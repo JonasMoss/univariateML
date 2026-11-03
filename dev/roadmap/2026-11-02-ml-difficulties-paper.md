@@ -38,6 +38,32 @@ to (the two-outcome procedure).
   (evaluation reports 2026-11-02: burr-collapse, norm-collapse, cauchy-bracket,
   bracket-fixes, zib-zero, gompertz-extreme).
 
+## Seams (added 2026-11-03)
+
+Many "escapes" are not boundaries but seams: a limit model that sits inside
+a larger smooth family, with the fitted family on one side. Reparametrize the
+escape coordinate so the limit is at zero and let it change sign.
+
+- `kappa = 1/N`: binomial (`kappa > 0`), Poisson (0), NB of shape `-1/kappa`.
+  The first-order slope at Poisson is `-h(v - mu)/2 kappa`; the binomial-size
+  and NB-shape existence results are its two signs.
+- BB, NB, beta-negative-binomial, by the same substitution in the
+  hypergeometric ratio. The BNB side is local geometry only, not a BB limit.
+- GPD in `xi`: Lomax (`xi > 0`), exponential (0), bounded support (`xi < 0`).
+  The slope at the exponential is `h(m2/(2 xbar^2) - 1)`, i.e. CV > 1,
+  while the Lomax dossier's exact criterion is a profile condition.
+- Burr XII is the GPD on `x^c` (`xi = 1/k`, `sigma = s^c/k`), so its
+  Weibull limit is the same seam; the other side has bounded support.
+- Generalized gamma in Prentice's parametrization: lognormal at zero.
+
+The recurring pattern: the first-order seam slope is a dispersion-type
+statistic and gives a sufficient condition; the exact existence criterion is
+global and differs. Where two seams meet (the Poisson corner of BB, and
+presumably the lognormal corner of GB2), the first-order scores are collinear,
+the information is singular, and the answer is decided at second order.
+The bbinom reports (2026-11-02 map; 2026-11-03 closure and cert) work this out
+in full for one family; see `2026-11-03-bbinom-free-size.md`.
+
 ## Thin spots
 
 No general existence theorem outside exponential families; joint uniqueness is
