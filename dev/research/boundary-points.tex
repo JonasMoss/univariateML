@@ -1,269 +1,515 @@
 \documentclass[11pt]{article}
-
 \usepackage[T1]{fontenc}
 \usepackage[margin=2.5cm]{geometry}
-\usepackage{amsmath,amssymb,amsthm}
-\usepackage{booktabs}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
 \usepackage{hyperref}
-
 \title{Limit models on the boundary of a statistical model:\\
-regular, singular and degenerate boundary points (draft)}
+Hellinger geometry, support leakage and dimension collapse}
 \author{}
-\date{\today}
-
-\newcommand{\E}{\mathbb{E}}
-\newcommand{\cM}{\mathcal{M}}
+\date{3 November 2026}
+\newcommand{\E}{\mathbb E}
+\newcommand{\cM}{\mathcal M}
 \newcommand{\code}[1]{\texttt{#1}}
-
-\theoremstyle{plain}
+\newcommand{\doi}[1]{\href{https://doi.org/#1}{doi:#1}}
 \newtheorem{theorem}{Theorem}
 \newtheorem{lemma}{Lemma}
-\newtheorem{claim}{Claim}
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}
 \newtheorem{example}{Example}
 \theoremstyle{remark}
 \newtheorem*{remark}{Remark}
-
 \begin{document}
 \maketitle
 
-\section*{Purpose and status}
+\section*{Results and status}
+The proposed regular/singular/degenerate trichotomy does not hold. Support
+leakage, quadratic-mean differentiability and intrinsic dimension are separate
+properties. The definitions below replace that trichotomy. They do not imply
+samplewise likelihood signs or universal escape probabilities.
 
-Maximum likelihood in many families of \code{univariateML} escapes to a limit
-model: Lomax to the exponential, the negative binomial to the Poisson, Burr to
-Weibull or Pareto, the beta-binomial with free size to the negative binomial.
-The research reports of 2026-11-02 and 2026-11-03 found that these limits
-behave in qualitatively different ways near the boundary. This note proposes a
-parametrization-free classification of such boundary points by their Hellinger
-tangent directions.
+Limit distributions reached at infinite parameter values are established
+\emph{embedded models} \cite{chengiles,chengtraylor,chengbook}. Hellinger
+tangents, singular information, nonregular support boundaries and exponential
+family completions also have established theories. No priority claim is made
+for combining these viewpoints. The precise leakage vocabulary and the narrow
+dimension-collapse definition below are conventions of this note, not
+established names. Sources and validation are recorded in the
+\href{evaluations/2026-11-03-boundary-lit-report.md}{TASK-139 review report}.
 
-\textbf{Status: draft.} The definitions are candidates. Before they are used
-(in dossiers or in the planned review paper,
-\code{dev/roadmap/2026-11-02-ml-difficulties-paper.md}) we must check that
-(i) they are well posed and the claims below hold, and (ii) the literature does
-not already have this classification or established names for it.
-Section~\ref{sec:open} lists both checks.
-
-\section{Setting}
-
-Let $\cM$ be a set of densities with respect to a $\sigma$-finite measure
-$\mu$. Represent $p$ by $\sqrt p$, a unit vector in $L^2(\mu)$, and use the
-Hellinger distance
+\section{Setting and intrinsic quantities}
+Let $\cM$ be a set of probability laws dominated by a common $\sigma$-finite
+measure $\mu$, identified with their densities modulo $\mu$-null sets. Put
+$q_p=\sqrt p$ and
 \[
-  H(p,q)=\bigl\|\sqrt p-\sqrt q\bigr\|_{L^2(\mu)} ,
+ H(p,g)=\|q_p-q_g\|_2,\qquad
+ \bar\cM=\operatorname{cl}_H\cM.
 \]
-without the conventional factor $1/\sqrt2$. Let $\bar\cM$ be the closure of
-$\cM$ in this metric and $g\in\bar\cM$ a boundary point: a limit model
-outside $\cM$ (Lomax to exponential) or a point of $\cM$ on its topological
-boundary ($N(\mu,1)$ with $\mu\ge0$, at $\mu=0$). Write
-$\ell_n(p)=\sum_{i=1}^n\log p(x_i)$.
+Fix an accumulation law $g\in\bar\cM$. A designated limit face, if used,
+is additional structure. Ambient topological boundary alone is uninformative:
+finite-dimensional models usually have empty interior in the space of laws.
+Weak limits outside the dominated Hellinger closure are excluded.
 
-\paragraph{Directions.} For $p_j\in\cM$ with $s_j=H(p_j,g)\to0$, call $u$ a
-direction of approach if $(\sqrt{p_j}-\sqrt g)/s_j\to u$ in $L^2(\mu)$ along
-a subsequence. Then $\|u\|=1$ and $\langle u,\sqrt g\rangle=0$, because
-$\langle\sqrt g,\sqrt{p_j}-\sqrt g\rangle=-s_j^2/2$. Split $u$ by the support
-of $g$:
+Let $S=\{g>0\}$ and, for $p\ne g$, define
 \[
-  u=\tfrac12\,h\sqrt g\ \mathbf 1\{g>0\}\;+\;u_\perp\,\mathbf 1\{g=0\},
-  \qquad h\in L^2(g),\quad \textstyle\int h\,g\,d\mu=0 .
+ s=H(p,g),\quad \sigma(p)=\int_{S^c}p\,d\mu,\quad
+ A(p)=\int_S(q_p-q_g)^2d\mu,\quad
+ R_g(p)=\frac{\sigma(p)}{s^2}.
 \]
-A path is differentiable in quadratic mean (DQM) with score $h$ exactly when
-its directions have $u_\perp=0$; DQM forces the mass that $p_t$ puts on
-$\{g=0\}$ to be $o(t^2)$ \cite{vdv}. Let $D_g(\cM)$ be the set of directions
-of approach (a subset of the unit sphere; its cone is a Bouligand-type
-tangent cone).
+Exactly $s^2=A+\sigma$, so $0\le R_g\le1$. These quantities depend on the
+laws, not on their density versions, coordinates or common dominating
+measure. Indeed, passage to a larger dominating measure sends square roots
+isometrically by multiplication by the appropriate square-root
+Radon--Nikodym derivative; it preserves the support decomposition. Invertible
+measurable transformations of the observations preserve them too.
 
-\section{Definitions (candidates)}
-
-\begin{definition}[Regular boundary point]
-Every direction in $D_g(\cM)$ has $u_\perp=0$.
+\begin{definition}[Leakage at a limit]
+Along a specified sequence or path $p\to g$, call leakage negligible if
+$R_g(p)\to0$, dominant if $R_g(p)\to1$, and mixed if $R_g(p)\to r\in(0,1)$.
+For the model at $g$, ``negligible leakage'' means this limit holds along
+\emph{every} approaching sequence; similarly for dominant leakage. Otherwise
+record the cluster set of $R_g$, a nonempty closed subset of $[0,1]$.
 \end{definition}
 
-\begin{definition}[Singular boundary point]
-Every direction in $D_g(\cM)$ has $h=0$: the model leaves $g$ by putting mass
-where $g$ has none.
-\end{definition}
+The cluster set is well defined by intersection of the closures of the ratio
+sets in shrinking punctured Hellinger balls. Oscillating and route-dependent
+ratios need not have a single type. For $g>0$ $\mu$-a.e., leakage is always
+zero, even for non-DQM models.
 
-\begin{definition}[Degenerate boundary point]
-Regular, but distinct escape routes share a direction, so the first-order
-geometry does not determine the local likelihood. Parametric version: the map
-from the escaping coordinates to scores is rank deficient (collinear scores).
-A parametrization-free version is open (Section~\ref{sec:open}).
-\end{definition}
-
-Working labels used in reports and chat: seam (regular), cusp (singular),
-corner (degenerate). ``Cusp'' clashes with singularity theory and should not be
-used in print. An earlier proposal, removable versus essential boundary, asked
-for a regular extension of the model through $g$. Our regular examples have
-one (beta-negative-binomial, bounded-support generalized Pareto), but the
-definitions above do not need it.
-
-\section{Consequences claimed}
-
-\begin{claim}[Regular: data decide]\label{cl:regular}
-Along a regular path with score $h$ and $s=H(p,g)$,
+\paragraph{Strong tangents.}
+Define the contingent cone and its normalized directions by
 \[
-  \ell_n(p)-\ell_n(g)=s\sum_{i=1}^n h(x_i)+O(s^2)\quad(\text{fixed sample}).
+ T_g=\left\{v:\frac{q_{p_j}-q_g}{t_j}\longrightarrow v\text{ in }L^2(\mu),\quad
+       p_j\in\cM,\ p_j\to g,\ t_j\downarrow0\right\},\qquad
+ D_g=T_g\cap\{\|v\|_2=1\}.
 \]
-The first-order coefficient is a score with mean zero under $g$, so its sign
-depends on the data. If $\cM$ is locally a half-space in a regular model, then
-under $g^{\otimes n}$ the maximum likelihood estimate lies on the boundary with
-probability tending to $1/2$ \cite{chernoff,selfliang}.
-\end{claim}
-
-\begin{claim}[Singular: the limit is a local maximum for every sample]
-\label{cl:singular}
-Suppose every observation lies in $\{g>0\}$ and every direction is singular.
-Let $\sigma(p)=\int_{\{g=0\}}p\,d\mu$. Then $H(p,g)^2=\sigma(p)+o(\sigma(p))$ and
+Allow $p_j=g$ when available; zero belongs to $T_g$ in any case, by choosing
+$t_j$ to decrease more slowly than $H(p_j,g)$. The nonzero part is the cone
+over $D_g$, which agrees with normalized secant limits. It need not be
+convex and $D_g$ can be empty. Every $u\in D_g$ has
 \[
-  \ell_n(p)-\ell_n(g)\approx-n\,\sigma(p)\approx-n\,H(p,g)^2<0
+ \langle u,q_g\rangle=0,\qquad
+ u=\tfrac12h q_g\mathbf1_S+w\mathbf1_{S^c},\qquad
+ h\in L^2(g),\quad \E_g h=0,\quad w\ge0.
 \]
-for every sample, so $g$ is a local maximum of the extended likelihood. Under
-$g^{\otimes n}$ the estimate escapes to $g$ with probability tending to one.
-\end{claim}
+This follows from $\langle q_p-q_g,q_g\rangle=-H(p,g)^2/2$.
+Moreover $R_g(p_j)\to\|w\|_2^2$ along a converging normalized secant.
+If normalized secants are relatively compact, all their limits being supported
+on $S$ is equivalent to negligible leakage; all being supported on $S^c$ is
+equivalent to dominant leakage. Without compactness neither converse holds.
 
-\begin{remark}
-The fixed-sample statement needs more than an $L^2$ statement: the absolutely
-continuous part must change by $o(\sigma)$ at the observed points, not only in
-$L^2(g)$. In the Burr example the relevant limit is the best Pareto fit, whose
-support edge is the sample minimum, so all observations lie in $\{g>0\}$ by
-construction. Mixed directions ($h\ne0$ and $u_\perp\ne0$) behave like
-regular ones: the linear term is of order $s$, the singular loss of order
-$s^2$.
-\end{remark}
+\begin{example}[Missing directions]
+For $g=U[0,1]$ and $p_t=U[-t,1]$, $\sigma=t/(1+t)$ and
+$H^2=2-2/\sqrt{1+t}$, hence $R_g\to1$. The normalized secants concentrate
+on $[-t,0)$ and converge weakly to zero but have norm one. No strong unit
+direction exists. For $p_t=U[t,1]$, $R_g=0$ and the same failure occurs on
+$[0,t]$. Thus a quantifier over $D_g=\varnothing$ makes both original
+``regular'' and ``singular'' definitions true. Weak limits alone lose the
+norm and do not repair this problem.
+\end{example}
 
-\section{Examples}
+\section{DQM and likelihood require their own hypotheses}
+A one-sided path is DQM at speed $t$ with score $h$ if
+\begin{equation}\label{eq:dqm}
+ q_{p_t}=q_g+\tfrac12t hq_g+o_{L^2}(t),\qquad h\in L^2(g).
+\end{equation}
+Normalization gives $\E_g h=0$. Necessarily $\sigma(p_t)=o(t^2)$.
+Conversely, this leakage condition together with the expansion on $S$ gives
+\eqref{eq:dqm}. If $h\ne0$, then
+$H(p_t,g)=t\|h\|_{L^2(g)}/2+o(t)$. A support-preserving direction does not
+imply DQM at the path's given speed: $N(\sqrt t,1)$ at $t=0$ is a simple
+counterexample. Zero-score DQM is possible, as in $N(t^2,1)$.
 
-\begin{center}
-\begin{tabular}{@{}llll@{}}
+\begin{lemma}[Fixed sample]\label{lem:fixed}
+Fix density versions and observations with $0<g(x_i)<\infty$. Assume
+\[
+ p_t(x_i)/g(x_i)=1+t h(x_i)+O(t^2)\qquad\text{for every }i.
+\]
+Then
+\[
+ \ell_n(p_t)-\ell_n(g)=t\sum_i h(x_i)+O(t^2).
+\]
+With only $o(t)$ pointwise remainders, the remainder is only $o(t)$.
+\end{lemma}
+\begin{proof}
+Apply $\log(1+z)=z+O(z^2)$ at the finitely many observations and sum.
+\end{proof}
+DQM is an integral assertion and does not supply these pointwise bounds.
+Even a smooth density path $p_t=g(1+t h+t^{3/2}a)$ with bounded mean-zero
+$h,a$ violates the proposed $O(t^2)$ remainder when $a(x_i)\ne0$.
+Changing densities on null sets is a further obstruction to any assertion
+about \emph{every} fixed sample based only on laws.
+For a stronger example fix $x_0\in(0,1)$, a bounded mean-zero $h$ on
+$[0,1]$, and an interval $I_t$ of length $t^4$ centered at $x_0$. The density
+$(1-t^4)(1+th)\mathbf1_{[0,1]}+\mathbf1_{I_t}$ is DQM at the uniform law
+with score $h$: the added bump changes square roots by $O(t^2)$ in $L^2$.
+Its log density at $x_0$ tends to $\log2$, so even the pointwise linear
+conclusion fails. This does not contradict LAN for random samples.
+
+For an iid sample, DQM of a finite-dimensional model gives the usual LAN
+expansion at each fixed local parameter under $g$; see \cite[Theorem 7.2]{vdv}.
+Consistency, local uniformity and control of maximizers are additional
+requirements for MLE conclusions. In a regular extension constrained by one
+smooth inequality, with positive efficient information for its scalar normal
+coordinate and regular fitted nuisance parameters, the local quadratic
+maximizer is the information-metric projection of a Gaussian onto a
+half-space \cite{chernoff,selfliang}. Its normal coordinate has an atom of
+probability $1/2$ at zero. To conclude that the actual MLE is \emph{exactly}
+on the face with probability tending to $1/2$, also require localization and
+a local profile whose derivative is continuous and strictly decreasing,
+with the normalized derivative at zero tending to a centered nondegenerate
+normal. Then the constrained optimum is zero exactly when that derivative
+is nonpositive. Weak convergence of the scaled MLE alone does not establish
+convergence of its mass at zero. This result is model-based, not a statement
+under misspecification or for an integer design coordinate.
+
+\begin{theorem}[What dominant leakage does imply]\label{th:leak}
+Along a path with $\sigma>0$, dominant leakage is equivalent to $A=o(\sigma)$
+and gives $H^2\sim\sigma$. If also
+\begin{equation}\label{eq:conditional}
+ p_t(x)/g(x)=(1-\sigma_t)(1+r_t(x)),\qquad
+ \max_i|r_t(x_i)|=o(\sigma_t),
+\end{equation}
+then, for that fixed sample in $S$,
+$\ell_n(p_t)-\ell_n(g)=-n\sigma_t+o(\sigma_t)<0$ eventually.
+A uniform bound $\sup_{x\in S}|r_t(x)|=o(\sigma_t)$ makes the assertion
+uniform over fixed samples of size $n$ in $S$.
+\end{theorem}
+\begin{proof}
+Use $H^2=A+\sigma$ for the equivalence and expand the two logarithms in
+\eqref{eq:conditional} for the likelihood.
+\end{proof}
+The exact mixture $p_t=(1-\sigma_t)g+\sigma_t q$, with $q$ supported on
+$S^c$, satisfies $\ell_n(p_t)-\ell_n(g)=n\log(1-\sigma_t)$ on $S$.
+Over this mixture model its closure MLE is $g$ for every sample from $g$.
+This is a sufficient model, not a consequence of dominant leakage alone.
+
+\begin{example}[Dominant leakage can improve likelihood]\label{ex:leak}
+On three atoms take $g=(1/2,1/2,0)$, $h=(1,-1)$ on $S$, and
+\[
+ p_t=\left(\tfrac12(1-t^2)(1+t^{3/2}),\
+           \tfrac12(1-t^2)(1-t^{3/2}),\ t^2\right).
+\]
+Then $\sigma=t^2$, $A=O(t^3)$, and $D_g$ consists of the direction at the
+third atom. Nevertheless, for one observation at the first atom,
+$\ell_1(p_t)-\ell_1(g)=t^{3/2}-t^2+O(t^3)>0$ for small $t$.
+Both the original direction condition and dominant leakage hold. The proposed
+samplewise local-maximum theorem fails even on a finite sample space.
+There is also an exact asymptotic counterexample. Fit this compact path with
+$0\le t\le\epsilon<1$. Put $Z_n=\sum_i h(X_i)$. Its log likelihood relative
+to $g$ is $Z_n t^{3/2}-nt^2+O(nt^3)$, so $Z_n>0$ excludes $g$ as a
+maximizer. If $Z_n\le0$, the bounds $\log(1+z)\le z$ and
+$\log(1-z)\le-z$ make the log likelihood strictly negative for every $t>0$.
+Thus $g$ is the unique MLE exactly when $Z_n\le0$; under $g^{\otimes n}$
+that probability tends to $1/2$, not one.
+\end{example}
+Mixed leakage likewise supplies no universal likelihood sign: pointwise
+expansion, a nonzero sample score, and comparison with nuisance directions
+are still needed. Neither support geometry nor a fixed-sample local result
+establishes a global escape probability tending to one.
+
+\section{A narrow intrinsic definition of degeneracy}
+Coordinate rank deficiency is invariant under smooth coordinate changes with
+invertible Jacobian, but not under arbitrary parametrizations. The same
+normal location family is described by $\theta=t^3$; its score in $t$ is zero
+at zero, although the set of laws is regular. Shared directions alone also
+occur in smooth manifolds: normal means $(t,0)$ and $(t,t^2)$ have the same
+first-order direction.
+
+\begin{definition}[Intrinsic dimension collapse]\label{def:collapse}
+Suppose the square-root model has a locally constant finite Hausdorff
+dimension $d$ near $q_g$, in the sense that
+$\dim_H(\{q_p:p\in\cM\}\cap B(q_g,\epsilon))=d$ for all sufficiently
+small $\epsilon>0$, and its normalized secants are relatively compact.
+Call $g$ dimension-collapsed if
+\[
+ \dim\overline{\operatorname{span}} T_g<d.
+\]
+\end{definition}
+This is parametrization-free and unchanged by a change of dominating measure.
+It is a deliberately sufficient, narrow meaning of ``degenerate'', independent
+of leakage. It is not a general definition of a singular statistical model.
+For a $d$-dimensional $C^1$ embedded manifold with boundary, the tangent cone
+spans its $d$-dimensional tangent space, so collapse is absent.
+
+\begin{example}[A collapsed model of laws]
+Take a regular bivariate normal location family with identity covariance,
+restricted to means $(a,b)$ with $a\ge0$, $|b|\le a^2$, near $(0,0)$.
+It has local Hausdorff dimension two and tangent cone the ray in the positive
+$a$ direction, of span dimension one. The square-root normal map has an
+injective derivative and is locally bi-Lipschitz, so it preserves these facts.
+All leakage is zero. By contrast a usual quadrant has two-dimensional tangent
+span, so an ordinary corner is not dimension collapse. The semicubical cusp
+$(a,b)=(t^2,t^3)$ is singular but has local dimension and tangent-span dimension
+both one; this definition intentionally does not detect it.
+\end{example}
+When local dimension or compactness is unavailable, leave this descriptor
+unassigned. Singular Fisher information \cite{rcbr}, singularities of a model
+set \cite{drton}, and singular learning models \cite{watanabe} should retain
+their established, distinct meanings.
+
+\section{Reassessment of the package examples}
+All statements concern the specified free subset and limit law.
+\begin{center}\small
+\begin{tabular}{@{}lll@{}}
 \toprule
-Family & Limit $g$ & Coordinate & Type \\
+Approach & Verified descriptor & Qualification \\
 \midrule
-$N(\mu,1)$, $\mu\ge0$ & $N(0,1)$ & $\mu$ & regular \\
-negative binomial & Poisson & $\kappa=-1/a$ & regular \\
-binomial, free size & Poisson & $\kappa=1/N$ & regular \\
-Lomax & exponential & $\xi=1/\alpha$ (GPD) & regular \\
-Burr XII & Weibull & $\xi=1/k$ on $x^c$ & regular \\
-beta-binomial, free size & negative binomial & $1/N$ & regular \\
-Burr XII & Pareto & $k\to0$, $kc$ fixed & singular \\
-beta-binomial, free size & Poisson & $(1/a,1/N)$ & degenerate \\
+$N(m,1)$, $m\ge0$, $m\to0$ & one-sided DQM & score $x$ \\
+NB to Poisson, mean fixed & DQM in $1/a$ & quadratic count score \\
+Binomial to Poisson, mean fixed & Hellinger secant & $1/N$ is discrete \\
+Lomax to exponential & one-sided DQM & fixed positive scale \\
+Burr XII to Weibull & one-sided DQM & fixed Weibull shape/scale \\
+BB to NB, mean/shape fixed & negligible leakage & full-support NB; DQM open here \\
+Burr XII to Pareto & path-dependent leakage & not globally dominant \\
+BB to Poisson, mean fixed & coordinate cancellation & full tangent span two \\
 \bottomrule
-\end{tabular}
-\end{center}
+\end{tabular}\end{center}
+For NB and binomial at fixed mean $\mu>0$, the log-pmf coefficients are
+$\pm C_2(x)/2$, where $C_2=x(x-1)-2\mu x+\mu^2$. Square-root expansions
+follow by a finite-count Taylor expansion and exponentially controlled tails;
+the same argument is given more explicitly below for BB. Integer sizes do not
+create an open Euclidean chart. In Lomax coordinates $(\xi,\sigma)$,
+\[
+ p_{\xi,\sigma}(x)=\sigma^{-1}(1+\xi x/\sigma)^{-1/\xi-1},\qquad x>0,
+\]
+the shape score at $\xi=0$ is $z^2/2-z$, $z=x/\sigma$.
+The square-root derivative is square integrable under the exponential;
+splitting the integral at a growing cutoff proves DQM. A fixed power
+transformation gives the Burr-to-Weibull result. Fitting the exponential scale
+at $\bar x$ gives the profile derivative
+$n\{\overline{x^2}/(2\bar x^2)-1\}$; its sign is only local. A fixed-data
+Taylor coefficient alone would not prove DQM.
 
-\begin{example}[Lomax]
-With $\xi=1/\alpha$ and $\sigma=\lambda/\alpha$ the Lomax density becomes
-$\sigma^{-1}(1+\xi x/\sigma)^{-1/\xi-1}$, the generalized Pareto family:
-$\xi>0$ Lomax, $\xi=0$ exponential, $\xi<0$ bounded support. The slope at the
-exponential is $n(\overline{x^2}/(2\bar x^2)-1)$, positive iff the coefficient
-of variation exceeds one. Local and global answers differ: for $(1,100)$ the
-slope is negative but a finite Lomax MLE exists (Lomax dossier).
-\end{example}
+\subsection{Burr to Pareto: path geometry and density traces}
+On the log scale write
+\[
+ p_{k,\alpha,b}(y)=\alpha e^{c(y-b)}(1+e^{c(y-b)})^{-k-1},\qquad c=\alpha/k.
+\]
+For $b=0$, $k\downarrow0$ and $\alpha>0$ fixed, the limit is
+$g_\alpha(y)=\alpha e^{-\alpha y}\mathbf1_{y\ge0}$. Here
+$\sigma=1-2^{-k}\sim k\log2$, while the density at zero tends to
+$\alpha/2$, not the closed-endpoint value $\alpha$.
+For $b=-k\log(1/k)/\alpha$ one instead has
+\[
+ \sigma=1-(1+1/k)^{-k}\sim k\log(1/k),\quad
+ \frac{p(y)}{g_\alpha(y)}=k^k(1+ke^{-\alpha y/k})^{-k-1},\quad y\ge0.
+\]
+Its logarithm is uniformly
+$O(k\log(1/k))$ on $S$, so $A=O(k^2\log^2(1/k))=o(\sigma)$.
+Nevertheless its endpoint correction is order $k$, not identically zero.
+The outside mass concentrates in a shrinking neighborhood of zero. Thus its
+normalized secants have no strong limit: any possible outside limit would
+be supported on the null singleton, while $A/H^2\to0$.
 
-\begin{example}[Burr to Pareto]
-On the log scale, the profile likelihood near the Pareto limit is
-$H(k)=P+nk\log k+O(k)$ for every nonconstant sample
-(\code{2026-11-03-burr-closure-report.md}). Along the report's comparison path
-for the log-scale sample $(0,0,1)$, 30-digit quadrature gives
+This cannot classify the whole free Burr model as dominant leakage at
+$g_\alpha$. Set instead $\alpha_k=\alpha+k^{1/4}$ along this path and replace
+$\alpha$ by $\alpha_k$ in $b,c$. The distance from the matching
+$g_{\alpha_k}$ is $O(\sqrt{k\log(1/k)})$, whereas
+$H(g_{\alpha_k},g_\alpha)$ is of order $k^{1/4}$. The Pareto shape direction
+dominates and $R_{g_\alpha}\to0$.
+In fact the full free model has leakage cluster set $[0,1]$. For any fixed
+$d>0$ take $\alpha_k=\alpha+2\alpha d\sqrt{\sigma_k}$ in the same
+construction. On $S$ the difference from $g_{\alpha_k}$ has square-root norm
+$O(\sigma_k)$, whereas DQM of the exponential shape family gives
+$\|\sqrt{g_{\alpha_k}}-\sqrt{g_\alpha}\|_2^2\sim d^2\sigma_k$.
+Thus $R_{g_\alpha}\to(1+d^2)^{-1}$. Together with the two endpoint limits
+already proved, these exhaust $[0,1]$.
 
-\begin{center}
-\begin{tabular}{@{}rcc@{}}
-\toprule
-$k$ & $\sigma/(k\log(1/k))$ & $H^2/(2k\log(1/k))$ \\
-\midrule
-$10^{-2}$ & 0.895 & 0.452 \\
-$10^{-3}$ & 0.938 & 0.470 \\
-$10^{-4}$ & 0.956 & 0.478 \\
-$10^{-5}$ & 0.965 & 0.482 \\
-\bottomrule
-\end{tabular}
-\end{center}
+The all-free profile assertion in the Burr closure report is stronger and
+separate: for a fixed nonconstant sample its entropy bound proves
+$H_{\rm prof}(k)=P+nk\log k+O(k)<P$ for small $k$, where $P$ is the
+optimized Pareto log likelihood. This is a likelihood inequality with a fitted
+endpoint, not a theorem derived from Hellinger geometry. Endpoint density
+traces depend on the approach even for the same Hellinger limit law.
 
-(the last column uses $H^2/2=1-\int\sqrt{pg}$). So $H^2/\sigma\to1$: the
-Hellinger distance is carried by the Burr mass below the Pareto edge, and the
-deficit $nk\log(1/k)$ is $n\sigma$. This was checked on one path, not over all
-directions.
-\end{example}
+\subsection{The full BB tangent at Poisson}\label{sec:bb}
+Fix the mean $\mu>0$ and set $u=1/a$, $k=1/N$,
+$b=a(N/\mu-1)>0$, with integer $N\to\infty$. Let $g$ be Poisson$(\mu)$.
+Define
+\[
+ C_2(x)=x(x-1)-2\mu x+\mu^2,\qquad
+ A_2(x)=-\frac{x(x-1)(2x-1)}6+\frac{\mu x(x+1)}2
+          -\frac{\mu^3}6-\frac{\mu^2}2.
+\]
+The polynomial $A_2$ has mean zero under $g$ and degree three. In terms of
+the third Poisson--Charlier polynomial,
+$A_2=-C_3/3-(\mu+1)C_2/2$.
 
-\begin{example}[Escape probabilities under the limit model]
-A small simulation (\code{build/scratch}, 2026-11-03): exponential data fitted
-by Lomax gave a finite MLE in 41\% ($n=50$) and 43\% ($n=400$) of 400
-samples, consistent with $1/2$; Pareto data fitted by Burr had some finite Burr
-fit beat the Pareto fit in 5\% ($n=50$) and 0\% ($n=400$) of 40 samples,
-consistent with escape probability one. Numerical evidence only.
-\end{example}
+\begin{theorem}[Cancellation is not tangent collapse]\label{th:bb}
+For this mean-fixed BB model the contingent cone at Poisson is
+\[
+ T_g=\{(a C_2+b A_2)\sqrt g:a\in\mathbb R,\ b\ge0\}.
+\]
+In particular its span has dimension two. The collinear coordinate scores
+at $(u,k)=(0,0)$ do not describe its full Hellinger geometry.
+\end{theorem}
+\begin{proof}
+The exact ratio and zero probability are
+\[
+ \frac{p(x+1)}{p(x)}=\frac{\mu}{x+1}
+ \frac{(1-xk)(1+xu)}{1+\mu(u-k)-\mu(x+1)uk},\qquad
+ \log p(0)=\sum_{j=0}^{N-1}\log\left(1-\frac{\mu k}{1+\mu ukj}\right).
+\]
+Their Taylor expansion gives first log coefficient $(u-k)C_2/2$.
+On $u=k$, the second coefficient is $k^2 A_2$.
+Writing $r=u+k$, if $|u-k|/r^2\to\infty$, the normalized square-root
+secants tend to the direction of $\pm C_2\sqrt g$. If $u-k=O(r^2)$,
+then $r\sim2k$ and
+\begin{equation}\label{eq:bbexp}
+ \sqrt p-\sqrt g=
+ \left\{\frac{u-k}{4}C_2+\frac{k^2}{2}A_2\right\}\sqrt g+o_{L^2}(k^2).
+\end{equation}
+Here is a tail justification, which is essential. The factorial moments obey
+\[
+ \E_p(X)_{\underline j}
+ =\mu^j\prod_{i=0}^{j-1}\frac{(1-ik)(1+iu)}{1+\mu uki}
+ \le\mu^j\prod_{i=0}^{j-1}(1+iu),\qquad j\le N.
+\]
+For any fixed $z>0$ and sufficiently small $u$, expansion of
+$(1+z)^X$ therefore gives
+$\E_p(1+z)^X\le(1-\mu uz)^{-1/u}$. Hence exponential moments of every
+fixed order are uniformly bounded as $r\to0$. On
+$x\le L\log(1/r)$ the displayed exact formulas have Taylor errors bounded
+by $O(r^3)$ times a fixed polynomial in $x$; their log-zero expansion is
+uniform since $kj\le1$. Taking square roots adds the usual square of the
+linear term, which is negligible in the cancellation regime. The tails
+beyond this cutoff have mass $O(r^K)$ for arbitrarily large fixed $K$ by
+choosing a fixed exponential moment and $L$. This proves \eqref{eq:bbexp}
+and the noncancelling expansion in $L^2$.
 
-\begin{example}[The Poisson corner of the beta-binomial]
-With the mean held at $\mu$, $u=1/a$ and $k=1/N$,
-$(\ell_{BB}-\ell_{\mathrm{Pois}})/n=\tfrac12(v-\mu)(u-k)+O((u+k)^2)$
-(\code{2026-11-03-bbinom-closure-report.md}): the two escape coordinates have
-collinear first-order scores, and second-order terms (third factorial moment)
-decide.
-\end{example}
+The leading quadratic and cubic polynomials are linearly independent. Their
+norm prevents an additional cancellation, so every nonzero contingent limit
+is in the asserted half-plane. Conversely $u=k+\beta k^2$ gives any finite
+ratio of the quadratic to cubic coefficients in \eqref{eq:bbexp}; the paths
+$u=2k$ and $u=k/2$ give the two line directions. Positive rescaling gives
+all of $T_g$; all paths retain integer $N$.
+\end{proof}
+At fixed finite $N$ the mean-fixed model has only one continuous shape
+coordinate. Its countable union over $N$ has local Hausdorff dimension one,
+not two. Thus Definition~\ref{def:collapse} cannot be applied by treating
+$N$ as an extra continuous coordinate. With the mean free the corresponding
+local dimension is two, and the Poisson mean supplies a third independent
+tangent-span direction. Coordinate cancellation remains a useful calculation,
+but it is not intrinsic dimension collapse in either case.
 
-\section{To verify}\label{sec:open}
+For a fixed sample at $\mu=\bar x$, the original first-order likelihood
+coefficient $n(v-\mu)(u-k)/2$ is correct. Along $u=k$ and $v=\mu$, the second
+coefficient is $n(\mu^3-F_3)k^2/3$, with
+$F_3=n^{-1}\sum_i(x_i)_{\underline3}$. Its sign is not a global existence
+criterion; the BB closure report gives exact remote counterexamples.
 
-\paragraph{Mathematics.}
-\begin{enumerate}
-\item Well-posedness: directions need not exist (no $L^2$-convergent
-  subsequence). Use weak limits, or restrict to paths? Is the classification
-  exhaustive up to mixed cases?
-\item Precise hypotheses and proofs for Claims~\ref{cl:regular}
-  and~\ref{cl:singular}, including the fixed-sample version and the
-  escape probabilities.
-\item A parametrization-free definition of degenerate points (tangent cone of
-  lower dimension than the model near $g$? a cone containing a line at a point
-  that is not interior?).
-\item Classify the limits declared or compared in all 99 dossiers. Candidates
-  for singular points: other limits with a hard support edge (skew normal to
-  half-normal, threshold families, truncated families).
-\end{enumerate}
+\section{Literature and remaining scope}\label{sec:open}
+\paragraph{Established notions.}
+Cheng and Iles \cite{chengiles} study fitting an embedded model when the
+larger family's optimum occurs at infinite parameters. Cheng and Traylor
+\cite{chengtraylor} distinguish unbounded likelihood, embedded models and
+indeterminate parameters; these are not the proposed three Hellinger types.
+Cheng \cite[Chapters 5--7]{chengbook} develops the embedded-model problem.
+Prentice \cite{prentice} extends a log-gamma parametrization through the
+normal member. Watkins \cite{watkins} treats Burr/Weibull fitting, and Shao,
+Ip and Wong \cite{shao} give local likelihood discriminants for embedded
+models. These precedents rule out novelty for embedded limits or face-slope
+comparisons; a local discriminant requires a separate global argument.
 
-\paragraph{Literature.} Is this classification, or established names for it,
-already in the literature? Places to check first:
-Cheng and Iles \cite{chengiles} and Cheng and Traylor \cite{chengtraylor}
-(``embedded models'' reached as parameters diverge; probably the closest),
-Cheng's book \cite{chengbook}, Smith \cite{smith} (nonregular threshold
-problems), Ibragimov and Has'minskii \cite{ih} (densities with jumps),
-Le Cam and van der Vaart \cite{vdv} and Bickel et al.\ \cite{bkrw} (tangent
-sets), Chernoff \cite{chernoff} and Self and Liang \cite{selfliang} (boundary
-tests), Drton \cite{drton} (tangent cones at singular points of algebraic
-models), Rotnitzky et al.\ \cite{rcbr} (singular information), Watanabe
-\cite{watanabe} (singular learning theory), Prentice \cite{prentice}
-(generalized gamma extended through the lognormal), and the exponential-family
-closure literature (Barndorff-Nielsen; Brown; Geyer; Csisz\'ar and Mat\'u\v s).
+Le Cam \cite{lecam}, van der Vaart \cite[Chapters 7, 16, 25]{vdv} and Bickel
+et al.\ \cite{bkrw} provide local experiments, DQM and tangent-set methods.
+Chernoff \cite{chernoff} and Self and Liang \cite{selfliang} concern
+constrained likelihood asymptotics. Dacunha-Castelle and Gassiat \cite{dcg}
+use locally conic models to handle nonidentifiability. Smith \cite{smith}
+studies moving-support estimation; Ibragimov and Has'minskii
+\cite[Chapters V--VI]{ih} treat jumps and classify density singularities.
+Here support behavior and convergence rates require more than an endpoint's
+mere presence. Rotnitzky et al.\ \cite{rcbr} address singular information;
+Drton \cite{drton} addresses tangent cones of singular model sets within a
+regular ambient model; Watanabe \cite{watanabe} addresses singular learning.
+Their uses of ``singular'' do not mean exclusively outside-support directions.
 
-\begin{thebibliography}{99}
-\small
-\item[] \emph{All entries are from memory; titles, years and venues must be checked.}
+Exponential-family \emph{completion}, \emph{extended families},
+\emph{accessible faces} and \emph{directions of recession} are the relevant
+closure terminology \cite{bn,brown,cm,geyer}. Variation and Hellinger give
+the same topology on probability laws, since
+$H^2\le\|p-g\|_1\le2H$. Their closures need not agree with weak or
+information-divergence closures. Exponential-family results cannot be
+transferred to Burr or BB without establishing their hypotheses.
+
+\paragraph{What remains open.}
+No exhaustive classification of the 99 dossiers is claimed here. The
+BB-to-NB transverse DQM expansion, the Burr-to-Pareto leakage cluster
+sets under other held subsets, and calibrated global escape
+probabilities for Burr and Lomax require separate proofs. Skew-normal to
+half-normal and other threshold limits need specified held subsets and rates.
+The unarchived simulation percentages in the draft have been removed; their
+samples, code and search guarantees were not retained. Literature coverage is
+bounded by the report's search log and access record; it establishes no
+priority for the intrinsic definition or the BB tangent calculation.
+
+\begin{thebibliography}{99}\small
+\bibitem{bn} O. Barndorff-Nielsen (1978).
+\emph{Information and Exponential Families in Statistical Theory}. Wiley.
+Reissued 2014, \doi{10.1002/9781118857281}.
 \bibitem{bkrw} P. J. Bickel, C. A. J. Klaassen, Y. Ritov and J. A. Wellner (1993).
-  \emph{Efficient and Adaptive Estimation for Semiparametric Models}. Johns Hopkins.
-\bibitem{chengiles} R. C. H. Cheng and T. C. Iles (1990). Embedded models in
-  three-parameter distributions and their estimation. \emph{J. R. Statist. Soc. B} 52.
-\bibitem{chengtraylor} R. C. H. Cheng and L. Traylor (1995). Non-regular maximum
-  likelihood problems. \emph{J. R. Statist. Soc. B} 57.
-\bibitem{chengbook} R. C. H. Cheng (2017). \emph{Non-Standard Parametric
-  Statistical Inference}. Oxford University Press.
-\bibitem{chernoff} H. Chernoff (1954). On the distribution of the likelihood
-  ratio. \emph{Ann. Math. Statist.} 25.
+\emph{Efficient and Adaptive Estimation for Semiparametric Models}.
+Johns Hopkins University Press, xix + 560 pp.
+\bibitem{brown} L. D. Brown (1986).
+\emph{Fundamentals of Statistical Exponential Families with Applications in
+Statistical Decision Theory}. IMS Lecture Notes--Monograph Series 9,
+Institute of Mathematical Statistics. \doi{10.1214/lnms/1215466757}.
+\bibitem{chengiles} R. C. H. Cheng and T. C. Iles (1990).
+Embedded models in three-parameter distributions and their estimation.
+\emph{J. R. Statist. Soc. B} 52(1), 135--149.
+\doi{10.1111/j.2517-6161.1990.tb01777.x}.
+\bibitem{chengtraylor} R. C. H. Cheng and L. Traylor (1995).
+Non-regular maximum likelihood problems.
+\emph{J. R. Statist. Soc. B} 57(1), 3--24.
+\doi{10.1111/j.2517-6161.1995.tb02013.x}.
+\bibitem{chengbook} R. C. H. Cheng (2017).
+\emph{Non-Standard Parametric Statistical Inference}. Oxford University Press.
+\doi{10.1093/oso/9780198505044.001.0001}.
+\bibitem{chernoff} H. Chernoff (1954). On the distribution of the likelihood ratio.
+\emph{Ann. Math. Statist.} 25(3), 573--578. \doi{10.1214/aoms/1177728725}.
+\bibitem{cm} I. Csisz\'ar and F. Mat\'u\v s (2005).
+Closures of exponential families. \emph{Ann. Probab.} 33(2), 582--600.
+\doi{10.1214/009117904000000766}.
+\bibitem{dcg} D. Dacunha-Castelle and \'E. Gassiat (1997).
+Testing in locally conic models, and application to mixture models.
+\emph{ESAIM: Probab. Statist.} 1, 285--317. \doi{10.1051/ps:1997111}.
 \bibitem{drton} M. Drton (2009). Likelihood ratio tests and singularities.
-  \emph{Ann. Statist.} 37.
-\bibitem{ih} I. A. Ibragimov and R. Z. Has'minskii (1981). \emph{Statistical
-  Estimation: Asymptotic Theory}. Springer.
-\bibitem{prentice} R. L. Prentice (1974). A log gamma model and its maximum
-  likelihood estimation. \emph{Biometrika} 61.
+\emph{Ann. Statist.} 37(2), 979--1012. \doi{10.1214/07-AOS571}.
+\bibitem{geyer} C. J. Geyer (2009). Likelihood inference in exponential families
+and directions of recession. \emph{Electron. J. Statist.} 3, 259--289.
+\doi{10.1214/08-EJS349}.
+\bibitem{ih} I. A. Ibragimov and R. Z. Has'minskii (1981).
+\emph{Statistical Estimation: Asymptotic Theory}. Translated by S. Kotz.
+Springer, Applications of Mathematics 16, vii + 403 pp.
+\doi{10.1007/978-1-4899-0027-2}.
+\bibitem{lecam} L. Le Cam (1986).
+\emph{Asymptotic Methods in Statistical Decision Theory}. Springer,
+xxvi + 742 pp. \doi{10.1007/978-1-4612-4946-7}.
+\bibitem{prentice} R. L. Prentice (1974).
+A log gamma model and its maximum likelihood estimation.
+\emph{Biometrika} 61(3), 539--544. \doi{10.1093/biomet/61.3.539}.
 \bibitem{rcbr} A. Rotnitzky, D. R. Cox, M. Bottai and J. Robins (2000).
-  Likelihood-based inference with singular information matrix. \emph{Bernoulli} 6.
-\bibitem{selfliang} S. G. Self and K.-Y. Liang (1987). Asymptotic properties of
-  maximum likelihood estimators and likelihood ratio tests under nonstandard
-  conditions. \emph{J. Amer. Statist. Assoc.} 82.
-\bibitem{smith} R. L. Smith (1985). Maximum likelihood estimation in a class of
-  nonregular cases. \emph{Biometrika} 72.
+Likelihood-based inference with singular information matrix.
+\emph{Bernoulli} 6(2), 243--284. \doi{10.2307/3318576}.
+\bibitem{selfliang} S. G. Self and K.-Y. Liang (1987).
+Asymptotic properties of maximum likelihood estimators and likelihood ratio
+tests under nonstandard conditions.
+\emph{J. Amer. Statist. Assoc.} 82(398), 605--610.
+\doi{10.1080/01621459.1987.10478472}.
+\bibitem{shao} Q. Shao, W.-C. Ip and H. Wong (2004).
+Determination of embedded distributions. \emph{Comput. Statist. Data Anal.}
+46(2), 317--334. \doi{10.1016/S0167-9473(03)00171-3}.
+\bibitem{smith} R. L. Smith (1985).
+Maximum likelihood estimation in a class of nonregular cases.
+\emph{Biometrika} 72(1), 67--90. \doi{10.1093/biomet/72.1.67}.
 \bibitem{vdv} A. W. van der Vaart (1998). \emph{Asymptotic Statistics}.
-  Cambridge University Press. Chapters 7 and 25.
-\bibitem{watanabe} S. Watanabe (2009). \emph{Algebraic Geometry and Statistical
-  Learning Theory}. Cambridge University Press.
+Cambridge University Press. \doi{10.1017/CBO9780511802256}.
+\bibitem{watanabe} S. Watanabe (2009).
+\emph{Algebraic Geometry and Statistical Learning Theory}.
+Cambridge University Press. \doi{10.1017/CBO9780511800474}.
+\bibitem{watkins} A. J. Watkins (1999).
+An algorithm for maximum likelihood estimation in the three parameter Burr XII
+distribution. \emph{Comput. Statist. Data Anal.} 32(1), 19--27.
+\doi{10.1016/S0167-9473(99)00024-9}.
 \end{thebibliography}
-
 \end{document}

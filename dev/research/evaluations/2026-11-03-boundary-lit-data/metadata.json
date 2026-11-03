@@ -1,0 +1,1166 @@
+{
+  "retrieved_utc": "2026-11-03T09:42:44.380338+00:00",
+  "authorization": "TASK-139: verify every bibliography entry; web search is on",
+  "transmitted": "DOI identifiers only",
+  "records": {
+    "chengiles": {
+      "url": "https://api.crossref.org/works/10.1111/j.2517-6161.1990.tb01777.x",
+      "metadata": {
+        "DOI": "10.1111/j.2517-6161.1990.tb01777.x",
+        "title": [
+          "Embedded Models in Three-Parameter Distributions and Their Estimation"
+        ],
+        "author": [
+          {
+            "given": "R. C. H.",
+            "family": "Cheng",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "University of Wales , Cardiff , UK"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "T. C.",
+            "family": "Iles",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "University of Wales , Cardiff , UK"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              1990,
+              9,
+              1
+            ]
+          ]
+        },
+        "published-print": {
+          "date-parts": [
+            [
+              1990,
+              9,
+              1
+            ]
+          ]
+        },
+        "published-online": {
+          "date-parts": [
+            [
+              2018,
+              12,
+              5
+            ]
+          ]
+        },
+        "container-title": [
+          "Journal of the Royal Statistical Society Series B: Statistical Methodology"
+        ],
+        "publisher": "Oxford University Press (OUP)",
+        "volume": "52",
+        "issue": "1",
+        "page": "135-149",
+        "type": "journal-article"
+      }
+    },
+    "chengtraylor": {
+      "url": "https://api.crossref.org/works/10.1111/j.2517-6161.1995.tb02013.x",
+      "metadata": {
+        "DOI": "10.1111/j.2517-6161.1995.tb02013.x",
+        "title": [
+          "Non-Regular Maximum Likelihood Problems"
+        ],
+        "author": [
+          {
+            "given": "R. C. H.",
+            "family": "Cheng",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "University of Wales College of Cardiff , UK"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "L.",
+            "family": "Traylor",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "University of Wales College of Cardiff , UK"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              1995,
+              1,
+              1
+            ]
+          ]
+        },
+        "published-print": {
+          "date-parts": [
+            [
+              1995,
+              1,
+              1
+            ]
+          ]
+        },
+        "published-online": {
+          "date-parts": [
+            [
+              2018,
+              12,
+              5
+            ]
+          ]
+        },
+        "container-title": [
+          "Journal of the Royal Statistical Society Series B: Statistical Methodology"
+        ],
+        "publisher": "Oxford University Press (OUP)",
+        "volume": "57",
+        "issue": "1",
+        "page": "3-24",
+        "type": "journal-article"
+      }
+    },
+    "chengbook": {
+      "url": "https://api.crossref.org/works/10.1093/oso/9780198505044.001.0001",
+      "metadata": {
+        "DOI": "10.1093/oso/9780198505044.001.0001",
+        "title": [
+          "Non-Standard Parametric Statistical Inference"
+        ],
+        "author": [
+          {
+            "given": "Russell",
+            "family": "Cheng",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "University of Southampton"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2017,
+              6,
+              22
+            ]
+          ]
+        },
+        "published-print": {
+          "date-parts": [
+            [
+              2017,
+              6,
+              22
+            ]
+          ]
+        },
+        "published-online": {
+          "date-parts": [
+            [
+              2017,
+              9,
+              21
+            ]
+          ]
+        },
+        "container-title": [],
+        "publisher": "Oxford University PressOxford",
+        "ISBN": [
+          "0198505043",
+          "9780198505044",
+          "9780191746390"
+        ],
+        "type": "edited-book"
+      }
+    },
+    "chernoff": {
+      "url": "https://api.crossref.org/works/10.1214/aoms/1177728725",
+      "metadata": {
+        "DOI": "10.1214/aoms/1177728725",
+        "title": [
+          "On the Distribution of the Likelihood Ratio"
+        ],
+        "author": [
+          {
+            "given": "Herman",
+            "family": "Chernoff",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              1954,
+              9
+            ]
+          ]
+        },
+        "published-print": {
+          "date-parts": [
+            [
+              1954,
+              9
+            ]
+          ]
+        },
+        "container-title": [
+          "The Annals of Mathematical Statistics"
+        ],
+        "publisher": "Institute of Mathematical Statistics",
+        "volume": "25",
+        "issue": "3",
+        "page": "573-578",
+        "type": "journal-article"
+      }
+    },
+    "drton": {
+      "url": "https://api.crossref.org/works/10.1214/07-AOS571",
+      "metadata": {
+        "DOI": "10.1214/07-aos571",
+        "title": [
+          "Likelihood ratio tests and singularities"
+        ],
+        "author": [
+          {
+            "given": "Mathias",
+            "family": "Drton",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2009,
+              4,
+              1
+            ]
+          ]
+        },
+        "published-print": {
+          "date-parts": [
+            [
+              2009,
+              4,
+              1
+            ]
+          ]
+        },
+        "container-title": [
+          "The Annals of Statistics"
+        ],
+        "publisher": "Institute of Mathematical Statistics",
+        "volume": "37",
+        "issue": "2",
+        "page": "979-1012",
+        "type": "journal-article"
+      }
+    },
+    "ih": {
+      "url": "https://api.crossref.org/works/10.1007/978-1-4899-0027-2",
+      "metadata": {
+        "DOI": "10.1007/978-1-4899-0027-2",
+        "title": [
+          "Statistical Estimation"
+        ],
+        "author": [
+          {
+            "given": "I. A.",
+            "family": "Ibragimov",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "R. Z.",
+            "family": "Has’minskii",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              1981
+            ]
+          ]
+        },
+        "published-print": {
+          "date-parts": [
+            [
+              1981
+            ]
+          ]
+        },
+        "container-title": [],
+        "publisher": "Springer New York",
+        "ISBN": [
+          "9781489900296",
+          "9781489900272"
+        ],
+        "type": "book"
+      }
+    },
+    "prentice": {
+      "url": "https://api.crossref.org/works/10.1093/biomet/61.3.539",
+      "metadata": {
+        "DOI": "10.1093/biomet/61.3.539",
+        "title": [
+          "A log gamma model and its maximum likelihood estimation"
+        ],
+        "author": [
+          {
+            "given": "R. L.",
+            "family": "PRENTICE",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              1974
+            ]
+          ]
+        },
+        "published-print": {
+          "date-parts": [
+            [
+              1974
+            ]
+          ]
+        },
+        "container-title": [
+          "Biometrika"
+        ],
+        "publisher": "Oxford University Press (OUP)",
+        "volume": "61",
+        "issue": "3",
+        "page": "539-544",
+        "type": "journal-article"
+      }
+    },
+    "rcbr": {
+      "url": "https://api.crossref.org/works/10.2307/3318576",
+      "metadata": {
+        "DOI": "10.2307/3318576",
+        "title": [
+          "Likelihood-Based Inference with Singular Information Matrix"
+        ],
+        "author": [
+          {
+            "given": "Andrea",
+            "family": "Rotnitzky",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "David R.",
+            "family": "Cox",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Matteo",
+            "family": "Bottai",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "James",
+            "family": "Robins",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2000,
+              4
+            ]
+          ]
+        },
+        "published-print": {
+          "date-parts": [
+            [
+              2000,
+              4
+            ]
+          ]
+        },
+        "container-title": [
+          "Bernoulli"
+        ],
+        "publisher": "JSTOR",
+        "volume": "6",
+        "issue": "2",
+        "page": "243",
+        "type": "journal-article"
+      }
+    },
+    "selfliang": {
+      "url": "https://api.crossref.org/works/10.1080/01621459.1987.10478472",
+      "metadata": {
+        "DOI": "10.1080/01621459.1987.10478472",
+        "title": [
+          "Asymptotic Properties of Maximum Likelihood Estimators and Likelihood Ratio Tests under Nonstandard Conditions"
+        ],
+        "author": [
+          {
+            "given": "Steven G.",
+            "family": "Self",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Kung-Yee",
+            "family": "Liang",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              1987,
+              6
+            ]
+          ]
+        },
+        "published-print": {
+          "date-parts": [
+            [
+              1987,
+              6
+            ]
+          ]
+        },
+        "container-title": [
+          "Journal of the American Statistical Association"
+        ],
+        "publisher": "Informa UK Limited",
+        "volume": "82",
+        "issue": "398",
+        "page": "605-610",
+        "type": "journal-article"
+      }
+    },
+    "smith": {
+      "url": "https://api.crossref.org/works/10.1093/biomet/72.1.67",
+      "metadata": {
+        "DOI": "10.1093/biomet/72.1.67",
+        "title": [
+          "Maximum likelihood estimation in a class of nonregular cases"
+        ],
+        "author": [
+          {
+            "given": "RICHARD L.",
+            "family": "SMITH",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              1985
+            ]
+          ]
+        },
+        "published-print": {
+          "date-parts": [
+            [
+              1985
+            ]
+          ]
+        },
+        "container-title": [
+          "Biometrika"
+        ],
+        "publisher": "Oxford University Press (OUP)",
+        "volume": "72",
+        "issue": "1",
+        "page": "67-90",
+        "type": "journal-article"
+      }
+    },
+    "vdv": {
+      "url": "https://api.crossref.org/works/10.1017/CBO9780511802256",
+      "metadata": {
+        "DOI": "10.1017/cbo9780511802256",
+        "title": [
+          "Asymptotic Statistics"
+        ],
+        "author": [
+          {
+            "given": "A. W. van der",
+            "family": "Vaart",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              1998,
+              10,
+              13
+            ]
+          ]
+        },
+        "published-print": {
+          "date-parts": [
+            [
+              1998,
+              10,
+              13
+            ]
+          ]
+        },
+        "published-online": {
+          "date-parts": [
+            [
+              2012,
+              6,
+              5
+            ]
+          ]
+        },
+        "container-title": [],
+        "publisher": "Cambridge University Press",
+        "ISBN": [
+          "9780511802256",
+          "9780521496032",
+          "9780521784504"
+        ],
+        "type": "monograph"
+      }
+    },
+    "watanabe": {
+      "url": "https://api.crossref.org/works/10.1017/CBO9780511800474",
+      "metadata": {
+        "DOI": "10.1017/cbo9780511800474",
+        "title": [
+          "Algebraic Geometry and Statistical Learning Theory"
+        ],
+        "author": [
+          {
+            "given": "Sumio",
+            "family": "Watanabe",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2009,
+              8,
+              13
+            ]
+          ]
+        },
+        "published-print": {
+          "date-parts": [
+            [
+              2009,
+              8,
+              13
+            ]
+          ]
+        },
+        "published-online": {
+          "date-parts": [
+            [
+              2011,
+              1,
+              10
+            ]
+          ]
+        },
+        "container-title": [],
+        "publisher": "Cambridge University Press",
+        "ISBN": [
+          "9780521864671",
+          "9780511800474"
+        ],
+        "type": "monograph"
+      }
+    },
+    "lecam": {
+      "url": "https://api.crossref.org/works/10.1007/978-1-4612-4946-7",
+      "metadata": {
+        "DOI": "10.1007/978-1-4612-4946-7",
+        "title": [
+          "Asymptotic Methods in Statistical Decision Theory"
+        ],
+        "author": [
+          {
+            "given": "Lucien Le",
+            "family": "Cam",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              1986
+            ]
+          ]
+        },
+        "published-print": {
+          "date-parts": [
+            [
+              1986
+            ]
+          ]
+        },
+        "container-title": [
+          "Springer Series in Statistics"
+        ],
+        "publisher": "Springer New York",
+        "ISBN": [
+          "9781461293699",
+          "9781461249467"
+        ],
+        "type": "book"
+      }
+    },
+    "brown": {
+      "url": "https://api.crossref.org/works/10.1214/lnms/1215466757",
+      "metadata": {
+        "DOI": "10.1214/lnms/1215466757",
+        "title": [
+          "Fundamentals of statistical exponential families with applications in statistical decision theory"
+        ],
+        "author": [
+          {
+            "given": "Lawrence D.",
+            "family": "Brown",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              1986,
+              1,
+              1
+            ]
+          ]
+        },
+        "published-print": {
+          "date-parts": [
+            [
+              1986,
+              1,
+              1
+            ]
+          ]
+        },
+        "container-title": [],
+        "publisher": "SPIE",
+        "type": "edited-book"
+      }
+    },
+    "bn": {
+      "url": "https://api.crossref.org/works/10.1002/9781118857281",
+      "metadata": {
+        "DOI": "10.1002/9781118857281",
+        "title": [
+          "Information and Exponential Families"
+        ],
+        "author": [
+          {
+            "given": "O.",
+            "family": "Barndorff&#8208;Nielsen",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2014,
+              4,
+              25
+            ]
+          ]
+        },
+        "published-print": {
+          "date-parts": [
+            [
+              2014,
+              4,
+              25
+            ]
+          ]
+        },
+        "published-online": {
+          "date-parts": [
+            [
+              2014,
+              5,
+              13
+            ]
+          ]
+        },
+        "container-title": [
+          "Wiley Series in Probability and Statistics"
+        ],
+        "publisher": "Wiley",
+        "ISBN": [
+          "9781118857502",
+          "9781118857281"
+        ],
+        "type": "monograph"
+      }
+    },
+    "cm": {
+      "url": "https://api.crossref.org/works/10.1214/009117904000000766",
+      "metadata": {
+        "DOI": "10.1214/009117904000000766",
+        "title": [
+          "Closures of exponential families"
+        ],
+        "author": [
+          {
+            "given": "Imre",
+            "family": "Csiszár",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "František",
+            "family": "Matúš",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2005,
+              3,
+              1
+            ]
+          ]
+        },
+        "published-print": {
+          "date-parts": [
+            [
+              2005,
+              3,
+              1
+            ]
+          ]
+        },
+        "container-title": [
+          "The Annals of Probability"
+        ],
+        "publisher": "Institute of Mathematical Statistics",
+        "volume": "33",
+        "issue": "2",
+        "page": "582-600",
+        "type": "journal-article"
+      }
+    },
+    "geyer": {
+      "url": "https://api.crossref.org/works/10.1214/08-EJS349",
+      "metadata": {
+        "DOI": "10.1214/08-ejs349",
+        "title": [
+          "Likelihood inference in exponential families and directions of recession"
+        ],
+        "author": [
+          {
+            "given": "Charles J.",
+            "family": "Geyer",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2009,
+              1,
+              1
+            ]
+          ]
+        },
+        "published-print": {
+          "date-parts": [
+            [
+              2009,
+              1,
+              1
+            ]
+          ]
+        },
+        "container-title": [
+          "Electronic Journal of Statistics"
+        ],
+        "publisher": "Institute of Mathematical Statistics",
+        "volume": "3",
+        "issue": "none",
+        "page": "259-289",
+        "type": "journal-article"
+      }
+    },
+    "shao": {
+      "url": "https://api.crossref.org/works/10.1016/S0167-9473(03)00171-3",
+      "metadata": {
+        "DOI": "10.1016/s0167-9473(03)00171-3",
+        "title": [
+          "Determination of embedded distributions"
+        ],
+        "author": [
+          {
+            "given": "Quanxi",
+            "family": "Shao",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Wai-Cheung",
+            "family": "Ip",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Heung",
+            "family": "Wong",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2004,
+              6
+            ]
+          ]
+        },
+        "published-print": {
+          "date-parts": [
+            [
+              2004,
+              6
+            ]
+          ]
+        },
+        "container-title": [
+          "Computational Statistics &amp; Data Analysis"
+        ],
+        "publisher": "Elsevier BV",
+        "volume": "46",
+        "issue": "2",
+        "page": "317-334",
+        "type": "journal-article"
+      }
+    },
+    "watkins": {
+      "url": "https://api.crossref.org/works/10.1016/S0167-9473(99)00024-9",
+      "metadata": {
+        "DOI": "10.1016/s0167-9473(99)00024-9",
+        "title": [
+          "An algorithm for maximum likelihood estimation in the three parameter Burr XII distribution"
+        ],
+        "author": [
+          {
+            "given": "Alan J.",
+            "family": "Watkins",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              1999,
+              11
+            ]
+          ]
+        },
+        "published-print": {
+          "date-parts": [
+            [
+              1999,
+              11
+            ]
+          ]
+        },
+        "container-title": [
+          "Computational Statistics &amp; Data Analysis"
+        ],
+        "publisher": "Elsevier BV",
+        "volume": "32",
+        "issue": "1",
+        "page": "19-27",
+        "type": "journal-article"
+      }
+    },
+    "dcg": {
+      "url": "https://api.crossref.org/works/10.1051/ps:1997111",
+      "metadata": {
+        "DOI": "10.1051/ps:1997111",
+        "title": [
+          "Testing in locally conic models, and application to mixture models"
+        ],
+        "author": [
+          {
+            "given": "Didier",
+            "family": "Dacunha-Castelle",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Elisabeth",
+            "family": "Gassiat",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              1997
+            ]
+          ]
+        },
+        "published-print": {
+          "date-parts": [
+            [
+              1997
+            ]
+          ]
+        },
+        "published-online": {
+          "date-parts": [
+            [
+              2002,
+              8,
+              15
+            ]
+          ]
+        },
+        "container-title": [
+          "ESAIM: Probability and Statistics"
+        ],
+        "publisher": "EDP Sciences",
+        "volume": "1",
+        "page": "285-317",
+        "type": "journal-article"
+      }
+    }
+  }
+}
