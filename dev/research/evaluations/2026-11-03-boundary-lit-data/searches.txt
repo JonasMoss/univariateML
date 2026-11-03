@@ -1,0 +1,63 @@
+Search-query ledger, TASK-139. 55 web search queries, 3 November 2026.
+Scope: named works, embedded models, DQM/tangent geometry, singular information,
+nonregular support, exponential-family closure, and exact proposed terminology.
+No date restriction; primary publisher, author and institutional records preferred.
+Stopping rule: verify all 13 original entries, follow the named literature strands,
+inspect directly relevant additional sources, then test exact terminology; cap 60.
+DOI retrievals and opening known URLs are not search queries.
+
+01 Cheng Iles 1990 embedded models three parameter distributions estimation
+02 Cheng Traylor 1995 non regular maximum likelihood problems
+03 Rotnitzky Cox Bottai Robins 2000 singular information matrix Bernoulli
+04 Drton 2009 likelihood ratio tests singularities tangent cones
+05 site.academic.oup.com "Cheng" "Traylor" "1995" "Non"
+06 site.projecteuclid.org "Rotnitzky" "243" "2000"
+07 site.academic.oup.com "Smith" "1985" "nonregular cases"
+08 site.academic.oup.com "Prentice" "1974" "log gamma"
+09 "Non-Standard Parametric Statistical Inference" Cheng 2017 DOI
+10 "Efficient and Adaptive Estimation" 1993 DOI
+11 "Statistical Estimation: Asymptotic Theory" 1981 doi
+12 "Asymptotic Statistics" "10.1017" van der Vaart
+13 "Cheng" "Traylor" "Non-Regular Maximum" doi
+14 "Rotnitzky" "Bottai" "Bernoulli" "10.2307"
+15 "Non-Standard Parametric Statistical Inference" "10.1093"
+16 "Statistical Estimation" "978-1" "1981" Springer
+17 Chernoff 1954 distribution likelihood ratio 25 573 578 doi
+18 Self Liang 1987 82 605 610 doi
+19 Watanabe 2009 algebraic geometry statistical learning theory DOI
+20 Geyer 2009 likelihood inference exponential families directions recession Csiszar Matus closures exponential families
+21 "Barndorff-Nielsen" "Information and Exponential Families" 1978 doi
+22 "Brown" "Fundamentals of Statistical Exponential Families" 1986 doi
+23 "Closures of exponential families" "2005" "10.1214"
+24 "Le Cam" "Asymptotic Methods in Statistical Decision Theory" 1986 doi
+25 "Determination of embedded distributions" Watkins 2004
+26 "Weibull" "Burr" "Watkins" "1999" embedded
+27 "Likelihood-based inference with singular information matrix" site:projecteuclid.org
+28 "Self" "Liang" "1987" site:stat.cmu.edu
+29 "Likelihood-based inference with singular information matrix" pdf Rotnitzky Cox
+30 "Hellinger" "tangent cone" singular statistical models locally conic Dacunha Gassiat
+31 "Algebraic Geometry and Statistical Learning Theory" site:cambridge.org
+32 "Fundamentals of Statistical Exponential Families" site:projecteuclid.org
+33 Dacunha Castelle Gassiat 1997 locally conic parametrization likelihood ratio test models loss identifiability
+34 "Brown" "Fundamentals" "10.1214" "lnms"
+35 "Cheng" "Traylor" "Non-Regular Maximum Likelihood Problems" abstract
+36 "Le Cam" "1986" site:link.springer.com/book/10.1007/978-1-4612-4946-7
+37 site:projecteuclid.org "Likelihood-based inference" "singular information" "284"
+38 site:sites.stat.washington.edu/jaw "Efficient" "1993" "1998"
+39 site:academic.oup.com/book/43941 "embedded" "2017"
+40 "Likelihood Inference in Exponential Families and Directions of Recession" "10.1214"
+41 "Testing in locally conic models" "10.1051"
+42 "Embedded Model Problem" Cheng "2017"
+43 "Non-Regular Maximum Likelihood Problems" "two" "1995"
+44 site:academic.oup.com/book/43941/chapter "Embedded Model Problem"
+45 site:projecteuclid.org "Rotnitzky" "2000" "singular"
+46 "Testing in locally conic models" site:esaim-ps.org
+47 "Likelihood inference in exponential families" "446" "484"
+48 "Hellinger" "boundary" "leakage" statistical models
+49 "regular singular degenerate" "boundary" statistics
+50 "Hellinger" "dimension collapse" tangent
+51 "seam" "cusp" "corner" "statistical" boundary
+52 "Non-Standard Parametric Statistical Inference" "Pages" 2017 512
+53 "Efficient and Adaptive Estimation for Semiparametric Models" "560" site:link.springer.com
+54 "Algebraic Geometry and Statistical Learning Theory" "304" Cambridge
+55 "Fundamentals of statistical exponential families" "283" "Institute"
