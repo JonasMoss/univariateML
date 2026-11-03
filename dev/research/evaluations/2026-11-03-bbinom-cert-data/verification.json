@@ -1,0 +1,11 @@
+{
+  "cpp_profile_calls": 3214,
+  "candidate_calls": 2208,
+  "selected_grid_calls": 1006,
+  "maximum_cpp_map_loglik_difference": 0.0,
+  "high_precision_witnesses": 13,
+  "maximum_witness_loglik_difference": 2.606404371990801e-08,
+  "extra_slope_counterexample_calls": 1,
+  "extra_slope_counterexample_loglik": "-5.6545863016222677",
+  "extra_slope_counterexample_binomial_loglik": "-5.784180329175803502552425697982971162120809080854884055320255209020852"
+}
