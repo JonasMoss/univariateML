@@ -15,7 +15,16 @@ Parked 2026-11-03 after two research rounds; the companion to
   chord envelopes in k. The value enclosure closes on 27 of 39 workloads;
   near-Weibull samples exhaust the budget.
 
-Missing for a production fit: a signed Weibull tail bound (to certify
+- [Seam coordinate](../research/evaluations/2026-11-03-burr-xi-report.md),
+  proved: in `xi = 1/k` the profile extends to Weibull at 0 and
+  `H(xi) <= W + A xi + B xi^2` near 0, uniformly over re-optimized nuisances;
+  with `A < 0` this excludes all large `k` against Weibull itself. Value
+  enclosure now closes on all 50 workloads.
+
+Missing for a production fit (after burr-xi): enclosure and isolation of the
+maximizing stationary point with coefficient accuracy, production error
+margins (bracketed Weibull root propagated into the seam constants), and the
+degenerate seam slope `A = 0`. Earlier list: a signed Weibull tail bound (to certify
 Weibull winners and shorten the k range), certified enclosure of the
 maximizing stationary point (the k-profile is not concave), and production
 error margins. Joint uniqueness is open.
