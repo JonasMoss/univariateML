@@ -110,8 +110,8 @@ relations:
     power: shape2
 fit:
   method: profile-search
-  certified: 'yes'
-  note: 'All-free fits are certified in exact arithmetic conditional on the computed comparisons, with the practical floating-point margin described below. Root boxes and negative profile curvature isolate the winner; dual/chord envelopes and both tail exclusions establish globality. Unresolved searches stop. Held subsets retain their separate algorithms and qualifications.'
+  certified: partial
+  note: 'The all-free fit is certified in exact arithmetic conditional on the computed comparisons, with the practical floating-point margin described below. Root boxes and negative profile curvature isolate the winner; dual/chord envelopes and both tail exclusions establish globality. Unresolved searches stop. Held subsets keep their separate algorithms; the held-power Weibull comparison is numerical, hence the aggregate tag is partial.'
 areas:
 - actuarial
 - economics and income
