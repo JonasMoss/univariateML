@@ -97,3 +97,55 @@ TEST_CASE("pareto4: TASK-132 precision comparison retains independent likelihood
   CHECK(std::abs(ll-r.logLik)<1e-8L);
   CHECK(std::sqrt(gk*gk+gc*gc+gs*gs)<1e-3L);
 }
+
+namespace {
+#include "../burr/certificate-fixtures.inc"
+}
+TEST_CASE("pareto4: transformed certificate workloads and guarded outcomes") {
+  for(const auto& f:burr_certificate_fixtures) {
+    CAPTURE(f.name);
+    std::vector<double> x=f.x;
+    for(double& v:x)v+=2;
+    auto y=x;for(double& v:y)v-=2;
+    const auto r=cppunivariate::pareto4_mle_certified(mltest::as_span(x),2,1e-8,1000);
+    const auto b=cppunivariate::burr_mle(mltest::as_span(y),1e-8,1000);
+    CHECK(r.status==b.status);
+    CHECK(r.min==2);
+    if(b.status==cppunivariate::BurrStatus::Ok || b.status==cppunivariate::BurrStatus::WeibullBoundary || b.status==cppunivariate::BurrStatus::ParetoBoundary) {
+      CHECK(r.shape1==b.shape1);
+      CHECK(r.shape2==b.shape2);
+      CHECK(r.scale==b.scale);
+      CHECK(r.logLik==doctest::Approx(b.logLik+0).epsilon(1e-11));
+      if(b.status==cppunivariate::BurrStatus::Ok) {
+        double ll=0;
+        for(double v:x) ll+=cppunivariate::distributions::dpareto4(v,r.shape1,r.shape2,r.scale,r.min,true);
+        CHECK(ll==doctest::Approx(r.logLik).epsilon(1e-10));
+      }
+    } else {
+      CHECK(std::isnan(r.shape1));CHECK(std::isnan(r.shape2));
+      CHECK(std::isnan(r.scale));CHECK(std::isnan(r.logLik));
+    }
+  }
+}
+
+TEST_CASE("pareto4: certified candidate rejects invalid thresholds and excesses") {
+  const std::vector<double> x={.2,.5,1,2,4};
+  for(double min:std::vector<double>{INFINITY,NAN,4.}) {
+    auto bad=x;
+    if(min==-std::numeric_limits<double>::max())bad.back()=std::numeric_limits<double>::max();
+    CHECK(cppunivariate::pareto4_mle_certified(mltest::as_span(bad),min,1e-8,1000).status==cppunivariate::BurrStatus::InvalidInit);
+  }
+  for(double tol:std::vector<double>{0.,-1.,INFINITY,NAN})
+    CHECK(cppunivariate::pareto4_mle_certified(mltest::as_span(x),0,tol,1000).status==cppunivariate::BurrStatus::InvalidInit);
+  const std::vector<double> constant={2,2,2};
+  CHECK(cppunivariate::pareto4_mle_certified(mltest::as_span(constant),1,1e-8,1000).status==cppunivariate::BurrStatus::Unbounded);
+}
+
+TEST_CASE("pareto4: certified excess arithmetic cannot create ties or overflow") {
+  const std::vector<double> close={1,std::nextafter(1.,INFINITY),2};
+  const auto r=cppunivariate::pareto4_mle_certified(mltest::as_span(close),-1e100,1e-8,1000);
+  CHECK(r.status==cppunivariate::BurrStatus::NumericalFailure);
+  CHECK(std::isnan(r.logLik));CHECK(std::isnan(r.shape1));
+  const std::vector<double> large={1,std::numeric_limits<double>::max()};
+  CHECK(cppunivariate::pareto4_mle_certified(mltest::as_span(large),-std::numeric_limits<double>::max(),1e-8,1000).status==cppunivariate::BurrStatus::NumericalFailure);
+}

@@ -138,7 +138,7 @@ fit:
   certified: partial
   note: 'pareto4/README.md, Details; pareto4/mle.hpp (public fitter and held overloads); pareto4/test.cpp: Held
     threshold transfers to Lomax, log-logistic or Burr; conditional monotone subsets are certified but joint excess
-    profiles inherit numerical-search qualifications. Free thresholds stop.'
+    profiles inherit numerical-search qualifications. Free thresholds stop. An explicit certified C++ joint candidate is available, but the default switch is blocked by unchanged golden tolerances (TASK-116).'
 areas:
 - actuarial
 - economics and income
@@ -209,3 +209,36 @@ not a global optimality proof. The appended precision case retains a 1e-3 score
 gate and 1e-8 absolute likelihood checks. Reproducer:
 [pareto4-precision.cpp](../../../../../dev/validation/pareto4-precision.cpp).
 The fitter and golden are unchanged.
+
+## Certified excess candidate and compatibility gate (2026-11-04, TASK-116)
+
+The explicit C++ `pareto4_mle_certified(x, min, tol, maxit)` entrypoint
+transports the Burr certificate to excesses. For $y_i=x_i-\mu$ with
+$\mu$ held, both shapes and scale are unchanged and the Jacobian is one:
+$\ell_x=\ell_y$. Thus every global exclusion, unique finite root and
+Weibull/Pareto face certificate transfers unchanged. The two faces are
+shifted Weibull and shifted Pareto; subtract `min` to fit those models.
+Ties, budget exhaustion and numerical failures preserve the Burr statuses
+and NaN estimates. This entrypoint never fits a free threshold or alters
+held-subset algorithms.
+
+The exact-arithmetic guarantee is conditional on computed comparisons,
+with the practical floating-point margin and libm assumptions of the
+[Burr dossier](../burr/README.md) and
+[production certificate report](../../../../../dev/research/evaluations/2026-11-04-burr-port-report.md).
+It is not an outward-rounded interval guarantee. The transformed observations
+must be representable in binary64. A universal joint uniqueness theorem is
+not claimed; an accepted finite outcome has a sample-specific proof.
+
+**The public default and R fit remain on the legacy engine.** Switching to
+the certified root fails the unchanged native and R golden tolerances.
+The [dependency report](../../../../../dev/research/evaluations/2026-11-04-burr-deps-report.md)
+records the high-precision root comparison and the exact compatibility gap.
+The `fit` metadata and limit detection above therefore still describe the
+production default. Resolving the golden contract requires an author decision;
+a certificate is not bypassed by returning a less accurate legacy candidate.
+
+The certified transformation rejects arithmetic overflow and any merging of
+distinct observations into equal transformed values with `NumericalFailure`.
+This prevents rounded transformations from supplying artificial constant-sample
+or tied-endpoint certificates. Genuine data ties remain allowed.

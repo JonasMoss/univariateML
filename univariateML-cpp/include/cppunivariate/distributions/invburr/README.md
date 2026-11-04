@@ -33,12 +33,12 @@ r:
     shape2: Known positive finite coefficient; NULL estimates it.
     shape1: Known positive finite coefficient; NULL estimates it.
     abstol: Absolute Newton step tolerance in `log(shape2)` when scale is fixed.
-    gradtol: Gradient tolerance for the mean profiled negative log likelihood.
-    iterlim: Maximum BFGS iterations per start.
+    gradtol: Positive delegate tolerance; the all-free certificate uses deterministic enclosure widths.
+    iterlim: Maximum delegate proposal iterations; the all-free certificate has a separate 4096-profile budget.
     shape10: Optional positive starting shape1; `NULL` uses automatic starts.
     shape20: Optional positive starting shape2; `NULL` uses automatic starts.
     scale0: Optional positive starting scale; `NULL` uses automatic starts.
-    reltol: Relative objective tolerance for BFGS.
+    reltol: Positive legacy relative tolerance, validated for compatibility by the all-free certificate.
 log_density: log(shape1) + log(shape2) - log(x) + shape2*log(scale/x) - (shape1+1)*log(1+(scale/x)**shape2)
 limits:
   - name: unbounded likelihood
@@ -57,13 +57,13 @@ limits:
   - model: 'invweibull'
     firmness: proved
     when: The shape $k$ tends to infinity while $s k^{1/c}$ tends to a positive inverse Weibull scale.
-    detect: A numerical comparison finds no candidate finite fit improving on this limit by more than $10^{-8}n$ log-likelihood units. This comparison is not a global certificate.
+    detect: With all coefficients free, the reciprocal Burr certificate strictly excludes every finite competitor and the other face; unresolved comparisons stop.
     status: 'InvWeibullBoundary'
     numerical: true
   - model: 'power'
     firmness: proved
     when: The power $c$ tends to infinity while $kc$ tends to a positive power shape and $s$ stays at its endpoint.
-    detect: A numerical comparison finds no candidate finite fit improving on this limit by more than $10^{-8}n$ log-likelihood units. This comparison is not a global certificate.
+    detect: With all coefficients free, the reciprocal Burr certificate strictly excludes every finite competitor and the other face; unresolved comparisons stop.
     status: 'PowerBoundary'
     numerical: true
   - model: 'power'
@@ -113,9 +113,7 @@ relations:
 fit:
   method: delegation
   certified: partial
-  note: 'invburr/README.md, Details; invburr/mle.hpp (public fitter and held overloads); invburr/test.cpp: One-free-coordinate
-    and transformed Lomax subsets have monotone scores; free shapes/scale use numerical profiles or BFGS. Reciprocal
-    delegation inherits these qualifications.'
+  note: 'All-free shapes and scale inherit the Burr global certificate in exact arithmetic conditional on computed comparisons and its practical floating-point margin. Unresolved ties, budget exhaustion and numerical failures stop. Held subsets retain their separate algorithms and numerical held-power boundary comparisons, hence the aggregate tag is partial.'
 areas:
 - actuarial
 - economics and income
@@ -135,7 +133,9 @@ existence:
   statement: >-
     With all coefficients free, constant positive data have unbounded likelihood.
     For nonconstant data, the inverse Weibull and power limits can compete with finite
-    fits. A complete joint sample criterion and joint uniqueness are not established.
+    fits. Each accepted finite fit is certified unique and global for that sample;
+    each accepted limit is certified globally optimal. A universal joint sample
+    criterion and universal joint uniqueness theorem are not established.
     With only scale $s$ held, a finite maximum exists for nonconstant data if some observation is
     above $s$. Constant data above $s$ have unbounded likelihood.
     If all observations are at most $s$, the supremum is on the
@@ -154,7 +154,7 @@ existence:
     With $s$ held, profiling $k$ gives a one-dimensional likelihood whose
     endpoints yield the stated existence and power conditions.
     The single-coordinate scores are strictly decreasing in suitable coordinates.
-    These conditional arguments do not certify the joint numerical search.
+    The all-free search additionally certifies each accepted outcome through the reciprocal Burr certificate; a universal joint sample criterion remains unknown.
 ---
 
 The inverse Burr distribution is the distribution of the reciprocal of a Burr type XII variable. It models positive size and loss data.
@@ -196,15 +196,50 @@ Supply `scale = s` to estimate only the shapes. This fits the historical
 scale-1 family to `x / s` and subtracts `length(x) * log(s)` from its
 log-likelihood. The fixed-scale path profiles `shape1` and refines `shape2`
 by Newton iteration, with a profile-likelihood fallback start. Starting
-controls `shape10`, `shape20`, `scale0`, and BFGS tolerances apply only to
-the free-scale path. Detected limits stop with a recommendation to fit
-`mlinvweibull` or `mlpower`.
-A limit recommendation from a numerical comparison is not an exact sample criterion.
-The free-scale comparisons prefer a limit within $10^{-8}n$ log-likelihood
-units, so a tied or very slightly better finite maximum can be rejected.
+controls `shape10`, `shape20`, `scale0` and positive tolerances remain
+accepted and validated for compatibility. The all-free certificate uses its
+own deterministic proposals and enclosure widths. Detected limits stop with
+`mlinvweibull` or `mlpower`; unresolved certificates stop without estimates.
 
 ## Decision history
 
 univariateML 1.x estimated only the shapes, with scale fixed at 1.
 The current default also estimates scale. The fixed-scale limit retains
 endpoint $s$, including the likelihood penalty at observations equal to it.
+
+## Certified joint delegation (2026-11-04, TASK-116)
+
+For $y_i=1/x_i$, $k$ and $c$ are unchanged and $s_x=1/s_y$.
+The log likelihood is $\ell_x=\ell_y-2\sum_i\log x_i$; this additive,
+parameter-independent Jacobian preserves strict comparisons and maximizers.
+The Weibull face becomes inverse Weibull with shape $c$ and scale $1/s_y$;
+the Pareto face becomes power with endpoint $1/\min y_i=\max x_i$ and
+shape equal to the Pareto tail exponent. Boundary result fields carry the
+transformed limiting scale and checked likelihood, with $k=\infty$ or
+$(k,c)=(0,\infty)$ as sentinels, rather than finite Burr coefficients.
+No secondary face optimizer can override the certificate.
+
+The certificate is exact-arithmetic conditional on its computed comparisons,
+with the practical floating-point margins and libm assumptions in the
+[Burr dossier](../burr/README.md#details) and
+[production certificate report](../../../../../dev/research/evaluations/2026-11-04-burr-port-report.md).
+It is not an outward-rounded interval guarantee. Reciprocal or excess
+observations must be representable in binary64; nonfinite transformed
+coefficients or likelihoods cannot become successful fits. Ties (including
+sign-uncertain seams), the 4096-profile budget and arithmetic failures have
+separate diagnostics and never return unchecked estimates. Starting controls
+cannot bypass certification. Held subsets retain their historical algorithms.
+The general joint uniqueness theorem remains open; the certificate proves
+uniqueness only for each accepted finite sample.
+
+This replaces the former multi-start/near-face comparison for the joint fit.
+The [dependency report](../../../../../dev/research/evaluations/2026-11-04-burr-deps-report.md)
+records transformation checks, unchanged goldens, timings and final validation.
+
+The certified transformation rejects arithmetic overflow and any merging of
+distinct observations into equal transformed values with `NumericalFailure`.
+This prevents rounded transformations from supplying artificial constant-sample
+or tied-endpoint certificates. Genuine data ties remain allowed.
+The power-limit endpoint is taken from the original sample maximum, avoiding
+a one-ulp support error from a reciprocal round trip. Its likelihood still
+transports the certificate value with the data-only Jacobian.

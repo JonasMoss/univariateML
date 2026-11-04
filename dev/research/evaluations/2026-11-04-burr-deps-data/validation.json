@@ -1,0 +1,81 @@
+{
+  "base_revision": "54b0d06a3e447f944940fc0dd4b5b87235d2acc2",
+  "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.43",
+  "python": "3.14.5 (main, Jun  2 2026, 22:25:17) [Clang 22.1.3 ]",
+  "mpmath": "1.3.0",
+  "compiler": "c++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "R": "R version 4.6.1 (2026-06-24)",
+  "runs": {
+    "cpp-dev-final": {
+      "machine": "local workstation",
+      "result": {
+        "passed_shards": 106
+      },
+      "log_sha256": "51bdfaa9f26bc14a74909bdd915f981c792306ff955413b000b6470371688332"
+    },
+    "cpp-no-long-double-final": {
+      "machine": "local workstation",
+      "result": {
+        "passed_shards": 127
+      },
+      "log_sha256": "6f2c879c1ec037b64b416e1054d6c2d4c26fe0d5d6c0587d7fde80e5095541b1"
+    },
+    "cpp-full": {
+      "machine": "local workstation",
+      "result": {
+        "passed_shards": 127
+      },
+      "log_sha256": "ec9a75904f771fc4242e896fa13cb14ed19ec1e60efbdecc41ec73d6c4c82d62"
+    },
+    "r-dev-final": {
+      "machine": "local workstation",
+      "result": {
+        "fail": 0,
+        "warn": 0,
+        "skip": 153,
+        "pass": 20518
+      },
+      "log_sha256": "b0f149637d8660ef8966cab75da747734e6b35070957a7da91dee1fc5ddb9a09"
+    },
+    "r-full": {
+      "machine": "local workstation",
+      "result": {
+        "fail": 0,
+        "warn": 0,
+        "skip": 0,
+        "pass": 43335
+      },
+      "log_sha256": "8812ac1ab58d5305bad640a06e564c37a4c2c932978319913c43acb2a4f6439f"
+    }
+  },
+  "source_sha256": {
+    "univariateML-cpp/include/cppunivariate/distributions/invburr/mle.hpp": "2dcc903c73f5dedca439dae13bfaf5455b460e15bbaf6e5921755e3e43517577",
+    "univariateML-cpp/include/cppunivariate/distributions/invburr/test.cpp": "6f8a32e2d4dd005d2ac319e05a91644a2f9ceeec979a34e2628ec96b817bc5b8",
+    "univariateML-cpp/include/cppunivariate/distributions/invburr/README.md": "3fdfe23fc35b883d2f0f70c1be1ac2b4752f066e4ee4c8e01b5a982cea870957",
+    "univariateML-cpp/include/cppunivariate/distributions/invburr/golden.json": "e062b73434fd4b7880aa0e26f9f3ec090d6bc474549853a23d67c236c0cfcbf9",
+    "bindings/r/distributions/invburr/test.R": "2ae05fae260ceb8de0ef51441a68eec0a1fbf5425d7be57615d8a683b2b24d7e",
+    "bindings/common/distributions/invburr/fit.hpp": "9ddf8e45b344a8900ed294fa5a43a14cd0cf6a8779c71774520223203010ea14",
+    "univariateML-cpp/include/cppunivariate/distributions/pareto4/mle.hpp": "5528b75937de3871b639abfcd618af47448cdba037e89b6294c81198454e9837",
+    "univariateML-cpp/include/cppunivariate/distributions/pareto4/test.cpp": "192112953f071524372ac51d3422fa7d40760296b698576a83be0ee30470d403",
+    "univariateML-cpp/include/cppunivariate/distributions/pareto4/README.md": "d65313d0cf1aaf88d3861f71562fadf849ebd71418ff231ceda92c9c89f60ad7",
+    "univariateML-cpp/include/cppunivariate/distributions/pareto4/golden.json": "8975ddbf74b08364bab0f1bd543e58410b94b43c9c18a078bc9b6dae66932a00",
+    "bindings/r/distributions/pareto4/test.R": "980770f69c212ba141a786f0eeeb49cce1ee004ccb3a0fa4227de4e1ce0a19bd",
+    "bindings/common/distributions/pareto4/fit.hpp": "07e8ae9c052eb56365b9181664c17ae66e67bf4751477ba39121658b308ded70",
+    "univariateML-cpp/include/cppunivariate/distributions/burr/mle.hpp": "108e2ae61d5de0c0aa7fdb03bf5a517d3b37dcc2359db73da6fdf1c16608d7aa",
+    "univariateML-cpp/include/cppunivariate/distributions/burr/certificate.hpp": "65d832956466f3174ed2a36c72457164f47e0f917ac840c6bb2b7e2ea25d1093",
+    "univariateML-cpp/include/cppunivariate/distributions/burr/certificate-fixtures.inc": "46b2fc9d4b2f5711e4dcbe0e256aa28599b95f8599a8e9a14449d6a0baa2c6b2",
+    "/home/jonas/Files/programming/univariateML.wt/burr-deps/dev/research/evaluations/2026-11-04-burr-deps-data/final_checks.py": "2cea2897e7e60f405fe6035495f468d8f6a769091d318dc1bbfc9dd87f5e5d2a",
+    "/home/jonas/Files/programming/univariateML.wt/burr-deps/dev/research/evaluations/2026-11-04-burr-deps-data/run.sh": "4805027ac0ac62a1b2428b3e31fb59b8fee6f08e0228204ade9776180c8f8b99",
+    "/home/jonas/Files/programming/univariateML.wt/burr-deps/dev/research/evaluations/2026-11-04-burr-deps-data/verification.json": "7309570a562b1ef5d1f6d794398799c92fcdb1a521fd5b345910d56a8ad88a05",
+    "/home/jonas/Files/programming/univariateML.wt/burr-deps/dev/research/evaluations/2026-11-04-burr-deps-data/timing.txt": "703e70423a73bb7e0e4eb429b8b781444fbd068c23d2d010aa9ffb1b11159ea9",
+    "/home/jonas/Files/programming/univariateML.wt/burr-deps/dev/research/evaluations/2026-11-04-burr-deps-data/inputs.txt": "4e56c89070b4b26c7484f6fa9d887ebbeb7d30c49ce04ce5890e8b7fe6e2c838",
+    "/home/jonas/Files/programming/univariateML.wt/burr-deps/dev/research/evaluations/2026-11-04-burr-deps-data/validation.py": "cf90bfc5abe07b6edc769da12e43627011fdf32bfbd3218d74274562fcfc194c",
+    "/home/jonas/Files/programming/univariateML.wt/burr-deps/dev/research/evaluations/2026-11-04-burr-deps-data/legacy-invburr.inc": "f8dfad77cb6f2bcfb7330dc5cdc72a7273e59d183b5a11c1da9f7b58090af98d",
+    "/home/jonas/Files/programming/univariateML.wt/burr-deps/dev/research/evaluations/2026-11-04-burr-deps-data/verify.py": "8db444e7af85486d100296431dc86f0d2e0362240270c166c18f1315b91a3668",
+    "/home/jonas/Files/programming/univariateML.wt/burr-deps/dev/research/evaluations/2026-11-04-burr-deps-data/verify.sh": "54e8d94884537eab4c7a7d28709220bc6d905fa2ea9caca1b2619652c91491f8",
+    "/home/jonas/Files/programming/univariateML.wt/burr-deps/dev/research/evaluations/2026-11-04-burr-deps-data/roots.txt": "b6177ea340eda6cac51abc9cb90302aaefce82b509e50b13df3421e0564a273b",
+    "/home/jonas/Files/programming/univariateML.wt/burr-deps/dev/research/evaluations/2026-11-04-burr-deps-data/timing.cpp": "b952157f94e8e59ec40eb3abe32dbf575111a934cebaed7c8c2157017ca0db89",
+    "/home/jonas/Files/programming/univariateML.wt/burr-deps/dev/research/evaluations/2026-11-04-burr-deps-data/roots.cpp": "3da46a51d07cc20950218ab5afca76f6a5a6f777a3a37af8ab42049cc23de313",
+    "/home/jonas/Files/programming/univariateML.wt/burr-deps/dev/research/evaluations/2026-11-04-burr-deps-data/compatibility.txt": "a766d4e0f664854f4559c43d1df128854b8f489a3864dc7899d19bc6eaeb0177"
+  }
+}

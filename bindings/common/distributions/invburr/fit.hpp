@@ -25,6 +25,9 @@ inline FitResult fit_invburr(cppunivariate::span x, Held shape1_arg = {}, Held s
  if (res.status == cppunivariate::InvBurrStatus::AllLeOne) return fail("The fixed-scale invburr MLE does not exist when all observations <= scale. Use `mlpower` to fit this model with endpoint scale.");
  if (res.status == cppunivariate::InvBurrStatus::InvWeibullBoundary) return fail("The invburr likelihood is maximised at a limit. Use `mlinvweibull` to fit this model.");
  if (res.status == cppunivariate::InvBurrStatus::PowerBoundary) return fail("The invburr likelihood is maximised at a limit. Use `mlpower` to fit this model.");
+ if (res.status == cppunivariate::InvBurrStatus::CertificateTie) return fail("invburr certificate unresolved at a tie or sign-uncertain seam; no verified MLE.");
+ if (res.status == cppunivariate::InvBurrStatus::CertificateBudget) return fail("invburr certificate budget exhausted; no verified MLE.");
+ if (res.status == cppunivariate::InvBurrStatus::NumericalFailure) return fail("invburr certificate numerical failure; no verified MLE.");
  if (res.status == cppunivariate::InvBurrStatus::IterationFailure) return fail("Constrained likelihood search failed to converge.");
  if (res.status == cppunivariate::InvBurrStatus::InvalidInit ||
  !std::isfinite(res.shape1) || !std::isfinite(res.shape2) || !std::isfinite(res.scale))
