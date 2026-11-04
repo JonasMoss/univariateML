@@ -1,0 +1,48 @@
+{
+  "source_revision": "b92c6189497f00b5917c8da8c29d07cc494f896d",
+  "machine": "local workstation; no simbox",
+  "slots": "/tmp/umvl-cpu/run or run4; wrappers apply nice -n 10 and BLAS/OpenMP thread caps",
+  "cpp_dev": {
+    "command": "/tmp/umvl-cpu/run4 just cpp-test",
+    "exit_status": 0,
+    "passed_shards": 106,
+    "failed_shards": 0,
+    "ctest_elapsed_seconds": 64.65
+  },
+  "r_dev": {
+    "command": "/tmp/umvl-cpu/run4 just test",
+    "exit_status": 0,
+    "fail": 0,
+    "warn": 0,
+    "skip": 154,
+    "passed": 20612,
+    "skip_reason": "requires full test tier",
+    "runner_elapsed_seconds": 150.109
+  },
+  "research_checks": {
+    "command": "/tmp/umvl-cpu/run python3 dev/research/evaluations/2026-11-04-dqm-a-data/check_classification.py",
+    "exit_status": 0,
+    "rows": 31,
+    "quadratures": 11,
+    "symbolic_identities": 3
+  },
+  "full_tier": "not run: research-only change; no fitting, dpqr or test infrastructure changes",
+  "artifact_audit": "PASS: rows match report; source hashes unchanged; dev logs green; git status contains only requested research deliverables",
+  "git_writes": false,
+  "report_sha256": "6690b603e74aab275e9baa693c034d6fe06ab274370416bfe1a6092b737538fa",
+  "csv_sha256": "2624c99164d43bdda902dfb48fb5272140c91f2ab9bba032f5146df197168577",
+  "local_link_audit": {
+    "command": "/tmp/umvl-cpu/run python3 dev/tools/check_links.py (executed inside artifact audit slot)",
+    "exit_status": 1,
+    "result": "448 Markdown files; 2074 local destinations; 5 broken\ndev/research/evaluations/2026-10-31-inference-6-report.md:133: ../../../build/scratch/inference-6/desktop.png\ndev/research/evaluations/2026-10-31-inference-6-report.md:135: ../../../build/scratch/inference-6/mobile-evidence.png\ndev/research/evaluations/2026-11-03-boundary-lit-report.md:5: ../boundary-points.pdf\nunivariateML-cpp/notes/inference.md:3: /inference/\nunivariateML-cpp/notes/inference.md:95: /inference/",
+    "classification": "five pre-existing broken links; all three source files byte-identical to HEAD; out of scope"
+  },
+  "authored_report_link_audit": {
+    "result": "PASS",
+    "local_destinations": 8
+  },
+  "artifact_pane_display": {
+    "command": "/home/jonas/Files/work/misc/codex-math-web/bin/show dev/research/evaluations/2026-11-04-dqm-a-report.md",
+    "result": "viewer HTTP 403: this worktree is outside every configured readable root; no file copied outside worktree"
+  }
+}
