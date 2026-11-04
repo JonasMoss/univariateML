@@ -1,0 +1,72 @@
+{
+  "checked_on": "2026-11-04",
+  "sources": [
+    {
+      "id": "smith1985",
+      "citation": "Smith, R. L. (1985). Maximum likelihood estimation in a class of nonregular cases. Biometrika 72(1), 67–90.",
+      "doi": "10.1093/biomet/72.1.67",
+      "url": "https://academic.oup.com/biomet/article-abstract/72/1/67/242523",
+      "verified": "Publisher metadata and abstract; full original proof not accessible. Endpoint exponent alpha and its three thresholds verified against the abstract. Do not cite this as a checked complete proof for Tukey lambda or for uniformity."
+    },
+    {
+      "id": "buchersegers2017",
+      "citation": "Bücher, A. and Segers, J. (2017). On the maximum likelihood estimator for the Generalized Extreme-Value distribution. Extremes 20, 839–872.",
+      "doi": "10.1007/s10687-017-0292-6",
+      "url": "https://arxiv.org/html/1601.05702",
+      "verified": "Read Propositions 2.1, 3.2, 3.3; discussion 'The role of uniformity'; Appendix C. Three-parameter GEV DQM iff xi > -1/2; normal MLE theorem has compact-set interior assumptions. The authors identify a uniformity gap in Smith's proof; this matters for transferring its claims."
+    },
+    {
+      "id": "grimshaw1993",
+      "citation": "Grimshaw, S. D. (1993). Computing maximum likelihood estimates for the generalized Pareto distribution. Technometrics 35(2), 185–191.",
+      "doi": "10.1080/00401706.1993.10485040",
+      "url": "https://www.stat.cmu.edu/technometrics/90-00/vol-35-02/v3502185.pdf",
+      "verified": "Original seven-page article, especially p.186: its shape k equals -xi here and its scale alpha equals sigma here. Its asymptotic covariance agrees with the inverse of the report's independently derived Fisher matrix. OCR corrupts formulas; the report does not reproduce OCR equations."
+    },
+    {
+      "id": "dachiancusp",
+      "citation": "Dachian, S., Kordzakhia, N., Kutoyants, Yu. A. and Novikov, A. (2017 preprint). Estimation of Cusp Location of Stochastic Processes: a Survey. arXiv:1711.03740.",
+      "url": "https://arxiv.org/html/1711.03740",
+      "verified": "Section 1.1 and Remark 1 explicitly discuss the i.i.d. generalized Gaussian example and exponent below 1/2; normalized likelihood is exponential of fractional Brownian motion with power drift. Main displayed example uses an odd cusp, so the report independently derives the even-cusp covariance. The survey explicitly calls its likelihood calculation heuristic."
+    },
+    {
+      "id": "prakasa1968",
+      "citation": "Prakasa Rao, B. L. S. (1968). Estimation of the Location of the Cusp of a Continuous Density. Annals of Mathematical Statistics 39(1), 76–87.",
+      "doi": "10.1214/aoms/1177698506",
+      "url": "https://doi.org/10.1214/aoms/1177698506",
+      "verified": "Identity verified through the survey and DOI citation records. Original DOI endpoint inaccessible; original theorem and assumptions not independently read. Report does not represent this as a verified original proof."
+    },
+    {
+      "id": "zhu2007",
+      "citation": "Zhu, D. and Zinde-Walsh, V. (2007). Properties and Estimation of Asymmetric Exponential Power Distribution. McGill working paper dated October 23, 2007.",
+      "url": "https://www.mcgill.ca/files/economics/propertiesandestimation.pdf",
+      "verified": "Read full-text Proposition 5 (printed pp.11–12) and Appendix C: stated location-estimated asymptotic-normality theorem requires both exponents >1. The nearby information-equality sentence must not be used to justify an ordinary Hessian for GED exponent <=1. Final article identity verified separately, but final proof not read."
+    },
+    {
+      "id": "zhu2009",
+      "citation": "Zhu, D. and Zinde-Walsh, V. (2009). Properties and estimation of asymmetric exponential power distribution. Journal of Econometrics 148(1), 86–99.",
+      "doi": "10.1016/j.jeconom.2008.09.038",
+      "url": "https://www.sciencedirect.com/science/article/pii/S0304407608001668",
+      "verified": "Publisher identity and abstract verified. Institutional copy of final article returned HTTP 502; theorem references in this report refer explicitly to the accessible 2007 preprint."
+    },
+    {
+      "id": "john1982",
+      "citation": "John, S. (1982). The three-parameter two-piece normal family of distributions and its fitting. Communications in Statistics — Theory and Methods 11(8), 879–885.",
+      "doi": "10.1080/03610928208828279",
+      "url": "https://www.tandfonline.com/doi/abs/10.1080/03610928208828279",
+      "verified": "Publisher identity and abstract only; the report proves DQM and information rank independently rather than treating the abstract as a theorem verification."
+    },
+    {
+      "id": "daniels1961",
+      "citation": "Daniels, H. E. (1961). The asymptotic efficiency of a maximum likelihood estimator. Proceedings of the Fourth Berkeley Symposium, vol.1, 151–163.",
+      "url": "https://digicoll.lib.berkeley.edu/record/112889/files/math_s4_v1_article-10.pdf",
+      "verified": "Original opening page and conditions visible in search index; direct PDF fetch forbidden. Establishes historical treatment of Laplace's zero a.e. Hessian, not a newly verified full theorem."
+    },
+    {
+      "id": "williamson1984",
+      "citation": "Williamson, J. A. (1984). A note on the proof by H. E. Daniels of the asymptotic efficiency of a maximum likelihood estimator. Biometrika 71(3), 651–653.",
+      "doi": "10.1093/biomet/71.3.651",
+      "url": "https://academic.oup.com/biomet/article-pdf/71/3/651/720670/71-3-651.pdf",
+      "verified": "Publisher metadata and abstract: corrected preliminary result. Do not present the uncorrected Daniels argument as a checked complete proof."
+    }
+  ]
+}

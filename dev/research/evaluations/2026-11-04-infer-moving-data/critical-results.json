@@ -1,0 +1,79 @@
+{
+  "seed": 20261105,
+  "mpmath_version": "1.3.0",
+  "dps": 50,
+  "revision": "a3fbb01383ab1ec6065c43f7fade40b1bd2751a4",
+  "script_sha256": "1527b8cbdd70a061c504c8311300d4288f6f288c7e2cf0ff69a49a2404a245a0",
+  "main_results_sha256": "17d85883a99a18cd41e5645172e6822a064e77ae3009dc66424d4f5bf36db33c",
+  "distance_comparisons": [
+    {
+      "family": "gpd",
+      "shape": 1.3333333333333333,
+      "h": 3e-05,
+      "mpmath_H2": "0.0000010369527971168071607623722292998379598365995995699",
+      "scipy_H2": 1.0369527971168073e-06,
+      "relative_difference": 2.220446049250313e-16
+    },
+    {
+      "family": "gpd",
+      "shape": 2,
+      "h": 3e-05,
+      "mpmath_H2": "0.0000000050851275879489853727494969274289613564052234354646",
+      "scipy_H2": 5.085127587948943e-09,
+      "relative_difference": 8.215650382226158e-15
+    },
+    {
+      "family": "gev",
+      "shape": 2,
+      "h": 3e-05,
+      "mpmath_H2": "0.0000000058553998656724937253157162151485795354907257465441",
+      "scipy_H2": 5.855399865672663e-09,
+      "relative_difference": 2.8976820942716586e-14
+    },
+    {
+      "family": "ged",
+      "shape": 0.5,
+      "h": 3e-05,
+      "mpmath_H2": "0.00000000029759675046759302398477716993409846840235699890117",
+      "scipy_H2": 2.9759675046768987e-10,
+      "relative_difference": 3.254063685176334e-13
+    }
+  ],
+  "critical_GED": [
+    {
+      "n": 10000,
+      "reps": 2000,
+      "h": 0.0032950511449113037,
+      "mean_log_LR": -0.04612809731701743,
+      "variance_log_LR": 0.07912079802476313,
+      "approximate_finite_h_drift": -0.04028856940609105,
+      "approximate_finite_h_variance": 0.0805771388121821,
+      "asymptotic_LAN_information": 0.0625,
+      "raw_OPG_over_n_log_n_quantiles": [
+        0.09105327699511931,
+        0.12277963082143328,
+        0.2736576687179815
+      ],
+      "raw_OPG_probability_limit": 0.125,
+      "hypothesis": "mu=0 versus mu=h; nu=1/2 and scale a=1 known"
+    },
+    {
+      "n": 100000,
+      "reps": 2000,
+      "h": 0.0009319812035693121,
+      "mean_log_LR": -0.03648083077426896,
+      "variance_log_LR": 0.08006630294037752,
+      "approximate_finite_h_drift": -0.038932817870285776,
+      "approximate_finite_h_variance": 0.07786563574057155,
+      "asymptotic_LAN_information": 0.0625,
+      "raw_OPG_over_n_log_n_quantiles": [
+        0.0970522595195634,
+        0.12314302405422822,
+        0.22316675561887978
+      ],
+      "raw_OPG_probability_limit": 0.125,
+      "hypothesis": "mu=0 versus mu=h; nu=1/2 and scale a=1 known"
+    }
+  ],
+  "assertions_passed": 8
+}

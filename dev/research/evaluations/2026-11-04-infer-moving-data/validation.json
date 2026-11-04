@@ -1,0 +1,26 @@
+{
+  "revision": "a3fbb01383ab1ec6065c43f7fade40b1bd2751a4",
+  "numerical_assertions": 152,
+  "critical_assertions": 8,
+  "quadrature_warnings": 0,
+  "proposed_family_lists": 6,
+  "proposed_regime_rows": 21,
+  "local_links_checked": 10,
+  "source_hashes_checked": 12,
+  "working_tree_scope": "only requested report and evidence directory",
+  "cpp_dev": {
+    "passed": 106,
+    "failed": 0,
+    "elapsed_ctest_seconds": 65.25,
+    "machine": "workstation"
+  },
+  "r_dev": {
+    "passed": 20612,
+    "failed": 0,
+    "warned": 0,
+    "skipped": 154,
+    "skip_reason": "requires full test tier",
+    "elapsed_runner_seconds": 124.383,
+    "machine": "workstation"
+  }
+}
