@@ -1,0 +1,12 @@
+{
+  "source_validation": "pass, strict",
+  "html_validation": "pass, strict",
+  "local_markdown_destinations_checked": 22,
+  "broken_destinations": 0,
+  "MathML_elements": 134,
+  "script_fixture_hashes": "all matched validation.json",
+  "tracked_source_diff": "empty",
+  "artifact_pane": "show returned HTTP 403: worktree outside configured readable roots",
+  "source_sha256": "5e6caf126040b58b0be110acb5e60f44a5bf2a960cc70c035ed5c5ba5dd1e4b2",
+  "html_sha256": "b4f16112e9d776521c670658c72dd0770099938dad4cb45f40ee8c1d2e4e3046"
+}
