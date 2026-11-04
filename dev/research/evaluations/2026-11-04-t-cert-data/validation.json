@@ -1,0 +1,336 @@
+{
+  "revision": "54b0d06a3e447f944940fc0dd4b5b87235d2acc2",
+  "machine": "Linux-7.0.0-38-generic-x86_64-with-glibc2.43",
+  "compiler": "c++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "R_packages": "R version 4.6.1 (2026-06-24) ; BH 1.90.0.1 ; Rcpp 1.1.2 ; testthat 3.3.2",
+  "commands": [
+    {
+      "command": "/tmp/umvl-cpu/run4 just cpp-test",
+      "machine": "local workstation",
+      "result": {
+        "passed": 106,
+        "failed": 0
+      },
+      "log_sha256": "041787f8da1df7210faa3574f178e35ff6ef5c910ae00b339490406ab3532eed"
+    },
+    {
+      "command": "/tmp/umvl-cpu/run4 just cpp-test-no-long-double",
+      "machine": "local workstation",
+      "result": {
+        "passed": 127,
+        "failed": 0
+      },
+      "log_sha256": "02c080888f65563da1cff0961f12dcbcf8096d3f4adc2a4bd81662bab3c3f683"
+    },
+    {
+      "command": "/tmp/umvl-cpu/run4 just test",
+      "machine": "local workstation",
+      "result": {
+        "failed": 0,
+        "warned": 0,
+        "skipped": 153,
+        "passed": 20511
+      },
+      "log_sha256": "b7d298492275512328ca2504557018e463b29957a5fd7c1fa30fc0764eee6023"
+    },
+    {
+      "command": "/tmp/umvl-cpu/run4 env UMVL_TEST_TIER=full just cpp-test",
+      "machine": "local workstation",
+      "result": {
+        "passed": 127,
+        "failed": 0
+      },
+      "log_sha256": "c5129eff67f2078f08ba53dafeaf38aceee06f426a61b73462bbe1b74289809f"
+    },
+    {
+      "command": "/tmp/umvl-cpu/run4 just test-full",
+      "machine": "local workstation",
+      "result": {
+        "failed": 0,
+        "warned": 0,
+        "skipped": 0,
+        "passed": 43328
+      },
+      "log_sha256": "7254883398655cbd7776762ca6e20a5b3c54d1f21fb3eeb0e023fad6fd445eee"
+    }
+  ],
+  "research_summary": {
+    "lst": {
+      "outcomes": {
+        "value_enclosed": 17,
+        "open_unsigned_normal_tail": 10,
+        "open_collapse_equality": 2,
+        "proved_unbounded": 2
+      },
+      "median_research_seconds": 0.0754324170993641,
+      "median_legacy_seconds": 0.0021725869999999997,
+      "max_cached_profiles": 100
+    },
+    "std": {
+      "outcomes": {
+        "value_enclosed": 17,
+        "open_unsigned_normal_tail": 13,
+        "open_collapse_equality": 1
+      },
+      "median_research_seconds": 0.09366804407909513,
+      "median_legacy_seconds": 0.0005198686666666667,
+      "max_cached_profiles": 98
+    },
+    "local_signed_tail": {
+      "count": 15,
+      "N_min": 8.0,
+      "N_max": 134217728.0
+    },
+    "global_signed_tail": {
+      "count": 15,
+      "N_min": 1110016.083333333,
+      "N_max": 1.6098221154685342e+28
+    },
+    "independent": {
+      "profile_checks": 57,
+      "max_abs_profile_value_error": 3.037774072681289e-11,
+      "max_relative_golden_error": 8.911888182353433e-06,
+      "golden_tolerance": 3e-05
+    }
+  },
+  "native_comparisons": [
+    {
+      "name": "lst-golden",
+      "family": "lst",
+      "native_status": 0,
+      "proposal_minus_native_logLik": -3.410605131648481e-13
+    },
+    {
+      "name": "std-golden",
+      "family": "lst",
+      "native_status": 0,
+      "proposal_minus_native_logLik": -1.0231815394945443e-12
+    },
+    {
+      "name": "t1-0",
+      "family": "lst",
+      "native_status": 0,
+      "proposal_minus_native_logLik": 0.0
+    },
+    {
+      "name": "t1-1",
+      "family": "lst",
+      "native_status": 0,
+      "proposal_minus_native_logLik": 0.0
+    },
+    {
+      "name": "t2-0",
+      "family": "lst",
+      "native_status": 0,
+      "proposal_minus_native_logLik": 8.526512829121202e-14
+    },
+    {
+      "name": "t2-1",
+      "family": "lst",
+      "native_status": 0,
+      "proposal_minus_native_logLik": 2.842170943040401e-14
+    },
+    {
+      "name": "t3-0",
+      "family": "lst",
+      "native_status": 0,
+      "proposal_minus_native_logLik": 5.684341886080802e-14
+    },
+    {
+      "name": "t3-1",
+      "family": "lst",
+      "native_status": 0,
+      "proposal_minus_native_logLik": 8.526512829121202e-14
+    },
+    {
+      "name": "t5-0",
+      "family": "lst",
+      "native_status": 0,
+      "proposal_minus_native_logLik": 2.2737367544323206e-13
+    },
+    {
+      "name": "t5-1",
+      "family": "lst",
+      "native_status": 0,
+      "proposal_minus_native_logLik": 1.1368683772161603e-13
+    },
+    {
+      "name": "contaminated",
+      "family": "lst",
+      "native_status": 0,
+      "proposal_minus_native_logLik": 1.1368683772161603e-13
+    },
+    {
+      "name": "cluster-0.001",
+      "family": "lst",
+      "native_status": 0,
+      "proposal_minus_native_logLik": 7.105427357601002e-15
+    },
+    {
+      "name": "cluster-0.01",
+      "family": "lst",
+      "native_status": 0,
+      "proposal_minus_native_logLik": 3.552713678800501e-15
+    },
+    {
+      "name": "cluster-0.03",
+      "family": "lst",
+      "native_status": 0,
+      "proposal_minus_native_logLik": 3.552713678800501e-15
+    },
+    {
+      "name": "seam-A--1e-06",
+      "family": "lst",
+      "native_status": 0,
+      "proposal_minus_native_logLik": 0.0
+    },
+    {
+      "name": "seam-A-0.0",
+      "family": "lst",
+      "native_status": 0,
+      "proposal_minus_native_logLik": -7.105427357601002e-15
+    },
+    {
+      "name": "seam-A-1e-06",
+      "family": "lst",
+      "native_status": 0,
+      "proposal_minus_native_logLik": 0.0
+    },
+    {
+      "name": "lst-golden",
+      "family": "std",
+      "native_status": 0,
+      "proposal_minus_native_logLik": 8.526512829121202e-12
+    },
+    {
+      "name": "std-golden",
+      "family": "std",
+      "native_status": 0,
+      "proposal_minus_native_logLik": 1.4154011296341196e-10
+    },
+    {
+      "name": "t1-0",
+      "family": "std",
+      "native_status": 4,
+      "proposal_minus_native_logLik": 0.0
+    },
+    {
+      "name": "t1-1",
+      "family": "std",
+      "native_status": 4,
+      "proposal_minus_native_logLik": 0.0
+    },
+    {
+      "name": "t2-0",
+      "family": "std",
+      "native_status": 4,
+      "proposal_minus_native_logLik": -2.842170943040401e-14
+    },
+    {
+      "name": "t2-1",
+      "family": "std",
+      "native_status": 4,
+      "proposal_minus_native_logLik": 0.0
+    },
+    {
+      "name": "t3-0",
+      "family": "std",
+      "native_status": 0,
+      "proposal_minus_native_logLik": 1.0652456694515422e-10
+    },
+    {
+      "name": "t3-1",
+      "family": "std",
+      "native_status": 0,
+      "proposal_minus_native_logLik": 3.674927029351238e-11
+    },
+    {
+      "name": "t5-0",
+      "family": "std",
+      "native_status": 0,
+      "proposal_minus_native_logLik": 2.5295321393059567e-12
+    },
+    {
+      "name": "t5-1",
+      "family": "std",
+      "native_status": 0,
+      "proposal_minus_native_logLik": 5.3660187404602766e-11
+    },
+    {
+      "name": "contaminated",
+      "family": "std",
+      "native_status": 4,
+      "proposal_minus_native_logLik": -2.842170943040401e-14
+    },
+    {
+      "name": "cluster-0.001",
+      "family": "std",
+      "native_status": 4,
+      "proposal_minus_native_logLik": 2.805082388590563e-09
+    },
+    {
+      "name": "cluster-0.01",
+      "family": "std",
+      "native_status": 4,
+      "proposal_minus_native_logLik": 2.842170943040401e-14
+    },
+    {
+      "name": "cluster-0.03",
+      "family": "std",
+      "native_status": 4,
+      "proposal_minus_native_logLik": -1.7763568394002505e-15
+    },
+    {
+      "name": "seam-A--1e-06",
+      "family": "std",
+      "native_status": 4,
+      "proposal_minus_native_logLik": 0.0
+    },
+    {
+      "name": "seam-A-0.0",
+      "family": "std",
+      "native_status": 4,
+      "proposal_minus_native_logLik": -3.552713678800501e-15
+    },
+    {
+      "name": "seam-A-1e-06",
+      "family": "std",
+      "native_status": 4,
+      "proposal_minus_native_logLik": 3.552713678800501e-15
+    }
+  ],
+  "hashes": {
+    "dev/research/evaluations/2026-11-04-t-cert-data/run.sh": "30c0d2e9efd87bb8f28f7b07344ac6d596744b76ebb065b7936bb6d4a7517f64",
+    "dev/research/evaluations/2026-11-04-t-cert-data/environment.json": "f1c05dd87a0afa50c489d18f72682ec9cd2da9a1a46948c3bdc8c948e032859a",
+    "dev/research/evaluations/2026-11-04-t-cert-data/local-tail.json": "80407665299337f2ba6426631453737a3a32741c678b22542077393b5e218cd7",
+    "dev/research/evaluations/2026-11-04-t-cert-data/independent.py": "d0cf1f43de69e1ef12dce0fe533ed955b1b0bd51a9434bf9bea171c8eecab225",
+    "dev/research/evaluations/2026-11-04-t-cert-data/exact.json": "12172b6104a1105335b3a81e5a14846a899bfe80380c4a6abef975390a261e7c",
+    "dev/research/evaluations/2026-11-04-t-cert-data/results.json": "279b27d0b75ed9a48e195a2dd0a6a8de63c165cb104d576d7aeb65bcab175b44",
+    "dev/research/evaluations/2026-11-04-t-cert-data/baseline.py": "35fd9143b0f64c11c856e98d448baf7d3d0e8e2a35c82d501366adee58438c49",
+    "dev/research/evaluations/2026-11-04-t-cert-data/baseline.json": "6f45360791b5ff242a44e594b217f430719eca09f6e3fac342d48809534e38e2",
+    "dev/research/evaluations/2026-11-04-t-cert-data/inputs.json": "08a41582b697207c537d721cf849958b91743812162d2c9d0538de755a05e3c6",
+    "dev/research/evaluations/2026-11-04-t-cert-data/baseline.cpp": "e79449d9280eddae7295064b346a217fef87dfdc3b02647f2ea40ea9086de21c",
+    "dev/research/evaluations/2026-11-04-t-cert-data/local-tail.py": "a457c21007fc416ec8a5a6301426fca12e3c060031c48fa960fb6d83d9f8f62c",
+    "dev/research/evaluations/2026-11-04-t-cert-data/signed-tail.py": "7fa92a3f3e99044811bc523d5306f1099a1fb12c7be5492cbf6ff1dd8baae6ea",
+    "dev/research/evaluations/2026-11-04-t-cert-data/local-tail.md": "94065bac74c18c80e7f94bb63769bc6cb8622ccf774bf8e8e6d8df9fa12c6361",
+    "dev/research/evaluations/2026-11-04-t-cert-data/exact.py": "81af6441e87c79cff5a915c5af25405b67c67ed967fb961eb0f8ec1c5a76d623",
+    "dev/research/evaluations/2026-11-04-t-cert-data/derivation.md": "464b59ae2e6b8132929fa9064b8d94660fa9f96c45fbd276d59ff91d46297f58",
+    "dev/research/evaluations/2026-11-04-t-cert-data/independent.json": "c8dfce4c6f56e7a43cec227d603e602f311b02bb2f0cee14ac951f394a7fd356",
+    "dev/research/evaluations/2026-11-04-t-cert-data/final-checks.py": "184435010addfe3111e7ee01f07f0b999226cc0750683b7d80bbecd8597886f3",
+    "dev/research/evaluations/2026-11-04-t-cert-data/signed-tail.md": "ff6e69e5c8e6e835486e8149a039035f9ffe18c46ee22af0362517de472b8a7d",
+    "dev/research/evaluations/2026-11-04-t-cert-data/signed-tail.json": "d3264e7b19b808ebf026ef0cb4b22206ff56475fd9f45b41fc56128dc9514d36",
+    "dev/research/evaluations/2026-11-04-t-cert-data/study.py": "11468a740a2837ca0b3d60598d1be5b2885687e57808cfbbfdad494e9349290b",
+    "dev/research/evaluations/2026-11-04-t-cert-data/validate.py": "4388ea9f05c47db2c01304952fc6a6222d599bf7d3fcf1be26c82a464232db61",
+    "dev/research/evaluations/2026-11-04-t-cert-data/README.md": "fbbde476b5668890c8a62c9eb8ca9bbf5e20da6d0766d0371bd68bc747d5fa19",
+    "univariateML-cpp/include/cppunivariate/distributions/lst/mle.hpp": "c573ef030c64a8c6e5fbeb0a033b36f1ebdef756cad31ea7e184fbd72f56447a",
+    "univariateML-cpp/include/cppunivariate/distributions/lst/README.md": "1dc4db9c634b54c003803c770fcd58439939c04e8fc28a26decaea9df2aeb1b1",
+    "univariateML-cpp/include/cppunivariate/distributions/lst/golden.json": "b6d077a9bc629723933fbccd693d878331cb4892ffe4cf538b6001ff478d86b6",
+    "univariateML-cpp/include/cppunivariate/distributions/lst/test.cpp": "cb38963aea9e927747b96a2ae524acd87e9900071f3c545582ba9f472d93ee6c",
+    "univariateML-cpp/include/cppunivariate/distributions/std/mle.hpp": "75279715fdc15e72769d5d0abb9ca0c936249931fad6549eac35697ad5f85aa9",
+    "univariateML-cpp/include/cppunivariate/distributions/std/README.md": "9b2f1c5c295f7beaa67a9e025fc9dfca52ee681d5a44551de6cbce6b855900f1",
+    "univariateML-cpp/include/cppunivariate/distributions/std/golden.json": "ae2f02e1f1e0f1fe8b8672fb2969657573c8c3da1cf17cc5615d95e8d0212e1d",
+    "univariateML-cpp/include/cppunivariate/distributions/std/test.cpp": "bf1154d2427460d741230e690c6da321d93fb679780800e798645ce50e5a760a",
+    "bindings/common/distributions/lst/fit.hpp": "127389c1db3b4a5dd9d062fcc5c0d0d35ab7226f0d9bb1ea91b3b77a556a5525",
+    "bindings/common/distributions/std/fit.hpp": "3758e0c25df82fdfe91cf6d6ec2b45d2ef73255f18a1be9c3d79f9b4dc17d65c"
+  }
+}

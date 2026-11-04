@@ -144,6 +144,25 @@ With $\mu$ held, the lower shape restriction is exempt. The fitter searches
 the wider shape domain and diagnoses collapse separately when observations
 equal the held location and scale is free.
 
+The [2026-11-04 certificate study](../../../../../dev/research/evaluations/2026-11-04-t-cert-report.md)
+proves geodesic convexity of the fixed-shape nuisance objective for
+$\nu\ge1$, gives explicit nuisance containment and finite-interval profile
+upper bounds, and derives the refitted normal-seam expansion. With $z_i=(x_i-\bar x)/s_N$ and
+$s_N^2=n^{-1}\sum_i(x_i-\bar x)^2$, its first coefficient in
+$\xi=1/\nu$ is $n(\overline{z^4}-3)/4$. A negative coefficient certifies
+only local preference for the normal limit: the study retains a sample with
+negative slope and a strictly better finite fit. The research value bounds
+do not certify coefficient accuracy or replace the current fitter. A production
+global certificate still requires bounded arithmetic near the normal seam,
+isolation of stationary roots and comparisons with equality faces.
+
+When the largest tie multiplicity satisfies $k<n/2$, a finite all-free
+maximum exists if and only if some finite admissible point reaches or exceeds
+the optimized normal likelihood. Equality is included. The Cauchy member is
+attained within the fitting domain; it remains eligible as a finite maximum.
+The linked study proves this criterion using uniform nuisance containment
+and convergence of the profile to the normal likelihood.
+
 ## R notes
 
 Estimated coefficients on an applicable `fit_domain` bound carry `restricted`
@@ -153,6 +172,11 @@ optimizers return a failure status unless the score norm in fitting
 coordinates is below `1e-3`; unresolved scalar searches stop.
 
 ## Decision history
+
+The 2026-11-04 TASK-140 study retains the existing default: its whole-profile
+value enclosures do not yet establish a certified global coefficient vector.
+See the linked certificate study for proofs, counterexamples and reproducible
+checks.
 
 The 2026-10-31 fit-speed revision computes the fixed-df likelihood normalizer
 once per conditional nuisance search. It retains the scale reconstruction
