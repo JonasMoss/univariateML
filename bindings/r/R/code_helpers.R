@@ -41,6 +41,8 @@ decorator <- function(name) {
     n <- length(x)
     out <- do.call(paste0(name, "_"), c(list(x = x), list(...)))
 
+    if (inherits(out, "univariateML_stop")) stop(out)
+
     params <- list(logLik = unname(out$logLik), call = deparse(match.call()), n = n)
     univariateML_construct(out$estimates, name = name, params = params, fixed = out$fixed,
                            restricted = out$restricted, data = x)

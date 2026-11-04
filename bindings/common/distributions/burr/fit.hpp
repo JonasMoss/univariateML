@@ -21,12 +21,12 @@ inline FitResult fit_burr(cppunivariate::span x, Held shape1_arg = {}, Held shap
  cppunivariate::burr_mle_fixed_scale(x,start(scale),abstol,iterlim) :
  cppunivariate::burr_mle(x,gradtol,iterlim,
  start(shape10),start(shape20),start(scale0),reltol);
- if (res.status == cppunivariate::BurrStatus::Unbounded) return fail("Likelihood is unbounded for this constant sample; no MLE.");
- if (res.status == cppunivariate::BurrStatus::AllGeOne) return fail("The fixed-scale burr MLE does not exist when all observations >= scale. Use `mlpareto` to fit this model with endpoint scale.");
- if (res.status == cppunivariate::BurrStatus::WeibullBoundary) return fail("The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.");
- if (res.status == cppunivariate::BurrStatus::ParetoBoundary) return fail("The burr likelihood is maximised at a limit. Use `mlpareto` to fit this model.");
- if (res.status == cppunivariate::BurrStatus::CertificateTie) return fail("Burr global certificate unresolved: finite/face tie or sign-uncertain seam; no verified MLE.");
- if (res.status == cppunivariate::BurrStatus::CertificateBudget) return fail("Burr global certificate budget exhausted; no verified MLE.");
+ if (res.status == cppunivariate::BurrStatus::Unbounded) return stop_failure(fail("Likelihood is unbounded for this constant sample; no MLE."),res.stop_detail,"nomle",{"shape1","shape2","scale"},"");
+ if (res.status == cppunivariate::BurrStatus::AllGeOne) return stop_failure(fail("The fixed-scale burr MLE does not exist when all observations >= scale. Use `mlpareto` to fit this model with endpoint scale."),res.stop_detail,"limit",{"shape1","shape2","scale"},"pareto");
+ if (res.status == cppunivariate::BurrStatus::WeibullBoundary) return stop_failure(fail("The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model."),res.stop_detail,"limit",{"shape1","shape2","scale"},"weibull");
+ if (res.status == cppunivariate::BurrStatus::ParetoBoundary) return stop_failure(fail("The burr likelihood is maximised at a limit. Use `mlpareto` to fit this model."),res.stop_detail,"limit",{"shape1","shape2","scale"},"pareto");
+ if (res.status == cppunivariate::BurrStatus::CertificateTie) return stop_failure(fail("Burr global certificate unresolved: finite/face tie or sign-uncertain seam; no verified MLE."),res.stop_detail,"tie",{"shape1","shape2","scale"},"");
+ if (res.status == cppunivariate::BurrStatus::CertificateBudget) return stop_failure(fail("Burr global certificate budget exhausted; no verified MLE."),res.stop_detail,"budget",{"shape1","shape2","scale"},"");
  if (res.status == cppunivariate::BurrStatus::NumericalFailure) return fail("Burr global certificate numerical failure (domain, bracket, nonfinite arithmetic or linear solve); no verified MLE.");
  if (res.status == cppunivariate::BurrStatus::IterationFailure) return fail("Constrained likelihood search failed to converge.");
  if (res.status == cppunivariate::BurrStatus::InvalidInit ||

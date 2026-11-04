@@ -27,7 +27,22 @@ emscripten::val fit_output(const umvl_binding::FitResult& result) {
   if(!result.error.empty()) {
     auto out=diagnostic(result.error), warnings=emscripten::val::array();
     for(const auto& message:result.warnings) warnings.call<void>("push",message);
-    out.set("warnings",warnings); return out;
+    out.set("warnings",warnings);
+    if(!result.error_kind.empty()) {
+      out.set("kind",result.error_kind);out.set("model",result.model);
+      auto estimates=emscripten::val::object(),candidates=emscripten::val::array();
+      for(const auto& item:result.limit_estimates)estimates.set(item.first,item.second);
+      for(const auto& candidate:result.candidates) {
+        auto row=emscripten::val::object();row.set("model",candidate.model);
+        for(const auto& item:candidate.estimates)row.set(item.first,item.second);
+        row.set("loglik_lower",candidate.loglik_lower);row.set("loglik_upper",candidate.loglik_upper);
+        candidates.call<void>("push",row);
+      }
+      out.set("estimates",estimates);out.set("candidates",candidates);
+      out.set("segment_loglik_upper",result.segment_loglik_upper);
+      out.set("limit_loglik",result.limit_loglik);out.set("loglik_lower",result.loglik_lower);out.set("loglik_upper",result.loglik_upper);
+    }
+    return out;
   }
   auto out=emscripten::val::object(), estimates=emscripten::val::object(), fixed=emscripten::val::array();
   for(const auto& item:result.estimates) estimates.set(item.first,item.second);

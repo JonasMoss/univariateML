@@ -429,3 +429,10 @@ conditioning event have positive probability. The tpois/tbinom dossiers exclude
 zero-probability conditioning events; their archived positive-truncation weak
 limits are not public members. The ztpois/ztbinom dossiers separately include
 those limits.
+
+## Structured fit stops
+
+The shared contract for adopting structured diagnostics in a fitter and its
+bindings is [structured-stop-details.md](../../../../dev/design/structured-stop-details.md).
+Status remains authoritative; candidate payloads never turn a stopped fit into
+a successful estimate.

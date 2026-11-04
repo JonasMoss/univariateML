@@ -271,3 +271,14 @@ test_that("Lomax certificate failures give no unchecked estimate", {
                "certificate budget exhausted")
   expect_error(mllomax(c(1,28)),"certified profile bound.*mlexp")
 })
+
+test_that("structured Lomax limits and budgets retain core diagnostics", {
+  e <- tryCatch(mllomax(c(1,1,1)),univariateML_limit=identity)
+  expect_identical(e$model,"exp")
+  expect_equal(e$estimates,c(rate=1))
+  expect_equal(e$limit_loglik,-3)
+  b <- tryCatch(mllomax(c(1,1,40,59),iterlim=1),univariateML_budget=identity)
+  expect_s3_class(b,"univariateML_stop")
+  expect_true(is.finite(b$loglik_lower))
+  expect_true(b$loglik_upper>=b$loglik_lower)
+})

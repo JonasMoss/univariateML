@@ -56,3 +56,25 @@ but also because the maximum likelihood estimator fails to exist. Here is a poss
 * **Gompertz.** Here we have a similar problem, with some parameters outside the range of the distribution converging to a density function with a different support. When the `b` parameter tends towards 0, the Gompertz tends towards an exponential. A failing estimation indicates the exponential has a better fit.
 * **Lomax.** Here we have convergence to an exponential for certain data sets.
 * **Burr**. The Burr distribution tends to the Pareto distribution when `shape1*shape2` converges to a constant while `shape2` tends to infinity.  
+
+## Catching structured fit stops
+
+Cauchy, Burr, inverse Burr and Lomax expose selected fit stops as base R error
+conditions. Catch `univariateML_tie`, `univariateML_limit`, `univariateML_budget`
+or `univariateML_nomle`, or their shared parent `univariateML_stop`:
+
+```{r, eval=FALSE}
+e <- tryCatch(mllomax(c(1, 1, 1)), univariateML_limit = identity)
+e$model      # "exp"
+e$estimates  # named rate of the fitted limit model
+e$limit_loglik
+```
+
+The printed error message is unchanged. `candidates` is a data frame of named
+coefficients, model ids and `loglik_lower`/`loglik_upper` bounds. Its rows are
+diagnostic witnesses, not returned MLEs. A tie can mean numerically unresolved
+comparisons. Top-level bounds concern the global supremum; NaN means unavailable
+and infinity means no finite bound was certified. `segment_loglik_upper` is
+Burr's last unresolved interior segment bound, which does not cover unclosed
+tails. Other families currently
+retain ordinary errors; structured-stop coverage is being extended.

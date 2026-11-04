@@ -103,3 +103,16 @@ To rebuild it alone use
 `c++ -std=c++17 -O2 -IunivariateML-cpp/include bindings/js/validation/vcov-native.cpp -o build/scratch/vcov-native`
 (add the existing BH include path if system Boost is absent). They compare both
 covariances at identical JS estimates against the native C++ entry point.
+
+## Structured fit stops
+
+Cauchy, Burr, inverse Burr and Lomax attach `kind` (`tie`, `limit`, `budget`,
+`nomle`) to selected thrown `Error`s. `model`, `estimates` and `limit_loglik`
+describe a selected fitted limit. `candidates` contains row objects with named
+coefficients, a model id (empty for the requested family), and
+`loglik_lower`/`loglik_upper`. Top-level bounds concern the global supremum.
+Candidates are diagnostic witnesses, not returned MLEs; ties can be numerical
+ambiguities. NaN denotes unavailable information and infinity an unclosed
+bound. `segment_loglik_upper` is Burr's last unresolved interior segment bound,
+which does not cover unclosed tails. Messages and successful fit results are unchanged. See
+[the convention](../../dev/design/structured-stop-details.md).

@@ -6,7 +6,13 @@
 #include <sstream>
 #include <iomanip>
 #include "cppunivariate/core/span.hpp"
+#include "cppunivariate/core/stop_detail.hpp"
 namespace umvl_binding {
+struct NamedCandidate {
+  std::vector<std::pair<std::string,double>> estimates;
+  double loglik_lower=NAN,loglik_upper=NAN;
+  std::string model;
+};
 struct FitResult {
   std::vector<std::pair<std::string, double>> estimates;
   double logLik = NAN;
@@ -20,6 +26,10 @@ struct FitResult {
   bool has_iterations = false;
   bool has_fixed = false;
   bool has_restricted = false;
+  std::string error_kind, model;
+  std::vector<NamedCandidate> candidates;
+  std::vector<std::pair<std::string,double>> limit_estimates;
+  double limit_loglik=NAN,loglik_lower=NAN,loglik_upper=NAN,segment_loglik_upper=NAN;
 };
 // The adapters use only %s, %g and fixed decimal %f diagnostics. Construct
 // strings without host I/O, exceptions, varargs or an R formatting dependency.
@@ -51,6 +61,41 @@ inline std::string binding_message(std::string pattern, const T&... values) {
 }
 inline FitResult failure(const std::string& message, const std::vector<std::string>& warnings = {}) {
   FitResult result; result.error = message; result.warnings = warnings; return result;
+}
+inline std::vector<std::pair<std::string,double>> named_coefficients(
+    const std::vector<double>& values,const std::vector<std::string>& names) {
+  std::vector<std::pair<std::string,double>> out;
+  for(std::size_t i=0;i<values.size()&&i<names.size();++i)out.push_back({names[i],values[i]});
+  return out;
+}
+inline std::string stop_model(cppunivariate::StopModel model) {
+  switch(model) {
+    case cppunivariate::StopModel::Weibull:return "weibull";
+    case cppunivariate::StopModel::Pareto:return "pareto";
+    case cppunivariate::StopModel::InvWeibull:return "invweibull";
+    case cppunivariate::StopModel::Power:return "power";
+    case cppunivariate::StopModel::Exp:return "exp";
+    default:return "";
+  }
+}
+inline std::vector<std::string> stop_names(const std::string& model,const std::vector<std::string>& names) {
+  if(model=="weibull"||model=="invweibull")return {"shape","scale"};
+  if(model=="pareto")return {"a","b"};
+  if(model=="power")return {"alpha","beta"};
+  if(model=="exp")return {"rate"};
+  return names;
+}
+inline FitResult stop_failure(FitResult out,const cppunivariate::StopDetail& detail,
+    const std::string& kind,const std::vector<std::string>& names,const std::string& model="") {
+  out.error_kind=kind;out.model=model;
+  out.limit_estimates=named_coefficients(detail.limit_coef,stop_names(model,names));
+  out.segment_loglik_upper=detail.segment_loglik_upper;
+  out.limit_loglik=detail.limit_loglik;out.loglik_lower=detail.loglik_lower;out.loglik_upper=detail.loglik_upper;
+  for(const auto& candidate:detail.candidates) {
+    const std::string id=stop_model(candidate.model);
+    out.candidates.push_back({named_coefficients(candidate.coef,stop_names(id,names)),candidate.loglik_lower,candidate.loglik_upper,id});
+  }
+  return out;
 }
 struct Held {
   bool supplied = false;

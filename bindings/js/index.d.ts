@@ -1,6 +1,17 @@
 import type {GeneratedAPI} from './family-types';
 export interface Tail { lower?: boolean; log?: boolean }
 export interface Fit<P> { estimates: P; logLik: number; iterations: number; status: 'Ok'; fixed: (keyof P)[]; warnings: string[]; restricted: Record<string, string>; [field: string]: unknown }
+/** Selected stopped fits; catch as Error and inspect kind before narrowing. */
+export interface FitStop extends Error {
+  kind: 'tie' | 'limit' | 'budget' | 'nomle';
+  model: string;
+  estimates: Record<string, number>;
+  candidates: Array<{model: string; loglik_lower: number; loglik_upper: number;
+    [coefficient: string]: string | number}>;
+  limit_loglik: number; loglik_lower: number; loglik_upper: number;
+  segment_loglik_upper: number;
+  warnings: string[];
+}
 export interface Covariance<P> {
   matrix: Float64Array[]; names: (keyof P)[]; held: (keyof P)[];
   type: 'sandwich' | 'observed'; condition: number; validity: string; warnings: string[];

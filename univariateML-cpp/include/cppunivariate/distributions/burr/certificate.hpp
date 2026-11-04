@@ -1,5 +1,6 @@
 // TASK-138 practical enclosures. See the Burr dossier for the arithmetic contract.
 #pragma once
+#include "../../core/stop_detail.hpp"
 #include "../../core/span.hpp"
 #include <array>
 #include <algorithm>
@@ -271,6 +272,7 @@ struct Segment {Node a,b;double upper;bool operator<(const Segment& other)const{
 inline double upper(const Node& a,const Node& b,double n){const Interval diff=Interval(b.p.k)-a.p.k;const Interval u=std::max(a.upper,b.upper)+n*diff*diff/(8*Interval(a.p.k)*Interval(a.p.k));return u.valid()?u.hi:INFINITY;}
 enum class Outcome { Finite, Weibull, Pareto, Tie, Budget, Numerical, Invalid, Unbounded };
 struct Result {
+  StopDetail stop_detail;
   Outcome outcome=Outcome::Numerical;
   double k=NAN,c=NAN,scale=NAN,logLik=NAN;
   int profiles=0;
@@ -294,6 +296,14 @@ inline Result fit(span x,int budget=4096,int maxit=120) {
   // Dependency loss enlarges the sum and cannot sharpen the Pareto bound.
   const Interval P=n*log(n/distances.get())-n;
   Weibull w;if(!P.valid()||!weibull(d,w))return result;
+  double distance=0,e=0;
+  for(double y:d.y){distance+=y-d.y.front();e+=std::exp(w.proposal*y);}
+  const double wc=w.proposal/d.unit;
+  const double ws=std::exp(d.center-std::log(n/e)/wc);
+  result.stop_detail.candidates.push_back({{n/distance/d.unit,minimum},P.lo+d.jacobian,P.hi+d.jacobian,StopModel::Pareto});
+  result.stop_detail.candidates.push_back({{wc,ws},w.W.lo+d.jacobian,w.W.hi+d.jacobian,StopModel::Weibull});
+  result.stop_detail.loglik_lower=std::max(P.lo,w.W.lo)+d.jacobian;
+  result.stop_detail.loglik_upper=INFINITY;
   double best=std::max(P.lo,w.W.lo);
   Outcome winner=P.lo>=w.W.lo?Outcome::Pareto:Outcome::Weibull;
   std::map<double,Node> cache;
@@ -302,7 +312,19 @@ inline Result fit(span x,int budget=4096,int maxit=120) {
     if(result.profiles>=budget){result.outcome=Outcome::Budget;return false;}
     ++result.profiles;
     if(!dual(d,k,node,maxit)){result.outcome=Outcome::Numerical;return false;}
-    cache.emplace(k,node);return true;
+    cache.emplace(k,node);
+    const Interval value=primal(d.box,node.p);
+    if(value.valid()) {
+      const double c=node.p.c/d.unit,s=std::exp(d.center-node.p.b/c);
+      if(std::isfinite(c)&&std::isfinite(s)&&c>0&&s>0) {
+        FitCandidate candidate{{node.p.k,c,s},value.lo+d.jacobian,value.hi+d.jacobian};
+        // Keep the best finite witness, not every subdivision evaluation.
+        if(result.stop_detail.candidates.size()==2)result.stop_detail.candidates.push_back(candidate);
+        else if(candidate.loglik_lower>result.stop_detail.candidates[2].loglik_lower)result.stop_detail.candidates[2]=candidate;
+        result.stop_detail.loglik_lower=std::max(result.stop_detail.loglik_lower,candidate.loglik_lower);
+      }
+    }
+    return true;
   };
   Root winning;bool has_root=false;
   // Reconnaissance only proposes roots; it never certifies exhaustiveness.
@@ -325,6 +347,9 @@ inline Result fit(span x,int budget=4096,int maxit=120) {
       if(isolate(original,raw,root)){
         root.t.b+=root.t.c*(d.center-shift);root.t.c*=d.unit;
         ++result.roots;const Interval value=primal(d.box,root.t);
+        const double c=root.t.c/d.unit,scale=std::exp(d.center-root.t.b/c);
+        if(value.valid()&&std::isfinite(scale)&&scale>0)
+          result.stop_detail.candidates.push_back({{root.t.k,c,scale},value.lo+d.jacobian,value.hi+d.jacobian});
         if(value.valid()&&value.lo>std::max(P.hi,w.W.hi)&&(!has_root||value.lo>best)){best=value.lo;winning=root;has_root=true;winner=Outcome::Finite;}
       }
     }
@@ -361,6 +386,7 @@ inline Result fit(span x,int budget=4096,int maxit=120) {
   for(std::size_t i=1;i<knots.size();++i){Node b;if(!get(knots[i],b))return result;push(a,b);a=b;}
   while(!heap.empty()){
     const Segment s=heap.top();heap.pop();result.remaining=s.upper;
+    result.stop_detail.segment_loglik_upper=s.upper+d.jacobian;
     const double mid=std::sqrt(s.a.p.k*s.b.p.k);
     if(!(mid>s.a.p.k&&mid<s.b.p.k)){result.outcome=Outcome::Tie;return result;}
     Node b;if(!get(mid,b))return result;push(s.a,b);push(b,s.b);

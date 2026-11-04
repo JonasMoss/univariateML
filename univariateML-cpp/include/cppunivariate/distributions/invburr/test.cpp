@@ -334,3 +334,17 @@ TEST_CASE("invburr: reciprocal overflow and artificial ties stop numerically") {
   }
   CHECK(found);
 }
+
+TEST_CASE("invburr: structured reciprocal face coefficients and likelihood") {
+  const std::vector<double> x{1,1,1,.5,.25,.125};
+  const auto r=cppunivariate::invburr_mle(mltest::as_span(x),1e-8,1000);
+  REQUIRE(r.status==cppunivariate::InvBurrStatus::PowerBoundary);
+  REQUIRE(r.stop_detail.limit_coef.size()==2);
+  CHECK(r.stop_detail.limit_coef[0]==1);
+  CHECK(r.stop_detail.limit_coef[1]==doctest::Approx(x.size()/(std::log(2.)+std::log(4.)+std::log(8.))));
+  CHECK(r.stop_detail.limit_loglik==doctest::Approx(r.logLik));
+  for(const auto& c:r.stop_detail.candidates) {
+    CHECK(c.loglik_lower<=c.loglik_upper);
+    if(c.model==cppunivariate::StopModel::Power)CHECK(c.coef==r.stop_detail.limit_coef);
+  }
+}

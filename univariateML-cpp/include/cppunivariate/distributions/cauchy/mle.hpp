@@ -5,6 +5,7 @@
 // Nonexistent MLEs and numerical failures are reported through CauchyStatus.
 
 #pragma once
+#include "../../core/stop_detail.hpp"
 #include "cppunivariate/core/constants.hpp"
 #include "../../core/precision.hpp"
 
@@ -26,6 +27,7 @@ struct CauchyResult {
   double logLik;
   int iterations;
   CauchyStatus status;
+  StopDetail stop_detail{};
 };
 
 // Negative log-likelihood of Cauchy(mu, scale=s):
@@ -342,7 +344,19 @@ inline CauchyResult fit_cauchy_location(const std::vector<double>& data, double 
     const double width = roots[j].b-roots[j].a;
     // |ell''| <= 2n and |score| <= 1e-7 at a candidate.
     const double upper = roots[j].ll + 1e-7*width+n*width*width;
-    if (!(best.ll > upper+ll_margin)) return {nan,scale,nan,evaluations,CauchyStatus::AmbiguousMaximum};
+    if (!(best.ll > upper+ll_margin)) {
+      CauchyResult out{nan,scale,nan,evaluations,CauchyStatus::AmbiguousMaximum};
+      const double offset=n*(std::log(cppunivariate::pi)+std::log(scale));
+      for (const auto& r : roots) {
+        const double width=r.b-r.a;
+        const double bound=r.ll+1e-7*width+n*width*width+ll_margin;
+        if (bound >= best.ll) out.stop_detail.candidates.push_back({
+          {static_cast<double>(static_cast<CPPUNIV_EXTENDED_REAL>(centre)+
+             static_cast<CPPUNIV_EXTENDED_REAL>(scale)*r.t),scale},
+          r.ll-offset-ll_margin,bound-offset});
+      }
+      return out;
+    }
   }
   const double location = static_cast<double>(static_cast<CPPUNIV_EXTENDED_REAL>(centre)+
       static_cast<CPPUNIV_EXTENDED_REAL>(scale)*best.t);
