@@ -1,0 +1,71 @@
+{
+  "source_revision": "498f4178c0361cbdb0dd597c408a18a797a9fb2b",
+  "branch": "codex/burr-root",
+  "suites": [
+    {
+      "name": "C++ dev",
+      "machine": "local workstation",
+      "command": "/tmp/umvl-cpu/run4 just cpp-test",
+      "result": "100% tests passed, 0 tests failed out of 106",
+      "final_output": [
+        "",
+        "Label Time Summary:",
+        "cran    = 236.93 sec*proc (105 tests)",
+        "dev     = 240.42 sec*proc (106 tests)",
+        "full    = 240.42 sec*proc (106 tests)",
+        "",
+        "Total Test time (real) =  60.75 sec"
+      ]
+    },
+    {
+      "name": "R dev",
+      "machine": "local workstation",
+      "command": "/tmp/umvl-cpu/run4 just test",
+      "result": "[ FAIL 0 | WARN 0 | SKIP 153 | PASS 20507 ]",
+      "final_output": [
+        "  'test-dist-ztpois.R:2:3', 'test-dist-ztnbinom.R:2:3',",
+        "  'test-dist-ztpois.R:33:3', 'test-dist-ztnbinom.R:57:3',",
+        "  'test-dist-ztnbinom.R:72:3'",
+        "",
+        "[ FAIL 0 | WARN 0 | SKIP 153 | PASS 20507 ]",
+        "   user  system elapsed ",
+        "434.008   4.104 146.143 "
+      ]
+    },
+    {
+      "name": "C++ full",
+      "machine": "local workstation",
+      "command": "/tmp/umvl-cpu/run4 env UMVL_TEST_TIER=full just cpp-test",
+      "result": "100% tests passed, 0 tests failed out of 127",
+      "final_output": [
+        "",
+        "Label Time Summary:",
+        "cran    = 162.66 sec*proc (105 tests)",
+        "dev     = 165.17 sec*proc (106 tests)",
+        "full    = 231.51 sec*proc (127 tests)",
+        "",
+        "Total Test time (real) =  80.75 sec"
+      ]
+    },
+    {
+      "name": "R full",
+      "machine": "local workstation",
+      "command": "/tmp/umvl-cpu/run4 just test-full",
+      "result": "[ FAIL 0 | WARN 0 | SKIP 0 | PASS 43324 ]",
+      "final_output": [
+        "                                                                                ",
+        "\u2550\u2550 Results \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550",
+        "Duration: 274.7 s",
+        "",
+        "[ FAIL 0 | WARN 0 | SKIP 0 | PASS 43324 ]",
+        "    user   system  elapsed ",
+        "1150.085    8.021  277.227 "
+      ]
+    }
+  ],
+  "versions": {
+    "cxx": "c++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.",
+    "R": "R version 4.6.1 (2026-06-24)",
+    "BH": "1.90.0.1"
+  }
+}

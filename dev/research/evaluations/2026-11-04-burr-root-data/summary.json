@@ -1,0 +1,112 @@
+{
+  "source_revision": "498f4178c0361cbdb0dd597c408a18a797a9fb2b",
+  "environment": {
+    "python": "3.14.5 (main, Jun  2 2026, 22:25:17) [Clang 22.1.3 ]",
+    "numpy": "2.4.6",
+    "scipy": "1.18.0",
+    "mpmath": "1.3.0",
+    "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.43"
+  },
+  "outcomes": {
+    "global-finite": 23,
+    "global-Pareto": 15,
+    "global-Weibull": 11,
+    "subdivision-budget": 1
+  },
+  "roots": 33,
+  "maxima": 27,
+  "global_profiles": 9131,
+  "global_seconds": 13.551039059180766,
+  "existing_seconds": 0.1240657317,
+  "median_existing_seconds": 0.00165394555,
+  "median_prototype_global_seconds": 0.1076271990314126,
+  "golden_coefficient_bounds": [
+    [
+      1.3346374587554561,
+      1.3346374854482055
+    ],
+    [
+      1.8604176855302879,
+      1.860417722738642
+    ],
+    [
+      1.1969911092591063,
+      1.1969911264317323
+    ]
+  ],
+  "golden_relative_errors": [
+    1.939467141700384e-07,
+    5.334697251748005e-08,
+    1.6729632747921412e-07
+  ],
+  "golden_exact_contraction_ratios": [
+    1.2260180158192416e-06,
+    3.889309367403843e-07,
+    1.7353798288847484e-06
+  ],
+  "golden_root": [
+    1.3346374721018308,
+    1.860417704134465,
+    -0.3345235793363498
+  ],
+  "golden_slab": {
+    "delta": 0.004003912416305493,
+    "nuisance_radii": [
+      0.004456820442347107,
+      0.008876576046785201
+    ],
+    "containment_ratio": 0.5202640456715266,
+    "curvature_congruence_radius": 0.5696125241783926,
+    "min_information_eigenvalue": 3.07432331635398
+  },
+  "golden_global": {
+    "sample": "golden",
+    "outcome": "global-finite",
+    "profiles": 76,
+    "seconds": 0.17616829799953848,
+    "candidate": "finite",
+    "root_slab": [
+      [
+        1.3306335596855252,
+        1.3386413845181364
+      ]
+    ],
+    "pruned": 74,
+    "K": 4000.0,
+    "tail": "unsigned",
+    "tail_constants": null,
+    "A": [
+      214.6444766764015,
+      214.6444776680654
+    ],
+    "W": [
+      -738.4477086674643,
+      -738.44770864732
+    ],
+    "P": [
+      -1328.4286138190735,
+      -1328.4286137743823
+    ],
+    "max_dual_gap": 0.0004693339169534738,
+    "max_repair_width": 7.176396366077096e-09,
+    "remaining_upper": null,
+    "lower": -696.9509716671758
+  },
+  "golden_existing_seconds": 0.0212029594,
+  "synthetic_seam_checks": 4,
+  "nearzero_unsigned_finite_certificates": 3,
+  "hashes": {
+    "README.md": "6a4ce9413414bfe929950ac24494c439fb56ed523a8059375152f794d5a10494",
+    "benchmark.cpp": "66d67ed2872ed95d3b12016a29da9fc1d1d7a1f82230e42abed628d6401c9e29",
+    "benchmark.py": "e16b9446ed12aa71ca8935fbb697ba4797746af5ef7306e72cac893088c0ab3a",
+    "derivation.md": "62ee2980cf69b6dfdce1467d647950b4d66c3a6f55c645a7c50f6ff08acd868d",
+    "exact_root.py": "e161555d3dabba2284b9b55e86dcb0183a91f375a71f2b9ecd30b7b7ea32c797",
+    "global_check.py": "3f1ae01530e34cbd73ab6ee4f28adf86def1c924a011889b4b63d0d94b2a00e6",
+    "isolate.py": "3f1caad72e648d4e4473f0127e7684e29393575b49585a09f9a8d667e9d97f7c",
+    "run.sh": "98652d80a247ba30761c2f7959f79e5ede11bf9ee677c34daa328a74575fabbe",
+    "summarize.py": "ea979c5803bdb04cca1b88509117777a1d810b1115ecc8b829a8275bc5b9b4e1",
+    "validation.py": "30e601a127d12f70a28f4830f341c90b5ad0e261fc496be78b6090fbf33171ab",
+    "verify.py": "1d841e3fbb371f40b5e8de2e485ede2aafb22bcd2b9d1da3e31bc901a84c65d5"
+  },
+  "input_sha256": "8c96dbe2983a8dbf9a710e26b9343eff7fafb37063a866ca83fbcd94d8b8f328"
+}
