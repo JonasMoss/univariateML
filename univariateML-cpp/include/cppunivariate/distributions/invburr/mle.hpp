@@ -157,14 +157,15 @@ inline InvBurrResult invburr_mle(span x, double tol, int maxit,
       if (std::isfinite(seed.f) && seed.theta[1]>0.0) shape20=seed.theta[1];
     }
   }
-  auto r = burr_mle(span{reciprocal.data(),reciprocal.size()},tol,maxit,
+  auto r = burr_mle_legacy(span{reciprocal.data(),reciprocal.size()},tol,maxit,
     shape10,shape20,std::isnan(scale0) ? scale0 : 1.0/scale0,reltol);
   InvBurrStatus status = InvBurrStatus::Ok;
   if (r.status == BurrStatus::WeibullBoundary) status = InvBurrStatus::InvWeibullBoundary;
   if (r.status == BurrStatus::Unbounded) status = InvBurrStatus::Unbounded;
   if (r.status == BurrStatus::ParetoBoundary) status = InvBurrStatus::PowerBoundary;
   if (r.status == BurrStatus::InvalidInit) status = InvBurrStatus::InvalidInit;
-  if (r.status == BurrStatus::IterationFailure) status = InvBurrStatus::IterationFailure;
+  if (r.status == BurrStatus::IterationFailure || r.status == BurrStatus::CertificateTie ||
+      r.status == BurrStatus::CertificateBudget || r.status == BurrStatus::NumericalFailure) status = InvBurrStatus::IterationFailure;
   if (status == InvBurrStatus::InvWeibullBoundary) {
     const auto face = invweibull_mle(x,1e-10,std::max(maxit,100));
     return {INFINITY,face.shape,face.scale,face.logLik,r.iterations,status};
@@ -209,10 +210,12 @@ namespace cppunivariate {
 inline InvBurrResult invburr_mle_holds(span x,double a,double b,double s,double tol=1e-9,int maxit=1000){
  std::vector<double> y;double jac=0;
  for(double v:x){y.push_back(1/v);jac-=2*std::log(v);}
- auto r=burr_mle_holds(span{y.data(),y.size()},a,b,std::isnan(s)?s:1/s,tol,maxit);
+ auto r=(std::isnan(a)&&std::isnan(b)&&std::isnan(s)&&tol>0&&std::isfinite(tol)&&maxit>0)?
+ burr_mle_legacy(span{y.data(),y.size()},tol,maxit):
+ burr_mle_holds(span{y.data(),y.size()},a,b,std::isnan(s)?s:1/s,tol,maxit);
  InvBurrStatus st=InvBurrStatus::Ok;
  if(r.status==BurrStatus::InvalidInit)st=InvBurrStatus::InvalidInit;
- if(r.status==BurrStatus::IterationFailure)st=InvBurrStatus::IterationFailure;
+ if(r.status==BurrStatus::IterationFailure||r.status==BurrStatus::CertificateTie||r.status==BurrStatus::CertificateBudget||r.status==BurrStatus::NumericalFailure)st=InvBurrStatus::IterationFailure;
  if(r.status==BurrStatus::Unbounded)st=InvBurrStatus::Unbounded;
  if(r.status==BurrStatus::WeibullBoundary)st=InvBurrStatus::InvWeibullBoundary;
  if(r.status==BurrStatus::ParetoBoundary)st=InvBurrStatus::PowerBoundary;

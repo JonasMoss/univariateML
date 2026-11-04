@@ -1,0 +1,42 @@
+{
+  "source_revision": "d4d26e5dd349b07b5b574d40465856574350869d",
+  "machine": "local workstation; /tmp/umvl-cpu/run; nice 10; one thread",
+  "compiler": "c++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "precision": 80,
+  "repetitions": 10,
+  "discarded_warmups": 1,
+  "outcomes": {
+    "global-finite": 23,
+    "global-Pareto": 15,
+    "global-Weibull": 11,
+    "subdivision-budget": 1,
+    "tie": 1
+  },
+  "median_seconds": 0.00774125575,
+  "legacy_median_seconds": 0.0022930069999999997,
+  "golden_seconds": 0.07716731,
+  "golden_legacy_seconds": 0.0265318825,
+  "max_root_relative_error": 4.035964255048385e-14,
+  "max_independent_logLik_error": 3.6995963655231084e-13,
+  "sha256": {
+    "dev/research/evaluations/2026-11-04-burr-port-data/probe.cpp": "e5f7036e5125880e354a55c407110ff2858436a796ed773177a54528f561bb13",
+    "dev/research/evaluations/2026-11-04-burr-port-data/check.py": "b04bc5c399f8e6e6bb53a127efddbfc9885314f85a448a7dc8999035a9d01206",
+    "univariateML-cpp/include/cppunivariate/distributions/burr/certificate.hpp": "65d832956466f3174ed2a36c72457164f47e0f917ac840c6bb2b7e2ea25d1093",
+    "univariateML-cpp/include/cppunivariate/distributions/burr/mle.hpp": "108e2ae61d5de0c0aa7fdb03bf5a517d3b37dcc2359db73da6fdf1c16608d7aa",
+    "univariateML-cpp/include/cppunivariate/distributions/burr/certificate-fixtures.inc": "46b2fc9d4b2f5711e4dcbe0e256aa28599b95f8599a8e9a14449d6a0baa2c6b2",
+    "dev/research/evaluations/2026-11-04-burr-port-data/components.cpp": "d15df5a6d124312215e9599978a5bf3f17aa250cb2f1ceebd8cb6db33de15590",
+    "dev/research/evaluations/2026-11-04-burr-port-data/coordinates.cpp": "ac72100ffce37aefb2bc2c3de65677934d69cc462a44a287ca5b4a318f0eb5c1",
+    "dev/research/evaluations/2026-11-04-burr-port-data/run.sh": "a8a24ed6c13ee6cec29f2fe3b16c76bc0558f0557e69c9c2325936cb21029389",
+    "dev/research/evaluations/2026-11-04-burr-port-data/validation.py": "ea225070a6c67d0d2a0c718cc3a169aad5439b3096fb2bc855cd988dbf5a16db",
+    "dev/research/evaluations/2026-11-03-burr-xi-data/samples.json": "8c96dbe2983a8dbf9a710e26b9343eff7fafb37063a866ca83fbcd94d8b8f328",
+    "dev/research/evaluations/2026-11-04-burr-root-data/global.json": "0614ce6cea1dfc945ddcc432a5c5d2c9e37b46426722b605e1051ac27873cee8",
+    "dev/research/evaluations/2026-11-04-burr-root-data/verification.json": "af4fcf46750668fa6b678e5ad02b9248e91684d46912ad22989752d1524b4d7d",
+    "bindings/common/distributions/burr/fit.hpp": "9ff9e313b7944f60880bf4502f8bb3dbeec8db95e153a8ff7c5f485caa2f17a0",
+    "bindings/r/distributions/burr/test.R": "2e37af757b7feebeac96f0b9451600aaaf7e5b07eac231a17a12fec22e149677",
+    "univariateML-cpp/include/cppunivariate/distributions/burr/README.md": "f1e33db5275e55a540643395a24482ef3a276bbee678ecf9004771e62a014fc6",
+    "univariateML-cpp/include/cppunivariate/distributions/burr/test.cpp": "b734f8c1a290662ba854e4268d16032430c4677387c4746153284211f3f05a96",
+    "univariateML-cpp/include/cppunivariate/distributions/invburr/mle.hpp": "32b116c92e591b18587e2ce37172d2ff5ba6203858a74281ca2ecadaa7acc5b4",
+    "univariateML-cpp/include/cppunivariate/distributions/gb2/mle.hpp": "4f85d2a7f2bd4522ca748b7466dc92443d395ec8e15d0a16c908369050771770",
+    "univariateML-cpp/include/cppunivariate/distributions/pareto4/mle.hpp": "8eb3822e99b0f6a9561ba6cc5395a2cc4d7f8eeffdbfaac563d6269aa35a084b"
+  }
+}

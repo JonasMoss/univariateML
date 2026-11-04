@@ -25,6 +25,9 @@ inline FitResult fit_burr(cppunivariate::span x, Held shape1_arg = {}, Held shap
  if (res.status == cppunivariate::BurrStatus::AllGeOne) return fail("The fixed-scale burr MLE does not exist when all observations >= scale. Use `mlpareto` to fit this model with endpoint scale.");
  if (res.status == cppunivariate::BurrStatus::WeibullBoundary) return fail("The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.");
  if (res.status == cppunivariate::BurrStatus::ParetoBoundary) return fail("The burr likelihood is maximised at a limit. Use `mlpareto` to fit this model.");
+ if (res.status == cppunivariate::BurrStatus::CertificateTie) return fail("Burr global certificate unresolved: finite/face tie or sign-uncertain seam; no verified MLE.");
+ if (res.status == cppunivariate::BurrStatus::CertificateBudget) return fail("Burr global certificate budget exhausted; no verified MLE.");
+ if (res.status == cppunivariate::BurrStatus::NumericalFailure) return fail("Burr global certificate numerical failure (domain, bracket, nonfinite arithmetic or linear solve); no verified MLE.");
  if (res.status == cppunivariate::BurrStatus::IterationFailure) return fail("Constrained likelihood search failed to converge.");
  if (res.status == cppunivariate::BurrStatus::InvalidInit ||
  !std::isfinite(res.shape1) || !std::isfinite(res.shape2) || !std::isfinite(res.scale))

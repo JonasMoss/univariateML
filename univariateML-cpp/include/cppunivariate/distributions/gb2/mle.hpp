@@ -313,7 +313,7 @@ inline Gb2Result gb2_mle(span x,double tol=1e-7,int maxit=300,
       }
     }
     const span seed=seed_data.empty()?x:span{seed_data.data(),seed_data.size()};
-    const auto bu=burr_mle(seed,1e-8,300);
+    const auto bu=burr_mle_legacy(seed,1e-8,300);
     if(bu.status==BurrStatus::Ok) starts.push_back({{0,std::log(bu.shape1)}});
     const auto ib=invburr_mle(seed,1e-8,300);
     if(ib.status==InvBurrStatus::Ok) starts.push_back({{std::log(ib.shape1),0}});

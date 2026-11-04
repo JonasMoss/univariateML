@@ -11,7 +11,7 @@ inline Pareto4Result pareto4_mle(span x, double min, double tol, int maxit, doub
   bool valid=tol>0 && std::isfinite(tol) && maxit>0 && std::isfinite(min);
   for(double v:x) valid=valid && std::isfinite(v) && v>min;
   if(!valid) y.clear();
-  auto r=(!std::isnan(shape1)||!std::isnan(shape2)) ? burr_mle_holds(span{y.data(),y.size()},shape1,shape2,scale,tol,maxit) : std::isnan(scale) ? burr_mle(span{y.data(),y.size()},tol,maxit) : burr_mle_fixed_scale(span{y.data(),y.size()},scale,tol,maxit);
+  auto r=(!std::isnan(shape1)||!std::isnan(shape2)) ? burr_mle_holds(span{y.data(),y.size()},shape1,shape2,scale,tol,maxit) : std::isnan(scale) ? burr_mle_legacy(span{y.data(),y.size()},tol,maxit) : burr_mle_fixed_scale(span{y.data(),y.size()},scale,tol,maxit);
   return {r.shape1,r.shape2,r.scale,min,r.logLik,r.iterations,r.status};
 }
 }

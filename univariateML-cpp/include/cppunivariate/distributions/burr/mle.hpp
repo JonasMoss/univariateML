@@ -4,6 +4,7 @@
 #include "../../core/multistart.hpp"
 #include "../lomax/mle.hpp"
 #include "fixed_scale.hpp"
+#include "certificate.hpp"
 #include "../../core/bfgs.hpp"
 #include "../../core/finite_diff.hpp"
 #include "../../core/span.hpp"
@@ -86,7 +87,7 @@ struct BurrCost {
 };
 
 
-enum class BurrStatus { Ok = 0, WeibullBoundary, ParetoBoundary, InvalidInit, IterationFailure, AllGeOne, Unbounded };
+enum class BurrStatus { Ok = 0, WeibullBoundary, ParetoBoundary, InvalidInit, IterationFailure, AllGeOne, Unbounded, CertificateTie, CertificateBudget, NumericalFailure };
 struct BurrMLE {
   double shape1, shape2, scale, logLik;
   int iterations;
@@ -114,7 +115,8 @@ struct BurrProfileCost {
     return value;
   }
 };
-inline BurrMLE burr_mle(span x, double tol, int maxit,
+// Compatibility path for dependent families; no global certificate.
+inline BurrMLE burr_mle_legacy(span x, double tol, int maxit,
     double shape10 = std::numeric_limits<double>::quiet_NaN(),
     double shape20 = std::numeric_limits<double>::quiet_NaN(),
     double scale0 = std::numeric_limits<double>::quiet_NaN(), double reltol = 1e-12) {
@@ -193,6 +195,41 @@ inline BurrMLE burr_mle(span x, double tol, int maxit,
   return {cost.shape1(best.theta.data()),std::exp(best.theta[0]),
     std::exp(center+best.theta[1]),-n*(best.f+center),best.iterations,
     best.status == BfgsStatus::Ok ? BurrStatus::Ok : BurrStatus::IterationFailure};
+}
+
+// Convert only checked certificate outcomes. No local-score rescue is valid
+// after a failed global certificate. Held paths below retain their algorithms.
+inline BurrMLE burr_mle_certified(span x, double tol, int maxit,
+    double shape10 = std::numeric_limits<double>::quiet_NaN(),
+    double shape20 = std::numeric_limits<double>::quiet_NaN(),
+    double scale0 = std::numeric_limits<double>::quiet_NaN(), double reltol = 1e-12,
+    int certificate_budget = 4096) {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  if(!(tol>0)||!std::isfinite(tol)||maxit<1||!(reltol>0)||!std::isfinite(reltol))
+    return {nan,nan,nan,nan,0,BurrStatus::InvalidInit};
+  for(double v:{shape10,shape20,scale0})
+    if(!std::isnan(v)&&(!(v>0)||!std::isfinite(v)))
+      return {nan,nan,nan,nan,0,BurrStatus::InvalidInit};
+  if(maxit==1)return {nan,nan,nan,nan,0,BurrStatus::IterationFailure};
+  const auto r=burr_cert_detail::fit(x,certificate_budget,std::min(maxit,120));
+  BurrStatus status=BurrStatus::NumericalFailure;
+  switch(r.outcome){
+    case burr_cert_detail::Outcome::Finite:status=BurrStatus::Ok;break;
+    case burr_cert_detail::Outcome::Weibull:status=BurrStatus::WeibullBoundary;break;
+    case burr_cert_detail::Outcome::Pareto:status=BurrStatus::ParetoBoundary;break;
+    case burr_cert_detail::Outcome::Tie:status=BurrStatus::CertificateTie;break;
+    case burr_cert_detail::Outcome::Budget:status=BurrStatus::CertificateBudget;break;
+    case burr_cert_detail::Outcome::Invalid:status=BurrStatus::InvalidInit;break;
+    case burr_cert_detail::Outcome::Unbounded:status=BurrStatus::Unbounded;break;
+    case burr_cert_detail::Outcome::Numerical:break;
+  }
+  return {r.k,r.c,r.scale,r.logLik,r.profiles,status};
+}
+inline BurrMLE burr_mle(span x, double tol, int maxit,
+    double shape10 = std::numeric_limits<double>::quiet_NaN(),
+    double shape20 = std::numeric_limits<double>::quiet_NaN(),
+    double scale0 = std::numeric_limits<double>::quiet_NaN(), double reltol = 1e-12) {
+  return burr_mle_certified(x,tol,maxit,shape10,shape20,scale0,reltol);
 }
 
 // Fixed scale reduces exactly to the historical scale-1 two-shape fit.

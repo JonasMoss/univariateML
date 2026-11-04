@@ -208,3 +208,76 @@ TEST_CASE("burr: constant data off a held scale collapse only with both shapes f
   std::vector<double> invalid{.5,.5,INFINITY};
   CHECK(cppunivariate::burr_mle_fixed_scale(mltest::as_span(invalid),1).status==cppunivariate::BurrStatus::InvalidInit);
 }
+
+namespace {
+#include "certificate-fixtures.inc"
+}
+TEST_CASE("burr: certified retained workloads and guarded stops") {
+  for (const auto& fixture : burr_certificate_fixtures) {
+    CAPTURE(fixture.name);
+    const auto fit=cppunivariate::burr_mle(mltest::as_span(fixture.x),1e-8,1000);
+    CHECK(fit.status==fixture.status);
+    if(fit.status==cppunivariate::BurrStatus::Ok){
+      CHECK(fit.shape1>0);CHECK(fit.shape2>0);CHECK(fit.scale>0);
+      CHECK(std::isfinite(fit.logLik));
+      double ll=0;
+      for(double x:fixture.x)ll+=cppunivariate::distributions::dburr(x,fit.shape1,fit.shape2,fit.scale,true);
+      CHECK(ll==doctest::Approx(fit.logLik).epsilon(1e-11));
+    }
+    if(fit.status==cppunivariate::BurrStatus::CertificateBudget||fit.status==cppunivariate::BurrStatus::CertificateTie){
+      CHECK(std::isnan(fit.shape1));CHECK(std::isnan(fit.logLik));
+    }
+  }
+}
+TEST_CASE("burr: certificate arithmetic and failure gates") {
+  namespace cert=cppunivariate::burr_cert_detail;
+  CHECK_FALSE(cert::log(cert::Interval(-1,1)).valid());
+  CHECK_FALSE((cert::Interval(1)/cert::Interval(-1,1)).valid());
+  CHECK_FALSE(cert::exp(cert::Interval(10000)).valid());
+  CHECK_FALSE(cert::entropy(cert::Interval(-.1,.5)).valid());
+  CHECK_FALSE(cert::padded(NAN,1).valid());
+  cert::Matrix singular,inverse;
+  CHECK_FALSE(cert::inverse(singular,inverse,3));
+  const std::vector<double> x={.2,.5,1,2,4};
+  auto a=cppunivariate::burr_mle_certified(mltest::as_span(x),1e-8,1000,NAN,NAN,NAN,1e-12,0);
+  CHECK(a.status==cppunivariate::BurrStatus::CertificateBudget);
+  CHECK(std::isnan(a.shape1));
+  for(const std::vector<double>& bad:std::vector<std::vector<double>>{{},{1},{0,1},{1,INFINITY},{1,NAN}})
+    CHECK(cppunivariate::burr_mle(mltest::as_span(bad),1e-8,1000).status==cppunivariate::BurrStatus::InvalidInit);
+  for(double tol:std::array<double,4>{{0.,-1.,INFINITY,NAN}})
+    CHECK(cppunivariate::burr_mle(mltest::as_span(x),tol,1000).status==cppunivariate::BurrStatus::InvalidInit);
+  const std::vector<double> constant={2,2,2};
+  CHECK(cppunivariate::burr_mle(mltest::as_span(constant),1e-8,1000).status==cppunivariate::BurrStatus::Unbounded);
+  const auto failed=cppunivariate::burr_mle(mltest::as_span(x),1e-8,2);
+  CHECK(failed.status==cppunivariate::BurrStatus::NumericalFailure);
+  CHECK(std::isnan(failed.shape1));
+  // A sign-uncertain slope never supplies a signed Weibull tail.
+  cert::Data d;REQUIRE(cert::data(mltest::as_span(x),d));
+  cert::Weibull w;REQUIRE(cert::weibull(d,w));
+  for(cert::Interval slope:{cert::Interval(-1e-20,1e-20),cert::Interval(0),cert::Interval(.1),cert::Interval(-1,1)}){
+    w.A=slope;CHECK(cert::signed_tail(d,w)==0);
+  }
+}
+
+TEST_CASE("burr: certificate coordinates survive extreme changes of units") {
+  auto g=mltest::load_distribution_golden("burr");
+  const auto base=cppunivariate::burr_mle(mltest::as_span(g.data),1e-8,1000);
+  REQUIRE(base.status==cppunivariate::BurrStatus::Ok);
+  for(double scale:{1e-100,1e100}){
+    auto x=g.data;for(double& v:x)v*=scale;
+    std::reverse(x.begin(),x.end());
+    const auto fit=cppunivariate::burr_mle(mltest::as_span(x),1e-8,1000);
+    REQUIRE(fit.status==cppunivariate::BurrStatus::Ok);
+    CHECK(fit.shape1==doctest::Approx(base.shape1).epsilon(1e-8));
+    CHECK(fit.shape2==doctest::Approx(base.shape2).epsilon(1e-8));
+    CHECK(fit.scale/scale==doctest::Approx(base.scale).epsilon(1e-8));
+    CHECK(fit.logLik==doctest::Approx(base.logLik-g.data.size()*std::log(scale)).epsilon(1e-10));
+  }
+}
+
+TEST_CASE("burr: inverse legacy held dispatch retains invalid control guards") {
+  const std::vector<double> x={.2,.5,1,2,4};
+  for(double tol:std::array<double,4>{{0.,-1.,INFINITY,NAN}})
+    CHECK(cppunivariate::invburr_mle_holds(mltest::as_span(x),NAN,NAN,NAN,tol,1000).status==cppunivariate::InvBurrStatus::InvalidInit);
+  CHECK(cppunivariate::invburr_mle_holds(mltest::as_span(x),NAN,NAN,NAN,1e-8,0).status==cppunivariate::InvBurrStatus::InvalidInit);
+}
