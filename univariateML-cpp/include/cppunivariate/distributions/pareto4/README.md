@@ -39,7 +39,7 @@ r:
   control:
     min: Known finite lower endpoint.
     reltol: Delegate fitting tolerance.
-    iterlim: Maximum delegate iterations.
+    iterlim: Maximum proposal-solve iterations; the joint certificate retains its fixed 4096-profile budget.
     shape1: Known positive finite coefficient; NULL estimates it.
     shape2: Known positive finite coefficient; NULL estimates it.
 log_density: log(shape1) + log(shape2) - log((x-min)) - shape2*log(scale/(x-min)) - (shape1+1)*log(1+((x-min)/scale)**shape2)
@@ -52,13 +52,13 @@ limits:
   message: unbounded
 - when: The shape $\alpha$ tends to infinity with $\gamma$ fixed and $\sigma\alpha^{-1/\gamma}$ fixed at a positive scale.
   firmness: proved
-  detect: The held coefficients permit this path, and the numerical comparison selects this limiting model within $10^{-8}n$ log-likelihood units of the best interior candidate found.
+  detect: With all regular coefficients free, the Burr certificate selects this face. Held subsets retain their numerical comparison within $10^{-8}n$ log-likelihood units.
   status: WeibullBoundary
   name: shifted weibull; subtract min before fitting
   numerical: true
 - when: The power $\gamma$ tends to infinity with $\alpha\gamma$ fixed at a positive tail exponent and $\sigma$ fixed.
   firmness: proved
-  detect: The held coefficients permit this path, and the numerical comparison selects this limiting model within $10^{-8}n$ log-likelihood units of the best interior candidate found.
+  detect: With all regular coefficients free, the Burr certificate selects this face. Held subsets retain their numerical comparison within $10^{-8}n$ log-likelihood units.
   status: ParetoBoundary
   name: shifted pareto; subtract min before fitting
   numerical: true
@@ -136,9 +136,7 @@ relations:
 fit:
   method: delegation
   certified: partial
-  note: 'pareto4/README.md, Details; pareto4/mle.hpp (public fitter and held overloads); pareto4/test.cpp: Held
-    threshold transfers to Lomax, log-logistic or Burr; conditional monotone subsets are certified but joint excess
-    profiles inherit numerical-search qualifications. Free thresholds stop. An explicit certified C++ joint candidate is available, but the default switch is blocked by unchanged golden tolerances (TASK-116).'
+  note: 'With min held and all regular coefficients free, the Burr certificate transfers unchanged to excesses: certified in exact arithmetic conditional on computed comparisons, with the practical floating-point margin documented below. Unresolved searches stop. Held subsets retain their separate algorithms and numerical held-power face comparison, hence the aggregate tag is partial.'
 areas:
 - actuarial
 - economics and income
@@ -157,8 +155,8 @@ existence:
     With all coefficients free, every nonempty sample has unbounded likelihood.
     Holding $\mu$ gives the Burr likelihood on the excesses. Constant excesses
     have unbounded joint likelihood, while nonconstant samples may favour
-    Weibull or Pareto limits. A complete joint existence criterion and joint
-    uniqueness are not established. Holding $\alpha$ gives a unique finite
+    Weibull or Pareto limits. The finite/face existence criterion is inherited from Burr; general joint
+    uniqueness is not established, but accepted finite certificates prove it for the sample. Holding $\alpha$ gives a unique finite
     fit on nonconstant excesses. Holding $\gamma$ reduces existence to Lomax
     on powered excesses. Holding both shapes gives a unique scale estimate.
     Holding scale alone gives a finite maximum for nonconstant excesses if
@@ -173,14 +171,14 @@ existence:
     $\gamma\log\sigma$ and has coercive profiles for nonconstant data.
     With $\gamma$ held, the transformation $(x_i-\mu)^\gamma$ gives Lomax.
     The single-coordinate scores decrease strictly in suitable coordinates.
-    These arguments do not certify the joint numerical search.
+    The separate Burr certificate certifies accepted joint regular fits.
 ---
 
 Pareto type IV models sizes above a threshold $\mu$ with Burr-distributed excesses. The scale $\sigma$ sets the size unit. The shapes $\alpha$ and $\gamma$ give upper-tail exponent $\alpha\gamma$ and lower-end power $\gamma$.
 
 ## Details
 
-Fitting requires finite observations strictly above a held threshold. Subtracting that threshold gives [Burr](../burr/README.md) with unchanged shapes and scale. The joint fit uses several numerical starts and compares candidate maxima with Weibull and Pareto limits. Global optimality is not certified.
+Fitting requires finite observations strictly above a held threshold. Subtracting that threshold gives [Burr](../burr/README.md) with unchanged shapes and scale. The joint fit uses the Burr global certificate, including root isolation, negative profile curvature, dual/chord envelopes and both tail exclusions. Accepted finite results have a sample-specific unique global maximum certificate; unresolved comparisons stop.
 
 With only scale held, nonconstant excesses all at least $\sigma$ have a supremum on the endpoint-$\sigma$ Pareto path. Its log-likelihood is the held-endpoint Pareto log-likelihood minus $Z\log2$, where $Z$ counts excesses equal to $\sigma$. The endpoint remains $\mu+\sigma$, so estimating it anew would change the constrained model. For nonconstant data with an excess below $\sigma$, a finite maximum exists. Constant excesses at or below $\sigma$ instead have unbounded likelihood with both shapes free. Constant excesses above it have a finite unattained Pareto path limit.
 
@@ -192,7 +190,7 @@ The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-genb
 
 ## R notes
 
-With `min = 0`, the fit agrees with `mlburr(x)` for the same holds. Numerical comparisons prefer limit models within $10^{-8}n$ log-likelihood units, so a tied or slightly better finite maximum may be rejected. Detected faces stop with a recommendation to use `mlweibull(x - min)` or `mlpareto(x - min)`, as applicable. Held-scale endpoint faces preserve `min + scale`. Unresolved searches stop.
+With `min = 0`, the fit agrees with `mlburr(x)` for the same holds. The joint regular fit certifies the finite winner or limiting face and refuses unresolved ties. Held-subset numerical comparisons retain their $10^{-8}n$ face preference. Detected faces stop with a recommendation to use `mlweibull(x - min)` or `mlpareto(x - min)`, as applicable. Held-scale endpoint faces preserve `min + scale`. Unresolved searches stop.
 
 ## Decision history
 
@@ -210,7 +208,7 @@ gate and 1e-8 absolute likelihood checks. Reproducer:
 [pareto4-precision.cpp](../../../../../dev/validation/pareto4-precision.cpp).
 The fitter and golden are unchanged.
 
-## Certified excess candidate and compatibility gate (2026-11-04, TASK-116)
+## Certified excess default (2026-11-04, TASK-116)
 
 The explicit C++ `pareto4_mle_certified(x, min, tol, maxit)` entrypoint
 transports the Burr certificate to excesses. For $y_i=x_i-\mu$ with
@@ -230,13 +228,12 @@ It is not an outward-rounded interval guarantee. The transformed observations
 must be representable in binary64. A universal joint uniqueness theorem is
 not claimed; an accepted finite outcome has a sample-specific proof.
 
-**The public default and R fit remain on the legacy engine.** Switching to
-the certified root fails the unchanged native and R golden tolerances.
-The [dependency report](../../../../../dev/research/evaluations/2026-11-04-burr-deps-report.md)
-records the high-precision root comparison and the exact compatibility gap.
-The `fit` metadata and limit detection above therefore still describe the
-production default. Resolving the golden contract requires an author decision;
-a certificate is not bypassed by returning a less accurate legacy candidate.
+The public default and R fit now use this certified entrypoint when all three
+regular coefficients are free. The Pareto IV golden alone was regenerated with
+author authorization; the independent 80-digit root confirms the corrected
+coefficients. The [switch report](../../../../../dev/research/evaluations/2026-11-04-pareto4-switch-report.md)
+records validation. The [dependency report](../../../../../dev/research/evaluations/2026-11-04-burr-deps-report.md)
+retains the historical compatibility conflict and transformation evidence.
 
 The certified transformation rejects arithmetic overflow and any merging of
 distinct observations into equal transformed values with `NumericalFailure`.

@@ -1,0 +1,48 @@
+{
+  "base_revision": "0460ccc8f9c108b5ff72fb750a4b42f6217c3d02",
+  "machine": "local workstation",
+  "source_sha256": {
+    "bindings/common/distributions/pareto4/fit.hpp": "d265d746a0ef41da3bdc5b92816e9c56aa143d70bed242da920fee63c9542eea",
+    "bindings/r/distributions/pareto4/test.R": "f57f1c927752e4301ac285419be1ef5535ac95785db6aef2d7bf3ade50c65632",
+    "univariateML-cpp/include/cppunivariate/distributions/pareto4/README.md": "242b00f15d08baac2adeac41e46aafffdbebfbda3a26a10c157d748529b757c5",
+    "univariateML-cpp/include/cppunivariate/distributions/pareto4/golden.json": "21909f8be2752420cec9346a30f9b284dce17697e309f2b59aaae72132f48acb",
+    "univariateML-cpp/include/cppunivariate/distributions/pareto4/mle.hpp": "825714cfa49b7233acdf7bd03c0bec771d1ca417a4fa3f0bbee4552fb44aa3ee",
+    "univariateML-cpp/include/cppunivariate/distributions/pareto4/test.cpp": "79913997ea2dc8b271aca94877593986fd5a5de8b7393dd38e705bf19d37dc12",
+    "dev/research/evaluations/2026-11-04-pareto4-switch-data/verify.py": "50e394df3ba4e0e1955fd0e97d6378778adab5c88e30b681e709b7794003a168",
+    "dev/research/evaluations/2026-11-04-pareto4-switch-data/refit.R": "9b9a9ae750a7b123ad3e9963e093391db84a82f8287fa40948cf0cd85272f7d7"
+  },
+  "logs": {
+    "goldens": {
+      "path": "build/scratch/goldens.log",
+      "sha256": "5cca040185b1b412f6d4eadb9cb8f15b3b86f6c2052e4488ed5d88e979533357"
+    },
+    "refit": {
+      "path": "build/scratch/refit.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "verify": {
+      "path": "build/scratch/verify.log",
+      "sha256": "b4850b94659b6e37e38b4a111a0be5313b2c1b2d5100df068b97bdb4cffa277a"
+    },
+    "cpp-dev": {
+      "path": "build/scratch/cpp-dev.log",
+      "sha256": "0c73857bb32bd815488caf420986f3383d8ac2b546705f3789c9bf0bf778fcea"
+    },
+    "cpp-double": {
+      "path": "build/scratch/cpp-double.log",
+      "sha256": "7fbc1ebae0e72057d2e5de6b574df4b84b9056cb93fea8e132540431dda1b9d2"
+    },
+    "r-dev": {
+      "path": "build/scratch/r-dev.log",
+      "sha256": "91c8750013ce51c5c6f306b1ed208f317fe08394a97b732afc51bd063697f926"
+    },
+    "cpp-full": {
+      "path": "build/scratch/cpp-full.log",
+      "sha256": "5f08daddff58621f205aa1b1d82752cd903710792d9d1fcba16c38e0ea16ddf9"
+    },
+    "r-full": {
+      "path": "build/scratch/r-full.log",
+      "sha256": "6942d2db9e3669074cecaa612e4562fcb71ef85068394c48e786495f55578389"
+    }
+  }
+}
