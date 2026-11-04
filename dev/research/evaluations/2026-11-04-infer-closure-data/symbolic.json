@@ -1,0 +1,8 @@
+{
+  "order": 4,
+  "normalization_through_order_4": "0",
+  "effective_leading_log_ratio": "d*mu**2/2 - d*mu*x + d*x**2/2 - d*x/2 + k**2*mu**3/3 - k**2*mu**2*x + k**2*mu*x**2 - k**2*mu*x - k**2*x**3/3 + k**2*x**2 - 2*k**2*x/3",
+  "effective_order_3_expectation": "0",
+  "effective_order_4_expectation": "mu**2*(-d**2/4 - k**4*mu/3)",
+  "log_ratio_polynomial": "k**4*(-mu**5/5 + mu**4*x/4 - x**5/20 + x**4/8 - x**3/12 + x/120) + k**3*(-mu**4/4 + mu**3*x/3 - x**4/12 + x**3/6 - x**2/12) + k**2*(-mu**3/3 + mu**2*x/2 - x**3/6 + x**2/4 - x/12) + k*(-mu**2/2 + mu*x - x**2/2 + x/2) + u**4*(-mu**5/5 + mu**4*x/4 - x**5/20 + x**4/8 - x**3/12 + x/120) + u**3*(k*(mu**5/2 - mu**4*x - mu**4/2 + mu**3*x**2/2 + mu**3*x/2) + mu**4/4 - mu**3*x/3 + x**4/12 - x**3/6 + x**2/12) + u**2*(k**2*(-2*mu**5/3 + 3*mu**4*x/2 + 3*mu**4/4 - mu**3*x**2 - mu**3*x - mu**3/6 + mu**2*x**3/6 + mu**2*x**2/4 + mu**2*x/12) + k*(-mu**4/2 + mu**3*x + mu**3/2 - mu**2*x**2/2 - mu**2*x/2) - mu**3/3 + mu**2*x/2 - x**3/6 + x**2/4 - x/12) + u*(k**3*(mu**5/2 - mu**4*x - mu**4/2 + mu**3*x**2/2 + mu**3*x/2) + k**2*(mu**4/2 - mu**3*x - mu**3/2 + mu**2*x**2/2 + mu**2*x/2) + k*(mu**3/2 - mu**2*x - mu**2/2 + mu*x**2/2 + mu*x/2) + mu**2/2 - mu*x + x**2/2 - x/2)"
+}

@@ -1,0 +1,32 @@
+{
+  "source_revision": "a3fbb01383ab1ec6065c43f7fade40b1bd2751a4",
+  "machine": "local workstation; shared slot locks; nice -n 10",
+  "preexisting_tracked_files_changed": [],
+  "local_markdown_links_checked": 39,
+  "whitespace_check": "passed",
+  "json_check": "passed",
+  "final_run_markers": {
+    "cpp-dev": "100% tests passed, 0 tests failed out of 106",
+    "cpp-full": "100% tests passed, 0 tests failed out of 127",
+    "r-dev": "[ FAIL 0 | WARN 0 | SKIP 154 | PASS 20612 ]",
+    "r-full": "[ FAIL 0 | WARN 0 | SKIP 0 | PASS 43427 ]",
+    "final-research": "\"checks\": \"passed\""
+  },
+  "sha256": {
+    "dev/research/evaluations/2026-11-04-infer-closure-data/README.md": "d4d9aeb0294192038e0866ccc2531ebb08ac659231e3ab3fa49064839e62f704",
+    "dev/research/evaluations/2026-11-04-infer-closure-data/bb-localization.md": "3536e367c699150029616a7334cf548a0ebe5b642884120ddd2b1bc790b3fa63",
+    "dev/research/evaluations/2026-11-04-infer-closure-data/burr-localization.md": "50c38bbd162d6bcf1b46700998b387708f865dff3fb7e23c2bdc7416d6caaa56",
+    "dev/research/evaluations/2026-11-04-infer-closure-data/check.py": "25e7d97af67819c3773f6aba29a88b8c7724eec8f5146f5356d19da039f2a9e2",
+    "dev/research/evaluations/2026-11-04-infer-closure-data/classification.md": "423c25e0fb85ebd193f3fff9bdb70f4593b67979d124212c8ecaf077dc89be13",
+    "dev/research/evaluations/2026-11-04-infer-closure-data/gaussian-experiments.md": "343881724cd10ce7f5cc8915a7636cc7ec41c29f678f39b2c29fb0bf97d80329",
+    "dev/research/evaluations/2026-11-04-infer-closure-data/literature.md": "1a9d347ac6f8f17f8f00f941494045e85bab7d9751faa809bd4a4f3f05b8315a",
+    "dev/research/evaluations/2026-11-04-infer-closure-data/pareto-experiment.md": "c932b21282119f049d6d0b4ea927419eb8813889aef4c446679c88175d642c13",
+    "dev/research/evaluations/2026-11-04-infer-closure-data/pareto-witness.csv": "2ad7df6052e0cc7d34e4279b18abfacf4e45f19177b7c9cfb70d501245457713",
+    "dev/research/evaluations/2026-11-04-infer-closure-data/results.json": "94eb99e1c60a6b7539cb696a3f6b00569d9770632e5d54c1418959e0abc24ea3",
+    "dev/research/evaluations/2026-11-04-infer-closure-data/run.sh": "385119ac0d487b146d3d2e50e4f13e7a1053f96830486b09e68e36933924b665",
+    "dev/research/evaluations/2026-11-04-infer-closure-data/symbolic.json": "ecad7d39984a14745961c6741175ec4403a7e2bf6b47c9bda6f0f9bb0d89ba4b",
+    "dev/research/evaluations/2026-11-04-infer-closure-data/symbolic.py": "872406deb15acceca6f3c189e93dff03271ea14625fbe0fc9b9ab9d91559e26b",
+    "dev/research/evaluations/2026-11-04-infer-closure-data/validate.py": "8b5a33dc2189c9607d5e8ec759ed00987a432334413f2263cfb9f8a81ac1e177",
+    "dev/research/evaluations/2026-11-04-infer-closure-report.md": "ad515a3fd8b6077618bedf97c7251d225d8198a0c450ae6e49b71fc64facbbf9"
+  }
+}
