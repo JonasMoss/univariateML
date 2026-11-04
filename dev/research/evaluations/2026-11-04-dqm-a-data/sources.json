@@ -1,0 +1,18 @@
+{
+  "accessed": "2026-11-04",
+  "primary_external": [{
+    "authors": "Axel Bücher and Johan Segers",
+    "title": "On the maximum likelihood estimator for the Generalized Extreme-Value distribution",
+    "url": "https://arxiv.org/html/1601.05702v3",
+    "version": "arXiv:1601.05702v3, 15 March 2017",
+    "read": "Introduction, Section 2 and the DQM definition; Proposition 3.2 is reused through the local moving-feature report",
+    "supports": "GEV DQM threshold and the distinction between classical local likelihood smoothness assumptions and regular moving-support models"
+  }],
+  "local_primary": [
+    "univariateML-cpp/include/cppunivariate/distributions/<id>/README.md (all 31 assigned ids)",
+    "dev/research/evaluations/2026-11-04-infer-moving-report.md (GED, GPD/GEV, Huber)",
+    "dev/research/evaluations/2026-10-31-inference-1-report.md (historical conservative inventory)",
+    "dev/roadmap/2026-10-30-inference-and-dqm.md (definitions and inference scope)"
+  ],
+  "new_derivations": "GB2 and subfamily rank; genbeta rank exception; convolution cumulant Jacobians; direct envelopes and local third-derivative classification. These are arguments in this report, not claims of external theorem coverage."
+}
