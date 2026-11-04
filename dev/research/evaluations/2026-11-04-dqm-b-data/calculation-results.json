@@ -1,0 +1,616 @@
+{
+  "environment": {
+    "python": "3.14.5",
+    "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.43",
+    "numpy": "2.4.6",
+    "scipy": "1.18.0",
+    "seed": "none (deterministic quadrature)",
+    "tolerances": {
+      "integration_absolute_relative": "2e-8 two-piece; 1e-7 st",
+      "mass_and_mean": 2e-06,
+      "hessian_opg_absolute": 3e-06,
+      "minimum_eigenvalue": 1e-07,
+      "df_difference_relative_step": 2e-05
+    }
+  },
+  "checks": 39,
+  "records": [
+    {
+      "model": "normal",
+      "nu": 2,
+      "xi": 0.6,
+      "mass": 1.0,
+      "max_abs_mean_score": 1.1102230246251565e-16,
+      "eigenvalues": [
+        0.10256538060819871,
+        1.7567524216637993,
+        3.919228910530771
+      ],
+      "location_opg": 1.0,
+      "location_negative_hessian": 1.0,
+      "quadrature_error_bound_estimate": 2.1934232386678895e-11
+    },
+    {
+      "model": "normal",
+      "nu": 2,
+      "xi": 1,
+      "mass": 1.0000000000000002,
+      "max_abs_mean_score": 5.551115123125783e-17,
+      "eigenvalues": [
+        0.11679021628754138,
+        2.0000000000000004,
+        3.883209783712459
+      ],
+      "location_opg": 1.0,
+      "location_negative_hessian": 1.0000000000000002,
+      "quadrature_error_bound_estimate": 2.2173944635609594e-11
+    },
+    {
+      "model": "normal",
+      "nu": 2,
+      "xi": 2,
+      "mass": 1.0000000000000002,
+      "max_abs_mean_score": 0.0,
+      "eigenvalues": [
+        0.091527726728021,
+        1.610633191871743,
+        3.937839081400237
+      ],
+      "location_opg": 1.0,
+      "location_negative_hessian": 1.0000000000000002,
+      "quadrature_error_bound_estimate": 2.177951611511338e-11
+    },
+    {
+      "model": "ged",
+      "nu": 0.7,
+      "xi": 0.6,
+      "mass": 0.9999999999999999,
+      "max_abs_mean_score": 1.6653345369377348e-16,
+      "eigenvalues": [
+        0.04992134913835779,
+        0.5536256131331226,
+        1.6188482905945258,
+        9.604876887060957
+      ],
+      "location_opg": 0.861894819765728,
+      "location_negative_hessian": "not integrated: invalid information Hessian",
+      "quadrature_error_bound_estimate": 2.119293362637272e-08
+    },
+    {
+      "model": "ged",
+      "nu": 0.7,
+      "xi": 1,
+      "mass": 0.9999999999999998,
+      "max_abs_mean_score": 4.440892098500626e-16,
+      "eigenvalues": [
+        0.05045130247492033,
+        0.5871075690101561,
+        1.9747872507654525,
+        9.436379304883548
+      ],
+      "location_opg": 0.8618948197756091,
+      "location_negative_hessian": "not integrated: invalid information Hessian",
+      "quadrature_error_bound_estimate": 2.1026906486018218e-08
+    },
+    {
+      "model": "ged",
+      "nu": 0.7,
+      "xi": 2,
+      "mass": 0.9999999999999998,
+      "max_abs_mean_score": 4.163336342344337e-17,
+      "eigenvalues": [
+        0.049402706980338475,
+        0.5202075281186096,
+        1.416740536113567,
+        9.702374655837364
+      ],
+      "location_opg": 0.8618948196914074,
+      "location_negative_hessian": "not integrated: invalid information Hessian",
+      "quadrature_error_bound_estimate": 2.232338674282199e-08
+    },
+    {
+      "model": "ged",
+      "nu": 1,
+      "xi": 0.6,
+      "mass": 1.0,
+      "max_abs_mean_score": 1.3833656442585607e-12,
+      "eigenvalues": [
+        0.08786612512758814,
+        0.3510507949202826,
+        2.0052840048567337,
+        3.6485291857973716
+      ],
+      "location_opg": 1.0,
+      "location_negative_hessian": "not integrated: invalid information Hessian",
+      "quadrature_error_bound_estimate": 2.661465465420791e-09
+    },
+    {
+      "model": "ged",
+      "nu": 1,
+      "xi": 1,
+      "mass": 1.0,
+      "max_abs_mean_score": 1.383337888682945e-12,
+      "eigenvalues": [
+        0.08990161314826806,
+        0.381966011250105,
+        2.6180339887498945,
+        3.224281784750942
+      ],
+      "location_opg": 1.0,
+      "location_negative_hessian": "not integrated: invalid information Hessian",
+      "quadrature_error_bound_estimate": 2.5850398301138154e-09
+    },
+    {
+      "model": "ged",
+      "nu": 1,
+      "xi": 2,
+      "mass": 1.0,
+      "max_abs_mean_score": 2.213285110741481e-12,
+      "eigenvalues": [
+        0.08583563502087499,
+        0.32531938671354715,
+        1.752838560450966,
+        3.7901898157145237
+      ],
+      "location_opg": 1.0,
+      "location_negative_hessian": "not integrated: invalid information Hessian",
+      "quadrature_error_bound_estimate": 4.557647768127424e-09
+    },
+    {
+      "model": "ged",
+      "nu": 1.2,
+      "xi": 0.6,
+      "mass": 1.0000000000000004,
+      "max_abs_mean_score": 1.6653345369377348e-16,
+      "eigenvalues": [
+        0.0951315390058538,
+        0.28405772721125877,
+        1.9402488870923311,
+        3.219697034017863
+      ],
+      "location_opg": 1.183496802347197,
+      "location_negative_hessian": 1.1834968008303077,
+      "quadrature_error_bound_estimate": 6.855277535105504e-09
+    },
+    {
+      "model": "ged",
+      "nu": 1.2,
+      "xi": 1,
+      "mass": 1.0000000000000004,
+      "max_abs_mean_score": 2.220446049250313e-16,
+      "eigenvalues": [
+        0.09742689086685574,
+        0.3185242345092681,
+        2.279664781310485,
+        3.064972567837929
+      ],
+      "location_opg": 1.1834968023471972,
+      "location_negative_hessian": 1.1834968010501805,
+      "quadrature_error_bound_estimate": 6.091088512856188e-09
+    },
+    {
+      "model": "ged",
+      "nu": 1.2,
+      "xi": 2,
+      "mass": 1.0000000000000004,
+      "max_abs_mean_score": 1.1102230246251565e-16,
+      "eigenvalues": [
+        0.09273273138657531,
+        0.2578278595537729,
+        1.7689843601438326,
+        3.281043523440359
+      ],
+      "location_opg": 1.183496802347197,
+      "location_negative_hessian": 1.1834968008762645,
+      "quadrature_error_bound_estimate": 6.6939660037934165e-09
+    },
+    {
+      "model": "ged",
+      "nu": 2,
+      "xi": 0.6,
+      "mass": 1.0,
+      "max_abs_mean_score": 1.411683270280406e-13,
+      "eigenvalues": [
+        0.046911501073302934,
+        0.1541447174001979,
+        2.1114447426015714,
+        4.6506100975995865
+      ],
+      "location_opg": 2.0,
+      "location_negative_hessian": 2.0,
+      "quadrature_error_bound_estimate": 3.91117085450096e-09
+    },
+    {
+      "model": "ged",
+      "nu": 2,
+      "xi": 1,
+      "mass": 1.0000000000000002,
+      "max_abs_mean_score": 4.950206911047417e-14,
+      "eigenvalues": [
+        0.04704080362961802,
+        0.18851602234827242,
+        2.137523542242272,
+        4.8114839776517275
+      ],
+      "location_opg": 2.0,
+      "location_negative_hessian": 2.0000000000000004,
+      "quadrature_error_bound_estimate": 2.2822229813103923e-09
+    },
+    {
+      "model": "ged",
+      "nu": 2,
+      "xi": 2,
+      "mass": 1.0000000000000002,
+      "max_abs_mean_score": 1.1876610805927612e-13,
+      "eigenvalues": [
+        0.04676426043907135,
+        0.1309255796715811,
+        2.093928506945432,
+        4.552945998815808
+      ],
+      "location_opg": 2.000000000000001,
+      "location_negative_hessian": 2.0000000000000004,
+      "quadrature_error_bound_estimate": 3.5533736601471226e-09
+    },
+    {
+      "model": "ged",
+      "nu": 3.5,
+      "xi": 0.6,
+      "mass": 1.0000000000000002,
+      "max_abs_mean_score": 4.85722573273506e-17,
+      "eigenvalues": [
+        0.011160398904345293,
+        0.08264602872556659,
+        3.5211452102742804,
+        7.7356982551615
+      ],
+      "location_opg": 3.545420060257944,
+      "location_negative_hessian": 3.545420060253181,
+      "quadrature_error_bound_estimate": 5.016471084593265e-09
+    },
+    {
+      "model": "ged",
+      "nu": 3.5,
+      "xi": 1,
+      "mass": 1.0000000000000002,
+      "max_abs_mean_score": 5.551115123125783e-17,
+      "eigenvalues": [
+        0.01116117973183387,
+        0.10355669059757026,
+        3.5155219402731452,
+        7.941863369660373
+      ],
+      "location_opg": 3.5454200602579444,
+      "location_negative_hessian": 3.545420060253181,
+      "quadrature_error_bound_estimate": 5.017981050800873e-09
+    },
+    {
+      "model": "ged",
+      "nu": 3.5,
+      "xi": 2,
+      "mass": 1.0000000000000004,
+      "max_abs_mean_score": 5.551115123125783e-17,
+      "eigenvalues": [
+        0.011159586584021015,
+        0.06901918927329673,
+        3.524913503643536,
+        7.6070109007620665
+      ],
+      "location_opg": 3.5454200602579444,
+      "location_negative_hessian": 3.5454200602531816,
+      "quadrature_error_bound_estimate": 5.0155095555829365e-09
+    },
+    {
+      "model": "t",
+      "nu": 2.5,
+      "xi": 0.6,
+      "mass": 0.9999999999999897,
+      "max_abs_mean_score": 1.2308903896141032e-13,
+      "eigenvalues": [
+        0.01826490895515832,
+        0.1349271711871902,
+        0.870277443727825,
+        2.2400073867077754
+      ],
+      "location_opg": 0.6363636363636362,
+      "location_negative_hessian": 0.6363636363636364,
+      "quadrature_error_bound_estimate": 2.814055931424666e-09
+    },
+    {
+      "model": "t",
+      "nu": 2.5,
+      "xi": 1,
+      "mass": 0.9999999999999896,
+      "max_abs_mean_score": 1.2307863062055446e-13,
+      "eigenvalues": [
+        0.01826741529690039,
+        0.15328986465128377,
+        0.9212082370238489,
+        2.392164680803135
+      ],
+      "location_opg": 0.6363636363636365,
+      "location_negative_hessian": 0.6363636363636364,
+      "quadrature_error_bound_estimate": 2.839475343166598e-09
+    },
+    {
+      "model": "t",
+      "nu": 2.5,
+      "xi": 2,
+      "mass": 0.9999999999999896,
+      "max_abs_mean_score": 1.2308210006750642e-13,
+      "eigenvalues": [
+        0.018262358298954787,
+        0.12047081638244327,
+        0.8341022673339761,
+        2.152094755759815
+      ],
+      "location_opg": 0.6363636363636364,
+      "location_negative_hessian": 0.6363636363636365,
+      "quadrature_error_bound_estimate": 2.7981515354064722e-09
+    },
+    {
+      "model": "t",
+      "nu": 5,
+      "xi": 0.6,
+      "mass": 1.0,
+      "max_abs_mean_score": 3.446500897175131e-13,
+      "eigenvalues": [
+        0.0016318828790313992,
+        0.11991149848521906,
+        1.1496643933324424,
+        2.760361527087843
+      ],
+      "location_opg": 0.7499999999999999,
+      "location_negative_hessian": 0.7499999999999999,
+      "quadrature_error_bound_estimate": 4.582732858468486e-09
+    },
+    {
+      "model": "t",
+      "nu": 5,
+      "xi": 1,
+      "mass": 1.0,
+      "max_abs_mean_score": 3.446513907601201e-13,
+      "eigenvalues": [
+        0.0016318845174990598,
+        0.1363977300466519,
+        1.2513907044642707,
+        2.8636022699533474
+      ],
+      "location_opg": 0.75,
+      "location_negative_hessian": 0.75,
+      "quadrature_error_bound_estimate": 4.591976048615795e-09
+    },
+    {
+      "model": "t",
+      "nu": 5,
+      "xi": 2,
+      "mass": 1.0,
+      "max_abs_mean_score": 3.4464705395143014e-13,
+      "eigenvalues": [
+        0.0016318812716421844,
+        0.10701910933250042,
+        1.0814183599806255,
+        2.7029532383970016
+      ],
+      "location_opg": 0.75,
+      "location_negative_hessian": 0.7499999999999999,
+      "quadrature_error_bound_estimate": 4.576644602320602e-09
+    },
+    {
+      "model": "t",
+      "nu": 20,
+      "xi": 0.6,
+      "mass": 1.0000000000000004,
+      "max_abs_mean_score": 1.7040947646040916e-16,
+      "eigenvalues": [
+        8.489982226674083e-06,
+        0.10711973910542177,
+        1.5481760980018615,
+        3.514565082585774
+      ],
+      "location_opg": 0.9130434782608698,
+      "location_negative_hessian": 0.9130434782608698,
+      "quadrature_error_bound_estimate": 3.729614010384901e-09
+    },
+    {
+      "model": "t",
+      "nu": 20,
+      "xi": 1,
+      "mass": 1.0000000000000004,
+      "max_abs_mean_score": 1.713039432527097e-16,
+      "eigenvalues": [
+        8.489982226920622e-06,
+        0.12193781547739324,
+        1.739140293846809,
+        3.5302360975660863
+      ],
+      "location_opg": 0.9130434782608701,
+      "location_negative_hessian": 0.9130434782608698,
+      "quadrature_error_bound_estimate": 8.127425293783846e-09
+    },
+    {
+      "model": "t",
+      "nu": 20,
+      "xi": 2,
+      "mass": 1.0000000000000004,
+      "max_abs_mean_score": 1.7032816129747275e-16,
+      "eigenvalues": [
+        8.489982226433066e-06,
+        0.09559725268427499,
+        1.4294355187005359,
+        3.506281435505479
+      ],
+      "location_opg": 0.9130434782608698,
+      "location_negative_hessian": 0.9130434782608698,
+      "quadrature_error_bound_estimate": 5.5793241452951445e-09
+    },
+    {
+      "model": "st",
+      "nu": 0.5,
+      "alpha": -2,
+      "mass": 0.9999999999994006,
+      "max_abs_mean_score": 2.2525517562321795e-10,
+      "eigenvalues": [
+        0.02180395527417869,
+        0.2293720461904546,
+        1.135461513208892,
+        2.731417274788416
+      ],
+      "quadrature_error_bound_estimate": 3.10168509997903e-08
+    },
+    {
+      "model": "st",
+      "nu": 0.5,
+      "alpha": 0,
+      "mass": 0.9999999999993969,
+      "max_abs_mean_score": 2.2501678298425531e-10,
+      "eigenvalues": [
+        0.12237930771480746,
+        0.2250236197405921,
+        0.7705934307514268,
+        2.6769339931626845
+      ],
+      "quadrature_error_bound_estimate": 3.139443245247623e-08
+    },
+    {
+      "model": "st",
+      "nu": 0.5,
+      "alpha": 2,
+      "mass": 0.9999999999994007,
+      "max_abs_mean_score": 2.2525520337879357e-10,
+      "eigenvalues": [
+        0.021803955274178465,
+        0.22937204619045462,
+        1.1354615132088912,
+        2.7314172747884164
+      ],
+      "quadrature_error_bound_estimate": 3.101685101397048e-08
+    },
+    {
+      "model": "st",
+      "nu": 1,
+      "alpha": -2,
+      "mass": 1.0000000000000002,
+      "max_abs_mean_score": 8.324505321177789e-11,
+      "eigenvalues": [
+        0.017684896752562664,
+        0.2295777338066873,
+        0.7231393698319203,
+        1.351152985117066
+      ],
+      "quadrature_error_bound_estimate": 1.635243089602304e-08
+    },
+    {
+      "model": "st",
+      "nu": 1,
+      "alpha": 0,
+      "mass": 1.0000000000000002,
+      "max_abs_mean_score": 8.13426409562723e-11,
+      "eigenvalues": [
+        0.07558681842161233,
+        0.22235744753267148,
+        0.7251095858417147,
+        0.9244131815783876
+      ],
+      "quadrature_error_bound_estimate": 1.8414466260087017e-08
+    },
+    {
+      "model": "st",
+      "nu": 1,
+      "alpha": 2,
+      "mass": 1.0000000000000004,
+      "max_abs_mean_score": 8.324503586454313e-11,
+      "eigenvalues": [
+        0.017684896752562913,
+        0.22957773380668767,
+        0.7231393698319204,
+        1.351152985117066
+      ],
+      "quadrature_error_bound_estimate": 1.6352430896680345e-08
+    },
+    {
+      "model": "st",
+      "nu": 5,
+      "alpha": -2,
+      "mass": 0.9999999999999999,
+      "max_abs_mean_score": 3.1184711930809517e-12,
+      "eigenvalues": [
+        0.0014489644998027513,
+        0.014778505744976274,
+        1.0378193089294283,
+        2.2200327677434233
+      ],
+      "quadrature_error_bound_estimate": 4.262233139433441e-09
+    },
+    {
+      "model": "st",
+      "nu": 5,
+      "alpha": 0,
+      "mass": 1.0,
+      "max_abs_mean_score": 2.744828669909438e-12,
+      "eigenvalues": [
+        0.0016318845176219474,
+        0.012064551190162729,
+        1.2513907044644623,
+        1.323872948809837
+      ],
+      "quadrature_error_bound_estimate": 4.098195148641996e-09
+    },
+    {
+      "model": "st",
+      "nu": 5,
+      "alpha": 2,
+      "mass": 1.0,
+      "max_abs_mean_score": 3.1184724941235586e-12,
+      "eigenvalues": [
+        0.0014489644998027557,
+        0.014778505744976354,
+        1.0378193089294279,
+        2.2200327677434224
+      ],
+      "quadrature_error_bound_estimate": 4.262233139433441e-09
+    },
+    {
+      "model": "st",
+      "nu": 20,
+      "alpha": -2,
+      "mass": 1.0000000000000002,
+      "max_abs_mean_score": 2.2691364168518288e-13,
+      "eigenvalues": [
+        6.883717901802374e-06,
+        0.014572826464948094,
+        1.2855390276667957,
+        2.868890907115973
+      ],
+      "quadrature_error_bound_estimate": 1.0397004730726782e-08
+    },
+    {
+      "model": "st",
+      "nu": 20,
+      "alpha": 0,
+      "mass": 1.0000000000000002,
+      "max_abs_mean_score": 2.0355451265524627e-13,
+      "eigenvalues": [
+        8.489982229704577e-06,
+        0.0012036719430522091,
+        1.5334865678242677,
+        1.739140293846814
+      ],
+      "quadrature_error_bound_estimate": 1.0108913463630922e-08
+    },
+    {
+      "model": "st",
+      "nu": 20,
+      "alpha": 2,
+      "mass": 1.0000000000000002,
+      "max_abs_mean_score": 2.269137568816637e-13,
+      "eigenvalues": [
+        6.883717901802367e-06,
+        0.014572826464948067,
+        1.2855390276667957,
+        2.8688909071159725
+      ],
+      "quadrature_error_bound_estimate": 1.0397004730726782e-08
+    }
+  ]
+}

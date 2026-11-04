@@ -1,0 +1,23 @@
+Source: b92c6189497f00b5917c8da8c29d07cc494f896d; research-only new files.
+Machine: local workstation; nice 10; /tmp/umvl-cpu/run4; OMP/BLAS/MKL threads=1.
+Environment: Linux x86_64 glibc 2.43; GCC 15.2.0; R 4.6.1; BH 1.90.0.1.
+Temporary environment: TMPDIR=$PWD/build/tmp JUST_TEMPDIR=$PWD/build/tmp XDG_RUNTIME_DIR=$PWD/build/tmp.
+
+Command: /tmp/umvl-cpu/run4 just cpp-test
+Exit: 0.
+100% tests passed, 0 tests failed out of 106
+
+Label Time Summary:
+cran    = 257.75 sec*proc (105 tests)
+dev     = 261.87 sec*proc (106 tests)
+full    = 261.87 sec*proc (106 tests)
+
+Total Test time (real) =  69.05 sec
+
+Command: /tmp/umvl-cpu/run4 just test
+Exit: 0.
+Duration: 129.1 s (testthat), 131.911 s runner elapsed; lock wait/build time additional.
+[ FAIL 0 | WARN 0 | SKIP 154 | PASS 20612 ]
+All 154 skips: requires full test tier. No permitted test failures.
+C++ compiler warnings in unchanged code and shell startup cargo/env notices were present; no test warnings/failures.
+Full R tier, no-long-double, JS and site suites not run: research-only scope, no fitting/dpqr/test infrastructure changes.

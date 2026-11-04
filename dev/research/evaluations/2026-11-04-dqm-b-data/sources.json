@@ -1,0 +1,18 @@
+{
+  "source_revision": "b92c6189497f00b5917c8da8c29d07cc494f896d",
+  "local_primary_contracts": [
+    "CLAUDE.md",
+    "univariateML-cpp/include/cppunivariate/distributions/README_SCHEMA.md",
+    "dev/roadmap/2026-10-29-parameter-rules.md",
+    "dev/roadmap/2026-10-30-inference-and-dqm.md"
+  ],
+  "reused_mathematical_work": [
+    {"path": "dev/research/evaluations/2026-11-04-infer-moving-report.md", "use": "Tukey lambda DQM and regular Hessian; snorm regularity; GED cusp and Hessian thresholds, including fitted joint Hessian gap"},
+    {"path": "dev/research/evaluations/2026-10-31-inference-1-report.md", "use": "Prior inventory, checked against current density contracts rather than treated as a theorem for moving joins"}
+  ],
+  "external": [
+    {"url": "https://arxiv.org/html/1209.4177", "authors": "Hallin and Ley", "title": "Skew-symmetric distributions and Fisher information: The double sin of the skew-normal", "version": "v3, 2014-07-09", "read": "HTML introduction and stated rank-two skew-normal singularity", "use": "Context and confirmation of sn symmetry singularity; proof in report is direct"},
+    {"url": "https://www.dss.uniroma1.it/RePec/mtn/articoli/2010-3-10.pdf", "read": "Search result only; PDF open timed out", "use": "Not used as theorem evidence; st proof supplied directly"},
+    {"url": "https://journal.r-project.org/articles/RJ-2020-019/", "read": "Search result only; open timed out", "use": "Not used as theorem evidence"}
+  ]
+}
