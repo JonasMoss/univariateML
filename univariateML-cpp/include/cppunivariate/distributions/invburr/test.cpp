@@ -259,3 +259,78 @@ TEST_CASE("invburr: constant data off a held scale collapse only with both shape
   std::vector<double> invalid{2.0,2.0,INFINITY};
   CHECK(cppunivariate::invburr_mle_fixed_scale(mltest::as_span(invalid),1).status==cppunivariate::InvBurrStatus::InvalidInit);
 }
+
+namespace {
+#include "../burr/certificate-fixtures.inc"
+}
+TEST_CASE("invburr: transformed certificate workloads and guarded outcomes") {
+  for(const auto& f:burr_certificate_fixtures) {
+    CAPTURE(f.name);
+    std::vector<double> x=f.x;
+    double jac=0; for(double& v:x){v=1/v;jac-=2*std::log(v);}
+    auto y=x;for(double& v:y)v=1/v;
+    const auto r=cppunivariate::invburr_mle(mltest::as_span(x),1e-8,1000);
+    const auto b=cppunivariate::burr_mle(mltest::as_span(y),1e-8,1000);
+    cppunivariate::InvBurrStatus expected=cppunivariate::InvBurrStatus::Ok;
+    switch(b.status){
+      case cppunivariate::BurrStatus::Ok:break;
+      case cppunivariate::BurrStatus::WeibullBoundary:expected=cppunivariate::InvBurrStatus::InvWeibullBoundary;break;
+      case cppunivariate::BurrStatus::ParetoBoundary:expected=cppunivariate::InvBurrStatus::PowerBoundary;break;
+      case cppunivariate::BurrStatus::CertificateTie:expected=cppunivariate::InvBurrStatus::CertificateTie;break;
+      case cppunivariate::BurrStatus::CertificateBudget:expected=cppunivariate::InvBurrStatus::CertificateBudget;break;
+      default:expected=cppunivariate::InvBurrStatus::NumericalFailure;break;
+    }
+    CHECK(r.status==expected);
+    const auto h=cppunivariate::invburr_mle_holds(mltest::as_span(x),NAN,NAN,NAN,1e-8,1000);
+    CHECK(h.status==r.status);
+    if(b.status==cppunivariate::BurrStatus::Ok || b.status==cppunivariate::BurrStatus::WeibullBoundary || b.status==cppunivariate::BurrStatus::ParetoBoundary) {
+      CHECK(r.shape1==b.shape1);
+      CHECK(r.shape2==b.shape2);
+      CHECK(r.scale==(b.status==cppunivariate::BurrStatus::ParetoBoundary ? *std::max_element(x.begin(),x.end()) : 1/b.scale));
+      CHECK(r.logLik==doctest::Approx(b.logLik+jac).epsilon(1e-11));
+      if(b.status==cppunivariate::BurrStatus::Ok) {
+        double ll=0;
+        for(double v:x) ll+=cppunivariate::distributions::dinvburr(v,r.shape1,r.shape2,r.scale,true);
+        CHECK(ll==doctest::Approx(r.logLik).epsilon(1e-10));
+      }
+    } else {
+      CHECK(std::isnan(r.shape1));CHECK(std::isnan(r.shape2));
+      CHECK(std::isnan(r.scale));CHECK(std::isnan(r.logLik));
+    }
+  }
+}
+
+TEST_CASE("invburr: certified entrypoints validate controls and reciprocal domain") {
+  const std::vector<double> x={.2,.5,1,2,4};
+  for(double tol:std::vector<double>{0.,-1.,INFINITY,NAN}) {
+    CHECK(cppunivariate::invburr_mle(mltest::as_span(x),tol,1000).status==cppunivariate::InvBurrStatus::InvalidInit);
+    CHECK(cppunivariate::invburr_mle_holds(mltest::as_span(x),NAN,NAN,NAN,tol,1000).status==cppunivariate::InvBurrStatus::InvalidInit);
+  }
+  for(double start:std::vector<double>{0.,-1.,INFINITY}) {
+    CHECK(cppunivariate::invburr_mle(mltest::as_span(x),1e-8,1000,start).status==cppunivariate::InvBurrStatus::InvalidInit);
+    CHECK(cppunivariate::invburr_mle(mltest::as_span(x),1e-8,1000,NAN,start).status==cppunivariate::InvBurrStatus::InvalidInit);
+    CHECK(cppunivariate::invburr_mle(mltest::as_span(x),1e-8,1000,NAN,NAN,start).status==cppunivariate::InvBurrStatus::InvalidInit);
+  }
+  for(const std::vector<double>& bad:std::vector<std::vector<double>>{{},{1},{0,1},{1,INFINITY},{1,NAN}}) {
+    CHECK(cppunivariate::invburr_mle(mltest::as_span(bad),1e-8,1000).status==cppunivariate::InvBurrStatus::InvalidInit);
+    CHECK(cppunivariate::invburr_mle_holds(mltest::as_span(bad),NAN,NAN,NAN).status==cppunivariate::InvBurrStatus::InvalidInit);
+  }
+}
+
+TEST_CASE("invburr: reciprocal overflow and artificial ties stop numerically") {
+  const std::vector<double> tiny={1,std::numeric_limits<double>::denorm_min()};
+  CHECK(cppunivariate::invburr_mle(mltest::as_span(tiny),1e-8,1000).status==cppunivariate::InvBurrStatus::NumericalFailure);
+  double v=1.5;bool found=false;
+  for(int i=0;i<1024&&!found;++i) {
+    const double next=std::nextafter(v,INFINITY);
+    if(1/v==1/next) {
+      found=true;
+      const std::vector<double> x={v,next,3};
+      const auto r=cppunivariate::invburr_mle(mltest::as_span(x),1e-8,1000);
+      CHECK(r.status==cppunivariate::InvBurrStatus::NumericalFailure);
+      CHECK(std::isnan(r.logLik));CHECK(std::isnan(r.shape1));
+    }
+    v=next;
+  }
+  CHECK(found);
+}

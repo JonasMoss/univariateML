@@ -1,0 +1,13 @@
+{
+  "tracked_source_scope": "passed",
+  "diff_whitespace": "passed",
+  "python_shell_json_syntax": "passed",
+  "local_links_checked": 31,
+  "report_sha256": "7911a02e7a75c5df319989754e2faa2b13461afcd38fe70ba16b800a3c4542b1",
+  "documents": [
+    "/home/jonas/Files/programming/univariateML.wt/burr-deps/dev/research/evaluations/2026-11-04-burr-deps-report.md",
+    "/home/jonas/Files/programming/univariateML.wt/burr-deps/dev/research/evaluations/2026-11-04-burr-deps-data/README.md",
+    "univariateML-cpp/include/cppunivariate/distributions/invburr/README.md",
+    "univariateML-cpp/include/cppunivariate/distributions/pareto4/README.md"
+  ]
+}

@@ -1,0 +1,21 @@
+Rejected certified-default attempt, unchanged tolerances:
+
+TEST CASE:  pareto4: default golden coefficients and likelihood
+
+../../include/cppunivariate/distributions/pareto4/test.cpp:72: ERROR: CHECK( r.shape2 == doctest::Approx(g.estimates.at("shape2")).epsilon(mltest::kPareto4GoldenTol) ) is NOT correct!
+  values: CHECK( 0.662371 == Approx( 0.662371 ) )
+
+../../include/cppunivariate/distributions/pareto4/test.cpp:73: ERROR: CHECK( r.scale == doctest::Approx(g.estimates.at("scale")).epsilon(mltest::kPareto4GoldenTol) ) is NOT correct!
+  values: CHECK( 1.08875 == Approx( 1.08875 ) )
+
+===============================================================================
+[doctest] test cases:   10 |    9 passed | 1 failed | 1141 skipped
+[doctest] assertions: 3866 | 3864 passed | 2 failed |
+[doctest] Status: FAILURE!
+
+Failure ('test_golden_regression.R:92:7'): golden: pareto4
+Expected `got` to equal `want`.
+Differences:
+1/4 mismatches
+[3] 1.09 - 1.09 == 2.18e-07
+

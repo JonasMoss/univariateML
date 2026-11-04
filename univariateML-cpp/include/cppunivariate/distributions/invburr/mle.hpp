@@ -120,7 +120,7 @@ struct InvBurrCost {
 };
 
 
-enum class InvBurrStatus { Ok = 0, InvWeibullBoundary, PowerBoundary, InvalidInit, IterationFailure, AllLeOne, Unbounded };
+enum class InvBurrStatus { Ok = 0, InvWeibullBoundary, PowerBoundary, InvalidInit, IterationFailure, AllLeOne, Unbounded, CertificateTie, CertificateBudget, NumericalFailure };
 struct InvBurrResult {
   double shape1, shape2, scale, logLik;
   int iterations;
@@ -131,50 +131,53 @@ inline InvBurrResult invburr_mle(span x, double tol, int maxit,
     double shape20 = std::numeric_limits<double>::quiet_NaN(),
     double scale0 = std::numeric_limits<double>::quiet_NaN(), double reltol = 1e-12) {
   std::vector<double> reciprocal;
-  double jacobian = 0.0;
+  double jacobian = 0.0, maximum = 0.0;
   for (double v : x) {
-    if (!(v > 0.0) || !std::isfinite(v) || !std::isfinite(1.0/v)) {
+    if (!(v > 0.0) || !std::isfinite(v)) {
       const double nan = std::numeric_limits<double>::quiet_NaN();
       return {nan,nan,nan,nan,0,InvBurrStatus::InvalidInit};
     }
+    if (!std::isfinite(1.0/v)) {
+      const double nan = std::numeric_limits<double>::quiet_NaN();
+      return {nan,nan,nan,nan,0,InvBurrStatus::NumericalFailure};
+    }
     reciprocal.push_back(1.0/v); jacobian -= 2.0*std::log(v);
+    maximum=std::max(maximum,v);
   }
-  if (x.size() > 1 && std::isnan(shape20)) {
-    // The old inverse two-shape fit is an optional start, never a constraint.
-    double center = 0.0;
-    for (double v : x) center += std::log(v)/static_cast<double>(x.size());
-    std::vector<double> normalized;
-    bool representable = true;
-    for (double v : x) {
-      normalized.push_back(std::exp(std::log(v)-center));
-      if (!(normalized.back() > 0.0) || !std::isfinite(normalized.back())) representable = false;
+  // Division can merge distinct binary64 observations. Such artificial
+  // ties must not supply a constant-sample or tied-endpoint certificate.
+  std::vector<std::size_t> order;
+  for(std::size_t i=0;i<x.size();++i)order.push_back(i);
+  std::sort(order.begin(),order.end(),[&](std::size_t i,std::size_t j){return x[i]<x[j];});
+  for(std::size_t i=1;i<order.size();++i)
+    if(x[order[i]]!=x[order[i-1]] && reciprocal[order[i]]==reciprocal[order[i-1]]) {
+      const double nan = std::numeric_limits<double>::quiet_NaN();
+      return {nan,nan,nan,nan,0,InvBurrStatus::NumericalFailure};
     }
-    if (representable) {
-      InvBurrCost fixed{span{normalized.data(),normalized.size()}};
-      BfgsControl ctl; ctl.maxit=maxit; ctl.grad_tol=tol; ctl.reltol=reltol;
-      const double start[2] = {1.0,2.0};
-      auto seed = bfgs_minimize(fixed,start,ctl);
-      if (std::isfinite(seed.f) && seed.theta[1]>0.0) shape20=seed.theta[1];
-    }
-  }
-  auto r = burr_mle_legacy(span{reciprocal.data(),reciprocal.size()},tol,maxit,
+  auto r = burr_mle_certified(span{reciprocal.data(),reciprocal.size()},tol,maxit,
     shape10,shape20,std::isnan(scale0) ? scale0 : 1.0/scale0,reltol);
   InvBurrStatus status = InvBurrStatus::Ok;
   if (r.status == BurrStatus::WeibullBoundary) status = InvBurrStatus::InvWeibullBoundary;
   if (r.status == BurrStatus::Unbounded) status = InvBurrStatus::Unbounded;
   if (r.status == BurrStatus::ParetoBoundary) status = InvBurrStatus::PowerBoundary;
   if (r.status == BurrStatus::InvalidInit) status = InvBurrStatus::InvalidInit;
-  if (r.status == BurrStatus::IterationFailure || r.status == BurrStatus::CertificateTie ||
-      r.status == BurrStatus::CertificateBudget || r.status == BurrStatus::NumericalFailure) status = InvBurrStatus::IterationFailure;
-  if (status == InvBurrStatus::InvWeibullBoundary) {
-    const auto face = invweibull_mle(x,1e-10,std::max(maxit,100));
-    return {INFINITY,face.shape,face.scale,face.logLik,r.iterations,status};
+  if (r.status == BurrStatus::IterationFailure) status = InvBurrStatus::IterationFailure;
+  if (r.status == BurrStatus::CertificateTie) status = InvBurrStatus::CertificateTie;
+  if (r.status == BurrStatus::CertificateBudget) status = InvBurrStatus::CertificateBudget;
+  if (r.status == BurrStatus::NumericalFailure) status = InvBurrStatus::NumericalFailure;
+  // A face carries its limiting scale, not a finite Burr coefficient.
+  // Reciprocation transports the certificate and its checked likelihood.
+  // Keep the power endpoint exactly at the original sample maximum;
+  // a reciprocal round trip can otherwise move it by one ulp.
+  const double scale = status==InvBurrStatus::PowerBoundary ? maximum : 1.0/r.scale;
+  const double logLik = r.logLik+jacobian;
+  if ((status == InvBurrStatus::Ok || status == InvBurrStatus::InvWeibullBoundary ||
+       status == InvBurrStatus::PowerBoundary) &&
+      (!(scale>0) || !std::isfinite(scale) || !std::isfinite(logLik))) {
+    const double nan = std::numeric_limits<double>::quiet_NaN();
+    return {nan,nan,nan,nan,r.iterations,InvBurrStatus::NumericalFailure};
   }
-  if (status == InvBurrStatus::PowerBoundary) {
-    const auto face = power_mle(x,0.0);
-    return {0.0,INFINITY,face.alpha,face.logLik,r.iterations,status};
-  }
-  return {r.shape1,r.shape2,1.0/r.scale,r.logLik+jacobian,r.iterations,status};
+  return {r.shape1,r.shape2,scale,logLik,r.iterations,status};
 }
 
 // Fixed scale reduces exactly to the historical scale-1 two-shape fit.
@@ -208,11 +211,11 @@ inline InvBurrResult invburr_mle_fixed_scale(span x, double scale,
 namespace cppunivariate {
 
 inline InvBurrResult invburr_mle_holds(span x,double a,double b,double s,double tol=1e-9,int maxit=1000){
+ if(std::isnan(a)&&std::isnan(b)&&std::isnan(s))
+   return invburr_mle(x,tol,maxit);
  std::vector<double> y;double jac=0;
  for(double v:x){y.push_back(1/v);jac-=2*std::log(v);}
- auto r=(std::isnan(a)&&std::isnan(b)&&std::isnan(s)&&tol>0&&std::isfinite(tol)&&maxit>0)?
- burr_mle_legacy(span{y.data(),y.size()},tol,maxit):
- burr_mle_holds(span{y.data(),y.size()},a,b,std::isnan(s)?s:1/s,tol,maxit);
+ auto r=burr_mle_holds(span{y.data(),y.size()},a,b,std::isnan(s)?s:1/s,tol,maxit);
  InvBurrStatus st=InvBurrStatus::Ok;
  if(r.status==BurrStatus::InvalidInit)st=InvBurrStatus::InvalidInit;
  if(r.status==BurrStatus::IterationFailure||r.status==BurrStatus::CertificateTie||r.status==BurrStatus::CertificateBudget||r.status==BurrStatus::NumericalFailure)st=InvBurrStatus::IterationFailure;
