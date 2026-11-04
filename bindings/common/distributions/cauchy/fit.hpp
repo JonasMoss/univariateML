@@ -25,7 +25,9 @@ inline FitResult fit_cauchy(cppunivariate::span x, Held location_arg = {}, Held 
     return fail("With location held the Cauchy scale MLE does not exist when at least half the observations equal that location.");
   if (res.status == cppunivariate::CauchyStatus::NoMLE)
     return fail("Cauchy MLE does not exist: a sample atom has at least half the mass, except for balanced two-point samples");
-  if(res.status==cppunivariate::CauchyStatus::IterationFailure)return fail("Conditional fit did not converge: numerical scale bracket or iteration failure; increase iterlim only for iteration exhaustion.");
+  if(res.status==cppunivariate::CauchyStatus::AmbiguousMaximum)return fail("Held-scale Cauchy global maxima are tied or numerically indistinguishable; no unique certified location returned.");
+  if(res.status==cppunivariate::CauchyStatus::InvalidInput)return fail("Cauchy fit requires finite data, positive tolerance and iterlim, and valid held coefficients.");
+  if(res.status==cppunivariate::CauchyStatus::IterationFailure)return fail("Conditional fit did not converge: numerical certificate, scale bracket or iteration failure; increase iterlim only for iteration exhaustion.");
   if (!std::isfinite(res.mu) || !std::isfinite(res.scale) || !(res.scale > 0.0))
     return fail("Cauchy MLE failed: non-finite or invalid parameters");
   return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"location",res.mu},{"scale",res.scale}}; out.fixed = fixed; out.has_fixed = true; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; return out; }();
