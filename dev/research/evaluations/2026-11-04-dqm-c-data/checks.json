@@ -1,0 +1,527 @@
+{
+  "python": "3.14.5 (main, Jun  2 2026, 22:25:17) [Clang 22.1.3 ]",
+  "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.43",
+  "numpy": "2.4.6",
+  "scipy": "1.18.0",
+  "seed": null,
+  "method": "central differences, original coordinates; step 2e-4; finite sums only",
+  "tolerances": {
+    "retained_mass": 3e-07,
+    "eigenvalue_rank_cutoff": 1e-07,
+    "hessian_opg_absolute": 3e-05
+  },
+  "checks": [
+    {
+      "family": "bnbinom_off_diagonal",
+      "theta": [
+        2.0,
+        7.0,
+        3.0
+      ],
+      "x_range": [
+        0,
+        1999
+      ],
+      "retained_mass": 1.0000000000000002,
+      "score_mean": [
+        9.209817015899452e-10,
+        2.62952103049712e-11,
+        2.789768815713767e-10
+      ],
+      "information_eigenvalues": [
+        1.1327378530644099e-05,
+        0.0009400357846024598,
+        0.18786417086235987
+      ],
+      "expected_rank": 3,
+      "numerical_rank": 3,
+      "max_opg_hessian_difference": 2.1779257501630678e-08
+    },
+    {
+      "family": "bnbinom_diagonal",
+      "theta": [
+        2.0,
+        7.0,
+        2.0
+      ],
+      "x_range": [
+        0,
+        1999
+      ],
+      "retained_mass": 1.0000000000000002,
+      "score_mean": [
+        6.850539921864909e-10,
+        1.7653848262667736e-11,
+        6.845106201255811e-10
+      ],
+      "information_eigenvalues": [
+        -5.62272870773929e-17,
+        0.0005746573854654619,
+        0.1888112240148156
+      ],
+      "expected_rank": 2,
+      "numerical_rank": 2,
+      "max_opg_hessian_difference": 3.2832177650210514e-08
+    },
+    {
+      "family": "dnorm",
+      "theta": [
+        0.3,
+        1.2
+      ],
+      "x_range": [
+        -18,
+        18
+      ],
+      "retained_mass": 1.0000000000000002,
+      "score_mean": [
+        3.682556765713247e-15,
+        3.170083696380892e-08
+      ],
+      "information_eigenvalues": [
+        0.6564565662190566,
+        1.2433407181883664
+      ],
+      "expected_rank": 2,
+      "numerical_rank": 2,
+      "max_opg_hessian_difference": 5.1242317278266114e-08
+    },
+    {
+      "family": "dgamma",
+      "theta": [
+        1.7,
+        1.2
+      ],
+      "x_range": [
+        0,
+        79
+      ],
+      "retained_mass": 0.9999999999999999,
+      "score_mean": [
+        2.4877913745984544e-09,
+        1.3098716711065355e-08
+      ],
+      "information_eigenvalues": [
+        0.05597450459253395,
+        1.6222002839762868
+      ],
+      "expected_rank": 2,
+      "numerical_rank": 2,
+      "max_opg_hessian_difference": 1.6412296632850598e-08
+    },
+    {
+      "family": "dweibull",
+      "theta": [
+        0.6,
+        1.3
+      ],
+      "x_range": [
+        0,
+        44
+      ],
+      "retained_mass": 1.0,
+      "score_mean": [
+        -1.2272778019427604e-07,
+        -3.69238799869089e-09
+      ],
+      "information_eigenvalues": [
+        0.5645443973614679,
+        10.987576499730975
+      ],
+      "expected_rank": 2,
+      "numerical_rank": 2,
+      "max_opg_hessian_difference": 2.7671411650942446e-07
+    },
+    {
+      "family": "dweibull_geometric",
+      "theta": [
+        0.6,
+        1.0
+      ],
+      "x_range": [
+        0,
+        119
+      ],
+      "retained_mass": 1.0,
+      "score_mean": [
+        -1.1574077842650517e-07,
+        -1.1411983541075759e-08
+      ],
+      "information_eigenvalues": [
+        0.9206781808397151,
+        11.8569267955927
+      ],
+      "expected_rank": 2,
+      "numerical_rank": 2,
+      "max_opg_hessian_difference": 2.3777069024788489e-07
+    },
+    {
+      "family": "dweibull_subunit",
+      "theta": [
+        0.6,
+        0.7
+      ],
+      "x_range": [
+        0,
+        999
+      ],
+      "retained_mass": 1.0000000000000002,
+      "score_mean": [
+        -1.1238291927182615e-07,
+        -3.666125970602705e-08
+      ],
+      "information_eigenvalues": [
+        1.6515919119556086,
+        13.730894023446016
+      ],
+      "expected_rank": 2,
+      "numerical_rank": 2,
+      "max_opg_hessian_difference": 7.123487355542579e-07
+    },
+    {
+      "family": "pig",
+      "theta": [
+        2.0,
+        3.0
+      ],
+      "x_range": [
+        0,
+        99
+      ],
+      "retained_mass": 0.9999999999999999,
+      "score_mean": [
+        3.327353429453401e-09,
+        6.930170416742676e-11
+      ],
+      "information_eigenvalues": [
+        0.009155236918331967,
+        0.2183123960675938
+      ],
+      "expected_rank": 2,
+      "numerical_rank": 2,
+      "max_opg_hessian_difference": 1.59192412550746e-08
+    },
+    {
+      "family": "skellam",
+      "theta": [
+        2.0,
+        3.0
+      ],
+      "x_range": [
+        -45,
+        45
+      ],
+      "retained_mass": 0.9999999999999993,
+      "score_mean": [
+        1.149788643075017e-09,
+        8.373621819417675e-10
+      ],
+      "information_eigenvalues": [
+        0.03754406619594798,
+        0.4016642160414447
+      ],
+      "expected_rank": 2,
+      "numerical_rank": 2,
+      "max_opg_hessian_difference": 4.1908837650206365e-08
+    },
+    {
+      "family": "skellam_symmetric",
+      "theta": [
+        2.0,
+        2.0
+      ],
+      "x_range": [
+        -45,
+        45
+      ],
+      "retained_mass": 0.9999999999999998,
+      "score_mean": [
+        1.565402824069054e-09,
+        1.5654026505342433e-09
+      ],
+      "information_eigenvalues": [
+        0.05708642837566996,
+        0.5000000033324628
+      ],
+      "expected_rank": 2,
+      "numerical_rank": 2,
+      "max_opg_hessian_difference": 1.0926079541118128e-08
+    },
+    {
+      "family": "bbinom_n0",
+      "theta": [
+        1.3,
+        2.1
+      ],
+      "x_range": [
+        0,
+        0
+      ],
+      "retained_mass": 1.0,
+      "score_mean": [
+        0.0,
+        0.0
+      ],
+      "information_eigenvalues": [
+        0.0,
+        0.0
+      ],
+      "expected_rank": 0,
+      "numerical_rank": 0,
+      "max_opg_hessian_difference": 0.0
+    },
+    {
+      "family": "cmb_n0",
+      "theta": [
+        0.4,
+        0.7
+      ],
+      "x_range": [
+        0,
+        0
+      ],
+      "retained_mass": 1.0,
+      "score_mean": [
+        0.0,
+        0.0
+      ],
+      "information_eigenvalues": [
+        0.0,
+        0.0
+      ],
+      "expected_rank": 0,
+      "numerical_rank": 0,
+      "max_opg_hessian_difference": 0.0
+    },
+    {
+      "family": "zib_n0",
+      "theta": [
+        0.4,
+        0.3
+      ],
+      "x_range": [
+        0,
+        0
+      ],
+      "retained_mass": 1.0,
+      "score_mean": [
+        0.0,
+        0.0
+      ],
+      "information_eigenvalues": [
+        0.0,
+        0.0
+      ],
+      "expected_rank": 0,
+      "numerical_rank": 0,
+      "max_opg_hessian_difference": 0.0
+    },
+    {
+      "family": "bbinom_n1",
+      "theta": [
+        1.3,
+        2.1
+      ],
+      "x_range": [
+        0,
+        1
+      ],
+      "retained_mass": 0.9999999999999998,
+      "score_mean": [
+        1.9834787423622657e-09,
+        5.501808314489764e-10
+      ],
+      "information_eigenvalues": [
+        0.0,
+        0.19328998820725712
+      ],
+      "expected_rank": 1,
+      "numerical_rank": 1,
+      "max_opg_hessian_difference": 2.614822141450146e-08
+    },
+    {
+      "family": "cmb_n1",
+      "theta": [
+        0.4,
+        0.7
+      ],
+      "x_range": [
+        0,
+        1
+      ],
+      "retained_mass": 1.0,
+      "score_mean": [
+        4.629630012686903e-08,
+        0.0
+      ],
+      "information_eigenvalues": [
+        0.0,
+        4.1666672067892705
+      ],
+      "expected_rank": 1,
+      "numerical_rank": 1,
+      "max_opg_hessian_difference": 1.3541901466851414e-07
+    },
+    {
+      "family": "zib_n1",
+      "theta": [
+        0.4,
+        0.3
+      ],
+      "x_range": [
+        0,
+        1
+      ],
+      "retained_mass": 1.0,
+      "score_mean": [
+        4.951112864137741e-08,
+        -9.238387888022004e-09
+      ],
+      "information_eigenvalues": [
+        2.220446049250313e-16,
+        3.224206690953581
+      ],
+      "expected_rank": 1,
+      "numerical_rank": 1,
+      "max_opg_hessian_difference": 7.907164212284101e-08
+    },
+    {
+      "family": "bbinom_n2",
+      "theta": [
+        1.3,
+        2.1
+      ],
+      "x_range": [
+        0,
+        2
+      ],
+      "retained_mass": 1.0000000000000004,
+      "score_mean": [
+        3.1540603184776472e-09,
+        8.515971677836021e-10
+      ],
+      "information_eigenvalues": [
+        0.005111937626534863,
+        0.31729666348652596
+      ],
+      "expected_rank": 2,
+      "numerical_rank": 2,
+      "max_opg_hessian_difference": 3.843623205823654e-08
+    },
+    {
+      "family": "cmb_n2",
+      "theta": [
+        0.4,
+        0.7
+      ],
+      "x_range": [
+        0,
+        2
+      ],
+      "retained_mass": 1.0,
+      "score_mean": [
+        8.588794664365906e-08,
+        -7.788069494862881e-11
+      ],
+      "information_eigenvalues": [
+        0.10941085005700178,
+        9.091359098138224
+      ],
+      "expected_rank": 2,
+      "numerical_rank": 2,
+      "max_opg_hessian_difference": 3.8685785952452534e-07
+    },
+    {
+      "family": "zib_n2",
+      "theta": [
+        0.4,
+        0.3
+      ],
+      "x_range": [
+        0,
+        2
+      ],
+      "retained_mass": 1.0,
+      "score_mean": [
+        1.1259884391545683e-07,
+        -5.944178760319829e-09
+      ],
+      "information_eigenvalues": [
+        0.43669611013487997,
+        5.531213366934313
+      ],
+      "expected_rank": 2,
+      "numerical_rank": 2,
+      "max_opg_hessian_difference": 7.019191050616769e-08
+    },
+    {
+      "family": "bbinom_n4",
+      "theta": [
+        1.3,
+        2.1
+      ],
+      "x_range": [
+        0,
+        4
+      ],
+      "retained_mass": 1.0000000000000004,
+      "score_mean": [
+        4.4585082986658975e-09,
+        1.1596323068463477e-09
+      ],
+      "information_eigenvalues": [
+        0.016973838856061463,
+        0.46917381176460393
+      ],
+      "expected_rank": 2,
+      "numerical_rank": 2,
+      "max_opg_hessian_difference": 4.481375764919804e-08
+    },
+    {
+      "family": "cmb_n4",
+      "theta": [
+        0.4,
+        0.7
+      ],
+      "x_range": [
+        0,
+        4
+      ],
+      "retained_mass": 1.0,
+      "score_mean": [
+        1.4067891862534765e-07,
+        2.1071276112838433e-09
+      ],
+      "information_eigenvalues": [
+        0.35114372496136315,
+        19.99780959409223
+      ],
+      "expected_rank": 2,
+      "numerical_rank": 2,
+      "max_opg_hessian_difference": 1.105944161139405e-06
+    },
+    {
+      "family": "zib_n4",
+      "theta": [
+        0.4,
+        0.3
+      ],
+      "x_range": [
+        0,
+        4
+      ],
+      "retained_mass": 1.0,
+      "score_mean": [
+        1.5912572959297933e-07,
+        3.390821927060084e-08
+      ],
+      "information_eigenvalues": [
+        2.3911279503339253,
+        9.362120318884836
+      ],
+      "expected_rank": 2,
+      "numerical_rank": 2,
+      "max_opg_hessian_difference": 1.0219096635566416e-07
+    }
+  ]
+}

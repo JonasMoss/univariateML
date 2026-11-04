@@ -1,0 +1,22 @@
+{
+  "accessed": "2026-11-04",
+  "sources": [
+    {
+      "author": "David Pollard",
+      "title": "A note on insufficiency and the preservation of Fisher information",
+      "url": "https://arxiv.org/pdf/1107.3797",
+      "version": "arXiv:1107.3797v2",
+      "location": "Theorem 7(i), PDF page 6; proof in Section 5",
+      "access": "Full PDF text read, including theorem and relevant proof context",
+      "used_for": "DQM under a fixed statistic and conditional-expectation score; multivariate extension stated immediately after theorem",
+      "not_used_for": "Any of this report's family-specific rank or Cramer-envelope derivations"
+    }
+  ],
+  "local_definition_source_revision": "b92c6189497f00b5917c8da8c29d07cc494f896d",
+  "local_definition_sources": "univariateML-cpp/include/cppunivariate/distributions/<id>/README.md (35 IDs in classification.csv)",
+  "prior_local_reports": [
+    "dev/research/evaluations/2026-10-31-inference-1-report.md",
+    "dev/research/evaluations/2026-11-04-infer-moving-report.md",
+    "dev/roadmap/2026-10-30-inference-and-dqm.md"
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "revision": "b92c6189497f00b5917c8da8c29d07cc494f896d",
+  "machine": "local workstation",
+  "cpp_dev": {
+    "passed": 106,
+    "failed": 0,
+    "ctest_elapsed_seconds": 68.25
+  },
+  "r_dev": {
+    "passed": 20612,
+    "failed": 0,
+    "warnings": 0,
+    "skipped": 154,
+    "runner_elapsed_seconds": 132.519
+  },
+  "csv_rows": 35,
+  "continuous_models": 32,
+  "zero_dimensional_models": 3,
+  "families_with_rank_exceptions": 10,
+  "numerical_illustrations_passed": 22,
+  "report_local_links_checked": 8,
+  "full_tiers_run": false
+}
