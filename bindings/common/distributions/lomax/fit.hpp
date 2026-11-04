@@ -31,10 +31,10 @@ inline FitResult fit_lomax(cppunivariate::span x, Held lambda_arg = {}, Held kap
   }
   auto res = cppunivariate::lomax_mle(x, reltol, iterlim, start, lambda_held, kappa_held);
   if (res.status == cppunivariate::LomaxStatus::ExponentialLimit) {
-    return fail("The certified profile bound places every improvement over the exponential limit within its tolerance (1e-8 per observation). Use `mlexp` to fit that limit model.");
+    return stop_failure(fail("The certified profile bound places every improvement over the exponential limit within its tolerance (1e-8 per observation). Use `mlexp` to fit that limit model."),res.stop_detail,"limit",{"lambda","kappa"},"exp");
   }
   if (res.certificate_failure == cppunivariate::LomaxCertificateFailure::Budget)
-    return fail("Lomax MLE failed to converge: global certificate budget exhausted (128 * min(iterlim, 100000) subdivision evaluations); no verified maximum.");
+    return stop_failure(fail("Lomax MLE failed to converge: global certificate budget exhausted (128 * min(iterlim, 100000) subdivision evaluations); no verified maximum."),res.stop_detail,"budget",{"lambda","kappa"},"");
   if (res.certificate_failure == cppunivariate::LomaxCertificateFailure::Arithmetic)
     return fail("Lomax MLE failed to converge: numerical certificate comparisons unresolved or coefficients unrepresentable; no verified maximum.");
   if (res.status != cppunivariate::LomaxStatus::Ok || !std::isfinite(res.lambda) ||

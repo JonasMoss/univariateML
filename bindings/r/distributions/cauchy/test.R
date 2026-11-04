@@ -275,3 +275,20 @@ test_that("held-scale Cauchy selects the winning separated mode", {
     expect_equal(as.numeric(logLik(f)),sum(dcauchy(x,f[1],1,log=TRUE)),tolerance=1e-12)
   }
 })
+
+test_that("structured Cauchy stops can be caught by class", {
+  e <- tryCatch(mlcauchy(c(-2,2),scale=1),univariateML_tie=identity)
+  expect_s3_class(e,"univariateML_stop")
+  expect_s3_class(e,"error")
+  expect_match(conditionMessage(e),"Held-scale Cauchy global maxima are tied")
+  expect_true(is.nan(e$segment_loglik_upper))
+  expect_equal(nrow(e$candidates),2L)
+  expect_equal(sort(e$candidates$location),c(-sqrt(3),sqrt(3)),tolerance=1e-7)
+  expect_equal(e$candidates$scale,c(1,1))
+  expect_true(all(e$candidates$loglik_lower <= e$candidates$loglik_upper))
+  n <- tryCatch(mlcauchy(c(1,1,2)),univariateML_nomle=identity)
+  expect_s3_class(n,"univariateML_stop")
+  expect_equal(nrow(n$candidates),0L)
+  h <- tryCatch(mlcauchy(c(1,1,2),location=1),univariateML_nomle=identity)
+  expect_match(conditionMessage(h),"With location held")
+})

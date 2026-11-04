@@ -78,3 +78,5 @@ process.on('exit',()=>{mkdirSync(new URL('../../build/scratch/',import.meta.url)
 await import('./fit-test.mjs');
 
 await import('./vcov-test.mjs');
+
+await import('./stop-test.mjs');

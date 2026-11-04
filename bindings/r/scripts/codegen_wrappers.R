@@ -278,6 +278,7 @@ gen_wrapper <- function(model) {
     "  x <- ml_check_modify(x, na.rm = na.rm, name = \"", fname, "\")\n",
     "  n <- length(x)\n",
     "  out <- ", fname, "_(x = x, ...)\n",
+    "  if (inherits(out, \"univariateML_stop\")) stop(out)\n",
     "  params <- list(logLik = unname(out$logLik), call = deparse(match.call()), n = n)\n",
     "  univariateML_construct(out$estimates, name = \"", fname, "\", params = params, fixed = out$fixed, restricted = out$restricted, data = x)\n",
     "}\n\n"

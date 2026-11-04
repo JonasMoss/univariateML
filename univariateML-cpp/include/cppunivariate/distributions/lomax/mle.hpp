@@ -1,6 +1,7 @@
 // Lomax profile search on the dimensionless bounded existence interval.
 
 #pragma once
+#include "../../core/stop_detail.hpp"
 #include "../../core/precision.hpp"
 
 #include "../../core/reductions.hpp"
@@ -30,6 +31,7 @@ struct LomaxResult {
   int iterations;
   LomaxStatus status;
   LomaxCertificateFailure certificate_failure = LomaxCertificateFailure::None;
+  StopDetail stop_detail{};
 };
 
 namespace lomax_detail {

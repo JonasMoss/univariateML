@@ -281,3 +281,32 @@ TEST_CASE("burr: inverse legacy held dispatch retains invalid control guards") {
     CHECK(cppunivariate::invburr_mle_holds(mltest::as_span(x),NAN,NAN,NAN,tol,1000).status==cppunivariate::InvBurrStatus::InvalidInit);
   CHECK(cppunivariate::invburr_mle_holds(mltest::as_span(x),NAN,NAN,NAN,1e-8,0).status==cppunivariate::InvBurrStatus::InvalidInit);
 }
+
+TEST_CASE("burr: structured limits and budget witnesses preserve units") {
+  const std::vector<double> x{1,1,1,2,4,8};
+  const auto face=cppunivariate::burr_mle(mltest::as_span(x),1e-8,1000);
+  REQUIRE(face.status==cppunivariate::BurrStatus::ParetoBoundary);
+  REQUIRE(face.stop_detail.limit_coef.size()==2);
+  CHECK(face.stop_detail.limit_coef[0]==doctest::Approx(x.size()/(std::log(2.)+std::log(4.)+std::log(8.))));
+  CHECK(face.stop_detail.limit_coef[1]==1);
+  CHECK(face.stop_detail.limit_loglik==face.logLik);
+  const auto budget=cppunivariate::burr_mle_certified(mltest::as_span(x),1e-8,1000,NAN,NAN,NAN,1e-12,2);
+  REQUIRE(budget.status==cppunivariate::BurrStatus::CertificateBudget);
+  REQUIRE(budget.stop_detail.candidates.size()==3);
+  const auto& c=budget.stop_detail.candidates.back();
+  double ll=0;for(double v:x)ll+=cppunivariate::distributions::dburr(v,c.coef[0],c.coef[1],c.coef[2],true);
+  CHECK(c.loglik_lower<=ll+1e-10);
+  CHECK(c.loglik_upper>=ll-1e-10);
+  CHECK(budget.stop_detail.loglik_lower>=c.loglik_lower);
+  CHECK(budget.stop_detail.loglik_upper==INFINITY);
+}
+
+TEST_CASE("burr: held-power Weibull stop transports the exponential fit") {
+  const std::vector<double> x{3,3,3};
+  const auto r=cppunivariate::burr_mle_holds(mltest::as_span(x),NAN,2,NAN);
+  REQUIRE(r.status==cppunivariate::BurrStatus::WeibullBoundary);
+  REQUIRE(r.stop_detail.limit_coef.size()==2);
+  CHECK(r.stop_detail.limit_coef[0]==2);
+  CHECK(r.stop_detail.limit_coef[1]==doctest::Approx(3));
+  CHECK(r.stop_detail.limit_loglik==doctest::Approx(3*(std::log(2.)-std::log(3.)-1)));
+}

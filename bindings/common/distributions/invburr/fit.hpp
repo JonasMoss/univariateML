@@ -21,12 +21,12 @@ inline FitResult fit_invburr(cppunivariate::span x, Held shape1_arg = {}, Held s
  cppunivariate::invburr_mle_fixed_scale(x,start(scale),abstol,iterlim) :
  cppunivariate::invburr_mle(x,gradtol,iterlim,
  start(shape10),start(shape20),start(scale0),reltol);
- if (res.status == cppunivariate::InvBurrStatus::Unbounded) return fail("Likelihood is unbounded for this constant sample; no MLE.");
- if (res.status == cppunivariate::InvBurrStatus::AllLeOne) return fail("The fixed-scale invburr MLE does not exist when all observations <= scale. Use `mlpower` to fit this model with endpoint scale.");
- if (res.status == cppunivariate::InvBurrStatus::InvWeibullBoundary) return fail("The invburr likelihood is maximised at a limit. Use `mlinvweibull` to fit this model.");
- if (res.status == cppunivariate::InvBurrStatus::PowerBoundary) return fail("The invburr likelihood is maximised at a limit. Use `mlpower` to fit this model.");
- if (res.status == cppunivariate::InvBurrStatus::CertificateTie) return fail("invburr certificate unresolved at a tie or sign-uncertain seam; no verified MLE.");
- if (res.status == cppunivariate::InvBurrStatus::CertificateBudget) return fail("invburr certificate budget exhausted; no verified MLE.");
+ if (res.status == cppunivariate::InvBurrStatus::Unbounded) return stop_failure(fail("Likelihood is unbounded for this constant sample; no MLE."),res.stop_detail,"nomle",{"shape1","shape2","scale"},"");
+ if (res.status == cppunivariate::InvBurrStatus::AllLeOne) return stop_failure(fail("The fixed-scale invburr MLE does not exist when all observations <= scale. Use `mlpower` to fit this model with endpoint scale."),res.stop_detail,"limit",{"shape1","shape2","scale"},"power");
+ if (res.status == cppunivariate::InvBurrStatus::InvWeibullBoundary) return stop_failure(fail("The invburr likelihood is maximised at a limit. Use `mlinvweibull` to fit this model."),res.stop_detail,"limit",{"shape1","shape2","scale"},"invweibull");
+ if (res.status == cppunivariate::InvBurrStatus::PowerBoundary) return stop_failure(fail("The invburr likelihood is maximised at a limit. Use `mlpower` to fit this model."),res.stop_detail,"limit",{"shape1","shape2","scale"},"power");
+ if (res.status == cppunivariate::InvBurrStatus::CertificateTie) return stop_failure(fail("invburr certificate unresolved at a tie or sign-uncertain seam; no verified MLE."),res.stop_detail,"tie",{"shape1","shape2","scale"},"");
+ if (res.status == cppunivariate::InvBurrStatus::CertificateBudget) return stop_failure(fail("invburr certificate budget exhausted; no verified MLE."),res.stop_detail,"budget",{"shape1","shape2","scale"},"");
  if (res.status == cppunivariate::InvBurrStatus::NumericalFailure) return fail("invburr certificate numerical failure; no verified MLE.");
  if (res.status == cppunivariate::InvBurrStatus::IterationFailure) return fail("Constrained likelihood search failed to converge.");
  if (res.status == cppunivariate::InvBurrStatus::InvalidInit ||

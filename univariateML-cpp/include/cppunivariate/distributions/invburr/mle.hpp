@@ -1,5 +1,6 @@
 // Inverse Burr is the reciprocal of a Burr with reciprocal scale.
 #pragma once
+#include "../../core/stop_detail.hpp"
 #include "../burr/mle.hpp"
 #include "../invweibull/mle.hpp"
 #include "../power/mle.hpp"
@@ -125,7 +126,24 @@ struct InvBurrResult {
   double shape1, shape2, scale, logLik;
   int iterations;
   InvBurrStatus status;
+  StopDetail stop_detail{};
 };
+// Reciprocal transport applies to diagnostics as well as successful fits.
+inline StopDetail invburr_stop_detail(StopDetail detail,double jacobian,double endpoint=NAN) {
+  for(auto& candidate:detail.candidates) {
+    if(candidate.model==StopModel::Pareto) {
+      candidate.model=StopModel::Power;
+      candidate.coef={std::isfinite(endpoint)?endpoint:1/candidate.coef[1],candidate.coef[0]};
+    } else if(candidate.model==StopModel::Weibull) {
+      candidate.model=StopModel::InvWeibull;candidate.coef[1]=1/candidate.coef[1];
+    } else if(candidate.coef.size()==3)candidate.coef[2]=1/candidate.coef[2];
+    candidate.loglik_lower+=jacobian;candidate.loglik_upper+=jacobian;
+  }
+  detail.loglik_lower+=jacobian;detail.loglik_upper+=jacobian;
+  detail.segment_loglik_upper+=jacobian;
+  detail.limit_loglik+=jacobian;
+  return detail;
+}
 inline InvBurrResult invburr_mle(span x, double tol, int maxit,
     double shape10 = std::numeric_limits<double>::quiet_NaN(),
     double shape20 = std::numeric_limits<double>::quiet_NaN(),
@@ -177,7 +195,11 @@ inline InvBurrResult invburr_mle(span x, double tol, int maxit,
     const double nan = std::numeric_limits<double>::quiet_NaN();
     return {nan,nan,nan,nan,r.iterations,InvBurrStatus::NumericalFailure};
   }
-  return {r.shape1,r.shape2,scale,logLik,r.iterations,status};
+  InvBurrResult out{r.shape1,r.shape2,scale,logLik,r.iterations,status};
+  out.stop_detail=invburr_stop_detail(r.stop_detail,jacobian,maximum);
+  if(status==InvBurrStatus::PowerBoundary)out.stop_detail.limit_coef={maximum,r.stop_detail.limit_coef[0]};
+  if(status==InvBurrStatus::InvWeibullBoundary)out.stop_detail.limit_coef={r.stop_detail.limit_coef[0],1/r.stop_detail.limit_coef[1]};
+  return out;
 }
 
 // Fixed scale reduces exactly to the historical scale-1 two-shape fit.
@@ -204,7 +226,12 @@ inline InvBurrResult invburr_mle_fixed_scale(span x, double scale,
   if (r.status == burr_fixed_detail::InvBurrStatus::AllLeOne) status = InvBurrStatus::AllLeOne;
   if (r.status == burr_fixed_detail::InvBurrStatus::InvalidInit) status = InvBurrStatus::InvalidInit;
   if (r.status == burr_fixed_detail::InvBurrStatus::IterationFailure) status = InvBurrStatus::IterationFailure;
-  return {r.shape1,r.shape2,scale,r.logLik-static_cast<double>(x.size())*std::log(scale),r.iterations,status};
+  InvBurrResult out{r.shape1,r.shape2,scale,r.logLik-static_cast<double>(x.size())*std::log(scale),r.iterations,status};
+  if(status==InvBurrStatus::AllLeOne) {
+    const auto face=power_mle(x,0,scale,NAN);
+    out.stop_detail.limit_coef={face.alpha,face.beta};out.stop_detail.limit_loglik=face.logLik;
+  }
+  return out;
 }
 } // namespace cppunivariate
 
@@ -223,7 +250,13 @@ inline InvBurrResult invburr_mle_holds(span x,double a,double b,double s,double 
  if(r.status==BurrStatus::WeibullBoundary)st=InvBurrStatus::InvWeibullBoundary;
  if(r.status==BurrStatus::ParetoBoundary)st=InvBurrStatus::PowerBoundary;
  if(r.status==BurrStatus::AllGeOne)st=InvBurrStatus::AllLeOne;
- return {r.shape1,r.shape2,std::isnan(s)?1/r.scale:s,r.logLik+jac,r.iterations,st};
+ InvBurrResult out{r.shape1,r.shape2,std::isnan(s)?1/r.scale:s,r.logLik+jac,r.iterations,st};
+ out.stop_detail=invburr_stop_detail(r.stop_detail,jac);
+ if(st==InvBurrStatus::InvWeibullBoundary && r.stop_detail.limit_coef.size()==2)
+   out.stop_detail.limit_coef={r.stop_detail.limit_coef[0],1/r.stop_detail.limit_coef[1]};
+ if((st==InvBurrStatus::PowerBoundary||st==InvBurrStatus::AllLeOne) && r.stop_detail.limit_coef.size()==2)
+   out.stop_detail.limit_coef={1/r.stop_detail.limit_coef[1],r.stop_detail.limit_coef[0]};
+ return out;
 }
 
 }

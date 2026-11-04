@@ -314,3 +314,17 @@ TEST_CASE("lomax: restored log coordinates require adequate relative precision")
   CHECK(r.lambda*1e307==doctest::Approx(base.lambda).epsilon(1e-6));
   CHECK(r.kappa==doctest::Approx(base.kappa).epsilon(1e-6));
 }
+
+TEST_CASE("lomax: structured exponential fit and budget bounds") {
+  const std::vector<double> x{1,1,1};
+  const auto r=cppunivariate::lomax_mle(mltest::as_span(x),1e-8,100);
+  REQUIRE(r.status==cppunivariate::LomaxStatus::ExponentialLimit);
+  REQUIRE(r.stop_detail.limit_coef.size()==1);
+  CHECK(r.stop_detail.limit_coef[0]==1);
+  CHECK(r.stop_detail.limit_loglik==-3);
+  const std::vector<double> y{1,1,40,59};
+  const auto budget=cppunivariate::lomax_mle(mltest::as_span(y),1e-8,1);
+  REQUIRE(budget.certificate_failure==cppunivariate::LomaxCertificateFailure::Budget);
+  CHECK(std::isfinite(budget.stop_detail.loglik_lower));
+  CHECK(budget.stop_detail.loglik_lower<=budget.stop_detail.loglik_upper);
+}

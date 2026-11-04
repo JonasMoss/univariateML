@@ -1,5 +1,6 @@
 // Three-parameter Burr XII MLE, with shape1 profiled exactly.
 #pragma once
+#include "../../core/stop_detail.hpp"
 #include "cppunivariate/core/constants.hpp"
 #include "../../core/multistart.hpp"
 #include "../lomax/mle.hpp"
@@ -92,6 +93,7 @@ struct BurrMLE {
   double shape1, shape2, scale, logLik;
   int iterations;
   BurrStatus status;
+  StopDetail stop_detail{};
 };
 // theta = (log shape2, log scale relative to geometric mean).
 // shape1 = n / sum softplus(shape2 * log(x/scale)).
@@ -223,7 +225,13 @@ inline BurrMLE burr_mle_certified(span x, double tol, int maxit,
     case burr_cert_detail::Outcome::Unbounded:status=BurrStatus::Unbounded;break;
     case burr_cert_detail::Outcome::Numerical:break;
   }
-  return {r.k,r.c,r.scale,r.logLik,r.profiles,status};
+  BurrMLE out{r.k,r.c,r.scale,r.logLik,r.profiles,status};
+  if(status!=BurrStatus::Ok)out.stop_detail=r.stop_detail;
+  if(status==BurrStatus::WeibullBoundary || status==BurrStatus::ParetoBoundary) {
+    const auto& face=r.stop_detail.candidates[status==BurrStatus::ParetoBoundary?0:1];
+    out.stop_detail.limit_coef=face.coef;out.stop_detail.limit_loglik=r.logLik;
+  }
+  return out;
 }
 inline BurrMLE burr_mle(span x, double tol, int maxit,
     double shape10 = std::numeric_limits<double>::quiet_NaN(),
@@ -256,7 +264,12 @@ inline BurrMLE burr_mle_fixed_scale(span x, double scale,
   if (r.status == burr_fixed_detail::BurrStatus::AllGeOne) status = BurrStatus::AllGeOne;
   if (r.status == burr_fixed_detail::BurrStatus::InvalidInit) status = BurrStatus::InvalidInit;
   if (r.status == burr_fixed_detail::BurrStatus::IterationFailure) status = BurrStatus::IterationFailure;
-  return {r.shape1,r.shape2,scale,r.logLik-static_cast<double>(x.size())*std::log(scale),r.iterations,status};
+  BurrMLE out{r.shape1,r.shape2,scale,r.logLik-static_cast<double>(x.size())*std::log(scale),r.iterations,status};
+  if(status==BurrStatus::AllGeOne) {
+    const auto face=pareto_mle(x,NAN,scale);
+    out.stop_detail.limit_coef={face.shape,face.min};out.stop_detail.limit_loglik=face.logLik;
+  }
+  return out;
 }
 } // namespace cppunivariate
 
@@ -296,7 +309,13 @@ inline BurrMLE burr_mle_holds(span x,double a,double b,double s,double tol=1e-9,
  if(fa&&fs){
    std::vector<double> y;for(double v:l)y.push_back(std::exp(b*(v-mx)));
    auto r=lomax_mle(span{y.data(),y.size()},tol,maxit);
-   if(r.status==LomaxStatus::ExponentialLimit){bad.status=BurrStatus::WeibullBoundary;return bad;}
+   if(r.status==LomaxStatus::ExponentialLimit){
+     bad.status=BurrStatus::WeibullBoundary;
+     const double rate=r.stop_detail.limit_coef.empty()?NAN:r.stop_detail.limit_coef[0];
+     bad.stop_detail.limit_coef={b,std::exp(mx-std::log(rate)/b)};
+     bad.stop_detail.limit_loglik=r.stop_detail.limit_loglik+n*std::log(b)+(b-1)*n*mean-b*n*mx;
+     return bad;
+   }
    if(r.status!=LomaxStatus::Ok){bad.status=BurrStatus::IterationFailure;return bad;}
    a=r.kappa;s=std::exp(mx-std::log(r.lambda)/b);
  } else {

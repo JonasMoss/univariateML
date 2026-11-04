@@ -131,7 +131,15 @@ inline LomaxResult fit(span x,double tol,int maxit,double lambda0) {
   double largest=0;
   bool constant=true;
   for(double v:x){if(!(v>0)||!std::isfinite(v))return stop(LomaxStatus::InvalidStart);largest=std::max(largest,v);if(v!=x[0])constant=false;}
-  if(constant)return stop(LomaxStatus::ExponentialLimit);
+  auto exponential=[&](int work) {
+    auto out=stop(LomaxStatus::ExponentialLimit,work);
+    double scaled_mean=0;for(double v:x)scaled_mean+=(v/largest)/x.size();
+    const double logmean=std::log(largest)+std::log(scaled_mean);
+    out.stop_detail.limit_coef={std::exp(-logmean)};
+    out.stop_detail.limit_loglik=x.size()*(-logmean-1);
+    return out;
+  };
+  if(constant)return exponential(0);
   const double n=static_cast<double>(x.size());
   Sum mean;
   for(double v:x)mean.add((v/largest)/n);
@@ -161,13 +169,29 @@ inline LomaxResult fit(span x,double tol,int maxit,double lambda0) {
   if(!std::isfinite(a.h)||!std::isfinite(b.h))return stop(LomaxStatus::IterationFailure);
   std::priority_queue<Segment> queue;queue.push({a,b,upper(d,a,b)});
   Root root;int work=2;
+  Point best_point=a.h>b.h?a:b;
   // lambda0 is only a nomination hint, never a restriction of the search.
   if(std::isfinite(lambda0)&&lambda0>0) {
     const double z=std::log(lambda0)+d.logmean;
-    if(z>lo&&z<hi){Point p=evaluate(d,z);queue.pop();queue.push({a,p,upper(d,a,p)});queue.push({p,b,upper(d,p,b)});++work;}
+    if(z>lo&&z<hi){Point p=evaluate(d,z);if(p.h>best_point.h)best_point=p;queue.pop();queue.push({a,p,upper(d,a,p)});queue.push({p,b,upper(d,p,b)});++work;}
   }
   // The work budget is explicit and independent of convergence tolerances.
   if(!(5.1e-11+4*d.error<margin))return stop(LomaxStatus::IterationFailure,work);
+  auto budget_stop=[&](double upper_bound) {
+    auto out=stop(LomaxStatus::IterationFailure,work,LomaxCertificateFailure::Budget);
+    const double base=-d.logmean-1;
+    out.stop_detail.loglik_lower=n*(base+(root.valid?std::max(0.,root.h-root.error):0.));
+    out.stop_detail.loglik_upper=n*(base+std::max({margin,upper_bound,queue.empty()?-INFINITY:queue.top().upper,root.valid?root.h+root.error:0.}));
+    const double lambda=std::exp(best_point.z-d.logmean),kappa=1/best_point.A;
+    if(lambda>0 && std::isfinite(lambda) && kappa>0 && std::isfinite(kappa)) {
+      const double lower=n*(base+best_point.h-best_point.error),upper=n*(base+best_point.h+best_point.error);
+      out.stop_detail.candidates.push_back({{lambda,kappa},lower,upper});
+      out.stop_detail.loglik_lower=std::max(out.stop_detail.loglik_lower,lower);
+    }
+    out.stop_detail.candidates.push_back({{std::exp(-d.logmean)},n*base,n*base,StopModel::Exp});
+    if(root.valid)out.stop_detail.candidates.push_back({{root.lambda,root.kappa},n*(base+root.h-root.error),n*(base+root.h+root.error)});
+    return out;
+  };
   const int budget=std::min(maxit,100000)*128;
   while(!queue.empty()) {
     Segment s=queue.top();queue.pop();
@@ -181,7 +205,7 @@ inline LomaxResult fit(span x,double tol,int maxit,double lambda0) {
     if(al>0 && (1-bh/al-bh>4*d.error || 1-bl/ah-bl< -4*d.error))continue;
     if(s.b.z-s.a.z<.25 && curvature_upper(d,s.a,s.b)< -4*d.error &&
        (s.a.score< -4*d.error || s.b.score>4*d.error))continue;
-    if(work>=budget)return stop(LomaxStatus::IterationFailure,work,LomaxCertificateFailure::Budget);
+    if(work>=budget)return budget_stop(s.upper);
     if(s.b.z-s.a.z<.25) {
       Root trial=isolate(d,s.a,s.b,maxit);
       // A root may lie on a subdivision boundary whose score enclosure
@@ -191,7 +215,7 @@ inline LomaxResult fit(span x,double tol,int maxit,double lambda0) {
         const double width=s.b.z-s.a.z;
         const Point left=evaluate(d,std::max(lo,s.a.z-width));
         const Point right=evaluate(d,std::min(hi,s.b.z+width));
-        if(work+2>budget)return stop(LomaxStatus::IterationFailure,work,LomaxCertificateFailure::Budget);
+        if(work+2>budget)return budget_stop(s.upper);
         work+=2;
         trial=isolate(d,left,right,maxit);
       }
@@ -204,10 +228,11 @@ inline LomaxResult fit(span x,double tol,int maxit,double lambda0) {
     const double mid=(s.a.z+s.b.z)/2;
     if(!(mid>s.a.z&&mid<s.b.z))return stop(LomaxStatus::IterationFailure,work);
     const Point p=evaluate(d,mid);++work;
+    if(p.h>best_point.h)best_point=p;
     if(!std::isfinite(p.h)||!std::isfinite(p.error))return stop(LomaxStatus::IterationFailure,work);
     queue.push({s.a,p,upper(d,s.a,p)});queue.push({p,s.b,upper(d,p,s.b)});
   }
-  if(!root.valid)return stop(LomaxStatus::ExponentialLimit,work);
+  if(!root.valid)return exponential(work);
   if(!(root.h-root.error>margin) || !(5.1e-11+4*d.error<root.h-root.error))return stop(LomaxStatus::IterationFailure,work);
   // Preserve the historical Newton coefficients only when they lie in the
   // certified narrow root enclosure; convergence alone is never sufficient.
