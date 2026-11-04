@@ -1,4 +1,4 @@
-# Burr XII with all coefficients free (later; TASK-138)
+# Burr XII with all coefficients free (TASK-138; implemented 2026-11-04)
 
 Parked 2026-11-03 after two research rounds; the companion to
 `2026-11-03-bbinom-free-size.md`, and probably the easier of the two.
@@ -35,3 +35,13 @@ degenerate seam slope `A = 0`. Earlier list: a signed Weibull tail bound (to cer
 Weibull winners and shorten the k range), certified enclosure of the
 maximizing stationary point (the k-profile is not concave), and production
 error margins. Joint uniqueness is open.
+
+## Implemented 2026-11-04
+
+[burr-port](../research/evaluations/2026-11-04-burr-port-report.md): the
+certified all-free fit is the default (`burr_mle`), with outcomes Ok,
+WeibullBoundary, ParetoBoundary, CertificateTie, CertificateBudget and
+NumericalFailure. About three times slower than the legacy fitter.
+Follow-ups: invburr (Burr on 1/x) and all-free pareto4 still use
+`burr_mle_legacy`; held subsets are uncertified (held-power Weibull
+comparison is numerical); exact ties and the nearly constant budget case.
