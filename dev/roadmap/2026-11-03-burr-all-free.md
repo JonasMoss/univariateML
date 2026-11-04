@@ -21,7 +21,14 @@ Parked 2026-11-03 after two research rounds; the companion to
   with `A < 0` this excludes all large `k` against Weibull itself. Value
   enclosure now closes on all 50 workloads.
 
-Missing for a production fit (after burr-xi): enclosure and isolation of the
+- [Root boxes](../research/evaluations/2026-11-04-burr-root-report.md),
+  2026-11-04: stationary maxima isolated by contraction boxes with a proved
+  negative profile curvature; exact rational certificate for the golden root;
+  global outcomes certified on 49 of 50 workloads in a Python research engine
+  under a stated arithmetic contract. Remaining: the guarded C++ port, the
+  binding/invburr status mapping, and speed (research engine ~100 ms per fit).
+
+Superseded list (after burr-xi): enclosure and isolation of the
 maximizing stationary point with coefficient accuracy, production error
 margins (bracketed Weibull root propagated into the seam constants), and the
 degenerate seam slope `A = 0`. Earlier list: a signed Weibull tail bound (to certify
