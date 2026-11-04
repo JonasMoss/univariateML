@@ -1,0 +1,12 @@
+{
+  "revision": "54b0d06a3e447f944940fc0dd4b5b87235d2acc2",
+  "python": "3.14.5",
+  "numpy": "2.4.6",
+  "scipy": "1.18.0",
+  "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.43",
+  "seed": 14020261104,
+  "hashes": {
+    "study.py": "11468a740a2837ca0b3d60598d1be5b2885687e57808cfbbfdad494e9349290b",
+    "inputs.json": "08a41582b697207c537d721cf849958b91743812162d2c9d0538de755a05e3c6"
+  }
+}

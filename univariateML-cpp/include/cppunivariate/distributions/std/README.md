@@ -153,7 +153,31 @@ permit the regular fixed-parameter fit.
 
 Holds use the ordinary t scale $\sigma\sqrt{(\nu-2)/\nu}$. With mean held, only its tie multiplicity drives scale collapse. With standard deviation held, the $\nu\downarrow2$ limit forces ordinary scale to zero, rather than giving a finite-scale t2 law. The conditional normal face remains eligible. When the standard deviation is free, the conditional ordinary t2 face is compared separately. Profile searches are numerical, not global certificates.
 
+The [2026-11-04 certificate study](../../../../../dev/research/evaluations/2026-11-04-t-cert-report.md)
+proves geodesic convexity of the fixed-shape nuisance objective for
+$\nu\ge1$, gives explicit nuisance containment and finite-interval profile
+upper bounds, and derives the refitted normal-seam expansion. With $z_i=(x_i-\bar x)/s_N$ and
+$s_N^2=n^{-1}\sum_i(x_i-\bar x)^2$, its first coefficient in
+$\xi=1/\nu$ is $n(\overline{z^4}-3)/4$. A negative coefficient certifies
+only local preference for the normal limit: the study retains a sample with
+negative slope and a strictly better finite fit. The research value bounds
+do not certify coefficient accuracy or replace the current fitter. A production
+global certificate still requires bounded arithmetic near the normal seam,
+isolation of stationary roots and comparisons with equality faces.
+
+When the largest tie multiplicity satisfies $k<2n/3$, a finite all-free
+maximum exists if and only if some point with $\nu>2$ reaches or exceeds
+both the optimized normal likelihood and the optimized ordinary-scale
+$t_2$ likelihood. Equality is included. The linked study proves this
+criterion using uniform nuisance containment and profile continuity; it
+does not make the current numerical face comparisons exhaustive.
+
 ## Decision history
+
+The 2026-11-04 TASK-140 study retains the existing default: its whole-profile
+value enclosures do not yet establish a certified global coefficient vector.
+See the linked certificate study for proofs, counterexamples and reproducible
+checks.
 
 The 2026-10-31 fit-speed revision hoists the fixed-df normalizer in the shared
 lst conditional search used by held-scale fits. It preserves scale

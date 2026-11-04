@@ -1,0 +1,21 @@
+{
+  "arithmetic": "Python Fraction, exact rational operations",
+  "pi_identity": "16 atan(1/5)-4 atan(1/239)",
+  "atan_terms": 48,
+  "log_terms": 48,
+  "A_exact": "-1170351/50160128",
+  "nu": 3,
+  "mu": 0,
+  "ordinary_scale": "1/3",
+  "finite_minus_normal_lower": "245935453749/500000000000",
+  "finite_minus_normal_upper": "491870907499/1000000000000",
+  "claim": "finite witness exceeds the normal by more than 49/100; normal inward slope is strictly negative",
+  "algebraic_zero_slope": {
+    "t_lower": "1/100000",
+    "t_upper": "1/50000",
+    "polynomial": "2304 t^2+1440.144 t-.0192",
+    "A_exact": 0,
+    "B_proved_greater_than": 2,
+    "B_rational_lower_bound": "597750247491609/200150037503125"
+  }
+}

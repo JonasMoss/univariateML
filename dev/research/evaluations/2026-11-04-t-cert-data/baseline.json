@@ -1,0 +1,715 @@
+[
+  {
+    "name": "lst-golden",
+    "lst": {
+      "status": 0,
+      "coefficients": [
+        0.0745507089520688,
+        1.0270947160838733,
+        3.024242725580454
+      ],
+      "logLik": -898.6247811046569,
+      "mean_seconds_3_repetitions": 0.013684463333333334
+    },
+    "std": {
+      "status": 0,
+      "coefficients": [
+        0.07455070352214441,
+        1.7648880760526602,
+        3.0242445913001
+      ],
+      "logLik": -898.6247811046659,
+      "mean_seconds_3_repetitions": 0.004203680666666667
+    }
+  },
+  {
+    "name": "std-golden",
+    "lst": {
+      "status": 0,
+      "coefficients": [
+        -0.006260319485203742,
+        0.5919513322623837,
+        3.977666321017646
+      ],
+      "logLik": -579.4807824213752,
+      "mean_seconds_3_repetitions": 0.015581389333333334
+    },
+    "std": {
+      "status": 0,
+      "coefficients": [
+        -0.0062603717426506856,
+        0.8395065634734545,
+        3.977653882598804
+      ],
+      "logLik": -579.4807824215177,
+      "mean_seconds_3_repetitions": 0.006602518666666667
+    }
+  },
+  {
+    "name": "t1-0",
+    "lst": {
+      "status": 0,
+      "coefficients": [
+        -0.21312914693601243,
+        0.8248117203942821,
+        1.0
+      ],
+      "logLik": -189.84296299639968,
+      "mean_seconds_3_repetitions": 0.0022075746666666667
+    },
+    "std": {
+      "status": 4,
+      "coefficients": [
+        -0.15702823342304484,
+        null,
+        2.0
+      ],
+      "logLik": -197.56522323747618,
+      "mean_seconds_3_repetitions": 0.0009840726666666666
+    }
+  },
+  {
+    "name": "t1-1",
+    "lst": {
+      "status": 0,
+      "coefficients": [
+        0.13370091556271155,
+        0.8080798306841728,
+        1.0
+      ],
+      "logLik": -192.1860059398394,
+      "mean_seconds_3_repetitions": 0.0022003656666666664
+    },
+    "std": {
+      "status": 4,
+      "coefficients": [
+        0.1124635566332091,
+        null,
+        2.0
+      ],
+      "logLik": -200.84505253721866,
+      "mean_seconds_3_repetitions": 0.0013668813333333335
+    }
+  },
+  {
+    "name": "t2-0",
+    "lst": {
+      "status": 0,
+      "coefficients": [
+        0.13611817158363745,
+        0.9471884406851233,
+        1.474127865427272
+      ],
+      "logLik": -168.70020555192255,
+      "mean_seconds_3_repetitions": 0.002246766333333333
+    },
+    "std": {
+      "status": 4,
+      "coefficients": [
+        0.15894135218474154,
+        null,
+        2.0
+      ],
+      "logLik": -169.49632882951317,
+      "mean_seconds_3_repetitions": 0.0009526006666666666
+    }
+  },
+  {
+    "name": "t2-1",
+    "lst": {
+      "status": 0,
+      "coefficients": [
+        -0.058424418710079695,
+        1.014236470513332,
+        1.5560818217213281
+      ],
+      "logLik": -170.91185197331507,
+      "mean_seconds_3_repetitions": 0.0022543563333333335
+    },
+    "std": {
+      "status": 4,
+      "coefficients": [
+        -0.0696931056875646,
+        null,
+        2.0
+      ],
+      "logLik": -171.4325642394022,
+      "mean_seconds_3_repetitions": 0.0009411466666666667
+    }
+  },
+  {
+    "name": "t3-0",
+    "lst": {
+      "status": 0,
+      "coefficients": [
+        -0.0030883189234782726,
+        1.0920223554285353,
+        3.197236073838515
+      ],
+      "logLik": -147.09972856952533,
+      "mean_seconds_3_repetitions": 0.006848584666666667
+    },
+    "std": {
+      "status": 0,
+      "coefficients": [
+        -0.0030876962152280307,
+        1.7845549335802382,
+        3.1972209490612618
+      ],
+      "logLik": -147.0997285696318,
+      "mean_seconds_3_repetitions": 0.0005228256666666666
+    }
+  },
+  {
+    "name": "t3-1",
+    "lst": {
+      "status": 0,
+      "coefficients": [
+        -0.1000196884522282,
+        1.010613276337971,
+        3.4093837319881177
+      ],
+      "logLik": -139.18428734140176,
+      "mean_seconds_3_repetitions": 0.0021427263333333333
+    },
+    "std": {
+      "status": 0,
+      "coefficients": [
+        -0.10001861548028008,
+        1.571840455563268,
+        3.409384092114996
+      ],
+      "logLik": -139.18428734143842,
+      "mean_seconds_3_repetitions": 0.0005102226666666667
+    }
+  },
+  {
+    "name": "t5-0",
+    "lst": {
+      "status": 0,
+      "coefficients": [
+        -0.04438539697033708,
+        0.9781105444593238,
+        5.841534879021948
+      ],
+      "logLik": -125.95376818091819,
+      "mean_seconds_3_repetitions": 0.0021725869999999997
+    },
+    "std": {
+      "status": 0,
+      "coefficients": [
+        -0.04438548798735318,
+        1.2061434465946728,
+        5.841536710803801
+      ],
+      "logLik": -125.95376818092049,
+      "mean_seconds_3_repetitions": 0.00038987933333333336
+    }
+  },
+  {
+    "name": "t5-1",
+    "lst": {
+      "status": 0,
+      "coefficients": [
+        -0.03596453285574237,
+        1.0534290981065395,
+        3.3854073998847696
+      ],
+      "logLik": -142.6867846002737,
+      "mean_seconds_3_repetitions": 0.0021660869999999997
+    },
+    "std": {
+      "status": 0,
+      "coefficients": [
+        -0.03596387812199822,
+        1.6467309817473343,
+        3.38539626139581
+      ],
+      "logLik": -142.68678460032726,
+      "mean_seconds_3_repetitions": 0.0005198686666666667
+    }
+  },
+  {
+    "name": "t30-0",
+    "lst": {
+      "status": 4,
+      "coefficients": [
+        -0.010073182702766987,
+        1.1067793217679138,
+        null
+      ],
+      "logLik": -121.63142552498041,
+      "mean_seconds_3_repetitions": 0.0022050043333333336
+    },
+    "std": {
+      "status": 3,
+      "coefficients": [
+        -0.010073182702767023,
+        1.1067793217679138,
+        null
+      ],
+      "logLik": -121.63142552498041,
+      "mean_seconds_3_repetitions": 0.0009017503333333334
+    }
+  },
+  {
+    "name": "t30-1",
+    "lst": {
+      "status": 4,
+      "coefficients": [
+        -0.04695096759103366,
+        0.952010263949059,
+        null
+      ],
+      "logLik": -109.58072563319017,
+      "mean_seconds_3_repetitions": 0.002229792
+    },
+    "std": {
+      "status": 3,
+      "coefficients": [
+        -0.046950967591033746,
+        0.9520102639490592,
+        null
+      ],
+      "logLik": -109.58072563319018,
+      "mean_seconds_3_repetitions": 0.0008208343333333335
+    }
+  },
+  {
+    "name": "t1000-0",
+    "lst": {
+      "status": 4,
+      "coefficients": [
+        -0.02418830865840984,
+        0.9456106343260121,
+        null
+      ],
+      "logLik": -109.0411317540625,
+      "mean_seconds_3_repetitions": 0.004014963
+    },
+    "std": {
+      "status": 3,
+      "coefficients": [
+        -0.024188308658409912,
+        0.9456106343260122,
+        null
+      ],
+      "logLik": -109.04113175406252,
+      "mean_seconds_3_repetitions": 0.0008368216666666667
+    }
+  },
+  {
+    "name": "t1000-1",
+    "lst": {
+      "status": 4,
+      "coefficients": [
+        0.056102880653943664,
+        0.9046801231786006,
+        null
+      ],
+      "logLik": -105.50117443129858,
+      "mean_seconds_3_repetitions": 0.0026279056666666666
+    },
+    "std": {
+      "status": 3,
+      "coefficients": [
+        0.05610288065394362,
+        0.9046801231786004,
+        null
+      ],
+      "logLik": -105.50117443129855,
+      "mean_seconds_3_repetitions": 0.0009820743333333333
+    }
+  },
+  {
+    "name": "normal-0",
+    "lst": {
+      "status": 0,
+      "coefficients": [
+        -0.024263611884802912,
+        1.02004573314694,
+        218.2633678969414
+      ],
+      "logLik": -115.46983062965307,
+      "mean_seconds_3_repetitions": 0.002215787
+    },
+    "std": {
+      "status": 0,
+      "coefficients": [
+        -0.024263237556307958,
+        1.024752198573177,
+        218.25139330451762
+      ],
+      "logLik": -115.46983062968195,
+      "mean_seconds_3_repetitions": 0.0013290643333333334
+    }
+  },
+  {
+    "name": "normal-1",
+    "lst": {
+      "status": 4,
+      "coefficients": [
+        -0.01521597515806692,
+        1.0432339979332756,
+        null
+      ],
+      "logLik": -116.90112279258247,
+      "mean_seconds_3_repetitions": 0.004498418333333333
+    },
+    "std": {
+      "status": 3,
+      "coefficients": [
+        -0.015215975158067024,
+        1.0432339979332759,
+        null
+      ],
+      "logLik": -116.9011227925825,
+      "mean_seconds_3_repetitions": 0.0009348813333333334
+    }
+  },
+  {
+    "name": "normal-2",
+    "lst": {
+      "status": 4,
+      "coefficients": [
+        0.01722018388273654,
+        0.9047426729748663,
+        null
+      ],
+      "logLik": -105.506705458888,
+      "mean_seconds_3_repetitions": 0.0022671236666666665
+    },
+    "std": {
+      "status": 3,
+      "coefficients": [
+        0.01722018388273657,
+        0.9047426729748663,
+        null
+      ],
+      "logLik": -105.506705458888,
+      "mean_seconds_3_repetitions": 0.0006789686666666667
+    }
+  },
+  {
+    "name": "contaminated",
+    "lst": {
+      "status": 0,
+      "coefficients": [
+        -0.21330574258162405,
+        0.8441531190594939,
+        1.6821096347577873
+      ],
+      "logLik": -151.84161995203613,
+      "mean_seconds_3_repetitions": 0.002188649
+    },
+    "std": {
+      "status": 4,
+      "coefficients": [
+        -0.20742270706081314,
+        null,
+        2.0
+      ],
+      "logLik": -152.15432969355072,
+      "mean_seconds_3_repetitions": 0.0017212119999999997
+    }
+  },
+  {
+    "name": "cluster-0.001",
+    "lst": {
+      "status": 0,
+      "coefficients": [
+        2.168404344971009e-19,
+        0.004367021568746844,
+        1.0
+      ],
+      "logLik": 5.523671343601528,
+      "mean_seconds_3_repetitions": 0.00042445933333333334
+    },
+    "std": {
+      "status": 4,
+      "coefficients": [
+        1.350570058460232e-16,
+        null,
+        2.0
+      ],
+      "logLik": -8.36356866560393,
+      "mean_seconds_3_repetitions": 0.000276135
+    }
+  },
+  {
+    "name": "cluster-0.01",
+    "lst": {
+      "status": 0,
+      "coefficients": [
+        0.0,
+        0.04354586539353214,
+        1.0
+      ],
+      "logLik": -3.694194583288521,
+      "mean_seconds_3_repetitions": 0.00045543199999999997
+    },
+    "std": {
+      "status": 4,
+      "coefficients": [
+        -2.572682881969848e-16,
+        null,
+        2.0
+      ],
+      "logLik": -8.774140754115987,
+      "mean_seconds_3_repetitions": 0.000305172
+    }
+  },
+  {
+    "name": "cluster-0.03",
+    "lst": {
+      "status": 0,
+      "coefficients": [
+        1.249000902703301e-16,
+        0.12786920387985756,
+        1.0
+      ],
+      "logLik": -8.147493873919242,
+      "mean_seconds_3_repetitions": 0.0004350733333333333
+    },
+    "std": {
+      "status": 4,
+      "coefficients": [
+        -1.6805509318825145e-18,
+        null,
+        2.0
+      ],
+      "logLik": -9.64413982180302,
+      "mean_seconds_3_repetitions": 0.00014343833333333334
+    }
+  },
+  {
+    "name": "cluster-0.1",
+    "lst": {
+      "status": 4,
+      "coefficients": [
+        0.0,
+        0.619166105876821,
+        null
+      ],
+      "logLik": -11.274682037145805,
+      "mean_seconds_3_repetitions": 0.0004311876666666666
+    },
+    "std": {
+      "status": 3,
+      "coefficients": [
+        0.0,
+        0.619166105876821,
+        null
+      ],
+      "logLik": -11.274682037145805,
+      "mean_seconds_3_repetitions": 0.00014172466666666667
+    }
+  },
+  {
+    "name": "cluster-0.2",
+    "lst": {
+      "status": 4,
+      "coefficients": [
+        5.551115123125783e-17,
+        0.7303195647568718,
+        null
+      ],
+      "logLik": -13.255985430203566,
+      "mean_seconds_3_repetitions": 0.0004475113333333333
+    },
+    "std": {
+      "status": 3,
+      "coefficients": [
+        0.0,
+        0.7303195647568719,
+        null
+      ],
+      "logLik": -13.25598543020357,
+      "mean_seconds_3_repetitions": 0.00012675166666666667
+    }
+  },
+  {
+    "name": "seam-A--1e-06",
+    "lst": {
+      "status": 0,
+      "coefficients": [
+        9.974659986866641e-18,
+        0.015941648673417488,
+        1.0
+      ],
+      "logLik": 0.3418830536591315,
+      "mean_seconds_3_repetitions": 0.00043643766666666666
+    },
+    "std": {
+      "status": 4,
+      "coefficients": [
+        -2.1158444078561221e-13,
+        null,
+        2.0
+      ],
+      "logLik": -8.485847255924295,
+      "mean_seconds_3_repetitions": 0.000184761
+    }
+  },
+  {
+    "name": "seam-A-0.0",
+    "lst": {
+      "status": 0,
+      "coefficients": [
+        -2.949029909160572e-17,
+        0.01593943544789786,
+        1.0
+      ],
+      "logLik": 0.34243913600823106,
+      "mean_seconds_3_repetitions": 0.00043381
+    },
+    "std": {
+      "status": 4,
+      "coefficients": [
+        -3.1741954156039603e-13,
+        null,
+        2.0
+      ],
+      "logLik": -8.485823965722329,
+      "mean_seconds_3_repetitions": 0.00025160600000000003
+    }
+  },
+  {
+    "name": "seam-A-1e-06",
+    "lst": {
+      "status": 0,
+      "coefficients": [
+        -1.734723475976807e-18,
+        0.01593722191453596,
+        1.0
+      ],
+      "logLik": 0.3429953727409867,
+      "mean_seconds_3_repetitions": 0.0004397986666666667
+    },
+    "std": {
+      "status": 4,
+      "coefficients": [
+        3.8671197494485213e-16,
+        null,
+        2.0
+      ],
+      "logLik": -8.485800672248043,
+      "mean_seconds_3_repetitions": 0.0002553676666666667
+    }
+  },
+  {
+    "name": "ties-half",
+    "lst": {
+      "status": 3,
+      "coefficients": [
+        null,
+        null,
+        null
+      ],
+      "logLik": null,
+      "mean_seconds_3_repetitions": 8.133333333333333e-08
+    },
+    "std": {
+      "status": 3,
+      "coefficients": [
+        0.0,
+        0.7071067811865475,
+        null
+      ],
+      "logLik": -4.2894597716988,
+      "mean_seconds_3_repetitions": 4.7323e-05
+    }
+  },
+  {
+    "name": "ties-two-atoms",
+    "lst": {
+      "status": 3,
+      "coefficients": [
+        null,
+        null,
+        null
+      ],
+      "logLik": null,
+      "mean_seconds_3_repetitions": 5.533333333333333e-08
+    },
+    "std": {
+      "status": 3,
+      "coefficients": [
+        0.5,
+        0.49999999999999994,
+        null
+      ],
+      "logLik": -2.9031654105789095,
+      "mean_seconds_3_repetitions": 7.1455e-05
+    }
+  },
+  {
+    "name": "ties-excess",
+    "lst": {
+      "status": 3,
+      "coefficients": [
+        null,
+        null,
+        null
+      ],
+      "logLik": null,
+      "mean_seconds_3_repetitions": 8.366666666666666e-08
+    },
+    "std": {
+      "status": 3,
+      "coefficients": [
+        0.6000000000000001,
+        0.8,
+        null
+      ],
+      "logLik": -5.978974909452314,
+      "mean_seconds_3_repetitions": 0.000123452
+    }
+  },
+  {
+    "name": "ties-two-thirds",
+    "lst": {
+      "status": 3,
+      "coefficients": [
+        null,
+        null,
+        null
+      ],
+      "logLik": null,
+      "mean_seconds_3_repetitions": 9.733333333333333e-08
+    },
+    "std": {
+      "status": 7,
+      "coefficients": [
+        null,
+        null,
+        null
+      ],
+      "logLik": null,
+      "mean_seconds_3_repetitions": 4.166666666666667e-08
+    }
+  },
+  {
+    "name": "ties-admissible",
+    "lst": {
+      "status": 4,
+      "coefficients": [
+        0.375,
+        1.4947825928876748,
+        null
+      ],
+      "logLik": -14.567354453238323,
+      "mean_seconds_3_repetitions": 0.00036624333333333336
+    },
+    "std": {
+      "status": 3,
+      "coefficients": [
+        0.37499999999999994,
+        1.4947825928876748,
+        null
+      ],
+      "logLik": -14.567354453238323,
+      "mean_seconds_3_repetitions": 9.873066666666667e-05
+    }
+  }
+]
