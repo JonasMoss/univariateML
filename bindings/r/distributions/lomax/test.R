@@ -248,11 +248,12 @@ test_that("lomax: P3 compressed profile rejects exhaustion", {
 })
 
 test_that("limit detector describes its numerical comparison", {
-  expect_error(mllomax(rep(1, 5)), "numerical profile search.*tolerance")
+  expect_error(mllomax(rep(1, 5)), "certified profile bound.*tolerance")
 })
 
-test_that("Lomax help describes the detector as numerical", {
+test_that("Lomax help describes the certificate", {
   rd <- umvl_rd_text("mllomax.Rd")
+  expect_match(rd, "global profile upper bounds certify", fixed = TRUE)
   expect_match(rd, "numerical search does not establish a finite maximum", fixed = TRUE)
 })
 
@@ -261,4 +262,12 @@ test_that("lomax: extreme conditional bracket is checked", {
   f <- mllomax(c(1,2),kappa=1e300)
   expect_equal(unname(f["lambda"])/1e-300,2/3,tolerance=1e-9)
   expect_equal(as.numeric(logLik(f)),2*(log(2/3)-1),tolerance=1e-10)
+})
+
+test_that("Lomax certificate failures give no unchecked estimate", {
+  expect_error(mllomax(c(.Machine$double.xmin*.Machine$double.eps,1e300)),
+               "numerical certificate comparisons")
+  expect_error(mllomax(c(1,1,40,59),iterlim=1),
+               "certificate budget exhausted")
+  expect_error(mllomax(c(1,28)),"certified profile bound.*mlexp")
 })
