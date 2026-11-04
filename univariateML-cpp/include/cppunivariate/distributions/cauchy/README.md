@@ -31,8 +31,8 @@ r:
   control:
     scale: Optional held scale; NULL estimates it.
     location: Optional held location; NULL estimates it.
-    abstol: Absolute step tolerance in (location, log(scale)).
-    iterlim: Maximum number of iterations.
+    abstol: Joint-fit absolute step tolerance in (location, log(scale)); conditional certificates use fixed tolerances.
+    iterlim: Maximum iterations (held scale uses this per root and subdivision depth, with at most 64 times iterlim boxes).
 log_density: -log(pi) - log(scale) - log(1 + ((x-location)/scale)**2)
 references:
 - Johnson, N. L., Kotz, S. and Balakrishnan, N. (1994) Continuous Univariate Distributions, Volume 1, Chapter 16.
@@ -65,8 +65,8 @@ relations:
       df: 1
 fit:
   method: convex-solve
-  certified: "partial"
-  note: "cauchy/mle.hpp, fit_cauchy; Details: the free fit is certified by strict geodesic convexity under the strict half-mass condition, conditional on computed comparisons and the final dimensionless total-score norm < 1e-3. Balanced two-point maxima are explicit. Held location is certified by a verified monotone-score bracket and bisection. Held-scale location scans remain uncertified; hence the aggregate tag is partial."
+  certified: "yes"
+  note: "cauchy/mle.hpp, fit_cauchy; Details: the free fit is certified by strict geodesic convexity under the strict half-mass condition, conditional on computed comparisons and the final dimensionless total-score norm < 1e-3. Balanced two-point maxima are explicit. Held location is certified by a verified monotone-score bracket and bisection. Held scale uses exhaustive interval bounds, strictly concave root isolation and separated likelihood comparisons; unresolved ties or numerical certificates stop."
 areas:
 - robust modelling
 classification: classical
@@ -133,7 +133,7 @@ The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-locs
 
 Two equally frequent distinct values have a continuum of joint maxima. The fit selects their midpoint as location and half their distance as scale. An atom with more than half the sample mass instead gives unbounded likelihood. An atom with exactly half the mass gives a finite unattained supremum unless the sample has just those two equally frequent values.
 
-Holding location leaves a strictly decreasing scale score with one root exactly below the half-mass threshold. Holding positive scale prevents collapse, but the location likelihood can have several modes and several global maxima. The conditional fit searches across observation gaps. The joint fit uses safeguarded Newton steps with the certificate below. The conditional location search has no general global certificate.
+Holding location leaves a strictly decreasing scale score with one root exactly below the half-mass threshold. Holding positive scale prevents collapse, but the location likelihood can have several modes and several global maxima. The conditional location fit uses the interval certificate below. The joint fit uses safeguarded Newton steps with its separate geometric certificate.
 
 For held location, the log-scale score is
 `g(t) = -k + sum(tanh(log(abs(x-location))-t))`, summing over nonzero
@@ -148,7 +148,7 @@ iteration exhaustion, nonfinite result or rounded-scale score exceeding
 Log residuals and a log-sum-exp likelihood avoid residual-ratio overflow.
 This certificate holds in exact arithmetic conditional on the computed
 comparisons; the score gate states the practical floating-point margin,
-not an outward-rounded interval guarantee. The held-scale search is unchanged.
+not an outward-rounded interval guarantee. The held-scale certificate is described separately below.
 The prior radius-minus-350 bracket failed for `c(0,1e-300,1)` at location zero;
 see the [regression report](../../../../../dev/research/evaluations/2026-11-02-cauchy-bracket-report.md).
 
@@ -199,3 +199,93 @@ No such computed bound is claimed here. Safeguards, median/MAD initialization
 and iteration limits find a candidate; the geometric theorem justifies its
 global interpretation when stationary. Neither convergence from every start
 nor outward-rounded floating-point certification is asserted.
+
+
+## Held-scale location certificate
+
+For fixed positive scale, standardize with the sample median $c$:
+$y_i=(x_i-c)/\sigma$ and $t=(\mu-c)/\sigma$. Ignore the constant
+$-n\log(\pi\sigma)$ and write
+
+$$
+ L(t)=-\sum_i\log(1+(y_i-t)^2),\qquad
+ G(t)=L'(t)=\sum_i q(y_i-t),\qquad q(z)=\frac{2z}{1+z^2}.
+$$
+
+Outside $[\min y_i,\max y_i]$ every score term has the same strict
+sign pointing inward, so all maxima are inside that compact interval.
+For a box $[a,b]$, each residual lies in $[y_i-b,y_i-a]$.
+The extrema of $q$ on such an interval occur at its endpoints or at
+$z=-1,1$, where $q=-1,1$. Summing these termwise extrema encloses $G$.
+Also
+
+$$
+ L''(t)=\sum_i h(y_i-t),\qquad
+ h(z)=\frac{2(z^2-1)}{(1+z^2)^2}.
+$$
+
+The maximum of $h$ on a residual interval occurs at an endpoint or at
+$z=\pm\sqrt3$, where $h=1/4$: its other stationary point $0$ is a
+minimum. Thus the sum of termwise upper bounds proves strict concavity
+where it is negative. Finally, if $d_i$ is the distance from $y_i$ to
+$[a,b]$, then $U(a,b)=-\sum_i\log(1+d_i^2)$ is an upper bound for
+$L$ throughout that box.
+
+Start with the full data range and the likelihood at $t=0$ as an incumbent
+lower bound. Discard a box only when its likelihood upper bound is strictly
+below the incumbent, its score has a definite sign, or its strictly decreasing
+score places its root outside the box. On a strictly concave box, slightly
+expand the endpoints and recheck concavity and strict positive/negative scores.
+Bisection then encloses its unique stationary point, a strict local maximum.
+Unresolved boxes are bisected, visiting the side nearer the median first.
+Overlapping root discoveries are merged only if the hull of their brackets
+is itself strictly concave: two distinct roots there would contradict the
+strict decrease of $G$. The finite partition therefore either excludes every
+possible competitor or encloses it in a certified local-maximum bracket.
+This argument uses rational-function bounds directly, without forming the
+potentially degree-$2n-1$ score polynomial.
+
+Root bisection requires bracket width at most $10^{-10}$ in scale units and
+total dimensionless score $|G|<10^{-7}$. Because $|L''|\le2n$, a root
+in a bracket of width $w$, with midpoint score below $10^{-7}$, has likelihood
+at most $L(t)+10^{-7}w+nw^2$. Success requires one candidate's evaluated
+likelihood to exceed every other candidate's upper bound by the comparison
+margin below. Hence there is a unique winning exact root conditional on the
+computed comparisons. The returned estimate approximates that root; it is
+not asserted to be an exact floating-point stationary point. Conversion back
+to the original location must retain the score gate and stay within $10^{-10}$
+of the root bracket. A corresponding conservative returned-point likelihood
+gap is $10^{-7}D+nD^2$, with $D=w+10^{-10}$.
+
+**Ties:** separated global maxima can be real, for example at
+$\mu=\pm\sqrt{a^2-\sigma^2}$ for observations $-a,a$ and
+$\sigma<a$. The fitter returns `AmbiguousMaximum`, with no location estimate,
+when the competing candidate likelihood intervals cannot be strictly ordered.
+The binding stops with "global maxima are tied or numerically indistinguishable".
+This reports ambiguity rather than claiming an exact tie from rounded numbers.
+No arbitrary maximizer is selected. A degenerate maximum, such as the quartic
+maximum for $(-1,1)$ at scale one, can instead exhaust subdivision and gives
+`IterationFailure`. Neither status means the mathematical MLE fails to exist.
+
+Compensated sums are used throughout this conditional search. With machine
+epsilon $\epsilon$, the practical score and curvature comparison margin is
+$128\epsilon n$; the likelihood comparison margin is
+$512\epsilon n[1+2\log\operatorname{hypot}(1,\max y-\min y)]$.
+The elementary-function evaluations and standardized coordinates are floating
+point, not outward-rounded intervals. As elsewhere in the package, the proof
+is in exact arithmetic conditional on the computed comparisons, with these
+stated practical margins. Bisection sign updates are conditional computed
+comparisons too, not rigorous interval-arithmetic evaluations near zero.
+
+`iterlim` bounds subdivision depth and each root bisection; at most
+`64*iterlim` boxes may be processed. Returned `iterations` counts processed
+boxes for this held subset. Nonfinite transformations, standardized magnitudes
+above $10^{150}$, lost location accuracy, missing strict brackets, exhausted
+budgets or unresolved curvature cause numerical failure, never an unchecked
+last iterate. Work is linear in sample size per box/score evaluation and memory
+is linear in sample size plus stored boxes and roots. No uniform bound on the
+number of boxes or successful certification for every input is claimed;
+adversarially flat or crowded modes may correctly stop. Median-centred search
+and likelihood pruning avoid the old observation-gap scan's quadratic growth.
+The [validation report](../../../../../dev/research/evaluations/2026-11-04-cauchy-sturm-report.md)
+records independent small-sample polynomial checks and timings through $n=10^5$.

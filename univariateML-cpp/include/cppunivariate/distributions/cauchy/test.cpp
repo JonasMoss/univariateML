@@ -162,3 +162,73 @@ TEST_CASE("cauchy: free geometric certificate checks adversarial total scores") 
   const auto r=cppunivariate::fit_cauchy(mltest::as_span(x),1e6,100);
   CHECK(r.status==cppunivariate::CauchyStatus::IterationFailure);
 }
+
+TEST_CASE("cauchy: held scale certifies roots and reports global ties") {
+  const double nan = std::numeric_limits<double>::quiet_NaN();
+  // The two-point score numerator is proportional to t*(a*a-s*s-t*t).
+  for (double scale : {2.1,3.0,100.0}) {
+    const std::vector<double> x{-2,2};
+    const auto r=cppunivariate::fit_cauchy(mltest::as_span(x),1e-8,100,nan,scale);
+    REQUIRE(r.status==cppunivariate::CauchyStatus::Ok);
+    CHECK(std::abs(r.mu)<1e-8*scale);
+    CHECK(r.logLik==doctest::Approx(-2*(std::log(cppunivariate::pi)+std::log(scale)+std::log1p(4/(scale*scale)))).epsilon(1e-12));
+  }
+  for (const std::vector<double>& x : {std::vector<double>{-2,2}, {-2,-2,2,2}, {-3,-2,2,3}}) {
+    const auto r=cppunivariate::fit_cauchy(mltest::as_span(x),1e-8,100,nan,1);
+    CHECK(r.status==cppunivariate::CauchyStatus::AmbiguousMaximum);
+    CHECK(std::isnan(r.mu));
+  }
+  const std::vector<double> flat{-1,1};
+  CHECK(cppunivariate::fit_cauchy(mltest::as_span(flat),1e-8,100,nan,1).status==cppunivariate::CauchyStatus::IterationFailure);
+  const std::vector<double> x{-2,-.5,0,.7,3};
+  CHECK(cppunivariate::fit_cauchy(mltest::as_span(x),1e-8,1,nan,1).status==cppunivariate::CauchyStatus::IterationFailure);
+  const std::vector<double> overflow{-1e308,1e308};
+  CHECK(cppunivariate::fit_cauchy(mltest::as_span(overflow),1e-8,100,nan,1e-308).status==cppunivariate::CauchyStatus::IterationFailure);
+}
+
+TEST_CASE("cauchy: held scale certificate preserves units and repeated points") {
+  const double nan = std::numeric_limits<double>::quiet_NaN();
+  const std::vector<double> x{-2,-.5,0,.7,3};
+  const auto base=cppunivariate::fit_cauchy(mltest::as_span(x),1e-8,100,nan,1);
+  REQUIRE(base.status==cppunivariate::CauchyStatus::Ok);
+  for(double unit : {1e-300,1e300}) {
+    auto y=x;for(double& v:y)v*=unit;
+    const auto r=cppunivariate::fit_cauchy(mltest::as_span(y),1e-8,100,nan,unit);
+    REQUIRE(r.status==cppunivariate::CauchyStatus::Ok);
+    CHECK(r.mu/unit==doctest::Approx(base.mu).epsilon(1e-8));
+    CHECK(r.scale==unit);
+    CHECK(r.logLik+x.size()*std::log(unit)==doctest::Approx(base.logLik).epsilon(1e-10));
+  }
+  for(const std::vector<double>& y : {std::vector<double>{2}, {2,2,2}}) {
+    const auto r=cppunivariate::fit_cauchy(mltest::as_span(y),1e-8,100,nan,1);
+    REQUIRE(r.status==cppunivariate::CauchyStatus::Ok);
+    CHECK(std::abs(r.mu-2)<1e-10);
+    CHECK(r.logLik==doctest::Approx(-static_cast<double>(y.size())*std::log(cppunivariate::pi)).epsilon(1e-12));
+  }
+}
+
+TEST_CASE("cauchy: held scale large sample certificate") {
+  const std::size_t n=100000;
+  std::vector<double> x;
+  // Symmetric deterministic Cauchy quantiles: the certified unique root is zero.
+  for(std::size_t j=0;j<n;++j)x.push_back(std::tan(cppunivariate::pi*((j+.5)/n-.5)));
+  const auto r=cppunivariate::fit_cauchy(mltest::as_span(x),1e-8,100,
+      std::numeric_limits<double>::quiet_NaN(),1);
+  REQUIRE(r.status==cppunivariate::CauchyStatus::Ok);
+  CHECK(std::abs(r.mu)<1e-9);
+  CHECK(r.scale==1);
+}
+
+TEST_CASE("cauchy: held scale chooses the winning separated mode") {
+  // For t>0 the heavier left cluster has L(-t)>L(t), by reflection.
+  // Both clusters have local maxima; a single local solve is insufficient.
+  for(double direction : {-1.0,1.0}) {
+    const std::vector<double> x{-10*direction,-10*direction,-10*direction,10*direction,10*direction};
+    const auto r=cppunivariate::fit_cauchy(mltest::as_span(x),1e-8,100,
+        std::numeric_limits<double>::quiet_NaN(),1);
+    REQUIRE(r.status==cppunivariate::CauchyStatus::Ok);
+    CHECK(r.mu*direction < -9.9);
+    double score=0;for(double v:x)score+=2*(v-r.mu)/(1+(v-r.mu)*(v-r.mu));
+    CHECK(std::abs(score)<1e-7);
+  }
+}

@@ -135,7 +135,7 @@ test_that("cauchy new holds agree with independent multistart likelihoods", {
     args <- as.list(held_values[held])
     f <- tryCatch(suppressWarnings(do.call(mlcauchy,c(list(x=x),args))),error=identity)
     if(inherits(f,"error")) {
-      expect_match(conditionMessage(f),"[Uu]se `ml|unbounded|collapse|support cannot contain|does not exist|positive")
+      expect_match(conditionMessage(f),"[Uu]se `ml|unbounded|collapse|support cannot contain|does not exist|positive|global maxima are tied")
       next
     }
     expect_identical(unname(as.numeric(f[held])),unname(held_values[held]))
@@ -229,4 +229,49 @@ test_that("free Cauchy fits pass the geometric total-score gate", {
                  sum(dcauchy(x, f[1], f[2], log=TRUE)), tolerance=1e-10)
   }
   expect_error(mlcauchy(c(-8,-2,0,1,3,20,100), abstol=1e6), "converge")
+})
+
+test_that("held-scale Cauchy roots are certified or fail explicitly", {
+  for (s in c(2.1,3,100)) {
+    f <- mlcauchy(c(-2,2),scale=s)
+    expect_equal(unname(f["location"]),0,tolerance=1e-8)
+    expect_identical(unname(f["scale"]),s)
+    expect_equal(as.numeric(logLik(f)),sum(dcauchy(c(-2,2),0,s,log=TRUE)),tolerance=1e-12)
+  }
+  for (x in list(c(-2,2),c(-2,-2,2,2),c(-3,-2,2,3))) {
+    expect_error(mlcauchy(x,scale=1),"global maxima are tied or numerically indistinguishable")
+  }
+  expect_error(mlcauchy(c(-1,1),scale=1),"numerical certificate")
+  expect_error(mlcauchy(c(-2,-.5,0,.7,3),scale=1,iterlim=1),"converge")
+  expect_error(mlcauchy(c(-1e308,1e308),scale=1e-308),"numerical certificate")
+  for (x in list(2,rep(2,3))) expect_equal(unname(mlcauchy(x,scale=1)["location"]),2,tolerance=1e-10)
+})
+
+test_that("held-scale Cauchy certification is invariant under data units", {
+  x <- c(-2,-.5,0,.7,3)
+  base <- mlcauchy(x,scale=1)
+  for (unit in c(1e-300,1e300)) {
+    f <- mlcauchy(x*unit,scale=unit)
+    expect_equal(unname(f["location"])/unit,unname(base["location"]),tolerance=1e-8)
+    expect_identical(unname(f["scale"]),unit)
+    expect_equal(as.numeric(logLik(f))+length(x)*log(unit),as.numeric(logLik(base)),tolerance=1e-10)
+  }
+})
+
+test_that("held-scale Cauchy certifies a sample of one hundred thousand", {
+  skip_unless_tier("full")
+  n <- 100000L
+  x <- qcauchy((seq_len(n)-.5)/n)
+  f <- mlcauchy(x,scale=1)
+  expect_lt(abs(unname(f["location"])),1e-9)
+  expect_identical(unname(f["scale"]),1)
+})
+
+test_that("held-scale Cauchy selects the winning separated mode", {
+  for (direction in c(-1,1)) {
+    x <- direction*c(-10,-10,-10,10,10)
+    f <- mlcauchy(x,scale=1)
+    expect_lt(unname(f["location"])*direction,-9.9)
+    expect_equal(as.numeric(logLik(f)),sum(dcauchy(x,f[1],1,log=TRUE)),tolerance=1e-12)
+  }
 })

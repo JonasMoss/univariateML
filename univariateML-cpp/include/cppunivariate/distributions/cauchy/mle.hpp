@@ -18,7 +18,7 @@
 
 namespace cppunivariate {
 
-enum class CauchyStatus { Ok, NoMLE, InvalidInput, IterationFailure };
+enum class CauchyStatus { Ok, NoMLE, InvalidInput, IterationFailure, AmbiguousMaximum };
 
 struct CauchyResult {
   double mu;
@@ -209,6 +209,152 @@ inline CauchyResult fit_cauchy(span x, double tol, int maxit) {
 }
 
 
+// Held-scale certificate; formulas and exact-arithmetic proof in README.md.
+namespace cauchy_location_detail {
+struct Sum {
+  double value = 0, correction = 0;
+  void add(double x) {
+    const double y = x - correction, t = value + y;
+    correction = (t - value) - y;
+    value = t;
+  }
+};
+inline double score_term(double z) {
+  if (std::abs(z) > 1) { const double r = 1/z; return 2*r/(1+r*r); }
+  return 2*z/(1+z*z);
+}
+inline double curvature_term(double z) {
+  const double r = 1/std::hypot(1.0,z), q = z*r;
+  return 2*(q*q-r*r)*r*r;
+}
+struct Bounds { double lower_score, upper_score, upper_curvature, upper_ll; };
+inline Bounds bounds(const std::vector<double>& y, double a, double b) {
+  Sum lower, upper, curvature, likelihood;
+  constexpr double root3 = 1.7320508075688772935;
+  for (double v : y) {
+    const double l = v-b, h = v-a;
+    double gl = std::min(score_term(l),score_term(h));
+    double gh = std::max(score_term(l),score_term(h));
+    if (l <= -1 && h >= -1) gl = -1;
+    if (l <= 1 && h >= 1) gh = 1;
+    lower.add(gl); upper.add(gh);
+    double ch = std::max(curvature_term(l),curvature_term(h));
+    if ((l <= -root3 && h >= -root3) || (l <= root3 && h >= root3)) ch = .25;
+    curvature.add(ch);
+    const double d = l > 0 ? l : (h < 0 ? h : 0);
+    likelihood.add(-2*std::log(std::hypot(1.0,d)));
+  }
+  return {lower.value,upper.value,curvature.value,likelihood.value};
+}
+inline double score(const std::vector<double>& y, double t) {
+  Sum sum; for (double v : y) sum.add(score_term(v-t)); return sum.value;
+}
+inline double likelihood(const std::vector<double>& y, double t) {
+  Sum sum; for (double v : y) sum.add(-2*std::log(std::hypot(1.0,v-t))); return sum.value;
+}
+} // namespace cauchy_location_detail
+
+inline CauchyResult fit_cauchy_location(const std::vector<double>& data, double scale, int maxit) {
+  const double nan = std::numeric_limits<double>::quiet_NaN();
+  int evaluations = 0;
+  const auto failure = [&]() { return CauchyResult{nan,scale,nan,evaluations,CauchyStatus::IterationFailure}; };
+  if (data.empty() || !(scale > 0 && std::isfinite(scale)) || maxit < 1) return failure();
+  const double centre = data[data.size()/2];
+  std::vector<double> y;
+  y.reserve(data.size());
+  for (double v : data) {
+    const double z = static_cast<double>((static_cast<CPPUNIV_EXTENDED_REAL>(v)-centre)/scale);
+    // Keep all interval differences finite, including on double-width platforms.
+    if (!std::isfinite(z) || std::abs(z) > 1e150) return failure();
+    y.push_back(z);
+  }
+  const double n = static_cast<double>(y.size());
+  const double eps = std::numeric_limits<double>::epsilon();
+  const double score_margin = 128*eps*n;
+  // Compensated sums; allowance includes elementary-function and coordinate rounding.
+  const double ll_margin = 512*eps*n*(1+2*std::log(std::hypot(1.0,y.back()-y.front())));
+  struct Box { double a, b; int depth; };
+  struct Root { double a, b, t, ll; };
+  std::vector<Box> pending{{y.front(),y.back(),0}};
+  std::vector<Root> roots;
+  double incumbent = cauchy_location_detail::likelihood(y,0);
+  const std::size_t budget = 64*static_cast<std::size_t>(maxit);
+  while (!pending.empty()) {
+    if (static_cast<std::size_t>(evaluations) >= budget) return failure();
+    const Box box = pending.back(); pending.pop_back(); ++evaluations;
+    const auto bound = cauchy_location_detail::bounds(y,box.a,box.b);
+    if (bound.upper_ll < incumbent-ll_margin || bound.lower_score > score_margin ||
+        bound.upper_score < -score_margin) continue;
+    if (bound.upper_curvature < -score_margin) {
+      // Expand slightly so a root at a partition endpoint has strict signs.
+      const double pad = 1e-7*std::max(1.0,std::max(std::abs(box.a),std::abs(box.b)));
+      double a = box.a-pad, b = box.b+pad;
+      const auto extended = cauchy_location_detail::bounds(y,a,b);
+      const double ga = cauchy_location_detail::score(y,a), gb = cauchy_location_detail::score(y,b);
+      if (extended.upper_curvature < -score_margin &&
+          (ga < -score_margin || gb > score_margin)) continue;
+      if (extended.upper_curvature < -score_margin && ga > score_margin && gb < -score_margin) {
+        bool converged = false;
+        for (int j = 0; j < maxit; ++j) {
+          const double t = a/2+b/2, g = cauchy_location_detail::score(y,t);
+          // A small score alone is not a bracket; keep both endpoint signs.
+          if (g > 0) a = t; else if (g < 0) b = t;
+          else {
+            const double d = 32*eps*std::max(1.0,std::abs(t));
+            const double left = std::max(a,t-d), right = std::min(b,t+d);
+            if (cauchy_location_detail::score(y,left) > 0 && cauchy_location_detail::score(y,right) < 0) {
+              a = left; b = right;
+            }
+          }
+          if (b-a <= 1e-10 && std::abs(cauchy_location_detail::score(y,a/2+b/2)) < 1e-7) {
+            converged = true; break;
+          }
+        }
+        if (!converged) return failure();
+        const double t = a/2+b/2, f = cauchy_location_detail::likelihood(y,t);
+        bool duplicate = false;
+        for (const auto& root : roots) {
+          // Two roots in a strictly concave union must be the same root.
+          const auto hull = cauchy_location_detail::bounds(y,std::min(a,root.a),std::max(b,root.b));
+          if (hull.upper_curvature < -score_margin) { duplicate = true; break; }
+        }
+        if (!duplicate) roots.push_back({a,b,t,f});
+        incumbent = std::max(incumbent,f);
+        continue;
+      }
+    }
+    if (box.depth >= maxit) return failure();
+    const double mid = box.a/2+box.b/2;
+    if (!(mid > box.a && mid < box.b)) return failure();
+    // Visit the interval nearer the median first, improving the likelihood bound.
+    if (mid > 0) {
+      pending.push_back({mid,box.b,box.depth+1}); pending.push_back({box.a,mid,box.depth+1});
+    } else {
+      pending.push_back({box.a,mid,box.depth+1}); pending.push_back({mid,box.b,box.depth+1});
+    }
+  }
+  if (roots.empty()) return failure();
+  std::size_t winner = 0;
+  for (std::size_t j = 1; j < roots.size(); ++j) if (roots[j].ll > roots[winner].ll) winner = j;
+  const auto& best = roots[winner];
+  for (std::size_t j = 0; j < roots.size(); ++j) {
+    if (j == winner) continue;
+    const double width = roots[j].b-roots[j].a;
+    // |ell''| <= 2n and |score| <= 1e-7 at a candidate.
+    const double upper = roots[j].ll + 1e-7*width+n*width*width;
+    if (!(best.ll > upper+ll_margin)) return {nan,scale,nan,evaluations,CauchyStatus::AmbiguousMaximum};
+  }
+  const double location = static_cast<double>(static_cast<CPPUNIV_EXTENDED_REAL>(centre)+
+      static_cast<CPPUNIV_EXTENDED_REAL>(scale)*best.t);
+  const double returned_t = static_cast<double>((static_cast<CPPUNIV_EXTENDED_REAL>(location)-centre)/scale);
+  if (!std::isfinite(location) || std::abs(cauchy_location_detail::score(y,returned_t)) >= 1e-7 ||
+      returned_t < best.a-1e-10 || returned_t > best.b+1e-10) return failure();
+  const double ll = cauchy_location_detail::likelihood(y,returned_t)-n*(std::log(cppunivariate::pi)+std::log(scale));
+  if (!std::isfinite(ll)) return failure();
+  return {location,scale,ll,evaluations,CauchyStatus::Ok};
+}
+
+
 inline CauchyResult fit_cauchy(span x,double tol,int maxit,double location,double scale) {
   if(std::isnan(location)&&std::isnan(scale))return fit_cauchy(x,tol,maxit);
   const double nan=std::numeric_limits<double>::quiet_NaN();
@@ -273,20 +419,7 @@ inline CauchyResult fit_cauchy(span x,double tol,int maxit,double location,doubl
     if (!std::isfinite(logLik)) return failure();
     return {m, s, logLik, it, CauchyStatus::Ok};
   } else if(std::isnan(m)) {
-    std::vector<double> grid=y;
-    for(std::size_t j=1;j<y.size();++j)for(int k=1;k<16;++k)grid.push_back(y[j-1]+(y[j]-y[j-1])*k/16);
-    for(double v:y)for(double d:{-.5,.5,-1.0,1.0})if(v+d*s>y.front()&&v+d*s<y.back())grid.push_back(v+d*s);
-    std::sort(grid.begin(),grid.end());grid.erase(std::unique(grid.begin(),grid.end()),grid.end());
-    m=grid.front();double best=ll(m,s);
-    for(std::size_t j=0;j<grid.size();++j) {
-      const double f=ll(grid[j],s);if(f>best){best=f;m=grid[j];}
-      if((j&&f<ll(grid[j-1],s))||(j+1<grid.size()&&f<ll(grid[j+1],s)))continue;
-      double lo=grid[j?j-1:0],hi=grid[j+1<grid.size()?j+1:j];
-      double a=hi-(hi-lo)*.6180339887498948482,b=lo+(hi-lo)*.6180339887498948482;
-      double fa=ll(a,s),fb=ll(b,s);int k=0;
-      for(;k<maxit&&hi-lo>1e-11*s;++k){if(fa>fb){hi=b;b=a;fb=fa;a=hi-(hi-lo)*.6180339887498948482;fa=ll(a,s);}else{lo=a;a=b;fa=fb;b=lo+(hi-lo)*.6180339887498948482;fb=ll(b,s);}}
-      it=std::max(it,k);if(std::max(fa,fb)>best){best=std::max(fa,fb);m=fa>fb?a:b;}
-    }
+    return fit_cauchy_location(y,s,maxit);
   }
   return {m,s,ll(m,s),it,it<maxit?CauchyStatus::Ok:CauchyStatus::IterationFailure};
 }
