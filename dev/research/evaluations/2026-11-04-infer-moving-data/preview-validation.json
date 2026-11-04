@@ -1,0 +1,152 @@
+{
+  "offline": true,
+  "passed": true,
+  "mathElements": 28,
+  "mathErrors": 0,
+  "scripts": 0,
+  "pageErrors": [],
+  "browserVersion": "151.0.7922.34",
+  "equations": [
+    {
+      "width": 1216,
+      "height": 54,
+      "text": "H2(p,q)=∫(p−q)2dx.\n H^2(p,q)=\\int(\\sqrt p-\\sqrt q)^2\\,dx.\n"
+    },
+    {
+      "width": 1216,
+      "height": 36.75,
+      "text": "f(d)=cdα−1(1+o(1)),c>0,α>0,\n f(d)=c d^{\\alpha-1}(1+o(1)),\\qquad c>0,\\quad\\a"
+    },
+    {
+      "width": 1216,
+      "height": 53.3125,
+      "text": "cκ24h2dα−3(1+o(1)).\n \\frac{c\\kappa^2}{4}h^2 d^{\\alpha-3}(1+o(1)).\n"
+    },
+    {
+      "width": 1216,
+      "height": 98.4375,
+      "text": "H2≍{|h|α,0<α<2,h2log⁡(1/|h|),α=2,h2,α>2.\n H^2\\asymp\n \\begin{cases}\n |h|^\\al"
+    },
+    {
+      "width": 1216,
+      "height": 57.5,
+      "text": "f(x−h)−f(x)=−f0A2(|x−h|ν−|x|ν)+remainder.\n \\sqrt{f(x-h)}-\\sqrt{f(x)}\n =-\\fr"
+    },
+    {
+      "width": 1216,
+      "height": 61.390625,
+      "text": "H2∼Kν|h|1+2ν,Kν=f0A24∫ℝ(|y−1|ν−|y|ν)2dy>0.\n H^2\\sim K_\\nu |h|^{1+2\\nu},\\qqu"
+    },
+    {
+      "width": 1216,
+      "height": 54.90625,
+      "text": "H2∼f0A28h2log⁡(1/|h|).\n H^2\\sim \\frac{f_0 A^2}{8}h^2\\log(1/|h|).\n"
+    },
+    {
+      "width": 1216,
+      "height": 39.9375,
+      "text": "2KνWν+1/2(u)−2Kν|u|1+2ν,\n 2\\sqrt{K_\\nu}\\,W_{\\nu+1/2}(u)\n       -2K_\\nu|u|^{"
+    },
+    {
+      "width": 1216,
+      "height": 48.15625,
+      "text": "d=σλ{uλ+λu+O(u2)}∼σλuλ,f∼λ1/λ−1σ−1/λd1/λ−1.\n d=\\frac{\\sigma}{\\lambda}\n     "
+    },
+    {
+      "width": 1216,
+      "height": 39.140625,
+      "text": "sμ=B/A2,slog⁡σ=−1+Bq/A2,sλ=−Aλ/A+Bqλ/A2.\n s_\\mu=B/A^2,\\quad\n s_{\\log\\sigma}"
+    },
+    {
+      "width": 1216,
+      "height": 36.9375,
+      "text": "δe±=δμ±(δσ/λ−σδλ/λ2).\n \\delta e_\\pm=\\delta\\mu\\pm\n       (\\delta\\sigma/\\lamb"
+    },
+    {
+      "width": 1216,
+      "height": 36.546875,
+      "text": "−12{log⁡u+log⁡(1−u)+2}.\n -\\tfrac12\\{\\log u+\\log(1-u)+2\\}.\n"
+    },
+    {
+      "width": 1216,
+      "height": 52.15625,
+      "text": "f(x)=ν2aΓ(1/ν)exp⁡{−|(x−μ)/a|ν}.\n f(x)=\\frac{\\nu}{2a\\Gamma(1/\\nu)}\n        "
+    },
+    {
+      "width": 1216,
+      "height": 58.3125,
+      "text": "sμ=νa−νsgn⁡(r)|r|ν−1,Iμμ=ν2a2Γ(2−1/ν)Γ(1/ν),ν>1/2.\n s_\\mu=\\nu a^{-\\nu}\\oper"
+    },
+    {
+      "width": 1216,
+      "height": 39.9375,
+      "text": "hμμ=ν(ν−1)a−ν|r|ν−2.\n h_{\\mu\\mu}=\\nu(\\nu-1)a^{-\\nu}|r|^{\\nu-2}.\n"
+    },
+    {
+      "width": 1216,
+      "height": 69.609375,
+      "text": "dXidr=1+p|r|p−1p∑j≠i|Xj−m(r)|p−1.\n \\frac{dX_i}{dr}=1+\n  \\frac{p|r|^{p-1}}{p"
+    },
+    {
+      "width": 1216,
+      "height": 34,
+      "text": "K=1/32,Icritical=2K=1/16.\n K=1/32,\\qquad I_{\\mathrm{critical}}=2K=1/16.\n"
+    },
+    {
+      "width": 1216,
+      "height": 59.140625,
+      "text": "E[sμ21{|r|>h}]=14E1(h),E1(t)=∫t∞e−vdv/v,\n E[s_\\mu^2\\,1\\{|r|>h\\}]\n     =\\tfr"
+    },
+    {
+      "width": 1216,
+      "height": 61.75,
+      "text": "f(x)=αe−μ(e−xe−μ)α−1,μ<x<e.\n f(x)=\\frac{\\alpha}{e-\\mu}\n       \\left(\\frac{e"
+    },
+    {
+      "width": 1216,
+      "height": 58.75,
+      "text": "f(x)=αb(e−xb)α−1exp⁡{−(e−xb)α},x<e.\n f(x)=\\frac{\\alpha}{b}\n       \\left(\\fr"
+    },
+    {
+      "width": 1216,
+      "height": 36.75,
+      "text": "δe=δμ−δσ/ξ+σδξ/ξ2.\n \\delta e=\\delta\\mu-\\delta\\sigma/\\xi+\n                  "
+    },
+    {
+      "width": 1216,
+      "height": 74.703125,
+      "text": "I=([σ2(1+2ξ)]−1[σ(1+ξ)(1+2ξ)]−1[σ(1+ξ)(1+2ξ)]−12[(1+ξ)(1+2ξ)]−1),ξ>−1/2.\n I"
+    },
+    {
+      "width": 1216,
+      "height": 37.015625,
+      "text": "ℓ=12log⁡(2/π)−a−log⁡(eb+e−b)−12z2e−2tb,\n \\ell=\\tfrac12\\log(2/\\pi)-a-\\log(e^"
+    },
+    {
+      "width": 1216,
+      "height": 36.15625,
+      "text": "sc=ze−2tb/s,sa=−1+z2e−2tb,sb=−tanh⁡b+tz2e−2tb.\n s_c=z e^{-2tb}/s,\\quad\n s_a"
+    },
+    {
+      "width": 1216,
+      "height": 48.671875,
+      "text": "m=2/π,C(ξ)2=(1−2/π)(ξ2+ξ−2)+4/π−1,s=σ/C(ξ),c=μ−sm(ξ−ξ−1).\n m=\\sqrt{2/\\pi},\\"
+    },
+    {
+      "width": 1216,
+      "height": 37.75,
+      "text": "Z(c)=2πerf⁡(c/2)+2e−c2/2/c,B(c)=−Z′(c)/Z(c)=2e−c2/2/{c2Z(c)}>0.\n Z(c)=\\sqrt"
+    },
+    {
+      "width": 1216,
+      "height": 39.390625,
+      "text": "sμ=ψc(z)/σ,slog⁡σ=zψc(z)−1,slog⁡c=c{B(c)−(|z|−c)+}.\n s_\\mu=\\psi_c(z)/\\sigma"
+    },
+    {
+      "width": 1216,
+      "height": 40.140625,
+      "text": "Iμμ=Pr⁡(|Z|<c)/σ2=E[ψc(Z)2]/σ2.\n I_{\\mu\\mu}=\\Pr(|Z|<c)/\\sigma^2\n           "
+    }
+  ],
+  "scope": "static MathML preview only; not a package site check"
+}
