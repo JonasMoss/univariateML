@@ -229,3 +229,88 @@ TEST_CASE("lomax: verified extreme conditional bracket") {
   CHECK(r.lambda==doctest::Approx(2e-300/3).epsilon(1e-9).scale(1e-300));
   CHECK(r.logLik==doctest::Approx(2*(std::log(2.0/3)-1)).epsilon(1e-10));
 }
+
+TEST_CASE("lomax: certificate envelopes dominate the complete scalar profile") {
+  cppunivariate::lomax_cert_detail::Data d;
+  const std::vector<double> y{.02,.02,.8,3.16}; // mean exactly one in decimal
+  for(double v:y)d.values.push_back({v,std::log(v),.25});
+  d.error=1e-12;
+  for(double v:y)d.second+=v*v/y.size();
+  for(double a:{-20.,-5.,-1.,1.,5.})for(double width:{.01,.2,2.,10.}) {
+    const auto l=cppunivariate::lomax_cert_detail::evaluate(d,a);
+    const auto r=cppunivariate::lomax_cert_detail::evaluate(d,a+width);
+    const double upper=cppunivariate::lomax_cert_detail::upper(d,l,r);
+    const double curvature=cppunivariate::lomax_cert_detail::curvature_upper(d,l,r);
+    for(int j=0;j<=20;++j) {
+      const auto p=cppunivariate::lomax_cert_detail::evaluate(d,a+width*j/20);
+      CHECK(p.h<=upper);
+      const double hessian=p.B*p.B/(p.A*p.A)-p.C/p.A-p.C;
+      CHECK(hessian>=-1.25);
+      CHECK(hessian<=curvature);
+    }
+  }
+}
+
+TEST_CASE("lomax: certificate arithmetic and budget failures never return coefficients") {
+  const std::vector<double> extremes{std::numeric_limits<double>::denorm_min(),1e300};
+  const auto failed=cppunivariate::lomax_mle(mltest::as_span(extremes),1e-10,100);
+  CHECK(failed.status==cppunivariate::LomaxStatus::IterationFailure);
+  CHECK(std::isnan(failed.lambda));
+  CHECK(std::isnan(failed.kappa));
+  const std::vector<double> nonlocal{1,1,40,59};
+  const auto fitted=cppunivariate::lomax_mle(mltest::as_span(nonlocal),1e-12,100);
+  REQUIRE(fitted.status==cppunivariate::LomaxStatus::Ok);
+  CHECK(fitted.logLik> -4*(1+std::log(25.25)));
+  CHECK(fitted.iterations>2);
+}
+
+TEST_CASE("lomax: certificate checks coefficients after extreme rescaling") {
+  const auto g=mltest::load_distribution_golden("lomax");
+  for(double scale:{1e-308,1e-309}) {
+    auto x=g.data;for(double& v:x)v*=scale;
+    const auto r=cppunivariate::lomax_mle(mltest::as_span(x),1e-10,100);
+    if(scale==1e-308) {
+      REQUIRE(r.status==cppunivariate::LomaxStatus::Ok);
+      CHECK(r.lambda>0);
+      CHECK(std::isfinite(r.lambda));
+      CHECK(std::isfinite(r.kappa));
+      CHECK(std::isfinite(r.logLik));
+    } else {
+      CHECK(r.status==cppunivariate::LomaxStatus::IterationFailure);
+      CHECK(std::isnan(r.lambda));
+      CHECK(std::isnan(r.kappa));
+    }
+  }
+}
+
+TEST_CASE("lomax: subnormal normalization cannot certify a relative enclosure") {
+  const std::vector<double> x{std::numeric_limits<double>::denorm_min(),1};
+  const auto r=cppunivariate::lomax_mle(mltest::as_span(x),1e-10,100);
+  CHECK(r.status==cppunivariate::LomaxStatus::IterationFailure);
+  CHECK(r.certificate_failure==cppunivariate::LomaxCertificateFailure::Arithmetic);
+  CHECK(std::isnan(r.lambda));
+}
+
+TEST_CASE("lomax: restored log coordinates require adequate relative precision") {
+  cppunivariate::lomax_cert_detail::Data d;
+  d.error=1e-12;
+  for(double v:{1.,100.})d.values.push_back({v/50.5,std::log(v/50.5),.5});
+  const double z=std::log(.7721986394822592*50.5);
+  const auto a=cppunivariate::lomax_cert_detail::evaluate(d,z-.001);
+  const auto b=cppunivariate::lomax_cert_detail::evaluate(d,z+.001);
+  REQUIRE(cppunivariate::lomax_cert_detail::isolate(d,a,b,100).valid);
+  // A conversion near exp(-740) has only about two significant digits.
+  // This tests the restoration component independently of input scaling.
+  d.logmean=z+740;
+  CHECK_FALSE(cppunivariate::lomax_cert_detail::isolate(d,a,b,100).valid);
+
+  const std::vector<double> x{1,1,1,12,12};
+  const auto base=cppunivariate::lomax_mle(mltest::as_span(x),1e-12,100);
+  auto large=x;for(double& v:large)v*=1e307;
+  const auto r=cppunivariate::lomax_mle(mltest::as_span(large),1e-12,100);
+  REQUIRE(r.status==cppunivariate::LomaxStatus::Ok);
+  CHECK(r.lambda>0);
+  CHECK(r.lambda<std::numeric_limits<double>::min());
+  CHECK(r.lambda*1e307==doctest::Approx(base.lambda).epsilon(1e-6));
+  CHECK(r.kappa==doctest::Approx(base.kappa).epsilon(1e-6));
+}
