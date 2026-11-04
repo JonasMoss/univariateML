@@ -215,5 +215,9 @@ mlgenbeta(x, scale = scale, shape2 = 1); mlpower estimates its endpoint.
 When shape2 = 1 and shape1 and shape3 are free, the fitter returns shape3 = 1
 and records it as fixed, so likelihood degrees of freedom count only the
 identified product.
+The Fisher information has rank 2 of 3 on that surface and is nearly singular
+near it, so Wald intervals for shape1 and shape3 separately are unreliable when
+shape2 is close to 1; elsewhere in the interior it is nonsingular
+([classification](../../../../../dev/research/evaluations/2026-11-04-dqm-a-report.md)).
 
 Face comparisons retain the family tolerance but stop with the existing numerical-failure status when `core/face_compare.hpp` cannot resolve the decision after its floating-point rounding allowance. This allowance concerns computed likelihood comparisons, not optimizer convergence or global optimality; see the [comparison analysis](../../../../../dev/research/evaluations/2026-11-02-face-compare-report.md).

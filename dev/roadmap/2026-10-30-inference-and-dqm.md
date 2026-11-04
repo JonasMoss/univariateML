@@ -313,3 +313,27 @@ Resume this implementation after the current density and parameterization
 work, alongside the documentation migration. A complete 98-family inference
 audit and implementation remain work to do; do not advertise blanket robust
 inference from this initial classification.
+
+## Pointwise interior classification (2026-11-04)
+
+All 99 families, every coefficient free except design quantities and held
+thresholds, integer coordinates known: DQM, information rank and smoothness
+class at every interior point, one row per family in
+`2026-11-04-dqm-{a,b,c}-data/classification.csv`
+([a](../research/evaluations/2026-11-04-dqm-a-report.md),
+[b](../research/evaluations/2026-11-04-dqm-b-report.md),
+[c](../research/evaluations/2026-11-04-dqm-c-report.md)). Regimes in detail:
+[moving features](../research/evaluations/2026-11-04-infer-moving-report.md),
+[closure points](../research/evaluations/2026-11-04-infer-closure-report.md).
+This supersedes the conservative C2 gate in the 2026-10-31 classification;
+the `inference_numeric` fields have not yet been updated.
+
+| Class | Families |
+|---|---|
+| Regular, C-infinity, Cramér | all others (about 80), including every discrete family away from the design exceptions below |
+| Regular, C1 with a moving kink; piecewise Hessian valid | snorm, sstd, huber |
+| Regular, Hessian invalid | laplace (C0); ged, sged for 1/2 < nu <= 1 |
+| Not DQM on the whole interior (free endpoint) | unif, pareto, power, triang |
+| Not DQM on part of the interior | gev, gpd for xi <= -1/2; ged, sged for nu <= 1/2; tlambda for lambda >= 1/2 |
+| Singular information at interior points | sn at alpha = 0; bnbinom on r = beta; genbeta on shape2 = 1; tlambda at lambda = 1, 2 |
+| Rank loss at design values | size 0 or 1 (bbinom, binom, cmb, zib, zmbinom, ztbinom); zipf N = 1; one-point truncations (tbinom, tpois) |

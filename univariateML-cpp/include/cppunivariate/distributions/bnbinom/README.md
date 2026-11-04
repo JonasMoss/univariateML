@@ -123,6 +123,8 @@ The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-disc
 
 Any subset of $r$, $\alpha$ and $\beta$ may be held fixed. When $r$ and $\beta$ are both free, swapping them gives exactly the same distribution. The returned representative satisfies $r\le\beta$. No ordering is imposed when either is held.
 
+On the diagonal $r=\beta$ the swap fixes the law, so the score along $(1,0,-1)$ in $(r,\alpha,\beta)$ vanishes and the Fisher information has rank 2 of 3. The diagonal is therefore a singular boundary of the identified set $r\le\beta$: Wald intervals for $r$ and $\beta$ separately are unreliable near it. Elsewhere in the interior the information is nonsingular ([classification](../../../../../dev/research/evaluations/2026-11-04-dqm-c-report.md)).
+
 A deterministic multistart search compares finite stationary points with every reachable negative binomial and Poisson face. Limiting models win computed likelihood ties within $10^{-8}$ times the sample size. This search does not certify global optimality or assume unimodality. An unresolved score or range endpoint stops the fit. With all coefficients supplied, the likelihood is evaluated directly. For all-zero data, any free coefficient allows the likelihood to approach one only at an excluded boundary. With every coefficient held, the all-zero likelihood is evaluated at the supplied positive values.
 
 ## R notes
