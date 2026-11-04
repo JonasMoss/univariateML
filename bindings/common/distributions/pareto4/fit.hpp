@@ -27,6 +27,9 @@ inline FitResult fit_pareto4(cppunivariate::span x, Held shape1_arg = {}, Held s
  if (res.status == cppunivariate::BurrStatus::AllGeOne) return fail("The fixed-scale Pareto IV MLE does not exist when all observations >= min + scale. The limit is a shifted Pareto with its endpoint held at min + scale; the package has no held-endpoint Pareto fitter.");
  if (res.status == cppunivariate::BurrStatus::WeibullBoundary) return fail("The burr likelihood is maximised at a limit. Use `mlweibull(x - min)` to fit this model.");
  if (res.status == cppunivariate::BurrStatus::ParetoBoundary) return fail("The burr likelihood is maximised at a limit. Use `mlpareto(x - min)` to fit this model.");
+ if (res.status == cppunivariate::BurrStatus::CertificateTie) return fail("Pareto IV certificate unresolved at a tie or sign-uncertain seam; no verified MLE.");
+ if (res.status == cppunivariate::BurrStatus::CertificateBudget) return fail("Pareto IV certificate budget exhausted; no verified MLE.");
+ if (res.status == cppunivariate::BurrStatus::NumericalFailure) return fail("Pareto IV certificate numerical failure; no verified MLE.");
  if (res.status == cppunivariate::BurrStatus::IterationFailure) return fail("Pareto IV delegate search failed to converge.");
  if (res.status == cppunivariate::BurrStatus::InvalidInit ||
  !std::isfinite(res.shape1) || !std::isfinite(res.shape2) || !std::isfinite(res.scale))

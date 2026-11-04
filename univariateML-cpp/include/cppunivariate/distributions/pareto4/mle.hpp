@@ -5,7 +5,11 @@
 namespace cppunivariate {
 struct Pareto4Result { double shape1,shape2,scale,min,logLik; int iterations; BurrStatus status; };
 
+inline Pareto4Result pareto4_mle_certified(span x, double min, double tol, int maxit);
+
 inline Pareto4Result pareto4_mle(span x, double min, double tol, int maxit, double scale=std::numeric_limits<double>::quiet_NaN(), double shape1=std::numeric_limits<double>::quiet_NaN(), double shape2=std::numeric_limits<double>::quiet_NaN()) {
+  if(std::isnan(scale) && std::isnan(shape1) && std::isnan(shape2))
+    return pareto4_mle_certified(x,min,tol,maxit);
   std::vector<double> y(x.size());
   for (std::size_t i=0;i<x.size();++i) y[i]=(x[i]-min);
   bool valid=tol>0 && std::isfinite(tol) && maxit>0 && std::isfinite(min);
@@ -14,8 +18,7 @@ inline Pareto4Result pareto4_mle(span x, double min, double tol, int maxit, doub
   auto r=(!std::isnan(shape1)||!std::isnan(shape2)) ? burr_mle_holds(span{y.data(),y.size()},shape1,shape2,scale,tol,maxit) : std::isnan(scale) ? burr_mle_legacy(span{y.data(),y.size()},tol,maxit) : burr_mle_fixed_scale(span{y.data(),y.size()},scale,tol,maxit);
   return {r.shape1,r.shape2,r.scale,min,r.logLik,r.iterations,r.status};
 }
-// Explicit certified joint excess fit. The default remains compatibility-gated
-// by the frozen golden; see the dossier and TASK-116 report.
+// Certified joint excess fit shared by the public all-free regular path.
 inline Pareto4Result pareto4_mle_certified(span x, double min, double tol, int maxit) {
   const double nan=std::numeric_limits<double>::quiet_NaN();
   if(!std::isfinite(min))

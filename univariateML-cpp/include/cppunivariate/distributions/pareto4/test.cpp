@@ -149,3 +149,16 @@ TEST_CASE("pareto4: certified excess arithmetic cannot create ties or overflow")
   const std::vector<double> large={1,std::numeric_limits<double>::max()};
   CHECK(cppunivariate::pareto4_mle_certified(mltest::as_span(large),-std::numeric_limits<double>::max(),1e-8,1000).status==cppunivariate::BurrStatus::NumericalFailure);
 }
+
+TEST_CASE("pareto4: public joint path preserves every certificate outcome") {
+  for(const auto& f:burr_certificate_fixtures) {
+    const auto a=cppunivariate::pareto4_mle(mltest::as_span(f.x),0,1e-8,1000);
+    const auto b=cppunivariate::pareto4_mle_certified(mltest::as_span(f.x),0,1e-8,1000);
+    CHECK(a.status==b.status);
+    if(std::isfinite(b.logLik)) CHECK(a.logLik==b.logLik);
+    else CHECK(std::isnan(a.logLik));
+    if(b.status==cppunivariate::BurrStatus::Ok) {
+      CHECK(a.shape1==b.shape1); CHECK(a.shape2==b.shape2); CHECK(a.scale==b.scale);
+    }
+  }
+}
