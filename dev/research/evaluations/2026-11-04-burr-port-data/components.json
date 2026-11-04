@@ -1,0 +1,7 @@
+{
+  "profiles_per_batch": 41,
+  "repetitions": 10,
+  "proposal_batch_seconds": 0.0240157628,
+  "proposal_and_enclosure_batch_seconds": 0.026204006100000003,
+  "checksum": -681341.7102754449
+}

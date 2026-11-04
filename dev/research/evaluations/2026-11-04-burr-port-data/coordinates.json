@@ -1,0 +1,65 @@
+[
+  {
+    "sample": "golden",
+    "coordinates": "standardized",
+    "isolated": true,
+    "delta": 0.004003912416305492,
+    "fraction": 0.003
+  },
+  {
+    "sample": "golden",
+    "coordinates": "unshifted logs",
+    "isolated": true,
+    "delta": 0.004003912416305492,
+    "fraction": 0.003
+  },
+  {
+    "sample": "golden",
+    "coordinates": "logs translated by proposed log scale",
+    "isolated": true,
+    "delta": 0.004003912416305492,
+    "fraction": 0.003
+  },
+  {
+    "sample": "golden-times-1000",
+    "coordinates": "standardized",
+    "isolated": true,
+    "delta": 0.004003912416305492,
+    "fraction": 0.003
+  },
+  {
+    "sample": "golden-times-1000",
+    "coordinates": "unshifted logs",
+    "isolated": true,
+    "delta": 1.3346374721018306e-06,
+    "fraction": 1e-06
+  },
+  {
+    "sample": "golden-times-1000",
+    "coordinates": "logs translated by proposed log scale",
+    "isolated": true,
+    "delta": 0.004003912416305492,
+    "fraction": 0.003
+  },
+  {
+    "sample": "burr-k0.08-r3",
+    "coordinates": "standardized",
+    "isolated": true,
+    "delta": 2.1101874789593163e-06,
+    "fraction": 3.0000000000000004e-05
+  },
+  {
+    "sample": "burr-k0.08-r3",
+    "coordinates": "unshifted logs",
+    "isolated": true,
+    "delta": 0.00021101874789593162,
+    "fraction": 0.003
+  },
+  {
+    "sample": "burr-k0.08-r3",
+    "coordinates": "logs translated by proposed log scale",
+    "isolated": true,
+    "delta": 0.00021101874789593162,
+    "fraction": 0.003
+  }
+]

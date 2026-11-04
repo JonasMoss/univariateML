@@ -33,12 +33,12 @@ r:
     shape2: Known positive finite coefficient; NULL estimates it.
     shape1: Known positive finite coefficient; NULL estimates it.
     abstol: Absolute Newton step tolerance in `log(shape2)` when scale is fixed.
-    gradtol: Gradient tolerance for the mean profiled negative log likelihood.
-    iterlim: Maximum BFGS iterations per start.
-    shape10: Optional positive starting shape1; `NULL` uses automatic starts.
-    shape20: Optional positive starting shape2; `NULL` uses automatic starts.
-    scale0: Optional positive starting scale; `NULL` uses automatic starts.
-    reltol: Relative objective tolerance for BFGS.
+    gradtol: Positive legacy gradient tolerance; all-free certification uses fixed conservative enclosures.
+    iterlim: Maximum proposal iterations (at most 120 per bracketed solve); the global certificate has a separate 4096-profile budget.
+    shape10: Optional positive historical starting shape1; checked for compatibility.
+    shape20: Optional positive historical starting shape2; checked for compatibility.
+    scale0: Optional positive historical starting scale; checked for compatibility.
+    reltol: Positive legacy relative objective tolerance; retained for compatibility with held and dependent fits.
 log_density: log(shape1) + log(shape2) - log(x) - shape2*log(scale/x) - (shape1+1)*log(1+(x/scale)**shape2)
 limits:
   - name: unbounded likelihood
@@ -57,15 +57,13 @@ limits:
   - model: 'weibull'
     firmness: proved
     when: The shape $k$ tends to infinity while $s k^{-1/c}$ tends to a positive Weibull scale.
-    detect: A numerical comparison finds no candidate finite fit improving on this limit by more than $10^{-8}n$ log-likelihood units. This comparison is not a global certificate.
+    detect: All-free search strictly excludes every finite profile interval using dual/chord bounds, small-k exclusion and a signed seam bound relative to the exact Weibull optimum. Computed enclosures use the stated practical arithmetic margin.
     status: 'WeibullBoundary'
-    numerical: true
   - model: 'pareto'
     firmness: proved
     when: The power $c$ tends to infinity while $kc$ tends to a positive Pareto shape and $s$ stays at its endpoint.
-    detect: A numerical comparison finds no candidate finite fit improving on this limit by more than $10^{-8}n$ log-likelihood units. This comparison is not a global certificate.
+    detect: All-free search strictly excludes every finite profile interval using dual/chord bounds, small-k exclusion and a signed or unsigned Weibull tail bound. Computed enclosures use the stated practical arithmetic margin.
     status: 'ParetoBoundary'
-    numerical: true
   - model: 'pareto'
     firmness: proved
     fixed: [scale]
@@ -111,11 +109,9 @@ relations:
     transform: power
     power: shape2
 fit:
-  method: multistart
-  certified: partial
-  note: 'burr/README.md, Details; burr/mle.hpp (public fitter and held overloads); burr/test.cpp: One-free-coordinate
-    and transformed Lomax subsets have monotone scores; free shapes/scale use numerical profiles or BFGS. Reciprocal
-    delegation inherits these qualifications.'
+  method: profile-search
+  certified: 'yes'
+  note: 'All-free fits are certified in exact arithmetic conditional on the computed comparisons, with the practical floating-point margin described below. Root boxes and negative profile curvature isolate the winner; dual/chord envelopes and both tail exclusions establish globality. Unresolved searches stop. Held subsets retain their separate algorithms and qualifications.'
 areas:
 - actuarial
 - economics and income
@@ -132,8 +128,12 @@ existence:
   uniqueness: unknown
   statement: >-
     With all coefficients free, constant positive data have unbounded likelihood.
-    For nonconstant data, the Weibull and Pareto limits can compete with finite
-    fits. A complete joint sample criterion and joint uniqueness are not established.
+    For nonconstant data, a finite MLE exists if and only if some finite point
+    reaches the larger of the optimized Pareto and Weibull log likelihoods
+    (equality is included). These are the only likelihood-retaining escape
+    faces. At least half the sample at its minimum precludes a finite MLE.
+    General joint uniqueness is not established; a successful certificate
+    proves uniqueness for that sample. Exact finite/face ties can stop unresolved.
     With only scale $s$ held, a finite maximum exists for nonconstant data if some observation is
     below $s$. Constant data below $s$ have unbounded likelihood.
     If all observations are at least $s$, the supremum is on the
@@ -152,7 +152,8 @@ existence:
     With $s$ held, profiling $k$ gives a one-dimensional likelihood whose
     endpoints yield the stated existence and Pareto conditions.
     The single-coordinate scores are strictly decreasing in suitable coordinates.
-    These conditional arguments do not certify the joint numerical search.
+    The joint certificate separately combines compact exclusion, root isolation
+    and the two face bounds; conditional arguments alone do not establish it.
 ---
 
 The Burr type XII distribution is a heavy-tailed model for positive size and loss data.
@@ -162,10 +163,74 @@ and the lower-tail power is $c$.
 
 ## Details
 
-Fitting requires a nonempty positive finite sample. The
+The all-free certificate requires at least two positive finite observations;
+constant samples have unbounded likelihood. Held subsets retain their
+existing sample-size contracts. The
 [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-genbeta.md)
 describes the limiting paths and the scope of the boundary comparisons.
-The joint fit uses several numerical starts and compares candidate fits with Weibull and Pareto limits. These comparisons do not constitute a global certificate.
+The all-free fit uses the certificate in
+[the root-box derivation](../../../../../dev/research/evaluations/2026-11-04-burr-root-data/derivation.md)
+and [the closure analysis](../../../../../dev/research/evaluations/2026-11-03-burr-closure-report.md).
+Its implementation is [certificate.hpp](certificate.hpp). All likelihoods
+inside the certificate are total sample log likelihoods with a common,
+explicitly restored log-data normalization constant. The Hessian is a
+likelihood Jacobian used for optimization, not Fisher information.
+
+For fixed $k$, the likelihood is strictly concave in $(c,b)$, where
+$b=-c\log s$. A bracketed intercept solve and a bracketed, decreasing
+profile-power score supply proposals. Safeguarded Newton steps remain inside
+those brackets. A 41-point logarithmic reconnaissance proposes stationary
+maxima, refined by analytic three-score Newton steps. Reconnaissance need
+not find every root: a missed competing root prevents global exclusion.
+User starts are validated positive finite values; the certificate's mandatory
+reconnaissance does not depend on the historical BFGS starting controls.
+
+A preconditioned fixed-point map encloses a unique three-score root in a
+small box. A larger product box contains the unique conditional nuisance
+maximum throughout a $k$ interval. A congruence enclosure of the negative
+Hessian proves negative profile curvature there; fixed-$k$ concavity alone
+would not suffice. Root boxes translate original log observations by the proposed log scale,
+propagating that exact affine change through the enclosures. Standardized
+coordinates or a large log offset can make the rectangular curvature extension
+unnecessarily loose.
+Outside the winning neighborhood, an entropy dual with one weight defined
+exactly through the sum constraint bounds each fixed-$k$ optimum. Convex
+chord envelopes bound intervals. Every remaining interval must be strictly
+below a feasible lower bound, or is subdivided; there is no likelihood tie
+preference or local-score rescue.
+
+If $m$ observations equal the sample minimum, the small-$k$ theorem excludes
+$0<k\le m/(n-m)$ against Pareto. The unsigned Weibull tail bound is
+$F(k)\le W+n^2(k+1)/[2(k+1-n)^2]$, for $k>n-1$.
+When the enclosed seam slope $A=\sum v_i^2/2-n$ is strictly negative,
+the signed seam theorem instead excludes all $k\ge1/h$ against the same
+exact Weibull optimum $W$. Its power root is bracketed and propagated into
+all fitted exponentials and seam constants. A slope enclosure containing
+zero supplies no signed-tail decision. A finite improvement can still use
+the unsigned bound. Without either route the fit stops unresolved.
+
+Certification is **in exact arithmetic, conditional on the computed
+comparisons, with a stated practical floating-point margin**. Each interval
+operation is enlarged by $64\epsilon(1+\max(|l|,|u|))$;
+an $n$-term sum uses $64\epsilon(n+1)(1+\sum_i\max(|l_i|,|u_i|))$,
+where $\epsilon=2^{-52}$. The elementary libm assumption is absolute error
+at most $8\epsilon\max(1,|f|)$ for exp, log, softplus, sigmoid and entropy.
+Root containment and curvature require a further 0.1 norm margin. These
+allowances are practical assumptions, not a universal libm theorem or
+outward-rounded interval proof. The golden root has independent exact
+rational evidence in the linked research work; that evidence does not make
+every production run an exact rational proof.
+
+Invalid domains, failed brackets, nonfinite evaluations and failed linear
+solves stop with explicit failure. The global budget is 4096 cached profiles;
+tail searches, root refinements and bracket solves are also bounded. Exhaustion
+returns `CertificateBudget`; a sign-uncertain seam or unresolved tie returns
+`CertificateTie`; other arithmetic/proposal failures return `NumericalFailure`.
+No capped estimate is returned. Constant positive data return `Unbounded`.
+The C++ `burr_mle_certified` entrypoint additionally accepts an explicit final
+`certificate_budget` for reproducible stops. The public default `burr_mle`
+uses this certified path. `burr_mle_legacy` remains for InvBurr, Pareto IV and
+GB2 starts, preserving those families' historical results; it is not certified.
 
 With only scale held at $s$ and nonconstant observations all at least $s$,
 the supremum is the endpoint-$s$ Pareto log-likelihood minus $Z\log 2$,
@@ -195,15 +260,26 @@ Supply `scale = s` to estimate only the shapes. This fits the historical
 scale-1 family to `x / s` and subtracts `length(x) * log(s)` from its
 log-likelihood. The fixed-scale path profiles `shape1` and refines `shape2`
 by Newton iteration, with a profile-likelihood fallback start. Starting
-controls `shape10`, `shape20`, `scale0`, and BFGS tolerances apply only to
-the free-scale path. Detected limits stop with a recommendation to fit
-`mlweibull` or `mlpareto`.
-A limit recommendation from a numerical comparison is not an exact sample criterion.
-The free-scale comparisons prefer a limit within $10^{-8}n$ log-likelihood
-units, so a tied or very slightly better finite maximum can be rejected.
+controls `shape10`, `shape20`, `scale0`, and historical BFGS tolerances
+are retained for compatibility and validated on the all-free path. Detected
+limits stop with a recommendation to fit `mlweibull` or `mlpareto`.
+Certificate tie, budget and numerical failures have distinct error messages
+and return no coefficient vector. The returned iteration count on the
+all-free path is the number of attempted cached conditional profiles.
+Held-$c$ and held-scale paths keep their historical limit diagnostics; their
+numerical comparisons do not acquire the all-free certificate.
 
 ## Decision history
 
 univariateML 1.x estimated only the shapes, with scale fixed at 1.
 The current default also estimates scale. The fixed-scale limit retains
 endpoint $s$, including the likelihood penalty at observations equal to it.
+
+On 2026-11-04 (TASK-138), the all-free BFGS comparison was replaced by root
+boxes plus global exclusion. The previous $10^{-8}n$ face preference could
+reject a better finite maximum and is deliberately absent here. The signed
+seam bound avoids the large-$k$ cost of an unsigned bound near Weibull.
+The earlier quadrature curvature diagnostic had incorrect signs on two
+retained workloads and is not used. See the linked derivation and
+[port validation](../../../../../dev/research/evaluations/2026-11-04-burr-port-report.md)
+for the retained decisions, workload outcomes and timing evidence.

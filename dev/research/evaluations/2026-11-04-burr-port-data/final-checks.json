@@ -1,0 +1,9 @@
+{
+  "changed_document_links": 32,
+  "broken_changed_document_links": 0,
+  "syntax": "passed",
+  "source_hashes": "passed",
+  "whitespace": "passed",
+  "repository_wide_link_audit": "5 unresolved destinations in unchanged documents; see report",
+  "artifact_pane": "HTTP 403: worktree outside configured readable roots"
+}
