@@ -89,10 +89,8 @@ relations:
     shift: min
 fit:
   method: delegation
-  certified: partial
-  note: 'pareto3/README.md, Details; pareto3/mle.hpp (public fitter and held overloads); pareto3/test.cpp: Default
-    fit transfers to the concave log-logistic likelihood; held shape/scale routes delegate to Burr numerical machinery,
-    so certification of every held subset is not established.'
+  certified: 'yes'
+  note: 'pareto3/README.md, Details; pareto3/mle.hpp (public fitter and held overloads); pareto3/test.cpp: Every supported subset with min held delegates exactly to certified log-logistic on x-min, including held shape and held scale.'
 areas:
 - actuarial
 - economics and income

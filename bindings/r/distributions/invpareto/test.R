@@ -102,11 +102,19 @@ test_that("invpareto: P3 held profile exhaustion stops", {
   expect_error(mlinvpareto(c(.3,.8,1.7,4.2),shape=2,iterlim=1), "[Ff]ail|converge|unresolved|exhausted")
 })
 
-test_that("limit detector describes its numerical comparison", {
-  expect_error(mlinvpareto(rep(1, 5)), "numerical profile search.*tolerance")
+test_that("limit detector describes its certified comparison", {
+  expect_error(mlinvpareto(rep(1, 5)), "certified profile bound.*tolerance")
 })
 
-test_that("inverse Pareto help describes the detector as numerical", {
+test_that("inverse Pareto help describes the certified detector", {
   rd <- umvl_rd_text("mlinvpareto.Rd")
-  expect_match(rd, "numerical search does not establish a finite maximum", fixed = TRUE)
+  expect_match(rd, "certified Lomax profile search", fixed = TRUE)
+})
+
+test_that("inverse Pareto carries inverse exponential stop details", {
+  e <- tryCatch(mlinvpareto(rep(2, 3)), error = identity)
+  expect_s3_class(e, "univariateML_limit")
+  expect_identical(e$model, "invexp")
+  expect_equal(e$estimates, c(scale = 2))
+  expect_equal(e$limit_loglik, -3 * (1 + log(2)))
 })

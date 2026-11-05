@@ -51,7 +51,7 @@ limits:
     firmness: proved
     fixed: [shape2]
     when: With $c$ held, $k$ tends to infinity and $s k^{1/c}$ stays at a positive inverse Weibull scale.
-    detect: With $c$ held, the numerical comparison for the transformed observations selects the exponential limit of the Lomax likelihood. This is not an exact sample criterion.
+    detect: With $c$ held, the certified Lomax comparison for the transformed observations selects the exponential limit of the Lomax likelihood. This is not an exact sample criterion.
     status: InvWeibullBoundary
     numerical: true
   - model: 'invweibull'
@@ -112,8 +112,8 @@ relations:
       scale: scale
 fit:
   method: delegation
-  certified: partial
-  note: 'All-free shapes and scale inherit the Burr global certificate in exact arithmetic conditional on computed comparisons and its practical floating-point margin. Unresolved ties, budget exhaustion and numerical failures stop. Held subsets retain their separate algorithms and numerical held-power boundary comparisons, hence the aggregate tag is partial.'
+  certified: 'partial'
+  note: 'invburr/README.md, Details; invburr/mle.hpp (public fitter and held overloads); invburr/test.cpp: All-free and held-power fits inherit Burr and Lomax certificates by reciprocation, including likelihood bounds and inverse-Weibull face coefficients. Held scale with both shapes free retains the historical numerical profile search; other shape holds use monotone scores or closed forms.'
 areas:
 - actuarial
 - economics and income
@@ -228,7 +228,7 @@ observations must be representable in binary64; nonfinite transformed
 coefficients or likelihoods cannot become successful fits. Ties (including
 sign-uncertain seams), the 4096-profile budget and arithmetic failures have
 separate diagnostics and never return unchecked estimates. Starting controls
-cannot bypass certification. Held subsets retain their historical algorithms.
+cannot bypass certification. Held power inherits the Lomax certificate; held scale with both shapes free retains its numerical profile algorithm.
 The general joint uniqueness theorem remains open; the certificate proves
 uniqueness only for each accepted finite sample.
 

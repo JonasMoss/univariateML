@@ -1,0 +1,20 @@
+{
+  "machine": "local workstation; no simbox",
+  "platform": "Linux-7.0.0-42-generic-x86_64-with-glibc2.43",
+  "architecture": "x86_64",
+  "python": "3.14.5",
+  "g++": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "R_packages": "R version 4.6.1 (2026-06-24) \ntestthat 3.3.2 \nRcpp 1.1.2 \nBH 1.90.0.1",
+  "node": "v22.22.1",
+  "emscripten": "emcc (Emscripten gcc/clang-like replacement + linker emulating GNU ld) 6.0.13 (e13ee988ce3d87a738dd8f3661d02223308c412a)",
+  "compute": {
+    "launcher": "/tmp/umvl-cpu/run4",
+    "nice": 10,
+    "maximum_reserved_cores": 4,
+    "OPENBLAS_NUM_THREADS": 1,
+    "OMP_NUM_THREADS": 1,
+    "MKL_NUM_THREADS": 1,
+    "CMAKE_BUILD_PARALLEL_LEVEL": 4,
+    "CTEST_PARALLEL_LEVEL": 4
+  }
+}

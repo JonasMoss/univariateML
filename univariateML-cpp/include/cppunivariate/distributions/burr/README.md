@@ -110,8 +110,8 @@ relations:
     power: shape2
 fit:
   method: profile-search
-  certified: partial
-  note: 'The all-free fit is certified in exact arithmetic conditional on the computed comparisons, with the practical floating-point margin described below. Root boxes and negative profile curvature isolate the winner; dual/chord envelopes and both tail exclusions establish globality. Unresolved searches stop. Held subsets keep their separate algorithms; the held-power Weibull comparison is numerical, hence the aggregate tag is partial.'
+  certified: 'partial'
+  note: 'burr/README.md, Details; burr/mle.hpp (public fitter and held overloads); burr/test.cpp: All-free fits use the global Burr certificate; held shape2 with free shape1 and scale uses certified Lomax on exp(shape2*(log(x)-max(log(x)))), with its exact Jacobian and Weibull face map. Held scale with both shapes free retains the historical numerical profile search. Other shape holds use monotone scores or closed forms.'
 areas:
 - actuarial
 - economics and income
@@ -229,8 +229,7 @@ returns `CertificateBudget`; a sign-uncertain seam or unresolved tie returns
 No capped estimate is returned. Constant positive data return `Unbounded`.
 The C++ `burr_mle_certified` entrypoint additionally accepts an explicit final
 `certificate_budget` for reproducible stops. The public default `burr_mle`
-uses this certified path. `burr_mle_legacy` remains for InvBurr, Pareto IV and
-GB2 starts, preserving those families' historical results; it is not certified.
+uses this certified path. `burr_mle_legacy` remains for GB2 starts; it is not certified.
 
 With only scale held at $s$ and nonconstant observations all at least $s$,
 the supremum is the endpoint-$s$ Pareto log-likelihood minus $Z\log 2$,
@@ -266,8 +265,11 @@ limits stop with a recommendation to fit `mlweibull` or `mlpareto`.
 Certificate tie, budget and numerical failures have distinct error messages
 and return no coefficient vector. The returned iteration count on the
 all-free path is the number of attempted cached conditional profiles.
-Held-$c$ and held-scale paths keep their historical limit diagnostics; their
-numerical comparisons do not acquire the all-free certificate.
+Held-$c$ inherits the separate Lomax certificate, with the Jacobian
+$n\log c+(c-1)\sum\log x_i-cn\max\log x_i$ for normalized powers.
+Every likelihood bound and candidate receives this shift. Underflow of a
+positive power stops as a numerical failure. The held-scale two-shape
+profile remains numerical and does not acquire the all-free certificate.
 
 ## Decision history
 

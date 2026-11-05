@@ -106,9 +106,8 @@ relations:
       xi: 1/lambda
 fit:
   method: delegation
-  certified: partial
-  note: 'frechet/README.md, Details; frechet/mle.hpp (public fitter and held overloads); frechet/test.cpp: Held
-    location delegates to the certified inverse-Weibull fit; free location uses numerical constrained profile searches.'
+  certified: 'partial'
+  note: 'frechet/README.md, Details; frechet/mle.hpp (public fitter and held overloads); frechet/test.cpp: Every subset with mu held is an inverse-Weibull fit (joint concave log profile, held-shape closed form or held-scale monotone shape score). Free mu retains numerical location/profile searches: all regular coefficients free, lambda held, sigma held, or both held.'
 areas:
 - extremes and environment
 classification: specialist

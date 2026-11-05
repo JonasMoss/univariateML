@@ -48,6 +48,8 @@ r:
     iterlim: Maximum delegate iterations.
 log_density: log(shape2)-log((x-min))-loggamma(shape3)-loggamma(shape1)+loggamma(shape3+shape1)+shape3*shape2*log((x-min)/scale)-(shape3+shape1)*log(1+((x-min)/scale)**shape2)
 limits:
+- {firmness: proved, model: weibull, when: 'With shape3 held at one, the Burr submodel tends to its Weibull face.', status: WeibullBoundary, fixed: [shape3], numerical: true}
+- {firmness: proved, model: invweibull, when: 'With shape1 held at one, the inverse Burr submodel tends to its inverse-Weibull face.', status: InvWeibullBoundary, fixed: [shape1], numerical: true}
 - name: unbounded likelihood
   firmness: proved
   when: With $\alpha$ and $\tau$ positive and fixed, the power $\gamma$ tends to infinity and scale places the concentrating distribution at the common excess.
@@ -198,9 +200,7 @@ relations:
 fit:
   method: delegation
   certified: partial
-  note: 'fpareto/README.md, Details; fpareto/mle.hpp (public fitter and held overloads); fpareto/test.cpp: With
-    threshold and beta shapes held, the GB2 delegate has a strictly concave inner power/location problem; joint
-    beta-shape search and face enumeration remain numerical.'
+  note: 'fpareto/README.md, Details; fpareto/mle.hpp (public fitter and held overloads); fpareto/test.cpp: With min held, GB2 on excesses transfers certified Burr and inverse Burr submodels when shape3=1 or shape1=1 is held. The parent held-scale two-shape profiles remain numerical. Holding both beta shapes gives a concave power/location likelihood, and holding power and scale gives a concave beta-shape likelihood. Outside unit-shape reductions, free-beta-shape profiles with power or scale free retain numerical searches and face comparisons. Face coefficients refer to excess data.'
 areas:
 - actuarial
 - economics and income

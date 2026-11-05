@@ -62,3 +62,13 @@ TEST_CASE("pareto2: shifted deep-tail delegation") {
   CHECK(cppunivariate::distributions::qpareto2(-INFINITY, 2, 3, 4, true, true) == 4);
   CHECK(cppunivariate::distributions::ppareto2(INFINITY, 2, 3, 4, false, true) == -INFINITY);
 }
+
+TEST_CASE("Pareto II held coefficients use exact Lomax coordinates") {
+ const std::vector<double> x{2,3,4,7,12},y{1,2,3,6,11};
+ for(double shape:{double(NAN),2.})for(double scale:{double(NAN),3.}) {
+  const auto r=cppunivariate::pareto2_mle(mltest::as_span(x),1,1e-10,1000,shape,scale);
+  const auto p=cppunivariate::lomax_mle(mltest::as_span(y),1e-10,1000,NAN,std::isnan(scale)?scale:1/scale,shape);
+  CHECK(r.status==p.status);
+  if(r.status==cppunivariate::LomaxStatus::Ok){CHECK(r.logLik==doctest::Approx(p.logLik));CHECK(r.shape==doctest::Approx(p.kappa));CHECK(r.scale==doctest::Approx(1/p.lambda));}
+ }
+}

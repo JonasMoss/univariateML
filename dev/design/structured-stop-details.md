@@ -51,7 +51,7 @@ certificates, numerical margins and unresolved guarantees.
 ## Bindings
 
 `bindings/common/fit.hpp` carries `error_kind` (`tie`, `limit`, `budget`,
-`nomle`), a limit `model` id, named candidates, named limit estimates and bounds.
+`nomle`, and for delegates `numerical` or `unresolved`), a limit `model` id, named candidates, named limit estimates and bounds.
 Unclassified input and numerical failures keep their existing ordinary errors.
 Successful fits and all printed messages retain their existing contract.
 
@@ -73,3 +73,33 @@ NaN and infinity are native numeric values, not JSON-safe serialization.
 For a new family: fill the payload where the evidence is computed; preserve it
 through delegates and transformations; classify the existing stop in its common
 fit header; add core and public-binding tests; retain existing message text.
+
+## Certified delegates (TASK-116.1, 2026-11-05)
+
+Pareto II and III use Lomax and log-logistic on excesses, respectively.
+Pareto IV transports Burr interior witnesses by appending the held threshold;
+its face coefficients remain those of the model fitted to excesses, as named
+in the diagnostic (`mlweibull(x - min)` or `mlpareto(x - min)`). Translation
+has unit Jacobian and preserves all likelihood bounds.
+
+Held-power Burr uses `y=exp(c*(log(x)-M))`, `M=max(log(x))`. The total
+log Jacobian is `n*log(c)+(c-1)*sum(log(x))-c*n*M`. A Lomax witness
+`(lambda,kappa)` becomes `(kappa,c,exp(M-log(lambda)/c))`; an exponential
+rate becomes a Weibull scale `exp(M-log(rate)/c)`. The same additive shift
+applies to candidate intervals, global bounds, selected-face likelihood and
+unresolved-segment bound. A transformed positive observation that underflows
+to zero stops with NumericalFailure. Inverse Burr applies its reciprocal
+transport after this map, retaining certificate failure categories.
+
+Inverse Pareto swaps Lomax `(lambda,kappa)` to `(shape,scale)=(kappa,lambda)`
+and adds `-2*sum(log(x))` to every likelihood field. The exponential face
+becomes `StopModel::InvExp`, with public inverse-exponential `scale=rate`.
+Unit held beta shapes in beta-prime and GB2 transfer these certificates,
+with witnesses reordered into each public coefficient order. Feller–Pareto
+appends its held threshold to GB2 interior witnesses. A free beta shape that
+happens to fit near one does not qualify for this reduction.
+
+These transports preserve the parent certificate conditional on computed
+comparisons and its practical floating-point margin. They do not certify the
+held-scale two-free-shape Burr profile, constrained equal-shape paralogistic
+profiles, free-location Fréchet profiles, or general GB2/beta-prime profiles.

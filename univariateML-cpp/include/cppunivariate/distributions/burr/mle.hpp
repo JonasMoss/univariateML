@@ -308,7 +308,17 @@ inline BurrMLE burr_mle_holds(span x,double a,double b,double s,double tol=1e-9,
  // can be tested without ever forming x^b by scaling at max(log x).
  if(fa&&fs){
    std::vector<double> y;for(double v:l)y.push_back(std::exp(b*(v-mx)));
+   for(double v:y)if(!(v>0) || !std::isfinite(v)){bad.status=BurrStatus::NumericalFailure;return bad;}
    auto r=lomax_mle(span{y.data(),y.size()},tol,maxit);
+   const double jac=n*std::log(b)+(b-1)*n*mean-b*n*mx;
+   bad.stop_detail=r.stop_detail;
+   for(auto& c:bad.stop_detail.candidates){
+     if(c.model==StopModel::None && c.coef.size()==2)c.coef={c.coef[1],b,std::exp(mx-std::log(c.coef[0])/b)};
+     else if(c.model==StopModel::Exp && c.coef.size()==1){c.model=StopModel::Weibull;c.coef={b,std::exp(mx-std::log(c.coef[0])/b)};}
+     c.loglik_lower+=jac;c.loglik_upper+=jac;
+   }
+   bad.stop_detail.loglik_lower+=jac;bad.stop_detail.loglik_upper+=jac;
+   bad.stop_detail.segment_loglik_upper+=jac;bad.stop_detail.limit_loglik+=jac;
    if(r.status==LomaxStatus::ExponentialLimit){
      bad.status=BurrStatus::WeibullBoundary;
      const double rate=r.stop_detail.limit_coef.empty()?NAN:r.stop_detail.limit_coef[0];
@@ -316,8 +326,10 @@ inline BurrMLE burr_mle_holds(span x,double a,double b,double s,double tol=1e-9,
      bad.stop_detail.limit_loglik=r.stop_detail.limit_loglik+n*std::log(b)+(b-1)*n*mean-b*n*mx;
      return bad;
    }
-   if(r.status!=LomaxStatus::Ok){bad.status=BurrStatus::IterationFailure;return bad;}
+   if(r.status!=LomaxStatus::Ok){bad.status=r.certificate_failure==LomaxCertificateFailure::Budget?BurrStatus::CertificateBudget:r.certificate_failure==LomaxCertificateFailure::Arithmetic?BurrStatus::NumericalFailure:BurrStatus::IterationFailure;return bad;}
    a=r.kappa;s=std::exp(mx-std::log(r.lambda)/b);
+   if(!(a>0 && std::isfinite(a) && s>0 && std::isfinite(s) && std::isfinite(r.logLik+jac))){bad.status=BurrStatus::NumericalFailure;return bad;}
+   return {a,b,s,r.logLik+jac,r.iterations,BurrStatus::Ok};
  } else {
    auto location=[&](double power){return solve_root([&](double c){double z=n;for(double v:l)z-=(a+1)*burr_hold_detail::sigmoid(power*(v-mean)-c);return -z;});};
    if(fb){

@@ -25,12 +25,16 @@ inline FitResult fit_betapr(cppunivariate::span x, Held shape1_arg = {}, Held sh
       ? cppunivariate::betapr_mle_fixed_scale(x, held, gradtol, iterlim)
       : cppunivariate::betapr_mle(x, gradtol, iterlim,
                                       shape10, shape20, scale0, reltol, abstol);
+  if(res.status==cppunivariate::BetaPrimeStatus::ExpBoundary)
+    return stop_failure(fail("The certified beta-prime submodel selects the exponential limit. Use `mlexp`."),res.stop_detail,"limit",{"shape1","shape2","scale"},"exp");
+  if(res.status==cppunivariate::BetaPrimeStatus::InvExpBoundary)
+    return stop_failure(fail("The certified beta-prime submodel selects the inverse exponential limit. Use `mlinvexp`."),res.stop_detail,"limit",{"shape1","shape2","scale"},"invexp");
   if (res.status == cppunivariate::BetaPrimeStatus::GammaBoundary)
     return fail("The beta-prime likelihood selects the gamma limit. Use `mlgamma` to fit this model.");
   if (res.status == cppunivariate::BetaPrimeStatus::InvGammaBoundary)
     return fail("The beta-prime likelihood selects the inverse-gamma limit. Use `mlinvgamma` to fit this model.");
   if (res.status == cppunivariate::BetaPrimeStatus::BfgsFailure)
-    return fail("Beta-prime optimizer BfgsFailure: profile did not converge or exceeded its numerical search range; increase iterlim.");
+    return stop_failure(fail("Beta-prime optimizer BfgsFailure: profile did not converge or exceeded its numerical search range; increase iterlim."),res.stop_detail,res.certificate_failure==cppunivariate::LomaxCertificateFailure::Budget?"budget":res.certificate_failure==cppunivariate::LomaxCertificateFailure::Arithmetic?"numerical":"unresolved",{"shape1","shape2","scale"},"");
   if (res.status == cppunivariate::BetaPrimeStatus::InvalidStart ||
       !std::isfinite(res.alpha) || !std::isfinite(res.beta) || !std::isfinite(res.scale))
     return fail("Beta-prime MLE requires positive finite observations with positive log-variance.");

@@ -15,16 +15,21 @@ inline FitResult fit_gb2(cppunivariate::span x, Held shape1_arg = {}, Held shape
   auto r=cppunivariate::gb2_mle(cppunivariate::span{x.data(),x.size()},gradtol,iterlim,shape1,shape2,shape3,scale);
   switch(r.status) {
     case cppunivariate::Gb2Status::Ok: break;
+    case cppunivariate::Gb2Status::WeibullBoundary: return stop_failure(failure("GB2 selects a limiting model. Use `mlweibull`."),r.stop_detail,"limit",{"shape1","shape2","shape3","scale"},"weibull");
+    case cppunivariate::Gb2Status::InvWeibullBoundary: return stop_failure(failure("GB2 selects a limiting model. Use `mlinvweibull`."),r.stop_detail,"limit",{"shape1","shape2","shape3","scale"},"invweibull");
+    case cppunivariate::Gb2Status::CertificateTie: return stop_failure(failure("GB2 certified delegate tie stop; no verified maximum."),r.stop_detail,"tie",{"shape1","shape2","shape3","scale"},"");
+    case cppunivariate::Gb2Status::CertificateBudget: return stop_failure(failure("GB2 certified delegate budget stop; no verified maximum."),r.stop_detail,"budget",{"shape1","shape2","shape3","scale"},"");
+    case cppunivariate::Gb2Status::NumericalFailure: return stop_failure(failure("GB2 certified delegate numerical stop; no verified maximum."),r.stop_detail,"numerical",{"shape1","shape2","shape3","scale"},"");
     case cppunivariate::Gb2Status::TrGammaBoundary: return failure("GB2 selects a limiting model. Use `mltrgamma`.");
     case cppunivariate::Gb2Status::InvTrGammaBoundary: return failure("GB2 selects a limiting model. Use `mlinvtrgamma`.");
     case cppunivariate::Gb2Status::LognormalBoundary: return failure("GB2 selects a limiting model. Use `mllnorm`.");
-    case cppunivariate::Gb2Status::ParetoBoundary: return failure("GB2 selects a limiting model. Use `mlpareto`.");
-    case cppunivariate::Gb2Status::PowerBoundary: return failure("GB2 selects a limiting model. Use `mlpower`.");
+    case cppunivariate::Gb2Status::ParetoBoundary: return stop_failure(failure("GB2 selects a limiting model. Use `mlpareto`."),r.stop_detail,"limit",{"shape1","shape2","shape3","scale"},"pareto");
+    case cppunivariate::Gb2Status::PowerBoundary: return stop_failure(failure("GB2 selects a limiting model. Use `mlpower`."),r.stop_detail,"limit",{"shape1","shape2","shape3","scale"},"power");
     case cppunivariate::Gb2Status::DoubleParetoBoundary: return failure("GB2 selects the double Pareto limit; this package has no double Pareto fitter.");
     case cppunivariate::Gb2Status::InvalidData: return failure("GB2 requires positive finite nonconstant observations; constant data have an unbounded free likelihood.");
     case cppunivariate::Gb2Status::InvalidFixed: return failure("GB2 fixed parameters must be positive and finite.");
     case cppunivariate::Gb2Status::ScaleOutOfRange: return failure("GB2 scale is outside the representable range.");
-    default: return failure("GB2 search unresolved: no verified interior maximum; increase iterlim or inspect the limiting models.");
+    default: return stop_failure(failure("GB2 search unresolved: no verified interior maximum; increase iterlim or inspect the limiting models."),r.stop_detail,"unresolved",{"shape1","shape2","shape3","scale"},"");
   }
   FitResult out;
   out.estimates.emplace_back("shape1",r.shape1); if(shape1_arg.supplied) out.fixed.push_back("shape1");

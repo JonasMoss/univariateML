@@ -67,10 +67,8 @@ relations:
     transform: inverse
 fit:
   method: delegation
-  certified: partial
-  note: 'invparalogis/README.md, Details; invparalogis/mle.hpp (public fitter and held overloads); invparalogis/test.cpp:
-    Reciprocal paralogistic delegation preserves its held-shape monotone scale solve; the joint BFGS fit has no
-    global certificate.'
+  certified: 'partial'
+  note: 'invparalogis/README.md, Details; invparalogis/mle.hpp (public fitter and held overloads); invparalogis/test.cpp: Reciprocal paralogistic delegation certifies held shape through the monotone scale solve. Joint fitting and held scale with free shape remain numerical; the equal-shapes constraint prevents an unconstrained Burr certificate.'
 areas:
 - actuarial
 - economics and income

@@ -31,8 +31,9 @@ inline FitResult fit_invpareto(cppunivariate::span x, Held shape_arg = {}, Held 
   }
   auto res = cppunivariate::invpareto_mle(x, reltol, iterlim, start, shape_held, scale_held);
   if (res.status == cppunivariate::LomaxStatus::ExponentialLimit) {
-    return fail("The numerical profile search found no improvement over the inverse exponential limit beyond its tolerance. Use `mlinvexp` to fit that limit model.");
+    return stop_failure(fail("The certified profile bound places every improvement over the inverse exponential limit within its tolerance. Use `mlinvexp` to fit that limit model."),res.stop_detail,"limit",{"shape","scale"},"invexp");
   }
+  if(res.status==cppunivariate::LomaxStatus::IterationFailure) return stop_failure(fail("Certified Lomax delegate failed; no verified maximum."),res.stop_detail,res.certificate_failure==cppunivariate::LomaxCertificateFailure::Budget?"budget":"numerical",{"shape","scale"},"");
   if (res.status != cppunivariate::LomaxStatus::Ok || !std::isfinite(res.scale) ||
       !std::isfinite(res.shape)) {
     return fail("Inverse Pareto MLE failed to converge (check dispersion/inputs)");

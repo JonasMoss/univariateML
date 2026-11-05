@@ -40,7 +40,7 @@ log_density: log((1/scale)) + log(shape) - (shape + 1)*log(1 + (1/scale)*(x-min)
 limits:
 - when: The shape $\alpha$ and scale $\sigma$ tend to infinity with $\alpha/\sigma$ fixed at a positive rate.
   firmness: proved
-  detect: With threshold held and both other coefficients free, the numerical profile search finds no improvement over the best shifted exponential greater than $10^{-8}n$ log-likelihood units.
+  detect: With threshold held and both other coefficients free, the certified profile bound excludes improvement over the best shifted exponential greater than $10^{-8}n$ log-likelihood units.
   status: ExponentialLimit
   name: shifted exp; subtract min before fitting
   numerical: true
@@ -94,10 +94,8 @@ relations:
     shift: min
 fit:
   method: delegation
-  certified: partial
-  note: 'pareto2/README.md, Details; pareto2/mle.hpp (public fitter and held overloads); pareto2/test.cpp: Held
-    threshold transfers to Lomax, log-logistic or Burr; conditional monotone subsets are certified but joint excess
-    profiles inherit numerical-search qualifications. Free thresholds stop.'
+  certified: 'yes'
+  note: 'pareto2/README.md, Details; pareto2/mle.hpp (public fitter and held overloads); pareto2/test.cpp: Every supported subset with min held is exactly Lomax on x-min: the joint certificate, monotone held-shape solve, or closed-form held-scale solve. Stops retain diagnostics; exponential face coefficients refer to excess data.'
 areas:
 - actuarial
 - economics and income
@@ -137,7 +135,7 @@ Pareto type II models sizes above a lower endpoint $\mu$ with Lomax-distributed 
 
 Fitting holds the threshold fixed and requires finite observations strictly above it. Subtracting the threshold reduces the fit to [Lomax](../lomax/README.md), with shape $\kappa=\alpha$ and rate $\lambda=1/\sigma$.
 
-For the joint excess fit, put $y_i=x_i-\mu$, $z_i=y_i/\bar y$, $\bar u=\bar y/(\prod_i y_i)^{1/n}$ and $\psi(u)=n^{-1}\sum_i\log(e^{-u}+uz_i)$. A finite maximum exists exactly when $\psi(u)\le0$ somewhere in $0<u<\bar u$. Otherwise the supremum is the shifted exponential limit. This profile comparison does not establish uniqueness. The bounded numerical search refines candidate maxima without a global certificate.
+For the joint excess fit, put $y_i=x_i-\mu$, $z_i=y_i/\bar y$, $\bar u=\bar y/(\prod_i y_i)^{1/n}$ and $\psi(u)=n^{-1}\sum_i\log(e^{-u}+uz_i)$. A finite maximum exists exactly when $\psi(u)\le0$ somewhere in $0<u<\bar u$. Otherwise the supremum is the shifted exponential limit. This profile comparison does not establish uniqueness. The certified Lomax search bounds the entire existence interval and stops if its comparison cannot be resolved; see [Lomax](../lomax/README.md) for the practical floating-point margin.
 
 Holding scale gives $\hat\alpha=n/\sum_i\log(1+y_i/\sigma)$. Holding shape gives a unique scale-score root. Both cases permit constant positive excesses. If shape and scale are held while the threshold is free, the likelihood increases up to the sample minimum, giving a finite endpoint maximum. The interface nevertheless requires a held threshold for every subset.
 

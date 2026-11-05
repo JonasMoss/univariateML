@@ -41,6 +41,8 @@ r:
     iterlim: Maximum number of iterations.
 log_density: (shape1-1)*log(x/scale) - log(scale) - (shape1+shape2)*log(1+x/scale) - loggamma(shape1) - loggamma(shape2) + loggamma(shape1+shape2)
 limits:
+  - {firmness: proved, model: exp, when: 'With shape1 held at one, shape2 and scale diverge at fixed ratio.', status: ExpBoundary, fixed: [shape1], numerical: true}
+  - {firmness: proved, model: invexp, when: 'With shape2 held at one, shape1 diverges and scale vanishes at fixed product.', status: InvExpBoundary, fixed: [shape2], numerical: true}
   - firmness: proved
     name: positive log-variance
     when: Both free shapes $p$ and $q$ tend to infinity with their ratio and scale chosen to concentrate at the common observation.
@@ -96,9 +98,7 @@ relations:
 fit:
   method: multistart
   certified: partial
-  note: 'betapr/README.md, Details; betapr/mle.hpp (public fitter and held overloads); betapr/test.cpp: Fixed-scale
-    beta fit and both-shapes-held scale solve are unique; a single held shape with free scale uses a grid without
-    a global certificate.'
+  note: 'betapr/README.md, Details; betapr/mle.hpp (public fitter and held overloads); betapr/test.cpp: Held shape1=1 reduces exactly to certified Lomax and held shape2=1 to inverse Pareto, including all supported further holds and transformed stop bounds. Fixed-scale beta fitting is concave. The joint three-parameter fit and one-held non-unit shape profiles remain numerical.'
 areas:
 - actuarial
 - economics and income

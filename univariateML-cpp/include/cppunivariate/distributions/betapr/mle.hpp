@@ -11,16 +11,20 @@
 #include <vector>
 #include <algorithm>
 #include "../invgamma/mle.hpp"
+#include "../lomax/mle.hpp"
+#include "../invpareto/mle.hpp"
 #include <cmath>
 #include <cstddef>
 #include <limits>
 namespace cppunivariate {
 enum class BetaPrimeStatus { Ok, BfgsFailure, InvalidStart,
-                             GammaBoundary, InvGammaBoundary };
+                             GammaBoundary, InvGammaBoundary, ExpBoundary, InvExpBoundary };
 struct BetaPrimeResult {
   double alpha, beta, scale, logLik;
   int iterations;
   BetaPrimeStatus status;
+  StopDetail stop_detail{};
+  LomaxCertificateFailure certificate_failure=LomaxCertificateFailure::None;
 };
 // Negative log-likelihood in the two shapes at a supplied scale.
 // Default scale 1 also preserves the legacy validation-harness seam.
@@ -226,6 +230,24 @@ inline BetaPrimeResult betapr_mle_holds(span x, double held_a, double held_b,
     (fa&&(!(held_a>0)||!std::isfinite(held_a))) ||
     (fb&&(!(held_b>0)||!std::isfinite(held_b))) ||
     (fs&&(!(held_s>0)||!std::isfinite(held_s)))) return invalid;
+  if(held_a==1) {
+    const auto r=lomax_mle(x,tol,maxit,NAN,fs?1/held_s:NAN,held_b);
+    auto d=r.stop_detail;
+    for(auto& c:d.candidates)if(c.model==StopModel::None && c.coef.size()==2)c.coef={1,c.coef[1],1/c.coef[0]};
+    return {1,r.kappa,fs?held_s:1/r.lambda,r.logLik,r.iterations,
+      r.status==LomaxStatus::Ok?BetaPrimeStatus::Ok:
+      r.status==LomaxStatus::ExponentialLimit?BetaPrimeStatus::ExpBoundary:
+      r.status==LomaxStatus::InvalidStart?BetaPrimeStatus::InvalidStart:BetaPrimeStatus::BfgsFailure,d,r.certificate_failure};
+  }
+  if(held_b==1) {
+    const auto r=invpareto_mle(x,tol,maxit,NAN,held_a,held_s);
+    auto d=r.stop_detail;
+    for(auto& c:d.candidates)if(c.model==StopModel::None && c.coef.size()==2)c.coef={c.coef[0],1,c.coef[1]};
+    return {r.shape,1,r.scale,r.logLik,r.iterations,
+      r.status==LomaxStatus::Ok?BetaPrimeStatus::Ok:
+      r.status==LomaxStatus::ExponentialLimit?BetaPrimeStatus::InvExpBoundary:
+      r.status==LomaxStatus::InvalidStart?BetaPrimeStatus::InvalidStart:BetaPrimeStatus::BfgsFailure,d,r.certificate_failure};
+  }
   double lm=0,mean=0,invmean=0;
   for(double v:x) {
     if(!(v>0)||!std::isfinite(v))return invalid;
