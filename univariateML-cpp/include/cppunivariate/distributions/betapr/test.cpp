@@ -158,3 +158,31 @@ TEST_CASE("betapr: audited huge held-parameter magnitude") {
   CHECK((r.status==cppunivariate::BetaPrimeStatus::Ok || r.status==cppunivariate::BetaPrimeStatus::BfgsFailure));
   CHECK(r.status!=cppunivariate::BetaPrimeStatus::GammaBoundary);
 }
+
+TEST_CASE("beta-prime held unit shapes inherit Lomax certificates") {
+ const std::vector<double> x{1,2,3,4};
+ const auto r=cppunivariate::betapr_mle_holds(mltest::as_span(x),1,NAN,NAN,1e-10,1000);
+ const auto p=cppunivariate::lomax_mle(mltest::as_span(x),1e-10,1000);
+ REQUIRE(r.status==cppunivariate::BetaPrimeStatus::ExpBoundary);
+ CHECK(r.stop_detail.limit_loglik==doctest::Approx(p.stop_detail.limit_loglik));
+ std::vector<double> y;for(double v:x)y.push_back(1/v);
+ const auto inv=cppunivariate::betapr_mle_holds(mltest::as_span(y),NAN,1,NAN,1e-10,1000);
+ CHECK(inv.status==cppunivariate::BetaPrimeStatus::InvExpBoundary);
+ CHECK(inv.stop_detail.limit_coef==r.stop_detail.limit_coef);
+}
+
+TEST_CASE("beta-prime unit beta shapes preserve finite Lomax coefficients") {
+ const auto g=mltest::load_distribution_golden("lomax");
+ const auto p=cppunivariate::lomax_mle(mltest::as_span(g.data),1e-10,1000);
+ REQUIRE(p.status==cppunivariate::LomaxStatus::Ok);
+ const auto r=cppunivariate::betapr_mle_holds(mltest::as_span(g.data),1,NAN,NAN,1e-10,1000);
+ REQUIRE(r.status==cppunivariate::BetaPrimeStatus::Ok);
+ CHECK(r.alpha==1);CHECK(r.beta==doctest::Approx(p.kappa));CHECK(r.scale==doctest::Approx(1/p.lambda));
+ double ll=0,jac=0;std::vector<double> reciprocal;
+ for(double v:g.data){ll+=cppunivariate::distributions::dbetapr(v,r.alpha,r.beta,r.scale,true);reciprocal.push_back(1/v);jac+=2*std::log(v);}
+ CHECK(r.logLik==doctest::Approx(ll).epsilon(1e-8));
+ const auto inv=cppunivariate::betapr_mle_holds(mltest::as_span(reciprocal),NAN,1,NAN,1e-10,1000);
+ REQUIRE(inv.status==cppunivariate::BetaPrimeStatus::Ok);
+ CHECK(inv.alpha==doctest::Approx(p.kappa));CHECK(inv.beta==1);
+ CHECK(inv.scale==doctest::Approx(p.lambda));CHECK(inv.logLik==doctest::Approx(p.logLik+jac).epsilon(1e-8));
+}

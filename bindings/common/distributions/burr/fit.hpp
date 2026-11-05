@@ -27,8 +27,8 @@ inline FitResult fit_burr(cppunivariate::span x, Held shape1_arg = {}, Held shap
  if (res.status == cppunivariate::BurrStatus::ParetoBoundary) return stop_failure(fail("The burr likelihood is maximised at a limit. Use `mlpareto` to fit this model."),res.stop_detail,"limit",{"shape1","shape2","scale"},"pareto");
  if (res.status == cppunivariate::BurrStatus::CertificateTie) return stop_failure(fail("Burr global certificate unresolved: finite/face tie or sign-uncertain seam; no verified MLE."),res.stop_detail,"tie",{"shape1","shape2","scale"},"");
  if (res.status == cppunivariate::BurrStatus::CertificateBudget) return stop_failure(fail("Burr global certificate budget exhausted; no verified MLE."),res.stop_detail,"budget",{"shape1","shape2","scale"},"");
- if (res.status == cppunivariate::BurrStatus::NumericalFailure) return fail("Burr global certificate numerical failure (domain, bracket, nonfinite arithmetic or linear solve); no verified MLE.");
- if (res.status == cppunivariate::BurrStatus::IterationFailure) return fail("Constrained likelihood search failed to converge.");
+ if (res.status == cppunivariate::BurrStatus::NumericalFailure) return stop_failure(fail("Burr global certificate numerical failure (domain, bracket, nonfinite arithmetic or linear solve); no verified MLE."),res.stop_detail,"numerical",{"shape1","shape2","scale"},"");
+ if (res.status == cppunivariate::BurrStatus::IterationFailure) return stop_failure(fail("Constrained likelihood search failed to converge."),res.stop_detail,"unresolved",{"shape1","shape2","scale"},"");
  if (res.status == cppunivariate::BurrStatus::InvalidInit ||
  !std::isfinite(res.shape1) || !std::isfinite(res.shape2) || !std::isfinite(res.scale))
  return fail("burr MLE requires positive finite nonconstant data and positive starts and a positive finite fixed scale");

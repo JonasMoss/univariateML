@@ -13,16 +13,10 @@ inline Pareto3Result pareto3_mle(span x, double min, double tol, int maxit, doub
   bool valid=tol>0 && std::isfinite(tol) && maxit>0 && std::isfinite(min);
   for(double v:x) valid=valid && std::isfinite(v) && v>min;
   if(!valid) y.clear();
-  if(!std::isnan(shape)||!std::isnan(scale)){
-    auto r=burr_mle_holds(span{y.data(),y.size()},1,shape,scale,tol,maxit);
-    return {r.shape2,r.scale,min,r.logLik,r.iterations,r.status==BurrStatus::Ok?Pareto3Status::Ok:r.status==BurrStatus::Unbounded?Pareto3Status::Unbounded:Pareto3Status::IterationFailure};
-  }
-  auto r=loglogistic_mle(span{y.data(),y.size()},tol,maxit);
-  bool constant=x.size()>0;
-  for(double v:x) constant=constant && v==x[0];
-  const auto status=!valid || x.size()==0 ? Pareto3Status::InvalidData :
-    (constant ? Pareto3Status::Unbounded :
-      (r.status==LogLogisticStatus::Ok && std::isfinite(r.logLik) && r.shape>0 && r.scale>0 ? Pareto3Status::Ok : Pareto3Status::IterationFailure));
+  auto r=loglogistic_mle(span{y.data(),y.size()},tol,maxit,shape,scale);
+  const auto status=!valid || x.size()==0 || r.status==LogLogisticStatus::InvalidInput ? Pareto3Status::InvalidData :
+    r.status==LogLogisticStatus::Unbounded ? Pareto3Status::Unbounded :
+    r.status==LogLogisticStatus::Ok && std::isfinite(r.logLik) && r.shape>0 && r.scale>0 ? Pareto3Status::Ok : Pareto3Status::IterationFailure;
   return {r.shape,r.scale,min,r.logLik,r.iterations,status};
 }
 }

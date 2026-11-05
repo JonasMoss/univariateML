@@ -72,3 +72,57 @@ test('held-power faces retain transformed coefficients', () => {
     });
   }
 });
+
+test('translated and reciprocal delegates preserve certified stops', () => {
+  for(const [family,data,held,model,coef,ll] of [
+    ['pareto2',[3,3,3],{min:1},'exp',{rate:.5},-3*(1+Math.log(2))],
+    ['invpareto',[2,2,2],{},'invexp',{scale:2},-3*(1+Math.log(2))],
+    ['pareto4',[4,4,4],{min:1,shape2:2},'weibull',{shape:2,scale:3},3*(Math.log(2/3)-1)],
+    ['gb2',[3,3,3],{shape3:1,shape2:2},'weibull',{shape:2,scale:3},3*(Math.log(2/3)-1)],
+    ['fpareto',[4,4,4],{min:1,shape3:1,shape2:2},'weibull',{shape:2,scale:3},3*(Math.log(2/3)-1)],
+    ['betapr',[2,2,2],{shape1:1},'exp',{rate:.5},-3*(1+Math.log(2))]
+  ]) {
+    assert.throws(()=>api[family].fit(data,held),e=>{
+      assert.equal(e.kind,'limit');assert.equal(e.model,model);
+      for(const [name,value] of Object.entries(coef))assert.ok(Math.abs(e.estimates[name]-value)<1e-10);
+      assert.ok(Math.abs(e.limit_loglik-ll)<1e-10);return true;
+    });
+  }
+});
+
+test('Lomax budget witnesses retain public delegate coordinates and bounds', () => {
+  const y=[1,1,40,59];
+  for(const [family,data,held,names] of [
+    ['pareto2',y.map(v=>v+1),{min:1},['shape','scale','min']],
+    ['invpareto',y.map(v=>1/v),{},['shape','scale']],
+    ['burr',y.map(Math.sqrt),{shape2:2},['shape1','shape2','scale']],
+    ['invburr',y.map(v=>1/Math.sqrt(v)),{shape2:2},['shape1','shape2','scale']],
+    ['gb2',y.map(Math.sqrt),{shape2:2,shape3:1},['shape1','shape2','shape3','scale']],
+    ['gb2',y.map(v=>1/Math.sqrt(v)),{shape1:1,shape2:2},['shape1','shape2','shape3','scale']],
+    ['fpareto',y.map(v=>1+Math.sqrt(v)),{min:1,shape2:2,shape3:1},['shape1','shape2','shape3','scale','min']],
+    ['fpareto',y.map(v=>1+1/Math.sqrt(v)),{min:1,shape1:1,shape2:2},['shape1','shape2','shape3','scale','min']],
+    ['betapr',y,{shape1:1},['shape1','shape2','scale']],
+    ['betapr',y.map(v=>1/v),{shape2:1},['shape1','shape2','scale']]
+  ]) {
+    assert.throws(()=>api[family].fit(data,held,{iterlim:1}),e=>{
+      assert.equal(e.kind,'budget',family);assert.ok(e.candidates.length>0,family);
+      assert.ok(e.loglik_lower<=e.loglik_upper,family);
+      for(const c of e.candidates){
+        assert.ok(c.loglik_lower<=c.loglik_upper,family);
+        if(c.model==='')for(const name of names)assert.ok(Number.isFinite(c[name]),`${family} ${name}`);
+      }
+      return true;
+    });
+  }
+});
+
+test('unrepresentable delegate reductions stop as numerical failures', () => {
+  for(const [family,data,held] of [
+    ['burr',[1e-300,1e300],{shape2:2}],
+    ['invburr',[1e-300,1e300],{shape2:2}],
+    ['pareto4',[1e-300,1e300],{min:0,shape2:2}],
+    ['gb2',[1e-300,1e300],{shape3:1,shape2:2}],
+    ['fpareto',[1e-300,1e300],{min:0,shape3:1,shape2:2}],
+    ['pareto4',[1e308,1.1e308],{min:-1e308}]
+  ])assert.throws(()=>api[family].fit(data,held),e=>e.kind==='numerical');
+});

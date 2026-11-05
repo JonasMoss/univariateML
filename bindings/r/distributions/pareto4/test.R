@@ -127,3 +127,9 @@ test_that("pareto4 refuses excess overflow and artificial ties", {
   expect_error(mlpareto4(c(1,.Machine$double.xmax), min=-.Machine$double.xmax), "certificate numerical failure; no verified MLE")
   expect_error(mlpareto4(c(1,1+.Machine$double.eps,2), min=-1e100), "certificate numerical failure; no verified MLE")
 })
+
+test_that("Pareto IV keeps numerical stops distinct from non-existence", {
+  e <- tryCatch(mlpareto4(c(1e-300, 1e300), min = 0, shape2 = 2), error = identity)
+  expect_s3_class(e, "univariateML_numerical")
+  expect_identical(e$kind, "numerical")
+})

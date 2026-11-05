@@ -34,7 +34,7 @@ limits:
   - model: invexp
     firmness: proved
     when: '$\alpha$ tends to infinity while $\alpha\theta$ tends to a positive inverse exponential scale'
-    detect: 'both coefficients are free and the numerical profile search on the reciprocals finds no improvement over the best inverse exponential larger than $10^{-8}n$ log-likelihood units'
+    detect: 'both coefficients are free and the certified profile bound on the reciprocals excludes improvement over the best inverse exponential larger than $10^{-8}n$ log-likelihood units'
     status: ExponentialLimit
     numerical: true
 references:
@@ -76,10 +76,8 @@ relations:
     transform: inverse
 fit:
   method: delegation
-  certified: partial
-  note: 'invpareto/README.md, Details; invpareto/mle.hpp (public fitter and held overloads); invpareto/test.cpp:
-    Either held coefficient gives a unique finite fit; joint scale profile and exponential-face comparison remain
-    numerical rather than a global certificate.'
+  certified: 'yes'
+  note: 'invpareto/README.md, Details; invpareto/mle.hpp (public fitter and held overloads); invpareto/test.cpp: Every supported subset delegates exactly to certified Lomax on 1/x, including its monotone held-shape and closed-form held-scale fits. Diagnostics swap lambda/kappa into shape/scale and add -2 sum(log(x)) to all likelihood bounds.'
 areas:
 - actuarial
 - economics and income
@@ -113,7 +111,7 @@ The [positive-family analysis](../../../../../dev/research/evaluations/2026-10-2
 
 The coefficient $\theta$ is a scale for the observations, and $\alpha$ controls their shape. Taking reciprocals gives a Lomax distribution with rate $\theta$ and shape $\alpha$. The fit uses this transformation and includes its Jacobian in the likelihood.
 
-Put $y_i=(1/x_i)/\overline{1/x}$, $\psi(u)=n^{-1}\sum_i\log(e^{-u}+uy_i)$ and $\bar u=\overline{1/x}(\prod_i x_i)^{1/n}$. The MLE exists exactly when $\psi(u)\le0$ for some $0<u<\bar u$. The Lomax argument compares the profiled likelihood with its exponential limit; reciprocation turns that limit into the inverse exponential. The bounded profile search is numerical and has no global certificate or proof of joint uniqueness.
+Put $y_i=(1/x_i)/\overline{1/x}$, $\psi(u)=n^{-1}\sum_i\log(e^{-u}+uy_i)$ and $\bar u=\overline{1/x}(\prod_i x_i)^{1/n}$. The MLE exists exactly when $\psi(u)\le0$ for some $0<u<\bar u$. The Lomax argument compares the profiled likelihood with its exponential limit; reciprocation turns that limit into the inverse exponential. The certified Lomax profile search bounds the global supremum and certifies isolated finite winners conditional on computed comparisons and the parent practical floating-point margin; unresolved comparisons stop.
 
 The condition $\overline{1/x^2}<2\overline{1/x}^{\,2}$ decides only local behaviour at the limit. The sample $(1,0.01)$ satisfies it but has a finite MLE. For two observations, the numerical transition is at a larger-to-smaller ratio of approximately 28.81; the exact criterion above handles equality.
 

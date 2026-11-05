@@ -168,3 +168,35 @@ TEST_CASE("gb2: audited huge held-parameter magnitude") {
   CHECK((r.status==cppunivariate::Gb2Status::Ok || r.status==cppunivariate::Gb2Status::SearchUnresolved || r.status==cppunivariate::Gb2Status::ScaleOutOfRange));
   CHECK(r.status!=cppunivariate::Gb2Status::TrGammaBoundary);
 }
+
+TEST_CASE("GB2 held unit beta shapes use Burr submodels") {
+ const std::vector<double> x{1,2,3,4};
+ const auto r=cppunivariate::gb2_mle(mltest::as_span(x),1e-10,1000,NAN,2,1,NAN);
+ const auto b=cppunivariate::burr_mle_holds(mltest::as_span(x),NAN,2,NAN,1e-10,1000);
+ REQUIRE(r.status==cppunivariate::Gb2Status::WeibullBoundary);
+ CHECK(r.stop_detail.limit_coef==b.stop_detail.limit_coef);
+ CHECK(r.stop_detail.limit_loglik==doctest::Approx(b.stop_detail.limit_loglik));
+ std::vector<double> reciprocal;for(double v:x)reciprocal.push_back(1/v);
+ const auto inv=cppunivariate::gb2_mle(mltest::as_span(reciprocal),1e-10,1000,1,2,NAN,NAN);
+ CHECK(inv.status==cppunivariate::Gb2Status::InvWeibullBoundary);
+ CHECK(inv.stop_detail.limit_coef[1]==doctest::Approx(1/r.stop_detail.limit_coef[1]));
+}
+
+TEST_CASE("GB2 unit beta shapes preserve finite certified joint coefficients") {
+ const auto g=mltest::load_distribution_golden("burr");
+ const auto r=cppunivariate::gb2_mle(mltest::as_span(g.data),1e-8,1000,NAN,NAN,1,NAN);
+ REQUIRE(r.status==cppunivariate::Gb2Status::Ok);
+ CHECK(r.shape1==doctest::Approx(g.estimates.at("shape1")).epsilon(mltest::kBurrGoldenTol));
+ CHECK(r.shape2==doctest::Approx(g.estimates.at("shape2")).epsilon(mltest::kBurrGoldenTol));
+ CHECK(r.shape3==1);
+ CHECK(r.scale==doctest::Approx(g.estimates.at("scale")).epsilon(mltest::kBurrGoldenTol));
+ double ll=0,jac=0;std::vector<double> reciprocal;
+ for(double v:g.data){ll+=cppunivariate::distributions::dgb2(v,r.shape1,r.shape2,r.shape3,r.scale,true);reciprocal.push_back(1/v);jac+=2*std::log(v);}
+ CHECK(r.logLik==doctest::Approx(ll).epsilon(1e-8));
+ const auto inv=cppunivariate::gb2_mle(mltest::as_span(reciprocal),1e-8,1000,1,NAN,NAN,NAN);
+ REQUIRE(inv.status==cppunivariate::Gb2Status::Ok);
+ CHECK(inv.shape1==1);CHECK(inv.shape2==doctest::Approx(r.shape2).epsilon(1e-6));
+ CHECK(inv.shape3==doctest::Approx(r.shape1).epsilon(1e-6));
+ CHECK(inv.scale==doctest::Approx(1/r.scale).epsilon(1e-6));
+ CHECK(inv.logLik==doctest::Approx(r.logLik+jac).epsilon(1e-8));
+}

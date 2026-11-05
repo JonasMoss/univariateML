@@ -245,7 +245,10 @@ inline InvBurrResult invburr_mle_holds(span x,double a,double b,double s,double 
  auto r=burr_mle_holds(span{y.data(),y.size()},a,b,std::isnan(s)?s:1/s,tol,maxit);
  InvBurrStatus st=InvBurrStatus::Ok;
  if(r.status==BurrStatus::InvalidInit)st=InvBurrStatus::InvalidInit;
- if(r.status==BurrStatus::IterationFailure||r.status==BurrStatus::CertificateTie||r.status==BurrStatus::CertificateBudget||r.status==BurrStatus::NumericalFailure)st=InvBurrStatus::IterationFailure;
+ if(r.status==BurrStatus::IterationFailure)st=InvBurrStatus::IterationFailure;
+ if(r.status==BurrStatus::CertificateTie)st=InvBurrStatus::CertificateTie;
+ if(r.status==BurrStatus::CertificateBudget)st=InvBurrStatus::CertificateBudget;
+ if(r.status==BurrStatus::NumericalFailure)st=InvBurrStatus::NumericalFailure;
  if(r.status==BurrStatus::Unbounded)st=InvBurrStatus::Unbounded;
  if(r.status==BurrStatus::WeibullBoundary)st=InvBurrStatus::InvWeibullBoundary;
  if(r.status==BurrStatus::ParetoBoundary)st=InvBurrStatus::PowerBoundary;

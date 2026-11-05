@@ -179,12 +179,11 @@ inline FrechetResult frechet_held_mle(span x,double tol,int maxit,double mu,
  }
  if(!hm && !hl && m==M) return bad; // shape spike with held scale
  if(hm) {
-   if(hl) {
-     const double sf=hs ? sigma : frechet_scale(x,lambda,mu);
-     const double ll=frechet_loglik(x,lambda,mu,sf);
-     return {lambda,mu,sf,ll,0,std::isfinite(ll) ? FrechetStatus::Ok : FrechetStatus::IterationFailure};
-   }
-   return frechet_shape(x,mu,sigma,0,tol,maxit);
+   std::vector<double> excess;for(double v:x)excess.push_back(v-mu);
+   const auto r=invweibull_mle(span{excess.data(),excess.size()},tol,maxit,NAN,lambda,sigma);
+   return {r.shape,mu,r.scale,r.logLik,r.iterations,
+     r.status==InvWeibullStatus::Ok?FrechetStatus::Ok:
+     r.status==InvWeibullStatus::IterationFailure?FrechetStatus::IterationFailure:FrechetStatus::InvalidData};
  }
  if(hl && !hs) {
    std::size_t k=0;for(double v:x) if(v==m) ++k;

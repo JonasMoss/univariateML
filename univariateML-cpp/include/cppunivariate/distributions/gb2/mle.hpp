@@ -12,11 +12,13 @@
 namespace cppunivariate {
 enum class Gb2Status { Ok, TrGammaBoundary, InvTrGammaBoundary,
   LognormalBoundary, ParetoBoundary, PowerBoundary, DoubleParetoBoundary,
-  InvalidData, InvalidFixed, SearchUnresolved, ScaleOutOfRange };
+  InvalidData, InvalidFixed, SearchUnresolved, ScaleOutOfRange,
+  WeibullBoundary, InvWeibullBoundary, CertificateTie, CertificateBudget, NumericalFailure };
 struct Gb2Result {
   double shape1, shape2, shape3, scale, logLik;
   int iterations;
   Gb2Status status;
+  StopDetail stop_detail{};
 };
 namespace gb2_detail {
 // Shift both shapes to >= 10, then use a cancellation-resistant Stirling
@@ -210,6 +212,35 @@ inline Gb2Result gb2_mle(span x,double tol=1e-7,int maxit=300,
   Gb2Result bad{q,a,p,b,nan,0,Gb2Status::InvalidData};
   for(double v:{q,a,p,b}) if(!std::isnan(v) && (!(v>0)||!std::isfinite(v))){bad.status=Gb2Status::InvalidFixed;return bad;}
   if(!(tol>0)||!std::isfinite(tol)||maxit<1)return bad;
+  // Exact held unit beta-shape submodels. Never use these as certificates
+  // when that beta shape is free: the constrained and joint maxima differ.
+  if(p==1 || q==1) {
+    Gb2Result out=bad;
+    if(p==1) {
+      const auto r=burr_mle_holds(x,q,a,b,tol,maxit);
+      out={r.shape1,r.shape2,1,r.scale,r.logLik,r.iterations,Gb2Status::SearchUnresolved,r.stop_detail};
+      if(r.status==BurrStatus::Ok)out.status=Gb2Status::Ok;
+      if(r.status==BurrStatus::InvalidInit || r.status==BurrStatus::Unbounded)out.status=Gb2Status::InvalidData;
+      if(r.status==BurrStatus::CertificateTie)out.status=Gb2Status::CertificateTie;
+      if(r.status==BurrStatus::CertificateBudget)out.status=Gb2Status::CertificateBudget;
+      if(r.status==BurrStatus::NumericalFailure)out.status=Gb2Status::NumericalFailure;
+      if(r.status==BurrStatus::ParetoBoundary || r.status==BurrStatus::AllGeOne)out.status=Gb2Status::ParetoBoundary;
+      if(r.status==BurrStatus::WeibullBoundary)out.status=Gb2Status::WeibullBoundary;
+      for(auto& c:out.stop_detail.candidates)if(c.model==StopModel::None && c.coef.size()==3)c.coef.insert(c.coef.begin()+2,1);
+    } else {
+      const auto r=invburr_mle_holds(x,p,a,b,tol,maxit);
+      out={1,r.shape2,r.shape1,r.scale,r.logLik,r.iterations,Gb2Status::SearchUnresolved,r.stop_detail};
+      if(r.status==InvBurrStatus::Ok)out.status=Gb2Status::Ok;
+      if(r.status==InvBurrStatus::InvalidInit || r.status==InvBurrStatus::Unbounded)out.status=Gb2Status::InvalidData;
+      if(r.status==InvBurrStatus::CertificateTie)out.status=Gb2Status::CertificateTie;
+      if(r.status==InvBurrStatus::CertificateBudget)out.status=Gb2Status::CertificateBudget;
+      if(r.status==InvBurrStatus::NumericalFailure)out.status=Gb2Status::NumericalFailure;
+      if(r.status==InvBurrStatus::PowerBoundary || r.status==InvBurrStatus::AllLeOne)out.status=Gb2Status::PowerBoundary;
+      if(r.status==InvBurrStatus::InvWeibullBoundary)out.status=Gb2Status::InvWeibullBoundary;
+      for(auto& c:out.stop_detail.candidates)if(c.model==StopModel::None && c.coef.size()==3)c.coef={1,c.coef[1],c.coef[0],c.coef[2]};
+    }
+    return out;
+  }
   std::vector<double> logs(x.size());
   for(std::size_t i=0;i<x.size();++i){if(!(x[i]>0)||!std::isfinite(x[i]))return bad;logs[i]=std::log(x[i]);}
   const auto solve_root=[&](auto score){return burr_hold_detail::root(score,maxit);};

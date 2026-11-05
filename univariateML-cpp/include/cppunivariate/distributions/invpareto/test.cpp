@@ -100,3 +100,19 @@ TEST_CASE("invpareto: P3 held delegate preserves exhaustion") {
   const double nan=std::numeric_limits<double>::quiet_NaN();
   CHECK(cppunivariate::invpareto_mle(mltest::as_span(values),1e-9,1,nan,2,nan).status==cppunivariate::LomaxStatus::IterationFailure);
 }
+
+TEST_CASE("inverse Pareto stop bounds include reciprocal Jacobian") {
+ std::vector<double> x{1,2,3,4},y; double jac=0;
+ for(double v:x){y.push_back(1/v);jac-=2*std::log(v);}
+ const auto parent=cppunivariate::lomax_mle({y.data(),y.size()},1e-10,1000);
+ const auto r=cppunivariate::invpareto_mle({x.data(),x.size()},1e-10,1000);
+ CHECK(r.status==parent.status);
+ CHECK(r.stop_detail.limit_loglik==doctest::Approx(parent.stop_detail.limit_loglik+jac));
+ auto detail=parent.stop_detail;
+ detail.candidates={{{2,3},-10,-9},{{4},-8,-8,cppunivariate::StopModel::Exp}};
+ const auto d=cppunivariate::invpareto_stop_detail(detail,jac);
+ CHECK((d.candidates[0].coef==std::vector<double>{3,2}));
+ CHECK(d.candidates[1].model==cppunivariate::StopModel::InvExp);
+ CHECK((d.candidates[1].coef==std::vector<double>{4}));
+ CHECK(d.candidates[0].loglik_upper==doctest::Approx(-9+jac));
+}

@@ -310,3 +310,13 @@ TEST_CASE("burr: held-power Weibull stop transports the exponential fit") {
   CHECK(r.stop_detail.limit_coef[1]==doctest::Approx(3));
   CHECK(r.stop_detail.limit_loglik==doctest::Approx(3*(std::log(2.)-std::log(3.)-1)));
 }
+
+TEST_CASE("held Burr power transports certified Lomax face bounds") {
+ const std::vector<double> x{1,2,3,4};
+ const auto r=cppunivariate::burr_mle_holds(mltest::as_span(x),NAN,2,NAN,1e-10,1000);
+ REQUIRE(r.status==cppunivariate::BurrStatus::WeibullBoundary);
+ REQUIRE(r.stop_detail.limit_coef.size()==2);
+ double ll=0;
+ for(double v:x){const double scale=r.stop_detail.limit_coef[1];ll+=std::log(2.)-2*std::log(scale)+std::log(v)-(v/scale)*(v/scale);}
+ CHECK(r.stop_detail.limit_loglik==doctest::Approx(ll));
+}

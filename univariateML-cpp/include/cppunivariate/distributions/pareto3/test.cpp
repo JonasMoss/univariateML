@@ -67,3 +67,22 @@ TEST_CASE("pareto3: P3 logistic delegate status is preserved") {
   const std::vector<double> values{.3,.8,1.7,4.2};
   CHECK(cppunivariate::pareto3_mle(mltest::as_span(values),0,1e-10,1).status==cppunivariate::Pareto3Status::IterationFailure);
 }
+
+TEST_CASE("Pareto III held subsets use log-logistic excess fits") {
+ const std::vector<double> x{2,3,4,7,12};
+ const std::vector<double> y{1,2,3,6,11};
+ for(double shape:{double(NAN),2.0}) for(double scale:{double(NAN),3.0}) {
+  const auto r=cppunivariate::pareto3_mle({x.data(),x.size()},1,1e-10,1000,shape,scale);
+  const auto b=cppunivariate::loglogistic_mle({y.data(),y.size()},1e-10,1000,shape,scale);
+  CHECK(r.logLik==doctest::Approx(b.logLik));
+  CHECK(r.shape==doctest::Approx(b.shape));CHECK(r.scale==doctest::Approx(b.scale));
+ }
+}
+
+TEST_CASE("Pareto III constant sample is finite with shape held") {
+ const std::vector<double> x{3,3,3};
+ const auto r=cppunivariate::pareto3_mle(mltest::as_span(x),1,1e-10,1000,2,NAN);
+ REQUIRE(r.status==cppunivariate::Pareto3Status::Ok);
+ CHECK(r.scale==doctest::Approx(2));
+ CHECK(r.logLik==doctest::Approx(3*std::log(.25)));
+}

@@ -40,6 +40,8 @@ r:
     iterlim: Maximum iterations per outer search start.
 log_density: log(shape2)-log(x)-loggamma(shape3)-loggamma(shape1)+loggamma(shape3+shape1)+shape3*shape2*log(x/scale)-(shape3+shape1)*log(1+(x/scale)**shape2)
 limits:
+  - {firmness: proved, model: weibull, when: 'With shape3 held at one, the Burr submodel tends to its Weibull face.', status: WeibullBoundary, fixed: [shape3], numerical: true}
+  - {firmness: proved, model: invweibull, when: 'With shape1 held at one, the inverse Burr submodel tends to its inverse-Weibull face.', status: InvWeibullBoundary, fixed: [shape1], numerical: true}
   - name: unbounded likelihood
     firmness: proved
     when: The log-scale dispersion tends to zero at the common observation while the remaining free coefficients allow concentration.
@@ -95,9 +97,7 @@ relations:
 fit:
   method: multistart
   certified: partial
-  note: 'gb2/README.md, Details; gb2/mle.hpp (public fitter and held overloads); gb2/test.cpp: With beta shapes
-    held, the inner power/location likelihood is strictly concave; free beta-shape multibasin profiles and face
-    comparisons remain numerical.'
+  note: 'gb2/README.md, Details; gb2/mle.hpp (public fitter and held overloads); gb2/test.cpp: Held shape3=1 reduces exactly to Burr and held shape1=1 to inverse Burr, including certified joint and held-power routes and stop details; their held-scale two-shape profiles remain numerical. Holding both beta shapes gives the concave power/location likelihood; holding power and scale gives a concave beta-shape likelihood. Outside the unit-shape reductions, profiles with shape1 and/or shape3 free while shape2 or scale is free retain numerical multibasin searches and face comparisons.'
 areas:
 - actuarial
 - economics and income

@@ -22,10 +22,11 @@ inline FitResult fit_pareto2(cppunivariate::span x, Held shape_arg = {}, Held sc
  if(scale.supplied) fixed.push_back("scale");
  auto res=cppunivariate::pareto2_mle(x,min,reltol,iterlim,shape.supplied?shape.value:NAN,scale.supplied?scale.value:NAN);
   if (res.status == cppunivariate::LomaxStatus::ExponentialLimit) {
-    return fail("The Lomax maximum likelihood estimator does not exist for data "
+    return stop_failure(fail("The Lomax maximum likelihood estimator does not exist for data "
                "whose likelihood is maximized on the exponential face. Use `mlexp(x - min)` to fit an "
-               "exponential distribution.");
+               "exponential distribution."),res.stop_detail,"limit",{"shape","scale","min"},"exp");
   }
+  if(res.status==cppunivariate::LomaxStatus::IterationFailure) return stop_failure(fail("Certified Lomax delegate failed; no verified maximum."),res.stop_detail,res.certificate_failure==cppunivariate::LomaxCertificateFailure::Budget?"budget":"numerical",{"shape","scale","min"},"");
   if (res.status != cppunivariate::LomaxStatus::Ok || !std::isfinite(res.scale) || !(res.scale>0) ||
       !std::isfinite(res.shape)) {
     return fail("Lomax MLE failed to converge (check dispersion/inputs)");

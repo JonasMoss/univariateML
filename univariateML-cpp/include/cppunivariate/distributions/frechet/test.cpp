@@ -148,3 +148,14 @@ TEST_CASE("frechet: free fit compares half-minimum ties with the free collapse f
   const std::vector<double> majority{1,1,1,2};
   CHECK(cppunivariate::frechet_mle(mltest::as_span(majority)).status == cppunivariate::FrechetStatus::InvalidData);
 }
+
+TEST_CASE("Frechet held location subsets inherit inverse Weibull") {
+ const std::vector<double> x{2,3,4,7,12},y{1,2,3,6,11};
+ for(double shape:{double(NAN),2.})for(double scale:{double(NAN),3.}) {
+  const auto r=cppunivariate::frechet_mle(mltest::as_span(x),1e-10,1000,1,shape,scale);
+  const auto p=cppunivariate::invweibull_mle(mltest::as_span(y),1e-10,1000,NAN,shape,scale);
+  CHECK(r.status==cppunivariate::FrechetStatus::Ok);
+  CHECK(r.logLik==doctest::Approx(p.logLik));CHECK(r.lambda==doctest::Approx(p.shape));
+  CHECK(r.sigma==doctest::Approx(p.scale));
+ }
+}

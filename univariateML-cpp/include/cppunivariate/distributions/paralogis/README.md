@@ -60,10 +60,8 @@ relations:
       scale: scale
 fit:
   method: multistart
-  certified: partial
-  note: 'paralogis/README.md, Details; paralogis/mle.hpp (public fitter and held overloads); paralogis/test.cpp:
-    With shape held, the Burr delegate solves the strictly monotone log-scale equation; the default joint shape/scale
-    BFGS has no global certificate.'
+  certified: 'partial'
+  note: 'paralogis/README.md, Details; paralogis/mle.hpp (public fitter and held overloads); paralogis/test.cpp: Held shape reduces to Burr with both shapes fixed, giving a monotone scale solve or an all-held evaluation. Joint fitting and held scale with free shape retain numerical searches; the equal-shapes constraint does not reduce to unconstrained certified Burr.'
 areas:
 - actuarial
 - economics and income

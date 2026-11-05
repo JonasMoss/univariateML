@@ -101,3 +101,11 @@ test_that("P2 pareto2 validates new held values", {
    f <- mlpareto2(rep(2,5),min=0,shape=2,scale=1)
    expect_identical(unname(f["scale"]),1)
  })
+
+test_that("Pareto II carries the shifted exponential stop", {
+  e <- tryCatch(mlpareto2(rep(3, 3), min = 1), error = identity)
+  expect_s3_class(e, "univariateML_limit")
+  expect_identical(e$model, "exp")
+  expect_equal(e$estimates, c(rate = .5))
+  expect_equal(e$limit_loglik, -3 * (1 + log(2)))
+})

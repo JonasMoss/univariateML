@@ -52,13 +52,13 @@ limits:
   message: unbounded
 - when: The shape $\alpha$ tends to infinity with $\gamma$ fixed and $\sigma\alpha^{-1/\gamma}$ fixed at a positive scale.
   firmness: proved
-  detect: With all regular coefficients free, the Burr certificate selects this face. Held subsets retain their numerical comparison within $10^{-8}n$ log-likelihood units.
+  detect: With all regular coefficients free, the Burr certificate selects this face. Held power uses the certified Lomax comparison; held scale with both shapes free remains numerical.
   status: WeibullBoundary
   name: shifted weibull; subtract min before fitting
   numerical: true
 - when: The power $\gamma$ tends to infinity with $\alpha\gamma$ fixed at a positive tail exponent and $\sigma$ fixed.
   firmness: proved
-  detect: With all regular coefficients free, the Burr certificate selects this face. Held subsets retain their numerical comparison within $10^{-8}n$ log-likelihood units.
+  detect: With all regular coefficients free, the Burr certificate selects this face. Held power uses the certified Lomax comparison; held scale with both shapes free remains numerical.
   status: ParetoBoundary
   name: shifted pareto; subtract min before fitting
   numerical: true
@@ -135,8 +135,8 @@ relations:
     shift: min
 fit:
   method: delegation
-  certified: partial
-  note: 'With min held and all regular coefficients free, the Burr certificate transfers unchanged to excesses: certified in exact arithmetic conditional on computed comparisons, with the practical floating-point margin documented below. Unresolved searches stop. Held subsets retain their separate algorithms and numerical held-power face comparison, hence the aggregate tag is partial.'
+  certified: 'partial'
+  note: 'pareto4/README.md, Details; pareto4/mle.hpp (public fitter and held overloads); pareto4/test.cpp: With min held, every regular subset delegates to the corresponding Burr fit on x-min. Joint and held-power fits are certified conditional on computed comparisons and the parent floating-point margin. Held scale with both shapes free remains a numerical profile search. Face coefficients refer to excess data.'
 areas:
 - actuarial
 - economics and income
@@ -190,7 +190,7 @@ The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-genb
 
 ## R notes
 
-With `min = 0`, the fit agrees with `mlburr(x)` for the same holds. The joint regular fit certifies the finite winner or limiting face and refuses unresolved ties. Held-subset numerical comparisons retain their $10^{-8}n$ face preference. Detected faces stop with a recommendation to use `mlweibull(x - min)` or `mlpareto(x - min)`, as applicable. Held-scale endpoint faces preserve `min + scale`. Unresolved searches stop.
+With `min = 0`, the fit agrees with `mlburr(x)` for the same holds. The joint regular fit certifies the finite winner or limiting face and refuses unresolved ties. Held power inherits the certified Lomax face comparison; held scale with both shapes free remains numerical. Detected faces stop with a recommendation to use `mlweibull(x - min)` or `mlpareto(x - min)`, as applicable. Held-scale endpoint faces preserve `min + scale`. Unresolved searches stop.
 
 ## Decision history
 

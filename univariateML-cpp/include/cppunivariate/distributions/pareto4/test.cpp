@@ -162,3 +162,12 @@ TEST_CASE("pareto4: public joint path preserves every certificate outcome") {
     }
   }
 }
+
+TEST_CASE("Pareto IV transports parent finite and face witnesses") {
+ const std::vector<double> x{2,3,4,5},y{1,2,3,4};
+ const auto r=cppunivariate::pareto4_mle(mltest::as_span(x),1,1e-10,1000,NAN,NAN,2);
+ const auto p=cppunivariate::burr_mle_holds(mltest::as_span(y),NAN,2,NAN,1e-10,1000);
+ CHECK(r.status==p.status);
+ CHECK(r.stop_detail.limit_coef==p.stop_detail.limit_coef);
+ CHECK(r.stop_detail.limit_loglik==doctest::Approx(p.stop_detail.limit_loglik));
+}
