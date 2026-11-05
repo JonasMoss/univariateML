@@ -191,3 +191,28 @@ location profiles without changing the grid, refinement or convergence checks.
 This reuse does not certify that the grid finds every mode.
 
 Face comparisons retain the family tolerance but stop with the existing numerical-failure status when `core/face_compare.hpp` cannot resolve the decision after its floating-point rounding allowance. This allowance concerns computed likelihood comparisons, not optimizer convergence or global optimality; see the [comparison analysis](../../../../../dev/research/evaluations/2026-11-02-face-compare-report.md).
+
+At a critical atom b with multiplicity $k=2(n-k)$, the fixed-shape
+ordinary t2 supremum is
+$-n\log2-3\sum_{x_i\ne b}\log|x_i-b|$, approached by ordinary scale
+collapse. It is unattained at positive scale. The endpoint value alone
+does not decide the all-free fit. Balanced two-point data instead have a
+strictly increasing optimized likelihood throughout $\nu>2$ and select
+the normal supremum.
+
+For the symmetric three-point sample with mass $2/3$ at b and $1/6$ each
+at $b-d$ and $b+d$, $d>0$, the entire profile is strictly decreasing as
+$\nu$ increases over $(2,\infty)$. Its collapse supremum is approached
+as $\nu\downarrow2$. Its normal
+seam slope is exactly zero, with positive second coefficient $n/4$;
+the zero slope does not make the normal the winner. The ordinary fitted
+scale satisfies $s^2=d^2(\nu-2)/(3\nu)$ and standard deviation stays
+$d/\sqrt3$ along this path. This is a collapse limit, with supremum
+$-n\log(2d)$, rather than a positive ordinary-scale t2 fit.
+
+The [root and lower-face derivation](../../../../../dev/research/evaluations/2026-11-05-t-root-data/derivation.md)
+proves these endpoint statements and gives a relative chord inequality
+that can exclude a whole punctured endpoint neighborhood. It also derives
+the analytic Hessian in upper-half-plane coordinates, root inclusion and
+uniform nuisance/profile-curvature checks. These statements do not
+certify the current production multistart dispatch.

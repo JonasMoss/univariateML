@@ -1,0 +1,343 @@
+[
+  {
+    "name": "lst-golden",
+    "lst": {
+      "status": 0,
+      "mean_seconds_3_repetitions": 0.012805117
+    },
+    "std": {
+      "status": 0,
+      "mean_seconds_3_repetitions": 0.003971161333333333
+    }
+  },
+  {
+    "name": "std-golden",
+    "lst": {
+      "status": 0,
+      "mean_seconds_3_repetitions": 0.012360519
+    },
+    "std": {
+      "status": 0,
+      "mean_seconds_3_repetitions": 0.003361937333333333
+    }
+  },
+  {
+    "name": "t1-0",
+    "lst": {
+      "status": 0,
+      "mean_seconds_3_repetitions": 0.0021550596666666667
+    },
+    "std": {
+      "status": 4,
+      "mean_seconds_3_repetitions": 0.001032745
+    }
+  },
+  {
+    "name": "t1-1",
+    "lst": {
+      "status": 0,
+      "mean_seconds_3_repetitions": 0.002173731
+    },
+    "std": {
+      "status": 4,
+      "mean_seconds_3_repetitions": 0.0008907243333333333
+    }
+  },
+  {
+    "name": "t2-0",
+    "lst": {
+      "status": 0,
+      "mean_seconds_3_repetitions": 0.0021069286666666664
+    },
+    "std": {
+      "status": 4,
+      "mean_seconds_3_repetitions": 0.001026694
+    }
+  },
+  {
+    "name": "t2-1",
+    "lst": {
+      "status": 0,
+      "mean_seconds_3_repetitions": 0.0022723883333333338
+    },
+    "std": {
+      "status": 4,
+      "mean_seconds_3_repetitions": 0.0009349156666666667
+    }
+  },
+  {
+    "name": "t3-0",
+    "lst": {
+      "status": 0,
+      "mean_seconds_3_repetitions": 0.0020953660000000004
+    },
+    "std": {
+      "status": 0,
+      "mean_seconds_3_repetitions": 0.000594957
+    }
+  },
+  {
+    "name": "t3-1",
+    "lst": {
+      "status": 0,
+      "mean_seconds_3_repetitions": 0.0021166166666666667
+    },
+    "std": {
+      "status": 0,
+      "mean_seconds_3_repetitions": 0.0005096353333333334
+    }
+  },
+  {
+    "name": "t5-0",
+    "lst": {
+      "status": 0,
+      "mean_seconds_3_repetitions": 0.002077033
+    },
+    "std": {
+      "status": 0,
+      "mean_seconds_3_repetitions": 0.0003897233333333333
+    }
+  },
+  {
+    "name": "t5-1",
+    "lst": {
+      "status": 0,
+      "mean_seconds_3_repetitions": 0.0021475183333333333
+    },
+    "std": {
+      "status": 0,
+      "mean_seconds_3_repetitions": 0.000517531
+    }
+  },
+  {
+    "name": "t30-0",
+    "lst": {
+      "status": 4,
+      "mean_seconds_3_repetitions": 0.0022071896666666668
+    },
+    "std": {
+      "status": 3,
+      "mean_seconds_3_repetitions": 0.0008935503333333334
+    }
+  },
+  {
+    "name": "t30-1",
+    "lst": {
+      "status": 4,
+      "mean_seconds_3_repetitions": 0.00227545
+    },
+    "std": {
+      "status": 3,
+      "mean_seconds_3_repetitions": 0.0008020843333333334
+    }
+  },
+  {
+    "name": "t1000-0",
+    "lst": {
+      "status": 4,
+      "mean_seconds_3_repetitions": 0.002186477333333333
+    },
+    "std": {
+      "status": 3,
+      "mean_seconds_3_repetitions": 0.0008098296666666667
+    }
+  },
+  {
+    "name": "t1000-1",
+    "lst": {
+      "status": 4,
+      "mean_seconds_3_repetitions": 0.002182539
+    },
+    "std": {
+      "status": 3,
+      "mean_seconds_3_repetitions": 0.00095191
+    }
+  },
+  {
+    "name": "normal-0",
+    "lst": {
+      "status": 0,
+      "mean_seconds_3_repetitions": 0.0020985636666666667
+    },
+    "std": {
+      "status": 0,
+      "mean_seconds_3_repetitions": 0.000559969
+    }
+  },
+  {
+    "name": "normal-1",
+    "lst": {
+      "status": 4,
+      "mean_seconds_3_repetitions": 0.002145881666666667
+    },
+    "std": {
+      "status": 3,
+      "mean_seconds_3_repetitions": 0.0008630133333333333
+    }
+  },
+  {
+    "name": "normal-2",
+    "lst": {
+      "status": 4,
+      "mean_seconds_3_repetitions": 0.0022095783333333334
+    },
+    "std": {
+      "status": 3,
+      "mean_seconds_3_repetitions": 0.0006578856666666666
+    }
+  },
+  {
+    "name": "contaminated",
+    "lst": {
+      "status": 0,
+      "mean_seconds_3_repetitions": 0.002110621
+    },
+    "std": {
+      "status": 4,
+      "mean_seconds_3_repetitions": 0.001673831
+    }
+  },
+  {
+    "name": "cluster-0.001",
+    "lst": {
+      "status": 0,
+      "mean_seconds_3_repetitions": 0.00041369333333333335
+    },
+    "std": {
+      "status": 4,
+      "mean_seconds_3_repetitions": 0.000268408
+    }
+  },
+  {
+    "name": "cluster-0.01",
+    "lst": {
+      "status": 0,
+      "mean_seconds_3_repetitions": 0.0004289713333333333
+    },
+    "std": {
+      "status": 4,
+      "mean_seconds_3_repetitions": 0.0001970646666666667
+    }
+  },
+  {
+    "name": "cluster-0.03",
+    "lst": {
+      "status": 0,
+      "mean_seconds_3_repetitions": 0.00042073100000000003
+    },
+    "std": {
+      "status": 4,
+      "mean_seconds_3_repetitions": 0.00013971466666666668
+    }
+  },
+  {
+    "name": "cluster-0.1",
+    "lst": {
+      "status": 4,
+      "mean_seconds_3_repetitions": 0.00042046833333333333
+    },
+    "std": {
+      "status": 3,
+      "mean_seconds_3_repetitions": 0.00012686466666666667
+    }
+  },
+  {
+    "name": "cluster-0.2",
+    "lst": {
+      "status": 4,
+      "mean_seconds_3_repetitions": 0.000434115
+    },
+    "std": {
+      "status": 3,
+      "mean_seconds_3_repetitions": 0.00012396800000000002
+    }
+  },
+  {
+    "name": "seam-A--1e-06",
+    "lst": {
+      "status": 0,
+      "mean_seconds_3_repetitions": 0.00042297333333333326
+    },
+    "std": {
+      "status": 4,
+      "mean_seconds_3_repetitions": 0.00018111533333333332
+    }
+  },
+  {
+    "name": "seam-A-0.0",
+    "lst": {
+      "status": 0,
+      "mean_seconds_3_repetitions": 0.00042195466666666663
+    },
+    "std": {
+      "status": 4,
+      "mean_seconds_3_repetitions": 0.00024514700000000003
+    }
+  },
+  {
+    "name": "seam-A-1e-06",
+    "lst": {
+      "status": 0,
+      "mean_seconds_3_repetitions": 0.00042178466666666667
+    },
+    "std": {
+      "status": 4,
+      "mean_seconds_3_repetitions": 0.000241915
+    }
+  },
+  {
+    "name": "ties-half",
+    "lst": {
+      "status": 3,
+      "mean_seconds_3_repetitions": 9e-08
+    },
+    "std": {
+      "status": 3,
+      "mean_seconds_3_repetitions": 4.6393333333333335e-05
+    }
+  },
+  {
+    "name": "ties-two-atoms",
+    "lst": {
+      "status": 3,
+      "mean_seconds_3_repetitions": 5.733333333333333e-08
+    },
+    "std": {
+      "status": 3,
+      "mean_seconds_3_repetitions": 6.317266666666667e-05
+    }
+  },
+  {
+    "name": "ties-excess",
+    "lst": {
+      "status": 3,
+      "mean_seconds_3_repetitions": 9.333333333333334e-08
+    },
+    "std": {
+      "status": 3,
+      "mean_seconds_3_repetitions": 7.705300000000001e-05
+    }
+  },
+  {
+    "name": "ties-two-thirds",
+    "lst": {
+      "status": 3,
+      "mean_seconds_3_repetitions": 1.0633333333333333e-07
+    },
+    "std": {
+      "status": 7,
+      "mean_seconds_3_repetitions": 5.133333333333333e-08
+    }
+  },
+  {
+    "name": "ties-admissible",
+    "lst": {
+      "status": 4,
+      "mean_seconds_3_repetitions": 0.0003456936666666667
+    },
+    "std": {
+      "status": 3,
+      "mean_seconds_3_repetitions": 9.611233333333332e-05
+    }
+  }
+]

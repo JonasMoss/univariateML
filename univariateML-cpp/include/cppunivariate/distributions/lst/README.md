@@ -193,3 +193,18 @@ comparisons and convergence checks; it does not strengthen global guarantees.
 With location and degrees of freedom held, the log-scale score is strictly decreasing from $\nu(n-k)-k$ to $-n$, where $k$ observations equal the held location. Under the strict existence inequality the unique root is the global scale maximum. The solver expands until both score signs are verified within the representable scale range, bisects, and requires absolute total log-scale score below $10^{-3}$ at the represented result. Residual log magnitudes avoid squared-residual overflow. Missing brackets and failed score checks return `IterationFailure`; no search endpoint is returned as an estimate.
 
 Face comparisons retain the family tolerance but stop with the existing numerical-failure status when `core/face_compare.hpp` cannot resolve the decision after its floating-point rounding allowance. This allowance concerns computed likelihood comparisons, not optimizer convergence or global optimality; see the [comparison analysis](../../../../../dev/research/evaluations/2026-11-02-face-compare-report.md).
+
+At a critical half-mass atom b, the fixed-shape Cauchy supremum is
+$-n\log\pi-2\sum_{x_i\ne b}\log|x_i-b|$. It is attained only for
+balanced two-point data, with nonunique nuisance fits. That exceptional
+Cauchy member is strictly dominated in the all-free problem: for balanced
+two-point data the optimized likelihood is strictly increasing in shape
+toward the normal supremum. With more support points the Cauchy collapse
+endpoint is unattained; its value alone does not decide the all-free fit.
+
+The [root and lower-face derivation](../../../../../dev/research/evaluations/2026-11-05-t-root-data/derivation.md)
+proves these endpoint statements and gives a relative chord inequality
+that can exclude a whole punctured endpoint neighborhood. It also derives
+the analytic Hessian in upper-half-plane coordinates, root inclusion and
+uniform nuisance/profile-curvature checks. These statements do not
+certify the current production multistart dispatch.
