@@ -127,3 +127,56 @@ test_that("gpd evaluates its attained xi=-1 endpoint", {
   expect_equal(qml(1, fit), 5)
   expect_equal(qml(-Inf, fit, lower.tail=FALSE, log.p=TRUE), 5)
 })
+
+test_that("GPD certificates stop with structured diagnostics", {
+  x <- c(.1,.3,.5,1,2,4)
+  for (args in list(list(),list(sigma=1))) {
+    err <- tryCatch(do.call(mlgpd,c(list(x=x,mu=0,iterlim=1),args)),error=identity)
+    expect_s3_class(err,"univariateML_stop")
+    expect_equal(err$kind,"budget")
+    expect_true(is.finite(err$loglik_lower))
+    expect_gte(err$loglik_upper,err$loglik_lower)
+  }
+  flat <- tryCatch(mlgpd(c(0,0,0),mu=0,sigma=2),error=identity)
+  expect_s3_class(flat,"univariateML_stop")
+  expect_equal(flat$kind,"tie")
+  collapse <- tryCatch(mlgpd(c(0,1,2),mu=0),error=identity)
+  expect_s3_class(collapse,"univariateML_stop")
+  expect_equal(collapse$kind,"nomle")
+  expect_equal(collapse$loglik_upper,Inf)
+})
+
+
+test_that("GPD threshold equality records its unattained finite supremum", {
+  limit <- tryCatch(mlgpd(c(0,1,2),mu=0,xi=2),error=identity)
+  expect_s3_class(limit,"univariateML_limit")
+  expect_match(conditionMessage(limit),"finite unattained")
+  expect_equal(limit$limit_loglik,-1.5*log(8),tolerance=1e-12)
+  expect_equal(limit$loglik_upper,limit$limit_loglik)
+})
+
+test_that("GPD arithmetic guards expose a structured numerical stop", {
+  for (smallest in c(.Machine$double.xmin*.Machine$double.eps,1e-100)) {
+    err <- tryCatch(mlgpd(c(smallest,1),mu=0),error=identity)
+    expect_s3_class(err,"univariateML_numerical")
+    expect_equal(err$kind,"numerical")
+    expect_match(conditionMessage(err),"comparisons unresolved|unrepresentable")
+  }
+})
+
+test_that("GPD finite competing maxima give a structured tie", {
+  a <- 0.07880675592383729
+  err <- tryCatch(mlgpd(c(a,a,1),mu=0),error=identity)
+  expect_s3_class(err,"univariateML_tie")
+  expect_gte(nrow(err$candidates),2L)
+  expect_true(all(err$candidates$loglik_lower<=err$candidates$loglik_upper))
+  expect_lt(err$loglik_upper-err$loglik_lower,1e-7)
+})
+
+test_that("GPD exponential scale rejects an inaccurate subnormal mean", {
+  tiny <- .Machine$double.xmin*.Machine$double.eps
+  err <- tryCatch(mlgpd(c(tiny,2*tiny),mu=0,xi=0),error=identity)
+  expect_s3_class(err,"univariateML_numerical")
+  fit <- mlgpd(c(tiny,3*tiny),mu=0,xi=0)
+  expect_identical(unname(fit[["sigma"]]),2*tiny)
+})

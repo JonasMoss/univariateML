@@ -1,0 +1,90 @@
+{
+  "base": "fe4573e9b02a950a1440039a8395c30ff2f25926",
+  "permitted_failures": 0,
+  "suites": [
+    {
+      "name": "C++ dev",
+      "command": "just cpp-test",
+      "machine": "local workstation",
+      "slots": 4,
+      "exit_code": 0,
+      "passed": 106,
+      "failed": 0,
+      "elapsed_seconds": 66.63
+    },
+    {
+      "name": "C++ no-long-double full",
+      "command": "just cpp-test-no-long-double",
+      "machine": "local workstation",
+      "slots": 4,
+      "exit_code": 0,
+      "passed": 127,
+      "failed": 0,
+      "elapsed_seconds": 78.67
+    },
+    {
+      "name": "C++ full",
+      "command": "UMVL_TEST_TIER=full just cpp-test",
+      "machine": "local workstation",
+      "slots": 4,
+      "exit_code": 0,
+      "passed": 127,
+      "failed": 0,
+      "elapsed_seconds": 92.09
+    },
+    {
+      "name": "R dev",
+      "command": "just test",
+      "machine": "local workstation",
+      "slots": 4,
+      "exit_code": 0,
+      "passed": 20641,
+      "failed": 0,
+      "warnings": 0,
+      "skipped": 154
+    },
+    {
+      "name": "R full",
+      "command": "just test-full",
+      "machine": "local workstation",
+      "slots": 4,
+      "exit_code": 0,
+      "passed": 43456,
+      "failed": 0,
+      "warnings": 0,
+      "skipped": 0
+    },
+    {
+      "name": "R GPD target serial",
+      "command": "UMVL_TEST_TIER=full testthat::test_local(filter=\"dist-gpd\")",
+      "machine": "local workstation",
+      "slots": 1,
+      "exit_code": 0,
+      "passed": 199,
+      "failed": 0,
+      "warnings": 0,
+      "skipped": 0
+    }
+  ],
+  "numerical_workloads": 22,
+  "maximum_scale_relative_error": 3.11856329734446e-13,
+  "maximum_shape_scaled_error": 8.558526635605981e-16,
+  "maximum_mean_loglik_error": 4.186173786522721e-13,
+  "source_hashes": {
+    "univariateML-cpp/include/cppunivariate/distributions/gpd/golden.json": "b9d29ca443f9914a222fb28322710c431a1bc6dc7f8746f393a252d5f281cb15",
+    "univariateML-cpp/include/cppunivariate/distributions/gpd/mle.hpp": "a508fe09f0887d27e5f17b57ef7113ab1ecfd5a3fe712a63005373e46af6e3f1",
+    "univariateML-cpp/include/cppunivariate/distributions/gpd/certificate.hpp": "cc980e65e4478c3a1c3f4678861c4e6b9c80282514b278c62d4bd54b9cfb44a4",
+    "univariateML-cpp/include/cppunivariate/distributions/gpd/test.cpp": "7c3b97061483aea27d0706143de813daecd2e4c17a747f9ca9ce99340efa10fc",
+    "univariateML-cpp/include/cppunivariate/distributions/gpd/README.md": "92f5ed5fb1da054338fd2b93a389fc465350ecf0d6bd7f2a6e5a7c8f1c81690a",
+    "bindings/common/distributions/gpd/fit.hpp": "fe6c299e50d35144c939f2e372227632106aa90f8c60d37b143cb201c59196b0",
+    "bindings/r/distributions/gpd/test.R": "25b4e364d099e344a17873fb41758793f9ee057da2f757e321164df17b4782de",
+    "dev/research/evaluations/2026-11-05-gpd-cert-data/check_uniqueness.py": "9b663337f9ba7cf13ab0e5ae289efd96c77481a003c12d2b00bb70681a1f4d5e",
+    "dev/research/evaluations/2026-11-05-gpd-cert-data/check_certificate.py": "0324fc6756e9d3bbd860c05f5c0abaa653dbf86e641d947f0a017ab80a8cf90e"
+  },
+  "evidence_hashes": {
+    "certificate-validation.json": "26606b25338c62a5e8a88fa5ea8b39d6aebd2a0f2286633e63c15925e4e61319",
+    "uniqueness-validation.json": "0e9496745ca7b793d50d39502030acae640ffee7d35069e080d8dbfba6a46edd",
+    "environment.txt": "fc055bb2bdf8e683713910c8748e6e57357c152156ac7e106e2feac6264c44f8",
+    "check_final.py": "680f60aa3ec7849a0478039f3aa792272f4637bed2d1693110d8141e030a9284"
+  }
+}
