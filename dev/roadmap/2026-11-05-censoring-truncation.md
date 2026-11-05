@@ -67,6 +67,18 @@ Findings to check properly (from chat on 2026-11-05, not proved):
    The bound is attained only on the Pareto face with minimum $x_0$,
    $\alpha^* = d / \sum_j \log(u_j/x_0)$. Censoring beyond the cluster turns a
    point-mass escape into a Pareto escape.
+   Caveat: in uncensored Burr any distinct exact observation already
+   bounds the likelihood (the unbounded case is all-equal only), so the
+   censored point acts like one. The asymmetry is the new part: a
+   censoring time below $x_0$ does not help, an exact point below does.
+   Closure view: censored factors are probabilities of closed sets, so
+   they are weakly upper semicontinuous functions of the law; at
+   $\delta_{x_0}$ they vanish, exact factors diverge, and the race needs
+   rates as in the collapse exponent of `dev/research/ml-behaviour.tex`.
+   For data censored into fixed bins the likelihood is a continuous
+   function of the observed law on a compact simplex, so the envelope
+   $L_x^*$ of the likelihood-closure lemma is the likelihood of the
+   limit law and the supremum is always attained in $\overline{T(M)}$.
 5. Weak closure: the censoring map $x \mapsto (\min(x,u), 1\{x \le u\})$
    is discontinuous at $u$, so concentration at $u$ gives the weak-only
    limits $(1-p)\,\delta_{(u,\text{exact})} + p\,\delta_{(u,\text{cens})}$,
