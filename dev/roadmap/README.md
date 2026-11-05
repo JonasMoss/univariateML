@@ -22,6 +22,11 @@ the queue.
 
 ## Index
 
+- [2026-11-05 — Censoring and truncation](2026-11-05-censoring-truncation.md)
+  *(idea; TASK-142)*: likelihood pieces, Burr worked example, the extra
+  Hellinger boundary $\overline{T(M)} \setminus T(\overline{M})$ created by an
+  observation map, and families made redundant by truncation.
+
 - [2026-11-01 — Estimation beyond ML](2026-11-01-estimation-beyond-ml.md)
   *(banked; preliminary exploration)*: closure-compatible coordinates,
   model-restricted Hellinger/KL Bayes actions, posterior propriety gates,
