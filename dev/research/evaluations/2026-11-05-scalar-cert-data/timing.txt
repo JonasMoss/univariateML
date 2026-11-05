@@ -1,0 +1,4 @@
+nbinom proposal 500 29.1093 us/fit
+nbinom certified 500 293 us/fit
+kumar proposal 500 47.3119 us/fit
+kumar certified 500 506.992 us/fit

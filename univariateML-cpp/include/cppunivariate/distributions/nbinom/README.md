@@ -24,8 +24,8 @@ r:
   density: stats::dnbinom
   sampler: stats::rnbinom
   control:
-    reltol: "Relative tolerance on the Newton step, with an absolute floor of the same size."
-    iterlim: "Maximum number of Newton iterations."
+    reltol: "Relative tolerance on the Newton proposal; the certificate uses its own fixed accuracy."
+    iterlim: "Maximum proposer iterations; certificate evaluation budget is 16 * min(iterlim, 100000)."
     size: "Optional fixed nonnegative size (including fractional values); NULL estimates size."
     prob: "Optional held prob; NULL estimates it."
 log_density: "loggamma(x + size) - loggamma(size) - loggamma(x + 1) + size*log(prob) + x*log(1 - prob)"
@@ -65,8 +65,8 @@ relations:
     when: size > 0 && prob < 1
 fit:
   method: scalar-solve
-  certified: 'partial'
-  note: 'Held size has an analytic probability fit and held probability has a monotone size score. The free-size root is unique under overdispersion, but floating-point score signs and Newton convergence are not certified.'
+  certified: 'yes'
+  note: 'Unique-root certificate with padded opposite score signs, analytic held-size probability, and a structured Poisson-limit stop. Exact-arithmetic certificate conditional on computed comparisons; unresolved arithmetic or budget stops.'
 areas:
 - counts and ecology
 classification: classical
@@ -125,10 +125,7 @@ and negative for sufficiently large size: its leading large-size term is
 proportional to the mean minus the population-form sample variance. The
 existence and uniqueness result of Aragon, Eberly and Eberly (1992) therefore
 places the finite maximizer between any two sizes with opposite score signs.
-The computed signs are floating-point approximations, however, and are not
-interval-certified. Failure to find a usable bracket is a precision failure,
-not evidence of a Poisson escape. Newton convergence and the floating-point
-score signs still require independent certification.
+The computed signs are floating-point approximations. The 2026-11-05 certificate below adds a practical sign margin and mandatory root enclosure; no outward-rounded interval arithmetic is claimed. Failure to find a usable bracket is a precision failure, not evidence of a Poisson escape.
 
 2026-11-01 (variance cancellation): the raw-moment variance can fall below
 its true value for large, tightly clustered counts. Before classifying a
@@ -137,3 +134,45 @@ mean. For example, the two counts $m-k,m+k$, with $m=k^2-1$, have mean $m$
 and population variance $k^2$ exactly. This reduces cancellation in the
 classification; it is not an exact-arithmetic certificate for every possible
 input or platform.
+
+## Scalar certificate (2026-11-05)
+
+The uniqueness theorem quoted above means that any positive and negative
+profile-score endpoints enclose the global maximizer. The held-probability
+score is strictly decreasing and has the same property. `certificate.hpp`
+uses the old solver only as a proposer; it doubles/halves until the signs
+are resolved and bisects to relative width $5\times10^{-7}$. A small
+residual alone cannot terminate the search: two nearby signed endpoints
+are required. Historical coefficients are retained only inside the enclosure.
+The profiled probability $r/(r+\bar x)$ increases with $r$ and has relative
+sensitivity at most one, so the size enclosure also controls probability.
+
+For integer counts, the score is evaluated through
+$\psi(r+x)-\psi(r)=\sum_{j=0}^{x-1}(r+j)^{-1}$.
+The implementation uses $r$ times the mean score to avoid small magnitudes.
+Counts through 4096 use recurrence; larger counts use digamma at $r<16$,
+and the Euler--Maclaurin expansion through the $r^{-10}$ term at $r\ge16$.
+Near the Poisson face the leading mean terms are canceled algebraically: the recurrence sums $-j/(r+j)$ and the logarithmic term uses a degree-20 series for $\log(1+u)-u$ at $u<0.01$. Thus the arithmetic pad scales with the remaining terms rather than the canceled mean. The omitted term is bounded by $691r^{-11}/32760$ for this positive-real
+asymptotic expansion. The positive-real remainder and its sign are given in
+[NIST DLMF 5.11(ii)](https://dlmf.nist.gov/5.11.ii). The two digamma
+remainders have the same sign, so the error of their difference is bounded
+by the larger first-neglected-term bound. The practical sign pad adds
+$128\epsilon(1+\text{absolute terms})(1+m\epsilon)$ (with the constant one omitted on the residual route) for $m$ distinct
+counts; the small-$r$ digamma route adds an explicit pad depending on both
+digamma magnitudes. This certificate is exact in arithmetic conditional on
+the comparisons, with this practical floating-point margin; it does not
+prove a universal libm error bound or use outward-rounded intervals.
+
+The dispersion decision is guarded by a centered-moment comparison.
+Ordinary integer-moment products within $2^{53}$ permit exact equality;
+otherwise a comparison within a $256\epsilon$ scale allowance stops.
+Unresolved root signs, nonfinite arithmetic, a probability rounding to one,
+or exhaustion of $16\min(\mathrm{maxit},100000)$ certificate evaluations
+return `PrecisionFailure`. A numerical search cap never diagnoses a
+Poisson limit. The genuine `Underdispersed` stop includes the Poisson mean
+and log likelihood in `StopDetail`; the binding exposes these on the error.
+
+The certificate transfers to an actual call of `nbinom_mle` made by another
+family. It does not certify a truncated/mixture likelihood, an outer search,
+or a caller that discards failure statuses. No other family's certification
+claim is changed here.

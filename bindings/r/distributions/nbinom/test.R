@@ -178,3 +178,20 @@ test_that("large counts with variance above their mean signal precision failure"
   m <- k * k - 1
   expect_error(mlnbinom(c(m-k, m+k), iterlim=1), "insufficient precision")
 })
+
+test_that("certificate stops carry the Poisson fit", {
+  err <- tryCatch(mlnbinom(0:4),error=identity)
+  expect_s3_class(err,"univariateML_limit")
+  expect_identical(err$model,"pois")
+  expect_equal(err$estimates,c(lambda=2))
+  expect_equal(err$limit_loglik,sum(dpois(0:4,2,log=TRUE)))
+  expect_match(conditionMessage(err),"mlpois")
+  expect_error(mlnbinom(c(0,0,1,3,6),iterlim=1),"precision|convergence")
+})
+
+test_that("all-held subnormal members retain finite likelihood evaluation", {
+  size <- .Machine$double.xmin*.Machine$double.eps
+  fit <- mlnbinom(c(0,1),size=size,prob=.5)
+  expect_true(is.finite(attr(fit,"logLik")))
+  expect_identical(fit[["size"]],size)
+})
