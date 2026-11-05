@@ -354,3 +354,89 @@ TEST_CASE("gpd xi minus one is the closed form limit law") {
     CHECK(cppunivariate::distributions::dgpd(3.5,2,3,-2,log)==INFINITY);
   }
 }
+
+TEST_CASE("gpd: certificate stops have structured bounds") {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  const std::vector<double> positive{.1,.3,.5,1,2,4};
+  for(double scale:{nan,1.}) {
+    const auto r=cppunivariate::gpd_mle(mltest::as_span(positive),1e-12,1,0,nan,scale);
+    CHECK(r.status==cppunivariate::GpdStatus::IterationFailure);
+    CHECK(r.certificate_failure==cppunivariate::GpdCertificateFailure::Budget);
+    CHECK(std::isfinite(r.stop_detail.loglik_lower));
+    CHECK(r.stop_detail.loglik_upper>=r.stop_detail.loglik_lower);
+  }
+  const std::vector<double> ties{0,1,2};
+  const auto unbounded=cppunivariate::gpd_mle(mltest::as_span(ties));
+  CHECK(unbounded.certificate_failure==cppunivariate::GpdCertificateFailure::ThresholdCollapse);
+  CHECK(unbounded.stop_detail.loglik_upper==INFINITY);
+  const auto limit=cppunivariate::gpd_mle(mltest::as_span(ties),1e-12,200,0,2);
+  CHECK(limit.certificate_failure==cppunivariate::GpdCertificateFailure::ThresholdCollapse);
+  CHECK(std::isfinite(limit.stop_detail.limit_loglik));
+  const std::vector<double> zero{0,0,0};
+  const auto flat=cppunivariate::gpd_mle(mltest::as_span(zero),1e-12,200,0,nan,2);
+  CHECK(flat.certificate_failure==cppunivariate::GpdCertificateFailure::Tie);
+  CHECK(flat.stop_detail.candidates.size()==2);
+  CHECK(flat.stop_detail.loglik_lower==flat.stop_detail.loglik_upper);
+}
+
+TEST_CASE("gpd: held-scale uniform bound and coefficient restoration") {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  for(double unit:{1e-200,1.,1e200}) {
+    const std::vector<double> x{.1*unit,.3*unit,.5*unit,unit,2*unit,4*unit};
+    const auto f=cppunivariate::gpd_mle(mltest::as_span(x));
+    REQUIRE(f.status==cppunivariate::GpdStatus::Ok);
+    const auto u=cppunivariate::gpd_mle(mltest::as_span(x),1e-12,200,0,nan,5*unit);
+    REQUIRE(u.status==cppunivariate::GpdStatus::Ok);
+    CHECK(u.xi==-1);CHECK(u.sigma==5*unit);
+    const auto held=cppunivariate::gpd_mle(mltest::as_span(x),1e-12,200,0,.3);
+    CHECK(held.status==cppunivariate::GpdStatus::Ok);
+  }
+}
+
+TEST_CASE("gpd: certified chords bound independently evaluated likelihoods") {
+  const std::vector<double> x{.1,.3,.5,1,2,4};
+  for(bool held:{false,true}) {
+    const cppunivariate::gpd_cert_detail::Data d{mltest::as_span(x),4.,1e-11,.25,held};
+    for(double left:{-8.,-2.,-.02,.02,1.,5.}) {
+      const auto a=cppunivariate::gpd_cert_detail::evaluate(d,left);
+      const auto b=cppunivariate::gpd_cert_detail::evaluate(d,left+.1);
+      const auto enclosure=cppunivariate::gpd_cert_detail::bounds(d,a,b);
+      for(int j=1;j<20;++j) {
+        const auto p=cppunivariate::gpd_cert_detail::evaluate(d,left+.1*j/20);
+        const double sigma=held?1.:4*p.D,xi=held?.25*p.b:p.b*p.D;
+        if(xi<-1)continue;
+        const double independent=cppunivariate::gpd_loglik(mltest::as_span(x),sigma,xi)/x.size()+std::log(held?1.:4.);
+        CHECK(independent<=enclosure.upper);
+        const double delta=1e-6;
+        const auto lower=cppunivariate::gpd_cert_detail::evaluate(d,p.t-delta);
+        const auto upper=cppunivariate::gpd_cert_detail::evaluate(d,p.t+delta);
+        const double numerical_score=(upper.h-lower.h)/(2*delta);
+        CHECK(numerical_score>=enclosure.score.lo-1e-7);
+        CHECK(numerical_score<=enclosure.score.hi+1e-7);
+      }
+    }
+  }
+}
+
+TEST_CASE("gpd: arithmetic guards stop without capped coefficients") {
+  for(double smallest:{std::numeric_limits<double>::denorm_min(),1e-100}) {
+    const std::vector<double> x{smallest,1.};
+    const auto r=cppunivariate::gpd_mle(mltest::as_span(x));
+    CHECK(r.status==cppunivariate::GpdStatus::IterationFailure);
+    CHECK(r.certificate_failure==cppunivariate::GpdCertificateFailure::Arithmetic);
+    CHECK(std::isnan(r.sigma));CHECK(std::isnan(r.xi));
+  }
+}
+
+TEST_CASE("gpd: exponential scale checks subnormal mean restoration") {
+  const double tiny=std::numeric_limits<double>::denorm_min();
+  const std::vector<double> inaccurate{tiny,2*tiny},accurate{tiny,3*tiny};
+  const auto bad=cppunivariate::gpd_mle(mltest::as_span(inaccurate),1e-12,200,0,0);
+  CHECK(bad.status==cppunivariate::GpdStatus::IterationFailure);
+  CHECK(bad.certificate_failure==cppunivariate::GpdCertificateFailure::Arithmetic);
+  CHECK(std::isnan(bad.sigma));
+  const auto good=cppunivariate::gpd_mle(mltest::as_span(accurate),1e-12,200,0,0);
+  CHECK(good.status==cppunivariate::GpdStatus::Ok);
+  CHECK(good.sigma==2*tiny);
+  CHECK(std::isfinite(good.logLik));
+}

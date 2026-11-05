@@ -23,6 +23,17 @@ inline FitResult fit_gpd(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg
   if(sigma.supplied) fixed.push_back("sigma");
   if(xi.supplied) fixed.push_back("xi");
   auto res = cppunivariate::gpd_mle(x, reltol, iterlim, threshold, shape, scale);
+  if (res.certificate_failure == cppunivariate::GpdCertificateFailure::ThresholdCollapse) {
+    if(std::isfinite(res.stop_detail.limit_loglik))
+      return stop_failure(fail("Generalized Pareto has no finite maximum: scale collapse at the threshold gives a finite unattained fixed-shape supremum."), res.stop_detail, "limit", {"mu","sigma","xi"});
+    return stop_failure(fail("Generalized Pareto has unbounded likelihood from scale collapse at the threshold."), res.stop_detail, "nomle", {"mu","sigma","xi"});
+  }
+  if (res.certificate_failure == cppunivariate::GpdCertificateFailure::Budget)
+    return stop_failure(fail("Generalized Pareto MLE failed to converge: global certificate budget exhausted; no verified maximum."), res.stop_detail, "budget", {"mu","sigma","xi"});
+  if (res.certificate_failure == cppunivariate::GpdCertificateFailure::Tie)
+    return stop_failure(fail("Generalized Pareto MLE failed to converge: competing maxima tie within the certificate margin (1e-8 per observation), or shape is unidentified."), res.stop_detail, "tie", {"mu","sigma","xi"});
+  if (res.certificate_failure == cppunivariate::GpdCertificateFailure::Arithmetic)
+    return stop_failure(fail("Generalized Pareto MLE failed to converge: certificate comparisons unresolved or coefficients unrepresentable."), res.stop_detail, "numerical", {"mu","sigma","xi"});
   if (res.status == cppunivariate::GpdStatus::InvalidData)
     return fail("Generalized Pareto requires finite data at or above `mu`, compatible support and holds, no scale collapse at the threshold, a finite threshold, positive `reltol` and positive `iterlim`.");
   if (res.status != cppunivariate::GpdStatus::Ok || !std::isfinite(res.logLik))

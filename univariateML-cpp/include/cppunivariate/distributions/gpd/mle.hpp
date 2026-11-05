@@ -1,7 +1,7 @@
 #pragma once
 #include "../../core/precision.hpp"
 #include "../../core/span.hpp"
-#include "../gev/mle.hpp"
+#include "../../core/stop_detail.hpp"
 #include <algorithm>
 #include <cmath>
 #include <limits>
@@ -11,10 +11,13 @@ namespace cppunivariate {
 inline constexpr double kGpdXiLower = -1.0;
 
 enum class GpdStatus { Ok, InvalidData, InvalidShape, IterationFailure };
+enum class GpdCertificateFailure { None, Budget, Arithmetic, Tie, ThresholdCollapse };
 struct GpdResult {
   double mu, sigma, xi, logLik;
   int iterations;
   GpdStatus status; unsigned restricted = 0;
+  GpdCertificateFailure certificate_failure = GpdCertificateFailure::None;
+  StopDetail stop_detail{};
 };
 // log1p(xi*z)/xi, including the interior exponential member.
 inline double gpd_log_ratio(double z, double xi) {
@@ -40,32 +43,92 @@ inline double gpd_loglik(span y, double sigma, double xi) {
 // For fixed xi > -1 the scale score is strictly decreasing in sigma
 // after multiplication by sigma: (1+xi)*mean(y/(sigma+xi*y))-1.
 inline GpdResult gpd_scale(span y, double mu, double xi, double tol, int maxit) {
-  double m = 0, M = 0;
-  for (double v : y) { m += v/static_cast<double>(y.size()); M=std::max(M,v); }
-  if (xi == -1) return {mu,M,xi,gpd_loglik(y,M,xi),0,GpdStatus::Ok};
-  if (xi == 0) return {mu,m,xi,gpd_loglik(y,m,xi),0,GpdStatus::Ok};
-  double lo = std::max(0.0,-xi*M), hi = std::max(M,lo*2);
-  auto score = [&](double s) {
-    CPPUNIV_EXTENDED_REAL v=0;
-    for (double z : y) v += (1+static_cast<CPPUNIV_EXTENDED_REAL>(xi))*z/(s+static_cast<CPPUNIV_EXTENDED_REAL>(xi)*z);
-    return v/y.size()-1;
+  double M=0;
+  for(double v:y)M=std::max(M,v);
+  auto failure=[&](int work) {
+    GpdResult out{mu,NAN,xi,NAN,work,GpdStatus::IterationFailure};
+    out.certificate_failure=GpdCertificateFailure::Arithmetic;
+    const double candidate=gpd_loglik(y,M,xi);
+    out.stop_detail.loglik_lower=candidate;
+    out.stop_detail.loglik_upper=INFINITY;
+    if(std::isfinite(candidate))out.stop_detail.candidates.push_back({{mu,M,xi},candidate,candidate});
+    return out;
   };
-  while (score(hi)>0 && std::isfinite(hi)) hi*=2;
-  int it=0;
-  for (; it<maxit; ++it) {
-    const double mid=lo+(hi-lo)/2;
-    if (score(mid)>0) lo=mid; else hi=mid;
-    if (hi-lo <= tol*hi) break;
+  if(!(M>0))return failure(0);
+  double m=0,mean_correction=0;
+  for(double v:y) {
+    const double term=(v/M)/y.size()-mean_correction,total=m+term;
+    mean_correction=(total-m)-term;m=total;
   }
-  const double s=lo+(hi-lo)/2;
-  return {mu,s,xi,gpd_loglik(y,s,xi),it+1,
-          it<maxit ? GpdStatus::Ok : GpdStatus::IterationFailure};
+  if(xi==-1)return {mu,M,xi,gpd_loglik(y,M,xi),0,GpdStatus::Ok};
+  if(xi==0) {
+    const double scale=M*m,ll=gpd_loglik(y,scale,xi);
+    if(!(scale>0) || !std::isfinite(scale) || !std::isfinite(ll) ||
+        std::abs(scale/M-m)>1e-8*m)return failure(0);
+    return {mu,scale,xi,ll,0,GpdStatus::Ok};
+  }
+  // Work in max-excess units, so scale bracketing cannot overflow merely
+  // because the input was rescaled. Score signs remain conditional on the
+  // stated binary64 allowance; ambiguous comparisons stop.
+  double lo=std::max(0.,-xi),hi=std::max(1.,2*lo);
+  const double eta=512*std::numeric_limits<double>::epsilon()*(1+std::log(y.size()+1.));
+  auto score=[&](double scale) {
+    CPPUNIV_EXTENDED_REAL value=0,correction=0;
+    for(double v:y) {
+      if(v==0)continue;
+      const CPPUNIV_EXTENDED_REAL r=static_cast<CPPUNIV_EXTENDED_REAL>(v)/M;
+      const CPPUNIV_EXTENDED_REAL term=(1+static_cast<CPPUNIV_EXTENDED_REAL>(xi))*r/(scale+static_cast<CPPUNIV_EXTENDED_REAL>(xi)*r)/y.size()-correction;
+      const CPPUNIV_EXTENDED_REAL total=value+term;
+      correction=(total-value)-term;value=total;
+    }
+    return static_cast<double>(value)-1;
+  };
+  int work=0;
+  while(std::isfinite(hi) && score(hi)>=-eta && work<maxit){hi*=2;++work;}
+  if(!std::isfinite(hi) || !(score(hi)<-eta))return failure(work);
+  const double target=std::min(tol,1e-8);
+  for(;work<maxit;++work) {
+    const double mid=lo+(hi-lo)/2,value=score(mid);
+    if(value>eta)lo=mid;
+    else if(value<-eta)hi=mid;
+    else {
+      bool signed_box=false;
+      double radius=std::max(2e-12,8*eta)*mid;
+      for(int k=0;k<32;++k,radius*=2) {
+        const double l=mid-radius,h=mid+radius;
+        if(l<=lo || h>=hi)break;
+        if(score(l)>eta && score(h)<-eta){lo=l;hi=h;signed_box=true;break;}
+      }
+      if(!signed_box)return failure(work);
+      // The enclosure certifies coefficients to 1e-7 relative accuracy;
+      // tighten the representative independently below.
+      if(hi-lo<=1e-7*mid)break;
+    }
+    if(hi-lo<=1e-8*hi)break;
+  }
+  if(work>=maxit) {
+    auto out=failure(work);out.certificate_failure=GpdCertificateFailure::Budget;return out;
+  }
+  double center=(lo+hi)/2;
+  // Nominate a more accurate representative inside the signed enclosure.
+  double l=lo,h=hi;
+  for(int k=0;k<48 && h-l>target*h;++k) {
+    center=(l+h)/2;
+    if(score(center)>0)l=center;else h=center;
+  }
+  const double scale=M*((l+h)/2),ll=gpd_loglik(y,scale,xi);
+  if(!(scale>0) || !std::isfinite(scale) || !std::isfinite(ll))return failure(work);
+  if(std::abs(scale/M-(l+h)/2)>1e-8*((l+h)/2))return failure(work);
+  return {mu,scale,xi,ll,work+1,GpdStatus::Ok};
 }
+} // namespace cppunivariate
+#include "certificate.hpp"
+namespace cppunivariate {
 inline GpdResult gpd_mle_impl(span x, double tol=1e-12, int maxit=200,
                          double mu=0, double xi=std::numeric_limits<double>::quiet_NaN(),
                          double sigma=std::numeric_limits<double>::quiet_NaN()) {
   GpdResult bad{mu,0,xi,0,0,GpdStatus::InvalidData};
-  if (x.size()==0 || !std::isfinite(mu) || !(tol>0) || maxit<1) return bad;
+  if (x.size()==0 || !std::isfinite(mu) || !(tol>0) || !std::isfinite(tol) || maxit<1) return bad;
   std::vector<double> y;
   double M=0, minimum=std::numeric_limits<double>::infinity();
   for (double v : x) {
@@ -77,7 +140,17 @@ inline GpdResult gpd_mle_impl(span x, double tol=1e-12, int maxit=200,
   // (n-k)/xi-k. With free shape any threshold tie permits this path.
   if(std::isnan(sigma)) {
     const double k=static_cast<double>(std::count(y.begin(),y.end(),0.0));
-    if(M==0 || (k>0 && (std::isnan(xi) || (xi>0 && xi*k>=y.size()-k)))) return bad;
+    if(M==0 || (k>0 && (std::isnan(xi) || (xi>0 && xi*k>=y.size()-k)))) {
+      bad.certificate_failure=GpdCertificateFailure::ThresholdCollapse;
+      bad.stop_detail.loglik_upper=INFINITY;
+      if(M>0 && !std::isnan(xi) && xi>0 && xi*k==y.size()-k) {
+        double limit=0;
+        for(double v:y)if(v>0)limit-=(1+1/xi)*(std::log(xi)+std::log(v));
+        bad.stop_detail.loglik_upper=limit;
+        bad.stop_detail.limit_loglik=limit;
+      }
+      return bad;
+    }
   }
   const span ys{y.data(),y.size()};
   if(!std::isnan(sigma)) {
@@ -87,101 +160,13 @@ inline GpdResult gpd_mle_impl(span x, double tol=1e-12, int maxit=200,
       const double ll=gpd_loglik(ys,sigma,xi);
       return {mu,sigma,xi,ll,0,std::isfinite(ll) ? GpdStatus::Ok : GpdStatus::InvalidData};
     }
-    const double lower=std::max(-1.0,-sigma/M);
-    // Positive support gives a finite lower endpoint; the log transform
-    // covers the unbounded upper shape range. Compare the attained floor.
-    auto objective=[&](double u) {return gpd_loglik(ys,sigma,lower+std::exp(u));};
-    auto opt=extreme_detail::maximize(objective,-32,32,tol,maxit,false);
-    double shape=lower+std::exp(opt.x),ll=opt.value;
-    const double floor=gpd_loglik(ys,sigma,lower);
-    if(std::isfinite(floor) && floor>=ll) {shape=lower;ll=floor;opt.ok=true;}
-    return {mu,sigma,shape,ll,opt.iterations,
-            opt.ok && maxit>1 ? GpdStatus::Ok : GpdStatus::IterationFailure};
+    return gpd_cert_detail::fit(ys,mu,tol,maxit,sigma);
   }
   if (!std::isnan(xi)) {
     if (!std::isfinite(xi) || xi < -1) { bad.status=GpdStatus::InvalidShape; return bad; }
     return gpd_scale(ys,mu,xi,tol,maxit);
   }
-  auto best=gpd_scale(ys,mu,0,tol,maxit);
-  auto floor=gpd_scale(ys,mu,-1,tol,maxit);
-  if (floor.status!=GpdStatus::Ok) return floor;
-  if (floor.logLik>best.logLik) best=floor;
-  // Grimshaw profile: differentiating in xi at fixed a=xi/sigma gives
-  // xi=L=mean(log1p(a*y)); the remaining score is (1+L)*Q-1,
-  // Q=mean(1/(1+a*y)). Dimensionless b=a*max(y), t=log1p(b).
-  // Cache normalized moments once; the divided score loses precision near
-  // zero even with log1p, whereas this series has no cancellation.
-  double moments[13] = {};
-  for (double z:y) {
-    double power=1, r=z/M;
-    for (int k=1;k<=12;++k) { power*=r; moments[k]+=power/y.size(); }
-  }
-  auto profile = [&](double t, bool shape) {
-    const double b=std::expm1(t);
-    double L=0,Q=0;
-    if (std::abs(b)<1e-3 && !shape) {
-      double sum=0,power=1;
-      for(int k=2;k<=12;++k) {
-        double c=moments[k];
-        for(int j=1;j<=k;++j) c-=moments[j]*moments[k-j]/j;
-        c-=moments[k]/k;
-        sum+=(k%2 ? -1:1)*c*power; power*=b;
-      }
-      return sum;
-    }
-    for(double z:y) { const double v=b*(z/M); L+=std::log1p(v); Q+=1/(1+v); }
-    L/=y.size(); Q/=y.size();
-    return shape ? L : ((1+L)*Q-1)/(b*b);
-  };
-  // L is monotone; below L=-1 no stationary candidate is admissible.
-  double left=-static_cast<double>(y.size()), right=0;
-  for(int j=0;j<50;++j) { auto mid=(left+right)/2; if(profile(mid,true)<-1) left=mid; else right=mid; }
-  const double lower=right;
-  double upper=1;
-  // Beyond this bound (1+L)Q < 1 follows from min(y), max(y).
-  while (1+upper >= 1+std::expm1(upper)*(static_cast<double>(minimum)/M)) upper*=2;
-  bool root_failure=false;
-  auto root = [&](double l,double h) {
-    double fl=profile(l,false);
-    int it=0;
-    for(;it<maxit;++it) {
-      const double mid=(l+h)/2, fm=profile(mid,false);
-      if((fl<0)==(fm<0)) {l=mid;fl=fm;} else h=mid;
-      if(h-l<tol*(1+std::abs(mid))) break;
-    }
-    if(it==maxit) { root_failure=true; return; }
-    const double t=(l+h)/2, shape=profile(t,true);
-    const double scale=shape*M/std::expm1(t);
-    const double ll=gpd_loglik(ys,scale,shape);
-    if(shape>=-1 && ll>best.logLik) best={mu,scale,shape,ll,it+1,GpdStatus::Ok};
-  };
-  auto scan=[&](double low,double high) {
-    const int cells=32;
-    double before=low, fb=profile(before,false);
-    double prev=low, fp=fb;
-    for(int j=1;j<=cells;++j) {
-      const double next=low+(high-low)*j/cells, fn=profile(next,false);
-      if ((fp<0)!=(fn<0)) root(prev,next);
-      // A pair of roots can lie in one cell. Refine every sampled local
-      // extremum of the score towards zero, including same-sign neighbours.
-      if(j>1 && (fb<0)==(fp<0) && (fp<0)==(fn<0)
-          && std::abs(fp)<std::abs(fb) && std::abs(fp)<std::abs(fn)) {
-        double l=before,h=next;
-        const double sign=fp<0 ? -1 : 1;
-        for(int k=0;k<48;++k) {
-          const double u=l+(h-l)*0.3819660112501051;
-          const double v=h-(h-l)*0.3819660112501051;
-          if(sign*profile(u,false)<sign*profile(v,false)) h=v; else l=u;
-        }
-        const double mid=(l+h)/2, fm=profile(mid,false);
-        if((fm<0)!=(fb<0)) { root(before,mid); root(mid,next); }
-      }
-      before=prev; fb=fp; prev=next; fp=fn;
-    }
-  };
-  scan(lower,-1e-12); scan(1e-12,upper);
-  if (root_failure) best.status=GpdStatus::IterationFailure;
-  return best;
+  return gpd_cert_detail::fit(ys,mu,tol,maxit);
 }
 
 inline GpdResult gpd_mle(span x,double tol=1e-12,int maxit=200,double mu=0,double xi=std::numeric_limits<double>::quiet_NaN(),double sigma=std::numeric_limits<double>::quiet_NaN()) {

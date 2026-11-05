@@ -1,0 +1,38 @@
+{
+  "critical_a_numeric": "0.0788067559238372909323201754696184560269434409819958225114473284903364993135",
+  "critical_xi_numeric": "0.580819888441923563685576302743105711645316924372293253161808406368152764871",
+  "critical_sigma_numeric": "0.20580629081361198514627921998601094084895092637118516755033052699333138161",
+  "note": "Scalar local root numerical; exact global-max construction and proof are in gpd/README.md.",
+  "cases": [
+    {
+      "label": "interior",
+      "a": 0.0787967559238373,
+      "status": 0,
+      "certificate_failure": 0,
+      "sigma": 0.20577152743249938,
+      "xi": 0.5809469209481916,
+      "loglik": 0.0001256846203805395,
+      "work": 69
+    },
+    {
+      "label": "tie",
+      "a": 0.07880675592383729,
+      "status": 3,
+      "certificate_failure": 3,
+      "sigma": null,
+      "xi": null,
+      "loglik": null,
+      "work": 69
+    },
+    {
+      "label": "uniform",
+      "a": 0.07881675592383729,
+      "status": 0,
+      "certificate_failure": 0,
+      "sigma": 1.0,
+      "xi": -1.0,
+      "loglik": -0.0,
+      "work": 60
+    }
+  ]
+}
