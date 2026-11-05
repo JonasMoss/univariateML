@@ -17,6 +17,8 @@ def clean(v):
 
 def snippet(folder, m):
     header = (folder/'mle.hpp').read_text()
+    # A certified public fitter may live in certificate.hpp beside mle.hpp.
+    if (folder/'certificate.hpp').exists(): header += '\n' + (folder/'certificate.hpp').read_text()
     # Public result-returning overloads, excluding detail solvers.
     matches = list(re.finditer(r'inline\s+([\w:]+)\s+((?:\w+_mle|fit_\w+))\s*\(\s*(i?span)\s+\w+\s*[,)]', header))
     adapter = (ROOT/f'bindings/r/distributions/{folder.name}/adapter.cpp').read_text()
