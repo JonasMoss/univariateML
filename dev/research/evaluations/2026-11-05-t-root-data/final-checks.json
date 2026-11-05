@@ -1,0 +1,12 @@
+{
+  "local_links_checked": 40,
+  "syntax": "passed",
+  "JSON": "passed",
+  "recorded_hashes": "passed",
+  "preexisting_changed_files": [
+    "univariateML-cpp/include/cppunivariate/distributions/lst/README.md",
+    "univariateML-cpp/include/cppunivariate/distributions/std/README.md"
+  ],
+  "whitespace": "passed",
+  "report_sha256": "2be9dd68e4df50c64f8225d04878124e7c3075c4f481ddcc153b74deca01976b"
+}

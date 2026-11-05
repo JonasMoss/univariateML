@@ -1,0 +1,182 @@
+{
+  "revision": "fe4573e9b02a950a1440039a8395c30ff2f25926",
+  "branch": "codex/t-root",
+  "platform": "Linux-7.0.0-42-generic-x86_64-with-glibc2.43",
+  "python": "3.14.5",
+  "numpy": "2.4.6",
+  "scipy": "1.18.0",
+  "mpmath": "1.3.0",
+  "node": "v22.22.1",
+  "compiler": "c++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "R": "R version 4.6.1 (2026-06-24) ; BH 1.90.0.1 ; Rcpp 1.1.2 ; testthat 3.3.2",
+  "commands": [
+    {
+      "command": "/tmp/umvl-cpu/run4 just cpp-test",
+      "machine": "local workstation",
+      "result": {
+        "passed": 106,
+        "failed": 0
+      },
+      "log_sha256": "41acdae274945e9fadac6d32d4ecc749c920477225e2e00cb16ba914d1666243"
+    },
+    {
+      "command": "/tmp/umvl-cpu/run4 just cpp-test-no-long-double",
+      "machine": "local workstation",
+      "result": {
+        "passed": 127,
+        "failed": 0
+      },
+      "log_sha256": "cd72e4d49615cd9b98c5fb995c085af536cb24006f8606560da12bab9d4691f9"
+    },
+    {
+      "command": "/tmp/umvl-cpu/run4 just test",
+      "machine": "local workstation",
+      "result": {
+        "passed": 20612,
+        "failed": 0,
+        "warnings": 0,
+        "skipped": 154
+      },
+      "log_sha256": "c5c9b647e1b969b21fd1920b618e20ccd7bed47ca3a727b37ba7b6caf8679c03"
+    },
+    {
+      "command": "/tmp/umvl-cpu/run4 just js-build",
+      "machine": "local workstation",
+      "result": {
+        "completed": true,
+        "artifacts": {
+          "univariateML.mjs": "392066af53f32627c40066d9714bf73ef3380c74b5ec802c8e49bf1f7a72d856",
+          "univariateML.wasm": "bd02ee45b897d03c99cd3dfa89ded6b461a38bda8111d5d69ef7e2bb14a40ff7"
+        }
+      },
+      "log_sha256": "ad779f7b4c5549276a893f6c6e90065c42742a786347bec6b4e49f457f1c9307"
+    },
+    {
+      "command": "/tmp/umvl-cpu/run4 just js-test",
+      "machine": "local workstation",
+      "result": {
+        "tests": 418,
+        "pass": 418,
+        "fail": 0,
+        "skipped": 0
+      },
+      "log_sha256": "de2f7adad892d43385936a4bf7b4cb17c9c4681ffca91275c9bf4ea57ccf0366"
+    },
+    {
+      "command": "/tmp/umvl-cpu/run4 env UMVL_TEST_TIER=full just cpp-test",
+      "machine": "local workstation",
+      "result": {
+        "passed": 127,
+        "failed": 0
+      },
+      "log_sha256": "c847e6cd1eb37c34b9fe82498e2278487b0ca89002b2c1655f75ff68afaf4f01"
+    },
+    {
+      "command": "/tmp/umvl-cpu/run4 just test-full",
+      "machine": "local workstation",
+      "result": {
+        "passed": 43427,
+        "failed": 0,
+        "warnings": 0,
+        "skipped": 0
+      },
+      "log_sha256": "b51950256e3f070687dc44afc10d8b6d00c10e56f656c24243ccf5a0b3da5243"
+    }
+  ],
+  "summary": {
+    "lst": {
+      "outcomes": {
+        "finite": 9,
+        "cauchy": 8,
+        "normal": 11,
+        "budget": 1,
+        "collapse_unbounded": 2
+      },
+      "max_profiles": 4096,
+      "median_research_seconds": 1.1219156289998864,
+      "median_native_seconds": 0.0020985636666666667,
+      "golden_research_seconds": 8.135688846000448,
+      "golden_native_seconds": 0.012805117
+    },
+    "std": {
+      "outcomes": {
+        "finite": 6,
+        "t2": 11,
+        "normal": 12,
+        "budget": 1,
+        "collapse": 1
+      },
+      "max_profiles": 4096,
+      "median_research_seconds": 0.9346667330000855,
+      "median_native_seconds": 0.000517531,
+      "golden_research_seconds": 11.77701062199958,
+      "golden_native_seconds": 0.003361937333333333
+    },
+    "independent": {
+      "roots": 17,
+      "endpoint_roots": 19,
+      "global_logic": {
+        "pairs": 62,
+        "decided": 60,
+        "unresolved": 2
+      },
+      "golden_boxes": [
+        {
+          "family": "lst",
+          "whole_box_max_relative_golden_error": "0.0000000054413918846370604720431578781759936049319847040306902447975387138928049781858272",
+          "tolerance": 3e-05
+        },
+        {
+          "family": "std",
+          "whole_box_max_relative_golden_error": "0.0000089250810217743429105353249266315660968295078377696346107734828775156980852877306",
+          "tolerance": 3e-05
+        }
+      ],
+      "budgets": {
+        "0": {
+          "outcome": "budget",
+          "profiles": 0
+        },
+        "1": {
+          "outcome": "budget",
+          "profiles": 1,
+          "reason": "profile budget"
+        }
+      }
+    }
+  },
+  "hashes": {
+    "dev/research/evaluations/2026-11-04-t-cert-data/baseline.cpp": "e79449d9280eddae7295064b346a217fef87dfdc3b02647f2ea40ea9086de21c",
+    "dev/research/evaluations/2026-11-04-t-cert-data/inputs.json": "08a41582b697207c537d721cf849958b91743812162d2c9d0538de755a05e3c6",
+    "dev/research/evaluations/2026-11-05-t-root-data/README.md": "2c702f80c51333b46481f1cc7bd0e91cab7c3fdce23dbe7e4de7c01923cb3a1a",
+    "dev/research/evaluations/2026-11-05-t-root-data/adversarial.json": "b3fd9e26c2e7bb8c2dfac4b14ac922e3a7627c7cf518f18a92773f02a75245d5",
+    "dev/research/evaluations/2026-11-05-t-root-data/adversarial.py": "efdb96c5a1ca9703db934469165eb22946a590ba05b787adfb15621ce2b10e7c",
+    "dev/research/evaluations/2026-11-05-t-root-data/baseline.json": "bd728569a79e5c81e5e22cbd4de914397ce591ebf651e2c0751667d1faee3dd7",
+    "dev/research/evaluations/2026-11-05-t-root-data/baseline.py": "4cae6e33fe6597e08d92dc454cc3165f700d00c296a35c3f6a3750bc5dd6a62d",
+    "dev/research/evaluations/2026-11-05-t-root-data/derivation.md": "ca609e85218df5328a3a714d3ed6a68e5ab30ce260d6bb87f5a295f1f9be2814",
+    "dev/research/evaluations/2026-11-05-t-root-data/final-checks.py": "80a63ee8479ee48a4358fdc37400aeaceed2487a4acc4a0adbc9c9a814675e1f",
+    "dev/research/evaluations/2026-11-05-t-root-data/global.json": "a6d49e8378a59ebc48219e192a06c801f9c8674f27bcfa39b2ea77088c405c2f",
+    "dev/research/evaluations/2026-11-05-t-root-data/global.py": "19cd553a37f72147ec0bca78448a5ab93fcaf581a7c1a1d27ab3a223d0131c44",
+    "dev/research/evaluations/2026-11-05-t-root-data/independent.json": "dc55f232acf7cb95637f32c89053f0490a4567ac068d88177804f0108869fff8",
+    "dev/research/evaluations/2026-11-05-t-root-data/roots.json": "1d6219b9c415b047f90f2e9a557ce3405bb8890d8c246634f3296c8197e8e4fa",
+    "dev/research/evaluations/2026-11-05-t-root-data/roots.py": "64f706987c8a8d57ee5ce6b60a15b231bba852eb2592806b72d08018ed81d820",
+    "dev/research/evaluations/2026-11-05-t-root-data/run.sh": "0e9adb879d47bc9afa52a09808e714e57dc3e840b5235682e8fcb43b4c2f7283",
+    "dev/research/evaluations/2026-11-05-t-root-data/shallow.json": "5249ddded982ebb4680b6aefb231dbe7b6cc04ada6bb2549fe286203d21b0b9b",
+    "dev/research/evaluations/2026-11-05-t-root-data/shallow.py": "5d27eaf8627f1c8233d8b7973be6994fdc2154bfb912dce9bd35d6e4f6ad75ec",
+    "dev/research/evaluations/2026-11-05-t-root-data/suites.sh": "5979f8a844f45d773d8841214a5b73837839ba85e7bcd76e157551ef496db853",
+    "dev/research/evaluations/2026-11-05-t-root-data/validation.py": "e47110b6d50bbf0836b526df0ffd3a761b93fad654fccca850e08b3920a4611f",
+    "dev/research/evaluations/2026-11-05-t-root-data/verify.py": "6b3abe3f735c95ce0c2681ff2ae160cd5a1d73fcf1763448f7a0f90db75f5cf1",
+    "univariateML-cpp/include/cppunivariate/distributions/lst/README.md": "ff3f760fadc68d0ebdd29ab3c37fd498ed480b9c38e18e15f38f4d852869bb6f",
+    "univariateML-cpp/include/cppunivariate/distributions/lst/golden.json": "b6d077a9bc629723933fbccd693d878331cb4892ffe4cf538b6001ff478d86b6",
+    "univariateML-cpp/include/cppunivariate/distributions/lst/mle.hpp": "c573ef030c64a8c6e5fbeb0a033b36f1ebdef756cad31ea7e184fbd72f56447a",
+    "univariateML-cpp/include/cppunivariate/distributions/lst/test.cpp": "cb38963aea9e927747b96a2ae524acd87e9900071f3c545582ba9f472d93ee6c",
+    "univariateML-cpp/include/cppunivariate/distributions/sstd/README.md": "366913dba257394024012839d0cae1b85a2ff6ea9ae596c394d4d8d3ab49d0ac",
+    "univariateML-cpp/include/cppunivariate/distributions/sstd/golden.json": "b4e12fb2df90fb43cacb7946b4e2cb7d5da960d83eb3add396b35afd96e59be0",
+    "univariateML-cpp/include/cppunivariate/distributions/sstd/mle.hpp": "61f646fc1129c425d1fbb4c459b27ab3a2b33c91f95730e5a8a3b281c6f68f00",
+    "univariateML-cpp/include/cppunivariate/distributions/sstd/test.cpp": "fdd843593457c7905ef1e59b2cd4ebaffaf9d3e05697827a960a01274fd188f9",
+    "univariateML-cpp/include/cppunivariate/distributions/std/README.md": "8d81fac28bdb9751ed3cd176798816d2771bb66bff9803a2b1c58699138c3dfa",
+    "univariateML-cpp/include/cppunivariate/distributions/std/golden.json": "ae2f02e1f1e0f1fe8b8672fb2969657573c8c3da1cf17cc5615d95e8d0212e1d",
+    "univariateML-cpp/include/cppunivariate/distributions/std/mle.hpp": "75279715fdc15e72769d5d0abb9ca0c936249931fad6549eac35697ad5f85aa9",
+    "univariateML-cpp/include/cppunivariate/distributions/std/test.cpp": "bf1154d2427460d741230e690c6da321d93fb679780800e798645ce50e5a760a"
+  }
+}
