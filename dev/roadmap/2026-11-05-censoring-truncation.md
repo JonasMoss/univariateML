@@ -59,6 +59,19 @@ Findings to check properly (from chat on 2026-11-05, not proved):
    at most two adjacent bins drive the MLE to this face, with a
    *bounded* likelihood (the empirical multinomial), where uncensored
    all-equal data gave an unbounded one.
+4. Burr, right censoring, all exact observations equal to $x_0$ and
+   $m \ge 1$ censored at times $u_j > x_0$: the likelihood is bounded
+   (it is unbounded without censoring). Since $h(x) = (k c/x)\,\sigma(z)$
+   and softplus is convex, with $A = k c\,\sigma(z_0)$,
+   $\log f(x_0) \le \log(A/x_0)$ and $\log S(u_j) \le -A \log(u_j/x_0)$.
+   The bound is attained only on the Pareto face with minimum $x_0$,
+   $\alpha^* = d / \sum_j \log(u_j/x_0)$. Censoring beyond the cluster turns a
+   point-mass escape into a Pareto escape.
+5. Weak closure: the censoring map $x \mapsto (\min(x,u), 1\{x \le u\})$
+   is discontinuous at $u$, so concentration at $u$ gives the weak-only
+   limits $(1-p)\,\delta_{(u,\text{exact})} + p\,\delta_{(u,\text{cens})}$,
+   $p \in [0,1]$. In contrast, the all-censored law (finding 2) and the
+   two-bin edge (finding 3) are Hellinger limits in the observed space.
 
 General question: characterise $\partial_T M$ for each family and each
 censoring/truncation scheme, and which faces of $\partial_T M$ attract
