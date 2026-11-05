@@ -189,3 +189,39 @@ TEST_CASE("nbinom: centered variance avoids false underdispersion for large coun
   const auto r = cppunivariate::nbinom_mle(as_ispan(x), 1e-8, 1);
   CHECK(r.status == cppunivariate::NbinomStatus::PrecisionFailure);
 }
+
+TEST_CASE("nbinom certificate: Poisson stop retains the limit fit") {
+  const std::vector<int> x{0,1,2,3,4};
+  const auto r=cppunivariate::nbinom_mle(as_ispan(x),1e-10,100);
+  REQUIRE(r.status==cppunivariate::NbinomStatus::Underdispersed);
+  REQUIRE(r.stop_detail.limit_coef.size()==1);
+  CHECK(r.stop_detail.limit_coef[0]==2);
+  double ll=0;for(int v:x)ll+=v*std::log(2.)-2-cppunivariate::special::lgamma(v+1.);
+  CHECK(r.stop_detail.limit_loglik==doctest::Approx(ll));
+}
+
+TEST_CASE("nbinom certificate: budget never returns unchecked coefficients") {
+  const std::vector<int> x{0,0,1,3,6};
+  const auto r=cppunivariate::nbinom_mle(as_ispan(x),1e-12,1);
+  CHECK(r.status==cppunivariate::NbinomStatus::PrecisionFailure);
+  CHECK_FALSE(std::isfinite(r.size));
+  CHECK(r.certificate_failure==cppunivariate::NbinomCertificateFailure::Budget);
+}
+
+TEST_CASE("nbinom certificate: large-count expansion agrees with integer recurrence") {
+  const std::vector<int> x{9000,11000};
+  const auto r=cppunivariate::nbinom_mle(as_ispan(x),1e-12,200);
+  REQUIRE(r.status==cppunivariate::NbinomStatus::Ok);
+  double score=-2*std::log1p(10000/r.size);
+  for(int v:x)for(int j=0;j<v;++j)score+=1/(r.size+j);
+  CHECK(std::abs(score)<1e-7);
+}
+
+TEST_CASE("nbinom certificate: cancellation-free near-Poisson root") {
+  std::vector<int> x;
+  for(int i=0;i<999;++i)for(int j=0;j<5;++j)x.push_back(j);
+  x.push_back(0);x.push_back(4);
+  const auto r=cppunivariate::nbinom_mle(as_ispan(x),1e-10,200);
+  REQUIRE(r.status==cppunivariate::NbinomStatus::Ok);
+  CHECK(r.size>1000);
+}

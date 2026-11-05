@@ -1,0 +1,11 @@
+
+── Failed tests ────────────────────────────────────────────────────────────────
+Failure ('test-dist-nbinom.R:193:3'): held subnormal arithmetic failure is not probability rounding
+Expected `mlnbinom(...)` to throw a error.
+
+[ FAIL 1 | WARN 0 | SKIP 154 | PASS 20626 ]
+Error:
+! Test failures.
+Timing stopped at: 477.5 4.085 132
+Execution halted
+error: Recipe `test` failed on line 66 with exit code 1

@@ -27,8 +27,8 @@ r:
     a: Optional held a; `NULL` estimates it.
     b: Optional held b; `NULL` estimates it.
     a0: Optional positive starting value for `a`; `NULL` uses the automatic start.
-    reltol: Relative step tolerance, with an absolute floor of the same size.
-    iterlim: Maximum number of iterations.
+    reltol: Relative step tolerance for the Newton proposal; the certificate uses its own fixed accuracy.
+    iterlim: Maximum proposer iterations; certificate evaluation budget is 16 * min(iterlim, 100000).
 log_density: log(a) + log(b) + (a-1)*log(x) + (b-1)*log(1-x**a)
 references:
 - Jones, M. C. (2009). Kumaraswamy’s distribution, a beta-type distribution with some tractability advantages. Statistical
@@ -70,10 +70,8 @@ relations:
     power: a
 fit:
   method: scalar-solve
-  certified: partial
-  note: 'kumar/README.md, Details; kumar/mle.hpp (public fitter and held overloads); kumar/test.cpp: Held a gives
-    analytic b and held b a decreasing bracketed score; coercivity of the joint profile proves existence, not uniqueness
-    of its numerical root.'
+  certified: 'yes'
+  note: 'Unique global maximum from strict profile concavity; padded opposite score signs enclose the root. Exact-arithmetic certificate conditional on computed comparisons, with a practical floating-point allowance; unresolved signs or budget stop.'
 areas:
 - proportions
 classification: specialist
@@ -83,10 +81,10 @@ aliases: []
 key_references:
 - 3
 existence:
-  uniqueness: unknown
+  uniqueness: proved
   statement: >-
     With both shapes free, a finite MLE exists for every nonconstant
-    sample in $(0,1)$, but joint uniqueness is not established. Constant
+    sample in $(0,1)$, and it is unique. Constant
     data have unbounded likelihood. Holding either shape gives a unique
     finite MLE even for constant interior data. Holding both leaves only
     likelihood evaluation.
@@ -96,7 +94,7 @@ existence:
     $-n\log|\log a|+O(1)$. As $a\to\infty$ it is
     $a(n\min_i t_i-\sum_i t_i)+n\log a+O(1)$, which tends to
     $-\infty$ for nonconstant data and to $+\infty$ for constant data.
-    Hence the continuous profile attains a maximum in the nonconstant case.
+    Hence the continuous profile attains a maximum in the nonconstant case. Strict concavity of this profile, proved below, makes the maximum unique.
     With $a$ held the likelihood is strictly concave in $b$.
     With $b$ held the score in $a$ strictly decreases from $+\infty$ to
     $-\sum_i t_i<0$. For $b<1$ its derivative is at most $-nb/a^2<0$,
@@ -111,6 +109,50 @@ The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-boun
 
 With both shapes free, constant observations have unbounded likelihood. If their common value is $c$, taking $a\to\infty$ and $b=c^{-a}$ concentrates the distribution at $c$ and makes its density there grow without bound.
 
-Every nonconstant interior sample has a finite maximum because the likelihood, after profiling out $b$, tends to $-\infty$ at both ends of the positive range of $a$. This proves existence, but does not prove uniqueness of the maximum or certify the numerical root search. The fit uses Newton iteration with a bracketed profile fallback.
+Every nonconstant interior sample has a finite maximum because the likelihood, after profiling out $b$, tends to $-\infty$ at both ends of the positive range of $a$. The profile is also strictly concave, so its maximum is unique. The fit uses Newton only to propose a location, then certifies opposite score signs around the unique root.
 
 With $a$ held, $\hat b=-n/\sum_i\log(1-x_i^a)$. With $b$ held, the strictly decreasing score for $a$ has a unique positive root, found by bracketing. These conditional fits exist even for constant interior data. Holding both evaluates the likelihood.
+
+## Scalar certificate and uniqueness proof (2026-11-05)
+
+Write $t_i=-\log x_i>0$, $T=\sum_i t_i$ and
+$G(a)=\sum_i-\log(1-e^{-at_i})>0$. Profiling $b$ gives
+
+$$h(a)=n\log a-n\log G(a)-aT+G(a)+C.$$
+
+Each summand has the positive exponential expansion
+$\sum_{k\ge1}e^{-kat_i}/k$. Thus $G$ is a Laplace transform of a
+positive measure and is log-convex (Cauchy--Schwarz applied to its first
+and second derivatives). Also
+
+$$G''(a)=\sum_i\frac{t_i^2e^{at_i}}{(e^{at_i}-1)^2}<\frac n{a^2},$$
+
+since $u^2e^u/(e^u-1)^2<1$ for $u>0$ (equivalently,
+$2\sinh(u/2)>u$). Therefore
+
+$$h''(a)=-n/a^2-n(\log G)''(a)+G''(a)<0.$$
+
+Together with the endpoint limits above, this proves a unique finite joint
+maximum for every nonconstant interior sample. This is an analytic result,
+not an inference from a numerical search. Constant samples remain unbounded.
+The held-$b$ strict concavity argument above supplies the same root certificate;
+held $a$ uses the analytic $b$ maximum.
+
+`certificate.hpp` brackets the unique root of $a h'(a)/n$, halving or
+doubling a positive proposal until both endpoint signs are resolved.
+Bisection preserves those signs. A residual near zero is accepted only after
+two nearby endpoints sign in opposite directions. Relative root width is at
+most $5\times10^{-7}$ (tightened by $\max(1,aT/n)$ when the second shape is sensitive); the computed endpoint values of $b$ must also have
+log ratio below $10^{-6}$. Since $b(a)=n/G(a)$ increases, these endpoints
+bound both coordinates. Historical Newton coefficients are retained only
+inside both enclosures (with a $10^{-12}$ relative rounding pad on the profiled second shape). Otherwise the bracket midpoint is returned.
+
+The certificate is exact in real arithmetic conditional on the computed
+comparisons. Its practical floating-point score allowance is
+$256\epsilon(1+aT/n+|(b-1)D|)(1+n\epsilon)$, where
+$D=n^{-1}\sum at_i/\operatorname{expm1}(at_i)$. This is a practical
+rounding margin, not outward-rounded interval arithmetic or a libm error
+proof. Subnormal/vanishing $G$, nonfinite arithmetic, unresolved signs,
+unrepresentable coefficients or an exhausted $16\min(\mathrm{maxit},100000)$
+evaluation budget produce `IterationFailure`, never an unchecked fit.
+No finite limit model accompanies the constant-sample unbounded stop.

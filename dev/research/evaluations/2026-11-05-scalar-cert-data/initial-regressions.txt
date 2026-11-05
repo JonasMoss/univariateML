@@ -1,0 +1,45 @@
+        Start  55: distribution_kumar
+ 43/106 Test  #55: distribution_kumar ...............***Failed    0.05 sec
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+../../include/cppunivariate/distributions/kumar/test.cpp:28:
+TEST CASE:  kumar
+
+../../include/cppunivariate/distributions/kumar/test.cpp:31: ERROR: CHECK( r.a == doctest::Approx(g.estimates.at("a")).epsilon(mltest::kTol) ) is NOT correct!
+  values: CHECK( 1.8209 == Approx( 1.8209 ) )
+
+../../include/cppunivariate/distributions/kumar/test.cpp:32: ERROR: CHECK( r.b == doctest::Approx(g.estimates.at("b")).epsilon(mltest::kTol) ) is NOT correct!
+  values: CHECK( 2.81136 == Approx( 2.81136 ) )
+
+===============================================================================
+../../include/cppunivariate/distributions/kumar/test.cpp:63:
+TEST CASE:  kumar ordinary golden is unchanged to 1e-12
+
+../../include/cppunivariate/distributions/kumar/test.cpp:66: ERROR: CHECK( std::abs(r.a - g.estimates.at("a")) < 1e-12 ) is NOT correct!
+  values: CHECK( 1.01751e-08 <  1e-12 )
+
+../../include/cppunivariate/distributions/kumar/test.cpp:67: ERROR: CHECK( std::abs(r.b - g.estimates.at("b")) < 1e-12 ) is NOT correct!
+  values: CHECK( 1.90052e-08 <  1e-12 )
+
+===============================================================================
+[doctest] test cases:    14 |    12 passed | 2 failed | 1162 skipped
+[doctest] assertions: 12840 | 12836 passed | 4 failed |
+[doctest] Status: FAILURE!
+
+        Start  57: distribution_laplace
+ 55/106 Test  #71: distribution_nbinom ..............***Failed    0.17 sec
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+../../include/cppunivariate/distributions/nbinom/test.cpp:111:
+TEST CASE:  nbinom: P2 held probability near one has a stable likelihood
+
+../../include/cppunivariate/distributions/nbinom/test.cpp:119: ERROR: CHECK( r.logLik==doctest::Approx(ll).epsilon(1e-13) ) is NOT correct!
+  values: CHECK( -6.63625 == Approx( -6.62861 ) )
+
+../../include/cppunivariate/distributions/nbinom/test.cpp:120: ERROR: CHECK( r.logLik==doctest::Approx(-6+6*std::log(2.0)-cppunivariate::special::lgamma(6.0)).epsilon(1e-10) ) is NOT correct!
+  values: CHECK( -6.63625 == Approx( -6.62861 ) )
+
+===============================================================================
+[doctest] test cases:    21 |    20 passed | 1 failed | 1155 skipped

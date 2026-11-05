@@ -1,3 +1,5 @@
+// Public certified entrypoint is defined in certificate.hpp below.
+// Legacy routines in this file propose coefficients; they are not certificates.
 // Negative Binomial MLE. Newton on size (1D, hybrid-step convergence)
 // using the unique-counts trick to avoid recomputing digamma at duplicate
 // observations. A finite MLE exists iff the population-form variance
@@ -8,6 +10,7 @@
 // score is bracketed on a log scale and bisected.
 
 #pragma once
+#include "../../core/stop_detail.hpp"
 
 #include "../../core/span.hpp"
 #include "../../special/special.hpp"
@@ -21,6 +24,8 @@
 
 namespace cppunivariate {
 
+enum class NbinomCertificateFailure { None, Arithmetic, Budget };
+
 enum class NbinomStatus { Ok, Underdispersed, ZeroLimit, InvalidInput, PrecisionFailure };
 
 struct NbinomResult {
@@ -30,9 +35,11 @@ struct NbinomResult {
   int iterations;
   bool underdispersed;
   NbinomStatus status = NbinomStatus::Ok;
+  StopDetail stop_detail{};
+  NbinomCertificateFailure certificate_failure = NbinomCertificateFailure::None;
 };
 
-inline NbinomResult nbinom_mle(ispan x, double tol, int maxit,
+inline NbinomResult nbinom_candidate_mle(ispan x, double tol, int maxit,
     double size_fixed = std::numeric_limits<double>::quiet_NaN(),
     double prob_fixed = std::numeric_limits<double>::quiet_NaN()) {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
@@ -236,3 +243,5 @@ inline NbinomResult nbinom_mle(ispan x, double tol, int maxit,
 }
 
 }  // namespace cppunivariate
+
+#include "certificate.hpp"

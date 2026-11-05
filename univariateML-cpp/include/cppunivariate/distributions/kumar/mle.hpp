@@ -1,3 +1,5 @@
+// Public certified entrypoint is defined in certificate.hpp below.
+// Legacy routines in this file propose coefficients; they are not certificates.
 // Kumaraswamy MLE: two-stage. Stage 1 uses an L-moment-based Newton on
 // `a` to seed; stage 2 refines `a` by Newton on the score. `b` is then
 // the closed-form maximiser. Convergence is hybrid (relative + absolute):
@@ -5,6 +7,7 @@
 // kept verbatim for golden parity.
 
 #pragma once
+#include "../../core/stop_detail.hpp"
 
 #include "cppunivariate/core/constants.hpp"
 #include "../../core/inverse_digamma.hpp"
@@ -19,6 +22,8 @@
 
 namespace cppunivariate {
 
+enum class KumarCertificateFailure { None, Arithmetic, Budget };
+
 enum class KumarStatus { Ok, InvalidData, Unbounded, IterationFailure };
 
 struct KumarResult {
@@ -27,11 +32,13 @@ struct KumarResult {
   double logLik;
   int iterations;
   KumarStatus status = KumarStatus::Ok;
+  StopDetail stop_detail{};
+  KumarCertificateFailure certificate_failure = KumarCertificateFailure::None;
 };
 
 // Stable profile fallback: b = -n / sum log(1-x^a). Solve the
 // profile score in log(a), preserving the legacy Newton path when it works.
-inline KumarResult kumar_profile_mle(span x, double tol, int maxit) {
+inline KumarResult kumar_profile_candidate_mle(span x, double tol, int maxit) {
   const double nan = std::numeric_limits<double>::quiet_NaN();
   const double n = static_cast<double>(x.size());
   const auto evaluate = [&](double p, double &b, double &ll) {
@@ -66,7 +73,7 @@ inline KumarResult kumar_profile_mle(span x, double tol, int maxit) {
   return {nan, nan, nan, maxit, KumarStatus::IterationFailure};
 }
 
-inline KumarResult kumar_mle(span x, double tol, int maxit,
+inline KumarResult kumar_candidate_mle(span x, double tol, int maxit,
                              double start = std::numeric_limits<double>::quiet_NaN(),
                              double fixed_a = std::numeric_limits<double>::quiet_NaN(),
                              double fixed_b = std::numeric_limits<double>::quiet_NaN()) {
@@ -130,7 +137,7 @@ inline KumarResult kumar_mle(span x, double tol, int maxit,
   if (constant) return {kNaN, kNaN, kNaN, 0, KumarStatus::Unbounded};
   if (!std::isnan(start) && (!(start > 0.0) || !std::isfinite(start)))
     return {kNaN, kNaN, kNaN, 0, KumarStatus::InvalidData};
-  if (extreme) return kumar_profile_mle(x, tol, maxit);
+  if (extreme) return kumar_profile_candidate_mle(x, tol, maxit);
   const double mu = cppunivariate::mean_log(x);
   // sigma2 = mean(log(x)^2) - mu^2
   double sum_log_sq = 0.0;
@@ -141,7 +148,7 @@ inline KumarResult kumar_mle(span x, double tol, int maxit,
   const double sigma2 = sum_log_sq / static_cast<double>(n) - mu * mu;
 
   if (!(sigma2 > 0.0) || !std::isfinite(sigma2))
-    return kumar_profile_mle(x, tol, maxit);
+    return kumar_profile_candidate_mle(x, tol, maxit);
 
   // Stage 1: Newton on `a` from L-moment estimating equation.
   auto f_over_df_lmom = [&](double a0) {
@@ -158,7 +165,7 @@ inline KumarResult kumar_mle(span x, double tol, int maxit,
   if (std::isnan(start)) {
     for (int i = 0; i < maxit; ++i) {
       if (!(a0 > 0.0) || !std::isfinite(a0) || !std::isfinite(a0 * mu))
-        return kumar_profile_mle(x, tol, maxit);
+        return kumar_profile_candidate_mle(x, tol, maxit);
       const double step = f_over_df_lmom(a0);
       a0 -= step;
       if (std::abs(step) < (std::abs(a0) * tol + tol)) break;
@@ -202,12 +209,12 @@ inline KumarResult kumar_mle(span x, double tol, int maxit,
     const double step = f_over_df(a);
     a -= step;
     if (a <= 0.0 || !std::isfinite(a)) {
-      return kumar_profile_mle(x, tol, maxit);
+      return kumar_profile_candidate_mle(x, tol, maxit);
     }
     if (std::abs(step) < (std::abs(a) * tol + tol)) break;
   }
 
-  if (iter > maxit) return kumar_profile_mle(x, tol, maxit);
+  if (iter > maxit) return kumar_profile_candidate_mle(x, tol, maxit);
 
   double sum_log1p_neg_xa = 0.0, sum_log_x = 0.0;
   for (auto v : x) {
@@ -223,3 +230,5 @@ inline KumarResult kumar_mle(span x, double tol, int maxit,
 }
 
 }  // namespace cppunivariate
+
+#include "certificate.hpp"

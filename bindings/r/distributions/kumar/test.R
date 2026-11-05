@@ -157,3 +157,13 @@ test_that("kumar: P3 unfinished optimizer stops", {
   expect_error(mlkumar(x, iterlim=1, reltol=1e-10),
                "[Ff]ail|converge|unresolved|exhausted|score check")
 })
+
+test_that("certified joint profile agrees across starting values", {
+  x <- c(.01,.1,.3,.6,.8,.99)
+  ref <- mlkumar(x)
+  for (a0 in c(.01,1,100)) {
+    fit <- mlkumar(x,a0=a0)
+    expect_equal(as.numeric(fit),as.numeric(ref),tolerance=1e-6)
+  }
+  expect_error(mlkumar(x,iterlim=1),"iteration|precision")
+})

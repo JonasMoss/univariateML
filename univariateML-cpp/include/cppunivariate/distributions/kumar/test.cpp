@@ -183,3 +183,23 @@ TEST_CASE("kumar: P3 unfinished optimizer is a failure") {
   const auto x=mltest::as_span(g.data);
   CHECK(cppunivariate::kumar_mle(x,1e-8,1).status==cppunivariate::KumarStatus::IterationFailure);
 }
+
+TEST_CASE("kumar certificate: unique profile root is independent of starts") {
+  const std::vector<double> x{.01,.1,.3,.6,.8,.99};
+  const auto reference=cppunivariate::kumar_mle({x.data(),x.size()},1e-10,200);
+  REQUIRE(reference.status==cppunivariate::KumarStatus::Ok);
+  for(double start:{.01,1.,100.}) {
+    const auto r=cppunivariate::kumar_mle({x.data(),x.size()},1e-10,200,start);
+    REQUIRE(r.status==cppunivariate::KumarStatus::Ok);
+    CHECK(r.a==doctest::Approx(reference.a).epsilon(1e-7));
+    CHECK(r.b==doctest::Approx(reference.b).epsilon(1e-7));
+  }
+}
+
+TEST_CASE("kumar certificate: small budget stops instead of returning a root proposal") {
+  const std::vector<double> x{.1,.2,.5,.8};
+  const auto r=cppunivariate::kumar_mle({x.data(),x.size()},1e-12,1);
+  CHECK(r.status==cppunivariate::KumarStatus::IterationFailure);
+  CHECK_FALSE(std::isfinite(r.a));
+  CHECK(r.certificate_failure==cppunivariate::KumarCertificateFailure::Budget);
+}

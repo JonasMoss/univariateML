@@ -1,0 +1,485 @@
+{
+  "seed": 1163,
+  "decimal_digits": 70,
+  "seconds": 14.267496249999567,
+  "binary": "build/scratch/scalar-probe",
+  "cases": [
+    {
+      "family": "nbinom",
+      "n": 500,
+      "status": 0,
+      "relative_a_error": 4.450219909923289e-14,
+      "relative_b_error": 3.0787755245348585e-14,
+      "loglik_error": 1.1784650975933918e-12,
+      "certificate_evaluations": 26
+    },
+    {
+      "family": "nbinom",
+      "n": 20,
+      "status": 0,
+      "relative_a_error": 1.1713444675724565e-15,
+      "relative_b_error": 4.854324568987344e-16,
+      "loglik_error": 1.00652089656895e-15,
+      "certificate_evaluations": 26
+    },
+    {
+      "family": "nbinom",
+      "n": 20,
+      "status": 1,
+      "kind": "attained zero or Poisson"
+    },
+    {
+      "family": "nbinom",
+      "n": 20,
+      "status": 0,
+      "relative_a_error": 3.608637581576282e-15,
+      "relative_b_error": 2.7431963370546402e-15,
+      "loglik_error": 1.8092831753536683e-14,
+      "certificate_evaluations": 26
+    },
+    {
+      "family": "nbinom",
+      "n": 20,
+      "status": 0,
+      "relative_a_error": 2.691421350756283e-15,
+      "relative_b_error": 1.3076084339312002e-15,
+      "loglik_error": 2.723972624582139e-15,
+      "certificate_evaluations": 26
+    },
+    {
+      "family": "nbinom",
+      "n": 20,
+      "status": 0,
+      "relative_a_error": 2.1949270416050386e-15,
+      "relative_b_error": 1.3020771627803883e-15,
+      "loglik_error": 3.2535968388034254e-15,
+      "certificate_evaluations": 26
+    },
+    {
+      "family": "nbinom",
+      "n": 20,
+      "status": 0,
+      "relative_a_error": 8.660473707766179e-15,
+      "relative_b_error": 4.3060830373255724e-15,
+      "loglik_error": 1.3620181235668854e-14,
+      "certificate_evaluations": 26
+    },
+    {
+      "family": "nbinom",
+      "n": 20,
+      "status": 0,
+      "relative_a_error": 3.302219583065138e-15,
+      "relative_b_error": 2.522390237621878e-15,
+      "loglik_error": 7.79086180884355e-14,
+      "certificate_evaluations": 26
+    },
+    {
+      "family": "nbinom",
+      "n": 20,
+      "status": 0,
+      "relative_a_error": 2.566506768961143e-15,
+      "relative_b_error": 2.0365360511849733e-15,
+      "loglik_error": 1.145571924844716e-15,
+      "certificate_evaluations": 26
+    },
+    {
+      "family": "nbinom",
+      "n": 20,
+      "status": 0,
+      "relative_a_error": 1.0827909544983959e-14,
+      "relative_b_error": 6.193259913552569e-15,
+      "loglik_error": 2.0508802563543857e-14,
+      "certificate_evaluations": 26
+    },
+    {
+      "family": "nbinom",
+      "n": 20,
+      "status": 0,
+      "relative_a_error": 4.8177245150999634e-14,
+      "relative_b_error": 1.0451706236386254e-14,
+      "loglik_error": 1.2675810289444881e-15,
+      "certificate_evaluations": 26
+    },
+    {
+      "family": "nbinom",
+      "n": 20,
+      "status": 0,
+      "relative_a_error": 1.7358465612107544e-14,
+      "relative_b_error": 2.183548603448266e-15,
+      "loglik_error": 1.410086986523609e-15,
+      "certificate_evaluations": 26
+    },
+    {
+      "family": "nbinom",
+      "n": 20,
+      "status": 0,
+      "relative_a_error": 8.228164281399518e-16,
+      "relative_b_error": 7.024379730554608e-16,
+      "loglik_error": 4.612793289026043e-15,
+      "certificate_evaluations": 26
+    },
+    {
+      "family": "nbinom",
+      "n": 20,
+      "status": 0,
+      "relative_a_error": 1.5534739570914853e-15,
+      "relative_b_error": 7.47585965908838e-16,
+      "loglik_error": 1.1240490156155011e-14,
+      "certificate_evaluations": 26
+    },
+    {
+      "family": "nbinom",
+      "n": 20,
+      "status": 0,
+      "relative_a_error": 4.550544465984897e-15,
+      "relative_b_error": 7.980743808613455e-16,
+      "loglik_error": 6.950533446198892e-16,
+      "certificate_evaluations": 26
+    },
+    {
+      "family": "nbinom",
+      "n": 20,
+      "status": 0,
+      "relative_a_error": 3.655323546939319e-16,
+      "relative_b_error": 3.152135536214796e-16,
+      "loglik_error": 7.248059982437586e-15,
+      "certificate_evaluations": 26
+    },
+    {
+      "family": "nbinom",
+      "n": 20,
+      "status": 0,
+      "relative_a_error": 9.690947820808031e-16,
+      "relative_b_error": 5.971248099951072e-16,
+      "loglik_error": 6.332120303508888e-15,
+      "certificate_evaluations": 26
+    },
+    {
+      "family": "nbinom",
+      "n": 20,
+      "status": 0,
+      "relative_a_error": 1.328796977045121e-15,
+      "relative_b_error": 9.897383210027699e-16,
+      "loglik_error": 6.606579237379402e-15,
+      "certificate_evaluations": 26
+    },
+    {
+      "family": "nbinom",
+      "n": 20,
+      "status": 0,
+      "relative_a_error": 2.150363277430536e-16,
+      "relative_b_error": 9.92648594276823e-17,
+      "loglik_error": 8.051679072409476e-15,
+      "certificate_evaluations": 26
+    },
+    {
+      "family": "nbinom",
+      "n": 20,
+      "status": 1,
+      "kind": "attained zero or Poisson"
+    },
+    {
+      "family": "nbinom",
+      "n": 20,
+      "status": 0,
+      "relative_a_error": 1.669776443078176e-15,
+      "relative_b_error": 1.0187174688629568e-15,
+      "loglik_error": 2.1967375460548604e-15,
+      "certificate_evaluations": 26
+    },
+    {
+      "family": "nbinom",
+      "n": 20,
+      "status": 0,
+      "relative_a_error": 1.5108472999589415e-15,
+      "relative_b_error": 3.9644602406441174e-16,
+      "loglik_error": 6.440729887314932e-16,
+      "certificate_evaluations": 26
+    },
+    {
+      "family": "nbinom",
+      "n": 20,
+      "status": 1,
+      "kind": "attained zero or Poisson"
+    },
+    {
+      "family": "nbinom",
+      "n": 20,
+      "status": 0,
+      "relative_a_error": 1.6717455650397112e-14,
+      "relative_b_error": 4.4715179961672626e-15,
+      "loglik_error": 2.429928430685411e-15,
+      "certificate_evaluations": 26
+    },
+    {
+      "family": "nbinom",
+      "n": 20,
+      "status": 0,
+      "relative_a_error": 5.723203734725567e-15,
+      "relative_b_error": 3.377866321133891e-15,
+      "loglik_error": 3.513889043606063e-15,
+      "certificate_evaluations": 26
+    },
+    {
+      "family": "kumar",
+      "n": 500,
+      "status": 0,
+      "relative_a_error": 7.845504610309754e-16,
+      "relative_b_error": 1.2463179981870015e-15,
+      "loglik_error": 2.2556356591531108e-13,
+      "certificate_evaluations": 29
+    },
+    {
+      "family": "kumar",
+      "n": 20,
+      "status": 0,
+      "relative_a_error": 8.383838616897065e-16,
+      "relative_b_error": 3.179720051905672e-16,
+      "loglik_error": 3.4829727616184177e-15,
+      "certificate_evaluations": 28
+    },
+    {
+      "family": "kumar",
+      "n": 20,
+      "status": 0,
+      "relative_a_error": 8.934598185015101e-12,
+      "relative_b_error": 6.552183333142851e-13,
+      "loglik_error": 3.930735471724507e-14,
+      "certificate_evaluations": 25
+    },
+    {
+      "family": "kumar",
+      "n": 20,
+      "status": 0,
+      "relative_a_error": 4.711046612393865e-13,
+      "relative_b_error": 6.836868962460523e-14,
+      "loglik_error": 3.584568348017301e-15,
+      "certificate_evaluations": 28
+    },
+    {
+      "family": "kumar",
+      "n": 20,
+      "status": 0,
+      "relative_a_error": 1.1659460934171885e-12,
+      "relative_b_error": 2.7126090584174105e-13,
+      "loglik_error": 1.8456727727294695e-14,
+      "certificate_evaluations": 25
+    },
+    {
+      "family": "kumar",
+      "n": 20,
+      "status": 0,
+      "relative_a_error": 2.044005827244329e-16,
+      "relative_b_error": 1.2036866209534825e-17,
+      "loglik_error": 2.534342490838295e-15,
+      "certificate_evaluations": 28
+    },
+    {
+      "family": "kumar",
+      "n": 20,
+      "status": 0,
+      "relative_a_error": 1.5165871422797878e-16,
+      "relative_b_error": 3.558053244427672e-16,
+      "loglik_error": 1.3334894207257653e-15,
+      "certificate_evaluations": 29
+    },
+    {
+      "family": "kumar",
+      "n": 20,
+      "status": 0,
+      "relative_a_error": 2.3811834993550536e-07,
+      "relative_b_error": 4.056116291404512e-08,
+      "loglik_error": 9.587974967979734e-14,
+      "certificate_evaluations": 27
+    },
+    {
+      "family": "kumar",
+      "n": 20,
+      "status": 0,
+      "relative_a_error": 1.259809188472266e-16,
+      "relative_b_error": 3.949044002557809e-16,
+      "loglik_error": 5.850492947087414e-15,
+      "certificate_evaluations": 29
+    },
+    {
+      "family": "kumar",
+      "n": 20,
+      "status": 0,
+      "relative_a_error": 3.028192804673304e-12,
+      "relative_b_error": 4.4498871505502653e-13,
+      "loglik_error": 2.2572621660165112e-12,
+      "certificate_evaluations": 25
+    },
+    {
+      "family": "kumar",
+      "n": 20,
+      "status": 0,
+      "relative_a_error": 5.866831832439828e-12,
+      "relative_b_error": 8.20194211906116e-13,
+      "loglik_error": 1.220524197307278e-14,
+      "certificate_evaluations": 26
+    },
+    {
+      "family": "kumar",
+      "n": 20,
+      "status": 0,
+      "relative_a_error": 1.746549436790928e-13,
+      "relative_b_error": 3.340272993039495e-14,
+      "loglik_error": 4.267925425902092e-13,
+      "certificate_evaluations": 28
+    },
+    {
+      "family": "kumar",
+      "n": 20,
+      "status": 0,
+      "relative_a_error": 6.802961107114173e-12,
+      "relative_b_error": 3.8176096937476616e-13,
+      "loglik_error": 1.3966882656961649e-14,
+      "certificate_evaluations": 26
+    },
+    {
+      "family": "kumar",
+      "n": 20,
+      "status": 0,
+      "relative_a_error": 4.2294625737144637e-16,
+      "relative_b_error": 1.4305580132401685e-15,
+      "loglik_error": 2.3922434345318845e-14,
+      "certificate_evaluations": 30
+    },
+    {
+      "family": "kumar",
+      "n": 20,
+      "status": 0,
+      "relative_a_error": 9.605466107849738e-16,
+      "relative_b_error": 1.4320554509194804e-15,
+      "loglik_error": 2.121661733848076e-15,
+      "certificate_evaluations": 29
+    },
+    {
+      "family": "kumar",
+      "n": 20,
+      "status": 0,
+      "relative_a_error": 7.077111425478375e-16,
+      "relative_b_error": 8.578380662037519e-16,
+      "loglik_error": 9.0844240521643e-15,
+      "certificate_evaluations": 29
+    },
+    {
+      "family": "kumar",
+      "n": 20,
+      "status": 0,
+      "relative_a_error": 1.4786922771389142e-16,
+      "relative_b_error": 1.7530162656752634e-17,
+      "loglik_error": 4.2989789021402184e-16,
+      "certificate_evaluations": 28
+    },
+    {
+      "family": "kumar",
+      "n": 20,
+      "status": 0,
+      "relative_a_error": 1.6995660290196074e-17,
+      "relative_b_error": 2.239563973923156e-16,
+      "loglik_error": 4.90840193844376e-16,
+      "certificate_evaluations": 29
+    },
+    {
+      "family": "kumar",
+      "n": 20,
+      "status": 0,
+      "relative_a_error": 2.2801424762761946e-16,
+      "relative_b_error": 5.357709487512404e-16,
+      "loglik_error": 6.845834901712195e-15,
+      "certificate_evaluations": 28
+    },
+    {
+      "family": "kumar",
+      "n": 20,
+      "status": 0,
+      "relative_a_error": 3.947255540987082e-12,
+      "relative_b_error": 3.9139478053359166e-13,
+      "loglik_error": 3.583142562907352e-14,
+      "certificate_evaluations": 26
+    },
+    {
+      "family": "kumar",
+      "n": 20,
+      "status": 0,
+      "relative_a_error": 1.749803506161118e-13,
+      "relative_b_error": 3.553116248670186e-13,
+      "loglik_error": 5.161041777097548e-14,
+      "certificate_evaluations": 29
+    },
+    {
+      "family": "kumar",
+      "n": 20,
+      "status": 0,
+      "relative_a_error": 6.772206509093954e-16,
+      "relative_b_error": 1.0480113589449283e-15,
+      "loglik_error": 2.9362641193345873e-15,
+      "certificate_evaluations": 29
+    },
+    {
+      "family": "kumar",
+      "n": 20,
+      "status": 0,
+      "relative_a_error": 4.13959294598467e-14,
+      "relative_b_error": 1.5284213125854166e-14,
+      "loglik_error": 1.0481348286589195e-13,
+      "certificate_evaluations": 28
+    },
+    {
+      "family": "kumar",
+      "n": 20,
+      "status": 0,
+      "relative_a_error": 1.6989936900907947e-16,
+      "relative_b_error": 1.1909709988542227e-17,
+      "loglik_error": 4.1723183969679415e-16,
+      "certificate_evaluations": 28
+    },
+    {
+      "family": "kumar",
+      "n": 20,
+      "status": 0,
+      "relative_a_error": 6.94842056402651e-16,
+      "relative_b_error": 1.423857051393063e-15,
+      "loglik_error": 2.536105366262722e-16,
+      "certificate_evaluations": 30
+    },
+    {
+      "family": "nbinom",
+      "n": 2,
+      "status": 0,
+      "relative_a_error": 2.399952102200321e-14,
+      "relative_b_error": 2.374984591653648e-14,
+      "loglik_error": 1.1543448502899448e-10,
+      "certificate_evaluations": 26
+    },
+    {
+      "family": "nbinom",
+      "n": 10,
+      "status": 0,
+      "relative_a_error": 4.6944611278727036e-17,
+      "relative_b_error": 9.324345104102416e-17,
+      "loglik_error": 4.781519059859379e-12,
+      "certificate_evaluations": 26
+    },
+    {
+      "family": "nbinom",
+      "n": 4997,
+      "status": 0,
+      "relative_a_error": 2.022015255620177e-07,
+      "relative_b_error": 1.2135368684784172e-10,
+      "loglik_error": 6.140034917384182e-11,
+      "certificate_evaluations": 23
+    },
+    {
+      "family": "kumar",
+      "n": 5,
+      "status": 0,
+      "relative_a_error": 2.0679434469994186e-12,
+      "relative_b_error": 2.4873715413176164e-13,
+      "loglik_error": 7.411266217212764e-15,
+      "certificate_evaluations": 25
+    }
+  ]
+}
