@@ -140,3 +140,11 @@ test_that("reciprocal rounding ties are numerical rather than nonexistence", {
   expect_s3_class(e,"univariateML_numerical")
   expect_false(inherits(e,"univariateML_nomle"))
 })
+
+test_that("invparalogis held-scale competing mode preserves the Jacobian", {
+  x <- exp(.001)
+  f <- mlinvparalogis(x,scale=1)
+  g <- mlparalogis(1/x,scale=1)
+  expect_equal(unname(f["shape"]),unname(g["shape"]),tolerance=1e-10)
+  expect_equal(attr(f,"logLik"),attr(g,"logLik")-2*log(x),tolerance=1e-10)
+})

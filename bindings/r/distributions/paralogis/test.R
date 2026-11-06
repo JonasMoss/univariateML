@@ -166,3 +166,9 @@ test_that("paralogis: certification stops carry structured witnesses", {
   expect_identical(e$kind,"nomle")
   expect_identical(e$loglik_lower,Inf)
 })
+
+test_that("paralogis held-scale competing mode is globally certified", {
+  f <- mlparalogis(exp(-.001),scale=1)
+  expect_equal(unname(f["shape"]),9262.778134534776,tolerance=1e-8)
+  expect_equal(attr(f,"logLik"),8.126729864909168,tolerance=1e-10)
+})

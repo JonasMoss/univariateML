@@ -274,13 +274,64 @@ inline ParalogisResult paralogis_mle(span x, double tol, int maxit,
   return r;
 }
 
+// Rescue proposals only: a dyadic scan can miss roots. Global acceptance
+// still requires the complete compact-domain certificate below.
+inline double paralogis_competing_shape(span x,double scale,double initial) {
+  std::vector<double> y;
+  double distance=0;
+  for(double v:x) {y.push_back(std::log(v)-std::log(scale));
+    distance=std::max(distance,std::abs(y.back()));}
+  if(!(distance>0))return initial;
+  auto evaluate=[&](double a,double& score) {
+    score=2*x.size()/a;
+    double value=2*x.size()*std::log(a);
+    for(double v:y) {
+      const double z=a*v;
+      const double p=burr_cert_detail::sigmoid(z),s=burr_cert_detail::softplus(z);
+      value+=z-(a+1)*s;score+=v-s-(a+1)*v*p;
+    }
+    return value;
+  };
+  double score=0,best=evaluate(initial,score),winner=initial;
+  double left=std::min(1.,initial),gl=0;
+  evaluate(left,gl);
+  for(int i=0;i<1024;++i) {
+    const double right=2*left;
+    if(!std::isfinite(right))break;
+    double gr=0;const double value=evaluate(right,gr);
+    if(std::isfinite(value)&&value>best){best=value;winner=right;}
+    if(gl>0&&gr<0) {
+      double lo=left,hi=right;
+      for(int j=0;j<100;++j) {
+        const double mid=lo+(hi-lo)/2;
+        if(!(mid>lo&&mid<hi))break;
+        double g=0;evaluate(mid,g);if(g>0)lo=mid;else hi=mid;
+      }
+      const double root=lo+(hi-lo)/2;
+      double g=0;const double v=evaluate(root,g);
+      if(std::isfinite(v)&&v>best){best=v;winner=root;}
+    }
+    // This cutoff merely ends proposal generation. The certificate
+    // independently re-establishes both tails with padded comparisons.
+    if(right>std::max(1.,2*x.size()/distance) &&
+        2*x.size()*std::log(right)-distance*right<best)break;
+    left=right;gl=gr;
+  }
+  return winner;
+}
+
 inline ParalogisResult paralogis_mle_fixed_scale(
     span x, double scale, double tol=1e-10, int maxit=100,
     double shape0=1.0) {
   auto r=paralogis_shape_proposal(x,scale,tol,maxit,shape0);
   r.stop_detail=paralogis_cert_detail::witness(x,r.shape,r.scale);
   if(r.status!=ParalogisStatus::Ok) return r;
-  const auto certified=paralogis_cert_detail::certify(x,r.shape,scale,true);
+  auto certified=paralogis_cert_detail::certify(x,r.shape,scale,true);
+  if(!certified.ok) {
+    const double alternative=paralogis_competing_shape(x,scale,r.shape);
+    if(alternative!=r.shape)
+      certified=paralogis_cert_detail::certify(x,alternative,scale,true);
+  }
   if(!certified.ok) {r.status=certified.budget?ParalogisStatus::CertificateBudget:ParalogisStatus::NumericalFailure;return r;}
   r.shape=certified.shape;r.logLik=certified.logLik;
   return r;

@@ -153,3 +153,39 @@ TEST_CASE("paralogis: normalization overflow is numerical rather than invalid da
   const std::vector<double> x{1e-300,1e300,1e300};
   CHECK(cppunivariate::paralogis_mle(mltest::as_span(x),1e-8,100).status==cppunivariate::ParalogisStatus::NumericalFailure);
 }
+
+TEST_CASE("paralogis: held-scale competing modes return the certified winner") {
+  for(double d:{.01,.003,.001,.0001,.00001}) {
+    const std::vector<double> x{std::exp(-d)};
+    const auto data=mltest::as_span(x);
+    const auto r=cppunivariate::paralogis_mle_fixed_scale(data,1,1e-10,1000);
+    REQUIRE(r.status==cppunivariate::ParalogisStatus::Ok);
+    CHECK(r.shape>100);
+    CHECK(cppunivariate::paralogis_cert_detail::certify(data,r.shape,1,true).ok);
+    if(d==.001) {
+      CHECK(r.shape==doctest::Approx(9262.778134534776).epsilon(1e-9));
+      CHECK(r.logLik==doctest::Approx(8.126729864909168).epsilon(1e-10));
+      const auto losing=cppunivariate::paralogis_shape_proposal(data,1);
+      CHECK_FALSE(cppunivariate::paralogis_cert_detail::certify(data,losing.shape,1,true).ok);
+      CHECK_FALSE(cppunivariate::paralogis_cert_detail::certify(data,r.shape,1,true,1).ok);
+    }
+  }
+}
+
+TEST_CASE("paralogis: binned bounds enclose exact grouped derivatives") {
+  std::vector<cppunivariate::burr_cert_detail::Interval> y;
+  for(int i=0;i<10000;++i)y.push_back({-.8+double(i)/10000,-.8+double(i)/10000});
+  const cppunivariate::paralogis_cert_detail::Data data(y);
+  for(bool held:{false,true})for(double a:{.5,3.,100.}) {
+    auto d=data;d.held=held;
+    std::array<cppunivariate::burr_cert_detail::Interval,3> g,gb;
+    cppunivariate::burr_cert_detail::BoxMatrix h,hb;
+    cppunivariate::burr_cert_detail::Interval l,lb;
+    REQUIRE(cppunivariate::paralogis_cert_detail::derivatives(d,a,0,g,h,l));
+    for(int level=0;level<3;++level) {
+      REQUIRE(cppunivariate::paralogis_cert_detail::derivatives(d,a,0,gb,hb,lb,level));
+      CHECK(lb.lo<=l.lo);CHECK(lb.hi>=l.hi);
+      for(int j=0;j<2;++j){CHECK(gb[j].lo<=g[j].lo);CHECK(gb[j].hi>=g[j].hi);}
+    }
+  }
+}

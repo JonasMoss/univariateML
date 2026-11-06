@@ -1,0 +1,23 @@
+{
+  "base": "f30584cd1819744e130850bcb1e58a5d1c52ed28",
+  "workstation": {
+    "cpu": "13th Gen Intel Core i7-1355U",
+    "compiler": "GCC 15.2.0",
+    "benchmark_flags": "-O2 -std=c++17",
+    "R": "4.6.1",
+    "Node": "22.22.1",
+    "Emscripten": "6.0.13"
+  },
+  "simbox": {
+    "CMake_compiler": "GCC 13.3.0",
+    "R_compiler": "GCC 15.2.0",
+    "R": "4.6.1"
+  },
+  "compute": {
+    "nice": 10,
+    "local_heavy_slots": 4,
+    "benchmark_slots": 1,
+    "simbox_CMake_and_CTest_workers": 4,
+    "BLAS_OpenMP_threads_per_worker": 1
+  }
+}

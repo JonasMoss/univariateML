@@ -1,0 +1,22 @@
+{
+  "base": "f30584cd1819744e130850bcb1e58a5d1c52ed28",
+  "sha256": {
+    "bindings/r/distributions/invparalogis/test.R": "1ba703ab1c00fa3b2ca3f14bea89a48bfbee43c518386cb08e110a591103fe73",
+    "bindings/r/distributions/paralogis/test.R": "90801a80926aca3e65fed8c371714e6adcd077e1f0bd61ca1bd58940383ba8db",
+    "dev/research/evaluations/2026-11-06-paralogis-modes-data/analyze.py": "e867342f4986128f12a8992d600d6022123b32fcb8f0456978fdf37c74f3ff24",
+    "dev/research/evaluations/2026-11-06-paralogis-modes-data/benchmark.cpp": "b9b2727b32638e88796880a127527a3de8814ea65d2339853ed86c5cc5e9d920",
+    "dev/research/evaluations/2026-11-06-paralogis-modes-data/modes.cpp": "12eed1f756517f92f5bb1cf99cd8e077d55c8cfb6bd2bd939a3071d6accfdf27",
+    "dev/research/evaluations/2026-11-06-paralogis-modes-data/oracle.py": "0a2e86df142cb3d509a08f594cd99439ed8ea95621192c416ac7481121a3e4c3",
+    "univariateML-cpp/include/cppunivariate/distributions/invparalogis/golden.json": "e2d16de010dce241c301ea218fb23d9d9a8fc09a50c5e3d40b9e9ef88ad9284b",
+    "univariateML-cpp/include/cppunivariate/distributions/invparalogis/test.cpp": "e4a7264cbe9eba73b7c30f7ce8aabe25c9b5acc11ff01ccd4321f6fe52c622b6",
+    "univariateML-cpp/include/cppunivariate/distributions/paralogis/README.md": "88f98586a364645f4f3c5fc4b637dad5dfad1d2f83770ff902d23df8f3c7a2aa",
+    "univariateML-cpp/include/cppunivariate/distributions/paralogis/certificate.hpp": "65c64e75dcca6c09f7295a8efeed0fa1ec033c2c82de92df483fcb7f795febc3",
+    "univariateML-cpp/include/cppunivariate/distributions/paralogis/fixed-scale-golden.json": "b42229de5c3f15a2331513b443c81c16ff03bcc407d1f52a5ca1cf4f94ca19da",
+    "univariateML-cpp/include/cppunivariate/distributions/paralogis/golden.json": "adf1ee807cfeb57743c33fa160096503a7bd361c1bffa24d29dcbb9239f212df",
+    "univariateML-cpp/include/cppunivariate/distributions/paralogis/mle.hpp": "1cdccc6975a199bf87adaf0102039d0efd47ffaffcb698f9a49173ea43baa8c3",
+    "univariateML-cpp/include/cppunivariate/distributions/paralogis/test.cpp": "4e5239cccc0fe4db45917649d1bc349e7e6a7595d69904c8117695b23cc175fb",
+    "dev/research/evaluations/2026-11-06-paralogis-modes-data/modes.mjs": "5af0489999d38c17f9f86791a6b3701bc01f9950e496636b937b052ef70ffe5f",
+    "dev/research/evaluations/2026-11-06-paralogis-modes-data/precision-stop.cpp": "52a6505bed7ffa25c1755c7a2b034bfc75389e8fa00a7e5b0aeaf5d4eb01087b",
+    "dev/research/evaluations/2026-11-06-paralogis-modes-data/rounded-endpoints.cpp": "96ff4029a3c7765b9fc9a54392bb5e1fad2f3499766d135dd1a08eb43c6dfa54"
+  }
+}
