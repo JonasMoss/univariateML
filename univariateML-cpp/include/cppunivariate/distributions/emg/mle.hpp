@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/stop_detail.hpp"
 #include "../../core/face_compare.hpp"
 #include "logconcave_profile.hpp"
 #include "../../core/precision.hpp"
@@ -10,7 +11,7 @@
 
 namespace cppunivariate {
 enum class EmgStatus { Ok, NormalLimit, TranslatedExponentialLimit, Unbounded, InvalidInput, IterationFailure };
-struct EmgResult { double mu,sigma,lambda,logLik; int iterations; EmgStatus status; };
+struct EmgResult { double mu,sigma,lambda,logLik; int iterations; EmgStatus status;  StopDetail stop_detail{}; };
 namespace emg_detail {
 struct Profile {
   const std::vector<double>& x;
@@ -95,6 +96,8 @@ inline EmgResult search(const Profile& p,std::vector<double> start,double tol,in
   if(multistart_score_acceptable(theta,likelihood)) {
     best.logLik=likelihood(theta);best.status=EmgStatus::Ok;
   }
+  if(best.status==EmgStatus::NormalLimit) best.stop_detail=limit_detail({best.mu,best.sigma},best.logLik,StopModel::Norm);
+  if(best.status==EmgStatus::TranslatedExponentialLimit) best.stop_detail=limit_detail({best.mu,best.lambda},best.logLik,StopModel::TranslatedExp);
   return best;
 }
 }
@@ -155,6 +158,22 @@ inline EmgResult emg_mle(span x,double tol=1e-8,int maxit=500,
   }
   if(!std::isfinite(best.logLik))best=attempted;
   const double n=static_cast<double>(x.size()),tie=1e-8*n;
+  const auto tied_face=[&](std::vector<double> coef,double ll,StopModel model) {
+    const double shift=n*std::log(scale),finite=attempted.logLik-shift;
+    StopDetail d;d.comparison_tie=true;
+    d.candidates.push_back({coef,ll-shift,ll-shift,model});
+    d.loglik_lower=ll-shift;d.loglik_upper=INFINITY;
+    if(best.status==EmgStatus::NormalLimit) {
+      const double face=best.logLik-shift;
+      d.candidates.push_back({{mean+scale*best.mu,scale*best.sigma},face,face,StopModel::Norm});
+      d.loglik_lower=std::max(d.loglik_lower,face);
+    }
+    if(attempted.sigma>0 && attempted.lambda>0 && std::isfinite(attempted.sigma) && std::isfinite(attempted.lambda)) {
+      d.candidates.push_back({{mean+scale*attempted.mu,scale*attempted.sigma,attempted.lambda/scale},finite,finite,StopModel::None});
+      d.loglik_lower=std::max(d.loglik_lower,finite);
+    }
+    best.status=EmgStatus::IterationFailure;best.stop_detail=d;
+  };
   auto compare_faces=[&]() {
   double comparison=attempted.logLik;
   // Conditional normal face: respect every held parameter.
@@ -163,7 +182,7 @@ inline EmgResult emg_mle(span x,double tol=1e-8,int maxit=500,
     double v=0;for(double z:y)v+=(z-m)*(z-m)/n;
     const double s=std::isnan(p.sigma)?std::sqrt(v):p.sigma;
     double ll=0;for(double z:y)ll+=-std::log(s)-.91893853320467274178-(z-m)*(z-m)/(2*s*s);
-    if(face_numerical_tie(ll,comparison,tie)) {best.status=EmgStatus::IterationFailure;return;}
+    if(face_numerical_tie(ll,comparison,tie)) {tied_face({mean+scale*m,scale*s},ll,StopModel::Norm);return;}
     if(ll>=comparison-tie){best={m,s,special::kPosInf,ll,0,EmgStatus::NormalLimit};comparison=ll;}
   }
   if(std::isnan(sigma) && (std::isnan(mu)||mu<=minimum)) {
@@ -173,7 +192,7 @@ inline EmgResult emg_mle(span x,double tol=1e-8,int maxit=500,
     double ll=n*std::log(l)-l*gap;
     // A held endpoint cannot move below the minimum to recover full density.
     if(!std::isnan(mu))ll-=ties*std::log(2.0);
-    if(face_numerical_tie(ll,comparison,((best.status==EmgStatus::NormalLimit)?0:tie))) {best.status=EmgStatus::IterationFailure;return;}
+    if(face_numerical_tie(ll,comparison,((best.status==EmgStatus::NormalLimit)?0:tie))) {tied_face({mean+scale*m,l/scale},ll,StopModel::TranslatedExp);return;}
     if(ll>=comparison-((best.status==EmgStatus::NormalLimit)?0:tie))best={m,0,l,ll,0,EmgStatus::TranslatedExponentialLimit};
   }
   };
@@ -189,6 +208,8 @@ inline EmgResult emg_mle(span x,double tol=1e-8,int maxit=500,
   best.sigma=std::isnan(sigma)?best.sigma*scale:sigma;
   best.lambda=std::isnan(lambda)?best.lambda/scale:lambda;
   best.logLik-=n*std::log(scale);
+  if(best.status==EmgStatus::NormalLimit) best.stop_detail=limit_detail({best.mu,best.sigma},best.logLik,StopModel::Norm);
+  if(best.status==EmgStatus::TranslatedExponentialLimit) best.stop_detail=limit_detail({best.mu,best.lambda},best.logLik,StopModel::TranslatedExp);
   return best;
 }
 }

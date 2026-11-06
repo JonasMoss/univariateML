@@ -7,8 +7,16 @@
 #include <string>
 namespace umvl_binding {
 inline FitResult fit_ht(cppunivariate::span x, Held mu_arg = {}, Held nu_arg = {}, Held sigma_arg = {}) {
+  const auto classify = [&](FitResult out, const cppunivariate::StopDetail& detail,
+      const std::string& kind, const std::vector<std::string>& names,
+      const std::string& model="") {
+    if(x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return out;
+    if(!finite_stop_payload(detail,kind))return out;
+    return stop_failure(out,detail,kind,names,model);
+  };
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
+  const auto nomle = [&](const std::string& format, const auto&... arguments) { return classify(failure(binding_message(format, arguments...), warnings), {}, "nomle", {}); };
   const Held mu = mu_arg;
   const Held nu = nu_arg;
   const Held sigma = sigma_arg;
@@ -26,9 +34,9 @@ inline FitResult fit_ht(cppunivariate::span x, Held mu_arg = {}, Held nu_arg = {
   if(mu_held && r.status==cppunivariate::HtStatus::InvalidData)
     return fail("Half-t observations must be finite and at least the held mu.");
   if(r.status==cppunivariate::HtStatus::Unbounded)
-    return fail("Half-t likelihood is unbounded along sigma -> 0 with nu*(n-k) < k (k ties at the free or held endpoint); hold sigma, hold nu with nu*(n-k) > k, or (with a free endpoint) hold mu.");
+    return nomle("Half-t likelihood is unbounded along sigma -> 0 with nu*(n-k) < k (k ties at the free or held endpoint); hold sigma, hold nu with nu*(n-k) > k, or (with a free endpoint) hold mu.");
   if(r.status==cppunivariate::HtStatus::ScaleBoundary)
-    return fail("Half-t likelihood has a finite unattained supremum as sigma -> 0: nu*(n-k) = k.");
+    return classify(fail("Half-t likelihood has a finite unattained supremum as sigma -> 0: nu*(n-k) = k."),{},"nomle",{});
   const auto whole_mu = [](double v) {
     std::ostringstream out;
     if (v == std::floor(v) && std::abs(v) < 1e15) out << static_cast<long long>(v);
@@ -37,10 +45,12 @@ inline FitResult fit_ht(cppunivariate::span x, Held mu_arg = {}, Held nu_arg = {
   };
   const std::string mu_hint = mu_held ? whole_mu(held_mu) : std::string("NULL");
   if(r.status==cppunivariate::HtStatus::NormalLimit && sigma.supplied)
-    return fail("Half-t MLE escapes as nu -> infinity to the half-normal with sigma held; "
-               "use `mlhnorm(x, mu = " + mu_hint + ", sigma = " + whole_mu(sc) + ")`.");
+    return classify(fail("Half-t MLE escapes as nu -> infinity to the half-normal with sigma held; "
+               "use `mlhnorm(x, mu = " + mu_hint + ", sigma = " + whole_mu(sc) + ")`."),r.stop_detail,"limit",{"mu","sigma"},"hnorm");
   if(r.status==cppunivariate::HtStatus::NormalLimit)
-    return fail("Half-t MLE escapes as nu -> infinity; use `mlhnorm(x, mu = " + mu_hint + ")`.");
+    return classify(fail("Half-t MLE escapes as nu -> infinity; use `mlhnorm(x, mu = " + mu_hint + ")`."),r.stop_detail,"limit",{"mu","sigma"},"hnorm");
+  if(r.budget_exhausted)
+    return classify(fail("Half-t MLE failed: the global shape search could not certify its result within its numerical budget."),r.stop_detail,"budget",{"mu","nu","sigma"});
   if(r.status==cppunivariate::HtStatus::IterationFailure)
     return fail("Half-t MLE failed: the global shape search could not certify its result within its numerical budget.");
   if(r.status!=cppunivariate::HtStatus::Ok)

@@ -6,6 +6,17 @@
 #include <vector>
 namespace umvl_binding {
 inline FitResult fit_logis(cppunivariate::span x, Held location_arg = {}, Held scale_arg = {}, double abstol = 1.220703e-4, int iterlim = 100) {
+  // Invalid controls remain ordinary errors, even if a legacy fitter reports
+  // a statistical status before checking them.
+  const auto classify = [&](FitResult out, const cppunivariate::StopDetail& detail,
+      const std::string& kind, const std::vector<std::string>& names,
+      const std::string& model="") {
+    if(!(abstol>0 && std::isfinite(abstol) && iterlim>0))return out;
+    if(x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return out;
+    if(kind=="nomle" && !std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return out;
+    if(!finite_stop_payload(detail,kind))return out;
+    return stop_failure(out,detail,kind,names,model);
+  };
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
   const Held location = location_arg;
@@ -21,11 +32,11 @@ inline FitResult fit_logis(cppunivariate::span x, Held location_arg = {}, Held s
   if(scale.supplied)fixed.push_back("scale");
 
   if(location.supplied && !scale.supplied && std::all_of(x.begin(),x.end(),[&](double v){return v==held_location;}))
-    return fail("Logistic scale likelihood is unbounded: all observations equal the held location.");
+    return classify(fail("Logistic scale likelihood is unbounded: all observations equal the held location."),{},"nomle",{});
   cppunivariate::LogisticResult res =
       cppunivariate::logistic_mle(x,abstol,iterlim,held_location,held_scale);
   if (!scale.supplied && !x.empty() && std::all_of(x.begin(), x.end(), [&](double v) { return v == x[0]; }) && (!location.supplied || location.value == x[0]))
-    return fail("Logistic likelihood is unbounded for constant data at the fitted or held location.");
+    return classify(fail("Logistic likelihood is unbounded for constant data at the fitted or held location."),{},"nomle",{});
   if (!std::isfinite(res.mu) || !std::isfinite(res.scale) || !(res.scale > 0.0))
     return fail("Logistic MLE failed: non-finite or invalid parameters");
   if(res.status==cppunivariate::LogisticStatus::IterationFailure)return fail("Conditional fit did not converge; increase iterlim.");

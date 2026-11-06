@@ -5,8 +5,19 @@
 #include <limits>
 namespace umvl_binding {
 inline FitResult fit_gev(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg = {}, Held xi_arg = {}, double reltol = 1e-10, int iterlim = 100) {
+  // Invalid controls remain ordinary errors, even if a legacy fitter reports
+  // a statistical status before checking them.
+  const auto classify = [&](FitResult out, const cppunivariate::StopDetail& detail,
+      const std::string& kind, const std::vector<std::string>& names,
+      const std::string& model="") {
+    if(!(reltol>0 && std::isfinite(reltol) && iterlim>0))return out;
+    if(x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return out;
+    if(!finite_stop_payload(detail,kind))return out;
+    return stop_failure(out,detail,kind,names,model);
+  };
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
+  const auto nomle = [&](const std::string& format, const auto&... arguments) { return classify(failure(binding_message(format, arguments...), warnings), {}, "nomle", {}); };
   const Held mu = mu_arg;
   const Held sigma = sigma_arg;
   const Held xi = xi_arg;
@@ -24,9 +35,17 @@ inline FitResult fit_gev(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg
   if(xi.supplied) fixed.push_back("xi");
   const auto r=cppunivariate::gev_mle(x,reltol,iterlim,shape,location,scale);
   if(r.status==cppunivariate::GevStatus::NoMLE)
-    return fail("Generalized extreme value has no finite maximum: minimum multiplicity permits scale collapse.");
+    return nomle("Generalized extreme value has no finite maximum: minimum multiplicity permits scale collapse.");
+  const bool valid_sample=x.size()>=3 && reltol>0 && std::isfinite(reltol) && iterlim>0 &&
+    std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);});
+  bool minimum_collapse=false;
+  if(valid_sample && !mu.supplied && !sigma.supplied) {
+    const double minimum=*std::min_element(x.begin(),x.end());
+    const double k=static_cast<double>(std::count(x.begin(),x.end(),minimum));
+    minimum_collapse=std::isnan(shape)?2*k>x.size():shape>0 && shape*k>=x.size()-k;
+  }
   if(r.status==cppunivariate::GevStatus::InvalidData)
-    return fail("Generalized extreme value requires at least three finite observations, an admissible multiplicity at the minimum, finite range, compatible support and holds, positive finite `reltol` and positive `iterlim`.");
+    return (minimum_collapse || (x.size()>=3 && std::isfinite(x[0]) && !sigma.supplied && (!mu.supplied || location==x[0]) && reltol>0 && std::isfinite(reltol) && iterlim>0 && std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))) ? classify(fail("Generalized extreme value requires at least three finite observations, an admissible multiplicity at the minimum, finite range, compatible support and holds, positive finite `reltol` and positive `iterlim`."),{},"nomle",{}) : fail("Generalized extreme value requires at least three finite observations, an admissible multiplicity at the minimum, finite range, compatible support and holds, positive finite `reltol` and positive `iterlim`.");
   if(r.status!=cppunivariate::GevStatus::Ok || !std::isfinite(r.logLik))
     return fail("Generalized extreme value MLE failed to converge.");
   std::vector<std::pair<std::string,std::string>> restricted;

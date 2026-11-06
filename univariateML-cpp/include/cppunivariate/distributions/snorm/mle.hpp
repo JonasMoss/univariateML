@@ -2,6 +2,7 @@
 // standardised (mean, sd, xi) coordinates.
 
 #pragma once
+#include "../../core/stop_detail.hpp"
 #include "../../core/face_compare.hpp"
 #include "cppunivariate/core/constants.hpp"
 #include "../../core/precision.hpp"
@@ -28,7 +29,7 @@ struct SnormResult {
   double logLik;
   int iterations;
   SnormStatus status;
-};
+ StopDetail stop_detail{}; };
 
 namespace snorm_detail {
 // Golden-section minimization on a finite bracket; caller establishes tail bounds.
@@ -142,9 +143,15 @@ inline SnormResult held_fit(span x, double mu, double sd, double xi) {
       if(hm && hs && std::abs(v-c)<=1e-14*(1+std::abs(c)))
         ll-=m1*m1/(8*h*h*h*h);
     }
-    if(face_numerical_tie(ll,out.logLik,1e-8*n)) {out.status=SnormStatus::BfgsFailure;return out;}
+    if(face_numerical_tie(ll,out.logLik,1e-8*n)) {
+      FitCandidate previous{{out.mu,out.sigma,out.xi},out.logLik,out.logLik,StopModel::None};
+      if(!out.stop_detail.candidates.empty())previous=out.stop_detail.candidates.front();
+      out.stop_detail=comparison_detail(previous,{{origin+unit*c,unit*b},ll,ll,side==1?StopModel::Hnorm:StopModel::ReflectedHnorm});
+      out.status=SnormStatus::BfgsFailure;return out;
+    }
     if(ll>=out.logLik-1e-8*n) {
       out.logLik=ll;
+      out.stop_detail=limit_detail({origin+unit*c,unit*b},ll,side==1?StopModel::Hnorm:StopModel::ReflectedHnorm);
       out.status=side==1 ? SnormStatus::RightHalfNormalBoundary : SnormStatus::LeftHalfNormalBoundary;
     }
   }
@@ -248,8 +255,11 @@ inline SnormResult snorm_mle(span x, double /*tol*/, int /*maxit*/,
   }
   const double ll=static_cast<double>(n*(CPPUNIV_EXTENDED_LITERAL(0.5,0.5L)*std::log(CPPUNIV_EXTENDED_LITERAL(2.0,2.0L)/cppunivariate::pi)-std::log(scale)
                      -CPPUNIV_EXTENDED_LITERAL(1.5,1.5L)*std::log(best)+CPPUNIV_EXTENDED_LITERAL(0.5,0.5L)*std::log(static_cast<CPPUNIV_EXTENDED_REAL>(n))-CPPUNIV_EXTENDED_LITERAL(0.5,0.5L)));
-  if (mode == 0) return {nan,nan,nan,ll,0,SnormStatus::RightHalfNormalBoundary};
-  if (mode == 1) return {nan,nan,nan,ll,0,SnormStatus::LeftHalfNormalBoundary};
+  if(mode==0 || mode==1) {
+    SnormResult face={nan,nan,nan,ll,0,mode==0?SnormStatus::RightHalfNormalBoundary:SnormStatus::LeftHalfNormalBoundary};
+    face.stop_detail=limit_detail({static_cast<double>(origin+scale*mode),static_cast<double>(scale*std::sqrt(best*best*best/n))},ll,mode==0?StopModel::Hnorm:StopModel::ReflectedHnorm);
+    return face;
+  }
   // For the two-piece normal: E[X]=c+m1*(b-a),
   // Var[X]=a*a-a*b+b*b-m1*m1*(b-a)^2, xi=sqrt(b/a).
   const CPPUNIV_EXTENDED_REAL factor=scale*std::sqrt(best/n), a=ca*factor, b=cb*factor;

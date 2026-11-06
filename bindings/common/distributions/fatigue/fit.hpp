@@ -6,8 +6,20 @@
 #include <limits>
 namespace umvl_binding {
 inline FitResult fit_fatigue(cppunivariate::span x, Held alpha_arg = {}, Held beta_arg = {}, Held mu_arg = {}, double abstol = 1.220703e-4, int iterlim = 100) {
+  // Invalid controls remain ordinary errors, even if a legacy fitter reports
+  // a statistical status before checking them.
+  const auto classify = [&](FitResult out, const cppunivariate::StopDetail& detail,
+      const std::string& kind, const std::vector<std::string>& names,
+      const std::string& model="") {
+    if(!(abstol>0 && std::isfinite(abstol) && iterlim>0))return out;
+    if(x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return out;
+    if(kind=="nomle" && !std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return out;
+    if(!finite_stop_payload(detail,kind))return out;
+    return stop_failure(out,detail,kind,names,model);
+  };
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
+  const auto nomle = [&](const std::string& format, const auto&... arguments) { return classify(failure(binding_message(format, arguments...), warnings), {}, "nomle", {}); };
   const Held alpha = alpha_arg;
   const Held beta = beta_arg;
   const Held mu = mu_arg;
@@ -28,7 +40,7 @@ inline FitResult fit_fatigue(cppunivariate::span x, Held alpha_arg = {}, Held be
     return fail("Fatigue optimizer SearchFailure: profile search did not converge; increase iterlim.");
   if (!(res.alpha>0.0) || !std::isfinite(res.alpha) || !std::isfinite(res.beta) || !std::isfinite(res.logLik)) {
     if (res.status==cppunivariate::FatigueStatus::Unbounded)
-      return fail("The fatigue maximum likelihood estimator does not exist for constant data: the likelihood is unbounded.");
+      return nomle("The fatigue maximum likelihood estimator does not exist for constant data: the likelihood is unbounded.");
     return fail("Fatigue MLE failed: data exceed double precision or profile search did not converge; increase iterlim.");
   }
   std::vector<std::string> fixed;

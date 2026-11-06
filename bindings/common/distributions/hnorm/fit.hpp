@@ -6,6 +6,14 @@
 #include <limits>
 namespace umvl_binding {
 inline FitResult fit_hnorm(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg = {}) {
+  const auto classify = [&](FitResult out, const cppunivariate::StopDetail& detail,
+      const std::string& kind, const std::vector<std::string>& names,
+      const std::string& model="") {
+    if(x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return out;
+    if(kind=="nomle" && !std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return out;
+    if(!finite_stop_payload(detail,kind))return out;
+    return stop_failure(out,detail,kind,names,model);
+  };
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
   const Held mu = mu_arg;
@@ -25,11 +33,11 @@ inline FitResult fit_hnorm(cppunivariate::span x, Held mu_arg = {}, Held sigma_a
     return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"mu",endpoint},{"sigma",sc}}; out.logLik = res.logLik; out.fixed = fixed_names; out.has_fixed = true; return out; }();
   }
   if (fixed && res.status == cppunivariate::HnormStatus::DegenerateData)
-    return fail("Half-normal likelihood is unbounded as sigma -> 0 when all observations equal held mu.");
+    return classify(fail("Half-normal likelihood is unbounded as sigma -> 0 when all observations equal held mu."),{},"nomle",{},"");
   if (fixed && res.status != cppunivariate::HnormStatus::Ok)
     return fail("Half-normal observations must be finite and at least the held mu.");
   if (res.status == cppunivariate::HnormStatus::DegenerateData)
-    return fail("Translated half-normal MLE requires at least two observations with distinct values; degenerate data have no positive-scale MLE.");
+    return x.empty() ? fail("Translated half-normal MLE requires at least two observations with distinct values; degenerate data have no positive-scale MLE.") : classify(fail("Translated half-normal MLE requires at least two observations with distinct values; degenerate data have no positive-scale MLE."),{},"nomle",{});
   if (res.status != cppunivariate::HnormStatus::Ok)
     return fail("Translated half-normal MLE requires finite data with a representable range.");
   if (fixed) return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"mu",res.mu},{"sigma",res.sigma}}; out.logLik = res.logLik; out.fixed = std::vector<std::string>{"mu"}; out.has_fixed = true; return out; }();

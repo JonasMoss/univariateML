@@ -319,3 +319,20 @@ TEST_CASE("huber: held-coordinate Gaussian gain cancels an enormous quadratic") 
   // A supplied large absolute-term sum must not be hidden by a small gain.
   CHECK(cppunivariate::compare_face(1,0,1e-8,1e20)==cppunivariate::FaceComparison::NumericalTie);
 }
+
+TEST_CASE("huber: structured face payloads") {
+  const std::vector<double> x{-2,-1,0,1,2};
+  const auto r=cppunivariate::huber_mle(mltest::as_span(x),1e-10,200,NAN);
+  REQUIRE(r.stop_detail.limit_coef.size()==2);
+  CHECK(r.stop_detail.limit_coef[0]==0);
+  CHECK(r.stop_detail.limit_coef[1]==doctest::Approx(std::sqrt(2.)));
+  CHECK(r.stop_detail.limit_loglik==doctest::Approx(-2.5*(std::log(4*std::acos(-1.))+1)));
+}
+
+TEST_CASE("huber: Laplace payload has the fitted public scale") {
+  const std::vector<double> x{-10,-.1,0,.1,10};
+  const auto r=cppunivariate::huber_mle(mltest::as_span(x),1e-10,200,NAN);
+  REQUIRE(r.stop_detail.limit_coef.size()==2);
+  CHECK(r.stop_detail.limit_coef[0]==0);CHECK(r.stop_detail.limit_coef[1]==doctest::Approx(4.04));
+  CHECK(r.stop_detail.limit_loglik==doctest::Approx(-5*(1+std::log(8.08))));
+}

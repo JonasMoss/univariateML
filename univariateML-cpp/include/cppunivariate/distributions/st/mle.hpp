@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/stop_detail.hpp"
 #include "../../core/face_compare.hpp"
 #include "dpqr.hpp"
 #include "../sn/mle.hpp"
@@ -12,8 +13,27 @@
 #include <vector>
 namespace cppunivariate {
 enum class StStatus {Ok, InvalidInput, Unbounded, ScaleBoundary, NumericalFailure, SkewNormalBoundary, RightHalfTBoundary, LeftHalfTBoundary, RightHalfNormalBoundary, LeftHalfNormalBoundary};
-struct StResult {double xi,omega,alpha,nu,logLik;int iterations;StStatus status;unsigned restricted=0;unsigned reason=0;};
+struct StResult {double xi,omega,alpha,nu,logLik;int iterations;StStatus status;unsigned restricted=0;unsigned reason=0;StopDetail stop_detail{};bool budget_exhausted=false;};
 namespace st_detail {
+// Transport a stopped limiting-family search, preserving its witnesses rather
+// than treating subdivision exhaustion as a generic optimizer failure.
+inline StopDetail face_transport(StopDetail detail,double origin,double unit,
+    double n,StopModel interior,double sign=1,double penalty=0) {
+ const double shift=n*std::log(unit)+penalty;
+ for(auto& candidate:detail.candidates) {
+  if(candidate.model==StopModel::None)candidate.model=interior;
+  const bool half_t=candidate.model==StopModel::Ht;
+  const std::size_t scale=half_t?2:1;
+  if(candidate.coef.size()<=scale)return {};
+  candidate.coef[0]=origin+sign*unit*candidate.coef[0];candidate.coef[scale]*=unit;
+  if(sign<0 && candidate.model==StopModel::Ht)candidate.model=StopModel::ReflectedHt;
+  if(sign<0 && candidate.model==StopModel::Hnorm)candidate.model=StopModel::ReflectedHnorm;
+  candidate.loglik_lower-=shift;candidate.loglik_upper-=shift;
+ }
+ detail.limit_coef.clear();detail.limit_loglik=NAN;
+ detail.loglik_lower-=shift;detail.loglik_upper-=shift;detail.segment_loglik_upper-=shift;
+ return detail;
+}
 struct Cost {
  span x;
  double fixed[4];
@@ -78,12 +98,13 @@ inline StResult st_mle(span data,double tol=1e-6,int maxit=200,double xi=special
  if(!(unit>0)||!std::isfinite(unit)){if(std::isfinite(omega))unit=omega;else return bad;}
  std::vector<double> y;for(double x:data)y.push_back((x-origin)/unit);span sy{y.data(),y.size()};
  double fx=std::isnan(xi)?nan:(xi-origin)/unit,fw=std::isnan(omega)?nan:omega/unit;
- st_detail::Candidate best;double profile_best=-INFINITY;
+ st_detail::Candidate best,profile_witness;double profile_best=-INFINITY;
  const std::vector<double> as=std::isnan(alpha)?std::vector<double>{-8,-3,-1,0,1,3,8}:std::vector<double>{alpha};
  const std::vector<double> ns=std::isnan(nu)?std::vector<double>{1,1.5,3,8,30,200}:std::vector<double>{nu};
  for(double a:as)for(double d:ns) {
   st_detail::Cost inner{sy,{fx,fw,a,d},{std::isnan(fx),std::isnan(fw),false,false}};
   double start[4]={0,0.5,a,d};auto p=st_detail::optimize(inner,start,tol,maxit);if(!p.ok)continue;
+  if(p.ll>profile_best)profile_witness=p;
   profile_best=std::max(profile_best,p.ll);
   bool boundary=std::isnan(nu)&&d==1;
   st_detail::Cost full{sy,{fx,fw,alpha,boundary?1.:nu},{std::isnan(fx),std::isnan(fw),std::isnan(alpha),std::isnan(nu)&&!boundary}};
@@ -100,11 +121,27 @@ inline StResult st_mle(span data,double tol=1e-6,int maxit=200,double xi=special
  }
  if(!std::isfinite(profile_best)){bad.status=StStatus::NumericalFailure;bad.reason=1;return bad;}
  const double reference=std::max(best.ll,profile_best),tie=1e-8*n;
+ const auto& witness=best.ll>=profile_best?best:profile_witness;
+ const double reference_ll=reference-n*std::log(unit);
+ const FitCandidate reference_candidate{{origin+unit*witness.v[0],unit*witness.v[1],witness.v[2],witness.v[3]},reference_ll,reference_ll,StopModel::None};
  StResult boundary{nan,nan,nan,nan,-INFINITY,0,StStatus::NumericalFailure};
  if(std::isnan(nu)) {
   auto sn=sn_mle(sy,tol,maxit,fx,fw,alpha);
-  if(sn.status!=SnStatus::Ok&&sn.status!=SnStatus::RightHalfNormalBoundary&&sn.status!=SnStatus::LeftHalfNormalBoundary){bad.status=StStatus::NumericalFailure;bad.reason=2;return bad;}
-  if(face_numerical_tie(sn.logLik,reference,tie) || face_numerical_tie(reference,sn.logLik,tie)) {bad.status=StStatus::NumericalFailure;return bad;}
+  if(sn.status!=SnStatus::Ok&&sn.status!=SnStatus::RightHalfNormalBoundary&&sn.status!=SnStatus::LeftHalfNormalBoundary){
+   bad.status=StStatus::NumericalFailure;bad.reason=2;
+   if(sn.budget_exhausted || sn.stop_detail.comparison_tie) {
+    bad.stop_detail=st_detail::face_transport(sn.stop_detail,origin,unit,n,StopModel::Sn);
+    bad.budget_exhausted=sn.budget_exhausted;
+   }
+   return bad;
+  }
+  if(face_numerical_tie(sn.logLik,reference,tie) || face_numerical_tie(reference,sn.logLik,tie)) {
+   const double ll=sn.logLik-n*std::log(unit);
+   FitCandidate face{{origin+unit*sn.xi,unit*sn.omega,sn.alpha},ll,ll,StopModel::Sn};
+   if(sn.status!=SnStatus::Ok)face={{origin+unit*sn.xi,unit*sn.omega},ll,ll,sn.status==SnStatus::RightHalfNormalBoundary?StopModel::Hnorm:StopModel::ReflectedHnorm};
+   bad.stop_detail=comparison_detail(reference_candidate,face);
+   bad.status=StStatus::NumericalFailure;return bad;
+  }
   if(sn.status==SnStatus::Ok&&(sn.logLik>reference+tie||(best.ok&&best.v[3]>1e5&&sn.logLik>=reference-tie)))
    boundary={origin+unit*sn.xi,unit*sn.omega,sn.alpha,INFINITY,sn.logLik,sn.iterations,StStatus::SkewNormalBoundary};
   if((sn.status==SnStatus::RightHalfNormalBoundary||sn.status==SnStatus::LeftHalfNormalBoundary)&&sn.logLik>=reference-tie)
@@ -116,8 +153,12 @@ inline StResult st_mle(span data,double tol=1e-6,int maxit=200,double xi=special
   bool feasible=true;if(std::isfinite(mu))for(double v:side)if(v<mu)feasible=false;
   if(!feasible)continue;
   span sx{side.data(),side.size()};
-  double face=-INFINITY;HtResult winner{};bool failed=false;
-  auto value=[&](double d){auto h=ht_mle(sx,mu,d,fw);if(h.status!=HtStatus::Ok&&h.status!=HtStatus::NormalLimit)failed=true;if((h.status==HtStatus::Ok||h.status==HtStatus::NormalLimit)&&h.logLik>face){face=h.logLik;winner=h;}return (h.status==HtStatus::Ok||h.status==HtStatus::NormalLimit)?h.logLik:-INFINITY;};
+  double face=-INFINITY;HtResult winner{};bool failed=false,plain_failure=false;
+  auto value=[&](double d){auto h=ht_mle(sx,mu,d,fw);if(h.status!=HtStatus::Ok&&h.status!=HtStatus::NormalLimit){
+   failed=true;if(!h.budget_exhausted)plain_failure=true;
+   else {double penalty=0;if(std::isfinite(mu))for(double v:side)if(v==mu)penalty+=std::log(2.);
+    bad.stop_detail=st_detail::face_transport(h.stop_detail,origin,unit,n,StopModel::Ht,sign,penalty);bad.budget_exhausted=true;}
+  }if((h.status==HtStatus::Ok||h.status==HtStatus::NormalLimit)&&h.logLik>face){face=h.logLik;winner=h;}return (h.status==HtStatus::Ok||h.status==HtStatus::NormalLimit)?h.logLik:-INFINITY;};
   if(!std::isnan(nu))value(nu);
   else if(std::isnan(mu))value(nan);
   else {
@@ -127,17 +168,28 @@ inline StResult st_mle(span data,double tol=1e-6,int maxit=200,double xi=special
     double l=grid[j-1],r=grid[j+1],a=r-(r-l)*.6180339887498949,b=l+(r-l)*.6180339887498949;
     double fa=value(std::exp(a)),fb=value(std::exp(b));
     for(int k=0;k<80&&r-l>1e-9;++k){if(fa>fb){r=b;b=a;fb=fa;a=r-(r-l)*.6180339887498949;fa=value(std::exp(a));}else{l=a;a=b;fa=fb;b=l+(r-l)*.6180339887498949;fb=value(std::exp(b));}}
-    if(r-l>1e-9)failed=true;
+    if(r-l>1e-9){failed=true;plain_failure=true;}
    }
    auto h=hnorm_mle(sx,mu,fw);
    if(h.status==HnormStatus::Ok&&h.logLik>face){face=h.logLik;winner={INFINITY,h.sigma,h.logLik,h.iterations,HtStatus::NormalLimit,0,h.mu};}
   }
-  if(failed){bad.status=StStatus::NumericalFailure;bad.reason=3;return bad;}
+  if(failed){bad.status=StStatus::NumericalFailure;bad.reason=3;if(plain_failure){bad.stop_detail={};bad.budget_exhausted=false;}return bad;}
   if(std::isfinite(mu))for(double v:side)if(v==mu)face-=std::log(2.);
-  if(face_numerical_tie(face,reference,tie)) {bad.status=StStatus::NumericalFailure;return bad;}
+  if(face_numerical_tie(face,reference,tie)) {
+   const double ll=face-n*std::log(unit);
+   FitCandidate half{{origin+unit*sign*winner.mu,winner.nu,unit*winner.sigma},ll,ll,sign>0?StopModel::Ht:StopModel::ReflectedHt};
+   if(winner.status==HtStatus::NormalLimit)half={{origin+unit*sign*winner.mu,unit*winner.sigma},ll,ll,sign>0?StopModel::Hnorm:StopModel::ReflectedHnorm};
+   bad.stop_detail=comparison_detail(reference_candidate,half);
+   bad.status=StStatus::NumericalFailure;return bad;
+  }
   if(face>=reference-tie&&face>boundary.logLik){bool normal=winner.status==HtStatus::NormalLimit;boundary={origin+unit*sign*winner.mu,unit*winner.sigma,sign*INFINITY,winner.nu,face,winner.iterations,normal?(sign>0?StStatus::RightHalfNormalBoundary:StStatus::LeftHalfNormalBoundary):(sign>0?StStatus::RightHalfTBoundary:StStatus::LeftHalfTBoundary)};}
  }
- if(std::isfinite(boundary.logLik)){boundary.logLik-=n*std::log(unit);return boundary;}
+ if(std::isfinite(boundary.logLik)){boundary.logLik-=n*std::log(unit);{
+    if(boundary.status==StStatus::SkewNormalBoundary)boundary.stop_detail=limit_detail({boundary.xi,boundary.omega,boundary.alpha},boundary.logLik,StopModel::Sn);
+    if(boundary.status==StStatus::RightHalfNormalBoundary || boundary.status==StStatus::LeftHalfNormalBoundary)boundary.stop_detail=limit_detail({boundary.xi,boundary.omega},boundary.logLik,boundary.status==StStatus::RightHalfNormalBoundary?StopModel::Hnorm:StopModel::ReflectedHnorm);
+    if(boundary.status==StStatus::RightHalfTBoundary || boundary.status==StStatus::LeftHalfTBoundary)boundary.stop_detail=limit_detail({boundary.xi,boundary.nu,boundary.omega},boundary.logLik,boundary.status==StStatus::RightHalfTBoundary?StopModel::Ht:StopModel::ReflectedHt);
+    return boundary;
+   }}
  if(!best.ok||profile_best>best.ll+tie){bad.status=StStatus::NumericalFailure;bad.reason=4;return bad;}
  if(std::abs(best.v[2])>1e5||best.v[3]>1e6){bad.status=StStatus::NumericalFailure;bad.reason=5;return bad;}
  return {std::isfinite(xi)?xi:origin+unit*best.v[0],std::isfinite(omega)?omega:unit*best.v[1],best.v[2],best.v[3],best.ll-n*std::log(unit),best.iterations,StStatus::Ok,(std::isnan(nu)&&best.v[3]==1)?64u:0u};

@@ -7,6 +7,7 @@
 // where f_unit is the standardised GED used by dged().
 
 #pragma once
+#include "../../core/stop_detail.hpp"
 #include "../../core/face_compare.hpp"
 #include "../../core/precision.hpp"
 #include "../../core/multistart.hpp"
@@ -39,7 +40,7 @@ struct GedResult {
   double logLik;
   int iterations;
   GedStatus status; unsigned restricted = 0;
-};
+ StopDetail stop_detail{}; };
 
 // Per-obs nll in phi-space (with a = x - mu, w = |a|/(sigma * lambda),
 // W = 0.5 * w^nu, K = log 2 - psi(1/nu)/2 + 3 psi(3/nu)/2,
@@ -193,10 +194,16 @@ inline GedResult ged_mle_impl(span x, double tol, int maxit) {
   }
   if(!accepted && attempted>best.logLik+tie) best.status=GedStatus::BfgsFailure;
   const double uniform = -dn * std::log(z.back() - z.front());
-  if(face_numerical_tie(attempted,uniform,tie)) {best.status=GedStatus::BfgsFailure;return best;}
+  if(face_numerical_tie(attempted,uniform,tie)) {
+    best.status=GedStatus::BfgsFailure;
+    const double face=uniform-dn*std::log(sd_x),ll=best.logLik-dn*std::log(sd_x);
+    best.stop_detail=comparison_detail({{mean_x+sd_x*z.front(),mean_x+sd_x*z.back()},face,face,StopModel::Unif},{{mean_x+sd_x*best.mu,sd_x*best.sigma,best.nu},ll,ll,StopModel::None});
+    return best;
+  }
   if (uniform > attempted + tie) {
     best.logLik = uniform;
     best.status = GedStatus::UniformBoundary;
+    best.stop_detail=limit_detail({mean_x+sd_x*z.front(),mean_x+sd_x*z.back()},uniform-dn*std::log(sd_x),StopModel::Unif);
   }
   best.mu = mean_x + sd_x * best.mu;
   best.sigma *= sd_x;
@@ -273,7 +280,10 @@ inline GedResult ged_mle_impl(span x,double tol,int maxit,double mean,double sd,
   const auto optimum=ged_detail::maximize([&](double a){return profile(a).logLik;},grid,1e-8,maxit);
   if(!optimum.converged)return {nan,nan,nan,nan,maxit,GedStatus::BfgsFailure};
   auto best=profile(optimum.point);const auto laplace=ged_detail::conditional(x,1,mean,sd);const double tie=1e-8*x.size();
-  if(face_numerical_tie(laplace.logLik,best.logLik,tie)) {best.status=GedStatus::BfgsFailure;return best;}
+  if(face_numerical_tie(laplace.logLik,best.logLik,tie)) {
+    best.status=GedStatus::BfgsFailure;
+    best.stop_detail=comparison_detail({{laplace.mu,laplace.sigma,laplace.nu},laplace.logLik,laplace.logLik,StopModel::None},{{best.mu,best.sigma,best.nu},best.logLik,best.logLik,StopModel::None});return best;
+  }
   if(laplace.logLik>=best.logLik-tie)best=laplace;
   const auto mm=std::minmax_element(x.begin(),x.end());
   const double m=std::isnan(mean)?*mm.first/2+*mm.second/2:mean;
@@ -287,8 +297,11 @@ inline GedResult ged_mle_impl(span x,double tol,int maxit,double mean,double sd,
       uniform-=std::exp(-0.5772156649015328606)*(std::isnan(mean)?2*std::sqrt(left*right):left+right);
     }
   }
-  if(face_numerical_tie(best.logLik,uniform,tie)) {best.status=GedStatus::BfgsFailure;return best;}
-  if(uniform>best.logLik+tie){best.logLik=uniform;best.status=GedStatus::UniformBoundary;}
+  if(face_numerical_tie(best.logLik,uniform,tie)) {
+    best.status=GedStatus::BfgsFailure;
+    best.stop_detail=comparison_detail({{m-r,m+r},uniform,uniform,StopModel::Unif},{{best.mu,best.sigma,best.nu},best.logLik,best.logLik,StopModel::None});return best;
+  }
+  if(uniform>best.logLik+tie){best.logLik=uniform;best.status=GedStatus::UniformBoundary;best.stop_detail=limit_detail({m-r,m+r},uniform,StopModel::Unif);}
   return best;
 }
 

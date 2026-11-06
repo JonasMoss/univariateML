@@ -4,6 +4,7 @@
 // -2 sum(log(x)). Faces mirror: lognormal stays lognormal, the power face
 // with endpoint 1/min(x) becomes Pareto with minimum min(x).
 #pragma once
+#include "../../core/stop_detail.hpp"
 
 #include "../trgamma/mle.hpp"
 
@@ -30,7 +31,7 @@ struct InvTrGammaResult {
   double logLik;
   int iterations;
   InvTrGammaStatus status;
-};
+ StopDetail stop_detail{}; };
 
 inline InvTrGammaStatus invtrgamma_status(TrGammaStatus s) {
   switch (s) {
@@ -61,8 +62,12 @@ inline InvTrGammaResult invtrgamma_mle(span x, double tol = 1e-10, int maxit = 1
   const TrGammaResult r = trgamma_fit_log(span{y.data(), y.size()}, tol, maxit, shape1, shape2);
   const double log_scale = -r.log_scale;
   const TrGammaStatus status = trgamma_range_status(r.status, log_scale);
-  return {r.shape1, r.shape2, std::exp(log_scale), log_scale, r.logLik + jacobian,
-          r.iterations, invtrgamma_status(status)};
+  InvTrGammaResult out={r.shape1,r.shape2,std::exp(log_scale),log_scale,r.logLik+jacobian,r.iterations,invtrgamma_status(status)};
+  if(r.status==TrGammaStatus::LognormalBoundary && r.stop_detail.limit_coef.size()==2)
+    out.stop_detail=limit_detail({-r.stop_detail.limit_coef[0],r.stop_detail.limit_coef[1]},out.logLik,StopModel::Lnorm);
+  if(r.status==TrGammaStatus::PowerBoundary && r.stop_detail.limit_coef.size()==2)
+    out.stop_detail=limit_detail({r.stop_detail.limit_coef[1],out.scale},out.logLik,StopModel::Pareto);
+  return out;
 }
 
 }  // namespace cppunivariate
@@ -72,7 +77,10 @@ namespace cppunivariate {
 inline InvTrGammaResult invtrgamma_mle_fixed_scale(span x,double scale,double a=std::numeric_limits<double>::quiet_NaN(),double b=std::numeric_limits<double>::quiet_NaN(),double tol=1e-10,int maxit=100){
  std::vector<double> y;double jac=0;for(double v:x){y.push_back(1/v);jac-=2*std::log(v);}
  auto r=trgamma_mle_fixed_scale(span{y.data(),y.size()},1/scale,a,b,tol,maxit);
- return {r.shape1,r.shape2,scale,std::log(scale),r.logLik+jac,r.iterations,invtrgamma_status(r.status)};
+ InvTrGammaResult out={r.shape1,r.shape2,scale,std::log(scale),r.logLik+jac,r.iterations,invtrgamma_status(r.status)};
+ if(r.status==TrGammaStatus::PowerBoundary && r.stop_detail.limit_coef.size()==2)
+   out.stop_detail=limit_detail({r.stop_detail.limit_coef[1],scale},out.logLik,StopModel::Pareto);
+ return out;
 }
 
 }

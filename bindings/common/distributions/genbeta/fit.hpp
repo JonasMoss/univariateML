@@ -3,6 +3,17 @@
 #include "cppunivariate/distributions/genbeta/mle.hpp"
 namespace umvl_binding {
 inline FitResult fit_genbeta(cppunivariate::span x, Held shape1_arg = {}, Held shape2_arg = {}, Held shape3_arg = {}, Held scale_arg = {}, double gradtol = 1e-7, int iterlim = 300) {
+  // Invalid controls remain ordinary errors, even if a legacy fitter reports
+  // a statistical status before checking them.
+  const auto classify = [&](FitResult out, const cppunivariate::StopDetail& detail,
+      const std::string& kind, const std::vector<std::string>& names,
+      const std::string& model="") {
+    if(!(gradtol>0 && std::isfinite(gradtol) && iterlim>0))return out;
+    if(x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return out;
+    if(kind=="nomle" && !std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return out;
+    if(!finite_stop_payload(detail,kind))return out;
+    return stop_failure(out,detail,kind,names,model);
+  };
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
   const Held shape1 = shape1_arg;
@@ -49,14 +60,16 @@ const std::string name = "shape3";
   if(b==1&&std::isnan(a)&&std::isnan(t))fixed.push_back("shape3");
   fixed.push_back("scale");
   const auto r=cppunivariate::genbeta_mle(x,scale,gradtol,iterlim,a,b,t);
+  if(r.stop_detail.comparison_tie)return classify(fail("Generalized beta search unresolved; increase iterlim or hold shapes."),r.stop_detail,"tie",{"shape1","shape2","shape3","scale"});
   switch(r.status) {
     case cppunivariate::GenbetaStatus::Ok:break;
     case cppunivariate::GenbetaStatus::UnitGammaBoundary:
-      if(!std::isnan(b))return fail("Generalized beta selects the unit-gamma limit with shapelog held at shape2. `mllgamma(scale / x)` fits the unrestricted loggamma; holding shapelog there is not supported.");
-      return fail("Generalized beta selects the unit-gamma limit. Use `mllgamma(scale / x)`.");
+      if(!std::isnan(b))return classify(fail("Generalized beta selects the unit-gamma limit with shapelog held at shape2. `mllgamma(scale / x)` fits the unrestricted loggamma; holding shapelog there is not supported."),r.stop_detail,"limit",{"shape","scale","upper"},"unavailable:unit-gamma");
+      return classify(fail("Generalized beta selects the unit-gamma limit. Use `mllgamma(scale / x)`."),r.stop_detail,"limit",{"shape","scale","upper"},"unavailable:unit-gamma");
     case cppunivariate::GenbetaStatus::PowerBoundary:
-      if(!std::isnan(b))return fail("Generalized beta selects power with the endpoint held: use `mlgenbeta(x, scale = scale, shape2 = 1)`. `mlpower` estimates its endpoint.");
-      return fail("Generalized beta selects a limiting power law. Use `mlpower`.");
+      if(!std::isnan(b))return classify(fail("Generalized beta selects power with the endpoint held: use `mlgenbeta(x, scale = scale, shape2 = 1)`. `mlpower` estimates its endpoint."),r.stop_detail,"limit",{"alpha","beta"},"power");
+      return classify(fail("Generalized beta selects a limiting power law. Use `mlpower`."),r.stop_detail,"limit",{"alpha","beta"},"power");
+    case cppunivariate::GenbetaStatus::Unbounded:return classify(fail("Generalized beta requires observations strictly between 0 and scale; constant samples with free beta shapes are not supported (the unrestricted likelihood is unbounded)."),{},"nomle",{});
     case cppunivariate::GenbetaStatus::InvalidData:return fail("Generalized beta requires observations strictly between 0 and scale; constant samples with free beta shapes are not supported (the unrestricted likelihood is unbounded).");
     case cppunivariate::GenbetaStatus::InvalidFixed:return fail("Generalized beta held parameters must be positive finite numbers.");
     case cppunivariate::GenbetaStatus::SearchUnresolved:return fail("Generalized beta search unresolved; increase iterlim or hold shapes.");

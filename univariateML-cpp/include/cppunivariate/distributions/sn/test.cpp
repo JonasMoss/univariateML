@@ -215,3 +215,29 @@ TEST_CASE("sn: audited huge held-parameter magnitude") {
   const auto r=cppunivariate::sn_mle(s,1e-9,100,0,1e-10,nan);
   CHECK((r.status==cppunivariate::SnStatus::RightHalfNormalBoundary || r.status==cppunivariate::SnStatus::IterationFailure));
 }
+
+TEST_CASE("sn: structured face payloads") {
+  for(double sign:{-1.,1.}) {
+    std::vector<double> x{0,.1,.2,.4,3};for(double& v:x)v*=sign;
+    const auto r=cppunivariate::sn_mle(mltest::as_span(x),1e-8,500);
+    REQUIRE(r.stop_detail.limit_coef.size()==2);
+    CHECK(r.stop_detail.limit_coef[0]==doctest::Approx(0));
+    CHECK(r.stop_detail.limit_coef[1]==doctest::Approx(std::sqrt(9.21/5)));
+    CHECK(r.stop_detail.limit_loglik==doctest::Approx(2.5*(std::log(2/std::acos(-1.))-std::log(9.21/5)-1)));
+  }
+}
+
+TEST_CASE("sn: certificate exhaustion retains original-unit witnesses") {
+  const std::vector<double> x{-2,-1,0,1,2};
+  const auto r=cppunivariate::sn_mle(mltest::as_span(x),1e-9,200,NAN,NAN,NAN,0);
+  REQUIRE(r.budget_exhausted);REQUIRE(r.stop_detail.candidates.size()==3);
+  CHECK(std::isinf(r.stop_detail.loglik_upper));
+  for(const auto& c:r.stop_detail.candidates)CHECK(c.loglik_lower<=r.stop_detail.loglik_lower+1e-7);
+}
+
+TEST_CASE("sn: a negative certificate control is invalid, not exhausted") {
+  const std::vector<double> x{-2,-1,0,1,2};
+  const auto r=cppunivariate::sn_mle(mltest::as_span(x),1e-9,200,NAN,NAN,NAN,-1);
+  CHECK(r.status==cppunivariate::SnStatus::InvalidInput);
+  CHECK_FALSE(r.budget_exhausted);CHECK(r.stop_detail.candidates.empty());
+}

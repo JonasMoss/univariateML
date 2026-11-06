@@ -103,3 +103,106 @@ These transports preserve the parent certificate conditional on computed
 comparisons and its practical floating-point margin. They do not certify the
 held-scale two-free-shape Burr profile, constrained equal-shape paralogistic
 profiles, free-location Fréchet profiles, or general GB2/beta-prime profiles.
+
+## Continuous-face transport (TASK-141.1, 2026-11-06)
+
+`limit_detail` retains a selected face and its evaluated likelihood as a
+candidate. It does not supply a global supremum bound. A comparison payload
+marks numerical ambiguity, retains the compared witnesses and uses an infinite
+global upper bound when a closed global certificate is unavailable. Exhausted
+half-t, skew-normal and slash subdivision certificates likewise retain their
+computed witnesses with an explicitly unclosed upper bound; arithmetic and
+iteration failures do not become budget stops.
+
+Face construction checks representable model domains, including strictly positive
+scales/shapes and ordered uniform endpoints. A scale that underflows to zero is
+not a fitted law, even if its log-coordinate likelihood is finite. Binding
+classification checks finite input, valid controls and finite evaluated witnesses. For families whose only unbounded concentration is a constant sample,
+`nomle` additionally requires equality in the original observations. Rounded
+logarithms or reciprocal transforms of distinct observations must not fabricate
+a non-existence claim. Exponential non-existence specifically requires all zeros.
+Genuine nonconstant scale-collapse cases in the heavy-tail families keep their
+existing multiplicity conditions.
+
+The new model tags cover normal, uniform, half-normal, Laplace, lognormal,
+Azzalini skew-normal and half-t. Binding names follow each model's public
+order (in particular uniform `min, max`, Power `alpha` endpoint then `beta` shape,
+and half-t `mu, nu, sigma`). A model
+string beginning `unavailable:` describes a law without a matching package
+family; it is not an id that can be passed to a package fitter. These tags
+include translated/reflected exponential, truncated exponential, reflected
+half-normal/half-t, unit-gamma and half-GED. Unit-gamma means
+`X = upper * exp(-Y)` with `Y ~ Gamma(shape, scale)`. Half-GED means
+`X = mu + side*Y`, with density
+`nu/(scale*Gamma(1/nu))*exp(-(Y/scale)^nu)` on positive distances. Reflected
+models report their endpoint in the original coordinates, not on negated data.
+
+EMG and Bhattacharjee retain the face parameters computed by their standardized
+searches and restore the scale Jacobian. The original face values include any
+held-endpoint penalties already used by the fitter; such a value need not equal
+the closed-support limit density evaluated at an observation on its endpoint.
+Gompertz's exponential rate is its held `a`, or reciprocal sample mean.
+Huber's normal/Laplace faces retain their own conditional location and scale,
+rather than the last finite Huber iterate. Transformed gamma's lognormal face
+uses the mean and population standard deviation of log data; its power shape
+is the reciprocal mean log distance from the endpoint. Inverse transformed
+gamma negates the lognormal mean and maps power to Pareto, including the
+reciprocal Jacobian. Generalized beta retains the gamma fit on
+`log(scale/x)` and includes `-sum(log(x))` in its face likelihood.
+
+SGED's free search now retains the half-GED scale while computing its profile.
+For held moments, `sged/face_payload.hpp` recovers the selected base coordinates
+without changing the original shape search or a successful fit. With mean held
+and scale free, put `u=1/scale` and
+`m=Gamma(2/nu)/Gamma(1/nu)`. Apart from constants the negative log likelihood is
+`-n*log(u)+sum((m+side*(x-mean)*u)^nu)`, on the interval imposed by nonnegative
+base distances. For `nu >= 1` its second derivative is strictly positive:
+`n/u^2 + nu*(nu-1)*sum((x-mean)^2*(m+side*(x-mean)*u)^(nu-2))`.
+A bracketed score root, or the support endpoint when the score stays
+nonpositive, therefore determines the global scale minimum in exact arithmetic.
+For `0 < nu < 1`, let `d_i=side*(x_i-mean)` and
+`H(u)=u^2*F''(u)=n-nu*(1-nu)*sum((d_i*u)^2*(m+d_i*u)^(nu-2))`.
+Every summand is strictly increasing on the support: its derivative has the sign
+of `2*m+nu*d_i*u`, which is positive because `d_i*u >= -m` and `nu < 1`.
+Thus `H` is strictly decreasing and the score has a single turning point.
+At a finite support endpoint the score tends to negative infinity; the global
+minimum is therefore either its first root or that endpoint. With no finite
+endpoint, the cost tends to positive infinity and the score approaches zero
+from above, so its first root is the unique global minimum. This settles the
+previously unresolved subunit-shape scale profile without changing the legacy
+shape search or a successful estimate.
+
+The implementation uses 100 bisections for each monotone solve, a
+`128*epsilon` score-comparison margin at the turning point, and `1e-7*n`
+likelihood agreement with the existing face value. Numerically unresolved
+root-versus-endpoint likelihood comparisons within `1e-7*n` retain both
+candidates as a `tie`. Arithmetic failures retain ordinary errors. Candidate
+bounds enclose both the original comparison value and the independently
+evaluated likelihood at recovered coordinates. These are exact-arithmetic
+profile certificates conditional on computed comparisons with the stated
+practical floating-point margins, not outward-rounded interval arithmetic.
+Analytic shape-1/2 cases and a mixed-sign two-root case are appended to SGED's
+C++ tests; R and JS also check the public held-mean subunit-shape face.
+Existing *shape* searches and their numerical global-search qualifications are
+unchanged.
+
+The seed-7, n=80 skew-t equivariance workload was independently rebuilt against
+base `164d4178` and the new headers on simbox with GCC 15. Both versions produce
+bit-identical fits: df is 1272.4538444838495 in original units and
+1272.1797791970282 after multiplying observations by 10000 and translating them.
+The relative df discrepancy is about `2.154e-4`, while the restored total
+likelihoods differ by less than `1.1e-11`. The R equivariance check therefore
+uses `3e-4` for this near-normal df coordinate, retaining its independent
+`2e-8` per-observation likelihood check and the existing tolerances on the other
+coordinates. The sample, comparison program, baseline reconstruction and output
+are retained under `dev/research/evaluations/2026-11-06-stops-cont-data/`.
+
+Conditional two-piece normal arithmetic ties retain the finite standardized
+fit and the compared half-normal face. Skew-t retains the actual finite profile
+witness used as its reference (including the location-scale profile witness
+when it exceeds the joint search), alongside a skew-normal or half-t/half-normal
+face. A failed limiting-family subdivision search in skew-t transports its tie
+or budget witnesses and bounds through the outer affine Jacobian and any held
+endpoint penalty. A simultaneous plain numerical failure stays ordinary. The
+large-held-magnitude snorm and skew-t tie checks independently evaluate the
+reported half-normal and half-t densities in original coordinates.

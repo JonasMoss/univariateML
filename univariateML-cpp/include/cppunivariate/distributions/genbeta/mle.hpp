@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/stop_detail.hpp"
 #include "../../core/face_compare.hpp"
 #include "../../core/precision.hpp"
 #include "../gb2/mle.hpp"
@@ -7,12 +8,12 @@
 
 namespace cppunivariate {
 enum class GenbetaStatus { Ok, UnitGammaBoundary, PowerBoundary, InvalidData,
-  InvalidFixed, SearchUnresolved };
+  InvalidFixed, SearchUnresolved, Unbounded };
 struct GenbetaResult {
   double shape1, shape2, shape3, scale, logLik;
   int iterations;
   GenbetaStatus status;
-};
+ StopDetail stop_detail{}; };
 namespace genbeta_detail {
 struct Point { double a=1,b=1,t=1,ll=-std::numeric_limits<double>::infinity(),score=0; bool ok=false; };
 // Concave beta exponential-family problem from sufficient statistics, without
@@ -85,14 +86,16 @@ inline GenbetaResult genbeta_mle(span x,double scale,double tol=1e-7,int maxit=3
   bool constant=true;for(double v:y)constant=constant&&v==y[0];
   // Free concentration can collapse on constant samples. With both beta
   // shapes held, the one-dimensional scale-in-y problem remains meaningful.
-  if(constant&&std::isnan(b)&&(std::isnan(a)||std::isnan(t)))return bad;
+  if(constant&&std::isnan(b)&&(std::isnan(a)||std::isnan(t))){bad.status=GenbetaStatus::Unbounded;return bad;}
   double face=-std::numeric_limits<double>::infinity();
   GenbetaStatus fs=GenbetaStatus::SearchUnresolved;
+  double gamma_shape=nan,gamma_scale=nan;
   auto consider=[&](double ll,GenbetaStatus s){if(std::isfinite(ll)&&ll>face){face=ll;fs=s;}};
   if(std::isnan(t)&&std::isnan(a)) {
     if(std::isnan(b)) {
       const auto g=gamma_mle({y.data(),y.size()},1e-10,300);
       if(g.status!=GammaStatus::Ok){bad.status=GenbetaStatus::SearchUnresolved;return bad;}
+      gamma_shape=g.shape;gamma_scale=g.scale;
       consider(g.logLik,GenbetaStatus::UnitGammaBoundary);
       CPPUNIV_EXTENDED_REAL total_gap=0;for(double v:y)total_gap+=v-ymin;
       const double gap=static_cast<double>(total_gap/n);
@@ -100,6 +103,7 @@ inline GenbetaResult genbeta_mle(span x,double scale,double tol=1e-7,int maxit=3
     } else {
       CPPUNIV_EXTENDED_REAL sl=0;for(double v:y)sl+=std::log(v);
       const double logmean=static_cast<double>(sl/n);
+      gamma_shape=b;gamma_scale=mean/b;
       const double contrast=gamma_detail::robust_s({y.data(),y.size()},mean);
       const double base=b>=100?.5*std::log(b)-.5*std::log(6.2831853071795864769)-gamma_detail::stirlerr(b):b*std::log(b)-b-special::lgamma(b);
       consider(n*(base-b*contrast-logmean),GenbetaStatus::UnitGammaBoundary);
@@ -146,8 +150,21 @@ inline GenbetaResult genbeta_mle(span x,double scale,double tol=1e-7,int maxit=3
       prev=cur;
     }
   }
-  if(best.ok && face_numerical_tie(face,best.ll,1e-8*n)) return {nan,nan,nan,scale,face,evals,GenbetaStatus::SearchUnresolved};
-  if(best.ok&&face>=best.ll-1e-8*n)return {nan,nan,nan,scale,face+static_cast<double>(jac),evals,fs};
+  if(best.ok && face_numerical_tie(face,best.ll,1e-8*n)) {
+    GenbetaResult r={nan,nan,nan,scale,face+static_cast<double>(jac),evals,GenbetaStatus::SearchUnresolved};
+    const double ll=best.ll+static_cast<double>(jac);
+    FitCandidate face_candidate;
+    face_candidate.loglik_lower=r.logLik;face_candidate.loglik_upper=r.logLik;
+    if(fs==GenbetaStatus::UnitGammaBoundary){face_candidate.coef={gamma_shape,gamma_scale,scale};face_candidate.model=StopModel::UnitGamma;}
+    if(fs==GenbetaStatus::PowerBoundary){face_candidate.coef={std::isnan(b)?*std::max_element(x.begin(),x.end()):scale,1/(std::isnan(b)?mean-ymin:mean)};face_candidate.model=StopModel::Power;}
+    r.stop_detail=comparison_detail(face_candidate,{{best.a,best.b,best.t,scale},ll,ll,StopModel::None});return r;
+  }
+  if(best.ok&&face>=best.ll-1e-8*n) {
+    GenbetaResult r={nan,nan,nan,scale,face+static_cast<double>(jac),evals,fs};
+    if(fs==GenbetaStatus::UnitGammaBoundary)r.stop_detail=limit_detail({gamma_shape,gamma_scale,scale},r.logLik,StopModel::UnitGamma);
+    if(fs==GenbetaStatus::PowerBoundary)r.stop_detail=limit_detail({std::isnan(b)?*std::max_element(x.begin(),x.end()):scale,1/(std::isnan(b)?mean-ymin:mean)},r.logLik,StopModel::Power);
+    return r;
+  }
   const bool ok=best.ok&&!edge&&(!std::isnan(t)||std::abs(best.score)<tol);
   return {best.a,best.b,best.t,scale,best.ll+static_cast<double>(jac),evals,
     ok?GenbetaStatus::Ok:GenbetaStatus::SearchUnresolved};

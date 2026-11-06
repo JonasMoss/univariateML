@@ -137,3 +137,14 @@ TEST_CASE("gompertz: stable sampler at fixed uniforms and ordinary arithmetic") 
     CHECK(cppunivariate::distributions::rgompertz(new_rng,1,1)==std::log(1-std::log(u)));
   }
 }
+
+TEST_CASE("gompertz: structured face payloads") {
+  const std::vector<double> x{0,0,1,9};
+  for(double a:{static_cast<double>(NAN),.3}) {
+    const auto r=cppunivariate::gompertz_mle(mltest::as_span(x),1e-8,100,a,NAN);
+    REQUIRE(r.stop_detail.limit_coef.size()==1);
+    const double rate=std::isnan(a)?.4:a;
+    CHECK(r.stop_detail.limit_coef[0]==doctest::Approx(rate));
+    CHECK(r.stop_detail.limit_loglik==doctest::Approx(4*std::log(rate)-10*rate));
+  }
+}

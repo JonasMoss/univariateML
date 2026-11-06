@@ -6,8 +6,17 @@
 #include <algorithm>
 namespace umvl_binding {
 inline FitResult fit_power(cppunivariate::span x, Held alpha_arg = {}, Held beta_arg = {}, double epsilon = 1.490116e-08) {
+  const auto classify = [&](FitResult out, const cppunivariate::StopDetail& detail,
+      const std::string& kind, const std::vector<std::string>& names,
+      const std::string& model="") {
+    if(x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return out;
+    if(kind=="nomle" && !std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return out;
+    if(!finite_stop_payload(detail,kind))return out;
+    return stop_failure(out,detail,kind,names,model);
+  };
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
+  const auto nomle = [&](const std::string& format, const auto&... arguments) { return classify(failure(binding_message(format, arguments...), warnings), {}, "nomle", {}); };
   const Held alpha = alpha_arg;
   const Held beta = beta_arg;
 
@@ -29,7 +38,7 @@ inline FitResult fit_power(cppunivariate::span x, Held alpha_arg = {}, Held beta
   auto res = cppunivariate::power_mle(
       cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())}, epsilon, alpha_held, beta_held);
   if (res.status == cppunivariate::PowerStatus::Unbounded)
-    return fail("Power likelihood is unbounded as beta -> Inf when every observation equals alpha; hold beta to fit constant samples.");
+    return nomle("Power likelihood is unbounded as beta -> Inf when every observation equals alpha; hold beta to fit constant samples.");
   if (!std::isfinite(res.alpha) || !std::isfinite(res.beta) || !std::isfinite(res.logLik)) {
     return fail("The power distribution is only defined for positive numbers.");
   }

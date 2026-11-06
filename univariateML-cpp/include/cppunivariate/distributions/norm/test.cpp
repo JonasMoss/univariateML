@@ -641,3 +641,26 @@ TEST_CASE("family inference: further known boundary identities") {
   CHECK(std::abs(sgomp.score[0]-exponential.score[0])<1e-7);
   CHECK(std::abs(sgomp.observed[0]-exponential.observed[0])<1e-5);
 }
+
+TEST_CASE("structured comparison candidates are diagnostic witnesses") {
+  const double ll=-3*(std::log(2*std::acos(-1.))/2+.5);
+  const auto d=cppunivariate::comparison_detail({{0,1},ll,ll,cppunivariate::StopModel::Norm},{{-1,1},-3*std::log(2.),-3*std::log(2.),cppunivariate::StopModel::Unif});
+  CHECK(d.comparison_tie);CHECK(d.candidates.size()==2);
+  CHECK(d.limit_coef.empty());CHECK(std::isnan(d.limit_loglik));
+  CHECK(d.loglik_lower==std::max(ll,-3*std::log(2.)));CHECK(std::isinf(d.loglik_upper));
+}
+
+TEST_CASE("stop detail preserves the original aggregate field order") {
+  const cppunivariate::StopDetail d{{},{},1,2,3,4};
+  CHECK(d.limit_loglik==1);CHECK(d.loglik_lower==2);CHECK(d.loglik_upper==3);
+  CHECK(d.segment_loglik_upper==4);CHECK_FALSE(d.comparison_tie);
+}
+
+TEST_CASE("stop payloads reject unrepresentable or improper face parameters") {
+  CHECK(cppunivariate::limit_detail({2,0,1},0,cppunivariate::StopModel::UnitGamma).limit_coef.empty());
+  CHECK(cppunivariate::limit_detail({0,0},0,cppunivariate::StopModel::Norm).limit_coef.empty());
+  CHECK(cppunivariate::limit_detail({1,1},0,cppunivariate::StopModel::Unif).limit_coef.empty());
+  CHECK(cppunivariate::limit_detail({1,-1},0,cppunivariate::StopModel::Power).limit_coef.empty());
+  const auto invalid=cppunivariate::comparison_detail({{0,1},-1,-1,cppunivariate::StopModel::Norm},{{2,0,1},0,0,cppunivariate::StopModel::UnitGamma});
+  CHECK_FALSE(invalid.comparison_tie);CHECK(invalid.candidates.empty());
+}

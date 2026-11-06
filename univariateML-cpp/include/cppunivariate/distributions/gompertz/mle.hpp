@@ -6,6 +6,7 @@
 // maximiser given b.
 
 #pragma once
+#include "../../core/stop_detail.hpp"
 #include "../../core/precision.hpp"
 
 #include "../../core/reductions.hpp"
@@ -33,7 +34,7 @@ struct GompertzResult {
   double logLik;
   int iterations;
   GompertzStatus status;
-};
+ StopDetail stop_detail{}; };
 
 inline GompertzResult gompertz_mle_impl(span x, double tol, int maxit, bool standardized) {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
@@ -109,7 +110,13 @@ inline GompertzResult gompertz_mle(span x, double tol, int maxit) {
     const double nan=std::numeric_limits<double>::quiet_NaN();
     return {nan,nan,nan,0,GompertzStatus::Unbounded};
   }
-  return gompertz_mle_impl(x, tol, maxit, false);
+  auto r=gompertz_mle_impl(x,tol,maxit,false);
+  if(r.status==GompertzStatus::Overdispersed) {
+    double mean=0;for(double v:x)mean+=v/x.size();
+    const double rate=1/mean;
+    r.stop_detail=limit_detail({rate},x.size()*(std::log(rate)-1),StopModel::Exp);
+  }
+  return r;
 }
 
 inline GompertzResult gompertz_mle(span x,double tol,int maxit,double a,double b) {
@@ -132,7 +139,10 @@ inline GompertzResult gompertz_mle(span x,double tol,int maxit,double a,double b
       else lh=std::log((z*std::exp(z)-std::expm1(z))/(z*z));
       total+=std::exp(std::log(a)+2*std::log(v)+lh-logsx);
     }return total;};
-    if(!(sumy>(a*big)*(sumy2/2)))return {a,nan,nan,0,GompertzStatus::Overdispersed};
+    if(!(sumy>(a*big)*(sumy2/2))) {
+      GompertzResult r={a,nan,nan,0,GompertzStatus::Overdispersed};
+      r.stop_detail=limit_detail({a},n*std::log(a)-a*big*sumy,StopModel::Exp);return r;
+    }
     const double lower=std::log(std::numeric_limits<double>::denorm_min()),upper=std::log(std::numeric_limits<double>::max());
     double lo=std::max(lower,std::min(upper,-std::log(big)-2)),hi=std::min(upper,lo+4),step=32;
     while(ratio(lo)>=1 && lo>lower){lo=std::max(lower,lo-step);step*=2;}

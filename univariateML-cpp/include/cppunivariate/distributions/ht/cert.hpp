@@ -170,7 +170,13 @@ inline HtResult certified_search(span x, double held_sigma, bool free_mu,
   for(int i=0;i<count;++i) work.push_back({lower+(upper-lower)*i/count, lower+(upper-lower)*(i+1)/count});
   int used=0;
   while(!work.empty()) {
-    if(++used>budget) return {nan,nan,nan,used,HtStatus::IterationFailure};
+    if(++used>budget) {
+      HtResult out={nan,nan,nan,used,HtStatus::IterationFailure};out.budget_exhausted=true;
+      out.stop_detail.candidates.push_back({{0,std::exp(normal_ls)},normal_ll,normal_ll,StopModel::Hnorm});
+      if(std::isfinite(best))out.stop_detail.candidates.push_back({{0,std::exp(bt),std::exp(bu)},best,best,StopModel::None});
+      out.stop_detail.loglik_lower=incumbent();out.stop_detail.loglik_upper=inf;
+      return out;
+    }
     const HtInterval q=work.back(); work.pop_back();
     const double mid=q.lo+(q.hi-q.lo)/2;
     if(mid==q.lo||mid==q.hi) return {nan,nan,nan,used,HtStatus::IterationFailure};

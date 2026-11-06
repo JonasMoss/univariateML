@@ -180,3 +180,25 @@ TEST_CASE("invtrgamma: P3 unfinished optimizer is a failure") {
   const auto x=mltest::as_span(g.data);
   CHECK(cppunivariate::invtrgamma_mle(x,1e-8,1).status==cppunivariate::InvTrGammaStatus::IterationFailure);
 }
+
+TEST_CASE("invtrgamma: structured face payloads") {
+  std::vector<double> x,p;
+  for(int i=0;i<400;++i) {
+    const double u=(i+.5)/400,z=cppunivariate::special::qnorm(u,0,1,true,false);
+    x.push_back(std::exp(-(z+.05*(z*z-1))));
+    p.push_back(2*std::pow(1-u,-1/1.7));
+  }
+  const auto n=cppunivariate::invtrgamma_mle(mltest::as_span(x));
+  const auto ref=cppunivariate::lognormal_mle(mltest::as_span(x));
+  REQUIRE(n.stop_detail.limit_coef.size()==2);
+  CHECK(n.stop_detail.limit_coef[0]==doctest::Approx(ref.meanlog));
+  CHECK(n.stop_detail.limit_coef[1]==doctest::Approx(ref.sdlog));
+  CHECK(n.stop_detail.limit_loglik==doctest::Approx(ref.logLik));
+  const auto r=cppunivariate::invtrgamma_mle(mltest::as_span(p));
+  REQUIRE(r.stop_detail.limit_coef.size()==2);
+  double sum=0;const double endpoint=*std::min_element(p.begin(),p.end());
+  for(double v:p)sum+=std::log(v/endpoint);
+  CHECK(r.stop_detail.limit_coef[0]==doctest::Approx(p.size()/sum));
+  CHECK(r.stop_detail.limit_coef[1]==doctest::Approx(endpoint));
+  CHECK(r.stop_detail.limit_loglik==doctest::Approx(r.logLik));
+}

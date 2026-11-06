@@ -231,3 +231,109 @@ TEST_CASE("sged fixed shape inverse-scale concavity examples") {
   const auto f=[](double z){return cppunivariate::distributions::dsged(z,0,1,0.5,1.0,true);};
   CHECK(f(2)<0.5*(f(1)+f(3)));
 }
+
+TEST_CASE("sged: structured face payloads") {
+  std::vector<double> x;for(int i=0;i<40;++i)x.push_back(-1.+2.*i/39.);
+  const auto r=cppunivariate::sged_mle(mltest::as_span(x),1e-6,500);
+  REQUIRE(r.stop_detail.limit_coef.size()==2);
+  CHECK(r.stop_detail.limit_coef[0]==doctest::Approx(-1));CHECK(r.stop_detail.limit_coef[1]==doctest::Approx(1));
+  CHECK(r.stop_detail.limit_loglik==doctest::Approx(-40*std::log(2.)));
+}
+
+TEST_CASE("sged: half-GED payload retains base scale and original-unit likelihood") {
+  for(double side:{-1.,1.}) {
+    std::vector<double> x;for(int i=0;i<100;++i)x.push_back(-side*std::log((i+.5)/100.));
+    const auto r=cppunivariate::sged_mle(mltest::as_span(x),1e-6,500);
+    REQUIRE(r.stop_detail.limit_coef.size()==3);
+    const double c=r.stop_detail.limit_coef[0],a=r.stop_detail.limit_coef[1],nu=r.stop_detail.limit_coef[2];
+    double ll=0;for(double v:x)ll+=std::log(nu)-std::log(a)-cppunivariate::special::lgamma(1/nu)-std::pow(std::abs(v-c)/a,nu);
+    CHECK(r.stop_detail.limit_loglik==doctest::Approx(ll));
+    CHECK(c==doctest::Approx(side>0?*std::min_element(x.begin(),x.end()):*std::max_element(x.begin(),x.end())));
+  }
+}
+
+TEST_CASE("sged: held-moment face recovery preserves the computed likelihood") {
+  const std::vector<double> x{.5,1,1.5,2,2.5,3,10};
+  const auto r=cppunivariate::sged_mle(mltest::as_span(x),1e-6,500,0,1,2);
+  REQUIRE(r.stop_detail.limit_coef.size()==3);
+  CHECK(r.stop_detail.limit_coef[2]==2);CHECK(r.stop_detail.limit_loglik==r.logLik);
+  const double endpoint=r.stop_detail.limit_coef[0],scale=r.stop_detail.limit_coef[1];
+  double direct=x.size()*(std::log(2.)-std::lgamma(.5)-std::log(scale));
+  for(double v:x)direct-=std::pow((v-endpoint)/scale,2);
+  REQUIRE(r.stop_detail.candidates.size()==1);
+  CHECK(direct>=r.stop_detail.candidates[0].loglik_lower-1e-10);
+  CHECK(direct<=r.stop_detail.candidates[0].loglik_upper+1e-10);
+  const std::vector<double> u{-.9,-.6,-.3,0,.3,.6,.9};
+  const auto f=cppunivariate::sged_mle(mltest::as_span(u),1e-6,500,0,NAN,NAN,1);
+  REQUIRE(f.stop_detail.limit_coef.size()==2);
+  CHECK(f.stop_detail.limit_coef[0]==doctest::Approx(-.9));CHECK(f.stop_detail.limit_coef[1]==doctest::Approx(.9));
+}
+
+TEST_CASE("sged: subunit half-GED shape has a certified scale profile") {
+  // For nu=1/2, m=Gamma(4)/Gamma(2)=6. With all distances 1 and
+  // held mean zero, the right-face scale score gives u=2+sqrt(28).
+  const std::vector<double> x{1,1,1};
+  const double inverse=2+std::sqrt(28.),a=1/inverse;
+  for(int side:{-1,1}) {
+    const double scale=side>0?a:1./6,endpoint=side>0?-6*a:1;
+    double ll=3*(std::log(.5)-std::log(scale));
+    for(double z:x)ll-=std::sqrt(std::abs(z-endpoint)/scale);
+    cppunivariate::SgedResult r{0,1,.5,1,ll,0,side>0?cppunivariate::SgedStatus::RightHalfGedBoundary:cppunivariate::SgedStatus::LeftHalfGedBoundary};
+    cppunivariate::sged_face_payload(mltest::as_span(x),0,NAN,r);
+    REQUIRE(r.stop_detail.limit_coef.size()==3);
+    CHECK(r.stop_detail.limit_coef[0]==doctest::Approx(endpoint));
+    CHECK(r.stop_detail.limit_coef[1]==doctest::Approx(scale));
+    CHECK(r.stop_detail.limit_coef[2]==.5);
+  }
+  // Mixed signs admit two score roots: the first minimum beats the support
+  // endpoint. Independently bracket that root of -2/u+.5*(-1/sqrt(6-u)
+  // +100/sqrt(6+100*u)) before its first turning point.
+  const std::vector<double> mixed{-1,100};double lo=.01,hi=.5;
+  for(int j=0;j<100;++j){const double u=(lo+hi)/2;const double g=-2/u+.5*(-1/std::sqrt(6-u)+100/std::sqrt(6+100*u));if(g>0)hi=u;else lo=u;}
+  const double u=(lo+hi)/2,scale=1/u,endpoint=-6/u;
+  double ll=2*(std::log(.5)-std::log(scale));for(double z:mixed)ll-=std::sqrt((z-endpoint)/scale);
+  cppunivariate::SgedResult r{0,1,.5,1,ll,0,cppunivariate::SgedStatus::RightHalfGedBoundary};
+  cppunivariate::sged_face_payload(mltest::as_span(mixed),0,NAN,r);
+  REQUIRE(r.stop_detail.limit_coef.size()==3);
+  CHECK(r.stop_detail.limit_coef[0]==doctest::Approx(endpoint));
+  CHECK(r.stop_detail.limit_coef[1]==doctest::Approx(scale));
+}
+
+TEST_CASE("sged: held mean and subunit shape retain their reflected half face") {
+  const std::vector<double> x{1,1,1};
+  const auto r=cppunivariate::sged_mle(mltest::as_span(x),1e-6,500,0,NAN,.5);
+  REQUIRE(r.status==cppunivariate::SgedStatus::LeftHalfGedBoundary);
+  REQUIRE(r.stop_detail.limit_coef.size()==3);
+  CHECK(r.stop_detail.limit_coef[0]==doctest::Approx(1));
+  CHECK(r.stop_detail.limit_coef[1]==doctest::Approx(1./6));
+  CHECK(r.stop_detail.limit_coef[2]==.5);
+  CHECK(r.stop_detail.limit_loglik==doctest::Approx(3*std::log(3.)).epsilon(1e-6));
+}
+
+TEST_CASE("sged: subunit profile retains a root-versus-endpoint tie") {
+  // Independent analytic score calculation is retained in find-half-ged-tie.py.
+  const std::vector<double> x{-1,17.742431303385693};
+  cppunivariate::SgedResult r{0,1,.5,1,-8.407236173702191,0,cppunivariate::SgedStatus::RightHalfGedBoundary};
+  cppunivariate::sged_face_payload(mltest::as_span(x),0,NAN,r);
+  REQUIRE(r.stop_detail.comparison_tie);
+  REQUIRE(r.stop_detail.candidates.size()==2);CHECK(r.stop_detail.limit_coef.empty());
+  CHECK(std::isinf(r.stop_detail.loglik_upper));
+  for(const auto& candidate:r.stop_detail.candidates) {
+    REQUIRE(candidate.coef.size()==3);
+    const double c=candidate.coef[0],a=candidate.coef[1];
+    CHECK(c<=-1);CHECK(c+6*a==doctest::Approx(0).scale(1));
+    double ll=2*(std::log(.5)-std::log(a));for(double z:x)ll-=std::sqrt((z-c)/a);
+    CHECK(ll>=candidate.loglik_lower-1e-10);CHECK(ll<=candidate.loglik_upper+1e-10);
+  }
+}
+
+TEST_CASE("sged: recovered subunit face includes the scale Jacobian") {
+  for(double b:{1e-4,1e4}) {
+    const std::vector<double> x{b,b,b};
+    const auto r=cppunivariate::sged_mle(mltest::as_span(x),1e-6,500,0,NAN,.5);
+    REQUIRE(r.stop_detail.limit_coef.size()==3);
+    CHECK(r.stop_detail.limit_coef[0]==doctest::Approx(b));
+    CHECK(r.stop_detail.limit_coef[1]==doctest::Approx(b/6));
+    CHECK(r.stop_detail.limit_loglik==doctest::Approx(3*(std::log(3.)-std::log(b))).epsilon(1e-6));
+  }
+}

@@ -76,6 +76,21 @@ inline std::string stop_model(cppunivariate::StopModel model) {
     case cppunivariate::StopModel::Power:return "power";
     case cppunivariate::StopModel::Exp:return "exp";
     case cppunivariate::StopModel::InvExp:return "invexp";
+    case cppunivariate::StopModel::Norm:return "norm";
+    case cppunivariate::StopModel::Unif:return "unif";
+    case cppunivariate::StopModel::Hnorm:return "hnorm";
+    case cppunivariate::StopModel::Laplace:return "laplace";
+    case cppunivariate::StopModel::Lnorm:return "lnorm";
+    case cppunivariate::StopModel::Sn:return "sn";
+    case cppunivariate::StopModel::Ht:return "ht";
+    case cppunivariate::StopModel::TranslatedExp:return "unavailable:translated-exponential";
+    case cppunivariate::StopModel::ReflectedExp:return "unavailable:reflected-exponential";
+    case cppunivariate::StopModel::TruncatedExp:return "unavailable:truncated-exponential";
+    case cppunivariate::StopModel::ReflectedHnorm:return "unavailable:reflected-half-normal";
+    case cppunivariate::StopModel::ReflectedHt:return "unavailable:reflected-half-t";
+    case cppunivariate::StopModel::UnitGamma:return "unavailable:unit-gamma";
+    case cppunivariate::StopModel::HalfGed:return "unavailable:half-ged";
+    case cppunivariate::StopModel::ReflectedHalfGed:return "unavailable:reflected-half-ged";
     default:return "";
   }
 }
@@ -85,7 +100,38 @@ inline std::vector<std::string> stop_names(const std::string& model,const std::v
   if(model=="power")return {"alpha","beta"};
   if(model=="exp")return {"rate"};
   if(model=="invexp")return {"scale"};
+  if(model=="norm")return {"mean","sd"};
+  if(model=="unif")return {"min","max"};
+  if(model=="hnorm")return {"mu","sigma"};
+  if(model=="laplace")return {"mu","sigma"};
+  if(model=="lnorm")return {"meanlog","sdlog"};
+  if(model=="sn")return {"xi","omega","alpha"};
+  if(model=="ht")return {"mu","nu","sigma"};
+  if(model=="unavailable:translated-exponential")return {"mu","rate"};
+  if(model=="unavailable:reflected-exponential")return {"mu","rate"};
+  if(model=="unavailable:truncated-exponential")return {"a","b","rate"};
+  if(model=="unavailable:reflected-half-normal")return {"mu","sigma"};
+  if(model=="unavailable:reflected-half-t")return {"mu","nu","sigma"};
+  if(model=="unavailable:unit-gamma")return {"shape","scale","upper"};
+  if(model=="unavailable:half-ged")return {"mu","scale","nu"};
+  if(model=="unavailable:reflected-half-ged")return {"mu","scale","nu"};
   return names;
+}
+// Candidate bounds describe evaluated finite witnesses. An unrepresentable
+// face remains an ordinary numerical error; global upper bounds may be infinite.
+inline bool finite_stop_payload(const cppunivariate::StopDetail& detail,const std::string& kind) {
+  if(kind=="limit") {
+    if(detail.limit_coef.empty() || !std::isfinite(detail.limit_loglik))return false;
+    for(double v:detail.limit_coef)if(!std::isfinite(v))return false;
+  }
+  if((kind=="tie" || kind=="budget") && detail.candidates.empty())return false;
+  for(const auto& candidate:detail.candidates) {
+    if(!cppunivariate::valid_stop_coefficients(candidate.model,candidate.coef) ||
+       !std::isfinite(candidate.loglik_lower) || !std::isfinite(candidate.loglik_upper) ||
+       candidate.loglik_lower>candidate.loglik_upper)return false;
+    for(double v:candidate.coef)if(!std::isfinite(v))return false;
+  }
+  return true;
 }
 inline FitResult stop_failure(FitResult out,const cppunivariate::StopDetail& detail,
     const std::string& kind,const std::vector<std::string>& names,const std::string& model="") {

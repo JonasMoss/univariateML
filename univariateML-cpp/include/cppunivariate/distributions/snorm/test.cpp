@@ -195,3 +195,33 @@ TEST_CASE("snorm: audited huge held-parameter magnitude") {
   const auto r=cppunivariate::snorm_mle(s,1e-6,100,0,1e-10,nan);
   CHECK((r.status==cppunivariate::SnormStatus::RightHalfNormalBoundary || r.status==cppunivariate::SnormStatus::BfgsFailure));
 }
+
+TEST_CASE("snorm: structured face payloads") {
+  for(double sign:{-1.,1.}) {
+    std::vector<double> x{0,.1,.2,.4,3};for(double& v:x)v*=sign;
+    const auto r=cppunivariate::snorm_mle(mltest::as_span(x),1e-8,500);
+    REQUIRE(r.stop_detail.limit_coef.size()==2);
+    CHECK(r.stop_detail.limit_coef[0]==doctest::Approx(0));
+    CHECK(r.stop_detail.limit_coef[1]==doctest::Approx(std::sqrt(9.21/5)));
+    CHECK(r.stop_detail.limit_loglik==doctest::Approx(2.5*(std::log(2/std::acos(-1.))-std::log(9.21/5)-1)));
+  }
+}
+
+#include "../hnorm/dpqr.hpp"
+
+TEST_CASE("snorm: conditional arithmetic ambiguity retains compared witnesses") {
+  const std::vector<double> x{1,2};
+  const auto r=cppunivariate::snorm_mle(mltest::as_span(x),1e-6,200,0,1e-4);
+  REQUIRE(r.status==cppunivariate::SnormStatus::BfgsFailure);
+  REQUIRE(r.stop_detail.comparison_tie);
+  REQUIRE(r.stop_detail.candidates.size()==2);
+  const auto& face=r.stop_detail.candidates[1];
+  REQUIRE(face.model==cppunivariate::StopModel::Hnorm);
+  REQUIRE(face.coef.size()==2);
+  double ll=0;for(double v:x)ll+=cppunivariate::distributions::dhnorm(v,face.coef[0],face.coef[1],true);
+  CHECK(face.loglik_lower==doctest::Approx(ll).epsilon(1e-12));
+  CHECK(r.stop_detail.candidates[0].coef[0]==0);
+  CHECK(r.stop_detail.candidates[0].coef[1]==1e-4);
+  CHECK(r.stop_detail.loglik_lower==std::max(face.loglik_lower,r.stop_detail.candidates[0].loglik_lower));
+  CHECK(r.stop_detail.loglik_upper==INFINITY);
+}

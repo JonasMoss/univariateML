@@ -42,6 +42,7 @@ struct SgedResult {
   double logLik;
   int iterations;
   SgedStatus status; unsigned restricted = 0;
+  StopDetail stop_detail{};
 };
 
 // Per-obs nll = ls + F_s(ln, lx) + F_g(ln) + 0.5 |w/lambda(nu)|^nu, with:
@@ -389,6 +390,9 @@ inline SgedResult sged_mle_free(span x, double tol, int maxit) {
     }
     if (ll > std::max(best.logLik,attempted) + tie) {
       best.logLik = ll; best.nu = shape;
+      double moment=0;for(double v:z)moment+=std::pow(std::abs(v-endpoint)/range,shape)/dn;
+      const double a=sd_x*range*std::exp((std::log(shape)+std::log(moment))/shape);
+      best.stop_detail=limit_detail({mean_x+sd_x*endpoint,a,shape},ll-dn*std::log(sd_x),side==1?StopModel::HalfGed:StopModel::ReflectedHalfGed);
       best.status = side == 1 ? SgedStatus::RightHalfGedBoundary
                               : SgedStatus::LeftHalfGedBoundary;
     }
@@ -400,12 +404,15 @@ inline SgedResult sged_mle_free(span x, double tol, int maxit) {
        uniform >= best.logLik - tie)) {
     best.logLik = uniform;
     best.status = SgedStatus::UniformBoundary;
+    best.stop_detail=limit_detail({mean_x+sd_x*z.front(),mean_x+sd_x*z.back()},uniform-dn*std::log(sd_x),StopModel::Unif);
   }
   best.mu = mean_x + sd_x * best.mu;
   best.sigma *= sd_x;
   best.logLik -= dn * std::log(sd_x);
   return best;
 }
+
+#include "face_payload.hpp"
 
 // Classified holds: fixed shape/skew and either location or scale (or both).
 inline SgedResult sged_mle_impl(span x, double tol, int maxit,
@@ -427,7 +434,8 @@ inline SgedResult sged_mle_impl(span x, double tol, int maxit,
     const auto r=skew_hold_detail::fit(x,false,fixed_mean,fixed_sd,fixed_nu,fixed_xi,tol,maxit);
     const std::vector<SgedStatus> statuses{SgedStatus::Ok,SgedStatus::BfgsFailure,SgedStatus::InvalidStart,SgedStatus::Unbounded,SgedStatus::ScaleBoundary,SgedStatus::UniformBoundary,SgedStatus::UniformBoundary,SgedStatus::RightHalfGedBoundary,SgedStatus::LeftHalfGedBoundary,SgedStatus::UniformBoundary};
     auto status=statuses[r.status];
-    return {r.mean,r.sd,r.nu,r.xi,-r.f,r.iterations,status};
+    SgedResult out={r.mean,r.sd,r.nu,r.xi,-r.f,r.iterations,status};
+    sged_face_payload(x,fixed_mean,fixed_sd,out);return out;
   }
   double lo=inf, hi=-inf;
   for(double v:x) { lo=std::min(lo,v); hi=std::max(hi,v); }

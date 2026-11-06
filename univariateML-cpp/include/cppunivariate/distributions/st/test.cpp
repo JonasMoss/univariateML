@@ -103,3 +103,55 @@ TEST_CASE("st: audited huge held-parameter magnitude") {
   CHECK((r.status==cppunivariate::StStatus::Ok || r.status==cppunivariate::StStatus::NumericalFailure));
   CHECK(r.status!=cppunivariate::StStatus::SkewNormalBoundary);
 }
+
+TEST_CASE("st: structured face payloads") {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  for(double sign:{-1.,1.}) {
+    std::vector<double> x{0,.1,.2,.4,3};for(double& v:x)v*=sign;
+    const auto r=cppunivariate::st_mle(mltest::as_span(x),1e-6,200,nan,nan,nan,5);
+    REQUIRE(r.stop_detail.limit_coef.size()==3);CHECK(r.stop_detail.limit_coef[0]==0);CHECK(r.stop_detail.limit_coef[1]==5);
+    CHECK(r.stop_detail.limit_coef[2]>0);CHECK(r.stop_detail.limit_loglik==r.logLik);
+  }
+  const std::vector<double> x{-2,-1,0,1,2};
+  const auto r=cppunivariate::st_mle(mltest::as_span(x),1e-6,200,nan,nan,0,nan);
+  REQUIRE(r.stop_detail.limit_coef.size()==3);CHECK(r.stop_detail.limit_coef[2]==0);
+  CHECK(r.stop_detail.limit_loglik==r.logLik);
+}
+
+#include "../ht/dpqr.hpp"
+
+TEST_CASE("st: half-t comparison ambiguity retains original-unit witnesses") {
+  const std::vector<double> x{1,2};
+  const auto r=cppunivariate::st_mle(mltest::as_span(x),1e-6,200,0,1e-4,cppunivariate::special::kNaN,1e20);
+  REQUIRE(r.status==cppunivariate::StStatus::NumericalFailure);
+  REQUIRE(r.stop_detail.comparison_tie);
+  REQUIRE(r.stop_detail.candidates.size()==2);
+  const auto& face=r.stop_detail.candidates[1];
+  REQUIRE(face.model==cppunivariate::StopModel::Ht);
+  REQUIRE(face.coef.size()==3);
+  CHECK(face.coef[0]==0);CHECK(face.coef[1]==1e20);CHECK(face.coef[2]==1e-4);
+  double ll=0;for(double v:x)ll+=cppunivariate::distributions::dht(v,face.coef[0],face.coef[1],face.coef[2],true);
+  CHECK(face.loglik_lower==doctest::Approx(ll).epsilon(1e-12));
+  const auto& finite=r.stop_detail.candidates[0];
+  REQUIRE(finite.coef.size()==4);ll=0;
+  for(double v:x)ll+=cppunivariate::distributions::dst(v,finite.coef[0],finite.coef[1],finite.coef[2],finite.coef[3],true);
+  CHECK(finite.loglik_lower==doctest::Approx(ll).epsilon(1e-12));
+  CHECK(r.stop_detail.loglik_upper==INFINITY);
+}
+
+TEST_CASE("st: stopped limiting-family certificates preserve transport and bounds") {
+  cppunivariate::StopDetail detail;
+  detail.candidates={{{2,5,3},-10,-9,cppunivariate::StopModel::None},{{2,4},-8,-8,cppunivariate::StopModel::Hnorm}};
+  detail.loglik_lower=-8;detail.loglik_upper=INFINITY;detail.segment_loglik_upper=-7;
+  const auto r=cppunivariate::st_detail::face_transport(detail,10,2,3,cppunivariate::StopModel::Ht,-1,std::log(2.));
+  REQUIRE(r.candidates.size()==2);
+  CHECK(r.candidates[0].model==cppunivariate::StopModel::ReflectedHt);
+  CHECK(r.candidates[0].coef==std::vector<double>{6,5,6});
+  CHECK(r.candidates[1].model==cppunivariate::StopModel::ReflectedHnorm);
+  CHECK(r.candidates[1].coef==std::vector<double>{6,8});
+  CHECK(r.candidates[0].loglik_lower==doctest::Approx(-10-4*std::log(2.)));
+  CHECK(r.candidates[0].loglik_upper==doctest::Approx(-9-4*std::log(2.)));
+  CHECK(r.loglik_lower==doctest::Approx(-8-4*std::log(2.)));
+  CHECK(r.segment_loglik_upper==doctest::Approx(-7-4*std::log(2.)));
+  CHECK(r.loglik_upper==INFINITY);
+}

@@ -128,3 +128,16 @@ TEST_CASE("emg: audited huge held-parameter magnitude") {
   CHECK((r.status==cppunivariate::EmgStatus::Ok || r.status==cppunivariate::EmgStatus::IterationFailure));
   CHECK(r.status!=cppunivariate::EmgStatus::NormalLimit);
 }
+
+TEST_CASE("emg: structured face payloads") {
+  const std::vector<double> x{-2,-1,0,1,2};
+  const auto e=cppunivariate::emg_mle(mltest::as_span(x));
+  REQUIRE(e.stop_detail.limit_coef.size()==2);
+  CHECK(e.stop_detail.limit_coef[0]==-2);
+  CHECK(e.stop_detail.limit_coef[1]==doctest::Approx(.5));
+  CHECK(e.stop_detail.limit_loglik==doctest::Approx(5*(std::log(.5)-1)));
+  const auto n=cppunivariate::emg_mle(mltest::as_span(x),1e-8,500,0,1);
+  REQUIRE(n.stop_detail.limit_coef.size()==2);
+  CHECK(n.stop_detail.limit_coef[0]==0);CHECK(n.stop_detail.limit_coef[1]==1);
+  CHECK(n.stop_detail.limit_loglik==doctest::Approx(-2.5*std::log(2*std::acos(-1.))-5));
+}

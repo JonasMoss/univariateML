@@ -126,3 +126,54 @@ test('unrepresentable delegate reductions stop as numerical failures', () => {
     ['pareto4',[1e308,1.1e308],{min:-1e308}]
   ])assert.throws(()=>api[family].fit(data,held),e=>e.kind==='numerical');
 });
+
+test('continuous structured nonexistence and fitted faces', () => {
+  for (const [family,x] of [['exp',[0,0,0]],['norm',[1,1,1]],['gamma',[1,1,1]],['beta',[.5,.5,.5]]]) {
+    assert.throws(() => api[family].fit(x), e => {
+      assert.equal(e.kind,'nomle');assert.deepEqual(e.estimates,{});assert.deepEqual(e.candidates,[]);return true;
+    });
+  }
+  for (const [family,x,held,model,estimates,ll] of [
+    ['bhatt',[-1,-.5,0,.5,1],{a:2},'unif',{min:-2,max:2},-5*Math.log(4)],
+    ['gompertz',[0,0,1,9],{},'exp',{rate:.4},4*(Math.log(.4)-1)],
+    ['tnorm',[2,2,3,11],{a:2,b:Infinity},'unavailable:translated-exponential',{mu:2,rate:.4},4*(Math.log(.4)-1)],
+    ['sn',[0,.1,.2,.4,3],{},'hnorm',{mu:0,sigma:Math.sqrt(9.21/5)},2.5*(Math.log(2/Math.PI)-Math.log(9.21/5)-1)]
+  ]) assert.throws(() => api[family].fit(x,held), e => {
+    assert.equal(e.kind,'limit');assert.equal(e.model,model);
+    assert.deepEqual(Object.keys(e.estimates),Object.keys(estimates));
+    for(const k of Object.keys(estimates))assert.ok(Math.abs(e.estimates[k]-estimates[k])<1e-8);
+    assert.ok(Math.abs(e.limit_loglik-ll)<1e-8);return true;
+  });
+  assert.throws(() => api.exp.fit([-1,2]), e => !e.kind);
+  assert.throws(() => api.gamma.fit([1,1,1],{}, {abstol:0}), e => !e.kind);
+  assert.throws(() => api.gev.fit([0,0,0,1,2]), e => e.kind==='nomle');
+});
+
+test('Power face payload follows public endpoint-then-shape order', () => {
+  const x=Array.from({length:300},(_,i)=>.7*((i+.5)/300)**2);
+  const ref=api.power.fit(x);
+  assert.throws(() => api.genbeta.fit(x,{scale:1}), e => {
+    assert.equal(e.kind,'limit');assert.equal(e.model,'power');
+    assert.deepEqual(Object.keys(e.estimates),['alpha','beta']);
+    for(const k of ['alpha','beta'])assert.ok(Math.abs(e.estimates[k]-ref.estimates[k])<1e-9);
+    assert.ok(Math.abs(e.limit_loglik-ref.logLik)<1e-9);return true;
+  });
+});
+
+test('held subunit GED shape retains the certified reflected half face', () => {
+  assert.throws(() => api.sged.fit([1,1,1],{mean:0,nu:.5}), e => {
+    assert.equal(e.kind,'limit');assert.equal(e.model,'unavailable:reflected-half-ged');
+    assert.ok(Math.abs(e.estimates.mu-1)<1e-7);
+    assert.ok(Math.abs(e.estimates.scale-1/6)<1e-7);assert.equal(e.estimates.nu,.5);
+    assert.ok(Math.abs(e.limit_loglik-3*Math.log(3))<1e-6);return true;
+  });
+});
+
+test('conditional snorm and skew-t ambiguities retain both compared models', () => {
+  for(const [family,held,model] of [['snorm',{mean:0,sd:1e-4},'hnorm'],['st',{xi:0,omega:1e-4,nu:1e20},'ht']])
+    assert.throws(()=>api[family].fit([1,2],held),e=>{
+      assert.equal(e.kind,'tie');assert.equal(e.candidates.length,2);
+      assert.ok(e.candidates.some(c=>c.model===model));assert.equal(e.loglik_upper,Infinity);
+      assert.ok(e.candidates.every(c=>Number.isFinite(c.loglik_lower)));return true;
+    });
+});
