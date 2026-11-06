@@ -1,5 +1,6 @@
 // Location-scale Student t, constrained to df >= 1.
 #pragma once
+#include "certificate.hpp"
 #include "../../core/face_compare.hpp"
 #include "cppunivariate/core/constants.hpp"
 #include "../../core/multistart.hpp"
@@ -16,11 +17,11 @@
 namespace cppunivariate {
 inline constexpr double kLstDfLower = 1.0;
 
-enum class LstStatus { Ok, BfgsFailure, InvalidStart, NoMLE, NormalBoundary, InvalidDf, Unbounded, ScaleBoundary, IterationFailure };
+enum class LstStatus { Ok, BfgsFailure, InvalidStart, NoMLE, NormalBoundary, InvalidDf, Unbounded, ScaleBoundary, IterationFailure, CertificateBudget, CertificateTie, NumericalFailure };
 struct LstResult {
   double mu, sigma, df, logLik;
   int iterations;
-  LstStatus status; unsigned restricted = 0;
+  LstStatus status; unsigned restricted = 0; StopDetail stop_detail{};
 };
 
 // Coordinates are location, log(scale), log(df-1); fixed_df includes Cauchy.
@@ -331,12 +332,31 @@ inline LstResult lst_mle_impl(span x,double tol,int maxit,double mu,double sigma
   return best;
 }
 
+inline LstResult lst_mle_certified(span x,double tol,int maxit,int budget=4096) {
+  if(!(tol>0)||!std::isfinite(tol))return {NAN,NAN,NAN,NAN,0,LstStatus::InvalidStart};
+  const auto c=t_certificate(x,1,budget,maxit,std::min(1e-6,std::max(1e-7,tol)));
+  LstStatus status=LstStatus::NumericalFailure;
+  switch(c.status){
+    case TCertificateStatus::Finite:case TCertificateStatus::Cauchy:status=LstStatus::Ok;break;
+    case TCertificateStatus::Normal:status=LstStatus::NormalBoundary;break;
+    case TCertificateStatus::Collapse:status=LstStatus::ScaleBoundary;break;
+    case TCertificateStatus::Unbounded:status=LstStatus::Unbounded;break;
+    case TCertificateStatus::Budget:status=LstStatus::CertificateBudget;break;
+    case TCertificateStatus::Tie:status=LstStatus::CertificateTie;break;
+    case TCertificateStatus::InvalidData:status=LstStatus::InvalidStart;break;
+    default:break;
+  }
+  LstResult r{c.mu,c.scale,c.nu,c.logLik,c.profiles,status};r.stop_detail=c.stop_detail;
+  if(status==LstStatus::Ok&&r.df==1)r.restricted=16u;
+  return r;
+}
 inline LstResult lst_mle(span x,double tol,int maxit) {
-  auto r=lst_mle_impl(x,tol,maxit);
+  auto r=lst_mle_certified(x,tol,maxit);
   if(r.status==LstStatus::Ok && r.df==kLstDfLower) r.restricted|=16u;
   return r;
 }
 inline LstResult lst_mle(span x,double tol,int maxit,double mu,double sigma,double df) {
+  if(std::isnan(mu)&&std::isnan(sigma)&&std::isnan(df))return lst_mle(x,tol,maxit);
   auto r=lst_mle_impl(x,tol,maxit,mu,sigma,df);
   if(r.status==LstStatus::Ok && (std::isnan(df) && std::isnan(mu)) && r.df==kLstDfLower) r.restricted|=16u;
   return r;

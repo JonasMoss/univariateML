@@ -32,7 +32,7 @@
 
 namespace cppunivariate {
 
-enum class StudentTStatus { Ok = 0, BfgsFailure, InvalidStart, NormalBoundary, DfTwoBoundary, InvalidNu, Unbounded, ScaleBoundary, IterationFailure };
+enum class StudentTStatus { Ok = 0, BfgsFailure, InvalidStart, NormalBoundary, DfTwoBoundary, InvalidNu, Unbounded, ScaleBoundary, IterationFailure, CertificateBudget, CertificateTie, NumericalFailure };
 
 struct StudentTResult {
   double mu;
@@ -41,6 +41,7 @@ struct StudentTResult {
   double logLik;
   int iterations;
   StudentTStatus status;
+  StopDetail stop_detail{};
 };
 
 // Per-obs nll in phi-space (with z = (x - mu)/sigma, m = nu - 2,
@@ -310,10 +311,35 @@ inline StudentTResult student_t_mle_impl(span x, double tol, int maxit, bool sta
   return {mu, sigma, nu, logLik, r.iterations, StudentTStatus::Ok};
 }
 
-inline StudentTResult student_t_mle(span x, double tol, int maxit) {
-  return student_t_mle_impl(x, tol, maxit, false);
+inline StudentTResult student_t_mle_certified(span x, double tol, int maxit,int budget=4096) {
+  if(!(tol>0)||!std::isfinite(tol))return {NAN,NAN,NAN,NAN,0,StudentTStatus::InvalidStart};
+  const auto c=t_certificate(x,2,budget,maxit,std::min(1e-6,std::max(1e-7,tol)));
+  StudentTStatus status=StudentTStatus::NumericalFailure;
+  switch(c.status){
+    case TCertificateStatus::Finite:status=StudentTStatus::Ok;break;
+    case TCertificateStatus::Normal:status=StudentTStatus::NormalBoundary;break;
+    case TCertificateStatus::TTwo:status=StudentTStatus::DfTwoBoundary;break;
+    case TCertificateStatus::Collapse:status=StudentTStatus::ScaleBoundary;break;
+    case TCertificateStatus::Unbounded:status=StudentTStatus::Unbounded;break;
+    case TCertificateStatus::Budget:status=StudentTStatus::CertificateBudget;break;
+    case TCertificateStatus::Tie:status=StudentTStatus::CertificateTie;break;
+    case TCertificateStatus::InvalidData:status=StudentTStatus::InvalidStart;break;
+    default:break;
+  }
+  double sd=c.scale;
+  if(status==StudentTStatus::Ok){
+    t_cert_detail::I v(c.coefficient_lower[2],c.coefficient_upper[2]),scale(c.coefficient_lower[1],c.coefficient_upper[1]);
+    const double unit=c.scale;
+    t_cert_detail::I box=t_cert_detail::scale_units(t_cert_detail::I(scale.lo/unit,scale.hi/unit)*t_cert_detail::root(v/(v-2)),unit);
+    if(!box.valid()||box.lo<=0||v.lo<=2||box.hi-box.lo>std::min(1e-6,std::max(1e-7,tol))*box.mid())status=StudentTStatus::NumericalFailure;
+    else sd=box.mid();
+  }
+  if(status==StudentTStatus::DfTwoBoundary)sd=INFINITY;
+  StudentTResult r{c.mu,sd,c.nu,c.logLik,c.profiles,status};r.stop_detail=c.stop_detail;return r;
 }
 
+
+inline StudentTResult student_t_mle(span x,double tol,int maxit){return student_t_mle_certified(x,tol,maxit);}
 
 inline StudentTResult student_t_mle(span x,double tol,int maxit,double mean,double sd,double nu) {
   if(std::isnan(mean)&&std::isnan(sd))return std::isnan(nu)?student_t_mle(x,tol,maxit):student_t_mle_fixed_nu(x,nu,tol,maxit);

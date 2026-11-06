@@ -228,7 +228,7 @@ TEST_CASE("std: targeted tail scaling without overflowing z") {
 TEST_CASE("std: P3 unfinished optimizer is a failure") {
   auto g=mltest::load_distribution_golden("std");
   const auto x=mltest::as_span(g.data);
-  CHECK(cppunivariate::student_t_mle(x,1e-8,1).status==cppunivariate::StudentTStatus::BfgsFailure);
+  CHECK(cppunivariate::student_t_mle(x,1e-8,1).status==cppunivariate::StudentTStatus::NumericalFailure);
 }
 
 TEST_CASE("std: face comparison cannot resolve rounded extreme objectives") {
@@ -246,4 +246,21 @@ TEST_CASE("std: audited huge held-parameter magnitude") {
   const auto r=cppunivariate::student_t_mle(s,1e-6,200,0,1e-10,nan);
   CHECK((r.status==cppunivariate::StudentTStatus::Ok || r.status==cppunivariate::StudentTStatus::BfgsFailure || r.status==cppunivariate::StudentTStatus::IterationFailure));
   CHECK(r.status!=cppunivariate::StudentTStatus::NormalBoundary);
+}
+
+TEST_CASE("std: certificate normal and critical collapse remain distinct") {
+  const std::vector<double> balanced{-1,-1,1,1},critical{-1,0,0,0,0,1};
+  const auto normal=cppunivariate::student_t_mle(mltest::as_span(balanced),1e-6,200);
+  CHECK(normal.status==cppunivariate::StudentTStatus::NormalBoundary);
+  REQUIRE(normal.stop_detail.limit_coef.size()==2);
+  CHECK(normal.stop_detail.limit_coef[0]==doctest::Approx(0));
+  CHECK(normal.stop_detail.limit_coef[1]==doctest::Approx(1));
+  const auto collapse=cppunivariate::student_t_mle(mltest::as_span(critical),1e-6,200);
+  CHECK(collapse.status==cppunivariate::StudentTStatus::ScaleBoundary);
+  CHECK(collapse.logLik==doctest::Approx(-6*std::log(2.)));
+  REQUIRE(collapse.stop_detail.limit_coef.size()==2);
+  CHECK(collapse.stop_detail.limit_coef[0]==0);
+  CHECK(collapse.stop_detail.limit_coef[1]==2);
+  CHECK(collapse.stop_detail.loglik_lower<=-6*std::log(2.));
+  CHECK(collapse.stop_detail.loglik_upper>=-6*std::log(2.));
 }

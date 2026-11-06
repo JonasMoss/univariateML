@@ -103,3 +103,20 @@ These transports preserve the parent certificate conditional on computed
 comparisons and its practical floating-point margin. They do not certify the
 held-scale two-free-shape Burr profile, constrained equal-shape paralogistic
 profiles, free-location Fréchet profiles, or general GB2/beta-prime profiles.
+
+## Location-scale t certificate (TASK-140, 2026-11-06)
+
+All-free lst/std certificate stops distinguish `budget`, `tie`, `numerical`,
+normal and ordinary-scale t2 `limit`, and unbounded/collapse `nomle`.
+Certificate failures are terminal and never use an optimizer-score exception.
+`StopModel::Norm` candidates have `(mean,sd)`; `StopModel::Lst` candidates
+have ordinary-scale `(mu,sigma,df)`, including a positive-scale t2 face.
+This avoids reporting the t2 face as a finite standard deviation.
+
+A selected bounded scale-collapse path uses diagnostic model `t-collapse`
+with `(mu,df)` and its limiting likelihood. This id denotes a path, not a
+public density family or a continuous density assigned to an atomic weak
+limit. There is no fitted zero scale among its diagnostic coefficients.
+Unbounded collapse has no finite face estimate. Original-unit likelihood
+bounds include the normalization Jacobian. Missing global upper bounds stay
+infinite or unavailable; a last segment bound is not a global bound.

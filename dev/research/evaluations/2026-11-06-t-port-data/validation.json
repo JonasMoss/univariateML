@@ -1,0 +1,139 @@
+{
+  "base_revision": "164d41784756606a48ddc0cedc67752acab4050b",
+  "branch": "codex/t-port",
+  "workstation": "Linux-7.0.0-42-generic-x86_64-with-glibc2.43",
+  "python": "3.14.5 (main, Jun  2 2026, 22:25:17) [Clang 22.1.3 ]",
+  "workstation_compiler": "c++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "node": "v22.22.1",
+  "native_machine": "MeanMachine",
+  "native_source_hashes_verified": 276,
+  "checks": [
+    {
+      "command": "/tmp/umvl-cpu/simbox-run just cpp-test",
+      "machine": "simbox",
+      "log": "build/scratch/t-port-final-arithmetic-suites.log",
+      "sha256": "83e493b14a99e285465166b2ac1dbdcbe363b62797f3b11672d864c80bb1780b",
+      "passed": 106,
+      "failed": 0
+    },
+    {
+      "command": "/tmp/umvl-cpu/simbox-run just cpp-test-no-long-double",
+      "machine": "simbox",
+      "log": "build/scratch/t-port-final-arithmetic-suites.log",
+      "sha256": "83e493b14a99e285465166b2ac1dbdcbe363b62797f3b11672d864c80bb1780b",
+      "passed": 127,
+      "failed": 0
+    },
+    {
+      "command": "/tmp/umvl-cpu/run4 just test",
+      "machine": "workstation",
+      "log": "build/scratch/t-port-r-dev.log",
+      "sha256": "efebe935540f5a4079287c1c8578830b14e2a41bf7c0aba7962c201321cbb715",
+      "passed": 20690,
+      "failed": 0,
+      "warnings": 0,
+      "skipped": 154
+    },
+    {
+      "command": "/tmp/umvl-cpu/simbox-run just test",
+      "machine": "simbox",
+      "log": "build/scratch/t-port-r-dev-simbox-final.log",
+      "sha256": "4a6b4b18dba767f738040381494307f5f4e0422a6e270efaf66f107ae96e1eba",
+      "passed": 20690,
+      "failed": 0,
+      "warnings": 0,
+      "skipped": 154
+    },
+    {
+      "command": "/tmp/umvl-cpu/run4 just js-build",
+      "machine": "workstation",
+      "log": "build/scratch/t-port-js-build.log",
+      "sha256": "5d51464f3921c5c5f9d31c03272b68966847af8ea35b1f8a11cf30be2a1257da",
+      "passed": true
+    },
+    {
+      "command": "/tmp/umvl-cpu/run4 just js-test",
+      "machine": "workstation",
+      "log": "build/scratch/t-port-js-test.log",
+      "sha256": "8d9ad171dae60279eef600b67897b1ca1e463ad467da15a9df4c1a7dbe92bc58",
+      "passed": 424,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "command": "/tmp/umvl-cpu/run4 just site-check",
+      "machine": "workstation",
+      "log": "build/scratch/t-port-site-final.log",
+      "sha256": "0c6a6aede9f00da76eaf2df0156db252fe2158aabdc647adecb36c5cccc31920",
+      "passed": true
+    },
+    {
+      "command": "/tmp/umvl-cpu/simbox-run env UMVL_TEST_TIER=full just cpp-test",
+      "machine": "simbox",
+      "log": "build/scratch/t-port-final-arithmetic-suites.log",
+      "sha256": "83e493b14a99e285465166b2ac1dbdcbe363b62797f3b11672d864c80bb1780b",
+      "passed": 127,
+      "failed": 0
+    },
+    {
+      "command": "/tmp/umvl-cpu/run4 just test-full",
+      "machine": "workstation",
+      "log": "build/scratch/t-port-test-full.log",
+      "sha256": "2d5a033eca420d2b86373d6af38b1ae4e528df0bc01f4984eb9c06ab7599a30b",
+      "passed": 43506,
+      "failed": 0,
+      "warnings": 0,
+      "skipped": 0
+    }
+  ],
+  "source_sha256": {
+    "bindings/common/distributions/lst/fit.hpp": "45e09e5d278f5ec08b1af95b4e20cbd3d41a318aedb83ce997304035462afd49",
+    "bindings/common/distributions/std/fit.hpp": "f217cde80dc5837ed00ac77743dcf13e01c62934517088c6b74580787429142d",
+    "bindings/common/fit.hpp": "03dec6cef98788148d3a87a4a03ddb07ad05d9e6a15b4ef9e8f511488e8dcd2d",
+    "bindings/js/test.mjs": "14f98fd026c10baf1aa736fe2e7d37eb7fbd797c844be08ad5f1ad8a4d597717",
+    "bindings/r/distributions/lst/test.R": "29f0bf62f5ec984b1563698e002a56bbd9e510e991cee8586c2ebe9f134f384c",
+    "bindings/r/distributions/std/test.R": "90a6020306a1268bb8082c5a064135b04577b3001e91d8f915967c535ba3777d",
+    "bindings/r/tests/testthat/test_scale_equivariance.R": "ba2047212896069b3c2d88e814fba7c90daeaf32eadfeca13b3443c76ed35414",
+    "dev/design/structured-stop-details.md": "d1d510d0f9d0ff0697e54d87713aa5ca01248e581ea839f2348d2dd086a5aabd",
+    "dev/research/evaluations/2026-11-06-t-port-data/README.md": "8be20280675f42f9cc2372d9c2a2f6254fd82c34528e3618928dcaf1c1fc283c",
+    "dev/research/evaluations/2026-11-06-t-port-data/adversarial.py": "199bf4c288b585319ecf6be4f068600078d1c6313f0fdd8871e1de93b130c583",
+    "dev/research/evaluations/2026-11-06-t-port-data/arithmetic.cpp": "7b4f4cc0324c8ce42d815170e73e286d215578db53e3171c6e69788845b79b03",
+    "dev/research/evaluations/2026-11-06-t-port-data/arithmetic.md": "3cf2027bac649b4cf360e3a7d57b2110fa4afbdf2e82bcac11d15b8cb636957f",
+    "dev/research/evaluations/2026-11-06-t-port-data/arithmetic.py": "0a3f329c22735949151ca07ccf051f21b84d531804da7696ac5c1456d8696fb1",
+    "dev/research/evaluations/2026-11-06-t-port-data/baseline-master/source.json": "c30ceccf758f5576e597ae8b6ad6bb0b29dbe8b951c5394d77f374b48b5bd08b",
+    "dev/research/evaluations/2026-11-06-t-port-data/baseline-st.R": "3b34d4b4a00e9ebb66616f8a3b688cbc18952e2c4ba9fdec135bbf3090c2627a",
+    "dev/research/evaluations/2026-11-06-t-port-data/baseline-st.sh": "17dab1aacace939caf9422a109b9105cee2874888999a0e99a16a7dfbb6aab53",
+    "dev/research/evaluations/2026-11-06-t-port-data/check-gamma.cpp": "5a2a26ae1a6f3854504841c122f5e69509ee65a3aa571461ee63aa4dca2f7c86",
+    "dev/research/evaluations/2026-11-06-t-port-data/check-gamma.py": "3ab445e8be1c452e2c6c163e29a4d5f9d16e76d51e67190c56b4850b1e53c4e2",
+    "dev/research/evaluations/2026-11-06-t-port-data/cutoff.cpp": "31c8e5bd2b19fce5b2376cfd1948487b8968bd07cceb0a4cb1575f55ebac1b80",
+    "dev/research/evaluations/2026-11-06-t-port-data/cutoff.py": "8b29f8c80ae3ee39097f0bf8bb704b2ad3c3d7794a4a2bb9ef3fc81425bf8205",
+    "dev/research/evaluations/2026-11-06-t-port-data/diagnostic.cpp": "6f102659daeb0715d7055c791f0c578643888e0b3aa57114cd8cf6341f0d831b",
+    "dev/research/evaluations/2026-11-06-t-port-data/diagnostic.py": "7b33f278da5bd010dc1719b9d085aefa0059db24fbf5974b0de2670c1e2bb417",
+    "dev/research/evaluations/2026-11-06-t-port-data/local-final.sh": "a2d4bc6abb557254d4b7fde09df5bafb4ed98d98e8f2eab317ccf08916c4a275",
+    "dev/research/evaluations/2026-11-06-t-port-data/native-manifest.py": "61b3b205ed510836aa1650f1774189a1df55e027da893eb7c0092b6c35049be6",
+    "dev/research/evaluations/2026-11-06-t-port-data/native.sh": "76d95fe261c4d26262615d27fbbbd047eeecbbb6969a1cf11474f1db40c8b8ad",
+    "dev/research/evaluations/2026-11-06-t-port-data/replay.cpp": "4ab547fec95e933e6c2dbcf7b271faee0578fabdac3c4c99b46c112f52136709",
+    "dev/research/evaluations/2026-11-06-t-port-data/replay.py": "4772e667ef84361ef8adc0f0da965cdb7526082f39266cdf65ce300b6fd2f884",
+    "dev/research/evaluations/2026-11-06-t-port-data/shallow.cpp": "81f1a8f0114be2de787b3f1d8ab70154c6dfc595700decbb02f5c0590da3970e",
+    "dev/research/evaluations/2026-11-06-t-port-data/stress.cpp": "310d418eded1869367280c3bedd9777bb4951723910267450e45d25565f479d8",
+    "dev/research/evaluations/2026-11-06-t-port-data/tail-profiles.cpp": "d21e7d1387cda946296e3b535c03138774bd055389ba4c3b92fd32db27592c27",
+    "dev/research/evaluations/2026-11-06-t-port-data/targeted.sh": "4c8693dceeb1dd39991605dbe2ae75c4d28e9e4905843de96447ab37faa6f3b7",
+    "dev/research/evaluations/2026-11-06-t-port-data/validation.py": "6e5f21bd4b76bc41eedbde4d108dc83043c6dad2544427e094e1d557621cb448",
+    "dev/research/evaluations/2026-11-06-t-port-data/verify.py": "fc309645650d60059b434774cb1272320a39a14d727f764ede8394081e96d83e",
+    "univariateML-cpp/include/cppunivariate/core/stop_detail.hpp": "118516d2b0f8f18e08c5c9e20a325ec4803fe551644b5b6152b1306e182a8cb4",
+    "univariateML-cpp/include/cppunivariate/distributions/lst/README.md": "c9f6c55d464d72f9348876309d8037352ebe9f082ba012e2474f1caa57869352",
+    "univariateML-cpp/include/cppunivariate/distributions/lst/certificate.hpp": "7b0548a019852fbe3cb30d170ac0cdac24b9068a1231c3cb4b4d78ff6611020d",
+    "univariateML-cpp/include/cppunivariate/distributions/lst/mle.hpp": "2ecf7bd291f75efd01d1898170a61136e1f99860f6d4a4fd8cde11d7157f4724",
+    "univariateML-cpp/include/cppunivariate/distributions/lst/test.cpp": "acf95679b44a306468f54c488ea5835645a3b0e7cd99071e90887f938f172e71",
+    "univariateML-cpp/include/cppunivariate/distributions/std/README.md": "049fa711b545d001260ebdc903f2805b84c19d1625ea86fa0e58b25ec38d4baa",
+    "univariateML-cpp/include/cppunivariate/distributions/std/mle.hpp": "085bf70de8c5be583f4ef3f2102db7a665359cef01c51c40f1f2f2537e75df2f",
+    "univariateML-cpp/include/cppunivariate/distributions/std/test.cpp": "6c83e04dab133aef85a3a764e03192f139d9b5f6a7ec2965fdbc37d4ef115aae"
+  },
+  "arithmetic_contract": "Exact arithmetic conditional on computed enclosures with documented practical binary64 margins; no outward-rounding claim.",
+  "golden_relative_tolerance": 3e-05,
+  "intermediate_findings": [
+    "Initial absolute operation/reciprocal floors caused avoidable budget/domain refusals; fixed and retained in rejected-arithmetic.json.",
+    "The initial endpoint nomination did not fall back to interior root isolation; the near-Cauchy sample exposed and fixed it.",
+    "An intermediate simbox R dev run had three failures: the old failure-message regex, the missing endpoint fallback, and a st equivariance discrepancy. Frozen-master scratch reproduction confirmed the st discrepancy; the shared test now scopes its df tolerance above nu=1000 to the measured baseline precision, retaining the likelihood check. Final R checks are separately recorded."
+  ]
+}

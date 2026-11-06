@@ -1,0 +1,182 @@
+[
+  {
+    "name": "lst-golden",
+    "family": "lst",
+    "independent_root_inside": true
+  },
+  {
+    "name": "lst-golden",
+    "whole_box_golden_relative_error": "0.0000000054415544399607935111701439164223781357538814993807152064392185060376361905327906",
+    "tolerance": 3e-05
+  },
+  {
+    "name": "lst-golden",
+    "family": "std",
+    "independent_root_inside": true
+  },
+  {
+    "name": "std-golden",
+    "family": "lst",
+    "independent_root_inside": true
+  },
+  {
+    "name": "std-golden",
+    "family": "std",
+    "independent_root_inside": true
+  },
+  {
+    "name": "std-golden",
+    "whole_box_golden_relative_error": "0.0000089250763759841256809401517297828139223591568946320386507794356241373213469665206",
+    "tolerance": 3e-05
+  },
+  {
+    "name": "t1-0",
+    "family": "lst",
+    "independent_endpoint_root_inside": true
+  },
+  {
+    "name": "t1-0",
+    "family": "std",
+    "independent_endpoint_root_inside": true
+  },
+  {
+    "name": "t1-1",
+    "family": "lst",
+    "independent_endpoint_root_inside": true
+  },
+  {
+    "name": "t1-1",
+    "family": "std",
+    "independent_endpoint_root_inside": true
+  },
+  {
+    "name": "t2-0",
+    "family": "lst",
+    "independent_root_inside": true
+  },
+  {
+    "name": "t2-0",
+    "family": "std",
+    "independent_endpoint_root_inside": true
+  },
+  {
+    "name": "t2-1",
+    "family": "lst",
+    "independent_root_inside": true
+  },
+  {
+    "name": "t2-1",
+    "family": "std",
+    "independent_endpoint_root_inside": true
+  },
+  {
+    "name": "t3-0",
+    "family": "lst",
+    "independent_root_inside": true
+  },
+  {
+    "name": "t3-0",
+    "family": "std",
+    "independent_root_inside": true
+  },
+  {
+    "name": "t3-1",
+    "family": "lst",
+    "independent_root_inside": true
+  },
+  {
+    "name": "t3-1",
+    "family": "std",
+    "independent_root_inside": true
+  },
+  {
+    "name": "t5-0",
+    "family": "lst",
+    "independent_root_inside": true
+  },
+  {
+    "name": "t5-0",
+    "family": "std",
+    "independent_root_inside": true
+  },
+  {
+    "name": "t5-1",
+    "family": "lst",
+    "independent_root_inside": true
+  },
+  {
+    "name": "t5-1",
+    "family": "std",
+    "independent_root_inside": true
+  },
+  {
+    "name": "contaminated",
+    "family": "lst",
+    "independent_root_inside": true
+  },
+  {
+    "name": "contaminated",
+    "family": "std",
+    "independent_endpoint_root_inside": true
+  },
+  {
+    "name": "cluster-0.001",
+    "family": "lst",
+    "independent_endpoint_root_inside": true
+  },
+  {
+    "name": "cluster-0.001",
+    "family": "std",
+    "independent_endpoint_root_inside": true
+  },
+  {
+    "name": "cluster-0.01",
+    "family": "lst",
+    "independent_endpoint_root_inside": true
+  },
+  {
+    "name": "cluster-0.01",
+    "family": "std",
+    "independent_endpoint_root_inside": true
+  },
+  {
+    "name": "cluster-0.03",
+    "family": "lst",
+    "independent_endpoint_root_inside": true
+  },
+  {
+    "name": "cluster-0.03",
+    "family": "std",
+    "independent_endpoint_root_inside": true
+  },
+  {
+    "name": "seam-A--1e-06",
+    "family": "lst",
+    "independent_endpoint_root_inside": true
+  },
+  {
+    "name": "seam-A--1e-06",
+    "family": "std",
+    "independent_endpoint_root_inside": true
+  },
+  {
+    "name": "seam-A-0.0",
+    "family": "lst",
+    "independent_endpoint_root_inside": true
+  },
+  {
+    "name": "seam-A-0.0",
+    "family": "std",
+    "independent_endpoint_root_inside": true
+  },
+  {
+    "name": "seam-A-1e-06",
+    "family": "lst",
+    "independent_endpoint_root_inside": true
+  },
+  {
+    "name": "seam-A-1e-06",
+    "family": "std",
+    "independent_endpoint_root_inside": true
+  }
+]

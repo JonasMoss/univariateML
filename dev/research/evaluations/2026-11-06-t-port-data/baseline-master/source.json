@@ -1,0 +1,11 @@
+{
+  "revision": "164d41784756606a48ddc0cedc67752acab4050b",
+  "sha256": {
+    "bindings/common/fit.hpp": "79a4dadff5799178a5427d8ff44391fe3b75b573bd568263a4db20957021ed15",
+    "bindings/common/distributions/lst/fit.hpp": "127389c1db3b4a5dd9d062fcc5c0d0d35ab7226f0d9bb1ea91b3b77a556a5525",
+    "bindings/common/distributions/std/fit.hpp": "3758e0c25df82fdfe91cf6d6ec2b45d2ef73255f18a1be9c3d79f9b4dc17d65c",
+    "univariateML-cpp/include/cppunivariate/core/stop_detail.hpp": "e22ef89147c51c57f6e182570c61a7558d4638159f3ee50c85fd769c14fe1a39",
+    "univariateML-cpp/include/cppunivariate/distributions/lst/mle.hpp": "c573ef030c64a8c6e5fbeb0a033b36f1ebdef756cad31ea7e184fbd72f56447a",
+    "univariateML-cpp/include/cppunivariate/distributions/std/mle.hpp": "75279715fdc15e72769d5d0abb9ca0c936249931fad6549eac35697ad5f85aa9"
+  }
+}

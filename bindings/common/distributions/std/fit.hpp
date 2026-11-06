@@ -22,22 +22,25 @@ inline FitResult fit_std(cppunivariate::span x, Held mean_arg = {}, Held sd_arg 
   if(sd.supplied)fixed.push_back("sd");
   if(nu.supplied)fixed.push_back("nu");
   auto res=cppunivariate::student_t_mle(x,gradtol,iterlim,held_mean,held_sd,nu.supplied?nu.value:nan);
+  if(res.status==cppunivariate::StudentTStatus::CertificateBudget)return stop_failure(fail("Student-t global certificate budget exhausted; no verified MLE."),res.stop_detail,"budget",{"mean","sd","nu"});
+  if(res.status==cppunivariate::StudentTStatus::CertificateTie)return stop_failure(fail("Student-t global certificate unresolved tie or sign-uncertain seam; no verified MLE."),res.stop_detail,"tie",{"mean","sd","nu"});
+  if(res.status==cppunivariate::StudentTStatus::NumericalFailure)return stop_failure(fail("Student-t global certificate numerical failure: score/root, enclosure, domain or linear solve unresolved; no verified MLE."),res.stop_detail,"numerical",{"mean","sd","nu"});
   if (res.status == cppunivariate::StudentTStatus::InvalidNu)
     return fail("`nu` must be finite and greater than 2.");
   if (res.status == cppunivariate::StudentTStatus::Unbounded)
-    return fail("Likelihood is unbounded at a tie of excessive multiplicity k > nu*(n-k) (free df: k > 2*(n-k)); no MLE.");
+    return stop_failure(fail("Likelihood is unbounded at a tie of excessive multiplicity k > nu*(n-k) (free df: k > 2*(n-k)); no MLE."),res.stop_detail,"nomle",{"mean","sd","nu"});
   if (res.status == cppunivariate::StudentTStatus::ScaleBoundary)
-    return fail("Tie equality scale-collapse boundary; a regular MLE is not certified.");
+    return stop_failure(fail("Tie equality scale-collapse boundary; a regular MLE is not certified."),res.stop_detail,"nomle",{"mean","sd","nu"},(!mean.supplied&&!sd.supplied&&!nu.supplied)?"t-collapse":"");
   if (res.status == cppunivariate::StudentTStatus::IterationFailure)
     return fail("Student-t optimizer IterationFailure: did not converge to the score tolerance; increase iterlim.");
   if (res.status == cppunivariate::StudentTStatus::NormalBoundary) {
-    return fail("The Student-t likelihood is maximised as nu -> Inf, i.e. by the "
-               "normal distribution. Use `mlnorm` to fit this model.");
+    return stop_failure(fail("The Student-t likelihood is maximised as nu -> Inf, i.e. by the "
+               "normal distribution. Use `mlnorm` to fit this model."),res.stop_detail,"limit",{"mean","sd","nu"},"norm");
   }
   if (res.status == cppunivariate::StudentTStatus::DfTwoBoundary) {
-    return fail("The Student-t likelihood is maximised as nu -> 2 (infinite "
+    return stop_failure(fail("The Student-t likelihood is maximised as nu -> 2 (infinite "
                "variance); the MLE does not exist in the mean/sd parameterisation. "
-               "Use `mllst` to fit a location-scale t distribution with free degrees of freedom.");
+               "Use `mllst` to fit a location-scale t distribution with free degrees of freedom."),res.stop_detail,"limit",{"mean","sd","nu"},"lst");
   }
   if (res.status == cppunivariate::StudentTStatus::BfgsFailure)
     return fail("StudentT optimizer BfgsFailure: score check failed; increase iterlim.");

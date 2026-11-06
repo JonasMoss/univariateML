@@ -76,6 +76,9 @@ inline std::string stop_model(cppunivariate::StopModel model) {
     case cppunivariate::StopModel::Power:return "power";
     case cppunivariate::StopModel::Exp:return "exp";
     case cppunivariate::StopModel::InvExp:return "invexp";
+    case cppunivariate::StopModel::Norm:return "norm";
+    case cppunivariate::StopModel::Lst:return "lst";
+    case cppunivariate::StopModel::TCollapsePath:return "t-collapse";
     default:return "";
   }
 }
@@ -85,6 +88,9 @@ inline std::vector<std::string> stop_names(const std::string& model,const std::v
   if(model=="power")return {"alpha","beta"};
   if(model=="exp")return {"rate"};
   if(model=="invexp")return {"scale"};
+  if(model=="norm")return {"mean","sd"};
+  if(model=="lst")return {"mu","sigma","df"};
+  if(model=="t-collapse")return {"mu","df"};
   return names;
 }
 inline FitResult stop_failure(FitResult out,const cppunivariate::StopDetail& detail,
