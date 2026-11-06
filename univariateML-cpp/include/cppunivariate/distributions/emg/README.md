@@ -181,3 +181,5 @@ back to the existing multistart; held-parameter fits retain that path. A test
 hook counts fallbacks when enabled. See the [round-four evidence](../../../../../dev/research/evaluations/2026-10-31-logconcave-4-report.md).
 
 Face comparisons retain the family tolerance but stop with the existing numerical-failure status when `core/face_compare.hpp` cannot resolve the decision after its floating-point rounding allowance. This allowance concerns computed likelihood comparisons, not optimizer convergence or global optimality; see the [comparison analysis](../../../../../dev/research/evaluations/2026-11-02-face-compare-report.md).
+
+Held-parameter fits reuse evaluations at exactly repeated search coordinates; seeded decisions are identical to the uncached search ([held-subset comparison](../../../../../dev/research/evaluations/2026-11-06-slow-held-report.md)).

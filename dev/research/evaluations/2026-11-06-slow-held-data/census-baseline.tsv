@@ -1,0 +1,640 @@
+bbinom	0	none	500	1.7328000000000001e-05	stop	nan	Estimating size together with both shapes is not implemented. It would require comparing the fits at every finite size, including their binomial and two-point limits, with the negative binomial and Poisson limits, and no usable bound on large sizes is known.
+bbinom	1	size	500	0.00091556899999999997	ok	-1129.5877962989744	
+bbinom	2	alpha	500	0.23528078999999999	ok	-1129.5877962989739	
+bbinom	3	size,alpha	500	3.2432999999999999e-05	ok	-1129.5877962989739	
+bbinom	4	beta	500	0.0060283869999999996	ok	-1129.5877962989748	
+bbinom	5	size,beta	500	2.4742000000000001e-05	ok	-1129.5877962989748	
+bbinom	6	alpha,beta	500	0.0011218529999999999	ok	-1129.5877962989732	
+bbinom	7	size,alpha,beta	500	6.8536999999999998e-05	ok	-1129.5877962989732	
+beta	0	none	500	9.9669999999999996e-06	ok	147.78133991463704	
+beta	1	shape1	500	1.5909999999999998e-05	ok	147.7813399146371	
+beta	2	shape2	500	1.4677e-05	ok	147.7813399146371	
+beta	3	shape1,shape2	500	1.0468999999999999e-05	ok	147.78133991463733	
+betapr	0	none	500	0.011540049	ok	-439.61585993236127	
+betapr	1	shape1	500	0.011768976	ok	-439.61585993236389	
+betapr	2	shape2	500	0.011854539000000001	ok	-439.61585993236235	
+betapr	3	shape1,shape2	500	0.00114489	ok	-439.61585993236486	
+betapr	4	scale	500	2.2186000000000001e-05	ok	-439.61585993236145	
+betapr	5	shape1,scale	500	3.4230000000000003e-05	ok	-439.61585993236343	
+betapr	6	shape2,scale	500	3.3624000000000002e-05	ok	-439.61585993236343	
+betapr	7	shape1,shape2,scale	500	2.6622999999999999e-05	ok	-439.61585993236343	
+bhatt	0	none	500	0.98983718200000004	ok	-896.31045982723822	
+bhatt	1	mu	500	0.44033672400000001	ok	-896.31045982723833	
+bhatt	2	sigma	500	0.35987823800000002	ok	-896.31045982723856	
+bhatt	3	mu,sigma	500	0.054807278000000001	ok	-896.31045982723845	
+bhatt	4	a	500	0.40265547299999999	ok	-896.31045982723845	
+bhatt	5	mu,a	500	0.061973278	ok	-896.31045982723867	
+bhatt	6	sigma,a	500	0.0021266570000000001	ok	-896.31045982723822	
+bhatt	7	mu,sigma,a	500	0.000240103	ok	-896.31045982723822	
+binom	0	none	500	2.0333999999999999e-05	ok	-938.32744339971975	
+binom	1	size	500	9.4839999999999993e-06	ok	-938.32744339971975	
+binom	2	prob	500	9.0402999999999995e-05	ok	-938.32744339971873	
+binom	3	size,prob	500	6.1440999999999997e-05	ok	-938.32744339971873	
+bnbinom	0	none	500	0.34632209600000002	ok	-1275.6474863695587	
+bnbinom	1	size	500	0.072525034000000002	ok	-1275.6474863695587	
+bnbinom	2	alpha	500	0.079833634000000001	ok	-1275.6474863695587	
+bnbinom	3	size,alpha	500	0.0093052050000000004	ok	-1275.6474863695587	
+bnbinom	4	beta	500	0.077122740999999995	ok	-1275.6474863695587	
+bnbinom	5	size,beta	500	0.0068428830000000001	ok	-1275.6474863695587	
+bnbinom	6	alpha,beta	500	0.0092792150000000004	ok	-1275.6474863695587	
+bnbinom	7	size,alpha,beta	500	6.3738000000000005e-05	ok	-1275.6474863695587	
+burr	0	none	500	0.095340765999999993	ok	-613.67979675083029	
+burr	1	shape1	500	0.017954583	ok	-613.67979675083063	
+burr	2	shape2	500	0.00070118600000000002	ok	-613.67979675082961	
+burr	3	shape1,shape2	500	0.00031212600000000003	ok	-613.67979675083075	
+burr	4	scale	500	0.0024063589999999998	ok	-613.67979675083029	
+burr	5	shape1,scale	500	0.000866674	ok	-613.67979675083018	
+burr	6	shape2,scale	500	4.3189999999999998e-05	ok	-613.6797967508312	
+burr	7	shape1,shape2,scale	500	2.6662e-05	ok	-613.6797967508312	
+cauchy	0	none	500	8.4907999999999994e-05	ok	-1303.5000220648508	
+cauchy	1	location	500	0.00028703700000000002	ok	-1303.500022064851	
+cauchy	2	scale	500	0.00042808700000000001	ok	-1303.5000220648517	
+cauchy	3	location,scale	500	1.7271000000000001e-05	ok	-1303.5000220648515	
+cmb	0	none	500	0.0088363720000000003	ok	-797.88964236001596	
+cmb	1	size	500	0.00043911699999999999	ok	-798.13063892819105	
+cmb	2	prob	500	0.085394692999999994	ok	-798.13063892819753	
+cmb	3	size,prob	500	9.3129999999999998e-05	ok	-798.13063892819105	
+cmb	4	nu	500	28.633691130999999	stop	nan	CMB MLE failed to converge or exhausted its normalizer work budget; a larger finite maximum is not excluded. The Conway-Maxwell-Poisson limit is available: use mlcmp with nu held fixed.
+cmb	5	size,nu	500	5.8624e-05	ok	-798.13063892819105	
+cmb	6	prob,nu	500	0.00071550699999999999	ok	-798.13063892819105	
+cmb	7	size,prob,nu	500	4.2766999999999999e-05	ok	-798.13063892819105	
+cmp	0	none	500	0.0010322809999999999	ok	-804.7902049621714	
+cmp	1	lambda	500	0.00029089099999999999	ok	-804.7902049621714	
+cmp	2	nu	500	0.00020525200000000001	ok	-804.7902049621714	
+cmp	3	lambda,nu	500	0.00010577999999999999	ok	-804.7902049621714	
+dgamma	0	none	500	0.34068909400000003	ok	-820.91822426883175	
+dgamma	1	shape	500	0.00040775000000000002	ok	-820.91822426883175	
+dgamma	2	rate	500	0.028924878000000001	ok	-820.91822426883198	
+dgamma	3	shape,rate	500	5.6326999999999998e-05	ok	-820.91822426883175	
+dlaplace	0	none	500	1.2103000000000001e-05	ok	-837.35597440332481	
+dlaplace	1	location	500	9.1100000000000004e-07	ok	-837.35597440332481	
+dlaplace	2	scale	500	6.0000000000000002e-06	ok	-837.35597440332481	
+dlaplace	3	location,scale	500	9.5900000000000005e-07	ok	-837.35597440332481	
+dnorm	0	none	500	4.5495999999999999e-05	ok	-737.92681622658836	
+dnorm	1	mean	500	3.7428000000000001e-05	ok	-737.92681622658836	
+dnorm	2	sd	500	1.6761000000000001e-05	ok	-737.92681622658836	
+dnorm	3	mean,sd	500	9.1840000000000005e-06	ok	-737.92681622658836	
+dunif	0	none	500	2.1509999999999998e-06	ok	-1098.6122886681098	
+dunif	1	min	500	7.9400000000000004e-07	ok	-1098.6122886681098	
+dunif	2	max	500	6.8599999999999998e-07	ok	-1098.6122886681098	
+dunif	3	min,max	500	7.54e-07	ok	-1098.6122886681098	
+dweibull	0	none	500	3.5769000000000003e-05	ok	-879.24051857626193	
+dweibull	1	shape1	500	1.5097e-05	ok	-879.24051857626205	
+dweibull	2	shape2	500	9.1940000000000004e-06	ok	-879.24051857626193	
+dweibull	3	shape1,shape2	500	6.4439999999999996e-06	ok	-879.24051857626193	
+emg	0	none	500	0.52789211199999997	ok	-846.75971897546572	
+emg	1	mu	500	0.35705717100000001	ok	-846.75971897546572	
+emg	2	sigma	500	0.28922118200000002	ok	-846.75971897546628	
+emg	3	mu,sigma	500	0.027522474000000002	ok	-846.75971897546594	
+emg	4	lambda	500	0.28058691499999999	ok	-846.75971897546617	
+emg	5	mu,lambda	500	0.028628857000000001	ok	-846.75971897546583	
+emg	6	sigma,lambda	500	0.00091994099999999997	ok	-846.75971897546572	
+emg	7	mu,sigma,lambda	500	0.000101353	ok	-846.75971897546572	
+exp	0	none	500	1.9530000000000002e-06	ok	-522.07759597211236	
+exp	1	rate	500	1.2279999999999999e-06	ok	-522.07759597211214	
+fatigue	0	none	500	1.218e-06	stop	nan	The threshold mu cannot be estimated. With mu free, the likelihood is unbounded for every sample with a unique minimum, so no maximum likelihood estimate exists. Supply mu.
+fatigue	1	alpha	500	4.2800000000000002e-07	stop	nan	The threshold mu cannot be estimated. With mu free, the likelihood is unbounded for every sample with a unique minimum, so no maximum likelihood estimate exists. Supply mu.
+fatigue	2	beta	500	2.1500000000000001e-07	stop	nan	The threshold mu cannot be estimated. With mu free, the likelihood is unbounded for every sample with a unique minimum, so no maximum likelihood estimate exists. Supply mu.
+fatigue	3	alpha,beta	500	1.72e-07	stop	nan	The threshold mu cannot be estimated. With mu free, the likelihood is unbounded for every sample with a unique minimum, so no maximum likelihood estimate exists. Supply mu.
+fatigue	4	mu	500	2.2155e-05	ok	-1354.8132605216492	
+fatigue	5	alpha,mu	500	0.014081487	ok	-1354.8132605216506	
+fatigue	6	beta,mu	500	0.00012729899999999999	ok	-1354.8132605216504	
+fatigue	7	alpha,beta,mu	500	2.7101999999999999e-05	ok	-1354.8132605216504	
+foldnorm	0	none	500	0.0072471319999999999	ok	-688.19521052874848	
+foldnorm	1	mu	500	0.0068319690000000002	ok	-688.19521052874848	
+foldnorm	2	sigma	500	0.00029184600000000001	ok	-688.19521052874848	
+foldnorm	3	mu,sigma	500	1.4347e-05	ok	-688.19521052874859	
+fpareto	0	none	500	2.0899999999999999e-06	stop	nan	Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.
+fpareto	1	shape1	500	1.003e-06	stop	nan	Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.
+fpareto	2	shape2	500	5.2499999999999995e-07	stop	nan	Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.
+fpareto	3	shape1,shape2	500	2.6800000000000002e-07	stop	nan	Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.
+fpareto	4	shape3	500	2.3999999999999998e-07	stop	nan	Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.
+fpareto	5	shape1,shape3	500	2.05e-07	stop	nan	Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.
+fpareto	6	shape2,shape3	500	2.1899999999999999e-07	stop	nan	Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.
+fpareto	7	shape1,shape2,shape3	500	2.3200000000000001e-07	stop	nan	Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.
+fpareto	8	scale	500	2.35e-07	stop	nan	Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.
+fpareto	9	shape1,scale	500	1.8e-07	stop	nan	Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.
+fpareto	10	shape2,scale	500	1.7700000000000001e-07	stop	nan	Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.
+fpareto	11	shape1,shape2,scale	500	1.8e-07	stop	nan	Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.
+fpareto	12	shape3,scale	500	1.79e-07	stop	nan	Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.
+fpareto	13	shape1,shape3,scale	500	1.7599999999999999e-07	stop	nan	Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.
+fpareto	14	shape2,shape3,scale	500	1.8799999999999999e-07	stop	nan	Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.
+fpareto	15	shape1,shape2,shape3,scale	500	1.8199999999999999e-07	stop	nan	Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.
+fpareto	16	min	500	0.97331678200000005	stop	nan	GB2 selects the double Pareto limit; this package has no double Pareto fitter.
+fpareto	17	shape1,min	500	0.031902449999999999	ok	-1306.3507425287803	
+fpareto	18	shape2,min	500	0.23076698500000001	ok	-1306.6412089241526	
+fpareto	19	shape1,shape2,min	500	0.0040358599999999996	ok	-1306.7861310332901	
+fpareto	20	shape3,min	500	0.021296711999999999	ok	-1306.9483667580612	
+fpareto	21	shape1,shape3,min	500	0.00017453	ok	-1307.1555233164149	
+fpareto	22	shape2,shape3,min	500	0.031847912999999999	ok	-1307.0671858266173	
+fpareto	23	shape1,shape2,shape3,min	500	0.00013363700000000001	ok	-1307.1555233164154	
+fpareto	24	scale,min	500	0.032057396000000002	ok	-1305.1444477011964	
+fpareto	25	shape1,scale,min	500	0.0029958879999999999	ok	-1306.9360988917215	
+fpareto	26	shape2,scale,min	500	0.0041675159999999996	ok	-1306.9816401323792	
+fpareto	27	shape1,shape2,scale,min	500	0.00072387000000000005	ok	-1306.983087486004	
+fpareto	28	shape3,scale,min	500	0.0030731729999999998	ok	-1307.0847616278693	
+fpareto	29	shape1,shape3,scale,min	500	0.00016265499999999999	ok	-1307.1555233164154	
+fpareto	30	shape2,shape3,scale,min	500	0.00071800499999999997	ok	-1307.1091114503674	
+fpareto	31	shape1,shape2,shape3,scale,min	500	5.0723999999999997e-05	ok	-1307.1555233164149	
+frechet	0	none	500	0.0046982309999999998	ok	-608.45464812711225	
+frechet	1	lambda	500	0.0037408089999999999	ok	-608.45464812711236	
+frechet	2	mu	500	2.6095999999999999e-05	ok	-608.4546481271118	
+frechet	3	lambda,mu	500	5.2352999999999998e-05	ok	-608.45464812711225	
+frechet	4	sigma	500	0.020934919	ok	-608.45464812711248	
+frechet	5	lambda,sigma	500	0.0013394629999999999	ok	-608.45464812711259	
+frechet	6	mu,sigma	500	0.00061094000000000003	ok	-608.45464812711225	
+frechet	7	lambda,mu,sigma	500	2.4087000000000002e-05	ok	-608.45464812711225	
+gamma	0	none	500	7.4669999999999998e-06	ok	-424.82576494602966	
+gamma	1	shape	500	6.9330000000000004e-06	ok	-424.82576494602949	
+gamma	2	scale	500	9.5070000000000006e-06	ok	-424.82576494602944	
+gamma	3	shape,scale	500	6.3249999999999996e-06	ok	-424.82576494602955	
+gb2	0	none	500	0.24082252800000001	ok	-1322.5740862676896	
+gb2	1	shape1	500	0.027014228000000001	ok	-1322.574086267691	
+gb2	2	shape2	500	0.31529468999999999	ok	-1322.5740862676896	
+gb2	3	shape1,shape2	500	0.036092463999999998	ok	-1322.574086267691	
+gb2	4	shape3	500	0.048004432	ok	-1322.5740862676901	
+gb2	5	shape1,shape3	500	0.00019016599999999999	ok	-1322.5740862676896	
+gb2	6	shape2,shape3	500	0.53709915699999999	ok	-1322.5740862676892	
+gb2	7	shape1,shape2,shape3	500	7.5869000000000002e-05	ok	-1322.5740862676896	
+gb2	8	scale	500	0.046090767999999997	ok	-1322.5740862676892	
+gb2	9	shape1,scale	500	0.0039205120000000001	ok	-1322.5740862676896	
+gb2	10	shape2,scale	500	0.30851543799999998	ok	-1322.5740862676885	
+gb2	11	shape1,shape2,scale	500	0.001173826	ok	-1322.5740862676892	
+gb2	12	shape3,scale	500	0.0054183829999999997	ok	-1322.574086267691	
+gb2	13	shape1,shape3,scale	500	0.00029358100000000001	ok	-1322.5740862676896	
+gb2	14	shape2,shape3,scale	500	0.30713012000000001	ok	-1322.5740862676896	
+gb2	15	shape1,shape2,shape3,scale	500	0.00012710299999999999	ok	-1322.5740862676896	
+ged	0	none	500	0.069711020999999998	ok	-711.69346056327856	
+ged	1	mean	500	0.046497666999999999	ok	-711.69346056327288	
+ged	2	sd	500	0.56311206199999997	ok	-711.69346056327277	
+ged	3	mean,sd	500	0.056589579000000001	ok	-711.69346056327345	
+ged	4	nu	500	0.0017929790000000001	ok	-711.69346056327879	
+ged	5	mean,nu	500	0.00013858800000000001	ok	-711.6934605632789	
+ged	6	sd,nu	500	0.0010600379999999999	ok	-711.69346056327902	
+ged	7	mean,sd,nu	500	0.00012790300000000001	ok	-711.69346056327902	
+genbeta	0	none	500	1.9369999999999998e-06	stop	nan	Estimating scale is not supported. The unrestricted likelihood is unbounded when shape2 is free or below one. With other held shapes, a finite MLE may exist but is not computed. Supply scale.
+genbeta	1	shape1	500	5.4199999999999996e-07	stop	nan	Estimating scale is not supported. The unrestricted likelihood is unbounded when shape2 is free or below one. With other held shapes, a finite MLE may exist but is not computed. Supply scale.
+genbeta	2	shape2	500	1.73e-07	stop	nan	Estimating scale is not supported. The unrestricted likelihood is unbounded when shape2 is free or below one. With other held shapes, a finite MLE may exist but is not computed. Supply scale.
+genbeta	3	shape1,shape2	500	1.61e-07	stop	nan	Estimating scale is not supported. The unrestricted likelihood is unbounded when shape2 is free or below one. With other held shapes, a finite MLE may exist but is not computed. Supply scale.
+genbeta	4	shape3	500	2.04e-07	stop	nan	Estimating scale is not supported. The unrestricted likelihood is unbounded when shape2 is free or below one. With other held shapes, a finite MLE may exist but is not computed. Supply scale.
+genbeta	5	shape1,shape3	500	1.67e-07	stop	nan	Estimating scale is not supported. The unrestricted likelihood is unbounded when shape2 is free or below one. With other held shapes, a finite MLE may exist but is not computed. Supply scale.
+genbeta	6	shape2,shape3	500	1.6299999999999999e-07	stop	nan	Estimating scale is not supported. The unrestricted likelihood is unbounded when shape2 is free or below one. With other held shapes, a finite MLE may exist but is not computed. Supply scale.
+genbeta	7	shape1,shape2,shape3	500	1.67e-07	stop	nan	Estimating scale is not supported. The unrestricted likelihood is unbounded when shape2 is free or below one. With other held shapes, a finite MLE may exist but is not computed. Supply scale.
+genbeta	8	scale	500	0.0052932109999999999	ok	548.75168869752292	
+genbeta	9	shape1,scale	500	0.019061023999999999	ok	548.75168869752201	
+genbeta	10	shape2,scale	500	0.0044656059999999996	ok	548.75168869752497	
+genbeta	11	shape1,shape2,scale	500	0.0039962829999999998	ok	548.75168869752292	
+genbeta	12	shape3,scale	500	3.6903999999999998e-05	ok	548.75168869752292	
+genbeta	13	shape1,shape3,scale	500	3.1769e-05	ok	548.75168869752201	
+genbeta	14	shape2,shape3,scale	500	2.7353000000000001e-05	ok	548.75168869752497	
+genbeta	15	shape1,shape2,shape3,scale	500	2.3640000000000001e-05	ok	548.75168869752292	
+geom	0	none	500	1.2001000000000001e-05	ok	-674.77829005326987	
+geom	1	prob	500	1.0182e-05	ok	-674.77829005326987	
+gev	0	none	500	0.0023377760000000002	ok	-874.76388443182964	
+gev	1	mu	500	0.31215812199999998	ok	-874.76388443183191	
+gev	2	sigma	500	0.34228700099999998	ok	-874.76388443183021	
+gev	3	mu,sigma	500	0.0015640039999999999	ok	-874.76388443183146	
+gev	4	xi	500	0.000150078	ok	-874.76388443183009	
+gev	5	mu,xi	500	0.0015541179999999999	ok	-874.76388443183066	
+gev	6	sigma,xi	500	0.001801693	ok	-874.76388443182998	
+gev	7	mu,sigma,xi	500	2.7923999999999999e-05	ok	-874.76388443183089	
+gompertz	0	none	500	2.1837000000000001e-05	ok	-208.33563320071013	
+gompertz	1	a	500	0.002200479	ok	-208.33563320070982	
+gompertz	2	b	500	2.7900000000000001e-05	ok	-208.33563320071056	
+gompertz	3	a,b	500	2.3079999999999999e-05	ok	-208.33563320071056	
+gpd	0	none	500	1.415e-06	stop	nan	Estimating `mu` is not supported. The unrestricted likelihood is unbounded. Hold mu to fit this family; some held-coefficient submodels have endpoint maxima or uniform plateaus.
+gpd	1	mu	500	0.0046304299999999996	ok	-576.20330619617391	
+gpd	2	sigma	500	4.15e-07	stop	nan	Estimating `mu` is not supported. The unrestricted likelihood is unbounded. Hold mu to fit this family; some held-coefficient submodels have endpoint maxima or uniform plateaus.
+gpd	3	mu,sigma	500	0.002791633	ok	-576.20330619617414	
+gpd	4	xi	500	2.9700000000000003e-07	stop	nan	Estimating `mu` is not supported. The unrestricted likelihood is unbounded. Hold mu to fit this family; some held-coefficient submodels have endpoint maxima or uniform plateaus.
+gpd	5	mu,xi	500	0.000125234	ok	-576.2033061961738	
+gpd	6	sigma,xi	500	1.8699999999999999e-07	stop	nan	Estimating `mu` is not supported. The unrestricted likelihood is unbounded. Hold mu to fit this family; some held-coefficient submodels have endpoint maxima or uniform plateaus.
+gpd	7	mu,sigma,xi	500	6.9079999999999998e-06	ok	-576.20330619617414	
+gumbel	0	none	500	1.6691e-05	ok	-1344.3285692798702	
+gumbel	1	mu	500	0.0016393779999999999	ok	-1344.3285692798695	
+gumbel	2	sigma	500	9.7550000000000006e-06	ok	-1344.3285692798704	
+gumbel	3	mu,sigma	500	6.1029999999999998e-06	ok	-1344.3285692798704	
+hcauchy	0	none	500	0.00048983399999999997	ok	-957.85373481979002	
+hcauchy	1	mu	500	0.00046890799999999998	ok	-957.93200381761449	
+hcauchy	2	sigma	500	1.6554000000000001e-05	ok	-957.85374728019644	
+hcauchy	3	mu,sigma	500	1.4823e-05	ok	-957.93200381761449	
+hnorm	0	none	500	7.0870000000000001e-06	ok	-331.88840240075291	
+hnorm	1	mu	500	4.8219999999999997e-06	ok	-331.88840240075291	
+hnorm	2	sigma	500	6.1149999999999999e-06	ok	-331.88840240075285	
+hnorm	3	mu,sigma	500	4.6120000000000001e-06	ok	-331.88840240075285	
+ht	0	none	500	0.26251703399999998	ok	-574.00292023115321	
+ht	1	mu	500	0.29274975800000003	ok	-574.86430992784972	
+ht	2	nu	500	0.00054112300000000002	ok	-574.00348555927974	
+ht	3	mu,nu	500	0.00054903899999999997	ok	-574.86430992784972	
+ht	4	sigma	500	0.019626276000000002	ok	-574.0048025545392	
+ht	5	mu,sigma	500	0.021945264999999999	ok	-574.86430992784949	
+ht	6	nu,sigma	500	2.0395999999999999e-05	ok	-574.00482282674773	
+ht	7	mu,nu,sigma	500	1.6752000000000002e-05	ok	-574.86430992784983	
+huber	0	none	500	0.0027234540000000002	ok	-838.95958569678339	
+huber	1	mu	500	0.0019689709999999999	ok	-838.95960987701221	
+huber	2	sigma	500	0.0010654060000000001	ok	-838.96598317563542	
+huber	3	mu,sigma	500	0.00029994400000000001	ok	-838.96598357334028	
+huber	4	epsilon	500	2.1324000000000001e-05	ok	-838.96816456606416	
+huber	5	mu,epsilon	500	2.1273000000000001e-05	ok	-838.96816456606416	
+huber	6	sigma,epsilon	500	1.1477999999999999e-05	ok	-838.9681645660645	
+huber	7	mu,sigma,epsilon	500	6.5239999999999997e-06	ok	-838.96816456606416	
+hyper	0	none	500	0.12940159100000001	stop	nan	Finite-grid numerical failure: 1e7 candidate evaluation budget or representability/nonfinite likelihood limit exceeded.
+hyper	1	m	500	0.27541126799999999	ok	-862.71268970947915	
+hyper	2	N	500	0.0028377300000000001	ok	-862.45717343055708	
+hyper	3	m,N	500	4.8356000000000003e-05	ok	-863.37178824464013	
+hyper	4	k	500	0.25497585699999997	ok	-862.67849575850414	
+hyper	5	m,k	500	7.0593999999999995e-05	ok	-863.3188379759315	
+hyper	6	N,k	500	6.6549000000000003e-05	ok	-863.37178824464002	
+hyper	7	m,N,k	500	1.2418999999999999e-05	ok	-863.37178824464002	
+invburr	0	none	500	0.128615379	ok	-625.40647696835754	
+invburr	1	shape1	500	0.017394507	ok	-625.40647696835765	
+invburr	2	shape2	500	0.001408779	ok	-625.4064769683572	
+invburr	3	shape1,shape2	500	0.00033816400000000001	ok	-625.4064769683572	
+invburr	4	scale	500	0.001829575	ok	-625.40647696835822	
+invburr	5	shape1,scale	500	0.0019918449999999999	ok	-625.40647696835742	
+invburr	6	shape2,scale	500	0.00015010100000000001	ok	-625.40647696835788	
+invburr	7	shape1,shape2,scale	500	0.000106075	ok	-625.40647696835788	
+invexp	0	none	500	1.0834e-05	ok	-1056.9477652066621	
+invexp	1	scale	500	1.4585e-05	ok	-1056.9477652066619	
+invgamma	0	none	500	1.9371000000000001e-05	ok	-707.04489619097467	
+invgamma	1	alpha	500	1.9167000000000001e-05	ok	-707.04489619097455	
+invgamma	2	beta	500	2.3995999999999999e-05	ok	-707.04489619097478	
+invgamma	3	alpha,beta	500	2.0078e-05	ok	-707.04489619097455	
+invgauss	0	none	500	1.3508e-05	ok	-963.83083981271272	
+invgauss	1	mean	500	1.2047e-05	ok	-963.83083981271238	
+invgauss	2	shape	500	1.1844e-05	ok	-963.8308398127125	
+invgauss	3	mean,shape	500	1.1753000000000001e-05	ok	-963.8308398127125	
+invparalogis	0	none	500	0.046592716999999999	ok	-902.04995114317728	
+invparalogis	1	shape	500	0.00037425700000000002	ok	-902.04995114318274	
+invparalogis	2	scale	500	0.0038701460000000001	ok	-902.04995114319343	
+invparalogis	3	shape,scale	500	4.0039000000000001e-05	ok	-902.04995114319365	
+invpareto	0	none	500	0.00084819799999999999	ok	-1413.8211879833152	
+invpareto	1	shape	500	0.001133296	ok	-1413.8211879833157	
+invpareto	2	scale	500	2.7591000000000001e-05	ok	-1413.8211879833157	
+invpareto	3	shape,scale	500	2.5822000000000001e-05	ok	-1413.8211879833157	
+invtrgamma	0	none	500	0.0066780629999999997	ok	396.21755742998414	
+invtrgamma	1	shape1	500	7.2769999999999996e-05	ok	396.21755742998403	
+invtrgamma	2	shape2	500	2.3731999999999999e-05	ok	396.21755742998414	
+invtrgamma	3	shape1,shape2	500	1.6778000000000001e-05	ok	396.21755742998414	
+invtrgamma	4	scale	500	0.018314073	ok	396.21755742997891	
+invtrgamma	5	shape1,scale	500	0.00018541299999999999	ok	396.21755742998027	
+invtrgamma	6	shape2,scale	500	2.4581000000000001e-05	ok	396.21755742998209	
+invtrgamma	7	shape1,shape2,scale	500	2.0769999999999999e-05	ok	396.21755742998164	
+invweibull	0	none	500	2.0102000000000002e-05	ok	-74.600099674988257	
+invweibull	1	shape	500	4.6502000000000003e-05	ok	-74.600099674988655	
+invweibull	2	scale	500	0.00062252100000000001	ok	-74.600099674988655	
+invweibull	3	shape,scale	500	1.8275999999999999e-05	ok	-74.600099674988655	
+kumar	0	none	500	0.00060234199999999996	ok	93.240851221745629	
+kumar	1	a	500	2.0669000000000001e-05	ok	93.240851221745629	
+kumar	2	b	500	0.001821317	ok	93.240851221745345	
+kumar	3	a,b	500	1.7465e-05	ok	93.240851221745572	
+laplace	0	none	500	2.5868e-05	ok	-832.14355219485014	
+laplace	1	mu	500	1.5988e-05	ok	-832.14355219484969	
+laplace	2	sigma	500	1.0335e-05	ok	-832.14355219484969	
+laplace	3	mu,sigma	500	8.2770000000000005e-06	ok	-832.14355219484969	
+lgamma	0	none	500	9.1649999999999995e-06	ok	-615.77320921436205	
+lgamma	1	shapelog	500	9.4360000000000008e-06	ok	-615.77320921436251	
+lgamma	2	ratelog	500	1.2492e-05	ok	-615.77320921436262	
+lgamma	3	shapelog,ratelog	500	9.5929999999999995e-06	ok	-615.7732092143624	
+lgser	0	none	500	9.0440000000000001e-06	ok	-1065.6449777933467	
+lgser	1	theta	500	1.52e-05	ok	-1065.644977793344	
+llogis	0	none	500	0.00017940499999999999	ok	-690.51985729704325	
+llogis	1	shape	500	0.00033942	ok	-690.51985729704279	
+llogis	2	scale	500	0.00039715099999999999	ok	-690.51985729704393	
+llogis	3	shape,scale	500	2.0874999999999999e-05	ok	-690.5198572970437	
+lnorm	0	none	500	6.9369999999999998e-06	ok	-733.6888336869406	
+lnorm	1	meanlog	500	9.5980000000000003e-06	ok	-733.68883368694071	
+lnorm	2	sdlog	500	1.1192000000000001e-05	ok	-733.68883368694071	
+lnorm	3	meanlog,sdlog	500	8.884e-06	ok	-733.68883368694071	
+logis	0	none	500	0.000163504	ok	-1002.4579022784048	
+logis	1	location	500	0.000390613	ok	-1002.4579022784055	
+logis	2	scale	500	0.00035384499999999998	ok	-1002.4579022784058	
+logis	3	location,scale	500	1.3114e-05	ok	-1002.4579022784048	
+logitnorm	0	none	500	9.2070000000000001e-06	ok	315.70258825305382	
+logitnorm	1	mu	500	9.3370000000000006e-06	ok	315.70258825305393	
+logitnorm	2	sigma	500	8.9039999999999998e-06	ok	315.70258825305399	
+logitnorm	3	mu,sigma	500	8.9449999999999999e-06	ok	315.70258825305399	
+lomax	0	none	500	0.00086320400000000001	ok	-409.42403193121351	
+lomax	1	lambda	500	2.0367999999999999e-05	ok	-409.42403193121345	
+lomax	2	kappa	500	0.0011029589999999999	ok	-409.42403193121265	
+lomax	3	lambda,kappa	500	1.7560000000000001e-05	ok	-409.42403193121351	
+lst	0	none	500	0.047736115000000003	ok	-898.62478110464826	
+lst	1	mu	500	0.121900781	ok	-898.62478110465679	
+lst	2	sigma	500	5.1636602580000002	ok	-898.62478110465634	
+lst	3	mu,sigma	500	0.0022645600000000001	ok	-898.62478110465645	
+lst	4	df	500	9.2767000000000001e-05	ok	-898.62478110466816	
+lst	5	mu,df	500	0.001076081	ok	-898.62478110465781	
+lst	6	sigma,df	500	0.053678522999999999	ok	-898.62478110465645	
+lst	7	mu,sigma,df	500	3.4360999999999998e-05	ok	-898.62478110465815	
+naka	0	none	500	9.4099999999999997e-06	ok	-412.81990212231858	
+naka	1	shape	500	6.1449999999999996e-06	ok	-412.81990212231892	
+naka	2	scale	500	1.4659e-05	ok	-412.81990212231887	
+naka	3	shape,scale	500	5.8549999999999998e-06	ok	-412.81990212231887	
+nbinom	0	none	500	0.00020488099999999999	ok	-1778.8021427996564	
+nbinom	1	size	500	4.4722999999999999e-05	ok	-1778.8021427996523	
+nbinom	2	prob	500	0.0019699090000000002	ok	-1778.8021427996525	
+nbinom	3	size,prob	500	8.0323999999999999e-05	ok	-1778.8021427996564	
+nhyper	0	none	500	1.581798786	ok	-1189.8441521613565	
+nhyper	1	m	500	0.0091194910000000004	ok	-1189.9639064395656	
+nhyper	2	N	500	0.0022266600000000001	ok	-1190.0992202168982	
+nhyper	3	m,N	500	4.5423999999999997e-05	ok	-1190.0992202168984	
+nhyper	4	r	500	0.49918259100000001	ok	-1189.8441521613565	
+nhyper	5	m,r	500	0.0013914610000000001	ok	-1189.9639064395656	
+nhyper	6	N,r	500	8.5180999999999996e-05	ok	-1190.0992202168984	
+nhyper	7	m,N,r	500	8.106e-06	ok	-1190.0992202168984	
+norm	0	none	500	3.9319999999999998e-06	ok	-692.05051296388592	
+norm	1	mean	500	1.624e-06	ok	-692.05051296388604	
+norm	2	sd	500	3.2710000000000001e-06	ok	-692.05051296388604	
+norm	3	mean,sd	500	1.1149999999999999e-06	ok	-692.05051296388604	
+nsbeta	0	none	500	1.215e-06	stop	nan	Estimating min or max is not supported. A free endpoint with its corresponding shape free or below one gives unbounded likelihood. Other held-shape cases may have a finite MLE but are not computed. Supply both min and max.
+nsbeta	1	shape1	500	4.51e-07	stop	nan	Estimating min or max is not supported. A free endpoint with its corresponding shape free or below one gives unbounded likelihood. Other held-shape cases may have a finite MLE but are not computed. Supply both min and max.
+nsbeta	2	shape2	500	1.8799999999999999e-07	stop	nan	Estimating min or max is not supported. A free endpoint with its corresponding shape free or below one gives unbounded likelihood. Other held-shape cases may have a finite MLE but are not computed. Supply both min and max.
+nsbeta	3	shape1,shape2	500	1.6999999999999999e-07	stop	nan	Estimating min or max is not supported. A free endpoint with its corresponding shape free or below one gives unbounded likelihood. Other held-shape cases may have a finite MLE but are not computed. Supply both min and max.
+nsbeta	4	min	500	6.2099999999999996e-07	stop	nan	Estimating min or max is not supported. A free endpoint with its corresponding shape free or below one gives unbounded likelihood. Other held-shape cases may have a finite MLE but are not computed. Supply both min and max.
+nsbeta	5	shape1,min	500	2.11e-07	stop	nan	Estimating min or max is not supported. A free endpoint with its corresponding shape free or below one gives unbounded likelihood. Other held-shape cases may have a finite MLE but are not computed. Supply both min and max.
+nsbeta	6	shape2,min	500	1.37e-07	stop	nan	Estimating min or max is not supported. A free endpoint with its corresponding shape free or below one gives unbounded likelihood. Other held-shape cases may have a finite MLE but are not computed. Supply both min and max.
+nsbeta	7	shape1,shape2,min	500	1.3199999999999999e-07	stop	nan	Estimating min or max is not supported. A free endpoint with its corresponding shape free or below one gives unbounded likelihood. Other held-shape cases may have a finite MLE but are not computed. Supply both min and max.
+nsbeta	8	max	500	1.35e-07	stop	nan	Estimating min or max is not supported. A free endpoint with its corresponding shape free or below one gives unbounded likelihood. Other held-shape cases may have a finite MLE but are not computed. Supply both min and max.
+nsbeta	9	shape1,max	500	1.3899999999999999e-07	stop	nan	Estimating min or max is not supported. A free endpoint with its corresponding shape free or below one gives unbounded likelihood. Other held-shape cases may have a finite MLE but are not computed. Supply both min and max.
+nsbeta	10	shape2,max	500	1.4100000000000001e-07	stop	nan	Estimating min or max is not supported. A free endpoint with its corresponding shape free or below one gives unbounded likelihood. Other held-shape cases may have a finite MLE but are not computed. Supply both min and max.
+nsbeta	11	shape1,shape2,max	500	1.4399999999999999e-07	stop	nan	Estimating min or max is not supported. A free endpoint with its corresponding shape free or below one gives unbounded likelihood. Other held-shape cases may have a finite MLE but are not computed. Supply both min and max.
+nsbeta	12	min,max	500	2.0574e-05	ok	120.28858886997496	
+nsbeta	13	shape1,min,max	500	1.5260999999999998e-05	ok	120.28858886997568	
+nsbeta	14	shape2,min,max	500	1.3539e-05	ok	120.28858886997546	
+nsbeta	15	shape1,shape2,min,max	500	8.4190000000000002e-06	ok	120.28858886997455	
+paralogis	0	none	500	0.039174346999999998	ok	-1035.217450331676	
+paralogis	1	shape	500	0.00030517800000000002	ok	-1035.2174503316774	
+paralogis	2	scale	500	0.0033943469999999998	ok	-1035.2174503316814	
+paralogis	3	shape,scale	500	2.6911999999999999e-05	ok	-1035.2174503316801	
+pareto	0	none	500	3.0383e-05	ok	-1424.3141611248113	
+pareto	1	a	500	2.5408000000000001e-05	ok	-1424.3141611248111	
+pareto	2	b	500	2.3533e-05	ok	-1424.3141611248111	
+pareto	3	a,b	500	2.2864999999999999e-05	ok	-1424.3141611248111	
+pareto2	0	none	500	8.7700000000000003e-07	stop	nan	Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.
+pareto2	1	shape	500	3.5999999999999999e-07	stop	nan	Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.
+pareto2	2	scale	500	1.2100000000000001e-07	stop	nan	Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.
+pareto2	3	shape,scale	500	1.3799999999999999e-07	stop	nan	Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.
+pareto2	4	min	500	0.00085352300000000002	ok	-2270.3824042475017	
+pareto2	5	shape,min	500	0.00088466900000000004	ok	-2270.3824042475039	
+pareto2	6	scale,min	500	1.6623999999999999e-05	ok	-2270.3824042475012	
+pareto2	7	shape,scale,min	500	1.5908000000000001e-05	ok	-2270.3824042475012	
+pareto3	0	none	500	7.4399999999999999e-07	stop	nan	Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.
+pareto3	1	shape	500	2.8900000000000001e-07	stop	nan	Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.
+pareto3	2	scale	500	1.24e-07	stop	nan	Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.
+pareto3	3	shape,scale	500	1.1999999999999999e-07	stop	nan	Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.
+pareto3	4	min	500	0.00051873999999999996	ok	-654.73632164613764	
+pareto3	5	shape,min	500	0.00029433500000000001	ok	-654.73632164613957	
+pareto3	6	scale,min	500	0.00035581700000000003	ok	-654.73632164613912	
+pareto3	7	shape,scale,min	500	1.5843999999999999e-05	ok	-654.73632164614014	
+pareto4	0	none	500	1.4020000000000001e-06	stop	nan	Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.
+pareto4	1	shape1	500	5.8800000000000002e-07	stop	nan	Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.
+pareto4	2	shape2	500	2.84e-07	stop	nan	Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.
+pareto4	3	shape1,shape2	500	1.9600000000000001e-07	stop	nan	Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.
+pareto4	4	scale	500	1.7100000000000001e-07	stop	nan	Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.
+pareto4	5	shape1,scale	500	1.4499999999999999e-07	stop	nan	Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.
+pareto4	6	shape2,scale	500	1.3199999999999999e-07	stop	nan	Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.
+pareto4	7	shape1,shape2,scale	500	1.2800000000000001e-07	stop	nan	Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.
+pareto4	8	min	500	0.12769989500000001	ok	-3607.2382431667834	
+pareto4	9	shape1,min	500	0.014249955999999999	ok	-3607.2382431667793	
+pareto4	10	shape2,min	500	0.00093077899999999996	ok	-3607.2382431667829	
+pareto4	11	shape1,shape2,min	500	0.000259454	ok	-3607.2382431667793	
+pareto4	12	scale,min	500	0.0024006399999999999	ok	-3607.2382431667847	
+pareto4	13	shape1,scale,min	500	0.00069591900000000003	ok	-3607.2382431667802	
+pareto4	14	shape2,scale,min	500	3.7301000000000001e-05	ok	-3607.2382431667802	
+pareto4	15	shape1,shape2,scale,min	500	2.4941999999999999e-05	ok	-3607.2382431667802	
+pig	0	none	500	0.00022311999999999999	ok	-930.1830192843388	
+pig	1	mean	500	0.00021018600000000001	ok	-930.1830192843388	
+pig	2	shape	500	0.000202478	ok	-930.18301928433868	
+pig	3	mean,shape	500	5.0989999999999998e-06	ok	-930.1830192843388	
+pois	0	none	500	1.6952999999999998e-05	ok	-858.81465399713022	
+pois	1	lambda	500	1.5675000000000002e-05	ok	-858.81465399713022	
+power	0	none	500	3.4360000000000003e-05	ok	106.72043360361705	
+power	1	alpha	500	3.2549000000000003e-05	ok	106.72043360361705	
+power	2	beta	500	2.9479e-05	ok	106.72043360361705	
+power	3	alpha,beta	500	2.2492000000000001e-05	ok	106.72043360361705	
+rayleigh	0	none	500	4.2679999999999996e-06	ok	-805.62848261557747	
+rayleigh	1	sigma	500	6.8549999999999996e-06	ok	-805.62848261557747	
+sged	0	none	500	0.40941432300000002	ok	-639.48280524084112	
+sged	1	mean	500	0.39589141900000002	ok	-639.48280524083839	
+sged	2	sd	500	0.044694653000000001	ok	-639.48280524083987	
+sged	3	mean,sd	500	0.012261597000000001	ok	-639.48280524083873	
+sged	4	nu	500	0.016377178999999999	ok	-639.4828052408418	
+sged	5	mean,nu	500	0.44197955300000002	ok	-639.48280524084032	
+sged	6	sd,nu	500	0.014164151999999999	ok	-639.48280524084805	
+sged	7	mean,sd,nu	500	0.0027174450000000002	ok	-639.48280524083964	
+sged	8	xi	500	0.040228772000000003	ok	-639.48280524083827	
+sged	9	mean,xi	500	0.012579922	ok	-639.48280524083839	
+sged	10	sd,xi	500	0.048722436000000001	ok	-639.48280524084737	
+sged	11	mean,sd,xi	500	0.0028637950000000001	ok	-639.48280524083862	
+sged	12	nu,xi	500	0.46006260700000001	ok	-639.48280524083987	
+sged	13	mean,nu,xi	500	0.014707688999999999	ok	-639.48280524083941	
+sged	14	sd,nu,xi	500	0.78773304700000002	ok	-639.48280524083953	
+sged	15	mean,sd,nu,xi	500	3.3135e-05	ok	-639.48280524084078	
+sgomp	0	none	500	0.031520102000000001	ok	-764.05653166093032	
+sgomp	1	b	500	0.000222625	ok	-764.05653166093032	
+sgomp	2	eta	500	0.018947465	ok	-764.05653166093157	
+sgomp	3	b,eta	500	5.7093999999999999e-05	ok	-764.05653166093032	
+skellam	0	none	500	0.129605316	ok	-1205.2790293184653	
+skellam	1	mu1	500	0.012751663999999999	ok	-1205.279029318468	
+skellam	2	mu2	500	0.011732271000000001	ok	-1205.2790293184698	
+skellam	3	mu1,mu2	500	0.0009808690000000001	ok	-1205.2790293184653	
+slash	0	none	500	6.3057407540000003	ok	-1481.5640876706591	
+slash	1	mu	500	0.00057789500000000004	ok	-1481.5640876706611	
+slash	2	sigma	500	0.060016680000000003	ok	-1481.5640876706591	
+slash	3	mu,sigma	500	3.4227999999999998e-05	ok	-1481.5640876706611	
+sn	0	none	500	0.248327721	ok	-456.82400184138714	
+sn	1	xi	500	0.0018383539999999999	ok	-456.82400184138771	
+sn	2	omega	500	0.39145885600000002	ok	-456.82400184138839	
+sn	3	xi,omega	500	0.0017859939999999999	ok	-456.82400184138805	
+sn	4	alpha	500	0.00017518000000000001	ok	-456.82400184138714	
+sn	5	xi,alpha	500	4.1219e-05	ok	-456.82400184138726	
+sn	6	omega,alpha	500	0.00016675699999999999	ok	-456.82400184138874	
+sn	7	xi,omega,alpha	500	3.3605000000000001e-05	ok	-456.82400184138714	
+snorm	0	none	500	0.00096554099999999999	ok	-639.61607386550099	
+snorm	1	mean	500	0.79216804600000001	ok	-639.61607386549872	
+snorm	2	sd	500	0.249422591	ok	-639.61607386549997	
+snorm	3	mean,sd	500	0.0033073809999999999	ok	-639.61607386550043	
+snorm	4	xi	500	0.045803601999999999	ok	-639.61607386549872	
+snorm	5	mean,xi	500	0.00087375500000000004	ok	-639.61607386549895	
+snorm	6	sd,xi	500	0.00078586200000000002	ok	-639.61607386550043	
+snorm	7	mean,sd,xi	500	1.783e-05	ok	-639.61607386550077	
+sstd	0	none	500	0.025239774999999999	ok	-523.15495503376553	
+sstd	1	mean	500	0.93081034600000001	ok	-523.15495503378145	
+sstd	2	sd	500	0.246320603	ok	-523.15495503377076	
+sstd	3	mean,sd	500	0.0088151110000000005	ok	-523.15495503377201	
+sstd	4	nu	500	0.016466565999999998	ok	-523.15495503378168	
+sstd	5	mean,nu	500	0.67784652199999995	ok	-523.15495503376837	
+sstd	6	sd,nu	500	0.008337934	ok	-523.15495503377235	
+sstd	7	mean,sd,nu	500	0.00215818	ok	-523.1549550337719	
+sstd	8	xi	500	0.062385124	ok	-523.1549550337661	
+sstd	9	mean,xi	500	0.0091967379999999994	ok	-523.15495503376678	
+sstd	10	sd,xi	500	0.011005693	ok	-523.15495503377099	
+sstd	11	mean,sd,xi	500	0.0025555220000000002	ok	-523.1549550337711	
+sstd	12	nu,xi	500	1.99414449	ok	-523.15495503376951	
+sstd	13	mean,nu,xi	500	0.0097030620000000001	ok	-523.15495503377167	
+sstd	14	sd,nu,xi	500	0.52646735300000003	ok	-523.15495503377122	
+sstd	15	mean,sd,nu,xi	500	2.7033e-05	ok	-523.15495503377224	
+st	0	none	500	15.460612551000001	ok	-774.30230789184475	
+st	1	xi	500	9.9087228889999999	ok	-774.30230789184475	
+st	2	omega	500	7.3494605719999999	ok	-774.30230789184486	
+st	3	xi,omega	500	3.288109033	ok	-774.30230789184498	
+st	4	alpha	500	0.76554309899999995	ok	-774.30230789184543	
+st	5	xi,alpha	500	0.55281287599999995	ok	-774.30230789184498	
+st	6	omega,alpha	500	0.63461214099999996	ok	-774.30230789184486	
+st	7	xi,omega,alpha	500	0.26910563399999998	ok	-774.30230789184532	
+st	8	nu	500	1.1360348039999999	ok	-774.30230789184486	
+st	9	xi,nu	500	0.71287730100000002	ok	-774.30230789184475	
+st	10	omega,nu	500	0.816444638	ok	-774.30230789184486	
+st	11	xi,omega,nu	500	0.22967623400000001	ok	-774.30230789184475	
+st	12	alpha,nu	500	0.121034448	ok	-774.30230789184486	
+st	13	xi,alpha,nu	500	0.040988431999999998	ok	-774.30230789184577	
+st	14	omega,alpha,nu	500	0.094459281000000006	ok	-774.30230789184498	
+st	15	xi,omega,alpha,nu	500	0.0027476000000000002	ok	-774.30230789184475	
+std	0	none	500	0.041230733999999998	ok	-579.4807824213691	
+std	1	mean	500	0.11326633899999999	ok	-579.48078242137717	
+std	2	sd	500	7.727914406	ok	-579.48078242147278	
+std	3	mean,sd	500	0.0034502669999999999	ok	-579.48078242147483	
+std	4	nu	500	0.00038084600000000001	ok	-579.48078242152826	
+std	5	mean,nu	500	0.0025784670000000001	ok	-579.48078242151746	
+std	6	sd,nu	500	0.077915238999999997	ok	-579.4807824215161	
+std	7	mean,sd,nu	500	6.2833e-05	ok	-579.48078242151792	
+tbinom	0	none	500	0.043185789000000002	ok	-965.85958997962962	
+tbinom	1	prob	500	0.0091702429999999998	ok	-965.93044540287269	
+tbinom	2	a	500	0.034979430999999998	ok	-965.85958997962962	
+tbinom	3	prob,a	500	0.0092433210000000005	ok	-965.93044540287269	
+tbinom	4	b	500	0.034806573	ok	-965.85958997962962	
+tbinom	5	prob,b	500	0.0088442659999999999	ok	-965.93044540287269	
+tbinom	6	a,b	500	0.033532779999999998	ok	-965.85958997962962	
+tbinom	7	prob,a,b	500	0.0087444740000000003	ok	-965.93044540287269	
+tbinom	8	size	500	5.092e-05	ok	-965.93044540287246	
+tbinom	9	prob,size	500	7.6071999999999999e-05	ok	-965.93044540287269	
+tbinom	10	a,size	500	4.7719999999999997e-05	ok	-965.93044540287246	
+tbinom	11	prob,a,size	500	7.3825000000000006e-05	ok	-965.93044540287269	
+tbinom	12	b,size	500	4.7644e-05	ok	-965.93044540287246	
+tbinom	13	prob,b,size	500	7.3868999999999994e-05	ok	-965.93044540287269	
+tbinom	14	a,b,size	500	4.6230000000000003e-05	ok	-965.93044540287246	
+tbinom	15	prob,a,b,size	500	7.2726999999999997e-05	ok	-965.93044540287269	
+tlambda	0	none	500	3.0248536239999999	ok	-911.40991142306734	
+tlambda	1	mu	500	0.73875822300000005	ok	-911.40991142306689	
+tlambda	2	sigma	500	15.331103591	ok	-911.40991142306768	
+tlambda	3	mu,sigma	500	3.6661861560000002	ok	-911.40991142306746	
+tlambda	4	lambda	500	0.11256567200000001	ok	-911.40991142306746	
+tlambda	5	mu,lambda	500	0.019719029999999999	ok	-911.40991142306825	
+tlambda	6	sigma,lambda	500	0.053131221999999999	ok	-911.40991142306757	
+tlambda	7	mu,sigma,lambda	500	0.00079767	ok	-911.40991142306734	
+tnorm	0	none	500	2.1064999999999999e-05	ok	-709.29272565153587	
+tnorm	1	mean	500	1.1795e-05	ok	-709.33627401505362	
+tnorm	2	sd	500	9.5650000000000007e-06	ok	-709.47239356259331	
+tnorm	3	mean,sd	500	4.7570000000000004e-06	ok	-709.50565159301982	
+tnorm	4	a	500	8.7110000000000001e-06	ok	-711.53552137512747	
+tnorm	5	mean,a	500	7.712e-06	ok	-711.53564927865068	
+tnorm	6	sd,a	500	6.8390000000000001e-06	ok	-711.53632114580557	
+tnorm	7	mean,sd,a	500	3.7390000000000001e-06	ok	-711.53644498274139	
+tnorm	8	b	500	1.0103e-05	ok	-709.40714085589923	
+tnorm	9	mean,b	500	7.8699999999999992e-06	ok	-709.45562447061786	
+tnorm	10	sd,b	500	8.1240000000000005e-06	ok	-709.56086303706184	
+tnorm	11	mean,sd,b	500	3.6859999999999999e-06	ok	-709.5982839764157	
+tnorm	12	a,b	500	2.3259999999999998e-06	ok	-711.62870192933224	
+tnorm	13	mean,a,b	500	2.8899999999999999e-06	ok	-711.62870192933224	
+tnorm	14	sd,a,b	500	2.8090000000000001e-06	ok	-711.62870192933224	
+tnorm	15	mean,sd,a,b	500	2.7980000000000001e-06	ok	-711.62870192933224	
+tpois	0	none	500	3.6041999999999998e-05	ok	-907.20750988097677	
+tpois	1	lambda	500	4.3609999999999998e-05	ok	-907.21031081018714	
+tpois	2	a	500	2.9309999999999999e-05	ok	-907.20750988097677	
+tpois	3	lambda,a	500	4.1489999999999997e-05	ok	-907.21031081018714	
+tpois	4	b	500	3.0312e-05	ok	-907.5998710799106	
+tpois	5	lambda,b	500	4.1974999999999997e-05	ok	-907.5998710799106	
+tpois	6	a,b	500	2.8969e-05	ok	-907.5998710799106	
+tpois	7	lambda,a,b	500	4.4036000000000003e-05	ok	-907.5998710799106	
+trgamma	0	none	500	0.0036573439999999999	ok	-912.88518099091073	
+trgamma	1	shape1	500	7.2440000000000004e-05	ok	-912.88518099091084	
+trgamma	2	shape2	500	1.8890999999999999e-05	ok	-912.88518099091073	
+trgamma	3	shape1,shape2	500	1.6467999999999999e-05	ok	-912.88518099091073	
+trgamma	4	scale	500	0.014766155	ok	-912.88518099091118	
+trgamma	5	shape1,scale	500	0.000157379	ok	-912.88518099091118	
+trgamma	6	shape2,scale	500	1.6793999999999999e-05	ok	-912.88518099091107	
+trgamma	7	shape1,shape2,scale	500	1.4141999999999999e-05	ok	-912.88518099091107	
+triang	0	none	500	0.0095869149999999997	ok	116.65889764678185	
+triang	1	a	500	0.0089682749999999995	ok	116.65889764678198	
+triang	2	b	500	0.0064833039999999996	ok	116.65889764678204	
+triang	3	a,b	500	4.2420999999999999e-05	ok	116.65889764678217	
+triang	4	c	500	8.7307999999999998e-05	ok	116.65889764678185	
+triang	5	a,c	500	8.5408999999999995e-05	ok	116.65889764678198	
+triang	6	b,c	500	4.3276999999999999e-05	ok	116.65889764678204	
+triang	7	a,b,c	500	1.1657999999999999e-05	ok	116.65889764678217	
+unif	0	none	500	2.2409999999999998e-06	ok	1.3803033874703496	
+unif	1	min	500	1.787e-06	ok	1.3803033874703496	
+unif	2	max	500	1.3829999999999999e-06	ok	1.3803033874703496	
+unif	3	min,max	500	1.418e-06	ok	1.3803033874703496	
+weibull	0	none	500	1.9619999999999998e-05	ok	-845.92464231981694	
+weibull	1	shape	500	3.7141000000000002e-05	ok	-845.92464231981717	
+weibull	2	scale	500	0.00059255699999999996	ok	-845.92464231981705	
+weibull	3	shape,scale	500	9.9990000000000003e-06	ok	-845.92464231981717	
+yulesimon	0	none	500	3.2765999999999998e-05	ok	-631.52198713028145	
+yulesimon	1	rho	500	3.7036999999999998e-05	ok	-631.52198713028326	
+zeta	0	none	500	0.00040402199999999997	ok	-854.21352853617191	
+zeta	1	s	500	4.831e-06	ok	-854.21352853617191	
+zib	0	none	500	0.003032383	ok	-850.49454651075507	
+zib	1	size	500	2.7399999999999999e-05	ok	-850.49454651075507	
+zib	2	prob	500	0.000412235	ok	-850.49454651075507	
+zib	3	size,prob	500	1.999e-05	ok	-850.49454651075507	
+zib	4	pi	500	0.077933519000000007	ok	-850.49454651075507	
+zib	5	size,pi	500	6.9729999999999998e-05	ok	-850.49454651075507	
+zib	6	prob,pi	500	0.00040904500000000002	ok	-850.49454651075507	
+zib	7	size,prob,pi	500	2.0375999999999999e-05	ok	-850.49454651075507	
+zinb	0	none	500	0.00070717499999999999	ok	-970.62401259788339	
+zinb	1	size	500	1.4489e-05	ok	-970.62401259788339	
+zinb	2	prob	500	0.000421879	ok	-970.62401259788339	
+zinb	3	size,prob	500	8.8689999999999993e-06	ok	-970.62401259788339	
+zinb	4	pi	500	0.012375081	ok	-970.62401259788317	
+zinb	5	size,pi	500	9.5285999999999995e-05	ok	-970.62401259788339	
+zinb	6	prob,pi	500	0.00041854899999999999	ok	-970.62401259788339	
+zinb	7	size,prob,pi	500	8.3650000000000004e-06	ok	-970.62401259788339	
+zip	0	none	500	1.4746000000000001e-05	ok	-475.97811488355859	
+zip	1	lambda	500	1.3414000000000001e-05	ok	-475.97811488355859	
+zip	2	pi	500	0.00046336899999999999	ok	-475.97811488355745	
+zip	3	lambda,pi	500	1.0165e-05	ok	-475.97811488355859	
+zipf	0	none	500	7.5560000000000002e-06	ok	-540.96363778119894	
+zipf	1	N	500	5.4970000000000001e-06	ok	-540.96363778119894	
+zipf	2	s	500	4.1880000000000004e-06	ok	-540.96363778119894	
+zipf	3	N,s	500	4.2010000000000001e-06	ok	-540.96363778119894	
+zmbinom	0	none	500	0.0050791009999999999	ok	-911.62532165829589	
+zmbinom	1	size	500	4.5844999999999999e-05	ok	-911.62532165829589	
+zmbinom	2	prob	500	0.00052878199999999999	ok	-911.62532165829589	
+zmbinom	3	size,prob	500	4.1017999999999999e-05	ok	-911.62532165829589	
+zmbinom	4	p0	500	0.0051372910000000004	ok	-911.62532165829589	
+zmbinom	5	size,p0	500	4.4948999999999999e-05	ok	-911.62532165829589	
+zmbinom	6	prob,p0	500	0.00053012399999999998	ok	-911.62532165829589	
+zmbinom	7	size,prob,p0	500	4.0269999999999999e-05	ok	-911.62532165829589	
+zmgeom	0	none	500	9.7929999999999992e-06	ok	-922.49352119648279	
+zmgeom	1	prob	500	8.2619999999999998e-06	ok	-922.49352119648279	
+zmgeom	2	p0	500	7.5429999999999996e-06	ok	-922.49352119648279	
+zmgeom	3	prob,p0	500	6.5860000000000001e-06	ok	-922.49352119648279	
+zmlogarithmic	0	none	500	1.0468999999999999e-05	ok	-540.94911729706519	
+zmlogarithmic	1	prob	500	1.2408e-05	ok	-540.94911729706337	
+zmlogarithmic	2	p0	500	7.4320000000000002e-06	ok	-540.94911729706519	
+zmlogarithmic	3	prob,p0	500	1.0302999999999999e-05	ok	-540.94911729706337	
+zmnbinom	0	none	500	0.0059699439999999996	ok	-1051.0130321969318	
+zmnbinom	1	size	500	4.4552999999999998e-05	ok	-1051.0130321969318	
+zmnbinom	2	prob	500	0.0056031329999999997	ok	-1051.0130321969309	
+zmnbinom	3	size,prob	500	3.3108999999999998e-05	ok	-1051.0130321969318	
+zmnbinom	4	p0	500	0.0059256930000000001	ok	-1051.0130321969318	
+zmnbinom	5	size,p0	500	4.3146999999999999e-05	ok	-1051.0130321969318	
+zmnbinom	6	prob,p0	500	0.005641404	ok	-1051.0130321969309	
+zmnbinom	7	size,prob,p0	500	3.4113999999999999e-05	ok	-1051.0130321969318	
+zmpois	0	none	500	2.6316999999999999e-05	ok	-835.75943914105369	
+zmpois	1	lambda	500	2.0834000000000001e-05	ok	-835.75943914105369	
+zmpois	2	p0	500	2.2027000000000001e-05	ok	-835.75943914105369	
+zmpois	3	lambda,p0	500	1.8580000000000002e-05	ok	-835.75943914105369	
+ztbinom	0	none	500	0.0039475500000000002	ok	-851.19637653372934	
+ztbinom	1	size	500	5.9286999999999997e-05	ok	-851.19637653372934	
+ztbinom	2	prob	500	0.00075815500000000005	ok	-851.19637653372934	
+ztbinom	3	size,prob	500	5.5594999999999999e-05	ok	-851.19637653372934	
+ztgeom	0	none	500	8.5350000000000004e-06	ok	-821.45740381824021	
+ztgeom	1	prob	500	6.7660000000000001e-06	ok	-821.45740381824021	
+ztnbinom	0	none	500	0.0083555190000000005	ok	-1034.5502527307622	
+ztnbinom	1	size	500	5.8279000000000002e-05	ok	-1034.5502527307622	
+ztnbinom	2	prob	500	0.008223803	ok	-1034.550252730761	
+ztnbinom	3	size,prob	500	4.706e-05	ok	-1034.5502527307622	
+ztpois	0	none	500	3.6424000000000002e-05	ok	-753.06334741395085	
+ztpois	1	lambda	500	3.2586999999999998e-05	ok	-753.06334741395085	

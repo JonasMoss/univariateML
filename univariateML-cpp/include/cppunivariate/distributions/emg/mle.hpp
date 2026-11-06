@@ -7,6 +7,7 @@
 #include "dpqr.hpp"
 #include "../../core/span.hpp"
 #include <vector>
+#include <map>
 #include <array>
 
 namespace cppunivariate {
@@ -44,7 +45,20 @@ struct Profile {
     }
     return m;
   }
+  // Reuse only identical held-profile coordinates, including across starts.
+  // Clearing the bounded cache changes cost only, never search decisions.
+  mutable std::map<std::vector<double>,EmgResult> evaluations{};
   EmgResult evaluate(const std::vector<double>& t) const {
+    if(std::isnan(mu) && std::isnan(sigma) && std::isnan(lambda)) return evaluate_uncached(t);
+    for(double v:t) if(std::isnan(v) || v==0) return evaluate_uncached(t);
+    const auto found=evaluations.find(t);
+    if(found!=evaluations.end()) return found->second;
+    const auto value=evaluate_uncached(t);
+    if(evaluations.size()>=4096) evaluations.clear();
+    evaluations.emplace(t,value);
+    return value;
+  }
+  EmgResult evaluate_uncached(const std::vector<double>& t) const {
     int k=0;
     const double s=std::isnan(sigma)?std::exp(t[k++]):sigma;
     const double l=std::isnan(lambda)?std::exp(-t[k++]):lambda;

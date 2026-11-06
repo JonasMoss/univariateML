@@ -1,0 +1,20 @@
+--- a/univariateML-cpp/include/cppunivariate/distributions/emg/mle.hpp
++++ b/univariateML-cpp/include/cppunivariate/distributions/emg/mle.hpp
+@@ -49,7 +49,6 @@
+   // Clearing the bounded cache changes cost only, never search decisions.
+   mutable std::map<std::vector<double>,EmgResult> evaluations{};
+   EmgResult evaluate(const std::vector<double>& t) const {
+-    if(std::isnan(mu) && std::isnan(sigma) && std::isnan(lambda)) return evaluate_uncached(t);
+     for(double v:t) if(std::isnan(v) || v==0) return evaluate_uncached(t);
+     const auto found=evaluations.find(t);
+     if(found!=evaluations.end()) return found->second;
+--- a/univariateML-cpp/include/cppunivariate/distributions/bhatt/mle.hpp
++++ b/univariateML-cpp/include/cppunivariate/distributions/bhatt/mle.hpp
+@@ -54,7 +54,6 @@
+   // Clearing the bounded cache changes cost only, never search decisions.
+   mutable std::map<std::vector<double>,BhattResult> evaluations{};
+   BhattResult evaluate(const std::vector<double>& t) const {
+-    if(std::isnan(held_mu) && std::isnan(sigma) && std::isnan(a)) return evaluate_uncached(t);
+     for(double v:t) if(std::isnan(v) || v==0) return evaluate_uncached(t);
+     const auto found=evaluations.find(t);
+     if(found!=evaluations.end()) return found->second;
