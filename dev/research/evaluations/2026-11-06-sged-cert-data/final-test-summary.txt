@@ -1,0 +1,9 @@
+{'command': 'targeted sged doctest', 'machine': 'workstation', 'result': '29 cases, 4208 assertions, no failures or skips'}
+{'command': 'just cpp-test', 'machine': 'simbox', 'passed': 106, 'failed': 0, 'seconds': 43.95}
+{'command': 'UMVL_TEST_TIER=full just cpp-test', 'machine': 'simbox', 'passed': 127, 'failed': 0, 'seconds': 56.79}
+{'command': 'just cpp-test-no-long-double', 'machine': 'simbox', 'passed': 127, 'failed': 0, 'seconds': 56.48}
+{'command': 'just test', 'machine': 'workstation', 'passed': 20911, 'failed': 0, 'warnings': 0, 'skips': 154, 'elapsed_seconds': 118.651}
+{'command': 'just test-full', 'machine': 'simbox', 'passed': 43731, 'failed': 0, 'warnings': 0, 'skips': 0, 'elapsed_seconds': 292.497}
+{'command': 'just js-build', 'machine': 'workstation', 'result': 'pass'}
+{'command': 'just js-test', 'machine': 'workstation', 'passed': 432, 'failed': 0, 'skips': 0, 'seconds': 89.597229133}
+{'command': 'just site-check', 'machine': 'workstation', 'result': 'pass:99 family pages,99 C++17 snippets,MathML,browser checks,links,graph'}

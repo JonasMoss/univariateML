@@ -337,3 +337,99 @@ TEST_CASE("sged: recovered subunit face includes the scale Jacobian") {
     CHECK(r.stop_detail.limit_loglik==doctest::Approx(3*(std::log(3.)-std::log(b))).epsilon(1e-6));
   }
 }
+
+TEST_CASE("sged certified normal submodels have exact reference coefficients") {
+  const std::vector<double> x{-3,-1,.2,.4,1,2,4};
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  double mean=0;for(double v:x)mean+=v/x.size();
+  double second=0;for(double v:x)second+=(v-mean)*(v-mean)/x.size();
+  auto joint=cppunivariate::sged_mle(mltest::as_span(x),1e-8,200,nan,nan,2,1);
+  REQUIRE(joint.status==cppunivariate::SgedStatus::Ok);
+  CHECK(joint.certified);
+  CHECK(joint.mu==doctest::Approx(mean).epsilon(2e-8));
+  CHECK(joint.sigma==doctest::Approx(std::sqrt(second)).epsilon(2e-8));
+  auto location=cppunivariate::sged_mle(mltest::as_span(x),1e-8,200,nan,1.7,2,1);
+  CHECK(location.certified);
+  CHECK(location.sigma==1.7);
+  CHECK(location.mu==doctest::Approx(mean).epsilon(2e-8));
+  auto scale=cppunivariate::sged_mle(mltest::as_span(x),1e-8,200,0,nan,2,1);
+  double raw=0;for(double v:x)raw+=v*v/x.size();
+  CHECK(scale.certified);
+  CHECK(scale.mu==0);
+  CHECK(scale.sigma==doctest::Approx(std::sqrt(raw)).epsilon(2e-12));
+}
+
+TEST_CASE("sged held-shape certificates expose flat and separated ties") {
+  const std::vector<double> x{-1,1};
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  for(double nu:{.5,1.})for(bool held_scale:{false,true}) {
+    const auto r=cppunivariate::sged_mle(mltest::as_span(x),1e-8,200,nan,held_scale?1:nan,nu,1);
+    CHECK(r.status==cppunivariate::SgedStatus::CertificateFailure);
+    CHECK_FALSE(r.certified);
+    CHECK(r.stop_detail.comparison_tie);
+    REQUIRE(r.stop_detail.candidates.size()==2);
+    CHECK(r.stop_detail.candidates[0].coef[0]==-1);
+    CHECK(r.stop_detail.candidates[1].coef[0]==1);
+  }
+  const std::vector<double> odd{-2,-1,0,1,3};
+  const auto r=cppunivariate::sged_mle(mltest::as_span(odd),1e-8,200,nan,1,1,1);
+  CHECK(r.status==cppunivariate::SgedStatus::Ok);
+  CHECK(r.certified);CHECK(r.mu==0);
+}
+
+TEST_CASE("sged certificate budget and numerical stops retain no successful estimate") {
+  const std::vector<double> x{-3,-1,.2,.4,1,2,4};
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  auto r=cppunivariate::sged_mle(mltest::as_span(x),1e-8,1,nan,1,2,1);
+  CHECK(r.status==cppunivariate::SgedStatus::CertificateFailure);
+  CHECK_FALSE(r.stop_detail.budget_exhausted);
+  CHECK_FALSE(r.stop_detail.candidates.empty());
+  r=cppunivariate::sged_mle(mltest::as_span(x),1e-8,200,nan,1,.001,1);
+  CHECK(r.status==cppunivariate::SgedStatus::CertificateFailure);
+  CHECK_FALSE(r.certified);
+  std::vector<double> many;for(int i=0;i<140;++i)many.push_back(i);
+  r=cppunivariate::sged_mle(mltest::as_span(many),1e-8,1,nan,1,.7,1.3);
+  CHECK(r.status==cppunivariate::SgedStatus::CertificateFailure);
+  CHECK(r.stop_detail.budget_exhausted);
+  CHECK_FALSE(r.stop_detail.candidates.empty());
+}
+
+TEST_CASE("sged certified held shapes preserve density and equivariance") {
+  const std::vector<double> x{-3,-1,-.2,0,.3,.4,2};
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  for(double nu:{.6,1.,1.01,2.,4.,20.})for(double xi:{.3,1.,3.})for(bool hs:{false,true}) {
+    INFO(nu, " ",xi," ",hs);
+    const auto r=cppunivariate::sged_mle(mltest::as_span(x),1e-9,300,nan,hs?1.7:nan,nu,xi);
+    REQUIRE(r.status==cppunivariate::SgedStatus::Ok);CHECK(r.certified);
+    double ll=0;for(double v:x)ll+=cppunivariate::distributions::dsged(v,r.mu,r.sigma,nu,xi,true);
+    CHECK(r.logLik==doctest::Approx(ll).epsilon(2e-8));
+    std::vector<double> z;for(double v:x)z.push_back(7+v*.03);
+    const auto s=cppunivariate::sged_mle(mltest::as_span(z),1e-9,300,nan,hs?.051:nan,nu,xi);
+    REQUIRE(s.status==cppunivariate::SgedStatus::Ok);CHECK(s.certified);
+    CHECK(s.mu==doctest::Approx(7+.03*r.mu).epsilon(2e-8));
+    CHECK(s.sigma==doctest::Approx(.03*r.sigma).epsilon(2e-8));
+    CHECK(s.logLik==doctest::Approx(r.logLik-x.size()*std::log(.03)).epsilon(2e-8));
+  }
+}
+
+TEST_CASE("sged asymmetric held-shape scale certificates satisfy convex score") {
+  const std::vector<double> x{-3,-1,-.2,0,.3,.4,2};
+  for(double nu:{1.,1.1,2.,4.,20.})for(double xi:{.3,1.3,3.}) {
+    const auto r=cppunivariate::sged_mle(mltest::as_span(x),1e-8,300,.1,NAN,nu,xi);
+    INFO(nu," ",xi);
+    REQUIRE(r.status==cppunivariate::SgedStatus::Ok);CHECK(r.certified);
+    CHECK(r.mu==.1);
+    const double step=1e-5;
+    double left=0,right=0;
+    for(double v:x) {
+      left+=cppunivariate::distributions::dsged(v,.1,r.sigma*std::exp(-step),nu,xi,true);
+      right+=cppunivariate::distributions::dsged(v,.1,r.sigma*std::exp(step),nu,xi,true);
+    }
+    CHECK(r.logLik>=left);CHECK(r.logLik>=right);
+    // At nu=1 the optimum may be a cusp: its two secants need not match.
+    if(nu>1)CHECK(std::abs(left-right)<1e-5);
+  }
+  const auto failed=cppunivariate::sged_mle(mltest::as_span(x),1e-8,1,.1,NAN,2,3);
+  CHECK(failed.status==cppunivariate::SgedStatus::CertificateFailure);
+  CHECK_FALSE(failed.certified);
+}

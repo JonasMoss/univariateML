@@ -1,0 +1,326 @@
+{
+  "precision": 80,
+  "cases": 35,
+  "passed": 35,
+  "checked_fits": 35,
+  "numerical_stops": 0,
+  "max_sd_error": 2.9639878593566193e-10,
+  "max_loglik_error": 2.084013463440895e-09,
+  "rows": [
+    {
+      "nu": 1.0,
+      "xi": 0.1,
+      "status": 0,
+      "outcome": "checked fit",
+      "sd_error": 2.868652802542786e-10,
+      "loglik_error": 2.084013463440895e-09,
+      "passed": true
+    },
+    {
+      "nu": 1.0,
+      "xi": 0.3,
+      "status": 0,
+      "outcome": "checked fit",
+      "sd_error": 1.4869096040726474e-11,
+      "loglik_error": 6.4713915661084725e-12,
+      "passed": true
+    },
+    {
+      "nu": 1.0,
+      "xi": 1.3,
+      "status": 0,
+      "outcome": "checked fit",
+      "sd_error": 1.984139046733952e-10,
+      "loglik_error": 1.0013132571152306e-16,
+      "passed": true
+    },
+    {
+      "nu": 1.0,
+      "xi": 3.0,
+      "status": 0,
+      "outcome": "checked fit",
+      "sd_error": 1.1448956253173387e-10,
+      "loglik_error": 5.085924539158209e-11,
+      "passed": true
+    },
+    {
+      "nu": 1.0,
+      "xi": 10.0,
+      "status": 0,
+      "outcome": "checked fit",
+      "sd_error": 1.0011397404168049e-10,
+      "loglik_error": 4.7793409489719073e-11,
+      "passed": true
+    },
+    {
+      "nu": 1.001,
+      "xi": 0.1,
+      "status": 0,
+      "outcome": "checked fit",
+      "sd_error": 8.953794574453194e-11,
+      "loglik_error": 4.028829662565671e-11,
+      "passed": true
+    },
+    {
+      "nu": 1.001,
+      "xi": 0.3,
+      "status": 0,
+      "outcome": "checked fit",
+      "sd_error": 6.950598282262932e-11,
+      "loglik_error": 3.01412053720466e-11,
+      "passed": true
+    },
+    {
+      "nu": 1.001,
+      "xi": 1.3,
+      "status": 0,
+      "outcome": "checked fit",
+      "sd_error": 2.63258436880556e-10,
+      "loglik_error": 1.043144654426192e-16,
+      "passed": true
+    },
+    {
+      "nu": 1.001,
+      "xi": 3.0,
+      "status": 0,
+      "outcome": "checked fit",
+      "sd_error": 1.330310770754536e-10,
+      "loglik_error": 8.40834853034116e-12,
+      "passed": true
+    },
+    {
+      "nu": 1.001,
+      "xi": 10.0,
+      "status": 0,
+      "outcome": "checked fit",
+      "sd_error": 1.7180478233895354e-10,
+      "loglik_error": 9.629918070566658e-10,
+      "passed": true
+    },
+    {
+      "nu": 1.5,
+      "xi": 0.1,
+      "status": 0,
+      "outcome": "checked fit",
+      "sd_error": 2.5817761244635795e-10,
+      "loglik_error": 6.071520609506555e-16,
+      "passed": true
+    },
+    {
+      "nu": 1.5,
+      "xi": 0.3,
+      "status": 0,
+      "outcome": "checked fit",
+      "sd_error": 3.7798925858784703e-11,
+      "loglik_error": 2.933385968366524e-17,
+      "passed": true
+    },
+    {
+      "nu": 1.5,
+      "xi": 1.3,
+      "status": 0,
+      "outcome": "checked fit",
+      "sd_error": 2.4270359586903914e-10,
+      "loglik_error": 5.192833622521612e-17,
+      "passed": true
+    },
+    {
+      "nu": 1.5,
+      "xi": 3.0,
+      "status": 0,
+      "outcome": "checked fit",
+      "sd_error": 8.995664914807667e-12,
+      "loglik_error": 1.520389681065281e-16,
+      "passed": true
+    },
+    {
+      "nu": 1.5,
+      "xi": 10.0,
+      "status": 0,
+      "outcome": "checked fit",
+      "sd_error": 1.623657471290757e-10,
+      "loglik_error": 1.089279634687928e-17,
+      "passed": true
+    },
+    {
+      "nu": 2.0,
+      "xi": 0.1,
+      "status": 0,
+      "outcome": "checked fit",
+      "sd_error": 2.3313265127078425e-10,
+      "loglik_error": 7.864540097887052e-17,
+      "passed": true
+    },
+    {
+      "nu": 2.0,
+      "xi": 0.3,
+      "status": 0,
+      "outcome": "checked fit",
+      "sd_error": 1.254309387325476e-10,
+      "loglik_error": 3.3186552073416496e-17,
+      "passed": true
+    },
+    {
+      "nu": 2.0,
+      "xi": 1.3,
+      "status": 0,
+      "outcome": "checked fit",
+      "sd_error": 2.333911702585716e-10,
+      "loglik_error": 2.1630910709425496e-17,
+      "passed": true
+    },
+    {
+      "nu": 2.0,
+      "xi": 3.0,
+      "status": 0,
+      "outcome": "checked fit",
+      "sd_error": 6.6028059861843974e-12,
+      "loglik_error": 3.506275316502212e-17,
+      "passed": true
+    },
+    {
+      "nu": 2.0,
+      "xi": 10.0,
+      "status": 0,
+      "outcome": "checked fit",
+      "sd_error": 1.7466552877449405e-10,
+      "loglik_error": 1.3999579527559013e-16,
+      "passed": true
+    },
+    {
+      "nu": 4.0,
+      "xi": 0.1,
+      "status": 0,
+      "outcome": "checked fit",
+      "sd_error": 5.87117663538313e-11,
+      "loglik_error": 3.26825122086438e-16,
+      "passed": true
+    },
+    {
+      "nu": 4.0,
+      "xi": 0.3,
+      "status": 0,
+      "outcome": "checked fit",
+      "sd_error": 2.1001883741286852e-10,
+      "loglik_error": 1.2867543974488846e-17,
+      "passed": true
+    },
+    {
+      "nu": 4.0,
+      "xi": 1.3,
+      "status": 0,
+      "outcome": "checked fit",
+      "sd_error": 1.5645613940157618e-10,
+      "loglik_error": 1.5345061973684914e-16,
+      "passed": true
+    },
+    {
+      "nu": 4.0,
+      "xi": 3.0,
+      "status": 0,
+      "outcome": "checked fit",
+      "sd_error": 1.296233890251581e-10,
+      "loglik_error": 2.6367629201868574e-18,
+      "passed": true
+    },
+    {
+      "nu": 4.0,
+      "xi": 10.0,
+      "status": 0,
+      "outcome": "checked fit",
+      "sd_error": 1.5196306471101038e-10,
+      "loglik_error": 1.6888480348135605e-16,
+      "passed": true
+    },
+    {
+      "nu": 20.0,
+      "xi": 0.1,
+      "status": 0,
+      "outcome": "checked fit",
+      "sd_error": 2.5734199634622632e-11,
+      "loglik_error": 7.174585656990467e-16,
+      "passed": true
+    },
+    {
+      "nu": 20.0,
+      "xi": 0.3,
+      "status": 0,
+      "outcome": "checked fit",
+      "sd_error": 1.6796354776727206e-12,
+      "loglik_error": 3.1971292111286854e-17,
+      "passed": true
+    },
+    {
+      "nu": 20.0,
+      "xi": 1.3,
+      "status": 0,
+      "outcome": "checked fit",
+      "sd_error": 2.0215308251584296e-10,
+      "loglik_error": 6.450422903523404e-17,
+      "passed": true
+    },
+    {
+      "nu": 20.0,
+      "xi": 3.0,
+      "status": 0,
+      "outcome": "checked fit",
+      "sd_error": 2.9425901710309795e-10,
+      "loglik_error": 1.453017160412658e-17,
+      "passed": true
+    },
+    {
+      "nu": 20.0,
+      "xi": 10.0,
+      "status": 0,
+      "outcome": "checked fit",
+      "sd_error": 1.862601058764891e-10,
+      "loglik_error": 1.36225064936514e-16,
+      "passed": true
+    },
+    {
+      "nu": 100.0,
+      "xi": 0.1,
+      "status": 0,
+      "outcome": "checked fit",
+      "sd_error": 2.9639878593566193e-10,
+      "loglik_error": 1.1987918254622245e-16,
+      "passed": true
+    },
+    {
+      "nu": 100.0,
+      "xi": 0.3,
+      "status": 0,
+      "outcome": "checked fit",
+      "sd_error": 2.5667403008824195e-11,
+      "loglik_error": 4.897472385112798e-16,
+      "passed": true
+    },
+    {
+      "nu": 100.0,
+      "xi": 1.3,
+      "status": 0,
+      "outcome": "checked fit",
+      "sd_error": 1.4751671192796096e-11,
+      "loglik_error": 1.2795484778857176e-16,
+      "passed": true
+    },
+    {
+      "nu": 100.0,
+      "xi": 3.0,
+      "status": 0,
+      "outcome": "checked fit",
+      "sd_error": 1.0453613085106354e-10,
+      "loglik_error": 9.788123375915916e-17,
+      "passed": true
+    },
+    {
+      "nu": 100.0,
+      "xi": 10.0,
+      "status": 0,
+      "outcome": "checked fit",
+      "sd_error": 9.956798514613632e-11,
+      "loglik_error": 1.1690128910134874e-16,
+      "passed": true
+    }
+  ]
+}
