@@ -45,7 +45,7 @@ inline InferenceResult special_family_inference(span data,const std::string& fam
     return r;
   }
   if(mask >= (1u<<n)) {InferenceResult r;r.status=InferenceStatus::InvalidSubset;return r;}
-  if(mask & ~allowed) {InferenceResult r;r.status=InferenceStatus::RegimeUnavailable;r.validity_conditions="the implemented derivative scope requires this coefficient to be held";return r;}
+  if(mask & ~allowed) {InferenceResult r;r.status=InferenceStatus::RegimeUnavailable;r.validity_conditions="the implemented derivative scope requires this coefficient to be held (nonsmooth, design, threshold or unvalidated direction)";return r;}
   std::array<NumericParameter,inference_max_parameters> p{};
   const auto set=[&](std::size_t i,const std::string& name,NumericCoordinate kind,double lower=0) {p[i]={name,v[i],kind,lower};};
   bool valid=true,regime=true;
