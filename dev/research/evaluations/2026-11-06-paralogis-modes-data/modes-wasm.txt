@@ -1,0 +1,2 @@
+paralogis {"warnings":[],"restricted":{},"estimates":{"shape":9262.778134534776,"scale":1},"fixed":["scale"],"logLik":8.126729864909167,"iterations":6,"status":"Ok"}
+invparalogis {"warnings":[],"restricted":{},"estimates":{"shape":9262.778134533623,"scale":1},"fixed":["scale"],"logLik":8.124729864909042,"iterations":6,"status":"Ok"}

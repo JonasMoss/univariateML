@@ -5,23 +5,98 @@ namespace cppunivariate {
 namespace paralogis_cert_detail {
 // Reuse the practical enclosures and small matrices of the Burr certificate.
 // This does not call the unconstrained Burr fitter.
-inline bool derivatives(const std::vector<burr_cert_detail::Interval>& y,
+// Relative operation margins retain tiny scores on the held-scale tail.
+inline burr_cert_detail::Interval relative(double lo,double hi) {
+  if(!std::isfinite(lo)||!std::isfinite(hi))return burr_cert_detail::invalid();
+  const double e=burr_cert_detail::pad*std::max(std::abs(lo),std::abs(hi))+std::numeric_limits<double>::denorm_min();
+  // Rounded monotone-function endpoints can reverse by one ulp near
+  // zero (notably softplus). Apply their error margins before ordering.
+  const burr_cert_detail::Interval result(lo-e,hi+e);
+  return result.valid()?result:burr_cert_detail::invalid();
+}
+inline burr_cert_detail::Interval product(burr_cert_detail::Interval a,burr_cert_detail::Interval b) {
+  const std::array<double,4> v{{a.lo*b.lo,a.lo*b.hi,a.hi*b.lo,a.hi*b.hi}};
+  for(double value:v)if(!std::isfinite(value))return burr_cert_detail::invalid();
+  return relative(*std::min_element(v.begin(),v.end()),*std::max_element(v.begin(),v.end()));
+}
+inline burr_cert_detail::Interval difference(burr_cert_detail::Interval a,burr_cert_detail::Interval b) {
+  return relative(a.lo-b.hi,a.hi-b.lo);
+}
+struct RelativeSum {
+  double lo=0,hi=0,mag=0,n=0;
+  void add(burr_cert_detail::Interval v){lo+=v.lo;hi+=v.hi;mag+=v.mag();++n;}
+  burr_cert_detail::Interval get()const {
+    const double e=burr_cert_detail::pad*(n+1)*mag+(n+1)*std::numeric_limits<double>::denorm_min();return {lo-e,hi+e};
+  }
+};
+struct Group { burr_cert_detail::Interval value; double count; };
+struct Data {
+  std::vector<Group> exact;
+  std::array<std::vector<Group>,3> bins;
+  burr_cert_detail::Interval sum;
+  double n=0; bool held=false;
+  explicit Data(std::vector<burr_cert_detail::Interval> y,bool fixed=false) {
+    held=fixed;
+    std::sort(y.begin(),y.end(),[](const burr_cert_detail::Interval& a,
+        const burr_cert_detail::Interval& b){return a.lo<b.lo;});
+    burr_cert_detail::Sum total;
+    for(auto v:y) {
+      total.add(v); ++n;
+      if(!exact.empty()&&exact.back().value.lo==v.lo&&exact.back().value.hi==v.hi)
+        ++exact.back().count;
+      else exact.push_back({v,1});
+    }
+    sum=total.get();
+    for(std::size_t level=0;level<bins.size();++level) {
+      const std::size_t target=std::size_t(128)<<(3*level);
+      const std::size_t width=std::max(std::size_t(1),(exact.size()+target-1)/target);
+      for(std::size_t i=0;i<exact.size();i+=width) {
+        Group g=exact[i];
+        for(std::size_t j=i+1;j<std::min(i+width,exact.size());++j) {
+          g.value.hi=std::max(g.value.hi,exact[j].value.hi);g.count+=exact[j].count;
+        }
+        bins[level].push_back(g);
+      }
+    }
+  }
+};
+inline bool derivatives(const Data& data,
     burr_cert_detail::Interval a, burr_cert_detail::Interval b,
     std::array<burr_cert_detail::Interval,3>& g,
-    burr_cert_detail::BoxMatrix& h, burr_cert_detail::Interval& ll) {
-  burr_cert_detail::Sum sy,sp,syp,sw,syw,syyw,sz;
-  for(auto v:y) {
+    burr_cert_detail::BoxMatrix& h, burr_cert_detail::Interval& ll,
+    int level=-1) {
+  burr_cert_detail::Sum sp,syp,sw,syw,syyw,prob;
+  for(const auto& group:level>=0?data.bins[level]:data.exact) {
+    const auto v=group.value;
     const auto z=a*v+b,p=burr_cert_detail::sig(z),w=p*(1-p);
-    sy.add(v);sp.add(burr_cert_detail::sp(z));syp.add(v*p);
-    sw.add(w);syw.add(v*w);syyw.add(v*v*w);sz.add(z);
+    const double m=group.count;
+    sp.add(m*burr_cert_detail::sp(z));syp.add(m*(v*p));prob.add(m*p);
+    sw.add(m*w);syw.add(m*(v*w));syyw.add(m*(v*v*w));
   }
-  const double n=y.size();
-  ll=2*n*burr_cert_detail::log(a)+sz.get()-(a+1)*sp.get();
-  g[0]=2*n/a+sy.get()-sp.get()-(a+1)*syp.get();
-  g[1]=n-(a+1)*([&](){burr_cert_detail::Sum s;for(auto v:y)s.add(burr_cert_detail::sig(a*v+b));return s.get();})();
+  const double n=data.n;
+  ll=2*n*burr_cert_detail::log(a)+a*data.sum+n*b-(a+1)*sp.get();
+  g[0]=2*n/a+data.sum-sp.get()-(a+1)*syp.get();
+  g[1]=n-(a+1)*prob.get();
   h.a[0][0]=-2*n/(a*a)-2*syp.get()-(a+1)*syyw.get();
-  h.a[0][1]=h.a[1][0]=-(n-g[1])/(a+1)-(a+1)*syw.get();
+  h.a[0][1]=h.a[1][0]=-prob.get()-(a+1)*syw.get();
   h.a[1][1]=-(a+1)*sw.get();
+  if(data.held) {
+    RelativeSum score,curvature;
+    score.add(relative(2*n/a.hi,2*n/a.lo));
+    curvature.add(relative(-2*n/(a.lo*a.lo),-2*n/(a.hi*a.hi)));
+    for(const auto& group:level>=0?data.bins[level]:data.exact) {
+      const auto v=group.value,z=product(a,v);
+      const auto p=relative(burr_cert_detail::sigmoid(z.lo),burr_cert_detail::sigmoid(z.hi));
+      const auto soft=relative(burr_cert_detail::softplus(z.lo),burr_cert_detail::softplus(z.hi));
+      const auto yp=product(v,p);
+      const auto term=product(relative(a.lo+1,a.hi+1),yp);
+      score.add(product(group.count,difference(difference(v,soft),term)));
+      const auto w=product(p,relative(1-p.hi,1-p.lo));
+      const auto second=product(relative(a.lo+1,a.hi+1),product(product(v,v),w));
+      curvature.add(product(group.count,difference(product(-2,yp),second)));
+    }
+    g[0]=score.get();h.a[0][0]=curvature.get();
+  }
   return a.lo>0&&ll.valid()&&g[0].valid()&&g[1].valid()
     &&h.a[0][0].valid()&&h.a[0][1].valid()&&h.a[1][1].valid();
 }
@@ -35,7 +110,11 @@ inline Result certify(span x,double a,double scale,bool fixed,int budget=32768) 
   double jac=0;
   std::vector<burr_cert_detail::Interval> y;
   for(double v:x){const double l=std::log(v);jac-=l;
-    y.push_back(burr_cert_detail::padded(l,l)-center);}
+    // Relative log rounding and subtraction cancellation allowance. An
+    // absolute unit-sized pad here obscures roots at large held shapes.
+    const double e=burr_cert_detail::pad*(std::abs(l)+std::abs(center)+std::abs(l-center))+std::numeric_limits<double>::denorm_min();
+    y.push_back({l-center-e,l-center+e});}
+  const Data data(y,fixed);
   double b=0;
   const int dim=fixed?1:2;
   // Newton steps propose a center only. Success below requires an enclosed
@@ -43,7 +122,7 @@ inline Result certify(span x,double a,double scale,bool fixed,int budget=32768) 
   for(int it=0;it<8;++it){
     std::array<burr_cert_detail::Interval,3> g;
     burr_cert_detail::BoxMatrix h; burr_cert_detail::Interval ll;
-    if(!derivatives(y,a,b,g,h,ll))return out;
+    if(!derivatives(data,a,b,g,h,ll))return out;
     burr_cert_detail::Matrix hn,R;
     for(int i=0;i<dim;++i)for(int j=0;j<dim;++j)hn.a[i][j]=(h.a[i][j].lo+h.a[i][j].hi)/2;
     if(!burr_cert_detail::inverse(hn,R,dim))return out;
@@ -55,7 +134,7 @@ inline Result certify(span x,double a,double scale,bool fixed,int budget=32768) 
   }
   std::array<burr_cert_detail::Interval,3> g;
   burr_cert_detail::BoxMatrix hc,hb; burr_cert_detail::Interval ll;
-  if(!derivatives(y,a,b,g,hc,ll))return out;
+  if(!derivatives(data,a,b,g,hc,ll))return out;
   const auto gc=g;
   burr_cert_detail::Matrix hn,R;
   for(int i=0;i<dim;++i)for(int j=0;j<dim;++j)hn.a[i][j]=(hc.a[i][j].lo+hc.a[i][j].hi)/2;
@@ -66,7 +145,7 @@ inline Result certify(span x,double a,double scale,bool fixed,int budget=32768) 
   const std::array<double,3> radii{{1e-8*a,1e-8*a,0}};
   const auto ab=burr_cert_detail::padded(a-radii[0],a+radii[0]);
   const auto bb=fixed?burr_cert_detail::Interval(0):burr_cert_detail::padded(b-radii[1],b+radii[1]);
-  if(!derivatives(y,ab,bb,g,hb,ll)||
+  if(!derivatives(data,ab,bb,g,hb,ll)||
       !burr_cert_detail::contraction(R,gc,hb,radii,dim,0))return out;
   const auto sb=burr_cert_detail::exp(center-bb/ab);
   if(!fixed&&(!sb.valid()||sb.lo<=0||(sb.hi-sb.lo)/sb.lo>1e-6))return out;
@@ -82,13 +161,13 @@ inline Result certify(span x,double a,double scale,bool fixed,int budget=32768) 
   bool local=false;
   for(double f:{.03,.01,.003,.001,.0003,.0001}){
     neighborhood={{f*a,f*a,0}};
-    if(derivatives(y,burr_cert_detail::padded(a-neighborhood[0],a+neighborhood[0]),
+    if(derivatives(data,burr_cert_detail::padded(a-neighborhood[0],a+neighborhood[0]),
         fixed?burr_cert_detail::Interval(0):burr_cert_detail::padded(b-neighborhood[1],b+neighborhood[1]),g,hb,ll)
         &&burr_cert_detail::contraction(R,gc,hb,neighborhood,dim,0)){local=true;break;}
   }
   if(!local)return out;
   // A feasible center gives a lower bound, independent of root accuracy.
-  if(!derivatives(y,a,b,g,hc,ll))return out;
+  if(!derivatives(data,a,b,g,hc,ll))return out;
   const double best=ll.lo;
   double ymin=INFINITY,ymax=-INFINITY;
   for(auto v:y){ymin=std::min(ymin,v.lo);ymax=std::max(ymax,v.hi);}
@@ -138,14 +217,29 @@ inline Result certify(span x,double a,double scale,bool fixed,int budget=32768) 
     Box box=pending.back();pending.pop_back();
     if(box.al>a-neighborhood[0]&&box.ah<a+neighborhood[0]&&
        (fixed||(box.bl>b-neighborhood[1]&&box.bh<b+neighborhood[1])))continue;
-    if(!derivatives(y,{box.al,box.ah},{box.bl,box.bh},g,hb,ll))return out;
+    // A coarse bin encloses every observation it replaces. It may only
+    // exclude; inconclusive bins fall back to the exact grouped sample.
+    bool excluded=false;
+    for(int level=0;level<2;++level) {
+      if(data.bins[level].size()>=data.exact.size())break;
+      if(derivatives(data,{box.al,box.ah},{box.bl,box.bh},g,hb,ll,level) &&
+          (ll.hi<best||g[0].lo>0||g[0].hi<0||(!fixed&&(g[1].lo>0||g[1].hi<0)))) {
+        excluded=true;break;
+      }
+    }
+    if(excluded)continue;
+    // Fine bins also give valid Hessian and midpoint bounds for the
+    // mean-value map. Restore individual groups on small unresolved boxes.
+    const int level=(box.ah-box.al>1e-4*box.al||
+        (!fixed&&box.bh-box.bl>1e-4*(1+box.al)))?2:-1;
+    if(!derivatives(data,{box.al,box.ah},{box.bl,box.bh},g,hb,ll,level))return out;
     if(ll.hi<best||g[0].lo>0||g[0].hi<0||(!fixed&&(g[1].lo>0||g[1].hi<0)))continue;
     // Every root in this box also lies in this mean-value fixed-point
     // image. Intersection is an exclusion step, not an optimizer step.
     const std::array<double,2> midpoint{{(box.al+box.ah)/2,(box.bl+box.bh)/2}};
     std::array<burr_cert_detail::Interval,3> gm;
     burr_cert_detail::BoxMatrix hm;burr_cert_detail::Interval lm;
-    if(!derivatives(y,midpoint[0],midpoint[1],gm,hm,lm))return out;
+    if(!derivatives(data,midpoint[0],midpoint[1],gm,hm,lm,level))return out;
     burr_cert_detail::Matrix Hm,Rm;
     for(int i=0;i<dim;++i)for(int j=0;j<dim;++j)Hm.a[i][j]=(hm.a[i][j].lo+hm.a[i][j].hi)/2;
     if(burr_cert_detail::inverse(Hm,Rm,dim)){
@@ -203,7 +297,8 @@ inline StopDetail witness(span x,double shape,double scale) {
     y.push_back(l-std::log(scale));jac.add(-l);}
   std::array<burr_cert_detail::Interval,3> g;
   burr_cert_detail::BoxMatrix h; burr_cert_detail::Interval ll;
-  if(derivatives(y,shape,0,g,h,ll)){
+  const Data data(y);
+  if(derivatives(data,shape,0,g,h,ll)){
     ll=ll+jac.get();
     d.candidates.push_back({{shape,scale},ll.lo,ll.hi});
     d.loglik_lower=ll.lo;d.loglik_upper=INFINITY;

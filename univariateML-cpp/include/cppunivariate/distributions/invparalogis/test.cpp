@@ -113,3 +113,13 @@ TEST_CASE("invparalogis: rounded reciprocal ties do not imply nonexistence") {
   CHECK(r.stop_detail.candidates.empty());
   CHECK_FALSE(std::isinf(r.stop_detail.loglik_lower));
 }
+
+TEST_CASE("invparalogis: competing held-scale winner and reciprocal likelihood") {
+  const std::vector<double> x{std::exp(.001)};
+  const std::vector<double> y{1/x[0]};
+  const auto a=cppunivariate::invparalogis_mle_fixed_scale(mltest::as_span(x),1);
+  const auto b=cppunivariate::paralogis_mle_fixed_scale(mltest::as_span(y),1);
+  REQUIRE(a.status==cppunivariate::ParalogisStatus::Ok);
+  CHECK(a.shape==doctest::Approx(b.shape).epsilon(1e-10));
+  CHECK(a.logLik==doctest::Approx(b.logLik-2*std::log(x[0])).epsilon(1e-10));
+}

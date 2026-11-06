@@ -1,0 +1,38 @@
+Final source: source-manifest.json; base f30584cd1819744e130850bcb1e58a5d1c52ed28.
+Final numerical source frozen before final-simbox.log.gz and local final builds.
+No simbox disconnection/fallback in final runs.
+
+simbox, /tmp/umvl-cpu/simbox-run, nice 10, CMAKE_BUILD_PARALLEL_LEVEL=4 CTEST_PARALLEL_LEVEL=4:
+just cpp-test: PASS 106/106 dev shards; CTest 60.51 s.
+UMVL_TEST_TIER=full just cpp-test: PASS 127/127 shards; CTest 86.38 s.
+just cpp-test-no-long-double: PASS 127/127 shards; CTest 74.61 s.
+just test: FAIL 0 WARN 0 SKIP 154 PASS 20826; test_local elapsed 114.558 s.
+just test-full: FAIL 0 WARN 0 SKIP 0 PASS 43642; test_local elapsed 242.271 s.
+R dev skips are intentional tier exclusions, not newly permitted failures.
+Existing unrelated compiler warnings remain; R tests have zero warnings.
+
+workstation, /tmp/umvl-cpu/run4, nice 10:
+just js-build: PASS.
+just js-test: PASS 430/430, FAIL 0 CANCELLED 0 SKIPPED 0; 149.847387 s.
+just relations: 157 edges, 0 failed.
+just site-check: PASS browser/HTML/MathML/link checks and 99 C++17 snippets.
+cmake build distribution_tests and --test-case=*paralogis*: PASS 27 cases, 5113 assertions.
+Site check regenerated an unrelated tracked PNG; original HEAD bytes restored.
+
+workstation, /tmp/umvl-cpu/run, nice 10, one thread:
+Three interleaved baseline/final benchmark pairs: all 23 fixtures certify in all runs.
+analyze.py: PASS all status, coefficient and likelihood comparisons.
+modes.cpp: PASS all six d=0.1,0.01,0.003,0.001,0.0001,0.00001 fits and repeat certificates.
+precision-stop.cpp: PASS expected NumericalFailure on nextafter(1,0), scale=1.
+rounded-endpoints.cpp: PASS enclosure with a one-ulp reversal of raw softplus endpoints.
+oracle.py: PASS 70-digit independent mpmath roots, curvatures and likelihoods recorded.
+modes.mjs: PASS direct WebAssembly competing-mode fits for both families.
+Golden, inverse golden and historical fixed-scale golden files byte-identical to base.
+
+Resolved intermediate failure:
+An ordered-endpoint guard rejected rounded softplus endpoint values before applying their
+64-epsilon margins. One development run failed the new binned-enclosure test.
+Applying margins before interval-order validation fixed it. The strong test is retained,
+and all final suites pass. See rejected-guard-simbox.log.gz and rounded-endpoints.cpp/tsv.
+No final failures were waived or reclassified. The precision-stop assertion checks a
+required refusal, not successful fitting of that deliberately unresolved instance.

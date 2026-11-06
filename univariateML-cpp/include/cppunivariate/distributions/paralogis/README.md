@@ -201,7 +201,8 @@ proves that this root is the global maximizer. General uniqueness for
 arbitrary samples remains unproved; a successful certificate establishes
 uniqueness of the returned global maximum for that sample.
 
-All enclosures use the Burr certificate's practical floating-point policy:
+Except for the relative held-scale margins described below, enclosures use
+the Burr certificate's practical floating-point policy:
 64 machine epsilons times one plus the operand magnitude per operation,
 with an additional term-count and magnitude allowance for sums. The claim
 is certification in exact arithmetic conditional on the computed comparisons,
@@ -215,16 +216,35 @@ including finite feasible candidates and likelihood bounds when available;
 they never return the unchecked proposal. The global upper bound on an
 unfinished search may be infinity. `shape0` affects only the proposal.
 
-A held-scale numerical proposal can miss a higher mode. For the one-point
-sample `x = exp(-0.001)` and scale 1, the historical proposal has shape
-2.89538 and log likelihood -0.570099, whereas the feasible shape 9000 gives
-8.100217. The certificate correctly refuses that proposal: the retained
-[competing-mode check](../../../../../dev/research/evaluations/2026-11-06-paralogis-cert-data/held-scale-competing-mode.cpp)
-stops with `NumericalFailure` after 51 boxes. A finite maximum exists here;
-this stop does not assert nonexistence. Returning the higher finite fit
-rather than a correct stop remains open: it requires an alternative winning
-proposal and a verified narrow root enclosure. No unimodality assumption
-can justify accepting the historical score root.
+The held-scale likelihood can have competing modes. If the historical
+proposal fails certification, a dyadic shape scan proposes additional
+positive-to-negative score crossings, refined by bisection. Its feasible
+likelihoods select a candidate; the scan does not establish completeness
+or globality. The same root enclosure, tail bounds and exhaustive exclusion
+must certify the replacement. Thus a missed crossing can cause a numerical
+stop, never acceptance of an unchecked mode. For `x = exp(-0.001)` and scale
+1 the returned shape is 9262.7781345 (log likelihood 8.1267299), rather than
+the local mode at 2.89538 (log likelihood -0.570099).
+
+The nearest double below 1 with scale 1 remains a numerical stop. Its
+large candidate root can be enclosed, but absolute allowances in the
+likelihood bound prevent closing the small-shape tail. Returning that
+candidate requires a tighter feasible-likelihood bound; see the retained
+[precision-stop check](../../../../../dev/research/evaluations/2026-11-06-paralogis-modes-data/precision-stop.cpp).
+
+Sorted centered logarithms are compressed into exact repeated-value groups.
+Their sum is cached. Conservative bins of at most 128, 1024 and 8192 groups
+replace all their observations by a containing log interval with the exact
+multiplicity. These bounds can exclude boxes and bound the mean-value map;
+finer groups resolve inconclusive comparisons, with individual groups used
+for small unresolved boxes and the root contraction. This changes cost,
+not the exclusion logic. The held-scale score and curvature use relative
+operation margins (including a subnormal allowance) rather than absolute
+unit-sized padding: the latter obscures tiny scores at large shape. Log
+rounding and centering carry a margin proportional to the log operands and
+their difference. Other interval operations retain the Burr margin. The
+claim remains conditional certification with practical floating-point
+margins, without outward rounding.
 
 There is no additional density in the Hellinger closure (equivalently,
 closure in $L^1$ for densities). As $a\downarrow0$, the uniform log-axis
