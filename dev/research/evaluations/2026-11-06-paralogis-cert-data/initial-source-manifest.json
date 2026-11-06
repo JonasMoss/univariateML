@@ -1,0 +1,34 @@
+{
+  "base_revision": "164d41784756606a48ddc0cedc67752acab4050b",
+  "state": "uncommitted TASK-116.6 changes; no git writes",
+  "files": {
+    "bindings/common/distributions/invparalogis/fit.hpp": "fab183c3d8c664208528e1a10ab027b2d7564eef880f746cde5c0003d52d1fc0",
+    "bindings/common/distributions/paralogis/fit.hpp": "7a57717c6c2fc29df510212c92776d1e30bcbd5f7e2d6f59bbfdf4d0880dc888",
+    "bindings/r/distributions/invparalogis/test.R": "c02fea3e4a296bf7737fa657d1dabaa83ea95bbd15e4cc354fa5e81dd0b872ab",
+    "bindings/r/distributions/paralogis/test.R": "ee4cea4d788012df2516636cdb7cd34682b62079aeb3a330521172db628d589a",
+    "dev/research/evaluations/2026-11-06-paralogis-cert-data/certificate-check.cpp": "368a22570da4c38a19dfce8ee60066f30c1e69d8d7877c961ba2a4d725a5c963",
+    "univariateML-cpp/include/cppunivariate/distributions/burr/certificate.hpp": "759722d5cc6c82c94fcd199a28735fa036523d17551c629db09229d1e85f90d0",
+    "univariateML-cpp/include/cppunivariate/distributions/invparalogis/README.md": "f0bcb3a97dfbd438679461b41c014061aa2f8e14beacccfaa5a86c3c47c481a7",
+    "univariateML-cpp/include/cppunivariate/distributions/invparalogis/dpqr.hpp": "8b62f24c5fb75760c048132e9daf845fd6c9fa579cb8c334a0ceb4533de207ce",
+    "univariateML-cpp/include/cppunivariate/distributions/invparalogis/golden.json": "e2d16de010dce241c301ea218fb23d9d9a8fc09a50c5e3d40b9e9ef88ad9284b",
+    "univariateML-cpp/include/cppunivariate/distributions/invparalogis/mle.hpp": "d4beaca55e9e5e74fba3c3da69d7203d2beeb3463c16efb358de59e23eb0e99d",
+    "univariateML-cpp/include/cppunivariate/distributions/invparalogis/test.cpp": "6b147ee05e360cec61f8dcd2cc8aa00aaad7446a8215129aed4ed9de755aa36b",
+    "univariateML-cpp/include/cppunivariate/distributions/paralogis/README.md": "e18fdf2316de03b04d9a24546e77157e241aee6d976a595f1f75e38819afc50b",
+    "univariateML-cpp/include/cppunivariate/distributions/paralogis/certificate.hpp": "ca461b31d2f6b3962c02740b7bbb2f2cd7c9f9ded6b6385e6752a05f2cd26d2a",
+    "univariateML-cpp/include/cppunivariate/distributions/paralogis/dpqr.hpp": "f4fb1844c7787be6cae163b9fa2b4f835305a35991d22d0985ed7146be0b2529",
+    "univariateML-cpp/include/cppunivariate/distributions/paralogis/golden.json": "adf1ee807cfeb57743c33fa160096503a7bd361c1bffa24d29dcbb9239f212df",
+    "univariateML-cpp/include/cppunivariate/distributions/paralogis/mle.hpp": "1a2680760df237b73e2f9a9aa08ea9191a1e432c26c36be8788f81dd28cb71b1",
+    "univariateML-cpp/include/cppunivariate/distributions/paralogis/test.cpp": "b233d5134cbae8d1d66fda34de5f2355b53c86b012a0cc83b735eeab941d5c19"
+  },
+  "workstation": {
+    "cpp": "GCC 15.2.0",
+    "R": "4.6.1 (2026-06-24)",
+    "node": "22.22.1"
+  },
+  "simbox": {
+    "cpp": "GCC 13.3.0",
+    "R_compiler": "g++-15",
+    "R": "4.6.1"
+  },
+  "checker": "C++17 -O2, deterministic quantile and fixed fixtures, no RNG; n=500 goldens retain their original seeds"
+}

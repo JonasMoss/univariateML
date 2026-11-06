@@ -1,0 +1,14 @@
+Final validation, workstation, 2026-11-06
+UMVL_TEST_TIER=full just cpp-test: PASS 127/127 (includes 106 dev shards); CTest 115.18 s
+just cpp-test-no-long-double: PASS 127/127; CTest 101.45 s
+just test: FAIL 0, WARN 0, SKIP 154, PASS 20687; test_local elapsed 169.375 s
+just test-full: FAIL 0, WARN 0, SKIP 0, PASS 43502; test_local elapsed 288.272 s
+just js-build: PASS, Emscripten 6.0.13
+just js-test: PASS 421/421, fail/cancel/skip/todo 0; 114.011 s
+just site-check: PASS; final closure/multimodality text present in built HTML; 99 C++ snippets and MathML/browser/link checks pass
+certificate-check.cpp: PASS 20/20 ordinary fixtures; timings in checks-workstation.tsv
+held-scale-competing-mode.cpp: PASS; nonglobal proposal correctly rejected with NumericalFailure (51 boxes)
+Earlier supplemental simbox: C++ dev 106/106; full and no-long-double 127/127; family-only R full tier 325 assertions, no failures/warnings/skips.
+Earlier simbox R dev: out-of-scope mlst df equivariance mismatch (about 1272; delta -0.274; relative tolerance 2e-4); corresponding workstation dev/full checks pass. No st files changed.
+A refreshed optional simbox timing check lost its connection (exit 75); local fallback completed successfully.
+No newly permitted failures. The 154 R dev skips are tier selections; R full has zero skips.

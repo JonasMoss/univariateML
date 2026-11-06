@@ -96,3 +96,60 @@ TEST_CASE("paralogis core preserves adapter constant-data rejection") {
   const std::vector<double> x{2,2,2};
   CHECK(cppunivariate::paralogis_mle(mltest::as_span(x),1e-8,100).status==cppunivariate::ParalogisStatus::Unbounded);
 }
+
+TEST_CASE("paralogis: compact certificate excludes competing maxima") {
+  for(const std::vector<double>& x: {std::vector<double>{.03,.1,.4,.7,1,2,4,12},
+       std::vector<double>{.3,.8,1,1,1},std::vector<double>{1.1,1.4,2,3,5}}) {
+    auto r=cppunivariate::paralogis_mle(mltest::as_span(x),1e-8,1000);
+    REQUIRE(r.status==cppunivariate::ParalogisStatus::Ok);
+    auto c=cppunivariate::paralogis_cert_detail::certify(mltest::as_span(x),r.shape,r.scale,false);
+    CHECK(c.ok);
+    CHECK(c.boxes>0);
+    auto stopped=cppunivariate::paralogis_cert_detail::certify(mltest::as_span(x),r.shape,r.scale,false,1);
+    CHECK_FALSE(stopped.ok);
+    CHECK(stopped.budget);
+    // A deliberately insufficient proof budget cannot become a success.
+    CHECK(c.shape==doctest::Approx(r.shape).epsilon(1e-8));
+  }
+}
+
+TEST_CASE("paralogis: held scale certificate includes constant and one-point data") {
+  for(double v:{.01,1.,100.}) {
+    const std::vector<double> x{v};
+    auto r=cppunivariate::paralogis_mle_fixed_scale(mltest::as_span(x),1,1e-10,1000);
+    REQUIRE(r.status==cppunivariate::ParalogisStatus::Ok);
+    CHECK(r.scale==1);
+  }
+  const std::vector<double> x{3,3,3};
+  auto r=cppunivariate::paralogis_mle_fixed_scale(mltest::as_span(x),3);
+  REQUIRE(r.status==cppunivariate::ParalogisStatus::Ok);
+  CHECK(r.shape==doctest::Approx(2/std::log(2.)).epsilon(1e-9));
+}
+
+TEST_CASE("paralogis: failed proposal retains a bounded likelihood witness") {
+  auto g=mltest::load_distribution_golden("paralogis");
+  const auto r=cppunivariate::paralogis_mle(mltest::as_span(g.data),1e-10,1);
+  CHECK(r.status==cppunivariate::ParalogisStatus::BfgsFailure);
+  REQUIRE(r.stop_detail.candidates.size()==1);
+  CHECK(r.stop_detail.candidates[0].loglik_lower<=r.logLik);
+  CHECK(r.stop_detail.candidates[0].loglik_upper>=r.logLik);
+  const std::vector<double> bad{0,0};
+  CHECK(cppunivariate::paralogis_mle(mltest::as_span(bad),1e-8,100).status==cppunivariate::ParalogisStatus::InvalidStart);
+}
+
+TEST_CASE("paralogis: free common shape holds entrypoint retains the equality constraint") {
+  const std::vector<double> x{.03,.1,.4,.7,1,2,4,12};
+  const auto data=mltest::as_span(x);
+  const auto a=cppunivariate::paralogis_mle_holds(data,NAN,1);
+  const auto b=cppunivariate::paralogis_mle_fixed_scale(data,1);
+  REQUIRE(a.status==cppunivariate::ParalogisStatus::Ok);
+  CHECK(a.shape==doctest::Approx(b.shape).epsilon(1e-10));
+  const auto c=cppunivariate::paralogis_mle_holds(data,NAN);
+  REQUIRE(c.status==cppunivariate::ParalogisStatus::Ok);
+  CHECK(c.logLik>=a.logLik);
+}
+
+TEST_CASE("paralogis: normalization overflow is numerical rather than invalid data") {
+  const std::vector<double> x{1e-300,1e300,1e300};
+  CHECK(cppunivariate::paralogis_mle(mltest::as_span(x),1e-8,100).status==cppunivariate::ParalogisStatus::NumericalFailure);
+}

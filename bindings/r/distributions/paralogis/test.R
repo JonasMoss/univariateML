@@ -151,3 +151,18 @@ test_that("paralogis: P3 unfinished optimizer stops", {
 test_that("paralogis: P3 held profile exhaustion stops", {
   expect_error(mlparalogis(c(.3,.8,1.7,4.2),shape=2,iterlim=1), "[Ff]ail|converge|unresolved|exhausted")
 })
+
+
+test_that("paralogis: certification stops carry structured witnesses", {
+  x <- c(.03,.1,.4,.7,1,2,4,12)
+  e <- tryCatch(mlparalogis(x,iterlim=1,gradtol=1e-10),error=identity)
+  expect_s3_class(e,"univariateML_budget")
+  expect_identical(e$kind,"budget")
+  expect_true(nrow(e$candidates)>=1)
+  expect_true(all(c("shape","scale","loglik_lower","loglik_upper") %in% names(e$candidates)))
+  expect_true(all(e$candidates$loglik_lower<=e$candidates$loglik_upper))
+  e <- tryCatch(mlparalogis(rep(2,5)),error=identity)
+  expect_s3_class(e,"univariateML_nomle")
+  expect_identical(e$kind,"nomle")
+  expect_identical(e$loglik_lower,Inf)
+})

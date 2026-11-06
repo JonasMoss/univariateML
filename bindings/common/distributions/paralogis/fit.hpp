@@ -27,16 +27,17 @@ inline FitResult fit_paralogis(cppunivariate::span x, Held shape_arg = {}, Held 
       ? cppunivariate::paralogis_mle_fixed_scale(x, held, gradtol, iterlim, start)
       : cppunivariate::paralogis_mle(x, gradtol, iterlim, start);
   if(res.status==cppunivariate::ParalogisStatus::Unbounded)
-    return fail("The paralogis maximum likelihood estimator does not exist for constant data: the likelihood is unbounded.");
-
-  if (res.status == cppunivariate::ParalogisStatus::BfgsFailure)
-    return fail("Paralogis optimizer BfgsFailure: score check failed; increase iterlim.");
-  if (res.status == cppunivariate::ParalogisStatus::InvalidStart) {
-    return fail("Paralogistic MLE requires positive, finite observations.");
-  }
-  if (!std::isfinite(res.shape) || !std::isfinite(res.scale) || !std::isfinite(res.logLik)) {
-    return fail("Paralogistic MLE failed: fitted parameters or likelihood exceed double precision");
-  }
+    return stop_failure(fail("The paralogis maximum likelihood estimator does not exist for constant data: the likelihood is unbounded."),res.stop_detail,"nomle",{"shape","scale"});
+  if(res.status==cppunivariate::ParalogisStatus::CertificateBudget)
+    return stop_failure(fail("Paralogis certificate budget exhausted; no verified MLE."),res.stop_detail,"budget",{"shape","scale"});
+  if(res.status==cppunivariate::ParalogisStatus::NumericalFailure)
+    return stop_failure(fail("Paralogis certificate numerical failure: unresolved bounds or fitted parameters exceed double precision; no verified MLE."),res.stop_detail,"numerical",{"shape","scale"});
+  if(res.status==cppunivariate::ParalogisStatus::InvalidStart)
+    return fail("Paralogis MLE requires positive, finite observations.");
+  if(!std::isfinite(res.shape)||!std::isfinite(res.scale)||!std::isfinite(res.logLik))
+    return stop_failure(fail("Paralogis MLE failed: fitted parameters or likelihood exceed double precision"),res.stop_detail,"numerical",{"shape","scale"});
+  if(res.status==cppunivariate::ParalogisStatus::BfgsFailure)
+    return stop_failure(fail("Paralogis optimizer BfgsFailure: proposal failed to converge; no verified MLE; increase iterlim or change shape0."),res.stop_detail,res.iterations>=iterlim?"budget":"numerical",{"shape","scale"});
   std::vector<std::string> fixed;
   if(shape.supplied) fixed.push_back("shape");
   if(scale.supplied) fixed.push_back("scale");

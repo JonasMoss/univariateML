@@ -72,3 +72,44 @@ TEST_CASE("invparalogis: P3 unfinished optimizer is a failure") {
   const auto x=mltest::as_span(g.data);
   CHECK(cppunivariate::invparalogis_mle(x,1e-8,1).status==cppunivariate::ParalogisStatus::BfgsFailure);
 }
+
+TEST_CASE("invparalogis: reciprocal failure witnesses preserve coefficients and bounds") {
+  const std::vector<double> x{.03,.1,.4,.7,1,2,4,12};
+  std::vector<double> y;double jac=0;
+  for(double v:x){y.push_back(1/v);jac-=2*std::log(v);}
+  auto a=cppunivariate::paralogis_mle(mltest::as_span(y),1e-10,1);
+  auto b=cppunivariate::invparalogis_mle(mltest::as_span(x),1e-10,1);
+  REQUIRE(a.status==cppunivariate::ParalogisStatus::BfgsFailure);
+  CHECK(b.status==a.status);
+  REQUIRE(b.stop_detail.candidates.size()==a.stop_detail.candidates.size());
+  CHECK(b.stop_detail.candidates[0].coef[1]==1/a.stop_detail.candidates[0].coef[1]);
+  CHECK(b.stop_detail.candidates[0].loglik_lower==a.stop_detail.candidates[0].loglik_lower+jac);
+  CHECK(b.stop_detail.candidates[0].loglik_upper==a.stop_detail.candidates[0].loglik_upper+jac);
+}
+
+TEST_CASE("invparalogis: free common shape holds entrypoint uses certified delegation") {
+  const std::vector<double> x{.03,.1,.4,.7,1,2,4,12};
+  const auto data=mltest::as_span(x);
+  const auto a=cppunivariate::invparalogis_mle_holds(data,NAN,1);
+  const auto b=cppunivariate::invparalogis_mle_fixed_scale(data,1);
+  REQUIRE(a.status==cppunivariate::ParalogisStatus::Ok);
+  CHECK(a.shape==doctest::Approx(b.shape).epsilon(1e-10));
+}
+
+TEST_CASE("invparalogis: reciprocal representation failure is numerical") {
+  const std::vector<double> x{1e-320,1};
+  CHECK(cppunivariate::invparalogis_mle(mltest::as_span(x),1e-8,100).status==cppunivariate::ParalogisStatus::NumericalFailure);
+  CHECK(cppunivariate::invparalogis_mle_fixed_scale(mltest::as_span(x),1).status==cppunivariate::ParalogisStatus::NumericalFailure);
+  const std::vector<double> constant{1e-320,1e-320};
+  CHECK(cppunivariate::invparalogis_mle(mltest::as_span(constant),1e-8,100).status==cppunivariate::ParalogisStatus::Unbounded);
+}
+
+TEST_CASE("invparalogis: rounded reciprocal ties do not imply nonexistence") {
+  const std::vector<double> x{1.9,std::nextafter(1.9,INFINITY)};
+  REQUIRE(x[0]!=x[1]);
+  REQUIRE(1/x[0]==1/x[1]);
+  const auto r=cppunivariate::invparalogis_mle(mltest::as_span(x),1e-8,100);
+  CHECK(r.status==cppunivariate::ParalogisStatus::NumericalFailure);
+  CHECK(r.stop_detail.candidates.empty());
+  CHECK_FALSE(std::isinf(r.stop_detail.loglik_lower));
+}

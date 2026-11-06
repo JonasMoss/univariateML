@@ -4,8 +4,8 @@
 // silently fixed at 1, which only happens to be correct on data that was
 // sampled with the actuar default. This implementation fits both
 // parameters jointly via BFGS on the log-reparameterised cost
-// (phi = (log shape, log scale)). Score-residual check at the recovered
-// estimate guards against the same "fake fit" class of fault.
+// (phi = (log shape, log scale)), then certifies the proposed maximizer
+// by root enclosure and compact-domain exclusion (certificate.hpp).
 //
 // Density (actuar::dparalogis):
 //   f(x; alpha, theta) = alpha^2 * (x/theta)^alpha
@@ -22,6 +22,7 @@
 
 #pragma once
 #include "../burr/mle.hpp"
+#include "certificate.hpp"
 
 #include "../../core/bfgs.hpp"
 #include "../../core/finite_diff.hpp"
@@ -36,7 +37,7 @@
 
 namespace cppunivariate {
 
-enum class ParalogisStatus { Ok = 0, BfgsFailure, InvalidStart, Unbounded };
+enum class ParalogisStatus { Ok = 0, BfgsFailure, InvalidStart, Unbounded, NumericalFailure, CertificateBudget };
 
 struct ParalogisResult {
   double shape;
@@ -44,6 +45,7 @@ struct ParalogisResult {
   double logLik;
   int iterations;
   ParalogisStatus status;
+  StopDetail stop_detail = {};
 };
 
 // Negative log-likelihood as a BFGS Cost, parameterised in phi-space:
@@ -134,7 +136,7 @@ struct ParalogisCost {
 
 // Historical one-dimensional shape score, with z=log(x/scale).
 // Safeguarded Newton keeps the shape positive and brackets its score root.
-inline ParalogisResult paralogis_mle_fixed_scale(
+inline ParalogisResult paralogis_shape_proposal(
     span x, double scale, double tol = 1e-10, int maxit = 100,
     double shape0 = 1.0) {
   const double nan = std::numeric_limits<double>::quiet_NaN();
@@ -208,7 +210,11 @@ inline ParalogisResult paralogis_mle_impl(
   // must not depend on the units of x or an additive likelihood constant.
   if (!standardized) {
     std::vector<double> z(n);
-    for (std::size_t i = 0; i < n; ++i) z[i] = x[i] / theta0;
+    for (std::size_t i = 0; i < n; ++i) {
+      z[i] = x[i] / theta0;
+      if(!(z[i]>0)||!std::isfinite(z[i]))
+        return {kNaN,kNaN,kNaN,0,ParalogisStatus::NumericalFailure};
+    }
     auto r = paralogis_mle_impl(span{z.data(), n}, tol, maxit, shape0, true);
     r.scale *= theta0;
     r.logLik -= static_cast<double>(n) * std::log(theta0);
@@ -252,11 +258,32 @@ inline ParalogisResult paralogis_mle_impl(
 
 inline ParalogisResult paralogis_mle(span x, double tol, int maxit,
     double shape0 = std::numeric_limits<double>::quiet_NaN()) {
+  for(double v:x) if(!(v>0)||!std::isfinite(v))
+    return {NAN,NAN,NAN,0,ParalogisStatus::InvalidStart};
   if(!x.empty() && std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];})) {
     const double nan=std::numeric_limits<double>::quiet_NaN();
-    return {nan,nan,nan,0,ParalogisStatus::Unbounded};
+    StopDetail detail;detail.loglik_lower=detail.loglik_upper=INFINITY;
+    return {nan,nan,INFINITY,0,ParalogisStatus::Unbounded,detail};
   }
-  return paralogis_mle_impl(x, tol, maxit, shape0, false);
+  auto r = paralogis_mle_impl(x, tol, maxit, shape0, false);
+  r.stop_detail=paralogis_cert_detail::witness(x,r.shape,r.scale);
+  if (r.status != ParalogisStatus::Ok) return r;
+  const auto certified = paralogis_cert_detail::certify(x,r.shape,r.scale,false);
+  if (!certified.ok) { r.status=certified.budget?ParalogisStatus::CertificateBudget:ParalogisStatus::NumericalFailure; return r; }
+  r.shape=certified.shape; r.scale=certified.scale; r.logLik=certified.logLik;
+  return r;
+}
+
+inline ParalogisResult paralogis_mle_fixed_scale(
+    span x, double scale, double tol=1e-10, int maxit=100,
+    double shape0=1.0) {
+  auto r=paralogis_shape_proposal(x,scale,tol,maxit,shape0);
+  r.stop_detail=paralogis_cert_detail::witness(x,r.shape,r.scale);
+  if(r.status!=ParalogisStatus::Ok) return r;
+  const auto certified=paralogis_cert_detail::certify(x,r.shape,scale,true);
+  if(!certified.ok) {r.status=certified.budget?ParalogisStatus::CertificateBudget:ParalogisStatus::NumericalFailure;return r;}
+  r.shape=certified.shape;r.logLik=certified.logLik;
+  return r;
 }
 
 }  // namespace cppunivariate
@@ -264,6 +291,7 @@ inline ParalogisResult paralogis_mle(span x, double tol, int maxit,
 namespace cppunivariate {
 
 inline ParalogisResult paralogis_mle_holds(span x,double shape,double scale=std::numeric_limits<double>::quiet_NaN(), double tol=1e-9, int maxit=1000){
+ if(std::isnan(shape)) return std::isnan(scale)?paralogis_mle(x,tol,maxit):paralogis_mle_fixed_scale(x,scale,tol,maxit);
  auto r=burr_mle_holds(x,shape,shape,scale,tol,maxit);
  return {shape,r.scale,r.logLik,r.iterations,r.status==BurrStatus::Ok?ParalogisStatus::Ok:r.status==BurrStatus::IterationFailure?ParalogisStatus::BfgsFailure:ParalogisStatus::InvalidStart};
 }
