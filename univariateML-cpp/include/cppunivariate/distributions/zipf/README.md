@@ -2,10 +2,11 @@
 id: zipf
 inference_numeric:
   - regime: "size one"
-    available: true
+    available: false
     condition: "known N = 1; finite s > 0 free; the law is a point mass, so information is zero"
+    reason: "The free information is structurally singular; neither observed nor sandwich covariance can be inverted"
     classification: "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
-  - regime: primary interior
+  - regime: "primary interior"
     available: true
     condition: "known integer N >= 2 held and finite s > 0 free"
     classification: "dev/roadmap/2026-10-30-inference-and-dqm.md#discrete-coordinates"

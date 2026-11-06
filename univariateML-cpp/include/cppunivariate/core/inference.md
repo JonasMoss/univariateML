@@ -393,10 +393,12 @@ the normal member is also smooth. The skew GED has the same `nu > 2` conclusion
 at its moving join because the two one-sided power terms and their first two
 join derivatives vanish there. When skew is held at one, skew GED reduces
 to GED, including the held-location and held-shape normal submodels described
-above. These elementary pointwise smoothness statements
-are separate from the cited DQM argument, information-rank questions, the GED
-fit restriction, and the numerical derivative validation, which remain separate
-checks. The `nu <= 2` joint skew-GED scope is left open, not asserted non-DQM.
+above. These pointwise smoothness statements describe the implemented derivative
+scopes, rather than a necessary condition for regular inference. The interior
+classification establishes DQM and full rank above nu = 1/2 for a moving
+location; ordinary Hessian validity requires nu > 1, with separate joint
+fitted-Hessian and numerical cusp-handling gaps for 1 < nu <= 2. The fit
+restriction and procedure calibration remain separate checks.
 
 ## Known-threshold and fixed-shape submodels
 
@@ -410,8 +412,9 @@ non-DQM free-threshold direction. It is not a calibration result. GEV with its
 shape fixed at zero is a Gumbel submodel, and GPD with its known threshold and
 shape fixed at zero is a shifted exponential submodel. With positive GPD shape,
 the support starts at that fixed threshold and the log density is smooth in the
-positive shape and scale. These statements do not settle the remaining moving
-support scopes or estimator limits.
+positive shape and scale. The later moving-feature classification establishes regularity for xi > -1/2,
+including free shape at zero, but the expanded support-aware numerical
+derivative scopes and estimator calibration remain unimplemented.
 
 ## Finite-support rank and known-design submodels
 
@@ -522,3 +525,26 @@ step, not a universal error bound. The intermediate header was uncommitted and u
 later shifted coordinate. Reconstructing the earlier check therefore also
 requires restoring that coordinate in an isolated copy; the earlier source
 hash was not retained.
+
+## Interior classification and covariance eligibility
+
+The [interior classification](../../../../dev/roadmap/2026-10-30-inference-and-dqm.md)
+separates DQM, finite information, rank and ordinary observed-Hessian validity.
+The dossier `inference_numeric.available` now requires an implemented covariance
+path for the stated subset. A mathematically regular expanded model stays
+unavailable when its numerical derivative or fitted-Hessian validation is missing.
+Both covariance types use the ordinary observed Hessian: sandwich covariance
+cannot repair its omitted Laplace kink or the moving GED/SGED cusp at nu <= 1.
+
+At sn alpha = 0 the null direction involves location and alpha; at bnbinom
+size = beta it involves size and beta; at genbeta shape2 = 1 it involves
+shape1 and shape3. Dispatch rejects exactly those subsets containing both
+coordinates, whether the other coefficients are held or free. Holding either
+coordinate removes that structural null direction. The ordinary Hessian can
+look invertible in a finite sample on these sets, so numerical conditioning
+alone is insufficient. The reviewed registry generator owns these guards.
+
+The [application report](../../../../dev/research/evaluations/2026-11-06-infer-meta-report.md)
+records the metadata changes, derivative checks and remaining procedure gaps.
+The dated classification reports supply mathematical arguments; numerical
+regression checks do not prove estimator asymptotics or coverage.

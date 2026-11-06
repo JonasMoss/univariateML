@@ -1,11 +1,11 @@
 ---
 id: sged
 inference_numeric:
-  - regime: symmetric member with held location
+  - regime: "symmetric member with held location"
     available: true
     condition: "finite mean held, sd > 0 and nu > 0; xi = 1 held; if nu is free require nu > 1"
     classification: "univariateML-cpp/include/cppunivariate/core/inference.md#pointwise-smoothness-for-ged-submodels"
-  - regime: symmetric normal member
+  - regime: "symmetric normal member"
     available: true
     condition: "finite mean and sd > 0; nu = 2 and xi = 1 held; mean and/or sd free"
     classification: "univariateML-cpp/include/cppunivariate/core/inference.md#pointwise-smoothness-for-ged-submodels"
@@ -13,11 +13,11 @@ inference_numeric:
     available: true
     condition: "finite mean, sd > 0, xi > 0 and nu > 2; any regular subset free"
     classification: "univariateML-cpp/include/cppunivariate/core/inference.md#pointwise-smoothness-for-ged-submodels"
-  - regime: unreviewed or unavailable
+  - regime: "unreviewed or unavailable"
     available: false
     condition: "joint cusp-moving regime with 0 < nu <= 2, excluding the stated symmetric held-parameter scopes"
-    reason: "the C2 and held-subset classification at the moving cusp has not yet been completed"
-    classification: "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+    reason: "DQM and finite full-rank information hold for nu > 1/2, but moving-mode ordinary Hessians are invalid for nu <= 1; joint fitted cusp Hessians and numerical join handling in the remaining excluded subsets are not yet validated"
+    classification: "dev/research/evaluations/2026-11-04-dqm-b-report.md#two-piece-models-snorm-sstd-and-sged"
 name: Skew Generalized Error
 support: {type: real, lower: -inf, upper: inf, closed: [false, false]}
 params:

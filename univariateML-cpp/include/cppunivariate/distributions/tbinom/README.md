@@ -2,10 +2,11 @@
 id: tbinom
 inference_numeric:
   - regime: "singleton retained support"
-    available: true
+    available: false
     condition: "known design and truncation bounds with exactly one retained integer; probability free in (0,1); the conditional law is a point mass, so information is zero"
+    reason: "The free information is structurally singular; neither observed nor sandwich covariance can be inverted"
     classification: "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
-  - regime: primary interior
+  - regime: "primary interior"
     available: true
     condition: "known integer size, known a and b held; 0 < prob < 1 free; retained support has at least two integers"
     classification: "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"

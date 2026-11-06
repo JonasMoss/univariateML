@@ -1,19 +1,21 @@
 ---
 id: bbinom
 inference_numeric:
-  - regime: size zero
-    available: true
+  - regime: "size zero"
+    available: false
     condition: "known integer size = 0 held; the law is a point mass and every regular score is zero"
+    reason: "The free information is structurally singular; neither observed nor sandwich covariance can be inverted"
     classification: "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
   - regime: "size one with one shape known"
     available: true
     condition: "known size = 1; exactly one positive finite shape free; the other shape known; rank one for the two-shape model; the scalar known-nuisance submodel is identifiable"
     classification: "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
   - regime: "size one with both shapes free"
-    available: true
+    available: false
     condition: "known size = 1; both positive finite shapes free; DQM and pointwise C2 hold, but joint information has rank one and covariance is singular"
+    reason: "The free information is structurally singular; neither observed nor sandwich covariance can be inverted"
     classification: "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
-  - regime: primary interior
+  - regime: "primary interior"
     available: true
     condition: "known integer size >= 2 held; finite alpha > 0 and beta > 0; either or both free"
     classification: "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"

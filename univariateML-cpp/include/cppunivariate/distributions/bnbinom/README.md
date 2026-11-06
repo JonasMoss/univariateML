@@ -1,10 +1,15 @@
 ---
 id: bnbinom
 inference_numeric:
-  - regime: primary interior
+  - regime: "identifiable interior submodel"
     available: true
-    condition: "finite size > 0, alpha > 0 and beta > 0; any regular subset free"
-    classification: "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+    condition: "finite size > 0, alpha > 0 and beta > 0; any nonempty supported free subset except size = beta with both size and beta free"
+    classification: "dev/research/evaluations/2026-11-04-dqm-c-report.md#b-beta-negative-binomial-exact-singular-set"
+  - regime: "singular information"
+    available: false
+    condition: "finite size > 0, alpha > 0 and beta > 0; size = beta with both size and beta free"
+    reason: "DQM holds but the free information has a null direction; ordinary observed or sandwich covariance is unavailable"
+    classification: "dev/research/evaluations/2026-11-04-dqm-c-report.md#b-beta-negative-binomial-exact-singular-set"
 name: Beta negative binomial
 support: {type: integer, lower: 0, upper: inf, closed: [true, false]}
 params:

@@ -4,12 +4,32 @@ inference_numeric:
   - regime: "gumbel member with shape held"
     available: true
     condition: "finite mu and sigma > 0; xi = 0 held; mu and/or sigma free"
-    classification: "univariateML-cpp/include/cppunivariate/core/inference.md#known-threshold-and-fixed-shape-submodels"
-  - regime: unreviewed or unavailable
+    classification: "dev/research/evaluations/2026-11-04-infer-moving-report.md#gpd-and-gev"
+  - regime: "regular interior model"
     available: false
-    condition: "joint moving-support regime with xi free or nonzero"
-    reason: "the moving-support C2 and fitted-subset classification for this numerical procedure is not yet completed"
-    classification: "dev/roadmap/2026-10-30-inference-and-dqm.md#moving-support"
+    condition: "finite mu, sigma > 0 and xi > -1/2; any nonempty supported free subset; if xi is free require xi < 1; excluding the preceding available submodels"
+    reason: "DQM and full-rank information are established, but support/join-aware numerical derivatives and fitted covariance validation for this expanded scope are not yet implemented"
+    classification: "dev/research/evaluations/2026-11-04-infer-moving-report.md#gpd-and-gev"
+  - regime: "critical upper endpoint"
+    available: false
+    condition: "finite mu, sigma > 0 and xi = -1/2; any nonempty supported free subset"
+    reason: "one endpoint direction has a sqrt(n log n) Gaussian experiment and the complement has root-n rate; ordinary finite Fisher inference is unavailable"
+    classification: "dev/research/evaluations/2026-11-04-infer-moving-report.md#gpd-and-gev"
+  - regime: "Poisson upper endpoint"
+    available: false
+    condition: "finite mu, sigma > 0 and -1 <= xi < -1/2; any nonempty supported free subset"
+    reason: "one endpoint direction has a non-Gaussian Poisson experiment at rate n^(-xi), with a root-n complement; free xi = -1 additionally constrains shape"
+    classification: "dev/research/evaluations/2026-11-04-infer-moving-report.md#gpd-and-gev"
+  - regime: "active upper fitted shape bound"
+    available: false
+    condition: "finite mu, sigma > 0 and xi = 1 free"
+    reason: "the model is DQM with full rank but the fitted shape bound gives a Gaussian cone experiment rather than ordinary joint Wald calibration"
+    classification: "dev/research/evaluations/2026-11-04-infer-moving-report.md#gpd-and-gev"
+  - regime: "held shape below fitted endpoint range"
+    available: false
+    condition: "xi < -1 held and at least one coefficient free"
+    reason: "the mathematical endpoint experiment is nonregular; nontrivial accepted free-scale exceptions occur only when all observations are below held mu, an event of probability exp(-n) under this model"
+    classification: "dev/research/evaluations/2026-11-04-infer-moving-report.md#gpd-and-gev"
 name: Generalized extreme value
 support: {type: real, lower: "if (xi > 0) mu - sigma/xi else -Inf", upper: "if (xi < 0) mu - sigma/xi else Inf", closed: [true, true], endpoint_log_density: {lower: "-Inf", upper: "if (xi == -1) -log(sigma) else if (xi < -1) Inf else -Inf"}}
 params:

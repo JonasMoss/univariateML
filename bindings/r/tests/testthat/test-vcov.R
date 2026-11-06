@@ -113,3 +113,42 @@ test_that("nonregular submodels and information failures stop explicitly", {
   old <- mlnorm(vcov_golden("norm")); attr(old, "inference_free") <- NULL
   expect_error(vcov(old), "free mask")
 })
+
+# Exercise the public vcov route at exact parameter regimes without asking a
+# fitter to land on a measure-zero singular set. Observations and free masks
+# are explicit; these tests establish dispatch, not estimator calibration.
+vcov_regime_object <- function(id, theta, free, x) {
+  object <- mlnorm(c(-2, -1, 0, 1, 2))
+  attributes(theta) <- attributes(object)
+  names(theta) <- names(free)
+  attr(theta, "model") <- univariateML:::univariateML_metadata[[paste0("ml", id)]]$model
+  attr(theta, "inference_free") <- free
+  attr(theta, "inference_data") <- x
+  theta
+}
+
+test_that("structural singularities stop before a numerical Hessian solve", {
+  cases <- list(
+    list("sn", c(0, 1, 0), c(xi=TRUE, omega=FALSE, alpha=TRUE), c(-1, 0, 1)),
+    list("bnbinom", c(2, 3, 2), c(size=TRUE, alpha=FALSE, beta=TRUE), c(0, 1, 2)),
+    list("genbeta", c(2, 1, 3, 1), c(shape1=TRUE, shape2=FALSE, shape3=TRUE, scale=FALSE), c(.2,.4,.8))
+  )
+  for (case in cases) for (type in c("observed", "sandwich")) {
+    fit <- do.call(vcov_regime_object, case)
+    expect_error(vcov(fit, type), "singular information", info=case[[1]])
+  }
+})
+
+test_that("ordinary cusp Hessian failures affect both covariance types", {
+  cases <- list(
+    list("laplace", c(0, 1), c(mu=TRUE, sigma=TRUE)),
+    list("ged", c(0, 1, 1), c(mean=TRUE, sd=TRUE, nu=FALSE)),
+    list("ged", c(0, 1, .75), c(mean=TRUE, sd=TRUE, nu=FALSE)),
+    list("sged", c(0, 1, 1, 1), c(mean=TRUE, sd=TRUE, nu=FALSE, xi=FALSE)),
+    list("sged", c(0, 1, .75, 1), c(mean=TRUE, sd=TRUE, nu=FALSE, xi=FALSE))
+  )
+  for (case in cases) for (type in c("observed", "sandwich")) {
+    fit <- do.call(vcov_regime_object, c(case, list(x=c(-2,-1,.2,1,2))))
+    expect_error(vcov(fit, type), "regime unavailable", info=case[[1]])
+  }
+})

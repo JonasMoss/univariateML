@@ -1,11 +1,11 @@
 ---
 id: pig
 inference_numeric:
-  - regime: unreviewed or unavailable
+  - regime: "unreviewed or unavailable"
     available: false
     condition: "interior joint regime"
-    reason: "DQM and score tail domination are open in the cited classification"
-    classification: "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+    reason: "DQM, finite full-rank information and a valid a.e. Hessian are established; numerical derivative and covariance validation for the expanded subsets is not yet implemented"
+    classification: "dev/research/evaluations/2026-11-04-dqm-c-report.md#e-poisson-inverse-gaussian"
 name: Poisson-inverse Gaussian
 support: {type: integer, lower: 0, upper: inf, closed: [true, false]}
 params:

@@ -130,6 +130,7 @@ inline InferenceResult generated_family_inference(span data,const std::string& f
     if(!(std::isfinite(value[1]) && value[1]>0)) {InferenceResult r;r.status=InferenceStatus::BoundaryOrLimit;r.validity_conditions="outside the recorded interior scope";return r;}
     p[2]={"beta",value[2],NumericCoordinate::Positive,0};
     if(!(std::isfinite(value[2]) && value[2]>0)) {InferenceResult r;r.status=InferenceStatus::BoundaryOrLimit;r.validity_conditions="outside the recorded interior scope";return r;}
+    if(value[0]==value[2] && (mask & 5u)==5u) {return inference_numeric_detail::singular_integer_support(data,0,INFINITY,"size and beta information is singular at size = beta");}
     const auto density=[](double x,const auto& a) {return distributions::dbnbinom(x,a[0],a[1],a[2],true);};
     const NumericEligibility eligibility{InferenceStatus::Ok,7u,"finite interior scope; structural coefficients held"};
     return numeric_inference_checked(data,p,n,mask,eligibility,density,emit);
@@ -321,6 +322,7 @@ inline InferenceResult generated_family_inference(span data,const std::string& f
     if(!(std::isfinite(value[2]) && value[2]>0)) {InferenceResult r;r.status=InferenceStatus::BoundaryOrLimit;r.validity_conditions="outside the recorded interior scope";return r;}
     p[3]={"scale",value[3],NumericCoordinate::Real,0};
     if(!std::isfinite(value[3]) || value[3]<=0) {InferenceResult r;r.status=InferenceStatus::BoundaryOrLimit;r.validity_conditions="outside the recorded interior scope";return r;}
+    if(value[1]==1 && (mask & 5u)==5u) {return inference_numeric_detail::singular_real_support(data,"shape1 and shape3 information is singular at shape2 = 1");}
     const auto density=[](double x,const auto& a) {return distributions::dgenbeta(x,a[0],a[1],a[2],a[3],true);};
     const NumericEligibility eligibility{InferenceStatus::Ok,7u,"finite interior scope; structural coefficients held"};
     return numeric_inference_checked(data,p,n,mask,eligibility,density,emit);

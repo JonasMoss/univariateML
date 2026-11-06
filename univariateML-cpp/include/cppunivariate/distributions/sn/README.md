@@ -1,10 +1,15 @@
 ---
 id: sn
 inference_numeric:
-  - regime: primary interior
+  - regime: "identifiable interior submodel"
     available: true
-    condition: "finite xi, omega > 0 and finite alpha; any regular subset free; information is singular at alpha = 0 when xi and alpha are both free"
-    classification: "dev/roadmap/2026-10-30-inference-and-dqm.md#cusps-and-singularities"
+    condition: "finite xi, omega > 0 and finite alpha; any nonempty supported free subset except alpha = 0 with both xi and alpha free"
+    classification: "dev/research/evaluations/2026-11-04-dqm-b-report.md#azzalini-sn-versus-st"
+  - regime: "singular information"
+    available: false
+    condition: "finite xi, omega > 0 and finite alpha; alpha = 0 with both xi and alpha free"
+    reason: "DQM holds but the free information has a null direction; ordinary observed or sandwich covariance is unavailable"
+    classification: "dev/research/evaluations/2026-11-04-dqm-b-report.md#azzalini-sn-versus-st"
 name: Azzalini skew-normal
 support: {type: real, lower: -inf, upper: inf, closed: [false, false]}
 params:

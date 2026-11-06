@@ -4,16 +4,31 @@ inference_numeric:
   - regime: "positive shape fixed support"
     available: true
     condition: "finite mu held, sigma > 0 and xi > 0; sigma and/or xi free"
-    classification: "univariateML-cpp/include/cppunivariate/core/inference.md#known-threshold-and-fixed-shape-submodels"
+    classification: "dev/research/evaluations/2026-11-04-infer-moving-report.md#gpd-and-gev"
   - regime: "exponential member with shape held"
     available: true
     condition: "finite mu held, sigma > 0 free and xi = 0 held"
-    classification: "univariateML-cpp/include/cppunivariate/core/inference.md#known-threshold-and-fixed-shape-submodels"
-  - regime: unreviewed or unavailable
+    classification: "dev/research/evaluations/2026-11-04-infer-moving-report.md#gpd-and-gev"
+  - regime: "known threshold regular model"
     available: false
-    condition: "joint moving-support regime with xi <= 0 and xi free"
-    reason: "the moving-support C2 and fitted-subset classification for this numerical procedure is not yet completed"
-    classification: "dev/roadmap/2026-10-30-inference-and-dqm.md#moving-support"
+    condition: "finite mu held, sigma > 0 and xi > -1/2; sigma and/or xi free, including xi = 0 with xi free; excluding the preceding available submodels"
+    reason: "DQM and full-rank information are established, but support/join-aware numerical derivatives and fitted covariance validation for this expanded scope are not yet implemented"
+    classification: "dev/research/evaluations/2026-11-04-infer-moving-report.md#gpd-and-gev"
+  - regime: "critical upper endpoint"
+    available: false
+    condition: "finite mu held, sigma > 0 and xi = -1/2; sigma and/or xi free"
+    reason: "the endpoint has a sqrt(n log n) Gaussian experiment and its complement has root-n rate; ordinary finite Fisher inference is unavailable"
+    classification: "dev/research/evaluations/2026-11-04-infer-moving-report.md#gpd-and-gev"
+  - regime: "Poisson upper endpoint"
+    available: false
+    condition: "finite mu held, sigma > 0 and -1 <= xi < -1/2; sigma and/or xi free"
+    reason: "the endpoint has a non-Gaussian Poisson experiment at rate n^(-xi); both free coordinates also permit a root-n shape tangent; free xi = -1 adds a fitted-bound constraint"
+    classification: "dev/research/evaluations/2026-11-04-infer-moving-report.md#gpd-and-gev"
+  - regime: "unsupported free threshold"
+    available: false
+    condition: "mu free"
+    reason: "the fitter does not estimate the threshold; known-threshold regularity does not justify this subset"
+    classification: "dev/research/evaluations/2026-11-04-infer-moving-report.md#gpd-and-gev"
 name: Generalized Pareto
 support: {type: real, lower: "mu", upper: "if (xi < 0) mu - sigma/xi else Inf", closed: [true, true], endpoint_log_density: {lower: "-log(sigma)", upper: "if (xi == -1) -log(sigma) else if (xi < -1) Inf else -Inf"}}
 params:

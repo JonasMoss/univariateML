@@ -1,0 +1,1172 @@
+[
+  {
+    "family": "bbinom",
+    "before": [
+      {
+        "regime": "size zero",
+        "available": true,
+        "condition": "known integer size = 0 held; the law is a point mass and every regular score is zero",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
+      },
+      {
+        "regime": "size one with one shape known",
+        "available": true,
+        "condition": "known size = 1; exactly one positive finite shape free; the other shape known; rank one for the two-shape model; the scalar known-nuisance submodel is identifiable",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
+      },
+      {
+        "regime": "size one with both shapes free",
+        "available": true,
+        "condition": "known size = 1; both positive finite shapes free; DQM and pointwise C2 hold, but joint information has rank one and covariance is singular",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
+      },
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "known integer size >= 2 held; finite alpha > 0 and beta > 0; either or both free",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
+      }
+    ],
+    "after": [
+      {
+        "regime": "size zero",
+        "available": false,
+        "condition": "known integer size = 0 held; the law is a point mass and every regular score is zero",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels",
+        "reason": "The free information is structurally singular; neither observed nor sandwich covariance can be inverted"
+      },
+      {
+        "regime": "size one with one shape known",
+        "available": true,
+        "condition": "known size = 1; exactly one positive finite shape free; the other shape known; rank one for the two-shape model; the scalar known-nuisance submodel is identifiable",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
+      },
+      {
+        "regime": "size one with both shapes free",
+        "available": false,
+        "condition": "known size = 1; both positive finite shapes free; DQM and pointwise C2 hold, but joint information has rank one and covariance is singular",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels",
+        "reason": "The free information is structurally singular; neither observed nor sandwich covariance can be inverted"
+      },
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "known integer size >= 2 held; finite alpha > 0 and beta > 0; either or both free",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
+      }
+    ]
+  },
+  {
+    "family": "bnbinom",
+    "before": [
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "finite size > 0, alpha > 0 and beta > 0; any regular subset free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "after": [
+      {
+        "regime": "identifiable interior submodel",
+        "available": true,
+        "condition": "finite size > 0, alpha > 0 and beta > 0; any nonempty supported free subset except size = beta with both size and beta free",
+        "classification": "dev/research/evaluations/2026-11-04-dqm-c-report.md#b-beta-negative-binomial-exact-singular-set"
+      },
+      {
+        "regime": "singular information",
+        "available": false,
+        "condition": "finite size > 0, alpha > 0 and beta > 0; size = beta with both size and beta free",
+        "reason": "DQM holds but the free information has a null direction; ordinary observed or sandwich covariance is unavailable",
+        "classification": "dev/research/evaluations/2026-11-04-dqm-c-report.md#b-beta-negative-binomial-exact-singular-set"
+      }
+    ]
+  },
+  {
+    "family": "cmb",
+    "before": [
+      {
+        "regime": "size zero",
+        "available": true,
+        "condition": "known integer size = 0 held; the law is a point mass and every regular score is zero",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
+      },
+      {
+        "regime": "size one with dispersion known",
+        "available": true,
+        "condition": "known size = 1; 0 < prob < 1 free and finite nu held; the Bernoulli probability is identifiable; dispersion is not",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
+      },
+      {
+        "regime": "size one with dispersion free",
+        "available": true,
+        "condition": "known size = 1; nu free; DQM and pointwise C2 hold but the dispersion score is identically zero",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
+      },
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "known integer size >= 2 held, 0 < prob < 1, finite nu; prob and/or nu free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "after": [
+      {
+        "regime": "size zero",
+        "available": false,
+        "condition": "known integer size = 0 held; the law is a point mass and every regular score is zero",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels",
+        "reason": "The free information is structurally singular; neither observed nor sandwich covariance can be inverted"
+      },
+      {
+        "regime": "size one with dispersion known",
+        "available": true,
+        "condition": "known size = 1; 0 < prob < 1 free and finite nu held; the Bernoulli probability is identifiable; dispersion is not",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
+      },
+      {
+        "regime": "size one with dispersion free",
+        "available": false,
+        "condition": "known size = 1; nu free; DQM and pointwise C2 hold but the dispersion score is identically zero",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels",
+        "reason": "The free information is structurally singular; neither observed nor sandwich covariance can be inverted"
+      },
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "known integer size >= 2 held, 0 < prob < 1, finite nu; prob and/or nu free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ]
+  },
+  {
+    "family": "ged",
+    "before": [
+      {
+        "regime": "cusp moving with smooth exponent",
+        "available": true,
+        "condition": "finite mean, sd > 0 and nu > 2; any regular subset free",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#pointwise-smoothness-for-ged-submodels"
+      },
+      {
+        "regime": "held location",
+        "available": true,
+        "condition": "finite mean held and sd > 0, nu > 0; if nu is free require nu > 1",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#pointwise-smoothness-for-ged-submodels"
+      },
+      {
+        "regime": "normal member with shape held",
+        "available": true,
+        "condition": "finite mean and sd > 0, nu = 2 held; mean and/or sd free",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#pointwise-smoothness-for-ged-submodels"
+      },
+      {
+        "regime": "unreviewed or unavailable",
+        "available": false,
+        "condition": "joint cusp-moving regime with 0 < nu <= 2, except the held-shape normal member",
+        "reason": "the C2 and held-subset classification at the moving cusp has not yet been completed",
+        "classification": "dev/roadmap/2026-10-30-inference-and-dqm.md#cusps-and-singularities"
+      }
+    ],
+    "after": [
+      {
+        "regime": "cusp moving with smooth exponent",
+        "available": true,
+        "condition": "finite mean, sd > 0 and nu > 2; any regular subset free",
+        "classification": "dev/research/evaluations/2026-11-04-infer-moving-report.md#ged"
+      },
+      {
+        "regime": "held location",
+        "available": true,
+        "condition": "finite mean held and sd > 0, nu > 0; if nu is free require nu > 1",
+        "classification": "dev/research/evaluations/2026-11-04-infer-moving-report.md#ged"
+      },
+      {
+        "regime": "normal member with shape held",
+        "available": true,
+        "condition": "finite mean and sd > 0, nu = 2 held; mean and/or sd free",
+        "classification": "dev/research/evaluations/2026-11-04-infer-moving-report.md#ged"
+      },
+      {
+        "regime": "moving location with smooth or held shape",
+        "available": false,
+        "condition": "finite mean free, sd > 0; either nu > 2, or nu > 1 is held; sd may be held or fitted; excluding the preceding available submodels",
+        "classification": "dev/research/evaluations/2026-11-04-infer-moving-report.md#ged",
+        "reason": "DQM and full-rank information are established, but support/join-aware numerical derivatives and fitted covariance validation for this expanded scope are not yet implemented"
+      },
+      {
+        "regime": "joint fitted cusp Hessian open",
+        "available": false,
+        "condition": "finite mean free, sd > 0 and 1 < nu <= 2 with nu free",
+        "reason": "the model is DQM with full-rank information and an integrable correct a.e. Hessian at the truth; consistency of the joint fitted Hessian and cusp-crossing numerical derivatives remains unvalidated",
+        "classification": "dev/research/evaluations/2026-11-04-infer-moving-report.md#ged"
+      },
+      {
+        "regime": "regular location with unsuitable ordinary Hessian",
+        "available": false,
+        "condition": "finite mean free, sd > 0 and 1/2 < nu <= 1 held",
+        "reason": "the model is DQM with full rank, but the ordinary location Hessian omits the Laplace kink at nu = 1 and is nonintegrable below 1; below 1 the location MLE also makes raw fitted OPG singular",
+        "classification": "dev/research/evaluations/2026-11-04-infer-moving-report.md#ged"
+      },
+      {
+        "regime": "critical or fractional cusp location",
+        "available": false,
+        "condition": "finite mean free, sd > 0 and 0 < nu <= 1/2 held",
+        "reason": "location uses sqrt(n log n) at nu = 1/2 or an fBm likelihood at rate n^(1/(1+2*nu)) below it; ordinary Hessian inference is invalid and raw critical OPG has the wrong information constant",
+        "classification": "dev/research/evaluations/2026-11-04-infer-moving-report.md#ged"
+      },
+      {
+        "regime": "active fitted Laplace shape bound",
+        "available": false,
+        "condition": "nu = 1 free, finite mean held or fitted, sd > 0",
+        "reason": "the regular underlying model has a constrained Gaussian shape tangent; moving-location ordinary Hessian inference additionally misses the cusp contribution",
+        "classification": "dev/research/evaluations/2026-11-04-infer-moving-report.md#ged"
+      }
+    ]
+  },
+  {
+    "family": "genbeta",
+    "before": [
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "finite shape1 > 0, shape2 > 0, shape3 > 0 and scale > 0; scale held; any regular subset free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "after": [
+      {
+        "regime": "identifiable interior submodel",
+        "available": true,
+        "condition": "finite shape1 > 0, shape2 > 0, shape3 > 0 and scale > 0 held; any nonempty supported free subset except shape2 = 1 with both shape1 and shape3 free",
+        "classification": "dev/research/evaluations/2026-11-04-dqm-a-report.md#genbeta-an-interior-identification-ridge"
+      },
+      {
+        "regime": "singular information",
+        "available": false,
+        "condition": "finite shape1 > 0, shape2 > 0, shape3 > 0 and scale > 0 held; shape2 = 1 with both shape1 and shape3 free",
+        "reason": "DQM holds but the free information has a null direction; ordinary observed or sandwich covariance is unavailable",
+        "classification": "dev/research/evaluations/2026-11-04-dqm-a-report.md#genbeta-an-interior-identification-ridge"
+      }
+    ]
+  },
+  {
+    "family": "gev",
+    "before": [
+      {
+        "regime": "gumbel member with shape held",
+        "available": true,
+        "condition": "finite mu and sigma > 0; xi = 0 held; mu and/or sigma free",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-threshold-and-fixed-shape-submodels"
+      },
+      {
+        "regime": "unreviewed or unavailable",
+        "available": false,
+        "condition": "joint moving-support regime with xi free or nonzero",
+        "reason": "the moving-support C2 and fitted-subset classification for this numerical procedure is not yet completed",
+        "classification": "dev/roadmap/2026-10-30-inference-and-dqm.md#moving-support"
+      }
+    ],
+    "after": [
+      {
+        "regime": "gumbel member with shape held",
+        "available": true,
+        "condition": "finite mu and sigma > 0; xi = 0 held; mu and/or sigma free",
+        "classification": "dev/research/evaluations/2026-11-04-infer-moving-report.md#gpd-and-gev"
+      },
+      {
+        "regime": "regular interior model",
+        "available": false,
+        "condition": "finite mu, sigma > 0 and xi > -1/2; any nonempty supported free subset; if xi is free require xi < 1; excluding the preceding available submodels",
+        "classification": "dev/research/evaluations/2026-11-04-infer-moving-report.md#gpd-and-gev",
+        "reason": "DQM and full-rank information are established, but support/join-aware numerical derivatives and fitted covariance validation for this expanded scope are not yet implemented"
+      },
+      {
+        "regime": "critical upper endpoint",
+        "available": false,
+        "condition": "finite mu, sigma > 0 and xi = -1/2; any nonempty supported free subset",
+        "reason": "one endpoint direction has a sqrt(n log n) Gaussian experiment and the complement has root-n rate; ordinary finite Fisher inference is unavailable",
+        "classification": "dev/research/evaluations/2026-11-04-infer-moving-report.md#gpd-and-gev"
+      },
+      {
+        "regime": "Poisson upper endpoint",
+        "available": false,
+        "condition": "finite mu, sigma > 0 and -1 <= xi < -1/2; any nonempty supported free subset",
+        "reason": "one endpoint direction has a non-Gaussian Poisson experiment at rate n^(-xi), with a root-n complement; free xi = -1 additionally constrains shape",
+        "classification": "dev/research/evaluations/2026-11-04-infer-moving-report.md#gpd-and-gev"
+      },
+      {
+        "regime": "active upper fitted shape bound",
+        "available": false,
+        "condition": "finite mu, sigma > 0 and xi = 1 free",
+        "reason": "the model is DQM with full rank but the fitted shape bound gives a Gaussian cone experiment rather than ordinary joint Wald calibration",
+        "classification": "dev/research/evaluations/2026-11-04-infer-moving-report.md#gpd-and-gev"
+      },
+      {
+        "regime": "held shape below fitted endpoint range",
+        "available": false,
+        "condition": "xi < -1 held and at least one coefficient free",
+        "reason": "the mathematical endpoint experiment is nonregular; nontrivial accepted free-scale exceptions occur only when all observations are below held mu, an event of probability exp(-n) under this model",
+        "classification": "dev/research/evaluations/2026-11-04-infer-moving-report.md#gpd-and-gev"
+      }
+    ]
+  },
+  {
+    "family": "gpd",
+    "before": [
+      {
+        "regime": "positive shape fixed support",
+        "available": true,
+        "condition": "finite mu held, sigma > 0 and xi > 0; sigma and/or xi free",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-threshold-and-fixed-shape-submodels"
+      },
+      {
+        "regime": "exponential member with shape held",
+        "available": true,
+        "condition": "finite mu held, sigma > 0 free and xi = 0 held",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-threshold-and-fixed-shape-submodels"
+      },
+      {
+        "regime": "unreviewed or unavailable",
+        "available": false,
+        "condition": "joint moving-support regime with xi <= 0 and xi free",
+        "reason": "the moving-support C2 and fitted-subset classification for this numerical procedure is not yet completed",
+        "classification": "dev/roadmap/2026-10-30-inference-and-dqm.md#moving-support"
+      }
+    ],
+    "after": [
+      {
+        "regime": "positive shape fixed support",
+        "available": true,
+        "condition": "finite mu held, sigma > 0 and xi > 0; sigma and/or xi free",
+        "classification": "dev/research/evaluations/2026-11-04-infer-moving-report.md#gpd-and-gev"
+      },
+      {
+        "regime": "exponential member with shape held",
+        "available": true,
+        "condition": "finite mu held, sigma > 0 free and xi = 0 held",
+        "classification": "dev/research/evaluations/2026-11-04-infer-moving-report.md#gpd-and-gev"
+      },
+      {
+        "regime": "known threshold regular model",
+        "available": false,
+        "condition": "finite mu held, sigma > 0 and xi > -1/2; sigma and/or xi free, including xi = 0 with xi free; excluding the preceding available submodels",
+        "classification": "dev/research/evaluations/2026-11-04-infer-moving-report.md#gpd-and-gev",
+        "reason": "DQM and full-rank information are established, but support/join-aware numerical derivatives and fitted covariance validation for this expanded scope are not yet implemented"
+      },
+      {
+        "regime": "critical upper endpoint",
+        "available": false,
+        "condition": "finite mu held, sigma > 0 and xi = -1/2; sigma and/or xi free",
+        "reason": "the endpoint has a sqrt(n log n) Gaussian experiment and its complement has root-n rate; ordinary finite Fisher inference is unavailable",
+        "classification": "dev/research/evaluations/2026-11-04-infer-moving-report.md#gpd-and-gev"
+      },
+      {
+        "regime": "Poisson upper endpoint",
+        "available": false,
+        "condition": "finite mu held, sigma > 0 and -1 <= xi < -1/2; sigma and/or xi free",
+        "reason": "the endpoint has a non-Gaussian Poisson experiment at rate n^(-xi); both free coordinates also permit a root-n shape tangent; free xi = -1 adds a fitted-bound constraint",
+        "classification": "dev/research/evaluations/2026-11-04-infer-moving-report.md#gpd-and-gev"
+      },
+      {
+        "regime": "unsupported free threshold",
+        "available": false,
+        "condition": "mu free",
+        "reason": "the fitter does not estimate the threshold; known-threshold regularity does not justify this subset",
+        "classification": "dev/research/evaluations/2026-11-04-infer-moving-report.md#gpd-and-gev"
+      }
+    ]
+  },
+  {
+    "family": "huber",
+    "before": [
+      {
+        "regime": "unreviewed or unavailable",
+        "available": false,
+        "condition": "joint kink-moving parameters",
+        "reason": "the piecewise quadratic log density has a moving second-derivative kink, so the joint pointwise C2 condition fails",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "after": [
+      {
+        "regime": "regular finite Huber interior",
+        "available": false,
+        "condition": "finite mu, sigma > 0 and finite epsilon > 0; any nonempty free subset; observed information uses the a.e. piecewise Hessian with defined join handling; normal and Laplace limits are excluded",
+        "classification": "dev/research/evaluations/2026-11-04-infer-moving-report.md#huber",
+        "reason": "DQM and full-rank information are established, but support/join-aware numerical derivatives and fitted covariance validation for this expanded scope are not yet implemented"
+      }
+    ]
+  },
+  {
+    "family": "pig",
+    "before": [
+      {
+        "regime": "unreviewed or unavailable",
+        "available": false,
+        "condition": "interior joint regime",
+        "reason": "DQM and score tail domination are open in the cited classification",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "after": [
+      {
+        "regime": "unreviewed or unavailable",
+        "available": false,
+        "condition": "interior joint regime",
+        "reason": "DQM, finite full-rank information and a valid a.e. Hessian are established; numerical derivative and covariance validation for the expanded subsets is not yet implemented",
+        "classification": "dev/research/evaluations/2026-11-04-dqm-c-report.md#e-poisson-inverse-gaussian"
+      }
+    ]
+  },
+  {
+    "family": "sged",
+    "before": [
+      {
+        "regime": "symmetric member with held location",
+        "available": true,
+        "condition": "finite mean held, sd > 0 and nu > 0; xi = 1 held; if nu is free require nu > 1",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#pointwise-smoothness-for-ged-submodels"
+      },
+      {
+        "regime": "symmetric normal member",
+        "available": true,
+        "condition": "finite mean and sd > 0; nu = 2 and xi = 1 held; mean and/or sd free",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#pointwise-smoothness-for-ged-submodels"
+      },
+      {
+        "regime": "cusp moving with smooth exponent",
+        "available": true,
+        "condition": "finite mean, sd > 0, xi > 0 and nu > 2; any regular subset free",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#pointwise-smoothness-for-ged-submodels"
+      },
+      {
+        "regime": "unreviewed or unavailable",
+        "available": false,
+        "condition": "joint cusp-moving regime with 0 < nu <= 2, excluding the stated symmetric held-parameter scopes",
+        "reason": "the C2 and held-subset classification at the moving cusp has not yet been completed",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "after": [
+      {
+        "regime": "symmetric member with held location",
+        "available": true,
+        "condition": "finite mean held, sd > 0 and nu > 0; xi = 1 held; if nu is free require nu > 1",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#pointwise-smoothness-for-ged-submodels"
+      },
+      {
+        "regime": "symmetric normal member",
+        "available": true,
+        "condition": "finite mean and sd > 0; nu = 2 and xi = 1 held; mean and/or sd free",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#pointwise-smoothness-for-ged-submodels"
+      },
+      {
+        "regime": "cusp moving with smooth exponent",
+        "available": true,
+        "condition": "finite mean, sd > 0, xi > 0 and nu > 2; any regular subset free",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#pointwise-smoothness-for-ged-submodels"
+      },
+      {
+        "regime": "unreviewed or unavailable",
+        "available": false,
+        "condition": "joint cusp-moving regime with 0 < nu <= 2, excluding the stated symmetric held-parameter scopes",
+        "reason": "DQM and finite full-rank information hold for nu > 1/2, but moving-mode ordinary Hessians are invalid for nu <= 1; joint fitted cusp Hessians and numerical join handling in the remaining excluded subsets are not yet validated",
+        "classification": "dev/research/evaluations/2026-11-04-dqm-b-report.md#two-piece-models-snorm-sstd-and-sged"
+      }
+    ]
+  },
+  {
+    "family": "sn",
+    "before": [
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "finite xi, omega > 0 and finite alpha; any regular subset free; information is singular at alpha = 0 when xi and alpha are both free",
+        "classification": "dev/roadmap/2026-10-30-inference-and-dqm.md#cusps-and-singularities"
+      }
+    ],
+    "after": [
+      {
+        "regime": "identifiable interior submodel",
+        "available": true,
+        "condition": "finite xi, omega > 0 and finite alpha; any nonempty supported free subset except alpha = 0 with both xi and alpha free",
+        "classification": "dev/research/evaluations/2026-11-04-dqm-b-report.md#azzalini-sn-versus-st"
+      },
+      {
+        "regime": "singular information",
+        "available": false,
+        "condition": "finite xi, omega > 0 and finite alpha; alpha = 0 with both xi and alpha free",
+        "reason": "DQM holds but the free information has a null direction; ordinary observed or sandwich covariance is unavailable",
+        "classification": "dev/research/evaluations/2026-11-04-dqm-b-report.md#azzalini-sn-versus-st"
+      }
+    ]
+  },
+  {
+    "family": "snorm",
+    "before": [
+      {
+        "regime": "symmetric member with skew held",
+        "available": true,
+        "condition": "finite mean and sd > 0; xi = 1 held; mean and/or sd free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      },
+      {
+        "regime": "unreviewed or unavailable",
+        "available": false,
+        "condition": "joint cusp-moving regime with xi != 1",
+        "reason": "the two-piece log density has a moving second-derivative kink",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "after": [
+      {
+        "regime": "symmetric member with skew held",
+        "available": true,
+        "condition": "finite mean and sd > 0; xi = 1 held; mean and/or sd free",
+        "classification": "dev/research/evaluations/2026-11-04-infer-moving-report.md#two-piece-normal-snorm"
+      },
+      {
+        "regime": "regular two-piece normal interior",
+        "available": false,
+        "condition": "finite mean, sd > 0 and finite xi > 0; any nonempty free subset, including xi = 1 with xi free; observed information uses the a.e. piecewise Hessian with defined join handling; excluding the preceding available submodels",
+        "classification": "dev/research/evaluations/2026-11-04-infer-moving-report.md#two-piece-normal-snorm",
+        "reason": "DQM and full-rank information are established, but support/join-aware numerical derivatives and fitted covariance validation for this expanded scope are not yet implemented"
+      }
+    ]
+  },
+  {
+    "family": "sstd",
+    "before": [
+      {
+        "regime": "symmetric member with skew held",
+        "available": true,
+        "condition": "finite mean, sd > 0 and nu > 2; xi = 1 held; any other subset free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      },
+      {
+        "regime": "unreviewed or unavailable",
+        "available": false,
+        "condition": "joint cusp-moving regime with xi != 1",
+        "reason": "the two-piece log density has a moving second-derivative kink",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "after": [
+      {
+        "regime": "symmetric member with skew held",
+        "available": true,
+        "condition": "finite mean, sd > 0 and nu > 2; xi = 1 held; any other subset free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      },
+      {
+        "regime": "unreviewed or unavailable",
+        "available": false,
+        "condition": "finite mean, sd > 0 and nu > 2, xi > 0; xi free or xi != 1",
+        "reason": "DQM, finite full-rank information and a valid a.e. Hessian are established; numerical derivative and covariance validation for the expanded subsets is not yet implemented",
+        "classification": "dev/research/evaluations/2026-11-04-dqm-b-report.md#two-piece-models-snorm-sstd-and-sged"
+      }
+    ]
+  },
+  {
+    "family": "tbinom",
+    "before": [
+      {
+        "regime": "singleton retained support",
+        "available": true,
+        "condition": "known design and truncation bounds with exactly one retained integer; probability free in (0,1); the conditional law is a point mass, so information is zero",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
+      },
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "known integer size, known a and b held; 0 < prob < 1 free; retained support has at least two integers",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "after": [
+      {
+        "regime": "singleton retained support",
+        "available": false,
+        "condition": "known design and truncation bounds with exactly one retained integer; probability free in (0,1); the conditional law is a point mass, so information is zero",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels",
+        "reason": "The free information is structurally singular; neither observed nor sandwich covariance can be inverted"
+      },
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "known integer size, known a and b held; 0 < prob < 1 free; retained support has at least two integers",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ]
+  },
+  {
+    "family": "tlambda",
+    "before": [
+      {
+        "regime": "unreviewed or unavailable",
+        "available": false,
+        "condition": "interior joint regime",
+        "reason": "DQM and support-dependent regularity remain open in the cited classification",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "after": [
+      {
+        "regime": "regular interior model",
+        "available": false,
+        "condition": "finite mu, sigma > 0 and lambda < 1/2; any nonempty supported free subset; if lambda and mu are free require lambda > -1",
+        "classification": "dev/research/evaluations/2026-11-04-infer-moving-report.md#tukey-lambda",
+        "reason": "DQM and full-rank information are established, but support/join-aware numerical derivatives and fitted covariance validation for this expanded scope are not yet implemented"
+      },
+      {
+        "regime": "active lower fitted shape bound",
+        "available": false,
+        "condition": "lambda = -1 with both lambda and mu free",
+        "reason": "the model is DQM with full rank, but the fitted shape bound gives a Gaussian cone experiment rather than ordinary joint Wald calibration",
+        "classification": "dev/research/evaluations/2026-11-04-infer-moving-report.md#tukey-lambda"
+      },
+      {
+        "regime": "critical moving endpoints",
+        "available": false,
+        "condition": "lambda = 1/2; any nonempty supported free subset",
+        "reason": "endpoint directions use sqrt(n log n) and the endpoint-preserving complement uses sqrt(n); a dedicated mixed-rate procedure is required",
+        "classification": "dev/research/evaluations/2026-11-04-infer-moving-report.md#tukey-lambda"
+      },
+      {
+        "regime": "Poisson moving endpoints",
+        "available": false,
+        "condition": "lambda > 1/2; any nonempty supported free subset; lambda > 1 must be held",
+        "reason": "endpoint directions have non-Gaussian Poisson limits, with an additional root-n endpoint-preserving shape direction when sigma and lambda are both free; lambda = 1 also constrains free shape",
+        "classification": "dev/research/evaluations/2026-11-04-infer-moving-report.md#tukey-lambda"
+      }
+    ]
+  },
+  {
+    "family": "tpois",
+    "before": [
+      {
+        "regime": "singleton retained support",
+        "available": true,
+        "condition": "known truncation bounds with exactly one retained integer; finite lambda > 0 free; the conditional law is a point mass, so information is zero",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
+      },
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "finite lambda > 0 free; known a and b held; retained support has at least two integers",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "after": [
+      {
+        "regime": "singleton retained support",
+        "available": false,
+        "condition": "known truncation bounds with exactly one retained integer; finite lambda > 0 free; the conditional law is a point mass, so information is zero",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels",
+        "reason": "The free information is structurally singular; neither observed nor sandwich covariance can be inverted"
+      },
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "finite lambda > 0 free; known a and b held; retained support has at least two integers",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ]
+  },
+  {
+    "family": "zib",
+    "before": [
+      {
+        "regime": "size zero",
+        "available": true,
+        "condition": "known integer size = 0 held; the law is a point mass and every regular score is zero",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
+      },
+      {
+        "regime": "known unit binomial probability",
+        "available": true,
+        "condition": "known integer size >= 1, prob = 1 held, 0 < pi < 1 free",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+      },
+      {
+        "regime": "binomial member with inflation known",
+        "available": true,
+        "condition": "integer size >= 1 held, 0 < prob < 1 free, pi = 0 held",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+      },
+      {
+        "regime": "known point-mass member",
+        "available": true,
+        "condition": "known integer size >= 1, 0 < prob < 1 free, pi = 1 held; information is zero",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+      },
+      {
+        "regime": "size one with one coefficient known",
+        "available": true,
+        "condition": "known size = 1; exactly one of prob and pi free, the other held in (0,1); the remaining scalar Bernoulli parameter is identifiable",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
+      },
+      {
+        "regime": "size one with both coefficients free",
+        "available": true,
+        "condition": "known size = 1; prob and pi both free in (0,1); DQM and pointwise C2 hold but the joint information has rank one",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
+      },
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "known integer size >= 2 held; 0 < prob < 1 and 0 < pi < 1; either or both free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "after": [
+      {
+        "regime": "size zero",
+        "available": false,
+        "condition": "known integer size = 0 held; the law is a point mass and every regular score is zero",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels",
+        "reason": "The free information is structurally singular; neither observed nor sandwich covariance can be inverted"
+      },
+      {
+        "regime": "known unit binomial probability",
+        "available": true,
+        "condition": "known integer size >= 1, prob = 1 held, 0 < pi < 1 free",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+      },
+      {
+        "regime": "binomial member with inflation known",
+        "available": true,
+        "condition": "integer size >= 1 held, 0 < prob < 1 free, pi = 0 held",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+      },
+      {
+        "regime": "known point-mass member",
+        "available": false,
+        "condition": "known integer size >= 1, 0 < prob < 1 free, pi = 1 held; information is zero",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels",
+        "reason": "The free information is structurally singular; neither observed nor sandwich covariance can be inverted"
+      },
+      {
+        "regime": "size one with one coefficient known",
+        "available": true,
+        "condition": "known size = 1; exactly one of prob and pi free, the other held in (0,1); the remaining scalar Bernoulli parameter is identifiable",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
+      },
+      {
+        "regime": "size one with both coefficients free",
+        "available": false,
+        "reason": "The two free probability coefficients have rank-one information; covariance is singular",
+        "condition": "known size = 1; prob and pi both free in (0,1); DQM and pointwise C2 hold but the joint information has rank one",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
+      },
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "known integer size >= 2 held; 0 < prob < 1 and 0 < pi < 1; either or both free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ]
+  },
+  {
+    "family": "zinb",
+    "before": [
+      {
+        "regime": "negative-binomial member with inflation known",
+        "available": true,
+        "condition": "finite size > 0 and 0 < prob < 1; pi = 0 held; size and/or prob free",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+      },
+      {
+        "regime": "known point-mass member",
+        "available": true,
+        "condition": "finite size > 0 and 0 < prob < 1; pi = 1 held; remaining information is zero",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+      },
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "finite size > 0, 0 < prob < 1 and 0 < pi < 1; any regular subset free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "after": [
+      {
+        "regime": "negative-binomial member with inflation known",
+        "available": true,
+        "condition": "finite size > 0 and 0 < prob < 1; pi = 0 held; size and/or prob free",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+      },
+      {
+        "regime": "known point-mass member",
+        "available": false,
+        "condition": "finite size > 0 and 0 < prob < 1; pi = 1 held; remaining information is zero",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels",
+        "reason": "The free information is structurally singular; neither observed nor sandwich covariance can be inverted"
+      },
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "finite size > 0, 0 < prob < 1 and 0 < pi < 1; any regular subset free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ]
+  },
+  {
+    "family": "zip",
+    "before": [
+      {
+        "regime": "Poisson member with inflation known",
+        "available": true,
+        "condition": "finite lambda > 0 free; pi = 0 held",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+      },
+      {
+        "regime": "known point-mass member",
+        "available": true,
+        "condition": "finite lambda > 0 free; pi = 1 held; information is zero",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+      },
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "finite lambda > 0 and 0 < pi < 1; either or both free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "after": [
+      {
+        "regime": "Poisson member with inflation known",
+        "available": true,
+        "condition": "finite lambda > 0 free; pi = 0 held",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+      },
+      {
+        "regime": "known point-mass member",
+        "available": false,
+        "condition": "finite lambda > 0 free; pi = 1 held; information is zero",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels",
+        "reason": "The free information is structurally singular; neither observed nor sandwich covariance can be inverted"
+      },
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "finite lambda > 0 and 0 < pi < 1; either or both free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ]
+  },
+  {
+    "family": "zipf",
+    "before": [
+      {
+        "regime": "size one",
+        "available": true,
+        "condition": "known N = 1; finite s > 0 free; the law is a point mass, so information is zero",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
+      },
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "known integer N >= 2 held and finite s > 0 free",
+        "classification": "dev/roadmap/2026-10-30-inference-and-dqm.md#discrete-coordinates"
+      }
+    ],
+    "after": [
+      {
+        "regime": "size one",
+        "available": false,
+        "condition": "known N = 1; finite s > 0 free; the law is a point mass, so information is zero",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels",
+        "reason": "The free information is structurally singular; neither observed nor sandwich covariance can be inverted"
+      },
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "known integer N >= 2 held and finite s > 0 free",
+        "classification": "dev/roadmap/2026-10-30-inference-and-dqm.md#discrete-coordinates"
+      }
+    ]
+  },
+  {
+    "family": "zmbinom",
+    "before": [
+      {
+        "regime": "known boundary binomial probability",
+        "available": true,
+        "condition": "known integer size >= 1; prob = 0 or prob = 1 held; 0 < p0 < 1 free",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+      },
+      {
+        "regime": "positive-count member with zero mass known",
+        "available": true,
+        "condition": "known integer size >= 2 held, 0 < prob < 1 free, p0 = 0 held",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+      },
+      {
+        "regime": "known point-mass member",
+        "available": true,
+        "condition": "known integer size >= 1 held, 0 < prob < 1 free, p0 = 1 held; information is zero",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+      },
+      {
+        "regime": "size one with probability known",
+        "available": true,
+        "condition": "known size = 1; prob held in (0,1), p0 free in (0,1); the remaining zero-mass parameter is identifiable",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
+      },
+      {
+        "regime": "size one with probability free",
+        "available": true,
+        "condition": "known size = 1; prob free; the conditional positive distribution is a point mass and the probability score vanishes",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
+      },
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "known integer size >= 2 held; 0 < prob < 1 and 0 < p0 < 1; either or both free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "after": [
+      {
+        "regime": "known boundary binomial probability",
+        "available": true,
+        "condition": "known integer size >= 1; prob = 0 or prob = 1 held; 0 < p0 < 1 free",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+      },
+      {
+        "regime": "positive-count member with zero mass known",
+        "available": true,
+        "condition": "known integer size >= 2 held, 0 < prob < 1 free, p0 = 0 held",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+      },
+      {
+        "regime": "known point-mass member",
+        "available": false,
+        "condition": "known integer size >= 1 held, 0 < prob < 1 free, p0 = 1 held; information is zero",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels",
+        "reason": "The free information is structurally singular; neither observed nor sandwich covariance can be inverted"
+      },
+      {
+        "regime": "size one with probability known",
+        "available": true,
+        "condition": "known size = 1; prob held in (0,1), p0 free in (0,1); the remaining zero-mass parameter is identifiable",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
+      },
+      {
+        "regime": "size one with probability free",
+        "available": false,
+        "condition": "known size = 1; prob free; the conditional positive distribution is a point mass and the probability score vanishes",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels",
+        "reason": "The free information is structurally singular; neither observed nor sandwich covariance can be inverted"
+      },
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "known integer size >= 2 held; 0 < prob < 1 and 0 < p0 < 1; either or both free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ]
+  },
+  {
+    "family": "zmgeom",
+    "before": [
+      {
+        "regime": "known unit geometric probability",
+        "available": true,
+        "condition": "prob = 1 held; 0 < p0 < 1 free",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+      },
+      {
+        "regime": "positive-count member with zero mass known",
+        "available": true,
+        "condition": "0 < prob < 1 free, p0 = 0 held",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+      },
+      {
+        "regime": "known point-mass member",
+        "available": true,
+        "condition": "0 < prob < 1 free, p0 = 1 held; information is zero",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+      },
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "0 < prob < 1 and 0 < p0 < 1; either or both free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "after": [
+      {
+        "regime": "known unit geometric probability",
+        "available": true,
+        "condition": "prob = 1 held; 0 < p0 < 1 free",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+      },
+      {
+        "regime": "positive-count member with zero mass known",
+        "available": true,
+        "condition": "0 < prob < 1 free, p0 = 0 held",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+      },
+      {
+        "regime": "known point-mass member",
+        "available": false,
+        "condition": "0 < prob < 1 free, p0 = 1 held; information is zero",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels",
+        "reason": "The free information is structurally singular; neither observed nor sandwich covariance can be inverted"
+      },
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "0 < prob < 1 and 0 < p0 < 1; either or both free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ]
+  },
+  {
+    "family": "zmlogarithmic",
+    "before": [
+      {
+        "regime": "known zero positive-count parameter",
+        "available": true,
+        "condition": "prob = 0 held; 0 < p0 < 1 free",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+      },
+      {
+        "regime": "positive-count member with zero mass known",
+        "available": true,
+        "condition": "0 < prob < 1 free, p0 = 0 held",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+      },
+      {
+        "regime": "known point-mass member",
+        "available": true,
+        "condition": "0 < prob < 1 free, p0 = 1 held; information is zero",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+      },
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "0 < prob < 1 and 0 < p0 < 1; either or both free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "after": [
+      {
+        "regime": "known zero positive-count parameter",
+        "available": true,
+        "condition": "prob = 0 held; 0 < p0 < 1 free",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+      },
+      {
+        "regime": "positive-count member with zero mass known",
+        "available": true,
+        "condition": "0 < prob < 1 free, p0 = 0 held",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+      },
+      {
+        "regime": "known point-mass member",
+        "available": false,
+        "condition": "0 < prob < 1 free, p0 = 1 held; information is zero",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels",
+        "reason": "The free information is structurally singular; neither observed nor sandwich covariance can be inverted"
+      },
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "0 < prob < 1 and 0 < p0 < 1; either or both free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ]
+  },
+  {
+    "family": "zmpois",
+    "before": [
+      {
+        "regime": "known zero Poisson rate",
+        "available": true,
+        "condition": "lambda = 0 held; 0 < p0 < 1 free",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+      },
+      {
+        "regime": "positive-count member with zero mass known",
+        "available": true,
+        "condition": "finite lambda > 0 free, p0 = 0 held",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+      },
+      {
+        "regime": "known point-mass member",
+        "available": true,
+        "condition": "finite lambda > 0 free, p0 = 1 held; information is zero",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+      },
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "finite lambda > 0 and 0 < p0 < 1; either or both free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "after": [
+      {
+        "regime": "known zero Poisson rate",
+        "available": true,
+        "condition": "lambda = 0 held; 0 < p0 < 1 free",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+      },
+      {
+        "regime": "positive-count member with zero mass known",
+        "available": true,
+        "condition": "finite lambda > 0 free, p0 = 0 held",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+      },
+      {
+        "regime": "known point-mass member",
+        "available": false,
+        "condition": "finite lambda > 0 free, p0 = 1 held; information is zero",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels",
+        "reason": "The free information is structurally singular; neither observed nor sandwich covariance can be inverted"
+      },
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "finite lambda > 0 and 0 < p0 < 1; either or both free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ]
+  },
+  {
+    "family": "ztbinom",
+    "before": [
+      {
+        "regime": "size one",
+        "available": true,
+        "condition": "known size = 1; 0 < prob < 1 free; the zero-truncated law is a point mass, so information is zero",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
+      },
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "known integer size >= 2 held; 0 < prob < 1 free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "after": [
+      {
+        "regime": "size one",
+        "available": false,
+        "condition": "known size = 1; 0 < prob < 1 free; the zero-truncated law is a point mass, so information is zero",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels",
+        "reason": "The free information is structurally singular; neither observed nor sandwich covariance can be inverted"
+      },
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "known integer size >= 2 held; 0 < prob < 1 free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ]
+  }
+]

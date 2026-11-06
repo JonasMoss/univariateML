@@ -267,7 +267,9 @@ try:
                     mh=max(mh,float(abs(v[2+n+i*n+j]-h)/(1+abs(h))))
         checks[family]={'score_error':ms,'observed_error':mh,'points':len(xs)}
         if ms>=2e-6 or mh>=2e-5:raise ValueError(f'{family}: tolerance exceeded')
-    singular=[('bbinom',[1.,2.,3.],6,1.),('bbinom',[0.,2.,3.],6,0.),
+    singular=[('bnbinom',[2.,3.,2.],5,1.),('bnbinom',[2.,3.,2.],7,1.),
+              ('genbeta',[2.,1.,3.,1.],5,.4),('genbeta',[2.,1.,3.,1.],7,.4),
+              ('bbinom',[1.,2.,3.],6,1.),('bbinom',[0.,2.,3.],6,0.),
               ('zib',[1.,.4,.2],6,1.),('zib',[0.,.4,.2],6,0.),('ztbinom',[1.,.4],2,1.),
               ('zipf',[1.,2.],2,1.),('cmb',[1.,.4,.8],4,1.),('cmb',[0.,.4,.8],6,0.),
               ('zmbinom',[1.,.4,.2],2,1.),('tpois',[2.,0.,1.],1,1.),

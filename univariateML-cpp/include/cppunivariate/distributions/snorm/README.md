@@ -4,12 +4,12 @@ inference_numeric:
   - regime: "symmetric member with skew held"
     available: true
     condition: "finite mean and sd > 0; xi = 1 held; mean and/or sd free"
-    classification: "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
-  - regime: unreviewed or unavailable
+    classification: "dev/research/evaluations/2026-11-04-infer-moving-report.md#two-piece-normal-snorm"
+  - regime: "regular two-piece normal interior"
     available: false
-    condition: "joint cusp-moving regime with xi != 1"
-    reason: "the two-piece log density has a moving second-derivative kink"
-    classification: "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+    condition: "finite mean, sd > 0 and finite xi > 0; any nonempty free subset, including xi = 1 with xi free; observed information uses the a.e. piecewise Hessian with defined join handling; excluding the preceding available submodels"
+    reason: "DQM and full-rank information are established, but support/join-aware numerical derivatives and fitted covariance validation for this expanded scope are not yet implemented"
+    classification: "dev/research/evaluations/2026-11-04-infer-moving-report.md#two-piece-normal-snorm"
 name: Skew Normal
 support: {type: real, lower: -inf, upper: inf, closed: [false, false]}
 params:

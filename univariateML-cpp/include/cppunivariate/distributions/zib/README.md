@@ -1,9 +1,10 @@
 ---
 id: zib
 inference_numeric:
-  - regime: size zero
-    available: true
+  - regime: "size zero"
+    available: false
     condition: "known integer size = 0 held; the law is a point mass and every regular score is zero"
+    reason: "The free information is structurally singular; neither observed nor sandwich covariance can be inverted"
     classification: "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
   - regime: "known unit binomial probability"
     available: true
@@ -14,18 +15,20 @@ inference_numeric:
     condition: "integer size >= 1 held, 0 < prob < 1 free, pi = 0 held"
     classification: "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
   - regime: "known point-mass member"
-    available: true
+    available: false
     condition: "known integer size >= 1, 0 < prob < 1 free, pi = 1 held; information is zero"
+    reason: "The free information is structurally singular; neither observed nor sandwich covariance can be inverted"
     classification: "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
   - regime: "size one with one coefficient known"
     available: true
     condition: "known size = 1; exactly one of prob and pi free, the other held in (0,1); the remaining scalar Bernoulli parameter is identifiable"
     classification: "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
   - regime: "size one with both coefficients free"
-    available: true
+    available: false
     condition: "known size = 1; prob and pi both free in (0,1); DQM and pointwise C2 hold but the joint information has rank one"
+    reason: "The two free probability coefficients have rank-one information; covariance is singular"
     classification: "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
-  - regime: primary interior
+  - regime: "primary interior"
     available: true
     condition: "known integer size >= 2 held; 0 < prob < 1 and 0 < pi < 1; either or both free"
     classification: "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
