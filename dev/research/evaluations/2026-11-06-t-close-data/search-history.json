@@ -1,0 +1,209 @@
+{
+  "initial_ordinary_coordinate_bounds": {
+    "description": "Quadratic nuisance gaps, ordinary-coordinate root neighborhoods and exterior curvature, retaining the original C/v unsigned tail. Superseded by the uniform moment tail bound and faster neighborhood trial ordering.",
+    "rows": [
+      {
+        "name": "normal-0",
+        "family": "lst",
+        "status": 0,
+        "profiles": 1258,
+        "seconds": 0.241191877,
+        "values": [
+          "-0.024263453621345521",
+          "1.0200456350576514",
+          "218.25716410599679"
+        ],
+        "box": [
+          "-0.024263484363725919",
+          "-0.024263422878965126",
+          "1.0200455373236872",
+          "1.0200457327916159",
+          "218.25715748579148",
+          "218.25717072620211"
+        ],
+        "unresolved": [
+          "218.3233661280693",
+          "218.39642468846515"
+        ]
+      },
+      {
+        "name": "normal-0",
+        "family": "std",
+        "status": 0,
+        "profiles": 1181,
+        "seconds": 0.198749329,
+        "values": [
+          "-0.024263453621343752",
+          "1.0200456350576266",
+          "218.25716410481698"
+        ],
+        "box": [
+          "-0.02426348436372415",
+          "-0.024263422878963357",
+          "1.0200455374930504",
+          "1.020045732622203",
+          "218.25715755709894",
+          "218.25717065253502"
+        ],
+        "unresolved": [
+          "218.08710554696435",
+          "218.19372182901057"
+        ]
+      },
+      {
+        "name": "cauchy-stable-interior",
+        "family": "lst",
+        "status": 0,
+        "profiles": 361,
+        "seconds": 0.031092646,
+        "values": [
+          "0.020343843627696052",
+          "0.96931309761350848",
+          "33.905406905588734"
+        ],
+        "box": [
+          "0.020343843527695474",
+          "0.020343843727696629",
+          "0.96931309739721583",
+          "0.96931309782980102",
+          "33.905406902197711",
+          "33.905406908979749"
+        ],
+        "unresolved": [
+          "33.669474120470134",
+          "33.810538575783688"
+        ]
+      },
+      {
+        "name": "cauchy-stable-interior",
+        "family": "std",
+        "status": 0,
+        "profiles": 234,
+        "seconds": 0.016891765,
+        "values": [
+          "0.020343843627694893",
+          "0.96931309761350914",
+          "33.905406905590809"
+        ],
+        "box": [
+          "0.020343843527694316",
+          "0.02034384372769547",
+          "0.96931309739303961",
+          "0.96931309783397879",
+          "33.905406901907575",
+          "33.905406909274042"
+        ],
+        "unresolved": [
+          "34.015889392110658",
+          "34.185149052290988"
+        ]
+      },
+      {
+        "name": "two-interior-maxima",
+        "family": "lst",
+        "status": 0,
+        "profiles": 485,
+        "seconds": 0.043487624,
+        "values": [
+          "0.019645599368767117",
+          "0.97977498098848104",
+          "49.705241724003827"
+        ],
+        "box": [
+          "0.019645598368766563",
+          "0.019645600368767672",
+          "0.97977497860498131",
+          "0.97977498337198066",
+          "49.705241674297888",
+          "49.705241773709773"
+        ],
+        "unresolved": [
+          "49.596007560825669",
+          "49.656544971487257"
+        ]
+      },
+      {
+        "name": "two-interior-maxima",
+        "family": "std",
+        "status": 0,
+        "profiles": 480,
+        "seconds": 0.034952797,
+        "values": [
+          "0.019645599368768821",
+          "0.97977498098847926",
+          "49.705241723999393"
+        ],
+        "box": [
+          "0.019645598368768266",
+          "0.019645600368769375",
+          "0.97977497855962292",
+          "0.9797749834173356",
+          "49.705241669691446",
+          "49.705241778307347"
+        ],
+        "unresolved": [
+          "49.759548973854073",
+          "49.82759137001311"
+        ]
+      },
+      {
+        "name": "quantile-4000",
+        "family": "lst",
+        "status": 0,
+        "profiles": 3993,
+        "seconds": 32.350304401,
+        "values": [
+          "-5.7986786172162669e-17",
+          "1.0013158802129034",
+          "539.46057297627294"
+        ],
+        "box": [
+          "-1.0031771346668514e-08",
+          "1.0031771230694942e-08",
+          "1.001315843730604",
+          "1.0013159166952026",
+          "539.46056758165957",
+          "539.4605783708862"
+        ],
+        "unresolved": [
+          "539.34436179878674",
+          "539.40824306480488"
+        ]
+      },
+      {
+        "name": "quantile-4000",
+        "family": "std",
+        "status": 0,
+        "profiles": 3689,
+        "seconds": 31.215050232,
+        "values": [
+          "-3.0934682999757028e-17",
+          "1.0013158802129043",
+          "539.46057297661605"
+        ],
+        "box": [
+          "-1.0031771319616411e-08",
+          "1.0031771257747045e-08",
+          "1.0013158435545217",
+          "1.0013159168712871",
+          "539.4605673922722",
+          "539.46057856096002"
+        ],
+        "unresolved": [
+          "539.51641633930751",
+          "539.58905058403582"
+        ]
+      }
+    ]
+  },
+  "nonpassing_attempts": [
+    {
+      "command": "initial arithmetic.py",
+      "reason": "At v=0.5, interval padding straddled the helper lower domain 0.5, correctly yielding an invalid enclosure. Changed the independent ordinary-system test to v=0.501; all-free domains begin at 1 and 2."
+    },
+    {
+      "command": "replay-final compilation and copy",
+      "reason": "Attempted to replace a replay executable while the exploratory benchmark was executing it; the operating system refused with Text file busy. Used a separate final executable and reran replay/verification. No library failure or accepted result."
+    }
+  ]
+}

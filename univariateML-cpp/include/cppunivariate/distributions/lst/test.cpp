@@ -252,3 +252,57 @@ TEST_CASE("lst: certificate cancellation margins at series cutoffs") {
     CHECK(negative.hi>0.000100670013377905084);
   }
 }
+
+TEST_CASE("lst: certificate resolves retained competing shape maxima") {
+  // Independent 80-digit roots and weighted counterexamples from TASK-140.
+  {
+    const std::vector<double> support{-3.3753182637169354,-1.2713352565886626,-0.8001089566898665,0.4550011648748676,0.4631607376683885,0.48440591294209223,1.2931658287635732};
+    const std::vector<int> counts{1,11,8,11,7,8,9};
+    std::vector<double> x;for(std::size_t j=0;j<support.size();++j)x.insert(x.end(),counts[j],support[j]);
+    for(double floor:{1.,2.}){
+      const auto r=cppunivariate::t_certificate(mltest::as_span(x),floor);
+      REQUIRE(r.status==cppunivariate::TCertificateStatus::Finite);
+      CHECK(r.profiles<2000);
+      CHECK(r.coefficient_lower[0]<0.020343843626779073);
+      CHECK(r.coefficient_upper[0]>0.020343843626779073);
+      CHECK(r.coefficient_lower[1]<0.9693130976148451);
+      CHECK(r.coefficient_upper[1]>0.9693130976148451);
+      CHECK(r.coefficient_lower[2]<33.90540690730407);
+      CHECK(r.coefficient_upper[2]>33.90540690730407);
+    }
+  }
+  {
+    const std::vector<double> support{-2.5267827738984026,-1.3086958612269082,-0.917311177389449,-0.7470612434645413,-0.6822670978323393,0.5175256317384838,0.8692557396694677};
+    const std::vector<int> counts{2,1,4,4,1,8,11};
+    std::vector<double> x;for(std::size_t j=0;j<support.size();++j)x.insert(x.end(),counts[j],support[j]);
+    for(double floor:{1.,2.}){
+      const auto r=cppunivariate::t_certificate(mltest::as_span(x),floor);
+      REQUIRE(r.status==cppunivariate::TCertificateStatus::Finite);
+      CHECK(r.profiles<2000);
+      CHECK(r.coefficient_lower[0]<0.01964559936858695);
+      CHECK(r.coefficient_upper[0]>0.01964559936858695);
+      CHECK(r.coefficient_lower[1]<0.9797749809886654);
+      CHECK(r.coefficient_upper[1]>0.9797749809886654);
+      CHECK(r.coefficient_lower[2]<49.705241724474675);
+      CHECK(r.coefficient_upper[2]>49.705241724474675);
+    }
+  }
+}
+
+TEST_CASE("lst: certificate closes the shallow retained normal sample") {
+  const std::vector<double> x{0.050954662455960954,-0.41009991819347347,-0.27514948570271125,1.738894665940981,0.7827929830488856,-0.6094885407586247,0.16676804415486185,2.1605246276102874,-0.2387465089482371,-2.306020779595189,0.7712778390740149,0.868444961637359,1.0920372377409862,-0.6483986076864828,0.46991123089786935,-0.42877220249733083,-0.6711991838272713,-0.02262549573968949,-1.4089791730105745,0.03065718253139144,0.7394838316847435,-0.9188201716268543,-0.9824239413172151,-1.2717118121176605,0.7072827328968989,1.1005705147845657,-0.31552546144261623,0.24877221879696262,-0.7638326991319095,-0.8839285063895818,0.6899451665252806,-0.06974028824316554,-0.497841648238298,0.8381413762133866,-0.26457437687827884,-0.38679889567518655,-0.1278879326472602,-0.06134395969980899,-1.9342834627670904,-0.9650194594318576,0.12782341531106875,-0.5397482053246428,1.393079864160065,-1.8866780642217882,0.48159934707033075,0.37619107597635915,-0.7842379492323549,0.16661327780961455,0.06570257810373901,1.5033378387590548,-1.5584653425173214,0.5575584145186088,-0.7733568166152429,0.17687773844287813,-0.453478962001212,-2.6420087840828708,-2.0359122776319354,0.40101402508509254,2.637322231411576,-1.2594962766931357,0.896216299275718,-1.124759799790428,-0.31742515720096587,-0.3950423506433641,2.0094231968658294,0.6377817892826372,1.362962386207389,0.4899601440673617,0.7184328548359303,0.7179914812225302,0.616123650652679,0.2661075130421014,-0.6585341582181332,-1.012868755256849,-0.5993024660073559,1.0810268064227586,0.5679558382979852,1.3096494218560304,0.8540889501811413,-1.3334550306342379};
+  for(double floor:{1.,2.}) {
+    const auto r=cppunivariate::t_certificate(mltest::as_span(x),floor);
+    REQUIRE(r.status==cppunivariate::TCertificateStatus::Finite);
+    CHECK(r.profiles<2000);
+    CHECK(r.coefficient_lower[2]<218.257164105);
+    CHECK(r.coefficient_upper[2]>218.257164105);
+    // A smaller explicit budget refuses, preserving witnesses and no estimate.
+    const auto b=cppunivariate::t_certificate(mltest::as_span(x),floor,40);
+    CHECK(b.status==cppunivariate::TCertificateStatus::Budget);
+    CHECK(b.profiles==40);
+    CHECK(std::isnan(b.mu));
+    CHECK(std::isfinite(b.stop_detail.loglik_lower));
+    CHECK(b.stop_detail.loglik_upper==INFINITY);
+  }
+}

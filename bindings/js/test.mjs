@@ -121,16 +121,14 @@ test('std certificate distinguishes ordinary t2 and collapse paths', async () =>
   });
 });
 
-test('std certificate budget cannot pass through local convergence', async () => {
+test('std certificate resolves the shallow quantile maximum', async () => {
   const {default: createApi} = await import('./index.mjs');
   const api = await createApi();
   const probabilities = Float64Array.from({length: 4000}, (_, i) => (i + .5) / 4000);
   const x = api.lst.q(probabilities, [0, 1, 300]);
-  assert.throws(() => api.std.fit(x, {}, {iterlim: 500}), error => {
-    assert.equal(error.kind, 'budget');
-    assert.ok(error.candidates.some(candidate => candidate.model === 'lst'));
-    assert.ok(Number.isFinite(error.loglik_lower));
-    assert.equal(error.loglik_upper, Infinity);
-    return true;
-  });
+  const fit = api.std.fit(x, {}, {iterlim: 500});
+  assert.equal(fit.status, 'Ok');
+  assert.ok(Math.abs(fit.estimates.nu / 539.46057298 - 1) < 1e-7);
+  assert.ok(Math.abs(fit.estimates.mean) < 1e-7);
+  assert.ok(fit.estimates.sd > 1);
 });

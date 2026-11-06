@@ -1,0 +1,120 @@
+{
+  "document_links": [
+    {
+      "document": "dev/research/evaluations/2026-11-06-t-close-report.md",
+      "link": "2026-11-06-t-close-data/validation.json",
+      "resolves": true
+    },
+    {
+      "document": "dev/research/evaluations/2026-11-06-t-close-report.md",
+      "link": "2026-11-06-t-close-data/environment.json",
+      "resolves": true
+    },
+    {
+      "document": "dev/research/evaluations/2026-11-06-t-close-report.md",
+      "link": "2026-11-06-t-close-data/replay.json",
+      "resolves": true
+    },
+    {
+      "document": "dev/research/evaluations/2026-11-06-t-close-report.md",
+      "link": "../../../univariateML-cpp/include/cppunivariate/distributions/lst/certificate.hpp",
+      "resolves": true
+    },
+    {
+      "document": "dev/research/evaluations/2026-11-06-t-close-report.md",
+      "link": "2026-11-06-t-close-data/derivation.md",
+      "resolves": true
+    },
+    {
+      "document": "dev/research/evaluations/2026-11-06-t-close-report.md",
+      "link": "2026-11-06-t-port-data/arithmetic.md",
+      "resolves": true
+    },
+    {
+      "document": "dev/research/evaluations/2026-11-06-t-close-report.md",
+      "link": "2026-11-05-t-root-data/derivation.md",
+      "resolves": true
+    },
+    {
+      "document": "dev/research/evaluations/2026-11-06-t-close-report.md",
+      "link": "2026-11-06-t-close-data/independent.json",
+      "resolves": true
+    },
+    {
+      "document": "dev/research/evaluations/2026-11-06-t-close-report.md",
+      "link": "2026-11-06-t-close-data/quantile-root.json",
+      "resolves": true
+    },
+    {
+      "document": "dev/research/evaluations/2026-11-06-t-close-report.md",
+      "link": "2026-11-06-t-close-data/arithmetic.json",
+      "resolves": true
+    },
+    {
+      "document": "dev/research/evaluations/2026-11-06-t-close-report.md",
+      "link": "2026-11-06-t-close-data/benchmark-final.json",
+      "resolves": true
+    },
+    {
+      "document": "dev/research/evaluations/2026-11-06-t-close-report.md",
+      "link": "2026-11-06-t-close-data/search-history.json",
+      "resolves": true
+    },
+    {
+      "document": "dev/research/evaluations/2026-11-06-t-close-report.md",
+      "link": "2026-11-06-t-close-data/README.md",
+      "resolves": true
+    },
+    {
+      "document": "dev/research/evaluations/2026-11-06-t-close-report.md",
+      "link": "2026-11-06-t-close-data/validation.json",
+      "resolves": true
+    },
+    {
+      "document": "dev/research/evaluations/2026-11-06-t-close-report.md",
+      "link": "2026-11-06-t-close-data/final-checks.json",
+      "resolves": true
+    },
+    {
+      "document": "dev/research/evaluations/2026-11-06-t-close-data/README.md",
+      "link": "../2026-11-06-t-close-report.md",
+      "resolves": true
+    },
+    {
+      "document": "dev/research/evaluations/2026-11-06-t-close-data/README.md",
+      "link": "derivation.md",
+      "resolves": true
+    },
+    {
+      "document": "dev/research/evaluations/2026-11-06-t-close-data/README.md",
+      "link": "../2026-11-04-t-cert-data/inputs.json",
+      "resolves": true
+    },
+    {
+      "document": "dev/research/evaluations/2026-11-06-t-close-data/derivation.md",
+      "link": "../2026-11-06-t-port-data/arithmetic.md",
+      "resolves": true
+    },
+    {
+      "document": "dev/research/evaluations/2026-11-06-t-close-data/derivation.md",
+      "link": "../2026-11-05-t-root-data/derivation.md",
+      "resolves": true
+    }
+  ],
+  "source_diff_check": true,
+  "validated_source_unchanged": true,
+  "goldens_unchanged": true,
+  "report_sha256": "91a306fb482575e4ecfbdeb3b7ded029ae9ad0a603f7d31e58abc6d2383b416d",
+  "tracked_changes": [
+    "bindings/js/test.mjs",
+    "bindings/r/distributions/std/test.R",
+    "univariateML-cpp/include/cppunivariate/distributions/lst/certificate.hpp",
+    "univariateML-cpp/include/cppunivariate/distributions/lst/test.cpp",
+    "univariateML-cpp/include/cppunivariate/distributions/std/test.cpp"
+  ],
+  "artifact_display": {
+    "exit_code": 1,
+    "http_status": 403,
+    "reason": "The worktree is outside every configured viewer readable root. Display requires registration of this worktree root. No viewer configuration was changed."
+  }
+}

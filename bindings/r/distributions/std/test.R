@@ -82,17 +82,8 @@ test_that("Student-t interior fit and large-nu log likelihood agree with indepen
 test_that("large-nu interior fit matches dt and a slow oracle", {
   skip_unless_tier("full")
   x <- qt(((1:4000) - .5)/4000, df = 300)
-  fit <- tryCatch(mlstd(x, gradtol = 1e-7, iterlim = 500),error=identity)
-  if(inherits(fit,"error")) {
-    # The shallow root is isolated, but exhaustive exterior exclusion can
-    # exceed the fixed certificate budget. Never accept its local score alone.
-    expect_s3_class(fit,"univariateML_budget")
-    expect_true(nrow(fit$candidates)>0)
-    expect_true(any(fit$candidates$model=="lst"))
-    expect_true(is.finite(fit$loglik_lower))
-    expect_identical(fit$loglik_upper,Inf)
-    return(invisible(NULL))
-  }
+  fit <- mlstd(x, gradtol = 1e-7, iterlim = 500)
+  expect_s3_class(fit,"univariateML")
   expect_gt(unname(fit[3]), 343)
   objective <- function(p) {
     nu <- 2 + exp(p[3]); s <- exp(p[2])*sqrt((nu-2)/nu)
@@ -370,9 +361,8 @@ test_that("std certificate t2 stops use ordinary scale coordinates", {
   expect_true(is.finite(err$estimates["sigma"])&&err$estimates["sigma"]>0)
 })
 
-# Frozen TASK-140 sample: a finite root near nu=218 is enclosed, but the
-# exterior profile comparison exhausts its budget. No RNG or refit of a limit.
-test_that("std certificate budget is a terminal structured stop", {
+# Frozen TASK-140 sample: the shallow global maximum is now certified.
+test_that("std certificate resolves the shallow normal-0 maximum", {
   x <- c(
     0.050954662455960954,-0.41009991819347347,-0.27514948570271125,1.738894665940981,
     0.78279298304888556,-0.60948854075862469,0.16676804415486185,2.1605246276102874,
@@ -395,10 +385,10 @@ test_that("std certificate budget is a terminal structured stop", {
     -0.65853415821813321,-1.0128687552568489,-0.59930246600735593,1.0810268064227586,
     0.56795583829798524,1.3096494218560304,0.85408895018114128,-1.3334550306342379
   )
-  err <- tryCatch(mlstd(x),error=identity)
-  expect_s3_class(err,"univariateML_budget")
-  expect_true(any(err$candidates$model=="lst"))
-  expect_true(is.finite(err$loglik_lower))
-  expect_identical(err$loglik_upper,Inf)
-  expect_length(err$estimates,0)
+  fit <- mlstd(x)
+  expect_s3_class(fit,"univariateML")
+  expect_equal(unname(fit["nu"]),218.257164105,tolerance=1e-6)
+  expect_equal(unname(fit["mean"]),-0.0242634536213,tolerance=1e-6)
+  normal_ll <- sum(dnorm(x,mean(x),sqrt(mean((x-mean(x))^2)),log=TRUE))
+  expect_gt(as.numeric(logLik(fit))-normal_ll,0.0008)
 })
