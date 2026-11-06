@@ -1,0 +1,43 @@
+{
+  "base_revision": "164d41784756606a48ddc0cedc67752acab4050b",
+  "branch": "codex/paralogis-cert",
+  "created_utc": "2026-11-06T12:37:19.122512+00:00",
+  "state": "uncommitted; no git writes or board edits",
+  "source_sha256": {
+    "bindings/common/distributions/invparalogis/fit.hpp": "2f8bddb3329ea4a2abb9f5093279a7c0238737e0dabad0bd62459824a0b7caa7",
+    "bindings/common/distributions/paralogis/fit.hpp": "41f075fc2a70249460e20424ec4e58a3854e865ba53bf7c8d100808530f03cf7",
+    "bindings/r/distributions/invparalogis/test.R": "907eb190c8c3fec9b94af4e28f4efd53787e4ea7ca9bc1cfa05cfc9d3cd22cbf",
+    "bindings/r/distributions/paralogis/test.R": "ee4cea4d788012df2516636cdb7cd34682b62079aeb3a330521172db628d589a",
+    "dev/research/evaluations/2026-11-06-paralogis-cert-data/certificate-check.cpp": "4de3ffdeabfff19a5a76c3f964020c41959cd3487b495ffa174cb1d06c23101e",
+    "dev/research/evaluations/2026-11-06-paralogis-cert-data/held-scale-competing-mode.cpp": "917abb052ea33a3bc55bf06b1cb9e4cfd18b5d95b58b1f26505f6f476194521f",
+    "univariateML-cpp/include/cppunivariate/core/stop_detail.hpp": "e22ef89147c51c57f6e182570c61a7558d4638159f3ee50c85fd769c14fe1a39",
+    "univariateML-cpp/include/cppunivariate/distributions/burr/certificate.hpp": "759722d5cc6c82c94fcd199a28735fa036523d17551c629db09229d1e85f90d0",
+    "univariateML-cpp/include/cppunivariate/distributions/invparalogis/README.md": "cb052fbfff5afff1dff903cbd8d124b36838f89124c8f3d0ec9d18da49776f34",
+    "univariateML-cpp/include/cppunivariate/distributions/invparalogis/mle.hpp": "3059000117d27cde4d5c6412f2193feabff77a02c3455ec01c7d33ae5bd5b043",
+    "univariateML-cpp/include/cppunivariate/distributions/invparalogis/test.cpp": "034b585d0f0168ff6be8544c00e44433f7204ad4c1d762f8152e070b106f5a57",
+    "univariateML-cpp/include/cppunivariate/distributions/paralogis/README.md": "d48ffeed9a478c801ff49395616a77d8d8ac0acd75d27dd67f403bb2c0338268",
+    "univariateML-cpp/include/cppunivariate/distributions/paralogis/certificate.hpp": "ca461b31d2f6b3962c02740b7bbb2f2cd7c9f9ded6b6385e6752a05f2cd26d2a",
+    "univariateML-cpp/include/cppunivariate/distributions/paralogis/mle.hpp": "de1dff8c427e2ca37b978a743efccfde12e34aacd835c3cbda5deb53a8076a6a",
+    "univariateML-cpp/include/cppunivariate/distributions/paralogis/test.cpp": "17cd5ad4e4eaece7aa28a08f1824477e06275605e4543b56b63ffadf7175bafd"
+  },
+  "protected_fixture_sha256": {
+    "univariateML-cpp/include/cppunivariate/distributions/paralogis/dpqr.hpp": "f4fb1844c7787be6cae163b9fa2b4f835305a35991d22d0985ed7146be0b2529",
+    "univariateML-cpp/include/cppunivariate/distributions/paralogis/truth.py": "5b9c03e852c718f1601827e693e9c7cde8cc1c79c37efd2fcaea41a4351100ec",
+    "univariateML-cpp/include/cppunivariate/distributions/paralogis/truth.json": "88a2998aa8c4dae6995d3ac0a968d6fb18a29200bd5b6de2c8f358d8b8c1abae",
+    "univariateML-cpp/include/cppunivariate/distributions/paralogis/golden.json": "adf1ee807cfeb57743c33fa160096503a7bd361c1bffa24d29dcbb9239f212df",
+    "univariateML-cpp/include/cppunivariate/distributions/invparalogis/dpqr.hpp": "8b62f24c5fb75760c048132e9daf845fd6c9fa579cb8c334a0ceb4533de207ce",
+    "univariateML-cpp/include/cppunivariate/distributions/invparalogis/truth.py": "8375ec3da1cb28b62174b276daedea978d55ed478eaa7a7ba54879ea3fff9aba",
+    "univariateML-cpp/include/cppunivariate/distributions/invparalogis/truth.json": "49b1ef4dd4e6dc8e92ef4b06699cca7e9ac02224064758eb1a4d5caa89710038",
+    "univariateML-cpp/include/cppunivariate/distributions/invparalogis/golden.json": "e2d16de010dce241c301ea218fb23d9d9a8fc09a50c5e3d40b9e9ef88ad9284b",
+    "univariateML-cpp/include/cppunivariate/distributions/paralogis/fixed-scale-golden.json": "b42229de5c3f15a2331513b443c81c16ff03bcc407d1f52a5ca1cf4f94ca19da"
+  },
+  "environment": {
+    "workstation_cpp": "GCC 15.2.0",
+    "R": "4.6.1 (2026-06-24)",
+    "Node": "22.22.1",
+    "Emscripten": "6.0.13",
+    "threads": "run/run4; nice 10; BLAS/OpenMP one thread per worker",
+    "simbox_supplemental_cpp": "GCC 13.3.0"
+  },
+  "note": "Final compiled code tested in full C++, no-long-double, R dev/full and JS suites. Final dossier prose separately verified by the final site build."
+}

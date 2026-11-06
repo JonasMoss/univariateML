@@ -26,8 +26,8 @@ r:
   control:
     shape: Known positive finite coefficient; NULL estimates it.
     shape0: Optional positive finite starting value; NULL uses the automatic start.
-    gradtol: Gradient tolerance for the underlying paralogistic fit on median-normalized reciprocals; with fixed scale, tolerance on the mean log-shape score (at most 1e-10).
-    iterlim: Maximum number of iterations.
+    gradtol: Tolerance for the reciprocal paralogistic numerical proposal; success additionally requires the global certificate.
+    iterlim: Maximum proposal iterations; the subsequent global certificate has a separate budget of 32768 boxes.
 limits:
   - name: unbounded likelihood
     firmness: proved
@@ -67,8 +67,8 @@ relations:
     transform: inverse
 fit:
   method: delegation
-  certified: 'partial'
-  note: 'invparalogis/README.md, Details; invparalogis/mle.hpp (public fitter and held overloads); invparalogis/test.cpp: Reciprocal paralogistic delegation certifies held shape through the monotone scale solve. Joint fitting and held scale with free shape remain numerical; the equal-shapes constraint prevents an unconstrained Burr certificate.'
+  certified: 'yes'
+  note: 'invparalogis/README.md, Global certificate; paralogis/certificate.hpp; invparalogis/test.cpp: Free-shape fits require root enclosure, analytic tail exclusion and exhaustive compact-domain exclusion. Held shape uses the monotone Burr scale solve. Reciprocal transformation preserves the certificate and stop details.'
 areas:
 - actuarial
 - economics and income
@@ -94,7 +94,7 @@ existence:
     $-\infty$ as $\alpha$ tends to zero or infinity, including for constant
     samples. For the joint problem, the log-data density bound given below forces
     the profiled likelihood to $-\infty$ at both shape ends for nonconstant
-    samples. It proves existence, but does not certify the numerical optimizer.
+    samples. It proves existence; the compact-domain certificate below verifies each returned free-shape fit.
     Reciprocation preserves these existence and uniqueness properties.
 ---
 
@@ -110,7 +110,7 @@ Fitting requires a nonempty positive finite sample. The
 [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-genbeta.md)
 gives the boundary argument. Both coefficients are estimated unless held.
 With both free, constant data permit concentration at their common value and
-have unbounded likelihood. The joint numerical fit has no global certificate.
+have unbounded likelihood. A numerical proposal is returned only after the global certificate below succeeds.
 
 Holding scale removes that collapse. There are no nondegenerate limit-model
 escapes in this conditional fit. Its log-likelihood tends to minus infinity
@@ -136,6 +136,40 @@ therefore exists. For constant $y_i=y_0$, choosing
 $v=y_0+\log(a)/a$ gives density asymptotic to $a/e$, proving unboundedness.
 Reciprocation transports the argument to the inverse distribution.
 
+
+## Global certificate
+
+All free-shape fits use the
+[paralogistic compact-domain certificate](../paralogis/README.md)
+on $y_i=1/x_i$. A held inverse scale $\theta$ becomes the held paralogistic
+scale $1/\theta$; a free scale is reciprocated after certification.
+The Jacobian $-2\sum_i\log x_i$ is independent of the coefficients, so
+existence, the enclosed stationary root and every global likelihood
+comparison transfer. Candidate scale coordinates and likelihood bounds in
+structured stops are transformed in the same way. Held values remain exact.
+
+The parent certifier uses analytic tail bounds, a verified local root box
+and exhaustive exclusion of competing maxima, with a budget of 32768 boxes.
+It certifies in exact arithmetic conditional on the computed comparisons,
+using the documented practical 64-epsilon floating-point margin. Its small
+root box bounds relative shape error by $10^{-8}$ and the mapped scale
+interval must have relative width below $10^{-6}$. It assumes no global
+unimodality. Ambiguous arithmetic and unrepresentable reciprocals stop with
+`NumericalFailure`. If reciprocal rounding merges a nonconstant sample,
+the fit also stops numerically rather than declaring an unbounded likelihood.
+Proof-budget exhaustion stops with `CertificateBudget`;
+proposal exhaustion preserves `BfgsFailure`. The bindings transport
+structured stop details and never return the unchecked proposal.
+
+There is no additional density in the Hellinger closure. The weak closure
+on $[0,\infty)$ also contains point masses, including at zero.
+Tight concentration paths at infinite shape yield weak point masses; these
+do not supply a Lebesgue-density likelihood face. Constant joint samples
+have unbounded likelihood, while held scale removes that collapse, as in
+the parent proof. General analytic uniqueness for arbitrary samples remains
+open; successful certification establishes the unique global maximum for
+the actual sample.
+
 ## R notes
 
 Supply `scale` to hold it at a positive finite value, or `shape` to hold the
@@ -148,3 +182,9 @@ univariateML 1.x estimated only shape, with scale held at 1.
 On 2026-10-30, the fully free constant-sample rejection was moved to the
 core as `Unbounded`. Reciprocal delegation preserves this status. This moved
 the former adapter decision without changing nonconstant fits.
+
+On 2026-11-06 (TASK-116.6), free-shape proposals gained a compact-domain
+certificate. A proposed concavity shortcut was rejected: dividing the
+likelihood by $a+1$ does not produce the needed softplus perspective.
+The implementation therefore excludes competitors explicitly. See the
+[validation report](../../../../../dev/research/evaluations/2026-11-06-paralogis-cert-report.md).
