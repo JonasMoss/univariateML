@@ -1,0 +1,11 @@
+{
+  "command": [
+    "/tmp/umvl-cpu/simbox-run",
+    "bash",
+    "dev/research/evaluations/2026-11-06-zinb-cert-data/r_targeted.sh"
+  ],
+  "machine": "simbox",
+  "started": "2026-11-06T15:26:13.203279+00:00",
+  "elapsed_seconds": 99.27585812599864,
+  "exit_code": 1
+}

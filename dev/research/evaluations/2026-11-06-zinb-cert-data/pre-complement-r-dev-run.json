@@ -1,0 +1,11 @@
+{
+  "command": [
+    "/tmp/umvl-cpu/simbox-run",
+    "just",
+    "test"
+  ],
+  "machine": "simbox",
+  "started": "2026-11-06T15:40:13.445141+00:00",
+  "elapsed_seconds": 150.63274425899726,
+  "exit_code": 0
+}

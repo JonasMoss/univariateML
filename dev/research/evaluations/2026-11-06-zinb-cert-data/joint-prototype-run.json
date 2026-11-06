@@ -1,0 +1,11 @@
+{
+  "command": [
+    "/tmp/umvl-cpu/run",
+    "python3",
+    "build/scratch/joint.py"
+  ],
+  "machine": "workstation",
+  "started": "2026-11-06T14:41:12.823325+00:00",
+  "elapsed_seconds": 963.4962537160027,
+  "exit_code": 0
+}

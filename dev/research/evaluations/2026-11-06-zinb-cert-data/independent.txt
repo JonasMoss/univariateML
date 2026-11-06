@@ -1,0 +1,26 @@
+{
+  "seed": 11671,
+  "precision": 70,
+  "calls": 49,
+  "statuses": {
+    "0": 31,
+    "5": 5,
+    "4": 7,
+    "3": 6
+  },
+  "failures": {
+    "0": 43,
+    "2": 5,
+    "3": 1
+  },
+  "max_relative_coefficient_error": 1.990189678204278e-07,
+  "max_absolute_inflation_error": 3.977194649657347e-08,
+  "max_loglik_error_per_observation": 5.5124506766938734e-15,
+  "hessian_and_Taylor_points": 216,
+  "face_grid_checks": 1944,
+  "first_order_tail_checks": 288
+}
+{"name": "positive-tail", "maxit": 2000, "status": 3, "failure": 2, "work": 31999, "elapsed_seconds": 0.13960259799205232, "output": ["3", "2", "31999", "nan", "nan", "nan", "nan", "nan", "inf", "1", "0", "nan"]}
+{"name": "positive-tail", "maxit": 20000, "status": 3, "failure": 2, "work": 319999, "elapsed_seconds": 0.3742710480000824, "output": ["3", "2", "319999", "nan", "nan", "nan", "nan", "nan", "inf", "1", "0", "nan"]}
+{"name": "generated-0", "maxit": 2000, "status": 4, "failure": 0, "work": 136333, "elapsed_seconds": 0.21178986600716598, "output": ["4", "0", "136333", "nan", "nan", "nan", "nan", "-9331.8069084694798", "-9331.8069064696083", "2", "15", "-9331.806908424991"]}
+

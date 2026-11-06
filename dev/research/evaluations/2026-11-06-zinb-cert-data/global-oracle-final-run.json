@@ -1,0 +1,11 @@
+{
+  "command": [
+    "/tmp/umvl-cpu/simbox-run",
+    "python3",
+    "dev/research/evaluations/2026-11-06-zinb-cert-data/compile_global.py"
+  ],
+  "machine": "simbox",
+  "started": "2026-11-06T15:21:38.437296+00:00",
+  "elapsed_seconds": 31.876586177997524,
+  "exit_code": 0
+}

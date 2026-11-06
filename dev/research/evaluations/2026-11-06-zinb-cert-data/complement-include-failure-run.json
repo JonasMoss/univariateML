@@ -1,0 +1,11 @@
+{
+  "command": [
+    "/tmp/umvl-cpu/run",
+    "python3",
+    "dev/research/evaluations/2026-11-06-zinb-cert-data/compile_probe.py"
+  ],
+  "machine": "workstation",
+  "started": "2026-11-06T15:57:43.481604+00:00",
+  "elapsed_seconds": 1.2831204710018937,
+  "exit_code": 1
+}

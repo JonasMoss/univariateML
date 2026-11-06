@@ -1,0 +1,371 @@
+{
+  "mathml_elements": 160,
+  "environment": {
+    "platform": "Linux-7.0.0-42-generic-x86_64-with-glibc2.43",
+    "python": "3.14.5 (main, Jun  2 2026, 22:25:17) [Clang 22.1.3 ]",
+    "mpmath": "1.3.0",
+    "numpy": "2.4.6",
+    "compiler": "c++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.",
+    "R": "R version 4.6.1 (2026-06-24)\nRcpp 1.1.2\nBH 1.90.0.1",
+    "node": "v22.22.1",
+    "revision": "f30584cd1819744e130850bcb1e58a5d1c52ed28",
+    "branch": "codex/zinb-cert"
+  },
+  "source_manifest_sha256": "59516b2506de035bdaa3b87c54ee49e8a61b5bbb2a8a97ad6cc43083200df235",
+  "runs": [
+    {
+      "command": [
+        "/tmp/umvl-cpu/simbox-run",
+        "just",
+        "cpp-test"
+      ],
+      "machine": "simbox",
+      "started": "2026-11-06T16:18:47.706913+00:00",
+      "elapsed_seconds": 120.56478841000353,
+      "exit_code": 0,
+      "name": "cpp-dev",
+      "log": "cpp-dev.txt",
+      "tests_passed": 106,
+      "ctest_seconds": 38.46
+    },
+    {
+      "command": [
+        "/tmp/umvl-cpu/simbox-run",
+        "just",
+        "cpp-test-no-long-double"
+      ],
+      "machine": "simbox",
+      "started": "2026-11-06T16:20:48.299151+00:00",
+      "elapsed_seconds": 126.77938453500246,
+      "exit_code": 0,
+      "name": "cpp-no-long-double",
+      "log": "cpp-no-long-double.txt",
+      "tests_passed": 127,
+      "ctest_seconds": 49.1
+    },
+    {
+      "command": [
+        "/tmp/umvl-cpu/simbox-run",
+        "env",
+        "UMVL_TEST_TIER=full",
+        "just",
+        "cpp-test"
+      ],
+      "machine": "simbox",
+      "started": "2026-11-06T16:22:55.103640+00:00",
+      "elapsed_seconds": 58.37068858299608,
+      "exit_code": 0,
+      "name": "cpp-full",
+      "log": "cpp-full.txt",
+      "tests_passed": 127,
+      "ctest_seconds": 53.3
+    },
+    {
+      "command": [
+        "/tmp/umvl-cpu/simbox-run",
+        "just",
+        "test"
+      ],
+      "machine": "simbox",
+      "started": "2026-11-06T16:23:53.516986+00:00",
+      "elapsed_seconds": 209.3768634540029,
+      "exit_code": 0,
+      "name": "r-dev",
+      "log": "r-dev.txt",
+      "tests": {
+        "fail": 0,
+        "warn": 0,
+        "skip": 154,
+        "passed": 20845
+      }
+    },
+    {
+      "command": [
+        "/tmp/umvl-cpu/simbox-run",
+        "just",
+        "test-full"
+      ],
+      "machine": "simbox",
+      "started": "2026-11-06T16:27:22.930510+00:00",
+      "elapsed_seconds": 280.8301814169972,
+      "exit_code": 0,
+      "name": "r-full",
+      "log": "r-full.txt",
+      "tests": {
+        "fail": 0,
+        "warn": 0,
+        "skip": 0,
+        "passed": 43665
+      }
+    },
+    {
+      "command": [
+        "/tmp/umvl-cpu/run4",
+        "just",
+        "js-build"
+      ],
+      "machine": "workstation",
+      "started": "2026-11-06T16:19:52.181877+00:00",
+      "elapsed_seconds": 42.80222202299774,
+      "exit_code": 0,
+      "name": "js-build",
+      "log": "js-build.txt"
+    },
+    {
+      "command": [
+        "/tmp/umvl-cpu/run4",
+        "just",
+        "js-test"
+      ],
+      "machine": "workstation",
+      "started": "2026-11-06T16:20:35.006851+00:00",
+      "elapsed_seconds": 105.70549385900085,
+      "exit_code": 0,
+      "name": "js-test",
+      "log": "js-test.txt",
+      "tests": {
+        "tests": 432,
+        "pass": 432,
+        "fail": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "command": [
+        "/tmp/umvl-cpu/run4",
+        "just",
+        "site-check"
+      ],
+      "machine": "workstation",
+      "started": "2026-11-06T16:22:20.734624+00:00",
+      "elapsed_seconds": 65.44385574699845,
+      "exit_code": 0,
+      "name": "site-check",
+      "log": "site-check.txt"
+    },
+    {
+      "command": [
+        "/tmp/umvl-cpu/run",
+        "python3",
+        "dev/research/evaluations/2026-11-06-zinb-cert-data/compile_probe.py"
+      ],
+      "machine": "workstation",
+      "started": "2026-11-06T16:19:08.870775+00:00",
+      "elapsed_seconds": 37.89973087299586,
+      "exit_code": 0,
+      "name": "oracle",
+      "log": "oracle.txt"
+    },
+    {
+      "command": [
+        "/tmp/umvl-cpu/run",
+        "python3",
+        "dev/research/evaluations/2026-11-06-zinb-cert-data/timing.py"
+      ],
+      "machine": "workstation",
+      "started": "2026-11-06T16:19:46.800274+00:00",
+      "elapsed_seconds": 5.039583652003785,
+      "exit_code": 0,
+      "name": "timing",
+      "log": "timing.txt"
+    },
+    {
+      "command": [
+        "/tmp/umvl-cpu/simbox-run",
+        "python3",
+        "dev/research/evaluations/2026-11-06-zinb-cert-data/final_independent.py"
+      ],
+      "machine": "simbox",
+      "started": "2026-11-06T16:13:41.151860+00:00",
+      "elapsed_seconds": 30.660462145002384,
+      "exit_code": 0,
+      "name": "independent",
+      "log": "independent.txt"
+    }
+  ],
+  "scalar": {
+    "seed": 1167,
+    "precision": 70,
+    "calls": 91,
+    "success": 90,
+    "failures": {
+      "0": 90,
+      "1": 0,
+      "2": 0,
+      "3": 1
+    },
+    "max_relative_coefficient_error": 1.1786330748036205e-10,
+    "max_absolute_inflation_error": 4.10050795655299e-13,
+    "max_loglik_error_per_observation": 1.9278328375611516e-15,
+    "median_new_us": 4.823,
+    "median_legacy_us": 53.2,
+    "tail_inequalities": 288
+  },
+  "joint": {
+    "seed": 11671,
+    "precision": 70,
+    "calls": 49,
+    "statuses": {
+      "0": 31,
+      "5": 5,
+      "4": 7,
+      "3": 6
+    },
+    "failures": {
+      "0": 43,
+      "2": 5,
+      "3": 1
+    },
+    "max_relative_coefficient_error": 1.990189678204278e-07,
+    "max_absolute_inflation_error": 3.977194649657347e-08,
+    "max_loglik_error_per_observation": 5.5124506766938734e-15,
+    "hessian_and_Taylor_points": 216,
+    "face_grid_checks": 1944,
+    "first_order_tail_checks": 288
+  },
+  "retries": [
+    {
+      "name": "positive-tail",
+      "maxit": 2000,
+      "status": 3,
+      "failure": 2,
+      "work": 31999,
+      "elapsed_seconds": 0.13960259799205232,
+      "output": [
+        "3",
+        "2",
+        "31999",
+        "nan",
+        "nan",
+        "nan",
+        "nan",
+        "nan",
+        "inf",
+        "1",
+        "0",
+        "nan"
+      ]
+    },
+    {
+      "name": "positive-tail",
+      "maxit": 20000,
+      "status": 3,
+      "failure": 2,
+      "work": 319999,
+      "elapsed_seconds": 0.3742710480000824,
+      "output": [
+        "3",
+        "2",
+        "319999",
+        "nan",
+        "nan",
+        "nan",
+        "nan",
+        "nan",
+        "inf",
+        "1",
+        "0",
+        "nan"
+      ]
+    },
+    {
+      "name": "generated-0",
+      "maxit": 2000,
+      "status": 4,
+      "failure": 0,
+      "work": 136333,
+      "elapsed_seconds": 0.21178986600716598,
+      "output": [
+        "4",
+        "0",
+        "136333",
+        "nan",
+        "nan",
+        "nan",
+        "nan",
+        "-9331.8069084694798",
+        "-9331.8069064696083",
+        "2",
+        "15",
+        "-9331.806908424991"
+      ]
+    }
+  ],
+  "timing": {
+    "batches": 3,
+    "repetitions": 100,
+    "n": 500,
+    "rows": [
+      {
+        "mask": 0,
+        "method": "legacy-proposer",
+        "median_us": 9.36437
+      },
+      {
+        "mask": 0,
+        "method": "certificate",
+        "median_us": 5.61566
+      },
+      {
+        "mask": 1,
+        "method": "legacy-proposer",
+        "median_us": 3.29041
+      },
+      {
+        "mask": 1,
+        "method": "certificate",
+        "median_us": 4.79575
+      },
+      {
+        "mask": 2,
+        "method": "legacy-proposer",
+        "median_us": 74.84533
+      },
+      {
+        "mask": 2,
+        "method": "certificate",
+        "median_us": 5.54317
+      },
+      {
+        "mask": 3,
+        "method": "legacy-proposer",
+        "median_us": 3.07312
+      },
+      {
+        "mask": 3,
+        "method": "certificate",
+        "median_us": 4.57464
+      },
+      {
+        "mask": 4,
+        "method": "legacy-proposer",
+        "median_us": 277.81492
+      },
+      {
+        "mask": 4,
+        "method": "certificate",
+        "median_us": 31.28504
+      },
+      {
+        "mask": 5,
+        "method": "legacy-proposer",
+        "median_us": 277.16849
+      },
+      {
+        "mask": 5,
+        "method": "certificate",
+        "median_us": 32.11361
+      },
+      {
+        "mask": 6,
+        "method": "legacy-proposer",
+        "median_us": 397.24257
+      },
+      {
+        "mask": 6,
+        "method": "certificate",
+        "median_us": 3667.3132
+      }
+    ]
+  }
+}

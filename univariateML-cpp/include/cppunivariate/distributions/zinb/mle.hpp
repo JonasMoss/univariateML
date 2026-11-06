@@ -1,6 +1,7 @@
-// Exact inflation profile; conditional-mean solve for prob, scalar size search.
+// Historical proposal; the certified public dispatcher is included below.
 #pragma once
 #include "../nbinom/mle.hpp"
+#include "../../core/stop_detail.hpp"
 #include "../zip/mle.hpp"
 #include "../ztpois/profile.hpp"
 #include <algorithm>
@@ -9,14 +10,22 @@
 #include <map>
 
 namespace cppunivariate {
+enum class ZinbCertificateFailure { None, Arithmetic, Budget, ComparisonTie, Workload, TailUnresolved };
 enum class ZinbStatus { Ok, InvalidInput, InvalidSize, IterationFailure, ZipLimit, PoissonLimit, ZeroLimit };
 struct ZinbResult {
   double size, prob, pi, logLik;
   int iterations;
   ZinbStatus status;
+  StopDetail stop_detail{};
+  ZinbCertificateFailure certificate_failure=ZinbCertificateFailure::None;
+};
+struct ZinbCertificateResult {
+  ZinbResult fit;
+  StopDetail stop_detail;
+  ZinbCertificateFailure failure=ZinbCertificateFailure::None;
 };
 
-inline ZinbResult zinb_mle(ispan x, double tol = 1e-10, int maxit = 200,
+inline ZinbResult zinb_candidate_mle(ispan x, double tol = 1e-10, int maxit = 200,
                          double fixed_size = std::numeric_limits<double>::quiet_NaN(),
                          double fixed_prob = std::numeric_limits<double>::quiet_NaN(),
                          double fixed_pi = std::numeric_limits<double>::quiet_NaN()) {
@@ -177,3 +186,18 @@ inline ZinbResult zinb_mle(ispan x, double tol = 1e-10, int maxit = 200,
   return best;
 }
 } // namespace cppunivariate
+
+namespace cppunivariate {
+namespace zinb_cert_detail { inline double zero_logmass(double logzero,double pi); }
+inline ZinbResult zinb_mle(ispan x,double tol=1e-10,int maxit=200,
+    double fixed_size=std::numeric_limits<double>::quiet_NaN(),
+    double fixed_prob=std::numeric_limits<double>::quiet_NaN(),
+    double fixed_pi=std::numeric_limits<double>::quiet_NaN());
+inline ZinbCertificateResult zinb_fixed_size_mle(ispan x,double size,
+    double fixed_prob=std::numeric_limits<double>::quiet_NaN(),
+    double fixed_pi=std::numeric_limits<double>::quiet_NaN(),double tol=1e-12,int maxit=200);
+inline ZinbCertificateResult zinb_fixed_prob_mle(ispan x,double prob,
+    double fixed_pi=std::numeric_limits<double>::quiet_NaN(),double tol=1e-12,int maxit=200);
+}
+#include "certificate.hpp"
+#include "global_certificate.hpp"
