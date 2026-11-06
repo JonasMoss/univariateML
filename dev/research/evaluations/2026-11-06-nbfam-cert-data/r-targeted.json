@@ -1,0 +1,14 @@
+{
+  "command": "export UMVL_DISTRIBUTIONS_DIR=\"$PWD/univariateML-cpp/include/cppunivariate/distributions\"; just regen && cd univariateML-r && UMVL_TEST_TIER=dev TESTTHAT_CPUS=1 PKG_BUILD_EXTRA_FLAGS=false Rscript -e 'options(pkg.build_extra_flags=FALSE); testthat::test_local(\".\",filter=\"dist-(ztnbinom|zmnbinom|zinb)\",stop_on_failure=TRUE)'",
+  "machine": "simbox",
+  "started_utc": "2026-11-06T10:31:04.535395+00:00",
+  "wall_including_slot_wait_seconds": 53.26551348500652,
+  "compute_seconds": 46.81,
+  "attempts": [
+    {
+      "machine": "simbox",
+      "exit": 0
+    }
+  ],
+  "exit": 0
+}

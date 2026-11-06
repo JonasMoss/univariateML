@@ -1,0 +1,14 @@
+{
+  "command": "just js-build",
+  "machine": "local",
+  "started_utc": "2026-11-06T10:21:55.620030+00:00",
+  "wall_including_slot_wait_seconds": 7084.343336302001,
+  "compute_seconds": 72.25,
+  "attempts": [
+    {
+      "machine": "local",
+      "exit": 0
+    }
+  ],
+  "exit": 0
+}

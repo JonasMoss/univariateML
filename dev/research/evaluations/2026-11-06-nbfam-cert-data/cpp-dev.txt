@@ -1,0 +1,62 @@
+COMMAND just cpp-test
+MACHINE simbox
+        Start  76: distribution_paralogis
+ 78/106 Test  #51: distribution_invparalogis ........   Passed    0.03 sec
+        Start  79: distribution_pareto2
+ 79/106 Test  #19: distribution_dnorm ...............   Passed    0.04 sec
+        Start  27: distribution_frechet
+ 80/106 Test  #18: distribution_dlaplace ............   Passed    0.04 sec
+        Start  62: distribution_lnorm
+ 81/106 Test  #65: distribution_logitnorm ...........   Passed    0.04 sec
+        Start  78: distribution_pareto
+ 82/106 Test  #79: distribution_pareto2 .............   Passed    0.03 sec
+        Start  61: distribution_llogis
+ 83/106 Test  #62: distribution_lnorm ...............   Passed    0.03 sec
+        Start  38: distribution_gumbel
+ 84/106 Test  #80: distribution_pareto3 .............   Passed    0.04 sec
+        Start  13: distribution_cauchy
+ 85/106 Test  #27: distribution_frechet .............   Passed    0.03 sec
+        Start  36: distribution_gompertz
+ 86/106 Test  #76: distribution_paralogis ...........   Passed    0.04 sec
+        Start  54: distribution_invweibull
+ 87/106 Test  #78: distribution_pareto ..............   Passed    0.04 sec
+        Start  57: distribution_laplace
+ 88/106 Test  #38: distribution_gumbel ..............   Passed    0.03 sec
+        Start  33: distribution_geom
+ 89/106 Test  #61: distribution_llogis ..............   Passed    0.03 sec
+        Start  85: distribution_rayleigh
+ 90/106 Test  #36: distribution_gompertz ............   Passed    0.03 sec
+        Start 105: distribution_weibull
+ 91/106 Test  #54: distribution_invweibull ..........   Passed    0.03 sec
+        Start  23: distribution_exp
+ 92/106 Test  #13: distribution_cauchy ..............   Passed    0.03 sec
+        Start  41: distribution_hnorm
+ 93/106 Test  #33: distribution_geom ................   Passed    0.03 sec
+        Start  63: distribution_logis
+ 94/106 Test  #57: distribution_laplace .............   Passed    0.03 sec
+        Start  48: distribution_invexp
+ 95/106 Test #105: distribution_weibull .............   Passed    0.03 sec
+        Start 104: distribution_unif
+ 96/106 Test  #23: distribution_exp .................   Passed    0.03 sec
+        Start   2: sample_tests
+ 97/106 Test  #85: distribution_rayleigh ............   Passed    0.03 sec
+        Start 123: distribution_support
+ 98/106 Test #123: distribution_support .............   Passed    0.00 sec
+        Start   1: bfgs_tests
+ 99/106 Test   #1: bfgs_tests .......................   Passed    0.00 sec
+        Start 124: no_throw_tests
+100/106 Test #124: no_throw_tests ...................   Passed    0.00 sec
+        Start 126: tails_tests
+101/106 Test  #41: distribution_hnorm ...............   Passed    0.04 sec
+102/106 Test #126: tails_tests ......................   Passed    0.00 sec
+103/106 Test   #2: sample_tests .....................   Passed    0.02 sec
+104/106 Test  #63: distribution_logis ...............   Passed    0.03 sec
+105/106 Test #104: distribution_unif ................   Passed    0.02 sec
+106/106 Test  #48: distribution_invexp ..............   Passed    0.03 sec
+100% tests passed out of 106
+Label Time Summary:
+cran    = 172.22 sec*proc (105 tests)
+dev     = 175.69 sec*proc (106 tests)
+full    = 175.69 sec*proc (106 tests)
+Total Test time (real) =  29.30 sec
+NBFAM_COMPUTE_SECONDS=70.54

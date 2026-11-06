@@ -1,0 +1,62 @@
+COMMAND python3 dev/research/evaluations/2026-11-06-nbfam-cert-data/single_core.py just js-test
+MACHINE local1
+  type: 'test'
+  ...
+# Subtest: structured stops survive the JS Error facade
+ok 414 - structured stops survive the JS Error facade
+  ---
+  duration_ms: 1.34979
+  type: 'test'
+  ...
+# Subtest: Burr and reciprocal sign-uncertain-seam structured tie
+ok 415 - Burr and reciprocal sign-uncertain-seam structured tie
+  ---
+  duration_ms: 5.546382
+  type: 'test'
+  ...
+# Subtest: Burr and reciprocal nearly-constant structured budget
+ok 416 - Burr and reciprocal nearly-constant structured budget
+  ---
+  duration_ms: 141.397494
+  type: 'test'
+  ...
+# Subtest: Burr and reciprocal burr-k1000-r0 structured limit
+ok 417 - Burr and reciprocal burr-k1000-r0 structured limit
+  ---
+  duration_ms: 53.106319
+  type: 'test'
+  ...
+# Subtest: held-power faces retain transformed coefficients
+ok 418 - held-power faces retain transformed coefficients
+  ---
+  duration_ms: 0.413015
+  type: 'test'
+  ...
+# Subtest: translated and reciprocal delegates preserve certified stops
+ok 419 - translated and reciprocal delegates preserve certified stops
+  ---
+  duration_ms: 0.671039
+  type: 'test'
+  ...
+# Subtest: Lomax budget witnesses retain public delegate coordinates and bounds
+ok 420 - Lomax budget witnesses retain public delegate coordinates and bounds
+  ---
+  duration_ms: 1.159439
+  type: 'test'
+  ...
+# Subtest: unrepresentable delegate reductions stop as numerical failures
+ok 421 - unrepresentable delegate reductions stop as numerical failures
+  ---
+  duration_ms: 0.277693
+  type: 'test'
+  ...
+1..421
+# tests 421
+# suites 0
+# pass 421
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 122280.022645
+NBFAM_COMPUTE_SECONDS=122.43

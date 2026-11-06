@@ -41,8 +41,8 @@ r:
   sampler: rzmnbinom
   control:
     size: Optional fixed size; NULL estimates size.
-    reltol: Tolerance for scalar profile search.
-    iterlim: Maximum scalar search iterations.
+    reltol: Tolerance for the positive-count coefficient proposer.
+    iterlim: Proposer iterations; delegated certificate budget is 16 times min(iterlim, 100000).
     prob: "Optional held prob; NULL estimates it."
     p0: "Optional held p0; NULL estimates it."
 log_density: Piecewise((log(p0), Eq(x, 0)), (log(1-p0)+(loggamma(size+x)-loggamma(size)-loggamma(x+1)+size*log(prob)+x*log(1-prob)-log(1-prob**size)), True))
@@ -50,9 +50,8 @@ limits:
 - model: zmpois
   firmness: proved
   when: 'The size $r$ tends to infinity and $p$ tends to one with $r(1-p)/p$ tending to a finite positive rate and $p_0$ unchanged.'
-  detect: 'Size and probability are free, and the fitted zero-modified Poisson boundary has log likelihood at least the best finite value found minus $10^{-8}$ times sample size. This numerical comparison does not certify non-existence.'
+  detect: 'Size and probability are free and the delegated positive-count certificate proves that its finite-size profile increases throughout the domain to the zero-truncated Poisson limit.'
   status: PoissonLimit
-  numerical: true
 examples: |
   set.seed(1)
   x <- rml(200, mlzmnbinom())
@@ -71,8 +70,8 @@ relations:
     mass: p0
 fit:
   method: delegation
-  certified: 'no'
-  note: "zmnbinom/mle.hpp: The zero-indicator likelihood separates analytically; positive counts delegate to ztnbinom, inheriting its finite log-size grid, local refinements and uncertified Poisson comparison."
+  certified: 'yes'
+  note: "zmnbinom/mle.hpp: Exact zero-indicator separation delegates positive counts to the global ztnbinom certificate and transports its limit and numerical/budget stops, including likelihood bounds."
 areas:
 - counts and ecology
 classification: specialist
@@ -109,8 +108,7 @@ existence:
     free, let $Q(r)$ be the maximized positive log likelihood at finite $r\ge0$
     and let $Q_\infty$ be the fitted zero-truncated Poisson value. A finite
     maximum exists if some finite $r$ has $Q(r)\ge Q_\infty$; otherwise only the
-    infinite-size boundary attains the supremum. This global characterization does
-    not certify the implemented numerical search.
+    infinite-size boundary attains the supremum. The positive-count certificate establishes the required global ordering on each successful call; it stops on unresolved signs or extra extrema. At held interior probability the positive-count size fit is unique by strict concavity, as proved in the ztnbinom dossier.
 ---
 
 The zero-modified negative binomial distribution assigns probability $p_0$ directly to zero and models positive counts by a zero-truncated negative binomial law. The size $r$ need not be an integer. Together with $p$, it controls the shape of the positive-count distribution.
@@ -123,10 +121,14 @@ Size zero is the attained logarithmic-series member, with logarithmic-series par
 
 Holding finite nonnegative size removes the infinite-size escape. Holding $p<1$ also removes it. With only the zero probability held, the positive conditional profile can still approach a zero-truncated Poisson law, producing a zero-modified Poisson boundary with the same zero probability.
 
-The remaining size profiles are searched numerically without a global certificate. The attained logarithmic member is included explicitly. A boundary log likelihood within $10^{-8}$ times the sample size of the best finite value found triggers a limit report, so nearly tied finite maxima can also be rejected. The [count-family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-counts.md) gives the global profile characterization and held-subset arguments.
+The positive-count fit delegates to the [ztnbinom certificate](../ztnbinom/README.md), including its attained logarithmic member, signed root enclosure, full-domain score bounds, practical floating-point margins and workload limits. Joint uniqueness remains unknown in general. Each successful free-size fit either has one globally certified maximum or the certified attained endpoint; unresolved signs or additional extrema stop. The Poisson report requires a globally increasing positive-count profile. Its limit coefficients are the zero-truncated Poisson rate and the held or fitted zero probability, and its likelihood includes the zero-indicator contribution. The [count-family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-counts.md) gives the global profile characterization and held-subset arguments.
 
 ## R notes
 
 Supply any coefficient to hold it; `NULL` estimates it. Fractional nonnegative sizes, including `size = 0`, are allowed. All-zero samples warn that base parameters are unidentified. Supplied values are preserved, and free base coefficients use the representatives `size = 1`, `prob = 0.5`. With free zero probability they return `p0 = 1`. A free fit with positives all equal to one warns that `mlbinom(x, size = 1)` fits the attained two-point law exactly.
 
-The infinite-size report stops with advice to use `mlzmpois`. A search that exhausts floating-point resolution or its refinement budget also stops.
+The infinite-size report stops with advice to use `mlzmpois`. A search that exhausts floating-point resolution or its certificate budget also stops, preserving the delegated diagnostic and likelihood bounds.
+
+## Decision history
+
+On 2026-11-06 the dedicated delegate path replaced the shared result alias so that limit coefficients, likelihood bounds and budget diagnostics survive every hold subset. The zero-indicator factor shifts both bounds by its log likelihood, with a practical $1024\epsilon(1+n+|\ell_0|)$ arithmetic allowance on each side. No density, golden fixture or zero-indicator maximizer changed. See the [certificate report](../../../../../dev/research/evaluations/2026-11-06-nbfam-cert-report.md).

@@ -1,0 +1,62 @@
+COMMAND just js-build
+MACHINE local
+MACHINE local
+bash bindings/js/build.sh
+/home/jonas/.bashrc: line 26: /home/jonas/.cargo/env: No such file or directory
+/home/jonas/.bash_profile: line 9: /home/jonas/.cargo/env: No such file or directory
+Setting up EMSDK environment (suppress these messages with EMSDK_QUIET=1)
+Adding directories to PATH:
+PATH += /home/jonas/emsdk
+PATH += /home/jonas/emsdk/upstream/emscripten
+Setting environment variables:
+PATH = /home/jonas/emsdk:/home/jonas/emsdk/upstream/emscripten:/home/jonas/.elan/bin:/home/jonas/.npm-global/bin:/home/jonas/.local/bin:/home/jonas/bin:/home/jonas/.npm-global/lib/node_modules/@openai/codex/node_modules/@openai/codex-linux-x64/vendor/x86_64-unknown-linux-musl/codex-path:/home/jonas/.codex/tmp/arg0-linux/codex-arg0U6xduB:/home/jonas/Files/work/misc/codex-math-web/node_modules/.bin:/home/jonas/Files/work/misc/node_modules/.bin:/home/jonas/Files/work/node_modules/.bin:/home/jonas/Files/node_modules/.bin:/home/jonas/node_modules/.bin:/home/node_modules/.bin:/node_modules/.bin:/usr/share/nodejs/@npmcli/run-script/lib/node-gyp-bin:/home/jonas/.venvs/global/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/jonas/mplusdemo
+EMSDK = /home/jonas/emsdk
+EMSDK_NODE = /home/jonas/emsdk/node/24.19.0_64bit/bin/node
+Validated and generated d/p/q/r for 99 families.
+shared:INFO: (Emscripten: Running sanity checks)
+cache:INFO: generating system headers: sysroot_install.stamp... (this will be cached in "/home/jonas/Files/programming/univariateML.wt/nbfam-cert/build/em-cache/sysroot_install.stamp" for subsequent builds)
+cache:INFO:  - ok
+In file included from bindings/js/bindings.cpp:9:
+In file included from build/js/generated/fit_includes.hpp:5:
+In file included from bindings/common/distributions/binom/fit.hpp:3:
+univariateML-cpp/include/cppunivariate/distributions/binom/mle.hpp:155:60: warning: self-comparison always evaluates to true [-Wtautological-compare]
+  155 |     if (std::numeric_limits<CPPUNIV_EXTENDED_REAL>::digits <=
+      |                                                            ^
+1 warning generated.
+cache:INFO: generating system library: sysroot/lib/wasm32-emscripten/libembind-rtti.a... (this will be cached in "/home/jonas/Files/programming/univariateML.wt/nbfam-cert/build/em-cache/sysroot/lib/wasm32-emscripten/libembind-rtti.a" for subsequent builds)
+system_libs:INFO: compiled 1 inputs in 0.71s
+cache:INFO:  - ok
+cache:INFO: generating system library: sysroot/lib/wasm32-emscripten/libGL-getprocaddr.a... (this will be cached in "/home/jonas/Files/programming/univariateML.wt/nbfam-cert/build/em-cache/sysroot/lib/wasm32-emscripten/libGL-getprocaddr.a" for subsequent builds)
+system_libs:INFO: compiled 4 inputs in 0.20s
+cache:INFO:  - ok
+cache:INFO: generating system library: sysroot/lib/wasm32-emscripten/libal.a... (this will be cached in "/home/jonas/Files/programming/univariateML.wt/nbfam-cert/build/em-cache/sysroot/lib/wasm32-emscripten/libal.a" for subsequent builds)
+system_libs:INFO: compiled 1 inputs in 0.11s
+cache:INFO:  - ok
+cache:INFO: generating system library: sysroot/lib/wasm32-emscripten/libhtml5.a... (this will be cached in "/home/jonas/Files/programming/univariateML.wt/nbfam-cert/build/em-cache/sysroot/lib/wasm32-emscripten/libhtml5.a" for subsequent builds)
+system_libs:INFO: compiled 5 inputs in 0.28s
+cache:INFO:  - ok
+cache:INFO: generating system library: sysroot/lib/wasm32-emscripten/libstubs.a... (this will be cached in "/home/jonas/Files/programming/univariateML.wt/nbfam-cert/build/em-cache/sysroot/lib/wasm32-emscripten/libstubs.a" for subsequent builds)
+system_libs:INFO: compiled 2 inputs in 0.12s
+cache:INFO:  - ok
+cache:INFO: generating system library: sysroot/lib/wasm32-emscripten/libnoexit.a... (this will be cached in "/home/jonas/Files/programming/univariateML.wt/nbfam-cert/build/em-cache/sysroot/lib/wasm32-emscripten/libnoexit.a" for subsequent builds)
+system_libs:INFO: compiled 1 inputs in 0.11s
+cache:INFO:  - ok
+cache:INFO: generating system library: sysroot/lib/wasm32-emscripten/libc.a... (this will be cached in "/home/jonas/Files/programming/univariateML.wt/nbfam-cert/build/em-cache/sysroot/lib/wasm32-emscripten/libc.a" for subsequent builds)
+system_libs:INFO: compiled 1074 inputs in 8.17s
+cache:INFO:  - ok
+cache:INFO: generating system library: sysroot/lib/wasm32-emscripten/libdlmalloc.a... (this will be cached in "/home/jonas/Files/programming/univariateML.wt/nbfam-cert/build/em-cache/sysroot/lib/wasm32-emscripten/libdlmalloc.a" for subsequent builds)
+system_libs:INFO: compiled 2 inputs in 0.27s
+cache:INFO:  - ok
+cache:INFO: generating system library: sysroot/lib/wasm32-emscripten/libclang_rt.builtins.a... (this will be cached in "/home/jonas/Files/programming/univariateML.wt/nbfam-cert/build/em-cache/sysroot/lib/wasm32-emscripten/libclang_rt.builtins.a" for subsequent builds)
+system_libs:INFO: compiled 184 inputs in 1.72s
+cache:INFO:  - ok
+cache:INFO: generating system library: sysroot/lib/wasm32-emscripten/libc++-noexcept.a... (this will be cached in "/home/jonas/Files/programming/univariateML.wt/nbfam-cert/build/em-cache/sysroot/lib/wasm32-emscripten/libc++-noexcept.a" for subsequent builds)
+system_libs:INFO: compiled 57 inputs in 12.56s
+cache:INFO:  - ok
+cache:INFO: generating system library: sysroot/lib/wasm32-emscripten/libc++abi-noexcept.a... (this will be cached in "/home/jonas/Files/programming/univariateML.wt/nbfam-cert/build/em-cache/sysroot/lib/wasm32-emscripten/libc++abi-noexcept.a" for subsequent builds)
+system_libs:INFO: compiled 16 inputs in 1.72s
+cache:INFO:  - ok
+cache:INFO: generating system library: sysroot/lib/wasm32-emscripten/libsockets.a... (this will be cached in "/home/jonas/Files/programming/univariateML.wt/nbfam-cert/build/em-cache/sysroot/lib/wasm32-emscripten/libsockets.a" for subsequent builds)
+system_libs:INFO: compiled 27 inputs in 0.60s
+cache:INFO:  - ok
+NBFAM_COMPUTE_SECONDS=72.25

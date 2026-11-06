@@ -1,0 +1,14 @@
+{
+  "command": "just test-full",
+  "machine": "local",
+  "started_utc": "2026-11-06T11:04:18.289563+00:00",
+  "wall_including_slot_wait_seconds": 428.8510877689987,
+  "compute_seconds": 324.69,
+  "attempts": [
+    {
+      "machine": "local",
+      "exit": 0
+    }
+  ],
+  "exit": 0
+}

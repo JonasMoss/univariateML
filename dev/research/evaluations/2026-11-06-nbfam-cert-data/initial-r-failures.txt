@@ -1,0 +1,68 @@
+Failure ('test_scale_equivariance.R:100:11'): mlst is equivariant in its dimensional parameters
+Expected `pulled[4]` to equal `as.numeric(base)[4]`.
+Differences:
+1/1 mismatches
+[1] 1272 - 1272 == -0.274
+
+Failure ('test-dist-zmnbinom.R:156:3'): P2 held-probability search respects iteration failure
+`mlzmnbinom(c(0, 1, 2, 5), prob = 0.4, iterlim = 1)` threw an error with unexpected message.
+Expected match: "Profile search"
+Actual message: "Profile certificate iteration budget exhausted (16 * min(iterlim, 100000)); no verified maximum."
+Backtrace:
+    ▆
+ 1. ├─testthat::expect_error(...) at test-dist-zmnbinom.R:156:3
+ 2. │ └─testthat:::quasi_capture(...)
+ 3. │   ├─testthat (local) .capture(...)
+ 4. │   │ └─base::withCallingHandlers(...)
+ 5. │   └─rlang::eval_bare(quo_get_expr(.quo), quo_get_env(.quo))
+ 6. └─univariateML::mlzmnbinom(c(0, 1, 2, 5), prob = 0.4, iterlim = 1)
+
+Failure ('test-dist-zmnbinom.R:160:2'): P3 insufficient profile refinement stops
+`mlzmnbinom(c(0, 0, 1, 2, 8)[c(1, 2, 3, 4, 5)], iterlim = 1)` threw an error with unexpected message.
+Expected match: "Profile search exhausted"
+Actual message: "Profile certificate iteration budget exhausted (16 * min(iterlim, 100000)); no verified maximum."
+Backtrace:
+    ▆
+ 1. ├─testthat::expect_error(...) at test-dist-zmnbinom.R:160:2
+ 2. │ └─testthat:::quasi_capture(...)
+ 3. │   ├─testthat (local) .capture(...)
+ 4. │   │ └─base::withCallingHandlers(...)
+ 5. │   └─rlang::eval_bare(quo_get_expr(.quo), quo_get_env(.quo))
+ 6. └─univariateML::mlzmnbinom(...)
+
+Failure ('test-dist-ztnbinom.R:140:3'): P2 held-probability search respects iteration failure
+`mlztnbinom(c(1, 2, 5), prob = 0.4, iterlim = 1)` threw an error with unexpected message.
+Expected match: "Profile search"
+Actual message: "Profile certificate iteration budget exhausted (16 * min(iterlim, 100000)); no verified maximum."
+Backtrace:
+    ▆
+ 1. ├─testthat::expect_error(...) at test-dist-ztnbinom.R:140:3
+ 2. │ └─testthat:::quasi_capture(...)
+ 3. │   ├─testthat (local) .capture(...)
+ 4. │   │ └─base::withCallingHandlers(...)
+ 5. │   └─rlang::eval_bare(quo_get_expr(.quo), quo_get_env(.quo))
+ 6. └─univariateML::mlztnbinom(c(1, 2, 5), prob = 0.4, iterlim = 1)
+
+Failure ('test-dist-ztnbinom.R:144:2'): P3 insufficient profile refinement stops
+`mlztnbinom(c(0, 0, 1, 2, 8)[c(3, 4, 5)], iterlim = 1)` threw an error with unexpected message.
+Expected match: "Profile search exhausted"
+Actual message: "Profile certificate iteration budget exhausted (16 * min(iterlim, 100000)); no verified maximum."
+Backtrace:
+    ▆
+ 1. ├─testthat::expect_error(...) at test-dist-ztnbinom.R:144:2
+ 2. │ └─testthat:::quasi_capture(...)
+ 3. │   ├─testthat (local) .capture(...)
+ 4. │   │ └─base::withCallingHandlers(...)
+ 5. │   └─rlang::eval_bare(quo_get_expr(.quo), quo_get_env(.quo))
+ 6. └─univariateML::mlztnbinom(c(0, 0, 1, 2, 8)[c(3, 4, 5)], iterlim = 1)
+
+[ FAIL 5 | WARN 0 | SKIP 154 | PASS 20680 ]
+
+No one gets it right on their first try
+Error:
+! Test failures.
+Timing stopped at: 302.8 3.776 86.04
+Execution halted
+error: Recipe `test` failed on line 66 with exit code 1
+Command exited with non-zero status 1
+NBFAM_COMPUTE_SECONDS=228.07

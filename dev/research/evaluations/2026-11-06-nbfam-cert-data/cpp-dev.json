@@ -1,0 +1,14 @@
+{
+  "command": "just cpp-test",
+  "machine": "simbox",
+  "started_utc": "2026-11-06T10:41:50.951279+00:00",
+  "wall_including_slot_wait_seconds": 745.2080622979993,
+  "compute_seconds": 70.54,
+  "attempts": [
+    {
+      "machine": "simbox",
+      "exit": 0
+    }
+  ],
+  "exit": 0
+}

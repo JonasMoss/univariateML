@@ -1,0 +1,14 @@
+{
+  "command": "just test",
+  "machine": "simbox",
+  "started_utc": "2026-11-06T10:21:00.005349+00:00",
+  "wall_including_slot_wait_seconds": 235.4421661469969,
+  "compute_seconds": 228.07,
+  "attempts": [
+    {
+      "machine": "simbox",
+      "exit": 1
+    }
+  ],
+  "exit": 1
+}

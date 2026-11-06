@@ -126,3 +126,22 @@ TEST_CASE("zmnbinom: extreme tails and discrete support") {
   CHECK(cppunivariate::distributions::qzmnbinom(-10000, 2.0, 0.4, 0.3, false, true) == 19593.0);
   CHECK(cppunivariate::distributions::dzmnbinom(0.5, 2.0, 0.4, 0.3, false) == 0);
 }
+
+#include "cppunivariate/distributions/zmpois/mle.hpp"
+TEST_CASE("zmnbinom: certificate details survive default and held zero share") {
+ const std::vector<int>x{0,0,1,2,2,3,3,3};
+ const double nan=std::numeric_limits<double>::quiet_NaN();
+ for(double held:{nan,.4}) {
+   const auto fit=cppunivariate::zmnbinom_mle({x.data(),x.size()},1e-10,200,nan,nan,held);
+   REQUIRE(fit.status==cppunivariate::ZmnbinomStatus::PoissonLimit);
+   REQUIRE(fit.stop_detail.limit_coef.size()==2);
+   CHECK(fit.stop_detail.limit_coef[1]==(std::isnan(held)?.25:held));
+   const auto face=cppunivariate::zmpois_mle({x.data(),x.size()},1e-10,200,nan,held);
+   CHECK(fit.stop_detail.limit_loglik==doctest::Approx(face.logLik).epsilon(1e-12));
+ }
+ const std::vector<int>finite{0,0,1,2,5};
+ const auto fail=cppunivariate::zmnbinom_mle({finite.data(),finite.size()},1e-10,1);
+ CHECK(fail.status==cppunivariate::ZmnbinomStatus::IterationFailure);
+ CHECK(fail.budget_exhausted);CHECK(std::isnan(fail.size));
+ CHECK(fail.stop_detail.loglik_upper<0);
+}
