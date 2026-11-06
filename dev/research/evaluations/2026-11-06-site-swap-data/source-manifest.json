@@ -1,0 +1,18 @@
+{
+  "base_revision": "a43800a7e906e77bbd41a6d6d64cefd9e2aaee01",
+  "snapshot": "uncommitted site-swap patch",
+  "machine": "workstation",
+  "sha256": {
+    "site/README.md": "fd86270267bb21bb5b833df79afb55e06ab3d05feaf81fd7dc805b467c45bb0f",
+    "site/scripts/check.py": "acd2a5767f7e43fa0b99f0495eaf47d58eb845e4a5ab5d2517f7d0ed7cc98270",
+    "site/scripts/browser-smoke.mjs": "21e40b79fe8f986b7489cdb720a48be5f84908d84bcc4a9026eb723309aeebee",
+    "bindings/js/browser-all.mjs": "34b1285f90c86c34a9d17ac846f9ef10b70bf9099ed0a02d2bd23e3d74fac0af",
+    "site/src/layouts/Page.astro": "13dae86fb7c12f8d975e07f19553b9ac23c6c5baea7e2db63a004a95a821ac5c",
+    "site/src/pages/distributions/[id].astro": "f68f7e4bb71588e7169b799d6c06996fe680cacaa50bc63614f1f76f49323bca",
+    "site/src/pages/distributions/[id]/explore.astro": "8f19080761278199d8126a8f7a8980650f17b2e34a5ce4ae882eed664ce5d926"
+  },
+  "deleted": [
+    "site/src/pages/lab/[id].astro",
+    "site/src/pages/lab/index.astro"
+  ]
+}

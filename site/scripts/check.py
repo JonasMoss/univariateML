@@ -59,7 +59,7 @@ for article,expected in [('limits',expected_limits),('holds',expected_holds),('r
     assert pages[DIST/f'articles/{article}/index.html'].records==expected, f'{article} catalogue differs from dossiers'
 # Boundary grades and non-reachable external laws are visible, not only embedded metadata.
 lomax_html=(DIST/'distributions/lomax/index.html').read_text()
-assert 'firmness proved' in lomax_html and 'numerical detection' in lomax_html
+assert re.search(r'<th>Firmness</th>.*?<td>proved \(numerical detection\)</td>',lomax_html,re.S), 'missing proved boundary grade and numerical detection marker'
 assert 'Lévy' in (DIST/'distributions/invgauss/index.html').read_text()
 assert 'Firmness' in (DIST/'articles/limits/index.html').read_text()
 # The Markdown transformer otherwise intentionally converts unresolved paths to text.
@@ -191,8 +191,23 @@ assert all(target(graph_page,url).exists() for tag,key,url in pages[graph_page].
 print(f'PASS: graph: {len(node_ids)} unique nodes, {len(expected)} edges, resolving family links; SVG generated twice byte-identically and matches built HTML.')
 coverage=json.loads((ROOT/'site/src/data/binding.json').read_text())
 for f in DATA:
-    html=(DIST/f"distributions/{f['id']}/index.html").read_text()
-    assert ('aria-label="Distribution explorer"' in html)==(f['id'] in coverage),f['id']
+    family_path=DIST/f"distributions/{f['id']}/index.html"
+    html=family_path.read_text()
+    explore_path=DIST/f"distributions/{f['id']}/explore/index.html"
+    assert 'aria-label="Distribution explorer"' not in html, f['id']
+    assert 'class="infobox"' in html and 'class="toc"' in html, f['id']
+    assert explore_path.exists()==(f['id'] in coverage), f['id']
+    if f['id'] in coverage:
+        assert f"/distributions/{f['id']}/explore/" in html, f['id']
+        explorer=explore_path.read_text()
+        assert 'aria-label="Distribution explorer"' in explorer and 'data-pagefind-ignore' in explorer, f['id']
+        assert 'data-pagefind-body' not in explorer, f['id']
+        assert f"/distributions/{f['id']}/" in explorer, f['id']
+assert not (DIST/'lab').exists(), 'obsolete prototype route'
+assert len(list((DIST/'distributions').glob('*/explore/index.html')))==len(coverage)
+for p,d in pages.items():
+    assert not any(urlsplit(url).path.startswith('/lab/') for tag,key,url in d.links), p
+assert len(list(DIST.rglob('pagefind.js')))==1, 'one Pagefind index'
 if coverage:
     assert (DIST/'binding/univariateML.wasm').exists()
     assert (DIST/'binding/index.mjs').exists()

@@ -1,0 +1,21 @@
+---
+import { getCollection } from 'astro:content';
+import Page from '../../../layouts/Page.astro';
+import Explorer from '../../../components/Explorer.svelte';
+import binding from '../../../data/binding.json';
+import families from '../../../data/families.json';
+export async function getStaticPaths() {
+ return (await getCollection('families')).filter(e=>binding.includes(e.id)).map(entry=>({params:{id:entry.id},props:{entry,f:families.find(f=>f.id===entry.id)}}));
+}
+const {entry,f}=Astro.props;
+const catalog=(await getCollection('families')).filter(e=>binding.includes(e.id)).map(e=>({id:e.id,support:e.data.support}));
+---
+<Page title={`Explore ${f.name}`} description={`Simulate, fit and compare ${f.name} models.`} index={false}>
+<article data-family={f.id}>
+<p class="eyebrow"><a href={`/distributions/${f.id}/`}>{f.name}</a> / Explorer</p>
+<h1>Explore {f.name}</h1>
+<p>Simulate observations, hold coefficients, fit data and compare models by AIC. <a href={`/distributions/${f.id}/#ml`}>Read the fitting conditions and limits</a> before interpreting results.</p>
+<Explorer client:visible family={{id:f.id,name:f.name,params:entry.data.params,support:entry.data.support}} catalog={catalog}/>
+<noscript>Enable JavaScript to use the interactive explorer. The <a href={`/distributions/${f.id}/`}>family definition and usage</a> are available without JavaScript.</noscript>
+</article>
+</Page>

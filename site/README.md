@@ -27,6 +27,15 @@ Pagefind search is available in production builds, not the Astro dev server.
 Deploy the static output at the origin root; subpath hosting needs an explicit
 Astro base and matching link/asset changes before release.
 
+## Family routes
+
+`/distributions/<id>/` is the wiki-style family page: definition and mini plot,
+relations, fitting conditions, language tabs, implementation and source evidence.
+`/distributions/<id>/explore/` provides simulation, fitting, held coefficients and
+AIC ranking for families in the binding registry, linked in both directions.
+Explorers are excluded from Pagefind; the canonical family page is indexed once.
+The prototype `/lab/` route has been removed.
+
 ## Boundaries
 
 - `src/content.config.ts`: canonical dossier collection, read in place.
@@ -47,14 +56,16 @@ Astro base and matching link/asset changes before release.
 The header preference script runs in the head before paint and tolerates blocked
 storage. Without JavaScript all usage panels and all catalog entries remain visible;
 implementation sections retain native accessible disclosure controls. There are no
-numerical algorithms in the site. Future explorer components receive serializable
+numerical algorithms in the site. Explorer components receive serializable
 family metadata and call a separately versioned WebAssembly binding in client islands.
 
 Optional browser verification uses an existing Chromium headless shell (auto-detected
 in the workstation Playwright cache) or `BROWSER_EXECUTABLE`; it never downloads a
 browser. Run `/tmp/umvl-cpu/run python3 site/scripts/browser-smoke.py` from the root.
 It pins the browser to one CPU, tests the controls/filter/search/no-JS behaviour,
-checks mobile overflow, and writes screenshots under `build/scratch/site-browser/`.
+checks mobile overflow, and writes routine screenshots under `build/scratch/site-browser/`.
+The exp, bbinom and burr desktop/mobile migration evidence is retained under
+`dev/research/evaluations/2026-11-06-site-swap/`.
 During `site-dev`, rerun `just site-data` after changing front matter; production
 builds always regenerate it automatically.
 

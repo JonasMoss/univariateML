@@ -1,0 +1,893 @@
+[
+  {
+    "family": "bbinom",
+    "ok": true,
+    "discrete": true,
+    "fitStatus": [
+      "Status: Ok; logLik -71.8020"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "beta",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [
+      "Status: Ok; logLik 1.18528"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "betapr",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [
+      "Status: Ok; logLik -65.0983"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "bhatt",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [],
+    "diagnostics": [
+      "Bhattacharjee likelihood selects the uniform face: use `mlunif`."
+    ]
+  },
+  {
+    "family": "binom",
+    "ok": true,
+    "discrete": true,
+    "fitStatus": [
+      "Status: Ok; logLik -58.9943"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "bnbinom",
+    "ok": true,
+    "discrete": true,
+    "fitStatus": [
+      "Status: Ok; logLik -76.9639"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "burr",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [
+      "Status: Ok; logLik -64.1059"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "cauchy",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [
+      "Status: Ok; logLik -84.8351"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "cmb",
+    "ok": true,
+    "discrete": true,
+    "fitStatus": [
+      "Status: Ok; logLik -58.7460"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "cmp",
+    "ok": true,
+    "discrete": true,
+    "fitStatus": [
+      "Status: Ok; logLik -41.1375"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "dgamma",
+    "ok": true,
+    "discrete": true,
+    "fitStatus": [
+      "Status: Ok; logLik -32.6630"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "dlaplace",
+    "ok": true,
+    "discrete": true,
+    "fitStatus": [
+      "Status: Ok; logLik -65.2007"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "dnorm",
+    "ok": true,
+    "discrete": true,
+    "fitStatus": [
+      "Status: Ok; logLik -35.9969"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "dunif",
+    "ok": true,
+    "discrete": true,
+    "fitStatus": [
+      "Status: Ok; logLik -71.9369"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "dweibull",
+    "ok": true,
+    "discrete": true,
+    "fitStatus": [
+      "Status: Ok; logLik -41.9634"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "emg",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [
+      "Status: Ok; logLik -49.1564"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "exp",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [
+      "Status: Ok; logLik -32.5413"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "fatigue",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [
+      "Status: Ok; logLik -38.4284"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "foldnorm",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [
+      "Status: Ok; logLik -28.4296"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "fpareto",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [],
+    "diagnostics": [
+      "GB2 selects a limiting model. Use `mlpower(x - min)`."
+    ]
+  },
+  {
+    "family": "frechet",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [
+      "Status: Ok; logLik -70.8232"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "gamma",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [
+      "Status: Ok; logLik -32.3121"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "gb2",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [],
+    "diagnostics": [
+      "GB2 selects a limiting model. Use `mlpower`."
+    ]
+  },
+  {
+    "family": "ged",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [],
+    "diagnostics": [
+      "GED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead."
+    ]
+  },
+  {
+    "family": "genbeta",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [],
+    "diagnostics": [
+      "Generalized beta selects a limiting power law. Use `mlpower`."
+    ]
+  },
+  {
+    "family": "geom",
+    "ok": true,
+    "discrete": true,
+    "fitStatus": [
+      "Status: Ok; logLik -45.4746"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "gev",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [
+      "Status: Ok; logLik -50.4085"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "gompertz",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [
+      "Status: Ok; logLik -13.2147"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "gpd",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [
+      "Status: Ok; logLik -32.2371"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "gumbel",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [
+      "Status: Ok; logLik -50.9310"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "hcauchy",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [
+      "Status: Ok; logLik -48.1706"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "hnorm",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [
+      "Status: Ok; logLik -15.7557"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "ht",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [
+      "Status: Ok; logLik -20.4359"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "huber",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [
+      "Status: Ok; logLik -51.7121"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "hyper",
+    "ok": true,
+    "discrete": true,
+    "fitStatus": [
+      "Status: Ok; logLik -42.0370"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "invburr",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [
+      "Status: Ok; logLik -64.3627"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "invexp",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [
+      "Status: Ok; logLik -68.3846"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "invgamma",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [
+      "Status: Ok; logLik -68.1554"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "invgauss",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [
+      "Status: Ok; logLik -32.5609"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "invparalogis",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [
+      "Status: Ok; logLik -63.0436"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "invpareto",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [
+      "Status: Ok; logLik -63.2671"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "invtrgamma",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [],
+    "diagnostics": [
+      "The invtrgamma likelihood is maximised at a limit. Use `mlpareto` to fit this model."
+    ]
+  },
+  {
+    "family": "invweibull",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [
+      "Status: Ok; logLik -70.8232"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "kumar",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [
+      "Status: Ok; logLik 0.402203"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "laplace",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [
+      "Status: Ok; logLik -55.2856"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "lgamma",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [
+      "Status: Ok; logLik -64.9642"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "lgser",
+    "ok": true,
+    "discrete": true,
+    "fitStatus": [
+      "Status: Ok; logLik -28.9797"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "llogis",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [
+      "Status: Ok; logLik -64.8307"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "lnorm",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [
+      "Status: Ok; logLik -40.4647"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "logis",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [
+      "Status: Ok; logLik -63.8695"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "logitnorm",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [
+      "Status: Ok; logLik 10.2045"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "lomax",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [
+      "Status: Ok; logLik -65.1895"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "lst",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [
+      "Status: Ok; logLik -41.2236"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "naka",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [
+      "Status: Ok; logLik -20.4785"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "nbinom",
+    "ok": true,
+    "discrete": true,
+    "fitStatus": [
+      "Status: Ok; logLik -42.2194"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "nhyper",
+    "ok": true,
+    "discrete": true,
+    "fitStatus": [
+      "Status: Ok; logLik -52.9904"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "norm",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [
+      "Status: Ok; logLik -36.0589"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "nsbeta",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [
+      "Status: Ok; logLik 1.18528"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "paralogis",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [
+      "Status: Ok; logLik -64.9660"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "pareto",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [
+      "Status: Ok; logLik -65.1547"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "pareto2",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [
+      "Status: Ok; logLik -65.1895"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "pareto3",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [
+      "Status: Ok; logLik -64.8307"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "pareto4",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [
+      "Status: Ok; logLik -64.1059"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "pig",
+    "ok": true,
+    "discrete": true,
+    "fitStatus": [
+      "Status: Ok; logLik -46.5695"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "pois",
+    "ok": true,
+    "discrete": true,
+    "fitStatus": [
+      "Status: Ok; logLik -39.7944"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "power",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [
+      "Status: Ok; logLik 0.780595"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "rayleigh",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [
+      "Status: Ok; logLik -31.1050"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "sged",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [],
+    "diagnostics": [
+      "The likelihood is maximised by a translated half-GED with mode at the sample minimum; no MLE in the skewed family."
+    ]
+  },
+  {
+    "family": "sgomp",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [
+      "Status: Ok; logLik -41.8947"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "skellam",
+    "ok": true,
+    "discrete": true,
+    "fitStatus": [
+      "Status: Ok; logLik -48.3378"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "slash",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [
+      "Status: Ok; logLik -87.6054"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "sn",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [
+      "Status: Ok; logLik -42.3375"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "snorm",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [
+      "Status: Ok; logLik -31.6702"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "sstd",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [],
+    "diagnostics": [
+      "The skew Student-t likelihood is maximised as nu -> 2, i.e. by a two-piece t with 2 degrees of freedom (infinite variance); the MLE does not exist in the mean/sd parameterisation."
+    ]
+  },
+  {
+    "family": "st",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [],
+    "diagnostics": [
+      "The shape escapes to minus infinity; use `mlht` on `-x`."
+    ]
+  },
+  {
+    "family": "std",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [
+      "Status: Ok; logLik -33.5613"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "tbinom",
+    "ok": true,
+    "discrete": true,
+    "fitStatus": [
+      "Status: Ok; logLik -57.9678"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "tlambda",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [
+      "Status: Ok; logLik -63.8564"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "tnorm",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [
+      "Status: Ok; logLik -45.8225"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "tpois",
+    "ok": true,
+    "discrete": true,
+    "fitStatus": [
+      "Status: Ok; logLik -32.6684"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "trgamma",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [],
+    "diagnostics": [
+      "The trgamma likelihood is maximised at a limit. Use `mlpower` to fit this model."
+    ]
+  },
+  {
+    "family": "triang",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [
+      "Status: Ok; logLik 4.27482"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "unif",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [
+      "Status: Ok; logLik 0.809901"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "weibull",
+    "ok": true,
+    "discrete": false,
+    "fitStatus": [
+      "Status: Ok; logLik -32.4709"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "yulesimon",
+    "ok": true,
+    "discrete": true,
+    "fitStatus": [
+      "Status: Ok; logLik -67.7537"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "zeta",
+    "ok": true,
+    "discrete": true,
+    "fitStatus": [
+      "Status: Ok; logLik -52.7247"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "zib",
+    "ok": true,
+    "discrete": true,
+    "fitStatus": [
+      "Status: Ok; logLik -51.6137"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "zinb",
+    "ok": true,
+    "discrete": true,
+    "fitStatus": [],
+    "diagnostics": [
+      "The maximum likelihood estimator does not exist, but converges to a zero-inflated Poisson. Use `mlzip` instead."
+    ]
+  },
+  {
+    "family": "zip",
+    "ok": true,
+    "discrete": true,
+    "fitStatus": [
+      "Status: Ok; logLik -29.0095"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "zipf",
+    "ok": true,
+    "discrete": true,
+    "fitStatus": [
+      "Status: Ok; logLik -61.2846"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "zmbinom",
+    "ok": true,
+    "discrete": true,
+    "fitStatus": [
+      "Status: Ok; logLik -51.6137"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "zmgeom",
+    "ok": true,
+    "discrete": true,
+    "fitStatus": [
+      "Status: Ok; logLik -45.4247"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "zmlogarithmic",
+    "ok": true,
+    "discrete": true,
+    "fitStatus": [
+      "Status: Ok; logLik -35.1980"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "zmnbinom",
+    "ok": true,
+    "discrete": true,
+    "fitStatus": [
+      "Status: Ok; logLik -45.3422"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "zmpois",
+    "ok": true,
+    "discrete": true,
+    "fitStatus": [
+      "Status: Ok; logLik -39.9750"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "ztbinom",
+    "ok": true,
+    "discrete": true,
+    "fitStatus": [
+      "Status: Ok; logLik -57.9678"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "ztgeom",
+    "ok": true,
+    "discrete": true,
+    "fitStatus": [
+      "Status: Ok; logLik -45.4746"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "ztnbinom",
+    "ok": true,
+    "discrete": true,
+    "fitStatus": [
+      "Status: Ok; logLik -45.3575"
+    ],
+    "diagnostics": []
+  },
+  {
+    "family": "ztpois",
+    "ok": true,
+    "discrete": true,
+    "fitStatus": [
+      "Status: Ok; logLik -32.6684"
+    ],
+    "diagnostics": []
+  }
+]
