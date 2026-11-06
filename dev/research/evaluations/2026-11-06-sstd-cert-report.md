@@ -4,7 +4,7 @@
 > Its routing lives only in the R adapter, so R and JS would disagree, and the
 > certified subsets are unit-skew special cases. The mathematics and the
 > fixed-skew multimodality evidence below are kept; the held-mean, held-nu
-> scale certificate belongs in std (TASK-146).
+> scale certificate belongs in std (TASK-116.13).
 
 Source base: `bb734cd78b846a565d8835606328bb1285a82db6`, branch
 `codex/sstd-cert`. Changes are uncommitted. No board edits, dependency installs,
