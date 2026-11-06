@@ -198,3 +198,83 @@ TEST_CASE("bnbinom: structured stop payloads") {
   CHECK(f.stop_detail.limit_coef[0]==1);
   CHECK(f.stop_detail.limit_coef[1]==doctest::Approx(1./3));
 }
+
+TEST_CASE("bnbinom: scalar global certificates and exact roots") {
+  const std::vector<int> x(12,1);
+  const double root=std::sqrt(2.);
+  for(int j=0;j<3;++j) {
+    std::vector<double> held{1,1,1};held[j]=NAN;
+    const auto f=cppunivariate::bnbinom_mle({x.data(),x.size()},1e-8,600,held[0],held[1],held[2]);
+    REQUIRE(f.status==cppunivariate::BnbinomStatus::Ok);
+    const std::vector<double> p{f.size,f.alpha,f.beta};
+    CHECK(p[j]==doctest::Approx(root).epsilon(1e-8));
+    CHECK(f.logLik==doctest::Approx(12*std::log(root/((root+1)*(root+2)))).epsilon(1e-12));
+    for(int k=0;k<3;++k)if(k!=j)CHECK(p[k]==1);
+    // A deliberately insufficient certificate budget is terminal, with a
+    // witness rather than an unchecked coefficient vector.
+    const auto stop=cppunivariate::bnbinom_mle({x.data(),x.size()},1e-8,1,held[0],held[1],held[2]);
+    CHECK(stop.status==cppunivariate::BnbinomStatus::IterationFailure);
+    CHECK(stop.stop_detail.budget_exhausted);
+    REQUIRE(stop.stop_detail.candidates.size()==1);
+    CHECK(std::isnan(stop.size));
+    CHECK(stop.stop_detail.loglik_upper==INFINITY);
+    const auto &c=stop.stop_detail.candidates[0];
+    CHECK(c.coef.size()==3);
+    CHECK(c.loglik_lower<=f.logLik);
+  }
+}
+
+TEST_CASE("bnbinom: scalar all-zero limits for each free coordinate") {
+  const std::vector<int> x(8,0);
+  for(int j=0;j<3;++j) {
+    std::vector<double> p{.37,1.8,4.6};p[j]=NAN;
+    const auto f=cppunivariate::bnbinom_mle({x.data(),x.size()},1e-8,600,p[0],p[1],p[2]);
+    CHECK(f.status==cppunivariate::BnbinomStatus::PointMass);
+    CHECK(f.stop_detail.limit_model==cppunivariate::StopModel::Pois);
+    CHECK(f.stop_detail.limit_coef[0]==0);
+  }
+}
+
+TEST_CASE("bnbinom: noninteger scalar roots against independent 80-digit oracle") {
+  // oracle.py/oracle.json in dev/research/evaluations/2026-11-06-bnbinom-cert-data.
+  const std::vector<int> x{0,0,1,2,3,6,12,24};
+  const std::vector<double> roots{1.2350155733754016305,.7885962837901386579,22.077541746455293487};
+  const std::vector<double> ll{-22.705386239276122233,-23.775023031191501427,-23.021170044851784493};
+  for(int j=0;j<3;++j) {
+    std::vector<double> p{.37,1.8,4.6};p[j]=NAN;
+    const auto f=cppunivariate::bnbinom_mle({x.data(),x.size()},1e-8,600,p[0],p[1],p[2]);
+    REQUIRE(f.status==cppunivariate::BnbinomStatus::Ok);
+    const std::vector<double> estimate{f.size,f.alpha,f.beta};
+    CHECK(estimate[j]==doctest::Approx(roots[j]).epsilon(1e-8));
+    CHECK(f.logLik==doctest::Approx(ll[j]).epsilon(1e-12));
+    // The certificate root must beat fixed multiplicative perturbations.
+    auto lo=estimate,hi=estimate;lo[j]*=.9;hi[j]*=1.1;
+    cppunivariate::bnbinom_detail::Data d;
+    d.n=x.size();for(int v:x){d.x.push_back(v);d.count.push_back(1);}
+    CHECK(cppunivariate::bnbinom_detail::likelihood(d,lo)<f.logLik);
+    CHECK(cppunivariate::bnbinom_detail::likelihood(d,hi)<f.logLik);
+  }
+}
+
+TEST_CASE("bnbinom: scalar cancellation is a terminal numerical stop") {
+  const std::vector<int> x(8,1);
+  const auto f=cppunivariate::bnbinom_mle({x.data(),x.size()},1e-20,600,1,NAN,1);
+  CHECK(f.status==cppunivariate::BnbinomStatus::NumericalFailure);
+  CHECK_FALSE(f.stop_detail.budget_exhausted);
+  CHECK(std::isnan(f.alpha));
+  CHECK_FALSE(f.stop_detail.candidates.empty());
+}
+
+TEST_CASE("bnbinom: scalar scaled exact roots and floating-point failure") {
+  const std::vector<int> x(5,1);
+  for(double beta:{1e-8,.01,10.,100.}) {
+    const auto f=cppunivariate::bnbinom_mle({x.data(),x.size()},1e-8,600,1,NAN,beta);
+    REQUIRE(f.status==cppunivariate::BnbinomStatus::Ok);
+    CHECK(f.alpha==doctest::Approx(std::sqrt(beta*(beta+1))).epsilon(1e-8));
+  }
+  // At this scale the digamma cancellation margin cannot isolate the shape
+  // to 1e-8 relative accuracy. The exact root still exists.
+  const auto f=cppunivariate::bnbinom_mle({x.data(),x.size()},1e-8,600,1,NAN,1e5);
+  CHECK(f.status==cppunivariate::BnbinomStatus::NumericalFailure);
+  CHECK(std::isnan(f.alpha));
+}

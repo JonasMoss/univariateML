@@ -27,6 +27,8 @@ inline FitResult fit_bnbinom(cppunivariate::ispan x, Held size_arg = {}, Held al
     case cppunivariate::BnbinomStatus::NegativeBinomialLimit: stop_kind="limit";break;
     case cppunivariate::BnbinomStatus::PoissonLimit: stop_kind="limit";break;
     case cppunivariate::BnbinomStatus::PointMass: stop_kind="limit";break;
+    case cppunivariate::BnbinomStatus::IterationFailure: if(fit.stop_detail.budget_exhausted)stop_kind="budget";break;
+    case cppunivariate::BnbinomStatus::NumericalFailure: stop_kind="numerical";break;
     default:break;
   }
   const auto stopped_fail = [&](const std::string& format, const auto&... arguments) {
@@ -42,9 +44,14 @@ inline FitResult fit_bnbinom(cppunivariate::ispan x, Held size_arg = {}, Held al
       return stopped_fail("The Poisson face wins (including likelihood ties). Use `mlpois` instead.");
     case cppunivariate::BnbinomStatus::PointMass:
       return stopped_fail("The maximum likelihood estimator does not exist: all observations are zero (point mass). Use `mlpois` instead.");
+    case cppunivariate::BnbinomStatus::NumericalFailure:
+      return stopped_fail("Beta negative binomial scalar certificate failed: unresolved score comparisons or floating-point range.");
     case cppunivariate::BnbinomStatus::InvalidInput:
       return stopped_fail("Beta negative binomial fitting requires nonempty nonnegative counts, positive finite fixed parameters and gradtol, and positive iterlim.");
-    default: return stopped_fail("Beta negative binomial search failed: unresolved stationary point or search range; try increasing iterlim.");
+    case cppunivariate::BnbinomStatus::IterationFailure:
+      if(fit.stop_detail.budget_exhausted)
+        return stopped_fail("Beta negative binomial certificate budget exhausted; try increasing iterlim.");
+      return stopped_fail("Beta negative binomial search failed: unresolved stationary point or search range; try increasing iterlim.");
   }
   std::vector<std::string> fixed;
   if (size.supplied) fixed.push_back("size");
