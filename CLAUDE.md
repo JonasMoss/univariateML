@@ -251,6 +251,9 @@ Iterative failure is an error (rule R6,
 - Invalid starts and nonfinite results stop.
 - A rescue solve must meet its own convergence or score criterion; never
   return an unchecked last iterate.
+- Every loop cap is a multiple of `min(iterlim, 100000)` by work unit;
+  certificate and enumeration caps stop as `budget`
+  (`dev/design/work-budgets.md`).
 
 This replaces the nlminb-style rule that returned whatever BFGS landed
 on, which let `mlstd` return its start values (TASK-77).
