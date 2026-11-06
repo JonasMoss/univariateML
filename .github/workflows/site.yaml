@@ -1,7 +1,6 @@
 name: site
+# Manual only (2026-11-06): the Actions quota is spent and validation runs locally.
 on:
-  push:
-  pull_request:
   workflow_dispatch:
 permissions:
   contents: read
