@@ -1,0 +1,218 @@
+[
+  {
+    "name": "normal-0",
+    "family": "lst",
+    "budget": 40,
+    "version": "before",
+    "status": 6,
+    "profiles": 40,
+    "seconds_median": 0.056636262
+  },
+  {
+    "name": "normal-0",
+    "family": "std",
+    "budget": 40,
+    "version": "before",
+    "status": 6,
+    "profiles": 40,
+    "seconds_median": 0.004531965
+  },
+  {
+    "name": "normal-0",
+    "family": "lst",
+    "budget": 128,
+    "version": "before",
+    "status": 6,
+    "profiles": 128,
+    "seconds_median": 0.111156572
+  },
+  {
+    "name": "normal-0",
+    "family": "std",
+    "budget": 128,
+    "version": "before",
+    "status": 6,
+    "profiles": 128,
+    "seconds_median": 0.113257295
+  },
+  {
+    "name": "normal-0",
+    "family": "lst",
+    "budget": 4096,
+    "version": "before",
+    "status": 6,
+    "profiles": 4096,
+    "seconds_median": 2.554305301
+  },
+  {
+    "name": "normal-0",
+    "family": "std",
+    "budget": 4096,
+    "version": "before",
+    "status": 6,
+    "profiles": 4096,
+    "seconds_median": 2.588327826
+  },
+  {
+    "name": "quantile-4000",
+    "family": "lst",
+    "budget": 40,
+    "version": "before",
+    "status": 6,
+    "profiles": 40,
+    "seconds_median": 0.451411924
+  },
+  {
+    "name": "quantile-4000",
+    "family": "std",
+    "budget": 40,
+    "version": "before",
+    "status": 6,
+    "profiles": 40,
+    "seconds_median": 0.196019122
+  },
+  {
+    "name": "quantile-4000",
+    "family": "lst",
+    "budget": 128,
+    "version": "before",
+    "status": 6,
+    "profiles": 128,
+    "seconds_median": 5.550230829
+  },
+  {
+    "name": "quantile-4000",
+    "family": "std",
+    "budget": 128,
+    "version": "before",
+    "status": 6,
+    "profiles": 128,
+    "seconds_median": 5.463936608
+  },
+  {
+    "name": "quantile-4000",
+    "family": "lst",
+    "budget": 4096,
+    "version": "before",
+    "status": 6,
+    "profiles": 4096,
+    "seconds_median": 17.691601899
+  },
+  {
+    "name": "quantile-4000",
+    "family": "std",
+    "budget": 4096,
+    "version": "before",
+    "status": 6,
+    "profiles": 4096,
+    "seconds_median": 7.022755074
+  },
+  {
+    "name": "normal-0",
+    "family": "lst",
+    "budget": 40,
+    "version": "after",
+    "status": 6,
+    "profiles": 40,
+    "seconds_median": 0.077498442
+  },
+  {
+    "name": "normal-0",
+    "family": "std",
+    "budget": 40,
+    "version": "after",
+    "status": 6,
+    "profiles": 40,
+    "seconds_median": 0.078485256
+  },
+  {
+    "name": "normal-0",
+    "family": "lst",
+    "budget": 128,
+    "version": "after",
+    "status": 6,
+    "profiles": 128,
+    "seconds_median": 0.174219432
+  },
+  {
+    "name": "normal-0",
+    "family": "std",
+    "budget": 128,
+    "version": "after",
+    "status": 6,
+    "profiles": 128,
+    "seconds_median": 0.039335907
+  },
+  {
+    "name": "normal-0",
+    "family": "lst",
+    "budget": 4096,
+    "version": "after",
+    "status": 0,
+    "profiles": 129,
+    "seconds_median": 0.040684304
+  },
+  {
+    "name": "normal-0",
+    "family": "std",
+    "budget": 4096,
+    "version": "after",
+    "status": 0,
+    "profiles": 132,
+    "seconds_median": 0.041141398
+  },
+  {
+    "name": "quantile-4000",
+    "family": "lst",
+    "budget": 40,
+    "version": "after",
+    "status": 6,
+    "profiles": 40,
+    "seconds_median": 1.390629092
+  },
+  {
+    "name": "quantile-4000",
+    "family": "std",
+    "budget": 40,
+    "version": "after",
+    "status": 6,
+    "profiles": 40,
+    "seconds_median": 0.205534999
+  },
+  {
+    "name": "quantile-4000",
+    "family": "lst",
+    "budget": 128,
+    "version": "after",
+    "status": 6,
+    "profiles": 128,
+    "seconds_median": 2.568499598
+  },
+  {
+    "name": "quantile-4000",
+    "family": "std",
+    "budget": 128,
+    "version": "after",
+    "status": 6,
+    "profiles": 128,
+    "seconds_median": 1.859423735
+  },
+  {
+    "name": "quantile-4000",
+    "family": "lst",
+    "budget": 4096,
+    "version": "after",
+    "status": 0,
+    "profiles": 135,
+    "seconds_median": 2.223592197
+  },
+  {
+    "name": "quantile-4000",
+    "family": "std",
+    "budget": 4096,
+    "version": "after",
+    "status": 0,
+    "profiles": 138,
+    "seconds_median": 2.579402827
+  }
+]

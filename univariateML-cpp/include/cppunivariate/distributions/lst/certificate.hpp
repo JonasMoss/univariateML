@@ -1,5 +1,6 @@
 // Exact-arithmetic certificate conditional on practical binary64 enclosures.
-// See README.md and the TASK-140 derivation; no outward rounding is claimed.
+// See README.md and dev/research/evaluations/2026-11-06-t-close-data/derivation.md;
+// no outward rounding is claimed.
 #pragma once
 #include "../../core/span.hpp"
 #include "../../core/stop_detail.hpp"
@@ -68,7 +69,7 @@ inline I gamma(double v,int order){
   for(int j=0;j<16&&q<32;++j,q+=2){
     ++shifts;
     double d=order==0?std::log1p(1/q)-.5*std::log1p(2/q):
-      order==1?1/(q*(q+1)):order==3?1/(q*(q+1)*(q+2)):(2*q+1)/(q*q*(q+1)*(q+1));
+      order==1?1/(q*(q+1)):order==3?1/(q*(q+1)*(q+2)):order==4?(3*q*q+6*q+2)/(q*q*(q+1)*(q+1)*(q+2)*(q+2)):(2*q+1)/(q*q*(q+1)*(q+1));
     shift+=d;mag+=std::abs(d);
   }
   double z=1/q,z2=z*z,value=0,remainder=0;
@@ -76,6 +77,7 @@ inline I gamma(double v,int order){
   if(order==1){value=z/2+z2/4-std::pow(z,4)/8+std::pow(z,6)/4-17*std::pow(z,8)/16;remainder=31*std::pow(z,10)/4;value+=shift;}
   if(order==2){value=z2/2+std::pow(z,3)/2-std::pow(z,5)/2+1.5*std::pow(z,7)-8.5*std::pow(z,9);remainder=77.5*std::pow(z,11);value+=shift;}
   if(order==3){value=z2/4-std::pow(z,4)/8+std::pow(z,6)/4-17*std::pow(z,8)/16;remainder=31*std::pow(z,10)/4;value+=shift;}
+  if(order==4){value=std::pow(z,3)/2-std::pow(z,5)/2+1.5*std::pow(z,7)-8.5*std::pow(z,9);remainder=77.5*std::pow(z,11);value+=shift;}
   const double e=eps*(8+2*shifts)*(mag+std::abs(value)+std::numeric_limits<double>::min());
   return {value-remainder-e,value+remainder+e};
 }
@@ -233,6 +235,18 @@ struct Engine {
       Sum g0,g1;I scale=exp(I(p.t));
       for(I x:d.x){I z=(x-p.m)/scale,z2=sq(z),den=I(1)+z2/v;g0.add(-I(1+1/v)*z/(scale*den));g1.add(I(1)-I(1+1/v)*z2/den);}
       I gm=g0.get(),gt=g1.get();I error=root(sq(a*gm)+sq(gt))*(D+eps);
+      // A verified local strongly convex nuisance ball gives a quadratic
+      // gap, while geodesic uniqueness identifies its interior minimum as
+      // the global conditional optimum. Retain the distance fallback.
+      const double radius=1e-4;
+      auto local=enclosure(d,{{{p.m-radius,p.m+radius},
+        {p.t+.5*std::log(v)-radius,p.t+.5*std::log(v)+radius},1}},v);
+      const double lam=nuisance_lower(local);
+      I G2=sq(gm)+sq(gt);
+      if(lam>0&&G2.valid()&&root(G2).hi<lam*radius){
+        I quadratic=G2/(I(2)*lam);
+        if(quadratic.valid())error.hi=std::min(error.hi,quadratic.hi);
+      }
       p.delta={val.lo,val.hi+error.hi};
     }
     if(!p.delta.valid()){failure=2;return p;}cache.emplace(v,p);return p;
@@ -255,6 +269,37 @@ inline I shape_score(const Data& d,const std::array<double,3>& p,double v0){
   I v=I(p[2])*v0,a2=exp(I(p[1])*2);Sum sum;
   for(I x:d.x){I u=sq(x-p[0])/a2;sum.add(shape_remainder(u)-u/((I(1)+u)*v));}
   return -I(d.y.size())*derivative(v,3)+sum.get()*.5;
+}
+// Total negative-likelihood derivatives in ordinary (m, log(s), v/v0)
+// coordinates. Combining terms before interval evaluation preserves the
+// normal-seam cancellations; gamma order 4 is -d(c'-1/(2v))/dv.
+inline System ordinary(const Data& d,const std::array<I,3>& p,double v0){
+  I v=p[2]*v0,scale=exp(p[1]),v2=sq(v),v3=v2*v;
+  Sum gm,gt,gv,mm,mt,tt,mv,tv,vv;
+  for(I x:d.x){I z=(x-p[0])/scale,z2=sq(z),u=z2/v,den=I(1)+u,den2=sq(den);
+    gm.add(-(I(1)+I(1)/v)*z/(scale*den));
+    gt.add(I(1)-(I(1)+I(1)/v)*z2/den);
+    gv.add(shape_remainder(u)-u/(v*den));
+    mm.add((I(1)+I(1)/v)*(I(1)-u)/(sq(scale)*den2));
+    mt.add(I(2)*(I(1)+I(1)/v)*z/(scale*den2));
+    tt.add(I(2)*(I(1)+I(1)/v)*z2/den2);
+    mv.add(z*(I(1)-z2)/(scale*v2*den2));
+    tv.add(z2*(I(1)-z2)/(v2*den2));
+    vv.add(z2*(I(2)+u-z2)/(I(2)*v3*den2));
+  }
+  System s;I n(d.y.size());
+  s.g={{gm.get(),gt.get(),I(v0)*(-n*derivative(v,3)+gv.get()*.5)}};
+  s.h[0]={{mm.get(),mt.get(),I(v0)*mv.get()}};
+  s.h[1]={{s.h[0][1],tt.get(),I(v0)*tv.get()}};
+  s.h[2]={{s.h[0][2],s.h[1][2],I(v0*v0)*(n*derivative(v,4)+vv.get())}};
+  return s;
+}
+inline bool tube(const Data& d,const std::array<I,3>& box,double v0,
+                 double m,double t,double radius,System& h){
+  h=ordinary(d,box,v0);const double lam=nuisance_lower(h);
+  if(!(lam>0))return false;
+  const auto centre=ordinary(d,{{m,t,box[2]}},v0);
+  return std::hypot(centre.g[0].mag(),centre.g[1].mag())<lam*radius;
 }
 struct Isolation {
   std::array<double,3> p{};std::array<I,3> box{};
@@ -291,14 +336,21 @@ inline bool isolate(Engine& e,const Profile& proposal,Isolation& r){
   if(!root_box(e.d,r,3)||r.box[2].lo*r.v0<=e.floor)return false;
   r.stage=3;
   const double massfloor=static_cast<double>(e.d.mass)/(e.d.y.size()-e.d.mass);
-  auto H0=enclosure(e.d,{{r.p[0],r.p[1],r.p[2]}},r.v0);
-  for(double h:{.01,.003,.001,.0003,.0001,.00003,.00001,.000003,.000001,.0000003,.0000001,.00000003,.00000001})for(double radius:{h,3*h,10*h,30*h}){
-    std::array<I,3> box{{{r.p[0]-radius,r.p[0]+radius},{r.p[1]-radius,r.p[1]+radius},{r.p[2]-h,r.p[2]+h}}};
+  const double t=r.p[1]-.5*std::log(r.v0*r.p[2]);
+  auto H0=ordinary(e.d,{{r.p[0],t,r.p[2]}},r.v0);
+  const I root_t=r.box[1]-log(r.box[2]*r.v0)*.5;
+  for(double h:{r.v0>=100?.1/r.v0:.1,r.v0>=100?.03/r.v0:.03,.1,.03,.01,.003,.001,.0003,.0001,.00003,.00001,.000003,.000001,.0000003,.0000001,.00000003,.00000001})for(double radius:{h,3*h,10*h,30*h}){
+    std::array<I,3> box{{{r.p[0]-radius,r.p[0]+radius},{t-radius,t+radius},{r.p[2]-h,r.p[2]+h}}};
     if(box[2].lo*r.v0<=std::max(e.floor,massfloor))continue;
-    bool contains=true;for(int i=0;i<3;++i)if(!(box[i].lo<r.box[i].lo&&r.box[i].hi<box[i].hi))contains=false;if(!contains)continue;
-    auto H=enclosure(e.d,box,r.v0);if(!positive(H,H0))continue;double lam=nuisance_lower(H);if(!(lam>0))continue;
-    auto centre=enclosure(e.d,{{r.p[0],r.p[1],box[2]}},r.v0);double G=std::hypot(centre.g[0].mag(),centre.g[1].mag());
-    if(G<lam*radius){r.left=std::nextafter(box[2].lo*r.v0,INFINITY);r.right=std::nextafter(box[2].hi*r.v0,-INFINITY);r.stage=4;return true;}
+    if(!(box[0].lo<r.box[0].lo&&r.box[0].hi<box[0].hi&&
+         box[1].lo<root_t.lo&&root_t.hi<box[1].hi&&
+         box[2].lo<r.box[2].lo&&r.box[2].hi<box[2].hi))continue;
+    const System H=ordinary(e.d,box,r.v0);
+    if(!positive(H,H0))continue;
+    const double lam=nuisance_lower(H);if(!(lam>0))continue;
+    const auto centre=ordinary(e.d,{{r.p[0],t,box[2]}},r.v0);
+    if(std::hypot(centre.g[0].mag(),centre.g[1].mag())<lam*radius){
+      r.left=std::nextafter(box[2].lo*r.v0,INFINITY);r.right=std::nextafter(box[2].hi*r.v0,-INFINITY);r.stage=4;return true;}
   }return false;
 }
 inline bool endpoint(Engine& e,const Profile& p,Isolation& r){
@@ -316,7 +368,7 @@ inline bool tail(Engine& e,double witness,Tail& tail){
   // fitted normal coordinates, even though affine constants are binary64.
   std::vector<I> x;for(I y:e.d.x){I z=(y-e.d.mean)/root(e.d.var);x.push_back(z);I z2=sq(z);fourth.add(sq(z2));gm.add(I((z*(I(1)-z2)).mag()));gt.add(I((z2*(I(1)-z2)).mag()));}
   I A=(fourth.get()-3*n)/4;double G=std::hypot(gm.get().hi,gt.get().hi);
-  if(A.valid()&&A.hi<0){
+  if(A.valid()&&(A.hi<0||witness>0)){
     for(double r:{.01,.03,.1})for(int j=0;j<80;++j){double h=std::ldexp(1.,-j-1);if(1/h<=static_cast<double>(e.d.mass)/(n-e.d.mass))continue;Sum mm,tt,cross;bool ok=true;
       for(I y:x){I z=(y-I(-r,r))*exp(I(-r,r)),z2=sq(z);double hi=std::max(0.,z2.hi),lo=std::max(0.,z2.lo);if(h*hi>=1){ok=false;break;}I den=I(1,std::pow(1+h*hi,2));mm.add(I(1-h*hi)/den);tt.add(I(lo)/den);cross.add(z/den);}
       if(!ok)continue;
@@ -325,7 +377,14 @@ inline bool tail(Engine& e,double witness,Tail& tail){
       if(!lam.valid()||lam.lo<=0)continue;
       I inward=lam*r-I(h*G);I K=fourth.get()/4+I(n*h/24)+I(G*G)/(I(2)*lam);
       I slope=-A/2-I(h)*K;
-      if(inward.valid()&&inward.lo>0&&slope.valid()&&slope.lo>0){tail={1/h,0};return true;}
+      if(inward.valid()&&inward.lo>0){
+        if(A.hi<0&&slope.valid()&&slope.lo>0){tail={1/h,0};return true;}
+        // log1p(u)>=u-u^2/2 and the integrated normalizer remainder
+        // give A/v + K/v^2 uniformly on the entire tail. The same
+        // inward nuisance ball supplies the quadratic optimization gap.
+        I upper=I(std::max(0.,A.hi))*h+I(h*h)*K;
+        if(witness>0&&upper.valid()&&upper.hi<witness){tail={1/h,upper.hi};return true;}
+      }
     }
   }
   if(witness>0){double L,U;if(!e.containment(std::max(2.,e.floor+1),L,U))return false;I C=I(3*n/8)*sq(sq((e.d.x.back()-e.d.x.front())/L));if(!C.valid())return false;double N=std::max(1000.,4*C.hi/witness);if(!std::isfinite(N)||N>1e14)return false;tail={N,C.hi/N};return true;}
@@ -412,6 +471,18 @@ inline TCertificateResult t_certificate(span x,double floor,int budget=4096,int 
     auto a=e.at(lo),b=e.at(hi);if(e.failure)return;
     auto error=t_cert_detail::I(n)*t_cert_detail::sq(t_cert_detail::I(hi)-lo)/(t_cert_detail::I(8)*t_cert_detail::sq(t_cert_detail::I(lo)));
     double upper=std::max(a.delta.hi,b.delta.hi)+error.hi;
+    if(upper>=witness&&!a.collapse&&!b.collapse&&hi-lo<.1*lo){
+      const double v0=lo/2+hi/2,m=a.m/2+b.m/2,t=a.t/2+b.t/2;
+      const double width=std::max(std::abs(a.m-b.m),std::abs(a.t-b.t));
+      for(double radius:{std::max(1e-6,2*width),std::max(1e-5,10*width)}){
+        t_cert_detail::System h;
+        if(t_cert_detail::tube(data,{{{m-radius,m+radius},{t-radius,t+radius},{lo/v0,hi/v0}}},v0,m,t,radius,h)){
+          auto tighter=h.h[2][2]*t_cert_detail::sq(t_cert_detail::I(hi)-lo)/(t_cert_detail::I(8)*v0*v0);
+          if(tighter.valid())upper=std::min(upper,std::max(a.delta.hi,b.delta.hi)+std::max(0.,tighter.hi));
+          break;
+        }
+      }
+    }
     if(!std::isfinite(upper)){e.failure=2;return;}if(upper>=witness)queue.push({upper,lo,hi});
   };
   std::vector<double> knots;for(const auto& p:e.cache)if(p.first<=tail.N)knots.push_back(p.first);

@@ -1,0 +1,98 @@
+{
+  "task": "TASK-140.1",
+  "base_revision": "f30584cd1819744e130850bcb1e58a5d1c52ed28",
+  "branch": "codex/t-close",
+  "source_sha256": {
+    "bindings/js/test.mjs": "27a805344976c220e035474fd85ab0f92c3321d8727e4c7778cf897957c4ca8f",
+    "bindings/r/distributions/std/test.R": "315210429b622bd1ab5ba3bc6e9f1c7c13a35e2548aa3ea9b79287da2a288ac0",
+    "univariateML-cpp/include/cppunivariate/distributions/lst/certificate.hpp": "3827ea413b81f439c6a0feb9e35e14e53371e9373090808b3b5839ece9e13968",
+    "univariateML-cpp/include/cppunivariate/distributions/lst/test.cpp": "8f00caa5f25f107f34f48493e465f2bf62f54e7bbb997ce5f2d3a0659cc0ce28",
+    "univariateML-cpp/include/cppunivariate/distributions/std/test.cpp": "6f38072a658c00bc6a770883005f695c7c2723d2d5b083e1ec720650e8be2f19"
+  },
+  "verified_simbox_source_count": 361,
+  "commands": [
+    {
+      "command": "just cpp-test",
+      "machine": "simbox",
+      "result": "106/106",
+      "exit_code": 0
+    },
+    {
+      "command": "just test",
+      "machine": "simbox",
+      "result": "FAIL 0, WARN 0, SKIP 154, PASS 20821",
+      "exit_code": 0
+    },
+    {
+      "command": "just cpp-test-no-long-double",
+      "machine": "simbox",
+      "result": "127/127",
+      "exit_code": 0
+    },
+    {
+      "command": "UMVL_TEST_TIER=full just cpp-test",
+      "machine": "simbox",
+      "result": "127/127",
+      "exit_code": 0
+    },
+    {
+      "command": "just test-full",
+      "machine": "simbox",
+      "result": "FAIL 0, WARN 0, SKIP 0, PASS 43637",
+      "exit_code": 0
+    },
+    {
+      "command": "just js-build",
+      "machine": "workstation",
+      "exit_code": 0
+    },
+    {
+      "command": "just js-test",
+      "machine": "workstation",
+      "exit_code": 0,
+      "result": "430 passed; 0 skipped"
+    },
+    {
+      "command": "just site-check",
+      "machine": "workstation",
+      "exit_code": 0
+    },
+    {
+      "command": "just relations",
+      "machine": "workstation",
+      "exit_code": 0
+    }
+  ],
+  "retained_replay": {
+    "outcomes": 68,
+    "prior_certified_preserved": 60,
+    "prior_budgets_resolved": 2,
+    "additional_finite_cases": 6
+  },
+  "independent_boxes": 42,
+  "arithmetic_boxes": 39,
+  "arithmetic_sampled_points": 221,
+  "goldens_unchanged": true,
+  "permitted_final_failures": [],
+  "local_log_sha256": {
+    "final-local.log": "178b18819464db5b599fca965287b1f7cf9e41d5ed8222fcaf5ca6f85d0e8515",
+    "t-close-js-test.log": "e1cd480f02d4c86a2cd29da05cba903e2aacc5b597a7b2ce68e44399ac11a1ec",
+    "independent-final.log": "c66191794f20ac211230d71da656a78b6ffd710429f2000365c13f35e0515a47",
+    "quantile-root.log": "8d19500f6791d01b3ad61052ae04edb92ada5408d151d31fb566e3b2a7c27885",
+    "environment.log": "b026fa0d86bc05059acd1f839df4766a04a68f7d0638b5290765c2e4878a4168",
+    "arithmetic-final.log": "8504735ec9bbe3b9e8382c9d958fd7a6e915f93b993b0c0d85aa7c88b8debf33",
+    "t-close-site-check.log": "3dd61b382274575eb62fa033d3c6396d7600d360286b40d5e271a62fb4fdc397",
+    "final-simbox.log": "2a760f96d3743e0071adb555abec4fb4a7d483d136ca919f039a199a4aa038ad",
+    "native-final.log": "8f9510452e68928b5c8bb60dce2cf38991bbef5a0e355a7f4600ede007bcfe9f",
+    "t-close-js-build.log": "7ee361e8e048f0279575d462c2bf84f62b669f47ca9c0049436b375966ecff95",
+    "t-close-relations.log": "73f40f9ee6e60f6d21aac171de3a976efb18f9d3f128815fb1e61573428c061e"
+  },
+  "simbox_log_sha256": {
+    "build/scratch/t-close-cpp-test.log": "387013f745c907246770517b9af8f56112b00309cce7d82fe1d579ec13956181",
+    "build/scratch/t-close-test.log": "af82426d0a85e6aedf7c35b1fd8f91aa1f36dee19148e2925b390f12e980313f",
+    "build/scratch/t-close-cpp-test-no-long-double.log": "ee7feb76c300326a977f717a7f1044f7a108f44290331b5c8ef499989651da44",
+    "build/scratch/t-close-cpp-full.log": "d4e59aeb8c1d18970f296b33ef2c7f6e25dfe15737cc13246510ef7a988cc5c5",
+    "build/scratch/t-close-test-full.log": "13e5ea684e200525f59a45bc0a3b123f701d89d8bb7429319b8a2a0ea37ae1a0"
+  },
+  "earlier_nonpassing_attempts": "search-history.json"
+}

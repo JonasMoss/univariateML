@@ -1,0 +1,314 @@
+[
+  {
+    "nu": "0.50100000000000000088817841970012523233890533447265625",
+    "width": 0.0,
+    "points": 1,
+    "quantities_per_point": 12,
+    "gamma4": true,
+    "passed": true
+  },
+  {
+    "nu": "0.50100000000000000088817841970012523233890533447265625",
+    "width": 1e-05,
+    "points": 8,
+    "quantities_per_point": 12,
+    "gamma4": true,
+    "passed": true
+  },
+  {
+    "nu": "0.50100000000000000088817841970012523233890533447265625",
+    "width": 0.001,
+    "points": 8,
+    "quantities_per_point": 12,
+    "gamma4": true,
+    "passed": true
+  },
+  {
+    "nu": "1.0",
+    "width": 0.0,
+    "points": 1,
+    "quantities_per_point": 12,
+    "gamma4": true,
+    "passed": true
+  },
+  {
+    "nu": "1.0",
+    "width": 1e-05,
+    "points": 8,
+    "quantities_per_point": 12,
+    "gamma4": true,
+    "passed": true
+  },
+  {
+    "nu": "1.0",
+    "width": 0.001,
+    "points": 8,
+    "quantities_per_point": 12,
+    "gamma4": true,
+    "passed": true
+  },
+  {
+    "nu": "1.000999999999999889865875957184471189975738525390625",
+    "width": 0.0,
+    "points": 1,
+    "quantities_per_point": 12,
+    "gamma4": true,
+    "passed": true
+  },
+  {
+    "nu": "1.000999999999999889865875957184471189975738525390625",
+    "width": 1e-05,
+    "points": 8,
+    "quantities_per_point": 12,
+    "gamma4": true,
+    "passed": true
+  },
+  {
+    "nu": "1.000999999999999889865875957184471189975738525390625",
+    "width": 0.001,
+    "points": 8,
+    "quantities_per_point": 12,
+    "gamma4": true,
+    "passed": true
+  },
+  {
+    "nu": "2.0",
+    "width": 0.0,
+    "points": 1,
+    "quantities_per_point": 12,
+    "gamma4": true,
+    "passed": true
+  },
+  {
+    "nu": "2.0",
+    "width": 1e-05,
+    "points": 8,
+    "quantities_per_point": 12,
+    "gamma4": true,
+    "passed": true
+  },
+  {
+    "nu": "2.0",
+    "width": 0.001,
+    "points": 8,
+    "quantities_per_point": 12,
+    "gamma4": true,
+    "passed": true
+  },
+  {
+    "nu": "3.0",
+    "width": 0.0,
+    "points": 1,
+    "quantities_per_point": 12,
+    "gamma4": true,
+    "passed": true
+  },
+  {
+    "nu": "3.0",
+    "width": 1e-05,
+    "points": 8,
+    "quantities_per_point": 12,
+    "gamma4": true,
+    "passed": true
+  },
+  {
+    "nu": "3.0",
+    "width": 0.001,
+    "points": 8,
+    "quantities_per_point": 12,
+    "gamma4": true,
+    "passed": true
+  },
+  {
+    "nu": "32.0",
+    "width": 0.0,
+    "points": 1,
+    "quantities_per_point": 12,
+    "gamma4": true,
+    "passed": true
+  },
+  {
+    "nu": "32.0",
+    "width": 1e-05,
+    "points": 8,
+    "quantities_per_point": 12,
+    "gamma4": true,
+    "passed": true
+  },
+  {
+    "nu": "32.0",
+    "width": 0.001,
+    "points": 8,
+    "quantities_per_point": 12,
+    "gamma4": true,
+    "passed": true
+  },
+  {
+    "nu": "128.0",
+    "width": 0.0,
+    "points": 1,
+    "quantities_per_point": 12,
+    "gamma4": true,
+    "passed": true
+  },
+  {
+    "nu": "128.0",
+    "width": 1e-05,
+    "points": 8,
+    "quantities_per_point": 12,
+    "gamma4": true,
+    "passed": true
+  },
+  {
+    "nu": "128.0",
+    "width": 0.001,
+    "points": 8,
+    "quantities_per_point": 12,
+    "gamma4": true,
+    "passed": true
+  },
+  {
+    "nu": "218.0",
+    "width": 0.0,
+    "points": 1,
+    "quantities_per_point": 12,
+    "gamma4": true,
+    "passed": true
+  },
+  {
+    "nu": "218.0",
+    "width": 1e-05,
+    "points": 8,
+    "quantities_per_point": 12,
+    "gamma4": true,
+    "passed": true
+  },
+  {
+    "nu": "218.0",
+    "width": 0.001,
+    "points": 8,
+    "quantities_per_point": 12,
+    "gamma4": true,
+    "passed": true
+  },
+  {
+    "nu": "539.0",
+    "width": 0.0,
+    "points": 1,
+    "quantities_per_point": 12,
+    "gamma4": true,
+    "passed": true
+  },
+  {
+    "nu": "539.0",
+    "width": 1e-05,
+    "points": 8,
+    "quantities_per_point": 12,
+    "gamma4": true,
+    "passed": true
+  },
+  {
+    "nu": "539.0",
+    "width": 0.001,
+    "points": 8,
+    "quantities_per_point": 12,
+    "gamma4": true,
+    "passed": true
+  },
+  {
+    "nu": "1000.0",
+    "width": 0.0,
+    "points": 1,
+    "quantities_per_point": 12,
+    "gamma4": true,
+    "passed": true
+  },
+  {
+    "nu": "1000.0",
+    "width": 1e-05,
+    "points": 8,
+    "quantities_per_point": 12,
+    "gamma4": true,
+    "passed": true
+  },
+  {
+    "nu": "1000.0",
+    "width": 0.001,
+    "points": 8,
+    "quantities_per_point": 12,
+    "gamma4": true,
+    "passed": true
+  },
+  {
+    "nu": "100000000.0",
+    "width": 0.0,
+    "points": 1,
+    "quantities_per_point": 12,
+    "gamma4": true,
+    "passed": true
+  },
+  {
+    "nu": "100000000.0",
+    "width": 1e-05,
+    "points": 8,
+    "quantities_per_point": 12,
+    "gamma4": true,
+    "passed": true
+  },
+  {
+    "nu": "100000000.0",
+    "width": 0.001,
+    "points": 8,
+    "quantities_per_point": 12,
+    "gamma4": true,
+    "passed": true
+  },
+  {
+    "nu": "1000000000000.0",
+    "width": 0.0,
+    "points": 1,
+    "quantities_per_point": 12,
+    "gamma4": true,
+    "passed": true
+  },
+  {
+    "nu": "1000000000000.0",
+    "width": 1e-05,
+    "points": 8,
+    "quantities_per_point": 12,
+    "gamma4": true,
+    "passed": true
+  },
+  {
+    "nu": "1000000000000.0",
+    "width": 0.001,
+    "points": 8,
+    "quantities_per_point": 12,
+    "gamma4": true,
+    "passed": true
+  },
+  {
+    "nu": "100000000000000.0",
+    "width": 0.0,
+    "points": 1,
+    "quantities_per_point": 12,
+    "gamma4": true,
+    "passed": true
+  },
+  {
+    "nu": "100000000000000.0",
+    "width": 1e-05,
+    "points": 8,
+    "quantities_per_point": 12,
+    "gamma4": true,
+    "passed": true
+  },
+  {
+    "nu": "100000000000000.0",
+    "width": 0.001,
+    "points": 8,
+    "quantities_per_point": 12,
+    "gamma4": true,
+    "passed": true
+  }
+]

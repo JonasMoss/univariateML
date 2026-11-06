@@ -264,3 +264,18 @@ TEST_CASE("std: certificate normal and critical collapse remain distinct") {
   CHECK(collapse.stop_detail.loglik_lower<=-6*std::log(2.));
   CHECK(collapse.stop_detail.loglik_upper>=-6*std::log(2.));
 }
+
+TEST_CASE("std: certificate large-sample shallow quantile maximum") {
+  std::vector<double> x;
+  for(int i=0;i<4000;++i)x.push_back(cppunivariate::special::qt((i+.5)/4000,300,true,false));
+  for(double floor:{1.,2.}){
+    const auto r=cppunivariate::t_certificate(mltest::as_span(x),floor,4096,500);
+    REQUIRE(r.status==cppunivariate::TCertificateStatus::Finite);
+    CHECK(r.profiles<4096);
+    CHECK(r.nu==doctest::Approx(539.46057298).epsilon(1e-7));
+    CHECK(r.scale==doctest::Approx(1.00131588021).epsilon(1e-7));
+  }
+  const auto r=cppunivariate::student_t_mle(mltest::as_span(x),1e-7,500);
+  REQUIRE(r.status==cppunivariate::StudentTStatus::Ok);
+  CHECK(r.nu==doctest::Approx(539.46057298).epsilon(1e-7));
+}

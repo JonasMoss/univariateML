@@ -1,0 +1,214 @@
+[
+  {
+    "name": "lst-golden",
+    "family": "lst",
+    "independent_root_inside": true,
+    "whole_box_golden_relative_error": "0.0000000054415544425367830198079258898520695265483483663805201567506756078517749929483849"
+  },
+  {
+    "name": "lst-golden",
+    "family": "std",
+    "independent_root_inside": true
+  },
+  {
+    "name": "std-golden",
+    "family": "lst",
+    "independent_root_inside": true
+  },
+  {
+    "name": "std-golden",
+    "family": "std",
+    "independent_root_inside": true,
+    "whole_box_golden_relative_error": "0.0000089250763759916458842097515033985868483955105270139554258860888914386332137653386"
+  },
+  {
+    "name": "t1-0",
+    "family": "lst",
+    "independent_root_inside": true
+  },
+  {
+    "name": "t1-0",
+    "family": "std",
+    "independent_root_inside": true
+  },
+  {
+    "name": "t1-1",
+    "family": "lst",
+    "independent_root_inside": true
+  },
+  {
+    "name": "t1-1",
+    "family": "std",
+    "independent_root_inside": true
+  },
+  {
+    "name": "t2-0",
+    "family": "lst",
+    "independent_root_inside": true
+  },
+  {
+    "name": "t2-0",
+    "family": "std",
+    "independent_root_inside": true
+  },
+  {
+    "name": "t2-1",
+    "family": "lst",
+    "independent_root_inside": true
+  },
+  {
+    "name": "t2-1",
+    "family": "std",
+    "independent_root_inside": true
+  },
+  {
+    "name": "t3-0",
+    "family": "lst",
+    "independent_root_inside": true
+  },
+  {
+    "name": "t3-0",
+    "family": "std",
+    "independent_root_inside": true
+  },
+  {
+    "name": "t3-1",
+    "family": "lst",
+    "independent_root_inside": true
+  },
+  {
+    "name": "t3-1",
+    "family": "std",
+    "independent_root_inside": true
+  },
+  {
+    "name": "t5-0",
+    "family": "lst",
+    "independent_root_inside": true
+  },
+  {
+    "name": "t5-0",
+    "family": "std",
+    "independent_root_inside": true
+  },
+  {
+    "name": "t5-1",
+    "family": "lst",
+    "independent_root_inside": true
+  },
+  {
+    "name": "t5-1",
+    "family": "std",
+    "independent_root_inside": true
+  },
+  {
+    "name": "normal-0",
+    "family": "lst",
+    "independent_root_inside": true
+  },
+  {
+    "name": "normal-0",
+    "family": "std",
+    "independent_root_inside": true
+  },
+  {
+    "name": "contaminated",
+    "family": "lst",
+    "independent_root_inside": true
+  },
+  {
+    "name": "contaminated",
+    "family": "std",
+    "independent_root_inside": true
+  },
+  {
+    "name": "cluster-0.001",
+    "family": "lst",
+    "independent_root_inside": true
+  },
+  {
+    "name": "cluster-0.001",
+    "family": "std",
+    "independent_root_inside": true
+  },
+  {
+    "name": "cluster-0.01",
+    "family": "lst",
+    "independent_root_inside": true
+  },
+  {
+    "name": "cluster-0.01",
+    "family": "std",
+    "independent_root_inside": true
+  },
+  {
+    "name": "cluster-0.03",
+    "family": "lst",
+    "independent_root_inside": true
+  },
+  {
+    "name": "cluster-0.03",
+    "family": "std",
+    "independent_root_inside": true
+  },
+  {
+    "name": "seam-A--1e-06",
+    "family": "lst",
+    "independent_root_inside": true
+  },
+  {
+    "name": "seam-A--1e-06",
+    "family": "std",
+    "independent_root_inside": true
+  },
+  {
+    "name": "seam-A-0.0",
+    "family": "lst",
+    "independent_root_inside": true
+  },
+  {
+    "name": "seam-A-0.0",
+    "family": "std",
+    "independent_root_inside": true
+  },
+  {
+    "name": "seam-A-1e-06",
+    "family": "lst",
+    "independent_root_inside": true
+  },
+  {
+    "name": "seam-A-1e-06",
+    "family": "std",
+    "independent_root_inside": true
+  },
+  {
+    "name": "cauchy-stable-interior",
+    "family": "lst",
+    "independent_root_inside": true
+  },
+  {
+    "name": "cauchy-stable-interior",
+    "family": "std",
+    "independent_root_inside": true
+  },
+  {
+    "name": "two-interior-maxima",
+    "family": "lst",
+    "independent_root_inside": true
+  },
+  {
+    "name": "two-interior-maxima",
+    "family": "std",
+    "independent_root_inside": true
+  },
+  {
+    "name": "quantile-4000",
+    "family": "lst",
+    "independent_root_inside": true
+  },
+  {
+    "name": "quantile-4000",
+    "family": "std",
+    "independent_root_inside": true
+  }
+]
