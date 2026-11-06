@@ -19,6 +19,7 @@
 #include "../../core/span.hpp"
 #include "../norm/mle.hpp"
 #include "../snorm/mle.hpp"
+#include "../snorm/fs.hpp"
 #include "../../special/skewed_densities.hpp"
 #include "../../special/special.hpp"
 
@@ -32,7 +33,7 @@ namespace cppunivariate {
 inline constexpr double kSgedNuLower = 1.0;
 
 
-enum class SgedStatus { Ok = 0, BfgsFailure, InvalidStart, Unbounded, ScaleBoundary, UnsupportedHold, UniformBoundary, RightHalfGedBoundary, LeftHalfGedBoundary };
+enum class SgedStatus { Ok = 0, BfgsFailure, InvalidStart, Unbounded, ScaleBoundary, UnsupportedHold, UniformBoundary, RightHalfGedBoundary, LeftHalfGedBoundary, CertificateFailure };
 
 struct SgedResult {
   double mu;
@@ -43,7 +44,10 @@ struct SgedResult {
   int iterations;
   SgedStatus status; unsigned restricted = 0;
   StopDetail stop_detail{};
+  bool certified = false;
 };
+
+#include "certificate.hpp"
 
 // Per-obs nll = ls + F_s(ln, lx) + F_g(ln) + 0.5 |w/lambda(nu)|^nu, with:
 //   F_s(ln, lx) = -log sigma_u(nu, xi) + log(xi + 1/xi) - log 2
@@ -428,8 +432,10 @@ inline SgedResult sged_mle_impl(span x, double tol, int maxit,
   SgedResult out{nan,nan,nan,nan,nan,0,SgedStatus::InvalidStart};
   if((hm && !std::isfinite(fixed_mean)) || (hs && !(fixed_sd>0 && std::isfinite(fixed_sd))) ||
      (hn && !(fixed_nu>0 && std::isfinite(fixed_nu))) ||
-     (hx && !(fixed_xi>0 && std::isfinite(fixed_xi))) || x.size()==0 || !(tol>0) || maxit<1) return out;
+     (hx && !(fixed_xi>0 && std::isfinite(fixed_xi))) || x.size()==0 || !(tol>0) || !std::isfinite(tol) || maxit<1) return out;
   for(double v:x) if(!std::isfinite(v)) return out;
+  if(hn && hx && ((!hm) || (!hs && (fixed_xi==1.0 || fixed_nu>=1.0))))
+    return sged_cert_detail::fit(x,tol,maxit,fixed_mean,fixed_sd,fixed_nu,fixed_xi);
   if(!(hn && hx && (hm || hs))) {
     const auto r=skew_hold_detail::fit(x,false,fixed_mean,fixed_sd,fixed_nu,fixed_xi,tol,maxit);
     const std::vector<SgedStatus> statuses{SgedStatus::Ok,SgedStatus::BfgsFailure,SgedStatus::InvalidStart,SgedStatus::Unbounded,SgedStatus::ScaleBoundary,SgedStatus::UniformBoundary,SgedStatus::UniformBoundary,SgedStatus::RightHalfGedBoundary,SgedStatus::LeftHalfGedBoundary,SgedStatus::UniformBoundary};

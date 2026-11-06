@@ -461,3 +461,38 @@ test_that("sged conditional failed iterates are never returned as fits", {
   x <- c(-2,-1,-.4,0,.2,.3,.5,1,2,5)
   expect_error(mlsged(x,sd=1,nu=1.7,iterlim=1),'failed.*score check|half-GED')
 })
+
+test_that("sged certified normal submodels agree with sufficient statistics", {
+  x <- c(-3,-1,.2,.4,1,2,4)
+  joint <- mlsged(x,nu=2,xi=1)
+  expect_equal(unname(coef(joint)[c('mean','sd')]),c(mean(x),sqrt(mean((x-mean(x))^2))),tolerance=2e-8)
+  held <- mlsged(x,mean=0,nu=2,xi=1)
+  expect_equal(unname(coef(held)['sd']),sqrt(mean(x^2)),tolerance=2e-12)
+  expect_identical(unname(coef(held)['mean']),0)
+  expect_equal(as.numeric(logLik(joint)),sum(dnorm(x,mean(x),sqrt(mean((x-mean(x))^2)),log=TRUE)),tolerance=2e-10)
+})
+
+test_that("sged held-shape ties and budgets have structured witnesses", {
+  for(nu in c(.5,1)) for(sd in list(NULL,1)) {
+    e <- tryCatch(mlsged(c(-1,1),sd=sd,nu=nu,xi=1),error=identity)
+    expect_s3_class(e,'univariateML_tie')
+    expect_equal(nrow(e$candidates),2L)
+  }
+  e <- tryCatch(mlsged(0:139,sd=1,nu=.7,xi=1.3,iterlim=1),error=identity)
+  expect_s3_class(e,'univariateML_budget')
+  expect_true(nrow(e$candidates)>0)
+  expect_error(mlsged(c(-3,-1,.2,.4,1,2,4),sd=1,nu=2,xi=1,iterlim=1),class='univariateML_numerical')
+  expect_error(mlsged(c(-1,0,1),sd=1,nu=.001,xi=1),class='univariateML_numerical')
+})
+
+test_that("sged asymmetric held-shape scale certificate matches a scalar reference", {
+  x <- c(-3,-1,-.2,0,.3,.4,2)
+  for(nu in c(1,1.1,2,4,20)) for(xi in c(.3,1.3,3)) {
+    f <- mlsged(x,mean=.1,nu=nu,xi=xi)
+    ref <- optimize(function(ls)-sum(sged_hold_logref(x,c(mean=.1,sd=exp(ls),nu=nu,xi=xi))),c(-5,5),tol=1e-10)
+    expect_equal(unname(coef(f)['sd']),exp(ref$minimum),tolerance=2e-7,info=paste(nu,xi))
+    # A Laplace join has first-order likelihood loss in scale error.
+    expect_equal(as.numeric(logLik(f)),-ref$objective,tolerance=if(nu==1) 2e-8 else 2e-9,info=paste(nu,xi))
+  }
+  expect_error(mlsged(x,mean=.1,nu=2,xi=3,iterlim=1),class='univariateML_numerical')
+})

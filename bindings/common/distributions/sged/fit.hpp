@@ -35,6 +35,14 @@ inline FitResult fit_sged(cppunivariate::span x, Held mean_arg = {}, Held sd_arg
   const double held_xi=xi.supplied ? xi.value : nan;
   if(xi.supplied && (!(std::isfinite(held_xi) && held_xi>0))) return fail("Invalid held `xi`: requires a finite value in its parameter domain.");
   auto res=cppunivariate::sged_mle(x,gradtol,iterlim,held_mean,held_sd,held_nu,held_xi);
+  if(res.status==cppunivariate::SgedStatus::CertificateFailure) {
+    const std::vector<std::string> names{"mean","sd","nu","xi"};
+    if(res.stop_detail.budget_exhausted)
+      return classify(fail("SGED held-shape certificate budget exhausted; increase `iterlim`."),res.stop_detail,"budget",names);
+    if(res.stop_detail.comparison_tie)
+      return classify(fail("SGED held-shape maxima are tied or numerically indistinguishable; no unique MLE returned."),res.stop_detail,"tie",names);
+    return classify(fail("SGED held-shape certificate numerical failure (arithmetic or root enclosure); increase `iterlim`."),res.stop_detail,"numerical",names);
+  }
   if(res.status==cppunivariate::SgedStatus::UnsupportedHold) return fail("Unsupported conditional fit.");
   if(res.status==cppunivariate::SgedStatus::Unbounded) return nomle("Scale collapse: likelihood is unbounded at the held mean; no MLE.");
   if(res.status==cppunivariate::SgedStatus::ScaleBoundary) return fail("Scale-collapse or constrained uniform endpoint boundary could not be certified; no finite MLE returned.");

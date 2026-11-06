@@ -132,10 +132,8 @@ construction:
 relations: {}
 fit:
   method: multistart
-  certified: 'no'
-  note: 'sged/README.md, Details; sged/mle.hpp (public fitter and held overloads); sged/test.cpp: Default and nontrivial
-    conditional fits use multistart, finite grids or local profile refinement without a global certificate; all-held
-    density evaluation is not counted as certification.'
+  certified: 'partial'
+  note: 'sged/certificate.hpp certifies free location with both shapes held (scale held or free), and free scale with mean held when xi=1 or nu>=1 is held. Other subsets, including the unchanged default, retain numerical searches without a global certificate; all-held evaluation is not counted.'
 areas:
 - finance
 - measurement and errors
@@ -149,7 +147,7 @@ key_references:
 existence:
   uniqueness: unknown
   statement: >-
-    With all coefficients free, estimated shape is restricted to $\nu\ge1$; constant data permit scale collapse, and uniform or translated half-GED limits can prevent a finite maximum. Without the fitting restriction, the all-free likelihood is unbounded for every sample. Global existence and uniqueness in the restricted domain outside the stated cases are unresolved. Holding coefficients retains only reachable limiting faces and the corresponding moment constraints. Holding both shapes in the log-concave range gives a concave location-scale problem in inverse-scale coordinates, but this alone does not certify the implemented search. With $\mu$ and both shapes held, a scale maximum exists unless every observation equals that location; uniqueness is not asserted for the numerical scale search. With $\sigma$ and both shapes held, a location maximum exists, including for tied samples. Holding all coefficients leaves likelihood evaluation.
+    With all coefficients free, estimated shape is restricted to $\nu\ge1$; constant data permit scale collapse, and uniform or translated half-GED limits can prevent a finite maximum. Without the fitting restriction, the all-free likelihood is unbounded for every sample. Global existence and uniqueness in the restricted domain outside the stated cases are unresolved. Holding coefficients retains only reachable limiting faces and the corresponding moment constraints. With both shapes held and location free, the location/scale maximum is unique for nu > 1 unless free scale collapses on constant data; nu <= 1 permits ties. These subsets now use a global certificate. With $\mu$ and both shapes held, a scale maximum exists unless every observation equals that location; the scale maximum is unique for nu >= 1 by strict convexity in inverse scale, and for every positive nu when xi=1; the asymmetric scale search below one remains uncertified. With $\sigma$ and both shapes held, a location maximum exists, including for tied samples. Holding all coefficients leaves likelihood evaluation.
 ---
 
 The skew generalized error distribution extends the exponential-power family with Fernandez-Steel asymmetry. Its location and scale parameters are the mean and standard deviation.
@@ -217,11 +215,10 @@ does not prove that no larger finite maximum was missed.
 
 
 Every coefficient may be held, singly or jointly; held values are returned
-exactly. Conditional fits compare multistart interior searches with every
+exactly. Other conditional fits compare multistart interior searches with every
 reachable half-family and shape boundary, retaining the held mean and standard deviation
-constraints on those faces. The fixed-shape, fixed-skew location-scale fit
-profiles scale and scans location, including observation kinks. Scalar
-searches scan before refining competing brackets. Numerical multistart and
+constraints on those faces. Fits with either shape free, and the asymmetric scale-only fit,
+scan before refining competing brackets. Numerical multistart and
 finite scans provide evidence rather than a global optimality certificate.
 A search reaching its numerical guard stops instead of returning a fit.
 
@@ -250,7 +247,8 @@ zero-side and uniform limits also require separate treatment.
 | TASK-116 property | Evidence |
 |---|---|
 | Fixed finite $\xi>0$, $\nu\ge1$ | Concavity in inverse-scale coordinates, proved as above. |
-| Conditional fits | Numerical scans and refinements; not an interval-certified inner solve. |
+| Held shapes, free location; scale-only with $\nu\ge1$ or $\xi=1$ | Global certificates described below. |
+| Remaining conditional fits | Numerical scans and refinements; no global certificate. |
 | Default free shapes and limiting faces | Multistart and face comparisons; numerical, with no global shape certificate. |
 
 With mean and shapes held, scale maxima exist unless all observations equal
@@ -264,6 +262,108 @@ endpoint retain the GED endpoint density penalty. If only the standard deviation
 and its limiting uniform width equals the sample range exactly, a winning
 endpoint face is reported as uncertified rather than returning a uniform
 proxy for its constrained likelihood.
+
+### Held-shape certificate
+
+Write $c=\mu-\sigma\mu_u/\sigma_u$ for the mode and
+$h=\sigma\lambda 2^{1/\nu}/\sigma_u$ for ordinary scale, where
+$\lambda$ is the variance-standardized GED scale, and $\mu_u,\sigma_u$
+are its Fernandez–Steel shift and scale. For fixed $\nu,\xi$,
+$$
+ Q(c)=\sum_{x_i<c}\xi^\nu(c-x_i)^\nu+
+       \sum_{x_i>c}\xi^{-\nu}(x_i-c)^\nu,\qquad
+ \ell=C-n\log h-Q(c)/h^\nu.
+$$
+With scale held, maximizing likelihood minimizes $Q$. With scale free,
+$h^\nu=\nu Q(c)/n$ is the unique scale maximum whenever $Q>0$, and
+profiling again minimizes $Q$. The public mean is recovered from the mode
+only after solving this problem; holding the mean instead does not fix the mode
+when $\xi\ne1$.
+
+For $\nu>1$, $Q$ is strictly convex, has derivative negative below the
+sample minimum and positive above the maximum, and has one global minimum.
+The certificate bisects that derivative on the whole sample range, evaluating
+compensated signed sums after logarithmic rescaling. An uncertain derivative sign must be
+replaced by two signed endpoints enclosing the root; it is never treated as a
+zero score. The normalized root enclosure has width at most $10^{-9}$.
+The stored mean must recover the normalized mode within another $10^{-9}$;
+otherwise the fitter stops. Cancellation in mean recovery is also rejected
+when a $32\epsilon$ allowance on its summands exceeds $10^{-7}(1+|\mu|)$.
+The likelihood evaluated at the stored coefficients must agree with the
+mode-coordinate evaluation within the candidate allowance below; this guards
+against cusp amplification of reconstruction errors. This supplies an absolute coefficient enclosure
+in units of the largest observation distance from the sample midpoint,
+rather than a stopping test based only on likelihood decrease. Termwise
+minimum/maximum distances over the root interval also enclose the profiled
+scale and recovered mean; both public-coordinate widths must be at most
+$10^{-7}(1+|\theta|)$ before acceptance.
+
+For $\nu=1$, the minimizers are weighted medians with quantile
+$1/(1+\xi^2)$. Sorted observations and cumulative left/right slopes locate
+one knot or a flat interval. For $0<\nu<1$, $Q$ is strictly concave on
+every interval between distinct observations. No such interior point can
+minimize it, and outside the sample range it is monotone towards the data.
+Evaluating every distinct observation therefore enumerates all possible
+global minima. The latter result does **not** assert uniqueness. For example,
+$x=(-1,1)$ with $\xi=1$ has two maximizing modes for every held
+$0<\nu<1$. At $\nu=1$ the entire interval $[-1,1]$ maximizes likelihood.
+These examples apply with scale held or profiled; ties stop with candidate
+coefficients rather than returning one arbitrary fit.
+
+Constant data with free location and scale have $Q=0$ and unbounded
+likelihood as scale vanishes. With positive scale held they have a unique
+maximizing mode at that observation. With mean and $\xi=1$ held, the
+same scale profile gives a unique maximum unless all observations equal
+the held mean. These statements cover all positive held shapes, independently
+of the restriction on estimated shape.
+
+With mean and both shapes held and $\nu\ge1$, set
+$t=u/\sigma>0$, with $u=\max_i|x_i-\mu|>0$. The negative log likelihood
+is, up to constants, $F(t)=-n\log t+\sum_i V(a_i t+\mu_u)$,
+where $a_i=(x_i-\mu)\sigma_u/u$ and
+$V(z)=|z/(\lambda\xi^{\operatorname{sign}z})|^\nu/2$.
+Each $V$ is convex, and $-n\log t$ is strictly convex. Thus $F$ has
+one minimum: it diverges at zero, and at infinity a nonzero $a_i$ gives
+power growth dominating the logarithm. The scale certificate brackets the
+monotone derivative $F'(t)$ with expanding log-$t$ endpoints and then
+bisects, using compensated signed logarithmic sums for $tF'(t)$. A derivative
+uncertainty, including a $\nu=1$ join, must be resolved by two signed
+endpoints or it stops numerically. A log-scale bracket of width $10^{-9}$
+is required, and the stored scale must preserve its log coordinate within
+$10^{-8}$. Tail bracketing and bisection share the solver budget; the
+certificate imposes no finite inverse-scale cutoff. When $u=0$, collapse
+is unbounded. For asymmetric held shapes below one, this convexity argument
+is unavailable and the legacy scale-only search is retained.
+
+The certificate is exact-arithmetic conditional on computed comparisons.
+Its practical floating-point allowances are $512\epsilon$ times the
+rescaled score magnitude and its exponent conditioning factor, and
+$10^{-10}(n+|\ell|)$ per evaluated candidate ($10^{-7}(n+|\ell|)$ for
+$\nu<1$, allowing for the cusp's sensitivity to mode reconstruction).
+Overlapping likelihood allowances or an uncertain weighted-median slope
+produce a comparison-tie stop. These are numerical allowances, not
+outward-rounded interval bounds. Nonfinite normalizers, powers, scales or
+failed coordinate reconstruction produce a numerical stop. The settled
+log-gamma moment helper used by d/p/q/r supplies the certificate's shift
+and scale; the historical all-free objective is unchanged.
+
+The certificate uses these fixed coefficient enclosures independently of
+`gradtol`, which continues to control the legacy numerical optimizers.
+Bisection uses at most $\min(\mathtt{iterlim},100000)$ solver steps;
+exhaustion is a numerical stop. Location bisection retains its finite
+witness when available; scale bracketing can stop before evaluating a
+candidate. Knot enumeration
+uses at most $128\min(\mathtt{iterlim},100000)$ distinct knots and stops
+as `budget` with surviving candidates if exhausted. Each knot evaluation
+costs $O(n)$; sorting costs $O(n\log n)$, the weighted-median path costs
+$O(n)$ after sorting, and the smooth solve costs $O(n)$ per iteration.
+No finite shape or skew cutoff is part of these held-shape proofs.
+
+The other free subsets remain uncertified, including asymmetric scale-only
+fits with held $0<\nu<1$. In particular, fixed-shape
+convexity does not control a free shape or free skew profile, close its
+infinite tails, or settle the moment-constrained uniform endpoint rates.
+See the [certification evidence and open cases](../../../../../dev/research/evaluations/2026-11-06-sged-cert-report.md).
 
 ## R notes
 

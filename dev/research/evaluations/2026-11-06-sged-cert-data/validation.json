@@ -1,0 +1,1448 @@
+{
+  "task": "TASK-116.12",
+  "base_revision": "bb734cd78b846a565d8835606328bb1285a82db6",
+  "recorded_utc": "2026-11-06T21:26:45.337865+00:00",
+  "source_manifest": "source-manifest.sha256",
+  "certificate_sha256": "e5dca00238f62833b886fd4cc5393d94438bc6291ca4189a41ca9ff8afabe62b",
+  "checks": [
+    {
+      "command": "targeted sged doctest",
+      "machine": "workstation",
+      "result": "29 cases, 4208 assertions, no failures or skips"
+    },
+    {
+      "command": "just cpp-test",
+      "machine": "simbox",
+      "passed": 106,
+      "failed": 0,
+      "seconds": 43.95
+    },
+    {
+      "command": "UMVL_TEST_TIER=full just cpp-test",
+      "machine": "simbox",
+      "passed": 127,
+      "failed": 0,
+      "seconds": 56.79
+    },
+    {
+      "command": "just cpp-test-no-long-double",
+      "machine": "simbox",
+      "passed": 127,
+      "failed": 0,
+      "seconds": 56.48
+    },
+    {
+      "command": "just test",
+      "machine": "workstation",
+      "passed": 20911,
+      "failed": 0,
+      "warnings": 0,
+      "skips": 154,
+      "elapsed_seconds": 118.651
+    },
+    {
+      "command": "just test-full",
+      "machine": "simbox",
+      "passed": 43731,
+      "failed": 0,
+      "warnings": 0,
+      "skips": 0,
+      "elapsed_seconds": 292.497
+    },
+    {
+      "command": "just js-build",
+      "machine": "workstation",
+      "result": "pass"
+    },
+    {
+      "command": "just js-test",
+      "machine": "workstation",
+      "passed": 432,
+      "failed": 0,
+      "skips": 0,
+      "seconds": 89.597229133
+    },
+    {
+      "command": "just site-check",
+      "machine": "workstation",
+      "result": "pass:99 family pages,99 C++17 snippets,MathML,browser checks,links,graph"
+    }
+  ],
+  "oracle_location": {
+    "precision": 80,
+    "cases": 90,
+    "passed": 90,
+    "checked_fits": 86,
+    "numerical_stops": 4,
+    "max_mean_error": 1.3714593819447096e-08,
+    "max_sd_error": 4.7703765509357174e-09,
+    "max_loglik_error": 3.172298445784078e-09,
+    "rows": [
+      {
+        "nu": 0.4,
+        "xi": 0.1,
+        "held_sd": false,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 5.937966890032278e-16,
+        "sd_error": 1.9556092410361392e-16,
+        "loglik_error": 2.1703084447011796e-16,
+        "passed": true
+      },
+      {
+        "nu": 0.4,
+        "xi": 0.1,
+        "held_sd": true,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 7.865794449818744e-17,
+        "sd_error": 0.0,
+        "loglik_error": 1.8428829322503646e-16,
+        "passed": true
+      },
+      {
+        "nu": 0.4,
+        "xi": 0.3,
+        "held_sd": false,
+        "status": 9,
+        "outcome": "numerical stop",
+        "passed": true
+      },
+      {
+        "nu": 0.4,
+        "xi": 0.3,
+        "held_sd": true,
+        "status": 9,
+        "outcome": "numerical stop",
+        "passed": true
+      },
+      {
+        "nu": 0.4,
+        "xi": 1.0,
+        "held_sd": false,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 0.0,
+        "sd_error": 3.785562890204262e-16,
+        "loglik_error": 2.191306926267893e-16,
+        "passed": true
+      },
+      {
+        "nu": 0.4,
+        "xi": 1.0,
+        "held_sd": true,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 0.0,
+        "sd_error": 0.0,
+        "loglik_error": 3.491063142557284e-16,
+        "passed": true
+      },
+      {
+        "nu": 0.4,
+        "xi": 3.0,
+        "held_sd": false,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 2.256325148645105e-16,
+        "sd_error": 9.680526150048714e-17,
+        "loglik_error": 2.0638663083833427e-16,
+        "passed": true
+      },
+      {
+        "nu": 0.4,
+        "xi": 3.0,
+        "held_sd": true,
+        "status": 9,
+        "outcome": "numerical stop",
+        "passed": true
+      },
+      {
+        "nu": 0.4,
+        "xi": 10.0,
+        "held_sd": false,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 9.685604709774784e-16,
+        "sd_error": 4.9537216754386e-16,
+        "loglik_error": 1.0483151585807108e-16,
+        "passed": true
+      },
+      {
+        "nu": 0.4,
+        "xi": 10.0,
+        "held_sd": true,
+        "status": 9,
+        "outcome": "numerical stop",
+        "passed": true
+      },
+      {
+        "nu": 0.6,
+        "xi": 0.1,
+        "held_sd": false,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 8.043759698899287e-16,
+        "sd_error": 3.777901748126895e-16,
+        "loglik_error": 3.2661072805091735e-16,
+        "passed": true
+      },
+      {
+        "nu": 0.6,
+        "xi": 0.1,
+        "held_sd": true,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 8.146198340834323e-17,
+        "sd_error": 0.0,
+        "loglik_error": 9.05938866826325e-18,
+        "passed": true
+      },
+      {
+        "nu": 0.6,
+        "xi": 0.3,
+        "held_sd": false,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 4.3997043356065756e-16,
+        "sd_error": 1.2304416833803809e-16,
+        "loglik_error": 9.218794528327855e-17,
+        "passed": true
+      },
+      {
+        "nu": 0.6,
+        "xi": 0.3,
+        "held_sd": true,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 1.990681567276403e-18,
+        "sd_error": 7.809035513504091e-82,
+        "loglik_error": 4.678487151183396e-17,
+        "passed": true
+      },
+      {
+        "nu": 0.6,
+        "xi": 1.0,
+        "held_sd": false,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 0.0,
+        "sd_error": 3.2620101167677076e-16,
+        "loglik_error": 5.262188176289287e-17,
+        "passed": true
+      },
+      {
+        "nu": 0.6,
+        "xi": 1.0,
+        "held_sd": true,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 0.0,
+        "sd_error": 0.0,
+        "loglik_error": 1.7380242022880584e-16,
+        "passed": true
+      },
+      {
+        "nu": 0.6,
+        "xi": 3.0,
+        "held_sd": false,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 9.78495665587001e-16,
+        "sd_error": 7.309797541146812e-16,
+        "loglik_error": 9.334303660661843e-11,
+        "passed": true
+      },
+      {
+        "nu": 0.6,
+        "xi": 3.0,
+        "held_sd": true,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 2.0193006788852358e-16,
+        "sd_error": 7.809035513504091e-82,
+        "loglik_error": 8.554809483894944e-11,
+        "passed": true
+      },
+      {
+        "nu": 0.6,
+        "xi": 10.0,
+        "held_sd": false,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 3.0133457976719747e-15,
+        "sd_error": 8.561854287426576e-16,
+        "loglik_error": 1.0542541520944944e-17,
+        "passed": true
+      },
+      {
+        "nu": 0.6,
+        "xi": 10.0,
+        "held_sd": true,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 3.794584297008913e-17,
+        "sd_error": 0.0,
+        "loglik_error": 1.8718131490885491e-16,
+        "passed": true
+      },
+      {
+        "nu": 1.0,
+        "xi": 0.1,
+        "held_sd": false,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 2.6482923906530857e-17,
+        "sd_error": 1.2842968075334146e-16,
+        "loglik_error": 5.023667820763346e-17,
+        "passed": true
+      },
+      {
+        "nu": 1.0,
+        "xi": 0.1,
+        "held_sd": true,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 2.9225019292569644e-16,
+        "sd_error": 7.809035513504091e-82,
+        "loglik_error": 6.885417009798028e-17,
+        "passed": true
+      },
+      {
+        "nu": 1.0,
+        "xi": 0.3,
+        "held_sd": false,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 3.283603096410978e-16,
+        "sd_error": 1.8927330070234169e-16,
+        "loglik_error": 8.467494029274829e-17,
+        "passed": true
+      },
+      {
+        "nu": 1.0,
+        "xi": 0.3,
+        "held_sd": true,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 2.497359350978468e-16,
+        "sd_error": 0.0,
+        "loglik_error": 1.1626894199122168e-16,
+        "passed": true
+      },
+      {
+        "nu": 1.0,
+        "xi": 1.0,
+        "held_sd": false,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 0.0,
+        "sd_error": 2.7644487033730056e-17,
+        "loglik_error": 1.0225799124419472e-16,
+        "passed": true
+      },
+      {
+        "nu": 1.0,
+        "xi": 1.0,
+        "held_sd": true,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 0.0,
+        "sd_error": 0.0,
+        "loglik_error": 4.4955280548532465e-17,
+        "passed": true
+      },
+      {
+        "nu": 1.0,
+        "xi": 3.0,
+        "held_sd": false,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 2.365625e-16,
+        "sd_error": 1.4115613916168182e-16,
+        "loglik_error": 8.211562014107681e-17,
+        "passed": true
+      },
+      {
+        "nu": 1.0,
+        "xi": 3.0,
+        "held_sd": true,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 5.926566269037516e-19,
+        "sd_error": 7.809035513504091e-82,
+        "loglik_error": 1.8168547894891606e-16,
+        "passed": true
+      },
+      {
+        "nu": 1.0,
+        "xi": 10.0,
+        "held_sd": false,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 2.392179413456009e-16,
+        "sd_error": 2.556069526823631e-16,
+        "loglik_error": 4.109742687266323e-16,
+        "passed": true
+      },
+      {
+        "nu": 1.0,
+        "xi": 10.0,
+        "held_sd": true,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 8.264033511674878e-17,
+        "sd_error": 0.0,
+        "loglik_error": 2.5613140492491343e-16,
+        "passed": true
+      },
+      {
+        "nu": 1.001,
+        "xi": 0.1,
+        "held_sd": false,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 1.3714593819447096e-08,
+        "sd_error": 4.7703765509357174e-09,
+        "loglik_error": 2.4694528470828405e-09,
+        "passed": true
+      },
+      {
+        "nu": 1.001,
+        "xi": 0.1,
+        "held_sd": true,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 8.844459118961322e-10,
+        "sd_error": 0.0,
+        "loglik_error": 3.172298445784078e-09,
+        "passed": true
+      },
+      {
+        "nu": 1.001,
+        "xi": 0.3,
+        "held_sd": false,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 1.8765866810697825e-09,
+        "sd_error": 2.53273201741553e-10,
+        "loglik_error": 1.2748173908581517e-10,
+        "passed": true
+      },
+      {
+        "nu": 1.001,
+        "xi": 0.3,
+        "held_sd": true,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 7.981711238040574e-10,
+        "sd_error": 0.0,
+        "loglik_error": 1.6441549178950566e-10,
+        "passed": true
+      },
+      {
+        "nu": 1.001,
+        "xi": 1.0,
+        "held_sd": false,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 6.984919309616089e-10,
+        "sd_error": 5.7570597682267465e-11,
+        "loglik_error": 3.690899134706173e-11,
+        "passed": true
+      },
+      {
+        "nu": 1.001,
+        "xi": 1.0,
+        "held_sd": true,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 6.984919309616089e-10,
+        "sd_error": 0.0,
+        "loglik_error": 3.0048263586540287e-11,
+        "passed": true
+      },
+      {
+        "nu": 1.001,
+        "xi": 3.0,
+        "held_sd": false,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 1.03681051140291e-09,
+        "sd_error": 1.2393086981965033e-10,
+        "loglik_error": 5.3737137808405165e-11,
+        "passed": true
+      },
+      {
+        "nu": 1.001,
+        "xi": 3.0,
+        "held_sd": true,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 4.661343424973917e-10,
+        "sd_error": 0.0,
+        "loglik_error": 8.45708436425046e-11,
+        "passed": true
+      },
+      {
+        "nu": 1.001,
+        "xi": 10.0,
+        "held_sd": false,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 1.3148472939940953e-08,
+        "sd_error": 4.0495941584883475e-09,
+        "loglik_error": 1.8140643791505115e-09,
+        "passed": true
+      },
+      {
+        "nu": 1.001,
+        "xi": 10.0,
+        "held_sd": true,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 5.026022933403407e-10,
+        "sd_error": 0.0,
+        "loglik_error": 2.8369616654189794e-09,
+        "passed": true
+      },
+      {
+        "nu": 1.5,
+        "xi": 0.1,
+        "held_sd": false,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 1.1716798622428104e-10,
+        "sd_error": 9.294676019369475e-17,
+        "loglik_error": 2.0734771404385374e-16,
+        "passed": true
+      },
+      {
+        "nu": 1.5,
+        "xi": 0.1,
+        "held_sd": true,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 1.2634010827153009e-10,
+        "sd_error": 7.809035513504091e-82,
+        "loglik_error": 1.3061312831710478e-16,
+        "passed": true
+      },
+      {
+        "nu": 1.5,
+        "xi": 0.3,
+        "held_sd": false,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 6.292829983885468e-10,
+        "sd_error": 1.0731410846620429e-16,
+        "loglik_error": 4.4819098468034146e-17,
+        "passed": true
+      },
+      {
+        "nu": 1.5,
+        "xi": 0.3,
+        "held_sd": true,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 5.755590975984627e-10,
+        "sd_error": 0.0,
+        "loglik_error": 3.075625988544594e-17,
+        "passed": true
+      },
+      {
+        "nu": 1.5,
+        "xi": 1.0,
+        "held_sd": false,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 5.858648823368523e-11,
+        "sd_error": 5.833281318211232e-17,
+        "loglik_error": 3.8853385509884233e-17,
+        "passed": true
+      },
+      {
+        "nu": 1.5,
+        "xi": 1.0,
+        "held_sd": true,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 5.858648823368523e-11,
+        "sd_error": 0.0,
+        "loglik_error": 1.0443378230210325e-16,
+        "passed": true
+      },
+      {
+        "nu": 1.5,
+        "xi": 3.0,
+        "held_sd": false,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 5.57154390420025e-10,
+        "sd_error": 7.463975601679636e-18,
+        "loglik_error": 2.0469578885028824e-17,
+        "passed": true
+      },
+      {
+        "nu": 1.5,
+        "xi": 3.0,
+        "held_sd": true,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 4.2296791757306214e-10,
+        "sd_error": 0.0,
+        "loglik_error": 5.667113386666069e-18,
+        "passed": true
+      },
+      {
+        "nu": 1.5,
+        "xi": 10.0,
+        "held_sd": false,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 5.421263936319779e-10,
+        "sd_error": 2.512248461882722e-16,
+        "loglik_error": 1.0401840068451306e-16,
+        "passed": true
+      },
+      {
+        "nu": 1.5,
+        "xi": 10.0,
+        "held_sd": true,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 3.932992528116945e-10,
+        "sd_error": 0.0,
+        "loglik_error": 1.922364220650523e-16,
+        "passed": true
+      },
+      {
+        "nu": 2.0,
+        "xi": 0.1,
+        "held_sd": false,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 5.160705274640348e-10,
+        "sd_error": 1.9828461162554938e-16,
+        "loglik_error": 4.99055273068779e-17,
+        "passed": true
+      },
+      {
+        "nu": 2.0,
+        "xi": 0.1,
+        "held_sd": true,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 4.547673663956473e-10,
+        "sd_error": 0.0,
+        "loglik_error": 8.591097554337536e-17,
+        "passed": true
+      },
+      {
+        "nu": 2.0,
+        "xi": 0.3,
+        "held_sd": false,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 1.142432511061725e-09,
+        "sd_error": 6.133723487319041e-17,
+        "loglik_error": 1.3433559381661276e-16,
+        "passed": true
+      },
+      {
+        "nu": 2.0,
+        "xi": 0.3,
+        "held_sd": true,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 1.0550265351190882e-09,
+        "sd_error": 7.809035513504091e-82,
+        "loglik_error": 7.780073652543705e-17,
+        "passed": true
+      },
+      {
+        "nu": 2.0,
+        "xi": 1.0,
+        "held_sd": false,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 3.5609392470588235e-10,
+        "sd_error": 3.0838787947699834e-17,
+        "loglik_error": 3.6461753742219425e-17,
+        "passed": true
+      },
+      {
+        "nu": 2.0,
+        "xi": 1.0,
+        "held_sd": true,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 3.5609392470588235e-10,
+        "sd_error": 0.0,
+        "loglik_error": 4.9836279206131126e-17,
+        "passed": true
+      },
+      {
+        "nu": 2.0,
+        "xi": 3.0,
+        "held_sd": false,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 2.0161274494282154e-10,
+        "sd_error": 1.7732243405910077e-16,
+        "loglik_error": 1.7805974738263955e-17,
+        "passed": true
+      },
+      {
+        "nu": 2.0,
+        "xi": 3.0,
+        "held_sd": true,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 1.7647681447261738e-10,
+        "sd_error": 0.0,
+        "loglik_error": 2.3683260944327673e-17,
+        "passed": true
+      },
+      {
+        "nu": 2.0,
+        "xi": 10.0,
+        "held_sd": false,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 1.3245496042603874e-10,
+        "sd_error": 1.9349066009966406e-16,
+        "loglik_error": 1.3715082731770025e-16,
+        "passed": true
+      },
+      {
+        "nu": 2.0,
+        "xi": 10.0,
+        "held_sd": true,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 1.1403960728525343e-10,
+        "sd_error": 7.809035513504091e-82,
+        "loglik_error": 1.8207338395330595e-16,
+        "passed": true
+      },
+      {
+        "nu": 4.0,
+        "xi": 0.1,
+        "held_sd": false,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 1.0234217257505526e-10,
+        "sd_error": 8.471673867019521e-17,
+        "loglik_error": 7.822702821528733e-17,
+        "passed": true
+      },
+      {
+        "nu": 4.0,
+        "xi": 0.1,
+        "held_sd": true,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 7.74234245742029e-11,
+        "sd_error": 7.809035513504091e-82,
+        "loglik_error": 2.1122026425150365e-17,
+        "passed": true
+      },
+      {
+        "nu": 4.0,
+        "xi": 0.3,
+        "held_sd": false,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 3.5245360561054924e-10,
+        "sd_error": 1.2457933749943376e-16,
+        "loglik_error": 8.984626451751797e-17,
+        "passed": true
+      },
+      {
+        "nu": 4.0,
+        "xi": 0.3,
+        "held_sd": true,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 2.8008112201752754e-10,
+        "sd_error": 0.0,
+        "loglik_error": 1.6161259206992001e-16,
+        "passed": true
+      },
+      {
+        "nu": 4.0,
+        "xi": 1.0,
+        "held_sd": false,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 2.0339339730329218e-10,
+        "sd_error": 6.268362562138871e-17,
+        "loglik_error": 6.554129988630301e-17,
+        "passed": true
+      },
+      {
+        "nu": 4.0,
+        "xi": 1.0,
+        "held_sd": true,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 2.0339339730329218e-10,
+        "sd_error": 0.0,
+        "loglik_error": 8.598340252950877e-17,
+        "passed": true
+      },
+      {
+        "nu": 4.0,
+        "xi": 3.0,
+        "held_sd": false,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 5.423485593848251e-10,
+        "sd_error": 2.607726719469978e-17,
+        "loglik_error": 4.6393633237106995e-17,
+        "passed": true
+      },
+      {
+        "nu": 4.0,
+        "xi": 3.0,
+        "held_sd": true,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 5.969652653573974e-10,
+        "sd_error": 0.0,
+        "loglik_error": 1.1012358673553144e-16,
+        "passed": true
+      },
+      {
+        "nu": 4.0,
+        "xi": 10.0,
+        "held_sd": false,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 2.756820770314137e-10,
+        "sd_error": 8.577951406530164e-17,
+        "loglik_error": 1.1653675107217747e-16,
+        "passed": true
+      },
+      {
+        "nu": 4.0,
+        "xi": 10.0,
+        "held_sd": true,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 3.184322239094324e-10,
+        "sd_error": 7.809035513504091e-82,
+        "loglik_error": 8.163480587053084e-17,
+        "passed": true
+      },
+      {
+        "nu": 20.0,
+        "xi": 0.1,
+        "held_sd": false,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 3.3962097296084745e-10,
+        "sd_error": 2.883897033992341e-16,
+        "loglik_error": 4.180650964062074e-17,
+        "passed": true
+      },
+      {
+        "nu": 20.0,
+        "xi": 0.1,
+        "held_sd": true,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 2.7970848124223276e-10,
+        "sd_error": 0.0,
+        "loglik_error": 3.2864971151092977e-16,
+        "passed": true
+      },
+      {
+        "nu": 20.0,
+        "xi": 0.3,
+        "held_sd": false,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 3.8102842269368236e-10,
+        "sd_error": 3.6060926503620604e-16,
+        "loglik_error": 6.113649808165983e-18,
+        "passed": true
+      },
+      {
+        "nu": 20.0,
+        "xi": 0.3,
+        "held_sd": true,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 3.2520298879131165e-10,
+        "sd_error": 0.0,
+        "loglik_error": 2.0029257037340273e-16,
+        "passed": true
+      },
+      {
+        "nu": 20.0,
+        "xi": 1.0,
+        "held_sd": false,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 5.958682117089142e-10,
+        "sd_error": 1.2425008034298389e-16,
+        "loglik_error": 4.181071451943754e-17,
+        "passed": true
+      },
+      {
+        "nu": 20.0,
+        "xi": 1.0,
+        "held_sd": true,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 5.958682117089142e-10,
+        "sd_error": 7.809035513504091e-82,
+        "loglik_error": 3.270211801348377e-18,
+        "passed": true
+      },
+      {
+        "nu": 20.0,
+        "xi": 3.0,
+        "held_sd": false,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 4.763763223005785e-10,
+        "sd_error": 3.5956171517324505e-16,
+        "loglik_error": 9.332247255752496e-17,
+        "passed": true
+      },
+      {
+        "nu": 20.0,
+        "xi": 3.0,
+        "held_sd": true,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 5.754526251094965e-10,
+        "sd_error": 0.0,
+        "loglik_error": 8.660255133313226e-17,
+        "passed": true
+      },
+      {
+        "nu": 20.0,
+        "xi": 10.0,
+        "held_sd": false,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 5.972052410070925e-10,
+        "sd_error": 6.518889403315095e-16,
+        "loglik_error": 1.8052392076210132e-16,
+        "passed": true
+      },
+      {
+        "nu": 20.0,
+        "xi": 10.0,
+        "held_sd": true,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 7.80497992124778e-10,
+        "sd_error": 7.809035513504091e-82,
+        "loglik_error": 2.4325760827251864e-16,
+        "passed": true
+      },
+      {
+        "nu": 100.0,
+        "xi": 0.1,
+        "held_sd": false,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 1.220859801351594e-10,
+        "sd_error": 1.1577997513358378e-15,
+        "loglik_error": 6.266578374398285e-18,
+        "passed": true
+      },
+      {
+        "nu": 100.0,
+        "xi": 0.1,
+        "held_sd": true,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 9.799763081030551e-11,
+        "sd_error": 0.0,
+        "loglik_error": 7.430805233726535e-16,
+        "passed": true
+      },
+      {
+        "nu": 100.0,
+        "xi": 0.3,
+        "held_sd": false,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 7.024339995869596e-10,
+        "sd_error": 4.99155262503409e-16,
+        "loglik_error": 3.007627584670753e-16,
+        "passed": true
+      },
+      {
+        "nu": 100.0,
+        "xi": 0.3,
+        "held_sd": true,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 5.81670694115383e-10,
+        "sd_error": 0.0,
+        "loglik_error": 6.675547699556723e-16,
+        "passed": true
+      },
+      {
+        "nu": 100.0,
+        "xi": 1.0,
+        "held_sd": false,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 9.980099756277153e-47,
+        "sd_error": 2.2707800479182878e-17,
+        "loglik_error": 2.0180428650214732e-16,
+        "passed": true
+      },
+      {
+        "nu": 100.0,
+        "xi": 1.0,
+        "held_sd": true,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 9.980099756277153e-47,
+        "sd_error": 0.0,
+        "loglik_error": 1.2229050115797962e-16,
+        "passed": true
+      },
+      {
+        "nu": 100.0,
+        "xi": 3.0,
+        "held_sd": false,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 7.245153658821026e-10,
+        "sd_error": 6.403584271947874e-16,
+        "loglik_error": 1.8524227938184289e-16,
+        "passed": true
+      },
+      {
+        "nu": 100.0,
+        "xi": 3.0,
+        "held_sd": true,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 9.164016496158699e-10,
+        "sd_error": 0.0,
+        "loglik_error": 3.9815802121168676e-16,
+        "passed": true
+      },
+      {
+        "nu": 100.0,
+        "xi": 10.0,
+        "held_sd": false,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 1.3073202576242175e-10,
+        "sd_error": 8.749947080906813e-16,
+        "loglik_error": 2.101219881948154e-16,
+        "passed": true
+      },
+      {
+        "nu": 100.0,
+        "xi": 10.0,
+        "held_sd": true,
+        "status": 0,
+        "outcome": "checked fit",
+        "mean_error": 1.7742123594155044e-10,
+        "sd_error": 7.809035513504091e-82,
+        "loglik_error": 7.430798590999391e-16,
+        "passed": true
+      }
+    ]
+  },
+  "oracle_scale": {
+    "precision": 80,
+    "cases": 35,
+    "passed": 35,
+    "checked_fits": 35,
+    "numerical_stops": 0,
+    "max_sd_error": 2.9639878593566193e-10,
+    "max_loglik_error": 2.084013463440895e-09,
+    "rows": [
+      {
+        "nu": 1.0,
+        "xi": 0.1,
+        "status": 0,
+        "outcome": "checked fit",
+        "sd_error": 2.868652802542786e-10,
+        "loglik_error": 2.084013463440895e-09,
+        "passed": true
+      },
+      {
+        "nu": 1.0,
+        "xi": 0.3,
+        "status": 0,
+        "outcome": "checked fit",
+        "sd_error": 1.4869096040726474e-11,
+        "loglik_error": 6.4713915661084725e-12,
+        "passed": true
+      },
+      {
+        "nu": 1.0,
+        "xi": 1.3,
+        "status": 0,
+        "outcome": "checked fit",
+        "sd_error": 1.984139046733952e-10,
+        "loglik_error": 1.0013132571152306e-16,
+        "passed": true
+      },
+      {
+        "nu": 1.0,
+        "xi": 3.0,
+        "status": 0,
+        "outcome": "checked fit",
+        "sd_error": 1.1448956253173387e-10,
+        "loglik_error": 5.085924539158209e-11,
+        "passed": true
+      },
+      {
+        "nu": 1.0,
+        "xi": 10.0,
+        "status": 0,
+        "outcome": "checked fit",
+        "sd_error": 1.0011397404168049e-10,
+        "loglik_error": 4.7793409489719073e-11,
+        "passed": true
+      },
+      {
+        "nu": 1.001,
+        "xi": 0.1,
+        "status": 0,
+        "outcome": "checked fit",
+        "sd_error": 8.953794574453194e-11,
+        "loglik_error": 4.028829662565671e-11,
+        "passed": true
+      },
+      {
+        "nu": 1.001,
+        "xi": 0.3,
+        "status": 0,
+        "outcome": "checked fit",
+        "sd_error": 6.950598282262932e-11,
+        "loglik_error": 3.01412053720466e-11,
+        "passed": true
+      },
+      {
+        "nu": 1.001,
+        "xi": 1.3,
+        "status": 0,
+        "outcome": "checked fit",
+        "sd_error": 2.63258436880556e-10,
+        "loglik_error": 1.043144654426192e-16,
+        "passed": true
+      },
+      {
+        "nu": 1.001,
+        "xi": 3.0,
+        "status": 0,
+        "outcome": "checked fit",
+        "sd_error": 1.330310770754536e-10,
+        "loglik_error": 8.40834853034116e-12,
+        "passed": true
+      },
+      {
+        "nu": 1.001,
+        "xi": 10.0,
+        "status": 0,
+        "outcome": "checked fit",
+        "sd_error": 1.7180478233895354e-10,
+        "loglik_error": 9.629918070566658e-10,
+        "passed": true
+      },
+      {
+        "nu": 1.5,
+        "xi": 0.1,
+        "status": 0,
+        "outcome": "checked fit",
+        "sd_error": 2.5817761244635795e-10,
+        "loglik_error": 6.071520609506555e-16,
+        "passed": true
+      },
+      {
+        "nu": 1.5,
+        "xi": 0.3,
+        "status": 0,
+        "outcome": "checked fit",
+        "sd_error": 3.7798925858784703e-11,
+        "loglik_error": 2.933385968366524e-17,
+        "passed": true
+      },
+      {
+        "nu": 1.5,
+        "xi": 1.3,
+        "status": 0,
+        "outcome": "checked fit",
+        "sd_error": 2.4270359586903914e-10,
+        "loglik_error": 5.192833622521612e-17,
+        "passed": true
+      },
+      {
+        "nu": 1.5,
+        "xi": 3.0,
+        "status": 0,
+        "outcome": "checked fit",
+        "sd_error": 8.995664914807667e-12,
+        "loglik_error": 1.520389681065281e-16,
+        "passed": true
+      },
+      {
+        "nu": 1.5,
+        "xi": 10.0,
+        "status": 0,
+        "outcome": "checked fit",
+        "sd_error": 1.623657471290757e-10,
+        "loglik_error": 1.089279634687928e-17,
+        "passed": true
+      },
+      {
+        "nu": 2.0,
+        "xi": 0.1,
+        "status": 0,
+        "outcome": "checked fit",
+        "sd_error": 2.3313265127078425e-10,
+        "loglik_error": 7.864540097887052e-17,
+        "passed": true
+      },
+      {
+        "nu": 2.0,
+        "xi": 0.3,
+        "status": 0,
+        "outcome": "checked fit",
+        "sd_error": 1.254309387325476e-10,
+        "loglik_error": 3.3186552073416496e-17,
+        "passed": true
+      },
+      {
+        "nu": 2.0,
+        "xi": 1.3,
+        "status": 0,
+        "outcome": "checked fit",
+        "sd_error": 2.333911702585716e-10,
+        "loglik_error": 2.1630910709425496e-17,
+        "passed": true
+      },
+      {
+        "nu": 2.0,
+        "xi": 3.0,
+        "status": 0,
+        "outcome": "checked fit",
+        "sd_error": 6.6028059861843974e-12,
+        "loglik_error": 3.506275316502212e-17,
+        "passed": true
+      },
+      {
+        "nu": 2.0,
+        "xi": 10.0,
+        "status": 0,
+        "outcome": "checked fit",
+        "sd_error": 1.7466552877449405e-10,
+        "loglik_error": 1.3999579527559013e-16,
+        "passed": true
+      },
+      {
+        "nu": 4.0,
+        "xi": 0.1,
+        "status": 0,
+        "outcome": "checked fit",
+        "sd_error": 5.87117663538313e-11,
+        "loglik_error": 3.26825122086438e-16,
+        "passed": true
+      },
+      {
+        "nu": 4.0,
+        "xi": 0.3,
+        "status": 0,
+        "outcome": "checked fit",
+        "sd_error": 2.1001883741286852e-10,
+        "loglik_error": 1.2867543974488846e-17,
+        "passed": true
+      },
+      {
+        "nu": 4.0,
+        "xi": 1.3,
+        "status": 0,
+        "outcome": "checked fit",
+        "sd_error": 1.5645613940157618e-10,
+        "loglik_error": 1.5345061973684914e-16,
+        "passed": true
+      },
+      {
+        "nu": 4.0,
+        "xi": 3.0,
+        "status": 0,
+        "outcome": "checked fit",
+        "sd_error": 1.296233890251581e-10,
+        "loglik_error": 2.6367629201868574e-18,
+        "passed": true
+      },
+      {
+        "nu": 4.0,
+        "xi": 10.0,
+        "status": 0,
+        "outcome": "checked fit",
+        "sd_error": 1.5196306471101038e-10,
+        "loglik_error": 1.6888480348135605e-16,
+        "passed": true
+      },
+      {
+        "nu": 20.0,
+        "xi": 0.1,
+        "status": 0,
+        "outcome": "checked fit",
+        "sd_error": 2.5734199634622632e-11,
+        "loglik_error": 7.174585656990467e-16,
+        "passed": true
+      },
+      {
+        "nu": 20.0,
+        "xi": 0.3,
+        "status": 0,
+        "outcome": "checked fit",
+        "sd_error": 1.6796354776727206e-12,
+        "loglik_error": 3.1971292111286854e-17,
+        "passed": true
+      },
+      {
+        "nu": 20.0,
+        "xi": 1.3,
+        "status": 0,
+        "outcome": "checked fit",
+        "sd_error": 2.0215308251584296e-10,
+        "loglik_error": 6.450422903523404e-17,
+        "passed": true
+      },
+      {
+        "nu": 20.0,
+        "xi": 3.0,
+        "status": 0,
+        "outcome": "checked fit",
+        "sd_error": 2.9425901710309795e-10,
+        "loglik_error": 1.453017160412658e-17,
+        "passed": true
+      },
+      {
+        "nu": 20.0,
+        "xi": 10.0,
+        "status": 0,
+        "outcome": "checked fit",
+        "sd_error": 1.862601058764891e-10,
+        "loglik_error": 1.36225064936514e-16,
+        "passed": true
+      },
+      {
+        "nu": 100.0,
+        "xi": 0.1,
+        "status": 0,
+        "outcome": "checked fit",
+        "sd_error": 2.9639878593566193e-10,
+        "loglik_error": 1.1987918254622245e-16,
+        "passed": true
+      },
+      {
+        "nu": 100.0,
+        "xi": 0.3,
+        "status": 0,
+        "outcome": "checked fit",
+        "sd_error": 2.5667403008824195e-11,
+        "loglik_error": 4.897472385112798e-16,
+        "passed": true
+      },
+      {
+        "nu": 100.0,
+        "xi": 1.3,
+        "status": 0,
+        "outcome": "checked fit",
+        "sd_error": 1.4751671192796096e-11,
+        "loglik_error": 1.2795484778857176e-16,
+        "passed": true
+      },
+      {
+        "nu": 100.0,
+        "xi": 3.0,
+        "status": 0,
+        "outcome": "checked fit",
+        "sd_error": 1.0453613085106354e-10,
+        "loglik_error": 9.788123375915916e-17,
+        "passed": true
+      },
+      {
+        "nu": 100.0,
+        "xi": 10.0,
+        "status": 0,
+        "outcome": "checked fit",
+        "sd_error": 9.956798514613632e-11,
+        "loglik_error": 1.1690128910134874e-16,
+        "passed": true
+      }
+    ]
+  },
+  "timings": {
+    "default_exact_golden": true,
+    "rows": [
+      {
+        "case": 0,
+        "before_wall": 0.325782437,
+        "after_wall": 0.335295502,
+        "before_cpu": 0.325792,
+        "after_cpu": 0.335283,
+        "max_coefficient_delta": 0.0,
+        "loglik_delta": 0.0
+      },
+      {
+        "case": 1,
+        "before_wall": 0.6209283124,
+        "after_wall": 0.0003220623,
+        "before_cpu": 0.6208237,
+        "after_cpu": 0.0003224,
+        "max_coefficient_delta": 6.0963506944549805e-09,
+        "loglik_delta": -9.094947017729282e-13
+      },
+      {
+        "case": 2,
+        "before_wall": 0.3805784656,
+        "after_wall": 0.0003536428,
+        "before_cpu": 0.3805303,
+        "after_cpu": 0.0003538,
+        "max_coefficient_delta": 9.124585351356758e-09,
+        "loglik_delta": -3.410605131648481e-13
+      },
+      {
+        "case": 3,
+        "before_wall": 0.0093168956,
+        "after_wall": 3.32532e-05,
+        "before_cpu": 0.0093174,
+        "after_cpu": 3.35e-05,
+        "max_coefficient_delta": 4.463197591270119e-09,
+        "loglik_delta": -9.094947017729282e-13
+      },
+      {
+        "case": 4,
+        "before_wall": 0.012499896100000001,
+        "after_wall": 0.0005279878,
+        "before_cpu": 0.0125,
+        "after_cpu": 0.0005282,
+        "max_coefficient_delta": 7.16785545658499e-09,
+        "loglik_delta": -1.2505552149377763e-12
+      }
+    ]
+  },
+  "environment": {
+    "workstation_cpp": "GCC 15.2.0",
+    "simbox_cpp": "GCC 13.3.0",
+    "r": "4.6.1",
+    "r_cpp": "g++15.2",
+    "node": "22.22.1",
+    "mpmath": "1.3.0",
+    "precision_digits": 80
+  },
+  "worktree_scope": "sged dossier,sged R/common bindings,evaluation evidence; no shared numerical header changes",
+  "committed": false
+}

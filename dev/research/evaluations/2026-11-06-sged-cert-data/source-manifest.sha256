@@ -1,0 +1,16 @@
+21a4151357d00e7768a4329bdc7c9b5250a6de1740c3420ee0ba10f8d4a0e70a  univariateML-cpp/include/cppunivariate/distributions/sged/README.md
+5aece8581eb070710478b0a4e1fcc2bd8eafb064acddbe6d292f7b80afa24573  univariateML-cpp/include/cppunivariate/distributions/sged/mle.hpp
+e5dca00238f62833b886fd4cc5393d94438bc6291ca4189a41ca9ff8afabe62b  univariateML-cpp/include/cppunivariate/distributions/sged/certificate.hpp
+783ad0d86c7ff614a2d41724decd71550c27de2e40aa8d9d0a65803cf5aa87e8  univariateML-cpp/include/cppunivariate/distributions/sged/test.cpp
+b58da11ff5f9ff94145c1cd627b750d47da9062d0c72734fe0fcec0c4097e8c0  bindings/common/distributions/sged/fit.hpp
+70d900cb30e38fdb9ca86e6993a1fa46b923c064adba1aceb457f0ef29011706  bindings/r/distributions/sged/test.R
+f57fe4aae009ec66843ec837d6f27e0189b17cbea28fcd20af91c8afc5911ae8  dev/research/evaluations/2026-11-06-sged-cert-data/benchmark.cpp
+6abda29883da3c14622575a8d4f40a30640ac26f938ca2b40ddee01e74a952a1  dev/research/evaluations/2026-11-06-sged-cert-data/benchmark.sh
+a54d157e89c3887ffca9a567df29f2c87a40193e40336f9d29d90a4783b5b963  dev/research/evaluations/2026-11-06-sged-cert-data/check-scale.py
+831d00ee54c4a0de8fe6d292c9a312bce81ae65425c64281440a2916a4766241  dev/research/evaluations/2026-11-06-sged-cert-data/check-timings.py
+68d828d986811537ebd34e910fe720abb41b9960cd29a6bd73d57de577e32e66  dev/research/evaluations/2026-11-06-sged-cert-data/check.py
+304a14089577c87c03582ea43cd468abe58e9d66915a6c34b41bf103f046bf9b  dev/research/evaluations/2026-11-06-sged-cert-data/large.cpp
+d0df12692de2dbb8fca4e2e877cbc806b88e1c23da2ebaddb2b9c3e7d8eac7dc  dev/research/evaluations/2026-11-06-sged-cert-data/oracle-scale.cpp
+2cafd9ea021e073d5df1823805d0cf84a36c1094ccaadad566916d8d093d699f  dev/research/evaluations/2026-11-06-sged-cert-data/oracle.cpp
+ff951039af23494d2f94fa0167c405b59db1f5c658d76000101b58d6da3cad5e  dev/research/evaluations/2026-11-06-sged-cert-data/oracles.sh
+c4332df534769d9b185bd1e2dbd7a4fa1050ad80770c8ef4d1263676a3bd816c  dev/research/evaluations/2026-11-06-sged-cert-data/targeted-r.sh
