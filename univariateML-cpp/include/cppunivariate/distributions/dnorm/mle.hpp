@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/discrete_stop.hpp"
 #include "../../core/span.hpp"
 #include "dpqr.hpp"
 #include <algorithm>
@@ -7,7 +8,8 @@
 #include <vector>
 namespace cppunivariate {
 enum class DnormStatus { Ok, InvalidData, InvalidControl, PointMass, TwoPointLimit, ScaleLimit, IterationFailure };
-struct DnormResult { double mean, sd, logLik; int iterations; DnormStatus status; };
+struct DnormResult { double mean, sd, logLik; int iterations; DnormStatus status;   StopDetail stop_detail{};
+};
 namespace dnorm_detail {
 struct Cells {
   std::vector<double> x, w;
@@ -78,6 +80,7 @@ inline double evaluate(const Cells &p,double A,double B,bool hm,bool hs,double h
 }
 inline DnormResult dnorm_mle(span x,double tol=1e-9,int maxit=200,
     double mean=std::numeric_limits<double>::quiet_NaN(),double sd=std::numeric_limits<double>::quiet_NaN()) {
+  auto stopped = [&]() -> DnormResult {
   const double nan=std::numeric_limits<double>::quiet_NaN();
   DnormResult out{nan,nan,nan,0,DnormStatus::InvalidData};
   const bool hm=!std::isnan(mean), hs=!std::isnan(sd);
@@ -131,5 +134,17 @@ inline DnormResult dnorm_mle(span x,double tol=1e-9,int maxit=200,
   out.mean=hm ? mean : p.centre+A/B; out.sd=hs ? sd : 1/B;
   out.logLik=0; for (std::size_t j=0;j<p.x.size();++j) out.logLik+=p.w[j]*distributions::ddnorm(p.x[j],out.mean,out.sd,true);
   return out;
+
+  }();
+  if(stopped.status==DnormStatus::PointMass) stopped.stop_detail=discrete_point(x[0]);
+  if(stopped.status==DnormStatus::TwoPointLimit) {
+    const double lo=*std::min_element(x.begin(),x.end());
+    stopped.stop_detail=discrete_two_point(x,lo,lo+1);
+  }
+  if(stopped.status==DnormStatus::ScaleLimit) {
+    const double lo=std::floor(mean);
+    stopped.stop_detail=mean==lo?discrete_two_point(x,lo-1,lo,0.5):discrete_point(lo);
+  }
+  return stopped;
 }
 }

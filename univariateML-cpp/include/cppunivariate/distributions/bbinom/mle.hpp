@@ -30,6 +30,7 @@
 // 200000 interval evaluations); no unimodality assumption is made.
 
 #pragma once
+#include "../../core/discrete_stop.hpp"
 
 #include "../../core/span.hpp"
 #include "../../special/special.hpp"
@@ -60,6 +61,7 @@ struct BbinomResult {
   double size, alpha, beta, logLik;
   int iterations;
   BbinomStatus status;
+  StopDetail stop_detail{};
 };
 
 namespace bbinom_detail {
@@ -271,6 +273,7 @@ inline std::vector<double> log_grid(double lo, double hi, double step) {
 inline BbinomResult bbinom_mle(ispan x, double size, double tol = 1e-10, int maxit = 100,
                                double alpha_fixed = std::numeric_limits<double>::quiet_NaN(),
                                double beta_fixed = std::numeric_limits<double>::quiet_NaN()) {
+  auto stopped = [&]() -> BbinomResult {
   const double nan = std::numeric_limits<double>::quiet_NaN();
   BbinomResult out{size, nan, nan, nan, 0, BbinomStatus::InvalidInput};
   const bool fix_a = !std::isnan(alpha_fixed), fix_b = !std::isnan(beta_fixed);
@@ -292,6 +295,7 @@ inline BbinomResult bbinom_mle(ispan x, double size, double tol = 1e-10, int max
       for (int j = 0; j < v; ++j) coeff += std::log((alpha_fixed + j) / (j + 1.0));
     const double h = static_cast<double>(x.size()), a = alpha_fixed, mu = sum / h;
     const double face = coeff + sum * std::log(mu / (a + mu)) - h * a * std::log1p(mu / a);
+    out.stop_detail=discrete_face(StopModel::Nbinom,{a,a/(a+mu)},face);
     const double margin = 2e-8 * h + 1024 * std::numeric_limits<double>::epsilon() *
                           (1 + std::abs(face) + std::abs(coeff) + h * a);
     if (!std::isfinite(face) || !std::isfinite(margin)) { out.status = BbinomStatus::IterationFailure; return out; }
@@ -321,6 +325,7 @@ inline BbinomResult bbinom_mle(ispan x, double size, double tol = 1e-10, int max
     for (int n = mx; n <= budget; ++n) {
       const BbinomResult candidate = bbinom_mle(x, n, tol, maxit, a, nan);
       if (candidate.status != BbinomStatus::Ok) return candidate;
+      out.stop_detail.candidates.push_back({{candidate.size,candidate.alpha,candidate.beta},candidate.logLik,candidate.logLik});
       if (candidate.logLik > best.logLik) { runner = best.logLik; best = candidate; }
       else runner = std::max(runner, candidate.logLik);
       // Neither outcome asserts that a larger finite size cannot improve the fit.
@@ -328,6 +333,7 @@ inline BbinomResult bbinom_mle(ispan x, double size, double tol = 1e-10, int max
       if (n == mx && !excludes_tail(budget + 1.0, best.logLik)) { out.status = BbinomStatus::SizeBudget; return out; }
       if (excludes_tail(n + 1.0, best.logLik)) {
         if (runner + margin >= best.logLik) best.status = BbinomStatus::ProfileTie;
+        best.stop_detail=out.stop_detail;
         return best;
       }
     }
@@ -365,11 +371,12 @@ inline BbinomResult bbinom_mle(ispan x, double size, double tol = 1e-10, int max
     for (int n = mx; n <= end; ++n) {
       const BbinomResult candidate = bbinom_mle(x, n, tol, maxit, nan, beta_fixed);
       if (candidate.status != BbinomStatus::Ok) return candidate;
+      out.stop_detail.candidates.push_back({{candidate.size,candidate.alpha,candidate.beta},candidate.logLik,candidate.logLik});
       if (candidate.logLik > best.logLik) { runner = best.logLik; best = candidate; }
       else runner = std::max(runner, candidate.logLik);
     }
     if (runner + 2e-8 * x.size() >= best.logLik) {
-      best.status = BbinomStatus::ProfileTie;
+      best.status = BbinomStatus::ProfileTie; best.stop_detail=out.stop_detail;
     }
     return best;
   }
@@ -535,6 +542,28 @@ inline BbinomResult bbinom_mle(ispan x, double size, double tol = 1e-10, int max
   const double p = bbinom_detail::solve_p(d, s, p_last);
   const double value = bbinom_detail::loglik(d, p, 1 - p, s);
   return finish(p / s, (1 - p) / s, value, iterations, BbinomStatus::Ok);
+
+  }();
+  if(stopped.status==BbinomStatus::PointMass) stopped.stop_detail=discrete_point(x[0]);
+  if(stopped.status==BbinomStatus::TwoPointLimit) stopped.stop_detail=discrete_two_point(x,0,size);
+  if(stopped.status==BbinomStatus::BinomialLimit) {
+    double m=0;for(int v:x)m+=v;m/=x.size();const double p=m/size;double ll=0;
+    for(int v:x)ll+=special::lgamma(size+1)-special::lgamma(v+1.)-special::lgamma(size-v+1)+v*std::log(p)+(size-v)*std::log1p(-p);
+    stopped.stop_detail=discrete_face(StopModel::Binom,{size,p},ll);
+  }
+  if(stopped.status==BbinomStatus::Unidentified && !x.empty()) {
+    double m=0;for(int v:x)m+=v;m/=x.size();
+    const double N=std::isnan(size)?0:size;
+    stopped.stop_detail=N==0?discrete_point(0):discrete_two_point(x,0,1);
+  }
+  if(stopped.status==BbinomStatus::SizeBudget || stopped.status==BbinomStatus::ProfileTie || stopped.status==BbinomStatus::FaceUnresolved) {
+    stopped.stop_detail.loglik_upper=INFINITY;
+    for(const auto& c:stopped.stop_detail.candidates)
+      if(std::isnan(stopped.stop_detail.loglik_lower) || c.loglik_lower>stopped.stop_detail.loglik_lower)
+        stopped.stop_detail.loglik_lower=c.loglik_lower;
+    if(std::isfinite(stopped.logLik)) stopped.stop_detail.candidates.push_back({{stopped.size,stopped.alpha,stopped.beta},stopped.logLik,stopped.logLik});
+  }
+  return stopped;
 }
 
 }  // namespace cppunivariate

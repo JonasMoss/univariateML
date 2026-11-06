@@ -103,3 +103,25 @@ These transports preserve the parent certificate conditional on computed
 comparisons and its practical floating-point margin. They do not certify the
 held-scale two-free-shape Burr profile, constrained equal-shape paralogistic
 profiles, free-location Fréchet profiles, or general GB2/beta-prime profiles.
+
+## Discrete sweep (TASK-141.2, 2026-11-06)
+
+`StopDetail::limit_model` records the selected face's model in the core.
+Existing callers can still supply an explicit model id to `stop_failure`.
+Discrete laws without a package family are labeled `point mass (no package
+family)`, `two-point law (no package family)`, or `translated negative
+binomial (no package family)`. Their coordinates are respectively `(point)`,
+`(lower, upper, prob)` (probability of upper), and `(size, prob, shift)`.
+The latter adds shift to a negative-binomial failure count. These descriptive
+labels are not invented package ids and cannot be dispatched as fitted models.
+A two-point law on {0,1} uses the package binomial family `(size=1, prob)`.
+
+Core face coefficients use each target model's public order. Unresolved
+comparisons retain diagnostic face and finite witnesses and an infinite
+global upper bound where the tail is not excluded. `unresolved` does not
+assert that the face wins. `budget_exhausted` distinguishes explicit work-budget guards from numerical
+failures inside an otherwise shared legacy status. Such guards become budget
+conditions without changing the existing status or message. Mixed numerical
+or iteration failures whose cause is not distinguished remain ordinary errors.
+No binding refits a face. The settled shared CMP implementation is unchanged;
+its dossier-level entry point adds payloads to its existing stop statuses.

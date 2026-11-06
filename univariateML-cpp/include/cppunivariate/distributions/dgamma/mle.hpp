@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/discrete_stop.hpp"
 #include "../../core/span.hpp"
 #include "../dnorm/mle.hpp"
 #include "dpqr.hpp"
@@ -8,7 +9,8 @@
 #include <vector>
 namespace cppunivariate {
 enum class DgammaStatus { Ok, InvalidData, InvalidControl, PointMass, TwoPointLimit, IterationFailure };
-struct DgammaResult { double shape, rate, logLik; int iterations; DgammaStatus status; };
+struct DgammaResult { double shape, rate, logLik; int iterations; DgammaStatus status;   StopDetail stop_detail{};
+};
 namespace dgamma_detail {
 // With shape held, log-rate is a location coordinate for log(Y).
 // Its grouped likelihood is strictly concave (log-gamma density is
@@ -207,6 +209,7 @@ inline bool certify(const dnorm_detail::Cells &p,bool held,double held_r,
 }
 inline DgammaResult dgamma_mle(span x,double tol=1e-8,int maxit=400,
     double shape=std::numeric_limits<double>::quiet_NaN(),double rate=std::numeric_limits<double>::quiet_NaN()) {
+  auto stopped = [&]() -> DgammaResult {
   const double nan=std::numeric_limits<double>::quiet_NaN();
   DgammaResult out{nan,nan,nan,0,DgammaStatus::InvalidData};
   const bool ha=!std::isnan(shape),hr=!std::isnan(rate);
@@ -261,5 +264,13 @@ inline DgammaResult dgamma_mle(span x,double tol=1e-8,int maxit=400,
     out.status=DgammaStatus::IterationFailure; return out;
   }
   out.status=DgammaStatus::Ok; return out;
+
+  }();
+  if(stopped.status==DgammaStatus::PointMass) stopped.stop_detail=discrete_point(x[0]);
+  if(stopped.status==DgammaStatus::TwoPointLimit) {
+    const double lo=*std::min_element(x.begin(),x.end());
+    stopped.stop_detail=discrete_two_point(x,lo,lo+1);
+  }
+  return stopped;
 }
 }

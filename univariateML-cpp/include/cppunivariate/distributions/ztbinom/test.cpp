@@ -159,3 +159,14 @@ TEST_CASE("ztbinom attained point sampler ignores zero uniform") {
   struct ZeroRng { double runif(double,double) { return 0; } } rng;
   CHECK(cppunivariate::distributions::rztbinom(rng,5,1)==5);
 }
+
+#include "../ztpois/dpqr.hpp"
+
+TEST_CASE("ztbinom: structured stop payloads") {
+  const std::vector<int> x{1,1,1,2,3,7,12};
+  const auto r=cppunivariate::ztbinom_mle({x.data(),x.size()});
+  REQUIRE(r.stop_detail.limit_model==cppunivariate::StopModel::Ztpois);
+  REQUIRE(r.stop_detail.limit_coef.size()==1);
+  double ll=0;for(int v:x)ll+=cppunivariate::distributions::dztpois(v,r.stop_detail.limit_coef[0],true);
+  CHECK(r.stop_detail.limit_loglik==doctest::Approx(ll));
+}

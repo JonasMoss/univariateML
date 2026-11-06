@@ -1,6 +1,7 @@
 // Deterministic multistart likelihood search; no unimodality assumption.
 // NB and Poisson faces are fitted separately, never by huge BNB shapes.
 #pragma once
+#include "../../core/discrete_stop.hpp"
 #include "../../core/precision.hpp"
 #include "dpqr.hpp"
 #include "../nbinom/mle.hpp"
@@ -16,6 +17,7 @@ struct BnbinomResult {
   double size, alpha, beta, logLik;
   int iterations;
   BnbinomStatus status;
+  StopDetail stop_detail{};
 };
 namespace bnbinom_detail {
 struct Data {
@@ -110,6 +112,7 @@ inline BnbinomResult bnbinom_mle(ispan x, double tol=1e-8, int maxit=600,
     double size_fixed=std::numeric_limits<double>::quiet_NaN(),
     double alpha_fixed=std::numeric_limits<double>::quiet_NaN(),
     double beta_fixed=std::numeric_limits<double>::quiet_NaN()) {
+  auto stopped = [&]() -> BnbinomResult {
   const double nan=std::numeric_limits<double>::quiet_NaN();
   BnbinomResult out{nan,nan,nan,nan,0,BnbinomStatus::InvalidInput};
   if (x.size()==0 || !(tol>0) || !std::isfinite(tol) || maxit<1) return out;
@@ -128,6 +131,7 @@ inline BnbinomResult bnbinom_mle(ispan x, double tol=1e-8, int maxit=600,
       bnbinom_detail::likelihood(d,cost.fixed),0,BnbinomStatus::Ok};
   if (sum==0) { out.logLik=0; out.status=BnbinomStatus::PointMass; return out; }
   const bool fr=std::isnan(size_fixed), fa=std::isnan(alpha_fixed), fb=std::isnan(beta_fixed);
+  StopDetail nb_detail, po_detail;
   double face=-std::numeric_limits<double>::infinity();
   BnbinomStatus face_status=BnbinomStatus::IterationFailure;
   double poisson_face=-std::numeric_limits<double>::infinity();
@@ -138,14 +142,16 @@ inline BnbinomResult bnbinom_mle(ispan x, double tol=1e-8, int maxit=600,
         out.status=BnbinomStatus::IterationFailure; return out;
       }
       if (nb.status==NbinomStatus::Ok && std::isfinite(nb.logLik)) {
+        nb_detail=discrete_face(StopModel::Nbinom,{nb.size,nb.prob},nb.logLik);
         face=nb.logLik; face_status=BnbinomStatus::NegativeBinomialLimit;
       }
       const auto po=pois_mle(x);
-      poisson_face=po.logLik;
+      poisson_face=po.logLik; po_detail=discrete_face(StopModel::Pois,{po.lambda},po.logLik);
       if (po.logLik>=face) { face=po.logLik; face_status=BnbinomStatus::PoissonLimit; }
     } else {
       const double r=fr ? beta_fixed : size_fixed;
-      face=nbinom_mle(x,1e-10,200,r).logLik;
+      const auto nb=nbinom_mle(x,1e-10,200,r);
+      face=nb.logLik;nb_detail=discrete_face(StopModel::Nbinom,{nb.size,nb.prob},nb.logLik);
       if (!std::isfinite(face)) { out.status=BnbinomStatus::IterationFailure; return out; }
       face_status=BnbinomStatus::NegativeBinomialLimit;
     }
@@ -176,9 +182,9 @@ inline BnbinomResult bnbinom_mle(ispan x, double tol=1e-8, int maxit=600,
   }
   out.logLik=std::isfinite(best)?best:attempted;
   if (std::isfinite(face) && face>=attempted-1e-8*d.n) {
-    out.logLik=face; out.status=face_status;
+    out.logLik=face; out.status=face_status; out.stop_detail=face_status==BnbinomStatus::PoissonLimit?po_detail:nb_detail;
     if (poisson_face>=attempted-1e-8*d.n && poisson_face>=face-1e-8*d.n) {
-      out.logLik=poisson_face; out.status=BnbinomStatus::PoissonLimit;
+      out.logLik=poisson_face; out.status=BnbinomStatus::PoissonLimit;out.stop_detail=po_detail;
     }
     return out;
   }
@@ -187,5 +193,9 @@ inline BnbinomResult bnbinom_mle(ispan x, double tol=1e-8, int maxit=600,
   if (fr && fb && p[0]>p[2]) std::swap(p[0],p[2]);
   out.size=p[0]; out.alpha=p[1]; out.beta=p[2]; out.status=BnbinomStatus::Ok;
   return out;
+
+  }();
+  if(stopped.status==BnbinomStatus::PointMass) stopped.stop_detail=discrete_face(StopModel::Pois,{0},0);
+  return stopped;
 }
 }

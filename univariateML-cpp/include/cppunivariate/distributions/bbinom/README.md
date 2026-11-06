@@ -303,3 +303,7 @@ joint bound must control the large- and small-$a$ regimes, establish which
 other joint escape paths can retain positive sample likelihood, compare
 fixed-size binomial and endpoint faces, and propagate the finite-profile
 allowances. An exhaustive closure proof and a global search remain open.
+
+## Stop details
+
+Binomial and endpoint faces retain their fitted probabilities. Free-size budget and unresolved-face stops retain evaluated finite profiles and the negative-binomial face when computed; their global upper bound remains infinite.

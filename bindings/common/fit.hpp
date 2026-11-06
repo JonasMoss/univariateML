@@ -76,6 +76,18 @@ inline std::string stop_model(cppunivariate::StopModel model) {
     case cppunivariate::StopModel::Power:return "power";
     case cppunivariate::StopModel::Exp:return "exp";
     case cppunivariate::StopModel::InvExp:return "invexp";
+    case cppunivariate::StopModel::Pois:return "pois";
+    case cppunivariate::StopModel::Binom:return "binom";
+    case cppunivariate::StopModel::Nbinom:return "nbinom";
+    case cppunivariate::StopModel::Geom:return "geom";
+    case cppunivariate::StopModel::Tpois:return "tpois";
+    case cppunivariate::StopModel::Ztpois:return "ztpois";
+    case cppunivariate::StopModel::Zmpois:return "zmpois";
+    case cppunivariate::StopModel::Zip:return "zip";
+    case cppunivariate::StopModel::Cmp:return "cmp";
+    case cppunivariate::StopModel::PointMass:return "point mass (no package family)";
+    case cppunivariate::StopModel::TwoPoint:return "two-point law (no package family)";
+    case cppunivariate::StopModel::ShiftedNbinom:return "translated negative binomial (no package family)";
     default:return "";
   }
 }
@@ -85,12 +97,24 @@ inline std::vector<std::string> stop_names(const std::string& model,const std::v
   if(model=="power")return {"alpha","beta"};
   if(model=="exp")return {"rate"};
   if(model=="invexp")return {"scale"};
+  if(model=="pois")return {"lambda"};
+  if(model=="binom")return {"size","prob"};
+  if(model=="nbinom")return {"size","prob"};
+  if(model=="geom")return {"prob"};
+  if(model=="tpois")return {"lambda","a","b"};
+  if(model=="ztpois")return {"lambda"};
+  if(model=="zmpois")return {"lambda","p0"};
+  if(model=="zip")return {"lambda","pi"};
+  if(model=="cmp")return {"lambda","nu"};
+  if(model=="point mass (no package family)")return {"point"};
+  if(model=="two-point law (no package family)")return {"lower","upper","prob"};
+  if(model=="translated negative binomial (no package family)")return {"size","prob","shift"};
   return names;
 }
 inline FitResult stop_failure(FitResult out,const cppunivariate::StopDetail& detail,
     const std::string& kind,const std::vector<std::string>& names,const std::string& model="") {
-  out.error_kind=kind;out.model=model;
-  out.limit_estimates=named_coefficients(detail.limit_coef,stop_names(model,names));
+  out.error_kind=kind;out.model=model.empty()?stop_model(detail.limit_model):model;
+  out.limit_estimates=named_coefficients(detail.limit_coef,stop_names(out.model,names));
   out.segment_loglik_upper=detail.segment_loglik_upper;
   out.limit_loglik=detail.limit_loglik;out.loglik_lower=detail.loglik_lower;out.loglik_upper=detail.loglik_upper;
   for(const auto& candidate:detail.candidates) {

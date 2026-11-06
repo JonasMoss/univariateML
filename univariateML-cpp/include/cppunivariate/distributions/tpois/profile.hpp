@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/discrete_stop.hpp"
 #include "../../core/span.hpp"
 #include "../../special/special.hpp"
 #include <algorithm>
@@ -33,7 +34,7 @@ inline Mass mass(double t, double lo, double hi, double size) {
   return {logz,mode+offset/total,std::isfinite(logz)};
 }
 enum class Status { Ok, InvalidInput, LowerPointMass, UpperPointMass, Unidentified, NumericalFailure };
-struct Result { double parameter, logLik; int iterations; Status status; };
+struct Result { double parameter, logLik; int iterations; Status status; StopDetail stop_detail{}; };
 inline Result fit(ispan x,double a,double b,double size) {
   Result r{0,0,0,Status::InvalidInput};
   if(x.size()==0 || std::isnan(a)||std::isnan(b)||a>=b || a==INFINITY || b==-INFINITY) return r;
@@ -43,8 +44,14 @@ inline Result fit(ispan x,double a,double b,double size) {
   double mean=0; for(int v:x) {if(v<lo||v>hi)return r; mean+=double(v);}
   mean/=x.size();
   if(lo==hi) {r.status=Status::Unidentified; return r;}
-  if(mean==lo) {if(lo==0){r.parameter=0;r.status=Status::Ok;}else r.status=Status::LowerPointMass;return r;}
-  if(mean==hi) {if(size>=0 && hi==size){r.parameter=1;r.status=Status::Ok;}else r.status=Status::UpperPointMass;return r;}
+  if(mean==lo) {if(lo==0){r.parameter=0;r.status=Status::Ok;}else r.status=Status::LowerPointMass;
+    if(r.status==Status::LowerPointMass) r.stop_detail=discrete_point(lo);
+    return r;
+  }
+  if(mean==hi) {if(size>=0 && hi==size){r.parameter=1;r.status=Status::Ok;}else r.status=Status::UpperPointMass;
+    if(r.status==Status::UpperPointMass) r.stop_detail=discrete_point(hi);
+    return r;
+  }
   const double centre=size<0 ? std::log(mean) : std::log(mean/(size-mean));
   double width=1, left=centre-width,right=centre+width;
   for(int j=0;j<12;++j) {

@@ -14,6 +14,7 @@
 // Escapes are exact data conditions (sample range; see README limits).
 
 #pragma once
+#include "../../core/discrete_stop.hpp"
 
 #include "../../core/span.hpp"
 
@@ -44,6 +45,7 @@ struct DweibullResult {
   double logLik;
   int iterations;
   DweibullStatus status;
+  StopDetail stop_detail{};
 };
 
 namespace dweibull_detail {
@@ -355,6 +357,7 @@ inline DweibullResult dweibull_mle(
     span x, double tol = 1e-12, int maxit = 200,
     double shape1 = std::numeric_limits<double>::quiet_NaN(),
     double shape2 = std::numeric_limits<double>::quiet_NaN()) {
+  auto stopped = [&]() -> DweibullResult {
   const double nan = std::numeric_limits<double>::quiet_NaN();
   DweibullResult bad{nan, nan, nan, 0, DweibullStatus::InvalidData};
   const bool hold_q = !std::isnan(shape1), hold_b = !std::isnan(shape2);
@@ -436,6 +439,16 @@ inline DweibullResult dweibull_mle(
   if (!inner_ok) return {nan, nan, nan, 0, DweibullStatus::IterationFailure};
   return dweibull_detail::finish(P, a, std::exp(u), static_cast<int>(seen_u.size()),
                                  true, tol, maxit);
+
+  }();
+  if(stopped.status==DweibullStatus::PointMass) stopped.stop_detail=discrete_point(x[0]);
+  if(stopped.status==DweibullStatus::TwoPointLimit) {
+    const double lo=*std::min_element(x.begin(),x.end());
+    stopped.stop_detail=discrete_two_point(x,lo,lo+1);
+  }
+  if(stopped.status==DweibullStatus::BernoulliLimit || stopped.status==DweibullStatus::HeldBernoulliLimit)
+    stopped.stop_detail=discrete_two_point(x,0,1,stopped.status==DweibullStatus::HeldBernoulliLimit?shape1:NAN);
+  return stopped;
 }
 
 }  // namespace cppunivariate

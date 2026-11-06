@@ -32,6 +32,7 @@
 // at most 2^53 - 1.
 
 #pragma once
+#include "../../core/discrete_stop.hpp"
 #include "../../core/precision.hpp"
 
 #include "../../core/span.hpp"
@@ -67,6 +68,7 @@ struct HyperResult {
   double tie;  // other end of a tie / unidentified set, else NaN
   int iterations;
   HyperStatus status;
+  StopDetail stop_detail{};
 };
 
 namespace hyper_detail {
@@ -320,33 +322,39 @@ inline HyperResult hyper_mle(span x, double k, double N, double m) {
       r.status = HyperStatus::Ok; return r;
     }
     r.status = HyperStatus::NumericalFailure;
-    if (c.max > 100000 || !std::isfinite(c.sum) || c.sum <= 0) return r;
+    if(c.max>100000){r.stop_detail=discrete_budget(r.stop_detail);return r;}
+    if(!std::isfinite(c.sum)||c.sum<=0)return r;
     const double mean = c.sum / c.h;
     double poisson = 0;
     for (std::size_t j = 0; j < c.value.size(); ++j)
       poisson += c.count[j] * (c.value[j] * std::log(mean) - mean - std::lgamma(c.value[j] + 1));
     if (!std::isfinite(poisson)) return r;
+    r.stop_detail=discrete_face(StopModel::Pois,{mean},poisson);
     const double margin = 1e-9 * (1 + std::fabs(poisson));
     double best = -kInf;
     HyperResult winner = r;
     int work = 0;
     auto evaluate = [&](double size, double nn) {
-      if (work >= hyper_detail::kGridBudget) return false;
+      if (work >= hyper_detail::kGridBudget){r.stop_detail=discrete_budget(r.stop_detail);return false;}
       const HyperResult f = hyper_mle(x, size, nn, kNaN);
       work += std::max(1, f.iterations);
       r.iterations = work;
+      if(work >= hyper_detail::kGridBudget)r.stop_detail=discrete_budget(r.stop_detail);
       if (work >= hyper_detail::kGridBudget ||
           (f.status != HyperStatus::Ok && f.status != HyperStatus::Tie &&
            f.status != HyperStatus::Unidentified) || !std::isfinite(f.logLik)) return false;
       if (f.logLik > best) {
         best = f.logLik; winner = f;
+        r.stop_detail.candidates.erase(std::remove_if(r.stop_detail.candidates.begin(),r.stop_detail.candidates.end(),
+          [](const FitCandidate& c){return c.model==StopModel::None;}),r.stop_detail.candidates.end());
+        r.stop_detail.candidates.push_back({{f.m,f.N,f.k},f.logLik,f.logLik});
         winner.m = std::min(size, f.m); winner.k = std::max(size, f.m);
       }
       return true;
     };
     auto face = [&](double size) {
       ++work; r.iterations = work;
-      if (work >= hyper_detail::kGridBudget) return kNaN;
+      if (work >= hyper_detail::kGridBudget){r.stop_detail=discrete_budget(r.stop_detail);return kNaN;}
       const double p = mean / size;
       double ll = 0;
       for (std::size_t j = 0; j < c.value.size(); ++j)
@@ -373,6 +381,10 @@ inline HyperResult hyper_mle(span x, double k, double N, double m) {
     const double initial_margin = 1e-9 * (1 + std::fabs(face_best));
     if (best <= face_best + initial_margin) {
       r.status = std::fabs(best-face_best) <= initial_margin ? HyperStatus::FaceTie : HyperStatus::FaceUnresolved;
+      r.stop_detail=discrete_face(face_size==0?StopModel::Pois:StopModel::Binom,
+        face_size==0?std::vector<double>{mean}:std::vector<double>{face_size,mean/face_size},face_best);
+      r.stop_detail.candidates.push_back({{winner.m,winner.N,winner.k},best,best});
+      r.stop_detail.loglik_upper=INFINITY;
       r.tie = face_size; r.iterations = work; return r;
     }
     // Divide the candidate/Poisson gap between the two corrections. All
@@ -384,7 +396,8 @@ inline HyperResult hyper_mle(span x, double k, double N, double m) {
     if (!(den_s > 0) || !(den_n > 0)) return r;
     const double S = std::max(c.max + 1, std::floor(c.max / den_s) + 2);
     const double n0 = std::max(c.max + 1, std::floor(c.max / den_n) + 2);
-    if (!std::isfinite(S) || !std::isfinite(n0) || S > 100000 || n0 >= hyper_detail::kMaxCount) return r;
+    if(S>100000 && std::isfinite(S)){r.stop_detail=discrete_budget(r.stop_detail);return r;}
+    if(!std::isfinite(S)||!std::isfinite(n0)||n0>=hyper_detail::kMaxCount)return r;
     // Each smaller-size face has its own, usually much smaller, cutoff.
     // -c_N(s) <= s(s-1)/(2(N-s+1)). Preflight before returning any fit.
     std::vector<double> ends;
@@ -395,6 +408,8 @@ inline HyperResult hyper_mle(span x, double k, double N, double m) {
       const double face_margin = 1e-9 * (1 + std::fabs(b));
       if (best <= b + face_margin) {
         r.status = std::fabs(best-b) <= face_margin ? HyperStatus::FaceTie : HyperStatus::FaceUnresolved;
+        r.stop_detail=discrete_face(StopModel::Binom,{size,mean/size},b);
+        r.stop_detail.candidates.push_back({{winner.m,winner.N,winner.k},best,best});r.stop_detail.loglik_upper=INFINITY;
         r.tie = size; r.iterations = work; return r;
       }
       const double d = best - b - face_margin;
@@ -404,14 +419,14 @@ inline HyperResult hyper_mle(span x, double k, double N, double m) {
       const double end = std::max(lo, cutoff);
       ends.push_back(end);
       populations += end - lo;
-      if (populations + work >= hyper_detail::kGridBudget) return r;
+      if (populations + work >= hyper_detail::kGridBudget){r.stop_detail=discrete_budget(r.stop_detail);return r;}
     }
     // For sizes >= S the envelope applies only above n0. Below n0,
     // enumerate the smaller size through its support bound at each N.
     for (double nn = 2*c.max-c.min; nn < n0; ++nn) {
       const double hi = std::floor((nn + c.min) / 2);
       if (hi >= S) populations += hi - S + 1;
-      if (populations + work >= hyper_detail::kGridBudget) return r;
+      if (populations + work >= hyper_detail::kGridBudget){r.stop_detail=discrete_budget(r.stop_detail);return r;}
     }
     for (double size = c.max; size < S; ++size) {
       const double lo = size + c.max - c.min;
@@ -454,12 +469,14 @@ inline HyperResult hyper_mle(span x, double k, double N, double m) {
     }
     r.status = HyperStatus::NumericalFailure;
     // Explicit work guard also bounds the correction's summation.
-    if (size > 100000 || size < 1) return r;
+    if(size>100000){r.stop_detail=discrete_budget(r.stop_detail);return r;}
+    if(size<1)return r;
     const double p = c.sum / (c.h * size);
     double face = 0;
     for (std::size_t j = 0; j < c.value.size(); ++j)
       face += c.count[j] * hyper_detail::lbinom_raw(c.value[j], size, p, 1-p);
     if (!std::isfinite(face)) return r;
+    r.stop_detail=discrete_face(StopModel::Binom,{size,p},face);
     const double margin = 1e-9 * (1 + std::fabs(face));
     double best = -kInf;
     HyperResult winner = r;
@@ -470,7 +487,10 @@ inline HyperResult hyper_mle(span x, double k, double N, double m) {
       work += std::max(1, f.iterations);
       if ((f.status != HyperStatus::Ok && f.status != HyperStatus::Tie &&
            f.status != HyperStatus::Unidentified) || !std::isfinite(f.logLik)) return false;
-      if (f.logLik > best) { best = f.logLik; winner = f; }
+      if (f.logLik > best) { best = f.logLik; winner = f;
+        r.stop_detail.candidates.erase(std::remove_if(r.stop_detail.candidates.begin(),r.stop_detail.candidates.end(),
+          [](const FitCandidate& c){return c.model==StopModel::None;}),r.stop_detail.candidates.end());
+        r.stop_detail.candidates.push_back({{f.m,f.N,f.k},f.logLik,f.logLik}); }
       if (std::fabs(f.logLik-face) <= margin) face_tie = true;
       return true;
     };
@@ -480,6 +500,8 @@ inline HyperResult hyper_mle(span x, double k, double N, double m) {
     for (double nn = lo; nn <= exploratory_end; ++nn)
       if (!evaluate(nn)) return r;
     if (best <= face + margin) {
+      r.stop_detail=discrete_face(StopModel::Binom,{size,p},face);
+      r.stop_detail.candidates.push_back({{winner.m,winner.N,winner.k},best,best});r.stop_detail.loglik_upper=INFINITY;
       r.status = face_tie ? HyperStatus::FaceTie : HyperStatus::FaceUnresolved;
       r.iterations = work; return r;
     }
@@ -498,11 +520,12 @@ inline HyperResult hyper_mle(span x, double k, double N, double m) {
       const double mid = lower + std::floor((end-lower)/2);
       if (face + correction(mid) < best-margin) end = mid; else lower = mid;
     }
-    if (end-lo > hyper_detail::kGridBudget / 4) return r;
+    if (end-lo > hyper_detail::kGridBudget / 4){r.stop_detail=discrete_budget(r.stop_detail);return r;}
     for (double nn = lo; nn < end; ++nn) {
-      if (work >= hyper_detail::kGridBudget || !evaluate(nn)) return r;
+      if(work>=hyper_detail::kGridBudget){r.stop_detail=discrete_budget(r.stop_detail);return r;}
+      else if(!evaluate(nn))return r;
     }
-    if (work >= hyper_detail::kGridBudget) return r;
+    if (work >= hyper_detail::kGridBudget){r.stop_detail=discrete_budget(r.stop_detail);return r;}
     if (held_k) r = winner;
     else { r = winner; r.k = winner.m; r.m = size; }
     r.iterations = work; r.status = HyperStatus::Ok;
@@ -516,7 +539,7 @@ inline HyperResult hyper_mle(span x, double k, double N, double m) {
     const CPPUNIV_EXTENDED_REAL width = static_cast<CPPUNIV_EXTENDED_REAL>(N) - 2 * c.max + c.min + 1;
     if (width <= 0) return r;
     r.status = HyperStatus::NumericalFailure;
-    if (width * (width + 1) > hyper_detail::kGridBudget) return r;
+    if (width * (width + 1) > hyper_detail::kGridBudget){r.stop_detail=discrete_budget(r.stop_detail);return r;}
     CPPUNIV_EXTENDED_REAL best = -kInf;
     for (int pass = 0; pass < 2; ++pass) {
       for (double mm = c.max; mm <= N - c.max + c.min; ++mm) {
@@ -601,7 +624,7 @@ inline HyperResult hyper_mle(span x, double k, double N, double m) {
     } else if (c.sum == 0.0) {
       r.N = kInf;
       r.logLik = 0.0;
-      r.status = HyperStatus::AllZero;
+      r.stop_detail=discrete_point(0);r.status = HyperStatus::AllZero;
       return r;
     } else {
       const hyper_detail::Peak p = hyper_detail::unimodal_peak(

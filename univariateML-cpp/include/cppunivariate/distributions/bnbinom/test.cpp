@@ -185,3 +185,16 @@ TEST_CASE("bnbinom: unit member quantiles allow adjacent answers at jumps") {
     CHECK(cppunivariate::distributions::dbnbinom(k,1,1,1,true)==doctest::Approx(-std::log(k+1)-std::log(k+2)).epsilon(1e-13));
   }
 }
+
+TEST_CASE("bnbinom: structured stop payloads") {
+  const std::vector<int> x{2,2,2};
+  const auto r=cppunivariate::bnbinom_mle({x.data(),x.size()});
+  REQUIRE(r.stop_detail.limit_model==cppunivariate::StopModel::Pois);
+  CHECK(r.stop_detail.limit_coef[0]==2);
+  CHECK(r.stop_detail.limit_loglik==doctest::Approx(3*(2*std::log(2.)-2-std::lgamma(3.))));
+  const auto f=cppunivariate::bnbinom_mle({x.data(),x.size()},1e-8,600,1);
+  REQUIRE(f.stop_detail.limit_model==cppunivariate::StopModel::Nbinom);
+  REQUIRE(f.stop_detail.limit_coef.size()==2);
+  CHECK(f.stop_detail.limit_coef[0]==1);
+  CHECK(f.stop_detail.limit_coef[1]==doctest::Approx(1./3));
+}

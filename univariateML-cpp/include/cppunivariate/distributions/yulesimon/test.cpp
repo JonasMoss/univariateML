@@ -77,3 +77,13 @@ TEST_CASE("yulesimon: unit shape quantiles allow adjacent answers at jumps") {
     CHECK(cppunivariate::distributions::dyulesimon(k,1,true)==doctest::Approx(-std::log(k)-std::log(k+1)).epsilon(1e-13));
   }
 }
+
+TEST_CASE("yulesimon: structured stop payloads") {
+  const std::vector<int> x{1,1};
+  const auto r=cppunivariate::yulesimon_mle({x.data(),x.size()});
+  REQUIRE(r.stop_detail.limit_coef.size()==1);
+  CHECK(r.stop_detail.limit_model==cppunivariate::StopModel::PointMass);
+  CHECK(r.stop_detail.limit_coef[0]==1);
+  CHECK(r.stop_detail.limit_loglik==0);
+  CHECK(r.stop_detail.candidates.size()==1);
+}

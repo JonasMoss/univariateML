@@ -521,3 +521,31 @@ TEST_CASE("hyper: fully free seeded fits match independent population grids") {
     CHECK(fit.logLik == doctest::Approx(static_cast<double>(best)).epsilon(1e-9));
   }
 }
+
+TEST_CASE("hyper: structured stop payloads") {
+  const std::vector<double> x{0,0,0,0,0,5};
+  const auto r=cppunivariate::hyper_mle({x.data(),x.size()},5,NAN,NAN);
+  REQUIRE(r.stop_detail.limit_model==cppunivariate::StopModel::Binom);
+  REQUIRE(r.stop_detail.limit_coef.size()==2);
+  CHECK(std::isfinite(r.stop_detail.limit_loglik));
+  CHECK(r.stop_detail.candidates.size()>=2);
+  CHECK(r.stop_detail.loglik_upper==INFINITY);
+}
+
+TEST_CASE("hyper: zero-count escape has a point-mass witness") {
+  const std::vector<double> x{0,0};
+  const auto r=cppunivariate::hyper_mle({x.data(),x.size()},2,NAN,3);
+  REQUIRE(r.status==cppunivariate::HyperStatus::AllZero);
+  REQUIRE(r.stop_detail.limit_coef.size()==1);
+  CHECK(r.stop_detail.limit_coef[0]==0);
+  CHECK(r.stop_detail.limit_loglik==0);
+}
+
+TEST_CASE("hyper: explicit exploratory-work preflight has an empty budget payload") {
+  const std::vector<double> x{0,100001};
+  const auto r=cppunivariate::hyper_mle({x.data(),x.size()},NAN,NAN,NAN);
+  CHECK(r.status==cppunivariate::HyperStatus::NumericalFailure);
+  CHECK(r.stop_detail.budget_exhausted);
+  CHECK(r.stop_detail.candidates.empty());
+  CHECK(r.stop_detail.loglik_upper==INFINITY);
+}

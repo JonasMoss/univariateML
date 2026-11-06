@@ -2,6 +2,7 @@
 // zero-rate exceeds exp(-mean), the principal branch W_0 yields the MLE.
 
 #pragma once
+#include "../../core/discrete_stop.hpp"
 
 #include "../../core/lambert_w.hpp"
 #include "../../core/span.hpp"
@@ -23,12 +24,14 @@ struct ZipResult {
   double pi;
   double logLik;
   ZipStatus status;
+  StopDetail stop_detail{};
 };
 
 
 inline ZipResult zip_mle(ispan x,
     double fixed_lambda=std::numeric_limits<double>::quiet_NaN(),
     double fixed_pi=std::numeric_limits<double>::quiet_NaN()) {
+  auto stopped = [&]() -> ZipResult {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
   if (n == 0) return {kNaN, kNaN, kNaN, ZipStatus::InvalidInput};
@@ -124,6 +127,10 @@ inline ZipResult zip_mle(ispan x,
   if (!std::isfinite(logLik))
     return {kNaN, kNaN, kNaN, ZipStatus::NumericalFailure};
   return {lambda, pi, logLik, ZipStatus::Ok};
+
+  }();
+  if(stopped.status==ZipStatus::ZeroLimit) stopped.stop_detail=discrete_face(StopModel::Pois,{0},0);
+  return stopped;
 }
 
 }  // namespace cppunivariate

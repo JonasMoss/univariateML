@@ -24,24 +24,35 @@ inline FitResult fit_zipf(cppunivariate::ispan x, Held N_arg = {}, Held s_arg = 
   if ((N.supplied&&!std::isfinite(hn)) || (s.supplied&&!std::isfinite(hs)))
     return fail("Held coefficients must be finite.");
   auto res = cppunivariate::zipf_mle(x, reltol, iterlim,hn,hs);
+  std::string stop_kind;
+  switch(res.status) {
+    case cppunivariate::ZipfStatus::PointMass: stop_kind="limit";break;
+    case cppunivariate::ZipfStatus::ShapeNegative: stop_kind="nomle";break;
+    default:break;
+  }
+  const auto stopped_fail = [&](const std::string& format, const auto&... arguments) {
+    auto out=fail(binding_message(format,arguments...));
+    return stop_kind.empty()?out:stop_failure(out,res.stop_detail,stop_kind,{"N","s"});
+  };
+
   if (res.status==cppunivariate::ZipfStatus::PointMass)
-    return fail("The MLE does not exist: point mass at one with held N > 1.");
+    return stopped_fail("The MLE does not exist: point mass at one with held N > 1.");
   if (res.status==cppunivariate::ZipfStatus::InvalidInput)
-    return fail("Zipf requires positive integer observations, integer N >= max(x) at most INT_MAX, and finite s >= 0.");
+    return stopped_fail("Zipf requires positive integer observations, integer N >= max(x) at most INT_MAX, and finite s >= 0.");
   if (res.status == cppunivariate::ZipfStatus::AllOnes) {
     warnings.push_back(binding_message("All observations are equal to 1. The maximum likelihood "
                   "estimator is not unique."));
   }
   if (res.status == cppunivariate::ZipfStatus::ShapeNegative) {
-    return fail("Optimal shape parameter is less than 0. The maximum likelihood "
+    return stopped_fail("Optimal shape parameter is less than 0. The maximum likelihood "
                "estimator does not exist.");
   }
   if (res.status != cppunivariate::ZipfStatus::Ok &&
       res.status != cppunivariate::ZipfStatus::AllOnes) {
-    return fail("Zipf MLE failed to converge (check data)");
+    return stopped_fail("Zipf MLE failed to converge (check data)");
   }
   if (!std::isfinite(res.N) || !std::isfinite(res.shape)) {
-    return fail("Zipf MLE failed to converge (check data)");
+    return stopped_fail("Zipf MLE failed to converge (check data)");
   }
   std::vector<std::string> fixed;
   if(N.supplied)fixed.push_back("N");

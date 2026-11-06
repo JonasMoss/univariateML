@@ -112,3 +112,7 @@ For fixed $s>1$, increasing $N$ without bound gives the zeta distribution. The [
 With all observations equal to one and a free shape on singleton support, the fitter returns `s = 1` as a representative and warns that the MLE is not unique. With `N > 1` held, a free-shape fit to all-ones data stops. Supply `N` or `s` to hold that coefficient. The function fits observations directly. For rank-abundance data, see `sads::fitzipf`. The infinite-support model is fitted by `mlzeta`.
 
 The endpoint is capped at `.Machine$integer.max`. Both probability tails are summed directly. Large supports use bounded-memory Euler--Maclaurin harmonic sums.
+
+## Stop details
+
+The held-N point-mass escape retains its degenerate face. The existing ShapeNegative non-existence stop has kind nomle and no candidate estimates.

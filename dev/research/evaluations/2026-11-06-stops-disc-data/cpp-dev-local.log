@@ -1,0 +1,369 @@
+-- Boost.Math headers: /home/jonas/R/x86_64-pc-linux-gnu-library/4.6/BH/include
+-- Configuring done (0.0s)
+-- Generating done (0.1s)
+-- Build files have been written to: /home/jonas/Files/programming/univariateML.wt/stops-disc/univariateML-cpp/build
+[  2%] Built target sample_tests
+[  3%] Built target bfgs_tests
+[  5%] Built target no_throw_tests
+[  7%] Built target tails_tests
+[  9%] Built target cmp_tests
+[ 10%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/beta/test.cpp.o
+[ 11%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/bbinom/test.cpp.o
+[ 11%] Building CXX object tests/CMakeFiles/diagnostics_tests.dir/home/jonas/Files/programming/univariateML.wt/stops-disc/dev/validation/diagnostics-audit.cpp.o
+[ 12%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/betapr/test.cpp.o
+[ 13%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/binom/test.cpp.o
+[ 14%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/bnbinom/test.cpp.o
+[ 15%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/burr/test.cpp.o
+[ 16%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/cauchy/test.cpp.o
+[ 16%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/cmb/test.cpp.o
+[ 17%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/cmp/test.cpp.o
+[ 18%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/dgamma/test.cpp.o
+[ 19%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/dlaplace/test.cpp.o
+[ 20%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/dnorm/test.cpp.o
+[ 21%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/dweibull/test.cpp.o
+In file included from ../../include/cppunivariate/distributions/dlaplace/test.cpp:16:
+../../include/cppunivariate/distributions/dlaplace/dpqr.hpp: In function ‘double cppunivariate::distributions::qdlaplace(double, double, double, bool, bool)’:
+../../include/cppunivariate/distributions/dlaplace/dpqr.hpp:18:2: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+   18 |  if(lp==-INFINITY)return lower_tail?-INFINITY:INFINITY;if(lp==0)return lower_tail?INFINITY:-INFINITY;
+      |  ^~
+../../include/cppunivariate/distributions/dlaplace/dpqr.hpp:18:56: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+   18 |  if(lp==-INFINITY)return lower_tail?-INFINITY:INFINITY;if(lp==0)return lower_tail?INFINITY:-INFINITY;
+      |                                                        ^~
+[ 22%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/fatigue/test.cpp.o
+[ 23%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/fpareto/test.cpp.o
+[ 24%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/gb2/test.cpp.o
+[ 25%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/ged/test.cpp.o
+[ 25%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/genbeta/test.cpp.o
+[ 26%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/gompertz/test.cpp.o
+[ 27%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/gpd/test.cpp.o
+[ 28%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/hyper/test.cpp.o
+[ 29%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/invburr/test.cpp.o
+[ 30%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/invparalogis/test.cpp.o
+[ 30%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/invpareto/test.cpp.o
+[ 31%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/invtrgamma/test.cpp.o
+[ 32%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/kumar/test.cpp.o
+../../include/cppunivariate/distributions/invburr/test.cpp: In function ‘void DOCTEST_ANON_FUNC_10()’:
+../../include/cppunivariate/distributions/invburr/test.cpp:54:2: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+   54 |  for (double &v : w) v=1/v; for (double &v : p) v=1/v;
+      |  ^~~
+../../include/cppunivariate/distributions/invburr/test.cpp:54:29: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+   54 |  for (double &v : w) v=1/v; for (double &v : p) v=1/v;
+      |                             ^~~
+[ 33%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/lgser/test.cpp.o
+[ 34%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/lomax/test.cpp.o
+[ 35%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/lst/test.cpp.o
+[ 36%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/nbinom/test.cpp.o
+[ 37%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/nhyper/test.cpp.o
+../../include/cppunivariate/distributions/lst/test.cpp: In function ‘void DOCTEST_ANON_FUNC_12()’:
+../../include/cppunivariate/distributions/lst/test.cpp:51:34: warning: loop variable ‘bad’ creates a copy from type ‘const std::vector<double>’ [-Wrange-loop-construct]
+   51 |   for (const std::vector<double> bad : {std::vector<double>{0,1}, {0,0,1,2}, {1,1,1,1}})
+      |                                  ^~~
+../../include/cppunivariate/distributions/lst/test.cpp:51:34: note: use reference type to prevent copying
+   51 |   for (const std::vector<double> bad : {std::vector<double>{0,1}, {0,0,1,2}, {1,1,1,1}})
+      |                                  ^~~
+      |                                  &
+[ 38%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/norm/test.cpp.o
+[ 38%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/nsbeta/test.cpp.o
+[ 39%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/paralogis/test.cpp.o
+[ 40%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/pareto2/test.cpp.o
+[ 41%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/pareto3/test.cpp.o
+[ 42%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/pareto4/test.cpp.o
+[ 43%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/snorm/test.cpp.o
+[ 44%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/std/test.cpp.o
+In file included from ../../include/cppunivariate/core/inference_numeric_generated.hpp:12,
+                 from ../../include/cppunivariate/core/inference_families.hpp:6,
+                 from ../../include/cppunivariate/distributions/norm/test.cpp:459:
+../../include/cppunivariate/core/../distributions/dlaplace/dpqr.hpp: In function ‘double cppunivariate::distributions::qdlaplace(double, double, double, bool, bool)’:
+../../include/cppunivariate/core/../distributions/dlaplace/dpqr.hpp:18:2: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+   18 |  if(lp==-INFINITY)return lower_tail?-INFINITY:INFINITY;if(lp==0)return lower_tail?INFINITY:-INFINITY;
+      |  ^~
+../../include/cppunivariate/core/../distributions/dlaplace/dpqr.hpp:18:56: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+   18 |  if(lp==-INFINITY)return lower_tail?-INFINITY:INFINITY;if(lp==0)return lower_tail?INFINITY:-INFINITY;
+      |                                                        ^~
+In file included from ../../include/cppunivariate/core/../distributions/tbinom/dpqr.hpp:2,
+                 from ../../include/cppunivariate/core/inference_numeric_special.hpp:15,
+                 from ../../include/cppunivariate/core/inference_families.hpp:7:
+../../include/cppunivariate/core/../distributions/tbinom/../tpois/dpqr_core.hpp: In function ‘double cppunivariate::truncated_detail::quantile(double, double, double, double, double, bool, bool)’:
+../../include/cppunivariate/core/../distributions/tbinom/../tpois/dpqr_core.hpp:38:3: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+   38 |   if(lp==-INFINITY)return lower?lo:hi;if(lp==0)return lower?hi:lo;
+      |   ^~
+../../include/cppunivariate/core/../distributions/tbinom/../tpois/dpqr_core.hpp:38:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+   38 |   if(lp==-INFINITY)return lower?lo:hi;if(lp==0)return lower?hi:lo;
+      |                                       ^~
+[ 45%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/tbinom/test.cpp.o
+[ 46%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/tpois/test.cpp.o
+In file included from ../../include/cppunivariate/distributions/tbinom/dpqr.hpp:2,
+                 from ../../include/cppunivariate/distributions/tbinom/test.cpp:16:
+../../include/cppunivariate/distributions/tbinom/../tpois/dpqr_core.hpp: In function ‘double cppunivariate::truncated_detail::quantile(double, double, double, double, double, bool, bool)’:
+../../include/cppunivariate/distributions/tbinom/../tpois/dpqr_core.hpp:38:3: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+   38 |   if(lp==-INFINITY)return lower?lo:hi;if(lp==0)return lower?hi:lo;
+      |   ^~
+../../include/cppunivariate/distributions/tbinom/../tpois/dpqr_core.hpp:38:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+   38 |   if(lp==-INFINITY)return lower?lo:hi;if(lp==0)return lower?hi:lo;
+      |                                       ^~
+[ 47%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/trgamma/test.cpp.o
+[ 48%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/yulesimon/test.cpp.o
+In file included from ../../include/cppunivariate/distributions/tpois/dpqr.hpp:2,
+                 from ../../include/cppunivariate/distributions/tpois/test.cpp:16:
+../../include/cppunivariate/distributions/tpois/dpqr_core.hpp: In function ‘double cppunivariate::truncated_detail::quantile(double, double, double, double, double, bool, bool)’:
+../../include/cppunivariate/distributions/tpois/dpqr_core.hpp:38:3: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+   38 |   if(lp==-INFINITY)return lower?lo:hi;if(lp==0)return lower?hi:lo;
+      |   ^~
+../../include/cppunivariate/distributions/tpois/dpqr_core.hpp:38:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+   38 |   if(lp==-INFINITY)return lower?lo:hi;if(lp==0)return lower?hi:lo;
+      |                                       ^~
+[ 49%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/zeta/test.cpp.o
+[ 50%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/zib/test.cpp.o
+[ 51%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/zinb/test.cpp.o
+[ 52%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/zip/test.cpp.o
+[ 52%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/zipf/test.cpp.o
+[ 53%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/zmbinom/test.cpp.o
+[ 54%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/zmgeom/test.cpp.o
+[ 55%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/zmlogarithmic/test.cpp.o
+[ 56%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/zmnbinom/test.cpp.o
+[ 57%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/zmpois/test.cpp.o
+[ 58%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/ztbinom/test.cpp.o
+[ 59%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/ztgeom/test.cpp.o
+[ 59%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/ztnbinom/test.cpp.o
+[ 60%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/ztpois/test.cpp.o
+[ 61%] Linking CXX executable distribution_tests
+[ 99%] Built target distribution_tests
+../../../dev/validation/diagnostics-audit.cpp: In function ‘void audit::observe(const T&, std::initializer_list<Value>)’:
+../../../dev/validation/diagnostics-audit.cpp:16:2: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+   16 |  if(seen)return;seen=true;
+      |  ^~
+../../../dev/validation/diagnostics-audit.cpp:16:17: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+   16 |  if(seen)return;seen=true;
+      |                 ^~~~
+../../../dev/validation/diagnostics-audit.cpp: In function ‘void route_hyper(cppunivariate::span, audit::Held, audit::Held, audit::Held)’:
+../../../dev/validation/diagnostics-audit.cpp:931:14: warning: variable ‘whole’ set but not used [-Wunused-but-set-variable]
+  931 |   const auto whole = [](double v) {
+      |              ^~~~~
+../../../dev/validation/diagnostics-audit.cpp: In function ‘void route_triang(cppunivariate::span, audit::Held, audit::Held, audit::Held, double, int)’:
+../../../dev/validation/diagnostics-audit.cpp:1780:16: warning: unused variable ‘nan’ [-Wunused-variable]
+ 1780 |   const double nan=std::numeric_limits<double>::quiet_NaN();
+      |                ^~~
+[100%] Linking CXX executable diagnostics_tests
+[100%] Built target diagnostics_tests
+Test project /home/jonas/Files/programming/univariateML.wt/stops-disc/univariateML-cpp/build
+        Start   1: bfgs_tests
+        Start   2: sample_tests
+        Start   3: distribution_bbinom
+        Start   4: distribution_beta
+  1/106 Test   #1: bfgs_tests .......................   Passed    0.01 sec
+        Start   5: distribution_betapr
+  2/106 Test   #2: sample_tests .....................   Passed    0.05 sec
+        Start   7: distribution_bhatt
+  3/106 Test   #4: distribution_beta ................   Passed    0.16 sec
+        Start   9: distribution_binom
+  4/106 Test   #5: distribution_betapr ..............   Passed    0.18 sec
+        Start  10: distribution_bnbinom
+  5/106 Test   #9: distribution_binom ...............   Passed    0.31 sec
+        Start  11: distribution_burr
+  6/106 Test   #3: distribution_bbinom ..............   Passed    0.58 sec
+        Start  13: distribution_cauchy
+  7/106 Test  #13: distribution_cauchy ..............   Passed    0.02 sec
+        Start  15: distribution_cmb
+  8/106 Test  #11: distribution_burr ................   Passed    2.82 sec
+        Start  16: distribution_cmp
+  9/106 Test  #10: distribution_bnbinom .............   Passed    4.18 sec
+        Start  17: distribution_dgamma
+ 10/106 Test   #7: distribution_bhatt ...............   Passed    5.21 sec
+        Start  18: distribution_dlaplace
+ 11/106 Test  #18: distribution_dlaplace ............   Passed    0.04 sec
+        Start  19: distribution_dnorm
+ 12/106 Test  #19: distribution_dnorm ...............   Passed    0.04 sec
+        Start  20: distribution_dunif
+ 13/106 Test  #20: distribution_dunif ...............   Passed    0.04 sec
+        Start  21: distribution_dweibull
+ 14/106 Test  #17: distribution_dgamma ..............   Passed    1.19 sec
+        Start  22: distribution_emg
+ 15/106 Test  #21: distribution_dweibull ............   Passed    0.64 sec
+        Start  23: distribution_exp
+ 16/106 Test  #23: distribution_exp .................   Passed    0.03 sec
+        Start  24: distribution_fatigue
+ 17/106 Test  #24: distribution_fatigue .............   Passed    0.08 sec
+        Start  25: distribution_foldnorm
+ 18/106 Test  #25: distribution_foldnorm ............   Passed    0.05 sec
+        Start  26: distribution_fpareto
+ 19/106 Test  #26: distribution_fpareto .............   Passed    0.65 sec
+        Start  27: distribution_frechet
+ 20/106 Test  #27: distribution_frechet .............   Passed    0.03 sec
+        Start  28: distribution_gamma
+ 21/106 Test  #22: distribution_emg .................   Passed    1.31 sec
+        Start  29: distribution_gb2
+ 22/106 Test  #28: distribution_gamma ...............   Passed    0.06 sec
+        Start  30: distribution_ged
+ 23/106 Test  #30: distribution_ged .................   Passed    0.32 sec
+        Start  32: distribution_genbeta
+ 24/106 Test  #32: distribution_genbeta .............   Passed    0.25 sec
+        Start  33: distribution_geom
+ 25/106 Test  #33: distribution_geom ................   Passed    0.05 sec
+        Start  34: distribution_gev
+ 26/106 Test  #34: distribution_gev .................   Passed    0.14 sec
+        Start  36: distribution_gompertz
+ 27/106 Test  #36: distribution_gompertz ............   Passed    0.05 sec
+        Start  37: distribution_gpd
+ 28/106 Test  #29: distribution_gb2 .................   Passed    1.94 sec
+        Start  38: distribution_gumbel
+ 29/106 Test  #38: distribution_gumbel ..............   Passed    0.05 sec
+        Start  40: distribution_hcauchy
+ 30/106 Test  #40: distribution_hcauchy .............   Passed    0.11 sec
+        Start  41: distribution_hnorm
+ 31/106 Test  #41: distribution_hnorm ...............   Passed    0.05 sec
+        Start  42: distribution_ht
+ 32/106 Test  #16: distribution_cmp .................   Passed   13.91 sec
+        Start  43: distribution_huber
+ 33/106 Test  #37: distribution_gpd .................   Passed   10.76 sec
+        Start  45: distribution_hyper
+ 34/106 Test  #15: distribution_cmb .................   Passed   28.68 sec
+        Start  46: distribution_invburr
+ 35/106 Test  #46: distribution_invburr .............   Passed    5.84 sec
+        Start  48: distribution_invexp
+ 36/106 Test  #48: distribution_invexp ..............   Passed    0.04 sec
+        Start  49: distribution_invgamma
+ 37/106 Test  #43: distribution_huber ...............   Passed   18.03 sec
+        Start  50: distribution_invgauss
+ 38/106 Test  #49: distribution_invgamma ............   Passed    0.09 sec
+        Start  51: distribution_invparalogis
+ 39/106 Test  #51: distribution_invparalogis ........   Passed    0.04 sec
+        Start  52: distribution_invpareto
+ 40/106 Test  #50: distribution_invgauss ............   Passed    0.11 sec
+        Start  53: distribution_invtrgamma
+ 41/106 Test  #52: distribution_invpareto ...........   Passed    0.05 sec
+        Start  54: distribution_invweibull
+ 42/106 Test  #54: distribution_invweibull ..........   Passed    0.04 sec
+        Start  55: distribution_kumar
+ 43/106 Test  #55: distribution_kumar ...............   Passed    0.05 sec
+        Start  57: distribution_laplace
+ 44/106 Test  #57: distribution_laplace .............   Passed    0.03 sec
+        Start  59: distribution_lgamma
+ 45/106 Test  #59: distribution_lgamma ..............   Passed    0.07 sec
+        Start  60: distribution_lgser
+ 46/106 Test  #53: distribution_invtrgamma ..........   Passed    0.21 sec
+        Start  61: distribution_llogis
+ 47/106 Test  #61: distribution_llogis ..............   Passed    0.05 sec
+        Start  62: distribution_lnorm
+ 48/106 Test  #60: distribution_lgser ...............   Passed    0.11 sec
+        Start  63: distribution_logis
+ 49/106 Test  #62: distribution_lnorm ...............   Passed    0.05 sec
+        Start  65: distribution_logitnorm
+ 50/106 Test  #63: distribution_logis ...............   Passed    0.03 sec
+        Start  66: distribution_lomax
+ 51/106 Test  #65: distribution_logitnorm ...........   Passed    0.05 sec
+        Start  68: distribution_lst
+ 52/106 Test  #66: distribution_lomax ...............   Passed    0.15 sec
+        Start  70: distribution_naka
+ 53/106 Test  #70: distribution_naka ................   Passed    0.10 sec
+        Start  71: distribution_nbinom
+ 54/106 Test  #68: distribution_lst .................   Passed    0.22 sec
+        Start  72: distribution_nhyper
+ 55/106 Test  #71: distribution_nbinom ..............   Passed    0.15 sec
+        Start  73: distribution_norm
+ 56/106 Test  #42: distribution_ht ..................   Passed   27.45 sec
+        Start  75: distribution_nsbeta
+ 57/106 Test  #75: distribution_nsbeta ..............   Passed    0.12 sec
+        Start  76: distribution_paralogis
+ 58/106 Test  #76: distribution_paralogis ...........   Passed    0.03 sec
+        Start  78: distribution_pareto
+ 59/106 Test  #72: distribution_nhyper ..............   Passed    0.72 sec
+        Start  79: distribution_pareto2
+ 60/106 Test  #78: distribution_pareto ..............   Passed    0.03 sec
+        Start  80: distribution_pareto3
+ 61/106 Test  #80: distribution_pareto3 .............   Passed    0.03 sec
+        Start  81: distribution_pareto4
+ 62/106 Test  #79: distribution_pareto2 .............   Passed    0.05 sec
+        Start  82: distribution_pig
+ 63/106 Test  #73: distribution_norm ................   Passed    2.51 sec
+        Start  83: distribution_pois
+ 64/106 Test  #83: distribution_pois ................   Passed    0.08 sec
+        Start  84: distribution_power
+ 65/106 Test  #84: distribution_power ...............   Passed    0.05 sec
+        Start  85: distribution_rayleigh
+ 66/106 Test  #85: distribution_rayleigh ............   Passed    0.05 sec
+        Start  86: distribution_sged
+ 67/106 Test  #82: distribution_pig .................   Passed    5.89 sec
+        Start  87: distribution_sgomp
+ 68/106 Test  #87: distribution_sgomp ...............   Passed    0.19 sec
+        Start  88: distribution_skellam
+ 69/106 Test  #88: distribution_skellam .............   Passed    0.52 sec
+        Start  89: distribution_slash
+ 70/106 Test  #86: distribution_sged ................   Passed    5.62 sec
+        Start  91: distribution_sn
+ 71/106 Test  #81: distribution_pareto4 .............   Passed    8.74 sec
+        Start  92: distribution_snorm
+ 72/106 Test  #45: distribution_hyper ...............   Passed   27.30 sec
+        Start  93: distribution_sstd
+ 73/106 Test  #92: distribution_snorm ...............   Passed    4.03 sec
+        Start  94: distribution_st
+ 74/106 Test  #93: distribution_sstd ................   Passed    5.98 sec
+        Start  95: distribution_std
+ 75/106 Test  #95: distribution_std .................   Passed    0.32 sec
+        Start  97: distribution_tbinom
+ 76/106 Test  #97: distribution_tbinom ..............   Passed    1.02 sec
+        Start  98: distribution_tlambda
+ 77/106 Test  #91: distribution_sn ..................   Passed    9.23 sec
+        Start 100: distribution_tnorm
+ 78/106 Test  #89: distribution_slash ...............   Passed   12.13 sec
+        Start 101: distribution_tpois
+ 79/106 Test #101: distribution_tpois ...............   Passed    0.20 sec
+        Start 102: distribution_trgamma
+ 80/106 Test #100: distribution_tnorm ...............   Passed    2.79 sec
+        Start 103: distribution_triang
+ 81/106 Test #103: distribution_triang ..............   Passed    0.30 sec
+        Start 104: distribution_unif
+ 82/106 Test #104: distribution_unif ................   Passed    0.03 sec
+        Start 105: distribution_weibull
+ 83/106 Test #105: distribution_weibull .............   Passed    0.04 sec
+        Start 106: distribution_yulesimon
+ 84/106 Test #106: distribution_yulesimon ...........   Passed    0.10 sec
+        Start 107: distribution_zeta
+ 85/106 Test  #98: distribution_tlambda .............   Passed    4.17 sec
+        Start 108: distribution_zib
+ 86/106 Test #108: distribution_zib .................   Passed    0.24 sec
+        Start 110: distribution_zinb
+ 87/106 Test #110: distribution_zinb ................   Passed    0.22 sec
+        Start 111: distribution_zip
+ 88/106 Test #111: distribution_zip .................   Passed    0.08 sec
+        Start 112: distribution_zipf
+ 89/106 Test #112: distribution_zipf ................   Passed    0.15 sec
+        Start 113: distribution_zmbinom
+ 90/106 Test #113: distribution_zmbinom .............   Passed    0.23 sec
+        Start 114: distribution_zmgeom
+ 91/106 Test #114: distribution_zmgeom ..............   Passed    0.07 sec
+        Start 115: distribution_zmlogarithmic
+ 92/106 Test #115: distribution_zmlogarithmic .......   Passed    0.11 sec
+        Start 116: distribution_zmnbinom
+ 93/106 Test #107: distribution_zeta ................   Passed    2.23 sec
+        Start 117: distribution_zmpois
+ 94/106 Test #116: distribution_zmnbinom ............   Passed    0.85 sec
+        Start 118: distribution_ztbinom
+ 95/106 Test #117: distribution_zmpois ..............   Passed    0.24 sec
+        Start 120: distribution_ztgeom
+ 96/106 Test #118: distribution_ztbinom .............   Passed    0.20 sec
+        Start 121: distribution_ztnbinom
+ 97/106 Test #120: distribution_ztgeom ..............   Passed    0.07 sec
+        Start 122: distribution_ztpois
+ 98/106 Test #122: distribution_ztpois ..............   Passed    0.16 sec
+        Start 123: distribution_support
+ 99/106 Test #123: distribution_support .............   Passed    0.01 sec
+        Start 124: no_throw_tests
+100/106 Test #124: no_throw_tests ...................   Passed    0.01 sec
+        Start 125: cmp_tests
+101/106 Test #121: distribution_ztnbinom ............   Passed    1.05 sec
+        Start 126: tails_tests
+102/106 Test #126: tails_tests ......................   Passed    0.01 sec
+        Start 127: diagnostics_tests
+103/106 Test #125: cmp_tests ........................   Passed    2.91 sec
+104/106 Test #127: diagnostics_tests ................   Passed    3.94 sec
+105/106 Test  #94: distribution_st ..................   Passed   15.90 sec
+106/106 Test #102: distribution_trgamma .............   Passed   10.20 sec
+
+100% tests passed, 0 tests failed out of 106
+
+Label Time Summary:
+cran    = 254.19 sec*proc (105 tests)
+dev     = 258.13 sec*proc (106 tests)
+full    = 258.13 sec*proc (106 tests)
+
+Total Test time (real) =  65.85 sec

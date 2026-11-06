@@ -1,5 +1,6 @@
 // Zero-modified likelihood = Bernoulli zero indicator + positive conditional law.
 #pragma once
+#include "../../core/discrete_stop.hpp"
 #include "../ztpois/mle.hpp"
 #include "../ztgeom/mle.hpp"
 #include "../ztnbinom/mle.hpp"
@@ -7,7 +8,7 @@
 namespace cppunivariate {
 namespace zero_detail {
 enum class ModifiedStatus { Ok, InvalidInput, InvalidSize, PoissonLimit, AllZero, TwoPoint, IterationFailure };
-struct ModifiedResult { double lambda, size, prob, p0, logLik; int iterations; ModifiedStatus status; };
+struct ModifiedResult { double lambda, size, prob, p0, logLik; int iterations; ModifiedStatus status; StopDetail stop_detail{}; };
 // kind: Poisson, geometric, NB, binomial, logarithmic.
 inline ModifiedResult modified_mle(ispan x, int kind, double tol, int maxit, double fixed_size) {
   ModifiedResult out{1,1,.5,0,0,0,ModifiedStatus::Ok};

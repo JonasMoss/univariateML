@@ -178,3 +178,14 @@ TEST_CASE("zib all-zero free-size held subsets attain the exact maximum") {
     }
   }
 }
+
+#include "../zip/dpqr.hpp"
+
+TEST_CASE("zib: structured stop payloads") {
+  const std::vector<int> x{0,0,0,0,0,0,0,0,1,1,1,2,3,7,12};
+  const auto r=cppunivariate::zib_mle({x.data(),x.size()});
+  REQUIRE(r.stop_detail.limit_model==cppunivariate::StopModel::Zip);
+  REQUIRE(r.stop_detail.limit_coef.size()==2);
+  double ll=0;for(int v:x)ll+=cppunivariate::distributions::dzip(v,r.stop_detail.limit_coef[0],r.stop_detail.limit_coef[1],true);
+  CHECK(r.stop_detail.limit_loglik==doctest::Approx(ll));
+}

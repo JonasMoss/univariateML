@@ -179,3 +179,7 @@ existence criterion, separately from numerical checks.
 With `shape1` held and all observations zero, the fitter warns that the estimate is not unique and returns `shape2 = 1`.
 
 Doubles close to 1 resolve $-\log \mathrm{shape1}$ only coarsely. When the fitted `shape1` is within `1e-6` of 1, `shape2` is refitted with that representable `shape1` held; when it rounds to 1 (the Weibull scale to the power `shape2` exceeds about $2^{53}$, e.g. counts near 40 with `shape2 = 10`) the fit stops with an error.
+
+## Stop details
+
+Adjacent faces preserve their original integer support. On the held-shape1 Bernoulli face the success probability is the held value, rather than the empirical proportion.

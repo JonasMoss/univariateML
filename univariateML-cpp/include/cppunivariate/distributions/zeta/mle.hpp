@@ -1,10 +1,12 @@
 // Infinite Zipf: strict exponential-family score, safeguarded by bisection.
 #pragma once
+#include "../../core/discrete_stop.hpp"
 #include "../zipf/mle.hpp"
 #include "../../special/special.hpp"
 namespace cppunivariate {
 enum class ZetaStatus { Ok, PointMass, InvalidInput, IterationFailure };
-struct ZetaResult { double s, logLik; int iterations; ZetaStatus status; };
+struct ZetaResult { double s, logLik; int iterations; ZetaStatus status;   StopDetail stop_detail{};
+};
 namespace zeta_detail {
 // Analytic infinite extension of Zipf's Euler--Maclaurin log moments.
 inline zipf_detail::HarmonicMoments moments(double s) {
@@ -28,6 +30,7 @@ inline double logz(double s) {
 }
 }
 inline ZetaResult zeta_mle(ispan x,double tol=1e-10,int maxit=200, double held=std::numeric_limits<double>::quiet_NaN()) {
+  auto stopped = [&]() -> ZetaResult {
   const double nan=special::kNaN;
   if (!x.size() || !(tol>0) || !std::isfinite(tol) || maxit<1)
     return {nan,nan,0,ZetaStatus::InvalidInput};
@@ -55,5 +58,9 @@ inline ZetaResult zeta_mle(ispan x,double tol=1e-10,int maxit=200, double held=s
       return {s,-s*sum-x.size()*zeta_detail::logz(s),it,ZetaStatus::Ok};
   }
   return {s,-s*sum-x.size()*zeta_detail::logz(s),maxit,ZetaStatus::IterationFailure};
+
+  }();
+  if(stopped.status==ZetaStatus::PointMass) stopped.stop_detail=discrete_point(x[0]);
+  return stopped;
 }
 }

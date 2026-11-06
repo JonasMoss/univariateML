@@ -117,3 +117,11 @@ TEST_CASE("zip: extreme tails and discrete support") {
   CHECK(cppunivariate::distributions::qzip(-10000, 1.0, 0.5, false, true) == 1571.0);
   CHECK(cppunivariate::distributions::dzip(0.5, 1.0, 0.5, false) == 0);
 }
+
+TEST_CASE("zip: structured stop payloads") {
+  const std::vector<int> x{0,0};
+  const auto r=cppunivariate::zip_mle({x.data(),x.size()},NAN,.5);
+  REQUIRE(r.stop_detail.limit_model==cppunivariate::StopModel::Pois);
+  CHECK(r.stop_detail.limit_coef[0]==0);
+  CHECK(r.stop_detail.limit_loglik==0);
+}

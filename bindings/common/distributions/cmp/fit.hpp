@@ -14,13 +14,25 @@ inline FitResult fit_cmp(cppunivariate::span x, Held lambda_arg = {}, Held nu_ar
  if (nu.supplied) {ctl.fixed_nu=nu.value;
   if (!std::isfinite(ctl.fixed_nu) || ctl.fixed_nu<0) return fail("fixed nu must be nonnegative and finite.");}
  const auto res=cppunivariate::cmp_domain_mle(x,ctl);
+  std::string stop_kind;
+  switch(res.status) {
+    case cppunivariate::CmpStatus::GeometricLimit: stop_kind="limit";break;
+    case cppunivariate::CmpStatus::TwoPointLimit: stop_kind="limit";break;
+    case cppunivariate::CmpStatus::PointMassLimit: stop_kind="limit";break;
+    default:break;
+  }
+  const auto stopped_fail = [&](const std::string& format, const auto&... arguments) {
+    auto out=fail(binding_message(format,arguments...));
+    return stop_kind.empty()?out:stop_failure(out,res.stop_detail,stop_kind,{"lambda","nu"});
+  };
+
  switch(res.status) {
  case cppunivariate::CmpStatus::Ok: break;
- case cppunivariate::CmpStatus::GeometricLimit: return fail("The MLE approaches the geometric face; use mlgeom.");
- case cppunivariate::CmpStatus::TwoPointLimit: return fail("The MLE approaches an adjacent two-point law.");
- case cppunivariate::CmpStatus::PointMassLimit: return fail("The MLE approaches a point mass.");
- case cppunivariate::CmpStatus::InvalidInput: return fail("CMP requires nonnegative integer counts at most 2147483647, valid fixed parameters and positive controls.");
- default: return fail("CMP calculation failed to converge or exceeded its work limit.");
+ case cppunivariate::CmpStatus::GeometricLimit: return stopped_fail("The MLE approaches the geometric face; use mlgeom.");
+ case cppunivariate::CmpStatus::TwoPointLimit: return stopped_fail("The MLE approaches an adjacent two-point law.");
+ case cppunivariate::CmpStatus::PointMassLimit: return stopped_fail("The MLE approaches a point mass.");
+ case cppunivariate::CmpStatus::InvalidInput: return stopped_fail("CMP requires nonnegative integer counts at most 2147483647, valid fixed parameters and positive controls.");
+ default: return stopped_fail("CMP calculation failed to converge or exceeded its work limit.");
  }
  std::vector<std::string> fixed;
  if(lambda.supplied) fixed.push_back("lambda");

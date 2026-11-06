@@ -93,3 +93,13 @@ TEST_CASE("lgser: TASK-132 invalid counts and empty input have statuses") {
   CHECK(cppunivariate::lgser_mle(cppunivariate::ispan{negative.data(),negative.size()}).status == cppunivariate::LgserStatus::InvalidInput);
   CHECK(cppunivariate::lgser_mle(cppunivariate::ispan{one.data(),one.size()}).status == cppunivariate::LgserStatus::PointMass);
 }
+
+TEST_CASE("lgser: structured stop payloads") {
+  const std::vector<int> x{1,1};
+  const auto r=cppunivariate::lgser_mle({x.data(),x.size()});
+  REQUIRE(r.stop_detail.limit_coef.size()==1);
+  CHECK(r.stop_detail.limit_model==cppunivariate::StopModel::PointMass);
+  CHECK(r.stop_detail.limit_coef[0]==1);
+  CHECK(r.stop_detail.limit_loglik==0);
+  CHECK(r.stop_detail.candidates.size()==1);
+}

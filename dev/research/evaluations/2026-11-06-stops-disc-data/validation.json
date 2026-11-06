@@ -1,0 +1,76 @@
+{
+  "base_revision": "164d41784756606a48ddc0cedc67752acab4050b",
+  "source_manifest": "source-manifest.json",
+  "final_runs": [
+    {
+      "command": "just cpp-test",
+      "machine": "workstation",
+      "result": "pass",
+      "shards": 106
+    },
+    {
+      "command": "just cpp-test",
+      "machine": "simbox",
+      "result": "pass",
+      "shards": 106
+    },
+    {
+      "command": "UMVL_TEST_TIER=full just cpp-test",
+      "machine": "simbox",
+      "result": "pass",
+      "shards": 127
+    },
+    {
+      "command": "just cpp-test-no-long-double",
+      "machine": "simbox",
+      "result": "pass",
+      "shards": 127
+    },
+    {
+      "command": "just test",
+      "machine": "workstation",
+      "result": "pass",
+      "pass": 20692,
+      "fail": 0,
+      "warn": 0,
+      "skip": 154
+    },
+    {
+      "command": "just test-full",
+      "machine": "workstation",
+      "result": "pass",
+      "pass": 43507,
+      "fail": 0,
+      "warn": 0,
+      "skip": 0
+    },
+    {
+      "command": "just js-build",
+      "machine": "workstation",
+      "result": "pass"
+    },
+    {
+      "command": "just js-test",
+      "machine": "workstation",
+      "result": "pass",
+      "tests": 423,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "command": "just site-check",
+      "machine": "workstation",
+      "result": "pass",
+      "families": 99
+    }
+  ],
+  "earlier_failure": {
+    "machine": "simbox",
+    "command": "just test",
+    "failure": "unchanged mlst scale-equivariance df comparison at seed 7",
+    "fail": 1,
+    "warn": 0,
+    "skip": 154,
+    "pass": 20691
+  }
+}

@@ -9,6 +9,7 @@
 // (theta -> 0); flagged via the result struct.
 
 #pragma once
+#include "../../core/discrete_stop.hpp"
 
 #include "../../core/span.hpp"
 
@@ -25,6 +26,7 @@ struct LgserResult {
   double logLik;
   bool all_ones;
   LgserStatus status = LgserStatus::Ok;
+  StopDetail stop_detail{};
 };
 
 namespace lgser_detail {
@@ -39,6 +41,7 @@ inline double q(double u) {
 }  // namespace lgser_detail
 
 inline LgserResult lgser_mle(ispan x, double fixed=std::numeric_limits<double>::quiet_NaN()) {
+  auto stopped = [&]() -> LgserResult {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
   if (n == 0) return {0.0,kNaN,false,LgserStatus::InvalidInput};
@@ -73,6 +76,10 @@ inline LgserResult lgser_mle(ispan x, double fixed=std::numeric_limits<double>::
   for (auto v : x) sum_log_x += std::log(static_cast<double>(v));
   const double logLik = -dn * std::log(u) + sumx * std::log(theta) - sum_log_x;
   return {theta,logLik,false,std::isfinite(logLik) && theta>0 && theta<1 ? LgserStatus::Ok : LgserStatus::NumericalFailure};
+
+  }();
+  if(stopped.status==LgserStatus::PointMass) stopped.stop_detail=discrete_point(x[0]);
+  return stopped;
 }
 
 }  // namespace cppunivariate

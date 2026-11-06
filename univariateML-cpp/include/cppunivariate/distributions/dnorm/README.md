@@ -154,3 +154,7 @@ likelihood without fitting.
 ## Decision history
 
 2026-10-30 (TASK-125): log interval probabilities use the shared normal log-tail helper, whose Mills expansion starts before the backend tail becomes subnormal. The first omitted term bounds the alternating expansion in the selected large-tail regime; truth rows check the resulting interval differences.
+
+## Stop details
+
+With mean held, a noninteger mean concentrates in its discretization cell. At an integer seam the zero-scale face assigns one half to each adjacent cell; its likelihood need not be the saturated empirical likelihood.

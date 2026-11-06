@@ -207,3 +207,12 @@ TEST_CASE("binom: TASK-132 negative counts never report success") {
   for (double size : {double(NAN),10.0})
     CHECK(cppunivariate::binom_mle(cppunivariate::ispan{data.data(),data.size()},size,1e-8,200).status == cppunivariate::BinomStatus::InvalidInput);
 }
+
+TEST_CASE("binom: structured stop payloads") {
+  const std::vector<int> x{0,0,6};
+  const auto r=cppunivariate::binom_mle({x.data(),x.size()},NAN,1e-8,100);
+  REQUIRE(r.status==cppunivariate::BinomStatus::Underdispersed);
+  REQUIRE(r.stop_detail.limit_coef.size()==1);
+  CHECK(r.stop_detail.limit_coef[0]==2);
+  CHECK(r.stop_detail.limit_loglik==doctest::Approx(6*std::log(2.)-6-std::lgamma(7.)));
+}

@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/discrete_stop.hpp"
 #include "../../core/precision.hpp"
 
 #include "../hyper/mle.hpp"
@@ -12,6 +13,7 @@ struct NhyperResult {
   double m, N, r, logLik, tie;
   int iterations;
   NhyperStatus status;
+  StopDetail stop_detail{};
 };
 
 // Total draws until the r-th white ball. P(T=x) = r/x P(H_x=r).
@@ -65,7 +67,8 @@ inline NhyperResult nhyper_mle(span x, double r, double N, double m) {
     out.status = NhyperStatus::NumericalFailure;
     if (c.max > 100000 || rhi > 100000 ||
         (rhi-rlo+1) * static_cast<double>(c.value.size()) > 1000000 ||
-        c.max * static_cast<double>(c.value.size()) > 1000000) return out;
+        c.max * static_cast<double>(c.value.size()) > 1000000){out.stop_detail=discrete_budget(out.stop_detail);return out;}
+    double face_r=rlo, face_p=NAN;
     double face = -std::numeric_limits<double>::infinity();
     for (double rr = rlo; rr <= rhi; ++rr) {
       const double p = rr * c.h / c.sum;
@@ -75,9 +78,10 @@ inline NhyperResult nhyper_mle(span x, double r, double N, double m) {
         const double qterm = y == 0 ? 0 : y*std::log1p(-p);
         ll += c.count[j] * (std::lgamma(v)-std::lgamma(rr)-std::lgamma(y+1) + rr*std::log(p) + qterm);
       }
-      face = std::max(face, ll);
+      if(ll>face){face=ll;face_r=rr;face_p=p;}
     }
     if (!std::isfinite(face)) return out;
+    out.stop_detail=discrete_face(StopModel::ShiftedNbinom,{face_r,face_p,face_r},face);
     const double margin = 1e-9 * (1 + std::fabs(face));
     double best = -std::numeric_limits<double>::infinity();
     NhyperResult winner = out;
@@ -89,9 +93,12 @@ inline NhyperResult nhyper_mle(span x, double r, double N, double m) {
         work += std::max(1, f.iterations);
         if ((f.status != NhyperStatus::Ok && f.status != NhyperStatus::Tie &&
              f.status != NhyperStatus::Unidentified) || !std::isfinite(f.logLik)) return false;
-        if (f.logLik > best) { best = f.logLik; winner = f; }
+        if (f.logLik > best) { best = f.logLik; winner = f;
+          out.stop_detail.candidates.erase(std::remove_if(out.stop_detail.candidates.begin(),out.stop_detail.candidates.end(),
+            [](const FitCandidate& c){return c.model==StopModel::None;}),out.stop_detail.candidates.end());
+          out.stop_detail.candidates.push_back({{f.m,f.N,f.r},f.logLik,f.logLik}); }
         if (std::fabs(f.logLik-face) <= margin) face_tie = true;
-        if (work >= hyper_detail::kGridBudget) return false;
+        if(work>=hyper_detail::kGridBudget){out.stop_detail=discrete_budget(out.stop_detail);return false;}
       }
       return true;
     };
@@ -99,6 +106,9 @@ inline NhyperResult nhyper_mle(span x, double r, double N, double m) {
     if (lo + 255 >= hyper_detail::kMaxCount) return out;
     for (double nn = lo; nn <= lo + 255; ++nn) if (!evaluate(nn)) return out;
     if (best <= face + margin) {
+      // Total draws = failures + r: retain the translation in a non-package law.
+      out.stop_detail=discrete_face(StopModel::ShiftedNbinom,{face_r,face_p,face_r},face);
+      out.stop_detail.candidates.push_back({{winner.m,winner.N,winner.r},best,best});out.stop_detail.loglik_upper=INFINITY;
       out.status = face_tie ? NhyperStatus::FaceTie : NhyperStatus::FaceUnresolved;
       out.iterations = work; return out;
     }
@@ -119,7 +129,7 @@ inline NhyperResult nhyper_mle(span x, double r, double N, double m) {
       const double mid = lower + std::floor((end-lower)/2);
       if (face + correction(mid) < best-margin) end = mid; else lower = mid;
     }
-    if ((end-lo)*(rhi-rlo+1) > hyper_detail::kGridBudget/4) return out;
+    if ((end-lo)*(rhi-rlo+1) > hyper_detail::kGridBudget/4){out.stop_detail=discrete_budget(out.stop_detail);return out;}
     for (double nn = lo; nn < end; ++nn) if (!evaluate(nn)) return out;
     out = winner; out.iterations = work; out.status = NhyperStatus::Ok;
     return out;
@@ -157,7 +167,7 @@ inline NhyperResult nhyper_mle(span x, double r, double N, double m) {
           std::max(lo, nhyper_detail::population_bound(m, c.max, rr));
       if (hi > hyper_detail::kMaxCount) return out;
       size += hi - lo + 1;
-      if (2 * size > hyper_detail::kGridBudget) return out;
+      if (2 * size > hyper_detail::kGridBudget){out.stop_detail=discrete_budget(out.stop_detail);return out;}
     }
     CPPUNIV_EXTENDED_REAL best = -std::numeric_limits<CPPUNIV_EXTENDED_REAL>::infinity();
     bool selected = false;

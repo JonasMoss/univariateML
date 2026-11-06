@@ -126,3 +126,28 @@ test('unrepresentable delegate reductions stop as numerical failures', () => {
     ['pareto4',[1e308,1.1e308],{min:-1e308}]
   ])assert.throws(()=>api[family].fit(data,held),e=>e.kind==='numerical');
 });
+
+test('discrete stops retain fitted package and non-package faces', () => {
+  for(const [family,x,held,model,estimates] of [
+    ['binom',[0,0,6],{},'pois',{lambda:2}],
+    ['bbinom',[0,1,1,2],{size:2},'binom',{size:2,prob:.5}],
+    ['dgamma',[2,2,3],{},'two-point law (no package family)',{lower:2,upper:3,prob:1/3}],
+    ['zip',[0,0],{pi:.5},'pois',{lambda:0}],
+    ['dnorm',[1,1],{},'point mass (no package family)',{point:1}]
+  ]) assert.throws(()=>api[family].fit(x,held),e=>{
+    assert.equal(e.kind,'limit');assert.equal(e.model,model);
+    assert.deepEqual(e.estimates,estimates);assert.ok(Number.isFinite(e.limit_loglik));
+    assert.ok(e.candidates.length>0);return true;
+  });
+  assert.throws(()=>api.cmb.fit([0,1]),e=>{
+    assert.equal(e.kind,'tie');assert.equal(e.model,'binom');
+    assert.deepEqual(e.estimates,{size:1,prob:.5});return true;
+  });
+});
+
+test('discrete empty preflight budget has no invented candidate', () => {
+  assert.throws(()=>api.bbinom.fit([0,1001],{alpha:1}),e=>{
+    assert.equal(e.kind,'budget');assert.equal(e.loglik_upper,Infinity);
+    assert.equal(e.candidates.length,0);assert.deepEqual(e.estimates,{});return true;
+  });
+});

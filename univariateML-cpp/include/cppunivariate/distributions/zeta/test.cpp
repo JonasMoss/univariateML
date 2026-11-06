@@ -55,3 +55,13 @@ TEST_CASE("zeta: held coefficient bypasses the all-ones escape") {
   CHECK(f.iterations==0);
   CHECK(cppunivariate::zeta_mle({x.data(),x.size()},1e-10,200,0).status==cppunivariate::ZetaStatus::InvalidInput);
 }
+
+TEST_CASE("zeta: structured stop payloads") {
+  const std::vector<int> x{1,1};
+  const auto r=cppunivariate::zeta_mle({x.data(),x.size()});
+  REQUIRE(r.stop_detail.limit_coef.size()==1);
+  CHECK(r.stop_detail.limit_model==cppunivariate::StopModel::PointMass);
+  CHECK(r.stop_detail.limit_coef[0]==1);
+  CHECK(r.stop_detail.limit_loglik==0);
+  CHECK(r.stop_detail.candidates.size()==1);
+}

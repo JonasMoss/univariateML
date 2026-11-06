@@ -195,3 +195,22 @@ TEST_CASE("nhyper: certified joint population profiles and unresolved face") {
   const std::vector<double> large{1,100001};
   CHECK(cppunivariate::nhyper_mle(mltest::as_span(large),1,nan,nan).status == cppunivariate::NhyperStatus::NumericalFailure);
 }
+
+TEST_CASE("nhyper: structured stop payloads") {
+  const std::vector<double> x{1,1,1,1,1,30};
+  const auto r=cppunivariate::nhyper_mle({x.data(),x.size()},1,NAN,NAN);
+  REQUIRE(r.stop_detail.limit_model==cppunivariate::StopModel::ShiftedNbinom);
+  REQUIRE(r.stop_detail.limit_coef.size()==3);
+  CHECK(std::isfinite(r.stop_detail.limit_loglik));
+  CHECK(r.stop_detail.candidates.size()>=2);
+  CHECK(r.stop_detail.loglik_upper==INFINITY);
+}
+
+TEST_CASE("nhyper: explicit growing-urn work preflight has an empty budget payload") {
+  const std::vector<double> x{1,100001};
+  const auto r=cppunivariate::nhyper_mle({x.data(),x.size()},1,NAN,NAN);
+  CHECK(r.status==cppunivariate::NhyperStatus::NumericalFailure);
+  CHECK(r.stop_detail.budget_exhausted);
+  CHECK(r.stop_detail.candidates.empty());
+  CHECK(r.stop_detail.loglik_upper==INFINITY);
+}

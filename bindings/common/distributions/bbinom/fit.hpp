@@ -24,47 +24,63 @@ inline FitResult fit_bbinom(cppunivariate::ispan x, Held size_arg = {}, Held alp
   if (beta.supplied && !(std::isfinite(b) && b > 0))
     return failure("`beta` must be a finite positive number.");
   const auto res = cppunivariate::bbinom_mle(x, N, reltol, iterlim, a, b);
+  std::string stop_kind;
+  switch(res.status) {
+    case cppunivariate::BbinomStatus::BinomialLimit: stop_kind="limit";break;
+    case cppunivariate::BbinomStatus::TwoPointLimit: stop_kind="limit";break;
+    case cppunivariate::BbinomStatus::PointMass: stop_kind="limit";break;
+    case cppunivariate::BbinomStatus::Unidentified: stop_kind="tie";break;
+    case cppunivariate::BbinomStatus::SizeBudget: stop_kind="budget";break;
+    case cppunivariate::BbinomStatus::ProfileTie: stop_kind="tie";break;
+    case cppunivariate::BbinomStatus::FaceUnresolved: stop_kind="unresolved";break;
+    default:break;
+  }
+  const auto stopped_fail = [&](const std::string& format, const auto&... arguments) {
+    auto out=failure(binding_message(format,arguments...));
+    return stop_kind.empty()?out:stop_failure(out,res.stop_detail,stop_kind,{"size","alpha","beta"});
+  };
+
   const std::string n_txt = std::to_string(static_cast<long long>(std::isfinite(N)?N:0));
   switch (res.status) {
     case cppunivariate::BbinomStatus::Ok:
       break;
     case cppunivariate::BbinomStatus::SizeTooSmall:
-      return failure("`size` is smaller than `max(x)`.");
+      return stopped_fail("`size` is smaller than `max(x)`.");
     case cppunivariate::BbinomStatus::BinomialLimit:
-      return failure("The maximum likelihood estimator does not exist: the likelihood increases "
+      return stopped_fail("The maximum likelihood estimator does not exist: the likelihood increases "
                  "toward the binomial distribution as `alpha + beta` grows (the data are not "
                  "overdispersed enough). Use `mlbinom(x, size = " + n_txt + ")` instead.");
     case cppunivariate::BbinomStatus::TwoPointLimit:
-      return failure("The maximum likelihood estimator does not exist: every observation is 0 or "
+      return stopped_fail("The maximum likelihood estimator does not exist: every observation is 0 or "
                  "`size`, and the likelihood increases toward the two-point distribution on "
                  "{0, size} as `alpha` and `beta` tend to 0 with `alpha / (alpha + beta)` "
                  "fixed. Its probability of `size` is `mean(x == size)`, the fit of "
                  "`mlbinom(x / " + n_txt + ", size = 1)`.");
     case cppunivariate::BbinomStatus::PointMass:
-      if (!size.supplied) return failure("The maximum likelihood estimator does not exist: the likelihood approaches a point mass at the common positive count.");
-      return failure("The maximum likelihood estimator does not exist: all observations equal 0 "
+      if (!size.supplied) return stopped_fail("The maximum likelihood estimator does not exist: the likelihood approaches a point mass at the common positive count.");
+      return stopped_fail("The maximum likelihood estimator does not exist: all observations equal 0 "
                  "or all equal `size`, and the likelihood increases toward a point mass. "
                  "Use `mlbinom(x, size = " + n_txt + ")` instead.");
     case cppunivariate::BbinomStatus::Unidentified:
-      if (!size.supplied) return failure("With all counts zero, size zero attains the maximum and the free shape is not identified.");
-      if (N == 0) return failure("With `size = 0` the beta-binomial parameters are not identified.");
-      return failure("With `size = 1` the beta-binomial is a Bernoulli distribution and "
+      if (!size.supplied) return stopped_fail("With all counts zero, size zero attains the maximum and the free shape is not identified.");
+      if (N == 0) return stopped_fail("With `size = 0` the beta-binomial parameters are not identified.");
+      return stopped_fail("With `size = 1` the beta-binomial is a Bernoulli distribution and "
                  "`alpha + beta` is not identified. Use `mlbinom(x, size = 1)`, or hold "
                  "`alpha` or `beta` fixed.");
     case cppunivariate::BbinomStatus::InvalidInput:
-      return failure("Beta-binomial fitting needs nonempty nonnegative counts, positive "
+      return stopped_fail("Beta-binomial fitting needs nonempty nonnegative counts, positive "
                  "`reltol` and positive `iterlim`.");
     case cppunivariate::BbinomStatus::SizeBudget:
-      return failure("Beta-binomial free-size search could not exclude the tail within its work budget.");
+      return stopped_fail("Beta-binomial free-size search could not exclude the tail within its work budget.");
     case cppunivariate::BbinomStatus::ProfileTie:
-      return failure("Beta-binomial free-size profiles have an unresolved numerical tie.");
+      return stopped_fail("Beta-binomial free-size profiles have an unresolved numerical tie.");
     case cppunivariate::BbinomStatus::FaceUnresolved:
-      return failure("Beta-binomial free-size search cannot resolve the negative binomial face against larger finite sizes.");
+      return stopped_fail("Beta-binomial free-size search cannot resolve the negative binomial face against larger finite sizes.");
     default:
-      return failure("Beta-binomial MLE failed.");
+      return stopped_fail("Beta-binomial MLE failed.");
   }
   if (!std::isfinite(res.alpha) || !std::isfinite(res.beta) || !std::isfinite(res.logLik))
-    return failure("Beta-binomial MLE failed.");
+    return stopped_fail("Beta-binomial MLE failed.");
   std::vector<std::string> fixed;
   if (size.supplied) fixed.push_back("size");
   if (alpha.supplied) fixed.push_back("alpha");
