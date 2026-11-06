@@ -149,3 +149,5 @@ the half displacement is `(sigma/2)/lambda`; at interior probabilities it is
 unchanged. Symmetric binary64 regression cases use `sigma=1e308`,
 `mu=+/-1e308`, `lambda=.5`, endpoints and probabilities .001/.999;
 these are numerical checks, not general floating-point error bounds.
+
+Sigma-held fits reuse evaluations at exactly repeated search coordinates; seeded decisions are identical to the uncached search ([held-subset comparison](../../../../../dev/research/evaluations/2026-11-06-slow-held-report.md)).

@@ -8,6 +8,7 @@
 #include "../norm/mle.hpp"
 #include "../../core/span.hpp"
 #include <vector>
+#include <map>
 namespace cppunivariate {
 enum class BhattStatus {Ok,NormalLimit,UniformLimit,Unbounded,InvalidInput,IterationFailure};
 struct BhattResult {double mu,sigma,a,logLik;int iterations;BhattStatus status; StopDetail stop_detail{}; };
@@ -49,7 +50,20 @@ struct Profile {
     return lo/2+hi/2;
   }
 
+  // Reuse only identical held-profile coordinates, including across starts.
+  // Clearing the bounded cache changes cost only, never search decisions.
+  mutable std::map<std::vector<double>,BhattResult> evaluations{};
   BhattResult evaluate(const std::vector<double>& t) const {
+    if(std::isnan(held_mu) && std::isnan(sigma) && std::isnan(a)) return evaluate_uncached(t);
+    for(double v:t) if(std::isnan(v) || v==0) return evaluate_uncached(t);
+    const auto found=evaluations.find(t);
+    if(found!=evaluations.end()) return found->second;
+    const auto value=evaluate_uncached(t);
+    if(evaluations.size()>=4096) evaluations.clear();
+    evaluations.emplace(t,value);
+    return value;
+  }
+  BhattResult evaluate_uncached(const std::vector<double>& t) const {
     int k=0;const double s=std::isnan(sigma)?std::exp(t[k++]):sigma,b=std::isnan(a)?std::exp(t[k++]):a;
     if(!(s>0&&b>0&&std::isfinite(s)&&std::isfinite(b)))return {0,s,b,special::kNegInf,0,BhattStatus::IterationFailure};
     // Exact upper bounds screen only candidates unable to beat an attained

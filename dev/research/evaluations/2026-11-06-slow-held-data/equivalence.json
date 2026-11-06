@@ -1,0 +1,44 @@
+[
+  {
+    "family": "tlambda",
+    "rows": 4960,
+    "identical": 4960,
+    "equivalent": 0,
+    "different": 0,
+    "non_ok": 0,
+    "statuses": {
+      "0": 4960
+    },
+    "before_sha256": "99bc12ad5979b4c8fb3cec230aaeb6eb5d443496bb6bc14b7d29e147b0544802",
+    "after_sha256": "99bc12ad5979b4c8fb3cec230aaeb6eb5d443496bb6bc14b7d29e147b0544802"
+  },
+  {
+    "family": "emg",
+    "rows": 4960,
+    "identical": 4960,
+    "equivalent": 0,
+    "different": 0,
+    "non_ok": 1846,
+    "statuses": {
+      "0": 3114,
+      "1": 1613,
+      "2": 233
+    },
+    "before_sha256": "52eb512bf18c9d198515bfc88589c9a47a00a88749e95ccea5c94af8dfbc33c4",
+    "after_sha256": "52eb512bf18c9d198515bfc88589c9a47a00a88749e95ccea5c94af8dfbc33c4"
+  },
+  {
+    "family": "bhatt",
+    "rows": 4960,
+    "identical": 4960,
+    "equivalent": 0,
+    "different": 0,
+    "non_ok": 1132,
+    "statuses": {
+      "0": 3828,
+      "2": 1132
+    },
+    "before_sha256": "d48fb80990a409e6a79445d93d514ee304e559090ad61b80977607e87bbd4113",
+    "after_sha256": "d48fb80990a409e6a79445d93d514ee304e559090ad61b80977607e87bbd4113"
+  }
+]

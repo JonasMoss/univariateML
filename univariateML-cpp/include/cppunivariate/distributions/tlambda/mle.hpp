@@ -6,6 +6,7 @@
 #include <cmath>
 #include <limits>
 #include <vector>
+#include <map>
 namespace cppunivariate {
 inline constexpr double kTlambdaLambdaLower = -1.0;
 inline constexpr double kTlambdaLambdaUpper = 1.0;
@@ -33,9 +34,17 @@ inline double likelihood(span x,double mu,double sigma,double lambda) {
 inline Point search(span x,std::array<double,3> start,bool fixed,double tol,int maxit,int& iterations,bool& converged,bool hold_mu=false,bool hold_sigma=false) {
   std::vector<int> index; if(!hold_mu)index.push_back(0);if(!hold_sigma)index.push_back(1);if(!fixed)index.push_back(2);
   const int dim=static_cast<int>(index.size());
+  std::map<std::array<double,3>,double> evaluations;
   auto eval=[&](std::array<double,3> t) -> double {
     if((!fixed && !hold_mu && t[2]<-1) || (!fixed && t[2]>1) || !std::isfinite(t[0]) || !std::isfinite(t[1]) || !(std::exp(t[1])>0) || !std::isfinite(std::exp(t[1]))) return INFINITY;
-    return -likelihood(x,t[0],std::exp(t[1]),t[2]);
+    if(!hold_sigma) return -likelihood(x,t[0],std::exp(t[1]),t[2]);
+    for(double v:t) if(std::isnan(v) || v==0) return -likelihood(x,t[0],std::exp(t[1]),t[2]);
+    const auto found=evaluations.find(t);
+    if(found!=evaluations.end()) return found->second;
+    const double value=-likelihood(x,t[0],std::exp(t[1]),t[2]);
+    if(evaluations.size()>=4096) evaluations.clear();
+    evaluations.emplace(t,value);
+    return value;
   };
   if(dim==0){converged=true;return {start,eval(start)};}
   std::vector<Point> v;

@@ -1,0 +1,74 @@
+[
+  {
+    "check": "cpp dev",
+    "command": "just cpp-test",
+    "machine": "simbox",
+    "passed": 106,
+    "skipped": 0,
+    "failed": 0
+  },
+  {
+    "check": "cpp full",
+    "command": "UMVL_TEST_TIER=full just cpp-test",
+    "machine": "simbox",
+    "passed": 127,
+    "skipped": 0,
+    "failed": 0
+  },
+  {
+    "check": "cpp precision proxy",
+    "command": "just cpp-test-no-long-double",
+    "machine": "simbox",
+    "passed": 127,
+    "skipped": 0,
+    "failed": 0
+  },
+  {
+    "check": "R dev",
+    "command": "just test",
+    "machine": "simbox",
+    "passed": 20822,
+    "skipped": 154,
+    "failed": 0
+  },
+  {
+    "check": "R full",
+    "command": "just test-full",
+    "machine": "simbox",
+    "passed": 43638,
+    "skipped": 0,
+    "failed": 0
+  },
+  {
+    "check": "JS",
+    "command": "just js-test",
+    "machine": "workstation",
+    "passed": 430,
+    "skipped": 0,
+    "failed": 0
+  },
+  {
+    "check": "site",
+    "command": "just site-check",
+    "machine": "workstation",
+    "passed": 99,
+    "skipped": 0,
+    "failed": 0
+  },
+  {
+    "check": "quality",
+    "command": "just quality tlambda emg bhatt",
+    "machine": "workstation",
+    "passed": 3,
+    "skipped": 0,
+    "failed": 0
+  },
+  {
+    "check": "relations",
+    "command": "just relations",
+    "machine": "workstation",
+    "passed": 157,
+    "skipped": 0,
+    "failed": 0
+  }
+]
