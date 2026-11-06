@@ -1,0 +1,20 @@
+Test project /home/jonas/Files/programming/univariateML.wt/burr-scale/univariateML-cpp/build
+    Start 46: distribution_invburr
+    Start 81: distribution_pareto4
+    Start 11: distribution_burr
+    Start 29: distribution_gb2
+1/5 Test #29: distribution_gb2 .................   Passed    1.57 sec
+    Start 26: distribution_fpareto
+2/5 Test #11: distribution_burr ................   Passed    2.87 sec
+3/5 Test #26: distribution_fpareto .............   Passed    1.47 sec
+4/5 Test #46: distribution_invburr .............   Passed    6.32 sec
+5/5 Test #81: distribution_pareto4 .............   Passed    7.61 sec
+
+100% tests passed, 0 tests failed out of 5
+
+Label Time Summary:
+cran    =  19.85 sec*proc (5 tests)
+dev     =  19.85 sec*proc (5 tests)
+full    =  19.85 sec*proc (5 tests)
+
+Total Test time (real) =   7.61 sec

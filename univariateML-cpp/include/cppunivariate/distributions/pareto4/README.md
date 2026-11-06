@@ -52,13 +52,13 @@ limits:
   message: unbounded
 - when: The shape $\alpha$ tends to infinity with $\gamma$ fixed and $\sigma\alpha^{-1/\gamma}$ fixed at a positive scale.
   firmness: proved
-  detect: With all regular coefficients free, the Burr certificate selects this face. Held power uses the certified Lomax comparison; held scale with both shapes free remains numerical.
+  detect: With all regular coefficients free, the Burr certificate selects this face. Held power uses the certified Lomax comparison; held scale with both shapes free uses a strictly concave scalar certificate.
   status: WeibullBoundary
   name: shifted weibull; subtract min before fitting
   numerical: true
 - when: The power $\gamma$ tends to infinity with $\alpha\gamma$ fixed at a positive tail exponent and $\sigma$ fixed.
   firmness: proved
-  detect: With all regular coefficients free, the Burr certificate selects this face. Held power uses the certified Lomax comparison; held scale with both shapes free remains numerical.
+  detect: With all regular coefficients free, the Burr certificate selects this face. Held power uses the certified Lomax comparison; held scale with both shapes free uses a strictly concave scalar certificate.
   status: ParetoBoundary
   name: shifted pareto; subtract min before fitting
   numerical: true
@@ -135,8 +135,8 @@ relations:
     shift: min
 fit:
   method: delegation
-  certified: 'partial'
-  note: 'pareto4/README.md, Details; pareto4/mle.hpp (public fitter and held overloads); pareto4/test.cpp: With min held, every regular subset delegates to the corresponding Burr fit on x-min. Joint and held-power fits are certified conditional on computed comparisons and the parent floating-point margin. Held scale with both shapes free remains a numerical profile search. Face coefficients refer to excess data.'
+  certified: 'yes'
+  note: 'pareto4/README.md, Details; pareto4/mle.hpp (public fitter and held overloads); pareto4/test.cpp: With min held, every regular subset delegates to the corresponding Burr fit on x-min. Joint and held-power fits are certified conditional on computed comparisons and the parent floating-point margin. Held scale with both shapes free inherits the strictly concave scalar-profile certificate. Face coefficients refer to excess data.'
 areas:
 - actuarial
 - economics and income
@@ -159,8 +159,8 @@ existence:
     uniqueness is not established, but accepted finite certificates prove it for the sample. Holding $\alpha$ gives a unique finite
     fit on nonconstant excesses. Holding $\gamma$ reduces existence to Lomax
     on powered excesses. Holding both shapes gives a unique scale estimate.
-    Holding scale alone gives a finite maximum for nonconstant excesses if
-    some excess is below it; uniqueness is not established. Other conditional
+    Holding scale alone gives a unique finite maximum for nonconstant excesses if
+    some excess is below it, by strict concavity of the shape profile. Other conditional
     cases are described below. Free-threshold fits are not supported.
     Holding all coefficients leaves likelihood evaluation.
   reason: >-
@@ -190,7 +190,7 @@ The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-genb
 
 ## R notes
 
-With `min = 0`, the fit agrees with `mlburr(x)` for the same holds. The joint regular fit certifies the finite winner or limiting face and refuses unresolved ties. Held power inherits the certified Lomax face comparison; held scale with both shapes free remains numerical. Detected faces stop with a recommendation to use `mlweibull(x - min)` or `mlpareto(x - min)`, as applicable. Held-scale endpoint faces preserve `min + scale`. Unresolved searches stop.
+With `min = 0`, the fit agrees with `mlburr(x)` for the same holds. The joint regular fit certifies the finite winner or limiting face and refuses unresolved ties. Held power inherits the certified Lomax face comparison; held scale with both shapes free uses a strictly concave scalar certificate. Detected faces stop with a recommendation to use `mlweibull(x - min)` or `mlpareto(x - min)`, as applicable. Held-scale endpoint faces preserve `min + scale`. Unresolved searches stop.
 
 ## Decision history
 
@@ -239,3 +239,12 @@ The certified transformation rejects arithmetic overflow and any merging of
 distinct observations into equal transformed values with `NumericalFailure`.
 This prevents rounded transformations from supplying artificial constant-sample
 or tied-endpoint certificates. Genuine data ties remain allowed.
+
+
+The held-scale two-shape reduction now inherits the
+[Burr scalar concavity certificate](../burr/README.md#held-scale-certificate-task-1164),
+including strict endpoint score comparisons, coefficient accuracy checks,
+practical floating-point margins and explicit tie/budget/numerical stops.
+Subtracting the held threshold transports the certificate to excess data with Jacobian one; artificial ties or overflow in this subtraction stop.
+
+Arithmetic that rounds a distinct observation onto a held scale stops numerically: reciprocation checks equality against the original scale, and threshold subtraction checks its error-free sum residual. This protects the exact endpoint classification and its tied-observation penalty.

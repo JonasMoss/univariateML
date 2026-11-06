@@ -320,3 +320,59 @@ TEST_CASE("held Burr power transports certified Lomax face bounds") {
  for(double v:x){const double scale=r.stop_detail.limit_coef[1];ll+=std::log(2.)-2*std::log(scale)+std::log(v)-(v/scale)*(v/scale);}
  CHECK(r.stop_detail.limit_loglik==doctest::Approx(ll));
 }
+
+TEST_CASE("Burr held-scale strict-concavity certificate covers both sides of scale") {
+ for(const std::vector<double>& x:std::vector<std::vector<double>>{
+   {.1,.2,.4,.8},{.5,2,3,4,5},{.01,.02,.1,1,2,100},{.9,.95,1,1.01},
+   {1e-100,1e-50,1.,1e50,1e100}}) {
+   const auto r=cppunivariate::burr_mle_fixed_scale(mltest::as_span(x),1,1e-10);
+   REQUIRE(r.status==cppunivariate::BurrStatus::Ok);
+   CHECK(r.stop_detail.loglik_lower<=r.logLik);
+   CHECK(r.stop_detail.loglik_upper>=r.logLik);
+   CHECK(r.stop_detail.candidates.size()==1);
+   double ll=0;for(double v:x)ll+=cppunivariate::distributions::dburr(v,r.shape1,r.shape2,1,true);
+   CHECK(ll==doctest::Approx(r.logLik).epsilon(1e-10));
+   // Concavity certifies globality. These scores independently check the center.
+   double theta[2]={r.shape1,r.shape2},g[2];
+   cppunivariate::BurrCost{mltest::as_span(x)}.gradient(theta,g);
+   CHECK(std::hypot(g[0]*r.shape1,g[1]*r.shape2)<1e-8);
+ }
+ const std::vector<double> x{.5,2,3,4,5};
+ const auto budget=cppunivariate::burr_mle_fixed_scale(mltest::as_span(x),1,1e-10,1);
+ CHECK(budget.status==cppunivariate::BurrStatus::CertificateBudget);
+ CHECK(std::isnan(budget.shape1));CHECK(std::isnan(budget.shape2));
+ CHECK(std::isfinite(budget.stop_detail.loglik_lower));
+ CHECK(budget.stop_detail.candidates.size()==1);
+ for(double tol:std::vector<double>{0.,-1.,INFINITY,NAN})
+   CHECK(cppunivariate::burr_mle_fixed_scale(mltest::as_span(x),1,tol).status==cppunivariate::BurrStatus::InvalidInit);
+}
+
+TEST_CASE("Burr held-scale Pareto supremum retains tied-endpoint penalty") {
+ const std::vector<double> x{1,1,2,4};
+ const auto r=cppunivariate::burr_mle_fixed_scale(mltest::as_span(x),1);
+ REQUIRE(r.status==cppunivariate::BurrStatus::AllGeOne);
+ const double s=std::log(8.),expected=4*std::log(4/s)-4-s-2*std::log(2.);
+ CHECK(r.stop_detail.limit_loglik==doctest::Approx(expected).epsilon(1e-12));
+ CHECK(r.stop_detail.loglik_lower<=expected);CHECK(r.stop_detail.loglik_upper>=expected);
+ CHECK(r.stop_detail.limit_coef[1]==1);
+}
+
+TEST_CASE("Burr held-scale log arithmetic avoids overflowing ratios") {
+ const std::vector<double> x{1e-300,1e-200,1e-100,1.,1e100};
+ const auto r=cppunivariate::burr_mle_fixed_scale(mltest::as_span(x),1e-200);
+ REQUIRE(r.status==cppunivariate::BurrStatus::Ok);
+ CHECK(std::isfinite(r.logLik));
+ const std::vector<double> close{.5,std::nextafter(.5,1.)};
+ const auto stop=cppunivariate::burr_mle_fixed_scale(mltest::as_span(close),1);
+ CHECK(stop.status!=cppunivariate::BurrStatus::Ok);
+ CHECK(std::isnan(stop.shape1));CHECK(std::isnan(stop.shape2));
+}
+
+TEST_CASE("Burr held-scale sign uncertainty returns a tie with a finite witness") {
+ const std::vector<double> x{std::exp(-1.1),std::exp(-1.)};
+ const auto r=cppunivariate::burr_mle_fixed_scale(mltest::as_span(x),1);
+ CHECK(r.status==cppunivariate::BurrStatus::CertificateTie);
+ CHECK(std::isnan(r.shape1));CHECK(std::isnan(r.shape2));
+ CHECK(std::isfinite(r.stop_detail.loglik_lower));
+ CHECK(r.stop_detail.candidates.size()==1);
+}

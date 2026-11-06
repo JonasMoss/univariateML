@@ -151,3 +151,13 @@ test_that("gb2: P3 unfinished optimizer stops", {
 test_that("gb2: P3 held profile exhaustion stops", {
   expect_error(mlgb2(rep(2,4),shape1=2,shape2=1,scale=1,iterlim=1), "[Ff]ail|converge|unresolved|exhausted")
 })
+
+test_that("GB2 held unit shape and scale inherit Burr scalar certificate", {
+  x <- c(.1,.2,.4,.8)
+  a <- mlgb2(x,shape3=1,scale=1,gradtol=1e-10)
+  b <- mlburr(x,scale=1,abstol=1e-10)
+  expect_equal(as.numeric(a[c(1,2,4)]),as.numeric(b),tolerance=1e-10)
+  e <- tryCatch(mlgb2(x,shape3=1,scale=1,iterlim=1),univariateML_budget=identity)
+  expect_s3_class(e,"univariateML_budget")
+  expect_true(is.finite(e$loglik_lower))
+})

@@ -202,36 +202,13 @@ inline InvBurrResult invburr_mle(span x, double tol, int maxit,
   return out;
 }
 
-// Fixed scale reduces exactly to the historical scale-1 two-shape fit.
+inline InvBurrResult invburr_mle_holds(span x,double a,double b,double s,double tol,int maxit);
+// Share the certified reciprocal path with the held-parameter dispatcher.
 inline InvBurrResult invburr_mle_fixed_scale(span x, double scale,
     double tol = 1.220703e-4, int maxit = 1000) {
-  const double nan = std::numeric_limits<double>::quiet_NaN();
-  if (!(scale > 0.0) || !std::isfinite(scale))
-    return {nan,nan,scale,nan,0,InvBurrStatus::InvalidInit};
-  // With both shapes free, constant data on this side of the held
-  // scale concentrate as shape2 grows (shape1 is profiled). Test the
-  // original observations exactly, before normalization or any search.
-  bool constant = x.size() > 0;
-  for (double v : x) {
-    if (!(v > 0.0) || !std::isfinite(v))
-      return {nan,nan,scale,nan,0,InvBurrStatus::InvalidInit};
-    if (v != x[0]) constant = false;
-  }
-  if (constant && x[0] >= scale)
-    return {nan,nan,scale,INFINITY,0,InvBurrStatus::Unbounded};
-  std::vector<double> normalized;
-  for (double v : x) normalized.push_back(v / scale);
-  const auto r = burr_fixed_detail::invburr_mle(span{normalized.data(),normalized.size()},tol,maxit);
-  InvBurrStatus status = InvBurrStatus::Ok;
-  if (r.status == burr_fixed_detail::InvBurrStatus::AllLeOne) status = InvBurrStatus::AllLeOne;
-  if (r.status == burr_fixed_detail::InvBurrStatus::InvalidInit) status = InvBurrStatus::InvalidInit;
-  if (r.status == burr_fixed_detail::InvBurrStatus::IterationFailure) status = InvBurrStatus::IterationFailure;
-  InvBurrResult out{r.shape1,r.shape2,scale,r.logLik-static_cast<double>(x.size())*std::log(scale),r.iterations,status};
-  if(status==InvBurrStatus::AllLeOne) {
-    const auto face=power_mle(x,0,scale,NAN);
-    out.stop_detail.limit_coef={face.alpha,face.beta};out.stop_detail.limit_loglik=face.logLik;
-  }
-  return out;
+  if(!(scale>0)||!std::isfinite(scale))
+    return {NAN,NAN,scale,NAN,0,InvBurrStatus::InvalidInit};
+  return invburr_mle_holds(x,NAN,NAN,scale,tol,maxit);
 }
 } // namespace cppunivariate
 
@@ -241,7 +218,23 @@ inline InvBurrResult invburr_mle_holds(span x,double a,double b,double s,double 
  if(std::isnan(a)&&std::isnan(b)&&std::isnan(s))
    return invburr_mle(x,tol,maxit);
  std::vector<double> y;double jac=0;
- for(double v:x){y.push_back(1/v);jac-=2*std::log(v);}
+ for(double v:x){
+   if(!(v>0)||!std::isfinite(v))return {NAN,NAN,s,NAN,0,InvBurrStatus::InvalidInit};
+   if(!std::isfinite(1/v)||!(1/v>0))return {NAN,NAN,s,NAN,0,InvBurrStatus::NumericalFailure};
+   y.push_back(1/v);jac-=2*std::log(v);
+ }
+ // Do not certify artificial ties created by reciprocal rounding.
+ std::vector<std::size_t> order;
+ for(std::size_t i=0;i<x.size();++i)order.push_back(i);
+ std::sort(order.begin(),order.end(),[&](std::size_t i,std::size_t j){return x[i]<x[j];});
+ for(std::size_t i=1;i<order.size();++i)
+   if(x[order[i]]!=x[order[i-1]]&&y[order[i]]==y[order[i-1]])
+     return {NAN,NAN,s,NAN,0,InvBurrStatus::NumericalFailure};
+ if(!std::isnan(s)&&(!(s>0)||!std::isfinite(s)))return {NAN,NAN,s,NAN,0,InvBurrStatus::InvalidInit};
+ if(!std::isnan(s)&&(!(1/s>0)||!std::isfinite(1/s)))return {NAN,NAN,s,NAN,0,InvBurrStatus::NumericalFailure};
+ if(!std::isnan(s)&&std::isnan(a)&&std::isnan(b))
+   for(std::size_t i=0;i<x.size();++i)
+     if(x[i]!=s&&y[i]==1/s)return {NAN,NAN,s,NAN,0,InvBurrStatus::NumericalFailure};
  auto r=burr_mle_holds(span{y.data(),y.size()},a,b,std::isnan(s)?s:1/s,tol,maxit);
  InvBurrStatus st=InvBurrStatus::Ok;
  if(r.status==BurrStatus::InvalidInit)st=InvBurrStatus::InvalidInit;
@@ -254,11 +247,13 @@ inline InvBurrResult invburr_mle_holds(span x,double a,double b,double s,double 
  if(r.status==BurrStatus::ParetoBoundary)st=InvBurrStatus::PowerBoundary;
  if(r.status==BurrStatus::AllGeOne)st=InvBurrStatus::AllLeOne;
  InvBurrResult out{r.shape1,r.shape2,std::isnan(s)?1/r.scale:s,r.logLik+jac,r.iterations,st};
- out.stop_detail=invburr_stop_detail(r.stop_detail,jac);
+ out.stop_detail=invburr_stop_detail(r.stop_detail,jac,std::isnan(s)?NAN:s);
+ if(!std::isnan(s))for(auto& candidate:out.stop_detail.candidates)
+   if(candidate.model==StopModel::None&&candidate.coef.size()==3)candidate.coef[2]=s;
  if(st==InvBurrStatus::InvWeibullBoundary && r.stop_detail.limit_coef.size()==2)
    out.stop_detail.limit_coef={r.stop_detail.limit_coef[0],1/r.stop_detail.limit_coef[1]};
  if((st==InvBurrStatus::PowerBoundary||st==InvBurrStatus::AllLeOne) && r.stop_detail.limit_coef.size()==2)
-   out.stop_detail.limit_coef={1/r.stop_detail.limit_coef[1],r.stop_detail.limit_coef[0]};
+   out.stop_detail.limit_coef={std::isnan(s)?1/r.stop_detail.limit_coef[1]:s,r.stop_detail.limit_coef[0]};
  return out;
 }
 

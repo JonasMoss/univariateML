@@ -266,3 +266,14 @@ test_that("held-power inverse Burr limit carries the reciprocal face", {
   expect_equal(e$estimates,c(shape=2,scale=1/3),tolerance=1e-12)
   expect_equal(e$limit_loglik,3*(log(2)+log(3)-1),tolerance=1e-12)
 })
+
+test_that("held-scale inverse Burr transports scalar certificates and budgets", {
+  x <- c(.1,.2,.4,.8)
+  a <- mlinvburr(1/x,scale=1,abstol=1e-10)
+  b <- mlburr(x,scale=1,abstol=1e-10)
+  expect_equal(as.numeric(a),as.numeric(b),tolerance=1e-10)
+  e <- tryCatch(mlinvburr(1/x,scale=1,iterlim=1),univariateML_budget=identity)
+  expect_s3_class(e,"univariateML_budget")
+  expect_true(is.finite(e$loglik_lower))
+  expect_true(nrow(e$candidates)>=1L)
+})

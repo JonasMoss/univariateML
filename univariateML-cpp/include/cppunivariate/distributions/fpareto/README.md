@@ -200,7 +200,7 @@ relations:
 fit:
   method: delegation
   certified: partial
-  note: 'fpareto/README.md, Details; fpareto/mle.hpp (public fitter and held overloads); fpareto/test.cpp: With min held, GB2 on excesses transfers certified Burr and inverse Burr submodels when shape3=1 or shape1=1 is held. The parent held-scale two-shape profiles remain numerical. Holding both beta shapes gives a concave power/location likelihood, and holding power and scale gives a concave beta-shape likelihood. Outside unit-shape reductions, free-beta-shape profiles with power or scale free retain numerical searches and face comparisons. Face coefficients refer to excess data.'
+  note: 'fpareto/README.md, Details; fpareto/mle.hpp (public fitter and held overloads); fpareto/test.cpp: With min held, GB2 on excesses transfers certified Burr and inverse Burr submodels when shape3=1 or shape1=1 is held. The parent held-scale two-shape profiles are also certified by strict scalar concavity. Holding both beta shapes gives a concave power/location likelihood, and holding power and scale gives a concave beta-shape likelihood. Outside unit-shape reductions, free-beta-shape profiles with power or scale free retain numerical searches and face comparisons. Face coefficients refer to excess data.'
 areas:
 - actuarial
 - economics and income
@@ -272,3 +272,12 @@ also applies through this delegate when all four GB2 coefficients are free.
 The held-threshold shift, validation and full-data final checks are unchanged;
 see [GB2](../gb2/README.md) and the
 [paired evidence](../../../../../dev/research/evaluations/2026-10-31-fit-speed-report.md).
+
+
+The held-scale two-shape reduction now inherits the
+[Burr scalar concavity certificate](../burr/README.md#held-scale-certificate-task-1164),
+including strict endpoint score comparisons, coefficient accuracy checks,
+practical floating-point margins and explicit tie/budget/numerical stops.
+This certifies the unit-beta-shape reductions only. Other numerical subsets remain, so the family-wide certification tag stays partial.
+
+Arithmetic that rounds a distinct observation onto a held scale stops numerically: reciprocation checks equality against the original scale, and threshold subtraction checks its error-free sum residual. This protects the exact endpoint classification and its tied-observation penalty.

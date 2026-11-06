@@ -97,7 +97,7 @@ relations:
 fit:
   method: multistart
   certified: partial
-  note: 'gb2/README.md, Details; gb2/mle.hpp (public fitter and held overloads); gb2/test.cpp: Held shape3=1 reduces exactly to Burr and held shape1=1 to inverse Burr, including certified joint and held-power routes and stop details; their held-scale two-shape profiles remain numerical. Holding both beta shapes gives the concave power/location likelihood; holding power and scale gives a concave beta-shape likelihood. Outside the unit-shape reductions, profiles with shape1 and/or shape3 free while shape2 or scale is free retain numerical multibasin searches and face comparisons.'
+  note: 'gb2/README.md, Details; gb2/mle.hpp (public fitter and held overloads); gb2/test.cpp: Held shape3=1 reduces exactly to Burr and held shape1=1 to inverse Burr, including certified joint and held-power routes and stop details; their held-scale two-shape profiles are also certified by strict scalar concavity. Holding both beta shapes gives the concave power/location likelihood; holding power and scale gives a concave beta-shape likelihood. Outside the unit-shape reductions, profiles with shape1 and/or shape3 free while shape2 or scale is free retain numerical multibasin searches and face comparisons.'
 areas:
 - actuarial
 - economics and income
@@ -182,3 +182,10 @@ over the data per profile evaluation; the implementation report includes
 measured workloads and the slower BFGS-only comparison.
 
 Face comparisons retain the family tolerance but stop with the existing numerical-failure status when `core/face_compare.hpp` cannot resolve the decision after its floating-point rounding allowance. This allowance concerns computed likelihood comparisons, not optimizer convergence or global optimality; see the [comparison analysis](../../../../../dev/research/evaluations/2026-11-02-face-compare-report.md).
+
+
+The held-scale two-shape reduction now inherits the
+[Burr scalar concavity certificate](../burr/README.md#held-scale-certificate-task-1164),
+including strict endpoint score comparisons, coefficient accuracy checks,
+practical floating-point margins and explicit tie/budget/numerical stops.
+This certifies the unit-beta-shape reductions only. Other numerical subsets remain, so the family-wide certification tag stays partial.

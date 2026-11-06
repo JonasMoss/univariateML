@@ -112,8 +112,8 @@ relations:
       scale: scale
 fit:
   method: delegation
-  certified: 'partial'
-  note: 'invburr/README.md, Details; invburr/mle.hpp (public fitter and held overloads); invburr/test.cpp: All-free and held-power fits inherit Burr and Lomax certificates by reciprocation, including likelihood bounds and inverse-Weibull face coefficients. Held scale with both shapes free retains the historical numerical profile search; other shape holds use monotone scores or closed forms.'
+  certified: 'yes'
+  note: 'invburr/README.md, Details; invburr/mle.hpp (public fitter and held overloads); invburr/test.cpp: All-free and held-power fits inherit Burr and Lomax certificates by reciprocation, including likelihood bounds and inverse-Weibull face coefficients. Held scale with both shapes free inherits the strictly concave scalar-profile certificate; other shape holds use monotone scores or closed forms.'
 areas:
 - actuarial
 - economics and income
@@ -136,7 +136,7 @@ existence:
     fits. Each accepted finite fit is certified unique and global for that sample;
     each accepted limit is certified globally optimal. A universal joint sample
     criterion and universal joint uniqueness theorem are not established.
-    With only scale $s$ held, a finite maximum exists for nonconstant data if some observation is
+    With only scale $s$ held, a unique finite maximum exists for nonconstant data if some observation is
     above $s$. Constant data above $s$ have unbounded likelihood.
     If all observations are at most $s$, the supremum is on the
     power path, except that all observations equal to $s$ give unbounded likelihood.
@@ -174,7 +174,7 @@ the supremum is the endpoint-$s$ power log-likelihood minus $Z\log 2$,
 where $Z$ counts observations equal to $s$. This endpoint penalty must be
 retained when comparing likelihoods. If every observation equals $s$, the
 likelihood is unbounded. For nonconstant data, if any observation is above $s$, a finite maximum
-exists, although uniqueness is not established here. Constant data above $s$
+exists and is unique by the reciprocal strict-concavity profile argument. Constant data above $s$
 instead have unbounded likelihood: $k$ can grow as $c$ tends to infinity,
 concentrating the distribution at that common value even with scale held.
 
@@ -192,10 +192,10 @@ equals $s$. Holding $c$ and $s$ leaves an explicit estimate of $k$.
 
 ## R notes
 
-Supply `scale = s` to estimate only the shapes. This fits the historical
-scale-1 family to `x / s` and subtracts `length(x) * log(s)` from its
-log-likelihood. The fixed-scale path profiles `shape1` and refines `shape2`
-by Newton iteration, with a profile-likelihood fallback start. Starting
+Supply `scale = s` to estimate only the shapes. The fixed-scale path reciprocates observations and scale, then delegates
+to the certified Burr scalar profile, including its reciprocal Jacobian.
+The legacy Newton proposal is retained only when it passes the independent
+root-bracket and coefficient checks. Starting
 controls `shape10`, `shape20`, `scale0` and positive tolerances remain
 accepted and validated for compatibility. The all-free certificate uses its
 own deterministic proposals and enclosure widths. Detected limits stop with
@@ -228,7 +228,7 @@ observations must be representable in binary64; nonfinite transformed
 coefficients or likelihoods cannot become successful fits. Ties (including
 sign-uncertain seams), the 4096-profile budget and arithmetic failures have
 separate diagnostics and never return unchecked estimates. Starting controls
-cannot bypass certification. Held power inherits the Lomax certificate; held scale with both shapes free retains its numerical profile algorithm.
+cannot bypass certification. Held power inherits the Lomax certificate; held scale with both shapes free inherits the strict-concavity scalar certificate.
 The general joint uniqueness theorem remains open; the certificate proves
 uniqueness only for each accepted finite sample.
 
@@ -243,3 +243,12 @@ or tied-endpoint certificates. Genuine data ties remain allowed.
 The power-limit endpoint is taken from the original sample maximum, avoiding
 a one-ulp support error from a reciprocal round trip. Its likelihood still
 transports the certificate value with the data-only Jacobian.
+
+
+The held-scale two-shape reduction now inherits the
+[Burr scalar concavity certificate](../burr/README.md#held-scale-certificate-task-1164),
+including strict endpoint score comparisons, coefficient accuracy checks,
+practical floating-point margins and explicit tie/budget/numerical stops.
+Reciprocation maps the held-scale Pareto face to a power face and adds the reciprocal Jacobian to likelihood bounds. Direct fixed-scale and held-subset entrypoints share this path.
+
+Arithmetic that rounds a distinct observation onto a held scale stops numerically: reciprocation checks equality against the original scale, and threshold subtraction checks its error-free sum residual. This protects the exact endpoint classification and its tied-observation penalty.

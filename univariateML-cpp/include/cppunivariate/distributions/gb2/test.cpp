@@ -200,3 +200,14 @@ TEST_CASE("GB2 unit beta shapes preserve finite certified joint coefficients") {
  CHECK(inv.scale==doctest::Approx(1/r.scale).epsilon(1e-6));
  CHECK(inv.logLik==doctest::Approx(r.logLik+jac).epsilon(1e-8));
 }
+
+TEST_CASE("GB2 held unit beta shape and scale inherit scalar certificate") {
+ const std::vector<double> x{.1,.2,.4,.8};
+ const auto a=cppunivariate::gb2_mle(mltest::as_span(x),1e-9,1000,NAN,NAN,1,1);
+ const auto b=cppunivariate::burr_mle_fixed_scale(mltest::as_span(x),1,1e-9);
+ REQUIRE(a.status==cppunivariate::Gb2Status::Ok);
+ CHECK(a.shape1==b.shape1);CHECK(a.shape2==b.shape2);CHECK(a.logLik==b.logLik);
+ const auto stop=cppunivariate::gb2_mle(mltest::as_span(x),1e-9,1,NAN,NAN,1,1);
+ CHECK(stop.status==cppunivariate::Gb2Status::CertificateBudget);
+ CHECK(std::isfinite(stop.stop_detail.loglik_lower));
+}

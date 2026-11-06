@@ -133,3 +133,13 @@ test_that("Pareto IV keeps numerical stops distinct from non-existence", {
   expect_s3_class(e, "univariateML_numerical")
   expect_identical(e$kind, "numerical")
 })
+
+test_that("held-scale Pareto IV transports scalar certificates and budgets", {
+  x <- c(.1,.2,.4,.8)
+  a <- mlpareto4(x+2,min=2,scale=1)
+  b <- mlburr(x,scale=1,abstol=1e-10)
+  expect_equal(as.numeric(a[1:3]),as.numeric(b),tolerance=1e-10)
+  e <- tryCatch(mlpareto4(x+2,min=2,scale=1,iterlim=1),univariateML_budget=identity)
+  expect_s3_class(e,"univariateML_budget")
+  expect_true(is.finite(e$loglik_lower))
+})
