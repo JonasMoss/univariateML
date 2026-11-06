@@ -356,3 +356,43 @@ TEST_CASE("cmb golden free size is certified and agrees with dense profiles") {
     CHECK(fit.fit.logLik==doctest::Approx(best).epsilon(1e-10));
   }
 }
+
+TEST_CASE("cmb: structured stop payloads") {
+  const std::vector<int> x{0,0,5};
+  const auto r=cppunivariate::cmb_mle({x.data(),x.size()},5);
+  REQUIRE(r.stop_detail.limit_coef.size()==3);
+  CHECK(r.stop_detail.limit_coef[2]==doctest::Approx(1./3));
+  const auto held=cppunivariate::cmb_mle({x.data(),x.size()},5,1e-10,100,.4);
+  const double p=1/(1+std::pow(1.5,5));
+  CHECK(held.stop_detail.limit_coef[2]==doctest::Approx(p));
+  const std::vector<int> spread{0,2};
+  const auto f=cppunivariate::cmb_size_fixed_nu_mle({spread.data(),spread.size()},1);
+  REQUIRE(f.fit.status==cppunivariate::CmbStatus::FaceUnresolved);
+  REQUIRE(f.fit.stop_detail.limit_coef.size()==2);
+  CHECK(f.fit.stop_detail.limit_coef[0]==doctest::Approx(1));
+  CHECK(f.fit.stop_detail.candidates.size()>=2);
+  CHECK(f.fit.stop_detail.loglik_upper==INFINITY);
+  const std::vector<int> tie{0,1};
+  const auto t=cppunivariate::cmb_size_free_nu_mle({tie.data(),tie.size()});
+  REQUIRE(t.fit.status==cppunivariate::CmbStatus::FaceTie);
+  CHECK(t.fit.stop_detail.limit_loglik==doctest::Approx(-2*std::log(2.)));
+}
+
+TEST_CASE("cmb: explicit work exhaustion differs from numerical iteration failure") {
+  const std::vector<int> x{0,1};
+  std::size_t work=0;
+  const auto r=cppunivariate::cmb_detail::size_candidate({x.data(),x.size()},1,NAN,1e-10,100,work,0);
+  CHECK(r.status==cppunivariate::CmbStatus::IterationFailure);
+  CHECK(r.stop_detail.budget_exhausted);
+  CHECK(r.stop_detail.loglik_upper==INFINITY);
+  CHECK(r.stop_detail.candidates.empty());
+}
+
+TEST_CASE("cmb: held endpoint odds do not erase the minority likelihood") {
+  const std::vector<int> x{0,1000};
+  const auto r=cppunivariate::cmb_mle({x.data(),x.size()},1000,1e-10,100,.9);
+  REQUIRE(r.status==cppunivariate::CmbStatus::EndpointLimit);
+  const double eta=1000*(std::log(.9)-std::log1p(-.9));
+  CHECK(std::isfinite(r.stop_detail.limit_loglik));
+  CHECK(r.stop_detail.limit_loglik==doctest::Approx(-eta));
+}

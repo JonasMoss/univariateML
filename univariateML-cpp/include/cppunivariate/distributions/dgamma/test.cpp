@@ -126,3 +126,24 @@ TEST_CASE("dgamma: exhausted certificate is a numerical failure") {
   const std::vector<double> x{0,0,1,2,4,8};
   CHECK(cppunivariate::dgamma_mle({x.data(),x.size()},1e-8,1).status==cppunivariate::DgammaStatus::IterationFailure);
 }
+
+TEST_CASE("dgamma: structured stop payloads") {
+  const std::vector<double> x{1,1};
+  const auto r=cppunivariate::dgamma_mle({x.data(),x.size()});
+  REQUIRE(r.stop_detail.limit_coef.size()==1);
+  CHECK(r.stop_detail.limit_model==cppunivariate::StopModel::PointMass);
+  CHECK(r.stop_detail.limit_coef[0]==1);
+  CHECK(r.stop_detail.limit_loglik==0);
+  CHECK(r.stop_detail.candidates.size()==1);
+}
+
+TEST_CASE("dgamma: translated adjacent limit retains original support") {
+  const std::vector<double> x{2,2,3};
+  const auto r=cppunivariate::dgamma_mle({x.data(),x.size()});
+  REQUIRE(r.status==cppunivariate::DgammaStatus::TwoPointLimit);
+  REQUIRE(r.stop_detail.limit_coef.size()==3);
+  CHECK(r.stop_detail.limit_coef[0]==2);
+  CHECK(r.stop_detail.limit_coef[1]==3);
+  CHECK(r.stop_detail.limit_coef[2]==doctest::Approx(1./3));
+  CHECK(r.stop_detail.limit_loglik==doctest::Approx(2*std::log(2./3)+std::log(1./3)));
+}

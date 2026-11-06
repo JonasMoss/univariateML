@@ -1,8 +1,10 @@
 #pragma once
+#include "../../core/discrete_stop.hpp"
 #include "../ztpois/mle.hpp"
 namespace cppunivariate {
 enum class ZtbinomStatus { Ok, InvalidInput, InvalidSize, PoissonLimit, IterationFailure };
-struct ZtbinomResult { double size, prob, logLik; int iterations; ZtbinomStatus status; };
+struct ZtbinomResult { double size, prob, logLik; int iterations; ZtbinomStatus status;   StopDetail stop_detail{};
+};
 namespace ztbinom_detail {
 template <typename F>
 inline double maximize(F f, double lo, double hi, double tol, int maxit, bool &done) {
@@ -19,6 +21,7 @@ inline double maximize(F f, double lo, double hi, double tol, int maxit, bool &d
 inline ZtbinomResult ztbinom_mle(ispan x, double tol=1e-10, int maxit=200,
     double fixed_size=std::numeric_limits<double>::quiet_NaN(),
     double fixed_prob=std::numeric_limits<double>::quiet_NaN()) {
+  auto stopped = [&]() -> ZtbinomResult {
   const bool fixed=!std::isnan(fixed_size);
   if(fixed && (!(fixed_size>=1)||!std::isfinite(fixed_size)||fixed_size!=std::floor(fixed_size)))
     return {0,0,0,0,ZtbinomStatus::InvalidSize};
@@ -97,11 +100,19 @@ inline ZtbinomResult ztbinom_mle(ispan x, double tol=1e-10, int maxit=200,
     if(improved) since_improvement=0; else ++since_improvement;
     if(t>=grid_floor && since_improvement>patience) break;
   }
-  if(ztpois_mle(x).logLik>=best.logLik-1e-8*n)best.status=ZtbinomStatus::PoissonLimit;
+  const auto face=ztpois_mle(x);
+  if(face.logLik>=best.logLik-1e-8*n) {
+    best.status=ZtbinomStatus::PoissonLimit;
+    best.stop_detail=discrete_face(StopModel::Ztpois,{face.lambda},face.logLik);
+  }
   // Ran out of the iteration budget while still finding improvements,
   // rather than stabilizing: the budget, not a size, is what is
   // exhausted (a larger `maxit` can always be supplied).
   if(best.status==ZtbinomStatus::Ok && t>cap && since_improvement<=patience)best.status=ZtbinomStatus::IterationFailure;
   return best;
+
+  }();
+
+  return stopped;
 }
 }

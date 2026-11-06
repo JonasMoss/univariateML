@@ -541,3 +541,7 @@ partial sums use `log1mexp` before quantile bisection on the finite design
 support. Size one is binomial for every nu. These algebraic reductions are
 exact; agreement of their floating-point evaluations with enumeration is
 checked numerically.
+
+## Stop details
+
+Held-probability endpoint faces use the support-width power of the held odds. Free-size comparisons retain the evaluated finite witness and fitted CMP or two-point face when available; unresolved tails have infinite global upper bounds.

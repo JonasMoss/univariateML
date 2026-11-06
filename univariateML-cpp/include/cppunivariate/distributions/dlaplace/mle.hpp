@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/discrete_stop.hpp"
 #include "../../core/span.hpp"
 #include <algorithm>
 #include <cmath>
@@ -6,8 +7,10 @@
 #include <vector>
 namespace cppunivariate {
 enum class DlaplaceStatus { Ok, InvalidInput, PointMass };
-struct DlaplaceResult { double location, scale, logLik; bool not_unique; DlaplaceStatus status; };
+struct DlaplaceResult { double location, scale, logLik; bool not_unique; DlaplaceStatus status;   StopDetail stop_detail{};
+};
 inline DlaplaceResult dlaplace_mle(ispan x, double location=std::numeric_limits<double>::quiet_NaN(), double scale=std::numeric_limits<double>::quiet_NaN()) {
+  auto stopped = [&]() -> DlaplaceResult {
   DlaplaceResult r{location,scale,0,false,DlaplaceStatus::InvalidInput};
   const bool free_location=std::isnan(location), free_scale=std::isnan(scale);
   if(x.size()==0 || (!free_location && (!std::isfinite(location)||location!=std::floor(location))) || (!free_scale && !(scale>0 && scale<1))) return r;
@@ -23,5 +26,9 @@ inline DlaplaceResult dlaplace_mle(ispan x, double location=std::numeric_limits<
   }
   r.logLik=x.size()*(std::log1p(-r.scale)-std::log1p(r.scale))+s*std::log(r.scale);
   r.status=DlaplaceStatus::Ok;return r;
+
+  }();
+  if(stopped.status==DlaplaceStatus::PointMass) stopped.stop_detail=discrete_point(x[0]);
+  return stopped;
 }
 }

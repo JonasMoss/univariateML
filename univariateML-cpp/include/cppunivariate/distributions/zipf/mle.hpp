@@ -3,6 +3,7 @@
 // degeneracy and shape-negative cases are surfaced via the status enum.
 
 #pragma once
+#include "../../core/discrete_stop.hpp"
 
 #include "../../core/span.hpp"
 
@@ -22,6 +23,7 @@ struct ZipfResult {
   double logLik;
   int iterations;
   ZipfStatus status;
+  StopDetail stop_detail{};
 };
 
 namespace zipf_detail {
@@ -74,6 +76,7 @@ inline HarmonicMoments moments(int N, double s) {
 inline ZipfResult zipf_mle(ispan x, double tol, int maxit,
     double held_N=std::numeric_limits<double>::quiet_NaN(),
     double held_s=std::numeric_limits<double>::quiet_NaN()) {
+  auto stopped = [&]() -> ZipfResult {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
   if (n == 0) return {0.0, 0.0, kNaN, 0, ZipfStatus::IterationFailure};
@@ -142,6 +145,10 @@ inline ZipfResult zipf_mle(ispan x, double tol, int maxit,
   const double sum_pow = zipf_detail::moments(N, shape).h;
   const double logLik = -shape * sum_lx - dn * std::log(sum_pow);
   return {dN, shape, logLik, iter, ZipfStatus::Ok};
+
+  }();
+  if(stopped.status==ZipfStatus::PointMass) stopped.stop_detail=discrete_point(x[0]);
+  return stopped;
 }
 
 }  // namespace cppunivariate

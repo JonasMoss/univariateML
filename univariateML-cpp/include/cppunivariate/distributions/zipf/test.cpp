@@ -109,3 +109,13 @@ TEST_CASE("zipf: endpoint, shape and joint holds") {
   CHECK(cppunivariate::zipf_mle({x.data(),x.size()},1e-10,100,3).status==cppunivariate::ZipfStatus::InvalidInput);
   CHECK(cppunivariate::zipf_mle({x.data(),x.size()},1e-10,100,nan,-1).status==cppunivariate::ZipfStatus::InvalidInput);
 }
+
+TEST_CASE("zipf: structured stop payloads") {
+  const std::vector<int> x{1,1};
+  const auto r=cppunivariate::zipf_mle({x.data(),x.size()},1e-8,100,4);
+  REQUIRE(r.stop_detail.limit_coef.size()==1);
+  CHECK(r.stop_detail.limit_model==cppunivariate::StopModel::PointMass);
+  CHECK(r.stop_detail.limit_coef[0]==1);
+  CHECK(r.stop_detail.limit_loglik==0);
+  CHECK(r.stop_detail.candidates.size()==1);
+}

@@ -104,3 +104,14 @@ TEST_CASE("zmbinom TASK-134 nominal design endpoints with absent masses") {
   CHECK(cppunivariate::distributions::qzmbinom(-INFINITY,10,.5,1,false,true)==10);
   CHECK(cppunivariate::distributions::qzmbinom(.75,10,0,.5)==1);
 }
+
+#include "../zmpois/dpqr.hpp"
+
+TEST_CASE("zmbinom: structured stop payloads") {
+  const std::vector<int> x{0,0,1,1,1,2,3,7,12};
+  const auto r=cppunivariate::zmbinom_mle({x.data(),x.size()});
+  REQUIRE(r.stop_detail.limit_model==cppunivariate::StopModel::Zmpois);
+  REQUIRE(r.stop_detail.limit_coef.size()==2);
+  double ll=0;for(int v:x)ll+=cppunivariate::distributions::dzmpois(v,r.stop_detail.limit_coef[0],r.stop_detail.limit_coef[1],true);
+  CHECK(r.stop_detail.limit_loglik==doctest::Approx(ll));
+}

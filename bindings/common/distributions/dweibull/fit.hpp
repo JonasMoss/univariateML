@@ -20,47 +20,60 @@ inline FitResult fit_dweibull(cppunivariate::span x, Held shape1_arg = {}, Held 
   if (shape2.supplied && !(b > 0 && std::isfinite(b)))
     return fail("`shape2` must be finite and positive.");
   const auto res = cppunivariate::dweibull_mle(x, reltol, iterlim, q, b);
+  std::string stop_kind;
+  switch(res.status) {
+    case cppunivariate::DweibullStatus::PointMass: stop_kind="limit";break;
+    case cppunivariate::DweibullStatus::TwoPointLimit: stop_kind="limit";break;
+    case cppunivariate::DweibullStatus::BernoulliLimit: stop_kind="limit";break;
+    case cppunivariate::DweibullStatus::HeldBernoulliLimit: stop_kind="limit";break;
+    default:break;
+  }
+  const auto stopped_fail = [&](const std::string& format, const auto&... arguments) {
+    auto out=fail(binding_message(format,arguments...));
+    return stop_kind.empty()?out:stop_failure(out,res.stop_detail,stop_kind,{"shape1","shape2"});
+  };
+
   switch (res.status) {
     case cppunivariate::DweibullStatus::Ok:
     case cppunivariate::DweibullStatus::ShapeUnidentified:
       break;
     case cppunivariate::DweibullStatus::InvalidData:
-      return fail("Discrete Weibull requires nonempty, finite, nonnegative integer data.");
+      return stopped_fail("Discrete Weibull requires nonempty, finite, nonnegative integer data.");
     case cppunivariate::DweibullStatus::InvalidControl:
-      return fail("`reltol` must be positive and `iterlim` at least 1.");
+      return stopped_fail("`reltol` must be positive and `iterlim` at least 1.");
     case cppunivariate::DweibullStatus::PointMass:
       if (shape2.supplied)
-        return fail("All observations are 0: with `shape2` held, the likelihood increases "
+        return stopped_fail("All observations are 0: with `shape2` held, the likelihood increases "
                    "toward the point mass at 0 as `shape1` -> 0, and the maximum "
                    "likelihood estimator does not exist.");
-      return fail("All observations equal %.0f: the likelihood increases toward the point "
+      return stopped_fail("All observations equal %.0f: the likelihood increases toward the point "
                  "mass at %.0f, and the maximum likelihood estimator does not exist.",
                  x[0], x[0]);
     case cppunivariate::DweibullStatus::BernoulliLimit:
-      return fail("The observations are 0 and 1 only: the likelihood increases toward a "
+      return stopped_fail("The observations are 0 and 1 only: the likelihood increases toward a "
                  "Bernoulli distribution (binomial with size 1) as `shape2` -> Inf, and "
                  "the maximum likelihood estimator does not exist. Use "
                  "`mlbinom(x, size = 1)` instead.");
     case cppunivariate::DweibullStatus::TwoPointLimit: {
       const double lo = *std::min_element(x.begin(),x.end());
-      return fail("The observations take the adjacent values %.0f and %.0f only: the "
+      return stopped_fail("The observations take the adjacent values %.0f and %.0f only: the "
                  "likelihood increases toward the two-point distribution on these values "
                  "as `shape2` -> Inf, and the maximum likelihood estimator does not exist.",
                  lo, lo + 1);
     }
     case cppunivariate::DweibullStatus::HeldBernoulliLimit:
-      return fail("The observations are at most 1: with `shape1` held, the likelihood "
+      return stopped_fail("The observations are at most 1: with `shape1` held, the likelihood "
                  "increases toward the Bernoulli distribution with success probability "
                  "`shape1` as `shape2` -> Inf, and the maximum likelihood estimator does "
                  "not exist.");
     case cppunivariate::DweibullStatus::Unrepresentable:
       if (res.shape1 == 0)
-        return fail("The fitted `shape1` rounds to 0 in double precision and cannot be returned.");
-      return fail("The fitted `shape1` rounds to 1 in double precision (the latent Weibull "
+        return stopped_fail("The fitted `shape1` rounds to 0 in double precision and cannot be returned.");
+      return stopped_fail("The fitted `shape1` rounds to 1 in double precision (the latent Weibull "
                  "scale to the power `shape2` exceeds 2^53), so the fit cannot be expressed "
                  "in extraDistr's (shape1, shape2) parametrization.");
     case cppunivariate::DweibullStatus::IterationFailure:
-      return fail("Discrete Weibull MLE failed to converge; increase `iterlim`.");
+      return stopped_fail("Discrete Weibull MLE failed to converge; increase `iterlim`.");
   }
   if (res.status == cppunivariate::DweibullStatus::ShapeUnidentified)
     warnings.push_back(binding_message("All observations are 0 and `shape1` is held: the likelihood does not "

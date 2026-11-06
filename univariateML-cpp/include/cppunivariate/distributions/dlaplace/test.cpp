@@ -42,3 +42,13 @@ TEST_CASE("dlaplace: d/p/q/r against the truth table") {
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qdlaplace(x, p[0], p[1], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rdlaplace(rng, p[0], p[1]); });
 }
+
+TEST_CASE("dlaplace: structured stop payloads") {
+  const std::vector<int> x{1,1};
+  const auto r=cppunivariate::dlaplace_mle({x.data(),x.size()});
+  REQUIRE(r.stop_detail.limit_coef.size()==1);
+  CHECK(r.stop_detail.limit_model==cppunivariate::StopModel::PointMass);
+  CHECK(r.stop_detail.limit_coef[0]==1);
+  CHECK(r.stop_detail.limit_loglik==0);
+  CHECK(r.stop_detail.candidates.size()==1);
+}

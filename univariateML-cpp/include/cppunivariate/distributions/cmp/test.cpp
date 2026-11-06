@@ -73,3 +73,25 @@ TEST_CASE("CMP legacy entry returns attained geometric and point laws") {
   const auto z=cppunivariate::cmp_mle({zero.data(),zero.size()},ctl);
   CHECK(z.status==cppunivariate::CmpStatus::Ok); CHECK(z.eta==-INFINITY); CHECK(z.logLik==0);
 }
+
+TEST_CASE("cmp: structured stop payloads") {
+  const std::vector<double> x{2,2,3};
+  const auto r=cppunivariate::cmp_domain_mle({x.data(),x.size()});
+  REQUIRE(r.stop_detail.limit_coef.size()==3);
+  CHECK(r.stop_detail.limit_coef[2]==doctest::Approx(1./3));
+  cppunivariate::CmpFitControl ctl;ctl.fixed_lambda=3;
+  const std::vector<double> y{0,1,1};
+  const auto f=cppunivariate::cmp_domain_mle({y.data(),y.size()},ctl);
+  REQUIRE(f.stop_detail.limit_coef.size()==2);
+  CHECK(f.stop_detail.limit_coef[1]==.75);
+  CHECK(f.stop_detail.limit_loglik==doctest::Approx(std::log(.25)+2*std::log(.75)));
+}
+
+TEST_CASE("CMP: held extreme odds retain a finite face likelihood") {
+  const std::vector<double> x{0,1};
+  cppunivariate::CmpFitControl ctl;ctl.fixed_lambda=1e300;
+  const auto r=cppunivariate::cmp_domain_mle({x.data(),x.size()},ctl);
+  REQUIRE(r.status==cppunivariate::CmpStatus::TwoPointLimit);
+  CHECK(std::isfinite(r.stop_detail.limit_loglik));
+  CHECK(r.stop_detail.limit_loglik==doctest::Approx(r.logLik));
+}

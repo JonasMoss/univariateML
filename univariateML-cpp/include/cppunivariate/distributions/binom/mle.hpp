@@ -9,6 +9,7 @@
 // enum surfaces SizeTooSmall, Underdispersed, IterationFailure.
 
 #pragma once
+#include "../../core/discrete_stop.hpp"
 #include "../../core/precision.hpp"
 
 #include "../../core/span.hpp"
@@ -37,6 +38,7 @@ struct BinomResult {
   double logLik;
   int iterations;
   BinomStatus status;
+  StopDetail stop_detail{};
 };
 
 inline double binom_lchoose(double n, double k) {
@@ -46,6 +48,7 @@ inline double binom_lchoose(double n, double k) {
 
 inline BinomResult binom_mle(ispan x, double size_or_nan, double tol,
                              int maxit, double held_prob = std::numeric_limits<double>::quiet_NaN()) {
+  auto stopped = [&]() -> BinomResult {
   (void)tol;
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
@@ -291,6 +294,14 @@ inline BinomResult binom_mle(ispan x, double size_or_nan, double tol,
   }
   const double best_size=static_cast<double>(hi);
   return {best_size,x_bar/best_size,log_likelihood(best_size),iterations,BinomStatus::Ok};
+
+  }();
+  if(stopped.status==BinomStatus::Underdispersed) {
+    double m=0;for(int v:x)m+=v;m/=x.size();double ll=0;
+    for(int v:x)ll+=v*std::log(m)-m-special::lgamma(v+1.);
+    stopped.stop_detail=discrete_face(StopModel::Pois,{m},ll);
+  }
+  return stopped;
 }
 
 }  // namespace cppunivariate

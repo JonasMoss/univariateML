@@ -353,3 +353,26 @@ TEST_CASE("bbinom: seeded held-alpha searches agree with finite size profiles") 
     }
   }
 }
+
+TEST_CASE("bbinom: structured stop payloads") {
+  const std::vector<int> x{0,1,1,2};
+  const auto r=cppunivariate::bbinom_mle({x.data(),x.size()},2,1e-10,100);
+  REQUIRE(r.status==cppunivariate::BbinomStatus::BinomialLimit);
+  REQUIRE(r.stop_detail.limit_coef.size()==2);
+  CHECK(r.stop_detail.limit_coef[0]==2);
+  CHECK(r.stop_detail.limit_coef[1]==.5);
+  CHECK(r.stop_detail.limit_loglik==doctest::Approx(2*std::log(.25)+2*std::log(.5)));
+  const std::vector<int> endpoints{0,0,5};
+  const auto f=cppunivariate::bbinom_mle({endpoints.data(),endpoints.size()},5,1e-10,100);
+  REQUIRE(f.stop_detail.limit_coef.size()==3);
+  CHECK(f.stop_detail.limit_coef[1]==5);
+  CHECK(f.stop_detail.limit_coef[2]==doctest::Approx(1./3));
+  const std::vector<int> spread{0,0,0,10};
+  const auto b=cppunivariate::bbinom_mle({spread.data(),spread.size()},NAN,1e-10,100,1,NAN);
+  CHECK(b.status==cppunivariate::BbinomStatus::FaceUnresolved);
+  REQUIRE(b.stop_detail.candidates.size()>=2);
+  CHECK(b.stop_detail.limit_model==cppunivariate::StopModel::Nbinom);
+  CHECK(b.stop_detail.loglik_upper==INFINITY);
+  const auto budget=cppunivariate::bbinom_mle({spread.data(),spread.size()},NAN,1e-10,100,.1,NAN);
+  if(budget.status==cppunivariate::BbinomStatus::SizeBudget)CHECK(budget.stop_detail.loglik_upper==INFINITY);
+}

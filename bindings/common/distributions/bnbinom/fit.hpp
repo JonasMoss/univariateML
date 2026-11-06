@@ -22,17 +22,29 @@ inline FitResult fit_bnbinom(cppunivariate::ispan x, Held size_arg = {}, Held al
     size.supplied?size.value:nan,
     alpha.supplied?alpha.value:nan,
     beta.supplied?beta.value:nan);
+  std::string stop_kind;
+  switch(fit.status) {
+    case cppunivariate::BnbinomStatus::NegativeBinomialLimit: stop_kind="limit";break;
+    case cppunivariate::BnbinomStatus::PoissonLimit: stop_kind="limit";break;
+    case cppunivariate::BnbinomStatus::PointMass: stop_kind="limit";break;
+    default:break;
+  }
+  const auto stopped_fail = [&](const std::string& format, const auto&... arguments) {
+    auto out=fail(binding_message(format,arguments...));
+    return stop_kind.empty()?out:stop_failure(out,fit.stop_detail,stop_kind,{"size","alpha","beta"});
+  };
+
   switch (fit.status) {
     case cppunivariate::BnbinomStatus::Ok: break;
     case cppunivariate::BnbinomStatus::NegativeBinomialLimit:
-      return fail("The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.");
+      return stopped_fail("The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.");
     case cppunivariate::BnbinomStatus::PoissonLimit:
-      return fail("The Poisson face wins (including likelihood ties). Use `mlpois` instead.");
+      return stopped_fail("The Poisson face wins (including likelihood ties). Use `mlpois` instead.");
     case cppunivariate::BnbinomStatus::PointMass:
-      return fail("The maximum likelihood estimator does not exist: all observations are zero (point mass). Use `mlpois` instead.");
+      return stopped_fail("The maximum likelihood estimator does not exist: all observations are zero (point mass). Use `mlpois` instead.");
     case cppunivariate::BnbinomStatus::InvalidInput:
-      return fail("Beta negative binomial fitting requires nonempty nonnegative counts, positive finite fixed parameters and gradtol, and positive iterlim.");
-    default: return fail("Beta negative binomial search failed: unresolved stationary point or search range; try increasing iterlim.");
+      return stopped_fail("Beta negative binomial fitting requires nonempty nonnegative counts, positive finite fixed parameters and gradtol, and positive iterlim.");
+    default: return stopped_fail("Beta negative binomial search failed: unresolved stationary point or search range; try increasing iterlim.");
   }
   std::vector<std::string> fixed;
   if (size.supplied) fixed.push_back("size");

@@ -18,17 +18,30 @@ inline FitResult fit_nhyper(cppunivariate::span x, Held m_arg = {}, Held N_arg =
   const double population = !N.supplied ? std::numeric_limits<double>::quiet_NaN() : N.value;
   if (N.supplied && std::isnan(population)) return fail("`N` must be a whole number or NULL, not NA.");
   const auto fit = cppunivariate::nhyper_mle(x, design, population, held);
+  std::string stop_kind;
+  switch(fit.status) {
+    case cppunivariate::NhyperStatus::FaceTie: stop_kind="tie";break;
+    case cppunivariate::NhyperStatus::FaceUnresolved: stop_kind="unresolved";break;
+    case cppunivariate::NhyperStatus::Infeasible: stop_kind="nomle";break;
+    default:break;
+  }
+  if(fit.stop_detail.budget_exhausted) stop_kind="budget";
+  const auto stopped_fail = [&](const std::string& format, const auto&... arguments) {
+    auto out=fail(binding_message(format,arguments...));
+    return stop_kind.empty()?out:stop_failure(out,fit.stop_detail,stop_kind,{"m","N","r"});
+  };
+
   switch (fit.status) {
     case cppunivariate::NhyperStatus::FaceUnresolved:
-      return fail("No finite maximum was found in the exploratory search; a larger finite maximum is not excluded. For the negative-binomial growing-urn limit use mlnbinom(x - r, size = r).");
+      return stopped_fail("No finite maximum was found in the exploratory search; a larger finite maximum is not excluded. For the negative-binomial growing-urn limit use mlnbinom(x - r, size = r).");
     case cppunivariate::NhyperStatus::FaceTie:
-      return fail("A finite likelihood matched the negative-binomial face within numerical tolerance; a larger finite maximum is not excluded. Use mlnbinom(x - r, size = r) for the limit model.");
+      return stopped_fail("A finite likelihood matched the negative-binomial face within numerical tolerance; a larger finite maximum is not excluded. Use mlnbinom(x - r, size = r) for the limit model.");
     case cppunivariate::NhyperStatus::NumericalFailure:
-      return fail("Finite-grid numerical failure: 1e7 candidate evaluation budget or representability/nonfinite likelihood limit exceeded.");
+      return stopped_fail("Finite-grid numerical failure: 1e7 candidate evaluation budget or representability/nonfinite likelihood limit exceeded.");
     case cppunivariate::NhyperStatus::InvalidInput:
-      return fail("Counts must be whole numbers from 0 to 2^53 - 1, with r <= m <= N.");
+      return stopped_fail("Counts must be whole numbers from 0 to 2^53 - 1, with r <= m <= N.");
     case cppunivariate::NhyperStatus::Infeasible:
-      return fail("No admissible composition gives every observation positive probability; total draws must lie from r through N - m + r (zero when r = 0).");
+      return stopped_fail("No admissible composition gives every observation positive probability; total draws must lie from r through N - m + r (zero when r = 0).");
     case cppunivariate::NhyperStatus::Tie:
       warnings.push_back(binding_message("Likelihood tied between adjacent counts; returning the smaller.")); break;
     case cppunivariate::NhyperStatus::Unidentified:

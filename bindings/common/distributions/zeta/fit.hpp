@@ -11,12 +11,22 @@ inline FitResult fit_zeta(cppunivariate::ispan x, Held s_arg = {}, double reltol
   if (s.supplied && (!std::isfinite(held) || !(held>1)))
     return fail("Invalid held `s`.");
   const auto fit=cppunivariate::zeta_mle(x,reltol,iterlim,held);
+  std::string stop_kind;
+  switch(fit.status) {
+    case cppunivariate::ZetaStatus::PointMass: stop_kind="limit";break;
+    default:break;
+  }
+  const auto stopped_fail = [&](const std::string& format, const auto&... arguments) {
+    auto out=fail(binding_message(format,arguments...));
+    return stop_kind.empty()?out:stop_failure(out,fit.stop_detail,stop_kind,{"s"});
+  };
+
   if (fit.status==cppunivariate::ZetaStatus::PointMass)
-    return fail("The maximum likelihood estimator does not exist: all observations are one (point mass at one).");
+    return stopped_fail("The maximum likelihood estimator does not exist: all observations are one (point mass at one).");
   if (fit.status==cppunivariate::ZetaStatus::InvalidInput)
-    return fail("Fitting requires positive integer observations, positive finite reltol and positive iterlim.");
+    return stopped_fail("Fitting requires positive integer observations, positive finite reltol and positive iterlim.");
   if (fit.status!=cppunivariate::ZetaStatus::Ok)
-    return fail("Maximum likelihood search failed to converge; increase iterlim.");
+    return stopped_fail("Maximum likelihood search failed to converge; increase iterlim.");
   return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"s",fit.s}}; out.logLik = fit.logLik; out.iterations = fit.iterations; out.has_iterations = true; out.fixed = s.supplied?std::vector<std::string>{"s"}:std::vector<std::string>{}; out.has_fixed = true; return out; }();
 
 }

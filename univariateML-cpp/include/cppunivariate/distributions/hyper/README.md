@@ -227,3 +227,7 @@ in `t=1/N` at the face is one half of the sum over observations of
 `k*(k-1) - x*(x-1)/p - (k-x)*(k-x-1)/(1-p)`.
 Its sign diagnoses the local direction at the face; it is not a global
 search certificate. The symmetric formula applies with `m` held.
+
+## Stop details
+
+Unresolved face comparisons retain the fitted Poisson or binomial face and the best finite witness, with no finite global upper bound claimed.

@@ -114,3 +114,39 @@ TEST_CASE("dnorm: exact half and rounded log half straddle the CDF jump") {
   CHECK(cppunivariate::distributions::qdnorm(lh,0,1,false,true)==-1);
   CHECK(cppunivariate::distributions::qdnorm(std::nextafter(lh,-INFINITY),0,1,false,true)==0);
 }
+
+TEST_CASE("dnorm: structured stop payloads") {
+  const std::vector<double> x{1,1};
+  const auto r=cppunivariate::dnorm_mle({x.data(),x.size()});
+  REQUIRE(r.stop_detail.limit_coef.size()==1);
+  CHECK(r.stop_detail.limit_model==cppunivariate::StopModel::PointMass);
+  CHECK(r.stop_detail.limit_coef[0]==1);
+  CHECK(r.stop_detail.limit_loglik==0);
+  CHECK(r.stop_detail.candidates.size()==1);
+}
+
+TEST_CASE("dnorm: translated adjacent limit retains original support") {
+  const std::vector<double> x{2,2,3};
+  const auto r=cppunivariate::dnorm_mle({x.data(),x.size()});
+  REQUIRE(r.status==cppunivariate::DnormStatus::TwoPointLimit);
+  REQUIRE(r.stop_detail.limit_coef.size()==3);
+  CHECK(r.stop_detail.limit_coef[0]==2);
+  CHECK(r.stop_detail.limit_coef[1]==3);
+  CHECK(r.stop_detail.limit_coef[2]==doctest::Approx(1./3));
+  CHECK(r.stop_detail.limit_loglik==doctest::Approx(2*std::log(2./3)+std::log(1./3)));
+}
+
+TEST_CASE("dnorm: held mean zero-scale face uses discretization cells") {
+  const std::vector<double> x{2,2};
+  const auto interior=cppunivariate::dnorm_mle({x.data(),x.size()},1e-9,200,2.5);
+  REQUIRE(interior.status==cppunivariate::DnormStatus::ScaleLimit);
+  REQUIRE(interior.stop_detail.limit_coef.size()==1);
+  CHECK(interior.stop_detail.limit_coef[0]==2);
+  CHECK(interior.stop_detail.limit_loglik==0);
+  const auto seam=cppunivariate::dnorm_mle({x.data(),x.size()},1e-9,200,2);
+  REQUIRE(seam.stop_detail.limit_coef.size()==3);
+  CHECK(seam.stop_detail.limit_coef[0]==1);
+  CHECK(seam.stop_detail.limit_coef[1]==2);
+  CHECK(seam.stop_detail.limit_coef[2]==.5);
+  CHECK(seam.stop_detail.limit_loglik==doctest::Approx(-2*std::log(2.)));
+}

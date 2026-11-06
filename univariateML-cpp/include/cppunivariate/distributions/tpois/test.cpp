@@ -63,3 +63,13 @@ TEST_CASE("tpois: all hold subsets, singleton representatives and escapes") {
   CHECK(cppunivariate::tpois_mle({constant.data(),constant.size()},nan,nan,0).status==cppunivariate::truncated_detail::Status::InvalidInput);
   CHECK(cppunivariate::tpois_mle({zeros.data(),zeros.size()},nan,nan,0).status==cppunivariate::truncated_detail::Status::Ok);
 }
+
+TEST_CASE("tpois: structured stop payloads") {
+  const std::vector<int> x{1,1};
+  const auto r=cppunivariate::tpois_mle({x.data(),x.size()},0,10);
+  REQUIRE(r.stop_detail.limit_model==cppunivariate::StopModel::PointMass);
+  CHECK(r.stop_detail.limit_coef[0]==1);
+  const auto f=cppunivariate::tpois_mle({x.data(),x.size()},-1,1);
+  REQUIRE(f.stop_detail.limit_model==cppunivariate::StopModel::PointMass);
+  CHECK(f.stop_detail.limit_loglik==0);
+}

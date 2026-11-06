@@ -16,14 +16,25 @@ inline FitResult fit_dgamma(cppunivariate::span x, Held shape_arg = {}, Held rat
   if (shape.supplied && (!std::isfinite(a) || a<=0)) return fail("Invalid held `shape`.");
   if (rate.supplied && (!std::isfinite(b) || b<=0)) return fail("Invalid held `rate`.");
   const auto r=cppunivariate::dgamma_mle(x,reltol,iterlim,a,b);
+  std::string stop_kind;
+  switch(r.status) {
+    case cppunivariate::DgammaStatus::PointMass: stop_kind="limit";break;
+    case cppunivariate::DgammaStatus::TwoPointLimit: stop_kind="limit";break;
+    default:break;
+  }
+  const auto stopped_fail = [&](const std::string& format, const auto&... arguments) {
+    auto out=fail(binding_message(format,arguments...));
+    return stop_kind.empty()?out:stop_failure(out,r.stop_detail,stop_kind,{"shape","rate"});
+  };
+
   switch (r.status) {
     case cppunivariate::DgammaStatus::Ok: break;
-    case cppunivariate::DgammaStatus::InvalidData: return fail("Requires nonempty finite nonnegative integer data (absolute value below 2^52).");
-    case cppunivariate::DgammaStatus::InvalidControl: return fail("Invalid control: reltol must be finite and positive, iterlim at least 1.");
-    case cppunivariate::DgammaStatus::PointMass: return fail("The maximum likelihood estimator does not exist: the likelihood approaches a point mass.");
+    case cppunivariate::DgammaStatus::InvalidData: return stopped_fail("Requires nonempty finite nonnegative integer data (absolute value below 2^52).");
+    case cppunivariate::DgammaStatus::InvalidControl: return stopped_fail("Invalid control: reltol must be finite and positive, iterlim at least 1.");
+    case cppunivariate::DgammaStatus::PointMass: return stopped_fail("The maximum likelihood estimator does not exist: the likelihood approaches a point mass.");
     case cppunivariate::DgammaStatus::TwoPointLimit:
-      return fail("The maximum likelihood estimator does not exist on two adjacent integers; use `mlbinom(x - k, size = 1)` with k = min(x).");
-    case cppunivariate::DgammaStatus::IterationFailure: return fail("MLE failed to converge; increase iterlim.");
+      return stopped_fail("The maximum likelihood estimator does not exist on two adjacent integers; use `mlbinom(x - k, size = 1)` with k = min(x).");
+    case cppunivariate::DgammaStatus::IterationFailure: return stopped_fail("MLE failed to converge; increase iterlim.");
   }
   std::vector<std::string> fixed;
   if (shape.supplied) fixed.push_back("shape");

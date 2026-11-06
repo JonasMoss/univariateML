@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/discrete_stop.hpp"
 #include "../tpois/profile.hpp"
 #include "../binom/dpqr.hpp"
 #include "../binom/mle.hpp"
@@ -124,9 +125,11 @@ struct TbinomDesignResult {
   double prob,a,b,size,logLik;
   int iterations;
   TbinomStatus status;
+  StopDetail stop_detail{};
 };
 inline TbinomDesignResult tbinom_design_mle(ispan x,double a,double b,double size,
     double prob=std::numeric_limits<double>::quiet_NaN()) {
+  auto stopped = [&]() -> TbinomDesignResult {
 #ifdef CPPUNIV_SIZE_SEARCH_DIAGNOSTICS
   tbinom_detail::size_search_diagnostic={false,0,0};
 #endif
@@ -186,7 +189,9 @@ inline TbinomDesignResult tbinom_design_mle(ispan x,double a,double b,double siz
     const auto r=binom_mle(x,std::numeric_limits<double>::quiet_NaN(),1e-10,512);
     const auto status=r.status==BinomStatus::Ok ? TbinomStatus::Ok :
       (r.status==BinomStatus::Underdispersed ? TbinomStatus::TpoisLimit : TbinomStatus::NumericalFailure);
-    return {r.prob,a,b,r.size,r.logLik,r.iterations,status};
+    TbinomDesignResult out{r.prob,a,b,r.size,r.logLik,r.iterations,status};
+    if(status==TbinomStatus::TpoisLimit) out.stop_detail=discrete_face(StopModel::Tpois,{r.stop_detail.limit_coef[0],a,b},r.stop_detail.limit_loglik);
+    return out;
   }
   std::map<double,TbinomDesignResult> evaluated;
   const auto evaluate=[&](double k) {
@@ -237,7 +242,8 @@ inline TbinomDesignResult tbinom_design_mle(ispan x,double a,double b,double siz
     }
     near_face=std::abs(candidate.logLik-tp.logLik)<allowance ? near_face+1 : 0;
     if(j>128 && near_face>=4) {
-      if(best.logLik<=tp.logLik+allowance)best.status=TbinomStatus::TpoisLimit;
+      if(best.logLik<=tp.logLik+allowance) {best.status=TbinomStatus::TpoisLimit;
+        best.stop_detail=discrete_face(StopModel::Tpois,{tp.parameter,a,b},tp.logLik);}
       else if(std::isfinite(upper)) {
         // For N>=U the difference from the Poisson profile is bounded by
         // sum_i (c_N(x_i)-c_N(U)), c_N(k)=sum_{h<k} log(1-h/N).
@@ -304,6 +310,11 @@ inline TbinomDesignResult tbinom_design_mle(ispan x,double a,double b,double siz
     older=previous;old_value=previous_value;previous=k;previous_value=candidate.logLik;
   }
   best.status=TbinomStatus::NumericalFailure;return best;
+
+  }();
+  if(stopped.status==TbinomStatus::LowerPointMass || stopped.status==TbinomStatus::UpperPointMass)
+    stopped.stop_detail=discrete_point(x[0]);
+  return stopped;
 }
 
 }

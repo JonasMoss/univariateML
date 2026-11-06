@@ -183,3 +183,15 @@ TEST_CASE("tbinom: expensive certificate preserves the numerical fit") {
   CHECK(f.size==3350);
   CHECK(f.logLik==doctest::Approx(-421.73150333619617).epsilon(1e-10));
 }
+
+TEST_CASE("tbinom: structured stop payloads") {
+  const std::vector<int> x{2,3,4};
+  const auto r=cppunivariate::tbinom_design_mle({x.data(),x.size()},NAN,NAN,NAN);
+  REQUIRE(r.stop_detail.limit_model==cppunivariate::StopModel::Tpois);
+  REQUIRE(r.stop_detail.limit_coef.size()==3);
+  CHECK(r.stop_detail.limit_coef[1]==1);
+  CHECK(r.stop_detail.limit_coef[2]==4);
+  const auto f=cppunivariate::truncated_detail::fit({x.data(),x.size()},1,4,-1);
+  CHECK(r.stop_detail.limit_coef[0]==doctest::Approx(f.parameter));
+  CHECK(r.stop_detail.limit_loglik==doctest::Approx(f.logLik));
+}

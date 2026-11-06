@@ -1,12 +1,15 @@
 #pragma once
+#include "../../core/discrete_stop.hpp"
 #include "../ztbinom/mle.hpp"
 #include "../zip/mle.hpp"
 namespace cppunivariate {
 enum class ZibStatus { Ok, InvalidInput, InvalidSize, ZipLimit, IterationFailure };
-struct ZibResult {double size, prob, pi, logLik;int iterations;ZibStatus status;};
+struct ZibResult {double size, prob, pi, logLik;int iterations;ZibStatus status;  StopDetail stop_detail{};
+};
 inline ZibResult zib_mle(ispan x,double tol=1e-10,int maxit=200,
     double fixed_size=std::numeric_limits<double>::quiet_NaN(),
     double fixed_prob=std::numeric_limits<double>::quiet_NaN(),double fixed_pi=std::numeric_limits<double>::quiet_NaN()) {
+  auto stopped = [&]() -> ZibResult {
   const bool fixed=!std::isnan(fixed_size);
   if(fixed && (!(fixed_size>=0)||!std::isfinite(fixed_size)||fixed_size!=std::floor(fixed_size)))
     return {0,0,0,0,0,ZibStatus::InvalidSize};
@@ -129,7 +132,8 @@ inline ZibResult zib_mle(ispan x,double tol=1e-10,int maxit=200,
       if(lambda>m && lambda<pm)points.push_back(lambda);
     }
     std::sort(points.begin(),points.end());
-    double face_best=std::max(face(m),face(pm));
+    double face_lambda=face(m)>=face(pm)?m:pm;
+    double face_best=face(face_lambda);
     const auto face_score=[&](double lambda) {
       return fixed_pi*(sum-k*lambda)+(1-fixed_pi)*std::exp(-lambda)*(sum-n*lambda);
     };
@@ -141,9 +145,11 @@ inline ZibResult zib_mle(ispan x,double tol=1e-10,int maxit=200,
         const double mid=lo+(hi-lo)/2;
         if((face_score(mid)>0)==positive)lo=mid;else hi=mid;
       }
-      face_best=std::max(face_best,face(lo+(hi-lo)/2));
+      const double lambda=lo+(hi-lo)/2;
+      if(face(lambda)>face_best){face_best=face(lambda);face_lambda=lambda;}
     }
-    if(face_best>=best.logLik-1e-8*n)best.status=ZibStatus::ZipLimit;
+    if(face_best>=best.logLik-1e-8*n) {best.status=ZibStatus::ZipLimit;
+      best.stop_detail=discrete_face(StopModel::Zip,{face_lambda,fixed_pi},face_best);}
     // Ran out of the iteration budget while still improving, rather
     // than stabilizing: the budget, not a size, is exhausted.
     if(best.status==ZibStatus::Ok && t>cap && since_improvement<=patience)best.status=ZibStatus::IterationFailure;
@@ -185,8 +191,13 @@ inline ZibResult zib_mle(ispan x,double tol=1e-10,int maxit=200,
     if(t>=grid_floor && since_improvement>patience) break;
   }
   const auto zip=zip_mle(x);
-  if(zip.status==ZipStatus::Ok && zip.logLik>=best.logLik-1e-8*n)best.status=ZibStatus::ZipLimit;
+  if(zip.status==ZipStatus::Ok && zip.logLik>=best.logLik-1e-8*n) {best.status=ZibStatus::ZipLimit;
+    best.stop_detail=discrete_face(StopModel::Zip,{zip.lambda,zip.pi},zip.logLik);}
   if(best.status==ZibStatus::Ok && t>cap && since_improvement<=patience)best.status=ZibStatus::IterationFailure;
   return best;
+
+  }();
+
+  return stopped;
 }
 }

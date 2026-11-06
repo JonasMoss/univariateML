@@ -31,38 +31,52 @@ inline FitResult fit_hyper(cppunivariate::span x, Held m_arg = {}, Held N_arg = 
   const double design=held_value(k, "k");
   const double N_held = held_value(N, "N"), m_held = held_value(m, "m");
   const auto res = cppunivariate::hyper_mle(x, design, N_held, m_held);
+  std::string stop_kind;
+  switch(res.status) {
+    case cppunivariate::HyperStatus::FaceTie: stop_kind="tie";break;
+    case cppunivariate::HyperStatus::FaceUnresolved: stop_kind="unresolved";break;
+    case cppunivariate::HyperStatus::AllZero: stop_kind="limit";break;
+    case cppunivariate::HyperStatus::Infeasible: stop_kind="nomle";break;
+    default:break;
+  }
+  if(res.stop_detail.budget_exhausted) stop_kind="budget";
+  const auto stopped_fail = [&](const std::string& format, const auto&... arguments) {
+    auto out=fail(binding_message(format,arguments...));
+    return stop_kind.empty()?out:stop_failure(out,res.stop_detail,stop_kind,{"m","N","k"});
+  };
+
   const std::string estimated = !k.supplied ? "k" : (!N.supplied ? "N" : "m");
   switch (res.status) {
     case cppunivariate::HyperStatus::FaceUnresolved:
       if (!N.supplied && !m.supplied && !k.supplied)
         return res.tie == 0 ? fail("No finite maximum was found in the exploratory search; a larger finite maximum is not excluded. The Poisson face may dominate; use mlpois for the limit model.") :
           fail("No finite maximum was found in the exploratory search; a larger finite maximum is not excluded. The binomial face of size %s may dominate; use mlbinom for the limit model.", whole(res.tie));
-      return fail("No finite maximum was found in the exploratory search; a larger finite maximum is not excluded. The binomial limit is available: use mlbinom(x, size = held count).");
+      return stopped_fail("No finite maximum was found in the exploratory search; a larger finite maximum is not excluded. The binomial limit is available: use mlbinom(x, size = held count).");
     case cppunivariate::HyperStatus::FaceTie:
       if (!N.supplied && !m.supplied && !k.supplied)
         return res.tie == 0 ? fail("A finite likelihood matched the Poisson face within numerical tolerance; a larger finite maximum is not excluded. Use mlpois for the limit model.") :
           fail("A finite likelihood matched the binomial face of size %s within numerical tolerance; a larger finite maximum is not excluded. Use mlbinom for the limit model.", whole(res.tie));
-      return fail("A finite likelihood matched the binomial face within numerical tolerance; a larger finite maximum is not excluded. Use mlbinom for the limit model.");
+      return stopped_fail("A finite likelihood matched the binomial face within numerical tolerance; a larger finite maximum is not excluded. Use mlbinom for the limit model.");
     case cppunivariate::HyperStatus::NumericalFailure:
-      return fail("Finite-grid numerical failure: 1e7 candidate evaluation budget or representability/nonfinite likelihood limit exceeded.");
+      return stopped_fail("Finite-grid numerical failure: 1e7 candidate evaluation budget or representability/nonfinite likelihood limit exceeded.");
     case cppunivariate::HyperStatus::BothFree:
-      return fail("Supply the population size `N` or the number of successes `m` "
+      return stopped_fail("Supply the population size `N` or the number of successes `m` "
                  "as well as `k`: estimating both is not supported. As `N` grows "
                  "with `m / N` fixed the model tends to the binomial; use "
                  "`mlbinom(x, size = k)`.");
     case cppunivariate::HyperStatus::InvalidInput:
-      return fail("`k`, `N` and `m` must be whole numbers from 0 to 2^53 - 1, with "
+      return stopped_fail("`k`, `N` and `m` must be whole numbers from 0 to 2^53 - 1, with "
                  "`k <= N` and `m <= N`; so must the observations.");
     case cppunivariate::HyperStatus::Infeasible:
-      return fail("No admissible value of `%s` gives every observation positive "
+      return stopped_fail("No admissible value of `%s` gives every observation positive "
                  "probability: observations must lie between max(0, k - (N - m)) "
                  "and min(k, m).", estimated);
     case cppunivariate::HyperStatus::AllZero:
-      return fail("All observations are 0: with `m` and `k` positive the likelihood "
+      return stopped_fail("All observations are 0: with `m` and `k` positive the likelihood "
                  "increases toward a point mass at zero as `N` grows, so the "
                  "maximum likelihood estimator of `N` does not exist.");
     case cppunivariate::HyperStatus::TooLarge:
-      return fail("The required population size or likelihood maximiser exceeds "
+      return stopped_fail("The required population size or likelihood maximiser exceeds "
                  "2^53 - 1; double precision does not represent every integer "
                  "beyond that, so the "
                  "estimate of `N` cannot be computed exactly.");

@@ -22,18 +22,31 @@ inline FitResult fit_tbinom(cppunivariate::ispan x, Held prob_arg = {}, Held a_a
   if((a.supplied&&std::isnan(lower))||(b.supplied&&std::isnan(upper)))return fail("Held bounds must not be missing.");
   if(size.supplied && !std::isfinite(trials))return fail("`size` must be a finite nonnegative integer.");
   auto r=cppunivariate::tbinom_design_mle(x,lower,upper,trials,held);
-  if(r.status==cppunivariate::TbinomStatus::LowerPointMass) return fail("MLE escapes to a point mass at the lowest support point.");
-  if(r.status==cppunivariate::TbinomStatus::UpperPointMass) return fail("MLE escapes to a point mass at the highest support point.");
-  if(r.status==cppunivariate::TbinomStatus::Unidentified) return fail("Parameter is unidentified on singleton truncation support.");
-  if(r.status==cppunivariate::TbinomStatus::InvalidInput) return fail("Invalid design parameters or observations outside truncation bounds a < x <= b.");
+  std::string stop_kind;
+  switch(r.status) {
+    case cppunivariate::TbinomStatus::LowerPointMass: stop_kind="limit";break;
+    case cppunivariate::TbinomStatus::UpperPointMass: stop_kind="limit";break;
+    case cppunivariate::TbinomStatus::TpoisLimit: stop_kind="limit";break;
+    case cppunivariate::TbinomStatus::Unidentified: stop_kind="tie";break;
+    default:break;
+  }
+  const auto stopped_fail = [&](const std::string& format, const auto&... arguments) {
+    auto out=fail(binding_message(format,arguments...));
+    return stop_kind.empty()?out:stop_failure(out,r.stop_detail,stop_kind,{"prob","a","b","size"});
+  };
+
+  if(r.status==cppunivariate::TbinomStatus::LowerPointMass) return stopped_fail("MLE escapes to a point mass at the lowest support point.");
+  if(r.status==cppunivariate::TbinomStatus::UpperPointMass) return stopped_fail("MLE escapes to a point mass at the highest support point.");
+  if(r.status==cppunivariate::TbinomStatus::Unidentified) return stopped_fail("Parameter is unidentified on singleton truncation support.");
+  if(r.status==cppunivariate::TbinomStatus::InvalidInput) return stopped_fail("Invalid design parameters or observations outside truncation bounds a < x <= b.");
   if(r.status==cppunivariate::TbinomStatus::TpoisLimit) {
     std::ostringstream os;
     os << "The maximum likelihood estimator does not exist: with both `prob` and `size` "
           "free, the likelihood increases toward the truncated Poisson distribution as "
           "`size` grows. Use `mltpois(x, a = " << lower << ", b = " << upper << ")` instead.";
-    return fail(os.str());
+    return stopped_fail(os.str());
   }
-  if(r.status!=cppunivariate::TbinomStatus::Ok) return fail("Truncated normalizer cannot be resolved within numerical precision or work budget.");
+  if(r.status!=cppunivariate::TbinomStatus::Ok) return stopped_fail("Truncated normalizer cannot be resolved within numerical precision or work budget.");
   std::vector<std::string> fixed;
   if(size.supplied)fixed.push_back("size");
   if(a.supplied)fixed.push_back("a");

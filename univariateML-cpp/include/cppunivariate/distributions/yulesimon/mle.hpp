@@ -1,11 +1,13 @@
 // The log-rho score is strictly decreasing; unique counts cache repeated work.
 #pragma once
+#include "../../core/discrete_stop.hpp"
 #include "dpqr.hpp"
 #include "../../core/span.hpp"
 #include <vector>
 namespace cppunivariate {
 enum class YulesimonStatus { Ok, PointMass, InvalidInput, IterationFailure };
-struct YulesimonResult { double rho, logLik; int iterations; YulesimonStatus status; };
+struct YulesimonResult { double rho, logLik; int iterations; YulesimonStatus status;   StopDetail stop_detail{};
+};
 namespace yulesimon_detail {
 inline double score_term(int k,double rho) {
   if (k<=32) {
@@ -17,6 +19,7 @@ inline double score_term(int k,double rho) {
 }
 }
 inline YulesimonResult yulesimon_mle(ispan x,double tol=1e-10,int maxit=200, double held=std::numeric_limits<double>::quiet_NaN()) {
+  auto stopped = [&]() -> YulesimonResult {
   const double nan=special::kNaN;
   if (!x.size() || !(tol>0) || !std::isfinite(tol) || maxit<1)
     return {nan,nan,0,YulesimonStatus::InvalidInput};
@@ -58,5 +61,9 @@ inline YulesimonResult yulesimon_mle(ispan x,double tol=1e-10,int maxit=200, dou
     }
   }
   return {rho,nan,maxit,YulesimonStatus::IterationFailure};
+
+  }();
+  if(stopped.status==YulesimonStatus::PointMass) stopped.stop_detail=discrete_point(x[0]);
+  return stopped;
 }
 }

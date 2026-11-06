@@ -19,11 +19,21 @@ inline FitResult fit_zip(cppunivariate::ispan x, Held lambda_arg = {}, Held pi_a
     warnings.push_back(binding_message("all observations are zero"));
   }
   auto res = cppunivariate::zip_mle(x,lambda.supplied?lambda.value:std::numeric_limits<double>::quiet_NaN(),pi.supplied?pi.value:std::numeric_limits<double>::quiet_NaN());
-  if(res.status==cppunivariate::ZipStatus::ZeroLimit)return fail("With pi held below one and all-zero data, lambda tends to zero, undefined by the reference; use `mlpois`.");
+  std::string stop_kind;
+  switch(res.status) {
+    case cppunivariate::ZipStatus::ZeroLimit: stop_kind="limit";break;
+    default:break;
+  }
+  const auto stopped_fail = [&](const std::string& format, const auto&... arguments) {
+    auto out=fail(binding_message(format,arguments...));
+    return stop_kind.empty()?out:stop_failure(out,res.stop_detail,stop_kind,{"lambda","pi"});
+  };
+
+  if(res.status==cppunivariate::ZipStatus::ZeroLimit)return stopped_fail("With pi held below one and all-zero data, lambda tends to zero, undefined by the reference; use `mlpois`.");
   if (res.status == cppunivariate::ZipStatus::InvalidInput)
-    return fail("Zero-inflated Poisson MLE requires nonempty nonnegative count data, lambda positive and finite, pi in [0,1], and compatible holds.");
+    return stopped_fail("Zero-inflated Poisson MLE requires nonempty nonnegative count data, lambda positive and finite, pi in [0,1], and compatible holds.");
   if (res.status != cppunivariate::ZipStatus::Ok)
-    return fail("Zero-inflated Poisson MLE failed to produce a finite valid fit.");
+    return stopped_fail("Zero-inflated Poisson MLE failed to produce a finite valid fit.");
   std::vector<std::string> fixed;
   if(lambda.supplied)fixed.push_back("lambda");
   if(pi.supplied)fixed.push_back("pi");

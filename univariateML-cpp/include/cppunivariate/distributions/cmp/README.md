@@ -151,3 +151,7 @@ uses inversion with R's RNG.
 ## d/p/q/r
 
 The normalizer and both tails are summed directly.
+
+## Stop details
+
+The public domain entry point retains adjacent-law witnesses, with held lambda fixing the Bernoulli odds. The shared legacy CMP solver is unchanged; its attained geometric and zero-count members remain successful fits.

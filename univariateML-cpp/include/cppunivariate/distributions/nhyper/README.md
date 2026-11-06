@@ -199,3 +199,7 @@ in `t=1/N` is one half of the sum over observations of
 `x*(x-1) - r*(r-1)/p - (x-r)*(x-r-1)/(1-p)`. Its sign is a local
 diagnostic, not a global search certificate; for free `r` it applies to
 each face separately.
+
+## Stop details
+
+The growing-urn face is a negative binomial translated by r, since observations count total draws. Its payload explicitly records the shift and the absence of a corresponding package family.

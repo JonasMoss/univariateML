@@ -23,17 +23,27 @@ inline FitResult fit_binom(cppunivariate::ispan x, Held size_arg = {}, Held prob
   const double p=prob.supplied?prob.value:std::numeric_limits<double>::quiet_NaN();
   if(prob.supplied && (!std::isfinite(p)||p<0||p>1))return fail("`prob` must be finite and in [0, 1].");
   auto res = cppunivariate::binom_mle(x, size_or_nan, abstol, iterlim, p);
-  if (res.status == cppunivariate::BinomStatus::InvalidInput) return fail("Held parameters are incompatible with the observations.");
+  std::string stop_kind;
+  switch(res.status) {
+    case cppunivariate::BinomStatus::Underdispersed: stop_kind="limit";break;
+    default:break;
+  }
+  const auto stopped_fail = [&](const std::string& format, const auto&... arguments) {
+    auto out=fail(binding_message(format,arguments...));
+    return stop_kind.empty()?out:stop_failure(out,res.stop_detail,stop_kind,{"size","prob"});
+  };
+
+  if (res.status == cppunivariate::BinomStatus::InvalidInput) return stopped_fail("Held parameters are incompatible with the observations.");
   if (res.status == cppunivariate::BinomStatus::SizeTooSmall) {
-    return fail("`size` is smaller than `max(x)`.");
+    return stopped_fail("`size` is smaller than `max(x)`.");
   }
   if (res.status == cppunivariate::BinomStatus::Underdispersed) {
-    return fail(
+    return stopped_fail(
         "The maximum likelihood estimator does not exist. Use `mlpois` to fit "
         "a Poisson or supply a `size` argument.");
   }
   if (res.status != cppunivariate::BinomStatus::Ok || !std::isfinite(res.size)) {
-    return fail("Binomial MLE failed (check dispersion/inputs)");
+    return stopped_fail("Binomial MLE failed (check dispersion/inputs)");
   }
   std::vector<std::string> fixed;
   if(size.supplied)fixed.push_back("size");

@@ -27,7 +27,11 @@ inline ZmbinomResult zmbinom_mle(ispan x, double tol=1e-10,int maxit=200,double 
  const auto fit=ztbinom_mle({pos.data(),pos.size()},tol,maxit,fixed_size,fixed_prob);
  if(std::isnan(fixed_prob)&&std::isnan(fixed_p0)&&fit.prob==0)out.status=ZmbinomStatus::TwoPoint;
  out.size=fit.size;out.prob=fit.prob;out.logLik+=fit.logLik;
- if(fit.status==ZtbinomStatus::PoissonLimit)out.status=ZmbinomStatus::PoissonLimit;
+ if(fit.status==ZtbinomStatus::PoissonLimit) {
+   out.status=ZmbinomStatus::PoissonLimit;
+   const auto& d=fit.stop_detail;
+   out.stop_detail=discrete_face(StopModel::Zmpois,{d.limit_coef[0],out.p0},out.logLik-fit.logLik+d.limit_loglik);
+ }
  if(fit.status==ZtbinomStatus::IterationFailure)out.status=ZmbinomStatus::IterationFailure;
  if(fit.status==ZtbinomStatus::InvalidInput)out.status=ZmbinomStatus::InvalidInput;
  if(fit.status==ZtbinomStatus::InvalidSize)out.status=ZmbinomStatus::InvalidSize;
