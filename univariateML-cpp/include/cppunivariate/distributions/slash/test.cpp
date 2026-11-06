@@ -213,3 +213,15 @@ TEST_CASE("slash: adjacent represented grid points are bounded before subdivisio
   CHECK(f.status==cppunivariate::SlashStatus::Ok);
   CHECK(std::isfinite(f.logLik));
 }
+
+TEST_CASE("slash: exhausted certificate retains its witness and an unclosed upper bound") {
+  const std::vector<double> x{-2,0,3},grid{-2,3};
+  const cppunivariate::slash_detail::Profile p{x,1};
+  const std::vector<double> ll{p(-2).logLik,p(3).logLik};auto best=p(-2);
+  double lo=0,hi=0;
+  CHECK_FALSE(cppunivariate::slash_detail::certify_held(p,grid,ll,0,best,lo,hi,0));
+  REQUIRE(best.budget_exhausted);REQUIRE(best.stop_detail.candidates.size()==1);
+  CHECK(best.stop_detail.candidates[0].coef[0]==-2);CHECK(best.stop_detail.candidates[0].coef[1]==1);
+  CHECK(best.stop_detail.candidates[0].loglik_lower==best.logLik);
+  CHECK(std::isinf(best.stop_detail.loglik_upper));
+}

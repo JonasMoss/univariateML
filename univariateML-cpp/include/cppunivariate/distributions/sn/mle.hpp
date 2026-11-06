@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/stop_detail.hpp"
 #include "../../core/face_compare.hpp"
 #include "cppunivariate/core/constants.hpp"
 #include "dpqr.hpp"
@@ -7,7 +8,7 @@
 #include <limits>
 namespace cppunivariate {
 enum class SnStatus { Ok, InvalidInput, IterationFailure, RightHalfNormalBoundary, LeftHalfNormalBoundary };
-struct SnResult { double xi,omega,alpha,logLik; int iterations; SnStatus status; };
+struct SnResult { double xi,omega,alpha,logLik; int iterations; SnStatus status;  StopDetail stop_detail{}; bool budget_exhausted=false; };
 namespace sn_detail {
 struct Inner { double eta,h,ll; bool converged; };
 // Normalized free-coordinate score, evaluated at the point actually returned.
@@ -157,10 +158,10 @@ inline double shape_tail_upper(const std::vector<double>& x,double omega,double 
 }
 }
 inline SnResult sn_mle(span data,double tol=1e-9,int maxit=100,
-                       double xi=special::kNaN,double omega=special::kNaN,double alpha=special::kNaN) {
+                       double xi=special::kNaN,double omega=special::kNaN,double alpha=special::kNaN, int certificate_budget=20000) {
   const double nan=special::kNaN;
   SnResult bad={nan,nan,nan,nan,0,SnStatus::InvalidInput};
-  if(data.size()<2 || !(tol>0) || maxit<1 || (!std::isnan(xi) && !std::isfinite(xi)) ||
+  if(data.size()<2 || !(tol>0) || maxit<1 || certificate_budget<0 || (!std::isnan(xi) && !std::isfinite(xi)) ||
      (!std::isnan(omega) && !(std::isfinite(omega) && omega>0)) || (!std::isnan(alpha) && !std::isfinite(alpha))) return bad;
   double low=data[0],high=data[0];
   for(double v:data) { if(!std::isfinite(v)) return bad; low=std::min(low,v); high=std::max(high,v); }
@@ -267,7 +268,7 @@ inline SnResult sn_mle(span data,double tol=1e-9,int maxit=100,
     std::sort(nodes.begin(),nodes.end(),[](const Node& a,const Node& b){return a.a<b.a;});
     std::vector<Interval> pending;
     for(std::size_t i=1;i<nodes.size();++i) pending.push_back({nodes[i-1],nodes[i]});
-    int budget=20000;
+    int budget=certificate_budget;
     while(!pending.empty()) {
       const Interval interval=pending.back();pending.pop_back();
       const auto bound=[&](const sn_detail::ShapeTangent& t) {
@@ -276,7 +277,21 @@ inline SnResult sn_mle(span data,double tol=1e-9,int maxit=100,
       const double upper=std::min(bound(interval.l.tangent),bound(interval.r.tangent));
       if(std::isfinite(upper) && upper<=std::max(incumbent,best.ll)+margin) continue;
       const double a=interval.l.a+(interval.r.a-interval.l.a)/2;
-      if(--budget<0 || a==interval.l.a || a==interval.r.a) {bad.status=SnStatus::IterationFailure;return bad;}
+      if(--budget<0) {
+        bad.status=SnStatus::IterationFailure;bad.budget_exhausted=true;
+        const double ll=best.ll-n*std::log(unit);
+        bad.stop_detail.candidates.push_back({{center+unit*best.h/best.eta,unit/best.eta,besta},ll,ll,StopModel::None});
+        bad.stop_detail.loglik_lower=incumbent-n*std::log(unit);bad.stop_detail.loglik_upper=INFINITY;
+        for(double sign:{-1.,1.}) {
+          const double c=sign>0?*std::min_element(x.begin(),x.end()):*std::max_element(x.begin(),x.end());
+          double square=0;for(double z:x)square+=(z-c)*(z-c);
+          const double w=std::isfinite(fw)?fw:std::sqrt(square/n);
+          const double face=n*(.5*std::log(2/cppunivariate::pi)-std::log(w))-square/(2*w*w)-n*std::log(unit);
+          bad.stop_detail.candidates.push_back({{center+unit*c,unit*w},face,face,sign>0?StopModel::Hnorm:StopModel::ReflectedHnorm});
+        }
+        return bad;
+      }
+      if(a==interval.l.a || a==interval.r.a) {bad.status=SnStatus::IterationFailure;return bad;}
       const auto v=fit(a);consider(a,v);
       const Node middle={a,v,sn_detail::shape_tangent(x,a,v)};
       pending.push_back({interval.l,middle});pending.push_back({middle,interval.r});
@@ -298,8 +313,13 @@ inline SnResult sn_mle(span data,double tol=1e-9,int maxit=100,
       if(ll>face.logLik+n*std::log(unit)) face={center+unit*c,unit*w,sign*std::numeric_limits<double>::infinity(),ll-n*std::log(unit),evaluations,
         sign>0 ? SnStatus::RightHalfNormalBoundary : SnStatus::LeftHalfNormalBoundary};
     }
-    if(face.status!=SnStatus::IterationFailure && face_numerical_tie(face.logLik+n*std::log(unit),best.ll,1e-8*n)) {bad.status=SnStatus::IterationFailure;return bad;}
-    if(face.status!=SnStatus::IterationFailure && face.logLik+n*std::log(unit)>=best.ll-1e-8*n) return face;
+    if(face.status!=SnStatus::IterationFailure && face_numerical_tie(face.logLik+n*std::log(unit),best.ll,1e-8*n)) {
+      const double ll=best.ll-n*std::log(unit);bad.status=SnStatus::IterationFailure;
+      bad.stop_detail=comparison_detail({{face.xi,face.omega},face.logLik,face.logLik,face.status==SnStatus::RightHalfNormalBoundary?StopModel::Hnorm:StopModel::ReflectedHnorm},{{center+unit*best.h/best.eta,unit/best.eta,besta},ll,ll,StopModel::None});return bad;
+    }
+    if(face.status!=SnStatus::IterationFailure && face.logLik+n*std::log(unit)>=best.ll-1e-8*n) {
+      face.stop_detail=limit_detail({face.xi,face.omega},face.logLik,face.status==SnStatus::RightHalfNormalBoundary?StopModel::Hnorm:StopModel::ReflectedHnorm);return face;
+    }
   }
   return {std::isfinite(xi) ? xi : center+unit*best.h/best.eta,
     std::isfinite(omega) ? omega : unit/best.eta,besta,best.ll-n*std::log(unit),evaluations,

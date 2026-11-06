@@ -180,3 +180,11 @@ TEST_CASE("ged: audited huge held-parameter magnitude") {
   const auto r=cppunivariate::ged_mle(s,1e-6,500,0,1e-20,nan);
   CHECK((r.status==cppunivariate::GedStatus::Ok || r.status==cppunivariate::GedStatus::BfgsFailure));
 }
+
+TEST_CASE("ged: structured face payloads") {
+  std::vector<double> x;for(int i=0;i<40;++i)x.push_back(-1.+2.*i/39.);
+  const auto r=cppunivariate::ged_mle(mltest::as_span(x),1e-6,500);
+  REQUIRE(r.stop_detail.limit_coef.size()==2);
+  CHECK(r.stop_detail.limit_coef[0]==doctest::Approx(-1));CHECK(r.stop_detail.limit_coef[1]==doctest::Approx(1));
+  CHECK(r.stop_detail.limit_loglik==doctest::Approx(-40*std::log(2.)));
+}

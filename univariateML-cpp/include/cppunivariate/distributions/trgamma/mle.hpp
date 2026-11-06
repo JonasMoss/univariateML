@@ -23,6 +23,7 @@
 // reciprocal fit passes -log(x) without forming 1/x.
 
 #pragma once
+#include "../../core/stop_detail.hpp"
 #include "../../core/precision.hpp"
 #include "../burr/mle.hpp"
 #include <array>
@@ -54,7 +55,7 @@ struct TrGammaResult {
   double logLik;
   int iterations;
   TrGammaStatus status;
-};
+ StopDetail stop_detail{}; };
 
 namespace trgamma_detail {
 
@@ -365,16 +366,15 @@ inline TrGammaResult fit_fixed_shape1(const LogData &d, double a, double tol, in
 
 inline TrGammaResult face_lognormal(const LogData &d, int iterations) {
   const double inf = std::numeric_limits<double>::infinity();
-  return {inf, 0.0, 0.0, -inf, lognormal_loglik(d), iterations,
-          TrGammaStatus::LognormalBoundary};
+  TrGammaResult r={inf,0.0,0.0,-inf,lognormal_loglik(d),iterations,TrGammaStatus::LognormalBoundary};
+  r.stop_detail=limit_detail({d.mean,d.sd},r.logLik,StopModel::Lnorm);return r;
 }
 
 inline TrGammaResult face_power(const LogData &d, int iterations) {
   const double inf = std::numeric_limits<double>::infinity();
   const double log_scale = d.mean + d.sd * d.umax;
-  return {0.0, inf, std::exp(log_scale), log_scale,
-          static_cast<double>(d.n) * power_delta(d) + lognormal_loglik(d), iterations,
-          TrGammaStatus::PowerBoundary};
+  TrGammaResult r={0.0,inf,std::exp(log_scale),log_scale,static_cast<double>(d.n)*power_delta(d)+lognormal_loglik(d),iterations,TrGammaStatus::PowerBoundary};
+  r.stop_detail=limit_detail({r.scale,1/(d.sd*d.umax)},r.logLik,StopModel::Power);return r;
 }
 
 // Free fit: one-dimensional search in t with an exact inner gamma fit.
@@ -606,7 +606,10 @@ inline TrGammaResult trgamma_mle_fixed_scale(span x,double scale,double a=std::n
    }prev=cur;
  }
  if(std::isnan(a)&&mx<=0&&sum<0){double face=n*(std::log(-n/sum)-1)+jac-std::count(z.begin(),z.end(),0.0);
-   if(face>=best-1e-8*n)return {nan,nan,scale,std::log(scale),face,720,TrGammaStatus::PowerBoundary};}
+   if(face>=best-1e-8*n) {
+     TrGammaResult r={nan,nan,scale,std::log(scale),face,720,TrGammaStatus::PowerBoundary};
+     r.stop_detail=limit_detail({scale,-n/sum},face,StopModel::Power);return r;
+   }}
  return {ba,bb,scale,std::log(scale),best,720,std::isfinite(best)&&residual<std::max(tol,1e-8)?TrGammaStatus::Ok:TrGammaStatus::IterationFailure};
 }
 

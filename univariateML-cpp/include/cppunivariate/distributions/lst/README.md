@@ -209,7 +209,7 @@ their previous algorithms and convergence rules.
 
 Normal stops carry `(mean,sd)`; positive ordinary-scale t2 stops carry
 `(mu,sigma,df=2)`. A bounded collapse stop carries the diagnostic path
-`(mu,df)` under the descriptive label `t scale collapse (no package family)`, with its limiting likelihood bounds.
+`(mu,df)` under the descriptive label `unavailable:t-scale-collapse`, with its limiting likelihood bounds.
 That path is not a public density family and does not assign a continuous
 density to an atomic weak limit. Budget and numerical stops preserve finite
 witnesses where available; unknown global upper bounds remain infinite.

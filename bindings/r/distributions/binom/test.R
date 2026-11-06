@@ -224,7 +224,7 @@ test_that("discrete limit stops expose fitted faces without changing messages", 
   expect_equal(e$limit_loglik,sum(dbinom(c(0,1,1,2),2,.5,log=TRUE)))
   e <- tryCatch(mldgamma(c(2,2,3)),error=identity)
   expect_s3_class(e,"univariateML_limit")
-  expect_match(e$model,"no package family",fixed=TRUE)
+  expect_match(e$model,"unavailable:",fixed=TRUE)
   expect_equal(e$estimates,c(lower=2,upper=3,prob=1/3))
   expect_equal(e$limit_loglik,2*log(2/3)+log(1/3))
   e <- tryCatch(mlcmb(c(0,1),size=NULL),error=identity)

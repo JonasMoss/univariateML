@@ -3,6 +3,17 @@
 #include "cppunivariate/distributions/sn/mle.hpp"
 namespace umvl_binding {
 inline FitResult fit_sn(cppunivariate::span x, Held xi_arg = {}, Held omega_arg = {}, Held alpha_arg = {}, double reltol=1e-9, int iterlim=100) {
+  // Invalid controls remain ordinary errors, even if a legacy fitter reports
+  // a statistical status before checking them.
+  const auto classify = [&](FitResult out, const cppunivariate::StopDetail& detail,
+      const std::string& kind, const std::vector<std::string>& names,
+      const std::string& model="") {
+    if(!(reltol>0 && std::isfinite(reltol) && iterlim>0))return out;
+    if(x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return out;
+    if(kind=="nomle" && !std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return out;
+    if(!finite_stop_payload(detail,kind))return out;
+    return stop_failure(out,detail,kind,names,model);
+  };
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
   const Held xi = xi_arg;
@@ -17,11 +28,13 @@ inline FitResult fit_sn(cppunivariate::span x, Held xi_arg = {}, Held omega_arg 
       (omega.supplied && !(std::isfinite(w) && w>0)) ||
       (alpha.supplied && !std::isfinite(a))) return fail("Fixed xi and alpha must be finite; fixed omega must be finite and positive.");
   const auto fit=cppunivariate::sn_mle(x,reltol,iterlim,c,w,a);
+  if(fit.stop_detail.comparison_tie)return classify(fail("Skew-normal search did not converge or could not certify the maximum; increase iterlim."),fit.stop_detail,"tie",{"xi","omega","alpha"});
   if(fit.status==cppunivariate::SnStatus::RightHalfNormalBoundary)
-    return fail("The skew-normal MLE is infinite: use `mlhnorm`.");
+    return classify(fail("The skew-normal MLE is infinite: use `mlhnorm`."),fit.stop_detail,"limit",{"mu","sigma"},"hnorm");
   if(fit.status==cppunivariate::SnStatus::LeftHalfNormalBoundary)
-    return fail("The skew-normal MLE is infinite: use `mlhnorm` on `-x`.");
-  if(fit.status==cppunivariate::SnStatus::InvalidInput) return fail("Skew-normal fitting requires distinct finite observations, positive reltol and positive iterlim.");
+    return classify(fail("The skew-normal MLE is infinite: use `mlhnorm` on `-x`."),fit.stop_detail,"limit",{"mu","sigma"},"unavailable:reflected-half-normal");
+  if(fit.status==cppunivariate::SnStatus::InvalidInput) return (x.size()>=2 && !omega.supplied && (!xi.supplied || c==x[0]) && std::isfinite(x[0]) && std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];})) ? classify(fail("Skew-normal fitting requires distinct finite observations, positive reltol and positive iterlim."),{},"nomle",{}) : fail("Skew-normal fitting requires distinct finite observations, positive reltol and positive iterlim.");
+  if(fit.budget_exhausted)return classify(fail("Skew-normal search did not converge or could not certify the maximum; increase iterlim."),fit.stop_detail,"budget",{"xi","omega","alpha"});
   if(fit.status!=cppunivariate::SnStatus::Ok) return fail("Skew-normal search did not converge or could not certify the maximum; increase iterlim.");
   std::vector<std::string> fixed;
   if(xi.supplied) fixed.push_back("xi");

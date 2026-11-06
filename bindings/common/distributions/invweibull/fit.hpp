@@ -7,8 +7,20 @@
 #include <vector>
 namespace umvl_binding {
 inline FitResult fit_invweibull(cppunivariate::span x, Held shape_arg = {}, Held scale_arg = {}, Held shape0 = {}, double reltol = 1.220703e-4, int iterlim = 100) {
+  // Invalid controls remain ordinary errors, even if a legacy fitter reports
+  // a statistical status before checking them.
+  const auto classify = [&](FitResult out, const cppunivariate::StopDetail& detail,
+      const std::string& kind, const std::vector<std::string>& names,
+      const std::string& model="") {
+    if(!(reltol>0 && std::isfinite(reltol) && iterlim>0))return out;
+    if(x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return out;
+    if(kind=="nomle" && !std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return out;
+    if(!finite_stop_payload(detail,kind))return out;
+    return stop_failure(out,detail,kind,names,model);
+  };
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
+  const auto nomle = [&](const std::string& format, const auto&... arguments) { return classify(failure(binding_message(format, arguments...), warnings), {}, "nomle", {}); };
   const Held shape = shape_arg;
   const Held scale = scale_arg;
 
@@ -35,7 +47,7 @@ inline FitResult fit_invweibull(cppunivariate::span x, Held shape_arg = {}, Held
   if (res.status == cppunivariate::InvWeibullStatus::InvalidInput)
     return fail("Inverse Weibull requires nonempty positive finite data, valid held parameters, positive reltol and positive iterlim.");
   if (res.status == cppunivariate::InvWeibullStatus::Unbounded)
-    return fail("The invweibull maximum likelihood estimator does not exist: the likelihood is unbounded when all transformed observations equal the held scale.");
+    return nomle("The invweibull maximum likelihood estimator does not exist: the likelihood is unbounded when all transformed observations equal the held scale.");
   if (res.status == cppunivariate::InvWeibullStatus::IterationFailure)
     return fail("Inverse Weibull optimizer IterationFailure: failed to converge; increase iterlim.");
   if (!std::isfinite(res.shape) || !std::isfinite(res.scale) || !std::isfinite(res.logLik)) {

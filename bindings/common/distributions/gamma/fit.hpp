@@ -3,6 +3,17 @@
 #include "cppunivariate/distributions/gamma/mle.hpp"
 namespace umvl_binding {
 inline FitResult fit_gamma(cppunivariate::span x, Held shape_arg = {}, Held scale_arg = {}, double abstol = 1.220703e-4, int iterlim = 100) {
+  // Invalid controls remain ordinary errors, even if a legacy fitter reports
+  // a statistical status before checking them.
+  const auto classify = [&](FitResult out, const cppunivariate::StopDetail& detail,
+      const std::string& kind, const std::vector<std::string>& names,
+      const std::string& model="") {
+    if(!(abstol>0 && std::isfinite(abstol) && iterlim>0))return out;
+    if(x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return out;
+    if(kind=="nomle" && !std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return out;
+    if(!finite_stop_payload(detail,kind))return out;
+    return stop_failure(out,detail,kind,names,model);
+  };
 
   if (shape_arg.supplied && (!(shape_arg.value > 0) || !std::isfinite(shape_arg.value))) return failure("Held `shape` must be positive and finite.");
   double shape=shape_arg.supplied ? shape_arg.value : NAN;
@@ -16,7 +27,7 @@ inline FitResult fit_gamma(cppunivariate::span x, Held shape_arg = {}, Held scal
   }
   if(r.status==cppunivariate::GammaStatus::TransformFailure) return failure("Gamma transformed observations exceed double precision.");
   if(r.status==cppunivariate::GammaStatus::IterationFailure) return failure("Gamma delegate optimizer IterationFailure; increase iterlim.");
-  if(r.status==cppunivariate::GammaStatus::Degenerate) return failure("The gamma maximum likelihood estimator does not exist for constant data: the likelihood is unbounded as the shape grows.");
+  if(r.status==cppunivariate::GammaStatus::Degenerate) return classify(failure("The gamma maximum likelihood estimator does not exist for constant data: the likelihood is unbounded as the shape grows."),{},"nomle",{},"");
   if(!std::isfinite(r.shape)||!std::isfinite(r.scale)||!std::isfinite(r.logLik)) return failure("Gamma MLE failed");
   FitResult out;
   out.estimates.emplace_back("shape",r.shape); if(shape_arg.supplied) out.fixed.push_back("shape");

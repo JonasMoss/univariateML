@@ -489,3 +489,21 @@ TEST_CASE("tnorm R6 collapse on one-sided and untruncated supports") {
   const std::vector<double> away(3,1.);
   CHECK(cppunivariate::tnorm_mle(mltest::as_span(away),0,inf,1e-12,100,0).status==cppunivariate::TnormStatus::Ok);
 }
+
+TEST_CASE("tnorm: structured face payloads") {
+  const std::vector<double> x{0,0,1,9};
+  for(int side:{-1,1}) {
+    std::vector<double> y;for(double v:x)y.push_back(2+side*v);
+    const auto r=cppunivariate::tnorm_mle(mltest::as_span(y),side==1?2:-INFINITY,side==1?INFINITY:2);
+    REQUIRE(r.stop_detail.limit_coef.size()==2);
+    CHECK(r.stop_detail.limit_coef[0]==2);CHECK(r.stop_detail.limit_coef[1]==doctest::Approx(.4));
+    CHECK(r.stop_detail.limit_loglik==doctest::Approx(4*(std::log(.4)-1)));
+  }
+  const std::vector<double> ends{.02,.05,.1,.12,.85,.9,.95,.97};
+  const auto t=cppunivariate::tnorm_mle(mltest::as_span(ends),0,1);
+  REQUIRE(t.stop_detail.limit_coef.size()==3);
+  CHECK(t.stop_detail.limit_coef[0]==0);CHECK(t.stop_detail.limit_coef[1]==1);
+  CHECK(t.stop_detail.limit_coef[2]==t.limit_rate);CHECK(t.stop_detail.limit_loglik==t.limit_logLik);
+  const auto u=cppunivariate::tnorm_mle(mltest::as_span(ends),0,1,1e-12,100,.5);
+  REQUIRE(u.stop_detail.limit_coef.size()==2);CHECK(u.stop_detail.limit_loglik==0);
+}

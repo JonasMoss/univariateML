@@ -15,6 +15,7 @@
 // the exponent is within kCut of its maximum. This is accurate in both tails
 // and near t2 = 0, where differences of normal CDFs cancel.
 #pragma once
+#include "../../core/stop_detail.hpp"
 
 #include "../../core/span.hpp"
 #include "../../special/special.hpp"
@@ -46,7 +47,7 @@ struct TnormResult {
   double limit_rate, limit_logLik;
   int iterations;
   TnormStatus status;
-};
+ StopDetail stop_detail{}; };
 
 namespace tnorm_detail {
 
@@ -340,7 +341,7 @@ inline bool tilt_with_zero_mean(double lo, double hi, double &t, Mass &m) {
 // corresponding sample extreme. Pass a finite fixed_mean or
 // fixed_sd to hold that parameter; NaN estimates it. tol is the relative
 // Newton step tolerance in natural parameters.
-inline TnormResult tnorm_mle(span x,
+inline TnormResult tnorm_mle_impl(span x,
                              double a = -std::numeric_limits<double>::infinity(),
                              double b = std::numeric_limits<double>::infinity(),
                              double tol = 1e-12,
@@ -534,3 +535,14 @@ inline TnormResult tnorm_mle(span x,
 }
 
 }  // namespace cppunivariate
+
+namespace cppunivariate {
+inline TnormResult tnorm_mle(span x,double a=-INFINITY,double b=INFINITY,double tol=1e-12,int maxit=100,double mean=NAN,double sd=NAN) {
+  auto r=tnorm_mle_impl(x,a,b,tol,maxit,mean,sd);
+  if(r.status==TnormStatus::UniformBoundary)r.stop_detail=limit_detail({r.a,r.b},r.limit_logLik,StopModel::Unif);
+  if(r.status==TnormStatus::ExponentialBoundary)r.stop_detail=limit_detail({r.a,-r.limit_rate},r.limit_logLik,StopModel::TranslatedExp);
+  if(r.status==TnormStatus::ReflectedExponentialBoundary)r.stop_detail=limit_detail({r.b,r.limit_rate},r.limit_logLik,StopModel::ReflectedExp);
+  if(r.status==TnormStatus::TruncatedExponentialBoundary)r.stop_detail=limit_detail({r.a,r.b,r.limit_rate},r.limit_logLik,StopModel::TruncatedExp);
+  return r;
+}
+}

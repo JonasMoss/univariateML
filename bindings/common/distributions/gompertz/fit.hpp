@@ -6,8 +6,20 @@
 #include <algorithm>
 namespace umvl_binding {
 inline FitResult fit_gompertz(cppunivariate::span x, Held a_arg = {}, Held b_arg = {}, double reltol = 1.220703e-4, int iterlim = 100) {
+  // Invalid controls remain ordinary errors, even if a legacy fitter reports
+  // a statistical status before checking them.
+  const auto classify = [&](FitResult out, const cppunivariate::StopDetail& detail,
+      const std::string& kind, const std::vector<std::string>& names,
+      const std::string& model="") {
+    if(!(reltol>0 && std::isfinite(reltol) && iterlim>0))return out;
+    if(x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v) && v>=0;}))return out;
+    if(kind=="nomle" && !std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return out;
+    if(!finite_stop_payload(detail,kind))return out;
+    return stop_failure(out,detail,kind,names,model);
+  };
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
+  const auto nomle = [&](const std::string& format, const auto&... arguments) { return classify(failure(binding_message(format, arguments...), warnings), {}, "nomle", {}); };
   const Held a = a_arg;
   const Held b = b_arg;
 
@@ -25,11 +37,11 @@ inline FitResult fit_gompertz(cppunivariate::span x, Held a_arg = {}, Held b_arg
 
   auto res = cppunivariate::gompertz_mle(x, reltol, iterlim, a_held, b_held);
   if(res.status==cppunivariate::GompertzStatus::Unbounded)
-    return fail("The Gompertz maximum likelihood estimator does not exist for constant data: the likelihood is unbounded.");
+    return nomle("The Gompertz maximum likelihood estimator does not exist for constant data: the likelihood is unbounded.");
 
   if (res.status == cppunivariate::GompertzStatus::Overdispersed) {
-    return fail("The Gompertz maximum likelihood estimator escapes to an exponential "
-               "when the score at b=0 is nonpositive. Use `mlexp` instead.");
+    return classify(fail("The Gompertz maximum likelihood estimator escapes to an exponential "
+               "when the score at b=0 is nonpositive. Use `mlexp` instead."),res.stop_detail,"limit",{"rate"},"exp");
   }
   if (res.status != cppunivariate::GompertzStatus::Ok || !std::isfinite(res.a) ||
       !std::isfinite(res.b)) {

@@ -6,6 +6,17 @@
 #include <limits>
 namespace umvl_binding {
 inline FitResult fit_trgamma(cppunivariate::span x, Held shape1_arg = {}, Held shape2_arg = {}, Held scale_arg = {}, double reltol = 1e-10, int iterlim = 100) {
+  // Invalid controls remain ordinary errors, even if a legacy fitter reports
+  // a statistical status before checking them.
+  const auto classify = [&](FitResult out, const cppunivariate::StopDetail& detail,
+      const std::string& kind, const std::vector<std::string>& names,
+      const std::string& model="") {
+    if(!(reltol>0 && std::isfinite(reltol) && iterlim>0))return out;
+    if(x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return out;
+    if(kind=="nomle" && !std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return out;
+    if(!finite_stop_payload(detail,kind))return out;
+    return stop_failure(out,detail,kind,names,model);
+  };
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
   const Held shape1 = shape1_arg;
@@ -23,14 +34,15 @@ inline FitResult fit_trgamma(cppunivariate::span x, Held shape1_arg = {}, Held s
   const cppunivariate::span xs = x;
   auto res = scale.supplied ? cppunivariate::trgamma_mle_fixed_scale(xs,scale.value,a,b,reltol,iterlim) : cppunivariate::trgamma_mle(xs, reltol, iterlim, a, b);
   if (res.status == cppunivariate::TrGammaStatus::InvalidData)
-    return fail("trgamma requires at least two distinct positive finite observations, "
+    return (x.size()>=2 && std::isfinite(x[0]) && !scale.supplied && (std::isnan(a)||std::isnan(b)) && reltol>0 && std::isfinite(reltol) && iterlim>0 && x[0]>0 && std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];})) ? classify(fail("trgamma requires at least two distinct positive finite observations, "
+               "positive `reltol` and positive `iterlim`; constant samples can have unbounded likelihood."),{},"nomle",{}) : fail("trgamma requires at least two distinct positive finite observations, "
                "positive `reltol` and positive `iterlim`; constant samples can have unbounded likelihood.");
   if (res.status == cppunivariate::TrGammaStatus::LognormalBoundary)
-    return fail("The trgamma likelihood is maximised at a limit. Use `mllnorm` to fit this model.");
+    return classify(fail("The trgamma likelihood is maximised at a limit. Use `mllnorm` to fit this model."),res.stop_detail,"limit",{"meanlog","sdlog"},"lnorm");
   if (res.status == cppunivariate::TrGammaStatus::PowerBoundary && scale.supplied)
-    return fail("The held-scale likelihood selects the limiting fixed-endpoint power face at scale; no matching held-endpoint fitter is available.");
+    return classify(fail("The held-scale likelihood selects the limiting fixed-endpoint power face at scale; no matching held-endpoint fitter is available."),res.stop_detail,"limit",{"alpha","beta"},"power");
   if (res.status == cppunivariate::TrGammaStatus::PowerBoundary)
-    return fail("The trgamma likelihood is maximised at a limit. Use `mlpower` to fit this model.");
+    return classify(fail("The trgamma likelihood is maximised at a limit. Use `mlpower` to fit this model."),res.stop_detail,"limit",{"alpha","beta"},"power");
   if (res.status == cppunivariate::TrGammaStatus::ScaleOutOfRange) {
     const double gap = res.logLik - cppunivariate::lognormal_mle(xs).logLik;
     return fail("The trgamma maximum likelihood fit lies so close to the lognormal limit "

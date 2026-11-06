@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/stop_detail.hpp"
 #include "../../core/precision.hpp"
 #include "dpqr.hpp"
 #include "../../core/span.hpp"
@@ -7,7 +8,7 @@
 #include <vector>
 namespace cppunivariate {
 enum class SlashStatus { Ok, Unbounded, CollapseLimit, InvalidInput, IterationFailure };
-struct SlashResult {double mu,sigma,logLik;int iterations;SlashStatus status;};
+struct SlashResult {double mu,sigma,logLik;int iterations;SlashStatus status;StopDetail stop_detail{};bool budget_exhausted=false;};
 namespace slash_detail {
 // Evaluate on the original observations again after affine back-transformation:
 // subnormal rounding of the returned scale can invalidate an internal root.
@@ -101,7 +102,13 @@ inline bool certify_held(const Profile& p,const std::vector<double>& grid,
   }
   std::size_t work=0;
   while(!stack.empty()) {
-    if(++work>budget)return false;
+    if(++work>budget) {
+      best.budget_exhausted=true;
+      const double ll=best.logLik-offset;
+      best.stop_detail.candidates.push_back({{best.mu,best.sigma},ll,ll,StopModel::None});
+      best.stop_detail.loglik_lower=ll;best.stop_detail.loglik_upper=INFINITY;
+      return false;
+    }
     const HeldInterval q=stack.back();stack.pop_back();
     const double margin=1e-9*(1+std::abs(best.logLik-offset));
     const double width=q.hi-q.lo;
@@ -164,7 +171,13 @@ inline bool certify_free(const Profile& p,const std::vector<double>& grid,const 
   for(std::size_t i=1;i<grid.size();++i)stack.push_back({grid[i-1],grid[i],ll[i-1],ll[i]});
   std::size_t work=0;const double n=p.x.size();
   while(!stack.empty()) {
-    if(++work>budget)return false;
+    if(++work>budget) {
+      best.budget_exhausted=true;
+      const double ll=best.logLik-offset;
+      best.stop_detail.candidates.push_back({{best.mu,best.sigma},ll,ll,StopModel::None});
+      best.stop_detail.loglik_lower=ll;best.stop_detail.loglik_upper=INFINITY;
+      return false;
+    }
     const auto q=stack.back();stack.pop_back();
     const double mid=q.lo/2+q.hi/2;
     std::vector<double> near,far;
@@ -320,6 +333,11 @@ inline SlashResult slash_mle(span x,double tol=1e-9,int maxit=200,double sigma=s
   if(std::isnan(sigma)&&best.status==SlashStatus::Ok) {
     double lo=0,hi=0;
     if(!slash_detail::certify_free(p,grid,ll,n*std::log(scale),boundary,best,lo,hi)) {
+      if(best.budget_exhausted) {
+        best.status=SlashStatus::IterationFailure;
+        for(auto& c:best.stop_detail.candidates){c.coef[0]=centre+scale*c.coef[0];c.coef[1]*=scale;}
+        return best;
+      }
       bad.status=SlashStatus::IterationFailure;return bad;
     }
     if(hi>lo) {
@@ -338,6 +356,11 @@ inline SlashResult slash_mle(span x,double tol=1e-9,int maxit=200,double sigma=s
   if(!std::isnan(sigma)&&best.status==SlashStatus::Ok) {
     double lo=0,hi=0;
     if(!slash_detail::certify_held(p,grid,ll,n*std::log(scale),best,lo,hi)) {
+      if(best.budget_exhausted) {
+        best.status=SlashStatus::IterationFailure;
+        for(auto& c:best.stop_detail.candidates){c.coef[0]=centre+scale*c.coef[0];c.coef[1]*=scale;}
+        return best;
+      }
       bad.status=SlashStatus::IterationFailure;return bad;
     }
     if(hi>lo) {

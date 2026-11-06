@@ -30,7 +30,7 @@ inline FitResult fit_std(cppunivariate::span x, Held mean_arg = {}, Held sd_arg 
   if (res.status == cppunivariate::StudentTStatus::Unbounded)
     return stop_failure(fail("Likelihood is unbounded at a tie of excessive multiplicity k > nu*(n-k) (free df: k > 2*(n-k)); no MLE."),res.stop_detail,"nomle",{"mean","sd","nu"});
   if (res.status == cppunivariate::StudentTStatus::ScaleBoundary)
-    return stop_failure(fail("Tie equality scale-collapse boundary; a regular MLE is not certified."),res.stop_detail,"nomle",{"mean","sd","nu"},(!mean.supplied&&!sd.supplied&&!nu.supplied)?"t scale collapse (no package family)":"");
+    return stop_failure(fail("Tie equality scale-collapse boundary; a regular MLE is not certified."),res.stop_detail,"nomle",{"mean","sd","nu"},(!mean.supplied&&!sd.supplied&&!nu.supplied)?"unavailable:t-scale-collapse":"");
   if (res.status == cppunivariate::StudentTStatus::IterationFailure)
     return fail("Student-t optimizer IterationFailure: did not converge to the score tolerance; increase iterlim.");
   if (res.status == cppunivariate::StudentTStatus::NormalBoundary) {

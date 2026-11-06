@@ -354,7 +354,7 @@ test_that("std certificate reports normal and collapse separately", {
   expect_equal(unname(normal$estimates),c(0,1))
   collapse <- tryCatch(mlstd(c(-1,0,0,0,0,1)), error=identity)
   expect_s3_class(collapse,"univariateML_nomle")
-  expect_identical(collapse$model,"t scale collapse (no package family)")
+  expect_identical(collapse$model,"unavailable:t-scale-collapse")
   expect_equal(unname(collapse$estimates),c(0,2))
   expect_lte(collapse$loglik_lower,-6*log(2))
   expect_gte(collapse$loglik_upper,-6*log(2))

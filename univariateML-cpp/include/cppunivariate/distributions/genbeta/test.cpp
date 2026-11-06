@@ -128,3 +128,20 @@ TEST_CASE("genbeta: audited huge held-parameter magnitude") {
   CHECK((r.status==cppunivariate::GenbetaStatus::Ok || r.status==cppunivariate::GenbetaStatus::PowerBoundary || r.status==cppunivariate::GenbetaStatus::SearchUnresolved));
   CHECK(r.status!=cppunivariate::GenbetaStatus::UnitGammaBoundary);
 }
+
+TEST_CASE("genbeta: structured face payloads") {
+  std::vector<double> x,p;
+  for(int i=0;i<300;++i) {const double u=(i+.5)/300;
+    x.push_back(std::exp(-cppunivariate::special::qgamma(u,2,1./3,true,false)));p.push_back(.7*u*u);}
+  const auto g=cppunivariate::genbeta_mle(mltest::as_span(x),1);
+  REQUIRE(g.stop_detail.limit_coef.size()==3);
+  double ll=0;for(double v:x)ll+=cppunivariate::special::dgamma(-std::log(v),g.stop_detail.limit_coef[0],g.stop_detail.limit_coef[1],true)-std::log(v);
+  CHECK(g.stop_detail.limit_loglik==doctest::Approx(ll));CHECK(g.stop_detail.limit_coef[2]==1);
+  const auto r=cppunivariate::genbeta_mle(mltest::as_span(p),1);
+  REQUIRE(r.stop_detail.limit_coef.size()==2);
+  CHECK(r.stop_detail.limit_coef[0]==doctest::Approx(p.back()));
+  const auto public_fit=cppunivariate::power_mle(mltest::as_span(p));
+  CHECK(r.stop_detail.limit_coef[0]==doctest::Approx(public_fit.alpha));
+  CHECK(r.stop_detail.limit_coef[1]==doctest::Approx(public_fit.beta));
+  CHECK(r.stop_detail.limit_loglik==doctest::Approx(public_fit.logLik));
+}

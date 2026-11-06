@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/stop_detail.hpp"
 #include "../../core/face_compare.hpp"
 #include "../emg/logconcave_profile.hpp"
 #include "../../core/precision.hpp"
@@ -9,7 +10,7 @@
 #include <vector>
 namespace cppunivariate {
 enum class BhattStatus {Ok,NormalLimit,UniformLimit,Unbounded,InvalidInput,IterationFailure};
-struct BhattResult {double mu,sigma,a,logLik;int iterations;BhattStatus status;};
+struct BhattResult {double mu,sigma,a,logLik;int iterations;BhattStatus status; StopDetail stop_detail{}; };
 namespace bhatt_detail {
 struct Profile {
   const std::vector<double>& x;double sigma,a,face;double held_mu=special::kNaN;
@@ -139,7 +140,9 @@ inline BhattResult bhatt_mle(span x,double tol=1e-8,int maxit=500,double sigma=s
       double left=0,right=0;for(double z:y){if(z==y.front())++left;if(z==y.back())++right;}
       ll+=left*std::log(left/(left+right))+right*std::log(right/(left+right));
     }
-    return {std::isnan(mu)?centre:mu,0,a,ll-n*std::log(scale),0,BhattStatus::UniformLimit};
+    BhattResult face_fit={std::isnan(mu)?centre:mu,0,a,ll-n*std::log(scale),0,BhattStatus::UniformLimit};
+    face_fit.stop_detail=limit_detail({face_fit.mu-a,face_fit.mu+a},face_fit.logLik,StopModel::Unif);
+    return face_fit;
   }
   double face=special::kNegInf;
   if(std::isnan(a)) {
@@ -211,13 +214,24 @@ inline BhattResult bhatt_mle(span x,double tol=1e-8,int maxit=500,double sigma=s
   }
   if(!std::isfinite(best.logLik))best=attempted;
   const double tie=1e-8*n;
+  const auto tied_face=[&](std::vector<double> coef,double ll,StopModel model) {
+    StopDetail d;d.comparison_tie=true;
+    const double face=ll-n*std::log(scale);d.candidates.push_back({coef,face,face,model});
+    d.loglik_lower=face;d.loglik_upper=INFINITY;
+    if(best.sigma>0 && best.a>=0) {
+      const double finite=best.logLik-n*std::log(scale);
+      d.candidates.push_back({{centre+scale*best.mu,scale*best.sigma,scale*best.a},finite,finite,StopModel::None});
+      d.loglik_lower=std::max(d.loglik_lower,finite);
+    }
+    best.status=BhattStatus::IterationFailure;best.stop_detail=d;
+  };
   auto compare_faces=[&]() {
   double comparison=attempted.logLik;
   if(std::isnan(a)) {
     double m=0;for(double z:y)m+=z/n;if(!std::isnan(mu))m=held_mu;double var=0;for(double z:y)var+=(z-m)*(z-m)/n;
     const double s=std::isnan(sigma)?std::sqrt(var):p.sigma;
     double ll=-n*(std::log(s)+.91893853320467274178)-n*var/(2*s*s);
-    if(face_numerical_tie(ll,comparison,tie)) {best.status=BhattStatus::IterationFailure;return;}
+    if(face_numerical_tie(ll,comparison,tie)) {tied_face({centre+scale*m,scale*s},ll,StopModel::Norm);return;}
     if(ll>=comparison-tie){best={m,s,0,ll,0,BhattStatus::Ok};comparison=ll;}
   }
   if(std::isnan(sigma)) {
@@ -229,7 +243,10 @@ inline BhattResult bhatt_mle(span x,double tol=1e-8,int maxit=500,double sigma=s
         double left=0,right=0;for(double z:y){if(z==y.front())++left;if(z==y.back())++right;}
         ll+=left*std::log(left/(left+right))+right*std::log(right/(left+right));
       }
-    if(face_numerical_tie(ll,comparison,(best.a==0?0:tie))) {best.status=BhattStatus::IterationFailure;return;}
+    if(face_numerical_tie(ll,comparison,(best.a==0?0:tie))) {
+      const double midpoint=std::isnan(mu)?centre+scale*(y.front()+y.back())/2:mu;
+      tied_face({midpoint-scale*b,midpoint+scale*b},ll,StopModel::Unif);return;
+    }
       if(ll>=comparison-(best.a==0?0:tie))best={0,0,b,ll,0,BhattStatus::UniformLimit};
     }
   }
@@ -242,6 +259,12 @@ inline BhattResult bhatt_mle(span x,double tol=1e-8,int maxit=500,double sigma=s
     if(!std::isfinite(best.logLik))best=attempted;
     compare_faces();
   }
-  best.mu=std::isnan(mu)?centre+scale*best.mu:mu;best.sigma=std::isnan(sigma)?scale*best.sigma:sigma;best.a=std::isnan(a)?scale*best.a:a;best.logLik-=n*std::log(scale);return best;
+  best.mu=std::isnan(mu)?centre+scale*best.mu:mu;best.sigma=std::isnan(sigma)?scale*best.sigma:sigma;best.a=std::isnan(a)?scale*best.a:a;best.logLik-=n*std::log(scale);
+  if(best.status==BhattStatus::UniformLimit) {
+    const double midpoint=std::isnan(mu)?centre+scale*(y.front()+y.back())/2:mu;
+    best.stop_detail=limit_detail({midpoint-best.a,midpoint+best.a},best.logLik,StopModel::Unif);
+  }
+  if(best.status==BhattStatus::NormalLimit)best.stop_detail=limit_detail({best.mu,best.sigma},best.logLik,StopModel::Norm);
+  return best;
 }
 }

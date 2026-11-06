@@ -6,8 +6,20 @@
 #include <limits>
 namespace umvl_binding {
 inline FitResult fit_sged(cppunivariate::span x, Held mean_arg = {}, Held sd_arg = {}, Held nu_arg = {}, Held xi_arg = {}, double gradtol = 1.220703e-4, int iterlim = 200) {
+  // Invalid controls remain ordinary errors, even if a legacy fitter reports
+  // a statistical status before checking them.
+  const auto classify = [&](FitResult out, const cppunivariate::StopDetail& detail,
+      const std::string& kind, const std::vector<std::string>& names,
+      const std::string& model="") {
+    if(!(gradtol>0 && std::isfinite(gradtol) && iterlim>0))return out;
+    if(x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return out;
+    if(kind=="nomle" && !std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return out;
+    if(!finite_stop_payload(detail,kind))return out;
+    return stop_failure(out,detail,kind,names,model);
+  };
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
+  const auto nomle = [&](const std::string& format, const auto&... arguments) { return classify(failure(binding_message(format, arguments...), warnings), {}, "nomle", {}); };
   const Held mean = mean_arg;
   const Held sd = sd_arg;
   const Held nu = nu_arg;
@@ -24,24 +36,31 @@ inline FitResult fit_sged(cppunivariate::span x, Held mean_arg = {}, Held sd_arg
   if(xi.supplied && (!(std::isfinite(held_xi) && held_xi>0))) return fail("Invalid held `xi`: requires a finite value in its parameter domain.");
   auto res=cppunivariate::sged_mle(x,gradtol,iterlim,held_mean,held_sd,held_nu,held_xi);
   if(res.status==cppunivariate::SgedStatus::UnsupportedHold) return fail("Unsupported conditional fit.");
-  if(res.status==cppunivariate::SgedStatus::Unbounded) return fail("Scale collapse: likelihood is unbounded at the held mean; no MLE.");
+  if(res.status==cppunivariate::SgedStatus::Unbounded) return nomle("Scale collapse: likelihood is unbounded at the held mean; no MLE.");
   if(res.status==cppunivariate::SgedStatus::ScaleBoundary) return fail("Scale-collapse or constrained uniform endpoint boundary could not be certified; no finite MLE returned.");
   if (res.status == cppunivariate::SgedStatus::InvalidStart) {
+    if(!sd.supplied && gradtol>0 && std::isfinite(gradtol) && iterlim>0 && !x.empty() && std::isfinite(x[0]) && (!mean.supplied || held_mean==x[0]) && std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return classify(fail("Skew GED MLE requires at least 2 finite observations with "
+               "positive variance."),{},"nomle",{});
     return fail("Skew GED MLE requires at least 2 finite observations with "
                "positive variance.");
   }
+  const auto face_fail = [&](const std::string& message, const std::string& model, const std::vector<std::string>& names) {
+    if(res.stop_detail.comparison_tie)return classify(fail(message),res.stop_detail,"tie",names);
+    if(res.stop_detail.limit_coef.empty())return fail(message);
+    return classify(fail(message),res.stop_detail,"limit",names,model);
+  };
   if (res.status == cppunivariate::SgedStatus::UniformBoundary) {
-    return fail("SGED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.");
+    return face_fail("SGED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.","unif",{"a","b"});
   }
   if (res.status == cppunivariate::SgedStatus::RightHalfGedBoundary) {
     if(mean.supplied || sd.supplied)
-      return fail("The likelihood is maximised by a translated half-GED with endpoint constrained by the held moments; no MLE in the skewed family.");
-    return fail("The likelihood is maximised by a translated half-GED with mode at the sample minimum; no MLE in the skewed family.");
+      return face_fail("The likelihood is maximised by a translated half-GED with endpoint constrained by the held moments; no MLE in the skewed family.","unavailable:half-ged",{"mu","scale","nu"});
+    return face_fail("The likelihood is maximised by a translated half-GED with mode at the sample minimum; no MLE in the skewed family.","unavailable:half-ged",{"mu","scale","nu"});
   }
   if (res.status == cppunivariate::SgedStatus::LeftHalfGedBoundary) {
     if(mean.supplied || sd.supplied)
-      return fail("The likelihood is maximised by a translated half-GED with reflected endpoint constrained by the held moments; no MLE in the skewed family.");
-    return fail("The likelihood is maximised by a translated half-GED with mode at the sample maximum; no MLE in the skewed family.");
+      return face_fail("The likelihood is maximised by a translated half-GED with reflected endpoint constrained by the held moments; no MLE in the skewed family.","unavailable:reflected-half-ged",{"mu","scale","nu"});
+    return face_fail("The likelihood is maximised by a translated half-GED with mode at the sample maximum; no MLE in the skewed family.","unavailable:reflected-half-ged",{"mu","scale","nu"});
   }
   if (!std::isfinite(res.mu) || !std::isfinite(res.sigma) ||
       !std::isfinite(res.nu) || !std::isfinite(res.xi)) {

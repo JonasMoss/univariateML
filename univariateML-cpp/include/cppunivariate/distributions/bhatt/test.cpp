@@ -159,3 +159,14 @@ TEST_CASE("bhatt: audited huge held-parameter magnitude") {
   CHECK((r.status==cppunivariate::BhattStatus::Ok || r.status==cppunivariate::BhattStatus::IterationFailure));
   CHECK(!(r.status==cppunivariate::BhattStatus::Ok && r.a==0));
 }
+
+TEST_CASE("bhatt: structured face payloads") {
+  const std::vector<double> x{-1,-.5,0,.5,1};
+  for(double width:{static_cast<double>(NAN),2.}) {
+    const auto r=cppunivariate::bhatt_mle(mltest::as_span(x),1e-8,500,NAN,width);
+    REQUIRE(r.stop_detail.limit_coef.size()==2);
+    const double a=std::isnan(width)?1:width;
+    CHECK(r.stop_detail.limit_coef[0]==-a);CHECK(r.stop_detail.limit_coef[1]==a);
+    CHECK(r.stop_detail.limit_loglik==doctest::Approx(-5*std::log(2*a)));
+  }
+}

@@ -5,8 +5,20 @@
 #include <limits>
 namespace umvl_binding {
 inline FitResult fit_triang(cppunivariate::span x, Held a_arg = {}, Held b_arg = {}, Held c_arg = {}, double reltol = 1e-12, int iterlim = 100) {
+  // Invalid controls remain ordinary errors, even if a legacy fitter reports
+  // a statistical status before checking them.
+  const auto classify = [&](FitResult out, const cppunivariate::StopDetail& detail,
+      const std::string& kind, const std::vector<std::string>& names,
+      const std::string& model="") {
+    if(!(reltol>0 && std::isfinite(reltol) && iterlim>0))return out;
+    if(x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return out;
+    if(kind=="nomle" && !std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return out;
+    if(!finite_stop_payload(detail,kind))return out;
+    return stop_failure(out,detail,kind,names,model);
+  };
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
+  const auto nomle = [&](const std::string& format, const auto&... arguments) { return classify(failure(binding_message(format, arguments...), warnings), {}, "nomle", {}); };
   const Held a = a_arg;
   const Held b = b_arg;
   const Held c = c_arg;
@@ -42,7 +54,7 @@ const Held z = c;
 
   auto r=cppunivariate::triang_mle(x,reltol,iterlim,checked_value_0,checked_value_1,checked_value_2);
   if(r.status==cppunivariate::TriangStatus::Unbounded)
-    return fail("Triangular likelihood is unbounded for constant data with these fixed parameters.");
+    return nomle("Triangular likelihood is unbounded for constant data with these fixed parameters.");
   if(r.status==cppunivariate::TriangStatus::Incompatible)
     return fail("Data incompatible with held triangular parameters (outside a held endpoint or zero likelihood).");
   if(r.status==cppunivariate::TriangStatus::InvalidInput)

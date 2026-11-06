@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/stop_detail.hpp"
 #include "../../core/span.hpp"
 #include "../../special/special.hpp"
 #include <algorithm>
@@ -13,7 +14,7 @@ enum class HtStatus { Ok, InvalidData, InvalidParameter, Unbounded, ScaleBoundar
 // `mu` defaults to NaN: `ht_mle_zero` and the search helpers below never set
 // it (they operate on already-translated data); the public `ht_mle` entry
 // point at the bottom of this file always fills it in before returning.
-struct HtResult { double nu, sigma, logLik; int iterations; HtStatus status; unsigned restricted = 0; double mu = std::numeric_limits<double>::quiet_NaN(); };
+struct HtResult { double nu, sigma, logLik; int iterations; HtStatus status; unsigned restricted = 0; double mu = std::numeric_limits<double>::quiet_NaN();  StopDetail stop_detail{}; bool budget_exhausted=false; };
 namespace ht_detail {
 constexpr double inf = std::numeric_limits<double>::infinity();
 inline double log_mode(double nu) {
@@ -187,6 +188,7 @@ inline HtResult free_threshold_search(span y, double held_sigma) {
   // at the tie, whose interior search starts strictly above 1) means the
   // restriction, not an interior score, picked this nu.
   if(!tie && best_t==lower) r.restricted|=4u;
+  if(r.status==HtStatus::NormalLimit)r.stop_detail=limit_detail({std::isfinite(r.mu)?r.mu:0,r.sigma},r.logLik,StopModel::Hnorm);
   return r;
 }
 } // namespace ht_detail
@@ -199,6 +201,7 @@ inline HtResult ht_mle_zero(span x, double held_nu = std::numeric_limits<double>
   if (std::isnan(held_nu) && (r.status == HtStatus::Ok || r.status == HtStatus::NormalLimit ||
                               r.status == HtStatus::ScaleBoundary || r.status == HtStatus::SearchFailure))
     r = ht_detail::certified_search(x, held_sigma, false, r);
+  if(r.status==HtStatus::NormalLimit)r.stop_detail=limit_detail({std::isfinite(r.mu)?r.mu:0,r.sigma},r.logLik,StopModel::Hnorm);
   return r;
 }
 
@@ -229,6 +232,8 @@ inline HtResult ht_mle(span x, double mu, double nu, double sigma) {
                          r.status == HtStatus::ScaleBoundary || r.status == HtStatus::SearchFailure))
     r = ht_detail::certified_search(span{y.data(), y.size()}, sigma, mu_free, r);
   r.mu = mu_hat;
+  for(auto& c:r.stop_detail.candidates)if(!c.coef.empty())c.coef[0]=mu_hat;
+  if(r.status==HtStatus::NormalLimit)r.stop_detail=limit_detail({std::isfinite(r.mu)?r.mu:0,r.sigma},r.logLik,StopModel::Hnorm);
   return r;
 }
 

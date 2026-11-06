@@ -234,3 +234,16 @@ TEST_CASE("ht: cached and log-domain scale boxes enclose roots") {
     }
   }
 }
+
+TEST_CASE("ht: structured face payloads") {
+  const std::vector<double> x{1,1.5,2,2.5,3};
+  const auto r=cppunivariate::ht_mle(mltest::as_span(x),0,NAN,NAN);
+  REQUIRE(r.stop_detail.limit_coef.size()==2);
+  CHECK(r.stop_detail.limit_coef[0]==0);
+  CHECK(r.stop_detail.limit_coef[1]==doctest::Approx(std::sqrt(4.5)));
+  CHECK(r.stop_detail.limit_loglik==doctest::Approx(5*(.5*std::log(2/std::acos(-1.))-.5*std::log(4.5)-.5)));
+  const auto b=cppunivariate::ht_detail::certified_search(mltest::as_span(x),NAN,false,r,0);
+  REQUIRE(b.budget_exhausted);CHECK(b.stop_detail.candidates.size()>=1);
+  CHECK(std::isinf(b.stop_detail.loglik_upper));
+  CHECK(b.stop_detail.loglik_lower>=b.stop_detail.candidates[0].loglik_lower);
+}

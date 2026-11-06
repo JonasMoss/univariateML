@@ -5,6 +5,17 @@
 #include <limits>
 namespace umvl_binding {
 inline FitResult fit_ged(cppunivariate::span x, Held mean_arg = {}, Held sd_arg = {}, Held nu_arg = {}, double gradtol = 1.220703e-4, int iterlim = 200) {
+  // Invalid controls remain ordinary errors, even if a legacy fitter reports
+  // a statistical status before checking them.
+  const auto classify = [&](FitResult out, const cppunivariate::StopDetail& detail,
+      const std::string& kind, const std::vector<std::string>& names,
+      const std::string& model="") {
+    if(!(gradtol>0 && std::isfinite(gradtol) && iterlim>0))return out;
+    if(x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return out;
+    if(kind=="nomle" && !std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return out;
+    if(!finite_stop_payload(detail,kind))return out;
+    return stop_failure(out,detail,kind,names,model);
+  };
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
   const Held mean = mean_arg;
@@ -25,13 +36,16 @@ inline FitResult fit_ged(cppunivariate::span x, Held mean_arg = {}, Held sd_arg 
   auto res = cppunivariate::ged_mle(x, gradtol, iterlim, held_mean, held_sd, held_nu);
   if(res.status==cppunivariate::GedStatus::InvalidShape)return fail("Held `nu` must be at least 1 under the existing GED restriction.");
   if(res.sigma==0 && (mean.supplied||sd.supplied||nu.supplied))
-    return fail("GED scale likelihood is unbounded: all observations equal the fitted or held location.");
+    return classify(fail("GED scale likelihood is unbounded: all observations equal the fitted or held location."),{},"nomle",{});
+  if(res.stop_detail.comparison_tie)return classify(fail("Conditional GED search did not converge; increase iterlim."),res.stop_detail,"tie",{"mean","sd","nu"});
   if (res.status == cppunivariate::GedStatus::InvalidStart) {
+    if(!sd.supplied && gradtol>0 && std::isfinite(gradtol) && iterlim>0 && !x.empty() && std::isfinite(x[0]) && (!mean.supplied || held_mean==x[0]) && std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return classify(fail("GED MLE requires at least 2 finite observations with positive "
+               "variance."),{},"nomle",{});
     return fail("GED MLE requires at least 2 finite observations with positive "
                "variance.");
   }
   if (res.status == cppunivariate::GedStatus::UniformBoundary) {
-    return fail("GED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.");
+    return classify(fail("GED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead."),res.stop_detail,"limit",{"a","b"},"unif");
   }
   if(res.status==cppunivariate::GedStatus::BfgsFailure)return fail("Conditional GED search did not converge; increase iterlim.");
   if (!std::isfinite(res.mu) || !std::isfinite(res.sigma) ||

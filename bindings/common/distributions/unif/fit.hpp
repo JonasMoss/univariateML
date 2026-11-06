@@ -5,8 +5,17 @@
 #include <limits>
 namespace umvl_binding {
 inline FitResult fit_unif(cppunivariate::span x, Held min_arg = {}, Held max_arg = {}) {
+  const auto classify = [&](FitResult out, const cppunivariate::StopDetail& detail,
+      const std::string& kind, const std::vector<std::string>& names,
+      const std::string& model="") {
+    if(x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return out;
+    if(kind=="nomle" && !std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return out;
+    if(!finite_stop_payload(detail,kind))return out;
+    return stop_failure(out,detail,kind,names,model);
+  };
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
+  const auto nomle = [&](const std::string& format, const auto&... arguments) { return classify(failure(binding_message(format, arguments...), warnings), {}, "nomle", {}); };
   const Held min = min_arg;
   const Held max = max_arg;
 
@@ -27,7 +36,7 @@ inline FitResult fit_unif(cppunivariate::span x, Held min_arg = {}, Held max_arg
   if (res.status == cppunivariate::UnifStatus::Incompatible)
     return fail("Data outside held uniform endpoints.");
   if (res.status == cppunivariate::UnifStatus::Unbounded) {
-    return fail("The uniform maximum likelihood estimator does not exist for constant data: "
+    return nomle("The uniform maximum likelihood estimator does not exist for constant data: "
                "the likelihood is unbounded as max - min shrinks to zero.");
   }
   return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"min",res.min},{"max",res.max}}; out.fixed = fixed; out.has_fixed = true; out.logLik = res.logLik; return out; }();

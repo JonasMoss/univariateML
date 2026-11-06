@@ -113,7 +113,7 @@ test('std certificate distinguishes ordinary t2 and collapse paths', async () =>
   });
   assert.throws(() => api.std.fit(new Float64Array([-1, 0, 0, 0, 0, 1])), error => {
     assert.equal(error.kind, 'nomle');
-    assert.equal(error.model, 't scale collapse (no package family)');
+    assert.equal(error.model, 'unavailable:t-scale-collapse');
     assert.deepEqual(error.estimates, {mu: 0, df: 2});
     assert.ok(error.loglik_lower <= -6 * Math.log(2));
     assert.ok(error.loglik_upper >= -6 * Math.log(2));

@@ -5,8 +5,17 @@
 #include <limits>
 namespace umvl_binding {
 inline FitResult fit_snorm(cppunivariate::span x, Held mean_arg = {}, Held sd_arg = {}, Held xi_arg = {}) {
+  const auto classify = [&](FitResult out, const cppunivariate::StopDetail& detail,
+      const std::string& kind, const std::vector<std::string>& names,
+      const std::string& model="") {
+    if(x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return out;
+    if(kind=="nomle" && !std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return out;
+    if(!finite_stop_payload(detail,kind))return out;
+    return stop_failure(out,detail,kind,names,model);
+  };
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
+  const auto nomle = [&](const std::string& format, const auto&... arguments) { return classify(failure(binding_message(format, arguments...), warnings), {}, "nomle", {}); };
   const Held mean = mean_arg;
   const Held sd = sd_arg;
   const Held xi = xi_arg;
@@ -19,13 +28,14 @@ inline FitResult fit_snorm(cppunivariate::span x, Held mean_arg = {}, Held sd_ar
   const double held_xi=xi.supplied ? xi.value : nan;
   if(xi.supplied && (!(std::isfinite(held_xi) && held_xi>0))) return fail("Invalid held `xi`: requires a finite value in its parameter domain.");
   auto res=cppunivariate::snorm_mle(x,1.220703e-4,200,held_mean,held_sd,held_xi);
-  if(res.status==cppunivariate::SnormStatus::Unbounded) return fail("Scale collapse: the conditional skew-normal likelihood is unbounded; no MLE.");
+  if(res.status==cppunivariate::SnormStatus::Unbounded) return nomle("Scale collapse: the conditional skew-normal likelihood is unbounded; no MLE.");
+  if(res.stop_detail.comparison_tie)return classify(fail("Conditional skew-normal fit did not converge."),res.stop_detail,"tie",{"mean","sd","xi"});
   if(res.status==cppunivariate::SnormStatus::BfgsFailure) return fail("Conditional skew-normal fit did not converge.");
   if (res.status == cppunivariate::SnormStatus::RightHalfNormalBoundary) {
-    return fail("The likelihood is maximised by a translated half-normal (mode at the sample minimum); the skew-normal MLE does not exist. Use `mlhnorm` to fit a translated half-normal.");
+    return classify(fail("The likelihood is maximised by a translated half-normal (mode at the sample minimum); the skew-normal MLE does not exist. Use `mlhnorm` to fit a translated half-normal."),res.stop_detail,"limit",{"mu","sigma"},"hnorm");
   }
   if (res.status == cppunivariate::SnormStatus::LeftHalfNormalBoundary) {
-    return fail("The likelihood is maximised by a translated half-normal (mode at the sample maximum); the skew-normal MLE does not exist. Use `mlhnorm` on `-x` (a half-normal reflected at the sample maximum).");
+    return classify(fail("The likelihood is maximised by a translated half-normal (mode at the sample maximum); the skew-normal MLE does not exist. Use `mlhnorm` on `-x` (a half-normal reflected at the sample maximum)."),res.stop_detail,"limit",{"mu","sigma"},"unavailable:reflected-half-normal");
   }
   if (res.status == cppunivariate::SnormStatus::InvalidStart) {
     return fail("Skew-normal MLE requires at least 2 finite observations with "

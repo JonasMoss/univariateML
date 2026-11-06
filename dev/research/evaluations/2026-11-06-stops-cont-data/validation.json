@@ -1,0 +1,230 @@
+{
+  "task": "TASK-141.1 stops-cont",
+  "completed_utc": "2026-11-06T13:22:02.536236+00:00",
+  "base_revision": "164d41784756606a48ddc0cedc67752acab4050b",
+  "source_fingerprint": {
+    "algorithm": "SHA256(sorted path + NUL + file bytes + NUL)",
+    "excluded": [
+      "dev/research/evaluations/2026-11-06-stops-cont-report.md",
+      "dev/research/evaluations/2026-11-06-stops-cont-data/validation.json"
+    ],
+    "file_count": 98,
+    "sha256": "b393e6fbe1e791967923c8f67397ada9b3e4a07d127a9f7853987d482a6c59b8",
+    "files": {
+      "bindings/common/distributions/beta/fit.hpp": "e2706935279c767ccb5da7594e211707f4a243fea802f3e6375b1e967e253972",
+      "bindings/common/distributions/bhatt/fit.hpp": "58af7ec886a2af0126ae0ead0dd80f63750c1f852e95147c9b7c0bbc649dd873",
+      "bindings/common/distributions/emg/fit.hpp": "bfc91e4586d5b291afc0646314ce4d678b7e2c24143b8b570829a3e338b18240",
+      "bindings/common/distributions/exp/fit.hpp": "78dabc615ada02d1cca4bbfa437e3f69bb7e1d71ca7371fd9f605961ab84eca0",
+      "bindings/common/distributions/fatigue/fit.hpp": "44aed008b208a5b9f0020b7c41ac772764c6f35014688f57c8776b93e47f0cff",
+      "bindings/common/distributions/foldnorm/fit.hpp": "34c669eaf1dbe80363c82d4a881cb3da9bd0b8563c78cc8dd617ae489d867848",
+      "bindings/common/distributions/gamma/fit.hpp": "e00fb164d80d4e13d9e057c38a35a644f0ec592979972afd2ea6d5211462b0cc",
+      "bindings/common/distributions/ged/fit.hpp": "2b20817d1c35c0ce293222f42128118158733ba23add625873fe2f63fb69f038",
+      "bindings/common/distributions/genbeta/fit.hpp": "f7e8682818367720a332239f42a00bb6df88ed091ac674ec6febb043cce52d81",
+      "bindings/common/distributions/gev/fit.hpp": "7f9e0953588b54b3ae0a5b673f589b3899fd7cba78ac52e1a3a1313c353806c2",
+      "bindings/common/distributions/gompertz/fit.hpp": "9c776a1795b8bac4412168d298d3992d89b4477da4bd17f6dc8de988ceda2a0f",
+      "bindings/common/distributions/gumbel/fit.hpp": "41472d5fd52b4ced38d1aff50b5768fa03e492786e8a6ef73c467297c4f58f41",
+      "bindings/common/distributions/hcauchy/fit.hpp": "135cababd13db4c7f2b51457d73b5cd2febeaa8755715a6dc58baba7b46683e3",
+      "bindings/common/distributions/hnorm/fit.hpp": "aef0eefc1470f4b715b4e48e171a2a64aca335f184abfcf0c700068ccc39657c",
+      "bindings/common/distributions/ht/fit.hpp": "d2a907bc6b92adc9d2c9e725a76b140ce5aaaa6685315be5e86ebb64e56007f5",
+      "bindings/common/distributions/huber/fit.hpp": "e48f98eb39c0837c8bced79bc1f4d304f203707c60399fdcf8f8f5af1e4a76e1",
+      "bindings/common/distributions/invgamma/fit.hpp": "b59c8638b1307e2597ff584d882c234ccac23bfec5973f3834d1f583a6613b35",
+      "bindings/common/distributions/invgauss/fit.hpp": "d87f6d5ca12076c707803d053d9c551302c8722b852b87c882da0338e87dd7cf",
+      "bindings/common/distributions/invtrgamma/fit.hpp": "eaa7ea2d0be5c4d1dc1868b59a81d33a0b053fbfd5967a270523f97b889dcbfa",
+      "bindings/common/distributions/invweibull/fit.hpp": "758a5ab5e3c6f47ff1aab8e59185cbadde5e229818051915c56236ea22cb43e4",
+      "bindings/common/distributions/laplace/fit.hpp": "49275906642cfe61384b403482d187bf6b88954a2fb60ca5cc8a6e1fdafcade6",
+      "bindings/common/distributions/lgamma/fit.hpp": "dfe9208b9eecf9b9e98606e7f3ed9352695a9bdfb4835c721bb52449713c3e27",
+      "bindings/common/distributions/llogis/fit.hpp": "c23024fb3a2591174389e35a7355766791b722a49f28ee3057cccc9434609940",
+      "bindings/common/distributions/lnorm/fit.hpp": "9962c4a8982dd09275a8e5a128ba7c6e85bed0e580a65756c219aa581b636114",
+      "bindings/common/distributions/logis/fit.hpp": "2d1a89c482e7ca8d433891b1ba227129621b0ff182c4cc040b3a5172cd458569",
+      "bindings/common/distributions/logitnorm/fit.hpp": "6b58d43ecf75a023fc6960d203452bd37d9eb4ef65713fe553aab6a017d06329",
+      "bindings/common/distributions/naka/fit.hpp": "4a3879051f162d3a0707307e0a6474f9725405c67536f93c02f0d122796c73ea",
+      "bindings/common/distributions/norm/fit.hpp": "987ad5be97de533a4f887691283f5f216ce6e8a0258d37f94b7806e28f47f0fd",
+      "bindings/common/distributions/nsbeta/fit.hpp": "94345101932e9bbb2b889d89ac71bad275d91bad75f3a43da3ead7330fb61c15",
+      "bindings/common/distributions/pareto/fit.hpp": "229b672b53679caef9c22ecd917f4fb322b8c17fc63c0d65a148bb423a80c77c",
+      "bindings/common/distributions/power/fit.hpp": "65fd819f9b1222a064e29e3baf7031e013d9647a5baf1f4428ff03684b32900d",
+      "bindings/common/distributions/rayleigh/fit.hpp": "8fe0d63f1b83b0c260dc197ef91d3d4d869ceb78eefc175c9a38883cbd9c74f8",
+      "bindings/common/distributions/sged/fit.hpp": "75457b46e74d561515f01e5e8f28d9ba67efbb4e9bb5a7a963532bf7a299db8e",
+      "bindings/common/distributions/sgomp/fit.hpp": "cf6b8284568041295c8c92f7860d93400f8208967fec8bfcece47e86e1134ebb",
+      "bindings/common/distributions/slash/fit.hpp": "f271ce3eeadc342731475278a6c2575b7917c84f3d5ab6bb5de34849f484f3e5",
+      "bindings/common/distributions/sn/fit.hpp": "ee2eefa7a0e1db38b4175d7402f579bfaed634e2dbaff43c204b53ac81e09bbd",
+      "bindings/common/distributions/snorm/fit.hpp": "49cea9c9239cde94aaee0c0a3d48ff91f1164273265eeb98feeb62b519e68455",
+      "bindings/common/distributions/st/fit.hpp": "d31b3e14f3e07a01c4b3cf8dd74dc11e18138ca3c5b7fc851e4dc0ec64fb9ab7",
+      "bindings/common/distributions/tlambda/fit.hpp": "84934d0f5e8dfd977b5922b288eb47e358acb08630b34d0a3c5ccb40bf279440",
+      "bindings/common/distributions/tnorm/fit.hpp": "3361091b2a429a52e0870b692f2db11ed2593669199ac0108c5d64a64435ef37",
+      "bindings/common/distributions/trgamma/fit.hpp": "6bc3441ed25d9bc358605b21ee5f1595b47e3b1392331398899b0a422024cb8f",
+      "bindings/common/distributions/triang/fit.hpp": "98023b5843bf16bb9c1b0ec1dcb561c18a65470be7d033213b6d46321058ffec",
+      "bindings/common/distributions/unif/fit.hpp": "e07d83069e5c3854f4242effd0f7e87017589dc6b33abacc3a17ea03aecf9d31",
+      "bindings/common/distributions/weibull/fit.hpp": "9964ecbfac7a3bd8faf6d10c5f302156f20119d442b5be690e47a55a0334804e",
+      "bindings/common/fit.hpp": "082e3d2463588241186192546c70547937af4882f632c94bfecb1e5e9174715a",
+      "bindings/js/stop-test.mjs": "a0a91a0aa51fcab3e07918b6c6290e831edcd344c9916d1d76a0c4f6666334e9",
+      "bindings/r/tests/testthat/test-stops-cont.R": "6ae0712c266f656b3fa6e8d0e282f40cc010f0227525252fc23a9459c3441071",
+      "bindings/r/tests/testthat/test_scale_equivariance.R": "8470005707e4e550c018f5abfc8586efc89777c492c8ecf8594cd1af0ae2c8e9",
+      "dev/design/structured-stop-details.md": "dfa099072be243fe43ac0f403a1e849b733be13c7d04031cd63ae43dbc0673b3",
+      "dev/research/evaluations/2026-11-06-stops-cont-data/check-bindings.sh": "1a6cb04a0a9f80fe9c0c18a5601e83febf191b2927df1fdbf5fed28063cbe80d",
+      "dev/research/evaluations/2026-11-06-stops-cont-data/check-nomle.cpp": "ef1cdb39a59040a4b5821862855857b2a9c6c19b71434c51bb3ae11f1ecc4af5",
+      "dev/research/evaluations/2026-11-06-stops-cont-data/check-st-compare.sh": "956fd7516661a74db109812c407e302a3aecef199aae499b25f1952b10784541",
+      "dev/research/evaluations/2026-11-06-stops-cont-data/check-st-equivariance.cpp": "8c5c90ce6d12d713588b7e7174799142ad2d896fa2125d28876a85d842dd3e2e",
+      "dev/research/evaluations/2026-11-06-stops-cont-data/check-subunit.cpp": "61ffb070119d408ba81a1e434cab100559eebba5d6f62ece74a8335faa93bdd3",
+      "dev/research/evaluations/2026-11-06-stops-cont-data/check-subunit.sh": "42b28dfc5c84e6b0992b0a9690aa35e011ae6fd1ea1127f4c79eef484010ac2b",
+      "dev/research/evaluations/2026-11-06-stops-cont-data/check-ties.cpp": "4ac3b53452e58fa2abd66b360c68a3933d5f579a65e3ce98f79960fe88959ef0",
+      "dev/research/evaluations/2026-11-06-stops-cont-data/find-half-ged-tie.py": "9a6aa9b2d7e3353b5ac98ac3f3a113849a8fee675fd8f92c03c912b334983c29",
+      "dev/research/evaluations/2026-11-06-stops-cont-data/legacy-tie-probe-local.txt": "f9ee05e162500895c125b0796fde67638c03032948eb4399c7abfe4a5238d922",
+      "dev/research/evaluations/2026-11-06-stops-cont-data/prepare-st-baseline.py": "38353548fe3b12ff59e9c974bbe99c38ca4c51caf49208765340483eac9df5d6",
+      "dev/research/evaluations/2026-11-06-stops-cont-data/search-legacy-ties.cpp": "8d4a1fc732d8945cfdc2b5d1c1a348560db18b1b84b6227e8d15b5662f671d7b",
+      "dev/research/evaluations/2026-11-06-stops-cont-data/search-legacy-ties.sh": "f9c9c3f083fcb159d0f04aef734bfb9d31bfccec965f813eaf58aa4f083e7352",
+      "dev/research/evaluations/2026-11-06-stops-cont-data/st-equivariance-local.txt": "d6df5c6f63a3eb35c68ace7aca0cbbb5fe54abd62c93bb3c91d597e1eeab5793",
+      "dev/research/evaluations/2026-11-06-stops-cont-data/st-equivariance-simbox.txt": "d159020f1ddd050eec9838044be34c4dcd02bace86f21850b798d9108002f90a",
+      "dev/research/evaluations/2026-11-06-stops-cont-data/st-sample.txt": "09ebee35e816a736de786f54766cb87b293c42ed842e6b17261d67d0b0324202",
+      "univariateML-cpp/include/cppunivariate/core/stop_detail.hpp": "07dc26c69b3f7e227a667e980391a36a8624d9b23574bce6ac12d85061a165b4",
+      "univariateML-cpp/include/cppunivariate/distributions/bhatt/mle.hpp": "471b510bb53528651a312974ba5f21ee0541d46953ae03412e3d288a07aadf50",
+      "univariateML-cpp/include/cppunivariate/distributions/bhatt/test.cpp": "22df12a3c62b32b36d46faac11a4ae867fbb0494eafb83bc2c9e68314907c853",
+      "univariateML-cpp/include/cppunivariate/distributions/emg/mle.hpp": "010782c9871807cb4fcf11315c7e94aec3121b67eade1facbc0a63ec1ca61ec7",
+      "univariateML-cpp/include/cppunivariate/distributions/emg/test.cpp": "c6bb3e25b390597ff88f199faa29699810816562b1cc6e0c1dd2ead41316562d",
+      "univariateML-cpp/include/cppunivariate/distributions/ged/mle.hpp": "60e1adda8af6b3130d7529d4bb199965364b6e108587796fde31738732721297",
+      "univariateML-cpp/include/cppunivariate/distributions/ged/test.cpp": "5de6b87c553c28180a1bf4fc06e361442c25c737a98ed84a6d12f90b99579c14",
+      "univariateML-cpp/include/cppunivariate/distributions/genbeta/mle.hpp": "c38bdf3065b448a2cf73f4e24229801e41d4b7ac658504cc161b32a4bc68620b",
+      "univariateML-cpp/include/cppunivariate/distributions/genbeta/test.cpp": "58eed6a92fc5f73a669ce920abe6b2b3a74b579a558feafa40d9dd5a678b8f8e",
+      "univariateML-cpp/include/cppunivariate/distributions/gompertz/mle.hpp": "651ca01d92916dedd2a606561ec6ea67819a085bb38db3f2602995b47d025308",
+      "univariateML-cpp/include/cppunivariate/distributions/gompertz/test.cpp": "75c0a5b684db85f638f4fb8d89e433ac068990cbfb28d46fc02245f1ac76d560",
+      "univariateML-cpp/include/cppunivariate/distributions/ht/cert.hpp": "553f2d4bed642e9f538b9e0931f8554540a3971dd9b72719879c4416cbc3369d",
+      "univariateML-cpp/include/cppunivariate/distributions/ht/mle.hpp": "8cc4457fb64749cd06f8216eafd16b8a3f27e97990e97d8d396bfcb0ae351928",
+      "univariateML-cpp/include/cppunivariate/distributions/ht/test.cpp": "977384cc32a283e5ada38c8966fe1e582596e6957c6620292fe7cefbe7143049",
+      "univariateML-cpp/include/cppunivariate/distributions/huber/mle.hpp": "5910958532dbaac3909877f5eabb15ed8b9fd480a2477c31f76adddb79dbab40",
+      "univariateML-cpp/include/cppunivariate/distributions/huber/test.cpp": "cc5c0e9eb32dd115dbe943d91f28833b9f92954d7e8d974ac5cf6590a48de30e",
+      "univariateML-cpp/include/cppunivariate/distributions/invtrgamma/mle.hpp": "579c9a4b683898f248c16e40ce5133c6d184c5186b89951b2e73d44213dab88c",
+      "univariateML-cpp/include/cppunivariate/distributions/invtrgamma/test.cpp": "788575f5657b650b3b89c8dd24f10546f153fb1ec390f68947e8470a123d2e50",
+      "univariateML-cpp/include/cppunivariate/distributions/norm/test.cpp": "6de52a917b89397b639166e556979d15dbccfcff73a34430b68bf21c69196b4c",
+      "univariateML-cpp/include/cppunivariate/distributions/sged/face_payload.hpp": "7e2443587fdd85cdb43e756453f5e8884476a9f430a7260d5171887c3fe6c9d2",
+      "univariateML-cpp/include/cppunivariate/distributions/sged/mle.hpp": "987f55509f7d4bba5a2084c7f1a362adcf59833ead201d370d9dadfc07ffe737",
+      "univariateML-cpp/include/cppunivariate/distributions/sged/test.cpp": "523510f2a9d138fc5c8c18857f419c054a1e2431b898771909db0668c782d2fc",
+      "univariateML-cpp/include/cppunivariate/distributions/slash/mle.hpp": "c43f67936e70bea274a18ecc01cfa8f7aa5cab20fd3065ac0280e29bf1552490",
+      "univariateML-cpp/include/cppunivariate/distributions/slash/test.cpp": "6aafe7bcbf09522f4c1c12cb8d6dfb7ae7026c204bc5e72a5e9ccbade060d246",
+      "univariateML-cpp/include/cppunivariate/distributions/sn/mle.hpp": "0613f23c30af981f96ffcfe8cfee12b0e00e0381c19023158fb878abac4fae2e",
+      "univariateML-cpp/include/cppunivariate/distributions/sn/test.cpp": "22d1cba24392c4976ec8b06296a7c8aea2ea423308188747d5c5e0ac449701be",
+      "univariateML-cpp/include/cppunivariate/distributions/snorm/mle.hpp": "df40896b4f933f276dff60ff6b85c4edcee0ecf9ef67a08e36fe2fdb3feb2f1f",
+      "univariateML-cpp/include/cppunivariate/distributions/snorm/test.cpp": "f7da062e625c619656ee0549c830ba657f91d937251369ac7aeb41d648e20549",
+      "univariateML-cpp/include/cppunivariate/distributions/st/mle.hpp": "08f2cb1baa95fc60f5f952580e0b58730ede367294b8a3eb1c7224a732f6b275",
+      "univariateML-cpp/include/cppunivariate/distributions/st/test.cpp": "eb3141bf65a1e00863c4f4ef086fbd53f7f287d9192a5ad52b5107957ddcfdaf",
+      "univariateML-cpp/include/cppunivariate/distributions/tnorm/mle.hpp": "e063ffcf901763dd1e502a02b91866d370fb9d5fa18e6fd02b2ae16dc5082772",
+      "univariateML-cpp/include/cppunivariate/distributions/tnorm/test.cpp": "a043fdcf286a54a7186d1c661b5c96d91cddad79c45afb6feeadf20dd7b87f39",
+      "univariateML-cpp/include/cppunivariate/distributions/trgamma/mle.hpp": "46d9a8dd703707dd1822ab5caf2f96c8e9e6936f5d9eb8c29b351f51f3a154e9",
+      "univariateML-cpp/include/cppunivariate/distributions/trgamma/test.cpp": "932a8692b014bd1bfb681e2964482997b942fb8efd1bdc9baf1d66bf95fc77e3"
+    }
+  },
+  "environment": {
+    "workstation": "Linux 7.0.0-42-generic x86_64; GCC 15.2.0; R 4.6.1; Node 22.22.1",
+    "simbox": "Linux 6.18.54.1-microsoft-standard-WSL2 x86_64; standalone/native GCC 13.3.0; R compiler GCC 15.2.0; R 4.6.1",
+    "language": "C++17; BH Boost headers; R compilation -g -O2; standalone comparison -O2 -g -fpic -fopenmp; native checkers -O1",
+    "compute": "local run/run4 slots; authorised simbox-run; nice 10; BLAS/OpenMP one thread; worktree build/tmp"
+  },
+  "runs": [
+    {
+      "command": "just cpp-test",
+      "machine": "simbox",
+      "result": "106/106 dev shards",
+      "elapsed_seconds": 28.17,
+      "exit_code": 0
+    },
+    {
+      "command": "just cpp-test-no-long-double",
+      "machine": "simbox",
+      "result": "127/127 shards",
+      "elapsed_seconds": 68.49,
+      "exit_code": 0
+    },
+    {
+      "command": "just test",
+      "machine": "simbox",
+      "result": "FAIL 0; WARN 0; SKIP 154; PASS 20714",
+      "elapsed_seconds": 184.88,
+      "exit_code": 0
+    },
+    {
+      "command": "just test-full",
+      "machine": "simbox",
+      "result": "FAIL 0; WARN 0; SKIP 0; PASS 43529",
+      "elapsed_seconds": 155.25,
+      "exit_code": 0
+    },
+    {
+      "command": "UMVL_TEST_TIER=full just cpp-test",
+      "machine": "simbox",
+      "result": "127/127 full shards",
+      "elapsed_seconds": 36.92,
+      "exit_code": 0
+    },
+    {
+      "command": "bash dev/research/evaluations/2026-11-06-stops-cont-data/check-bindings.sh",
+      "machine": "simbox",
+      "result": "exit 0; nonexistence/input/representability and tie probes",
+      "elapsed_seconds": null,
+      "exit_code": 0
+    },
+    {
+      "command": "bash dev/research/evaluations/2026-11-06-stops-cont-data/check-subunit.sh",
+      "machine": "simbox",
+      "result": "exit 0; reflected half-GED public payload",
+      "elapsed_seconds": null,
+      "exit_code": 0
+    },
+    {
+      "command": "just js-build",
+      "machine": "workstation",
+      "result": "exit 0",
+      "elapsed_seconds": 49.96,
+      "exit_code": 0
+    },
+    {
+      "command": "just js-test",
+      "machine": "workstation",
+      "result": "425 pass; 0 fail/cancel/skip",
+      "elapsed_seconds": 123.12,
+      "exit_code": 0
+    },
+    {
+      "command": "just site-check",
+      "machine": "workstation",
+      "result": "exit 0; 99 families; numerical/browser/HTML checks",
+      "elapsed_seconds": 85.64,
+      "exit_code": 0
+    },
+    {
+      "command": "ctest --test-dir univariateML-cpp/build -R \"^distribution_(snorm|st)$\" --output-on-failure -j1",
+      "machine": "workstation",
+      "result": "2/2 shards",
+      "elapsed_seconds": 13.13,
+      "exit_code": 0
+    },
+    {
+      "command": "bash dev/research/evaluations/2026-11-06-stops-cont-data/check-st-compare.sh",
+      "machine": "workstation",
+      "result": "exit 0; final and base outputs bit-identical; retained local evidence unchanged",
+      "elapsed_seconds": null,
+      "exit_code": 0
+    }
+  ],
+  "source_audits": [
+    "git diff --check",
+    "C++ original test.cpp byte prefixes preserved",
+    "all original common binding string literals retained",
+    "protected files and forbidden families untouched",
+    "generated R common/family/stop-detail/SGED/ST/test sources compared against authored sources on simbox"
+  ],
+  "tolerances": {
+    "face_comparison": "existing family margin; arithmetic compare_face allowance retained",
+    "sged_scale_profile": "100 bisections; 128*epsilon turning-point score margin; 1e-7*n likelihood agreement and root/cap tie threshold",
+    "st_df_equivariance": "3e-4 relative (previously 2e-4), unchanged other coefficient and independent 2e-8 per-observation likelihood tolerances",
+    "new_face_density_checks": "typically 1e-12 relative C++ or family-specific checks; R/JS exact names/models and 1e-7 to 1e-10 coefficient/likelihood checks"
+  },
+  "open_validation": [
+    "No deterministic end-to-end arithmetic seam fixture for Bhatt, GED, genbeta, SN, or the skew-normal-face branch in ST; shared construction/transport and selected-face checks cover payload mechanics; adaptive EMG/Huber, public snorm/ST half-t and SGED root/cap ties were exercised.",
+    "Nested ST child-certificate budget transport is unit checked; forcing default-budget exhaustion of the complete parent fit is not covered.",
+    "Existing numerical shape searches and unresolved equality boundaries keep their original global-search qualifications."
+  ],
+  "artifact_display": {
+    "command": "show <requested report path>",
+    "exit_code": 1,
+    "http_status": 403,
+    "reason": "Worktree outside viewer readable-root allowlist; report file saved successfully."
+  }
+}

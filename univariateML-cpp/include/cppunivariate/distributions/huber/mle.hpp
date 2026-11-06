@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/stop_detail.hpp"
 #include "../../core/face_compare.hpp"
 #include "../../core/precision.hpp"
 #include "../../core/span.hpp"
@@ -13,7 +14,7 @@ struct HuberResult {
   double mu, sigma, epsilon, logLik;
   int iterations;
   HuberStatus status;
-};
+ StopDetail stop_detail{}; };
 inline double huber_rho(double z, double epsilon) {
   const double a = std::abs(z);
   return a <= epsilon ? z*z/2 : epsilon*(a-epsilon/2);
@@ -491,12 +492,29 @@ inline HuberResult huber_mle(span x, double tol=1e-10, int maxit=200,
     }
     normal_comparison=compare_face(gain,0,slack,gain_scale);
   }
-  if(normal_comparison==FaceComparison::NumericalTie || face_numerical_tie(laplace,best.logLik,slack) || (normal_comparison==FaceComparison::FirstWins && laplace>=best.logLik-slack && face_numerical_tie(normal,laplace,0))) {best.status=HuberStatus::IterationFailure;return best;}
+  if(normal_comparison==FaceComparison::NumericalTie || face_numerical_tie(laplace,best.logLik,slack) || (normal_comparison==FaceComparison::FirstWins && laplace>=best.logLik-slack && face_numerical_tie(normal,laplace,0))) {
+    StopDetail d;d.comparison_tie=true;d.loglik_upper=INFINITY;d.loglik_lower=normal;
+    d.candidates.push_back({{nm,ns},normal,normal,StopModel::Norm});
+    if(std::isfinite(laplace)) {
+      const double lm=fm?mu:y[y.size()/2];double ad=0;for(double v:y)ad+=std::abs(v-lm);
+      d.candidates.push_back({{lm,ad/n},laplace,laplace,StopModel::Laplace});d.loglik_lower=std::max(d.loglik_lower,laplace);
+    }
+    if(best.sigma>0 && std::isfinite(best.logLik)) {
+      d.candidates.push_back({{best.mu,best.sigma,best.epsilon},best.logLik,best.logLik,StopModel::None});d.loglik_lower=std::max(d.loglik_lower,best.logLik);
+    }
+    best.stop_detail=d;best.status=HuberStatus::IterationFailure;return best;
+  }
   if (normal_comparison==FaceComparison::FirstWins && normal>=laplace)
     best.status=HuberStatus::NormalLimit;
   else if (laplace>=best.logLik-slack)
     best.status=HuberStatus::LaplaceLimit;
   else if (failed) best.status=HuberStatus::IterationFailure;
+  if(best.status==HuberStatus::NormalLimit)best.stop_detail=limit_detail({nm,ns},normal,StopModel::Norm);
+  if(best.status==HuberStatus::LaplaceLimit) {
+    const double lm=fm?mu:y[y.size()/2];
+    double ad=0;for(double v:y)ad+=std::abs(v-lm);
+    best.stop_detail=limit_detail({lm,ad/n},laplace,StopModel::Laplace);
+  }
   // The held-coordinate shape search must not accept a nonstationary
   // finite candidate merely because its sampled grid missed a narrow peak.
   if(fm && fs && best.status==HuberStatus::Ok) {

@@ -7,8 +7,20 @@
 #include <vector>
 namespace umvl_binding {
 inline FitResult fit_llogis(cppunivariate::span x, Held shape_arg = {}, Held scale_arg = {}, double abstol = 1.220703e-4, int iterlim = 100) {
+  // Invalid controls remain ordinary errors, even if a legacy fitter reports
+  // a statistical status before checking them.
+  const auto classify = [&](FitResult out, const cppunivariate::StopDetail& detail,
+      const std::string& kind, const std::vector<std::string>& names,
+      const std::string& model="") {
+    if(!(abstol>0 && std::isfinite(abstol) && iterlim>0))return out;
+    if(x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return out;
+    if(kind=="nomle" && !std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return out;
+    if(!finite_stop_payload(detail,kind))return out;
+    return stop_failure(out,detail,kind,names,model);
+  };
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
+  const auto nomle = [&](const std::string& format, const auto&... arguments) { return classify(failure(binding_message(format, arguments...), warnings), {}, "nomle", {}); };
   const Held shape = shape_arg;
   const Held scale = scale_arg;
 
@@ -29,7 +41,7 @@ inline FitResult fit_llogis(cppunivariate::span x, Held shape_arg = {}, Held sca
   if (res.status == cppunivariate::LogLogisticStatus::InvalidInput)
     return fail("Log-logistic requires nonempty positive finite data, valid held parameters, positive abstol and positive iterlim.");
   if (res.status == cppunivariate::LogLogisticStatus::Unbounded)
-    return fail("The log-logistic maximum likelihood estimator does not exist: the likelihood is unbounded for these constant transformed observations.");
+    return nomle("The log-logistic maximum likelihood estimator does not exist: the likelihood is unbounded for these constant transformed observations.");
   if (res.status == cppunivariate::LogLogisticStatus::IterationFailure)
     return fail("Log-logistic optimizer IterationFailure: failed to converge; increase iterlim.");
   if (!(res.shape>0.0) || !(res.scale>0.0) || !std::isfinite(res.shape) || !std::isfinite(res.scale) || !std::isfinite(res.logLik)) {

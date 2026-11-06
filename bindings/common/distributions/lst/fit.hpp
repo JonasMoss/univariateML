@@ -30,7 +30,7 @@ inline FitResult fit_lst(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg
   if (r.status == cppunivariate::LstStatus::Unbounded)
     return stop_failure(fail("Likelihood is unbounded through scale collapse: excessive ties."),r.stop_detail,"nomle",{"mu","sigma","df"});
   if (r.status == cppunivariate::LstStatus::ScaleBoundary)
-    return stop_failure(fail("Tie equality scale-collapse boundary; a regular MLE is not certified."),r.stop_detail,"nomle",{"mu","sigma","df"},(!mu.supplied&&!sigma.supplied&&!df.supplied)?"t scale collapse (no package family)":"");
+    return stop_failure(fail("Tie equality scale-collapse boundary; a regular MLE is not certified."),r.stop_detail,"nomle",{"mu","sigma","df"},(!mu.supplied&&!sigma.supplied&&!df.supplied)?"unavailable:t-scale-collapse":"");
   if (r.status == cppunivariate::LstStatus::IterationFailure)
     return fail("Location-scale t solve could not establish a representable score bracket or converge to the score tolerance; increase iterlim.");
   if (r.status == cppunivariate::LstStatus::NoMLE)
