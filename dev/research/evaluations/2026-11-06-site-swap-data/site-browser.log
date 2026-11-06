@@ -1,0 +1,2 @@
+PASS family layouts: exp, bbinom, burr at 1200x1000 and 390x844; infobox, explorer links, integer profile notes, held limits and expanded details without page overflow.
+PASS Chromium 151.0.7922.34: explorer slider/simulation/diagnostics/AIC (when available), persistent language, implementation switch, Svelte name/measure filters, Pagefind results, no-JS panels, mobile overflow; no page errors or external requests.

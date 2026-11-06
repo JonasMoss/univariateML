@@ -19,11 +19,12 @@ try {
  const page=await browser.newPage({viewport:{width:1200,height:1000}});
  const errors=[],bindingRequests=[],localRequests=[];page.on('pageerror',e=>errors.push(e.message));page.on('request',r=>{if(r.url().startsWith(base))localRequests.push(new URL(r.url()).pathname);if(r.url().includes('/binding/'))bindingRequests.push(r.url());if(!r.url().startsWith(base)&&!r.url().startsWith('data:'))requests.push(r.url());});
  await page.setViewportSize({width:1200,height:200});
- await page.goto(base+'/distributions/gamma/');
+ await page.goto(base+'/distributions/gamma/explore/');
  await page.waitForTimeout(200);
 
  const initialRequests=[...new Set(localRequests)];
  const hasExplorer=await page.locator('.explorer').count()>0;
+ if(hasExplorer!==JSON.parse(readFileSync(path.join(root,'site/src/data/binding.json'),'utf8')).includes('gamma'))throw Error('Explorer route does not match binding registry');
  if(hasExplorer){
   if(bindingRequests.length)throw new Error('Binding requested before explorer intersection');
   await page.locator('.explorer').scrollIntoViewIfNeeded();
@@ -53,6 +54,7 @@ try {
   await page.setViewportSize({width:1200,height:1000});
   await page.locator('.explorer').screenshot({path:path.join(scratch,'explorer-gamma.png')});
  }
+ await page.goto(base+'/distributions/gamma/');
  await page.selectOption('#language','cpp');
  if(await page.locator('.usage-panel[data-language=r]').isVisible())throw new Error('R panel remained visible');
  await page.check('#detail');
@@ -61,22 +63,50 @@ try {
  if(await page.locator('#language').inputValue()!=='cpp')throw new Error('Language preference did not persist');
  await page.goto(base+'/distributions/gamma/');await page.screenshot({path:path.join(scratch,'gamma-desktop.png'),fullPage:true});
  await page.setViewportSize({width:390,height:844});await page.goto(base+'/distributions/gb2/');
- if(hasExplorer){await page.locator('.explorer').scrollIntoViewIfNeeded();await page.locator('svg[aria-label="Density plot"]').waitFor();}
+
  if(!await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth))throw new Error('Mobile horizontal overflow');
  await page.screenshot({path:path.join(scratch,'gb2-mobile.png'),fullPage:true});
  if(!await page.locator('math[display=block], pre').evaluateAll(nodes=>nodes.every(n=>{if(n.scrollWidth<=n.clientWidth)return true;n.scrollLeft=20;return n.scrollLeft>0;})))throw new Error('Wide math/code cannot scroll');
  for(const id of ['exp','gamma']){
   await page.goto(base+`/distributions/${id}/`);
-  if(hasExplorer){await page.locator('.explorer').scrollIntoViewIfNeeded();await page.locator('svg[aria-label="Density plot"]').waitFor();}
+
   if(!await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth))throw new Error(`${id}: mobile horizontal overflow`);
  }
 
  await page.goto(base+'/distributions/');await page.locator('astro-island:not([ssr])').waitFor();
  await page.locator('input[type=search]').fill('gamma');await page.waitForFunction(()=>document.querySelectorAll('.cards li').length>0&&document.querySelectorAll('.cards li').length<98);
  await page.locator('input[type=search]').fill('');
- await page.locator('.filters select').nth(1).selectOption('integer');await page.waitForFunction(()=>[...document.querySelectorAll('.cards li .count')].every(n=>n.textContent.includes('Discrete')));
+ await page.getByText('Support', {exact:true}).click();
+ await page.getByRole('checkbox',{name:/^counts /}).check();
+ await page.getByRole('checkbox',{name:/^finite-counts /}).check();
+ const discreteIds=JSON.parse(readFileSync(path.join(root,'site/src/data/families.json'),'utf8')).filter(f=>f.support.type==='integer').map(f=>f.id).sort();
+ await page.waitForFunction(expected=>JSON.stringify([...document.querySelectorAll('.cards li a')].map(a=>a.pathname.split('/')[2]).sort())===JSON.stringify(expected),discreteIds);
+ const evidence=path.join(root,'dev/research/evaluations/2026-11-06-site-swap');mkdirSync(evidence,{recursive:true});
+ for(const width of [1200,390]) for(const id of ['exp','bbinom','burr']) {
+  await page.setViewportSize({width,height:width===390?844:1000});
+  await page.goto(base+`/distributions/${id}/`);
+  if(hasExplorer)await page.locator('.infobox svg').waitFor();
+  if(await page.locator('.explorer').count())throw Error('Explorer still on family page');
+  if(hasExplorer)await page.locator(`a[href="/distributions/${id}/explore/"]`).waitFor();
+  if(!await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth))throw Error(`${id} ${width}: overflow`);
+  if(id==='bbinom' && !await page.locator('article').innerText().then(t=>t.includes('integer tail bounds')))throw Error('Integer search missing');
+  if(id==='burr') {await page.locator('#ml-more').evaluate(d=>d.open=true);if(!await page.locator('.limits').innerText().then(t=>t.includes('held')))throw Error('Held limits missing');}
+  if(!await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth))throw Error(`${id} ${width}: expanded details overflow`);
+  await page.screenshot({path:path.join(evidence,`${id}-${width}.jpg`),type:'jpeg',quality:70,fullPage:false});
+ }
+ await page.goto(base+'/distributions/bbinom/explore/');
+ if(hasExplorer){
+  await page.locator('.explorer').scrollIntoViewIfNeeded();
+  await page.locator('svg[aria-label="Density plot"]').waitFor();
+  await page.locator('svg[aria-label="Density plot"] .density').first().waitFor({state:'attached'});
+  if(await page.locator('svg[aria-label="Density plot"] .density').count()<2 || !await page.locator('svg[aria-label="CDF plot"] .density').getAttribute('d').then(d=>d.includes('H')))throw Error('Discrete PMF stems or CDF steps missing');
+  await page.getByLabel('Observations n').fill('30');
+  await page.getByRole('button',{name:'Simulate and fit',exact:true}).click();await page.locator('.fit-status').waitFor();
+ }
  await page.goto(base+'/search/');await page.locator('.pagefind-ui__search-input').fill('gamma');await page.locator('.pagefind-ui__result').first().waitFor();
+ if(await page.locator('.pagefind-ui__result-link').evaluateAll(as=>as.some(a=>/\/lab\/|\/explore\//.test(a.href))))throw Error('Duplicate search entry');
  const nojs=await browser.newContext({javaScriptEnabled:false});const plain=await nojs.newPage();await plain.goto(base+'/distributions/exp/');if(await plain.locator('.usage-panel:visible').count()!==4)throw new Error('No-JS usage panels hidden');await nojs.close();
  if(errors.length||requests.length)throw new Error(JSON.stringify({errors,externalRequests:requests}));
+ console.log('PASS family layouts: exp, bbinom, burr at 1200x1000 and 390x844; infobox, explorer links, integer profile notes, held limits and expanded details without page overflow.');
  console.log(`PASS Chromium ${browser.version()}: explorer slider/simulation/diagnostics/AIC (when available), persistent language, implementation switch, Svelte name/measure filters, Pagefind results, no-JS panels, mobile overflow; no page errors or external requests.`);
 } finally {if(browser)await browser.close();await new Promise(resolve=>server.close(resolve));}

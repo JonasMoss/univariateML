@@ -26,7 +26,7 @@ try {
  for(const family of catalog) {
   const errors=[];const listener=e=>errors.push(e.message);page.on('pageerror',listener);
   try {
-   await page.goto(`http://127.0.0.1:${server.address().port}/distributions/${family.id}/`);
+   await page.goto(`http://127.0.0.1:${server.address().port}/distributions/${family.id}/explore/`);
    await page.locator('.explorer').scrollIntoViewIfNeeded();
    await page.waitForFunction(()=>{const e=document.querySelector('.explorer');return e&&(!e.textContent.includes('Loading local calculation module')||e.querySelector('svg'));},{},{timeout:30000});
    await page.locator('svg[aria-label="CDF plot"]').waitFor({timeout:10000});
@@ -49,7 +49,7 @@ try {
   } catch(e) {results.push({family:family.id,ok:false,error:e.message,alerts:await page.locator('.explorer [role="alert"]').allTextContents()});}
   page.off('pageerror',listener);
  }
- await page.goto(`http://127.0.0.1:${server.address().port}/distributions/exp/`);
+ await page.goto(`http://127.0.0.1:${server.address().port}/distributions/exp/explore/`);
  await page.locator('.explorer').scrollIntoViewIfNeeded();
  await page.waitForFunction(()=>!document.querySelector('.explorer').textContent.includes('Loading local calculation module'));
  await page.locator('#observations').fill('0.2 0.5 1 1.8 2.7 3.4 4.1 5.3');

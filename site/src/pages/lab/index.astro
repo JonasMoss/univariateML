@@ -1,6 +1,0 @@
----
-import Page from '../../layouts/Page.astro';
-const panel=[['gamma','clean classical case'],['norm','minimal; empty sections should vanish'],['sstd','58 limit records, log-density only'],['bbinom','discrete, required size, holds'],['tnorm','support from coefficients'],['gev','log-only, piecewise support, restrictions']];
----
-<Page title="Layout lab"><h1>Layout lab</h1><p>Prototype family pages (Wikipedia-style). Any family works at <code>/lab/&lt;id&gt;/</code>.</p>
-<ul>{panel.map(([id,why])=><li><a href={`/lab/${id}/`}>{id}</a>: {why} · <a href={`/distributions/${id}/`}>current</a></li>)}</ul></Page>
