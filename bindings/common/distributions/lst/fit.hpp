@@ -22,18 +22,21 @@ inline FitResult fit_lst(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg
   if(sigma.supplied)fixed.push_back("sigma");
   if(df.supplied)fixed.push_back("df");
   auto r=cppunivariate::lst_mle(x,gradtol,iterlim,held_mu,held_sigma,df.supplied?df.value:nan);
+  if(r.status==cppunivariate::LstStatus::CertificateBudget)return stop_failure(fail("Student-t global certificate budget exhausted; no verified MLE."),r.stop_detail,"budget",{"mu","sigma","df"});
+  if(r.status==cppunivariate::LstStatus::CertificateTie)return stop_failure(fail("Student-t global certificate unresolved tie or sign-uncertain seam; no verified MLE."),r.stop_detail,"tie",{"mu","sigma","df"});
+  if(r.status==cppunivariate::LstStatus::NumericalFailure)return stop_failure(fail("Student-t global certificate numerical failure: score/root, enclosure, domain or linear solve unresolved; no verified MLE."),r.stop_detail,"numerical",{"mu","sigma","df"});
   if (r.status == cppunivariate::LstStatus::InvalidDf)
     return fail("`df` must be finite and positive.");
   if (r.status == cppunivariate::LstStatus::Unbounded)
-    return fail("Fixed `df` likelihood is unbounded through scale collapse: excessive ties.");
+    return stop_failure(fail("Likelihood is unbounded through scale collapse: excessive ties."),r.stop_detail,"nomle",{"mu","sigma","df"});
   if (r.status == cppunivariate::LstStatus::ScaleBoundary)
-    return fail("Fixed `df` is at the tie equality scale-collapse boundary; a regular MLE is not certified.");
+    return stop_failure(fail("Tie equality scale-collapse boundary; a regular MLE is not certified."),r.stop_detail,"nomle",{"mu","sigma","df"},(!mu.supplied&&!sigma.supplied&&!df.supplied)?"t scale collapse (no package family)":"");
   if (r.status == cppunivariate::LstStatus::IterationFailure)
     return fail("Location-scale t solve could not establish a representable score bracket or converge to the score tolerance; increase iterlim.");
   if (r.status == cppunivariate::LstStatus::NoMLE)
     return fail("Location-scale t MLE on df >= 1 requires at least 3 observations and no value repeated n/2 or more times; scale collapse otherwise prevents a regular MLE.");
   if (r.status == cppunivariate::LstStatus::NormalBoundary)
-    return fail("The location-scale t likelihood is maximised as df -> Inf. Use `mlnorm` to fit the normal distribution.");
+    return stop_failure(fail("The location-scale t likelihood is maximised as df -> Inf. Use `mlnorm` to fit the normal distribution."),r.stop_detail,"limit",{"mu","sigma","df"},"norm");
   if(r.status==cppunivariate::LstStatus::BfgsFailure) return fail("Location-scale t optimizer failed its score check; increase iterlim.");
   if (!std::isfinite(r.mu) || !std::isfinite(r.sigma) || !std::isfinite(r.df))
     return fail("Location-scale t MLE requires finite data with positive spread.");

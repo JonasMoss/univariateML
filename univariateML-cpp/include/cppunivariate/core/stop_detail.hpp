@@ -15,7 +15,10 @@ enum class StopModel { None, Weibull, Pareto, InvWeibull, Power, Exp, InvExp,
   Zip,
   Cmp,
   PointMass,
-  TwoPoint
+  TwoPoint,
+  Norm,
+  Lst,
+  TCollapsePath
 };
 struct FitCandidate {
   std::vector<double> coef;

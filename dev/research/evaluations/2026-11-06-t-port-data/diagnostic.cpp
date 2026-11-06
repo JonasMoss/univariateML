@@ -1,0 +1,4 @@
+#include "cppunivariate/distributions/lst/certificate.hpp"
+#include <iostream>
+#include <iomanip>
+int main(){std::cout<<std::setprecision(17);std::size_t n;while(std::cin>>n){std::vector<double>x(n);for(double&v:x)std::cin>>v;for(double q:{1.,2.}){cppunivariate::t_cert_detail::Data d;cppunivariate::t_cert_detail::data({x.data(),x.size()},d);cppunivariate::t_cert_detail::Engine e(d,q,4096,200);auto p=e.at(q);cppunivariate::t_cert_detail::Isolation box;bool endpoint=cppunivariate::t_cert_detail::endpoint(e,p,box);auto r=cppunivariate::t_certificate({x.data(),x.size()},q);std::cout<<q<<" "<<int(r.status)<<" "<<p.delta.lo<<" "<<p.delta.hi<<" "<<endpoint<<" "<<box.left<<" "<<box.right<<" "<<r.stop_detail.segment_loglik_upper<<" "<<r.unresolved_shape[0]<<" "<<r.unresolved_shape[1]<<std::endl;}}}

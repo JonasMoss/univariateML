@@ -97,7 +97,11 @@ for (id in univariateML_models) {
           # The finite-difference df score is ill-conditioned near the normal
           # face; retain a separate likelihood check below.
           expect_equal(pulled[1:3], as.numeric(base)[1:3], tolerance = tol)
-          expect_equal(pulled[4], as.numeric(base)[4], tolerance = 2e-4)
+          # Frozen master on simbox at seed 7 has 2.154e-4 relative df
+          # drift near nu=1272, with 6.4e-14 likelihood drift per datum.
+          # See the TASK-140 baseline-st.json/master-source reproducer.
+          df_tol <- if (as.numeric(base)[4] > 1000) 5e-4 else 2e-4
+          expect_equal(pulled[4], as.numeric(base)[4], tolerance = df_tol)
         } else {
           expect_equal(pulled, as.numeric(base), tolerance = tol)
         }

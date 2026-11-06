@@ -80,3 +80,57 @@ await import('./fit-test.mjs');
 await import('./vcov-test.mjs');
 
 await import('./stop-test.mjs');
+
+test('lst and std certificate normal stops name the fitted face', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  for (const family of ['lst', 'std']) {
+    assert.throws(() => api[family].fit(new Float64Array([-1, -1, 1, 1])), (error) => {
+      assert.equal(error.kind, 'limit');
+      assert.equal(error.model, 'norm');
+      assert.equal(error.estimates.mean, 0);
+      assert.equal(error.estimates.sd, 1);
+      assert.ok(Number.isFinite(error.loglik_lower));
+      assert.ok(error.loglik_upper >= error.loglik_lower);
+      return true;
+    });
+  }
+});
+
+test('std certificate distinguishes ordinary t2 and collapse paths', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  const cluster = new Float64Array([
+    ...Array.from({length: 30}, (_, i) => -1e-4 + 2e-4 * i / 29),
+    ...Array.from({length: 10}, (_, i) => .9999 + 2e-4 * i / 9),
+  ]);
+  assert.throws(() => api.std.fit(cluster), error => {
+    assert.equal(error.kind, 'limit');
+    assert.equal(error.model, 'lst');
+    assert.equal(error.estimates.df, 2);
+    assert.ok(error.estimates.sigma > 0 && Number.isFinite(error.estimates.sigma));
+    return true;
+  });
+  assert.throws(() => api.std.fit(new Float64Array([-1, 0, 0, 0, 0, 1])), error => {
+    assert.equal(error.kind, 'nomle');
+    assert.equal(error.model, 't scale collapse (no package family)');
+    assert.deepEqual(error.estimates, {mu: 0, df: 2});
+    assert.ok(error.loglik_lower <= -6 * Math.log(2));
+    assert.ok(error.loglik_upper >= -6 * Math.log(2));
+    return true;
+  });
+});
+
+test('std certificate budget cannot pass through local convergence', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  const probabilities = Float64Array.from({length: 4000}, (_, i) => (i + .5) / 4000);
+  const x = api.lst.q(probabilities, [0, 1, 300]);
+  assert.throws(() => api.std.fit(x, {}, {iterlim: 500}), error => {
+    assert.equal(error.kind, 'budget');
+    assert.ok(error.candidates.some(candidate => candidate.model === 'lst'));
+    assert.ok(Number.isFinite(error.loglik_lower));
+    assert.equal(error.loglik_upper, Infinity);
+    return true;
+  });
+});

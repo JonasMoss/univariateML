@@ -42,8 +42,8 @@ r:
     df: Optional held df; NULL estimates it.
     sigma: Optional held sigma; NULL estimates it.
     mu: Optional held mu; NULL estimates it.
-    gradtol: Tolerance on the analytic gradient norm of the total negative log-likelihood in standardized location, log scale and log(df - 1) coordinates; fixed step and objective backstops also apply.
-    iterlim: Maximum iterations for each EM start and each BFGS refinement.
+    gradtol: All-free coefficient enclosure width target, clamped between 1e-7 and 1e-6 in normalized location and relative scale/shape units. Held fits retain their analytic score tolerance.
+    iterlim: Maximum iterations in each nuisance EM and Newton proposal. The all-free global certificate separately allows at most 4096 profile evaluations.
 log_density: loggamma((df+1)/2) - loggamma(df/2) - log(df*pi)/2 - log(sigma) - (df+1)*log(1+((x-mu)/sigma)**2/df)/2
 limits:
   - name: scale collapse
@@ -67,7 +67,7 @@ limits:
   - model: norm
     firmness: proved
     when: 'The shape $\nu$ tends to infinity, retaining finite location and scale.'
-    detect: The numerically compared limiting face is selected over the retained finite candidates.
+    detect: For all-free fits, exhaustive profile and tail bounds select this face. Held subsets retain their numerical face comparisons.
     status: NormalBoundary
     numerical: true
 holds: []
@@ -80,11 +80,9 @@ construction:
 - location-scale
 relations: {}
 fit:
-  method: multistart
+  method: profile-search
   certified: partial
-  note: 'lst/README.md, Details; lst/mle.hpp (public fitter and held overloads); lst/test.cpp: With mu and df held,
-    scale has a strictly monotone score with the documented tie criterion; free location/df uses EM or multistart
-    profiles without a global certificate.'
+  note: 'lst/README.md, Details; lst/certificate.hpp; lst/mle.hpp: All-free fits use exhaustive profile envelopes, root inclusion and uniform curvature neighborhoods, with normal and lower-face certificates conditional on computed practical arithmetic bounds. Held subsets retain their existing exact or numerical routes; general held location/shape profiles remain uncertified.'
 areas:
 - measurement and errors
 classification: classical
@@ -117,9 +115,9 @@ The location $\mu$ is the centre of symmetry, $\sigma$ is the ordinary Student s
 
 The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-locscale.md) describes the limiting paths and the scope of the boundary comparisons.
 
-$\sigma$ is a scale, not a standard deviation. With location free, estimating shape restricts $\nu$ to be at least 1 and includes the attained Cauchy member at $\nu=1$. Unrestricted positive degrees of freedom allow unbounded likelihood through scale collapse. The all-free fitter requires at least three observations and rejects samples in which any value occurs at least half the time, including equality. This equality rejection is not a proof of mathematical non-existence; Cauchy equality can admit nonunique attained fits.
+$\sigma$ is a scale, not a standard deviation. With location free, estimating shape restricts $\nu$ to be at least 1 and includes the attained Cauchy member at $\nu=1$. Unrestricted positive degrees of freedom allow unbounded likelihood through scale collapse. Strictly more than half the observations at one value makes the all-free likelihood unbounded. At exact half mass the finite Cauchy collapse supremum enters the global comparison; it is not an automatic all-free failure. Balanced two-point data select the normal supremum by an exact monotonicity theorem.
 
-A multistart profile grid and joint refinement compare finite fits with Cauchy and normal fits. The joint problem need not be unimodal; the search does not certify a global maximum. Log-likelihood differences within `1e-8` per observation are treated as ties, preferring Cauchy and then other attained finite members. On the unresolved normal approach ($\nu\ge10^5$) a numerical tie selects the normal boundary.
+The all-free fitter uses the certificate described below. A grid nominates roots; acceptance requires root inclusion, a uniform profile neighborhood and exclusion of every other shape interval and the normal tail. No fitted shape cap, local residual exception or numerical tie is accepted as a maximum.
 
 With $\nu$ held fixed, only location and scale are estimated by monotone
 EM, stopping when the norm of the scale-standardized location and log-scale
@@ -151,10 +149,7 @@ upper bounds, and derives the refitted normal-seam expansion. With $z_i=(x_i-\ba
 $s_N^2=n^{-1}\sum_i(x_i-\bar x)^2$, its first coefficient in
 $\xi=1/\nu$ is $n(\overline{z^4}-3)/4$. A negative coefficient certifies
 only local preference for the normal limit: the study retains a sample with
-negative slope and a strictly better finite fit. The research value bounds
-do not certify coefficient accuracy or replace the current fitter. A production
-global certificate still requires bounded arithmetic near the normal seam,
-isolation of stationary roots and comparisons with equality faces.
+negative slope and a strictly better finite fit. The subsequent root inclusion and uniform-neighborhood arguments supply coefficient and global exclusion checks in the native certificate described below.
 
 When the largest tie multiplicity satisfies $k<n/2$, a finite all-free
 maximum exists if and only if some finite admissible point reaches or exceeds
@@ -171,7 +166,57 @@ not flagged. README hold exemptions apply to free coefficients. Failed
 optimizers return a failure status unless the score norm in fitting
 coordinates is below `1e-3`; unresolved scalar searches stop.
 
+
+The 2026-11-06 native port makes the certificate the all-free default.
+The [arithmetic and acceptance note](../../../../../dev/research/evaluations/2026-11-06-t-port-data/arithmetic.md)
+records formulas, margins, rejected arithmetic choices and guarded failures.
+The grid supplies proposals only. Root acceptance requires a strict
+contraction self-map, a uniform nuisance-ball inward bound and a positive
+Hessian congruence throughout a larger product neighborhood. Geodesic
+convexity identifies every conditional nuisance optimum there; the Schur
+complement makes the retained profile neighborhood strictly concave.
+Every exterior finite shape interval receives a chord upper bound, and the
+entire normal tail receives a signed or unsigned bound. At the lower face,
+the relative endpoint chord compares the same exact endpoint on both sides.
+A positive-scale endpoint additionally needs nuisance root inclusion.
+
+Arithmetic is binary64, with operation margins of 64 epsilon times endpoint
+magnitude plus the minimum subnormal; cancellation branches use the operand
+magnitudes. Sums have a separate depth-dependent margin.
+Normalization uncertainty is propagated from the original observations.
+Gamma-ratio recurrences and integrated alternating remainders avoid large
+gamma subtraction. Relative normal losses and log1p remainders avoid
+subtracting full likelihoods at the normal seam. Certification is in exact
+arithmetic conditional on the computed bounds and strict comparisons, with
+these practical floating-point margins; it is not outward-rounded interval
+arithmetic.
+
+Binary-carry pairwise sums limit accumulation depth. The stable point-score
+combination in the linked note preserves shape/nuisance cancellation near
+normal. Exact common replication is reduced before fitting and all likelihood
+bounds are multiplied back.
+
+All proposal, line-search and neighborhood loops are bounded. The default
+cache permits 4096 profiles; shapes beyond 1e14 are a numerical-domain
+refusal, never a fitted cap. Unresolved comparisons, singular solves,
+nonfinite/domain errors and insufficient coefficient widths stop with
+`CertificateTie`, `CertificateBudget` or `NumericalFailure`. No certificate
+failure can use the local optimizer-score exception. Location width is
+measured in empirical normal-scale units; scale and shape widths are relative.
+The all-free width target is gradtol clamped to [1e-7,1e-6]; std checks the
+entire transformed standard-deviation interval as well. Held subsets retain
+their previous algorithms and convergence rules.
+
+Normal stops carry `(mean,sd)`; positive ordinary-scale t2 stops carry
+`(mu,sigma,df=2)`. A bounded collapse stop carries the diagnostic path
+`(mu,df)` under the descriptive label `t scale collapse (no package family)`, with its limiting likelihood bounds.
+That path is not a public density family and does not assign a continuous
+density to an atomic weak limit. Budget and numerical stops preserve finite
+witnesses where available; unknown global upper bounds remain infinite.
+
 ## Decision history
+
+The 2026-11-06 TASK-140 port replaces only the all-free defaults with the native certificate. Held subsets and sstd remain on their existing routes.
 
 The 2026-11-04 TASK-140 study retains the existing default: its whole-profile
 value enclosures do not yet establish a certified global coefficient vector.
@@ -192,7 +237,7 @@ comparisons and convergence checks; it does not strengthen global guarantees.
 
 With location and degrees of freedom held, the log-scale score is strictly decreasing from $\nu(n-k)-k$ to $-n$, where $k$ observations equal the held location. Under the strict existence inequality the unique root is the global scale maximum. The solver expands until both score signs are verified within the representable scale range, bisects, and requires absolute total log-scale score below $10^{-3}$ at the represented result. Residual log magnitudes avoid squared-residual overflow. Missing brackets and failed score checks return `IterationFailure`; no search endpoint is returned as an estimate.
 
-Face comparisons retain the family tolerance but stop with the existing numerical-failure status when `core/face_compare.hpp` cannot resolve the decision after its floating-point rounding allowance. This allowance concerns computed likelihood comparisons, not optimizer convergence or global optimality; see the [comparison analysis](../../../../../dev/research/evaluations/2026-11-02-face-compare-report.md).
+Historical held-subset face comparisons retain the family tolerance but stop with the existing numerical-failure status when `core/face_compare.hpp` cannot resolve the decision after its floating-point rounding allowance. This allowance concerns computed likelihood comparisons, not optimizer convergence or global optimality; see the [comparison analysis](../../../../../dev/research/evaluations/2026-11-02-face-compare-report.md).
 
 At a critical half-mass atom b, the fixed-shape Cauchy supremum is
 $-n\log\pi-2\sum_{x_i\ne b}\log|x_i-b|$. It is attained only for
@@ -206,5 +251,4 @@ The [root and lower-face derivation](../../../../../dev/research/evaluations/202
 proves these endpoint statements and gives a relative chord inequality
 that can exclude a whole punctured endpoint neighborhood. It also derives
 the analytic Hessian in upper-half-plane coordinates, root inclusion and
-uniform nuisance/profile-curvature checks. These statements do not
-certify the current production multistart dispatch.
+uniform nuisance/profile-curvature checks. These arguments underlie the all-free native certificate; held profile searches keep their existing scope.

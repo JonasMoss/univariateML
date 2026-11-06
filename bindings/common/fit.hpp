@@ -88,6 +88,9 @@ inline std::string stop_model(cppunivariate::StopModel model) {
     case cppunivariate::StopModel::PointMass:return "point mass (no package family)";
     case cppunivariate::StopModel::TwoPoint:return "two-point law (no package family)";
     case cppunivariate::StopModel::ShiftedNbinom:return "translated negative binomial (no package family)";
+    case cppunivariate::StopModel::Norm:return "norm";
+    case cppunivariate::StopModel::Lst:return "lst";
+    case cppunivariate::StopModel::TCollapsePath:return "t scale collapse (no package family)";
     default:return "";
   }
 }
@@ -109,6 +112,9 @@ inline std::vector<std::string> stop_names(const std::string& model,const std::v
   if(model=="point mass (no package family)")return {"point"};
   if(model=="two-point law (no package family)")return {"lower","upper","prob"};
   if(model=="translated negative binomial (no package family)")return {"size","prob","shift"};
+  if(model=="norm")return {"mean","sd"};
+  if(model=="lst")return {"mu","sigma","df"};
+  if(model=="t scale collapse (no package family)")return {"mu","df"};
   return names;
 }
 inline FitResult stop_failure(FitResult out,const cppunivariate::StopDetail& detail,

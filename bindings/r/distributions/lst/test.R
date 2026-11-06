@@ -34,8 +34,10 @@ test_that("Cauchy is attained and normal escapes name mlnorm", {
 })
 
 test_that("collapse configurations are rejected and allowed ties fit", {
-  for (x in list(c(1, 2), rep(1, 5), c(0, 0, 1, 2), c(0, 0, 0, 1, 2)))
-    expect_error(suppressWarnings(mllst(x), classes = "univariateML_restricted"), "no value repeated n/2", fixed = TRUE)
+  for (x in list(c(1,2),c(0,0,1,2)))
+    expect_error(mllst(x),"Use `mlnorm`",fixed=TRUE)
+  for (x in list(rep(1,5),c(0,0,0,1,2)))
+    expect_error(mllst(x),"unbounded.*collapse")
   expect_error(suppressWarnings(mllst(c(1:5, NA)), classes = "univariateML_restricted"))
   expect_s3_class(suppressWarnings(mllst(c(0, 0, 1, 2, 10)), classes = "univariateML_restricted"), "univariateML")
 })
@@ -181,4 +183,13 @@ test_that("lst: extreme conditional bracket is checked", {
   wide <- mllst(c(big,-big,0),mu=big,df=1)
   expect_equal(unname(wide["sigma"])/big,sqrt((sqrt(73)-5)/6),tolerance=1e-9)
   expect_true(is.finite(as.numeric(logLik(wide))))
+})
+
+test_that("lst certificate normal stops expose the normal model", {
+  err <- tryCatch(mllst(c(-1,-1,1,1)), error=identity)
+  expect_s3_class(err,"univariateML_limit")
+  expect_identical(err$model,"norm")
+  expect_equal(unname(err$estimates),c(0,1))
+  expect_true(is.finite(err$loglik_lower))
+  expect_gte(err$loglik_upper,err$loglik_lower)
 })

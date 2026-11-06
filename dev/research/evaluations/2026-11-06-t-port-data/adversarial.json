@@ -1,0 +1,34 @@
+[
+  {
+    "name": "cauchy-stable-interior",
+    "family": "lst",
+    "status": 0,
+    "profiles": 602,
+    "seconds": 0.022857979666666667,
+    "winner_enclosed": true
+  },
+  {
+    "name": "cauchy-stable-interior",
+    "family": "std",
+    "status": 7,
+    "profiles": 570,
+    "seconds": 0.024028189666666665,
+    "guarded_refusal": true
+  },
+  {
+    "name": "two-interior-maxima",
+    "family": "lst",
+    "status": 7,
+    "profiles": 1451,
+    "seconds": 0.0321104,
+    "guarded_refusal": true
+  },
+  {
+    "name": "two-interior-maxima",
+    "family": "std",
+    "status": 7,
+    "profiles": 1520,
+    "seconds": 0.034060929,
+    "guarded_refusal": true
+  }
+]

@@ -125,3 +125,20 @@ conditions without changing the existing status or message. Mixed numerical
 or iteration failures whose cause is not distinguished remain ordinary errors.
 No binding refits a face. The settled shared CMP implementation is unchanged;
 its dossier-level entry point adds payloads to its existing stop statuses.
+
+## Location-scale t certificate (TASK-140, 2026-11-06)
+
+All-free lst/std certificate stops distinguish `budget`, `tie`, `numerical`,
+normal and ordinary-scale t2 `limit`, and unbounded/collapse `nomle`.
+Certificate failures are terminal and never use an optimizer-score exception.
+`StopModel::Norm` candidates have `(mean,sd)`; `StopModel::Lst` candidates
+have ordinary-scale `(mu,sigma,df)`, including a positive-scale t2 face.
+This avoids reporting the t2 face as a finite standard deviation.
+
+A selected bounded scale-collapse path uses the descriptive label `t scale collapse (no package family)`
+with `(mu,df)` and its limiting likelihood. This id denotes a path, not a
+public density family or a continuous density assigned to an atomic weak
+limit. There is no fitted zero scale among its diagnostic coefficients.
+Unbounded collapse has no finite face estimate. Original-unit likelihood
+bounds include the normalization Jacobian. Missing global upper bounds stay
+infinite or unavailable; a last segment bound is not a global bound.

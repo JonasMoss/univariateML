@@ -1,0 +1,20 @@
+{
+  "kind": "historical native diagnostic, before magnitude-scaled reciprocal and operation bounds",
+  "input_source": "../2026-11-04-t-cert-data/inputs.json",
+  "input": "cluster-0.001",
+  "lst": {
+    "unresolved_shape_interval": [2055313446996.0894, 2058181270278.7593],
+    "segment_loglik_upper_original_units": 1402500.5517021494,
+    "lower_face_relative_likelihood_interval": [15.959949415220521, 15.959953037395398],
+    "outcome": "budget at 4096"
+  },
+  "std": {
+    "unresolved_shape_interval": [383801259132.23993, 388185929604.26721],
+    "segment_loglik_upper_original_units": 3278490.9327494935,
+    "lower_face_relative_likelihood_interval": [2.0727099620672353, 2.072711773261644],
+    "outcome": "budget at 4096"
+  },
+  "cause": "A 64-epsilon absolute allowance on a reciprocal near 1e-26 was multiplied by a large squared width; the same absolute floor could straddle zero in a small positive squared Hessian denominator.",
+  "resolution": "Magnitude-scaled operation and reciprocal allowances with gradual-underflow protection; separate binary-carry sum margins; homogeneous conversion back to physical units.",
+  "reproducer": "diagnostic.cpp and diagnostic.py; the old primitive was pad(l,h) with error = 64*epsilon*(1+max(abs(l),abs(h))), also used inside reciprocal construction. The final sources use corrected arithmetic and do not reproduce the historical numbers byte for byte."
+}
