@@ -1,0 +1,30 @@
+{
+  "seed": 11671,
+  "precision": 70,
+  "calls": 49,
+  "statuses": {
+    "0": 30,
+    "3": 7,
+    "5": 5,
+    "4": 7
+  },
+  "failures": {
+    "0": 42,
+    "1": 1,
+    "2": 5,
+    "3": 1
+  },
+  "max_relative_coefficient_error": 1.990189678204278e-07,
+  "max_absolute_inflation_error": 3.977194649657347e-08,
+  "max_loglik_error_per_observation": 5.5124506766938734e-15,
+  "hessian_and_Taylor_points": 216,
+  "face_grid_checks": 1944,
+  "first_order_tail_checks": 288
+}
+{"name": "joint-0", "maxit": 2000, "status": 3, "failure": 1, "work": 332, "elapsed_seconds": 0.008662665000883862, "output": ["3", "1", "332", "nan", "nan", "nan", "nan", "nan", "inf", "1", "0", "nan"]}
+{"name": "joint-0", "maxit": 20000, "status": 3, "failure": 1, "work": 332, "elapsed_seconds": 0.009006169988424517, "output": ["3", "1", "332", "nan", "nan", "nan", "nan", "nan", "inf", "1", "0", "nan"]}
+{"name": "positive-tail", "maxit": 2000, "status": 3, "failure": 2, "work": 31999, "elapsed_seconds": 0.14425834699068218, "output": ["3", "2", "31999", "nan", "nan", "nan", "nan", "nan", "inf", "1", "0", "nan"]}
+{"name": "positive-tail", "maxit": 20000, "status": 3, "failure": 2, "work": 319999, "elapsed_seconds": 0.35948237098637037, "output": ["3", "2", "319999", "nan", "nan", "nan", "nan", "nan", "inf", "1", "0", "nan"]}
+{"name": "generated-0", "maxit": 2000, "status": 4, "failure": 0, "work": 136333, "elapsed_seconds": 0.2260698419995606, "output": ["4", "0", "136333", "nan", "nan", "nan", "nan", "-9331.8069084694798", "-9331.8069064696083", "2", "15", "-9331.806908424991"]}
+validation 0 0 proposal 0 2.5965104545160917 0.21536175410931574 0.47598892514099506 parents 0 0 2.5965100480672487 0.21536172867181502 0 face 1 9.6382605651653854 -186.64965536502163 -186.64965530209543 gradient 1.8329123463445285e-07 -2.8421709430404007e-14 6.3209881756548621e-10 radius 0.02 -15.497518826268058 -1.1908708377031773e-08 radius 0.00125 4.1987654909288379 4.3954689221940627e-08 radius 7.8125000000000002e-05 5.5360891840117512 3.3336788143258763e-08 radius 4.8828125000000001e-06 5.6201244958591126 3.283831744395801e-08
+

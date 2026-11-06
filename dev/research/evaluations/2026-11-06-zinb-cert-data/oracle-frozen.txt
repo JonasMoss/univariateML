@@ -1,0 +1,18 @@
+{
+  "seed": 1167,
+  "precision": 70,
+  "calls": 91,
+  "success": 90,
+  "failures": {
+    "0": 90,
+    "1": 0,
+    "2": 0,
+    "3": 1
+  },
+  "max_relative_coefficient_error": 1.1786330748036205e-10,
+  "max_absolute_inflation_error": 4.1016181795776154e-13,
+  "max_loglik_error_per_observation": 1.9278328375611516e-15,
+  "median_new_us": 14.09,
+  "median_legacy_us": 157.27,
+  "tail_inequalities": 288
+}

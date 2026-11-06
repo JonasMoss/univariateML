@@ -1,0 +1,24 @@
+{
+  "seed": 11671,
+  "precision": 70,
+  "calls": 49,
+  "statuses": {
+    "0": 28,
+    "3": 9,
+    "5": 5,
+    "4": 7
+  },
+  "failures": {
+    "0": 40,
+    "1": 2,
+    "5": 1,
+    "2": 5,
+    "3": 1
+  },
+  "max_relative_coefficient_error": 1.990189678204278e-07,
+  "max_absolute_inflation_error": 3.977194649657347e-08,
+  "max_loglik_error_per_observation": 5.2376254409992745e-15,
+  "hessian_and_Taylor_points": 216,
+  "face_grid_checks": 1944,
+  "first_order_tail_checks": 288
+}

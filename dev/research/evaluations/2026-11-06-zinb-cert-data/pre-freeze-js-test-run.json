@@ -1,0 +1,11 @@
+{
+  "command": [
+    "/tmp/umvl-cpu/run4",
+    "just",
+    "js-test"
+  ],
+  "machine": "workstation",
+  "started": "2026-11-06T15:16:58.934253+00:00",
+  "elapsed_seconds": 105.29699843999697,
+  "exit_code": 0
+}

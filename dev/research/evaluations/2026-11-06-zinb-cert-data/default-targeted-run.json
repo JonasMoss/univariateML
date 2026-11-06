@@ -1,0 +1,11 @@
+{
+  "command": [
+    "/tmp/umvl-cpu/run",
+    "python3",
+    "dev/research/evaluations/2026-11-06-zinb-cert-data/targeted.py"
+  ],
+  "machine": "workstation",
+  "started": "2026-11-06T15:01:18.194107+00:00",
+  "elapsed_seconds": 35.188138507000986,
+  "exit_code": 1
+}

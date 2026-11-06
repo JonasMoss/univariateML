@@ -1,0 +1,11 @@
+{
+  "command": [
+    "/tmp/umvl-cpu/run4",
+    "just",
+    "site-check"
+  ],
+  "machine": "workstation",
+  "started": "2026-11-06T16:22:20.734624+00:00",
+  "elapsed_seconds": 65.44385574699845,
+  "exit_code": 0
+}

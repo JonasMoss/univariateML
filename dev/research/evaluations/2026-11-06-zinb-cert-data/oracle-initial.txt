@@ -1,0 +1,16 @@
+{
+  "seed": 1167,
+  "precision": 70,
+  "calls": 91,
+  "success": 89,
+  "failures": {
+    "0": 89,
+    "1": 1,
+    "2": 0,
+    "3": 1
+  },
+  "max_relative_probability_error": 1.1786330748036205e-10,
+  "median_new_us": 12.666,
+  "median_legacy_us": 91.153,
+  "tail_inequalities": 288
+}

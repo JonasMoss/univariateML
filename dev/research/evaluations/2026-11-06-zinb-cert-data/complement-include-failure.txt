@@ -1,0 +1,23 @@
+In file included from univariateML-cpp/include/cppunivariate/distributions/zinb/mle.hpp:202,
+                 from univariateML-cpp/include/cppunivariate/distributions/zinb/certificate.hpp:2,
+                 from /home/jonas/Files/programming/univariateML.wt/zinb-cert/dev/research/evaluations/2026-11-06-zinb-cert-data/probe.cpp:1:
+univariateML-cpp/include/cppunivariate/distributions/zinb/global_certificate.hpp: In member function ‘cppunivariate::zinb_global_detail::Point cppunivariate::zinb_global_detail::Data::at(double, double) const’:
+univariateML-cpp/include/cppunivariate/distributions/zinb/global_certificate.hpp:60:28: error: ‘zinb_cert_detail’ has not been declared
+   60 |       const double zero_ll=zinb_cert_detail::zero_logmass(-t,zero);
+      |                            ^~~~~~~~~~~~~~~~
+univariateML-cpp/include/cppunivariate/distributions/zinb/global_certificate.hpp: In member function ‘cppunivariate::zinb_global_detail::Point cppunivariate::zinb_global_detail::Data::zip_at(double) const’:
+univariateML-cpp/include/cppunivariate/distributions/zinb/global_certificate.hpp:79:28: error: ‘zinb_cert_detail’ has not been declared
+   79 |       const double zero_ll=zinb_cert_detail::zero_logmass(-t,p);
+      |                            ^~~~~~~~~~~~~~~~
+univariateML-cpp/include/cppunivariate/distributions/zinb/global_certificate.hpp: In function ‘cppunivariate::zinb_global_detail::Face cppunivariate::zinb_global_detail::zip_upper(const Data&, int)’:
+univariateML-cpp/include/cppunivariate/distributions/zinb/global_certificate.hpp:155:28: error: ‘zinb_cert_detail’ has not been declared
+  155 |       const double ll=d.n0*zinb_cert_detail::zero_logmass(-lambda,d.pi)+d.k*std::log1p(-d.pi)-d.k*lambda+d.S*std::log(lambda)+d.factorial;
+      |                            ^~~~~~~~~~~~~~~~
+Traceback (most recent call last):
+  File "/home/jonas/Files/programming/univariateML.wt/zinb-cert/dev/research/evaluations/2026-11-06-zinb-cert-data/compile_probe.py", line 6, in <module>
+    subprocess.run(['ccache','c++','-std=c++17','-O2','-Wall','-Wextra','-Wpedantic','-IunivariateML-cpp/include','-I'+boost,str(Path(__file__).with_name('probe.cpp')),'-o','build/scratch/zinb-probe'],check=True)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jonas/.local/share/uv/python/cpython-3.14.5-linux-x86_64-gnu/lib/python3.14/subprocess.py", line 578, in run
+    raise CalledProcessError(retcode, process.args,
+                             output=stdout, stderr=stderr)
+subprocess.CalledProcessError: Command '['ccache', 'c++', '-std=c++17', '-O2', '-Wall', '-Wextra', '-Wpedantic', '-IunivariateML-cpp/include', '-I/home/jonas/R/x86_64-pc-linux-gnu-library/4.6/BH/include', '/home/jonas/Files/programming/univariateML.wt/zinb-cert/dev/research/evaluations/2026-11-06-zinb-cert-data/probe.cpp', '-o', 'build/scratch/zinb-probe']' returned non-zero exit status 1.

@@ -1,0 +1,112 @@
+[
+  {
+    "name": "joint-0",
+    "maxit": 2000,
+    "status": 3,
+    "failure": 1,
+    "work": 332,
+    "elapsed_seconds": 0.008662665000883862,
+    "output": [
+      "3",
+      "1",
+      "332",
+      "nan",
+      "nan",
+      "nan",
+      "nan",
+      "nan",
+      "inf",
+      "1",
+      "0",
+      "nan"
+    ]
+  },
+  {
+    "name": "joint-0",
+    "maxit": 20000,
+    "status": 3,
+    "failure": 1,
+    "work": 332,
+    "elapsed_seconds": 0.009006169988424517,
+    "output": [
+      "3",
+      "1",
+      "332",
+      "nan",
+      "nan",
+      "nan",
+      "nan",
+      "nan",
+      "inf",
+      "1",
+      "0",
+      "nan"
+    ]
+  },
+  {
+    "name": "positive-tail",
+    "maxit": 2000,
+    "status": 3,
+    "failure": 2,
+    "work": 31999,
+    "elapsed_seconds": 0.14425834699068218,
+    "output": [
+      "3",
+      "2",
+      "31999",
+      "nan",
+      "nan",
+      "nan",
+      "nan",
+      "nan",
+      "inf",
+      "1",
+      "0",
+      "nan"
+    ]
+  },
+  {
+    "name": "positive-tail",
+    "maxit": 20000,
+    "status": 3,
+    "failure": 2,
+    "work": 319999,
+    "elapsed_seconds": 0.35948237098637037,
+    "output": [
+      "3",
+      "2",
+      "319999",
+      "nan",
+      "nan",
+      "nan",
+      "nan",
+      "nan",
+      "inf",
+      "1",
+      "0",
+      "nan"
+    ]
+  },
+  {
+    "name": "generated-0",
+    "maxit": 2000,
+    "status": 4,
+    "failure": 0,
+    "work": 136333,
+    "elapsed_seconds": 0.2260698419995606,
+    "output": [
+      "4",
+      "0",
+      "136333",
+      "nan",
+      "nan",
+      "nan",
+      "nan",
+      "-9331.8069084694798",
+      "-9331.8069064696083",
+      "2",
+      "15",
+      "-9331.806908424991"
+    ]
+  }
+]

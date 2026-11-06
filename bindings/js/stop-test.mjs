@@ -202,3 +202,28 @@ test('conditional snorm and skew-t ambiguities retain both compared models', () 
       assert.ok(e.candidates.every(c=>Number.isFinite(c.loglik_lower)));return true;
     });
 });
+
+test('ZINB certificate transports competing maxima and terminal budgets', () => {
+  assert.throws(() => api.zinb.fit([...Array(99).fill(0),10], {size:10,pi:.76839477568758077746}), e => {
+    assert.equal(e.kind,'tie');assert.equal(e.candidates.length,2);
+    for(const c of e.candidates){assert.equal(c.size,10);assert.equal(c.pi,.76839477568758077746);assert.ok(c.loglik_lower<=c.loglik_upper);}
+    assert.equal(e.loglik_upper,Infinity);return true;
+  });
+  assert.throws(() => api.zinb.fit([0,1,2,5], {prob:.4}, {iterlim:1}), e => {
+    assert.equal(e.kind,'budget');assert.equal(e.loglik_upper,Infinity);return true;
+  });
+  assert.throws(() => api.zinb.fit([0,100001], {size:2}), e => {
+    assert.equal(e.kind,'numerical');return /workload limit/.test(e.message);
+  });
+});
+
+test('ZINB certified ZIP and Poisson stops name their limiting coefficients', () => {
+  assert.throws(() => api.zinb.fit([...Array(50).fill(0),...Array(50).fill(4)], {pi:.5}), e => {
+    assert.equal(e.kind,'limit');assert.equal(e.model,'zip');assert.equal(e.estimates.pi,.5);
+    assert.ok(e.estimates.lambda>2 && e.estimates.lambda<4);
+    assert.ok(e.loglik_lower<=e.limit_loglik && e.limit_loglik<=e.loglik_upper);return true;
+  });
+  assert.throws(() => api.zinb.fit(Array(100).fill(2)), e => {
+    assert.equal(e.kind,'limit');assert.equal(e.model,'pois');assert.equal(e.estimates.lambda,2);return true;
+  });
+});

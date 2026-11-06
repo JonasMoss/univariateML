@@ -1,0 +1,9 @@
+{"name": "joint-0", "maxit": 2000, "status": 3, "failure": 1, "work": 0, "elapsed_seconds": 0.00842943300085608, "output": ["3", "1", "0", "nan", "nan", "nan", "nan", "nan", "inf", "1", "0", "nan"]}
+{"name": "joint-0", "maxit": 20000, "status": 3, "failure": 1, "work": 0, "elapsed_seconds": 0.005146584007889032, "output": ["3", "1", "0", "nan", "nan", "nan", "nan", "nan", "inf", "1", "0", "nan"]}
+{"name": "joint-2", "maxit": 2000, "status": 3, "failure": 1, "work": 0, "elapsed_seconds": 0.007423546994687058, "output": ["3", "1", "0", "nan", "nan", "nan", "nan", "nan", "inf", "1", "0", "nan"]}
+{"name": "joint-2", "maxit": 20000, "status": 3, "failure": 1, "work": 0, "elapsed_seconds": 0.007365054989350028, "output": ["3", "1", "0", "nan", "nan", "nan", "nan", "nan", "inf", "1", "0", "nan"]}
+{"name": "joint-7", "maxit": 2000, "status": 3, "failure": 5, "work": 0, "elapsed_seconds": 0.006281323992880061, "output": ["3", "5", "0", "nan", "nan", "nan", "nan", "-23.188960759306429", "inf", "1", "0", "nan"]}
+{"name": "joint-7", "maxit": 20000, "status": 3, "failure": 5, "work": 0, "elapsed_seconds": 0.006330664997221902, "output": ["3", "5", "0", "nan", "nan", "nan", "nan", "-23.188960759306429", "inf", "1", "0", "nan"]}
+{"name": "positive-tail", "maxit": 2000, "status": 3, "failure": 2, "work": 0, "elapsed_seconds": 0.1541717130021425, "output": ["3", "2", "0", "nan", "nan", "nan", "nan", "nan", "inf", "1", "0", "nan"]}
+{"name": "positive-tail", "maxit": 20000, "status": 3, "failure": 2, "work": 0, "elapsed_seconds": 0.35322883700428065, "output": ["3", "2", "0", "nan", "nan", "nan", "nan", "nan", "inf", "1", "0", "nan"]}
+{"name": "generated-0", "maxit": 2000, "status": 4, "failure": 0, "work": 8307, "elapsed_seconds": 0.2098138139990624, "output": ["4", "0", "8307", "nan", "nan", "nan", "nan", "-9331.8069084694798", "-9331.8069064696083", "2", "15", "-9331.806908424991"]}

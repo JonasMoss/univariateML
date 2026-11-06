@@ -1,0 +1,72 @@
+{
+  "batches": 3,
+  "repetitions": 100,
+  "n": 500,
+  "rows": [
+    {
+      "mask": 0,
+      "method": "default",
+      "median_us": 12.54726
+    },
+    {
+      "mask": 0,
+      "method": "certificate",
+      "median_us": 108.3247
+    },
+    {
+      "mask": 1,
+      "method": "default",
+      "median_us": 7.10959
+    },
+    {
+      "mask": 1,
+      "method": "certificate",
+      "median_us": 100.40929
+    },
+    {
+      "mask": 2,
+      "method": "default",
+      "median_us": 166.7537
+    },
+    {
+      "mask": 2,
+      "method": "certificate",
+      "median_us": 102.45739
+    },
+    {
+      "mask": 3,
+      "method": "default",
+      "median_us": 6.80757
+    },
+    {
+      "mask": 3,
+      "method": "certificate",
+      "median_us": 100.98725
+    },
+    {
+      "mask": 4,
+      "method": "default",
+      "median_us": 1075.26944
+    },
+    {
+      "mask": 4,
+      "method": "certificate",
+      "median_us": 269.95444
+    },
+    {
+      "mask": 5,
+      "method": "default",
+      "median_us": 379.0597
+    },
+    {
+      "mask": 5,
+      "method": "certificate",
+      "median_us": 282.60067
+    },
+    {
+      "mask": 6,
+      "method": "default",
+      "median_us": 559.21742
+    }
+  ]
+}

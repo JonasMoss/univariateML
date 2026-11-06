@@ -67,8 +67,15 @@ local({
       label <- paste(id,length(x),paste(held,collapse=","))
       fit <- tryCatch(suppressWarnings(do.call(get(paste0("ml",id)),c(list(x=x),fixed))),error=identity)
       if (inherits(fit,"error")) {
-        # Only declared non-existence faces are allowed in these valid holds.
-        expect_match(conditionMessage(fit),"mlpois|mlzip|mlztpois|mlzmpois",info=label)
+        # An unresolved certificate is a terminal numerical stop, never an estimate.
+        expect_s3_class(fit,"univariateML_stop")
+        expect_true(fit$kind %in% c("limit","budget","tie","numerical","unresolved"),info=label)
+        if(identical(fit$kind,"limit")) {
+          expect_match(conditionMessage(fit),"mlpois|mlzip|mlztpois|mlzmpois",info=label)
+        } else {
+          expect_match(conditionMessage(fit),"no (unique )?verified maximum",info=label)
+          expect_true(is.infinite(fit$loglik_upper) || is.na(fit$loglik_upper),info=label)
+        }
         next
       }
       expect_identical(as.numeric(fit[held]),as.numeric(base[held]),info=label)
@@ -178,4 +185,43 @@ test_that("zinb zero boundary works through generated d/p/q/r", {
     expect_equal(qzinb(c(-Inf,-10000,0),size=0,prob=.4,pi=.3,lower.tail=lower,log.p=TRUE),rep(0,3))
   }
   expect_equal(rzinb(20,size=0,prob=.4,pi=.3),rep(0,20))
+})
+
+test_that("ZINB certified stops retain competing maxima and explicit budgets", {
+  x <- c(rep(0L,99),10L)
+  tie <- tryCatch(mlzinb(x,size=10,pi=.76839477568758077746),error=identity)
+  expect_s3_class(tie,"univariateML_tie")
+  expect_identical(tie$kind,"tie")
+  expect_equal(nrow(tie$candidates),2L)
+  expect_true(all(tie$candidates$size==10))
+  expect_true(all(tie$candidates$pi==.76839477568758077746))
+  for(j in seq_len(nrow(tie$candidates))) {
+    ll <- sum(dzinb(x,size=10,prob=tie$candidates$prob[j],pi=.76839477568758077746,log=TRUE))
+    expect_lte(tie$candidates$loglik_lower[j],ll)
+    expect_gte(tie$candidates$loglik_upper[j],ll)
+  }
+  budget <- tryCatch(mlzinb(c(0L,1L,2L,5L),prob=.4,iterlim=1),error=identity)
+  expect_s3_class(budget,"univariateML_budget")
+  expect_identical(budget$kind,"budget")
+  expect_true(is.infinite(budget$loglik_upper))
+  workload <- tryCatch(mlzinb(c(0L,100001L),size=2),error=identity)
+  expect_s3_class(workload,"univariateML_numerical")
+  expect_match(conditionMessage(workload),"workload limit")
+})
+
+test_that("ZINB certified limit payloads preserve held inflation", {
+  x <- c(rep(0L,50),rep(4L,50))
+  face <- tryCatch(mlzinb(x,pi=.5),error=identity)
+  expect_s3_class(face,"univariateML_limit")
+  expect_identical(face$model,"zip")
+  expect_identical(face$estimates[["pi"]],.5)
+  rate <- face$estimates[["lambda"]]
+  ll <- 50*log(.5+.5*exp(-rate))+50*(log(.5)+dpois(4,rate,log=TRUE))
+  expect_equal(face$limit_loglik,ll,tolerance=1e-8)
+  expect_lte(face$loglik_lower,ll)
+  expect_gte(face$loglik_upper,ll)
+  poisson <- tryCatch(mlzinb(rep(2L,100)),error=identity)
+  expect_s3_class(poisson,"univariateML_limit")
+  expect_identical(poisson$model,"pois")
+  expect_equal(poisson$estimates,c(lambda=2))
 })

@@ -1,0 +1,77 @@
+{
+  "batches": 3,
+  "repetitions": 100,
+  "n": 500,
+  "rows": [
+    {
+      "mask": 0,
+      "method": "legacy-proposer",
+      "median_us": 9.36437
+    },
+    {
+      "mask": 0,
+      "method": "certificate",
+      "median_us": 5.61566
+    },
+    {
+      "mask": 1,
+      "method": "legacy-proposer",
+      "median_us": 3.29041
+    },
+    {
+      "mask": 1,
+      "method": "certificate",
+      "median_us": 4.79575
+    },
+    {
+      "mask": 2,
+      "method": "legacy-proposer",
+      "median_us": 74.84533
+    },
+    {
+      "mask": 2,
+      "method": "certificate",
+      "median_us": 5.54317
+    },
+    {
+      "mask": 3,
+      "method": "legacy-proposer",
+      "median_us": 3.07312
+    },
+    {
+      "mask": 3,
+      "method": "certificate",
+      "median_us": 4.57464
+    },
+    {
+      "mask": 4,
+      "method": "legacy-proposer",
+      "median_us": 277.81492
+    },
+    {
+      "mask": 4,
+      "method": "certificate",
+      "median_us": 31.28504
+    },
+    {
+      "mask": 5,
+      "method": "legacy-proposer",
+      "median_us": 277.16849
+    },
+    {
+      "mask": 5,
+      "method": "certificate",
+      "median_us": 32.11361
+    },
+    {
+      "mask": 6,
+      "method": "legacy-proposer",
+      "median_us": 397.24257
+    },
+    {
+      "mask": 6,
+      "method": "certificate",
+      "median_us": 3667.3132
+    }
+  ]
+}
