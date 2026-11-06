@@ -1,0 +1,9 @@
+Validated and generated d/p/q/r for 99 families.
+PASS: four articles; dossier catalogues: 287 limits, 99 families, 9 fit domains.
+PASS: inference: 355 unique scopes, 99 families; implementation symbols, evidence anchors, calibration and checks resolve; full static table.
+PASS: graph: 99 unique nodes, 277 edges, resolving family links; SVG generated twice byte-identically and matches built HTML.
+PASS: explorer coverage matches binding registry; optional build assets agree.
+PASS: every declared and inverted relation and limit link is rendered and resolves.
+PASS: 99 family pages; MathML on every family; no math runtime or external runtime assets; internal links and fragments resolve.
+PASS: 99 generated C++ snippets compile and link as C++17 (including exp, gamma, gb2).
+PASS: pilot and ten additional HTML spot checks: exp, gamma, gb2, binom, beta, hyper, sstd, gev, gpd, tnorm, pois, unif, pareto

@@ -1,0 +1,111 @@
+{
+  "base_revision": "bb734cd78b846a565d8835606328bb1285a82db6",
+  "committed": false,
+  "source_sha256": {
+    "univariateML-cpp/include/cppunivariate/distributions/sstd/mle.hpp": "259f8aef8b29e075cc2bc8f77494f0cf8cf50b2be2711d40e386f52596f7c17c",
+    "univariateML-cpp/include/cppunivariate/distributions/sstd/scale_certificate.hpp": "a27e0df611272cebed35887f25e62897d98f1873831d5f1bb5ed0bc95a95d833",
+    "univariateML-cpp/include/cppunivariate/distributions/sstd/README.md": "3ff0ae04388d8e1fb518fea530fe9bb2076eb0dbf12c2ad15fc96fb38b1b4856",
+    "univariateML-cpp/include/cppunivariate/distributions/sstd/test.cpp": "928fa2de42b12547f4ae344cacd2460d241813bdd5d3924ddd5a4644697e0bb0",
+    "bindings/r/distributions/sstd/adapter.cpp": "4b880de1e5f693c047e77509116f028e1cfd277ad452c5ef6724634ec7c40064",
+    "bindings/r/distributions/sstd/test.R": "70de3cc5b50081b52125cf8fbaea5421c27e7d36c4b7438b57aea26581ba7f2d"
+  },
+  "golden_sha256": "b4e12fb2df90fb43cacb7946b4e2cb7d5da960d83eb3add396b35afd96e59be0",
+  "golden_unchanged": true,
+  "snapshot_note": "C++ dev precedes explicit StopDetail default initializer; R dev precedes final numerical-message clarification. Full tiers cover final corresponding sources. Targeted test code and numerical logic match final source.",
+  "environment": {
+    "workstation_gcc": "15.2.0 Ubuntu 15.2.0-16ubuntu1",
+    "workstation_node": "22.22.1",
+    "site_python": "3.14.5",
+    "site_sympy": "1.14.0",
+    "simbox_gcc": "15.2.0",
+    "simbox_R": "4.6.1",
+    "blas_openmp_threads": 1
+  },
+  "controls": {
+    "tol": 0.0001220703,
+    "iterlim": 200,
+    "scale_log_bracket_width": "2e-12*(1+max(abs(endpoints)))",
+    "score_margin": "128*epsilon*n*(nu+1)",
+    "certificate_evaluations": "128LL*min(iterlim,100000)"
+  },
+  "simbox_fallback_used": false,
+  "runs": [
+    {
+      "name": "targeted_cpp",
+      "machine": "workstation",
+      "command": "sstd-tests --source-file=*sstd/test.cpp",
+      "exit_code": 0,
+      "result": "26 cases / 3823 assertions passed; two main-file cases filtered",
+      "log_sha256": "080da98365101501833f6fa44fe3d4bbdf56cee25d964b572f4da075cdabc845"
+    },
+    {
+      "name": "cpp_dev",
+      "machine": "simbox",
+      "command": "just cpp-test",
+      "exit_code": 0,
+      "result": "106/106 passed; 56.95 s",
+      "log_sha256": "963b471eb46fec6332fc55209d9f5ab97b83a75dd25ffb75fb3ecb1477366fe2"
+    },
+    {
+      "name": "cpp_full",
+      "machine": "simbox",
+      "command": "UMVL_TEST_TIER=full just cpp-test",
+      "exit_code": 0,
+      "result": "127/127 passed; 98.66 s",
+      "log_sha256": "30233a67bf67602a390ad9237c6d7b8e8655e37e2d035c59b0334317cff5385b"
+    },
+    {
+      "name": "cpp_no_long_double",
+      "machine": "simbox",
+      "command": "just cpp-test-no-long-double",
+      "exit_code": 0,
+      "result": "127/127 passed; 76.84 s",
+      "log_sha256": "c1bbad9aed1b5078a0d68a3a9dece845c544cf323bb63a136e0d31545df42f12"
+    },
+    {
+      "name": "r_dev",
+      "machine": "simbox",
+      "command": "just test",
+      "exit_code": 0,
+      "result": "FAIL 0 / WARN 0 / SKIP 154 / PASS 20886; 117.865 s",
+      "log_sha256": "b98e4f3f44f359e65010545f2295e2edbe409632fd2d9ca84de9154430f63ff9"
+    },
+    {
+      "name": "r_full",
+      "machine": "simbox",
+      "command": "just test-full",
+      "exit_code": 0,
+      "result": "FAIL 0 / WARN 0 / SKIP 0 / PASS 43706; 326.188 s",
+      "log_sha256": "c19731ffe030a42eae2bd6a9c99624c9c1ef327fbf2e7a76f4b8f0b5b867af25"
+    },
+    {
+      "name": "js_build",
+      "machine": "workstation",
+      "command": "just js-build",
+      "exit_code": 0,
+      "result": "passed; 99 generated families",
+      "log_sha256": "bd9a96c3325a91d607b20fabf501a6cbfb99480a11b65417f293eb0ccdad0e91"
+    },
+    {
+      "name": "js_test",
+      "machine": "workstation",
+      "command": "just js-test",
+      "exit_code": 0,
+      "result": "432 passed / 0 failed / 0 skipped; 100.392 s",
+      "log_sha256": "2d1f385a78e622c73a6ec88776eef118a1bbaad1035939bdb0069fc78815583e"
+    },
+    {
+      "name": "site_check",
+      "machine": "workstation",
+      "command": "just site-check",
+      "exit_code": 0,
+      "result": "passed; 99 families and C++ snippets, MathML, links",
+      "log_sha256": "92f922f659a890b1ae2ac37b05e78c4f47835a8461c9ff075a1917226929407c"
+    }
+  ],
+  "artifact_viewer": {
+    "attempted": true,
+    "http_status": 403,
+    "reason": "worktree outside configured readable roots"
+  }
+}
