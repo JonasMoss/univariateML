@@ -134,3 +134,74 @@ TEST_CASE("ztnbinom: geometric member allows adjacent answers at jumps") {
   CHECK(adjacent(cppunivariate::distributions::qztnbinom(.5,1,.5,true,false),1));
   CHECK(cppunivariate::distributions::pztnbinom(2,1,.5,false,false)==doctest::Approx(.25).epsilon(1e-14));
 }
+
+TEST_CASE("ztnbinom: global certificate preserves the historical proposer") {
+ const auto g=mltest::load_distribution_golden("ztnbinom");
+ std::vector<int>x;for(double v:g.data)x.push_back(static_cast<int>(v));
+ const auto old=cppunivariate::ztnbinom_candidate_mle({x.data(),x.size()});
+ const auto fit=cppunivariate::ztnbinom_mle({x.data(),x.size()});
+ REQUIRE(fit.status==cppunivariate::ZtnbinomStatus::Ok);
+ CHECK(fit.size==old.size);CHECK(fit.prob==old.prob);CHECK(fit.logLik==old.logLik);
+ CHECK(fit.iterations>0);
+}
+
+TEST_CASE("ztnbinom: certified limit and exhausted budget carry details") {
+ const std::vector<int>x{1,2,2,3,3,3},finite{1,2,5},large{100001};
+ const auto fit=cppunivariate::ztnbinom_mle({x.data(),x.size()});
+ REQUIRE(fit.status==cppunivariate::ZtnbinomStatus::PoissonLimit);
+ REQUIRE(fit.stop_detail.limit_coef.size()==1);
+ const auto face=cppunivariate::ztpois_mle({x.data(),x.size()});
+ CHECK(fit.stop_detail.limit_coef[0]==face.lambda);
+ CHECK(fit.stop_detail.limit_loglik==face.logLik);
+ CHECK(fit.stop_detail.loglik_lower<=face.logLik);
+ CHECK(fit.stop_detail.loglik_upper>=face.logLik);
+ const auto fail=cppunivariate::ztnbinom_mle({finite.data(),finite.size()},1e-10,1);
+ CHECK(fail.status==cppunivariate::ZtnbinomStatus::IterationFailure);
+ CHECK(fail.budget_exhausted);CHECK(std::isnan(fail.size));CHECK(std::isnan(fail.prob));
+ CHECK(fail.stop_detail.loglik_upper==0);
+ CHECK(cppunivariate::ztnbinom_mle({large.data(),large.size()}).status==cppunivariate::ZtnbinomStatus::IterationFailure);
+}
+
+TEST_CASE("ztnbinom: held probability has a unique signed size solution") {
+ const std::vector<int>x{1,2,5};
+ const auto fit=cppunivariate::ztnbinom_mle({x.data(),x.size()},1e-10,200,NAN,.4);
+ REQUIRE(fit.status==cppunivariate::ZtnbinomStatus::Ok);
+ auto score=[&](long double r) {
+   long double out=0,t=-std::log(.4L);
+   for(int v:x) {for(int j=0;j<v;++j)out+=1/(r+j);out-=t/(-std::expm1(-r*t));}
+   return out;
+ };
+ CHECK(score(fit.size*(1-3e-6))>0);CHECK(score(fit.size*(1+3e-6))<0);
+ const auto endpoint=cppunivariate::ztnbinom_mle({x.data(),x.size()},1e-10,200,NAN,.001);
+ REQUIRE(endpoint.status==cppunivariate::ZtnbinomStatus::Ok);CHECK(endpoint.size==0);
+ CHECK(endpoint.prob==.001);
+}
+
+TEST_CASE("ztnbinom: near Poisson finite maximum is never labelled an escape") {
+ // mean=2, K=1.5937 > mean*lambda/2=1.59362426004... .
+ // The proved tail coefficient is negative, hence some finite likelihood
+ // exceeds the Poisson face. A resolution/budget stop remains permissible.
+ std::vector<int>x(3958,1);x.insert(x.end(),4063,2);x.insert(x.end(),1979,4);
+ const auto fit=cppunivariate::ztnbinom_mle({x.data(),x.size()});
+ CHECK(fit.status!=cppunivariate::ZtnbinomStatus::PoissonLimit);
+ CHECK((fit.status==cppunivariate::ZtnbinomStatus::Ok || fit.status==cppunivariate::ZtnbinomStatus::IterationFailure));
+}
+
+TEST_CASE("ztnbinom: invalid domains precede the certificate workload guard") {
+ const std::vector<int>x{1,100001},bad{-1,100001};
+ CHECK(cppunivariate::ztnbinom_mle({x.data(),x.size()},0).status==cppunivariate::ZtnbinomStatus::InvalidInput);
+ CHECK(cppunivariate::ztnbinom_mle({bad.data(),bad.size()}).status==cppunivariate::ZtnbinomStatus::InvalidInput);
+ CHECK(cppunivariate::ztnbinom_mle({x.data(),x.size()},1e-10,200,-1).status==cppunivariate::ZtnbinomStatus::InvalidSize);
+ CHECK(cppunivariate::ztnbinom_mle({x.data(),x.size()},1e-10,200,NAN,1).status==cppunivariate::ZtnbinomStatus::InvalidInput);
+}
+
+TEST_CASE("ztnbinom: unresolved large-count Poisson-tail comparison stops") {
+ // Mean and population variance are both 313^2. The truncated Poisson
+ // rate is smaller than the mean by an exponentially tiny amount, so its
+ // tail coefficient is negative but unresolvable in binary64.
+ const std::vector<int>x{97656,98282};
+ const auto fit=cppunivariate::ztnbinom_mle({x.data(),x.size()});
+ CHECK(fit.status==cppunivariate::ZtnbinomStatus::IterationFailure);
+ CHECK(fit.certificate_failure==cppunivariate::ZtnbinomCertificateFailure::Arithmetic);
+ CHECK(std::isnan(fit.size));CHECK(std::isnan(fit.prob));
+}

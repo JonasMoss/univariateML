@@ -1,0 +1,62 @@
+COMMAND UMVL_TEST_TIER=full just cpp-test
+MACHINE simbox
+        Start  57: distribution_laplace
+ 99/127 Test  #61: distribution_llogis ..............   Passed    0.02 sec
+        Start  41: distribution_hnorm
+100/127 Test  #38: distribution_gumbel ..............   Passed    0.02 sec
+        Start  54: distribution_invweibull
+101/127 Test  #36: distribution_gompertz ............   Passed    0.02 sec
+        Start  33: distribution_geom
+102/127 Test  #85: distribution_rayleigh ............   Passed    0.03 sec
+        Start 105: distribution_weibull
+103/127 Test  #57: distribution_laplace .............   Passed    0.03 sec
+        Start  23: distribution_exp
+104/127 Test  #41: distribution_hnorm ...............   Passed    0.02 sec
+        Start  63: distribution_logis
+105/127 Test  #33: distribution_geom ................   Passed    0.02 sec
+        Start  48: distribution_invexp
+106/127 Test  #54: distribution_invweibull ..........   Passed    0.03 sec
+        Start 104: distribution_unif
+107/127 Test  #23: distribution_exp .................   Passed    0.02 sec
+        Start   6: distribution_betapr_slow
+108/127 Test #105: distribution_weibull .............   Passed    0.02 sec
+        Start   2: sample_tests
+109/127 Test  #63: distribution_logis ...............   Passed    0.02 sec
+        Start  39: distribution_gumbel_slow
+110/127 Test  #48: distribution_invexp ..............   Passed    0.02 sec
+        Start 119: distribution_ztbinom_slow
+111/127 Test  #39: distribution_gumbel_slow .........   Passed    0.01 sec
+        Start 109: distribution_zib_slow
+112/127 Test #104: distribution_unif ................   Passed    0.02 sec
+        Start  67: distribution_lomax_slow
+113/127 Test   #2: sample_tests .....................   Passed    0.02 sec
+        Start  64: distribution_logis_slow
+114/127 Test  #67: distribution_lomax_slow ..........   Passed    0.01 sec
+        Start  56: distribution_kumar_slow
+115/127 Test #109: distribution_zib_slow ............   Passed    0.01 sec
+        Start  58: distribution_laplace_slow
+116/127 Test   #6: distribution_betapr_slow .........   Passed    0.03 sec
+        Start  74: distribution_norm_slow
+117/127 Test #119: distribution_ztbinom_slow ........   Passed    0.01 sec
+        Start  77: distribution_paralogis_slow
+118/127 Test  #64: distribution_logis_slow ..........   Passed    0.01 sec
+        Start 123: distribution_support
+119/127 Test  #56: distribution_kumar_slow ..........   Passed    0.01 sec
+        Start   1: bfgs_tests
+120/127 Test #123: distribution_support .............   Passed    0.00 sec
+121/127 Test  #58: distribution_laplace_slow ........   Passed    0.01 sec
+        Start 124: no_throw_tests
+        Start 126: tails_tests
+122/127 Test  #74: distribution_norm_slow ...........   Passed    0.01 sec
+123/127 Test  #77: distribution_paralogis_slow ......   Passed    0.01 sec
+124/127 Test   #1: bfgs_tests .......................   Passed    0.01 sec
+125/127 Test #124: no_throw_tests ...................   Passed    0.01 sec
+126/127 Test #126: tails_tests ......................   Passed    0.00 sec
+127/127 Test  #99: distribution_tlambda_slow ........   Passed   43.55 sec
+100% tests passed out of 127
+Label Time Summary:
+cran    = 177.08 sec*proc (105 tests)
+dev     = 180.42 sec*proc (106 tests)
+full    = 253.17 sec*proc (127 tests)
+Total Test time (real) =  43.55 sec
+NBFAM_COMPUTE_SECONDS=43.70

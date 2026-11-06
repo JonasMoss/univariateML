@@ -159,3 +159,18 @@ test_that("P2 held-probability search respects iteration failure", {
 test_that("P3 insufficient profile refinement stops", {
  expect_error(mlzmnbinom(c(0,0,1,2,8)[c(1,2,3,4,5)],iterlim=1),"Profile search exhausted")
 })
+
+test_that("delegated certificate retains modified Poisson stop details", {
+  x <- c(0,0,1,2,2,3,3,3)
+  for(p in list(NULL,.4)) {
+    e <- tryCatch(mlzmnbinom(x,p0=p),error=identity)
+    expect_s3_class(e,"univariateML_limit")
+    expect_identical(e$model,"zmpois")
+    expect_named(e$estimates,c("lambda","p0"))
+    face <- mlzmpois(x,p0=p)
+    expect_equal(unname(e$estimates),unname(as.numeric(face)))
+    expect_equal(e$limit_loglik,attr(face,"logLik"))
+  }
+  e <- tryCatch(mlzmnbinom(c(0,0,1,2,5),iterlim=1),error=identity)
+  expect_s3_class(e,"univariateML_budget")
+})

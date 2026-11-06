@@ -1,0 +1,62 @@
+COMMAND python3 dev/research/evaluations/2026-11-06-nbfam-cert-data/single_core.py just site-check
+MACHINE local1
+12:31:10 ✓ Completed in 5.17s.
+12:31:10 [build] ✓ Completed in 6.43s.
+12:31:10 [build] 212 page(s) built in 7.66s
+12:31:10 [build] Complete!
+Running Pagefind v1.5.2 (Extended)
+Running from: "/home/jonas/Files/programming/univariateML.wt/nbfam-cert/site"
+Source:       "dist"
+Output:       "dist/pagefind"
+[Walking source directory]
+Found 212 files matching **/*.{html}
+[Parsing files]
+Found a data-pagefind-body element on the site.
+↳ Ignoring pages without this tag.
+[Reading languages]
+Discovered 1 language: en
+[Building search indexes]
+Total: 
+  Indexed 1 language
+  Indexed 212 pages
+  Indexed 11906 words
+  Indexed 0 filters
+  Indexed 0 sorts
+┌─────────────────────────────────────────────────────────────────────────┐
+│  Pagefind found references to the Default UI (pagefind-ui.js)           │
+│  on your site. The Default UI is supported and will continue            │
+│  to work.                                                               │
+│                                                                         │
+│  As of 1.5.0, if you are setting up a new integration, use the          │
+│  Component UI instead. It includes a search modal, better               │
+│  accessibility and customization: https://pagefind.app/docs/search-ui/  │
+└─────────────────────────────────────────────────────────────────────────┘
+Finished in 1.184 seconds
+python3 site/scripts/check.py
+/home/jonas/.bashrc: line 26: /home/jonas/.cargo/env: No such file or directory
+/home/jonas/.bash_profile: line 9: /home/jonas/.cargo/env: No such file or directory
+PASS inference browser: {"rows":338,"families":99,"desktop":[1280,1100],"mobile":[390,1000],"checks":["covariance and combined filters with follow-up evidence","all status filters","combined family/status/regime filters","empty state","reset","native evidence disclosure","no horizontal overflow","all rows and evidence without JavaScript","no page errors"]}
+PASS theory numerical: 5 static/live profiles, 4 escape messages and limit approaches, analytic normal held fits, static/live contours, parser and failed-fit gaps.
+PASS nice linear/log ticks; Gompertz free/held fits, conditional escape, fixed-rate boundary, static/live equality and build-time MathML.
+PASS likelihood windows: 15-unit clipping, low-marker expansion, constant likelihoods, marker clearance, finite SVG coordinates.
+PASS theory browser: desktop/mobile, live profiles and held faces, seeded data, errors, no-JS figures and diagnostics.
+PASS: four articles; dossier catalogues: 287 limits, 99 families, 9 fit domains.
+Covariance scopes: 180 {'implemented': 135, 'historically recoverable': 0, 'available but missing': 0, 'unreviewed': 6, 'invalid for the procedure': 39}
+PASS: inference: 338 unique scopes, 99 families; implementation symbols, evidence anchors, calibration and checks resolve; full static table.
+PASS: graph: 99 unique nodes, 277 edges, resolving family links; SVG generated twice byte-identically and matches built HTML.
+PASS: explorer coverage matches binding registry; optional build assets agree.
+PASS: every declared and inverted relation and limit link is rendered and resolves.
+PASS: 99 family pages; MathML on every family; no math runtime or external runtime assets; internal links and fragments resolve.
+Environment: Python 3.14.5, SymPy 1.14.0; g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0
+Boost headers: /home/jonas/R/x86_64-pc-linux-gnu-library/4.5/BH/include
+PASS: 99 generated C++ snippets compile and link as C++17 (including exp, gamma, gb2).
+PASS: pilot and ten additional HTML spot checks: exp, gamma, gb2, binom, beta, hyper, sstd, gev, gpd, tnorm, pois, unif, pareto
+Log-density fallback: cmb, cmp, dweibull, gev, gpd, huber, sged, snorm, sstd, st, tbinom, tpois, triang, zib, zinb, zip, zipf, zmbinom, zmgeom, zmlogarithmic, zmnbinom, zmpois
+WEIGHT exp: HTML 46413 B; CSS 4516 B; JS 70007 B (inline included in HTML)
+WEIGHT gamma: HTML 49220 B; CSS 4516 B; JS 70007 B (inline included in HTML)
+WEIGHT gb2: HTML 68140 B; CSS 4516 B; JS 70007 B (inline included in HTML)
+WEIGHT binom: HTML 54696 B; CSS 4516 B; JS 70007 B (inline included in HTML)
+WEIGHT hyper: HTML 57890 B; CSS 4516 B; JS 70007 B (inline included in HTML)
+WEIGHT sstd: HTML 138327 B; CSS 4516 B; JS 70007 B (inline included in HTML)
+Total dist: 21532182 B
+NBFAM_COMPUTE_SECONDS=106.15

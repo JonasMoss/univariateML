@@ -3,11 +3,8 @@
 namespace cppunivariate {
 // Status and result types retain the shared factorised likelihood contract.
 typedef zero_detail::ModifiedStatus ZmnbinomStatus;
-typedef zero_detail::ModifiedResult ZmnbinomResult;
+struct ZmnbinomResult { double lambda,size,prob,p0,logLik; int iterations; ZmnbinomStatus status; StopDetail stop_detail{}; bool budget_exhausted=false; ZtnbinomCertificateFailure certificate_failure=ZtnbinomCertificateFailure::None; };
 inline ZmnbinomResult zmnbinom_mle(ispan x, double tol=1e-10,int maxit=200,double fixed_size=std::numeric_limits<double>::quiet_NaN(),double fixed_prob=std::numeric_limits<double>::quiet_NaN(),double fixed_p0=std::numeric_limits<double>::quiet_NaN()) {
- if(std::isnan(fixed_prob) && std::isnan(fixed_p0)) {
-  return zero_detail::modified_mle(x,2,tol,maxit,fixed_size);
- }
  ZmnbinomResult out{1,1,.5,0,0,0,ZmnbinomStatus::Ok};
  const bool fb=!std::isnan(fixed_prob), fz=!std::isnan(fixed_p0);
  if(x.empty() || !(tol>0)||!std::isfinite(tol)||maxit<1 ||
@@ -29,13 +26,26 @@ inline ZmnbinomResult zmnbinom_mle(ispan x, double tol=1e-10,int maxit=200,doubl
  if(pos.empty()) {out.logLik=n*std::log(out.p0);out.status=ZmnbinomStatus::AllZero;return out;}
  const ispan positive{pos.data(),pos.size()};
  const auto r=ztnbinom_mle(positive,tol,maxit,fixed_size,fixed_prob);
- out.size=r.size;out.prob=r.prob;out.logLik=r.logLik;
- if(r.status==ZtnbinomStatus::PoissonLimit)out.status=ZmnbinomStatus::PoissonLimit;
- if(r.status==ZtnbinomStatus::IterationFailure)out.status=ZmnbinomStatus::IterationFailure;
+ out.size=r.size;out.prob=r.prob;out.logLik=r.logLik;out.iterations=r.iterations;
+ out.stop_detail=r.stop_detail;out.budget_exhausted=r.budget_exhausted;out.certificate_failure=r.certificate_failure;
+ double indicator=0;
+ if(n>k)indicator+=(n-k)*std::log(out.p0);
+ indicator+=k*std::log1p(-out.p0);
+ const double allowance=1024*std::numeric_limits<double>::epsilon()*(1+n+std::abs(indicator));
+ if(r.status==ZtnbinomStatus::PoissonLimit) {
+   out.status=ZmnbinomStatus::PoissonLimit;
+   out.lambda=r.stop_detail.limit_coef[0];
+   out.stop_detail.limit_coef={out.lambda,out.p0};
+   out.stop_detail.limit_loglik+=indicator;
+   out.stop_detail.loglik_lower+=indicator-allowance;out.stop_detail.loglik_upper+=indicator+allowance;
+   return out;
+ }
+ if(r.status==ZtnbinomStatus::IterationFailure) {out.status=ZmnbinomStatus::IterationFailure;out.stop_detail.loglik_lower+=indicator-allowance;out.stop_detail.loglik_upper+=indicator+allowance;return out;}
  if(r.status==ZtnbinomStatus::InvalidInput)out.status=ZmnbinomStatus::InvalidInput;
  if(n>k)out.logLik+=(n-k)*std::log(out.p0);
  out.logLik+=k*std::log1p(-out.p0);
  if(!std::isfinite(out.logLik))out.status=ZmnbinomStatus::InvalidInput;
+ if(out.status==ZmnbinomStatus::Ok && !fb && zero_detail::mean(positive)==1)out.status=ZmnbinomStatus::TwoPoint;
  return out;
 }
 }

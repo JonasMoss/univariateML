@@ -1,0 +1,62 @@
+COMMAND just test-full
+MACHINE local
+⠇ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 28695 ] @ dist-slash, dist-trgamma, dist-zin
+✔ |        247 | dist-zinb [1.6s]                                               
+⠏ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 28757 ] @ dist-slash, dist-trgamma, dist-zip
+⠋ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 28757 ] @ dist-slash, dist-trgamma, dist-zip
+✔ |        112 | dist-zip                                                       
+⠙ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 28935 ] @ dist-slash, dist-trgamma, dist-zip
+⠹ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 28936 ] @ dist-slash, dist-trgamma, dist-zip
+✔ |        339 | dist-zipf [1.3s]                                               
+⠸ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 29197 ] @ dist-slash, dist-trgamma, dist-zmb
+⠼ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 29198 ] @ dist-slash, dist-trgamma, dist-zmb
+✔ |         95 | dist-zmgeom                                                    
+⠴ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 29295 ] @ dist-slash, dist-trgamma, dist-zmb
+⠦ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 29295 ] @ dist-slash, dist-trgamma, dist-zmb
+✔ |         95 | dist-zmlogarithmic                                             
+⠧ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 29392 ] @ dist-slash, dist-trgamma, dist-zmb
+⠇ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 29392 ] @ dist-slash, dist-trgamma, dist-zmb
+✔ |        217 | dist-zmnbinom [1.1s]                                           
+⠏ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 29619 ] @ dist-slash, dist-trgamma, dist-zmb
+⠋ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 29619 ] @ dist-slash, dist-trgamma, dist-zmb
+✔ |         95 | dist-zmpois                                                    
+⠙ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 29748 ] @ dist-slash, dist-trgamma, dist-zmb
+⠹ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 29748 ] @ dist-slash, dist-trgamma, dist-zmb
+⠸ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 29751 ] @ dist-slash, dist-trgamma, dist-zmb
+⠼ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 29769 ] @ dist-slash, dist-trgamma, dist-zmb
+⠴ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 29769 ] @ dist-slash, dist-trgamma, dist-zmb
+⠦ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 29773 ] @ dist-slash, dist-trgamma, dist-zmb
+✔ |         77 | dist-ztbinom [1.8s]                                            
+⠧ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 29963 ] @ dist-slash, dist-trgamma, dist-zmb
+⠇ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 29963 ] @ dist-slash, dist-trgamma, dist-zmb
+✔ |         33 | dist-ztgeom                                                    
+⠏ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 30003 ] @ dist-slash, dist-trgamma, dist-zmb
+⠋ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 30003 ] @ dist-slash, dist-trgamma, dist-zmb
+✔ |        167 | dist-zmbinom [5.2s]                                            
+⠙ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 30052 ] @ dist-slash, dist-trgamma, dist-ztn
+✔ |         33 | dist-ztpois                                                    
+⠹ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 30168 ] @ dist-slash, dist-trgamma, dist-ztn
+✔ |        112 | dist-ztnbinom                                                  
+⠸ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 30171 ] @ dist-slash, dist-trgamma          
+⠼ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 30171 ] @ dist-slash, dist-trgamma          
+✔ |         47 | vcov                                                           
+⠴ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 30282 ] @ dist-slash, dist-trgamma, generate
+⠦ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 31456 ] @ dist-slash, dist-trgamma, generate
+⠧ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 31458 ] @ dist-slash, dist-trgamma, generate
+⠇ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 31460 ] @ dist-slash, dist-trgamma, generate
+⠏ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 31460 ] @ dist-slash, dist-trgamma, generate
+⠋ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 31460 ] @ dist-slash, dist-trgamma, generate
+⠙ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 31472 ] @ dist-slash, dist-trgamma, generate
+✔ |        414 | dist-trgamma [29.1s]                                           
+⠹ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 35045 ] @ dist-slash, generated-dpqr        
+⠸ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 38137 ] @ dist-slash, generated-dpqr        
+✔ |        1440 | dist-slash [137.7s]                                           
+⠼ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 40856 ] @ generated-dpqr                    
+✔ |        12593 | generated-dpqr [33.9s]                                       
+⠴ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 43500 ] Starting up...                      
+══ Results ═════════════════════════════════════════════════════════════════════
+Duration: 295.3 s
+[ FAIL 0 | WARN 0 | SKIP 0 | PASS 43500 ]
+   user  system elapsed 
+691.423   6.729 298.038 
+NBFAM_COMPUTE_SECONDS=324.69

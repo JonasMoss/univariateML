@@ -1,10 +1,12 @@
 #pragma once
 #include "../ztpois/mle.hpp"
+#include "../../core/stop_detail.hpp"
 #include "../lgser/mle.hpp"
 namespace cppunivariate {
 enum class ZtnbinomStatus { Ok, InvalidInput, InvalidSize, PoissonLimit, IterationFailure };
-struct ZtnbinomResult { double size, prob, logLik; int iterations; ZtnbinomStatus status; };
-inline ZtnbinomResult ztnbinom_mle(ispan x, double tol=1e-10, int maxit=200,
+enum class ZtnbinomCertificateFailure { None, Arithmetic, Budget, Workload, AdditionalExtrema };
+struct ZtnbinomResult { double size, prob, logLik; int iterations; ZtnbinomStatus status; StopDetail stop_detail{}; bool budget_exhausted=false; ZtnbinomCertificateFailure certificate_failure=ZtnbinomCertificateFailure::None; };
+inline ZtnbinomResult ztnbinom_candidate_mle(ispan x, double tol=1e-10, int maxit=200,
     double fixed_size=std::numeric_limits<double>::quiet_NaN(),
     double fixed_prob=std::numeric_limits<double>::quiet_NaN()) {
   const bool fixed=!std::isnan(fixed_size);
@@ -75,3 +77,5 @@ inline ZtnbinomResult ztnbinom_mle(ispan x, double tol=1e-10, int maxit=200,
   return best;
 }
 }
+
+#include "certificate.hpp"

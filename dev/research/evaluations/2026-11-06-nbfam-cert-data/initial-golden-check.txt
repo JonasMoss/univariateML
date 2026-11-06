@@ -1,0 +1,6 @@
+First narrow-root prototype, before signed proposer retention (no golden or test modified):
+ztnbinom returned size=2.1894037295088937 prob=0.42697277851928217
+historical proposer size=2.1894042903107165 prob=0.42697283208553038
+60-digit independent size root=2.1894036963023267895982625625581252
+historical relative size error=2.71310581368e-7
+The final certificate separately signs the proposer accuracy enclosure, preserving the regression.

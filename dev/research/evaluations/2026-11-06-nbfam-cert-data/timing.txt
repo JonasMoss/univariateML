@@ -1,0 +1,15 @@
+ztnbinom proposer 500 14684.10047 us/fit
+ztnbinom certified 500 15773.9477 us/fit
+zmnbinom proposer 500 10529.12665 us/fit
+zmnbinom certified 500 11652.10413 us/fit
+zinb unchanged 500 1170.15161 us/fit
+ztnbinom proposer 500 14639.80812 us/fit
+ztnbinom certified 500 15795.28122 us/fit
+zmnbinom proposer 500 10544.45518 us/fit
+zmnbinom certified 500 11644.10659 us/fit
+zinb unchanged 500 1164.05969 us/fit
+ztnbinom proposer 500 14714.26574 us/fit
+ztnbinom certified 500 16248.19175 us/fit
+zmnbinom proposer 500 10585.81426 us/fit
+zmnbinom certified 500 11646.26052 us/fit
+zinb unchanged 500 1165.14105 us/fit

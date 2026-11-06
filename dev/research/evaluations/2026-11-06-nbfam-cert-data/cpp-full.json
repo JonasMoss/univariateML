@@ -1,0 +1,14 @@
+{
+  "command": "UMVL_TEST_TIER=full just cpp-test",
+  "machine": "simbox",
+  "started_utc": "2026-11-06T11:01:45.258214+00:00",
+  "wall_including_slot_wait_seconds": 67.38662436700542,
+  "compute_seconds": 43.7,
+  "attempts": [
+    {
+      "machine": "simbox",
+      "exit": 0
+    }
+  ],
+  "exit": 0
+}

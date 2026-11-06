@@ -1,0 +1,14 @@
+{
+  "command": "python3 dev/research/evaluations/2026-11-06-nbfam-cert-data/single_core.py just js-test",
+  "machine": "local1",
+  "started_utc": "2026-11-06T12:28:05.971484+00:00",
+  "wall_including_slot_wait_seconds": 122.46532315199875,
+  "compute_seconds": 122.43,
+  "attempts": [
+    {
+      "machine": "local1",
+      "exit": 0
+    }
+  ],
+  "exit": 0
+}
