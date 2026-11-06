@@ -171,3 +171,23 @@ TEST_CASE("Pareto IV transports parent finite and face witnesses") {
  CHECK(r.stop_detail.limit_coef==p.stop_detail.limit_coef);
  CHECK(r.stop_detail.limit_loglik==doctest::Approx(p.stop_detail.limit_loglik));
 }
+
+TEST_CASE("Pareto IV held-scale inherits finite and budget certificates") {
+ const std::vector<double> x{2.5,3,4,6},y{.5,1,2,4};
+ const auto a=cppunivariate::pareto4_mle(mltest::as_span(x),2,1e-10,1000,1);
+ const auto b=cppunivariate::burr_mle_fixed_scale(mltest::as_span(y),1,1e-10);
+ REQUIRE(a.status==cppunivariate::BurrStatus::Ok);
+ CHECK(a.shape1==b.shape1);CHECK(a.shape2==b.shape2);CHECK(a.logLik==b.logLik);
+ REQUIRE(a.stop_detail.candidates.size()==1);
+ CHECK(a.stop_detail.candidates[0].coef.size()==4);
+ const auto budget=cppunivariate::pareto4_mle(mltest::as_span(x),2,1e-10,1,1);
+ CHECK(budget.status==cppunivariate::BurrStatus::CertificateBudget);
+ CHECK(std::isnan(budget.shape1));CHECK(std::isfinite(budget.stop_detail.loglik_lower));
+ const std::vector<double> close{1,std::nextafter(1.,INFINITY),2};
+ CHECK(cppunivariate::pareto4_mle(mltest::as_span(close),-1e100,1e-10,1000,1e100).status==cppunivariate::BurrStatus::NumericalFailure);
+}
+
+TEST_CASE("Pareto IV refuses inexact threshold subtraction onto held scale") {
+ const std::vector<double> x{1.1,2,3};
+ CHECK(cppunivariate::pareto4_mle(mltest::as_span(x),.1,1e-9,1000,1).status==cppunivariate::BurrStatus::NumericalFailure);
+}

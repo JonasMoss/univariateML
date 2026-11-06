@@ -66,3 +66,21 @@ TEST_CASE("fpareto: d/p/q/r against the truth table") {
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qfpareto(x, p[0], p[1], p[2], p[3], p[4], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rfpareto(rng, p[0], p[1], p[2], p[3], p[4]); });
 }
+
+TEST_CASE("Feller Pareto held unit beta shape and scale inherit scalar certificate") {
+ const std::vector<double> x{2.1,2.2,2.4,2.8};
+ const auto a=cppunivariate::fpareto_mle(mltest::as_span(x),2,1e-9,1000,NAN,NAN,1,1);
+ REQUIRE(a.status==cppunivariate::Gb2Status::Ok);
+ REQUIRE(a.stop_detail.candidates.size()==1);
+ CHECK(a.stop_detail.candidates[0].coef.size()==5);
+ const auto stop=cppunivariate::fpareto_mle(mltest::as_span(x),2,1e-9,1,NAN,NAN,1,1);
+ CHECK(stop.status==cppunivariate::Gb2Status::CertificateBudget);
+ CHECK(std::isfinite(stop.stop_detail.loglik_lower));
+ const std::vector<double> close{1,std::nextafter(1.,INFINITY),2};
+ CHECK(cppunivariate::fpareto_mle(mltest::as_span(close),-1e100,1e-9,1000,NAN,NAN,1,1e100).status==cppunivariate::Gb2Status::NumericalFailure);
+}
+
+TEST_CASE("Feller Pareto refuses inexact threshold subtraction onto held scale") {
+ const std::vector<double> x{1.1,2,3};
+ CHECK(cppunivariate::fpareto_mle(mltest::as_span(x),.1,1e-9,1000,NAN,NAN,1,1).status==cppunivariate::Gb2Status::NumericalFailure);
+}

@@ -1,0 +1,22 @@
+Initial workstation C++ run, before historical proposal preservation:
+TEST CASE:  burr fixed scale historical regression and equivariance
+
+../../include/cppunivariate/distributions/burr/test.cpp:82: ERROR: CHECK( std::abs(r.shape1 - 1.077036666067376) < 1e-10 ) is NOT correct!
+  values: CHECK( 5.62896e-10 <  1e-10 )
+
+../../include/cppunivariate/distributions/burr/test.cpp:83: ERROR: CHECK( std::abs(r.shape2 - 1.9857562895421235) < 1e-10 ) is NOT correct!
+  values: CHECK( 2.28052e-09 <  1e-10 )
+
+===============================================================================
+[doctest] test cases:   20 |   19 passed | 1 failed | 1179 skipped
+[doctest] assertions: 4078 | 4076 passed | 2 failed |
+
+
+Initial simbox R dev run (GCC 15.2.0, R 4.6.1), unrelated st failure:
+Failure ('test_scale_equivariance.R:100:11'): mlst is equivariant in its dimensional parameters
+Expected `pulled[4]` to equal `as.numeric(base)[4]`.
+Differences:
+1/1 mismatches
+[1] 1272 - 1272 == -0.274
+
+The other five failures in that run were new test assertions comparing model attributes or incorrect Pareto names. They were corrected without changing existing tests or tolerances.

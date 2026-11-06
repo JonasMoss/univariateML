@@ -348,3 +348,35 @@ TEST_CASE("invburr: structured reciprocal face coefficients and likelihood") {
     if(c.model==cppunivariate::StopModel::Power)CHECK(c.coef==r.stop_detail.limit_coef);
   }
 }
+
+TEST_CASE("Inverse Burr held-scale direct and delegated certificates agree") {
+ const std::vector<double> x{.2,.4,1,2,4};
+ const auto a=cppunivariate::invburr_mle_fixed_scale(mltest::as_span(x),2,1e-9);
+ const auto b=cppunivariate::invburr_mle_holds(mltest::as_span(x),NAN,NAN,2);
+ REQUIRE(a.status==cppunivariate::InvBurrStatus::Ok);
+ CHECK(a.shape1==b.shape1);CHECK(a.shape2==b.shape2);CHECK(a.logLik==b.logLik);
+ CHECK(a.stop_detail.loglik_lower<=a.logLik);CHECK(a.stop_detail.loglik_upper>=a.logLik);
+ const auto budget=cppunivariate::invburr_mle_fixed_scale(mltest::as_span(x),2,1e-9,1);
+ CHECK(budget.status==cppunivariate::InvBurrStatus::CertificateBudget);
+ CHECK(std::isfinite(budget.stop_detail.loglik_lower));
+ const std::vector<double> face{1,1,.5,.25};
+ const auto p=cppunivariate::invburr_mle_fixed_scale(mltest::as_span(face),1);
+ CHECK(p.status==cppunivariate::InvBurrStatus::AllLeOne);
+ REQUIRE(p.stop_detail.limit_coef.size()==2);
+ CHECK(p.stop_detail.limit_coef[0]==1);
+ CHECK(cppunivariate::invburr_mle_fixed_scale(mltest::as_span(x),NAN).status==cppunivariate::InvBurrStatus::InvalidInit);
+}
+
+TEST_CASE("Inverse Burr rejects reciprocal rounding onto the held scale") {
+ double scale=1.5;bool found=false;
+ for(int i=0;i<1024&&!found;++i) {
+   const double next=std::nextafter(scale,INFINITY);
+   if(1/scale==1/next) {
+     found=true;
+     const std::vector<double> x{next,.5,1};
+     CHECK(cppunivariate::invburr_mle_fixed_scale(mltest::as_span(x),scale).status==cppunivariate::InvBurrStatus::NumericalFailure);
+   }
+   scale=next;
+ }
+ CHECK(found);
+}

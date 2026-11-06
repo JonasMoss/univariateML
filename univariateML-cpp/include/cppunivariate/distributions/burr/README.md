@@ -110,8 +110,8 @@ relations:
     power: shape2
 fit:
   method: profile-search
-  certified: 'partial'
-  note: 'burr/README.md, Details; burr/mle.hpp (public fitter and held overloads); burr/test.cpp: All-free fits use the global Burr certificate; held shape2 with free shape1 and scale uses certified Lomax on exp(shape2*(log(x)-max(log(x)))), with its exact Jacobian and Weibull face map. Held scale with both shapes free retains the historical numerical profile search. Other shape holds use monotone scores or closed forms.'
+  certified: 'yes'
+  note: 'burr/README.md, Details; burr/mle.hpp (public fitter and held overloads); burr/test.cpp: All-free fits use the global Burr certificate; held shape2 with free shape1 and scale uses certified Lomax on exp(shape2*(log(x)-max(log(x)))), with its exact Jacobian and Weibull face map. Held scale with both shapes free uses the strictly concave scalar-profile certificate, conditional on computed comparisons and the stated practical margin. Other shape holds use monotone scores or closed forms.'
 areas:
 - actuarial
 - economics and income
@@ -134,7 +134,7 @@ existence:
     faces. At least half the sample at its minimum precludes a finite MLE.
     General joint uniqueness is not established; a successful certificate
     proves uniqueness for that sample. Exact finite/face ties can stop unresolved.
-    With only scale $s$ held, a finite maximum exists for nonconstant data if some observation is
+    With only scale $s$ held, a unique finite maximum exists for nonconstant data if some observation is
     below $s$. Constant data below $s$ have unbounded likelihood.
     If all observations are at least $s$, the supremum is on the
     Pareto path, except that all observations equal to $s$ give unbounded likelihood.
@@ -236,7 +236,7 @@ the supremum is the endpoint-$s$ Pareto log-likelihood minus $Z\log 2$,
 where $Z$ counts observations equal to $s$. This endpoint penalty must be
 retained when comparing likelihoods. If every observation equals $s$, the
 likelihood is unbounded. For nonconstant data, if any observation is below $s$, a finite maximum
-exists, although uniqueness is not established here. Constant data below $s$
+exists and is unique by strict concavity of the profiled power likelihood. Constant data below $s$
 instead have unbounded likelihood: $k$ can grow as $c$ tends to infinity,
 concentrating the distribution at that common value even with scale held.
 
@@ -255,10 +255,8 @@ equals $s$. Holding $c$ and $s$ leaves an explicit estimate of $k$.
 
 ## R notes
 
-Supply `scale = s` to estimate only the shapes. This fits the historical
-scale-1 family to `x / s` and subtracts `length(x) * log(s)` from its
-log-likelihood. The fixed-scale path profiles `shape1` and refines `shape2`
-by Newton iteration, with a profile-likelihood fallback start. Starting
+Supply `scale = s` to estimate only the shapes. The fixed-scale path profiles `shape1` exactly and certifies the unique
+`shape2` maximum using strict scalar concavity and signed endpoint bounds. Starting
 controls `shape10`, `shape20`, `scale0`, and historical BFGS tolerances
 are retained for compatibility and validated on the all-free path. Detected
 limits stop with a recommendation to fit `mlweibull` or `mlpareto`.
@@ -268,8 +266,7 @@ all-free path is the number of attempted cached conditional profiles.
 Held-$c$ inherits the separate Lomax certificate, with the Jacobian
 $n\log c+(c-1)\sum\log x_i-cn\max\log x_i$ for normalized powers.
 Every likelihood bound and candidate receives this shift. Underflow of a
-positive power stops as a numerical failure. The held-scale two-shape
-profile remains numerical and does not acquire the all-free certificate.
+positive power stops as a numerical failure. The held-scale two-shape profile has its own strict-concavity certificate below.
 
 ## Decision history
 
@@ -285,3 +282,69 @@ The earlier quadrature curvature diagnostic had incorrect signs on two
 retained workloads and is not used. See the linked derivation and
 [port validation](../../../../../dev/research/evaluations/2026-11-04-burr-port-report.md)
 for the retained decisions, workload outcomes and timing evidence.
+
+
+### Held-scale certificate (TASK-116.4)
+
+Write $z_i=\log(x_i/s)$, $G(c)=\sum_i\log(1+e^{cz_i})$ and
+$R(c)=\sum_i\log(1+e^{-cz_i})$. Profiling $k=n/G(c)$ gives
+
+$$\ell_p(c)=n\log n-n-\sum_i\log x_i-n\log(G(c)/c)-R(c),\qquad c>0.$$
+
+This profile is **strictly concave**. Here is an elementary proof rather than
+an assumption of unimodality. For $u>0$, set $A(u)=\log(1+e^{-u})$ and
+$p=(1+e^u)^{-1}$. The inequalities $p\le A\le e^{-u}$ imply
+$1-p\le p/A\le1$ and
+
+$$(\log A)''=(p/A)(1-p-p/A)\ge-p\ge-e^{-u}.$$
+
+Consequently $(\log(A(u)/u))''\ge u^{-2}-e^{-u}>0$, since
+$u^2e^{-u}\le4/e^2<1$. Thus $A(u)/u$ is strictly log-convex.
+For positive arguments, $\log(1+e^u)/u=1+A(u)/u$ is also strictly
+log-convex (sums of positive log-convex functions are log-convex, with
+strictness here). For $z_i=0$, the summand is $\log2/c$.
+It follows that $G(c)/c$ is strictly log-convex. As $R$ is convex,
+$\ell_p''(c)<0$ for every finite $c>0$.
+
+As $c\downarrow0$, $\ell_p\to-\infty$. For nonconstant data with a negative
+$z_i$, it also tends to $-\infty$ as $c\to\infty$: if any $z_i\ge0$,
+the negative observations supply the diverging negative linear term;
+if every $z_i<0$, its linear coefficient is
+$\sum_i z_i-n\max_i z_i<0$. There is therefore exactly one finite
+maximizer. Constant samples at or below $s$ instead have unbounded
+likelihood. If every observation is at least $s$ and some exceeds it,
+put $S=\sum_i z_i>0$ and $Z=\#\{x_i=s\}$. The profile increases to
+$n\log(n/S)-n-\sum_i\log x_i-Z\log2$, strictly below which every finite
+fit lies. This is the endpoint-$s$ Pareto path; the $Z\log2$ deficit is
+retained in stop likelihoods. Its endpoint must stay held. A Weibull face
+requires changing scale, so cannot compete in this subset.
+
+`scale_certificate.hpp` rescales logs by $U=\max_i|z_i|$ and solves in
+$t=cU$. Doubling and bisection only propose a root. Acceptance requires
+strictly positive and negative enclosed scores at two positive endpoints,
+and their coefficient images for both $k$ and $c$ must have relative width
+at most $10^{-6}$. The root proposal is refined to relative bracket width
+$10^{-13}$ independently of the user tolerance. To preserve historical
+held-scale coefficients without changing goldens, a successful historical
+Newton proposal within $10^{-8}$ of that root may instead supply the returned
+center. It must pass the same independent signed bracket and coefficient
+width checks; its optimizer status never establishes globality. Strict concavity proves
+that this bracket contains the unique global maximum. Concave tangents
+supply an upper likelihood bound and the center a lower bound. `iterlim`
+bounds proposal evaluations; exhaustion stops with `CertificateBudget`.
+Unresolved endpoint signs or coefficient width stop with `CertificateTie`;
+nonfinite arithmetic or invalid bounds stop with `NumericalFailure`.
+No capped iterate is returned. The historical moment/Newton path is retained solely as a compatibility
+proposal; alone it could stop at an unchecked iterate and supplied no global
+certificate. Invalid or distant proposals are discarded.
+
+The certificate is in exact arithmetic conditional on the computed
+comparisons. Practical bounds reuse the all-free certificate allowance:
+$64\epsilon(1+\max|a|)$ on elementary operations and transcendental
+values, and $64\epsilon(m+1)(1+\sum|a_i|)$ on sums of $m$ terms.
+They are practical floating-point margins, not outward-rounded interval
+arithmetic or a universal libm error theorem. Close ratios use `log1p`;
+otherwise differences of logs avoid ratio overflow. Very ill-conditioned
+or extreme data may correctly stop when the margin prevents a decision.
+The [validation report](../../../../../dev/research/evaluations/2026-11-06-burr-scale-report.md)
+records independent comparisons, regression tolerances, and timings.

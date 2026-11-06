@@ -15,6 +15,22 @@ inline Pareto4Result pareto4_mle(span x, double min, double tol, int maxit, doub
   bool valid=tol>0 && std::isfinite(tol) && maxit>0 && std::isfinite(min);
   for(double v:x) valid=valid && std::isfinite(v) && v>min;
   if(!valid) y.clear();
+  if(valid && std::isnan(shape1) && std::isnan(shape2) && !std::isnan(scale)) {
+    for(double v:y)if(!std::isfinite(v))return {NAN,NAN,scale,min,NAN,0,BurrStatus::NumericalFailure};
+    // A rounded equality at held scale must be an exact subtraction.
+    // Error-free TwoSum residual for x[i] + (-min).
+    for(std::size_t i=0;i<x.size();++i)if(y[i]==scale) {
+      const double virtual_b=y[i]-x[i];
+      const double residual=(x[i]-(y[i]-virtual_b))+(-min-virtual_b);
+      if(!std::isfinite(residual)||residual!=0)return {NAN,NAN,scale,min,NAN,0,BurrStatus::NumericalFailure};
+    }
+    std::vector<std::size_t> order;
+    for(std::size_t i=0;i<x.size();++i)order.push_back(i);
+    std::sort(order.begin(),order.end(),[&](std::size_t i,std::size_t j){return x[i]<x[j];});
+    for(std::size_t i=1;i<order.size();++i)
+      if(x[order[i]]!=x[order[i-1]]&&y[order[i]]==y[order[i-1]])
+        return {NAN,NAN,scale,min,NAN,0,BurrStatus::NumericalFailure};
+  }
   auto r=(!std::isnan(shape1)||!std::isnan(shape2)) ? burr_mle_holds(span{y.data(),y.size()},shape1,shape2,scale,tol,maxit) : std::isnan(scale) ? burr_mle_legacy(span{y.data(),y.size()},tol,maxit) : burr_mle_fixed_scale(span{y.data(),y.size()},scale,tol,maxit);
   auto detail=r.stop_detail;
   for(auto& c:detail.candidates) if(c.model==StopModel::None && c.coef.size()==3)c.coef.push_back(min);

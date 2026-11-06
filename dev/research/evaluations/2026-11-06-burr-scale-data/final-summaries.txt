@@ -1,0 +1,64 @@
+cpp-dev: workstation; exit 0; 120.018 seconds
+ 12/106 Test  #81: distribution_pareto4 .............   Passed    7.83 sec
+ 19/106 Test  #46: distribution_invburr .............   Passed    9.96 sec
+ 22/106 Test  #11: distribution_burr ................   Passed    3.00 sec
+ 30/106 Test  #26: distribution_fpareto .............   Passed    0.71 sec
+ 31/106 Test  #29: distribution_gb2 .................   Passed    2.66 sec
+100% tests passed, 0 tests failed out of 106
+Total Test time (real) =  67.12 sec
+
+cpp-no-long-double: workstation; exit 0; 180.531 seconds
+ 19/127 Test  #11: distribution_burr ................   Passed    3.86 sec
+ 23/127 Test  #26: distribution_fpareto .............   Passed    0.51 sec
+ 32/127 Test  #29: distribution_gb2 .................   Passed    2.43 sec
+ 78/127 Test  #46: distribution_invburr .............   Passed    7.65 sec
+ 86/127 Test  #81: distribution_pareto4 .............   Passed    7.72 sec
+100% tests passed, 0 tests failed out of 127
+Total Test time (real) =  94.80 sec
+
+r-dev: workstation; exit 0; 290.048 seconds
+[ FAIL 0 | WARN 0 | SKIP 154 | PASS 20689 ]
+✔ |        198 | golden_regression [42.4s]                                      
+✔ |      3 130 | dist-burr [2.2s]                                               
+✔ |      1  74 | dist-fpareto [9.2s]                                            
+✔ |      3 100 | dist-invburr [2.1s]                                            
+✔ |      2 123 | dist-gb2 [11.6s]                                               
+✔ |      1  47 | dist-pareto4                                                   
+
+js-build: workstation; exit 0; 68.264 seconds
+
+js-test: workstation; exit 0; 116.063 seconds
+# tests 421
+# pass 421
+# fail 0
+# skipped 0
+# duration_ms 115824.497672
+
+site-check: workstation; exit 0; 135.975 seconds
+PASS: four articles; dossier catalogues: 287 limits, 99 families, 9 fit domains.
+PASS: inference: 338 unique scopes, 99 families; implementation symbols, evidence anchors, calibration and checks resolve; full static table.
+PASS: graph: 99 unique nodes, 277 edges, resolving family links; SVG generated twice byte-identically and matches built HTML.
+PASS: explorer coverage matches binding registry; optional build assets agree.
+PASS: every declared and inverted relation and limit link is rendered and resolves.
+PASS: 99 family pages; MathML on every family; no math runtime or external runtime assets; internal links and fragments resolve.
+PASS: 99 generated C++ snippets compile and link as C++17 (including exp, gamma, gb2).
+PASS: pilot and ten additional HTML spot checks: exp, gamma, gb2, binom, beta, hyper, sstd, gev, gpd, tnorm, pois, unif, pareto
+
+cpp-full: workstation; exit 0; 114.271 seconds
+ 10/127 Test  #81: distribution_pareto4 .............   Passed    6.39 sec
+ 14/127 Test  #46: distribution_invburr .............   Passed    5.03 sec
+ 23/127 Test  #11: distribution_burr ................   Passed    3.59 sec
+ 26/127 Test  #29: distribution_gb2 .................   Passed    2.80 sec
+ 29/127 Test  #26: distribution_fpareto .............   Passed    0.50 sec
+100% tests passed, 0 tests failed out of 127
+Total Test time (real) = 110.40 sec
+
+r-full: workstation; exit 0; 325.992 seconds
+[ FAIL 0 | WARN 0 | SKIP 0 | PASS 43504 ]
+✔ |        198 | golden_regression [32.0s]                                      
+✔ |        467 | dist-burr [4.6s]                                               
+✔ |        554 | dist-fpareto [10.7s]                                           
+✔ |        614 | dist-gb2 [16.1s]                                               
+✔ |        437 | dist-invburr [5.4s]                                            
+✔ |        297 | dist-pareto4 [1.6s]                                            
+

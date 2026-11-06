@@ -130,3 +130,13 @@ test_that("P2 fpareto constant samples with coercive holds fit", {
   expect_true(is.finite(attr(mlfpareto(rep(2,5),shape3=2,shape2=3,scale=1,min=0),"logLik")))
   expect_true(is.finite(attr(mlfpareto(rep(2,5),shape1=2,shape3=3,scale=1,min=0),"logLik")))
 })
+
+test_that("Feller Pareto unit shape and held scale inherit scalar certificate", {
+  x <- c(.1,.2,.4,.8)
+  a <- mlfpareto(x+2,min=2,shape3=1,scale=1)
+  b <- mlgb2(x+2-2,shape3=1,scale=1)
+  expect_equal(as.numeric(a[1:4]),as.numeric(b),tolerance=1e-10)
+  e <- tryCatch(mlfpareto(x+2,min=2,shape3=1,scale=1,iterlim=1),univariateML_budget=identity)
+  expect_s3_class(e,"univariateML_budget")
+  expect_true(is.finite(e$loglik_lower))
+})

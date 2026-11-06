@@ -1,0 +1,8 @@
+{"label": "cpp-dev", "command": ["just", "cpp-test"], "environment": {}, "machine": "workstation", "seconds": 120.0176930259986, "exit_code": 0, "log": "build/scratch/cpp-dev-final.log"}
+{"label": "cpp-no-long-double", "command": ["just", "cpp-test-no-long-double"], "environment": {}, "machine": "workstation", "seconds": 180.5314859220016, "exit_code": 0, "log": "build/scratch/cpp-no-long-double-final.log"}
+{"label": "r-dev", "command": ["just", "test"], "environment": {}, "machine": "workstation", "seconds": 290.04780650199973, "exit_code": 0, "log": "build/scratch/r-dev-final.log"}
+{"label": "js-build", "command": ["just", "js-build"], "environment": {}, "machine": "workstation", "seconds": 68.26390447599988, "exit_code": 0, "log": "build/scratch/js-build-final.log"}
+{"label": "js-test", "command": ["just", "js-test"], "environment": {}, "machine": "workstation", "seconds": 116.06304593999812, "exit_code": 0, "log": "build/scratch/js-test-final.log"}
+{"label": "site-check", "command": ["just", "site-check"], "environment": {}, "machine": "workstation", "seconds": 135.9754162629979, "exit_code": 0, "log": "build/scratch/site-check-final.log"}
+{"label": "cpp-full", "command": ["just", "cpp-test"], "environment": {"UMVL_TEST_TIER": "full"}, "machine": "workstation", "seconds": 114.27123852899967, "exit_code": 0, "log": "build/scratch/cpp-full-final.log"}
+{"label": "r-full", "command": ["just", "test-full"], "environment": {}, "machine": "workstation", "seconds": 325.99201890699624, "exit_code": 0, "log": "build/scratch/r-full-final.log"}

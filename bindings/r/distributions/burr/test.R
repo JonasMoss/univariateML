@@ -272,3 +272,23 @@ test_that("held-power Burr limit carries the transformed face", {
   expect_equal(e$estimates,c(shape=2,scale=3),tolerance=1e-12)
   expect_equal(e$limit_loglik,3*(log(2)-log(3)-1),tolerance=1e-12)
 })
+
+test_that("held-scale Burr certifies finite fits and refuses exhausted budgets", {
+  x <- c(.1,.2,.4,.8)
+  a <- mlburr(x,scale=1)
+  expect_true(all(is.finite(a)))
+  e <- tryCatch(mlburr(x,scale=1,iterlim=1),univariateML_budget=identity)
+  expect_s3_class(e,"univariateML_budget")
+  expect_true(is.finite(e$loglik_lower))
+  expect_true(nrow(e$candidates)>=1L)
+  p <- tryCatch(mlburr(c(1,1,2,4),scale=1),univariateML_limit=identity)
+  expect_equal(p$estimates,c(a=4/log(8),b=1),tolerance=1e-12)
+  expect_equal(p$limit_loglik,4*log(4/log(8))-4-log(8)-2*log(2),tolerance=1e-12)
+})
+
+test_that("held-scale Burr refuses sign-uncertain profiles with a tie witness", {
+  e <- tryCatch(mlburr(exp(c(-1.1,-1)),scale=1),univariateML_tie=identity)
+  expect_s3_class(e,"univariateML_tie")
+  expect_true(is.finite(e$loglik_lower))
+  expect_true(nrow(e$candidates)>=1L)
+})

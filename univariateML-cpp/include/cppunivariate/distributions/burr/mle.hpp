@@ -6,6 +6,7 @@
 #include "../lomax/mle.hpp"
 #include "fixed_scale.hpp"
 #include "certificate.hpp"
+#include "scale_certificate.hpp"
 #include "../../core/bfgs.hpp"
 #include "../../core/finite_diff.hpp"
 #include "../../core/span.hpp"
@@ -240,36 +241,33 @@ inline BurrMLE burr_mle(span x, double tol, int maxit,
   return burr_mle_certified(x,tol,maxit,shape10,shape20,scale0,reltol);
 }
 
-// Fixed scale reduces exactly to the historical scale-1 two-shape fit.
+// Held-scale likelihood has a strictly concave scalar profile.
 inline BurrMLE burr_mle_fixed_scale(span x, double scale,
     double tol = 1.220703e-4, int maxit = 1000) {
-  const double nan = std::numeric_limits<double>::quiet_NaN();
-  if (!(scale > 0.0) || !std::isfinite(scale))
-    return {nan,nan,scale,nan,0,BurrStatus::InvalidInit};
-  // With both shapes free, constant data on this side of the held
-  // scale concentrate as shape2 grows (shape1 is profiled). Test the
-  // original observations exactly, before normalization or any search.
-  bool constant = x.size() > 0;
-  for (double v : x) {
-    if (!(v > 0.0) || !std::isfinite(v))
-      return {nan,nan,scale,nan,0,BurrStatus::InvalidInit};
-    if (v != x[0]) constant = false;
+  double proposal=NAN;
+  // Compatibility proposal only: successful or failed historical solves
+  // must pass the same independent root bracket and coefficient bounds.
+  if(scale>0&&std::isfinite(scale)&&tol>0&&std::isfinite(tol)&&maxit>0) {
+    std::vector<double> normalized;
+    for(double v:x) {
+      const double y=v/scale;
+      if(!(y>0)||!std::isfinite(y)){normalized.clear();break;}
+      normalized.push_back(y);
+    }
+    if(!normalized.empty()) {
+      const auto legacy=burr_fixed_detail::burr_mle(span{normalized.data(),normalized.size()},tol,maxit);
+      if(legacy.status==burr_fixed_detail::BurrStatus::Ok)proposal=legacy.shape2;
+    }
   }
-  if (constant && x[0] <= scale)
-    return {nan,nan,scale,INFINITY,0,BurrStatus::Unbounded};
-  std::vector<double> normalized;
-  for (double v : x) normalized.push_back(v / scale);
-  const auto r = burr_fixed_detail::burr_mle(span{normalized.data(),normalized.size()},tol,maxit);
-  BurrStatus status = BurrStatus::Ok;
-  if (r.status == burr_fixed_detail::BurrStatus::AllGeOne) status = BurrStatus::AllGeOne;
-  if (r.status == burr_fixed_detail::BurrStatus::InvalidInit) status = BurrStatus::InvalidInit;
-  if (r.status == burr_fixed_detail::BurrStatus::IterationFailure) status = BurrStatus::IterationFailure;
-  BurrMLE out{r.shape1,r.shape2,scale,r.logLik-static_cast<double>(x.size())*std::log(scale),r.iterations,status};
-  if(status==BurrStatus::AllGeOne) {
-    const auto face=pareto_mle(x,NAN,scale);
-    out.stop_detail.limit_coef={face.shape,face.min};out.stop_detail.limit_loglik=face.logLik;
-  }
-  return out;
+  const auto r=burr_cert_detail::scale_fit(x,scale,tol,maxit,proposal);
+  BurrStatus status=BurrStatus::NumericalFailure;
+  if(r.outcome==burr_cert_detail::Outcome::Finite)status=BurrStatus::Ok;
+  if(r.outcome==burr_cert_detail::Outcome::Pareto)status=BurrStatus::AllGeOne;
+  if(r.outcome==burr_cert_detail::Outcome::Unbounded)status=BurrStatus::Unbounded;
+  if(r.outcome==burr_cert_detail::Outcome::Invalid)status=BurrStatus::InvalidInit;
+  if(r.outcome==burr_cert_detail::Outcome::Budget)status=BurrStatus::CertificateBudget;
+  if(r.outcome==burr_cert_detail::Outcome::Tie)status=BurrStatus::CertificateTie;
+  return {r.k,r.c,scale,r.logLik,r.profiles,status,r.stop_detail};
 }
 } // namespace cppunivariate
 
