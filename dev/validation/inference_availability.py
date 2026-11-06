@@ -77,19 +77,19 @@ def covariance_rows(eligibility):
         for scope in scopes:
             available = scope['available']
             reason = scope.get('reason', '')
-            unreviewed = any(word in reason.lower() for word in ('not yet', 'open', 'not been completed'))
+            unreviewed = any(word in reason.lower() for word in ('not yet', 'open', 'not been completed', 'unvalidated', 'unimplemented'))
             yield dict(family=family, regime=scope['regime'], kind='covariance',
                 target='Free-coefficient covariance',
                 status='implemented' if available else ('unreviewed' if unreviewed else 'invalid for the procedure'),
                 procedures='Sandwich and observed covariance · C++ and R vcov (default sandwich)',
-                theory='Numerical covariance API; eligibility does not establish rank, estimator asymptotics or coverage',
+                theory='Implemented numerical covariance scope; availability does not establish estimator asymptotics or coverage',
                 assumptions=scope['condition']+'; '+
                     'IID; successful fit interior to the stated free submodel, correct free mask and nonsingular well-conditioned sensitivity. '
                     'Observed inference requires correct specification and regular estimator asymptotics; '
                     'robust sandwich inference additionally requires finite score variance, an identifiable KL target and an estimating-equation expansion.',
                 dqm='Conditional classification in the linked source',
                 information='Derivative eligibility only; no automatic finite-information claim',
-                rank='Scope may be singular; runtime singular, indefinite and ill-conditioned solves fail',
+                rank='Available scopes exclude structural null directions; runtime singular, indefinite and ill-conditioned solves still fail',
                 evidence=scope['classification'], calibration=VCOV_REPORT+'#monte-carlo-sanity-check',
                 evidence_links=[dict(label='Canonical dossier', path=PREFIX+family+'/README.md'), *evidence],
                 implementation=([dict(path='univariateML-cpp/include/cppunivariate/core/inference_families.hpp', function='family_inference'),
@@ -261,6 +261,15 @@ def generate():
                 if ref[1] not in slugs:
                     raise ValueError(f'missing inference classification anchor {scope["classification"]}: {dossier}')
                 seen.add(scope['regime'])
+        # Metadata cannot enable an absent family adapter. Subset/regime guards
+        # remain explicit in those adapters and are checked by regime tests.
+        if any(scope['available'] for scope in scopes):
+            core = ROOT / 'univariateML-cpp/include/cppunivariate/core'
+            dispatch = '\n'.join((core / name).read_text() for name in (
+                'inference_families.hpp', 'inference_numeric_generated.hpp',
+                'inference_numeric_special.hpp'))
+            if f'family=="{meta["id"]}"' not in dispatch and f'family == "{meta["id"]}"' not in dispatch:
+                raise ValueError(f'available inference family has no adapter: {dossier}')
         numeric_eligibility[meta['id']] = scopes
     # The dated inventory is historical evidence, not a list of all current
     # families. New dossiers receive explicitly unreviewed procedure rows

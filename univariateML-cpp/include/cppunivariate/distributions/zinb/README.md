@@ -6,10 +6,11 @@ inference_numeric:
     condition: "finite size > 0 and 0 < prob < 1; pi = 0 held; size and/or prob free"
     classification: "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
   - regime: "known point-mass member"
-    available: true
+    available: false
     condition: "finite size > 0 and 0 < prob < 1; pi = 1 held; remaining information is zero"
+    reason: "The free information is structurally singular; neither observed nor sandwich covariance can be inverted"
     classification: "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
-  - regime: primary interior
+  - regime: "primary interior"
     available: true
     condition: "finite size > 0, 0 < prob < 1 and 0 < pi < 1; any regular subset free"
     classification: "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"

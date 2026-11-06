@@ -102,6 +102,10 @@ for family in FAMILIES:
     if family=='lst':
         result += ['    if((mask & 5u)==5u && !(value[2]>1)) {InferenceResult r;r.status=InferenceStatus::BoundaryOrLimit;r.validity_conditions="free df and location require df > 1";return r;}',
                    '    if((mask & 5u)==5u) {p[2].coordinate=NumericCoordinate::LowerBounded;p[2].lower=1;}']
+    if family=='bnbinom':
+        result += ['    if(value[0]==value[2] && (mask & 5u)==5u) {return inference_numeric_detail::singular_integer_support(data,0,INFINITY,"size and beta information is singular at size = beta");}']
+    if family=='genbeta':
+        result += ['    if(value[1]==1 && (mask & 5u)==5u) {return inference_numeric_detail::singular_real_support(data,"shape1 and shape3 information is singular at shape2 = 1");}']
     if family=='sn':
         result += ['    if(value[2]==0 && (mask & 5u)==5u) {return inference_numeric_detail::singular_real_support(data,"shape and location information is singular at alpha = 0");}']
     if family=='nsbeta':

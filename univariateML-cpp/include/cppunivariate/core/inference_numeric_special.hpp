@@ -36,16 +36,16 @@ inline InferenceResult special_family_inference(span data,const std::string& fam
   if(!n) {
     InferenceResult r;r.status=InferenceStatus::FamilyUnavailable;
     if(family=="triang") r.validity_conditions="the mode has a moving kink and endpoint directions are non-DQM";
-    else if(family=="huber") r.validity_conditions="moving piecewise quadratic joins are not pointwise twice continuously differentiable";
+    else if(family=="huber") r.validity_conditions="DQM and full-rank information hold; join-aware numerical derivatives and fitted covariance validation are not yet implemented";
     else if(family=="unif") r.validity_conditions="both endpoint coordinates are non-DQM and excluded";
     else if(family=="dunif" || family=="hyper" || family=="nhyper") r.validity_conditions="all potentially free coefficients are integer valued";
-    else if(family=="pig") r.validity_conditions="DQM and score-tail domination remain open";
-    else if(family=="tlambda") r.validity_conditions="support-dependent DQM and rank remain open";
+    else if(family=="pig") r.validity_conditions="DQM and score-tail domination hold; numerical derivatives and covariance validation are not yet implemented";
+    else if(family=="tlambda") r.validity_conditions="DQM and full rank hold for lambda < 1/2; support-aware numerical derivatives and fitted covariance validation are not yet implemented";
     else r.validity_conditions="family inference not classified or implemented";
     return r;
   }
   if(mask >= (1u<<n)) {InferenceResult r;r.status=InferenceStatus::InvalidSubset;return r;}
-  if(mask & ~allowed) {InferenceResult r;r.status=InferenceStatus::RegimeUnavailable;r.validity_conditions="a nonsmooth, design or threshold coefficient must be held in this scope";return r;}
+  if(mask & ~allowed) {InferenceResult r;r.status=InferenceStatus::RegimeUnavailable;r.validity_conditions="the implemented derivative scope requires this coefficient to be held";return r;}
   std::array<NumericParameter,inference_max_parameters> p{};
   const auto set=[&](std::size_t i,const std::string& name,NumericCoordinate kind,double lower=0) {p[i]={name,v[i],kind,lower};};
   bool valid=true,regime=true;
@@ -131,7 +131,7 @@ inline InferenceResult special_family_inference(span data,const std::string& fam
   if(!valid) {InferenceResult r;r.status=InferenceStatus::BoundaryOrLimit;r.validity_conditions="invalid or boundary parameters for the classified scope";return r;}
   if(!regime) {
     InferenceResult r;r.status=InferenceStatus::RegimeUnavailable;
-    if(family=="ged" || family=="sged") r.validity_conditions="the requested cusp-moving subset is not in a classified C2 regime or reaches the fitting restriction";
+    if(family=="ged" || family=="sged") r.validity_conditions="DQM holds above nu = 1/2; ordinary moving-location Hessians are invalid for nu <= 1; remaining excluded fitted cusp derivatives are unvalidated or on a fitting restriction";
     else if(family=="snorm" || family=="sstd") r.validity_conditions="the implemented regular submodel requires skew fixed at one";
     else if(family=="gev") r.validity_conditions="only shape fixed at zero is classified here";
     else if(family=="gpd") r.validity_conditions="shape must be positive, or zero held known, with threshold held";

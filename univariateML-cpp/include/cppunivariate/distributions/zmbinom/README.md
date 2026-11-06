@@ -10,18 +10,20 @@ inference_numeric:
     condition: "known integer size >= 2 held, 0 < prob < 1 free, p0 = 0 held"
     classification: "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
   - regime: "known point-mass member"
-    available: true
+    available: false
     condition: "known integer size >= 1 held, 0 < prob < 1 free, p0 = 1 held; information is zero"
+    reason: "The free information is structurally singular; neither observed nor sandwich covariance can be inverted"
     classification: "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
   - regime: "size one with probability known"
     available: true
     condition: "known size = 1; prob held in (0,1), p0 free in (0,1); the remaining zero-mass parameter is identifiable"
     classification: "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
   - regime: "size one with probability free"
-    available: true
+    available: false
     condition: "known size = 1; prob free; the conditional positive distribution is a point mass and the probability score vanishes"
+    reason: "The free information is structurally singular; neither observed nor sandwich covariance can be inverted"
     classification: "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
-  - regime: primary interior
+  - regime: "primary interior"
     available: true
     condition: "known integer size >= 2 held; 0 < prob < 1 and 0 < p0 < 1; either or both free"
     classification: "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"

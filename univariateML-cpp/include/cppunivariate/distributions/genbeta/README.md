@@ -1,10 +1,15 @@
 ---
 id: genbeta
 inference_numeric:
-  - regime: primary interior
+  - regime: "identifiable interior submodel"
     available: true
-    condition: "finite shape1 > 0, shape2 > 0, shape3 > 0 and scale > 0; scale held; any regular subset free"
-    classification: "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+    condition: "finite shape1 > 0, shape2 > 0, shape3 > 0 and scale > 0 held; any nonempty supported free subset except shape2 = 1 with both shape1 and shape3 free"
+    classification: "dev/research/evaluations/2026-11-04-dqm-a-report.md#genbeta-an-interior-identification-ridge"
+  - regime: "singular information"
+    available: false
+    condition: "finite shape1 > 0, shape2 > 0, shape3 > 0 and scale > 0 held; shape2 = 1 with both shape1 and shape3 free"
+    reason: "DQM holds but the free information has a null direction; ordinary observed or sandwich covariance is unavailable"
+    classification: "dev/research/evaluations/2026-11-04-dqm-a-report.md#genbeta-an-interior-identification-ridge"
 name: Generalized beta of the first kind
 support: {type: real, lower: "0", upper: "scale", closed: [false, true], endpoint_log_density: {upper: "if (shape2 < 1) Inf else if (shape2 > 1) -Inf else log(shape3) - log(scale) - lbeta(shape1, shape2)"}}
 params:

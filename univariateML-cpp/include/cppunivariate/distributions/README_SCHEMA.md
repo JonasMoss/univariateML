@@ -53,9 +53,12 @@ it does not by itself establish rank or estimator asymptotics. The
 `classification` link points to the supporting classification section. An open
 classification is unavailable and its reason states what is open. This field is
 populated with at least an initial scope across the family dossiers; some held
-subsets and boundary scopes remain open. `available` records mathematical
-qualification only; it does not assert that a family adapter is implemented,
-that the fit is successful, or that an estimator has a root-n limit. The loader
+subsets and boundary scopes remain open. `available` requires mathematical qualification and an implemented numerical
+covariance path for the stated scope. Structural singular-information sets and
+invalid ordinary observed Hessians are unavailable for both observed and
+Hessian-based sandwich covariance. DQM alone does not enable a scope; missing
+derivative or fitted-Hessian validation is recorded explicitly as unavailable.
+Availability does not assert a successful fit, root-n estimator limit or coverage. The loader
 permits omission for minimal fixtures without a presentation metadata block.
 
 ## Prose

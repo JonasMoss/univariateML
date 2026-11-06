@@ -4,20 +4,40 @@ inference_numeric:
   - regime: "cusp moving with smooth exponent"
     available: true
     condition: "finite mean, sd > 0 and nu > 2; any regular subset free"
-    classification: "univariateML-cpp/include/cppunivariate/core/inference.md#pointwise-smoothness-for-ged-submodels"
+    classification: "dev/research/evaluations/2026-11-04-infer-moving-report.md#ged"
   - regime: "held location"
     available: true
     condition: "finite mean held and sd > 0, nu > 0; if nu is free require nu > 1"
-    classification: "univariateML-cpp/include/cppunivariate/core/inference.md#pointwise-smoothness-for-ged-submodels"
+    classification: "dev/research/evaluations/2026-11-04-infer-moving-report.md#ged"
   - regime: "normal member with shape held"
     available: true
     condition: "finite mean and sd > 0, nu = 2 held; mean and/or sd free"
-    classification: "univariateML-cpp/include/cppunivariate/core/inference.md#pointwise-smoothness-for-ged-submodels"
-  - regime: unreviewed or unavailable
+    classification: "dev/research/evaluations/2026-11-04-infer-moving-report.md#ged"
+  - regime: "moving location with smooth or held shape"
     available: false
-    condition: "joint cusp-moving regime with 0 < nu <= 2, except the held-shape normal member"
-    reason: "the C2 and held-subset classification at the moving cusp has not yet been completed"
-    classification: "dev/roadmap/2026-10-30-inference-and-dqm.md#cusps-and-singularities"
+    condition: "finite mean free, sd > 0; either nu > 2, or nu > 1 is held; sd may be held or fitted; excluding the preceding available submodels"
+    reason: "DQM and full-rank information are established, but support/join-aware numerical derivatives and fitted covariance validation for this expanded scope are not yet implemented"
+    classification: "dev/research/evaluations/2026-11-04-infer-moving-report.md#ged"
+  - regime: "joint fitted cusp Hessian open"
+    available: false
+    condition: "finite mean free, sd > 0 and 1 < nu <= 2 with nu free"
+    reason: "the model is DQM with full-rank information and an integrable correct a.e. Hessian at the truth; consistency of the joint fitted Hessian and cusp-crossing numerical derivatives remains unvalidated"
+    classification: "dev/research/evaluations/2026-11-04-infer-moving-report.md#ged"
+  - regime: "regular location with unsuitable ordinary Hessian"
+    available: false
+    condition: "finite mean free, sd > 0 and 1/2 < nu <= 1 held"
+    reason: "the model is DQM with full rank, but the ordinary location Hessian omits the Laplace kink at nu = 1 and is nonintegrable below 1; below 1 the location MLE also makes raw fitted OPG singular"
+    classification: "dev/research/evaluations/2026-11-04-infer-moving-report.md#ged"
+  - regime: "critical or fractional cusp location"
+    available: false
+    condition: "finite mean free, sd > 0 and 0 < nu <= 1/2 held"
+    reason: "location uses sqrt(n log n) at nu = 1/2 or an fBm likelihood at rate n^(1/(1+2*nu)) below it; ordinary Hessian inference is invalid and raw critical OPG has the wrong information constant"
+    classification: "dev/research/evaluations/2026-11-04-infer-moving-report.md#ged"
+  - regime: "active fitted Laplace shape bound"
+    available: false
+    condition: "nu = 1 free, finite mean held or fitted, sd > 0"
+    reason: "the regular underlying model has a constrained Gaussian shape tangent; moving-location ordinary Hessian inference additionally misses the cusp contribution"
+    classification: "dev/research/evaluations/2026-11-04-infer-moving-report.md#ged"
 name: Generalized Error
 support: {type: real, lower: -inf, upper: inf, closed: [false, false]}
 params:

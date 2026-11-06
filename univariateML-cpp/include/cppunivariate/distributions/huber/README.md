@@ -1,11 +1,11 @@
 ---
 id: huber
 inference_numeric:
-  - regime: unreviewed or unavailable
+  - regime: "regular finite Huber interior"
     available: false
-    condition: "joint kink-moving parameters"
-    reason: "the piecewise quadratic log density has a moving second-derivative kink, so the joint pointwise C2 condition fails"
-    classification: "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+    condition: "finite mu, sigma > 0 and finite epsilon > 0; any nonempty free subset; observed information uses the a.e. piecewise Hessian with defined join handling; normal and Laplace limits are excluded"
+    reason: "DQM and full-rank information are established, but support/join-aware numerical derivatives and fitted covariance validation for this expanded scope are not yet implemented"
+    classification: "dev/research/evaluations/2026-11-04-infer-moving-report.md#huber"
 name: Huber
 support: {type: real, lower: -inf, upper: inf, closed: [false, false]}
 params:

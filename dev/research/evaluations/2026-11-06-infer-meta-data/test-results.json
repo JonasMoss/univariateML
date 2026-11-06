@@ -1,0 +1,67 @@
+[
+  {
+    "check": "r-dev",
+    "machine": "workstation",
+    "command": "/tmp/umvl-cpu/run4 just test",
+    "exit_code": 0,
+    "fail": 0,
+    "warn": 0,
+    "skip": 154,
+    "passed": 20838
+  },
+  {
+    "check": "r-full",
+    "machine": "simbox",
+    "command": "/tmp/umvl-cpu/simbox-run just test-full",
+    "exit_code": 0,
+    "fail": 0,
+    "warn": 0,
+    "skip": 0,
+    "passed": 43654
+  },
+  {
+    "check": "cpp-dev",
+    "machine": "simbox",
+    "command": "/tmp/umvl-cpu/simbox-run just cpp-test",
+    "exit_code": 0,
+    "passed": 106,
+    "failed": 0,
+    "skipped": 0,
+    "ctest_seconds": 41.41
+  },
+  {
+    "check": "site",
+    "machine": "workstation",
+    "command": "/tmp/umvl-cpu/run just site-check",
+    "exit_code": 0,
+    "families": 99,
+    "snippets": 99,
+    "availability_rows": 355
+  },
+  {
+    "check": "inference-validation",
+    "machine": "workstation",
+    "exit_code": 0,
+    "registry_families": 66,
+    "special_families": 13,
+    "standard_families": 11,
+    "pilot_families": 4,
+    "regime_cases": 35
+  },
+  {
+    "check": "final-source-and-report",
+    "machine": "workstation",
+    "exit_code": 0,
+    "report_links": 14,
+    "source_hashes": "all match",
+    "registry": "66 entries match",
+    "availability": "current"
+  },
+  {
+    "check": "artifact-pane-show",
+    "machine": "workstation",
+    "exit_code": 1,
+    "http_status": 403,
+    "reason": "worktree outside viewer readable roots; configuration unchanged"
+  }
+]

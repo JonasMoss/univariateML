@@ -1,11 +1,26 @@
 ---
 id: tlambda
 inference_numeric:
-  - regime: unreviewed or unavailable
+  - regime: "regular interior model"
     available: false
-    condition: "interior joint regime"
-    reason: "DQM and support-dependent regularity remain open in the cited classification"
-    classification: "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+    condition: "finite mu, sigma > 0 and lambda < 1/2; any nonempty supported free subset; if lambda and mu are free require lambda > -1"
+    reason: "DQM and full-rank information are established, but support/join-aware numerical derivatives and fitted covariance validation for this expanded scope are not yet implemented"
+    classification: "dev/research/evaluations/2026-11-04-infer-moving-report.md#tukey-lambda"
+  - regime: "active lower fitted shape bound"
+    available: false
+    condition: "lambda = -1 with both lambda and mu free"
+    reason: "the model is DQM with full rank, but the fitted shape bound gives a Gaussian cone experiment rather than ordinary joint Wald calibration"
+    classification: "dev/research/evaluations/2026-11-04-infer-moving-report.md#tukey-lambda"
+  - regime: "critical moving endpoints"
+    available: false
+    condition: "lambda = 1/2; any nonempty supported free subset"
+    reason: "endpoint directions use sqrt(n log n) and the endpoint-preserving complement uses sqrt(n); a dedicated mixed-rate procedure is required"
+    classification: "dev/research/evaluations/2026-11-04-infer-moving-report.md#tukey-lambda"
+  - regime: "Poisson moving endpoints"
+    available: false
+    condition: "lambda > 1/2; any nonempty supported free subset; lambda > 1 must be held"
+    reason: "endpoint directions have non-Gaussian Poisson limits, with an additional root-n endpoint-preserving shape direction when sigma and lambda are both free; lambda = 1 also constrains free shape"
+    classification: "dev/research/evaluations/2026-11-04-infer-moving-report.md#tukey-lambda"
 name: Tukey lambda
 support: {type: real, lower: "if (lambda > 0) mu - sigma/lambda else -Inf", upper: "if (lambda > 0) mu + sigma/lambda else Inf", closed: [true, true], endpoint_log_density: {lower: "if (lambda < 1) -Inf else if (lambda == 1) -log(2*sigma) else -log(sigma)", upper: "if (lambda < 1) -Inf else if (lambda == 1) -log(2*sigma) else -log(sigma)"}}
 params:
