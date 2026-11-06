@@ -1,0 +1,15 @@
+{
+  "revision": "bb734cd78b846a565d8835606328bb1285a82db6",
+  "dirty": true,
+  "platform": "Linux-7.0.0-42-generic-x86_64-with-glibc2.43",
+  "source_sha256": {
+    "univariateML-cpp/include/cppunivariate/distributions/bnbinom/README.md": "be6ec970c4ae88e9fd53cc897e0ee8e37d7184964937d7c0d75795101f903a91",
+    "univariateML-cpp/include/cppunivariate/distributions/bnbinom/mle.hpp": "09098d680171ce71c388e02bbaeac70e0d6f224fa5e5c312c52c717aaf5a35bd",
+    "univariateML-cpp/include/cppunivariate/distributions/bnbinom/test.cpp": "37e6f455cf2b56e14ddd77dbf564168d3dba5834cae1bbd3cb212bf206cecc16",
+    "univariateML-cpp/include/cppunivariate/distributions/bnbinom/golden.json": "0de183786766e278851859371879fae2338fabaab9249dd714cd808edaa36e00",
+    "bindings/common/distributions/bnbinom/fit.hpp": "ce09114f2f2540706d41bcf5c9e4b715053dd64f6077835de419b403657f5f0a",
+    "bindings/r/distributions/bnbinom/test.R": "9bb9b7f791e627e28a9df3a7c4d8d32e1783a6c19284fc3068434dc65617590c"
+  },
+  "compiler": "c++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "python": "3.14.5"
+}

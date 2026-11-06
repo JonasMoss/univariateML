@@ -1,0 +1,22 @@
+{
+  "alpha": 2,
+  "witness": [
+    1,
+    2,
+    5
+  ],
+  "witness_logLik": "-1276.3456581776476962455616510034647548886401896046787948517",
+  "diagonal_logLik_upper": "-1276.44582736568923804049389967393581400608267507228180520513",
+  "strict_gap_at_least": "0.100169188041541794932248670471059117442485467603010353428867",
+  "left_upper": "-5513.5490086779259377331268020754243950122480575341450739912",
+  "right_upper": "-78890.8419918041292177358224495496443714199005574346957932193",
+  "range": [
+    "0.000001",
+    "256.0"
+  ],
+  "segments": 861,
+  "accepted": 431,
+  "precision": 60,
+  "margin": "1.0e-20",
+  "certificate": "exact arithmetic conditional on computed comparisons; practical margin, not outward rounding"
+}

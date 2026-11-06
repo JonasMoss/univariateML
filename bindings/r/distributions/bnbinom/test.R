@@ -101,3 +101,25 @@ test_that("unit beta-negative-binomial quantiles allow neighbouring integers at 
   expect_true(qml(-4.605170185988092, f, lower.tail=FALSE, log.p=TRUE) %in% c(98, 99))
   expect_true(qml(1e-6, f, lower.tail=FALSE) %in% c(999998, 999999))
 })
+
+test_that("one-free-shape certificates recover exact roots and structured stops", {
+  for (free in c("size","alpha","beta")) {
+    fixed <- as.list(c(size=1,alpha=1,beta=1)); fixed[[free]] <- NULL
+    f <- do.call(mlbnbinom,c(list(rep(1L,12)),fixed))
+    expect_equal(unname(f[free]),sqrt(2),tolerance=1e-8)
+    expect_equal(attr(f,"logLik"),12*log(sqrt(2)/((sqrt(2)+1)*(sqrt(2)+2))),tolerance=1e-12)
+    e <- tryCatch(do.call(mlbnbinom,c(list(rep(1L,12),iterlim=1),fixed)),error=identity)
+    expect_s3_class(e,"univariateML_budget")
+    expect_equal(e$kind,"budget")
+    expect_equal(nrow(e$candidates),1L)
+    expect_true(is.infinite(e$loglik_upper))
+    expect_true(all(c("size","alpha","beta") %in% names(e$candidates)))
+  }
+})
+
+test_that("scalar cancellation is a structured numerical stop", {
+  e <- tryCatch(mlbnbinom(rep(1L,8),size=1,beta=1,gradtol=1e-20),error=identity)
+  expect_s3_class(e,"univariateML_numerical")
+  expect_equal(e$kind,"numerical")
+  expect_equal(nrow(e$candidates),1L)
+})

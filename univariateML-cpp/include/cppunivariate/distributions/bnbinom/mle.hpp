@@ -12,7 +12,7 @@
 
 namespace cppunivariate {
 enum class BnbinomStatus { Ok, InvalidInput, NegativeBinomialLimit, PoissonLimit,
-                           PointMass, IterationFailure };
+                           PointMass, IterationFailure, NumericalFailure };
 struct BnbinomResult {
   double size, alpha, beta, logLik;
   int iterations;
@@ -107,6 +107,95 @@ inline std::vector<double> optimise(const Cost &c, std::vector<double> u,
   }
   return u;
 }
+// Scalar score differences use a conservative practical cancellation margin.
+// The single-crossing proof and floating-point contract are in README.md.
+struct ScalarScore { double value, margin; };
+inline ScalarScore scalar_score(const Data &d, const std::vector<double> &p, int j) {
+  const double r=p[0], a=p[1], b=p[2];
+  const double first=special::digamma(j==1?a+r:(j==0?a+r:a+b));
+  const double second=special::digamma(j==1?a+b:(j==0?r:b));
+  CPPUNIV_EXTENDED_REAL sum=0, magnitude=0;
+  for (std::size_t i=0;i<d.x.size();++i) {
+    const double third=special::digamma(j==1?a:(j==0?r:b)+d.x[i]);
+    const double fourth=special::digamma(a+r+b+d.x[i]);
+    const double term=j==1?first+second-third-fourth:first-second+third-fourth;
+    sum+=d.count[i]*term;
+    magnitude+=d.count[i]*(std::abs(first)+std::abs(second)+std::abs(third)+std::abs(fourth));
+  }
+  return {static_cast<double>(sum/d.n),
+    128*std::numeric_limits<double>::epsilon()*static_cast<double>(magnitude/d.n)};
+}
+inline BnbinomResult scalar_fit(const Cost &c, double tol, int maxit) {
+  BnbinomResult out{NAN,NAN,NAN,NAN,0,BnbinomStatus::NumericalFailure};
+  const int j=c.free[0];
+  const int steps=std::min(maxit,100000);
+  const long long cap=128LL*steps;
+  long long evaluations=0;
+  std::vector<double> best;
+  double best_ll=-INFINITY;
+  auto evaluate=[&](double u) -> int {
+    if (++evaluations>cap) return 2;
+    auto p=c.fixed; p[j]=std::exp(u);
+    if (!(p[j]>0) || !std::isfinite(p[j])) return 2;
+    const auto score=scalar_score(c.d,p,j);
+    const double ll=likelihood(c.d,p);
+    if (std::isfinite(ll) && ll>best_ll) { best=p; best_ll=ll; }
+    if (!std::isfinite(score.value) || !std::isfinite(score.margin) || !std::isfinite(ll)) return 2;
+    return score.value>score.margin?1:(score.value < -score.margin?-1:0);
+  };
+  auto stop=[&](bool budget) -> BnbinomResult {
+    out.status=budget?BnbinomStatus::IterationFailure:BnbinomStatus::NumericalFailure;
+    out.stop_detail.budget_exhausted=budget;
+    if (!best.empty()) {
+      const double margin=1e-10*c.d.n*(1+std::abs(best_ll/c.d.n));
+      out.logLik=best_ll;
+      out.stop_detail.candidates.push_back({best,best_ll-margin,best_ll+margin,StopModel::None});
+      out.stop_detail.loglik_lower=best_ll-margin;
+    }
+    out.stop_detail.loglik_upper=INFINITY;
+    return out;
+  };
+  double lo=0, hi=0, radius=1;
+  bool left=false, right=false;
+  // Expansion and refinement count certificate evaluations; each can be raised
+  // through maxit. No exp/log range endpoint can be returned as a fit.
+  while (!left || !right) {
+    if (evaluations+2>cap) return stop(true);
+    if (!left) { const int sign=evaluate(-radius); if(sign==2)return stop(false); if(sign==1){lo=-radius;left=true;} }
+    if (!right) { const int sign=evaluate(radius); if(sign==2)return stop(false); if(sign==-1){hi=radius;right=true;} }
+    radius*=2;
+  }
+  const double width=std::min(tol,1e-8);
+  for (int it=0;it<steps;++it) {
+    ++out.iterations;
+    if (hi-lo<=width) {
+      auto p=c.fixed; p[j]=std::exp(lo+(hi-lo)/2);
+      const double ll=likelihood(c.d,p);
+      if(!std::isfinite(ll))return stop(false);
+      out.size=p[0];out.alpha=p[1];out.beta=p[2];out.logLik=ll;
+      out.status=BnbinomStatus::Ok;return out;
+    }
+    if (evaluations+3>cap) return stop(true);
+    const double mid=lo+(hi-lo)/2;
+    if(mid==lo || mid==hi)return stop(false);
+    const int sign=evaluate(mid);
+    if(sign==2)return stop(false);
+    if(sign==1)lo=mid;
+    else if(sign==-1)hi=mid;
+    else {
+      // A small score alone never certifies coefficient accuracy. Preserve
+      // signed endpoints and try both quarter points instead.
+      const double l=lo+(hi-lo)/4, h=hi-(hi-lo)/4;
+      const int sl=evaluate(l), sh=evaluate(h);
+      if(sl==2 || sh==2)return stop(false);
+      bool progress=false;
+      if(sl==1){lo=l;progress=true;} else if(sl==-1){hi=l;progress=true;}
+      if(sh==-1 && h<hi){hi=h;progress=true;} else if(sh==1 && h>lo){lo=h;progress=true;}
+      if(!progress || !(lo<hi))return stop(false);
+    }
+  }
+  return stop(true);
+}
 }
 inline BnbinomResult bnbinom_mle(ispan x, double tol=1e-8, int maxit=600,
     double size_fixed=std::numeric_limits<double>::quiet_NaN(),
@@ -130,6 +219,7 @@ inline BnbinomResult bnbinom_mle(ispan x, double tol=1e-8, int maxit=600,
   if (cost.free.empty()) return {size_fixed,alpha_fixed,beta_fixed,
       bnbinom_detail::likelihood(d,cost.fixed),0,BnbinomStatus::Ok};
   if (sum==0) { out.logLik=0; out.status=BnbinomStatus::PointMass; return out; }
+  if (cost.free.size()==1) return bnbinom_detail::scalar_fit(cost,tol,maxit);
   const bool fr=std::isnan(size_fixed), fa=std::isnan(alpha_fixed), fb=std::isnan(beta_fixed);
   StopDetail nb_detail, po_detail;
   double face=-std::numeric_limits<double>::infinity();
