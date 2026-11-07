@@ -1,0 +1,31 @@
+{
+  "base_revision": "017b9f8ec3bed7610ccd41c62738bce1ea987316",
+  "branch": "codex/std-held",
+  "uncommitted": true,
+  "workstation": "Linux-7.0.0-42-generic-x86_64-with-glibc2.43",
+  "python": "3.14.5",
+  "local_compiler": "c++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "sha256": {
+    "univariateML-cpp/include/cppunivariate/distributions/lst/mle.hpp": "1c5b4d371c3f5d9930621976338c062a5311c7793439432c2f27812573c7a388",
+    "univariateML-cpp/include/cppunivariate/distributions/lst/README.md": "8eb3f618ba503cd163d69366f3d813313868da3d44ca9be987917c2044713ee9",
+    "univariateML-cpp/include/cppunivariate/distributions/lst/test.cpp": "0f7dd1db3bd55e19896e683317160dbe77caa68dfc1e076cb3afe058dcf39d49",
+    "univariateML-cpp/include/cppunivariate/distributions/lst/golden.json": "b6d077a9bc629723933fbccd693d878331cb4892ffe4cf538b6001ff478d86b6",
+    "univariateML-cpp/include/cppunivariate/distributions/lst/truth.json": "329a6bf3197c6c26a2b83ea21df29b3754fe391340e29aeb42168d4bd98d253a",
+    "bindings/common/distributions/lst/fit.hpp": "46f61eeedd3578694219fac553d7d56268cf1aa651bf14f766a23526abd5d1a8",
+    "bindings/r/distributions/lst/test.R": "1faac6c9cb35f814c445fcfd922390d7f9795be22e97697dd858602d4aa99bfc",
+    "univariateML-cpp/include/cppunivariate/distributions/std/mle.hpp": "ca146b3f1713c656be3f4233a122996af00e0b32bcb3a034d5682f6219ce2426",
+    "univariateML-cpp/include/cppunivariate/distributions/std/README.md": "4e20fe990b6e0ea845325e36d4a7154b06f64a94783005abaca457c64c9fe3cf",
+    "univariateML-cpp/include/cppunivariate/distributions/std/test.cpp": "cd010cdb55c8c4f97b77e51275da4e60ac9927b392e34caf8ab17e68edd7d110",
+    "univariateML-cpp/include/cppunivariate/distributions/std/golden.json": "ae2f02e1f1e0f1fe8b8672fb2969657573c8c3da1cf17cc5615d95e8d0212e1d",
+    "univariateML-cpp/include/cppunivariate/distributions/std/truth.json": "bb09dd3aae7e41ccd4ff7b9062a6cdbb1e4f27c686c16d57119bd32c514b286d",
+    "bindings/common/distributions/std/fit.hpp": "d63c63d7c01fc2d43f558c2563c08d65b1194eb55a53cb760ebbaffb4d58be44",
+    "bindings/r/distributions/std/test.R": "7ffd7dc0e8d579b53fa9e205c5df0da0f3ba1a99a7b46e693a52ebec0048d1b8",
+    "univariateML-cpp/include/cppunivariate/distributions/lst/location_certificate.hpp": "69c670f793b61105a81f387db45c002da60f63e9d9ef5481990fa7289d3453de",
+    "bindings/js/test.mjs": "a733d12b583e2604cbda7a144bb2a4ecd0911be3bc445e0029a1136e2abe5459",
+    "dev/research/evaluations/2026-11-07-std-held-data/check.py": "36df167b3e90d2f9e231056fb03696c009f2b170a271e7d610fd2063f147bbcb",
+    "dev/research/evaluations/2026-11-07-std-held-data/held_check.cpp": "202895f37621dfef45e588a9c87dc2ad7fec96697a12c5369976656fe3f782e4",
+    "dev/research/evaluations/2026-11-07-std-held-data/timing.cpp": "f36bf1b7e9c3ae8d9d1ea1ef0ff474254ad008fe0f0338e5a4478e75e7b92ec5",
+    "dev/research/evaluations/2026-11-07-std-held-data/derivation.md": "264e867578701aeb1cfc7ec83bdf066b033ff3a4ca33674cfdd7e372e5c0330d",
+    "dev/research/evaluations/2026-11-07-std-held-data/collect.py": "e3565f253fffe5259daee2f181a7c94cb1847f095e3ce6716f45711d625b6480"
+  }
+}

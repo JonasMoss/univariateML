@@ -33,14 +33,14 @@ r:
     nu: Optional held nu; NULL estimates it.
     sd: Optional held sd; NULL estimates it.
     mean: Optional held mean; NULL estimates it.
-    gradtol: All-free coefficient enclosure width target, clamped between 1e-7 and 1e-6 in normalized location and relative scale/shape units, including the complete sd enclosure. Held fits retain their existing score tolerance.
+    gradtol: All-free coefficient enclosure width target, clamped between 1e-7 and 1e-6 in normalized location and relative scale/shape units, including the complete sd enclosure. Held joint fits use the score tolerance for EM nominations and require root inclusion; scalar held fits require coefficient brackets.
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations."
 log_density: loggamma((nu+1)/2) - loggamma(nu/2) - log((nu-2)*pi)/2 - (nu+1)*log(1+((x-mean)/sd)**2/(nu-2))/2 - log(sd)
 limits:
   - name: scale collapse
     firmness: proved
     when: The free scale tends to zero at the fitted or held location.
-    detect: The collapse exponent is negative at an attainable location; equality is treated separately as an uncertified boundary.
+    detect: The collapse exponent is negative at an attainable location; critical equality uses the separate fixed-shape analysis.
     status: Unbounded
     message: "collapse"
   - name: scale collapse
@@ -50,21 +50,21 @@ limits:
     detect: 'The location has multiplicity $k>\nu(n-k)$ in a sample of size $n$.'
     status: Unbounded
   - name: tie equality boundary
-    firmness: argued
+    firmness: proved
     fixed: [nu]
     when: "The ordinary t scale tends to zero at the free or held location."
-    detect: 'The location has multiplicity $k=\nu(n-k)$; a regular maximum is not certified.'
+    detect: 'Exact equality $k=\nu(n-k)$ gives a finite unattained scale-zero supremum.'
     status: ScaleBoundary
   - model: 'norm'
     firmness: proved
     when: 'The shape $\nu$ tends to infinity with mean and sd fixed.'
-    detect: For all-free fits, exhaustive profile and tail bounds select this face. Held subsets retain their numerical face comparisons.
+    detect: For all-free fits, exhaustive profile and tail bounds select this face. Held free-shape subsets retain uncertified numerical profile and face comparisons.
     status: 'NormalBoundary'
     numerical: true
   - model: lst
     firmness: proved
     when: 'The shape $\nu$ decreases to two with mean and ordinary t scale fixed; sd diverges.'
-    detect: For all-free fits, exhaustive profile and tail bounds select this face. Held subsets retain their numerical face comparisons.
+    detect: For all-free fits, exhaustive profile and tail bounds select this face. Held free-shape subsets retain uncertified numerical profile and face comparisons.
     status: 'DfTwoBoundary'
     numerical: true
 references:
@@ -96,7 +96,7 @@ relations:
 fit:
   method: profile-search
   certified: partial
-  note: 'std/README.md, Details; lst/certificate.hpp; std/mle.hpp: All-free fits use exhaustive profile envelopes, root inclusion and uniform curvature neighborhoods, with normal and lower-face certificates conditional on computed practical arithmetic bounds. Held subsets retain their existing exact or numerical routes; general held location/shape profiles remain uncertified.'
+  note: 'std/README.md, Details; lst/certificate.hpp; std/mle.hpp: All-free fits use exhaustive profile envelopes, root inclusion and uniform curvature neighborhoods, with normal and lower-face certificates conditional on computed practical arithmetic bounds. Fixed-location/fixed-shape scale fits use monotone brackets; fixed-scale/fixed-shape location fits isolate every possible maximum and stop on unresolved ties. Joint location/scale fits at held shape >= 1 require root inclusion under the strict atom condition. Free-shape held profiles retain converged numerical searches and face comparisons without global certification.'
 areas:
 - finance
 - measurement and errors
@@ -109,7 +109,7 @@ key_references:
 existence:
   uniqueness: unknown
   statement: >-
-    With all coefficients free, a finite MLE is not guaranteed: scale collapse, a normal limit or a location-scale $t_2$ limit can prevent attainment. Global uniqueness is unknown. Holding $\nu>2$ removes both shape limits; a tie of multiplicity $k$ gives unbounded likelihood if $k>\nu(n-k)$, while equality requires separate boundary analysis. With $\mu$ and shape held, a unique positive scale maximum exists exactly when $\nu(n-k)>k$, where $k$ counts observations at that location. Holding $\sigma$ removes scale collapse only when shape is also held; free shape can still collapse as $\nu\downarrow2$. Other held subsets use numerical profiles and reachable boundary comparisons. Holding all coefficients leaves likelihood evaluation.
+    With all coefficients free, a finite MLE is not guaranteed: scale collapse, a normal limit or a location-scale $t_2$ limit can prevent attainment. Global uniqueness is unknown. Holding $\nu>2$ removes both shape limits; a tie of multiplicity $k$ gives unbounded likelihood if $k>\nu(n-k)$, while exact equality gives an unattained scale-zero supremum. With $\mu$ and shape held, a unique positive scale maximum exists exactly when $\nu(n-k)>k$, where $k$ counts observations at that location. Holding $\sigma$ removes scale collapse only when shape is also held; free shape can still collapse as $\nu\downarrow2$. Other held free-shape subsets use uncertified numerical searches, with failures stopped. Holding all coefficients leaves likelihood evaluation.
   reason: >-
     For ordinary t scale $a$, collapse contributes $a^{\nu(n-k)-k}$. With location and shape held, the log-scale score $\sum_i(\nu+1)d_i^2/(\nu a^2+d_i^2)-n$ decreases strictly from $\nu(n-k)-k$ to $-n$ when any residual is nonzero. The density limits in Details establish the shape faces, not global profile optimality.
 ---
@@ -118,7 +118,7 @@ The Student-t distribution is a symmetric, heavy-tailed alternative to the norma
 
 ## Details
 
-The location $\mu$ is the mean and $\sigma$ is the standard deviation. Smaller $\nu>2$ gives heavier tails. Holding either moment preserves it during estimation of the remaining coefficients.
+The location $\mu$ is the mean and $\sigma$ is the standard deviation. Smaller $\nu>2$ gives heavier tails. Held moments are preserved by the certified fixed-shape subsets; free-shape held fits use uncertified numerical profile searches.
 
 For fixed mean and standard deviation, the ordinary t scale is
 $\sigma\sqrt{(\nu-2)/\nu}$; the gamma ratio in the t normalizer
@@ -138,7 +138,7 @@ This is the fGarch parameterisation: $\mu$ and $\sigma$ are the mean and standar
 
 With $\nu$ held fixed, only location and scale are estimated by monotone
 EM, stopping when the norm of the scale-standardized location and log-scale
-scores is below the requested score tolerance. Failure to reach that tolerance is an error.
+scores is below the requested score tolerance. This nominates a point for the joint fixed-shape root inclusion below; score convergence alone is not its certificate. Failure to reach that tolerance is an error.
 The normal and two-degree-of-freedom escapes do not apply to this subset.
 Fixed $\nu$ must exceed 2.
 For multiplicity $k$ in a sample of size $n$, collapse of ordinary t scale $a$ has likelihood
@@ -149,7 +149,7 @@ can have nonunique attained fits). Strictly positive exponents for every tie
 permit the regular fixed-parameter fit.
 
 
-Holds use the ordinary t scale $\sigma\sqrt{(\nu-2)/\nu}$. With mean held, only its tie multiplicity drives scale collapse. With standard deviation held, the $\nu\downarrow2$ limit forces ordinary scale to zero, rather than giving a finite-scale t2 law. The conditional normal face remains eligible. When the standard deviation is free, the conditional ordinary t2 face is compared separately. Profile searches are numerical, not global certificates.
+Holds use the ordinary t scale $\sigma\sqrt{(\nu-2)/\nu}$. With mean held, only its tie multiplicity drives scale collapse. With standard deviation held, the $\nu\downarrow2$ limit forces ordinary scale to zero, rather than giving a finite-scale t2 law. The conditional normal face remains eligible. When the standard deviation is free, the conditional ordinary t2 face is eligible but requires a separate global comparison. Held free-shape fits retain numerical searches and face comparisons without a global certificate. Fixed-shape location and scale subsets use the certificates below.
 
 The [2026-11-04 certificate study](../../../../../dev/research/evaluations/2026-11-04-t-cert-report.md)
 proves geodesic convexity of the fixed-shape nuisance objective for
@@ -205,8 +205,7 @@ nonfinite/domain errors and insufficient coefficient widths stop with
 failure can use the local optimizer-score exception. Location width is
 measured in empirical normal-scale units; scale and shape widths are relative.
 The all-free width target is gradtol clamped to [1e-7,1e-6]; std checks the
-entire transformed standard-deviation interval as well. Held subsets retain
-their previous algorithms and convergence rules.
+entire transformed standard-deviation interval as well. Held fixed-shape subsets use the certificates below; held free-shape fits retain uncertified numerical searches.
 
 Normal stops carry `(mean,sd)`; positive ordinary-scale t2 stops carry
 `(mu,sigma,df=2)`. A bounded collapse stop carries the diagnostic path
@@ -217,7 +216,7 @@ witnesses where available; unknown global upper bounds remain infinite.
 
 ## Decision history
 
-The 2026-11-06 TASK-140 port replaces only the all-free defaults with the native certificate. Held subsets and sstd remain on their existing routes.
+The all-free default uses the native certificate. Held subsets use the fixed-shape certificates and the free-shape numerical searches described below.
 
 The 2026-11-04 TASK-140 study retains the existing default: its whole-profile
 value enclosures do not yet establish a certified global coefficient vector.
@@ -235,7 +234,7 @@ The shared profile search caches grid-point values, avoiding repeated nested
 location profiles without changing the grid, refinement or convergence checks.
 This reuse does not certify that the grid finds every mode.
 
-Historical held-subset face comparisons retain the family tolerance but stop with the existing numerical-failure status when `core/face_compare.hpp` cannot resolve the decision after its floating-point rounding allowance. This allowance concerns computed likelihood comparisons, not optimizer convergence or global optimality; see the [comparison analysis](../../../../../dev/research/evaluations/2026-11-02-face-compare-report.md).
+Uncertified held free-shape face comparisons use the family tolerance and stop numerically when `core/face_compare.hpp` cannot resolve a decision after its floating-point rounding allowance. This allowance concerns computed likelihood comparisons, not optimizer convergence or global optimality; see the [comparison analysis](../../../../../dev/research/evaluations/2026-11-02-face-compare-report.md).
 
 At a critical atom b with multiplicity $k=2(n-k)$, the fixed-shape
 ordinary t2 supremum is
@@ -260,3 +259,35 @@ proves these endpoint statements and gives a relative chord inequality
 that can exclude a whole punctured endpoint neighborhood. It also derives
 the analytic Hessian in upper-half-plane coordinates, root inclusion and
 uniform nuisance/profile-curvature checks. These arguments underlie the all-free native certificate; held profile searches keep their existing scope.
+
+## Fixed-shape held certificates
+
+At held $\nu>2$, the ordinary scale is
+$s=\sigma\sqrt{(\nu-2)/\nu}$. The [lst fixed-shape certificates](../lst/README.md)
+therefore apply to free mean, free standard deviation, or their joint fit.
+The relative standard-deviation enclosure has the same width as ordinary
+scale because shape is held. Candidate diagnostics are transformed back
+to `(mean,sd,nu)` for held-standard-deviation location ties.
+
+For observations $\pm b$ and held sd, two equal location maxima occur at
+$\pm\sqrt{b^2-(\nu-2)\sigma^2}$ when
+$b^2>(\nu-2)\sigma^2$; the fitter retains both and stops as
+`CertificateTie`. Joint fixed-shape root inclusion uses the strict atom
+condition; it does not extend to general free-shape held constraints.
+
+The [held-subset derivation and validation](../../../../../dev/research/evaluations/2026-11-07-std-held-report.md)
+records the proofs and remaining bounds. In particular, holding sd while
+shape varies changes ordinary scale and the lower face. These open
+free-shape profiles retain numerical estimates and keep the family-wide certification partial.
+
+With nu free and mean, sd, or both held, the numerical profile search is
+retained. It scans and refines log(nu-2), requires refinement convergence,
+and compares the conditional normal and eligible lower faces. Holding sd
+changes the ordinary scale at every trial shape. These numerical comparisons
+do not supply global profile or uniform tail certificates.
+
+Transport to standard deviation must preserve the certified relative scale
+accuracy, including for subnormal coefficients. If a held standard deviation
+maps to a nonnormal ordinary scale, nonconstant location search refuses;
+all-held points and constant-sample location maxima are evaluated directly
+in standardized coordinates.

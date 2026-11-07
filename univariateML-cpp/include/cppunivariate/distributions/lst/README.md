@@ -42,14 +42,14 @@ r:
     df: Optional held df; NULL estimates it.
     sigma: Optional held sigma; NULL estimates it.
     mu: Optional held mu; NULL estimates it.
-    gradtol: All-free coefficient enclosure width target, clamped between 1e-7 and 1e-6 in normalized location and relative scale/shape units. Held fits retain their analytic score tolerance.
+    gradtol: All-free coefficient enclosure width target, clamped between 1e-7 and 1e-6 in normalized location and relative scale/shape units. Held joint fits use the score tolerance for EM nominations and require root inclusion; scalar held fits require coefficient brackets.
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations."
 log_density: loggamma((df+1)/2) - loggamma(df/2) - log(df*pi)/2 - log(sigma) - (df+1)*log(1+((x-mu)/sigma)**2/df)/2
 limits:
   - name: scale collapse
     firmness: proved
     when: The free scale tends to zero at the fitted or held location.
-    detect: The collapse exponent is negative at an attainable location; equality is treated separately as an uncertified boundary.
+    detect: The collapse exponent is negative at an attainable location; critical equality uses the separate fixed-shape analysis.
     status: Unbounded
     message: "scale"
   - name: scale collapse
@@ -59,15 +59,15 @@ limits:
     detect: 'The location has multiplicity $k>\nu(n-k)$ in a sample of size $n$.'
     status: Unbounded
   - name: tie equality boundary
-    firmness: argued
+    firmness: proved
     fixed: [df]
     when: "The scale tends to zero at the free or held location."
-    detect: 'A location has multiplicity $k=\nu(n-k)$. Equality needs separate analysis. Balanced two-point Cauchy data can have attained, nonunique fits; the remaining diagnosed equality cases are not certified as regular maxima.'
+    detect: 'At $k=\nu(n-k)$, held location gives an unattained supremum. With free location and shape at least one, equality is unattained except for the balanced two-point Cauchy maximum curve; joint equality below shape one stops numerically.'
     status: ScaleBoundary
   - model: norm
     firmness: proved
     when: 'The shape $\nu$ tends to infinity, retaining finite location and scale.'
-    detect: For all-free fits, exhaustive profile and tail bounds select this face. Held subsets retain their numerical face comparisons.
+    detect: For all-free fits, exhaustive profile and tail bounds select this face. Held free-shape subsets retain uncertified numerical profile and face comparisons.
     status: NormalBoundary
     numerical: true
 holds: []
@@ -82,7 +82,7 @@ relations: {}
 fit:
   method: profile-search
   certified: partial
-  note: 'lst/README.md, Details; lst/certificate.hpp; lst/mle.hpp: All-free fits use exhaustive profile envelopes, root inclusion and uniform curvature neighborhoods, with normal and lower-face certificates conditional on computed practical arithmetic bounds. Held subsets retain their existing exact or numerical routes; general held location/shape profiles remain uncertified.'
+  note: 'lst/README.md, Details; lst/certificate.hpp; lst/mle.hpp: All-free fits use exhaustive profile envelopes, root inclusion and uniform curvature neighborhoods, with normal and lower-face certificates conditional on computed practical arithmetic bounds. Fixed-location/fixed-shape scale fits use monotone brackets; fixed-scale/fixed-shape location fits isolate every possible maximum and stop on unresolved ties. Joint location/scale fits at held shape >= 1 require root inclusion under the strict atom condition. A uniform shape-score bound additionally certifies the held-scale Cauchy regime; other free-shape held profiles retain uncertified numerical searches. Joint fits below shape one stop numerically pending global bounds.'
 areas:
 - measurement and errors
 classification: classical
@@ -121,7 +121,7 @@ The all-free fitter uses the certificate described below. A grid nominates roots
 
 With $\nu$ held fixed, only location and scale are estimated by monotone
 EM, stopping when the norm of the scale-standardized location and log-scale
-scores is below the requested score tolerance. Failure to reach that tolerance is an error.
+scores is below the requested score tolerance. For held shape at least one, this nominates a point for the root inclusion below. Failure to reach the score tolerance is an error; a small residual alone is not the certificate.
 The normal escape does not apply to this subset.
 Fixed $\nu$ may be any positive finite value when its collapse condition
 permits a finite MLE.
@@ -133,14 +133,12 @@ can have nonunique attained fits). Strictly positive exponents for every tie
 permit the regular fixed-parameter fit.
 
 
-Conditional fits preserve held location $\mu$ and scale $\sigma$. With location held and scale free, only ties at that location contribute to collapse: the exponent is $\nu(n-k)-k$. A negative exponent is unbounded; at equality and fixed shape the collapse supremum is not attained. Free shape has lower bound one with location free; held location exempts that bound. The conditional normal face is compared in either case. Holding scale removes scale collapse. Shape and held-scale location profiles use numerical multistart searches; they do not certify isolation of every mode.
+Conditional fits preserve held location $\mu$ and scale $\sigma$. With location held and scale free, only ties at that location contribute to collapse: the exponent is $\nu(n-k)-k$. A negative exponent is unbounded; at equality and fixed shape the collapse supremum is not attained. Free shape has lower bound one with location free; held location exempts that bound. The conditional normal face remains eligible in the numerical profile comparison. Holding scale removes scale collapse. Held-scale/free-location/free-shape fits can certify the Cauchy face using a uniform shape-score bound. Other held free-shape fits retain numerical searches and face comparisons, without actual-hold global bounds. At fixed shape, held-scale location fits use exhaustive stationary-point isolation.
 
 With shape free, any observation equal to the held location permits scale collapse
 through sufficiently small positive shape when scale is free, and fitting stops.
 
-With $\mu$ held, the lower shape restriction is exempt. The fitter searches
-the wider shape domain and diagnoses collapse separately when observations
-equal the held location and scale is free.
+With $\mu$ held, the lower shape restriction is exempt. Observations equal to that location make the free-scale/free-shape likelihood unbounded; other free-shape cases retain uncertified numerical searches.
 
 The [2026-11-04 certificate study](../../../../../dev/research/evaluations/2026-11-04-t-cert-report.md)
 proves geodesic convexity of the fixed-shape nuisance objective for
@@ -205,7 +203,7 @@ failure can use the local optimizer-score exception. Location width is
 measured in empirical normal-scale units; scale and shape widths are relative.
 The all-free width target is gradtol clamped to [1e-7,1e-6]; std checks the
 entire transformed standard-deviation interval as well. Held subsets retain
-their previous algorithms and convergence rules.
+uncertified numerical searches for free-shape profiles; the fixed-shape certificates below apply separately.
 
 Normal stops carry `(mean,sd)`; positive ordinary-scale t2 stops carry
 `(mu,sigma,df=2)`. A bounded collapse stop carries the diagnostic path
@@ -216,7 +214,7 @@ witnesses where available; unknown global upper bounds remain infinite.
 
 ## Decision history
 
-The 2026-11-06 TASK-140 port replaces only the all-free defaults with the native certificate. Held subsets and sstd remain on their existing routes.
+The all-free default uses the native certificate. Held subsets use the fixed-shape certificates and the free-shape numerical searches described below.
 
 The 2026-11-04 TASK-140 study retains the existing default: its whole-profile
 value enclosures do not yet establish a certified global coefficient vector.
@@ -235,9 +233,9 @@ The shared profile search caches each grid-point value within a search. This
 avoids repeating nested location profiles while preserving the grid, refinement,
 comparisons and convergence checks; it does not strengthen global guarantees.
 
-With location and degrees of freedom held, the log-scale score is strictly decreasing from $\nu(n-k)-k$ to $-n$, where $k$ observations equal the held location. Under the strict existence inequality the unique root is the global scale maximum. The solver expands until both score signs are verified within the representable scale range, bisects, and requires absolute total log-scale score below $10^{-3}$ at the represented result. Residual log magnitudes avoid squared-residual overflow. Missing brackets and failed score checks return `IterationFailure`; no search endpoint is returned as an estimate.
+The held-location scale route retains residual log magnitudes to avoid squared-residual overflow; the strengthened bracket acceptance is described below.
 
-Historical held-subset face comparisons retain the family tolerance but stop with the existing numerical-failure status when `core/face_compare.hpp` cannot resolve the decision after its floating-point rounding allowance. This allowance concerns computed likelihood comparisons, not optimizer convergence or global optimality; see the [comparison analysis](../../../../../dev/research/evaluations/2026-11-02-face-compare-report.md).
+Uncertified held free-shape face comparisons use the family tolerance and stop numerically when `core/face_compare.hpp` cannot resolve a decision after its floating-point rounding allowance. This allowance concerns computed likelihood comparisons, not optimizer convergence or global optimality; see the [comparison analysis](../../../../../dev/research/evaluations/2026-11-02-face-compare-report.md).
 
 At a critical half-mass atom b, the fixed-shape Cauchy supremum is
 $-n\log\pi-2\sum_{x_i\ne b}\log|x_i-b|$. It is attained only for
@@ -252,3 +250,61 @@ proves these endpoint statements and gives a relative chord inequality
 that can exclude a whole punctured endpoint neighborhood. It also derives
 the analytic Hessian in upper-half-plane coordinates, root inclusion and
 uniform nuisance/profile-curvature checks. These arguments underlie the all-free native certificate; held profile searches keep their existing scope.
+
+## Fixed-shape held certificates
+
+With both location and shape held, the strictly decreasing log-scale score
+brackets the unique maximum when the collapse exponent is positive. The
+returned log-scale bracket must have width at most $10^{-10}$; score signs
+at offsets $5\times10^{-9}$ must additionally exceed a roundoff allowance
+$256\epsilon n\max(4+\log(1+\nu)+n,\max_i|w_i|)$, where
+$w_i=2(\log|x_i-\mu|-\log s)-\log\nu$ and $s$ is ordinary t scale.
+Equality yields the unattained scale-zero supremum with its likelihood.
+
+With ordinary scale and shape held, every stationary location lies in the
+sample range. `lst/location_certificate.hpp` covers that range with score
+and curvature enclosures, isolates all possible maxima, and compares their
+likelihood intervals. Two observations at $\pm b$ have two equal maxima
+$\pm\sqrt{b^2-\nu s^2}$ when $b^2>\nu s^2$. Such comparisons stop as
+`CertificateTie` with both candidates; no uniqueness is assumed. Degenerate
+curvature, insufficient coefficient accuracy and exhausted work stop.
+The arithmetic uses the existing practical $64\epsilon$ enclosure margins;
+it does not claim outward-rounded intervals.
+
+For joint location/scale with held shape at least one and the strict atom
+inequality, geodesic convexity makes an included stationary root global.
+EM nominates the point; Newton refinement and a two-dimensional contraction
+inclusion verify it. The complete location and relative scale widths must
+be below $10^{-6}$. The balanced two-point Cauchy equality keeps its existing
+attained, nonunique route after verifying its maximizing curve in physical coordinates. An endpoint-rounded midpoint stops numerically. Subunit-shape joint fits stop numerically rather than returning an unchecked EM result.
+
+The [held-subset derivation and validation](../../../../../dev/research/evaluations/2026-11-07-std-held-report.md)
+records the proofs, actual-hold normal-seam coefficients, unresolved
+free-shape bounds and regression evidence. These gaps keep certification
+partial; these held profiles retain numerical estimates without a globality claim.
+
+Outside the certified decreasing-shape Cauchy regime, the three free-shape
+held subsets retain their numerical profiles: a shape grid nominates peaks,
+golden-section refinement must converge, and numerical comparisons select
+conditional normal or collapse faces. Holding location removes the df >= 1
+fitting bound. These searches do not exclude every remote maximum or supply
+uniform tail bounds; successful estimates remain uncertified.
+
+With scale held and location free, a sufficiently large sample range permits
+a uniform-in-location proof that the likelihood strictly decreases in shape
+on $\nu\ge1$. The fitter bounds the shape derivative on a finite interval
+and closes the infinite tail analytically, then certifies the location fit
+at the attained Cauchy endpoint. The [derivation](../../../../../dev/research/evaluations/2026-11-07-std-held-data/derivation.md#held-scale-decreasing-shape-regime)
+gives the sufficient bound; failure of that bound implies no shape decision.
+Both stages share the certificate evaluation budget. This regime needs
+ordinary scale held and does not transfer to held standard deviation.
+
+Collapse equality is evaluated at the supplied binary64 shape, using fused
+multiply-add for $\nu(n-k)-k$. A rounded product can otherwise manufacture
+equality; for example, stored `8/3` is slightly below the exact 8-to-3
+critical ratio and gives strict unboundedness.
+
+Location accuracy with scale held is measured against empirical data spread,
+so a large held scale cannot mask an inaccurate location. Scale estimates
+must survive logarithmic round-trip checks after conversion to physical
+coordinates; an unrepresentable accurate estimate causes a numerical stop.

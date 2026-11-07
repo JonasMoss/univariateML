@@ -1,0 +1,104 @@
+{
+  "base_revision": "017b9f8ec3bed7610ccd41c62738bce1ea987316",
+  "uncommitted": true,
+  "machines": {
+    "r_and_cpp_suites": "simbox",
+    "cpp_no_long_double": "workstation",
+    "javascript_and_site": "workstation",
+    "independent_checks_and_timings": "workstation"
+  },
+  "final_native_command": "/tmp/umvl-cpu/simbox-run sh -c 'c++ -O2 -std=c++17 -IunivariateML-cpp/include -I\"$(Rscript -e '\"'\"'cat(system.file(\"include\",package=\"BH\"))'\"'\"')\" dev/research/evaluations/2026-11-07-std-held-data/held_check.cpp -o build/scratch/held-check && build/scratch/held-check && just test && just test-full && just cpp-test && UMVL_TEST_TIER=full just cpp-test'",
+  "final_workstation_command": "/tmp/umvl-cpu/run4 sh -c 'just cpp-test-no-long-double && just js-build && just js-test && GOMAXPROCS=4 just site-check'",
+  "r_dev": {
+    "fail": 0,
+    "warn": 0,
+    "skip": 154,
+    "pass": 21066
+  },
+  "r_full": {
+    "fail": 0,
+    "warn": 0,
+    "skip": 0,
+    "pass": 43886
+  },
+  "cpp": {
+    "dev": 106,
+    "full": 129,
+    "no_long_double_full": 129
+  },
+  "cpp_elapsed_seconds": [
+    47.28,
+    52.55,
+    117.18
+  ],
+  "javascript": {
+    "tests": 444,
+    "pass": 444,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0
+  },
+  "site": "passed: MathML, links, graph, snippets and runtime assets",
+  "exit_codes": {
+    "native_chain": 0,
+    "workstation_no_ld_js_site_chain": 0
+  },
+  "simbox_fallback": false,
+  "logs": {
+    "final-simbox-10.log.gz": "5a5e5ae6b8cf945cac3d8c897ce4e81c131217dda6e9c266d3ece4510be94e9e",
+    "final-simbox-9.log.gz": "9689f6a31cdfc6951d51de933e30096b66ba3bd26bfbb42106bfb548259297dd",
+    "no-long-double-stop-expectation.log.gz": "130efed51c686ab62aba27e90c4b32d4a4e4e32720bf87bc3866efc08bbaf597",
+    "no-long-double-restored.log.gz": "9aebf9430d4e163457e97602418a2b1cc1f641a7d31786c59e4a1420d7390288",
+    "js-build-final.log.gz": "2c909ffef39aa6697729003f8bf651ccf8039128cf000de4581e85ddfb7d19ea",
+    "js-test-final.log.gz": "5bf98a4ac1e86a0691343e526c6a651481a50d02e69b0522a9b19ec4d555ea7d",
+    "site-check-final.log.gz": "d87e99a9adccd5287062b2dd77a76ed5b9711bbfb9555e62e83494464e11527b",
+    "final-simbox-8.log.gz": "fd30c1222a216bfad452720a517638d5f651dbff7f21c4d6fecd9e18f9e54f76",
+    "final-simbox-7.log.gz": "7f2d66c4b45e90a41da38b8f7d65f4b2017fd370702f835dd7d2aa20baa1c2f7",
+    "final-simbox-6.log.gz": "b2022a5afab62c79ae47bdd2dbe88252b6bc297ae732c6748740a2b5821f50da",
+    "js-build-restored.log.gz": "c89d290d663564ebba8c787aac919a1a552150a7485868be004d8b525a352e42",
+    "js-test-restored.log.gz": "9a2017cfae17a831331cafaa4edfa5e67b3816a912666c67778568a07f745715",
+    "site-check-restored.log.gz": "ad0ed0b797a1414564ace5ded27c6c5be30a3c4118e60b6492bca0ee191e2665",
+    "final-simbox.log.gz": "124efbc454c38418fdea67d99b23c05949d3b1ae24f91515ae5cdf59c708e0c8",
+    "final-simbox-2.log.gz": "197315585f74573acc76db7944c843239ded24632333d1bd42bb051af799423d",
+    "final-simbox-3.log.gz": "0f918c347f887c24ee1e843af981c1136be59eacf01df0465b2bec45754d7148",
+    "final-simbox-4.log.gz": "f8357d376fcd669f219cf63322d0485d0f835707709bdd3abaccb0367d68e845",
+    "final-simbox-5.log.gz": "899eb2790bf1074793036062d2e1ceba13af2640dbfee6db748f340ed547141a",
+    "site-check.log.gz": "8c07a1f3b64c81a4dec930802c07856fdc74db9c797d3260aeca173b7736ddd3"
+  },
+  "notes": [
+    "Review feedback restored the three uncertified free-shape numerical searches; prior refusal-route logs are superseded.",
+    "R dev skips are declared tier exclusions; R full has no skips.",
+    "Superseded native chains and failed shared-restriction/site runs are retained as development evidence, not final validation.",
+    "No goldens or truth fixtures were regenerated."
+  ],
+  "native_source_fingerprints": "simbox-source.sha256",
+  "warnings": [
+    "Workstation JS build (also invoked by site-check) emits an existing -Wtautological-compare warning from unchanged binom/mle.hpp:160; builds exit zero. R suites report zero warnings."
+  ],
+  "compiler_warnings": {
+    "native": [
+      "../../../dev/validation/diagnostics-audit.cpp:16:2: warning: this \u2018if\u2019 clause does not guard... [-Wmisleading-indentation]",
+      "../../../dev/validation/diagnostics-audit.cpp:1780:16: warning: unused variable \u2018nan\u2019 [-Wunused-variable]",
+      "../../../dev/validation/diagnostics-audit.cpp:931:14: warning: variable \u2018whole\u2019 set but not used [-Wunused-but-set-variable]",
+      "../../include/cppunivariate/distributions/invburr/test.cpp:54:2: warning: this \u2018for\u2019 clause does not guard... [-Wmisleading-indentation]",
+      "../../include/cppunivariate/distributions/lst/certificate.hpp:140:3: warning: this \u2018for\u2019 clause does not guard... [-Wmisleading-indentation]",
+      "../../include/cppunivariate/distributions/lst/certificate.hpp:161:5: warning: this \u2018if\u2019 clause does not guard... [-Wmisleading-indentation]",
+      "../../include/cppunivariate/distributions/lst/test.cpp:50:34: warning: loop variable \u2018normal\u2019 creates a copy from type \u2018const std::vector<double>\u2019 [-Wrange-loop-construct]",
+      "../../include/cppunivariate/distributions/std/../lst/certificate.hpp:140:3: warning: this \u2018for\u2019 clause does not guard... [-Wmisleading-indentation]",
+      "../../include/cppunivariate/distributions/std/../lst/certificate.hpp:161:5: warning: this \u2018if\u2019 clause does not guard... [-Wmisleading-indentation]"
+    ],
+    "workstation_no_long_double": [
+      "../../../univariateML-cpp/include/cppunivariate/distributions/lst/certificate.hpp:140:3: warning: this \u2018for\u2019 clause does not guard... [-Wmisleading-indentation]",
+      "../../../univariateML-cpp/include/cppunivariate/distributions/lst/certificate.hpp:161:5: warning: this \u2018if\u2019 clause does not guard... [-Wmisleading-indentation]",
+      "../../../univariateML-cpp/include/cppunivariate/distributions/lst/test.cpp:50:34: warning: loop variable \u2018normal\u2019 creates a copy from type \u2018const std::vector<double>\u2019 [-Wrange-loop-construct]"
+    ],
+    "javascript": [
+      "univariateML-cpp/include/cppunivariate/distributions/binom/mle.hpp:160:60: warning: self-comparison always evaluates to true [-Wtautological-compare]"
+    ]
+  },
+  "targeted_checks": {
+    "standalone_cpp": "passed on simbox; workstation rerun recorded in held-check.txt",
+    "high_precision": "80-digit mpmath checks passed",
+    "paired_timing": "completed on workstation; same deterministic n=500 workload; combined family timings"
+  }
+}
