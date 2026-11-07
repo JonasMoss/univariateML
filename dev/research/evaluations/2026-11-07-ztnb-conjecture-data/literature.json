@@ -1,0 +1,79 @@
+{
+  "date": "2026-11-07",
+  "scope": "Research reconnaissance for an iid two-free-parameter zero-truncated NB existence/uniqueness theorem, 1955 onward; not a formal manuscript bibliography audit.",
+  "provider": "web search and primary-source web/local full-text reading",
+  "stopping_rule": "20 search queries, followed by primary-source acquisition and reading of the relevant accessible results",
+  "queries": [
+    "\"truncated negative binomial\" \"uniqueness\" likelihood",
+    "\"Sampford\" \"conjecture\" negative binomial truncated",
+    "\"truncated negative binomial\" \"existence\" maximum likelihood",
+    "\"truncated negative binomial\" \"Sampford\" maximum likelihood uniqueness",
+    "\"truncated negative binomial\" \"likelihood\" \"necessary\"",
+    "\"truncated negative binomial\" \"unimodal\"",
+    "\"truncated negative binomial\" \"conjectures\"",
+    "\"truncated negative binomial\" \"unique\" \"likelihood equations\"",
+    "\"Sampford\" \"uniqueness\" binomial",
+    "\"truncated negative binomial\" \"existence and uniqueness\"",
+    "\"truncated negative binomial\" maximum likelihood concavity theorem",
+    "\"truncated negative binomial\" likelihood uniqueness Sampford theorem Brass 1958",
+    "\"truncated negative binomial\" \"maximum likelihood\" \"conjecture\" -site:researchgate.net",
+    "\"zero-truncated\" \"negative binomial\" \"unimodality\"",
+    "\"Sampford\" \"1955\" \"necessity\"",
+    "\"truncated negative binomial\" \"uniqueness\" theorem likelihood -site:researchgate.net -site:scispace.com",
+    "\"Sampford\" \"likelihood\" \"conjecture\" truncated negative",
+    "\"Brass\" \"1958\" \"truncated\" \"proof\"",
+    "\"truncated negative binomial\" \"Levin\" \"Reeds\"",
+    "Brass 1958 \"Simplified methods\" truncated negative binomial pdf"
+  ],
+  "readings": [
+    {
+      "work": "Sampford (1955), The Truncated Negative Binomial Distribution, Biometrika 42, 58–69",
+      "url": "https://doi.org/10.1093/biomet/42.1-2.58",
+      "primary_scan": "https://amsr.contentdm.oclc.org/digital/api/collection/p21050coll5/id/892/download",
+      "locator": "printed pp. 65–66, section 8, especially the end of section 8 on p. 66",
+      "inspection": "Read the two-page primary scan visually, including equations (15)–(17), endpoint conditions, and conjecture paragraph.",
+      "finding": "Two endpoint conditions are sufficient for at least one positive-size solution. Necessity and uniqueness are explicitly left conjectural. The two limits are Poisson and logarithmic series, not just Poisson."
+    },
+    {
+      "work": "Wyshak (1974), Algorithm AS 68: A Program for Estimating the Parameters of the Truncated Negative Binomial Distribution, JRSS C 23, 87–91",
+      "url": "https://doi.org/10.2307/2347059",
+      "primary_record": "https://academic.oup.com/jrsssc/article/23/1/87/6953447",
+      "locator": "pp. 87–91, especially description pp. 87–88, failure indicators p. 89, and code pp. 90–91",
+      "inspection": "Full primary PDF text read via web extraction.",
+      "finding": "Gives score iteration, starting values, observed second derivatives, failure indicators, examples, and Fortran code. No proof of joint necessity or uniqueness. Its stated variance-larger-than-mean applicability is not a proved iff criterion for the positive sample."
+    },
+    {
+      "work": "Simon (1961), Fitting Negative Binomial Distributions by the Method of Maximum Likelihood",
+      "url": "https://www.casact.org/sites/default/files/database/proceed_proceed61_61045.pdf",
+      "inspection": "Primary PDF acquired to ignored scratch; full text inspected locally.",
+      "locator": "printed pp. 47–48, equations (11)–(18); pp. 50–51, equations (35)–(38), iteration discussion and conclusion",
+      "finding": "Eliminates a freely adjusted zero mass to obtain the same score equations as positive truncation. Supplies an iterative numerical scheme and examples, but no necessity or uniqueness proof. The zero-distortion parameter is broader than nonnegative zero inflation, so its elimination does not remove the ZINB feasibility check."
+    },
+    {
+      "work": "Brass (1958), Simplified Methods of Fitting the Truncated Negative Binomial Distribution, Biometrika 45, 59–68",
+      "url": "https://doi.org/10.1093/biomet/45.1-2.59",
+      "attempted_pdf": "https://academic.oup.com/biomet/article-pdf/45/1-2/59/736248/45-1-2-59.pdf",
+      "inspection": "Publisher metadata available; PDF redirects to purchase page through web, HTTP 403 on direct download.",
+      "finding": "Proof not inspected; unresolved coverage gap."
+    },
+    {
+      "work": "Sanathanan (1977), Estimating the Size of a Truncated Sample",
+      "url": "https://doi.org/10.1080/01621459.1977.10480634",
+      "inspection": "Search preview only; publisher full-text request returned HTTP 403.",
+      "finding": "Asymptotic population-size theory is advertised; no finite-sample uniqueness theorem verified."
+    },
+    {
+      "work": "On the robustness of truncated negative binomial regression model: application to field epidemiology (accepted 2025)",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13134751/",
+      "inspection": "Search extraction supplied model, robustness results, and algorithm discussion; direct open hit a CAPTCHA.",
+      "finding": "Inspected extraction concerns regression robustness and numerical Hessian corrections, not a proof of the iid finite-sample conjecture. Not a full-text proof reading."
+    },
+    {
+      "work": "Jayakumar and Sankaran (2020), A Generalization of Inverse Marshall-Olkin Family of Distributions",
+      "url": "https://jds-online.org/journal/JDS/article/86/file/pdf",
+      "inspection": "Primary abstract/title extraction only.",
+      "finding": "Search false positive: claimed uniqueness concerns an inverse truncated-NB Weibull continuous model, not the count model here. Not used as evidence about the conjecture."
+    }
+  ],
+  "conclusion": "No later settlement verified within this search. This is not proof that the conjecture remains open in all literature; inaccessible Brass and other uninspected sources remain explicit gaps."
+}
