@@ -94,7 +94,6 @@ limits:
   - {firmness: proved, name: left translated half-family, fixed: [mean, sd, nu], when: "The skew $\\xi$ tends to zero, with endpoint and one-sided scale chosen to retain any held mean and standard deviation.", detect: "The numerically compared half-family face wins among retained candidates while satisfying held constraints.", status: LeftHalfGedBoundary, numerical: true}
   - {firmness: proved, model: unif, fixed: [mean, sd, xi], when: "The shape $\\nu$ tends to infinity while any held mean and standard deviation are retained.", detect: "The numerically compared limiting face wins among retained candidates while satisfying held constraints.", status: UniformBoundary, numerical: true}
   - {firmness: proved, name: scale collapse, fixed: [mean, nu, xi], when: "The standard deviation $\\sigma$ tends to zero at the held mean.", detect: "Every observation equals the free or held mean and standard deviation is free.", status: Unbounded, message: "Scale collapse"}
-  - {firmness: numerical, name: uncertified scale boundary, fixed: [mean, nu, xi], when: "The conditional scale search approaches its numerical tail guard.", detect: "The numerical scale search cannot certify a finite interior answer.", status: ScaleBoundary, message: "Scale-collapse boundary", numerical: true}
   - model: unif
     firmness: proved
     when: 'The shape $\nu$ tends to infinity, retaining finite location and scale.'
@@ -133,7 +132,7 @@ relations: {}
 fit:
   method: multistart
   certified: 'partial'
-  note: 'sged/certificate.hpp certifies free location with both shapes held (scale held or free), and free scale with mean held when xi=1 or nu>=1 is held. Other subsets, including the unchanged default, retain numerical searches without a global certificate; all-held evaluation is not counted.'
+  note: 'sged/certificate.hpp certifies free location with both shapes held (scale held or free), and free scale with mean and both positive shapes held. Other subsets, including the unchanged default, retain numerical searches without a global certificate; all-held evaluation is not counted.'
 areas:
 - finance
 - measurement and errors
@@ -147,7 +146,7 @@ key_references:
 existence:
   uniqueness: unknown
   statement: >-
-    With all coefficients free, estimated shape is restricted to $\nu\ge1$; constant data permit scale collapse, and uniform or translated half-GED limits can prevent a finite maximum. Without the fitting restriction, the all-free likelihood is unbounded for every sample. Global existence and uniqueness in the restricted domain outside the stated cases are unresolved. Holding coefficients retains only reachable limiting faces and the corresponding moment constraints. With both shapes held and location free, the location/scale maximum is unique for nu > 1 unless free scale collapses on constant data; nu <= 1 permits ties. These subsets now use a global certificate. With $\mu$ and both shapes held, a scale maximum exists unless every observation equals that location; the scale maximum is unique for nu >= 1 by strict convexity in inverse scale, and for every positive nu when xi=1; the asymmetric scale search below one remains uncertified. With $\sigma$ and both shapes held, a location maximum exists, including for tied samples. Holding all coefficients leaves likelihood evaluation.
+    With all coefficients free, estimated shape is restricted to $\nu\ge1$; constant data permit scale collapse, and uniform or translated half-GED limits can prevent a finite maximum. Without the fitting restriction, the all-free likelihood is unbounded for every sample. Global existence and uniqueness in the restricted domain outside the stated cases are unresolved. Holding coefficients retains only reachable limiting faces and the corresponding moment constraints. With both shapes held and location free, the location/scale maximum is unique for nu > 1 unless free scale collapses on constant data; nu <= 1 permits ties. These subsets now use a global certificate. With $\mu$ and both shapes held, a scale maximum exists unless every observation equals that location; the scale maximum is unique for nu >= 1 by strict convexity in inverse scale, and for every positive nu when xi=1; the asymmetric scale search below one uses a compact-domain certificate and can have separated ties. With $\sigma$ and both shapes held, a location maximum exists, including for tied samples. Holding all coefficients leaves likelihood evaluation.
 ---
 
 The skew generalized error distribution extends the exponential-power family with Fernandez-Steel asymmetry. Its location and scale parameters are the mean and standard deviation.
@@ -217,7 +216,7 @@ does not prove that no larger finite maximum was missed.
 Every coefficient may be held, singly or jointly; held values are returned
 exactly. Other conditional fits compare multistart interior searches with every
 reachable half-family and shape boundary, retaining the held mean and standard deviation
-constraints on those faces. Fits with either shape free, and the asymmetric scale-only fit,
+constraints on those faces. Fits with either shape free
 scan before refining competing brackets. Numerical multistart and
 finite scans provide evidence rather than a global optimality certificate.
 A search reaching its numerical guard stops instead of returning a fit.
@@ -247,7 +246,7 @@ zero-side and uniform limits also require separate treatment.
 | TASK-116 property | Evidence |
 |---|---|
 | Fixed finite $\xi>0$, $\nu\ge1$ | Concavity in inverse-scale coordinates, proved as above. |
-| Held shapes, free location; scale-only with $\nu\ge1$ or $\xi=1$ | Global certificates described below. |
+| Held shapes, free location; scale-only with positive held shapes | Global certificates described below. |
 | Remaining conditional fits | Numerical scans and refinements; no global certificate. |
 | Default free shapes and limiting faces | Multistart and face comparisons; numerical, with no global shape certificate. |
 
@@ -332,8 +331,69 @@ endpoints or it stops numerically. A log-scale bracket of width $10^{-9}$
 is required, and the stored scale must preserve its log coordinate within
 $10^{-8}$. Tail bracketing and bisection share the solver budget; the
 certificate imposes no finite inverse-scale cutoff. When $u=0$, collapse
-is unbounded. For asymmetric held shapes below one, this convexity argument
-is unavailable and the legacy scale-only search is retained.
+is unbounded. For asymmetric held shapes below one, the separate certificate below replaces
+the convexity argument.
+
+For $0<\nu<1$, $\xi\ne1$ and held mean, put
+$u=\max|x_i-\mu|$, $d=\mu_u\ne0$,
+$r=u\sigma_u/(|d|\sigma)$, $b_i=\operatorname{sign}(d)(x_i-\mu)/u$
+and $k=|d/\lambda|^\nu/2$. Up to the known additive constant,
+$$
+ F(r)=-n\log r+P(r),\qquad
+ P(r)=\sum_i k\xi^{-\nu\operatorname{sign}(d(1+b_i r))}|1+b_i r|^\nu.
+$$
+Positive knots $r=-1/b_i$ partition its sign cells. Within each open cell,
+$P$ is concave and $P'$ decreases. The certificate evaluates all knots and
+bounds every intervening cell; it assumes neither unimodality nor uniqueness.
+An incumbent cost $B$ excludes $\log r<-B/n-1$, since $P\ge0$.
+For $r\ge2$, some $|b_i|=1$, so
+$F(r)\ge C r^\nu-n\log r$, with
+$C=k\exp(-|\nu\log\xi|)/2^\nu>0$.
+This envelope increases once $C\nu r^\nu>n$ and diverges. Expanding
+its log endpoint until its lower bound exceeds $B$ closes the upper tail.
+Thus every global minimum lies in a finite, computed interval, and exists
+unless $u=0$, the unbounded collapse case.
+
+On a cell $[l,h]$, the chord of $P$ is a lower bound. Its sum with
+$-n\log r$ is minimized explicitly at $r=n/\text{slope}$, clamped to
+the cell (at $h$ if the slope is nonpositive). A cell is discarded if
+this bound exceeds the incumbent, or if
+$P'(h)-n/l>0$ or $P'(l)-n/h<0$ certifies monotonicity; its endpoints
+have already been evaluated. Remaining cells are bisected geometrically.
+Terminal cells have log width at most $10^{-10}$. Retained knots and
+cells must together enclose all possible winners within a public scale
+width $10^{-7}(1+|\sigma|)$ and log-scale width $10^{-7}$. Separated surviving regions stop as a
+comparison tie, retaining finite witnesses. A finite global likelihood upper
+bound is reported after every cell and both tails have been closed; before
+that, budget and numerical stops retain an infinite upper bound.
+
+Uniqueness can fail here. Take any repeated sample $x_i=-1$,
+held mean zero and $\nu=1/2$. Let $R>1$ solve
+$\log R=2(1-1/R)$, set $K=2\sqrt{R-1}/R$ and
+$\xi=\sqrt{1+K^2/6}$. On $r>1$ the cost relative to the cusp is
+$n[-\log r+K\sqrt{r-1}]$. Its stationary equation is quadratic in
+$\sqrt{r-1}$: the first root is a maximum, the second is the minimum
+at $R\simeq4.92155$, tied with the cusp $r=1$. On $0<r<1$ the cost
+strictly decreases towards the cusp. These are two separated global scale
+maxima, despite every observation differing from the held mean.
+
+The subunit certificate uses compensated sums, fused residual evaluation and
+a $4096\epsilon(1+n+|F|)(1+|\nu\log\xi|+1/\nu)$ cost allowance;
+derivative comparisons use the same conditioning factor times their absolute
+term sum. Algebraic knot residuals are set to zero. Recovery tries three algebraically equivalent scale expressions at a cusp and
+their adjacent representable values. It is accepted only
+if the density at the stored public coefficients agrees with its ideal value
+within $10^{-7}(n+|\ell|)$. Nonfinite arithmetic, lost distinct normalized
+observations or knots, and underflowed scales stop numerically. These checks address practical cancellation and cusp
+sensitivity; they are not directed-rounding bounds. Tail expansions, point
+and cell evaluations share $128\min(\mathtt{iterlim},100000)$ work units.
+A partition whose endpoint evaluations cannot fit the remaining budget stops
+before evaluating its knots, retaining the non-cusp initial witness. This
+avoids quadratic work before a predictable large-sample budget stop.
+Each evaluation is $O(n)$; evaluating $k$ distinct knots costs $O(nk)$,
+knot sorting is $O(n\log n)$, and retained
+search storage is bounded by the certificate budget. Raising `iterlim`
+raises the work cap without introducing a fixed scale cutoff.
 
 The certificate is exact-arithmetic conditional on computed comparisons.
 Its practical floating-point allowances are $512\epsilon$ times the
@@ -359,8 +419,7 @@ costs $O(n)$; sorting costs $O(n\log n)$, the weighted-median path costs
 $O(n)$ after sorting, and the smooth solve costs $O(n)$ per iteration.
 No finite shape or skew cutoff is part of these held-shape proofs.
 
-The other free subsets remain uncertified, including asymmetric scale-only
-fits with held $0<\nu<1$. In particular, fixed-shape
+The other free subsets remain uncertified. In particular, fixed-shape
 convexity does not control a free shape or free skew profile, close its
 infinite tails, or settle the moment-constrained uniform endpoint rates.
 See the [certification evidence and open cases](../../../../../dev/research/evaluations/2026-11-06-sged-cert-report.md).
@@ -383,3 +442,8 @@ density contribution retains the previous arithmetic grouping and observation
 order. Search grids, observation-kink refinements and failure handling are
 unchanged. See the [paired evidence and rejected
 trials](../../../../../dev/research/evaluations/2026-10-31-fit-speed-report.md).
+
+The finite scan is not used when the public mean and both shapes are held;
+that fit uses the subunit certificate above. Its bounds and the analytic
+nonuniqueness example are checked in the [implementation and validation
+evidence](../../../../../dev/research/evaluations/2026-11-07-sged-subunit-report.md).

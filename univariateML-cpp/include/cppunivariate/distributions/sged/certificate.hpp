@@ -202,10 +202,11 @@ inline SgedResult fit(span x, double /*tol*/, int maxit, double mean,
   if(r.status==SgedStatus::Ok)r.certified=true;
   return r;
 }
+#include "subunit_certificate.hpp"
 // With held mean, nu>=1 gives a strictly convex objective in inverse sd.
 inline SgedResult scale_fit(span x,int maxit,double mean,double nu,double xi) {
   SgedResult out{mean,NAN,nu,xi,NAN,0,SgedStatus::CertificateFailure};
-  if(nu<1)return out;
+  if(nu<1)return subunit_scale_fit(x,maxit,mean,nu,xi);
   const int cap=std::min(maxit,100000);
   double unit=0,shift=0;
   for(double v:x)unit=std::max(unit,std::abs(v-mean));

@@ -1,0 +1,26 @@
+Linux 7.0.0-42-generic
+PRETTY_NAME="Ubuntu 26.04.1 LTS"
+NAME="Ubuntu"
+VERSION_ID="26.04"
+VERSION="26.04.1 LTS (Resolute Raccoon)"
+VERSION_CODENAME=resolute
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+UBUNTU_CODENAME=resolute
+LOGO=ubuntu-logo
+g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0
+R 4.6.1; BH 1.90.0.1; Rcpp 1.1.2
+Python 3.14.5 SciPy 1.18.0 mpmath 1.3.0 NumPy 2.4.6
+v22.22.1
+"6.0.13"
+univariateML-cpp/include/cppunivariate/distributions/sged/mle.hpp: OK
+univariateML-cpp/include/cppunivariate/distributions/sged/certificate.hpp: OK
+univariateML-cpp/include/cppunivariate/distributions/sged/subunit_certificate.hpp: OK
+univariateML-cpp/include/cppunivariate/distributions/sged/README.md: OK
+univariateML-cpp/include/cppunivariate/distributions/sged/test.cpp: OK
+bindings/r/tests/testthat/test-sged-subunit.R: OK
+bindings/js/test.mjs: OK

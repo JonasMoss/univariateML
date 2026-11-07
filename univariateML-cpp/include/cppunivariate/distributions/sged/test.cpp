@@ -433,3 +433,72 @@ TEST_CASE("sged asymmetric held-shape scale certificates satisfy convex score") 
   CHECK(failed.status==cppunivariate::SgedStatus::CertificateFailure);
   CHECK_FALSE(failed.certified);
 }
+
+TEST_CASE("sged subunit asymmetric scale certificate closes cusps and smooth extrema") {
+  const std::vector<double> x{-3,-1,-.2,0,.3,.4,2};
+  for(double nu:{.3,.5,.9})for(double xi:{.3,1.3,3.}) {
+    INFO(nu," ",xi);
+    const auto r=cppunivariate::sged_mle(mltest::as_span(x),1e-8,200,.1,NAN,nu,xi);
+    REQUIRE(r.status==cppunivariate::SgedStatus::Ok);CHECK(r.certified);
+    double ll=0;for(double v:x)ll+=dist::dsged(v,.1,r.sigma,nu,xi,true);
+    CHECK(r.logLik==doctest::Approx(ll).epsilon(2e-8));
+    // Independent broad log-scale grid: a regression check, not the proof.
+    for(int j=-300;j<=300;++j) {
+      const double sd=std::exp(j*.05);double candidate=0;
+      for(double v:x)candidate+=dist::dsged(v,.1,sd,nu,xi,true);
+      CHECK(candidate<=r.logLik+1e-6);
+    }
+    std::vector<double> z;for(double v:x)z.push_back(7+.03*v);
+    const auto s=cppunivariate::sged_mle(mltest::as_span(z),1e-8,200,7.003,NAN,nu,xi);
+    REQUIRE(s.status==cppunivariate::SgedStatus::Ok);CHECK(s.certified);
+    CHECK(s.sigma==doctest::Approx(.03*r.sigma).epsilon(2e-7));
+    CHECK(s.logLik==doctest::Approx(r.logLik-x.size()*std::log(.03)).epsilon(2e-7));
+  }
+}
+
+TEST_CASE("sged subunit scale certificate has an analytic separated tie") {
+  // nu=1/2, x=-1, held mean=0. Beyond the cusp the cost difference is
+  // -log(r)+K sqrt(r-1). Its smooth minimum ties r=1 when
+  // log(r)=2(1-1/r), K=2 sqrt(r-1)/r, xi^2=1+K^2/6.
+  double lo=4,hi=6;
+  for(int j=0;j<60;++j){double t=(lo+hi)/2;if(std::log(t)>2*(1-1/t))hi=t;else lo=t;}
+  const double t=(lo+hi)/2,K=2*std::sqrt(t-1)/t,xi=std::sqrt(1+K*K/6);
+  const std::vector<double> x{-1,-1,-1};
+  const auto r=cppunivariate::sged_mle(mltest::as_span(x),1e-8,400,0,NAN,.5,xi);
+  CHECK(r.status==cppunivariate::SgedStatus::CertificateFailure);CHECK_FALSE(r.certified);
+  CHECK(r.stop_detail.comparison_tie);REQUIRE(r.stop_detail.candidates.size()>=2);
+  double small=INFINITY,large=0;
+  for(const auto& c:r.stop_detail.candidates) {
+    small=std::min(small,c.coef[1]);large=std::max(large,c.coef[1]);
+    double ll=0;for(double v:x)ll+=dist::dsged(v,0,c.coef[1],.5,xi,true);
+    CHECK(ll>=c.loglik_lower-1e-8);CHECK(ll<=c.loglik_upper+1e-8);
+  }
+  CHECK(large/small==doctest::Approx(t).epsilon(2e-6));
+  for(double factor:{.999,1.001}) {
+    const auto s=cppunivariate::sged_mle(mltest::as_span(x),1e-8,400,0,NAN,.5,xi*factor);
+    REQUIRE(s.status==cppunivariate::SgedStatus::Ok);CHECK(s.certified);
+    CHECK(s.sigma>0);
+  }
+}
+
+TEST_CASE("sged subunit scale budget collapse and numerical stops are terminal") {
+  std::vector<double> x;for(int j=0;j<160;++j)x.push_back(-1.-j*.1);
+  auto r=cppunivariate::sged_mle(mltest::as_span(x),1e-8,1,0,NAN,.5,1.3);
+  CHECK(r.status==cppunivariate::SgedStatus::CertificateFailure);
+  CHECK(r.stop_detail.budget_exhausted);CHECK_FALSE(r.certified);
+  CHECK_FALSE(r.stop_detail.candidates.empty());
+  const std::vector<double> constant{0,0,0};
+  r=cppunivariate::sged_mle(mltest::as_span(constant),1e-8,200,0,NAN,.5,1.3);
+  CHECK(r.status==cppunivariate::SgedStatus::Unbounded);
+  const std::vector<double> data{-1,1};
+  r=cppunivariate::sged_mle(mltest::as_span(data),1e-8,200,0,NAN,.001,1.3);
+  CHECK(r.status==cppunivariate::SgedStatus::CertificateFailure);CHECK_FALSE(r.certified);
+}
+
+TEST_CASE("sged subunit unfundable knot partitions stop before quadratic work") {
+  std::vector<double> x;for(int j=0;j<100000;++j)x.push_back(-1.-j*.1);
+  const auto r=cppunivariate::sged_mle(mltest::as_span(x),1e-8,200,0,NAN,.5,1.3);
+  CHECK(r.status==cppunivariate::SgedStatus::CertificateFailure);
+  CHECK(r.stop_detail.budget_exhausted);CHECK_FALSE(r.certified);
+  CHECK(r.iterations<32);CHECK_FALSE(r.stop_detail.candidates.empty());
+}

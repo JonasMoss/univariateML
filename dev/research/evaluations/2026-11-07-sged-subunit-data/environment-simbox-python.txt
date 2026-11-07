@@ -1,0 +1,1 @@
+Python 3.12.3 SciPy 1.11.4 mpmath 1.2.1 NumPy 1.26.4
