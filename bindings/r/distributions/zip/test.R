@@ -139,3 +139,35 @@ test_that("P2 fixed inflation compares separated rate peaks", {
     expect_gte(attr(fit,"logLik"),-min(values)-1e-7)
   }
 })
+
+test_that("ZIP certificate returns structured tie, budget and numerical stops", {
+  x <- c(rep(0,99),10)
+  tie <- tryCatch(mlzip(x,pi=.7254971052291191),error=identity)
+  expect_s3_class(tie,"univariateML_tie")
+  expect_equal(nrow(tie$candidates),2)
+  expect_equal(tie$candidates$lambda,c(.5223041246623353,9.982727928366345),tolerance=1e-10)
+  expect_true(all(tie$candidates$loglik_lower <= -35.13856131179308))
+  expect_true(all(tie$candidates$loglik_upper >= -35.13856131179308))
+  budget <- tryCatch(mlzip(x,pi=.1,iterlim=1),error=identity)
+  expect_s3_class(budget,"univariateML_budget")
+  expect_match(conditionMessage(budget),"Raising iterlim")
+  expect_equal(nrow(budget$candidates),2)
+  expect_true(is.finite(budget$loglik_lower))
+  expect_gte(budget$loglik_upper,budget$loglik_lower)
+  numerical <- tryCatch(mlzip(x,pi=.7901867873967294),error=identity)
+  expect_s3_class(numerical,"univariateML_numerical")
+  expect_equal(nrow(numerical$candidates),1)
+  expect_equal(numerical$loglik_upper,Inf)
+  expect_error(mlzip(x,pi=.1,iterlim=0),"iterlim must be positive")
+  for(p in c(.7254961052291191,.7254981052291191)) {
+    fit <- mlzip(x,pi=p)
+    expect_identical(unname(fit["pi"]),p)
+    expect_identical(unname(fit["lambda"]>5),p>.7254971052291191)
+  }
+})
+
+test_that("ZIP held tiny rate attains the all-zero inflation maximum", {
+  fit <- suppressWarnings(mlzip(c(0,0),lambda=1e-20))
+  expect_equal(unname(fit["pi"]),1)
+  expect_equal(attr(fit,"logLik"),0)
+})

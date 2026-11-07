@@ -1,0 +1,8 @@
+{
+  "cases": 192,
+  "passed": 192,
+  "allowed_stops": 0,
+  "max_relative_rate_error": 4.5945805506941134e-14,
+  "max_absolute_loglik_error": 1.2077775122667432e-13,
+  "failures": []
+}

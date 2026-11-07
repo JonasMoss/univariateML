@@ -1,0 +1,36 @@
+{
+  "machine": "simbox",
+  "C++": {
+    "dev": 106,
+    "full": 129,
+    "no-long-double": 129
+  },
+  "R": {
+    "dev": {
+      "fail": 0,
+      "warn": 0,
+      "skip": 154,
+      "pass": 21016
+    },
+    "full": {
+      "fail": 0,
+      "warn": 0,
+      "skip": 0,
+      "pass": 43836
+    }
+  },
+  "workstation_JS": {
+    "pass": 440,
+    "fail": 0
+  },
+  "workstation_site": {
+    "status": "pass",
+    "families": 99,
+    "C++17_snippets": 99
+  },
+  "golden_all_hold_masks": {
+    "pass": 4,
+    "tolerance": 1e-10,
+    "maximum_scaled_error": 8.641724713074346e-15
+  }
+}

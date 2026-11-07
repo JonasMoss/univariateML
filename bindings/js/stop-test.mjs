@@ -289,3 +289,24 @@ test('GB2 delegated budget keeps transformed-gamma witness names', () => {
     assert.ok(Number.isFinite(c.loglik_lower));assert.equal(e.loglik_upper,Infinity);return true;
   });
 });
+
+test('ZIP certified rate ties, budgets and numerical stops', () => {
+  const x=Array(100).fill(0);x[99]=10;
+  for(const [pi,controls,kind,count] of [
+    [.7254971052291191,{},'tie',2],[.1,{iterlim:1},'budget',2],
+    [.7901867873967294,{},'numerical',1]]) {
+    assert.throws(()=>api.zip.fit(x,{pi},controls),e=> {
+      assert.equal(e.kind,kind);assert.equal(e.candidates.length,count);
+      assert.ok(Number.isFinite(e.loglik_lower));assert.ok(e.loglik_upper>=e.loglik_lower);
+      for(const c of e.candidates)assert.equal(c.pi,pi);
+      return true;
+    });
+  }
+  const fit=api.zip.fit(x,{pi:.9});
+  assert.ok(Math.abs(fit.estimates.lambda-9.994983435397758)<1e-10);
+});
+
+test('ZIP held tiny rate attains all-zero inflation maximum', () => {
+  const fit=api.zip.fit([0,0],{lambda:1e-20});
+  assert.equal(fit.estimates.pi,1);assert.equal(fit.logLik,0);
+});
