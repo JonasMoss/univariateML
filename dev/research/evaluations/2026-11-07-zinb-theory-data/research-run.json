@@ -1,0 +1,14 @@
+{
+  "machine": "simbox",
+  "exit_code": 0,
+  "wall_seconds": 16.655583091999688,
+  "foreground": true,
+  "commands": [
+    "explore.py",
+    "search_modes.py",
+    "curvature_search.py",
+    "recheck_curvature.py",
+    "near_face.py",
+    "certify_near.py"
+  ]
+}
