@@ -14,8 +14,12 @@ inline FitResult fit_invtrgamma(cppunivariate::span x, Held shape1_arg = {}, Hel
     if(!(reltol>0 && std::isfinite(reltol) && iterlim>0))return out;
     if(x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return out;
     if(kind=="nomle" && !std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return out;
-    if(!finite_stop_payload(detail,kind))return out;
-    return stop_failure(out,detail,kind,names,model);
+    auto payload=detail;
+    if(kind=="budget" && payload.candidates.empty() &&
+       cppunivariate::valid_stop_coefficients(payload.limit_model,payload.limit_coef) && std::isfinite(payload.limit_loglik))
+      payload.candidates.push_back({payload.limit_coef,payload.limit_loglik,payload.limit_loglik,payload.limit_model});
+    if(!finite_stop_payload(payload,kind))return out;
+    return stop_failure(out,payload,kind,names,model);
   };
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
@@ -34,8 +38,16 @@ inline FitResult fit_invtrgamma(cppunivariate::span x, Held shape1_arg = {}, Hel
   const cppunivariate::span xs = x;
   auto res = scale.supplied ? cppunivariate::invtrgamma_mle_fixed_scale(xs,scale.value,a,b,reltol,iterlim) : cppunivariate::invtrgamma_mle(xs, reltol, iterlim, a, b);
   if(res.stop_detail.budget_exhausted)return classify(fail("Constrained likelihood search failed to converge. Raising iterlim may resolve this stop."),res.stop_detail,"budget",{"shape1","shape2","scale"});
+  if(res.stop_detail.comparison_tie) {
+    if(scale.supplied)return classify(fail("The held-scale interior maximum is too close to the fixed-endpoint Pareto face to certify its coefficients."),res.stop_detail,"tie",{"shape1","shape2","scale"});
+    return classify(fail(res.stop_detail.limit_model==cppunivariate::StopModel::Lnorm ?
+      "The interior and lognormal likelihoods cannot be distinguished at the comparison tolerance. Use `mllnorm` for the limiting fit." :
+      "The interior and endpoint likelihoods cannot be distinguished at the comparison tolerance. Use `mlpareto` for the limiting fit."),res.stop_detail,"tie",{"shape1","shape2","scale"});
+  }
+  if(res.transformation_failure)return classify(fail("Distinct observations or the held endpoint became indistinguishable after taking logarithms."),res.stop_detail,"numerical",{"shape1","shape2","scale"});
+  if(res.reconstruction_failure)return classify(fail("Cannot certify the likelihood after reconstructing the coefficients in double precision."),res.stop_detail,"numerical",{"shape1","shape2","scale"});
   if (res.status == cppunivariate::InvTrGammaStatus::InvalidData)
-    return (x.size()>=2 && std::isfinite(x[0]) && !scale.supplied && (std::isnan(a)||std::isnan(b)) && reltol>0 && std::isfinite(reltol) && iterlim>0 && x[0]>0 && std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];})) ? classify(fail("invtrgamma requires at least two distinct positive finite observations, "
+    return (x.size()>=2 && std::isfinite(x[0]) && (res.logLik==INFINITY || (!scale.supplied && (std::isnan(a)||std::isnan(b)))) && reltol>0 && std::isfinite(reltol) && iterlim>0 && x[0]>0 && std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];})) ? classify(fail("invtrgamma requires at least two distinct positive finite observations, "
                "positive `reltol` and positive `iterlim`; constant samples can have unbounded likelihood."),{},"nomle",{}) : fail("invtrgamma requires at least two distinct positive finite observations, "
                "positive `reltol` and positive `iterlim`; constant samples can have unbounded likelihood.");
   if (res.status == cppunivariate::InvTrGammaStatus::LognormalBoundary)
@@ -46,12 +58,13 @@ inline FitResult fit_invtrgamma(cppunivariate::span x, Held shape1_arg = {}, Hel
     return classify(fail("The invtrgamma likelihood is maximised at a limit. Use `mlpareto` to fit this model."),res.stop_detail,"limit",{"a","b"},"pareto");
   if (res.status == cppunivariate::InvTrGammaStatus::ScaleOutOfRange) {
     const double gap = res.logLik - cppunivariate::lognormal_mle(xs).logLik;
-    return fail("The invtrgamma maximum likelihood fit lies so close to the lognormal limit "
+    auto detail=res.stop_detail;detail.loglik_upper=INFINITY;
+    return classify(fail("The invtrgamma maximum likelihood fit lies so close to the lognormal limit "
                "that `scale` is not representable with normal double precision (log(scale) = %g). "
                "Use `mllnorm`: its log-likelihood is lower by only %g.",
-               res.log_scale, gap);
+               res.log_scale, gap),detail,"numerical",{"shape1","shape2","scale"});
   }
-  if (res.status == cppunivariate::InvTrGammaStatus::IterationFailure) return fail("Constrained likelihood search failed to converge.");
+  if (res.status == cppunivariate::InvTrGammaStatus::IterationFailure) return classify(fail("Constrained likelihood search failed to converge."),res.stop_detail,"numerical",{"shape1","shape2","scale"});
   if (!std::isfinite(res.shape1) || !std::isfinite(res.shape2) || !std::isfinite(res.scale) ||
       !std::isfinite(res.logLik))
     return fail("invtrgamma MLE failed to converge.");

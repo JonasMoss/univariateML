@@ -1,0 +1,728 @@
+{
+  "precision": 70,
+  "no_long_double": false,
+  "seed": 11625,
+  "base_revision": "3de415f0896527001caeb0d612bcb91b858d644d",
+  "source_sha256": {
+    "univariateML-cpp/include/cppunivariate/distributions/trgamma/mle.hpp": "f5fad619d282f24de69d2829d23851bee9f1981b27541ae9d756b93cf9179d3e",
+    "univariateML-cpp/include/cppunivariate/distributions/invtrgamma/mle.hpp": "f070ae25d85952907c9c607040ac62932dddd497e6bc812cbfa8bbc794e1f55f"
+  },
+  "checks": [
+    {
+      "case": "trgamma golden",
+      "status": 0,
+      "coef": [
+        1.7142653452622978,
+        2.0950702312229583,
+        3.3727556843232365
+      ],
+      "loglik": -912.8851809909111,
+      "evaluations": 277,
+      "budget": false,
+      "drift": 5.551115123125783e-15,
+      "loglik_error": 1.9119799227509845e-14,
+      "score_max": 7.460520478035716e-16
+    },
+    {
+      "case": "trgamma held 1",
+      "status": 0,
+      "coef": [
+        1.7142653452622882,
+        2.0950702312229654,
+        3.3727556843232493
+      ],
+      "loglik": -912.885180990911,
+      "evaluations": 11,
+      "budget": false,
+      "loglik_error": -9.456703849410602e-14,
+      "score_max": 1.8008459993931194e-15
+    },
+    {
+      "case": "trgamma held 2",
+      "status": 0,
+      "coef": [
+        1.7142653452622882,
+        2.0950702312229668,
+        3.37275568432325
+      ],
+      "loglik": -912.885180990911,
+      "evaluations": 4,
+      "budget": false,
+      "loglik_error": -9.456703849410632e-14,
+      "score_max": 2.644370031981844e-15
+    },
+    {
+      "case": "trgamma held 3",
+      "status": 0,
+      "coef": [
+        1.7142653452622882,
+        2.0950702312229668,
+        3.37275568432325
+      ],
+      "loglik": -912.885180990911,
+      "evaluations": 0,
+      "budget": false,
+      "loglik_error": -9.456703849410632e-14,
+      "score_max": 2.644370031981844e-15
+    },
+    {
+      "case": "trgamma held 4",
+      "status": 0,
+      "coef": [
+        1.7142653452622876,
+        2.095070231222961,
+        3.37275568432325
+      ],
+      "loglik": -912.8851809909111,
+      "evaluations": 217,
+      "budget": false,
+      "loglik_error": 1.9119799227507207e-14,
+      "score_max": 5.633868868463674e-15
+    },
+    {
+      "case": "trgamma held 5",
+      "status": 0,
+      "coef": [
+        1.7142653452622882,
+        2.095070231223665,
+        3.37275568432325
+      ],
+      "loglik": -912.8851809909111,
+      "evaluations": 43,
+      "budget": false,
+      "loglik_error": 1.9119799147212615e-14,
+      "score_max": 9.617527938746454e-13
+    },
+    {
+      "case": "trgamma held 6",
+      "status": 0,
+      "coef": [
+        1.7142653452622885,
+        2.0950702312229668,
+        3.37275568432325
+      ],
+      "loglik": -912.885180990911,
+      "evaluations": 1,
+      "budget": false,
+      "loglik_error": -9.45670384941063e-14,
+      "score_max": 3.1443998493322306e-16
+    },
+    {
+      "case": "trgamma held 7",
+      "status": 0,
+      "coef": [
+        1.7142653452622882,
+        2.0950702312229668,
+        3.37275568432325
+      ],
+      "loglik": -912.885180990911,
+      "evaluations": 1,
+      "budget": false,
+      "loglik_error": -9.456703849410632e-14,
+      "score_max": 0.0
+    },
+    {
+      "case": "invtrgamma golden",
+      "status": 0,
+      "coef": [
+        6.816533889616262,
+        0.9549164274069499,
+        1.8386548711327289
+      ],
+      "loglik": 396.21755742998414,
+      "evaluations": 327,
+      "budget": false,
+      "drift": 1.942224159279249e-11,
+      "loglik_error": 1.0788754242270386e-12,
+      "score_max": 8.706604392255608e-16
+    },
+    {
+      "case": "invtrgamma held 1",
+      "status": 0,
+      "coef": [
+        6.816533889554411,
+        0.9549164274114419,
+        1.838654871097225
+      ],
+      "loglik": 396.217557429984,
+      "evaluations": 11,
+      "budget": false,
+      "loglik_error": 1.1925622618279824e-12,
+      "score_max": 3.4731276128616905e-15
+    },
+    {
+      "case": "invtrgamma held 2",
+      "status": 0,
+      "coef": [
+        6.816533889554411,
+        0.9549164274114935,
+        1.838654871097018
+      ],
+      "loglik": 396.217557429984,
+      "evaluations": 101,
+      "budget": false,
+      "loglik_error": 1.192562261826591e-12,
+      "score_max": 1.031972510524976e-15
+    },
+    {
+      "case": "invtrgamma held 3",
+      "status": 0,
+      "coef": [
+        6.816533889554411,
+        0.9549164274114935,
+        1.838654871097018
+      ],
+      "loglik": 396.217557429984,
+      "evaluations": 0,
+      "budget": false,
+      "loglik_error": 1.192562261826591e-12,
+      "score_max": 3.3598022342202467e-16
+    },
+    {
+      "case": "invtrgamma held 4",
+      "status": 0,
+      "coef": [
+        6.816533889554254,
+        0.9549164274114813,
+        1.838654871097018
+      ],
+      "loglik": 396.2175574299837,
+      "evaluations": 240,
+      "budget": false,
+      "loglik_error": 1.5336227749918032e-12,
+      "score_max": 2.2617388382582402e-14
+    },
+    {
+      "case": "invtrgamma held 5",
+      "status": 0,
+      "coef": [
+        6.816533889554411,
+        0.954916427411242,
+        1.838654871097018
+      ],
+      "loglik": 396.217557429984,
+      "evaluations": 43,
+      "budget": false,
+      "loglik_error": 1.1925622613382866e-12,
+      "score_max": 7.52006238407496e-12
+    },
+    {
+      "case": "invtrgamma held 6",
+      "status": 0,
+      "coef": [
+        6.816533889554404,
+        0.9549164274114935,
+        1.838654871097018
+      ],
+      "loglik": 396.2175574299836,
+      "evaluations": 1,
+      "budget": false,
+      "loglik_error": 1.6473096127130537e-12,
+      "score_max": 6.620024017099838e-15
+    },
+    {
+      "case": "invtrgamma held 7",
+      "status": 0,
+      "coef": [
+        6.816533889554411,
+        0.9549164274114935,
+        1.838654871097018
+      ],
+      "loglik": 396.217557429984,
+      "evaluations": 1,
+      "budget": false,
+      "loglik_error": 1.192562261826591e-12,
+      "score_max": 0.0
+    },
+    {
+      "case": "held endpoint [0.1, 0.3, 1]",
+      "status": 0,
+      "coef": [
+        0.32838215697849077,
+        2.7229305330910187,
+        1.0
+      ],
+      "loglik": -0.6664880612063884,
+      "evaluations": 244,
+      "budget": false,
+      "mp_root_drift": 1.3322676295501878e-15,
+      "loglik_error": 3.3659014884770485e-16,
+      "score_max": 1.8606587788630167e-16
+    },
+    {
+      "case": "held endpoint [0.1, 0.3, 0.7]",
+      "status": 0,
+      "coef": [
+        0.08433358749775668,
+        9.554779565291044,
+        1.0
+      ],
+      "loglik": 0.19853305775958954,
+      "evaluations": 286,
+      "budget": false,
+      "mp_root_drift": 4.440892098500626e-16,
+      "loglik_error": -1.5019280524397928e-15,
+      "score_max": 2.0291170148779485e-17
+    },
+    {
+      "case": "held endpoint [0.5, 0.5, 0.5]",
+      "status": 0,
+      "coef": [
+        0.24444117304021137,
+        6.239791251477461,
+        1.0
+      ],
+      "loglik": 0.4255168279235444,
+      "evaluations": 239,
+      "budget": false,
+      "mp_root_drift": 1.3322676295501878e-15,
+      "loglik_error": 2.526998603329762e-16,
+      "score_max": 1.9607146169117276e-16
+    },
+    {
+      "case": "held endpoint [0.1, 2, 4]",
+      "status": 0,
+      "coef": [
+        1.4110914311327134,
+        0.6731850764319404,
+        1.0
+      ],
+      "loglik": -5.164877629154151,
+      "evaluations": 222,
+      "budget": false,
+      "mp_root_drift": 7.771561172376096e-16,
+      "loglik_error": 3.342522554764127e-16,
+      "score_max": 1.7783887370679763e-15
+    },
+    {
+      "case": "seeded held scale 0",
+      "status": 0,
+      "coef": [
+        1.4428079159393767,
+        0.8641859891763924,
+        1.0
+      ],
+      "loglik": -17.557480625512387,
+      "evaluations": 228,
+      "budget": false,
+      "loglik_error": -6.981888227684748e-16,
+      "score_max": 5.890062233743401e-15
+    },
+    {
+      "case": "seeded held scale 1",
+      "status": 0,
+      "coef": [
+        1.4477477679812394,
+        0.6798947162983872,
+        1.0
+      ],
+      "loglik": -20.545099053005682,
+      "evaluations": 227,
+      "budget": false,
+      "loglik_error": 3.5705260017876e-16,
+      "score_max": 2.6994105988642983e-16
+    },
+    {
+      "case": "seeded held scale 2",
+      "status": 0,
+      "coef": [
+        0.9047310316670794,
+        1.1664945879561401,
+        1.0
+      ],
+      "loglik": -9.60927309174498,
+      "evaluations": 213,
+      "budget": false,
+      "loglik_error": -1.6674546606901177e-15,
+      "score_max": 1.9029630026357767e-15
+    },
+    {
+      "case": "seeded held scale 3",
+      "status": 0,
+      "coef": [
+        1.574373921991878,
+        0.7348880922475078,
+        1.0
+      ],
+      "loglik": -20.951925344380868,
+      "evaluations": 205,
+      "budget": false,
+      "loglik_error": 1.1440816615196549e-15,
+      "score_max": 2.509058566379109e-16
+    },
+    {
+      "case": "seeded held scale 4",
+      "status": 0,
+      "coef": [
+        1.5341746724389986,
+        0.9861450329143454,
+        1.0
+      ],
+      "loglik": -16.91489855061395,
+      "evaluations": 210,
+      "budget": false,
+      "loglik_error": 2.474665439332691e-16,
+      "score_max": 6.158029111981068e-15
+    },
+    {
+      "case": "seeded held scale 5",
+      "status": 0,
+      "coef": [
+        1.5074171480268788,
+        0.6619696959884823,
+        1.0
+      ],
+      "loglik": -21.441926899174653,
+      "evaluations": 204,
+      "budget": false,
+      "loglik_error": 3.175384179841713e-15,
+      "score_max": 1.444877837502799e-15
+    },
+    {
+      "case": "seeded held scale 6",
+      "status": 0,
+      "coef": [
+        1.2944457430799219,
+        0.5953266481357222,
+        1.0
+      ],
+      "loglik": -19.37627860073955,
+      "evaluations": 210,
+      "budget": false,
+      "loglik_error": -1.208756584601694e-16,
+      "score_max": 4.046776974606249e-15
+    },
+    {
+      "case": "seeded held scale 7",
+      "status": 0,
+      "coef": [
+        1.2356223853753259,
+        0.9585244146032047,
+        1.0
+      ],
+      "loglik": -14.061753375194785,
+      "evaluations": 205,
+      "budget": false,
+      "loglik_error": 2.806232181930333e-17,
+      "score_max": 4.74040087397919e-15
+    },
+    {
+      "case": "seeded held scale 8",
+      "status": 0,
+      "coef": [
+        1.753540187916449,
+        0.8461511557621012,
+        1.0
+      ],
+      "loglik": -20.25210921002274,
+      "evaluations": 211,
+      "budget": false,
+      "loglik_error": -2.5049300830084645e-17,
+      "score_max": 7.958367788897555e-15
+    },
+    {
+      "case": "seeded held scale 9",
+      "status": 0,
+      "coef": [
+        1.4544197643439303,
+        0.6834128829018788,
+        1.0
+      ],
+      "loglik": -20.27860584257337,
+      "evaluations": 233,
+      "budget": false,
+      "loglik_error": 2.7157208844204583e-15,
+      "score_max": 5.54130462437828e-16
+    },
+    {
+      "case": "seeded held scale 10",
+      "status": 0,
+      "coef": [
+        1.8092701985171848,
+        0.8615810192067898,
+        1.0
+      ],
+      "loglik": -20.536235141744704,
+      "evaluations": 214,
+      "budget": false,
+      "loglik_error": 3.9792291754085746e-16,
+      "score_max": 1.7227991465387573e-15
+    },
+    {
+      "case": "seeded held scale 11",
+      "status": 0,
+      "coef": [
+        1.9261116896368786,
+        0.7958063319710631,
+        1.0
+      ],
+      "loglik": -22.355446093774017,
+      "evaluations": 210,
+      "budget": false,
+      "loglik_error": 2.8115830805989754e-15,
+      "score_max": 8.503359428739513e-15
+    },
+    {
+      "case": "seeded held scale 12",
+      "status": 0,
+      "coef": [
+        1.3168875992439946,
+        0.7557128929503683,
+        1.0
+      ],
+      "loglik": -17.317761406841377,
+      "evaluations": 211,
+      "budget": false,
+      "loglik_error": 1.791645433804286e-15,
+      "score_max": 1.5706297342377972e-15
+    },
+    {
+      "case": "seeded held scale 13",
+      "status": 0,
+      "coef": [
+        1.140072670383337,
+        0.787306150320148,
+        1.0
+      ],
+      "loglik": -14.825521181031379,
+      "evaluations": 211,
+      "budget": false,
+      "loglik_error": -5.719790045007497e-17,
+      "score_max": 3.1467783197871394e-15
+    },
+    {
+      "case": "seeded held scale 14",
+      "status": 0,
+      "coef": [
+        1.7273030104577882,
+        1.0042231991214525,
+        1.0
+      ],
+      "loglik": -17.833483086278413,
+      "evaluations": 210,
+      "budget": false,
+      "loglik_error": -2.6289347996949937e-16,
+      "score_max": 6.252940126487814e-15
+    },
+    {
+      "case": "seeded held scale 15",
+      "status": 0,
+      "coef": [
+        1.2486555328418358,
+        1.0278596252903518,
+        1.0
+      ],
+      "loglik": -14.064188036730476,
+      "evaluations": 211,
+      "budget": false,
+      "loglik_error": -2.0999464959022313e-16,
+      "score_max": 3.1894044002160715e-15
+    },
+    {
+      "case": "seeded held scale 16",
+      "status": 0,
+      "coef": [
+        1.0667562346903259,
+        0.9916204787200725,
+        1.0
+      ],
+      "loglik": -12.561413005551978,
+      "evaluations": 210,
+      "budget": false,
+      "loglik_error": -1.1185561604116882e-15,
+      "score_max": 4.3936030259969866e-15
+    },
+    {
+      "case": "seeded held scale 17",
+      "status": 0,
+      "coef": [
+        1.252764888637459,
+        0.8878067800429909,
+        1.0
+      ],
+      "loglik": -14.936398902102443,
+      "evaluations": 210,
+      "budget": false,
+      "loglik_error": -1.2551280151021824e-15,
+      "score_max": 5.147905681073599e-15
+    },
+    {
+      "case": "seeded held scale 18",
+      "status": 0,
+      "coef": [
+        1.1230782437138038,
+        0.8908515123170951,
+        1.0
+      ],
+      "loglik": -13.686415966820471,
+      "evaluations": 210,
+      "budget": false,
+      "loglik_error": 3.997179791641525e-16,
+      "score_max": 1.1727057949027864e-15
+    },
+    {
+      "case": "seeded held scale 19",
+      "status": 0,
+      "coef": [
+        1.3192228589757788,
+        0.9886347671320476,
+        1.0
+      ],
+      "loglik": -14.965868167962157,
+      "evaluations": 210,
+      "budget": false,
+      "loglik_error": -5.400517246558337e-16,
+      "score_max": 3.9452092346560024e-15
+    },
+    {
+      "case": "seeded held scale 20",
+      "status": 0,
+      "coef": [
+        1.8904752325084153,
+        1.0170360345136151,
+        1.0
+      ],
+      "loglik": -18.444696328298885,
+      "evaluations": 210,
+      "budget": false,
+      "loglik_error": -1.8667818743382826e-15,
+      "score_max": 2.8014053839383154e-15
+    },
+    {
+      "case": "seeded held scale 21",
+      "status": 0,
+      "coef": [
+        1.4487896670963483,
+        0.7098647515809358,
+        1.0
+      ],
+      "loglik": -19.962642899974153,
+      "evaluations": 234,
+      "budget": false,
+      "loglik_error": 9.412114659316862e-16,
+      "score_max": 4.831528173548182e-15
+    },
+    {
+      "case": "seeded held scale 22",
+      "status": 0,
+      "coef": [
+        1.6296878431364825,
+        0.5969588379576103,
+        1.0
+      ],
+      "loglik": -24.67294396902463,
+      "evaluations": 210,
+      "budget": false,
+      "loglik_error": 4.012454389115157e-15,
+      "score_max": 6.92947540684076e-15
+    },
+    {
+      "case": "seeded held scale 23",
+      "status": 0,
+      "coef": [
+        1.4494047991941557,
+        0.744623958580046,
+        1.0
+      ],
+      "loglik": -19.32195997536286,
+      "evaluations": 233,
+      "budget": false,
+      "loglik_error": -3.1273720509368284e-16,
+      "score_max": 5.511398278526466e-15
+    },
+    {
+      "case": "small-power represented normal seam",
+      "status": 0,
+      "coef": [
+        27955.862393942818,
+        6.000053412081459,
+        0.18152192090438526
+      ],
+      "loglik": 1103.8950091750694,
+      "evaluations": 4520,
+      "budget": false,
+      "mp_root_drift": 8.859579736508749e-14,
+      "loglik_error": -9.976336437708394e-13,
+      "score_max": 3.1234020274664763e-10
+    }
+  ],
+  "support_checks": {
+    "log_collision_statuses": [
+      6,
+      6,
+      6
+    ],
+    "power_endpoint": 7.0,
+    "subnormal_pareto_endpoint": 5e-324
+  },
+  "seams": [
+    {
+      "skew": -0.001,
+      "T": 0.004366445042713382,
+      "upper": 2.360030471836491e-06,
+      "sampled_max": 2.2906094095434905e-06,
+      "points": 12
+    },
+    {
+      "skew": 0,
+      "T": 0.004374389282630476,
+      "upper": 6.51505627544532e-34,
+      "sampled_max": -9.357997066050401e-09,
+      "points": 12
+    },
+    {
+      "skew": 0.001,
+      "T": 0.004366445042713382,
+      "upper": 0.0,
+      "sampled_max": -3.120965759725763e-07,
+      "points": 12
+    }
+  ],
+  "represented_rounding": [
+    {
+      "physical_sd": 1e-14,
+      "status": 6,
+      "loglik_error": 5.014233117521378e-14,
+      "gap_to_mp_root": 0.0014466647880002185
+    },
+    {
+      "physical_sd": 2e-14,
+      "status": 6,
+      "loglik_error": -4.616205432096634e-13,
+      "gap_to_mp_root": 0.00018335372775276807
+    },
+    {
+      "physical_sd": 5e-14,
+      "status": 6,
+      "loglik_error": -2.7725718005824015e-13,
+      "gap_to_mp_root": 0.00013713953165802613
+    }
+  ],
+  "evaluation_gaps": [
+    {
+      "input": {
+        "x": 1,
+        "shape1": 1e-320,
+        "shape2": 1,
+        "scale": 1
+      },
+      "actual": "-Inf",
+      "expected": -737.8272408909739,
+      "fitter_status": 6
+    }
+  ],
+  "multiple_stationary_maxima": [
+    {
+      "t": 0.6657702070546474,
+      "shape": 2.6445607976909002,
+      "delta": 0.016987581503436665,
+      "curvature": -0.04537370898787368
+    },
+    {
+      "t": 12.098420026967762,
+      "shape": 0.059313832906772716,
+      "delta": 0.030522632158395457,
+      "curvature": -0.00010690573305524802
+    }
+  ]
+}

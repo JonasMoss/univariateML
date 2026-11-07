@@ -20,10 +20,10 @@ test_that("mlinvtrgamma agrees with a multistart density oracle", {
     }
     faces <- c(attr(mllnorm(x), "logLik"), attr(mlpareto(x), "logLik"))
     if (max(faces) >= -best$value - 1e-8 * length(x)) {
-      expect_error(mlinvtrgamma(x), if (which.max(faces) == 1) "Use `mllnorm`" else "Use `mlpareto`")
+      expect_error(mlinvtrgamma(x,iterlim=1000), if (which.max(faces) == 1) "Use `mllnorm`" else "Use `mlpareto`")
       next
     }
-    fit <- tryCatch(mlinvtrgamma(x), error = function(e) e)
+    fit <- tryCatch(mlinvtrgamma(x,iterlim=1000), error = function(e) e)
     if (inherits(fit, "error")) {
       expect_match(conditionMessage(fit), "not representable")
       next
@@ -32,7 +32,7 @@ test_that("mlinvtrgamma agrees with a multistart density oracle", {
     if (generating_shape == 2) expect_equal(as.numeric(fit), exp(best$par), tolerance = 1e-3)
     expect_equal(sum(dinvtrgamma(x = x, shape1 = fit[1], shape2 = fit[2], scale = fit[3], log = TRUE)),
                  attr(fit, "logLik"), tolerance = 1e-10)
-    forward <- mltrgamma(1 / x)
+    forward <- mltrgamma(1 / x,iterlim=1000)
     expect_equal(unname(fit[1:2]), unname(forward[1:2]), tolerance = 1e-8)
     expect_equal(unname(fit[3]), unname(1 / forward[3]), tolerance = 1e-8)
     expect_equal(attr(fit, "logLik"), attr(forward, "logLik") - 2 * sum(log(x)), tolerance = 1e-12)

@@ -1,0 +1,15 @@
+{
+  "seed": 20261029,
+  "macro": "BOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS",
+  "columns": [
+    "shape1_sim",
+    "n",
+    "rep",
+    "budget",
+    "gate",
+    "power_relative_width",
+    "shape_relative_width",
+    "logscale_width"
+  ],
+  "rows": []
+}

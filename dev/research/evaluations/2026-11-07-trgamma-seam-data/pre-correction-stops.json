@@ -1,0 +1,37 @@
+{
+  "seed": 20261029,
+  "compiler": "GCC 13.3, BOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS",
+  "gate_102": "last Newton shape outside independently certified shape enclosure",
+  "columns": [
+    "generating_shape",
+    "n",
+    "rep",
+    "budget",
+    "gate",
+    "relative_power_width",
+    "relative_shape_width",
+    "logscale_width"
+  ],
+  "rows": [
+    [
+      50.0,
+      150.0,
+      1.0,
+      0.0,
+      102.0,
+      5.800455955229451e-15,
+      6.283862319378386e-14,
+      5.435651928564766e-13
+    ],
+    [
+      50.0,
+      150.0,
+      3.0,
+      0.0,
+      102.0,
+      5.854436057736512e-15,
+      6.8833827526759706e-15,
+      4.618527782440651e-14
+    ]
+  ]
+}
