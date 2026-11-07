@@ -137,6 +137,15 @@ Bracket means (tax tables: count and total per bracket).
   Lorenz-curve points and scale drops out. (Venue checked 2026-11-07;
   volume and pages not checked.)
 
+Scope (Jonas, 2026-11-07): population bracket means are out of scope.
+As exact constraints, $J$ mean equations in $p < J$ coefficients have
+generically no solution, so the constrained MLE does not exist for any
+misspecified model, and under an exact model the feasible set is just
+the truth. Fitting then means minimizing a distance (GMM), not ML. In
+scope: counts only, and counts with sample (survey) means. A single
+constraint (for example an overall mean from national accounts) leaves a
+$(p-1)$-dimensional feasible set and remains well posed; not planned.
+
 The classical income families are already here: burr (Singh-Maddala),
 invburr (Dagum), llogis (Fisk), gb2, lnorm, gamma, pareto.
 
