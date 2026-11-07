@@ -145,3 +145,141 @@ TEST_CASE("tlambda: affine cancellation survives overflowing unscaled products")
     CHECK(cppunivariate::distributions::ptlambda(x,mu,1e308,.5)==doctest::Approx(p).epsilon(1e-12));
   }
 }
+
+TEST_CASE("tlambda: certificate inverse brackets retain quantile-generated tails") {
+  for(double l:{-3.0,-1.0,-.1,0.0,1e-12,.14,.9,1.5,3.0}) {
+    for(double p:{1e-30,1e-8,.1,.499999,.5}) {
+      const double z=-cppunivariate::distributions::qtlambda(p,0,1,l);
+      if(l>0 && z>=1/l)continue; // quantile rounded to the support endpoint
+      const auto b=cppunivariate::tlambda_cert_detail::inverse(z,l,1000);
+      CAPTURE(l);CAPTURE(p);CAPTURE(z);
+      REQUIRE(b.ok);
+      const double t=-std::log(p),pad=2e-8*(1+t);
+      CHECK(b.lo<=t+pad);CHECK(b.hi>=t-pad);
+      CHECK(b.hi-b.lo<=1e-11*(1+t));
+    }
+  }
+}
+TEST_CASE("tlambda: concavity certifies every held nonnegative shape nuisance subset") {
+  const std::vector<double> x{-2,-1,-.2,.4,1,3};
+  const double nan=NAN;
+  for(double l:{0.0,.14,.5,.9})for(int mask:{0,1,2,3}) {
+    CAPTURE(l);CAPTURE(mask);
+    const auto r=cppunivariate::tlambda_mle(mltest::as_span(x),1e-7,1000,l,mask&1?.2:nan,mask&2?4:nan);
+    REQUIRE(r.status==cppunivariate::TlambdaStatus::Ok);CHECK(r.certified);
+    CHECK(r.certificate_lower<=r.logLik+1e-9);
+    CHECK(r.certificate_upper>=r.logLik-1e-9);
+    CHECK(r.certificate_upper-r.certificate_lower<=1e-7*x.size());
+    if(mask&1)CHECK(r.mu==.2);if(mask&2)CHECK(r.sigma==4);
+    // Independent feasible alternatives need not be stationary or close.
+    for(double dm:{-.3,0.,.3})for(double factor:{.8,1.,1.2}) {
+      const double ll=cppunivariate::tlambda_detail::likelihood(mltest::as_span(x),mask&1?.2:r.mu+dm,mask&2?4:r.sigma*factor,l);
+      CHECK(ll<=r.certificate_upper+1e-8);
+    }
+  }
+  const std::vector<double> constant{2,2,2};
+  auto c=cppunivariate::tlambda_mle(mltest::as_span(constant),1e-7,1000,.5,0,nan);
+  REQUIRE(c.status==cppunivariate::TlambdaStatus::Ok);CHECK(c.certified);
+  CHECK(cppunivariate::tlambda_mle(mltest::as_span(constant),1e-7,1000,.5).status==cppunivariate::TlambdaStatus::Unbounded);
+  const auto small=cppunivariate::tlambda_mle(mltest::as_span(x),1e-7,1,.14);
+  CHECK(small.status==cppunivariate::TlambdaStatus::CertificateFailure);CHECK_FALSE(small.stop_detail.budget_exhausted);
+}
+TEST_CASE("tlambda: exact uniforms include plateaus and check closed support") {
+  const std::vector<double> x{-.25,.25};
+  for(double l:{1.,2.}) {
+    const auto r=cppunivariate::tlambda_mle(mltest::as_span(x),1e-7,1000,l,NAN,l);
+    REQUIRE(r.status==cppunivariate::TlambdaStatus::Ok);CHECK(r.certified);CHECK(r.mu==0);
+    CHECK(r.logLik==doctest::Approx(-2*std::log(2.)));
+    const auto edge=cppunivariate::tlambda_mle(mltest::as_span(x),1e-7,1000,l,.75,l);
+    REQUIRE(edge.status==cppunivariate::TlambdaStatus::Ok);CHECK(edge.certified);
+  }
+}
+TEST_CASE("tlambda: convex contact maxima include exact ties") {
+  const std::vector<double> symmetric{-.25,.25};
+  const auto r=cppunivariate::tlambda_mle(mltest::as_span(symmetric),1e-7,1000,1.5,NAN,1);
+  REQUIRE(r.status==cppunivariate::TlambdaStatus::CertificateFailure);
+  CHECK(r.stop_detail.comparison_tie);REQUIRE(r.stop_detail.candidates.size()==2);
+  CHECK(r.stop_detail.candidates[0].coef[0]==doctest::Approx(-5./12));
+  CHECK(r.stop_detail.candidates[1].coef[0]==doctest::Approx(5./12));
+  const std::vector<double> x{-1,-.8,.3,2};
+  const auto s=cppunivariate::tlambda_mle(mltest::as_span(x),1e-7,1000,1.5,0,NAN);
+  REQUIRE(s.status==cppunivariate::TlambdaStatus::Ok);CHECK(s.certified);CHECK(s.sigma==3);
+  const auto joint=cppunivariate::tlambda_mle(mltest::as_span(x),1e-6,2000,1.5);
+  REQUIRE(joint.status==cppunivariate::TlambdaStatus::Ok);CHECK(joint.certified);
+  CHECK(joint.certificate_upper-joint.certificate_lower<=1e-6*x.size()+1e-9);
+}
+TEST_CASE("tlambda: exact collapse decisions retain original-unit faces") {
+  const std::vector<double> equal{2,2,5,9};
+  const auto r=cppunivariate::tlambda_mle(mltest::as_span(equal),1e-7,1000,-1);
+  REQUIRE(r.status==cppunivariate::TlambdaStatus::CollapseLimit);
+  CHECK(r.stop_detail.limit_coef==std::vector<double>{2,0,-1});
+  CHECK(r.stop_detail.limit_loglik==doctest::Approx(-6*std::log(2.)-2*std::log(3.)-2*std::log(7.)));
+  const std::vector<double> held{0,1,2};
+  CHECK(cppunivariate::tlambda_mle(mltest::as_span(held),1e-7,1000,-2,0,NAN).status==cppunivariate::TlambdaStatus::CollapseLimit);
+  CHECK(cppunivariate::tlambda_mle(mltest::as_span(held),1e-7,1000,-3,0,NAN).status==cppunivariate::TlambdaStatus::Unbounded);
+  const auto unresolved=cppunivariate::tlambda_mle(mltest::as_span(held),1e-7,1000,-2);
+  CHECK(unresolved.status==cppunivariate::TlambdaStatus::CertificateFailure);
+  CHECK(std::isfinite(unresolved.stop_detail.limit_loglik));
+}
+TEST_CASE("tlambda: negative scalar and shape-only boxes bound global likelihood") {
+  const std::vector<double> x{-2,-1,.5,2};
+  for(int mask:{1,2,3}) {
+    const auto r=cppunivariate::tlambda_mle(mltest::as_span(x),1e-6,2000,mask==3?NAN:-1,mask&1?0:NAN,mask&2?1:NAN);
+    CAPTURE(mask);CAPTURE(r.iterations);
+    REQUIRE(r.status==cppunivariate::TlambdaStatus::Ok);CHECK(r.certified);
+    CHECK(r.certificate_upper-r.certificate_lower<=1e-6*x.size()+1e-9);
+  }
+  // The negative-shape midpoint can be a local minimum: never use concavity.
+  const std::vector<double> modes{-80./9,80./9};
+  const auto m=cppunivariate::tlambda_mle(mltest::as_span(modes),1e-6,2000,-1,NAN,1);
+  REQUIRE(m.status==cppunivariate::TlambdaStatus::Ok);CHECK(m.certified);
+  CHECK(std::abs(m.mu)>1);
+  const auto budget=cppunivariate::tlambda_mle(mltest::as_span(modes),1e-12,64,-1,NAN,1);
+  CHECK(budget.status==cppunivariate::TlambdaStatus::CertificateFailure);CHECK(budget.stop_detail.budget_exhausted);
+}
+
+TEST_CASE("tlambda: free-shape half ties retain faces without claiming nonattainment") {
+  const std::vector<double> x{0,0,1,2};
+  const auto r=cppunivariate::tlambda_mle(mltest::as_span(x));
+  REQUIRE(r.status==cppunivariate::TlambdaStatus::CertificateFailure);
+  CHECK_FALSE(r.stop_detail.budget_exhausted);CHECK(std::isfinite(r.stop_detail.limit_loglik));
+  CHECK(r.stop_detail.loglik_upper==INFINITY);REQUIRE(r.stop_detail.candidates.size()==1);
+  CHECK(r.stop_detail.candidates[0].loglik_lower>r.stop_detail.limit_loglik);
+}
+
+TEST_CASE("tlambda: shapes above two have decreasing scale densities and contact certificates") {
+  const std::vector<double> x{-2,-1,.5,2};
+  for(double l:{2.5,3.,5.}) {
+    const auto scale=cppunivariate::tlambda_mle(mltest::as_span(x),1e-6,1000,l,0,NAN);
+    REQUIRE(scale.status==cppunivariate::TlambdaStatus::Ok);CHECK(scale.certified);CHECK(scale.sigma==2*l);
+    for(double s:{2.1*l,3*l,5*l})CHECK(cppunivariate::tlambda_detail::likelihood(mltest::as_span(x),0,s,l)<=scale.certificate_upper);
+    const auto location=cppunivariate::tlambda_mle(mltest::as_span(x),1e-6,2000,l,NAN,3*l);
+    REQUIRE(location.status==cppunivariate::TlambdaStatus::Ok);CHECK(location.certified);
+    const auto joint=cppunivariate::tlambda_mle(mltest::as_span(x),1e-6,2000,l);
+    REQUIRE(joint.status==cppunivariate::TlambdaStatus::Ok);CHECK(joint.certified);
+    for(double m:{-1.,-.5,0.,.5,1.}) {
+      const double s=l*std::max(std::abs(-2-m),std::abs(2-m));
+      CHECK(cppunivariate::tlambda_detail::likelihood(mltest::as_span(x),m,s,l)<=joint.certificate_upper+1e-9);
+    }
+  }
+}
+
+TEST_CASE("tlambda: likelihood enclosures survive cancellation of normalization terms") {
+  const std::vector<double> x(1024,0);
+  const auto r=cppunivariate::tlambda_mle(mltest::as_span(x),1e-7,1000,-998,0,std::ldexp(1.0,-1000));
+  REQUIRE(r.status==cppunivariate::TlambdaStatus::Ok);CHECK(r.certified);
+  // g_lambda(0)=2^(lambda-2)=sigma, hence every density is exactly one.
+  CHECK(r.certificate_lower<=0);CHECK(r.certificate_upper>=0);
+  CHECK(r.logLik>=r.certificate_lower);CHECK(r.logLik<=r.certificate_upper);
+}
+
+TEST_CASE("tlambda: unrepresentable uniform midpoints stop instead of widening silently") {
+  const double lo=1,hi=std::nextafter(lo,INFINITY);
+  const std::vector<double> x{lo,hi};
+  for(double l:{1.,2.}) {
+    const auto r=cppunivariate::tlambda_mle(mltest::as_span(x),1e-7,1000,l);
+    CHECK(r.status==cppunivariate::TlambdaStatus::CertificateFailure);CHECK_FALSE(r.certified);
+  }
+  double top=lo;for(int i=0;i<3;++i)top=std::nextafter(top,INFINITY);
+  CHECK(cppunivariate::tlambda_detail::uniform_fit(lo,top,4,1,1000).status==cppunivariate::TlambdaStatus::CertificateFailure);
+}

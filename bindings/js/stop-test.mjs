@@ -310,3 +310,28 @@ test('ZIP held tiny rate attains all-zero inflation maximum', () => {
   const fit=api.zip.fit([0,0],{lambda:1e-20});
   assert.equal(fit.estimates.pi,1);assert.equal(fit.logLik,0);
 });
+
+test('tlambda certificates keep contact ties, budget and collapse witnesses', () => {
+  assert.throws(()=>api.tlambda.fit([-.25,.25],{sigma:1,lambda:1.5}), e=> {
+    assert.equal(e.kind,'tie');assert.equal(e.candidates.length,2);
+    assert.ok(Math.abs(e.candidates[0].mu+5/12)<1e-12);
+    assert.ok(Math.abs(e.candidates[1].mu-5/12)<1e-12);return true;
+  });
+  assert.throws(()=>api.tlambda.fit([-80/9,80/9],{sigma:1,lambda:-1},{reltol:1e-12,iterlim:64}), e=> {
+    assert.equal(e.kind,'budget');assert.ok(Number.isFinite(e.loglik_lower));return true;
+  });
+  assert.throws(()=>api.tlambda.fit([2,2,5,9],{lambda:-1}), e=> {
+    assert.equal(e.kind,'nomle');assert.ok(Number.isFinite(e.limit_loglik));
+    assert.ok(Math.abs(e.limit_loglik-(-6*Math.log(2)-2*Math.log(3)-2*Math.log(7)))<1e-12);return true;
+  });
+  assert.throws(()=>api.tlambda.fit([0,1,2],{lambda:-2}), e=> {
+    assert.equal(e.kind,'numerical');assert.ok(Number.isFinite(e.limit_loglik));return true;
+  });
+});
+
+test('tlambda free-shape half ties retain a finite improvement and an unresolved global bound', () => {
+  assert.throws(()=>api.tlambda.fit([0,0,1,2]), e=> {
+    assert.equal(e.kind,'numerical');assert.ok(Number.isFinite(e.limit_loglik));
+    assert.ok(e.loglik_lower>e.limit_loglik);assert.equal(e.loglik_upper,Infinity);return true;
+  });
+});

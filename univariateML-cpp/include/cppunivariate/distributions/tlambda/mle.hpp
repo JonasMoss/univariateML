@@ -1,5 +1,6 @@
 #pragma once
 #include "../../core/work_budget.hpp"
+#include "../../core/stop_detail.hpp"
 #include "dpqr.hpp"
 #include "../../core/span.hpp"
 #include <algorithm>
@@ -12,19 +13,31 @@ namespace cppunivariate {
 inline constexpr double kTlambdaLambdaLower = -1.0;
 inline constexpr double kTlambdaLambdaUpper = 1.0;
 
-enum class TlambdaStatus { Ok, InvalidData, InvalidShape, IterationFailure, Unbounded, CollapseLimit, InvalidSupport };
-struct TlambdaResult { double mu,sigma,lambda,logLik; int iterations; TlambdaStatus status; unsigned restricted = 0; };
+enum class TlambdaStatus { Ok, InvalidData, InvalidShape, IterationFailure, Unbounded, CollapseLimit, InvalidSupport, CertificateFailure };
+struct TlambdaResult { double mu,sigma,lambda,logLik; int iterations; TlambdaStatus status; unsigned restricted = 0; bool certified=false; double certificate_lower=NAN,certificate_upper=NAN; StopDetail stop_detail={}; };
 namespace tlambda_detail {
-inline TlambdaResult uniform_fit(double lo,double hi,double n,double lambda,int maxit) {
+inline TlambdaResult uniform_fit(double lo,double hi,double n,double lambda,int maxit,double tol=1e-7) {
   maxit = static_cast<int>(solver_budget(maxit));
   const double mu=lo+(hi-lo)/2;
   double sigma=std::max(mu-lo,hi-mu)*lambda;
-  // Outward rounding makes both observed endpoints belong to the represented
-  // support even when midpoint and width cannot be represented simultaneously.
-  for(int j=0;j<maxit && (!std::isfinite(distributions::dtlambda(lo,mu,sigma,lambda,true)) || !std::isfinite(distributions::dtlambda(hi,mu,sigma,lambda,true)));++j)
+  for(int j=0;j<maxit && valid(mu,sigma,lambda) &&
+      (slack(lo,mu,sigma,lambda)<0 || slack(hi,mu,sigma,lambda)<0);++j)
     sigma=std::nextafter(sigma,INFINITY);
   const double ll=-n*(std::log(sigma)+std::log(2/lambda));
-  return {mu,sigma,lambda,ll,0,valid(mu,sigma,lambda) && std::isfinite(ll)?TlambdaStatus::Ok:TlambdaStatus::IterationFailure};
+  const double ideal=-n*logstandard(hi,lo,1);
+  const double pad=512*std::numeric_limits<double>::epsilon()*(n+std::abs(ll)+std::abs(ideal));
+  // A rounded midpoint can require a materially wider interval. Never call
+  // that represented interval the exact uniform optimum merely because it fits.
+  const bool ok=valid(mu,sigma,lambda) && std::isfinite(ll) && std::isfinite(ideal) &&
+      slack(lo,mu,sigma,lambda)>=0 && slack(hi,mu,sigma,lambda)>=0 && ideal-ll<=n*tol+pad;
+  TlambdaResult out{mu,sigma,lambda,ll,0,ok?TlambdaStatus::Ok:TlambdaStatus::CertificateFailure};
+  if(!ok && valid(mu,sigma,lambda) && std::isfinite(ll) &&
+      slack(lo,mu,sigma,lambda)>=0 && slack(hi,mu,sigma,lambda)>=0) {
+    out.stop_detail.candidates.push_back({{mu,sigma,lambda},ll-pad,ll+pad});
+    out.stop_detail.loglik_lower=ll-pad;out.stop_detail.loglik_upper=INFINITY;
+    out.stop_detail.segment_loglik_upper=ideal+pad;
+  }
+  return out;
 }
 struct Point { std::array<double,3> t; double f; };
 inline double likelihood(span x,double mu,double sigma,double lambda) {
@@ -91,7 +104,7 @@ inline TlambdaResult tlambda_mle_impl(span x,double tol=1e-7,int maxit=1000,doub
   for(std::size_t j=1;j<y.size();++j) {run=y[j]==y[j-1]?run+1:1;if(fixed && lambda<0 ? run*std::abs(lambda)>=y.size()-run : 2*run>=y.size())return bad;}
   const double origin=y.front(),upper=y.back(),range=upper-origin,n=static_cast<double>(y.size());
   if(!(range>0) || !std::isfinite(range)) return bad;
-  if(fixed && (lambda==1 || lambda==2)) return tlambda_detail::uniform_fit(y.front(),y.back(),n,lambda,maxit);
+  if(fixed && (lambda==1 || lambda==2)) return tlambda_detail::uniform_fit(y.front(),y.back(),n,lambda,maxit,tol);
   double previous=origin;
   for(std::size_t j=0;j<y.size();++j) {
     const double raw=y[j];y[j]=(raw-origin)/range;
@@ -124,7 +137,7 @@ inline TlambdaResult tlambda_mle_impl(span x,double tol=1e-7,int maxit=1000,doub
     }
   }
   if(!any_converged || unresolved>best+1e-8*n || result.status!=TlambdaStatus::Ok) {bad.status=TlambdaStatus::IterationFailure;return bad;}
-  if(result.lambda==1) {result=tlambda_detail::uniform_fit(origin,upper,n,1,maxit);result.iterations=iterations;return result;}
+  if(result.lambda==1) {result=tlambda_detail::uniform_fit(origin,upper,n,1,maxit,tol);result.iterations=iterations;return result;}
   result.mu=origin+range*result.mu;result.sigma*=range;
   result.logLik=tlambda_detail::likelihood(x,result.mu,result.sigma,result.lambda);
   if(!tlambda_detail::valid(result.mu,result.sigma,result.lambda) || !std::isfinite(result.logLik)) result.status=TlambdaStatus::IterationFailure;
@@ -196,16 +209,18 @@ inline TlambdaResult tlambda_mle_impl(span x,double tol,int maxit,double lambda,
 }
 
 
+#include "certificate.hpp"
+
 inline TlambdaResult tlambda_mle(span x,double tol=1e-7,int maxit=1000,double lambda=std::numeric_limits<double>::quiet_NaN()) {
   maxit = static_cast<int>(solver_budget(maxit));
-  auto r=tlambda_mle_impl(x,tol,maxit,lambda);
+  auto r=tlambda_cert_detail::fit(x,tol,maxit,lambda);
   if(r.status==TlambdaStatus::Ok && (std::isnan(lambda)) && r.lambda==kTlambdaLambdaLower) r.restricted|=16u;
   if(r.status==TlambdaStatus::Ok && (std::isnan(lambda)) && r.lambda==kTlambdaLambdaUpper) r.restricted|=32u;
   return r;
 }
 inline TlambdaResult tlambda_mle(span x,double tol,int maxit,double lambda,double mu,double sigma) {
   maxit = static_cast<int>(solver_budget(maxit));
-  auto r=tlambda_mle_impl(x,tol,maxit,lambda,mu,sigma);
+  auto r=tlambda_cert_detail::fit(x,tol,maxit,lambda,mu,sigma);
   if(r.status==TlambdaStatus::Ok && (std::isnan(lambda) && std::isnan(mu)) && r.lambda==kTlambdaLambdaLower) r.restricted|=16u;
   if(r.status==TlambdaStatus::Ok && (std::isnan(lambda)) && r.lambda==kTlambdaLambdaUpper) r.restricted|=32u;
   return r;

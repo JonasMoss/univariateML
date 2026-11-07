@@ -1,0 +1,85 @@
+{
+  "n": 500,
+  "tolerance": "1e-6*(1+abs(coef)), 1e-7 absolute loglik",
+  "passed": true,
+  "rows": [
+    {
+      "mask": 0,
+      "certified": false,
+      "coefficients": {
+        "mu": 0.04752470885944682,
+        "sigma": 1.0988151658577159,
+        "lambda": 0.1844784700779352
+      },
+      "coefficient_abs_drift": 4.1364899283635737e-08,
+      "loglik_abs_drift": 5.684341886080801e-13,
+      "iterations": 4713,
+      "seconds": 2.132023868
+    },
+    {
+      "mask": 3,
+      "certified": true,
+      "coefficients": {
+        "mu": 0.04752470610558923,
+        "sigma": 1.0988151244928166,
+        "lambda": 0.18447845429182053
+      },
+      "coefficient_abs_drift": 6.744817537818193e-09,
+      "loglik_abs_drift": 6.821210263296962e-13,
+      "iterations": 113161,
+      "seconds": 115.405524372
+    },
+    {
+      "mask": 4,
+      "certified": true,
+      "coefficients": {
+        "mu": 0.04752470856902983,
+        "sigma": 1.0988151303837437,
+        "lambda": 0.184478447547003
+      },
+      "coefficient_abs_drift": 5.890927079477137e-09,
+      "loglik_abs_drift": 3.410605131648481e-13,
+      "iterations": 4,
+      "seconds": 0.01121299
+    },
+    {
+      "mask": 5,
+      "certified": true,
+      "coefficients": {
+        "mu": 0.04752470610558923,
+        "sigma": 1.0988151303826115,
+        "lambda": 0.184478447547003
+      },
+      "coefficient_abs_drift": 5.889794874036625e-09,
+      "loglik_abs_drift": 4.547473508864641e-13,
+      "iterations": 4,
+      "seconds": 0.011152538
+    },
+    {
+      "mask": 6,
+      "certified": true,
+      "coefficients": {
+        "mu": 0.0475247085503167,
+        "sigma": 1.0988151244928166,
+        "lambda": 0.184478447547003
+      },
+      "coefficient_abs_drift": 2.444727469075314e-09,
+      "loglik_abs_drift": 4.547473508864641e-13,
+      "iterations": 2,
+      "seconds": 0.006636063
+    },
+    {
+      "mask": 7,
+      "certified": true,
+      "coefficients": {
+        "mu": 0.04752470610558923,
+        "sigma": 1.0988151244928166,
+        "lambda": 0.184478447547003
+      },
+      "coefficient_abs_drift": 0.0,
+      "loglik_abs_drift": 0.0,
+      "iterations": 0,
+      "seconds": 0.001162811
+    }
+  ]
+}

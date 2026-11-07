@@ -96,10 +96,11 @@ construction:
 relations: {}
 fit:
   method: multistart
-  certified: 'no'
-  note: 'tlambda/README.md, Details; tlambda/mle.hpp (public fitter and held overloads); tlambda/test.cpp: Default
-    and nontrivial conditional fits use multistart, finite grids or local profile refinement without a global certificate;
-    all-held density evaluation is not counted as certification.'
+  certified: 'partial'
+  note: 'tlambda/certificate.hpp and Details: held nonnegative shapes (concavity below 1, exact uniforms at 1 and 2,
+    support-contact reductions above 1), scalar negative-shape fits and shape-only fits
+    have conditional arithmetic certificates or structured stops. Free-shape fits with free
+    nuisance coordinates and negative-shape joint location-scale fits retain uncertified searches. All-held evaluation is not counted as fitting certification.'
 areas:
 - robust modelling
 classification: specialist
@@ -111,7 +112,7 @@ key_references:
 existence:
   uniqueness: unknown
   statement: >-
-    With all coefficients free over all finite shapes, the likelihood is unbounded. On the fitted branch $-1\le\lambda\le1$, a maximum is attained for at least three observations with every tie multiplicity strictly below half the sample size; uniqueness is unknown. Holding location removes the lower shape bound, and a tie at that location allows collapse when scale and shape are free. Holding scale prevents scale collapse. Held positive shape requires support compatibility. General conditional existence and uniqueness beyond these cases are not established.
+    With all coefficients free over all finite shapes, the likelihood is unbounded. On the fitted branch $-1\le\lambda\le1$, a maximum is attained for at least three observations with every tie multiplicity strictly below half the sample size; uniqueness is unknown. Holding location removes the lower shape bound, and a tie at that location allows collapse when scale and shape are free. Holding scale prevents scale collapse. Held positive shape requires support compatibility. Fixed nonnegative sub-uniform shapes have unique nuisance fits when a finite maximum exists. Uniform plateaus, convex support-contact ties and negative-shape multiple modes preclude a general uniqueness claim. The linked theory inventory gives the remaining conditional existence regimes.
   reason: >-
     On the fitted branch the standardized density and its product with squared distance are uniformly bounded. Near a collapsing location of multiplicity $k$, likelihood is bounded by a constant times $\sigma^{n-2k}$. Under the strict tie condition it vanishes at collapse, and it also vanishes at diverging scale or location. Upper semicontinuity, including the uniform endpoint member, then gives attainment. The unrestricted spike path and conditional collapse exponent are given below; numerical searches do not establish uniqueness.
 ---
@@ -130,9 +131,85 @@ The fitted branch excludes the U-shaped interval $1<\lambda<2$ and the subsequen
 
 For held $\lambda=-a<0$, collapse at a location of multiplicity $k$ has likelihood proportional to $\sigma^{(n-k)/a-k}$. A negative exponent gives unbounded likelihood. At held location, equality gives an unattained collapse supremum. With shape free and location held, even one observation at that location permits collapse through a sufficiently negative shape. Holding scale prevents scale collapse and permits small or tied samples. Positive held shape requires support containment, strictly inside the endpoints when $0<\lambda<1$; endpoints with positive limiting density are allowed for $\lambda\ge1$.
 
-On the fitted branch with location and scale free, the default tie guard is sufficient for existence, not necessary. It also rejects some tied configurations with shape held. Fitting requires a finite sample range and a standardization that preserves distinct values.
+On the fitted branch with location and scale free, the default tie guard is sufficient for existence, not necessary. The legacy negative-shape joint search still rejects some tied configurations. Held nonnegative shapes instead use their exact existence conditions, including small samples and repeated observations. Standardization must preserve distinct values.
 
-The fitter standardizes the observations and searches multiple location, scale and shape starts, including a separate optimization of the lower shape face. It compares the exact uniform fit with every candidate and selects it for ties within $10^{-8}n$ in log likelihood. This is a numerical search without a certificate that every mode has been found. The uniform is an attained member. The existence argument for the declared branch requires no further limit model, but conditional searches outside that branch do not have a general existence certificate.
+The [certificate theory](../../../../../dev/research/evaluations/2026-11-07-tlambda-theory-data/proofs.md) supplies the reductions in `certificate.hpp`:
+
+* At held $0\le\lambda<1$, the log likelihood is strictly concave in
+  $A=1/\sigma,B=-\mu/\sigma$. Newton steps only supply proposals; a tangent
+  upper bound over an explicitly bounded superlevel region certifies the
+  likelihood gap. Held location is an affine constraint. Acceptance also
+  requires a relative inverse-scale and standardized-location Newton step
+  below $10^{-9}$. Constant samples collapse unless location is held away
+  from the observed value or scale is held.
+* At held $\lambda=1,2$, the halfwidth is $\sigma/\lambda$ and the exact
+  support solution is used, including location plateaus when scale is held.
+* At held $1<\lambda<2$, held-location scale is
+  $\lambda\max_i|x_i-\mu|$ for a positive radius. Held-scale location compares the two support
+  contacts, with indistinguishable endpoints producing a structured tie.
+  Joint fitting searches the contact curve
+  $\sigma=\lambda\max_i|x_i-\mu|$ using scalar boxes.
+  Above two the same scale and contact reductions hold, while held-scale
+  location uses scalar boxes instead of the convex endpoint comparison.
+* Held negative shape with either location or scale held uses scalar boxes.
+  With both nuisances held, shape uses scalar boxes with an incumbent-derived
+  negative cutoff from $g_{-a}\le2^{-a-2}$. The inverse brackets bound
+  densities on each box; a local proposal does not establish globality.
+
+The scale reduction above two follows without a shape-profile assumption.
+For $u+v=1$, $u,v>0$, and $\lambda>2$,
+
+$$
+D^2-(u^\lambda-v^\lambda)(u^{\lambda-2}-v^{\lambda-2})
+=2u^{\lambda-1}v^{\lambda-1}+u^\lambda v^{\lambda-2}
+ +v^\lambda u^{\lambda-2}>0.
+$$
+
+Thus $Q D'/D^2<(\lambda-1)/\lambda<1$, so the log-scale
+score of each density, $-1+Q D'/D^2$, is negative. Its closed-support
+maximum is at the smallest feasible scale. On a contact curve the envelope
+$g\le2^{\lambda-2}$ gives a finite location interval from an incumbent.
+Here $D$ is smallest at the largest admissible inverse tail (towards the
+centre), whereas for $1<\lambda<2$ it is smallest towards an endpoint.
+
+For held $\lambda=-a<0$, the density envelope is
+$\min(M/\sigma,C\sigma^{1/a}/|x-\mu|^{1+1/a})$, where
+$M=2^{-a-2}$ and $C=a^{-1-1/a}$. It bounds the scalar search region from a
+feasible likelihood. With held location, collapse exponent zero is an
+unattained supremum. With free location and held $\lambda=-1$, pairing a
+half-tie with the other observations proves strict domination by the
+collapse face; other held negative-shape equality comparisons stop
+numerically with a face witness. Free-shape half ties retain the collapse face
+and a uniform incumbent but stop numerically because the global comparison
+is not implemented. A tolerance tie is never used to declare
+nonattainment in these certificate routes.
+
+Certification is in exact arithmetic conditional on the computed comparisons.
+The practical padding is $512\epsilon(1+|v|)$, with compensated per-observation likelihood
+sums padded by the uncancelled normalization/density magnitudes, compensated
+score sums and inverse-bracket score uncertainty for tangents. Box geometry
+margins are propagated through inverse brackets, so a nearly contacting
+observation cannot lose its endpoint density upper bound through rounding. This is not
+outward-rounded interval arithmetic. Fitted positive-shape proposals must contain
+the observed extrema under the affine support residual, rather than relying on
+rounded endpoint aliases. Uniform candidates are compared with the ideal
+span/radius likelihood; if a represented midpoint needs a materially wider
+interval, the fitter stops numerically. Inverse roots retain finite analytic
+brackets in $-\log p$ and contract both bracket width and log-density width;
+a small density variation alone is insufficient near the mode to certify a
+score. Numerical enclosure failures stop. Scalar-box acceptance bounds the
+log-likelihood gap by $n\,\texttt{reltol}$, subject to the stated arithmetic
+floor; it does not prove unique coordinates. Certificate evaluations use
+$128\min(\texttt{iterlim},100000)$ and solver/inverse iterations use
+$\min(\texttt{iterlim},100000)$. The box allowance stops with budget witnesses when exhausted; a solver cap stops as numerical non-convergence.
+
+The other fits retain the standardized multistart search, including the
+lower shape face and exact uniform candidate. Its $10^{-8}n$ preference for
+the uniform is historical numerical behavior, without a global certificate.
+In particular, free shape with a free nuisance, negative-shape joint nuisance
+fits remain uncertified. The
+[implementation validation](../../../../../dev/research/evaluations/2026-11-07-tlambda-impl-report.md)
+records the scope, coefficient comparisons, performance and open work.
 
 The log density uses $u=F(x)$, defined implicitly by the quantile function. The quality specification differentiates this inverse implicitly and uses independent SciPy and mpmath evaluations. The $\lambda=0$ member is logistic. Quantile inversion uses the smaller logarithmic tail in safeguarded Newton steps.
 
@@ -140,7 +217,7 @@ The log density uses $u=F(x)$, defined implicitly by the quantile function. The 
 
 Estimated coefficients on an applicable `fit_domain` bound carry `restricted`
 and emit a warning of class `univariateML_restricted`. Held coefficients are
-not flagged. The declared hold exemptions apply to free coefficients. A search start converges when its simplex diameter and log-likelihood spread meet the `reltol` criteria. Fitting stops if no start converges, or if an unresolved start exceeds the best converged likelihood by more than $10^{-8}n$. This family has no score-based rescue of failed starts.
+not flagged. The declared hold exemptions apply to free coefficients. In the remaining multistart routes, a search start converges when its simplex diameter and log-likelihood spread meet the `reltol` criteria. Fitting stops if no start converges, or if an unresolved start exceeds the best converged likelihood by more than $10^{-8}n$. This family has no score-based rescue of failed starts.
 
 
 ## Decision history
