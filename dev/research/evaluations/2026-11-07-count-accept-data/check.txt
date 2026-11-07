@@ -1,0 +1,14 @@
+tnorm mask=0 ok=1 coef_errors=0,0 loglik_error=0
+tnorm mask=1 ok=1 coef_errors=0,0 loglik_error=0
+tnorm mask=2 ok=1 coef_errors=0,0 loglik_error=0
+tnorm mask=3 ok=1 coef_errors=0,0 loglik_error=0
+cmb mask=0 ok=1 coef_errors=0,0 loglik_error=0
+cmb mask=1 ok=1 coef_errors=0,0 loglik_error=0
+cmb mask=2 ok=1 coef_errors=0,0 loglik_error=0
+cmb mask=3 ok=1 coef_errors=0,0 loglik_error=0
+cmp mask=0 ok=1 coef_errors=0,0 loglik_error=0
+cmp mask=1 ok=1 coef_errors=0,6.9537234238452528e-13 loglik_error=0
+cmp mask=2 ok=1 coef_errors=0,0 loglik_error=0
+cmp mask=3 ok=1 coef_errors=0,0 loglik_error=0
+CMB 97-size scan: refined=39 max_absolute_nu_change=1.81853465619497e-09
+failures=0

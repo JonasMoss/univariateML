@@ -324,3 +324,12 @@ test_that("CMB fixed-size normalizers spend the cell budget", {
   expect_match(conditionMessage(err),"Raising iterlim may resolve")
   expect_true(is.finite(as.numeric(logLik(mlcmb(c(0,1),size=100001,nu=1,iterlim=100)))))
 })
+
+test_that("CMB fixed-size acceptance stops unchecked loose solves", {
+  x <- c(0,0,1,1,2,2,3,4)
+  expect_error(mlcmb(x, size=8, reltol=.1, iterlim=1), class="univariateML_numerical")
+  for (args in list(list(),list(prob=.3),list(nu=1),list(prob=.3,nu=1))) {
+    f <- do.call(mlcmb,c(list(x,size=8),args))
+    expect_equal(as.numeric(logLik(f)),sum(dml(x,f,log=TRUE)),tolerance=1e-10)
+  }
+})

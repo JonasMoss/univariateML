@@ -37,6 +37,7 @@ inline FitResult fit_cmb(cppunivariate::ispan x, Held size_arg = {}, Held prob_a
     case cppunivariate::CmbStatus::FaceUnresolved: stop_kind="unresolved";break;
     default:break;
   }
+  if(res.status==cppunivariate::CmbStatus::IterationFailure)stop_kind="numerical";
   if(res.stop_detail.budget_exhausted) stop_kind="budget";
   const auto stopped_fail = [&](const std::string& format, const auto&... arguments) {
     auto out=fail(binding_message(format,arguments...));

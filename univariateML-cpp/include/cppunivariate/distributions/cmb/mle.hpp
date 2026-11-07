@@ -3,6 +3,7 @@
 #include "../../core/work_budget.hpp"
 #include "../../core/discrete_stop.hpp"
 #include "dpqr.hpp"
+#include "acceptance.hpp"
 #include "../../core/span.hpp"
 #include "../../special/cmp.hpp"
 #include <limits>
@@ -160,11 +161,71 @@ inline CmbResult cmb_mle_work(ispan x,int N,double tol,int maxit,
   }
   return stopped;
 }
+inline CmbResult cmb_accept_work(ispan x,int N,CmbResult out,int maxit,
+                                 double prob,double nu,std::uint64_t& work) {
+  if(out.status==CmbStatus::Ok && !(std::isfinite(out.prob) && std::isfinite(out.nu) && std::isfinite(out.logLik))) {
+    out.status=CmbStatus::IterationFailure;out.stop_detail.loglik_upper=INFINITY;return out;
+  }
+  if(out.status!=CmbStatus::Ok || N<=1 || out.prob==0 || out.prob==1 ||
+     (!std::isnan(prob) && !std::isnan(nu)))return out;
+  std::map<int,std::uint64_t> counts;for(int k:x)++counts[k];
+  cmb_detail::TableWork ledger{work,static_cast<std::uint64_t>(enumeration_budget(maxit)),counts,prob};
+  const double eta=std::log(out.prob)-std::log1p(-out.prob), n=double(x.size());
+  double m=0,t=0;for(int k:x){m+=k;t+=cmb_detail::logchoose(N,k);}m/=n;t/=n;
+  const auto tab=ledger.table(N,eta,out.nu);
+  const bool fp=!std::isnan(prob),fn=!std::isnan(nu);
+  double a=0,b=0,c=0;
+  if(fp)a=1/tab.vh;
+  else if(fn)a=1/tab.vx;
+  else {const double det=tab.vx*tab.vh-tab.cov*tab.cov;
+    a=tab.vh/det;b=-tab.cov/det;c=tab.vx/det;}
+  const auto evaluate=[&](double u,double v) {
+    const double e=fp?eta:u, dispersion=fp?u:(fn?out.nu:v);
+    const auto q=ledger.table(N,e,dispersion);
+    if(!std::isfinite(q.mean))return concave_accept_detail::Evaluation{};
+    double ll=0;for(const auto& kv:counts)ll+=kv.second*q.lp[kv.first];
+    return concave_accept_detail::Evaluation{ll/n,fp?t-q.mh:m-q.mean,
+      (!fp && !fn)?t-q.mh:0,std::isfinite(ll) && std::isfinite(q.mean)};
+  };
+  const auto accurate=[&](const concave_accept_detail::Bound& z) {
+    if(!fp && (std::abs(cmb_detail::probability(z.lo1)-out.prob)>1e-8*(1+out.prob) ||
+               std::abs(cmb_detail::probability(z.hi1)-out.prob)>1e-8*(1+out.prob)))return false;
+    const double low=fp?z.lo1:z.lo2,high=fp?z.hi1:z.hi2;
+    return fn || std::max(std::abs(low-out.nu),std::abs(high-out.nu))<=1e-8*(1+std::abs(out.nu));
+  };
+  const auto bound=concave_accept_detail::certify(fp?out.nu:eta,out.nu,out.logLik/n,
+    a,b,c,(!fp && !fn)?2:1,false,maxit,evaluate,accurate);
+  out.stop_detail.loglik_lower=out.logLik-1e-9*(n+std::abs(out.logLik));
+  out.stop_detail.loglik_upper=n*bound.upper;
+  if(!bound.ok || ledger.exhausted) {
+    out.status=CmbStatus::IterationFailure;
+    out.stop_detail.candidates.push_back({{double(N),out.prob,out.nu},out.stop_detail.loglik_lower,
+      out.logLik+1e-9*(n+std::abs(out.logLik))});
+    if(ledger.exhausted)out.stop_detail=discrete_budget(out.stop_detail);
+  }
+  return out;
+}
+
 inline CmbResult cmb_mle(ispan x,int N,double tol=1e-10,int maxit=2000,
                         double prob=std::numeric_limits<double>::quiet_NaN(),
                         double nu=std::numeric_limits<double>::quiet_NaN()) {
   std::uint64_t work=0;
-  return cmb_mle_work(x,N,tol,maxit,prob,nu,work,enumeration_budget(maxit));
+  const auto proposed=cmb_mle_work(x,N,tol,maxit,prob,nu,work,enumeration_budget(maxit));
+  auto out=cmb_accept_work(x,N,proposed,maxit,prob,nu,work);
+  // A flat profile can meet the historical moment tolerance before its
+  // coefficients are accurate. Retain passing proposals exactly; otherwise
+  // one tighter solve and its own certificate share the remaining ledger.
+  if(proposed.status==CmbStatus::Ok && out.status==CmbStatus::IterationFailure &&
+     !out.stop_detail.budget_exhausted && tol>1e-14) {
+    auto refined=cmb_mle_work(x,N,1e-14,maxit,prob,nu,work,enumeration_budget(maxit));
+    refined=cmb_accept_work(x,N,refined,maxit,prob,nu,work);
+    if(refined.status!=CmbStatus::Ok) {
+      for(const auto& witness:out.stop_detail.candidates)refined.stop_detail.candidates.push_back(witness);
+      refined.stop_detail.loglik_lower=std::fmax(refined.stop_detail.loglik_lower,out.stop_detail.loglik_lower);
+    }
+    out=refined;
+  }
+  return out;
 }
 
 struct CmbSizeResult { double size; CmbResult fit; };

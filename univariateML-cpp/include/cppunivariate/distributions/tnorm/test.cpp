@@ -507,3 +507,23 @@ TEST_CASE("tnorm: structured face payloads") {
   const auto u=cppunivariate::tnorm_mle(mltest::as_span(ends),0,1,1e-12,100,.5);
   REQUIRE(u.stop_detail.limit_coef.size()==2);CHECK(u.stop_detail.limit_loglik==0);
 }
+
+TEST_CASE("tnorm: quantitative natural-parameter acceptance on held affine subsets") {
+  const std::vector<double> x{0,0,1,1,2,2,3,4};
+  for(double mean:{double(NAN),1.})for(double sd:{double(NAN),2.}) {
+    const auto f=cppunivariate::tnorm_mle({x.data(),x.size()},-2,8,1e-12,100,mean,sd);
+    REQUIRE(f.status==cppunivariate::TnormStatus::Ok);
+    if(std::isnan(mean) || std::isnan(sd)) {
+      CHECK(std::isfinite(f.stop_detail.loglik_upper));
+      CHECK(f.stop_detail.loglik_upper>=f.logLik);
+      CHECK(f.stop_detail.loglik_upper-f.logLik<=1e-8*(x.size()+std::abs(f.logLik)));
+    }
+  }
+}
+
+TEST_CASE("tnorm: squared-distance underflow is numerical rather than a collapse proof") {
+  const std::vector<double> distinct{0,1e-200},offset{1e-200,1e-200};
+  CHECK(cppunivariate::tnorm_mle({distinct.data(),distinct.size()}).status==cppunivariate::TnormStatus::IterationFailure);
+  CHECK(cppunivariate::tnorm_mle({offset.data(),offset.size()},-INFINITY,INFINITY,
+    1e-12,100,0).status==cppunivariate::TnormStatus::IterationFailure);
+}
