@@ -1,0 +1,153 @@
+d094916edf885084799cfe3a62d9ca654f0231551ed521a8b382b9c7f055174f  univariateML-cpp/include/cppunivariate/distributions/huber/mle.hpp
+de7ad9e93e2a7bba8725731c7f5eb22636fad79f6b0f3d160209722d3c41bad8  bindings/common/distributions/huber/fit.hpp
+09b38b27e59a9370c83d840d64885ae0f31493d4f5a76b322756fbb31de9ecb3  bindings/r/distributions/huber/test.R
+19540a21f5586e444434c57b3068dc072d3ab3062d37d6c348481db4d2b74cd9  univariateML-cpp/include/cppunivariate/distributions/huber/test.cpp
+        Start  68: distribution_lomax_slow
+112/129 Test  #42: distribution_hnorm ...............   Passed    0.03 sec
+        Start  40: distribution_gumbel_slow
+113/129 Test  #64: distribution_logis ...............   Passed    0.03 sec
+        Start  84: distribution_pig_slow
+114/129 Test  #68: distribution_lomax_slow ..........   Passed    0.01 sec
+        Start  11: distribution_bnbinom_slow
+115/129 Test  #40: distribution_gumbel_slow .........   Passed    0.01 sec
+116/129 Test  #84: distribution_pig_slow ............   Passed    0.01 sec
+        Start  59: distribution_laplace_slow
+        Start  57: distribution_kumar_slow
+117/129 Test #111: distribution_zib_slow ............   Passed    0.02 sec
+        Start  65: distribution_logis_slow
+118/129 Test #121: distribution_ztbinom_slow ........   Passed    0.02 sec
+        Start  78: distribution_paralogis_slow
+119/129 Test  #11: distribution_bnbinom_slow ........   Passed    0.01 sec
+        Start  75: distribution_norm_slow
+120/129 Test  #65: distribution_logis_slow ..........   Passed    0.01 sec
+        Start 125: distribution_support
+121/129 Test  #59: distribution_laplace_slow ........   Passed    0.01 sec
+122/129 Test  #57: distribution_kumar_slow ..........   Passed    0.01 sec
+        Start 126: no_throw_tests
+        Start   1: bfgs_tests
+123/129 Test #125: distribution_support .............   Passed    0.00 sec
+        Start 128: tails_tests
+124/129 Test   #1: bfgs_tests .......................   Passed    0.00 sec
+125/129 Test #126: no_throw_tests ...................   Passed    0.00 sec
+126/129 Test  #78: distribution_paralogis_slow ......   Passed    0.01 sec
+127/129 Test #128: tails_tests ......................   Passed    0.00 sec
+128/129 Test  #75: distribution_norm_slow ...........   Passed    0.01 sec
+129/129 Test #101: distribution_tlambda_slow ........   Passed  181.17 sec
+
+100% tests passed out of 129
+
+Label Time Summary:
+cran    = 283.73 sec*proc (105 tests)
+dev     = 286.49 sec*proc (106 tests)
+full    = 523.46 sec*proc (129 tests)
+
+Total Test time (real) = 181.17 sec
+        Start  68: distribution_lomax_slow
+112/129 Test  #64: distribution_logis ...............   Passed    0.02 sec
+113/129 Test #121: distribution_ztbinom_slow ........   Passed    0.01 sec
+        Start  84: distribution_pig_slow
+        Start  57: distribution_kumar_slow
+114/129 Test #106: distribution_unif ................   Passed    0.02 sec
+        Start  65: distribution_logis_slow
+115/129 Test  #57: distribution_kumar_slow ..........   Passed    0.01 sec
+        Start  11: distribution_bnbinom_slow
+116/129 Test  #68: distribution_lomax_slow ..........   Passed    0.01 sec
+        Start  40: distribution_gumbel_slow
+117/129 Test  #65: distribution_logis_slow ..........   Passed    0.01 sec
+        Start  59: distribution_laplace_slow
+118/129 Test  #84: distribution_pig_slow ............   Passed    0.01 sec
+        Start  75: distribution_norm_slow
+119/129 Test #111: distribution_zib_slow ............   Passed    0.01 sec
+        Start  78: distribution_paralogis_slow
+120/129 Test  #11: distribution_bnbinom_slow ........   Passed    0.01 sec
+        Start 125: distribution_support
+121/129 Test  #40: distribution_gumbel_slow .........   Passed    0.01 sec
+        Start   1: bfgs_tests
+122/129 Test  #59: distribution_laplace_slow ........   Passed    0.01 sec
+        Start 126: no_throw_tests
+123/129 Test  #75: distribution_norm_slow ...........   Passed    0.01 sec
+        Start 128: tails_tests
+124/129 Test   #1: bfgs_tests .......................   Passed    0.00 sec
+125/129 Test  #78: distribution_paralogis_slow ......   Passed    0.01 sec
+126/129 Test #126: no_throw_tests ...................   Passed    0.00 sec
+127/129 Test #128: tails_tests ......................   Passed    0.00 sec
+128/129 Test #125: distribution_support .............   Passed    0.00 sec
+129/129 Test #101: distribution_tlambda_slow ........   Passed  182.22 sec
+
+100% tests passed out of 129
+
+Label Time Summary:
+cran    = 221.44 sec*proc (105 tests)
+dev     = 223.42 sec*proc (106 tests)
+full    = 456.53 sec*proc (129 tests)
+
+Total Test time (real) = 182.22 sec
+  'test-dist-zmnbinom.R:2:3', 'test-dist-zmpois.R:2:3',
+  'test-dist-zipf.R:117:3', 'test-dist-zmpois.R:36:3',
+  'test-dist-zmnbinom.R:60:3', 'test-dist-ztbinom.R:2:3',
+  'test-dist-zmnbinom.R:75:3', 'test-dist-ztbinom.R:49:3',
+  'test-dist-ztbinom.R:91:3', 'test-dist-ztgeom.R:2:3',
+  'test-dist-ztnbinom.R:2:3', 'test-dist-ztgeom.R:33:3',
+  'test-dist-ztnbinom.R:57:3', 'test-dist-ztpois.R:2:3',
+  'test-dist-ztnbinom.R:72:3', 'test-dist-ztpois.R:33:3'
+
+[ FAIL 0 | WARN 0 | SKIP 154 | PASS 21268 ]
+   user  system elapsed 
+322.892   3.879  80.139 
+⠼ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 43724 ] @ dist-sged                         
+⠴ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 43726 ] @ dist-sged                         
+⠦ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 43730 ] @ dist-sged                         
+⠧ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 43734 ] @ dist-sged                         
+⠇ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 43740 ] @ dist-sged                         
+⠏ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 43766 ] @ dist-sged                         
+⠋ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 43810 ] @ dist-sged                         
+⠙ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 43829 ] @ dist-sged                         
+⠹ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 43873 ] @ dist-sged                         
+⠸ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 43892 ] @ dist-sged                         
+⠼ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 43895 ] @ dist-sged                         
+⠴ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 43895 ] @ dist-sged                         
+⠦ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 43945 ] @ dist-sged                         
+⠧ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 43948 ] @ dist-sged                         
+⠇ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 43955 ] @ dist-sged                         
+✔ |        754 | dist-sged [185.0s]                                             
+
+⠏ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44086 ] Starting up...                      
+                                                                                
+══ Results ═════════════════════════════════════════════════════════════════════
+Duration: 259.1 s
+
+[ FAIL 0 | WARN 0 | SKIP 0 | PASS 44086 ]
+   user  system elapsed 
+754.956   5.599 261.574 
+sample 2 -1 status 4 budget 0 tie 0 bounds -2.8378770664093453 -2.8378770664091792 finite 0 1 7.9999999999999982 -2.8378770664093453
+sample 2 10 status 4 budget 0 tie 0 bounds -3.6488072826256741 -3.6488072826254849 finite 11.5 1.5 7.9999999999999982 -3.6488072826256741
+sample 3 -3 status 4 budget 0 tie 0 bounds -6.9444548034561002 -6.9444548034557894 finite 0 2.4494897427831783 8.0000000000000018 -6.9444548034561011
+sample 5 -2 status 4 budget 0 tie 0 bounds -8.8275606174232273 -8.8275606174228063 finite -1.2560739669472624e-16 1.4142135623733678 7.9999999999999947 -8.8275606174232255
+sample 5 -10 status 5 budget 0 tie 0 bounds -15.446959362665019 -15.44695936266441 finite 0 0.00049857560851070235 0.00012340980408667956 -15.446959370280007
+sample 6 -7 status 0 budget 0 tie 0 bounds nan nan finite -0.48002780375496362 1.4604903717546012 0.38337574801156504 -18.203242886312722
+timing free=0 certified=0 seconds=3.2525000000000003e-07 status=0 ll=-18.914016562579256
+timing free=0 certified=1 seconds=3.9559999999999997e-07 status=0 ll=-18.91401656257926
+timing free=1 certified=0 seconds=0.0001035385 status=0 ll=-18.203242886312719
+timing free=1 certified=1 seconds=0.00017950445 status=0 ll=-18.203242886312722
+low-budget 0 status=4 budget=0 tie=0 bounds=-31.992655996140179 -31.992655996138389
+low-budget 1 status=0 budget=0 tie=0 bounds=nan nan
+low-budget 2 status=0 budget=0 tie=0 bounds=nan nan
+low-budget 3 status=0 budget=0 tie=0 bounds=nan nan
+low-budget 4 status=0 budget=0 tie=0 bounds=nan nan
+low-budget 5 status=0 budget=0 tie=0 bounds=nan nan
+low-budget 6 status=0 budget=0 tie=0 bounds=nan nan
+low-budget 7 status=0 budget=0 tie=0 bounds=nan nan
+large certified=0 seconds=0.14730860300000001 status=0 parameters=1.9999999999999998 3.0000616192695388 0.80002562451792358 ll=-305874.52068983053
+large certified=1 seconds=1.1925272979999999 status=0 parameters=2.0000000000000004 3.000057581814727 0.80002434343572137 ll=-305874.52068983449
+near-normal certified=0 critical_c=0.76842842824488278 residual=1.5242981269692526 status=4 tie=0 bounds=nan nan
+near-normal certified=1 critical_c=0.76842842824488278 residual=1.5242981269692526 status=3 tie=1 bounds=-4.1613618462913173 -4.1613618462900259
+rep 1372 n 116 kind budget lower -126.76206444392845 upper -126.76206147245944 candidates 5
+x -0.32283519471050437 0.56004610229139151 0.24062294485683297 -0.088878705536788991 0.12305505133070878 0.064567380442255545 0.25814860725654326 0.14591428237235451 0.62332092235612113 0.26420036630323274 0.71055912402086863 0.33663304489841905 0.70182310486117594 -0.025340367060941286 0.050990857744344746 0.75281890183333477 -0.05557259890370024 -0.56120947849842451 0.026347017591919288 -0.15517484672905729 0.86452959641391891 -0.71195839901739244 -0.94612567440892215 -0.29542548038786409 0.26965913710286959 0.48059759060619683 -0.030462403889848364 0.11093604070570322 -0.35997828378781377 0.24952531246511239 -0.23394701321375985 -0.24722025350899068 0.012836498657150461 -0.023436292684979536 0.61485978622266546 0.017020385093300502 -0.25974509027121551 -0.11280105869104964 0.81313993047309774 0.10181966876533859 1.7473930084080151 -0.88531598704617864 1.2748815667918896 0.35594665103338496 0.071543640083915144 -0.01297809807371891 0.094748227840731086 0.24742597857990029 0.79045203085236826 -0.44718041963259347 -0.15380486001683369 -0.17894388291912616 -0.040586229805024784 1.0771830588854203 3.1540555868376994 -0.12099807922169033 1.2293257673397848 -0.33292964663166652 0.13903151557304691 1.0923765957948217 -0.13827424777668951 0.244529272638281 -0.47847297100759534 -0.60095970153327505 0.22059936560700111 -0.24557243324720354 -0.2796761146863726 -0.31354339120358099 -0.48536169854337113 0.81071946642790516 -0.2502629043554499 0.018235517898873337 -0.2230531140817783 -0.4544847409764991 0.31558941301975912 0.036080330538694416 0.39249420119851114 -0.03274283432823933 0.37176052931259257 0.22411381562121394 -0.050237098147130406 -0.62919234822042325 0.97112823819410732 -0.085527124548871333 -0.21569426863118649 0.088178079737749354 0.20674950840209663 -0.59434991352822975 -0.41886274661669975 0.22711167886175962 -0.11913412024406722 0.23029716475963682 0.024974313651555217 0.54416962572147898 0.21748330845633795 0.83114017621592085 -0.55176667148362601 0.14626333219509194 -0.17488419475233924 -0.05235454805040908 1.0706205317273547 0.53875205044232444 -0.094711939325875835 -0.2288230736160366 0.71148699099053303 -0.23419898471717487 0.18180541021751695 0.093069093113652981 0.91033955915747822 1.8078561078899447 -0.20876472368952154 -0.43850224364124452 0.11707743242285477 -0.49058940233708082 0.14041824722302929 -0.10478872835971313
+legacy default status 0 finite point ll -126.76206443944406 selected face ll nan
+raised iterlim status 0 budget 0 tie 0 ll -126.76206443944403
+1e-300 status=3 kind=numerical core_candidates=3 binding_candidates=3 lower=1378.59 upper=inf
+1e+300 status=3 kind=numerical core_candidates=3 binding_candidates=3 lower=-1384.39 upper=inf
+nonrepresentable objective kind=numerical candidates=0 lower=nan upper=inf
+large Laplace witness retained=1 status=3
+d094916edf885084799cfe3a62d9ca654f0231551ed521a8b382b9c7f055174f  univariateML-cpp/include/cppunivariate/distributions/huber/mle.hpp
+d094916edf885084799cfe3a62d9ca654f0231551ed521a8b382b9c7f055174f  univariateML-r/inst/include/cppunivariate/distributions/huber/mle.hpp

@@ -339,7 +339,7 @@ struct HuberProfileData {
 };
 
 // NaN epsilon requests estimation; the public default remains held at 1.345.
-inline HuberResult huber_mle(span x, double tol=1e-10, int maxit=200,
+inline HuberResult huber_candidate_mle(span x, double tol=1e-10, int maxit=200,
     double epsilon=1.345,
     double mu=std::numeric_limits<double>::quiet_NaN(),
     double sigma=std::numeric_limits<double>::quiet_NaN(),
@@ -436,8 +436,15 @@ inline HuberResult huber_mle(span x, double tol=1e-10, int maxit=200,
   // for large samples: tiny cores otherwise cost many inner iterations.
   if (!fs && best.logLik>laplace)
     lower=std::max(lower,.5*std::log(2*(best.logLik-laplace)/n));
+  // A face calculation can be unavailable at extreme scales. Do not cast
+  // an infinite grid size or index an empty nomination grid. The public
+  // certificate will retain the valid witnesses and report numerical failure.
+  if(!(std::isfinite(lower) && std::isfinite(upper) && lower<upper)) {
+    best.status=HuberStatus::IterationFailure;return best;
+  }
   const double spacing=.125;
-  const int count=static_cast<int>(std::ceil((upper-lower)/spacing));
+  const int count=static_cast<int>(std::min<double>(certificate_budget(maxit)-1,
+      std::ceil((upper-lower)/spacing)));
   std::vector<double> ts, values;
   for (int i=0;i<=count;++i) {
     const double t=lower+(upper-lower)*i/count;
@@ -533,5 +540,325 @@ inline HuberResult huber_mle(span x, double tol=1e-10, int maxit=200,
       best.status=HuberStatus::IterationFailure;
   }
   return best;
+}
+
+// Evaluate the represented public coefficients, not the pre-restoration
+// normalized location. Extended intermediates also avoid needless products
+// of a large residual and a small shape overflowing before cancellation.
+inline double huber_point_loglik(span x,double mu,double sigma,double epsilon) {
+  if(!(std::isfinite(mu) && sigma>0 && std::isfinite(sigma) &&
+      epsilon>0 && std::isfinite(epsilon)))return NAN;
+  CPPUNIV_EXTENDED_REAL value=-static_cast<CPPUNIV_EXTENDED_REAL>(x.size())*
+      (std::log(sigma)+std::log(huber_z(epsilon)));
+  for(double v:x) {
+    const CPPUNIV_EXTENDED_REAL z=(static_cast<CPPUNIV_EXTENDED_REAL>(v)-mu)/sigma;
+    const CPPUNIV_EXTENDED_REAL a=std::abs(z),c=epsilon;
+    value-=a<=c ? z*z/2 : c*(a-c/2);
+  }
+  return static_cast<double>(value);
+}
+
+// A supporting plane to the convex loss bounds the ENTIRE nuisance problem.
+// Location is confined to the sample hull when free. The remaining supremum
+// is max_{t>0} n log(t)-K*t; a nonpositive K cannot certify a finite bound.
+inline double huber_nuisance_upper(span x, const HuberResult& r,
+    bool fixed_mu, bool fixed_sigma) {
+  if(r.status!=HuberStatus::Ok || !std::isfinite(r.logLik)) return INFINITY;
+  CPPUNIV_EXTENDED_REAL g=0,h=0,absolute=0,psi_absolute=0;
+  double lo=x[0],hi=x[0];
+  for(double v:x) {
+    const double z=(v-r.mu)/r.sigma,psi=huber_psi(z,r.epsilon);
+    g+=static_cast<CPPUNIV_EXTENDED_REAL>(z)*psi;h+=psi;psi_absolute+=std::abs(psi);
+    absolute+=std::abs(static_cast<CPPUNIV_EXTENDED_REAL>(z)*psi);
+    lo=std::min(lo,v);hi=std::max(hi,v);
+  }
+  const CPPUNIV_EXTENDED_REAL n=x.size();
+  const CPPUNIV_EXTENDED_REAL move=fixed_mu ? 0 :
+      h*((h>0 ? hi : lo)-r.mu)/r.sigma;
+  CPPUNIV_EXTENDED_REAL gap=move;
+  if(!fixed_sigma) {
+    const CPPUNIV_EXTENDED_REAL k=g-move;
+    if(!(k>0))return INFINITY;
+    const CPPUNIV_EXTENDED_REAL delta=(k-n)/n;
+    gap=move+n*(delta-std::log1p(delta));
+  }
+  if(!fixed_mu)absolute+=psi_absolute*std::max(std::abs((lo-r.mu)/r.sigma),
+      std::abs((hi-r.mu)/r.sigma));
+  const double pad=256*std::numeric_limits<double>::epsilon()*
+      (1+std::abs(r.logLik)+static_cast<double>(absolute+std::abs(move)))*
+      (1+x.size()*std::numeric_limits<double>::epsilon());
+  return r.logLik+std::max(0.,static_cast<double>(gap))+pad;
+}
+
+// Below c0, the median cluster remains the only quadratic cluster. Its
+// exact profiled likelihood is Laplace + B*c^2/2 - n*log(c*Z(c)/2).
+// log(c*Z(c)/2) >= c^2/2-c^4/6, so B<n proves this tail below Laplace.
+inline bool huber_laplace_tail(span x,double mu,double c0,double& lm,double& b) {
+  std::vector<double> y(x.begin(),x.end());std::sort(y.begin(),y.end());
+  const bool fm=std::isfinite(mu);
+  lm=fm ? mu : y[y.size()/2];
+  const double n=y.size();
+  double a=0,nearest=INFINITY;
+  std::int64_t left=0,right=0,k=0;
+  for(double v:y) {
+    a+=std::abs(v-lm)/n;
+    if(v<lm)++left;else if(v>lm)++right;else ++k;
+    if(v!=lm)nearest=std::min(nearest,std::abs(v-lm));
+  }
+  const double d=fm ? 0 : double(right-left);
+  b=a;
+  if(!(k>0 && b>0))return false;
+  const double deficit=k-d*d/k;
+  return deficit>0 && c0*c0<3*deficit/n && c0*c0<1 &&
+      c0*c0*b*(1+std::abs(d)/k)*(1+1e-8)<nearest;
+}
+
+// Recheck the actual returned point. A global value enclosure does not waive
+// the nuisance solver gates or the historical total log-shape score gate.
+inline bool huber_free_score_gate(span x,const HuberResult& r,bool fm,bool fs,double tol) {
+  if(!(r.sigma>0 && r.epsilon>0 && std::isfinite(r.mu) &&
+      std::isfinite(r.sigma) && std::isfinite(r.epsilon) && std::isfinite(r.logLik)))return false;
+  CPPUNIV_EXTENDED_REAL location=0,scale=0,tail=0;
+  const double c=r.epsilon,n=x.size();
+  for(double v:x) {
+    const double z=(v-r.mu)/r.sigma;
+    if(!std::isfinite(z))return false;
+    const double psi=huber_psi(z,c);
+    location+=psi;scale+=static_cast<CPPUNIV_EXTENDED_REAL>(z)*psi;
+    if(std::abs(z)>c)tail+=static_cast<CPPUNIV_EXTENDED_REAL>(c)*(std::abs(z)-c);
+  }
+  const CPPUNIV_EXTENDED_REAL shape=2*n*std::exp(-c*c/2)/(c*huber_z(c))-tail;
+  return (fm || std::abs(location)/n<=std::max(tol,1e-7)) &&
+      (fs || std::abs(scale/n-1)<=tol) &&
+      std::isfinite(shape) && std::abs(shape)<=1e-3;
+}
+
+inline HuberResult huber_mle(span x,double tol=1e-10,int maxit=200,
+    double epsilon=1.345,
+    double mu=std::numeric_limits<double>::quiet_NaN(),
+    double sigma=std::numeric_limits<double>::quiet_NaN(),bool exact_scan=false) {
+  auto best=huber_candidate_mle(x,tol,maxit,epsilon,mu,sigma,exact_scan);
+  const bool fm=std::isfinite(mu),fs=std::isfinite(sigma);
+  if(best.status==HuberStatus::InvalidData || best.status==HuberStatus::UnboundedLikelihood)
+    return best;
+  best.logLik=huber_point_loglik(x,best.mu,best.sigma,best.epsilon);
+  if(!std::isnan(epsilon)) {
+    if(best.status==HuberStatus::Ok) {
+      const double upper=huber_nuisance_upper(x,best,fm,fs);
+      const double allowance=1e-8*x.size()+1024*std::numeric_limits<double>::epsilon()*
+          (1+std::abs(best.logLik));
+      if(!(std::isfinite(upper) && upper-best.logLik<=allowance))
+        best.status=HuberStatus::IterationFailure;
+    }
+    if(best.status==HuberStatus::IterationFailure) {
+      best.stop_detail.loglik_upper=INFINITY;
+      auto witness=best;
+      if(!(witness.sigma>0 && std::isfinite(witness.logLik))) {
+        double scale=fs ? sigma : 1;
+        if(!fs)for(double v:x)scale=std::max(scale,std::abs(v-x[0]));
+        witness=huber_fixed_mle(x,tol,maxit,epsilon,fm ? mu : x[0],scale);
+        witness.logLik=huber_point_loglik(x,witness.mu,witness.sigma,witness.epsilon);
+      }
+      if(witness.sigma>0 && std::isfinite(witness.logLik)) {
+        best.stop_detail.candidates.push_back({{witness.mu,witness.sigma,epsilon},
+            witness.logLik,witness.logLik});
+        best.stop_detail.loglik_lower=witness.logLik;
+        best.stop_detail.loglik_upper=INFINITY;
+      }
+    }
+    return best;
+  }
+  // Recompute both faces even when the proposer stopped on one of them.
+  const double n=x.size();
+  CPPUNIV_EXTENDED_REAL sum=0;
+  for(double v:x)sum+=static_cast<CPPUNIV_EXTENDED_REAL>(v)-x[0];
+  const double nm=fm ? mu : static_cast<double>(x[0]+sum/n);
+  CPPUNIV_EXTENDED_REAL ss=0;
+  for(double v:x){const CPPUNIV_EXTENDED_REAL d=static_cast<CPPUNIV_EXTENDED_REAL>(v)-nm;ss+=d*d;}
+  const double ns=fs ? sigma : static_cast<double>(std::sqrt(ss/n));
+  CPPUNIV_EXTENDED_REAL normal_h=0,normal_g=0;
+  if(ns>0 && std::isfinite(ns) && std::isfinite(nm))for(double v:x) {
+    const CPPUNIV_EXTENDED_REAL z=(static_cast<CPPUNIV_EXTENDED_REAL>(v)-nm)/ns;
+    normal_h+=z;normal_g+=z*z;
+  }
+  const double normal=ns>0 && std::isfinite(ns) && std::isfinite(nm) ?
+      -n*(std::log(ns)+.5*std::log(2*std::acos(-1.0)))-static_cast<double>(normal_g/2) : NAN;
+  const bool normal_precise=std::isfinite(normal) &&
+      (fm || std::abs(normal_h/n)<=1e-7) && (fs || std::abs(normal_g/n-1)<=1e-10);
+  std::vector<double> sorted(x.begin(),x.end());std::sort(sorted.begin(),sorted.end());
+  double lm=fm ? mu : sorted[sorted.size()/2],b=0;
+  for(double v:x)b+=std::abs(v-lm)/n;
+  CPPUNIV_EXTENDED_REAL laplace_loss=0;
+  if(!fs && b>0 && std::isfinite(b))for(double v:x)
+    laplace_loss+=std::abs((static_cast<CPPUNIV_EXTENDED_REAL>(v)-lm)/b);
+  const double laplace=fs ? -INFINITY : b>0 && std::isfinite(b) ?
+      -n*(std::log(2.0)+std::log(b))-static_cast<double>(laplace_loss) : NAN;
+  const bool laplace_precise=fs || (std::isfinite(laplace) && std::abs(laplace_loss/n-1)<=1e-10);
+  const bool faces_precise=normal_precise && laplace_precise;
+  // The score gates bound the ideal Gaussian and Laplace face improvement
+  // by < 6e-15*n and < 6e-21*n respectively. Include room for arithmetic.
+  const double normal_upper=normal_precise ? normal+
+      128*std::numeric_limits<double>::epsilon()*(1+n+std::abs(normal)) : INFINITY;
+  const double laplace_upper=fs ? -INFINITY : laplace_precise ? laplace+
+      128*std::numeric_limits<double>::epsilon()*(1+n+std::abs(laplace)) : INFINITY;
+  StopDetail evidence;
+  evidence.candidates.push_back({{nm,ns},normal,normal,StopModel::Norm});
+  if(!fs)
+    evidence.candidates.push_back({{lm,b},laplace,laplace,StopModel::Laplace});
+  if(!(best.sigma>0 && best.epsilon>0 && std::isfinite(best.logLik))) {
+    best=huber_fixed_mle(x,tol,maxit,1.345,mu,sigma);
+    best.logLik=huber_point_loglik(x,best.mu,best.sigma,best.epsilon);
+  }
+  const bool finite=best.sigma>0 && best.epsilon>0 && std::isfinite(best.logLik);
+  if(finite) {
+    best.status=HuberStatus::Ok;
+    evidence.candidates.push_back({{best.mu,best.sigma,best.epsilon},best.logLik,best.logLik});
+  }
+  const HuberResult proposal=best;
+  double incumbent=std::max(normal,laplace);
+  if(finite)incumbent=std::max(incumbent,best.logLik);
+  const double margin=1e-8*n;
+  const double arithmetic=1024*std::numeric_limits<double>::epsilon()*(1+std::abs(incumbent)+n);
+  auto stop=[&](bool budget,double upper) {
+    if(best.sigma>0 && best.epsilon>0 && std::isfinite(best.logLik))
+      evidence.candidates.push_back({{best.mu,best.sigma,best.epsilon},best.logLik,best.logLik});
+    best.status=HuberStatus::IterationFailure;
+    // An underflowed/overflowed face is unavailable evidence, not a model
+    // witness. Preserve every proper computable point and classify the stop
+    // as numerical; a missing face prevents a finite global upper bound.
+    std::vector<FitCandidate> proper;
+    double lower=-INFINITY;
+    bool unavailable=!faces_precise;
+    for(const auto& c:evidence.candidates) {
+      if(valid_stop_coefficients(c.model,c.coef) && std::isfinite(c.loglik_lower) &&
+          std::isfinite(c.loglik_upper) && c.loglik_lower<=c.loglik_upper) {
+        proper.push_back(c);lower=std::max(lower,c.loglik_lower);
+      } else unavailable=true;
+    }
+    evidence.candidates.swap(proper);
+    evidence.budget_exhausted=budget && !unavailable;
+    evidence.comparison_tie=!budget && !unavailable;
+    evidence.loglik_lower=std::isfinite(lower) ? lower : NAN;
+    evidence.loglik_upper=unavailable || std::isnan(upper) ? INFINITY : upper;
+    best.stop_detail=evidence;return best;
+  };
+  if(!faces_precise)
+    return stop(false,INFINITY);
+  if(!std::isfinite(incumbent) || !(arithmetic<margin/8))return stop(false,INFINITY);
+  double upper=0;
+  for(double v:x)upper=std::max(upper,std::abs((v-nm)/ns));
+  // Above this value the constrained normal fit solves the concave inner
+  // problem exactly. Avoid a rounded zero interval for zero residuals.
+  if(upper==0 && std::isfinite(normal)) {
+    best.status=HuberStatus::NormalLimit;
+    evidence.limit_coef={nm,ns};evidence.limit_loglik=normal;
+    evidence.limit_model=StopModel::Norm;evidence.loglik_lower=normal;
+    evidence.loglik_upper=normal;best.stop_detail=evidence;return best;
+  }
+  if(!(upper>0 && std::isfinite(upper)))return stop(false,INFINITY);
+  // Gaussian score gates bound the mean shift by 1e-7*sigma and the scale
+  // ratio by 1+/-6e-11; this endpoint contains the exact Gaussian core.
+  upper=(upper+1e-6)*(1+1e-6);
+  double lower=std::min(.01,upper/2);
+  bool laplace_proved=false;
+  if(!fs) {
+    laplace_proved=huber_laplace_tail(x,mu,lower,lm,b);
+    if(!laplace_proved && incumbent>laplace+margin)
+      lower=std::min(lower,std::sqrt((incumbent-laplace)/n));
+  } else {
+    lower=std::min(lower,std::exp(incumbent/n+std::log(2*sigma)-2));
+  }
+  if(!(lower>0 && lower<upper))return stop(false,INFINITY);
+  const double tail=fs ? n*(std::log(lower)-std::log(2*sigma)+lower*lower/2) :
+      laplace_upper+(laplace_proved ? 0 : n*lower*lower/2);
+  if(tail>incumbent+arithmetic)return stop(false,INFINITY);
+  const bool proposal_scores=finite && huber_free_score_gate(x,proposal,fm,fs,tol);
+  struct Point {double c,lo,hi;HuberResult fit;};
+  std::int64_t work=0;
+  bool failure=false;
+  auto point=[&](double c) {
+    ++work;
+    auto r=huber_fixed_mle({sorted.data(),sorted.size()},
+        std::min(tol,1e-12),maxit,c,mu,sigma,true);
+    r.logLik=huber_point_loglik(x,r.mu,r.sigma,r.epsilon);
+    if(r.status!=HuberStatus::Ok) {failure=true;return Point{c,-INFINITY,INFINITY,r};}
+    const double hi=huber_nuisance_upper(x,r,fm,fs);
+    if(!(std::isfinite(hi) && hi-r.logLik<margin/8))failure=true;
+    if(r.logLik>incumbent) {incumbent=r.logLik;best=r;}
+    else if(r.logLik>=incumbent-64*std::numeric_limits<double>::epsilon()*(1+std::abs(incumbent)) &&
+        !huber_free_score_gate(x,best,fm,fs,tol) && huber_free_score_gate(x,r,fm,fs,tol))best=r;
+    return Point{c,r.logLik,hi,r};
+  };
+  struct Segment {Point l,r;double bound;};
+  auto segment=[&](Point l,Point r) {
+    // (log Z)'' = q+(2q-q^2)/c^2 <= 1+2/c^2, 0<q<1.
+    const double width=r.c-l.c;
+    return Segment{l,r,std::max(l.hi,r.hi)+n*(1+2/(l.c*l.c))*width*width/8};
+  };
+  std::vector<Segment> pending{segment(point(lower),point(upper))};
+  double global=INFINITY;
+  while(!pending.empty()) {
+    const auto it=std::max_element(pending.begin(),pending.end(),
+        [](const Segment& a,const Segment& b){return a.bound<b.bound;});
+    const Segment current=*it;
+    global=std::max({incumbent,tail,normal_upper,current.bound});
+    auto unresolved=[&](bool budget) {
+      for(const auto& p:{current.l,current.r})
+        if(p.fit.sigma>0 && std::isfinite(p.fit.mu) && std::isfinite(p.fit.logLik))
+          evidence.candidates.push_back({{p.fit.mu,p.fit.sigma,p.c},p.fit.logLik,p.fit.logLik});
+      evidence.segment_loglik_upper=current.bound;
+      return stop(budget,global);
+    };
+    if(failure)return unresolved(false);
+    // Finite winner: the retained original proposal must beat both faces.
+    // The bound certifies likelihood accuracy, never uniqueness.
+    if(global<=incumbent+margin && incumbent>std::max(normal_upper,laplace_upper)+arithmetic) {
+      if(proposal_scores && proposal.logLik>std::max(normal_upper,laplace_upper)+arithmetic &&
+          proposal.logLik>=incumbent-64*std::numeric_limits<double>::epsilon()*(1+std::abs(incumbent))) {
+        best=proposal;best.status=HuberStatus::Ok;best.stop_detail={};return best;
+      }
+      if(best.logLik>std::max(normal_upper,laplace_upper)+arithmetic && huber_free_score_gate(x,best,fm,fs,tol)) {
+        best.status=HuberStatus::Ok;best.stop_detail={};return best;
+      }
+    }
+    // A face is selected only after every compact segment lies below it.
+    // Padding accounts for arithmetic at the supporting-plane evaluations.
+    const double face=std::max(normal,laplace);
+    const bool normal_wins=normal>laplace_upper+arithmetic;
+    const bool laplace_wins=!fs && laplace>normal_upper+arithmetic && laplace_proved;
+    const bool tail_closed=normal_wins ? tail<normal-arithmetic : laplace_wins && tail<=laplace_upper;
+    if(current.bound<face-arithmetic && tail_closed && (normal_wins || laplace_wins)) {
+      best.status=normal_wins ? HuberStatus::NormalLimit : HuberStatus::LaplaceLimit;
+      evidence.limit_coef=normal>=laplace ? std::vector<double>{nm,ns} : std::vector<double>{lm,b};
+      evidence.limit_loglik=face;evidence.limit_model=normal>=laplace ? StopModel::Norm : StopModel::Laplace;
+      evidence.loglik_lower=face;evidence.loglik_upper=global;best.stop_detail=evidence;return best;
+    }
+    if(current.bound<=face+arithmetic && tail<=std::max(normal_upper,laplace_upper)+arithmetic &&
+        incumbent<=std::max(normal_upper,laplace_upper)+arithmetic)
+      return unresolved(false);
+    if(work+1>certificate_budget(maxit))return unresolved(true);
+    const double mid=std::sqrt(current.l.c)*std::sqrt(current.r.c);
+    if(!(mid>current.l.c && mid<current.r.c))return unresolved(false);
+    pending.erase(it);
+    const Point m=point(mid);
+    for(const auto& child:{segment(current.l,m),segment(m,current.r)})
+      if(child.bound>incumbent-margin)pending.push_back(child);
+  }
+  if(incumbent>std::max(normal_upper,laplace_upper)+arithmetic && tail<=incumbent &&
+      huber_free_score_gate(x,best,fm,fs,tol)) {
+    best.status=HuberStatus::Ok;best.stop_detail={};return best;
+  }
+  const double face=std::max(normal,laplace);
+  const bool normal_wins=normal>laplace_upper+arithmetic;
+  const bool laplace_wins=!fs && laplace>normal_upper+arithmetic && laplace_proved;
+  const bool tail_closed=normal_wins ? tail<normal-arithmetic : laplace_wins && tail<=laplace_upper;
+  if(tail_closed && incumbent<=face+arithmetic && (normal_wins || laplace_wins)) {
+    best.status=normal>=laplace ? HuberStatus::NormalLimit : HuberStatus::LaplaceLimit;
+    evidence.limit_coef=normal>=laplace ? std::vector<double>{nm,ns} : std::vector<double>{lm,b};
+    evidence.limit_loglik=face;evidence.limit_model=normal>=laplace ? StopModel::Norm : StopModel::Laplace;
+    evidence.loglik_lower=face;evidence.loglik_upper=std::max(normal_upper,laplace_upper);
+    best.stop_detail=evidence;return best;
+  }
+  return stop(false,std::max({incumbent,normal_upper,laplace_upper,tail}));
 }
 } // namespace cppunivariate

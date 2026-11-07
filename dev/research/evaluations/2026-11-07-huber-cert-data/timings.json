@@ -1,0 +1,84 @@
+{
+  "machine": "simbox",
+  "compiler": "GCC 13.3.0",
+  "flags": "-O2 -std=c++17",
+  "nice": 10,
+  "threads": 1,
+  "baseline": "retained original proposal: huber_candidate_mle; ordinary benchmark path unchanged",
+  "controls": {
+    "tol": 1e-10,
+    "maxit": 200
+  },
+  "small_data": [
+    -7,
+    -1,
+    -1,
+    0,
+    2,
+    12
+  ],
+  "small_repeats": 20,
+  "large_n": 100000,
+  "large_generation": "qhuber((i+0.5)/100000, mu=2, sigma=3, epsilon=0.8); generation excluded from timing",
+  "large_repeats": 1,
+  "runs": [
+    {
+      "workload": "small",
+      "free_shape": false,
+      "certified": false,
+      "seconds": 3.2525000000000003e-07,
+      "status": 0,
+      "logLik": -18.914016562579256
+    },
+    {
+      "workload": "small",
+      "free_shape": false,
+      "certified": true,
+      "seconds": 3.9559999999999997e-07,
+      "status": 0,
+      "logLik": -18.91401656257926
+    },
+    {
+      "workload": "small",
+      "free_shape": true,
+      "certified": false,
+      "seconds": 0.0001035385,
+      "status": 0,
+      "logLik": -18.20324288631272
+    },
+    {
+      "workload": "small",
+      "free_shape": true,
+      "certified": true,
+      "seconds": 0.00017950445,
+      "status": 0,
+      "logLik": -18.203242886312722
+    },
+    {
+      "workload": "large",
+      "free_shape": true,
+      "certified": false,
+      "seconds": 0.147308603,
+      "status": 0,
+      "coefficients": [
+        1.9999999999999998,
+        3.000061619269539,
+        0.8000256245179236
+      ],
+      "logLik": -305874.52068983053
+    },
+    {
+      "workload": "large",
+      "free_shape": true,
+      "certified": true,
+      "seconds": 1.192527298,
+      "status": 0,
+      "coefficients": [
+        2.0000000000000004,
+        3.000057581814727,
+        0.8000243434357214
+      ],
+      "logLik": -305874.5206898345
+    }
+  ]
+}

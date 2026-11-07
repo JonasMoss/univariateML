@@ -1,0 +1,15 @@
+Base revision: 7c52f905f21bee7d997d59211d4093e2593ec727
+Uncommitted source SHA-256:
+69230c26d7d5489b919c123ed17ce76bcc6d835a9582992110ee76e0c2ef71cf  univariateML-cpp/include/cppunivariate/distributions/huber/README.md
+d094916edf885084799cfe3a62d9ca654f0231551ed521a8b382b9c7f055174f  univariateML-cpp/include/cppunivariate/distributions/huber/mle.hpp
+19540a21f5586e444434c57b3068dc072d3ab3062d37d6c348481db4d2b74cd9  univariateML-cpp/include/cppunivariate/distributions/huber/test.cpp
+96263e2d1edaa69a3a5c92fb832f976554192d61e025b20a02b98c1ac6845e31  univariateML-cpp/include/cppunivariate/distributions/huber/golden.json
+de7ad9e93e2a7bba8725731c7f5eb22636fad79f6b0f3d160209722d3c41bad8  bindings/common/distributions/huber/fit.hpp
+09b38b27e59a9370c83d840d64885ae0f31493d4f5a76b322756fbb31de9ecb3  bindings/r/distributions/huber/test.R
+Validation driver SHA-256:
+6553f8b85763dbcd798b3c89129d27f73d09bb6c8f5d609890e05f36c8c89a72  dev/research/evaluations/2026-11-07-huber-cert-data/budget-search.cpp
+49da392ab43d83b1270abcd75f20a200bbc951039790398e0b9ad16232587d30  dev/research/evaluations/2026-11-07-huber-cert-data/check.cpp
+c039503ef90714ef5494843a45246fccd67227245b03ddf7ad3a030061f0f45f  dev/research/evaluations/2026-11-07-huber-cert-data/point-check.cpp
+b24a6ae24a4d358425853c54ce7c57ed7349d53e8fd95fc6e62b56463cb88d08  dev/research/evaluations/2026-11-07-huber-cert-data/scale-probe.cpp
+12af66bf7bf1d0b8cc67498216c0578a94688404c845d581b9d9139a1f36fbac  dev/research/evaluations/2026-11-07-huber-cert-data/run-checks.sh
+golden.json is byte-identical to the base revision. Both family test files are append-only.

@@ -1,0 +1,7 @@
+Captured terminal output of the first GCC 15 double-width probe, before the
+payload repair (header 4161934fcb4198d876d616c201baae1caabb4bc20e1343c952940ca93836c68c).
+The empty kind and zero binding candidates were caused by a malformed Gaussian
+face row poisoning the payload; the finite fitter witnesses were present.
+
+1e-300 status=3 kind= core_candidates=4 binding_candidates=0 lower=-nan upper=inf
+1e+300 status=3 kind= core_candidates=4 binding_candidates=0 lower=-nan upper=inf
