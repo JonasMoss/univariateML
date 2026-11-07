@@ -195,3 +195,30 @@ TEST_CASE("tbinom: structured stop payloads") {
   CHECK(r.stop_detail.limit_coef[0]==doctest::Approx(f.parameter));
   CHECK(r.stop_detail.limit_loglik==doctest::Approx(f.logLik));
 }
+
+TEST_CASE("tbinom: mandatory finite and infinite retained-window certificates") {
+  const std::vector<int>x{1,2,2,3,3,3,4,4,5,5};
+  for(double b : {10.,double(INFINITY)}) {
+    const auto f=cppunivariate::tbinom_design_mle({x.data(),x.size()},0,b,NAN);
+    REQUIRE(f.status==cppunivariate::TbinomStatus::Ok);
+    for(int N=5;N<100;++N) {
+      const auto g=cppunivariate::tbinom_mle({x.data(),x.size()},0,b,N);
+      CHECK(g.logLik<=f.logLik+1e-8);
+    }
+  }
+}
+
+TEST_CASE("tbinom: equivalent real bounds disprove coefficient uniqueness") {
+  const std::vector<int>x{1,2};
+  const auto a=cppunivariate::tbinom_design_mle({x.data(),x.size()},0,2,3);
+  const auto b=cppunivariate::tbinom_design_mle({x.data(),x.size()},.5,2.5,3);
+  CHECK(a.logLik==doctest::Approx(b.logLik));
+  CHECK(a.prob==doctest::Approx(b.prob));
+}
+
+TEST_CASE("tbinom: a very large finite upper window needs only a small retained support") {
+  const std::vector<int>x{1,2,2,3,3,3,4,4,5,5};
+  const auto f=cppunivariate::tbinom_design_mle({x.data(),x.size()},0,1e300,NAN);
+  REQUIRE(f.status==cppunivariate::TbinomStatus::Ok);
+  CHECK(f.size==6);
+}

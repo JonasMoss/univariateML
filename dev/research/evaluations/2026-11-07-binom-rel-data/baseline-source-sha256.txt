@@ -1,0 +1,4 @@
+55c033fdcdc6c659736714c9e7958c2ec2706fb8e4d38abd9e67c5ba4bf2d7c4  univariateML-cpp/include/cppunivariate/distributions/ztbinom/mle.hpp
+0d6a0a12fd44c680d388b1a68d75a16868b87eec71d9d7fa960b5f2b7508b795  univariateML-cpp/include/cppunivariate/distributions/zmbinom/mle.hpp
+e0486707667413843b6a39bc081dd7f4c740ef2737a126608eb22cdbf9cec0dd  univariateML-cpp/include/cppunivariate/distributions/tbinom/mle.hpp
+703767ddb2f27b489b75a8aaac24c883d6ae89e444119debf5797c1225827043  univariateML-cpp/include/cppunivariate/distributions/zib/mle.hpp

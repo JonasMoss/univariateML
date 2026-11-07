@@ -1,4 +1,5 @@
 #pragma once
+#include "../ztbinom/certificate.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/discrete_stop.hpp"
 #include "../ztpois/mle.hpp"
@@ -20,7 +21,8 @@ inline double maximize(F f, double lo, double hi, double tol, int maxit, bool &d
   return fc>fd ? c : d;
 }
 }
-inline ZtbinomResult ztbinom_mle(ispan x, double tol=1e-10, int maxit=200,
+namespace ztbinom_detail {
+inline ZtbinomResult ztbinom_mle_proposal(ispan x, double tol=1e-10, int maxit=200,
     double fixed_size=std::numeric_limits<double>::quiet_NaN(),
     double fixed_prob=std::numeric_limits<double>::quiet_NaN()) {
   maxit = static_cast<int>(solver_budget(maxit));
@@ -75,7 +77,11 @@ inline ZtbinomResult ztbinom_mle(ispan x, double tol=1e-10, int maxit=200,
     const double p=zero_detail::bin_prob(r,m,maxit);
     double ll=0;
     for(int v:x) ll+=zero_detail::bin_logpmf(v,r,p)-std::log(-std::expm1(r*std::log1p(-p)));
-    return ZtbinomResult{r,p,ll,0,ZtbinomStatus::Ok};
+    // The shared probability solver's absolute bracket width is insufficient
+    // when a held size makes p tiny. Check the total log-odds score as well.
+    const double conditional_mean=r*p/(-std::expm1(r*std::log1p(-p)));
+    const bool resolved=std::abs(n*(conditional_mean-m))<1e-7;
+    return ZtbinomResult{r,p,ll,0,std::isfinite(ll)&&resolved?ZtbinomStatus::Ok:ZtbinomStatus::IterationFailure};
   };
   if(fixed) return profile(fixed_size);
   auto best=profile(mx);
@@ -127,4 +133,45 @@ inline ZtbinomResult ztbinom_mle(ispan x, double tol=1e-10, int maxit=200,
 
   return stopped;
 }
+} // namespace ztbinom_detail
+inline ZtbinomResult ztbinom_mle(ispan x,double tol=1e-10,int maxit=200,
+    double fixed_size=NAN,double fixed_prob=NAN) {
+  auto best=ztbinom_detail::ztbinom_mle_proposal(x,tol,maxit,fixed_size,fixed_prob);
+  if(!std::isnan(fixed_size)||!std::isnan(fixed_prob)||x.size()==0) {
+    if(best.status==ZtbinomStatus::IterationFailure)
+      binomial_certificate_detail::witness(best.stop_detail,{best.size,best.prob},best.logLik,false);
+    return best;
+  }
+  int mx=0;double sum=0;for(int v:x){mx=std::max(mx,v);sum+=v;}
+  if(sum==double(x.size()))return best;
+  if(best.status==ZtbinomStatus::InvalidInput || best.status==ZtbinomStatus::InvalidSize)return best;
+  if(best.status==ZtbinomStatus::IterationFailure) {
+    binomial_certificate_detail::witness(best.stop_detail,{best.size,best.prob},best.logLik,false);return best;
+  }
+  // A face is a witness, never a J7a proof that no finite size wins.
+  if(best.status!=ZtbinomStatus::Ok) {
+    binomial_certificate_detail::witness(best.stop_detail,{best.size,best.prob},best.logLik,false,true);return best;
+  }
+  if(best.logLik==0)return best;
+  binomial_certificate_detail::Work work{0,0,maxit};
+  const double end=binomial_certificate_detail::cutoff(x,1,INFINITY,false,NAN,best.logLik,work);
+  if(std::isfinite(end) && best.size>=end)work.numerical=true;
+  if(!std::isfinite(end) || work.numerical) {
+    best.status=ZtbinomStatus::IterationFailure;
+    binomial_certificate_detail::witness(best.stop_detail,{best.size,best.prob},best.logLik,!work.numerical);return best;
+  }
+  double incumbent=best.logLik;
+  const bool complete=binomial_certificate_detail::cover(x,mx,end,incumbent,work,[&](double N) {
+    const auto f=ztbinom_detail::ztbinom_mle_proposal(x,tol,maxit,N,NAN);
+    if(f.status!=ZtbinomStatus::Ok)return double(NAN);
+    if(f.logLik>best.logLik)best=f;
+    return f.logLik;
+  });
+  if(!complete) {
+    best.status=ZtbinomStatus::IterationFailure;
+    binomial_certificate_detail::witness(best.stop_detail,{best.size,best.prob},best.logLik,!work.numerical);
+  }
+  return best;
+}
+
 }

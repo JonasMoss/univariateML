@@ -183,3 +183,32 @@ test_that("zib all-zero free-size held subsets attain likelihood one", {
   f <- mlzib(c(0, 0, 0), size=NULL, prob=.5, pi=.2)
   expect_gt(attr(f, "logLik"), 3*log(.6))
 })
+
+test_that("zib J7a held inflation uses a constrained finite certificate", {
+  x <- c(rep(0,5),1,2,2,3,3,3,4,4,5,5)
+  f <- mlzib(x,size=NULL,pi=.2)
+  expect_equal(unname(f["size"]),6)
+  e <- tryCatch(mlzib(c(rep(0,8),1,1,1,2,3,7,12),size=NULL,pi=.2),error=identity)
+  expect_s3_class(e,"univariateML_unresolved")
+  expect_equal(e$loglik_upper,Inf)
+})
+
+
+test_that("zib unresolved size-face comparisons stop as unresolved", {
+  e <- tryCatch(mlzib(c(rep(0,8),1,1,1,2,3,7,12),size=NULL,pi=.2),error=identity)
+  expect_identical(e$kind,"unresolved")
+  expect_identical(class(e)[1],"univariateML_unresolved")
+})
+
+test_that("zib validates tiny probabilities before selecting the inflation branch", {
+  x <- c(rep(0,4),1:4)
+  e <- tryCatch(mlzib(x,size=1e100),error=identity)
+  expect_s3_class(e,"univariateML_numerical")
+  expect_identical(e$kind,"numerical")
+  expect_equal(nrow(e$candidates),1)
+  expect_equal(e$loglik_upper,Inf)
+  f <- mlzib(x,size=1e100,iterlim=1000)
+  face <- mlzip(x)
+  expect_equal(as.numeric(f["prob"])*1e100,as.numeric(face["lambda"]),tolerance=1e-9)
+  expect_equal(as.numeric(f["pi"]),as.numeric(face["pi"]),tolerance=1e-9)
+})

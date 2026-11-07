@@ -405,3 +405,38 @@ test('shifted Gompertz unfinished bracket preserves a finite witness', async () 
     assert.ok(Number.isFinite(error.loglik_lower));return true;
   });
 });
+
+test('binomial relatives retain unresolved finite and Poisson witnesses', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  for(const [family,x,held] of [
+    ['ztbinom',[1,1,1,2,3,7,12],{}],
+    ['zmbinom',[0,0,1,1,1,2,3,7,12],{p0:.2}],
+    ['zib',[0,0,0,0,0,0,0,0,1,1,1,2,3,7,12],{pi:.2}],
+    ['tbinom',[1,2,3],{}]
+  ]) {
+    assert.throws(() => api[family].fit(new Float64Array(x),held),error => {
+      assert.equal(error.kind,'unresolved');
+      assert.equal(error.loglik_upper,Infinity);
+      assert.ok(error.candidates.length>=2);
+      return true;
+    });
+  }
+});
+
+test('binomial probability solves stop numerically before returning an unresolved coefficient', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  for(const [family,face,values] of [['ztbinom','ztpois',[1,2,3]],['zib','zip',[0,0,0,0,1,2,3,4]]]) {
+    const x=new Float64Array(values);
+    assert.throws(() => api[family].fit(x,{size:1e100}),error => {
+      assert.equal(error.kind,'numerical');
+      assert.equal(error.loglik_upper,Infinity);
+      assert.equal(error.candidates.length,1);
+      return true;
+    });
+    const f=api[family].fit(x,{size:1e100},{iterlim:1000});
+    const limiting=api[face].fit(x);
+    assert.ok(Math.abs(f.estimates.prob*1e100-limiting.estimates.lambda)<1e-9);
+  }
+});

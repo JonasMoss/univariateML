@@ -170,3 +170,51 @@ TEST_CASE("ztbinom: structured stop payloads") {
   double ll=0;for(int v:x)ll+=cppunivariate::distributions::dztpois(v,r.stop_detail.limit_coef[0],true);
   CHECK(r.stop_detail.limit_loglik==doctest::Approx(ll));
 }
+
+TEST_CASE("ztbinom: retained-support certificate bounds the entire tail") {
+  const std::vector<int> x{1,2,2,3,3,3,4,4,5,5};
+  const cppunivariate::ispan sample{x.data(),x.size()};
+  const auto f=cppunivariate::ztbinom_mle(sample);
+  REQUIRE(f.status==cppunivariate::ZtbinomStatus::Ok);
+  cppunivariate::binomial_certificate_detail::Work work{0,0,200};
+  const double end=cppunivariate::binomial_certificate_detail::cutoff(sample,1,INFINITY,false,NAN,f.logLik,work);
+  REQUIRE(std::isfinite(end));
+  for(double N : {end,end*2,end*100}) {
+    const auto g=cppunivariate::ztbinom_mle(sample,1e-10,200,N);
+    CHECK(g.logLik<f.logLik);
+  }
+  for(int N=5;N<end;++N)CHECK(cppunivariate::ztbinom_mle(sample,1e-10,200,N).logLik<=f.logLik+1e-9);
+}
+TEST_CASE("ztbinom: J7a does not claim that its Poisson witness wins") {
+  const std::vector<int>x{1,1,1,2,3,7,12};
+  const auto f=cppunivariate::ztbinom_mle({x.data(),x.size()});
+  CHECK(f.stop_detail.comparison_tie);
+  CHECK(f.stop_detail.loglik_upper==INFINITY);
+  CHECK(f.stop_detail.candidates.size()>=2);
+  // Size one leaves probability unidentified: distinct finite maximizers.
+  CHECK(cppunivariate::ztbinom_mle({x.data(),1},1e-10,200,1,.2).logLik==0);
+  CHECK(cppunivariate::ztbinom_mle({x.data(),1},1e-10,200,1,.8).logLik==0);
+}
+
+TEST_CASE("ztbinom: convex correction covers finite size blocks") {
+  const std::vector<int>x{1,2,2,3,4};
+  const cppunivariate::ispan sample{x.data(),x.size()};
+  for(double A : {4.,8.,32.}) {
+    cppunivariate::binomial_certificate_detail::Work work{0,0,200};
+    const double B=2*A;
+    const double upper=cppunivariate::ztbinom_mle(sample,1e-10,200,A).logLik+
+      cppunivariate::binomial_certificate_detail::block_error(sample,A,B,work);
+    for(double N=A;N<=B;++N)CHECK(cppunivariate::ztbinom_mle(sample,1e-10,200,N).logLik<=upper+1e-10);
+  }
+}
+
+TEST_CASE("ztbinom: an unresolved tiny probability never becomes a successful fit") {
+  const std::vector<int>x{1,2,3};
+  for(const auto& controls : {std::pair<double,int>{1e12,40},{1e100,200}}) {
+    const auto f=cppunivariate::ztbinom_mle({x.data(),x.size()},1e-10,controls.second,controls.first);
+    CHECK(f.status==cppunivariate::ZtbinomStatus::IterationFailure);
+    CHECK_FALSE(f.stop_detail.budget_exhausted);
+    CHECK(f.stop_detail.loglik_upper==INFINITY);
+    REQUIRE(f.stop_detail.candidates.size()==1);
+  }
+}

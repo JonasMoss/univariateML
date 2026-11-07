@@ -1,0 +1,121 @@
+{
+  "job": "TASK-116.28 / binom-rel J7a",
+  "base_revision": "7c52f905f21bee7d997d59211d4093e2593ec727",
+  "branch": "codex/binom-rel",
+  "source_fingerprint_sha256": "02373121061f90606b09d92e8e5e132e19c6a8be7232bf7238bb05697d5f7101",
+  "source_manifest": "source-sha256.txt",
+  "recorded_utc": "2026-11-07T18:31:11.501813+00:00",
+  "environment": {
+    "workstation": "Linux x86_64; GCC 15.2.0; R 4.6.1; Boost 1.90 headers from BH; C++17",
+    "simbox": "WSL2 Linux 6.18.54.1; standalone CMake GCC 13.3.0; R compilation GCC 15.2.0; R 4.6.1; Boost 1.90 headers from BH",
+    "compute": "Local run/run4 slot helpers, nice 10, BLAS/OpenMP one thread; simbox-run nice 10; CMake/CTest four workers."
+  },
+  "runs": [
+    {
+      "command": "UMVL_TEST_TIER=full just cpp-test",
+      "machine": "simbox",
+      "compiler": "GCC 13.3",
+      "pass_shards": 129,
+      "fail": 0,
+      "seconds": 203.2,
+      "includes_dev_shards": 106
+    },
+    {
+      "command": "just cpp-test-no-long-double",
+      "machine": "simbox",
+      "compiler": "GCC 13.3",
+      "pass_shards": 129,
+      "fail": 0,
+      "seconds": 178.98
+    },
+    {
+      "command": "just cpp-test-no-long-double",
+      "machine": "workstation",
+      "compiler": "GCC 15.2",
+      "pass_shards": 129,
+      "fail": 0,
+      "seconds": 253.52
+    },
+    {
+      "command": "just test",
+      "machine": "simbox",
+      "R": "4.6.1",
+      "pass": 21279,
+      "fail": 0,
+      "warn": 0,
+      "skip": 154,
+      "seconds": 100.6
+    },
+    {
+      "command": "just test-full",
+      "machine": "simbox",
+      "R": "4.6.1",
+      "pass": 44097,
+      "fail": 0,
+      "warn": 0,
+      "skip": 0,
+      "seconds": 306.1
+    },
+    {
+      "command": "just js-build && just js-test",
+      "machine": "workstation",
+      "pass": 471,
+      "fail": 0,
+      "skip": 0,
+      "test_seconds": 148.417731543
+    },
+    {
+      "command": "just site-check",
+      "machine": "workstation",
+      "pass": true,
+      "family_pages": 99,
+      "C++17_examples": 99,
+      "MathML": true
+    },
+    {
+      "command": "python3 dev/research/evaluations/2026-11-07-binom-rel-data/check_bound.py",
+      "machine": "simbox",
+      "digits": 70,
+      "inequalities": 162,
+      "minimum_slack": "0.04954245037134986201091565142517569476014882046134402613107997911979652"
+    }
+  ],
+  "goldens": {
+    "unchanged": true,
+    "families": [
+      "ztbinom",
+      "zmbinom",
+      "tbinom",
+      "zib"
+    ],
+    "C++_family_coefficient_and_loglik_relative_tolerance": 1e-10
+  },
+  "append_only_tests_verified": true,
+  "shared_binom_R_test_unchanged": true,
+  "timing_seconds": {
+    "ztbinom": {
+      "before": 0.00084536,
+      "after": 0.000870863,
+      "repetitions": 10
+    },
+    "zmbinom": {
+      "before": 0.000843437,
+      "after": 0.000497242,
+      "repetitions": 10
+    },
+    "zib": {
+      "before": 0.00075736,
+      "after": 0.000419243,
+      "repetitions": 10
+    },
+    "tbinom": {
+      "before": 0.0136853,
+      "after": 0.00215638,
+      "repetitions": 10
+    }
+  },
+  "open": [
+    "J7b: signed infinite-size tails and winning-face/tie decisions; no general free-size uniqueness theorem."
+  ],
+  "numerical_contract": "Exact-arithmetic certificate conditional on computed comparisons, with documented practical floating-point margins; not outward-rounded interval arithmetic."
+}

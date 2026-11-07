@@ -160,3 +160,17 @@ test_that("zmbinom attained point member evaluates and samples exactly", {
   expect_equal(qml(.5,fit),5)
   expect_equal(rml(10,fit),rep(5,10))
 })
+
+test_that("zmbinom J7a stop transports the held zero probability", {
+  e <- tryCatch(mlzmbinom(c(0,0,1,1,1,2,3,7,12),size=NULL,p0=.2),error=identity)
+  expect_s3_class(e,"univariateML_unresolved")
+  expect_equal(e$loglik_upper,Inf)
+  expect_equal(e$candidates$p0,rep(.2,nrow(e$candidates)))
+})
+
+
+test_that("zmbinom unresolved size-face comparisons stop as unresolved", {
+  e <- tryCatch(mlzmbinom(c(0,0,1,1,1,2,3,7,12),size=NULL,p0=.2),error=identity)
+  expect_identical(e$kind,"unresolved")
+  expect_identical(class(e)[1],"univariateML_unresolved")
+})

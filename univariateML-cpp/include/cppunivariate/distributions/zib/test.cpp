@@ -189,3 +189,80 @@ TEST_CASE("zib: structured stop payloads") {
   double ll=0;for(int v:x)ll+=cppunivariate::distributions::dzip(v,r.stop_detail.limit_coef[0],r.stop_detail.limit_coef[1],true);
   CHECK(r.stop_detail.limit_loglik==doctest::Approx(ll));
 }
+
+TEST_CASE("zib: constrained retained-support finite winner and J1 face witness") {
+  const std::vector<int>x{0,0,0,0,0,1,2,2,3,3,3,4,4,5,5};
+  for(double pi : {double(NAN),.2}) {
+    const auto f=cppunivariate::zib_mle({x.data(),x.size()},1e-10,200,NAN,NAN,pi);
+    REQUIRE(f.status==cppunivariate::ZibStatus::Ok);
+    for(int N=5;N<100;++N) {
+      const auto g=cppunivariate::zib_mle({x.data(),x.size()},1e-10,200,N,NAN,pi);
+      CHECK(g.logLik<=f.logLik+1e-8);
+    }
+  }
+  const std::vector<int>tail{0,0,0,0,0,0,0,0,1,1,1,2,3,7,12};
+  const auto f=cppunivariate::zib_mle({tail.data(),tail.size()},1e-10,200,NAN,NAN,.2);
+  CHECK(f.stop_detail.comparison_tie);
+  CHECK(f.stop_detail.loglik_upper==INFINITY);
+}
+
+TEST_CASE("zib: distinct coefficients can describe the same saturated maximum") {
+  const std::vector<int>x{0,1,1};
+  const auto a=cppunivariate::zib_mle({x.data(),x.size()},1e-10,200,1,2./3,0);
+  const auto b=cppunivariate::zib_mle({x.data(),x.size()},1e-10,200,1,1,1./3);
+  CHECK(a.logLik==doctest::Approx(b.logLik));
+  CHECK(a.status==cppunivariate::ZibStatus::Ok);
+  CHECK(b.status==cppunivariate::ZibStatus::Ok);
+}
+
+TEST_CASE("zib: block correction preserves held inflation constraints") {
+  const std::vector<int>x{0,0,1,2,2,3,4};
+  const cppunivariate::ispan sample{x.data(),x.size()};
+  for(double pi : {double(NAN),0.,.3,.8}) {
+    cppunivariate::binomial_certificate_detail::Work work{0,0,200};
+    const double upper=cppunivariate::zib_mle(sample,1e-10,200,4,NAN,pi).logLik+
+      cppunivariate::binomial_certificate_detail::block_error(sample,4,40,work);
+    for(int N=4;N<=40;++N)CHECK(cppunivariate::zib_mle(sample,1e-10,200,N,NAN,pi).logLik<=upper+1e-9);
+  }
+}
+
+TEST_CASE("zib: held inflation needs relative probability root resolution") {
+  const std::vector<int>x{0,1,2,3,4};
+  const auto f=cppunivariate::zib_mle({x.data(),x.size()},1e-10,1,1e12,NAN,.2);
+  CHECK(f.status==cppunivariate::ZibStatus::IterationFailure);
+  CHECK_FALSE(f.stop_detail.budget_exhausted);
+  CHECK_FALSE(f.stop_detail.comparison_tie);
+  CHECK(f.stop_detail.loglik_upper==INFINITY);
+  REQUIRE(f.stop_detail.candidates.size()==1);
+  CHECK(std::isfinite(f.stop_detail.candidates[0].loglik_lower));
+}
+
+TEST_CASE("zib: validate the positive mean root before selecting the inflation branch") {
+  const std::vector<int>x{0,0,0,0,1,2,3,4};
+  const auto f=cppunivariate::zib_mle({x.data(),x.size()},1e-10,200,1e100);
+  CHECK(f.status==cppunivariate::ZibStatus::IterationFailure);
+  CHECK_FALSE(f.stop_detail.budget_exhausted);
+  CHECK(f.stop_detail.loglik_upper==INFINITY);
+  REQUIRE(f.stop_detail.candidates.size()==1);
+}
+
+TEST_CASE("zib: held inflation remains stable at a huge held size") {
+  const std::vector<int>x{0,1,2,3,4};
+  const cppunivariate::ispan sample{x.data(),x.size()};
+  const auto f=cppunivariate::zib_mle(sample,1e-10,200,1e100,NAN,.2);
+  const auto face=cppunivariate::zip_mle(sample,NAN,.2);
+  REQUIRE(f.status==cppunivariate::ZibStatus::Ok);
+  REQUIRE(face.status==cppunivariate::ZipStatus::Ok);
+  CHECK(f.prob*1e100==doctest::Approx(face.lambda).epsilon(1e-10));
+  CHECK(f.logLik==doctest::Approx(face.logLik).epsilon(1e-10));
+}
+
+TEST_CASE("zib: no-zero data use the exact ordinary-binomial reduction") {
+  const std::vector<int>x{1,2,3};
+  for(double pi : {double(NAN),.2}) {
+    const auto f=cppunivariate::zib_mle({x.data(),x.size()},1e-10,1,1e100,NAN,pi);
+    REQUIRE(f.status==cppunivariate::ZibStatus::Ok);
+    CHECK(f.prob*1e100==doctest::Approx(2).epsilon(1e-12));
+    CHECK(f.pi==(std::isnan(pi)?0:pi));
+  }
+}

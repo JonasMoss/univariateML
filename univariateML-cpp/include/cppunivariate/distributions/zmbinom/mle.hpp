@@ -34,6 +34,19 @@ inline ZmbinomResult zmbinom_mle(ispan x, double tol=1e-10,int maxit=200,double 
    const auto& d=fit.stop_detail;
    out.stop_detail=discrete_face(StopModel::Zmpois,{d.limit_coef[0],out.p0},out.logLik-fit.logLik+d.limit_loglik);
  }
+ if(!fit.stop_detail.candidates.empty()) {
+   const double shift=out.logLik-fit.logLik;
+   out.stop_detail=fit.stop_detail;
+   for(auto& c:out.stop_detail.candidates) {
+     if(c.model==StopModel::None)c.coef.push_back(out.p0);
+     else if(c.model==StopModel::Ztpois){c.model=StopModel::Zmpois;c.coef.push_back(out.p0);}
+     c.loglik_lower+=shift;c.loglik_upper+=shift;
+   }
+   if(out.stop_detail.limit_model==StopModel::Ztpois) {
+     out.stop_detail.limit_model=StopModel::Zmpois;out.stop_detail.limit_coef.push_back(out.p0);
+   }
+   out.stop_detail.limit_loglik+=shift;out.stop_detail.loglik_lower+=shift;out.stop_detail.loglik_upper+=shift;
+ }
  if(fit.status==ZtbinomStatus::IterationFailure)out.status=ZmbinomStatus::IterationFailure;
  if(fit.status==ZtbinomStatus::InvalidInput)out.status=ZmbinomStatus::InvalidInput;
  if(fit.status==ZtbinomStatus::InvalidSize)out.status=ZmbinomStatus::InvalidSize;

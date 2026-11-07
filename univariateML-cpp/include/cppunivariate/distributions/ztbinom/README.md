@@ -32,7 +32,7 @@ r:
   control:
     size: "Optional fixed size; NULL estimates size."
     reltol: "Tolerance for scalar profile search."
-    iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per integer scan: 100000 * min(iterlim, 100000) enumeration cells."
+    iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per global certificate: 128 * min(iterlim, 100000) evaluations; per integer scan: 100000 * min(iterlim, 100000) enumeration cells."
     prob: "Optional fixed probability in `[0, 1]`; NULL estimates it."
 log_density: loggamma(size+1)-loggamma(x+1)-loggamma(size-x+1)+x*log(prob)+(size-x)*log(1-prob)-log(1-(1-prob)**size)
 limits:
@@ -68,9 +68,7 @@ relations:
 fit:
   method: integer-search
   certified: partial
-  note: 'ztbinom/README.md, Details; ztbinom/mle.hpp (public fitter and held overloads); ztbinom/test.cpp: Fixed
-    size has exact conditional probability profiling; held probability has integer tail bounds. Free-size/free-probability
-    grids lack a global unimodality certificate.'
+  note: 'ztbinom/README.md, Details; ztbinom/mle.hpp; ztbinom/test.cpp: Finite free-size winners require retained-support tail exclusion and complete integer-prefix coverage. Fixed size and held probability use their exact profiles. Winning-face comparisons remain unresolved.'
 areas:
 - counts and ecology
 classification: specialist
@@ -95,9 +93,21 @@ The zero-truncated binomial distribution describes binomial success counts obser
 
 ## Details
 
-Holding the trial count removes the infinite-size escape. For a trial count greater than one, the fit matches the conditional mean to the sample mean. All-one data give the attained endpoint $p=0$, and counts all equal to the held trial count give $p=1$. At trial count one every probability gives the same point mass, and the probability is unidentified.
+Holding the trial count removes the infinite-size escape. For a trial count greater than one, the fit matches the conditional mean to the sample mean. All-one data give the attained endpoint $p=0$, and counts all equal to the held trial count give $p=1$. At trial count one every probability gives the same point mass, and the probability is unidentified. An interior probability solve must pass a total log-odds score check, $|\sum_i x_i-n_{\mathrm{obs}}E[X]|<10^{-7}$. An absolute probability-bracket width alone can accept an unresolved tiny probability at a large held size; those fits stop numerically with their evaluated witness.
 
-With both coefficients free, probability is profiled by conditional-mean matching at each candidate size. The search scans an exponential grid and refines local peaks before comparing neighboring integer sizes. The grid extends beyond its initial range until more than ten consecutive cells give no improvement, subject to the iteration budget. This is a numerical stopping rule. Neither the grid nor its comparison with the Poisson limit certifies a global maximum.
+With both coefficients free, the exponential grid and local refinements propose an integer size; they do not certify it. A successful finite proposal must exclude every size at or beyond a cutoff and cover every feasible integer below it by evaluation or an explicit block bound. For $N\ge K\ge\max x_i$, write $c_N(k)=\sum_{j<k}\log(1-j/N)$ and $\lambda=Np/(1-p)$. Retaining only counts $1,\ldots,K$ in the normalizer gives
+
+$$\ell_N(\lambda)\le T_K(\lambda)+D_{N,K},\qquad D_{N,K}=\sum_i[c_N(x_i)-c_N(K)].$$
+
+Here $T_K$ is the retained finite-support Poisson log likelihood. It is concave in $\log\lambda$; its mean equation brackets the unique maximum unless the retained support is degenerate. Tangent bounds on that bracket bound its supremum. The nonnegative correction decreases to zero with $N$, so strict finite improvements produce a tail cutoff. Increasing $K$ tightens the retained-support bound for infinite windows. Exhausted certificate or enumeration budgets stop with a finite witness and an infinite global upper bound. The certificate is valid in exact arithmetic conditional on the computed comparisons. It uses a $10^{-9}n$ likelihood separation plus $4096\epsilon(1+|\ell|)$ and a retained-sum bound margin $4096\epsilon(1+|\ell|+nK)$; these are practical floating-point margins, without outward rounding.
+
+For a finite block $A\le N\le B$, let $\delta_N(k)=c_N(k)-c_A(k)$ and choose an integer $h<A$. Its increments $d_N(j)=\delta_N(j+1)-\delta_N(j)$ increase with $j$. Thus $r_N(k)=\delta_N(k)-\delta_N(h)-(k-h)d_N(h)$ is nonnegative. Each residual summand also increases with $N$, giving $r_N(k)\le r_B(k)$. The affine part is absorbed into the log odds and normalizing constant, so
+
+$$\sup_{A\le N\le B,p}\ell_N(p)\le\sup_p\ell_A(p)+\sum_i r_B(x_i).$$
+
+The bound uses the support at $A$ as a subset of every later support, so it remains valid below a finite upper truncation endpoint. The same bound holds after zero inflation: a zero mass is bounded by $e^{r_B(0)}$ times the corresponding inflated mass at $A$. Blocks that fail strict exclusion are bisected down to singleton sizes. This avoids exhaustive profiling of a long prefix without assuming profile unimodality.
+
+An unsigned tail bound does not establish that the Poisson face wins. Such comparisons stop as unresolved, preserving the finite and Poisson witnesses. The signed-tail and face-tie analysis is open. See the [certificate investigation](../../../../../dev/research/evaluations/2026-11-07-binom-rel-report.md) for the bound proof, coverage checks and remaining limitations.
 
 With an interior probability held, the integer search bounds the remaining tail before returning. Exhausting its work budget is an error. Probability zero permits only ones. Probability one permits only counts equal to the trial count. These are attained members, not escapes.
 
@@ -105,9 +115,9 @@ The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-bino
 
 ## R notes
 
-The numerical limit comparison can reject a finite mathematical maximum that ties or improves on the limit by less than the comparison tolerance. A limit diagnostic is therefore not a proof of non-existence for the supplied sample.
+A Poisson comparison witness does not assert non-existence; the public condition has kind `unresolved`. The other binomial relatives report such comparisons the same way.
 
-Supply `size` explicitly. A numeric value holds it, while `size = NULL` estimates it. Supplying `prob` holds the probability exactly. The boundary convention at `prob = 0` agrees with actuar. Detected Poisson escapes stop with advice to use `mlztpois`. Iteration exhaustion stops instead of returning a capped size. Increasing `iterlim` permits more work but does not supply a global certificate.
+Supply `size` explicitly. A numeric value holds it, while `size = NULL` estimates it. Supplying `prob` holds the probability exactly. The boundary convention at `prob = 0` agrees with actuar. Unresolved Poisson comparisons retain advice to use `mlztpois` as a comparison model. Iteration exhaustion stops instead of returning a capped size. Increasing `iterlim` raises the certificate and enumeration budgets.
 
 ## Decision history
 
