@@ -335,3 +335,27 @@ test('tlambda free-shape half ties retain a finite improvement and an unresolved
     assert.ok(e.loglik_lower>e.limit_loglik);assert.equal(e.loglik_upper,Infinity);return true;
   });
 });
+
+test('CMP ledger budget retains witnesses; huge modes are numerical', () => {
+  assert.throws(()=>api.cmp.fit([0,0,0,20000],{lambda:5000/5001},{iterlim:1}),e=> {
+    assert.equal(e.kind,'budget');assert.ok(e.candidates.length>0);
+    assert.ok(Number.isFinite(e.loglik_lower));assert.equal(e.loglik_upper,Infinity);
+    assert.match(e.message,/Raising iterlim/);return true;
+  });
+  assert.throws(()=>api.cmp.fit([0,1,2],{lambda:Math.exp(100),nu:.1}),e=> {
+    assert.equal(e.kind,'numerical');assert.doesNotMatch(e.message,/Raising iterlim/);return true;
+  });
+});
+
+test('CMB shared CMP work remains available at higher iterlim', () => {
+  const x=[0,0,1,1,2,2,2,3,3,4];
+  const a=api.cmb.fit(x,{}, {iterlim:100});
+  const b=api.cmb.fit(x,{}, {iterlim:2000});
+  assert.deepEqual(a.estimates,b.estimates);assert.equal(a.logLik,b.logLik);
+});
+
+test('Fully held CMP evaluation uses its fixed cap and fails numerically', () => {
+  assert.throws(()=>api.cmp.fit([0,1,2],{lambda:.999999,nu:1e-12},{iterlim:1}),e=> {
+    assert.equal(e.kind,'numerical');assert.doesNotMatch(e.message,/Raising iterlim/);return true;
+  });
+});

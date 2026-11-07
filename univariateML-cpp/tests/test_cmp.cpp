@@ -68,8 +68,8 @@ TEST_CASE("CMP statuses and fixed parameter paths") {
     }
     CHECK(cppunivariate::cmp_moments(0,0).status == cppunivariate::CmpStatus::InvalidInput);
     CHECK(cppunivariate::cmp_moments(0,-1).status == cppunivariate::CmpStatus::InvalidInput);
-    CHECK(cppunivariate::cmp_moments(100,.1).status == cppunivariate::CmpStatus::WorkLimit);
-    CHECK(cppunivariate::cmp_moments(10,1,2e-16,2).status == cppunivariate::CmpStatus::WorkLimit);
+    CHECK(cppunivariate::cmp_moments(100,.1).status == cppunivariate::CmpStatus::NumericalFailure);
+    CHECK(cppunivariate::cmp_moments(10,1,2e-16,2).status == cppunivariate::CmpStatus::NumericalFailure);
     std::vector<double> x{0,1,1,2,2,2,3,3,4,5};
     cppunivariate::CmpFitControl ctl;
     ctl.fixed_nu=1;

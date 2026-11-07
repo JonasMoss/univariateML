@@ -1,0 +1,18 @@
+{
+  "base": "d34a44cd1b0d7324e1f486d66e6b3f7e3db9210a",
+  "files": {
+    "bindings/common/distributions/cmb/fit.hpp": "1d53565767248d9212d7c40fd00b32d7aa7920c925c3b9d82d56cf72a91305c3",
+    "bindings/common/distributions/cmp/fit.hpp": "8b19f12a22e7ce12691d0d323fffbb437554edd2b35473bbebfa075f845c96d0",
+    "bindings/js/stop-test.mjs": "c79587ddea5ff0174dd477d99da3d4495ff8bcde8f3d4e9b93639a646be8b2b0",
+    "bindings/r/distributions/cmb/test.R": "671127d1c091515084a921c4d630d8e4b2454939d3c320962b715ea4c45e1382",
+    "bindings/r/distributions/cmp/test.R": "765016aad8974aa2391d5e55b43e72e708e505a7d05af5cb8a860bc116c93ed6",
+    "dev/design/work-budgets.md": "66f5ad6fe7cca7c3fde1cb6a1edf4acfe204388bb28a3a26da419a49107ced98",
+    "univariateML-cpp/include/cppunivariate/distributions/cmb/mle.hpp": "cb5161ff0da2526cb19f8e2a668fa4e3b95b75789943a9ef9d04e719527aab85",
+    "univariateML-cpp/include/cppunivariate/distributions/cmb/test.cpp": "aa1c2fc4a2825b069e7bb2c480451392e0d84e978158e63e6ded65b270d57c5f",
+    "univariateML-cpp/include/cppunivariate/distributions/cmp/mle.hpp": "452756996bfb27eccc492b34ace9d3b221733c0df594f6eaf875ff23cf4a0bd1",
+    "univariateML-cpp/include/cppunivariate/distributions/cmp/test.cpp": "641948a55f05ad576af23439337ddd9c0d38963b11dd59a67b0551ba50dfb910",
+    "univariateML-cpp/include/cppunivariate/distributions/skellam/dpqr.hpp": "0ce61c04de668745dbf5bb56ad9ae2cfadb5b6a26a7ecc4a4df8244e23bea9de",
+    "univariateML-cpp/include/cppunivariate/distributions/skellam/test.cpp": "1574d9354158834c678099b71a899341331d0957ab720c19cdd2098092dd4711",
+    "univariateML-cpp/include/cppunivariate/special/cmp.hpp": "f62ea9bc1341e9bafbea61e566602f03f7ac2de2c15ffba65f91bf1940d00310"
+  }
+}

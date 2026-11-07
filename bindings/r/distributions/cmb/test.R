@@ -333,3 +333,11 @@ test_that("CMB fixed-size acceptance stops unchecked loose solves", {
     expect_equal(as.numeric(logLik(f)),sum(dml(x,f,log=TRUE)),tolerance=1e-10)
   }
 })
+
+test_that("CMB delegated CMP allowance increases with iterlim", {
+  x <- c(0,0,1,1,2,2,2,3,3,4)
+  a <- mlcmb(x,size=NULL,iterlim=100)
+  b <- mlcmb(x,size=NULL,iterlim=2000)
+  expect_identical(as.numeric(a),as.numeric(b))
+  expect_identical(as.numeric(logLik(a)),as.numeric(logLik(b)))
+})

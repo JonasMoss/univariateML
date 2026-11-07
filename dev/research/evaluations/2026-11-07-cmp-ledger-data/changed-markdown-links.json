@@ -1,0 +1,42 @@
+{
+  "files": [
+    "dev/design/work-budgets.md",
+    "dev/research/evaluations/2026-11-07-cmp-ledger-report.md"
+  ],
+  "checked_destinations": 13,
+  "broken": [],
+  "repository_wide_check": {
+    "markdown_files": 510,
+    "destinations": 2769,
+    "preexisting_findings": [
+      {
+        "file": "dev/research/evaluations/2026-11-03-boundary-lit-report.md",
+        "line": 5,
+        "url": "../boundary-points.pdf",
+        "unchanged_from_base": true,
+        "sha256": "cd351c4120a8ba7d1181ac10498c470cbddfce532947ab4b019380224c24ba3e"
+      },
+      {
+        "file": "univariateML-cpp/include/cppunivariate/distributions/nbinom/README.md",
+        "line": 234,
+        "url": "1+m/r",
+        "unchanged_from_base": true,
+        "sha256": "d904451e9b6df5a64fbb2a252a2e0a5d2538e5af168a589d0d4914733e231ab8"
+      },
+      {
+        "file": "univariateML-cpp/notes/inference.md",
+        "line": 3,
+        "url": "/inference/",
+        "unchanged_from_base": true,
+        "sha256": "9843db90c9a907959bca5b1013da1d5b9379df11db218324d6ed1476601dd9d1"
+      },
+      {
+        "file": "univariateML-cpp/notes/inference.md",
+        "line": 95,
+        "url": "/inference/",
+        "unchanged_from_base": true,
+        "sha256": "9843db90c9a907959bca5b1013da1d5b9379df11db218324d6ed1476601dd9d1"
+      }
+    ]
+  }
+}

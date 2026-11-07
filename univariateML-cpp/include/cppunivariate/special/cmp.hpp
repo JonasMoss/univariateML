@@ -4,6 +4,8 @@
 #include "../core/precision.hpp"
 
 #include "../core/span.hpp"
+#include "../core/work_budget.hpp"
+#include "../core/discrete_stop.hpp"
 #include "special.hpp"
 #include <algorithm>
 #include <cmath>
@@ -14,8 +16,19 @@ namespace cppunivariate {
 
 // Ok certifies truncation/quadrature remainders, not floating-point roundoff.
 enum class CmpStatus {
-    Ok, InvalidInput, WorkLimit, IterationFailure,
-    GeometricLimit, TwoPointLimit, PointMassLimit
+    Ok, InvalidInput, NumericalFailure, IterationFailure,
+    GeometricLimit, TwoPointLimit, PointMassLimit, BudgetLimit
+};
+// NumericalFailure is an evaluator refusal; BudgetLimit is fitting exhaustion.
+// A view of caller-owned state: delegates never reset or reserve the allowance.
+struct CmpWorkLedger {
+    std::uint64_t& used;
+    std::uint64_t limit;
+    std::uint64_t remaining() const { return used < limit ? limit-used : 0; }
+    bool spend(std::uint64_t count) {
+        if (count > remaining()) return false;
+        used+=count; return true;
+    }
 };
 enum class CmpRegime { Direct, Geometric, EulerMaclaurin };
 struct CmpMoments {
@@ -29,7 +42,7 @@ struct CmpMoments {
     double variance_residual = special::kNaN;
     double covariance_residual = special::kNaN;
     double relative_tail_bound = special::kPosInf;
-    std::size_t work = 0;
+    std::uint64_t work = 0;
     CmpStatus status = CmpStatus::InvalidInput;
     CmpRegime regime = CmpRegime::Direct;
 };
@@ -135,8 +148,8 @@ inline CPPUNIV_EXTENDED_REAL tail_bound_log(
 // Euler--Maclaurin on a smooth saddle window, with composite 16-point Gauss
 // integration. All derivative bounds are absolute Taylor coefficients.
 // The tails and EM/quadrature remainders are bounded separately from roundoff.
-inline CmpMoments euler_maclaurin(double eta, double nu, double tol) {
-    CmpMoments out; out.regime=CmpRegime::EulerMaclaurin; out.status=CmpStatus::WorkLimit;
+inline CmpMoments euler_maclaurin(double eta, double nu, double tol, CmpWorkLedger& ledger) {
+    CmpMoments out; out.regime=CmpRegime::EulerMaclaurin; out.status=CmpStatus::NumericalFailure;
     if (!(nu > 0)) return out;
     const CPPUNIV_EXTENDED_REAL n=nu, lm=static_cast<CPPUNIV_EXTENDED_REAL>(eta)/n;
     CPPUNIV_EXTENDED_REAL z=std::exp(lm);
@@ -165,6 +178,8 @@ inline CmpMoments euler_maclaurin(double eta, double nu, double tol) {
     std::vector<CPPUNIV_EXTENDED_REAL> sums(6,0), corrections(6,0);
     const int panels=256;
     const CPPUNIV_EXTENDED_REAL step=2*radius/panels;
+    if (!ledger.spend(panels*16)) { out.status=CmpStatus::BudgetLimit; return out; }
+    out.work=panels*16;
     for (int panel=0;panel<panels;++panel) {
         const CPPUNIV_EXTENDED_REAL mid=-radius+(panel+CPPUNIV_EXTENDED_LITERAL(.5,.5L))*step;
         for (int j=0;j<8;++j) for (int sign : {-1,1}) {
@@ -261,13 +276,13 @@ inline CmpMoments euler_maclaurin(double eta, double nu, double tol) {
 
 }
 
-// max_terms bounds total work, independently of the mode. Both tails are
+// The shared ledger bounds total work, independently of the mode. Both tails are
 // bounded geometrically; one need not enumerate billions of lower indices.
-inline CmpMoments cmp_moments(double eta, double nu, double tol = 2e-16,
-                              std::size_t max_terms = 1000000) {
+inline CmpMoments cmp_moments(double eta, double nu, CmpWorkLedger& ledger,
+                              double tol = 2e-16) {
     CmpMoments out;
     if (!std::isfinite(eta) || !std::isfinite(nu) || nu < 0 ||
-        !(tol > 0 && tol < 1) || max_terms < 2 || (nu == 0 && eta >= 0)) return out;
+        !(tol > 0 && tol < 1) || (nu == 0 && eta >= 0)) return out;
     if (nu == 0) {
         out.regime=CmpRegime::Geometric;
         out.log_z=-std::log(-std::expm1(eta));
@@ -276,23 +291,25 @@ inline CmpMoments cmp_moments(double eta, double nu, double tol = 2e-16,
     }
     const CPPUNIV_EXTENDED_REAL e=eta, n=nu;
     const CPPUNIV_EXTENDED_REAL lm=nu == 0 ? -special::kPosInf : e/n;
-    std::size_t preliminary_work=0;
-    if (max_terms >= 4096 && nu > 0 && lm > std::log(CPPUNIV_EXTENDED_LITERAL(1e6,1e6L)) && lm-std::log(nu) >= std::log(CPPUNIV_EXTENDED_LITERAL(1e6,1e6L))) {
-        CmpMoments smooth=cmp_detail::euler_maclaurin(eta,nu,tol);
-        if (smooth.status == CmpStatus::Ok) return smooth;
+    std::uint64_t preliminary_work=0;
+    if (ledger.remaining() >= 4096 && nu > 0 && lm > std::log(CPPUNIV_EXTENDED_LITERAL(1e6,1e6L)) && lm-std::log(nu) >= std::log(CPPUNIV_EXTENDED_LITERAL(1e6,1e6L))) {
+        CmpMoments smooth=cmp_detail::euler_maclaurin(eta,nu,tol,ledger);
+        if (smooth.status == CmpStatus::Ok || smooth.status == CmpStatus::BudgetLimit) return smooth;
         if (lm > std::log(CPPUNIV_EXTENDED_LITERAL(9e15,9e15L))) return smooth;
         preliminary_work=smooth.work;
     }
-    if (lm > std::log(CPPUNIV_EXTENDED_LITERAL(9e15,9e15L))) { out.status=CmpStatus::WorkLimit; return out; }
+    if (lm > std::log(CPPUNIV_EXTENDED_LITERAL(9e15,9e15L))) { out.status=CmpStatus::NumericalFailure; return out; }
     const CPPUNIV_EXTENDED_REAL mode=lm > 0 ? std::floor(std::exp(lm)) : 0;
     const CPPUNIV_EXTENDED_REAL h0=std::lgamma(mode+1), a=mode <= 1 ? 0 : std::log(mode+1);
     cmp_detail::Sums s;
-    out.work=1+preliminary_work;
+    out.work=preliminary_work;
+    if (!ledger.spend(1)) { out.status=CmpStatus::BudgetLimit; return out; }
+    ++out.work;
     CPPUNIV_EXTENDED_REAL worst=0;
     for (int direction : {-1,1}) {
         CPPUNIV_EXTENDED_REAL k=mode, lw=0, lw_correction=0, d=0, r=0;
         bool done=false;
-        while (out.work < max_terms) {
+        while (ledger.remaining() > 0) {
             if (direction < 0 && k == 0) { done=true; break; }
             const CPPUNIV_EXTENDED_REAL index=direction > 0 ? k+1 : k;
             const CPPUNIV_EXTENDED_REAL dr=mode <= 1 ? std::log(index) :
@@ -317,7 +334,7 @@ inline CmpMoments cmp_moments(double eta, double nu, double tol = 2e-16,
             else
 #endif
                 s.add(lw,d,r,lw_correction);
-            ++out.work;
+            ledger.spend(1); ++out.work;
             if (direction < 0 && k == 0) { done=true; break; }
             const CPPUNIV_EXTENDED_REAL next_index=direction > 0 ? k+1 : k;
             const CPPUNIV_EXTENDED_REAL next_dr=mode <= 1 ? std::log(next_index) :
@@ -328,7 +345,7 @@ inline CmpMoments cmp_moments(double eta, double nu, double tol = 2e-16,
             if (bound <= 1) { worst += bound*tol; done=true; break; }
         }
         if (!done) {
-            out.status=CmpStatus::WorkLimit; return out;
+            out.status=CmpStatus::BudgetLimit; return out;
         }
     }
     const CPPUNIV_EXTENDED_REAL md=s.d/s.z, mr=s.r/s.z;
@@ -356,31 +373,41 @@ inline CmpMoments cmp_moments(double eta, double nu, double tol = 2e-16,
     return out;
 }
 
+inline CmpMoments cmp_moments(double eta, double nu, double tol = 2e-16,
+                              std::uint64_t max_terms = 1000000) {
+    if(max_terms<2) return CmpMoments{};
+    std::uint64_t used=0;
+    CmpWorkLedger ledger{used,max_terms};
+    auto out=cmp_moments(eta,nu,ledger,tol);
+    if(out.status==CmpStatus::BudgetLimit)out.status=CmpStatus::NumericalFailure;
+    return out;
+}
+
 struct CmpFitControl {
     double tol = 1e-10;
     int maxit = 100;
     double fixed_nu = special::kNaN;
     double fixed_lambda = special::kNaN;
-    std::size_t max_terms = 1000000;
 };
 struct CmpResult {
     double eta = special::kNaN, nu = special::kNaN;
     double logLik = special::kNaN;
     double mean = special::kNaN, mean_h = special::kNaN;
     int iterations = 0;
-    std::size_t work = 0;
+    std::uint64_t work = 0;
     CmpStatus status = CmpStatus::InvalidInput;
+    StopDetail stop_detail{};
 };
 
 namespace cmp_detail {
 inline CmpMoments mean_match(double m, double nu, double& eta,
-                             const CmpFitControl& ctl, std::size_t& work) {
+                             const CmpFitControl& ctl, std::uint64_t& work, CmpWorkLedger& ledger) {
     double lo=-special::kPosInf, hi=special::kPosInf;
     eta=nu*std::log(m+0.5);
     if (nu == 0) eta=-std::log1p(1/m);
     CmpMoments v;
-    for (int i=0;i<ctl.maxit;++i) {
-        v=cmp_moments(eta,nu,2e-16,ctl.max_terms); work+=v.work;
+    for (int i=0;i<solver_budget(ctl.maxit);++i) {
+        v=cmp_moments(eta,nu,ledger); work+=v.work;
         if (v.status != CmpStatus::Ok) return v;
         const CPPUNIV_EXTENDED_REAL err=(v.center-m)+v.offset;
         const double resolution=2*std::numeric_limits<double>::epsilon()*
@@ -414,13 +441,13 @@ inline CPPUNIV_EXTENDED_REAL geometric_lower(CPPUNIV_EXTENDED_REAL m) {
 }
 }
 
-inline CmpResult cmp_mle(span x, const CmpFitControl& ctl = {}) {
+inline CmpResult cmp_mle_work(span x, const CmpFitControl& ctl, CmpWorkLedger& ledger) {
     CmpResult out;
     const bool fn=std::isfinite(ctl.fixed_nu), fl=std::isfinite(ctl.fixed_lambda);
     if (x.empty() || !(ctl.tol > 0 && ctl.tol < 1) || ctl.maxit < 1 ||
         (!std::isnan(ctl.fixed_nu) && !fn) ||
         (!std::isnan(ctl.fixed_lambda) && !fl) ||
-        (fn && ctl.fixed_nu < 0) || (fl && ctl.fixed_lambda < 0) || ctl.max_terms<2 ||
+        (fn && ctl.fixed_nu < 0) || (fl && ctl.fixed_lambda < 0) ||
         (fl && fn && ctl.fixed_nu==0 && ctl.fixed_lambda>=1)) return out;
     CPPUNIV_EXTENDED_REAL sx=0, sh=0;
     double xmin=special::kPosInf, xmax=0;
@@ -476,7 +503,7 @@ inline CmpResult cmp_mle(span x, const CmpFitControl& ctl = {}) {
     if (!fn && (!fl || eta < 0) &&
         !(!fl && m > 1000 && t < cmp_detail::geometric_lower(m))) {
         const double eg=fl ? eta : -std::log1p(1/static_cast<double>(m));
-        v=cmp_moments(eg,0,2e-16,ctl.max_terms); out.work+=v.work;
+        v=cmp_moments(eg,0,ledger); out.work+=v.work;
         if (v.status != CmpStatus::Ok) { out.status=v.status; return out; }
         geometric_eta=eg; geometric_ll=static_cast<double>(sx*eg-x.size()*v.log_z);
         if (t >= v.mean_h) {
@@ -485,10 +512,10 @@ inline CmpResult cmp_mle(span x, const CmpFitControl& ctl = {}) {
         }
     }
     double lo=0, hi=special::kPosInf;
-    for (int i=0;i<ctl.maxit;++i) {
+    for (int i=0;i<solver_budget(ctl.maxit);++i) {
         out.iterations=i+1;
-        if (fl) { v=cmp_moments(eta,nu,2e-16,ctl.max_terms); out.work+=v.work; }
-        else v=cmp_detail::mean_match(static_cast<double>(m),nu,eta,ctl,out.work);
+        if (fl) { v=cmp_moments(eta,nu,ledger); out.work+=v.work; }
+        else v=cmp_detail::mean_match(static_cast<double>(m),nu,eta,ctl,out.work,ledger);
         if (v.status != CmpStatus::Ok) { out.status=v.status; return out; }
         out.eta=eta; out.nu=nu;
         const CPPUNIV_EXTENDED_REAL amode=v.slope;
@@ -496,6 +523,12 @@ inline CmpResult cmp_mle(span x, const CmpFitControl& ctl = {}) {
             (adata-amode)*(m-pivot);
         out.logLik=static_cast<double>(x.size()*((m-v.center)*(eta-nu*amode)-
             nu*data_at_mode-v.log_scaled_z));
+        if(std::isfinite(out.logLik) && std::isfinite(std::exp(eta)) && std::exp(eta)>0 &&
+           (!std::isfinite(out.stop_detail.loglik_lower) || out.logLik>out.stop_detail.loglik_lower)) {
+            const double margin=1e-9*(x.size()+std::abs(out.logLik));
+            out.stop_detail.candidates={{{std::exp(eta),nu},out.logLik-margin,out.logLik+margin}};
+            out.stop_detail.loglik_lower=out.logLik-margin;
+        }
         const CPPUNIV_EXTENDED_REAL mean_error=(v.center-m)+v.offset;
         // Project out the small remaining mean-solving error. This avoids
         // amplifying binary64 eta resolution by log(m) at large counts.
@@ -519,6 +552,41 @@ inline CmpResult cmp_mle(span x, const CmpFitControl& ctl = {}) {
         nu=next;
     }
     out.status=CmpStatus::IterationFailure; return out;
+}
+
+inline CmpResult cmp_mle(span x, const CmpFitControl& ctl, CmpWorkLedger& ledger) {
+    auto out=cmp_mle_work(x,ctl,ledger);
+    if(out.status==CmpStatus::Ok)out.stop_detail={};
+    if(out.status==CmpStatus::BudgetLimit) {
+        // Closed-form proper members provide witnesses even before a series
+        // completes. Retain the better member when both respect the holds.
+        if(out.stop_detail.candidates.empty()) {
+            double sum=0,h=0;for(double v:x){sum+=v;h+=std::lgamma(v+1);}
+            const double mean=sum/x.size();
+            const auto keep=[&](double lambda,double nu,double ll) {
+                if(!std::isfinite(ll) || !(lambda>0) || !std::isfinite(lambda))return;
+                if(!out.stop_detail.candidates.empty() &&
+                   ll<=out.stop_detail.candidates.front().loglik_lower)return;
+                const double margin=1e-9*(x.size()+std::abs(ll));
+                out.stop_detail.candidates={{{lambda,nu},ll-margin,ll+margin}};
+            };
+            if(!std::isfinite(ctl.fixed_nu) || ctl.fixed_nu==1) {
+                const double lambda=std::isfinite(ctl.fixed_lambda)?ctl.fixed_lambda:mean;
+                keep(lambda,1,sum*std::log(lambda)-x.size()*lambda-h);
+            }
+            if(!std::isfinite(ctl.fixed_nu) || ctl.fixed_nu==0) {
+                const double lambda=std::isfinite(ctl.fixed_lambda)?ctl.fixed_lambda:mean/(1+mean);
+                if(lambda<1)keep(lambda,0,sum*std::log(lambda)+x.size()*std::log1p(-lambda));
+            }
+        }
+        out.stop_detail=discrete_budget(out.stop_detail);
+    }
+    return out;
+}
+inline CmpResult cmp_mle(span x, const CmpFitControl& ctl = {}) {
+    std::uint64_t used=0;
+    CmpWorkLedger ledger{used,static_cast<std::uint64_t>(enumeration_budget(ctl.maxit))};
+    return cmp_mle(x,ctl,ledger);
 }
 
 } // namespace cppunivariate

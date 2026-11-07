@@ -41,3 +41,12 @@ takes a few seconds at most.
 Families without an `iterlim` argument (exact or closed-form fitters) keep a
 fixed cap, stated in the README. Add `iterlim` to one only if realistic
 samples hit that cap.
+
+Likelihood and density evaluators (CMP d/p/q, discrete-gamma gamma tails,
+PIG recurrence and asymptotic terms, and Skellam sums) behave like special
+functions: their fixed internal caps are outside the `iterlim` policy, and
+exhaustion is a numerical stop. Fully held R models are pure evaluation and
+are not metered. CMP fitting normalizers instead consume the caller's shared
+64-bit enumeration ledger, including CMB's delegated CMP solves and CMP's
+acceptance checks; no per-call reservation reduces the child's allowance.
+See the [CMP ledger validation report](../research/evaluations/2026-11-07-cmp-ledger-report.md).
