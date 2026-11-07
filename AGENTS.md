@@ -52,9 +52,11 @@ docs, validation harness and site page
   `<Id>Status` enum. `Rcpp::stop` belongs in R adapters only.
 - No `using` declarations, no raw pointers (take `cppunivariate::span`), no
   Armadillo.
-- C++ fitters take `tol` and `maxit`. R adapters use the CRAN names in
-  [cran-argument-names](dev/roadmap/2026-10-28-cran-argument-names.md)
-  (`reltol`, `abstol`, `gradtol`, `iterlim`, `<param>0`).
+- Accuracy contract ([design](dev/design/accuracy-contract.md)): an `Ok`
+  fit is within relative `tol` (default `1e-10`) of a maximizer in every free
+  coefficient, and its stopping rule must justify that. Target controls are
+  `tol` and `iterlim` only (C++ `tol`, `maxit`); the CRAN-era `reltol`,
+  `abstol`, `gradtol` and `<param>0` are being removed for 2.0.
 - The core must build, test, fit, evaluate and sample without R. R RNG state
   stays in the bindings.
 - Failure handling, score gates and work caps:

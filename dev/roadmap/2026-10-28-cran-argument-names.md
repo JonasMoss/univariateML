@@ -1,3 +1,6 @@
+> **Superseded 2026-11-07** by the [accuracy contract](../design/accuracy-contract.md):
+> every fitter takes only `tol` and `iterlim`.
+
 # R argument names vs the CRAN release (decision D3)
 
 **Decision (2026-10-28):** keep CRAN names where the meaning is the same;

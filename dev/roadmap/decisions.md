@@ -8,6 +8,12 @@ Active work lives on the board (`~/boards/univariateML`), not here.
 
 ## 2026-11-07
 
+- **One accuracy contract and uniform controls for 2.0** (Jonas: "we should
+  aim for the same sort of tolerance across everything, compatibility is not
+  important. this is a version bump++"). Every `Ok` fit is within relative
+  `1e-10` of a maximizer in each free coefficient, justified by its stopping
+  rule; every fitter takes only `tol` and `iterlim`. Supersedes D3 (CRAN
+  argument names, 2026-10-28). Design: [accuracy contract](../design/accuracy-contract.md).
 - **Agent instructions** (Jonas: "i dont want old stuff there, and this has
   clearly drifted"): one lean `AGENTS.md` replaces `CLAUDE.md` and the old
   `AGENTS.md`. It states the purpose (a proof of concept for solid maximum
