@@ -1,4 +1,5 @@
 #pragma once
+#include "../ztbinom/certificate.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/discrete_stop.hpp"
 #include "../ztbinom/mle.hpp"
@@ -7,7 +8,8 @@ namespace cppunivariate {
 enum class ZibStatus { Ok, InvalidInput, InvalidSize, ZipLimit, IterationFailure };
 struct ZibResult {double size, prob, pi, logLik;int iterations;ZibStatus status;  StopDetail stop_detail{};
 };
-inline ZibResult zib_mle(ispan x,double tol=1e-10,int maxit=200,
+namespace zib_fit_detail {
+inline ZibResult zib_mle_proposal(ispan x,double tol=1e-10,int maxit=200,
     double fixed_size=std::numeric_limits<double>::quiet_NaN(),
     double fixed_prob=std::numeric_limits<double>::quiet_NaN(),double fixed_pi=std::numeric_limits<double>::quiet_NaN()) {
   maxit = static_cast<int>(solver_budget(maxit));
@@ -39,30 +41,33 @@ inline ZibResult zib_mle(ispan x,double tol=1e-10,int maxit=200,
     const auto held_profile=[&](double r) {
       if(fp)return evaluate(r,fixed_prob);
       if(sum==0)return evaluate(r,0);
-      if(fixed_pi==0)return evaluate(r,m/r);
+      if(fixed_pi==0 || zeros==0)return evaluate(r,m/r);
       if(fixed_pi==1)return evaluate(r,.5);
       // At any stationary point m/r <= p <= positive_mean/r.
       // Turning points of (1-p)^r*(n*r*p-S)/(S-k*r*p)
       // are the roots of a quadratic. Partition there to isolate every root.
       const double k=n-zeros, lower=m/r, upper=std::min(1.,sum/(k*r));
       std::vector<double> points{lower,upper};
-      const auto quadratic=[&](double p) {
-        const double a=n*r*p-sum,b=sum-k*r*p;
-        return -a*b+n*(1-p)*b+k*(1-p)*a;
-      };
-      const double c=quadratic(0),v=quadratic(1),w=quadratic(.5);
-      const double a=2*(v+c-2*w),b=v-c-a;
+      // Use u=r*p: recovering p coefficients by differencing values at
+      // 0, 1/2, 1 loses the linear coefficient for a large held size.
+      const double a=n*k,b=-sum*(n+k)-sum*zeros/r,c=sum*sum+sum*zeros;
       const double disc=b*b-4*a*c;
-      if(a!=0 && disc>=0)for(double sign:{-1.,1.}) {
-        const double p=(-b+sign*std::sqrt(disc))/(2*a);
-        if(p>lower && p<upper)points.push_back(p);
+      const double arithmetic=4096*std::numeric_limits<double>::epsilon()*(1+b*b+4*a*c);
+      if(!std::isfinite(disc) || std::abs(disc)<=arithmetic) {
+        auto out=evaluate(r,lower);out.status=ZibStatus::IterationFailure;return out;
       }
-      if(a==0 && b!=0 && -c/b>lower && -c/b<upper)points.push_back(-c/b);
+      if(disc>0) {
+        const double q=-.5*(b+std::copysign(std::sqrt(disc),b));
+        for(double u : {q/a,c/q}) {
+          const double p=u/r;
+          if(p>lower && p<upper)points.push_back(p);
+        }
+      }
       std::sort(points.begin(),points.end());
       auto best=evaluate(r,lower);
       auto candidate=evaluate(r,upper);if(candidate.logLik>best.logLik)best=candidate;
       const auto score=[&](double p) {
-        const double q=std::pow(1-p,r);
+        const double q=std::exp(r*std::log1p(-p));
         return fixed_pi*(sum-k*r*p)+(1-fixed_pi)*q*(sum-n*r*p);
       };
       for(std::size_t j=1;j<points.size();++j) {
@@ -72,6 +77,9 @@ inline ZibResult zib_mle(ispan x,double tol=1e-10,int maxit=200,
         for(int it=0;it<maxit;++it) {
           const double mid=lo+(hi-lo)/2;
           if((score(mid)>0)==positive)lo=mid;else hi=mid;
+        }
+        if(hi-lo>tol*std::abs(lo)) {
+          best.status=ZibStatus::IterationFailure;return best;
         }
         candidate=evaluate(r,lo+(hi-lo)/2);if(candidate.logLik>best.logLik)best=candidate;
       }
@@ -124,50 +132,23 @@ inline ZibResult zib_mle(ispan x,double tol=1e-10,int maxit=200,
       if(improved) since_improvement=0; else ++since_improvement;
       if(t>=grid_floor && since_improvement>patience) break;
     }
-    const auto face=[&](double lambda) {
-      double ll=0;
-      for(int v:x) {
-        if(v==0)ll+=std::log(fixed_pi+(1-fixed_pi)*std::exp(-lambda));
-        else ll+=std::log1p(-fixed_pi)+v*std::log(lambda)-lambda-special::lgamma(v+1.);
-      }
-      return ll;
-    };
-    // Isolate every stationary point of the matching ZIP face as well.
-    // The logarithmic odds equation turns where the quadratic below is zero.
-    const double k=n-zeros;
-    std::vector<double> points{m,pm};
-    const double qa=n*k,qb=-sum*(n+k),qc=sum*sum+sum*zeros;
-    const double discriminant=qb*qb-4*qa*qc;
-    if(qa>0 && discriminant>=0)for(double sign:{-1.,1.}) {
-      const double lambda=(-qb+sign*std::sqrt(discriminant))/(2*qa);
-      if(lambda>m && lambda<pm)points.push_back(lambda);
+    // J1 isolates all held-inflation ZIP branches, including ambiguity.
+    const auto face=zip_mle(x,NAN,fixed_pi,maxit);
+    if(face.status==ZipStatus::Ok && face.logLik>=best.logLik-1e-8*n) {
+      best.status=ZibStatus::ZipLimit;
+      best.stop_detail=discrete_face(StopModel::Zip,{face.lambda,fixed_pi},face.logLik);
     }
-    std::sort(points.begin(),points.end());
-    double face_lambda=face(m)>=face(pm)?m:pm;
-    double face_best=face(face_lambda);
-    const auto face_score=[&](double lambda) {
-      return fixed_pi*(sum-k*lambda)+(1-fixed_pi)*std::exp(-lambda)*(sum-n*lambda);
-    };
-    for(std::size_t j=1;j<points.size();++j) {
-      double lo=points[j-1],hi=points[j];
-      if(face_score(lo)*face_score(hi)>0)continue;
-      const bool positive=face_score(lo)>0;
-      for(int it=0;it<maxit;++it) {
-        const double mid=lo+(hi-lo)/2;
-        if((face_score(mid)>0)==positive)lo=mid;else hi=mid;
-      }
-      const double lambda=lo+(hi-lo)/2;
-      if(face(lambda)>face_best){face_best=face(lambda);face_lambda=lambda;}
-    }
-    if(face_best>=best.logLik-1e-8*n) {best.status=ZibStatus::ZipLimit;
-      best.stop_detail=discrete_face(StopModel::Zip,{face_lambda,fixed_pi},face_best);}
     // Ran out of the iteration budget while still improving, rather
     // than stabilizing: the budget, not a size, is exhausted.
     if(best.status==ZibStatus::Ok && t>cap && since_improvement<=patience)best.status=ZibStatus::IterationFailure;
     return best;
   }
   auto profile=[&](double r) {
-    double p=zero_detail::bin_prob(r,pm,maxit);
+    double p=zeros==0?m/r:zero_detail::bin_prob(r,pm,maxit);
+    // Certify the positive-mean solve before using it to select the constrained
+    // inflation branch; an inaccurate root can otherwise select the wrong side.
+    const bool root_done=zeros==0 || pm==1 || (p>0 && p<=1 &&
+      std::abs((n-zeros)*(r*p/(-std::expm1(r*std::log1p(-p)))-pm))<1e-7);
     // If the unconstrained mixture needs negative inflation, pi=0.
     if(std::exp(r*std::log1p(-p))>z)p=m/r;
     const double logf0=r*std::log1p(-p), f0=std::exp(logf0);
@@ -177,7 +158,7 @@ inline ZibResult zib_mle(ispan x,double tol=1e-10,int maxit=200,
       if(v==0)ll+=std::log(pi+(1-pi)*f0);
       else ll+=std::log1p(-pi)+zero_detail::bin_logpmf(v,r,p);
     }
-    return ZibResult{r,p,pi,ll,0,ZibStatus::Ok};
+    return ZibResult{r,p,pi,ll,0,std::isfinite(ll)&&root_done?ZibStatus::Ok:ZibStatus::IterationFailure};
   };
   if(fixed)return profile(fixed_size);
   auto best=profile(mx);
@@ -211,4 +192,56 @@ inline ZibResult zib_mle(ispan x,double tol=1e-10,int maxit=200,
 
   return stopped;
 }
+} // namespace zib_fit_detail
+inline ZibResult zib_mle(ispan x,double tol=1e-10,int maxit=200,
+    double fixed_size=NAN,double fixed_prob=NAN, double fixed_pi=NAN) {
+  // The support {0,1} is saturated at size one, even with inflation held.
+  if((std::isnan(fixed_size)||fixed_size==1) && std::isnan(fixed_prob) && x.size()>0 && maxit>1 && tol>0 && std::isfinite(tol)) {
+    bool binary=true;double sum=0;for(int v:x){binary=binary && v>=0 && v<=1;sum+=v;}
+    if(binary && sum>0 && (std::isnan(fixed_pi)||(fixed_pi>=0 && fixed_pi<1))) {
+      const double pi=std::isnan(fixed_pi)?0:fixed_pi;
+      const double p=std::min(1.,sum/(x.size()*(1-pi)));
+      double ll=sum*std::log((1-pi)*p);
+      if(sum<x.size())ll+=(x.size()-sum)*std::log(1-(1-pi)*p);
+      return {1,p,pi,ll,0,ZibStatus::Ok};
+    }
+  }
+  auto best=zib_fit_detail::zib_mle_proposal(x,tol,maxit,fixed_size,fixed_prob,fixed_pi);
+  if(!std::isnan(fixed_size)||!std::isnan(fixed_prob)||x.size()==0) {
+    if(best.status==ZibStatus::IterationFailure)
+      binomial_certificate_detail::witness(best.stop_detail,{best.size,best.prob,best.pi},best.logLik,false);
+    return best;
+  }
+  int mx=0;double sum=0;for(int v:x){mx=std::max(mx,v);sum+=v;}
+  if(sum==0 || mx==1)return best;
+  if(best.status==ZibStatus::InvalidInput || best.status==ZibStatus::InvalidSize)return best;
+  if(best.status==ZibStatus::IterationFailure) {
+    binomial_certificate_detail::witness(best.stop_detail,{best.size,best.prob,best.pi},best.logLik,false);return best;
+  }
+  // A face is a witness, never a J7a proof that no finite size wins.
+  if(best.status!=ZibStatus::Ok) {
+    binomial_certificate_detail::witness(best.stop_detail,{best.size,best.prob,best.pi},best.logLik,false,true);return best;
+  }
+  if(best.logLik==0)return best;
+  binomial_certificate_detail::Work work{0,0,maxit};
+  const double end=binomial_certificate_detail::cutoff(x,0,INFINITY,true,fixed_pi,best.logLik,work);
+  if(std::isfinite(end) && best.size>=end)work.numerical=true;
+  if(!std::isfinite(end) || work.numerical) {
+    best.status=ZibStatus::IterationFailure;
+    binomial_certificate_detail::witness(best.stop_detail,{best.size,best.prob,best.pi},best.logLik,!work.numerical);return best;
+  }
+  double incumbent=best.logLik;
+  const bool complete=binomial_certificate_detail::cover(x,mx,end,incumbent,work,[&](double N) {
+    const auto f=zib_fit_detail::zib_mle_proposal(x,tol,maxit,N,NAN,fixed_pi);
+    if(f.status!=ZibStatus::Ok)return double(NAN);
+    if(f.logLik>best.logLik)best=f;
+    return f.logLik;
+  });
+  if(!complete) {
+    best.status=ZibStatus::IterationFailure;
+    binomial_certificate_detail::witness(best.stop_detail,{best.size,best.prob,best.pi},best.logLik,!work.numerical);
+  }
+  return best;
+}
+
 }

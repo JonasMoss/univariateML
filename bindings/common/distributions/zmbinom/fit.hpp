@@ -19,10 +19,14 @@ inline FitResult fit_zmbinom(cppunivariate::ispan x, Held size_arg = {}, Held pr
   std::string stop_kind;
   switch(res.status) {
     case cppunivariate::ZmbinomStatus::PoissonLimit: stop_kind="limit";break;
+    case cppunivariate::ZmbinomStatus::IterationFailure: stop_kind="numerical";break;
     default:break;
   }
+  if(res.stop_detail.comparison_tie)stop_kind="unresolved";
+  if(res.stop_detail.budget_exhausted)stop_kind="budget";
+  if(stop_kind.empty() && !res.stop_detail.candidates.empty())stop_kind="numerical";
   const auto stopped_fail = [&](const std::string& format, const auto&... arguments) {
-    auto out=fail(binding_message(format,arguments...));
+    auto out=fail(stop_kind=="unresolved" ? "Finite-size versus limit comparison is unresolved; no maximizer is certified. Use `mlzmpois` only to fit the comparison face." : binding_message(format,arguments...));
     return stop_kind.empty()?out:stop_failure(out,res.stop_detail,stop_kind,{"size","prob","p0"});
   };
 

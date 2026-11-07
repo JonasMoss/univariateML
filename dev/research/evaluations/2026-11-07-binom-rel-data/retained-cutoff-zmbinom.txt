@@ -1,0 +1,6 @@
+proposal 0 8 -617.057
+8 -617.238 cells 160 eval 5
+16 -626.744 cells 368 eval 6
+32 -626.744 cells 736 eval 6
+64 -626.744 cells 1472 eval 6
+end 65536 cells 5340 eval 5

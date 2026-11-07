@@ -1,0 +1,33 @@
+cpp-final-verified-simbox.log
+100% tests passed out of 129
+Total Test time (real) = 203.20 sec
+100% tests passed out of 129
+Total Test time (real) = 178.98 sec
+
+cpp-no-long-double-local-final.log
+100% tests passed, 0 tests failed out of 129
+Total Test time (real) = 253.52 sec
+
+r-acceptance-simbox.log
+Duration: 100.6 s
+[ FAIL 0 | WARN 0 | SKIP 154 | PASS 21279 ]
+Duration: 306.1 s
+[ FAIL 0 | WARN 0 | SKIP 0 | PASS 44097 ]
+
+js-test-final.log
+# tests 471
+# pass 471
+# fail 0
+# skipped 0
+# duration_ms 148417.731543
+
+site-check-latest.log
+PASS: four articles; dossier catalogues: 288 limits, 99 families, 9 fit domains.
+PASS: inference: 353 unique scopes, 99 families; implementation symbols, evidence anchors, calibration and checks resolve; full static table.
+PASS: graph: 99 unique nodes, 277 edges, resolving family links; SVG generated twice byte-identically and matches built HTML.
+PASS: explorer coverage matches binding registry; optional build assets agree.
+PASS: every declared and inverted relation and limit link is rendered and resolves.
+PASS: 99 family pages; MathML on every family; no math runtime or external runtime assets; internal links and fragments resolve.
+PASS: 99 generated C++ snippets compile and link as C++17 (including exp, gamma, gb2).
+PASS: pilot and ten additional HTML spot checks: exp, gamma, gb2, binom, beta, hyper, sstd, gev, gpd, tnorm, pois, unif, pareto
+

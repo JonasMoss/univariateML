@@ -1,0 +1,18 @@
+6434b454ae853beb8b0f7056e9087713c4244cba75cad0cbf155b872ff2bb22b  univariateML-cpp/include/cppunivariate/distributions/ztbinom/mle.hpp
+0d3313ba4be3c238870a6b370f4b00708cfebf1e231d83b6b4f370ac5c7471d8  univariateML-cpp/include/cppunivariate/distributions/zmbinom/mle.hpp
+8ad936fcfd2965e370fa17af7afc0f5734b61ab4bc864ccf8f7801536a07fddd  univariateML-cpp/include/cppunivariate/distributions/tbinom/mle.hpp
+29b2533d8b4337f35b8ba32e8e2bdc5ef4b43c3fee86d920f0f9e1d8c06fa46a  univariateML-cpp/include/cppunivariate/distributions/zib/mle.hpp
+133a01fd3a8e2cf65f332941b19a81f6af9653f9a8a5516befdf373b4adf9ac8  univariateML-cpp/include/cppunivariate/distributions/ztbinom/certificate.hpp
+6434b454ae853beb8b0f7056e9087713c4244cba75cad0cbf155b872ff2bb22b  univariateML-cpp/include/cppunivariate/distributions/ztbinom/mle.hpp
+0d3313ba4be3c238870a6b370f4b00708cfebf1e231d83b6b4f370ac5c7471d8  univariateML-cpp/include/cppunivariate/distributions/zmbinom/mle.hpp
+8ad936fcfd2965e370fa17af7afc0f5734b61ab4bc864ccf8f7801536a07fddd  univariateML-cpp/include/cppunivariate/distributions/tbinom/mle.hpp
+29b2533d8b4337f35b8ba32e8e2bdc5ef4b43c3fee86d920f0f9e1d8c06fa46a  univariateML-cpp/include/cppunivariate/distributions/zib/mle.hpp
+133a01fd3a8e2cf65f332941b19a81f6af9653f9a8a5516befdf373b4adf9ac8  univariateML-cpp/include/cppunivariate/distributions/ztbinom/certificate.hpp
+6434b454ae853beb8b0f7056e9087713c4244cba75cad0cbf155b872ff2bb22b  univariateML-r/inst/include/cppunivariate/distributions/ztbinom/mle.hpp
+0d3313ba4be3c238870a6b370f4b00708cfebf1e231d83b6b4f370ac5c7471d8  univariateML-r/inst/include/cppunivariate/distributions/zmbinom/mle.hpp
+8ad936fcfd2965e370fa17af7afc0f5734b61ab4bc864ccf8f7801536a07fddd  univariateML-r/inst/include/cppunivariate/distributions/tbinom/mle.hpp
+29b2533d8b4337f35b8ba32e8e2bdc5ef4b43c3fee86d920f0f9e1d8c06fa46a  univariateML-r/inst/include/cppunivariate/distributions/zib/mle.hpp
+//  BOOST_LIB_VERSION must be defined to be the same as BOOST_VERSION
+#define BOOST_LIB_VERSION "1_90"
+146:test_that("ztbinom unresolved comparisons preserve the historical R catch class", {
+153:test_that("ztbinom tiny-probability work stops retain witnesses and can be resolved", {

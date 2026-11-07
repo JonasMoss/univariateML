@@ -60,7 +60,7 @@ r:
   control:
     size: "Optional fixed size; NULL estimates size."
     reltol: "Tolerance for scalar profile search."
-    iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per integer scan: 100000 * min(iterlim, 100000) enumeration cells."
+    iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per global certificate: 128 * min(iterlim, 100000) evaluations; per integer scan: 100000 * min(iterlim, 100000) enumeration cells."
     prob: "Optional fixed probability in `[0, 1]`; NULL estimates it."
     pi: "Optional fixed pi in `[0, 1]`; NULL estimates it."
 log_density: Piecewise((log(pi+(1-pi)*(1-prob)**size), Eq(x,0)), (log(1-pi)+loggamma(size+1)-loggamma(x+1)-loggamma(size-x+1)+x*log(prob)+(size-x)*log(1-prob), True))
@@ -98,9 +98,7 @@ relations:
 fit:
   method: multistart
   certified: partial
-  note: 'zib/README.md, Details; zib/mle.hpp (public fitter and held overloads); zib/test.cpp: Fixed size has exact
-    conditional probability profiling; held probability has integer tail bounds. Free-size/free-probability grids
-    lack a global unimodality certificate.'
+  note: 'zib/README.md, Details; zib/mle.hpp; zib/test.cpp: Finite free-size winners require constrained retained-support tail exclusion and complete integer-prefix coverage; held-inflation ZIP witnesses use the ZIP certificate. Winning-face comparisons remain unresolved.'
 areas:
 - counts and ecology
 classification: specialist
@@ -117,8 +115,9 @@ existence:
   statement: >-
     With all coefficients free, all-zero data attain a nonunique maximum. For
     positive data, finite-size attainment must be distinguished from a supremum on
-    the infinite-size zero-inflated Poisson boundary; the numerical search does
-    not settle this globally for every sample. With size held at an integer at
+    the infinite-size zero-inflated Poisson boundary. Retained-support certificates
+    settle strict finite winners within their work budgets; winning-face decisions
+    remain unresolved. With size held at an integer at
     least the largest count, a maximum always exists for compatible data, but it
     need not be unique. With $0<p<1$ held, a finite integer maximum exists.
     Holding only inflation retains the infinite-size comparison with that same
@@ -135,7 +134,8 @@ existence:
     prevent attainment. With both probabilities held and all counts zero, the
     smallest compatible size attains the maximum. When size and probability are
     free, a finite-mean path to infinite size has the zero-inflated Poisson
-    boundary. The current grid comparison is not a proof of global attainment or
+    boundary. A retained-support bound and complete integer-prefix coverage certify
+    returned finite winners; they do not establish a general face-win criterion or
     uniqueness.
 ---
 
@@ -149,9 +149,15 @@ Holding size removes the infinite-size escape. The binomial member at $\pi=0$ re
 
 A held probability is preserved. With $0<p<1$ and at least one positive count, the integer search bounds the remaining likelihood tail before returning. Exhausting its work budget is a numerical failure. Boundary probabilities must assign positive likelihood to the observations.
 
-Holding inflation leaves a scalar probability profile at each integer size. Its stationary points are isolated using a quadratic turning-point equation. The infinite-size comparison uses the zero-inflated Poisson boundary with the same held inflation.
+Holding inflation leaves a scalar probability profile at each integer size. Its stationary points are isolated using a quadratic turning-point equation. Root brackets must resolve relative to the probability: an absolute-width test can accept an unchecked tiny probability at a large held size. An unfinished solve stops numerically and retains its evaluated finite witness. The turning-point polynomial is formed in $u=Np$, with coefficients $n_{\mathrm{obs}}n_+$, $-S(n_{\mathrm{obs}}+n_+)-Sn_0/N$ and $S^2+Sn_0$, where $S$ is the count sum and $n_0,n_+$ are zero and positive sample counts. Differencing polynomial values in probability coordinates loses its linear coefficient at large size. Discriminants within $4096\epsilon(1+b^2+4ac)$ of zero stop numerically. Zero probabilities use `exp(N*log1p(-p))`; forming `1-p` first can round it to one and change the score. With no zeros, inflation is zero when free and contributes only a constant when held; the ordinary-binomial mean fit applies. The infinite-size comparison uses the zero-inflated Poisson boundary with the same held inflation.
 
-When size and probability are free, an exponential grid of sizes is scanned and local peaks are refined. The free inflation profile is analytic. No unimodality proof or global tail certificate is known for this size profile. The boundary comparison uses a log-likelihood margin of $10^{-8}$ times the sample size and can reject a nearly tied finite maximum. This is a numerical decision rather than a necessary-and-sufficient data criterion for non-existence.
+When size and probability are free, the grid supplies a proposal. Success requires the retained-support correction $D_{N,K}$ from [ztbinom](../ztbinom/README.md), retaining $0,\ldots,K$, and complete evaluation or bounded block exclusion of all feasible sizes below the resulting tail cutoff. Positive counts have the same correction bound. At zero, the inflated mass is at most $e^{-c_N(K)}[\pi+(1-\pi)/Z_K]$, so the same total correction applies with inflation held or free.
+
+The positive-mean root is checked before deciding whether the unconstrained inflation is feasible; otherwise an inaccurate tiny probability could select the wrong branch.
+
+The retained likelihood factors into the positive conditional likelihood and a Bernoulli zero-indicator likelihood. On a log-rate interval the first has a concave tangent upper bound. The second is maximized over its attainable zero-mass interval: $[\pi+(1-\pi)/Z_K(\eta_+),\pi+(1-\pi)/Z_K(\eta_-)]$ when inflation is held and $[1/Z_K(\eta_+),1]$ when free. Subdivision bounds all branches without assuming unimodality. The base conditional mean brackets every maximum between the full and positive sample means. The work units and floating-point margins are those of the shared retained-support certificate.
+
+The held-inflation ZIP face uses [ZIP's root certificate](../zip/README.md). Neither it nor a nearly equal face value establishes that no finite size wins. Unresolved face comparisons preserve both witnesses and an infinite global upper bound; signed-tail decisions are open. For data on $\{0,1\}$, size one is saturated; with inflation held, choose $p=\min(1,\bar x/(1-\pi))$. This also attains the best constrained zero frequency when held inflation exceeds the observed zero fraction. With both probabilities free only their product is identified.
 
 ## R notes
 
@@ -161,7 +167,7 @@ For all-zero data with free size and either probability held, the fitter returns
 
 Indeed, the zero mass is $\pi+(1-\pi)(1-p)^n\leq1$, with equality exactly when $n=0$, $p=0$, or $\pi=1$ (interpreting size zero as the point mass even at $p=1$). With both probabilities held, size zero is unique if $p>0$ and $\pi<1$; otherwise every size maximizes. With only $p>0$ held, the maximizing set is $n=0$ or $\pi=1$; with $p=0$ held, both free coefficients are unidentified. With only $\pi<1$ held, the maximizing set is $n=0$ or $p=0$; with $\pi=1$ held, both free coefficients are unidentified. With neither held, the maximizing set is the union of all three faces, so no individual coefficient has a unique maximizing value. At the returned size-zero representative every free probability is unidentified. These are exact boundary statements, requiring no numerical size search.
 
-The size grid has no fixed magnitude cap. After its initial grid depth it continues until more than ten exponential steps pass without improvement, subject to the iteration budget `iterlim`. Budget or floating-point resolution failures stop. The infinite-size report recommends `mlzip`.
+The size grid has no fixed magnitude cap. After its initial grid depth it continues until more than ten exponential steps pass without improvement, subject to the iteration budget `iterlim`. Budget or floating-point resolution failures stop. An unresolved infinite-size comparison retains the fitted ZIP witness.
 
 ## Decision history
 

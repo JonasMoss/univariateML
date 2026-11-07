@@ -1,4 +1,5 @@
 #pragma once
+#include "../ztbinom/certificate.hpp"
 #include "../../core/discrete_stop.hpp"
 #include "../tpois/profile.hpp"
 #include "../binom/dpqr.hpp"
@@ -127,7 +128,8 @@ struct TbinomDesignResult {
   TbinomStatus status;
   StopDetail stop_detail{};
 };
-inline TbinomDesignResult tbinom_design_mle(ispan x,double a,double b,double size,
+namespace tbinom_detail {
+inline TbinomDesignResult tbinom_design_proposal(ispan x,double a,double b,double size,
     double prob=std::numeric_limits<double>::quiet_NaN()) {
   auto stopped = [&]() -> TbinomDesignResult {
 #ifdef CPPUNIV_SIZE_SEARCH_DIAGNOSTICS
@@ -244,67 +246,6 @@ inline TbinomDesignResult tbinom_design_mle(ispan x,double a,double b,double siz
     if(j>128 && near_face>=4) {
       if(best.logLik<=tp.logLik+allowance) {best.status=TbinomStatus::TpoisLimit;
         best.stop_detail=discrete_face(StopModel::Tpois,{tp.parameter,a,b},tp.logLik);}
-      else if(std::isfinite(upper)) {
-        // For N>=U the difference from the Poisson profile is bounded by
-        // sum_i (c_N(x_i)-c_N(U)), c_N(k)=sum_{h<k} log(1-h/N).
-        // This bound decreases in N. Comparisons use the existing likelihood
-        // margin, not directed rounding; see the size-search report.
-        if(upper>2000000 || upper>=4503599627370496.)return best;
-        std::vector<int> counts(static_cast<std::size_t>(upper)+1,0);
-        for(int v:x)++counts[static_cast<std::size_t>(v)];
-        const auto correction=[&](double size) {
-          double sum=0;std::size_t count=0;
-          for(int h=0;h<static_cast<int>(upper);++h) {
-            count+=static_cast<std::size_t>(counts[static_cast<std::size_t>(h)]);
-            if(count)sum-=static_cast<double>(count)*std::log1p(-h/size);
-          }
-          return sum;
-        };
-        const auto cutoff=[&](double target) {
-          double l=upper,h=upper;
-          while(!(tp.logLik+correction(h)<target)) {
-            if(h>=2251799813685248.)return std::numeric_limits<double>::infinity();
-            h=std::max(h+1,2*h);
-          }
-          while(h-l>1) {
-            const double mid=std::floor(l+(h-l)/2);
-            if(tp.logLik+correction(mid)<target)h=mid;else l=mid;
-          }
-          return tp.logLik+correction(l)<target ? l : h;
-        };
-        double end=cutoff(best.logLik-allowance);
-        // Estimate work as observation/kernel operations plus 100 scans of
-        // the conditioning window per profile, with a 400-operation floor.
-        // Forty million units bounds cheap profiles to 100,000 evaluations.
-        double per_profile=static_cast<double>(x.size())+100*(upper-lo+1);
-        for(int v:x)per_profile+=v;
-        per_profile=std::max(400.,per_profile);
-        double missing=end-static_cast<double>(xmax)+1;
-        for(const auto &entry:evaluated)
-          if(entry.first>=xmax && entry.first<=end)missing-=1;
-#ifdef CPPUNIV_SIZE_SEARCH_DIAGNOSTICS
-        tbinom_detail::size_search_diagnostic.cutoff=end;
-        tbinom_detail::size_search_diagnostic.work=missing*per_profile;
-#endif
-        if(!std::isfinite(end) || end+1==end || missing*per_profile>40000000.)return best;
-        const auto original=best;
-        // Sizes below U have changing conditioning support and must also be
-        // enumerated if the exploratory search did not already visit them.
-        for(double size=xmax;size<=end;size+=1) {
-          if(!std::isfinite(end) || size+1==size)return original;
-          if(evaluated.find(size)!=evaluated.end())continue;
-          const auto f=evaluate(size);
-          if(f.status!=TbinomStatus::Ok)return original;
-          if(f.logLik>best.logLik) {
-            best=f;
-            end=cutoff(best.logLik-allowance);
-          }
-        }
-#ifdef CPPUNIV_SIZE_SEARCH_DIAGNOSTICS
-        tbinom_detail::size_search_diagnostic.certified=true;
-        tbinom_detail::size_search_diagnostic.cutoff=end;
-#endif
-      }
       return best;
     }
     older=previous;old_value=previous_value;previous=k;previous_value=candidate.logLik;
@@ -315,6 +256,44 @@ inline TbinomDesignResult tbinom_design_mle(ispan x,double a,double b,double siz
   if(stopped.status==TbinomStatus::LowerPointMass || stopped.status==TbinomStatus::UpperPointMass)
     stopped.stop_detail=discrete_point(x[0]);
   return stopped;
+}
+
+} // namespace tbinom_detail
+inline TbinomDesignResult tbinom_design_mle(ispan x,double a,double b,double size,double prob=NAN) {
+  auto best=tbinom_detail::tbinom_design_proposal(x,a,b,size,prob);
+  if(!std::isnan(size)||!std::isnan(prob)||x.size()==0)return best;
+  int xmin=x[0],mx=x[0];for(int v:x){xmin=std::min(xmin,v);mx=std::max(mx,v);}
+  const double lo=std::max(0.,std::floor(best.a)+1),U=std::floor(best.b);
+  if(xmin==mx || U-lo==1 || (lo==0 && U==INFINITY))return best;
+  if(best.status!=TbinomStatus::Ok) {
+    if(best.status==TbinomStatus::TpoisLimit)
+      binomial_certificate_detail::witness(best.stop_detail,{best.prob,best.a,best.b,best.size},best.logLik,false,true);
+    return best;
+  }
+  // This public fitter has no iterlim; retain a stated fixed work budget.
+  binomial_certificate_detail::Work work{0,0,512};
+  const double end=binomial_certificate_detail::cutoff(x,static_cast<int>(lo),U,false,NAN,best.logLik,work);
+  if(std::isfinite(end) && best.size>=end)work.numerical=true;
+  if(!std::isfinite(end) || work.numerical) {
+    best.status=TbinomStatus::NumericalFailure;
+    binomial_certificate_detail::witness(best.stop_detail,{best.prob,best.a,best.b,best.size},best.logLik,!work.numerical);return best;
+  }
+  double incumbent=best.logLik;
+  const bool complete=binomial_certificate_detail::cover(x,mx,end,incumbent,work,[&](double N) {
+    const auto f=tbinom_detail::profile(x,lo,U,N);
+    if(f.status!=truncated_detail::Status::Ok)return double(NAN);
+    if(f.logLik>best.logLik)best={f.parameter,best.a,best.b,N,f.logLik,f.iterations,TbinomStatus::Ok};
+    return f.logLik;
+  });
+  if(!complete) {
+    best.status=TbinomStatus::NumericalFailure;
+    binomial_certificate_detail::witness(best.stop_detail,{best.prob,best.a,best.b,best.size},best.logLik,!work.numerical);
+    return best;
+  }
+#ifdef CPPUNIV_SIZE_SEARCH_DIAGNOSTICS
+  tbinom_detail::size_search_diagnostic={true,end,double(work.cells)};
+#endif
+  return best;
 }
 
 }

@@ -179,3 +179,18 @@ test_that("TASK-134 zero-probability conditioning is excluded explicitly", {
   expect_true(is.nan(expect_warning(qtbinom(.5, 0, 0, 10, 10), "NaNs produced")))
   expect_true(all(is.nan(expect_warning(rtbinom(3, 0, 0, 10, 10), "NaNs produced"))))
 })
+
+test_that("tbinom J7a certifies infinite conditioning windows", {
+  f <- mltbinom(c(1,2,2,3,3,3,4,4,5,5),a=0,b=Inf,size=NULL)
+  expect_equal(unname(f["size"]),6)
+  e <- tryCatch(mltbinom(1:3,a=NULL,b=NULL,size=NULL),error=identity)
+  expect_s3_class(e,"univariateML_unresolved")
+  expect_equal(e$loglik_upper,Inf)
+})
+
+
+test_that("tbinom unresolved size-face comparisons stop as unresolved", {
+  e <- tryCatch(mltbinom(1:3,a=NULL,b=NULL,size=NULL),error=identity)
+  expect_identical(e$kind,"unresolved")
+  expect_identical(class(e)[1],"univariateML_unresolved")
+})
