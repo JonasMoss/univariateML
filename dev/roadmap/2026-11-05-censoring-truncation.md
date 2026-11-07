@@ -141,8 +141,13 @@ Scope (Jonas, 2026-11-07): population bracket means are out of scope.
 As exact constraints, $J$ mean equations in $p < J$ coefficients have
 generically no solution, so the constrained MLE does not exist for any
 misspecified model, and under an exact model the feasible set is just
-the truth. Fitting then means minimizing a distance (GMM), not ML. In
-scope: counts only, and counts with sample (survey) means. A single
+the truth. Fitting then means minimizing a distance (GMM), not ML.
+Sample (survey) means are out of scope too: the exact likelihood needs
+the density of the mean of $n_j$ draws from the model truncated to the
+bracket, an $n_j$-fold convolution with no closed form for nearly every
+family. Practice uses a normal (CLT) or saddlepoint approximation,
+which is not the verified ML this library promises. In scope: counts
+only. A single
 constraint (for example an overall mean from national accounts) leaves a
 $(p-1)$-dimensional feasible set and remains well posed; not planned.
 
