@@ -8,6 +8,11 @@ Active work lives on the board (`~/boards/univariateML`), not here.
 
 ## 2026-11-07
 
+- **Tukey lambda: no further certification or speed work** (Jonas: "lets keep
+  them won't do, yeah. very low priority"). ML for the symmetric Tukey lambda
+  is rarely used; the family stays as it is (`certified: partial`). Open items
+  are listed on the board (TASK-151); evidence in the
+  [tlambda-impl report](../research/evaluations/2026-11-07-tlambda-impl-report.md).
 - **One accuracy contract and uniform controls for 2.0** (Jonas: "we should
   aim for the same sort of tolerance across everything, compatibility is not
   important. this is a version bump++"). Every `Ok` fit is within relative
