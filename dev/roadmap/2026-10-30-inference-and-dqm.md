@@ -337,3 +337,25 @@ the `inference_numeric` fields have not yet been updated.
 | Not DQM on part of the interior | gev, gpd for xi <= -1/2; ged, sged for nu <= 1/2; tlambda for lambda >= 1/2 |
 | Singular information at interior points | sn at alpha = 0; bnbinom on r = beta; genbeta on shape2 = 1; tlambda at lambda = 1, 2 |
 | Rank loss at design values | size 0 or 1 (bbinom, binom, cmb, zib, zmbinom, ztbinom); zipf N = 1; one-point truncations (tbinom, tpois) |
+
+## Requirements for inference work
+
+Moved from the agent instructions on 2026-11-07.
+
+Classify DQM, finite information, rank, Hessian suitability and estimator
+asymptotics separately at the relevant parameter value and free subset.
+Interior parameters alone do not establish regularity. State the hypothesis and
+whether nuisance parameters are known or fitted.
+
+Distinguish per-observation score cross-products, observed Hessians, model
+Fisher information and estimating-equation sensitivity; record coordinates and
+objective normalization. The total-score outer product and an optimizer's
+inverse Hessian are not substitutes. Nonsmooth sensitivity and historical
+derivatives need validation of their mathematical meaning and current
+parameterization.
+
+Mark procedure availability and gaps by regime and hypothesis. Consider regular
+submodels, exact and nonregular procedures when joint Wald inference fails.
+Model-based and misspecification-robust inference need distinct assumptions;
+bootstrap availability establishes neither validity nor robustness. Dated
+inventories are historical evidence, not live coverage claims.

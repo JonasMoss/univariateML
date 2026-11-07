@@ -6,7 +6,7 @@ C++17 core and an R package. Python bindings are planned.
 - [R package: usage and distribution catalog](bindings/r/README.md)
 - [C++ library](univariateML-cpp/): public headers remain under `cppunivariate/`
 - [Planned Python bindings](bindings/python/README.md)
-- [Engineering and build guide](CLAUDE.md)
+- [Engineering and build guide](AGENTS.md)
 - [Development records](dev/STATUS.md), [plans](dev/roadmap/README.md) and
   [research](dev/research/)
 

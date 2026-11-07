@@ -439,3 +439,33 @@ The shared contract for adopting structured diagnostics in a fitter and its
 bindings is [structured-stop-details.md](../../../../dev/design/structured-stop-details.md).
 Status remains authoritative; candidate payloads never turn a stopped fit into
 a successful estimate.
+
+## Adding a distribution
+
+Moved from the agent instructions on 2026-11-07. Nothing shared lists
+distributions by hand except the `cppunivariate.hpp` aggregator.
+
+| file | what |
+|---|---|
+| `README.md` | front matter as above, plus prose |
+| `mle.hpp` | `<id>_mle(span x, tol, maxit, ...)`, `<Id>Result`, `<Id>Status`; a `Cost` struct only when the fitter uses it |
+| `dpqr.hpp` | d/p/q/r templates |
+| `test.cpp` | doctest cases, globbed into `distribution_tests`; `#include "test_support.hpp"` for `load_distribution_golden(id)` and tolerances |
+| `golden.json` | golden data and estimates, written by `just goldens` |
+| `truth.py`, `truth.json` | high-precision d/p/q route and its table, written by `just dpqr-truth <id>`; checked by the truth `TEST_CASE` in `test.cpp` |
+| `bindings/r/distributions/<id>/adapter.cpp` | the Rcpp adapter `ml<id>_`, copied to `src/dist_<id>.cpp`; argument names follow `dev/roadmap/2026-10-28-cran-argument-names.md` and must match `r.control` (codegen checks) |
+| `bindings/r/distributions/<id>/test.R` | testthat file, copied to `tests/testthat/test-dist-<id>.R` |
+
+Steps:
+
+1. Create the folder (`lomax/` is the worked example) and add
+   `#include "distributions/<id>/mle.hpp"` to `cppunivariate.hpp`.
+2. Run `just quality <id>` and `just dpqr-truth <id>`.
+3. Run `just goldens`; then `just cpp-test` and `just test` must pass.
+4. Run `just readme-table`.
+
+R metadata, wrappers and roxygen docs are generated from `README.md` (`just gen`).
+Families that are not Hellinger-closed declare their `limits`; see
+`dev/research/ml-behaviour.tex`. `test_conformance.R` checks adapter arguments,
+required diagnostics and every holdable subset on golden data; it is not a
+proof for arbitrary samples.

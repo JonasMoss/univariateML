@@ -48,7 +48,7 @@ unset UMVL_DISTRIBUTIONS_DIR UMVL_DOSSIER_DIR UMVL_BINDINGS_DIR UMVL_PKG_DIR UMV
 unset R_LIBS R_TESTS NOT_CRAN JUST_TEMPDIR
 export TMPDIR="$external/tmp" CCACHE_BASEDIR="$external" UMVL_TEST_TIMINGS=true
 # Confirm isolation before checking; retain the check tree for review.
-"${isolate[@]}" sh -c 'if cat "$1/CLAUDE.md" >/dev/null 2>&1; then exit 1; fi' sh "$root"
+"${isolate[@]}" sh -c 'if cat "$1/AGENTS.md" >/dev/null 2>&1; then exit 1; fi' sh "$root"
 set +e
 /usr/bin/time -p -o "$external/check-time.txt" \
   "${isolate[@]}" R CMD check --no-manual --timings "$tarball" \

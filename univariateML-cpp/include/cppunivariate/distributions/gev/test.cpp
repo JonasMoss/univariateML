@@ -229,7 +229,7 @@ TEST_CASE("gev: held shapes outside free restrictions retain proper finite laws"
 // *always* the free-location supremum at this exact tie fraction was
 // found or attempted; this records strong, not conclusive, evidence
 // for it. The check below is therefore written to accept either
-// outcome (CLAUDE.md's rule against assuming more than is proved),
+// outcome (AGENTS.md: claims name their evidence),
 // not because both are expected to occur in practice.
 TEST_CASE("gev: free fit compares half-minimum ties with the free collapse face") {
   for (auto x : {std::vector<double>{0,0,1,2}, std::vector<double>{0,0,.01,100},
@@ -242,7 +242,7 @@ TEST_CASE("gev: free fit compares half-minimum ties with the free collapse face"
     CAPTURE(m);
     if (f.status == cppunivariate::GevStatus::Ok) {
       CHECK(f.logLik > a_free);
-      // Score check (CLAUDE.md): a genuinely interior maximum has a
+      // Score check (dev/validation/diagnostics.md): a genuinely interior maximum has a
       // near-zero free-coordinate gradient, not just a logLik that
       // happens to beat the face.
       double norm = 0, h = 1e-5;

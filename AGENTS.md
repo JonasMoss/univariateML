@@ -1,80 +1,110 @@
-# univariateML agent instructions
+# univariateML
 
-Read [CLAUDE.md](CLAUDE.md) for the current architecture, engineering conventions
-and build workflow. Do not push or publish without an explicit user request.
+## Purpose
 
-## Banked plans
+univariateML is a proof of concept for **solid maximum likelihood**: across
+about a hundred univariate families, every fit either returns a verified MLE or
+says correctly and specifically why there is none. The library is the evidence.
+The research behind it covers escapes to limit models, nonexistence, multiple
+maxima, when standard inference holds, and eventually numerical certificates.
+See [the ML-difficulties paper plan](dev/roadmap/2026-11-02-ml-difficulties-paper.md).
 
-- [Useful density proposals](dev/roadmap/2026-10-31-useful-density-proposals.md):
-  exponentiated Weibull, GIG, PGW, sinh–arcsinh and unified Prentice gamma; priorities and preliminary ML/dpqr risks.
+## Principles
 
-- [Package structure and mathematical documentation](dev/roadmap/2026-10-30-package-and-documentation.md):
-  standalone C++, generated R package, custom mathematical website and algorithm history.
-- [Inference regularity and derivative support](dev/roadmap/2026-10-30-inference-and-dqm.md):
-  conditional regularity, derivatives and inference by regime and hypothesis.
-- [Python package for teaching and simulation](dev/roadmap/2026-10-30-python-teaching-and-simulation.md):
-  deferred bindings, NumPy integration, simulation workflows and student installation.
+1. **No silent failures.** A fit ends as a verified estimate, an escape to a
+   named limit model ("use `mlX`"), a proved nonexistence, an exhausted budget,
+   or a reported failure. A wrong answer with status `Ok` is the worst bug.
+2. **Fitters follow the likelihood's structure.** Use what is known about it:
+   concavity, exponential-family form, monotone scores, escape analysis.
+   Heuristic starts and ad hoc profiling are not a design.
+3. **Legacy carries no weight.** Algorithms, starts and outputs inherited from
+   the original CRAN univariateML have no standing. Goldens detect drift only;
+   regenerate them after deliberate changes and inspect the diff.
+4. **Claims name their evidence.** Proof, rigorous or high-precision comparison,
+   independent oracle and golden regression support different claims; say which
+   one backs a claim. See the [validation guide](dev/validation/README.md).
 
-Link to these canonical plans rather than duplicating them. Coordinate planned
-work through the shared board and the user's orchestrators; a plan entry does
-not authorize unrelated implementation during another task.
+## Layout
 
-The C++ component must build, test, fit, evaluate and sample without R or sibling
-repository directories. Keep R RNG state handling in the bindings.
+```
+univariateML-cpp/include/cppunivariate/   C++17 core, header-only
+  core/            span, reductions, optimizers, work budgets
+  special/         Boost.Math seam (special.hpp) and tail-accurate helpers
+  distributions/<id>/  README.md (dossier), mle.hpp, dpqr.hpp, test.cpp,
+                   golden.json, truth.py, truth.json
+univariateML-cpp/tests/   shared doctest targets
+bindings/r/               R package inputs: scripts, distributions/<id>/ adapters and tests
+univariateML-r/           generated R package (gitignored; `just regen`)
+site/                     catalogue website
+dev/                      STATUS.md, KNOWN_ISSUES.md, roadmap/, research/, design/, validation/, tools/
+```
 
-## Algorithm and numerical documentation
+A family's `README.md` front matter is the single source for its R wrapper,
+docs, validation harness and site page
+([schema and new-family steps](univariateML-cpp/include/cppunivariate/distributions/README_SCHEMA.md)).
+`lomax/` is the worked example.
 
-For substantive algorithmic or numerical changes, update the canonical
-distribution dossier or shared algorithm note and leave a reproducible check,
-or name the concrete validation gap. See the [validation guide](dev/validation/README.md).
-Keep documentation proportional to complexity: a formula, conditions and
-reference may suffice for a closed form. An involved fitter needs its objective,
-profile or search structure, initialization, convergence and failure behavior,
-boundary comparisons, computational tradeoffs and unresolved guarantees.
+## C++ rules
 
-Preserve the reasons for material choices and changes. Retain significant
-rejected or reverted approaches when they explain the current design, with
-dated decisions and links to commits, derivations, reproducers or benchmarks.
-Recover lasting conclusions from existing reports into current documentation;
-keep the original evidence accessible. Important findings must not exist only
-in chat, task summaries, ignored build output or temporary files.
+- C++17, header-only, depending only on the standard library and Boost.Math.
+  Boost only through `special/special.hpp`, with its no-throw policy.
+- No exceptions, printing or logging. Report outcomes through each fitter's
+  `<Id>Status` enum. `Rcpp::stop` belongs in R adapters only.
+- No `using` declarations, no raw pointers (take `cppunivariate::span`), no
+  Armadillo.
+- C++ fitters take `tol` and `maxit`. R adapters use the CRAN names in
+  [cran-argument-names](dev/roadmap/2026-10-28-cran-argument-names.md)
+  (`reltol`, `abstol`, `gradtol`, `iterlim`, `<param>0`).
+- The core must build, test, fit, evaluate and sample without R. R RNG state
+  stays in the bindings.
+- Failure handling, score gates and work caps:
+  [diagnostics](dev/validation/diagnostics.md#wrapper-failure-handling-rule-r6)
+  and [work budgets](dev/design/work-budgets.md). Parameter holds, defaults and
+  restrictions: [parameter rules](dev/roadmap/2026-10-29-parameter-rules.md).
+- Every `dpqr.hpp` is tail-accurate (`special/tails.hpp`) and checked against
+  its mpmath truth table.
 
-An apparent overlap with Boost or another implementation is not evidence that
-custom code is redundant. Before replacing it, establish its contract, protected
-cases, rationale and comparison evidence. Record unknown rationale as unknown.
-Keep layout moves separate from changes to numerical behavior.
+## R package
 
-## Inference requirements
+ML-first: it exports fitters, `dml`/`pml`/`qml`/`rml`, model selection,
+bootstrap and plots, and no d/p/q/r of its own. The 14 stats families use
+`stats`; every other family's d/p/q/r is generated from `dpqr.hpp` at assembly.
+Dependencies: Rcpp and BH only.
 
-Read the linked inference plan before inference work. Classify DQM, finite
-information, rank, Hessian suitability and estimator asymptotics separately at
-the relevant parameter value and free subset. Interior parameters alone do not
-establish regularity. State the hypothesis and whether nuisance parameters are
-known or fitted.
+## Out of scope
 
-Distinguish per-observation score cross-products, observed Hessians, model Fisher
-information and estimating-equation sensitivity; record coordinates and objective
-normalization. The total-score outer product and an optimizer's inverse Hessian
-are not substitutes. Nonsmooth sensitivity and historical derivatives need
-validation of their mathematical meaning and current parameterization.
+Dependencies beyond Rcpp + BH (R) and the standard library + Boost.Math (C++);
+Bayesian inference, regression, MCMC; families whose parameter vector has a
+user-chosen length (finite mixtures, categorical).
 
-Mark procedure availability and gaps by regime and hypothesis. Consider regular
-submodels, exact and nonregular procedures when joint Wald inference fails.
-Model-based and misspecification-robust inference need distinct assumptions;
-bootstrap availability establishes neither validity nor robustness. Dated
-inventories are historical evidence, not live coverage claims.
+## Commands
 
-## Validation and coordination
+| command | what |
+|---|---|
+| `just cpp-test` | C++ ctest targets |
+| `just test` | default R tier (reserve all four CPU slots first) |
+| `just test-full` | exhaustive pre-merge suite with slow oracles |
+| `just quality [id ...]` | fitter goldens against symbolic densities and a multistart oracle |
+| `just dpqr-truth <id>` | regenerate a truth table |
+| `just goldens` | regenerate goldens; inspect the diff before committing |
+| `just regen` / `just gen` | assemble the R package / regenerate wrappers |
+| `python3 dev/tools/check_links.py` | check local Markdown links |
 
-Record the tested source revision, commands, environment, workloads or seeds,
-tolerances and results. Distinguish passes, failures, permitted failures, skips
-and missing coverage. Golden regression, internal identities, independent
-numerical comparisons and mathematical proofs support different claims.
-Inference additionally needs checks of coverage or test calibration under its
-stated assumptions; likelihood agreement alone is insufficient.
+Open items and test status: [dev/STATUS.md](dev/STATUS.md). Decisions:
+[dev/roadmap/decisions.md](dev/roadmap/decisions.md). Inference work: read the
+[inference plan](dev/roadmap/2026-10-30-inference-and-dqm.md) first.
 
-Use the shared board through `/home/jonas/.local/bin/board`, check active tasks
-before touching overlapping files, and keep its task records current. Across
-concurrent workstation jobs use at most four cores, pin BLAS/OpenMP to one thread
-in parallel workers, and run long computations under `nice -n 10`. Use simbox
-only when the task or user calls for it.
+## Working rules
+
+- **Never push or publish** (`git push`, `gh pr create`, `gh pr merge`, CRAN)
+  without an explicit request. This tree has diverged from the published
+  package on purpose. Local commits, branches and merges are fine.
+- Keep layout moves separate from numerical changes. Substantive algorithmic
+  changes update the family's dossier and leave a reproducible check
+  ([recording evidence](dev/validation/README.md#recording-evidence-and-decisions)).
+- Record lasting findings in the repository, not only in chat or task notes;
+  "later" ideas go in `dev/roadmap/` as one dated file each.
+- Coordinate through the board (`~/.local/bin/board`); check In Progress tasks
+  before touching the same files.
+- Use at most four cores in total, BLAS/OpenMP pinned to one thread per
+  parallel worker, and `nice -n 10` for long runs.

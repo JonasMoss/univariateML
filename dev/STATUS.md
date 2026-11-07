@@ -31,7 +31,7 @@ Validation methods and coverage limits: [validation guide](validation/README.md)
 
 ## Decisions for Jonas
 
-- Whether and when to push or publish (CLAUDE.md: never without an
+- Whether and when to push or publish (AGENTS.md: never without an
   explicit request).
 - GitHub issues #52 and #7: every density listed there is now
   implemented; the boxes can be ticked (not edited from here).
@@ -85,7 +85,7 @@ Validation methods and coverage limits: [validation guide](validation/README.md)
 ## Coverage
 
 The vector-parameter tier (`dcat`, `dmixpois`, `dmixnorm`) was dropped on
-2026-10-30: out of scope (CLAUDE.md, "Out of vision").
+2026-10-30: out of scope (AGENTS.md, "Out of scope").
 
 ## Robustness
 

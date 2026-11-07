@@ -45,3 +45,24 @@ headers and Boost. The checked-in generated sweep runs in the monorepo C++ dev
 tier; generation itself is not a dependency of standalone core consumers.
 See the [diagnostics report](../research/evaluations/2026-10-31-diagnostics-report.md)
 for tested revision, commands, timings, defects and coverage limits.
+
+## Wrapper failure handling (rule R6)
+
+Iterative failure is an error ([parameter rules](../roadmap/2026-10-29-parameter-rules.md), R6).
+
+- Preserve failure statuses through transformations and delegates, and stop in
+  the adapter with the status and a clear diagnostic.
+- Keep a failed solve only when its finite free-coordinate score has Euclidean
+  norm below 1e-3 in fitter coordinates, or passes the family's documented
+  score gate. Use the total likelihood score, with any objective normalization
+  undone.
+- Invalid starts and nonfinite results stop.
+- A rescue solve must meet its own convergence or score criterion; never return
+  an unchecked last iterate.
+- Every loop cap is a multiple of `min(iterlim, 100000)` by work unit;
+  certificate and enumeration caps stop as `budget`
+  ([work budgets](../design/work-budgets.md)).
+
+This replaced the nlminb-style rule that returned whatever BFGS landed on, which
+let `mlstd` return its start values (TASK-77). The score gate checks local
+stationarity, not existence or global optimality.

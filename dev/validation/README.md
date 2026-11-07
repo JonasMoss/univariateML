@@ -298,7 +298,7 @@ limitation on a broader, finite sample collection.
 
 Optimizer convergence is a termination property. Some failed solves are
 accepted only when a finite free-coordinate total score passes the documented
-residual gate; see [wrapper failure handling](../../CLAUDE.md). This is a local
+residual gate; see [wrapper failure handling](diagnostics.md#wrapper-failure-handling-rule-r6). This is a local
 stationarity check, not a maximum or global certificate. The symbolic quality
 score is standardized using observed curvature and is a different check.
 Numerical accuracy is supported at tested points by independent comparisons,
@@ -389,3 +389,35 @@ entry points: `Rscript .github/scripts/assemble.R`, then
 `Rscript .github/scripts/golden-drift.R` and `Rscript .github/scripts/r-check.R`.
 Use the CPU slot lock for local runs. Hosted package installation, cache restore,
 action execution and actual macOS/Windows results require the first push.
+
+## Recording evidence and decisions
+
+Moved from the agent instructions on 2026-11-07.
+
+For substantive algorithmic or numerical changes, update the canonical
+distribution dossier or shared algorithm note and leave a reproducible check,
+or name the concrete validation gap. Keep documentation proportional to
+complexity: a formula, conditions and reference may suffice for a closed form.
+An involved fitter needs its objective, profile or search structure,
+initialization, convergence and failure behavior, boundary comparisons,
+computational tradeoffs and unresolved guarantees.
+
+Preserve the reasons for material choices and changes. Retain significant
+rejected or reverted approaches when they explain the current design, with
+dated decisions and links to commits, derivations, reproducers or benchmarks.
+Recover lasting conclusions from existing reports into current documentation;
+keep the original evidence accessible. Important findings must not exist only
+in chat, task summaries, ignored build output or temporary files.
+
+An apparent overlap with Boost or another implementation is not evidence that
+custom code is redundant. Before replacing it, establish its contract, protected
+cases, rationale and comparison evidence. Record unknown rationale as unknown.
+Keep layout moves separate from changes to numerical behavior.
+
+Validation records state the tested source revision, commands, environment,
+workloads or seeds, tolerances and results. Distinguish passes, failures,
+permitted failures, skips and missing coverage. Golden regression, internal
+identities, independent numerical comparisons and mathematical proofs support
+different claims. Inference additionally needs checks of coverage or test
+calibration under its stated assumptions; likelihood agreement alone is
+insufficient.
