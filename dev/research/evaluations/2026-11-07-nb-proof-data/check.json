@@ -1,0 +1,2497 @@
+{
+  "python": "3.14.5",
+  "mpmath": "1.3.0",
+  "digits": 80,
+  "comparison_margin": "1.0e-55",
+  "grid": "29 half-decade sizes, 1e-6 through 1e8",
+  "iterlim": 128,
+  "budget_per_root": 16384,
+  "sample_count": 219,
+  "finite": 67,
+  "poisson": 152,
+  "equality": 10,
+  "aee_fixed_coordinate_boundary": {
+    "F2": "1/4",
+    "u_at_z1": "-1/16",
+    "u_at_z2": "-1/24",
+    "difference": "1/48"
+  },
+  "result": "PASS",
+  "samples": [
+    {
+      "data": [
+        1
+      ],
+      "mean": "1",
+      "variance": "0",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        2
+      ],
+      "mean": "2",
+      "variance": "0",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        3
+      ],
+      "mean": "3",
+      "variance": "0",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        4
+      ],
+      "mean": "4",
+      "variance": "0",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        5
+      ],
+      "mean": "5",
+      "variance": "0",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        0,
+        1
+      ],
+      "mean": "1/2",
+      "variance": "1/4",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        0,
+        2
+      ],
+      "mean": "1",
+      "variance": "1",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        0,
+        3
+      ],
+      "mean": "3/2",
+      "variance": "9/4",
+      "regime": "finite",
+      "root_lower": "1.00471084445515736281137404230115579717213153",
+      "root_upper": "1.0047108444551573628113740423011558031906626",
+      "search_steps": 118
+    },
+    {
+      "data": [
+        0,
+        4
+      ],
+      "mean": "2",
+      "variance": "4",
+      "regime": "finite",
+      "root_lower": "0.627834352481249543371048709523796865521579542",
+      "root_upper": "0.627834352481249543371048709523796871540110618",
+      "search_steps": 117
+    },
+    {
+      "data": [
+        0,
+        5
+      ],
+      "mean": "5/2",
+      "variance": "25/4",
+      "regime": "finite",
+      "root_lower": "0.493767973267303377527878981417253523998236874",
+      "root_upper": "0.493767973267303377527878981417253528512135182",
+      "search_steps": 119
+    },
+    {
+      "data": [
+        1,
+        1
+      ],
+      "mean": "1",
+      "variance": "0",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        1,
+        2
+      ],
+      "mean": "3/2",
+      "variance": "1/4",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        1,
+        3
+      ],
+      "mean": "2",
+      "variance": "1",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        1,
+        4
+      ],
+      "mean": "5/2",
+      "variance": "9/4",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        1,
+        5
+      ],
+      "mean": "3",
+      "variance": "4",
+      "regime": "finite",
+      "root_lower": "6.60428761432087230967007721124546937906673841",
+      "root_upper": "6.60428761432087230967007721124546942119645594",
+      "search_steps": 120
+    },
+    {
+      "data": [
+        2,
+        2
+      ],
+      "mean": "2",
+      "variance": "0",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        2,
+        3
+      ],
+      "mean": "5/2",
+      "variance": "1/4",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        2,
+        4
+      ],
+      "mean": "3",
+      "variance": "1",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        2,
+        5
+      ],
+      "mean": "7/2",
+      "variance": "9/4",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        3,
+        3
+      ],
+      "mean": "3",
+      "variance": "0",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        3,
+        4
+      ],
+      "mean": "7/2",
+      "variance": "1/4",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        3,
+        5
+      ],
+      "mean": "4",
+      "variance": "1",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        4,
+        4
+      ],
+      "mean": "4",
+      "variance": "0",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        4,
+        5
+      ],
+      "mean": "9/2",
+      "variance": "1/4",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        5,
+        5
+      ],
+      "mean": "5",
+      "variance": "0",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        0,
+        0,
+        1
+      ],
+      "mean": "1/3",
+      "variance": "2/9",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        0,
+        0,
+        2
+      ],
+      "mean": "2/3",
+      "variance": "8/9",
+      "regime": "finite",
+      "root_lower": "0.736130895424028000936719595638954607728615656",
+      "root_upper": "0.736130895424028000936719595638954613747146733",
+      "search_steps": 117
+    },
+    {
+      "data": [
+        0,
+        0,
+        3
+      ],
+      "mean": "1",
+      "variance": "2",
+      "regime": "finite",
+      "root_lower": "0.340127597027709386113396185320769986149207417",
+      "root_upper": "0.340127597027709386113396185320769988406156571",
+      "search_steps": 120
+    },
+    {
+      "data": [
+        0,
+        0,
+        4
+      ],
+      "mean": "4/3",
+      "variance": "32/9",
+      "regime": "finite",
+      "root_lower": "0.252175172560750789779714137218533073809986571",
+      "root_upper": "0.252175172560750789779714137218533076066935725",
+      "search_steps": 120
+    },
+    {
+      "data": [
+        0,
+        0,
+        5
+      ],
+      "mean": "5/3",
+      "variance": "50/9",
+      "regime": "finite",
+      "root_lower": "0.211785921312974457611916075624460368597512926",
+      "root_upper": "0.211785921312974457611916075624460369914066599",
+      "search_steps": 122
+    },
+    {
+      "data": [
+        0,
+        1,
+        1
+      ],
+      "mean": "2/3",
+      "variance": "2/9",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        0,
+        1,
+        2
+      ],
+      "mean": "1",
+      "variance": "2/3",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        0,
+        1,
+        3
+      ],
+      "mean": "4/3",
+      "variance": "14/9",
+      "regime": "finite",
+      "root_lower": "5.21225988492545771743289231574456607522525525",
+      "root_upper": "5.21225988492545771743289231574456611735497278",
+      "search_steps": 120
+    },
+    {
+      "data": [
+        0,
+        1,
+        4
+      ],
+      "mean": "5/3",
+      "variance": "26/9",
+      "regime": "finite",
+      "root_lower": "1.49707811426784799780557143495790167590089611",
+      "root_upper": "1.49707811426784799780557143495790168793795826",
+      "search_steps": 117
+    },
+    {
+      "data": [
+        0,
+        1,
+        5
+      ],
+      "mean": "2",
+      "variance": "14/3",
+      "regime": "finite",
+      "root_lower": "0.974287790579549997025168768611954957773405815",
+      "root_upper": "0.974287790579549997025168768611954963791936891",
+      "search_steps": 117
+    },
+    {
+      "data": [
+        0,
+        2,
+        2
+      ],
+      "mean": "4/3",
+      "variance": "8/9",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        0,
+        2,
+        3
+      ],
+      "mean": "5/3",
+      "variance": "14/9",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        0,
+        2,
+        4
+      ],
+      "mean": "2",
+      "variance": "8/3",
+      "regime": "finite",
+      "root_lower": "3.05969851854441411873872333381052240201009938",
+      "root_upper": "3.05969851854441411873872333381052242006569261",
+      "search_steps": 119
+    },
+    {
+      "data": [
+        0,
+        2,
+        5
+      ],
+      "mean": "7/3",
+      "variance": "38/9",
+      "regime": "finite",
+      "root_lower": "1.55713264525964452423866713146341235995509944",
+      "root_upper": "1.55713264525964452423866713146341237199216159",
+      "search_steps": 117
+    },
+    {
+      "data": [
+        0,
+        3,
+        3
+      ],
+      "mean": "2",
+      "variance": "2",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        0,
+        3,
+        4
+      ],
+      "mean": "7/3",
+      "variance": "26/9",
+      "regime": "finite",
+      "root_lower": "3.60500667912220815679134638838757407879558488",
+      "root_upper": "3.60500667912220815679134638838757409685117811",
+      "search_steps": 119
+    },
+    {
+      "data": [
+        0,
+        3,
+        5
+      ],
+      "mean": "8/3",
+      "variance": "38/9",
+      "regime": "finite",
+      "root_lower": "1.871479571766157055257962828919171969850755",
+      "root_upper": "1.87147957176615705525796282891917198188781715",
+      "search_steps": 117
+    },
+    {
+      "data": [
+        0,
+        4,
+        4
+      ],
+      "mean": "8/3",
+      "variance": "32/9",
+      "regime": "finite",
+      "root_lower": "2.56220184647970823857276880422448057719228286",
+      "root_upper": "2.56220184647970823857276880422448059524787609",
+      "search_steps": 119
+    },
+    {
+      "data": [
+        0,
+        4,
+        5
+      ],
+      "mean": "3",
+      "variance": "14/3",
+      "regime": "finite",
+      "root_lower": "1.78066251759320023425253680456078074373631166",
+      "root_upper": "1.78066251759320023425253680456078075577337381",
+      "search_steps": 117
+    },
+    {
+      "data": [
+        0,
+        5,
+        5
+      ],
+      "mean": "10/3",
+      "variance": "50/9",
+      "regime": "finite",
+      "root_lower": "1.51702779713958308216395456723582891752445679",
+      "root_upper": "1.51702779713958308216395456723582892956151895",
+      "search_steps": 117
+    },
+    {
+      "data": [
+        1,
+        1,
+        1
+      ],
+      "mean": "1",
+      "variance": "0",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        1,
+        1,
+        2
+      ],
+      "mean": "4/3",
+      "variance": "2/9",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        1,
+        1,
+        3
+      ],
+      "mean": "5/3",
+      "variance": "8/9",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        1,
+        1,
+        4
+      ],
+      "mean": "2",
+      "variance": "2",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        1,
+        1,
+        5
+      ],
+      "mean": "7/3",
+      "variance": "32/9",
+      "regime": "finite",
+      "root_lower": "4.51202785824429370716051624738589372822229925",
+      "root_upper": "4.51202785824429370716051624738589377035201678",
+      "search_steps": 120
+    },
+    {
+      "data": [
+        1,
+        2,
+        2
+      ],
+      "mean": "5/3",
+      "variance": "2/9",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        1,
+        2,
+        3
+      ],
+      "mean": "2",
+      "variance": "2/3",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        1,
+        2,
+        4
+      ],
+      "mean": "7/3",
+      "variance": "14/9",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        1,
+        2,
+        5
+      ],
+      "mean": "8/3",
+      "variance": "26/9",
+      "regime": "finite",
+      "root_lower": "30.7202259813701891680072435756499253324486733",
+      "root_upper": "30.7202259813701891680072435756499255190231367",
+      "search_steps": 122
+    },
+    {
+      "data": [
+        1,
+        3,
+        3
+      ],
+      "mean": "7/3",
+      "variance": "8/9",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        1,
+        3,
+        4
+      ],
+      "mean": "8/3",
+      "variance": "14/9",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        1,
+        3,
+        5
+      ],
+      "mean": "3",
+      "variance": "8/3",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        1,
+        4,
+        4
+      ],
+      "mean": "3",
+      "variance": "2",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        1,
+        4,
+        5
+      ],
+      "mean": "10/3",
+      "variance": "26/9",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        1,
+        5,
+        5
+      ],
+      "mean": "11/3",
+      "variance": "32/9",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        2,
+        2,
+        2
+      ],
+      "mean": "2",
+      "variance": "0",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        2,
+        2,
+        3
+      ],
+      "mean": "7/3",
+      "variance": "2/9",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        2,
+        2,
+        4
+      ],
+      "mean": "8/3",
+      "variance": "8/9",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        2,
+        2,
+        5
+      ],
+      "mean": "3",
+      "variance": "2",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        2,
+        3,
+        3
+      ],
+      "mean": "8/3",
+      "variance": "2/9",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        2,
+        3,
+        4
+      ],
+      "mean": "3",
+      "variance": "2/3",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        2,
+        3,
+        5
+      ],
+      "mean": "10/3",
+      "variance": "14/9",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        2,
+        4,
+        4
+      ],
+      "mean": "10/3",
+      "variance": "8/9",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        2,
+        4,
+        5
+      ],
+      "mean": "11/3",
+      "variance": "14/9",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        2,
+        5,
+        5
+      ],
+      "mean": "4",
+      "variance": "2",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        3,
+        3,
+        3
+      ],
+      "mean": "3",
+      "variance": "0",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        3,
+        3,
+        4
+      ],
+      "mean": "10/3",
+      "variance": "2/9",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        3,
+        3,
+        5
+      ],
+      "mean": "11/3",
+      "variance": "8/9",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        3,
+        4,
+        4
+      ],
+      "mean": "11/3",
+      "variance": "2/9",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        3,
+        4,
+        5
+      ],
+      "mean": "4",
+      "variance": "2/3",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        3,
+        5,
+        5
+      ],
+      "mean": "13/3",
+      "variance": "8/9",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        4,
+        4,
+        4
+      ],
+      "mean": "4",
+      "variance": "0",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        4,
+        4,
+        5
+      ],
+      "mean": "13/3",
+      "variance": "2/9",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        4,
+        5,
+        5
+      ],
+      "mean": "14/3",
+      "variance": "2/9",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        5,
+        5,
+        5
+      ],
+      "mean": "5",
+      "variance": "0",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "mean": "1/4",
+      "variance": "3/16",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        0,
+        0,
+        0,
+        2
+      ],
+      "mean": "1/2",
+      "variance": "3/4",
+      "regime": "finite",
+      "root_lower": "0.378121785454304099815004313875042305192883052",
+      "root_upper": "0.378121785454304099815004313875042307449832205",
+      "search_steps": 120
+    },
+    {
+      "data": [
+        0,
+        0,
+        0,
+        3
+      ],
+      "mean": "3/4",
+      "variance": "27/16",
+      "regime": "finite",
+      "root_lower": "0.205712108763164497872827461776691837735413915",
+      "root_upper": "0.205712108763164497872827461776691839051967588",
+      "search_steps": 122
+    },
+    {
+      "data": [
+        0,
+        0,
+        0,
+        4
+      ],
+      "mean": "1",
+      "variance": "3",
+      "regime": "finite",
+      "root_lower": "0.158276003631410549314906398072722983350991418",
+      "root_upper": "0.158276003631410549314906398072722984667545091",
+      "search_steps": 122
+    },
+    {
+      "data": [
+        0,
+        0,
+        0,
+        5
+      ],
+      "mean": "5/4",
+      "variance": "75/16",
+      "regime": "finite",
+      "root_lower": "0.1351691007971783755987652274119861884234996",
+      "root_upper": "0.135169100797178375598765227411986189740053273",
+      "search_steps": 122
+    },
+    {
+      "data": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "mean": "1/2",
+      "variance": "1/4",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        0,
+        0,
+        1,
+        2
+      ],
+      "mean": "3/4",
+      "variance": "11/16",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        0,
+        0,
+        1,
+        3
+      ],
+      "mean": "1",
+      "variance": "3/2",
+      "regime": "finite",
+      "root_lower": "1.25667684927070554447286664152253774265120949",
+      "root_upper": "1.25667684927070554447286664152253775468827164",
+      "search_steps": 117
+    },
+    {
+      "data": [
+        0,
+        0,
+        1,
+        4
+      ],
+      "mean": "5/4",
+      "variance": "43/16",
+      "regime": "finite",
+      "root_lower": "0.688072711005687707379009504768028826808068811",
+      "root_upper": "0.688072711005687707379009504768028832826599887",
+      "search_steps": 117
+    },
+    {
+      "data": [
+        0,
+        0,
+        1,
+        5
+      ],
+      "mean": "3/2",
+      "variance": "17/4",
+      "regime": "finite",
+      "root_lower": "0.511150689222366120925972184411719858627316003",
+      "root_upper": "0.511150689222366120925972184411719861636581541",
+      "search_steps": 118
+    },
+    {
+      "data": [
+        0,
+        0,
+        2,
+        2
+      ],
+      "mean": "1",
+      "variance": "1",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        0,
+        0,
+        2,
+        3
+      ],
+      "mean": "5/4",
+      "variance": "27/16",
+      "regime": "finite",
+      "root_lower": "1.43647563770413607441385668011168699031552181",
+      "root_upper": "1.43647563770413607441385668011168700235258397",
+      "search_steps": 117
+    },
+    {
+      "data": [
+        0,
+        0,
+        2,
+        4
+      ],
+      "mean": "3/2",
+      "variance": "11/4",
+      "regime": "finite",
+      "root_lower": "0.810886577256516516131744897878747528657344926",
+      "root_upper": "0.810886577256516516131744897878747534675876003",
+      "search_steps": 117
+    },
+    {
+      "data": [
+        0,
+        0,
+        2,
+        5
+      ],
+      "mean": "7/4",
+      "variance": "67/16",
+      "regime": "finite",
+      "root_lower": "0.601314589570045381648122993047391749855042871",
+      "root_upper": "0.601314589570045381648122993047391752864308409",
+      "search_steps": 118
+    },
+    {
+      "data": [
+        0,
+        0,
+        3,
+        3
+      ],
+      "mean": "3/2",
+      "variance": "9/4",
+      "regime": "finite",
+      "root_lower": "1.00471084445515736281137404230115579717213153",
+      "root_upper": "1.0047108444551573628113740423011558031906626",
+      "search_steps": 118
+    },
+    {
+      "data": [
+        0,
+        0,
+        3,
+        4
+      ],
+      "mean": "7/4",
+      "variance": "51/16",
+      "regime": "finite",
+      "root_lower": "0.735224008425491401561752172092926935672848762",
+      "root_upper": "0.735224008425491401561752172092926941691379838",
+      "search_steps": 117
+    },
+    {
+      "data": [
+        0,
+        0,
+        3,
+        5
+      ],
+      "mean": "2",
+      "variance": "9/2",
+      "regime": "finite",
+      "root_lower": "0.589506013020169383554771588655010049053162739",
+      "root_upper": "0.589506013020169383554771588655010052062428277",
+      "search_steps": 118
+    },
+    {
+      "data": [
+        0,
+        0,
+        4,
+        4
+      ],
+      "mean": "2",
+      "variance": "4",
+      "regime": "finite",
+      "root_lower": "0.627834352481249543371048709523796865521579542",
+      "root_upper": "0.627834352481249543371048709523796871540110618",
+      "search_steps": 117
+    },
+    {
+      "data": [
+        0,
+        0,
+        4,
+        5
+      ],
+      "mean": "9/4",
+      "variance": "83/16",
+      "regime": "finite",
+      "root_lower": "0.542752416988752403894257558410742606502319844",
+      "root_upper": "0.542752416988752403894257558410742609511585382",
+      "search_steps": 118
+    },
+    {
+      "data": [
+        0,
+        0,
+        5,
+        5
+      ],
+      "mean": "5/2",
+      "variance": "25/4",
+      "regime": "finite",
+      "root_lower": "0.493767973267303377527878981417253523998236874",
+      "root_upper": "0.493767973267303377527878981417253528512135182",
+      "search_steps": 119
+    },
+    {
+      "data": [
+        0,
+        1,
+        1,
+        1
+      ],
+      "mean": "3/4",
+      "variance": "3/16",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        0,
+        1,
+        1,
+        2
+      ],
+      "mean": "1",
+      "variance": "1/2",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        0,
+        1,
+        1,
+        3
+      ],
+      "mean": "5/4",
+      "variance": "19/16",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        0,
+        1,
+        1,
+        4
+      ],
+      "mean": "3/2",
+      "variance": "9/4",
+      "regime": "finite",
+      "root_lower": "2.77617200573601121490399096072998550309495234",
+      "root_upper": "2.77617200573601121490399096072998552115054556",
+      "search_steps": 119
+    },
+    {
+      "data": [
+        0,
+        1,
+        1,
+        5
+      ],
+      "mean": "7/4",
+      "variance": "59/16",
+      "regime": "finite",
+      "root_lower": "1.48667298335158690190676917985177640437726182",
+      "root_upper": "1.48667298335158690190676917985177641641432398",
+      "search_steps": 117
+    },
+    {
+      "data": [
+        0,
+        1,
+        2,
+        2
+      ],
+      "mean": "5/4",
+      "variance": "11/16",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "mean": "3/2",
+      "variance": "5/4",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        0,
+        1,
+        2,
+        4
+      ],
+      "mean": "7/4",
+      "variance": "35/16",
+      "regime": "finite",
+      "root_lower": "5.20339832414276003261705863544755131099726398",
+      "root_upper": "5.20339832414276003261705863544755135312698152",
+      "search_steps": 120
+    },
+    {
+      "data": [
+        0,
+        1,
+        2,
+        5
+      ],
+      "mean": "2",
+      "variance": "7/2",
+      "regime": "finite",
+      "root_lower": "2.11754686411117599921262369968107336814453955",
+      "root_upper": "2.11754686411117599921262369968107338620013278",
+      "search_steps": 119
+    },
+    {
+      "data": [
+        0,
+        1,
+        3,
+        3
+      ],
+      "mean": "7/4",
+      "variance": "27/16",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        0,
+        1,
+        3,
+        4
+      ],
+      "mean": "2",
+      "variance": "5/2",
+      "regime": "finite",
+      "root_lower": "4.57616212600136655733642982750906152069438143",
+      "root_upper": "4.57616212600136655733642982750906156282409896",
+      "search_steps": 120
+    },
+    {
+      "data": [
+        0,
+        1,
+        3,
+        5
+      ],
+      "mean": "9/4",
+      "variance": "59/16",
+      "regime": "finite",
+      "root_lower": "2.20890844476857311905144975369718213557201315",
+      "root_upper": "2.20890844476857311905144975369718215362760638",
+      "search_steps": 119
+    },
+    {
+      "data": [
+        0,
+        1,
+        4,
+        4
+      ],
+      "mean": "9/4",
+      "variance": "51/16",
+      "regime": "finite",
+      "root_lower": "2.80530352390662412768027676001060019157229762",
+      "root_upper": "2.80530352390662412768027676001060020962789085",
+      "search_steps": 119
+    },
+    {
+      "data": [
+        0,
+        1,
+        4,
+        5
+      ],
+      "mean": "5/2",
+      "variance": "17/4",
+      "regime": "finite",
+      "root_lower": "1.9006479205528292942028787018589180137844869",
+      "root_upper": "1.90064792055282929420287870185891802582154906",
+      "search_steps": 117
+    },
+    {
+      "data": [
+        0,
+        1,
+        5,
+        5
+      ],
+      "mean": "11/4",
+      "variance": "83/16",
+      "regime": "finite",
+      "root_lower": "1.55740185606769001587244900570824919066727567",
+      "root_upper": "1.55740185606769001587244900570824920270433782",
+      "search_steps": 117
+    },
+    {
+      "data": [
+        0,
+        2,
+        2,
+        2
+      ],
+      "mean": "3/2",
+      "variance": "3/4",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        0,
+        2,
+        2,
+        3
+      ],
+      "mean": "7/4",
+      "variance": "19/16",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        0,
+        2,
+        2,
+        4
+      ],
+      "mean": "2",
+      "variance": "2",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        0,
+        2,
+        2,
+        5
+      ],
+      "mean": "9/4",
+      "variance": "51/16",
+      "regime": "finite",
+      "root_lower": "3.94647927891908913956146014851206224910352899",
+      "root_upper": "3.94647927891908913956146014851206228521471545",
+      "search_steps": 118
+    },
+    {
+      "data": [
+        0,
+        2,
+        3,
+        3
+      ],
+      "mean": "2",
+      "variance": "3/2",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        0,
+        2,
+        3,
+        4
+      ],
+      "mean": "9/4",
+      "variance": "35/16",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        0,
+        2,
+        3,
+        5
+      ],
+      "mean": "5/2",
+      "variance": "13/4",
+      "regime": "finite",
+      "root_lower": "4.99359537454627485992754652713952791201477932",
+      "root_upper": "4.99359537454627485992754652713952795414449685",
+      "search_steps": 120
+    },
+    {
+      "data": [
+        0,
+        2,
+        4,
+        4
+      ],
+      "mean": "5/2",
+      "variance": "11/4",
+      "regime": "finite",
+      "root_lower": "11.9602105197422765316841777462633153425664748",
+      "root_upper": "11.9602105197422765316841777462633154328444409",
+      "search_steps": 121
+    },
+    {
+      "data": [
+        0,
+        2,
+        4,
+        5
+      ],
+      "mean": "11/4",
+      "variance": "59/16",
+      "regime": "finite",
+      "root_lower": "4.0918615226227808903235780933741553867598116",
+      "root_upper": "4.09186152262278089032357809337415540782467037",
+      "search_steps": 121
+    },
+    {
+      "data": [
+        0,
+        2,
+        5,
+        5
+      ],
+      "mean": "3",
+      "variance": "9/2",
+      "regime": "finite",
+      "root_lower": "2.8929261249532757215635073703417737044085642",
+      "root_upper": "2.89292612495327572156350737034177372246415743",
+      "search_steps": 119
+    },
+    {
+      "data": [
+        0,
+        3,
+        3,
+        3
+      ],
+      "mean": "9/4",
+      "variance": "27/16",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        0,
+        3,
+        3,
+        4
+      ],
+      "mean": "5/2",
+      "variance": "9/4",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        0,
+        3,
+        3,
+        5
+      ],
+      "mean": "11/4",
+      "variance": "51/16",
+      "regime": "finite",
+      "root_lower": "8.72913617372057217949229646235486281526559089",
+      "root_upper": "8.72913617372057217949229646235486286040457396",
+      "search_steps": 122
+    },
+    {
+      "data": [
+        0,
+        3,
+        4,
+        4
+      ],
+      "mean": "11/4",
+      "variance": "43/16",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        0,
+        3,
+        4,
+        5
+      ],
+      "mean": "3",
+      "variance": "7/2",
+      "regime": "finite",
+      "root_lower": "7.70697065877701369500820379993067318325575755",
+      "root_upper": "7.70697065877701369500820379993067322538547509",
+      "search_steps": 120
+    },
+    {
+      "data": [
+        0,
+        3,
+        5,
+        5
+      ],
+      "mean": "13/4",
+      "variance": "67/16",
+      "regime": "finite",
+      "root_lower": "4.64109239710359632400009827872059666498985843",
+      "root_upper": "4.64109239710359632400009827872059670711957597",
+      "search_steps": 120
+    },
+    {
+      "data": [
+        0,
+        4,
+        4,
+        4
+      ],
+      "mean": "3",
+      "variance": "3",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        0,
+        4,
+        4,
+        5
+      ],
+      "mean": "13/4",
+      "variance": "59/16",
+      "regime": "finite",
+      "root_lower": "8.69645133272107341375065916418885025353641182",
+      "root_upper": "8.69645133272107341375065916418885029867539489",
+      "search_steps": 122
+    },
+    {
+      "data": [
+        0,
+        4,
+        5,
+        5
+      ],
+      "mean": "7/2",
+      "variance": "17/4",
+      "regime": "finite",
+      "root_lower": "5.63436575659583389905322824798043462491774532",
+      "root_upper": "5.63436575659583389905322824798043466704746285",
+      "search_steps": 120
+    },
+    {
+      "data": [
+        0,
+        5,
+        5,
+        5
+      ],
+      "mean": "15/4",
+      "variance": "75/16",
+      "regime": "finite",
+      "root_lower": "4.75423495143364359814005965817827015303130668",
+      "root_upper": "4.75423495143364359814005965817827019516102422",
+      "search_steps": 120
+    },
+    {
+      "data": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "mean": "1",
+      "variance": "0",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        1,
+        1,
+        1,
+        2
+      ],
+      "mean": "5/4",
+      "variance": "3/16",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        1,
+        1,
+        1,
+        3
+      ],
+      "mean": "3/2",
+      "variance": "3/4",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        1,
+        1,
+        1,
+        4
+      ],
+      "mean": "7/4",
+      "variance": "27/16",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        1,
+        1,
+        1,
+        5
+      ],
+      "mean": "2",
+      "variance": "3",
+      "regime": "finite",
+      "root_lower": "4.967043861048199024412132397054488001841075",
+      "root_upper": "4.96704386104819902441213239705448804397079254",
+      "search_steps": 120
+    },
+    {
+      "data": [
+        1,
+        1,
+        2,
+        2
+      ],
+      "mean": "3/2",
+      "variance": "1/4",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        1,
+        1,
+        2,
+        3
+      ],
+      "mean": "7/4",
+      "variance": "11/16",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        1,
+        1,
+        2,
+        4
+      ],
+      "mean": "2",
+      "variance": "3/2",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        1,
+        1,
+        2,
+        5
+      ],
+      "mean": "9/4",
+      "variance": "43/16",
+      "regime": "finite",
+      "root_lower": "13.0674960719112407564389705466593071716757582",
+      "root_upper": "13.0674960719112407564389705466593072619537244",
+      "search_steps": 121
+    },
+    {
+      "data": [
+        1,
+        1,
+        3,
+        3
+      ],
+      "mean": "2",
+      "variance": "1",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        1,
+        1,
+        3,
+        4
+      ],
+      "mean": "9/4",
+      "variance": "27/16",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        1,
+        1,
+        3,
+        5
+      ],
+      "mean": "5/2",
+      "variance": "11/4",
+      "regime": "finite",
+      "root_lower": "23.2396301654111470445393674267157039189949009",
+      "root_upper": "23.2396301654111470445393674267157041055693643",
+      "search_steps": 122
+    },
+    {
+      "data": [
+        1,
+        1,
+        4,
+        4
+      ],
+      "mean": "5/2",
+      "variance": "9/4",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        1,
+        1,
+        4,
+        5
+      ],
+      "mean": "11/4",
+      "variance": "51/16",
+      "regime": "finite",
+      "root_lower": "13.5065970224646530656452772451211464650331991",
+      "root_upper": "13.5065970224646530656452772451211465553111653",
+      "search_steps": 121
+    },
+    {
+      "data": [
+        1,
+        1,
+        5,
+        5
+      ],
+      "mean": "3",
+      "variance": "4",
+      "regime": "finite",
+      "root_lower": "6.60428761432087230967007721124546937906673841",
+      "root_upper": "6.60428761432087230967007721124546942119645594",
+      "search_steps": 120
+    },
+    {
+      "data": [
+        1,
+        2,
+        2,
+        2
+      ],
+      "mean": "7/4",
+      "variance": "3/16",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        1,
+        2,
+        2,
+        3
+      ],
+      "mean": "2",
+      "variance": "1/2",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        1,
+        2,
+        2,
+        4
+      ],
+      "mean": "9/4",
+      "variance": "19/16",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        1,
+        2,
+        2,
+        5
+      ],
+      "mean": "5/2",
+      "variance": "9/4",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        1,
+        2,
+        3,
+        3
+      ],
+      "mean": "9/4",
+      "variance": "11/16",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "mean": "5/2",
+      "variance": "5/4",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        1,
+        2,
+        3,
+        5
+      ],
+      "mean": "11/4",
+      "variance": "35/16",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        1,
+        2,
+        4,
+        4
+      ],
+      "mean": "11/4",
+      "variance": "27/16",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        1,
+        2,
+        4,
+        5
+      ],
+      "mean": "3",
+      "variance": "5/2",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        1,
+        2,
+        5,
+        5
+      ],
+      "mean": "13/4",
+      "variance": "51/16",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        1,
+        3,
+        3,
+        3
+      ],
+      "mean": "5/2",
+      "variance": "3/4",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        1,
+        3,
+        3,
+        4
+      ],
+      "mean": "11/4",
+      "variance": "19/16",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        1,
+        3,
+        3,
+        5
+      ],
+      "mean": "3",
+      "variance": "2",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        1,
+        3,
+        4,
+        4
+      ],
+      "mean": "3",
+      "variance": "3/2",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        1,
+        3,
+        4,
+        5
+      ],
+      "mean": "13/4",
+      "variance": "35/16",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        1,
+        3,
+        5,
+        5
+      ],
+      "mean": "7/2",
+      "variance": "11/4",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        1,
+        4,
+        4,
+        4
+      ],
+      "mean": "13/4",
+      "variance": "27/16",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        1,
+        4,
+        4,
+        5
+      ],
+      "mean": "7/2",
+      "variance": "9/4",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        1,
+        4,
+        5,
+        5
+      ],
+      "mean": "15/4",
+      "variance": "43/16",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        1,
+        5,
+        5,
+        5
+      ],
+      "mean": "4",
+      "variance": "3",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "mean": "2",
+      "variance": "0",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        2,
+        2,
+        2,
+        3
+      ],
+      "mean": "9/4",
+      "variance": "3/16",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        2,
+        2,
+        2,
+        4
+      ],
+      "mean": "5/2",
+      "variance": "3/4",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        2,
+        2,
+        2,
+        5
+      ],
+      "mean": "11/4",
+      "variance": "27/16",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        2,
+        2,
+        3,
+        3
+      ],
+      "mean": "5/2",
+      "variance": "1/4",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        2,
+        2,
+        3,
+        4
+      ],
+      "mean": "11/4",
+      "variance": "11/16",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        2,
+        2,
+        3,
+        5
+      ],
+      "mean": "3",
+      "variance": "3/2",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        2,
+        2,
+        4,
+        4
+      ],
+      "mean": "3",
+      "variance": "1",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        2,
+        2,
+        4,
+        5
+      ],
+      "mean": "13/4",
+      "variance": "27/16",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        2,
+        2,
+        5,
+        5
+      ],
+      "mean": "7/2",
+      "variance": "9/4",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        2,
+        3,
+        3,
+        3
+      ],
+      "mean": "11/4",
+      "variance": "3/16",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        2,
+        3,
+        3,
+        4
+      ],
+      "mean": "3",
+      "variance": "1/2",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        2,
+        3,
+        3,
+        5
+      ],
+      "mean": "13/4",
+      "variance": "19/16",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        2,
+        3,
+        4,
+        4
+      ],
+      "mean": "13/4",
+      "variance": "11/16",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        2,
+        3,
+        4,
+        5
+      ],
+      "mean": "7/2",
+      "variance": "5/4",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        2,
+        3,
+        5,
+        5
+      ],
+      "mean": "15/4",
+      "variance": "27/16",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        2,
+        4,
+        4,
+        4
+      ],
+      "mean": "7/2",
+      "variance": "3/4",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        2,
+        4,
+        4,
+        5
+      ],
+      "mean": "15/4",
+      "variance": "19/16",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        2,
+        4,
+        5,
+        5
+      ],
+      "mean": "4",
+      "variance": "3/2",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        2,
+        5,
+        5,
+        5
+      ],
+      "mean": "17/4",
+      "variance": "27/16",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        3,
+        3,
+        3,
+        3
+      ],
+      "mean": "3",
+      "variance": "0",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        3,
+        3,
+        3,
+        4
+      ],
+      "mean": "13/4",
+      "variance": "3/16",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        3,
+        3,
+        3,
+        5
+      ],
+      "mean": "7/2",
+      "variance": "3/4",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        3,
+        3,
+        4,
+        4
+      ],
+      "mean": "7/2",
+      "variance": "1/4",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        3,
+        3,
+        4,
+        5
+      ],
+      "mean": "15/4",
+      "variance": "11/16",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        3,
+        3,
+        5,
+        5
+      ],
+      "mean": "4",
+      "variance": "1",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        3,
+        4,
+        4,
+        4
+      ],
+      "mean": "15/4",
+      "variance": "3/16",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        3,
+        4,
+        4,
+        5
+      ],
+      "mean": "4",
+      "variance": "1/2",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        3,
+        4,
+        5,
+        5
+      ],
+      "mean": "17/4",
+      "variance": "11/16",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        3,
+        5,
+        5,
+        5
+      ],
+      "mean": "9/2",
+      "variance": "3/4",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        4,
+        4,
+        4,
+        4
+      ],
+      "mean": "4",
+      "variance": "0",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        4,
+        4,
+        4,
+        5
+      ],
+      "mean": "17/4",
+      "variance": "3/16",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        4,
+        4,
+        5,
+        5
+      ],
+      "mean": "9/2",
+      "variance": "1/4",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        4,
+        5,
+        5,
+        5
+      ],
+      "mean": "19/4",
+      "variance": "3/16",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        5,
+        5,
+        5,
+        5
+      ],
+      "mean": "5",
+      "variance": "0",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        1,
+        1,
+        10
+      ],
+      "mean": "4",
+      "variance": "18",
+      "regime": "finite",
+      "root_lower": "1.10161002287031410852481998331751867945727202",
+      "root_upper": "1.1016100228703141085248199833175186854758031",
+      "search_steps": 118
+    },
+    {
+      "data": [
+        0,
+        0,
+        0,
+        100
+      ],
+      "mean": "25",
+      "variance": "1875",
+      "regime": "finite",
+      "root_lower": "0.0507333308783111155478885192178152645821528342",
+      "root_upper": "0.050733330878311115547888519217815264946556083",
+      "search_steps": 126
+    },
+    {
+      "data": [
+        1,
+        5
+      ],
+      "mean": "3",
+      "variance": "4",
+      "regime": "finite",
+      "root_lower": "6.60428761432087230967007721124546937906673841",
+      "root_upper": "6.60428761432087230967007721124546942119645594",
+      "search_steps": 120
+    },
+    {
+      "data": [
+        2,
+        6
+      ],
+      "mean": "4",
+      "variance": "4",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        3,
+        7
+      ],
+      "mean": "5",
+      "variance": "4",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        89,
+        109
+      ],
+      "mean": "99",
+      "variance": "100",
+      "regime": "finite",
+      "root_lower": "9734.66607328141580825820527360925499235137412",
+      "root_upper": "9734.66607328141580825820527360925504165217143",
+      "search_steps": 132
+    },
+    {
+      "data": [
+        90,
+        110
+      ],
+      "mean": "100",
+      "variance": "100",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        91,
+        111
+      ],
+      "mean": "101",
+      "variance": "100",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        9899,
+        10099
+      ],
+      "mean": "9999",
+      "variance": "10000",
+      "regime": "finite",
+      "root_lower": "99973334.6666611074066307064071136167495209637",
+      "root_upper": "99973334.6666611074066307064071136175573145246",
+      "search_steps": 144
+    },
+    {
+      "data": [
+        9900,
+        10100
+      ],
+      "mean": "10000",
+      "variance": "10000",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        9901,
+        10101
+      ],
+      "mean": "10001",
+      "variance": "10000",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        998999,
+        1000999
+      ],
+      "mean": "999999",
+      "variance": "1000000",
+      "regime": "finite",
+      "root_lower": "999997333334.666666611110740739964192442665201",
+      "root_upper": "999997333334.666666611110740739964199060110101",
+      "search_steps": 157
+    },
+    {
+      "data": [
+        999000,
+        1001000
+      ],
+      "mean": "1000000",
+      "variance": "1000000",
+      "regime": "poisson"
+    },
+    {
+      "data": [
+        999001,
+        1001001
+      ],
+      "mean": "1000001",
+      "variance": "1000000",
+      "regime": "poisson"
+    }
+  ]
+}

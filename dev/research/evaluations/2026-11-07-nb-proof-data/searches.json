@@ -1,0 +1,31 @@
+{
+  "date": "2026-11-07",
+  "scope": "Ordinary iid two-free-parameter NB existence, uniqueness and proof corrections",
+  "provider": "web search",
+  "query_count": 22,
+  "queries": [
+    "Wang 1996 negative binomial maximum likelihood estimation 00259 proof Eberly",
+    "Levin Reeds 1977 negative binomial maximum likelihood proof existence uniqueness pdf",
+    "Aragon Eberly Eberly 1992 existence uniqueness negative binomial proof pdf",
+    "\"Wang\" \"1996\" \"existence\" \"negative binomial\"",
+    "\"Scott\" \"2023\" \"negative binomial\" proof uniqueness",
+    "\"Levin\" \"Reeds\" 1977 maximum likelihood negative binomial pdf",
+    "\"Estimation problems\" \"Wang\" negative binomial pdf",
+    "\"Compound Multinomial Likelihood Functions\" pdf",
+    "\"Anscombe\" \"1950\" \"Sampling theory\" pdf",
+    "\"Aragon\" \"Wang\" \"proof\" negative binomial 1996",
+    "\"Wang\" \"negative binomial\" \"Levin\" proof",
+    "\"1176343741\" pdf",
+    "\"0167715294002592\" pdf",
+    "\"Existence and uniqueness\" \"gy645ty0351\"",
+    "\"Simonsen\" \"1980\" \"negative-binomial\"",
+    "\"On the solution\" \"negative binomial\" pdf Simonsen",
+    "\"Wang\" \"Aragon\" \"counterexample\" binomial proof",
+    "\"Levin\" \"Reeds\" \"pdf\" \"unimodal\"",
+    "\"Yining Wang\" \"1996\" \"113\" \"proof\"",
+    "\"Estimation problems for the two-parameter\" filetype:pdf",
+    "\"Brøns\" \"Jensen\" \"Negative Binomial\" 1989",
+    "\"Estimation problems for the two-parameter negative binomial\" Wang proof error monotonicity"
+  ],
+  "stopping_rule": "About 20 queries; two final targeted queries to check the newly located proof and Wang attribution; follow primary-source links and stop without treating inaccessible texts as read."
+}

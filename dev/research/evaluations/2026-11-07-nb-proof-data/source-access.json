@@ -1,0 +1,202 @@
+[
+  {
+    "name": "aragon",
+    "url": "https://stacks.stanford.edu/file/druid:gy645ty0351/gy645ty0351_OLK-NSF-282.pdf",
+    "retrieved_utc": "2026-11-07T09:40:46.683424+00:00",
+    "sha256": "c72d3287383342be240aaa46396ca9dd034925142851d0670671cdcc9cd8868a",
+    "bytes": 272448,
+    "status": "PDF obtained; reading scope recorded in report",
+    "retention": "ignored scratch only",
+    "reading": "Full proof inspected from rasterized Stanford preprint: printed pp. 1–7, PDF pp. 3–9; this is not a verified copy of the 1992 published proof."
+  },
+  {
+    "name": "brons",
+    "url": "https://www.math.ku.dk/bibliotek/arkivet/preprints-fra-ims/1988/preprint_1988_-_no._8_br_ns__hans_and_jensen__s_ren_tolver_-_maximum_likelihood_estimation_in_the---.pdf",
+    "retrieved_utc": "2026-11-07T09:40:46.503820+00:00",
+    "sha256": "b557d1f36f368f62f40d52efd2fa153302b8cb0e41d18cad5cfd31a2d5a447a6",
+    "bytes": 508216,
+    "status": "PDF obtained; reading scope recorded in report",
+    "retention": "ignored scratch only",
+    "reading": "Complete argument inspected, printed pp. 1–7, PDF pp. 3–9; all curvature steps rederived in the NB dossier. Preprint, not journal publication."
+  },
+  {
+    "name": "anscombe",
+    "url": "https://www1.cmc.edu/pages/faculty/MONeill/Math152/Handouts/Anscombe1.pdf",
+    "retrieved_utc": "2026-11-07T09:40:21.741472+00:00",
+    "sha256": "031a6cf23178bb6ecbf606129f27f31e45f34f27b9002393caecdd1bdd0047fc",
+    "bytes": 2843947,
+    "status": "PDF obtained; reading scope recorded in report",
+    "retention": "ignored scratch only",
+    "reading": "Scanned printed p. 367 (PDF p. 11), equation (3.2) and following paragraph, read directly; neighboring pp. 361–364 and 368–369 also inspected. No full-paper read claimed."
+  },
+  {
+    "name": "seifen",
+    "url": "https://www.itwm.fraunhofer.de/content/dam/itwm/de/documents/MDF_Infomaterial/mdf_2013_Seifen_Dissertation_Grouped_Extreme_Values.pdf",
+    "retrieved_utc": "2026-11-07T09:40:20.394890+00:00",
+    "sha256": "49dc52e9f28620d92b7d622d26dc14054afbcef340e0bb136d23f513ea5d39ad",
+    "bytes": 2987709,
+    "status": "PDF obtained; reading scope recorded in report",
+    "retention": "ignored scratch only",
+    "reading": "Printed pp. 81–83 (PDF pp. 99–101 in the 1-based numbering) inspected, theorem 4.3.7 setup and ordinary-NB historical reference; generalized exposure proof not relied on."
+  },
+  {
+    "name": "euclid",
+    "url": "https://projecteuclid.org/journals/annals-of-statistics/volume-5/issue-1/Compound-Multinomial-Likelihood-Functions-are-Unimodal--Proof-of-a/10.1214/aos/1176343741.pdf",
+    "retrieved_utc": "2026-11-07T09:40:18.187171+00:00",
+    "sha256": "b8408c9bc8e0ff111e3dedfdc18ae7e4cf8b955254cfe983c3bf1b9e4eb1ba98",
+    "bytes": 1157,
+    "status": "HTML challenge; no PDF/proof text",
+    "retention": "ignored scratch only"
+  },
+  {
+    "name": "euclid-download",
+    "url": "https://projecteuclid.org/journalArticle/Download?urlid=10.1214%2Faos%2F1176343741",
+    "retrieved_utc": "2026-11-07T09:40:18.187609+00:00",
+    "sha256": "314aa14b3ed120e735b0f6b2a43eddf8c7d7c8bc623d67f5bce085364775c2d4",
+    "bytes": 1155,
+    "status": "HTML challenge; no PDF/proof text",
+    "retention": "ignored scratch only"
+  },
+  {
+    "name": "euclid-old",
+    "url": "https://projecteuclid.org/euclid.aos/1176343741",
+    "retrieved_utc": "2026-11-07T09:40:45.385956+00:00",
+    "sha256": "edc6469175587c49506d7691a2de76b651302414eb7baddfdd68abc5d9068bd8",
+    "bytes": 1156,
+    "status": "HTML challenge; no PDF/proof text",
+    "retention": "ignored scratch only"
+  },
+  {
+    "name": "euclid-bsl",
+    "url": "https://projecteuclid.org/download/pdf_1/euclid.aos/1176343741",
+    "retrieved_utc": "2026-11-07T09:40:45.393670+00:00",
+    "sha256": "338191b0c4db30cd5cb4e00baffe8b767acc29ca802a634b44cb7875fcf8629d",
+    "bytes": 1161,
+    "status": "HTML challenge; no PDF/proof text",
+    "retention": "ignored scratch only"
+  },
+  {
+    "name": "jstor",
+    "url": "https://www.jstor.org/stable/pdf/2958762.pdf",
+    "retrieved_utc": "2026-11-07T09:40:45.523086+00:00",
+    "sha256": "32ed63159c77e21ee19ca1b9aa3213ccf0218eb59539560b132a8e68ef0e18ea",
+    "bytes": 3038,
+    "status": "HTML challenge; no PDF/proof text",
+    "retention": "ignored scratch only"
+  },
+  {
+    "name": "wang-api",
+    "url": "https://api.elsevier.com/content/article/pii/0167715294002592?httpAccept=text%2Fxml",
+    "retrieved_utc": "2026-11-07T09:41:17.750854+00:00",
+    "sha256": "c251cc513f444d17acdc623227e3ac2ffc462c521ee4e857b7e2f797df333f3d",
+    "bytes": 1834,
+    "status": "metadata only; no proof text",
+    "retention": "ignored scratch only"
+  },
+  {
+    "name": "aragon-api",
+    "url": "https://api.elsevier.com/content/article/pii/016771529290157Z?httpAccept=text%2Fxml",
+    "retrieved_utc": "2026-11-07T09:41:17.775552+00:00",
+    "sha256": "5bfd5bde2653f115f6e54ff89dab2851e69e64aa64daee3d8e9e7f06ced75683",
+    "bytes": 1875,
+    "status": "metadata only; no proof text",
+    "retention": "ignored scratch only"
+  },
+  {
+    "name": "wang-openalex",
+    "url": "https://api.openalex.org/works/https://doi.org/10.1016/0167-7152(94)00259-2",
+    "retrieved_utc": "2026-11-07T09:41:18.817477+00:00",
+    "sha256": "b55e4f733bd19c7ceaa19d00429f02c13065f05e3b37be9fb22903fddefec850",
+    "bytes": 10523,
+    "status": "metadata only; no proof text",
+    "retention": "ignored scratch only"
+  },
+  {
+    "name": "levin-openalex",
+    "url": "https://api.openalex.org/works/https://doi.org/10.1214/aos/1176343741",
+    "retrieved_utc": "2026-11-07T09:41:18.815545+00:00",
+    "sha256": "fd8e0a035fb306ff478f388f6d3e1eeb2de94f886c590a84095ab08509115a3d",
+    "bytes": 10853,
+    "status": "metadata only; no proof text",
+    "retention": "ignored scratch only"
+  },
+  {
+    "name": "wang-crossref",
+    "url": "https://api.crossref.org/works/10.1016/0167-7152(94)00259-2",
+    "retrieved_utc": "2026-11-07T09:42:09.130765+00:00",
+    "sha256": "471f274efebb5f936bf16de1714b834ac7e1bc701f94309a212e84ba5b85664d",
+    "bytes": 3506,
+    "status": "metadata only; no proof text",
+    "retention": "ignored scratch only"
+  },
+  {
+    "name": "levin-crossref",
+    "url": "https://api.crossref.org/works/10.1214/aos/1176343741",
+    "retrieved_utc": "2026-11-07T09:42:09.150708+00:00",
+    "sha256": "74eca11b48288ffcbe0b1144099ffeb1c80d41baddd860f6cf93dcb121b7b1d4",
+    "bytes": 2524,
+    "status": "metadata only; no proof text",
+    "retention": "ignored scratch only"
+  },
+  {
+    "name": "Wang publisher",
+    "url": "https://www.sciencedirect.com/science/article/pii/0167715294002592",
+    "status": "HTTP 403 via urllib and web; indexed abstract available",
+    "date": "2026-11-07",
+    "proof_read": false
+  },
+  {
+    "name": "Wang PDF",
+    "url": "https://www.sciencedirect.com/science/article/pii/0167715294002592/pdf",
+    "status": "HTTP 403",
+    "date": "2026-11-07",
+    "proof_read": false
+  },
+  {
+    "name": "Wang full text API",
+    "url": "https://api.elsevier.com/content/article/pii/0167715294002592?httpAccept=text%2Fplain&view=FULL",
+    "status": "HTTP 401",
+    "date": "2026-11-07",
+    "proof_read": false
+  },
+  {
+    "name": "Wang PDF API",
+    "url": "https://api.elsevier.com/content/article/pii/0167715294002592?httpAccept=application%2Fpdf",
+    "status": "HTTP 406",
+    "date": "2026-11-07",
+    "proof_read": false
+  },
+  {
+    "name": "AEE publisher",
+    "url": "https://www.sciencedirect.com/science/article/pii/016771529290157Z",
+    "status": "HTTP 403; API metadata only",
+    "date": "2026-11-07",
+    "proof_read": false
+  },
+  {
+    "name": "Bandara, Gill and Mitra (2019)",
+    "url": "https://www.sciencedirect.com/science/article/pii/S016771521930015X",
+    "date": "2026-11-07",
+    "access": "Indexed publisher introduction and discussion; full proofs not inspected",
+    "finding": "References Simonsen 1976/1980 correction and Levin–Reeds alternative proof; not used to certify either unread proof."
+  },
+  {
+    "name": "Brons–Jensen proceedings lead",
+    "url": "https://www.cambridge.org/core/journals/astin-bulletin-journal-of-the-iaa/article/trend-et-systemes-de-bonusmalus1/5C952A263DE55EE407B905C11E512EC7",
+    "date": "2026-11-07",
+    "access": "Primary citing-paper bibliography only",
+    "finding": "Lists 1989 ISI Paris contributed papers vol.1 pp.168–169. Proceedings text not obtained; no assertion that it includes a complete proof."
+  },
+  {
+    "name": "Simonsen (1976)",
+    "url": "https://doi.org/10.1080/03461238.1976.10405618",
+    "date": "2026-11-07",
+    "access": "Bibliographic lead only; proof not acquired"
+  },
+  {
+    "name": "Simonsen corrections",
+    "date": "2026-11-07",
+    "access": "Bibliographic leads only, not acquired",
+    "finding": "Brons–Jensen cites 1979 pp.228–229; Bandara et al. and publisher-indexed recent paper cite 1980 pp.227–229. Do not conflate or certify from those citations."
+  }
+]

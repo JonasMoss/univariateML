@@ -128,6 +128,11 @@ The zero-inflated negative binomial distribution adds structural zeros with prob
 
 ## Details
 
+For a reduction to an ordinary negative binomial likelihood, the
+[NB dossier proof](../nbinom/README.md) supplies
+the variance criterion and unique size root. That theorem alone gives no
+uniqueness result for an inflated or truncated profile.
+
 Inflation zero is an attained negative binomial member. Size zero, probability one and inflation one each give the point mass at zero. Thus all-zero data attain a maximum, although the coefficients are not identified. Endpoint holds that give zero probability to a positive observation are incompatible.
 
 Holding a finite nonnegative size removes the infinite-size escape. Holding a probability strictly below one also removes it, because increasing size at fixed probability sends mass away from the observed positive counts. Holding only inflation retains comparison against the zero-inflated Poisson boundary with that same inflation.

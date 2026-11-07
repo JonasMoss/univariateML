@@ -1,0 +1,86 @@
+{
+  "date": "2026-11-07",
+  "base_revision": "2fb7558010a91dab4d2c4172263cdbdaa99bb8f9",
+  "production_code_changed": false,
+  "goldens_changed": false,
+  "file_sha256": {
+    "univariateML-cpp/include/cppunivariate/distributions/nbinom/README.md": "235f7cd678fc7915a6771455ff8ba05cb723b7c63a45f054c69318af57e614ac",
+    "univariateML-cpp/include/cppunivariate/distributions/zinb/README.md": "f4140b166988f7c18706cd2a7a2ffc13b551f09fe6ab1ebadc3604dc3a5baa00",
+    "dev/research/evaluations/2026-11-07-nb-proof-data/check.py": "72d63901c5a7f13b53b579c6fe9d84905c0f46402ace6f7124840c0025985806"
+  },
+  "local_environment": [
+    "Linux 7.0.0-42-generic x86_64 GNU/Linux",
+    "Python 3.14.5",
+    "Rscript (R) version 4.6.1 (2026-06-24)",
+    "v22.22.1",
+    "pandoc 3.7.0.2",
+    "c++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0"
+  ],
+  "simbox_environment": {
+    "platform": "WSL Linux, per job configuration",
+    "cpp_compiler": "GNU 13.3.0",
+    "threads": "wrapper: BLAS/OpenMP=1, CMake/ctest=6; R testthat=4 workers",
+    "r_version": "not captured in test logs"
+  },
+  "runs": [
+    {
+      "command": "/tmp/umvl-cpu/run python3 dev/research/evaluations/2026-11-07-nb-proof-data/check.py --output dev/research/evaluations/2026-11-07-nb-proof-data/check.json",
+      "machine": "workstation",
+      "exit_code": 0,
+      "result": "219 samples; 67 finite-root brackets; 152 Poisson regimes; 10 exact equality cases; exact AEE boundary-term check passed"
+    },
+    {
+      "command": "/tmp/umvl-cpu/simbox-run just test",
+      "machine": "simbox",
+      "exit_code": 0,
+      "fail": 0,
+      "warn": 0,
+      "skip": 154,
+      "pass": 20983
+    },
+    {
+      "command": "/tmp/umvl-cpu/simbox-run just cpp-test",
+      "machine": "simbox",
+      "exit_code": 0,
+      "passed_shards": 106,
+      "total_shards": 106
+    },
+    {
+      "command": "/tmp/umvl-cpu/simbox-run bash -c 'just test-full && UMVL_TEST_TIER=full just cpp-test'",
+      "machine": "simbox",
+      "exit_code": 0,
+      "r": {
+        "fail": 0,
+        "warn": 0,
+        "skip": 0,
+        "pass": 43803
+      },
+      "cpp": {
+        "passed_shards": 129,
+        "total_shards": 129
+      }
+    },
+    {
+      "command": "/tmp/umvl-cpu/run just site-check",
+      "machine": "workstation",
+      "exit_code": 0,
+      "result": "99 family pages; build-time MathML; all links/fragments; 99 standalone C++17 snippets; browser and theory checks passed",
+      "prior_attempt": "exit 1: ZINB link used a dossier section fragment omitted by the site renderer; link corrected to the NB family page and complete command rerun green"
+    },
+    {
+      "command": "/tmp/umvl-cpu/run python3 build/scratch/nb-proof/render.py",
+      "machine": "workstation",
+      "exit_code": 0,
+      "result": "PASS: warning-free Pandoc MathML report with canonical proof appendix; local links; no math runtime; git diff whitespace check",
+      "prior_attempt": "Scratch link checker mistook a mathematical ]( for a Markdown link. Checker updated to preserve math spans; rerun passed. No dossier change was required.",
+      "artifact_math": "Legacy TeX rm-prof notation normalized to mathrm in the rendered copy only. Pandoc --fail-if-warnings now makes any conversion fallback fail."
+    }
+  ],
+  "delivery": {
+    "pane_command": "/home/jonas/Files/work/misc/codex-math-web/bin/show dev/research/evaluations/2026-11-07-nb-proof-report.md",
+    "exit_code": 1,
+    "http_status": 403,
+    "reason": "Current worktree omitted from viewer readable roots",
+    "html_artifact": "build/scratch/nb-proof/nb-proof-report.html"
+  }
+}
