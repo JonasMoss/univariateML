@@ -1,0 +1,103 @@
+# Golden reference census, 2026-11-07 (TASK-149)
+# just golden-reference (report only) on master 071e44b0: stored golden estimates vs 50-digit Newton refinement of the README density.
+# worst rel = largest relative difference over refined coefficients; dlogLik = stored minus reference logLik; nd = negative-definite observed information.
+bbinom         worst rel 4.1e-16  dlogLik -2.3e-13  score 1.11e-58  nd True  local only  not refined {'size': 'held'}
+beta           worst rel 1.1e-15  dlogLik -3.6e-13  score 2.76e-59  nd True  unique maximum proved in the dossier  not refined -
+betapr         worst rel 7.7e-10  dlogLik +1.8e-12  score 9.24e-59  nd True  local only  not refined -
+bhatt          worst rel 1.8e-07  dlogLik +3.6e-13  score 4.54e-59  nd True  local only  not refined -
+binom          worst rel 4.0e-17  dlogLik -1.2e-12  score 2.26e-58  nd True  local only  not refined {'size': 'integer'}
+bnbinom        worst rel 8.6e-08  dlogLik -7.5e-14  score 6.85e-59  nd True  local only  not refined -
+burr           worst rel 1.8e-07  dlogLik -2.6e-13  score 8.12e-59  nd True  local only  not refined -
+cauchy         worst rel 2.3e-12  dlogLik +7.7e-13  score 3.05e-59  nd True  unique maximum proved in the dossier  not refined -
+cmb            worst rel 3.0e-10  dlogLik +3.9e-12  score 1.16e-57  nd True  local only  not refined {'size': 'held'}
+cmp            worst rel 1.5e-16  dlogLik -3.7e-14  score 7.67e-59  nd True  unique maximum proved in the dossier  not refined -
+dgamma         worst rel 2.1e-09  dlogLik +2.0e-13  score 7.87e-57  nd True  local only  not refined -
+dlaplace       worst rel 7.5e-18  dlogLik -7.1e-14  score 2.14e-58  nd True  unique maximum proved in the dossier  not refined {'location': 'integer'}
+dnorm          worst rel 7.0e-13  dlogLik -2.2e-14  score 2.82e-59  nd True  unique maximum proved in the dossier  not refined -
+dunif          worst rel 0.0e+00  dlogLik -1.5e-13  score -  nd -  unique maximum proved in the dossier  not refined {'min': 'integer', 'max': 'integer'}
+dweibull       worst rel 6.2e-17  dlogLik +1.4e-13  score 4.45e-58  nd True  unique maximum proved in the dossier  not refined -
+emg            worst rel 7.9e-08  dlogLik +9.6e-13  score 1.44e-58  nd True  local only  not refined -
+exp            worst rel 3.7e-16  dlogLik -2.0e-13  score 1.37e-59  nd True  unique maximum proved in the dossier  not refined -
+fatigue        worst rel 3.1e-09  dlogLik +7.5e-13  score 1.5e-59  nd True  local only  not refined {'mu': 'held'}
+foldnorm       worst rel 2.7e-09  dlogLik +2.6e-13  score 7.58e-59  nd True  local only  not refined -
+fpareto        worst rel 5.8e-12  dlogLik -5.0e-13  score 1.92e-59  nd True  local only  not refined {'shape1': 'held', 'shape3': 'held', 'min': 'held'}
+frechet        worst rel 1.3e-13  dlogLik +2.6e-13  score 1.84e-58  nd True  local only  not refined -
+gamma          worst rel 6.1e-16  dlogLik -1.7e-13  score 2.43e-58  nd True  unique maximum proved in the dossier  not refined -
+gb2            worst rel 2.4e-13  dlogLik +1.8e-12  score 8.59e-59  nd True  local only  not refined -
+ged            worst rel 2.2e-06  dlogLik -5.8e-12  score 3.68e-58  nd True  local only  not refined -
+genbeta        worst rel 3.9e-09  dlogLik -3.4e-13  score 1.84e-55  nd True  local only  not refined {'scale': 'held'}
+geom           worst rel 1.2e-16  dlogLik -2.8e-12  score 1.24e-58  nd True  unique maximum proved in the dossier  not refined -
+gev            worst rel 1.8e-12  dlogLik +1.4e-13  score 3.14e-58  nd True  local only  not refined -
+gompertz       worst rel 1.6e-12  dlogLik -1.2e-12  score 3.04e-59  nd True  unique maximum proved in the dossier  not refined -
+gpd            worst rel 2.1e-13  dlogLik +1.1e-13  score 1.64e-58  nd True  local only  not refined {'mu': 'held'}
+gumbel         worst rel 2.3e-10  dlogLik -1.4e-13  score 5.59e-60  nd True  unique maximum proved in the dossier  not refined -
+hcauchy        worst rel 4.7e-15  dlogLik -2.5e-14  score 3.52e-59  nd True  unique maximum proved in the dossier  not refined {'mu': 'held'}
+hnorm          worst rel 8.3e-17  dlogLik -6.1e-14  score 5.66e-59  nd True  unique maximum proved in the dossier  not refined {'mu': 'support bound'}
+ht             worst rel 7.9e-08  dlogLik +7.5e-13  score 8.19e-59  nd True  local only  not refined {'mu': 'held'}
+huber          worst rel 6.2e-13  dlogLik +2.1e-14  score 1.37e-60  nd True  local only  not refined {'epsilon': 'held'}
+hyper          worst rel 0.0e+00  dlogLik +9.1e-14  score -  nd -  local only  not refined {'m': 'integer', 'N': 'held', 'k': 'held'}
+invburr        worst rel 3.1e-08  dlogLik -4.3e-13  score 4.13e-59  nd True  local only  not refined -
+invexp         worst rel 7.3e-16  dlogLik -4.2e-13  score 7.47e-60  nd True  unique maximum proved in the dossier  not refined -
+invgamma       worst rel 1.2e-15  dlogLik -2.4e-13  score 5.58e-59  nd True  unique maximum proved in the dossier  not refined -
+invgauss       worst rel 3.1e-15  dlogLik -3.5e-13  score 2.92e-59  nd True  unique maximum proved in the dossier  not refined -
+invparalogis   worst rel 4.9e-07  dlogLik -1.8e-11  score 1.44e-58  nd True  local only  not refined -
+invpareto      worst rel 5.2e-11  dlogLik +3.4e-13  score 2.33e-59  nd True  local only  not refined -
+invtrgamma     worst rel 1.9e-11  dlogLik -1.1e-12  score 4.45e-58  nd True  local only  not refined -
+invweibull     worst rel 7.4e-16  dlogLik +7.0e-13  score 2.11e-58  nd True  unique maximum proved in the dossier  not refined -
+kumar          worst rel 5.0e-09  dlogLik +1.1e-13  score 7.51e-60  nd True  unique maximum proved in the dossier  not refined -
+laplace        ERROR line search failed
+lgamma         worst rel 1.4e-15  dlogLik +5.0e-13  score 5.19e-59  nd True  unique maximum proved in the dossier  not refined -
+lgser          worst rel 6.4e-17  dlogLik +4.6e-13  score 4.13e-58  nd True  unique maximum proved in the dossier  not refined -
+llogis         worst rel 1.9e-13  dlogLik +6.1e-14  score 3.22e-59  nd True  unique maximum proved in the dossier  not refined -
+lnorm          worst rel 8.1e-16  dlogLik +2.2e-15  score 6.06e-59  nd True  unique maximum proved in the dossier  not refined -
+logis          worst rel 4.1e-14  dlogLik +6.6e-13  score 7.82e-59  nd True  unique maximum proved in the dossier  not refined -
+logitnorm      worst rel 7.1e-16  dlogLik +4.4e-13  score 1.11e-59  nd True  unique maximum proved in the dossier  not refined -
+lomax          worst rel 7.9e-08  dlogLik -7.2e-13  score 2.44e-59  nd True  local only  not refined -
+lst            worst rel 5.3e-09  dlogLik +4.5e-13  score 1.35e-58  nd True  local only  not refined -
+naka           worst rel 2.0e-15  dlogLik +6.1e-13  score 1.84e-59  nd True  unique maximum proved in the dossier  not refined -
+nbinom         worst rel 5.5e-11  dlogLik +1.6e-12  score 3.03e-57  nd True  unique maximum proved in the dossier  not refined -
+nhyper         worst rel 0.0e+00  dlogLik -1.3e-13  score -  nd -  local only  not refined {'m': 'integer', 'N': 'held', 'r': 'held'}
+norm           worst rel 3.2e-14  dlogLik -4.8e-14  score 2.73e-59  nd True  unique maximum proved in the dossier  not refined -
+nsbeta         worst rel 6.9e-16  dlogLik -5.3e-15  score 1.98e-59  nd True  local only  not refined {'min': 'held', 'max': 'held'}
+paralogis      worst rel 2.6e-07  dlogLik -5.2e-12  score 1.03e-58  nd True  local only  not refined -
+pareto         worst rel 4.8e-16  dlogLik -9.6e-13  score 7.0e-61  nd True  unique maximum proved in the dossier  not refined {'b': 'support bound'}
+pareto2        worst rel 7.5e-16  dlogLik +8.9e-13  score 1.37e-58  nd True  local only  not refined {'min': 'held'}
+pareto3        worst rel 1.2e-08  dlogLik +1.4e-12  score 4.64e-59  nd True  unique maximum proved in the dossier  not refined {'min': 'held'}
+pareto4        worst rel 4.6e-15  dlogLik -1.4e-12  score 2.5e-58  nd True  local only  not refined {'min': 'held'}
+pig            worst rel 5.1e-08  dlogLik +3.2e-14  score 1.99e-59  nd True  unique maximum proved in the dossier  not refined -
+pois           worst rel 8.1e-17  dlogLik +2.0e-12  score 3.58e-59  nd True  unique maximum proved in the dossier  not refined -
+power          worst rel 2.4e-17  dlogLik +7.6e-15  score 2.06e-59  nd True  unique maximum proved in the dossier  not refined {'alpha': 'support bound'}
+rayleigh       worst rel 1.1e-16  dlogLik -4.8e-14  score 2.35e-59  nd True  unique maximum proved in the dossier  not refined -
+sged           worst rel 3.9e-07  dlogLik -3.3e-12  score 8.48e-58  nd True  local only  not refined -
+sgomp          worst rel 2.9e-08  dlogLik +1.7e-12  score 1.71e-59  nd True  local only  not refined -
+skellam        worst rel 4.0e-08  dlogLik +4.0e-12  score 1.1e-58  nd True  local only  not refined -
+slash          worst rel 1.5e-05  dlogLik -2.7e-14  score 2.5e-55  nd True  local only  not refined -
+sn             worst rel 4.3e-07  dlogLik +8.7e-13  score 7.81e-59  nd True  local only  not refined -
+snorm          worst rel 1.0e-15  dlogLik -2.8e-14  score 4.03e-58  nd True  local only  not refined -
+sstd           worst rel 3.6e-06  dlogLik -8.4e-12  score 9.04e-59  nd True  local only  not refined -
+st             worst rel 6.0e-09  dlogLik +7.5e-13  score 6.62e-59  nd True  local only  not refined -
+std            worst rel 8.9e-06  dlogLik -1.4e-10  score 4.85e-59  nd True  local only  not refined -
+tbinom         worst rel 8.4e-17  dlogLik -3.1e-12  score 2.86e-59  nd True  local only  not refined {'a': 'held', 'b': 'held', 'size': 'held'}
+tlambda        worst rel 9.9e-08  dlogLik -5.9e-14  score 8.39e-59  nd True  local only  not refined -
+tnorm          worst rel 1.0e-14  dlogLik -9.3e-14  score 3.14e-59  nd True  unique maximum proved in the dossier  not refined {'a': 'held', 'b': 'held'}
+tpois          worst rel 9.2e-17  dlogLik +2.3e-12  score 1.09e-59  nd True  unique maximum proved in the dossier  not refined {'a': 'held', 'b': 'held'}
+trgamma        worst rel 5.3e-16  dlogLik +3.2e-13  score 3.59e-59  nd True  local only  not refined -
+triang         worst rel 7.1e-13  dlogLik -1.9e-13  score 3.36e-58  nd True  local only  not refined {'c': 'kink'}
+unif           worst rel 0.0e+00  dlogLik -4.3e-17  score -  nd -  unique maximum proved in the dossier  not refined {'min': 'support bound', 'max': 'support bound'}
+weibull        worst rel 3.0e-09  dlogLik +4.0e-13  score 1.16e-58  nd True  unique maximum proved in the dossier  not refined -
+yulesimon      worst rel 4.5e-11  dlogLik +1.2e-13  score 3.27e-60  nd True  unique maximum proved in the dossier  not refined -
+zeta           worst rel 5.2e-12  dlogLik -1.1e-13  score 5.55e-59  nd True  unique maximum proved in the dossier  not refined -
+zib            worst rel 9.2e-17  dlogLik -3.2e-12  score 6.06e-59  nd True  local only  not refined {'size': 'integer'}
+zinb           worst rel 3.8e-08  dlogLik +3.7e-13  score 6.1e-59  nd True  local only  not refined -
+zip            worst rel 3.6e-16  dlogLik +1.6e-12  score 5.84e-59  nd True  unique maximum proved in the dossier  not refined -
+zipf           worst rel 5.2e-14  dlogLik -9.5e-14  score 2.05e-59  nd True  unique maximum proved in the dossier  not refined {'N': 'integer'}
+zmbinom        worst rel 8.4e-17  dlogLik +4.0e-13  score 2.07e-58  nd True  local only  not refined {'size': 'integer'}
+zmgeom         worst rel 7.9e-17  dlogLik -1.7e-12  score 1.41e-58  nd True  unique maximum proved in the dossier  not refined -
+zmlogarithmic  worst rel 4.5e-16  dlogLik +1.8e-12  score 9.66e-60  nd True  unique maximum proved in the dossier  not refined -
+zmnbinom       worst rel 3.8e-07  dlogLik -1.5e-13  score 2.5e-58  nd True  local only  not refined -
+zmpois         worst rel 3.2e-16  dlogLik +2.7e-12  score 2.92e-59  nd True  unique maximum proved in the dossier  not refined -
+ztbinom        worst rel 7.0e-17  dlogLik +4.3e-13  score 9.58e-59  nd True  local only  not refined {'size': 'integer'}
+ztgeom         worst rel 8.9e-18  dlogLik +4.2e-15  score 6.29e-59  nd True  unique maximum proved in the dossier  not refined -
+ztnbinom       worst rel 2.7e-07  dlogLik +3.9e-12  score 2.79e-58  nd True  local only  not refined -
+ztpois         worst rel 4.7e-17  dlogLik +1.9e-13  score 1.66e-59  nd True  unique maximum proved in the dossier  not refined -
+done 1
