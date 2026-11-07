@@ -18,8 +18,8 @@ the competing witnesses and likelihood bounds), or a work budget ran out. It
 never returns an unchecked optimizer iterate. Limit families come from the
 Hellinger closure of each family ([ml-behaviour.tex](ml-behaviour.tex)).
 
-Coverage on 2026-11-07 (afternoon): 73 of 99 families certified for every
-held subset, 24 partially, 2 not (sstd, st). Several of the
+Coverage on 2026-11-07 (evening): 75 of 99 families certified for every
+held subset and 24 partially; none is uncertified. Several of the
 certificates needed new existence or uniqueness arguments (section 2), and
 several found that uniqueness fails (section 3).
 
