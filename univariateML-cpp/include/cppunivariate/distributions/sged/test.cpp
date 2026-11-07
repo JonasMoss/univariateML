@@ -502,3 +502,97 @@ TEST_CASE("sged subunit unfundable knot partitions stop before quadratic work") 
   CHECK(r.stop_detail.budget_exhausted);CHECK_FALSE(r.certified);
   CHECK(r.iterations<32);CHECK_FALSE(r.stop_detail.candidates.empty());
 }
+
+TEST_CASE("sged held two is the conditional normal certificate in public coordinates") {
+  std::vector<double> x{-3,-1,-.5,0,.1,.2,.4,1,2,4};
+  for(double mean:{double(NAN),.2})for(double sd:{double(NAN),1.4}) {
+    const auto a=cppunivariate::sged_mle(mltest::as_span(x),1e-8,1000,mean,sd,2);
+    const auto b=cppunivariate::snorm_mle(mltest::as_span(x),1e-10,1000,mean,sd,NAN);
+    CHECK(a.logLik==doctest::Approx(b.logLik));
+    CHECK(a.stop_detail.budget_exhausted==b.stop_detail.budget_exhausted);
+    CHECK(a.stop_detail.comparison_tie==b.stop_detail.comparison_tie);
+    if(b.status==cppunivariate::SnormStatus::Ok) {
+      CHECK(a.certified);CHECK(a.mu==b.mu);CHECK(a.sigma==b.sigma);CHECK(a.xi==b.xi);
+    }
+    for(const auto& c:a.stop_detail.candidates) {
+      if(c.model==cppunivariate::StopModel::None)CHECK(c.coef.size()==4);
+      else {CHECK(c.coef.size()==3);CHECK(c.coef[2]==2);}
+    }
+  }
+}
+TEST_CASE("sged free moments subunit skew closes both faces and separated ties") {
+  std::vector<double> x{-1,1};
+  for(double nu:{.3,.5,.9,1.}) {
+    const auto r=cppunivariate::sged_mle(mltest::as_span(x),1e-8,200,NAN,NAN,nu);
+    CHECK(r.status==cppunivariate::SgedStatus::CertificateFailure);
+    CHECK(r.stop_detail.comparison_tie);REQUIRE(r.stop_detail.candidates.size()==2);
+    CHECK(std::isfinite(r.stop_detail.loglik_upper));
+    CHECK(r.stop_detail.candidates[0].model==cppunivariate::StopModel::HalfGed);
+    CHECK(r.stop_detail.candidates[1].model==cppunivariate::StopModel::ReflectedHalfGed);
+  }
+}
+TEST_CASE("sged subunit free skew compares finite knots to their public density") {
+  std::vector<double> x{-4,-1,0,0,0,0,0,0,.3,2};
+  for(double nu:{.5,.8,1.}) {
+    const auto r=cppunivariate::sged_mle(mltest::as_span(x),1e-8,200,NAN,NAN,nu);
+    REQUIRE(r.status==cppunivariate::SgedStatus::Ok);CHECK(r.certified);
+    double ll=0;for(double z:x)ll+=dist::dsged(z,r.mu,r.sigma,nu,r.xi,true);
+    CHECK(ll==doctest::Approx(r.logLik).epsilon(1e-7));
+  }
+  std::vector<double> large;for(int j=0;j<140;++j)large.push_back(j);
+  const auto r=cppunivariate::sged_mle(mltest::as_span(large),1e-8,1,NAN,NAN,.7);
+  CHECK(r.stop_detail.budget_exhausted);CHECK_FALSE(r.certified);
+}
+TEST_CASE("sged subunit skew has separated finite global maxima") {
+  const std::vector<double> x{-100,-1,-1,-1,-1,-1,1,1,1,1,1,100};
+  const auto r=cppunivariate::sged_mle(mltest::as_span(x),1e-8,200,NAN,NAN,.5);
+  REQUIRE(r.stop_detail.comparison_tie);REQUIRE(r.stop_detail.candidates.size()==2);
+  for(const auto& c:r.stop_detail.candidates){CHECK(c.model==cppunivariate::StopModel::None);CHECK(c.coef.size()==4);}
+}
+TEST_CASE("sged subunit free skew coefficients match a 70 digit reference") {
+  const std::vector<double> x{-4,-1,0,0,0,0,0,0,.3,2};
+  const auto r=cppunivariate::sged_mle(mltest::as_span(x),1e-8,200,NAN,NAN,.5);
+  REQUIRE(r.status==cppunivariate::SgedStatus::Ok);
+  // check.py, 70 digits, independent unnormalised two-half-scale moments.
+  const double a=.06917655828196826647265728464405659;
+  const double b=.05211963387596999114054257892853992;
+  CHECK(r.mu==doctest::Approx(6*(b-a)).epsilon(2e-12));
+  CHECK(r.sigma==doctest::Approx(std::sqrt(120*(a*a-a*b+b*b)-36*(b-a)*(b-a))).epsilon(2e-12));
+  CHECK(r.xi==doctest::Approx(std::sqrt(b/a)).epsilon(2e-12));
+  CHECK(r.logLik==doctest::Approx(-5.83627325097221080719737442296735).epsilon(2e-12));
+}
+TEST_CASE("sged subunit free skew rejects an unfundable partition before quadratic work") {
+  std::vector<double> x;for(int j=0;j<100000;++j)x.push_back(j*.1);
+  const auto r=cppunivariate::sged_mle(mltest::as_span(x),1e-8,200,NAN,NAN,.7);
+  CHECK(r.status==cppunivariate::SgedStatus::CertificateFailure);
+  CHECK(r.stop_detail.budget_exhausted);CHECK(r.iterations==1);
+  REQUIRE(r.stop_detail.candidates.size()==1);CHECK(std::isfinite(r.stop_detail.loglik_lower));
+  CHECK(r.stop_detail.loglik_upper==INFINITY);
+}
+TEST_CASE("sged subunit free skew stops on cancellation in the public mean") {
+  std::vector<double> x{-4,-1,0,0,0,0,0,0,.3,2};
+  for(auto& z:x)z=1e100*(z+.10234154643598965);
+  const auto r=cppunivariate::sged_mle(mltest::as_span(x),1e-8,200,NAN,NAN,.5);
+  CHECK(r.status==cppunivariate::SgedStatus::CertificateFailure);CHECK_FALSE(r.certified);
+}
+TEST_CASE("sged subunit free skew rejects rounded subnormal face scales") {
+  const std::vector<double> x{-1e-320,1e-320};
+  const auto r=cppunivariate::sged_mle(mltest::as_span(x),1e-8,200,NAN,NAN,.5);
+  CHECK(r.status==cppunivariate::SgedStatus::CertificateFailure);CHECK_FALSE(r.certified);
+}
+TEST_CASE("sged normal face conversion rejects an unrepresentable half GED scale") {
+  const std::vector<double> x{0,0,0};
+  const auto normal=cppunivariate::snorm_mle(mltest::as_span(x),1e-8,200,1.1e308);
+  REQUIRE(normal.status==cppunivariate::SnormStatus::RightHalfNormalBoundary);
+  REQUIRE(normal.stop_detail.limit_coef.size()==2);
+  REQUIRE(std::isfinite(normal.stop_detail.limit_coef[1]));
+  const auto r=cppunivariate::sged_mle(mltest::as_span(x),1e-8,200,1.1e308,NAN,2);
+  CHECK(r.status==cppunivariate::SgedStatus::CertificateFailure);CHECK_FALSE(r.certified);
+  CHECK(r.stop_detail.limit_coef.empty());CHECK(r.stop_detail.loglik_upper==INFINITY);
+}
+TEST_CASE("sged normal face conversion rejects rounded subnormal half GED scales") {
+  const std::vector<double> x{0,std::ldexp(1.,-1047)};
+  const auto r=cppunivariate::sged_mle(mltest::as_span(x),1e-8,200,NAN,NAN,2);
+  CHECK(r.status==cppunivariate::SgedStatus::CertificateFailure);CHECK_FALSE(r.certified);
+  CHECK(r.stop_detail.limit_coef.empty());CHECK(r.stop_detail.loglik_upper==INFINITY);
+}

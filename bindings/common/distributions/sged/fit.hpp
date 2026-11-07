@@ -14,7 +14,7 @@ inline FitResult fit_sged(cppunivariate::span x, Held mean_arg = {}, Held sd_arg
     if(!(gradtol>0 && std::isfinite(gradtol) && iterlim>0))return out;
     if(x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return out;
     if(kind=="nomle" && !std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return out;
-    if(!finite_stop_payload(detail,kind))return out;
+    if(!(kind=="budget" && detail.budget_exhausted) && !finite_stop_payload(detail,kind))return out;
     return stop_failure(out,detail,kind,names,model);
   };
   std::vector<std::string> warnings;
