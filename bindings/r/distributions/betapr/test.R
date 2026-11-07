@@ -163,3 +163,47 @@ test_that("betapr: P3 unfinished optimizer stops", {
 test_that("betapr: P3 finite failed default BFGS stops", {
   expect_error(mlbetapr(c(.01,.2,.3,.5,2,10,50),iterlim=1), "BfgsFailure")
 })
+
+test_that("non-unit held shapes expose certified faces and numerical stops", {
+  g <- tryCatch(mlbetapr(rep(2,3),shape1=2),error=identity)
+  expect_s3_class(g,"univariateML_limit")
+  expect_identical(g$model,"gamma")
+  expect_equal(unname(g$estimates),c(2,1))
+  ig <- tryCatch(mlbetapr(rep(.5,3),shape2=2),error=identity)
+  expect_s3_class(ig,"univariateML_limit")
+  expect_identical(ig$model,"invgamma")
+  expect_equal(unname(ig$estimates),c(2,1))
+  e <- tryCatch(mlbetapr(1:4,shape1=1e100),error=identity)
+  expect_s3_class(e,"univariateML_numerical")
+  expect_true(nrow(e$candidates)>0)
+  expect_true(is.infinite(e$loglik_upper))
+  x <- c(.03,.1,.4,.7,1,2,4,12)
+  f <- mlbetapr(x,shape1=2)
+  inv <- mlbetapr(1/x,shape2=2)
+  expect_equal(unname(inv[1]),unname(f[2]),tolerance=1e-6)
+  expect_equal(unname(inv[3]),1/unname(f[3]),tolerance=1e-6)
+  expect_equal(attr(inv,"logLik"),attr(f,"logLik")+2*sum(log(x)),tolerance=1e-10)
+})
+
+test_that("nonunique conditional beta-prime peaks retain both witnesses", {
+  x <- c(1.9901008294052028e-5,2.209857117039297e-5,.0002450722434289249,
+         12.288342947780086,942.976056905759,16.239512580216314,
+         2.898690421966857,1.2684036923492177,400970.63293690106*exp(5.646438395028704))
+  e <- tryCatch(mlbetapr(x,shape1=.22690393135372058),error=identity)
+  expect_s3_class(e,"univariateML_tie")
+  expect_true(any(e$candidates$shape2<.12,na.rm=TRUE))
+  expect_true(any(e$candidates$shape2>.12,na.rm=TRUE))
+  expect_true(is.finite(e$loglik_upper))
+})
+
+test_that("beta-prime certificate budget stops preserve witnesses", {
+  set.seed(8104)
+  invisible(rbetapr(n=20,shape1=.7,shape2=1.2,scale=1))
+  invisible(rbetapr(n=100,shape1=.7,shape2=1.2,scale=1))
+  invisible(rgamma(20,2))
+  x <- rinvgamma(n=100,alpha=3,beta=1)
+  e <- tryCatch(mlbetapr(x,shape1=.66110553857791232,iterlim=64),error=identity)
+  expect_s3_class(e,"univariateML_budget")
+  expect_true(nrow(e$candidates)>0)
+  expect_match(conditionMessage(e),"raising iterlim")
+})

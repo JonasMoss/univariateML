@@ -109,6 +109,8 @@ inline std::string stop_model(cppunivariate::StopModel model) {
     case cppunivariate::StopModel::UnitGamma:return "unavailable:unit-gamma";
     case cppunivariate::StopModel::HalfGed:return "unavailable:half-ged";
     case cppunivariate::StopModel::ReflectedHalfGed:return "unavailable:reflected-half-ged";
+    case cppunivariate::StopModel::Gamma:return "gamma";
+    case cppunivariate::StopModel::InvGamma:return "invgamma";
     default:return "";
   }
 }
@@ -149,6 +151,8 @@ inline std::vector<std::string> stop_names(const std::string& model,const std::v
   if(model=="unavailable:unit-gamma")return {"shape","scale","upper"};
   if(model=="unavailable:half-ged")return {"mu","scale","nu"};
   if(model=="unavailable:reflected-half-ged")return {"mu","scale","nu"};
+  if(model=="gamma")return {"shape","scale"};
+  if(model=="invgamma")return {"alpha","beta"};
   return names;
 }
 // Candidate bounds describe evaluated finite witnesses. An unrepresentable
