@@ -122,3 +122,22 @@ test_that("sgomp positive face score overrides a tiny likelihood tie", {
   expect_gt(gain,0)
   expect_lt(gain,1e-8)
 })
+
+test_that("shifted Gompertz held-shape rate agrees with a scalar oracle", {
+  x <- c(0,.1,.3,2,9)
+  for(eta in c(.01,2,1e10)) {
+    f <- mlsgomp(x,eta=eta)
+    density <- getFromNamespace("dsgomp","univariateML")
+    objective <- function(z) -sum(density(x,exp(z),eta,log=TRUE))
+    oracle <- optimize(objective,c(-10,10),tol=1e-11)
+    expect_equal(attr(f,"logLik"),-oracle$objective,tolerance=1e-9)
+    expect_identical(unname(f["eta"]),eta)
+  }
+})
+
+test_that("shifted Gompertz unfinished bracket preserves a finite witness", {
+  e <- tryCatch(mlsgomp(c(1,1.01),iterlim=1),error=identity)
+  expect_s3_class(e,"error")
+  expect_identical(e$kind,"numerical")
+  expect_true(is.finite(e$loglik_lower))
+})

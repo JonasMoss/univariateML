@@ -63,10 +63,10 @@ construction:
 relations: {}
 fit:
   method: profile-search
-  certified: partial
-  note: 'fatigue/README.md, Details; fatigue/mle.hpp (public fitter and held overloads); fatigue/test.cpp: Held
-    beta gives analytic alpha; held alpha gives a monotone scale solve. The joint scale profile is searched numerically;
-    estimating threshold is structurally excluded.'
+  certified: 'yes'
+  note: 'fatigue/README.md, Details; fatigue/certificate.hpp; fatigue/test.cpp: Analytic held-beta fit and
+    complete rational-score inclusion on finite beta brackets; distinct numerically tied maxima stop.
+    Estimating threshold remains structurally excluded.'
 areas:
 - reliability and survival
 classification: specialist
@@ -101,7 +101,34 @@ The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-half
 
 The threshold $\mu$ is supplied, and $\alpha$ and $\beta$ are fitted to the shifted observations $x - \mu$, which must all be positive. Either $\alpha$ or $\beta$ can also be held. The coefficient $\beta$ is a scale.
 
-With $\beta$ held, $\hat\alpha$ is the root mean square of $\sqrt{t/\beta} - \sqrt{\beta/t}$ over the shifted observations $t = x - \mu$. It is zero only when every $t$ equals $\beta$, and the likelihood is then unbounded. Holding $\alpha$ removes this collapse for constant samples. With $\alpha$ held, the likelihood in $\beta$ can have several local maxima, and the fit compares all the maxima it finds.
+With $\beta$ held, $\hat\alpha$ is the root mean square of $\sqrt{t/\beta} - \sqrt{\beta/t}$ over the shifted observations $t = x - \mu$. It is zero only when every $t$ equals $\beta$, and the likelihood is then unbounded. Holding $\alpha$ removes this collapse for constant samples. With $\alpha$ held, the likelihood in $\beta$ can have several local maxima, and the fit isolates and compares every possible maximum on a finite interval. For a constant shifted sample and $\alpha>2$, two reciprocal scales are equal global maxima, and fitting stops with both witnesses.
+
+
+Write $A=\overline t$, $H=1/\overline{1/t}$ and
+$\xi(b)=n/\sum_i(t_i+b)^{-1}$. After profiling alpha, the scale score has the sign of
+$F(b)=b^2-2Hb+HA+(H-b)\xi(b)$. Since $\xi(b)\ge b+H$, the score points inward
+outside $[H,A]$. With alpha held, each individual score in $u=\log(b/t_i)$ is
+$\tfrac12\tanh(u/2)-\sinh(u)/\alpha^2$; its exterior roots give
+$[\min(t)r_-,\max(t)r_+]$, where $r_+=\{\alpha/2+\sqrt{\alpha^2/4-1}\}^2$
+and $r_-=1/r_+$ for alpha above two, and both are one otherwise.
+
+Rational interval bounds exclude root-free segments and certify monotone
+segments before bisection; no sampled sign-change enumeration is assumed complete.
+A non-simple root that cannot be isolated stops. Distinct maxima within
+$10^{-10}n$ in log likelihood also stop. Bounds use a practical floating-point
+allowance of $16\epsilon$ times the endpoint magnitude per interval operation;
+the guarantee is conditional on the computed comparisons. The historical joint Newton proposal is retained when both coordinates agree with the isolated winning root within $10^{-8}$ relatively and its likelihood agrees within $10^{-10}n$, preserving default golden rounding. Scale roots are
+refined to relative bracket width $2\cdot10^{-13}$. When $A,H$ coincide to
+rounding accuracy, fitting stops numerically because the induced alpha accuracy
+has not been resolved. Alpha uses original-data squared differences rather than
+a cancelling moment formula or rounded standardized differences. A threshold
+translation that merges distinct data, or rounds a nonzero held-beta residual
+to zero, cannot establish an unbounded likelihood: these apparent collapses
+stop numerically. Reconstruction of a free beta on the original scale must
+agree with the normalized root within $2\cdot10^{-13}$ relatively, including at
+subnormal scales; otherwise fitting stops numerically.
+Each search permits $128\min(\mathrm{iterlim},100000)$ segment evaluations,
+and each root solve permits $\min(\mathrm{iterlim},100000)$ iterations.
 
 The threshold is not estimated even when $\alpha$ or $\beta$ is held. This is a design choice rather than a mathematical necessity: in some of these cases an MLE exists.
 

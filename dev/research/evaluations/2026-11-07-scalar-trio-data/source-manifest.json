@@ -1,0 +1,24 @@
+{
+  "base_revision": "017b9f8ec3bed7610ccd41c62738bce1ea987316",
+  "worktree": "scalar-trio",
+  "machine": "Linux-7.0.0-42-generic-x86_64-with-glibc2.43",
+  "sha256": {
+    "bindings/common/distributions/fatigue/fit.hpp": "ffbbf516ccc31badf05c88b065dae449d41d996ef250aeb7c4b63567ea0e6e9a",
+    "bindings/common/distributions/genbeta/fit.hpp": "5d74d45a59a4ce06cba7970d407b4a489f5958cd66a6de00bf00dc6d5cd65240",
+    "bindings/common/distributions/sgomp/fit.hpp": "78770da20d82738d14b3cc182ca48ef3047f7caa2790da2ed93bae09fea9d0fa",
+    "bindings/js/test.mjs": "b43020473bfaf70380a727d5bbfe17ff03fa433f2c2ad6c959a579dd1786e929",
+    "bindings/r/distributions/fatigue/test.R": "a2a23fd3677beb64a4cc6d862936d014bedb0fc88b9fb4d9de255a10ebfb6b1b",
+    "bindings/r/distributions/genbeta/test.R": "ded09eb86e42893c3970bcbdabee844ef6bad4f8b12ca542923761a3c922e480",
+    "bindings/r/distributions/sgomp/test.R": "35c890f4f7318f66d41d72479c7f05442f78585b2dad6f3448c857c36433ad74",
+    "univariateML-cpp/include/cppunivariate/distributions/fatigue/README.md": "5d89bc6cec00ceb384c722823f1e0171291d0c6c185f284ac368c266204785d5",
+    "univariateML-cpp/include/cppunivariate/distributions/fatigue/certificate.hpp": "34cac373ff9f4e01ee6902d57a0ac41829862fd4e0e3d044b3b3b75be980ab6c",
+    "univariateML-cpp/include/cppunivariate/distributions/fatigue/mle.hpp": "b0df182a3e8f2e9028749cd5e138d3062dd0138353fd518df9c8ea59546dc75f",
+    "univariateML-cpp/include/cppunivariate/distributions/fatigue/test.cpp": "c33c22c6fe33e53983d9c8ba59a1a1237e1ab5be56991d26b0ce3903f26f972a",
+    "univariateML-cpp/include/cppunivariate/distributions/genbeta/README.md": "82837bc82b2e56e7c3eb2428f54e1fff7182533cae657a60cd12643bc3273c1d",
+    "univariateML-cpp/include/cppunivariate/distributions/genbeta/mle.hpp": "1ba33768c0ef9ea56b65a385a68cbf06510aad3d128576614e2dddc2150899dd",
+    "univariateML-cpp/include/cppunivariate/distributions/genbeta/test.cpp": "0e4d8da5baea7674224f308001b140c30e8e212adffb48c07846621a8a69dfc8",
+    "univariateML-cpp/include/cppunivariate/distributions/sgomp/README.md": "3e3691a2c1b17dbda8410dde660a87d426a02519b319bb019987cec67a4a9d02",
+    "univariateML-cpp/include/cppunivariate/distributions/sgomp/mle.hpp": "389219a7ef82d0b827af92fcdb85c75cc4cfae1f92ce216a4635dbf7210f62cf",
+    "univariateML-cpp/include/cppunivariate/distributions/sgomp/test.cpp": "0103bca324f6e0c19656bb60409fd09a4533bc80f52da14c1ab0234e22673793"
+  }
+}

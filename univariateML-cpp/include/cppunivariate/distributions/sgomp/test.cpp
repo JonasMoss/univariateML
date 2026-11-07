@@ -108,3 +108,23 @@ TEST_CASE("sgomp: ranking tie margin never grows with the common likelihood") {
   CHECK(cppunivariate::sgomp_detail::ranking_difference(mltest::as_span(x),a,b)>.027);
   CHECK(cppunivariate::sgomp_detail::ranking_difference(mltest::as_span(x),b,a)<-.027);
 }
+
+TEST_CASE("sgomp certificate: held eta strictly concave rate root") {
+  const std::vector<double> x{0,.1,.3,2,9};
+  for(double eta:{0.,.01,2.,1e10}) {
+    const auto r=cppunivariate::sgomp_mle(mltest::as_span(x),1e-10,200,cppunivariate::sgomp_detail::nan(),eta);
+    REQUIRE(r.status==cppunivariate::SgompStatus::Ok);
+    double score=0;
+    for(double v:x){const double e=std::exp(-r.b*v),a=-std::expm1(-r.b*v);score+=1/r.b-v+eta*v*e*(1+1/(1+eta*a));}
+    CHECK(std::abs(score*r.b)<1e-8);
+  }
+}
+
+TEST_CASE("sgomp certificate: unfinished bracket preserves a numerical witness") {
+  const std::vector<double> x{1,1.01};
+  const auto r=cppunivariate::sgomp_mle(mltest::as_span(x),1e-10,1);
+  CHECK(r.status==cppunivariate::SgompStatus::IterationFailure);
+  CHECK_FALSE(r.stop_detail.budget_exhausted);
+  REQUIRE(!r.stop_detail.candidates.empty());
+  CHECK(std::isfinite(r.stop_detail.candidates.front().loglik_lower));
+}

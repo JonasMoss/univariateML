@@ -45,10 +45,10 @@ construction:
 relations: {}
 fit:
   method: profile-search
-  certified: partial
-  note: 'sgomp/README.md, Details; sgomp/mle.hpp (public fitter and held overloads); sgomp/test.cpp: Held rate leaves
-    a strictly monotone shape score; joint rate grid refines sampled peaks without certifying enumeration of all
-    stationary points.'
+  certified: 'yes'
+  note: 'sgomp/README.md, Details; sgomp/mle.hpp; sgomp/test.cpp: Monotone conditional score roots;
+    compact profile curvature subdivision certifies the joint proposal or stops with numerical,
+    comparison or budget details. Joint uniqueness is not assumed.'
 areas:
 - reliability and survival
 classification: specialist
@@ -83,8 +83,8 @@ existence:
     With both free and nonconstant data, likelihood envelopes bound the rate
     away from zero and infinity on every positive likelihood level set.
     Bounded rate then bounds the maximizing shape. These bounds prove
-    attainment but do not prove uniqueness or completeness of the numerical
-    search.
+    attainment but do not prove uniqueness. Profile subdivision certifies
+    completeness conditional on the computed interval bounds.
 ---
 
 The shifted Gompertz distribution models nonnegative waiting times, including diffusion and adoption times. The coefficient $b$ sets the time scale through a rate, and $\eta$ changes the shape; there is no location coefficient.
@@ -99,10 +99,42 @@ For a nonconstant sample, the joint likelihood attains a maximum. This existence
 $\ell\le n\log b+n\log n-b(\sum_i x_i-nm)$.
 The coefficient of $-b$ is positive for nonconstant data, so this excludes arbitrarily large rates. For $b\max_i x_i\le1$, maximizing $n\log(1+\eta)-n\eta/e$ bounds the remaining shape contribution by $n$, giving $\ell\le n\log b+n$. This excludes rates near zero. At bounded rates the likelihood decreases without bound as the shape grows. Constant positive samples instead allow $b$ to increase and $\eta=\exp(bx_1)$ to concentrate the density at their common value. All-zero data have unbounded likelihood whenever the rate is free.
 
-The fitter profiles shape and refines the rate maxima bracketed by a grid on the finite interval supplied by the envelopes. This search does not certify that every stationary point has been found. Joint uniqueness remains open. The strict concavity of either conditional likelihood does not imply joint concavity of the profiled likelihood. Failure to resolve a scalar search stops fitting.
+The joint grid only proposes a candidate. A complete profile subdivision then checks
+the rate interval supplied by the envelopes. The conditional shape optimum
+$\hat\eta(b)$ is nondecreasing: the mixed derivative is
+$C=\sum_i x_i e^{-bx_i}\{1+(1+\eta(1-e^{-bx_i}))^{-2}\}>0$.
+On each rate interval $[l,h]$, the endpoint shape optima bound all intervening
+optima. Writing $D=-\ell_{\eta\eta}>0$, the profile curvature is
+$\ell_{bb}+C^2/D$ in the interior and $\ell_{bb}$ on the zero-shape face.
+Bounds on these three derivatives give a quadratic upper envelope about the
+midpoint, including the residual inner-root tangent error. Losing intervals
+are excluded. Every unresolved small region is retained until the final
+lower likelihood witness is known; changing the proposal cannot invalidate
+previously retained regions. A successful certificate encloses every possible
+global maximizer within relative rate error $10^{-7}$ and shape error
+$10^{-7}\max(1,\eta)$ of the returned coefficients. Joint uniqueness is not
+presumed. Separated surviving regions stop as a comparison tie, and exhaustion
+of $128\min(\mathrm{iterlim},100000)$ certificate evaluations (including the
+proposal mesh) stops on budget. Overflow or an invalid curvature bound stops
+numerically. Endpoint shape solutions are reused when subdividing.
+
+The rate root with eta held uses its strictly negative second derivative,
+$-n/b^2-\eta\sum x_i^2e^{-bx_i}-\eta(1+\eta)\sum
+x_i^2e^{-bx_i}/(1+\eta-\eta e^{-bx_i})^2$, and a signed expanding bracket.
+It is refined to relative width $2\cdot10^{-13}$. In the joint certificate,
+conditional shape solves use $\min(\mathrm{reltol},10^{-13})$. The log-shape
+brackets are inflated by twice this tolerance plus $10^{-12}$. Each retained
+region has relative rate width at most $10^{-9}$, shape width at most
+$10^{-8}\max(1,\eta)$, and its likelihood upper bound exceeds its center
+value by at most twice the practical margin
+$512\epsilon(n+|\ell|)$. The final global upper bound must be within eight
+such margins of the returned value. A historical proposal is retained only
+when all surviving regions satisfy the coefficient enclosure around it.
+The certificate is in exact arithmetic conditional on those computed bounds
+and comparisons; it does not use outward-rounded interval arithmetic.
 
 The [positive-family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-positive.md) records the held-parameter and boundary arguments.
 
 ## R notes
 
-The fitter compares candidates by directly subtracting the rate and shape contributions before adding their common log likelihood. To preserve ordinary-fit rounding on numerical plateaus, candidate differences within $8\epsilon n$ retain the historical ordering only when the full-likelihood floating-point spacing is also at most $8\epsilon n$, where $\epsilon$ is double precision machine epsilon. This tie margin stays absolute as the common likelihood grows. It prefers the attained `eta = 0` member only when its right shape score is nonpositive and its directly computed likelihood difference is at least $-10^{-8}n$. This absolute per-observation margin does not grow with the magnitude of the common log likelihood. Strict concavity proves the held-rate shape decision in exact arithmetic, conditional on the computed score comparison; floating-point comparisons use double precision. Joint search completeness remains unproved. Constant samples with both coefficients free, and all-zero samples with `b` free, stop with an unbounded-likelihood error.
+The fitter compares candidates by directly subtracting the rate and shape contributions before adding their common log likelihood. To preserve ordinary-fit rounding on numerical plateaus, candidate differences within $8\epsilon n$ retain the historical ordering only when the full-likelihood floating-point spacing is also at most $8\epsilon n$, where $\epsilon$ is double precision machine epsilon. This tie margin stays absolute as the common likelihood grows. It prefers the attained `eta = 0` member only when its right shape score is nonpositive and its directly computed likelihood difference is at least $-10^{-8}n$. This absolute per-observation margin does not grow with the magnitude of the common log likelihood. Strict concavity proves the held-rate shape decision in exact arithmetic, conditional on the computed score comparison; floating-point comparisons use double precision. The compact profile subdivision checks joint search completeness using the bounds above. Constant samples with both coefficients free, and all-zero samples with `b` free, stop with an unbounded-likelihood error.

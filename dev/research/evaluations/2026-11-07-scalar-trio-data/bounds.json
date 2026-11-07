@@ -1,0 +1,6 @@
+{
+  "precision_digits": 60,
+  "boxes": 16,
+  "interior_checks": 64,
+  "maximum_loglik_minus_upper": "-0.218007341143628882478114635434163578322570327900195272925659"
+}

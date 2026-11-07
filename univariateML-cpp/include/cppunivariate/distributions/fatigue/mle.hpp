@@ -1,11 +1,10 @@
 // Birnbaum-Saunders (Fatigue Life) MLE.
 //
-// 1D Newton on beta with relative-step convergence; alpha is the
-// closed-form maximiser given beta. Log-likelihood evaluated via
-// Rmath dnorm in standard form.
+// Complete rational-score inclusion in beta; alpha profiles analytically.
 
 #pragma once
 #include "../../core/work_budget.hpp"
+#include "../../core/stop_detail.hpp"
 #include "../../core/precision.hpp"
 
 #include "../../core/newton.hpp"
@@ -28,9 +27,14 @@ struct FatigueResult {
   double logLik;
   int iterations;
   FatigueStatus status = FatigueStatus::Ok;
+  StopDetail stop_detail{};
 };
 
-inline FatigueResult fatigue_mle_impl(span x, double tol, int maxit, bool standardized) {
+#include "certificate.hpp"
+
+// Historical Newton proposer retained for golden compatibility. The complete
+// rational inclusion below decides whether it represents the winning root.
+inline FatigueResult fatigue_proposal_impl(span x, double tol, int maxit, bool standardized) {
   maxit = static_cast<int>(solver_budget(maxit));
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
@@ -46,7 +50,7 @@ inline FatigueResult fatigue_mle_impl(span x, double tol, int maxit, bool standa
       y[i]=x[i]/unit;
       if (!(y[i]>0.0)) return {kNaN,kNaN,kNaN,0};
     }
-    const auto r=fatigue_mle_impl(span{y.data(),n},tol,maxit,true);
+    const auto r=fatigue_proposal_impl(span{y.data(),n},tol,maxit,true);
     return {r.alpha,r.beta*unit,r.logLik-static_cast<double>(n)*std::log(unit),r.iterations,r.status};
   }
 
@@ -127,75 +131,29 @@ inline FatigueResult fatigue_mle_impl(span x, double tol, int maxit, bool standa
 }
 
 // With beta held, alpha has its exact RMS solution. With alpha held,
-// search every sampled beta-profile maximum (the profile can be multimodal).
+// certify every beta-profile maximum (the profile can be multimodal).
 inline FatigueResult fatigue_mle(span x, double tol, int maxit,
     double held_alpha = std::numeric_limits<double>::quiet_NaN(),
     double held_beta = std::numeric_limits<double>::quiet_NaN()) {
   maxit = static_cast<int>(solver_budget(maxit));
   const bool fa=!std::isnan(held_alpha), fb=!std::isnan(held_beta);
-  if (!fa && !fb) return fatigue_mle_impl(x, tol, maxit, false);
+  if (!fa && !fb) {
+    auto certified=fatigue_certificate::fit(x,tol,maxit,held_alpha,held_beta);
+    if(certified.status!=FatigueStatus::Ok)return certified;
+    const auto proposal=fatigue_proposal_impl(x,tol,maxit,false);
+    if(proposal.status==FatigueStatus::Ok&&proposal.alpha>0&&proposal.beta>0&&
+       std::isfinite(proposal.logLik)&&std::abs(std::log(proposal.beta/certified.beta))<=1e-8&&
+       std::abs(std::log(proposal.alpha/certified.alpha))<=1e-8&&
+       std::abs(proposal.logLik-certified.logLik)<=1e-10*x.size()) {
+      certified.alpha=proposal.alpha;certified.beta=proposal.beta;certified.logLik=proposal.logLik;
+    }
+    return certified;
+  }
   const double nan=std::numeric_limits<double>::quiet_NaN();
   if (x.empty() || !(tol>0) || !std::isfinite(tol) || maxit<=0 ||
       (fa && (!(held_alpha>0)||!std::isfinite(held_alpha))) ||
       (fb && (!(held_beta>0)||!std::isfinite(held_beta)))) return {nan,nan,nan,0,FatigueStatus::InvalidInput};
-  double lm=0;
-  for (double v:x) {
-    if (!(v>0)||!std::isfinite(v)) return {nan,nan,nan,0,FatigueStatus::InvalidInput};
-    lm+=std::log(v)/x.size();
-  }
-  const auto alpha_at=[&](double lb) {
-    if (fa) return held_alpha;
-    CPPUNIV_EXTENDED_REAL ss=0;
-    for (double v:x) {
-      const CPPUNIV_EXTENDED_REAL d=2*std::sinh((static_cast<CPPUNIV_EXTENDED_REAL>(std::log(v))-lb)/2);
-      ss+=d*d;
-    }
-    return static_cast<double>(std::sqrt(ss/x.size()));
-  };
-  const auto ll=[&](double lb) -> double {
-    const double a=alpha_at(lb);
-    if (!(a>0)||!std::isfinite(a)) return -INFINITY;
-    double value=0;
-    for (double v:x) {
-      const double d=(std::log(v)-lb)/2;
-      const double z=2*std::sinh(d)/a;
-      const double logcosh=std::abs(d)+std::log1p(std::exp(-2*std::abs(d)))-std::log(2.0);
-      value+=logcosh-std::log(a)-std::log(v)-0.5*std::log(2*std::acos(-1.0))-0.5*z*z;
-    }
-    return value;
-  };
-  double best=fb?std::log(held_beta):lm, value=ll(best);
-  int iterations=0;
-  if (!fb) {
-    double lo=INFINITY,hi=-INFINITY;
-    for (double v:x) {lo=std::min(lo,std::log(v));hi=std::max(hi,std::log(v));}
-    // Outside these bounds every individual density increases toward the
-    // interval. Its stationary roots satisfy y=1 or (y+1)^2=alpha^2*y.
-    const double width=2*std::log(std::max(held_alpha,2.0))+2;
-    lo-=width;hi+=width;
-    constexpr int grids=512;
-    std::vector<double> grid(grids+1);
-    for(int j=0;j<=grids;++j) {
-      const double t=lo+(hi-lo)*j/grids;grid[j]=ll(t);
-      if(grid[j]>value) {best=t;value=grid[j];}
-    }
-    for(int j=1;j<grids;++j) if(grid[j]>=grid[j-1]&&grid[j]>=grid[j+1]) {
-      double l=lo+(hi-lo)*(j-1)/grids,r=lo+(hi-lo)*(j+1)/grids;
-      int it=0;
-      for(;it<maxit && r-l>std::min(tol,1e-10);++it) {
-        const double a=r-(r-l)*.6180339887498949,b=l+(r-l)*.6180339887498949;
-        if(ll(a)>ll(b)) r=b; else l=a;
-      }
-      iterations=std::max(iterations,it);
-      const double t=(l+r)/2,v=ll(t);
-      if(v>value) {best=t;value=v;}
-      if(it==maxit) return {nan,nan,nan,it,FatigueStatus::SearchFailure};
-    }
-  }
-  const double a=alpha_at(best),b=fb?held_beta:std::exp(best);
-  if (!fa && a==0) return {nan,b,nan,iterations,FatigueStatus::Unbounded};
-  if (!(a>0)||!std::isfinite(a)||!std::isfinite(value)||!std::isfinite(b)) return {nan,nan,nan,iterations,FatigueStatus::SearchFailure};
-  return {fa?held_alpha:a,b,value,iterations};
+  return fatigue_certificate::fit(x,tol,maxit,held_alpha,held_beta);
 }
 
 }  // namespace cppunivariate
@@ -214,6 +172,22 @@ inline FatigueResult fatigue_mle_shifted(span x, double mu, double tol, int maxi
     if(!(shifted[i]>0) || !std::isfinite(shifted[i]))
       return {nan,nan,nan,0,FatigueStatus::InvalidInput};
   }
-  return fatigue_mle(span{shifted.data(),shifted.size()},tol,maxit,alpha,beta);
+  auto result=fatigue_mle(span{shifted.data(),shifted.size()},tol,maxit,alpha,beta);
+  if(result.status==FatigueStatus::Unbounded) {
+    bool distinct=false,rounded=false;
+    for(std::size_t i=0;i<x.size();++i) {
+      distinct=distinct||x[i]!=x[0];
+      if(!std::isnan(beta)) {
+        // TwoDiff residual: x[i]-mu = shifted[i]+error exactly when its
+        // intermediates are representable. A rounded zero RMS is not a
+        // mathematical collapse at the supplied beta.
+        const double virtual_mu=x[i]-shifted[i];
+        const double error=(x[i]-(shifted[i]+virtual_mu))+(virtual_mu-mu);
+        rounded=rounded||error!=0;
+      }
+    }
+    if(distinct||rounded)return {nan,nan,nan,0,FatigueStatus::SearchFailure};
+  }
+  return result;
 }
 } // namespace cppunivariate

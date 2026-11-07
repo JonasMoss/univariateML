@@ -145,3 +145,46 @@ TEST_CASE("genbeta: structured face payloads") {
   CHECK(r.stop_detail.limit_coef[1]==doctest::Approx(public_fit.beta));
   CHECK(r.stop_detail.limit_loglik==doctest::Approx(public_fit.logLik));
 }
+
+TEST_CASE("genbeta certificate: held shapes power root includes q below one") {
+  const std::vector<double> x{.02,.2,.6,.9};
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  for(double p:{.1,1.,10.})for(double q:{.01,.7,2.,30.}) {
+    const auto r=cppunivariate::genbeta_mle(mltest::as_span(x),1,1e-7,200,p,q,nan);
+    REQUIRE(r.status==cppunivariate::GenbetaStatus::Ok);
+    double score=4;
+    for(double v:x){const double z=-r.shape3*std::log(v);score-=p*z;score+=(q-1)*z/std::expm1(z);}
+    CHECK(std::abs(score)<1e-9);
+  }
+}
+
+TEST_CASE("genbeta certificate: tiny held q retains the power score scale") {
+  const std::vector<double> x{.02,.2,.6,.9};
+  double mean=0;for(double v:x)mean-=std::log(v)/x.size();
+  for(double q:{1e-16,1e-100,1e-300}) {
+    const auto r=cppunivariate::genbeta_mle(mltest::as_span(x),1,1e-7,200,2,q);
+    REQUIRE(r.status==cppunivariate::GenbetaStatus::Ok);
+    CHECK(r.shape3/q==doctest::Approx(1/(1.5*mean)).epsilon(1e-12));
+    CHECK(std::isfinite(r.logLik));
+  }
+}
+
+TEST_CASE("genbeta certificate: large held q retains the weighted exponential tail") {
+  const std::vector<double> x{.5};
+  const double q=std::exp(705.);
+  const auto r=cppunivariate::genbeta_mle(mltest::as_span(x),1,1e-7,200,2,q);
+  REQUIRE(r.status==cppunivariate::GenbetaStatus::Ok);
+  const double z=r.shape3*std::log(2.);
+  CHECK(z>700);
+  CHECK(std::abs(z-(705-std::log(2-1/z)))<1e-9);
+}
+
+TEST_CASE("genbeta certificate: critical p one half retains the quadratic score") {
+  const std::vector<double> x{.02,.2,.6,.9};
+  double second=0;for(double v:x)second+=std::pow(std::log(v),2)/x.size();
+  for(double q:{1e-100,1e-300}) {
+    const auto r=cppunivariate::genbeta_mle(mltest::as_span(x),1,1e-7,1000,.5,q);
+    REQUIRE(r.status==cppunivariate::GenbetaStatus::Ok);
+    CHECK(r.shape3/std::sqrt(q)==doctest::Approx(std::sqrt(12/second)).epsilon(1e-12));
+  }
+}

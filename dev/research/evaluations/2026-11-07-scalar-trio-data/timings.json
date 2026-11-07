@@ -1,0 +1,224 @@
+{
+  "before": [
+    {
+      "family": "fatigue",
+      "workload": 0,
+      "status": 0,
+      "coef": [
+        2.858368126583106,
+        1.9642698285831126
+      ],
+      "logLik": -1354.8132605216492,
+      "milliseconds_per_fit": 0.04678255
+    },
+    {
+      "family": "fatigue",
+      "workload": 1,
+      "status": 0,
+      "coef": [
+        3.0,
+        1.965720095807243
+      ],
+      "logLik": -1355.9458064784528,
+      "milliseconds_per_fit": 13.2036489
+    },
+    {
+      "family": "fatigue",
+      "workload": 2,
+      "status": 0,
+      "coef": [
+        2.8588342633040527,
+        2.0
+      ],
+      "logLik": -1354.8527889627303,
+      "milliseconds_per_fit": 0.10662385
+    },
+    {
+      "family": "sgomp",
+      "workload": 0,
+      "status": 0,
+      "coef": [
+        0.9706547498921746,
+        2.738208806793902
+      ],
+      "logLik": -764.0565316609303,
+      "milliseconds_per_fit": 24.9085155
+    },
+    {
+      "family": "sgomp",
+      "workload": 1,
+      "status": 0,
+      "coef": [
+        0.8816666302274725,
+        2.0
+      ],
+      "logLik": -768.1079647283899,
+      "milliseconds_per_fit": 14.360131899999999
+    },
+    {
+      "family": "sgomp",
+      "workload": 2,
+      "status": 0,
+      "coef": [
+        1.0,
+        2.88630136616653
+      ],
+      "logLik": -764.304166509586,
+      "milliseconds_per_fit": 0.1868122
+    },
+    {
+      "family": "genbeta",
+      "workload": 0,
+      "status": 0,
+      "coef": [
+        0.23474506053961935,
+        0.24298710443400298,
+        4.084996007320842
+      ],
+      "logLik": 548.7516886975229,
+      "milliseconds_per_fit": 3.6098101999999996
+    },
+    {
+      "family": "genbeta",
+      "workload": 1,
+      "status": 0,
+      "coef": [
+        2.0,
+        0.7,
+        0.627192379918048
+      ],
+      "logLik": 319.0978638555056,
+      "milliseconds_per_fit": 2.5786831
+    },
+    {
+      "family": "genbeta",
+      "workload": 2,
+      "status": 0,
+      "coef": [
+        2.0,
+        2.0,
+        1.4536073117645862
+      ],
+      "logLik": -954.8390326573688,
+      "milliseconds_per_fit": 2.61367425
+    }
+  ],
+  "after": [
+    {
+      "family": "fatigue",
+      "workload": 0,
+      "status": 0,
+      "coef": [
+        2.858368126583106,
+        1.9642698285831126
+      ],
+      "logLik": -1354.8132605216492,
+      "milliseconds_per_fit": 0.72711695
+    },
+    {
+      "family": "fatigue",
+      "workload": 1,
+      "status": 0,
+      "coef": [
+        3.0,
+        1.9657201511658244
+      ],
+      "logLik": -1355.9458064784517,
+      "milliseconds_per_fit": 0.57210215
+    },
+    {
+      "family": "fatigue",
+      "workload": 2,
+      "status": 0,
+      "coef": [
+        2.8588342633040527,
+        2.0
+      ],
+      "logLik": -1354.8527889627294,
+      "milliseconds_per_fit": 0.0189167
+    },
+    {
+      "family": "sgomp",
+      "workload": 0,
+      "status": 0,
+      "coef": [
+        0.9706547498921746,
+        2.738208806793902
+      ],
+      "logLik": -764.0565316609303,
+      "milliseconds_per_fit": 61.41942205
+    },
+    {
+      "family": "sgomp",
+      "workload": 1,
+      "status": 0,
+      "coef": [
+        0.8816666530157653,
+        2.0
+      ],
+      "logLik": -768.1079647283904,
+      "milliseconds_per_fit": 0.48939985
+    },
+    {
+      "family": "sgomp",
+      "workload": 2,
+      "status": 0,
+      "coef": [
+        1.0,
+        2.88630136616653
+      ],
+      "logLik": -764.304166509586,
+      "milliseconds_per_fit": 0.18116075
+    },
+    {
+      "family": "genbeta",
+      "workload": 0,
+      "status": 0,
+      "coef": [
+        0.23474506053961935,
+        0.24298710443400298,
+        4.084996007320842
+      ],
+      "logLik": 548.7516886975229,
+      "milliseconds_per_fit": 3.5944089499999996
+    },
+    {
+      "family": "genbeta",
+      "workload": 1,
+      "status": 0,
+      "coef": [
+        2.0,
+        0.7,
+        0.6271923800903658
+      ],
+      "logLik": 319.0978638555056,
+      "milliseconds_per_fit": 0.16379135
+    },
+    {
+      "family": "genbeta",
+      "workload": 2,
+      "status": 0,
+      "coef": [
+        2.0,
+        2.0,
+        1.4536073117133128
+      ],
+      "logLik": -954.839032657369,
+      "milliseconds_per_fit": 0.19652415
+    }
+  ],
+  "repeats": 20,
+  "workloads": [
+    "default",
+    "held alpha=3 / eta=2 / beta shapes=2,.7",
+    "held beta=2 / rate=1 / beta shapes=2,2"
+  ],
+  "compiler": "c++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "base_revision": "017b9f8ec3bed7610ccd41c62738bce1ea987316",
+  "working_headers_sha256": {
+    "univariateML-cpp/include/cppunivariate/distributions/fatigue/mle.hpp": "b0df182a3e8f2e9028749cd5e138d3062dd0138353fd518df9c8ea59546dc75f",
+    "univariateML-cpp/include/cppunivariate/distributions/sgomp/mle.hpp": "389219a7ef82d0b827af92fcdb85c75cc4cfae1f92ce216a4635dbf7210f62cf",
+    "univariateML-cpp/include/cppunivariate/distributions/genbeta/mle.hpp": "1ba33768c0ef9ea56b65a385a68cbf06510aad3d128576614e2dddc2150899dd",
+    "univariateML-cpp/include/cppunivariate/distributions/fatigue/certificate.hpp": "34cac373ff9f4e01ee6902d57a0ac41829862fd4e0e3d044b3b3b75be980ab6c"
+  }
+}

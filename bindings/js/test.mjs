@@ -319,3 +319,89 @@ test('trgamma unrepresentable scales retain numerical stop details', async () =>
       assert.equal(error.loglik_upper,Infinity);return true;
     });
 });
+
+test('scalar-trio certificates expose fatigue ties and solve held scalar roots', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  assert.throws(() => api.fatigue.fit(new Float64Array([1]), {alpha: 3, mu: 0}), error => {
+    assert.equal(error.kind, 'tie');
+    assert.equal(error.candidates.length, 2);
+    return true;
+  });
+  assert.throws(() => api.fatigue.fit(new Float64Array([1,2,3]), {alpha: 1, mu: 0}, {iterlim: 1}), error => {
+    assert.equal(error.kind, 'numerical');
+    return true;
+  });
+  const x = new Float64Array([.02,.2,.6,.9]);
+  const fit = api.genbeta.fit(x, {scale: 1, shape1: 2, shape2: .7});
+  const a = fit.estimates.shape3;
+  const score = Array.from(x, v => {const z = -a*Math.log(v); return 1-2*z-.3*z/Math.expm1(z);}).reduce((a,b) => a+b, 0);
+  assert.ok(Math.abs(score) < 1e-9);
+  assert.equal(api.sgomp.fit(new Float64Array([0,.1,.3,2,9]), {eta: 2}).status, 'Ok');
+});
+
+test('fatigue certificate stops when rounding hides alpha resolution', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  const x = Float64Array.from({length: 5}, (_, i) => 1+i*Number.EPSILON);
+  assert.throws(() => api.fatigue.fit(x, {mu: 0}), error => {
+    assert.equal(error.kind, 'numerical');
+    assert.equal(error.candidates.length, 1);
+    return true;
+  });
+});
+
+test('genbeta power certificate keeps tiny held beta shapes in double precision', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  const x = new Float64Array([.02,.2,.6,.9]);
+  const mean = Array.from(x, v => -Math.log(v)).reduce((a,b) => a+b,0)/x.length;
+  for(const q of [1e-16,1e-100,1e-300]) {
+    const fit = api.genbeta.fit(x, {scale: 1, shape1: 2, shape2: q});
+    assert.ok(Math.abs(fit.estimates.shape3/q*1.5*mean-1) < 1e-12);
+    assert.ok(Number.isFinite(fit.logLik));
+  }
+});
+
+test('genbeta power certificate retains a large-shape weighted exponential tail', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  const fit = api.genbeta.fit(new Float64Array([.5]), {scale: 1, shape1: 2, shape2: Math.exp(705)});
+  const z = fit.estimates.shape3*Math.log(2);
+  assert.ok(z > 700);
+  assert.ok(Math.abs(z-(705-Math.log(2-1/z))) < 1e-9);
+});
+
+test('genbeta critical held p one half preserves the small-power quadratic score', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  const x = new Float64Array([.02,.2,.6,.9]);
+  const second = Array.from(x,v => Math.log(v)**2).reduce((a,b) => a+b,0)/x.length;
+  const fit = api.genbeta.fit(x,{scale: 1,shape1: .5,shape2: 1e-100});
+  assert.ok(Math.abs(fit.estimates.shape3/1e-50/Math.sqrt(12/second)-1) < 1e-12);
+});
+
+test('fatigue rounded threshold translations stop numerically rather than claiming nonexistence', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  for(const [x, held] of [[new Float64Array([1,2]), {mu: -1e300}], [new Float64Array([1]), {mu: .1,beta: .9}]]) {
+    assert.throws(() => api.fatigue.fit(x,held), error => {assert.equal(error.kind,'numerical');return true;});
+  }
+});
+
+test('fatigue subnormal coefficient reconstruction must retain relative accuracy', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  assert.throws(() => api.fatigue.fit(new Float64Array([1e-320,3e-320,4e-320]),{mu: 0}), error => {
+    assert.equal(error.kind,'numerical');return true;
+  });
+});
+
+test('shifted Gompertz unfinished bracket preserves a finite witness', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  assert.throws(() => api.sgomp.fit(new Float64Array([1,1.01]),{},{iterlim: 1}), error => {
+    assert.equal(error.kind,'numerical');
+    assert.ok(Number.isFinite(error.loglik_lower));return true;
+  });
+});

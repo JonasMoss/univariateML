@@ -72,7 +72,7 @@ const std::string name = "shape3";
     case cppunivariate::GenbetaStatus::Unbounded:return classify(fail("Generalized beta requires observations strictly between 0 and scale; constant samples with free beta shapes are not supported (the unrestricted likelihood is unbounded)."),{},"nomle",{});
     case cppunivariate::GenbetaStatus::InvalidData:return fail("Generalized beta requires observations strictly between 0 and scale; constant samples with free beta shapes are not supported (the unrestricted likelihood is unbounded).");
     case cppunivariate::GenbetaStatus::InvalidFixed:return fail("Generalized beta held parameters must be positive finite numbers.");
-    case cppunivariate::GenbetaStatus::SearchUnresolved:return fail("Generalized beta search unresolved; increase iterlim or hold shapes.");
+    case cppunivariate::GenbetaStatus::SearchUnresolved:return classify(fail("Generalized beta search unresolved; increase iterlim or hold shapes."),r.stop_detail,"numerical",{"shape1","shape2","shape3","scale"});
   }
   return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"shape1",r.shape1},{"shape2",r.shape2},{"shape3",r.shape3},{"scale",r.scale}}; out.logLik = r.logLik; out.iterations = r.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; out.extra_vectors.emplace_back("support", std::vector<double>{0,scale}); return out; }();
 

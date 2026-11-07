@@ -88,3 +88,69 @@ TEST_CASE("fatigue core threshold transform matches former adapter") {
     CHECK(r.logLik==old.logLik);
   }
 }
+
+TEST_CASE("fatigue certificate: reciprocal conditional maxima are a structured tie") {
+  const std::vector<double> x{1};
+  const auto r=cppunivariate::fatigue_mle(mltest::as_span(x),1e-10,200,3);
+  CHECK(r.status==cppunivariate::FatigueStatus::SearchFailure);
+  REQUIRE(r.stop_detail.comparison_tie);
+  REQUIRE(r.stop_detail.candidates.size()==2);
+  CHECK(r.stop_detail.candidates[0].coef[1]==doctest::Approx((7-3*std::sqrt(5.))/2).epsilon(1e-12));
+  CHECK(r.stop_detail.candidates[1].coef[1]==doctest::Approx((7+3*std::sqrt(5.))/2).epsilon(1e-12));
+  CHECK(r.stop_detail.candidates[0].loglik_lower==doctest::Approx(r.stop_detail.candidates[1].loglik_lower));
+  CHECK(cppunivariate::fatigue_mle(mltest::as_span(x),1e-10,200,2).beta==1);
+}
+
+TEST_CASE("fatigue certificate: rational inclusion holds over dispersed scales") {
+  const std::vector<double> x{.001,.02,.3,1,2,40};
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  for(double a:{nan,.7,3.,8.}) {
+    const auto r=cppunivariate::fatigue_mle(mltest::as_span(x),1e-10,200,a);
+    REQUIRE(r.status==cppunivariate::FatigueStatus::Ok);
+    double score=0;
+    for(double v:x)score+=1/(v+r.beta)-1/(2*r.beta)+v/(2*r.alpha*r.alpha*r.beta*r.beta)-1/(2*r.alpha*r.alpha*v);
+    CHECK(std::abs(score*r.beta)<1e-9);
+  }
+}
+
+TEST_CASE("fatigue certificate: nonconstant reciprocal data retain the two-mode tie") {
+  const std::vector<double> x{.5,2};
+  const auto r=cppunivariate::fatigue_mle(mltest::as_span(x),1e-10,300,3);
+  CHECK(r.status==cppunivariate::FatigueStatus::SearchFailure);
+  CHECK(r.stop_detail.comparison_tie);
+  REQUIRE(r.stop_detail.candidates.size()>=2);
+  CHECK(r.stop_detail.candidates[0].coef[1]*r.stop_detail.candidates[1].coef[1]==doctest::Approx(1).epsilon(1e-10));
+}
+
+TEST_CASE("fatigue certificate: nearly coincident mean bounds stop numerically") {
+  const double e=std::numeric_limits<double>::epsilon();
+  const std::vector<double> x{1,1+e,1+2*e,1+3*e,1+4*e};
+  const auto r=cppunivariate::fatigue_mle(mltest::as_span(x),1e-10,300);
+  CHECK(r.status==cppunivariate::FatigueStatus::SearchFailure);
+  CHECK_FALSE(r.stop_detail.comparison_tie);
+  CHECK_FALSE(r.stop_detail.budget_exhausted);
+  REQUIRE(r.stop_detail.candidates.size()==1);
+  CHECK(r.stop_detail.candidates[0].coef[0]>0);
+}
+
+TEST_CASE("fatigue certificate: held huge alpha avoids squaring alpha") {
+  const std::vector<double> x{1e308};
+  const auto r=cppunivariate::fatigue_mle(mltest::as_span(x),1e-10,200,1e155,1);
+  REQUIRE(r.status==cppunivariate::FatigueStatus::Ok);
+  CHECK(r.logLik==doctest::Approx(cppunivariate::distributions::dfatigue(x[0],1e155,1,0,true)).epsilon(1e-12));
+}
+
+TEST_CASE("fatigue certificate: rounded threshold shifts cannot assert nonexistence") {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  const std::vector<double> x{1,2},one{1};
+  CHECK(cppunivariate::fatigue_mle_shifted(mltest::as_span(x),-1e300,1e-10,200).status==cppunivariate::FatigueStatus::SearchFailure);
+  CHECK(cppunivariate::fatigue_mle_shifted(mltest::as_span(one),.1,1e-10,200,nan,.9).status==cppunivariate::FatigueStatus::SearchFailure);
+  CHECK(cppunivariate::fatigue_mle_shifted(mltest::as_span(one),0,1e-10,200,nan,1).status==cppunivariate::FatigueStatus::Unbounded);
+}
+
+TEST_CASE("fatigue certificate: subnormal rescaling must retain coefficient accuracy") {
+  const double unit=1e-320;
+  const std::vector<double> x{unit,3*unit,4*unit};
+  const auto r=cppunivariate::fatigue_mle(mltest::as_span(x),1e-10,200);
+  CHECK(r.status==cppunivariate::FatigueStatus::SearchFailure);
+}
