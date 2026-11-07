@@ -215,15 +215,23 @@ inline CmbResult cmb_mle(ispan x,int N,double tol=1e-10,int maxit=2000,
   // A flat profile can meet the historical moment tolerance before its
   // coefficients are accurate. Retain passing proposals exactly; otherwise
   // one tighter solve and its own certificate share the remaining ledger.
+  // A moment tolerance of 1e-14 can be unattainable in double arithmetic
+  // (no long double); looser proposals are still only proposals, so try
+  // them in turn and keep the first one the certificate accepts.
   if(proposed.status==CmbStatus::Ok && out.status==CmbStatus::IterationFailure &&
-     !out.stop_detail.budget_exhausted && tol>1e-14) {
-    auto refined=cmb_mle_work(x,N,1e-14,maxit,prob,nu,work,enumeration_budget(maxit));
-    refined=cmb_accept_work(x,N,refined,maxit,prob,nu,work);
-    if(refined.status!=CmbStatus::Ok) {
-      for(const auto& witness:out.stop_detail.candidates)refined.stop_detail.candidates.push_back(witness);
-      refined.stop_detail.loglik_lower=std::fmax(refined.stop_detail.loglik_lower,out.stop_detail.loglik_lower);
+     !out.stop_detail.budget_exhausted) {
+    for(const double refine_tol:{1e-14,1e-13,1e-12}) {
+      if(!(tol>refine_tol))continue;
+      auto refined=cmb_mle_work(x,N,refine_tol,maxit,prob,nu,work,enumeration_budget(maxit));
+      if(refined.status!=CmbStatus::Ok && !refined.stop_detail.budget_exhausted)continue;
+      if(refined.status==CmbStatus::Ok)refined=cmb_accept_work(x,N,refined,maxit,prob,nu,work);
+      if(refined.status!=CmbStatus::Ok) {
+        for(const auto& witness:out.stop_detail.candidates)refined.stop_detail.candidates.push_back(witness);
+        refined.stop_detail.loglik_lower=std::fmax(refined.stop_detail.loglik_lower,out.stop_detail.loglik_lower);
+      }
+      out=refined;
+      if(out.status==CmbStatus::Ok || out.stop_detail.budget_exhausted)break;
     }
-    out=refined;
   }
   return out;
 }
