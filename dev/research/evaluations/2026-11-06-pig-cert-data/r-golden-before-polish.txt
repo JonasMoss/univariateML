@@ -1,0 +1,17 @@
+  'test-dist-ztnbinom.R:2:3', 'test-dist-ztpois.R:2:3',
+  'test-dist-ztpois.R:33:3', 'test-dist-ztnbinom.R:57:3',
+  'test-dist-ztnbinom.R:72:3'
+
+── Failed tests ────────────────────────────────────────────────────────────────
+Failure ('test_golden_regression.R:92:7'): golden: pig
+Expected `got` to equal `want`.
+Differences:
+1/2 mismatches
+[2] 3.51 - 3.51 == -3.81e-07
+
+[ FAIL 1 | WARN 0 | SKIP 154 | PASS 20911 ]
+Error:
+! Test failures.
+Timing stopped at: 455.6 9.667 116.8
+Execution halted
+error: Recipe `test` failed on line 66 with exit code 1

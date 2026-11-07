@@ -17,15 +17,20 @@ inline FitResult fit_pig(cppunivariate::ispan x, Held mean_arg = {}, Held shape_
    shape.supplied?shape.value:nan);
  if (r.status==cppunivariate::PigStatus::PoissonLimit) {
    if (mean.supplied)
-     return fail("The PIG likelihood is maximised at the Poisson limit with the supplied mean fixed. Use `mlpois` for an unrestricted Poisson fit.");
-   return fail("The PIG likelihood is maximised at the Poisson limit. Use `mlpois` instead.");
+     return stop_failure(fail("The PIG likelihood is maximised at the Poisson limit with the supplied mean fixed. Use `mlpois` for an unrestricted Poisson fit."),r.stop_detail,"limit",{"mean","shape"});
+   return stop_failure(fail("The PIG likelihood is maximised at the Poisson limit. Use `mlpois` instead."),r.stop_detail,"limit",{"mean","shape"});
  }
  if (r.status==cppunivariate::PigStatus::ZeroLimit)
-   return fail("All-zero data have an unattained point-mass supremum. Use `mlpois` for the zero point mass.");
+   return stop_failure(fail("All-zero data have an unattained point-mass supremum. Use `mlpois` for the zero point mass."),r.stop_detail,"limit",{"mean","shape"});
  if (r.status==cppunivariate::PigStatus::InvalidInput)
    return fail("PIG requires nonnegative integer data, positive finite fixed parameters, reltol > 0 and iterlim >= 1.");
- if (r.status==cppunivariate::PigStatus::SearchFailure)
-   return fail("PIG scalar search did not converge; increase iterlim or inspect the parameter range.");
+ if (r.status==cppunivariate::PigStatus::SearchFailure) {
+   if(r.stop_detail.budget_exhausted)
+     return stop_failure(fail("PIG certificate exhausted its count budget; increase iterlim."),r.stop_detail,"budget",{"mean","shape"});
+   if(r.stop_detail.comparison_tie)
+     return stop_failure(fail("PIG Poisson-boundary score is numerically unresolved; relax the comparison or inspect the data."),r.stop_detail,"tie",{"mean","shape"});
+   return stop_failure(fail("PIG scalar search did not converge; increase iterlim or inspect the parameter range."),r.stop_detail,"numerical",{"mean","shape"});
+ }
  std::vector<std::string> fixed;
  if (mean.supplied) fixed.push_back("mean");
  if (shape.supplied) fixed.push_back("shape");

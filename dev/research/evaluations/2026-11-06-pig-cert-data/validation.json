@@ -1,0 +1,79 @@
+{
+  "base_revision": "bb734cd78b846a565d8835606328bb1285a82db6",
+  "branch": "codex/pig-cert",
+  "committed": false,
+  "source_sha256": {
+    "univariateML-cpp/include/cppunivariate/distributions/pig/mle.hpp": "b12182f99326b42ff9524a7c2acff4858178b647da4405b9252fa5decdbb2ccc",
+    "univariateML-cpp/include/cppunivariate/distributions/pig/README.md": "eab30aec913befa4aaaf86c389b33388d86b5a86edac81fe09cefe054dd15b52",
+    "univariateML-cpp/include/cppunivariate/distributions/pig/test.cpp": "39a0d1d106d0a74ec79d4d1cb9ec02d9f3c36dd5f3acd74b6e63ce539bbab3de",
+    "univariateML-cpp/include/cppunivariate/distributions/pig/golden.json": "e3c27aad8fb1dfe1c62697ff035169bca1022b81282728d25a9b30ff008f164c",
+    "univariateML-cpp/include/cppunivariate/distributions/pig/dpqr.hpp": "0c96f5aa429b670b5ccef1d534fa5c964729ad608a304d3a3e8e43bc06620223",
+    "univariateML-cpp/include/cppunivariate/distributions/pig/truth.json": "224fc7053e23a8e31ccb63710ec533ea34db2cdc6a94421bd8f213573fdc7fdb",
+    "bindings/common/distributions/pig/fit.hpp": "7b7ff5715671cc9774d82d2dc2297d4aba1a12195500adb10118d4a034a2f881",
+    "bindings/r/distributions/pig/adapter.cpp": "809025d9af5341557f54730c40a0199059730a6f88cf16a5bb0915e717720421",
+    "bindings/r/distributions/pig/test.R": "a5558009e7066fc16c87bc0af9b3e092e8d37d674df6c65f6b3f87cec0be7f67",
+    "bindings/js/stop-test.mjs": "901417e1c4f61c10517211921be485a8fd024da3f918b9de92e2cf3a65d248a9"
+  },
+  "compute": {
+    "local": "slot lock; nice 10; one pinned CPU for web checks and one thread for numerical checks",
+    "simbox": "simbox-run; nice 10; CMAKE_BUILD_PARALLEL_LEVEL=CTEST_PARALLEL_LEVEL=3; R testthat four workers; BLAS/OpenMP one thread"
+  },
+  "commands": {
+    "cpp": [
+      "just cpp-test",
+      "UMVL_TEST_TIER=full just cpp-test",
+      "just cpp-test-no-long-double"
+    ],
+    "r": [
+      "just test",
+      "just test-full"
+    ],
+    "web": [
+      "just js-build",
+      "just js-test",
+      "just site-check",
+      "just relations"
+    ],
+    "independent": [
+      "/tmp/umvl-cpu/run bash dev/research/evaluations/2026-11-06-pig-cert-data/reproduce.sh"
+    ]
+  },
+  "results": {
+    "cpp_dev": 106,
+    "cpp_full": 128,
+    "cpp_no_long_double": 128,
+    "r_dev": {
+      "fail": 0,
+      "warn": 0,
+      "skip": 154,
+      "passed": 20912
+    },
+    "r_full": {
+      "fail": 0,
+      "warn": 0,
+      "skip": 0,
+      "passed": 43732
+    },
+    "js": {
+      "passed": 434,
+      "fail": 0,
+      "skip": 0
+    },
+    "site": "passed",
+    "relations": {
+      "edges": 157,
+      "fail": 0
+    }
+  },
+  "oracle_shape": {
+    "rows": 10,
+    "max_relative_mean_error": 0.0,
+    "max_relative_shape_error": 3.4476921323804135e-10,
+    "max_absolute_loglik_error": 9.130474154517287e-13
+  },
+  "oracle_held_shape": {
+    "rows": 16,
+    "max_relative_mean_error": 2.8921531835672026e-11,
+    "max_absolute_loglik_error": 1.4210854715202004e-14
+  }
+}

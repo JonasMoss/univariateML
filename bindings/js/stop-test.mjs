@@ -227,3 +227,37 @@ test('ZINB certified ZIP and Poisson stops name their limiting coefficients', ()
     assert.equal(e.kind,'limit');assert.equal(e.model,'pois');assert.equal(e.estimates.lambda,2);return true;
   });
 });
+
+test('PIG global certificate transports Poisson, tie, budget and numerical stops', () => {
+  assert.throws(() => api.pig.fit([0,1,2,3],{mean:2}),e=>{
+    assert.equal(e.kind,'limit');assert.equal(e.model,'pois');
+    assert.equal(e.estimates.lambda,2);
+    assert.ok(e.loglik_lower<=e.limit_loglik && e.limit_loglik<=e.loglik_upper);return true;
+  });
+  assert.throws(() => api.pig.fit([0,1,2],{mean:1+Math.sqrt(1/3)}),e=>{
+    assert.equal(e.kind,'tie');assert.equal(e.candidates[0].model,'pois');
+    assert.equal(e.loglik_upper,Infinity);return true;
+  });
+  assert.throws(() => api.pig.fit([0,0,2147483647],{},{iterlim:1}),e=>{
+    assert.equal(e.kind,'budget');assert.equal(e.candidates.length,0);return true;
+  });
+  assert.throws(() => api.pig.fit([0,0,10],{},{iterlim:1}),e=>{
+    assert.equal(e.kind,'numerical');assert.ok(e.candidates.length>0);return true;
+  });
+  assert.throws(() => api.pig.fit([0,0],{shape:3}),e=>{
+    assert.equal(e.kind,'limit');assert.equal(e.model,'pois');
+    assert.equal(e.estimates.lambda,0);assert.equal(e.limit_loglik,0);return true;
+  });
+});
+
+test('PIG binary closed form and small positive Poisson improvement survive WASM', () => {
+  const binary=api.pig.fit([0,1,1],{mean:3},{iterlim:1});
+  const w=Math.sqrt(1-4/9),shape=2*(2/3)**2/(w*(1+w)**2);
+  assert.ok(Math.abs(binary.estimates.shape-shape)<1e-12);
+  assert.throws(()=>api.pig.fit([0,1,1],{mean:4/3}),e=>e.kind==='limit');
+  const adjacent=api.pig.fit([0,1,1],{mean:4/3+Number.EPSILON},{iterlim:1});
+  assert.ok(Number.isFinite(adjacent.estimates.shape));
+  const x=[...Array(10002).fill(0),...Array(10000).fill(2),3];
+  const fit=api.pig.fit(x);
+  assert.equal(fit.estimates.mean,1);assert.ok(Number.isFinite(fit.estimates.shape));
+});
