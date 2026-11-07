@@ -1,0 +1,20 @@
+[
+  {
+    "name": "aragon",
+    "url": "https://stacks.stanford.edu/file/druid:gy645ty0351/gy645ty0351_OLK-NSF-282.pdf",
+    "sha256": "c72d3287383342be240aaa46396ca9dd034925142851d0670671cdcc9cd8868a",
+    "bytes": 272448
+  },
+  {
+    "name": "sampford-891",
+    "url": "https://amsr.contentdm.oclc.org/digital/api/collection/p21050coll5/id/891/download",
+    "sha256": "2bf7c4e50cbf91f123e7a6432ae15ef9d3872563a47f24b3ebe2e320699e970f",
+    "bytes": 551599
+  },
+  {
+    "name": "sampford-892",
+    "url": "https://amsr.contentdm.oclc.org/digital/api/collection/p21050coll5/id/892/download",
+    "sha256": "591ec56e664eb4745365039cad680e282263da255937b1096a0bdaada423196c",
+    "bytes": 728583
+  }
+]

@@ -1,0 +1,29 @@
+{
+  "date": "2026-11-07",
+  "kind": "research reconnaissance; not a formal paper-workflows audit",
+  "search_provider": "web search",
+  "queries": [
+    "zero truncated negative binomial maximum likelihood existence uniqueness theorem",
+    "zero inflated negative binomial likelihood multiple maxima existence uniqueness",
+    "zero truncated negative binomial distribution maximum likelihood estimate dispersion existence variance",
+    "\"truncated negative binomial\" \"uniqueness\"",
+    "\"zero-inflated negative binomial\" \"multiple maxima\"",
+    "\"negative binomial\" \"truncated\" \"existence\" estimator theorem",
+    "\"zero inflated\" \"likelihood\" \"unique\" negative binomial theorem",
+    "\"truncated negative binomial\" \"maximum likelihood\" \"existence uniqueness\"",
+    "\"truncated negative binomial\" \"multiple\" \"maxima\"",
+    "\"zero-inflated negative binomial\" \"existence\" \"MLE\"",
+    "\"truncated negative binomial\" estimation Sampford 1955",
+    "\"zero-truncated negative binomial\" \"likelihood\" \"unique\"",
+    "\"Levin\" \"Reeds\" 1977 negative binomial maximum likelihood",
+    "\"Aragón\" \"Eberly\" 1992 negative binomial existence uniqueness",
+    "\"Sampford\" \"negative binomial\" \"likelihood\" uniqueness",
+    "\"Compound Multinomial Likelihood Functions\" Levin Reeds pdf",
+    "\"Wang\" \"1996\" \"negative binomial\" likelihood uniqueness",
+    "\"zero inflated negative binomial\" \"intercept-only\" likelihood uniqueness",
+    "\"zero-inflated negative binomial\" \"existence and uniqueness\"",
+    "\"truncated negative binomial\" \"likelihood equations\" \"solutions\""
+  ],
+  "scope": "iid intercept-only ZINB and ZTNB; classical NB baseline; regression and asymptotic results screened separately",
+  "note": "Direct source opens and repository/PDF retrievals are additional to the 20 search queries. Search snippets containing text from citing works were not treated as theorems of the retrieved work."
+}

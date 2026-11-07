@@ -1,0 +1,64 @@
+{
+  "scope": "Research reconnaissance, 20 search queries plus direct primary-source opens; no formal bibliography or support audit",
+  "read_primary_results": [
+    {
+      "work": "Aragón, Eberly and Eberly, 1991 Stanford preprint (published 1992)",
+      "url": "https://purl.stanford.edu/gy645ty0351",
+      "locator": "printed page 2, PDF page 4: theorem statement; opening proof setup on printed page 3",
+      "read": "Theorem statement and opening setup, not a complete proof audit",
+      "result": "Claims ordinary NB existence iff divisor-n empirical variance exceeds empirical mean, and uniqueness when it exists",
+      "caveat": "This is a preprint. Wang (1996) reports a problem with the 1992 proof; neither the published version nor Wang's full correction was inspected. Do not use this read as a repaired proof."
+    },
+    {
+      "work": "Sampford (1955), The Truncated Negative Binomial Distribution",
+      "url": "https://doi.org/10.1093/biomet/42.1-2.58",
+      "locator": "Sections 7–8, printed pages 64–66, especially page 66",
+      "read": "Primary scanned pages with embedded OCR, sections 7–8; section 4 moment example also read",
+      "result": "Likelihood equations and an alternative solution method; two endpoint conditions suffice for a solution; necessity and uniqueness explicitly remain conjectures there",
+      "caveat": "Moment-estimation convergence is not a joint ML uniqueness proof. This historical statement does not establish whether subsequent literature settled the conjectures."
+    },
+    {
+      "work": "Haslett, Parnell, Hinde and de Andrade Moral (2022), Modelling Excess Zeros in Count Data: A New Perspective on Modelling Approaches",
+      "url": "https://onlinelibrary.wiley.com/doi/full/10.1111/insr.12479",
+      "locator": "Sections 2.2 and 3.2, equation (4)",
+      "read": "Primary full text, selected sections and displayed decomposition",
+      "result": "Zero/nonzero indicator and truncated-count likelihood decomposition; gamma–Poisson NB representation and its zero-probability inequality",
+      "caveat": "No general iid joint ZINB existence or uniqueness theorem was located in the inspected material."
+    },
+    {
+      "work": "Santos Silva (2017), Local Maxima in the Estimation of the ZINB and Sample Selection models",
+      "url": "https://www.stata.com/meeting/uk17/slides/uk17_Santos_Silva.pdf",
+      "locator": "slides 8–10 (PDF pages 8–10)",
+      "read": "Full slide text, with focus on the ZINB section",
+      "result": "Numerical evidence for competing local optima in ZINB regression using covariates",
+      "caveat": "Not an iid intercept-only counterexample, not a theorem of equal global maxima."
+    }
+  ],
+  "abstracts_or_metadata_only": [
+    {
+      "work": "Levin and Reeds (1977), Compound Multinomial Likelihood Functions are Unimodal: Proof of a Conjecture of I. J. Good",
+      "url": "https://doi.org/10.1214/aos/1176343741",
+      "observed": "Primary journal issue metadata; full-text attempts blocked or challenge pages",
+      "scope": "Classical NB reference supplied in task brief; its original NB theorem/proof was not read here"
+    },
+    {
+      "work": "Wang (1996), Estimation problems for the two-parameter negative binomial distribution",
+      "url": "https://doi.org/10.1016/0167-7152(94)00259-2",
+      "observed": "Publisher abstract and metadata through search result",
+      "scope": "Abstract reports a major problem with the 1992 proof; full correction not read"
+    },
+    {
+      "work": "Dai, Bao and Bao (2013), Maximum likelihood estimate for the dispersion parameter of the negative binomial distribution",
+      "url": "https://doi.org/10.1016/j.spl.2012.08.017",
+      "observed": "Publisher abstract and introduction preview",
+      "scope": "Abstract asserts uniqueness under a condition and fixed-point convergence when the score root is unique; the condition/theorem was not inspected"
+    },
+    {
+      "work": "Wyshak (1974), A Program for Estimating the Parameters of the Truncated Negative Binomial Distribution (Algorithm AS 68)",
+      "url": "https://doi.org/10.2307/2347059",
+      "observed": "Publisher metadata, keywords and references",
+      "scope": "Algorithm record; no theorem or algorithm PDF read. The page's 2018 platform timestamp is not the publication year."
+    }
+  ],
+  "conclusion": "No inspected source establishes a general finite-sample iff-C criterion or nondegenerate all-free iid ZINB uniqueness theorem. Search non-discovery is not proof of novelty or absence."
+}
