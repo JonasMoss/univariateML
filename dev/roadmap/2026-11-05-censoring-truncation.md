@@ -146,8 +146,16 @@ Sample (survey) means are out of scope too: the exact likelihood needs
 the density of the mean of $n_j$ draws from the model truncated to the
 bracket, an $n_j$-fold convolution with no closed form for nearly every
 family. Practice uses a normal (CLT) or saddlepoint approximation,
-which is not the verified ML this library promises. In scope: counts
-only. A single
+which is not the verified ML this library promises.
+Open (Jonas, 2026-11-07): the normal version is exact ML for a stated
+working model: counts multinomial; given the counts, bracket means
+independent (exact under i.i.d. sampling) and
+$\bar x_j \sim N(\mu_j(\theta), \sigma_j^2(\theta)/n_j)$ (the only approximation).
+Its own curiosities: $\sigma_j \to 0$ brings back collapse; for the open
+top bracket $\sigma_J^2$ needs $kc > 2$, and for $1 < kc \le 2$ the true limit of
+the bracket mean is stable, not normal, which is the usual range of
+income tail indices. Using means only for bounded brackets avoids that.
+Counts only come first either way. A single
 constraint (for example an overall mean from national accounts) leaves a
 $(p-1)$-dimensional feasible set and remains well posed; not planned.
 
