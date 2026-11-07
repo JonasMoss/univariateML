@@ -1,0 +1,16 @@
+Workstation invocation: /tmp/umvl-cpu/run4 just site-check
+PASS inference browser: {"rows":353,"families":99,"desktop":[1280,1100],"mobile":[390,1000],"checks":["covariance and combined filters with follow-up evidence","all status filters","combined family/status/regime filters","empty state","reset","native evidence disclosure","no horizontal overflow","all rows and evidence without JavaScript","no page errors"]}
+PASS theory numerical: 5 static/live profiles, 4 escape messages and limit approaches, analytic normal held fits, static/live contours, parser and failed-fit gaps.
+PASS nice linear/log ticks; Gompertz free/held fits, conditional escape, fixed-rate boundary, static/live equality and build-time MathML.
+PASS likelihood windows: 15-unit clipping, low-marker expansion, constant likelihoods, marker clearance, finite SVG coordinates.
+PASS theory browser: desktop/mobile, live profiles and held faces, seeded data, errors, no-JS figures and diagnostics.
+PASS: four articles; dossier catalogues: 288 limits, 99 families, 9 fit domains.
+PASS: inference: 353 unique scopes, 99 families; implementation symbols, evidence anchors, calibration and checks resolve; full static table.
+PASS: graph: 99 unique nodes, 277 edges, resolving family links; SVG generated twice byte-identically and matches built HTML.
+PASS: explorer coverage matches binding registry; optional build assets agree.
+PASS: every declared and inverted relation and limit link is rendered and resolves.
+PASS: 99 family pages; MathML on every family; no math runtime or external runtime assets; internal links and fragments resolve.
+PASS: 99 generated C++ snippets compile and link as C++17 (including exp, gamma, gb2).
+PASS: pilot and ten additional HTML spot checks: exp, gamma, gb2, binom, beta, hyper, sstd, gev, gpd, tnorm, pois, unif, pareto
+Total dist: 21560770 B
+Generated tracked screenshot was restored to HEAD bytes after the check.

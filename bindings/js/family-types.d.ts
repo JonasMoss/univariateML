@@ -73,7 +73,7 @@ export interface GeneratedAPI {
   skellam: Family<{mu1: number; mu2: number}, [mu1: number, mu2: number], {reltol?: number; iterlim?: number}>;
   slash: Family<{mu: number; sigma: number}, [mu: number, sigma: number], {reltol?: number; iterlim?: number}>;
   sn: Family<{xi: number; omega: number; alpha: number}, [xi: number, omega: number, alpha: number], {reltol?: number; iterlim?: number}>;
-  snorm: Family<{mean: number; sd: number; xi: number}, [mean: number, sd: number, xi: number], Record<string, never>>;
+  snorm: Family<{mean: number; sd: number; xi: number}, [mean: number, sd: number, xi: number], {iterlim?: number}>;
   sstd: Family<{mean: number; sd: number; nu: number; xi: number}, [mean: number, sd: number, nu: number, xi: number], {gradtol?: number; iterlim?: number}>;
   st: Family<{xi: number; omega: number; alpha: number; nu: number}, [xi: number, omega: number, alpha: number, nu: number], {reltol?: number; iterlim?: number}>;
   std: Family<{mean: number; sd: number; nu: number}, [mean: number, sd: number, nu: number], {gradtol?: number; iterlim?: number}>;

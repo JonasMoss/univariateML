@@ -1,0 +1,22 @@
+GCC 13.3 simbox, BOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS.
+Intermediate certificate SHA-256: 169a238280355ae0638afe28a048862f0fd2d54fffc345d9252144021f39664a
+TEST CASE:  snorm: conditional arithmetic ambiguity retains compared witnesses
+
+../../../univariateML-cpp/include/cppunivariate/distributions/snorm/test.cpp:216: FATAL ERROR: REQUIRE( r.stop_detail.comparison_tie ) is NOT correct!
+  values: REQUIRE( false )
+
+===============================================================================
+../../../univariateML-cpp/include/cppunivariate/distributions/snorm/test.cpp:268:
+TEST CASE:  snorm Bernstein isolation retains even and separated roots
+
+../../../univariateML-cpp/include/cppunivariate/distributions/snorm/test.cpp:275: ERROR: CHECK( std::any_of(roots.begin(),roots.end(),[&](double v){return std::abs(v-expected)<1e-8;}) ) is NOT correct!
+  values: CHECK( false )
+
+../../../univariateML-cpp/include/cppunivariate/distributions/snorm/test.cpp:275: ERROR: CHECK( std::any_of(roots.begin(),roots.end(),[&](double v){return std::abs(v-expected)<1e-8;}) ) is NOT correct!
+  values: CHECK( false )
+
+===============================================================================
+[doctest] test cases:    23 |    21 passed | 2 failed | 1389 skipped
+[doctest] assertions: 12263 | 12260 passed | 3 failed |
+[doctest] Status: FAILURE!
+

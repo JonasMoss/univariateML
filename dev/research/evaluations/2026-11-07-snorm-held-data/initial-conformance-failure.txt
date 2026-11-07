@@ -1,0 +1,16 @@
+Intermediate implementation: root width 2e-12, likelihood-width gate 1e-8*(n+abs(logLik)).
+── Failed tests ────────────────────────────────────────────────────────────────
+Failure ('test_conformance.R:97:9'): every holdable subset fits golden data or gives a declared reason
+Expected `any(...)` to be TRUE.
+Differences:
+`actual`:   FALSE
+`expected`: TRUE
+
+mlsnorm mean Conditional skew-normal fit did not converge (certificate arithmetic or root enclosure; increase `iterlim`).
+
+[ FAIL 1 | WARN 0 | SKIP 154 | PASS 21245 ]
+Error:
+! Test failures.
+Timing stopped at: 279.5 3.362 69.99
+Execution halted
+error: Recipe `test` failed on line 66 with exit code 1

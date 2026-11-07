@@ -1,0 +1,7 @@
+held sd, free mean, nonconstant left 1
+held sd, constant left 4
+held sd, empty left 8
+held mean, constant left 3
+held mean, zero left 6
+held mean, empty left 12
+both moments held, empty left 3

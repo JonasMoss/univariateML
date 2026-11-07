@@ -250,3 +250,135 @@ TEST_CASE("snorm: analytic covariance derivatives and subset projection") {
   CHECK(cppunivariate::join_family_inference({x.data(),x.size()},"snorm",bad,1).status==cppunivariate::InferenceStatus::BoundaryOrLimit);
   CHECK(cppunivariate::join_family_inference({x.data(),x.size()},"snorm",theta,1u<<3).status==cppunivariate::InferenceStatus::InvalidSubset);
 }
+
+TEST_CASE("snorm held certificates remove fixed log-scale guards") {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  for(double unit:{1e-30,1.,1e30}) {
+    const std::vector<double> x{-2*unit,-unit,.2*unit,3*unit};
+    const auto r=cppunivariate::snorm_mle(mltest::as_span(x),1e-9,200,0,nan,1.3);
+    REQUIRE(r.status==cppunivariate::SnormStatus::Ok);
+    CHECK(r.mu==0);CHECK(r.xi==1.3);
+    double ll=0;for(double v:x)ll+=cppunivariate::distributions::dsnorm(v,r.mu,r.sigma,r.xi,true);
+    CHECK(r.logLik==doctest::Approx(ll).epsilon(1e-10));
+    const auto ref=cppunivariate::snorm_mle(mltest::as_span(std::vector<double>{-2,-1,.2,3}),1e-9,200,0,nan,1.3);
+    CHECK(r.sigma/unit==doctest::Approx(ref.sigma).epsilon(1e-10));
+  }
+}
+
+TEST_CASE("snorm Bernstein isolation retains even and separated roots") {
+  namespace cert=cppunivariate::snorm_certificate;
+  // Exact dyadic Bernstein coefficients of 3*(u-.25)^2*(u-.75)^2.
+  // Constructing the product through rounded thirds can remove its roots.
+  const cert::Poly p{{27./256,-45./256,59./256,-45./256,27./256}};
+  std::vector<double> roots;std::int64_t work=0;bool budget=false;
+  REQUIRE(cert::isolate(p,200,work,roots,budget));
+  for(double expected:{.25,.75})CHECK(std::any_of(roots.begin(),roots.end(),[&](double v){return std::abs(v-expected)<1e-8;}));
+  roots.clear();work=0;
+  CHECK_FALSE(cert::isolate(p,1,work,roots,budget));
+}
+
+TEST_CASE("snorm held moments dominate independent skewness grid") {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  for(const auto& x:{std::vector<double>{-2,-1,-.4,0,.2,.8,1,1.3,2,3},std::vector<double>{-.5,0,.2,.8,2}}) {
+    const auto r=cppunivariate::snorm_mle(mltest::as_span(x),1e-9,200,.2,1.4,nan);
+    REQUIRE((r.status==cppunivariate::SnormStatus::Ok || r.status==cppunivariate::SnormStatus::RightHalfNormalBoundary || r.status==cppunivariate::SnormStatus::LeftHalfNormalBoundary));
+    for(int i=-2000;i<=2000;++i) {
+      const double xi=std::exp(i*.005);double ll=0;
+      for(double v:x)ll+=cppunivariate::distributions::dsnorm(v,.2,1.4,xi,true);
+      CHECK(r.logLik>=ll-1e-8);
+    }
+  }
+}
+
+TEST_CASE("snorm opposite half-normal maxima are a structured tie") {
+  const std::vector<double> x{0,0,0};
+  const auto r=cppunivariate::snorm_mle(mltest::as_span(x),1e-9,200,NAN,1,NAN);
+  REQUIRE(r.status==cppunivariate::SnormStatus::BfgsFailure);
+  REQUIRE(r.stop_detail.comparison_tie);
+  REQUIRE(r.stop_detail.candidates.size()==2);
+  CHECK(r.stop_detail.candidates[0].model!=r.stop_detail.candidates[1].model);
+  CHECK(r.stop_detail.candidates[0].loglik_lower==doctest::Approx(r.stop_detail.candidates[1].loglik_lower));
+}
+
+TEST_CASE("snorm algebraic certificate exhaustion never returns an iterate") {
+  const std::vector<double> x{-2,-1,-.4,0,.2,.8,1,1.3,2,3};
+  const auto r=cppunivariate::snorm_mle(mltest::as_span(x),1e-9,1,.2,1.4,NAN);
+  CHECK(r.status==cppunivariate::SnormStatus::BfgsFailure);
+  CHECK(r.stop_detail.loglik_upper==INFINITY);
+}
+
+TEST_CASE("snorm held moments can have two distinct finite global maxima") {
+  const std::vector<double> x{-1,0,1};
+  const auto r=cppunivariate::snorm_mle(mltest::as_span(x),1e-9,200,0,.755,NAN);
+  REQUIRE(r.status==cppunivariate::SnormStatus::BfgsFailure);
+  REQUIRE(r.stop_detail.comparison_tie);
+  REQUIRE(r.stop_detail.candidates.size()==2);
+  for(const auto& candidate:r.stop_detail.candidates) {
+    CHECK(candidate.model==cppunivariate::StopModel::None);
+    CHECK(candidate.coef[0]==0);CHECK(candidate.coef[1]==.755);
+  }
+  CHECK(r.stop_detail.candidates[0].coef[2]*r.stop_detail.candidates[1].coef[2]==doctest::Approx(1).epsilon(1e-7));
+}
+
+TEST_CASE("snorm Bernstein roots on subdivision seams are retained") {
+  namespace cert=cppunivariate::snorm_certificate;
+  const cert::Poly t{{-.5,.5}};
+  std::vector<double> roots;std::int64_t work=0;bool budget=false;
+  REQUIRE(cert::isolate(cert::mul(t,t),200,work,roots,budget));
+  CHECK(std::find(roots.begin(),roots.end(),.5)!=roots.end());
+}
+
+TEST_CASE("snorm normalization cannot turn distinct observations into a constant") {
+  const std::vector<double> x{1,2};
+  const auto r=cppunivariate::snorm_mle(mltest::as_span(x),1e-9,200,1e300,NAN,1.3);
+  CHECK(r.status==cppunivariate::SnormStatus::BfgsFailure);
+  CHECK_FALSE(r.stop_detail.budget_exhausted);
+}
+
+TEST_CASE("snorm even-root rounding cannot certify an empty root set") {
+  const cppunivariate::snorm_certificate::Poly p{{1,-2,4}}; // (3u-1)^2
+  std::vector<double> roots;std::int64_t work=0;bool budget=false;
+  const bool resolved=cppunivariate::snorm_certificate::isolate(p,200,work,roots,budget);
+  CHECK_FALSE(budget);
+  CHECK((!resolved || std::any_of(roots.begin(),roots.end(),[](double v){return std::abs(v-1./3)<1e-7;})));
+}
+
+TEST_CASE("snorm held skew cannot return a cancelled weighted variance") {
+  const std::vector<double> x{-1,1};
+  for(double xi:{1.,2.,10.,100.,1e3,1e4,1e6,1e10,1e20,1e200})for(double skew:{xi,1/xi}) {
+    const auto r=cppunivariate::snorm_mle(mltest::as_span(x),1e-9,200,NAN,NAN,skew);
+    if(xi<=1e3)REQUIRE(r.status==cppunivariate::SnormStatus::Ok);
+    REQUIRE((r.status==cppunivariate::SnormStatus::Ok || r.status==cppunivariate::SnormStatus::BfgsFailure));
+    if(r.status==cppunivariate::SnormStatus::Ok) {
+      const double ratio=skew>=1?1/(skew*skew):skew*skew;
+      const double optimum=-std::log(cppunivariate::pi)-std::log1p(2*ratio/(1+ratio*ratio))-1;
+      CHECK(r.logLik==doctest::Approx(optimum).epsilon(1e-10));
+    }
+  }
+}
+
+TEST_CASE("snorm unresolved contact cannot discard the unpenalized face") {
+  const std::vector<double> x{0};
+  const double m=std::sqrt(2/cppunivariate::pi),h=std::sqrt(1-m*m);
+  for(double side:{-1.,1.}) {
+    const auto r=cppunivariate::snorm_mle(mltest::as_span(x),1e-9,200,side*(m-2e-14),h,NAN);
+    REQUIRE(r.status!=cppunivariate::SnormStatus::Unbounded);
+    REQUIRE(r.status!=cppunivariate::SnormStatus::InvalidStart);
+    // The feasible half-normal face is an independent lower witness.
+    CHECK((r.status==cppunivariate::SnormStatus::BfgsFailure || r.logLik>=std::log(m)-1e-8));
+  }
+}
+
+TEST_CASE("snorm constant sample away from held mean has a sharp half-normal bound") {
+  const double m=std::sqrt(2/cppunivariate::pi);
+  for(double value:{-2.,2.}) {
+    const std::vector<double> x{value,value};
+    const auto r=cppunivariate::snorm_mle(mltest::as_span(x),1e-9,1,0,NAN,NAN);
+    REQUIRE(r.status==(value<0?cppunivariate::SnormStatus::RightHalfNormalBoundary:cppunivariate::SnormStatus::LeftHalfNormalBoundary));
+    REQUIRE(r.stop_detail.limit_coef.size()==2);
+    CHECK(r.stop_detail.limit_coef[0]==value);
+    CHECK(r.stop_detail.limit_coef[1]==doctest::Approx(2/m).epsilon(1e-12));
+    CHECK(r.logLik==doctest::Approx(2*std::log(m*m/2)).epsilon(1e-12));
+    CHECK(r.stop_detail.loglik_upper>=r.stop_detail.loglik_lower);
+  }
+}

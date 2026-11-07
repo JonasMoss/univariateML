@@ -1,0 +1,21 @@
+simbox: C++17 GCC 13.3; R 4.6.1 with g++-15; nice -n 10, BLAS/OpenMP=1.
+Invocation: /tmp/umvl-cpu/simbox-run bash -c "export CMAKE_BUILD_PARALLEL_LEVEL=3 CTEST_PARALLEL_LEVEL=3; sha256sum univariateML-cpp/include/cppunivariate/distributions/snorm/certificate.hpp; just cpp-test && UMVL_TEST_TIER=full just cpp-test && just cpp-test-no-long-double"
+87c830fbd7331bc37ba6296d6c55573d6fe663df9ad05573ffa138b3bc50d753  univariateML-cpp/include/cppunivariate/distributions/snorm/certificate.hpp
+ 20/106 Test  #94: distribution_snorm ...............   Passed    2.05 sec
+100% tests passed out of 106
+Total Test time (real) =  68.71 sec
+ 23/129 Test  #94: distribution_snorm ...............   Passed    2.38 sec
+100% tests passed out of 129
+Total Test time (real) = 185.80 sec
+  1/129 Test  #94: distribution_snorm ...............   Passed    1.56 sec
+100% tests passed out of 129
+Total Test time (real) = 171.06 sec
+Invocation: /tmp/umvl-cpu/simbox-run bash -c "export CMAKE_BUILD_PARALLEL_LEVEL=3 CTEST_PARALLEL_LEVEL=3; sha256sum univariateML-cpp/include/cppunivariate/distributions/snorm/certificate.hpp; just test && just test-full"
+87c830fbd7331bc37ba6296d6c55573d6fe663df9ad05573ffa138b3bc50d753  univariateML-cpp/include/cppunivariate/distributions/snorm/certificate.hpp
+Duration: 69.1 s
+[ FAIL 0 | WARN 0 | SKIP 154 | PASS 21257 ]
+Duration: 271.1 s
+[ FAIL 0 | WARN 0 | SKIP 0 | PASS 44072 ]
+R final timing (user/system/elapsed seconds):
+   user  system elapsed
+794.451   5.957 273.379
