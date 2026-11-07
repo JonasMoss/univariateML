@@ -19,7 +19,7 @@ inline FitResult fit_st(cppunivariate::span x,Held xi_arg={},Held omega_arg={},H
  if((xi_arg.supplied&&!std::isfinite(xi))||(omega_arg.supplied&&(!std::isfinite(omega)||omega<=0))||(alpha_arg.supplied&&!std::isfinite(alpha))||(nu_arg.supplied&&(!std::isfinite(nu)||nu<=0)))return fail("Held xi and alpha must be finite; omega and nu must be finite and positive.");
  const auto r=cppunivariate::st_mle(x,reltol,iterlim,xi,omega,alpha,nu);
  if(r.stop_detail.comparison_tie || r.budget_exhausted) {
-  const std::string message=r.reason==2?"Skew-normal limiting-face comparison failed.":r.reason==3?"Half-t limiting-face comparison failed.":"Skew-t numerical search reached an unresolved limiting region.";
+  const std::string message=r.budget_exhausted?"Skew-t certificate budget exhausted; increase `iterlim`.":r.reason==2?"Skew-normal limiting-face comparison failed.":r.reason==3?"Half-t limiting-face comparison failed.":"Skew-t numerical search reached an unresolved limiting region.";
   return classify(fail(message),r.stop_detail,r.stop_detail.comparison_tie?"tie":"budget",{"xi","omega","alpha","nu"});
  }
  switch(r.status){
@@ -31,7 +31,7 @@ inline FitResult fit_st(cppunivariate::span x,Held xi_arg={},Held omega_arg={},H
   if(r.reason==2)return fail("Skew-normal limiting-face comparison failed.");
   if(r.reason==3)return fail("Half-t limiting-face comparison failed.");
   if(r.reason==4)return fail("Skew-t joint search did not resolve a finite maximum above the profiled candidates.");
-  return fail("Skew-t numerical search reached an unresolved limiting region.");
+  return stop_failure(fail("Skew-t numerical search reached an unresolved limiting region."),r.stop_detail,"numerical",{"xi","omega","alpha","nu"});
  case cppunivariate::StStatus::SkewNormalBoundary:return classify(fail("The degrees of freedom escape to infinity; use `mlsn`."),r.stop_detail,"limit",{"xi","omega","alpha"},"sn");
  case cppunivariate::StStatus::RightHalfTBoundary:return classify(fail("The shape escapes to infinity; use `mlht`."),r.stop_detail,"limit",{"nu","mu","sigma"},"ht");
  case cppunivariate::StStatus::LeftHalfTBoundary:return classify(fail("The shape escapes to minus infinity; use `mlht` on `-x`."),r.stop_detail,"limit",{"nu","mu","sigma"},"unavailable:reflected-half-t");

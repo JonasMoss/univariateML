@@ -10,11 +10,14 @@
 
 #pragma once
 #include "../../core/work_budget.hpp"
+#include "../../core/stop_detail.hpp"
+#include "scalar_search.hpp"
 #include "cppunivariate/core/constants.hpp"
 #include "../../core/precision.hpp"
 #include "hold_search.hpp"
 
 #include "../snorm/mle.hpp"
+#include "../std/mle.hpp"
 #include "../../core/bfgs.hpp"
 #include "../../core/multistart.hpp"
 #include "../../core/finite_diff.hpp"
@@ -39,7 +42,7 @@ enum class SstdStatus {
   SnormBoundary,                                    // nu -> inf: use mlsnorm
   RightHalfNormalBoundary, LeftHalfNormalBoundary,  // and xi -> inf / 0
   RightHalfTBoundary, LeftHalfTBoundary,            // xi -> inf / 0
-  DfTwoBoundary                                     // nu -> 2
+  DfTwoBoundary, CertificateFailure                 // nu -> 2 / unresolved certificate
 };
 
 struct SstdResult {
@@ -50,7 +53,12 @@ struct SstdResult {
   double logLik;
   int iterations;
   SstdStatus status;
+  StopDetail stop_detail{};
+  bool certified=false;
+  unsigned certificate_reason=0;
 };
+
+#include "certificate.hpp"
 
 // Per-obs nll = ls + F_s(lm, lx) + F_t(lm) + 0.5 (nu+1) log R, where:
 //   F_s(lm, lx) = -log sigma_u(m, xi) + log(xi + 1/xi) - log 2
@@ -673,7 +681,6 @@ inline SstdResult sstd_mle(span x, double tol, int maxit,
     double fixed_xi=std::numeric_limits<double>::quiet_NaN()) {
   maxit = static_cast<int>(solver_budget(maxit));
   const double nan=std::numeric_limits<double>::quiet_NaN();
-  const double inf=std::numeric_limits<double>::infinity();
   const bool hm=!std::isnan(fixed_mean), hs=!std::isnan(fixed_sd);
   const bool hn=!std::isnan(fixed_nu), hx=!std::isnan(fixed_xi);
   if(!hm && !hs && !hn && !hx) {
@@ -694,6 +701,30 @@ inline SstdResult sstd_mle(span x, double tol, int maxit,
      (hn && !(fixed_nu>2 && std::isfinite(fixed_nu))) ||
      (hx && !(fixed_xi>0 && std::isfinite(fixed_xi))) || x.size()==0 || !(tol>0) || maxit<1) return out;
   for(double v:x) if(!std::isfinite(v)) return out;
+  // An exactly held unit skew is the std model, including its closure.
+  // Delegate only the all-free parent subset already certified on this base;
+  // other std holds belong to the separate held-subset implementation job.
+  if(hx && fixed_xi==1 && !hm && !hs && !hn) {
+    const auto r=student_t_mle_certified(x,tol,maxit,certificate_budget(maxit));
+    SstdStatus status=SstdStatus::CertificateFailure;
+    switch(r.status) {
+      case StudentTStatus::Ok:status=SstdStatus::Ok;break;
+      case StudentTStatus::InvalidStart:status=SstdStatus::InvalidStart;break;
+      case StudentTStatus::Unbounded:status=SstdStatus::Unbounded;break;
+      case StudentTStatus::ScaleBoundary:status=SstdStatus::ScaleBoundary;break;
+      case StudentTStatus::NormalBoundary:status=SstdStatus::SnormBoundary;break;
+      case StudentTStatus::DfTwoBoundary:status=SstdStatus::DfTwoBoundary;break;
+      default:break;
+    }
+    out={r.mu,r.sigma,r.nu,1,r.logLik,r.iterations,status};out.stop_detail=r.stop_detail;
+    out.stop_detail.budget_exhausted=r.status==StudentTStatus::CertificateBudget;
+    out.stop_detail.comparison_tie=r.status==StudentTStatus::CertificateTie;
+    if(r.status==StudentTStatus::NormalBoundary)out.stop_detail.limit_model=StopModel::Norm;
+    if(r.status==StudentTStatus::DfTwoBoundary)out.stop_detail.limit_model=StopModel::Lst;
+    if(r.status==StudentTStatus::ScaleBoundary)out.stop_detail.limit_model=StopModel::TCollapsePath;
+    out.certified=status!=SstdStatus::CertificateFailure && status!=SstdStatus::InvalidStart;
+    return out;
+  }
   if(!(hn && hx && (hm || hs))) {
     const auto r=skew_hold_detail::fit(x,true,fixed_mean,fixed_sd,fixed_nu,fixed_xi,tol,maxit);
     const std::vector<SstdStatus> statuses{SstdStatus::Ok,SstdStatus::BfgsFailure,SstdStatus::InvalidStart,SstdStatus::Unbounded,SstdStatus::ScaleBoundary,SstdStatus::SnormBoundary,SstdStatus::SnormBoundary,SstdStatus::RightHalfTBoundary,SstdStatus::LeftHalfTBoundary,SstdStatus::DfTwoBoundary};
@@ -702,60 +733,13 @@ inline SstdResult sstd_mle(span x, double tol, int maxit,
       status=r.status==7 ? SstdStatus::RightHalfNormalBoundary : SstdStatus::LeftHalfNormalBoundary;
     return {r.mean,r.sd,r.nu,r.xi,-r.f,r.iterations,status};
   }
-  double lo=inf, hi=-inf;
-  for(double v:x) { lo=std::min(lo,v); hi=std::max(hi,v); }
-  if(!hs && lo==hi && lo==fixed_mean) { out.status=SstdStatus::Unbounded; return out; }
-  if(!hs) {
-    std::size_t k=0;
-    for(double v:x) if(v==fixed_mean) ++k;
-    const double exponent=fixed_nu*(x.size()-k)-k;
-    if(exponent<=0) {
-      out.status=exponent<0 ? SstdStatus::Unbounded : SstdStatus::ScaleBoundary;
-      return out;
-    }
+  if(hm && hs) {
+    SstdCost cost{x};const double phi[]={fixed_mean,std::log(fixed_sd),std::log(fixed_nu-2),std::log(fixed_xi)};
+    out={fixed_mean,fixed_sd,fixed_nu,fixed_xi,-cost(phi),0,SstdStatus::Ok};
+    out.certified=std::isfinite(out.logLik);if(!out.certified)out.status=SstdStatus::CertificateFailure;
+    return out;
   }
-  const double origin=hm ? fixed_mean : lo+(hi-lo)/2;
-  const double unit=hs ? fixed_sd : std::max(hi-lo,std::max(std::abs(lo-origin),std::abs(hi-origin)));
-  if(!(unit>0) || !std::isfinite(unit)) return out;
-  std::vector<double> y;
-  for(double v:x) y.push_back((v-origin)/unit);
-  double shift=0;
-  const double scale=dens::sstd_sigma(fixed_nu,fixed_xi,shift);
-  const double log_g=std::log(2.0/(fixed_xi+1.0/fixed_xi));
-  const double normalizer=dens::log_dstd_unit_const(fixed_nu);
-  auto cost=[&](double mean, double sd) {
-    double neg=x.size()*(std::log(sd)-std::log(scale));
-    for(double v:y) {
-      const double z=(v-mean)*scale/sd+shift;
-      const double Xi=std::pow(fixed_xi,dens::sign1(z));
-      const double u=z/Xi;
-      neg-=log_g+(normalizer-0.5*(fixed_nu+1.0)*std::log1p(u*u/(fixed_nu-2.0)));
-    }
-    return neg;
-  };
-  double mean=0, sd=hs ? fixed_sd/unit : 1;
-  if(!hm) {
-    // Every location mode lies between the smallest/largest translated observations.
-    const double left=(lo-origin)/unit+sd*shift/scale, right=(hi-origin)/unit+sd*shift/scale;
-    auto objective=[&](double m) { return cost(m,sd); };
-    mean=snorm_detail::scan(objective,left,right,256);
-    // Include each density kink / possible narrow t mode explicitly.
-    for(double v:y) {
-      const double c=v+sd*shift/scale;
-      const double t=snorm_detail::minimize(objective,std::max(left,c-sd/scale),std::min(right,c+sd/scale));
-      if(objective(t)<objective(mean)) mean=t;
-      if(objective(c)<objective(mean)) mean=c;
-    }
-  } else if(!hs) {
-    auto objective=[&](double ls) { return cost(0,std::exp(ls)); };
-    const double ls=snorm_detail::scan(objective,-32,32,512);
-    if(std::abs(ls)>31.9) { out.status=SstdStatus::ScaleBoundary; return out; }
-    sd=std::exp(ls);
-  }
-  out={hm ? fixed_mean : origin+unit*mean,hs ? fixed_sd : unit*sd,
-       fixed_nu,fixed_xi,-cost(mean,sd)-x.size()*std::log(unit),0,SstdStatus::Ok};
-  if(!std::isfinite(out.logLik)) out.status=SstdStatus::BfgsFailure;
-  return out;
+  return sstd_cert_detail::fit(x,maxit,fixed_mean,fixed_sd,fixed_nu,fixed_xi);
 }
 
 }  // namespace cppunivariate

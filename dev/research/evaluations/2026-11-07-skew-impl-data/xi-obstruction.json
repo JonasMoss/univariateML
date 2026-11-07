@@ -1,0 +1,36 @@
+{
+  "nu": 3,
+  "mean": 0,
+  "sd": 1,
+  "endpoint": -0.8255161610276827,
+  "rho": 0.5352307308831128,
+  "factor": 0.6042259416374592,
+  "paths": [
+    {
+      "xi": 10.0,
+      "thin_ratio": -0.5383379656739131,
+      "factor": 0.6011045639984134
+    },
+    {
+      "xi": 100.0,
+      "thin_ratio": -0.5352617549970369,
+      "factor": 0.6041947459012685
+    },
+    {
+      "xi": 1000.0,
+      "thin_ratio": -0.5352310411193613,
+      "factor": 0.6042256296820068
+    },
+    {
+      "xi": 10000.0,
+      "thin_ratio": -0.5352307339854748,
+      "factor": 0.604225938517905
+    },
+    {
+      "xi": 100000.0,
+      "thin_ratio": -0.5352307309141364,
+      "factor": 0.6042259416062638
+    }
+  ],
+  "obligation": "An independent interval for x-c and a loses their limiting ratio at a=0. A correlated algebraic enclosure or endpoint remainder is required; a closed half-t value overstates this held-moment face."
+}

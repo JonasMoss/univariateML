@@ -155,3 +155,54 @@ TEST_CASE("st: stopped limiting-family certificates preserve transport and bound
   CHECK(r.segment_loglik_upper==doctest::Approx(-7-4*std::log(2.)));
   CHECK(r.loglik_upper==INFINITY);
 }
+
+TEST_CASE("st: conditional skew certificate and exact endpoint factors") {
+ for(double sign:{-1.,1.}) {
+  const std::vector<double> x{0,sign,2*sign};
+  const auto r=cppunivariate::st_mle(mltest::as_span(x),1e-6,200,0,1,NAN,4);
+  CHECK(r.status==(sign>0?cppunivariate::StStatus::RightHalfTBoundary:cppunivariate::StStatus::LeftHalfTBoundary));
+  CHECK(r.certified);REQUIRE(r.stop_detail.limit_coef.size()==3);
+  double closed=0;for(double v:x)closed+=cppunivariate::distributions::dht(sign*v,0,4,1,true);
+  CHECK(r.logLik==doctest::Approx(closed-std::log(2.)).epsilon(1e-13));
+ }
+ const std::vector<double> flat{2,2,2};
+ const auto f=cppunivariate::st_mle(mltest::as_span(flat),1e-6,200,2,1,NAN,.5);
+ CHECK(f.status==cppunivariate::StStatus::NumericalFailure);CHECK(f.stop_detail.comparison_tie);
+ REQUIRE(f.stop_detail.candidates.size()==2);
+ CHECK(f.stop_detail.candidates[0].loglik_lower==f.stop_detail.candidates[1].loglik_lower);
+}
+
+TEST_CASE("st: conditional skew searches both signs without concavity") {
+ const std::vector<double> x{-3,-1,-.2,.1,.8,2,4};
+ const auto r=cppunivariate::st_mle(mltest::as_span(x),1e-6,200,0,1,NAN,4);
+ REQUIRE(r.status==cppunivariate::StStatus::Ok);CHECK(r.certified);
+ CHECK(r.alpha==doctest::Approx(.16456272666935215).epsilon(1e-8));
+ CHECK(r.logLik==doctest::Approx(-16.43971347475502).epsilon(1e-12));
+ std::vector<double> reflected;for(double v:x)reflected.push_back(-v);
+ const auto f=cppunivariate::st_mle(mltest::as_span(reflected),1e-6,200,0,1,NAN,4);
+ REQUIRE(f.status==cppunivariate::StStatus::Ok);CHECK(f.certified);
+ CHECK(f.alpha==doctest::Approx(-r.alpha).epsilon(1e-9));
+ const std::vector<double> difficult{-1e-12,-1,.1,1,4};
+ const auto b=cppunivariate::st_mle(mltest::as_span(difficult),1e-6,1,0,1,NAN,4);
+ REQUIRE(b.status==cppunivariate::StStatus::NumericalFailure);CHECK(b.budget_exhausted);
+ CHECK_FALSE(b.stop_detail.candidates.empty());
+}
+
+TEST_CASE("st: underflowed conditional residuals are not exact ties") {
+ const std::vector<double> x{1e-300,2e-300};
+ const auto r=cppunivariate::st_mle(mltest::as_span(x),1e-6,200,0,1,NAN,1e300);
+ CHECK(r.status==cppunivariate::StStatus::NumericalFailure);
+ CHECK_FALSE(r.stop_detail.comparison_tie);CHECK_FALSE(r.certified);
+}
+
+TEST_CASE("st: reflected conditional face retains the original endpoint coordinate") {
+ for(double sign:{-1.,1.}) {
+  const std::vector<double> x{2,2+sign,2+2*sign};
+  const auto r=cppunivariate::st_mle(mltest::as_span(x),1e-6,200,2,1,NAN,4);
+  REQUIRE(r.certified);REQUIRE(r.stop_detail.limit_coef.size()==3);
+  CHECK(r.stop_detail.limit_coef[0]==2);
+  CHECK(r.stop_detail.limit_model==(sign>0?cppunivariate::StopModel::Ht:cppunivariate::StopModel::ReflectedHt));
+  double closed=0;for(double v:x)closed+=cppunivariate::distributions::dht(sign*(v-2),0,4,1,true);
+  CHECK(r.logLik==doctest::Approx(closed-std::log(2.)).epsilon(1e-13));
+ }
+}

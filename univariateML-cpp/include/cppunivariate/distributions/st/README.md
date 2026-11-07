@@ -60,8 +60,8 @@ relations:
     when: alpha == 0
 fit:
   method: multistart
-  certified: 'no'
-  note: Numerical profiling and face comparison; no global optimality certificate.
+  certified: 'partial'
+  note: certificate.hpp and README.md, Conditional skew certificate. Conditional alpha-only fitting has a global score-enclosure certificate and exact monotone half-face stops; larger free subsets retain numerical profiling and face comparison without a global certificate.
 areas: [robust modelling]
 classification: specialist
 classification_reason: Flexible heavy-tailed Azzalini skew model.
@@ -183,9 +183,12 @@ settle paths with moving xi, omega, or observations at the moving boundary.
 z -> 0 with alpha z -> c, the skewing factor tends to
 2 T_(nu0+1)(c sqrt((nu0+1)/nu0)), which ranges strictly between 0 and 2.
 Thus endpoint pointwise values and moving-boundary likelihoods depend on the
-joint rate. Simultaneous nu -> 0, nu -> infinity with moving location/scale,
-and all likelihood-relevant joint degeneracies remain open; a list of the
-three named faces is not a closure proof.
+joint rate. For free nu restricted to at least one and $2k_{max}<n$, the
+[uniform closure proof](../../../../../dev/research/evaluations/2026-11-07-skew-theory-data/proofs.md)
+exhausts the joint escaping coordinates after nuisance exclusion. It also
+controls the joint normal/skew corner. Quantitative face-neighborhood
+profilers and global searches are still missing from the implementation;
+nu tending to zero lies outside the free-df fitting restriction.
 
 ## Information at symmetry
 
@@ -208,8 +211,7 @@ one-sided df score, including transformed iterates that round to the bound. Succ
 check; failed searches stop. It compares the skew-normal, half-t, reflected
 half-t and half-normal faces. Half-t face profiling with a held endpoint
 retains the same df restriction. Face comparisons use numerical tolerance;
-these are multistart searches, not global certificates. All held subsets are
-handled by the same free-coordinate search. No penalized likelihood is used.
+these are multistart searches, not global certificates. Subsets other than alpha-only retain the free-coordinate search. No penalized likelihood is used.
 
 | TASK-116 property | Evidence |
 |---|---|
@@ -218,7 +220,7 @@ handled by the same free-coordinate search. No penalized likelihood is used.
 | Boundary comparisons | Numerical profiles and existing half-t/skew-normal fitters; no global shape certificate. |
 | Computed score | Analytic nuisance scores and a finite-difference df score, with an explicit returned-point threshold; numerical. |
 
-Joint moving-location/scale paths, full held-set existence and full information
+Certified optimization over moving location/scale and free-df faces, full held-set attainment decisions and full information
 rank remain open. The fitting search does not establish MLE existence or
 uniqueness.
 
@@ -300,3 +302,41 @@ require the relevant held coefficients to be supplied in the new model.
 `mllst` is the symmetric location-scale Student model.
 
 Face comparisons retain the family tolerance but stop with the existing numerical-failure status when `core/face_compare.hpp` cannot resolve the decision after its floating-point rounding allowance. This allowance concerns computed likelihood comparisons, not optimizer convergence or global optimality; see the [comparison analysis](../../../../../dev/research/evaluations/2026-11-02-face-compare-report.md).
+
+## Conditional skew certificate
+
+When location, scale and df are held, `certificate.hpp` certifies the
+alpha-only fit. Put $m=\nu+1$,
+$q_i=z_i\sqrt{m/(\nu+z_i^2)}$ and $R_m=t_m/T_m$.
+If every nonzero $q_i$ has one sign, the likelihood is strictly monotone;
+the fitter stops at the corresponding half-t face. Each observation at the
+held endpoint contributes its symmetric t density, so the face likelihood
+is the closed half-t value divided by $2^k$. If all residuals vanish, alpha
+is unidentifiable and a tie stop supplies two different finite maximizers.
+
+With both signs present, all stationary points lie in $[-A_-,A_+]$.
+For $n_-$ negative residuals, set
+$C_+=2t_m(0)m^{(m+1)/2}\sum_{q_i>0}q_i^{-m}$ and
+$A_+=\max\{\sqrt m/\min|q_i|,(4C_+/(mn_-))^{1/m}\}$;
+reflection gives $A_-$. These are computed in logarithms.
+The Student tail inequality $R_m(-a)\ge ma/(m+a^2)$ and
+$R_m(a)\le2t_m(a)$ prove inward score signs on the entire exterior
+half-lines. This does not assume that $\log T_m$ is concave.
+
+On each interior interval the pdf's unimodality and the CDF's monotonicity
+give lower and upper bounds for each $q_iR_m(\alpha q_i)$.
+Exhaustive subdivision discards only intervals with a strictly signed score
+range, and compares all remaining stationary enclosures using midpoint
+likelihoods plus integrated score bounds. The coordinate width, grouping,
+128-epsilon term-sum allowance and certificate work budget are those of the
+sstd scalar search helper. No Student-CDF root-count assumption is made;
+multiple or poorly separated stationary components can stop on tie or budget.
+Nonfinite bounds stop numerically. At huge objective magnitudes, a lost
+face gain retains the numerical tie stop and its finite/face witnesses.
+
+The certificate is conditional on the computed ranges and comparisons in
+exact arithmetic, with the stated practical binary64 allowance; it does not
+claim outward rounding. Held df may be any positive value. Free df and all
+larger subsets remain uncertified. See the
+[proof of the skew bracket](../../../../../dev/research/evaluations/2026-11-07-skew-theory-data/proofs.md)
+and [implementation record](../../../../../dev/research/evaluations/2026-11-07-skew-impl-report.md).

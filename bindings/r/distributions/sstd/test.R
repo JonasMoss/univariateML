@@ -473,3 +473,21 @@ test_that("sstd conditional optimizer failure stops the wrapper", {
   x <- c(-2,-1,-.4,0,.2,.3,.5,1,2,5)
   expect_error(mlsstd(x,sd=1,nu=4,iterlim=1),'failed.*score check')
 })
+
+test_that("sstd scalar certificates preserve ties, holds and nonunit scale branches", {
+  expect_error(mlsstd(c(-2,2),sd=1,nu=3,xi=1),class="univariateML_tie")
+  x <- c(-35.321072334324725,11.459074428000962,-.015351125824354262,
+         -.2513099360462538,-297.3459307209368,.5881721220894813)
+  f <- mlsstd(x,mean=0,nu=3,xi=10)
+  expect_equal(log(unname(coef(f)["sd"])),5.894765235143508,tolerance=1e-8)
+  expect_equal(as.numeric(logLik(f)),-38.8073025560888,tolerance=1e-11)
+  expect_equal(unname(coef(f)[c("mean","nu","xi")]),c(0,3,10))
+  expect_error(mlsstd(c(-2,2),sd=1,nu=3,xi=1,iterlim=1),class="univariateML_budget")
+  expect_error(mlsstd(c(0,0,0,1),mean=0,nu=3,xi=1),class="univariateML_nomle")
+  expect_error(mlsstd(c(0,0,0,1),mean=0,nu=3,xi=2),class="univariateML_numerical")
+})
+
+test_that("sstd held unit skew retains the certified symmetric closure", {
+  expect_error(mlsstd(c(-2,-1,0,1,2),xi=1),class="univariateML_limit")
+  expect_error(mlsstd(c(-2,-1,0,1,2),xi=1),"mlnorm")
+})
