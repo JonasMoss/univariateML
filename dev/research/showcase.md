@@ -18,8 +18,8 @@ the competing witnesses and likelihood bounds), or a work budget ran out. It
 never returns an unchecked optimizer iterate. Limit families come from the
 Hellinger closure of each family ([ml-behaviour.tex](ml-behaviour.tex)).
 
-Coverage on 2026-11-06: 66 of 99 families certified for every held subset,
-27 partially, 6 not (bnbinom, pig, sged, sstd, st, tlambda). Several of the
+Coverage on 2026-11-07: 67 of 99 families certified for every held subset,
+29 partially, 3 not (sstd, st, tlambda). Several of the
 certificates needed new existence or uniqueness arguments (section 2), and
 several found that uniqueness fails (section 3).
 
@@ -31,6 +31,7 @@ with typed non-existence stops is not checked.
 
 | Result | Status | Literature | Source |
 |---|---|---|---|
+| **Poisson-inverse Gaussian: exists iff overdispersed, as for NB.** With $m=\bar x$ and $v=n^{-1}\sum_i(x_i-m)^2$, a finite MLE exists if and only if $v>m$, and it is then unique; otherwise the supremum is the Poisson face. The free mean reduces exactly to $m$; the shape profile is strictly concave in the compact coordinate $w=(\sqrt{1+2\mu^2/\lambda}-1)/(\sqrt{1+2\mu^2/\lambda}+1)$. The key step is a new inequality for half-integer Bessel polynomials $Q_{k-1}(1/z)$: the degree's mean $E_k$ and variance $V_k$ under the positive term weights satisfy $V_k<E_k(k^2-E_k^2)/(k^2+E_k^2)$ for $k\ge2$. With the mean held at $\mu$: exists iff $v+(m-\mu)^2>m$ | proved | not checked (PIG: Sichel; Willmot 1987); the Bessel-polynomial bound not checked | [pig](../../univariateML-cpp/include/cppunivariate/distributions/pig/README.md), [report](evaluations/2026-11-06-pig-cert-report.md) |
 | Kumaraswamy, both shapes free: with $t_i=-\log x_i$ and $G(a)=\sum_i-\log(1-e^{-at_i})$, the profile $h(a)=n\log a-n\log G(a)-aT+G(a)+C$ is strictly concave, because $G$ is a log-convex Laplace transform and $G''(a)<n/a^2$; so the MLE is unique for every nonconstant sample in $(0,1)$ | proved | not checked | [kumar](../../univariateML-cpp/include/cppunivariate/distributions/kumar/README.md) |
 | Burr XII with scale held: $\ell_p(c)=\text{const}-n\log(G(c)/c)-R(c)$ with $G(c)=\sum_i\log(1+e^{cz_i})$; $G(c)/c$ is log-convex, so the profile is strictly concave and the finite maximum unique | proved | possibly known for the two-parameter Burr XII (Wingo 1983, 1993); check | [burr](../../univariateML-cpp/include/cppunivariate/distributions/burr/README.md), [report](evaluations/2026-11-06-burr-scale-report.md) |
 | Zero-truncated NB with probability held: the size profile is strictly concave | proved | not checked (truncated NB ML goes back to Sampford 1955) | [ztnbinom](../../univariateML-cpp/include/cppunivariate/distributions/ztnbinom/README.md) |
@@ -117,6 +118,7 @@ had conflated.
 - Sampford, M. R. (1955). The truncated negative binomial distribution. *Biometrika* 42, 58–69.
 - Self, S. G. and Liang, K.-Y. (1987). Asymptotic properties of maximum likelihood estimators and likelihood ratio tests under nonstandard conditions. *Journal of the American Statistical Association* 82, 605–610.
 - Smith, R. L. (1985). Maximum likelihood estimation in a class of nonregular cases. *Biometrika* 72, 67–90.
+- Willmot, G. E. (1987). The Poisson-inverse Gaussian distribution as an alternative to the negative binomial. *Scandinavian Actuarial Journal* 1987, 113–127.
 - Wingo, D. R. (1983). Maximum likelihood methods for fitting the Burr type XII distribution to life test data. *Biometrical Journal* 25, 77–84.
 
 References are from memory and need checking before use.
