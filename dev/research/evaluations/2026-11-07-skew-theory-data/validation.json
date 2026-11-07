@@ -1,0 +1,85 @@
+{
+  "task": "TASK-116.15",
+  "source_revision": "31e2b66d395dd87068e1e204e934298407ea5955",
+  "branch": "codex/skew-theory",
+  "scope": "Research report/evidence only; existing tracked files unchanged",
+  "runs": [
+    {
+      "command": "/tmp/umvl-cpu/simbox-run just cpp-test",
+      "machine": "simbox",
+      "exit_code": 0,
+      "passed": 106,
+      "failed": 0,
+      "ctest_wall_seconds": 28.16,
+      "log_sha256": "fca32b8f039b7cc47868bd15de517231d078faa0e5639885f65e74158a3ad1e5"
+    },
+    {
+      "command": "/tmp/umvl-cpu/simbox-run just test",
+      "machine": "simbox",
+      "exit_code": 0,
+      "pass": 20983,
+      "fail": 0,
+      "warn": 0,
+      "skip": 154,
+      "elapsed_seconds": 60.184,
+      "log_sha256": "9e041def9533c7c546aac13a9765ce2a9288201c239f2091abba937d526a8134"
+    },
+    {
+      "command": "/tmp/umvl-cpu/simbox-run bash -c 'python3 dev/research/evaluations/2026-11-07-skew-theory-data/check.py > build/scratch/theory-check.log && cat dev/research/evaluations/2026-11-07-skew-theory-data/checks.json'",
+      "machine": "simbox",
+      "exit_code": 0,
+      "environment": {
+        "python": "3.12.3",
+        "scipy": "1.11.4",
+        "mpmath": "1.2.1",
+        "machine": "MeanMachine"
+      },
+      "evidence": "checks-simbox.json"
+    },
+    {
+      "command": "export TMPDIR=$PWD/build/tmp JUST_TEMPDIR=$PWD/build/tmp XDG_RUNTIME_DIR=$PWD/build/tmp; /tmp/umvl-cpu/run python3 dev/research/evaluations/2026-11-07-skew-theory-data/check.py > build/scratch/theory-check-local.log 2>&1",
+      "machine": "workstation",
+      "exit_code": 0,
+      "environment": {
+        "python": "3.14.5",
+        "scipy": "1.18.0",
+        "mpmath": "1.3.0",
+        "machine": "JonasBI"
+      },
+      "evidence": "checks.json"
+    }
+  ],
+  "research_check_contract": {
+    "mpmath_decimal_digits": 70,
+    "coordinate_absolute_tolerance": 2e-11,
+    "coordinate_max_error_simbox": 1.1368683772161603e-13,
+    "coordinate_max_error_local": 1.1368683772161603e-13,
+    "score_signs": "Exact Fraction interval enclosures with Machin alternating-series pi bounds; + - + -",
+    "fixture_seed": 11611,
+    "new_checks": "Deterministic finite grids; no additional random seed",
+    "equality_tolerance": 1e-07,
+    "final_sstd_equality_df_gap": "1e-15",
+    "subset_rows": [
+      16,
+      16
+    ]
+  },
+  "exploratory_failure": {
+    "run": "simbox equality convergence check",
+    "reason": "nu-2=1e-9 was too coarse for absolute error <1e-7: mode displacement is O(sqrt(nu-2))",
+    "correction": "Added nu-2=1e-15 without weakening tolerance; final check passed on both machines"
+  },
+  "not_run": {
+    "full_suites": "No fitting, density, binding or test-infrastructure changes; full tier conditional does not apply",
+    "site_and_js": "No dossiers, public fitter signatures or JS/common/core code changed"
+  },
+  "compute": "All computation used requested wrappers. Simbox wrapper supplies nice and thread limits; local run reserves one slot and pins BLAS/OpenMP to one. Slot waits completed. No exit-75 fallback, installs, subagents, commits, board mutations or other local worktree changes.",
+  "limits": "Research checks do not certify the current fitters or establish floating-point error margins for future root counts.",
+  "artifact_pane": {
+    "command": "/home/jonas/Files/work/misc/codex-math-web/bin/show dev/research/evaluations/2026-11-07-skew-theory-report.md",
+    "exit_code": 1,
+    "http_status": 403,
+    "reason": "Worktree outside viewer readable roots",
+    "remaining_action": "Register worktree as viewer readable root; no outside-worktree configuration was changed"
+  }
+}
