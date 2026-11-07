@@ -496,3 +496,34 @@ test_that("sged asymmetric held-shape scale certificate matches a scalar referen
   }
   expect_error(mlsged(x,mean=.1,nu=2,xi=3,iterlim=1),class='univariateML_numerical')
 })
+
+test_that("SGED held subunit asymmetric scale agrees with the density", {
+  x <- c(-3,-1,-.2,0,.3,.4,2)
+  for (nu in c(.3,.5,.9)) for (xi in c(.3,1.3,3)) {
+    fit <- mlsged(x, mean=.1, nu=nu, xi=xi)
+    expect_identical(as.numeric(fit[c("mean","nu","xi")]), c(.1,nu,xi))
+    expect_equal(as.numeric(logLik(fit)), sum(dml(x,fit,log=TRUE)), tolerance=2e-7)
+    expect_setequal(attr(fit,"fixed"),c("mean","nu","xi"))
+  }
+})
+
+test_that("SGED subunit separated scale maxima and budgets are structured stops", {
+  R <- uniroot(function(r) log(r)-2*(1-1/r),c(4,6),tol=1e-13)$root
+  K <- 2*sqrt(R-1)/R
+  xi <- sqrt(1+K^2/6)
+  e <- tryCatch(mlsged(rep(-1,3),mean=0,nu=.5,xi=xi,iterlim=400),error=identity)
+  expect_s3_class(e,"univariateML_tie")
+  expect_gte(nrow(e$candidates),2L)
+  expect_equal(max(e$candidates$sd)/min(e$candidates$sd),R,tolerance=2e-6)
+  expect_true(is.finite(e$loglik_upper))
+  for (j in seq_len(nrow(e$candidates))) {
+    row <- e$candidates[j,]
+    ref <- mlsged(rep(-1,3),mean=0,sd=row$sd,nu=.5,xi=xi)
+    expect_gte(as.numeric(logLik(ref))+1e-8,row$loglik_lower)
+    expect_lte(as.numeric(logLik(ref))-1e-8,row$loglik_upper)
+  }
+  e <- tryCatch(mlsged(-1-(0:159)*.1,mean=0,nu=.5,xi=1.3,iterlim=1),error=identity)
+  expect_s3_class(e,"univariateML_budget")
+  expect_gte(nrow(e$candidates),1L)
+  expect_s3_class(tryCatch(mlsged(rep(0,3),mean=0,nu=.5,xi=1.3),error=identity),"univariateML_nomle")
+})

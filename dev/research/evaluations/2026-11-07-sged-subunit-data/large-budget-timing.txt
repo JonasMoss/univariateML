@@ -1,0 +1,14 @@
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/test.cpp:498:
+TEST CASE:  sged subunit unfundable knot partitions stop before quadratic work
+
+0.050218 s: sged subunit unfundable knot partitions stop before quadratic work
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 1407 skipped
+[doctest] assertions: 5 | 5 passed | 0 failed |
+[doctest] Status: SUCCESS!
+real 0.05
+user 0.04
+sys 0.00

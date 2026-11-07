@@ -405,3 +405,36 @@ test('shifted Gompertz unfinished bracket preserves a finite witness', async () 
     assert.ok(Number.isFinite(error.loglik_lower));return true;
   });
 });
+
+test('SGED subunit asymmetric scale certificates agree with independent fixtures', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  const x = new Float64Array([-3,-1,-.2,0,.3,.4,2]);
+  for (const [nu,sd,ll] of [[.3,1.6240399853168161,-12.241713109781369], [.9,1.4916863638394504,-12.781716887610742]]) {
+    const fit = api.sged.fit(x,{mean: .1,nu,xi: 1.3});
+    assert.equal(fit.status,'Ok');
+    assert.ok(Math.abs(fit.estimates.sd/sd-1)<2e-7);
+    assert.ok(Math.abs(fit.logLik-ll)<2e-6);
+    const density = api.sged.d(x,[.1,fit.estimates.sd,nu,1.3],{log: true});
+    assert.ok(Math.abs(Array.from(density).reduce((a,b)=>a+b,0)-fit.logLik)<2e-6);
+  }
+});
+
+test('SGED subunit scale ties and exhausted certificates stop in the common binding', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  let lo=4,hi=6;
+  for(let j=0;j<60;++j){const r=(lo+hi)/2;if(Math.log(r)>2*(1-1/r))hi=r;else lo=r;}
+  const r=(lo+hi)/2,k=2*Math.sqrt(r-1)/r,xi=Math.sqrt(1+k*k/6);
+  assert.throws(()=>api.sged.fit(new Float64Array([-1,-1,-1]),{mean: 0,nu: .5,xi},{iterlim: 400}),error=>{
+    assert.equal(error.kind,'tie');
+    assert.ok(error.candidates.length>=2);
+    const scales=error.candidates.map(c=>c.sd);
+    assert.ok(Math.abs(Math.max(...scales)/Math.min(...scales)/r-1)<2e-6);
+    assert.ok(Number.isFinite(error.loglik_upper));
+    return true;
+  });
+  assert.throws(()=>api.sged.fit(Float64Array.from({length:160},(_,j)=>-1-j*.1),{mean: 0,nu: .5,xi: 1.3},{iterlim: 1}),error=>{
+    assert.equal(error.kind,'budget');assert.ok(error.candidates.length>=1);return true;
+  });
+});

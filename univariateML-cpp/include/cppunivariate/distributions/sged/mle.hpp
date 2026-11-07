@@ -437,7 +437,7 @@ inline SgedResult sged_mle_impl(span x, double tol, int maxit,
      (hn && !(fixed_nu>0 && std::isfinite(fixed_nu))) ||
      (hx && !(fixed_xi>0 && std::isfinite(fixed_xi))) || x.size()==0 || !(tol>0) || !std::isfinite(tol) || maxit<1) return out;
   for(double v:x) if(!std::isfinite(v)) return out;
-  if(hn && hx && ((!hm) || (!hs && (fixed_xi==1.0 || fixed_nu>=1.0))))
+  if(hn && hx && (!hm || !hs))
     return sged_cert_detail::fit(x,tol,maxit,fixed_mean,fixed_sd,fixed_nu,fixed_xi);
   if(!(hn && hx && (hm || hs))) {
     const auto r=skew_hold_detail::fit(x,false,fixed_mean,fixed_sd,fixed_nu,fixed_xi,tol,maxit);

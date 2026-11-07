@@ -1,0 +1,24 @@
+{
+  "workstation": {
+    "before_median_us": 182.14015,
+    "after_median_us": 17.74855,
+    "paired_median_speedup": 11.77593480376152,
+    "minimum_speedup": 2.4925574231956342,
+    "maximum_speedup": 17.718633196782584,
+    "maximum_relative_scale_error": 9.905171127755352e-09,
+    "maximum_loglik_error": 2.701320767073412e-08,
+    "maximum_conditional_scale_drift": 1.0100557945591504e-08,
+    "maximum_conditional_loglik_change": 0.0014093514802802076
+  },
+  "simbox": {
+    "before_median_us": 159.13575,
+    "after_median_us": 6.742749999999999,
+    "paired_median_speedup": 23.874804664022115,
+    "minimum_speedup": 5.47480722546853,
+    "maximum_speedup": 29.600794542745874,
+    "maximum_relative_scale_error": 9.905171127755352e-09,
+    "maximum_loglik_error": 2.701320767073412e-08,
+    "maximum_conditional_scale_drift": 1.0161442576261948e-08,
+    "maximum_conditional_loglik_change": 0.0014094235471358019
+  }
+}
