@@ -159,6 +159,28 @@ Counts only come first either way. A single
 constraint (for example an overall mean from national accounts) leaves a
 $(p-1)$-dimensional feasible set and remains well posed; not planned.
 
+Quantile shares (World Bank style): groups are fixed population
+fractions $q_k$ with unknown edges, and the data are income shares,
+that is points on the Lorenz curve $L(q) = \mu^{-1}\int_0^q F^{-1}(u)\,du$.
+- Exact likelihood: the joint law of block sums of order statistics,
+  divided by the total. Intractable; no ML in our sense.
+- Working model: empirical Lorenz ordinates are asymptotically normal
+  (Beach and Davidson 1983, Review of Economic Studies 50, 723-735). A
+  Gaussian working likelihood needs the survey size $n$ (often not
+  published) and finite variance overall (Burr: $kc > 2$); the open top
+  group cannot be dropped, because every share is divided by the total.
+- Practice: PovcalNet fits the general quadratic (Villasenor and Arnold
+  1989) or beta (Kakwani 1980) Lorenz curve, keeping the better fit; a
+  curve fit, not a likelihood. (Checked by web search 2026-11-07.)
+- Burr: $L(q) = I_t(1 + 1/c,\ k - 1/c)$ with $t = 1 - (1-q)^{1/k}$
+  (regularized incomplete beta; checked against quadrature 2026-11-07).
+  Scale drops out. Curiosity: share vectors live in a compact polytope
+  (shares sum to 1, group means nondecreasing). Collapse ($c \to \infty$)
+  becomes the perfect-equality point, and $kc \to 1^+$ (mean blowing up)
+  sends every $L(q_k)$, $q_k < 1$, to $0$: all income in the top group.
+  Both are ordinary boundary points there.
+Scope: out for fitting; the Lorenz geometry is a possible note.
+
 The classical income families are already here: burr (Singh-Maddala),
 invburr (Dagum), llogis (Fisk), gb2, lnorm, gamma, pareto.
 
