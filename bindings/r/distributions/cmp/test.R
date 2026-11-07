@@ -99,3 +99,23 @@ test_that("P3 CMP boundaries respect all holds and geometric normalizability", {
   expect_equal(as.numeric(f),c(.5,0))
   expect_equal(attr(f,"logLik"),sum(dgeom(x,.5,log=TRUE)))
 })
+
+test_that("CMP acceptance is binding neutral and stops unchecked loose solves", {
+  x <- c(0,0,1,1,2,2,3,4)
+  expect_error(mlcmp(x,reltol=.1),class="univariateML_numerical")
+  for (args in list(list(),list(lambda=2),list(nu=1),list(lambda=2,nu=1))) {
+    f <- do.call(mlcmp,c(list(x),args))
+    expect_equal(as.numeric(logLik(f)),sum(dml(x,f,log=TRUE)),tolerance=1e-10)
+  }
+  expect_equal(mlcmp(c(0,0,0,10),lambda=.7)[["nu"]],0)
+})
+
+test_that("CMP acceptance budget exposes its witness and responds to iterlim", {
+  x <- c(0,0,0,20000)
+  stopped <- tryCatch(mlcmp(x,lambda=5000/5001,iterlim=1),error=identity)
+  expect_s3_class(stopped,"univariateML_budget")
+  expect_match(conditionMessage(stopped),"Raising iterlim")
+  expect_equal(nrow(stopped$candidates),1)
+  expect_true(is.finite(stopped$candidates$loglik_lower))
+  expect_equal(mlcmp(x,lambda=5000/5001,iterlim=10)[["nu"]],0)
+})

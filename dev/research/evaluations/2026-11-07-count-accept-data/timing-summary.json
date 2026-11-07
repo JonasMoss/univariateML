@@ -1,0 +1,17 @@
+{
+  "unit": "microseconds per fit",
+  "repeats": 5,
+  "fits_per_repeat": 100,
+  "median": {
+    "before": {
+      "tnorm": 20.124,
+      "cmb": 600.167,
+      "cmp": 827.56
+    },
+    "after": {
+      "tnorm": 74.9258,
+      "cmb": 741.019,
+      "cmp": 2350.5
+    }
+  }
+}

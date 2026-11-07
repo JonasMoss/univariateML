@@ -112,11 +112,8 @@ relations:
       sd: sd
 fit:
   method: convex-solve
-  certified: partial
-  note: 'tnorm/README.md, Details; tnorm/mle.hpp (public fitter and held overloads); tnorm/test.cpp: Fixed-bound
-    likelihood is strictly concave in mean/sd^2 and -1/(2*sd^2); holding mean or sd gives affine restrictions. Free
-    bounds profile exactly to sample extremes; collapse tests are exact. Newton solves and face comparisons
-    use floating-point quadrature and tolerances, rather than a global numerical certificate.'
+  certified: 'yes'
+  note: 'tnorm/README.md, Numerical acceptance; tnorm/mle.hpp, tnorm_mle; cmb/acceptance.hpp, certify: exact bound profiling and collapse tests; affine natural-parameter subsets use score half-space coefficient enclosures and a concave tangent likelihood bound. Untruncated fits are closed form. Numerical face ties and failed certificates stop; comparisons use the documented practical floating-point margins.'
 areas:
 - measurement and errors
 classification: specialist
@@ -207,3 +204,34 @@ Supply both `a` and `b`. A numeric value holds a bound, `NULL` estimates it at t
 Boundary comparisons favour the limiting model within `1e-8` times sample size in log likelihood. Exponential, truncated exponential and uniform escapes stop rather than returning a finite parent-normal estimate. `mlunif` estimates its own endpoints and is a different model from the uniform limit on held bounds. See `mlhnorm` for a half-normal with an estimated endpoint and `mlnorm` for the untruncated fit.
 
 Scale collapse is checked by exact equality before searching: constant observations must equal the projection of a held mean onto the profiled interval, or mean must be free. With scale held and mean free, constant observations at a finite endpoint instead report an unbounded location escape. Both-held fits evaluate the likelihood. Coincident profiled bounds remain invalid. The [existence review](../../../../../dev/research/evaluations/2026-11-02-existence-6-report.md) preserves the original reproducer.
+
+## Numerical acceptance
+
+The acceptance calculation centers joint and held-scale fits at the empirical
+mean and scales them by the empirical standard deviation; held-mean fits use
+the empirical root mean squared distance from that mean. This avoids the
+nearly singular covariance obtained by centering at a distant parent mean
+near an exponential face. In these coordinates, the score components are
+empirical minus model means of $U$ and $U^2$. With mean held only the quadratic
+coordinate is free; with scale held only the linear coordinate is free.
+The inverse sufficient-statistic covariance proposes surrounding points for
+the [concavity certificate](../cmb/acceptance.hpp). Its half-space enclosure
+is transformed back through
+$\mu=c-s\theta_1/(2\theta_2)$ and
+$\sigma=s/\sqrt{-2\theta_2}$. Every enclosed corner must agree with the
+reported mean within $10^{-8}(s+|\hat\mu|)$ and scale within
+$10^{-8}\hat\sigma$. Enclosures crossing zero quadratic coefficient fail.
+
+The certificate uses the likelihood and coordinate margins stated in
+[acceptance.hpp](../cmb/acceptance.hpp); quadrature and face comparisons remain
+conditional floating-point calculations. Each refinement uses two or three
+quadratures and has the shared solver allowance. A failed enclosure stops
+numerically with its feasible witness and any established likelihood upper bound.
+
+At the likelihood roundoff floor, Newton backtracking may accept an objective
+decrease of at most $64\epsilon(1+|f|)$ only when the free moment residual
+strictly decreases. This replaces premature acceptance of a stalled score
+below $10^{-7}$ in near-face examples; the final quantitative certificate
+still decides acceptance. A finite solve within the face likelihood tolerance
+is reported as a numerical tie with both witnesses, rather than asserting
+that a finite MLE does not exist.

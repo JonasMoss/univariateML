@@ -56,11 +56,9 @@ construction:
 - generalisation
 relations: {}
 fit:
-  method: multistart
-  certified: partial
-  note: 'cmp/README.md, Details; cmp/mle.hpp (public fitter and held overloads); cmp/test.cpp: Moment matching exploits
-    exponential-family convexity for fixed design/dispersion subsets; integer-tail or normalizer bounds certify
-    only their stated scope, not every joint numerical solve.'
+  method: convex-solve
+  certified: 'yes'
+  note: 'cmp/README.md, Moment-error acceptance; cmp/mle.hpp, cmp_domain_mle; cmb/acceptance.hpp, certify: the public domain wrapper checks scalar or joint moment proposals with concave tangent bounds and score half-space coefficient enclosures, including the geometric KKT face. Atomic and held-geometric subsets are exact. The historical special/cmp.hpp solver remains a proposer; its evaluator remainders exclude roundoff.'
 areas:
 - counts and ecology
 existence:
@@ -127,8 +125,8 @@ the geometric endpoint. With rate at least one the normalizable domain
 requires strictly positive dispersion.
 
 The [existence analysis](../../../../../dev/research/evaluations/2026-10-29-p0-discrete2.md)
-discusses the limit paths. A small moment residual is a numerical
-convergence check; it does not by itself certify a likelihood-error bound.
+discusses the limit paths. The raw shared solver supplies a moment proposal; the public domain wrapper
+adds the quantitative acceptance check below.
 
 ## R notes
 
@@ -144,7 +142,7 @@ uses inversion with R's RNG.
 
 ## Decision history
 
-### Moment and tail arithmetic (2026-10-30, TASK-125)
+### Moment and tail arithmetic
 
 2026-10-30 (TASK-125): moment sums use compensated accumulation, the saddle-point quotient retains its division residual, and geometric tail bounds can be evaluated in log coordinates. For mode zero or one, the second-count weight uses `exp((2-mode)*eta)*exp2(-nu)`, avoiding amplification of rounding in `log(2)`. The 73-row independent reference grid measures errors; the truncation certificate excludes floating-point roundoff.
 
@@ -154,4 +152,51 @@ The normalizer and both tails are summed directly.
 
 ## Stop details
 
-The public domain entry point retains adjacent-law witnesses, with held lambda fixing the Bernoulli odds. The shared legacy CMP solver is unchanged; its attained geometric and zero-count members remain successful fits.
+The public domain entry point retains adjacent-law witnesses, with held lambda fixing the Bernoulli odds. The shared legacy CMP solver is unchanged; the public domain wrapper now certifies its proposals. Attained geometric and zero-count members remain supported.
+
+## Moment-error acceptance
+
+The binding-neutral public route is `cmp_domain_mle`, which retains the shared
+`cmp_mle` solver as a proposer. For a joint interior fit it uses coordinates
+$(\alpha,\nu)$ with $\alpha=\log\lambda-s\nu$, where $s$ is the proposal's
+centered log-factorial slope. This affine change keeps profile covariance and
+score calculations from subtracting large nearly equal log-factorial moments.
+At every surrounding point the evaluator's centered residuals recover the
+likelihood and the expectations of $X$ and $\log(X!)-sX$.
+With rate held, only dispersion varies; with dispersion held, only log rate
+varies. [The concavity check](../cmb/acceptance.hpp) bounds the global likelihood
+and encloses free coefficients using score half-spaces. It transforms the
+canonical rectangle through $\lambda=\exp(\alpha+s\nu)$ and requires each
+reported free coefficient to lie within $10^{-8}(1+|\hat\theta|)$ of every
+endpoint of its enclosure. Failed score surrounds or coefficient checks stop.
+
+At zero dispersion, the geometric rate is analytic. A free-dispersion
+geometric proposal must additionally have a strictly nonpositive dispersion
+score, separated from zero by $10^{-12}(1+|\overline{\log(X!)}|)$.
+Both endpoints of the rate bracket must pass the dispersion sign check.
+Since $\operatorname{Cov}(X,\log(X!))>0$, that score is increasing in log rate,
+so the sign also holds at the enclosed geometric rate root. The bracket
+supplies the free rate enclosure and the supporting planes give a constrained KKT upper bound for all $\nu\ge0$. With rate held,
+the same score inequality certifies the exact endpoint directly. An uncertain
+seam stops numerically; a near-geometric interior fit is not silently replaced
+by an unchecked endpoint. Held zero dispersion uses the analytic geometric
+fit. At zero rate any dispersion defines the same atom, so dispersion is
+unidentified; for example two zero observations have likelihood one at both
+$(\lambda,\nu)=(0,0)$ and $(0,30)$.
+
+Each moment evaluation requests remainder tolerance $2\times10^{-16}$
+and requires the evaluator's relative remainder bound below $10^{-12}$.
+The shared certificate's likelihood and coordinate margins are specified in
+[acceptance.hpp](../cmb/acceptance.hpp); its coefficient inclusion is conditional
+on these computed moments, including the protected evaluator's roundoff
+qualification.
+
+The wrapper clamps its solver control to `min(iterlim,100000)`. Its acceptance
+pass has at most that many refinements, with two or three moment evaluations
+per refinement. Those evaluations use the remaining
+`100000*min(iterlim,100000)` work allowance after the proposer's reported work.
+The protected evaluator's own work ledger and fixed `max_terms` control remain
+a separate shared dependency; this wrapper does not revise its internal loops.
+Budget stops in the new pass retain feasible finite witnesses where available.
+The historical `cmp_mle` entry point itself does not promise this acceptance
+certificate; callers needing it must use `cmp_domain_mle`.

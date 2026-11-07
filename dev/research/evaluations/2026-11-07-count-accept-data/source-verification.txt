@@ -1,0 +1,17 @@
+univariateML-cpp/include/cppunivariate/distributions/tnorm/mle.hpp: OK
+univariateML-cpp/include/cppunivariate/distributions/tnorm/test.cpp: OK
+univariateML-cpp/include/cppunivariate/distributions/tnorm/README.md: OK
+univariateML-cpp/include/cppunivariate/distributions/cmb/mle.hpp: OK
+univariateML-cpp/include/cppunivariate/distributions/cmb/test.cpp: OK
+univariateML-cpp/include/cppunivariate/distributions/cmb/README.md: OK
+univariateML-cpp/include/cppunivariate/distributions/cmp/mle.hpp: OK
+univariateML-cpp/include/cppunivariate/distributions/cmp/test.cpp: OK
+univariateML-cpp/include/cppunivariate/distributions/cmp/README.md: OK
+univariateML-cpp/include/cppunivariate/distributions/cmb/acceptance.hpp: OK
+bindings/common/distributions/tnorm/fit.hpp: OK
+bindings/common/distributions/cmb/fit.hpp: OK
+bindings/common/distributions/cmp/fit.hpp: OK
+bindings/r/distributions/tnorm/test.R: OK
+bindings/r/distributions/cmb/test.R: OK
+bindings/r/distributions/cmp/test.R: OK
+bindings/js/test.mjs: OK

@@ -1,0 +1,67 @@
+{
+  "base": "3de415f0896527001caeb0d612bcb91b858d644d",
+  "source": "source.sha256",
+  "final_runs": [
+    {
+      "command": "UMVL_TEST_TIER=dev just cpp-test",
+      "machine": "simbox",
+      "passed_shards": 106,
+      "failed_shards": 0,
+      "test_seconds": 61.37
+    },
+    {
+      "command": "UMVL_TEST_TIER=full just cpp-test",
+      "machine": "simbox",
+      "passed_shards": 129,
+      "failed_shards": 0,
+      "test_seconds": 111.07
+    },
+    {
+      "command": "just cpp-test-no-long-double",
+      "machine": "simbox",
+      "passed_shards": 129,
+      "failed_shards": 0,
+      "test_seconds": 99.81
+    },
+    {
+      "command": "just test",
+      "machine": "simbox",
+      "pass": 21017,
+      "fail": 0,
+      "warn": 0,
+      "skip": 154,
+      "test_seconds": 73.1
+    },
+    {
+      "command": "just test-full",
+      "machine": "simbox",
+      "pass": 43837,
+      "fail": 0,
+      "warn": 0,
+      "skip": 0,
+      "test_seconds": 371.4
+    },
+    {
+      "command": "just js-build && just js-test",
+      "machine": "workstation",
+      "pass": 439,
+      "fail": 0,
+      "skip": 0,
+      "test_seconds": 89.29210837
+    },
+    {
+      "command": "just site-check",
+      "machine": "workstation",
+      "exit_code": 0
+    },
+    {
+      "command": "just relations",
+      "machine": "workstation",
+      "edges": 157,
+      "failed": 0
+    }
+  ],
+  "dev_skips": "All 154 require the full test tier; full ran with zero skips.",
+  "goldens": "No fixtures modified; check.txt records every regular hold subset.",
+  "development_failures": "Initial C++ dev run failed CMB and tnorm; retained in cpp-dev-development-failures.log.gz, resolved before all final runs."
+}

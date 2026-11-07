@@ -17,6 +17,7 @@
 #pragma once
 #include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
+#include "../cmb/acceptance.hpp"
 
 #include "../../core/span.hpp"
 #include "../../special/special.hpp"
@@ -212,7 +213,9 @@ inline bool newton_scale(double lo, double hi, double m2, double tol, int maxit,
       const Mass mn = mass(0, next, lo, hi);
       if (!mn.ok) continue;
       const double fn = next * m2 - mn.log_mass;
-      if (fn >= f + 1e-4 * alpha * g * step) {
+      if (fn >= f + 1e-4 * alpha * g * step ||
+          (fn >= f-64*std::numeric_limits<double>::epsilon()*(1+std::abs(f)) &&
+           std::abs(m2-(mn.var+mn.mean*mn.mean)) < std::abs(g))) {
         t2 = next;
         m = mn;
         f = fn;
@@ -246,7 +249,9 @@ inline bool newton_location(double lo, double hi, double t2, double tol, int max
       const Mass mn = mass(next, t2, lo, hi);
       if (!mn.ok) continue;
       const double fn = -mn.log_mass;
-      if (fn >= f + 1e-4 * alpha * g * step) {
+      if (fn >= f + 1e-4 * alpha * g * step ||
+          (fn >= f-64*std::numeric_limits<double>::epsilon()*(1+std::abs(f)) &&
+           std::abs(mn.mean) < std::abs(g))) {
         t1 = next;
         m = mn;
         f = fn;
@@ -294,7 +299,10 @@ inline bool newton_joint(double lo, double hi, double tol, int maxit,
       const Mass mn = mass(n1, n2, lo, hi);
       if (!mn.ok) continue;
       const double fn = n2 - mn.log_mass;
-      if (fn >= f + 1e-4 * alpha * slope) {
+      if (fn >= f + 1e-4 * alpha * slope ||
+          (fn >= f-64*std::numeric_limits<double>::epsilon()*(1+std::abs(f)) &&
+           std::max(std::abs(mn.mean),std::abs(1-mn.var-mn.mean*mn.mean)) <
+             std::max(std::abs(g1),std::abs(g2)))) {
         t1 = n1;
         t2 = n2;
         m = mn;
@@ -546,10 +554,74 @@ namespace cppunivariate {
 inline TnormResult tnorm_mle(span x,double a=-INFINITY,double b=INFINITY,double tol=1e-12,int maxit=100,double mean=NAN,double sd=NAN) {
   maxit = static_cast<int>(solver_budget(maxit));
   auto r=tnorm_mle_impl(x,a,b,tol,maxit,mean,sd);
+  if(r.status==TnormStatus::DegenerateData && !x.empty()) {
+    bool collapse=true;for(double value:x)collapse=collapse && value==x[0];
+    if(!std::isnan(mean))collapse=collapse && x[0]==std::min(std::max(mean,r.a),r.b);
+    if(!collapse)r.status=TnormStatus::IterationFailure;
+  }
+  if(r.status==TnormStatus::Ok && !(std::isfinite(r.mean) && std::isfinite(r.sd) &&
+     r.sd>0 && std::isfinite(r.logLik))) {
+    r.status=TnormStatus::IterationFailure;r.stop_detail.loglik_upper=INFINITY;return r;
+  }
+  if(r.status==TnormStatus::Ok && (std::isnan(mean) || std::isnan(sd)) &&
+     (std::isfinite(r.a) || std::isfinite(r.b))) {
+    const bool fm=!std::isnan(mean),fs=!std::isnan(sd);
+    const double n=double(x.size());
+    double shifted_sum=0;for(double k:x)shifted_sum+=k-x[0];
+    const double origin=fm?mean:x[0]+shifted_sum/n;
+    double square=0;for(double k:x)square+=(k-origin)*(k-origin)/n;
+    const double scale=square>0?std::sqrt(square):r.sd;
+    double u1=0,u2=0;for(double k:x){const double u=(k-origin)/scale;u1+=u/n;u2+=u*u/n;}
+    const double lo=(r.a-origin)/scale,hi=(r.b-origin)/scale;
+    const double theta2=-.5*(scale/r.sd)*(scale/r.sd);
+    const double theta1=(r.mean-origin)/scale*(-2*theta2);
+    const auto q=tnorm_detail::mass(theta1,theta2,lo,hi);
+    const double cov=q.m3+2*q.mean*q.var;
+    const double var2=q.m4-q.var*q.var+4*q.mean*q.m3+4*q.mean*q.mean*q.var;
+    double a=0,b=0,c=0;
+    if(fs)a=1/q.var;else if(fm)a=1/var2;
+    else {const double det=q.var*var2-cov*cov;a=var2/det;b=-cov/det;c=q.var/det;}
+    const auto evaluate=[&](double v,double w) {
+      const double t1=fm?0:v,t2=fm?v:(fs?theta2:w);
+      const auto z=tnorm_detail::mass(t1,t2,lo,hi);
+      const double ll=t1*u1+t2*u2-z.log_mass-std::log(scale);
+      return concave_accept_detail::Evaluation{ll,fm?u2-z.var-z.mean*z.mean:u1-z.mean,
+        (!fm && !fs)?u2-z.var-z.mean*z.mean:0,z.ok};
+    };
+    const auto accurate=[&](const concave_accept_detail::Bound& z) {
+      for(double v:{z.lo1,z.hi1})for(double w:{z.lo2,z.hi2}) {
+        const double t1=fm?0:v,t2=fm?v:(fs?theta2:w);
+        if(!(t2<0))return false;
+        const double mu=origin-scale*t1/(2*t2),sigma=scale/std::sqrt(-2*t2);
+        if((!fm && std::abs(mu-r.mean)>1e-8*(scale+std::abs(r.mean))) ||
+           (!fs && std::abs(sigma-r.sd)>1e-8*r.sd))return false;
+      }
+      return true;
+    };
+    const auto bound=concave_accept_detail::certify(fm?theta2:theta1,theta2,r.logLik/n,
+      a,b,c,(!fm && !fs)?2:1,false,maxit,evaluate,accurate);
+    r.stop_detail.loglik_lower=r.logLik-1e-9*(n+std::abs(r.logLik));
+    r.stop_detail.loglik_upper=n*bound.upper;
+    if(!bound.ok) {
+      r.status=TnormStatus::IterationFailure;
+      r.stop_detail.candidates.push_back({{r.mean,r.sd,r.a,r.b},r.stop_detail.loglik_lower,
+        r.logLik+1e-9*(n+std::abs(r.logLik))});
+    }
+  }
   if(r.status==TnormStatus::UniformBoundary)r.stop_detail=limit_detail({r.a,r.b},r.limit_logLik,StopModel::Unif);
   if(r.status==TnormStatus::ExponentialBoundary)r.stop_detail=limit_detail({r.a,-r.limit_rate},r.limit_logLik,StopModel::TranslatedExp);
   if(r.status==TnormStatus::ReflectedExponentialBoundary)r.stop_detail=limit_detail({r.b,r.limit_rate},r.limit_logLik,StopModel::ReflectedExp);
   if(r.status==TnormStatus::TruncatedExponentialBoundary)r.stop_detail=limit_detail({r.a,r.b,r.limit_rate},r.limit_logLik,StopModel::TruncatedExp);
+  // A solved interior point compared closely with its face is a numerical
+  // tie, not a mathematical assertion of nonexistence.
+  if(r.status!=TnormStatus::Ok && std::isfinite(r.mean) && r.sd>0 && std::isfinite(r.logLik) &&
+     std::isfinite(r.limit_logLik) && !r.stop_detail.limit_coef.empty()) {
+    r.stop_detail.comparison_tie=true;
+    const double margin=1e-9*(double(x.size())+std::abs(r.logLik));
+    r.stop_detail.candidates.push_back({{r.mean,r.sd,r.a,r.b},r.logLik-margin,r.logLik+margin});
+    r.stop_detail.loglik_lower=std::max(r.logLik-margin,r.limit_logLik-margin);
+    r.stop_detail.loglik_upper=INFINITY;
+  }
   return r;
 }
 }

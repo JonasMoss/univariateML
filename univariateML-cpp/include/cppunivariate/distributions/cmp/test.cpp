@@ -95,3 +95,53 @@ TEST_CASE("CMP: held extreme odds retain a finite face likelihood") {
   CHECK(std::isfinite(r.stop_detail.limit_loglik));
   CHECK(r.stop_detail.limit_loglik==doctest::Approx(r.logLik));
 }
+
+TEST_CASE("CMP: public moment-error wrapper bounds all interior hold subsets") {
+  const std::vector<double> x{0,0,1,1,2,2,3,4};
+  for(double lambda:{double(NAN),2.})for(double nu:{double(NAN),1.}) {
+    cppunivariate::CmpFitControl ctl;ctl.fixed_lambda=lambda;ctl.fixed_nu=nu;
+    const auto f=cppunivariate::cmp_domain_mle({x.data(),x.size()},ctl);
+    REQUIRE(f.status==cppunivariate::CmpStatus::Ok);
+    if(std::isnan(lambda) || std::isnan(nu)) {
+      CHECK(std::isfinite(f.stop_detail.loglik_upper));
+      CHECK(f.stop_detail.loglik_upper>=f.logLik);
+      CHECK(f.stop_detail.loglik_upper-f.logLik<=1e-8*(x.size()+std::abs(f.logLik)));
+    }
+  }
+  // At lambda zero every finite dispersion gives the same maximum.
+  const std::vector<double> z{0,0};
+  cppunivariate::CmpFitControl ctl;ctl.fixed_nu=30;
+  const auto a=cppunivariate::cmp_domain_mle({z.data(),z.size()},ctl);
+  ctl.fixed_nu=0;
+  const auto b=cppunivariate::cmp_domain_mle({z.data(),z.size()},ctl);
+  CHECK(a.logLik==b.logLik);
+}
+
+TEST_CASE("CMP: certified wrapper preserves all golden hold subsets") {
+  const auto g=mltest::load_distribution_golden("cmp");
+  for(bool fl:{false,true})for(bool fn:{false,true}) {
+    cppunivariate::CmpFitControl ctl;
+    if(fl)ctl.fixed_lambda=g.estimates.at("lambda");
+    if(fn)ctl.fixed_nu=g.estimates.at("nu");
+    const auto f=cppunivariate::cmp_domain_mle({g.data.data(),g.data.size()},ctl);
+    REQUIRE(f.status==cppunivariate::CmpStatus::Ok);
+    CHECK(std::exp(f.eta)==doctest::Approx(g.estimates.at("lambda")).epsilon(1e-8));
+    CHECK(f.nu==doctest::Approx(g.estimates.at("nu")).epsilon(1e-8));
+    CHECK(f.logLik==doctest::Approx(g.logLik).epsilon(1e-10));
+  }
+}
+
+TEST_CASE("CMP: acceptance budget retains the geometric witness and scales with iterlim") {
+  const std::vector<double> x{0,0,0,20000};
+  cppunivariate::CmpFitControl ctl;ctl.fixed_lambda=5000./5001;ctl.maxit=1;
+  const auto stopped=cppunivariate::cmp_domain_mle({x.data(),x.size()},ctl);
+  REQUIRE(stopped.status==cppunivariate::CmpStatus::IterationFailure);
+  CHECK(stopped.stop_detail.budget_exhausted);
+  REQUIRE(stopped.stop_detail.candidates.size()==1);
+  CHECK(std::isfinite(stopped.stop_detail.candidates[0].loglik_lower));
+  ctl.maxit=10;
+  const auto fitted=cppunivariate::cmp_domain_mle({x.data(),x.size()},ctl);
+  REQUIRE(fitted.status==cppunivariate::CmpStatus::Ok);
+  CHECK(fitted.nu==0);
+  CHECK(fitted.stop_detail.loglik_upper>=fitted.logLik);
+}

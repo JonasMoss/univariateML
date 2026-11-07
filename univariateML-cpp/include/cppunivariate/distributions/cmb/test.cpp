@@ -408,3 +408,56 @@ TEST_CASE("cmb: fixed-size normalizers share the iterlim cell allowance") {
   CHECK(fitted.status==cppunivariate::CmbStatus::Ok);
   CHECK(std::isfinite(fitted.logLik));
 }
+
+TEST_CASE("cmb: fixed-design quantitative concave acceptance") {
+  const std::vector<int> x{0,0,1,1,2,2,3,4};
+  for(double p:{double(NAN),.3})for(double nu:{double(NAN),1.}) {
+    const auto f=cppunivariate::cmb_mle({x.data(),x.size()},8,1e-10,2000,p,nu);
+    REQUIRE(f.status==cppunivariate::CmbStatus::Ok);
+    if(std::isnan(p) || std::isnan(nu)) {
+      CHECK(std::isfinite(f.stop_detail.loglik_upper));
+      CHECK(f.stop_detail.loglik_upper>=f.logLik);
+      CHECK(f.stop_detail.loglik_upper-f.logLik<=1e-8*(x.size()+std::abs(f.logLik)));
+    }
+  }
+  // Size one cannot identify dispersion: distinct nu have the same law.
+  const std::vector<int> bernoulli{0,1,1};
+  const auto a=cppunivariate::cmb_mle({bernoulli.data(),bernoulli.size()},1,1e-10,2000,NAN,-20);
+  const auto b=cppunivariate::cmb_mle({bernoulli.data(),bernoulli.size()},1,1e-10,2000,NAN,20);
+  CHECK(a.logLik==doctest::Approx(b.logLik));
+}
+
+TEST_CASE("J6: score half-spaces enclose an independently known flat quadratic maximum") {
+  const auto evaluate=[](double u,double v) {
+    return cppunivariate::concave_accept_detail::Evaluation{
+      -.5*(100*u*u+.01*v*v),-100*u,-.01*v,true};
+  };
+  const auto accurate=[](const cppunivariate::concave_accept_detail::Bound& b) {
+    return std::max({std::abs(b.lo1),std::abs(b.hi1),std::abs(b.lo2),std::abs(b.hi2)})<1e-8;
+  };
+  const auto b=cppunivariate::concave_accept_detail::certify(0,0,0,.01,0,100,
+    2,false,100,evaluate,accurate);
+  REQUIRE(b.ok);
+  CHECK(b.upper>=0);CHECK(b.upper<1e-8);
+  CHECK(b.lo1<=0);CHECK(b.hi1>=0);CHECK(b.lo2<=0);CHECK(b.hi2>=0);
+  CHECK(b.evaluations<=300);
+  CHECK_FALSE(cppunivariate::concave_accept_detail::certify(1,0,-50,.01,0,100,
+    2,false,100,evaluate,accurate).ok);
+  CHECK_FALSE(cppunivariate::concave_accept_detail::certify(0,0,0,.01,0,100,
+    2,false,1,evaluate,accurate).ok);
+}
+
+TEST_CASE("J6: boundary KKT sign holds across the enclosed scalar root") {
+  const auto evaluate=[](double u,double v) {
+    return cppunivariate::concave_accept_detail::Evaluation{
+      -.5*u*u-10*u*v-50.5*v*v-1e-6*v,-u-10*v,-10*u-101*v-1e-6,true};
+  };
+  const auto accurate=[](const cppunivariate::concave_accept_detail::Bound& b) {
+    return std::max(std::abs(b.lo1),std::abs(b.hi1))<1e-8;
+  };
+  const auto b=cppunivariate::concave_accept_detail::certify(0,0,0,1,0,0,
+    1,true,100,evaluate,accurate);
+  REQUIRE(b.ok);
+  CHECK(b.lo1<=0);CHECK(b.hi1>=0);CHECK(b.evaluations>2);
+  CHECK(b.upper>=0);CHECK(b.upper<1e-8);
+}

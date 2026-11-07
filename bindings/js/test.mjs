@@ -149,3 +149,33 @@ test('lst and std iterlim scales the certificate and preserves budget witnesses'
     assert.equal(api[family].fit(x, {}, {iterlim: 20}).status, 'Ok');
   }
 });
+
+test('J6 tnorm CMB and CMP quantitative acceptance uses common binding routes', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  const x = new Float64Array([0,0,1,1,2,2,3,4]);
+  const cases = [
+    ['tnorm', {a:-2,b:8}, [{},{mean:1},{sd:2},{mean:1,sd:2}], ['mean','sd','a','b']],
+    ['cmb', {size:8}, [{},{prob:.3},{nu:1},{prob:.3,nu:1}], ['size','prob','nu']],
+    ['cmp', {}, [{},{lambda:2},{nu:1},{lambda:2,nu:1}], ['lambda','nu']],
+  ];
+  for (const [family, design, subsets, names] of cases) for (const held of subsets) {
+    const fit = api[family].fit(x, {...design,...held});
+    assert.equal(fit.status, 'Ok');
+    const parameters = names.map(name => fit.estimates[name]);
+    const ll = api[family].d(x, parameters, {log:true}).reduce((a,b) => a+b, 0);
+    assert.ok(Math.abs(fit.logLik-ll) < 1e-9*(1+Math.abs(ll)));
+  }
+  assert.throws(() => api.tnorm.fit(x, {a:-2,b:8}, {iterlim:1}), error => error.kind==='numerical');
+  assert.throws(() => api.cmb.fit(x, {size:8}, {reltol:.1,iterlim:1}), error => error.kind==='numerical');
+  assert.throws(() => api.cmp.fit(x, {}, {reltol:.1}), error => error.kind==='numerical');
+  const geometric = new Float64Array([0,0,0,20000]);
+  assert.throws(() => api.cmp.fit(geometric, {lambda:5000/5001}, {iterlim:1}), error => {
+    assert.equal(error.kind, 'budget');
+    assert.match(error.message, /Raising iterlim/);
+    assert.equal(error.candidates.length, 1);
+    assert.ok(Number.isFinite(error.candidates[0].loglik_lower));
+    return true;
+  });
+  assert.equal(api.cmp.fit(geometric, {lambda:5000/5001}, {iterlim:10}).estimates.nu, 0);
+});

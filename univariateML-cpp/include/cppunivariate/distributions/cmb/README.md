@@ -92,10 +92,8 @@ construction:
 relations: {}
 fit:
   method: profile-search
-  certified: partial
-  note: 'cmb/README.md, Details; cmb/mle.hpp (public fitter and held overloads); cmb/test.cpp: Moment matching exploits
-    exponential-family convexity; entropy bounds and integer-tail comparisons certify accepted free-size fits
-    conditionally on the stated numerical margins. Budget exhaustion and unresolved faces stop.'
+  certified: 'partial'
+  note: 'cmb/README.md, Fixed-size coefficient acceptance; cmb/mle.hpp, cmb_mle; cmb/acceptance.hpp, certify: every fixed-size free subset has a concave tangent likelihood bound and score half-space coefficient enclosure, with exact atomic and Bernoulli reductions. Free-size searches retain their entropy and integer-tail certificates, but their internal fixed-size candidates do not all have coefficient enclosures. Budget and unresolved comparisons stop.'
 areas:
 - counts and ecology
 existence:
@@ -213,9 +211,7 @@ with probability held the unidentified dispersion is represented by one.
 
 ## Decision history
 
-### Fixed-design analysis and free-size certificates (2026-11-01 to 2026-11-02)
-
-### Free-size profile bounds (2026-11-01)
+### Free-size profile bounds
 
 The following inequalities are exact-arithmetic results, not floating-point
 roundoff certificates. Write `N` for size,
@@ -551,3 +547,32 @@ Held-probability endpoint faces use the support-width power of the held odds. Fr
 Fixed-size normalizers, nested mean matches and the historical free-size rescue now share the enumeration ledger with their caller. The rescue no longer reserves work using fixed assumptions about inner iteration counts. A normalizer table is charged by its support cells, including its fixed number of moment/tail passes. Budget witnesses retain a feasible represented probability; the bound $|\partial\ell/\partial\eta|\le nN$ covers conversion from canonical log odds to that probability, in addition to the practical rounding margin. The CMP-face kernel remains a separate dependency with its own work contract.
 
 The default iteration allowance is 2000 so the fixed-dispersion finite-size examples and seeded CMB/binomial samples retain certified fits under shared table-cell accounting.
+
+## Fixed-size coefficient acceptance
+
+For held size at least two and interior probability, the public fixed-size
+entry point checks every free subset in canonical coordinates
+$(\eta,\nu)=(\operatorname{logit}(p),\nu)$. Holding probability or dispersion
+selects the corresponding affine line. The finite sufficient-statistic table
+supplies the likelihood, score and inverse covariance used by
+[acceptance.hpp](acceptance.hpp). The resulting probability and dispersion enclosure must be
+within $10^{-8}(1+|\hat\theta|)$ of each reported free coefficient.
+The canonical half-space and likelihood calculations, including their
+practical floating-point margins, are specified in that header.
+
+A passing historical proposal is retained exactly. If its coefficient enclosure
+fails, one solve at moment tolerance $10^{-14}$ is allowed, sharing the same
+remaining table-cell ledger, and must pass its own certificate. In particular,
+a small log-binomial residual at large size need not imply accurate dispersion.
+The certificate uses at most `min(iterlim,100000)` refinements, with two or
+three tables per refinement. Every table is charged to the existing enumeration
+allowance. Exhaustion retains available witnesses as a budget stop; other failed
+certificates stop numerically. No support or dispersion cap becomes an estimate.
+
+Size zero, endpoint probabilities and Bernoulli size one use their exact law
+reductions. They also supply counterexamples to coefficient uniqueness:
+any dispersion gives the same size-one law, and at size zero both probability
+and dispersion are unidentified. The broader free-size entry points retain
+their existing entropy certificates; their internal candidates have not all
+been upgraded to these coefficient enclosures, so the family-wide flag remains
+partial.

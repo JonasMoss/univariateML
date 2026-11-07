@@ -128,3 +128,12 @@ test_that("tnorm R6 collapse includes one-sided and untruncated supports", {
   expect_error(mltnorm(rep(0,3),a=NULL,b=NULL),"bounds")
   expect_true(is.finite(logLik(mltnorm(rep(1,3),a=0,b=Inf,mean=0))))
 })
+
+test_that("tnorm acceptance stops numerical failures and retains held subsets", {
+  x <- c(0,0,1,1,2,2,3,4)
+  expect_error(mltnorm(x,a=-2,b=8,iterlim=1),class="univariateML_numerical")
+  for (args in list(list(),list(mean=1),list(sd=2),list(mean=1,sd=2))) {
+    f <- do.call(mltnorm,c(list(x,a=-2,b=8),args))
+    expect_equal(as.numeric(logLik(f)),sum(dml(x,f,log=TRUE)),tolerance=1e-10)
+  }
+})

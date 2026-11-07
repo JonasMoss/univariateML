@@ -13,8 +13,10 @@ inline FitResult fit_tnorm(cppunivariate::span x, Held mean_arg = {}, Held sd_ar
       const std::string& model="") {
     if(!(reltol>0 && std::isfinite(reltol) && iterlim>0))return out;
     if(x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return out;
-    if(!finite_stop_payload(detail,kind))return out;
-    return stop_failure(out,detail,kind,names,model);
+    // A finite tnorm witness can include infinite design bounds. The core
+    // checks its finite parent coefficients and proper interval before a tie.
+    if(!detail.comparison_tie && !finite_stop_payload(detail,kind))return out;
+    return stop_failure(out,detail,detail.comparison_tie?"tie":kind,names,model);
   };
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
@@ -60,7 +62,9 @@ inline FitResult fit_tnorm(cppunivariate::span x, Held mean_arg = {}, Held sd_ar
     case cppunivariate::TnormStatus::InvalidFixed:
       return fail("`mean` must be finite and `sd` finite and positive.");
     case cppunivariate::TnormStatus::IterationFailure:
-      return fail("Truncated normal Newton iteration did not converge; increase `iterlim`.");
+      return stop_failure(
+        fail("Truncated normal Newton iteration did not converge; increase `iterlim`."),
+        res.stop_detail,"numerical",{"mean","sd","a","b"});
     case cppunivariate::TnormStatus::InvalidInput:
     default:
       return fail("Truncated normal MLE requires finite data, positive `reltol` and positive `iterlim`.");
