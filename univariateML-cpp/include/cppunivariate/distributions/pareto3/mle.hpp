@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../burr/mle.hpp"
 #include "../llogis/mle.hpp"
 #include <vector>
@@ -8,6 +9,7 @@ enum class Pareto3Status { Ok, InvalidData, Unbounded, IterationFailure };
 struct Pareto3Result { double shape,scale,min,logLik; int iterations; Pareto3Status status; };
 
 inline Pareto3Result pareto3_mle(span x, double min, double tol, int maxit, double shape=std::numeric_limits<double>::quiet_NaN(), double scale=std::numeric_limits<double>::quiet_NaN()) {
+  maxit = static_cast<int>(solver_budget(maxit));
   std::vector<double> y(x.size());
   for (std::size_t i=0;i<x.size();++i) y[i]=(x[i]-min);
   bool valid=tol>0 && std::isfinite(tol) && maxit>0 && std::isfinite(min);

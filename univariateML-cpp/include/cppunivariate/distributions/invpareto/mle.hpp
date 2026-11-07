@@ -1,5 +1,6 @@
 // Actuar (shape, scale) maps to Lomax (kappa, lambda) on 1/x.
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../lomax/mle.hpp"
 #include <cmath>
 #include <limits>
@@ -18,6 +19,7 @@ inline StopDetail invpareto_stop_detail(StopDetail d,double jac) {
 
 struct InvParetoResult { double shape, scale; double logLik; int iterations; LomaxStatus status; StopDetail stop_detail{}; LomaxCertificateFailure certificate_failure = LomaxCertificateFailure::None; };
 inline InvParetoResult invpareto_mle(span x, double tol, int maxit, double scale0 = std::numeric_limits<double>::quiet_NaN()) {
+  maxit = static_cast<int>(solver_budget(maxit));
   for (double v : x) {
     if (!(v > 0) || !std::isfinite(v) || !std::isfinite(1/v)) {
       const double nan=std::numeric_limits<double>::quiet_NaN();
@@ -32,6 +34,7 @@ inline InvParetoResult invpareto_mle(span x, double tol, int maxit, double scale
 }
 
 inline InvParetoResult invpareto_mle(span x,double tol,int maxit,double scale0,double shape,double scale) {
+  maxit = static_cast<int>(solver_budget(maxit));
   if(std::isnan(shape) && std::isnan(scale))return invpareto_mle(x,tol,maxit,scale0);
   std::vector<double> y;double jac=0;
   for(double v:x){y.push_back(1/v);jac-=2*std::log(v);}

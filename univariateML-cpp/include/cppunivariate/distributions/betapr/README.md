@@ -38,7 +38,7 @@ r:
     shape10: Optional positive starting value for shape1 (zero selects automatic starts).
     shape20: Optional positive starting value for shape2 (zero selects automatic starts).
     scale0: Optional positive starting value for scale (zero selects automatic starts).
-    iterlim: Maximum number of iterations.
+    iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations."
 log_density: (shape1-1)*log(x/scale) - log(scale) - (shape1+shape2)*log(1+x/scale) - loggamma(shape1) - loggamma(shape2) + loggamma(shape1+shape2)
 limits:
   - {firmness: proved, model: exp, when: 'With shape1 held at one, shape2 and scale diverge at fixed ratio.', status: ExpBoundary, fixed: [shape1], numerical: true}

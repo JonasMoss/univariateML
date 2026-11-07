@@ -32,7 +32,7 @@ r:
     shape: Optional held shape; NULL estimates it.
     scale: Optional held scale; NULL estimates it.
     abstol: Absolute step tolerance in (location, log(scale)) of the underlying logistic fit.
-    iterlim: Maximum number of iterations.
+    iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
 log_density: log(shape) - log(scale) + (shape - 1)*log(x/scale) - 2*log(1 + (x/scale)**shape)
 references:
 - Kleiber, C. and Kotz, S. (2003), Statistical Size Distributions in Economics and Actuarial Sciences, Wiley.

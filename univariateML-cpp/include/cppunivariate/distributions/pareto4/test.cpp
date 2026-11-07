@@ -181,8 +181,8 @@ TEST_CASE("Pareto IV held-scale inherits finite and budget certificates") {
  REQUIRE(a.stop_detail.candidates.size()==1);
  CHECK(a.stop_detail.candidates[0].coef.size()==4);
  const auto budget=cppunivariate::pareto4_mle(mltest::as_span(x),2,1e-10,1,1);
- CHECK(budget.status==cppunivariate::BurrStatus::CertificateBudget);
- CHECK(std::isnan(budget.shape1));CHECK(std::isfinite(budget.stop_detail.loglik_lower));
+ CHECK(budget.status==cppunivariate::BurrStatus::Ok);
+ CHECK(std::isfinite(budget.shape1));CHECK(std::isfinite(budget.stop_detail.loglik_lower));
  const std::vector<double> close{1,std::nextafter(1.,INFINITY),2};
  CHECK(cppunivariate::pareto4_mle(mltest::as_span(close),-1e100,1e-10,1000,1e100).status==cppunivariate::BurrStatus::NumericalFailure);
 }

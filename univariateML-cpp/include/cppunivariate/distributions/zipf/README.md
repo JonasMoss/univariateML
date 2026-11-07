@@ -34,7 +34,7 @@ r:
     "N": "Optional integer upper endpoint; NULL estimates it as max(x)."
     s: "Optional finite nonnegative shape; NULL estimates it."
     reltol: "Relative tolerance on the Newton step, with an absolute floor of the same size."
-    iterlim: "Maximum number of Newton iterations."
+    iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
 log_density: "-s*log(x) - log(Sum(k**(-s), (k, 1, N)))"
 references:
 - Johnson, N. L., Kemp, A. W. and Kotz, S. (2005). Univariate Discrete Distributions, third edition. Wiley. doi:10.1002/0471715816.

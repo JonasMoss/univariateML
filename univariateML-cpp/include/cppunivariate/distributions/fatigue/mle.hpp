@@ -5,6 +5,7 @@
 // Rmath dnorm in standard form.
 
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../../core/precision.hpp"
 
 #include "../../core/newton.hpp"
@@ -30,6 +31,7 @@ struct FatigueResult {
 };
 
 inline FatigueResult fatigue_mle_impl(span x, double tol, int maxit, bool standardized) {
+  maxit = static_cast<int>(solver_budget(maxit));
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
   if (n == 0) return {0.0, 0.0, kNaN, 0, FatigueStatus::InvalidInput};
@@ -84,7 +86,7 @@ inline FatigueResult fatigue_mle_impl(span x, double tol, int maxit, bool standa
   if (!(beta>0.0) || !std::isfinite(beta) || !nr.converged) {
     // The profile root lies between harmonic and arithmetic means.
     double lo=x_inv_bar, hi=x_bar;
-    for (int j=0;j<std::min(maxit,100);++j) {
+    for (int j=0;j<maxit;++j) {
       const double mid=std::sqrt(lo)*std::sqrt(hi);
       CPPUNIV_EXTENDED_REAL inv=CPPUNIV_EXTENDED_LITERAL(0.0,0.0L);
       for (auto v:x) inv+=CPPUNIV_EXTENDED_LITERAL(1.0,1.0L)/(static_cast<CPPUNIV_EXTENDED_REAL>(v)+mid);
@@ -129,6 +131,7 @@ inline FatigueResult fatigue_mle_impl(span x, double tol, int maxit, bool standa
 inline FatigueResult fatigue_mle(span x, double tol, int maxit,
     double held_alpha = std::numeric_limits<double>::quiet_NaN(),
     double held_beta = std::numeric_limits<double>::quiet_NaN()) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const bool fa=!std::isnan(held_alpha), fb=!std::isnan(held_beta);
   if (!fa && !fb) return fatigue_mle_impl(x, tol, maxit, false);
   const double nan=std::numeric_limits<double>::quiet_NaN();
@@ -202,6 +205,7 @@ namespace cppunivariate {
 inline FatigueResult fatigue_mle_shifted(span x, double mu, double tol, int maxit,
     double alpha=std::numeric_limits<double>::quiet_NaN(),
     double beta=std::numeric_limits<double>::quiet_NaN()) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const double nan=std::numeric_limits<double>::quiet_NaN();
   if(!std::isfinite(mu)) return {nan,nan,nan,0,FatigueStatus::InvalidInput};
   std::vector<double> shifted(x.size());

@@ -18,7 +18,7 @@ inline FitResult fit_nbinom(cppunivariate::ispan x, Held size_arg = {}, Held pro
   const auto r=cppunivariate::nbinom_mle(x,reltol,iterlim,
       size.supplied?size.value:nan,prob.supplied?prob.value:nan);
   if(r.certificate_failure==cppunivariate::NbinomCertificateFailure::Budget)
-    return stop_failure(fail("Negative binomial MLE failed convergence: insufficient precision or certificate budget exhausted (16 * min(iterlim, 100000)); no verified maximum."),r.stop_detail,"budget",{"size","prob"});
+    return stop_failure(fail("Negative binomial MLE failed convergence: insufficient precision or certificate budget exhausted (128 * min(iterlim, 100000)); no verified maximum. Raising iterlim may resolve this stop."),r.stop_detail,"budget",{"size","prob"});
   if(r.status==cppunivariate::NbinomStatus::PrecisionFailure)
     return fail(size.supplied && r.certificate_failure==cppunivariate::NbinomCertificateFailure::None ? "Negative binomial MLE probability rounds to one: held size exceeds double precision for these data." : "Negative binomial MLE failed: insufficient precision to resolve the size estimate.");
   if(r.status==cppunivariate::NbinomStatus::Underdispersed)

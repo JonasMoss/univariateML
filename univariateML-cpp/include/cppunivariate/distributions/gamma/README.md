@@ -32,7 +32,7 @@ r:
     shape: Optional held shape; NULL estimates it.
     scale: Optional held scale; NULL estimates it.
     abstol: Absolute step tolerance in shape.
-    iterlim: Maximum number of iterations.
+    iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
 log_density: -shape*log(scale) - loggamma(shape) + (shape - 1)*log(x) - x/scale
 references:
   - "Choi, S. C, and R. Wette. \"Maximum likelihood estimation of the parameters of the gamma distribution and their bias.\" Technometrics 11.4 (1969): 683-690. doi:10.1080/00401706.1969.10490731."

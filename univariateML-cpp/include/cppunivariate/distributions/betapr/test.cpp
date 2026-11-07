@@ -133,12 +133,12 @@ TEST_CASE("betapr: P3 unfinished optimizer is a failure") {
   CHECK(cppunivariate::betapr_mle_fixed_scale(x,1,1e-8,1).status==cppunivariate::BetaPrimeStatus::BfgsFailure);
 }
 
-TEST_CASE("betapr: P3 finite failed BFGS point is not a fit") {
+TEST_CASE("betapr: P3 a capped face solve cannot produce a beta-prime fit") {
   const std::vector<double> values{.01,.2,.3,.5,2,10,50};
   const auto r=cppunivariate::betapr_mle(mltest::as_span(values),1e-10,1);
   CHECK(r.status==cppunivariate::BetaPrimeStatus::BfgsFailure);
-  CHECK(std::isfinite(r.alpha));
-  CHECK(std::isfinite(r.beta));
+  CHECK(std::isnan(r.alpha));
+  CHECK(std::isnan(r.beta));
   CHECK(std::isfinite(r.scale));
 }
 

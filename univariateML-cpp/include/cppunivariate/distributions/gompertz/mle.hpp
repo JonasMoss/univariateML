@@ -6,6 +6,7 @@
 // maximiser given b.
 
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
 #include "../../core/precision.hpp"
 
@@ -37,6 +38,7 @@ struct GompertzResult {
  StopDetail stop_detail{}; };
 
 inline GompertzResult gompertz_mle_impl(span x, double tol, int maxit, bool standardized) {
+  maxit = static_cast<int>(solver_budget(maxit));
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
   if (n == 0) return {0.0, 0.0, kNaN, 0, GompertzStatus::IterationFailure};
@@ -106,6 +108,7 @@ inline GompertzResult gompertz_mle_impl(span x, double tol, int maxit, bool stan
 }
 
 inline GompertzResult gompertz_mle(span x, double tol, int maxit) {
+  maxit = static_cast<int>(solver_budget(maxit));
   if(!x.empty() && std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];})) {
     const double nan=std::numeric_limits<double>::quiet_NaN();
     return {nan,nan,nan,0,GompertzStatus::Unbounded};
@@ -120,6 +123,7 @@ inline GompertzResult gompertz_mle(span x, double tol, int maxit) {
 }
 
 inline GompertzResult gompertz_mle(span x,double tol,int maxit,double a,double b) {
+  maxit = static_cast<int>(solver_budget(maxit));
   if(std::isnan(a) && std::isnan(b))return gompertz_mle(x,tol,maxit);
   const double nan=std::numeric_limits<double>::quiet_NaN();
   if(x.size()==0 || !(tol>0 && std::isfinite(tol)) || maxit<=0 || (!std::isnan(a) && !(a>0 && std::isfinite(a))) ||
@@ -145,8 +149,8 @@ inline GompertzResult gompertz_mle(span x,double tol,int maxit,double a,double b
     }
     const double lower=std::log(std::numeric_limits<double>::denorm_min()),upper=std::log(std::numeric_limits<double>::max());
     double lo=std::max(lower,std::min(upper,-std::log(big)-2)),hi=std::min(upper,lo+4),step=32;
-    while(ratio(lo)>=1 && lo>lower){lo=std::max(lower,lo-step);step*=2;}
-    step=32;while(ratio(hi)<=1 && hi<upper){hi=std::min(upper,hi+step);step*=2;}
+    for(std::int64_t bracket_pass=0; bracket_pass<solver_budget(maxit) && (ratio(lo)>=1 && lo>lower); ++bracket_pass){lo=std::max(lower,lo-step);step*=2;}
+    step=32;for(std::int64_t bracket_pass=0; bracket_pass<solver_budget(maxit) && (ratio(hi)<=1 && hi<upper); ++bracket_pass){hi=std::min(upper,hi+step);step*=2;}
     if(!(ratio(lo)<1 && ratio(hi)>1))return {a,nan,nan,0,GompertzStatus::IterationFailure};
     for(int j=0;j<maxit && hi-lo>1e-12;++j){const double mid=lo/2+hi/2;if(ratio(mid)<1)lo=mid;else hi=mid;++iterations;}
     b=std::exp(lo/2+hi/2);

@@ -26,7 +26,7 @@ inline FitResult fit_slash(cppunivariate::span x, Held mu_arg = {}, Held sigma_a
   const auto f=cppunivariate::slash_mle(x,reltol,iterlim,f_sigma,f_mu);
   if(f.status==cppunivariate::SlashStatus::Unbounded)return nomle("Slash likelihood is unbounded: a value has more than half the sample mass.");
   if(f.status==cppunivariate::SlashStatus::CollapseLimit)return classify(fail("Slash likelihood selects scale collapse; no finite fit is returned."),{},"nomle",{},"");
-  if(f.budget_exhausted)return classify(fail("Slash fit failed: check inputs, reltol and iterlim."),f.stop_detail,"budget",{"mu","sigma"});
+  if(f.budget_exhausted)return classify(fail("Slash fit failed: check inputs, reltol and iterlim. Raising iterlim may resolve this stop."),f.stop_detail,"budget",{"mu","sigma"});
   if(f.status!=cppunivariate::SlashStatus::Ok)return fail("Slash fit failed: check inputs, reltol and iterlim.");
   std::vector<std::string> fixed;
   if(mu.supplied)fixed.push_back("mu");

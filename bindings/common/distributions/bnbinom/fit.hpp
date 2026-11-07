@@ -31,6 +31,7 @@ inline FitResult fit_bnbinom(cppunivariate::ispan x, Held size_arg = {}, Held al
     case cppunivariate::BnbinomStatus::NumericalFailure: stop_kind="numerical";break;
     default:break;
   }
+  if(fit.stop_detail.budget_exhausted)stop_kind="budget";
   const auto stopped_fail = [&](const std::string& format, const auto&... arguments) {
     auto out=fail(binding_message(format,arguments...));
     return stop_kind.empty()?out:stop_failure(out,fit.stop_detail,stop_kind,{"size","alpha","beta"});
@@ -50,8 +51,8 @@ inline FitResult fit_bnbinom(cppunivariate::ispan x, Held size_arg = {}, Held al
       return stopped_fail("Beta negative binomial fitting requires nonempty nonnegative counts, positive finite fixed parameters and gradtol, and positive iterlim.");
     case cppunivariate::BnbinomStatus::IterationFailure:
       if(fit.stop_detail.budget_exhausted)
-        return stopped_fail("Beta negative binomial certificate budget exhausted; try increasing iterlim.");
-      return stopped_fail("Beta negative binomial search failed: unresolved stationary point or search range; try increasing iterlim.");
+        return stopped_fail("Beta negative binomial certificate budget exhausted; try increasing iterlim. Raising iterlim may resolve this stop.");
+      return stopped_fail("Beta negative binomial search failed: unresolved stationary point or search range; try increasing iterlim. Raising iterlim may resolve a delegate budget stop.");
   }
   std::vector<std::string> fixed;
   if (size.supplied) fixed.push_back("size");

@@ -1,0 +1,12 @@
+{
+  "source_sha256": "8bb4f06fa5b5f453b28b8058e0894c0d995906cdc801669f8ec399c51bab4b39",
+  "command": [
+    "bash",
+    "dev/research/evaluations/2026-11-07-budget-align-data/nbfam-save.sh"
+  ],
+  "machine": "workstation",
+  "returncode": 0,
+  "wall_seconds": 318.0865457057953,
+  "started_utc": "2026-11-06T19:46:42.095316+00:00",
+  "revision": "f8f65f9b080c394d11ca9dc178a93219fffee210"
+}

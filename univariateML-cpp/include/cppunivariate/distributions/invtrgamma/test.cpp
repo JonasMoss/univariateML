@@ -202,3 +202,20 @@ TEST_CASE("invtrgamma: structured face payloads") {
   CHECK(r.stop_detail.limit_coef[1]==doctest::Approx(endpoint));
   CHECK(r.stop_detail.limit_loglik==doctest::Approx(r.logLik));
 }
+
+TEST_CASE("invtrgamma: small certificate cap retains a feasible witness") {
+  const auto g=mltest::load_distribution_golden("invtrgamma");
+  const auto r=cppunivariate::invtrgamma_mle({g.data.data(),g.data.size()},1e-10,5);
+  CHECK(r.status==cppunivariate::InvTrGammaStatus::IterationFailure);
+  REQUIRE(r.stop_detail.budget_exhausted);
+  REQUIRE_FALSE(r.stop_detail.candidates.empty());
+  CHECK(std::isfinite(r.stop_detail.loglik_lower));
+  CHECK(r.stop_detail.loglik_upper==INFINITY);
+  const auto& c=r.stop_detail.candidates.front();
+  REQUIRE(c.coef.size()==3);
+  double ll=0;
+  for(double v:g.data)ll+=cppunivariate::distributions::dinvtrgamma(v,c.coef[0],c.coef[1],c.coef[2],true);
+  CHECK(ll>=c.loglik_lower-1e-8);
+  CHECK(ll<=c.loglik_upper+1e-8);
+  CHECK_FALSE(cppunivariate::invtrgamma_mle({g.data.data(),g.data.size()},1e-10,100).stop_detail.budget_exhausted);
+}

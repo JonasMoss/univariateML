@@ -1,0 +1,24 @@
+cd bindings/r && UMVL_DOSSIER_DIR=/home/jonas/Files/programming/univariateML.wt/budget-align/univariateML-cpp/include/cppunivariate/distributions Rscript scripts/assemble_package.R
+/home/jonas/.bashrc: line 26: /home/jonas/.cargo/env: No such file or directory
+/home/jonas/.bash_profile: line 9: /home/jonas/.cargo/env: No such file or directory
+[1] TRUE
+[1] TRUE
+[1] TRUE
+mkdir -p univariateML-r/inst/include
+/home/jonas/.bashrc: line 26: /home/jonas/.cargo/env: No such file or directory
+/home/jonas/.bash_profile: line 9: /home/jonas/.cargo/env: No such file or directory
+rsync -a --delete --prune-empty-dirs --include='*/' --include='*.hpp' --exclude='*' univariateML-cpp/include/cppunivariate univariateML-r/inst/include/
+/home/jonas/.bashrc: line 26: /home/jonas/.cargo/env: No such file or directory
+/home/jonas/.bash_profile: line 9: /home/jonas/.cargo/env: No such file or directory
+cd univariateML-r && Rscript -e "Rcpp::compileAttributes()"
+/home/jonas/.bashrc: line 26: /home/jonas/.cargo/env: No such file or directory
+/home/jonas/.bash_profile: line 9: /home/jonas/.cargo/env: No such file or directory
+cd bindings/r && UMVL_DOSSIER_DIR=/home/jonas/Files/programming/univariateML.wt/budget-align/univariateML-cpp/include/cppunivariate/distributions UMVL_PKG_R_DIR=/home/jonas/Files/programming/univariateML.wt/budget-align/univariateML-r/R Rscript scripts/codegen_metadata.R
+/home/jonas/.bashrc: line 26: /home/jonas/.cargo/env: No such file or directory
+/home/jonas/.bash_profile: line 9: /home/jonas/.cargo/env: No such file or directory
+cd bindings/r && UMVL_DOSSIER_DIR=/home/jonas/Files/programming/univariateML.wt/budget-align/univariateML-cpp/include/cppunivariate/distributions UMVL_PKG_R_DIR=/home/jonas/Files/programming/univariateML.wt/budget-align/univariateML-r/R Rscript scripts/codegen_wrappers.R
+/home/jonas/.bashrc: line 26: /home/jonas/.cargo/env: No such file or directory
+/home/jonas/.bash_profile: line 9: /home/jonas/.cargo/env: No such file or directory
+cd bindings/r && UMVL_PKG_R_DIR=/home/jonas/Files/programming/univariateML.wt/budget-align/univariateML-r/R Rscript scripts/codegen_links.R
+/home/jonas/.bashrc: line 26: /home/jonas/.cargo/env: No such file or directory
+/home/jonas/.bash_profile: line 9: /home/jonas/.cargo/env: No such file or directory

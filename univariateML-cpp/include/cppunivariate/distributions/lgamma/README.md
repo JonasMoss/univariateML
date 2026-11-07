@@ -32,7 +32,7 @@ r:
     shapelog: Optional held shapelog; NULL estimates it.
     ratelog: Optional held ratelog; NULL estimates it.
     abstol: Absolute step tolerance in shapelog.
-    iterlim: Maximum number of iterations.
+    iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
 log_density: shapelog*log(ratelog) - loggamma(shapelog) + (shapelog - 1)*log(log(x)) - (ratelog + 1)*log(x)
 limits:
   - name: unbounded likelihood

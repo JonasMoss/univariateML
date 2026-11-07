@@ -128,14 +128,13 @@ test_that("gpd evaluates its attained xi=-1 endpoint", {
   expect_equal(qml(-Inf, fit, lower.tail=FALSE, log.p=TRUE), 5)
 })
 
-test_that("GPD certificates stop with structured diagnostics", {
+test_that("GPD exhausted tail bracket is a numerical stop", {
   x <- c(.1,.3,.5,1,2,4)
   for (args in list(list(),list(sigma=1))) {
     err <- tryCatch(do.call(mlgpd,c(list(x=x,mu=0,iterlim=1),args)),error=identity)
     expect_s3_class(err,"univariateML_stop")
-    expect_equal(err$kind,"budget")
-    expect_true(is.finite(err$loglik_lower))
-    expect_gte(err$loglik_upper,err$loglik_lower)
+    expect_equal(err$kind,"numerical")
+    expect_false(inherits(err,"univariateML_budget"))
   }
   flat <- tryCatch(mlgpd(c(0,0,0),mu=0,sigma=2),error=identity)
   expect_s3_class(flat,"univariateML_stop")

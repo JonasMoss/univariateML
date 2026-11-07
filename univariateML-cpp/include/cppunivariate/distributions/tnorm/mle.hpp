@@ -15,6 +15,7 @@
 // the exponent is within kCut of its maximum. This is accurate in both tails
 // and near t2 = 0, where differences of normal CDFs cancel.
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
 
 #include "../../core/span.hpp"
@@ -193,6 +194,7 @@ inline Mass mass(double t1, double t2, double lo, double hi, bool moments = true
 // Returns false on iteration failure.
 inline bool newton_scale(double lo, double hi, double m2, double tol, int maxit,
                          double &t2, int &iterations) {
+  maxit = static_cast<int>(solver_budget(maxit));
   Mass m = mass(0, t2, lo, hi);
   if (!m.ok) return false;
   double f = t2 * m2 - m.log_mass;
@@ -204,7 +206,7 @@ inline bool newton_scale(double lo, double hi, double m2, double tol, int maxit,
     if (!std::isfinite(step)) return false;
     double alpha = 1;
     bool accepted = false;
-    for (int k = 0; k < 60; ++k, alpha /= 2) {
+    for (int k = 0; k < maxit; ++k, alpha /= 2) {
       const double next = t2 + alpha * step;
       if (!(next < 0)) continue;
       const Mass mn = mass(0, next, lo, hi);
@@ -229,6 +231,7 @@ inline bool newton_scale(double lo, double hi, double m2, double tol, int maxit,
 // Location at fixed t2 with mean(u) = 0: minimize A(t1, t2) over t1.
 inline bool newton_location(double lo, double hi, double t2, double tol, int maxit,
                             double &t1, int &iterations) {
+  maxit = static_cast<int>(solver_budget(maxit));
   Mass m = mass(t1, t2, lo, hi);
   if (!m.ok) return false;
   double f = -m.log_mass;
@@ -238,7 +241,7 @@ inline bool newton_location(double lo, double hi, double t2, double tol, int max
     if (!std::isfinite(step)) return false;
     double alpha = 1;
     bool accepted = false;
-    for (int k = 0; k < 60; ++k, alpha /= 2) {
+    for (int k = 0; k < maxit; ++k, alpha /= 2) {
       const double next = t1 + alpha * step;
       const Mass mn = mass(next, t2, lo, hi);
       if (!mn.ok) continue;
@@ -261,6 +264,7 @@ inline bool newton_location(double lo, double hi, double t2, double tol, int max
 // Maximize t1*0 + t2*1 - A(t1, t2) over t2 < 0 (standardized data).
 inline bool newton_joint(double lo, double hi, double tol, int maxit,
                          double &t1, double &t2, int &iterations) {
+  maxit = static_cast<int>(solver_budget(maxit));
   Mass m = mass(t1, t2, lo, hi);
   if (!m.ok) return false;
   double f = t2 - m.log_mass;
@@ -284,7 +288,7 @@ inline bool newton_joint(double lo, double hi, double tol, int maxit,
     const double slope = g1 * s1 + g2 * s2;
     double alpha = 1;
     bool accepted = false;
-    for (int k = 0; k < 60; ++k, alpha /= 2) {
+    for (int k = 0; k < maxit; ++k, alpha /= 2) {
       const double n1 = t1 + alpha * s1, n2 = t2 + alpha * s2;
       if (!(n2 < 0)) continue;
       const Mass mn = mass(n1, n2, lo, hi);
@@ -309,11 +313,12 @@ inline bool newton_joint(double lo, double hi, double tol, int maxit,
 }
 
 // Tilt t with mean zero of exp(t*u) on finite (lo, hi), lo < 0 < hi.
-inline bool tilt_with_zero_mean(double lo, double hi, double &t, Mass &m) {
+inline bool tilt_with_zero_mean(double lo, double hi, double &t, Mass &m,int maxit=200) {
+  maxit = static_cast<int>(solver_budget(maxit));
   double tl = -std::numeric_limits<double>::infinity();
   double th = std::numeric_limits<double>::infinity();
   t = 0;
-  for (int it = 0; it < 400; ++it) {
+  for (int it = 0; it < maxit; ++it) {
     m = mass(t, 0, lo, hi);
     if (!m.ok) return false;
     if (m.mean == 0) return true;
@@ -348,6 +353,7 @@ inline TnormResult tnorm_mle_impl(span x,
                              int maxit = 100,
                              double fixed_mean = std::numeric_limits<double>::quiet_NaN(),
                              double fixed_sd = std::numeric_limits<double>::quiet_NaN()) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const double nan = std::numeric_limits<double>::quiet_NaN();
   const double inf = std::numeric_limits<double>::infinity();
   const double log_root_2pi = 0.91893853320467274178;
@@ -505,7 +511,7 @@ inline TnormResult tnorm_mle_impl(span x,
     face = TnormStatus::TruncatedExponentialBoundary;
     double t;
     tnorm_detail::Mass m;
-    if (!tnorm_detail::tilt_with_zero_mean(lo, hi, t, m)) {
+    if (!tnorm_detail::tilt_with_zero_mean(lo, hi, t, m,maxit)) {
       res.status = TnormStatus::IterationFailure;
       return res;
     }
@@ -538,6 +544,7 @@ inline TnormResult tnorm_mle_impl(span x,
 
 namespace cppunivariate {
 inline TnormResult tnorm_mle(span x,double a=-INFINITY,double b=INFINITY,double tol=1e-12,int maxit=100,double mean=NAN,double sd=NAN) {
+  maxit = static_cast<int>(solver_budget(maxit));
   auto r=tnorm_mle_impl(x,a,b,tol,maxit,mean,sd);
   if(r.status==TnormStatus::UniformBoundary)r.stop_detail=limit_detail({r.a,r.b},r.limit_logLik,StopModel::Unif);
   if(r.status==TnormStatus::ExponentialBoundary)r.stop_detail=limit_detail({r.a,-r.limit_rate},r.limit_logLik,StopModel::TranslatedExp);

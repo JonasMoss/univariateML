@@ -1,0 +1,120 @@
+family,loop,unit,old_default_iterlim,default_iterlim,old_cap_at_default,new_cap_at_default,new_formula
+bbinom,shape profile certificate,certificate evaluation,100,500,200000,64000,128*I
+bbinom,"size range and support scans, shared ledger",enumeration cell,100,500,1000 size points; no aggregate cell cap,50000000,100000*I
+bbinom,held-shape fixed-size likelihood scans,enumeration cell,100,500,unbudgeted finite support,50000000,100000*I
+burr,Weibull bracket doubling,solver iteration,1000,1000,80,1000,I
+burr,nuisance enclosure widening,solver iteration,1000,1000,6,1000,I
+gb2,adaptive shape-box expansion,solver iteration,300,300,3,300,I
+huber,cold full-reduction Newton trajectory,solver iteration,200,200,"min(I,max(12,16000000/n))",200,I
+huber,fallback scale bracket doubling,solver iteration,200,200,1024,200,I
+dweibull,inner bracket doubling,solver iteration,200,200,65,200,I
+gpd,root-center Newton polish,solver iteration,200,200,8,200,I
+lomax,two root-center Newton polishes (each),solver iteration,100,100,8,100,I
+paralogis,certificate center Newton polish,solver iteration,100,100,8,100,I
+slash,scale-bound bracket halving,solver iteration,500,500,8,500,I
+tlambda,support rounding solves (each),solver iteration,1000,1000,8,1000,I
+burr,all-free global cover,certificate evaluation,1000,1000,4096,128000,128*I
+burr,held-scale profile points,certificate evaluation,1000,1000,1000,128000,128*I
+cauchy,held-scale location cover,certificate evaluation,100,100,6400,12800,128*I
+cmb,"fixed-size normalizers and nested mean matches, shared ledger",enumeration cell,100,2000,unbudgeted N+1 tables per solve,200000000,100000*I
+cmb,free-size monotone rescue normalizers,enumeration cell,100,2000,(I+110)*(N+1)*230 reserved cells,200000000,100000*I
+cmb,three free-size normalizer covers,enumeration cell,100,2000,10000000,200000000,100000*I
+cmb,"both natural coordinates held, size cover",enumeration cell,100,2000,4000000,200000000,100000*I
+dgamma,shape global cover,certificate evaluation,400,400,400000,51200,128*I
+foldnorm,held-location and free covers,certificate evaluation,200,200,102400,25600,128*I
+gpd,held-threshold covers,certificate evaluation,200,200,25600,25600,128*I
+kumar,free-shape score certificate,certificate evaluation,100,100,1600,12800,128*I
+lomax,global profile cover,certificate evaluation,100,100,12800,12800,128*I
+lst,all-free t cover,certificate evaluation,200,200,4096,25600,128*I
+nbinom,size score certificate,certificate evaluation,100,100,1600,12800,128*I
+paralogis,free and held-scale covers including rescue,certificate evaluation,100,100,32768,12800,128*I
+slash,held and free covers,certificate evaluation,500,500,1000000,64000,128*I
+skellam,joint-rate finite cover including tail nominations,certificate evaluation,150,150,150000,19200,128*I
+trgamma,shared free-shape segment cover,certificate evaluation,100,100,depth 40; no aggregate cap,12800,128*I
+invtrgamma,reciprocal transformed-gamma segment cover,certificate evaluation,100,100,depth 40; no aggregate cap,12800,128*I
+sn,shape cover,certificate evaluation,100,100,20000,12800,128*I
+std,all-free t cover,certificate evaluation,200,200,4096,25600,128*I
+zinb,held-probability size cover,certificate evaluation,200,200,6400,25600,128*I
+zinb,joint finite and ZIP face covers (each),certificate evaluation,200,200,12800,25600,128*I
+ztnbinom,size cover,certificate evaluation,200,200,3200,25600,128*I
+ztnbinom,recurrence support,enumeration cell,200,200,100000,20000000,100000*I
+zib,held-probability integer scan,enumeration cell,200,200,1000000 profile points,20000000,100000*I
+ztbinom,held-probability integer scan,enumeration cell,200,200,1000000 profile points,20000000,100000*I
+invburr,certified delegates: burr,certificate evaluation,1000,1000,4096 all-free; caller I held-scale,128000,128*I
+invparalogis,certified delegates: paralogis,certificate evaluation,100,100,32768,12800,128*I
+invpareto,certified delegates: lomax,certificate evaluation,100,100,12800,12800,128*I
+pareto2,certified delegates: lomax,certificate evaluation,1000,1000,128000,128000,128*I
+pareto4,certified delegates: burr,certificate evaluation,1000,1000,4096 all-free; caller I held-scale,128000,128*I
+betapr,certified delegates: lomax,certificate evaluation,1000,1000,128000,128000,128*I
+gb2,certified delegates: burr/lomax/trgamma,certificate evaluation,300,300,4096 all-free Burr; caller I held-scale Burr; 128*I Lomax; depth-40 trgamma with solver I=100,38400,128*I
+fpareto,certified delegates: gb2,certificate evaluation,1000,1000,4096 all-free Burr; caller I held-scale Burr; 128*I Lomax; depth-40 trgamma with solver I=100,128000,128*I
+zmnbinom,certified delegates: ztnbinom,certificate evaluation,200,200,3200,25600,128*I
+bnbinom,certified delegates: nbinom,certificate evaluation,600,600,3200,76800,128*I
+bbinom,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,100,500,I or fixed inner caps (source expressions retained in inventory),500,"1*min(I,100000)"
+beta,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,100,100,I or fixed inner caps (source expressions retained in inventory),100,"1*min(I,100000)"
+betapr,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,1000,1000,I or fixed inner caps (source expressions retained in inventory),1000,"1*min(I,100000)"
+bhatt,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,500,500,I or fixed inner caps (source expressions retained in inventory),500,"1*min(I,100000)"
+binom,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,100,100,I or fixed inner caps (source expressions retained in inventory),100,"1*min(I,100000)"
+bnbinom,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,600,600,I or fixed inner caps (source expressions retained in inventory),600,"1*min(I,100000)"
+burr,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,1000,1000,I or fixed inner caps (source expressions retained in inventory),1000,"1*min(I,100000)"
+cauchy,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,100,100,I or fixed inner caps (source expressions retained in inventory),100,"1*min(I,100000)"
+cmb,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,100,2000,I or fixed inner caps (source expressions retained in inventory),2000,"1*min(I,100000)"
+dgamma,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,400,400,I or fixed inner caps (source expressions retained in inventory),400,"1*min(I,100000)"
+dnorm,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,200,200,I or fixed inner caps (source expressions retained in inventory),200,"1*min(I,100000)"
+dweibull,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,200,200,I or fixed inner caps (source expressions retained in inventory),200,"1*min(I,100000)"
+emg,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,500,500,I or fixed inner caps (source expressions retained in inventory),500,"1*min(I,100000)"
+fatigue,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,100,100,I or fixed inner caps (source expressions retained in inventory),100,"1*min(I,100000)"
+foldnorm,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,200,200,I or fixed inner caps (source expressions retained in inventory),200,"1*min(I,100000)"
+fpareto,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,1000,1000,I or fixed inner caps (source expressions retained in inventory),1000,"1*min(I,100000)"
+frechet,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,100,100,I or fixed inner caps (source expressions retained in inventory),100,"1*min(I,100000)"
+gamma,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,100,100,I or fixed inner caps (source expressions retained in inventory),100,"1*min(I,100000)"
+gb2,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,300,300,I or fixed inner caps (source expressions retained in inventory),300,"1*min(I,100000)"
+ged,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,200,200,I or fixed inner caps (source expressions retained in inventory),200,"1*min(I,100000)"
+genbeta,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,300,300,I or fixed inner caps (source expressions retained in inventory),300,"1*min(I,100000)"
+gev,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,100,100,I or fixed inner caps (source expressions retained in inventory),100,"1*min(I,100000)"
+gompertz,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,100,100,I or fixed inner caps (source expressions retained in inventory),100,"1*min(I,100000)"
+gpd,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,200,200,I or fixed inner caps (source expressions retained in inventory),200,"1*min(I,100000)"
+gumbel,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,100,100,I or fixed inner caps (source expressions retained in inventory),100,"1*min(I,100000)"
+huber,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,200,200,I or fixed inner caps (source expressions retained in inventory),200,"1*min(I,100000)"
+invburr,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,1000,1000,I or fixed inner caps (source expressions retained in inventory),1000,"1*min(I,100000)"
+invgamma,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,100,100,I or fixed inner caps (source expressions retained in inventory),100,"1*min(I,100000)"
+invparalogis,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,100,100,I or fixed inner caps (source expressions retained in inventory),100,"1*min(I,100000)"
+invpareto,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,100,100,I or fixed inner caps (source expressions retained in inventory),100,"1*min(I,100000)"
+invtrgamma,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,100,100,I or fixed inner caps (source expressions retained in inventory),100,"1*min(I,100000)"
+invweibull,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,100,100,I or fixed inner caps (source expressions retained in inventory),100,"1*min(I,100000)"
+kumar,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,100,100,I or fixed inner caps (source expressions retained in inventory),100,"1*min(I,100000)"
+lgamma,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,100,100,I or fixed inner caps (source expressions retained in inventory),100,"1*min(I,100000)"
+llogis,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,100,100,I or fixed inner caps (source expressions retained in inventory),100,"1*min(I,100000)"
+logis,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,100,100,I or fixed inner caps (source expressions retained in inventory),100,"1*min(I,100000)"
+lomax,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,100,100,I or fixed inner caps (source expressions retained in inventory),100,"1*min(I,100000)"
+lst,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,200,200,I or fixed inner caps (source expressions retained in inventory),200,"1*min(I,100000)"
+naka,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,100,100,I or fixed inner caps (source expressions retained in inventory),100,"1*min(I,100000)"
+nbinom,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,100,100,I or fixed inner caps (source expressions retained in inventory),100,"1*min(I,100000)"
+nsbeta,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,1000,1000,I or fixed inner caps (source expressions retained in inventory),1000,"1*min(I,100000)"
+paralogis,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,100,100,I or fixed inner caps (source expressions retained in inventory),100,"1*min(I,100000)"
+pareto2,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,1000,1000,I or fixed inner caps (source expressions retained in inventory),1000,"1*min(I,100000)"
+pareto3,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,1000,1000,I or fixed inner caps (source expressions retained in inventory),1000,"1*min(I,100000)"
+pareto4,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,1000,1000,I or fixed inner caps (source expressions retained in inventory),1000,"1*min(I,100000)"
+pig,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,200,200,I or fixed inner caps (source expressions retained in inventory),200,"1*min(I,100000)"
+sged,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,200,200,I or fixed inner caps (source expressions retained in inventory),200,"1*min(I,100000)"
+sgomp,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,200,200,I or fixed inner caps (source expressions retained in inventory),200,"1*min(I,100000)"
+skellam,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,150,150,I or fixed inner caps (source expressions retained in inventory),150,"1*min(I,100000)"
+slash,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,500,500,I or fixed inner caps (source expressions retained in inventory),500,"1*min(I,100000)"
+sn,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,100,100,I or fixed inner caps (source expressions retained in inventory),100,"1*min(I,100000)"
+sstd,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,200,200,I or fixed inner caps (source expressions retained in inventory),200,"1*min(I,100000)"
+st,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,200,200,I or fixed inner caps (source expressions retained in inventory),200,"1*min(I,100000)"
+std,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,200,200,I or fixed inner caps (source expressions retained in inventory),200,"1*min(I,100000)"
+tlambda,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,1000,1000,I or fixed inner caps (source expressions retained in inventory),1000,"1*min(I,100000)"
+tnorm,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,100,100,I or fixed inner caps (source expressions retained in inventory),100,"1*min(I,100000)"
+trgamma,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,100,100,I or fixed inner caps (source expressions retained in inventory),100,"1*min(I,100000)"
+triang,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,100,100,I or fixed inner caps (source expressions retained in inventory),100,"1*min(I,100000)"
+weibull,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,100,100,I or fixed inner caps (source expressions retained in inventory),100,"1*min(I,100000)"
+yulesimon,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,200,200,I or fixed inner caps (source expressions retained in inventory),200,"1*min(I,100000)"
+zeta,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,200,200,I or fixed inner caps (source expressions retained in inventory),200,"1*min(I,100000)"
+zib,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,200,200,I or fixed inner caps (source expressions retained in inventory),200,"1*min(I,100000)"
+zinb,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,200,200,I or fixed inner caps (source expressions retained in inventory),200,"1*min(I,100000)"
+zipf,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,100,100,I or fixed inner caps (source expressions retained in inventory),100,"1*min(I,100000)"
+zmbinom,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,200,200,I or fixed inner caps (source expressions retained in inventory),200,"1*min(I,100000)"
+zmnbinom,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,200,200,I or fixed inner caps (source expressions retained in inventory),200,"1*min(I,100000)"
+ztbinom,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,200,200,I or fixed inner caps (source expressions retained in inventory),200,"1*min(I,100000)"
+ztnbinom,"local solves, bracketing and backtracking (details in loop inventory)",solver iteration,200,200,I or fixed inner caps (source expressions retained in inventory),200,"1*min(I,100000)"

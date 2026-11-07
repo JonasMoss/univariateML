@@ -140,7 +140,7 @@ TEST_CASE("cmb free size with fixed dispersion bounds the full tail") {
   CHECK(cppunivariate::cmb_size_fixed_nu_mle({face.data(),face.size()},1).fit.status==cppunivariate::CmbStatus::FaceUnresolved);
   const std::vector<int> tie{0,0,0,0,0,0,0,0,0,6};
   CHECK(cppunivariate::cmb_size_fixed_nu_mle({tie.data(),tie.size()},0.0030483655389936895).fit.status==cppunivariate::CmbStatus::FaceTie);
-  CHECK(cppunivariate::cmb_size_fixed_nu_mle({huge.data(),huge.size()},1).fit.status==cppunivariate::CmbStatus::IterationFailure);
+  CHECK(cppunivariate::cmb_size_fixed_nu_mle({huge.data(),huge.size()},1,1e-10,1).fit.status==cppunivariate::CmbStatus::IterationFailure);
   CHECK(cppunivariate::cmb_size_fixed_nu_mle({constant.data(),constant.size()},-1).size==3);
 }
 
@@ -237,8 +237,8 @@ TEST_CASE("cmb uniform empirical support attains the saturated likelihood") {
 
 TEST_CASE("cmb free dispersion does not return a capped size") {
   const std::vector<int> x{1,10000000};
-  CHECK(cppunivariate::cmb_size_free_nu_mle({x.data(),x.size()}).fit.status==cppunivariate::CmbStatus::IterationFailure);
-  CHECK(cppunivariate::cmb_size_free_nu_mle({x.data(),x.size()},.3).fit.status==cppunivariate::CmbStatus::IterationFailure);
+  CHECK(cppunivariate::cmb_size_free_nu_mle({x.data(),x.size()},NAN,1e-10,1).fit.status==cppunivariate::CmbStatus::IterationFailure);
+  CHECK(cppunivariate::cmb_size_free_nu_mle({x.data(),x.size()},.3,1e-10,1).fit.status==cppunivariate::CmbStatus::IterationFailure);
 }
 
 TEST_CASE("cmb fixed-size entropy dual certifies moment solves") {
@@ -395,4 +395,16 @@ TEST_CASE("cmb: held endpoint odds do not erase the minority likelihood") {
   const double eta=1000*(std::log(.9)-std::log1p(-.9));
   CHECK(std::isfinite(r.stop_detail.limit_loglik));
   CHECK(r.stop_detail.limit_loglik==doctest::Approx(-eta));
+}
+
+TEST_CASE("cmb: fixed-size normalizers share the iterlim cell allowance") {
+  const std::vector<int> x{0,1};
+  const auto stopped=cppunivariate::cmb_mle({x.data(),x.size()},100001,1e-10,1,.5,1);
+  CHECK(stopped.status==cppunivariate::CmbStatus::IterationFailure);
+  CHECK(stopped.stop_detail.budget_exhausted);
+  CHECK(stopped.stop_detail.candidates.empty());
+  CHECK(stopped.stop_detail.loglik_upper==INFINITY);
+  const auto fitted=cppunivariate::cmb_mle({x.data(),x.size()},100001,1e-10,2,.5,1);
+  CHECK(fitted.status==cppunivariate::CmbStatus::Ok);
+  CHECK(std::isfinite(fitted.logLik));
 }

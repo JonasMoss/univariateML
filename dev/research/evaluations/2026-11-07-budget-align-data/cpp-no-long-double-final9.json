@@ -1,0 +1,12 @@
+{
+  "source_sha256": "8bb4f06fa5b5f453b28b8058e0894c0d995906cdc801669f8ec399c51bab4b39",
+  "command": [
+    "just",
+    "cpp-test-no-long-double"
+  ],
+  "machine": "workstation (exit-75 fallback)",
+  "returncode": 0,
+  "wall_seconds": 1719.2653784751892,
+  "started_utc": "2026-11-06T19:52:05.583459+00:00",
+  "revision": "f8f65f9b080c394d11ca9dc178a93219fffee210"
+}

@@ -1,5 +1,6 @@
 #include "test_support.hpp"
 #include "cppunivariate/distributions/gb2/dpqr.hpp"
+#include "cppunivariate/distributions/trgamma/dpqr.hpp"
 #include <vector>
 TEST_CASE("gb2: golden and full score gate") {
   const auto g=mltest::load_distribution_golden("gb2");
@@ -10,7 +11,7 @@ TEST_CASE("gb2: golden and full score gate") {
     const double u=cppunivariate::special::beta_quantile((i+.5)/200,.4,.3,true);
     budget_data.push_back(std::sqrt(u/(1-u)));
   }
-  CHECK(cppunivariate::gb2_mle(mltest::as_span(budget_data),1e-7,1).status==cppunivariate::Gb2Status::SearchUnresolved);
+  CHECK(cppunivariate::gb2_mle(mltest::as_span(budget_data),1e-7,1).status==cppunivariate::Gb2Status::CertificateBudget);
   CHECK(r.logLik==doctest::Approx(g.logLik).epsilon(1e-9));
   CHECK(r.shape1==doctest::Approx(g.estimates.at("shape1")).epsilon(1e-5));
   CHECK(r.shape2==doctest::Approx(g.estimates.at("shape2")).epsilon(1e-5));
@@ -54,6 +55,7 @@ TEST_CASE("gb2: analytic envelope scores and Hessians for inner constraints") {
 }
 
 #include "cppunivariate/distributions/gb2/dpqr.hpp"
+#include "cppunivariate/distributions/trgamma/dpqr.hpp"
 #include "cppunivariate/distributions/rng_std.hpp"
 TEST_CASE("gb2: probability endpoints and sampler CDF") {
   CHECK(cppunivariate::distributions::qgb2(0,20,2,20,1,true,false)==0);
@@ -132,7 +134,7 @@ TEST_CASE("gb2: targeted tail finite and zero endpoint limits") {
 TEST_CASE("gb2: P3 unfinished optimizer is a failure") {
   auto g=mltest::load_distribution_golden("gb2");
   const auto x=mltest::as_span(g.data);
-  CHECK(cppunivariate::gb2_mle(x,1e-8,1).status==cppunivariate::Gb2Status::SearchUnresolved);
+  CHECK(cppunivariate::gb2_mle(x,1e-8,1).status==cppunivariate::Gb2Status::CertificateBudget);
 }
 
 TEST_CASE("gb2: beta logit inversion fails when a finite bracket cannot be represented") {
@@ -208,6 +210,26 @@ TEST_CASE("GB2 held unit beta shape and scale inherit scalar certificate") {
  REQUIRE(a.status==cppunivariate::Gb2Status::Ok);
  CHECK(a.shape1==b.shape1);CHECK(a.shape2==b.shape2);CHECK(a.logLik==b.logLik);
  const auto stop=cppunivariate::gb2_mle(mltest::as_span(x),1e-9,1,NAN,NAN,1,1);
- CHECK(stop.status==cppunivariate::Gb2Status::CertificateBudget);
+ CHECK(stop.status==cppunivariate::Gb2Status::Ok);
  CHECK(std::isfinite(stop.stop_detail.loglik_lower));
+}
+
+TEST_CASE("gb2: transformed-gamma budget keeps its face witness coordinates") {
+  const auto g=mltest::load_distribution_golden("trgamma");
+  const auto r=cppunivariate::gb2_mle(mltest::as_span(g.data),1e-8,1);
+  REQUIRE(r.status==cppunivariate::Gb2Status::CertificateBudget);
+  REQUIRE(r.stop_detail.budget_exhausted);
+  REQUIRE_FALSE(r.stop_detail.candidates.empty());
+  bool found=false;
+  for(const auto& c:r.stop_detail.candidates) {
+    if(c.model!=cppunivariate::StopModel::Trgamma)continue;
+    found=true;
+    REQUIRE(cppunivariate::valid_stop_coefficients(c.model,c.coef));
+    double ll=0;
+    for(double v:g.data)ll+=cppunivariate::distributions::dtrgamma(v,c.coef[0],c.coef[1],c.coef[2],true);
+    CHECK(ll>=c.loglik_lower-1e-8);
+    CHECK(ll<=c.loglik_upper+1e-8);
+  }
+  CHECK(found);
+  CHECK(r.stop_detail.loglik_upper==INFINITY);
 }

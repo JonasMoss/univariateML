@@ -1,6 +1,7 @@
 // Lomax profile search on the dimensionless bounded existence interval.
 
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
 #include "../../core/precision.hpp"
 
@@ -50,6 +51,7 @@ inline double profile_loglik(span x, double lambda) {
 inline LomaxResult lomax_newton_candidate(
     span x, double tol, int maxit,
     double lambda0 = std::numeric_limits<double>::quiet_NaN()) {
+  maxit = static_cast<int>(solver_budget(maxit));
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
   if (n == 0 || maxit<1) return {0.0, 0.0, kNaN, 0, LomaxStatus::InvalidStart};
@@ -116,7 +118,7 @@ inline LomaxResult lomax_newton_candidate(
     if (lambda - step <= 0.0) step = 0.5 * lambda;
     const double lp_old = lomax_detail::profile_loglik(x, lambda);
     int halvings = 0;
-    for (; halvings < 60; ++halvings) {
+    for (; halvings < maxit; ++halvings) {
       const double lp_new = lomax_detail::profile_loglik(x, lambda - step);
       if (lp_new >= lp_old - 1e-12 * (std::abs(lp_old) + 1.0)) break;
       step *= 0.5;
@@ -157,10 +159,12 @@ inline LomaxResult lomax_newton_candidate(
 namespace cppunivariate {
 inline LomaxResult lomax_mle(span x, double tol, int maxit,
     double lambda0 = std::numeric_limits<double>::quiet_NaN()) {
+  maxit = static_cast<int>(solver_budget(maxit));
   return lomax_cert_detail::fit(x,tol,maxit,lambda0);
 }
 
 inline LomaxResult lomax_mle(span x,double tol,int maxit,double lambda0,double lambda,double kappa) {
+  maxit = static_cast<int>(solver_budget(maxit));
   if(std::isnan(lambda) && std::isnan(kappa))return lomax_mle(x,tol,maxit,lambda0);
   const double nan=std::numeric_limits<double>::quiet_NaN();
   if(x.size()==0 || !(tol>0 && std::isfinite(tol)) || maxit<=0 || (!std::isnan(lambda) && !(lambda>0 && std::isfinite(lambda))) ||
@@ -174,8 +178,8 @@ inline LomaxResult lomax_mle(span x,double tol,int maxit,double lambda0,double l
     auto score=[&](double t){double g=n;for(double v:x){const double z=t+std::log(v);const double logp=-std::max(-z,0.0)-std::log1p(std::exp(-std::abs(z)));g-=std::exp(std::log1p(kappa)+logp);}return g;};
     double lo=std::max(lower,-std::log(x[0])-std::log(kappa)-2),hi=std::min(upper,lo+4),step=32;
     lo=std::min(lo,upper);
-    while(score(lo)<=0 && lo>lower){lo=std::max(lower,lo-step);step*=2;}
-    step=32;while(score(hi)>=0 && hi<upper){hi=std::min(upper,hi+step);step*=2;}
+    for(std::int64_t bracket_pass=0; bracket_pass<solver_budget(maxit) && (score(lo)<=0 && lo>lower); ++bracket_pass){lo=std::max(lower,lo-step);step*=2;}
+    step=32;for(std::int64_t bracket_pass=0; bracket_pass<solver_budget(maxit) && (score(hi)>=0 && hi<upper); ++bracket_pass){hi=std::min(upper,hi+step);step*=2;}
     if(!(score(lo)>0 && score(hi)<0))return {nan,kappa,nan,iterations,LomaxStatus::IterationFailure};
     for(int j=0;j<maxit && hi-lo>1e-12;++j){const double mid=lo/2+hi/2;if(score(mid)>0)lo=mid;else hi=mid;++iterations;}
     lambda=std::exp(lo/2+hi/2);

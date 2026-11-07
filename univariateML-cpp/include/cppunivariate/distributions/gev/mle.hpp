@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../../core/span.hpp"
 #include <algorithm>
 #include <cmath>
@@ -43,6 +44,7 @@ struct Maximum { double x, value; int iterations; bool ok; };
 template<class F>
 inline Maximum maximize(F f, double lo, double hi, double tol, int maxit,
                         bool closed=true) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const int cells=128;
   Maximum best{lo,f(lo),0,false};
   auto keep=[&](double x, double value, int it, bool ok) {
@@ -78,6 +80,7 @@ inline Maximum maximize(F f, double lo, double hi, double tol, int maxit,
 // Fixed location and/or scale, standardized by the caller.
 inline GevResult gev_held_profile(span x,double mu,double sigma,double xi,
                                   double tol,int maxit) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const bool hm=!std::isnan(mu), hs=!std::isnan(sigma);
   if(hm && hs) return {mu,sigma,xi,gev_loglik(x,mu,sigma,xi),0,GevStatus::Ok};
   if (xi == -1) {
@@ -110,6 +113,7 @@ inline GevResult gev_held_profile(span x,double mu,double sigma,double xi,
           opt.value,opt.iterations,opt.ok ? GevStatus::Ok : GevStatus::IterationFailure};
 }
 inline GevResult gev_held_mle(span x,double tol,int maxit,double xi,double mu,double sigma) {
+  maxit = static_cast<int>(solver_budget(maxit));
   GevResult bad{mu,sigma,xi,0,0,GevStatus::InvalidData};
   const bool hm=!std::isnan(mu), hs=!std::isnan(sigma);
   if(x.size()==0 || !(tol>0) || !std::isfinite(tol) || maxit<1 ||
@@ -169,6 +173,7 @@ struct GevProfile { GevResult fit; double score, curvature; };
 // mu=x0+s0*expm1(xi*g)/xi. Only u=log(s0) remains to solve.
 // Internal helper: x must be sorted, finite and nonconstant.
 inline GevProfile gev_profile(span x, double xi, double tol, int maxit) {
+  maxit = static_cast<int>(solver_budget(maxit));
   if (xi == -1) {
     const double nan=std::numeric_limits<double>::quiet_NaN();
     return {gev_held_profile(x,nan,nan,xi,tol,maxit),0,0};
@@ -222,6 +227,7 @@ inline GevResult gev_mle_impl(span x, double tol=1e-10, int maxit=100,
                          double xi=std::numeric_limits<double>::quiet_NaN(),
                          double mu=std::numeric_limits<double>::quiet_NaN(),
                          double sigma=std::numeric_limits<double>::quiet_NaN()) {
+  maxit = static_cast<int>(solver_budget(maxit));
   if(!std::isnan(mu) || !std::isnan(sigma)) return gev_held_mle(x,tol,maxit,xi,mu,sigma);
   GevResult bad{0,0,xi,0,0,GevStatus::InvalidData};
   if(x.size()<3 || !(tol>0) || !std::isfinite(tol) || maxit<1) return bad;
@@ -343,6 +349,7 @@ inline GevResult gev_mle_impl(span x, double tol=1e-10, int maxit=100,
 }
 
 inline GevResult gev_mle(span x,double tol=1e-10,int maxit=100,double xi=std::numeric_limits<double>::quiet_NaN(),double mu=std::numeric_limits<double>::quiet_NaN(),double sigma=std::numeric_limits<double>::quiet_NaN()) {
+  maxit = static_cast<int>(solver_budget(maxit));
   auto r=gev_mle_impl(x,tol,maxit,xi,mu,sigma);
   if(r.status==GevStatus::Ok && (std::isnan(xi)) && r.xi==kGevXiLower) r.restricted|=16u;
   if(r.status==GevStatus::Ok && (std::isnan(xi)) && r.xi==kGevXiUpper) r.restricted|=32u;

@@ -16,6 +16,7 @@ inline FitResult fit_dgamma(cppunivariate::span x, Held shape_arg = {}, Held rat
   if (shape.supplied && (!std::isfinite(a) || a<=0)) return fail("Invalid held `shape`.");
   if (rate.supplied && (!std::isfinite(b) || b<=0)) return fail("Invalid held `rate`.");
   const auto r=cppunivariate::dgamma_mle(x,reltol,iterlim,a,b);
+  if(r.stop_detail.budget_exhausted)return stop_failure(failure("MLE failed to converge; certificate work budget exhausted. Raising iterlim may resolve this stop."),r.stop_detail,"budget",{"shape","rate"});
   std::string stop_kind;
   switch(r.status) {
     case cppunivariate::DgammaStatus::PointMass: stop_kind="limit";break;

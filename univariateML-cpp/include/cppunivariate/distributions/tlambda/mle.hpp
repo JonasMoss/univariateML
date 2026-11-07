@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "dpqr.hpp"
 #include "../../core/span.hpp"
 #include <algorithm>
@@ -14,12 +15,13 @@ inline constexpr double kTlambdaLambdaUpper = 1.0;
 enum class TlambdaStatus { Ok, InvalidData, InvalidShape, IterationFailure, Unbounded, CollapseLimit, InvalidSupport };
 struct TlambdaResult { double mu,sigma,lambda,logLik; int iterations; TlambdaStatus status; unsigned restricted = 0; };
 namespace tlambda_detail {
-inline TlambdaResult uniform_fit(double lo,double hi,double n,double lambda) {
+inline TlambdaResult uniform_fit(double lo,double hi,double n,double lambda,int maxit) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const double mu=lo+(hi-lo)/2;
   double sigma=std::max(mu-lo,hi-mu)*lambda;
   // Outward rounding makes both observed endpoints belong to the represented
   // support even when midpoint and width cannot be represented simultaneously.
-  for(int j=0;j<8 && (!std::isfinite(distributions::dtlambda(lo,mu,sigma,lambda,true)) || !std::isfinite(distributions::dtlambda(hi,mu,sigma,lambda,true)));++j)
+  for(int j=0;j<maxit && (!std::isfinite(distributions::dtlambda(lo,mu,sigma,lambda,true)) || !std::isfinite(distributions::dtlambda(hi,mu,sigma,lambda,true)));++j)
     sigma=std::nextafter(sigma,INFINITY);
   const double ll=-n*(std::log(sigma)+std::log(2/lambda));
   return {mu,sigma,lambda,ll,0,valid(mu,sigma,lambda) && std::isfinite(ll)?TlambdaStatus::Ok:TlambdaStatus::IterationFailure};
@@ -32,6 +34,7 @@ inline double likelihood(span x,double mu,double sigma,double lambda) {
 }
 // Multistart Nelder--Mead. Shape boundaries are separately optimized faces.
 inline Point search(span x,std::array<double,3> start,bool fixed,double tol,int maxit,int& iterations,bool& converged,bool hold_mu=false,bool hold_sigma=false) {
+  maxit = static_cast<int>(solver_budget(maxit));
   std::vector<int> index; if(!hold_mu)index.push_back(0);if(!hold_sigma)index.push_back(1);if(!fixed)index.push_back(2);
   const int dim=static_cast<int>(index.size());
   std::map<std::array<double,3>,double> evaluations;
@@ -75,6 +78,7 @@ inline Point search(span x,std::array<double,3> start,bool fixed,double tol,int 
 }
 }
 inline TlambdaResult tlambda_mle_impl(span x,double tol=1e-7,int maxit=1000,double lambda=std::numeric_limits<double>::quiet_NaN()) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const double nan=std::numeric_limits<double>::quiet_NaN();
   TlambdaResult bad{nan,nan,lambda,nan,0,TlambdaStatus::InvalidData};
   const bool fixed=!std::isnan(lambda);
@@ -87,7 +91,7 @@ inline TlambdaResult tlambda_mle_impl(span x,double tol=1e-7,int maxit=1000,doub
   for(std::size_t j=1;j<y.size();++j) {run=y[j]==y[j-1]?run+1:1;if(fixed && lambda<0 ? run*std::abs(lambda)>=y.size()-run : 2*run>=y.size())return bad;}
   const double origin=y.front(),upper=y.back(),range=upper-origin,n=static_cast<double>(y.size());
   if(!(range>0) || !std::isfinite(range)) return bad;
-  if(fixed && (lambda==1 || lambda==2)) return tlambda_detail::uniform_fit(y.front(),y.back(),n,lambda);
+  if(fixed && (lambda==1 || lambda==2)) return tlambda_detail::uniform_fit(y.front(),y.back(),n,lambda,maxit);
   double previous=origin;
   for(std::size_t j=0;j<y.size();++j) {
     const double raw=y[j];y[j]=(raw-origin)/range;
@@ -120,7 +124,7 @@ inline TlambdaResult tlambda_mle_impl(span x,double tol=1e-7,int maxit=1000,doub
     }
   }
   if(!any_converged || unresolved>best+1e-8*n || result.status!=TlambdaStatus::Ok) {bad.status=TlambdaStatus::IterationFailure;return bad;}
-  if(result.lambda==1) {result=tlambda_detail::uniform_fit(origin,upper,n,1);result.iterations=iterations;return result;}
+  if(result.lambda==1) {result=tlambda_detail::uniform_fit(origin,upper,n,1,maxit);result.iterations=iterations;return result;}
   result.mu=origin+range*result.mu;result.sigma*=range;
   result.logLik=tlambda_detail::likelihood(x,result.mu,result.sigma,result.lambda);
   if(!tlambda_detail::valid(result.mu,result.sigma,result.lambda) || !std::isfinite(result.logLik)) result.status=TlambdaStatus::IterationFailure;
@@ -128,6 +132,7 @@ inline TlambdaResult tlambda_mle_impl(span x,double tol=1e-7,int maxit=1000,doub
   return result;
 }
 inline TlambdaResult tlambda_mle_impl(span x,double tol,int maxit,double lambda,double mu,double sigma) {
+  maxit = static_cast<int>(solver_budget(maxit));
   if(std::isnan(mu)&&std::isnan(sigma))return tlambda_mle_impl(x,tol,maxit,lambda);
   const double nan=std::numeric_limits<double>::quiet_NaN();
   TlambdaResult bad{nan,nan,lambda,nan,0,TlambdaStatus::InvalidData};
@@ -163,7 +168,7 @@ inline TlambdaResult tlambda_mle_impl(span x,double tol,int maxit,double lambda,
     if(fl) {
       if(best.status!=TlambdaStatus::Ok){bad.status=TlambdaStatus::InvalidSupport;return bad;}
       best.mu=fm?mu:origin+unit*best.mu;best.sigma=fs?sigma:unit*best.sigma;
-      if(!fs)for(int j=0;j<8&&!std::isfinite(tlambda_detail::likelihood(x,best.mu,best.sigma,l));++j)best.sigma=std::nextafter(best.sigma,INFINITY);
+      if(!fs)for(int j=0;j<maxit&&!std::isfinite(tlambda_detail::likelihood(x,best.mu,best.sigma,l));++j)best.sigma=std::nextafter(best.sigma,INFINITY);
       best.logLik=tlambda_detail::likelihood(x,best.mu,best.sigma,l);return best;
     }
   }
@@ -184,7 +189,7 @@ inline TlambdaResult tlambda_mle_impl(span x,double tol,int maxit,double lambda,
   }
   if(best.status!=TlambdaStatus::Ok||unresolved>value+1e-8*n){bad.status=TlambdaStatus::IterationFailure;return bad;}
   best.mu=fm?mu:origin+unit*best.mu;best.sigma=fs?sigma:unit*best.sigma;
-  if(!fs&&best.lambda==1)for(int j=0;j<8&&!std::isfinite(tlambda_detail::likelihood(x,best.mu,best.sigma,1));++j)best.sigma=std::nextafter(best.sigma,INFINITY);
+  if(!fs&&best.lambda==1)for(int j=0;j<maxit&&!std::isfinite(tlambda_detail::likelihood(x,best.mu,best.sigma,1));++j)best.sigma=std::nextafter(best.sigma,INFINITY);
   best.logLik=tlambda_detail::likelihood(x,best.mu,best.sigma,best.lambda);
   if(collapse>=best.logLik-1e-8*n){bad.status=TlambdaStatus::CollapseLimit;return bad;}
   best.iterations=iterations;return best;
@@ -192,12 +197,14 @@ inline TlambdaResult tlambda_mle_impl(span x,double tol,int maxit,double lambda,
 
 
 inline TlambdaResult tlambda_mle(span x,double tol=1e-7,int maxit=1000,double lambda=std::numeric_limits<double>::quiet_NaN()) {
+  maxit = static_cast<int>(solver_budget(maxit));
   auto r=tlambda_mle_impl(x,tol,maxit,lambda);
   if(r.status==TlambdaStatus::Ok && (std::isnan(lambda)) && r.lambda==kTlambdaLambdaLower) r.restricted|=16u;
   if(r.status==TlambdaStatus::Ok && (std::isnan(lambda)) && r.lambda==kTlambdaLambdaUpper) r.restricted|=32u;
   return r;
 }
 inline TlambdaResult tlambda_mle(span x,double tol,int maxit,double lambda,double mu,double sigma) {
+  maxit = static_cast<int>(solver_budget(maxit));
   auto r=tlambda_mle_impl(x,tol,maxit,lambda,mu,sigma);
   if(r.status==TlambdaStatus::Ok && (std::isnan(lambda) && std::isnan(mu)) && r.lambda==kTlambdaLambdaLower) r.restricted|=16u;
   if(r.status==TlambdaStatus::Ok && (std::isnan(lambda)) && r.lambda==kTlambdaLambdaUpper) r.restricted|=32u;

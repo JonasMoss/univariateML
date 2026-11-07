@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "certificate.hpp"
 #include "../ztnbinom/mle.hpp"
 
@@ -120,6 +121,7 @@ struct Face {
   double lo=NAN,hi=NAN;std::vector<RatePeak> peaks{};
 };
 inline Face zip_upper(const Data& d,int maxit) {
+  maxit = static_cast<int>(solver_budget(maxit));
   if(!std::isnan(d.pi) && d.pi>0 && d.n0>0) {
     const double u=d.S/d.n,v=d.S/d.k;
     const double B=-d.S*(d.n+d.k),C=d.S*d.S+d.S*(d.n-d.k);
@@ -194,6 +196,7 @@ inline Face zip_upper(const Data& d,int maxit) {
 // upper bound is also valid with inflation held. An unclosed tail stops.
 inline ZinbCertificateResult zinb_joint_certificate(ispan x,double fixed_pi=NAN,
     double tol=1e-10,int maxit=200,double start_size=NAN,double start_prob=NAN) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const double nan=std::numeric_limits<double>::quiet_NaN();
   ZinbCertificateResult out{{nan,nan,nan,nan,0,ZinbStatus::IterationFailure},{}};
   auto fail=[&](ZinbCertificateFailure reason) {
@@ -216,7 +219,7 @@ inline ZinbCertificateResult zinb_joint_certificate(ispan x,double fixed_pi=NAN,
   if(!face.ok)return fail(ZinbCertificateFailure::Arithmetic);
   out.stop_detail.candidates.push_back({{face.lambda,face.pi},face.lower,face.upper,StopModel::Zip});
   auto candidate=std::isnan(start_size)?
-    zinb_candidate_mle(x,std::max(1e-12,std::min(tol,1e-10)),std::min(maxit,1000),nan,nan,fixed_pi):
+    zinb_candidate_mle(x,std::max(1e-12,std::min(tol,1e-10)),maxit,nan,nan,fixed_pi):
     ZinbResult{start_size,start_prob,nan,nan,0,ZinbStatus::IterationFailure};
   if(!(candidate.size>0 && candidate.prob>0 && candidate.prob<1 && std::isfinite(candidate.size)))return fail(ZinbCertificateFailure::Arithmetic);
   double a=std::log(candidate.size),b=std::log(-candidate.size*std::log(candidate.prob));
@@ -228,9 +231,9 @@ inline ZinbCertificateResult zinb_joint_certificate(ispan x,double fixed_pi=NAN,
     return c.aa.hi<0 && c.bb.hi<0 && value>0 && std::isfinite(value)?value:0.;
   };
   double radius=.02,lambda=0;
-  for(int iter=0;iter<std::min(maxit,50);++iter) {
+  for(int iter=0;iter<maxit;++iter) {
     radius=.02;lambda=0;
-    for(int trial=0;trial<12;++trial) {
+    for(int trial=0;trial<maxit;++trial) {
       lambda=eigen_lower(d.curvature(a-radius,a+radius,b-radius,b+radius));
       if(lambda>0 && (std::hypot(point.ga,point.gb)+2*point.ge)/lambda<
          1e-8/std::max(1.,2*std::exp(b-a)))break;
@@ -243,7 +246,7 @@ inline ZinbCertificateResult zinb_joint_certificate(ispan x,double fixed_pi=NAN,
     const double da=(-point.bb*point.ga+point.ab*point.gb)/det;
     const double db=(point.ab*point.ga-point.aa*point.gb)/det;
     bool accepted=false;
-    for(int j=0;j<30;++j) {
+    for(int j=0;j<maxit;++j) {
       const double step=std::ldexp(1.,-j),aa=a+step*da,bb=b+step*db;
       const auto next=d.at(aa,bb);
       if(std::isfinite(next.ll) && next.ll>=point.ll-point.error){a=aa;b=bb;point=next;accepted=true;break;}
@@ -251,7 +254,7 @@ inline ZinbCertificateResult zinb_joint_certificate(ispan x,double fixed_pi=NAN,
     if(!accepted)return fail(ZinbCertificateFailure::Arithmetic);
   }
   radius=.02;lambda=0;
-  for(int trial=0;trial<12;++trial) {
+  for(int trial=0;trial<maxit;++trial) {
     lambda=eigen_lower(d.curvature(a-radius,a+radius,b-radius,b+radius));
     if(lambda>0 && (std::hypot(point.ga,point.gb)+2*point.ge)/lambda<
        1e-8/std::max(1.,2*std::exp(b-a)))break;
@@ -277,7 +280,7 @@ inline ZinbCertificateResult zinb_joint_certificate(ispan x,double fixed_pi=NAN,
   double th=std::max(4*t,2*d.S/d.k);
   int work=0;
   while(-d.k*th+d.S*std::log(th)+C>=lower-d.pad(d.k*th+d.S*std::abs(std::log(th))+std::abs(C))) {
-    if(++work>maxit){out.fit.iterations=work;return fail(ZinbCertificateFailure::Budget);}
+    if(++work>maxit){out.fit.iterations=work;return fail(ZinbCertificateFailure::Arithmetic);}
     if(!std::isfinite(th*2))return fail(ZinbCertificateFailure::Arithmetic);
     th*=2;
   }
@@ -302,7 +305,7 @@ inline ZinbCertificateResult zinb_joint_certificate(ispan x,double fixed_pi=NAN,
   const std::vector<double> acuts{al,a-radius,a+radius,ah},bcuts{bl,b-radius,b+radius,bh};
   for(int i=0;i<3;++i)for(int j=0;j<3;++j)if(i!=1 || j!=1)
     if(!insert(acuts[i],acuts[i+1],bcuts[j],bcuts[j+1]))return fail(ZinbCertificateFailure::Arithmetic);
-  const int budget=64*std::min(maxit,100000);
+  const std::int64_t budget=certificate_budget(maxit);
   while(!cells.empty()) {
     out.fit.iterations=work;
     if(work+2>budget){out.stop_detail.segment_loglik_upper=cells.front().upper;return fail(ZinbCertificateFailure::Budget);}
@@ -341,6 +344,7 @@ inline ZinbCertificateResult zinb_joint_certificate(ispan x,double fixed_pi=NAN,
 // Signed first-order Poisson-tail bound plus complete finite-rectangle cover.
 inline ZinbCertificateResult zinb_zip_certificate(ispan x,double fixed_pi=NAN,
     double tol=1e-10,int maxit=200) {
+  maxit = static_cast<int>(solver_budget(maxit));
   auto out=zinb_fixed_size_mle(x,1,NAN,fixed_pi,tol,maxit);
   if(out.fit.status!=ZinbStatus::Ok)return out;
   zinb_global_detail::Data d;d.n=double(x.size());d.pi=fixed_pi;
@@ -374,7 +378,7 @@ inline ZinbCertificateResult zinb_zip_certificate(ispan x,double fixed_pi=NAN,
   for(const auto& kv:d.counts)for(int j=1;j<kv.first;++j)cs.add(kv.second*std::log1p(j/rl));
   double th=std::max(4*face.lambda,2*d.S/d.k);int work=0;
   while(-d.k*th+d.S*std::log(th)+cs.value>=face.lower-d.pad(d.k*th+d.S*std::abs(std::log(th))+std::abs(cs.value))) {
-    if(++work>maxit){out.fit.iterations=work;return fail(ZinbCertificateFailure::Budget);}
+    if(++work>maxit){out.fit.iterations=work;return fail(ZinbCertificateFailure::Arithmetic);}
     if(!std::isfinite(th*2))return fail(ZinbCertificateFailure::Arithmetic);
     th*=2;
   }
@@ -402,7 +406,7 @@ inline ZinbCertificateResult zinb_zip_certificate(ispan x,double fixed_pi=NAN,
     return true;
   };
   if(!insert(std::log(rl),std::log(rh),std::log(tl),std::log(th)))return fail(ZinbCertificateFailure::Arithmetic);
-  const int budget=64*std::min(maxit,100000);
+  const std::int64_t budget=certificate_budget(maxit);
   while(!cells.empty()) {
     out.fit.iterations=work;
     if(work+2>budget){out.stop_detail.segment_loglik_upper=cells.front().upper;return fail(ZinbCertificateFailure::Budget);}
@@ -425,6 +429,7 @@ inline ZinbCertificateResult zinb_zip_certificate(ispan x,double fixed_pi=NAN,
 }
 inline ZinbCertificateResult zinb_certified_mle(ispan x,double tol=1e-10,int maxit=200,
     double fixed_size=NAN,double fixed_prob=NAN,double fixed_pi=NAN) {
+  maxit = static_cast<int>(solver_budget(maxit));
   if(!std::isnan(fixed_size))return zinb_fixed_size_mle(x,fixed_size,fixed_prob,fixed_pi,tol,maxit);
   if(!std::isnan(fixed_prob))return zinb_fixed_prob_mle(x,fixed_prob,fixed_pi,tol,maxit);
   auto out=zinb_fixed_size_mle(x,1,NAN,fixed_pi,tol,maxit);
@@ -536,6 +541,7 @@ inline ZinbCertificateResult zinb_certified_mle(ispan x,double tol=1e-10,int max
 }
 inline ZinbResult zinb_mle(ispan x,double tol,int maxit,
     double fixed_size,double fixed_prob,double fixed_pi) {
+  maxit = static_cast<int>(solver_budget(maxit));
   auto result=zinb_certified_mle(x,tol,maxit,fixed_size,fixed_prob,fixed_pi);
   result.fit.stop_detail=result.stop_detail;
   result.fit.certificate_failure=result.failure;

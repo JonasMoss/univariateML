@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../../core/discrete_stop.hpp"
 #include "../../core/span.hpp"
 #include "dpqr.hpp"
@@ -80,6 +81,7 @@ inline double evaluate(const Cells &p,double A,double B,bool hm,bool hs,double h
 }
 inline DnormResult dnorm_mle(span x,double tol=1e-9,int maxit=200,
     double mean=std::numeric_limits<double>::quiet_NaN(),double sd=std::numeric_limits<double>::quiet_NaN()) {
+  maxit = static_cast<int>(solver_budget(maxit));
   auto stopped = [&]() -> DnormResult {
   const double nan=std::numeric_limits<double>::quiet_NaN();
   DnormResult out{nan,nan,nan,0,DnormStatus::InvalidData};
@@ -114,7 +116,8 @@ inline DnormResult dnorm_mle(span x,double tol=1e-9,int maxit=200,
     if (!std::isfinite(slope) || slope>0) break;
     if (-slope <= tol*tol*p.n) { out.status=DnormStatus::Ok; break; }
     bool accepted=false;
-    for (double t=1;t>1e-12;t*=0.5) {
+    double t=1;
+    for (std::int64_t backtrack=0;backtrack<solver_budget(maxit) && t>1e-12;++backtrack,t*=0.5) {
       double nA=A,nB=B;
       if (hm) { nB+=t*step[0]; nA=held*nB; }
       else { nA+=t*step[0]; if (!hs) nB+=t*step[1]; }

@@ -22,7 +22,7 @@ inline FitResult fit_std(cppunivariate::span x, Held mean_arg = {}, Held sd_arg 
   if(sd.supplied)fixed.push_back("sd");
   if(nu.supplied)fixed.push_back("nu");
   auto res=cppunivariate::student_t_mle(x,gradtol,iterlim,held_mean,held_sd,nu.supplied?nu.value:nan);
-  if(res.status==cppunivariate::StudentTStatus::CertificateBudget)return stop_failure(fail("Student-t global certificate budget exhausted; no verified MLE."),res.stop_detail,"budget",{"mean","sd","nu"});
+  if(res.status==cppunivariate::StudentTStatus::CertificateBudget)return stop_failure(fail("Student-t global certificate budget exhausted; no verified MLE. Raising iterlim may resolve this stop."),res.stop_detail,"budget",{"mean","sd","nu"});
   if(res.status==cppunivariate::StudentTStatus::CertificateTie)return stop_failure(fail("Student-t global certificate unresolved tie or sign-uncertain seam; no verified MLE."),res.stop_detail,"tie",{"mean","sd","nu"});
   if(res.status==cppunivariate::StudentTStatus::NumericalFailure)return stop_failure(fail("Student-t global certificate numerical failure: score/root, enclosure, domain or linear solve unresolved; no verified MLE."),res.stop_detail,"numerical",{"mean","sd","nu"});
   if (res.status == cppunivariate::StudentTStatus::InvalidNu)

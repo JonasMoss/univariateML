@@ -1,0 +1,12 @@
+{
+  "source_sha256": "f025a233d4f50560c00f4192a6beb7dc6df131f79f73484e1052e9d639f2cc1f",
+  "command": [
+    "bash",
+    "dev/research/evaluations/2026-11-07-budget-align-data/stress-solver-final.sh"
+  ],
+  "machine": "workstation4",
+  "returncode": 0,
+  "wall_seconds": 1866.7011315822601,
+  "started_utc": "2026-11-07T07:56:08.545723+00:00",
+  "revision": "f8f65f9b080c394d11ca9dc178a93219fffee210"
+}

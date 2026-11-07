@@ -1,0 +1,12 @@
+{
+  "source_sha256": "84f56491008b87b4880fd21e4382daf818591641d86b78b7b2fbdae5ca9bd7b3",
+  "command": [
+    "just",
+    "gen"
+  ],
+  "machine": "workstation",
+  "returncode": 0,
+  "wall_seconds": 15.928371667861938,
+  "started_utc": "2026-11-06T19:33:34.483476+00:00",
+  "revision": "f8f65f9b080c394d11ca9dc178a93219fffee210"
+}

@@ -42,7 +42,7 @@ r:
   control:
     size: Optional fixed size; NULL estimates size.
     reltol: Tolerance for the positive-count coefficient proposer.
-    iterlim: Proposer iterations; delegated certificate budget is 16 times min(iterlim, 100000).
+    iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations."
     prob: "Optional held prob; NULL estimates it."
     p0: "Optional held p0; NULL estimates it."
 log_density: Piecewise((log(p0), Eq(x, 0)), (log(1-p0)+(loggamma(size+x)-loggamma(size)-loggamma(x+1)+size*log(prob)+x*log(1-prob)-log(1-prob**size)), True))

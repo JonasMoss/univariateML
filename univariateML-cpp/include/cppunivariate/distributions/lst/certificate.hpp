@@ -2,6 +2,7 @@
 // See README.md and dev/research/evaluations/2026-11-06-t-close-data/derivation.md;
 // no outward rounding is claimed.
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../../core/span.hpp"
 #include "../../core/stop_detail.hpp"
 #include "../../core/constants.hpp"
@@ -178,9 +179,9 @@ inline bool positive(const System& s,const System& point){
 }
 struct Profile {double v=0,m=0,t=0;I delta;bool collapse=false;};
 struct Engine {
-  Data d;double floor;int budget,maxit;int failure=0; double containedL=0,containedU=0; // 1 budget, 2 numerical, 3 tie
+  Data d;double floor;std::int64_t budget;int maxit;int failure=0; double containedL=0,containedU=0; // 1 budget, 2 numerical, 3 tie
   std::map<double,Profile> cache;
-  explicit Engine(Data input,double q,int b,int it):d(input),floor(q),budget(b),maxit(it){}
+  explicit Engine(Data input,double q,std::int64_t b,int it):d(input),floor(q),budget(b),maxit(it){}
   bool containment(double v,double& L,double& U){
     if(v>=floor&&containedL>0){L=containedL;U=containedU;return true;}
     I best(0);const double n=d.y.size();
@@ -205,11 +206,11 @@ struct Engine {
       if(!(ss>0)||!std::isfinite(next))return false;
       double nt=std::log(ss)/2;if(std::max(std::abs(nt-t),std::abs(next-m))<1e-11){m=next;t=nt;break;}m=next;t=nt;
     }
-    for(int it=0;it<std::min(40,maxit);++it){std::array<I,3> p{{m,t+.5*std::log(v),1}};auto s=enclosure(d,p,v);std::array<std::array<double,3>,3>C{};if(!inverse(s,2,C))return false;
+    for(int it=0;it<maxit;++it){std::array<I,3> p{{m,t+.5*std::log(v),1}};auto s=enclosure(d,p,v);std::array<std::array<double,3>,3>C{};if(!inverse(s,2,C))return false;
       std::array<double,2> step{};for(int i=0;i<2;++i)for(int j=0;j<2;++j)step[i]+=C[i][j]*s.g[j].mid();
       if(std::max(std::abs(step[0]),std::abs(step[1]))<1e-13)break;
       double f=value(v,m,t).mid(),a=1;bool ok=false;
-      for(int k=0;k<24;++k,a*=.5){double mm=m-a*step[0],tt=t-a*step[1];I trial=value(v,mm,tt);if(trial.valid()&&trial.mid()>=f-1e-12){m=mm;t=tt;ok=true;break;}}
+      for(int k=0;k<maxit;++k,a*=.5){double mm=m-a*step[0],tt=t-a*step[1];I trial=value(v,mm,tt);if(trial.valid()&&trial.mid()>=f-1e-12){m=mm;t=tt;ok=true;break;}}
       if(!ok)break;
     }return std::isfinite(m)&&std::isfinite(t);
   }
@@ -325,11 +326,11 @@ inline bool root_box(const Data& d,Isolation& r,int dim){
 inline bool isolate(Engine& e,const Profile& proposal,Isolation& r){
   r.stage=1;r.v0=proposal.v;r.p={{proposal.m,proposal.t+.5*std::log(proposal.v),1}};
   // Newton nominations do not certify roots. Finite bounded trials only.
-  for(int it=0;it<std::min(60,e.maxit);++it){std::array<I,3> p{{r.p[0],r.p[1],r.p[2]}};auto h=enclosure(e.d,p,r.v0);std::array<std::array<double,3>,3>C{};if(!inverse(h,3,C))return false;
+  for(int it=0;it<e.maxit;++it){std::array<I,3> p{{r.p[0],r.p[1],r.p[2]}};auto h=enclosure(e.d,p,r.v0);std::array<std::array<double,3>,3>C{};if(!inverse(h,3,C))return false;
     std::array<double,3> step{};double size=0;for(int i=0;i<3;++i){for(int j=0;j<3;++j)step[i]+=C[i][j]*h.g[j].mid();size=std::max(size,std::abs(step[i]));}
     if(size<1e-12)break;
     double a=1;bool ok=false;I old=e.value(r.v0*r.p[2],r.p[0],r.p[1]-.5*std::log(r.v0*r.p[2]));
-    for(int j=0;j<30;++j,a*=.5){auto next=r.p;for(int i=0;i<3;++i)next[i]-=a*step[i];double v=r.v0*next[2];if(!(v>e.floor&&v<1e14))continue;I val=e.value(v,next[0],next[1]-.5*std::log(v));if(val.valid()&&val.mid()>=old.mid()-1e-10){r.p=next;ok=true;break;}}
+    for(int j=0;j<e.maxit;++j,a*=.5){auto next=r.p;for(int i=0;i<3;++i)next[i]-=a*step[i];double v=r.v0*next[2];if(!(v>e.floor&&v<1e14))continue;I val=e.value(v,next[0],next[1]-.5*std::log(v));if(val.valid()&&val.mid()>=old.mid()-1e-10){r.p=next;ok=true;break;}}
     if(!ok)return false;
   }
   r.stage=2;
@@ -369,7 +370,7 @@ inline bool tail(Engine& e,double witness,Tail& tail){
   std::vector<I> x;for(I y:e.d.x){I z=(y-e.d.mean)/root(e.d.var);x.push_back(z);I z2=sq(z);fourth.add(sq(z2));gm.add(I((z*(I(1)-z2)).mag()));gt.add(I((z2*(I(1)-z2)).mag()));}
   I A=(fourth.get()-3*n)/4;double G=std::hypot(gm.get().hi,gt.get().hi);
   if(A.valid()&&(A.hi<0||witness>0)){
-    for(double r:{.01,.03,.1})for(int j=0;j<80;++j){double h=std::ldexp(1.,-j-1);if(1/h<=static_cast<double>(e.d.mass)/(n-e.d.mass))continue;Sum mm,tt,cross;bool ok=true;
+    for(double r:{.01,.03,.1})for(int j=0;j<e.maxit;++j){double h=std::ldexp(1.,-j-1);if(1/h<=static_cast<double>(e.d.mass)/(n-e.d.mass))continue;Sum mm,tt,cross;bool ok=true;
       for(I y:x){I z=(y-I(-r,r))*exp(I(-r,r)),z2=sq(z);double hi=std::max(0.,z2.hi),lo=std::max(0.,z2.lo);if(h*hi>=1){ok=false;break;}I den=I(1,std::pow(1+h*hi,2));mm.add(I(1-h*hi)/den);tt.add(I(lo)/den);cross.add(z/den);}
       if(!ok)continue;
       double off=(I(2*(1+h))*exp(I(r))*cross.get()).mag();
@@ -401,10 +402,12 @@ struct TCertificateResult {
   // Root enclosure in public ordinary-scale coordinates; no fitted sd at t2.
   std::array<double,3> coefficient_lower{{NAN,NAN,NAN}},coefficient_upper{{NAN,NAN,NAN}};
 };
-inline TCertificateResult t_certificate(span x,double floor,int budget=4096,int maxit=200,double coefficient_tol=1e-6){
+inline TCertificateResult t_certificate(span x,double floor,std::int64_t budget=-1,int maxit=200,double coefficient_tol=1e-6){
+  maxit = static_cast<int>(solver_budget(maxit));
   TCertificateResult out;
-  if(!(floor==1||floor==2)||budget<0||maxit<1||!(coefficient_tol>0)||!std::isfinite(coefficient_tol)){out.status=TCertificateStatus::InvalidData;return out;}
-  if(budget==0){out.status=TCertificateStatus::Budget;return out;}
+  if(!(floor==1||floor==2)||budget< -1||maxit<1||!(coefficient_tol>0)||!std::isfinite(coefficient_tol)){out.status=TCertificateStatus::InvalidData;return out;}
+  if(budget<0)budget=certificate_budget(maxit);
+  if(budget==0){out.status=TCertificateStatus::Budget;out.stop_detail.budget_exhausted=true;return out;}
   t_cert_detail::Data data;if(!t_cert_detail::data(x,data)){
     bool constant=!x.empty();for(double v:x)constant=constant&&std::isfinite(v)&&v==x[0];
     bool finite=x.size()>=2;for(double v:x)finite=finite&&std::isfinite(v);
@@ -447,7 +450,7 @@ inline TCertificateResult t_certificate(span x,double floor,int budget=4096,int 
     out.stop_detail.candidates.push_back({{data.center+data.unit*data.mean.mid(),data.unit*std::sqrt(data.var.mid())},data.normal.lo,data.normal.hi,StopModel::Norm});
     if(best.delta.valid()&&best.collapse)out.stop_detail.candidates.push_back({{data.atom,floor},best.delta.lo+data.normal.lo,best.delta.hi+data.normal.hi,StopModel::TCollapsePath});
     if(best.delta.valid()&&!best.collapse)out.stop_detail.candidates.push_back({{data.center+data.unit*best.m,data.unit*std::exp(best.t),best.v},best.delta.lo+data.normal.lo,best.delta.hi+data.normal.hi,StopModel::Lst});
-    out.profiles=e.cache.size();out.status=e.failure==1?TCertificateStatus::Budget:e.failure==3?TCertificateStatus::Tie:TCertificateStatus::NumericalFailure;out.stop_detail.loglik_lower=std::max(data.normal.lo,best.delta.lo+data.normal.lo);out.stop_detail.loglik_upper=INFINITY;return out;};
+    out.profiles=e.cache.size();out.status=e.failure==1?TCertificateStatus::Budget:e.failure==3?TCertificateStatus::Tie:TCertificateStatus::NumericalFailure;out.stop_detail.loglik_lower=std::max(data.normal.lo,best.delta.lo+data.normal.lo);out.stop_detail.loglik_upper=INFINITY;out.stop_detail.budget_exhausted=out.status==TCertificateStatus::Budget;return out;};
   for(int j=0;j<=32;++j){double v=floor*std::exp(std::log(1000/floor)*j/32);if(j==0)v=floor;auto p=e.at(v);if(e.failure)return finish_failure();if(p.delta.lo>best.delta.lo)best=p;}
   t_cert_detail::Isolation iso;bool finite=false,boundary=false;
   if(best.delta.lo>0){

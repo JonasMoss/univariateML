@@ -1,6 +1,7 @@
 // Held-scale scalar certificate. Mathematical proof and arithmetic contract:
 // README.md, "Held-scale certificate (TASK-116.4)".
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "certificate.hpp"
 namespace cppunivariate {
 namespace burr_cert_detail {
@@ -33,6 +34,7 @@ inline bool scale_bounds(const std::vector<Interval>& y,Interval t,
   return g.valid()&&g.lo>0&&score.valid()&&value.valid();
 }
 inline Result scale_fit(span x,double scale,double tol,int maxit,double proposal=NAN) {
+  maxit = static_cast<int>(solver_budget(maxit));
   Result out;out.scale=scale;
   if(x.size()==0||!(scale>0)||!std::isfinite(scale)||!(tol>0)||!std::isfinite(tol)||maxit<1) {
     out.outcome=Outcome::Invalid;return out;
@@ -85,7 +87,7 @@ inline Result scale_fit(span x,double scale,double tol,int maxit,double proposal
   // These evaluations propose a bracket only. The final endpoint signs
   // below certify the unique global root, independently of this search.
   for(;;) {
-    if(out.profiles>=maxit){out.outcome=Outcome::Budget;return out;}
+    if(out.profiles>=certificate_budget(maxit)){out.outcome=Outcome::Budget;return out;}
     ++out.profiles;p=scale_point(z,hi);
     if(!std::isfinite(p.score)||!std::isfinite(p.value))return out;
     if(p.score<0)break;
@@ -93,7 +95,7 @@ inline Result scale_fit(span x,double scale,double tol,int maxit,double proposal
   }
   double t=(lo+hi)/2;
   for(;;) {
-    if(out.profiles>=maxit){out.outcome=Outcome::Budget;return out;}
+    if(out.profiles>=certificate_budget(maxit)){out.outcome=Outcome::Budget;return out;}
     ++out.profiles;p=scale_point(z,t);
     if(!std::isfinite(p.score)||!std::isfinite(p.value))return out;
     if(p.score>0)lo=t;else hi=t;
@@ -111,10 +113,10 @@ inline Result scale_fit(span x,double scale,double tol,int maxit,double proposal
   Interval gl,sl,vl,gh,sh,vh,gc,sc,vc;
   bool signed_bracket=false;
   double radius=1e-10*t;
-  for(int i=0;i<12;++i,radius*=2) {
+  for(int i=0;i<maxit;++i,radius*=2) {
     lo=t-radius;hi=t+radius;
-    if(!(lo>0))return out;
-    if(!scale_bounds(box,Interval(lo),gl,sl,vl)||!scale_bounds(box,Interval(hi),gh,sh,vh))return out;
+    if(!(lo>0)){out.outcome=Outcome::Tie;return out;}
+    if(!scale_bounds(box,Interval(lo),gl,sl,vl)||!scale_bounds(box,Interval(hi),gh,sh,vh)){out.outcome=Outcome::Tie;return out;}
     if(sl.lo>0&&sh.hi<0){signed_bracket=true;break;}
   }
   if(!signed_bracket){out.outcome=Outcome::Tie;return out;}

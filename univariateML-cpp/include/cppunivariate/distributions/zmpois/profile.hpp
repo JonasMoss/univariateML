@@ -1,5 +1,6 @@
 // Zero-modified likelihood = Bernoulli zero indicator + positive conditional law.
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../../core/discrete_stop.hpp"
 #include "../ztpois/mle.hpp"
 #include "../ztgeom/mle.hpp"
@@ -11,6 +12,7 @@ enum class ModifiedStatus { Ok, InvalidInput, InvalidSize, PoissonLimit, AllZero
 struct ModifiedResult { double lambda, size, prob, p0, logLik; int iterations; ModifiedStatus status; StopDetail stop_detail{}; };
 // kind: Poisson, geometric, NB, binomial, logarithmic.
 inline ModifiedResult modified_mle(ispan x, int kind, double tol, int maxit, double fixed_size) {
+  maxit = static_cast<int>(solver_budget(maxit));
   ModifiedResult out{1,1,.5,0,0,0,ModifiedStatus::Ok};
   const bool fixed=!std::isnan(fixed_size);
   if(fixed && (!(fixed_size>=(kind==3?1:0)) || !std::isfinite(fixed_size) ||
@@ -44,7 +46,7 @@ inline ModifiedResult modified_mle(ispan x, int kind, double tol, int maxit, dou
     if(r.status==ZtbinomStatus::PoissonLimit)out.status=ModifiedStatus::PoissonLimit;
   }
   if(kind==4) {
-    const auto logarithmic=logarithmic_fit(positive);
+    const auto logarithmic=logarithmic_fit(positive,maxit);
     out.prob=logarithmic.all_ones ? 0 : logarithmic.theta;
     out.logLik=logarithmic.all_ones ? 0 : logarithmic.logLik;
   }

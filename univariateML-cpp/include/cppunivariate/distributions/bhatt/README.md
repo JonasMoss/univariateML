@@ -38,7 +38,7 @@ r:
     sigma: Optional positive held sigma; NULL estimates it.
     a: Optional nonnegative held a; NULL estimates it.
     reltol: Relative search tolerance in standardized coordinates.
-    iterlim: Maximum refinement iterations per search start.
+    iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
 log_density: log((erf((x-mu+a)/(sqrt(2)*sigma))-erf((x-mu-a)/(sqrt(2)*sigma)))/(4*a))
 limits:
   - model: unif

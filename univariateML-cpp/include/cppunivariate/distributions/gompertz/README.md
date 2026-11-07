@@ -27,7 +27,7 @@ r:
     a: Optional held a; NULL estimates it.
     b: Optional held b; NULL estimates it.
     reltol: Relative step tolerance in `b * mean(x)`, with an absolute floor of the same size in these dimensionless units.
-    iterlim: Maximum number of iterations.
+    iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
 log_density: log(a) + b*x - (a/b)*(exp(b*x)-1)
 limits:
 - name: unbounded likelihood

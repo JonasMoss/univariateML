@@ -26,7 +26,7 @@ inline FitResult fit_zinb(cppunivariate::ispan x, Held size_arg = {}, Held prob_
     return stop_failure(fail("The maximum likelihood estimator does not exist, but converges to a Poisson. Use `mlpois` instead."),fit.stop_detail,"limit",{"size","prob","pi"});
   if (fit.status != cppunivariate::ZinbStatus::Ok) {
     std::string kind="numerical",message="Zero-inflated negative binomial MLE failed: unresolved arithmetic, root enclosure or curvature; no verified maximum.";
-    if(fit.certificate_failure==cppunivariate::ZinbCertificateFailure::Budget){kind="budget";message="Zero-inflated negative binomial MLE failed: certificate budget exhausted; no verified maximum.";}
+    if(fit.certificate_failure==cppunivariate::ZinbCertificateFailure::Budget){kind="budget";message="Zero-inflated negative binomial MLE failed: certificate budget exhausted; no verified maximum. Raising iterlim may resolve this stop.";}
     if(fit.certificate_failure==cppunivariate::ZinbCertificateFailure::ComparisonTie){kind="tie";message="Zero-inflated negative binomial MLE failed: competing maxima overlap at the comparison margin; no unique verified maximum.";}
     if(fit.certificate_failure==cppunivariate::ZinbCertificateFailure::Workload)message="Zero-inflated negative binomial MLE failed: certificate workload limit (maximum count 100000, total count 2^52); no verified maximum.";
     if(fit.certificate_failure==cppunivariate::ZinbCertificateFailure::TailUnresolved){kind="unresolved";message="Zero-inflated negative binomial MLE failed: infinite-size tail is not excluded at the comparison margin; no verified maximum.";}

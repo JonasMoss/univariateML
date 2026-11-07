@@ -26,7 +26,7 @@ r:
   sampler: rpig
   control:
     reltol: "Requested log-parameter tolerance; the general shape certificate uses width max(reltol, 2e-7)."
-    iterlim: "Solver work limit; count recurrences are limited to 100000 times min(iterlim, 100000) cells."
+    iterlim: "Work limit: 1 * min(iterlim, 100000) solver iterations per solve; count recurrences limited to 100000 * min(iterlim, 100000) enumeration cells."
 log_density: "log(2*shape/pi)/2 - loggamma(x+1) + shape/mean + (x-1/2)*log(shape/(2+shape/mean**2))/2 + log(besselk(x-1/2, sqrt(shape*(2+shape/mean**2))))"
 limits:
   - model: pois

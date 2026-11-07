@@ -2,6 +2,7 @@
 // shape = 1/sigma, scale = exp(-mu + s) where s = -mean(log_x).
 
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../../core/precision.hpp"
 
 #include "../../core/span.hpp"
@@ -27,6 +28,7 @@ struct WeibullResult {
 // shape0 is an optional positive starting shape; NaN keeps the automatic start.
 inline WeibullResult weibull_mle(span x, double tol, int maxit,
                                   double shape0 = std::numeric_limits<double>::quiet_NaN()) {
+  maxit = static_cast<int>(solver_budget(maxit));
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
   if (n == 0) return {0.0, 0.0, kNaN, 0, WeibullStatus::InvalidInput};
@@ -61,6 +63,7 @@ inline WeibullResult weibull_mle(span x, double tol, int maxit,
 // Strictly decreasing fixed-scale shape score. Powers and the profiled
 // scale use log coordinates to avoid overflow on ordinary wide samples.
 inline WeibullResult weibull_mle(span x,double tol,int maxit,double shape0,double shape,double scale) {
+  maxit = static_cast<int>(solver_budget(maxit));
   if (std::isnan(shape) && std::isnan(scale)) return weibull_mle(x,tol,maxit,shape0);
   const double nan=std::numeric_limits<double>::quiet_NaN();
   if(x.size()==0 || !(tol>0 && std::isfinite(tol)) || maxit<=0 || (!std::isnan(shape) && !(shape>0 && std::isfinite(shape))) ||

@@ -49,7 +49,7 @@ r:
     prob: "Optional fixed canonical probability between zero and one inclusive; NULL estimates it."
     nu: "Optional fixed finite real dispersion; NULL estimates it. Both prob and nu may be held fixed."
     reltol: "Relative tolerance for the free-coordinate moment residuals."
-    iterlim: "Maximum number of dispersion bisection or natural-coordinate Newton iterations."
+    iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations (default iterlim 2000); per enumeration: 100000 * min(iterlim, 100000) enumeration cells."
 log_density: "nu*(loggamma(size+1)-loggamma(x+1)-loggamma(size-x+1)) + x*log(prob) + (size-x)*log(1-prob) - log(Sum((factorial(size)/(factorial(k)*factorial(size-k)))**nu * prob**k * (1-prob)**(size-k), (k, 0, size)))"
 limits:
   - model: cmp
@@ -199,7 +199,7 @@ The size is a design quantity that can be held or searched over feasible integer
 
 For size at least two, the joint MLE is attained when the mean sufficient statistic lies inside the convex polygon of the statistic points or is an endpoint vertex. Other boundary samples stop with a named limiting law. With fixed dispersion, endpoint point masses are attained. With fixed probability, dispersion can escape only toward the central mode(s) or the endpoints; constants elsewhere can have finite fits. With both coordinates fixed there is no optimization or escape. Size zero is the attained point mass at zero: unidentified free prob and nu are represented by 0.5 and one. Endpoint samples with free prob return prob zero or one, with unidentified free nu represented by one. Endpoint probability holds are accepted only for compatible observations. With size one, dispersion is unidentified: an unspecified dispersion is set to one with a warning for interior probabilities and marked fixed, leaving a Bernoulli fit.
 
-With both `prob` and `nu` held, `size = NULL` enumerates feasible integer sizes until a decreasing upper bound excludes the entire remaining tail. For positive dispersion the bound uses a normalizer term at `max(x) + 1`; for negative dispersion it uses the endpoint terms. At zero dispersion the normalizer increases with size, so the smallest feasible size is optimal. This argument does not assume size-profile unimodality. Four million cumulative normalizer terms form a work budget; exhaustion stops rather than returning a capped estimate. Endpoint probabilities and size zero are handled exactly. With `nu` held and `prob` free, the separate search below handles the CMP face and bounds the remaining sizes. The free-dispersion search and its separate adjacent-sample bound are described below.
+With both `prob` and `nu` held, `size = NULL` enumerates feasible integer sizes until a decreasing upper bound excludes the entire remaining tail. For positive dispersion the bound uses a normalizer term at `max(x) + 1`; for negative dispersion it uses the endpoint terms. At zero dispersion the normalizer increases with size, so the smallest feasible size is optimal. This argument does not assume size-profile unimodality. `100000 * min(iterlim, 100000)` cumulative normalizer terms form the enumeration-cell budget; exhaustion stops rather than returning a capped estimate. Endpoint probabilities and size zero are handled exactly. With `nu` held and `prob` free, the separate search below handles the CMP face and bounds the remaining sizes. The free-dispersion search and its separate adjacent-sample bound are described below.
 
 For a constant sample at `k`, free probability attains likelihood one at size `k`, probability one (or probability zero for `k = 0`). With probability held at an interior value, `k = 0` attains likelihood one at size zero. For `0 < k <= 5000000`, size `2*k` is supported and `nu -> +inf` concentrates its mass at `k`: the supremum is one and no finite member attains it. Held probability one attains the constant sample at size `k`; held probability zero is incompatible with positive observations. Positive constants above 5000000 with an interior held probability remain unimplemented because the central size exceeds the supported size cap.
 
@@ -442,16 +442,16 @@ covariance, cap the largest coordinate displacement at four and backtrack
 on likelihood, and require the free moment residuals to meet `reltol`. A
 singular covariance, unsuccessful line search, failed residual check or
 iteration limit stops the search. The cumulative
-work allowance is ten million charged support terms. Every fixed-size
+work allowance is `100000 * min(iterlim, 100000)` charged support cells. Every fixed-size
 Newton normalizer and final entropy table is charged by its support length;
 truncated solves are charged separately. When a Newton solve fails, a
-budget-reserved monotone dispersion bisection is attempted, with safeguarded
+monotone dispersion bisection shares the same remaining allowance, with safeguarded
 mean matching when probability is free; it must pass the same entropy check.
-The reservation covers the solver's iteration limits. These are work units,
+Nested mean matches spend the same cell ledger. These are work units,
 not a count of every arithmetic operation. Beyond the exact special cases,
-the current search stops when the observed maximum exceeds 10000, or when
-the necessary truncation would exceed 4096; it does not return a size capped
-at either threshold.
+the current search stops when the required support or cumulative table work
+exceeds its enumeration-cell budget; it does not return a size capped
+at a work threshold.
 Exhaustion, failed
 moment checks, unsupported truncations or inability to establish the
 cutoff stop without returning an estimate. Fixed-size moment solves and
@@ -512,8 +512,8 @@ this is a practical floating-point allowance, not a proved rounding bound.
 When the candidate exceeds the face, the algorithm increases the truncation
 point until the truncated profile lies strictly below the candidate, finds a
 tail cutoff, and enumerates every feasible size below it. It charges the
-support length per profile against a ten-million-term budget and stops on
-exhaustion, solver failure, or the allocation cap; truncation above 8192 also
+support length per profile against the cumulative enumeration-cell budget and stops on
+exhaustion, solver failure, or the allocation domain; exhaustion of the cumulative enumeration budget also
 stops. For negative dispersion it enumerates until the endpoint bound falls
 below the best fit. At zero dispersion the first feasible size is optimal.
 The floating-point profile solves, CMP face and comparisons are numerical;
@@ -547,3 +547,7 @@ checked numerically.
 ## Stop details
 
 Held-probability endpoint faces use the support-width power of the held odds. Free-size comparisons retain the evaluated finite witness and fitted CMP or two-point face when available; unresolved tails have infinite global upper bounds.
+
+Fixed-size normalizers, nested mean matches and the historical free-size rescue now share the enumeration ledger with their caller. The rescue no longer reserves work using fixed assumptions about inner iteration counts. A normalizer table is charged by its support cells, including its fixed number of moment/tail passes. Budget witnesses retain a feasible represented probability; the bound $|\partial\ell/\partial\eta|\le nN$ covers conversion from canonical log odds to that probability, in addition to the practical rounding margin. The CMP-face kernel remains a separate dependency with its own work contract.
+
+The default iteration allowance is 2000 so the fixed-dispersion finite-size examples and seeded CMB/binomial samples retain certified fits under shared table-cell accounting.

@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../../core/discrete_stop.hpp"
 #include "../ztpois/mle.hpp"
 namespace cppunivariate {
@@ -8,6 +9,7 @@ struct ZtbinomResult { double size, prob, logLik; int iterations; ZtbinomStatus 
 namespace ztbinom_detail {
 template <typename F>
 inline double maximize(F f, double lo, double hi, double tol, int maxit, bool &done) {
+  maxit = static_cast<int>(solver_budget(maxit));
   constexpr double ratio=.6180339887498948482;
   double c=hi-ratio*(hi-lo), d=lo+ratio*(hi-lo), fc=f(c), fd=f(d);
   for(int i=0;i<maxit && hi-lo>tol;++i) {
@@ -21,6 +23,7 @@ inline double maximize(F f, double lo, double hi, double tol, int maxit, bool &d
 inline ZtbinomResult ztbinom_mle(ispan x, double tol=1e-10, int maxit=200,
     double fixed_size=std::numeric_limits<double>::quiet_NaN(),
     double fixed_prob=std::numeric_limits<double>::quiet_NaN()) {
+  maxit = static_cast<int>(solver_budget(maxit));
   auto stopped = [&]() -> ZtbinomResult {
   const bool fixed=!std::isnan(fixed_size);
   if(fixed && (!(fixed_size>=1)||!std::isfinite(fixed_size)||fixed_size!=std::floor(fixed_size)))
@@ -45,7 +48,16 @@ inline ZtbinomResult ztbinom_mle(ispan x, double tol=1e-10, int maxit=200,
     if(fixed)return profile_held(fixed_size);
     if(p==0 || p==1)return profile_held(mx);
     auto best=profile_held(mx);
-    for(int j=0;j<1000000;++j) {
+    std::int64_t work=x.size();
+      const std::int64_t cap=enumeration_budget(maxit);
+      for(std::int64_t j=0;;++j) {
+        if(static_cast<std::int64_t>(x.size())>cap-work){
+          best.status=ZtbinomStatus::IterationFailure;
+          best.stop_detail=discrete_budget(best.stop_detail);
+          best.stop_detail.candidates.push_back({{best.size,best.prob},best.logLik,best.logLik});
+          best.stop_detail.loglik_lower=best.logLik;return best;
+        }
+        work+=x.size();
       const double size=double(mx)+j;
       auto candidate=profile_held(size);
       if(candidate.logLik>best.logLik)best=candidate;
@@ -60,7 +72,7 @@ inline ZtbinomResult ztbinom_mle(ispan x, double tol=1e-10, int maxit=200,
   }
   if(m==1) return {fixed?fixed_size:1,0,0,0,ZtbinomStatus::Ok};
   auto profile=[&](double r) {
-    const double p=zero_detail::bin_prob(r,m);
+    const double p=zero_detail::bin_prob(r,m,maxit);
     double ll=0;
     for(int v:x) ll+=zero_detail::bin_logpmf(v,r,p)-std::log(-std::expm1(r*std::log1p(-p)));
     return ZtbinomResult{r,p,ll,0,ZtbinomStatus::Ok};
@@ -83,7 +95,7 @@ inline ZtbinomResult ztbinom_mle(ispan x, double tol=1e-10, int maxit=200,
   // `maxit` and by `patience` consecutive non-improving cells, both
   // ordinary stopping rules, not a magnitude limit.
   int since_improvement=0, t=0;
-  const int grid_floor=24, patience=10, cap=std::max(grid_floor,maxit);
+  const int grid_floor=24, patience=10, cap=static_cast<int>(solver_budget(maxit));
   for(; t<=cap; ++t) {
     bool improved=false;
     const double r=mx+std::exp(t);

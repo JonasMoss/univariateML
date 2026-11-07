@@ -1,0 +1,192 @@
+[  2%] Built target no_throw_tests
+[  3%] Built target bfgs_tests
+[  5%] Built target sample_tests
+[  7%] Built target tails_tests
+[  9%] Built target cmp_tests
+[ 10%] Building CXX object tests/CMakeFiles/diagnostics_tests.dir/home/jmoss/umvl-wt/budget-align/dev/validation/diagnostics-audit.cpp.o
+[ 13%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/beta/test.cpp.o
+[ 13%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/dgamma/test.cpp.o
+[ 13%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/burr/test.cpp.o
+[ 14%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/fatigue/test.cpp.o
+In file included from /home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/sged/mle.hpp:13,
+                 from /home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/cppunivariate.hpp:62,
+                 from /home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/beta/test.cpp:2:
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/hold_search.hpp: In lambda function:
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/hold_search.hpp:290:14: error: inconsistent types 'void' and 'double' deduced for lambda return type
+  290 |       return f;
+      |              ^
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/hold_search.hpp:290:14: error: return-statement with a value, in function returning 'void' [-fpermissive]
+In file included from /home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/std/../lst/mle.hpp:4,
+                 from /home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/std/mle.hpp:17,
+                 from /home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/cppunivariate.hpp:67:
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp: In function 'bool cppunivariate::t_cert_detail::data(cppunivariate::span, Data&)':
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp:140:3: warning: this 'for' clause does not guard... [-Wmisleading-indentation]
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |   ^~~
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp:140:42: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'for'
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |                                          ^
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp: In function 'bool cppunivariate::t_cert_detail::inverse(const System&, int, std::array<std::array<double, 3>, 3>&)':
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp:161:5: warning: this 'if' clause does not guard... [-Wmisleading-indentation]
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |     ^~
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp:161:51: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'if'
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |                                                   ^~~
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/hold_search.hpp: In instantiation of 'double cppunivariate::skew_hold_detail::scan(Objective, double, double, int, int) [with Objective = fit(cppunivariate::span, bool, double, double, double, double, double, int)::<lambda(double)>]':
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/hold_search.hpp:306:33:   required from here
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/hold_search.hpp:47:55: error: invalid use of void expression
+   47 |   for(int i=0;i<=cells;++i) values.push_back(objective(lo+(hi-lo)*i/cells));
+      |                                              ~~~~~~~~~^~~~~~~~~~~~~~~~~~~~
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/hold_search.hpp:54:29: error: void value not ignored as it ought to be
+   54 |     const double f=objective(t);
+      |                    ~~~~~~~~~^~~
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/hold_search.hpp: In instantiation of 'double cppunivariate::skew_hold_detail::scan(Objective, double, double, int, int) [with Objective = fit(cppunivariate::span, bool, double, double, double, double, double, int)::<lambda(double)>]':
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/hold_search.hpp:314:28:   required from here
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/hold_search.hpp:47:55: error: invalid use of void expression
+   47 |   for(int i=0;i<=cells;++i) values.push_back(objective(lo+(hi-lo)*i/cells));
+      |                                              ~~~~~~~~~^~~~~~~~~~~~~~~~~~~~
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/hold_search.hpp:54:29: error: void value not ignored as it ought to be
+   54 |     const double f=objective(t);
+      |                    ~~~~~~~~~^~~
+gmake[2]: *** [tests/CMakeFiles/distribution_tests.dir/build.make:126: tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/beta/test.cpp.o] Error 1
+gmake[2]: *** Waiting for unfinished jobs....
+In file included from /home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/sged/mle.hpp:13,
+                 from /home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/cppunivariate.hpp:62,
+                 from /home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/burr/test.cpp:2:
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/hold_search.hpp: In lambda function:
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/hold_search.hpp:290:14: error: inconsistent types 'void' and 'double' deduced for lambda return type
+  290 |       return f;
+      |              ^
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/hold_search.hpp:290:14: error: return-statement with a value, in function returning 'void' [-fpermissive]
+In file included from /home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/std/../lst/mle.hpp:4,
+                 from /home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/std/mle.hpp:17,
+                 from /home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/cppunivariate.hpp:67:
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp: In function 'bool cppunivariate::t_cert_detail::data(cppunivariate::span, Data&)':
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp:140:3: warning: this 'for' clause does not guard... [-Wmisleading-indentation]
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |   ^~~
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp:140:42: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'for'
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |                                          ^
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp: In function 'bool cppunivariate::t_cert_detail::inverse(const System&, int, std::array<std::array<double, 3>, 3>&)':
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp:161:5: warning: this 'if' clause does not guard... [-Wmisleading-indentation]
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |     ^~
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp:161:51: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'if'
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |                                                   ^~~
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/hold_search.hpp: In instantiation of 'double cppunivariate::skew_hold_detail::scan(Objective, double, double, int, int) [with Objective = fit(cppunivariate::span, bool, double, double, double, double, double, int)::<lambda(double)>]':
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/hold_search.hpp:306:33:   required from here
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/hold_search.hpp:47:55: error: invalid use of void expression
+   47 |   for(int i=0;i<=cells;++i) values.push_back(objective(lo+(hi-lo)*i/cells));
+      |                                              ~~~~~~~~~^~~~~~~~~~~~~~~~~~~~
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/hold_search.hpp:54:29: error: void value not ignored as it ought to be
+   54 |     const double f=objective(t);
+      |                    ~~~~~~~~~^~~
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/hold_search.hpp: In instantiation of 'double cppunivariate::skew_hold_detail::scan(Objective, double, double, int, int) [with Objective = fit(cppunivariate::span, bool, double, double, double, double, double, int)::<lambda(double)>]':
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/hold_search.hpp:314:28:   required from here
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/hold_search.hpp:47:55: error: invalid use of void expression
+   47 |   for(int i=0;i<=cells;++i) values.push_back(objective(lo+(hi-lo)*i/cells));
+      |                                              ~~~~~~~~~^~~~~~~~~~~~~~~~~~~~
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/hold_search.hpp:54:29: error: void value not ignored as it ought to be
+   54 |     const double f=objective(t);
+      |                    ~~~~~~~~~^~~
+gmake[2]: *** [tests/CMakeFiles/distribution_tests.dir/build.make:206: tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/burr/test.cpp.o] Error 1
+In file included from /home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/sged/mle.hpp:13,
+                 from /home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/cppunivariate.hpp:62,
+                 from /home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/fatigue/test.cpp:2:
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/hold_search.hpp: In lambda function:
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/hold_search.hpp:290:14: error: inconsistent types 'void' and 'double' deduced for lambda return type
+  290 |       return f;
+      |              ^
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/hold_search.hpp:290:14: error: return-statement with a value, in function returning 'void' [-fpermissive]
+In file included from /home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/std/../lst/mle.hpp:4,
+                 from /home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/std/mle.hpp:17,
+                 from /home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/cppunivariate.hpp:67:
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp: In function 'bool cppunivariate::t_cert_detail::data(cppunivariate::span, Data&)':
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp:140:3: warning: this 'for' clause does not guard... [-Wmisleading-indentation]
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |   ^~~
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp:140:42: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'for'
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |                                          ^
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp: In function 'bool cppunivariate::t_cert_detail::inverse(const System&, int, std::array<std::array<double, 3>, 3>&)':
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp:161:5: warning: this 'if' clause does not guard... [-Wmisleading-indentation]
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |     ^~
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp:161:51: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'if'
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |                                                   ^~~
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/hold_search.hpp: In instantiation of 'double cppunivariate::skew_hold_detail::scan(Objective, double, double, int, int) [with Objective = fit(cppunivariate::span, bool, double, double, double, double, double, int)::<lambda(double)>]':
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/hold_search.hpp:306:33:   required from here
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/hold_search.hpp:47:55: error: invalid use of void expression
+   47 |   for(int i=0;i<=cells;++i) values.push_back(objective(lo+(hi-lo)*i/cells));
+      |                                              ~~~~~~~~~^~~~~~~~~~~~~~~~~~~~
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/hold_search.hpp:54:29: error: void value not ignored as it ought to be
+   54 |     const double f=objective(t);
+      |                    ~~~~~~~~~^~~
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/hold_search.hpp: In instantiation of 'double cppunivariate::skew_hold_detail::scan(Objective, double, double, int, int) [with Objective = fit(cppunivariate::span, bool, double, double, double, double, double, int)::<lambda(double)>]':
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/hold_search.hpp:314:28:   required from here
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/hold_search.hpp:47:55: error: invalid use of void expression
+   47 |   for(int i=0;i<=cells;++i) values.push_back(objective(lo+(hi-lo)*i/cells));
+      |                                              ~~~~~~~~~^~~~~~~~~~~~~~~~~~~~
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/hold_search.hpp:54:29: error: void value not ignored as it ought to be
+   54 |     const double f=objective(t);
+      |                    ~~~~~~~~~^~~
+gmake[2]: *** [tests/CMakeFiles/distribution_tests.dir/build.make:382: tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/fatigue/test.cpp.o] Error 1
+gmake[1]: *** [CMakeFiles/Makefile2:220: tests/CMakeFiles/distribution_tests.dir/all] Error 2
+gmake[1]: *** Waiting for unfinished jobs....
+/home/jmoss/umvl-wt/budget-align/dev/validation/diagnostics-audit.cpp: In function 'void audit::observe(const T&, std::initializer_list<Value>)':
+/home/jmoss/umvl-wt/budget-align/dev/validation/diagnostics-audit.cpp:16:2: warning: this 'if' clause does not guard... [-Wmisleading-indentation]
+   16 |  if(seen)return;seen=true;
+      |  ^~
+/home/jmoss/umvl-wt/budget-align/dev/validation/diagnostics-audit.cpp:16:17: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'if'
+   16 |  if(seen)return;seen=true;
+      |                 ^~~~
+In file included from /home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/lst/mle.hpp:4,
+                 from /home/jmoss/umvl-wt/budget-align/dev/validation/diagnostics-audit.cpp:188:
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/lst/certificate.hpp: In function 'bool cppunivariate::t_cert_detail::data(cppunivariate::span, Data&)':
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/lst/certificate.hpp:140:3: warning: this 'for' clause does not guard... [-Wmisleading-indentation]
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |   ^~~
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/lst/certificate.hpp:140:42: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'for'
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |                                          ^
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/lst/certificate.hpp: In function 'bool cppunivariate::t_cert_detail::inverse(const System&, int, std::array<std::array<double, 3>, 3>&)':
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/lst/certificate.hpp:161:5: warning: this 'if' clause does not guard... [-Wmisleading-indentation]
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |     ^~
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/lst/certificate.hpp:161:51: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'if'
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |                                                   ^~~
+In file included from /home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/sged/mle.hpp:13,
+                 from /home/jmoss/umvl-wt/budget-align/dev/validation/diagnostics-audit.cpp:238:
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/hold_search.hpp: In lambda function:
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/hold_search.hpp:290:14: error: inconsistent types 'void' and 'double' deduced for lambda return type
+  290 |       return f;
+      |              ^
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/hold_search.hpp:290:14: error: return-statement with a value, in function returning 'void' [-fpermissive]
+/home/jmoss/umvl-wt/budget-align/dev/validation/diagnostics-audit.cpp: In function 'void route_triang(cppunivariate::span, audit::Held, audit::Held, audit::Held, double, int)':
+/home/jmoss/umvl-wt/budget-align/dev/validation/diagnostics-audit.cpp:1780:16: warning: unused variable 'nan' [-Wunused-variable]
+ 1780 |   const double nan=std::numeric_limits<double>::quiet_NaN();
+      |                ^~~
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/hold_search.hpp: In instantiation of 'double cppunivariate::skew_hold_detail::scan(Objective, double, double, int, int) [with Objective = fit(cppunivariate::span, bool, double, double, double, double, double, int)::<lambda(double)>]':
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/hold_search.hpp:306:33:   required from here
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/hold_search.hpp:47:55: error: invalid use of void expression
+   47 |   for(int i=0;i<=cells;++i) values.push_back(objective(lo+(hi-lo)*i/cells));
+      |                                              ~~~~~~~~~^~~~~~~~~~~~~~~~~~~~
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/hold_search.hpp:54:29: error: void value not ignored as it ought to be
+   54 |     const double f=objective(t);
+      |                    ~~~~~~~~~^~~
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/hold_search.hpp: In instantiation of 'double cppunivariate::skew_hold_detail::scan(Objective, double, double, int, int) [with Objective = fit(cppunivariate::span, bool, double, double, double, double, double, int)::<lambda(double)>]':
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/hold_search.hpp:314:28:   required from here
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/hold_search.hpp:47:55: error: invalid use of void expression
+   47 |   for(int i=0;i<=cells;++i) values.push_back(objective(lo+(hi-lo)*i/cells));
+      |                                              ~~~~~~~~~^~~~~~~~~~~~~~~~~~~~
+/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/hold_search.hpp:54:29: error: void value not ignored as it ought to be
+   54 |     const double f=objective(t);
+      |                    ~~~~~~~~~^~~
+gmake[2]: *** [tests/CMakeFiles/diagnostics_tests.dir/build.make:79: tests/CMakeFiles/diagnostics_tests.dir/home/jmoss/umvl-wt/budget-align/dev/validation/diagnostics-audit.cpp.o] Error 1
+gmake[1]: *** [CMakeFiles/Makefile2:316: tests/CMakeFiles/diagnostics_tests.dir/all] Error 2
+gmake: *** [Makefile:101: all] Error 2

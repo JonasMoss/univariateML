@@ -1,0 +1,12 @@
+{
+  "source_sha256": "2396ca303441a6ee5681a2ec2a2977d136d00367d3e863e8b2357018ee4951f7",
+  "command": [
+    "just",
+    "test"
+  ],
+  "machine": "simbox",
+  "returncode": 1,
+  "wall_seconds": 651.4986846446991,
+  "started_utc": "2026-11-06T19:28:25.929329+00:00",
+  "revision": "f8f65f9b080c394d11ca9dc178a93219fffee210"
+}

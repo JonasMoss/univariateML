@@ -1,6 +1,7 @@
 // Actuar scale is the reciprocal of the paralogistic scale on 1/x.
 // The fixed-scale path preserves the supplied value exactly.
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../paralogis/mle.hpp"
 #include <cmath>
 #include <limits>
@@ -14,6 +15,7 @@ inline StopDetail invparalogis_stop_detail(StopDetail d,double jacobian) {
   d.segment_loglik_upper+=jacobian;return d;
 }
 inline InvParalogisResult invparalogis_mle(span x, double tol, int maxit, double shape0 = std::numeric_limits<double>::quiet_NaN()) {
+  maxit = static_cast<int>(solver_budget(maxit));
   for (double v : x) {
     if (!(v > 0) || !std::isfinite(v)) {
       const double nan=std::numeric_limits<double>::quiet_NaN();
@@ -39,6 +41,7 @@ inline InvParalogisResult invparalogis_mle(span x, double tol, int maxit, double
 inline InvParalogisResult invparalogis_mle_fixed_scale(span x, double scale,
     double tol=1e-10, int maxit=100,
     double shape0=std::numeric_limits<double>::quiet_NaN()) {
+  maxit = static_cast<int>(solver_budget(maxit));
   if (!(scale > 0) || !std::isfinite(scale)) {
     const double nan=std::numeric_limits<double>::quiet_NaN();
     return {nan,scale,nan,0,ParalogisStatus::InvalidStart};
@@ -60,6 +63,7 @@ inline InvParalogisResult invparalogis_mle_fixed_scale(span x, double scale,
 namespace cppunivariate {
 
 inline InvParalogisResult invparalogis_mle_holds(span x,double shape,double scale=std::numeric_limits<double>::quiet_NaN(), double tol=1e-9, int maxit=1000){
+  maxit = static_cast<int>(solver_budget(maxit));
  if(std::isnan(shape)) return std::isnan(scale)?invparalogis_mle(x,tol,maxit):invparalogis_mle_fixed_scale(x,scale,tol,maxit);
  std::vector<double> y;double jac=0;for(double v:x){y.push_back(1/v);jac-=2*std::log(v);}
  auto r=paralogis_mle_holds(span{y.data(),y.size()},shape,std::isnan(scale)?scale:1/scale,tol,maxit);

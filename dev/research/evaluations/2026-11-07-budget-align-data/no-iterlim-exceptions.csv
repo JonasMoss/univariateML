@@ -1,0 +1,27 @@
+family,file,line,ordinal,loop,old_expression,new_expression,unit,classification,default_iterlim,old_cap_at_default,new_cap_at_default
+ht,univariateML-cpp/include/cppunivariate/distributions/ht/cert.hpp,49,0,for,int i=0;i<100;++i,int i=0;i<100;++i,fixed (policy exception),no-iterlim exception: retained,,100,100
+ht,univariateML-cpp/include/cppunivariate/distributions/ht/cert.hpp,57,1,for,int i=0;i<100;++i,int i=0;i<100;++i,fixed (policy exception),no-iterlim exception: retained,,100,100
+ht,univariateML-cpp/include/cppunivariate/distributions/ht/cert.hpp,141,2,for,int i=0;i<100;++i,int i=0;i<100;++i,fixed (policy exception),no-iterlim exception: retained,,100,100
+ht,univariateML-cpp/include/cppunivariate/distributions/ht/cert.hpp,172,4,while,!work.empty(),!work.empty(),fixed (policy exception),no-iterlim exception: retained,,see explicit cap table/source guard,see explicit cap table/source guard
+ht,univariateML-cpp/include/cppunivariate/distributions/ht/mle.hpp,39,0,for,int i=0; i<1024 && score(lo)<=0; ++i,int i=0; i<1024 && score(lo)<=0; ++i,fixed (policy exception),no-iterlim exception: retained,,1024,1024
+ht,univariateML-cpp/include/cppunivariate/distributions/ht/mle.hpp,40,1,for,int i=0; i<1024 && score(hi)>=0; ++i,int i=0; i<1024 && score(hi)>=0; ++i,fixed (policy exception),no-iterlim exception: retained,,1024,1024
+ht,univariateML-cpp/include/cppunivariate/distributions/ht/mle.hpp,41,2,for,int i=0; i<120; ++i,int i=0; i<120; ++i,fixed (policy exception),no-iterlim exception: retained,,120,120
+ht,univariateML-cpp/include/cppunivariate/distributions/ht/mle.hpp,103,3,for,int j=0;j<180;++j,int j=0;j<180;++j,fixed (policy exception),no-iterlim exception: retained,,180,180
+ht,univariateML-cpp/include/cppunivariate/distributions/ht/mle.hpp,122,6,for,int it=0;it<70;++it,int it=0;it<70;++it,fixed (policy exception),no-iterlim exception: retained,,70,70
+ht,univariateML-cpp/include/cppunivariate/distributions/ht/mle.hpp,175,9,for,int it=0;it<70;++it,int it=0;it<70;++it,fixed (policy exception),no-iterlim exception: retained,,70,70
+hyper,univariateML-cpp/include/cppunivariate/distributions/hyper/mle.hpp,120,0,for,int j = 1; j < 1000; ++j,int j = 1; j < 1000; ++j,fixed (policy exception),no-iterlim exception: retained,,1000,1000
+hyper,univariateML-cpp/include/cppunivariate/distributions/hyper/mle.hpp,370,8,for,double nn = lo; nn < lo + 128; ++nn,double nn = lo; nn < lo + 128; ++nn,fixed (policy exception),no-iterlim exception: retained,,see explicit cap table/source guard,see explicit cap table/source guard
+lgser,univariateML-cpp/include/cppunivariate/distributions/lgser/mle.hpp,68,2,for,int i = 0; i < 200 && hi / lo - 1.0 > 4.0 * std::numeric_limits<double>::epsilon(); ++i,int i = 0; i < 200 && hi / lo - 1.0 > 4.0 * std::numeric_limits<double>::epsilon(); ++i,fixed (policy exception),no-iterlim exception: retained,,200,200
+nhyper,univariateML-cpp/include/cppunivariate/distributions/nhyper/mle.hpp,107,5,for,double nn = lo; nn <= lo + 255; ++nn,double nn = lo; nn <= lo + 255; ++nn,fixed (policy exception),no-iterlim exception: retained,,see explicit cap table/source guard,see explicit cap table/source guard
+pois,univariateML-cpp/include/cppunivariate/distributions/pois/mle.hpp,32,0,for,int j=2;j<60;++j,int j=2;j<60;++j,fixed (policy exception),no-iterlim exception: retained,,60,60
+tbinom,univariateML-cpp/include/cppunivariate/distributions/tbinom/mle.hpp,66,1,for,;j<2000000;++j,;j<2000000;++j,fixed (policy exception),no-iterlim exception: retained,,2000000,2000000
+tbinom,univariateML-cpp/include/cppunivariate/distributions/tbinom/mle.hpp,87,2,for,int j=0;j<20;++j,int j=0;j<20;++j,fixed (policy exception),no-iterlim exception: retained,,20,20
+tbinom,univariateML-cpp/include/cppunivariate/distributions/tbinom/mle.hpp,96,3,for,int j=0;j<100;++j,int j=0;j<100;++j,fixed (policy exception),no-iterlim exception: retained,,100,100
+tbinom,univariateML-cpp/include/cppunivariate/distributions/tbinom/mle.hpp,158,4,for,int j=0;j<1000000;++j,int j=0;j<1000000;++j,fixed (policy exception),no-iterlim exception: retained,,1000000,1000000
+tbinom,univariateML-cpp/include/cppunivariate/distributions/tbinom/mle.hpp,218,5,for,int j=1;j<=512;++j,int j=1;j<=512;++j,fixed (policy exception),no-iterlim exception: retained,,512,512
+tpois,univariateML-cpp/include/cppunivariate/distributions/tpois/profile.hpp,23,0,for,;j<2000000;++j,;j<2000000;++j,fixed (policy exception),no-iterlim exception: retained,,2000000,2000000
+tpois,univariateML-cpp/include/cppunivariate/distributions/tpois/profile.hpp,57,1,for,int j=0;j<12;++j,int j=0;j<12;++j,fixed (policy exception),no-iterlim exception: retained,,12,12
+tpois,univariateML-cpp/include/cppunivariate/distributions/tpois/profile.hpp,65,2,for,int j=0;j<120;++j,int j=0;j<120;++j,fixed (policy exception),no-iterlim exception: retained,,120,120
+zip,univariateML-cpp/include/cppunivariate/distributions/zip/mle.hpp,61,0,for,int i=0;i<200;++i,int i=0;i<200;++i,fixed (policy exception),no-iterlim exception: retained,,200,200
+ztpois,univariateML-cpp/include/cppunivariate/distributions/ztpois/mle.hpp,17,0,for,int i=0;i<100;++i,int i=0;i<100;++i,fixed (policy exception),no-iterlim exception: retained,,100,100
+ztpois,univariateML-cpp/include/cppunivariate/distributions/ztpois/profile.hpp,74,5,for,int i=0;i<maxit && hi-lo>tol;++i,int i=0;i<maxit && hi-lo>tol;++i,fixed (policy exception),no-iterlim exception: retained,,100,100

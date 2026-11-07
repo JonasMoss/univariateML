@@ -1,0 +1,7 @@
+0			-798.131
+1			-798.131
+2			-798.131
+3			-798.131
+large-held-nu	10.1204	budget	CMB MLE failed to converge or exhausted its normalizer work budget; a larger finite maximum is not excluded. The Conway-Maxwell-Poisson limit is available: use mlcmp with nu held fixed. Raising iterlim may resolve this stop.	3
+preflight	1	budget	CMB MLE failed to converge or exhausted its normalizer work budget. Raising iterlim may resolve this stop.	nan
+preflight	2			-138619

@@ -1,3 +1,4 @@
+import {readFileSync} from 'node:fs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import create from './index.mjs';
@@ -42,11 +43,11 @@ test('Burr and reciprocal sign-uncertain-seam structured tie', () => {
   }
 });
 
-test('Burr and reciprocal nearly-constant structured budget', () => {
+test('Burr and reciprocal nearly-constant structured tie', () => {
   const x=[0.99999900000050002,0.99999910526355817,0.99999921052662744,0.9999993157897078,0.99999942105279915,0.99999952631590161,0.99999963157901528,0.99999973684213994,0.99999984210527559,0.99999994736842246,1.0000000526315804,1.0000001578947493,1.0000002631579294,1.0000003684211205,1.0000004736843227,1.0000005789475359,1.0000006842107605,1.000000789473996,1.0000008947372423,1.0000010000005];
   for (const [family,data] of [['burr',x],['invburr',x.map(v=>1/v)]]) {
     assert.throws(() => api[family].fit(data), e => {
-      assert.equal(e.kind,'budget');assert.ok(e.candidates.length>=2);
+      assert.equal(e.kind,'tie');assert.ok(e.candidates.length>=2);
       for(const c of e.candidates)assert.ok(c.loglik_lower<=c.loglik_upper);
       return true;
     });
@@ -146,7 +147,7 @@ test('discrete stops retain fitted package and non-package faces', () => {
 });
 
 test('discrete empty preflight budget has no invented candidate', () => {
-  assert.throws(()=>api.bbinom.fit([0,1001],{alpha:1}),e=>{
+  assert.throws(()=>api.bbinom.fit([0,100001],{alpha:1},{iterlim:1}),e=>{
     assert.equal(e.kind,'budget');assert.equal(e.loglik_upper,Infinity);
     assert.equal(e.candidates.length,0);assert.deepEqual(e.estimates,{});return true;
   });
@@ -260,4 +261,31 @@ test('PIG binary closed form and small positive Poisson improvement survive WASM
   const x=[...Array(10002).fill(0),...Array(10000).fill(2),3];
   const fit=api.pig.fit(x);
   assert.equal(fit.estimates.mean,1);assert.ok(Number.isFinite(fit.estimates.shape));
+});
+
+test('Skellam tail-cover budget preserves a feasible witness', () => {
+  assert.throws(() => api.skellam.fit([-1e9,0,1e9], {}, {iterlim:1}), e => {
+    assert.equal(e.kind,'budget');assert.equal(e.candidates.length,1);
+    assert.ok(Number.isFinite(e.loglik_lower));assert.equal(e.loglik_upper,Infinity);
+    assert.match(e.message,/Raising iterlim may resolve/);return true;
+  });
+});
+
+test('CMB fixed-size normalizers spend and raise the cell budget', () => {
+  const held={size:100001,prob:.5,nu:1};
+  assert.throws(() => api.cmb.fit([0,1],held,{iterlim:1}), e => {
+    assert.equal(e.kind,'budget');assert.equal(e.candidates.length,0);
+    assert.equal(e.loglik_upper,Infinity);return true;
+  });
+  assert.ok(Number.isFinite(api.cmb.fit([0,1],held,{iterlim:2}).logLik));
+});
+
+test('GB2 delegated budget keeps transformed-gamma witness names', () => {
+  const g=JSON.parse(readFileSync(new URL('../../univariateML-cpp/include/cppunivariate/distributions/trgamma/golden.json',import.meta.url),'utf8'));
+  assert.throws(()=>api.gb2.fit(g.data,{}, {iterlim:1}),e=>{
+    assert.equal(e.kind,'budget');
+    const c=e.candidates.find(c=>c.model==='trgamma');assert.ok(c);
+    assert.deepEqual(Object.keys(c).filter(k=>!['model','loglik_lower','loglik_upper'].includes(k)),['shape1','shape2','scale']);
+    assert.ok(Number.isFinite(c.loglik_lower));assert.equal(e.loglik_upper,Infinity);return true;
+  });
 });

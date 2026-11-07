@@ -27,7 +27,7 @@ r:
     mu: Optional held mu; NULL estimates it.
     sigma: Optional positive held sigma; NULL estimates it.
     reltol: Relative search tolerance in standardized coordinates.
-    iterlim: Maximum refinement iterations per search start.
+    iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations (default iterlim 500); per certificate: 128 * min(iterlim, 100000) certificate evaluations."
 log_density: -log(sigma)-log(2*pi)/2+log(1-exp(-((x-mu)/sigma)**2/2))-2*log(Abs((x-mu)/sigma))
 limits:
   - name: point mass collapse
@@ -147,7 +147,7 @@ global gap is at most $10^{-9}(1+|\ell_*|)$, conditional on the computed
 likelihood, score and bound comparisons. The magnitude uses the likelihood
 in the original coordinates. This margin is a practical floating-point
 allowance, not a proved error bound or outward-rounded enclosure. Subdivision
-has a budget of one million intervals; exhausted budget, a nonfinite required
+has a budget of `128 * min(iterlim, 100000)` intervals; exhausted budget, a nonfinite required
 quantity, or a midpoint that cannot be represented returns `IterationFailure`
 rather than an unchecked partial maximum. The same status is used when a
 required golden-section refinement exhausts its iteration budget.
@@ -215,9 +215,9 @@ coordinates, capped at $10^{-9}n$ when a half-mass boundary is present,
 so that a change of units does not enlarge the collapse decision tolerance.
 The final comparison applies the stated $10^{-8}n$ collapse preference.
 These are exact-arithmetic bounds conditional on the computed comparisons;
-the margin is not a proof of floating-point rounding error. An exhausted
-million-interval budget, nonfinite required value, or unrepresentable
-midpoint reports `IterationFailure`, never an unchecked estimate.
+the margin is not a proof of floating-point rounding error. Exhausting `128 * min(iterlim, 100000)` intervals reports a budget stop. A
+nonfinite required value or unrepresentable midpoint reports
+`IterationFailure`; neither path returns an unchecked estimate.
 
 | Question | Evidence |
 |---|---|

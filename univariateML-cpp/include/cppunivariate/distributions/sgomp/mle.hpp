@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "dpqr.hpp"
 #include "../../core/span.hpp"
 #include <vector>
@@ -45,6 +46,7 @@ inline double face_score(span x,double b) {
 }
 // Strict concavity in eta gives its unique constrained maximizer.
 inline Candidate profile(span x,double b,double held_eta,int maxit,double tol) {
+  maxit = static_cast<int>(solver_budget(maxit));
   int iterations=0; bool converged=true;
   double lsv=-inf();
   std::vector<double> loga;
@@ -84,6 +86,7 @@ inline Candidate profile(span x,double b,double held_eta,int maxit,double tol) {
   return {b,k,ll,iterations,converged};
 }
 inline Candidate refine(span x,double lo,double hi,double eta,int maxit,double tol) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const double ratio=.6180339887498948482;
   double a=hi-ratio*(hi-lo),b=lo+ratio*(hi-lo);
   auto fa=profile(x,std::exp(a),eta,maxit,tol),fb=profile(x,std::exp(b),eta,maxit,tol);
@@ -99,6 +102,7 @@ inline Candidate refine(span x,double lo,double hi,double eta,int maxit,double t
 }
 inline SgompResult sgomp_mle(span x,double tol=1e-10,int maxit=200,
                             double b=sgomp_detail::nan(),double eta=sgomp_detail::nan()) {
+  maxit = static_cast<int>(solver_budget(maxit));
   SgompResult out{b,eta,sgomp_detail::nan(),0,SgompStatus::InvalidInput};
   if (x.empty() || !(tol>0) || !std::isfinite(tol) || maxit<1 ||
       (!std::isnan(b) && !(b>0 && std::isfinite(b))) ||
@@ -128,11 +132,11 @@ inline SgompResult sgomp_mle(span x,double tol=1e-10,int maxit=200,
       for (double v:y) gap+=free_eta ? v-mn/scale : v;
       const double c=free_eta ? n*std::log(n) : n*std::log1p(eta);
       double upper=std::max(2*n/gap,best.b*2);
-      while (n*std::log(upper)+c-upper*gap>=best.ll) upper*=2;
+      for(std::int64_t bracket_pass=0; bracket_pass<solver_budget(maxit) && (n*std::log(upper)+c-upper*gap>=best.ll); ++bracket_pass) upper*=2;
       // For b<=1, sum(v)>=n/e: ell<=n log b+n (also valid
       // for held eta by maximizing over eta). This excludes the low end.
       const double lower=std::min(0.5,std::exp(best.ll/n-2));
-      if (!(std::isfinite(upper) && lower>0 && std::isfinite(best.ll))) {out.status=SgompStatus::IterationFailure;return out;}
+      if (!(std::isfinite(upper) && lower>0 && std::isfinite(best.ll)) || n*std::log(upper)+c-upper*gap>=best.ll) {out.status=SgompStatus::IterationFailure;return out;}
       const double lo=std::log(lower),hi=std::log(upper);
       const int steps=std::max(64,static_cast<int>(std::ceil((hi-lo)/.0625)));
       std::vector<sgomp_detail::Candidate> grid;

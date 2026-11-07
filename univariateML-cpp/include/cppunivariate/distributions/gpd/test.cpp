@@ -355,15 +355,14 @@ TEST_CASE("gpd xi minus one is the closed form limit law") {
   }
 }
 
-TEST_CASE("gpd: certificate stops have structured bounds") {
+TEST_CASE("gpd: exhausted tail bracket is a numerical stop") {
   const double nan=std::numeric_limits<double>::quiet_NaN();
   const std::vector<double> positive{.1,.3,.5,1,2,4};
   for(double scale:{nan,1.}) {
     const auto r=cppunivariate::gpd_mle(mltest::as_span(positive),1e-12,1,0,nan,scale);
     CHECK(r.status==cppunivariate::GpdStatus::IterationFailure);
-    CHECK(r.certificate_failure==cppunivariate::GpdCertificateFailure::Budget);
-    CHECK(std::isfinite(r.stop_detail.loglik_lower));
-    CHECK(r.stop_detail.loglik_upper>=r.stop_detail.loglik_lower);
+    CHECK(r.certificate_failure==cppunivariate::GpdCertificateFailure::Arithmetic);
+    CHECK_FALSE(r.stop_detail.budget_exhausted);
   }
   const std::vector<double> ties{0,1,2};
   const auto unbounded=cppunivariate::gpd_mle(mltest::as_span(ties));

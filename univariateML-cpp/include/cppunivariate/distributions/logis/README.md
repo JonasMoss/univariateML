@@ -32,7 +32,7 @@ r:
     scale: Optional held scale; NULL estimates it.
     location: Optional held location; NULL estimates it.
     abstol: Absolute step tolerance in (location, log(scale)).
-    iterlim: Maximum number of iterations.
+    iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
 log_density: -(x-location)/scale - log(scale) - 2*log(1 + exp(-(x-location)/scale))
 references:
 - Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 2, Chapter 23.

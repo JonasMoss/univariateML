@@ -9,6 +9,7 @@
 //   z = (x - mu)/sigma * sigma_u + mu_u.
 
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../sstd/hold_search.hpp"
 
 #include "../../core/bfgs.hpp"
@@ -296,6 +297,7 @@ struct SgedFitCost {
 };
 
 inline SgedResult sged_mle_free(span x, double tol, int maxit) {
+  maxit = static_cast<int>(solver_budget(maxit));
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
   if (n < 2)
@@ -383,9 +385,9 @@ inline SgedResult sged_mle_free(span x, double tol, int maxit) {
     };
     double ll = profile(0.0), shape = 1.0;
     // Scan log nu, refining every bracket (no unimodality assumption).
-    for (int k = 0; k < 100; ++k) {
+    for (int k = 0; k < maxit; ++k) {
       double lo = k * 0.2, hi = (k+1) * 0.2;
-      for (int j = 0; j < 45; ++j) {
+      for (int j = 0; j < maxit; ++j) {
         const double l = lo + (hi-lo)/3, r = hi - (hi-lo)/3;
         if (profile(l) < profile(r)) lo = l; else hi = r;
       }
@@ -424,6 +426,7 @@ inline SgedResult sged_mle_impl(span x, double tol, int maxit,
     double fixed_sd=std::numeric_limits<double>::quiet_NaN(),
     double fixed_nu=std::numeric_limits<double>::quiet_NaN(),
     double fixed_xi=std::numeric_limits<double>::quiet_NaN()) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const double nan=std::numeric_limits<double>::quiet_NaN();
   const double inf=std::numeric_limits<double>::infinity();
   const bool hm=!std::isnan(fixed_mean), hs=!std::isnan(fixed_sd);
@@ -441,7 +444,7 @@ inline SgedResult sged_mle_impl(span x, double tol, int maxit,
     const std::vector<SgedStatus> statuses{SgedStatus::Ok,SgedStatus::BfgsFailure,SgedStatus::InvalidStart,SgedStatus::Unbounded,SgedStatus::ScaleBoundary,SgedStatus::UniformBoundary,SgedStatus::UniformBoundary,SgedStatus::RightHalfGedBoundary,SgedStatus::LeftHalfGedBoundary,SgedStatus::UniformBoundary};
     auto status=statuses[r.status];
     SgedResult out={r.mean,r.sd,r.nu,r.xi,-r.f,r.iterations,status};
-    sged_face_payload(x,fixed_mean,fixed_sd,out);return out;
+    sged_face_payload(x,fixed_mean,fixed_sd,out,maxit);return out;
   }
   double lo=inf, hi=-inf;
   for(double v:x) { lo=std::min(lo,v); hi=std::max(hi,v); }
@@ -493,6 +496,7 @@ inline SgedResult sged_mle_impl(span x, double tol, int maxit,
 
 
 inline SgedResult sged_mle(span x,double tol,int maxit,double mean= std::numeric_limits<double>::quiet_NaN(),double sd= std::numeric_limits<double>::quiet_NaN(),double nu= std::numeric_limits<double>::quiet_NaN(),double xi= std::numeric_limits<double>::quiet_NaN()) {
+  maxit = static_cast<int>(solver_budget(maxit));
   auto r=sged_mle_impl(x,tol,maxit,mean,sd,nu,xi);
   if(r.status==SgedStatus::Ok && (std::isnan(nu)) && r.nu==kSgedNuLower) r.restricted|=16u;
   return r;

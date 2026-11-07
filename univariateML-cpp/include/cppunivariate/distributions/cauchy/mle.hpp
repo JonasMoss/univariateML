@@ -5,6 +5,7 @@
 // Nonexistent MLEs and numerical failures are reported through CauchyStatus.
 
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
 #include "cppunivariate/core/constants.hpp"
 #include "../../core/precision.hpp"
@@ -91,6 +92,7 @@ struct CauchyCost {
 };
 
 inline CauchyResult fit_cauchy(span x, double tol, int maxit) {
+  maxit = static_cast<int>(solver_budget(maxit));
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   constexpr double kEps = std::numeric_limits<double>::epsilon();
   const std::size_t n = x.size();
@@ -171,7 +173,7 @@ inline CauchyResult fit_cauchy(span x, double tol, int maxit) {
     const double old = cost(current);
     double step = 1.0;
     bool accepted = false;
-    for (int ls = 0; ls < 60; ++ls) {
+    for (int ls = 0; ls < maxit; ++ls) {
       const double candidate[] = {mu + step * dmu, std::exp(theta + step * dth)};
       if (std::isfinite(candidate[0]) && std::isfinite(candidate[1]) &&
           candidate[1] > 0.0 && std::isfinite(cost(candidate)) && cost(candidate) <= old) {
@@ -257,6 +259,7 @@ inline double likelihood(const std::vector<double>& y, double t) {
 } // namespace cauchy_location_detail
 
 inline CauchyResult fit_cauchy_location(const std::vector<double>& data, double scale, int maxit) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const double nan = std::numeric_limits<double>::quiet_NaN();
   int evaluations = 0;
   const auto failure = [&]() { return CauchyResult{nan,scale,nan,evaluations,CauchyStatus::IterationFailure}; };
@@ -280,9 +283,12 @@ inline CauchyResult fit_cauchy_location(const std::vector<double>& data, double 
   std::vector<Box> pending{{y.front(),y.back(),0}};
   std::vector<Root> roots;
   double incumbent = cauchy_location_detail::likelihood(y,0);
-  const std::size_t budget = 64*static_cast<std::size_t>(maxit);
+  const std::int64_t budget = certificate_budget(maxit);
   while (!pending.empty()) {
-    if (static_cast<std::size_t>(evaluations) >= budget) return failure();
+    if (evaluations >= budget) { auto out=failure(); out.stop_detail.budget_exhausted=true;
+      const double ll=cauchy_location_detail::likelihood(y,0)-n*std::log(std::acos(-1.0)*scale);
+      out.stop_detail.candidates.push_back({{centre,scale},ll,ll});
+      out.stop_detail.loglik_lower=ll;out.stop_detail.loglik_upper=INFINITY;return out; }
     const Box box = pending.back(); pending.pop_back(); ++evaluations;
     const auto bound = cauchy_location_detail::bounds(y,box.a,box.b);
     if (bound.upper_ll < incumbent-ll_margin || bound.lower_score > score_margin ||
@@ -325,7 +331,7 @@ inline CauchyResult fit_cauchy_location(const std::vector<double>& data, double 
         continue;
       }
     }
-    if (box.depth >= maxit) return failure();
+
     const double mid = box.a/2+box.b/2;
     if (!(mid > box.a && mid < box.b)) return failure();
     // Visit the interval nearer the median first, improving the likelihood bound.
@@ -370,6 +376,7 @@ inline CauchyResult fit_cauchy_location(const std::vector<double>& data, double 
 
 
 inline CauchyResult fit_cauchy(span x,double tol,int maxit,double location,double scale) {
+  maxit = static_cast<int>(solver_budget(maxit));
   if(std::isnan(location)&&std::isnan(scale))return fit_cauchy(x,tol,maxit);
   const double nan=std::numeric_limits<double>::quiet_NaN();
   CauchyResult bad{nan,nan,nan,0,CauchyStatus::InvalidInput};
@@ -402,11 +409,11 @@ inline CauchyResult fit_cauchy(span x,double tol,int maxit,double location,doubl
     const double ceiling = std::log(std::numeric_limits<double>::max());
     double lo = std::max(floor, *bounds.first), hi = std::min(ceiling, *bounds.second);
     double step = 1;
-    while (!(score(lo) > 0) && lo > floor) {
+    for(std::int64_t bracket_pass=0; bracket_pass<solver_budget(maxit) && (!(score(lo) > 0) && lo > floor); ++bracket_pass) {
       lo = std::max(floor, lo - step); step *= 2;
     }
     step = 1;
-    while (!(score(hi) < 0) && hi < ceiling) {
+    for(std::int64_t bracket_pass=0; bracket_pass<solver_budget(maxit) && (!(score(hi) < 0) && hi < ceiling); ++bracket_pass) {
       hi = std::min(ceiling, hi + step); step *= 2;
     }
     if (!(score(lo) > 0 && score(hi) < 0)) return failure();

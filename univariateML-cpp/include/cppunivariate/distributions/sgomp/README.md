@@ -31,7 +31,7 @@ r:
     b: Optional fixed positive rate; `NULL` estimates it.
     eta: Optional fixed nonnegative shape; `NULL` estimates it.
     reltol: Tolerance for the scalar profile searches.
-    iterlim: Maximum iterations per scalar search.
+    iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
 log_density: log(b) - b*x - eta*exp(-b*x) + log(1 + eta*(1-exp(-b*x)))
 holds: []
 examples: |

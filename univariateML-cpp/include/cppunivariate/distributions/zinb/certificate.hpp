@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "mle.hpp"
 #include "../../core/stop_detail.hpp"
 #include <vector>
@@ -17,6 +18,7 @@ inline double zero_logmass(double logzero,double pi) {
 // See README.md for the exhaustive stationary-branch argument and margins.
 inline ZinbCertificateResult zinb_fixed_size_mle(ispan x,double size,
     double fixed_prob,double fixed_pi,double tol,int maxit) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const double nan=std::numeric_limits<double>::quiet_NaN();
   ZinbCertificateResult out{{size,nan,nan,nan,0,ZinbStatus::IterationFailure},{}};
   auto fail=[&](ZinbCertificateFailure reason) {
@@ -201,6 +203,7 @@ inline ZinbCertificateResult zinb_fixed_size_mle(ispan x,double size,
 // All stationary size branches at a held probability. No size cap is used.
 inline ZinbCertificateResult zinb_fixed_prob_mle(ispan x,double prob,
     double fixed_pi,double tol,int maxit) {
+  maxit = static_cast<int>(solver_budget(maxit));
   auto out=zinb_fixed_size_mle(x,1,prob,fixed_pi,tol,maxit);
   if(out.fit.status!=ZinbStatus::Ok)return out;
   double S=0,k=0;int largest=0;
@@ -243,7 +246,7 @@ inline ZinbCertificateResult zinb_fixed_prob_mle(ispan x,double prob,
   if(!(first.value>first.error && last.value< -last.error))return fail(ZinbCertificateFailure::Arithmetic);
   struct Segment {double lo,hi;};
   std::vector<Segment> pending{{lower,upper}},roots;
-  const int budget=32*std::min(maxit,100000);
+  const std::int64_t budget=certificate_budget(maxit);
   while(!pending.empty()) {
     if(out.fit.iterations+2>budget)return fail(ZinbCertificateFailure::Budget);
     const auto segment=pending.back();pending.pop_back();

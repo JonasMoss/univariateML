@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
 #include "../../core/face_compare.hpp"
 #include "cppunivariate/core/constants.hpp"
@@ -30,6 +31,7 @@ inline double score_residual(const std::vector<double>& x,double a,double xi,
 // Newton maximisation of a strictly concave objective on an affine subspace.
 // Fixed xi imposes h=xi*eta; fixed omega imposes eta=1/omega.
 inline Inner inner(const std::vector<double>& x,double a,double xi,double omega,double tol,int maxit) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const bool fx=std::isfinite(xi),fw=std::isfinite(omega);
   double eta=fw ? 1/omega : 1/std::hypot(1.0,fx ? xi : 0.0);
   double h=fx ? xi*eta : 0;
@@ -96,7 +98,7 @@ inline Inner inner(const std::vector<double>& x,double a,double xi,double omega,
       return {eta,h,ll,true};
     double step=1;
     bool accepted=false;
-    for(int k=0;k<60;++k) {
+    for(int k=0;k<maxit;++k) {
       const double e=eta+step*de,b=h+step*dh,candidate=objective(e,b);
       if(e>0 && candidate>=ll+1e-4*step*(ge*de+gh*dh)) {
         eta=e; h=b; ll=candidate; accepted=true; break;
@@ -134,11 +136,12 @@ inline double shape_upper(const std::vector<double>& x,double omega,double a,con
 }
 // Tail bound: minimize weighted Q by its monotone derivative, then use the
 // exact minimum for its active quadratic segment (avoids optimistic bisection).
-inline double shape_tail_upper(const std::vector<double>& x,double omega,double a,double sign) {
+inline double shape_tail_upper(const std::vector<double>& x,double omega,double a,double sign,int maxit=100) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const long double n=x.size(),w=static_cast<long double>(a)*a;
   long double lo=std::numeric_limits<long double>::infinity(),hi=-lo;
   for(double y:x) { const long double z=sign*y;lo=std::min(lo,z);hi=std::max(hi,z); }
-  for(int i=0;i<100;++i) {
+  for(int i=0;i<maxit;++i) {
     const long double mid=(lo+hi)/2;long double sw=0,sx=0;
     for(double y:x) {const long double z=sign*y,weight=1+(z<mid ? w:0);sw+=weight;sx+=weight*(z-mid);}
     if(sx>0) lo=mid;else hi=mid;
@@ -158,10 +161,11 @@ inline double shape_tail_upper(const std::vector<double>& x,double omega,double 
 }
 }
 inline SnResult sn_mle(span data,double tol=1e-9,int maxit=100,
-                       double xi=special::kNaN,double omega=special::kNaN,double alpha=special::kNaN, int certificate_budget=20000) {
+                       double xi=special::kNaN,double omega=special::kNaN,double alpha=special::kNaN, std::int64_t work_budget=-2) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const double nan=special::kNaN;
   SnResult bad={nan,nan,nan,nan,0,SnStatus::InvalidInput};
-  if(data.size()<2 || !(tol>0) || maxit<1 || certificate_budget<0 || (!std::isnan(xi) && !std::isfinite(xi)) ||
+  if(data.size()<2 || !(tol>0) || maxit<1 || (work_budget<0 && work_budget!= -2) || (!std::isnan(xi) && !std::isfinite(xi)) ||
      (!std::isnan(omega) && !(std::isfinite(omega) && omega>0)) || (!std::isnan(alpha) && !std::isfinite(alpha))) return bad;
   double low=data[0],high=data[0];
   for(double v:data) { if(!std::isfinite(v)) return bad; low=std::min(low,v); high=std::max(high,v); }
@@ -200,9 +204,10 @@ inline SnResult sn_mle(span data,double tol=1e-9,int maxit=100,
         return sum;
       };
       double l=-1,r=1;
-      while(score(l)<0) l*=2;
-      while(score(r)>0) r*=2;
-      for(int k=0;k<std::min(maxit,160);++k) {
+      for(std::int64_t bracket_pass=0; bracket_pass<solver_budget(maxit) && (score(l)<0); ++bracket_pass) l*=2;
+      for(std::int64_t bracket_pass=0; bracket_pass<solver_budget(maxit) && (score(r)>0); ++bracket_pass) r*=2;
+      if(!(score(l)>=0 && score(r)<=0)){bad.status=SnStatus::IterationFailure;return bad;}
+      for(int k=0;k<maxit;++k) {
         const double mid=l+(r-l)/2;
         if(mid==l || mid==r) break;
         if(score(mid)>0) l=mid; else r=mid;
@@ -229,7 +234,7 @@ inline SnResult sn_mle(span data,double tol=1e-9,int maxit=100,
       const double ratio=(std::sqrt(5.0)-1)/2;
       double u=r-ratio*(r-l),v=l+ratio*(r-l);
       auto fu=fit(std::sinh(u)),fv=fit(std::sinh(v));
-      for(int k=0;k<std::min(maxit,70) && r-l>1e-9;++k) {
+      for(int k=0;k<maxit && r-l>1e-9;++k) {
         consider(std::sinh(u),fu); consider(std::sinh(v),fv);
         if(fu.ll<fv.ll) { l=u;u=v;fu=fv;v=l+ratio*(r-l);fv=fit(std::sinh(v)); }
         else { r=v;v=u;fv=fu;u=r-ratio*(r-l);fu=fit(std::sinh(u)); }
@@ -250,9 +255,9 @@ inline SnResult sn_mle(span data,double tol=1e-9,int maxit=100,
     // 1.5e-8 n, conditional on the computed comparisons.
     const double margin=5e-9*n;
     double cutoff=8;
-    for(int k=0;k<50;++k) {
-      if(sn_detail::shape_tail_upper(x,fw,cutoff,1)<=incumbent+margin &&
-         sn_detail::shape_tail_upper(x,fw,cutoff,-1)<=incumbent+margin) break;
+    for(int k=0;k<maxit;++k) {
+      if(sn_detail::shape_tail_upper(x,fw,cutoff,1,maxit)<=incumbent+margin &&
+         sn_detail::shape_tail_upper(x,fw,cutoff,-1,maxit)<=incumbent+margin) break;
       cutoff*=2;
     }
     if(!std::isfinite(cutoff) || cutoff>8*std::pow(2.0,49)) {bad.status=SnStatus::IterationFailure;return bad;}
@@ -268,7 +273,8 @@ inline SnResult sn_mle(span data,double tol=1e-9,int maxit=100,
     std::sort(nodes.begin(),nodes.end(),[](const Node& a,const Node& b){return a.a<b.a;});
     std::vector<Interval> pending;
     for(std::size_t i=1;i<nodes.size();++i) pending.push_back({nodes[i-1],nodes[i]});
-    int budget=certificate_budget;
+    const std::int64_t cap=work_budget== -2?certificate_budget(maxit):work_budget;
+    std::int64_t budget=cap;
     while(!pending.empty()) {
       const Interval interval=pending.back();pending.pop_back();
       const auto bound=[&](const sn_detail::ShapeTangent& t) {

@@ -1,0 +1,12 @@
+{
+  "source_sha256": "87e33146bebac8a5d1f826615dac5c2dfcefa44dbd5fc85239881d6a918fc2ef",
+  "command": [
+    "just",
+    "js-build"
+  ],
+  "machine": "workstation",
+  "returncode": 0,
+  "wall_seconds": 2539.448216676712,
+  "started_utc": "2026-11-06T19:08:12.750160+00:00",
+  "revision": "f8f65f9b080c394d11ca9dc178a93219fffee210"
+}

@@ -27,7 +27,7 @@ r:
     shape: "Optional held value; NULL estimates it."
     rate: "Optional positive held value; NULL estimates it."
     reltol: "Tolerance for the logarithmic search coordinates."
-    iterlim: "Maximum iterations per local search or rate solve; the outer certificate permits 1000 times this many intervals."
+    iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations."
 log_density: "log((lowergamma(shape, rate*(x+1)) - lowergamma(shape, rate*x))/gamma(shape))"
 limits:
   - name: point mass
@@ -279,7 +279,7 @@ guarantee.
 
 ## R notes
 
-For adjacent values `j` and `j + 1`, `mlbinom(x - j, size = 1)` fits the limiting Bernoulli probabilities. Passing `NULL` estimates a coefficient; supplying a positive finite value holds it. Supplying both coefficients evaluates the likelihood without optimization. The subdivision budget is `1000 * iterlim` intervals, and numerical failure stops the fit rather than returning an unchecked candidate.
+For adjacent values `j` and `j + 1`, `mlbinom(x - j, size = 1)` fits the limiting Bernoulli probabilities. Passing `NULL` estimates a coefficient; supplying a positive finite value holds it. Supplying both coefficients evaluates the likelihood without optimization. The subdivision budget is `128 * min(iterlim, 100000)` intervals, and numerical failure stops the fit rather than returning an unchecked candidate.
 
 ## Decision history
 

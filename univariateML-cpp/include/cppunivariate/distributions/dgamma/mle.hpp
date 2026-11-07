@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../../core/discrete_stop.hpp"
 #include "../../core/span.hpp"
 #include "../dnorm/mle.hpp"
@@ -30,18 +31,20 @@ inline double rate_score(const dnorm_detail::Cells &p,double shape,double logr,d
   return g;
 }
 inline bool profile_rate(const dnorm_detail::Cells &p,double shape,double &rate,int maxit=100) {
+  maxit = static_cast<int>(solver_budget(maxit));
   double u=std::log(shape)-std::log(p.centre),derivative=0;
   double g=rate_score(p,shape,u,derivative);
   if (!std::isfinite(g)) return false;
   double lo=u,hi=u; const bool up=g>0;
-  for (double step=1;step<=512;step*=2) {
+  bool bracketed=false;double step=1;
+  for (int pass=0;pass<maxit;++pass,step*=2) {
     const double v=u+(up ? step:-step);
     double dg=0; const double gv=rate_score(p,shape,v,dg);
     if (!std::isfinite(gv)) return false;
     if (up) hi=v; else lo=v;
-    if ((gv>0)!=up || gv==0) break;
-    if (step==512) return false;
+    if ((gv>0)!=up || gv==0) {bracketed=true;break;}
   }
+  if(!bracketed)return false;
   u=(lo+hi)/2;
   for (int it=0;it<maxit;++it) {
     g=rate_score(p,shape,u,derivative);
@@ -68,6 +71,7 @@ struct Cost {
 // Deterministic Nelder--Mead with vector storage, avoiding pointer interfaces.
 // The outer logarithmic grid supplies separated starts; no unimodality is assumed.
 inline bool search(const Cost &cost,std::vector<double> &t,double tol,int maxit,int &iterations) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const int d=static_cast<int>(t.size());
   std::vector<std::vector<double>> v(d+1,t); std::vector<double> f(d+1);
   for (int j=1;j<=d;++j) v[j][j-1]+=0.4;
@@ -100,6 +104,7 @@ inline bool search(const Cost &cost,std::vector<double> &t,double tol,int maxit,
 // The derivation and the likelihood allowance are in the family dossier.
 inline bool enclosed_rate(const dnorm_detail::Cells &p,double a,double &r,
                           double &upper,int maxit) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const double mean=p.centre-0.5;
   if (!(mean>0)) return false;
   double lo=std::log(a)-std::log(mean+1),hi=std::log(a)-std::log(mean);
@@ -128,13 +133,14 @@ inline double shape_integral(const dnorm_detail::Cells &p,double a,double r,doub
 }
 
 inline bool shape_score_bounds(const dnorm_detail::Cells &p,double A,double B,
-                               bool held,double held_r,double &lower,double &upper) {
+                               bool held,double held_r,double &lower,double &upper,int maxit=400) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const double mean=p.centre-0.5;
   double rlo=held_r,rhi=held_r;
   if(!held) {
     if(!(mean>0)) return false;
     double lo=std::log(A)-std::log(mean+1),hi=std::log(B)-std::log(mean);
-    for(int i=0;i<40;++i) {
+    for(int i=0;i<maxit;++i) {
       const double mid=(lo+hi)/2; double d1=0,d2=0;
       const double ga=rate_score(p,A,mid,d1),gb=rate_score(p,B,mid,d2);
       if(!std::isfinite(ga)||!std::isfinite(gb)) return false;
@@ -160,7 +166,8 @@ inline bool shape_score_bounds(const dnorm_detail::Cells &p,double A,double B,
 }
 
 inline bool certify(const dnorm_detail::Cells &p,bool held,double held_r,
-                    double &best,double &best_t,int maxit) {
+                    double &best,double &best_t,int maxit,bool& budget_exhausted) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const double L=-p.n*best;
   double low=0;
   for(std::size_t j=0;j<p.x.size();++j) if(p.x[j]>0) {
@@ -181,11 +188,12 @@ inline bool certify(const dnorm_detail::Cells &p,bool held,double held_r,
   struct Interval {double lo,hi;};
   std::vector<Interval> pending;
   const int pieces=static_cast<int>(std::ceil((thi-tlo)/0.5));
-  if(pieces<1 || pieces>10000) return false;
+  if(pieces<1)return false;
+  if(pieces>certificate_budget(maxit)){budget_exhausted=true;return false;}
   for(int i=0;i<pieces;++i) pending.push_back({tlo+(thi-tlo)*i/pieces,tlo+(thi-tlo)*(i+1)/pieces});
-  long long count=0; const long long budget=1000LL*maxit;
+  long long count=0; const std::int64_t budget=certificate_budget(maxit);
   while(!pending.empty()) {
-    if(++count>budget) return false;
+    if(++count>budget) {budget_exhausted=true;return false;}
     const Interval q=pending.back();pending.pop_back();
     const double t=(q.lo+q.hi)/2,A=std::exp(q.lo),B=std::exp(q.hi),a=std::exp(t);
     double r=held_r,error=0;
@@ -196,7 +204,7 @@ inline bool certify(const dnorm_detail::Cells &p,bool held,double held_r,
     if(!std::isfinite(ll)) return false;
     if(-ll<best) {best=-ll;best_t=t;}
     double lower=0,upper=0;
-    if(!shape_score_bounds(p,A,B,held,held_r,lower,upper)) return false;
+    if(!shape_score_bounds(p,A,B,held,held_r,lower,upper,maxit)) return false;
     const double bound=ll+error+std::max(0.0,std::max(-lower*(t-q.lo),upper*(q.hi-t)));
     if(!std::isfinite(bound)) return false;
     if(bound>-best+5e-9) {
@@ -209,6 +217,7 @@ inline bool certify(const dnorm_detail::Cells &p,bool held,double held_r,
 }
 inline DgammaResult dgamma_mle(span x,double tol=1e-8,int maxit=400,
     double shape=std::numeric_limits<double>::quiet_NaN(),double rate=std::numeric_limits<double>::quiet_NaN()) {
+  maxit = static_cast<int>(solver_budget(maxit));
   auto stopped = [&]() -> DgammaResult {
   const double nan=std::numeric_limits<double>::quiet_NaN();
   DgammaResult out{nan,nan,nan,0,DgammaStatus::InvalidData};
@@ -238,11 +247,11 @@ inline DgammaResult dgamma_mle(span x,double tol=1e-8,int maxit=400,
     const double t=std::log(a0)+i;
     grid.push_back(t); values.push_back(cost(std::vector<double>{t}));
   }
-  for (int i=0;i<32 && values.front()<values[1];++i) {
+  for (int i=0;i<maxit && values.front()<values[1];++i) {
     grid.insert(grid.begin(),grid.front()-1);
     values.insert(values.begin(),cost(std::vector<double>{grid.front()}));
   }
-  for (int i=0;i<32 && values.back()<values[values.size()-2];++i) {
+  for (int i=0;i<maxit && values.back()<values[values.size()-2];++i) {
     grid.push_back(grid.back()+1); values.push_back(cost(std::vector<double>{grid.back()}));
   }
   double best=std::numeric_limits<double>::infinity(); std::vector<double> best_t;
@@ -254,7 +263,15 @@ inline DgammaResult dgamma_mle(span x,double tol=1e-8,int maxit=400,
     if (ok && f<best) { best=f; best_t=t; }
   }
   if (best_t.empty()) { out.status=DgammaStatus::IterationFailure; return out; }
-  if (!dgamma_detail::certify(p,hr,rate,best,best_t[0],maxit)) { out.status=DgammaStatus::IterationFailure; return out; }
+  bool budget_exhausted=false;
+  if (!dgamma_detail::certify(p,hr,rate,best,best_t[0],maxit,budget_exhausted)) { out.status=DgammaStatus::IterationFailure; if(budget_exhausted) {
+    double witness_rate=rate;
+    if(hr || dgamma_detail::profile_rate(p,std::exp(best_t[0]),witness_rate,maxit)) {
+      out.stop_detail.candidates.push_back({{std::exp(best_t[0]),witness_rate},-p.n*best,-p.n*best});
+      out.stop_detail.loglik_lower=-p.n*best;
+    }
+    out.stop_detail=discrete_budget(out.stop_detail);
+  } return out; }
   out.shape=std::exp(best_t[0]); out.rate=rate;
   if (!hr && !dgamma_detail::profile_rate(p,out.shape,out.rate,maxit)) { out.status=DgammaStatus::IterationFailure; return out; }
   out.logLik=0;

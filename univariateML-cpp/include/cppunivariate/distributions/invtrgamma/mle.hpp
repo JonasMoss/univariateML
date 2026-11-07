@@ -4,6 +4,7 @@
 // -2 sum(log(x)). Faces mirror: lognormal stays lognormal, the power face
 // with endpoint 1/min(x) becomes Pareto with minimum min(x).
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
 
 #include "../trgamma/mle.hpp"
@@ -49,6 +50,7 @@ inline InvTrGammaStatus invtrgamma_status(TrGammaStatus s) {
 inline InvTrGammaResult invtrgamma_mle(span x, double tol = 1e-10, int maxit = 100,
                                        double shape1 = std::numeric_limits<double>::quiet_NaN(),
                                        double shape2 = std::numeric_limits<double>::quiet_NaN()) {
+  maxit = static_cast<int>(solver_budget(maxit));
   std::vector<double> y(x.size());
   double jacobian = 0.0;
   for (std::size_t i = 0; i < x.size(); ++i) {
@@ -63,6 +65,22 @@ inline InvTrGammaResult invtrgamma_mle(span x, double tol = 1e-10, int maxit = 1
   const double log_scale = -r.log_scale;
   const TrGammaStatus status = trgamma_range_status(r.status, log_scale);
   InvTrGammaResult out={r.shape1,r.shape2,std::exp(log_scale),log_scale,r.logLik+jacobian,r.iterations,invtrgamma_status(status)};
+  if(r.stop_detail.budget_exhausted) {
+    out.stop_detail=r.stop_detail;
+    out.stop_detail.loglik_lower+=jacobian;
+    out.stop_detail.loglik_upper+=jacobian;
+    out.stop_detail.limit_loglik+=jacobian;
+    for(auto& c:out.stop_detail.candidates) {
+      if(c.model==StopModel::None && c.coef.size()==3)c.coef[2]=1/c.coef[2];
+      c.loglik_lower+=jacobian;c.loglik_upper+=jacobian;
+    }
+    if(out.stop_detail.limit_model==StopModel::Lnorm && out.stop_detail.limit_coef.size()==2)
+      out.stop_detail.limit_coef[0]=-out.stop_detail.limit_coef[0];
+    if(out.stop_detail.limit_model==StopModel::Power && out.stop_detail.limit_coef.size()==2) {
+      out.stop_detail.limit_coef={out.stop_detail.limit_coef[1],1/out.stop_detail.limit_coef[0]};
+      out.stop_detail.limit_model=StopModel::Pareto;
+    }
+  }
   if(r.status==TrGammaStatus::LognormalBoundary && r.stop_detail.limit_coef.size()==2)
     out.stop_detail=limit_detail({-r.stop_detail.limit_coef[0],r.stop_detail.limit_coef[1]},out.logLik,StopModel::Lnorm);
   if(r.status==TrGammaStatus::PowerBoundary && r.stop_detail.limit_coef.size()==2)
@@ -75,6 +93,7 @@ inline InvTrGammaResult invtrgamma_mle(span x, double tol = 1e-10, int maxit = 1
 namespace cppunivariate {
 
 inline InvTrGammaResult invtrgamma_mle_fixed_scale(span x,double scale,double a=std::numeric_limits<double>::quiet_NaN(),double b=std::numeric_limits<double>::quiet_NaN(),double tol=1e-10,int maxit=100){
+  maxit = static_cast<int>(solver_budget(maxit));
  std::vector<double> y;double jac=0;for(double v:x){y.push_back(1/v);jac-=2*std::log(v);}
  auto r=trgamma_mle_fixed_scale(span{y.data(),y.size()},1/scale,a,b,tol,maxit);
  InvTrGammaResult out={r.shape1,r.shape2,scale,std::log(scale),r.logLik+jac,r.iterations,invtrgamma_status(r.status)};

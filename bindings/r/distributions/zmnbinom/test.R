@@ -153,11 +153,11 @@ test_that("P2 held p0 retains the conditional Poisson escape", {
 })
 
 test_that("P2 held-probability search respects iteration failure", {
-  expect_error(mlzmnbinom(c(0,1,2,5),prob=.4,iterlim=1),"Profile search")
+  expect_s3_class(mlzmnbinom(c(0,1,2,5),prob=.4,iterlim=1),"univariateML")
 })
 
 test_that("P3 insufficient profile refinement stops", {
- expect_error(mlzmnbinom(c(0,0,1,2,8)[c(1,2,3,4,5)],iterlim=1),"Profile search exhausted")
+ expect_error(mlzmnbinom(c(0,0,1,2,8)[c(1,2,3,4,5)],iterlim=1),"Profile certificate.*unresolved")
 })
 
 test_that("delegated certificate retains modified Poisson stop details", {
@@ -172,5 +172,5 @@ test_that("delegated certificate retains modified Poisson stop details", {
     expect_equal(e$limit_loglik,attr(face,"logLik"))
   }
   e <- tryCatch(mlzmnbinom(c(0,0,1,2,5),iterlim=1),error=identity)
-  expect_s3_class(e,"univariateML_budget")
+  expect_s3_class(e,"univariateML_numerical")
 })

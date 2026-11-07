@@ -27,7 +27,7 @@ r:
     mu1: "Optional fixed nonnegative finite positive-count rate; NULL estimates it."
     mu2: "Optional fixed nonnegative finite negative-count rate; NULL estimates it."
     reltol: "Relative tolerance for the scalar profile search."
-    iterlim: "Maximum iterations for each scalar refinement; also sets the branch-and-bound work limit."
+    iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations."
 log_density: "-mu1-mu2 + x*log(mu1/mu2)/2 + log(besseli(Abs(x),2*sqrt(mu1*mu2)))"
 references:
 - Skellam, J. G. (1946). The frequency distribution of the difference between two Poisson variates belonging to
@@ -160,3 +160,5 @@ For a negative count `v`, the positive Bessel series also gives
 is at most `mu2/(1-v)`. This analytic geometric bound can certify a
 single-term tail at enormous counts where the next integer is not
 representable. It avoids treating representational stagnation as convergence.
+
+The joint-rate cover counts curvature-bounded intervals, rather than local optimizer steps. On exhaustion it retains the best feasible pair of rates and a practical likelihood rounding margin; the global upper bound remains infinite.

@@ -33,7 +33,7 @@ r:
     alpha: Optional held skewness; NULL estimates it.
     nu: Optional held degrees of freedom; NULL estimates it.
     reltol: Numerical score tolerance.
-    iterlim: Maximum optimizer iterations.
+    iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
 log_density: "log(2)-log(omega)+loggamma((nu+1)/2)-loggamma(nu/2)-log(nu*pi)/2-(nu+1)*log(1+((x-xi)/omega)**2/nu)/2+log((1+sign(alpha*(x-xi))*betainc(1/2,(nu+1)/2,0,(alpha*(x-xi)/omega)**2/(nu+((x-xi)/omega)**2+(alpha*(x-xi)/omega)**2))/beta(1/2,(nu+1)/2))/2)"
 limits:
 - {model: sn, when: 'The degrees of freedom satisfy $\nu\to\infty$ with location, scale and skewness fixed.', detect: 'With $\nu$ free, the numerical skew-normal face exceeds the best interior reference by $10^{-8}n$, or is within that tolerance when the fitted $\nu>10^5$.', status: SkewNormalBoundary, firmness: proved, numerical: true}

@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../pois/mle.hpp"
 namespace cppunivariate {
 namespace nbinom_cert_detail {
@@ -19,10 +20,13 @@ inline double log1pmx(double u) {
 inline NbinomResult nbinom_mle(ispan x,double tol,int maxit,
     double fixed_size=std::numeric_limits<double>::quiet_NaN(),
     double fixed_prob=std::numeric_limits<double>::quiet_NaN()) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const double nan=std::numeric_limits<double>::quiet_NaN();
+  StopDetail evidence;
   auto fail=[&](int work,NbinomCertificateFailure reason=NbinomCertificateFailure::Arithmetic) {
     auto out=NbinomResult{nan,nan,nan,work,false,NbinomStatus::PrecisionFailure};
-    out.certificate_failure=reason;return out;
+    out.stop_detail=evidence;
+    out.certificate_failure=reason;out.stop_detail.budget_exhausted=reason==NbinomCertificateFailure::Budget;return out;
   };
   bool poisson=false,overdispersed=false;
   // Guard the dispersion comparison independently of the legacy proposer.
@@ -44,6 +48,11 @@ inline NbinomResult nbinom_mle(ispan x,double tol,int maxit,
     overdispersed=mean>0 && !poisson;
   }
   auto candidate=nbinom_candidate_mle(x,tol,maxit,fixed_size,fixed_prob);
+  if(std::isfinite(candidate.logLik)) {
+    const double pad=1024*std::numeric_limits<double>::epsilon()*(1+std::abs(candidate.logLik))*(1+x.size());
+    evidence.candidates.push_back({{candidate.size,candidate.prob},candidate.logLik-pad,candidate.logLik+pad});
+    evidence.loglik_lower=candidate.logLik-pad;evidence.loglik_upper=INFINITY;
+  }
   if(candidate.status==NbinomStatus::InvalidInput)return candidate;
   if(poisson)candidate={nan,nan,nan,0,true,NbinomStatus::Underdispersed};
   else if(overdispersed && candidate.status==NbinomStatus::Underdispersed)candidate=fail(0);
@@ -95,7 +104,7 @@ inline NbinomResult nbinom_mle(ispan x,double tol,int maxit,
   double center=candidate.status==NbinomStatus::Ok?candidate.size:1;
   if(!(center>0)||!std::isfinite(center))center=1;
   double lo=center,hi=center,err=0;int work=0;
-  const int budget=std::min(maxit,100000)*16;
+  const std::int64_t budget=certificate_budget(maxit);
   for(;;) {const double s=score(lo,err);++work;if(s>err)break;
     if(work>=budget)return fail(work,NbinomCertificateFailure::Budget);
     if(!(lo/2>0))return fail(work);

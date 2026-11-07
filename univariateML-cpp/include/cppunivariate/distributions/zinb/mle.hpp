@@ -1,5 +1,6 @@
 // Historical proposal; the certified public dispatcher is included below.
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../nbinom/mle.hpp"
 #include "../../core/stop_detail.hpp"
 #include "../zip/mle.hpp"
@@ -29,6 +30,7 @@ inline ZinbResult zinb_candidate_mle(ispan x, double tol = 1e-10, int maxit = 20
                          double fixed_size = std::numeric_limits<double>::quiet_NaN(),
                          double fixed_prob = std::numeric_limits<double>::quiet_NaN(),
                          double fixed_pi = std::numeric_limits<double>::quiet_NaN()) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const double nan = std::numeric_limits<double>::quiet_NaN();
   ZinbResult best{nan, nan, nan, -std::numeric_limits<double>::infinity(), 0,
                   ZinbStatus::IterationFailure};
@@ -129,7 +131,7 @@ inline ZinbResult zinb_candidate_mle(ispan x, double tol = 1e-10, int maxit = 20
       }
       return out;
     }
-    const double p = zero_detail::nb_prob(r, positive_mean);
+    const double p = zero_detail::nb_prob(r, positive_mean,maxit);
     // The join belongs to the NB branch. Its optimum has p=r/(r+mean).
     if (r * std::log(p) <= std::log(z)) return evaluate(r, p);
     return evaluate(r, r / (r + sum / n));
@@ -147,12 +149,13 @@ inline ZinbResult zinb_candidate_mle(ispan x, double tol = 1e-10, int maxit = 20
   // the upper end agrees with the independently maximized infinite-size
   // face. No finite size cap is returned as an approximation to that face.
   int lower = -2, upper = 2;
-  while (lower > -700 && profile(std::exp(lower)).logLik > best.logLik - n)
+  for(std::int64_t bracket_pass=0; bracket_pass<solver_budget(maxit) && (lower > -700 && profile(std::exp(lower)).logLik > best.logLik - n); ++bracket_pass)
     lower -= 2;
-  while (upper < (fp?700:32) && (fp ? profile(std::exp(upper)).logLik>best.logLik-n : (zip.status != ZipStatus::Ok ||
-         std::abs(profile(std::exp(upper)).logLik - zip.logLik) > 1e-10*n)))
+  for(std::int64_t bracket_pass=0; bracket_pass<solver_budget(maxit) && (upper < (fp?700:32) && (fp ? profile(std::exp(upper)).logLik>best.logLik-n : (zip.status != ZipStatus::Ok ||
+         std::abs(profile(std::exp(upper)).logLik - zip.logLik) > 1e-10*n))); ++bracket_pass)
     upper += 2;
-  if (upper >= (fp?700:32)) {
+  if (lower > -700 && profile(std::exp(lower)).logLik > best.logLik - n) {best.status=ZinbStatus::IterationFailure;return best;}
+  if (upper >= (fp?700:32) || (fp ? profile(std::exp(upper)).logLik>best.logLik-n : (zip.status != ZipStatus::Ok || std::abs(profile(std::exp(upper)).logLik-zip.logLik)>1e-10*n))) {
     best.status = ZinbStatus::IterationFailure;
     return best; // Floating-point resolution exhausted; never return a capped fit.
   }

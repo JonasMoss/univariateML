@@ -1,5 +1,6 @@
 // GB2 in actuar order (q,a,p,b). All optimisation uses standardized logs.
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../../core/face_compare.hpp"
 #include "../../core/precision.hpp"
 #include "../trgamma/mle.hpp"
@@ -74,14 +75,15 @@ inline Inner evaluate(const trgamma_detail::LogData &d, double A, double c,
 }
 // Strict concavity in (A,c); a held scale restricts c to a line.
 inline Point profile(const trgamma_detail::LogData &d,double p,double q,
-                     double a,double b) {
+                     double a,double b,int maxit=300) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const bool ha=!std::isnan(a), hb=!std::isnan(b);
   const double offset=hb ? (d.mean-std::log(b))/d.sd : 0;
   double A=ha ? a*d.sd : std::sqrt(special::trigamma(p)+special::trigamma(q));
   double c=hb ? 0 : special::digamma(q)-special::digamma(p);
   Inner e=evaluate(d,A,c,p,q,hb,offset);
   bool ok=false;
-  for(int it=0;it<100;++it) {
+  for(int it=0;it<maxit;++it) {
     double da=0,dc=0;
     if(!ha && !hb) {
       const double det=e.haa*e.hcc-e.hac*e.hac;
@@ -95,7 +97,8 @@ inline Point profile(const trgamma_detail::LogData &d,double p,double q,
     if(residual<1e-9*d.n) {ok=true;break;}
     double step=1;
     bool accepted=false;
-    for(int ls=0;ls<45;++ls) {
+    for(int ls=0;ls<maxit;++ls) {
+      if(A+step*da==A && c+step*dc==c)break;
       if(A+step*da>0) {
         const Inner next=evaluate(d,A+step*da,c+step*dc,p,q,hb,offset);
         if(next.ll>=e.ll-1e-12*d.n) {
@@ -152,15 +155,21 @@ inline double double_pareto(const trgamma_detail::LogData &d,double b) {
 // A small dimension BFGS with analytic envelope scores; no pointer API.
 inline Point refine(const trgamma_detail::LogData &d,std::array<double,2> v,
                     double p,double q,double a,double b,double box,int maxit,int &evals) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const std::array<bool,2> free{{std::isnan(p),std::isnan(q)}};
   auto get=[&](std::array<double,2> w) {
     ++evals;
     if((free[0] && std::abs(w[0])>box)||(free[1] && std::abs(w[1])>box)) return Point{};
-    return profile(d,free[0]?std::exp(w[0]):p,free[1]?std::exp(w[1]):q,a,b);
+    return profile(d,free[0]?std::exp(w[0]):p,free[1]?std::exp(w[1]):q,a,b,maxit);
   };
   Point cur=get(v);
   std::array<double,4> H{{1,0,0,1}};
   for(int it=0;it<maxit;++it) {
+    // The existing completion rule already treats an outward box edge as
+    // a completed proposal. It cannot be returned as a fitted maximum.
+    const bool outward=(free[0]&&std::abs(v[0])>box-0.2&&v[0]*cur.g[0]>0)||
+                       (free[1]&&std::abs(v[1])>box-0.2&&v[1]*cur.g[1]>0);
+    if(outward)break;
     std::array<double,2> g{{free[0]?cur.g[0]:0,free[1]?cur.g[1]:0}};
     if(std::hypot(g[0],g[1])<1e-8) break;
     std::array<double,2> s{{H[0]*g[0]+H[1]*g[1],H[2]*g[0]+H[3]*g[1]}};
@@ -178,8 +187,10 @@ inline Point refine(const trgamma_detail::LogData &d,std::array<double,2> v,
     if(norm>2){s[0]*=2/norm;s[1]*=2/norm;}
     double step=1; Point next; std::array<double,2> w;
     bool accepted=false;
-    for(int ls=0;ls<35;++ls){
-      w={{v[0]+step*s[0],v[1]+step*s[1]}};next=get(w);
+    for(int ls=0;ls<maxit;++ls){
+      w={{v[0]+step*s[0],v[1]+step*s[1]}};
+      if(w==v)break;
+      next=get(w);
       if(next.ok && next.ll>=cur.ll+1e-4*d.n*step*(s[0]*g[0]+s[1]*g[1])){accepted=true;break;}
       step*=0.5;
     }
@@ -208,6 +219,7 @@ inline Gb2Result gb2_mle(span x,double tol=1e-7,int maxit=300,
     double a=std::numeric_limits<double>::quiet_NaN(),
     double p=std::numeric_limits<double>::quiet_NaN(),
     double b=std::numeric_limits<double>::quiet_NaN()) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const double nan=std::numeric_limits<double>::quiet_NaN();
   Gb2Result bad{q,a,p,b,nan,0,Gb2Status::InvalidData};
   for(double v:{q,a,p,b}) if(!std::isnan(v) && (!(v>0)||!std::isfinite(v))){bad.status=Gb2Status::InvalidFixed;return bad;}
@@ -292,14 +304,32 @@ inline Gb2Result gb2_mle(span x,double tol=1e-7,int maxit=300,
   };
   if(std::isnan(b)) {
     if(std::isnan(q)) {
-      const auto gg=trgamma_fit_log(span{logs.data(),logs.size()},1e-10,100,p,a);
+      const auto gg=trgamma_fit_log(span{logs.data(),logs.size()},1e-10,maxit,p,a);
+      if(gg.stop_detail.budget_exhausted) {
+        Gb2Result out{nan,nan,nan,nan,gg.logLik,gg.iterations,Gb2Status::CertificateBudget,gg.stop_detail};
+        for(auto& c:out.stop_detail.candidates)if(c.model==StopModel::None)c.model=StopModel::Trgamma;
+        return out;
+      }
       face_failure=face_failure||gg.status==TrGammaStatus::IterationFailure;
       consider(gg.logLik,gg.status==TrGammaStatus::LognormalBoundary?Gb2Status::LognormalBoundary:
         gg.status==TrGammaStatus::PowerBoundary?Gb2Status::PowerBoundary:Gb2Status::TrGammaBoundary);
     }
     if(std::isnan(p)) {
       std::vector<double> neg=logs;for(double &v:neg)v=-v;
-      const auto gg=trgamma_fit_log(span{neg.data(),neg.size()},1e-10,100,q,a);
+      const auto gg=trgamma_fit_log(span{neg.data(),neg.size()},1e-10,maxit,q,a);
+      if(gg.stop_detail.budget_exhausted) {
+        const double jac=-2*d.sum;
+        Gb2Result out{nan,nan,nan,nan,gg.logLik+jac,gg.iterations,Gb2Status::CertificateBudget,gg.stop_detail};
+        out.stop_detail.loglik_lower+=jac;out.stop_detail.loglik_upper+=jac;
+        out.stop_detail.limit_loglik+=jac;
+        for(auto& c:out.stop_detail.candidates) {
+          if(c.model==StopModel::None && c.coef.size()==3){c.model=StopModel::InvTrgamma;c.coef[2]=1/c.coef[2];}
+          c.loglik_lower+=jac;c.loglik_upper+=jac;
+        }
+        if(out.stop_detail.limit_model==StopModel::Lnorm && out.stop_detail.limit_coef.size()==2)out.stop_detail.limit_coef[0]=-out.stop_detail.limit_coef[0];
+        if(out.stop_detail.limit_model==StopModel::Power && out.stop_detail.limit_coef.size()==2){out.stop_detail.limit_model=StopModel::Pareto;out.stop_detail.limit_coef={out.stop_detail.limit_coef[1],1/out.stop_detail.limit_coef[0]};}
+        return out;
+      }
       face_failure=face_failure||gg.status==TrGammaStatus::IterationFailure;
       consider(gg.logLik-2*d.sum,gg.status==TrGammaStatus::LognormalBoundary?Gb2Status::LognormalBoundary:
         gg.status==TrGammaStatus::PowerBoundary?Gb2Status::ParetoBoundary:Gb2Status::InvTrGammaBoundary);
@@ -344,11 +374,11 @@ inline Gb2Result gb2_mle(span x,double tol=1e-7,int maxit=300,
       }
     }
     const span seed=seed_data.empty()?x:span{seed_data.data(),seed_data.size()};
-    const auto bu=burr_mle_legacy(seed,1e-8,300);
+    const auto bu=burr_mle_legacy(seed,1e-8,maxit);
     if(bu.status==BurrStatus::Ok) starts.push_back({{0,std::log(bu.shape1)}});
-    const auto ib=invburr_mle(seed,1e-8,300);
+    const auto ib=invburr_mle(seed,1e-8,maxit);
     if(ib.status==InvBurrStatus::Ok) starts.push_back({{std::log(ib.shape1),0}});
-    const auto bp=betapr_mle(seed);
+    const auto bp=betapr_mle(seed,1e-6,maxit);
     if(bp.status==BetaPrimeStatus::Ok) starts.push_back({{std::log(bp.alpha),std::log(bp.beta)}});
   }
   if(!std::isnan(p)||!std::isnan(q)) {
@@ -360,14 +390,14 @@ inline Gb2Result gb2_mle(span x,double tol=1e-7,int maxit=300,
   gb2_detail::Point best;
   int evals=0;double box=8, searched_box=8;
   bool explored=false;
-  for(int expansion=0;expansion<3;++expansion) {
+  for(int expansion=0;expansion<maxit;++expansion) {
     searched_box=box;
     // Give every grid/member/face seed a short exploration, then spend the
     // full budget on distinct promising basins rather than repeatedly
     // following the same long, flat escape from many seeds.
     std::vector<gb2_detail::Point> basins;
     for(auto v:starts) {
-      const auto candidate=gb2_detail::refine(d,v,p,q,a,b,box,std::min(20,maxit),evals);
+      const auto candidate=gb2_detail::refine(d,v,p,q,a,b,box,maxit,evals);
       if(candidate.ok) {
         basins.push_back(candidate);
         if(candidate.ll>best.ll)best=candidate;
@@ -390,7 +420,13 @@ inline Gb2Result gb2_mle(span x,double tol=1e-7,int maxit=300,
     }
     const bool edge=(std::isnan(p)&&std::abs(std::log(best.p))>box-0.2)||
                     (std::isnan(q)&&std::abs(std::log(best.q))>box-0.2);
-    if(!edge)break;
+    if(!edge || basins.empty())break;
+    // Once an explored outward proposal is dominated by a resolved face,
+    // the existing final face comparison can decide without more boxes.
+    if(explored && !face_failure && face>=best.ll-1e-8*d.n)break;
+    // Beyond this representable domain exp(box) cannot supply a finite
+    // proposal. The final edge gate still returns SearchUnresolved.
+    if(box>std::log(std::numeric_limits<double>::max())-3)break;
     starts={{{std::log(best.p),std::log(best.q)}},{{-box,-box}},{{box,box}},{{-box,box}},{{box,-box}}};
     box+=3;
   }

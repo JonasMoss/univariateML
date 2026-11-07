@@ -14,6 +14,7 @@
 // Escapes are exact data conditions (sample range; see README limits).
 
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../../core/discrete_stop.hpp"
 
 #include "../../core/span.hpp"
@@ -202,6 +203,7 @@ inline double loglik(const Problem &P, double a) {
 // Requires a positive count. Bracket by doubling steps, then Newton with
 // bisection safeguard.
 inline bool inner_root(const Problem &P, double &a, int maxit, int &evals) {
+  maxit = static_cast<int>(solver_budget(maxit));
   double f, df;
   inner_eval(P, a, f, df);
   ++evals;
@@ -211,7 +213,7 @@ inline bool inner_root(const Problem &P, double &a, int maxit, int &evals) {
   const bool up = f > 0;
   double lo = a, hi = a, flo = f, fhi = f, dlo = df, dhi = df, step = 1;
   for (int i = 0;; ++i, step *= 2) {
-    if (i > 64) return false;
+    if (i >= maxit) return false;
     const double y = up ? hi + step : lo - step;
     double fy, dy;
     inner_eval(P, y, fy, dy);
@@ -252,6 +254,7 @@ inline bool inner_root(const Problem &P, double &a, int maxit, int &evals) {
 template <typename G>
 inline bool brent_root(G &&g, double a, double b, double fa, double fb,
                        double tol, int maxit, double &root, int &iter) {
+  maxit = static_cast<int>(solver_budget(maxit));
   double c = a, fc = fa, d = b - a, e = d;
   constexpr double eps = std::numeric_limits<double>::epsilon();
   for (iter = 0; iter < maxit; ++iter) {
@@ -289,6 +292,7 @@ inline bool brent_root(G &&g, double a, double b, double fa, double fb,
 template <typename G>
 inline bool decreasing_root(G &&g, double tol, int maxit, double &root,
                             int &iter) {
+  maxit = static_cast<int>(solver_budget(maxit));
   double u = 0, gu = g(u);
   if (std::isnan(gu)) return false;
   if (gu == 0) { root = 0; iter = 0; return true; }
@@ -310,6 +314,7 @@ inline bool decreasing_root(G &&g, double tol, int maxit, double &root,
 // Fit beta with alpha = log(-log q) held: strictly concave in beta, and
 // the score changes sign when max(x) >= 2. Uncentred (logc = 0).
 inline DweibullResult held_q_fit(Problem &P, double q, double tol, int maxit) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const double nan = std::numeric_limits<double>::quiet_NaN();
   const double alpha = std::log(-std::log(q));
   P.centre(0);
@@ -336,6 +341,7 @@ inline DweibullResult held_q_fit(Problem &P, double q, double tol, int maxit) {
 // return. shape1 == 1 cannot be returned at all.
 inline DweibullResult finish(Problem &P, double a, double beta, int iterations,
                              bool refit, double tol, int maxit) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const double nan = std::numeric_limits<double>::quiet_NaN();
   const double t = std::exp(a - beta * P.logc);
   const double q = std::exp(-t);
@@ -357,6 +363,7 @@ inline DweibullResult dweibull_mle(
     span x, double tol = 1e-12, int maxit = 200,
     double shape1 = std::numeric_limits<double>::quiet_NaN(),
     double shape2 = std::numeric_limits<double>::quiet_NaN()) {
+  maxit = static_cast<int>(solver_budget(maxit));
   auto stopped = [&]() -> DweibullResult {
   const double nan = std::numeric_limits<double>::quiet_NaN();
   DweibullResult bad{nan, nan, nan, 0, DweibullStatus::InvalidData};

@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../zmpois/profile.hpp"
 namespace cppunivariate {
 // Status and result types retain the shared factorised likelihood contract.
@@ -6,6 +7,7 @@ typedef zero_detail::ModifiedStatus ZmbinomStatus;
 typedef zero_detail::ModifiedResult ZmbinomResult;
 inline ZmbinomResult zmbinom_mle(ispan x, double tol=1e-10,int maxit=200,double fixed_size=std::numeric_limits<double>::quiet_NaN(),
  double fixed_prob=std::numeric_limits<double>::quiet_NaN(),double fixed_p0=std::numeric_limits<double>::quiet_NaN()) {
+  maxit = static_cast<int>(solver_budget(maxit));
 
  ZmbinomResult out{1,1,.5,0,0,0,ZmbinomStatus::InvalidInput};
  if(x.size()==0 || !(tol>0) || !std::isfinite(tol) || maxit<1)return out;

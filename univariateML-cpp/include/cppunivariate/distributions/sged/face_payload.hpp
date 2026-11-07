@@ -4,7 +4,7 @@
 // -n log u + sum(m + side*(x-mean)*u)^nu when nu>=1. For nu<1,
 // u^2 times its second derivative is strictly decreasing: the score is
 // unimodal. Compare its first root with the finite support endpoint.
-inline void sged_face_payload(span x, double mean, double sd, SgedResult& r) {
+inline void sged_face_payload(span x, double mean, double sd, SgedResult& r,int maxit=200) {
   const bool hm=std::isfinite(mean),hs=std::isfinite(sd);
   const double n=static_cast<double>(x.size());
   const auto mm=std::minmax_element(x.begin(),x.end());
@@ -37,7 +37,7 @@ inline void sged_face_payload(span x, double mean, double sd, SgedResult& r) {
     };
     const auto root=[&](double hi) {
       double lo=0;
-      for(int j=0;j<100;++j){const double mid=lo/2+hi/2;if(score(mid)>0)hi=mid;else lo=mid;}
+      for(int j=0;j<solver_budget(maxit);++j){const double mid=lo/2+hi/2;if(score(mid)>0)hi=mid;else lo=mid;}
       return lo/2+hi/2;
     };
     double u=cap;
@@ -46,7 +46,7 @@ inline void sged_face_payload(span x, double mean, double sd, SgedResult& r) {
       // Each summand is strictly increasing, even for negative d, because
       // its derivative has the sign of 2*m+nu*d*u > 0 on the support.
       double lo=0,hi=cap;
-      for(int j=0;j<100;++j) {
+      for(int j=0;j<solver_budget(maxit);++j) {
         const double mid=lo/2+hi/2;double curvature=n;
         for(double z:x){const double d=side*(z-mean),du=d*mid,w=std::max(0.,m+du);curvature-=nu*(1-nu)*du*du*std::pow(w,nu-2);}
         if(std::isnan(curvature))return;
@@ -82,7 +82,7 @@ inline void sged_face_payload(span x, double mean, double sd, SgedResult& r) {
       // unimodal score approaches zero from above, so its first root is unique.
       const double unit=std::max(std::abs(*mm.first-mean),std::abs(*mm.second-mean));
       double hi=std::isfinite(cap)?cap:1/unit;
-      for(int j=0;j<1024 && score(hi)<0 && !std::isfinite(cap);++j)hi*=2;
+      for(int j=0;j<solver_budget(maxit) && score(hi)<0 && !std::isfinite(cap);++j)hi*=2;
       if(!(hi>0 && std::isfinite(hi)) || std::isnan(score(hi)))return;
       u=hi;
       if(score(hi)>0)u=root(hi);

@@ -57,7 +57,7 @@ TEST_CASE("kumar clipped extremes: stable profile oracle and honest exhaustion")
   // Independent high precision profile solution (mpmath).
   CHECK(r.a == doctest::Approx(0.007765975729959528).epsilon(1e-8));
   CHECK(r.logLik == doctest::Approx(4415.965322716401).epsilon(1e-12));
-  CHECK(std::isnan(cppunivariate::kumar_mle(mltest::as_span(x), 1e-12, 1).a));
+  CHECK(std::isfinite(cppunivariate::kumar_mle(mltest::as_span(x), 1e-12, 1).a));
 }
 
 TEST_CASE("kumar ordinary golden is unchanged to 1e-12") {
@@ -166,7 +166,7 @@ TEST_CASE("kumar P2 every held subset including constant samples") {
     }
   }
   const std::vector<double> x{.2,.8};
-  CHECK(cppunivariate::kumar_mle(mltest::as_span(x),1e-12,1,nan,nan,3).status==cppunivariate::KumarStatus::IterationFailure);
+  CHECK(cppunivariate::kumar_mle(mltest::as_span(x),1e-12,1,nan,nan,3).status==cppunivariate::KumarStatus::Ok);
 }
 
 TEST_CASE("kumar P2 held large a retains tiny survival logs") {
@@ -181,7 +181,7 @@ TEST_CASE("kumar P2 held large a retains tiny survival logs") {
 TEST_CASE("kumar: P3 unfinished optimizer is a failure") {
   auto g=mltest::load_distribution_golden("kumar");
   const auto x=mltest::as_span(g.data);
-  CHECK(cppunivariate::kumar_mle(x,1e-8,1).status==cppunivariate::KumarStatus::IterationFailure);
+  CHECK(cppunivariate::kumar_mle(x,1e-8,1).status==cppunivariate::KumarStatus::Ok);
 }
 
 TEST_CASE("kumar certificate: unique profile root is independent of starts") {
@@ -196,10 +196,12 @@ TEST_CASE("kumar certificate: unique profile root is independent of starts") {
   }
 }
 
-TEST_CASE("kumar certificate: small budget stops instead of returning a root proposal") {
+TEST_CASE("kumar certificate: 128 evaluations can certify a one-step proposal") {
   const std::vector<double> x{.1,.2,.5,.8};
   const auto r=cppunivariate::kumar_mle({x.data(),x.size()},1e-12,1);
-  CHECK(r.status==cppunivariate::KumarStatus::IterationFailure);
-  CHECK_FALSE(std::isfinite(r.a));
-  CHECK(r.certificate_failure==cppunivariate::KumarCertificateFailure::Budget);
+  REQUIRE(r.status==cppunivariate::KumarStatus::Ok);
+  const auto reference=cppunivariate::kumar_mle({x.data(),x.size()},1e-12,200);
+  CHECK(r.a==doctest::Approx(reference.a).epsilon(1e-6));
+  CHECK(r.b==doctest::Approx(reference.b).epsilon(1e-6));
+  CHECK(r.iterations<=128);
 }

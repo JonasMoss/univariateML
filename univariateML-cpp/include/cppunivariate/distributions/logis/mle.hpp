@@ -8,6 +8,7 @@
 // engine of Log-Logistic via a log-transform.
 
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "cppunivariate/core/constants.hpp"
 #include "../../core/precision.hpp"
 
@@ -98,6 +99,7 @@ struct LogisticCost {
 };
 
 inline LogisticResult logistic_mle(span x, double tol, int maxit) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const std::size_t n = x.size();
 
   const double nan = std::numeric_limits<double>::quiet_NaN();
@@ -167,7 +169,7 @@ inline LogisticResult logistic_mle(span x, double tol, int maxit) {
     const double old = cost(current);
     double step = 1.0;
     bool accepted = false;
-    for (int ls = 0; ls < 60; ++ls) {
+    for (int ls = 0; ls < maxit; ++ls) {
       const double candidate[] = {mu + step * dmu, std::exp(theta + step * dtheta)};
       if (std::isfinite(candidate[0]) && std::isfinite(candidate[1]) &&
           candidate[1] > 0.0 && std::isfinite(cost(candidate)) && cost(candidate) <= old) {
@@ -196,6 +198,7 @@ inline LogisticResult logistic_mle(span x, double tol, int maxit) {
 
 // Both conditional scores are monotone: bisect the unique root.
 inline LogisticResult logistic_mle(span x,double tol,int maxit,double location,double scale) {
+  maxit = static_cast<int>(solver_budget(maxit));
   if(std::isnan(location)&&std::isnan(scale))return logistic_mle(x,tol,maxit);
   const double nan=std::numeric_limits<double>::quiet_NaN();
   LogisticResult bad{nan,nan,nan,0,LogisticStatus::InvalidInput};

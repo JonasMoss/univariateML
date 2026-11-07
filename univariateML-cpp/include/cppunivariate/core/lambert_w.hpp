@@ -5,6 +5,7 @@
 // series approximation near 0 on the principal branch.
 
 #pragma once
+#include "work_budget.hpp"
 
 #include <cmath>
 
@@ -12,6 +13,7 @@ namespace cppunivariate {
 
 // Shared refinement; the initial value selects the real branch.
 inline double lambertw_refine(double z, double w, double tol, int maxit) {
+  maxit=static_cast<int>(solver_budget(maxit));
   for (int i = 0; i < maxit; ++i) {
     const double e = std::exp(w);
     const double f = w * e - z;

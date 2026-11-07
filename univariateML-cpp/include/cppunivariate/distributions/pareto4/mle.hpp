@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../burr/mle.hpp"
 #include <vector>
 #include <cmath>
@@ -8,6 +9,7 @@ struct Pareto4Result { double shape1,shape2,scale,min,logLik; int iterations; Bu
 inline Pareto4Result pareto4_mle_certified(span x, double min, double tol, int maxit);
 
 inline Pareto4Result pareto4_mle(span x, double min, double tol, int maxit, double scale=std::numeric_limits<double>::quiet_NaN(), double shape1=std::numeric_limits<double>::quiet_NaN(), double shape2=std::numeric_limits<double>::quiet_NaN()) {
+  maxit = static_cast<int>(solver_budget(maxit));
   if(std::isnan(scale) && std::isnan(shape1) && std::isnan(shape2))
     return pareto4_mle_certified(x,min,tol,maxit);
   std::vector<double> y(x.size());
@@ -38,6 +40,7 @@ inline Pareto4Result pareto4_mle(span x, double min, double tol, int maxit, doub
 }
 // Certified joint excess fit shared by the public all-free regular path.
 inline Pareto4Result pareto4_mle_certified(span x, double min, double tol, int maxit) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const double nan=std::numeric_limits<double>::quiet_NaN();
   if(!std::isfinite(min))
     return {nan,nan,nan,min,nan,0,BurrStatus::InvalidInit};

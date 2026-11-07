@@ -7,6 +7,7 @@
 // where f_unit is the standardised GED used by dged().
 
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
 #include "../../core/face_compare.hpp"
 #include "../../core/precision.hpp"
@@ -141,6 +142,7 @@ struct GedFitCost {
 };
 
 inline GedResult ged_mle_impl(span x, double tol, int maxit) {
+  maxit = static_cast<int>(solver_budget(maxit));
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
   if (n < 2) return {kNaN, kNaN, kNaN, kNaN, 0, GedStatus::InvalidStart};
@@ -215,6 +217,7 @@ namespace ged_detail {
 struct Maximum {double point;bool converged;};
 template <typename F>
 inline Maximum maximize(F f,const std::vector<double>& grid,double tol,int maxit) {
+  maxit = static_cast<int>(solver_budget(maxit));
   double best=grid.front(),value=f(best);bool converged=grid.size()==1;
   for(std::size_t j=0;j<grid.size();++j) {
     const double v=f(grid[j]);if(v>value){value=v;best=grid[j];converged=false;}
@@ -232,7 +235,8 @@ inline Maximum maximize(F f,const std::vector<double>& grid,double tol,int maxit
   return {best,converged};
 }
 
-inline GedResult conditional(span x,double nu,double mean,double sd) {
+inline GedResult conditional(span x,double nu,double mean,double sd,int maxit=200) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const double nan=std::numeric_limits<double>::quiet_NaN();
   if(x.empty())return {nan,nan,nu,nan,0,GedStatus::InvalidStart};
   std::vector<double> y(x.begin(),x.end());for(double v:y)if(!std::isfinite(v))return {nan,nan,nu,nan,0,GedStatus::InvalidStart};std::sort(y.begin(),y.end());
@@ -252,7 +256,8 @@ inline GedResult conditional(span x,double nu,double mean,double sd) {
     else {
       double lo=y.front(),hi=y.back();
 
-      for(int it=0;it<100;++it){const double mid=lo/2+hi/2;const double unit=std::max(std::max(std::abs(y.front()-mid),std::abs(y.back()-mid)),std::numeric_limits<double>::denorm_min());CPPUNIV_EXTENDED_REAL score=0;for(double v:y){const double d=(v-mid)/unit;score+=(d>0?1:-1)*std::pow(std::abs(d),nu-1);}if(score>0)lo=mid;else hi=mid;}
+      for(int it=0;it<maxit;++it){const double mid=lo/2+hi/2;const double unit=std::max(std::max(std::abs(y.front()-mid),std::abs(y.back()-mid)),std::numeric_limits<double>::denorm_min());CPPUNIV_EXTENDED_REAL score=0;for(double v:y){const double d=(v-mid)/unit;score+=(d>0?1:-1)*std::pow(std::abs(d),nu-1);}if(score>0)lo=mid;else hi=mid;}
+      if(hi-lo>1e-10*(y.back()-y.front()))return {nan,nan,nu,nan,maxit,GedStatus::BfgsFailure};
       m=lo/2+hi/2;
     }
   }
@@ -268,18 +273,19 @@ inline GedResult conditional(span x,double nu,double mean,double sd) {
 }
 }
 inline GedResult ged_mle_impl(span x,double tol,int maxit,double mean,double sd,double nu) {
+  maxit = static_cast<int>(solver_budget(maxit));
   if(std::isnan(mean)&&std::isnan(sd)&&std::isnan(nu))return ged_mle_impl(x,tol,maxit);
   const double nan=std::numeric_limits<double>::quiet_NaN();
   if(!std::isnan(nu)) {
     if(!std::isfinite(nu)||nu<=0)return {nan,nan,nu,nan,0,GedStatus::InvalidShape};
-    return ged_detail::conditional(x,nu,mean,sd);
+    return ged_detail::conditional(x,nu,mean,sd,maxit);
   }
   if(x.empty()||!(tol>0)||maxit<1)return {nan,nan,nan,nan,0,GedStatus::InvalidStart};
   std::vector<double> grid;for(double t=-12;t<=12;t+=.4)grid.push_back(t);
-  auto profile=[&](double t){return ged_detail::conditional(x,1+std::exp(t),mean,sd);};
+  auto profile=[&](double t){return ged_detail::conditional(x,1+std::exp(t),mean,sd,maxit);};
   const auto optimum=ged_detail::maximize([&](double a){return profile(a).logLik;},grid,1e-8,maxit);
   if(!optimum.converged)return {nan,nan,nan,nan,maxit,GedStatus::BfgsFailure};
-  auto best=profile(optimum.point);const auto laplace=ged_detail::conditional(x,1,mean,sd);const double tie=1e-8*x.size();
+  auto best=profile(optimum.point);const auto laplace=ged_detail::conditional(x,1,mean,sd,maxit);const double tie=1e-8*x.size();
   if(face_numerical_tie(laplace.logLik,best.logLik,tie)) {
     best.status=GedStatus::BfgsFailure;
     best.stop_detail=comparison_detail({{laplace.mu,laplace.sigma,laplace.nu},laplace.logLik,laplace.logLik,StopModel::None},{{best.mu,best.sigma,best.nu},best.logLik,best.logLik,StopModel::None});return best;
@@ -306,11 +312,13 @@ inline GedResult ged_mle_impl(span x,double tol,int maxit,double mean,double sd,
 }
 
 inline GedResult ged_mle(span x,double tol,int maxit) {
+  maxit = static_cast<int>(solver_budget(maxit));
   auto r=ged_mle_impl(x,tol,maxit);
   if(r.status==GedStatus::Ok && (true) && r.nu==kGedNuLower) r.restricted|=16u;
   return r;
 }
 inline GedResult ged_mle(span x,double tol,int maxit,double mean,double sd,double nu) {
+  maxit = static_cast<int>(solver_budget(maxit));
   auto r=ged_mle_impl(x,tol,maxit,mean,sd,nu);
   if(r.status==GedStatus::Ok && (std::isnan(nu)) && r.nu==kGedNuLower) r.restricted|=16u;
   return r;

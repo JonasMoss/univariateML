@@ -112,3 +112,21 @@ TEST_CASE("skellam: certified profile dominates a dense finite grid") {
     }
   }
 }
+
+TEST_CASE("skellam: tail-cover budget retains the feasible rate witness") {
+  const std::vector<double> x{-1e9,0,1e9};
+  const auto r=cppunivariate::skellam_mle({x.data(),x.size()},1e-9,1);
+  CHECK(r.status==cppunivariate::SkellamStatus::IterationFailure);
+  REQUIRE(r.stop_detail.budget_exhausted);
+  REQUIRE(r.stop_detail.candidates.size()==1);
+  const auto& c=r.stop_detail.candidates.front();
+  REQUIRE(c.coef.size()==2);
+  CHECK(c.coef[0]>0);
+  CHECK(c.coef[1]>0);
+  double ll=0;
+  for(double v:x)ll+=cppunivariate::distributions::dskellam(v,c.coef[0],c.coef[1],true);
+  CHECK(ll>=c.loglik_lower);
+  CHECK(ll<=c.loglik_upper);
+  CHECK(std::isfinite(r.stop_detail.loglik_lower));
+  CHECK(r.stop_detail.loglik_upper==INFINITY);
+}

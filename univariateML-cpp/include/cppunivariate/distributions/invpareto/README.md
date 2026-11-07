@@ -28,7 +28,7 @@ r:
     scale: Optional held scale; NULL estimates it.
     scale0: Optional positive finite starting value; NULL uses the automatic start.
     reltol: Tolerance for the underlying fit.
-    iterlim: Maximum number of iterations.
+    iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations."
 log_density: log(shape) + log(scale) - 2*log(x) - (shape+1)*log(1+scale/x)
 limits:
   - model: invexp

@@ -36,7 +36,7 @@ r:
   sampler: rbnbinom
   control:
     gradtol: "Scalar log-parameter bracket width (at most 1e-8); otherwise tolerance on the average log likelihood score in log parameters."
-    iterlim: "Scalar certificate refinement iterations and evaluation budget; otherwise maximum BFGS iterations per deterministic start."
+    iterlim: "Work limit: 1 * min(iterlim, 100000) solver iterations per solve (scalar refinement, or BFGS per deterministic start); 128 * min(iterlim, 100000) certificate evaluations per scalar or negative-binomial face certificate."
 log_density: "loggamma(size+x)-loggamma(size)-loggamma(x+1)+loggamma(alpha+size)+loggamma(beta+x)-loggamma(alpha+size+beta+x)-loggamma(alpha)-loggamma(beta)+loggamma(alpha+beta)"
 limits:
   - model: nbinom
@@ -216,3 +216,7 @@ records validation and the multivariate certification gaps.
 ## R notes
 
 Supply `size`, `alpha` or `beta` to hold that coefficient. A detected negative binomial limit recommends `mlnbinom`, holding its size at the supplied `size` or `beta` when either was held. A Poisson limit or all-zero free fit recommends `mlpois`. The multivariate search and limit comparisons do not certify a global maximum. One-free-shape fits use the scalar certificate below; its budget and arithmetic stops carry finite diagnostic witnesses when available.
+
+An unresolved negative-binomial face is not replaced by the Poisson face:
+its certificate failure and any retained face witnesses propagate to the
+parent fit. Both face solvers use the caller's iteration allowance.

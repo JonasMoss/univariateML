@@ -34,7 +34,7 @@ r:
     shape1: Known positive finite coefficient; NULL estimates it.
     abstol: Absolute Newton step tolerance in `log(shape2)` when scale is fixed.
     gradtol: Positive legacy gradient tolerance; all-free certification uses fixed conservative enclosures.
-    iterlim: Maximum proposal iterations (at most 120 per bracketed solve); the global certificate has a separate 4096-profile budget.
+    iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations."
     shape10: Optional positive historical starting shape1; checked for compatibility.
     shape20: Optional positive historical starting shape2; checked for compatibility.
     scale0: Optional positive historical starting scale; checked for compatibility.
@@ -222,7 +222,7 @@ rational evidence in the linked research work; that evidence does not make
 every production run an exact rational proof.
 
 Invalid domains, failed brackets, nonfinite evaluations and failed linear
-solves stop with explicit failure. The global budget is 4096 cached profiles;
+solves stop with explicit failure. The global budget is `128 * min(iterlim, 100000)` cached profiles;
 tail searches, root refinements and bracket solves are also bounded. Exhaustion
 returns `CertificateBudget`; a sign-uncertain seam or unresolved tie returns
 `CertificateTie`; other arithmetic/proposal failures return `NumericalFailure`.

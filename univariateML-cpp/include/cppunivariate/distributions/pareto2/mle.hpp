@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../burr/mle.hpp"
 #include "../lomax/mle.hpp"
 #include <vector>
@@ -7,6 +8,7 @@ namespace cppunivariate {
 struct Pareto2Result { double shape,scale,min,logLik; int iterations; LomaxStatus status; StopDetail stop_detail{}; LomaxCertificateFailure certificate_failure = LomaxCertificateFailure::None; };
 
 inline Pareto2Result pareto2_mle(span x, double min, double tol, int maxit, double shape=std::numeric_limits<double>::quiet_NaN(), double scale=std::numeric_limits<double>::quiet_NaN()) {
+  maxit = static_cast<int>(solver_budget(maxit));
   std::vector<double> y(x.size());
   for (std::size_t i=0;i<x.size();++i) y[i]=(x[i]-min);
   bool valid=tol>0 && std::isfinite(tol) && maxit>0 && std::isfinite(min);

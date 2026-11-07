@@ -21,6 +21,7 @@ inline FitResult fit_cauchy(cppunivariate::span x, Held location_arg = {}, Held 
   if(scale.supplied)fixed.push_back("scale");
 
   cppunivariate::CauchyResult res = cppunivariate::fit_cauchy(x,abstol,iterlim,held_location,held_scale);
+  if(res.stop_detail.budget_exhausted)return stop_failure(failure("Conditional fit did not converge: numerical certificate work budget exhausted. Raising iterlim may resolve this stop."),res.stop_detail,"budget",{"location","scale"});
   if(res.status==cppunivariate::CauchyStatus::NoMLE && location.supplied)
     return stop_failure(fail("With location held the Cauchy scale MLE does not exist when at least half the observations equal that location."),res.stop_detail,"nomle",{"location","scale"},"");
   if (res.status == cppunivariate::CauchyStatus::NoMLE)

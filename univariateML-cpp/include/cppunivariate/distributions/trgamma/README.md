@@ -34,7 +34,7 @@ r:
     shape2: Known positive finite coefficient; NULL estimates it.
     shape1: Known positive finite coefficient; NULL estimates it.
     reltol: Tolerance in `log(shape2)` for the one-dimensional profile search (free `shape2`).
-    iterlim: Maximum number of iterations per root of the profile score.
+    iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations."
 log_density: log(shape2) + shape1*shape2*log(x/scale) - (x/scale)**shape2 - log(x) - loggamma(shape1)
 limits:
   - name: fixed-endpoint power face
@@ -168,3 +168,7 @@ The C++ face helper `trgamma_faces_log` accepts logarithms of observations
 and returns the maximised lognormal and power likelihoods and their fitted
 parameters. The derivation and numerical search qualifications are in
 `dev/research/evaluations/2026-10-29-trgamma-derivation.md` in the source tree.
+
+The free transformed-gamma certificate shares its segment allowance across all initial grid cells. Exhaustion retains the best represented finite profile and the computed lognormal or power face; a depth cutoff is not used as a substitute for excluding an unresolved interval.
+
+An inner gamma-shape proposal is accepted only when its represented shape has relative equation residual at most `1e-12`; exhaustion without that check is a numerical failure. A failed profile or root refinement cannot be replaced by a face comparison. This is a numerical residual gate, not a proof that floating-point profile bounds are outward rounded.

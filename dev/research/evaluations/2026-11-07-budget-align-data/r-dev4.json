@@ -1,0 +1,11 @@
+{
+  "command": [
+    "just",
+    "test"
+  ],
+  "machine": "workstation",
+  "returncode": 0,
+  "wall_seconds": 464.3647246360779,
+  "started_utc": "2026-11-06T18:09:49.658902+00:00",
+  "revision": "f8f65f9b080c394d11ca9dc178a93219fffee210"
+}

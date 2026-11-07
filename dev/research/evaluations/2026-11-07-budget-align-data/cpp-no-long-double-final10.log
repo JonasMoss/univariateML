@@ -1,0 +1,191 @@
+-- Boost.Math headers: /home/jmoss/R/x86_64-pc-linux-gnu-library/4.6/BH/include
+-- Configuring done (0.0s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/jmoss/umvl-wt/budget-align/build/cpp-no-long-double
+[  2%] Built target tails_tests
+[  3%] Built target bfgs_tests
+[  5%] Built target sample_tests
+[  7%] Built target no_throw_tests
+[  9%] Built target cmp_tests
+[ 10%] Building CXX object tests/CMakeFiles/diagnostics_tests.dir/home/jmoss/umvl-wt/budget-align/dev/validation/diagnostics-audit.cpp.o
+[ 11%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/burr/test.cpp.o
+[ 11%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/cmb/test.cpp.o
+[ 12%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/beta/test.cpp.o
+[ 13%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/fatigue/test.cpp.o
+[ 14%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/ged/test.cpp.o
+[ 15%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/gompertz/test.cpp.o
+In file included from ../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/mle.hpp:4,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/std/mle.hpp:17,
+                 from ../../../univariateML-cpp/include/cppunivariate/cppunivariate.hpp:67,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/fatigue/test.cpp:2:
+../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp: In function ‘bool cppunivariate::t_cert_detail::data(cppunivariate::span, Data&)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp:140:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |   ^~~
+../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp:140:42: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |                                          ^
+../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp: In function ‘bool cppunivariate::t_cert_detail::inverse(const System&, int, std::array<std::array<double, 3>, 3>&)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp:161:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp:161:51: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |                                                   ^~~
+[ 16%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/invburr/test.cpp.o
+In file included from ../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/mle.hpp:4,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/std/mle.hpp:17,
+                 from ../../../univariateML-cpp/include/cppunivariate/cppunivariate.hpp:67,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/ged/test.cpp:2:
+../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp: In function ‘bool cppunivariate::t_cert_detail::data(cppunivariate::span, Data&)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp:140:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |   ^~~
+../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp:140:42: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |                                          ^
+../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp: In function ‘bool cppunivariate::t_cert_detail::inverse(const System&, int, std::array<std::array<double, 3>, 3>&)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp:161:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp:161:51: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |                                                   ^~~
+[ 17%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/kumar/test.cpp.o
+[ 18%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/snorm/test.cpp.o
+In file included from ../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/mle.hpp:4,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/std/mle.hpp:17,
+                 from ../../../univariateML-cpp/include/cppunivariate/cppunivariate.hpp:67,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/beta/test.cpp:2:
+../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp: In function ‘bool cppunivariate::t_cert_detail::data(cppunivariate::span, Data&)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp:140:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |   ^~~
+../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp:140:42: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |                                          ^
+../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp: In function ‘bool cppunivariate::t_cert_detail::inverse(const System&, int, std::array<std::array<double, 3>, 3>&)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp:161:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp:161:51: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |                                                   ^~~
+In file included from ../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/mle.hpp:4,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/std/mle.hpp:17,
+                 from ../../../univariateML-cpp/include/cppunivariate/cppunivariate.hpp:67,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/burr/test.cpp:2:
+../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp: In function ‘bool cppunivariate::t_cert_detail::data(cppunivariate::span, Data&)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp:140:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |   ^~~
+../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp:140:42: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |                                          ^
+../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp: In function ‘bool cppunivariate::t_cert_detail::inverse(const System&, int, std::array<std::array<double, 3>, 3>&)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp:161:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp:161:51: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |                                                   ^~~
+[ 19%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/std/test.cpp.o
+In file included from ../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/mle.hpp:4,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/std/mle.hpp:17,
+                 from ../../../univariateML-cpp/include/cppunivariate/cppunivariate.hpp:67,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/gompertz/test.cpp:2:
+../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp: In function ‘bool cppunivariate::t_cert_detail::data(cppunivariate::span, Data&)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp:140:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |   ^~~
+../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp:140:42: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |                                          ^
+../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp: In function ‘bool cppunivariate::t_cert_detail::inverse(const System&, int, std::array<std::array<double, 3>, 3>&)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp:161:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp:161:51: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |                                                   ^~~
+In file included from ../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/mle.hpp:4,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/std/mle.hpp:17,
+                 from ../../../univariateML-cpp/include/cppunivariate/cppunivariate.hpp:67,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/kumar/test.cpp:2:
+../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp: In function ‘bool cppunivariate::t_cert_detail::data(cppunivariate::span, Data&)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp:140:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |   ^~~
+../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp:140:42: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |                                          ^
+../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp: In function ‘bool cppunivariate::t_cert_detail::inverse(const System&, int, std::array<std::array<double, 3>, 3>&)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp:161:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp:161:51: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |                                                   ^~~
+In file included from ../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/mle.hpp:4,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/std/mle.hpp:17,
+                 from ../../../univariateML-cpp/include/cppunivariate/cppunivariate.hpp:67,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/snorm/test.cpp:3:
+../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp: In function ‘bool cppunivariate::t_cert_detail::data(cppunivariate::span, Data&)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp:140:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |   ^~~
+../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp:140:42: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |                                          ^
+../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp: In function ‘bool cppunivariate::t_cert_detail::inverse(const System&, int, std::array<std::array<double, 3>, 3>&)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp:161:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp:161:51: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |                                                   ^~~
+In file included from ../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/mle.hpp:4,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/std/mle.hpp:17,
+                 from ../../../univariateML-cpp/include/cppunivariate/cppunivariate.hpp:67,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/invburr/test.cpp:2:
+../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp: In function ‘bool cppunivariate::t_cert_detail::data(cppunivariate::span, Data&)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp:140:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |   ^~~
+../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp:140:42: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |                                          ^
+../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp: In function ‘bool cppunivariate::t_cert_detail::inverse(const System&, int, std::array<std::array<double, 3>, 3>&)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp:161:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp:161:51: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |                                                   ^~~
+../../../univariateML-cpp/include/cppunivariate/distributions/invburr/test.cpp: In function ‘void DOCTEST_ANON_FUNC_10()’:
+../../../univariateML-cpp/include/cppunivariate/distributions/invburr/test.cpp:54:2: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+   54 |  for (double &v : w) v=1/v; for (double &v : p) v=1/v;
+      |  ^~~
+../../../univariateML-cpp/include/cppunivariate/distributions/invburr/test.cpp:54:29: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+   54 |  for (double &v : w) v=1/v; for (double &v : p) v=1/v;
+      |                             ^~~
+[ 20%] Linking CXX executable distribution_tests
+In file included from ../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/mle.hpp:4,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/std/mle.hpp:17,
+                 from ../../../univariateML-cpp/include/cppunivariate/cppunivariate.hpp:67,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/std/test.cpp:2:
+../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp: In function ‘bool cppunivariate::t_cert_detail::data(cppunivariate::span, Data&)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp:140:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |   ^~~
+../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp:140:42: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |                                          ^
+../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp: In function ‘bool cppunivariate::t_cert_detail::inverse(const System&, int, std::array<std::array<double, 3>, 3>&)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp:161:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/std/../lst/certificate.hpp:161:51: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |                                                   ^~~
+[ 99%] Built target distribution_tests

@@ -3,6 +3,7 @@
 // degeneracy and shape-negative cases are surfaced via the status enum.
 
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../../core/discrete_stop.hpp"
 
 #include "../../core/span.hpp"
@@ -76,6 +77,7 @@ inline HarmonicMoments moments(int N, double s) {
 inline ZipfResult zipf_mle(ispan x, double tol, int maxit,
     double held_N=std::numeric_limits<double>::quiet_NaN(),
     double held_s=std::numeric_limits<double>::quiet_NaN()) {
+  maxit = static_cast<int>(solver_budget(maxit));
   auto stopped = [&]() -> ZipfResult {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
@@ -134,11 +136,12 @@ inline ZipfResult zipf_mle(ispan x, double tol, int maxit,
       return h.l/h.h - sum_lx/dn;
     };
     double lo = 0.0, hi = 1.0;
-    for (int j = 0; j < 20 && score(hi) > 0.0; ++j) hi *= 2.0;
-    for (int j = 0; j < 100; ++j) {
+    for (int j = 0; j < maxit && score(hi) > 0.0; ++j) hi *= 2.0;
+    for (int j = 0; j < maxit; ++j) {
       const double mid = (lo+hi)/2.0;
       if (score(mid)>0.0) lo=mid; else hi=mid;
     }
+    if(!(score(hi)<=0) || hi-lo>1e-10*(1+lo+hi))return {dN,NAN,NAN,maxit,ZipfStatus::IterationFailure};
     shape = (lo+hi)/2.0;
   }
 

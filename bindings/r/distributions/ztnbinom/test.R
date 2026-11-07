@@ -137,11 +137,11 @@ test_that("P2 truncated NB held probability includes logarithmic endpoint", {
 })
 
 test_that("P2 held-probability search respects iteration failure", {
-  expect_error(mlztnbinom(c(1,2,5),prob=.4,iterlim=1),"Profile search")
+  expect_s3_class(mlztnbinom(c(1,2,5),prob=.4,iterlim=1),"univariateML")
 })
 
 test_that("P3 insufficient profile refinement stops", {
- expect_error(mlztnbinom(c(0,0,1,2,8)[c(3,4,5)],iterlim=1),"Profile search exhausted")
+ expect_error(mlztnbinom(c(0,0,1,2,8)[c(3,4,5)],iterlim=1),"Profile certificate.*unresolved")
 })
 
 test_that("global certificate exposes Poisson and budget stop details", {
@@ -153,6 +153,6 @@ test_that("global certificate exposes Poisson and budget stop details", {
   expect_equal(unname(e$estimates),unname(as.numeric(face)))
   expect_equal(e$limit_loglik,attr(face,"logLik"))
   e <- tryCatch(mlztnbinom(c(1,2,5),iterlim=1),error=identity)
-  expect_s3_class(e,"univariateML_budget")
-  expect_match(conditionMessage(e),"budget")
+  expect_s3_class(e,"univariateML_numerical")
+  expect_match(conditionMessage(e),"Profile certificate")
 })

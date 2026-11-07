@@ -23,6 +23,7 @@
 // reciprocal fit passes -log(x) without forming 1/x.
 
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
 #include "../../core/precision.hpp"
 #include "../burr/mle.hpp"
@@ -117,14 +118,15 @@ inline double stirling_remainder(double a) {
 
 // Gamma shape a > 0 solving log(a) - digamma(a) = s > 0: Newton in log(a)
 // (the equation is decreasing and convex there).
-inline double gamma_shape(double s, int &iterations) {
+inline double gamma_shape(double s, int &iterations,int maxit=200) {
+  maxit = static_cast<int>(solver_budget(maxit));
   if (!(s > 0.0) || !std::isfinite(s)) return std::numeric_limits<double>::quiet_NaN();
   double a = s < 3.0
                  ? (3.0 - s + std::sqrt((s - 3.0) * (s - 3.0) + 24.0 * s)) / (12.0 * s)
                  : 1.0 / (s + std::log(s) - kEulerGamma);
   double b = std::log(a);
   int it = 0;
-  for (; it < 60; ++it) {
+  for (; it < solver_budget(maxit); ++it) {
     a = std::exp(b);
     const double f = log_minus_digamma(a) - s;
     const double df = a * dlog_minus_digamma(a);
@@ -135,7 +137,10 @@ inline double gamma_shape(double s, int &iterations) {
     if (std::abs(step) <= 4e-16 * (1.0 + std::abs(b))) break;
   }
   iterations += it + 1;
-  return std::exp(b);
+  a=std::exp(b);
+  if(!(a>0 && std::isfinite(a)) || std::abs(log_minus_digamma(a)-s)>1e-12*s)
+    return std::numeric_limits<double>::quiet_NaN();
+  return a;
 }
 
 // Standardized log data u = (y - mean) / sd, mean(u) = 0, mean(u^2) = 1.
@@ -250,10 +255,11 @@ struct ProfilePoint {
   double t, delta, slope, shape, K, K1;
 };
 
-inline ProfilePoint profile(const LogData &d, double t, int &evaluations) {
+inline ProfilePoint profile(const LogData &d, double t, int &evaluations,int maxit=200) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const Cgf c = cgf(d, t);
   int inner_iterations = 0;
-  const double a = gamma_shape(c.K, inner_iterations);
+  const double a = gamma_shape(c.K, inner_iterations,maxit);
   ++evaluations;
   return {t, delta_at(t, a, c.K), 1.0 / t - a * c.K1, a, c.K, c.K1};
 }
@@ -262,6 +268,7 @@ inline ProfilePoint profile(const LogData &d, double t, int &evaluations) {
 template <typename F>
 inline double brent_zero(F f, double lo, double hi, double flo, double fhi,
                          double tol, int maxit, bool &converged) {
+  maxit = static_cast<int>(solver_budget(maxit));
   double a = lo, b = hi, fa = flo, fb = fhi, c = a, fc = fa, d = b - a, e = d;
   converged = false;
   for (int it = 0; it < maxit; ++it) {
@@ -323,6 +330,7 @@ inline TrGammaResult make_result(const LogData &d, double shape1, double t, doub
 // is strictly concave in b = log(t): its derivative 1 - a t K'(t) decreases
 // from 1 to -inf. Safeguarded Newton on that derivative inside a bracket.
 inline TrGammaResult fit_fixed_shape1(const LogData &d, double a, double tol, int maxit) {
+  maxit = static_cast<int>(solver_budget(maxit));
   int evaluations = 0;
   auto score = [&](double b, double &derivative) {
     const double t = std::exp(b);
@@ -337,11 +345,12 @@ inline TrGammaResult fit_fixed_shape1(const LogData &d, double a, double tol, in
   double unused = 0.0;
   const bool rising = score(b, unused) > 0.0;
   if (rising) lo = b; else hi = b;
-  while (lo < bmax && hi > bmin && (rising ? hi == bmax : lo == bmin)) {
+  for(std::int64_t bracket_pass=0; bracket_pass<solver_budget(maxit) && lo < bmax && hi > bmin && (rising ? hi == bmax : lo == bmin); ++bracket_pass) {
     const double next = rising ? std::min(bmax, lo + 2.0) : std::max(bmin, hi - 2.0);
     if (score(next, unused) > 0.0) lo = next; else hi = next;
     if ((rising && next >= bmax) || (!rising && next <= bmin)) break;
   }
+  if(!(score(lo,unused)>0 && score(hi,unused)<0))return make_result(d,a,std::exp(b),cgf(d,std::exp(b)).K,0,evaluations,TrGammaStatus::IterationFailure);
   b = 0.5 * (lo + hi);
   bool converged = false;
   for (int it = 0; it < maxit; ++it) {
@@ -378,7 +387,9 @@ inline TrGammaResult face_power(const LogData &d, int iterations) {
 }
 
 // Free fit: one-dimensional search in t with an exact inner gamma fit.
-inline TrGammaResult fit_free(const LogData &d, double tol, int maxit) {
+inline TrGammaResult fit_free(const LogData &d, double tol, int maxit, std::int64_t budget=-1) {
+  if(budget<0)budget=certificate_budget(maxit);
+  maxit = static_cast<int>(solver_budget(maxit));
   int evaluations = 0;
   const double dn = static_cast<double>(d.n);
   const double slope0 = -d.kappa3 / 6.0;  // dDelta/dt at t = 0+
@@ -389,34 +400,37 @@ inline TrGammaResult fit_free(const LogData &d, double tol, int maxit) {
   const int cells = std::max(8, static_cast<int>(std::ceil(per_decade * std::log10(t_hi / t_lo))));
 
   ProfilePoint best{0.0, -std::numeric_limits<double>::infinity(), 0.0, 0.0, 0.0, 0.0};
-  bool failure = false;
+  bool failure = false, budget_exhausted=false;
+  std::int64_t checked=0;
   auto consider = [&](const ProfilePoint &p) {
-    if (std::isfinite(p.delta) && p.delta > best.delta) best = p;
+    if(!std::isfinite(p.delta) || !std::isfinite(p.slope) || !std::isfinite(p.shape)){failure=true;return;}
+    if (p.delta > best.delta) best = p;
   };
   auto refine_log = [&](const ProfilePoint &l, const ProfilePoint &r) {
     auto f = [&](double b) {
       const double t = std::exp(b);
-      return profile(d, t, evaluations).slope * t;
+      return profile(d, t, evaluations,maxit).slope * t;
     };
     bool ok = false;
     const double b = brent_zero(f, std::log(l.t), std::log(r.t), l.slope * l.t,
                                 r.slope * r.t, tol, maxit, ok);
     if (!ok) failure = true;
-    consider(profile(d, std::exp(b), evaluations));
+    consider(profile(d, std::exp(b), evaluations,maxit));
   };
 
-  ProfilePoint prev = profile(d, t_lo, evaluations);
+  ProfilePoint prev = profile(d, t_lo, evaluations,maxit);
   consider(prev);
   if (slope0 > 0.0 && prev.slope <= 0.0) {
     // A local maximum below the grid, near the lognormal face. Below
     // t = 1e-12 it cannot beat that face by the tie margin.
     ProfilePoint right = prev, left = prev;
-    while (left.t > 1e-12) {
-      left = profile(d, left.t / 10.0, evaluations);
+    for(std::int64_t bracket_pass=0; bracket_pass<solver_budget(maxit) && left.t > 1e-12; ++bracket_pass) {
+      left = profile(d, left.t / 10.0, evaluations,maxit);
       if (left.slope > 0.0) break;
       right = left;
     }
     if (left.slope > 0.0) refine_log(left, right);
+    else if(left.t>1e-12)failure=true;
   }
   // H(K) = sup_a [a log(a)-a-lgamma(a)-a K] is convex. Its
   // secant over [K(l), K(r)] is an upper bound. Consequently the
@@ -427,6 +441,8 @@ inline TrGammaResult fit_free(const LogData &d, double tol, int maxit) {
     struct Cell { ProfilePoint l, r; int depth; };
     std::vector<Cell> pending{{left, right, 0}};
     while (!pending.empty()) {
+      if(failure)return;
+      if(++checked>budget){failure=true;budget_exhausted=true;return;}
       const Cell cell = pending.back();
       pending.pop_back();
       const auto &l = cell.l;
@@ -441,9 +457,11 @@ inline TrGammaResult fit_free(const LogData &d, double tol, int maxit) {
       }
       const double incumbent = std::max(best.delta, std::max(0.0, power_delta(d)));
       if (upper <= incumbent + kTiePerObs) continue;
-      if (cell.depth >= 40) { failure = true; continue; }
-      const auto mid = profile(d, std::sqrt(l.t * r.t), evaluations);
+      const double center=std::sqrt(l.t*r.t);
+      if(!(center>l.t && center<r.t)){failure=true;continue;}
+      const auto mid = profile(d, std::sqrt(l.t * r.t), evaluations,maxit);
       consider(mid);
+      if(failure)return;
       if (l.slope > 0.0 && mid.slope <= 0.0) refine_log(l, mid);
       if (mid.slope > 0.0 && r.slope <= 0.0) refine_log(mid, r);
       pending.push_back({l, mid, cell.depth + 1});
@@ -452,13 +470,31 @@ inline TrGammaResult fit_free(const LogData &d, double tol, int maxit) {
   };
   for (int j = 1; j <= cells; ++j) {
     const double t = t_lo * std::pow(t_hi / t_lo, static_cast<double>(j) / cells);
-    const ProfilePoint cur = profile(d, t, evaluations);
+    const ProfilePoint cur = profile(d, t, evaluations,maxit);
     consider(cur);
     if (prev.slope > 0.0 && cur.slope <= 0.0) refine_log(prev, cur);
     certify(prev, cur);
+    if(failure || budget_exhausted)break;
     prev = cur;
   }
 
+  if(budget_exhausted) {
+    auto out=make_result(d,best.shape,best.t,best.K,best.delta,evaluations,TrGammaStatus::IterationFailure);
+    out.stop_detail.budget_exhausted=true;
+    out.stop_detail.loglik_upper=INFINITY;
+    const auto face=power_delta(d)>0 ? face_power(d,evaluations) : face_lognormal(d,evaluations);
+    out.stop_detail.limit_model=face.stop_detail.limit_model;
+    out.stop_detail.limit_coef=face.stop_detail.limit_coef;
+    out.stop_detail.limit_loglik=face.logLik;
+    out.stop_detail.loglik_lower=face.logLik;
+    if(std::isfinite(out.logLik) && std::isfinite(out.scale) && out.scale>0) {
+      const double pad=64*std::numeric_limits<double>::epsilon()*dn*(1+std::abs(out.logLik));
+      out.stop_detail.candidates.push_back({{out.shape1,out.shape2,out.scale},out.logLik-pad,out.logLik+pad,StopModel::None});
+      out.stop_detail.loglik_lower=std::max(face.logLik,out.logLik-pad);
+    }
+    return out;
+  }
+  if(failure)return make_result(d,best.shape,best.t,best.K,best.delta,evaluations,TrGammaStatus::IterationFailure);
   const double face = std::max(0.0, power_delta(d));
   if (!(best.delta > face + kTiePerObs)) {
     return power_delta(d) > 0.0 ? face_power(d, evaluations) : face_lognormal(d, evaluations);
@@ -491,6 +527,7 @@ inline TrGammaFaces trgamma_faces_log(span y) {
 inline TrGammaResult trgamma_fit_log(span y, double tol, int maxit,
                                      double shape1 = std::numeric_limits<double>::quiet_NaN(),
                                      double shape2 = std::numeric_limits<double>::quiet_NaN()) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const double nan = std::numeric_limits<double>::quiet_NaN();
   TrGammaResult bad{shape1, shape2, nan, nan, nan, 0, TrGammaStatus::InvalidData};
   for (double s : {shape1, shape2}) {
@@ -529,7 +566,8 @@ inline TrGammaResult trgamma_fit_log(span y, double tol, int maxit,
     const double t = shape2 * d.sd;
     const trgamma_detail::Cgf c = trgamma_detail::cgf(d, t);
     int iterations = 0;
-    const double a = std::isnan(shape1) ? trgamma_detail::gamma_shape(c.K, iterations) : shape1;
+    const double a = std::isnan(shape1) ? trgamma_detail::gamma_shape(c.K, iterations,maxit) : shape1;
+    if(!std::isfinite(a)){bad.status=TrGammaStatus::IterationFailure;return bad;}
     auto result = trgamma_detail::make_result(d, a, t, c.K, trgamma_detail::delta_at(t, a, c.K),
                                        iterations, TrGammaStatus::Ok);
     result.shape2 = shape2;
@@ -551,6 +589,7 @@ inline TrGammaStatus trgamma_range_status(TrGammaStatus status, double log_scale
 inline TrGammaResult trgamma_mle(span x, double tol = 1e-10, int maxit = 100,
                                  double shape1 = std::numeric_limits<double>::quiet_NaN(),
                                  double shape2 = std::numeric_limits<double>::quiet_NaN()) {
+  maxit = static_cast<int>(solver_budget(maxit));
   std::vector<double> y(x.size());
   for (std::size_t i = 0; i < x.size(); ++i) {
     if (!(x[i] > 0.0) || !std::isfinite(x[i])) {
@@ -571,6 +610,7 @@ namespace cppunivariate {
 // Fixed scale profile. The gamma-shape score is strictly decreasing;
 // at fixed gamma shape the power score is strictly decreasing as well.
 inline TrGammaResult trgamma_mle_fixed_scale(span x,double scale,double a=std::numeric_limits<double>::quiet_NaN(),double b=std::numeric_limits<double>::quiet_NaN(),double tol=1e-10,int maxit=100){
+  maxit = static_cast<int>(solver_budget(maxit));
  const double nan=std::numeric_limits<double>::quiet_NaN();
  TrGammaResult bad{a,b,scale,std::log(scale),nan,0,TrGammaStatus::InvalidData};
  if(x.size()==0||!(tol>0)||!std::isfinite(tol)||maxit<1)return bad;
@@ -600,7 +640,7 @@ inline TrGammaResult trgamma_mle_fixed_scale(span x,double scale,double a=std::n
  const double lo=-18-std::log(unit),hi=18-std::log(unit);auto prev=at(std::exp(lo));
  for(int i=1;i<=720;++i){double h=lo+(hi-lo)*i/720,l=h-(hi-lo)/720;auto cur=at(std::exp(h));
    if(prev[2]>0&&cur[2]<0){
-     for(int j=0;j<std::min(maxit,100);++j){double m=(l+h)/2;auto v=at(std::exp(m));if(v[2]>0)l=m;else h=m;}
+     for(int j=0;j<maxit;++j){double m=(l+h)/2;auto v=at(std::exp(m));if(v[2]>0)l=m;else h=m;}
      double power=std::exp((l+h)/2);auto v=at(power);
      if(v[1]>best){best=v[1];ba=v[0];bb=power;residual=std::abs(v[2]);}
    }prev=cur;

@@ -1,5 +1,6 @@
 // Conditional Fernandez--Steel fits. Used only by sstd and sged.
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../snorm/mle.hpp"
 #include "../../core/bfgs.hpp"
 #include "../../core/finite_diff.hpp"
@@ -41,14 +42,15 @@ inline double density_cost(span x, bool student, double c, double a, double b, d
 // Finite local brackets only: impossible support faces must not trigger
 // golden searches in every all-infinite grid interval.
 template <typename Objective>
-inline double scan(Objective objective, double lo, double hi, int cells) {
+inline double scan(Objective objective, double lo, double hi, int cells,int maxit=200) {
   std::vector<double> values;
   for(int i=0;i<=cells;++i) values.push_back(objective(lo+(hi-lo)*i/cells));
   int best=0;
   for(int i=1;i<=cells;++i) if(values[i]<values[best]) best=i;
   double arg=lo+(hi-lo)*best/cells,value=values[best];
   for(int i=1;i<cells;++i) if(std::isfinite(values[i]) && values[i]<=values[i-1] && values[i]<=values[i+1]) {
-    const double t=snorm_detail::minimize(objective,lo+(hi-lo)*(i-1)/cells,lo+(hi-lo)*(i+1)/cells);
+    const double t=snorm_detail::minimize(objective,lo+(hi-lo)*(i-1)/cells,lo+(hi-lo)*(i+1)/cells,maxit);
+    if(!std::isfinite(t))return NAN;
     const double f=objective(t);
     if(f<value) { value=f; arg=t; }
   }
@@ -71,6 +73,7 @@ template <typename Objective>
 inline Fit solve(Objective objective, const std::vector<std::vector<double>> &starts,
                  const std::vector<double> &lower, const std::vector<double> &upper,
                  double tol, int maxit) {
+  maxit = static_cast<int>(solver_budget(maxit));
   Fit best;
   if(starts.empty()) return best;
   const int d=static_cast<int>(lower.size());
@@ -146,6 +149,7 @@ struct Result {
 
 inline Result fit(span x, bool student, double fm, double fs, double fn, double fx,
                   double tol, int maxit) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const bool hm=!std::isnan(fm), hs=!std::isnan(fs), hn=!std::isnan(fn), hx=!std::isnan(fx);
   Result out;
   if(x.empty() || !(tol>0 && std::isfinite(tol)) || maxit<1 ||
@@ -185,7 +189,7 @@ inline Result fit(span x, bool student, double fm, double fs, double fn, double 
         ls=std::log(largest)+(std::log(fn)+std::log(sum))/fn;
       } else {
         double left=-32,right=32;
-        for(int j=0;j<110;++j) {
+        for(int j=0;j<maxit;++j) {
           const double mid=(left+right)/2;
           // Once the midpoint rounds to an endpoint, the remaining
           // updates cannot change the represented final midpoint or scale.
@@ -329,11 +333,11 @@ inline Result fit(span x, bool student, double fm, double fs, double fn, double 
     double selected_scale=1;
     auto profile=[&](double lx) {
       auto at=[&](double ls) { return objective(std::vector<double>{ls,lx},0); };
-      const double ls=student || fn<1 ? scan(at,-24,24,128) : snorm_detail::minimize(at,-24,24);
+      const double ls=student || fn<1 ? scan(at,-24,24,128,maxit) : snorm_detail::minimize(at,-24,24,maxit);
       selected_scale=std::exp(ls);
       return at(ls);
     };
-    const double lx=scan(profile,-18,18,180),f=profile(lx);
+    const double lx=scan(profile,-18,18,180,maxit),f=profile(lx);
     if(f<out.f) out={0,selected_scale,fn,std::exp(lx),f,
       std::abs(lx)>17.99 || std::abs(std::log(selected_scale))>23.99 ? 1 : 0,0};
   }
@@ -351,6 +355,7 @@ inline Result fit(span x, bool student, double fm, double fs, double fn, double 
   // interior restart fails. A failed finite estimate keeps status 1 and
   // is never returned unless the free-score or rescue gate passed.
   auto accept=[&](double f,int status,double nu) {
+    if(out.status==1 && interior.iterations>=maxit)return;
     if(std::isfinite(f) && f<=out.f+tie) { out.f=f; out.status=status; out.nu=nu; }
   };
   if(!hn && student) {
@@ -407,7 +412,7 @@ inline Result fit(span x, bool student, double fm, double fs, double fn, double 
           ls=std::log(range)+(std::log(nu)+std::log(sum))/nu;
         } else {
           double l=-32,r=32;
-          for(int j=0;j<100;++j) {
+          for(int j=0;j<maxit;++j) {
             const double mid=(l+r)/2,t=std::exp(mid);
             double score=-n;
             for(double a:y) {
@@ -423,13 +428,13 @@ inline Result fit(span x, bool student, double fm, double fs, double fn, double 
       double left=minscale>0 ? std::log(minscale) : -24;
       if(left>24) return inf;
       // The support constraint is closed; include its endpoint explicitly.
-      const double t=scan(at,left,24,96);
+      const double t=scan(at,left,24,96,maxit);
       return std::min(at(left),at(t));
     };
     if(hn) accept(half(fn),side==1 ? 7 : 8,fn);
     else {
       auto profile=[&](double t) { return half(student ? 2+std::exp(t) : std::exp(t)); };
-      const double t=scan(profile,student ? -18 : 0,11,96);
+      const double t=scan(profile,student ? -18 : 0,11,96,maxit);
       accept(profile(t),side==1 ? 7 : 8,student ? 2+std::exp(t) : std::exp(t));
     }
   }

@@ -1,0 +1,5 @@
+{"family": "burr", "mode": 2, "elapsed": 52.60242865300097, "returncode": 0, "output": "burr\t2\t100000\t52.596850083\ttie\tBurr global certificate unresolved: finite/face tie or sign-uncertain seam; no verified MLE.", "stderr": ""}
+{"family": "cmb", "mode": 3, "elapsed": 44.585886619010125, "returncode": 0, "output": "cmb\t3\t100000\t44.579240316000003\tbudget\tCMB MLE failed to converge or exhausted its normalizer work budget; a larger finite maximum is not excluded. The Conway-Maxwell-Poisson limit is available: use mlcmp with nu held fixed. Raising iterlim may resolve this stop.", "stderr": ""}
+{"family": "fpareto", "mode": 0, "elapsed": 180.12090500400518, "censored": true, "limit_seconds": 180}
+{"family": "fpareto", "mode": 1, "elapsed": 180.1117509140022, "censored": true, "limit_seconds": 180}
+{"family": "fpareto", "mode": 2, "elapsed": 180.10051933399518, "censored": true, "limit_seconds": 180}

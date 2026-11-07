@@ -1,0 +1,5 @@
+{"source_headers_sha256": "7349c83fd8ae9cc29c52d42593b53160ba0dbb512a36f265cc84779f652e036f", "probe_sha256": "7529bf71be7ff9eadee74ea1ea19e0c6f8b524830ee3f25e53b13071be173534", "machine": "simbox", "compiler": "c++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0", "seed": 143, "n": 100000, "timeout_seconds": 60, "cmb_timeout_seconds": 180}
+{"family": "cmb", "mode": 0, "elapsed": 0.00558936400921084, "returncode": 0, "output": "cmb\t0\t100000\t0.0031217699999999998", "stderr": ""}
+{"family": "cmb", "mode": 1, "elapsed": 0.00810573500348255, "returncode": 0, "output": "cmb\t1\t100000\t0.003265886", "stderr": ""}
+{"family": "cmb", "mode": 2, "elapsed": 0.004602223998517729, "returncode": 0, "output": "cmb\t2\t100000\t0.002306574", "stderr": ""}
+{"family": "cmb", "mode": 3, "elapsed": 24.338016920009977, "returncode": 0, "output": "cmb\t3\t100000\t24.335743294\tbudget\tCMB MLE failed to converge or exhausted its normalizer work budget; a larger finite maximum is not excluded. The Conway-Maxwell-Poisson limit is available: use mlcmp with nu held fixed. Raising iterlim may resolve this stop.", "stderr": ""}

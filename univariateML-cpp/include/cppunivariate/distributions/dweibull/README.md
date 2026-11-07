@@ -27,7 +27,7 @@ r:
     shape1: "Optional value in (0, 1) at which to hold `shape1`; `NULL` (the default) estimates it."
     shape2: "Optional positive value at which to hold `shape2`; `NULL` (the default) estimates it. `shape2 = 1` is the geometric distribution."
     reltol: "Absolute tolerance on `log(shape2)` in the root search for `shape2`; unused when `shape2` is held."
-    iterlim: "Maximum number of iterations of each scalar root search."
+    iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
 log_density: "Piecewise((log(1 - shape1), Eq(x, 0)), (log(shape1**(x**shape2) - shape1**((x + 1)**shape2)), True))"
 limits:
   - name: degenerate

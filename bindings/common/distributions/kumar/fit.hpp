@@ -29,7 +29,7 @@ inline FitResult fit_kumar(cppunivariate::span x, Held a_arg = {}, Held b_arg = 
   if (b.supplied) fixed.push_back("b");
   auto res = cppunivariate::kumar_mle(x, reltol, iterlim, start, checked_a, checked_b);
   if(res.certificate_failure==cppunivariate::KumarCertificateFailure::Budget)
-    return stop_failure(fail("Kumaraswamy MLE failed: iteration certificate budget exhausted (16 * min(iterlim, 100000)); no verified maximum."),res.stop_detail,"budget",{"a","b"});
+    return stop_failure(fail("Kumaraswamy MLE failed: iteration certificate budget exhausted (128 * min(iterlim, 100000)); no verified maximum. Raising iterlim may resolve this stop."),res.stop_detail,"budget",{"a","b"});
   if (res.status == cppunivariate::KumarStatus::Unbounded)
     return fail("Kumaraswamy likelihood is unbounded for constant samples.");
   if (res.status != cppunivariate::KumarStatus::Ok || !std::isfinite(res.a) || !std::isfinite(res.b) || !std::isfinite(res.logLik)) {

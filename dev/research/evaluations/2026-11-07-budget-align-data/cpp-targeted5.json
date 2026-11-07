@@ -1,0 +1,12 @@
+{
+  "command": [
+    "bash",
+    "-c",
+    "cmake --build univariateML-cpp/build -j4 && ctest --test-dir univariateML-cpp/build --output-on-failure -j4 -R \"distribution_(sstd|sged|bbinom|burr|dgamma|kumar)$\""
+  ],
+  "machine": "simbox",
+  "returncode": 0,
+  "wall_seconds": 150.14212799072266,
+  "started_utc": "2026-11-06T18:03:28.326413+00:00",
+  "revision": "f8f65f9b080c394d11ca9dc178a93219fffee210"
+}

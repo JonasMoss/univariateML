@@ -1,0 +1,129 @@
+{"source_headers_sha256": "c320e51621df538dc1bc3a42dfbb444022a2ab688a3f94d2d06ebec19108f977", "probe_sha256": "7529bf71be7ff9eadee74ea1ea19e0c6f8b524830ee3f25e53b13071be173534", "machine": "simbox", "compiler": "c++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0", "seed": 143, "n": 100000, "timeout_seconds": 60}
+{"family": "bbinom", "mode": 0, "elapsed": 0.007767924005747773, "returncode": 0, "output": "bbinom\t0\t100000\t0.00096420200000000005", "stderr": ""}
+{"family": "bbinom", "mode": 1, "elapsed": 0.01219732999743428, "returncode": 0, "output": "bbinom\t1\t100000\t0.00054976799999999996", "stderr": ""}
+{"family": "bbinom", "mode": 2, "elapsed": 0.005290405999403447, "returncode": 0, "output": "bbinom\t2\t100000\t0.00090643400000000002", "stderr": ""}
+{"family": "bbinom", "mode": 3, "elapsed": 0.31650504299614113, "returncode": 0, "output": "bbinom\t3\t100000\t0.31178855", "stderr": ""}
+{"family": "betapr", "mode": 0, "elapsed": 2.4514610869955504, "returncode": 0, "output": "betapr\t0\t100000\t2.4450666660000002", "stderr": ""}
+{"family": "betapr", "mode": 1, "elapsed": 2.082146942993859, "returncode": 0, "output": "betapr\t1\t100000\t2.072647415", "stderr": ""}
+{"family": "betapr", "mode": 2, "elapsed": 6.311680374012212, "returncode": 0, "output": "betapr\t2\t100000\t6.3055845540000002", "stderr": ""}
+{"family": "betapr", "mode": 3, "elapsed": 0.010120384991751052, "returncode": 0, "output": "betapr\t3\t100000\t0.0043891080000000001", "stderr": ""}
+{"family": "bnbinom", "mode": 0, "elapsed": 0.405784959992161, "returncode": 0, "output": "bnbinom\t0\t100000\t0.39919079299999999", "stderr": ""}
+{"family": "bnbinom", "mode": 1, "elapsed": 0.4065151800023159, "returncode": 0, "output": "bnbinom\t1\t100000\t0.388868096", "stderr": ""}
+{"family": "bnbinom", "mode": 2, "elapsed": 0.17361934600921813, "returncode": 0, "output": "bnbinom\t2\t100000\t0.168551484", "stderr": ""}
+{"family": "bnbinom", "mode": 3, "elapsed": 0.40163495000160765, "returncode": 0, "output": "bnbinom\t3\t100000\t0.39618924100000003", "stderr": ""}
+{"family": "burr", "mode": 0, "elapsed": 9.688842528004898, "returncode": 0, "output": "burr\t0\t100000\t9.6833672199999992\tbudget\tBurr global certificate budget exhausted; no verified MLE. Raising iterlim may resolve this stop.", "stderr": ""}
+{"family": "burr", "mode": 1, "elapsed": 17.273068726994097, "returncode": 0, "output": "burr\t1\t100000\t17.263016738000001\tbudget\tBurr global certificate budget exhausted; no verified MLE. Raising iterlim may resolve this stop.", "stderr": ""}
+{"family": "burr", "mode": 2, "elapsed": 52.15590170699579, "returncode": 0, "output": "burr\t2\t100000\t52.150428677999997\ttie\tBurr global certificate unresolved: finite/face tie or sign-uncertain seam; no verified MLE.", "stderr": ""}
+{"family": "burr", "mode": 3, "elapsed": 0.5492217269929824, "returncode": 0, "output": "burr\t3\t100000\t0.54349035499999998", "stderr": ""}
+{"family": "cauchy", "mode": 0, "elapsed": 0.021271693010930903, "returncode": 0, "output": "cauchy\t0\t100000\t0.015583876999999999", "stderr": ""}
+{"family": "cauchy", "mode": 1, "elapsed": 0.028910641005495563, "returncode": 0, "output": "cauchy\t1\t100000\t0.020814399000000001", "stderr": ""}
+{"family": "cauchy", "mode": 2, "elapsed": 0.022047733000363223, "returncode": 0, "output": "cauchy\t2\t100000\t0.017924766000000002", "stderr": ""}
+{"family": "cauchy", "mode": 3, "elapsed": 0.11351337599626277, "returncode": 0, "output": "cauchy\t3\t100000\t0.10786171", "stderr": ""}
+{"family": "cmb", "mode": 0, "elapsed": 0.012548294005682692, "returncode": 0, "output": "cmb\t0\t100000\t0.0051608619999999996", "stderr": ""}
+{"family": "cmb", "mode": 1, "elapsed": 0.021166441001696512, "returncode": 0, "output": "cmb\t1\t100000\t0.0072900250000000003", "stderr": ""}
+{"family": "cmb", "mode": 2, "elapsed": 0.012413814009050839, "returncode": 0, "output": "cmb\t2\t100000\t0.0051797639999999999", "stderr": ""}
+{"family": "cmb", "mode": 3, "elapsed": 44.64426007999282, "returncode": 0, "output": "cmb\t3\t100000\t44.637584564000001\tbudget\tCMB MLE failed to converge or exhausted its normalizer work budget; a larger finite maximum is not excluded. The Conway-Maxwell-Poisson limit is available: use mlcmp with nu held fixed. Raising iterlim may resolve this stop.", "stderr": ""}
+{"family": "dgamma", "mode": 0, "elapsed": 0.38764140800049063, "returncode": 0, "output": "dgamma\t0\t100000\t0.380602575", "stderr": ""}
+{"family": "dgamma", "mode": 1, "elapsed": 0.3828298540029209, "returncode": 0, "output": "dgamma\t1\t100000\t0.371277358", "stderr": ""}
+{"family": "dgamma", "mode": 2, "elapsed": 0.5097018069936894, "returncode": 0, "output": "dgamma\t2\t100000\t0.50426312299999998", "stderr": ""}
+{"family": "dgamma", "mode": 3, "elapsed": 0.41256370198971126, "returncode": 0, "output": "dgamma\t3\t100000\t0.407916679", "stderr": ""}
+{"family": "foldnorm", "mode": 0, "elapsed": 2.3609587509999983, "returncode": 0, "output": "foldnorm\t0\t100000\t2.3557160079999999", "stderr": ""}
+{"family": "foldnorm", "mode": 1, "elapsed": 2.129553284001304, "returncode": 0, "output": "foldnorm\t1\t100000\t2.11557846", "stderr": ""}
+{"family": "foldnorm", "mode": 2, "elapsed": 6.578885127004469, "returncode": 0, "output": "foldnorm\t2\t100000\t6.5729935399999997", "stderr": ""}
+{"family": "foldnorm", "mode": 3, "elapsed": 1.9756320559972664, "returncode": 0, "output": "foldnorm\t3\t100000\t1.9705050079999999", "stderr": ""}
+{"family": "fpareto", "mode": 0, "elapsed": 16.310310838001897, "returncode": 0, "output": "fpareto\t0\t100000\t16.304357413999998\t\tGB2 selects the double Pareto limit; this package has no double Pareto fitter.", "stderr": ""}
+{"family": "fpareto", "mode": 1, "elapsed": 15.499494254007004, "returncode": 0, "output": "fpareto\t1\t100000\t15.485676743000001\t\tGB2 selects the double Pareto limit; this package has no double Pareto fitter.", "stderr": ""}
+{"family": "fpareto", "mode": 2, "elapsed": 45.52520990699122, "returncode": 0, "output": "fpareto\t2\t100000\t45.519558930000002\t\tGB2 selects the double Pareto limit; this package has no double Pareto fitter.", "stderr": ""}
+{"family": "fpareto", "mode": 3, "elapsed": 0.7549439900030848, "returncode": 0, "output": "fpareto\t3\t100000\t0.74854419000000005", "stderr": ""}
+{"family": "gb2", "mode": 0, "elapsed": 18.025985915999627, "returncode": 0, "output": "gb2\t0\t100000\t18.018338656000001", "stderr": ""}
+{"family": "gb2", "mode": 1, "elapsed": 24.448854767993907, "returncode": 0, "output": "gb2\t1\t100000\t24.430262662000001", "stderr": ""}
+{"family": "gb2", "mode": 2, "elapsed": 25.46686922200024, "returncode": 0, "output": "gb2\t2\t100000\t25.456442027000001", "stderr": ""}
+{"family": "gb2", "mode": 3, "elapsed": 0.9471705869946163, "returncode": 0, "output": "gb2\t3\t100000\t0.93516686699999996", "stderr": ""}
+{"family": "gpd", "mode": 0, "elapsed": 1.1142608400114113, "returncode": 0, "output": "gpd\t0\t100000\t1.100704873", "stderr": ""}
+{"family": "gpd", "mode": 1, "elapsed": 1.2004679479869083, "returncode": 0, "output": "gpd\t1\t100000\t1.184203605", "stderr": ""}
+{"family": "gpd", "mode": 2, "elapsed": 1.9644395289942622, "returncode": 0, "output": "gpd\t2\t100000\t1.957382553", "stderr": ""}
+{"family": "gpd", "mode": 3, "elapsed": 0.8636109429935459, "returncode": 0, "output": "gpd\t3\t100000\t0.85719941600000005", "stderr": ""}
+{"family": "invburr", "mode": 0, "elapsed": 18.450374662003014, "returncode": 0, "output": "invburr\t0\t100000\t18.440984948000001\tbudget\tinvburr certificate budget exhausted; no verified MLE. Raising iterlim may resolve this stop.", "stderr": ""}
+{"family": "invburr", "mode": 1, "elapsed": 20.708061216995702, "returncode": 0, "output": "invburr\t1\t100000\t20.695988113999999\tbudget\tinvburr certificate budget exhausted; no verified MLE. Raising iterlim may resolve this stop.", "stderr": ""}
+{"family": "invburr", "mode": 2, "elapsed": 25.08138353000686, "returncode": 0, "output": "invburr\t2\t100000\t25.074443914\tlimit\tThe invburr likelihood is maximised at a limit. Use `mlinvweibull` to fit this model.", "stderr": ""}
+{"family": "invburr", "mode": 3, "elapsed": 0.9374992160010152, "returncode": 0, "output": "invburr\t3\t100000\t0.93124126100000004", "stderr": ""}
+{"family": "invparalogis", "mode": 0, "elapsed": 0.2540686110005481, "returncode": 0, "output": "invparalogis\t0\t100000\t0.247733809", "stderr": ""}
+{"family": "invparalogis", "mode": 1, "elapsed": 0.8029285590018844, "returncode": 0, "output": "invparalogis\t1\t100000\t0.79207407600000002", "stderr": ""}
+{"family": "invparalogis", "mode": 2, "elapsed": 0.283694737998303, "returncode": 0, "output": "invparalogis\t2\t100000\t0.27859050000000002", "stderr": ""}
+{"family": "invparalogis", "mode": 3, "elapsed": 0.07355653900594916, "returncode": 0, "output": "invparalogis\t3\t100000\t0.067462705999999997", "stderr": ""}
+{"family": "invpareto", "mode": 0, "elapsed": 0.035495773001457565, "returncode": 0, "output": "invpareto\t0\t100000\t0.028125870000000001", "stderr": ""}
+{"family": "invpareto", "mode": 1, "elapsed": 0.47588266800448764, "returncode": 0, "output": "invpareto\t1\t100000\t0.46333075200000001", "stderr": ""}
+{"family": "invpareto", "mode": 2, "elapsed": 0.03856669500237331, "returncode": 0, "output": "invpareto\t2\t100000\t0.033346097999999998", "stderr": ""}
+{"family": "invpareto", "mode": 3, "elapsed": 0.03632504100096412, "returncode": 0, "output": "invpareto\t3\t100000\t0.030475437000000001", "stderr": ""}
+{"family": "kumar", "mode": 0, "elapsed": 0.1475261860032333, "returncode": 0, "output": "kumar\t0\t100000\t0.14083875700000001", "stderr": ""}
+{"family": "kumar", "mode": 1, "elapsed": 0.1548451869894052, "returncode": 0, "output": "kumar\t1\t100000\t0.14294981100000001", "stderr": ""}
+{"family": "kumar", "mode": 2, "elapsed": 0.35577806799847167, "returncode": 0, "output": "kumar\t2\t100000\t0.35115165799999998", "stderr": ""}
+{"family": "kumar", "mode": 3, "elapsed": 0.2540021229942795, "returncode": 0, "output": "kumar\t3\t100000\t0.24893615099999999", "stderr": ""}
+{"family": "lomax", "mode": 0, "elapsed": 0.029312939004739746, "returncode": 0, "output": "lomax\t0\t100000\t0.023494936000000001", "stderr": ""}
+{"family": "lomax", "mode": 1, "elapsed": 0.4716357270081062, "returncode": 0, "output": "lomax\t1\t100000\t0.46058289800000002", "stderr": ""}
+{"family": "lomax", "mode": 2, "elapsed": 0.1320819910033606, "returncode": 0, "output": "lomax\t2\t100000\t0.12744962800000001", "stderr": ""}
+{"family": "lomax", "mode": 3, "elapsed": 0.028162708011223003, "returncode": 0, "output": "lomax\t3\t100000\t0.023247721999999998", "stderr": ""}
+{"family": "lst", "mode": 0, "elapsed": 0.0995705090026604, "returncode": 0, "output": "lst\t0\t100000\t0.095137615999999994", "stderr": ""}
+{"family": "lst", "mode": 1, "elapsed": 60.1005190910073, "censored": true, "limit_seconds": 60}
+{"family": "lst", "mode": 2, "elapsed": 0.02730165699904319, "returncode": 0, "output": "lst\t2\t100000\t0.019889770000000001\tnumerical\tStudent-t global certificate numerical failure: score/root, enclosure, domain or linear solve unresolved; no verified MLE.", "stderr": ""}
+{"family": "lst", "mode": 3, "elapsed": 0.097107651992701, "returncode": 0, "output": "lst\t3\t100000\t0.091719331000000001", "stderr": ""}
+{"family": "nbinom", "mode": 0, "elapsed": 0.03031055499741342, "returncode": 0, "output": "nbinom\t0\t100000\t0.023128242", "stderr": ""}
+{"family": "nbinom", "mode": 1, "elapsed": 0.040865058996132575, "returncode": 0, "output": "nbinom\t1\t100000\t0.023934937999999999", "stderr": ""}
+{"family": "nbinom", "mode": 2, "elapsed": 0.01194950299395714, "returncode": 0, "output": "nbinom\t2\t100000\t0.005842435", "stderr": ""}
+{"family": "nbinom", "mode": 3, "elapsed": 0.39470560300105717, "returncode": 0, "output": "nbinom\t3\t100000\t0.38745955100000001", "stderr": ""}
+{"family": "paralogis", "mode": 0, "elapsed": 0.21912815599353053, "returncode": 0, "output": "paralogis\t0\t100000\t0.211967452", "stderr": ""}
+{"family": "paralogis", "mode": 1, "elapsed": 0.9027483419922646, "returncode": 0, "output": "paralogis\t1\t100000\t0.88894646700000002", "stderr": ""}
+{"family": "paralogis", "mode": 2, "elapsed": 0.25202886799525004, "returncode": 0, "output": "paralogis\t2\t100000\t0.24543900399999999\tnumerical\tParalogis certificate numerical failure: unresolved bounds or fitted parameters exceed double precision; no verified MLE.", "stderr": ""}
+{"family": "paralogis", "mode": 3, "elapsed": 0.07284228400385473, "returncode": 0, "output": "paralogis\t3\t100000\t0.067365825000000004", "stderr": ""}
+{"family": "pareto2", "mode": 0, "elapsed": 0.13299512799130753, "returncode": 0, "output": "pareto2\t0\t100000\t0.12416245300000001", "stderr": ""}
+{"family": "pareto2", "mode": 1, "elapsed": 2.25299629100482, "returncode": 0, "output": "pareto2\t1\t100000\t2.2412983839999998", "stderr": ""}
+{"family": "pareto2", "mode": 2, "elapsed": 0.13254317799874116, "returncode": 0, "output": "pareto2\t2\t100000\t0.126736762", "stderr": ""}
+{"family": "pareto2", "mode": 3, "elapsed": 0.08947791600076016, "returncode": 0, "output": "pareto2\t3\t100000\t0.084434553999999995", "stderr": ""}
+{"family": "pareto4", "mode": 0, "elapsed": 17.460758908986463, "returncode": 0, "output": "pareto4\t0\t100000\t17.446228707\tbudget\tPareto IV certificate budget exhausted; no verified MLE. Raising iterlim may resolve this stop.", "stderr": ""}
+{"family": "pareto4", "mode": 1, "elapsed": 21.872541333999834, "returncode": 0, "output": "pareto4\t1\t100000\t21.862890357000001\tbudget\tPareto IV certificate budget exhausted; no verified MLE. Raising iterlim may resolve this stop.", "stderr": ""}
+{"family": "pareto4", "mode": 2, "elapsed": 56.54344833199866, "returncode": 0, "output": "pareto4\t2\t100000\t56.538776816999999\ttie\tPareto IV certificate unresolved at a tie or sign-uncertain seam; no verified MLE.", "stderr": ""}
+{"family": "pareto4", "mode": 3, "elapsed": 0.6851632359903306, "returncode": 0, "output": "pareto4\t3\t100000\t0.67923126", "stderr": ""}
+{"family": "slash", "mode": 0, "elapsed": 60.09937620999699, "censored": true, "limit_seconds": 60}
+{"family": "slash", "mode": 1, "elapsed": 60.09921152298921, "censored": true, "limit_seconds": 60}
+{"family": "slash", "mode": 2, "elapsed": 60.10192722499778, "censored": true, "limit_seconds": 60}
+{"family": "slash", "mode": 3, "elapsed": 60.10270591099106, "censored": true, "limit_seconds": 60}
+{"family": "skellam", "mode": 0, "elapsed": 22.167669407004723, "returncode": 0, "output": "skellam\t0\t100000\t22.160994647999999", "stderr": ""}
+{"family": "skellam", "mode": 1, "elapsed": 22.141872200008947, "returncode": 0, "output": "skellam\t1\t100000\t22.133173966000001", "stderr": ""}
+{"family": "skellam", "mode": 2, "elapsed": 7.720373500007554, "returncode": 0, "output": "skellam\t2\t100000\t7.7132989710000004", "stderr": ""}
+{"family": "skellam", "mode": 3, "elapsed": 23.99461370400968, "returncode": 0, "output": "skellam\t3\t100000\t23.988144593000001", "stderr": ""}
+{"family": "sn", "mode": 0, "elapsed": 60.10167963299318, "censored": true, "limit_seconds": 60}
+{"family": "sn", "mode": 1, "elapsed": 28.975402570998995, "returncode": 0, "output": "sn\t1\t100000\t28.96473765", "stderr": ""}
+{"family": "sn", "mode": 2, "elapsed": 60.101849420010694, "censored": true, "limit_seconds": 60}
+{"family": "sn", "mode": 3, "elapsed": 60.10198317299364, "censored": true, "limit_seconds": 60}
+{"family": "std", "mode": 0, "elapsed": 0.07786455799941905, "returncode": 0, "output": "std\t0\t100000\t0.071553013999999998", "stderr": ""}
+{"family": "std", "mode": 1, "elapsed": 60.10266921100265, "censored": true, "limit_seconds": 60}
+{"family": "std", "mode": 2, "elapsed": 0.01614503598830197, "returncode": 0, "output": "std\t2\t100000\t0.011212728\tnumerical\tStudent-t global certificate numerical failure: score/root, enclosure, domain or linear solve unresolved; no verified MLE.", "stderr": ""}
+{"family": "std", "mode": 3, "elapsed": 0.0968579909967957, "returncode": 0, "output": "std\t3\t100000\t0.090993560000000001", "stderr": ""}
+{"family": "trgamma", "mode": 0, "elapsed": 0.6736003279947909, "returncode": 0, "output": "trgamma\t0\t100000\t0.669201292", "stderr": ""}
+{"family": "trgamma", "mode": 1, "elapsed": 0.7029065009992337, "returncode": 0, "output": "trgamma\t1\t100000\t0.69049729599999998", "stderr": ""}
+{"family": "trgamma", "mode": 2, "elapsed": 0.0850695670087589, "returncode": 0, "output": "trgamma\t2\t100000\t0.081479399999999993\tlimit\tThe trgamma likelihood is maximised at a limit. Use `mllnorm` to fit this model.", "stderr": ""}
+{"family": "trgamma", "mode": 3, "elapsed": 0.6631795599969337, "returncode": 0, "output": "trgamma\t3\t100000\t0.65877430800000003", "stderr": ""}
+{"family": "invtrgamma", "mode": 0, "elapsed": 1.1367121859948384, "returncode": 0, "output": "invtrgamma\t0\t100000\t1.1305475030000001", "stderr": ""}
+{"family": "invtrgamma", "mode": 1, "elapsed": 0.9839369649998844, "returncode": 0, "output": "invtrgamma\t1\t100000\t0.97581275899999997", "stderr": ""}
+{"family": "invtrgamma", "mode": 2, "elapsed": 0.210417783993762, "returncode": 0, "output": "invtrgamma\t2\t100000\t0.206149901", "stderr": ""}
+{"family": "invtrgamma", "mode": 3, "elapsed": 1.139188943998306, "returncode": 0, "output": "invtrgamma\t3\t100000\t1.1338740810000001", "stderr": ""}
+{"family": "zinb", "mode": 0, "elapsed": 0.023880777996964753, "returncode": 0, "output": "zinb\t0\t100000\t0.017872875", "stderr": ""}
+{"family": "zinb", "mode": 1, "elapsed": 0.024072301006526686, "returncode": 0, "output": "zinb\t1\t100000\t0.012766843999999999", "stderr": ""}
+{"family": "zinb", "mode": 2, "elapsed": 1.4348368319915608, "returncode": 0, "output": "zinb\t2\t100000\t1.429241526\tbudget\tZero-inflated negative binomial MLE failed: certificate budget exhausted; no verified maximum. Raising iterlim may resolve this stop.", "stderr": ""}
+{"family": "zinb", "mode": 3, "elapsed": 0.03286896699864883, "returncode": 0, "output": "zinb\t3\t100000\t0.026139056000000001", "stderr": ""}
+{"family": "zmnbinom", "mode": 0, "elapsed": 1.0989046900067478, "returncode": 0, "output": "zmnbinom\t0\t100000\t1.0935805240000001", "stderr": ""}
+{"family": "zmnbinom", "mode": 1, "elapsed": 0.9545120249968022, "returncode": 0, "output": "zmnbinom\t1\t100000\t0.94402676399999996", "stderr": ""}
+{"family": "zmnbinom", "mode": 2, "elapsed": 1.4011544519889867, "returncode": 0, "output": "zmnbinom\t2\t100000\t1.394387271\tbudget\tProfile search exhausted: certificate iteration budget exhausted (128 * min(iterlim, 100000)); no verified maximum. Raising iterlim may resolve this stop.", "stderr": ""}
+{"family": "zmnbinom", "mode": 3, "elapsed": 1.0920696290122578, "returncode": 0, "output": "zmnbinom\t3\t100000\t1.0864774909999999", "stderr": ""}
+{"family": "ztnbinom", "mode": 0, "elapsed": 1.4666636239999207, "returncode": 0, "output": "ztnbinom\t0\t100000\t1.460336834", "stderr": ""}
+{"family": "ztnbinom", "mode": 1, "elapsed": 1.5513608530018246, "returncode": 0, "output": "ztnbinom\t1\t100000\t1.5382102369999999", "stderr": ""}
+{"family": "ztnbinom", "mode": 2, "elapsed": 2.196121713001048, "returncode": 0, "output": "ztnbinom\t2\t100000\t2.1878454409999999\tbudget\tProfile search exhausted: certificate iteration budget exhausted (128 * min(iterlim, 100000)); no verified maximum. Raising iterlim may resolve this stop.", "stderr": ""}
+{"family": "ztnbinom", "mode": 3, "elapsed": 1.471433917991817, "returncode": 0, "output": "ztnbinom\t3\t100000\t1.463840475", "stderr": ""}
+{"family": "zib", "mode": 0, "elapsed": 0.015804308000952005, "returncode": 0, "output": "zib\t0\t100000\t0.0073338980000000002", "stderr": ""}
+{"family": "zib", "mode": 1, "elapsed": 0.01935522200074047, "returncode": 0, "output": "zib\t1\t100000\t0.0046731699999999999", "stderr": ""}
+{"family": "zib", "mode": 2, "elapsed": 0.009710519007057883, "returncode": 0, "output": "zib\t2\t100000\t0.0020187899999999999", "stderr": ""}
+{"family": "zib", "mode": 3, "elapsed": 0.009569135989295319, "returncode": 0, "output": "zib\t3\t100000\t0.0042064789999999999", "stderr": ""}
+{"family": "ztbinom", "mode": 0, "elapsed": 0.02596378599992022, "returncode": 0, "output": "ztbinom\t0\t100000\t0.018422562", "stderr": ""}
+{"family": "ztbinom", "mode": 1, "elapsed": 0.022543173006852157, "returncode": 0, "output": "ztbinom\t1\t100000\t0.011373698999999999", "stderr": ""}
+{"family": "ztbinom", "mode": 2, "elapsed": 0.013906728010624647, "returncode": 0, "output": "ztbinom\t2\t100000\t0.0075892360000000001", "stderr": ""}
+{"family": "ztbinom", "mode": 3, "elapsed": 0.01676079598837532, "returncode": 0, "output": "ztbinom\t3\t100000\t0.0091937709999999999", "stderr": ""}

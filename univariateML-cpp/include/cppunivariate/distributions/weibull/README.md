@@ -33,7 +33,7 @@ r:
     scale: Optional held scale; NULL estimates it.
     shape0: Optional positive finite starting shape; `NULL` uses the automatic start.
     reltol: Relative step tolerance in log(sigma) of the underlying Gumbel fit.
-    iterlim: Maximum number of iterations.
+    iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
 log_density: log(shape) - log(scale) + (shape - 1)*log(x/scale) - (x/scale)**shape
 references:
 - Johnson, N. L., Kotz, S. and Balakrishnan, N. (1994) Continuous Univariate Distributions, Volume 1, Chapter 21.

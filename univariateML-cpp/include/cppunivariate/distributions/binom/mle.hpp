@@ -9,6 +9,7 @@
 // enum surfaces SizeTooSmall, Underdispersed, IterationFailure.
 
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../../core/discrete_stop.hpp"
 #include "../../core/precision.hpp"
 
@@ -48,6 +49,7 @@ inline double binom_lchoose(double n, double k) {
 
 inline BinomResult binom_mle(ispan x, double size_or_nan, double tol,
                              int maxit, double held_prob = std::numeric_limits<double>::quiet_NaN()) {
+  maxit = static_cast<int>(solver_budget(maxit));
   auto stopped = [&]() -> BinomResult {
   (void)tol;
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();

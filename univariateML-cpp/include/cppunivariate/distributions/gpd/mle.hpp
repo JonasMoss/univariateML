@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../../core/precision.hpp"
 #include "../../core/span.hpp"
 #include "../../core/stop_detail.hpp"
@@ -43,6 +44,7 @@ inline double gpd_loglik(span y, double sigma, double xi) {
 // For fixed xi > -1 the scale score is strictly decreasing in sigma
 // after multiplication by sigma: (1+xi)*mean(y/(sigma+xi*y))-1.
 inline GpdResult gpd_scale(span y, double mu, double xi, double tol, int maxit) {
+  maxit = static_cast<int>(solver_budget(maxit));
   double M=0;
   for(double v:y)M=std::max(M,v);
   auto failure=[&](int work) {
@@ -94,7 +96,7 @@ inline GpdResult gpd_scale(span y, double mu, double xi, double tol, int maxit) 
     else {
       bool signed_box=false;
       double radius=std::max(2e-12,8*eta)*mid;
-      for(int k=0;k<32;++k,radius*=2) {
+      for(int k=0;k<maxit;++k,radius*=2) {
         const double l=mid-radius,h=mid+radius;
         if(l<=lo || h>=hi)break;
         if(score(l)>eta && score(h)<-eta){lo=l;hi=h;signed_box=true;break;}
@@ -112,7 +114,7 @@ inline GpdResult gpd_scale(span y, double mu, double xi, double tol, int maxit) 
   double center=(lo+hi)/2;
   // Nominate a more accurate representative inside the signed enclosure.
   double l=lo,h=hi;
-  for(int k=0;k<48 && h-l>target*h;++k) {
+  for(int k=0;k<maxit && h-l>target*h;++k) {
     center=(l+h)/2;
     if(score(center)>0)l=center;else h=center;
   }
@@ -127,6 +129,7 @@ namespace cppunivariate {
 inline GpdResult gpd_mle_impl(span x, double tol=1e-12, int maxit=200,
                          double mu=0, double xi=std::numeric_limits<double>::quiet_NaN(),
                          double sigma=std::numeric_limits<double>::quiet_NaN()) {
+  maxit = static_cast<int>(solver_budget(maxit));
   GpdResult bad{mu,0,xi,0,0,GpdStatus::InvalidData};
   if (x.size()==0 || !std::isfinite(mu) || !(tol>0) || !std::isfinite(tol) || maxit<1) return bad;
   std::vector<double> y;
@@ -170,6 +173,7 @@ inline GpdResult gpd_mle_impl(span x, double tol=1e-12, int maxit=200,
 }
 
 inline GpdResult gpd_mle(span x,double tol=1e-12,int maxit=200,double mu=0,double xi=std::numeric_limits<double>::quiet_NaN(),double sigma=std::numeric_limits<double>::quiet_NaN()) {
+  maxit = static_cast<int>(solver_budget(maxit));
   auto r=gpd_mle_impl(x,tol,maxit,mu,xi,sigma);
   if(r.status==GpdStatus::Ok && (std::isnan(xi)) && r.xi==kGpdXiLower) r.restricted|=16u;
   return r;

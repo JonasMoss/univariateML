@@ -18,7 +18,7 @@ inline FitResult fit_gb2(cppunivariate::span x, Held shape1_arg = {}, Held shape
     case cppunivariate::Gb2Status::WeibullBoundary: return stop_failure(failure("GB2 selects a limiting model. Use `mlweibull`."),r.stop_detail,"limit",{"shape1","shape2","shape3","scale"},"weibull");
     case cppunivariate::Gb2Status::InvWeibullBoundary: return stop_failure(failure("GB2 selects a limiting model. Use `mlinvweibull`."),r.stop_detail,"limit",{"shape1","shape2","shape3","scale"},"invweibull");
     case cppunivariate::Gb2Status::CertificateTie: return stop_failure(failure("GB2 certified delegate tie stop; no verified maximum."),r.stop_detail,"tie",{"shape1","shape2","shape3","scale"},"");
-    case cppunivariate::Gb2Status::CertificateBudget: return stop_failure(failure("GB2 certified delegate budget stop; no verified maximum."),r.stop_detail,"budget",{"shape1","shape2","shape3","scale"},"");
+    case cppunivariate::Gb2Status::CertificateBudget: return stop_failure(failure("GB2 certified delegate budget stop; no verified maximum. Raising iterlim may resolve this stop."),r.stop_detail,"budget",{"shape1","shape2","shape3","scale"},"");
     case cppunivariate::Gb2Status::NumericalFailure: return stop_failure(failure("GB2 certified delegate numerical stop; no verified maximum."),r.stop_detail,"numerical",{"shape1","shape2","shape3","scale"},"");
     case cppunivariate::Gb2Status::TrGammaBoundary: return failure("GB2 selects a limiting model. Use `mltrgamma`.");
     case cppunivariate::Gb2Status::InvTrGammaBoundary: return failure("GB2 selects a limiting model. Use `mlinvtrgamma`.");

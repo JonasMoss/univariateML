@@ -27,9 +27,10 @@
 // beta is the mirror image (x -> N - x).
 //
 // Cost: O(N) per likelihood evaluation, adaptive certificate work (at most
-// 200000 interval evaluations); no unimodality assumption is made.
+// 128 * min(maxit, 100000) interval evaluations); no unimodality assumption is made.
 
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../../core/discrete_stop.hpp"
 
 #include "../../core/span.hpp"
@@ -66,8 +67,38 @@ struct BbinomResult {
 
 namespace bbinom_detail {
 
+inline BbinomResult retain_budget(BbinomResult child,const BbinomResult& parent) {
+  if(!child.stop_detail.budget_exhausted && child.status!=BbinomStatus::SizeBudget)return child;
+  auto& detail=child.stop_detail;
+  detail.candidates.insert(detail.candidates.end(),parent.stop_detail.candidates.begin(),parent.stop_detail.candidates.end());
+  if(detail.limit_model==StopModel::None && parent.stop_detail.limit_model!=StopModel::None) {
+    detail.limit_model=parent.stop_detail.limit_model;detail.limit_coef=parent.stop_detail.limit_coef;
+    detail.limit_loglik=parent.stop_detail.limit_loglik;
+  }
+  if(std::isfinite(parent.size) && std::isfinite(parent.alpha) && std::isfinite(parent.beta) && std::isfinite(parent.logLik))
+    detail.candidates.push_back({{parent.size,parent.alpha,parent.beta},parent.logLik,parent.logLik});
+  for(const auto& c:detail.candidates)if(std::isfinite(c.loglik_lower) && (!std::isfinite(detail.loglik_lower) || c.loglik_lower>detail.loglik_lower))detail.loglik_lower=c.loglik_lower;
+  if(std::isfinite(detail.limit_loglik) && (!std::isfinite(detail.loglik_lower)||detail.limit_loglik>detail.loglik_lower))detail.loglik_lower=detail.limit_loglik;
+  detail.loglik_upper=INFINITY;return child;
+}
+struct CellWork {
+  std::int64_t cap;
+  mutable std::int64_t used=0;
+  mutable bool exhausted=false;
+  explicit CellWork(std::int64_t value):cap(value){}
+  bool consume(std::int64_t cells) const {
+    if(cells>cap-used){exhausted=true;return false;}
+    used+=cells;return true;
+  }
+};
 struct Data {
+  CellWork owned{enumeration_budget(500)};
+  const CellWork& work;
+  Data():work(owned){}
+  explicit Data(const CellWork& input):work(input){}
+
   int size = 0;
+  int maxit = 500;
   double n = 0, interior = 0, zeros = 0, tops = 0, sum = 0;
   double log_choose = 0;  // sum_i log C(N, x_i)
   std::vector<double> A, C;  // length N
@@ -75,6 +106,7 @@ struct Data {
 
 // l(p, s) without the binomial coefficients; q = 1 - p passed separately.
 inline double loglik(const Data &d, double p, double q, double s) {
+  if(!d.work.consume(d.size))return NAN;
   double ll = 0;
   for (int j = 0; j < d.size; ++j) {
     const double js = static_cast<double>(j) * s;
@@ -105,7 +137,8 @@ inline double solve_p(const Data &d, double s, double p0) {
   double lo = 0, hi = 1, p = std::min(std::max(p0, 1e-300), 1 - 1e-16);
   if (!(p > 0 && p < 1)) p = 0.5;
   bool converged = false;
-  for (int it = 0; it < 200; ++it) {
+  for (int it = 0; it < d.maxit; ++it) {
+    if(!d.work.consume(d.size))return NAN;
     double g = 0, H = 0;
     for (int j = 0; j < d.size; ++j) {
       const double js = static_cast<double>(j) * s;
@@ -134,6 +167,7 @@ inline Point profile(const Data &d, double s, double p0) {
 // d/du and d2/du2 of the profile L at u = log s (envelope theorem; the
 // second derivative is l_ss - l_ps^2 / l_pp in s, then the chain rule).
 inline void profile_derivs(const Data &d, double s, double p, double &g, double &H) {
+  if(!d.work.consume(d.size)){g=H=NAN;return;}
   double ls = 0, lpp = 0, lps = 0, lss = 0;
   for (int j = 0; j < d.size; ++j) {
     const double dj = static_cast<double>(j), js = dj * s;
@@ -154,6 +188,7 @@ inline void profile_derivs(const Data &d, double s, double p, double &g, double 
 // A_j (b = alpha). Returns d/du and d2/du2 of l at u = log b.
 inline void shape_derivs(const Data &d, const std::vector<double> &W, double k, double b,
                          double &g, double &H) {
+  if(!d.work.consume(d.size)){g=H=NAN;return;}
   g = 0; H = 0;
   for (int j = 0; j < d.size; ++j) {
     const double dj = static_cast<double>(j);
@@ -173,6 +208,7 @@ inline void shape_derivs(const Data &d, const std::vector<double> &W, double k, 
 template <typename Deriv>
 inline double maximise_on_grid(const std::vector<double> &grid, double tol, int maxit,
                                Deriv deriv, double &best_u, int &iterations) {
+  maxit = static_cast<int>(solver_budget(maxit));
   double best = -std::numeric_limits<double>::infinity();
   std::vector<double> g(grid.size()), H(grid.size());
   for (std::size_t k = 0; k < grid.size(); ++k) deriv(grid[k], g[k], H[k]);
@@ -206,7 +242,8 @@ inline double maximise_on_grid(const std::vector<double> &grid, double tol, int 
 // This is a floating-point likelihood certificate, not interval arithmetic.
 template <typename Bound>
 inline bool certify(const std::vector<double> &grid, double best, double allowance,
-                    Bound bound) {
+                    Bound bound, int maxit, bool& exhausted) {
+  maxit = static_cast<int>(solver_budget(maxit));
   struct Interval { double a, b; };
   std::vector<Interval> pending;
   for (std::size_t k = 0; k + 1 < grid.size(); ++k)
@@ -215,7 +252,7 @@ inline bool certify(const std::vector<double> &grid, double best, double allowan
   while (!pending.empty()) {
     const Interval z = pending.back();
     pending.pop_back();
-    if (++evaluations > 200000) return false;
+    if (++evaluations > certificate_budget(maxit)) {exhausted=true;return false;}
     const double m = z.a + (z.b - z.a) * 0.5;
     if (!(m > z.a && m < z.b)) return false;
     const double upper = bound(z.a, m, z.b);
@@ -227,7 +264,14 @@ inline bool certify(const std::vector<double> &grid, double best, double allowan
   return true;
 }
 
+template <typename Bound>
+inline bool certify(const std::vector<double>& grid,double best,double allowance,Bound bound) {
+  bool exhausted=false;
+  return certify(grid,best,allowance,bound,500,exhausted);
+}
+
 inline double profile_bound(const Data &d, double a, double m, double b) {
+  if(!d.work.consume(d.size))return NAN;
   const double p = solve_p(d, m, d.sum / (d.n * d.size));
   const double value = loglik(d, p, 1 - p, m);
   double vs = 0, gp = 0, da = 0, db = 0;
@@ -245,6 +289,7 @@ inline double profile_bound(const Data &d, double a, double m, double b) {
 }
 
 inline double shape_bound(const Data &d, double k, double a, double m, double b) {
+  if(!d.work.consume(d.size))return NAN;
   const double value = loglik(d, k / (k + m), m / (k + m), 1 / (k + m));
   double vs = 0, da = 0, db = 0;
   for (int j = 0; j < d.size; ++j) {
@@ -270,9 +315,9 @@ inline std::vector<double> log_grid(double lo, double hi, double step) {
 // size: known number of trials (required). alpha_fixed / beta_fixed: NaN to
 // estimate; both may be held. With size NaN, at least one shape must be held. tol: relative tolerance on log shape
 // steps in the Newton refinement; maxit: iterations per refinement.
-inline BbinomResult bbinom_mle(ispan x, double size, double tol = 1e-10, int maxit = 100,
-                               double alpha_fixed = std::numeric_limits<double>::quiet_NaN(),
-                               double beta_fixed = std::numeric_limits<double>::quiet_NaN()) {
+inline BbinomResult bbinom_mle_work(ispan x, double size, double tol, int maxit,
+                               double alpha_fixed,double beta_fixed, const bbinom_detail::CellWork& work) {
+  maxit = static_cast<int>(solver_budget(maxit));
   auto stopped = [&]() -> BbinomResult {
   const double nan = std::numeric_limits<double>::quiet_NaN();
   BbinomResult out{size, nan, nan, nan, 0, BbinomStatus::InvalidInput};
@@ -289,8 +334,9 @@ inline BbinomResult bbinom_mle(ispan x, double size, double tol = 1e-10, int max
     }
     if (mx == 0) { out.status = BbinomStatus::Unidentified; return out; }
     if (mn == mx) { out.status = BbinomStatus::PointMass; return out; }
-    constexpr int budget = 1000;
-    if (mx > budget) { out.status = BbinomStatus::SizeBudget; return out; }
+    const std::int64_t budget = enumeration_budget(maxit);
+    if (mx > budget) { out.stop_detail=discrete_budget(out.stop_detail); out.status = BbinomStatus::SizeBudget; return out; }
+    if(sum>work.cap-work.used || !work.consume(static_cast<std::int64_t>(sum))){out.status=BbinomStatus::SizeBudget;return out;}
     for (int v : x)
       for (int j = 0; j < v; ++j) coeff += std::log((alpha_fixed + j) / (j + 1.0));
     const double h = static_cast<double>(x.size()), a = alpha_fixed, mu = sum / h;
@@ -311,8 +357,8 @@ inline BbinomResult bbinom_mle(ispan x, double size, double tol = 1e-10, int max
       };
       if (!(small(0) + margin < value)) return false;
       double lo = 0, hi = 1;
-      while (hi < 1e12 && small(hi) + margin < value) hi *= 2;
-      for (int j = 0; j < 60; ++j) {
+      for(std::int64_t bracket_pass=0; bracket_pass<solver_budget(maxit) && (hi < 1e12 && small(hi) + margin < value); ++bracket_pass) hi *= 2;
+      for (int j = 0; j < maxit; ++j) {
         const double mid = (lo + hi) / 2;
         if (small(mid) + margin < value) lo = mid; else hi = mid;
       }
@@ -322,22 +368,22 @@ inline BbinomResult bbinom_mle(ispan x, double size, double tol = 1e-10, int max
       const double correction = quadratic / (N - mx) + h * a * a * (1 / b + 1 / (b * b)) / 2;
       return std::isfinite(correction) && face + correction + margin < value;
     };
-    for (int n = mx; n <= budget; ++n) {
-      const BbinomResult candidate = bbinom_mle(x, n, tol, maxit, a, nan);
-      if (candidate.status != BbinomStatus::Ok) return candidate;
+    for (std::int64_t n = mx; n <= budget; ++n) {
+      const BbinomResult candidate = bbinom_mle_work(x, n, tol, maxit, a, nan,work);
+      if (candidate.status != BbinomStatus::Ok) return bbinom_detail::retain_budget(candidate,out);
       out.stop_detail.candidates.push_back({{candidate.size,candidate.alpha,candidate.beta},candidate.logLik,candidate.logLik});
       if (candidate.logLik > best.logLik) { runner = best.logLik; best = candidate; }
       else runner = std::max(runner, candidate.logLik);
       // Neither outcome asserts that a larger finite size cannot improve the fit.
       if (n == mx && best.logLik <= face + margin) { out.status = BbinomStatus::FaceUnresolved; return out; }
-      if (n == mx && !excludes_tail(budget + 1.0, best.logLik)) { out.status = BbinomStatus::SizeBudget; return out; }
+      if (n == mx && !excludes_tail(budget + 1.0, best.logLik)) { out.stop_detail=discrete_budget(out.stop_detail); out.status = BbinomStatus::SizeBudget; return out; }
       if (excludes_tail(n + 1.0, best.logLik)) {
         if (runner + margin >= best.logLik) best.status = BbinomStatus::ProfileTie;
         best.stop_detail=out.stop_detail;
         return best;
       }
     }
-    out.status = BbinomStatus::SizeBudget;
+    out.stop_detail=discrete_budget(out.stop_detail); out.status = BbinomStatus::SizeBudget;
     return out;
   }
   if (std::isnan(size) && !fix_a && fix_b) {
@@ -353,24 +399,26 @@ inline BbinomResult bbinom_mle(ispan x, double size, double tol = 1e-10, int max
     // At N+1 the alpha score is positive below m/(h H), H=sum 1/(b+j).
     // The size ratio is <=1 for alpha >= M(b-1)/(N+1-M).
     // (N+1-M)/H is increasing, so the first such N controls the tail.
-    constexpr int budget = 1000;
-    if (mx > budget) { out.status = BbinomStatus::SizeBudget; return out; }
+    const std::int64_t budget = enumeration_budget(maxit);
+    if (mx > budget) { out.stop_detail=discrete_budget(out.stop_detail); out.status = BbinomStatus::SizeBudget; return out; }
+    if(!work.consume(static_cast<std::int64_t>(mx)+1)){out.status=BbinomStatus::SizeBudget;return out;}
     double harmonic = 0;
     for (int j = 0; j <= mx; ++j) harmonic += 1 / (beta_fixed + j);
-    int end = mx;
+    std::int64_t end = mx;
     const double margin = 1 + 256 * std::numeric_limits<double>::epsilon() * (budget + beta_fixed + 1);
     while (beta_fixed > 1 &&
            static_cast<double>(positives) * (end + 1.0 - mx) <
              margin * x.size() * mx * (beta_fixed - 1) * harmonic) {
-      if (end >= budget) { out.status = BbinomStatus::SizeBudget; return out; }
+      if (end >= budget) { out.stop_detail=discrete_budget(out.stop_detail); out.status = BbinomStatus::SizeBudget; return out; }
+      if(!work.consume(1)){out.status=BbinomStatus::SizeBudget;return out;}
       ++end;
       harmonic += 1 / (beta_fixed + end);
     }
     BbinomResult best{nan, nan, beta_fixed, -std::numeric_limits<double>::infinity(), 0, BbinomStatus::IterationFailure};
     double runner = -std::numeric_limits<double>::infinity();
-    for (int n = mx; n <= end; ++n) {
-      const BbinomResult candidate = bbinom_mle(x, n, tol, maxit, nan, beta_fixed);
-      if (candidate.status != BbinomStatus::Ok) return candidate;
+    for (std::int64_t n = mx; n <= end; ++n) {
+      const BbinomResult candidate = bbinom_mle_work(x, n, tol, maxit, nan, beta_fixed,work);
+      if (candidate.status != BbinomStatus::Ok) return bbinom_detail::retain_budget(candidate,out);
       out.stop_detail.candidates.push_back({{candidate.size,candidate.alpha,candidate.beta},candidate.logLik,candidate.logLik});
       if (candidate.logLik > best.logLik) { runner = best.logLik; best = candidate; }
       else runner = std::max(runner, candidate.logLik);
@@ -385,11 +433,11 @@ inline BbinomResult bbinom_mle(ispan x, double size, double tol = 1e-10, int max
     int mx=0; for(int v:x) {if(v<0)return out;mx=std::max(mx,v);}
     // Each pmf is decreasing once size+1 >= x*(alpha+beta-1)/alpha.
     const double end=std::max(double(mx),std::ceil(mx*std::max(0.,alpha_fixed+beta_fixed-1)/alpha_fixed));
-    if (end>1000000) {out.status=BbinomStatus::IterationFailure;return out;}
+    if (end-mx+1>enumeration_budget(maxit)) {out.stop_detail=discrete_budget(out.stop_detail);out.status=BbinomStatus::SizeBudget;return out;}
     out.logLik=-std::numeric_limits<double>::infinity();
-    for (int k=mx;k<=end;++k) {
-      auto candidate=bbinom_mle(x,k,tol,maxit,alpha_fixed,beta_fixed);
-      if(candidate.status!=BbinomStatus::Ok)return candidate;
+    for (std::int64_t k=mx;k<=end;++k) {
+      auto candidate=bbinom_mle_work(x,k,tol,maxit,alpha_fixed,beta_fixed,work);
+      if(candidate.status!=BbinomStatus::Ok)return bbinom_detail::retain_budget(candidate,out);
       if(candidate.logLik>out.logLik)out=candidate;
     }
     return out;
@@ -400,6 +448,7 @@ inline BbinomResult bbinom_mle(ispan x, double size, double tol = 1e-10, int max
   if (fix_b && !(beta_fixed > 0 && std::isfinite(beta_fixed))) return out;
 
   if (fix_a && fix_b) {
+    if(!work.consume(static_cast<std::int64_t>(size)*x.size())){out.status=BbinomStatus::SizeBudget;return out;}
     double ll=0;
     for(int v:x) {
       if(v<0)return out;
@@ -410,7 +459,8 @@ inline BbinomResult bbinom_mle(ispan x, double size, double tol = 1e-10, int max
     }
     return {size,alpha_fixed,beta_fixed,ll,0,BbinomStatus::Ok};
   }
-  bbinom_detail::Data d;
+  if(!work.consume(static_cast<std::int64_t>(size)*4)){out.status=BbinomStatus::SizeBudget;return out;}
+  bbinom_detail::Data d(work); d.maxit=maxit;
   d.size = static_cast<int>(size);
   const int N = d.size;
   std::vector<double> counts(static_cast<std::size_t>(N) + 1, 0.0);
@@ -488,8 +538,10 @@ inline BbinomResult bbinom_mle(ispan x, double size, double tol = 1e-10, int max
     }
     std::vector<double> intervals;
     for (double uu : u) intervals.push_back(std::exp(uu));
+    bool exhausted=false;
     if (!bbinom_detail::certify(intervals, best, 1e-8 * d.n,
-        [&](double l, double m, double h) { return bbinom_detail::shape_bound(d, a, l, m, h); })) {
+        [&](double l, double m, double h) { return bbinom_detail::shape_bound(d, a, l, m, h); },maxit,exhausted)) {
+    if(exhausted)out.stop_detail=discrete_budget(out.stop_detail);
       out.status = BbinomStatus::IterationFailure;
       return out;
     }
@@ -527,8 +579,10 @@ inline BbinomResult bbinom_mle(ispan x, double size, double tol = 1e-10, int max
   // Include s = 0: no arbitrary lower concentration cutoff in the certificate.
   std::vector<double> intervals{0};
   for (double uu : u) intervals.push_back(std::exp(uu));
+  bool exhausted=false;
   if (!bbinom_detail::certify(intervals, std::max(best, face), tie * 0.25,
-      [&](double l, double m, double h) { return bbinom_detail::profile_bound(d, l, m, h); })) {
+      [&](double l, double m, double h) { return bbinom_detail::profile_bound(d, l, m, h); },maxit,exhausted)) {
+    if(exhausted)out.stop_detail=discrete_budget(out.stop_detail);
     out.status = BbinomStatus::IterationFailure;
     return out;
   }
@@ -563,7 +617,16 @@ inline BbinomResult bbinom_mle(ispan x, double size, double tol = 1e-10, int max
         stopped.stop_detail.loglik_lower=c.loglik_lower;
     if(std::isfinite(stopped.logLik)) stopped.stop_detail.candidates.push_back({{stopped.size,stopped.alpha,stopped.beta},stopped.logLik,stopped.logLik});
   }
+  if(work.exhausted){stopped.status=BbinomStatus::SizeBudget;stopped.stop_detail=discrete_budget(stopped.stop_detail);}
   return stopped;
+}
+
+inline BbinomResult bbinom_mle(ispan x,double size,double tol=1e-10,int maxit=500,
+    double alpha_fixed=std::numeric_limits<double>::quiet_NaN(),
+    double beta_fixed=std::numeric_limits<double>::quiet_NaN()) {
+  maxit = static_cast<int>(solver_budget(maxit));
+  const bbinom_detail::CellWork work(enumeration_budget(maxit));
+  return bbinom_mle_work(x,size,tol,maxit,alpha_fixed,beta_fixed,work);
 }
 
 }  // namespace cppunivariate

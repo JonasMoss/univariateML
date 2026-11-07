@@ -1,5 +1,6 @@
 // Infinite Zipf: strict exponential-family score, safeguarded by bisection.
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../../core/discrete_stop.hpp"
 #include "../zipf/mle.hpp"
 #include "../../special/special.hpp"
@@ -30,6 +31,7 @@ inline double logz(double s) {
 }
 }
 inline ZetaResult zeta_mle(ispan x,double tol=1e-10,int maxit=200, double held=std::numeric_limits<double>::quiet_NaN()) {
+  maxit = static_cast<int>(solver_budget(maxit));
   auto stopped = [&]() -> ZetaResult {
   const double nan=special::kNaN;
   if (!x.size() || !(tol>0) || !std::isfinite(tol) || maxit<1)

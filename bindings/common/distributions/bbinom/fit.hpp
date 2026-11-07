@@ -5,7 +5,7 @@
 #include <limits>
 #include <string>
 namespace umvl_binding {
-inline FitResult fit_bbinom(cppunivariate::ispan x, Held size_arg = {}, Held alpha_arg = {}, Held beta_arg = {}, double reltol = 1e-10, int iterlim = 100) {
+inline FitResult fit_bbinom(cppunivariate::ispan x, Held size_arg = {}, Held alpha_arg = {}, Held beta_arg = {}, double reltol = 1e-10, int iterlim = 500) {
   std::vector<std::string> warnings;
   const Held size = size_arg;
   const Held alpha = alpha_arg;
@@ -24,6 +24,7 @@ inline FitResult fit_bbinom(cppunivariate::ispan x, Held size_arg = {}, Held alp
   if (beta.supplied && !(std::isfinite(b) && b > 0))
     return failure("`beta` must be a finite positive number.");
   const auto res = cppunivariate::bbinom_mle(x, N, reltol, iterlim, a, b);
+  if(res.stop_detail.budget_exhausted)return stop_failure(failure("Beta-binomial free-size search could not exclude the tail within its work budget. Raising iterlim may resolve this stop."),res.stop_detail,"budget",{"size","alpha","beta"});
   std::string stop_kind;
   switch(res.status) {
     case cppunivariate::BbinomStatus::BinomialLimit: stop_kind="limit";break;
@@ -71,7 +72,7 @@ inline FitResult fit_bbinom(cppunivariate::ispan x, Held size_arg = {}, Held alp
       return stopped_fail("Beta-binomial fitting needs nonempty nonnegative counts, positive "
                  "`reltol` and positive `iterlim`.");
     case cppunivariate::BbinomStatus::SizeBudget:
-      return stopped_fail("Beta-binomial free-size search could not exclude the tail within its work budget.");
+      return stopped_fail("Beta-binomial free-size search could not exclude the tail within its work budget. Raising iterlim may resolve this stop.");
     case cppunivariate::BbinomStatus::ProfileTie:
       return stopped_fail("Beta-binomial free-size profiles have an unresolved numerical tie.");
     case cppunivariate::BbinomStatus::FaceUnresolved:

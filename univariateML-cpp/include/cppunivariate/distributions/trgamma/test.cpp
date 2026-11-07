@@ -389,3 +389,23 @@ TEST_CASE("trgamma: structured face payloads") {
   CHECK(r.stop_detail.limit_coef[1]==doctest::Approx(public_fit.beta));
   CHECK(r.stop_detail.limit_loglik==doctest::Approx(public_fit.logLik));
 }
+
+TEST_CASE("trgamma: small certificate cap retains a feasible witness") {
+  const auto g=mltest::load_distribution_golden("trgamma");
+  std::vector<double> logs;for(double v:g.data)logs.push_back(std::log(v));
+  cppunivariate::trgamma_detail::LogData d;
+  REQUIRE(cppunivariate::trgamma_detail::standardize({logs.data(),logs.size()},d));
+  const auto r=cppunivariate::trgamma_detail::fit_free(d,1e-10,100,1);
+  CHECK(r.status==cppunivariate::TrGammaStatus::IterationFailure);
+  REQUIRE(r.stop_detail.budget_exhausted);
+  REQUIRE_FALSE(r.stop_detail.candidates.empty());
+  CHECK(std::isfinite(r.stop_detail.loglik_lower));
+  CHECK(r.stop_detail.loglik_upper==INFINITY);
+  const auto& c=r.stop_detail.candidates.front();
+  REQUIRE(c.coef.size()==3);
+  double ll=0;
+  for(double v:g.data)ll+=cppunivariate::distributions::dtrgamma(v,c.coef[0],c.coef[1],c.coef[2],true);
+  CHECK(ll>=c.loglik_lower-1e-8);
+  CHECK(ll<=c.loglik_upper+1e-8);
+  CHECK_FALSE(cppunivariate::trgamma_mle({g.data.data(),g.data.size()},1e-10,100).stop_detail.budget_exhausted);
+}

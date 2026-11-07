@@ -1,6 +1,7 @@
 // Scalar global certificate; arithmetic contract and proof in README.md.
 // Included after LomaxResult and the optional Newton proposer in mle.hpp.
 #pragma once
+#include "../../core/work_budget.hpp"
 #include <queue>
 namespace cppunivariate {
 namespace lomax_cert_detail {
@@ -62,6 +63,7 @@ inline double curvature_upper(const Data& d,const Point& a,const Point& b) {
 }
 struct Root { double lo=0,hi=0,rootlo=0,roothi=0,lambda=NAN,kappa=NAN,h=-INFINITY,error=0; bool valid=false; };
 inline Root isolate(const Data& d,Point a,Point b,int maxit) {
+  maxit = static_cast<int>(solver_budget(maxit));
   Root r;
   if(!(a.score>4*d.error && b.score< -4*d.error && curvature_upper(d,a,b)< -4*d.error))return r;
   r.lo=a.z;r.hi=b.z;
@@ -76,7 +78,7 @@ inline Root isolate(const Data& d,Point a,Point b,int maxit) {
     else {
       // Widen about the proposal until both signs can be certified.
       double center=mid.z;
-      for(int k=0;k<8;++k) {
+      for(int k=0;k<maxit;++k) {
         const Point p=evaluate(d,center);
         const double slope=p.B*p.B/(p.A*p.A)-p.C/p.A-p.C;
         const double next=center-p.score/slope;
@@ -87,7 +89,7 @@ inline Root isolate(const Data& d,Point a,Point b,int maxit) {
       const double slope=proposal.B*proposal.B/(proposal.A*proposal.A)-proposal.C/proposal.A-proposal.C;
       double radius=std::max(1e-10,5*d.error/std::abs(slope));
       bool signed_box=false;
-      for(int k=0;k<24;++k,radius*=2) {
+      for(int k=0;k<maxit;++k,radius*=2) {
         if(center-radius<=a.z || center+radius>=b.z)break;
         const Point l=evaluate(d,center-radius),h=evaluate(d,center+radius);
         if(l.score>se && h.score< -se){left=l;right=h;signed_box=true;break;}
@@ -98,7 +100,7 @@ inline Root isolate(const Data& d,Point a,Point b,int maxit) {
     if(j>0 && right.z-left.z<7e-7) {
       r.rootlo=left.z-1e-7;r.roothi=right.z+1e-7;
       double z=(left.z+right.z)/2;
-      for(int k=0;k<8;++k) {
+      for(int k=0;k<maxit;++k) {
         const Point p=evaluate(d,z);
         const double slope=p.B*p.B/(p.A*p.A)-p.C/p.A-p.C;
         const double next=z-p.score/slope;
@@ -121,6 +123,7 @@ inline Root isolate(const Data& d,Point a,Point b,int maxit) {
   return r;
 }
 inline LomaxResult fit(span x,double tol,int maxit,double lambda0) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const double nan=std::numeric_limits<double>::quiet_NaN();
   auto stop=[&](LomaxStatus status,int work=0,
       LomaxCertificateFailure reason=LomaxCertificateFailure::Arithmetic){
@@ -179,6 +182,7 @@ inline LomaxResult fit(span x,double tol,int maxit,double lambda0) {
   if(!(5.1e-11+4*d.error<margin))return stop(LomaxStatus::IterationFailure,work);
   auto budget_stop=[&](double upper_bound) {
     auto out=stop(LomaxStatus::IterationFailure,work,LomaxCertificateFailure::Budget);
+    out.stop_detail.budget_exhausted=true;
     const double base=-d.logmean-1;
     out.stop_detail.loglik_lower=n*(base+(root.valid?std::max(0.,root.h-root.error):0.));
     out.stop_detail.loglik_upper=n*(base+std::max({margin,upper_bound,queue.empty()?-INFINITY:queue.top().upper,root.valid?root.h+root.error:0.}));
@@ -192,7 +196,7 @@ inline LomaxResult fit(span x,double tol,int maxit,double lambda0) {
     if(root.valid)out.stop_detail.candidates.push_back({{root.lambda,root.kappa},n*(base+root.h-root.error),n*(base+root.h+root.error)});
     return out;
   };
-  const int budget=std::min(maxit,100000)*128;
+  const std::int64_t budget=certificate_budget(maxit);
   while(!queue.empty()) {
     Segment s=queue.top();queue.pop();
     if(root.valid && s.a.z>=root.lo && s.b.z<=root.hi)continue;

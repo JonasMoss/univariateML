@@ -1,0 +1,1 @@
+beta bhatt binom dnorm dweibull emg fatigue frechet gamma ged genbeta gev gompertz gumbel huber invgamma invweibull lgamma llogis logis naka nsbeta pareto3 pig sged sgomp sstd st tlambda tnorm triang weibull yulesimon zeta zipf zmbinom

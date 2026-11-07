@@ -1,10 +1,12 @@
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../zmpois/profile.hpp"
 namespace cppunivariate {
 // Status and result types retain the shared factorised likelihood contract.
 typedef zero_detail::ModifiedStatus ZmnbinomStatus;
 struct ZmnbinomResult { double lambda,size,prob,p0,logLik; int iterations; ZmnbinomStatus status; StopDetail stop_detail{}; bool budget_exhausted=false; ZtnbinomCertificateFailure certificate_failure=ZtnbinomCertificateFailure::None; };
 inline ZmnbinomResult zmnbinom_mle(ispan x, double tol=1e-10,int maxit=200,double fixed_size=std::numeric_limits<double>::quiet_NaN(),double fixed_prob=std::numeric_limits<double>::quiet_NaN(),double fixed_p0=std::numeric_limits<double>::quiet_NaN()) {
+  maxit = static_cast<int>(solver_budget(maxit));
  ZmnbinomResult out{1,1,.5,0,0,0,ZmnbinomStatus::Ok};
  const bool fb=!std::isnan(fixed_prob), fz=!std::isnan(fixed_p0);
  if(x.empty() || !(tol>0)||!std::isfinite(tol)||maxit<1 ||

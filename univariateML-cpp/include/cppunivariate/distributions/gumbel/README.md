@@ -32,7 +32,7 @@ r:
     sigma: Optional held sigma; NULL estimates it.
     mu: Optional held mu; NULL estimates it.
     reltol: Relative step tolerance in log(sigma) of the underlying Gumbel fit.
-    iterlim: Maximum number of iterations.
+    iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
 log_density: -log(sigma) - (x-mu)/sigma - exp(-(x-mu)/sigma)
 references:
 - Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 2, Chapter 22.

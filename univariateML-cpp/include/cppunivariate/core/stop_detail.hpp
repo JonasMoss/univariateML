@@ -32,7 +32,8 @@ enum class StopModel { None, Weibull, Pareto, InvWeibull, Power, Exp, InvExp,
   ReflectedHt,
   UnitGamma,
   HalfGed,
-  ReflectedHalfGed
+  ReflectedHalfGed,
+  Trgamma, InvTrgamma, ShiftedTrgamma, ShiftedInvTrgamma
 };
 struct FitCandidate {
   std::vector<double> coef;
@@ -79,6 +80,10 @@ inline bool valid_stop_coefficients(StopModel model,const std::vector<double>& v
     case StopModel::HalfGed:
     case StopModel::ReflectedHalfGed:return v.size()==3 && v[1]>0 && v[2]>0;
     case StopModel::TruncatedExp:return v.size()==3 && v[0]<v[1];
+    case StopModel::Trgamma:
+    case StopModel::InvTrgamma:return v.size()==3 && v[0]>0 && v[1]>0 && v[2]>0;
+    case StopModel::ShiftedTrgamma:
+    case StopModel::ShiftedInvTrgamma:return v.size()==4 && v[0]>0 && v[1]>0 && v[2]>0;
     case StopModel::UnitGamma:return v.size()==3 && v[0]>0 && v[1]>0 && v[2]>0;
     // Discrete and t faces: finite coefficients, checked by their families.
     default:return true;

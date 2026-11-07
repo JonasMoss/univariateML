@@ -1,0 +1,145 @@
+{"source_headers_sha256": "7349c83fd8ae9cc29c52d42593b53160ba0dbb512a36f265cc84779f652e036f", "probe_sha256": "5bf9d093310bc08f379e1288a248a8cf08a10224c564415ff022ba195b65610b", "machine": "workstation", "compiler": "c++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0", "seed": 143, "n": 100000, "timeout_seconds": 60, "cmb_timeout_seconds": 180}
+{"family": "beta", "mode": 0, "elapsed": 0.2340073290001783, "returncode": 0, "output": "beta\t0\t100000\t0.00074581599999999995", "stderr": ""}
+{"family": "beta", "mode": 1, "elapsed": 0.230859306000184, "returncode": 0, "output": "beta\t1\t100000\t0.00072986399999999999", "stderr": ""}
+{"family": "beta", "mode": 2, "elapsed": 0.2541372539999429, "returncode": 0, "output": "beta\t2\t100000\t0.00082438900000000002", "stderr": ""}
+{"family": "beta", "mode": 3, "elapsed": 0.25058262199991077, "returncode": 0, "output": "beta\t3\t100000\t0.0012375279999999999", "stderr": ""}
+{"family": "bhatt", "mode": 0, "elapsed": 60.10091038700011, "censored": true, "limit_seconds": 60}
+{"family": "bhatt", "mode": 1, "elapsed": 60.07454216699989, "censored": true, "limit_seconds": 60}
+{"family": "bhatt", "mode": 2, "elapsed": 60.07689902199991, "censored": true, "limit_seconds": 60}
+{"family": "bhatt", "mode": 3, "elapsed": 53.34998888300015, "returncode": 0, "output": "bhatt\t3\t100000\t53.143943798999999", "stderr": ""}
+{"family": "binom", "mode": 0, "elapsed": 0.20030257000007623, "returncode": 0, "output": "binom\t0\t100000\t0.00052338299999999999", "stderr": ""}
+{"family": "binom", "mode": 1, "elapsed": 0.2034384260000479, "returncode": 0, "output": "binom\t1\t100000\t0.00050456000000000003", "stderr": ""}
+{"family": "binom", "mode": 2, "elapsed": 0.1929419770003733, "returncode": 0, "output": "binom\t2\t100000\t0.00048009399999999997", "stderr": ""}
+{"family": "binom", "mode": 3, "elapsed": 0.22874441399972056, "returncode": 0, "output": "binom\t3\t100000\t0.00050172599999999997", "stderr": ""}
+{"family": "dnorm", "mode": 0, "elapsed": 0.21696925400010514, "returncode": 0, "output": "dnorm\t0\t100000\t0.0018079120000000001", "stderr": ""}
+{"family": "dnorm", "mode": 1, "elapsed": 0.22962830899996334, "returncode": 0, "output": "dnorm\t1\t100000\t0.00057131200000000004\t\tRequires nonempty finite integer data (absolute value below 2^52).", "stderr": ""}
+{"family": "dnorm", "mode": 2, "elapsed": 0.24145188300008158, "returncode": 0, "output": "dnorm\t2\t100000\t0.000392011\t\tRequires nonempty finite integer data (absolute value below 2^52).", "stderr": ""}
+{"family": "dnorm", "mode": 3, "elapsed": 0.19356347800021467, "returncode": 0, "output": "dnorm\t3\t100000\t0.0017079689999999999", "stderr": ""}
+{"family": "dweibull", "mode": 0, "elapsed": 0.2283859509998365, "returncode": 0, "output": "dweibull\t0\t100000\t0.0021750530000000001", "stderr": ""}
+{"family": "dweibull", "mode": 1, "elapsed": 0.19569173699983367, "returncode": 0, "output": "dweibull\t1\t100000\t0.00033577800000000001\t\tDiscrete Weibull requires nonempty, finite, nonnegative integer data.", "stderr": ""}
+{"family": "dweibull", "mode": 2, "elapsed": 0.20331606999980067, "returncode": 0, "output": "dweibull\t2\t100000\t0.00038777700000000001\t\tDiscrete Weibull requires nonempty, finite, nonnegative integer data.", "stderr": ""}
+{"family": "dweibull", "mode": 3, "elapsed": 0.1930566980004187, "returncode": 0, "output": "dweibull\t3\t100000\t0.001662076", "stderr": ""}
+{"family": "emg", "mode": 0, "elapsed": 60.101324591999855, "censored": true, "limit_seconds": 60}
+{"family": "emg", "mode": 1, "elapsed": 60.10075271100004, "censored": true, "limit_seconds": 60}
+{"family": "emg", "mode": 2, "elapsed": 60.09635394399993, "censored": true, "limit_seconds": 60}
+{"family": "emg", "mode": 3, "elapsed": 44.870812613, "returncode": 0, "output": "emg\t3\t100000\t44.667313161999999", "stderr": ""}
+{"family": "fatigue", "mode": 0, "elapsed": 0.22150153700022202, "returncode": 0, "output": "fatigue\t0\t100000\t0.0031710509999999998", "stderr": ""}
+{"family": "fatigue", "mode": 1, "elapsed": 0.22154387999989922, "returncode": 0, "output": "fatigue\t1\t100000\t0.003163716", "stderr": ""}
+{"family": "fatigue", "mode": 2, "elapsed": 0.19575663699970391, "returncode": 0, "output": "fatigue\t2\t100000\t0.0033781560000000002", "stderr": ""}
+{"family": "fatigue", "mode": 3, "elapsed": 2.010894591000124, "returncode": 0, "output": "fatigue\t3\t100000\t1.7835551359999999", "stderr": ""}
+{"family": "frechet", "mode": 0, "elapsed": 0.23079637699993327, "returncode": 0, "output": "frechet\t0\t100000\t0.0035439640000000001", "stderr": ""}
+{"family": "frechet", "mode": 1, "elapsed": 0.23247721100005947, "returncode": 0, "output": "frechet\t1\t100000\t0.0035565900000000001", "stderr": ""}
+{"family": "frechet", "mode": 2, "elapsed": 0.22331228800021563, "returncode": 0, "output": "frechet\t2\t100000\t0.0039481910000000002", "stderr": ""}
+{"family": "frechet", "mode": 3, "elapsed": 0.2261776989998907, "returncode": 0, "output": "frechet\t3\t100000\t0.0062758789999999998", "stderr": ""}
+{"family": "gamma", "mode": 0, "elapsed": 0.19656873700023425, "returncode": 0, "output": "gamma\t0\t100000\t0.00043481599999999998", "stderr": ""}
+{"family": "gamma", "mode": 1, "elapsed": 0.20081857600007424, "returncode": 0, "output": "gamma\t1\t100000\t0.000425604", "stderr": ""}
+{"family": "gamma", "mode": 2, "elapsed": 0.22643728000002739, "returncode": 0, "output": "gamma\t2\t100000\t0.00042289600000000002", "stderr": ""}
+{"family": "gamma", "mode": 3, "elapsed": 0.22889547100021446, "returncode": 0, "output": "gamma\t3\t100000\t0.00076693099999999999", "stderr": ""}
+{"family": "ged", "mode": 0, "elapsed": 3.9081828399998813, "returncode": 0, "output": "ged\t0\t100000\t3.7159070249999999", "stderr": ""}
+{"family": "ged", "mode": 1, "elapsed": 4.014548889999787, "returncode": 0, "output": "ged\t1\t100000\t3.7908813669999999", "stderr": ""}
+{"family": "ged", "mode": 2, "elapsed": 23.083283432999906, "returncode": 0, "output": "ged\t2\t100000\t22.863877610999999", "stderr": ""}
+{"family": "ged", "mode": 3, "elapsed": 4.201083190999725, "returncode": 0, "output": "ged\t3\t100000\t3.9832049820000002", "stderr": ""}
+{"family": "genbeta", "mode": 0, "elapsed": 0.5520418090000021, "returncode": 0, "output": "genbeta\t0\t100000\t0.32226721699999999", "stderr": ""}
+{"family": "genbeta", "mode": 1, "elapsed": 0.5565156279999428, "returncode": 0, "output": "genbeta\t1\t100000\t0.325205574", "stderr": ""}
+{"family": "genbeta", "mode": 2, "elapsed": 0.5142191219997585, "returncode": 0, "output": "genbeta\t2\t100000\t0.31092816000000001", "stderr": ""}
+{"family": "genbeta", "mode": 3, "elapsed": 0.5425126290001572, "returncode": 0, "output": "genbeta\t3\t100000\t0.319804912", "stderr": ""}
+{"family": "gev", "mode": 0, "elapsed": 0.471537890000036, "returncode": 0, "output": "gev\t0\t100000\t0.26852415400000001", "stderr": ""}
+{"family": "gev", "mode": 1, "elapsed": 0.5003495299997667, "returncode": 0, "output": "gev\t1\t100000\t0.26573328200000002", "stderr": ""}
+{"family": "gev", "mode": 2, "elapsed": 0.45780268099997556, "returncode": 0, "output": "gev\t2\t100000\t0.25828722100000001", "stderr": ""}
+{"family": "gev", "mode": 3, "elapsed": 32.623287592, "returncode": 0, "output": "gev\t3\t100000\t32.424036209999997", "stderr": ""}
+{"family": "gompertz", "mode": 0, "elapsed": 0.24606421999988015, "returncode": 0, "output": "gompertz\t0\t100000\t0.0023280990000000001", "stderr": ""}
+{"family": "gompertz", "mode": 1, "elapsed": 0.23964676300010979, "returncode": 0, "output": "gompertz\t1\t100000\t0.002354526", "stderr": ""}
+{"family": "gompertz", "mode": 2, "elapsed": 0.1961148220002542, "returncode": 0, "output": "gompertz\t2\t100000\t0.00077705799999999996\tlimit\tThe Gompertz maximum likelihood estimator escapes to an exponential when the score at b=0 is nonpositive. Use `mlexp` instead.", "stderr": ""}
+{"family": "gompertz", "mode": 3, "elapsed": 0.39272254700017584, "returncode": 0, "output": "gompertz\t3\t100000\t0.174933222", "stderr": ""}
+{"family": "gumbel", "mode": 0, "elapsed": 0.19368197500034512, "returncode": 0, "output": "gumbel\t0\t100000\t0.0016556679999999999", "stderr": ""}
+{"family": "gumbel", "mode": 1, "elapsed": 0.23368853000010859, "returncode": 0, "output": "gumbel\t1\t100000\t0.0016583730000000001", "stderr": ""}
+{"family": "gumbel", "mode": 2, "elapsed": 0.1990227389997017, "returncode": 0, "output": "gumbel\t2\t100000\t0.0025956719999999998", "stderr": ""}
+{"family": "gumbel", "mode": 3, "elapsed": 0.40554027700000006, "returncode": 0, "output": "gumbel\t3\t100000\t0.19391766899999999", "stderr": ""}
+{"family": "huber", "mode": 0, "elapsed": 0.2314527589996942, "returncode": 0, "output": "huber\t0\t100000\t0.0052617710000000002", "stderr": ""}
+{"family": "huber", "mode": 1, "elapsed": 0.22625695899978382, "returncode": 0, "output": "huber\t1\t100000\t0.0064737359999999999", "stderr": ""}
+{"family": "huber", "mode": 2, "elapsed": 0.19855990199994267, "returncode": 0, "output": "huber\t2\t100000\t0.0071034510000000002", "stderr": ""}
+{"family": "huber", "mode": 3, "elapsed": 0.2051156689999516, "returncode": 0, "output": "huber\t3\t100000\t0.0062989359999999998", "stderr": ""}
+{"family": "invgamma", "mode": 0, "elapsed": 0.23979672399991614, "returncode": 0, "output": "invgamma\t0\t100000\t0.0023553929999999999", "stderr": ""}
+{"family": "invgamma", "mode": 1, "elapsed": 0.21898908000002848, "returncode": 0, "output": "invgamma\t1\t100000\t0.001154403", "stderr": ""}
+{"family": "invgamma", "mode": 2, "elapsed": 0.22667990499985535, "returncode": 0, "output": "invgamma\t2\t100000\t0.0011143279999999999", "stderr": ""}
+{"family": "invgamma", "mode": 3, "elapsed": 0.2473175209997862, "returncode": 0, "output": "invgamma\t3\t100000\t0.001835494", "stderr": ""}
+{"family": "invweibull", "mode": 0, "elapsed": 0.21854072800033464, "returncode": 0, "output": "invweibull\t0\t100000\t0.0023752809999999999", "stderr": ""}
+{"family": "invweibull", "mode": 1, "elapsed": 0.22489620599981208, "returncode": 0, "output": "invweibull\t1\t100000\t0.002284351", "stderr": ""}
+{"family": "invweibull", "mode": 2, "elapsed": 0.23046107000027405, "returncode": 0, "output": "invweibull\t2\t100000\t0.0034222129999999999", "stderr": ""}
+{"family": "invweibull", "mode": 3, "elapsed": 0.1971805250000216, "returncode": 0, "output": "invweibull\t3\t100000\t0.0056062839999999996", "stderr": ""}
+{"family": "lgamma", "mode": 0, "elapsed": 0.20265051600017614, "returncode": 0, "output": "lgamma\t0\t100000\t0.001185572", "stderr": ""}
+{"family": "lgamma", "mode": 1, "elapsed": 0.2283015709999745, "returncode": 0, "output": "lgamma\t1\t100000\t0.00095554699999999995", "stderr": ""}
+{"family": "lgamma", "mode": 2, "elapsed": 0.21685597600026085, "returncode": 0, "output": "lgamma\t2\t100000\t0.001157992", "stderr": ""}
+{"family": "lgamma", "mode": 3, "elapsed": 0.22122642499971334, "returncode": 0, "output": "lgamma\t3\t100000\t0.0012328420000000001", "stderr": ""}
+{"family": "llogis", "mode": 0, "elapsed": 0.3258307299997796, "returncode": 0, "output": "llogis\t0\t100000\t0.096485240999999999", "stderr": ""}
+{"family": "llogis", "mode": 1, "elapsed": 0.21657351400017433, "returncode": 0, "output": "llogis\t1\t100000\t0.016445622", "stderr": ""}
+{"family": "llogis", "mode": 2, "elapsed": 0.24525230200015358, "returncode": 0, "output": "llogis\t2\t100000\t0.022883602999999999", "stderr": ""}
+{"family": "llogis", "mode": 3, "elapsed": 0.2276852219997636, "returncode": 0, "output": "llogis\t3\t100000\t0.031943873999999997", "stderr": ""}
+{"family": "logis", "mode": 0, "elapsed": 0.23816723299978548, "returncode": 0, "output": "logis\t0\t100000\t0.016147183999999998", "stderr": ""}
+{"family": "logis", "mode": 1, "elapsed": 0.2115756030002558, "returncode": 0, "output": "logis\t1\t100000\t0.016028218", "stderr": ""}
+{"family": "logis", "mode": 2, "elapsed": 0.24759044800021002, "returncode": 0, "output": "logis\t2\t100000\t0.024702436000000001", "stderr": ""}
+{"family": "logis", "mode": 3, "elapsed": 0.324037006999788, "returncode": 0, "output": "logis\t3\t100000\t0.036596185000000003", "stderr": ""}
+{"family": "naka", "mode": 0, "elapsed": 0.23352022100016256, "returncode": 0, "output": "naka\t0\t100000\t0.0011164840000000001", "stderr": ""}
+{"family": "naka", "mode": 1, "elapsed": 0.19689156100002947, "returncode": 0, "output": "naka\t1\t100000\t0.0011211579999999999", "stderr": ""}
+{"family": "naka", "mode": 2, "elapsed": 0.19254855600001974, "returncode": 0, "output": "naka\t2\t100000\t0.0012034070000000001", "stderr": ""}
+{"family": "naka", "mode": 3, "elapsed": 0.21829495799966026, "returncode": 0, "output": "naka\t3\t100000\t0.00066394999999999996", "stderr": ""}
+{"family": "nsbeta", "mode": 0, "elapsed": 0.1924600399997871, "returncode": 0, "output": "nsbeta\t0\t100000\t0.0012102110000000001", "stderr": ""}
+{"family": "nsbeta", "mode": 1, "elapsed": 0.2386482850001812, "returncode": 0, "output": "nsbeta\t1\t100000\t0.001222889", "stderr": ""}
+{"family": "nsbeta", "mode": 2, "elapsed": 0.19270653200010202, "returncode": 0, "output": "nsbeta\t2\t100000\t0.001174495", "stderr": ""}
+{"family": "nsbeta", "mode": 3, "elapsed": 0.23487964200012357, "returncode": 0, "output": "nsbeta\t3\t100000\t0.001352039", "stderr": ""}
+{"family": "pareto3", "mode": 0, "elapsed": 0.2670610810000653, "returncode": 0, "output": "pareto3\t0\t100000\t0.071081395000000006", "stderr": ""}
+{"family": "pareto3", "mode": 1, "elapsed": 0.21835287599969888, "returncode": 0, "output": "pareto3\t1\t100000\t0.022552421", "stderr": ""}
+{"family": "pareto3", "mode": 2, "elapsed": 0.3087135529999614, "returncode": 0, "output": "pareto3\t2\t100000\t0.052400832000000001", "stderr": ""}
+{"family": "pareto3", "mode": 3, "elapsed": 0.22364315499999066, "returncode": 0, "output": "pareto3\t3\t100000\t0.031956406999999999", "stderr": ""}
+{"family": "pig", "mode": 0, "elapsed": 0.1928697410003224, "returncode": 0, "output": "pig\t0\t100000\t0.00042989699999999999", "stderr": ""}
+{"family": "pig", "mode": 1, "elapsed": 0.2261768650000704, "returncode": 0, "output": "pig\t1\t100000\t0.00041823199999999999", "stderr": ""}
+{"family": "pig", "mode": 2, "elapsed": 0.1929042169999775, "returncode": 0, "output": "pig\t2\t100000\t0.00036274199999999999", "stderr": ""}
+{"family": "pig", "mode": 3, "elapsed": 0.2068791029996646, "returncode": 0, "output": "pig\t3\t100000\t0.00045299000000000001", "stderr": ""}
+{"family": "sged", "mode": 0, "elapsed": 60.10161428799984, "censored": true, "limit_seconds": 60}
+{"family": "sged", "mode": 1, "elapsed": 60.04839639900001, "censored": true, "limit_seconds": 60}
+{"family": "sged", "mode": 2, "elapsed": 60.10189339200042, "censored": true, "limit_seconds": 60}
+{"family": "sged", "mode": 3, "elapsed": 60.02840848200003, "censored": true, "limit_seconds": 60}
+{"family": "sgomp", "mode": 0, "elapsed": 3.807366864999949, "returncode": 0, "output": "sgomp\t0\t100000\t3.604631012", "stderr": ""}
+{"family": "sgomp", "mode": 1, "elapsed": 4.047324637999736, "returncode": 0, "output": "sgomp\t1\t100000\t3.8096474470000001", "stderr": ""}
+{"family": "sgomp", "mode": 2, "elapsed": 1.2670446560000528, "returncode": 0, "output": "sgomp\t2\t100000\t1.0388819869999999", "stderr": ""}
+{"family": "sgomp", "mode": 3, "elapsed": 0.2680206059999364, "returncode": 0, "output": "sgomp\t3\t100000\t0.029035287999999999", "stderr": ""}
+{"family": "sstd", "mode": 0, "elapsed": 3.2718617319997065, "returncode": 0, "output": "sstd\t0\t100000\t3.0618693700000001", "stderr": ""}
+{"family": "sstd", "mode": 1, "elapsed": 3.16570726000009, "returncode": 0, "output": "sstd\t1\t100000\t2.9209746980000002", "stderr": ""}
+{"family": "sstd", "mode": 2, "elapsed": 5.271755724000286, "returncode": 0, "output": "sstd\t2\t100000\t4.9932155979999999\t\tThe skew Student-t likelihood is maximised as nu -> 2, i.e. by a two-piece t with 2 degrees of freedom (infinite variance); the MLE does not exist in the mean/sd parameterisation.", "stderr": ""}
+{"family": "sstd", "mode": 3, "elapsed": 60.04744073799975, "censored": true, "limit_seconds": 60}
+{"family": "st", "mode": 0, "elapsed": 60.10121672599962, "censored": true, "limit_seconds": 60}
+{"family": "st", "mode": 1, "elapsed": 60.101821197999925, "censored": true, "limit_seconds": 60}
+{"family": "st", "mode": 2, "elapsed": 60.10167620899938, "censored": true, "limit_seconds": 60}
+{"family": "st", "mode": 3, "elapsed": 60.10171829599949, "censored": true, "limit_seconds": 60}
+{"family": "tlambda", "mode": 0, "elapsed": 60.100879106999855, "censored": true, "limit_seconds": 60}
+{"family": "tlambda", "mode": 1, "elapsed": 60.10168775400052, "censored": true, "limit_seconds": 60}
+{"family": "tlambda", "mode": 2, "elapsed": 60.10167491299944, "censored": true, "limit_seconds": 60}
+{"family": "tlambda", "mode": 3, "elapsed": 60.101231445999474, "censored": true, "limit_seconds": 60}
+{"family": "tnorm", "mode": 0, "elapsed": 0.2592869990003237, "returncode": 0, "output": "tnorm\t0\t100000\t0.00040699399999999999", "stderr": ""}
+{"family": "tnorm", "mode": 1, "elapsed": 0.20070066100015538, "returncode": 0, "output": "tnorm\t1\t100000\t0.00031319099999999999", "stderr": ""}
+{"family": "tnorm", "mode": 2, "elapsed": 0.19912109800043254, "returncode": 0, "output": "tnorm\t2\t100000\t0.00028002600000000001", "stderr": ""}
+{"family": "tnorm", "mode": 3, "elapsed": 0.19732583699988027, "returncode": 0, "output": "tnorm\t3\t100000\t0.00038733000000000002", "stderr": ""}
+{"family": "triang", "mode": 0, "elapsed": 1.4177942730002542, "returncode": 0, "output": "triang\t0\t100000\t1.1951597709999999", "stderr": ""}
+{"family": "triang", "mode": 1, "elapsed": 3.923304670000107, "returncode": 0, "output": "triang\t1\t100000\t3.6986505379999999", "stderr": ""}
+{"family": "triang", "mode": 2, "elapsed": 4.776678803999857, "returncode": 0, "output": "triang\t2\t100000\t4.5681570809999998", "stderr": ""}
+{"family": "triang", "mode": 3, "elapsed": 1.3500075359997936, "returncode": 0, "output": "triang\t3\t100000\t1.1419824220000001", "stderr": ""}
+{"family": "weibull", "mode": 0, "elapsed": 0.23155577099987568, "returncode": 0, "output": "weibull\t0\t100000\t0.00256901", "stderr": ""}
+{"family": "weibull", "mode": 1, "elapsed": 0.21156716800032882, "returncode": 0, "output": "weibull\t1\t100000\t0.0025885639999999998", "stderr": ""}
+{"family": "weibull", "mode": 2, "elapsed": 0.22490735100018355, "returncode": 0, "output": "weibull\t2\t100000\t0.0031837459999999999", "stderr": ""}
+{"family": "weibull", "mode": 3, "elapsed": 0.20126326199988398, "returncode": 0, "output": "weibull\t3\t100000\t0.0047707679999999999", "stderr": ""}
+{"family": "yulesimon", "mode": 0, "elapsed": 0.22003201200004696, "returncode": 0, "output": "yulesimon\t0\t100000\t0.0011407870000000001", "stderr": ""}
+{"family": "yulesimon", "mode": 1, "elapsed": 0.1988961590004692, "returncode": 0, "output": "yulesimon\t1\t100000\t0.0011135819999999999", "stderr": ""}
+{"family": "yulesimon", "mode": 2, "elapsed": 0.22657721799987485, "returncode": 0, "output": "yulesimon\t2\t100000\t0.00074894899999999995", "stderr": ""}
+{"family": "yulesimon", "mode": 3, "elapsed": 0.2020666620001066, "returncode": 0, "output": "yulesimon\t3\t100000\t0.0040722459999999999", "stderr": ""}
+{"family": "zeta", "mode": 0, "elapsed": 0.1940004839998437, "returncode": 0, "output": "zeta\t0\t100000\t0.00058288600000000002", "stderr": ""}
+{"family": "zeta", "mode": 1, "elapsed": 0.22847499400086235, "returncode": 0, "output": "zeta\t1\t100000\t0.00057340799999999997", "stderr": ""}
+{"family": "zeta", "mode": 2, "elapsed": 0.19878297899958852, "returncode": 0, "output": "zeta\t2\t100000\t0.00050472400000000001", "stderr": ""}
+{"family": "zeta", "mode": 3, "elapsed": 0.193128634000459, "returncode": 0, "output": "zeta\t3\t100000\t0.00034998499999999998", "stderr": ""}
+{"family": "zipf", "mode": 0, "elapsed": 0.22573334700064152, "returncode": 0, "output": "zipf\t0\t100000\t0.00040924199999999998", "stderr": ""}
+{"family": "zipf", "mode": 1, "elapsed": 0.22217872599958355, "returncode": 0, "output": "zipf\t1\t100000\t0.00039746900000000001", "stderr": ""}
+{"family": "zipf", "mode": 2, "elapsed": 0.1998819350001213, "returncode": 0, "output": "zipf\t2\t100000\t0.000333092", "stderr": ""}
+{"family": "zipf", "mode": 3, "elapsed": 0.236931476000791, "returncode": 0, "output": "zipf\t3\t100000\t0.00041305900000000002", "stderr": ""}
+{"family": "zmbinom", "mode": 0, "elapsed": 0.2375642010001684, "returncode": 0, "output": "zmbinom\t0\t100000\t0.0078696200000000008", "stderr": ""}
+{"family": "zmbinom", "mode": 1, "elapsed": 0.22459447999972326, "returncode": 0, "output": "zmbinom\t1\t100000\t0.0045987129999999999", "stderr": ""}
+{"family": "zmbinom", "mode": 2, "elapsed": 0.2158717259999321, "returncode": 0, "output": "zmbinom\t2\t100000\t0.00055261299999999998", "stderr": ""}
+{"family": "zmbinom", "mode": 3, "elapsed": 0.24328039600004558, "returncode": 0, "output": "zmbinom\t3\t100000\t0.0046536190000000003", "stderr": ""}

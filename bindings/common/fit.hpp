@@ -102,6 +102,10 @@ inline std::string stop_model(cppunivariate::StopModel model) {
     case cppunivariate::StopModel::TruncatedExp:return "unavailable:truncated-exponential";
     case cppunivariate::StopModel::ReflectedHnorm:return "unavailable:reflected-half-normal";
     case cppunivariate::StopModel::ReflectedHt:return "unavailable:reflected-half-t";
+    case cppunivariate::StopModel::Trgamma:return "trgamma";
+    case cppunivariate::StopModel::InvTrgamma:return "invtrgamma";
+    case cppunivariate::StopModel::ShiftedTrgamma:return "unavailable:shifted-trgamma";
+    case cppunivariate::StopModel::ShiftedInvTrgamma:return "unavailable:shifted-invtrgamma";
     case cppunivariate::StopModel::UnitGamma:return "unavailable:unit-gamma";
     case cppunivariate::StopModel::HalfGed:return "unavailable:half-ged";
     case cppunivariate::StopModel::ReflectedHalfGed:return "unavailable:reflected-half-ged";
@@ -122,6 +126,8 @@ inline std::vector<std::string> stop_names(const std::string& model,const std::v
   if(model=="ztpois")return {"lambda"};
   if(model=="zmpois")return {"lambda","p0"};
   if(model=="zip")return {"lambda","pi"};
+  if(model=="trgamma"||model=="invtrgamma")return {"shape1","shape2","scale"};
+  if(model=="unavailable:shifted-trgamma"||model=="unavailable:shifted-invtrgamma")return {"shape1","shape2","scale","min"};
   if(model=="cmp")return {"lambda","nu"};
   if(model=="unavailable:point-mass")return {"point"};
   if(model=="unavailable:two-point")return {"lower","upper","prob"};

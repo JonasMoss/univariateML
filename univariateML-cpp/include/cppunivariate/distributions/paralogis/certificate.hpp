@@ -1,5 +1,6 @@
 // Compact-domain stationary-point exclusion certificate; see README.md.
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../burr/certificate.hpp"
 namespace cppunivariate {
 namespace paralogis_cert_detail {
@@ -101,7 +102,9 @@ inline bool derivatives(const Data& data,
     &&h.a[0][0].valid()&&h.a[0][1].valid()&&h.a[1][1].valid();
 }
 struct Result {bool ok=false,budget=false;int boxes=0;double shape=NAN,scale=NAN,logLik=NAN;};
-inline Result certify(span x,double a,double scale,bool fixed,int budget=32768) {
+inline Result certify(span x,double a,double scale,bool fixed,std::int64_t budget=-1,int maxit=100) {
+  maxit = static_cast<int>(solver_budget(maxit));
+  if(budget<0)budget=certificate_budget(maxit);
   Result out;
   if(!(a>0)||!(scale>0)||!std::isfinite(a)||!std::isfinite(scale))return out;
   // Center at the proposal's scale: the intercept root is near zero, and
@@ -119,7 +122,7 @@ inline Result certify(span x,double a,double scale,bool fixed,int budget=32768) 
   const int dim=fixed?1:2;
   // Newton steps propose a center only. Success below requires an enclosed
   // fixed-point map, regardless of the proposal's optimizer status.
-  for(int it=0;it<8;++it){
+  for(int it=0;it<maxit;++it){
     std::array<burr_cert_detail::Interval,3> g;
     burr_cert_detail::BoxMatrix h; burr_cert_detail::Interval ll;
     if(!derivatives(data,a,b,g,h,ll))return out;
@@ -195,8 +198,8 @@ inline Result certify(span x,double a,double scale,bool fixed,int budget=32768) 
     return (n*(burr_cert_detail::log(z)+.6*std::log(4.))-.6*delta*z).hi;
   };
   bool lower=false,upper=false;
-  for(int i=0;i<1024;++i){if(tail(lo,false)<best){lower=true;break;}lo/=2;if(!(lo>0))break;}
-  for(int i=0;i<1024;++i){if(tail(hi,true)<best){upper=true;break;}hi*=2;if(!std::isfinite(hi))break;}
+  for(int i=0;i<maxit;++i){if(tail(lo,false)<best){lower=true;break;}lo/=2;if(!(lo>0))break;}
+  for(int i=0;i<maxit;++i){if(tail(hi,true)<best){upper=true;break;}hi*=2;if(!std::isfinite(hi))break;}
   if(!lower||!upper)return out;
   struct Box {double al,ah,bl,bh;};
   auto range=[&](double al,double ah){

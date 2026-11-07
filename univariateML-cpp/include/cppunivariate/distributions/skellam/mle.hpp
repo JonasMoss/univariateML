@@ -1,13 +1,16 @@
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../../core/precision.hpp"
+#include "../../core/stop_detail.hpp"
 #include "dpqr.hpp"
 #include "../../core/span.hpp"
 #include <vector>
 namespace cppunivariate {
 enum class SkellamStatus { Ok, InvalidInput, Impossible, IterationFailure };
-struct SkellamResult { double mu1,mu2,logLik; int iterations; SkellamStatus status; };
+struct SkellamResult { double mu1,mu2,logLik; int iterations; SkellamStatus status; StopDetail stop_detail{}; };
 inline SkellamResult skellam_mle(span x,double tol=1e-9,int maxit=150,
     double mu1=special::kNaN,double mu2=special::kNaN) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const bool f1=!std::isnan(mu1),f2=!std::isnan(mu2);
   const auto fail=[](SkellamStatus s) {return SkellamResult{special::kNaN,special::kNaN,special::kNaN,0,s};};
   if(x.size()==0 || !(tol>0) || !std::isfinite(tol) || maxit<1 ||
@@ -66,12 +69,26 @@ inline SkellamResult skellam_mle(span x,double tol=1e-9,int maxit=150,
   const auto rates=[&](double t) {return std::vector<double>{f1?mu1:(f2?t:t+std::max(m,0.0)),f2?mu2:(f1?t:t+std::max(-m,0.0))};};
   const auto value=[&](double t) {const auto r=rates(t);return ll(r[0],r[1]);};
   double best=value(0),best_t=0;
+  std::int64_t checked=0;
+  const auto budget_stop=[&]() {
+      auto out=fail(SkellamStatus::IterationFailure);
+      out.stop_detail.budget_exhausted=true;
+      out.stop_detail.loglik_upper=INFINITY;
+      if(std::isfinite(best)) {
+        const auto r=rates(best_t);
+        const double pad=64*std::numeric_limits<double>::epsilon()*x.size()*(1+std::abs(best));
+        out.stop_detail.loglik_lower=best-pad;
+        out.stop_detail.candidates.push_back({r,best-pad,best+pad,StopModel::None});
+      }
+      return out;
+  };
   // Search all nominated local maxima on a logarithmic grid, comparing the
   // attained zero-rate face exactly. No uniqueness assumption is used.
   constexpr double upper=709;
   std::vector<double> grid,values;
   bool certified=false;
   for(double u=-32;u<=upper;u+=0.5) {
+    if(++checked>certificate_budget(maxit))return budget_stop();
     const double t=std::exp(u),v=value(t);
     grid.push_back(u);values.push_back(v);
     if(v>best) {best=v;best_t=t;}
@@ -110,9 +127,8 @@ inline SkellamResult skellam_mle(span x,double tol=1e-9,int maxit=150,
   if(!std::isfinite(low) || low>best+margin) return fail(SkellamStatus::IterationFailure);
   struct Interval { double lo,hi; };
   std::vector<Interval> pending{{first,last}};
-  int checked=0;
   while(!pending.empty()) {
-    if(++checked>maxit*1000LL) return fail(SkellamStatus::IterationFailure);
+    if(++checked>certificate_budget(maxit))return budget_stop();
     const Interval interval=pending.back();pending.pop_back();
     const double mid=interval.lo+(interval.hi-interval.lo)/2;
     if(!(mid>interval.lo && mid<interval.hi)) return fail(SkellamStatus::IterationFailure);

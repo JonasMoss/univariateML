@@ -50,7 +50,7 @@ r:
     lambda: Positive shape to hold fixed, or NULL to estimate.
     sigma: Positive scale to hold fixed, or NULL to estimate.
     reltol: Profile score and root bracket tolerance.
-    iterlim: Maximum iterations per scalar solve.
+    iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
 log_density: log(lambda)-log(sigma)-(lambda+1)*log((x-mu)/sigma)-((x-mu)/sigma)**(-lambda)
 limits:
   - firmness: proved

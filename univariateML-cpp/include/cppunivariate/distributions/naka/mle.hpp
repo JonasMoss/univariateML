@@ -3,6 +3,7 @@
 // (gamma_scale = 1/rate).
 
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../../core/precision.hpp"
 
 #include "../../core/span.hpp"
@@ -25,6 +26,7 @@ struct NakaResult {
 };
 
 inline NakaResult naka_mle(span x, double tol, int maxit) {
+  maxit = static_cast<int>(solver_budget(maxit));
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
   if (n == 0) return {0.0, 0.0, kNaN, 0, GammaStatus::InvalidInput};
@@ -56,6 +58,7 @@ inline NakaResult naka_mle(span x, double tol, int maxit) {
 }
 
 inline NakaResult naka_mle(span x,double tol,int maxit,double shape,double scale) {
+  maxit = static_cast<int>(solver_budget(maxit));
   if(std::isnan(shape) && std::isnan(scale))return naka_mle(x,tol,maxit);
   const double nan=std::numeric_limits<double>::quiet_NaN();
   if(x.size()==0 || !(tol>0 && std::isfinite(tol)) || maxit<=0 || (!std::isnan(shape) && !(shape>0 && std::isfinite(shape))) ||

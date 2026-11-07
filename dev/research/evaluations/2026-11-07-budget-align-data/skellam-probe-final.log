@@ -1,0 +1,3 @@
+1e+06		0	nan	Skellam search did not converge; increase iterlim.
+1e+09	budget	1	-10490.9	Skellam search did not converge; increase iterlim. Raising iterlim may resolve this stop.
+1e+14	budget	1	-9.70523e+13	Skellam search did not converge; increase iterlim. Raising iterlim may resolve this stop.

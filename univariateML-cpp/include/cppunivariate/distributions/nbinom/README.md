@@ -25,7 +25,7 @@ r:
   sampler: stats::rnbinom
   control:
     reltol: "Relative tolerance on the Newton proposal; the certificate uses its own fixed accuracy."
-    iterlim: "Maximum proposer iterations; certificate evaluation budget is 16 * min(iterlim, 100000)."
+    iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations."
     size: "Optional fixed nonnegative size (including fractional values); NULL estimates size."
     prob: "Optional held prob; NULL estimates it."
 log_density: "loggamma(x + size) - loggamma(size) - loggamma(x + 1) + size*log(prob) + x*log(1 - prob)"

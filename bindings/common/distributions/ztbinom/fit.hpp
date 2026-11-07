@@ -18,6 +18,7 @@ inline FitResult fit_ztbinom(cppunivariate::ispan x, Held size_arg = {}, Held pr
     case cppunivariate::ZtbinomStatus::PoissonLimit: stop_kind="limit";break;
     default:break;
   }
+  if(res.stop_detail.budget_exhausted)stop_kind="budget";
   const auto stopped_fail = [&](const std::string& format, const auto&... arguments) {
     auto out=fail(binding_message(format,arguments...));
     return stop_kind.empty()?out:stop_failure(out,res.stop_detail,stop_kind,{"size","prob"});

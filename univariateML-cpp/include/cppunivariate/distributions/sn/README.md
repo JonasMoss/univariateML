@@ -39,7 +39,7 @@ r:
     omega: "Optional fixed positive finite scale; NULL estimates it."
     alpha: "Optional fixed finite shape; NULL estimates it."
     reltol: "Tolerance on the normalized inner likelihood score."
-    iterlim: "Maximum Newton iterations per inner fit."
+    iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations."
 log_density: "log(2)-log(omega)-log(2*pi)/2-((x-xi)/omega)**2/2+log((1+erf(alpha*(x-xi)/(omega*sqrt(2))))/2)"
 limits:
   - model: hnorm

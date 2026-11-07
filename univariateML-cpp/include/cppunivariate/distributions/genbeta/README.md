@@ -44,7 +44,7 @@ r:
   control:
     scale: Known positive finite upper endpoint, strictly above every observation.
     gradtol: Tolerance on the per-observation log-shape3 profile score.
-    iterlim: Maximum Newton iterations per beta-shape profile evaluation.
+    iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
 log_density: log(shape3)-log(x)-loggamma(shape1)-loggamma(shape2)+loggamma(shape1+shape2)+shape1*shape3*log(x/scale)+(shape2-1)*log(1-(x/scale)**shape3)
 limits:
   - name: unbounded likelihood

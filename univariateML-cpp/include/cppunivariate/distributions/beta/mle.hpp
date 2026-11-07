@@ -13,6 +13,7 @@
 // MLE (point-mass limit) and are flagged.
 
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "cppunivariate/core/constants.hpp"
 #include "../../core/precision.hpp"
 
@@ -75,6 +76,7 @@ inline double loglik_per_obs(double a, double b, double s, double r) {
 
 // Damped Newton ascent on the concave per-observation log-likelihood.
 inline BetaResult concave_newton(span x, double s, double r, int maxit) {
+  maxit = static_cast<int>(solver_budget(maxit));
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const double dn = static_cast<double>(x.size());
   double m = 0.0;
@@ -102,9 +104,9 @@ inline BetaResult concave_newton(span x, double s, double r, int maxit) {
     const double f0 = loglik_per_obs(a, b, s, r);
     double t = 1.0;
     // Stay inside the domain, then backtrack on the objective.
-    while ((a + t * da <= 0.0 || b + t * db <= 0.0) && t > 1e-300) t *= 0.5;
+    for(std::int64_t bracket_pass=0; bracket_pass<solver_budget(maxit) && ((a + t * da <= 0.0 || b + t * db <= 0.0) && t > 1e-300); ++bracket_pass) t *= 0.5;
     bool accepted = false;
-    for (int ls = 0; ls < 80; ++ls) {
+    for (int ls = 0; ls < maxit; ++ls) {
       const double f1 = loglik_per_obs(a + t * da, b + t * db, s, r);
       if (std::isfinite(f1) && f1 >= f0 - 1e-15 * (std::abs(f0) + 1.0)) {
         accepted = true;
@@ -129,6 +131,7 @@ inline BetaResult concave_newton(span x, double s, double r, int maxit) {
 inline BetaResult beta_mle(span x, double tol, int maxit,
     double shape1 = std::numeric_limits<double>::quiet_NaN(),
     double shape2 = std::numeric_limits<double>::quiet_NaN()) {
+  maxit = static_cast<int>(solver_budget(maxit));
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
   if (n == 0)
@@ -166,8 +169,13 @@ inline BetaResult beta_mle(span x, double tol, int maxit,
       const auto score = [&](double z) {
         return target + beta_detail::digamma_increment(z, held);
       };
-      double lo = 0, hi = 1;
-      while (score(hi) > 0 && hi < std::numeric_limits<double>::max()/2) hi *= 2;
+      // psi'(z) <= 1/z + 1/z^2, so for z>=1 the held-shape
+      // digamma increment is <=2*held/z. This brackets even tiny log
+      // complements without spending hundreds of doubling iterations.
+      const double ratio=held/(-target);
+      const double ceiling=std::numeric_limits<double>::max();
+      double lo=0,hi=std::max(1.,ratio<ceiling/2?2*ratio:ceiling);
+      for(std::int64_t bracket_pass=0; bracket_pass<solver_budget(maxit) && (score(hi) > 0 && hi < std::numeric_limits<double>::max()/2); ++bracket_pass) hi *= 2;
       if (!(score(hi) <= 0))
         return {kNaN,kNaN,kNaN,0,BetaStatus::IterationFailure};
       double z = hi;
