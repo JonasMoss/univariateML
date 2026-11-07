@@ -1,0 +1,62 @@
+{
+  "revision": "2fb7558010a91dab4d2c4172263cdbdaa99bb8f9",
+  "machine": "workstation; no simbox runs",
+  "python": "3.14.5",
+  "scipy": "1.18.0",
+  "mpmath": "1.3.0",
+  "research_cells": 1012,
+  "distinct_parameter_cells": 944,
+  "cross_precision_scaled_discrepancy": "3.20377003576357333036787900401653369200645734478257446704425809357491335058209450736624966817815364221046825515820506235e-53",
+  "min_scaled_margin": {
+    "m": "1.00000001",
+    "r": "0.000000000001",
+    "j": 2,
+    "weights": [
+      "0.99999999000000013333333222215556563107404541165335645388799966604842839478818633353518558629123134907558258979",
+      "0.0000000099999997333333355556888687378519091766932870922240006679031432104236273329296288274175373018488348204115793433",
+      "0.00000000000000013333333222215556563107404541165335645388799966604842839478818633353518558629123134907558258979441529374772653"
+    ],
+    "scaled_margin": "0.000000000000000000000000000033333332611061121334861039661801663155414670026499163853902919231107945086554357451729833199589958840235826612",
+    "tau": "0.000000019999999866646667777977787701481310128644828971546910566923374577860178008033569899471130907856424143256954408"
+  },
+  "support_range": [
+    2,
+    1802147
+  ],
+  "cpp_dev_shards": 106,
+  "r_dev": {
+    "fail": 0,
+    "warn": 0,
+    "skip": 154,
+    "pass": 20983
+  },
+  "acquired_primary_pdfs": [
+    {
+      "file": "891.pdf",
+      "url": "https://amsr.contentdm.oclc.org/digital/api/collection/p21050coll5/id/891/download",
+      "bytes": 551599,
+      "sha256": "c951616a433b78f31a9479ef879208f7dd8c1a4dbfe238652b641ee6eec166f2"
+    },
+    {
+      "file": "simon.pdf",
+      "url": "https://www.casact.org/sites/default/files/database/proceed_proceed61_61045.pdf",
+      "bytes": 371154,
+      "sha256": "abfb46ef20679d8c18aa2d718b3bd73b97a5efb3c1392d233ad3484b276896cf"
+    },
+    {
+      "file": "892.pdf",
+      "url": "https://amsr.contentdm.oclc.org/digital/api/collection/p21050coll5/id/892/download",
+      "bytes": 728583,
+      "sha256": "16878b2d40df1ac142d6c9365b4e6b540add5b9874ac8ae82c13036d4134f8ed"
+    }
+  ],
+  "commands": [
+    "/tmp/umvl-cpu/run python3 dev/research/evaluations/2026-11-07-ztnb-conjecture-data/check.py",
+    "/tmp/umvl-cpu/run python3 dev/research/evaluations/2026-11-07-ztnb-conjecture-data/check.py --dps 110 --output dev/research/evaluations/2026-11-07-ztnb-conjecture-data/checks-110.json",
+    "/tmp/umvl-cpu/run4 bash -c 'just cpp-test && just test'",
+    "/tmp/umvl-cpu/run python3 dev/research/evaluations/2026-11-07-ztnb-conjecture-data/validate.py"
+  ],
+  "numerical_qualification": "85/110 digit point calculations, signed margin threshold 1e-45, relative cross-precision tolerance 1e-35; no interval enclosure or universal inequality proof",
+  "compiler_warnings": "Retained in cpp-dev.txt; zero failed CTest shards is distinct from warning-free compilation.",
+  "full_tier": "Not required: research-only files; no fitting, d/p/q/r or test-infrastructure changes."
+}
