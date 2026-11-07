@@ -642,3 +642,46 @@ test('binomial probability solves stop numerically before returning an unresolve
     assert.ok(Math.abs(f.estimates.prob*1e100-limiting.estimates.lambda)<1e-9);
   }
 });
+
+test('SGED fixed-shape free-skew certificates share core routing', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  const x = new Float64Array([-4,-1,0,0,0,0,0,0,.3,2]);
+  const fit = api.sged.fit(x,{nu:.5});
+  assert.ok(Math.abs(fit.logLik+5.836273250972211)<2e-7);
+  assert.ok(Math.abs(fit.estimates.xi-Math.sqrt(.05211963387596999/.06917655828196827))<1e-10);
+  assert.throws(()=>api.sged.fit(new Float64Array([-1,1]),{nu:.5}),error=>{
+    assert.equal(error.kind,'tie');assert.equal(error.candidates.length,2);
+    assert.ok(Number.isFinite(error.loglik_upper));return true;
+  });
+  const y = new Float64Array([-3,-1,-.5,0,.1,.2,.4,1,2,4]);
+  for(const held of [{},{mean:.2},{sd:1.4},{mean:.2,sd:1.4}]) {
+    let normal;
+    try { normal=api.snorm.fit(y,held,{iterlim:1000}); }
+    catch(error) {
+      assert.throws(()=>api.sged.fit(y,{...held,nu:2},{iterlim:1000}));
+      continue;
+    }
+    const sged=api.sged.fit(y,{...held,nu:2},{iterlim:1000});
+    assert.ok(Math.abs(sged.logLik-normal.logLik)<1e-10);
+    for(const name of ['mean','sd','xi'])assert.ok(Math.abs(sged.estimates[name]-normal.estimates[name])<1e-10);
+  }
+});
+
+test('SGED normal face conversion reports scale overflow numerically', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  assert.throws(()=>api.sged.fit(new Float64Array([0,0,0]),{mean:1.1e308,nu:2}),error=>{
+    assert.equal(error.kind,'numerical');assert.equal(error.candidates.length,0);
+    assert.equal(error.loglik_upper,Infinity);return true;
+  });
+});
+
+test('SGED normal face conversion rejects rounded subnormal scales', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  assert.throws(()=>api.sged.fit(new Float64Array([0,2**(-1047)]),{nu:2}),error=>{
+    assert.equal(error.kind,'numerical');assert.equal(error.candidates.length,0);
+    assert.equal(error.loglik_upper,Infinity);return true;
+  });
+});

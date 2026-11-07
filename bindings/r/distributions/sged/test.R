@@ -527,3 +527,36 @@ test_that("SGED subunit separated scale maxima and budgets are structured stops"
   expect_gte(nrow(e$candidates),1L)
   expect_s3_class(tryCatch(mlsged(rep(0,3),mean=0,nu=.5,xi=1.3),error=identity),"univariateML_nomle")
 })
+
+test_that("sged held normal shape delegates in public moment coordinates", {
+  x <- c(-3,-1,-.5,0,.1,.2,.4,1,2,4)
+  for (held in list(list(),list(mean=.2),list(sd=1.4),list(mean=.2,sd=1.4))) {
+    a <- tryCatch(do.call(mlsged,c(list(x=x,nu=2,iterlim=1000),held)),error=identity)
+    b <- tryCatch(do.call(mlsnorm,c(list(x=x,iterlim=1000),held)),error=identity)
+    if(inherits(b,"error")) expect_s3_class(a,"error") else {
+      expect_equal(as.numeric(a[c('mean','sd','xi')]),as.numeric(b),tolerance=1e-12)
+      expect_equal(as.numeric(logLik(a)),as.numeric(logLik(b)),tolerance=1e-10)
+      expect_setequal(attr(a,'fixed'),c(names(held),'nu'))
+    }
+  }
+})
+test_that("sged free skew subunit enumerates knots and both faces", {
+  for(nu in c(.3,.5,.9,1)) {
+    e <- tryCatch(mlsged(c(-1,1),nu=nu),error=identity)
+    expect_s3_class(e,'univariateML_tie')
+    expect_equal(nrow(e$candidates),2L)
+  }
+  x <- c(-4,-1,rep(0,6),.3,2)
+  for(nu in c(.5,.8,1)) {
+    f <- mlsged(x,nu=nu)
+    expect_equal(as.numeric(logLik(f)),sum(dml(x,f,log=TRUE)),tolerance=2e-7)
+  }
+})
+
+test_that("sged normal face conversion reports scale overflow numerically", {
+  expect_error(mlsged(rep(0,3),mean=1.1e308,nu=2),class='univariateML_numerical')
+})
+
+test_that("sged normal face conversion rejects rounded subnormal scales", {
+  expect_error(mlsged(c(0,2^(-1047)),nu=2),class='univariateML_numerical')
+})

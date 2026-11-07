@@ -282,6 +282,8 @@ struct SgedCost {
   }
 };
 
+#include "skew_certificate.hpp"
+
 // Keep the unconstrained Cost/Hessian coordinates for density diagnostics.
 // Fitting uses log(nu - 1), with the attained face compared separately.
 struct SgedFitCost {
@@ -437,6 +439,10 @@ inline SgedResult sged_mle_impl(span x, double tol, int maxit,
      (hn && !(fixed_nu>0 && std::isfinite(fixed_nu))) ||
      (hx && !(fixed_xi>0 && std::isfinite(fixed_xi))) || x.size()==0 || !(tol>0) || !std::isfinite(tol) || maxit<1) return out;
   for(double v:x) if(!std::isfinite(v)) return out;
+  if(hn && !hx && fixed_nu==2)
+    return sged_skew_certificate::normal(x,maxit,fixed_mean,fixed_sd);
+  if(hn && !hx && !hm && !hs && fixed_nu<=1)
+    return sged_skew_certificate::subunit(x,maxit,fixed_nu);
   if(hn && hx && (!hm || !hs))
     return sged_cert_detail::fit(x,tol,maxit,fixed_mean,fixed_sd,fixed_nu,fixed_xi);
   if(!(hn && hx && (hm || hs))) {

@@ -132,7 +132,7 @@ relations: {}
 fit:
   method: multistart
   certified: 'partial'
-  note: 'sged/certificate.hpp certifies free location with both shapes held (scale held or free), and free scale with mean and both positive shapes held. Other subsets, including the unchanged default, retain numerical searches without a global certificate; all-held evaluation is not counted.'
+  note: 'sged/certificate.hpp certifies free location with both shapes held (scale held or free), and free scale with mean and both positive shapes held. sged/skew_certificate.hpp additionally certifies free skew at held nu=2 with either moment held or free, and at 0<nu<=1 with both moments free. Remaining fixed-shape free-skew subsets and the unchanged free-shape default retain uncertified numerical searches; see the fixed-shape free-skew section.'
 areas:
 - finance
 - measurement and errors
@@ -419,9 +419,9 @@ costs $O(n)$; sorting costs $O(n\log n)$, the weighted-median path costs
 $O(n)$ after sorting, and the smooth solve costs $O(n)$ per iteration.
 No finite shape or skew cutoff is part of these held-shape proofs.
 
-The other free subsets remain uncertified. In particular, fixed-shape
-convexity does not control a free shape or free skew profile, close its
-infinite tails, or settle the moment-constrained uniform endpoint rates.
+The remaining free subsets are described below. Fixed-skew convexity alone
+does not control a free shape or free skew profile, close its infinite
+tails, or settle the moment-constrained uniform endpoint rates.
 See the [certification evidence and open cases](../../../../../dev/research/evaluations/2026-11-06-sged-cert-report.md).
 
 ## R notes
@@ -447,3 +447,66 @@ The finite scan is not used when the public mean and both shapes are held;
 that fit uses the subunit certificate above. Its bounds and the analytic
 nonuniqueness example are checked in the [implementation and validation
 evidence](../../../../../dev/research/evaluations/2026-11-07-sged-subunit-report.md).
+
+## Fixed-shape free-skew certificates
+
+At held $\nu=2$, the public mean, standard deviation and skew coordinates
+are exactly those of the two-piece normal. Its public fitter dispatches
+to the joint polynomial certificate when both moments are free, and the
+conditional certificate otherwise. Its
+half-normal scales are multiplied by $\sqrt{2}$ to express the same density
+as a half-GED with kernel $\exp[-(x/b)^2]$. Candidate coordinates, face
+models, ties, budgets and arithmetic stops are translated together. If the
+converted half-GED scale overflows or loses more than $10^{-10}$ in its
+logarithmic conversion, delegation stops numerically rather than retaining
+an unrepresentable or inaccurate face coefficient.
+
+For $0<\nu\le1$ with both moments free, write the density as
+$\nu\exp[-|(x-c)/s|^\nu]/[\Gamma(1/\nu)(a+b)]$, with
+$s=a$ left of the join $c$ and $s=b$ right of it. Put
+$A=\sum_{x_i<c}(c-x_i)^\nu$, $B=\sum_{x_i>c}(x_i-c)^\nu$,
+$r=1/(1+\nu)$ and $S=A^r+B^r$. Profiling gives
+$a=tA^r$, $b=tB^r$, $t=(\nu S/n)^{1/\nu}$ and
+$\ell=n[\log\nu-\log\Gamma(1/\nu)-\log(tS)-1/\nu]$.
+On every interval between observations, $A$ and $B$ are nonnegative concave
+functions. Composition with the increasing concave power $r$ shows that
+$S$ is concave. Its minimum is therefore at a sample knot. A join outside
+the sample range can be moved towards the nearest observation, reducing
+every residual at fixed side scales. Thus all finite maximizers and both
+half-GED faces are covered by enumerating the distinct knots. The face
+scale is $(\nu\operatorname{mean}|x-c|^\nu)^{1/\nu}$.
+
+The public moment map uses $k=\Gamma(2/\nu)/\Gamma(1/\nu)$ and
+$v=\Gamma(3/\nu)/\Gamma(1/\nu)$:
+$\mu=c+k(b-a)$,
+$\sigma^2=v(a^2-ab+b^2)-k^2(b-a)^2$, $\xi=\sqrt{b/a}$.
+The power sums use compensated accumulation. Comparisons allow $4096\epsilon(1+n+|\ell|)(1+1/\nu)$ per candidate.
+Stored coefficients must reconstruct the knot within $10^{-10}(1+|c|)$
+and agree with the public density within $10^{-7}(n+|\ell|)$. Candidate
+bounds include the discrepancy between ideal and stored-coordinate
+likelihoods in addition to the comparison allowance. Recovered finite and face
+scales must agree with their logarithmic ideal values within $10^{-10}$;
+face likelihoods are also reevaluated at the stored coefficients. Nonfinite
+moments, underflow of a positive side scale, merged normalized knots or failed
+reconstruction stop numerically. A $256\epsilon$ absolute-term allowance
+also checks cancellation in the recovered public mean against its
+$10^{-7}(1+|\mu|)$ coefficient margin.
+These are exact-arithmetic certificates conditional on computed comparisons
+with practical floating-point margins, not outward-rounded intervals.
+Enumeration costs $O(nk)$ for $k$ distinct knots and is limited to
+$128\min(\mathtt{iterlim},100000)$ evaluations. A partition with more
+knots than the remaining budget stops after one linear-cost face witness,
+before incurring predictable quadratic work. Overlapping winning
+likelihood bounds stop as a tie; for the two-point sample $(-1,1)$ the
+reflected half-GED faces tie, disproving general closure uniqueness.
+Finite uniqueness also fails: at $\nu=1/2$, the symmetric sample consisting
+of $-100$, five copies each of $-1$ and $1$, and $100$ has two winning
+interior knots $c=\pm1$. At either interior knot $S<12$; at either
+endpoint $S>20$. These inequalities separate the only four distinct
+knots, and reflection gives the exact tie.
+
+For other held shapes with a held moment, and for $\nu>1$, $\nu\ne2$
+with both moments free, the existing numerical searches remain uncertified.
+In particular their finite skew scan is not a bound on either infinite
+tail. These open regions and the missing bounds are recorded in the
+[free-skew evidence](../../../../../dev/research/evaluations/2026-11-07-sged-skew-report.md).

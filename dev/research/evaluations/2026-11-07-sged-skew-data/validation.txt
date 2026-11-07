@@ -1,0 +1,35 @@
+TASK-116.37 final validation, 2026-11-07
+Base: 5c9c02d8; no commits made.
+
+simbox, native C++ GCC 13.3.0:
+  just cpp-test: 106/106, 64.66 s
+  UMVL_TEST_TIER=full just cpp-test: 129/129, 194.02 s
+  just cpp-test-no-long-double: 129/129, 173.36 s
+  70-digit checker: 12 knot/face configurations; 5 held-moment contact limits
+  Both free and all three remaining held-moment normal routes timed, 5 repeats.
+
+simbox, R package compiled with g++-15:
+  just test: FAIL 0, WARN 0, SKIP 154, PASS 21482; 96.0 s
+  just test-full: FAIL 0, WARN 0, SKIP 0, PASS 44297; 277.2 s
+
+workstation, native C++ GCC 15.2.0:
+  just cpp-test-no-long-double: 129/129, 237.29 s
+
+workstation, WebAssembly and site:
+  just js-build: success
+  just js-test: 489/489; 155.51 s
+  just site-check: success
+
+All these suites include the final face-conversion accuracy/overflow guards.
+The site checker regenerated an unrelated tracked screenshot; it was restored
+byte-for-byte from HEAD after checking. No resulting change outside job scope.
+
+Repository-wide Markdown checker: 4 pre-existing findings (repository-links.txt).
+An unbuilt note PDF, a LaTeX false positive in nbinom, and two website-route links.
+Those three source files are unchanged from HEAD. The job-specific check is
+restricted to this report and the SGED dossier (check-links.py).
+
+Final skew_certificate.hpp SHA256:
+c5bd3c46cf8292914a5174160223232027fb0af63b7de92dfc987d3314f45a1d
+
+Changed Markdown check: 2 files; 15 local destinations; 0 broken.
