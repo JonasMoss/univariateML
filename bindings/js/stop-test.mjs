@@ -335,3 +335,30 @@ test('tlambda free-shape half ties retain a finite improvement and an unresolved
     assert.ok(e.loglik_lower>e.limit_loglik);assert.equal(e.loglik_upper,Infinity);return true;
   });
 });
+
+test('snorm held certificate preserves opposite-face ties and root failures', () => {
+  assert.throws(()=>api.snorm.fit([0,0,0],{sd:1}),e=> {
+    assert.equal(e.kind,'tie');assert.equal(e.candidates.length,2);
+    assert.deepEqual(new Set(e.candidates.map(c=>c.model)),new Set(['hnorm','unavailable:reflected-half-normal']));return true;
+  });
+  assert.throws(()=>api.snorm.fit([-2,-1,-.4,0,.2,.8,1,1.3,2,3],{mean:.2,sd:1.4},{iterlim:1}),e=> {
+    assert.equal(e.kind,'numerical');assert.equal(e.loglik_upper,Infinity);return true;
+  });
+});
+
+test('snorm reflected finite modes remain a comparison tie', () => {
+  assert.throws(()=>api.snorm.fit([-1,0,1],{mean:0,sd:.755}),e=> {
+    assert.equal(e.kind,'tie');assert.equal(e.candidates.length,2);
+    assert.ok(e.candidates.every(c=>c.model===''));
+    assert.ok(Math.abs(e.candidates[0].xi*e.candidates[1].xi-1)<1e-7);return true;
+  });
+});
+
+test('snorm constant sample with held mean has a constrained half-normal supremum', () => {
+  const m=Math.sqrt(2/Math.PI);
+  for(const value of [-2,2])assert.throws(()=>api.snorm.fit([value,value],{mean:0},{iterlim:1}),e=> {
+    assert.equal(e.kind,'limit');assert.equal(e.model,value<0?'hnorm':'unavailable:reflected-half-normal');
+    assert.equal(e.estimates.mu,value);assert.ok(Math.abs(e.estimates.sigma-2/m)<1e-12);
+    assert.ok(Math.abs(e.limit_loglik-2*Math.log(m*m/2))<1e-12);return true;
+  });
+});

@@ -32,7 +32,10 @@ struct SnormResult {
   SnormStatus status;
  StopDetail stop_detail{}; };
 
+#include "certificate.hpp"
+
 namespace snorm_detail {
+// Retained for the existing skew-t/GED consumers; snorm uses certificates.
 // Golden-section minimization on a finite bracket; caller establishes tail bounds.
 template <typename Objective>
 inline double minimize(Objective objective, double lo, double hi,int maxit=200) {
@@ -63,107 +66,6 @@ inline double scan(Objective objective, double lo, double hi, int cells=160,int 
     if(f<value) { value=f; arg=t; }
   }
   return arg;
-}
-
-inline SnormResult held_fit(span x, double mu, double sd, double xi,int maxit=200) {
-  maxit = static_cast<int>(solver_budget(maxit));
-  const double nan=std::numeric_limits<double>::quiet_NaN();
-  const double inf=std::numeric_limits<double>::infinity();
-  SnormResult out{nan,nan,nan,nan,0,SnormStatus::InvalidStart};
-  const bool hm=!std::isnan(mu), hs=!std::isnan(sd), hx=!std::isnan(xi);
-  if(x.size()==0 || (hm && !std::isfinite(mu)) ||
-     (hs && !(sd>0 && std::isfinite(sd))) || (hx && !(xi>0 && std::isfinite(xi)))) return out;
-  double lo=inf, hi=-inf;
-  for(double v:x) { if(!std::isfinite(v)) return out; lo=std::min(lo,v); hi=std::max(hi,v); }
-  if(!hs && lo==hi && (!hm || mu==lo)) { out.status=SnormStatus::Unbounded; return out; }
-  if(hx && xi==1) {
-    double mean=mu, sigma=sd, sum=0;
-    if(!hm) { for(double v:x) sum+=v-lo; mean=lo+sum/x.size(); }
-    double ss=0;
-    for(double v:x) ss+=(v-mean)*(v-mean);
-    if(!hs) sigma=std::sqrt(ss/x.size());
-    if(!(sigma>0)) return out;
-    return {mean,sigma,xi,-static_cast<double>(x.size())*(std::log(sigma)+0.5*std::log(2*cppunivariate::pi))-ss/(2*sigma*sigma),0,SnormStatus::Ok};
-  }
-  const double origin=hm ? mu : lo+(hi-lo)/2;
-  double unit=hs ? sd : std::max(hi-lo,std::max(std::abs(lo-origin),std::abs(hi-origin)));
-  if(!(unit>0) || !std::isfinite(unit)) return out;
-  std::vector<double> y;
-  for(double v:x) y.push_back((v-origin)/unit);
-  const double n=static_cast<double>(x.size()), yl=(lo-origin)/unit, yh=(hi-origin)/unit;
-  const double m1=std::sqrt(2/cppunivariate::pi), h=std::sqrt(1-m1*m1);
-  double best_mu=0, best_sd=1;
-  auto profile=[&](double lx) {
-    const double skew=hx ? xi : std::exp(lx);
-    const double q=skew-1/skew, shift=m1*q;
-    const double scale=std::hypot(1.0,h*q);
-    auto cost=[&](double mean, double sigma) {
-      double neg=n*(std::log(sigma)-std::log(scale));
-      for(double v:y) {
-        const double d=(v-mean)/sigma;
-        double z=d*scale+shift;
-        // Rationalize cancellation at a held-moment half-normal endpoint.
-        if(d*shift<0 && std::abs(z)<0.01*std::abs(shift))
-          z=(d*d+q*q*(h*d-m1)*(h*d+m1))/(d*scale-shift);
-        neg-=dens::log_dsnorm_core(z,skew);
-      }
-      return neg;
-    };
-    auto at_scale=[&](double ls) {
-      const double sigma=hs ? sd/unit : std::exp(ls);
-      auto location=[&](double mean) { return cost(mean,sigma); };
-      // Mode of a location-only log-concave likelihood lies between data extremes.
-      const double mean=hm ? 0 : minimize(location,yl+sigma*shift/scale,yh+sigma*shift/scale,maxit);
-      best_mu=mean; best_sd=sigma;
-      return cost(mean,sigma);
-    };
-    if(hs) return at_scale(0);
-    const double ls=minimize(at_scale,-32,32,maxit);
-    return at_scale(ls);
-  };
-  const double lx=hx ? std::log(xi) : scan(profile,-18,18,180,maxit);
-  const double neg=profile(lx);
-  out={hm ? mu : origin+unit*best_mu,hs ? sd : unit*best_sd,
-       hx ? xi : std::exp(lx),-neg-n*std::log(unit),0,SnormStatus::Ok};
-  if(!std::isfinite(out.logLik)) { out.status=SnormStatus::BfgsFailure; return out; }
-  if(!hx) for(int side : {-1,1}) {
-    // Half-normal with mean=c+side*m1*b, sd=h*b. Retain held moments.
-    double b=hs ? sd/unit/h : 0;
-    double sum=0, ss=0;
-    const double centre=hm ? 0 : (side==1 ? yl : yh);
-    for(double v:y) { sum+=v-centre; ss+=(v-centre)*(v-centre); }
-    if(!hs) {
-      const double linear=hm ? side*m1*sum : 0;
-      b=(linear+std::sqrt(linear*linear+4*n*ss))/(2*n);
-      if(hm) b=std::max(b,side==1 ? -yl/m1 : yh/m1);
-    }
-    if(!(b>0)) continue;
-    const double c=hm ? -side*m1*b : centre;
-    if((side==1 && c>yl+1e-12) || (side==-1 && c<yh-1e-12)) continue;
-    double ll=n*(0.5*std::log(2/cppunivariate::pi)-std::log(b)-std::log(unit));
-    for(double v:y) {
-      ll-=0.5*((v-c)/b)*((v-c)/b);
-      // If both moments are held, the mode approaches this endpoint from
-      // inside the sample: the shrinking side retains a finite residual.
-      if(hm && hs && std::abs(v-c)<=1e-14*(1+std::abs(c)))
-        ll-=m1*m1/(8*h*h*h*h);
-    }
-    if(face_numerical_tie(ll,out.logLik,1e-8*n)) {
-      FitCandidate previous{{out.mu,out.sigma,out.xi},out.logLik,out.logLik,StopModel::None};
-      if(!out.stop_detail.candidates.empty())previous=out.stop_detail.candidates.front();
-      out.stop_detail=comparison_detail(previous,{{origin+unit*c,unit*b},ll,ll,side==1?StopModel::Hnorm:StopModel::ReflectedHnorm});
-      out.status=SnormStatus::BfgsFailure;return out;
-    }
-    if(ll>=out.logLik-1e-8*n) {
-      out.logLik=ll;
-      out.stop_detail=limit_detail({origin+unit*c,unit*b},ll,side==1?StopModel::Hnorm:StopModel::ReflectedHnorm);
-      out.status=side==1 ? SnormStatus::RightHalfNormalBoundary : SnormStatus::LeftHalfNormalBoundary;
-    }
-  }
-  if(out.status==SnormStatus::Ok &&
-     ((!hs && std::abs(std::log(best_sd))>31.9) || (!hx && std::abs(lx)>17.99)))
-    out.status=SnormStatus::BfgsFailure;
-  return out;
 }
 
 // Recursive derivative isolation: between successive derivative roots a
@@ -217,7 +119,7 @@ inline SnormResult snorm_mle(span x, double /*tol*/, int maxit,
     double fixed_xi=std::numeric_limits<double>::quiet_NaN()) {
   maxit = static_cast<int>(solver_budget(maxit));
   if(!std::isnan(fixed_mean) || !std::isnan(fixed_sd) || !std::isnan(fixed_xi))
-    return snorm_detail::held_fit(x,fixed_mean,fixed_sd,fixed_xi,maxit);
+    return snorm_certificate::fit(x,maxit,fixed_mean,fixed_sd,fixed_xi);
   constexpr double nan = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
   if (n == 0) return {nan,nan,nan,nan,0,SnormStatus::InvalidStart};

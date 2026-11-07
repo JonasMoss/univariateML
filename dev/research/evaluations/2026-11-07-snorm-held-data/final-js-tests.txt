@@ -1,0 +1,13 @@
+Workstation invocation: /tmp/umvl-cpu/run4 bash -c "just js-build && just js-test"
+  duration_ms: 29.127697
+  type: 'test'
+  ...
+1..472
+# tests 472
+# suites 0
+# pass 472
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 138986.083174

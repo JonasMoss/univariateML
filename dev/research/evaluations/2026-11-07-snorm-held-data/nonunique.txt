@@ -1,0 +1,4 @@
+L(xi=6)-L(xi=1) in 0.07685316053712524 0.07685316053712524
+Squared absolute half-normal endpoint < 0.9986486829737891
+Reflection gives L(xi)=L(1/xi). Both tails tend to -infinity;
+a finite global maximum exists and cannot be xi=1. Thus at least two distinct finite maxima exist.

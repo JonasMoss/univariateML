@@ -1,0 +1,5 @@
+Workstation: GCC 15.2, C++17, BOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS; nice -n 10, four reserved slots, BLAS/OpenMP=1.
+Invocation: /tmp/umvl-cpu/run4 just cpp-test-no-long-double
+  1/129 Test  #94: distribution_snorm ...............   Passed    2.02 sec
+100% tests passed, 0 tests failed out of 129
+Total Test time (real) = 237.26 sec
