@@ -41,8 +41,11 @@ with typed non-existence stops is not checked.
 Context: for NB the classical result is that a finite MLE exists if and only
 if $s^2>\bar x$ (divisor $n$), and it is then unique (Anscombe 1950; Levin and
 Reeds 1977; Aragón, Eberly and Eberly 1992). Wang (1996) reports a major
-problem with the 1992 proof; which published proof is complete needs checking
-(TASK-116.19), since the nbinom certificate cites it.
+problem with the 1992 proof; we located a concrete gap in the accessible
+1991 preprint (Case 3 cancels boundary values on the wrong slice). The nbinom
+dossier now carries a complete self-contained proof, expanding the convexity
+argument of Brøns and Jensen (1988, Copenhagen preprint): the profile is
+strictly convex in $b=r\log(1+m/r)/m$ ([nb-proof](evaluations/2026-11-07-nb-proof-report.md)).
 
 ## 3. Non-uniqueness and multimodality
 
