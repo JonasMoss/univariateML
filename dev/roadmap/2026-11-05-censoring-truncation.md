@@ -89,6 +89,56 @@ General question: characterise $\partial_T M$ for each family and each
 censoring/truncation scheme, and which faces of $\partial_T M$ attract
 the MLE on which samples.
 
+## Grouped data (income brackets), added 2026-11-07
+
+Fixed bins $b_0 < \dots < b_J$ with counts $n_j$: the likelihood is
+multinomial, $\sum_j n_j \log p_j(\theta)$ with
+$p_j = F(b_j) - F(b_{j-1})$, which equals $-n\,\mathrm{KL}(\hat p \,\|\, p(\theta))$
+up to a constant. The MLE is a KL projection of $\hat p$ onto
+$\overline{T(M)}$ in the simplex.
+
+- Always attained in the closure (finding 3); the log likelihood is at
+  most $0$, so unbounded likelihoods disappear. Escapes go to faces of
+  the simplex (mass in one bin, or split across adjacent bins).
+- Identifiability needs $J - 1 \ge p$. With $J - 1 = p$ the fit is exact
+  when $\hat p$ lies in the image of the bin map and on its boundary
+  otherwise: existence becomes a question about the shape of that image.
+- Threshold coefficients (Pareto minimum, uniform endpoints) enter
+  through $F(b_j)$ smoothly, except where the threshold crosses a bin edge.
+  Binning should make these fits regular ($\sqrt n$) when the true
+  threshold lies inside a bin. Unchecked.
+- An open top bracket $[b_{J-1}, \infty)$ carries the tail through a single
+  probability. Fixed bins also break scale invariance, as truncation does.
+- Computation: cost $O(J)$ per evaluation, independent of $n$; $\log p_j$
+  from the tail-accurate log CDF or log survival, whichever is smaller,
+  with `log1mexp`; multinomial bootstrap; $G^2$ goodness of fit on
+  $J - 1 - p$ degrees of freedom. Burr's exact $k$-profile is lost.
+
+Bracket means (tax tables: count and total per bracket).
+
+- The Burr partial moment is $s k\,B_t(1 + 1/c,\ k - 1/c)$ with
+  $t = y/(1+y)$, $y = (b/s)^c$ (unregularized incomplete beta, from
+  $Y/(1+Y) \sim \mathrm{Beta}(1, k)$). The top-bracket mean is finite only if
+  $kc > 1$, so reporting it imposes a tail restriction. For a Pareto top
+  bracket the mean $m$ alone gives $\alpha = m/(m - b_{J-1})$ (classical Pareto
+  interpolation).
+- The mean is only weakly lower semicontinuous ($\mathbb E_Q X \le \liminf \mathbb E_{P_n} X$),
+  so in (share, mean) coordinates the closure can contain points whose
+  top mean exceeds that of the limit law: vanishing mass at infinity
+  carrying mean.
+- Likelihood options: sample bracket means with a normal approximation
+  give a composite likelihood; within-bin concentration at $\bar x_j$ sends
+  its variance to $0$, so unbounded likelihood returns, at least for
+  single-bin data. Population bracket means are constraints, not data;
+  then it is GMM or minimum distance, outside ML. Hajargasht, Griffiths,
+  Brice, Rao and Chotikapanich (2012), JBES 30(4), use GMM on population
+  shares and class means with unknown group bounds; then the data are
+  Lorenz-curve points and scale drops out. (Venue checked 2026-11-07;
+  the issue number has not been checked.)
+
+The classical income families are already here: burr (Singh-Maddala),
+invburr (Dagum), llogis (Fisk), gb2, lnorm, gamma, pareto.
+
 ## Families that become redundant
 
 Truncated and zero-truncated families would become a base family plus
