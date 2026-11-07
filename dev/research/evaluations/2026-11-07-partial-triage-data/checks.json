@@ -1,0 +1,45 @@
+{
+  "source_revision": "681d7ac5ce6965db4066b4117c12eff69e75cd0c",
+  "environment": {
+    "python": "3.14.5 (main, Jun  2 2026, 22:25:17) [Clang 22.1.3 ]",
+    "platform": "Linux-7.0.0-42-generic-x86_64-with-glibc2.43",
+    "mpmath": "1.3.0",
+    "PyYAML": "6.0.3",
+    "digits": 70
+  },
+  "inventory": {
+    "partial_families": 29,
+    "nonempty_free_subsets": 251
+  },
+  "zip": {
+    "maximum_derivative_error": "7.418412301374842771463470523095279026735129557515582004906078117835163e-68",
+    "result": "stationary roots confined to [S/n,S/m]; log H strictly concave"
+  },
+  "fatigue": {
+    "sample": [
+      1
+    ],
+    "held_alpha": 3,
+    "global_beta_maxima": [
+      "0.1458980337503154553862394969030856468390724605827114135936541318842186",
+      "6.854101966249684544613760503096914353160927539417288586406345868115781"
+    ],
+    "loglik_gain_over_beta_one": "0.1276873303303866042002353376865713587942126456847164198362365463663229",
+    "maximum_polynomial_identity_error": "5.433407447296027420505471574532675068409518718883482913749568933961301e-71"
+  },
+  "genbeta": {
+    "grid_cases": 36,
+    "maximum_curvature_identity_error": "2.373891936439949686868310567390489288555241458404986241569944997707252e-66",
+    "result": "held beta shapes: strictly concave power likelihood for every q>0"
+  },
+  "truncated_binomial": {
+    "maximum_actual_minus_upper": "-0.5408907762927397498567360274829592888150686733545861900721457560501902",
+    "result": "retained positive support 1..K bounds infinite-window binomial tail"
+  },
+  "extreme_value": {
+    "maximum_GEV_curvature_identity_error": "2.17336297891841096820218862981307002736380748755339316549982757358452e-70",
+    "result": "fixed negative GEV shape has strictly concave location; fixed-shape Frechet tail bounds passed"
+  },
+  "seed": "none: deterministic grids",
+  "status": "passed"
+}

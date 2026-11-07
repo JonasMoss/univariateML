@@ -1,0 +1,3293 @@
+[
+  {
+    "id": "bbinom",
+    "parameters": [
+      "size",
+      "alpha",
+      "beta"
+    ],
+    "fit": {
+      "method": "profile-search",
+      "certified": "partial",
+      "note": "bbinom/mle.hpp, bbinom_mle and bbinom_detail::certify: Fixed-size free-shape profiles use tangent/chord bounds, including the binomial face, with a 1e-8 per-observation face preference; this numerical preference is not an exact nonexistence test. Supported free-size fits use integer tail bounds, including free alpha with beta held; unresolved profile ties and budgets stop. Other free-size profiles remain unsupported."
+    },
+    "subsets": [
+      {
+        "free": [
+          "size"
+        ],
+        "held": [
+          "alpha",
+          "beta"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "alpha"
+        ],
+        "held": [
+          "size",
+          "beta"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "beta"
+        ],
+        "held": [
+          "size",
+          "alpha"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "size",
+          "alpha"
+        ],
+        "held": [
+          "beta"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "size",
+          "beta"
+        ],
+        "held": [
+          "alpha"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "alpha",
+          "beta"
+        ],
+        "held": [
+          "size"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "size",
+          "alpha",
+          "beta"
+        ],
+        "held": [],
+        "structural": [
+          {
+            "held": [],
+            "status": "not-implemented",
+            "reason": "Estimating size together with both shapes is not implemented. It would require comparing the fits at every finite size, including their binomial and two-point limits, with the negative binomial and Poisson limits, and no usable bound on large sizes is known."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "betapr",
+    "parameters": [
+      "shape1",
+      "shape2",
+      "scale"
+    ],
+    "fit": {
+      "method": "multistart",
+      "certified": "partial",
+      "note": "betapr/README.md, Details; betapr/mle.hpp (public fitter and held overloads); betapr/test.cpp: Held shape1=1 reduces exactly to certified Lomax and held shape2=1 to inverse Pareto, including all supported further holds and transformed stop bounds. Fixed-scale beta fitting is concave. The joint three-parameter fit and one-held non-unit shape profiles remain numerical."
+    },
+    "subsets": [
+      {
+        "free": [
+          "shape1"
+        ],
+        "held": [
+          "shape2",
+          "scale"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "shape2"
+        ],
+        "held": [
+          "shape1",
+          "scale"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "scale"
+        ],
+        "held": [
+          "shape1",
+          "shape2"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "shape1",
+          "shape2"
+        ],
+        "held": [
+          "scale"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "shape1",
+          "scale"
+        ],
+        "held": [
+          "shape2"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "shape2",
+          "scale"
+        ],
+        "held": [
+          "shape1"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "shape1",
+          "shape2",
+          "scale"
+        ],
+        "held": [],
+        "structural": []
+      }
+    ]
+  },
+  {
+    "id": "bhatt",
+    "parameters": [
+      "mu",
+      "sigma",
+      "a"
+    ],
+    "fit": {
+      "method": "profile-search",
+      "certified": "partial",
+      "note": "bhatt/README.md, Details: fixed-shape location-scale objective is strictly concave; the shape grid and face comparison are numerical."
+    },
+    "subsets": [
+      {
+        "free": [
+          "mu"
+        ],
+        "held": [
+          "sigma",
+          "a"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "sigma"
+        ],
+        "held": [
+          "mu",
+          "a"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "a"
+        ],
+        "held": [
+          "mu",
+          "sigma"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "mu",
+          "sigma"
+        ],
+        "held": [
+          "a"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "mu",
+          "a"
+        ],
+        "held": [
+          "sigma"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "sigma",
+          "a"
+        ],
+        "held": [
+          "mu"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "mu",
+          "sigma",
+          "a"
+        ],
+        "held": [],
+        "structural": []
+      }
+    ]
+  },
+  {
+    "id": "bnbinom",
+    "parameters": [
+      "size",
+      "alpha",
+      "beta"
+    ],
+    "fit": {
+      "method": "multistart",
+      "certified": "partial",
+      "note": "bnbinom/README.md, Scalar certificates; bnbinom/mle.hpp: Every one-free-shape fit has a single-crossing global certificate. Fits with two or three free shapes retain the uncertified multistart search; all-held evaluation is not counted as certification."
+    },
+    "subsets": [
+      {
+        "free": [
+          "size"
+        ],
+        "held": [
+          "alpha",
+          "beta"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "alpha"
+        ],
+        "held": [
+          "size",
+          "beta"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "beta"
+        ],
+        "held": [
+          "size",
+          "alpha"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "size",
+          "alpha"
+        ],
+        "held": [
+          "beta"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "size",
+          "beta"
+        ],
+        "held": [
+          "alpha"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "alpha",
+          "beta"
+        ],
+        "held": [
+          "size"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "size",
+          "alpha",
+          "beta"
+        ],
+        "held": [],
+        "structural": []
+      }
+    ]
+  },
+  {
+    "id": "cmb",
+    "parameters": [
+      "size",
+      "prob",
+      "nu"
+    ],
+    "fit": {
+      "method": "profile-search",
+      "certified": "partial",
+      "note": "cmb/README.md, Details; cmb/mle.hpp (public fitter and held overloads); cmb/test.cpp: Moment matching exploits exponential-family convexity; entropy bounds and integer-tail comparisons certify accepted free-size fits conditionally on the stated numerical margins. Budget exhaustion and unresolved faces stop."
+    },
+    "subsets": [
+      {
+        "free": [
+          "size"
+        ],
+        "held": [
+          "prob",
+          "nu"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "prob"
+        ],
+        "held": [
+          "size",
+          "nu"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "nu"
+        ],
+        "held": [
+          "size",
+          "prob"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "size",
+          "prob"
+        ],
+        "held": [
+          "nu"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "size",
+          "nu"
+        ],
+        "held": [
+          "prob"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "prob",
+          "nu"
+        ],
+        "held": [
+          "size"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "size",
+          "prob",
+          "nu"
+        ],
+        "held": [],
+        "structural": []
+      }
+    ]
+  },
+  {
+    "id": "cmp",
+    "parameters": [
+      "lambda",
+      "nu"
+    ],
+    "fit": {
+      "method": "multistart",
+      "certified": "partial",
+      "note": "cmp/README.md, Details; cmp/mle.hpp (public fitter and held overloads); cmp/test.cpp: Moment matching exploits exponential-family convexity for fixed design/dispersion subsets; integer-tail or normalizer bounds certify only their stated scope, not every joint numerical solve."
+    },
+    "subsets": [
+      {
+        "free": [
+          "lambda"
+        ],
+        "held": [
+          "nu"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "nu"
+        ],
+        "held": [
+          "lambda"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "lambda",
+          "nu"
+        ],
+        "held": [],
+        "structural": []
+      }
+    ]
+  },
+  {
+    "id": "emg",
+    "parameters": [
+      "mu",
+      "sigma",
+      "lambda"
+    ],
+    "fit": {
+      "method": "profile-search",
+      "certified": "partial",
+      "note": "emg/README.md, Details: fixed-shape location-scale objective is strictly concave; the shape grid and face comparison are numerical."
+    },
+    "subsets": [
+      {
+        "free": [
+          "mu"
+        ],
+        "held": [
+          "sigma",
+          "lambda"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "sigma"
+        ],
+        "held": [
+          "mu",
+          "lambda"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "lambda"
+        ],
+        "held": [
+          "mu",
+          "sigma"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "mu",
+          "sigma"
+        ],
+        "held": [
+          "lambda"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "mu",
+          "lambda"
+        ],
+        "held": [
+          "sigma"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "sigma",
+          "lambda"
+        ],
+        "held": [
+          "mu"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "mu",
+          "sigma",
+          "lambda"
+        ],
+        "held": [],
+        "structural": []
+      }
+    ]
+  },
+  {
+    "id": "fatigue",
+    "parameters": [
+      "alpha",
+      "beta",
+      "mu"
+    ],
+    "fit": {
+      "method": "profile-search",
+      "certified": "partial",
+      "note": "fatigue/README.md, Details; fatigue/mle.hpp (public fitter and held overloads); fatigue/test.cpp: Held beta gives analytic alpha; held alpha gives a monotone scale solve. The joint scale profile is searched numerically; estimating threshold is structurally excluded."
+    },
+    "subsets": [
+      {
+        "free": [
+          "alpha"
+        ],
+        "held": [
+          "beta",
+          "mu"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "beta"
+        ],
+        "held": [
+          "alpha",
+          "mu"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "mu"
+        ],
+        "held": [
+          "alpha",
+          "beta"
+        ],
+        "structural": [
+          {
+            "held": [
+              "alpha",
+              "beta"
+            ],
+            "status": "not-implemented",
+            "reason": "The threshold mu is not estimated, even with alpha and beta held. Supply mu."
+          }
+        ]
+      },
+      {
+        "free": [
+          "alpha",
+          "beta"
+        ],
+        "held": [
+          "mu"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "alpha",
+          "mu"
+        ],
+        "held": [
+          "beta"
+        ],
+        "structural": [
+          {
+            "held": [
+              "beta"
+            ],
+            "status": "not-implemented",
+            "reason": "The threshold mu is not estimated, even with beta held. A maximum likelihood estimate exists for some held values of beta, but the package does not compute it. Supply mu."
+          }
+        ]
+      },
+      {
+        "free": [
+          "beta",
+          "mu"
+        ],
+        "held": [
+          "alpha"
+        ],
+        "structural": [
+          {
+            "held": [
+              "alpha"
+            ],
+            "status": "not-implemented",
+            "reason": "The threshold mu is not estimated, even with alpha held. A maximum likelihood estimate exists in this case, but the package does not compute it. Supply mu."
+          }
+        ]
+      },
+      {
+        "free": [
+          "alpha",
+          "beta",
+          "mu"
+        ],
+        "held": [],
+        "structural": [
+          {
+            "held": [],
+            "status": "no-mle",
+            "reason": "The threshold mu cannot be estimated. With mu free, the likelihood is unbounded for every sample with a unique minimum, so no maximum likelihood estimate exists. Supply mu."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "fpareto",
+    "parameters": [
+      "shape1",
+      "shape2",
+      "shape3",
+      "scale",
+      "min"
+    ],
+    "fit": {
+      "method": "delegation",
+      "certified": "partial",
+      "note": "fpareto/README.md, Details; fpareto/mle.hpp (public fitter and held overloads); fpareto/test.cpp: With min held, GB2 on excesses transfers certified Burr and inverse Burr submodels when shape3=1 or shape1=1 is held. The parent held-scale two-shape profiles are also certified by strict scalar concavity. Holding both beta shapes gives a concave power/location likelihood, and holding power and scale gives a concave beta-shape likelihood. Outside unit-shape reductions, free-beta-shape profiles with power or scale free retain numerical searches and face comparisons. Face coefficients refer to excess data."
+    },
+    "subsets": [
+      {
+        "free": [
+          "shape1"
+        ],
+        "held": [
+          "shape2",
+          "shape3",
+          "scale",
+          "min"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "shape2"
+        ],
+        "held": [
+          "shape1",
+          "shape3",
+          "scale",
+          "min"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "shape3"
+        ],
+        "held": [
+          "shape1",
+          "shape2",
+          "scale",
+          "min"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "scale"
+        ],
+        "held": [
+          "shape1",
+          "shape2",
+          "shape3",
+          "min"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "min"
+        ],
+        "held": [
+          "shape1",
+          "shape2",
+          "shape3",
+          "scale"
+        ],
+        "structural": [
+          {
+            "held": [
+              "shape1",
+              "shape2",
+              "shape3",
+              "scale"
+            ],
+            "status": "not-implemented",
+            "reason": "Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values."
+          }
+        ]
+      },
+      {
+        "free": [
+          "shape1",
+          "shape2"
+        ],
+        "held": [
+          "shape3",
+          "scale",
+          "min"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "shape1",
+          "shape3"
+        ],
+        "held": [
+          "shape2",
+          "scale",
+          "min"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "shape1",
+          "scale"
+        ],
+        "held": [
+          "shape2",
+          "shape3",
+          "min"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "shape1",
+          "min"
+        ],
+        "held": [
+          "shape2",
+          "shape3",
+          "scale"
+        ],
+        "structural": [
+          {
+            "held": [
+              "shape2",
+              "shape3",
+              "scale"
+            ],
+            "status": "not-implemented",
+            "reason": "Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values."
+          }
+        ]
+      },
+      {
+        "free": [
+          "shape2",
+          "shape3"
+        ],
+        "held": [
+          "shape1",
+          "scale",
+          "min"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "shape2",
+          "scale"
+        ],
+        "held": [
+          "shape1",
+          "shape3",
+          "min"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "shape2",
+          "min"
+        ],
+        "held": [
+          "shape1",
+          "shape3",
+          "scale"
+        ],
+        "structural": [
+          {
+            "held": [
+              "shape1",
+              "shape3",
+              "scale"
+            ],
+            "status": "no-mle",
+            "reason": "Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values."
+          }
+        ]
+      },
+      {
+        "free": [
+          "shape3",
+          "scale"
+        ],
+        "held": [
+          "shape1",
+          "shape2",
+          "min"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "shape3",
+          "min"
+        ],
+        "held": [
+          "shape1",
+          "shape2",
+          "scale"
+        ],
+        "structural": [
+          {
+            "held": [
+              "shape1",
+              "shape2",
+              "scale"
+            ],
+            "status": "no-mle",
+            "reason": "Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values."
+          }
+        ]
+      },
+      {
+        "free": [
+          "scale",
+          "min"
+        ],
+        "held": [
+          "shape1",
+          "shape2",
+          "shape3"
+        ],
+        "structural": [
+          {
+            "held": [
+              "shape1",
+              "shape2",
+              "shape3"
+            ],
+            "status": "not-implemented",
+            "reason": "Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values."
+          }
+        ]
+      },
+      {
+        "free": [
+          "shape1",
+          "shape2",
+          "shape3"
+        ],
+        "held": [
+          "scale",
+          "min"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "shape1",
+          "shape2",
+          "scale"
+        ],
+        "held": [
+          "shape3",
+          "min"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "shape1",
+          "shape2",
+          "min"
+        ],
+        "held": [
+          "shape3",
+          "scale"
+        ],
+        "structural": [
+          {
+            "held": [
+              "shape3",
+              "scale"
+            ],
+            "status": "no-mle",
+            "reason": "Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values."
+          }
+        ]
+      },
+      {
+        "free": [
+          "shape1",
+          "shape3",
+          "scale"
+        ],
+        "held": [
+          "shape2",
+          "min"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "shape1",
+          "shape3",
+          "min"
+        ],
+        "held": [
+          "shape2",
+          "scale"
+        ],
+        "structural": [
+          {
+            "held": [
+              "shape2",
+              "scale"
+            ],
+            "status": "no-mle",
+            "reason": "Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values."
+          }
+        ]
+      },
+      {
+        "free": [
+          "shape1",
+          "scale",
+          "min"
+        ],
+        "held": [
+          "shape2",
+          "shape3"
+        ],
+        "structural": [
+          {
+            "held": [
+              "shape2",
+              "shape3"
+            ],
+            "status": "no-mle",
+            "reason": "Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values."
+          }
+        ]
+      },
+      {
+        "free": [
+          "shape2",
+          "shape3",
+          "scale"
+        ],
+        "held": [
+          "shape1",
+          "min"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "shape2",
+          "shape3",
+          "min"
+        ],
+        "held": [
+          "shape1",
+          "scale"
+        ],
+        "structural": [
+          {
+            "held": [
+              "shape1",
+              "scale"
+            ],
+            "status": "no-mle",
+            "reason": "Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values."
+          }
+        ]
+      },
+      {
+        "free": [
+          "shape2",
+          "scale",
+          "min"
+        ],
+        "held": [
+          "shape1",
+          "shape3"
+        ],
+        "structural": [
+          {
+            "held": [
+              "shape1",
+              "shape3"
+            ],
+            "status": "no-mle",
+            "reason": "Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values."
+          }
+        ]
+      },
+      {
+        "free": [
+          "shape3",
+          "scale",
+          "min"
+        ],
+        "held": [
+          "shape1",
+          "shape2"
+        ],
+        "structural": [
+          {
+            "held": [
+              "shape1",
+              "shape2"
+            ],
+            "status": "no-mle",
+            "reason": "Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values."
+          }
+        ]
+      },
+      {
+        "free": [
+          "shape1",
+          "shape2",
+          "shape3",
+          "scale"
+        ],
+        "held": [
+          "min"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "shape1",
+          "shape2",
+          "shape3",
+          "min"
+        ],
+        "held": [
+          "scale"
+        ],
+        "structural": [
+          {
+            "held": [
+              "scale"
+            ],
+            "status": "no-mle",
+            "reason": "Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values."
+          }
+        ]
+      },
+      {
+        "free": [
+          "shape1",
+          "shape2",
+          "scale",
+          "min"
+        ],
+        "held": [
+          "shape3"
+        ],
+        "structural": [
+          {
+            "held": [
+              "shape3"
+            ],
+            "status": "no-mle",
+            "reason": "Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values."
+          }
+        ]
+      },
+      {
+        "free": [
+          "shape1",
+          "shape3",
+          "scale",
+          "min"
+        ],
+        "held": [
+          "shape2"
+        ],
+        "structural": [
+          {
+            "held": [
+              "shape2"
+            ],
+            "status": "no-mle",
+            "reason": "Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values."
+          }
+        ]
+      },
+      {
+        "free": [
+          "shape2",
+          "shape3",
+          "scale",
+          "min"
+        ],
+        "held": [
+          "shape1"
+        ],
+        "structural": [
+          {
+            "held": [
+              "shape1"
+            ],
+            "status": "no-mle",
+            "reason": "Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values."
+          }
+        ]
+      },
+      {
+        "free": [
+          "shape1",
+          "shape2",
+          "shape3",
+          "scale",
+          "min"
+        ],
+        "held": [],
+        "structural": [
+          {
+            "held": [],
+            "status": "no-mle",
+            "reason": "Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "frechet",
+    "parameters": [
+      "lambda",
+      "mu",
+      "sigma"
+    ],
+    "fit": {
+      "method": "delegation",
+      "certified": "partial",
+      "note": "frechet/README.md, Details; frechet/mle.hpp (public fitter and held overloads); frechet/test.cpp: Every subset with mu held is an inverse-Weibull fit (joint concave log profile, held-shape closed form or held-scale monotone shape score). Free mu retains numerical location/profile searches: all regular coefficients free, lambda held, sigma held, or both held."
+    },
+    "subsets": [
+      {
+        "free": [
+          "lambda"
+        ],
+        "held": [
+          "mu",
+          "sigma"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "mu"
+        ],
+        "held": [
+          "lambda",
+          "sigma"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "sigma"
+        ],
+        "held": [
+          "lambda",
+          "mu"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "lambda",
+          "mu"
+        ],
+        "held": [
+          "sigma"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "lambda",
+          "sigma"
+        ],
+        "held": [
+          "mu"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "mu",
+          "sigma"
+        ],
+        "held": [
+          "lambda"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "lambda",
+          "mu",
+          "sigma"
+        ],
+        "held": [],
+        "structural": []
+      }
+    ]
+  },
+  {
+    "id": "gb2",
+    "parameters": [
+      "shape1",
+      "shape2",
+      "shape3",
+      "scale"
+    ],
+    "fit": {
+      "method": "multistart",
+      "certified": "partial",
+      "note": "gb2/README.md, Details; gb2/mle.hpp (public fitter and held overloads); gb2/test.cpp: Held shape3=1 reduces exactly to Burr and held shape1=1 to inverse Burr, including certified joint and held-power routes and stop details; their held-scale two-shape profiles are also certified by strict scalar concavity. Holding both beta shapes gives the concave power/location likelihood; holding power and scale gives a concave beta-shape likelihood. Outside the unit-shape reductions, profiles with shape1 and/or shape3 free while shape2 or scale is free retain numerical multibasin searches and face comparisons."
+    },
+    "subsets": [
+      {
+        "free": [
+          "shape1"
+        ],
+        "held": [
+          "shape2",
+          "shape3",
+          "scale"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "shape2"
+        ],
+        "held": [
+          "shape1",
+          "shape3",
+          "scale"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "shape3"
+        ],
+        "held": [
+          "shape1",
+          "shape2",
+          "scale"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "scale"
+        ],
+        "held": [
+          "shape1",
+          "shape2",
+          "shape3"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "shape1",
+          "shape2"
+        ],
+        "held": [
+          "shape3",
+          "scale"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "shape1",
+          "shape3"
+        ],
+        "held": [
+          "shape2",
+          "scale"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "shape1",
+          "scale"
+        ],
+        "held": [
+          "shape2",
+          "shape3"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "shape2",
+          "shape3"
+        ],
+        "held": [
+          "shape1",
+          "scale"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "shape2",
+          "scale"
+        ],
+        "held": [
+          "shape1",
+          "shape3"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "shape3",
+          "scale"
+        ],
+        "held": [
+          "shape1",
+          "shape2"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "shape1",
+          "shape2",
+          "shape3"
+        ],
+        "held": [
+          "scale"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "shape1",
+          "shape2",
+          "scale"
+        ],
+        "held": [
+          "shape3"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "shape1",
+          "shape3",
+          "scale"
+        ],
+        "held": [
+          "shape2"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "shape2",
+          "shape3",
+          "scale"
+        ],
+        "held": [
+          "shape1"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "shape1",
+          "shape2",
+          "shape3",
+          "scale"
+        ],
+        "held": [],
+        "structural": []
+      }
+    ]
+  },
+  {
+    "id": "ged",
+    "parameters": [
+      "mean",
+      "sd",
+      "nu"
+    ],
+    "fit": {
+      "method": "multistart",
+      "certified": "partial",
+      "note": "ged/README.md, Details; ged/mle.hpp (public fitter and held overloads); ged/test.cpp: Held shape at least one gives a convex location problem and analytic scale profile; free shape search is numerical, including uniform-face comparisons."
+    },
+    "subsets": [
+      {
+        "free": [
+          "mean"
+        ],
+        "held": [
+          "sd",
+          "nu"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "sd"
+        ],
+        "held": [
+          "mean",
+          "nu"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "nu"
+        ],
+        "held": [
+          "mean",
+          "sd"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "mean",
+          "sd"
+        ],
+        "held": [
+          "nu"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "mean",
+          "nu"
+        ],
+        "held": [
+          "sd"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "sd",
+          "nu"
+        ],
+        "held": [
+          "mean"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "mean",
+          "sd",
+          "nu"
+        ],
+        "held": [],
+        "structural": []
+      }
+    ]
+  },
+  {
+    "id": "genbeta",
+    "parameters": [
+      "shape1",
+      "shape2",
+      "shape3",
+      "scale"
+    ],
+    "fit": {
+      "method": "profile-search",
+      "certified": "partial",
+      "note": "genbeta/README.md, Details; genbeta/mle.hpp (public fitter and held overloads); genbeta/test.cpp: With endpoint and power held, beta-shape fitting is strictly concave; the free-power mesh and envelope-score search do not certify every maximum."
+    },
+    "subsets": [
+      {
+        "free": [
+          "shape1"
+        ],
+        "held": [
+          "shape2",
+          "shape3",
+          "scale"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "shape2"
+        ],
+        "held": [
+          "shape1",
+          "shape3",
+          "scale"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "shape3"
+        ],
+        "held": [
+          "shape1",
+          "shape2",
+          "scale"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "scale"
+        ],
+        "held": [
+          "shape1",
+          "shape2",
+          "shape3"
+        ],
+        "structural": [
+          {
+            "held": [
+              "shape1",
+              "shape2",
+              "shape3"
+            ],
+            "status": "not-implemented",
+            "reason": "Estimating scale is not supported. The unrestricted likelihood is unbounded when shape2 is free or below one. With other held shapes, a finite MLE may exist but is not computed. Supply scale."
+          }
+        ]
+      },
+      {
+        "free": [
+          "shape1",
+          "shape2"
+        ],
+        "held": [
+          "shape3",
+          "scale"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "shape1",
+          "shape3"
+        ],
+        "held": [
+          "shape2",
+          "scale"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "shape1",
+          "scale"
+        ],
+        "held": [
+          "shape2",
+          "shape3"
+        ],
+        "structural": [
+          {
+            "held": [
+              "shape2",
+              "shape3"
+            ],
+            "status": "not-implemented",
+            "reason": "Estimating scale is not supported. The unrestricted likelihood is unbounded when shape2 is free or below one. With other held shapes, a finite MLE may exist but is not computed. Supply scale."
+          }
+        ]
+      },
+      {
+        "free": [
+          "shape2",
+          "shape3"
+        ],
+        "held": [
+          "shape1",
+          "scale"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "shape2",
+          "scale"
+        ],
+        "held": [
+          "shape1",
+          "shape3"
+        ],
+        "structural": [
+          {
+            "held": [
+              "shape1",
+              "shape3"
+            ],
+            "status": "no-mle",
+            "reason": "Estimating scale is not supported. The unrestricted likelihood is unbounded when shape2 is free or below one. With other held shapes, a finite MLE may exist but is not computed. Supply scale."
+          }
+        ]
+      },
+      {
+        "free": [
+          "shape3",
+          "scale"
+        ],
+        "held": [
+          "shape1",
+          "shape2"
+        ],
+        "structural": [
+          {
+            "held": [
+              "shape1",
+              "shape2"
+            ],
+            "status": "not-implemented",
+            "reason": "Estimating scale is not supported. The unrestricted likelihood is unbounded when shape2 is free or below one. With other held shapes, a finite MLE may exist but is not computed. Supply scale."
+          }
+        ]
+      },
+      {
+        "free": [
+          "shape1",
+          "shape2",
+          "shape3"
+        ],
+        "held": [
+          "scale"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "shape1",
+          "shape2",
+          "scale"
+        ],
+        "held": [
+          "shape3"
+        ],
+        "structural": [
+          {
+            "held": [
+              "shape3"
+            ],
+            "status": "no-mle",
+            "reason": "Estimating scale is not supported. The unrestricted likelihood is unbounded when shape2 is free or below one. With other held shapes, a finite MLE may exist but is not computed. Supply scale."
+          }
+        ]
+      },
+      {
+        "free": [
+          "shape1",
+          "shape3",
+          "scale"
+        ],
+        "held": [
+          "shape2"
+        ],
+        "structural": [
+          {
+            "held": [
+              "shape2"
+            ],
+            "status": "not-implemented",
+            "reason": "Estimating scale is not supported. The unrestricted likelihood is unbounded when shape2 is free or below one. With other held shapes, a finite MLE may exist but is not computed. Supply scale."
+          }
+        ]
+      },
+      {
+        "free": [
+          "shape2",
+          "shape3",
+          "scale"
+        ],
+        "held": [
+          "shape1"
+        ],
+        "structural": [
+          {
+            "held": [
+              "shape1"
+            ],
+            "status": "no-mle",
+            "reason": "Estimating scale is not supported. The unrestricted likelihood is unbounded when shape2 is free or below one. With other held shapes, a finite MLE may exist but is not computed. Supply scale."
+          }
+        ]
+      },
+      {
+        "free": [
+          "shape1",
+          "shape2",
+          "shape3",
+          "scale"
+        ],
+        "held": [],
+        "structural": [
+          {
+            "held": [],
+            "status": "no-mle",
+            "reason": "Estimating scale is not supported. The unrestricted likelihood is unbounded when shape2 is free or below one. With other held shapes, a finite MLE may exist but is not computed. Supply scale."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "gev",
+    "parameters": [
+      "mu",
+      "sigma",
+      "xi"
+    ],
+    "fit": {
+      "method": "profile-search",
+      "certified": "partial",
+      "note": "gev/mle.hpp, gev_held_profile and gev_profile: Held xi=-1 has closed-form shifted reverse-exponential fits; held xi=0 and sigma give analytic location. These nontrivial submodels are certified. General free and conditional fits use scalar profiles, finite scans and root discovery without a global enumeration certificate; half-tie face comparisons remain numerical."
+    },
+    "subsets": [
+      {
+        "free": [
+          "mu"
+        ],
+        "held": [
+          "sigma",
+          "xi"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "sigma"
+        ],
+        "held": [
+          "mu",
+          "xi"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "xi"
+        ],
+        "held": [
+          "mu",
+          "sigma"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "mu",
+          "sigma"
+        ],
+        "held": [
+          "xi"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "mu",
+          "xi"
+        ],
+        "held": [
+          "sigma"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "sigma",
+          "xi"
+        ],
+        "held": [
+          "mu"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "mu",
+          "sigma",
+          "xi"
+        ],
+        "held": [],
+        "structural": []
+      }
+    ]
+  },
+  {
+    "id": "huber",
+    "parameters": [
+      "mu",
+      "sigma",
+      "epsilon"
+    ],
+    "fit": {
+      "method": "profile-search",
+      "certified": "partial",
+      "note": "huber/README.md, Details; huber/mle.hpp (public fitter and held overloads); huber/test.cpp: Held epsilon gives a concave location/inverse-scale fit; free epsilon is searched numerically with normal and Laplace comparisons."
+    },
+    "subsets": [
+      {
+        "free": [
+          "mu"
+        ],
+        "held": [
+          "sigma",
+          "epsilon"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "sigma"
+        ],
+        "held": [
+          "mu",
+          "epsilon"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "epsilon"
+        ],
+        "held": [
+          "mu",
+          "sigma"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "mu",
+          "sigma"
+        ],
+        "held": [
+          "epsilon"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "mu",
+          "epsilon"
+        ],
+        "held": [
+          "sigma"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "sigma",
+          "epsilon"
+        ],
+        "held": [
+          "mu"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "mu",
+          "sigma",
+          "epsilon"
+        ],
+        "held": [],
+        "structural": []
+      }
+    ]
+  },
+  {
+    "id": "invtrgamma",
+    "parameters": [
+      "shape1",
+      "shape2",
+      "scale"
+    ],
+    "fit": {
+      "method": "delegation",
+      "certified": "partial",
+      "note": "invtrgamma/README.md, Details; invtrgamma/mle.hpp (public fitter and held overloads); invtrgamma/test.cpp: Held power reduces to gamma and held gamma shape to a concave transformed problem; the free-power/shape profile and face enumeration are numerical."
+    },
+    "subsets": [
+      {
+        "free": [
+          "shape1"
+        ],
+        "held": [
+          "shape2",
+          "scale"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "shape2"
+        ],
+        "held": [
+          "shape1",
+          "scale"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "scale"
+        ],
+        "held": [
+          "shape1",
+          "shape2"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "shape1",
+          "shape2"
+        ],
+        "held": [
+          "scale"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "shape1",
+          "scale"
+        ],
+        "held": [
+          "shape2"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "shape2",
+          "scale"
+        ],
+        "held": [
+          "shape1"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "shape1",
+          "shape2",
+          "scale"
+        ],
+        "held": [],
+        "structural": []
+      }
+    ]
+  },
+  {
+    "id": "lst",
+    "parameters": [
+      "mu",
+      "sigma",
+      "df"
+    ],
+    "fit": {
+      "method": "profile-search",
+      "certified": "partial",
+      "note": "lst/README.md, Details; lst/certificate.hpp; lst/mle.hpp: All-free fits use exhaustive profile envelopes, root inclusion and uniform curvature neighborhoods, with normal and lower-face certificates conditional on computed practical arithmetic bounds. Held subsets retain their existing exact or numerical routes; general held location/shape profiles remain uncertified."
+    },
+    "subsets": [
+      {
+        "free": [
+          "mu"
+        ],
+        "held": [
+          "sigma",
+          "df"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "sigma"
+        ],
+        "held": [
+          "mu",
+          "df"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "df"
+        ],
+        "held": [
+          "mu",
+          "sigma"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "mu",
+          "sigma"
+        ],
+        "held": [
+          "df"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "mu",
+          "df"
+        ],
+        "held": [
+          "sigma"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "sigma",
+          "df"
+        ],
+        "held": [
+          "mu"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "mu",
+          "sigma",
+          "df"
+        ],
+        "held": [],
+        "structural": []
+      }
+    ]
+  },
+  {
+    "id": "sged",
+    "parameters": [
+      "mean",
+      "sd",
+      "nu",
+      "xi"
+    ],
+    "fit": {
+      "method": "multistart",
+      "certified": "partial",
+      "note": "sged/certificate.hpp certifies free location with both shapes held (scale held or free), and free scale with mean held when xi=1 or nu>=1 is held. Other subsets, including the unchanged default, retain numerical searches without a global certificate; all-held evaluation is not counted."
+    },
+    "subsets": [
+      {
+        "free": [
+          "mean"
+        ],
+        "held": [
+          "sd",
+          "nu",
+          "xi"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "sd"
+        ],
+        "held": [
+          "mean",
+          "nu",
+          "xi"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "nu"
+        ],
+        "held": [
+          "mean",
+          "sd",
+          "xi"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "xi"
+        ],
+        "held": [
+          "mean",
+          "sd",
+          "nu"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "mean",
+          "sd"
+        ],
+        "held": [
+          "nu",
+          "xi"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "mean",
+          "nu"
+        ],
+        "held": [
+          "sd",
+          "xi"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "mean",
+          "xi"
+        ],
+        "held": [
+          "sd",
+          "nu"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "sd",
+          "nu"
+        ],
+        "held": [
+          "mean",
+          "xi"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "sd",
+          "xi"
+        ],
+        "held": [
+          "mean",
+          "nu"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "nu",
+          "xi"
+        ],
+        "held": [
+          "mean",
+          "sd"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "mean",
+          "sd",
+          "nu"
+        ],
+        "held": [
+          "xi"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "mean",
+          "sd",
+          "xi"
+        ],
+        "held": [
+          "nu"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "mean",
+          "nu",
+          "xi"
+        ],
+        "held": [
+          "sd"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "sd",
+          "nu",
+          "xi"
+        ],
+        "held": [
+          "mean"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "mean",
+          "sd",
+          "nu",
+          "xi"
+        ],
+        "held": [],
+        "structural": []
+      }
+    ]
+  },
+  {
+    "id": "sgomp",
+    "parameters": [
+      "b",
+      "eta"
+    ],
+    "fit": {
+      "method": "profile-search",
+      "certified": "partial",
+      "note": "sgomp/README.md, Details; sgomp/mle.hpp (public fitter and held overloads); sgomp/test.cpp: Held rate leaves a strictly monotone shape score; joint rate grid refines sampled peaks without certifying enumeration of all stationary points."
+    },
+    "subsets": [
+      {
+        "free": [
+          "b"
+        ],
+        "held": [
+          "eta"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "eta"
+        ],
+        "held": [
+          "b"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "b",
+          "eta"
+        ],
+        "held": [],
+        "structural": []
+      }
+    ]
+  },
+  {
+    "id": "sn",
+    "parameters": [
+      "xi",
+      "omega",
+      "alpha"
+    ],
+    "fit": {
+      "method": "profile-search",
+      "certified": "partial",
+      "note": "sn/README.md, Details; sn/mle.hpp: free location and shape use interval and tail upper bounds conditional on computed comparisons; held-location and held-shape solves remain numerical."
+    },
+    "subsets": [
+      {
+        "free": [
+          "xi"
+        ],
+        "held": [
+          "omega",
+          "alpha"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "omega"
+        ],
+        "held": [
+          "xi",
+          "alpha"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "alpha"
+        ],
+        "held": [
+          "xi",
+          "omega"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "xi",
+          "omega"
+        ],
+        "held": [
+          "alpha"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "xi",
+          "alpha"
+        ],
+        "held": [
+          "omega"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "omega",
+          "alpha"
+        ],
+        "held": [
+          "xi"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "xi",
+          "omega",
+          "alpha"
+        ],
+        "held": [],
+        "structural": []
+      }
+    ]
+  },
+  {
+    "id": "snorm",
+    "parameters": [
+      "mean",
+      "sd",
+      "xi"
+    ],
+    "fit": {
+      "method": "profile-search",
+      "certified": "partial",
+      "note": "snorm/README.md, Details; snorm/mle.hpp (public fitter and held overloads); snorm/test.cpp: Held shape gives a concave location/inverse-scale problem; free skewness uses finite scans and local refinement, not a global certificate."
+    },
+    "subsets": [
+      {
+        "free": [
+          "mean"
+        ],
+        "held": [
+          "sd",
+          "xi"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "sd"
+        ],
+        "held": [
+          "mean",
+          "xi"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "xi"
+        ],
+        "held": [
+          "mean",
+          "sd"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "mean",
+          "sd"
+        ],
+        "held": [
+          "xi"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "mean",
+          "xi"
+        ],
+        "held": [
+          "sd"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "sd",
+          "xi"
+        ],
+        "held": [
+          "mean"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "mean",
+          "sd",
+          "xi"
+        ],
+        "held": [],
+        "structural": []
+      }
+    ]
+  },
+  {
+    "id": "std",
+    "parameters": [
+      "mean",
+      "sd",
+      "nu"
+    ],
+    "fit": {
+      "method": "profile-search",
+      "certified": "partial",
+      "note": "std/README.md, Details; lst/certificate.hpp; std/mle.hpp: All-free fits use exhaustive profile envelopes, root inclusion and uniform curvature neighborhoods, with normal and lower-face certificates conditional on computed practical arithmetic bounds. Held subsets retain their existing exact or numerical routes; general held location/shape profiles remain uncertified."
+    },
+    "subsets": [
+      {
+        "free": [
+          "mean"
+        ],
+        "held": [
+          "sd",
+          "nu"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "sd"
+        ],
+        "held": [
+          "mean",
+          "nu"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "nu"
+        ],
+        "held": [
+          "mean",
+          "sd"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "mean",
+          "sd"
+        ],
+        "held": [
+          "nu"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "mean",
+          "nu"
+        ],
+        "held": [
+          "sd"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "sd",
+          "nu"
+        ],
+        "held": [
+          "mean"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "mean",
+          "sd",
+          "nu"
+        ],
+        "held": [],
+        "structural": []
+      }
+    ]
+  },
+  {
+    "id": "tbinom",
+    "parameters": [
+      "prob",
+      "a",
+      "b",
+      "size"
+    ],
+    "fit": {
+      "method": "integer-search",
+      "certified": "partial",
+      "note": "tbinom/README.md, Details; tbinom/mle.hpp (public fitter and held overloads); tbinom/test.cpp: Fixed size has exact conditional probability profiling; held probability has integer tail bounds. Free-size/free-probability grids lack a global unimodality certificate."
+    },
+    "subsets": [
+      {
+        "free": [
+          "prob"
+        ],
+        "held": [
+          "a",
+          "b",
+          "size"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "a"
+        ],
+        "held": [
+          "prob",
+          "b",
+          "size"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "b"
+        ],
+        "held": [
+          "prob",
+          "a",
+          "size"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "size"
+        ],
+        "held": [
+          "prob",
+          "a",
+          "b"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "prob",
+          "a"
+        ],
+        "held": [
+          "b",
+          "size"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "prob",
+          "b"
+        ],
+        "held": [
+          "a",
+          "size"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "prob",
+          "size"
+        ],
+        "held": [
+          "a",
+          "b"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "a",
+          "b"
+        ],
+        "held": [
+          "prob",
+          "size"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "a",
+          "size"
+        ],
+        "held": [
+          "prob",
+          "b"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "b",
+          "size"
+        ],
+        "held": [
+          "prob",
+          "a"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "prob",
+          "a",
+          "b"
+        ],
+        "held": [
+          "size"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "prob",
+          "a",
+          "size"
+        ],
+        "held": [
+          "b"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "prob",
+          "b",
+          "size"
+        ],
+        "held": [
+          "a"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "a",
+          "b",
+          "size"
+        ],
+        "held": [
+          "prob"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "prob",
+          "a",
+          "b",
+          "size"
+        ],
+        "held": [],
+        "structural": []
+      }
+    ]
+  },
+  {
+    "id": "tnorm",
+    "parameters": [
+      "mean",
+      "sd",
+      "a",
+      "b"
+    ],
+    "fit": {
+      "method": "convex-solve",
+      "certified": "partial",
+      "note": "tnorm/README.md, Details; tnorm/mle.hpp (public fitter and held overloads); tnorm/test.cpp: Fixed-bound likelihood is strictly concave in mean/sd^2 and -1/(2*sd^2); holding mean or sd gives affine restrictions. Free bounds profile exactly to sample extremes; collapse tests are exact. Newton solves and face comparisons use floating-point quadrature and tolerances, rather than a global numerical certificate."
+    },
+    "subsets": [
+      {
+        "free": [
+          "mean"
+        ],
+        "held": [
+          "sd",
+          "a",
+          "b"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "sd"
+        ],
+        "held": [
+          "mean",
+          "a",
+          "b"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "a"
+        ],
+        "held": [
+          "mean",
+          "sd",
+          "b"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "b"
+        ],
+        "held": [
+          "mean",
+          "sd",
+          "a"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "mean",
+          "sd"
+        ],
+        "held": [
+          "a",
+          "b"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "mean",
+          "a"
+        ],
+        "held": [
+          "sd",
+          "b"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "mean",
+          "b"
+        ],
+        "held": [
+          "sd",
+          "a"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "sd",
+          "a"
+        ],
+        "held": [
+          "mean",
+          "b"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "sd",
+          "b"
+        ],
+        "held": [
+          "mean",
+          "a"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "a",
+          "b"
+        ],
+        "held": [
+          "mean",
+          "sd"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "mean",
+          "sd",
+          "a"
+        ],
+        "held": [
+          "b"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "mean",
+          "sd",
+          "b"
+        ],
+        "held": [
+          "a"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "mean",
+          "a",
+          "b"
+        ],
+        "held": [
+          "sd"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "sd",
+          "a",
+          "b"
+        ],
+        "held": [
+          "mean"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "mean",
+          "sd",
+          "a",
+          "b"
+        ],
+        "held": [],
+        "structural": []
+      }
+    ]
+  },
+  {
+    "id": "trgamma",
+    "parameters": [
+      "shape1",
+      "shape2",
+      "scale"
+    ],
+    "fit": {
+      "method": "profile-search",
+      "certified": "partial",
+      "note": "trgamma/README.md, Details; trgamma/mle.hpp (public fitter and held overloads); trgamma/test.cpp: Held power reduces to gamma and held gamma shape to a concave transformed problem; the free-power/shape profile and face enumeration are numerical."
+    },
+    "subsets": [
+      {
+        "free": [
+          "shape1"
+        ],
+        "held": [
+          "shape2",
+          "scale"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "shape2"
+        ],
+        "held": [
+          "shape1",
+          "scale"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "scale"
+        ],
+        "held": [
+          "shape1",
+          "shape2"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "shape1",
+          "shape2"
+        ],
+        "held": [
+          "scale"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "shape1",
+          "scale"
+        ],
+        "held": [
+          "shape2"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "shape2",
+          "scale"
+        ],
+        "held": [
+          "shape1"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "shape1",
+          "shape2",
+          "scale"
+        ],
+        "held": [],
+        "structural": []
+      }
+    ]
+  },
+  {
+    "id": "zib",
+    "parameters": [
+      "size",
+      "prob",
+      "pi"
+    ],
+    "fit": {
+      "method": "multistart",
+      "certified": "partial",
+      "note": "zib/README.md, Details; zib/mle.hpp (public fitter and held overloads); zib/test.cpp: Fixed size has exact conditional probability profiling; held probability has integer tail bounds. Free-size/free-probability grids lack a global unimodality certificate."
+    },
+    "subsets": [
+      {
+        "free": [
+          "size"
+        ],
+        "held": [
+          "prob",
+          "pi"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "prob"
+        ],
+        "held": [
+          "size",
+          "pi"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "pi"
+        ],
+        "held": [
+          "size",
+          "prob"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "size",
+          "prob"
+        ],
+        "held": [
+          "pi"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "size",
+          "pi"
+        ],
+        "held": [
+          "prob"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "prob",
+          "pi"
+        ],
+        "held": [
+          "size"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "size",
+          "prob",
+          "pi"
+        ],
+        "held": [],
+        "structural": []
+      }
+    ]
+  },
+  {
+    "id": "zip",
+    "parameters": [
+      "lambda",
+      "pi"
+    ],
+    "fit": {
+      "method": "closed-form",
+      "certified": "partial",
+      "note": "zip/README.md, Details; zip/mle.hpp (public fitter and held overloads); zip/test.cpp: Free inflation is an exact clipped profile and the free fit reduces to the zero-truncated rate equation; held inflation uses a numerical rate search without a global root certificate."
+    },
+    "subsets": [
+      {
+        "free": [
+          "lambda"
+        ],
+        "held": [
+          "pi"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "pi"
+        ],
+        "held": [
+          "lambda"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "lambda",
+          "pi"
+        ],
+        "held": [],
+        "structural": []
+      }
+    ]
+  },
+  {
+    "id": "zmbinom",
+    "parameters": [
+      "size",
+      "prob",
+      "p0"
+    ],
+    "fit": {
+      "method": "delegation",
+      "certified": "partial",
+      "note": "zmbinom/README.md, Details; zmbinom/mle.hpp (public fitter and held overloads); zmbinom/test.cpp: Fixed size has exact conditional probability profiling; held probability has integer tail bounds. Free-size/free-probability grids lack a global unimodality certificate."
+    },
+    "subsets": [
+      {
+        "free": [
+          "size"
+        ],
+        "held": [
+          "prob",
+          "p0"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "prob"
+        ],
+        "held": [
+          "size",
+          "p0"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "p0"
+        ],
+        "held": [
+          "size",
+          "prob"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "size",
+          "prob"
+        ],
+        "held": [
+          "p0"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "size",
+          "p0"
+        ],
+        "held": [
+          "prob"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "prob",
+          "p0"
+        ],
+        "held": [
+          "size"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "size",
+          "prob",
+          "p0"
+        ],
+        "held": [],
+        "structural": []
+      }
+    ]
+  },
+  {
+    "id": "ztbinom",
+    "parameters": [
+      "size",
+      "prob"
+    ],
+    "fit": {
+      "method": "integer-search",
+      "certified": "partial",
+      "note": "ztbinom/README.md, Details; ztbinom/mle.hpp (public fitter and held overloads); ztbinom/test.cpp: Fixed size has exact conditional probability profiling; held probability has integer tail bounds. Free-size/free-probability grids lack a global unimodality certificate."
+    },
+    "subsets": [
+      {
+        "free": [
+          "size"
+        ],
+        "held": [
+          "prob"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "prob"
+        ],
+        "held": [
+          "size"
+        ],
+        "structural": []
+      },
+      {
+        "free": [
+          "size",
+          "prob"
+        ],
+        "held": [],
+        "structural": []
+      }
+    ]
+  }
+]

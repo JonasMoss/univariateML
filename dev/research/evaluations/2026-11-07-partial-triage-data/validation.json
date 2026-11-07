@@ -1,0 +1,44 @@
+{
+  "source_revision": "681d7ac5ce6965db4066b4117c12eff69e75cd0c",
+  "research_checks": "checks.json",
+  "commands": [
+    {
+      "command": "/tmp/umvl-cpu/run python3 dev/research/evaluations/2026-11-07-partial-triage-data/check.py",
+      "machine": "workstation",
+      "exit": 0
+    },
+    {
+      "command": "/tmp/umvl-cpu/simbox-run just cpp-test",
+      "machine": "simbox",
+      "exit": 0,
+      "passed_shards": 106,
+      "elapsed_ctest_seconds": 30.3,
+      "compiler": "GNU 13.3.0",
+      "log": "cpp-dev.txt.gz",
+      "configuration_fallback": "system Boost missing; Justfile retried successfully with R BH include path"
+    },
+    {
+      "command": "/tmp/umvl-cpu/simbox-run just test",
+      "machine": "simbox",
+      "exit": 0,
+      "pass": 20983,
+      "fail": 0,
+      "warn": 0,
+      "skip": 154,
+      "elapsed_tests_seconds": 60.169,
+      "R": "4.6.1",
+      "compiler": "g++-15",
+      "log": "r-dev.txt.gz"
+    }
+  ],
+  "fallback_to_workstation": false,
+  "unchanged_source_fingerprints": 102,
+  "report_family_sections": 29,
+  "report_local_links_checked": 19,
+  "scope": "research only; no library or test infrastructure changes",
+  "full_JS_site_not_required": true,
+  "artifact_pane": {
+    "attempted": true,
+    "result": "HTTP 403: worktree outside configured readable roots"
+  }
+}
