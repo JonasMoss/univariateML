@@ -541,3 +541,70 @@ test('extreme scalar certificates expose common binding stops', async () => {
     assert.equal(e.kind,'nomle');assert.ok(Number.isFinite(e.loglik_upper));return true;
   });
 });
+test('betapr non-unit conditional certificate transports finite fits and gamma faces', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  const x = new Float64Array([.03,.1,.4,.7,1,2,4,12]);
+  const f = api.betapr.fit(x,{shape1: 2});
+  const inv = api.betapr.fit(Float64Array.from(x,v => 1/v),{shape2: 2});
+  assert.ok(Math.abs(f.estimates.shape2/.6398504179662102-1)<1e-6);
+  assert.ok(Math.abs(inv.estimates.scale*f.estimates.scale-1)<1e-6);
+  assert.throws(() => api.betapr.fit(new Float64Array([1,2,3,4]),{shape1: .7}), e => {
+    assert.equal(e.kind,'limit');assert.equal(e.model,'gamma');
+    assert.ok(Math.abs(e.estimates.scale-2.5/.7)<1e-10);return true;
+  });
+  assert.throws(() => api.betapr.fit(new Float64Array([3,3]),{shape2: 2}), e => {
+    assert.equal(e.kind,'limit');assert.equal(e.model,'invgamma');
+    assert.equal(e.estimates.alpha,2);assert.ok(Math.abs(e.estimates.beta-6)<1e-10);return true;
+  });
+  assert.throws(() => api.betapr.fit(new Float64Array([1,2,3,4]),{shape1: 1e100}), e => {
+    assert.equal(e.kind,'numerical');assert.ok(e.candidates.length>0);return true;
+  });
+});
+
+test('betapr nonunique conditional peaks retain two witnesses on a tie', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  const x = new Float64Array([1.9901008294052028e-5,2.209857117039297e-5,.0002450722434289249,
+    12.288342947780086,942.976056905759,16.239512580216314,2.898690421966857,
+    1.2684036923492177,400970.63293690106*Math.exp(5.646438395028704)]);
+  assert.throws(() => api.betapr.fit(x,{shape1: .22690393135372058}), e => {
+    assert.equal(e.kind,'tie');assert.ok(Number.isFinite(e.loglik_upper));
+    assert.ok(e.candidates.some(c => c.shape2<.12));assert.ok(e.candidates.some(c => c.shape2>.12));
+    return true;
+  });
+});
+
+test('betapr flat gamma-adjacent profile retains coefficient accuracy in WASM', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  const x = new Float64Array([
+    0.2802410396791599,1.3436077191767044,0.3472030471432838,0.2441657957218209,0.37701961388941624,
+    0.6833708903622272,0.6278389000252419,0.38052450377474095,0.36732564867894735,0.29465588306090007,
+    1.6337413655534816,0.5004872207354496,0.25644728823570834,0.30489045402771314,0.43156701444273454,
+    0.3417576191295499,0.6299669667981216,0.4052784001144798,0.4067675092434208,0.4723512023354753,
+    0.23656005267689753,0.2642974860041385,0.9126126455038472,0.32651442909992406,0.46787154802779246,
+    0.1628156505909309,0.3788340921782178,0.835567043527286,0.3323693396507257,0.3235089636008228,
+    0.5129659623359408,0.6237662717585744,0.2941132697632576,0.529388645275596,0.9425930099919333,
+    1.2345113855705605,0.29093411659111756,0.800363767645574,0.5766059381215861,0.6692187265125815,
+    0.20447619833715736,0.49035079695672834,0.16071566219449587,0.6181761242554693,0.2267230146767822,
+    0.12765259697091694,0.41677556632417445,0.4059483378259152,0.8440600080403166,0.20514995369266417,
+    0.4942728850503481,0.26190221637225936,0.26275727790533004,0.9032343024104332,0.7268230941680275,
+    0.286034486110887,1.4472051241771995,1.0248139974432968,0.275316269565675,0.23313051172217203,
+    1.4110065473371882,0.4366764752390559,0.7648443462094332,0.17455770282334382,0.2530796200266882,
+    0.2894980917784592,1.3011788730484601,0.5665417375334098,0.2566793308738982,0.32048779836743785,
+    0.23663945218855686,0.5998659518183862,0.2678331031882215,0.5032930931900615,0.6874786603810399,
+    0.3214440324208265,0.14211011008082958,0.819017807409365,0.4105961256971879,0.5740438256003082,
+    0.21131695936725742,0.3306741868864489,0.3793284722734561,0.7089210134356432,2.128146114762274,
+    0.2130429847932904,1.6613597787317225,0.22276444863059733,0.2896374900002532,6.6784395851634635,
+    0.3039549833938396,0.28494128883588377,0.40624286664406933,0.22108556498133647,0.507836372617378,
+    0.18205988265034304,0.2673444641589703,0.9012350282744386,0.3236899952843548,0.7274713901255461]);
+  const f = api.betapr.fit(x,{shape1: .7});
+  assert.ok(Math.abs(f.estimates.shape2/95.516952-1)<1e-6);
+  assert.ok(Math.abs(f.estimates.scale/78.232314-1)<1e-6);
+  assert.ok(Math.abs(f.logLik+58.0668187021122)<1e-8);
+  assert.throws(() => api.betapr.fit(x,{shape1: .66110553857791232},{iterlim: 64}), e => {
+    assert.equal(e.kind,'budget');assert.ok(e.candidates.length>0);
+    assert.match(e.message,/raising iterlim/i);return true;
+  });
+});

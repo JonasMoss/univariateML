@@ -214,6 +214,9 @@ inline BetaPrimeResult betapr_mle(span x, double tol = 1e-6, int maxit = 1000,
   maxit = static_cast<int>(solver_budget(maxit));
   return betapr_mle_impl(x, tol, maxit, shape1, shape2, scale, reltol, abstol);
 }
+} // namespace cppunivariate
+#include "certificate.hpp"
+namespace cppunivariate {
 // Hold-aware profiles. The legacy all-free and fixed-scale paths above are
 // retained verbatim so their golden fits do not change.
 namespace betapr_detail {
@@ -256,10 +259,10 @@ inline BetaPrimeResult betapr_mle_holds(span x, double held_a, double held_b,
       r.status==LomaxStatus::ExponentialLimit?BetaPrimeStatus::InvExpBoundary:
       r.status==LomaxStatus::InvalidStart?BetaPrimeStatus::InvalidStart:BetaPrimeStatus::BfgsFailure,d,r.certificate_failure};
   }
-  double lm=0,mean=0,invmean=0;
+  double lm=0;
   for(double v:x) {
     if(!(v>0)||!std::isfinite(v))return invalid;
-    lm+=std::log(v)/x.size();mean+=v/x.size();invmean+=(1/v)/x.size();
+    lm+=std::log(v)/x.size();
   }
   if(!fa&&!fb) return fs?betapr_mle_fixed_scale(x,held_s,tol,maxit):betapr_mle(x,tol,maxit);
   const double n=static_cast<double>(x.size());
@@ -303,51 +306,43 @@ inline BetaPrimeResult betapr_mle_holds(span x, double held_a, double held_b,
     if(hi-lo>1e-10)return {nan,nan,nan,nan,maxit,BetaPrimeStatus::BfgsFailure};
     return profile((lo+hi)/2);
   }
-  // Only the face opposite the held shape survives. Optimize that face
-  // retaining the held shape; comparing with an unrestricted face is wrong.
-  double face_ll=0;
-  if(fa) {
-    const double rate=held_a/mean;
-    face_ll=n*(held_a*std::log(rate)-special::lgamma(held_a)+(held_a-1)*lm-held_a);
-  } else {
-    const double scale=held_b/invmean;
-    face_ll=n*(held_b*std::log(scale)-special::lgamma(held_b)-(held_b+1)*lm-held_b);
-  }
-  // With identical observations, profiling scale gives a monotone density
-  // in the free shape: psi(a+b)-psi(b) > log((a+b)/b).
-  // Thus its supremum is precisely the appropriate gamma face.
-  if (std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))
-    return {held_a,held_b,nan,face_ll,0,
-      fa?BetaPrimeStatus::GammaBoundary:BetaPrimeStatus::InvGammaBoundary};
-  BetaPrimeResult best=invalid;best.logLik=-INFINITY;
-  const double lo=lm-24,hi=lm+24;
-  constexpr int grids=384;
-  std::vector<double> values(grids+1);
-  const auto value=[&](double ls) {
-    const auto r=profile(ls);
-    if(r.status==BetaPrimeStatus::Ok&&std::isfinite(r.logLik)&&r.logLik>best.logLik)best=r;
-    return r.logLik;
-  };
-  for(int j=0;j<=grids;++j)values[j]=value(lo+(hi-lo)*j/grids);
-  int iterations=0;
-  for(int j=1;j<grids;++j)if(values[j]>=values[j-1]&&values[j]>=values[j+1]) {
-    double l=lo+(hi-lo)*(j-1)/grids,r=lo+(hi-lo)*(j+1)/grids;
-    int it=0;
-    for(;it<maxit&&r-l>1e-9;++it) {
-      const double a=r-(r-l)*.6180339887498949,b=l+(r-l)*.6180339887498949;
-      if(value(a)>value(b))r=b;else l=a;
+  if(fa)return betapr_cert_detail::fit(x,held_a,tol,maxit);
+  std::vector<double> reciprocal;betapr_cert_detail::Sum jac_sum,jac_magnitude;
+  for(double v:x){
+    if(!(1/v>0)||!std::isfinite(1/v)) {
+      invalid.status=BetaPrimeStatus::BfgsFailure;
+      invalid.certificate_failure=LomaxCertificateFailure::Arithmetic;return invalid;
     }
-    iterations=std::max(iterations,it);
-    if(it==maxit) {best.status=BetaPrimeStatus::BfgsFailure;return best;}
+    reciprocal.push_back(1/v);
+    const double term=-2*std::log(v);jac_sum.add(term);jac_magnitude.add(std::abs(term));
   }
-  if(!std::isfinite(best.logLik)) {best.status=BetaPrimeStatus::BfgsFailure;return best;}
-  if(face_numerical_tie(face_ll,best.logLik,1e-8*n)) {best.status=BetaPrimeStatus::BfgsFailure;return best;}
-  if(face_ll>=best.logLik-1e-8*n) return {held_a,held_b,nan,face_ll,iterations,
-    fa?BetaPrimeStatus::GammaBoundary:BetaPrimeStatus::InvGammaBoundary};
-  if(!std::isfinite(best.logLik) || best.alpha>=.999e8 || best.beta>=.999e8 ||
-      !(best.scale>std::exp(lo)&&best.scale<std::exp(hi))) best.status=BetaPrimeStatus::BfgsFailure;
-  best.iterations=iterations;
-  return best;
+  const double jac=jac_sum.value;
+  const double jac_error=64*std::numeric_limits<double>::epsilon()*(1+jac_magnitude.value);
+  auto r=betapr_cert_detail::fit(span{reciprocal.data(),reciprocal.size()},held_b,tol,maxit);
+  std::swap(r.alpha,r.beta);const double original_scale=r.scale;
+  r.scale=1/r.scale;r.logLik+=jac;
+  if(r.status==BetaPrimeStatus::Ok && (!(r.scale>0)||!std::isfinite(r.scale)||
+      std::abs((1/r.scale)/original_scale-1)>1e-6)) {
+    r.status=BetaPrimeStatus::BfgsFailure;r.certificate_failure=LomaxCertificateFailure::Arithmetic;
+  }
+  if(r.status==BetaPrimeStatus::GammaBoundary)r.status=BetaPrimeStatus::InvGammaBoundary;
+  auto& d=r.stop_detail;
+  d.limit_model=StopModel::InvGamma;
+  if(d.limit_coef.size()==2)d.limit_coef[1]=1/d.limit_coef[1];
+  d.limit_loglik+=jac;d.loglik_lower+=jac-jac_error;d.loglik_upper+=jac+jac_error;
+  d.segment_loglik_upper+=jac+jac_error;
+  for(auto& c:d.candidates){
+    if(c.model==StopModel::Gamma){c.model=StopModel::InvGamma;if(c.coef.size()==2)c.coef[1]=1/c.coef[1];}
+    c.loglik_lower+=jac-jac_error;c.loglik_upper+=jac+jac_error;
+    if(c.coef.size()==3){std::swap(c.coef[0],c.coef[1]);c.coef[2]=1/c.coef[2];}
+  }
+  d.candidates.erase(std::remove_if(d.candidates.begin(),d.candidates.end(),
+    [](const FitCandidate& c){return !valid_stop_coefficients(c.model,c.coef);}),d.candidates.end());
+  if(!valid_stop_coefficients(d.limit_model,d.limit_coef)) {
+    d.limit_coef.clear();d.limit_loglik=NAN;d.limit_model=StopModel::None;
+    if(r.status==BetaPrimeStatus::InvGammaBoundary){r.status=BetaPrimeStatus::BfgsFailure;r.certificate_failure=LomaxCertificateFailure::Arithmetic;}
+  }
+  return r;
 }
 
 } // namespace cppunivariate

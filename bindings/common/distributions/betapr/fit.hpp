@@ -29,12 +29,18 @@ inline FitResult fit_betapr(cppunivariate::span x, Held shape1_arg = {}, Held sh
     return stop_failure(fail("The certified beta-prime submodel selects the exponential limit. Use `mlexp`."),res.stop_detail,"limit",{"shape1","shape2","scale"},"exp");
   if(res.status==cppunivariate::BetaPrimeStatus::InvExpBoundary)
     return stop_failure(fail("The certified beta-prime submodel selects the inverse exponential limit. Use `mlinvexp`."),res.stop_detail,"limit",{"shape1","shape2","scale"},"invexp");
-  if (res.status == cppunivariate::BetaPrimeStatus::GammaBoundary)
+  if (res.status == cppunivariate::BetaPrimeStatus::GammaBoundary && res.stop_detail.limit_coef.empty())
     return fail("The beta-prime likelihood selects the gamma limit. Use `mlgamma` to fit this model.");
-  if (res.status == cppunivariate::BetaPrimeStatus::InvGammaBoundary)
+  if (res.status == cppunivariate::BetaPrimeStatus::InvGammaBoundary && res.stop_detail.limit_coef.empty())
     return fail("The beta-prime likelihood selects the inverse-gamma limit. Use `mlinvgamma` to fit this model.");
+  if (res.status == cppunivariate::BetaPrimeStatus::GammaBoundary)
+    return stop_failure(fail("The beta-prime likelihood selects the gamma limit. Use `mlgamma` to fit this model."),res.stop_detail,"limit",{"shape1","shape2","scale"},"gamma");
+  if (res.status == cppunivariate::BetaPrimeStatus::InvGammaBoundary)
+    return stop_failure(fail("The beta-prime likelihood selects the inverse-gamma limit. Use `mlinvgamma` to fit this model."),res.stop_detail,"limit",{"shape1","shape2","scale"},"invgamma");
+  if (res.status == cppunivariate::BetaPrimeStatus::BfgsFailure && res.certificate_failure==cppunivariate::LomaxCertificateFailure::Budget)
+    return stop_failure(fail("Beta-prime global certificate budget exhausted (128 * min(iterlim, 100000) evaluations); raising iterlim may resolve this stop."),res.stop_detail,"budget",{"shape1","shape2","scale"},"");
   if (res.status == cppunivariate::BetaPrimeStatus::BfgsFailure)
-    return stop_failure(fail("Beta-prime optimizer BfgsFailure: profile did not converge or exceeded its numerical search range; increase iterlim."),res.stop_detail,res.certificate_failure==cppunivariate::LomaxCertificateFailure::Budget?"budget":res.certificate_failure==cppunivariate::LomaxCertificateFailure::Arithmetic?"numerical":"unresolved",{"shape1","shape2","scale"},"");
+    return stop_failure(fail("Beta-prime optimizer BfgsFailure: profile did not converge or its global certificate is unresolved; increase iterlim. An unresolved gamma or inverse-gamma comparison does not select `mlgamma` or `mlinvgamma`."),res.stop_detail,res.certificate_failure==cppunivariate::LomaxCertificateFailure::Budget?"budget":res.stop_detail.comparison_tie?"tie":res.certificate_failure==cppunivariate::LomaxCertificateFailure::Arithmetic?"numerical":"unresolved",{"shape1","shape2","scale"},"");
   if (res.status == cppunivariate::BetaPrimeStatus::InvalidStart ||
       !std::isfinite(res.alpha) || !std::isfinite(res.beta) || !std::isfinite(res.scale))
     return fail("Beta-prime MLE requires positive finite observations with positive log-variance.");

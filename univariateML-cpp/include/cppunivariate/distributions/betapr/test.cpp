@@ -186,3 +186,188 @@ TEST_CASE("beta-prime unit beta shapes preserve finite Lomax coefficients") {
  CHECK(inv.alpha==doctest::Approx(p.kappa));CHECK(inv.beta==1);
  CHECK(inv.scale==doctest::Approx(p.lambda));CHECK(inv.logLik==doctest::Approx(p.logLik+jac).epsilon(1e-8));
 }
+
+TEST_CASE("betapr conditional certificate closes finite tails and transports bounds") {
+  const std::vector<double> x{.03,.1,.4,.7,1,2,4,12};
+  std::vector<double> inverse;double jac=0;
+  for(double v:x){inverse.push_back(1/v);jac+=2*std::log(v);}
+  for(double a:{.7,2.,5.}) {
+    const auto r=cppunivariate::betapr_mle_holds(mltest::as_span(x),a,NAN,NAN,1e-10,1000);
+    REQUIRE(r.status==cppunivariate::BetaPrimeStatus::Ok);
+    REQUIRE(!r.stop_detail.candidates.empty());
+    CHECK(r.stop_detail.loglik_lower<=r.logLik);
+    CHECK(r.stop_detail.loglik_upper>=r.logLik);
+    double score=0;
+    for(double v:x)score+=cppunivariate::special::digamma(a+r.beta)-cppunivariate::special::digamma(r.beta)-std::log1p(v/r.scale);
+    CHECK(std::abs(score)<1e-5);
+    const auto inv=cppunivariate::betapr_mle_holds(mltest::as_span(inverse),NAN,a,NAN,1e-10,1000);
+    REQUIRE(inv.status==cppunivariate::BetaPrimeStatus::Ok);
+    CHECK(inv.alpha==doctest::Approx(r.beta).epsilon(1e-6));
+    CHECK(inv.scale==doctest::Approx(1/r.scale).epsilon(1e-6));
+    CHECK(inv.logLik==doctest::Approx(r.logLik+jac).epsilon(1e-10));
+    CHECK(inv.stop_detail.candidates.front().model==cppunivariate::StopModel::InvGamma);
+    CHECK(inv.stop_detail.loglik_lower==doctest::Approx(r.stop_detail.loglik_lower+jac).epsilon(1e-10));
+    CHECK(inv.stop_detail.loglik_upper==doctest::Approx(r.stop_detail.loglik_upper+jac).epsilon(1e-10));
+    CHECK(inv.stop_detail.segment_loglik_upper==doctest::Approx(r.stop_detail.segment_loglik_upper+jac).epsilon(1e-8));
+  }
+}
+
+TEST_CASE("betapr conditional certificate retains faces and rejects unresolved searches") {
+  const std::vector<double> constant{2,2,2},ordinary{1,2,3,4};
+  const auto r=cppunivariate::betapr_mle_holds(mltest::as_span(constant),2,NAN,NAN);
+  REQUIRE(r.status==cppunivariate::BetaPrimeStatus::GammaBoundary);
+  CHECK(r.stop_detail.limit_model==cppunivariate::StopModel::Gamma);
+  CHECK(r.stop_detail.limit_coef==std::vector<double>{2,1});
+  CHECK(r.stop_detail.loglik_lower<=r.logLik);
+  CHECK(r.stop_detail.loglik_upper>=r.logLik);
+  const auto unresolved=cppunivariate::betapr_mle_holds(mltest::as_span(ordinary),1e100,NAN,NAN);
+  CHECK(unresolved.status==cppunivariate::BetaPrimeStatus::BfgsFailure);
+  CHECK(unresolved.certificate_failure==cppunivariate::LomaxCertificateFailure::Arithmetic);
+  CHECK(std::isinf(unresolved.stop_detail.loglik_upper));
+  CHECK(!unresolved.stop_detail.candidates.empty());
+  const auto short_run=cppunivariate::betapr_mle_holds(mltest::as_span(ordinary),.7,NAN,NAN,1e-10,1);
+  CHECK(short_run.status==cppunivariate::BetaPrimeStatus::BfgsFailure);
+}
+
+TEST_CASE("betapr inverse gamma face uses reciprocal gamma scale") {
+  const std::vector<double> x{3,3};
+  const auto r=cppunivariate::betapr_mle_holds(mltest::as_span(x),NAN,2,NAN);
+  REQUIRE(r.status==cppunivariate::BetaPrimeStatus::InvGammaBoundary);
+  REQUIRE(r.stop_detail.limit_coef.size()==2);
+  CHECK(r.stop_detail.limit_coef[0]==2);
+  CHECK(r.stop_detail.limit_coef[1]==doctest::Approx(6));
+}
+
+TEST_CASE("betapr signed tail selects nonconstant gamma faces") {
+  const std::vector<double> x{1,2,3,4};
+  const auto r=cppunivariate::betapr_mle_holds(mltest::as_span(x),.7,NAN,NAN);
+  REQUIRE(r.status==cppunivariate::BetaPrimeStatus::GammaBoundary);
+  REQUIRE(r.stop_detail.limit_coef.size()==2);
+  CHECK(r.stop_detail.limit_coef[0]==.7);
+  CHECK(r.stop_detail.limit_coef[1]==doctest::Approx(2.5/.7));
+  CHECK(r.stop_detail.loglik_upper>=r.logLik);
+  const std::vector<double> y{1,.5,1./3,.25};
+  const auto inv=cppunivariate::betapr_mle_holds(mltest::as_span(y),NAN,.7,NAN);
+  REQUIRE(inv.status==cppunivariate::BetaPrimeStatus::InvGammaBoundary);
+  CHECK(inv.stop_detail.limit_coef[1]==doctest::Approx(.7/2.5));
+}
+
+TEST_CASE("betapr conditional coefficients match independent scipy profiles") {
+  const std::vector<double> x{.03,.1,.4,.7,1,2,4,12};
+  const double shapes[]{.7,2,5},b[]{1.6969258659791764,.6398504179662102,.48632248971440617},
+    scales[]{3.092136533992608,.12184378490069656,.021291062908283555},
+    ll[]{-13.69991969846438,-14.337177096752114,-14.632869134819313};
+  for(int j=0;j<3;++j) {
+    const auto r=cppunivariate::betapr_mle_holds(mltest::as_span(x),shapes[j],NAN,NAN);
+    REQUIRE(r.status==cppunivariate::BetaPrimeStatus::Ok);
+    CHECK(r.beta==doctest::Approx(b[j]).epsilon(1e-6));
+    CHECK(r.scale==doctest::Approx(scales[j]).epsilon(1e-6));
+    CHECK(r.logLik==doctest::Approx(ll[j]).epsilon(1e-10));
+  }
+}
+
+TEST_CASE("betapr conditional reciprocal arithmetic stops before overflow") {
+  const std::vector<double> x{std::numeric_limits<double>::denorm_min(),1};
+  const auto r=cppunivariate::betapr_mle_holds(mltest::as_span(x),NAN,2,NAN);
+  CHECK(r.status==cppunivariate::BetaPrimeStatus::BfgsFailure);
+  CHECK(r.certificate_failure==cppunivariate::LomaxCertificateFailure::Arithmetic);
+  std::vector<double> y{.03,.1,.4,.7,1,2,4,12};
+  const auto base=cppunivariate::betapr_mle_holds(mltest::as_span(y),2,NAN,NAN);
+  for(double& v:y)v*=1e-200;
+  const auto moved=cppunivariate::betapr_mle_holds(mltest::as_span(y),2,NAN,NAN);
+  REQUIRE(moved.status==cppunivariate::BetaPrimeStatus::Ok);
+  CHECK(moved.beta==doctest::Approx(base.beta).epsilon(1e-6));
+  CHECK(moved.scale/1e-200==doctest::Approx(base.scale).epsilon(1e-6));
+}
+
+TEST_CASE("betapr conditional certificate compares separated local maxima") {
+  const std::vector<double> x{1.9901008294052028e-5,2.209857117039297e-5,
+    .0002450722434289249,12.288342947780086,942.976056905759,16.239512580216314,
+    2.898690421966857,1.2684036923492177,400970.63293690106};
+  const auto r=cppunivariate::betapr_mle_holds(mltest::as_span(x),.22690393135372058,NAN,NAN);
+  REQUIRE(r.status==cppunivariate::BetaPrimeStatus::Ok);
+  CHECK(r.beta==doctest::Approx(.22150182242584585).epsilon(1e-6));
+  CHECK(r.scale==doctest::Approx(2.5493370924264878).epsilon(1e-6));
+  CHECK(r.logLik==doctest::Approx(-28.556114324015226).epsilon(1e-10));
+}
+
+TEST_CASE("betapr conditional nonunique crossing stops with both witnesses") {
+  std::vector<double> x{1.9901008294052028e-5,2.209857117039297e-5,
+    .0002450722434289249,12.288342947780086,942.976056905759,16.239512580216314,
+    2.898690421966857,1.2684036923492177,400970.63293690106};
+  x.back()*=std::exp(5.646438395028704);
+  const auto r=cppunivariate::betapr_mle_holds(mltest::as_span(x),.22690393135372058,NAN,NAN);
+  REQUIRE(r.status==cppunivariate::BetaPrimeStatus::BfgsFailure);
+  REQUIRE(r.stop_detail.comparison_tie);
+  CHECK(std::isfinite(r.stop_detail.loglik_upper));
+  CHECK(r.stop_detail.loglik_lower<=r.stop_detail.loglik_upper);
+  bool left=false,right=false;
+  for(const auto& c:r.stop_detail.candidates)if(c.coef.size()==3) {
+    left=left||c.coef[1]<.12;right=right||c.coef[1]>.12;
+  }
+  CHECK(left);CHECK(right);
+}
+
+TEST_CASE("betapr stable digamma increments retain large-shape relative accuracy") {
+  for(double b:{32.,1000.,100000.})for(double a:{1.,2.}) {
+    const auto g=cppunivariate::betapr_cert_detail::increment(a,b);
+    const double exact=1/b+(a==2?1/(b+1):0);
+    CHECK(std::abs(g.value/exact-1)<1e-14);
+    CHECK(std::abs(g.value-exact)<=g.error+4*std::numeric_limits<double>::epsilon()*exact);
+  }
+}
+
+TEST_CASE("betapr non-unit faces stop when subnormal means lose coefficient accuracy") {
+  const double v=3*std::numeric_limits<double>::denorm_min();
+  const std::vector<double> x{v,v};
+  const auto r=cppunivariate::betapr_mle_holds(mltest::as_span(x),2,NAN,NAN);
+  CHECK(r.status==cppunivariate::BetaPrimeStatus::BfgsFailure);
+  CHECK(r.certificate_failure==cppunivariate::LomaxCertificateFailure::Arithmetic);
+}
+
+TEST_CASE("betapr flat gamma-adjacent conditional maximum retains golden coefficient accuracy") {
+  // Seed-8104 R hold sweep; high-precision stationarity oracle: flat.py.
+  const std::vector<double> x{
+    0.2802410396791599,1.3436077191767044,0.3472030471432838,0.2441657957218209,0.37701961388941624,
+    0.6833708903622272,0.6278389000252419,0.38052450377474095,0.36732564867894735,0.29465588306090007,
+    1.6337413655534816,0.5004872207354496,0.25644728823570834,0.30489045402771314,0.43156701444273454,
+    0.3417576191295499,0.6299669667981216,0.4052784001144798,0.4067675092434208,0.4723512023354753,
+    0.23656005267689753,0.2642974860041385,0.9126126455038472,0.32651442909992406,0.46787154802779246,
+    0.1628156505909309,0.3788340921782178,0.835567043527286,0.3323693396507257,0.3235089636008228,
+    0.5129659623359408,0.6237662717585744,0.2941132697632576,0.529388645275596,0.9425930099919333,
+    1.2345113855705605,0.29093411659111756,0.800363767645574,0.5766059381215861,0.6692187265125815,
+    0.20447619833715736,0.49035079695672834,0.16071566219449587,0.6181761242554693,0.2267230146767822,
+    0.12765259697091694,0.41677556632417445,0.4059483378259152,0.8440600080403166,0.20514995369266417,
+    0.4942728850503481,0.26190221637225936,0.26275727790533004,0.9032343024104332,0.7268230941680275,
+    0.286034486110887,1.4472051241771995,1.0248139974432968,0.275316269565675,0.23313051172217203,
+    1.4110065473371882,0.4366764752390559,0.7648443462094332,0.17455770282334382,0.2530796200266882,
+    0.2894980917784592,1.3011788730484601,0.5665417375334098,0.2566793308738982,0.32048779836743785,
+    0.23663945218855686,0.5998659518183862,0.2678331031882215,0.5032930931900615,0.6874786603810399,
+    0.3214440324208265,0.14211011008082958,0.819017807409365,0.4105961256971879,0.5740438256003082,
+    0.21131695936725742,0.3306741868864489,0.3793284722734561,0.7089210134356432,2.128146114762274,
+    0.2130429847932904,1.6613597787317225,0.22276444863059733,0.2896374900002532,6.6784395851634635,
+    0.3039549833938396,0.28494128883588377,0.40624286664406933,0.22108556498133647,0.507836372617378,
+    0.18205988265034304,0.2673444641589703,0.9012350282744386,0.3236899952843548,0.7274713901255461};
+  const auto r=cppunivariate::betapr_mle_holds(mltest::as_span(x),.7,NAN,NAN);
+  REQUIRE(r.status==cppunivariate::BetaPrimeStatus::Ok);
+  CHECK(r.beta==doctest::Approx(95.516952).epsilon(1e-6));
+  CHECK(r.scale==doctest::Approx(78.232314).epsilon(1e-6));
+  CHECK(r.logLik==doctest::Approx(-58.0668187021122).epsilon(1e-10));
+  CHECK(r.iterations<=cppunivariate::certificate_budget(1000));
+  const auto budget=cppunivariate::betapr_mle_holds(mltest::as_span(x),.66110553857791232,NAN,NAN,1e-6,64);
+  REQUIRE(budget.status==cppunivariate::BetaPrimeStatus::BfgsFailure);
+  CHECK(budget.certificate_failure==cppunivariate::LomaxCertificateFailure::Budget);
+  CHECK(budget.stop_detail.budget_exhausted);
+  CHECK(budget.iterations==cppunivariate::certificate_budget(64));
+  CHECK(!budget.stop_detail.candidates.empty());
+}
+
+TEST_CASE("betapr reciprocal face enclosures retain large-Jacobian accuracy") {
+  const std::vector<double> x(100000,1e200);
+  const auto r=cppunivariate::betapr_mle_holds(mltest::as_span(x),NAN,2,NAN);
+  REQUIRE(r.status==cppunivariate::BetaPrimeStatus::InvGammaBoundary);
+  const double exact=x.size()*(2*std::log(2.)-2-std::log(1e200));
+  CHECK(r.stop_detail.loglik_lower<=exact);
+  CHECK(r.stop_detail.loglik_upper>=exact);
+  CHECK(r.stop_detail.loglik_upper-r.stop_detail.loglik_lower<1e-4);
+}

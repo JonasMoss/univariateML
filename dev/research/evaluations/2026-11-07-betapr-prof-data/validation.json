@@ -1,0 +1,31 @@
+{
+  "base": "7c52f905f21bee7d997d59211d4093e2593ec727",
+  "source_manifest": "source-sha256.txt",
+  "simbox": {
+    "cpp_dev": 106,
+    "cpp_full": 129,
+    "cpp_no_long_double": 129,
+    "r_dev": {
+      "fail": 0,
+      "warn": 0,
+      "skip": 154,
+      "pass": 21260
+    },
+    "r_full": {
+      "fail": 0,
+      "warn": 0,
+      "skip": 0,
+      "pass": 44078
+    }
+  },
+  "workstation": {
+    "cpp_no_long_double": 129,
+    "js_tests": 472,
+    "js_failures": 0,
+    "js_skips": 0,
+    "site_family_pages": 99,
+    "site_cpp_snippets": 99
+  },
+  "permitted_failures": 0,
+  "fixtures_regenerated": false
+}
