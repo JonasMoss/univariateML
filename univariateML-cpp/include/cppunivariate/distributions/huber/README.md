@@ -1,10 +1,9 @@
 ---
 id: huber
 inference_numeric:
-  - regime: "regular finite Huber interior"
-    available: false
-    condition: "finite mu, sigma > 0 and finite epsilon > 0; any nonempty free subset; observed information uses the a.e. piecewise Hessian with defined join handling; normal and Laplace limits are excluded"
-    reason: "DQM and full-rank information are established, but support/join-aware numerical derivatives and fitted covariance validation for this expanded scope are not yet implemented"
+  - regime: "regular finite interior"
+    available: true
+    condition: "finite mu, sigma > 0 and finite epsilon > 0; any free subset; normal and Laplace limits excluded; analytic piecewise natural-coordinate derivatives; successful interior fit and nonsingular information required"
     classification: "dev/research/evaluations/2026-11-04-infer-moving-report.md#huber"
 name: Huber
 support: {type: real, lower: -inf, upper: inf, closed: [false, false]}

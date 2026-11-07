@@ -548,3 +548,78 @@ The [application report](../../../../dev/research/evaluations/2026-11-06-infer-m
 records the metadata changes, derivative checks and remaining procedure gaps.
 The dated classification reports supply mathematical arguments; numerical
 regression checks do not prove estimator asymptotics or coverage.
+
+## Analytic derivatives at moving C1 joins
+
+`core/inference_join.hpp` evaluates snorm, sstd and Huber by second-order
+chain rules on the log-density piece selected at the supplied observation.
+It computes scores and negative log-density Hessians directly in README
+coordinates, without profile reduction, transformed-coordinate curvature,
+objective normalization or perturbed parameters. All free subsets are principal
+projections before accumulating the total score, H and observation OPG J.
+At an exactly represented two-piece-normal/t join it selects the right-hand
+continuation; at either Huber join it selects the central continuation. Scores
+agree between the two pieces. Hessians can differ there, so these are explicit
+null-set conventions, not a twice-differentiability assertion. Continuous model
+sampling hits a join with probability zero at the true point; rounded or atomic
+data at fitted joins need the usual sensitivity and estimator assumptions.
+
+For snorm/sstd, write `m = E|T|`, `b=m*(xi-1/xi)`,
+`c^2=(1-m^2)*(xi^2+xi^-2)+2*m^2-1`, and
+`z=c*(x-mean)/sd+b`. Differentiate
+`log(c/sd)+log(2/(xi+1/xi))+log f_T(z*xi)` on the left and use
+`z/xi` on the right. The standardized t has
+`m=Gamma((nu-1)/2)/Gamma(nu/2)*sqrt((nu-2)/pi)`, for nu > 2.
+Gamma compositions use digamma and trigamma through the special-function seam.
+Huber's normalizer is
+`Z(e)=sqrt(2*pi)*erf(e/sqrt(2))+2*exp(-e^2/2)/e`, with
+`Z'=-2*exp(-e^2/2)/e^2` and
+`Z''=2*exp(-e^2/2)*(1/e+2/e^3)`; its selected quadratic/linear loss
+and log normalizer are differentiated together, including free epsilon.
+The prior nested-stencil implementation is retained for other special scopes;
+its smooth symmetric snorm/sstd path is superseded by these analytic pieces.
+
+PIG uses the differentiated exact positive mass recurrence. With
+`t=1+2*mean^2/shape`, `A=(t-1)/t`, `B=mean^2/t`,
+`p0=exp(-2*mean/(1+sqrt(t)))`, `r1=mean/sqrt(t)`, and
+`rk=A*(1-3/(2*k))+B/(k*(k-1)*r[k-1])`, propagate value, score and Hessian
+through stable log-addition. Runtime is proportional to the sum of observed
+counts and storage is constant per observation. Counts outside the representable
+integer-loop range fail numerically; no capped recurrence or asymptotic-series
+derivative is returned. Extreme finite arithmetic can also fail explicitly.
+This may cost more than density evaluation in the large-count asymptotic region.
+
+The DQM, finite full-rank information and a.e. Hessian justification comes from
+the [moving-feature](../../../../dev/research/evaluations/2026-11-04-infer-moving-report.md)
+and [discrete-family](../../../../dev/research/evaluations/2026-11-04-dqm-c-report.md)
+analyses. The reproducible derivative and fitted-covariance checks are in
+[the join validation data](../../../../dev/research/evaluations/2026-11-07-infer-joins-data/).
+Finite-grid high-precision agreement and model simulations do not prove uniform
+numerical accuracy or misspecification-robust coverage.
+
+The GPD (known threshold) and GEV adapters also use natural-coordinate analytic
+chain rules for shape > -1/2, excluding a free GEV shape at its fitted upper
+bound one. They evaluate `h=z*L(xi*z)`, where `L(t)=log1p(t)/t`, and use
+`ell=-log(sigma)-log1p(xi*z)-h` for GPD and `ell-exp(-h)` for GEV.
+At zero shape the removable jet includes `L(0)=1`, `L'(0)=-1/2`, and
+`L''(0)=2/3`, so free shape at zero retains its score and curvature.
+For |t| < .01 a degree-14 alternating polynomial avoids cancellation in the
+second derivative; its value remainder is bounded by
+`|t|^15/(16*(1-|t|))`, and its first and second derivative remainders at the
+switch are below 2e-28 and 3e-25. Outside this region the log1p quotient is
+used directly. This bound concerns exact arithmetic truncation, not an
+outward-rounded floating-point enclosure. Interior-support tests precede
+differentiation, so no derivative stencil leaves the support. The critical
+shape -1/2 and Poisson endpoint regimes remain excluded for both covariance
+types; positive definiteness at a sample point does not override this rule.
+
+Tukey lambda remains unavailable. Its density currently inverts the quantile in
+log-tail coordinates before evaluating `-log(sigma)-log(Q_lambda'(u))`.
+A suitable inference path must differentiate the implicit equation
+`mu+sigma*Q_lambda(u)=x`, keeping its first and second implicit derivatives,
+and differentiate the quantile derivative along that path. Reusing the generic
+nested density stencil would perturb both support and inversion error. The
+remaining work is a residual-checked inverse with derivative error control near
+finite endpoints and at lambda=0, independent high-precision checks of the
+implicit derivatives, and fitted-nuisance calibration for lambda < 1/2 excluding
+active fitted bounds. No mathematical rank or DQM issue is being reopened.

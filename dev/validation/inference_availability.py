@@ -74,6 +74,22 @@ def covariance_rows(eligibility):
         runs = [dict(path=r['path'], sample_size=r['sample_size'],
                      **{k: r['result'].get(k) for k in ('truth', 'held', 'free', 'status', 'replications', 'successes')},
                      failure_count=len(r['result'].get('failures', []))) for r in runs]
+        joins = family in {'snorm','sstd','huber','pig','gpd','gev'}
+        join_report = 'univariateML-cpp/include/cppunivariate/core/inference.md#analytic-derivatives-at-moving-c1-joins'
+        join_data = 'dev/research/evaluations/2026-11-07-infer-joins-data/'
+        if joins:
+            evidence += [dict(label='Analytic derivative and fitted coverage validation', path=join_report),
+                         dict(label='80-digit piecewise derivative checks', path=join_data+'derivatives.json'),
+                         dict(label='Fitted-nuisance coverage with failure accounting', path=join_data+'calibration.json')]
+            calibration = json.loads((ROOT / (join_data+'calibration.json')).read_text())
+            runs += [dict(path=join_data+'calibration.json', record_key=label, sample_size=r['n'], truth=r['truth'],
+                          held=r['held'], free=r['free'], status=r['status'],
+                          replications=r['replications'], successes=r['successes'], failure_count=len(r['failures']))
+                     for label,r in calibration['results'].items() if r['family']==family]
+            caveats.append('TASK-102.15 model calibration is pointwise: n=200, 800, 3200; '
+                           'small-sample Wald undercoverage and fit failures are retained. '
+                           'Huber with epsilon fitted is especially poorly calibrated at n=200. '
+                           'Sandwich availability does not establish misspecification robustness.')
         for scope in scopes:
             available = scope['available']
             reason = scope.get('reason', '')
@@ -90,12 +106,12 @@ def covariance_rows(eligibility):
                 dqm='Conditional classification in the linked source',
                 information='Derivative eligibility only; no automatic finite-information claim',
                 rank='Available scopes exclude structural null directions; runtime singular, indefinite and ill-conditioned solves still fail',
-                evidence=scope['classification'], calibration=VCOV_REPORT+'#monte-carlo-sanity-check',
+                evidence=scope['classification'], calibration=join_data+'calibration.json' if joins else VCOV_REPORT+'#monte-carlo-sanity-check',
                 evidence_links=[dict(label='Canonical dossier', path=PREFIX+family+'/README.md'), *evidence],
                 implementation=([dict(path='univariateML-cpp/include/cppunivariate/core/inference_families.hpp', function='family_inference'),
                     dict(path='univariateML-cpp/include/cppunivariate/core/inference.hpp', function='inference_covariance'),
                     dict(path='bindings/r/R/code_vcov.R', function='vcov.univariateML')] if available else []),
-                checks=['dev/validation/inference-numeric-registry.py', 'bindings/r/tests/testthat/test-vcov.R'] if available else [],
+                checks=([join_data+'check-derivatives.py', join_data+'calibrate.py', 'bindings/r/tests/testthat/test-vcov.R', 'bindings/js/vcov-test.mjs'] if joins else ['dev/validation/inference-numeric-registry.py', 'bindings/r/tests/testthat/test-vcov.R']) if available else [],
                 gap=(reason+' ' if reason else '')+'Pointwise SE/SD comparisons are not coverage validation. '
                     'Evidence uses recorded truth points and held subsets, not every regime; failed replications can select results. '
                     'Near-singular sn/bhatt members, bnbinom weak identification at n = 500 and invtrgamma finite-sample bias require caution.',

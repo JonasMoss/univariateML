@@ -1,0 +1,93 @@
+{
+  "cpp_dev": {
+    "machine": "simbox",
+    "status": "pass",
+    "shards": 106,
+    "log": "infer-joins-cpp-dev-final.log"
+  },
+  "cpp_no_long_double_full": {
+    "machine": "simbox",
+    "status": "pass",
+    "shards": 129,
+    "log": "infer-joins-cpp-double.log"
+  },
+  "r_dev": {
+    "machine": "simbox",
+    "status": "pass",
+    "fail": 0,
+    "warn": 0,
+    "skip": 154,
+    "passed": 21049,
+    "log": "infer-joins-r-dev-green.log"
+  },
+  "r_full": {
+    "machine": "simbox",
+    "status": "pass",
+    "fail": 0,
+    "warn": 0,
+    "skip": 0,
+    "passed": 43869,
+    "log": "infer-joins-r-full.log"
+  },
+  "r_vcov": {
+    "machine": "simbox",
+    "status": "pass",
+    "fail": 0,
+    "warn": 0,
+    "skip": 0,
+    "passed": 129,
+    "log": "infer-joins-r-targeted.log"
+  },
+  "js": {
+    "machine": "workstation",
+    "status": "pass",
+    "tests": 442,
+    "passed": 442,
+    "log": "infer-joins-js-green.log"
+  },
+  "site": {
+    "machine": "workstation",
+    "status": "pass",
+    "log": "infer-joins-site.log"
+  },
+  "catalog_and_metadata": {
+    "machine": "workstation",
+    "status": "pass",
+    "log": "infer-joins-checks.log"
+  },
+  "derivatives.json": {
+    "machine": "workstation",
+    "status": "pass"
+  },
+  "special-results.json": {
+    "machine": "simbox",
+    "status": "pass"
+  },
+  "calibration-check.json": {
+    "machine": "workstation",
+    "status": "pass"
+  },
+  "calibration": {
+    "machine": "simbox",
+    "status": "pass",
+    "replications": 10800,
+    "successes": 10786,
+    "truth_configurations": 12,
+    "sample_sizes": [
+      200,
+      800,
+      3200
+    ]
+  },
+  "js_build": {
+    "machine": "workstation",
+    "status": "pass",
+    "log": "infer-joins-js-build-final.log"
+  },
+  "js_vcov": {
+    "machine": "workstation",
+    "status": "pass",
+    "tests": 17,
+    "log": "infer-joins-js-targeted.log"
+  }
+}

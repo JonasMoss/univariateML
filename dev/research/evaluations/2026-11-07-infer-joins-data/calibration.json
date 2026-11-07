@@ -1,0 +1,3336 @@
+{
+  "seed": 20261107,
+  "source_identity": "109900c8497002aa54d50dcc22ded6ee6266cf021f922baa6fb59950ee6b344b",
+  "replications": 300,
+  "results": {
+    "snorm-0-n200": {
+      "family": "snorm",
+      "n": 200,
+      "truth": [
+        0,
+        1,
+        1.5
+      ],
+      "held": {},
+      "free": [
+        "mean",
+        "sd",
+        "xi"
+      ],
+      "status": "pointwise model calibration",
+      "replications": 300,
+      "successes": 300,
+      "failures": [],
+      "coordinates": [
+        {
+          "truth": 0,
+          "mean": 0.0007806165609074348,
+          "empirical_sd": 0.0692064488248912,
+          "observed": {
+            "covered": 293,
+            "coverage_all": 0.9766666666666667,
+            "coverage_success": 0.9766666666666667,
+            "wilson95": [
+              0.9526280277317246,
+              0.9886523397008747
+            ],
+            "mean_se": 0.06967821911154783
+          },
+          "sandwich": {
+            "covered": 293,
+            "coverage_all": 0.9766666666666667,
+            "coverage_success": 0.9766666666666667,
+            "wilson95": [
+              0.9526280277317246,
+              0.9886523397008747
+            ],
+            "mean_se": 0.07024402701767145
+          }
+        },
+        {
+          "truth": 1,
+          "mean": 0.9952925294767163,
+          "empirical_sd": 0.052651774376876015,
+          "observed": {
+            "covered": 282,
+            "coverage_all": 0.94,
+            "coverage_success": 0.94,
+            "wilson95": [
+              0.9071605548470915,
+              0.9617136304753079
+            ],
+            "mean_se": 0.05252801123516273
+          },
+          "sandwich": {
+            "covered": 282,
+            "coverage_all": 0.94,
+            "coverage_success": 0.94,
+            "wilson95": [
+              0.9071605548470915,
+              0.9617136304753079
+            ],
+            "mean_se": 0.05204024552032958
+          }
+        },
+        {
+          "truth": 1.5,
+          "mean": 1.5289477153201252,
+          "empirical_sd": 0.22415792722207958,
+          "observed": {
+            "covered": 271,
+            "coverage_all": 0.9033333333333333,
+            "coverage_success": 0.9033333333333333,
+            "wilson95": [
+              0.8646182980304887,
+              0.9318497051817106
+            ],
+            "mean_se": 0.188640622315227
+          },
+          "sandwich": {
+            "covered": 270,
+            "coverage_all": 0.9,
+            "coverage_success": 0.9,
+            "wilson95": [
+              0.8608335376153785,
+              0.9290520854049847
+            ],
+            "mean_se": 0.19110990831535934
+          }
+        }
+      ]
+    },
+    "snorm-0-n800": {
+      "family": "snorm",
+      "n": 800,
+      "truth": [
+        0,
+        1,
+        1.5
+      ],
+      "held": {},
+      "free": [
+        "mean",
+        "sd",
+        "xi"
+      ],
+      "status": "pointwise model calibration",
+      "replications": 300,
+      "successes": 300,
+      "failures": [],
+      "coordinates": [
+        {
+          "truth": 0,
+          "mean": 0.001590160260410608,
+          "empirical_sd": 0.034527934825412394,
+          "observed": {
+            "covered": 288,
+            "coverage_all": 0.96,
+            "coverage_success": 0.96,
+            "wilson95": [
+              0.9313957879613599,
+              0.9769726785120576
+            ],
+            "mean_se": 0.034842584092022795
+          },
+          "sandwich": {
+            "covered": 288,
+            "coverage_all": 0.96,
+            "coverage_success": 0.96,
+            "wilson95": [
+              0.9313957879613599,
+              0.9769726785120576
+            ],
+            "mean_se": 0.03486445869790501
+          }
+        },
+        {
+          "truth": 1,
+          "mean": 0.997882820519215,
+          "empirical_sd": 0.027641471200474027,
+          "observed": {
+            "covered": 280,
+            "coverage_all": 0.9333333333333333,
+            "coverage_success": 0.9333333333333333,
+            "wilson95": [
+              0.899276940483885,
+              0.9564324844548417
+            ],
+            "mean_se": 0.02616123167776103
+          },
+          "sandwich": {
+            "covered": 280,
+            "coverage_all": 0.9333333333333333,
+            "coverage_success": 0.9333333333333333,
+            "wilson95": [
+              0.899276940483885,
+              0.9564324844548417
+            ],
+            "mean_se": 0.02607739527885903
+          }
+        },
+        {
+          "truth": 1.5,
+          "mean": 1.4977562543685154,
+          "empirical_sd": 0.08691057020813533,
+          "observed": {
+            "covered": 281,
+            "coverage_all": 0.9366666666666666,
+            "coverage_success": 0.9366666666666666,
+            "wilson95": [
+              0.9032086875144784,
+              0.9590831176160847
+            ],
+            "mean_se": 0.08573105993399487
+          },
+          "sandwich": {
+            "covered": 283,
+            "coverage_all": 0.9433333333333334,
+            "coverage_success": 0.9433333333333334,
+            "wilson95": [
+              0.9111340419775253,
+              0.9643225235367106
+            ],
+            "mean_se": 0.08489128095235639
+          }
+        }
+      ]
+    },
+    "snorm-0-n3200": {
+      "family": "snorm",
+      "n": 3200,
+      "truth": [
+        0,
+        1,
+        1.5
+      ],
+      "held": {},
+      "free": [
+        "mean",
+        "sd",
+        "xi"
+      ],
+      "status": "pointwise model calibration",
+      "replications": 300,
+      "successes": 300,
+      "failures": [],
+      "coordinates": [
+        {
+          "truth": 0,
+          "mean": 0.0022048186642829857,
+          "empirical_sd": 0.01756327153356922,
+          "observed": {
+            "covered": 284,
+            "coverage_all": 0.9466666666666667,
+            "coverage_success": 0.9466666666666667,
+            "wilson95": [
+              0.9151308582251686,
+              0.9669080874809034
+            ],
+            "mean_se": 0.017471392142812077
+          },
+          "sandwich": {
+            "covered": 284,
+            "coverage_all": 0.9466666666666667,
+            "coverage_success": 0.9466666666666667,
+            "wilson95": [
+              0.9151308582251686,
+              0.9669080874809034
+            ],
+            "mean_se": 0.01748016049555505
+          }
+        },
+        {
+          "truth": 1,
+          "mean": 1.0010099316808911,
+          "empirical_sd": 0.013532583322603972,
+          "observed": {
+            "covered": 279,
+            "coverage_all": 0.93,
+            "coverage_success": 0.93,
+            "wilson95": [
+              0.8953639895740667,
+              0.9537630551728237
+            ],
+            "mean_se": 0.01313346221517491
+          },
+          "sandwich": {
+            "covered": 279,
+            "coverage_all": 0.93,
+            "coverage_success": 0.93,
+            "wilson95": [
+              0.8953639895740667,
+              0.9537630551728237
+            ],
+            "mean_se": 0.013137435120426944
+          }
+        },
+        {
+          "truth": 1.5,
+          "mean": 1.5071824068365844,
+          "empirical_sd": 0.04379983363500119,
+          "observed": {
+            "covered": 287,
+            "coverage_all": 0.9566666666666667,
+            "coverage_success": 0.9566666666666667,
+            "wilson95": [
+              0.9272825343659885,
+              0.9745035519155927
+            ],
+            "mean_se": 0.04298492326809153
+          },
+          "sandwich": {
+            "covered": 289,
+            "coverage_all": 0.9633333333333334,
+            "coverage_success": 0.9633333333333334,
+            "wilson95": [
+              0.9355461518281071,
+              0.979404694837147
+            ],
+            "mean_se": 0.04312829198812924
+          }
+        }
+      ]
+    },
+    "snorm-1-n200": {
+      "family": "snorm",
+      "n": 200,
+      "truth": [
+        0,
+        1,
+        1
+      ],
+      "held": {},
+      "free": [
+        "mean",
+        "sd",
+        "xi"
+      ],
+      "status": "pointwise model calibration",
+      "replications": 300,
+      "successes": 300,
+      "failures": [],
+      "coordinates": [
+        {
+          "truth": 0,
+          "mean": 0.0010621446351607785,
+          "empirical_sd": 0.0732987637613793,
+          "observed": {
+            "covered": 284,
+            "coverage_all": 0.9466666666666667,
+            "coverage_success": 0.9466666666666667,
+            "wilson95": [
+              0.9151308582251686,
+              0.9669080874809034
+            ],
+            "mean_se": 0.07019577003893643
+          },
+          "sandwich": {
+            "covered": 284,
+            "coverage_all": 0.9466666666666667,
+            "coverage_success": 0.9466666666666667,
+            "wilson95": [
+              0.9151308582251686,
+              0.9669080874809034
+            ],
+            "mean_se": 0.07077280208526733
+          }
+        },
+        {
+          "truth": 1,
+          "mean": 0.9921520481819784,
+          "empirical_sd": 0.05105621186197447,
+          "observed": {
+            "covered": 284,
+            "coverage_all": 0.9466666666666667,
+            "coverage_success": 0.9466666666666667,
+            "wilson95": [
+              0.9151308582251686,
+              0.9669080874809034
+            ],
+            "mean_se": 0.049898835789897636
+          },
+          "sandwich": {
+            "covered": 280,
+            "coverage_all": 0.9333333333333333,
+            "coverage_success": 0.9333333333333333,
+            "wilson95": [
+              0.899276940483885,
+              0.9564324844548417
+            ],
+            "mean_se": 0.049036213200304386
+          }
+        },
+        {
+          "truth": 1,
+          "mean": 0.9929973176302419,
+          "empirical_sd": 0.10998138410126007,
+          "observed": {
+            "covered": 281,
+            "coverage_all": 0.9366666666666666,
+            "coverage_success": 0.9366666666666666,
+            "wilson95": [
+              0.9032086875144784,
+              0.9590831176160847
+            ],
+            "mean_se": 0.10862341933627696
+          },
+          "sandwich": {
+            "covered": 281,
+            "coverage_all": 0.9366666666666666,
+            "coverage_success": 0.9366666666666666,
+            "wilson95": [
+              0.9032086875144784,
+              0.9590831176160847
+            ],
+            "mean_se": 0.10863311381201374
+          }
+        }
+      ]
+    },
+    "snorm-1-n800": {
+      "family": "snorm",
+      "n": 800,
+      "truth": [
+        0,
+        1,
+        1
+      ],
+      "held": {},
+      "free": [
+        "mean",
+        "sd",
+        "xi"
+      ],
+      "status": "pointwise model calibration",
+      "replications": 300,
+      "successes": 300,
+      "failures": [],
+      "coordinates": [
+        {
+          "truth": 0,
+          "mean": 0.0012053853049546835,
+          "empirical_sd": 0.03195291792264543,
+          "observed": {
+            "covered": 290,
+            "coverage_all": 0.9666666666666667,
+            "coverage_success": 0.9666666666666667,
+            "wilson95": [
+              0.9397381741959452,
+              0.9817950526611452
+            ],
+            "mean_se": 0.03539277916034366
+          },
+          "sandwich": {
+            "covered": 290,
+            "coverage_all": 0.9666666666666667,
+            "coverage_success": 0.9666666666666667,
+            "wilson95": [
+              0.9397381741959452,
+              0.9817950526611452
+            ],
+            "mean_se": 0.03544718905501218
+          }
+        },
+        {
+          "truth": 1,
+          "mean": 1.0010171636941394,
+          "empirical_sd": 0.024911165296693013,
+          "observed": {
+            "covered": 286,
+            "coverage_all": 0.9533333333333334,
+            "coverage_success": 0.9533333333333334,
+            "wilson95": [
+              0.923202639772079,
+              0.9720010663176659
+            ],
+            "mean_se": 0.025054408666033114
+          },
+          "sandwich": {
+            "covered": 287,
+            "coverage_all": 0.9566666666666667,
+            "coverage_success": 0.9566666666666667,
+            "wilson95": [
+              0.9272825343659885,
+              0.9745035519155927
+            ],
+            "mean_se": 0.02505444911911668
+          }
+        },
+        {
+          "truth": 1,
+          "mean": 1.0011895010633602,
+          "empirical_sd": 0.05064321079951103,
+          "observed": {
+            "covered": 289,
+            "coverage_all": 0.9633333333333334,
+            "coverage_success": 0.9633333333333334,
+            "wilson95": [
+              0.9355461518281071,
+              0.979404694837147
+            ],
+            "mean_se": 0.05271860959145826
+          },
+          "sandwich": {
+            "covered": 286,
+            "coverage_all": 0.9533333333333334,
+            "coverage_success": 0.9533333333333334,
+            "wilson95": [
+              0.923202639772079,
+              0.9720010663176659
+            ],
+            "mean_se": 0.052594063175990545
+          }
+        }
+      ]
+    },
+    "snorm-1-n3200": {
+      "family": "snorm",
+      "n": 3200,
+      "truth": [
+        0,
+        1,
+        1
+      ],
+      "held": {},
+      "free": [
+        "mean",
+        "sd",
+        "xi"
+      ],
+      "status": "pointwise model calibration",
+      "replications": 300,
+      "successes": 300,
+      "failures": [],
+      "coordinates": [
+        {
+          "truth": 0,
+          "mean": -0.002133537590724818,
+          "empirical_sd": 0.017881277041398816,
+          "observed": {
+            "covered": 282,
+            "coverage_all": 0.94,
+            "coverage_success": 0.94,
+            "wilson95": [
+              0.9071605548470915,
+              0.9617136304753079
+            ],
+            "mean_se": 0.017670943796608794
+          },
+          "sandwich": {
+            "covered": 282,
+            "coverage_all": 0.94,
+            "coverage_success": 0.94,
+            "wilson95": [
+              0.9071605548470915,
+              0.9617136304753079
+            ],
+            "mean_se": 0.017679173923778546
+          }
+        },
+        {
+          "truth": 1,
+          "mean": 0.9995871310828339,
+          "empirical_sd": 0.011719124427845347,
+          "observed": {
+            "covered": 290,
+            "coverage_all": 0.9666666666666667,
+            "coverage_success": 0.9666666666666667,
+            "wilson95": [
+              0.9397381741959452,
+              0.9817950526611452
+            ],
+            "mean_se": 0.012498557575738452
+          },
+          "sandwich": {
+            "covered": 289,
+            "coverage_all": 0.9633333333333334,
+            "coverage_success": 0.9633333333333334,
+            "wilson95": [
+              0.9355461518281071,
+              0.979404694837147
+            ],
+            "mean_se": 0.012510223791641826
+          }
+        },
+        {
+          "truth": 1,
+          "mean": 0.9987128963440135,
+          "empirical_sd": 0.02564414885883221,
+          "observed": {
+            "covered": 286,
+            "coverage_all": 0.9533333333333334,
+            "coverage_success": 0.9533333333333334,
+            "wilson95": [
+              0.923202639772079,
+              0.9720010663176659
+            ],
+            "mean_se": 0.026170328016827515
+          },
+          "sandwich": {
+            "covered": 284,
+            "coverage_all": 0.9466666666666667,
+            "coverage_success": 0.9466666666666667,
+            "wilson95": [
+              0.9151308582251686,
+              0.9669080874809034
+            ],
+            "mean_se": 0.026094294776730784
+          }
+        }
+      ]
+    },
+    "sstd-2-n200": {
+      "family": "sstd",
+      "n": 200,
+      "truth": [
+        0,
+        1,
+        5,
+        1.5
+      ],
+      "held": {},
+      "free": [
+        "mean",
+        "sd",
+        "nu",
+        "xi"
+      ],
+      "status": "pointwise model calibration",
+      "replications": 300,
+      "successes": 297,
+      "failures": [
+        "12 fit_failure 6",
+        "137 fit_failure 6",
+        "286 inference_failure 0 7 7"
+      ],
+      "coordinates": [
+        {
+          "truth": 0,
+          "mean": 0.005325711667390759,
+          "empirical_sd": 0.07045880197039259,
+          "observed": {
+            "covered": 284,
+            "coverage_all": 0.9466666666666667,
+            "coverage_success": 0.9562289562289562,
+            "wilson95": [
+              0.9151308582251686,
+              0.9669080874809034
+            ],
+            "mean_se": 0.07019181878438978
+          },
+          "sandwich": {
+            "covered": 282,
+            "coverage_all": 0.94,
+            "coverage_success": 0.9494949494949495,
+            "wilson95": [
+              0.9071605548470915,
+              0.9617136304753079
+            ],
+            "mean_se": 0.07024782407103013
+          }
+        },
+        {
+          "truth": 1,
+          "mean": 1.0143671036717223,
+          "empirical_sd": 0.11530865103535126,
+          "observed": {
+            "covered": 278,
+            "coverage_all": 0.9266666666666666,
+            "coverage_success": 0.936026936026936,
+            "wilson95": [
+              0.8914686583942826,
+              0.9510760061607713
+            ],
+            "mean_se": 0.11436478536511739
+          },
+          "sandwich": {
+            "covered": 276,
+            "coverage_all": 0.92,
+            "coverage_success": 0.9292929292929293,
+            "wilson95": [
+              0.8837267595665261,
+              0.9456531446048553
+            ],
+            "mean_se": 0.10769940626867593
+          }
+        },
+        {
+          "truth": 5,
+          "mean": 6.701936375017472,
+          "empirical_sd": 5.449375956721705,
+          "observed": {
+            "covered": 280,
+            "coverage_all": 0.9333333333333333,
+            "coverage_success": 0.9427609427609428,
+            "wilson95": [
+              0.899276940483885,
+              0.9564324844548417
+            ],
+            "mean_se": 5.032807535006848
+          },
+          "sandwich": {
+            "covered": 271,
+            "coverage_all": 0.9033333333333333,
+            "coverage_success": 0.9124579124579124,
+            "wilson95": [
+              0.8646182980304887,
+              0.9318497051817106
+            ],
+            "mean_se": 4.608198441331915
+          }
+        },
+        {
+          "truth": 1.5,
+          "mean": 1.5277709559235793,
+          "empirical_sd": 0.15583405398629685,
+          "observed": {
+            "covered": 289,
+            "coverage_all": 0.9633333333333334,
+            "coverage_success": 0.9730639730639731,
+            "wilson95": [
+              0.9355461518281071,
+              0.979404694837147
+            ],
+            "mean_se": 0.16513833821113347
+          },
+          "sandwich": {
+            "covered": 282,
+            "coverage_all": 0.94,
+            "coverage_success": 0.9494949494949495,
+            "wilson95": [
+              0.9071605548470915,
+              0.9617136304753079
+            ],
+            "mean_se": 0.16546218242630722
+          }
+        }
+      ]
+    },
+    "sstd-2-n800": {
+      "family": "sstd",
+      "n": 800,
+      "truth": [
+        0,
+        1,
+        5,
+        1.5
+      ],
+      "held": {},
+      "free": [
+        "mean",
+        "sd",
+        "nu",
+        "xi"
+      ],
+      "status": "pointwise model calibration",
+      "replications": 300,
+      "successes": 300,
+      "failures": [],
+      "coordinates": [
+        {
+          "truth": 0,
+          "mean": -0.0015878533415904683,
+          "empirical_sd": 0.03450509917778527,
+          "observed": {
+            "covered": 285,
+            "coverage_all": 0.95,
+            "coverage_success": 0.95,
+            "wilson95": [
+              0.9191529665272558,
+              0.9694683593706526
+            ],
+            "mean_se": 0.034700867668574185
+          },
+          "sandwich": {
+            "covered": 285,
+            "coverage_all": 0.95,
+            "coverage_success": 0.95,
+            "wilson95": [
+              0.9191529665272558,
+              0.9694683593706526
+            ],
+            "mean_se": 0.03473669183535992
+          }
+        },
+        {
+          "truth": 1,
+          "mean": 0.9984199091500557,
+          "empirical_sd": 0.05204299471344139,
+          "observed": {
+            "covered": 283,
+            "coverage_all": 0.9433333333333334,
+            "coverage_success": 0.9433333333333334,
+            "wilson95": [
+              0.9111340419775253,
+              0.9643225235367106
+            ],
+            "mean_se": 0.05029729153124767
+          },
+          "sandwich": {
+            "covered": 283,
+            "coverage_all": 0.9433333333333334,
+            "coverage_success": 0.9433333333333334,
+            "wilson95": [
+              0.9111340419775253,
+              0.9643225235367106
+            ],
+            "mean_se": 0.04964135590757881
+          }
+        },
+        {
+          "truth": 5,
+          "mean": 5.29196731124264,
+          "empirical_sd": 1.0805580669802273,
+          "observed": {
+            "covered": 286,
+            "coverage_all": 0.9533333333333334,
+            "coverage_success": 0.9533333333333334,
+            "wilson95": [
+              0.923202639772079,
+              0.9720010663176659
+            ],
+            "mean_se": 1.0153352550713353
+          },
+          "sandwich": {
+            "covered": 289,
+            "coverage_all": 0.9633333333333334,
+            "coverage_success": 0.9633333333333334,
+            "wilson95": [
+              0.9355461518281071,
+              0.979404694837147
+            ],
+            "mean_se": 0.9883662487078807
+          }
+        },
+        {
+          "truth": 1.5,
+          "mean": 1.5079135109180637,
+          "empirical_sd": 0.08223248855714461,
+          "observed": {
+            "covered": 289,
+            "coverage_all": 0.9633333333333334,
+            "coverage_success": 0.9633333333333334,
+            "wilson95": [
+              0.9355461518281071,
+              0.979404694837147
+            ],
+            "mean_se": 0.08081279581615242
+          },
+          "sandwich": {
+            "covered": 287,
+            "coverage_all": 0.9566666666666667,
+            "coverage_success": 0.9566666666666667,
+            "wilson95": [
+              0.9272825343659885,
+              0.9745035519155927
+            ],
+            "mean_se": 0.08094376499078552
+          }
+        }
+      ]
+    },
+    "sstd-2-n3200": {
+      "family": "sstd",
+      "n": 3200,
+      "truth": [
+        0,
+        1,
+        5,
+        1.5
+      ],
+      "held": {},
+      "free": [
+        "mean",
+        "sd",
+        "nu",
+        "xi"
+      ],
+      "status": "pointwise model calibration",
+      "replications": 300,
+      "successes": 300,
+      "failures": [],
+      "coordinates": [
+        {
+          "truth": 0,
+          "mean": 0.0002925138016638998,
+          "empirical_sd": 0.017260670797431786,
+          "observed": {
+            "covered": 283,
+            "coverage_all": 0.9433333333333334,
+            "coverage_success": 0.9433333333333334,
+            "wilson95": [
+              0.9111340419775253,
+              0.9643225235367106
+            ],
+            "mean_se": 0.017414713285822055
+          },
+          "sandwich": {
+            "covered": 284,
+            "coverage_all": 0.9466666666666667,
+            "coverage_success": 0.9466666666666667,
+            "wilson95": [
+              0.9151308582251686,
+              0.9669080874809034
+            ],
+            "mean_se": 0.01740733850369656
+          }
+        },
+        {
+          "truth": 1,
+          "mean": 1.0012577391190915,
+          "empirical_sd": 0.02613911274099489,
+          "observed": {
+            "covered": 284,
+            "coverage_all": 0.9466666666666667,
+            "coverage_success": 0.9466666666666667,
+            "wilson95": [
+              0.9151308582251686,
+              0.9669080874809034
+            ],
+            "mean_se": 0.024767837522992584
+          },
+          "sandwich": {
+            "covered": 279,
+            "coverage_all": 0.93,
+            "coverage_success": 0.93,
+            "wilson95": [
+              0.8953639895740667,
+              0.9537630551728237
+            ],
+            "mean_se": 0.02459014350812941
+          }
+        },
+        {
+          "truth": 5,
+          "mean": 5.0918087136008845,
+          "empirical_sd": 0.46451877191144614,
+          "observed": {
+            "covered": 283,
+            "coverage_all": 0.9433333333333334,
+            "coverage_success": 0.9433333333333334,
+            "wilson95": [
+              0.9111340419775253,
+              0.9643225235367106
+            ],
+            "mean_se": 0.4561973104130625
+          },
+          "sandwich": {
+            "covered": 283,
+            "coverage_all": 0.9433333333333334,
+            "coverage_success": 0.9433333333333334,
+            "wilson95": [
+              0.9111340419775253,
+              0.9643225235367106
+            ],
+            "mean_se": 0.4516131212858836
+          }
+        },
+        {
+          "truth": 1.5,
+          "mean": 1.5016103107306842,
+          "empirical_sd": 0.03873508683641604,
+          "observed": {
+            "covered": 287,
+            "coverage_all": 0.9566666666666667,
+            "coverage_success": 0.9566666666666667,
+            "wilson95": [
+              0.9272825343659885,
+              0.9745035519155927
+            ],
+            "mean_se": 0.03996683448230506
+          },
+          "sandwich": {
+            "covered": 287,
+            "coverage_all": 0.9566666666666667,
+            "coverage_success": 0.9566666666666667,
+            "wilson95": [
+              0.9272825343659885,
+              0.9745035519155927
+            ],
+            "mean_se": 0.04009786948808322
+          }
+        }
+      ]
+    },
+    "sstd-3-n200": {
+      "family": "sstd",
+      "n": 200,
+      "truth": [
+        0,
+        1,
+        5,
+        1
+      ],
+      "held": {},
+      "free": [
+        "mean",
+        "sd",
+        "nu",
+        "xi"
+      ],
+      "status": "pointwise model calibration",
+      "replications": 300,
+      "successes": 294,
+      "failures": [
+        "1 fit_failure 6",
+        "2 fit_failure 6",
+        "7 inference_failure 0 7 7",
+        "27 fit_failure 6",
+        "194 fit_failure 6",
+        "282 fit_failure 6"
+      ],
+      "coordinates": [
+        {
+          "truth": 0,
+          "mean": 0.0020433874170622873,
+          "empirical_sd": 0.06960381690448492,
+          "observed": {
+            "covered": 279,
+            "coverage_all": 0.93,
+            "coverage_success": 0.9489795918367347,
+            "wilson95": [
+              0.8953639895740667,
+              0.9537630551728237
+            ],
+            "mean_se": 0.069456426151302
+          },
+          "sandwich": {
+            "covered": 278,
+            "coverage_all": 0.9266666666666666,
+            "coverage_success": 0.9455782312925171,
+            "wilson95": [
+              0.8914686583942826,
+              0.9510760061607713
+            ],
+            "mean_se": 0.06950830515027492
+          }
+        },
+        {
+          "truth": 1,
+          "mean": 1.0032815398649693,
+          "empirical_sd": 0.08771477402157324,
+          "observed": {
+            "covered": 280,
+            "coverage_all": 0.9333333333333333,
+            "coverage_success": 0.9523809523809523,
+            "wilson95": [
+              0.899276940483885,
+              0.9564324844548417
+            ],
+            "mean_se": 0.09510117879238297
+          },
+          "sandwich": {
+            "covered": 274,
+            "coverage_all": 0.9133333333333333,
+            "coverage_success": 0.9319727891156463,
+            "wilson95": [
+              0.8760440413057516,
+              0.9401711024819569
+            ],
+            "mean_se": 0.08961513081863887
+          }
+        },
+        {
+          "truth": 5,
+          "mean": 6.709908129878193,
+          "empirical_sd": 5.255087238995883,
+          "observed": {
+            "covered": 283,
+            "coverage_all": 0.9433333333333334,
+            "coverage_success": 0.9625850340136054,
+            "wilson95": [
+              0.9111340419775253,
+              0.9643225235367106
+            ],
+            "mean_se": 4.9578058556339295
+          },
+          "sandwich": {
+            "covered": 280,
+            "coverage_all": 0.9333333333333333,
+            "coverage_success": 0.9523809523809523,
+            "wilson95": [
+              0.899276940483885,
+              0.9564324844548417
+            ],
+            "mean_se": 4.395856538139989
+          }
+        },
+        {
+          "truth": 1,
+          "mean": 1.007616259385291,
+          "empirical_sd": 0.10226128583414419,
+          "observed": {
+            "covered": 279,
+            "coverage_all": 0.93,
+            "coverage_success": 0.9489795918367347,
+            "wilson95": [
+              0.8953639895740667,
+              0.9537630551728237
+            ],
+            "mean_se": 0.10063124865097857
+          },
+          "sandwich": {
+            "covered": 279,
+            "coverage_all": 0.93,
+            "coverage_success": 0.9489795918367347,
+            "wilson95": [
+              0.8953639895740667,
+              0.9537630551728237
+            ],
+            "mean_se": 0.10141439378924011
+          }
+        }
+      ]
+    },
+    "sstd-3-n800": {
+      "family": "sstd",
+      "n": 800,
+      "truth": [
+        0,
+        1,
+        5,
+        1
+      ],
+      "held": {},
+      "free": [
+        "mean",
+        "sd",
+        "nu",
+        "xi"
+      ],
+      "status": "pointwise model calibration",
+      "replications": 300,
+      "successes": 300,
+      "failures": [],
+      "coordinates": [
+        {
+          "truth": 0,
+          "mean": 0.0010588349297345329,
+          "empirical_sd": 0.034453736423874046,
+          "observed": {
+            "covered": 287,
+            "coverage_all": 0.9566666666666667,
+            "coverage_success": 0.9566666666666667,
+            "wilson95": [
+              0.9272825343659885,
+              0.9745035519155927
+            ],
+            "mean_se": 0.034824559950914526
+          },
+          "sandwich": {
+            "covered": 287,
+            "coverage_all": 0.9566666666666667,
+            "coverage_success": 0.9566666666666667,
+            "wilson95": [
+              0.9272825343659885,
+              0.9745035519155927
+            ],
+            "mean_se": 0.034850856773227086
+          }
+        },
+        {
+          "truth": 1,
+          "mean": 1.0029940717910002,
+          "empirical_sd": 0.04540023174460789,
+          "observed": {
+            "covered": 282,
+            "coverage_all": 0.94,
+            "coverage_success": 0.94,
+            "wilson95": [
+              0.9071605548470915,
+              0.9617136304753079
+            ],
+            "mean_se": 0.044255069177858236
+          },
+          "sandwich": {
+            "covered": 282,
+            "coverage_all": 0.94,
+            "coverage_success": 0.94,
+            "wilson95": [
+              0.9071605548470915,
+              0.9617136304753079
+            ],
+            "mean_se": 0.04316224007988419
+          }
+        },
+        {
+          "truth": 5,
+          "mean": 5.262396089484408,
+          "empirical_sd": 1.0667868980853503,
+          "observed": {
+            "covered": 282,
+            "coverage_all": 0.94,
+            "coverage_success": 0.94,
+            "wilson95": [
+              0.9071605548470915,
+              0.9617136304753079
+            ],
+            "mean_se": 1.0089505798061018
+          },
+          "sandwich": {
+            "covered": 283,
+            "coverage_all": 0.9433333333333334,
+            "coverage_success": 0.9433333333333334,
+            "wilson95": [
+              0.9111340419775253,
+              0.9643225235367106
+            ],
+            "mean_se": 0.972292406333474
+          }
+        },
+        {
+          "truth": 1,
+          "mean": 1.001454911084687,
+          "empirical_sd": 0.0489550442993529,
+          "observed": {
+            "covered": 285,
+            "coverage_all": 0.95,
+            "coverage_success": 0.95,
+            "wilson95": [
+              0.9191529665272558,
+              0.9694683593706526
+            ],
+            "mean_se": 0.049177228505049485
+          },
+          "sandwich": {
+            "covered": 285,
+            "coverage_all": 0.95,
+            "coverage_success": 0.95,
+            "wilson95": [
+              0.9191529665272558,
+              0.9694683593706526
+            ],
+            "mean_se": 0.04913693247680995
+          }
+        }
+      ]
+    },
+    "sstd-3-n3200": {
+      "family": "sstd",
+      "n": 3200,
+      "truth": [
+        0,
+        1,
+        5,
+        1
+      ],
+      "held": {},
+      "free": [
+        "mean",
+        "sd",
+        "nu",
+        "xi"
+      ],
+      "status": "pointwise model calibration",
+      "replications": 300,
+      "successes": 300,
+      "failures": [],
+      "coordinates": [
+        {
+          "truth": 0,
+          "mean": -0.00048646097668135556,
+          "empirical_sd": 0.016191002307408237,
+          "observed": {
+            "covered": 288,
+            "coverage_all": 0.96,
+            "coverage_success": 0.96,
+            "wilson95": [
+              0.9313957879613599,
+              0.9769726785120576
+            ],
+            "mean_se": 0.0173575327830132
+          },
+          "sandwich": {
+            "covered": 288,
+            "coverage_all": 0.96,
+            "coverage_success": 0.96,
+            "wilson95": [
+              0.9313957879613599,
+              0.9769726785120576
+            ],
+            "mean_se": 0.01735662307148575
+          }
+        },
+        {
+          "truth": 1,
+          "mean": 0.9990661887826662,
+          "empirical_sd": 0.021747672912618594,
+          "observed": {
+            "covered": 280,
+            "coverage_all": 0.9333333333333333,
+            "coverage_success": 0.9333333333333333,
+            "wilson95": [
+              0.899276940483885,
+              0.9564324844548417
+            ],
+            "mean_se": 0.02152621890586983
+          },
+          "sandwich": {
+            "covered": 279,
+            "coverage_all": 0.93,
+            "coverage_success": 0.93,
+            "wilson95": [
+              0.8953639895740667,
+              0.9537630551728237
+            ],
+            "mean_se": 0.021416341179669465
+          }
+        },
+        {
+          "truth": 5,
+          "mean": 5.08027002792944,
+          "empirical_sd": 0.46706234994640367,
+          "observed": {
+            "covered": 287,
+            "coverage_all": 0.9566666666666667,
+            "coverage_success": 0.9566666666666667,
+            "wilson95": [
+              0.9272825343659885,
+              0.9745035519155927
+            ],
+            "mean_se": 0.45445837944215467
+          },
+          "sandwich": {
+            "covered": 285,
+            "coverage_all": 0.95,
+            "coverage_success": 0.95,
+            "wilson95": [
+              0.9191529665272558,
+              0.9694683593706526
+            ],
+            "mean_se": 0.45023698587132527
+          }
+        },
+        {
+          "truth": 1,
+          "mean": 0.9997950830341914,
+          "empirical_sd": 0.023151303551193502,
+          "observed": {
+            "covered": 288,
+            "coverage_all": 0.96,
+            "coverage_success": 0.96,
+            "wilson95": [
+              0.9313957879613599,
+              0.9769726785120576
+            ],
+            "mean_se": 0.024542256132759715
+          },
+          "sandwich": {
+            "covered": 287,
+            "coverage_all": 0.9566666666666667,
+            "coverage_success": 0.9566666666666667,
+            "wilson95": [
+              0.9272825343659885,
+              0.9745035519155927
+            ],
+            "mean_se": 0.024575490700036545
+          }
+        }
+      ]
+    },
+    "huber-4-n200": {
+      "family": "huber",
+      "n": 200,
+      "truth": [
+        0,
+        1,
+        1
+      ],
+      "held": {},
+      "free": [
+        "mu",
+        "sigma",
+        "epsilon"
+      ],
+      "status": "pointwise model calibration",
+      "replications": 300,
+      "successes": 295,
+      "failures": [
+        "9 fit_failure 4",
+        "61 fit_failure 4",
+        "69 fit_failure 4",
+        "151 fit_failure 5",
+        "264 fit_failure 4"
+      ],
+      "coordinates": [
+        {
+          "truth": 0,
+          "mean": -0.004427059254295582,
+          "empirical_sd": 0.09305447875399453,
+          "observed": {
+            "covered": 265,
+            "coverage_all": 0.8833333333333333,
+            "coverage_success": 0.8983050847457628,
+            "wilson95": [
+              0.8420668566758442,
+              0.9149068653853369
+            ],
+            "mean_se": 0.08908448195775708
+          },
+          "sandwich": {
+            "covered": 266,
+            "coverage_all": 0.8866666666666667,
+            "coverage_success": 0.9016949152542373,
+            "wilson95": [
+              0.8458006041283088,
+              0.9177554981247089
+            ],
+            "mean_se": 0.09004234102923567
+          }
+        },
+        {
+          "truth": 1,
+          "mean": 0.922586417798424,
+          "empirical_sd": 0.3158632749977101,
+          "observed": {
+            "covered": 252,
+            "coverage_all": 0.84,
+            "coverage_success": 0.8542372881355932,
+            "wilson95": [
+              0.7942563251514081,
+              0.8771464544159004
+            ],
+            "mean_se": 0.20536536685010415
+          },
+          "sandwich": {
+            "covered": 226,
+            "coverage_all": 0.7533333333333333,
+            "coverage_success": 0.7661016949152543,
+            "wilson95": [
+              0.7015546972961404,
+              0.7987061972834228
+            ],
+            "mean_se": 0.1625352534955638
+          }
+        },
+        {
+          "truth": 1,
+          "mean": 0.974973717076617,
+          "empirical_sd": 0.3939719768548203,
+          "observed": {
+            "covered": 262,
+            "coverage_all": 0.8733333333333333,
+            "coverage_success": 0.888135593220339,
+            "wilson95": [
+              0.8309188299507383,
+              0.9063077515349339
+            ],
+            "mean_se": 0.2805525821135654
+          },
+          "sandwich": {
+            "covered": 236,
+            "coverage_all": 0.7866666666666666,
+            "coverage_success": 0.8,
+            "wilson95": [
+              0.7368372921361543,
+              0.8292474043617724
+            ],
+            "mean_se": 0.2416367915317367
+          }
+        }
+      ]
+    },
+    "huber-4-n800": {
+      "family": "huber",
+      "n": 800,
+      "truth": [
+        0,
+        1,
+        1
+      ],
+      "held": {},
+      "free": [
+        "mu",
+        "sigma",
+        "epsilon"
+      ],
+      "status": "pointwise model calibration",
+      "replications": 300,
+      "successes": 300,
+      "failures": [],
+      "coordinates": [
+        {
+          "truth": 0,
+          "mean": -0.00045336115296044997,
+          "empirical_sd": 0.049630474347412634,
+          "observed": {
+            "covered": 280,
+            "coverage_all": 0.9333333333333333,
+            "coverage_success": 0.9333333333333333,
+            "wilson95": [
+              0.899276940483885,
+              0.9564324844548417
+            ],
+            "mean_se": 0.04627237883024658
+          },
+          "sandwich": {
+            "covered": 279,
+            "coverage_all": 0.93,
+            "coverage_success": 0.93,
+            "wilson95": [
+              0.8953639895740667,
+              0.9537630551728237
+            ],
+            "mean_se": 0.04670626814115288
+          }
+        },
+        {
+          "truth": 1,
+          "mean": 0.9932936148856676,
+          "empirical_sd": 0.10486507695103164,
+          "observed": {
+            "covered": 281,
+            "coverage_all": 0.9366666666666666,
+            "coverage_success": 0.9366666666666666,
+            "wilson95": [
+              0.9032086875144784,
+              0.9590831176160847
+            ],
+            "mean_se": 0.10346670663980968
+          },
+          "sandwich": {
+            "covered": 273,
+            "coverage_all": 0.91,
+            "coverage_success": 0.91,
+            "wilson95": [
+              0.8722229892013517,
+              0.9374097743945206
+            ],
+            "mean_se": 0.10839262331671734
+          }
+        },
+        {
+          "truth": 1,
+          "mean": 1.0025864496003214,
+          "empirical_sd": 0.14121966879492634,
+          "observed": {
+            "covered": 281,
+            "coverage_all": 0.9366666666666666,
+            "coverage_success": 0.9366666666666666,
+            "wilson95": [
+              0.9032086875144784,
+              0.9590831176160847
+            ],
+            "mean_se": 0.13834542552663154
+          },
+          "sandwich": {
+            "covered": 278,
+            "coverage_all": 0.9266666666666666,
+            "coverage_success": 0.9266666666666666,
+            "wilson95": [
+              0.8914686583942826,
+              0.9510760061607713
+            ],
+            "mean_se": 0.1443655630428278
+          }
+        }
+      ]
+    },
+    "huber-4-n3200": {
+      "family": "huber",
+      "n": 3200,
+      "truth": [
+        0,
+        1,
+        1
+      ],
+      "held": {},
+      "free": [
+        "mu",
+        "sigma",
+        "epsilon"
+      ],
+      "status": "pointwise model calibration",
+      "replications": 300,
+      "successes": 300,
+      "failures": [],
+      "coordinates": [
+        {
+          "truth": 0,
+          "mean": 0.0007701790291118843,
+          "empirical_sd": 0.021398769938245923,
+          "observed": {
+            "covered": 289,
+            "coverage_all": 0.9633333333333334,
+            "coverage_success": 0.9633333333333334,
+            "wilson95": [
+              0.9355461518281071,
+              0.979404694837147
+            ],
+            "mean_se": 0.0231114725991829
+          },
+          "sandwich": {
+            "covered": 288,
+            "coverage_all": 0.96,
+            "coverage_success": 0.96,
+            "wilson95": [
+              0.9313957879613599,
+              0.9769726785120576
+            ],
+            "mean_se": 0.02317114852494126
+          }
+        },
+        {
+          "truth": 1,
+          "mean": 0.9979618737297314,
+          "empirical_sd": 0.0509301777589591,
+          "observed": {
+            "covered": 283,
+            "coverage_all": 0.9433333333333334,
+            "coverage_success": 0.9433333333333334,
+            "wilson95": [
+              0.9111340419775253,
+              0.9643225235367106
+            ],
+            "mean_se": 0.05087767584474307
+          },
+          "sandwich": {
+            "covered": 281,
+            "coverage_all": 0.9366666666666666,
+            "coverage_success": 0.9366666666666666,
+            "wilson95": [
+              0.9032086875144784,
+              0.9590831176160847
+            ],
+            "mean_se": 0.05167529279843868
+          }
+        },
+        {
+          "truth": 1,
+          "mean": 1.0008267346711623,
+          "empirical_sd": 0.06839870882305485,
+          "observed": {
+            "covered": 285,
+            "coverage_all": 0.95,
+            "coverage_success": 0.95,
+            "wilson95": [
+              0.9191529665272558,
+              0.9694683593706526
+            ],
+            "mean_se": 0.06795119387595551
+          },
+          "sandwich": {
+            "covered": 284,
+            "coverage_all": 0.9466666666666667,
+            "coverage_success": 0.9466666666666667,
+            "wilson95": [
+              0.9151308582251686,
+              0.9669080874809034
+            ],
+            "mean_se": 0.0689626786794817
+          }
+        }
+      ]
+    },
+    "pig-5-n200": {
+      "family": "pig",
+      "n": 200,
+      "truth": [
+        2,
+        3
+      ],
+      "held": {},
+      "free": [
+        "mean",
+        "shape"
+      ],
+      "status": "pointwise model calibration",
+      "replications": 300,
+      "successes": 300,
+      "failures": [],
+      "coordinates": [
+        {
+          "truth": 2,
+          "mean": 1.9844,
+          "empirical_sd": 0.16092117765558453,
+          "observed": {
+            "covered": 275,
+            "coverage_all": 0.9166666666666666,
+            "coverage_success": 0.9166666666666666,
+            "wilson95": [
+              0.8798783980359391,
+              0.9429191259436057
+            ],
+            "mean_se": 0.15166194470946412
+          },
+          "sandwich": {
+            "covered": 272,
+            "coverage_all": 0.9066666666666666,
+            "coverage_success": 0.9066666666666666,
+            "wilson95": [
+              0.8684146029829267,
+              0.934635780421109
+            ],
+            "mean_se": 0.15060753635487878
+          }
+        },
+        {
+          "truth": 3,
+          "mean": 3.153834601167388,
+          "empirical_sd": 0.8276263496215299,
+          "observed": {
+            "covered": 286,
+            "coverage_all": 0.9533333333333334,
+            "coverage_success": 0.9533333333333334,
+            "wilson95": [
+              0.923202639772079,
+              0.9720010663176659
+            ],
+            "mean_se": 0.81196959836457
+          },
+          "sandwich": {
+            "covered": 284,
+            "coverage_all": 0.9466666666666667,
+            "coverage_success": 0.9466666666666667,
+            "wilson95": [
+              0.9151308582251686,
+              0.9669080874809034
+            ],
+            "mean_se": 0.7984808709000453
+          }
+        }
+      ]
+    },
+    "pig-5-n800": {
+      "family": "pig",
+      "n": 800,
+      "truth": [
+        2,
+        3
+      ],
+      "held": {},
+      "free": [
+        "mean",
+        "shape"
+      ],
+      "status": "pointwise model calibration",
+      "replications": 300,
+      "successes": 300,
+      "failures": [],
+      "coordinates": [
+        {
+          "truth": 2,
+          "mean": 1.9982208333333333,
+          "empirical_sd": 0.07825193656534202,
+          "observed": {
+            "covered": 285,
+            "coverage_all": 0.95,
+            "coverage_success": 0.95,
+            "wilson95": [
+              0.9191529665272558,
+              0.9694683593706526
+            ],
+            "mean_se": 0.07629402734493564
+          },
+          "sandwich": {
+            "covered": 285,
+            "coverage_all": 0.95,
+            "coverage_success": 0.95,
+            "wilson95": [
+              0.9191529665272558,
+              0.9694683593706526
+            ],
+            "mean_se": 0.0761172301123407
+          }
+        },
+        {
+          "truth": 3,
+          "mean": 3.0442279624755213,
+          "empirical_sd": 0.3832738286592686,
+          "observed": {
+            "covered": 286,
+            "coverage_all": 0.9533333333333334,
+            "coverage_success": 0.9533333333333334,
+            "wilson95": [
+              0.923202639772079,
+              0.9720010663176659
+            ],
+            "mean_se": 0.3786119852062171
+          },
+          "sandwich": {
+            "covered": 285,
+            "coverage_all": 0.95,
+            "coverage_success": 0.95,
+            "wilson95": [
+              0.9191529665272558,
+              0.9694683593706526
+            ],
+            "mean_se": 0.37625276185009215
+          }
+        }
+      ]
+    },
+    "pig-5-n3200": {
+      "family": "pig",
+      "n": 3200,
+      "truth": [
+        2,
+        3
+      ],
+      "held": {},
+      "free": [
+        "mean",
+        "shape"
+      ],
+      "status": "pointwise model calibration",
+      "replications": 300,
+      "successes": 300,
+      "failures": [],
+      "coordinates": [
+        {
+          "truth": 2,
+          "mean": 2.0012864583333334,
+          "empirical_sd": 0.03538794732540231,
+          "observed": {
+            "covered": 290,
+            "coverage_all": 0.9666666666666667,
+            "coverage_success": 0.9666666666666667,
+            "wilson95": [
+              0.9397381741959452,
+              0.9817950526611452
+            ],
+            "mean_se": 0.03823021135221931
+          },
+          "sandwich": {
+            "covered": 290,
+            "coverage_all": 0.9666666666666667,
+            "coverage_success": 0.9666666666666667,
+            "wilson95": [
+              0.9397381741959452,
+              0.9817950526611452
+            ],
+            "mean_se": 0.038200510514413276
+          }
+        },
+        {
+          "truth": 3,
+          "mean": 3.0048351764494945,
+          "empirical_sd": 0.17355834586778596,
+          "observed": {
+            "covered": 289,
+            "coverage_all": 0.9633333333333334,
+            "coverage_success": 0.9633333333333334,
+            "wilson95": [
+              0.9355461518281071,
+              0.979404694837147
+            ],
+            "mean_se": 0.1851754679069457
+          },
+          "sandwich": {
+            "covered": 288,
+            "coverage_all": 0.96,
+            "coverage_success": 0.96,
+            "wilson95": [
+              0.9313957879613599,
+              0.9769726785120576
+            ],
+            "mean_se": 0.18456545931341153
+          }
+        }
+      ]
+    },
+    "gpd-6-n200": {
+      "family": "gpd",
+      "n": 200,
+      "truth": [
+        1,
+        -0.25
+      ],
+      "held": {
+        "mu": 0
+      },
+      "free": [
+        "sigma",
+        "xi"
+      ],
+      "status": "pointwise model calibration",
+      "replications": 300,
+      "successes": 300,
+      "failures": [],
+      "coordinates": [
+        {
+          "truth": 1,
+          "mean": 1.0125831274093442,
+          "empirical_sd": 0.08897615280985385,
+          "observed": {
+            "covered": 287,
+            "coverage_all": 0.9566666666666667,
+            "coverage_success": 0.9566666666666667,
+            "wilson95": [
+              0.9272825343659885,
+              0.9745035519155927
+            ],
+            "mean_se": 0.0928776854298584
+          },
+          "sandwich": {
+            "covered": 288,
+            "coverage_all": 0.96,
+            "coverage_success": 0.96,
+            "wilson95": [
+              0.9313957879613599,
+              0.9769726785120576
+            ],
+            "mean_se": 0.09168322279699227
+          }
+        },
+        {
+          "truth": -0.25,
+          "mean": -0.26523778600331294,
+          "empirical_sd": 0.06325897092081617,
+          "observed": {
+            "covered": 279,
+            "coverage_all": 0.93,
+            "coverage_success": 0.93,
+            "wilson95": [
+              0.8953639895740667,
+              0.9537630551728237
+            ],
+            "mean_se": 0.06152346732492967
+          },
+          "sandwich": {
+            "covered": 266,
+            "coverage_all": 0.8866666666666667,
+            "coverage_success": 0.8866666666666667,
+            "wilson95": [
+              0.8458006041283088,
+              0.9177554981247089
+            ],
+            "mean_se": 0.053603604157778026
+          }
+        }
+      ]
+    },
+    "gpd-6-n800": {
+      "family": "gpd",
+      "n": 800,
+      "truth": [
+        1,
+        -0.25
+      ],
+      "held": {
+        "mu": 0
+      },
+      "free": [
+        "sigma",
+        "xi"
+      ],
+      "status": "pointwise model calibration",
+      "replications": 300,
+      "successes": 300,
+      "failures": [],
+      "coordinates": [
+        {
+          "truth": 1,
+          "mean": 1.0055281983527016,
+          "empirical_sd": 0.047874802907238195,
+          "observed": {
+            "covered": 285,
+            "coverage_all": 0.95,
+            "coverage_success": 0.95,
+            "wilson95": [
+              0.9191529665272558,
+              0.9694683593706526
+            ],
+            "mean_se": 0.04484392432599154
+          },
+          "sandwich": {
+            "covered": 286,
+            "coverage_all": 0.9533333333333334,
+            "coverage_success": 0.9533333333333334,
+            "wilson95": [
+              0.923202639772079,
+              0.9720010663176659
+            ],
+            "mean_se": 0.04394981542626937
+          }
+        },
+        {
+          "truth": -0.25,
+          "mean": -0.25536606305303183,
+          "empirical_sd": 0.0314957592263423,
+          "observed": {
+            "covered": 276,
+            "coverage_all": 0.92,
+            "coverage_success": 0.92,
+            "wilson95": [
+              0.8837267595665261,
+              0.9456531446048553
+            ],
+            "mean_se": 0.02863488005106873
+          },
+          "sandwich": {
+            "covered": 268,
+            "coverage_all": 0.8933333333333333,
+            "coverage_success": 0.8933333333333333,
+            "wilson95": [
+              0.8532967116826325,
+              0.9234241509540578
+            ],
+            "mean_se": 0.02598572215464475
+          }
+        }
+      ]
+    },
+    "gpd-6-n3200": {
+      "family": "gpd",
+      "n": 3200,
+      "truth": [
+        1,
+        -0.25
+      ],
+      "held": {
+        "mu": 0
+      },
+      "free": [
+        "sigma",
+        "xi"
+      ],
+      "status": "pointwise model calibration",
+      "replications": 300,
+      "successes": 300,
+      "failures": [],
+      "coordinates": [
+        {
+          "truth": 1,
+          "mean": 0.9991785890019392,
+          "empirical_sd": 0.019714981846288303,
+          "observed": {
+            "covered": 290,
+            "coverage_all": 0.9666666666666667,
+            "coverage_success": 0.9666666666666667,
+            "wilson95": [
+              0.9397381741959452,
+              0.9817950526611452
+            ],
+            "mean_se": 0.021959557794946554
+          },
+          "sandwich": {
+            "covered": 289,
+            "coverage_all": 0.9633333333333334,
+            "coverage_success": 0.9633333333333334,
+            "wilson95": [
+              0.9355461518281071,
+              0.979404694837147
+            ],
+            "mean_se": 0.021626631543912568
+          }
+        },
+        {
+          "truth": -0.25,
+          "mean": -0.250293850010653,
+          "empirical_sd": 0.012581537887215067,
+          "observed": {
+            "covered": 290,
+            "coverage_all": 0.9666666666666667,
+            "coverage_success": 0.9666666666666667,
+            "wilson95": [
+              0.9397381741959452,
+              0.9817950526611452
+            ],
+            "mean_se": 0.013770425752141319
+          },
+          "sandwich": {
+            "covered": 288,
+            "coverage_all": 0.96,
+            "coverage_success": 0.96,
+            "wilson95": [
+              0.9313957879613599,
+              0.9769726785120576
+            ],
+            "mean_se": 0.013019252517232115
+          }
+        }
+      ]
+    },
+    "gpd-7-n200": {
+      "family": "gpd",
+      "n": 200,
+      "truth": [
+        1,
+        0
+      ],
+      "held": {
+        "mu": 0
+      },
+      "free": [
+        "sigma",
+        "xi"
+      ],
+      "status": "pointwise model calibration",
+      "replications": 300,
+      "successes": 300,
+      "failures": [],
+      "coordinates": [
+        {
+          "truth": 1,
+          "mean": 1.0245278545334584,
+          "empirical_sd": 0.10272749128882443,
+          "observed": {
+            "covered": 285,
+            "coverage_all": 0.95,
+            "coverage_success": 0.95,
+            "wilson95": [
+              0.9191529665272558,
+              0.9694683593706526
+            ],
+            "mean_se": 0.10370294559655117
+          },
+          "sandwich": {
+            "covered": 281,
+            "coverage_all": 0.9366666666666666,
+            "coverage_success": 0.9366666666666666,
+            "wilson95": [
+              0.9032086875144784,
+              0.9590831176160847
+            ],
+            "mean_se": 0.10211138054282598
+          }
+        },
+        {
+          "truth": 0,
+          "mean": -0.016723834680207352,
+          "empirical_sd": 0.06896273798248136,
+          "observed": {
+            "covered": 287,
+            "coverage_all": 0.9566666666666667,
+            "coverage_success": 0.9566666666666667,
+            "wilson95": [
+              0.9272825343659885,
+              0.9745035519155927
+            ],
+            "mean_se": 0.07265812421205073
+          },
+          "sandwich": {
+            "covered": 278,
+            "coverage_all": 0.9266666666666666,
+            "coverage_success": 0.9266666666666666,
+            "wilson95": [
+              0.8914686583942826,
+              0.9510760061607713
+            ],
+            "mean_se": 0.06624684610681913
+          }
+        }
+      ]
+    },
+    "gpd-7-n800": {
+      "family": "gpd",
+      "n": 800,
+      "truth": [
+        1,
+        0
+      ],
+      "held": {
+        "mu": 0
+      },
+      "free": [
+        "sigma",
+        "xi"
+      ],
+      "status": "pointwise model calibration",
+      "replications": 300,
+      "successes": 300,
+      "failures": [],
+      "coordinates": [
+        {
+          "truth": 1,
+          "mean": 1.0055303044905186,
+          "empirical_sd": 0.05063177129185561,
+          "observed": {
+            "covered": 280,
+            "coverage_all": 0.9333333333333333,
+            "coverage_success": 0.9333333333333333,
+            "wilson95": [
+              0.899276940483885,
+              0.9564324844548417
+            ],
+            "mean_se": 0.050432648121810114
+          },
+          "sandwich": {
+            "covered": 278,
+            "coverage_all": 0.9266666666666666,
+            "coverage_success": 0.9266666666666666,
+            "wilson95": [
+              0.8914686583942826,
+              0.9510760061607713
+            ],
+            "mean_se": 0.04989974944369878
+          }
+        },
+        {
+          "truth": 0,
+          "mean": -0.007221753821602381,
+          "empirical_sd": 0.03674815889633067,
+          "observed": {
+            "covered": 282,
+            "coverage_all": 0.94,
+            "coverage_success": 0.94,
+            "wilson95": [
+              0.9071605548470915,
+              0.9617136304753079
+            ],
+            "mean_se": 0.03560864969611584
+          },
+          "sandwich": {
+            "covered": 277,
+            "coverage_all": 0.9233333333333333,
+            "coverage_success": 0.9233333333333333,
+            "wilson95": [
+              0.8875898961498251,
+              0.9483723882133924
+            ],
+            "mean_se": 0.034111067834694565
+          }
+        }
+      ]
+    },
+    "gpd-7-n3200": {
+      "family": "gpd",
+      "n": 3200,
+      "truth": [
+        1,
+        0
+      ],
+      "held": {
+        "mu": 0
+      },
+      "free": [
+        "sigma",
+        "xi"
+      ],
+      "status": "pointwise model calibration",
+      "replications": 300,
+      "successes": 300,
+      "failures": [],
+      "coordinates": [
+        {
+          "truth": 1,
+          "mean": 1.0020808450160055,
+          "empirical_sd": 0.024331955967740786,
+          "observed": {
+            "covered": 284,
+            "coverage_all": 0.9466666666666667,
+            "coverage_success": 0.9466666666666667,
+            "wilson95": [
+              0.9151308582251686,
+              0.9669080874809034
+            ],
+            "mean_se": 0.02509664298870882
+          },
+          "sandwich": {
+            "covered": 284,
+            "coverage_all": 0.9466666666666667,
+            "coverage_success": 0.9466666666666667,
+            "wilson95": [
+              0.9151308582251686,
+              0.9669080874809034
+            ],
+            "mean_se": 0.02498320353149637
+          }
+        },
+        {
+          "truth": 0,
+          "mean": -0.0015901477105491142,
+          "empirical_sd": 0.016405043008075167,
+          "observed": {
+            "covered": 283,
+            "coverage_all": 0.9433333333333334,
+            "coverage_success": 0.9433333333333334,
+            "wilson95": [
+              0.9111340419775253,
+              0.9643225235367106
+            ],
+            "mean_se": 0.017741667904863253
+          },
+          "sandwich": {
+            "covered": 282,
+            "coverage_all": 0.94,
+            "coverage_success": 0.94,
+            "wilson95": [
+              0.9071605548470915,
+              0.9617136304753079
+            ],
+            "mean_se": 0.017431251319813656
+          }
+        }
+      ]
+    },
+    "gpd-8-n200": {
+      "family": "gpd",
+      "n": 200,
+      "truth": [
+        1,
+        0.25
+      ],
+      "held": {
+        "mu": 0
+      },
+      "free": [
+        "sigma",
+        "xi"
+      ],
+      "status": "pointwise model calibration",
+      "replications": 300,
+      "successes": 300,
+      "failures": [],
+      "coordinates": [
+        {
+          "truth": 1,
+          "mean": 1.0048225982457804,
+          "empirical_sd": 0.10749562005635462,
+          "observed": {
+            "covered": 291,
+            "coverage_all": 0.97,
+            "coverage_success": 0.97,
+            "wilson95": [
+              0.9439774608583589,
+              0.9841381461905676
+            ],
+            "mean_se": 0.11302906924163132
+          },
+          "sandwich": {
+            "covered": 290,
+            "coverage_all": 0.9666666666666667,
+            "coverage_success": 0.9666666666666667,
+            "wilson95": [
+              0.9397381741959452,
+              0.9817950526611452
+            ],
+            "mean_se": 0.11220237509987152
+          }
+        },
+        {
+          "truth": 0.25,
+          "mean": 0.23957002821868983,
+          "empirical_sd": 0.08509007344638643,
+          "observed": {
+            "covered": 287,
+            "coverage_all": 0.9566666666666667,
+            "coverage_success": 0.9566666666666667,
+            "wilson95": [
+              0.9272825343659885,
+              0.9745035519155927
+            ],
+            "mean_se": 0.0893658261700169
+          },
+          "sandwich": {
+            "covered": 280,
+            "coverage_all": 0.9333333333333333,
+            "coverage_success": 0.9333333333333333,
+            "wilson95": [
+              0.899276940483885,
+              0.9564324844548417
+            ],
+            "mean_se": 0.08361742523099369
+          }
+        }
+      ]
+    },
+    "gpd-8-n800": {
+      "family": "gpd",
+      "n": 800,
+      "truth": [
+        1,
+        0.25
+      ],
+      "held": {
+        "mu": 0
+      },
+      "free": [
+        "sigma",
+        "xi"
+      ],
+      "status": "pointwise model calibration",
+      "replications": 300,
+      "successes": 300,
+      "failures": [],
+      "coordinates": [
+        {
+          "truth": 1,
+          "mean": 1.0046347596581071,
+          "empirical_sd": 0.057669873966481475,
+          "observed": {
+            "covered": 284,
+            "coverage_all": 0.9466666666666667,
+            "coverage_success": 0.9466666666666667,
+            "wilson95": [
+              0.9151308582251686,
+              0.9669080874809034
+            ],
+            "mean_se": 0.0561694959362603
+          },
+          "sandwich": {
+            "covered": 285,
+            "coverage_all": 0.95,
+            "coverage_success": 0.95,
+            "wilson95": [
+              0.9191529665272558,
+              0.9694683593706526
+            ],
+            "mean_se": 0.05599310858501139
+          }
+        },
+        {
+          "truth": 0.25,
+          "mean": 0.2453024969017607,
+          "empirical_sd": 0.042810376045749304,
+          "observed": {
+            "covered": 289,
+            "coverage_all": 0.9633333333333334,
+            "coverage_success": 0.9633333333333334,
+            "wilson95": [
+              0.9355461518281071,
+              0.979404694837147
+            ],
+            "mean_se": 0.04422393657832022
+          },
+          "sandwich": {
+            "covered": 288,
+            "coverage_all": 0.96,
+            "coverage_success": 0.96,
+            "wilson95": [
+              0.9313957879613599,
+              0.9769726785120576
+            ],
+            "mean_se": 0.043392203537010156
+          }
+        }
+      ]
+    },
+    "gpd-8-n3200": {
+      "family": "gpd",
+      "n": 3200,
+      "truth": [
+        1,
+        0.25
+      ],
+      "held": {
+        "mu": 0
+      },
+      "free": [
+        "sigma",
+        "xi"
+      ],
+      "status": "pointwise model calibration",
+      "replications": 300,
+      "successes": 300,
+      "failures": [],
+      "coordinates": [
+        {
+          "truth": 1,
+          "mean": 1.0001258284028125,
+          "empirical_sd": 0.02686772946574279,
+          "observed": {
+            "covered": 284,
+            "coverage_all": 0.9466666666666667,
+            "coverage_success": 0.9466666666666667,
+            "wilson95": [
+              0.9151308582251686,
+              0.9669080874809034
+            ],
+            "mean_se": 0.027989684173210544
+          },
+          "sandwich": {
+            "covered": 285,
+            "coverage_all": 0.95,
+            "coverage_success": 0.95,
+            "wilson95": [
+              0.9191529665272558,
+              0.9694683593706526
+            ],
+            "mean_se": 0.027943824058646014
+          }
+        },
+        {
+          "truth": 0.25,
+          "mean": 0.25078731099143975,
+          "empirical_sd": 0.020391288877725226,
+          "observed": {
+            "covered": 290,
+            "coverage_all": 0.9666666666666667,
+            "coverage_success": 0.9666666666666667,
+            "wilson95": [
+              0.9397381741959452,
+              0.9817950526611452
+            ],
+            "mean_se": 0.022150318683840615
+          },
+          "sandwich": {
+            "covered": 289,
+            "coverage_all": 0.9633333333333334,
+            "coverage_success": 0.9633333333333334,
+            "wilson95": [
+              0.9355461518281071,
+              0.979404694837147
+            ],
+            "mean_se": 0.02196042204088476
+          }
+        }
+      ]
+    },
+    "gev-9-n200": {
+      "family": "gev",
+      "n": 200,
+      "truth": [
+        0,
+        1,
+        -0.25
+      ],
+      "held": {},
+      "free": [
+        "mu",
+        "sigma",
+        "xi"
+      ],
+      "status": "pointwise model calibration",
+      "replications": 300,
+      "successes": 300,
+      "failures": [],
+      "coordinates": [
+        {
+          "truth": 0,
+          "mean": 0.010052573300752385,
+          "empirical_sd": 0.07999445569761549,
+          "observed": {
+            "covered": 284,
+            "coverage_all": 0.9466666666666667,
+            "coverage_success": 0.9466666666666667,
+            "wilson95": [
+              0.9151308582251686,
+              0.9669080874809034
+            ],
+            "mean_se": 0.07765785414068177
+          },
+          "sandwich": {
+            "covered": 283,
+            "coverage_all": 0.9433333333333334,
+            "coverage_success": 0.9433333333333334,
+            "wilson95": [
+              0.9111340419775253,
+              0.9643225235367106
+            ],
+            "mean_se": 0.07802972054667587
+          }
+        },
+        {
+          "truth": 1,
+          "mean": 0.9976009212722939,
+          "empirical_sd": 0.05307398676589342,
+          "observed": {
+            "covered": 287,
+            "coverage_all": 0.9566666666666667,
+            "coverage_success": 0.9566666666666667,
+            "wilson95": [
+              0.9272825343659885,
+              0.9745035519155927
+            ],
+            "mean_se": 0.05468135714870494
+          },
+          "sandwich": {
+            "covered": 285,
+            "coverage_all": 0.95,
+            "coverage_success": 0.95,
+            "wilson95": [
+              0.9191529665272558,
+              0.9694683593706526
+            ],
+            "mean_se": 0.05287378028716121
+          }
+        },
+        {
+          "truth": -0.25,
+          "mean": -0.2569431161948481,
+          "empirical_sd": 0.048093326835820654,
+          "observed": {
+            "covered": 279,
+            "coverage_all": 0.93,
+            "coverage_success": 0.93,
+            "wilson95": [
+              0.8953639895740667,
+              0.9537630551728237
+            ],
+            "mean_se": 0.04374636647512435
+          },
+          "sandwich": {
+            "covered": 265,
+            "coverage_all": 0.8833333333333333,
+            "coverage_success": 0.8833333333333333,
+            "wilson95": [
+              0.8420668566758442,
+              0.9149068653853369
+            ],
+            "mean_se": 0.037856367716893595
+          }
+        }
+      ]
+    },
+    "gev-9-n800": {
+      "family": "gev",
+      "n": 800,
+      "truth": [
+        0,
+        1,
+        -0.25
+      ],
+      "held": {},
+      "free": [
+        "mu",
+        "sigma",
+        "xi"
+      ],
+      "status": "pointwise model calibration",
+      "replications": 300,
+      "successes": 300,
+      "failures": [],
+      "coordinates": [
+        {
+          "truth": 0,
+          "mean": 0.004640622854246024,
+          "empirical_sd": 0.037188317752770886,
+          "observed": {
+            "covered": 289,
+            "coverage_all": 0.9633333333333334,
+            "coverage_success": 0.9633333333333334,
+            "wilson95": [
+              0.9355461518281071,
+              0.979404694837147
+            ],
+            "mean_se": 0.03871868342349894
+          },
+          "sandwich": {
+            "covered": 289,
+            "coverage_all": 0.9633333333333334,
+            "coverage_success": 0.9633333333333334,
+            "wilson95": [
+              0.9355461518281071,
+              0.979404694837147
+            ],
+            "mean_se": 0.03868413186848498
+          }
+        },
+        {
+          "truth": 1,
+          "mean": 1.0001910528023892,
+          "empirical_sd": 0.02867394257610416,
+          "observed": {
+            "covered": 283,
+            "coverage_all": 0.9433333333333334,
+            "coverage_success": 0.9433333333333334,
+            "wilson95": [
+              0.9111340419775253,
+              0.9643225235367106
+            ],
+            "mean_se": 0.02710760325997641
+          },
+          "sandwich": {
+            "covered": 280,
+            "coverage_all": 0.9333333333333333,
+            "coverage_success": 0.9333333333333333,
+            "wilson95": [
+              0.899276940483885,
+              0.9564324844548417
+            ],
+            "mean_se": 0.02680599404349026
+          }
+        },
+        {
+          "truth": -0.25,
+          "mean": -0.25327517628701945,
+          "empirical_sd": 0.022145655415682152,
+          "observed": {
+            "covered": 284,
+            "coverage_all": 0.9466666666666667,
+            "coverage_success": 0.9466666666666667,
+            "wilson95": [
+              0.9151308582251686,
+              0.9669080874809034
+            ],
+            "mean_se": 0.02048678711401733
+          },
+          "sandwich": {
+            "covered": 277,
+            "coverage_all": 0.9233333333333333,
+            "coverage_success": 0.9233333333333333,
+            "wilson95": [
+              0.8875898961498251,
+              0.9483723882133924
+            ],
+            "mean_se": 0.018905984386179943
+          }
+        }
+      ]
+    },
+    "gev-9-n3200": {
+      "family": "gev",
+      "n": 3200,
+      "truth": [
+        0,
+        1,
+        -0.25
+      ],
+      "held": {},
+      "free": [
+        "mu",
+        "sigma",
+        "xi"
+      ],
+      "status": "pointwise model calibration",
+      "replications": 300,
+      "successes": 300,
+      "failures": [],
+      "coordinates": [
+        {
+          "truth": 0,
+          "mean": 0.0008747156656910541,
+          "empirical_sd": 0.01942007372154807,
+          "observed": {
+            "covered": 287,
+            "coverage_all": 0.9566666666666667,
+            "coverage_success": 0.9566666666666667,
+            "wilson95": [
+              0.9272825343659885,
+              0.9745035519155927
+            ],
+            "mean_se": 0.019286461222681142
+          },
+          "sandwich": {
+            "covered": 286,
+            "coverage_all": 0.9533333333333334,
+            "coverage_success": 0.9533333333333334,
+            "wilson95": [
+              0.923202639772079,
+              0.9720010663176659
+            ],
+            "mean_se": 0.019256317862021418
+          }
+        },
+        {
+          "truth": 1,
+          "mean": 0.9990874620274471,
+          "empirical_sd": 0.012729456320350978,
+          "observed": {
+            "covered": 290,
+            "coverage_all": 0.9666666666666667,
+            "coverage_success": 0.9666666666666667,
+            "wilson95": [
+              0.9397381741959452,
+              0.9817950526611452
+            ],
+            "mean_se": 0.013475894312536377
+          },
+          "sandwich": {
+            "covered": 288,
+            "coverage_all": 0.96,
+            "coverage_success": 0.96,
+            "wilson95": [
+              0.9313957879613599,
+              0.9769726785120576
+            ],
+            "mean_se": 0.013408104000058532
+          }
+        },
+        {
+          "truth": -0.25,
+          "mean": -0.25091632820500454,
+          "empirical_sd": 0.009457859455596027,
+          "observed": {
+            "covered": 287,
+            "coverage_all": 0.9566666666666667,
+            "coverage_success": 0.9566666666666667,
+            "wilson95": [
+              0.9272825343659885,
+              0.9745035519155927
+            ],
+            "mean_se": 0.009888465647527054
+          },
+          "sandwich": {
+            "covered": 285,
+            "coverage_all": 0.95,
+            "coverage_success": 0.95,
+            "wilson95": [
+              0.9191529665272558,
+              0.9694683593706526
+            ],
+            "mean_se": 0.009480149770893783
+          }
+        }
+      ]
+    },
+    "gev-10-n200": {
+      "family": "gev",
+      "n": 200,
+      "truth": [
+        0,
+        1,
+        0
+      ],
+      "held": {},
+      "free": [
+        "mu",
+        "sigma",
+        "xi"
+      ],
+      "status": "pointwise model calibration",
+      "replications": 300,
+      "successes": 300,
+      "failures": [],
+      "coordinates": [
+        {
+          "truth": 0,
+          "mean": 0.0029970452679304567,
+          "empirical_sd": 0.07958655185109824,
+          "observed": {
+            "covered": 289,
+            "coverage_all": 0.9633333333333334,
+            "coverage_success": 0.9633333333333334,
+            "wilson95": [
+              0.9355461518281071,
+              0.979404694837147
+            ],
+            "mean_se": 0.07905413243304515
+          },
+          "sandwich": {
+            "covered": 289,
+            "coverage_all": 0.9633333333333334,
+            "coverage_success": 0.9633333333333334,
+            "wilson95": [
+              0.9355461518281071,
+              0.979404694837147
+            ],
+            "mean_se": 0.07962195604081279
+          }
+        },
+        {
+          "truth": 1,
+          "mean": 0.994814586817072,
+          "empirical_sd": 0.06014338336075474,
+          "observed": {
+            "covered": 280,
+            "coverage_all": 0.9333333333333333,
+            "coverage_success": 0.9333333333333333,
+            "wilson95": [
+              0.899276940483885,
+              0.9564324844548417
+            ],
+            "mean_se": 0.05743079559267767
+          },
+          "sandwich": {
+            "covered": 279,
+            "coverage_all": 0.93,
+            "coverage_success": 0.93,
+            "wilson95": [
+              0.8953639895740667,
+              0.9537630551728237
+            ],
+            "mean_se": 0.05612392553018082
+          }
+        },
+        {
+          "truth": 0,
+          "mean": -0.001818840454089047,
+          "empirical_sd": 0.049783870021272894,
+          "observed": {
+            "covered": 287,
+            "coverage_all": 0.9566666666666667,
+            "coverage_success": 0.9566666666666667,
+            "wilson95": [
+              0.9272825343659885,
+              0.9745035519155927
+            ],
+            "mean_se": 0.051155892147663244
+          },
+          "sandwich": {
+            "covered": 279,
+            "coverage_all": 0.93,
+            "coverage_success": 0.93,
+            "wilson95": [
+              0.8953639895740667,
+              0.9537630551728237
+            ],
+            "mean_se": 0.046349980999255615
+          }
+        }
+      ]
+    },
+    "gev-10-n800": {
+      "family": "gev",
+      "n": 800,
+      "truth": [
+        0,
+        1,
+        0
+      ],
+      "held": {},
+      "free": [
+        "mu",
+        "sigma",
+        "xi"
+      ],
+      "status": "pointwise model calibration",
+      "replications": 300,
+      "successes": 300,
+      "failures": [],
+      "coordinates": [
+        {
+          "truth": 0,
+          "mean": -0.0001535553781561346,
+          "empirical_sd": 0.038653102926306894,
+          "observed": {
+            "covered": 286,
+            "coverage_all": 0.9533333333333334,
+            "coverage_success": 0.9533333333333334,
+            "wilson95": [
+              0.923202639772079,
+              0.9720010663176659
+            ],
+            "mean_se": 0.039540458611857746
+          },
+          "sandwich": {
+            "covered": 287,
+            "coverage_all": 0.9566666666666667,
+            "coverage_success": 0.9566666666666667,
+            "wilson95": [
+              0.9272825343659885,
+              0.9745035519155927
+            ],
+            "mean_se": 0.03960590787032575
+          }
+        },
+        {
+          "truth": 1,
+          "mean": 0.9988387577823149,
+          "empirical_sd": 0.028616479318293506,
+          "observed": {
+            "covered": 283,
+            "coverage_all": 0.9433333333333334,
+            "coverage_success": 0.9433333333333334,
+            "wilson95": [
+              0.9111340419775253,
+              0.9643225235367106
+            ],
+            "mean_se": 0.02863903474721222
+          },
+          "sandwich": {
+            "covered": 281,
+            "coverage_all": 0.9366666666666666,
+            "coverage_success": 0.9366666666666666,
+            "wilson95": [
+              0.9032086875144784,
+              0.9590831176160847
+            ],
+            "mean_se": 0.02837461615432415
+          }
+        },
+        {
+          "truth": 0,
+          "mean": -0.000565130713421617,
+          "empirical_sd": 0.026903002324024598,
+          "observed": {
+            "covered": 280,
+            "coverage_all": 0.9333333333333333,
+            "coverage_success": 0.9333333333333333,
+            "wilson95": [
+              0.899276940483885,
+              0.9564324844548417
+            ],
+            "mean_se": 0.024837775154053065
+          },
+          "sandwich": {
+            "covered": 278,
+            "coverage_all": 0.9266666666666666,
+            "coverage_success": 0.9266666666666666,
+            "wilson95": [
+              0.8914686583942826,
+              0.9510760061607713
+            ],
+            "mean_se": 0.023814619032455867
+          }
+        }
+      ]
+    },
+    "gev-10-n3200": {
+      "family": "gev",
+      "n": 3200,
+      "truth": [
+        0,
+        1,
+        0
+      ],
+      "held": {},
+      "free": [
+        "mu",
+        "sigma",
+        "xi"
+      ],
+      "status": "pointwise model calibration",
+      "replications": 300,
+      "successes": 300,
+      "failures": [],
+      "coordinates": [
+        {
+          "truth": 0,
+          "mean": 0.0007333324031397763,
+          "empirical_sd": 0.020628436567475244,
+          "observed": {
+            "covered": 281,
+            "coverage_all": 0.9366666666666666,
+            "coverage_success": 0.9366666666666666,
+            "wilson95": [
+              0.9032086875144784,
+              0.9590831176160847
+            ],
+            "mean_se": 0.019767110614360615
+          },
+          "sandwich": {
+            "covered": 282,
+            "coverage_all": 0.94,
+            "coverage_success": 0.94,
+            "wilson95": [
+              0.9071605548470915,
+              0.9617136304753079
+            ],
+            "mean_se": 0.019780032458073957
+          }
+        },
+        {
+          "truth": 1,
+          "mean": 1.0001608713445551,
+          "empirical_sd": 0.013975377217158524,
+          "observed": {
+            "covered": 286,
+            "coverage_all": 0.9533333333333334,
+            "coverage_success": 0.9533333333333334,
+            "wilson95": [
+              0.923202639772079,
+              0.9720010663176659
+            ],
+            "mean_se": 0.01430175407021523
+          },
+          "sandwich": {
+            "covered": 286,
+            "coverage_all": 0.9533333333333334,
+            "coverage_success": 0.9533333333333334,
+            "wilson95": [
+              0.923202639772079,
+              0.9720010663176659
+            ],
+            "mean_se": 0.014265422702423371
+          }
+        },
+        {
+          "truth": 0,
+          "mean": -0.00022522911193839111,
+          "empirical_sd": 0.012646615072880707,
+          "observed": {
+            "covered": 286,
+            "coverage_all": 0.9533333333333334,
+            "coverage_success": 0.9533333333333334,
+            "wilson95": [
+              0.923202639772079,
+              0.9720010663176659
+            ],
+            "mean_se": 0.012256478064971205
+          },
+          "sandwich": {
+            "covered": 285,
+            "coverage_all": 0.95,
+            "coverage_success": 0.95,
+            "wilson95": [
+              0.9191529665272558,
+              0.9694683593706526
+            ],
+            "mean_se": 0.012137478335583877
+          }
+        }
+      ]
+    },
+    "gev-11-n200": {
+      "family": "gev",
+      "n": 200,
+      "truth": [
+        0,
+        1,
+        0.25
+      ],
+      "held": {},
+      "free": [
+        "mu",
+        "sigma",
+        "xi"
+      ],
+      "status": "pointwise model calibration",
+      "replications": 300,
+      "successes": 300,
+      "failures": [],
+      "coordinates": [
+        {
+          "truth": 0,
+          "mean": 0.002264193164592414,
+          "empirical_sd": 0.08582869959991409,
+          "observed": {
+            "covered": 280,
+            "coverage_all": 0.9333333333333333,
+            "coverage_success": 0.9333333333333333,
+            "wilson95": [
+              0.899276940483885,
+              0.9564324844548417
+            ],
+            "mean_se": 0.07980270220468538
+          },
+          "sandwich": {
+            "covered": 280,
+            "coverage_all": 0.9333333333333333,
+            "coverage_success": 0.9333333333333333,
+            "wilson95": [
+              0.899276940483885,
+              0.9564324844548417
+            ],
+            "mean_se": 0.0805924285092065
+          }
+        },
+        {
+          "truth": 1,
+          "mean": 0.9909871754733693,
+          "empirical_sd": 0.0634930617755606,
+          "observed": {
+            "covered": 279,
+            "coverage_all": 0.93,
+            "coverage_success": 0.93,
+            "wilson95": [
+              0.8953639895740667,
+              0.9537630551728237
+            ],
+            "mean_se": 0.06540931861619267
+          },
+          "sandwich": {
+            "covered": 278,
+            "coverage_all": 0.9266666666666666,
+            "coverage_success": 0.9266666666666666,
+            "wilson95": [
+              0.8914686583942826,
+              0.9510760061607713
+            ],
+            "mean_se": 0.06450720525811417
+          }
+        },
+        {
+          "truth": 0.25,
+          "mean": 0.25015462132794325,
+          "empirical_sd": 0.06248234948067315,
+          "observed": {
+            "covered": 284,
+            "coverage_all": 0.9466666666666667,
+            "coverage_success": 0.9466666666666667,
+            "wilson95": [
+              0.9151308582251686,
+              0.9669080874809034
+            ],
+            "mean_se": 0.06064800305531496
+          },
+          "sandwich": {
+            "covered": 274,
+            "coverage_all": 0.9133333333333333,
+            "coverage_success": 0.9133333333333333,
+            "wilson95": [
+              0.8760440413057516,
+              0.9401711024819569
+            ],
+            "mean_se": 0.05720290179480913
+          }
+        }
+      ]
+    },
+    "gev-11-n800": {
+      "family": "gev",
+      "n": 800,
+      "truth": [
+        0,
+        1,
+        0.25
+      ],
+      "held": {},
+      "free": [
+        "mu",
+        "sigma",
+        "xi"
+      ],
+      "status": "pointwise model calibration",
+      "replications": 300,
+      "successes": 300,
+      "failures": [],
+      "coordinates": [
+        {
+          "truth": 0,
+          "mean": 0.002775293161255169,
+          "empirical_sd": 0.04284223248479355,
+          "observed": {
+            "covered": 283,
+            "coverage_all": 0.9433333333333334,
+            "coverage_success": 0.9433333333333334,
+            "wilson95": [
+              0.9111340419775253,
+              0.9643225235367106
+            ],
+            "mean_se": 0.04005163115754236
+          },
+          "sandwich": {
+            "covered": 284,
+            "coverage_all": 0.9466666666666667,
+            "coverage_success": 0.9466666666666667,
+            "wilson95": [
+              0.9151308582251686,
+              0.9669080874809034
+            ],
+            "mean_se": 0.04011483063387198
+          }
+        },
+        {
+          "truth": 1,
+          "mean": 0.9987328296400036,
+          "empirical_sd": 0.03306497176653564,
+          "observed": {
+            "covered": 279,
+            "coverage_all": 0.93,
+            "coverage_success": 0.93,
+            "wilson95": [
+              0.8953639895740667,
+              0.9537630551728237
+            ],
+            "mean_se": 0.03273707862041504
+          },
+          "sandwich": {
+            "covered": 281,
+            "coverage_all": 0.9366666666666666,
+            "coverage_success": 0.9366666666666666,
+            "wilson95": [
+              0.9032086875144784,
+              0.9590831176160847
+            ],
+            "mean_se": 0.032515437521789675
+          }
+        },
+        {
+          "truth": 0.25,
+          "mean": 0.24927895554998292,
+          "empirical_sd": 0.028737894018017456,
+          "observed": {
+            "covered": 287,
+            "coverage_all": 0.9566666666666667,
+            "coverage_success": 0.9566666666666667,
+            "wilson95": [
+              0.9272825343659885,
+              0.9745035519155927
+            ],
+            "mean_se": 0.02958942758825516
+          },
+          "sandwich": {
+            "covered": 287,
+            "coverage_all": 0.9566666666666667,
+            "coverage_success": 0.9566666666666667,
+            "wilson95": [
+              0.9272825343659885,
+              0.9745035519155927
+            ],
+            "mean_se": 0.02901054673040895
+          }
+        }
+      ]
+    },
+    "gev-11-n3200": {
+      "family": "gev",
+      "n": 3200,
+      "truth": [
+        0,
+        1,
+        0.25
+      ],
+      "held": {},
+      "free": [
+        "mu",
+        "sigma",
+        "xi"
+      ],
+      "status": "pointwise model calibration",
+      "replications": 300,
+      "successes": 300,
+      "failures": [],
+      "coordinates": [
+        {
+          "truth": 0,
+          "mean": 0.002350188382005583,
+          "empirical_sd": 0.018637598803659724,
+          "observed": {
+            "covered": 288,
+            "coverage_all": 0.96,
+            "coverage_success": 0.96,
+            "wilson95": [
+              0.9313957879613599,
+              0.9769726785120576
+            ],
+            "mean_se": 0.020067988249550008
+          },
+          "sandwich": {
+            "covered": 288,
+            "coverage_all": 0.96,
+            "coverage_success": 0.96,
+            "wilson95": [
+              0.9313957879613599,
+              0.9769726785120576
+            ],
+            "mean_se": 0.020073367587076334
+          }
+        },
+        {
+          "truth": 1,
+          "mean": 1.0017314349205886,
+          "empirical_sd": 0.016102598028289984,
+          "observed": {
+            "covered": 289,
+            "coverage_all": 0.9633333333333334,
+            "coverage_success": 0.9633333333333334,
+            "wilson95": [
+              0.9355461518281071,
+              0.979404694837147
+            ],
+            "mean_se": 0.016407963505127122
+          },
+          "sandwich": {
+            "covered": 289,
+            "coverage_all": 0.9633333333333334,
+            "coverage_success": 0.9633333333333334,
+            "wilson95": [
+              0.9355461518281071,
+              0.979404694837147
+            ],
+            "mean_se": 0.016346988863798827
+          }
+        },
+        {
+          "truth": 0.25,
+          "mean": 0.25054183179246825,
+          "empirical_sd": 0.014952119991562521,
+          "observed": {
+            "covered": 283,
+            "coverage_all": 0.9433333333333334,
+            "coverage_success": 0.9433333333333334,
+            "wilson95": [
+              0.9111340419775253,
+              0.9643225235367106
+            ],
+            "mean_se": 0.014726547746346793
+          },
+          "sandwich": {
+            "covered": 283,
+            "coverage_all": 0.9433333333333334,
+            "coverage_success": 0.9433333333333334,
+            "wilson95": [
+              0.9111340419775253,
+              0.9643225235367106
+            ],
+            "mean_se": 0.014606984401002537
+          }
+        }
+      ]
+    }
+  }
+}

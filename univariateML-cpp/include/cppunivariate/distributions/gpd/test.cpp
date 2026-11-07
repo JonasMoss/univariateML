@@ -440,3 +440,29 @@ TEST_CASE("gpd: exponential scale checks subnormal mean restoration") {
   CHECK(good.sigma==2*tiny);
   CHECK(std::isfinite(good.logLik));
 }
+
+#include "cppunivariate/core/inference_join.hpp"
+TEST_CASE("gpd: analytic covariance derivatives and subset projection") {
+  const std::array<double,8> theta{0,1,0};
+  const std::vector<double> x{0,.2,.5,1,2,4};
+  const auto full=cppunivariate::join_family_inference({x.data(),x.size()},"gpd",theta,6);
+  REQUIRE(full.status==cppunivariate::InferenceStatus::Ok);
+  for(unsigned mask=0;mask<(1u<<3);++mask) {
+    if(mask & 1u)continue;
+    std::size_t emitted=0;
+    const auto r=cppunivariate::join_family_inference({x.data(),x.size()},"gpd",theta,mask,[&](const auto&){++emitted;});
+    REQUIRE(r.status==cppunivariate::InferenceStatus::Ok);
+    CHECK(emitted==x.size());
+    for(std::size_t i=0;i<r.dimension;++i) {
+      const auto a=r.free_indices[i];CHECK(r.score[i]==doctest::Approx(full.score[a-1]));
+      for(std::size_t j=0;j<r.dimension;++j) {
+        const auto b=r.free_indices[j];
+        CHECK(r.observed[i*r.dimension+j]==doctest::Approx(full.observed[(a-1)*2+b-1]));
+        CHECK(r.opg[i*r.dimension+j]==doctest::Approx(full.opg[(a-1)*2+b-1]));
+      }
+    }
+  }
+  auto bad=theta;bad[1]=0;
+  CHECK(cppunivariate::join_family_inference({x.data(),x.size()},"gpd",bad,2).status==cppunivariate::InferenceStatus::BoundaryOrLimit);
+  CHECK(cppunivariate::join_family_inference({x.data(),x.size()},"gpd",theta,1u<<3).status==cppunivariate::InferenceStatus::InvalidSubset);
+}

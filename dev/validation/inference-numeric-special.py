@@ -22,14 +22,14 @@ os.environ.setdefault('CCACHE_BASEDIR',str(ROOT));os.environ.setdefault('CCACHE_
 COMPILER=([shutil.which('ccache')] if shutil.which('ccache') else [])+[os.environ.get('CXX','c++')]
 INC=ROOT/'univariateML-cpp/include/cppunivariate';DIST=INC/'distributions'
 OUT=ROOT/'build/scratch/inference-numeric-special';OUT.mkdir(parents=True,exist_ok=True)
-FAMILIES={'laplace':(['mu','sigma'],[1]),'gev':(['mu','sigma','xi'],[0,1]),
+FAMILIES={'laplace':(['mu','sigma'],[1]),'gev':(['mu','sigma','xi'],[0,1,2]),
 'gpd':(['mu','sigma','xi'],[1,2]),'ged':(['mean','sd','nu'],[0,1,2]),
-'sged':(['mean','sd','nu','xi'],[0,1,2,3]),'snorm':(['mean','sd','xi'],[0,1]),
-'sstd':(['mean','sd','nu','xi'],[0,1,2]),'tnorm':(['mean','sd','a','b'],[0,1]),
+'sged':(['mean','sd','nu','xi'],[0,1,2,3]),'snorm':(['mean','sd','xi'],[0,1,2]),
+'sstd':(['mean','sd','nu','xi'],[0,1,2,3]),'tnorm':(['mean','sd','a','b'],[0,1]),
 'cmb':(['size','prob','nu'],[1,2]),'cmp':(['lambda','nu'],[0,1]),
 'tbinom':(['prob','a','b','size'],[0]),'tpois':(['lambda','a','b'],[0]),
 'zmbinom':(['size','prob','p0'],[1,2])}
-seed_only={'gev','snorm','sstd'}
+seed_only=set()
 SEED=20261102;rng=random.Random(SEED);mp.mp.dps=40
 src='''#include <array>
 #include <iostream>
@@ -48,13 +48,15 @@ for(std::size_t i=0;i<r.dimension*r.dimension;++i)std::cout<<" "<<r.observed[i];
 (OUT/'probe.cpp').write_text(src)
 boost=os.environ.get('BOOST_INCLUDE_DIR','');cache=ROOT/'univariateML-cpp/build/CMakeCache.txt'
 if not boost and cache.exists(): boost=next((l.split('=',1)[1] for l in cache.read_text().splitlines() if l.startswith('Boost_INCLUDE_DIR:')),'')
+if not boost: boost=subprocess.check_output(['Rscript','-e','cat(system.file("include",package="BH"))'],text=True).strip()
 subprocess.run(COMPILER+['-std=c++17','-O2','-I'+boost,'-I'+str(INC.parent),str(OUT/'probe.cpp'),'-o',str(OUT/'probe')],check=True)
 
 def logdensity(f,x,p):
     if f=='laplace':
         mu,sd=p;return -mp.log(2*sd)-abs(x-mu)/sd
     if f=='gev':
-        mu,sd,_=p;z=(x-mu)/sd;return -mp.log(sd)-z-mp.exp(-z)
+        mu,sd,xi=p;z=(x-mu)/sd;h=z if xi==0 else mp.log1p(xi*z)/xi
+        return -mp.log(sd)-mp.log1p(xi*z)-h-mp.exp(-h)
     if f=='gpd':
         mu,sd,xi=p;z=(x-mu)/sd
         return -mp.log(sd)-z if xi==0 else -mp.log(sd)-(1+xi)*mp.log1p(xi*z)/xi
@@ -66,11 +68,17 @@ def logdensity(f,x,p):
         c=mp.sqrt((1-m*m)*(xi*xi+1/(xi*xi))+2*m*m-1)
         z=c*(x-mu)/sd+m*(xi-1/xi);q=z/xi if z>0 else z*xi
         return mp.log(c)-mp.log(sd)+mp.log(2/(xi+1/xi))+mp.log(nu/(b*mp.power(2,1+1/nu)*mp.gamma(1/nu)))-abs(q)**nu/(2*b**nu)
-    if f=='snorm':
-        mu,sd,_=p;z=(x-mu)/sd;return -mp.log(sd)-mp.log(2*mp.pi)/2-z*z/2
-    if f=='sstd':
-        mu,sd,nu,_=p;z=(x-mu)/sd
-        return mp.loggamma((nu+1)/2)-mp.loggamma(nu/2)-mp.log((nu-2)*mp.pi)/2-mp.log(sd)-(nu+1)*mp.log1p(z*z/(nu-2))/2
+    if f in ('snorm','sstd'):
+        mu,sd=p[:2];xi=p[-1]
+        if f=='snorm':
+            moment=mp.sqrt(2/mp.pi);constant=-mp.log(2*mp.pi)/2
+        else:
+            nu=p[2];constant=mp.loggamma((nu+1)/2)-mp.loggamma(nu/2)-mp.log((nu-2)*mp.pi)/2
+            moment=mp.exp(constant)*2*(nu-2)/(nu-1)
+        c=mp.sqrt((1-moment**2)*(xi**2+xi**-2)+2*moment**2-1)
+        z=c*(x-mu)/sd+moment*(xi-1/xi);q=z*xi if z<0 else z/xi
+        base=constant-q*q/2 if f=='snorm' else constant-(nu+1)*mp.log1p(q*q/(nu-2))/2
+        return mp.log(c/sd)+mp.log(2/(xi+1/xi))+base
     if f=='tnorm':
         mu,sd,a,b=p;cdf=lambda z:mp.erfc(-z/mp.sqrt(2))/2
         return -mp.log(sd)-mp.log(2*mp.pi)/2-((x-mu)/sd)**2/2-mp.log(cdf((b-mu)/sd)-cdf((a-mu)/sd))
@@ -330,9 +338,9 @@ try:
     results['more_known_boundary_submodels']={'status':'pass','reason':'','checks':checks}
 except Exception as exc:
     results['more_known_boundary_submodels']={'status':'fail','reason':f'{type(exc).__name__}: {exc}'}
-paths=[Path(__file__),INC/'core/inference_numeric.hpp',INC/'core/inference_families.hpp',INC/'core/inference_numeric_special.hpp',INC/'core/inference_numeric_generated.hpp']
+paths=[Path(__file__),INC/'core/inference_numeric.hpp',INC/'core/inference_join.hpp',INC/'core/inference_families.hpp',INC/'core/inference_numeric_special.hpp',INC/'core/inference_numeric_generated.hpp']
 paths += [DIST/f/name for f in sorted(set(FAMILIES)|{'bhatt','zip','zmpois','bbinom','zib','ztbinom','zipf','sgomp','zmgeom','zmlogarithmic','zmnbinom','ztnbinom','sn','foldnorm','nbinom','zinb'}) for name in ('README.md','dpqr.hpp','golden.json')]
-result={'revision':subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
+result={'revision':os.environ.get('UMVL_SOURCE_REVISION') or subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
         'source_sha256':{str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest() for p in paths},
         'seed':SEED,'mpmath_dps':mp.mp.dps,'tolerance_score':2e-6,'tolerance_observed':2e-5,
         'golden_total_score_tolerance':1e-3,'errors_scaled_by':'1 + abs(reference)','families':results}

@@ -10,9 +10,8 @@ inference_numeric:
     condition: "finite mu held, sigma > 0 free and xi = 0 held"
     classification: "dev/research/evaluations/2026-11-04-infer-moving-report.md#gpd-and-gev"
   - regime: "known threshold regular model"
-    available: false
+    available: true
     condition: "finite mu held, sigma > 0 and xi > -1/2; sigma and/or xi free, including xi = 0 with xi free; excluding the preceding available submodels"
-    reason: "DQM and full-rank information are established, but support/join-aware numerical derivatives and fitted covariance validation for this expanded scope are not yet implemented"
     classification: "dev/research/evaluations/2026-11-04-infer-moving-report.md#gpd-and-gev"
   - regime: "critical upper endpoint"
     available: false

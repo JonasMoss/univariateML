@@ -449,3 +449,28 @@ TEST_CASE("pig: certified point polish preserves the R golden tolerance") {
   CHECK(stopped.status==cppunivariate::PigStatus::SearchFailure);
   CHECK_FALSE(stopped.stop_detail.budget_exhausted);
 }
+
+#include "cppunivariate/core/inference_join.hpp"
+TEST_CASE("pig: analytic covariance derivatives and subset projection") {
+  const std::array<double,8> theta{2,3};
+  const std::vector<double> x{0,1,2,3,5};
+  const auto full=cppunivariate::join_family_inference({x.data(),x.size()},"pig",theta,3);
+  REQUIRE(full.status==cppunivariate::InferenceStatus::Ok);
+  for(unsigned mask=0;mask<(1u<<2);++mask) {
+    std::size_t emitted=0;
+    const auto r=cppunivariate::join_family_inference({x.data(),x.size()},"pig",theta,mask,[&](const auto&){++emitted;});
+    REQUIRE(r.status==cppunivariate::InferenceStatus::Ok);
+    CHECK(emitted==x.size());
+    for(std::size_t i=0;i<r.dimension;++i) {
+      const auto a=r.free_indices[i];CHECK(r.score[i]==doctest::Approx(full.score[a]));
+      for(std::size_t j=0;j<r.dimension;++j) {
+        const auto b=r.free_indices[j];
+        CHECK(r.observed[i*r.dimension+j]==doctest::Approx(full.observed[a*2+b]));
+        CHECK(r.opg[i*r.dimension+j]==doctest::Approx(full.opg[a*2+b]));
+      }
+    }
+  }
+  auto bad=theta;bad[1]=0;
+  CHECK(cppunivariate::join_family_inference({x.data(),x.size()},"pig",bad,1).status==cppunivariate::InferenceStatus::BoundaryOrLimit);
+  CHECK(cppunivariate::join_family_inference({x.data(),x.size()},"pig",theta,1u<<2).status==cppunivariate::InferenceStatus::InvalidSubset);
+}

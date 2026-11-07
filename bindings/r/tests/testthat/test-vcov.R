@@ -152,3 +152,44 @@ test_that("ordinary cusp Hessian failures affect both covariance types", {
     expect_error(vcov(fit, type), "regime unavailable", info=case[[1]])
   }
 })
+
+test_that("join-aware covariance reaches all six public family adapters", {
+  for (id in c("snorm", "sstd", "huber", "pig", "gpd", "gev")) {
+    x <- vcov_golden(id)
+    fit <- do.call(get(paste0("ml", id)), c(list(x), if (id=="huber") list(epsilon=NULL) else if (id=="gpd") list(mu=0) else list()))
+    for (type in c("observed", "sandwich")) {
+      v <- vcov(fit, type)
+      expect_true(all(is.finite(v)), info=id)
+      expect_equal(as.vector(v), as.vector(t(v)), info=id)
+      expect_true(all(diag(v)>0), info=id)
+      expect_identical(rownames(v), names(fit)[attr(fit, "inference_free")])
+    }
+  }
+})
+
+test_that("free skew at symmetry and held subsets use analytic derivatives", {
+  x <- qnorm((seq_len(100)-.5)/100)
+  # Explicit parameter points test dispatch; calibration uses genuine fits.
+  for (mask in list(c(mean=TRUE,sd=TRUE,xi=TRUE), c(mean=FALSE,sd=TRUE,xi=TRUE))) {
+    fit <- vcov_regime_object("snorm", c(0,1,1), mask, x)
+    for (type in c("observed", "sandwich"))
+      expect_true(all(is.finite(vcov(fit,type))))
+  }
+  for (id in c("snorm", "sstd", "huber", "pig", "gpd", "gev")) {
+    fit <- do.call(get(paste0("ml",id)), c(list(vcov_golden(id)), if (id=="huber") list(epsilon=NULL) else if (id=="gpd") list(mu=0) else list()))
+    fit[2] <- 0
+    expect_error(vcov(fit), "boundary or limit", info=id)
+  }
+})
+
+
+test_that("zero shape is free and critical endpoint regimes stay excluded", {
+  for (id in c("gpd", "gev")) {
+    x <- if (id=="gpd") qexp((seq_len(100)-.5)/100) else -log(-log((seq_len(100)-.5)/100))
+    free <- c(mu=id=="gev",sigma=TRUE,xi=TRUE)
+    fit <- vcov_regime_object(id,c(0,1,0),free,x)
+    for (type in c("observed", "sandwich")) expect_true(all(is.finite(vcov(fit,type))))
+    fit[3] <- -.5
+    for (type in c("observed", "sandwich")) expect_error(vcov(fit,type), "regime unavailable")
+  }
+})

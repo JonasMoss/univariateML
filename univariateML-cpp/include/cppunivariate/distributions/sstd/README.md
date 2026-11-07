@@ -1,14 +1,9 @@
 ---
 id: sstd
 inference_numeric:
-  - regime: "symmetric member with skew held"
+  - regime: "regular finite interior"
     available: true
-    condition: "finite mean, sd > 0 and nu > 2; xi = 1 held; any other subset free"
-    classification: "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
-  - regime: "unreviewed or unavailable"
-    available: false
-    condition: "finite mean, sd > 0 and nu > 2, xi > 0; xi free or xi != 1"
-    reason: "DQM, finite full-rank information and a valid a.e. Hessian are established; numerical derivative and covariance validation for the expanded subsets is not yet implemented"
+    condition: "finite mean, sd > 0, finite nu > 2 and finite xi > 0; any free subset, including xi = 1 with xi free; analytic piecewise natural-coordinate derivatives; successful interior fit and nonsingular information required"
     classification: "dev/research/evaluations/2026-11-04-dqm-b-report.md#two-piece-models-snorm-sstd-and-sged"
 name: Skew Student-t
 support: {type: real, lower: -inf, upper: inf, closed: [false, false]}

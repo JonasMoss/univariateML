@@ -1,0 +1,33 @@
+{
+  "revision": "681d7ac5ce6965db4066b4117c12eff69e75cd0c",
+  "uncommitted": true,
+  "source_sha256": {
+    "bindings/js/vcov-test.mjs": "982f4d2dbb5cfe3e5ca41e51eb21c713cdbf084a9fb9a646a9d2911c94714135",
+    "bindings/r/tests/testthat/test-vcov.R": "e66ce674de03613291087e5bdf4f7aa1ac159cc8e1575ed8b3b90de677ad0687",
+    "dev/research/evaluations/2026-11-07-infer-joins-data/calibrate.cpp": "53b8b850ee0de2496a4c0bae8646be8c51ef259d1e0c11b5e0d2b2df833fbcdd",
+    "dev/research/evaluations/2026-11-07-infer-joins-data/calibrate.py": "461c65a74645c0a75aa56bbcfd9508ae505839cac59e945be66b23d790c0d3c2",
+    "dev/research/evaluations/2026-11-07-infer-joins-data/check-calibration.py": "2f22b769e711adb460fcd9958217865009fa9b6ec2238d25eec6ad80ab30d686",
+    "dev/research/evaluations/2026-11-07-infer-joins-data/check-derivatives.py": "f7d49e699dfd3039d777e5e3b56cbd8d29e3e7a053be5bcacb60b486c48ab40b",
+    "dev/research/evaluations/2026-11-07-infer-joins-data/check-r-vcov.sh": "fbded79debea1aa4dcbbc29c1c571d373b23310cfce0dc24ffdce39fd7d34d30",
+    "dev/research/evaluations/2026-11-07-infer-joins-data/record-validation.py": "ee9acd2597933d5111f51aeef5f2ed649f78d5a9731d78cc3681e3ae71394430",
+    "dev/validation/inference-availability.json": "5fd5157fbed1478ba8ca89704b031b61fdc28db862f8aba4e63689ba8fc7c6b2",
+    "dev/validation/inference-numeric-special.py": "3ec64a886715774ca87e0f1fa8d2cd74d84e3400f0ee434c2cd3ff84c4377b87",
+    "dev/validation/inference_availability.py": "370298e213e53e423be9f81bbeff2943b61a5220be3b074c4d9574fc5a1819ef",
+    "site/scripts/check.py": "c39f600b6f9376960a3958f5c5272e2f59061752b639bec1a5837423ecbb4869",
+    "univariateML-cpp/include/cppunivariate/core/inference.md": "871ce5826ba29b2e6a9ae2ba2d2963113cfd06ab7b73905502a95723c837e6e2",
+    "univariateML-cpp/include/cppunivariate/core/inference_join.hpp": "81fdaa678c18aa64738fc983062b1b1e2c7603d19bf40a0b5b6df4e70cc00f4a",
+    "univariateML-cpp/include/cppunivariate/core/inference_numeric_special.hpp": "b43361df29aa3abdd7c69efc0e77dcfb4f30b424bb9d7f2f4e1560381df04654",
+    "univariateML-cpp/include/cppunivariate/distributions/gev/README.md": "5389c6a6762fce03804c4b1b734125f7f790249a21a34227fdbd6ec0596beae2",
+    "univariateML-cpp/include/cppunivariate/distributions/gev/test.cpp": "5916838ba5ef79faf02cbffdef001b78830362eb28873ba453b0106e355c3d97",
+    "univariateML-cpp/include/cppunivariate/distributions/gpd/README.md": "77d311c8dd4e603f8e9fdac54b716a55952de0b74ddf0985fca5edcda33e1f69",
+    "univariateML-cpp/include/cppunivariate/distributions/gpd/test.cpp": "09b99c8bb19e271f2fff88f7a4887023fc11b4340d73c340c592a0e9c6a3c562",
+    "univariateML-cpp/include/cppunivariate/distributions/huber/README.md": "a94e16d2fca05d367302a1c4b63333d95f4c81232083f0ace05836c5783b13ef",
+    "univariateML-cpp/include/cppunivariate/distributions/huber/test.cpp": "e7ca0fec32b8b314ffb13014fb63d983927756f1e5e11afb2e03f2769ca42f43",
+    "univariateML-cpp/include/cppunivariate/distributions/pig/README.md": "418bd289e32750f303dec03ede80d7b1110ff424eb0f067be77dd0b91d85dc19",
+    "univariateML-cpp/include/cppunivariate/distributions/pig/test.cpp": "0b85cf1f764824760532d0aec6d2e674977d6b55aa9988630da57342e9be094e",
+    "univariateML-cpp/include/cppunivariate/distributions/snorm/README.md": "7ae07f77f5bc97cb8c61a4355b0abdd11e78389faa257b0ec7c70aebdd003157",
+    "univariateML-cpp/include/cppunivariate/distributions/snorm/test.cpp": "e500f2c9dc0be80f4a585f7accd4a9a0568e24e45270f12f977e5be9e50fe560",
+    "univariateML-cpp/include/cppunivariate/distributions/sstd/README.md": "97c39a0a6240e1e375a458c6f08d7634e58387827c2ee228da1bebc53e0fbeda",
+    "univariateML-cpp/include/cppunivariate/distributions/sstd/test.cpp": "a91cf04c72e7532d2af92d3be66bdf572624963a79431ca72bbb23993884d0b8"
+  }
+}
