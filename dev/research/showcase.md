@@ -40,7 +40,9 @@ with typed non-existence stops is not checked.
 
 Context: for NB the classical result is that a finite MLE exists if and only
 if $s^2>\bar x$ (divisor $n$), and it is then unique (Anscombe 1950; Levin and
-Reeds 1977; Aragón, Eberly and Eberly 1992).
+Reeds 1977; Aragón, Eberly and Eberly 1992). Wang (1996) reports a major
+problem with the 1992 proof; which published proof is complete needs checking
+(TASK-116.19), since the nbinom certificate cites it.
 
 ## 3. Non-uniqueness and multimodality
 
@@ -60,8 +62,9 @@ Reeds 1977; Aragón, Eberly and Eberly 1992).
 | Phenomenon | Status | Literature | Source |
 |---|---|---|---|
 | **ZINB versus ZIP.** With $t=-r\log p$ held, $\log f_{\mathrm{NB}}(x)=\log f_{\mathrm{Pois}}(x;t)+r^{-1}[x(x-1)/2-xt/2]+O(r^{-2})$, with no $1/r$ term at $x=0$. The first-order coefficient $C=A-S\lambda/2$, $A=\sum_i x_i(x_i-1)/2$, $S=\sum_i x_i$, is the boundary score, the ZINB analogue of the NB criterion $s^2>\bar x$. $C>0$ proves a finite maximum. $C<0$ does not prove that ZIP wins globally; the certificate also covers every finite rectangle | proved | partly known: the boundary score underlies the ZIP-versus-ZINB score test (Ridout, Hinde and Demétrio 2001); a global existence theory (as Levin and Reeds give for NB) not known to us | [zinb](../../univariateML-cpp/include/cppunivariate/distributions/zinb/README.md) |
-| **A proved-finite sample the fitters cannot yet resolve.** 5000 zeros, 3958 ones, 4063 twos, 1979 fours: $C\approx+0.757$, so a finite ZINB maximum beats the ZIP face, at very large size. The historical fitter reported the ZIP limit (false non-existence); the certified fitter stops on budget even at iterlim 20000. The same positive counts make the zero-truncated NB report a false Poisson limit historically | proved (existence); open (location) | not checked | [zinb report](evaluations/2026-11-06-zinb-cert-report.md), [nbfam report](evaluations/2026-11-06-nbfam-cert-report.md) |
+| **A proved-finite sample the fitters cannot yet resolve.** 5000 zeros, 3958 ones, 4063 twos, 1979 fours: a finite ZINB maximum exists and is unique, certified independently at $r=8108.2389$, $p=0.99980$, $\pi=0.16328$, beating the ZIP face by only $4.67\times10^{-5}$ in total log likelihood ($3\times10^{-9}$ per observation). The historical fitter's $10^{-8}n$ face tolerance exceeds the whole gain, hence its false ZIP report; the certified fitter stops on budget because the profiled curvature in $\log r$ is $-9.3\times10^{-5}$ (condition number about $5\times10^8$) | certified (65 digits, padded) | not checked | [zinb-theory](evaluations/2026-11-07-zinb-theory-report.md) |
 | **The likelihood at a limit face is not the limit law's density.** Skew t (Fernández–Steel) with mean and sd held: as a half-width shrinks, the mode is forced toward the half-t endpoint, and each observation at that endpoint carries a density factor $(1+\rho^2)^{-(\nu+1)/2}$ relative to the closed half-t, with $\rho=h_\nu/[2(\nu-2)v]$, $v=1/(\nu-2)-h_\nu^2$; the factor is $0.604$ at $\nu=3$ and $e^{-\rho_N^2/2}\approx0.547$ at the joint normal corner. With $\nu$ free, or with fewer moments held, the full factor is reachable. Azzalini skew t: free location attains the closed half-t endpoint, but location held at the endpoint halves each tied observation's density. Weak convergence alone does not give the reachable likelihood | proved | not checked | [skew-theory](evaluations/2026-11-07-skew-theory-report.md) |
+| **ZINB, all free: what we can prove.** (i) If $n_0/n\le e^{-\bar x}$ (no excess zeros), a finite MLE exists iff $v>\bar x$ and is unique: the profile coincides with the NB profile. (ii) With the admissible ZIP fit $(\lambda_*,\pi_*)$, $C=A-S\lambda_*/2>0$ is sufficient. (iii) For integer data $C\neq0$ on the positive-inflation face, by Hermite–Lindemann. (iv) If every positive count equals one value $j\ge2$ and $k/n\le1-e^{-\lambda_j}$, no finite MLE exists; so $(0,0,0,4)$, with $v=3>\bar x=1$, has none: the NB variance criterion does not carry over. Open: necessity of $C>0$ and uniqueness in the excess-zero region, reduced to one inequality for the zero-truncated NB profile; LP searches over histograms found no counterexample | proved; open remainder | Sampford (1955, §8) left necessity and uniqueness for the two-parameter truncated NB conjectural (primary pages read); profile separation as in Haslett et al. (2022) | [zinb-theory](evaluations/2026-11-07-zinb-theory-report.md) |
 | **Standardized t, zero seam slope but the collapse wins.** Symmetric three-point sample (mass $2/3$ at $b$, $1/6$ at $b\pm d$): the normal-seam slope is exactly zero with positive second coefficient $n/4$, yet the profile decreases strictly in $\nu$ over $(2,\infty)$ and the supremum is the scale collapse at $\nu\downarrow2$, $-n\log(2d)$ | proved | not checked | [std](../../univariateML-cpp/include/cppunivariate/distributions/std/README.md) |
 
 ## 5. Interior regularity: a pointwise classification of 99 families
@@ -113,6 +116,7 @@ had conflated.
 - Fernández, C. and Steel, M. F. J. (1999). Multivariate Student-t regression models: pitfalls and inference. *Biometrika* 86, 153–167.
 - Grimshaw, S. D. (1993). Computing maximum likelihood estimates for the generalized Pareto distribution. *Technometrics* 35, 185–191.
 - Hallin, M. and Ley, C. (2012). Skew-symmetric distributions and Fisher information: a tale of two densities. *Bernoulli* 18, 747–763.
+- Haslett, J., Parnell, A. C., Hinde, J. and de Andrade Moral, R. (2022). Modelling excess zeros in count data: a new perspective on modelling approaches. *International Statistical Review*, doi:10.1111/insr.12479.
 - Levin, B. and Reeds, J. (1977). Compound multinomial likelihood functions are unimodal: proof of a conjecture of I. J. Good. *Annals of Statistics* 5, 79–87.
 - Reeds, J. A. (1985). Asymptotic number of roots of Cauchy location likelihood equations. *Annals of Statistics* 13, 775–784.
 - Ridout, M., Hinde, J. and Demétrio, C. G. B. (2001). A score test for testing a zero-inflated Poisson regression model against zero-inflated negative binomial alternatives. *Biometrics* 57, 219–223.
@@ -120,6 +124,7 @@ had conflated.
 - Self, S. G. and Liang, K.-Y. (1987). Asymptotic properties of maximum likelihood estimators and likelihood ratio tests under nonstandard conditions. *Journal of the American Statistical Association* 82, 605–610.
 - Smith, R. L. (1985). Maximum likelihood estimation in a class of nonregular cases. *Biometrika* 72, 67–90.
 - Willmot, G. E. (1987). The Poisson-inverse Gaussian distribution as an alternative to the negative binomial. *Scandinavian Actuarial Journal* 1987, 113–127.
+- Wang, Y. (1996). Estimation problems for the two-parameter negative binomial distribution. *Statistics & Probability Letters*, doi:10.1016/0167-7152(94)00259-2.
 - Wingo, D. R. (1983). Maximum likelihood methods for fitting the Burr type XII distribution to life test data. *Biometrical Journal* 25, 77–84.
 
 References are from memory and need checking before use.
