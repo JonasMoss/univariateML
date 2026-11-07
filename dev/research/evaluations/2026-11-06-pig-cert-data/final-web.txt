@@ -1,0 +1,21 @@
+Commands: just js-build; just js-test; just site-check; just relations
+Runner: workstation /tmp/umvl-cpu/run, one pinned CPU; EMCC_CORES=BINARYEN_CORES=GOMAXPROCS=1; nice 10
+Exit status: 0 for every command
+
+# tests 434
+# pass 434
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 193112.043116
+
+univariateML-cpp/include/cppunivariate/distributions/binom/mle.hpp:158:60: warning: self-comparison always evaluates to true [-Wtautological-compare]
+PASS inference browser: {"rows":355,"families":99,"desktop":[1280,1100],"mobile":[390,1000],"checks":["covariance and combined filters with follow-up evidence","all status filters","combined family/status/regime filters","empty state","reset","native evidence disclosure","no horizontal overflow","all rows and evidence without JavaScript","no page errors"]}
+PASS theory numerical: 5 static/live profiles, 4 escape messages and limit approaches, analytic normal held fits, static/live contours, parser and failed-fit gaps.
+PASS nice linear/log ticks; Gompertz free/held fits, conditional escape, fixed-rate boundary, static/live equality and build-time MathML.
+PASS likelihood windows: 15-unit clipping, low-marker expansion, constant likelihoods, marker clearance, finite SVG coordinates.
+PASS theory browser: desktop/mobile, live profiles and held faces, seeded data, errors, no-JS figures and diagnostics.
+Total dist: 20501081 B
+
+157 edges; 0 failed

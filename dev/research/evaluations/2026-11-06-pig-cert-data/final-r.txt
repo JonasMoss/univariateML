@@ -1,0 +1,43 @@
+b12182f99326b42ff9524a7c2acff4858178b647da4405b9252fa5decdbb2ccc  univariateML-cpp/include/cppunivariate/distributions/pig/mle.hpp
+7b7ff5715671cc9774d82d2dc2297d4aba1a12195500adb10118d4a034a2f881  bindings/common/distributions/pig/fit.hpp
+a5558009e7066fc16c87bc0af9b3e092e8d37d674df6c65f6b3f87cec0be7f67  bindings/r/distributions/pig/test.R
+  'test-dist-weibull.R:73:3', 'test-dist-yulesimon.R:2:3',
+  'test-dist-zeta.R:2:3', 'test-dist-zib.R:2:3', 'test-dist-zib.R:55:3',
+  'test-dist-zib.R:118:3', 'test-dist-zinb.R:18:3', 'test-dist-zip.R:10:3',
+  'test-dist-zinb.R:58:3', 'test-dist-zip.R:57:3', 'test-dist-zipf.R:30:3',
+  'test-dist-zmbinom.R:2:3', 'test-dist-zmbinom.R:52:3',
+  'test-dist-zmbinom.R:115:3', 'test-dist-zmgeom.R:2:3',
+  'test-dist-zmgeom.R:36:3', 'test-dist-zipf.R:117:3',
+  'test-dist-zmlogarithmic.R:2:3', 'test-dist-zmlogarithmic.R:36:3',
+  'test-dist-zmnbinom.R:2:3', 'test-dist-zmnbinom.R:60:3',
+  'test-dist-zmnbinom.R:75:3', 'test-dist-zmpois.R:2:3',
+  'test-dist-zmpois.R:36:3', 'test-dist-ztbinom.R:2:3',
+  'test-dist-ztgeom.R:2:3', 'test-dist-ztgeom.R:33:3',
+  'test-dist-ztbinom.R:49:3', 'test-dist-ztbinom.R:91:3',
+  'test-dist-ztnbinom.R:2:3', 'test-dist-ztpois.R:2:3',
+  'test-dist-ztpois.R:33:3', 'test-dist-ztnbinom.R:57:3',
+  'test-dist-ztnbinom.R:72:3'
+
+[ FAIL 0 | WARN 0 | SKIP 154 | PASS 20912 ]
+   user  system elapsed 
+218.312   2.891  60.385 
+⠙ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 43701 ] @ dist-slash                        
+⠹ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 43703 ] @ dist-slash                        
+⠸ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 43705 ] @ dist-slash                        
+⠼ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 43713 ] @ dist-slash                        
+⠴ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 43715 ] @ dist-slash                        
+⠦ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 43719 ] @ dist-slash                        
+⠧ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 43721 ] @ dist-slash                        
+⠇ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 43723 ] @ dist-slash                        
+⠏ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 43725 ] @ dist-slash                        
+⠋ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 43731 ] @ dist-slash                        
+✔ |        1440 | dist-slash [73.8s]                                            
+
+⠙ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 43732 ] Starting up...                      
+                                                                                
+══ Results ═════════════════════════════════════════════════════════════════════
+Duration: 135.8 s
+
+[ FAIL 0 | WARN 0 | SKIP 0 | PASS 43732 ]
+   user  system elapsed 
+504.397   5.096 138.039 

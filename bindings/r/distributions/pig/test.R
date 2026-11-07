@@ -40,10 +40,12 @@ test_that("fixed controls reject invalid values", {
   }
 })
 
-test_that("a tiny finite overdispersion gain loses the mandated face tie", {
+test_that("a small proved finite improvement is retained by the shape certificate", {
   x <- c(rep(0,10002),rep(2,10000),3)
   expect_gt(mean((x-mean(x))^2),mean(x))
-  expect_error(mlpig(x),"Use `mlpois`")
+  fit <- mlpig(x)
+  expect_true(is.finite(fit[["shape"]]))
+  expect_gt(attr(fit,"logLik"),sum(dpois(x,mean(x),log=TRUE)))
 })
 
 # P2: independent multistart reference-density oracle for every nonempty hold.
@@ -135,4 +137,72 @@ test_that("pig zero boundary works through generated d/p/q/r", {
     expect_equal(qpig(c(-Inf,-10000,0),mean=2,shape=0,lower.tail=lower,log.p=TRUE),rep(0,3))
   }
   expect_equal(rpig(20,mean=2,shape=0),rep(0,20))
+})
+
+test_that("held positive shape uses the unique mean certificate", {
+  f <- mlpig(1,shape=1/9)
+  expect_equal(unname(f[["mean"]]),2/3,tolerance=1e-9)
+  expect_equal(attr(f,"fixed"),"shape")
+  expect_equal(attr(logLik(f),"df"),1L)
+  for (s in c(1e-20,.01,3,1e20)) {
+    x <- c(0,0,0,0,10)
+    f <- mlpig(x,shape=s)
+    expect_gt(f[["mean"]],mean(x)/2)
+    expect_lt(f[["mean"]],2*mean(x))
+    expect_equal(attr(f,"logLik"),sum(dpig(x,f[["mean"]],s,log=TRUE)),tolerance=1e-9)
+  }
+  e <- tryCatch(mlpig(c(0,0,0,0,10),shape=3,iterlim=1),error=identity)
+  expect_s3_class(e,"univariateML_numerical")
+  expect_equal(e$kind,"numerical")
+  expect_equal(e$candidates$shape,3)
+  expect_equal(e$loglik_upper,Inf)
+  e <- tryCatch(mlpig(.Machine$integer.max,shape=3,iterlim=1),error=identity)
+  expect_s3_class(e,"univariateML_budget")
+  expect_equal(e$kind,"budget")
+})
+
+test_that("held-shape zero limit retains its fitted face", {
+  e <- tryCatch(mlpig(rep(0,3),shape=2),error=identity)
+  expect_s3_class(e,"univariateML_limit")
+  expect_equal(e$model,"pois")
+  expect_equal(e$estimates,c(lambda=0))
+  expect_equal(e$limit_loglik,0)
+  expect_equal(e$loglik_lower,0)
+  expect_equal(e$loglik_upper,0)
+})
+
+test_that("held-mean binary-count shape uses its closed-form certificate", {
+  x <- c(0,1,1)
+  f <- mlpig(x,mean=3,iterlim=1)
+  w <- sqrt(1-2*mean(x)/3)
+  expected <- 2*mean(x)^2/(w*(1+w)^2)
+  expect_equal(f[["shape"]],expected,tolerance=1e-12)
+  expect_equal(f[["mean"]],3)
+  expect_equal(attr(f,"fixed"),"mean")
+  expect_equal(attr(f,"logLik"),sum(dpig(x,3,expected,log=TRUE)),tolerance=1e-12)
+  e <- tryCatch(mlpig(1,mean=2),error=identity)
+  expect_s3_class(e,"univariateML_limit")
+  expect_equal(e$model,"pois")
+  expect_equal(e$estimates,c(lambda=2))
+  expect_equal(e$limit_loglik,dpois(1,2,log=TRUE))
+  e <- tryCatch(mlpig(x,mean=4/3),error=identity)
+  expect_s3_class(e,"univariateML_limit")
+  expect_s3_class(mlpig(x,mean=4/3+.Machine$double.eps,iterlim=1),"univariateML")
+})
+
+test_that("general shape certificates transport limit, tie and budget details", {
+  e <- tryCatch(mlpig(c(0,1,2,3),mean=2),error=identity)
+  expect_s3_class(e,"univariateML_limit")
+  expect_equal(e$model,"pois")
+  expect_equal(e$estimates,c(lambda=2))
+  e <- tryCatch(mlpig(c(0,1,2),mean=1+sqrt(1/3)),error=identity)
+  expect_s3_class(e,"univariateML_tie")
+  expect_equal(e$candidates$model,"pois")
+  expect_equal(e$loglik_upper,Inf)
+  e <- tryCatch(mlpig(c(0,0,.Machine$integer.max),iterlim=1),error=identity)
+  expect_s3_class(e,"univariateML_budget")
+  expect_equal(e$kind,"budget")
+  e <- tryCatch(mlpig(c(0,0,10),iterlim=1),error=identity)
+  expect_s3_class(e,"univariateML_numerical")
+  expect_true(nrow(e$candidates)>0)
 })
