@@ -685,3 +685,31 @@ test('SGED normal face conversion rejects rounded subnormal scales', async () =>
     assert.equal(error.loglik_upper,Infinity);return true;
   });
 });
+test('bnbinom alpha-held global certificate keeps both labels and the diagonal witness',async()=>{
+  const api=await (await import('./index.mjs')).default();
+  const x=read('bnbinom','golden').data;
+  const f=api.bnbinom.fit(x,{alpha:2});
+  assert.equal(f.status,'Ok');
+  assert.ok(Math.abs(f.estimates.size-1.15097395202066)<2e-8);
+  assert.ok(Math.abs(f.estimates.beta-4.50374529147196)<5e-8);
+  assert.deepEqual(Array.from(f.swap_maximum),[f.estimates.beta,2,f.estimates.size]);
+  assert.equal(f.diagonal_witness[0],f.diagonal_witness[2]);
+  const seamLL=api.bnbinom.d(x,f.diagonal_witness,{log:true}).reduce((a,b)=>a+b,0);
+  assert.ok(seamLL<f.logLik-.1);
+  const d=api.bnbinom.fit([0,0,1,2,3,6,12,24],{alpha:.5});
+  assert.ok(Math.abs(d.estimates.size-1.1088158545389952)<2e-8);
+  assert.ok(Math.abs(d.estimates.beta-d.estimates.size)<1e-8);
+  assert.throws(()=>api.bnbinom.fit([0,0,1,2,3,6,12,24],{alpha:2},{iterlim:1}),e=>{
+    assert.equal(e.kind,'budget');assert.ok(e.candidates.length>0);
+    assert.ok(e.loglik_upper>=e.loglik_lower);return true;
+  });
+});
+
+test('bnbinom alpha-held range exhaustion has numerical stop details',async()=>{
+  const api=await (await import('./index.mjs')).default();
+  assert.throws(()=>api.bnbinom.fit([0,0,1,2,3,6,12,24],{alpha:1e308}),e=>{
+    assert.equal(e.kind,'numerical');
+    assert.ok(e.candidates.every(c=>Number.isFinite(c.loglik_lower)&&Number.isFinite(c.loglik_upper)));
+    return true;
+  });
+});

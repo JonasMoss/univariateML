@@ -8,12 +8,13 @@
 #include "../nbinom/mle.hpp"
 #include "../pois/mle.hpp"
 #include "../../core/span.hpp"
+#include <array>
 #include <map>
 #include <vector>
 
 namespace cppunivariate {
 enum class BnbinomStatus { Ok, InvalidInput, NegativeBinomialLimit, PoissonLimit,
-                           PointMass, IterationFailure, NumericalFailure };
+                           PointMass, IterationFailure, NumericalFailure, ComparisonTie };
 struct BnbinomResult {
   double size, alpha, beta, logLik;
   int iterations;
@@ -198,6 +199,311 @@ inline BnbinomResult scalar_fit(const Cost &c, double tol, int maxit) {
   }
   return stop(true);
 }
+// Alpha-held certificates use single-crossing coordinate scores to enclose
+// every stationary maximum, then cover that rectangle. See README.md.
+struct AlphaBox { double rl, rh, bl, bh; };
+struct AlphaRoot { AlphaBox box; std::vector<double> p; double ll, error; };
+struct AlphaLikelihood { double value, margin; };
+inline AlphaLikelihood alpha_likelihood_bound(const Data &d,double a,const AlphaBox &q) {
+  CPPUNIV_EXTENDED_REAL value=d.n*zero(q.rl,a,q.bl),magnitude=std::abs(value);
+  const CPPUNIV_EXTENDED_REAL t=static_cast<CPPUNIV_EXTENDED_REAL>(a)+q.rh+q.bh;
+  for(std::size_t i=0;i<d.x.size();++i) {
+    const int x=d.x[i];
+    const CPPUNIV_EXTENDED_REAL r=increment(q.rh,x),b=increment(q.bh,x),
+      denominator=increment(t,x),factorial=special::lgamma(x+1.);
+    value+=d.count[i]*(r+b-denominator-factorial);
+    magnitude+=d.count[i]*(std::abs(r)+std::abs(b)+std::abs(denominator)+std::abs(factorial));
+  }
+  const double ll=static_cast<double>(value);
+  return {ll,1e-10*d.n*(1+std::abs(ll/d.n))+
+    512*std::numeric_limits<double>::epsilon()*static_cast<double>(magnitude)};
+}
+struct AlphaHessian { double rr, rb, bb; };
+inline AlphaHessian alpha_hessian(const Data &d, double a, double r, double b) {
+  double rr=special::trigamma(a+r)-special::trigamma(r);
+  double bb=special::trigamma(a+b)-special::trigamma(b), rb=0;
+  for(std::size_t i=0;i<d.x.size();++i) {
+    const double w=d.count[i]/d.n, t=special::trigamma(a+r+b+d.x[i]);
+    rr+=w*(special::trigamma(r+d.x[i])-t);
+    bb+=w*(special::trigamma(b+d.x[i])-t);rb-=w*t;
+  }
+  return {rr,rb,bb};
+}
+// Componentwise interval Hessian, using decreasing trigamma. All intervals
+// receive a practical cancellation margin; these are not outward roundings.
+inline std::array<AlphaHessian,2> alpha_hessian_bounds(const Data &d,double a,const AlphaBox &q) {
+  AlphaHessian lo{special::trigamma(a+q.rh)-special::trigamma(q.rl),0,
+                  special::trigamma(a+q.bh)-special::trigamma(q.bl)};
+  AlphaHessian hi{special::trigamma(a+q.rl)-special::trigamma(q.rh),0,
+                  special::trigamma(a+q.bl)-special::trigamma(q.bh)};
+  double mag=special::trigamma(a+q.rh)+special::trigamma(q.rl)+
+    special::trigamma(a+q.rl)+special::trigamma(q.rh)+
+    special::trigamma(a+q.bh)+special::trigamma(q.bl)+
+    special::trigamma(a+q.bl)+special::trigamma(q.bh);
+  for(std::size_t i=0;i<d.x.size();++i) {
+    const double w=d.count[i]/d.n, x=d.x[i];
+    const double tl=special::trigamma(a+q.rh+q.bh+x), th=special::trigamma(a+q.rl+q.bl+x);
+    lo.rr+=w*(special::trigamma(q.rh+x)-th);
+    hi.rr+=w*(special::trigamma(q.rl+x)-tl);
+    lo.bb+=w*(special::trigamma(q.bh+x)-th);
+    hi.bb+=w*(special::trigamma(q.bl+x)-tl);
+    lo.rb-=w*th;hi.rb-=w*tl;
+    mag+=w*(special::trigamma(q.rl+x)+special::trigamma(q.bl+x)+2*th);
+  }
+  const double e=512*std::numeric_limits<double>::epsilon()*mag;
+  lo.rr-=e;lo.rb-=e;lo.bb-=e;hi.rr+=e;hi.rb+=e;hi.bb+=e;
+  return {lo,hi};
+}
+inline double alpha_root_error(const Data &d,const std::vector<double> &p,double tol) {
+  const double radius=std::min(tol,1e-8)*.25,dr=p[0]*radius,db=p[2]*radius;
+  const AlphaBox small{p[0]-dr,p[0]+dr,p[2]-db,p[2]+db};
+  const auto h=alpha_hessian_bounds(d,p[1],small);
+  const auto r=scalar_score(d,p,0),b=scalar_score(d,p,2);
+  const double rr=std::max(std::abs(h[0].rr),std::abs(h[1].rr));
+  const double rb=std::max(std::abs(h[0].rb),std::abs(h[1].rb));
+  const double bb=std::max(std::abs(h[0].bb),std::abs(h[1].bb));
+  // Taylor's theorem transfers the evaluated-center likelihood enclosure to
+  // the enclosed stationary point, including coefficient-isolation error.
+  return alpha_likelihood_bound(d,p[1],{p[0],p[0],p[2],p[2]}).margin+
+    d.n*((std::abs(r.value)+r.margin)*dr+(std::abs(b.value)+b.margin)*db+
+         .5*(rr*dr*dr+2*rb*dr*db+bb*db*db));
+}
+inline bool alpha_isolate(const Cost &c, std::vector<double> &p, AlphaBox &box,
+                          double tol,int maxit,int &iterations) {
+  // Newton only proposes a center. The interval contraction below must prove
+  // existence, uniqueness and coefficient accuracy independently of this loop.
+  for(int it=0;it<maxit;++it) {
+    if(iterations<std::numeric_limits<int>::max())++iterations;
+    const auto g=scalar_score(c.d,p,0), h=scalar_score(c.d,p,2);
+    const auto H=alpha_hessian(c.d,p[1],p[0],p[2]);
+    const double det=H.rr*H.bb-H.rb*H.rb;
+    if(!(H.rr<0 && H.bb<0 && det>0) || !std::isfinite(det))return false;
+    const double dr=(H.bb*g.value-H.rb*h.value)/det;
+    const double db=(H.rr*h.value-H.rb*g.value)/det;
+    if(!std::isfinite(dr) || !std::isfinite(db))return false;
+    if(std::max(std::abs(dr)/p[0],std::abs(db)/p[2])<std::min(tol,1e-8)*.01)break;
+    if(std::abs(dr)>p[0]*.25 || std::abs(db)>p[2]*.25)return false;
+    p[0]-=dr;p[2]-=db;
+  }
+  if(p[0]>p[2])std::swap(p[0],p[2]);
+  const auto g=scalar_score(c.d,p,0), h=scalar_score(c.d,p,2);
+  const auto H=alpha_hessian(c.d,p[1],p[0],p[2]);
+  const double det=H.rr*H.bb-H.rb*H.rb;
+  if(!(H.rr<0 && H.bb<0 && det>0))return false;
+  const double m00=H.bb/det,m01=-H.rb/det,m11=H.rr/det;
+  const auto contraction=[&](double radius,AlphaBox &q) {
+    q={p[0]*(1-radius),p[0]*(1+radius),p[2]*(1-radius),p[2]*(1+radius)};
+    const auto bounds=alpha_hessian_bounds(c.d,p[1],q);
+    const auto lo=bounds[0],hi=bounds[1];
+    // Strict negative definiteness throughout the box makes its stationary
+    // point the unique box maximum, including its evaluated center.
+    if(!(hi.rr<0 && hi.bb<0 && hi.rr*hi.bb>std::max(lo.rb*lo.rb,hi.rb*hi.rb)))return false;
+    const auto product=[](double m,double l,double u) {return m>=0?std::array<double,2>{m*l,m*u}:std::array<double,2>{m*u,m*l};};
+    const auto bound=[&](double a0,double a1,double l0,double u0,double l1,double u1,double identity) {
+      const auto v=product(a0,l0,u0),w=product(a1,l1,u1);
+      return std::max(std::abs(identity-v[0]-w[0]),std::abs(identity-v[1]-w[1]));
+    };
+    const double e00=bound(m00,m01,lo.rr,hi.rr,lo.rb,hi.rb,1);
+    const double e01=bound(m00,m01,lo.rb,hi.rb,lo.bb,hi.bb,0);
+    const double e10=bound(m01,m11,lo.rr,hi.rr,lo.rb,hi.rb,0);
+    const double e11=bound(m01,m11,lo.rb,hi.rb,lo.bb,hi.bb,1);
+    const double er=std::abs(m00*g.value+m01*h.value)+std::abs(m00)*g.margin+std::abs(m01)*h.margin;
+    const double eb=std::abs(m01*g.value+m11*h.value)+std::abs(m01)*g.margin+std::abs(m11)*h.margin;
+    // The weighted infinity norm is used both for the mapping and contraction.
+    const double cr=e00+e01*p[2]/p[0], cb=e11+e10*p[0]/p[2];
+    return std::isfinite(cr+cb+er+eb) && cr<1 && cb<1 &&
+      er/p[0]+cr*radius<radius && eb/p[2]+cb*radius<radius;
+  };
+  AlphaBox small;
+  if(!contraction(std::min(tol,1e-8)*.25,small))return false;
+  double radius=.01;
+  for(int it=0;it<maxit;++it) {
+    if(contraction(radius,box))return std::isfinite(likelihood(c.d,p)) &&
+      std::isfinite(alpha_root_error(c.d,p,tol));
+    radius*=.5;
+    if(radius<std::min(tol,1e-8)*.25)break;
+  }
+  return false;
+}
+inline BnbinomResult alpha_fit(const Cost &c,double tol,int maxit) {
+  BnbinomResult out{NAN,NAN,NAN,NAN,0,BnbinomStatus::NumericalFailure};
+  const double a=c.fixed[1];
+  const long long cap=certificate_budget(maxit);
+  long long evaluations=0;
+  const auto margin=[&](const std::vector<double> &p) {
+    return alpha_likelihood_bound(c.d,a,{p[0],p[0],p[2],p[2]}).margin;
+  };
+  std::vector<double> best{1,a,1}, diagonal=best;
+  double best_ll=likelihood(c.d,best),diagonal_ll=best_ll;
+  std::vector<AlphaRoot> roots;
+  const auto known_root=[&](const std::vector<double> &p) {
+    const double width=std::min(tol,1e-8)*.25;
+    for(const auto &root:roots)
+      if(p[0]*(1-width)>root.box.rl && p[0]*(1+width)<root.box.rh &&
+         p[2]*(1-width)>root.box.bl && p[2]*(1+width)<root.box.bh)return true;
+    return false;
+  };
+  double global_upper=INFINITY;
+  const auto stop=[&](bool budget,bool tie=false) {
+    out.status=budget?BnbinomStatus::IterationFailure:(tie?BnbinomStatus::ComparisonTie:BnbinomStatus::NumericalFailure);
+    out.stop_detail.budget_exhausted=budget;out.stop_detail.comparison_tie=tie;
+    out.logLik=best_ll;
+    out.stop_detail.candidates.clear();
+    const auto retain=[&](const std::vector<double> &p,double ll) {
+      const double error=margin(p);
+      if(!std::isfinite(ll-error) || !std::isfinite(ll+error))return;
+      out.stop_detail.candidates.push_back({p,ll-error,ll+error,StopModel::None});
+    };
+    retain(best,best_ll);
+    if(best[0]!=best[2])retain({best[2],a,best[0]},best_ll);
+    retain(diagonal,diagonal_ll);
+    for(const auto &root:roots) {
+      out.stop_detail.candidates.push_back({root.p,root.ll-root.error,root.ll+root.error,StopModel::None});
+      if(root.p[0]!=root.p[2])out.stop_detail.candidates.push_back(
+        {{root.p[2],a,root.p[0]},root.ll-root.error,root.ll+root.error,StopModel::None});
+    }
+    out.stop_detail.loglik_lower=best_ll-margin(best);
+    out.stop_detail.loglik_upper=global_upper;
+    return out;
+  };
+  // Proposals are not evidence: no window from Cost constrains the certificate.
+  // The diagonal proposal is retained even when it is a saddle.
+  for(double r:{.15,1.,6.,40.})for(double b:{.15,1.,6.,40.}) {
+    if(r>b)continue;
+    auto u=optimise(c,{std::log(r),std::log(b)},tol,maxit,out.iterations);
+    auto p=c.decode(u);
+    if(p[0]>p[2])std::swap(p[0],p[2]);
+    const double ll=likelihood(c.d,p);
+    if(std::isfinite(ll) && ll>best_ll){best=p;best_ll=ll;}
+    if(r==b && std::abs(p[0]-p[2])<1e-8*(1+p[0])) {
+      const double mid=(p[0]+p[2])/2;
+      const double dll=likelihood(c.d,{mid,a,mid});
+      if(std::isfinite(dll) && dll>diagonal_ll){diagonal={mid,a,mid};diagonal_ll=dll;}
+    }
+    if(++evaluations>cap)return stop(true);
+    AlphaBox box;
+    if(alpha_isolate(c,p,box,tol,maxit,out.iterations)) {
+      if(!known_root(p))roots.push_back({box,p,likelihood(c.d,p),alpha_root_error(c.d,p,tol)});
+    }
+  }
+  if(!std::isfinite(best_ll))return stop(false);
+  // Small-shape exclusion: p_x <= min(1,(r)_x/x!) uniformly in beta.
+  double lower=1,small_upper=0;
+  while(true) {
+    if(++evaluations>cap)return stop(true);
+    CPPUNIV_EXTENDED_REAL ll=0;
+    double small_magnitude=0;
+    for(std::size_t i=0;i<c.d.x.size();++i)if(c.d.x[i]>0) {
+      const double numerator=static_cast<double>(increment(lower,c.d.x[i]));
+      const double denominator=special::lgamma(c.d.x[i]+1.);
+      ll+=c.d.count[i]*std::min(0.,numerator-denominator);
+      small_magnitude+=c.d.count[i]*(std::abs(numerator)+std::abs(denominator));
+    }
+    small_upper=static_cast<double>(ll);
+    if(std::isfinite(small_upper) && small_upper+1e-10*c.d.n*(1+std::abs(small_upper/c.d.n))+512*std::numeric_limits<double>::epsilon()*small_magnitude<best_ll-margin(best))break;
+    lower*=.5;
+    if(!(lower>0))return stop(false);
+  }
+  // Since the r-score is strictly decreasing in beta, its single-crossing
+  // scalar theorem makes a negative score at (upper,lower) exclude every
+  // stationary maximum with r>=upper,beta>=lower. Symmetry closes beta too.
+  double upper=std::max(1.,2*lower);
+  while(true) {
+    if(++evaluations>cap)return stop(true);
+    const auto score=scalar_score(c.d,{upper,a,lower},0);
+    if(!std::isfinite(score.value+score.margin))return stop(false);
+    if(score.value < -score.margin)break;
+    upper*=2;
+    if(!std::isfinite(upper))return stop(false);
+  }
+  // The diagonal score has a single crossing too: increasing both shapes
+  // preserves the scalar sign after its root. This isolates a seam witness,
+  // without assuming it maximizes the two-dimensional likelihood.
+  double dl=std::log(lower),dh=std::log(upper);
+  for(int it=0;it<maxit;++it) {
+    if(++evaluations>cap)return stop(true);
+    const double mid=std::exp(dl+(dh-dl)/2);
+    const auto score=scalar_score(c.d,{mid,a,mid},0);
+    const double ll=likelihood(c.d,{mid,a,mid});
+    if(std::isfinite(ll) && ll>diagonal_ll){diagonal={mid,a,mid};diagonal_ll=ll;}
+    if(score.value>score.margin)dl=std::log(mid);
+    else if(score.value < -score.margin)dh=std::log(mid);
+    else break;
+    if(dh-dl<std::min(tol,1e-8))break;
+  }
+  {
+    if(++evaluations>cap)return stop(true);
+    auto p=diagonal;AlphaBox box;
+    if(alpha_isolate(c,p,box,tol,maxit,out.iterations)) {
+      if(!known_root(p))roots.push_back({box,p,likelihood(c.d,p),alpha_root_error(c.d,p,tol)});
+    }
+  }
+  // Every exterior point is below the witness or is dominated by clipping
+  // its large coordinates to upper. Zero is a universal log-likelihood UB.
+  global_upper=0;
+  std::vector<AlphaBox> queue{{lower,upper,lower,upper}};
+  const auto covered=[&](const AlphaBox &q,const AlphaBox &r) {
+    return q.rl>=r.rl && q.rh<=r.rh && q.bl>=r.bl && q.bh<=r.bh;
+  };
+  while(!queue.empty()) {
+    if(++evaluations>cap)return stop(true);
+    const AlphaBox q=queue.back();queue.pop_back();
+    // Work in the identified half; boxes crossing the diagonal stay intact.
+    if(q.rl>q.bh)continue;
+    bool isolated=false;
+    for(const auto &root:roots)if(covered(q,root.box)){isolated=true;break;}
+    if(isolated)continue;
+    // Monotone mass-ratio enclosure, valid including on the singular diagonal.
+    const auto enclosure=alpha_likelihood_bound(c.d,a,q);
+    if(!std::isfinite(enclosure.value+enclosure.margin))return stop(false);
+    if(enclosure.value+enclosure.margin<best_ll-margin(best))continue;
+    // Coordinate profiles need no numerical root at each box: the scalar
+    // theorem and negative cross partial propagate corner score signs.
+    bool excluded=false;
+    for(int j:{0,2}) {
+      const auto lo=scalar_score(c.d,{q.rl,a,q.bl},j),hi=scalar_score(c.d,{q.rh,a,q.bh},j);
+      if(!std::isfinite(lo.value+lo.margin+hi.value+hi.margin))return stop(false);
+      if(lo.value < -lo.margin || hi.value>hi.margin){excluded=true;break;}
+    }
+    if(excluded)continue;
+    // Discover any root missed by proposals, once its box is local enough.
+    const double wr=std::log(q.rh/q.rl),wb=std::log(q.bh/q.bl);
+    if(std::max(wr,wb)<.02) {
+      std::vector<double> p{std::sqrt(q.rl)*std::sqrt(q.rh),a,std::sqrt(q.bl)*std::sqrt(q.bh)};
+      if(p[0]>p[2])std::swap(p[0],p[2]);
+      AlphaBox box;
+      if(alpha_isolate(c,p,box,tol,maxit,out.iterations)) {
+        if(!known_root(p))roots.push_back({box,p,likelihood(c.d,p),alpha_root_error(c.d,p,tol)});
+        if(covered(q,box))continue;
+      }
+    }
+    if(wr>=wb) {
+      const double mid=std::sqrt(q.rl)*std::sqrt(q.rh);
+      if(!(q.rl<mid && mid<q.rh))return stop(false);
+      queue.push_back({mid,q.rh,q.bl,q.bh});queue.push_back({q.rl,mid,q.bl,q.bh});
+    } else {
+      const double mid=std::sqrt(q.bl)*std::sqrt(q.bh);
+      if(!(q.bl<mid && mid<q.bh))return stop(false);
+      queue.push_back({q.rl,q.rh,mid,q.bh});queue.push_back({q.rl,q.rh,q.bl,mid});
+    }
+  }
+  // Full coverage proves every global maximum is one of these isolated roots.
+  if(roots.empty())return stop(false);
+  std::size_t winner=0;
+  for(std::size_t i=1;i<roots.size();++i)if(roots[i].ll>roots[winner].ll)winner=i;
+  global_upper=-INFINITY;
+  for(const auto &root:roots)global_upper=std::max(global_upper,root.ll+root.error);
+  for(std::size_t i=0;i<roots.size();++i)if(i!=winner &&
+      roots[i].ll+roots[i].error>=roots[winner].ll-roots[winner].error)return stop(false,true);
+  const auto &root=roots[winner];
+  out.size=root.p[0];out.alpha=a;out.beta=root.p[2];out.logLik=root.ll;out.status=BnbinomStatus::Ok;
+  // Both labeled maxima and the singular-diagonal witness remain inspectable.
+  stop(false);
+  out.status=BnbinomStatus::Ok;out.logLik=root.ll;
+  out.stop_detail.loglik_lower=root.ll-root.error;
+  return out;
+}
+
 }
 inline BnbinomResult bnbinom_mle(ispan x, double tol=1e-8, int maxit=600,
     double size_fixed=std::numeric_limits<double>::quiet_NaN(),
@@ -223,6 +529,8 @@ inline BnbinomResult bnbinom_mle(ispan x, double tol=1e-8, int maxit=600,
       bnbinom_detail::likelihood(d,cost.fixed),0,BnbinomStatus::Ok};
   if (sum==0) { out.logLik=0; out.status=BnbinomStatus::PointMass; return out; }
   if (cost.free.size()==1) return bnbinom_detail::scalar_fit(cost,tol,maxit);
+  if (cost.free.size()==2 && std::isfinite(alpha_fixed))
+    return bnbinom_detail::alpha_fit(cost,tol,maxit);
   const bool fr=std::isnan(size_fixed), fa=std::isnan(alpha_fixed), fb=std::isnan(beta_fixed);
   StopDetail nb_detail, po_detail;
   double face=-std::numeric_limits<double>::infinity();

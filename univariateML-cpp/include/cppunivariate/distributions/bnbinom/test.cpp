@@ -278,3 +278,81 @@ TEST_CASE("bnbinom: scalar scaled exact roots and floating-point failure") {
   CHECK(f.status==cppunivariate::BnbinomStatus::NumericalFailure);
   CHECK(std::isnan(f.alpha));
 }
+
+TEST_CASE("bnbinom: alpha-held global off-diagonal certificate retains both labels and seam") {
+  const auto golden=mltest::load_distribution_golden("bnbinom");
+  std::vector<int> x;for(double v:golden.data)x.push_back(static_cast<int>(v));
+  const auto f=cppunivariate::bnbinom_mle({x.data(),x.size()},1e-8,600,NAN,2,NAN);
+  REQUIRE(f.status==cppunivariate::BnbinomStatus::Ok);
+  CHECK(f.size==doctest::Approx(1.15097395202066).epsilon(1e-8));
+  CHECK(f.beta==doctest::Approx(4.50374529147196).epsilon(1e-8));
+  CHECK(f.logLik==doctest::Approx(-1275.720827702446).epsilon(1e-12));
+  CHECK(f.size<f.beta);
+  bool direct=false,mirror=false,diagonal=false;
+  for(const auto &c:f.stop_detail.candidates) {
+    REQUIRE(c.coef.size()==3);
+    direct=direct || (std::abs(c.coef[0]-f.size)<1e-7 && std::abs(c.coef[2]-f.beta)<1e-7);
+    mirror=mirror || (std::abs(c.coef[2]-f.size)<1e-7 && std::abs(c.coef[0]-f.beta)<1e-7);
+    if(c.coef[0]==c.coef[2]) {
+      diagonal=true;CHECK(c.loglik_upper<f.logLik-.1);
+    }
+  }
+  CHECK(direct);CHECK(mirror);CHECK(diagonal);
+  CHECK(f.stop_detail.loglik_lower<=f.logLik);
+  CHECK(f.stop_detail.loglik_upper>=f.logLik);
+  CHECK_FALSE(f.stop_detail.budget_exhausted);
+}
+
+TEST_CASE("bnbinom: alpha-held diagonal is certified without imposing symmetry") {
+  const std::vector<int>x{0,0,1,2,3,6,12,24};
+  const auto f=cppunivariate::bnbinom_mle({x.data(),x.size()},1e-8,600,NAN,.5,NAN);
+  REQUIRE(f.status==cppunivariate::BnbinomStatus::Ok);
+  CHECK(f.size==doctest::Approx(1.1088158545389952).epsilon(1e-8));
+  CHECK(f.beta==doctest::Approx(f.size).epsilon(1e-10));
+  CHECK(f.logLik==doctest::Approx(-23.848045048100712).epsilon(1e-12));
+  // The population information is singular on this seam; the observed
+  // likelihood Hessian can still be negative definite.
+  cppunivariate::bnbinom_detail::Data d;
+  d.n=x.size();for(int v:x){d.x.push_back(v);d.count.push_back(1);}
+  const auto h=cppunivariate::bnbinom_detail::alpha_hessian(d,.5,f.size,f.beta);
+  CHECK(h.rr<0);CHECK(h.rr*h.bb>h.rb*h.rb);
+}
+
+TEST_CASE("bnbinom: alpha-held work exhaustion and cancellation never return an estimate") {
+  const std::vector<int>x{0,0,1,2,3,6,12,24};
+  const auto f=cppunivariate::bnbinom_mle({x.data(),x.size()},1e-8,1,NAN,2,NAN);
+  CHECK(f.status==cppunivariate::BnbinomStatus::IterationFailure);
+  CHECK(f.stop_detail.budget_exhausted);
+  CHECK(std::isnan(f.size));CHECK(std::isnan(f.beta));
+  CHECK_FALSE(f.stop_detail.candidates.empty());
+  CHECK(f.stop_detail.loglik_upper>=f.stop_detail.loglik_lower);
+  const auto zero=cppunivariate::bnbinom_mle({x.data(),x.size()},1e-8,0,NAN,2,NAN);
+  CHECK(zero.status==cppunivariate::BnbinomStatus::InvalidInput);
+}
+
+TEST_CASE("bnbinom: alpha-held box Hessian encloses interior derivatives") {
+  const std::vector<int>x{0,1,3,12,24};
+  cppunivariate::bnbinom_detail::Data d;
+  d.n=x.size();for(int v:x){d.x.push_back(v);d.count.push_back(1);}
+  for(double a:{.1,1.,10.})for(double r:{.2,1.,8.})for(double b:{.3,2.,20.}) {
+    const cppunivariate::bnbinom_detail::AlphaBox box{.99*r,1.01*r,.99*b,1.01*b};
+    const auto h=cppunivariate::bnbinom_detail::alpha_hessian_bounds(d,a,box);
+    for(double u:{.99,1.,1.01})for(double v:{.99,1.,1.01}) {
+      const auto actual=cppunivariate::bnbinom_detail::alpha_hessian(d,a,u*r,v*b);
+      CHECK(h[0].rr<=actual.rr);CHECK(actual.rr<=h[1].rr);
+      CHECK(h[0].rb<=actual.rb);CHECK(actual.rb<=h[1].rb);
+      CHECK(h[0].bb<=actual.bb);CHECK(actual.bb<=h[1].bb);
+    }
+  }
+}
+
+TEST_CASE("bnbinom: alpha-held unrepresentable certificate range stops numerically") {
+  const std::vector<int>x{0,0,1,2,3,6,12,24};
+  const auto f=cppunivariate::bnbinom_mle({x.data(),x.size()},1e-8,600,NAN,1e308,NAN);
+  CHECK(f.status==cppunivariate::BnbinomStatus::NumericalFailure);
+  CHECK_FALSE(f.stop_detail.budget_exhausted);
+  CHECK(std::isnan(f.size));CHECK(std::isnan(f.beta));
+  for(const auto &candidate:f.stop_detail.candidates) {
+    CHECK(std::isfinite(candidate.loglik_lower));CHECK(std::isfinite(candidate.loglik_upper));
+  }
+}

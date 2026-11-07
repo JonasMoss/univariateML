@@ -1,0 +1,65 @@
+Final validation: TASK-116.34, bnbinom alpha-held
+
+simbox environment:
+c++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
+Rscript (R) version 4.6.1 (2026-06-24)
+
+simbox: targeted: GREEN; start 2026-11-07T18:56:03Z; finish 2026-11-07T18:56:15Z
+[doctest] test cases:     22 |     22 passed | 0 failed | 0 skipped
+[doctest] assertions: 186562 | 186562 passed | 0 failed |
+[doctest] Status: SUCCESS!
+
+simbox: cpp-dev: GREEN; start 2026-11-07T18:56:15Z; finish 2026-11-07T18:58:24Z
+100% tests passed out of 106
+
+simbox: cpp-full: GREEN; start 2026-11-07T18:58:24Z; finish 2026-11-07T19:01:44Z
+100% tests passed out of 129
+
+simbox: cpp-no-long-double: GREEN; start 2026-11-07T19:01:44Z; finish 2026-11-07T19:05:49Z
+100% tests passed out of 129
+
+simbox: r-dev: GREEN; start 2026-11-07T19:05:49Z; finish 2026-11-07T19:07:47Z
+FAIL 0, WARN 0, SKIP 154, PASS 21377
+
+simbox: r-full: GREEN; start 2026-11-07T19:07:47Z; finish 2026-11-07T19:12:32Z
+FAIL 0, WARN 0, SKIP 0, PASS 44195
+
+workstation: cpp-no-long-double: GREEN; start 2026-11-07T22:20:27Z; finish 2026-11-07T22:26:42Z
+100% tests passed, 0 tests failed out of 129
+
+workstation: js-build: GREEN; start 2026-11-07T22:26:42Z; finish 2026-11-07T22:27:54Z
+
+workstation: js-test: GREEN; start 2026-11-07T22:27:54Z; finish 2026-11-07T22:30:30Z
+# tests 480
+# suites 0
+# pass 480
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 156431.074095
+
+workstation: site-check: GREEN; start 2026-11-07T22:30:30Z; finish 2026-11-07T22:31:39Z
+Log-density fallback: cmb, cmp, dweibull, gev, gpd, huber, sged, snorm, sstd, st, tbinom, tpois, triang, zib, zinb, zip, zipf, zmbinom, zmgeom, zmlogarithmic, zmnbinom, zmpois
+WEIGHT exp: HTML 25426 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+WEIGHT gamma: HTML 29651 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+WEIGHT gb2: HTML 51508 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+WEIGHT binom: HTML 41341 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+WEIGHT hyper: HTML 40161 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+WEIGHT sstd: HTML 134469 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+Total dist: 21794186 B
+
+workstation: targeted bnbinom double-width preflight: GREEN
+[doctest] test cases:     22 |     22 passed | 0 failed | 0 skipped
+[doctest] assertions: 186562 | 186562 passed | 0 failed |
+[doctest] Status: SUCCESS!
+
+Source fingerprints: match retained source.json and simbox before/after records.
+golden.json, dpqr.hpp, truth.py, truth.json: byte-identical to HEAD.
+C++, R and shared JS tests: append-only.
+Paired benchmark: all masks status Ok; unchanged routes identical coefficients/logLik.
+80-digit oracle: four roots and 400 sampled mass-box comparisons pass (simbox).
+60-digit retained nonuniqueness reproducer: 861 segments / 431 accepted (simbox).
+git diff --check: clean.
+
+Workstation compiler: c++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0

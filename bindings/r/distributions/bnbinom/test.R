@@ -123,3 +123,36 @@ test_that("scalar cancellation is a structured numerical stop", {
   expect_equal(e$kind,"numerical")
   expect_equal(nrow(e$candidates),1L)
 })
+
+test_that("alpha-held certificate preserves off-diagonal maxima and the singular seam", {
+  root <- Sys.getenv("UMVL_DISTRIBUTIONS_DIR")
+  skip_if(!nzchar(root), "no distribution goldens")
+  x <- jsonlite::fromJSON(file.path(root,"bnbinom","golden.json"))$data
+  fit <- mlbnbinom(x,alpha=2)
+  expect_equal(unname(fit[c("size","beta")]),c(1.15097395202066,4.50374529147196),tolerance=1e-8)
+  expect_equal(attr(fit,"logLik"),-1275.720827702446,tolerance=1e-12)
+  raw <- getFromNamespace("mlbnbinom_","univariateML")(as.integer(x),alpha=2)
+  expect_equal(raw$swap_maximum,unname(raw$estimates[c("beta","alpha","size")]))
+  expect_equal(raw$diagonal_witness[1],raw$diagonal_witness[3])
+  expect_lt(sum(bnbinom_exact(x,raw$diagonal_witness)),attr(fit,"logLik")-.1)
+  e <- tryCatch(mlbnbinom(c(0,0,1,2,3,6,12,24),alpha=2,iterlim=1),error=identity)
+  expect_s3_class(e,"univariateML_budget")
+  expect_equal(e$kind,"budget")
+  expect_gte(nrow(e$candidates),1L)
+  expect_gte(e$loglik_upper,e$loglik_lower)
+})
+
+test_that("alpha-held diagonal maximum passes the full pair certificate", {
+  fit <- mlbnbinom(c(0,0,1,2,3,6,12,24),alpha=.5)
+  expect_equal(unname(fit[c("size","beta")]),rep(1.1088158545389952,2),tolerance=1e-8)
+  expect_equal(attr(fit,"fixed"),"alpha")
+  expect_equal(attr(logLik(fit),"df"),2L)
+})
+
+test_that("alpha-held range exhaustion is a structured numerical condition", {
+  e <- tryCatch(mlbnbinom(c(0,0,1,2,3,6,12,24),alpha=1e308),error=identity)
+  expect_s3_class(e,"univariateML_numerical")
+  expect_equal(e$kind,"numerical")
+  expect_true(all(is.finite(e$candidates$loglik_lower)))
+  expect_true(all(is.finite(e$candidates$loglik_upper)))
+})
