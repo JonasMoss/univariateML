@@ -399,7 +399,7 @@ inline BetaResult beta_mle(span x, double tol, int maxit,
   tol = std::max(tol, 1e-14);
   double width = tol, eta = eta0, mu = 0, mc = 0;
   bool solved = false;
-  for (std::int64_t pass = 0; pass < std::min<std::int64_t>(8, budget) && !solved; ++pass) {
+  for (std::int64_t pass = 0; pass < budget && !solved; ++pass) {
     const auto outer = beta_detail::decreasing_root(profile, eta, width, width,
         lower, upper, budget, pass == 0 ? 1 : 4 * width);
     if (!outer.ok || !inner_ok) break;
