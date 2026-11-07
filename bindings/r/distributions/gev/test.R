@@ -210,3 +210,16 @@ test_that("gev evaluates its attained xi=-1 endpoint", {
   expect_equal(qml(1, fit), 5)
   expect_equal(qml(-Inf, fit, lower.tail=FALSE, log.p=TRUE), 5)
 })
+
+test_that("GEV concave location certificate has a typed non-convergence stop", {
+  e <- tryCatch(mlgev(c(-2,0,.3,1,5),sigma=2,xi=-.3,iterlim=1),error=identity)
+  expect_s3_class(e,"univariateML_numerical")
+  f <- mlgev(c(-2,0,.3,1,5),sigma=2,xi=-.3)
+  oracle <- optimize(function(m) -sum(dgev(c(-2,0,.3,1,5),m,2,-.3,log=TRUE)),c(5+2/(-.3)+1e-10,10),tol=1e-10)
+  expect_equal(unname(f["mu"]),oracle$minimum,tolerance=1e-7)
+})
+
+test_that("GEV location certificate rejects a rounded location", {
+  e <- tryCatch(mlgev(1e300,sigma=1,xi=-.3),error=identity)
+  expect_s3_class(e,"univariateML_numerical")
+})

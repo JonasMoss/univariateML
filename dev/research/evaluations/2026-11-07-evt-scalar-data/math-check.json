@@ -1,0 +1,6 @@
+{
+  "seed": 11630,
+  "checks": 1494,
+  "worst_frechet_score_error_per_observation": 9.158366904355515e-10,
+  "status": "pass"
+}

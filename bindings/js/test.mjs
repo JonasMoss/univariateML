@@ -524,3 +524,20 @@ test('SGED subunit scale ties and exhausted certificates stop in the common bind
     assert.equal(error.kind,'budget');assert.ok(error.candidates.length>=1);return true;
   });
 });
+test('extreme scalar certificates expose common binding stops', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  for(const [family,x,held] of [
+    ['frechet',[0,.2,.5,1,3,20],{lambda:2}],
+    ['gev',[-2,0,.3,1,5],{sigma:2,xi:-.3}]
+  ]) {
+    assert.throws(() => api[family].fit(new Float64Array(x),held,{iterlim:1}), e => {
+      assert.equal(e.kind,'numerical');assert.equal(e.loglik_upper,Infinity);
+      assert.ok(e.candidates.length>0);return true;
+    });
+    assert.equal(api[family].fit(new Float64Array(x),held).status,'Ok');
+  }
+  assert.throws(() => api.frechet.fit(new Float64Array([0,0,1,2]),{lambda:1}), e => {
+    assert.equal(e.kind,'nomle');assert.ok(Number.isFinite(e.loglik_upper));return true;
+  });
+});

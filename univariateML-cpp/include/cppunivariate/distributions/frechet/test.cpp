@@ -159,3 +159,79 @@ TEST_CASE("Frechet held location subsets inherit inverse Weibull") {
   CHECK(r.sigma==doctest::Approx(p.scale));
  }
 }
+
+TEST_CASE("frechet: fixed-shape certificates cover profiled scale and monotone location") {
+ const std::vector<double> x{0,.2,.5,1,3,20};const auto d=mltest::as_span(x);
+ for(double a:{.5,1.,2.,10.})for(double scale:{double(NAN),.7}) {
+   const auto f=cppunivariate::frechet_mle(d,1e-11,1000,NAN,a,scale);
+   CAPTURE(a);CAPTURE(scale);
+   REQUIRE(f.status==cppunivariate::FrechetStatus::Ok);
+   // Independent dense feasible competitors, including the old search edges.
+   for(int j=-400;j<=400;++j) {
+     const double gap=std::exp(j*.1);
+     const double s=std::isnan(scale)?cppunivariate::frechet_scale(d,a,-gap):scale;
+     CHECK(cppunivariate::frechet_loglik(d,a,-gap,s)<=f.logLik+1e-8);
+   }
+   std::vector<double> y;for(double v:x)y.push_back(3+v*1e50);
+   const auto g=cppunivariate::frechet_mle(mltest::as_span(y),1e-11,1000,NAN,a,std::isnan(scale)?NAN:scale*1e50);
+   REQUIRE(g.status==cppunivariate::FrechetStatus::Ok);
+   CHECK(g.mu/1e50==doctest::Approx(f.mu).epsilon(1e-8));
+   CHECK(g.sigma/1e50==doctest::Approx(f.sigma).epsilon(1e-8));
+ }
+ const auto b=cppunivariate::frechet_mle(d,1e-10,1,NAN,2);
+ CHECK(b.status==cppunivariate::FrechetStatus::IterationFailure);
+ CHECK_FALSE(b.stop_detail.budget_exhausted);
+ REQUIRE(!b.stop_detail.candidates.empty());
+ CHECK(std::isinf(b.stop_detail.loglik_upper));
+ const std::vector<double> ties{0,0,1,2};
+ const auto c=cppunivariate::frechet_mle(mltest::as_span(ties),1e-10,100,NAN,1);
+ CHECK(c.status==cppunivariate::FrechetStatus::InvalidData);
+ CHECK(c.stop_detail.loglik_upper==doctest::Approx(4*std::log(2.)-4-2*std::log(2.)));
+}
+
+TEST_CASE("frechet: near-collapse exponent is evaluated without a rounded false equality") {
+ const std::vector<double> x{0,1,2,3};
+ const double a=1./3.;
+ // This double lies below the exact rational boundary; its ordinary
+ // product by 3 rounds to 1, whereas fma retains the negative exponent.
+ REQUIRE(std::fma(a,3.,-1.)<0);
+ const auto f=cppunivariate::frechet_mle(mltest::as_span(x),1e-10,100,NAN,a);
+ CHECK(f.status==cppunivariate::FrechetStatus::InvalidData);
+ CHECK(std::isinf(f.stop_detail.loglik_upper));
+}
+
+TEST_CASE("frechet: the double above the collapse ratio is not classified as nonexistence") {
+ const std::vector<double> x{0,1,2,3};
+ const double a=std::nextafter(1./3.,1.);
+ REQUIRE(std::fma(a,3.,-1.)>0);
+ const auto f=cppunivariate::frechet_mle(mltest::as_span(x),1e-10,100,NAN,a);
+ CHECK(f.status!=cppunivariate::FrechetStatus::InvalidData);
+ CHECK(f.status!=cppunivariate::FrechetStatus::NoMLE);
+}
+
+TEST_CASE("frechet: unrepresentable stopped witnesses are removed") {
+ const std::vector<double> x{-1e308,-.9e308,0};
+ const auto f=cppunivariate::frechet_mle(mltest::as_span(x),1e-10,1,NAN,2);
+ CHECK(f.status==cppunivariate::FrechetStatus::NumericalFailure);
+ CHECK(f.stop_detail.candidates.empty());
+}
+
+TEST_CASE("frechet: finite collapse bound survives an overflowing observation range") {
+ const std::vector<double> x{-1e308,1e308};
+ const auto f=cppunivariate::frechet_mle(mltest::as_span(x),1e-10,100,NAN,1);
+ CHECK(f.status==cppunivariate::FrechetStatus::InvalidData);
+ CHECK(std::isfinite(f.stop_detail.loglik_upper));
+ CHECK(f.stop_detail.loglik_upper==doctest::Approx(-2-2*std::log(1e308)).epsilon(1e-12));
+}
+
+TEST_CASE("frechet: overflowing positive-exponent normalization is numerical, not nonexistence") {
+ const std::vector<double> x{-1e308,1e308};
+ const auto f=cppunivariate::frechet_mle(mltest::as_span(x),1e-10,100,NAN,2);
+ CHECK(f.status==cppunivariate::FrechetStatus::NumericalFailure);
+}
+
+TEST_CASE("frechet: enormous held powers do not return a rounded-log point fit") {
+ const std::vector<double> x{0,.2,.5,1,3,20};
+ const auto f=cppunivariate::frechet_mle(mltest::as_span(x),1e-10,100,NAN,1e100);
+ CHECK(f.status==cppunivariate::FrechetStatus::NumericalFailure);
+}

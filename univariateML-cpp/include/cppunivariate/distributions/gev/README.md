@@ -98,7 +98,7 @@ relations: {}
 fit:
   method: profile-search
   certified: 'partial'
-  note: "gev/mle.hpp, gev_held_profile and gev_profile: Held xi=-1 has closed-form shifted reverse-exponential fits; held xi=0 and sigma give analytic location. These nontrivial submodels are certified. General free and conditional fits use scalar profiles, finite scans and root discovery without a global enumeration certificate; half-tie face comparisons remain numerical."
+  note: "gev/mle.hpp, gev_held_profile and gev_profile: Held xi=-1 has closed-form shifted reverse-exponential fits; held xi=0 and sigma give analytic location; held sigma and -1<xi<0 give a strictly concave, bracketed location solve. These nontrivial submodels are certified. General free and conditional fits use scalar profiles, finite scans and root discovery without a global enumeration certificate; half-tie face comparisons remain numerical."
 areas:
 - extremes and environment
 existence:
@@ -145,7 +145,29 @@ Only ties at the sample minimum matter. Let $k$ observations equal the minimum. 
 
 Held shapes above 1 are accepted when the tie condition allows them. A held shape below $-1$ is accepted only when $\mu$ is held at or above the sample maximum, or when every coefficient is held.
 
-With the shape held, holding the scale leaves a one-dimensional fit for the location (exact for the Gumbel case), and holding the location leaves one for the scale. With the shape free, the fit profiles over $\xi$ and compares interior maxima with both shape bounds. The search is checked against independent multistart fits; it is not certified. The default fit needs three finite, non-constant observations.
+With the shape held, holding the scale leaves a one-dimensional fit for the location (certified for nonpositive shape), and holding the location leaves one for the scale. With the shape free, the fit profiles over $\xi$ and compares interior maxima with both shape bounds. The search is checked against independent multistart fits; it is not certified. The default fit needs three finite, non-constant observations.
+
+
+At fixed scale and $-1<\xi<0$, set
+$t_i=1+\xi(x_i-\mu)/\sigma$. The location score and curvature are
+$\ell_\mu=\sigma^{-1}\sum t_i^{-1}(1+\xi-t_i^{-1/\xi})$
+and
+$\ell_{\mu\mu}=(1+\xi)\sigma^{-2}\sum t_i^{-2}(\xi-t_i^{-1/\xi})<0$.
+Each individual score changes sign at
+$x_i+\sigma[1-(1+\xi)^{-\xi}]/\xi$. Their extremes, intersected
+with $\mu>\max x+\sigma/\xi$, bracket the unique global location
+maximum. The score tends to positive infinity at the support boundary
+and is negative beyond the last individual crossing. Bisection stops at
+width `reltol*sigma` and a total dimensionless location-score residual
+below $10^{-3}$, using `min(iterlim,100000)` iterations; exhaustion
+is non-convergence with a structured `numerical` stop. The score evaluates its near-zero difference
+with `expm1`, also for shapes close to zero. The exact-arithmetic
+certificate is conditional on computed signs; the practical location
+margin is the stated bracket width. Nonfinite likelihoods or an
+unrepresentable interior solution stop numerically. At $\xi=-1$ the
+linear likelihood selects $\mu=\max x-\sigma$; at zero the analytic
+Gumbel location applies. Positive held shape can have changing curvature
+and retains the numerical scalar search.
 
 ## R notes
 

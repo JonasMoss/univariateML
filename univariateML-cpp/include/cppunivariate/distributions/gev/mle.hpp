@@ -1,5 +1,6 @@
 #pragma once
 #include "../../core/work_budget.hpp"
+#include "../../core/stop_detail.hpp"
 #include "../../core/span.hpp"
 #include <algorithm>
 #include <cmath>
@@ -10,11 +11,11 @@ namespace cppunivariate {
 inline constexpr double kGevXiLower = -1.0;
 inline constexpr double kGevXiUpper = 1.0;
 
-enum class GevStatus { Ok, InvalidData, InvalidShape, IterationFailure, NoMLE };
+enum class GevStatus { Ok, InvalidData, InvalidShape, IterationFailure, NoMLE, NumericalFailure };
 struct GevResult {
   double mu, sigma, xi, logLik;
   int iterations;
-  GevStatus status; unsigned restricted = 0;
+  GevStatus status; unsigned restricted = 0; StopDetail stop_detail{};
 };
 inline double gev_log_ratio(double z, double xi) {
   const double v=xi*z;
@@ -93,6 +94,49 @@ inline GevResult gev_held_profile(span x,double mu,double sigma,double xi,
     const double ll=gev_loglik(x,mu,sigma,xi);
     return {mu,sigma,xi,ll,0,std::isfinite(ll) ? GevStatus::Ok : GevStatus::InvalidData};
   }
+  if(hs && xi > -1 && xi < 0) {
+    // Strict concavity and individual score crossings bracket every maximum.
+    const double shift=-sigma*std::expm1(-xi*std::log1p(xi))/xi;
+    double lo=std::max(x[0]+shift,x[x.size()-1]+sigma/xi);
+    double hi=x[x.size()-1]+shift;
+    auto score=[&](double m) {
+      double value=0;
+      for(double v:x) {
+        const double z=(v-m)/sigma,t=1+xi*z;
+        if(!(t>0))return std::numeric_limits<double>::infinity();
+        const double L=gev_log_ratio(z,xi);
+        value+=(xi-std::expm1(-L))/t;
+      }
+      return value;
+    };
+    GevResult result{mu,sigma,xi,NAN,0,GevStatus::IterationFailure};
+    if(lo==hi && std::abs(score(lo))<1e-3) {
+      result.mu=lo;result.logLik=gev_loglik(x,lo,sigma,xi);
+      result.status=std::isfinite(result.logLik) ? GevStatus::Ok : GevStatus::NumericalFailure;
+      return result;
+    }
+    for(int j=0;j<maxit;++j) {
+      const double mid=lo+(hi-lo)/2;
+      if(mid==lo || mid==hi) {
+        result.status=GevStatus::NumericalFailure;return result;
+      }
+      if(score(mid)>0)lo=mid;else hi=mid;
+      if(hi-lo<=tol*sigma && std::abs(score(lo+(hi-lo)/2))<1e-3) {
+        result.mu=lo+(hi-lo)/2;result.iterations=j+1;
+        result.logLik=gev_loglik(x,result.mu,sigma,xi);
+        result.status=std::isfinite(result.logLik) && std::isfinite(score(result.mu)) ? GevStatus::Ok : GevStatus::NumericalFailure;
+        return result;
+      }
+    }
+    result.mu=lo+(hi-lo)/2;result.iterations=maxit;
+    result.logLik=gev_loglik(x,result.mu,sigma,xi);
+    result.stop_detail.loglik_upper=INFINITY;
+    if(std::isfinite(result.logLik)) {
+      result.stop_detail.loglik_lower=result.logLik;
+      result.stop_detail.candidates.push_back({{result.mu,sigma,xi},result.logLik,result.logLik});
+    }
+    return result;
+  }
   double low=0;
   if(hm) for(double v:x) low=std::max(low,-xi*(v-mu));
   auto location=[&](double u) {
@@ -155,15 +199,41 @@ inline GevResult gev_held_mle(span x,double tol,int maxit,double xi,double mu,do
     fit=gev_held_profile(data,m,s,opt.x,tol,maxit);
     if(!opt.ok) fit.status=GevStatus::IterationFailure;
   }
+  std::vector<FitCandidate> restored;
+  bool lost_witness=false;
+  for(auto c:fit.stop_detail.candidates) {
+    c.coef[0]=hm ? mu : origin+scale*c.coef[0];c.coef[1]=hs ? sigma : scale*c.coef[1];
+    c.loglik_lower-=x.size()*std::log(scale);c.loglik_upper-=x.size()*std::log(scale);
+    const double evaluated=gev_loglik(x,c.coef[0],c.coef[1],c.coef[2]);
+    if(!std::isfinite(c.coef[0]) || !std::isfinite(c.coef[1]) || !std::isfinite(evaluated)) {
+      lost_witness=true;continue;
+    }
+    c.loglik_lower=std::min(c.loglik_lower,evaluated);
+    c.loglik_upper=std::max(c.loglik_upper,evaluated);
+    restored.push_back(c);
+  }
+  fit.stop_detail.candidates=std::move(restored);
+  fit.stop_detail.loglik_lower-=x.size()*std::log(scale);
+  fit.stop_detail.loglik_upper-=x.size()*std::log(scale);
+  if(!fit.stop_detail.candidates.empty()) {
+    fit.stop_detail.loglik_lower=-INFINITY;
+    for(const auto& c:fit.stop_detail.candidates)
+      fit.stop_detail.loglik_lower=std::max(fit.stop_detail.loglik_lower,c.loglik_lower);
+  } else if(lost_witness)fit.stop_detail.loglik_lower=NAN;
+  if(lost_witness)fit.status=GevStatus::NumericalFailure;
+  const double standardized_ll=fit.logLik;
   fit.mu=hm ? mu : origin+scale*fit.mu;
   fit.sigma=hs ? sigma : scale*fit.sigma;
   fit.logLik=gev_loglik(x,fit.mu,fit.sigma,fit.xi);
+  if(hs && !hm && !std::isnan(xi) && xi>-1 && xi<0 && fit.status==GevStatus::Ok &&
+     (!std::isfinite(fit.logLik) || std::abs(fit.logLik-(standardized_ll-x.size()*std::log(scale)))>1e-7*x.size()))
+    fit.status=GevStatus::NumericalFailure;
   if(collapse_face) {
     double face=0;
     for(double v:x) face+=v==mu ? -1 : -2*std::log(v-mu);
     if(fit.logLik<=face+tol*x.size()) fit.status=GevStatus::NoMLE;
   }
-  if(!std::isfinite(fit.logLik)) fit.status=GevStatus::InvalidData;
+  if(fit.status==GevStatus::Ok && !std::isfinite(fit.logLik)) fit.status=GevStatus::InvalidData;
   return fit;
 }
 struct GevProfile { GevResult fit; double score, curvature; };

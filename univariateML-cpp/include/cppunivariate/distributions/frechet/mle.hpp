@@ -1,5 +1,6 @@
 #pragma once
 #include "../../core/work_budget.hpp"
+#include "../../core/stop_detail.hpp"
 #include "../gev/mle.hpp"
 #include "../invweibull/mle.hpp"
 namespace cppunivariate {
@@ -112,8 +113,8 @@ inline GevResult frechet_gev_mle(span x, double tol=1e-10, int maxit=100,
   return result;
 }
 
-enum class FrechetStatus { Ok, InvalidData, GumbelLimit, IterationFailure, NoMLE };
-struct FrechetResult { double lambda, mu, sigma, logLik; int iterations; FrechetStatus status; unsigned restricted = 0; };
+enum class FrechetStatus { Ok, InvalidData, GumbelLimit, IterationFailure, NoMLE, NumericalFailure };
+struct FrechetResult { double lambda, mu, sigma, logLik; int iterations; FrechetStatus status; unsigned restricted = 0; StopDetail stop_detail{}; };
 inline double frechet_loglik(span x,double lambda,double mu,double sigma) {
  if(!(lambda>0) || !(sigma>0)) return -std::numeric_limits<double>::infinity();
  double ll=x.size()*(std::log(lambda)-std::log(sigma));
@@ -167,6 +168,9 @@ inline double frechet_scale(span x,double lambda,double mu) {
  const double correction=spread<.5 ? -std::log1p(delta/x.size()) : std::log(x.size()/se);
  return std::exp(m+correction/lambda);
 }
+} // namespace cppunivariate
+#include "certificate.hpp"
+namespace cppunivariate {
 inline FrechetResult frechet_held_mle(span x,double tol,int maxit,double mu,
                                      double lambda,double sigma) {
   maxit = static_cast<int>(solver_budget(maxit));
@@ -191,14 +195,64 @@ inline FrechetResult frechet_held_mle(span x,double tol,int maxit,double mu,
  }
  if(hl && !hs) {
    std::size_t k=0;for(double v:x) if(v==m) ++k;
-   if(lambda*(x.size()-k)<=k) return bad;
+   const double n=static_cast<double>(x.size());
+   const double E=std::fma(lambda,static_cast<double>(x.size()-k),-static_cast<double>(k));
+   if(E<=0) {
+     double C=n*std::log(n*lambda)-n-n*std::log(static_cast<double>(k));
+     for(double v:x)if(v>m) {
+       const double gap=v-m;
+       const double log_gap=std::isfinite(gap) ? std::log(gap) : std::log(v/2-m/2)+std::log(2.);
+       C-=(lambda+1)*log_gap;
+     }
+     // Retain the historical InvalidData status for this rejected hold;
+     // the explicit supremum bound distinguishes the statistical stop.
+     bad.stop_detail.loglik_upper=E<0 ? INFINITY : C;
+     bad.stop_detail.loglik_lower=bad.stop_detail.loglik_upper;
+     return bad;
+   }
  }
  // Work in units of range or held scale, keeping log-gap tolerances
  // invariant under location-scale transformations.
  const double unit=hs ? sigma : M-m;
- if(!(unit>0) || !std::isfinite(unit)) return bad;
+ if(!(unit>0) || !std::isfinite(unit)) {
+   if(hl)bad.status=FrechetStatus::NumericalFailure;
+   return bad;
+ }
  std::vector<double> y;for(double v:x)y.push_back((v-m)/unit);
  const span data{y.data(),y.size()};
+ if(hl) {
+   auto fit=frechet_fixed_shape_certificate(data,lambda,hs,tol,maxit);
+   fit.mu=m+unit*fit.mu;fit.sigma=hs ? sigma : unit*fit.sigma;
+   const double jac=x.size()*std::log(unit);
+   fit.logLik-=jac;
+   auto& detail=fit.stop_detail;
+   std::vector<FitCandidate> restored;
+   bool lost_witness=false;
+   for(auto c:detail.candidates) {
+     c.coef[1]=m+unit*c.coef[1];c.coef[2]*=unit;
+     c.loglik_lower-=jac;c.loglik_upper-=jac;
+     const double evaluated=frechet_loglik(x,c.coef[0],c.coef[1],c.coef[2]);
+     if(!std::isfinite(c.coef[1]) || !std::isfinite(c.coef[2]) || !std::isfinite(evaluated)) {
+       lost_witness=true;continue;
+     }
+     c.loglik_lower=std::min(c.loglik_lower,evaluated);
+     c.loglik_upper=std::max(c.loglik_upper,evaluated);
+     restored.push_back(c);
+   }
+   detail.candidates=std::move(restored);
+   detail.loglik_lower-=jac;detail.loglik_upper-=jac;
+   if(!detail.candidates.empty()) {
+     detail.loglik_lower=-INFINITY;
+     for(const auto& c:detail.candidates)detail.loglik_lower=std::max(detail.loglik_lower,c.loglik_lower);
+   } else if(lost_witness)detail.loglik_lower=NAN;
+   if(lost_witness)fit.status=FrechetStatus::NumericalFailure;
+   if(fit.status==FrechetStatus::Ok) {
+     const double evaluated=frechet_loglik(x,fit.lambda,fit.mu,fit.sigma);
+     if(!std::isfinite(evaluated) || std::abs(evaluated-fit.logLik)>1e-7*x.size())fit.status=FrechetStatus::NumericalFailure;
+     else fit.logLik=evaluated;
+   }
+   return fit;
+ }
  auto candidate=[&](double u) {
    const double location=-std::exp(u);
    if(!hl) return frechet_shape(data,location,1,1,tol,maxit);
