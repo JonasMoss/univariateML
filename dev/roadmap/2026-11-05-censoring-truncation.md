@@ -153,8 +153,8 @@ independent (exact under i.i.d. sampling) and
 $\bar x_j \sim N(\mu_j(\theta), \sigma_j^2(\theta)/n_j)$ (the only approximation).
 Its own curiosities: $\sigma_j \to 0$ brings back collapse; for the open
 top bracket $\sigma_J^2$ needs $kc > 2$, and for $1 < kc \le 2$ the true limit of
-the bracket mean is stable, not normal, which is the usual range of
-income tail indices. Using means only for bounded brackets avoids that.
+the bracket mean is stable, not normal; top-income tail indices are
+often reported near this range (not checked here). Using means only for bounded brackets avoids that.
 Counts only come first either way. A single
 constraint (for example an overall mean from national accounts) leaves a
 $(p-1)$-dimensional feasible set and remains well posed; not planned.
