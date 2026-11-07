@@ -1,0 +1,74 @@
+{
+  "base_revision": "017b9f8ec3bed7610ccd41c62738bce1ea987316",
+  "uncommitted": true,
+  "machines": {
+    "native_suites": "simbox",
+    "javascript_and_site": "workstation",
+    "independent_checks_and_timings": "workstation"
+  },
+  "final_native_command": "/tmp/umvl-cpu/simbox-run sh -c 'c++ -O2 -std=c++17 -IunivariateML-cpp/include -I\"$(Rscript -e '\"'\"'cat(system.file(\"include\",package=\"BH\"))'\"'\"')\" dev/research/evaluations/2026-11-07-std-held-data/held_check.cpp -o build/scratch/held-check && build/scratch/held-check && just test && just test-full && just cpp-test && UMVL_TEST_TIER=full just cpp-test && just cpp-test-no-long-double'",
+  "final_workstation_command": "/tmp/umvl-cpu/run4 nice -n 10 sh -c 'just js-build && just js-test && GOMAXPROCS=4 just site-check'",
+  "r_dev": {
+    "fail": 0,
+    "warn": 0,
+    "skip": 154,
+    "pass": 21042
+  },
+  "r_full": {
+    "fail": 0,
+    "warn": 0,
+    "skip": 0,
+    "pass": 43792
+  },
+  "cpp": {
+    "dev": 106,
+    "full": 129,
+    "no_long_double_full": 129
+  },
+  "cpp_elapsed_seconds": [
+    43.7,
+    48.91,
+    44.84
+  ],
+  "javascript": {
+    "tests": 444,
+    "pass": 444,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0
+  },
+  "site": "passed: MathML, links, graph, snippets and runtime assets",
+  "exit_codes": {
+    "native_chain": 0,
+    "workstation_chain": 0
+  },
+  "simbox_fallback": false,
+  "logs": {
+    "final-simbox-8.log.gz": "fd30c1222a216bfad452720a517638d5f651dbff7f21c4d6fecd9e18f9e54f76",
+    "final-simbox-7.log.gz": "7f2d66c4b45e90a41da38b8f7d65f4b2017fd370702f835dd7d2aa20baa1c2f7",
+    "final-simbox-6.log.gz": "b2022a5afab62c79ae47bdd2dbe88252b6bc297ae732c6748740a2b5821f50da",
+    "js-build-final.log.gz": "2c909ffef39aa6697729003f8bf651ccf8039128cf000de4581e85ddfb7d19ea",
+    "js-test-final.log.gz": "5bf98a4ac1e86a0691343e526c6a651481a50d02e69b0522a9b19ec4d555ea7d",
+    "site-check-final.log.gz": "d87e99a9adccd5287062b2dd77a76ed5b9711bbfb9555e62e83494464e11527b",
+    "final-simbox.log.gz": "124efbc454c38418fdea67d99b23c05949d3b1ae24f91515ae5cdf59c708e0c8",
+    "final-simbox-2.log.gz": "197315585f74573acc76db7944c843239ded24632333d1bd42bb051af799423d",
+    "final-simbox-3.log.gz": "0f918c347f887c24ee1e843af981c1136be59eacf01df0465b2bec45754d7148",
+    "final-simbox-4.log.gz": "f8357d376fcd669f219cf63322d0485d0f835707709bdd3abaccb0367d68e845",
+    "final-simbox-5.log.gz": "899eb2790bf1074793036062d2e1ceba13af2640dbfee6db748f340ed547141a",
+    "site-check.log.gz": "8c07a1f3b64c81a4dec930802c07856fdc74db9c797d3260aeca173b7736ddd3"
+  },
+  "notes": [
+    "R dev skips are declared tier exclusions; R full has no skips.",
+    "Superseded native chains and failed shared-restriction/site runs are retained as development evidence, not final validation.",
+    "No goldens or truth fixtures were regenerated."
+  ],
+  "native_source_fingerprints": "simbox-source.sha256",
+  "warnings": [
+    "Workstation JS build (also invoked by site-check) emits an existing -Wtautological-compare warning from unchanged binom/mle.hpp:160; builds exit zero. R suites report zero warnings."
+  ],
+  "targeted_checks": {
+    "standalone_cpp": "passed on workstation and simbox",
+    "high_precision": "80-digit mpmath checks passed",
+    "paired_timing": "completed on workstation; same deterministic n=500 workload; combined family timings"
+  }
+}

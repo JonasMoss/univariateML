@@ -155,7 +155,8 @@ test_that("free Student t detects strict tie collapse and separates equality", {
     }
   }
   expect_error(mlstd(c(rep(0,8),1,2,3),nu=2.5),"unbounded")
-  expect_error(mlstd(c(rep(0,8),1,2,3),nu=8/3),"equality")
+  # The binary64 value of 8/3 is below the exact rational threshold.
+  expect_error(mlstd(c(rep(0,8),1,2,3),nu=8/3),"unbounded")
 })
 
 # Package-owned dpqr contract, independent of the optional reference package.
@@ -263,7 +264,7 @@ test_that("std new holds agree with independent multistart likelihoods", {
     args <- as.list(held_values[held])
     f <- tryCatch(suppressWarnings(do.call(mlstd,c(list(x=x),args))),error=identity)
     if(inherits(f,"error")) {
-      expect_match(conditionMessage(f),"[Uu]se `ml|unbounded|collapse|support cannot contain|does not exist|positive")
+      expect_match(conditionMessage(f),"[Uu]se `ml|unbounded|collapse|support cannot contain|does not exist|positive|unresolved tie")
       next
     }
     expect_identical(unname(as.numeric(f[held])),unname(held_values[held]))
@@ -402,4 +403,49 @@ test_that("iterlim controls the global certificate and keeps budget witnesses", 
   expect_true(is.finite(err$loglik_lower))
   expect_true(length(err$candidates)>0)
   expect_s3_class(mlstd(x,iterlim=20),"univariateML")
+})
+
+test_that("held sd location ties preserve std candidate coordinates", {
+  e <- tryCatch(mlstd(c(-3,3),sd=1,nu=3),error=identity)
+  expect_s3_class(e,"univariateML_tie")
+  expect_equal(nrow(e$candidates),2L)
+  expect_true(is.finite(e$loglik_lower))
+  expect_true(is.finite(e$loglik_upper))
+})
+
+
+test_that("uncertified held free-shape searches still return finite golden fits", {
+  g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"),"std","golden.json"))
+  for (held in list("mean","sd",c("mean","sd"))) {
+    args <- g$estimates[held]
+    f <- do.call(mlstd,c(list(x=g$data,iterlim=1000),args))
+    expect_s3_class(f,"univariateML")
+    expect_identical(unname(as.numeric(f[held])),unname(as.numeric(unlist(args))))
+    expect_setequal(attr(f,"fixed"),held)
+    expect_true(all(is.finite(f)))
+    expect_gte(as.numeric(logLik(f)),g$logLik-1e-6*length(g$data))
+    expect_error(do.call(mlstd,c(list(x=g$data,iterlim=1),args)),class="univariateML_numerical")
+  }
+})
+
+
+test_that("held-shape sd overflow is a numerical stop with an ordinary-scale witness", {
+  nu <- 2 + 2*.Machine$double.eps
+  for (held in list(list(nu=nu),list(mean=0,nu=nu))) {
+    e <- tryCatch(do.call(mlstd,c(list(x=c(-1e301,1e301)),held)),error=identity)
+    expect_s3_class(e,"univariateML_numerical")
+    expect_true(is.finite(e$loglik_lower))
+    expect_gte(nrow(e$candidates),1L)
+    expect_true(all(is.finite(e$candidates$loglik_lower)))
+  }
+})
+
+
+test_that("held solver exhaustion carries structured numerical details", {
+  for (held in list(list(nu=3),list(mean=0,nu=3))) {
+    e <- tryCatch(do.call(mlstd,c(list(x=c(-3,-1,.2,1,8),iterlim=1),held)),error=identity)
+    expect_s3_class(e,"univariateML_numerical")
+    expect_true(is.finite(e$loglik_lower))
+    expect_identical(e$loglik_upper,Inf)
+  }
 })

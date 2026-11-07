@@ -405,3 +405,90 @@ test('shifted Gompertz unfinished bracket preserves a finite witness', async () 
     assert.ok(Number.isFinite(error.loglik_lower));return true;
   });
 });
+test('lst and std fixed-scale location certificates transport equal maxima', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  for (const [family, held] of [['lst', {sigma: 1, df: 3}], ['std', {sd: 1, nu: 3}]]) {
+    assert.throws(() => api[family].fit(new Float64Array([-3, 3]), held), error => {
+      assert.equal(error.kind, 'tie');
+      assert.equal(error.candidates.length, 2);
+      assert.ok(Number.isFinite(error.loglik_lower));
+      assert.ok(Number.isFinite(error.loglik_upper));
+      return true;
+    });
+  }
+});
+
+test('lst and std uncertified held free-shape searches preserve golden fits', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  for (const family of ['lst','std']) {
+    const g = read(family,'golden'), names = Object.keys(g.estimates);
+    for (const mask of [1,2,3]) {
+      const held = Object.fromEntries(names.filter((_,i) => mask >> i & 1).map(k => [k,g.estimates[k]]));
+      const fit = api[family].fit(new Float64Array(g.data), held, {iterlim: 1000});
+      assert.equal(fit.status, 'Ok');
+      for (const [key,value] of Object.entries(held)) assert.equal(fit.estimates[key],value);
+      assert.ok(Object.values(fit.estimates).every(Number.isFinite));
+      assert.ok(fit.logLik >= g.logLik - 1e-6*g.data.length);
+      assert.throws(() => api[family].fit(new Float64Array(g.data), held, {iterlim: 1}), error => {
+        assert.equal(error.kind, family === 'lst' && mask === 2 ? 'budget' : 'numerical');
+        return true;
+      });
+    }
+  }
+});
+
+test('std collapse comparisons preserve the sign at binary64 rational shapes', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  assert.throws(() => api.std.fit(new Float64Array([0,0,0,0,0,0,0,0,1,2,3]), {nu: 8/3}), error => {
+    assert.equal(error.kind, 'nomle');
+    assert.match(error.message, /unbounded/);
+    assert.equal(error.loglik_lower, Infinity);
+    return true;
+  });
+});
+
+test('lst Cauchy equality checks and projects the represented maximizing curve', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  const a = 2 ** 20, step = 2 ** -32;
+  assert.throws(() => api.lst.fit(new Float64Array([a,a,a+step,a+step]), {df: 1}), error => {
+    assert.equal(error.kind, 'numerical');
+    assert.ok(Number.isFinite(error.loglik_lower));
+    assert.equal(error.loglik_upper, Infinity);
+    return true;
+  });
+  const fit = api.lst.fit(new Float64Array([a,a,a+3*step,a+3*step]), {df: 1});
+  assert.equal(fit.status, 'Ok');
+  assert.ok(fit.estimates.mu > a && fit.estimates.mu < a+3*step);
+  assert.ok(Math.abs(fit.estimates.sigma/step-Math.sqrt(2)) < 1e-6);
+});
+
+test('std held-shape sd overflow retains a proper ordinary-scale witness', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  const nu = 2 + 2*Number.EPSILON;
+  for (const held of [{nu}, {mean: 0, nu}]) {
+    assert.throws(() => api.std.fit(new Float64Array([-1e301,1e301]), held), error => {
+      assert.equal(error.kind, 'numerical');
+      assert.ok(Number.isFinite(error.loglik_lower));
+      assert.ok(error.candidates.length > 0);
+      return true;
+    });
+  }
+});
+
+test('lst and std held solver caps return structured numerical stops', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  for (const [family, held] of [['lst', {df: 3}], ['lst', {mu: 0, df: 3}], ['std', {nu: 3}], ['std', {mean: 0, nu: 3}]]) {
+    assert.throws(() => api[family].fit(new Float64Array([-3,-1,.2,1,8]), held, {iterlim: 1}), error => {
+      assert.equal(error.kind, 'numerical');
+      assert.ok(Number.isFinite(error.loglik_lower));
+      assert.equal(error.loglik_upper, Infinity);
+      return true;
+    });
+  }
+});

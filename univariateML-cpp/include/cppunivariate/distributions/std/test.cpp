@@ -279,3 +279,64 @@ TEST_CASE("std: certificate large-sample shallow quantile maximum") {
   REQUIRE(r.status==cppunivariate::StudentTStatus::Ok);
   CHECK(r.nu==doctest::Approx(539.46057298).epsilon(1e-7));
 }
+
+TEST_CASE("std: held sd and shape transport the complete location certificate") {
+  const std::vector<double> x{-3,3};
+  const auto tie=cppunivariate::student_t_mle(mltest::as_span(x),1e-7,200,NAN,1,3);
+  REQUIRE(tie.status==cppunivariate::StudentTStatus::CertificateTie);
+  CHECK(tie.stop_detail.comparison_tie);
+  REQUIRE(tie.stop_detail.candidates.size()==2);
+  for(const auto& c:tie.stop_detail.candidates){
+    CHECK(std::abs(c.coef[0])==doctest::Approx(std::sqrt(8.)).epsilon(1e-8));
+    CHECK(c.coef[1]==doctest::Approx(1));
+    CHECK(c.coef[2]==3);
+  }
+  const std::vector<double> scale_sample{-1,1};
+  const auto scale=cppunivariate::student_t_mle(mltest::as_span(scale_sample),1e-7,200,0,NAN,3);
+  REQUIRE(scale.status==cppunivariate::StudentTStatus::Ok);
+  CHECK(scale.sigma==doctest::Approx(std::sqrt(3.)).epsilon(1e-9));
+}
+
+TEST_CASE("std: held-shape scale transport cannot return an overflowing standard deviation") {
+  const double nu=std::nextafter(2.,INFINITY);
+  const std::vector<double> x{-1e301,1e301};
+  for(double held_mu:std::vector<double>{NAN,0.}){
+    const auto r=cppunivariate::student_t_mle(mltest::as_span(x),1e-7,500,held_mu,NAN,nu);
+    REQUIRE(r.status==cppunivariate::StudentTStatus::NumericalFailure);
+    CHECK(std::isnan(r.sigma));CHECK(std::isfinite(r.stop_detail.loglik_lower));
+    REQUIRE_FALSE(r.stop_detail.candidates.empty());
+    CHECK(r.stop_detail.candidates.front().model==cppunivariate::StopModel::Lst);
+    CHECK(std::isfinite(r.stop_detail.candidates.front().coef[1]));
+  }
+  const std::vector<double> representable{-1e300,1e300};
+  const auto r=cppunivariate::student_t_mle(mltest::as_span(representable),1e-7,500,0,NAN,nu);
+  REQUIRE(r.status==cppunivariate::StudentTStatus::Ok);
+  CHECK(std::isfinite(r.sigma));CHECK(r.sigma>1e307);
+}
+
+TEST_CASE("std: held-scale and represented-scale precision guards") {
+  const std::vector<double> x{-2,-1,0,1,3};
+  const auto r=cppunivariate::student_t_mle(mltest::as_span(x),1e-7,500,NAN,1e100,3);
+  REQUIRE(r.status==cppunivariate::StudentTStatus::Ok);
+  CHECK(r.mu==doctest::Approx(.2).epsilon(1e-7));
+  const double tiny=std::numeric_limits<double>::denorm_min();
+  const std::vector<double> subnormal{-2*tiny,2*tiny};
+  const auto s=cppunivariate::student_t_mle(mltest::as_span(subnormal),1e-7,500,0,NAN,3);
+  CHECK(s.status==cppunivariate::StudentTStatus::NumericalFailure);
+  const double nu=std::nextafter(2.,INFINITY),sd=3e-316;
+  const std::vector<double> constant{0,0};
+  const auto c=cppunivariate::student_t_mle(mltest::as_span(constant),1e-7,500,NAN,sd,nu);
+  REQUIRE(c.status==cppunivariate::StudentTStatus::Ok);
+  CHECK(std::isfinite(c.logLik));CHECK(c.mu==0);CHECK(c.sigma==sd);
+  const auto h=cppunivariate::student_t_mle(mltest::as_span(subnormal),1e-7,500,NAN,sd,nu);
+  CHECK(h.status==cppunivariate::StudentTStatus::NumericalFailure);
+}
+
+TEST_CASE("std: uncertified free-shape searches still stop on solver exhaustion") {
+  const auto g=mltest::load_distribution_golden("std");
+  for(int mask:{1,2,3}) {
+    const auto r=cppunivariate::student_t_mle(mltest::as_span(g.data),1e-8,1,
+      mask&1?g.estimates.at("mean"):NAN,mask&2?g.estimates.at("sd"):NAN,NAN);
+    CHECK(r.status==cppunivariate::StudentTStatus::IterationFailure);
+  }
+}

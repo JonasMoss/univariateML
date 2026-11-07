@@ -1,0 +1,23 @@
+{
+  "python": "3.14.5",
+  "mpmath": "1.3.0",
+  "digits": 80,
+  "asymmetric_location": "-0.3210104101280357121953144400891770841901820115802951347705631350444232730887163",
+  "two_point_score_identity_max_error": "1.054219794323052322434857405127001900770996138236850755007776302510814429096976e-81",
+  "scale_identity": "passed for 5 shapes, including below one",
+  "fixed_ordinary_scale": {
+    "A": "16.0",
+    "seam_error": "0.000000000000000000000010774995151480978685651929197360956571002702395676946709344597889039312193063406"
+  },
+  "fixed_sd": {
+    "A": "6.0",
+    "seam_error": "0.0000000000000000000000048749951514809786856519340206943326100144238020018431291635478198498017962568832"
+  },
+  "lower_shape_uniform_bound": "passed at 6 shapes",
+  "normal_tail_value_bound": "passed at 20 shape/residual pairs",
+  "held_scale_shape_envelope": {
+    "largest_grid_bound": "-0.096548557780972667214613810772016052222771260987965758030844222027902551898954272",
+    "shapes": 101,
+    "analytic_tail": "Q^2/8-Q > (2*n-1)/2 passed"
+  }
+}

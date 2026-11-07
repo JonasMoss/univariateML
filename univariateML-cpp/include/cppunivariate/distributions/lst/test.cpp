@@ -329,3 +329,201 @@ TEST_CASE("lst and std: iterlim scales certificate budget and preserves witnesse
     CHECK(cppunivariate::t_certificate(mltest::as_span(x),floor,-1,20).status==cppunivariate::TCertificateStatus::Finite);
   }
 }
+
+TEST_CASE("lst: held-scale certificate isolates competing maxima and retains ties") {
+  const std::vector<double> two{-3,3};
+  const auto tie=cppunivariate::lst_mle(mltest::as_span(two),1e-7,200,NAN,1,3);
+  REQUIRE(tie.status==cppunivariate::LstStatus::CertificateTie);
+  CHECK(tie.stop_detail.comparison_tie);
+  REQUIRE(tie.stop_detail.candidates.size()==2);
+  // For two symmetric observations, maxima are +/-sqrt(a^2-df*sigma^2).
+  for(const auto& c:tie.stop_detail.candidates)CHECK(std::abs(c.coef[0])==doctest::Approx(std::sqrt(6.)).epsilon(1e-8));
+  const std::vector<double> one{-1,1};
+  const auto unique=cppunivariate::lst_mle(mltest::as_span(one),1e-7,200,NAN,1,3);
+  REQUIRE(unique.status==cppunivariate::LstStatus::Ok);
+  CHECK(std::abs(unique.mu)<1e-8);
+  const std::vector<double> asymmetric{-3,-2,0,1,5};
+  const auto fit=cppunivariate::lst_mle(mltest::as_span(asymmetric),1e-7,200,NAN,1,3);
+  REQUIRE(fit.status==cppunivariate::LstStatus::Ok);
+  CHECK(fit.mu==doctest::Approx(-.3210104101280357).epsilon(1e-6));
+  const auto budget=cppunivariate::t_location_detail::solve(mltest::as_span(two),1,3,0);
+  CHECK(budget.failure==1);
+  CHECK(budget.detail.budget_exhausted);
+  CHECK(std::isfinite(budget.detail.loglik_lower));
+  CHECK_FALSE(budget.detail.candidates.empty());
+}
+
+TEST_CASE("lst: held-location scale bracket proves coefficient accuracy and collapse values") {
+  const std::vector<double> x{0,1};
+  const auto equality=cppunivariate::lst_mle(mltest::as_span(x),1e-7,200,0,NAN,1);
+  REQUIRE(equality.status==cppunivariate::LstStatus::ScaleBoundary);
+  CHECK(equality.stop_detail.limit_loglik==doctest::Approx(-2*std::log(cppunivariate::pi)));
+  const std::vector<double> symmetric{-3,3};
+  for(double df:{.25,1.,3.,1e20,1e300}){
+    const auto fit=cppunivariate::lst_mle(mltest::as_span(symmetric),1e-7,200,0,NAN,df);
+    REQUIRE(fit.status==cppunivariate::LstStatus::Ok);
+    CHECK(fit.sigma==doctest::Approx(3).epsilon(1e-9));
+  }
+  const auto small=cppunivariate::lst_mle(mltest::as_span(symmetric),1e-7,1,0,NAN,3);
+  CHECK(small.status!=cppunivariate::LstStatus::Ok);
+}
+
+TEST_CASE("lst: fixed-shape joint root inclusion works up to normal-sized shape") {
+  const std::vector<double> x{-2,-1,0,1,3};
+  for(double df:{1.,3.,1e20,1e300}) {
+    const auto fit=cppunivariate::lst_mle(mltest::as_span(x),1e-7,500,NAN,NAN,df);
+    REQUIRE(fit.status==cppunivariate::LstStatus::Ok);
+    double mu=fit.mu,scale=fit.sigma;
+    CHECK(cppunivariate::t_location_detail::joint_inclusion(mltest::as_span(x),df,500,mu,scale));
+    CHECK(mu==doctest::Approx(fit.mu).epsilon(1e-8));
+    CHECK(scale==doctest::Approx(fit.sigma).epsilon(1e-8));
+  }
+}
+
+TEST_CASE("lst: non-Cauchy held-location equality has the correct scale-zero value") {
+  const std::vector<double> x{0,0,0,1};
+  const auto r=cppunivariate::lst_mle(mltest::as_span(x),1e-7,200,0,NAN,3);
+  REQUIRE(r.status==cppunivariate::LstStatus::ScaleBoundary);
+  const double c=cppunivariate::special::lgamma(2)-cppunivariate::special::lgamma(1.5)-.5*std::log(3*cppunivariate::pi);
+  CHECK(r.stop_detail.limit_loglik==doctest::Approx(4*c+2*std::log(3)).epsilon(1e-12));
+}
+
+TEST_CASE("lst: subunit joint shape stops with a witness rather than an EM maximum") {
+  const std::vector<double> x{-5,-4,-3,-2,-1,1,2,3,4,5};
+  const auto r=cppunivariate::lst_mle(mltest::as_span(x),1e-7,200,NAN,NAN,.5);
+  REQUIRE(r.status==cppunivariate::LstStatus::NumericalFailure);
+  CHECK(std::isnan(r.mu));CHECK(std::isnan(r.sigma));
+  CHECK(std::isfinite(r.stop_detail.loglik_lower));
+  CHECK(r.stop_detail.loglik_upper==INFINITY);
+  CHECK_FALSE(r.stop_detail.candidates.empty());
+}
+
+TEST_CASE("lst: held scale has a certified decreasing-shape Cauchy regime") {
+  const std::vector<double> x{-100,-2,-.01,0,.01,2,100};
+  const auto proof=cppunivariate::t_location_detail::decreasing_shape(mltest::as_span(x),1,200);
+  REQUIRE(proof.result==1);
+  CHECK(proof.evaluations<cppunivariate::certificate_budget(200));
+  const auto r=cppunivariate::lst_mle(mltest::as_span(x),1e-7,200,NAN,1,NAN);
+  REQUIRE(r.status==cppunivariate::LstStatus::Ok);
+  CHECK(r.df==1);CHECK(r.restricted==16u);CHECK(std::abs(r.mu)<1e-8);
+  CHECK(r.iterations<=cppunivariate::certificate_budget(200));
+  const auto small=cppunivariate::lst_mle(mltest::as_span(x),1e-7,1,NAN,1,NAN);
+  CHECK(small.status!=cppunivariate::LstStatus::Ok);
+}
+
+TEST_CASE("lst: subunit joint equality is a numerical refusal, not a selected face") {
+  const std::vector<double> x{-1,0,1};
+  const auto r=cppunivariate::lst_mle_fixed_df(mltest::as_span(x),.5,1e-7,200);
+  REQUIRE(r.status==cppunivariate::LstStatus::NumericalFailure);
+  CHECK(std::isfinite(r.stop_detail.loglik_lower));
+  CHECK(r.stop_detail.limit_coef.empty());
+}
+
+TEST_CASE("lst: fused collapse comparison does not manufacture rational equality") {
+  const std::vector<double> x{0,1,2,3};
+  const double df=1./3;
+  REQUIRE(df*3==1); // Rounded multiplication hides the negative exact exponent.
+  REQUIRE(std::fma(df,3.,-1.)<0);
+  const auto held=cppunivariate::lst_mle(mltest::as_span(x),1e-7,200,0,NAN,df);
+  CHECK(held.status==cppunivariate::LstStatus::Unbounded);
+  const auto joint=cppunivariate::lst_mle_fixed_df(mltest::as_span(x),df,1e-7,200);
+  CHECK(joint.status==cppunivariate::LstStatus::Unbounded);
+}
+
+TEST_CASE("lst: location candidate bounds evaluate the rounded physical coefficient") {
+  const double center=1e7;
+  const std::vector<double> x{center,center,std::nextafter(center,INFINITY),center+1};
+  const auto r=cppunivariate::t_location_detail::solve(mltest::as_span(x),1e-4,3,500);
+  REQUIRE(r.failure==0);
+  REQUIRE_FALSE(r.detail.candidates.empty());
+  for(const auto& candidate:r.detail.candidates){
+    const double p[2]={candidate.coef[0],std::log(candidate.coef[1])};
+    const double ll=-cppunivariate::LstCost{mltest::as_span(x),3,true}(p);
+    CHECK(ll>=candidate.loglik_lower);CHECK(ll<=candidate.loglik_upper);
+  }
+}
+
+TEST_CASE("lst: joint numerical witnesses retain the represented translated likelihood") {
+  const double a=1e7,b=std::nextafter(a,INFINITY),c=std::nextafter(b,INFINITY),d=std::nextafter(c,INFINITY);
+  const std::vector<double> x{a,b,c,d};
+  const auto r=cppunivariate::lst_mle_fixed_df(mltest::as_span(x),3,1e-7,500);
+  REQUIRE(r.status==cppunivariate::LstStatus::NumericalFailure);
+  REQUIRE_FALSE(r.stop_detail.candidates.empty());
+  for(const auto& candidate:r.stop_detail.candidates){
+    const double p[2]={candidate.coef[0],std::log(candidate.coef[1])};
+    const double ll=-cppunivariate::LstCost{mltest::as_span(x),3,true}(p);
+    CHECK(ll>=candidate.loglik_lower);CHECK(ll<=candidate.loglik_upper);
+  }
+  CHECK(r.stop_detail.loglik_upper==INFINITY);
+}
+
+TEST_CASE("lst: balanced Cauchy midpoint rounding cannot return an endpoint as a maximizer") {
+  const double a=1e7,b=std::nextafter(a,INFINITY);
+  const std::vector<double> x{a,a,b,b};
+  const auto r=cppunivariate::lst_mle_fixed_df(mltest::as_span(x),1,1e-7,200);
+  REQUIRE(r.status==cppunivariate::LstStatus::NumericalFailure);
+  REQUIRE_FALSE(r.stop_detail.candidates.empty());
+  const auto& candidate=r.stop_detail.candidates.front();
+  const double p[2]={candidate.coef[0],std::log(candidate.coef[1])};
+  const double ll=-cppunivariate::LstCost{mltest::as_span(x),1,true}(p);
+  CHECK(ll>=candidate.loglik_lower);CHECK(ll<=candidate.loglik_upper);
+  CHECK(r.stop_detail.loglik_upper==INFINITY);
+}
+
+TEST_CASE("lst: joint critical shape carries the proved global collapse supremum") {
+  const std::vector<double> x{0,0,0,1};
+  const auto r=cppunivariate::lst_mle_fixed_df(mltest::as_span(x),3,1e-7,200);
+  REQUIRE(r.status==cppunivariate::LstStatus::ScaleBoundary);
+  REQUIRE(r.stop_detail.limit_coef.size()==2);
+  CHECK(r.stop_detail.limit_coef[0]==0);CHECK(r.stop_detail.limit_coef[1]==3);
+  const double c=cppunivariate::special::lgamma(2)-cppunivariate::special::lgamma(1.5)-.5*std::log(3*cppunivariate::pi);
+  const double limit=4*c+2*std::log(3);
+  CHECK(r.stop_detail.loglik_lower<=limit);CHECK(r.stop_detail.loglik_upper>=limit);
+  CHECK(r.stop_detail.limit_model==cppunivariate::StopModel::TCollapsePath);
+}
+
+TEST_CASE("lst: representable Cauchy location is projected onto the maximizing curve") {
+  const double a=1e7,b=std::nextafter(a,INFINITY),c=std::nextafter(b,INFINITY),d=std::nextafter(c,INFINITY);
+  const std::vector<double> x{a,a,d,d};
+  const auto r=cppunivariate::lst_mle_fixed_df(mltest::as_span(x),1,1e-7,200);
+  REQUIRE(r.status==cppunivariate::LstStatus::Ok);
+  CHECK(r.mu>a);CHECK(r.mu<d);
+  CHECK(r.sigma/(b-a)==doctest::Approx(std::sqrt(2.)).epsilon(1e-6));
+  CHECK(r.logLik==doctest::Approx(-4*(std::log(cppunivariate::pi)+std::log(d-a))).epsilon(1e-12));
+}
+
+TEST_CASE("lst: finite data with an unrepresentable range stop as a numerical failure") {
+  const std::vector<double> x{-1e308,0,1e308};
+  const auto r=cppunivariate::lst_mle_fixed_df(mltest::as_span(x),3,1e-7,200);
+  CHECK(r.status==cppunivariate::LstStatus::NumericalFailure);
+  CHECK(std::isnan(r.mu));CHECK(std::isnan(r.sigma));
+  CHECK(r.stop_detail.loglik_upper==INFINITY);
+}
+
+TEST_CASE("lst: held solver caps preserve physical finite witnesses") {
+  const std::vector<double> x{-3,-1,.2,1,8};
+  const auto r=cppunivariate::lst_mle_fixed_df(mltest::as_span(x),3,1e-7,1);
+  REQUIRE(r.status==cppunivariate::LstStatus::IterationFailure);
+  REQUIRE_FALSE(r.stop_detail.candidates.empty());
+  CHECK(std::isfinite(r.stop_detail.loglik_lower));CHECK(r.stop_detail.loglik_upper==INFINITY);
+}
+
+TEST_CASE("lst: held-scale location precision uses empirical spread") {
+  const std::vector<double> x{-2,-1,0,1,3};
+  const auto r=cppunivariate::lst_mle(mltest::as_span(x),1e-7,500,NAN,1e100,3);
+  REQUIRE(r.status==cppunivariate::LstStatus::Ok);
+  CHECK(r.mu==doctest::Approx(.2).epsilon(1e-7));
+  const double tiny=std::numeric_limits<double>::denorm_min();
+  const std::vector<double> subnormal{tiny,2*tiny};
+  const auto s=cppunivariate::lst_mle(mltest::as_span(subnormal),1e-7,500,0,NAN,.001);
+  CHECK(s.status==cppunivariate::LstStatus::NumericalFailure);
+}
+
+TEST_CASE("lst: uncertified free-shape searches still stop on solver exhaustion") {
+  const auto g=mltest::load_distribution_golden("lst");
+  for(int mask:{1,2,3}) {
+    const auto r=cppunivariate::lst_mle(mltest::as_span(g.data),1e-8,1,
+      mask&1?g.estimates.at("mu"):NAN,mask&2?g.estimates.at("sigma"):NAN,NAN);
+    CHECK(r.status==(mask==2?cppunivariate::LstStatus::CertificateBudget:cppunivariate::LstStatus::IterationFailure));
+  }
+}

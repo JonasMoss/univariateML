@@ -204,3 +204,55 @@ test_that("iterlim controls the global certificate and keeps budget witnesses", 
   expect_true(length(err$candidates)>0)
   expect_s3_class(mllst(x,iterlim=20),"univariateML")
 })
+
+test_that("held-scale location certificates retain both equal maxima", {
+  e <- tryCatch(mllst(c(-3,3),sigma=1,df=3),error=identity)
+  expect_s3_class(e,"univariateML_tie")
+  expect_equal(nrow(e$candidates),2L)
+  expect_true(is.finite(e$loglik_lower))
+  expect_true(is.finite(e$loglik_upper))
+  expect_equal(unname(mllst(c(-1,1),sigma=1,df=3)["mu"]),0,tolerance=1e-8)
+})
+
+
+test_that("uncertified held free-shape searches still return finite golden fits", {
+  g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"),"lst","golden.json"))
+  for (held in list("mu","sigma",c("mu","sigma"))) {
+    args <- g$estimates[held]
+    f <- do.call(mllst,c(list(x=g$data,iterlim=1000),args))
+    expect_s3_class(f,"univariateML")
+    expect_identical(unname(as.numeric(f[held])),unname(as.numeric(unlist(args))))
+    expect_setequal(attr(f,"fixed"),held)
+    expect_true(all(is.finite(f)))
+    expect_gte(as.numeric(logLik(f)),g$logLik-1e-6*length(g$data))
+    expect_error(do.call(mllst,c(list(x=g$data,iterlim=1),args)),
+      class=if(identical(held,"sigma")) "univariateML_budget" else "univariateML_numerical")
+  }
+})
+
+
+test_that("balanced Cauchy fits refuse a rounded endpoint midpoint", {
+  a <- 2^20
+  b <- a + 2^-32
+  e <- tryCatch(mllst(c(a,a,b,b),df=1),error=identity)
+  expect_s3_class(e,"univariateML_numerical")
+  expect_true(is.finite(e$loglik_lower))
+  expect_identical(e$loglik_upper,Inf)
+})
+
+
+test_that("finite range overflow is numerical rather than invalid input", {
+  e <- tryCatch(mllst(c(-1e308,0,1e308),df=3),error=identity)
+  expect_s3_class(e,"univariateML_numerical")
+  expect_identical(e$loglik_upper,Inf)
+})
+
+
+test_that("held solver exhaustion carries structured numerical details", {
+  for (held in list(list(df=3),list(mu=0,df=3))) {
+    e <- tryCatch(do.call(mllst,c(list(x=c(-3,-1,.2,1,8),iterlim=1),held)),error=identity)
+    expect_s3_class(e,"univariateML_numerical")
+    expect_true(is.finite(e$loglik_lower))
+    expect_identical(e$loglik_upper,Inf)
+  }
+})

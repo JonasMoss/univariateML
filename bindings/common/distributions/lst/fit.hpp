@@ -24,6 +24,10 @@ inline FitResult fit_lst(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg
   auto r=cppunivariate::lst_mle(x,gradtol,iterlim,held_mu,held_sigma,df.supplied?df.value:nan);
   if(r.status==cppunivariate::LstStatus::CertificateBudget)return stop_failure(fail("Student-t global certificate budget exhausted; no verified MLE. Raising iterlim may resolve this stop."),r.stop_detail,"budget",{"mu","sigma","df"});
   if(r.status==cppunivariate::LstStatus::CertificateTie)return stop_failure(fail("Student-t global certificate unresolved tie or sign-uncertain seam; no verified MLE."),r.stop_detail,"tie",{"mu","sigma","df"});
+  if(r.status==cppunivariate::LstStatus::NumericalFailure && df.supplied && df.value<1 && !mu.supplied && !sigma.supplied)
+    return stop_failure(fail("Location-scale t numerical failure: joint location/scale at df < 1 lacks a global nuisance certificate; no verified MLE."),r.stop_detail,"numerical",{"mu","sigma","df"});
+  if(r.status==cppunivariate::LstStatus::NumericalFailure && !df.supplied && (mu.supplied || sigma.supplied))
+    return stop_failure(fail("Student-t held-subset numerical search failed its score, arithmetic or representability checks; increase iterlim."),r.stop_detail,"numerical",{"mu","sigma","df"});
   if(r.status==cppunivariate::LstStatus::NumericalFailure)return stop_failure(fail("Student-t global certificate numerical failure: score/root, enclosure, domain or linear solve unresolved; no verified MLE."),r.stop_detail,"numerical",{"mu","sigma","df"});
   if (r.status == cppunivariate::LstStatus::InvalidDf)
     return fail("`df` must be finite and positive.");
@@ -32,7 +36,7 @@ inline FitResult fit_lst(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg
   if (r.status == cppunivariate::LstStatus::ScaleBoundary)
     return stop_failure(fail("Tie equality scale-collapse boundary; a regular MLE is not certified."),r.stop_detail,"nomle",{"mu","sigma","df"},(!mu.supplied&&!sigma.supplied&&!df.supplied)?"unavailable:t-scale-collapse":"");
   if (r.status == cppunivariate::LstStatus::IterationFailure)
-    return fail("Location-scale t solve could not establish a representable score bracket or converge to the score tolerance; increase iterlim.");
+    return stop_failure(fail("Location-scale t solve could not establish a representable score bracket or converge to the score tolerance; increase iterlim."),r.stop_detail,"numerical",{"mu","sigma","df"});
   if (r.status == cppunivariate::LstStatus::NoMLE)
     return fail("Location-scale t MLE on df >= 1 requires at least 3 observations and no value repeated n/2 or more times; scale collapse otherwise prevents a regular MLE.");
   if (r.status == cppunivariate::LstStatus::NormalBoundary)

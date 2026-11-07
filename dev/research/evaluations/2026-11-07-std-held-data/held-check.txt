@@ -1,0 +1,9 @@
+shape proof 1 evaluations 15
+fit status 0 mu -1.37256e-11 scale 1 df 1 evaluations 98
+translated status 0
+translated joint status 11
+rounded Cauchy status 11
+Cauchy curve status 0
+std transport status 11
+std transport status 11
+wide-scale location 0.2 status 0

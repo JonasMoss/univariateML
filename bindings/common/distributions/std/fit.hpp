@@ -24,6 +24,8 @@ inline FitResult fit_std(cppunivariate::span x, Held mean_arg = {}, Held sd_arg 
   auto res=cppunivariate::student_t_mle(x,gradtol,iterlim,held_mean,held_sd,nu.supplied?nu.value:nan);
   if(res.status==cppunivariate::StudentTStatus::CertificateBudget)return stop_failure(fail("Student-t global certificate budget exhausted; no verified MLE. Raising iterlim may resolve this stop."),res.stop_detail,"budget",{"mean","sd","nu"});
   if(res.status==cppunivariate::StudentTStatus::CertificateTie)return stop_failure(fail("Student-t global certificate unresolved tie or sign-uncertain seam; no verified MLE."),res.stop_detail,"tie",{"mean","sd","nu"});
+  if(res.status==cppunivariate::StudentTStatus::NumericalFailure && !nu.supplied && (mean.supplied || sd.supplied))
+    return stop_failure(fail("Student-t held-subset numerical search failed its score, arithmetic or representability checks; increase iterlim."),res.stop_detail,"numerical",{"mean","sd","nu"});
   if(res.status==cppunivariate::StudentTStatus::NumericalFailure)return stop_failure(fail("Student-t global certificate numerical failure: score/root, enclosure, domain or linear solve unresolved; no verified MLE."),res.stop_detail,"numerical",{"mean","sd","nu"});
   if (res.status == cppunivariate::StudentTStatus::InvalidNu)
     return fail("`nu` must be finite and greater than 2.");
@@ -32,7 +34,7 @@ inline FitResult fit_std(cppunivariate::span x, Held mean_arg = {}, Held sd_arg 
   if (res.status == cppunivariate::StudentTStatus::ScaleBoundary)
     return stop_failure(fail("Tie equality scale-collapse boundary; a regular MLE is not certified."),res.stop_detail,"nomle",{"mean","sd","nu"},(!mean.supplied&&!sd.supplied&&!nu.supplied)?"unavailable:t-scale-collapse":"");
   if (res.status == cppunivariate::StudentTStatus::IterationFailure)
-    return fail("Student-t optimizer IterationFailure: did not converge to the score tolerance; increase iterlim.");
+    return stop_failure(fail("Student-t optimizer IterationFailure: did not converge to the score tolerance; increase iterlim."),res.stop_detail,"numerical",{"mean","sd","nu"});
   if (res.status == cppunivariate::StudentTStatus::NormalBoundary) {
     return stop_failure(fail("The Student-t likelihood is maximised as nu -> Inf, i.e. by the "
                "normal distribution. Use `mlnorm` to fit this model."),res.stop_detail,"limit",{"mean","sd","nu"},"norm");

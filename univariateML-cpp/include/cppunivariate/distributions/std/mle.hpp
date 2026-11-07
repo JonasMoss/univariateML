@@ -171,6 +171,26 @@ struct StudentTTwoCost {
   }
 };
 
+// Evaluate the actual standardized coordinates without a rounded ordinary scale.
+inline double student_t_held_loglik(span x,double mu,double sd,double nu) {
+  if(!std::isfinite(mu)||!(sd>0)||!std::isfinite(sd)||!(nu>2)||!std::isfinite(nu))return NAN;
+  const double c=dens::log_dstd_unit(0,nu),ls=std::log(sd),lm=std::log(nu-2);
+  double ll=0;
+  for(double v:x){
+    if(!std::isfinite(v))return NAN;
+    const double distance=std::abs(v-mu);
+    const double ld=std::isfinite(distance)?std::log(distance):special::log_sum_exp(std::log(std::abs(v)),std::log(std::abs(mu)));
+    const double w=2*(ld-ls)-lm;
+    const double tail=w>0?w+std::log1p(std::exp(-w)):std::log1p(std::exp(w));
+    ll+=c-ls-.5*(nu+1)*tail;
+  }
+  return ll;
+}
+inline bool student_t_scale_accurate(double ordinary,double sd,double nu) {
+  return ordinary>0&&sd>0&&std::isfinite(sd)&&
+    std::abs(std::log(sd)-std::log(ordinary)-.5*(std::log(nu)-std::log(nu-2)))<=5e-9;
+}
+
 inline StudentTResult student_t_mle_fixed_nu(span x, double nu, double tol, int maxit) {
   maxit = static_cast<int>(solver_budget(maxit));
   const double nan = std::numeric_limits<double>::quiet_NaN();
@@ -182,7 +202,19 @@ inline StudentTResult student_t_mle_fixed_nu(span x, double nu, double tol, int 
   if (r.status == LstStatus::Unbounded) status = StudentTStatus::Unbounded;
   if (r.status == LstStatus::ScaleBoundary) status = StudentTStatus::ScaleBoundary;
   if (r.status == LstStatus::IterationFailure) status = StudentTStatus::IterationFailure;
-  return {r.mu,r.sigma*std::sqrt(nu/(nu-2.0)),nu,r.logLik,r.iterations,status};
+  if (r.status == LstStatus::NumericalFailure) status = StudentTStatus::NumericalFailure;
+  auto result=StudentTResult{r.mu,r.sigma*std::sqrt(nu/(nu-2.0)),nu,r.logLik,r.iterations,status};
+  result.stop_detail=r.stop_detail;
+  if(status==StudentTStatus::Ok&&(!std::isfinite(result.mu)||!std::isfinite(result.sigma)||!(result.sigma>0)||!std::isfinite(result.logLik)||!student_t_scale_accurate(r.sigma,result.sigma,nu))) {
+    result.status=StudentTStatus::NumericalFailure;result.mu=NAN;result.sigma=NAN;result.logLik=NAN;
+    result.stop_detail.loglik_upper=INFINITY;
+    if(std::isfinite(r.mu)&&std::isfinite(r.sigma)&&r.sigma>0&&std::isfinite(r.logLik)) {
+      const double margin=256*std::numeric_limits<double>::epsilon()*x.size()*(1+std::abs(r.logLik));
+      result.stop_detail.candidates.push_back({{r.mu,r.sigma,nu},r.logLik-margin,r.logLik+margin,StopModel::Lst});
+      result.stop_detail.loglik_lower=r.logLik-margin;
+    }
+  }
+  return result;
 }
 
 inline StudentTResult student_t_mle_impl(span x, double tol, int maxit, bool standardized) {
@@ -353,21 +385,71 @@ inline StudentTResult student_t_mle(span x,double tol,int maxit,double mean,doub
   const double nan=std::numeric_limits<double>::quiet_NaN();
   auto profile=[&](double d){
     const double s=std::isnan(sd)?sd:sd*std::sqrt((d-2)/d);
-    const auto r=lst_detail::conditional(x,d,mean,s,tol,maxit);
+    if(!std::isnan(sd)&&sd>0&&std::isfinite(sd)&&!std::isnormal(s)) {
+      StudentTResult stopped{NAN,sd,d,NAN,0,StudentTStatus::NumericalFailure};
+      if(x.empty())return stopped;
+      bool constant=true;for(double v:x)if(v!=x[0])constant=false;
+      const double m=std::isnan(mean)?x[0]:mean;
+      const double ll=student_t_held_loglik(x,m,sd,d);
+      if(std::isfinite(ll)) {
+        if((!std::isnan(mean)||constant)&&tol>0&&std::isfinite(tol)&&maxit>0)
+          return StudentTResult{m,sd,d,ll,0,StudentTStatus::Ok};
+        const double margin=256*std::numeric_limits<double>::epsilon()*x.size()*(1+std::abs(ll)+x.size()*(4+std::abs(std::log(sd))+std::abs(std::log(d-2))));
+        stopped.stop_detail.candidates.push_back({{m,sd,d},ll-margin,ll+margin,StopModel::None});
+        stopped.stop_detail.loglik_lower=ll-margin;
+      }
+      stopped.stop_detail.loglik_upper=INFINITY;return stopped;
+    }
+    const auto r=lst_detail::conditional(x,d,mean,s,tol,maxit,!std::isnan(nu));
     StudentTStatus status=StudentTStatus::InvalidStart;
     if(r.status==LstStatus::Ok)status=StudentTStatus::Ok;
     if(r.status==LstStatus::Unbounded)status=StudentTStatus::Unbounded;
     if(r.status==LstStatus::ScaleBoundary)status=StudentTStatus::ScaleBoundary;
     if(r.status==LstStatus::IterationFailure)status=StudentTStatus::IterationFailure;
-    return StudentTResult{r.mu,std::isnan(sd)?r.sigma*std::sqrt(d/(d-2)):sd,d,r.logLik,r.iterations,status};
+    if(r.status==LstStatus::CertificateBudget)status=StudentTStatus::CertificateBudget;
+    if(r.status==LstStatus::CertificateTie)status=StudentTStatus::CertificateTie;
+    if(r.status==LstStatus::NumericalFailure)status=StudentTStatus::NumericalFailure;
+    auto result=StudentTResult{r.mu,std::isnan(sd)?r.sigma*std::sqrt(d/(d-2)):sd,d,r.logLik,r.iterations,status};
+    result.stop_detail=r.stop_detail;
+    if(status==StudentTStatus::Ok&&(!std::isfinite(result.mu)||!std::isfinite(result.sigma)||!(result.sigma>0)||!std::isfinite(result.logLik)||(std::isnan(sd)&&!student_t_scale_accurate(r.sigma,result.sigma,d)))) {
+      result.status=StudentTStatus::NumericalFailure;result.mu=NAN;result.sigma=NAN;result.logLik=NAN;
+      result.stop_detail.loglik_upper=INFINITY;
+      if(std::isfinite(r.mu)&&std::isfinite(r.sigma)&&r.sigma>0&&std::isfinite(r.logLik)) {
+        const double margin=256*std::numeric_limits<double>::epsilon()*x.size()*(1+std::abs(r.logLik));
+        result.stop_detail.candidates.push_back({{r.mu,r.sigma,d},r.logLik-margin,r.logLik+margin,StopModel::Lst});
+        result.stop_detail.loglik_lower=r.logLik-margin;
+      }
+    }
+    for(auto& candidate:result.stop_detail.candidates) {
+      if(candidate.model==StopModel::Lst && candidate.coef.size()==3) {
+        const double transformed=std::isnan(sd)?candidate.coef[1]*std::sqrt(d/(d-2)):sd;
+        if(!std::isnan(sd)&&std::isfinite(transformed)&&transformed>0&&student_t_scale_accurate(candidate.coef[1],transformed,d)) {
+          const double value=student_t_held_loglik(x,candidate.coef[0],transformed,d);
+          const double margin=256*std::numeric_limits<double>::epsilon()*x.size()*(1+std::abs(value)+x.size()*(4+std::abs(std::log(transformed))+std::abs(std::log(d-2))));
+          if(std::isfinite(value)&&std::isfinite(margin)) {
+            candidate.coef[1]=transformed;candidate.model=StopModel::None;
+            candidate.loglik_lower=value-margin;candidate.loglik_upper=value+margin;
+          }
+        }
+      }
+    }
+    return result;
   };
   if(!std::isnan(nu)) {
     if(!(nu>2)||!std::isfinite(nu))return {nan,nan,nu,nan,0,StudentTStatus::InvalidNu};
     return profile(nu);
   }
   if(x.empty())return {nan,nan,nan,nan,0,StudentTStatus::InvalidStart};
+  if(!(tol>0)||!std::isfinite(tol)||maxit<1 ||
+     (!std::isnan(mean)&&!std::isfinite(mean)) ||
+     (!std::isnan(sd)&&(!(sd>0)||!std::isfinite(sd))))
+    return {NAN,NAN,NAN,NAN,0,StudentTStatus::InvalidStart};
+  for(double v:x)if(!std::isfinite(v))return {NAN,NAN,NAN,NAN,0,StudentTStatus::InvalidStart};
   const std::size_t k=std::isnan(mean)?collapse_multiplicity(x):static_cast<std::size_t>(std::count(x.begin(),x.end(),mean));
-  if(k>2*(x.size()-k))return {nan,nan,nan,INFINITY,0,StudentTStatus::Unbounded};
+  if(k>2*(x.size()-k)) {
+    StudentTResult unbounded{nan,nan,nan,INFINITY,0,StudentTStatus::Unbounded};
+    unbounded.stop_detail.loglik_lower=INFINITY;unbounded.stop_detail.loglik_upper=INFINITY;return unbounded;
+  }
   std::vector<double> grid;for(double t=-18;t<=16;t+=.5)grid.push_back(t);
   const auto optimum=lst_detail::maximize([&](double a){return profile(2+std::exp(a)).logLik;},grid,1e-8,maxit);
   if(!optimum.converged)return {nan,nan,nan,nan,maxit,StudentTStatus::IterationFailure};
