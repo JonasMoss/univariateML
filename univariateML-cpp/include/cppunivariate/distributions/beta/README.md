@@ -31,7 +31,7 @@ r:
   control:
     shape1: Optional held shape1; `NULL` estimates it.
     shape2: Optional held shape2; `NULL` estimates it.
-    reltol: Relative step tolerance in `log(shape2)`.
+    reltol: Requested relative accuracy of the free shapes (floored at `1e-14`).
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
 log_density: (shape1-1)*log(x) + (shape2-1)*log(1-x) - loggamma(shape1) - loggamma(shape2) + loggamma(shape1+shape2)
 references:
@@ -78,8 +78,8 @@ fit:
   method: scalar-solve
   certified: 'yes'
   note: 'beta/README.md, Details; beta/mle.hpp (public fitter and held overloads); beta/test.cpp: Strictly concave
-    beta likelihood in its two shapes; held-shape digamma scores decrease strictly. nsbeta uses supplied endpoints;
-    unsupported endpoint fits stop.'
+    beta likelihood in its two shapes; ray scores decrease strictly and the mean profile is unimodal; held-shape
+    digamma scores decrease strictly. nsbeta uses supplied endpoints; unsupported endpoint fits stop.'
 areas:
 - proportions
 existence:
@@ -117,10 +117,30 @@ corresponding endpoint. Their ratio determines the center, while their
 sum controls concentration at a fixed ratio.
 
 With both shapes free, nonconstant data have a unique finite maximum.
-The fit uses a scalar Newton iteration with an inner digamma inversion.
-If this route fails, damped Newton ascent on the strictly concave joint
-log likelihood provides a fallback. Exhausted solves report numerical failure.
-Constant data have unbounded likelihood as both shapes increase at a fixed ratio.
+The fit works in mean and precision, $\alpha=\mu t$ and $\beta=(1-\mu)t$.
+With $R(z,h)=\psi(z+h)-\psi(z)-\log(1+h/z)$ and the binary Kullback–Leibler
+divergence $\mathrm{KL}(\mu\Vert x)$, the scores are
+
+$$
+\begin{aligned}
+n^{-1}\partial_t\ell &= -\overline{\mathrm{KL}(\mu\Vert x)}+\mu R(\alpha,\beta)+(1-\mu)R(\beta,\alpha),\\
+(nt)^{-1}\partial_\mu\ell &= \overline{\operatorname{logit}x}-\operatorname{logit}\mu+R(\alpha,\beta)-R(\beta,\alpha),
+\end{aligned}
+$$
+
+where the logit difference is averaged per observation with `log1p`. The
+leading terms cancel analytically, so the scores keep their information for
+nearly constant data and for data near zero or one. Along a ray of fixed
+$\mu$ the likelihood is concave in $t$, so its score has one root. The
+superlevel sets of a concave function are convex, so the profile over $\mu$
+is unimodal. Both levels are bracketed, safeguarded Newton root-finds in
+$\log t$ and $\operatorname{logit}\mu$, with exact profile derivatives;
+starts affect only speed. The outer bracket width is chosen so that both
+shapes reach relative accuracy `reltol`, including the quadratic
+sensitivity of $t$ to $\mu$ for concentrated data. The log-likelihood uses
+the same coordinates and Stirling remainders. Exhausted solves report
+numerical failure. Constant data have unbounded likelihood as both shapes
+increase at a fixed ratio.
 
 With either finite positive shape held, the remaining shape has a unique
 finite maximum even for constant data. Its strictly decreasing digamma
@@ -138,3 +158,19 @@ See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.m
 and the appended TASK-132 cases in `test.cpp` for the validation scope.
 
 For one held shape $h$, the free-shape bracket starts at $z=\max(1,2h/T)$, with $T$ the negative mean log observation in the corresponding coordinate, subject to representability. The bound $\psi'(z)\le z^{-1}+z^{-2}$ implies $\psi(z+h)-\psi(z)\le2h/z$ for $z\ge1$. Thus tiny log complements retain a signed bracket without requiring hundreds of doubling passes; computed endpoint signs still decide acceptance.
+
+### Free fit rebuilt in mean and precision (2026-11-07, TASK-148)
+
+The inherited free fit solved a Newton iteration on $\log\beta$ with three
+fixed digamma-inversion steps for $\alpha$, using $\log(1-x)$ and direct
+digamma differences. It returned status `Ok` with wrong estimates on data near
+zero ($\alpha$ 43% off at $x\approx10^{-17}$, where `1 - x` rounds to one) and
+on nearly constant data, where concentration is a second-order difference of
+mean logs. Its goldens were about $2\times10^{-9}$ off in $\alpha$. A first
+replacement profiling $\alpha$ out at fixed $\beta$ fixed the boundary cases
+but not the concentrated ones. The current fit agrees with 60-digit mpmath
+MLEs to $3\times10^{-14}$ relative on fifteen samples, including data at
+$10^{-200}$, near one, at $0.3\pm10^{-8}$, U-shaped data and $n=2$
+(`dev/validation/beta-free-fit-check.py`). The beta, nsbeta and betapr
+fixed-scale golden estimates were updated in place (data unchanged) to values
+that agree with mpmath; the old ones were $10^{-11}$ to $2\times10^{-9}$ off.

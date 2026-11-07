@@ -197,8 +197,8 @@ TEST_CASE("beta: small concentrated and imbalanced inference") {
 
 TEST_CASE("beta: cancellation-safe differences obey special-function recurrences") {
   for(double z : {19.,20.,99.,100.,1000.,1e5,1e6}) {
-    CHECK(cppunivariate::inference_detail::beta_psi_increment(z,1)==doctest::Approx(1/z).epsilon(2e-12));
-    CHECK(cppunivariate::inference_detail::beta_tri_difference(z,1)==doctest::Approx(1/z/z).epsilon(2e-12));
+    CHECK(cppunivariate::beta_detail::psi_increment(z,1)==doctest::Approx(1/z).epsilon(2e-12));
+    CHECK(cppunivariate::beta_detail::tri_difference(z,1)==doctest::Approx(1/z/z).epsilon(2e-12));
   }
 }
 
@@ -210,4 +210,40 @@ TEST_CASE("beta mean nuisance concentration inference") {
   REQUIRE(ci.status==cppunivariate::InferenceStatus::Ok);
   CHECK(ci.lower<r.estimate);CHECK(ci.upper>r.estimate);
   for(double t:{ci.lower,ci.upper}) CHECK(cppunivariate::beta_mean_inference(data,t).likelihood_ratio.statistic==doctest::Approx(3.841458820694124).epsilon(1e-7));
+}
+
+// TASK-148. The former free fit returned status Ok with alpha 43% off for data
+// near 1e-17, and wrong precisions for nearly constant data. References are
+// mpmath MLEs at 60+ digits (dev/validation/beta-free-fit-check.py).
+TEST_CASE("beta: free fit near the boundaries and near constant data") {
+  struct Case { std::vector<double> x; double alpha, beta, logLik; };
+  std::vector<Case> cases;
+  const auto ramp = [](double scale, bool mirror) {
+    std::vector<double> x;
+    for (int i = 1; i <= 50; ++i) {
+      const double v = scale * i * (1 + 0.01 * (i % 7));
+      x.push_back(mirror ? 1 - v : v);
+    }
+    return x;
+  };
+  cases.push_back({ramp(1e-17, false), 2.0072808783723451, 7645386285069185.1, 1749.6542133490738});
+  cases.push_back({ramp(1e-200, false), 2.0072808783723454, 7.6453862850691888e+198, 22818.307814244592});
+  cases.push_back({ramp(1e-12, true), 76453743555.827302, 2.0072777888541409, 1174.0079166642071});
+  {
+    std::vector<double> x;
+    for (int i = 1; i <= 50; ++i) x.push_back(0.3 + 1e-9 * (i - 25));
+    cases.push_back({x, 302521009010145.09, 705882352676332.97, 831.7478831455809});
+  }
+  {
+    std::vector<double> x;
+    for (int i = 1; i <= 50; ++i) x.push_back(i % 2 ? 1e-30 * i : 1 - 1e-12 * i);
+    cases.push_back({x, 0.018808931292276311, 0.030846739792523061, 1996.7168952952675});
+  }
+  for (const auto &c : cases) {
+    const auto r = cppunivariate::beta_mle(mltest::as_span(c.x), 1.490116e-08, 100);
+    REQUIRE(r.status == cppunivariate::BetaStatus::Ok);
+    CHECK(r.alpha == doctest::Approx(c.alpha).epsilon(1e-12));
+    CHECK(r.beta == doctest::Approx(c.beta).epsilon(1e-12));
+    CHECK(r.logLik == doctest::Approx(c.logLik).epsilon(1e-12));
+  }
 }
