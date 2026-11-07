@@ -1,14 +1,17 @@
 #!/usr/bin/env Rscript
-# Generate golden values for univariateML estimators.
+# Create golden samples for univariateML families that have none.
 #
-# For every dossier this script samples from the configured sampler
-# with default parameters and a deterministic seed, fits the
-# corresponding ml<id>() function, and writes the parameter estimates,
-# log-likelihood, and observation count to distributions/<id>/golden.json.
+# A golden sample is a frozen fixture (decided 2026-11-07): existing
+# golden.json files are never resampled or refitted here, because their
+# data are shared by the C++, R and JS tests. For a new family this script
+# samples from the configured sampler with the README `simulate` values and a
+# deterministic seed, fits ml<id>(), and writes data, provenance and the fitted
+# values. The stored estimates are then replaced by an independent
+# high-precision reference: `just golden-reference <id>`.
 #
-# These goldens are the regression net for Workstreams 1-5 of the C++ port:
-# any change that does NOT also change the algorithm must reproduce them
-# bit-for-bit (or to within ~1e-12 floating-point noise).
+# UMVL_GOLDEN_IDS="hnorm lst" restricts the run to those families.
+# UMVL_GOLDEN_RESAMPLE=1 deliberately replaces the samples of the selected
+# families (requires UMVL_GOLDEN_IDS); rerun the reference afterwards.
 
 suppressPackageStartupMessages({
   library(jsonlite)
@@ -95,8 +98,12 @@ main <- function() {
   only <- strsplit(Sys.getenv("UMVL_GOLDEN_IDS"), "[ ,]+")[[1]]
   if (length(only)) models <- models[names(models) %in% only]
 
+  resample <- identical(Sys.getenv("UMVL_GOLDEN_RESAMPLE"), "1")
+  if (resample && !length(only)) stop("UMVL_GOLDEN_RESAMPLE=1 needs UMVL_GOLDEN_IDS")
+
   results <- list()
   for (model in models) {
+    if (!resample && file.exists(file.path(dossier_dir, model$id, "golden.json"))) next
     set_seed_for(model$id)
 
     data <- tryCatch(sample_one(model, GOLDEN_N), error = function(e) e)
@@ -123,7 +130,7 @@ main <- function() {
     message(sprintf("[ok]   %-10s logLik=%g  n=%d", model$id, record$logLik, record$n))
   }
 
-  message(sprintf("\nWrote %d goldens to %s/<id>/golden.json", length(results), dossier_dir))
+  message(sprintf("\nWrote %d goldens to %s/<id>/golden.json; run just golden-reference on them", length(results), dossier_dir))
 }
 
 main()

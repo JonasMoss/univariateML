@@ -86,7 +86,8 @@ user-chosen length (finite mixtures, categorical).
 | `just test-full` | exhaustive pre-merge suite with slow oracles |
 | `just quality [id ...]` | fitter goldens against symbolic densities and a multistart oracle |
 | `just dpqr-truth <id>` | regenerate a truth table |
-| `just goldens` | regenerate goldens; inspect the diff before committing |
+| `just goldens` | create golden samples for new families (existing samples are frozen) |
+| `just golden-reference [--write] <id>` | independent 50-digit reference MLE for a golden sample |
 | `just regen` / `just gen` | assemble the R package / regenerate wrappers |
 | `python3 dev/tools/check_links.py` | check local Markdown links |
 

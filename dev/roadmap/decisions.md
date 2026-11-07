@@ -6,6 +6,27 @@ entry stays, marked superseded. Design detail lives in the linked roadmap
 entries, reports and code; this file is the index of what was chosen.
 Active work lives on the board (`~/boards/univariateML`), not here.
 
+## 2026-11-07
+
+- **Agent instructions** (Jonas: "i dont want old stuff there, and this has
+  clearly drifted"): one lean `AGENTS.md` replaces `CLAUDE.md` and the old
+  `AGENTS.md`. It states the purpose (a proof of concept for solid maximum
+  likelihood) and four principles: no silent failures, fitters follow the
+  likelihood's structure, legacy carries no weight, claims name their
+  evidence. Procedures moved to the dossier schema and validation guide
+  (TASK-147).
+- **Original univariateML algorithms carry no weight.** Goldens no longer
+  justify keeping inherited algorithms; the beta free fit was rebuilt after it
+  failed silently (TASK-148).
+- **Goldens are frozen samples with independent references** (Jonas chose all
+  three options; TASK-149). (1) Existing samples are frozen fixtures, decoupled
+  from README `simulate` (76 of 99 had been drawn at older values); `just
+  goldens` only creates missing ones. (2) Stored estimates are independent
+  50-digit MLEs from the README density (`just golden-reference`), with local
+  and global evidence, so fitters are tested against correct values and
+  improvements need no regeneration. (3) Stress cases from the fit audit
+  (TASK-101.7.1) join `golden.json` as a `cases` list.
+
 ## 2026-10-31
 
 - **Test tiers** (Jonas: "we dont need supertesting all the time"): R and

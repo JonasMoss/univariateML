@@ -461,7 +461,8 @@ Steps:
 1. Create the folder (`lomax/` is the worked example) and add
    `#include "distributions/<id>/mle.hpp"` to `cppunivariate.hpp`.
 2. Run `just quality <id>` and `just dpqr-truth <id>`.
-3. Run `just goldens`; then `just cpp-test` and `just test` must pass.
+3. Run `just goldens` (creates the sample) and `just golden-reference --write <id>`
+   (independent reference); then `just cpp-test` and `just test` must pass.
 4. Run `just readme-table`.
 
 R metadata, wrappers and roxygen docs are generated from `README.md` (`just gen`).

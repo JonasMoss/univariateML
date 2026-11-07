@@ -9,7 +9,7 @@ are different kinds of evidence.
 | Check | Command | Kind of evidence | Runs in |
 |---|---|---|---|
 | [Core diagnostic sweep](diagnostics.md) (98 families, supported holds, invalid/degenerate data) | `just cpp-test` | status/domain regression, not an existence proof | monorepo dev/full |
-| C++ fit goldens | `just cpp-test` | regression (our own frozen output) | ordinary |
+| C++ fit goldens | `just cpp-test` | agreement with independent references where present, else regression | ordinary |
 | C++ family cases: holds, limits, closed forms, score residuals | `just cpp-test` | internal identities; closed forms where derived | ordinary |
 | C++ truth tables | `just cpp-test` | independent numerical, given the README density | ordinary |
 | C++ shared targets: BFGS, sampling, no-throw, CMP, tails | `just cpp-test` | internal identities, finite examples | ordinary |
@@ -93,13 +93,18 @@ family `test.cpp` files. A passing ctest target exits zero; doctest reports
 cases, assertions, skips and any `may_fail` cases. Read the individual cases.
 
 - Family fit goldens replay stored data and fit arguments from each
-  `golden.json`. They are frozen output of our own R/C++ pipeline, generated
-  by [goldens.R](../../bindings/r/scripts/goldens.R), not independent MLEs.
+  `golden.json`. The samples are frozen fixtures (2026-11-07): `just goldens`
+  only creates missing ones, and resampling one takes
+  `UMVL_GOLDEN_IDS=<id> UMVL_GOLDEN_RESAMPLE=1`. Goldens carrying a
+  `reference` block store independent 50-digit MLEs from the README density
+  ([reference.py](quality/reference.py), `just golden-reference`), with the
+  coefficients not refined (held, integer, bound, kink) and the global
+  evidence; for those, a test failure means the fitter moved away from the
+  MLE. Goldens without the block still hold our own earlier output.
   Shared [tolerances](../../univariateML-cpp/tests/test_support.hpp) use a
   small rounding floor for closed-form fits and a wider finite-difference
   allowance based on observed cross-machine drift. Some cases choose their
-  own tolerance. Do not regenerate fixtures merely to make a test pass;
-  `just goldens` rewrites all of them.
+  own tolerance. Do not regenerate fixtures merely to make a test pass.
 - Family cases also exercise held subsets, status and limit decisions,
   support, endpoints, analytic cases, independent optimizers and score
   residuals where implemented. For examples see [exp](../../univariateML-cpp/include/cppunivariate/distributions/exp/test.cpp),

@@ -79,9 +79,9 @@ check: regen
 check-standalone: regen
 	bash dev/tools/r-standalone-check.sh
 
-# Regenerate distributions/<id>/golden.json from the current R/C++ pipeline.
-# Run only when intentionally accepting a new baseline (e.g. algorithm
-# change). After regen, inspect the diff before committing.
+# Create golden samples for families without one (existing samples are frozen;
+# UMVL_GOLDEN_IDS=<id> UMVL_GOLDEN_RESAMPLE=1 replaces one deliberately).
+# Then run `just golden-reference --write <id>`.
 goldens: regen
 	cd bindings/r && \
 	  UMVL_DOSSIER_DIR={{repo_root}}/univariateML-cpp/include/cppunivariate/distributions \
@@ -140,6 +140,11 @@ quality *ids:
 # Independent high-precision d/p/q truth from declarative densities.
 dpqr-truth *ids:
 	PYTHONPATH={{repo_root}}/dev/validation python3 -m quality truth {{ids}}
+
+# Independent 50-digit reference MLEs for golden samples (report only;
+# add --write to update golden.json estimates and its reference block).
+golden-reference *args:
+	PYTHONPATH={{repo_root}}/dev/validation python3 -m quality reference {{args}}
 
 # --- LaTeX research notes (dev/research/) ---
 notes_dir := "dev/research"
