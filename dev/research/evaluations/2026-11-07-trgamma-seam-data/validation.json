@@ -1,0 +1,100 @@
+{
+  "base_revision": "3de415f0896527001caeb0d612bcb91b858d644d",
+  "source_state": "uncommitted worktree; no commits",
+  "source_sha256": {
+    "univariateML-cpp/include/cppunivariate/distributions/trgamma/mle.hpp": "f5fad619d282f24de69d2829d23851bee9f1981b27541ae9d756b93cf9179d3e",
+    "univariateML-cpp/include/cppunivariate/distributions/invtrgamma/mle.hpp": "f070ae25d85952907c9c607040ac62932dddd497e6bc812cbfa8bbc794e1f55f",
+    "bindings/common/distributions/trgamma/fit.hpp": "9fdd639502179400b8a92033d40d57e33961985dc30ce2cf9d287bf12bf679a8",
+    "bindings/common/distributions/invtrgamma/fit.hpp": "9dff9a1b2b6dc1e96f62b1584027252f1700f57f0dd927a4bd8720a5513681a7"
+  },
+  "runs": [
+    {
+      "name": "cpp-dev",
+      "machine": "simbox",
+      "command": "UMVL_TEST_TIER=dev just cpp-test",
+      "pass_count": 106,
+      "fail": 0,
+      "warn": null,
+      "skip": 0,
+      "exit_code": 0
+    },
+    {
+      "name": "cpp-full",
+      "machine": "simbox",
+      "command": "UMVL_TEST_TIER=full just cpp-test",
+      "pass_count": 129,
+      "fail": 0,
+      "warn": null,
+      "skip": 0,
+      "exit_code": 0
+    },
+    {
+      "name": "cpp-no-long-double",
+      "machine": "simbox",
+      "command": "just cpp-test-no-long-double",
+      "pass_count": 129,
+      "fail": 0,
+      "warn": null,
+      "skip": 0,
+      "exit_code": 0
+    },
+    {
+      "name": "r-dev",
+      "machine": "simbox",
+      "command": "UMVL_TEST_TIER=dev just test",
+      "pass_count": 21048,
+      "fail": 0,
+      "warn": 0,
+      "skip": 154,
+      "exit_code": 0
+    },
+    {
+      "name": "r-full",
+      "machine": "simbox",
+      "command": "just test-full",
+      "pass_count": 43868,
+      "fail": 0,
+      "warn": 0,
+      "skip": 0,
+      "exit_code": 0
+    },
+    {
+      "name": "javascript",
+      "machine": "workstation",
+      "command": "just js-build && just js-test",
+      "pass_count": 444,
+      "fail": 0,
+      "warn": null,
+      "skip": 0,
+      "exit_code": 0
+    },
+    {
+      "name": "site",
+      "machine": "workstation",
+      "command": "just site-check",
+      "pass_count": null,
+      "fail": 0,
+      "warn": null,
+      "skip": null,
+      "exit_code": 0
+    }
+  ],
+  "workstation": {
+    "platform": "Linux-7.0.0-42-generic-x86_64-with-glibc2.43",
+    "python": "3.14.5",
+    "cxx": "c++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+    "node": "v22.22.1"
+  },
+  "logs_sha256": {
+    "final-frozen-suites.log": "00e9ba87edfc18fe8b06774f833db40d2ac77e33f59c157d29e84df2eb398c23",
+    "final-binding-js.log": "3257f2022dfbe052063675cd44d3ee1ca66b80d4b2486ba4acde6786beaceabd",
+    "latest-check.log": "6dcd98990391c0fd14eb88106af157202111b4ffd38f4c4928241a770ab051ad",
+    "final-evidence-site.log": "9781ad30252a8e27e8a2b6a3f9537ddf2cdcc8dee2189f720ed2bdee675b2ab7"
+  },
+  "notes": [
+    "Final simbox command emitted these four source hashes before testing.",
+    "Local commands ran via /tmp/umvl-cpu/run or run4; BLAS/OpenMP one thread; nice scheduling.",
+    "Earlier parallel same-worktree simbox mirroring returned 75; local fallback passed. Final mirroring and suites ran serially without this race.",
+    "site-check historical screenshot side effect restored byte-for-byte from HEAD after its final run."
+  ]
+}

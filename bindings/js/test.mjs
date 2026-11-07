@@ -238,3 +238,84 @@ test('sn checks likelihood after restoring large held shapes', async () => {
   }
   assert.ok(Math.abs(f.logLik-ll)<3e-9);
 });
+
+test('trgamma certificates preserve held endpoints and reciprocal likelihoods', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  const x = new Float64Array([.1,.3,1]);
+  const a = api.trgamma.fit(x, {scale: 1});
+  const b = api.invtrgamma.fit(Float64Array.from(x, v => 1/v), {scale: 1});
+  assert.equal(a.status, 'Ok');
+  assert.equal(b.status, 'Ok');
+  for (const name of ['shape1','shape2'])
+    assert.ok(Math.abs(a.estimates[name]/b.estimates[name]-1) < 1e-9);
+  assert.equal(a.estimates.scale, 1);
+  assert.equal(b.estimates.scale, 1);
+  assert.ok(Math.abs(b.logLik-a.logLik-2*(Math.log(.1)+Math.log(.3))) < 1e-10);
+});
+
+test('trgamma held-scale concentration and numerical stops have distinct kinds', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  for (const [family,value] of [['trgamma',2],['invtrgamma',.5]]) {
+    assert.throws(() => api[family].fit(new Float64Array([value,value,value]), {scale: 1}), error => {
+      assert.equal(error.kind, 'nomle');
+      return true;
+    });
+  }
+  assert.throws(() => api.trgamma.fit(new Float64Array([.1,.3,1]), {scale: 1}, {iterlim: 1}), error => {
+    assert.ok(['numerical','budget'].includes(error.kind));
+    return true;
+  });
+});
+
+test('trgamma held endpoint comparisons stop without asserting nonattainment', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  const x = new Float64Array([Math.exp(-1),1-Number.EPSILON/2,1]);
+  for (const [family,data] of [['trgamma',x],['invtrgamma',Float64Array.from(x,v=>1/v)]]) {
+    assert.throws(() => api[family].fit(data,{scale:1}),error => {
+      assert.equal(error.kind,'tie');
+      assert.equal(error.candidates.length,2);
+      assert.ok(error.loglik_upper>=error.loglik_lower);
+      assert.ok(error.loglik_upper-error.loglik_lower<1e-7);
+      return true;
+    });
+  }
+});
+
+test('trgamma partial logarithmic ties stop numerically', async () => {
+  const {default:createApi}=await import('./index.mjs');
+  const api=await createApi();
+  const x=Float64Array.from({length:16},(_,i)=>7-i*4*Number.EPSILON);
+  for(const family of ['trgamma','invtrgamma'])assert.throws(()=>api[family].fit(x),error=>{
+    assert.equal(error.kind,'numerical');
+    assert.match(error.message,/taking logarithms/);
+    return true;
+  });
+});
+
+test('trgamma limit witnesses preserve raw support endpoints', async () => {
+  const {default:createApi}=await import('./index.mjs');
+  const api=await createApi();
+  const x=Float64Array.from({length:400},(_,i)=>7*Math.pow((i+1)/400,1/2.5));
+  assert.throws(()=>api.trgamma.fit(x),error=>{
+    assert.equal(error.kind,'limit');assert.equal(error.estimates.alpha,7);return true;
+  });
+  const inverse=Float64Array.from(x,v=>1/v);
+  assert.throws(()=>api.invtrgamma.fit(inverse),error=>{
+    assert.equal(error.kind,'limit');assert.equal(error.estimates.b,Math.min(...inverse));return true;
+  });
+});
+
+test('trgamma unrepresentable scales retain numerical stop details', async () => {
+  const {default:createApi}=await import('./index.mjs');
+  const api=await createApi();
+  const z=api.norm.q(Float64Array.from({length:201},(_,i)=>(i+.5)/201),[0,1]);
+  const x=Float64Array.from(z,v=>Math.exp(v-.001*(v*v-1)));
+  for(const [family,data] of [['trgamma',x],['invtrgamma',Float64Array.from(x,v=>1/v)]])
+    assert.throws(()=>api[family].fit(data),error=>{
+      assert.equal(error.kind,'numerical');assert.match(error.message,/log\(scale\)/);
+      assert.equal(error.loglik_upper,Infinity);return true;
+    });
+});

@@ -41,13 +41,13 @@ limits:
     firmness: proved
     fixed: [scale]
     when: The gamma shape $k$ tends to zero and the power $p$ tends to infinity with $kp\to d>0$ and the scale $a$ held.
-    status: ParetoBoundary
+    status: IterationFailure
     message: fixed-endpoint Pareto face
     numerical: true
   - name: unbounded likelihood
     firmness: proved
     when: The free coefficients concentrate the distribution at the common positive observation.
-    detect: All observations are equal and the free coefficients allow concentration. With scale free, either free shape suffices. With scale held, a free power suffices when the common observation equals $a$.
+    detect: All observations are equal and the free coefficients allow concentration. With scale free, either free shape suffices. With scale held, a free power suffices at the common observation $a$; with both shapes free, concentration is also possible below $a$.
     status: InvalidData
     message: unbounded
   - model: lnorm
@@ -93,10 +93,10 @@ relations:
     power: shape2
 fit:
   method: delegation
-  certified: partial
-  note: 'invtrgamma/README.md, Details; invtrgamma/mle.hpp (public fitter and held overloads); invtrgamma/test.cpp:
-    Held power reduces to gamma and held gamma shape to a concave transformed problem; the free-power/shape profile
-    and face enumeration are numerical.'
+  certified: 'yes'
+  note: 'trgamma/mle.hpp: exact scalar reductions; convex-conjugate secant bounds, uniform refitted-normal seam,
+    analytic power tails and certified concave root neighborhoods for the free and held-scale profiles.
+    Reciprocal fits transport coefficients and all likelihood bounds. Numerical, comparison and work-budget stops retain no successful estimate.'
 areas:
 - actuarial
 - reliability and survival
@@ -120,8 +120,9 @@ existence:
     power held, the remaining gamma shape has a unique finite MLE.
     With scale and gamma shape held, the power MLE is unique unless
     every observation equals the held scale, when likelihood is unbounded.
-    With only scale held, attainment is assessed numerically against the
-    fixed-endpoint Pareto limit.
+    With only scale held, the reciprocal transformed-gamma certificate
+    assesses attainment against the fixed-endpoint Pareto limit. Constant
+    samples below scale have unbounded likelihood when both shapes are free.
   reason: >-
     Holding the power reduces fitting to the gamma family. Holding the
     gamma shape gives a strictly concave profile in log-power after
@@ -155,10 +156,11 @@ log likelihoods differ by $-2\sum_i\log x_i$. The inverse gamma
 members. For nonconstant data, holding $k$ or $p$ fixed gives a maximum
 likelihood estimate; the unrestricted fit fails to have a finite MLE with positive probability. The
 inward likelihood slope from the lognormal face has the same sign as the
-sample skewness of the logarithms. Faces win likelihood ties within $10^{-8}$
-per observation. Fits very close to that limit can have a scale outside the numerical representation range.
+sample skewness of the logarithms. A positive finite improvement within $10^{-8}$ per observation of a face
+stops as an unresolved comparison with both witnesses. Face selection uses
+the transformed-gamma floating-point comparison margin. Fits very close to that limit can have a scale outside the numerical representation range.
 
-Held-scale fits use the reciprocal transformed gamma profile. With $a,p$ held, the score for $k$ has one root. With $a,k$ held, the likelihood in $p$ is strictly concave and has a finite maximum unless every observation equals $a$. With only $a$ held, the fixed-endpoint Pareto limit is compared numerically.
+Held-scale fits use the reciprocal transformed gamma profile. With $a,p$ held, the score for $k$ has one root. With $a,k$ held, the likelihood in $p$ is strictly concave and has a finite maximum unless every observation equals $a$. With only $a$ held, the reciprocal certificate compares the interior with the fixed-endpoint Pareto limit.
 
 ## R notes
 
@@ -175,3 +177,21 @@ parameters. The derivation and numerical search qualifications are in
 `dev/research/evaluations/2026-10-29-trgamma-derivation.md` in the source tree.
 
 A transformed-gamma budget stop retains the reciprocal-scale finite candidates and the mirrored lognormal or Pareto face. Candidate and global likelihood bounds include the reciprocal transformation’s Jacobian.
+
+The [transformed-gamma certificate](../trgamma/README.md#details) operates
+on $-\log x$ and includes the held-scale profile. It maps interior scales
+and power endpoints back by reciprocation, maps power faces to Pareto,
+negates the fitted lognormal location, and shifts every likelihood field
+by $-2\sum\log x_i$. Held endpoints remain in original coordinates even
+when their reciprocals cannot be represented. The fixed-endpoint Pareto
+comparison retains the $-1$ contribution of each observation at the endpoint.
+The proof and numerical qualifications are in
+[the certificate report](../../../../../dev/research/evaluations/2026-11-07-trgamma-seam-report.md).
+
+With only scale held, a finite maximizer exists for every nonconstant
+positive sample and for constant samples above the held scale. Constants
+at or below that scale allow concentration. The positive Euler-constant
+term in the parent's endpoint expansion prevents the fixed-endpoint Pareto
+face from being an unattained maximum. Tolerance-level comparisons stop
+as unresolved comparisons. The represented-coefficient likelihood check
+is repeated after reciprocal transport, in the original coordinates.

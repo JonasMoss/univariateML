@@ -409,3 +409,186 @@ TEST_CASE("trgamma: small certificate cap retains a feasible witness") {
   CHECK(ll<=c.loglik_upper+1e-8);
   CHECK_FALSE(cppunivariate::trgamma_mle({g.data.data(),g.data.size()},1e-10,100).stop_detail.budget_exhausted);
 }
+
+TEST_CASE("trgamma: uniform refitted seam includes zero skewness") {
+  for(double skew:{-0.001,0.0,0.001}) {
+    std::vector<double> y;
+    for(int i=0;i<101;++i) {
+      const double z=cppunivariate::special::qnorm((i+.5)/101,0,1,true,false);
+      y.push_back(z+skew*(z*z-1));
+    }
+    cppunivariate::trgamma_detail::LogData d;
+    REQUIRE(cppunivariate::trgamma_detail::standardize(mltest::as_span(y),d));
+    const double T=.01/std::max(d.umax,-d.umin);
+    const double upper=cppunivariate::trgamma_detail::normal_seam_upper(d,T);
+    CHECK(std::isfinite(upper));
+    for(int j=1;j<=100;++j) {
+      int evaluations=0;
+      const auto p=cppunivariate::trgamma_detail::profile(d,T*j/100,evaluations);
+      CHECK(p.delta<=upper+2e-13);
+    }
+    if(skew==0)CHECK(upper<1e-30);
+  }
+}
+
+TEST_CASE("trgamma: held endpoint retains each exp minus one factor") {
+  const std::vector<double> x={.1,.3,1.0};
+  const auto r=cppunivariate::trgamma_mle_fixed_scale(mltest::as_span(x),1);
+  REQUIRE(r.status==cppunivariate::TrGammaStatus::Ok);
+  CHECK(r.scale==1);
+  CHECK(r.logLik==doctest::Approx(trgamma_loglik(x,r.shape1,r.shape2,1)).epsilon(1e-11));
+  const double sum=std::log(.1)+std::log(.3);
+  const double face=3*(std::log(-3/sum)-1)-sum-1;
+  const auto tail=cppunivariate::trgamma_mle_fixed_scale(mltest::as_span(x),1,NAN,1e6);
+  REQUIRE(tail.status==cppunivariate::TrGammaStatus::Ok);
+  CHECK(tail.logLik==doctest::Approx(face).epsilon(1e-5));
+  CHECK(r.logLik>face+.01);
+  const std::vector<double> common={2,2,2};
+  CHECK(cppunivariate::trgamma_mle_fixed_scale(mltest::as_span(common),1).logLik==INFINITY);
+  const auto held=cppunivariate::trgamma_mle_fixed_scale(mltest::as_span(common),1,2);
+  CHECK(held.status==cppunivariate::TrGammaStatus::Ok);
+}
+
+TEST_CASE("trgamma: held-scale exhausted certificate keeps original witnesses") {
+  const auto g=mltest::load_distribution_golden("trgamma");
+  std::vector<double> logs;for(double v:g.data)logs.push_back(std::log(v));
+  const auto r=cppunivariate::trgamma_fixed_scale_log(mltest::as_span(logs),std::log(2.0),NAN,NAN,1e-10,100,1);
+  CHECK(r.status==cppunivariate::TrGammaStatus::IterationFailure);
+  REQUIRE(r.stop_detail.budget_exhausted);
+  REQUIRE_FALSE(r.stop_detail.candidates.empty());
+  const auto& c=r.stop_detail.candidates.front();
+  const double ll=trgamma_loglik(g.data,c.coef[0],c.coef[1],c.coef[2]);
+  CHECK(ll>=c.loglik_lower-1e-8);
+  CHECK(ll<=c.loglik_upper+1e-8);
+}
+
+TEST_CASE("trgamma: distinct observations collapsed by logarithms stop numerically") {
+  const std::vector<double> x={1e300,std::nextafter(1e300,INFINITY)};
+  REQUIRE(x[0]!=x[1]);
+  REQUIRE(std::log(x[0])==std::log(x[1]));
+  CHECK(cppunivariate::trgamma_mle(mltest::as_span(x)).status==cppunivariate::TrGammaStatus::IterationFailure);
+  CHECK(cppunivariate::trgamma_mle_fixed_scale(mltest::as_span(x),1e300).status==cppunivariate::TrGammaStatus::IterationFailure);
+  CHECK(cppunivariate::invtrgamma_mle(mltest::as_span(x)).status==cppunivariate::InvTrGammaStatus::IterationFailure);
+  CHECK(cppunivariate::invtrgamma_mle_fixed_scale(mltest::as_span(x),1e300).status==cppunivariate::InvTrGammaStatus::IterationFailure);
+}
+
+TEST_CASE("trgamma: exact zero first seam coefficient has a uniform exclusion") {
+  // sd=2 and all standardized odd powers cancel exactly in binary arithmetic.
+  const std::vector<double> y={-3,-1,0,1,3};
+  cppunivariate::trgamma_detail::LogData d;
+  REQUIRE(cppunivariate::trgamma_detail::standardize(mltest::as_span(y),d));
+  REQUIRE(d.kappa3==0);
+  const double T=.001/d.umax;
+  CHECK(cppunivariate::trgamma_detail::normal_seam_upper(d,T)==0);
+  for(double fraction:{.01,.1,1.0}) {
+    int evaluations=0;
+    CHECK(cppunivariate::trgamma_detail::profile(d,T*fraction,evaluations).delta<=2e-13);
+  }
+}
+
+TEST_CASE("trgamma: held coefficients survive logarithmic round trips exactly") {
+  const std::vector<double> x={.1,.3,1};
+  const auto a=cppunivariate::trgamma_mle_fixed_scale(mltest::as_span(x),.1,2.2,.7);
+  const auto b=cppunivariate::invtrgamma_mle_fixed_scale(mltest::as_span(x),.1,2.2,.7);
+  REQUIRE(a.status==cppunivariate::TrGammaStatus::Ok);
+  REQUIRE(b.status==cppunivariate::InvTrGammaStatus::Ok);
+  CHECK(a.shape1==2.2);CHECK(a.shape2==.7);CHECK(a.scale==.1);
+  CHECK(b.shape1==2.2);CHECK(b.shape2==.7);CHECK(b.scale==.1);
+}
+
+TEST_CASE("trgamma: a held-endpoint tolerance cannot establish nonattainment") {
+  const std::vector<double> x={std::exp(-1.0),std::nextafter(1.0,0.0),1};
+  const auto r=cppunivariate::trgamma_mle_fixed_scale(mltest::as_span(x),1);
+  CHECK(r.status==cppunivariate::TrGammaStatus::IterationFailure);
+  REQUIRE(r.stop_detail.comparison_tie);
+  REQUIRE(r.stop_detail.candidates.size()==2);
+  CHECK(r.stop_detail.candidates.back().model==cppunivariate::StopModel::Power);
+  CHECK(r.stop_detail.loglik_upper>=r.stop_detail.loglik_lower);
+  CHECK(r.stop_detail.loglik_upper-r.stop_detail.loglik_lower<1e-7);
+  std::vector<double> inverse;for(double v:x)inverse.push_back(1/v);
+  const auto t=cppunivariate::invtrgamma_mle_fixed_scale(mltest::as_span(inverse),1);
+  CHECK(t.status==cppunivariate::InvTrGammaStatus::IterationFailure);
+  REQUIRE(t.stop_detail.comparison_tie);
+  CHECK(t.stop_detail.candidates.back().model==cppunivariate::StopModel::Pareto);
+}
+
+TEST_CASE("trgamma: represented-scale likelihood loss is a numerical stop") {
+  std::vector<double> x;
+  for(int i=0;i<201;++i) {
+    const double z=cppunivariate::special::qnorm((i+.5)/201,0,1,true,false);
+    x.push_back(std::exp(1e-14*(z-.1*(z*z-1))));
+  }
+  const auto r=cppunivariate::trgamma_mle(mltest::as_span(x));
+  REQUIRE(r.status==cppunivariate::TrGammaStatus::IterationFailure);
+  CHECK(r.reconstruction_failure);
+  CHECK_FALSE(r.stop_detail.budget_exhausted);
+  REQUIRE_FALSE(r.stop_detail.candidates.empty());
+  const auto& c=r.stop_detail.candidates.front();
+  const double ll=trgamma_loglik(x,c.coef[0],c.coef[1],c.coef[2]);
+  CHECK(ll>=c.loglik_lower-1e-8);
+  CHECK(ll<=c.loglik_upper+1e-8);
+}
+
+TEST_CASE("trgamma: partial logarithmic ties and invented endpoint ties stop") {
+  double endpoint=7,below=std::nextafter(endpoint,0.0);
+  for(int i=0;i<16 && std::log(endpoint)!=std::log(below);++i) {
+    endpoint=below;below=std::nextafter(endpoint,0.0);
+  }
+  REQUIRE(endpoint!=below);
+  REQUIRE(std::log(endpoint)==std::log(below));
+  const std::vector<double> x={1,below,endpoint};
+  const auto r=cppunivariate::trgamma_mle(mltest::as_span(x));
+  CHECK(r.status==cppunivariate::TrGammaStatus::IterationFailure);
+  CHECK(r.transformation_failure);
+  const auto inverse=cppunivariate::invtrgamma_mle(mltest::as_span(x));
+  CHECK(inverse.status==cppunivariate::InvTrGammaStatus::IterationFailure);
+  CHECK(inverse.transformation_failure);
+  // Below a held endpoint the constant sample has a finite maximum, not an
+  // unbounded density at the endpoint invented by subtracting rounded logs.
+  const std::vector<double> one={below};
+  const auto held=cppunivariate::trgamma_mle_fixed_scale(mltest::as_span(one),endpoint);
+  CHECK(held.status==cppunivariate::TrGammaStatus::IterationFailure);
+  CHECK(held.transformation_failure);
+  CHECK_FALSE(held.logLik==INFINITY);
+}
+
+TEST_CASE("trgamma: limit witnesses retain raw support endpoints exactly") {
+  std::vector<double> x,inverse;
+  for(int i=1;i<=400;++i) {
+    const double v=7*std::pow(i/400.0,1/2.5);
+    x.push_back(v);inverse.push_back(1/v);
+  }
+  const auto r=cppunivariate::trgamma_mle(mltest::as_span(x));
+  REQUIRE(r.status==cppunivariate::TrGammaStatus::PowerBoundary);
+  REQUIRE(r.stop_detail.limit_coef.size()==2);
+  CHECK(r.scale==*std::max_element(x.begin(),x.end()));
+  CHECK(r.stop_detail.limit_coef[0]==r.scale);
+  CHECK(r.stop_detail.candidates[0].coef[0]==r.scale);
+  const auto t=cppunivariate::invtrgamma_mle(mltest::as_span(inverse));
+  REQUIRE(t.status==cppunivariate::InvTrGammaStatus::ParetoBoundary);
+  REQUIRE(t.stop_detail.limit_coef.size()==2);
+  CHECK(t.scale==*std::min_element(inverse.begin(),inverse.end()));
+  CHECK(t.stop_detail.limit_coef[1]==t.scale);
+  const double tiny=std::numeric_limits<double>::denorm_min();
+  const std::vector<double> subnormal={tiny,2*tiny,3*tiny};
+  const auto u=cppunivariate::invtrgamma_mle(mltest::as_span(subnormal));
+  REQUIRE(u.status==cppunivariate::InvTrGammaStatus::ParetoBoundary);
+  REQUIRE(u.stop_detail.limit_coef.size()==2);
+  CHECK(u.stop_detail.limit_coef[1]==tiny);
+  CHECK(u.stop_detail.candidates[0].coef[1]==tiny);
+}
+
+TEST_CASE("trgamma: positive near-face improvement is a comparison stop") {
+  std::vector<double> x;
+  for(int i=0;i<201;++i) {
+    const double z=cppunivariate::special::qnorm((i+.5)/201,0,1,true,false);
+    x.push_back(std::exp(.001*(z-1e-5*(z*z-1))));
+  }
+  const auto r=cppunivariate::trgamma_mle(mltest::as_span(x));
+  CHECK(r.status==cppunivariate::TrGammaStatus::IterationFailure);
+  CHECK(r.stop_detail.comparison_tie);
+  CHECK_FALSE(r.stop_detail.budget_exhausted);
+  CHECK(r.stop_detail.loglik_upper>=r.stop_detail.loglik_lower);
+  CHECK(r.stop_detail.loglik_upper-r.stop_detail.loglik_lower<3e-6);
+  CHECK(r.stop_detail.candidates.size()>=2);
+}

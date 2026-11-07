@@ -203,11 +203,13 @@ TEST_CASE("invtrgamma: structured face payloads") {
   CHECK(r.stop_detail.limit_loglik==doctest::Approx(r.logLik));
 }
 
-TEST_CASE("invtrgamma: small certificate cap retains a feasible witness") {
+TEST_CASE("invtrgamma: exhausted coefficient solve retains a feasible witness") {
   const auto g=mltest::load_distribution_golden("invtrgamma");
   const auto r=cppunivariate::invtrgamma_mle({g.data.data(),g.data.size()},1e-10,5);
   CHECK(r.status==cppunivariate::InvTrGammaStatus::IterationFailure);
-  REQUIRE(r.stop_detail.budget_exhausted);
+  // Five solver iterations cannot isolate the coefficients to the required
+  // width. This is a numerical stop before the global certificate cap.
+  REQUIRE_FALSE(r.stop_detail.budget_exhausted);
   REQUIRE_FALSE(r.stop_detail.candidates.empty());
   CHECK(std::isfinite(r.stop_detail.loglik_lower));
   CHECK(r.stop_detail.loglik_upper==INFINITY);
@@ -218,4 +220,39 @@ TEST_CASE("invtrgamma: small certificate cap retains a feasible witness") {
   CHECK(ll>=c.loglik_lower-1e-8);
   CHECK(ll<=c.loglik_upper+1e-8);
   CHECK_FALSE(cppunivariate::invtrgamma_mle({g.data.data(),g.data.size()},1e-10,100).stop_detail.budget_exhausted);
+}
+
+TEST_CASE("invtrgamma: reciprocal transport shifts every diagnostic field") {
+  cppunivariate::StopDetail d;
+  d.loglik_lower=1;d.loglik_upper=2;d.segment_loglik_upper=3;d.limit_loglik=4;
+  d.limit_model=cppunivariate::StopModel::Power;d.limit_coef={2,3};
+  d.candidates={{{1,2,4},5,6,cppunivariate::StopModel::None},{{2,3},7,8,cppunivariate::StopModel::Power}};
+  d.comparison_tie=true;
+  const auto r=cppunivariate::invtrgamma_transport_detail(d,-10);
+  CHECK(r.loglik_lower==-9);CHECK(r.loglik_upper==-8);
+  CHECK(r.segment_loglik_upper==-7);CHECK(r.limit_loglik==-6);
+  CHECK(r.comparison_tie);
+  CHECK(r.limit_model==cppunivariate::StopModel::Pareto);
+  CHECK(r.limit_coef==std::vector<double>{3,.5});
+  CHECK(r.candidates[0].coef==std::vector<double>{1,2,.25});
+  CHECK(r.candidates[0].loglik_lower==-5);CHECK(r.candidates[0].loglik_upper==-4);
+  CHECK(r.candidates[1].model==cppunivariate::StopModel::Pareto);
+  CHECK(r.candidates[1].coef==std::vector<double>{3,.5});
+  CHECK(r.candidates[1].loglik_lower==-3);CHECK(r.candidates[1].loglik_upper==-2);
+}
+
+TEST_CASE("invtrgamma: held endpoint agrees with reciprocal fit") {
+  const std::vector<double> x={10,1/.3,1};
+  const std::vector<double> y={.1,.3,1};
+  const auto r=cppunivariate::invtrgamma_mle_fixed_scale(mltest::as_span(x),1);
+  const auto t=cppunivariate::trgamma_mle_fixed_scale(mltest::as_span(y),1);
+  REQUIRE(r.status==cppunivariate::InvTrGammaStatus::Ok);
+  CHECK(r.shape1==doctest::Approx(t.shape1).epsilon(1e-10));
+  CHECK(r.shape2==doctest::Approx(t.shape2).epsilon(1e-10));
+  CHECK(r.logLik==doctest::Approx(t.logLik-2*(std::log(10)+std::log(1/.3))).epsilon(1e-11));
+  const std::vector<double> tiny={1e-310,1e-305};
+  const auto extreme=cppunivariate::invtrgamma_mle_fixed_scale(mltest::as_span(tiny),1e-308,2,1.5);
+  CHECK(extreme.status==cppunivariate::InvTrGammaStatus::Ok);
+  CHECK(extreme.scale==1e-308);
+  CHECK(std::isfinite(extreme.logLik));
 }

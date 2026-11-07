@@ -41,13 +41,13 @@ limits:
     firmness: proved
     fixed: [scale]
     when: The gamma shape $k$ tends to zero and the power $p$ tends to infinity with $kp\to d>0$ and the scale $a$ held.
-    status: PowerBoundary
+    status: IterationFailure
     message: fixed-endpoint power face
     numerical: true
   - name: unbounded likelihood
     firmness: proved
     when: The free coefficients concentrate the distribution at the common positive observation.
-    detect: All observations are equal and the free coefficients allow concentration. With scale free, either free shape suffices. With scale held, a free power suffices when the common observation equals $a$.
+    detect: All observations are equal and the free coefficients allow concentration. With scale free, either free shape suffices. With scale held, a free power suffices at the common observation $a$; with both shapes free, concentration is also possible above $a$.
     status: InvalidData
     message: unbounded
   - model: lnorm
@@ -89,10 +89,10 @@ relations:
     power: shape2
 fit:
   method: profile-search
-  certified: partial
-  note: 'trgamma/README.md, Details; trgamma/mle.hpp (public fitter and held overloads); trgamma/test.cpp: Held
-    power reduces to gamma and held gamma shape to a concave transformed problem; the free-power/shape profile and
-    face enumeration are numerical.'
+  certified: 'yes'
+  note: 'trgamma/mle.hpp: exact scalar reductions; convex-conjugate secant bounds, uniform refitted-normal seam,
+    analytic power tails and certified concave root neighborhoods for the free and held-scale profiles.
+    Reciprocal fits transport coefficients and all likelihood bounds. Numerical, comparison and work-budget stops retain no successful estimate.'
 areas:
 - reliability and survival
 - waiting times and queues
@@ -116,8 +116,9 @@ existence:
     power held, the remaining gamma shape has a unique finite MLE.
     With scale and gamma shape held, the power MLE is unique unless
     every observation equals the held scale, when likelihood is unbounded.
-    With only scale held, attainment is assessed numerically against the
-    fixed-endpoint power limit.
+    With only scale held, global profile bounds compare the interior with the
+    fixed-endpoint power limit; constant samples above scale additionally
+    have unbounded likelihood when both shapes are free.
   reason: >-
     Holding the power reduces fitting to the gamma family. Holding the
     gamma shape gives a strictly concave profile in log-power after
@@ -150,10 +151,12 @@ strictly concave problem (the Weibull fit when $k=1$). For nonconstant data both
 
 The unrestricted fit fails to have a finite MLE with positive probability. For nonconstant samples, the inward likelihood slope from the lognormal face has sign opposite
 to the sample skewness of the logarithms. Under lognormal sampling the
-asymptotic boundary probability is one half. Faces win likelihood ties
-within $10^{-8}$ per observation. Fits very close to the lognormal limit can have a scale outside the numerical representation range.
+asymptotic boundary probability is one half. A positive finite improvement within $10^{-8}$ per observation of a face
+stops as an unresolved comparison, retaining both witnesses and a global upper
+bound. A face is selected only within the floating-point comparison margin;
+this does not assert exact finite-sample equality. Fits very close to the lognormal limit can have a scale outside the numerical representation range.
 
-With $a,p$ held, the score for $k$ has one root. With $a,k$ held, the likelihood in $p$ is strictly concave and has a finite maximum unless every observation equals $a$. With only $a$ held, the fixed-endpoint power limit is compared with the interior profile. This search is numerical.
+With $a,p$ held, the score for $k$ has one root. With $a,k$ held, the likelihood in $p$ is strictly concave and has a finite maximum unless every observation equals $a$. With only $a$ held, the fixed-endpoint power limit is compared with the interior profile. The convex conjugate of log-gamma bounds the profile between evaluated powers, and analytic bounds close both tails.
 
 ## R notes
 
@@ -171,4 +174,51 @@ parameters. The derivation and numerical search qualifications are in
 
 The free transformed-gamma certificate shares its segment allowance across all initial grid cells. Exhaustion retains the best represented finite profile and the computed lognormal or power face; a depth cutoff is not used as a substitute for excluding an unresolved interval.
 
-An inner gamma-shape proposal is accepted only when its represented shape has relative equation residual at most `1e-12`; exhaustion without that check is a numerical failure. A failed profile or root refinement cannot be replaced by a face comparison. This is a numerical residual gate, not a proof that floating-point profile bounds are outward rounded.
+An inner gamma-shape proposal is accepted only when its represented shape has relative equation residual at most `1e-12`; exhaustion without that check is a numerical failure. Unsuccessful optimizer proposals are discarded; a failed certificate evaluation cannot be replaced by a face comparison. This is a numerical residual gate, not a proof that floating-point profile bounds are outward rounded.
+
+The certificate is valid in exact arithmetic conditional on the computed
+comparisons. Its practical per-observation floating-point comparison margin
+is $64\epsilon(1+|\Delta|)$ for finite free-profile comparisons (with
+$|\Delta_{\rm face}|$ added when comparing a face), and
+$2\times10^{-12}(1+|F(1)|)$ at held scale, where $F(1)$ is the initial normalized profile value; it does not use outward-rounded
+interval arithmetic. A successful interior fit excludes all competing cells
+and isolates a root inside a neighborhood proved strictly concave by
+subdivision. A likelihood tolerance alone never accepts coefficients.
+The signed quadratic normal-seam bound includes zero third log moment.
+
+With the endpoint held, each observation exactly at that endpoint contributes
+$-1$ to the power-face log likelihood. The fixed-endpoint comparison therefore
+subtracts the endpoint multiplicity; a free endpoint can move to remove this
+factor. At held scale, constant samples on the concentrating side of the
+endpoint have unbounded likelihood when both shapes are free, even when
+the observation differs from the held endpoint.
+
+The proof, coefficient checks, rejected objective-only acceptance and
+reproducible validation are recorded in
+[the certificate report](../../../../../dev/research/evaluations/2026-11-07-trgamma-seam-report.md).
+
+With only scale held, every nonconstant positive sample has a finite
+maximizer; constant samples on the nonconcentrating side do as well.
+The fixed-endpoint profile approaches its limiting likelihood from above,
+with leading excess $\gamma_E/(-p\,\overline{\log(x/a)})$ per observation
+for transformed gamma, after reversing the logarithms for its reciprocal.
+An interior/endpoint comparison within the likelihood tolerance stops as
+an unresolved comparison, rather than asserting non-existence of the MLE.
+
+Near the normal seam the profile score is evaluated through exponential and
+Stirling remainders, avoiding cancellation of two terms of order $1/t$.
+The root neighborhood shrinks with standardized power while retaining a
+floor based on the practical score margin; a fixed relative neighborhood
+would require increasingly many curvature cells as $t$ tends to zero.
+
+A small log-data spread can turn a moderate standardized power into a huge
+physical power. Rounding the reconstructed scale can then lose likelihood
+even though the profile root is well resolved. Returned coefficients and
+finite diagnostic witnesses are evaluated at their represented values;
+reconstruction loss beyond $10^{-10}(1+|\ell|)$ gives a numerical stop.
+
+Logarithmic collisions between distinct raw observations, or between an
+observation and a held endpoint, stop numerically rather than inventing
+multiplicities or endpoint factors. Free power witnesses keep the raw
+sample maximum; reciprocal Pareto witnesses keep the raw minimum, including
+when the corresponding reciprocal endpoint overflows.

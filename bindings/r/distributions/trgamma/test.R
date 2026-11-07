@@ -32,7 +32,7 @@ test_that("mltrgamma agrees with a multistart density oracle and its faces", {
     set.seed(seed)
     x <- rtrgamma(n = case$n, shape1 = case$a, shape2 = case$t, scale = case$s)
     oracle <- suppressWarnings(trgamma_oracle(x))
-    fit <- tryCatch(mltrgamma(x), error = function(e) e)
+    fit <- tryCatch(mltrgamma(x,iterlim=1000), error = function(e) e)
     info <- paste(case$n, case$a, seed)
     if (oracle$face == "interior") {
       expect_false(inherits(fit, "error"), info = info)
@@ -43,7 +43,7 @@ test_that("mltrgamma agrees with a multistart density oracle and its faces", {
       expect_equal(sum(dtrgamma(x = x, shape1 = fit[1], shape2 = fit[2], scale = fit[3], log = TRUE)),
                    attr(fit, "logLik"), tolerance = 1e-10)
     } else {
-      expect_error(mltrgamma(x), paste0("Use `ml", oracle$face, "`"), info = info)
+      expect_error(mltrgamma(x,iterlim=1000), paste0("Use `ml", oracle$face, "`"), info = info)
     }
   }
 })
@@ -206,4 +206,99 @@ test_that("trgamma: P3 unfinished optimizer stops", {
 
 test_that("trgamma: P3 held profile exhaustion stops", {
   expect_error(mltrgamma(c(.3,.8,1.7,4.2),scale=2,shape2=1,iterlim=1), "[Ff]ail|converge|unresolved|exhausted")
+})
+
+test_that("transformed gamma certificates preserve held endpoints and reciprocals", {
+  x <- c(.1,.3,1)
+  a <- mltrgamma(x, scale=1)
+  b <- mlinvtrgamma(1/x, scale=1)
+  expect_equal(as.numeric(a)[1:2],as.numeric(b)[1:2],tolerance=1e-9)
+  expect_identical(as.numeric(a["scale"]),1)
+  expect_identical(as.numeric(b["scale"]),1)
+  expect_equal(as.numeric(logLik(b)),as.numeric(logLik(a))+2*sum(log(x)),tolerance=1e-10)
+  expect_equal(as.numeric(logLik(a)),sum(dml(x,a,log=TRUE)),tolerance=1e-10)
+  expect_equal(as.numeric(logLik(b)),sum(dml(1/x,b,log=TRUE)),tolerance=1e-10)
+})
+
+test_that("held-scale concentration and numerical controls retain different stops", {
+  caught <- function(expr) tryCatch(expr,error=identity)
+  expect_s3_class(caught(mltrgamma(c(2,2,2),scale=1)),"univariateML_nomle")
+  expect_s3_class(caught(mlinvtrgamma(c(.5,.5,.5),scale=1)),"univariateML_nomle")
+  expect_true(is.finite(as.numeric(logLik(mltrgamma(c(2,2,2),shape1=2,scale=1)))))
+  expect_true(is.finite(as.numeric(logLik(mlinvtrgamma(c(.5,.5,.5),shape1=2,scale=1)))))
+  e <- caught(mltrgamma(c(.1,.3,1),scale=1,iterlim=1))
+  expect_s3_class(e,"univariateML_stop")
+  expect_true(e$kind %in% c("numerical","budget"))
+  expect_false(inherits(caught(mltrgamma(c(.1,.3,1),scale=1,reltol=0)),"univariateML_stop"))
+})
+
+test_that("held endpoint comparisons do not assert nonattainment", {
+  x <- c(exp(-1),1-.Machine$double.eps/2,1)
+  for (fit in list(function() mltrgamma(x,scale=1),function() mlinvtrgamma(1/x,scale=1))) {
+    e <- tryCatch(fit(),error=identity)
+    expect_s3_class(e,"univariateML_tie")
+    expect_equal(nrow(e$candidates),2L)
+    expect_true(e$loglik_upper>=e$loglik_lower)
+    expect_true(e$loglik_upper-e$loglik_lower<1e-7)
+  }
+})
+
+test_that("coefficient reconstruction loss is a numerical stop with a real witness", {
+  z <- qnorm(((1:201)-.5)/201)
+  x <- exp(1e-14*(z-.1*(z*z-1)))
+  e <- tryCatch(mltrgamma(x),error=identity)
+  expect_s3_class(e,"univariateML_numerical")
+  expect_match(conditionMessage(e),"reconstructing")
+  expect_gt(nrow(e$candidates),0)
+  c <- e$candidates[1,]
+  ll <- sum(dtrgamma(x,c$shape1,c$shape2,c$scale,log=TRUE))
+  expect_gte(ll,c$loglik_lower-1e-8)
+  expect_lte(ll,c$loglik_upper+1e-8)
+})
+
+test_that("partial logarithmic ties stop as numerical failures", {
+  x <- 7-(0:15)*4*.Machine$double.eps
+  for (fit in list(function() mltrgamma(x),function() mlinvtrgamma(x))) {
+    e <- tryCatch(fit(),error=identity)
+    expect_s3_class(e,"univariateML_numerical")
+    expect_match(conditionMessage(e),"taking logarithms")
+  }
+  i <- which(diff(log(x))==0)[1]
+  e <- tryCatch(mltrgamma(x[i+1],scale=x[i]),error=identity)
+  expect_s3_class(e,"univariateML_numerical")
+  expect_match(conditionMessage(e),"taking logarithms")
+})
+
+test_that("limit witnesses retain raw endpoints", {
+  x <- 7*((1:400)/400)^(1/2.5)
+  a <- tryCatch(mltrgamma(x),error=identity)
+  b <- tryCatch(mlinvtrgamma(1/x),error=identity)
+  expect_s3_class(a,"univariateML_limit")
+  expect_s3_class(b,"univariateML_limit")
+  expect_identical(unname(a$estimates["alpha"]),max(x))
+  expect_identical(unname(b$estimates["b"]),min(1/x))
+})
+
+test_that("positive near-face improvements stop as unresolved comparisons", {
+  z <- qnorm(((1:201)-.5)/201)
+  x <- exp(.001*(z-1e-5*(z*z-1)))
+  for (fit in list(function() mltrgamma(x),function() mlinvtrgamma(1/x))) {
+    e <- tryCatch(fit(),error=identity)
+    expect_s3_class(e,"univariateML_tie")
+    expect_match(conditionMessage(e),"mllnorm")
+    expect_gte(nrow(e$candidates),2)
+    expect_gte(e$loglik_upper,e$loglik_lower)
+    expect_lt(e$loglik_upper-e$loglik_lower,3e-6)
+  }
+})
+
+test_that("unrepresentable scales carry numerical stop details", {
+  z <- qnorm(((1:201)-.5)/201)
+  x <- exp(z-.001*(z*z-1))
+  for (fit in list(function() mltrgamma(x),function() mlinvtrgamma(1/x))) {
+    e <- tryCatch(fit(),error=identity)
+    expect_s3_class(e,"univariateML_numerical")
+    expect_match(conditionMessage(e),"log\\(scale\\)")
+    expect_identical(e$loglik_upper,Inf)
+  }
 })
