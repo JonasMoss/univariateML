@@ -1,0 +1,38 @@
+  'test-dist-zmbinom.R:2:3', 'test-dist-zmbinom.R:52:3',
+  'test-dist-zipf.R:117:3', 'test-dist-zmbinom.R:115:3',
+  'test-dist-zmgeom.R:2:3', 'test-dist-zmgeom.R:36:3',
+  'test-dist-zmlogarithmic.R:2:3', 'test-dist-zmlogarithmic.R:36:3',
+  'test-dist-zmnbinom.R:2:3', 'test-dist-zmpois.R:2:3',
+  'test-dist-zmpois.R:36:3', 'test-dist-ztbinom.R:2:3',
+  'test-dist-zmnbinom.R:60:3', 'test-dist-ztbinom.R:49:3',
+  'test-dist-zmnbinom.R:75:3', 'test-dist-ztbinom.R:91:3',
+  'test-dist-ztgeom.R:2:3', 'test-dist-ztgeom.R:33:3',
+  'test-dist-ztnbinom.R:2:3', 'test-dist-ztpois.R:2:3',
+  'test-dist-ztpois.R:33:3', 'test-dist-ztnbinom.R:57:3',
+  'test-dist-ztnbinom.R:72:3'
+
+[ FAIL 0 | WARN 0 | SKIP 154 | PASS 21008 ]
+   user  system elapsed 
+309.209   3.740  77.780 
+⠴ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 43476 ] @ dist-sged                         
+⠦ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 43482 ] @ dist-sged                         
+⠧ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 43508 ] @ dist-sged                         
+⠇ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 43550 ] @ dist-sged                         
+⠏ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 43552 ] @ dist-sged                         
+⠋ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 43571 ] @ dist-sged                         
+⠙ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 43615 ] @ dist-sged                         
+⠹ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 43634 ] @ dist-sged                         
+⠸ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 43637 ] @ dist-sged                         
+⠼ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 43687 ] @ dist-sged                         
+⠴ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 43690 ] @ dist-sged                         
+⠦ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 43697 ] @ dist-sged                         
+✔ |        754 | dist-sged [222.8s]                                             
+
+⠧ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 43828 ] Starting up...                      
+                                                                                
+══ Results ═════════════════════════════════════════════════════════════════════
+Duration: 316.3 s
+
+[ FAIL 0 | WARN 0 | SKIP 0 | PASS 43828 ]
+   user  system elapsed 
+915.828   8.089 318.890 

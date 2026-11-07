@@ -28,6 +28,9 @@ inline FitResult fit_sn(cppunivariate::span x, Held xi_arg = {}, Held omega_arg 
       (omega.supplied && !(std::isfinite(w) && w>0)) ||
       (alpha.supplied && !std::isfinite(a))) return fail("Fixed xi and alpha must be finite; fixed omega must be finite and positive.");
   const auto fit=cppunivariate::sn_mle(x,reltol,iterlim,c,w,a);
+  if(fit.stop_detail.comparison_tie && std::isfinite(fit.stop_detail.loglik_upper) &&
+     fit.stop_detail.loglik_lower==fit.stop_detail.loglik_upper)
+    return classify(fail("Skew-normal shape is not identifiable when every observation equals the held location."),fit.stop_detail,"tie",{"xi","omega","alpha"});
   if(fit.stop_detail.comparison_tie)return classify(fail("Skew-normal search did not converge or could not certify the maximum; increase iterlim."),fit.stop_detail,"tie",{"xi","omega","alpha"});
   if(fit.status==cppunivariate::SnStatus::RightHalfNormalBoundary)
     return classify(fail("The skew-normal MLE is infinite: use `mlhnorm`."),fit.stop_detail,"limit",{"mu","sigma"},"hnorm");
@@ -35,7 +38,7 @@ inline FitResult fit_sn(cppunivariate::span x, Held xi_arg = {}, Held omega_arg 
     return classify(fail("The skew-normal MLE is infinite: use `mlhnorm` on `-x`."),fit.stop_detail,"limit",{"mu","sigma"},"unavailable:reflected-half-normal");
   if(fit.status==cppunivariate::SnStatus::InvalidInput) return (x.size()>=2 && !omega.supplied && (!xi.supplied || c==x[0]) && std::isfinite(x[0]) && std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];})) ? classify(fail("Skew-normal fitting requires distinct finite observations, positive reltol and positive iterlim."),{},"nomle",{}) : fail("Skew-normal fitting requires distinct finite observations, positive reltol and positive iterlim.");
   if(fit.budget_exhausted)return classify(fail("Skew-normal search did not converge or could not certify the maximum; increase iterlim."),fit.stop_detail,"budget",{"xi","omega","alpha"});
-  if(fit.status!=cppunivariate::SnStatus::Ok) return fail("Skew-normal search did not converge or could not certify the maximum; increase iterlim.");
+  if(fit.status!=cppunivariate::SnStatus::Ok) return classify(fail("Skew-normal search did not converge or could not certify the maximum; increase iterlim."),fit.stop_detail,"numerical",{"xi","omega","alpha"});
   std::vector<std::string> fixed;
   if(xi.supplied) fixed.push_back("xi");
   if(omega.supplied) fixed.push_back("omega");

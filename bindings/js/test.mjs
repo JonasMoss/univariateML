@@ -179,3 +179,62 @@ test('J6 tnorm CMB and CMP quantitative acceptance uses common binding routes', 
   });
   assert.equal(api.cmp.fit(geometric, {lambda:5000/5001}, {iterlim:10}).estimates.nu, 0);
 });
+
+test('sn conditional certificates and nonunique shape have shared stops', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  const x = new Float64Array([-2,-1,0,1,2]);
+  for (const held of [{xi: 0}, {xi: 0, omega: 1.7}]) {
+    const f = api.sn.fit(x, held);
+    assert.ok(Math.abs(f.estimates.alpha) < 1e-9);
+    assert.ok(Math.abs(f.estimates.omega - (held.omega ?? Math.sqrt(2))) < 1e-10);
+  }
+  assert.throws(() => api.sn.fit(new Float64Array([3,3,3,3,3]), {xi: 3, omega: 2}), e => {
+    assert.equal(e.kind, 'tie');
+    assert.equal(e.candidates.length, 2);
+    assert.equal(e.loglik_lower, e.loglik_upper);
+    assert.notEqual(e.candidates[0].alpha, e.candidates[1].alpha);
+    return true;
+  });
+  assert.throws(() => api.sn.fit(new Float64Array([-2,-.3,.1,.8,4]), {alpha: 2}, {iterlim: 1}), e => {
+    assert.equal(e.kind, 'numerical');
+    assert.equal(e.candidates.length, 1);
+    return true;
+  });
+});
+
+test('sn finite normalization overflow is a numerical stop', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  assert.throws(() => api.sn.fit(new Float64Array([-1e308,1e308]), {alpha: 0}), e => {
+    assert.equal(e.kind, 'numerical');
+    assert.equal(e.candidates.length, 0);
+    return true;
+  });
+});
+
+test('sn rounded residuals cannot fabricate held-endpoint factors', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  assert.throws(() => api.sn.fit(new Float64Array([1,2,1e308]), {xi: 0}), e => {
+    assert.equal(e.kind, 'numerical');
+    assert.equal(e.candidates.length, 0);
+    return true;
+  });
+});
+
+test('sn checks likelihood after restoring large held shapes', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  const x = new Float64Array([1,2,3]), p = [1+1e-15,1.3,1e16];
+  const ll = [...api.sn.d(x,p,{log:true})].reduce((a,b) => a+b,0);
+  let f;
+  try { f = api.sn.fit(x,{xi:p[0],omega:p[1],alpha:p[2]}); }
+  catch (e) {
+    assert.equal(e.kind,'numerical');
+    assert.equal(e.candidates.length,1);
+    assert.ok(Math.abs(e.candidates[0].loglik_lower-ll)<1e-12);
+    return;
+  }
+  assert.ok(Math.abs(f.logLik-ll)<3e-9);
+});

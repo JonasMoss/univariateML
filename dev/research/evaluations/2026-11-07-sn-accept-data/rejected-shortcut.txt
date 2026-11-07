@@ -1,0 +1,22 @@
+ 22/129 Test  #93: distribution_sn ..................***Failed    2.37 sec
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+../../include/cppunivariate/distributions/sn/test.cpp:139:
+TEST CASE:  sn cached Newton evaluations retain returned-point likelihood and score
+
+../../include/cppunivariate/distributions/sn/test.cpp:147: FATAL ERROR: REQUIRE( f.converged ) is NOT correct!
+  values: REQUIRE( false )
+  logged: a := -1000
+          mask := 1
+
+===============================================================================
+[doctest] test cases:   21 |   20 passed | 1 failed | 1311 skipped
+[doctest] assertions: 4244 | 4243 passed | 1 failed |
+[doctest] Status: FAILURE!
+
+        Start 129: diagnostics_tests
+ 23/129 Test #127: cmp_tests ........................   Passed    2.70 sec
+	 93 - distribution_sn (Failed)                          cran dev full
+Errors while running CTest
+error: Recipe `cpp-test` failed with exit code 8

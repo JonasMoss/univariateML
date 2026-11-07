@@ -103,7 +103,7 @@ test_that('sn detects both exact half-normal faces and respects fixed location',
   expect_gte(as.numeric(logLik(mlhnorm(x, mu = NULL))),sn_oracle(-x)-1e-5)
   expect_error(mlsn(x,xi=-1),'use `mlhnorm`')
   expect_error(mlsn(x,xi=0),'use `mlhnorm`')
-  expect_equal(as.numeric(mlsn(rep(1,5),xi=1,omega=2)),c(1,2,0))
+  expect_error(mlsn(rep(1,5),xi=1,omega=2), class='univariateML_tie')
   fixed <- mlsn(rep(1,5),xi=0,omega=2,alpha=3)
   expect_equal(attr(fixed,'logLik'),5*dsn(x = 1, xi = 0, omega = 2, alpha = 3, log = TRUE))
   expect_error(mlsn(x,omega=2),'use `mlhnorm`')
@@ -156,5 +156,43 @@ test_that('sn free-shape fit dominates fixed-shape fits on seeded samples', {
       g <- mlsn(x,alpha=fixed)
       expect_gte(as.numeric(logLik(f)),as.numeric(logLik(g))-2e-6)
     }
+  }
+})
+
+test_that('sn quantitative acceptance and nonunique shape stops are public', {
+  for (w in list(NULL, 1.7)) {
+    f <- mlsn(c(-2,-1,0,1,2), xi=0, omega=w)
+    expect_lt(abs(f[['alpha']]), 1e-9)
+    expect_equal(unname(f[['omega']]), if (is.null(w)) sqrt(2) else w, tolerance=1e-10)
+  }
+  e <- tryCatch(mlsn(rep(3,5), xi=3, omega=2), error=identity)
+  expect_s3_class(e, 'univariateML_tie')
+  expect_equal(nrow(e$candidates), 2L)
+  expect_equal(e$loglik_lower, e$loglik_upper)
+  e <- tryCatch(mlsn(c(-2,-.3,.1,.8,4), alpha=2, iterlim=1), error=identity)
+  expect_s3_class(e, 'univariateML_numerical')
+  f <- mlsn(c(-2,-.3,.1,.8,4), alpha=2, reltol=10)
+  g <- mlsn(c(-2,-.3,.1,.8,4), alpha=2, reltol=1e-12)
+  expect_equal(as.numeric(f), as.numeric(g), tolerance=1e-6)
+})
+
+test_that('sn finite normalization overflow is a numerical stop', {
+  expect_error(mlsn(c(-1e308,1e308), alpha=0), class='univariateML_numerical')
+})
+
+test_that('sn rounded residuals cannot fabricate held-endpoint factors', {
+  expect_error(mlsn(c(1,2,1e308), xi=0), class='univariateML_numerical')
+})
+
+test_that('sn checks likelihood after restoring large held shapes', {
+  x <- c(1,2,3)
+  f <- tryCatch(mlsn(x, xi=1+1e-15, omega=1.3, alpha=1e16), error=identity)
+  if (inherits(f, 'error')) {
+    expect_s3_class(f, 'univariateML_numerical')
+    expect_equal(nrow(f$candidates), 1L)
+    expect_equal(f$candidates$loglik_lower,
+                 sum(dsn(x, 1+1e-15, 1.3, 1e16, log=TRUE)), tolerance=1e-12)
+  } else {
+    expect_lt(abs(as.numeric(logLik(f))-sum(dsn(x, 1+1e-15, 1.3, 1e16, log=TRUE))), 3e-9)
   }
 })
