@@ -197,3 +197,29 @@ test_that("Frechet tiny held shape retains its exact scale limit", {
   expect_equal(unname(f["sigma"]),2,tolerance=1e-14)
   expect_identical(unname(f["lambda"]),1e-20)
 })
+
+test_that("Frechet fixed shape certificate stops carry typed details", {
+  e <- tryCatch(mlfrechet(c(0,.2,.5,1,3,20),mu=NULL,lambda=2,iterlim=1),error=identity)
+  expect_s3_class(e,"univariateML_numerical")
+  expect_gt(nrow(e$candidates),0)
+  expect_identical(e$loglik_upper,Inf)
+  e <- tryCatch(mlfrechet(c(0,0,1,2),mu=NULL,lambda=1),error=identity)
+  expect_s3_class(e,"univariateML_nomle")
+  expect_equal(e$loglik_upper,4*log(2)-4-2*log(2))
+})
+
+test_that("Frechet collapse supremum remains finite for an overflowing range", {
+  e <- tryCatch(mlfrechet(c(-1e308,1e308),mu=NULL,lambda=1),error=identity)
+  expect_s3_class(e,"univariateML_nomle")
+  expect_equal(e$loglik_upper,-2-2*log(1e308),tolerance=1e-12)
+})
+
+test_that("Frechet positive-exponent range overflow is numerical", {
+  e <- tryCatch(mlfrechet(c(-1e308,1e308),mu=NULL,lambda=2),error=identity)
+  expect_s3_class(e,"univariateML_numerical")
+})
+
+test_that("Frechet rejects an unresolved enormous held power", {
+  e <- tryCatch(mlfrechet(c(0,.2,.5,1,3,20),mu=NULL,lambda=1e100),error=identity)
+  expect_s3_class(e,"univariateML_numerical")
+})

@@ -34,6 +34,9 @@ inline FitResult fit_gev(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg
   if(sigma.supplied) fixed.push_back("sigma");
   if(xi.supplied) fixed.push_back("xi");
   const auto r=cppunivariate::gev_mle(x,reltol,iterlim,shape,location,scale);
+  if(r.status==cppunivariate::GevStatus::NumericalFailure ||
+     (r.status==cppunivariate::GevStatus::IterationFailure && std::isinf(r.stop_detail.loglik_upper)))
+    return stop_failure(fail("Generalized extreme value certificate failed to converge or resolve the maximum numerically; raise iterlim for an exhausted solve."),r.stop_detail,"numerical",{"mu","sigma","xi"});
   if(r.status==cppunivariate::GevStatus::NoMLE)
     return nomle("Generalized extreme value has no finite maximum: minimum multiplicity permits scale collapse.");
   const bool valid_sample=x.size()>=3 && reltol>0 && std::isfinite(reltol) && iterlim>0 &&

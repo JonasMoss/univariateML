@@ -107,7 +107,7 @@ relations:
 fit:
   method: delegation
   certified: 'partial'
-  note: 'frechet/README.md, Details; frechet/mle.hpp (public fitter and held overloads); frechet/test.cpp: Every subset with mu held is an inverse-Weibull fit (joint concave log profile, held-shape closed form or held-scale monotone shape score). Free mu retains numerical location/profile searches: all regular coefficients free, lambda held, sigma held, or both held.'
+  note: 'frechet/README.md, Details; frechet/mle.hpp (public fitter and held overloads); frechet/test.cpp: Every subset with mu held is an inverse-Weibull fit (joint concave log profile, held-shape closed form or held-scale monotone shape score). Held lambda with free mu has a monotone-location certificate when sigma is held and a monotone profiled-scale certificate when sigma is free. Free lambda with free mu remains numerical, whether sigma is held or free.'
 areas:
 - extremes and environment
 classification: specialist
@@ -134,12 +134,12 @@ existence:
     Holding $\mu$ and $\lambda$ gives a unique finite scale estimate even
     for constants. Holding $\mu$ and $\sigma$ gives a unique finite shape
     estimate unless every $x_i-\mu=\sigma$, when likelihood is unbounded.
-    With only $\lambda$ held, a finite MLE exists exactly when
+    With only $\lambda$ held, a unique finite MLE exists exactly when
     $\lambda(n-k)>k$, where $k$ is the minimum multiplicity.
     Otherwise the supremum is an unattained collapse face or is unbounded. With only $\sigma$ held,
     constant data have unbounded shape likelihood.
     Holding $\lambda$ and $\sigma$ gives a unique finite location maximum.
-    Uniqueness for the remaining free-location fits is not established.
+    Uniqueness with shape free and location free is not established.
     Holding all coefficients leaves only likelihood evaluation.
   reason: >-
     Holding location reduces the model to inverse Weibull on $x_i-\mu$,
@@ -189,7 +189,54 @@ Since $r_i\le1$, the ratio is at most one, while $\sum_i r_i>k$ for nonconstant 
 
 Holding shape and scale leaves a scalar location fit and permits every positive shape, including values below one. Its likelihood tends to zero at both ends of the location domain, so a finite maximum exists. Uniqueness follows by writing $d_i=x_i-\mu$ and $R=\sum_i d_i^{-\lambda-1}/\sum_i d_i^{-1}$. As the location gap increases, $R$ decreases strictly from infinity to zero. Indeed, under weights proportional to $d_i^{-1}$, its derivative is
 $-(\lambda+1)E_w(d^{-\lambda-1})+E_w(d^{-\lambda})E_w(d^{-1})<0$,
-since the covariance of the two decreasing powers of $d$ is nonnegative. The gap score changes sign exactly when $R=(\lambda+1)/(\lambda\sigma^\lambda)$. Holding only scale restricts the free shape to $\lambda\ge1$ and rejects constant samples because of shape divergence. The lower shape bound also excludes a different spike that is possible even with scale held. Put $\mu=m-\sigma e^{-L}$ and $\lambda=c/L$ for fixed $c>0$. As $L$ increases, each minimum density is proportional to $e^L/L$, while every other observation contributes a density proportional to $1/L$. Thus the unrestricted likelihood grows as $e^{kL}/L^n$ for any sample with minimum multiplicity $k$. The location search profiles the exact scale or the concave shape solve and refines sampled local maxima. Its global coverage remains numerical.
+since the covariance of the two decreasing powers of $d$ is nonnegative. The gap score changes sign exactly when $R=(\lambda+1)/(\lambda\sigma^\lambda)$. Holding only scale restricts the free shape to $\lambda\ge1$ and rejects constant samples because of shape divergence. The lower shape bound also excludes a different spike that is possible even with scale held. Put $\mu=m-\sigma e^{-L}$ and $\lambda=c/L$ for fixed $c>0$. As $L$ increases, each minimum density is proportional to $e^L/L$, while every other observation contributes a density proportional to $1/L$. Thus the unrestricted likelihood grows as $e^{kL}/L^n$ for any sample with minimum multiplicity $k$. With shape free, the location search profiles the concave shape solve and refines sampled local maxima; its global coverage remains numerical.
+
+
+With $\lambda$ and $\sigma$ held, the monotone ratio above is solved in
+log gap by expanding a bracket and bisecting. There is no fixed search
+window. Failure to close a bracket or root within `iterlim` stops.
+
+With only $\lambda$ held, scale is profiled analytically. Put
+$S_p(\varepsilon)=\sum_i(g_i+\varepsilon)^{-p}$, $g_i=x_i-\min x$,
+and $R=S_{\lambda+1}/(S_\lambda S_1)$. The gap score has the sign of
+$n\lambda R-(\lambda+1)$. For $q_i=(g_i+\varepsilon)^{-1}$ define
+$E_p(q)=\sum q_i^{p+1}/\sum q_i^p$. This weighted mean is strictly
+increasing in $p$ for nonconstant data: its derivative with respect to $p$
+is the positive weighted covariance of $q$ and $\log q$. Consequently
+$\frac{d}{d\varepsilon}\log R
+=-(\lambda+1)E_{\lambda+1}(q)+\lambda E_\lambda(q)+E_1(q)<0$.
+The two endpoint limits are $R(0+)=1/k$ and $R(\infty)=1/n$.
+Thus when $\lambda(n-k)>k$ there is exactly one score root, and it is
+the unique global maximum. This also proves that no distinct equal maxima
+occur in the fixed-shape profile. The earlier collapse criterion handles
+all other samples before searching.
+At equality the finite, unattained supremum is
+$n\log(n\lambda)-n-n\log k-(\lambda+1)\sum_{g_i>0}\log g_i$;
+a negative exponent gives an infinite supremum. These bounds accompany
+the structured non-existence stop. Overflowing differences of finite
+observations are evaluated on half-sized operands before taking the logarithm.
+
+The solver evaluates these ratios with $r_i=\varepsilon/(g_i+\varepsilon)$,
+so each sum has at least one unit minimum term and cannot underflow as a
+whole. It expands a bracket in log gap and bisects; there is no fixed
+location window. Bracket and root loops each use
+`min(iterlim,100000)` iterations. The exact-arithmetic certificate is
+conditional on computed score signs, with practical log-gap width
+`reltol*(1+abs(log_gap))`. Equality of the collapse exponent is tested
+with a fused multiply-add to avoid a rounded false equality. Diagnostic
+likelihood bounds use $256\epsilon_{\rm mach}n(1+\lambda)^2$;
+these are floating-point margins, not outward-rounded intervals.
+Arithmetic failure, an unrepresentable gap or restored coefficients,
+or a restored likelihood discrepancy above $10^{-7}n$ stops numerically.
+A returned normalized point also requires
+$256\epsilon_{\rm mach}\lambda[1+|\log\sigma|+\max_i|\log(g_i+\varepsilon)|]\le10^{-7}$.
+This conservative precision check prevents enormous held powers from turning
+rounded log distances into a spurious point fit; it is a floating-point
+safeguard, not an additional parameter restriction.
+An exhausted bracket or root solve stops as non-convergence, with a structured
+`numerical` condition,
+retaining its finite witness in original units. These monotone certificates
+establish no joint free-shape result.
 
 The joint fit uses the generalized extreme-value coordinates: location $\mu+\sigma$, scale $\sigma/\lambda$, and shape $1/\lambda$. It scans profile score roots and compares finite candidates with the Gumbel and collapse faces. Root discovery and the face comparison have no global certificate. Unresolved scalar solves stop fitting.
 

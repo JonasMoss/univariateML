@@ -20,8 +20,11 @@ inline FitResult fit_frechet(cppunivariate::span x, Held lambda_arg = {}, Held m
  if(sigma.supplied) fixed.push_back("sigma");
  const auto r=cppunivariate::frechet_mle(x,reltol,iterlim,
  mu.supplied ? mu.value : std::numeric_limits<double>::quiet_NaN(),shape,scale);
+ if(r.status==cppunivariate::FrechetStatus::NumericalFailure ||
+    (r.status==cppunivariate::FrechetStatus::IterationFailure && std::isinf(r.stop_detail.loglik_upper)))
+   return stop_failure(fail("Frechet certificate failed to converge or resolve the maximum numerically; raise iterlim for an exhausted solve."),r.stop_detail,"numerical",{"lambda","mu","sigma"});
  if(r.status==cppunivariate::FrechetStatus::GumbelLimit) return fail("Frechet selects the Gumbel limit. Use `mlgumbel`.");
- if(r.status==cppunivariate::FrechetStatus::NoMLE) return fail("Frechet has no finite maximum: minimum multiplicity permits scale collapse.");
+ if(r.status==cppunivariate::FrechetStatus::NoMLE || (r.status==cppunivariate::FrechetStatus::InvalidData && !std::isnan(r.stop_detail.loglik_upper))) return stop_failure(fail("Frechet has no finite maximum: minimum multiplicity permits scale collapse."),r.stop_detail,"nomle",{"lambda","mu","sigma"});
  if(r.status==cppunivariate::FrechetStatus::InvalidData) return fail("Frechet requires finite observations strictly above held mu and compatible holds. Free shape and scale require nonconstant data; the default free-mu fit requires at least three observations and admissible minimum tie multiplicity. Constant data can have an unbounded shape likelihood and fixed shape can have an unattained collapse face. Tolerance and iteration limit must be positive.");
  if(r.status!=cppunivariate::FrechetStatus::Ok) return fail("Frechet profile search failed to converge.");
   std::vector<std::pair<std::string,std::string>> restricted;

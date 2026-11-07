@@ -330,3 +330,63 @@ TEST_CASE("gev: analytic covariance derivatives and subset projection") {
   CHECK(cppunivariate::join_family_inference({x.data(),x.size()},"gev",bad,1).status==cppunivariate::InferenceStatus::BoundaryOrLimit);
   CHECK(cppunivariate::join_family_inference({x.data(),x.size()},"gev",theta,1u<<3).status==cppunivariate::InferenceStatus::InvalidSubset);
 }
+
+TEST_CASE("gev: nonpositive held-shape location certificate") {
+ const std::vector<double> x{-2,0,.3,1,5};const auto d=mltest::as_span(x);
+ for(double a:{-1.,-.99,-.5,-.01,-1e-16,0.}) {
+   const auto f=cppunivariate::gev_mle(d,1e-11,1000,a,NAN,2);
+   CAPTURE(a);REQUIRE(f.status==cppunivariate::GevStatus::Ok);
+   for(int j=-1000;j<=1000;++j)
+     CHECK(cppunivariate::gev_loglik(d,f.mu+j*.01,2,a)<=f.logLik+1e-8);
+ }
+ const auto b=cppunivariate::gev_mle(d,1e-10,1,-.3,NAN,2);
+ CHECK(b.status==cppunivariate::GevStatus::IterationFailure);
+ CHECK_FALSE(b.stop_detail.budget_exhausted);
+ const std::vector<double> one{2};
+ const auto c=cppunivariate::gev_mle(mltest::as_span(one),1e-10,100,-.5,NAN,2);
+ CHECK(c.status==cppunivariate::GevStatus::Ok);
+ CHECK(c.mu==doctest::Approx(2+2*(1-std::sqrt(.5))/(-.5)).epsilon(1e-9));
+}
+
+TEST_CASE("gev: location budget witness is restored to original units") {
+ const std::vector<double> x{100,102,102.3,103,107};
+ const auto f=cppunivariate::gev_mle(mltest::as_span(x),1e-10,1,-.3,NAN,2);
+ REQUIRE(f.status==cppunivariate::GevStatus::IterationFailure);
+ REQUIRE(f.stop_detail.candidates.size()==1);
+ const auto c=f.stop_detail.candidates[0];
+ CHECK(c.coef[1]==2);
+ CHECK(c.loglik_lower==doctest::Approx(cppunivariate::gev_loglik(mltest::as_span(x),c.coef[0],c.coef[1],c.coef[2])).epsilon(1e-12));
+}
+
+TEST_CASE("gev: unrepresentable restored location stops numerically") {
+ const std::vector<double> x{1e300};
+ const auto f=cppunivariate::gev_mle(mltest::as_span(x),1e-10,100,-.3,NAN,1);
+ CHECK(f.status==cppunivariate::GevStatus::NumericalFailure);
+}
+
+TEST_CASE("gev: certified location can lie outside the legacy transformed search window") {
+ const auto g=mltest::load_distribution_golden("frechet");
+ const auto d=mltest::as_span(g.data);
+ const auto f=cppunivariate::gev_mle(d,1e-10,100,-.3,NAN,2);
+ REQUIRE(f.status==cppunivariate::GevStatus::Ok);
+ const double M=*std::max_element(g.data.begin(),g.data.end());
+ const double t=1+f.xi*(M-f.mu)/f.sigma;
+ CHECK(std::log(t)/f.xi>32);
+ double score=0;
+ for(double v:g.data) {
+   const double z=(v-f.mu)/f.sigma,ti=1+f.xi*z;
+   score+=(1+f.xi-std::exp(-cppunivariate::gev_log_ratio(z,f.xi)))/ti;
+ }
+ CHECK(std::abs(score)<1e-3);
+}
+
+TEST_CASE("gev: rounded solver witness bounds include its original-coordinate likelihood") {
+ const double origin=1e300,next=std::nextafter(origin,INFINITY),last=std::nextafter(next,INFINITY);
+ const std::vector<double> x{origin,next,last};
+ const auto f=cppunivariate::gev_mle(mltest::as_span(x),1e-10,1,-.3,NAN,next-origin);
+ REQUIRE(f.status==cppunivariate::GevStatus::IterationFailure);
+ REQUIRE(f.stop_detail.candidates.size()==1);
+ const auto& c=f.stop_detail.candidates[0];
+ const double ll=cppunivariate::gev_loglik(mltest::as_span(x),c.coef[0],c.coef[1],c.coef[2]);
+ CHECK(std::isfinite(ll));CHECK(c.loglik_lower<=ll);CHECK(c.loglik_upper>=ll);
+}

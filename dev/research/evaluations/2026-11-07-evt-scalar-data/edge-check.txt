@@ -1,0 +1,8 @@
+PASS Frechet solver cap retains witness
+PASS Frechet removes unrepresentable witness
+PASS GEV restored witness likelihood enclosure
+PASS GEV unrepresentable maximum
+PASS positive exact collapse exponent does not become no-MLE
+PASS finite supremum with overflowing range
+PASS positive-exponent range overflow is numerical
+PASS enormous held shape stops on precision loss
