@@ -1,0 +1,2641 @@
+node --v8-pool-size=1 --test bindings/js/test.mjs
+/home/jonas/.bashrc: line 26: /home/jonas/.cargo/env: No such file or directory
+/home/jonas/.bash_profile: line 9: /home/jonas/.cargo/env: No such file or directory
+TAP version 13
+# Subtest: public facade
+ok 1 - public facade
+  ---
+  duration_ms: 264.289355
+  type: 'test'
+  ...
+# Subtest: bbinom generated truth and sampler
+ok 2 - bbinom generated truth and sampler
+  ---
+  duration_ms: 141.75609
+  type: 'test'
+  ...
+# Subtest: beta generated truth and sampler
+ok 3 - beta generated truth and sampler
+  ---
+  duration_ms: 60.387398
+  type: 'test'
+  ...
+# Subtest: betapr generated truth and sampler
+ok 4 - betapr generated truth and sampler
+  ---
+  duration_ms: 75.708381
+  type: 'test'
+  ...
+# Subtest: bhatt generated truth and sampler
+ok 5 - bhatt generated truth and sampler
+  ---
+  duration_ms: 84.147239
+  type: 'test'
+  ...
+# Subtest: binom generated truth and sampler
+ok 6 - binom generated truth and sampler
+  ---
+  duration_ms: 80.577025
+  type: 'test'
+  ...
+# Subtest: bnbinom generated truth and sampler
+ok 7 - bnbinom generated truth and sampler
+  ---
+  duration_ms: 253.272957
+  type: 'test'
+  ...
+# Subtest: burr generated truth and sampler
+ok 8 - burr generated truth and sampler
+  ---
+  duration_ms: 65.829887
+  type: 'test'
+  ...
+# Subtest: cauchy generated truth and sampler
+ok 9 - cauchy generated truth and sampler
+  ---
+  duration_ms: 49.716276
+  type: 'test'
+  ...
+# Subtest: cmb generated truth and sampler
+ok 10 - cmb generated truth and sampler
+  ---
+  duration_ms: 194.416275
+  type: 'test'
+  ...
+# Subtest: cmp generated truth and sampler
+ok 11 - cmp generated truth and sampler
+  ---
+  duration_ms: 1265.535815
+  type: 'test'
+  ...
+# Subtest: dgamma generated truth and sampler
+ok 12 - dgamma generated truth and sampler
+  ---
+  duration_ms: 73.947319
+  type: 'test'
+  ...
+# Subtest: dlaplace generated truth and sampler
+ok 13 - dlaplace generated truth and sampler
+  ---
+  duration_ms: 66.191352
+  type: 'test'
+  ...
+# Subtest: dnorm generated truth and sampler
+ok 14 - dnorm generated truth and sampler
+  ---
+  duration_ms: 67.203875
+  type: 'test'
+  ...
+# Subtest: dunif generated truth and sampler
+ok 15 - dunif generated truth and sampler
+  ---
+  duration_ms: 45.066789
+  type: 'test'
+  ...
+# Subtest: dweibull generated truth and sampler
+ok 16 - dweibull generated truth and sampler
+  ---
+  duration_ms: 68.588298
+  type: 'test'
+  ...
+# Subtest: emg generated truth and sampler
+ok 17 - emg generated truth and sampler
+  ---
+  duration_ms: 71.990659
+  type: 'test'
+  ...
+# Subtest: exp generated truth and sampler
+ok 18 - exp generated truth and sampler
+  ---
+  duration_ms: 30.779302
+  type: 'test'
+  ...
+# Subtest: fatigue generated truth and sampler
+ok 19 - fatigue generated truth and sampler
+  ---
+  duration_ms: 63.711948
+  type: 'test'
+  ...
+# Subtest: foldnorm generated truth and sampler
+ok 20 - foldnorm generated truth and sampler
+  ---
+  duration_ms: 53.867624
+  type: 'test'
+  ...
+# Subtest: fpareto generated truth and sampler
+ok 21 - fpareto generated truth and sampler
+  ---
+  duration_ms: 108.595611
+  type: 'test'
+  ...
+# Subtest: frechet generated truth and sampler
+ok 22 - frechet generated truth and sampler
+  ---
+  duration_ms: 64.654613
+  type: 'test'
+  ...
+# Subtest: gamma generated truth and sampler
+ok 23 - gamma generated truth and sampler
+  ---
+  duration_ms: 51.416529
+  type: 'test'
+  ...
+# Subtest: gb2 generated truth and sampler
+ok 24 - gb2 generated truth and sampler
+  ---
+  duration_ms: 95.271827
+  type: 'test'
+  ...
+# Subtest: ged generated truth and sampler
+ok 25 - ged generated truth and sampler
+  ---
+  duration_ms: 78.873045
+  type: 'test'
+  ...
+# Subtest: genbeta generated truth and sampler
+ok 26 - genbeta generated truth and sampler
+  ---
+  duration_ms: 101.659512
+  type: 'test'
+  ...
+# Subtest: geom generated truth and sampler
+ok 27 - geom generated truth and sampler
+  ---
+  duration_ms: 45.01202
+  type: 'test'
+  ...
+# Subtest: gev generated truth and sampler
+ok 28 - gev generated truth and sampler
+  ---
+  duration_ms: 67.627576
+  type: 'test'
+  ...
+# Subtest: gompertz generated truth and sampler
+ok 29 - gompertz generated truth and sampler
+  ---
+  duration_ms: 48.174006
+  type: 'test'
+  ...
+# Subtest: gpd generated truth and sampler
+ok 30 - gpd generated truth and sampler
+  ---
+  duration_ms: 66.411731
+  type: 'test'
+  ...
+# Subtest: gumbel generated truth and sampler
+ok 31 - gumbel generated truth and sampler
+  ---
+  duration_ms: 47.324745
+  type: 'test'
+  ...
+# Subtest: hcauchy generated truth and sampler
+ok 32 - hcauchy generated truth and sampler
+  ---
+  duration_ms: 55.906241
+  type: 'test'
+  ...
+# Subtest: hnorm generated truth and sampler
+ok 33 - hnorm generated truth and sampler
+  ---
+  duration_ms: 47.928636
+  type: 'test'
+  ...
+# Subtest: ht generated truth and sampler
+ok 34 - ht generated truth and sampler
+  ---
+  duration_ms: 76.57055
+  type: 'test'
+  ...
+# Subtest: huber generated truth and sampler
+ok 35 - huber generated truth and sampler
+  ---
+  duration_ms: 70.118105
+  type: 'test'
+  ...
+# Subtest: hyper generated truth and sampler
+ok 36 - hyper generated truth and sampler
+  ---
+  duration_ms: 99.347642
+  type: 'test'
+  ...
+# Subtest: invburr generated truth and sampler
+ok 37 - invburr generated truth and sampler
+  ---
+  duration_ms: 66.463389
+  type: 'test'
+  ...
+# Subtest: invexp generated truth and sampler
+ok 38 - invexp generated truth and sampler
+  ---
+  duration_ms: 31.650283
+  type: 'test'
+  ...
+# Subtest: invgamma generated truth and sampler
+ok 39 - invgamma generated truth and sampler
+  ---
+  duration_ms: 53.626244
+  type: 'test'
+  ...
+# Subtest: invgauss generated truth and sampler
+ok 40 - invgauss generated truth and sampler
+  ---
+  duration_ms: 67.660369
+  type: 'test'
+  ...
+# Subtest: invparalogis generated truth and sampler
+ok 41 - invparalogis generated truth and sampler
+  ---
+  duration_ms: 57.719868
+  type: 'test'
+  ...
+# Subtest: invpareto generated truth and sampler
+ok 42 - invpareto generated truth and sampler
+  ---
+  duration_ms: 60.827488
+  type: 'test'
+  ...
+# Subtest: invtrgamma generated truth and sampler
+ok 43 - invtrgamma generated truth and sampler
+  ---
+  duration_ms: 80.115842
+  type: 'test'
+  ...
+# Subtest: invweibull generated truth and sampler
+ok 44 - invweibull generated truth and sampler
+  ---
+  duration_ms: 56.956545
+  type: 'test'
+  ...
+# Subtest: kumar generated truth and sampler
+ok 45 - kumar generated truth and sampler
+  ---
+  duration_ms: 56.76829
+  type: 'test'
+  ...
+# Subtest: laplace generated truth and sampler
+ok 46 - laplace generated truth and sampler
+  ---
+  duration_ms: 51.997751
+  type: 'test'
+  ...
+# Subtest: lgamma generated truth and sampler
+ok 47 - lgamma generated truth and sampler
+  ---
+  duration_ms: 54.832097
+  type: 'test'
+  ...
+# Subtest: lgser generated truth and sampler
+ok 48 - lgser generated truth and sampler
+  ---
+  duration_ms: 59.36715
+  type: 'test'
+  ...
+# Subtest: llogis generated truth and sampler
+ok 49 - llogis generated truth and sampler
+  ---
+  duration_ms: 50.968655
+  type: 'test'
+  ...
+# Subtest: lnorm generated truth and sampler
+ok 50 - lnorm generated truth and sampler
+  ---
+  duration_ms: 52.443635
+  type: 'test'
+  ...
+# Subtest: logis generated truth and sampler
+ok 51 - logis generated truth and sampler
+  ---
+  duration_ms: 52.569862
+  type: 'test'
+  ...
+# Subtest: logitnorm generated truth and sampler
+ok 52 - logitnorm generated truth and sampler
+  ---
+  duration_ms: 50.218532
+  type: 'test'
+  ...
+# Subtest: lomax generated truth and sampler
+ok 53 - lomax generated truth and sampler
+  ---
+  duration_ms: 50.975393
+  type: 'test'
+  ...
+# Subtest: lst generated truth and sampler
+ok 54 - lst generated truth and sampler
+  ---
+  duration_ms: 84.432903
+  type: 'test'
+  ...
+# Subtest: naka generated truth and sampler
+ok 55 - naka generated truth and sampler
+  ---
+  duration_ms: 52.139471
+  type: 'test'
+  ...
+# Subtest: nbinom generated truth and sampler
+ok 56 - nbinom generated truth and sampler
+  ---
+  duration_ms: 85.817213
+  type: 'test'
+  ...
+# Subtest: nhyper generated truth and sampler
+ok 57 - nhyper generated truth and sampler
+  ---
+  duration_ms: 156.598375
+  type: 'test'
+  ...
+# Subtest: norm generated truth and sampler
+ok 58 - norm generated truth and sampler
+  ---
+  duration_ms: 49.803065
+  type: 'test'
+  ...
+# Subtest: nsbeta generated truth and sampler
+ok 59 - nsbeta generated truth and sampler
+  ---
+  duration_ms: 86.740238
+  type: 'test'
+  ...
+# Subtest: paralogis generated truth and sampler
+ok 60 - paralogis generated truth and sampler
+  ---
+  duration_ms: 50.293959
+  type: 'test'
+  ...
+# Subtest: pareto generated truth and sampler
+ok 61 - pareto generated truth and sampler
+  ---
+  duration_ms: 47.300425
+  type: 'test'
+  ...
+# Subtest: pareto2 generated truth and sampler
+ok 62 - pareto2 generated truth and sampler
+  ---
+  duration_ms: 63.139145
+  type: 'test'
+  ...
+# Subtest: pareto3 generated truth and sampler
+ok 63 - pareto3 generated truth and sampler
+  ---
+  duration_ms: 63.314345
+  type: 'test'
+  ...
+# Subtest: pareto4 generated truth and sampler
+ok 64 - pareto4 generated truth and sampler
+  ---
+  duration_ms: 81.013584
+  type: 'test'
+  ...
+# Subtest: pig generated truth and sampler
+ok 65 - pig generated truth and sampler
+  ---
+  duration_ms: 2545.164724
+  type: 'test'
+  ...
+# Subtest: pois generated truth and sampler
+ok 66 - pois generated truth and sampler
+  ---
+  duration_ms: 42.577585
+  type: 'test'
+  ...
+# Subtest: power generated truth and sampler
+ok 67 - power generated truth and sampler
+  ---
+  duration_ms: 44.584667
+  type: 'test'
+  ...
+# Subtest: rayleigh generated truth and sampler
+ok 68 - rayleigh generated truth and sampler
+  ---
+  duration_ms: 32.772636
+  type: 'test'
+  ...
+# Subtest: sged generated truth and sampler
+ok 69 - sged generated truth and sampler
+  ---
+  duration_ms: 98.604081
+  type: 'test'
+  ...
+# Subtest: sgomp generated truth and sampler
+ok 70 - sgomp generated truth and sampler
+  ---
+  duration_ms: 52.177182
+  type: 'test'
+  ...
+# Subtest: skellam generated truth and sampler
+ok 71 - skellam generated truth and sampler
+  ---
+  duration_ms: 85.355807
+  type: 'test'
+  ...
+# Subtest: slash generated truth and sampler
+ok 72 - slash generated truth and sampler
+  ---
+  duration_ms: 54.256219
+  type: 'test'
+  ...
+# Subtest: sn generated truth and sampler
+ok 73 - sn generated truth and sampler
+  ---
+  duration_ms: 343.030381
+  type: 'test'
+  ...
+# Subtest: snorm generated truth and sampler
+ok 74 - snorm generated truth and sampler
+  ---
+  duration_ms: 64.916578
+  type: 'test'
+  ...
+# Subtest: sstd generated truth and sampler
+ok 75 - sstd generated truth and sampler
+  ---
+  duration_ms: 99.89306
+  type: 'test'
+  ...
+# Subtest: st generated truth and sampler
+ok 76 - st generated truth and sampler
+  ---
+  duration_ms: 176.516513
+  type: 'test'
+  ...
+# Subtest: std generated truth and sampler
+ok 77 - std generated truth and sampler
+  ---
+  duration_ms: 75.740169
+  type: 'test'
+  ...
+# Subtest: tbinom generated truth and sampler
+ok 78 - tbinom generated truth and sampler
+  ---
+  duration_ms: 180.265132
+  type: 'test'
+  ...
+# Subtest: tlambda generated truth and sampler
+ok 79 - tlambda generated truth and sampler
+  ---
+  duration_ms: 111.535985
+  type: 'test'
+  ...
+# Subtest: tnorm generated truth and sampler
+ok 80 - tnorm generated truth and sampler
+  ---
+  duration_ms: 267.872458
+  type: 'test'
+  ...
+# Subtest: tpois generated truth and sampler
+ok 81 - tpois generated truth and sampler
+  ---
+  duration_ms: 131.308939
+  type: 'test'
+  ...
+# Subtest: trgamma generated truth and sampler
+ok 82 - trgamma generated truth and sampler
+  ---
+  duration_ms: 71.931038
+  type: 'test'
+  ...
+# Subtest: triang generated truth and sampler
+ok 83 - triang generated truth and sampler
+  ---
+  duration_ms: 66.528174
+  type: 'test'
+  ...
+# Subtest: unif generated truth and sampler
+ok 84 - unif generated truth and sampler
+  ---
+  duration_ms: 45.508081
+  type: 'test'
+  ...
+# Subtest: weibull generated truth and sampler
+ok 85 - weibull generated truth and sampler
+  ---
+  duration_ms: 51.88482
+  type: 'test'
+  ...
+# Subtest: yulesimon generated truth and sampler
+ok 86 - yulesimon generated truth and sampler
+  ---
+  duration_ms: 98.301436
+  type: 'test'
+  ...
+# Subtest: zeta generated truth and sampler
+ok 87 - zeta generated truth and sampler
+  ---
+  duration_ms: 2994.175378
+  type: 'test'
+  ...
+# Subtest: zib generated truth and sampler
+ok 88 - zib generated truth and sampler
+  ---
+  duration_ms: 111.874303
+  type: 'test'
+  ...
+# Subtest: zinb generated truth and sampler
+ok 89 - zinb generated truth and sampler
+  ---
+  duration_ms: 107.092024
+  type: 'test'
+  ...
+# Subtest: zip generated truth and sampler
+ok 90 - zip generated truth and sampler
+  ---
+  duration_ms: 70.406947
+  type: 'test'
+  ...
+# Subtest: zipf generated truth and sampler
+ok 91 - zipf generated truth and sampler
+  ---
+  duration_ms: 95.988794
+  type: 'test'
+  ...
+# Subtest: zmbinom generated truth and sampler
+ok 92 - zmbinom generated truth and sampler
+  ---
+  duration_ms: 119.35789
+  type: 'test'
+  ...
+# Subtest: zmgeom generated truth and sampler
+ok 93 - zmgeom generated truth and sampler
+  ---
+  duration_ms: 84.035417
+  type: 'test'
+  ...
+# Subtest: zmlogarithmic generated truth and sampler
+ok 94 - zmlogarithmic generated truth and sampler
+  ---
+  duration_ms: 85.55891
+  type: 'test'
+  ...
+# Subtest: zmnbinom generated truth and sampler
+ok 95 - zmnbinom generated truth and sampler
+  ---
+  duration_ms: 198.464186
+  type: 'test'
+  ...
+# Subtest: zmpois generated truth and sampler
+ok 96 - zmpois generated truth and sampler
+  ---
+  duration_ms: 98.537387
+  type: 'test'
+  ...
+# Subtest: ztbinom generated truth and sampler
+ok 97 - ztbinom generated truth and sampler
+  ---
+  duration_ms: 132.737523
+  type: 'test'
+  ...
+# Subtest: ztgeom generated truth and sampler
+ok 98 - ztgeom generated truth and sampler
+  ---
+  duration_ms: 56.319047
+  type: 'test'
+  ...
+# Subtest: ztnbinom generated truth and sampler
+ok 99 - ztnbinom generated truth and sampler
+  ---
+  duration_ms: 220.035371
+  type: 'test'
+  ...
+# Subtest: ztpois generated truth and sampler
+ok 100 - ztpois generated truth and sampler
+  ---
+  duration_ms: 76.70759
+  type: 'test'
+  ...
+# Subtest: exp golden
+ok 101 - exp golden
+  ---
+  duration_ms: 0.765953
+  type: 'test'
+  ...
+# Subtest: exp every held subset
+ok 102 - exp every held subset
+  ---
+  duration_ms: 0.672753
+  type: 'test'
+  ...
+# Subtest: gamma golden
+ok 103 - gamma golden
+  ---
+  duration_ms: 0.372239
+  type: 'test'
+  ...
+# Subtest: gamma every held subset
+ok 104 - gamma every held subset
+  ---
+  duration_ms: 0.549702
+  type: 'test'
+  ...
+# Subtest: gb2 golden
+ok 105 - gb2 golden
+  ---
+  duration_ms: 147.488378
+  type: 'test'
+  ...
+# Subtest: gb2 every held subset
+ok 106 - gb2 every held subset
+  ---
+  duration_ms: 102.578326
+  type: 'test'
+  ...
+# Subtest: diagnostics and vector flags
+ok 107 - diagnostics and vector flags
+  ---
+  duration_ms: 4.350884
+  type: 'test'
+  ...
+# Subtest: bbinom shared golden
+ok 108 - bbinom shared golden
+  ---
+  duration_ms: 1.79205
+  type: 'test'
+  ...
+# Subtest: bbinom all held subsets
+ok 109 - bbinom all held subsets
+  ---
+  duration_ms: 255.766868
+  type: 'test'
+  ...
+# Subtest: bbinom held-value diagnostic
+ok 110 - bbinom held-value diagnostic
+  ---
+  duration_ms: 0.42025
+  type: 'test'
+  ...
+# Subtest: beta shared golden
+ok 111 - beta shared golden
+  ---
+  duration_ms: 0.452825
+  type: 'test'
+  ...
+# Subtest: beta all held subsets
+ok 112 - beta all held subsets
+  ---
+  duration_ms: 0.174639
+  type: 'test'
+  ...
+# Subtest: beta held-value diagnostic
+ok 113 - beta held-value diagnostic
+  ---
+  duration_ms: 0.058726
+  type: 'test'
+  ...
+# Subtest: betapr shared golden
+ok 114 - betapr shared golden
+  ---
+  duration_ms: 9.348425
+  type: 'test'
+  ...
+# Subtest: betapr all held subsets
+ok 115 - betapr all held subsets
+  ---
+  duration_ms: 74.180594
+  type: 'test'
+  ...
+# Subtest: betapr held-value diagnostic
+ok 116 - betapr held-value diagnostic
+  ---
+  duration_ms: 0.109958
+  type: 'test'
+  ...
+# Subtest: bhatt shared golden
+ok 117 - bhatt shared golden
+  ---
+  duration_ms: 517.790648
+  type: 'test'
+  ...
+# Subtest: bhatt all held subsets
+ok 118 - bhatt all held subsets
+  ---
+  duration_ms: 740.321701
+  type: 'test'
+  ...
+# Subtest: bhatt held-value diagnostic
+ok 119 - bhatt held-value diagnostic
+  ---
+  duration_ms: 0.232902
+  type: 'test'
+  ...
+# Subtest: binom shared golden
+ok 120 - binom shared golden
+  ---
+  duration_ms: 0.513539
+  type: 'test'
+  ...
+# Subtest: binom all held subsets
+ok 121 - binom all held subsets
+  ---
+  duration_ms: 0.266556
+  type: 'test'
+  ...
+# Subtest: binom held-value diagnostic
+ok 122 - binom held-value diagnostic
+  ---
+  duration_ms: 0.104127
+  type: 'test'
+  ...
+# Subtest: bnbinom shared golden
+ok 123 - bnbinom shared golden
+  ---
+  duration_ms: 80.74227
+  type: 'test'
+  ...
+# Subtest: bnbinom all held subsets
+ok 124 - bnbinom all held subsets
+  ---
+  duration_ms: 130.270696
+  type: 'test'
+  ...
+# Subtest: bnbinom held-value diagnostic
+ok 125 - bnbinom held-value diagnostic
+  ---
+  duration_ms: 0.203265
+  type: 'test'
+  ...
+# Subtest: burr shared golden
+ok 126 - burr shared golden
+  ---
+  duration_ms: 71.026673
+  type: 'test'
+  ...
+# Subtest: burr all held subsets
+ok 127 - burr all held subsets
+  ---
+  duration_ms: 100.35551
+  type: 'test'
+  ...
+# Subtest: burr held-value diagnostic
+ok 128 - burr held-value diagnostic
+  ---
+  duration_ms: 0.090053
+  type: 'test'
+  ...
+# Subtest: cauchy shared golden
+ok 129 - cauchy shared golden
+  ---
+  duration_ms: 0.677324
+  type: 'test'
+  ...
+# Subtest: cauchy all held subsets
+ok 130 - cauchy all held subsets
+  ---
+  duration_ms: 1.151974
+  type: 'test'
+  ...
+# Subtest: cauchy held-value diagnostic
+ok 131 - cauchy held-value diagnostic
+  ---
+  duration_ms: 0.061604
+  type: 'test'
+  ...
+# Subtest: cmb shared golden
+ok 132 - cmb shared golden
+  ---
+  duration_ms: 1.685552
+  type: 'test'
+  ...
+# Subtest: cmb all held subsets
+ok 133 - cmb all held subsets
+  ---
+  duration_ms: 18598.060388
+  type: 'test'
+  ...
+# Subtest: cmb held-value diagnostic
+ok 134 - cmb held-value diagnostic
+  ---
+  duration_ms: 0.133892
+  type: 'test'
+  ...
+# Subtest: cmp shared golden
+ok 135 - cmp shared golden
+  ---
+  duration_ms: 0.405865
+  type: 'test'
+  ...
+# Subtest: cmp all held subsets
+ok 136 - cmp all held subsets
+  ---
+  duration_ms: 0.326802
+  type: 'test'
+  ...
+# Subtest: cmp held-value diagnostic
+ok 137 - cmp held-value diagnostic
+  ---
+  duration_ms: 0.052511
+  type: 'test'
+  ...
+# Subtest: dgamma shared golden
+ok 138 - dgamma shared golden
+  ---
+  duration_ms: 70.488854
+  type: 'test'
+  ...
+# Subtest: dgamma all held subsets
+ok 139 - dgamma all held subsets
+  ---
+  duration_ms: 73.086671
+  type: 'test'
+  ...
+# Subtest: dgamma held-value diagnostic
+ok 140 - dgamma held-value diagnostic
+  ---
+  duration_ms: 0.087132
+  type: 'test'
+  ...
+# Subtest: dlaplace shared golden
+ok 141 - dlaplace shared golden
+  ---
+  duration_ms: 0.455909
+  type: 'test'
+  ...
+# Subtest: dlaplace all held subsets
+ok 142 - dlaplace all held subsets
+  ---
+  duration_ms: 0.130525
+  type: 'test'
+  ...
+# Subtest: dlaplace held-value diagnostic
+ok 143 - dlaplace held-value diagnostic
+  ---
+  duration_ms: 0.078276
+  type: 'test'
+  ...
+# Subtest: dnorm shared golden
+ok 144 - dnorm shared golden
+  ---
+  duration_ms: 0.380669
+  type: 'test'
+  ...
+# Subtest: dnorm all held subsets
+ok 145 - dnorm all held subsets
+  ---
+  duration_ms: 0.137057
+  type: 'test'
+  ...
+# Subtest: dnorm held-value diagnostic
+ok 146 - dnorm held-value diagnostic
+  ---
+  duration_ms: 0.046042
+  type: 'test'
+  ...
+# Subtest: dunif shared golden
+ok 147 - dunif shared golden
+  ---
+  duration_ms: 0.154787
+  type: 'test'
+  ...
+# Subtest: dunif all held subsets
+ok 148 - dunif all held subsets
+  ---
+  duration_ms: 0.096687
+  type: 'test'
+  ...
+# Subtest: dunif held-value diagnostic
+ok 149 - dunif held-value diagnostic
+  ---
+  duration_ms: 0.05954
+  type: 'test'
+  ...
+# Subtest: dweibull shared golden
+ok 150 - dweibull shared golden
+  ---
+  duration_ms: 0.527712
+  type: 'test'
+  ...
+# Subtest: dweibull all held subsets
+ok 151 - dweibull all held subsets
+  ---
+  duration_ms: 0.218227
+  type: 'test'
+  ...
+# Subtest: dweibull held-value diagnostic
+ok 152 - dweibull held-value diagnostic
+  ---
+  duration_ms: 0.053185
+  type: 'test'
+  ...
+# Subtest: emg shared golden
+ok 153 - emg shared golden
+  ---
+  duration_ms: 735.75161
+  type: 'test'
+  ...
+# Subtest: emg all held subsets
+ok 154 - emg all held subsets
+  ---
+  duration_ms: 848.605456
+  type: 'test'
+  ...
+# Subtest: emg held-value diagnostic
+ok 155 - emg held-value diagnostic
+  ---
+  duration_ms: 0.116356
+  type: 'test'
+  ...
+# Subtest: exp shared golden
+ok 156 - exp shared golden
+  ---
+  duration_ms: 0.042088
+  type: 'test'
+  ...
+# Subtest: exp all held subsets
+ok 157 - exp all held subsets
+  ---
+  duration_ms: 0.042397
+  type: 'test'
+  ...
+# Subtest: exp held-value diagnostic
+ok 158 - exp held-value diagnostic
+  ---
+  duration_ms: 0.033637
+  type: 'test'
+  ...
+# Subtest: fatigue shared golden
+ok 159 - fatigue shared golden
+  ---
+  duration_ms: 0.543253
+  type: 'test'
+  ...
+# Subtest: fatigue all held subsets
+ok 160 - fatigue all held subsets
+  ---
+  duration_ms: 14.71752
+  type: 'test'
+  ...
+# Subtest: fatigue held-value diagnostic
+ok 161 - fatigue held-value diagnostic
+  ---
+  duration_ms: 0.153312
+  type: 'test'
+  ...
+# Subtest: foldnorm shared golden
+ok 162 - foldnorm shared golden
+  ---
+  duration_ms: 6.500347
+  type: 'test'
+  ...
+# Subtest: foldnorm all held subsets
+ok 163 - foldnorm all held subsets
+  ---
+  duration_ms: 11.838288
+  type: 'test'
+  ...
+# Subtest: foldnorm held-value diagnostic
+ok 164 - foldnorm held-value diagnostic
+  ---
+  duration_ms: 0.092436
+  type: 'test'
+  ...
+# Subtest: fpareto shared golden
+ok 165 - fpareto shared golden
+  ---
+  duration_ms: 0.494161
+  type: 'test'
+  ...
+# Subtest: fpareto all held subsets
+ok 166 - fpareto all held subsets
+  ---
+  duration_ms: 203.186635
+  type: 'test'
+  ...
+# Subtest: fpareto held-value diagnostic
+ok 167 - fpareto held-value diagnostic
+  ---
+  duration_ms: 0.150825
+  type: 'test'
+  ...
+# Subtest: frechet shared golden
+ok 168 - frechet shared golden
+  ---
+  duration_ms: 5.079198
+  type: 'test'
+  ...
+# Subtest: frechet all held subsets
+ok 169 - frechet all held subsets
+  ---
+  duration_ms: 27.923697
+  type: 'test'
+  ...
+# Subtest: frechet held-value diagnostic
+ok 170 - frechet held-value diagnostic
+  ---
+  duration_ms: 0.090055
+  type: 'test'
+  ...
+# Subtest: gamma shared golden
+ok 171 - gamma shared golden
+  ---
+  duration_ms: 0.053334
+  type: 'test'
+  ...
+# Subtest: gamma all held subsets
+ok 172 - gamma all held subsets
+  ---
+  duration_ms: 0.099609
+  type: 'test'
+  ...
+# Subtest: gamma held-value diagnostic
+ok 173 - gamma held-value diagnostic
+  ---
+  duration_ms: 0.04313
+  type: 'test'
+  ...
+# Subtest: gb2 shared golden
+ok 174 - gb2 shared golden
+  ---
+  duration_ms: 135.767517
+  type: 'test'
+  ...
+# Subtest: gb2 all held subsets
+ok 175 - gb2 all held subsets
+  ---
+  duration_ms: 240.686264
+  type: 'test'
+  ...
+# Subtest: gb2 held-value diagnostic
+ok 176 - gb2 held-value diagnostic
+  ---
+  duration_ms: 0.093789
+  type: 'test'
+  ...
+# Subtest: ged shared golden
+ok 177 - ged shared golden
+  ---
+  duration_ms: 4.941756
+  type: 'test'
+  ...
+# Subtest: ged all held subsets
+ok 178 - ged all held subsets
+  ---
+  duration_ms: 1022.097769
+  type: 'test'
+  ...
+# Subtest: ged held-value diagnostic
+ok 179 - ged held-value diagnostic
+  ---
+  duration_ms: 0.088406
+  type: 'test'
+  ...
+# Subtest: genbeta shared golden
+ok 180 - genbeta shared golden
+  ---
+  duration_ms: 4.677491
+  type: 'test'
+  ...
+# Subtest: genbeta all held subsets
+ok 181 - genbeta all held subsets
+  ---
+  duration_ms: 24.552771
+  type: 'test'
+  ...
+# Subtest: genbeta held-value diagnostic
+ok 182 - genbeta held-value diagnostic
+  ---
+  duration_ms: 0.100379
+  type: 'test'
+  ...
+# Subtest: geom shared golden
+ok 183 - geom shared golden
+  ---
+  duration_ms: 0.21743
+  type: 'test'
+  ...
+# Subtest: geom all held subsets
+ok 184 - geom all held subsets
+  ---
+  duration_ms: 0.084016
+  type: 'test'
+  ...
+# Subtest: geom held-value diagnostic
+ok 185 - geom held-value diagnostic
+  ---
+  duration_ms: 0.085101
+  type: 'test'
+  ...
+# Subtest: gev shared golden
+ok 186 - gev shared golden
+  ---
+  duration_ms: 2.302105
+  type: 'test'
+  ...
+# Subtest: gev all held subsets
+ok 187 - gev all held subsets
+  ---
+  duration_ms: 490.194217
+  type: 'test'
+  ...
+# Subtest: gev held-value diagnostic
+ok 188 - gev held-value diagnostic
+  ---
+  duration_ms: 0.088948
+  type: 'test'
+  ...
+# Subtest: gompertz shared golden
+ok 189 - gompertz shared golden
+  ---
+  duration_ms: 0.520553
+  type: 'test'
+  ...
+# Subtest: gompertz all held subsets
+ok 190 - gompertz all held subsets
+  ---
+  duration_ms: 1.793227
+  type: 'test'
+  ...
+# Subtest: gompertz held-value diagnostic
+ok 191 - gompertz held-value diagnostic
+  ---
+  duration_ms: 0.049068
+  type: 'test'
+  ...
+# Subtest: gpd shared golden
+ok 192 - gpd shared golden
+  ---
+  duration_ms: 3.92364
+  type: 'test'
+  ...
+# Subtest: gpd all held subsets
+ok 193 - gpd all held subsets
+  ---
+  duration_ms: 4.80162
+  type: 'test'
+  ...
+# Subtest: gpd held-value diagnostic
+ok 194 - gpd held-value diagnostic
+  ---
+  duration_ms: 0.070341
+  type: 'test'
+  ...
+# Subtest: gumbel shared golden
+ok 195 - gumbel shared golden
+  ---
+  duration_ms: 0.270972
+  type: 'test'
+  ...
+# Subtest: gumbel all held subsets
+ok 196 - gumbel all held subsets
+  ---
+  duration_ms: 0.331003
+  type: 'test'
+  ...
+# Subtest: gumbel held-value diagnostic
+ok 197 - gumbel held-value diagnostic
+  ---
+  duration_ms: 0.046926
+  type: 'test'
+  ...
+# Subtest: hcauchy shared golden
+ok 198 - hcauchy shared golden
+  ---
+  duration_ms: 0.765408
+  type: 'test'
+  ...
+# Subtest: hcauchy all held subsets
+ok 199 - hcauchy all held subsets
+  ---
+  duration_ms: 0.879876
+  type: 'test'
+  ...
+# Subtest: hcauchy held-value diagnostic
+ok 200 - hcauchy held-value diagnostic
+  ---
+  duration_ms: 0.042813
+  type: 'test'
+  ...
+# Subtest: hnorm shared golden
+ok 201 - hnorm shared golden
+  ---
+  duration_ms: 0.219105
+  type: 'test'
+  ...
+# Subtest: hnorm all held subsets
+ok 202 - hnorm all held subsets
+  ---
+  duration_ms: 0.077768
+  type: 'test'
+  ...
+# Subtest: hnorm held-value diagnostic
+ok 203 - hnorm held-value diagnostic
+  ---
+  duration_ms: 0.039116
+  type: 'test'
+  ...
+# Subtest: ht shared golden
+ok 204 - ht shared golden
+  ---
+  duration_ms: 176.890745
+  type: 'test'
+  ...
+# Subtest: ht all held subsets
+ok 205 - ht all held subsets
+  ---
+  duration_ms: 336.978623
+  type: 'test'
+  ...
+# Subtest: ht held-value diagnostic
+ok 206 - ht held-value diagnostic
+  ---
+  duration_ms: 0.117006
+  type: 'test'
+  ...
+# Subtest: huber shared golden
+ok 207 - huber shared golden
+  ---
+  duration_ms: 0.81389
+  type: 'test'
+  ...
+# Subtest: huber all held subsets
+ok 208 - huber all held subsets
+  ---
+  duration_ms: 9.523358
+  type: 'test'
+  ...
+# Subtest: huber held-value diagnostic
+ok 209 - huber held-value diagnostic
+  ---
+  duration_ms: 0.103169
+  type: 'test'
+  ...
+# Subtest: hyper shared golden
+ok 210 - hyper shared golden
+  ---
+  duration_ms: 0.791251
+  type: 'test'
+  ...
+# Subtest: hyper all held subsets
+ok 211 - hyper all held subsets
+  ---
+  duration_ms: 71.423677
+  type: 'test'
+  ...
+# Subtest: hyper held-value diagnostic
+ok 212 - hyper held-value diagnostic
+  ---
+  duration_ms: 0.108076
+  type: 'test'
+  ...
+# Subtest: invburr shared golden
+ok 213 - invburr shared golden
+  ---
+  duration_ms: 96.270339
+  type: 'test'
+  ...
+# Subtest: invburr all held subsets
+ok 214 - invburr all held subsets
+  ---
+  duration_ms: 121.70737
+  type: 'test'
+  ...
+# Subtest: invburr held-value diagnostic
+ok 215 - invburr held-value diagnostic
+  ---
+  duration_ms: 0.136748
+  type: 'test'
+  ...
+# Subtest: invexp shared golden
+ok 216 - invexp shared golden
+  ---
+  duration_ms: 0.222233
+  type: 'test'
+  ...
+# Subtest: invexp all held subsets
+ok 217 - invexp all held subsets
+  ---
+  duration_ms: 0.066299
+  type: 'test'
+  ...
+# Subtest: invexp held-value diagnostic
+ok 218 - invexp held-value diagnostic
+  ---
+  duration_ms: 0.044667
+  type: 'test'
+  ...
+# Subtest: invgamma shared golden
+ok 219 - invgamma shared golden
+  ---
+  duration_ms: 0.196322
+  type: 'test'
+  ...
+# Subtest: invgamma all held subsets
+ok 220 - invgamma all held subsets
+  ---
+  duration_ms: 0.376535
+  type: 'test'
+  ...
+# Subtest: invgamma held-value diagnostic
+ok 221 - invgamma held-value diagnostic
+  ---
+  duration_ms: 0.052595
+  type: 'test'
+  ...
+# Subtest: invgauss shared golden
+ok 222 - invgauss shared golden
+  ---
+  duration_ms: 0.214705
+  type: 'test'
+  ...
+# Subtest: invgauss all held subsets
+ok 223 - invgauss all held subsets
+  ---
+  duration_ms: 0.08789
+  type: 'test'
+  ...
+# Subtest: invgauss held-value diagnostic
+ok 224 - invgauss held-value diagnostic
+  ---
+  duration_ms: 0.04241
+  type: 'test'
+  ...
+# Subtest: invparalogis shared golden
+ok 225 - invparalogis shared golden
+  ---
+  duration_ms: 17.839703
+  type: 'test'
+  ...
+# Subtest: invparalogis all held subsets
+ok 226 - invparalogis all held subsets
+  ---
+  duration_ms: 15.167688
+  type: 'test'
+  ...
+# Subtest: invparalogis held-value diagnostic
+ok 227 - invparalogis held-value diagnostic
+  ---
+  duration_ms: 0.069609
+  type: 'test'
+  ...
+# Subtest: invpareto shared golden
+ok 228 - invpareto shared golden
+  ---
+  duration_ms: 1.860007
+  type: 'test'
+  ...
+# Subtest: invpareto all held subsets
+ok 229 - invpareto all held subsets
+  ---
+  duration_ms: 2.786589
+  type: 'test'
+  ...
+# Subtest: invpareto held-value diagnostic
+ok 230 - invpareto held-value diagnostic
+  ---
+  duration_ms: 0.066173
+  type: 'test'
+  ...
+# Subtest: invtrgamma shared golden
+ok 231 - invtrgamma shared golden
+  ---
+  duration_ms: 2.667531
+  type: 'test'
+  ...
+# Subtest: invtrgamma all held subsets
+ok 232 - invtrgamma all held subsets
+  ---
+  duration_ms: 7.572314
+  type: 'test'
+  ...
+# Subtest: invtrgamma held-value diagnostic
+ok 233 - invtrgamma held-value diagnostic
+  ---
+  duration_ms: 0.075495
+  type: 'test'
+  ...
+# Subtest: invweibull shared golden
+ok 234 - invweibull shared golden
+  ---
+  duration_ms: 0.199887
+  type: 'test'
+  ...
+# Subtest: invweibull all held subsets
+ok 235 - invweibull all held subsets
+  ---
+  duration_ms: 0.364449
+  type: 'test'
+  ...
+# Subtest: invweibull held-value diagnostic
+ok 236 - invweibull held-value diagnostic
+  ---
+  duration_ms: 0.050739
+  type: 'test'
+  ...
+# Subtest: kumar shared golden
+ok 237 - kumar shared golden
+  ---
+  duration_ms: 1.687456
+  type: 'test'
+  ...
+# Subtest: kumar all held subsets
+ok 238 - kumar all held subsets
+  ---
+  duration_ms: 2.341574
+  type: 'test'
+  ...
+# Subtest: kumar held-value diagnostic
+ok 239 - kumar held-value diagnostic
+  ---
+  duration_ms: 0.0688
+  type: 'test'
+  ...
+# Subtest: laplace shared golden
+ok 240 - laplace shared golden
+  ---
+  duration_ms: 0.266527
+  type: 'test'
+  ...
+# Subtest: laplace all held subsets
+ok 241 - laplace all held subsets
+  ---
+  duration_ms: 0.139807
+  type: 'test'
+  ...
+# Subtest: laplace held-value diagnostic
+ok 242 - laplace held-value diagnostic
+  ---
+  duration_ms: 0.050739
+  type: 'test'
+  ...
+# Subtest: lgamma shared golden
+ok 243 - lgamma shared golden
+  ---
+  duration_ms: 0.227028
+  type: 'test'
+  ...
+# Subtest: lgamma all held subsets
+ok 244 - lgamma all held subsets
+  ---
+  duration_ms: 0.130737
+  type: 'test'
+  ...
+# Subtest: lgamma held-value diagnostic
+ok 245 - lgamma held-value diagnostic
+  ---
+  duration_ms: 0.044743
+  type: 'test'
+  ...
+# Subtest: lgser shared golden
+ok 246 - lgser shared golden
+  ---
+  duration_ms: 0.240848
+  type: 'test'
+  ...
+# Subtest: lgser all held subsets
+ok 247 - lgser all held subsets
+  ---
+  duration_ms: 0.084096
+  type: 'test'
+  ...
+# Subtest: lgser held-value diagnostic
+ok 248 - lgser held-value diagnostic
+  ---
+  duration_ms: 0.058194
+  type: 'test'
+  ...
+# Subtest: llogis shared golden
+ok 249 - llogis shared golden
+  ---
+  duration_ms: 0.515529
+  type: 'test'
+  ...
+# Subtest: llogis all held subsets
+ok 250 - llogis all held subsets
+  ---
+  duration_ms: 0.964006
+  type: 'test'
+  ...
+# Subtest: llogis held-value diagnostic
+ok 251 - llogis held-value diagnostic
+  ---
+  duration_ms: 0.047919
+  type: 'test'
+  ...
+# Subtest: lnorm shared golden
+ok 252 - lnorm shared golden
+  ---
+  duration_ms: 0.192404
+  type: 'test'
+  ...
+# Subtest: lnorm all held subsets
+ok 253 - lnorm all held subsets
+  ---
+  duration_ms: 0.104492
+  type: 'test'
+  ...
+# Subtest: lnorm held-value diagnostic
+ok 254 - lnorm held-value diagnostic
+  ---
+  duration_ms: 0.042421
+  type: 'test'
+  ...
+# Subtest: logis shared golden
+ok 255 - logis shared golden
+  ---
+  duration_ms: 0.379233
+  type: 'test'
+  ...
+# Subtest: logis all held subsets
+ok 256 - logis all held subsets
+  ---
+  duration_ms: 1.037431
+  type: 'test'
+  ...
+# Subtest: logis held-value diagnostic
+ok 257 - logis held-value diagnostic
+  ---
+  duration_ms: 0.04656
+  type: 'test'
+  ...
+# Subtest: logitnorm shared golden
+ok 258 - logitnorm shared golden
+  ---
+  duration_ms: 0.200056
+  type: 'test'
+  ...
+# Subtest: logitnorm all held subsets
+ok 259 - logitnorm all held subsets
+  ---
+  duration_ms: 0.099195
+  type: 'test'
+  ...
+# Subtest: logitnorm held-value diagnostic
+ok 260 - logitnorm held-value diagnostic
+  ---
+  duration_ms: 0.041025
+  type: 'test'
+  ...
+# Subtest: lomax shared golden
+ok 261 - lomax shared golden
+  ---
+  duration_ms: 1.755185
+  type: 'test'
+  ...
+# Subtest: lomax all held subsets
+ok 262 - lomax all held subsets
+  ---
+  duration_ms: 2.48396
+  type: 'test'
+  ...
+# Subtest: lomax held-value diagnostic
+ok 263 - lomax held-value diagnostic
+  ---
+  duration_ms: 0.048173
+  type: 'test'
+  ...
+# Subtest: lst shared golden
+ok 264 - lst shared golden
+  ---
+  duration_ms: 59.504726
+  type: 'test'
+  ...
+# Subtest: lst all held subsets
+ok 265 - lst all held subsets
+  ---
+  duration_ms: 3362.964859
+  type: 'test'
+  ...
+# Subtest: lst held-value diagnostic
+ok 266 - lst held-value diagnostic
+  ---
+  duration_ms: 0.089352
+  type: 'test'
+  ...
+# Subtest: naka shared golden
+ok 267 - naka shared golden
+  ---
+  duration_ms: 0.295948
+  type: 'test'
+  ...
+# Subtest: naka all held subsets
+ok 268 - naka all held subsets
+  ---
+  duration_ms: 0.116311
+  type: 'test'
+  ...
+# Subtest: naka held-value diagnostic
+ok 269 - naka held-value diagnostic
+  ---
+  duration_ms: 0.043137
+  type: 'test'
+  ...
+# Subtest: nbinom shared golden
+ok 270 - nbinom shared golden
+  ---
+  duration_ms: 0.366006
+  type: 'test'
+  ...
+# Subtest: nbinom all held subsets
+ok 271 - nbinom all held subsets
+  ---
+  duration_ms: 1.965086
+  type: 'test'
+  ...
+# Subtest: nbinom held-value diagnostic
+ok 272 - nbinom held-value diagnostic
+  ---
+  duration_ms: 0.072096
+  type: 'test'
+  ...
+# Subtest: nhyper shared golden
+ok 273 - nhyper shared golden
+  ---
+  duration_ms: 0.470922
+  type: 'test'
+  ...
+# Subtest: nhyper all held subsets
+ok 274 - nhyper all held subsets
+  ---
+  duration_ms: 139.359848
+  type: 'test'
+  ...
+# Subtest: nhyper held-value diagnostic
+ok 275 - nhyper held-value diagnostic
+  ---
+  duration_ms: 0.12159
+  type: 'test'
+  ...
+# Subtest: norm shared golden
+ok 276 - norm shared golden
+  ---
+  duration_ms: 0.243242
+  type: 'test'
+  ...
+# Subtest: norm all held subsets
+ok 277 - norm all held subsets
+  ---
+  duration_ms: 0.096931
+  type: 'test'
+  ...
+# Subtest: norm held-value diagnostic
+ok 278 - norm held-value diagnostic
+  ---
+  duration_ms: 0.047331
+  type: 'test'
+  ...
+# Subtest: nsbeta shared golden
+ok 279 - nsbeta shared golden
+  ---
+  duration_ms: 0.252547
+  type: 'test'
+  ...
+# Subtest: nsbeta all held subsets
+ok 280 - nsbeta all held subsets
+  ---
+  duration_ms: 0.277574
+  type: 'test'
+  ...
+# Subtest: nsbeta held-value diagnostic
+ok 281 - nsbeta held-value diagnostic
+  ---
+  duration_ms: 0.059132
+  type: 'test'
+  ...
+# Subtest: paralogis shared golden
+ok 282 - paralogis shared golden
+  ---
+  duration_ms: 14.527266
+  type: 'test'
+  ...
+# Subtest: paralogis all held subsets
+ok 283 - paralogis all held subsets
+  ---
+  duration_ms: 16.951937
+  type: 'test'
+  ...
+# Subtest: paralogis held-value diagnostic
+ok 284 - paralogis held-value diagnostic
+  ---
+  duration_ms: 0.060828
+  type: 'test'
+  ...
+# Subtest: pareto shared golden
+ok 285 - pareto shared golden
+  ---
+  duration_ms: 0.286697
+  type: 'test'
+  ...
+# Subtest: pareto all held subsets
+ok 286 - pareto all held subsets
+  ---
+  duration_ms: 0.118714
+  type: 'test'
+  ...
+# Subtest: pareto held-value diagnostic
+ok 287 - pareto held-value diagnostic
+  ---
+  duration_ms: 0.047071
+  type: 'test'
+  ...
+# Subtest: pareto2 shared golden
+ok 288 - pareto2 shared golden
+  ---
+  duration_ms: 8.633848
+  type: 'test'
+  ...
+# Subtest: pareto2 all held subsets
+ok 289 - pareto2 all held subsets
+  ---
+  duration_ms: 9.163263
+  type: 'test'
+  ...
+# Subtest: pareto2 held-value diagnostic
+ok 290 - pareto2 held-value diagnostic
+  ---
+  duration_ms: 0.080421
+  type: 'test'
+  ...
+# Subtest: pareto3 shared golden
+ok 291 - pareto3 shared golden
+  ---
+  duration_ms: 0.764483
+  type: 'test'
+  ...
+# Subtest: pareto3 all held subsets
+ok 292 - pareto3 all held subsets
+  ---
+  duration_ms: 1.294926
+  type: 'test'
+  ...
+# Subtest: pareto3 held-value diagnostic
+ok 293 - pareto3 held-value diagnostic
+  ---
+  duration_ms: 0.063609
+  type: 'test'
+  ...
+# Subtest: pareto4 shared golden
+ok 294 - pareto4 shared golden
+  ---
+  duration_ms: 100.615201
+  type: 'test'
+  ...
+# Subtest: pareto4 all held subsets
+ok 295 - pareto4 all held subsets
+  ---
+  duration_ms: 126.472886
+  type: 'test'
+  ...
+# Subtest: pareto4 held-value diagnostic
+ok 296 - pareto4 held-value diagnostic
+  ---
+  duration_ms: 0.11231
+  type: 'test'
+  ...
+# Subtest: pig shared golden
+ok 297 - pig shared golden
+  ---
+  duration_ms: 0.66952
+  type: 'test'
+  ...
+# Subtest: pig all held subsets
+ok 298 - pig all held subsets
+  ---
+  duration_ms: 0.25116
+  type: 'test'
+  ...
+# Subtest: pig held-value diagnostic
+ok 299 - pig held-value diagnostic
+  ---
+  duration_ms: 0.076865
+  type: 'test'
+  ...
+# Subtest: pois shared golden
+ok 300 - pois shared golden
+  ---
+  duration_ms: 0.134551
+  type: 'test'
+  ...
+# Subtest: pois all held subsets
+ok 301 - pois all held subsets
+  ---
+  duration_ms: 0.076966
+  type: 'test'
+  ...
+# Subtest: pois held-value diagnostic
+ok 302 - pois held-value diagnostic
+  ---
+  duration_ms: 0.043407
+  type: 'test'
+  ...
+# Subtest: power shared golden
+ok 303 - power shared golden
+  ---
+  duration_ms: 0.163193
+  type: 'test'
+  ...
+# Subtest: power all held subsets
+ok 304 - power all held subsets
+  ---
+  duration_ms: 0.119717
+  type: 'test'
+  ...
+# Subtest: power held-value diagnostic
+ok 305 - power held-value diagnostic
+  ---
+  duration_ms: 0.04125
+  type: 'test'
+  ...
+# Subtest: rayleigh shared golden
+ok 306 - rayleigh shared golden
+  ---
+  duration_ms: 0.162602
+  type: 'test'
+  ...
+# Subtest: rayleigh all held subsets
+ok 307 - rayleigh all held subsets
+  ---
+  duration_ms: 0.057482
+  type: 'test'
+  ...
+# Subtest: rayleigh held-value diagnostic
+ok 308 - rayleigh held-value diagnostic
+  ---
+  duration_ms: 0.034744
+  type: 'test'
+  ...
+# Subtest: sged shared golden
+ok 309 - sged shared golden
+  ---
+  duration_ms: 1359.702646
+  type: 'test'
+  ...
+# Subtest: sged all held subsets
+ok 310 - sged all held subsets
+  ---
+  duration_ms: 2224.854921
+  type: 'test'
+  ...
+# Subtest: sged held-value diagnostic
+ok 311 - sged held-value diagnostic
+  ---
+  duration_ms: 0.113573
+  type: 'test'
+  ...
+# Subtest: sgomp shared golden
+ok 312 - sgomp shared golden
+  ---
+  duration_ms: 30.699084
+  type: 'test'
+  ...
+# Subtest: sgomp all held subsets
+ok 313 - sgomp all held subsets
+  ---
+  duration_ms: 46.828604
+  type: 'test'
+  ...
+# Subtest: sgomp held-value diagnostic
+ok 314 - sgomp held-value diagnostic
+  ---
+  duration_ms: 0.078551
+  type: 'test'
+  ...
+# Subtest: skellam shared golden
+ok 315 - skellam shared golden
+  ---
+  duration_ms: 32.350654
+  type: 'test'
+  ...
+# Subtest: skellam all held subsets
+ok 316 - skellam all held subsets
+  ---
+  duration_ms: 35.818018
+  type: 'test'
+  ...
+# Subtest: skellam held-value diagnostic
+ok 317 - skellam held-value diagnostic
+  ---
+  duration_ms: 0.072262
+  type: 'test'
+  ...
+# Subtest: slash shared golden
+ok 318 - slash shared golden
+  ---
+  duration_ms: 6708.872214
+  type: 'test'
+  ...
+# Subtest: slash all held subsets
+ok 319 - slash all held subsets
+  ---
+  duration_ms: 6732.497385
+  type: 'test'
+  ...
+# Subtest: slash held-value diagnostic
+ok 320 - slash held-value diagnostic
+  ---
+  duration_ms: 0.107727
+  type: 'test'
+  ...
+# Subtest: sn shared golden
+ok 321 - sn shared golden
+  ---
+  duration_ms: 116.97059
+  type: 'test'
+  ...
+# Subtest: sn all held subsets
+ok 322 - sn all held subsets
+  ---
+  duration_ms: 215.792774
+  type: 'test'
+  ...
+# Subtest: sn held-value diagnostic
+ok 323 - sn held-value diagnostic
+  ---
+  duration_ms: 0.145362
+  type: 'test'
+  ...
+# Subtest: snorm shared golden
+ok 324 - snorm shared golden
+  ---
+  duration_ms: 1.374183
+  type: 'test'
+  ...
+# Subtest: snorm all held subsets
+ok 325 - snorm all held subsets
+  ---
+  duration_ms: 1160.013874
+  type: 'test'
+  ...
+# Subtest: snorm held-value diagnostic
+ok 326 - snorm held-value diagnostic
+  ---
+  duration_ms: 0.092426
+  type: 'test'
+  ...
+# Subtest: sstd shared golden
+ok 327 - sstd shared golden
+  ---
+  duration_ms: 24.850862
+  type: 'test'
+  ...
+# Subtest: sstd all held subsets
+ok 328 - sstd all held subsets
+  ---
+  duration_ms: 2764.211215
+  type: 'test'
+  ...
+# Subtest: sstd held-value diagnostic
+ok 329 - sstd held-value diagnostic
+  ---
+  duration_ms: 0.086453
+  type: 'test'
+  ...
+# Subtest: st shared golden
+ok 330 - st shared golden
+  ---
+  duration_ms: 1643.637552
+  type: 'test'
+  ...
+# Subtest: st all held subsets
+ok 331 - st all held subsets
+  ---
+  duration_ms: 5533.482898
+  type: 'test'
+  ...
+# Subtest: st held-value diagnostic
+ok 332 - st held-value diagnostic
+  ---
+  duration_ms: 0.107497
+  type: 'test'
+  ...
+# Subtest: std shared golden
+ok 333 - std shared golden
+  ---
+  duration_ms: 22.495384
+  type: 'test'
+  ...
+# Subtest: std all held subsets
+ok 334 - std all held subsets
+  ---
+  duration_ms: 5160.166696
+  type: 'test'
+  ...
+# Subtest: std held-value diagnostic
+ok 335 - std held-value diagnostic
+  ---
+  duration_ms: 0.141675
+  type: 'test'
+  ...
+# Subtest: tbinom shared golden
+ok 336 - tbinom shared golden
+  ---
+  duration_ms: 0.756249
+  type: 'test'
+  ...
+# Subtest: tbinom all held subsets
+ok 337 - tbinom all held subsets
+  ---
+  duration_ms: 111.712599
+  type: 'test'
+  ...
+# Subtest: tbinom held-value diagnostic
+ok 338 - tbinom held-value diagnostic
+  ---
+  duration_ms: 0.149448
+  type: 'test'
+  ...
+# Subtest: tlambda shared golden
+ok 339 - tlambda shared golden
+  ---
+  duration_ms: 2506.382765
+  type: 'test'
+  ...
+# Subtest: tlambda all held subsets
+ok 340 - tlambda all held subsets
+  ---
+  duration_ms: 4729.1064
+  type: 'test'
+  ...
+# Subtest: tlambda held-value diagnostic
+ok 341 - tlambda held-value diagnostic
+  ---
+  duration_ms: 0.106772
+  type: 'test'
+  ...
+# Subtest: tnorm shared golden
+ok 342 - tnorm shared golden
+  ---
+  duration_ms: 0.996891
+  type: 'test'
+  ...
+# Subtest: tnorm all held subsets
+ok 343 - tnorm all held subsets
+  ---
+  duration_ms: 0.382981
+  type: 'test'
+  ...
+# Subtest: tnorm held-value diagnostic
+ok 344 - tnorm held-value diagnostic
+  ---
+  duration_ms: 0.064265
+  type: 'test'
+  ...
+# Subtest: tpois shared golden
+ok 345 - tpois shared golden
+  ---
+  duration_ms: 0.266696
+  type: 'test'
+  ...
+# Subtest: tpois all held subsets
+ok 346 - tpois all held subsets
+  ---
+  duration_ms: 0.27974
+  type: 'test'
+  ...
+# Subtest: tpois held-value diagnostic
+ok 347 - tpois held-value diagnostic
+  ---
+  duration_ms: 0.341201
+  type: 'test'
+  ...
+# Subtest: trgamma shared golden
+ok 348 - trgamma shared golden
+  ---
+  duration_ms: 1.618925
+  type: 'test'
+  ...
+# Subtest: trgamma all held subsets
+ok 349 - trgamma all held subsets
+  ---
+  duration_ms: 5.7775
+  type: 'test'
+  ...
+# Subtest: trgamma held-value diagnostic
+ok 350 - trgamma held-value diagnostic
+  ---
+  duration_ms: 0.051591
+  type: 'test'
+  ...
+# Subtest: triang shared golden
+ok 351 - triang shared golden
+  ---
+  duration_ms: 8.539414
+  type: 'test'
+  ...
+# Subtest: triang all held subsets
+ok 352 - triang all held subsets
+  ---
+  duration_ms: 21.312747
+  type: 'test'
+  ...
+# Subtest: triang held-value diagnostic
+ok 353 - triang held-value diagnostic
+  ---
+  duration_ms: 0.084165
+  type: 'test'
+  ...
+# Subtest: unif shared golden
+ok 354 - unif shared golden
+  ---
+  duration_ms: 0.198092
+  type: 'test'
+  ...
+# Subtest: unif all held subsets
+ok 355 - unif all held subsets
+  ---
+  duration_ms: 0.09002
+  type: 'test'
+  ...
+# Subtest: unif held-value diagnostic
+ok 356 - unif held-value diagnostic
+  ---
+  duration_ms: 0.045991
+  type: 'test'
+  ...
+# Subtest: weibull shared golden
+ok 357 - weibull shared golden
+  ---
+  duration_ms: 0.187145
+  type: 'test'
+  ...
+# Subtest: weibull all held subsets
+ok 358 - weibull all held subsets
+  ---
+  duration_ms: 0.326545
+  type: 'test'
+  ...
+# Subtest: weibull held-value diagnostic
+ok 359 - weibull held-value diagnostic
+  ---
+  duration_ms: 0.039067
+  type: 'test'
+  ...
+# Subtest: yulesimon shared golden
+ok 360 - yulesimon shared golden
+  ---
+  duration_ms: 0.285993
+  type: 'test'
+  ...
+# Subtest: yulesimon all held subsets
+ok 361 - yulesimon all held subsets
+  ---
+  duration_ms: 0.092962
+  type: 'test'
+  ...
+# Subtest: yulesimon held-value diagnostic
+ok 362 - yulesimon held-value diagnostic
+  ---
+  duration_ms: 0.044924
+  type: 'test'
+  ...
+# Subtest: zeta shared golden
+ok 363 - zeta shared golden
+  ---
+  duration_ms: 0.638407
+  type: 'test'
+  ...
+# Subtest: zeta all held subsets
+ok 364 - zeta all held subsets
+  ---
+  duration_ms: 0.484703
+  type: 'test'
+  ...
+# Subtest: zeta held-value diagnostic
+ok 365 - zeta held-value diagnostic
+  ---
+  duration_ms: 0.046121
+  type: 'test'
+  ...
+# Subtest: zib shared golden
+ok 366 - zib shared golden
+  ---
+  duration_ms: 2.89426
+  type: 'test'
+  ...
+# Subtest: zib all held subsets
+ok 367 - zib all held subsets
+  ---
+  duration_ms: 56.83416
+  type: 'test'
+  ...
+# Subtest: zib held-value diagnostic
+ok 368 - zib held-value diagnostic
+  ---
+  duration_ms: 0.08279
+  type: 'test'
+  ...
+# Subtest: zinb shared golden
+ok 369 - zinb shared golden
+  ---
+  duration_ms: 8.568077
+  type: 'test'
+  ...
+# Subtest: zinb all held subsets
+ok 370 - zinb all held subsets
+  ---
+  duration_ms: 13.672682
+  type: 'test'
+  ...
+# Subtest: zinb held-value diagnostic
+ok 371 - zinb held-value diagnostic
+  ---
+  duration_ms: 0.114831
+  type: 'test'
+  ...
+# Subtest: zip shared golden
+ok 372 - zip shared golden
+  ---
+  duration_ms: 0.238441
+  type: 'test'
+  ...
+# Subtest: zip all held subsets
+ok 373 - zip all held subsets
+  ---
+  duration_ms: 0.38189
+  type: 'test'
+  ...
+# Subtest: zip held-value diagnostic
+ok 374 - zip held-value diagnostic
+  ---
+  duration_ms: 0.054644
+  type: 'test'
+  ...
+# Subtest: zipf shared golden
+ok 375 - zipf shared golden
+  ---
+  duration_ms: 0.300121
+  type: 'test'
+  ...
+# Subtest: zipf all held subsets
+ok 376 - zipf all held subsets
+  ---
+  duration_ms: 0.102481
+  type: 'test'
+  ...
+# Subtest: zipf held-value diagnostic
+ok 377 - zipf held-value diagnostic
+  ---
+  duration_ms: 0.054907
+  type: 'test'
+  ...
+# Subtest: zmbinom shared golden
+ok 378 - zmbinom shared golden
+  ---
+  duration_ms: 4.264553
+  type: 'test'
+  ...
+# Subtest: zmbinom all held subsets
+ok 379 - zmbinom all held subsets
+  ---
+  duration_ms: 8.626063
+  type: 'test'
+  ...
+# Subtest: zmbinom held-value diagnostic
+ok 380 - zmbinom held-value diagnostic
+  ---
+  duration_ms: 0.092901
+  type: 'test'
+  ...
+# Subtest: zmgeom shared golden
+ok 381 - zmgeom shared golden
+  ---
+  duration_ms: 0.304158
+  type: 'test'
+  ...
+# Subtest: zmgeom all held subsets
+ok 382 - zmgeom all held subsets
+  ---
+  duration_ms: 0.100675
+  type: 'test'
+  ...
+# Subtest: zmgeom held-value diagnostic
+ok 383 - zmgeom held-value diagnostic
+  ---
+  duration_ms: 0.052675
+  type: 'test'
+  ...
+# Subtest: zmlogarithmic shared golden
+ok 384 - zmlogarithmic shared golden
+  ---
+  duration_ms: 0.227086
+  type: 'test'
+  ...
+# Subtest: zmlogarithmic all held subsets
+ok 385 - zmlogarithmic all held subsets
+  ---
+  duration_ms: 0.105313
+  type: 'test'
+  ...
+# Subtest: zmlogarithmic held-value diagnostic
+ok 386 - zmlogarithmic held-value diagnostic
+  ---
+  duration_ms: 0.053405
+  type: 'test'
+  ...
+# Subtest: zmnbinom shared golden
+ok 387 - zmnbinom shared golden
+  ---
+  duration_ms: 4.873709
+  type: 'test'
+  ...
+# Subtest: zmnbinom all held subsets
+ok 388 - zmnbinom all held subsets
+  ---
+  duration_ms: 16.967677
+  type: 'test'
+  ...
+# Subtest: zmnbinom held-value diagnostic
+ok 389 - zmnbinom held-value diagnostic
+  ---
+  duration_ms: 0.130886
+  type: 'test'
+  ...
+# Subtest: zmpois shared golden
+ok 390 - zmpois shared golden
+  ---
+  duration_ms: 0.293693
+  type: 'test'
+  ...
+# Subtest: zmpois all held subsets
+ok 391 - zmpois all held subsets
+  ---
+  duration_ms: 0.17606
+  type: 'test'
+  ...
+# Subtest: zmpois held-value diagnostic
+ok 392 - zmpois held-value diagnostic
+  ---
+  duration_ms: 0.053462
+  type: 'test'
+  ...
+# Subtest: ztbinom shared golden
+ok 393 - ztbinom shared golden
+  ---
+  duration_ms: 3.050627
+  type: 'test'
+  ...
+# Subtest: ztbinom all held subsets
+ok 394 - ztbinom all held subsets
+  ---
+  duration_ms: 3.660391
+  type: 'test'
+  ...
+# Subtest: ztbinom held-value diagnostic
+ok 395 - ztbinom held-value diagnostic
+  ---
+  duration_ms: 0.055653
+  type: 'test'
+  ...
+# Subtest: ztgeom shared golden
+ok 396 - ztgeom shared golden
+  ---
+  duration_ms: 0.148142
+  type: 'test'
+  ...
+# Subtest: ztgeom all held subsets
+ok 397 - ztgeom all held subsets
+  ---
+  duration_ms: 0.051503
+  type: 'test'
+  ...
+# Subtest: ztgeom held-value diagnostic
+ok 398 - ztgeom held-value diagnostic
+  ---
+  duration_ms: 0.042277
+  type: 'test'
+  ...
+# Subtest: ztnbinom shared golden
+ok 399 - ztnbinom shared golden
+  ---
+  duration_ms: 4.981106
+  type: 'test'
+  ...
+# Subtest: ztnbinom all held subsets
+ok 400 - ztnbinom all held subsets
+  ---
+  duration_ms: 10.938512
+  type: 'test'
+  ...
+# Subtest: ztnbinom held-value diagnostic
+ok 401 - ztnbinom held-value diagnostic
+  ---
+  duration_ms: 0.074802
+  type: 'test'
+  ...
+# Subtest: ztpois shared golden
+ok 402 - ztpois shared golden
+  ---
+  duration_ms: 0.165279
+  type: 'test'
+  ...
+# Subtest: ztpois all held subsets
+ok 403 - ztpois all held subsets
+  ---
+  duration_ms: 0.09166
+  type: 'test'
+  ...
+# Subtest: ztpois held-value diagnostic
+ok 404 - ztpois held-value diagnostic
+  ---
+  duration_ms: 0.051714
+  type: 'test'
+  ...
+# Subtest: covariance native agreement: norm
+ok 405 - covariance native agreement: norm
+  ---
+  duration_ms: 47.318899
+  type: 'test'
+  ...
+# Subtest: covariance native agreement: gamma
+ok 406 - covariance native agreement: gamma
+  ---
+  duration_ms: 39.906433
+  type: 'test'
+  ...
+# Subtest: covariance native agreement: beta
+ok 407 - covariance native agreement: beta
+  ---
+  duration_ms: 32.00115
+  type: 'test'
+  ...
+# Subtest: covariance native agreement: pois
+ok 408 - covariance native agreement: pois
+  ---
+  duration_ms: 20.514216
+  type: 'test'
+  ...
+# Subtest: covariance native agreement: exp
+ok 409 - covariance native agreement: exp
+  ---
+  duration_ms: 29.340087
+  type: 'test'
+  ...
+# Subtest: covariance native agreement: lnorm
+ok 410 - covariance native agreement: lnorm
+  ---
+  duration_ms: 54.121447
+  type: 'test'
+  ...
+# Subtest: covariance native agreement: betapr
+ok 411 - covariance native agreement: betapr
+  ---
+  duration_ms: 315.115182
+  type: 'test'
+  ...
+# Subtest: covariance native agreement: binom
+ok 412 - covariance native agreement: binom
+  ---
+  duration_ms: 20.76698
+  type: 'test'
+  ...
+# Subtest: covariance diagnostics and input ownership
+ok 413 - covariance diagnostics and input ownership
+  ---
+  duration_ms: 2.197972
+  type: 'test'
+  ...
+# Subtest: structured stops survive the JS Error facade
+ok 414 - structured stops survive the JS Error facade
+  ---
+  duration_ms: 1.412523
+  type: 'test'
+  ...
+# Subtest: Burr and reciprocal sign-uncertain-seam structured tie
+ok 415 - Burr and reciprocal sign-uncertain-seam structured tie
+  ---
+  duration_ms: 2.833617
+  type: 'test'
+  ...
+# Subtest: Burr and reciprocal nearly-constant structured tie
+ok 416 - Burr and reciprocal nearly-constant structured tie
+  ---
+  duration_ms: 161.825405
+  type: 'test'
+  ...
+# Subtest: Burr and reciprocal burr-k1000-r0 structured limit
+ok 417 - Burr and reciprocal burr-k1000-r0 structured limit
+  ---
+  duration_ms: 41.658885
+  type: 'test'
+  ...
+# Subtest: held-power faces retain transformed coefficients
+ok 418 - held-power faces retain transformed coefficients
+  ---
+  duration_ms: 0.214249
+  type: 'test'
+  ...
+# Subtest: translated and reciprocal delegates preserve certified stops
+ok 419 - translated and reciprocal delegates preserve certified stops
+  ---
+  duration_ms: 0.535
+  type: 'test'
+  ...
+# Subtest: Lomax budget witnesses retain public delegate coordinates and bounds
+ok 420 - Lomax budget witnesses retain public delegate coordinates and bounds
+  ---
+  duration_ms: 1.089559
+  type: 'test'
+  ...
+# Subtest: unrepresentable delegate reductions stop as numerical failures
+ok 421 - unrepresentable delegate reductions stop as numerical failures
+  ---
+  duration_ms: 0.26376
+  type: 'test'
+  ...
+# Subtest: discrete stops retain fitted package and non-package faces
+ok 422 - discrete stops retain fitted package and non-package faces
+  ---
+  duration_ms: 0.839597
+  type: 'test'
+  ...
+# Subtest: discrete empty preflight budget has no invented candidate
+ok 423 - discrete empty preflight budget has no invented candidate
+  ---
+  duration_ms: 0.126626
+  type: 'test'
+  ...
+# Subtest: continuous structured nonexistence and fitted faces
+ok 424 - continuous structured nonexistence and fitted faces
+  ---
+  duration_ms: 7.092392
+  type: 'test'
+  ...
+# Subtest: Power face payload follows public endpoint-then-shape order
+ok 425 - Power face payload follows public endpoint-then-shape order
+  ---
+  duration_ms: 2.903861
+  type: 'test'
+  ...
+# Subtest: held subunit GED shape retains the certified reflected half face
+ok 426 - held subunit GED shape retains the certified reflected half face
+  ---
+  duration_ms: 37.471166
+  type: 'test'
+  ...
+# Subtest: conditional snorm and skew-t ambiguities retain both compared models
+ok 427 - conditional snorm and skew-t ambiguities retain both compared models
+  ---
+  duration_ms: 0.483506
+  type: 'test'
+  ...
+# Subtest: ZINB certificate transports competing maxima and terminal budgets
+ok 428 - ZINB certificate transports competing maxima and terminal budgets
+  ---
+  duration_ms: 0.351725
+  type: 'test'
+  ...
+# Subtest: ZINB certified ZIP and Poisson stops name their limiting coefficients
+ok 429 - ZINB certified ZIP and Poisson stops name their limiting coefficients
+  ---
+  duration_ms: 4.302224
+  type: 'test'
+  ...
+# Subtest: PIG global certificate transports Poisson, tie, budget and numerical stops
+ok 430 - PIG global certificate transports Poisson, tie, budget and numerical stops
+  ---
+  duration_ms: 0.373282
+  type: 'test'
+  ...
+# Subtest: PIG binary closed form and small positive Poisson improvement survive WASM
+ok 431 - PIG binary closed form and small positive Poisson improvement survive WASM
+  ---
+  duration_ms: 0.896402
+  type: 'test'
+  ...
+# Subtest: Skellam tail-cover budget preserves a feasible witness
+ok 432 - Skellam tail-cover budget preserves a feasible witness
+  ---
+  duration_ms: 0.226311
+  type: 'test'
+  ...
+# Subtest: CMB fixed-size normalizers spend and raise the cell budget
+ok 433 - CMB fixed-size normalizers spend and raise the cell budget
+  ---
+  duration_ms: 10.884867
+  type: 'test'
+  ...
+# Subtest: GB2 delegated budget keeps transformed-gamma witness names
+ok 434 - GB2 delegated budget keeps transformed-gamma witness names
+  ---
+  duration_ms: 0.668999
+  type: 'test'
+  ...
+# Subtest: lst and std certificate normal stops name the fitted face
+ok 435 - lst and std certificate normal stops name the fitted face
+  ---
+  duration_ms: 21.335292
+  type: 'test'
+  ...
+# Subtest: std certificate distinguishes ordinary t2 and collapse paths
+ok 436 - std certificate distinguishes ordinary t2 and collapse paths
+  ---
+  duration_ms: 73.494192
+  type: 'test'
+  ...
+# Subtest: std certificate resolves the shallow quantile maximum
+ok 437 - std certificate resolves the shallow quantile maximum
+  ---
+  duration_ms: 700.417485
+  type: 'test'
+  ...
+# Subtest: lst and std iterlim scales the certificate and preserves budget witnesses
+ok 438 - lst and std iterlim scales the certificate and preserves budget witnesses
+  ---
+  duration_ms: 158.3786
+  type: 'test'
+  ...
+1..438
+# tests 438
+# suites 0
+# pass 438
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 88100.540162

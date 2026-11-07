@@ -1,0 +1,141 @@
+{
+  "seed": 11616,
+  "mpmath_dps": 50,
+  "cases": [
+    {
+      "family": 0,
+      "parameter": 2.0835317679987124,
+      "reference": 2.083531767991179,
+      "relative_error": 2.443149583895584e-12,
+      "loglik_error": 7.105427357601002e-15
+    },
+    {
+      "family": 0,
+      "parameter": 0.26101541533101447,
+      "reference": 0.2610154152994586,
+      "relative_error": 2.502417388880779e-11,
+      "loglik_error": 3.552713678800501e-15
+    },
+    {
+      "family": 0,
+      "parameter": -0.5871331671063302,
+      "reference": -0.5871331670915297,
+      "relative_error": 9.325300781599055e-12,
+      "loglik_error": 0.0
+    },
+    {
+      "family": 0,
+      "parameter": 0.5644127149111846,
+      "reference": 0.5644127149177753,
+      "relative_error": 4.212908716822328e-12,
+      "loglik_error": 7.105427357601002e-15
+    },
+    {
+      "family": 0,
+      "parameter": 0.2612127479218866,
+      "reference": 0.26121274792362265,
+      "relative_error": 1.3764971425038995e-12,
+      "loglik_error": 7.105427357601002e-15
+    },
+    {
+      "family": 0,
+      "parameter": 0.48917868618915206,
+      "reference": 0.48917868618793475,
+      "relative_error": 8.174331573777499e-13,
+      "loglik_error": 0.0
+    },
+    {
+      "family": 1,
+      "parameter": 6.505751559841246,
+      "reference": 6.505751559910723,
+      "relative_error": 9.256483930764288e-12,
+      "loglik_error": 3.552713678800501e-15
+    },
+    {
+      "family": 1,
+      "parameter": 3.843657660709903,
+      "reference": 3.843657660722347,
+      "relative_error": 2.5690964599163737e-12,
+      "loglik_error": 0.0
+    },
+    {
+      "family": 1,
+      "parameter": 1.7768098966695767,
+      "reference": 1.7768098966856132,
+      "relative_error": 5.775154243017034e-12,
+      "loglik_error": 3.552713678800501e-15
+    },
+    {
+      "family": 1,
+      "parameter": 1.9062156860284825,
+      "reference": 1.9062156860231845,
+      "relative_error": 1.8229838545675586e-12,
+      "loglik_error": 3.552713678800501e-15
+    },
+    {
+      "family": 1,
+      "parameter": 5.05382887836074,
+      "reference": 5.053828878384805,
+      "relative_error": 3.9752022670643474e-12,
+      "loglik_error": 0.0
+    },
+    {
+      "family": 1,
+      "parameter": 2.8013451143329005,
+      "reference": 2.801345114302417,
+      "relative_error": 8.019165509872913e-12,
+      "loglik_error": 0.0
+    },
+    {
+      "family": 2,
+      "parameter": 0.12422537828361575,
+      "reference": 0.12422537828859374,
+      "relative_error": 4.4279290775455065e-12,
+      "loglik_error": 0.0
+    },
+    {
+      "family": 2,
+      "parameter": 0.13534795773766237,
+      "reference": 0.1353479577350503,
+      "relative_error": 2.300684299813928e-12,
+      "loglik_error": 0.0
+    },
+    {
+      "family": 2,
+      "parameter": 0.22247477403430732,
+      "reference": 0.2224747740371313,
+      "relative_error": 2.310060788973293e-12,
+      "loglik_error": 0.0
+    },
+    {
+      "family": 2,
+      "parameter": 0.16504186154195294,
+      "reference": 0.1650418615500801,
+      "relative_error": 6.975857156197285e-12,
+      "loglik_error": 7.105427357601002e-15
+    },
+    {
+      "family": 2,
+      "parameter": 0.24237815494217357,
+      "reference": 0.24237815493978254,
+      "relative_error": 1.9245604146185754e-12,
+      "loglik_error": 3.552713678800501e-15
+    },
+    {
+      "family": 2,
+      "parameter": 0.20708965971572726,
+      "reference": 0.20708965971626878,
+      "relative_error": 4.486089959450108e-13,
+      "loglik_error": 3.552713678800501e-15
+    },
+    {
+      "family": 1,
+      "parameter": 363.1315753573547,
+      "reference": 363.1315753590254,
+      "relative_error": 4.5882913765705595e-12,
+      "loglik_error": 0.0
+    }
+  ],
+  "max_parameter_error": 2.502417388880779e-11,
+  "max_loglik_error": 7.105427357601002e-15
+}

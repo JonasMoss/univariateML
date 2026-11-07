@@ -1,5 +1,6 @@
 #pragma once
 #include "../../core/work_budget.hpp"
+#include "../sstd/scalar_search.hpp"
 #include "../../core/stop_detail.hpp"
 #include "../../core/face_compare.hpp"
 #include "dpqr.hpp"
@@ -14,7 +15,7 @@
 #include <vector>
 namespace cppunivariate {
 enum class StStatus {Ok, InvalidInput, Unbounded, ScaleBoundary, NumericalFailure, SkewNormalBoundary, RightHalfTBoundary, LeftHalfTBoundary, RightHalfNormalBoundary, LeftHalfNormalBoundary};
-struct StResult {double xi,omega,alpha,nu,logLik;int iterations;StStatus status;unsigned restricted=0;unsigned reason=0;StopDetail stop_detail{};bool budget_exhausted=false;};
+struct StResult {double xi,omega,alpha,nu,logLik;int iterations;StStatus status;unsigned restricted=0;unsigned reason=0;StopDetail stop_detail{};bool budget_exhausted=false;bool certified=false;};
 namespace st_detail {
 // Transport a stopped limiting-family search, preserving its witnesses rather
 // than treating subdivision exhaustion as a generic optimizer failure.
@@ -85,11 +86,19 @@ inline Candidate optimize(Cost c,const double* start,double tol,int maxit) {
  c.unpack(r.theta.data(),out.v);out.ll=-c(r.theta.data());out.iterations=r.iterations;out.ok=std::isfinite(out.ll);return out;
 }
 }
+
+#include "certificate.hpp"
+
 inline StResult st_mle(span data,double tol=1e-6,int maxit=200,double xi=special::kNaN,double omega=special::kNaN,double alpha=special::kNaN,double nu=special::kNaN) {
   maxit = static_cast<int>(solver_budget(maxit));
  const double nan=special::kNaN;StResult bad{nan,nan,nan,nan,nan,0,StStatus::InvalidInput};
  if(data.empty()||!(tol>0)||maxit<=0||(!std::isnan(xi)&&!std::isfinite(xi))||(!std::isnan(omega)&&(!std::isfinite(omega)||omega<=0))||(!std::isnan(alpha)&&!std::isfinite(alpha))||(!std::isnan(nu)&&(!std::isfinite(nu)||nu<=0)))return bad;
  std::vector<double> sorted(data.begin(),data.end());for(double v:sorted)if(!std::isfinite(v))return bad;std::sort(sorted.begin(),sorted.end());
+ if(std::isfinite(xi)&&std::isfinite(omega)&&std::isfinite(alpha)&&std::isfinite(nu)) {
+  StResult out{xi,omega,alpha,nu,0,0,StStatus::Ok};for(double v:data)out.logLik+=st_detail::logdensity(v,xi,omega,alpha,nu);
+  out.certified=std::isfinite(out.logLik);if(!out.certified)out.status=StStatus::NumericalFailure;return out;
+ }
+ if(std::isfinite(xi)&&std::isfinite(omega)&&std::isnan(alpha)&&std::isfinite(nu))return st_cert_detail::skew_fit(data,xi,omega,nu,maxit);
  const std::size_t n=sorted.size();std::size_t maxrun=1,run=1;for(std::size_t i=1;i<n;++i){run=sorted[i]==sorted[i-1]?run+1:1;maxrun=std::max(maxrun,run);}
  if(std::isnan(omega)) {
   std::size_t k=std::isnan(xi)?maxrun:std::count(sorted.begin(),sorted.end(),xi);

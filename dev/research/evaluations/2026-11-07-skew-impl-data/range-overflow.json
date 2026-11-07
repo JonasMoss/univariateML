@@ -1,0 +1,20 @@
+{
+  "c": 1e+155,
+  "shift": 8e+153,
+  "unscaled_roots": [
+    "inf",
+    "-inf"
+  ],
+  "scaled_roots": [
+    3.993620398445248e+153,
+    -2.5039936203984456e+156
+  ],
+  "old_positive_range": [
+    0,
+    0
+  ],
+  "positive_probe": -0.001597444089456869,
+  "corrected_positive_lower": -0.0015974481593780997,
+  "negative_probe": 1.0015974440894568,
+  "corrected_negative_upper": 1.0015974481593781
+}

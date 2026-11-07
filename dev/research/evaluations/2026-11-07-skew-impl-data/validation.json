@@ -1,0 +1,116 @@
+{
+  "base_revision": "017b9f8ec3bed7610ccd41c62738bce1ea987316",
+  "branch": "codex/skew-impl",
+  "uncommitted": true,
+  "finished_utc": "2026-11-07T14:33:16.310685+00:00",
+  "source_file_count": 685,
+  "source_manifest_sha256": "832f7c28c059b280c7ddbf3e5c7549176bc688775b7de1a3be2a16e0614f35b3",
+  "wasm_sha256": "a2177736bca700fa6923d9df46fa8137e58183c13ce63701c8c3f755ea2db4e1",
+  "source_check": "pass",
+  "golden_diff": "unchanged",
+  "diff_check": "pass",
+  "simbox_exit_75_fallback": false,
+  "final_runs": [
+    {
+      "command": "just cpp-test",
+      "machine": "simbox (MeanMachine)",
+      "passed": 106,
+      "failed": 0,
+      "seconds": 47.98
+    },
+    {
+      "command": "just test",
+      "machine": "simbox (MeanMachine)",
+      "fail": 0,
+      "warn": 0,
+      "skip": 154,
+      "pass": 21011,
+      "seconds": 62.033
+    },
+    {
+      "command": "UMVL_TEST_TIER=full just cpp-test",
+      "machine": "simbox (MeanMachine)",
+      "passed": 129,
+      "failed": 0,
+      "seconds": 60.75
+    },
+    {
+      "command": "just cpp-test-no-long-double",
+      "machine": "simbox (MeanMachine)",
+      "passed": 129,
+      "failed": 0,
+      "seconds": 50.2
+    },
+    {
+      "command": "just test-full",
+      "machine": "simbox (MeanMachine)",
+      "fail": 0,
+      "warn": 0,
+      "skip": 0,
+      "pass": 43831,
+      "seconds": 250.516
+    },
+    {
+      "command": "targeted sstd/st doctest binary",
+      "machine": "workstation",
+      "cases": 43,
+      "assertions": 13071,
+      "failed": 0
+    },
+    {
+      "command": "check.py probe",
+      "machine": "workstation",
+      "cases": 19,
+      "dps": 50,
+      "passed": true
+    },
+    {
+      "command": "sharp-peak.py probe",
+      "machine": "workstation",
+      "dps": 70,
+      "passed": true
+    },
+    {
+      "command": "just js-build",
+      "machine": "workstation",
+      "exit_code": 0
+    },
+    {
+      "command": "just js-test",
+      "machine": "workstation",
+      "passed": 438,
+      "failed": 0,
+      "skipped": 0,
+      "seconds": 88.100540162
+    },
+    {
+      "command": "just site-check",
+      "machine": "workstation",
+      "exit_code": 0
+    }
+  ],
+  "validation_history": [
+    "Initial standalone compile needed the preinstalled BH Boost include directory; no dependency was installed.",
+    "Low-iterlim tests were corrected to distinguish solver bracket failure from certificate-budget exhaustion and to allow a simple fit to finish within budget.",
+    "The existing huge-magnitude conditional st face comparison remains a numerical tie with finite and face witnesses.",
+    "Reflected st limit payloads retain the original data-coordinate endpoint.",
+    "Finite extrema were initially lost through overflowing intermediate products; normalized hypot ratios and numerical guards repair this, with a direct range regression.",
+    "Coefficient width alone gave a near-df-two log-likelihood loss of 2.794444924347772e-7; the integrated-score remainder gate reduces this measured loss to roundoff.",
+    "The site test regenerated an unrelated historical screenshot; its original bytes were restored using read-only git show.",
+    "A syntax error in the first metadata aggregation was corrected; no fitting or test source changed."
+  ],
+  "warnings": [
+    "Inherited LST compiler warnings and shell startup references to a missing cargo/env file do not affect successful exits. R testthat WARN counts are zero."
+  ],
+  "environment": {
+    "machine": "workstation",
+    "checked_at_utc": "2026-11-07T12:07:52.858654+00:00",
+    "compiler": "c++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+    "R": "Rscript (R) version 4.6.1 (2026-06-24)",
+    "Python": "3.14.5 (main, Jun  2 2026, 22:25:17) [Clang 22.1.3 ]",
+    "mpmath": "1.3.0",
+    "Node": "v22.22.1",
+    "cmake": "cmake version 4.2.3",
+    "Emscripten": "emcc (Emscripten gcc/clang-like replacement + linker emulating GNU ld) 6.0.13 (e13ee988ce3d87a738dd8f3661d02223308c412a)"
+  }
+}

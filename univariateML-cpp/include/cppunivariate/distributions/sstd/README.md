@@ -95,7 +95,8 @@ limits:
   - {firmness: numerical, name: uncertified tie equality, fixed: [mean, sd, xi], when: "The effective ordinary t scale tends to zero at an attainable concentration point.", detect: "A reachable concentration point has multiplicity $k$, with $k=\\nu(n-k)$ for held shape; use the limiting value two for free shape. Equality is unresolved.", status: ScaleBoundary}
   - {firmness: proved, model: snorm, fixed: [mean, sd, xi], when: "The shape $\\nu$ tends to infinity while any held mean and standard deviation are retained.", detect: "The numerically compared limiting face wins among retained candidates while satisfying held constraints.", status: SnormBoundary, numerical: true}
   - {firmness: proved, name: scale collapse, fixed: [mean, nu, xi], when: "The standard deviation $\\sigma$ tends to zero at the held mean.", detect: "The concentration point has multiplicity $k>\\nu(n-k)$ with scale free.", status: Unbounded, message: "Likelihood is unbounded at a tie"}
-  - {firmness: numerical, name: scale-collapse equality, fixed: [mean, nu, xi], when: "The standard deviation $\\sigma$ tends to zero at the held mean.", detect: "The tie multiplicity satisfies $k=\\nu(n-k)$; the scale-collapse boundary is uncertified.", status: ScaleBoundary, message: "Tie equality scale-collapse boundary"}
+  - {firmness: proved, name: symmetric scale-collapse equality, fixed: [mean, nu, xi], when: "Held xi is one and the standard deviation tends to zero at the held mean.", detect: "The tie multiplicity satisfies $k=\\nu(n-k)$; the inverse-scale likelihood is strictly increasing to a finite unattained supremum.", status: ScaleBoundary, message: "finite and unattained"}
+  - {firmness: numerical, name: nonunit-skew scale-collapse equality, fixed: [mean, nu, xi], when: "Held xi differs from one and the standard deviation tends to zero at the held mean.", detect: "The tie multiplicity satisfies $k=\\nu(n-k)$; the finite/face likelihood comparison is unresolved.", status: CertificateFailure, message: "Nonunit-skew scale-collapse equality"}
   - model: snorm
     firmness: proved
     when: 'The shape $\nu$ tends to infinity, retaining finite location and scale.'
@@ -153,17 +154,17 @@ construction:
 relations: {}
 fit:
   method: multistart
-  certified: 'no'
-  note: 'sstd/README.md, Details; sstd/mle.hpp (public fitter and held overloads); sstd/test.cpp: Default and nontrivial
-    conditional fits use multistart, finite grids or local profile refinement without a global certificate; all-held
-    density evaluation is not counted as certification.'
+  certified: 'partial'
+  note: 'certificate.hpp and README.md, Held-shape scalar certificates. Fixed nu and xi: mean-only and sd-only searches use exhaustive score enclosures with budget,
+    tie and numerical stops. Symmetric scale equality has an exact unattained supremum. Held xi=1 with mean, sd and nu free delegates to the certified std parent. Other subsets,
+    including xi-only with held moments and all-free fits, remain uncertified.'
 areas:
 - finance
 - measurement and errors
 existence:
   uniqueness: unknown
   statement: >-
-    With all coefficients free, scale collapse or a skew-normal, half-t, half-normal or two-piece $t_2$ limit can prevent a finite maximum. Global uniqueness is unknown, and the listed faces have not been proved to exhaust joint escapes. Holding coefficients restricts the reachable faces by their moment constraints. Holding $\nu$ removes shape escapes, holding $\xi$ removes skew escapes, and holding $\sigma$ excludes a finite-scale $t_2$ face but does not exclude collapse when $\nu$ is free. With $\mu$ and both shapes held, a positive scale maximum exists when $\nu(n-k)>k$, where $k$ counts observations at that location; the reverse strict inequality gives unbounded likelihood, and equality remains uncertified. With $\sigma$ and both shapes held, a location maximum exists even with ties. Holding all coefficients leaves likelihood evaluation.
+    With all coefficients free, scale collapse or a skew-normal, half-t, half-normal or two-piece $t_2$ limit can prevent a finite maximum. Global uniqueness is unknown, and the implementation does not certify the full search. The uniform closure theorem exhausts joint escapes in the strict tie regime $3k_{max}<2n$, but its quantitative face profilers are not implemented. Holding coefficients restricts the reachable faces by their moment constraints. Holding $\nu$ removes shape escapes, holding $\xi$ removes skew escapes, and holding $\sigma$ excludes a finite-scale $t_2$ face but does not exclude collapse when $\nu$ is free. With $\mu$ and both shapes held, a positive scale maximum exists when $\nu(n-k)>k$, where $k$ counts observations at that location; the reverse strict inequality gives unbounded likelihood, and equality is an unattained finite supremum at $\xi=1$ and remains numerically unresolved otherwise. With $\sigma$ and both shapes held, a location maximum exists even with ties. Holding all coefficients leaves likelihood evaluation.
 ---
 
 The skew Student-t distribution combines heavy tails with asymmetry using the Fernandez-Steel construction. Its location and scale parameters are the mean and standard deviation.
@@ -218,18 +219,17 @@ This is a multistart comparison, not a certificate of the global maximum. The re
 
 
 Every coefficient may be held, singly or jointly; held values are returned
-exactly. Conditional fits compare multistart interior searches with every
+exactly. Except for the held-shape scalar certificates below, conditional fits compare multistart interior searches with every
 reachable half-family and shape boundary, retaining the held mean and standard deviation
 constraints on those faces. The fixed-shape, fixed-skew location-scale fit
-profiles scale and scans location, including observation kinks. Scalar
+profiles scale and scans location, including observation kinks. Remaining scalar
 searches scan before refining competing brackets. Numerical multistart and
 finite scans provide evidence rather than a global optimality certificate.
 A search reaching its numerical guard stops instead of returning a fit.
 
 For scale estimation with fixed mean and shapes, let k observations equal
 the held mean. The likelihood is unbounded at scale zero when
-$k>\nu(n-k)$. Equality is reported as an uncertified scale-collapse
-boundary; with strict inequality reversed the likelihood vanishes at both
+$k>\nu(n-k)$. At $\xi=1$, equality is a finite unattained supremum; at other fixed skewness it stops numerically pending a finite/face comparison. With strict inequality reversed the likelihood vanishes at both
 scale endpoints. With scale and both shapes held, location maxima exist even with ties.
 
 Holding the standard deviation does not prevent collapse when shape is free: as shape tends to two,
@@ -250,3 +250,69 @@ trials](../../../../../dev/research/evaluations/2026-10-31-fit-speed-report.md).
 2026-10-30 (adapter independence).
 
 The unconditional BFGS failure rescue now lives in `sstd_mle`: accept only when the Euclidean norm of the finite-difference total score in (mu, log(sigma), log(nu-2), log(xi)) coordinates is below 1e-3. Conditional failures remain failures. This preserves the former adapter gate; it is a numerical stationarity check, not a global maximum proof.
+
+## Held-shape scalar certificates
+
+With $\nu$ and $\xi$ held, the mean-only and sd-only routes use
+`certificate.hpp`, without a finite scan window or a unimodality assumption.
+Write $s_u, m_u$ for the standardized core sd and mean, and
+$z=(x-M)s_u/S+m_u$. On either side let $c=\sqrt{\nu-2}\xi^{\operatorname{sign}(z)}$.
+The mean score sums $(\nu+1)s_u z/[S(c^2+z^2)]$.
+Every stationary mean lies between the extreme observations translated by
+$Sm_u/s_u$. The search encloses each rational term using its endpoints and
+its possible extrema $z=\pm c$, splitting terms at $z=0$.
+
+For scale, use log inverse sd $t$ in sample units. Its score is
+$n-(\nu+1)\sum z(z-m_u)/(c^2+z^2)$.
+The rational term's only interior extrema solve
+$m_u z^2+2c^2z-m_uc^2=0$; both roots are included. Their coordinates use ratios scaled by
+$\operatorname{hypot}(c,m_u)$: unscaled products can overflow while the
+extrema themselves remain finite. Nonfinite radii or stationary coordinates,
+and subnormal denominator widths, stop numerically.
+The initial log-scale bracket expands by one until score bounds on the
+**entire** two exterior half-lines have inward signs. Thus no finite cap
+is mistaken for a tail certificate. A failed bracket stops numerically.
+The nonunit-skew six-point example has two distinct local maxima, so a
+single scale root is insufficient.
+
+Subdivision excludes only intervals whose padded score range omits zero.
+Every retained stationary interval has width at most
+$2\times10^{-11}(1+|t|)$ in its search coordinate; adjacent intervals are
+grouped only within $10^{-9}(1+|t|)$. The likelihood upper bound adds the
+score bound times the half-width to its midpoint value. Subdivision continues
+until this integrated score remainder is no larger than the point-likelihood
+rounding allowance. Near $\nu=2$ a narrow coefficient interval can still
+span a sharply varying likelihood, so coefficient width alone is insufficient. All surviving
+components are compared, including minima; competing maxima within their
+computed bounds produce a tie stop with witnesses. For example, observations
+$-2,2$ with $S=1,\nu=3,\xi=1$ have two global mean maxima
+$\pm\sqrt3$, disproving general conditional uniqueness.
+
+These certificates are exact-arithmetic arguments conditional on the
+computed enclosures and comparisons. The practical floating-point allowance
+is 128 binary64 epsilons times one plus the absolute term sum, applied to
+scores and likelihoods; it is not outward-rounded interval arithmetic.
+Nonfinite bounds or lossy public-coordinate transport stop numerically.
+Certificate work is $128\min(\mathrm{iterlim},100000)$ cells; the separate
+bracket-expansion cap is $\min(\mathrm{iterlim},100000)$ solver steps.
+Budget stops retain a finite incumbent and an infinite global upper bound.
+
+For held mean, the scale-collapse exponent is $\nu(n-k)-k$, where $k$
+counts observations at that mean. A negative exponent is unbounded. At
+$\xi=1$ and equality, the inverse-scale score is strictly positive, so the
+explicit finite collapse supremum is unattained. At nonunit skew, equality
+stops numerically: the collapse value still needs comparison with finite
+branches. With both shapes held, all-held evaluation is exact up to density
+arithmetic. Xi-only fitting, free-shape searches and larger free subsets
+retain the previous numerical methods and have no new certificate, except
+that exactly held $\xi=1$ with mean, sd and nu free delegates to
+`student_t_mle_certified`. This is the identical std likelihood and parameter
+space. Its normal, two-df and collapse faces, budget and tie witnesses are
+transported without local fallback; finite candidates retain their declared
+parent model coordinates. Merely estimating xi close to one does not invoke
+the reduction. Other held std subsets are not claimed by this delegation.
+
+The [implementation record](../../../../../dev/research/evaluations/2026-11-07-skew-impl-report.md)
+retains the scan replacement rationale, checks and remaining obligations;
+the [closure and endpoint analysis](../../../../../dev/research/evaluations/2026-11-07-skew-theory-data/proofs.md)
+supplies the held-moment half-face factors needed by future profilers.

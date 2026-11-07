@@ -1,0 +1,11 @@
+{
+  "machine": "workstation",
+  "checked_at_utc": "2026-11-07T12:07:52.858654+00:00",
+  "compiler": "c++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "R": "Rscript (R) version 4.6.1 (2026-06-24)",
+  "Python": "3.14.5 (main, Jun  2 2026, 22:25:17) [Clang 22.1.3 ]",
+  "mpmath": "1.3.0",
+  "Node": "v22.22.1",
+  "cmake": "cmake version 4.2.3",
+  "Emscripten": "emcc (Emscripten gcc/clang-like replacement + linker emulating GNU ld) 6.0.13 (e13ee988ce3d87a738dd8f3661d02223308c412a)"
+}

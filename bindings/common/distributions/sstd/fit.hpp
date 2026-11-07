@@ -23,11 +23,23 @@ inline FitResult fit_sstd(cppunivariate::span x, Held mean_arg = {}, Held sd_arg
   const double held_xi=xi.supplied ? xi.value : nan;
   if(xi.supplied && (!(std::isfinite(held_xi) && held_xi>0))) return fail("Invalid held `xi`: requires a finite value in its parameter domain.");
   auto res=cppunivariate::sstd_mle(x,gradtol,iterlim,held_mean,held_sd,held_nu,held_xi);
+  if(res.certified && res.stop_detail.limit_model==cppunivariate::StopModel::Norm)
+    return stop_failure(fail("The symmetric Student-t likelihood is maximised as nu -> Inf; use `mlnorm`."),res.stop_detail,"limit",{"mean","sd","nu","xi"},"norm");
+  if(res.certified && res.stop_detail.limit_model==cppunivariate::StopModel::Lst)
+    return stop_failure(fail("The symmetric Student-t likelihood is maximised as nu -> 2 (infinite variance); use `mllst`."),res.stop_detail,"limit",{"mean","sd","nu","xi"},"lst");
+  if(res.certified && res.stop_detail.limit_model==cppunivariate::StopModel::TCollapsePath)
+    return stop_failure(fail("Tie equality scale-collapse boundary; the symmetric Student-t supremum is unattained."),res.stop_detail,"nomle",{"mean","sd","nu","xi"});
+  if(res.status==cppunivariate::SstdStatus::CertificateFailure) {
+    const auto& d=res.stop_detail;
+    const std::string kind=d.budget_exhausted?"budget":d.comparison_tie?"tie":"numerical";
+    const std::string message=d.budget_exhausted?"Skew Student-t certificate budget exhausted; increase `iterlim`.":d.comparison_tie?"Skew Student-t maxima are tied or numerically indistinguishable.":res.certificate_reason==1?"Nonunit-skew scale-collapse equality needs an unresolved finite/face likelihood comparison.":res.certificate_reason==2?"Skew Student-t exterior scale-score bracket failed; increase `iterlim`.":"Skew Student-t certificate could not resolve the root enclosure or arithmetic; increase `iterlim`.";
+    return stop_failure(fail(message),d,kind,{"mean","sd","nu","xi"});
+  }
   if(res.status==cppunivariate::SstdStatus::UnsupportedHold) return fail("Unsupported conditional fit.");
   if (res.status == cppunivariate::SstdStatus::Unbounded)
-    return fail("Likelihood is unbounded at a tie of multiplicity k > nu*(n-k) with nu held, or k > 2*(n-k) with nu free; no MLE.");
+    return stop_failure(fail("Likelihood is unbounded at a tie of multiplicity k > nu*(n-k) with nu held, or k > 2*(n-k) with nu free; no MLE."),res.stop_detail,"nomle",{"mean","sd","nu","xi"});
   if (res.status == cppunivariate::SstdStatus::ScaleBoundary)
-    return fail("Tie equality scale-collapse boundary; a regular MLE is not certified.");
+    return stop_failure(fail(res.certified?"At tie equality the scale-collapse supremum is finite and unattained; no MLE.":"Tie equality scale-collapse boundary; a regular MLE is not certified."),res.stop_detail,res.certified?"nomle":"numerical",{"mean","sd","nu","xi"});
   if (res.status == cppunivariate::SstdStatus::InvalidStart) {
     return fail("Skew Student-t MLE requires at least 2 finite observations "
                "with positive variance.");

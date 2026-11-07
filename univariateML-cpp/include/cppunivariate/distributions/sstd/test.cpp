@@ -351,3 +351,106 @@ TEST_CASE("sstd: analytic covariance derivatives and subset projection") {
   CHECK(cppunivariate::join_family_inference({x.data(),x.size()},"sstd",bad,1).status==cppunivariate::InferenceStatus::BoundaryOrLimit);
   CHECK(cppunivariate::join_family_inference({x.data(),x.size()},"sstd",theta,1u<<4).status==cppunivariate::InferenceStatus::InvalidSubset);
 }
+
+TEST_CASE("sstd: held-shape certificates enumerate competing location modes") {
+ const double nan=std::numeric_limits<double>::quiet_NaN();
+ const std::vector<double> x{-2,2};
+ const auto r=cppunivariate::sstd_mle(mltest::as_span(x),1e-6,200,nan,1,3,1);
+ REQUIRE(r.status==cppunivariate::SstdStatus::CertificateFailure);
+ REQUIRE(r.stop_detail.comparison_tie);
+ REQUIRE(r.stop_detail.candidates.size()>=2);
+ CHECK(r.stop_detail.candidates.front().coef[0]==doctest::Approx(-std::sqrt(3.)).epsilon(1e-8));
+ CHECK(r.stop_detail.candidates.back().coef[0]==doctest::Approx(std::sqrt(3.)).epsilon(1e-8));
+ const std::vector<double> y{-1,.2,.4,1,2};
+ const auto f=cppunivariate::sstd_mle(mltest::as_span(y),1e-6,200,nan,1,5,2);
+ REQUIRE(f.status==cppunivariate::SstdStatus::Ok);CHECK(f.certified);
+ CHECK(f.sigma==1);CHECK(f.nu==5);CHECK(f.xi==2);
+}
+
+TEST_CASE("sstd: nonunit-skew scale certificate retains both maximum branches") {
+ const std::vector<double> x{-35.321072334324725,11.459074428000962,-.015351125824354262,-.2513099360462538,-297.3459307209368,.5881721220894813};
+ const auto r=cppunivariate::sstd_mle(mltest::as_span(x),1e-6,200,0,NAN,3,10);
+ REQUIRE(r.status==cppunivariate::SstdStatus::Ok);CHECK(r.certified);
+ CHECK(std::log(r.sigma)==doctest::Approx(5.894765235143508).epsilon(1e-8));
+ CHECK(r.logLik==doctest::Approx(-38.8073025560888).epsilon(1e-12));
+ // Removing the old fixed log(sd) window must preserve very small units.
+ std::vector<double> tiny;for(double v:x)tiny.push_back(v*1e-30);
+ const auto t=cppunivariate::sstd_mle(mltest::as_span(tiny),1e-6,200,0,NAN,3,10);
+ REQUIRE(t.status==cppunivariate::SstdStatus::Ok);CHECK(t.certified);
+ CHECK(t.sigma/1e-30==doctest::Approx(r.sigma).epsilon(1e-8));
+ const auto b=cppunivariate::sstd_mle(mltest::as_span(x),1e-6,1,0,NAN,3,10);
+ REQUIRE(b.status==cppunivariate::SstdStatus::CertificateFailure);
+ CHECK_FALSE(b.certified);CHECK_FALSE(b.stop_detail.candidates.empty());
+ const std::vector<double> tied{-2,2};
+ const auto budget=cppunivariate::sstd_mle(mltest::as_span(tied),1e-6,1,NAN,1,3,1);
+ CHECK(budget.stop_detail.budget_exhausted);CHECK_FALSE(budget.stop_detail.candidates.empty());
+}
+
+TEST_CASE("sstd: symmetric equality is a monotone unattained scale supremum") {
+ const std::vector<double> x{0,0,0,1};
+ const auto r=cppunivariate::sstd_mle(mltest::as_span(x),1e-6,200,0,NAN,3,1);
+ CHECK(r.status==cppunivariate::SstdStatus::ScaleBoundary);CHECK(r.certified);
+ CHECK(std::isfinite(r.stop_detail.loglik_lower));CHECK(std::isfinite(r.stop_detail.loglik_upper));
+ const auto unresolved=cppunivariate::sstd_mle(mltest::as_span(x),1e-6,200,0,NAN,3,2);
+ CHECK(unresolved.status==cppunivariate::SstdStatus::CertificateFailure);
+ CHECK_FALSE(unresolved.certified);
+}
+
+TEST_CASE("sstd: rational score ranges include extrema and seam crossings") {
+ for(double xi:{.1,1.,10.})for(double shift:{-6.,0.,6.})for(bool scale:{false,true})
+ for(const auto& ab:std::vector<std::pair<double,double>>{{-100,-.2},{-2,3},{0,20},{-.1,.1}}) {
+  const auto r=cppunivariate::sstd_cert_detail::term(ab.first,ab.second,3,xi,shift,scale);
+  for(int j=0;j<=40;++j){const double z=ab.first+(ab.second-ab.first)*j/40;
+   const double c=z>0?xi:1/xi;
+   const double v=scale?z*(z-shift)/(c*c+z*z):z/(c*c+z*z);
+   CHECK(v>=r.lo-1e-12*(1+std::abs(v)));CHECK(v<=r.hi+1e-12*(1+std::abs(v)));
+  }
+ }
+}
+
+TEST_CASE("sstd: lossy sample normalization stops the scalar certificate") {
+ const std::vector<double> x{1e-300,1,1e300};
+ const auto r=cppunivariate::sstd_mle(mltest::as_span(x),1e-6,200,0,NAN,3,2);
+ CHECK(r.status==cppunivariate::SstdStatus::CertificateFailure);CHECK_FALSE(r.certified);
+}
+
+TEST_CASE("sstd: held unit skew delegates the complete certified std model") {
+ const auto g=mltest::load_distribution_golden("std");
+ const auto parent=cppunivariate::student_t_mle_certified(mltest::as_span(g.data),1e-6,200);
+ const auto r=cppunivariate::sstd_mle(mltest::as_span(g.data),1e-6,200,NAN,NAN,NAN,1);
+ REQUIRE(parent.status==cppunivariate::StudentTStatus::Ok);
+ REQUIRE(r.status==cppunivariate::SstdStatus::Ok);CHECK(r.certified);
+ CHECK(r.mu==parent.mu);CHECK(r.sigma==parent.sigma);CHECK(r.nu==parent.nu);CHECK(r.logLik==parent.logLik);CHECK(r.xi==1);
+ const auto b=cppunivariate::sstd_mle(mltest::as_span(g.data),1e-6,1,NAN,NAN,NAN,1);
+ REQUIRE(b.status==cppunivariate::SstdStatus::CertificateFailure);
+ const auto limited_parent=cppunivariate::student_t_mle_certified(mltest::as_span(g.data),1e-6,1);
+ CHECK(b.stop_detail.budget_exhausted==(limited_parent.status==cppunivariate::StudentTStatus::CertificateBudget));
+ CHECK(b.stop_detail.comparison_tie==(limited_parent.status==cppunivariate::StudentTStatus::CertificateTie));
+ CHECK(b.stop_detail.candidates.size()==limited_parent.stop_detail.candidates.size());
+ CHECK_FALSE(b.stop_detail.candidates.empty());
+ const std::vector<double> normal{-2,-1,0,1,2};
+ const auto f=cppunivariate::sstd_mle(mltest::as_span(normal),1e-6,200,NAN,NAN,NAN,1);
+ REQUIRE(f.status==cppunivariate::SstdStatus::SnormBoundary);CHECK(f.certified);
+ CHECK(f.stop_detail.limit_model==cppunivariate::StopModel::Norm);
+}
+
+TEST_CASE("sstd: score ranges avoid overflowing finite-extremum products") {
+ const double c=1e155,shift=8e153;
+ const auto positive=cppunivariate::sstd_cert_detail::kernel(0,shift,c,shift,true);
+ const auto negative=cppunivariate::sstd_cert_detail::kernel(-1e157,0,c,shift,true);
+ const auto value=[&](double z){const double t=z/c;return t*(t-shift/c)/(1+t*t);};
+ CHECK(positive.lo<=value(4e153));CHECK(positive.lo<-.0015);CHECK(positive.hi>=0);
+ CHECK(negative.hi>=value(-2.5e156));CHECK(negative.hi>1.0015);CHECK(negative.lo<=0);
+ const auto unresolved=cppunivariate::sstd_cert_detail::kernel(0,1.7e308,1.7e308,0,true);
+ CHECK(std::isnan(unresolved.lo));CHECK(std::isnan(unresolved.hi));
+}
+
+TEST_CASE("sstd: near-two location peaks require a likelihood remainder check") {
+ const double nu=std::nextafter(2.,INFINITY);
+ const std::vector<double> x{-2,2,2.5};
+ const auto r=cppunivariate::sstd_mle(mltest::as_span(x),1e-6,200,NAN,1,nu,1);
+ REQUIRE(r.status==cppunivariate::SstdStatus::Ok);CHECK(r.certified);
+ CHECK(r.mu==doctest::Approx(2.).epsilon(1e-10));
+ double reference=0;for(double v:x)reference+=cppunivariate::distributions::dsstd(v,2,1,nu,1,true);
+ CHECK(r.logLik>=reference-1e-10);
+}
