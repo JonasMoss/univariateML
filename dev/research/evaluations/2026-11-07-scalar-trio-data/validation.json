@@ -1,0 +1,70 @@
+{
+  "source_manifest": "source-manifest.json",
+  "all_final_commands_exit_zero": true,
+  "runs": [
+    {
+      "command": "just cpp-test",
+      "machine": "simbox",
+      "passed": 106,
+      "failed": 0
+    },
+    {
+      "command": "UMVL_TEST_TIER=full just cpp-test",
+      "machine": "simbox",
+      "passed": 129,
+      "failed": 0
+    },
+    {
+      "command": "just cpp-test-no-long-double",
+      "machine": "simbox",
+      "passed": 129,
+      "failed": 0
+    },
+    {
+      "command": "just test",
+      "machine": "simbox",
+      "passed": 21026,
+      "failed": 0,
+      "warned": 0,
+      "skipped": 154
+    },
+    {
+      "command": "just test-full",
+      "machine": "simbox",
+      "passed": 43840,
+      "failed": 0,
+      "warned": 0,
+      "skipped": 0
+    },
+    {
+      "command": "just js-build && just js-test",
+      "machine": "workstation",
+      "passed": 446,
+      "failed": 0
+    },
+    {
+      "command": "just site-check",
+      "machine": "workstation",
+      "status": "passed",
+      "family_pages": 99,
+      "compiled_cpp_snippets": 99
+    },
+    {
+      "command": "sh dev/research/evaluations/2026-11-07-scalar-trio-data/run-checks.sh",
+      "machine": "workstation",
+      "status": "passed"
+    }
+  ],
+  "logs": [
+    "simbox-final.log.gz",
+    "workstation-final.log.gz",
+    "preliminary-golden-failures.log.gz",
+    "preliminary-metadata-failure.log.gz",
+    "preliminary-test-expectation-failure.log.gz"
+  ],
+  "independent": "independent.json",
+  "envelope_checks": "bounds.json",
+  "timings": "timings.json",
+  "counterexamples": "counterexamples.json",
+  "open_dpqr_probe": "dpqr-gap.txt"
+}

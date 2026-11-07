@@ -105,8 +105,8 @@ fit:
   method: profile-search
   certified: partial
   note: 'genbeta/README.md, Details; genbeta/mle.hpp (public fitter and held overloads); genbeta/test.cpp: With
-    endpoint and power held, beta-shape fitting is strictly concave; the free-power mesh and envelope-score search
-    do not certify every maximum.'
+    endpoint and power held, beta-shape fitting is strictly concave; with both beta shapes held,
+    the unique power root is bracketed and certified. Other free-power profiles remain numerical.'
 areas:
 - actuarial
 - economics and income
@@ -162,6 +162,29 @@ logarithmic mesh and an analytic envelope-score root search compare local
 maxima with gamma and power limits, using a log-likelihood tie tolerance
 $10^{-8}n$. The numerical search cannot certify that an arbitrarily narrow
 basin has not been missed. An unresolved search stops.
+
+
+With both beta shapes held, the power likelihood is strictly concave even
+when $0<q<1$. For $y_i=\log(b/x_i)>0$, its second derivative is
+$-n/a^2-(q-1)\sum y_i^2e^{ay_i}/(e^{ay_i}-1)^2$.
+The inequality $(z/(2\sinh(z/2)))^2<1$ makes this less than
+$-nq/a^2$ when $q<1$. The score changes from positive to negative at the
+two ends, so signed bracketing and bisection give the unique global maximum,
+including constant samples. The power bracket is refined to relative width
+$2\cdot10^{-13}$, conditional on the double precision score comparisons;
+nonconvergence or an unrepresentable bracket stops numerically. This route
+uses at most $\min(\mathrm{iterlim},100000)$ steps per bracketing or root solve. For $q<1$, the score is evaluated as
+$q-pa\bar y+(q-1)\overline{r(ay)}$, where
+$r(z)=z/\operatorname{expm1}(z)-1$. Below $z=0.01$ an eighth-order Bernoulli
+expansion evaluates $r$ without cancellation; the first omitted term is
+$z^{10}/47900160$. This retains the small positive score scale when $q$ is
+far below machine epsilon. When every $ay_i<0.01$, its linear term is
+combined with $pa\bar y$ before subtraction; this also resolves the
+critical held $p=1/2$ case, whose power is of order $\sqrt q$. For $q\ge1$, the positive correction
+avoids subtracting quantities of size $q$. At large $z$ it is evaluated as
+$z\exp\{\log(q-1)-z\}$ before summation, retaining a material weighted
+exponential tail even above $z=700$. The discarded denominator correction
+for $z>50$ is below $2\cdot10^{-22}$ relatively.
 
 The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-genbeta.md)
 describes the limiting paths and boundary comparisons. The transformed density is

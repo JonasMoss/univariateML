@@ -192,3 +192,35 @@ test_that("genbeta upper endpoint uses its finite inside limit", {
   expect_equal(pml(3,fit),1)
   expect_equal(qml(1,fit),3)
 })
+
+test_that("generalized beta power root handles q below one", {
+  x <- c(.02,.2,.6,.9)
+  for(q in c(.01,.7,2)) {
+    f <- mlgenbeta(x,scale=1,shape1=2,shape2=q)
+    a <- unname(f["shape3"]);z <- -a*log(x)
+    expect_lt(abs(length(x)-2*sum(z)+(q-1)*sum(z/expm1(z))),1e-9)
+    expect_identical(unname(f["shape1"]),2)
+    expect_identical(unname(f["shape2"]),q)
+  }
+})
+
+test_that("generalized beta retains the power root at tiny held q", {
+  x <- c(.02,.2,.6,.9)
+  for(q in c(1e-16,1e-100,1e-300)) {
+    f <- mlgenbeta(x,scale=1,shape1=2,shape2=q)
+    expect_equal(unname(f["shape3"])/q,1/(1.5*mean(-log(x))),tolerance=1e-12)
+  }
+})
+
+test_that("generalized beta retains a large-q weighted exponential tail", {
+  f <- mlgenbeta(.5,scale=1,shape1=2,shape2=exp(705))
+  z <- unname(f["shape3"])*log(2)
+  expect_gt(z,700)
+  expect_lt(abs(z-(705-log(2-1/z))),1e-9)
+})
+
+test_that("generalized beta preserves the critical small-power quadratic score", {
+  x <- c(.02,.2,.6,.9);q <- 1e-100
+  f <- mlgenbeta(x,scale=1,shape1=.5,shape2=q)
+  expect_equal(unname(f["shape3"])/sqrt(q),sqrt(12/mean(log(x)^2)),tolerance=1e-12)
+})

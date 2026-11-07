@@ -36,8 +36,12 @@ inline FitResult fit_fatigue(cppunivariate::span x, Held alpha_arg = {}, Held be
   auto res = cppunivariate::fatigue_mle_shifted(x, threshold, abstol, iterlim,a,b);
   if (res.status == cppunivariate::FatigueStatus::InvalidInput)
     return fail("Fatigue observations must be finite and strictly above `mu`.");
-  if (res.status == cppunivariate::FatigueStatus::SearchFailure)
-    return fail("Fatigue optimizer SearchFailure: profile search did not converge; increase iterlim.");
+  if (res.status == cppunivariate::FatigueStatus::SearchFailure) {
+    for(auto& candidate:res.stop_detail.candidates)candidate.coef.push_back(threshold);
+    if(res.stop_detail.budget_exhausted)return classify(fail("Fatigue optimizer SearchFailure: certificate budget exhausted; increase iterlim."),res.stop_detail,"budget",{"alpha","beta","mu"});
+    if(res.stop_detail.comparison_tie)return classify(fail("Fatigue optimizer SearchFailure: competing global maxima cannot be distinguished."),res.stop_detail,"tie",{"alpha","beta","mu"});
+    return classify(fail("Fatigue optimizer SearchFailure: profile search did not converge or floating-point coefficient resolution failed; increase iterlim for unresolved searches."),res.stop_detail,"numerical",{"alpha","beta","mu"});
+  }
   if (!(res.alpha>0.0) || !std::isfinite(res.alpha) || !std::isfinite(res.beta) || !std::isfinite(res.logLik)) {
     if (res.status==cppunivariate::FatigueStatus::Unbounded)
       return nomle("The fatigue maximum likelihood estimator does not exist for constant data: the likelihood is unbounded.");

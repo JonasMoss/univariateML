@@ -26,7 +26,11 @@ inline FitResult fit_sgomp(cppunivariate::span x, Held b_arg = {}, Held eta_arg 
   const auto f=cppunivariate::sgomp_mle(x,reltol,iterlim,bv,ev);
   if (f.status==cppunivariate::SgompStatus::Collapse) return nomle("The shifted Gompertz MLE does not exist: constant data have unbounded likelihood.");
   if (f.status==cppunivariate::SgompStatus::InvalidInput) return fail("Shifted Gompertz requires finite nonnegative data, positive reltol and positive iterlim.");
-  if (f.status!=cppunivariate::SgompStatus::Ok) return fail("Shifted Gompertz MLE failed to converge; increase iterlim.");
+  if (f.status!=cppunivariate::SgompStatus::Ok) {
+    if(f.stop_detail.budget_exhausted)return classify(fail("Shifted Gompertz certificate budget exhausted; increase iterlim."),f.stop_detail,"budget",{"b","eta"});
+    if(f.stop_detail.comparison_tie)return classify(fail("Shifted Gompertz competing global maxima cannot be distinguished; increase iterlim."),f.stop_detail,"tie",{"b","eta"});
+    return classify(fail("Shifted Gompertz MLE failed to converge; increase iterlim."),f.stop_detail,"numerical",{"b","eta"});
+  }
   std::vector<std::string> fixed;
   if (b.supplied) fixed.push_back("b");
   if (eta.supplied) fixed.push_back("eta");

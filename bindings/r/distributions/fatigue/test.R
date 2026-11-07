@@ -25,9 +25,7 @@ test_that("the three-parameter likelihood with free mu is unbounded (why mu is f
 
 test_that("fatigue handles ties and extreme scales without invalid estimates", {
   expect_error(mlfatigue(rep(1,5), mu = 0),"does not exist")
-  f <- mlfatigue(1+(0:4)*.Machine$double.eps, mu = 0)
-  expect_gt(f[["alpha"]],0)
-  expect_true(is.finite(attr(f,"logLik")))
+  expect_error(mlfatigue(1+(0:4)*.Machine$double.eps, mu = 0),class="univariateML_numerical")
   x <- c(.4,.8,1,2,4); base <- mlfatigue(x, mu = 0)
   for(s in c(1e-300,1e300)) {
     g <- mlfatigue(x*s, mu = 0)
@@ -56,6 +54,10 @@ test_that("fatigue coefficient holds match independent multistart density oracle
   samples <- list(rfatigue(n = 20, alpha = 0.7, beta = 2, mu = 0),rfatigue(n = 100, alpha = 3, beta = 2, mu = 0),
     c(.2,.2,1,3),.4,rep(2,4),exp(rnorm(20)),rgamma(100,.5))
   for(x in samples) for(args in list(list(alpha=.7),list(alpha=3),list(beta=1.3),list(alpha=.7,beta=1.3))) {
+    if(length(unique(x))==1 && identical(args,list(alpha=3))) {
+      expect_error(do.call(mlfatigue,c(list(x=x-5,mu=-5),args)),class="univariateML_tie")
+      next
+    }
     f <- do.call(mlfatigue,c(list(x=x-5,mu=-5),args))
     expect_setequal(attr(f,"fixed"),c(names(args),"mu"))
     for(nm in names(args))expect_identical(unname(f[nm]),args[[nm]])
@@ -82,4 +84,22 @@ test_that("fatigue: P3 unfinished optimizer stops", {
   x <- g$data
   expect_error(mlfatigue(x, iterlim=1, abstol=1e-10, mu=0),
                "[Ff]ail|converge|unresolved|exhausted|score check")
+})
+
+
+test_that("fatigue certificate exposes both reciprocal maxima", {
+  e <- tryCatch(mlfatigue(1,mu=0,alpha=3),error=identity)
+  expect_s3_class(e,"univariateML_tie")
+  expect_equal(nrow(e$candidates),2L)
+  expect_error(mlfatigue(1:3,mu=0,alpha=1,iterlim=1),class="univariateML_numerical")
+})
+
+test_that("rounded fatigue threshold shifts stop numerically rather than claiming nonexistence", {
+  expect_error(mlfatigue(c(1,2),mu=-1e300),class="univariateML_numerical")
+  expect_error(mlfatigue(1,mu=.1,beta=.9),class="univariateML_numerical")
+  expect_error(mlfatigue(1,mu=0,beta=1),class="univariateML_nomle")
+})
+
+test_that("fatigue refuses inaccurate subnormal coefficient reconstruction", {
+  expect_error(mlfatigue(c(1,3,4)*1e-320,mu=0),class="univariateML_numerical")
 })

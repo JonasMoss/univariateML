@@ -123,6 +123,56 @@ inline GenbetaResult genbeta_mle(span x,double scale,double tol=1e-7,int maxit=3
     const double value=n*(std::log(a*t)-a*t*mean)+static_cast<double>(jac);
     return {a,b,t,scale,value,0,std::isfinite(value)&&std::isfinite(a)&&std::isfinite(t)?GenbetaStatus::Ok:GenbetaStatus::SearchUnresolved};
   }
+  // Held beta shapes: strictly concave in power, including 0 < b < 1.
+  // The dimensionless score is t*L'(t)/n; its sign brackets the sole root.
+  if(std::isnan(t)&&!std::isnan(a)&&!std::isnan(b)) {
+    const double ymax=*std::max_element(y.begin(),y.end());
+    const auto score=[&](double power) {
+      const bool centered=b<1&&power*ymax<.01;
+      CPPUNIV_EXTENDED_REAL correction=0;
+      for(double v:y) {
+        const double z=power*v;
+        if(b<1) {
+          // z/expm1(z)-1, without subtracting two numbers near one.
+          const double z2=z*z;
+          const double remainder=z2*(1.0/12+z2*(-1.0/720+z2*(1.0/30240-z2/1209600)));
+          correction+=centered ? remainder : (z<.01 ? -.5*z+remainder : (z>700 ? -1 : z/std::expm1(z)-1));
+        } else {
+          // Weight before the exponential tail underflows: a large held q
+          // can make (q-1)*z/expm1(z) material even beyond z=700.
+          const double term=z<=50 ? (b-1)*(z/std::expm1(z)) :
+            (std::isfinite(z)?z*std::exp(std::log(b-1)-z):0);
+          correction+=term/n;
+        }
+      }
+      if(centered)return b-(a-.5+.5*b)*power*mean+(b-1)*static_cast<double>(correction/n);
+      return (b<1?b:1)-a*power*mean+(b<1?(b-1)*static_cast<double>(correction/n):static_cast<double>(correction));
+    };
+    double lo=0,hi=(b<1?b:1+std::log(b))/(a*mean);
+    bool bracket=std::isfinite(hi)&&hi>0;
+    for(std::int64_t j=0;bracket&&score(hi)>0&&j<solver_budget(maxit);++j)hi*=2;
+    bracket=bracket&&std::isfinite(hi)&&score(hi)<=0;
+    bool converged=false;int iterations=0;
+    for(std::int64_t j=0;bracket&&j<solver_budget(maxit);++j) {
+      ++iterations;const double mid=lo+(hi-lo)/2;
+      if(score(mid)>0)lo=mid;else hi=mid;
+      if(lo>0&&hi-lo<=2e-13*hi){converged=true;break;}
+    }
+    if(!converged){
+      bad.status=GenbetaStatus::SearchUnresolved;bad.iterations=iterations;
+      if(bracket) {
+        const auto witness=genbeta_detail::profile(y,lo+(hi-lo)/2,a,b,maxit);
+        const double ll=witness.ll+static_cast<double>(jac);
+        if(witness.ok&&std::isfinite(ll)) {
+          bad.stop_detail.candidates={{{a,b,witness.t,scale},ll,ll,StopModel::None}};
+          bad.stop_detail.loglik_lower=ll;bad.stop_detail.loglik_upper=INFINITY;
+        }
+      }
+      return bad;
+    }
+    const auto p=genbeta_detail::profile(y,lo+(hi-lo)/2,a,b,maxit);
+    return {a,b,p.t,scale,p.ll+static_cast<double>(jac),iterations,p.ok?GenbetaStatus::Ok:GenbetaStatus::SearchUnresolved};
+  }
   int evals=0;
   auto at=[&](double z){++evals;return genbeta_detail::profile(y,std::exp(z),a,b,maxit);};
   genbeta_detail::Point best;
