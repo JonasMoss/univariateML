@@ -1,0 +1,50 @@
+{
+  "source_revision": "681d7ac5ce6965db4066b4117c12eff69e75cd0c",
+  "machine": "workstation",
+  "completed_utc": "2026-11-07T09:46:56.458811+00:00",
+  "runs": [
+    {
+      "command": "/tmp/umvl-cpu/run4 just cpp-test",
+      "exit_code": 0,
+      "result": "106/106 dev shards passed",
+      "ctest_seconds": 63.1
+    },
+    {
+      "command": "/tmp/umvl-cpu/run4 just test",
+      "exit_code": 0,
+      "tier": "dev",
+      "fail": 0,
+      "warn": 0,
+      "skip": 154,
+      "pass": 20983,
+      "r_elapsed_seconds": 110.173
+    },
+    {
+      "command": "/tmp/umvl-cpu/run python3 dev/research/evaluations/2026-11-07-tlambda-theory-data/check.py",
+      "exit_code": 0,
+      "result": "all assertions passed; all nine exploratory proposal searches converged",
+      "precision_digits": 120
+    },
+    {
+      "command": "/tmp/umvl-cpu/run python3 (validation record and fingerprint verification)",
+      "exit_code": 0,
+      "result": "research and source fingerprints match; dev log summaries checked"
+    }
+  ],
+  "thread_policy": "slot wrapper: nice +10; BLAS/OpenMP one thread; four slots reserved for each dev suite; one for research",
+  "temporary_environment": "TMPDIR=JUST_TEMPDIR=XDG_RUNTIME_DIR=$PWD/build/tmp",
+  "earlier_check_failure": {
+    "precision_digits": 70,
+    "location": "direct-versus-expanded curvature cancellation at extreme inverse tails",
+    "resolution": "raise mpmath precision to 120 digits; retain relative comparison tolerance 1e-55; final run passed"
+  },
+  "tolerances": {
+    "curvature_identity_relative": "1e-55",
+    "envelope_allowance": "1e-55 to 1e-60",
+    "inverse_bracket_relative": "1e-38",
+    "equality_limit_absolute_ratio": "1e-8",
+    "uniform_corner_final_absolute": "1e-60"
+  },
+  "not_run": "full R, no-long-double, JS, site: research-only additions; no fitting, d/p/q/r, test infrastructure, public signatures, bindings, or family dossier changes",
+  "seeds": "116170..116174 and 116180..116183; complete proposal boxes and counts in checks.json"
+}
