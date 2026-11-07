@@ -336,3 +336,28 @@ TEST_CASE("huber: Laplace payload has the fitted public scale") {
   CHECK(r.stop_detail.limit_coef[0]==0);CHECK(r.stop_detail.limit_coef[1]==doctest::Approx(4.04));
   CHECK(r.stop_detail.limit_loglik==doctest::Approx(-5*(1+std::log(8.08))));
 }
+
+#include "cppunivariate/core/inference_join.hpp"
+TEST_CASE("huber: analytic covariance derivatives and subset projection") {
+  const std::array<double,8> theta{0,1,1};
+  const std::vector<double> x{-2,-1,-.2,0,.2,1,2};
+  const auto full=cppunivariate::join_family_inference({x.data(),x.size()},"huber",theta,7);
+  REQUIRE(full.status==cppunivariate::InferenceStatus::Ok);
+  for(unsigned mask=0;mask<(1u<<3);++mask) {
+    std::size_t emitted=0;
+    const auto r=cppunivariate::join_family_inference({x.data(),x.size()},"huber",theta,mask,[&](const auto&){++emitted;});
+    REQUIRE(r.status==cppunivariate::InferenceStatus::Ok);
+    CHECK(emitted==x.size());
+    for(std::size_t i=0;i<r.dimension;++i) {
+      const auto a=r.free_indices[i];CHECK(r.score[i]==doctest::Approx(full.score[a]));
+      for(std::size_t j=0;j<r.dimension;++j) {
+        const auto b=r.free_indices[j];
+        CHECK(r.observed[i*r.dimension+j]==doctest::Approx(full.observed[a*3+b]));
+        CHECK(r.opg[i*r.dimension+j]==doctest::Approx(full.opg[a*3+b]));
+      }
+    }
+  }
+  auto bad=theta;bad[1]=0;
+  CHECK(cppunivariate::join_family_inference({x.data(),x.size()},"huber",bad,1).status==cppunivariate::InferenceStatus::BoundaryOrLimit);
+  CHECK(cppunivariate::join_family_inference({x.data(),x.size()},"huber",theta,1u<<3).status==cppunivariate::InferenceStatus::InvalidSubset);
+}

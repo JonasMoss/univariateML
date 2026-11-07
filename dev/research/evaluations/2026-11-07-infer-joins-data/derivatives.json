@@ -1,0 +1,47 @@
+{
+  "revision": "681d7ac5ce6965db4066b4117c12eff69e75cd0c",
+  "source_sha256": {
+    "dev/research/evaluations/2026-11-07-infer-joins-data/check-derivatives.py": "f7d49e699dfd3039d777e5e3b56cbd8d29e3e7a053be5bcacb60b486c48ab40b",
+    "univariateML-cpp/include/cppunivariate/core/inference_join.hpp": "81fdaa678c18aa64738fc983062b1b1e2c7603d19bf40a0b5b6df4e70cc00f4a",
+    "univariateML-cpp/include/cppunivariate/core/inference_numeric_special.hpp": "b43361df29aa3abdd7c69efc0e77dcfb4f30b424bb9d7f2f4e1560381df04654",
+    "univariateML-cpp/include/cppunivariate/core/inference_families.hpp": "3ec93a155361195621939b03401550811954cd25e01cc3bfde3ebfe946e6f943",
+    "univariateML-cpp/include/cppunivariate/core/inference.hpp": "7d092f4ab0e5eef3f4318069eca3deb31105c886713626534d2a63e6f9001674"
+  },
+  "mpmath_version": "1.3.0",
+  "mpmath_dps": 80,
+  "tolerance_score": 2e-08,
+  "tolerance_observed": 2e-07,
+  "scaled_by": "1+abs(reference)",
+  "results": {
+    "snorm": {
+      "cases": 31,
+      "max_score_error": 2.282441902562371e-15,
+      "max_observed_error": 5.051433033789383e-15
+    },
+    "sstd": {
+      "cases": 127,
+      "max_score_error": 7.270862881036386e-14,
+      "max_observed_error": 4.861632148699017e-14
+    },
+    "huber": {
+      "cases": 33,
+      "max_score_error": 7.105427329179293e-17,
+      "max_observed_error": 1.2346497555357762e-16
+    },
+    "pig": {
+      "cases": 31,
+      "max_score_error": 4.1232475417902883e-14,
+      "max_observed_error": 1.36692646533635e-13
+    },
+    "gpd": {
+      "cases": 32,
+      "max_score_error": 3.985215539177654e-09,
+      "max_observed_error": 7.970430468615042e-09
+    },
+    "gev": {
+      "cases": 53,
+      "max_score_error": 3.985215539177654e-09,
+      "max_observed_error": 7.970430468615042e-09
+    }
+  }
+}

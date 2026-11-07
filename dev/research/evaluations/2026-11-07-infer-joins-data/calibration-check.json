@@ -1,0 +1,6 @@
+{
+  "status": "pass",
+  "largest_n": 3200,
+  "checks": 68,
+  "criterion": "nominal .95 in each marginal 95% Wilson interval; no largest-n failures"
+}

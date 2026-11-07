@@ -326,3 +326,28 @@ TEST_CASE("sstd core preserves previous adapter unconditional failure score gate
   CHECK(r.status==status);
   CHECK((r.logLik==old.logLik || (std::isnan(r.logLik) && std::isnan(old.logLik))));
 }
+
+#include "cppunivariate/core/inference_join.hpp"
+TEST_CASE("sstd: analytic covariance derivatives and subset projection") {
+  const std::array<double,8> theta{0,1,5,1};
+  const std::vector<double> x{-2,-1,-.2,0,.2,1,2};
+  const auto full=cppunivariate::join_family_inference({x.data(),x.size()},"sstd",theta,15);
+  REQUIRE(full.status==cppunivariate::InferenceStatus::Ok);
+  for(unsigned mask=0;mask<(1u<<4);++mask) {
+    std::size_t emitted=0;
+    const auto r=cppunivariate::join_family_inference({x.data(),x.size()},"sstd",theta,mask,[&](const auto&){++emitted;});
+    REQUIRE(r.status==cppunivariate::InferenceStatus::Ok);
+    CHECK(emitted==x.size());
+    for(std::size_t i=0;i<r.dimension;++i) {
+      const auto a=r.free_indices[i];CHECK(r.score[i]==doctest::Approx(full.score[a]));
+      for(std::size_t j=0;j<r.dimension;++j) {
+        const auto b=r.free_indices[j];
+        CHECK(r.observed[i*r.dimension+j]==doctest::Approx(full.observed[a*4+b]));
+        CHECK(r.opg[i*r.dimension+j]==doctest::Approx(full.opg[a*4+b]));
+      }
+    }
+  }
+  auto bad=theta;bad[1]=0;
+  CHECK(cppunivariate::join_family_inference({x.data(),x.size()},"sstd",bad,1).status==cppunivariate::InferenceStatus::BoundaryOrLimit);
+  CHECK(cppunivariate::join_family_inference({x.data(),x.size()},"sstd",theta,1u<<4).status==cppunivariate::InferenceStatus::InvalidSubset);
+}

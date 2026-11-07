@@ -305,3 +305,28 @@ TEST_CASE("gev xi minus one is the closed form limit law") {
     CHECK(cppunivariate::distributions::dgev(3.5,2,3,-2,log)==INFINITY);
   }
 }
+
+#include "cppunivariate/core/inference_join.hpp"
+TEST_CASE("gev: analytic covariance derivatives and subset projection") {
+  const std::array<double,8> theta{0,1,0};
+  const std::vector<double> x{-2,-1,-.2,0,.2,1,2};
+  const auto full=cppunivariate::join_family_inference({x.data(),x.size()},"gev",theta,7);
+  REQUIRE(full.status==cppunivariate::InferenceStatus::Ok);
+  for(unsigned mask=0;mask<(1u<<3);++mask) {
+    std::size_t emitted=0;
+    const auto r=cppunivariate::join_family_inference({x.data(),x.size()},"gev",theta,mask,[&](const auto&){++emitted;});
+    REQUIRE(r.status==cppunivariate::InferenceStatus::Ok);
+    CHECK(emitted==x.size());
+    for(std::size_t i=0;i<r.dimension;++i) {
+      const auto a=r.free_indices[i];CHECK(r.score[i]==doctest::Approx(full.score[a]));
+      for(std::size_t j=0;j<r.dimension;++j) {
+        const auto b=r.free_indices[j];
+        CHECK(r.observed[i*r.dimension+j]==doctest::Approx(full.observed[a*3+b]));
+        CHECK(r.opg[i*r.dimension+j]==doctest::Approx(full.opg[a*3+b]));
+      }
+    }
+  }
+  auto bad=theta;bad[1]=0;
+  CHECK(cppunivariate::join_family_inference({x.data(),x.size()},"gev",bad,1).status==cppunivariate::InferenceStatus::BoundaryOrLimit);
+  CHECK(cppunivariate::join_family_inference({x.data(),x.size()},"gev",theta,1u<<3).status==cppunivariate::InferenceStatus::InvalidSubset);
+}

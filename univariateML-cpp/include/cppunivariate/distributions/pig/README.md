@@ -1,10 +1,9 @@
 ---
 id: pig
 inference_numeric:
-  - regime: "unreviewed or unavailable"
-    available: false
-    condition: "interior joint regime"
-    reason: "DQM, finite full-rank information and a valid a.e. Hessian are established; numerical derivative and covariance validation for the expanded subsets is not yet implemented"
+  - regime: "regular finite interior"
+    available: true
+    condition: "finite mean > 0 and finite shape > 0; any free subset; zero mass and Poisson faces excluded; analytic piecewise natural-coordinate derivatives; successful interior fit and nonsingular information required"
     classification: "dev/research/evaluations/2026-11-04-dqm-c-report.md#e-poisson-inverse-gaussian"
 name: Poisson-inverse Gaussian
 support: {type: integer, lower: 0, upper: inf, closed: [true, false]}

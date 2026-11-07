@@ -7542,7 +7542,7 @@
       "information": "Derivative eligibility only; no automatic finite-information claim",
       "rank": "Available scopes exclude structural null directions; runtime singular, indefinite and ill-conditioned solves still fail",
       "evidence": "dev/research/evaluations/2026-11-04-infer-moving-report.md#gpd-and-gev",
-      "calibration": "dev/research/evaluations/2026-11-01-vcov-scores-report.md#monte-carlo-sanity-check",
+      "calibration": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
       "evidence_links": [
         {
           "label": "Canonical dossier",
@@ -7567,6 +7567,18 @@
         {
           "label": "Pilot Monte Carlo data",
           "path": "dev/research/evaluations/2026-11-01-vcov-scores-data/summary.json"
+        },
+        {
+          "label": "Analytic derivative and fitted coverage validation",
+          "path": "univariateML-cpp/include/cppunivariate/core/inference.md#analytic-derivatives-at-moving-c1-joins"
+        },
+        {
+          "label": "80-digit piecewise derivative checks",
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/derivatives.json"
+        },
+        {
+          "label": "Fitted-nuisance coverage with failure accounting",
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json"
         }
       ],
       "implementation": [
@@ -7584,11 +7596,15 @@
         }
       ],
       "checks": [
-        "dev/validation/inference-numeric-registry.py",
-        "bindings/r/tests/testthat/test-vcov.R"
+        "dev/research/evaluations/2026-11-07-infer-joins-data/check-derivatives.py",
+        "dev/research/evaluations/2026-11-07-infer-joins-data/calibrate.py",
+        "bindings/r/tests/testthat/test-vcov.R",
+        "bindings/js/vcov-test.mjs"
       ],
       "gap": "Pointwise SE/SD comparisons are not coverage validation. Evidence uses recorded truth points and held subsets, not every regime; failed replications can select results. Near-singular sn/bhatt members, bnbinom weak identification at n = 500 and invtrgamma finite-sample bias require caution.",
-      "caveats": [],
+      "caveats": [
+        "TASK-102.15 model calibration is pointwise: n=200, 800, 3200; small-sample Wald undercoverage and fit failures are retained. Huber with epsilon fitted is especially poorly calibrated at n=200. Sandwich availability does not establish misspecification robustness."
+      ],
       "monte_carlo": [
         {
           "path": "dev/research/evaluations/2026-11-01-vcov-scores-data/summary.json",
@@ -7609,6 +7625,186 @@
           "replications": 200,
           "successes": 200,
           "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gev-9-n200",
+          "sample_size": 200,
+          "truth": [
+            0,
+            1,
+            -0.25
+          ],
+          "held": {},
+          "free": [
+            "mu",
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gev-9-n800",
+          "sample_size": 800,
+          "truth": [
+            0,
+            1,
+            -0.25
+          ],
+          "held": {},
+          "free": [
+            "mu",
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gev-9-n3200",
+          "sample_size": 3200,
+          "truth": [
+            0,
+            1,
+            -0.25
+          ],
+          "held": {},
+          "free": [
+            "mu",
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gev-10-n200",
+          "sample_size": 200,
+          "truth": [
+            0,
+            1,
+            0
+          ],
+          "held": {},
+          "free": [
+            "mu",
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gev-10-n800",
+          "sample_size": 800,
+          "truth": [
+            0,
+            1,
+            0
+          ],
+          "held": {},
+          "free": [
+            "mu",
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gev-10-n3200",
+          "sample_size": 3200,
+          "truth": [
+            0,
+            1,
+            0
+          ],
+          "held": {},
+          "free": [
+            "mu",
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gev-11-n200",
+          "sample_size": 200,
+          "truth": [
+            0,
+            1,
+            0.25
+          ],
+          "held": {},
+          "free": [
+            "mu",
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gev-11-n800",
+          "sample_size": 800,
+          "truth": [
+            0,
+            1,
+            0.25
+          ],
+          "held": {},
+          "free": [
+            "mu",
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gev-11-n3200",
+          "sample_size": 3200,
+          "truth": [
+            0,
+            1,
+            0.25
+          ],
+          "held": {},
+          "free": [
+            "mu",
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
         }
       ],
       "historical_sources": "",
@@ -7619,7 +7815,7 @@
       "regime": "regular interior model",
       "kind": "covariance",
       "target": "Free-coefficient covariance",
-      "status": "unreviewed",
+      "status": "implemented",
       "procedures": "Sandwich and observed covariance \u00b7 C++ and R vcov (default sandwich)",
       "theory": "Implemented numerical covariance scope; availability does not establish estimator asymptotics or coverage",
       "assumptions": "finite mu, sigma > 0 and xi > -1/2; any nonempty supported free subset; if xi is free require xi < 1; excluding the preceding available submodels; IID; successful fit interior to the stated free submodel, correct free mask and nonsingular well-conditioned sensitivity. Observed inference requires correct specification and regular estimator asymptotics; robust sandwich inference additionally requires finite score variance, an identifiable KL target and an estimating-equation expansion.",
@@ -7627,7 +7823,7 @@
       "information": "Derivative eligibility only; no automatic finite-information claim",
       "rank": "Available scopes exclude structural null directions; runtime singular, indefinite and ill-conditioned solves still fail",
       "evidence": "dev/research/evaluations/2026-11-04-infer-moving-report.md#gpd-and-gev",
-      "calibration": "dev/research/evaluations/2026-11-01-vcov-scores-report.md#monte-carlo-sanity-check",
+      "calibration": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
       "evidence_links": [
         {
           "label": "Canonical dossier",
@@ -7652,12 +7848,44 @@
         {
           "label": "Pilot Monte Carlo data",
           "path": "dev/research/evaluations/2026-11-01-vcov-scores-data/summary.json"
+        },
+        {
+          "label": "Analytic derivative and fitted coverage validation",
+          "path": "univariateML-cpp/include/cppunivariate/core/inference.md#analytic-derivatives-at-moving-c1-joins"
+        },
+        {
+          "label": "80-digit piecewise derivative checks",
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/derivatives.json"
+        },
+        {
+          "label": "Fitted-nuisance coverage with failure accounting",
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json"
         }
       ],
-      "implementation": [],
-      "checks": [],
-      "gap": "DQM and full-rank information are established, but support/join-aware numerical derivatives and fitted covariance validation for this expanded scope are not yet implemented Pointwise SE/SD comparisons are not coverage validation. Evidence uses recorded truth points and held subsets, not every regime; failed replications can select results. Near-singular sn/bhatt members, bnbinom weak identification at n = 500 and invtrgamma finite-sample bias require caution.",
-      "caveats": [],
+      "implementation": [
+        {
+          "path": "univariateML-cpp/include/cppunivariate/core/inference_families.hpp",
+          "function": "family_inference"
+        },
+        {
+          "path": "univariateML-cpp/include/cppunivariate/core/inference.hpp",
+          "function": "inference_covariance"
+        },
+        {
+          "path": "bindings/r/R/code_vcov.R",
+          "function": "vcov.univariateML"
+        }
+      ],
+      "checks": [
+        "dev/research/evaluations/2026-11-07-infer-joins-data/check-derivatives.py",
+        "dev/research/evaluations/2026-11-07-infer-joins-data/calibrate.py",
+        "bindings/r/tests/testthat/test-vcov.R",
+        "bindings/js/vcov-test.mjs"
+      ],
+      "gap": "Pointwise SE/SD comparisons are not coverage validation. Evidence uses recorded truth points and held subsets, not every regime; failed replications can select results. Near-singular sn/bhatt members, bnbinom weak identification at n = 500 and invtrgamma finite-sample bias require caution.",
+      "caveats": [
+        "TASK-102.15 model calibration is pointwise: n=200, 800, 3200; small-sample Wald undercoverage and fit failures are retained. Huber with epsilon fitted is especially poorly calibrated at n=200. Sandwich availability does not establish misspecification robustness."
+      ],
       "monte_carlo": [
         {
           "path": "dev/research/evaluations/2026-11-01-vcov-scores-data/summary.json",
@@ -7677,6 +7905,186 @@
           "status": "complete",
           "replications": 200,
           "successes": 200,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gev-9-n200",
+          "sample_size": 200,
+          "truth": [
+            0,
+            1,
+            -0.25
+          ],
+          "held": {},
+          "free": [
+            "mu",
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gev-9-n800",
+          "sample_size": 800,
+          "truth": [
+            0,
+            1,
+            -0.25
+          ],
+          "held": {},
+          "free": [
+            "mu",
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gev-9-n3200",
+          "sample_size": 3200,
+          "truth": [
+            0,
+            1,
+            -0.25
+          ],
+          "held": {},
+          "free": [
+            "mu",
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gev-10-n200",
+          "sample_size": 200,
+          "truth": [
+            0,
+            1,
+            0
+          ],
+          "held": {},
+          "free": [
+            "mu",
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gev-10-n800",
+          "sample_size": 800,
+          "truth": [
+            0,
+            1,
+            0
+          ],
+          "held": {},
+          "free": [
+            "mu",
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gev-10-n3200",
+          "sample_size": 3200,
+          "truth": [
+            0,
+            1,
+            0
+          ],
+          "held": {},
+          "free": [
+            "mu",
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gev-11-n200",
+          "sample_size": 200,
+          "truth": [
+            0,
+            1,
+            0.25
+          ],
+          "held": {},
+          "free": [
+            "mu",
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gev-11-n800",
+          "sample_size": 800,
+          "truth": [
+            0,
+            1,
+            0.25
+          ],
+          "held": {},
+          "free": [
+            "mu",
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gev-11-n3200",
+          "sample_size": 3200,
+          "truth": [
+            0,
+            1,
+            0.25
+          ],
+          "held": {},
+          "free": [
+            "mu",
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
           "failure_count": 0
         }
       ],
@@ -7696,7 +8104,7 @@
       "information": "Derivative eligibility only; no automatic finite-information claim",
       "rank": "Available scopes exclude structural null directions; runtime singular, indefinite and ill-conditioned solves still fail",
       "evidence": "dev/research/evaluations/2026-11-04-infer-moving-report.md#gpd-and-gev",
-      "calibration": "dev/research/evaluations/2026-11-01-vcov-scores-report.md#monte-carlo-sanity-check",
+      "calibration": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
       "evidence_links": [
         {
           "label": "Canonical dossier",
@@ -7721,12 +8129,26 @@
         {
           "label": "Pilot Monte Carlo data",
           "path": "dev/research/evaluations/2026-11-01-vcov-scores-data/summary.json"
+        },
+        {
+          "label": "Analytic derivative and fitted coverage validation",
+          "path": "univariateML-cpp/include/cppunivariate/core/inference.md#analytic-derivatives-at-moving-c1-joins"
+        },
+        {
+          "label": "80-digit piecewise derivative checks",
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/derivatives.json"
+        },
+        {
+          "label": "Fitted-nuisance coverage with failure accounting",
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json"
         }
       ],
       "implementation": [],
       "checks": [],
       "gap": "one endpoint direction has a sqrt(n log n) Gaussian experiment and the complement has root-n rate; ordinary finite Fisher inference is unavailable Pointwise SE/SD comparisons are not coverage validation. Evidence uses recorded truth points and held subsets, not every regime; failed replications can select results. Near-singular sn/bhatt members, bnbinom weak identification at n = 500 and invtrgamma finite-sample bias require caution.",
-      "caveats": [],
+      "caveats": [
+        "TASK-102.15 model calibration is pointwise: n=200, 800, 3200; small-sample Wald undercoverage and fit failures are retained. Huber with epsilon fitted is especially poorly calibrated at n=200. Sandwich availability does not establish misspecification robustness."
+      ],
       "monte_carlo": [
         {
           "path": "dev/research/evaluations/2026-11-01-vcov-scores-data/summary.json",
@@ -7746,6 +8168,186 @@
           "status": "complete",
           "replications": 200,
           "successes": 200,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gev-9-n200",
+          "sample_size": 200,
+          "truth": [
+            0,
+            1,
+            -0.25
+          ],
+          "held": {},
+          "free": [
+            "mu",
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gev-9-n800",
+          "sample_size": 800,
+          "truth": [
+            0,
+            1,
+            -0.25
+          ],
+          "held": {},
+          "free": [
+            "mu",
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gev-9-n3200",
+          "sample_size": 3200,
+          "truth": [
+            0,
+            1,
+            -0.25
+          ],
+          "held": {},
+          "free": [
+            "mu",
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gev-10-n200",
+          "sample_size": 200,
+          "truth": [
+            0,
+            1,
+            0
+          ],
+          "held": {},
+          "free": [
+            "mu",
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gev-10-n800",
+          "sample_size": 800,
+          "truth": [
+            0,
+            1,
+            0
+          ],
+          "held": {},
+          "free": [
+            "mu",
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gev-10-n3200",
+          "sample_size": 3200,
+          "truth": [
+            0,
+            1,
+            0
+          ],
+          "held": {},
+          "free": [
+            "mu",
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gev-11-n200",
+          "sample_size": 200,
+          "truth": [
+            0,
+            1,
+            0.25
+          ],
+          "held": {},
+          "free": [
+            "mu",
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gev-11-n800",
+          "sample_size": 800,
+          "truth": [
+            0,
+            1,
+            0.25
+          ],
+          "held": {},
+          "free": [
+            "mu",
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gev-11-n3200",
+          "sample_size": 3200,
+          "truth": [
+            0,
+            1,
+            0.25
+          ],
+          "held": {},
+          "free": [
+            "mu",
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
           "failure_count": 0
         }
       ],
@@ -7765,7 +8367,7 @@
       "information": "Derivative eligibility only; no automatic finite-information claim",
       "rank": "Available scopes exclude structural null directions; runtime singular, indefinite and ill-conditioned solves still fail",
       "evidence": "dev/research/evaluations/2026-11-04-infer-moving-report.md#gpd-and-gev",
-      "calibration": "dev/research/evaluations/2026-11-01-vcov-scores-report.md#monte-carlo-sanity-check",
+      "calibration": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
       "evidence_links": [
         {
           "label": "Canonical dossier",
@@ -7790,12 +8392,26 @@
         {
           "label": "Pilot Monte Carlo data",
           "path": "dev/research/evaluations/2026-11-01-vcov-scores-data/summary.json"
+        },
+        {
+          "label": "Analytic derivative and fitted coverage validation",
+          "path": "univariateML-cpp/include/cppunivariate/core/inference.md#analytic-derivatives-at-moving-c1-joins"
+        },
+        {
+          "label": "80-digit piecewise derivative checks",
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/derivatives.json"
+        },
+        {
+          "label": "Fitted-nuisance coverage with failure accounting",
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json"
         }
       ],
       "implementation": [],
       "checks": [],
       "gap": "one endpoint direction has a non-Gaussian Poisson experiment at rate n^(-xi), with a root-n complement; free xi = -1 additionally constrains shape Pointwise SE/SD comparisons are not coverage validation. Evidence uses recorded truth points and held subsets, not every regime; failed replications can select results. Near-singular sn/bhatt members, bnbinom weak identification at n = 500 and invtrgamma finite-sample bias require caution.",
-      "caveats": [],
+      "caveats": [
+        "TASK-102.15 model calibration is pointwise: n=200, 800, 3200; small-sample Wald undercoverage and fit failures are retained. Huber with epsilon fitted is especially poorly calibrated at n=200. Sandwich availability does not establish misspecification robustness."
+      ],
       "monte_carlo": [
         {
           "path": "dev/research/evaluations/2026-11-01-vcov-scores-data/summary.json",
@@ -7815,6 +8431,186 @@
           "status": "complete",
           "replications": 200,
           "successes": 200,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gev-9-n200",
+          "sample_size": 200,
+          "truth": [
+            0,
+            1,
+            -0.25
+          ],
+          "held": {},
+          "free": [
+            "mu",
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gev-9-n800",
+          "sample_size": 800,
+          "truth": [
+            0,
+            1,
+            -0.25
+          ],
+          "held": {},
+          "free": [
+            "mu",
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gev-9-n3200",
+          "sample_size": 3200,
+          "truth": [
+            0,
+            1,
+            -0.25
+          ],
+          "held": {},
+          "free": [
+            "mu",
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gev-10-n200",
+          "sample_size": 200,
+          "truth": [
+            0,
+            1,
+            0
+          ],
+          "held": {},
+          "free": [
+            "mu",
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gev-10-n800",
+          "sample_size": 800,
+          "truth": [
+            0,
+            1,
+            0
+          ],
+          "held": {},
+          "free": [
+            "mu",
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gev-10-n3200",
+          "sample_size": 3200,
+          "truth": [
+            0,
+            1,
+            0
+          ],
+          "held": {},
+          "free": [
+            "mu",
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gev-11-n200",
+          "sample_size": 200,
+          "truth": [
+            0,
+            1,
+            0.25
+          ],
+          "held": {},
+          "free": [
+            "mu",
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gev-11-n800",
+          "sample_size": 800,
+          "truth": [
+            0,
+            1,
+            0.25
+          ],
+          "held": {},
+          "free": [
+            "mu",
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gev-11-n3200",
+          "sample_size": 3200,
+          "truth": [
+            0,
+            1,
+            0.25
+          ],
+          "held": {},
+          "free": [
+            "mu",
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
           "failure_count": 0
         }
       ],
@@ -7834,7 +8630,7 @@
       "information": "Derivative eligibility only; no automatic finite-information claim",
       "rank": "Available scopes exclude structural null directions; runtime singular, indefinite and ill-conditioned solves still fail",
       "evidence": "dev/research/evaluations/2026-11-04-infer-moving-report.md#gpd-and-gev",
-      "calibration": "dev/research/evaluations/2026-11-01-vcov-scores-report.md#monte-carlo-sanity-check",
+      "calibration": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
       "evidence_links": [
         {
           "label": "Canonical dossier",
@@ -7859,12 +8655,26 @@
         {
           "label": "Pilot Monte Carlo data",
           "path": "dev/research/evaluations/2026-11-01-vcov-scores-data/summary.json"
+        },
+        {
+          "label": "Analytic derivative and fitted coverage validation",
+          "path": "univariateML-cpp/include/cppunivariate/core/inference.md#analytic-derivatives-at-moving-c1-joins"
+        },
+        {
+          "label": "80-digit piecewise derivative checks",
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/derivatives.json"
+        },
+        {
+          "label": "Fitted-nuisance coverage with failure accounting",
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json"
         }
       ],
       "implementation": [],
       "checks": [],
       "gap": "the model is DQM with full rank but the fitted shape bound gives a Gaussian cone experiment rather than ordinary joint Wald calibration Pointwise SE/SD comparisons are not coverage validation. Evidence uses recorded truth points and held subsets, not every regime; failed replications can select results. Near-singular sn/bhatt members, bnbinom weak identification at n = 500 and invtrgamma finite-sample bias require caution.",
-      "caveats": [],
+      "caveats": [
+        "TASK-102.15 model calibration is pointwise: n=200, 800, 3200; small-sample Wald undercoverage and fit failures are retained. Huber with epsilon fitted is especially poorly calibrated at n=200. Sandwich availability does not establish misspecification robustness."
+      ],
       "monte_carlo": [
         {
           "path": "dev/research/evaluations/2026-11-01-vcov-scores-data/summary.json",
@@ -7885,6 +8695,186 @@
           "replications": 200,
           "successes": 200,
           "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gev-9-n200",
+          "sample_size": 200,
+          "truth": [
+            0,
+            1,
+            -0.25
+          ],
+          "held": {},
+          "free": [
+            "mu",
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gev-9-n800",
+          "sample_size": 800,
+          "truth": [
+            0,
+            1,
+            -0.25
+          ],
+          "held": {},
+          "free": [
+            "mu",
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gev-9-n3200",
+          "sample_size": 3200,
+          "truth": [
+            0,
+            1,
+            -0.25
+          ],
+          "held": {},
+          "free": [
+            "mu",
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gev-10-n200",
+          "sample_size": 200,
+          "truth": [
+            0,
+            1,
+            0
+          ],
+          "held": {},
+          "free": [
+            "mu",
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gev-10-n800",
+          "sample_size": 800,
+          "truth": [
+            0,
+            1,
+            0
+          ],
+          "held": {},
+          "free": [
+            "mu",
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gev-10-n3200",
+          "sample_size": 3200,
+          "truth": [
+            0,
+            1,
+            0
+          ],
+          "held": {},
+          "free": [
+            "mu",
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gev-11-n200",
+          "sample_size": 200,
+          "truth": [
+            0,
+            1,
+            0.25
+          ],
+          "held": {},
+          "free": [
+            "mu",
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gev-11-n800",
+          "sample_size": 800,
+          "truth": [
+            0,
+            1,
+            0.25
+          ],
+          "held": {},
+          "free": [
+            "mu",
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gev-11-n3200",
+          "sample_size": 3200,
+          "truth": [
+            0,
+            1,
+            0.25
+          ],
+          "held": {},
+          "free": [
+            "mu",
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
         }
       ],
       "historical_sources": "",
@@ -7903,7 +8893,7 @@
       "information": "Derivative eligibility only; no automatic finite-information claim",
       "rank": "Available scopes exclude structural null directions; runtime singular, indefinite and ill-conditioned solves still fail",
       "evidence": "dev/research/evaluations/2026-11-04-infer-moving-report.md#gpd-and-gev",
-      "calibration": "dev/research/evaluations/2026-11-01-vcov-scores-report.md#monte-carlo-sanity-check",
+      "calibration": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
       "evidence_links": [
         {
           "label": "Canonical dossier",
@@ -7928,12 +8918,26 @@
         {
           "label": "Pilot Monte Carlo data",
           "path": "dev/research/evaluations/2026-11-01-vcov-scores-data/summary.json"
+        },
+        {
+          "label": "Analytic derivative and fitted coverage validation",
+          "path": "univariateML-cpp/include/cppunivariate/core/inference.md#analytic-derivatives-at-moving-c1-joins"
+        },
+        {
+          "label": "80-digit piecewise derivative checks",
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/derivatives.json"
+        },
+        {
+          "label": "Fitted-nuisance coverage with failure accounting",
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json"
         }
       ],
       "implementation": [],
       "checks": [],
       "gap": "the mathematical endpoint experiment is nonregular; nontrivial accepted free-scale exceptions occur only when all observations are below held mu, an event of probability exp(-n) under this model Pointwise SE/SD comparisons are not coverage validation. Evidence uses recorded truth points and held subsets, not every regime; failed replications can select results. Near-singular sn/bhatt members, bnbinom weak identification at n = 500 and invtrgamma finite-sample bias require caution.",
-      "caveats": [],
+      "caveats": [
+        "TASK-102.15 model calibration is pointwise: n=200, 800, 3200; small-sample Wald undercoverage and fit failures are retained. Huber with epsilon fitted is especially poorly calibrated at n=200. Sandwich availability does not establish misspecification robustness."
+      ],
       "monte_carlo": [
         {
           "path": "dev/research/evaluations/2026-11-01-vcov-scores-data/summary.json",
@@ -7953,6 +8957,186 @@
           "status": "complete",
           "replications": 200,
           "successes": 200,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gev-9-n200",
+          "sample_size": 200,
+          "truth": [
+            0,
+            1,
+            -0.25
+          ],
+          "held": {},
+          "free": [
+            "mu",
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gev-9-n800",
+          "sample_size": 800,
+          "truth": [
+            0,
+            1,
+            -0.25
+          ],
+          "held": {},
+          "free": [
+            "mu",
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gev-9-n3200",
+          "sample_size": 3200,
+          "truth": [
+            0,
+            1,
+            -0.25
+          ],
+          "held": {},
+          "free": [
+            "mu",
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gev-10-n200",
+          "sample_size": 200,
+          "truth": [
+            0,
+            1,
+            0
+          ],
+          "held": {},
+          "free": [
+            "mu",
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gev-10-n800",
+          "sample_size": 800,
+          "truth": [
+            0,
+            1,
+            0
+          ],
+          "held": {},
+          "free": [
+            "mu",
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gev-10-n3200",
+          "sample_size": 3200,
+          "truth": [
+            0,
+            1,
+            0
+          ],
+          "held": {},
+          "free": [
+            "mu",
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gev-11-n200",
+          "sample_size": 200,
+          "truth": [
+            0,
+            1,
+            0.25
+          ],
+          "held": {},
+          "free": [
+            "mu",
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gev-11-n800",
+          "sample_size": 800,
+          "truth": [
+            0,
+            1,
+            0.25
+          ],
+          "held": {},
+          "free": [
+            "mu",
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gev-11-n3200",
+          "sample_size": 3200,
+          "truth": [
+            0,
+            1,
+            0.25
+          ],
+          "held": {},
+          "free": [
+            "mu",
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
           "failure_count": 0
         }
       ],
@@ -8054,7 +9238,7 @@
       "information": "Derivative eligibility only; no automatic finite-information claim",
       "rank": "Available scopes exclude structural null directions; runtime singular, indefinite and ill-conditioned solves still fail",
       "evidence": "dev/research/evaluations/2026-11-04-infer-moving-report.md#gpd-and-gev",
-      "calibration": "dev/research/evaluations/2026-11-01-vcov-scores-report.md#monte-carlo-sanity-check",
+      "calibration": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
       "evidence_links": [
         {
           "label": "Canonical dossier",
@@ -8079,6 +9263,18 @@
         {
           "label": "Pilot Monte Carlo data",
           "path": "dev/research/evaluations/2026-11-01-vcov-scores-data/summary.json"
+        },
+        {
+          "label": "Analytic derivative and fitted coverage validation",
+          "path": "univariateML-cpp/include/cppunivariate/core/inference.md#analytic-derivatives-at-moving-c1-joins"
+        },
+        {
+          "label": "80-digit piecewise derivative checks",
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/derivatives.json"
+        },
+        {
+          "label": "Fitted-nuisance coverage with failure accounting",
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json"
         }
       ],
       "implementation": [
@@ -8096,11 +9292,15 @@
         }
       ],
       "checks": [
-        "dev/validation/inference-numeric-registry.py",
-        "bindings/r/tests/testthat/test-vcov.R"
+        "dev/research/evaluations/2026-11-07-infer-joins-data/check-derivatives.py",
+        "dev/research/evaluations/2026-11-07-infer-joins-data/calibrate.py",
+        "bindings/r/tests/testthat/test-vcov.R",
+        "bindings/js/vcov-test.mjs"
       ],
       "gap": "Pointwise SE/SD comparisons are not coverage validation. Evidence uses recorded truth points and held subsets, not every regime; failed replications can select results. Near-singular sn/bhatt members, bnbinom weak identification at n = 500 and invtrgamma finite-sample bias require caution.",
-      "caveats": [],
+      "caveats": [
+        "TASK-102.15 model calibration is pointwise: n=200, 800, 3200; small-sample Wald undercoverage and fit failures are retained. Huber with epsilon fitted is especially poorly calibrated at n=200. Sandwich availability does not establish misspecification robustness."
+      ],
       "monte_carlo": [
         {
           "path": "dev/research/evaluations/2026-11-01-vcov-scores-data/summary.json",
@@ -8121,6 +9321,186 @@
           "replications": 200,
           "successes": 199,
           "failure_count": 1
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gpd-6-n200",
+          "sample_size": 200,
+          "truth": [
+            1,
+            -0.25
+          ],
+          "held": {
+            "mu": 0
+          },
+          "free": [
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gpd-6-n800",
+          "sample_size": 800,
+          "truth": [
+            1,
+            -0.25
+          ],
+          "held": {
+            "mu": 0
+          },
+          "free": [
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gpd-6-n3200",
+          "sample_size": 3200,
+          "truth": [
+            1,
+            -0.25
+          ],
+          "held": {
+            "mu": 0
+          },
+          "free": [
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gpd-7-n200",
+          "sample_size": 200,
+          "truth": [
+            1,
+            0
+          ],
+          "held": {
+            "mu": 0
+          },
+          "free": [
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gpd-7-n800",
+          "sample_size": 800,
+          "truth": [
+            1,
+            0
+          ],
+          "held": {
+            "mu": 0
+          },
+          "free": [
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gpd-7-n3200",
+          "sample_size": 3200,
+          "truth": [
+            1,
+            0
+          ],
+          "held": {
+            "mu": 0
+          },
+          "free": [
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gpd-8-n200",
+          "sample_size": 200,
+          "truth": [
+            1,
+            0.25
+          ],
+          "held": {
+            "mu": 0
+          },
+          "free": [
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gpd-8-n800",
+          "sample_size": 800,
+          "truth": [
+            1,
+            0.25
+          ],
+          "held": {
+            "mu": 0
+          },
+          "free": [
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gpd-8-n3200",
+          "sample_size": 3200,
+          "truth": [
+            1,
+            0.25
+          ],
+          "held": {
+            "mu": 0
+          },
+          "free": [
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
         }
       ],
       "historical_sources": "",
@@ -8139,7 +9519,7 @@
       "information": "Derivative eligibility only; no automatic finite-information claim",
       "rank": "Available scopes exclude structural null directions; runtime singular, indefinite and ill-conditioned solves still fail",
       "evidence": "dev/research/evaluations/2026-11-04-infer-moving-report.md#gpd-and-gev",
-      "calibration": "dev/research/evaluations/2026-11-01-vcov-scores-report.md#monte-carlo-sanity-check",
+      "calibration": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
       "evidence_links": [
         {
           "label": "Canonical dossier",
@@ -8164,6 +9544,18 @@
         {
           "label": "Pilot Monte Carlo data",
           "path": "dev/research/evaluations/2026-11-01-vcov-scores-data/summary.json"
+        },
+        {
+          "label": "Analytic derivative and fitted coverage validation",
+          "path": "univariateML-cpp/include/cppunivariate/core/inference.md#analytic-derivatives-at-moving-c1-joins"
+        },
+        {
+          "label": "80-digit piecewise derivative checks",
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/derivatives.json"
+        },
+        {
+          "label": "Fitted-nuisance coverage with failure accounting",
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json"
         }
       ],
       "implementation": [
@@ -8181,11 +9573,15 @@
         }
       ],
       "checks": [
-        "dev/validation/inference-numeric-registry.py",
-        "bindings/r/tests/testthat/test-vcov.R"
+        "dev/research/evaluations/2026-11-07-infer-joins-data/check-derivatives.py",
+        "dev/research/evaluations/2026-11-07-infer-joins-data/calibrate.py",
+        "bindings/r/tests/testthat/test-vcov.R",
+        "bindings/js/vcov-test.mjs"
       ],
       "gap": "Pointwise SE/SD comparisons are not coverage validation. Evidence uses recorded truth points and held subsets, not every regime; failed replications can select results. Near-singular sn/bhatt members, bnbinom weak identification at n = 500 and invtrgamma finite-sample bias require caution.",
-      "caveats": [],
+      "caveats": [
+        "TASK-102.15 model calibration is pointwise: n=200, 800, 3200; small-sample Wald undercoverage and fit failures are retained. Huber with epsilon fitted is especially poorly calibrated at n=200. Sandwich availability does not establish misspecification robustness."
+      ],
       "monte_carlo": [
         {
           "path": "dev/research/evaluations/2026-11-01-vcov-scores-data/summary.json",
@@ -8206,6 +9602,186 @@
           "replications": 200,
           "successes": 199,
           "failure_count": 1
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gpd-6-n200",
+          "sample_size": 200,
+          "truth": [
+            1,
+            -0.25
+          ],
+          "held": {
+            "mu": 0
+          },
+          "free": [
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gpd-6-n800",
+          "sample_size": 800,
+          "truth": [
+            1,
+            -0.25
+          ],
+          "held": {
+            "mu": 0
+          },
+          "free": [
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gpd-6-n3200",
+          "sample_size": 3200,
+          "truth": [
+            1,
+            -0.25
+          ],
+          "held": {
+            "mu": 0
+          },
+          "free": [
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gpd-7-n200",
+          "sample_size": 200,
+          "truth": [
+            1,
+            0
+          ],
+          "held": {
+            "mu": 0
+          },
+          "free": [
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gpd-7-n800",
+          "sample_size": 800,
+          "truth": [
+            1,
+            0
+          ],
+          "held": {
+            "mu": 0
+          },
+          "free": [
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gpd-7-n3200",
+          "sample_size": 3200,
+          "truth": [
+            1,
+            0
+          ],
+          "held": {
+            "mu": 0
+          },
+          "free": [
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gpd-8-n200",
+          "sample_size": 200,
+          "truth": [
+            1,
+            0.25
+          ],
+          "held": {
+            "mu": 0
+          },
+          "free": [
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gpd-8-n800",
+          "sample_size": 800,
+          "truth": [
+            1,
+            0.25
+          ],
+          "held": {
+            "mu": 0
+          },
+          "free": [
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gpd-8-n3200",
+          "sample_size": 3200,
+          "truth": [
+            1,
+            0.25
+          ],
+          "held": {
+            "mu": 0
+          },
+          "free": [
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
         }
       ],
       "historical_sources": "",
@@ -8216,7 +9792,7 @@
       "regime": "known threshold regular model",
       "kind": "covariance",
       "target": "Free-coefficient covariance",
-      "status": "unreviewed",
+      "status": "implemented",
       "procedures": "Sandwich and observed covariance \u00b7 C++ and R vcov (default sandwich)",
       "theory": "Implemented numerical covariance scope; availability does not establish estimator asymptotics or coverage",
       "assumptions": "finite mu held, sigma > 0 and xi > -1/2; sigma and/or xi free, including xi = 0 with xi free; excluding the preceding available submodels; IID; successful fit interior to the stated free submodel, correct free mask and nonsingular well-conditioned sensitivity. Observed inference requires correct specification and regular estimator asymptotics; robust sandwich inference additionally requires finite score variance, an identifiable KL target and an estimating-equation expansion.",
@@ -8224,7 +9800,7 @@
       "information": "Derivative eligibility only; no automatic finite-information claim",
       "rank": "Available scopes exclude structural null directions; runtime singular, indefinite and ill-conditioned solves still fail",
       "evidence": "dev/research/evaluations/2026-11-04-infer-moving-report.md#gpd-and-gev",
-      "calibration": "dev/research/evaluations/2026-11-01-vcov-scores-report.md#monte-carlo-sanity-check",
+      "calibration": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
       "evidence_links": [
         {
           "label": "Canonical dossier",
@@ -8249,12 +9825,44 @@
         {
           "label": "Pilot Monte Carlo data",
           "path": "dev/research/evaluations/2026-11-01-vcov-scores-data/summary.json"
+        },
+        {
+          "label": "Analytic derivative and fitted coverage validation",
+          "path": "univariateML-cpp/include/cppunivariate/core/inference.md#analytic-derivatives-at-moving-c1-joins"
+        },
+        {
+          "label": "80-digit piecewise derivative checks",
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/derivatives.json"
+        },
+        {
+          "label": "Fitted-nuisance coverage with failure accounting",
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json"
         }
       ],
-      "implementation": [],
-      "checks": [],
-      "gap": "DQM and full-rank information are established, but support/join-aware numerical derivatives and fitted covariance validation for this expanded scope are not yet implemented Pointwise SE/SD comparisons are not coverage validation. Evidence uses recorded truth points and held subsets, not every regime; failed replications can select results. Near-singular sn/bhatt members, bnbinom weak identification at n = 500 and invtrgamma finite-sample bias require caution.",
-      "caveats": [],
+      "implementation": [
+        {
+          "path": "univariateML-cpp/include/cppunivariate/core/inference_families.hpp",
+          "function": "family_inference"
+        },
+        {
+          "path": "univariateML-cpp/include/cppunivariate/core/inference.hpp",
+          "function": "inference_covariance"
+        },
+        {
+          "path": "bindings/r/R/code_vcov.R",
+          "function": "vcov.univariateML"
+        }
+      ],
+      "checks": [
+        "dev/research/evaluations/2026-11-07-infer-joins-data/check-derivatives.py",
+        "dev/research/evaluations/2026-11-07-infer-joins-data/calibrate.py",
+        "bindings/r/tests/testthat/test-vcov.R",
+        "bindings/js/vcov-test.mjs"
+      ],
+      "gap": "Pointwise SE/SD comparisons are not coverage validation. Evidence uses recorded truth points and held subsets, not every regime; failed replications can select results. Near-singular sn/bhatt members, bnbinom weak identification at n = 500 and invtrgamma finite-sample bias require caution.",
+      "caveats": [
+        "TASK-102.15 model calibration is pointwise: n=200, 800, 3200; small-sample Wald undercoverage and fit failures are retained. Huber with epsilon fitted is especially poorly calibrated at n=200. Sandwich availability does not establish misspecification robustness."
+      ],
       "monte_carlo": [
         {
           "path": "dev/research/evaluations/2026-11-01-vcov-scores-data/summary.json",
@@ -8275,6 +9883,186 @@
           "replications": 200,
           "successes": 199,
           "failure_count": 1
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gpd-6-n200",
+          "sample_size": 200,
+          "truth": [
+            1,
+            -0.25
+          ],
+          "held": {
+            "mu": 0
+          },
+          "free": [
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gpd-6-n800",
+          "sample_size": 800,
+          "truth": [
+            1,
+            -0.25
+          ],
+          "held": {
+            "mu": 0
+          },
+          "free": [
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gpd-6-n3200",
+          "sample_size": 3200,
+          "truth": [
+            1,
+            -0.25
+          ],
+          "held": {
+            "mu": 0
+          },
+          "free": [
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gpd-7-n200",
+          "sample_size": 200,
+          "truth": [
+            1,
+            0
+          ],
+          "held": {
+            "mu": 0
+          },
+          "free": [
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gpd-7-n800",
+          "sample_size": 800,
+          "truth": [
+            1,
+            0
+          ],
+          "held": {
+            "mu": 0
+          },
+          "free": [
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gpd-7-n3200",
+          "sample_size": 3200,
+          "truth": [
+            1,
+            0
+          ],
+          "held": {
+            "mu": 0
+          },
+          "free": [
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gpd-8-n200",
+          "sample_size": 200,
+          "truth": [
+            1,
+            0.25
+          ],
+          "held": {
+            "mu": 0
+          },
+          "free": [
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gpd-8-n800",
+          "sample_size": 800,
+          "truth": [
+            1,
+            0.25
+          ],
+          "held": {
+            "mu": 0
+          },
+          "free": [
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gpd-8-n3200",
+          "sample_size": 3200,
+          "truth": [
+            1,
+            0.25
+          ],
+          "held": {
+            "mu": 0
+          },
+          "free": [
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
         }
       ],
       "historical_sources": "",
@@ -8293,7 +10081,7 @@
       "information": "Derivative eligibility only; no automatic finite-information claim",
       "rank": "Available scopes exclude structural null directions; runtime singular, indefinite and ill-conditioned solves still fail",
       "evidence": "dev/research/evaluations/2026-11-04-infer-moving-report.md#gpd-and-gev",
-      "calibration": "dev/research/evaluations/2026-11-01-vcov-scores-report.md#monte-carlo-sanity-check",
+      "calibration": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
       "evidence_links": [
         {
           "label": "Canonical dossier",
@@ -8318,12 +10106,26 @@
         {
           "label": "Pilot Monte Carlo data",
           "path": "dev/research/evaluations/2026-11-01-vcov-scores-data/summary.json"
+        },
+        {
+          "label": "Analytic derivative and fitted coverage validation",
+          "path": "univariateML-cpp/include/cppunivariate/core/inference.md#analytic-derivatives-at-moving-c1-joins"
+        },
+        {
+          "label": "80-digit piecewise derivative checks",
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/derivatives.json"
+        },
+        {
+          "label": "Fitted-nuisance coverage with failure accounting",
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json"
         }
       ],
       "implementation": [],
       "checks": [],
       "gap": "the endpoint has a sqrt(n log n) Gaussian experiment and its complement has root-n rate; ordinary finite Fisher inference is unavailable Pointwise SE/SD comparisons are not coverage validation. Evidence uses recorded truth points and held subsets, not every regime; failed replications can select results. Near-singular sn/bhatt members, bnbinom weak identification at n = 500 and invtrgamma finite-sample bias require caution.",
-      "caveats": [],
+      "caveats": [
+        "TASK-102.15 model calibration is pointwise: n=200, 800, 3200; small-sample Wald undercoverage and fit failures are retained. Huber with epsilon fitted is especially poorly calibrated at n=200. Sandwich availability does not establish misspecification robustness."
+      ],
       "monte_carlo": [
         {
           "path": "dev/research/evaluations/2026-11-01-vcov-scores-data/summary.json",
@@ -8344,6 +10146,186 @@
           "replications": 200,
           "successes": 199,
           "failure_count": 1
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gpd-6-n200",
+          "sample_size": 200,
+          "truth": [
+            1,
+            -0.25
+          ],
+          "held": {
+            "mu": 0
+          },
+          "free": [
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gpd-6-n800",
+          "sample_size": 800,
+          "truth": [
+            1,
+            -0.25
+          ],
+          "held": {
+            "mu": 0
+          },
+          "free": [
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gpd-6-n3200",
+          "sample_size": 3200,
+          "truth": [
+            1,
+            -0.25
+          ],
+          "held": {
+            "mu": 0
+          },
+          "free": [
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gpd-7-n200",
+          "sample_size": 200,
+          "truth": [
+            1,
+            0
+          ],
+          "held": {
+            "mu": 0
+          },
+          "free": [
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gpd-7-n800",
+          "sample_size": 800,
+          "truth": [
+            1,
+            0
+          ],
+          "held": {
+            "mu": 0
+          },
+          "free": [
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gpd-7-n3200",
+          "sample_size": 3200,
+          "truth": [
+            1,
+            0
+          ],
+          "held": {
+            "mu": 0
+          },
+          "free": [
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gpd-8-n200",
+          "sample_size": 200,
+          "truth": [
+            1,
+            0.25
+          ],
+          "held": {
+            "mu": 0
+          },
+          "free": [
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gpd-8-n800",
+          "sample_size": 800,
+          "truth": [
+            1,
+            0.25
+          ],
+          "held": {
+            "mu": 0
+          },
+          "free": [
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gpd-8-n3200",
+          "sample_size": 3200,
+          "truth": [
+            1,
+            0.25
+          ],
+          "held": {
+            "mu": 0
+          },
+          "free": [
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
         }
       ],
       "historical_sources": "",
@@ -8362,7 +10344,7 @@
       "information": "Derivative eligibility only; no automatic finite-information claim",
       "rank": "Available scopes exclude structural null directions; runtime singular, indefinite and ill-conditioned solves still fail",
       "evidence": "dev/research/evaluations/2026-11-04-infer-moving-report.md#gpd-and-gev",
-      "calibration": "dev/research/evaluations/2026-11-01-vcov-scores-report.md#monte-carlo-sanity-check",
+      "calibration": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
       "evidence_links": [
         {
           "label": "Canonical dossier",
@@ -8387,12 +10369,26 @@
         {
           "label": "Pilot Monte Carlo data",
           "path": "dev/research/evaluations/2026-11-01-vcov-scores-data/summary.json"
+        },
+        {
+          "label": "Analytic derivative and fitted coverage validation",
+          "path": "univariateML-cpp/include/cppunivariate/core/inference.md#analytic-derivatives-at-moving-c1-joins"
+        },
+        {
+          "label": "80-digit piecewise derivative checks",
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/derivatives.json"
+        },
+        {
+          "label": "Fitted-nuisance coverage with failure accounting",
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json"
         }
       ],
       "implementation": [],
       "checks": [],
       "gap": "the endpoint has a non-Gaussian Poisson experiment at rate n^(-xi); both free coordinates also permit a root-n shape tangent; free xi = -1 adds a fitted-bound constraint Pointwise SE/SD comparisons are not coverage validation. Evidence uses recorded truth points and held subsets, not every regime; failed replications can select results. Near-singular sn/bhatt members, bnbinom weak identification at n = 500 and invtrgamma finite-sample bias require caution.",
-      "caveats": [],
+      "caveats": [
+        "TASK-102.15 model calibration is pointwise: n=200, 800, 3200; small-sample Wald undercoverage and fit failures are retained. Huber with epsilon fitted is especially poorly calibrated at n=200. Sandwich availability does not establish misspecification robustness."
+      ],
       "monte_carlo": [
         {
           "path": "dev/research/evaluations/2026-11-01-vcov-scores-data/summary.json",
@@ -8413,6 +10409,186 @@
           "replications": 200,
           "successes": 199,
           "failure_count": 1
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gpd-6-n200",
+          "sample_size": 200,
+          "truth": [
+            1,
+            -0.25
+          ],
+          "held": {
+            "mu": 0
+          },
+          "free": [
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gpd-6-n800",
+          "sample_size": 800,
+          "truth": [
+            1,
+            -0.25
+          ],
+          "held": {
+            "mu": 0
+          },
+          "free": [
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gpd-6-n3200",
+          "sample_size": 3200,
+          "truth": [
+            1,
+            -0.25
+          ],
+          "held": {
+            "mu": 0
+          },
+          "free": [
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gpd-7-n200",
+          "sample_size": 200,
+          "truth": [
+            1,
+            0
+          ],
+          "held": {
+            "mu": 0
+          },
+          "free": [
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gpd-7-n800",
+          "sample_size": 800,
+          "truth": [
+            1,
+            0
+          ],
+          "held": {
+            "mu": 0
+          },
+          "free": [
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gpd-7-n3200",
+          "sample_size": 3200,
+          "truth": [
+            1,
+            0
+          ],
+          "held": {
+            "mu": 0
+          },
+          "free": [
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gpd-8-n200",
+          "sample_size": 200,
+          "truth": [
+            1,
+            0.25
+          ],
+          "held": {
+            "mu": 0
+          },
+          "free": [
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gpd-8-n800",
+          "sample_size": 800,
+          "truth": [
+            1,
+            0.25
+          ],
+          "held": {
+            "mu": 0
+          },
+          "free": [
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gpd-8-n3200",
+          "sample_size": 3200,
+          "truth": [
+            1,
+            0.25
+          ],
+          "held": {
+            "mu": 0
+          },
+          "free": [
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
         }
       ],
       "historical_sources": "",
@@ -8431,7 +10607,7 @@
       "information": "Derivative eligibility only; no automatic finite-information claim",
       "rank": "Available scopes exclude structural null directions; runtime singular, indefinite and ill-conditioned solves still fail",
       "evidence": "dev/research/evaluations/2026-11-04-infer-moving-report.md#gpd-and-gev",
-      "calibration": "dev/research/evaluations/2026-11-01-vcov-scores-report.md#monte-carlo-sanity-check",
+      "calibration": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
       "evidence_links": [
         {
           "label": "Canonical dossier",
@@ -8456,12 +10632,26 @@
         {
           "label": "Pilot Monte Carlo data",
           "path": "dev/research/evaluations/2026-11-01-vcov-scores-data/summary.json"
+        },
+        {
+          "label": "Analytic derivative and fitted coverage validation",
+          "path": "univariateML-cpp/include/cppunivariate/core/inference.md#analytic-derivatives-at-moving-c1-joins"
+        },
+        {
+          "label": "80-digit piecewise derivative checks",
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/derivatives.json"
+        },
+        {
+          "label": "Fitted-nuisance coverage with failure accounting",
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json"
         }
       ],
       "implementation": [],
       "checks": [],
       "gap": "the fitter does not estimate the threshold; known-threshold regularity does not justify this subset Pointwise SE/SD comparisons are not coverage validation. Evidence uses recorded truth points and held subsets, not every regime; failed replications can select results. Near-singular sn/bhatt members, bnbinom weak identification at n = 500 and invtrgamma finite-sample bias require caution.",
-      "caveats": [],
+      "caveats": [
+        "TASK-102.15 model calibration is pointwise: n=200, 800, 3200; small-sample Wald undercoverage and fit failures are retained. Huber with epsilon fitted is especially poorly calibrated at n=200. Sandwich availability does not establish misspecification robustness."
+      ],
       "monte_carlo": [
         {
           "path": "dev/research/evaluations/2026-11-01-vcov-scores-data/summary.json",
@@ -8482,6 +10672,186 @@
           "replications": 200,
           "successes": 199,
           "failure_count": 1
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gpd-6-n200",
+          "sample_size": 200,
+          "truth": [
+            1,
+            -0.25
+          ],
+          "held": {
+            "mu": 0
+          },
+          "free": [
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gpd-6-n800",
+          "sample_size": 800,
+          "truth": [
+            1,
+            -0.25
+          ],
+          "held": {
+            "mu": 0
+          },
+          "free": [
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gpd-6-n3200",
+          "sample_size": 3200,
+          "truth": [
+            1,
+            -0.25
+          ],
+          "held": {
+            "mu": 0
+          },
+          "free": [
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gpd-7-n200",
+          "sample_size": 200,
+          "truth": [
+            1,
+            0
+          ],
+          "held": {
+            "mu": 0
+          },
+          "free": [
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gpd-7-n800",
+          "sample_size": 800,
+          "truth": [
+            1,
+            0
+          ],
+          "held": {
+            "mu": 0
+          },
+          "free": [
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gpd-7-n3200",
+          "sample_size": 3200,
+          "truth": [
+            1,
+            0
+          ],
+          "held": {
+            "mu": 0
+          },
+          "free": [
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gpd-8-n200",
+          "sample_size": 200,
+          "truth": [
+            1,
+            0.25
+          ],
+          "held": {
+            "mu": 0
+          },
+          "free": [
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gpd-8-n800",
+          "sample_size": 800,
+          "truth": [
+            1,
+            0.25
+          ],
+          "held": {
+            "mu": 0
+          },
+          "free": [
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "gpd-8-n3200",
+          "sample_size": 3200,
+          "truth": [
+            1,
+            0.25
+          ],
+          "held": {
+            "mu": 0
+          },
+          "free": [
+            "sigma",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
         }
       ],
       "historical_sources": "",
@@ -9024,18 +11394,18 @@
     },
     {
       "family": "huber",
-      "regime": "regular finite Huber interior",
+      "regime": "regular finite interior",
       "kind": "covariance",
       "target": "Free-coefficient covariance",
-      "status": "unreviewed",
+      "status": "implemented",
       "procedures": "Sandwich and observed covariance \u00b7 C++ and R vcov (default sandwich)",
       "theory": "Implemented numerical covariance scope; availability does not establish estimator asymptotics or coverage",
-      "assumptions": "finite mu, sigma > 0 and finite epsilon > 0; any nonempty free subset; observed information uses the a.e. piecewise Hessian with defined join handling; normal and Laplace limits are excluded; IID; successful fit interior to the stated free submodel, correct free mask and nonsingular well-conditioned sensitivity. Observed inference requires correct specification and regular estimator asymptotics; robust sandwich inference additionally requires finite score variance, an identifiable KL target and an estimating-equation expansion.",
+      "assumptions": "finite mu, sigma > 0 and finite epsilon > 0; any free subset; normal and Laplace limits excluded; analytic piecewise natural-coordinate derivatives; successful interior fit and nonsingular information required; IID; successful fit interior to the stated free submodel, correct free mask and nonsingular well-conditioned sensitivity. Observed inference requires correct specification and regular estimator asymptotics; robust sandwich inference additionally requires finite score variance, an identifiable KL target and an estimating-equation expansion.",
       "dqm": "Conditional classification in the linked source",
       "information": "Derivative eligibility only; no automatic finite-information claim",
       "rank": "Available scopes exclude structural null directions; runtime singular, indefinite and ill-conditioned solves still fail",
       "evidence": "dev/research/evaluations/2026-11-04-infer-moving-report.md#huber",
-      "calibration": "dev/research/evaluations/2026-11-01-vcov-scores-report.md#monte-carlo-sanity-check",
+      "calibration": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
       "evidence_links": [
         {
           "label": "Canonical dossier",
@@ -9052,13 +11422,106 @@
         {
           "label": "R vcov interface and assumptions",
           "path": "dev/research/evaluations/2026-11-01-vcov-r-report.md#interface-and-mathematical-scope"
+        },
+        {
+          "label": "Analytic derivative and fitted coverage validation",
+          "path": "univariateML-cpp/include/cppunivariate/core/inference.md#analytic-derivatives-at-moving-c1-joins"
+        },
+        {
+          "label": "80-digit piecewise derivative checks",
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/derivatives.json"
+        },
+        {
+          "label": "Fitted-nuisance coverage with failure accounting",
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json"
         }
       ],
-      "implementation": [],
-      "checks": [],
-      "gap": "DQM and full-rank information are established, but support/join-aware numerical derivatives and fitted covariance validation for this expanded scope are not yet implemented Pointwise SE/SD comparisons are not coverage validation. Evidence uses recorded truth points and held subsets, not every regime; failed replications can select results. Near-singular sn/bhatt members, bnbinom weak identification at n = 500 and invtrgamma finite-sample bias require caution.",
-      "caveats": [],
-      "monte_carlo": [],
+      "implementation": [
+        {
+          "path": "univariateML-cpp/include/cppunivariate/core/inference_families.hpp",
+          "function": "family_inference"
+        },
+        {
+          "path": "univariateML-cpp/include/cppunivariate/core/inference.hpp",
+          "function": "inference_covariance"
+        },
+        {
+          "path": "bindings/r/R/code_vcov.R",
+          "function": "vcov.univariateML"
+        }
+      ],
+      "checks": [
+        "dev/research/evaluations/2026-11-07-infer-joins-data/check-derivatives.py",
+        "dev/research/evaluations/2026-11-07-infer-joins-data/calibrate.py",
+        "bindings/r/tests/testthat/test-vcov.R",
+        "bindings/js/vcov-test.mjs"
+      ],
+      "gap": "Pointwise SE/SD comparisons are not coverage validation. Evidence uses recorded truth points and held subsets, not every regime; failed replications can select results. Near-singular sn/bhatt members, bnbinom weak identification at n = 500 and invtrgamma finite-sample bias require caution.",
+      "caveats": [
+        "TASK-102.15 model calibration is pointwise: n=200, 800, 3200; small-sample Wald undercoverage and fit failures are retained. Huber with epsilon fitted is especially poorly calibrated at n=200. Sandwich availability does not establish misspecification robustness."
+      ],
+      "monte_carlo": [
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "huber-4-n200",
+          "sample_size": 200,
+          "truth": [
+            0,
+            1,
+            1
+          ],
+          "held": {},
+          "free": [
+            "mu",
+            "sigma",
+            "epsilon"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 295,
+          "failure_count": 5
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "huber-4-n800",
+          "sample_size": 800,
+          "truth": [
+            0,
+            1,
+            1
+          ],
+          "held": {},
+          "free": [
+            "mu",
+            "sigma",
+            "epsilon"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "huber-4-n3200",
+          "sample_size": 3200,
+          "truth": [
+            0,
+            1,
+            1
+          ],
+          "held": {},
+          "free": [
+            "mu",
+            "sigma",
+            "epsilon"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        }
+      ],
       "historical_sources": "",
       "historical_validation": ""
     },
@@ -12482,18 +14945,18 @@
     },
     {
       "family": "pig",
-      "regime": "unreviewed or unavailable",
+      "regime": "regular finite interior",
       "kind": "covariance",
       "target": "Free-coefficient covariance",
-      "status": "unreviewed",
+      "status": "implemented",
       "procedures": "Sandwich and observed covariance \u00b7 C++ and R vcov (default sandwich)",
       "theory": "Implemented numerical covariance scope; availability does not establish estimator asymptotics or coverage",
-      "assumptions": "interior joint regime; IID; successful fit interior to the stated free submodel, correct free mask and nonsingular well-conditioned sensitivity. Observed inference requires correct specification and regular estimator asymptotics; robust sandwich inference additionally requires finite score variance, an identifiable KL target and an estimating-equation expansion.",
+      "assumptions": "finite mean > 0 and finite shape > 0; any free subset; zero mass and Poisson faces excluded; analytic piecewise natural-coordinate derivatives; successful interior fit and nonsingular information required; IID; successful fit interior to the stated free submodel, correct free mask and nonsingular well-conditioned sensitivity. Observed inference requires correct specification and regular estimator asymptotics; robust sandwich inference additionally requires finite score variance, an identifiable KL target and an estimating-equation expansion.",
       "dqm": "Conditional classification in the linked source",
       "information": "Derivative eligibility only; no automatic finite-information claim",
       "rank": "Available scopes exclude structural null directions; runtime singular, indefinite and ill-conditioned solves still fail",
       "evidence": "dev/research/evaluations/2026-11-04-dqm-c-report.md#e-poisson-inverse-gaussian",
-      "calibration": "dev/research/evaluations/2026-11-01-vcov-scores-report.md#monte-carlo-sanity-check",
+      "calibration": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
       "evidence_links": [
         {
           "label": "Canonical dossier",
@@ -12510,13 +14973,100 @@
         {
           "label": "R vcov interface and assumptions",
           "path": "dev/research/evaluations/2026-11-01-vcov-r-report.md#interface-and-mathematical-scope"
+        },
+        {
+          "label": "Analytic derivative and fitted coverage validation",
+          "path": "univariateML-cpp/include/cppunivariate/core/inference.md#analytic-derivatives-at-moving-c1-joins"
+        },
+        {
+          "label": "80-digit piecewise derivative checks",
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/derivatives.json"
+        },
+        {
+          "label": "Fitted-nuisance coverage with failure accounting",
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json"
         }
       ],
-      "implementation": [],
-      "checks": [],
-      "gap": "DQM, finite full-rank information and a valid a.e. Hessian are established; numerical derivative and covariance validation for the expanded subsets is not yet implemented Pointwise SE/SD comparisons are not coverage validation. Evidence uses recorded truth points and held subsets, not every regime; failed replications can select results. Near-singular sn/bhatt members, bnbinom weak identification at n = 500 and invtrgamma finite-sample bias require caution.",
-      "caveats": [],
-      "monte_carlo": [],
+      "implementation": [
+        {
+          "path": "univariateML-cpp/include/cppunivariate/core/inference_families.hpp",
+          "function": "family_inference"
+        },
+        {
+          "path": "univariateML-cpp/include/cppunivariate/core/inference.hpp",
+          "function": "inference_covariance"
+        },
+        {
+          "path": "bindings/r/R/code_vcov.R",
+          "function": "vcov.univariateML"
+        }
+      ],
+      "checks": [
+        "dev/research/evaluations/2026-11-07-infer-joins-data/check-derivatives.py",
+        "dev/research/evaluations/2026-11-07-infer-joins-data/calibrate.py",
+        "bindings/r/tests/testthat/test-vcov.R",
+        "bindings/js/vcov-test.mjs"
+      ],
+      "gap": "Pointwise SE/SD comparisons are not coverage validation. Evidence uses recorded truth points and held subsets, not every regime; failed replications can select results. Near-singular sn/bhatt members, bnbinom weak identification at n = 500 and invtrgamma finite-sample bias require caution.",
+      "caveats": [
+        "TASK-102.15 model calibration is pointwise: n=200, 800, 3200; small-sample Wald undercoverage and fit failures are retained. Huber with epsilon fitted is especially poorly calibrated at n=200. Sandwich availability does not establish misspecification robustness."
+      ],
+      "monte_carlo": [
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "pig-5-n200",
+          "sample_size": 200,
+          "truth": [
+            2,
+            3
+          ],
+          "held": {},
+          "free": [
+            "mean",
+            "shape"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "pig-5-n800",
+          "sample_size": 800,
+          "truth": [
+            2,
+            3
+          ],
+          "held": {},
+          "free": [
+            "mean",
+            "shape"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "pig-5-n3200",
+          "sample_size": 3200,
+          "truth": [
+            2,
+            3
+          ],
+          "held": {},
+          "free": [
+            "mean",
+            "shape"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        }
+      ],
       "historical_sources": "",
       "historical_validation": ""
     },
@@ -13954,18 +16504,18 @@
     },
     {
       "family": "snorm",
-      "regime": "symmetric member with skew held",
+      "regime": "regular finite interior",
       "kind": "covariance",
       "target": "Free-coefficient covariance",
       "status": "implemented",
       "procedures": "Sandwich and observed covariance \u00b7 C++ and R vcov (default sandwich)",
       "theory": "Implemented numerical covariance scope; availability does not establish estimator asymptotics or coverage",
-      "assumptions": "finite mean and sd > 0; xi = 1 held; mean and/or sd free; IID; successful fit interior to the stated free submodel, correct free mask and nonsingular well-conditioned sensitivity. Observed inference requires correct specification and regular estimator asymptotics; robust sandwich inference additionally requires finite score variance, an identifiable KL target and an estimating-equation expansion.",
+      "assumptions": "finite mean, sd > 0 and finite xi > 0; any free subset, including xi = 1 with xi free; analytic piecewise natural-coordinate derivatives; successful interior fit and nonsingular information required; IID; successful fit interior to the stated free submodel, correct free mask and nonsingular well-conditioned sensitivity. Observed inference requires correct specification and regular estimator asymptotics; robust sandwich inference additionally requires finite score variance, an identifiable KL target and an estimating-equation expansion.",
       "dqm": "Conditional classification in the linked source",
       "information": "Derivative eligibility only; no automatic finite-information claim",
       "rank": "Available scopes exclude structural null directions; runtime singular, indefinite and ill-conditioned solves still fail",
       "evidence": "dev/research/evaluations/2026-11-04-infer-moving-report.md#two-piece-normal-snorm",
-      "calibration": "dev/research/evaluations/2026-11-01-vcov-scores-report.md#monte-carlo-sanity-check",
+      "calibration": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
       "evidence_links": [
         {
           "label": "Canonical dossier",
@@ -13990,6 +16540,18 @@
         {
           "label": "Pilot Monte Carlo data",
           "path": "dev/research/evaluations/2026-11-01-vcov-scores-data/summary.json"
+        },
+        {
+          "label": "Analytic derivative and fitted coverage validation",
+          "path": "univariateML-cpp/include/cppunivariate/core/inference.md#analytic-derivatives-at-moving-c1-joins"
+        },
+        {
+          "label": "80-digit piecewise derivative checks",
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/derivatives.json"
+        },
+        {
+          "label": "Fitted-nuisance coverage with failure accounting",
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json"
         }
       ],
       "implementation": [
@@ -14007,11 +16569,15 @@
         }
       ],
       "checks": [
-        "dev/validation/inference-numeric-registry.py",
-        "bindings/r/tests/testthat/test-vcov.R"
+        "dev/research/evaluations/2026-11-07-infer-joins-data/check-derivatives.py",
+        "dev/research/evaluations/2026-11-07-infer-joins-data/calibrate.py",
+        "bindings/r/tests/testthat/test-vcov.R",
+        "bindings/js/vcov-test.mjs"
       ],
       "gap": "Pointwise SE/SD comparisons are not coverage validation. Evidence uses recorded truth points and held subsets, not every regime; failed replications can select results. Near-singular sn/bhatt members, bnbinom weak identification at n = 500 and invtrgamma finite-sample bias require caution.",
-      "caveats": [],
+      "caveats": [
+        "TASK-102.15 model calibration is pointwise: n=200, 800, 3200; small-sample Wald undercoverage and fit failures are retained. Huber with epsilon fitted is especially poorly calibrated at n=200. Sandwich availability does not establish misspecification robustness."
+      ],
       "monte_carlo": [
         {
           "path": "dev/research/evaluations/2026-11-01-vcov-scores-data/summary.json",
@@ -14032,161 +16598,125 @@
           "replications": 200,
           "successes": 200,
           "failure_count": 0
-        }
-      ],
-      "historical_sources": "",
-      "historical_validation": ""
-    },
-    {
-      "family": "snorm",
-      "regime": "regular two-piece normal interior",
-      "kind": "covariance",
-      "target": "Free-coefficient covariance",
-      "status": "unreviewed",
-      "procedures": "Sandwich and observed covariance \u00b7 C++ and R vcov (default sandwich)",
-      "theory": "Implemented numerical covariance scope; availability does not establish estimator asymptotics or coverage",
-      "assumptions": "finite mean, sd > 0 and finite xi > 0; any nonempty free subset, including xi = 1 with xi free; observed information uses the a.e. piecewise Hessian with defined join handling; excluding the preceding available submodels; IID; successful fit interior to the stated free submodel, correct free mask and nonsingular well-conditioned sensitivity. Observed inference requires correct specification and regular estimator asymptotics; robust sandwich inference additionally requires finite score variance, an identifiable KL target and an estimating-equation expansion.",
-      "dqm": "Conditional classification in the linked source",
-      "information": "Derivative eligibility only; no automatic finite-information claim",
-      "rank": "Available scopes exclude structural null directions; runtime singular, indefinite and ill-conditioned solves still fail",
-      "evidence": "dev/research/evaluations/2026-11-04-infer-moving-report.md#two-piece-normal-snorm",
-      "calibration": "dev/research/evaluations/2026-11-01-vcov-scores-report.md#monte-carlo-sanity-check",
-      "evidence_links": [
-        {
-          "label": "Canonical dossier",
-          "path": "univariateML-cpp/include/cppunivariate/distributions/snorm/README.md"
         },
         {
-          "label": "Independent derivative validation",
-          "path": "dev/research/evaluations/2026-11-01-vcov-scores-report.md#independent-derivative-validation"
-        },
-        {
-          "label": "Pilot Monte Carlo table",
-          "path": "dev/research/evaluations/2026-11-01-vcov-scores-report.md#monte-carlo-sanity-check"
-        },
-        {
-          "label": "R vcov interface and assumptions",
-          "path": "dev/research/evaluations/2026-11-01-vcov-r-report.md#interface-and-mathematical-scope"
-        },
-        {
-          "label": "Derivative results: validator-special",
-          "path": "dev/research/evaluations/2026-11-01-vcov-scores-data/validator-special.json"
-        },
-        {
-          "label": "Pilot Monte Carlo data",
-          "path": "dev/research/evaluations/2026-11-01-vcov-scores-data/summary.json"
-        }
-      ],
-      "implementation": [],
-      "checks": [],
-      "gap": "DQM and full-rank information are established, but support/join-aware numerical derivatives and fitted covariance validation for this expanded scope are not yet implemented Pointwise SE/SD comparisons are not coverage validation. Evidence uses recorded truth points and held subsets, not every regime; failed replications can select results. Near-singular sn/bhatt members, bnbinom weak identification at n = 500 and invtrgamma finite-sample bias require caution.",
-      "caveats": [],
-      "monte_carlo": [
-        {
-          "path": "dev/research/evaluations/2026-11-01-vcov-scores-data/summary.json",
-          "sample_size": 500,
-          "truth": {
-            "mean": 0.0,
-            "sd": 1.0,
-            "xi": 1
-          },
-          "held": [
-            "xi"
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "snorm-0-n200",
+          "sample_size": 200,
+          "truth": [
+            0,
+            1,
+            1.5
           ],
-          "free": [
-            "mean",
-            "sd"
-          ],
-          "status": "complete",
-          "replications": 200,
-          "successes": 200,
-          "failure_count": 0
-        }
-      ],
-      "historical_sources": "",
-      "historical_validation": ""
-    },
-    {
-      "family": "sstd",
-      "regime": "symmetric member with skew held",
-      "kind": "covariance",
-      "target": "Free-coefficient covariance",
-      "status": "implemented",
-      "procedures": "Sandwich and observed covariance \u00b7 C++ and R vcov (default sandwich)",
-      "theory": "Implemented numerical covariance scope; availability does not establish estimator asymptotics or coverage",
-      "assumptions": "finite mean, sd > 0 and nu > 2; xi = 1 held; any other subset free; IID; successful fit interior to the stated free submodel, correct free mask and nonsingular well-conditioned sensitivity. Observed inference requires correct specification and regular estimator asymptotics; robust sandwich inference additionally requires finite score variance, an identifiable KL target and an estimating-equation expansion.",
-      "dqm": "Conditional classification in the linked source",
-      "information": "Derivative eligibility only; no automatic finite-information claim",
-      "rank": "Available scopes exclude structural null directions; runtime singular, indefinite and ill-conditioned solves still fail",
-      "evidence": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification",
-      "calibration": "dev/research/evaluations/2026-11-01-vcov-scores-report.md#monte-carlo-sanity-check",
-      "evidence_links": [
-        {
-          "label": "Canonical dossier",
-          "path": "univariateML-cpp/include/cppunivariate/distributions/sstd/README.md"
-        },
-        {
-          "label": "Independent derivative validation",
-          "path": "dev/research/evaluations/2026-11-01-vcov-scores-report.md#independent-derivative-validation"
-        },
-        {
-          "label": "Pilot Monte Carlo table",
-          "path": "dev/research/evaluations/2026-11-01-vcov-scores-report.md#monte-carlo-sanity-check"
-        },
-        {
-          "label": "R vcov interface and assumptions",
-          "path": "dev/research/evaluations/2026-11-01-vcov-r-report.md#interface-and-mathematical-scope"
-        },
-        {
-          "label": "Derivative results: validator-special",
-          "path": "dev/research/evaluations/2026-11-01-vcov-scores-data/validator-special.json"
-        },
-        {
-          "label": "Pilot Monte Carlo data",
-          "path": "dev/research/evaluations/2026-11-01-vcov-scores-data/summary.json"
-        }
-      ],
-      "implementation": [
-        {
-          "path": "univariateML-cpp/include/cppunivariate/core/inference_families.hpp",
-          "function": "family_inference"
-        },
-        {
-          "path": "univariateML-cpp/include/cppunivariate/core/inference.hpp",
-          "function": "inference_covariance"
-        },
-        {
-          "path": "bindings/r/R/code_vcov.R",
-          "function": "vcov.univariateML"
-        }
-      ],
-      "checks": [
-        "dev/validation/inference-numeric-registry.py",
-        "bindings/r/tests/testthat/test-vcov.R"
-      ],
-      "gap": "Pointwise SE/SD comparisons are not coverage validation. Evidence uses recorded truth points and held subsets, not every regime; failed replications can select results. Near-singular sn/bhatt members, bnbinom weak identification at n = 500 and invtrgamma finite-sample bias require caution.",
-      "caveats": [],
-      "monte_carlo": [
-        {
-          "path": "dev/research/evaluations/2026-11-01-vcov-scores-data/summary.json",
-          "sample_size": 500,
-          "truth": {
-            "mean": 0.0,
-            "sd": 1.0,
-            "nu": 5.0,
-            "xi": 1
-          },
-          "held": [
-            "xi"
-          ],
+          "held": {},
           "free": [
             "mean",
             "sd",
-            "nu"
+            "xi"
           ],
-          "status": "complete",
-          "replications": 200,
-          "successes": 200,
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "snorm-0-n800",
+          "sample_size": 800,
+          "truth": [
+            0,
+            1,
+            1.5
+          ],
+          "held": {},
+          "free": [
+            "mean",
+            "sd",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "snorm-0-n3200",
+          "sample_size": 3200,
+          "truth": [
+            0,
+            1,
+            1.5
+          ],
+          "held": {},
+          "free": [
+            "mean",
+            "sd",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "snorm-1-n200",
+          "sample_size": 200,
+          "truth": [
+            0,
+            1,
+            1
+          ],
+          "held": {},
+          "free": [
+            "mean",
+            "sd",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "snorm-1-n800",
+          "sample_size": 800,
+          "truth": [
+            0,
+            1,
+            1
+          ],
+          "held": {},
+          "free": [
+            "mean",
+            "sd",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "snorm-1-n3200",
+          "sample_size": 3200,
+          "truth": [
+            0,
+            1,
+            1
+          ],
+          "held": {},
+          "free": [
+            "mean",
+            "sd",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
           "failure_count": 0
         }
       ],
@@ -14195,18 +16725,18 @@
     },
     {
       "family": "sstd",
-      "regime": "unreviewed or unavailable",
+      "regime": "regular finite interior",
       "kind": "covariance",
       "target": "Free-coefficient covariance",
-      "status": "unreviewed",
+      "status": "implemented",
       "procedures": "Sandwich and observed covariance \u00b7 C++ and R vcov (default sandwich)",
       "theory": "Implemented numerical covariance scope; availability does not establish estimator asymptotics or coverage",
-      "assumptions": "finite mean, sd > 0 and nu > 2, xi > 0; xi free or xi != 1; IID; successful fit interior to the stated free submodel, correct free mask and nonsingular well-conditioned sensitivity. Observed inference requires correct specification and regular estimator asymptotics; robust sandwich inference additionally requires finite score variance, an identifiable KL target and an estimating-equation expansion.",
+      "assumptions": "finite mean, sd > 0, finite nu > 2 and finite xi > 0; any free subset, including xi = 1 with xi free; analytic piecewise natural-coordinate derivatives; successful interior fit and nonsingular information required; IID; successful fit interior to the stated free submodel, correct free mask and nonsingular well-conditioned sensitivity. Observed inference requires correct specification and regular estimator asymptotics; robust sandwich inference additionally requires finite score variance, an identifiable KL target and an estimating-equation expansion.",
       "dqm": "Conditional classification in the linked source",
       "information": "Derivative eligibility only; no automatic finite-information claim",
       "rank": "Available scopes exclude structural null directions; runtime singular, indefinite and ill-conditioned solves still fail",
       "evidence": "dev/research/evaluations/2026-11-04-dqm-b-report.md#two-piece-models-snorm-sstd-and-sged",
-      "calibration": "dev/research/evaluations/2026-11-01-vcov-scores-report.md#monte-carlo-sanity-check",
+      "calibration": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
       "evidence_links": [
         {
           "label": "Canonical dossier",
@@ -14231,12 +16761,44 @@
         {
           "label": "Pilot Monte Carlo data",
           "path": "dev/research/evaluations/2026-11-01-vcov-scores-data/summary.json"
+        },
+        {
+          "label": "Analytic derivative and fitted coverage validation",
+          "path": "univariateML-cpp/include/cppunivariate/core/inference.md#analytic-derivatives-at-moving-c1-joins"
+        },
+        {
+          "label": "80-digit piecewise derivative checks",
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/derivatives.json"
+        },
+        {
+          "label": "Fitted-nuisance coverage with failure accounting",
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json"
         }
       ],
-      "implementation": [],
-      "checks": [],
-      "gap": "DQM, finite full-rank information and a valid a.e. Hessian are established; numerical derivative and covariance validation for the expanded subsets is not yet implemented Pointwise SE/SD comparisons are not coverage validation. Evidence uses recorded truth points and held subsets, not every regime; failed replications can select results. Near-singular sn/bhatt members, bnbinom weak identification at n = 500 and invtrgamma finite-sample bias require caution.",
-      "caveats": [],
+      "implementation": [
+        {
+          "path": "univariateML-cpp/include/cppunivariate/core/inference_families.hpp",
+          "function": "family_inference"
+        },
+        {
+          "path": "univariateML-cpp/include/cppunivariate/core/inference.hpp",
+          "function": "inference_covariance"
+        },
+        {
+          "path": "bindings/r/R/code_vcov.R",
+          "function": "vcov.univariateML"
+        }
+      ],
+      "checks": [
+        "dev/research/evaluations/2026-11-07-infer-joins-data/check-derivatives.py",
+        "dev/research/evaluations/2026-11-07-infer-joins-data/calibrate.py",
+        "bindings/r/tests/testthat/test-vcov.R",
+        "bindings/js/vcov-test.mjs"
+      ],
+      "gap": "Pointwise SE/SD comparisons are not coverage validation. Evidence uses recorded truth points and held subsets, not every regime; failed replications can select results. Near-singular sn/bhatt members, bnbinom weak identification at n = 500 and invtrgamma finite-sample bias require caution.",
+      "caveats": [
+        "TASK-102.15 model calibration is pointwise: n=200, 800, 3200; small-sample Wald undercoverage and fit failures are retained. Huber with epsilon fitted is especially poorly calibrated at n=200. Sandwich availability does not establish misspecification robustness."
+      ],
       "monte_carlo": [
         {
           "path": "dev/research/evaluations/2026-11-01-vcov-scores-data/summary.json",
@@ -14258,6 +16820,138 @@
           "status": "complete",
           "replications": 200,
           "successes": 200,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "sstd-2-n200",
+          "sample_size": 200,
+          "truth": [
+            0,
+            1,
+            5,
+            1.5
+          ],
+          "held": {},
+          "free": [
+            "mean",
+            "sd",
+            "nu",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 297,
+          "failure_count": 3
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "sstd-2-n800",
+          "sample_size": 800,
+          "truth": [
+            0,
+            1,
+            5,
+            1.5
+          ],
+          "held": {},
+          "free": [
+            "mean",
+            "sd",
+            "nu",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "sstd-2-n3200",
+          "sample_size": 3200,
+          "truth": [
+            0,
+            1,
+            5,
+            1.5
+          ],
+          "held": {},
+          "free": [
+            "mean",
+            "sd",
+            "nu",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "sstd-3-n200",
+          "sample_size": 200,
+          "truth": [
+            0,
+            1,
+            5,
+            1
+          ],
+          "held": {},
+          "free": [
+            "mean",
+            "sd",
+            "nu",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 294,
+          "failure_count": 6
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "sstd-3-n800",
+          "sample_size": 800,
+          "truth": [
+            0,
+            1,
+            5,
+            1
+          ],
+          "held": {},
+          "free": [
+            "mean",
+            "sd",
+            "nu",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
+          "failure_count": 0
+        },
+        {
+          "path": "dev/research/evaluations/2026-11-07-infer-joins-data/calibration.json",
+          "record_key": "sstd-3-n3200",
+          "sample_size": 3200,
+          "truth": [
+            0,
+            1,
+            5,
+            1
+          ],
+          "held": {},
+          "free": [
+            "mean",
+            "sd",
+            "nu",
+            "xi"
+          ],
+          "status": "pointwise model calibration",
+          "replications": 300,
+          "successes": 300,
           "failure_count": 0
         }
       ],
@@ -18981,8 +21675,8 @@
         "regime": "size zero",
         "available": false,
         "condition": "known integer size = 0 held; the law is a point mass and every regular score is zero",
-        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels",
-        "reason": "The free information is structurally singular; neither observed nor sandwich covariance can be inverted"
+        "reason": "The free information is structurally singular; neither observed nor sandwich covariance can be inverted",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
       },
       {
         "regime": "size one with one shape known",
@@ -18994,8 +21688,8 @@
         "regime": "size one with both shapes free",
         "available": false,
         "condition": "known size = 1; both positive finite shapes free; DQM and pointwise C2 hold, but joint information has rank one and covariance is singular",
-        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels",
-        "reason": "The free information is structurally singular; neither observed nor sandwich covariance can be inverted"
+        "reason": "The free information is structurally singular; neither observed nor sandwich covariance can be inverted",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
       },
       {
         "regime": "primary interior",
@@ -19099,8 +21793,8 @@
         "regime": "size zero",
         "available": false,
         "condition": "known integer size = 0 held; the law is a point mass and every regular score is zero",
-        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels",
-        "reason": "The free information is structurally singular; neither observed nor sandwich covariance can be inverted"
+        "reason": "The free information is structurally singular; neither observed nor sandwich covariance can be inverted",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
       },
       {
         "regime": "size one with dispersion known",
@@ -19112,8 +21806,8 @@
         "regime": "size one with dispersion free",
         "available": false,
         "condition": "known size = 1; nu free; DQM and pointwise C2 hold but the dispersion score is identically zero",
-        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels",
-        "reason": "The free information is structurally singular; neither observed nor sandwich covariance can be inverted"
+        "reason": "The free information is structurally singular; neither observed nor sandwich covariance can be inverted",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
       },
       {
         "regime": "primary interior",
@@ -19284,8 +21978,8 @@
         "regime": "moving location with smooth or held shape",
         "available": false,
         "condition": "finite mean free, sd > 0; either nu > 2, or nu > 1 is held; sd may be held or fitted; excluding the preceding available submodels",
-        "classification": "dev/research/evaluations/2026-11-04-infer-moving-report.md#ged",
-        "reason": "DQM and full-rank information are established, but support/join-aware numerical derivatives and fitted covariance validation for this expanded scope are not yet implemented"
+        "reason": "DQM and full-rank information are established, but support/join-aware numerical derivatives and fitted covariance validation for this expanded scope are not yet implemented",
+        "classification": "dev/research/evaluations/2026-11-04-infer-moving-report.md#ged"
       },
       {
         "regime": "joint fitted cusp Hessian open",
@@ -19355,10 +22049,9 @@
       },
       {
         "regime": "regular interior model",
-        "available": false,
+        "available": true,
         "condition": "finite mu, sigma > 0 and xi > -1/2; any nonempty supported free subset; if xi is free require xi < 1; excluding the preceding available submodels",
-        "classification": "dev/research/evaluations/2026-11-04-infer-moving-report.md#gpd-and-gev",
-        "reason": "DQM and full-rank information are established, but support/join-aware numerical derivatives and fitted covariance validation for this expanded scope are not yet implemented"
+        "classification": "dev/research/evaluations/2026-11-04-infer-moving-report.md#gpd-and-gev"
       },
       {
         "regime": "critical upper endpoint",
@@ -19412,10 +22105,9 @@
       },
       {
         "regime": "known threshold regular model",
-        "available": false,
+        "available": true,
         "condition": "finite mu held, sigma > 0 and xi > -1/2; sigma and/or xi free, including xi = 0 with xi free; excluding the preceding available submodels",
-        "classification": "dev/research/evaluations/2026-11-04-infer-moving-report.md#gpd-and-gev",
-        "reason": "DQM and full-rank information are established, but support/join-aware numerical derivatives and fitted covariance validation for this expanded scope are not yet implemented"
+        "classification": "dev/research/evaluations/2026-11-04-infer-moving-report.md#gpd-and-gev"
       },
       {
         "regime": "critical upper endpoint",
@@ -19494,11 +22186,10 @@
     ],
     "huber": [
       {
-        "regime": "regular finite Huber interior",
-        "available": false,
-        "condition": "finite mu, sigma > 0 and finite epsilon > 0; any nonempty free subset; observed information uses the a.e. piecewise Hessian with defined join handling; normal and Laplace limits are excluded",
-        "classification": "dev/research/evaluations/2026-11-04-infer-moving-report.md#huber",
-        "reason": "DQM and full-rank information are established, but support/join-aware numerical derivatives and fitted covariance validation for this expanded scope are not yet implemented"
+        "regime": "regular finite interior",
+        "available": true,
+        "condition": "finite mu, sigma > 0 and finite epsilon > 0; any free subset; normal and Laplace limits excluded; analytic piecewise natural-coordinate derivatives; successful interior fit and nonsingular information required",
+        "classification": "dev/research/evaluations/2026-11-04-infer-moving-report.md#huber"
       }
     ],
     "hyper": [
@@ -19835,10 +22526,9 @@
     ],
     "pig": [
       {
-        "regime": "unreviewed or unavailable",
-        "available": false,
-        "condition": "interior joint regime",
-        "reason": "DQM, finite full-rank information and a valid a.e. Hessian are established; numerical derivative and covariance validation for the expanded subsets is not yet implemented",
+        "regime": "regular finite interior",
+        "available": true,
+        "condition": "finite mean > 0 and finite shape > 0; any free subset; zero mass and Poisson faces excluded; analytic piecewise natural-coordinate derivatives; successful interior fit and nonsingular information required",
         "classification": "dev/research/evaluations/2026-11-04-dqm-c-report.md#e-poisson-inverse-gaussian"
       }
     ],
@@ -19954,31 +22644,17 @@
     ],
     "snorm": [
       {
-        "regime": "symmetric member with skew held",
+        "regime": "regular finite interior",
         "available": true,
-        "condition": "finite mean and sd > 0; xi = 1 held; mean and/or sd free",
+        "condition": "finite mean, sd > 0 and finite xi > 0; any free subset, including xi = 1 with xi free; analytic piecewise natural-coordinate derivatives; successful interior fit and nonsingular information required",
         "classification": "dev/research/evaluations/2026-11-04-infer-moving-report.md#two-piece-normal-snorm"
-      },
-      {
-        "regime": "regular two-piece normal interior",
-        "available": false,
-        "condition": "finite mean, sd > 0 and finite xi > 0; any nonempty free subset, including xi = 1 with xi free; observed information uses the a.e. piecewise Hessian with defined join handling; excluding the preceding available submodels",
-        "classification": "dev/research/evaluations/2026-11-04-infer-moving-report.md#two-piece-normal-snorm",
-        "reason": "DQM and full-rank information are established, but support/join-aware numerical derivatives and fitted covariance validation for this expanded scope are not yet implemented"
       }
     ],
     "sstd": [
       {
-        "regime": "symmetric member with skew held",
+        "regime": "regular finite interior",
         "available": true,
-        "condition": "finite mean, sd > 0 and nu > 2; xi = 1 held; any other subset free",
-        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
-      },
-      {
-        "regime": "unreviewed or unavailable",
-        "available": false,
-        "condition": "finite mean, sd > 0 and nu > 2, xi > 0; xi free or xi != 1",
-        "reason": "DQM, finite full-rank information and a valid a.e. Hessian are established; numerical derivative and covariance validation for the expanded subsets is not yet implemented",
+        "condition": "finite mean, sd > 0, finite nu > 2 and finite xi > 0; any free subset, including xi = 1 with xi free; analytic piecewise natural-coordinate derivatives; successful interior fit and nonsingular information required",
         "classification": "dev/research/evaluations/2026-11-04-dqm-b-report.md#two-piece-models-snorm-sstd-and-sged"
       }
     ],
@@ -20004,8 +22680,8 @@
         "regime": "singleton retained support",
         "available": false,
         "condition": "known design and truncation bounds with exactly one retained integer; probability free in (0,1); the conditional law is a point mass, so information is zero",
-        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels",
-        "reason": "The free information is structurally singular; neither observed nor sandwich covariance can be inverted"
+        "reason": "The free information is structurally singular; neither observed nor sandwich covariance can be inverted",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
       },
       {
         "regime": "primary interior",
@@ -20019,8 +22695,8 @@
         "regime": "regular interior model",
         "available": false,
         "condition": "finite mu, sigma > 0 and lambda < 1/2; any nonempty supported free subset; if lambda and mu are free require lambda > -1",
-        "classification": "dev/research/evaluations/2026-11-04-infer-moving-report.md#tukey-lambda",
-        "reason": "DQM and full-rank information are established, but support/join-aware numerical derivatives and fitted covariance validation for this expanded scope are not yet implemented"
+        "reason": "DQM and full-rank information are established, but support/join-aware numerical derivatives and fitted covariance validation for this expanded scope are not yet implemented",
+        "classification": "dev/research/evaluations/2026-11-04-infer-moving-report.md#tukey-lambda"
       },
       {
         "regime": "active lower fitted shape bound",
@@ -20057,8 +22733,8 @@
         "regime": "singleton retained support",
         "available": false,
         "condition": "known truncation bounds with exactly one retained integer; finite lambda > 0 free; the conditional law is a point mass, so information is zero",
-        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels",
-        "reason": "The free information is structurally singular; neither observed nor sandwich covariance can be inverted"
+        "reason": "The free information is structurally singular; neither observed nor sandwich covariance can be inverted",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
       },
       {
         "regime": "primary interior",
@@ -20143,8 +22819,8 @@
         "regime": "size zero",
         "available": false,
         "condition": "known integer size = 0 held; the law is a point mass and every regular score is zero",
-        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels",
-        "reason": "The free information is structurally singular; neither observed nor sandwich covariance can be inverted"
+        "reason": "The free information is structurally singular; neither observed nor sandwich covariance can be inverted",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
       },
       {
         "regime": "known unit binomial probability",
@@ -20162,8 +22838,8 @@
         "regime": "known point-mass member",
         "available": false,
         "condition": "known integer size >= 1, 0 < prob < 1 free, pi = 1 held; information is zero",
-        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels",
-        "reason": "The free information is structurally singular; neither observed nor sandwich covariance can be inverted"
+        "reason": "The free information is structurally singular; neither observed nor sandwich covariance can be inverted",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
       },
       {
         "regime": "size one with one coefficient known",
@@ -20174,8 +22850,8 @@
       {
         "regime": "size one with both coefficients free",
         "available": false,
-        "reason": "The two free probability coefficients have rank-one information; covariance is singular",
         "condition": "known size = 1; prob and pi both free in (0,1); DQM and pointwise C2 hold but the joint information has rank one",
+        "reason": "The two free probability coefficients have rank-one information; covariance is singular",
         "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
       },
       {
@@ -20196,8 +22872,8 @@
         "regime": "known point-mass member",
         "available": false,
         "condition": "finite size > 0 and 0 < prob < 1; pi = 1 held; remaining information is zero",
-        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels",
-        "reason": "The free information is structurally singular; neither observed nor sandwich covariance can be inverted"
+        "reason": "The free information is structurally singular; neither observed nor sandwich covariance can be inverted",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
       },
       {
         "regime": "primary interior",
@@ -20217,8 +22893,8 @@
         "regime": "known point-mass member",
         "available": false,
         "condition": "finite lambda > 0 free; pi = 1 held; information is zero",
-        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels",
-        "reason": "The free information is structurally singular; neither observed nor sandwich covariance can be inverted"
+        "reason": "The free information is structurally singular; neither observed nor sandwich covariance can be inverted",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
       },
       {
         "regime": "primary interior",
@@ -20232,8 +22908,8 @@
         "regime": "size one",
         "available": false,
         "condition": "known N = 1; finite s > 0 free; the law is a point mass, so information is zero",
-        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels",
-        "reason": "The free information is structurally singular; neither observed nor sandwich covariance can be inverted"
+        "reason": "The free information is structurally singular; neither observed nor sandwich covariance can be inverted",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
       },
       {
         "regime": "primary interior",
@@ -20259,8 +22935,8 @@
         "regime": "known point-mass member",
         "available": false,
         "condition": "known integer size >= 1 held, 0 < prob < 1 free, p0 = 1 held; information is zero",
-        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels",
-        "reason": "The free information is structurally singular; neither observed nor sandwich covariance can be inverted"
+        "reason": "The free information is structurally singular; neither observed nor sandwich covariance can be inverted",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
       },
       {
         "regime": "size one with probability known",
@@ -20272,8 +22948,8 @@
         "regime": "size one with probability free",
         "available": false,
         "condition": "known size = 1; prob free; the conditional positive distribution is a point mass and the probability score vanishes",
-        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels",
-        "reason": "The free information is structurally singular; neither observed nor sandwich covariance can be inverted"
+        "reason": "The free information is structurally singular; neither observed nor sandwich covariance can be inverted",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
       },
       {
         "regime": "primary interior",
@@ -20299,8 +22975,8 @@
         "regime": "known point-mass member",
         "available": false,
         "condition": "0 < prob < 1 free, p0 = 1 held; information is zero",
-        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels",
-        "reason": "The free information is structurally singular; neither observed nor sandwich covariance can be inverted"
+        "reason": "The free information is structurally singular; neither observed nor sandwich covariance can be inverted",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
       },
       {
         "regime": "primary interior",
@@ -20326,8 +23002,8 @@
         "regime": "known point-mass member",
         "available": false,
         "condition": "0 < prob < 1 free, p0 = 1 held; information is zero",
-        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels",
-        "reason": "The free information is structurally singular; neither observed nor sandwich covariance can be inverted"
+        "reason": "The free information is structurally singular; neither observed nor sandwich covariance can be inverted",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
       },
       {
         "regime": "primary interior",
@@ -20367,8 +23043,8 @@
         "regime": "known point-mass member",
         "available": false,
         "condition": "finite lambda > 0 free, p0 = 1 held; information is zero",
-        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels",
-        "reason": "The free information is structurally singular; neither observed nor sandwich covariance can be inverted"
+        "reason": "The free information is structurally singular; neither observed nor sandwich covariance can be inverted",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
       },
       {
         "regime": "primary interior",
@@ -20382,8 +23058,8 @@
         "regime": "size one",
         "available": false,
         "condition": "known size = 1; 0 < prob < 1 free; the zero-truncated law is a point mass, so information is zero",
-        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels",
-        "reason": "The free information is structurally singular; neither observed nor sandwich covariance can be inverted"
+        "reason": "The free information is structurally singular; neither observed nor sandwich covariance can be inverted",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
       },
       {
         "regime": "primary interior",

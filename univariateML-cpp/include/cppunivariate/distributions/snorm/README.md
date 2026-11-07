@@ -1,14 +1,9 @@
 ---
 id: snorm
 inference_numeric:
-  - regime: "symmetric member with skew held"
+  - regime: "regular finite interior"
     available: true
-    condition: "finite mean and sd > 0; xi = 1 held; mean and/or sd free"
-    classification: "dev/research/evaluations/2026-11-04-infer-moving-report.md#two-piece-normal-snorm"
-  - regime: "regular two-piece normal interior"
-    available: false
-    condition: "finite mean, sd > 0 and finite xi > 0; any nonempty free subset, including xi = 1 with xi free; observed information uses the a.e. piecewise Hessian with defined join handling; excluding the preceding available submodels"
-    reason: "DQM and full-rank information are established, but support/join-aware numerical derivatives and fitted covariance validation for this expanded scope are not yet implemented"
+    condition: "finite mean, sd > 0 and finite xi > 0; any free subset, including xi = 1 with xi free; analytic piecewise natural-coordinate derivatives; successful interior fit and nonsingular information required"
     classification: "dev/research/evaluations/2026-11-04-infer-moving-report.md#two-piece-normal-snorm"
 name: Skew Normal
 support: {type: real, lower: -inf, upper: inf, closed: [false, false]}

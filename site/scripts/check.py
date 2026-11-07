@@ -108,8 +108,13 @@ for family, scopes in availability['numeric_eligibility'].items():
         assert row['evidence_links']
         for run in row['monte_carlo']:
             source=json.loads((ROOT/run['path']).read_text())
-            record=source['families'][family]
-            assert run['sample_size']==source['sample_size']
+            if 'record_key' in run:
+                record=source['results'][run['record_key']]
+                assert record['family']==family
+                assert run['sample_size']==record['n']
+            else:
+                record=source['families'][family]
+                assert run['sample_size']==source['sample_size']
             for field in ('truth','held','free','status','replications','successes'):
                 assert run[field]==record.get(field), (family,field)
             assert run['failure_count']==len(record.get('failures',[]))
