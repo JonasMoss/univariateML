@@ -184,6 +184,29 @@ Scope: out for fitting; the Lorenz geometry is a possible note.
 The classical income families are already here: burr (Singh-Maddala),
 invburr (Dagum), llogis (Fisk), gb2, lnorm, gamma, pareto.
 
+## Other observation schemes used in practice (2026-11-07)
+
+- Type I, type II, progressive and hybrid censoring: the designs differ,
+  but the likelihood is $\prod f(x_i)\,S(x_i)^{R_i}$ up to a constant, the
+  same shape as right censoring. Free once right censoring exists.
+- Observation-specific points: insurance losses with a per-policy
+  deductible (left truncation) and limit (right censoring); detection
+  limits that differ by lab; delayed entry; top-coding in surveys. The
+  closure analysis above assumed one fixed $t$ or $u$; per-observation
+  points are the realistic case. The actuar-style loss families here
+  (burr, invburr, paralogis, trgamma, pareto2-4, ...) are the families
+  this is used with.
+- Doubly truncated data, each observation with its own window
+  $[u_i, v_i]$ (astronomy, incubation times).
+- Rounding: interval censoring on the rounding cells.
+- Frequency weights: an exact likelihood, cheap, worth adding. Survey
+  weights give a pseudo-likelihood: out of scope.
+- Length- or size-biased sampling, observed density $x f(x)/\mu$. Burr
+  becomes GB2 with $p = 1 + 1/c$, $q = k - 1/c$ (exists only if $kc > 1$);
+  the general question is which families are closed under $w(x) f(x)$.
+- Out of scope: measurement error (deconvolution), heaping, ranked-set
+  sampling.
+
 ## Families that become redundant
 
 Truncated and zero-truncated families would become a base family plus
