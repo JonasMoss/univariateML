@@ -119,3 +119,18 @@ test_that("CMP acceptance budget exposes its witness and responds to iterlim", {
   expect_true(is.finite(stopped$candidates$loglik_lower))
   expect_equal(mlcmp(x,lambda=5000/5001,iterlim=10)[["nu"]],0)
 })
+
+test_that("CMP huge mode is numerical without iterlim advice", {
+  e <- tryCatch(mlcmp(c(0,1,2),lambda=exp(100),nu=.1),error=identity)
+  expect_s3_class(e,"univariateML_numerical")
+  expect_false(inherits(e,"univariateML_budget"))
+  expect_false(grepl("Raising iterlim",conditionMessage(e)))
+  expect_warning(expect_true(is.nan(dcmp(1,exp(100),.1))),"NaNs")
+})
+
+test_that("fully held CMP evaluator exhaustion is numerical at every iterlim", {
+  e <- tryCatch(mlcmp(c(0,1,2),lambda=.999999,nu=1e-12,iterlim=1),error=identity)
+  expect_s3_class(e,"univariateML_numerical")
+  expect_false(inherits(e,"univariateML_budget"))
+  expect_false(grepl("Raising iterlim",conditionMessage(e)))
+})

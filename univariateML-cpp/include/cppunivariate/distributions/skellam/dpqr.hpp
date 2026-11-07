@@ -48,7 +48,15 @@ inline double logmass(double k,double a,double b) {
   CPPUNIV_EXTENDED_REAL total=1,term=1;
   for(CPPUNIV_EXTENDED_REAL h=j;h>0;--h) {term*=h*(h+n)/product;total+=term;if(term<total*CPPUNIV_EXTENDED_LITERAL(1e-20,1e-20L)) break;}
   term=1;
-  for(CPPUNIV_EXTENDED_REAL h=j+1;;++h) {term*=product/(h*(h+n));total+=term;if(term<total*CPPUNIV_EXTENDED_LITERAL(1e-20,1e-20L)) break;}
+  bool converged=false;
+  CPPUNIV_EXTENDED_REAL h=j+1;
+  // Structural special-function guard, independent of fitting iterlim.
+  for(int count=0;count<1000000;++count,++h) {
+    term*=product/(h*(h+n));total+=term;
+    if(!std::isfinite(term) || !std::isfinite(total))return special::kNaN;
+    if(term<total*CPPUNIV_EXTENDED_LITERAL(1e-20,1e-20L)) {converged=true;break;}
+  }
+  if(!converged)return special::kNaN;
   return static_cast<double>(lp+std::log(total));
 }
 inline double logadd(double a,double b) {

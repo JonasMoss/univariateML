@@ -1,0 +1,122 @@
+[
+  {
+    "family": "cmp",
+    "mode": 0,
+    "before": {
+      "median_seconds": 0.002388665,
+      "likelihoods": [
+        "-804.7902049621714",
+        "-804.7902049621714",
+        "-804.7902049621714"
+      ],
+      "errors": [
+        "",
+        "",
+        ""
+      ]
+    },
+    "after": {
+      "median_seconds": 0.00222799,
+      "likelihoods": [
+        "-804.7902049621714",
+        "-804.7902049621714",
+        "-804.7902049621714"
+      ],
+      "errors": [
+        "",
+        "",
+        ""
+      ]
+    }
+  },
+  {
+    "family": "cmb",
+    "mode": 0,
+    "before": {
+      "median_seconds": 0.000361957,
+      "likelihoods": [
+        "-798.1306389281898",
+        "-798.1306389281898",
+        "-798.1306389281898"
+      ],
+      "errors": [
+        "",
+        "",
+        ""
+      ]
+    },
+    "after": {
+      "median_seconds": 0.000336314,
+      "likelihoods": [
+        "-798.1306389281898",
+        "-798.1306389281898",
+        "-798.1306389281898"
+      ],
+      "errors": [
+        "",
+        "",
+        ""
+      ]
+    }
+  },
+  {
+    "family": "cmb",
+    "mode": 1,
+    "before": {
+      "median_seconds": 0.006233359,
+      "likelihoods": [
+        "-797.8896423600155",
+        "-797.8896423600155",
+        "-797.8896423600155"
+      ],
+      "errors": [
+        "",
+        "",
+        ""
+      ]
+    },
+    "after": {
+      "median_seconds": 0.006290426,
+      "likelihoods": [
+        "-797.8896423600155",
+        "-797.8896423600155",
+        "-797.8896423600155"
+      ],
+      "errors": [
+        "",
+        "",
+        ""
+      ]
+    }
+  },
+  {
+    "family": "cmb",
+    "mode": 2,
+    "before": {
+      "median_seconds": 15.678055966,
+      "likelihoods": [
+        "nan",
+        "nan",
+        "nan"
+      ],
+      "errors": [
+        "CMB MLE failed to converge or exhausted its normalizer work budget; a larger finite maximum is not excluded. The Conway-Maxwell-Poisson limit is available: use mlcmp with nu held fixed. Raising iterlim may resolve this stop.",
+        "CMB MLE failed to converge or exhausted its normalizer work budget; a larger finite maximum is not excluded. The Conway-Maxwell-Poisson limit is available: use mlcmp with nu held fixed. Raising iterlim may resolve this stop.",
+        "CMB MLE failed to converge or exhausted its normalizer work budget; a larger finite maximum is not excluded. The Conway-Maxwell-Poisson limit is available: use mlcmp with nu held fixed. Raising iterlim may resolve this stop."
+      ]
+    },
+    "after": {
+      "median_seconds": 13.065998807,
+      "likelihoods": [
+        "nan",
+        "nan",
+        "nan"
+      ],
+      "errors": [
+        "CMB MLE failed to converge or exhausted its normalizer work budget; a larger finite maximum is not excluded. The Conway-Maxwell-Poisson limit is available: use mlcmp with nu held fixed. Raising iterlim may resolve this stop.",
+        "CMB MLE failed to converge or exhausted its normalizer work budget; a larger finite maximum is not excluded. The Conway-Maxwell-Poisson limit is available: use mlcmp with nu held fixed. Raising iterlim may resolve this stop.",
+        "CMB MLE failed to converge or exhausted its normalizer work budget; a larger finite maximum is not excluded. The Conway-Maxwell-Poisson limit is available: use mlcmp with nu held fixed. Raising iterlim may resolve this stop."
+      ]
+    }
+  }
+]

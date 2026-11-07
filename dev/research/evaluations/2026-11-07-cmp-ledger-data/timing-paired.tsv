@@ -1,0 +1,24 @@
+before	cmp	0	0	0.0023737440000000001	-804.7902049621714	
+before	cmp	0	1	0.0023886649999999999	-804.7902049621714	
+before	cmp	0	2	0.0023961579999999998	-804.7902049621714	
+before	cmb	0	0	0.00036195699999999999	-798.1306389281898	
+before	cmb	1	0	0.0062601870000000004	-797.8896423600155	
+before	cmb	2	0	16.799486715	nan	CMB MLE failed to converge or exhausted its normalizer work budget; a larger finite maximum is not excluded. The Conway-Maxwell-Poisson limit is available: use mlcmp with nu held fixed. Raising iterlim may resolve this stop.
+before	cmb	0	1	0.000344347	-798.1306389281898	
+before	cmb	1	1	0.0062333589999999999	-797.8896423600155	
+before	cmb	2	1	15.378859488	nan	CMB MLE failed to converge or exhausted its normalizer work budget; a larger finite maximum is not excluded. The Conway-Maxwell-Poisson limit is available: use mlcmp with nu held fixed. Raising iterlim may resolve this stop.
+before	cmb	0	2	0.00038433100000000002	-798.1306389281898	
+before	cmb	1	2	0.0061772169999999996	-797.8896423600155	
+before	cmb	2	2	15.678055966000001	nan	CMB MLE failed to converge or exhausted its normalizer work budget; a larger finite maximum is not excluded. The Conway-Maxwell-Poisson limit is available: use mlcmp with nu held fixed. Raising iterlim may resolve this stop.
+after	cmp	0	0	0.0022372389999999998	-804.7902049621714	
+after	cmp	0	1	0.0022247270000000001	-804.7902049621714	
+after	cmp	0	2	0.00222799	-804.7902049621714	
+after	cmb	0	0	0.00033631399999999999	-798.1306389281898	
+after	cmb	1	0	0.006290426	-797.8896423600155	
+after	cmb	2	0	13.065998807	nan	CMB MLE failed to converge or exhausted its normalizer work budget; a larger finite maximum is not excluded. The Conway-Maxwell-Poisson limit is available: use mlcmp with nu held fixed. Raising iterlim may resolve this stop.
+after	cmb	0	1	0.00031342000000000002	-798.1306389281898	
+after	cmb	1	1	0.0063395869999999998	-797.8896423600155	
+after	cmb	2	1	13.027821561	nan	CMB MLE failed to converge or exhausted its normalizer work budget; a larger finite maximum is not excluded. The Conway-Maxwell-Poisson limit is available: use mlcmp with nu held fixed. Raising iterlim may resolve this stop.
+after	cmb	0	2	0.00041635899999999999	-798.1306389281898	
+after	cmb	1	2	0.00612095	-797.8896423600155	
+after	cmb	2	2	13.076387349999999	nan	CMB MLE failed to converge or exhausted its normalizer work budget; a larger finite maximum is not excluded. The Conway-Maxwell-Poisson limit is available: use mlcmp with nu held fixed. Raising iterlim may resolve this stop.

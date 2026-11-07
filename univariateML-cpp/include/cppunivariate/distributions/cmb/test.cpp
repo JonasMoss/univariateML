@@ -461,3 +461,15 @@ TEST_CASE("J6: boundary KKT sign holds across the enclosed scalar root") {
   CHECK(b.lo1<=0);CHECK(b.hi1>=0);CHECK(b.evaluations>2);
   CHECK(b.upper>=0);CHECK(b.upper<1e-8);
 }
+
+TEST_CASE("CMB CMP child allowance never shrinks when iterlim rises") {
+  const std::vector<int> x{0,0,1,1,2,2,2,3,3,4};
+  const auto a=cppunivariate::cmb_size_free_nu_mle({x.data(),x.size()},NAN,1e-10,100);
+  const auto b=cppunivariate::cmb_size_free_nu_mle({x.data(),x.size()},NAN,1e-10,2000);
+  REQUIRE(a.fit.status==cppunivariate::CmbStatus::Ok);
+  REQUIRE(b.fit.status==cppunivariate::CmbStatus::Ok);
+  CHECK(a.size==b.size);
+  CHECK(a.fit.prob==b.fit.prob);
+  CHECK(a.fit.nu==b.fit.nu);
+  CHECK(a.fit.logLik==b.fit.logLik);
+}

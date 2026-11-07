@@ -40,7 +40,9 @@ inline FitResult fit_cmb(cppunivariate::ispan x, Held size_arg = {}, Held prob_a
   if(res.status==cppunivariate::CmbStatus::IterationFailure)stop_kind="numerical";
   if(res.stop_detail.budget_exhausted) stop_kind="budget";
   const auto stopped_fail = [&](const std::string& format, const auto&... arguments) {
-    auto out=fail(binding_message(format,arguments...));
+    auto message=binding_message(format,arguments...);
+    if(res.stop_detail.budget_exhausted)message+=" Raising iterlim may resolve this stop.";
+    auto out=fail(message);
     return stop_kind.empty()?out:stop_failure(out,res.stop_detail,stop_kind,{"size","prob","nu"});
   };
 
@@ -74,8 +76,8 @@ inline FitResult fit_cmb(cppunivariate::ispan x, Held size_arg = {}, Held prob_a
       return stopped_fail("Free size with free dispersion is not implemented for this sample within the supported size range.");
     default:
       if (!size.supplied && !prob.supplied && nu.supplied && v>0)
-        return stopped_fail("CMB MLE failed to converge or exhausted its normalizer work budget; a larger finite maximum is not excluded. The Conway-Maxwell-Poisson limit is available: use mlcmp with nu held fixed. Raising iterlim may resolve this stop.");
-      return stopped_fail("CMB MLE failed to converge or exhausted its normalizer work budget. Raising iterlim may resolve this stop.");
+        return stopped_fail("CMB MLE failed to converge or exhausted its normalizer work budget; a larger finite maximum is not excluded. The Conway-Maxwell-Poisson limit is available: use mlcmp with nu held fixed.");
+      return stopped_fail("CMB MLE failed to converge or exhausted its normalizer work budget.");
   }
   std::vector<std::string> fixed;
   if(size.supplied)fixed.push_back("size");

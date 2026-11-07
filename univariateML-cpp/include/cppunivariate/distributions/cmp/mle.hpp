@@ -6,11 +6,14 @@
 
 namespace cppunivariate {
 // Compatibility family entry point; the shared public solver owns closure.
-struct CmpDomainResult : CmpResult { StopDetail stop_detail{}; };
+struct CmpDomainResult : CmpResult {};
 inline CmpDomainResult cmp_domain_mle(span x, const CmpFitControl& ctl = {}) {
   CmpFitControl control=ctl;
   control.maxit=static_cast<int>(solver_budget(ctl.maxit));
-  CmpDomainResult out; static_cast<CmpResult&>(out)=cmp_mle(x,control);
+  std::uint64_t used=0;
+  CmpWorkLedger ledger{used,static_cast<std::uint64_t>(enumeration_budget(ctl.maxit))};
+  CmpDomainResult out; static_cast<CmpResult&>(out)=cmp_mle(x,control,ledger);
+  if(out.status==CmpStatus::BudgetLimit)out.status=CmpStatus::IterationFailure;
   if(out.status==CmpStatus::Ok && (!std::isfinite(out.logLik) || !std::isfinite(out.nu) ||
      !std::isfinite(std::exp(out.eta)) || (std::isfinite(out.eta) && std::exp(out.eta)==0))) {
     out.status=CmpStatus::IterationFailure;out.stop_detail.loglik_upper=INFINITY;return out;
@@ -24,18 +27,11 @@ inline CmpDomainResult cmp_domain_mle(span x, const CmpFitControl& ctl = {}) {
     CPPUNIV_EXTENDED_REAL sum_x=0;for(double k:x)sum_x+=k;
     const CPPUNIV_EXTENDED_REAL empirical_mean=sum_x/n;
     const double eta=fl?std::log(ctl.fixed_lambda):std::log(std::exp(out.eta));
-    const std::uint64_t budget=static_cast<std::uint64_t>(enumeration_budget(ctl.maxit));
-    std::uint64_t used=out.work;
     bool exhausted=false;
     const auto moment_evaluate=[&](double e,double dispersion) {
-      CmpMoments q;
-      if(used>=budget) {exhausted=true;q.status=CmpStatus::WorkLimit;return q;}
-      const std::uint64_t remaining=budget-used;
-      const auto terms=static_cast<std::size_t>(std::min<std::uint64_t>(ctl.max_terms,remaining));
-      q=cmp_moments(e,dispersion,2e-16,terms);
-      used+=q.work;
-      out.work=static_cast<std::size_t>(std::min<std::uint64_t>(used,std::numeric_limits<std::size_t>::max()));
-      if(used>budget || (q.status==CmpStatus::WorkLimit && remaining<ctl.max_terms))exhausted=true;
+      auto q=cmp_moments(e,dispersion,ledger);
+      out.work=used;
+      if(q.status==CmpStatus::BudgetLimit)exhausted=true;
       return q;
     };
     auto moments=moment_evaluate(eta,out.nu);

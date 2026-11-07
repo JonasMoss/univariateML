@@ -130,3 +130,7 @@ TEST_CASE("skellam: tail-cover budget retains the feasible rate witness") {
   CHECK(std::isfinite(r.stop_detail.loglik_lower));
   CHECK(r.stop_detail.loglik_upper==INFINITY);
 }
+
+TEST_CASE("Skellam nonfinite positive series fails numerically") {
+  CHECK(std::isnan(cppunivariate::skellam_detail::logmass(NAN,1,1)));
+}

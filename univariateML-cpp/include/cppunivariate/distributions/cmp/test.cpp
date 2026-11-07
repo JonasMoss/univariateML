@@ -145,3 +145,33 @@ TEST_CASE("CMP: acceptance budget retains the geometric witness and scales with 
   CHECK(fitted.nu==0);
   CHECK(fitted.stop_detail.loglik_upper>=fitted.logLik);
 }
+
+TEST_CASE("CMP consumable ledger shares actual 64-bit work and separates numerical refusals") {
+  std::uint64_t used=4294967296ULL;
+  cppunivariate::CmpWorkLedger ledger{used,used+1000};
+  const auto first=cppunivariate::cmp_moments(std::log(2.),1,ledger);
+  REQUIRE(first.status==cppunivariate::CmpStatus::Ok);
+  CHECK(used==4294967296ULL+first.work);
+  const auto second=cppunivariate::cmp_moments(std::log(2.),1,ledger);
+  CHECK(second.status==cppunivariate::CmpStatus::Ok);
+  CHECK(used==4294967296ULL+first.work+second.work);
+  ledger.limit=used+2;
+  const auto exhausted=cppunivariate::cmp_moments(10,1,ledger);
+  CHECK(exhausted.status==cppunivariate::CmpStatus::BudgetLimit);
+  CHECK(used==ledger.limit);
+  // Identical structural cap in a pure evaluator is a numerical refusal.
+  CHECK(cppunivariate::cmp_moments(10,1,2e-16,2).status==cppunivariate::CmpStatus::NumericalFailure);
+  const auto before=used;
+  const auto huge=cppunivariate::cmp_moments(100,.1,ledger);
+  CHECK(huge.status==cppunivariate::CmpStatus::NumericalFailure);
+  CHECK(used==before);
+  cppunivariate::CmpFitControl ctl;
+  const std::vector<double> x{0,0,1,1,2,2,3,4};
+  const auto stopped=cppunivariate::cmp_mle({x.data(),x.size()},ctl,ledger);
+  CHECK(stopped.status==cppunivariate::CmpStatus::BudgetLimit);
+  CHECK(stopped.stop_detail.budget_exhausted);
+  REQUIRE(stopped.stop_detail.candidates.size()==1);
+  CHECK(std::isfinite(stopped.stop_detail.loglik_lower));
+  CHECK(stopped.stop_detail.loglik_upper==INFINITY);
+  CHECK(cppunivariate::solver_budget(2147483647)==100000);
+}

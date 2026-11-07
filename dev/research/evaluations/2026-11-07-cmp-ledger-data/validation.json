@@ -1,0 +1,78 @@
+{
+  "base": "d34a44cd1b0d7324e1f486d66e6b3f7e3db9210a",
+  "runs": [
+    {
+      "command": "UMVL_TEST_TIER=dev just cpp-test",
+      "machine": "simbox",
+      "compiler": "GCC 13.3",
+      "passed_shards": 106
+    },
+    {
+      "command": "UMVL_TEST_TIER=full just cpp-test",
+      "machine": "simbox",
+      "compiler": "GCC 13.3",
+      "passed_shards": 129
+    },
+    {
+      "command": "just cpp-test-no-long-double",
+      "machine": "simbox",
+      "compiler": "GCC 13.3",
+      "passed_shards": 129
+    },
+    {
+      "command": "just cpp-test-no-long-double",
+      "machine": "workstation",
+      "compiler": "GCC 15.2",
+      "passed_shards": 129
+    },
+    {
+      "command": "just test",
+      "machine": "simbox",
+      "passed": 21371,
+      "skipped": 154,
+      "failed": 0,
+      "warnings": 0
+    },
+    {
+      "command": "just test-full",
+      "machine": "simbox",
+      "passed": 44189,
+      "skipped": 0,
+      "failed": 0,
+      "warnings": 0
+    },
+    {
+      "command": "just js-build && just js-test",
+      "machine": "workstation",
+      "passed_tests": 481,
+      "failed": 0
+    },
+    {
+      "command": "just site-check",
+      "machine": "workstation",
+      "result": "PASS; 99 generated C++17 snippets compile/link; browser, numerical and HTML checks pass"
+    }
+  ],
+  "frozen_files_identical_to_base": 297,
+  "site_check_screenshot": "Existing screenshot restored byte-for-byte after site-check; no authored report image changed.",
+  "all_required_suites_exit_zero": true,
+  "repository_markdown_check": {
+    "exit_code": 1,
+    "files": 510,
+    "destinations": 2769,
+    "preexisting_findings": 4,
+    "changed_files_have_findings": false,
+    "preexisting_files_byte_identical_to_base": true
+  },
+  "artifact_viewer": {
+    "status": "HTTP 403",
+    "reason": "worktree outside registered readable roots",
+    "configuration_changed": false
+  },
+  "changed_markdown_check": {
+    "exit_code": 0,
+    "files": 2,
+    "local_destinations": 13,
+    "broken": 0
+  }
+}

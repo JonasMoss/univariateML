@@ -668,12 +668,18 @@ inline CmbSizeResult cmb_size_nonconstant_free_nu(ispan x,int mn,int mx,
     std::vector<double> data;data.reserve(x.size());
     for(int v:x)data.push_back(double(v));
     CmpFitControl ctl;ctl.tol=1e-10;ctl.maxit=maxit;
-    const std::uint64_t count=static_cast<std::uint64_t>(ctl.maxit)+1;
-    ctl.max_terms=(budget-work)/(2*count*count);
-    if(ctl.max_terms>=2) {
-      const auto cmp=cmp_mle({data.data(),data.size()},ctl);
-      if(cmp.work>budget-work){evidence=discrete_budget(evidence);return fail(CmbStatus::IterationFailure);}
-      work+=cmp.work;
+    CmpWorkLedger ledger{work,budget};
+    {
+      const auto cmp=cmp_mle({data.data(),data.size()},ctl,ledger);
+      if(cmp.status==CmpStatus::BudgetLimit) {
+        evidence=discrete_budget(evidence);
+        for(auto candidate:cmp.stop_detail.candidates) {
+          candidate.model=StopModel::Cmp;evidence.candidates.push_back(candidate);
+        }
+        return fail(CmbStatus::IterationFailure);
+      }
+      if(cmp.status==CmpStatus::NumericalFailure || cmp.status==CmpStatus::InvalidInput ||
+         cmp.status==CmpStatus::IterationFailure)return fail(CmbStatus::IterationFailure);
       if(cmp.status==CmpStatus::Ok && std::isfinite(cmp.logLik) && cmp.logLik>face) {
         face=cmp.logLik;
         evidence.limit_model=StopModel::Cmp;evidence.limit_coef={std::exp(cmp.eta),cmp.nu};evidence.limit_loglik=face;
@@ -903,14 +909,12 @@ inline CmbSizeResult cmb_size_fixed_nu_mle(ispan x,double nu,
     return fail(CmbStatus::IterationFailure);
   }
   CmpFitControl ctl; ctl.fixed_nu=nu; ctl.tol=1e-12; ctl.maxit=maxit;
-  ctl.max_terms=budget/std::size_t(maxit);
-  if(ctl.max_terms<2)return fail(CmbStatus::IterationFailure);
-  double eta=0; std::size_t face_work=0;
-  const CmpMoments face_mom=cmp_detail::mean_match(mean,nu,eta,ctl,face_work);
-  if(face_work>budget-work)evidence=discrete_budget(evidence);
-  if(face_mom.status!=CmpStatus::Ok || !std::isfinite(face_mom.log_z) || face_work>budget-work)
+  CmpWorkLedger ledger{work,budget};
+  double eta=0; std::uint64_t face_work=0;
+  const CmpMoments face_mom=cmp_detail::mean_match(mean,nu,eta,ctl,face_work,ledger);
+  if(face_mom.status==CmpStatus::BudgetLimit)evidence=discrete_budget(evidence);
+  if(face_mom.status!=CmpStatus::Ok || !std::isfinite(face_mom.log_z))
     return fail(CmbStatus::IterationFailure);
-  work+=face_work;
   const double face=sx*eta-n*face_mom.log_z-nu*sh;
   evidence.limit_model=StopModel::Cmp;evidence.limit_coef={std::exp(eta),nu};evidence.limit_loglik=face;
   evidence.candidates.push_back({evidence.limit_coef,face,face,StopModel::Cmp});

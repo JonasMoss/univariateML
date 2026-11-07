@@ -13,7 +13,22 @@ inline FitResult fit_cmp(cppunivariate::span x, Held lambda_arg = {}, Held nu_ar
   if (!std::isfinite(ctl.fixed_lambda) || ctl.fixed_lambda<0) return fail("fixed lambda must be nonnegative and finite.");}
  if (nu.supplied) {ctl.fixed_nu=nu.value;
   if (!std::isfinite(ctl.fixed_nu) || ctl.fixed_nu<0) return fail("fixed nu must be nonnegative and finite.");}
- const auto res=cppunivariate::cmp_domain_mle(x,ctl);
+ const auto res=[&]() {
+   if(lambda.supplied && nu.supplied) {
+     // No parameters are being fitted. Match the fixed special-function cap
+     // used by d/p/q, including the R fully-held diagnostic fallback.
+     std::uint64_t used=0;
+     cppunivariate::CmpWorkLedger ledger{used,1000000};
+     cppunivariate::CmpDomainResult result;
+     static_cast<cppunivariate::CmpResult&>(result)=cppunivariate::cmp_mle(x,ctl,ledger);
+     if(result.status==cppunivariate::CmpStatus::BudgetLimit) {
+       result.status=cppunivariate::CmpStatus::NumericalFailure;
+       result.stop_detail.budget_exhausted=false;
+     }
+     return result;
+   }
+   return cppunivariate::cmp_domain_mle(x,ctl);
+ }();
   std::string stop_kind;
   switch(res.status) {
     case cppunivariate::CmpStatus::GeometricLimit: stop_kind="limit";break;
@@ -21,7 +36,7 @@ inline FitResult fit_cmp(cppunivariate::span x, Held lambda_arg = {}, Held nu_ar
     case cppunivariate::CmpStatus::PointMassLimit: stop_kind="limit";break;
     default:break;
   }
-  if(res.status==cppunivariate::CmpStatus::IterationFailure || res.status==cppunivariate::CmpStatus::WorkLimit)stop_kind="numerical";
+  if(res.status==cppunivariate::CmpStatus::IterationFailure || res.status==cppunivariate::CmpStatus::NumericalFailure || res.status==cppunivariate::CmpStatus::BudgetLimit)stop_kind="numerical";
   if(res.stop_detail.budget_exhausted)stop_kind="budget";
   const auto stopped_fail = [&](const std::string& format, const auto&... arguments) {
     auto out=fail(binding_message(format,arguments...));
@@ -35,7 +50,7 @@ inline FitResult fit_cmp(cppunivariate::span x, Held lambda_arg = {}, Held nu_ar
  case cppunivariate::CmpStatus::PointMassLimit: return stopped_fail("The MLE approaches a point mass.");
  case cppunivariate::CmpStatus::InvalidInput: return stopped_fail("CMP requires nonnegative integer counts at most 2147483647, valid fixed parameters and positive controls.");
  default:
-   if(res.stop_detail.budget_exhausted)return stopped_fail("CMP acceptance exhausted its work budget. Raising iterlim may resolve this stop.");
+   if(res.stop_detail.budget_exhausted)return stopped_fail("CMP calculation exhausted its work budget. Raising iterlim may resolve this stop.");
    return stopped_fail("CMP calculation failed to converge or exceeded its work limit.");
  }
  std::vector<std::string> fixed;
