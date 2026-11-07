@@ -131,10 +131,11 @@ Bracket means (tax tables: count and total per bracket).
   its variance to $0$, so unbounded likelihood returns, at least for
   single-bin data. Population bracket means are constraints, not data;
   then it is GMM or minimum distance, outside ML. Hajargasht, Griffiths,
-  Brice, Rao and Chotikapanich (2012), JBES 30(4), use GMM on population
+  Brice, Rao and Chotikapanich (2012, Journal of Business & Economic
+  Statistics) use GMM on population
   shares and class means with unknown group bounds; then the data are
   Lorenz-curve points and scale drops out. (Venue checked 2026-11-07;
-  the issue number has not been checked.)
+  volume and pages not checked.)
 
 The classical income families are already here: burr (Singh-Maddala),
 invburr (Dagum), llogis (Fisk), gb2, lnorm, gamma, pareto.
