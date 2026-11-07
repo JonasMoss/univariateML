@@ -1,0 +1,7 @@
+Workstation: c++ 15.2.0; R 4.6.1.
+Simbox:
+c++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
+R version 4.6.1 (2026-06-24) -- "Happy Hop"
+ccache g++-15
+univariateML-cpp/build/CMakeFiles/4.4.4/CMakeCXXCompiler.cmake:set(CMAKE_CXX_COMPILER_VERSION "13.3.0")
+build/cpp-no-long-double/CMakeFiles/4.4.4/CMakeCXXCompiler.cmake:set(CMAKE_CXX_COMPILER_VERSION "13.3.0")

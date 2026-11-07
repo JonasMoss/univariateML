@@ -33,6 +33,7 @@ inline FitResult fit_huber(cppunivariate::span x, Held mu_arg = {}, Held sigma_a
   if (epsilon.supplied && (!(e>0) || !std::isfinite(e)))
     return fail("`epsilon` must be positive and finite.");
   auto r=cppunivariate::huber_mle(x,gradtol,iterlim,e,m,s);
+  if(r.stop_detail.budget_exhausted)return classify(fail("Huber certificate exhausted its work budget; raising `iterlim` may resolve it."),r.stop_detail,"budget",{"mu","sigma","epsilon"});
   if(r.stop_detail.comparison_tie)return classify(fail("Huber MLE failed to converge."),r.stop_detail,"tie",{"mu","sigma","epsilon"});
   if (r.status==cppunivariate::HuberStatus::InvalidData)
     return fail("Huber requires finite data, positive finite `gradtol` and positive `iterlim`.");
@@ -42,6 +43,9 @@ inline FitResult fit_huber(cppunivariate::span x, Held mu_arg = {}, Held sigma_a
     return classify(fail("Huber shape reaches the normal face; use `mlnorm`."),r.stop_detail,"limit",{"mean","sd"},"norm");
   if (r.status==cppunivariate::HuberStatus::LaplaceLimit)
     return classify(fail("Huber shape reaches the Laplace face; use `mllaplace`."),r.stop_detail,"limit",{"mu","sigma"},"laplace");
+  if(r.status==cppunivariate::HuberStatus::IterationFailure &&
+      (!r.stop_detail.candidates.empty() || r.stop_detail.loglik_upper==std::numeric_limits<double>::infinity()))
+    return classify(fail("Huber MLE failed to converge."),r.stop_detail,"numerical",{"mu","sigma","epsilon"});
   if (r.status!=cppunivariate::HuberStatus::Ok || !std::isfinite(r.logLik))
     return fail("Huber MLE failed to converge.");
   std::vector<std::string> fixed;

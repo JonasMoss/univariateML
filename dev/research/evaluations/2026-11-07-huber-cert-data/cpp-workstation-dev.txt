@@ -1,0 +1,18 @@
+        Start   1: bfgs_tests
+101/106 Test   #1: bfgs_tests .......................   Passed    0.00 sec
+        Start 126: no_throw_tests
+102/106 Test #126: no_throw_tests ...................   Passed    0.00 sec
+        Start 128: tails_tests
+103/106 Test #128: tails_tests ......................   Passed    0.00 sec
+104/106 Test  #37: distribution_gompertz ............   Passed    0.03 sec
+105/106 Test  #14: distribution_cauchy ..............   Passed    0.05 sec
+106/106 Test  #28: distribution_frechet .............   Passed    0.05 sec
+
+100% tests passed, 0 tests failed out of 106
+
+Label Time Summary:
+cran    = 433.60 sec*proc (105 tests)
+dev     = 436.73 sec*proc (106 tests)
+full    = 436.73 sec*proc (106 tests)
+
+Total Test time (real) = 109.20 sec

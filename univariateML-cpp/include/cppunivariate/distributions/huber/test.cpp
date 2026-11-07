@@ -361,3 +361,184 @@ TEST_CASE("huber: analytic covariance derivatives and subset projection") {
   CHECK(cppunivariate::join_family_inference({x.data(),x.size()},"huber",bad,1).status==cppunivariate::InferenceStatus::BoundaryOrLimit);
   CHECK(cppunivariate::join_family_inference({x.data(),x.size()},"huber",theta,1u<<3).status==cppunivariate::InferenceStatus::InvalidSubset);
 }
+
+TEST_CASE("huber: supporting plane bounds nuisance competitors") {
+  const std::vector<double> x{-7,-1,-1,0,2,12};
+  for(bool fm:{false,true})for(bool fs:{false,true}) {
+    const auto r=cppunivariate::huber_fixed_mle(mltest::as_span(x),1e-12,200,.8,
+        fm?.2:NAN,fs?1.3:NAN);
+    REQUIRE(r.status==cppunivariate::HuberStatus::Ok);
+    const double upper=cppunivariate::huber_nuisance_upper(mltest::as_span(x),r,fm,fs);
+    CHECK(upper>=r.logLik);
+    CHECK(upper-r.logLik<1e-8*x.size());
+    for(double m:{-4.,.2,3.})for(double s:{.3,1.3,10.}) {
+      double ll=0;
+      for(double v:x)ll+=cppunivariate::distributions::dhuber(v,fm?.2:m,fs?1.3:s,.8,true);
+      CHECK(ll<=upper);
+    }
+  }
+}
+
+TEST_CASE("huber: epsilon chord bounds the refitted nuisance profile") {
+  const std::vector<double> x{-7,-1,-1,0,2,12};
+  const double l=.6,u=1.2,n=x.size();
+  for(bool fm:{false,true})for(bool fs:{false,true}) {
+    auto fit=[&](double c){return cppunivariate::huber_fixed_mle(mltest::as_span(x),1e-12,200,c,fm?.2:NAN,fs?1.3:NAN);};
+    const auto left=fit(l),right=fit(u);
+    const double a=cppunivariate::huber_nuisance_upper(mltest::as_span(x),left,fm,fs);
+    const double b=cppunivariate::huber_nuisance_upper(mltest::as_span(x),right,fm,fs);
+    for(double w:{.1,.25,.5,.9}) {
+      const double c=l+(u-l)*w;
+      const auto r=fit(c);
+      const double chord=(1-w)*a+w*b+n*((1-w)*std::log(cppunivariate::huber_z(l))+w*std::log(cppunivariate::huber_z(u))-std::log(cppunivariate::huber_z(c)));
+      CHECK(r.logLik<=chord+1e-10);
+      CHECK(chord<=std::max(a,b)+n*(1+2/(l*l))*(u-l)*(u-l)/8);
+    }
+  }
+}
+
+TEST_CASE("huber: strict median cluster certifies the entire Laplace tail") {
+  const std::vector<double> x{-10,-.1,0,.1,10};
+  double m=0,b=0;
+  REQUIRE(cppunivariate::huber_laplace_tail(mltest::as_span(x),NAN,.01,m,b));
+  CHECK(b==doctest::Approx(4.04));
+  const double face=-5*(1+std::log(2*b));
+  for(double c:{.001,.005,.01}) {
+    const auto r=cppunivariate::huber_fixed_mle(mltest::as_span(x),1e-12,200,c);
+    REQUIRE(r.status==cppunivariate::HuberStatus::Ok);
+    CHECK(r.logLik<face);
+    CHECK(r.logLik==doctest::Approx(face+2*c*c-5*std::log(c*cppunivariate::huber_z(c)/2)).epsilon(1e-12));
+  }
+  const std::vector<double> even{-1,1};
+  CHECK_FALSE(cppunivariate::huber_laplace_tail(mltest::as_span(even),NAN,.01,m,b));
+}
+
+TEST_CASE("huber: certificate preserves both faces and the finite witness") {
+  const std::vector<double> x{-10,-.1,0,.1,10};
+  const auto r=cppunivariate::huber_mle(mltest::as_span(x),1e-10,200,NAN);
+  REQUIRE(r.status==cppunivariate::HuberStatus::LaplaceLimit);
+  REQUIRE(r.stop_detail.candidates.size()>=3);
+  CHECK(r.stop_detail.candidates[0].model==cppunivariate::StopModel::Norm);
+  CHECK(r.stop_detail.candidates[1].model==cppunivariate::StopModel::Laplace);
+  CHECK(r.stop_detail.loglik_upper>=r.stop_detail.loglik_lower);
+}
+
+TEST_CASE("huber: all-zero held-scale residuals have an analytic normal face") {
+  const std::vector<double> x{2,2,2};
+  const auto r=cppunivariate::huber_mle(mltest::as_span(x),1e-10,200,NAN,NAN,1);
+  REQUIRE(r.status==cppunivariate::HuberStatus::NormalLimit);
+  CHECK((r.stop_detail.limit_coef==std::vector<double>{2,1}));
+  CHECK(r.stop_detail.loglik_lower==r.stop_detail.loglik_upper);
+}
+
+TEST_CASE("huber: numerical stop retains an evaluated finite witness") {
+  const auto g=mltest::load_distribution_golden("huber");
+  const auto r=cppunivariate::huber_mle(mltest::as_span(g.data),1e-10,1,1.345);
+  REQUIRE(r.status==cppunivariate::HuberStatus::IterationFailure);
+  REQUIRE_FALSE(r.stop_detail.candidates.empty());
+  CHECK(std::isfinite(r.stop_detail.loglik_lower));
+  CHECK(r.stop_detail.loglik_upper==INFINITY);
+}
+
+TEST_CASE("huber: finite stationary witness indistinguishable from the normal face stops") {
+  const double gaussian=std::sqrt(2*std::acos(-1.0));
+  auto gain=[&](double c) {
+    const double z=cppunivariate::huber_z(c);
+    const double d=2*std::exp(-c*c/2)/(c*c*z);
+    return d*d/2-std::log(z/gaussian);
+  };
+  double lo=.7,hi=.85;
+  REQUIRE(gain(lo)>0);REQUIRE(gain(hi)<0);
+  for(int j=0;j<100;++j) {
+    const double c=(lo+hi)/2;
+    if(gain(c)>0)lo=c;else hi=c;
+  }
+  const double c=(lo+hi)/2;
+  const double a=c+2*std::exp(-c*c/2)/(c*c*cppunivariate::huber_z(c));
+  const std::vector<double> x{a,a};
+  const auto r=cppunivariate::huber_mle(mltest::as_span(x),1e-10,200,NAN,0,1);
+  REQUIRE(r.status==cppunivariate::HuberStatus::IterationFailure);
+  REQUIRE(r.stop_detail.comparison_tie);
+  CHECK(r.stop_detail.loglik_upper>=r.stop_detail.loglik_lower);
+  bool interior=false;
+  for(const auto& p:r.stop_detail.candidates)
+    if(p.model==cppunivariate::StopModel::None && p.coef.size()==3 && p.coef[2]<1)
+      interior=true;
+  CHECK(interior);
+}
+
+TEST_CASE("huber: unavailable Gaussian arithmetic retains proper numerical witnesses") {
+  for(double scale:{1e-300,1e300}) {
+    const std::vector<double> x{-scale,scale};
+    const auto r=cppunivariate::huber_mle(mltest::as_span(x),1e-10,200,NAN);
+#if defined(BOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS) || LDBL_MANT_DIG <= DBL_MANT_DIG
+    REQUIRE(r.status==cppunivariate::HuberStatus::IterationFailure);
+    CHECK_FALSE(r.stop_detail.comparison_tie);
+    CHECK_FALSE(r.stop_detail.budget_exhausted);
+    CHECK(std::isfinite(r.stop_detail.loglik_lower));
+    CHECK(r.stop_detail.loglik_upper==INFINITY);
+    REQUIRE_FALSE(r.stop_detail.candidates.empty());
+    for(const auto& p:r.stop_detail.candidates) {
+      CHECK(cppunivariate::valid_stop_coefficients(p.model,p.coef));
+      CHECK(std::isfinite(p.loglik_lower));CHECK(std::isfinite(p.loglik_upper));
+    }
+#else
+    REQUIRE(r.status==cppunivariate::HuberStatus::NormalLimit);
+    CHECK(r.stop_detail.limit_coef[1]/scale==doctest::Approx(1).epsilon(1e-10));
+#endif
+  }
+}
+
+TEST_CASE("huber: nonrepresentable fixed-shape objective has explicit unknown bounds") {
+  const std::vector<double> x{-100,100};
+  const auto r=cppunivariate::huber_mle(mltest::as_span(x),1e-10,200,1.345,NAN,
+      std::numeric_limits<double>::min());
+  REQUIRE(r.status==cppunivariate::HuberStatus::IterationFailure);
+  CHECK(r.stop_detail.loglik_upper==INFINITY);
+  CHECK(std::isnan(r.stop_detail.loglik_lower));
+}
+
+TEST_CASE("huber: finite certificates retain the total shape score gate") {
+  std::vector<double> x;
+  for(int j=0;j<200;++j)x.push_back(cppunivariate::distributions::qhuber((j+.5)/200,2,3,.8,true,false));
+  for(bool fm:{false,true})for(bool fs:{false,true})for(int maxit:{1,200}) {
+    const auto r=cppunivariate::huber_mle(mltest::as_span(x),1e-10,maxit,NAN,fm?2:NAN,fs?3:NAN);
+    if(maxit==200)REQUIRE(r.status==cppunivariate::HuberStatus::Ok);
+    if(r.status!=cppunivariate::HuberStatus::Ok)continue;
+    // Independent derivative of the settled density, not the fitter's score.
+    auto ll=[&](double c){CPPUNIV_EXTENDED_REAL total=0;for(double v:x)total+=cppunivariate::distributions::dhuber(v,r.mu,r.sigma,c,true);return total;};
+    const double step=1e-5;
+    const double derivative=static_cast<double>((ll(r.epsilon*std::exp(step))-ll(r.epsilon*std::exp(-step)))/(2*step));
+    CHECK(std::abs(derivative)<1.1e-3);
+  }
+}
+
+TEST_CASE("huber: represented face coordinates are checked before certification") {
+  const double tiny=std::numeric_limits<double>::denorm_min();
+  for(const auto& x:std::vector<std::vector<double>>{{1e15,1e15+.125},
+      {4*tiny,-2*tiny,-2*tiny,0,0,0}}) {
+    const auto r=cppunivariate::huber_mle(mltest::as_span(x),1e-10,200,NAN);
+    REQUIRE(r.status==cppunivariate::HuberStatus::IterationFailure);
+    CHECK_FALSE(r.stop_detail.comparison_tie);
+    CHECK_FALSE(r.stop_detail.budget_exhausted);
+    CHECK(r.stop_detail.loglik_upper==INFINITY);
+    REQUIRE_FALSE(r.stop_detail.candidates.empty());
+    for(const auto& p:r.stop_detail.candidates) {
+      CPPUNIV_EXTENDED_REAL ll=0;
+      for(double v:x) {
+        const CPPUNIV_EXTENDED_REAL z=(static_cast<CPPUNIV_EXTENDED_REAL>(v)-p.coef[0])/p.coef[1];
+        if(p.model==cppunivariate::StopModel::Norm)
+          ll-=std::log(p.coef[1])+.5*std::log(2*std::acos(-1.0))+z*z/2;
+        else if(p.model==cppunivariate::StopModel::Laplace)
+          ll-=std::log(2.)+std::log(p.coef[1])+std::abs(z);
+        else {
+          const double c=p.coef[2];
+          ll-=std::log(p.coef[1])+std::log(cppunivariate::huber_z(c))+
+              (std::abs(z)<=c ? z*z/2 : c*(std::abs(z)-c/2));
+        }
+      }
+      CHECK(p.loglik_lower==doctest::Approx(static_cast<double>(ll)).epsilon(1e-12));
+      CHECK(p.loglik_lower==p.loglik_upper);
+    }
+  }
+}

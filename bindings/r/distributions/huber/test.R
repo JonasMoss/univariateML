@@ -97,3 +97,57 @@ test_that("huber: P3 fixed-scale fallback requires its location score", {
   fit <- mlhuber(x,epsilon=1.345,sigma=1e-300)
   expect_lt(abs(fit["mu"]-5e-302),1e-310)
 })
+
+test_that("huber certificates retain normal, Laplace and finite witnesses", {
+  x <- c(-10,-.1,0,.1,10)
+  e <- tryCatch(mlhuber(x,epsilon=NULL),error=identity)
+  expect_s3_class(e,"univariateML_limit")
+  expect_equal(e$model,"laplace")
+  expect_true(all(c("norm","laplace","") %in% e$candidates$model))
+  expect_gte(e$loglik_upper,e$loglik_lower)
+  expect_equal(e$limit_loglik,-5*(1+log(8.08)),tolerance=1e-12)
+  expect_equal(unname(e$estimates),c(0,4.04),tolerance=1e-12)
+  expect_equal(e$loglik_upper-e$loglik_lower,0,tolerance=1e-9)
+})
+
+test_that("huber certificates preserve a flat interval and an all-core face", {
+  fit <- mlhuber(c(-10,10),sigma=1,epsilon=1)
+  expect_equal(unname(fit["mu"]),0)
+  expected <- as.numeric(logLik(fit))
+  for (m in c(-9,-4,0,4,9)) {
+    expect_equal(sum(dhuber(c(-10,10),mu=m,sigma=1,epsilon=1,log=TRUE)),expected,
+                 tolerance=1e-12)
+  }
+  e <- tryCatch(mlhuber(rep(2,3),sigma=1,epsilon=NULL),error=identity)
+  expect_s3_class(e,"univariateML_limit")
+  expect_equal(e$model,"norm")
+  expect_equal(unname(e$estimates),c(2,1))
+})
+
+test_that("huber certificate numerical stops retain an evaluated witness", {
+  g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"),"huber","golden.json"))
+  e <- tryCatch(mlhuber(g$data,epsilon=1.345,iterlim=1),error=identity)
+  expect_s3_class(e,"univariateML_numerical")
+  expect_true(nrow(e$candidates)>=1)
+  expect_true(is.finite(e$loglik_lower))
+  expect_equal(e$loglik_upper,Inf)
+})
+
+test_that("huber certificates stop at an unresolved finite-normal comparison", {
+  z <- function(c) sqrt(2*pi)*(2*pnorm(c)-1)+2*exp(-c*c/2)/c
+  gain <- function(c) .5*(2*exp(-c*c/2)/(c*c*z(c)))^2-log(z(c)/sqrt(2*pi))
+  c <- uniroot(gain,c(.7,.85),tol=1e-14)$root
+  a <- c+2*exp(-c*c/2)/(c*c*z(c))
+  e <- tryCatch(mlhuber(c(a,a),mu=0,sigma=1,epsilon=NULL),error=identity)
+  expect_s3_class(e,"univariateML_tie")
+  expect_true(any(e$candidates$model=="norm"))
+  expect_true(any(e$candidates$model=="" & e$candidates$epsilon<1,na.rm=TRUE))
+  expect_gte(e$loglik_upper,e$loglik_lower)
+})
+
+test_that("huber numerical stops report a nonrepresentable objective", {
+  e <- tryCatch(mlhuber(c(-100,100),sigma=.Machine$double.xmin,epsilon=1.345),error=identity)
+  expect_s3_class(e,"univariateML_numerical")
+  expect_true(is.na(e$loglik_lower))
+  expect_equal(e$loglik_upper,Inf)
+})
