@@ -1,0 +1,631 @@
+-- Boost.Math headers: /home/jmoss/R/x86_64-pc-linux-gnu-library/4.6/BH/include
+-- Configuring done (0.0s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/jmoss/umvl-wt/budget-align/univariateML-cpp/build
+[  2%] Built target tails_tests
+[  4%] Built target sample_tests
+[  8%] Built target cmp_tests
+[  8%] Built target no_throw_tests
+[  9%] Built target bfgs_tests
+[ 10%] Building CXX object tests/CMakeFiles/diagnostics_tests.dir/home/jmoss/umvl-wt/budget-align/dev/validation/diagnostics-audit.cpp.o
+[ 10%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/bbinom/test.cpp.o
+[ 12%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/bhatt/test.cpp.o
+[ 12%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/beta/test.cpp.o
+[ 13%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/betapr/test.cpp.o
+[ 14%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/bnbinom/test.cpp.o
+[ 15%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/burr/test.cpp.o
+[ 16%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/cauchy/test.cpp.o
+[ 16%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/cmb/test.cpp.o
+[ 17%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/dgamma/test.cpp.o
+[ 18%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/dnorm/test.cpp.o
+[ 19%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/emg/test.cpp.o
+[ 20%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/fatigue/test.cpp.o
+[ 21%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/fpareto/test.cpp.o
+In file included from ../../include/cppunivariate/distributions/std/../lst/mle.hpp:4,
+                 from ../../include/cppunivariate/distributions/std/mle.hpp:17,
+                 from ../../include/cppunivariate/cppunivariate.hpp:67,
+                 from ../../include/cppunivariate/distributions/beta/test.cpp:2:
+../../include/cppunivariate/distributions/std/../lst/certificate.hpp: In function ‘bool cppunivariate::t_cert_detail::data(cppunivariate::span, Data&)’:
+../../include/cppunivariate/distributions/std/../lst/certificate.hpp:140:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |   ^~~
+../../include/cppunivariate/distributions/std/../lst/certificate.hpp:140:42: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |                                          ^
+../../include/cppunivariate/distributions/std/../lst/certificate.hpp: In function ‘bool cppunivariate::t_cert_detail::inverse(const System&, int, std::array<std::array<double, 3>, 3>&)’:
+../../include/cppunivariate/distributions/std/../lst/certificate.hpp:161:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |     ^~
+../../include/cppunivariate/distributions/std/../lst/certificate.hpp:161:51: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |                                                   ^~~
+[ 22%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/frechet/test.cpp.o
+[ 23%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/gb2/test.cpp.o
+[ 24%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/ged/test.cpp.o
+In file included from ../../include/cppunivariate/distributions/std/../lst/mle.hpp:4,
+                 from ../../include/cppunivariate/distributions/std/mle.hpp:17,
+                 from ../../include/cppunivariate/cppunivariate.hpp:67,
+                 from ../../include/cppunivariate/distributions/burr/test.cpp:2:
+../../include/cppunivariate/distributions/std/../lst/certificate.hpp: In function ‘bool cppunivariate::t_cert_detail::data(cppunivariate::span, Data&)’:
+../../include/cppunivariate/distributions/std/../lst/certificate.hpp:140:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |   ^~~
+../../include/cppunivariate/distributions/std/../lst/certificate.hpp:140:42: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |                                          ^
+../../include/cppunivariate/distributions/std/../lst/certificate.hpp: In function ‘bool cppunivariate::t_cert_detail::inverse(const System&, int, std::array<std::array<double, 3>, 3>&)’:
+../../include/cppunivariate/distributions/std/../lst/certificate.hpp:161:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |     ^~
+../../include/cppunivariate/distributions/std/../lst/certificate.hpp:161:51: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |                                                   ^~~
+[ 24%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/genbeta/test.cpp.o
+[ 25%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/gompertz/test.cpp.o
+In file included from ../../include/cppunivariate/distributions/std/../lst/mle.hpp:4,
+                 from ../../include/cppunivariate/distributions/std/mle.hpp:17,
+                 from ../../include/cppunivariate/cppunivariate.hpp:67,
+                 from ../../include/cppunivariate/distributions/fatigue/test.cpp:2:
+../../include/cppunivariate/distributions/std/../lst/certificate.hpp: In function ‘bool cppunivariate::t_cert_detail::data(cppunivariate::span, Data&)’:
+../../include/cppunivariate/distributions/std/../lst/certificate.hpp:140:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |   ^~~
+../../include/cppunivariate/distributions/std/../lst/certificate.hpp:140:42: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |                                          ^
+../../include/cppunivariate/distributions/std/../lst/certificate.hpp: In function ‘bool cppunivariate::t_cert_detail::inverse(const System&, int, std::array<std::array<double, 3>, 3>&)’:
+../../include/cppunivariate/distributions/std/../lst/certificate.hpp:161:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |     ^~
+../../include/cppunivariate/distributions/std/../lst/certificate.hpp:161:51: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |                                                   ^~~
+[ 26%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/gpd/test.cpp.o
+[ 27%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/gumbel/test.cpp.o
+[ 28%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/invburr/test.cpp.o
+[ 29%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/invparalogis/test.cpp.o
+[ 29%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/invpareto/test.cpp.o
+In file included from ../../include/cppunivariate/distributions/std/../lst/mle.hpp:4,
+                 from ../../include/cppunivariate/distributions/std/mle.hpp:17,
+                 from ../../include/cppunivariate/cppunivariate.hpp:67,
+                 from ../../include/cppunivariate/distributions/ged/test.cpp:2:
+../../include/cppunivariate/distributions/std/../lst/certificate.hpp: In function ‘bool cppunivariate::t_cert_detail::data(cppunivariate::span, Data&)’:
+../../include/cppunivariate/distributions/std/../lst/certificate.hpp:140:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |   ^~~
+../../include/cppunivariate/distributions/std/../lst/certificate.hpp:140:42: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |                                          ^
+../../include/cppunivariate/distributions/std/../lst/certificate.hpp: In function ‘bool cppunivariate::t_cert_detail::inverse(const System&, int, std::array<std::array<double, 3>, 3>&)’:
+../../include/cppunivariate/distributions/std/../lst/certificate.hpp:161:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |     ^~
+../../include/cppunivariate/distributions/std/../lst/certificate.hpp:161:51: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |                                                   ^~~
+[ 30%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/invtrgamma/test.cpp.o
+[ 31%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/invweibull/test.cpp.o
+[ 32%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/kumar/test.cpp.o
+In file included from ../../include/cppunivariate/distributions/std/../lst/mle.hpp:4,
+                 from ../../include/cppunivariate/distributions/std/mle.hpp:17,
+                 from ../../include/cppunivariate/cppunivariate.hpp:67,
+                 from ../../include/cppunivariate/distributions/gompertz/test.cpp:2:
+../../include/cppunivariate/distributions/std/../lst/certificate.hpp: In function ‘bool cppunivariate::t_cert_detail::data(cppunivariate::span, Data&)’:
+../../include/cppunivariate/distributions/std/../lst/certificate.hpp:140:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |   ^~~
+../../include/cppunivariate/distributions/std/../lst/certificate.hpp:140:42: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |                                          ^
+../../include/cppunivariate/distributions/std/../lst/certificate.hpp: In function ‘bool cppunivariate::t_cert_detail::inverse(const System&, int, std::array<std::array<double, 3>, 3>&)’:
+../../include/cppunivariate/distributions/std/../lst/certificate.hpp:161:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |     ^~
+../../include/cppunivariate/distributions/std/../lst/certificate.hpp:161:51: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |                                                   ^~~
+[ 33%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/lomax/test.cpp.o
+[ 34%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/lst/test.cpp.o
+[ 35%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/nbinom/test.cpp.o
+[ 36%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/norm/test.cpp.o
+In file included from ../../include/cppunivariate/distributions/std/../lst/mle.hpp:4,
+                 from ../../include/cppunivariate/distributions/std/mle.hpp:17,
+                 from ../../include/cppunivariate/cppunivariate.hpp:67,
+                 from ../../include/cppunivariate/distributions/invburr/test.cpp:2:
+../../include/cppunivariate/distributions/std/../lst/certificate.hpp: In function ‘bool cppunivariate::t_cert_detail::data(cppunivariate::span, Data&)’:
+../../include/cppunivariate/distributions/std/../lst/certificate.hpp:140:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |   ^~~
+../../include/cppunivariate/distributions/std/../lst/certificate.hpp:140:42: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |                                          ^
+../../include/cppunivariate/distributions/std/../lst/certificate.hpp: In function ‘bool cppunivariate::t_cert_detail::inverse(const System&, int, std::array<std::array<double, 3>, 3>&)’:
+../../include/cppunivariate/distributions/std/../lst/certificate.hpp:161:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |     ^~
+../../include/cppunivariate/distributions/std/../lst/certificate.hpp:161:51: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |                                                   ^~~
+../../include/cppunivariate/distributions/invburr/test.cpp: In function ‘void DOCTEST_ANON_FUNC_10()’:
+../../include/cppunivariate/distributions/invburr/test.cpp:54:2: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+   54 |  for (double &v : w) v=1/v; for (double &v : p) v=1/v;
+      |  ^~~
+../../include/cppunivariate/distributions/invburr/test.cpp:54:29: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+   54 |  for (double &v : w) v=1/v; for (double &v : p) v=1/v;
+      |                             ^~~
+[ 36%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/nsbeta/test.cpp.o
+[ 37%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/paralogis/test.cpp.o
+In file included from ../../include/cppunivariate/distributions/lst/mle.hpp:4,
+                 from ../../include/cppunivariate/distributions/lst/test.cpp:3:
+../../include/cppunivariate/distributions/lst/certificate.hpp: In function ‘bool cppunivariate::t_cert_detail::data(cppunivariate::span, Data&)’:
+../../include/cppunivariate/distributions/lst/certificate.hpp:140:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |   ^~~
+../../include/cppunivariate/distributions/lst/certificate.hpp:140:42: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |                                          ^
+../../include/cppunivariate/distributions/lst/certificate.hpp: In function ‘bool cppunivariate::t_cert_detail::inverse(const System&, int, std::array<std::array<double, 3>, 3>&)’:
+../../include/cppunivariate/distributions/lst/certificate.hpp:161:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |     ^~
+../../include/cppunivariate/distributions/lst/certificate.hpp:161:51: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |                                                   ^~~
+../../include/cppunivariate/distributions/lst/test.cpp: In function ‘void DOCTEST_ANON_FUNC_12()’:
+../../include/cppunivariate/distributions/lst/test.cpp:50:34: warning: loop variable ‘normal’ creates a copy from type ‘const std::vector<double>’ [-Wrange-loop-construct]
+   50 |   for (const std::vector<double> normal : {std::vector<double>{0,1}, {0,0,1,2}})
+      |                                  ^~~~~~
+../../include/cppunivariate/distributions/lst/test.cpp:50:34: note: use reference type to prevent copying
+   50 |   for (const std::vector<double> normal : {std::vector<double>{0,1}, {0,0,1,2}})
+      |                                  ^~~~~~
+      |                                  &
+[ 38%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/pareto2/test.cpp.o
+[ 39%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/pareto3/test.cpp.o
+In file included from ../../include/cppunivariate/distributions/std/../lst/mle.hpp:4,
+                 from ../../include/cppunivariate/distributions/std/mle.hpp:17,
+                 from ../../include/cppunivariate/cppunivariate.hpp:67,
+                 from ../../include/cppunivariate/distributions/kumar/test.cpp:2:
+../../include/cppunivariate/distributions/std/../lst/certificate.hpp: In function ‘bool cppunivariate::t_cert_detail::data(cppunivariate::span, Data&)’:
+../../include/cppunivariate/distributions/std/../lst/certificate.hpp:140:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |   ^~~
+../../include/cppunivariate/distributions/std/../lst/certificate.hpp:140:42: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |                                          ^
+../../include/cppunivariate/distributions/std/../lst/certificate.hpp: In function ‘bool cppunivariate::t_cert_detail::inverse(const System&, int, std::array<std::array<double, 3>, 3>&)’:
+../../include/cppunivariate/distributions/std/../lst/certificate.hpp:161:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |     ^~
+../../include/cppunivariate/distributions/std/../lst/certificate.hpp:161:51: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |                                                   ^~~
+[ 40%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/pareto4/test.cpp.o
+[ 41%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/sgomp/test.cpp.o
+[ 42%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/skellam/test.cpp.o
+[ 43%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/slash/test.cpp.o
+[ 44%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/sn/test.cpp.o
+../../include/cppunivariate/distributions/skellam/test.cpp: In function ‘void DOCTEST_ANON_FUNC_22()’:
+../../include/cppunivariate/distributions/skellam/test.cpp:101:33: warning: loop variable ‘x’ creates a copy from type ‘const std::vector<double>’ [-Wrange-loop-construct]
+  101 |   for(const std::vector<double> x: {std::vector<double>{-4,-2,-1,0,1,2,5,8},
+      |                                 ^
+../../include/cppunivariate/distributions/skellam/test.cpp:101:33: note: use reference type to prevent copying
+  101 |   for(const std::vector<double> x: {std::vector<double>{-4,-2,-1,0,1,2,5,8},
+      |                                 ^
+      |                                 &
+[ 45%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/snorm/test.cpp.o
+[ 46%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/st/test.cpp.o
+[ 47%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/std/test.cpp.o
+[ 48%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/trgamma/test.cpp.o
+In file included from ../../include/cppunivariate/core/inference_numeric_generated.hpp:12,
+                 from ../../include/cppunivariate/core/inference_families.hpp:6,
+                 from ../../include/cppunivariate/distributions/norm/test.cpp:459:
+../../include/cppunivariate/core/../distributions/dlaplace/dpqr.hpp: In function ‘double cppunivariate::distributions::qdlaplace(double, double, double, bool, bool)’:
+../../include/cppunivariate/core/../distributions/dlaplace/dpqr.hpp:18:2: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+   18 |  if(lp==-INFINITY)return lower_tail?-INFINITY:INFINITY;if(lp==0)return lower_tail?INFINITY:-INFINITY;
+      |  ^~
+../../include/cppunivariate/core/../distributions/dlaplace/dpqr.hpp:18:56: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+   18 |  if(lp==-INFINITY)return lower_tail?-INFINITY:INFINITY;if(lp==0)return lower_tail?INFINITY:-INFINITY;
+      |                                                        ^~
+In file included from ../../include/cppunivariate/core/../distributions/tbinom/dpqr.hpp:2,
+                 from ../../include/cppunivariate/core/inference_numeric_special.hpp:15,
+                 from ../../include/cppunivariate/core/inference_families.hpp:7:
+../../include/cppunivariate/core/../distributions/tbinom/../tpois/dpqr_core.hpp: In function ‘double cppunivariate::truncated_detail::quantile(double, double, double, double, double, bool, bool)’:
+../../include/cppunivariate/core/../distributions/tbinom/../tpois/dpqr_core.hpp:38:3: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+   38 |   if(lp==-INFINITY)return lower?lo:hi;if(lp==0)return lower?hi:lo;
+      |   ^~
+../../include/cppunivariate/core/../distributions/tbinom/../tpois/dpqr_core.hpp:38:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+   38 |   if(lp==-INFINITY)return lower?lo:hi;if(lp==0)return lower?hi:lo;
+      |                                       ^~
+[ 49%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/weibull/test.cpp.o
+[ 50%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/yulesimon/test.cpp.o
+[ 51%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/zinb/test.cpp.o
+[ 52%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/zmbinom/test.cpp.o
+[ 53%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/zmgeom/test.cpp.o
+In file included from ../../include/cppunivariate/distributions/std/../lst/mle.hpp:4,
+                 from ../../include/cppunivariate/distributions/std/mle.hpp:17,
+                 from ../../include/cppunivariate/cppunivariate.hpp:67,
+                 from ../../include/cppunivariate/distributions/snorm/test.cpp:3:
+../../include/cppunivariate/distributions/std/../lst/certificate.hpp: In function ‘bool cppunivariate::t_cert_detail::data(cppunivariate::span, Data&)’:
+../../include/cppunivariate/distributions/std/../lst/certificate.hpp:140:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |   ^~~
+../../include/cppunivariate/distributions/std/../lst/certificate.hpp:140:42: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |                                          ^
+../../include/cppunivariate/distributions/std/../lst/certificate.hpp: In function ‘bool cppunivariate::t_cert_detail::inverse(const System&, int, std::array<std::array<double, 3>, 3>&)’:
+../../include/cppunivariate/distributions/std/../lst/certificate.hpp:161:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |     ^~
+../../include/cppunivariate/distributions/std/../lst/certificate.hpp:161:51: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |                                                   ^~~
+[ 54%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/zmlogarithmic/test.cpp.o
+[ 55%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/zmnbinom/test.cpp.o
+[ 56%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/zmpois/test.cpp.o
+[ 56%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/ztnbinom/test.cpp.o
+In file included from ../../include/cppunivariate/distributions/std/../lst/mle.hpp:4,
+                 from ../../include/cppunivariate/distributions/std/mle.hpp:17,
+                 from ../../include/cppunivariate/cppunivariate.hpp:67,
+                 from ../../include/cppunivariate/distributions/std/test.cpp:2:
+../../include/cppunivariate/distributions/std/../lst/certificate.hpp: In function ‘bool cppunivariate::t_cert_detail::data(cppunivariate::span, Data&)’:
+../../include/cppunivariate/distributions/std/../lst/certificate.hpp:140:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |   ^~~
+../../include/cppunivariate/distributions/std/../lst/certificate.hpp:140:42: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |                                          ^
+../../include/cppunivariate/distributions/std/../lst/certificate.hpp: In function ‘bool cppunivariate::t_cert_detail::inverse(const System&, int, std::array<std::array<double, 3>, 3>&)’:
+../../include/cppunivariate/distributions/std/../lst/certificate.hpp:161:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |     ^~
+../../include/cppunivariate/distributions/std/../lst/certificate.hpp:161:51: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |                                                   ^~~
+[ 57%] Linking CXX executable distribution_tests
+[ 99%] Built target distribution_tests
+[100%] Linking CXX executable diagnostics_tests
+../../../dev/validation/diagnostics-audit.cpp: In function ‘void audit::observe(const T&, std::initializer_list<Value>)’:
+../../../dev/validation/diagnostics-audit.cpp:16:2: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+   16 |  if(seen)return;seen=true;
+      |  ^~
+../../../dev/validation/diagnostics-audit.cpp:16:17: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+   16 |  if(seen)return;seen=true;
+      |                 ^~~~
+In file included from ../../include/cppunivariate/distributions/lst/mle.hpp:4,
+                 from ../../../dev/validation/diagnostics-audit.cpp:188:
+../../include/cppunivariate/distributions/lst/certificate.hpp: In function ‘bool cppunivariate::t_cert_detail::data(cppunivariate::span, Data&)’:
+../../include/cppunivariate/distributions/lst/certificate.hpp:140:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |   ^~~
+../../include/cppunivariate/distributions/lst/certificate.hpp:140:42: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |                                          ^
+../../include/cppunivariate/distributions/lst/certificate.hpp: In function ‘bool cppunivariate::t_cert_detail::inverse(const System&, int, std::array<std::array<double, 3>, 3>&)’:
+../../include/cppunivariate/distributions/lst/certificate.hpp:161:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |     ^~
+../../include/cppunivariate/distributions/lst/certificate.hpp:161:51: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |                                                   ^~~
+../../../dev/validation/diagnostics-audit.cpp: In function ‘void route_hyper(cppunivariate::span, audit::Held, audit::Held, audit::Held)’:
+../../../dev/validation/diagnostics-audit.cpp:931:14: warning: variable ‘whole’ set but not used [-Wunused-but-set-variable]
+  931 |   const auto whole = [](double v) {
+      |              ^~~~~
+../../../dev/validation/diagnostics-audit.cpp: In function ‘void route_triang(cppunivariate::span, audit::Held, audit::Held, audit::Held, double, int)’:
+../../../dev/validation/diagnostics-audit.cpp:1780:16: warning: unused variable ‘nan’ [-Wunused-variable]
+ 1780 |   const double nan=std::numeric_limits<double>::quiet_NaN();
+      |                ^~~
+[100%] Built target diagnostics_tests
+Test project /home/jmoss/umvl-wt/budget-align/univariateML-cpp/build
+        Start  96: distribution_std_slow
+        Start  86: distribution_sged
+        Start  43: distribution_huber
+        Start  42: distribution_ht
+        Start  45: distribution_hyper
+        Start  26: distribution_fpareto
+  1/127 Test  #26: distribution_fpareto .............   Passed   23.53 sec
+        Start  15: distribution_cmb
+  2/127 Test  #45: distribution_hyper ...............   Passed   27.58 sec
+        Start  94: distribution_st
+  3/127 Test  #42: distribution_ht ..................   Passed   33.98 sec
+        Start  89: distribution_slash
+  4/127 Test  #43: distribution_huber ...............   Passed   45.50 sec
+        Start  93: distribution_sstd
+  5/127 Test  #94: distribution_st ..................   Passed   22.03 sec
+        Start  69: distribution_lst_slow
+  6/127 Test  #89: distribution_slash ...............   Passed   19.20 sec
+        Start  81: distribution_pareto4
+  7/127 Test  #15: distribution_cmb .................   Passed   29.80 sec
+        Start  68: distribution_lst
+  8/127 Test  #93: distribution_sstd ................   Passed   14.09 sec
+        Start  37: distribution_gpd
+  9/127 Test  #86: distribution_sged ................   Passed   61.02 sec
+        Start  31: distribution_ged_slow
+ 10/127 Test  #69: distribution_lst_slow ............   Passed   14.56 sec
+        Start 102: distribution_trgamma
+ 11/127 Test  #81: distribution_pareto4 .............   Passed   11.33 sec
+        Start  46: distribution_invburr
+ 12/127 Test  #68: distribution_lst .................   Passed   14.51 sec
+        Start  16: distribution_cmp
+ 13/127 Test  #37: distribution_gpd .................***Failed    9.64 sec
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+../../include/cppunivariate/distributions/gpd/test.cpp:358:
+TEST CASE:  gpd: certificate stops have structured bounds
+
+../../include/cppunivariate/distributions/gpd/test.cpp:364: ERROR: CHECK( r.certificate_failure==cppunivariate::GpdCertificateFailure::Budget ) is NOT correct!
+  values: CHECK( 2 == 1 )
+
+../../include/cppunivariate/distributions/gpd/test.cpp:365: ERROR: CHECK( std::isfinite(r.stop_detail.loglik_lower) ) is NOT correct!
+  values: CHECK( false )
+
+../../include/cppunivariate/distributions/gpd/test.cpp:366: ERROR: CHECK( r.stop_detail.loglik_upper>=r.stop_detail.loglik_lower ) is NOT correct!
+  values: CHECK( nan >= nan )
+
+../../include/cppunivariate/distributions/gpd/test.cpp:364: ERROR: CHECK( r.certificate_failure==cppunivariate::GpdCertificateFailure::Budget ) is NOT correct!
+  values: CHECK( 2 == 1 )
+
+../../include/cppunivariate/distributions/gpd/test.cpp:365: ERROR: CHECK( std::isfinite(r.stop_detail.loglik_lower) ) is NOT correct!
+  values: CHECK( false )
+
+../../include/cppunivariate/distributions/gpd/test.cpp:366: ERROR: CHECK( r.stop_detail.loglik_upper>=r.stop_detail.loglik_lower ) is NOT correct!
+  values: CHECK( nan >= nan )
+
+===============================================================================
+[doctest] test cases:   20 |   19 passed | 1 failed | 1280 skipped
+[doctest] assertions: 4978 | 4972 passed | 6 failed |
+[doctest] Status: FAILURE!
+
+        Start   7: distribution_bhatt
+ 14/127 Test  #31: distribution_ged_slow ............   Passed   10.47 sec
+        Start  82: distribution_pig
+ 15/127 Test  #46: distribution_invburr .............   Passed    9.67 sec
+        Start  98: distribution_tlambda
+ 16/127 Test   #7: distribution_bhatt ...............   Passed    5.86 sec
+        Start  99: distribution_tlambda_slow
+ 17/127 Test #102: distribution_trgamma .............   Passed   11.22 sec
+        Start  11: distribution_burr
+ 18/127 Test  #82: distribution_pig .................   Passed    6.01 sec
+        Start  35: distribution_gev_slow
+ 19/127 Test  #16: distribution_cmp .................   Passed    9.68 sec
+        Start  92: distribution_snorm
+ 20/127 Test  #96: distribution_std_slow ............   Passed   78.42 sec
+        Start  10: distribution_bnbinom
+ 21/127 Test  #98: distribution_tlambda .............   Passed    5.29 sec
+        Start 125: cmp_tests
+ 22/127 Test  #99: distribution_tlambda_slow ........   Passed    5.00 sec
+        Start  95: distribution_std
+ 23/127 Test  #11: distribution_burr ................   Passed    5.68 sec
+        Start  44: distribution_huber_slow
+ 24/127 Test  #92: distribution_snorm ...............   Passed    3.65 sec
+        Start  73: distribution_norm
+ 25/127 Test  #10: distribution_bnbinom .............   Passed    2.95 sec
+        Start 127: diagnostics_tests
+ 26/127 Test  #35: distribution_gev_slow ............   Passed    4.76 sec
+        Start  29: distribution_gb2
+ 27/127 Test #125: cmp_tests ........................   Passed    3.16 sec
+        Start 107: distribution_zeta
+ 28/127 Test  #95: distribution_std .................   Passed    3.05 sec
+        Start  91: distribution_sn
+ 29/127 Test  #73: distribution_norm ................   Passed    2.74 sec
+        Start   8: distribution_bhatt_slow
+ 30/127 Test  #44: distribution_huber_slow ..........   Passed    2.91 sec
+        Start 100: distribution_tnorm
+ 31/127 Test #127: diagnostics_tests ................   Passed    2.73 sec
+        Start 121: distribution_ztnbinom
+ 32/127 Test  #29: distribution_gb2 .................   Passed    2.58 sec
+        Start  22: distribution_emg
+ 33/127 Test #107: distribution_zeta ................   Passed    2.67 sec
+        Start  17: distribution_dgamma
+ 34/127 Test  #91: distribution_sn ..................   Passed    2.79 sec
+        Start  76: distribution_paralogis
+ 35/127 Test #121: distribution_ztnbinom ............   Passed    1.96 sec
+        Start 110: distribution_zinb
+ 36/127 Test #100: distribution_tnorm ...............   Passed    2.23 sec
+        Start  14: distribution_cauchy_slow
+ 37/127 Test   #8: distribution_bhatt_slow ..........   Passed    2.31 sec
+        Start   3: distribution_bbinom
+ 38/127 Test  #22: distribution_emg .................   Passed    1.43 sec
+        Start 116: distribution_zmnbinom
+ 39/127 Test  #17: distribution_dgamma ..............   Passed    1.32 sec
+        Start  21: distribution_dweibull
+ 40/127 Test  #76: distribution_paralogis ...........   Passed    1.03 sec
+        Start   5: distribution_betapr
+ 41/127 Test #110: distribution_zinb ................   Passed    0.92 sec
+        Start  97: distribution_tbinom
+ 42/127 Test  #14: distribution_cauchy_slow .........   Passed    0.84 sec
+        Start  72: distribution_nhyper
+ 43/127 Test #116: distribution_zmnbinom ............   Passed    0.81 sec
+        Start  88: distribution_skellam
+ 44/127 Test   #3: distribution_bbinom ..............   Passed    0.92 sec
+        Start   9: distribution_binom
+ 45/127 Test  #21: distribution_dweibull ............   Passed    0.68 sec
+        Start  51: distribution_invparalogis
+ 46/127 Test  #88: distribution_skellam .............   Passed    0.43 sec
+        Start 118: distribution_ztbinom
+ 47/127 Test   #9: distribution_binom ...............   Passed    0.40 sec
+        Start  30: distribution_ged
+ 48/127 Test  #72: distribution_nhyper ..............   Passed    0.49 sec
+        Start  32: distribution_genbeta
+ 49/127 Test   #5: distribution_betapr ..............   Passed    0.61 sec
+        Start  47: distribution_invburr_slow
+ 50/127 Test  #97: distribution_tbinom ..............   Passed    0.67 sec
+        Start 103: distribution_triang
+ 51/127 Test  #51: distribution_invparalogis ........   Passed    0.39 sec
+        Start 122: distribution_ztpois
+ 52/127 Test  #47: distribution_invburr_slow ........   Passed    0.22 sec
+        Start 117: distribution_zmpois
+ 53/127 Test  #32: distribution_genbeta .............   Passed    0.26 sec
+        Start 113: distribution_zmbinom
+ 54/127 Test  #30: distribution_ged .................   Passed    0.28 sec
+        Start 108: distribution_zib
+ 55/127 Test #118: distribution_ztbinom .............   Passed    0.33 sec
+        Start  53: distribution_invtrgamma
+ 56/127 Test #103: distribution_triang ..............   Passed    0.24 sec
+        Start  66: distribution_lomax
+ 57/127 Test #122: distribution_ztpois ..............   Passed    0.21 sec
+        Start  90: distribution_slash_slow
+ 58/127 Test #117: distribution_zmpois ..............   Passed    0.20 sec
+        Start  75: distribution_nsbeta
+ 59/127 Test #113: distribution_zmbinom .............   Passed    0.19 sec
+        Start 101: distribution_tpois
+ 60/127 Test  #53: distribution_invtrgamma ..........   Passed    0.17 sec
+        Start  87: distribution_sgomp
+ 61/127 Test #108: distribution_zib .................   Passed    0.20 sec
+        Start   4: distribution_beta
+ 62/127 Test  #90: distribution_slash_slow ..........   Passed    0.16 sec
+        Start  71: distribution_nbinom
+ 63/127 Test  #87: distribution_sgomp ...............   Passed    0.12 sec
+        Start 112: distribution_zipf
+ 64/127 Test  #75: distribution_nsbeta ..............   Passed    0.14 sec
+        Start  24: distribution_fatigue
+ 65/127 Test   #4: distribution_beta ................***Failed    0.12 sec
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+../../include/cppunivariate/distributions/beta/test.cpp:70:
+TEST CASE:  beta P2 held shape retains tiny log complements
+
+../../include/cppunivariate/distributions/beta/test.cpp:73: FATAL ERROR: REQUIRE( r.status==cppunivariate::BetaStatus::Ok ) is NOT correct!
+  values: REQUIRE( 2 == 0 )
+
+===============================================================================
+[doctest] test cases:   16 |   15 passed | 1 failed | 1284 skipped
+[doctest] assertions: 2907 | 2906 passed | 1 failed |
+[doctest] Status: FAILURE!
+
+        Start  12: distribution_burr_slow
+ 66/127 Test #101: distribution_tpois ...............   Passed    0.16 sec
+        Start  34: distribution_gev
+ 67/127 Test  #66: distribution_lomax ...............   Passed    0.27 sec
+        Start 115: distribution_zmlogarithmic
+ 68/127 Test  #71: distribution_nbinom ..............   Passed    0.13 sec
+        Start  28: distribution_gamma
+ 69/127 Test  #24: distribution_fatigue .............   Passed    0.11 sec
+        Start  60: distribution_lgser
+ 70/127 Test #112: distribution_zipf ................   Passed    0.12 sec
+        Start  49: distribution_invgamma
+ 71/127 Test #115: distribution_zmlogarithmic .......   Passed    0.08 sec
+        Start  59: distribution_lgamma
+ 72/127 Test  #34: distribution_gev .................   Passed    0.09 sec
+        Start 106: distribution_yulesimon
+ 73/127 Test  #12: distribution_burr_slow ...........   Passed    0.10 sec
+        Start  40: distribution_hcauchy
+ 74/127 Test  #28: distribution_gamma ...............   Passed    0.08 sec
+        Start  70: distribution_naka
+ 75/127 Test  #49: distribution_invgamma ............   Passed    0.07 sec
+        Start  50: distribution_invgauss
+ 76/127 Test  #60: distribution_lgser ...............   Passed    0.09 sec
+        Start  25: distribution_foldnorm
+ 77/127 Test  #59: distribution_lgamma ..............   Passed    0.08 sec
+        Start 114: distribution_zmgeom
+ 78/127 Test #106: distribution_yulesimon ...........   Passed    0.08 sec
+        Start 111: distribution_zip
+ 79/127 Test  #40: distribution_hcauchy .............   Passed    0.07 sec
+        Start  83: distribution_pois
+ 80/127 Test  #70: distribution_naka ................   Passed    0.07 sec
+        Start 120: distribution_ztgeom
+ 81/127 Test  #25: distribution_foldnorm ............   Passed    0.07 sec
+        Start  20: distribution_dunif
+ 82/127 Test  #50: distribution_invgauss ............   Passed    0.08 sec
+        Start  65: distribution_logitnorm
+ 83/127 Test #114: distribution_zmgeom ..............   Passed    0.07 sec
+        Start  18: distribution_dlaplace
+ 84/127 Test #111: distribution_zip .................   Passed    0.07 sec
+        Start  52: distribution_invpareto
+ 85/127 Test #120: distribution_ztgeom ..............   Passed    0.06 sec
+        Start  55: distribution_kumar
+ 86/127 Test  #83: distribution_pois ................   Passed    0.07 sec
+        Start  19: distribution_dnorm
+ 87/127 Test  #65: distribution_logitnorm ...........   Passed    0.05 sec
+        Start  84: distribution_power
+ 88/127 Test  #20: distribution_dunif ...............   Passed    0.06 sec
+        Start  80: distribution_pareto3
+ 89/127 Test  #18: distribution_dlaplace ............   Passed    0.05 sec
+        Start  79: distribution_pareto2
+ 90/127 Test  #52: distribution_invpareto ...........   Passed    0.05 sec
+        Start  27: distribution_frechet
+ 91/127 Test  #55: distribution_kumar ...............   Passed    0.05 sec
+        Start   6: distribution_betapr_slow
+ 92/127 Test  #19: distribution_dnorm ...............   Passed    0.05 sec
+        Start  78: distribution_pareto
+ 93/127 Test  #80: distribution_pareto3 .............   Passed    0.05 sec
+        Start  61: distribution_llogis
+ 94/127 Test  #84: distribution_power ...............   Passed    0.05 sec
+        Start 105: distribution_weibull
+ 95/127 Test  #79: distribution_pareto2 .............   Passed    0.04 sec
+        Start  62: distribution_lnorm
+ 96/127 Test   #6: distribution_betapr_slow .........   Passed    0.04 sec
+        Start  85: distribution_rayleigh
+ 97/127 Test  #27: distribution_frechet .............   Passed    0.05 sec
+        Start  54: distribution_invweibull
+ 98/127 Test  #78: distribution_pareto ..............   Passed    0.04 sec
+        Start  36: distribution_gompertz
+ 99/127 Test #105: distribution_weibull .............   Passed    0.04 sec
+        Start  33: distribution_geom
+100/127 Test  #61: distribution_llogis ..............   Passed    0.04 sec
+        Start  13: distribution_cauchy
+101/127 Test  #62: distribution_lnorm ...............   Passed    0.04 sec
+        Start  57: distribution_laplace
+102/127 Test  #54: distribution_invweibull ..........   Passed    0.04 sec
+        Start  41: distribution_hnorm
+103/127 Test  #85: distribution_rayleigh ............   Passed    0.05 sec
+        Start  38: distribution_gumbel
+104/127 Test  #36: distribution_gompertz ............   Passed    0.04 sec
+        Start  63: distribution_logis
+105/127 Test  #33: distribution_geom ................   Passed    0.03 sec
+        Start  23: distribution_exp
+106/127 Test  #41: distribution_hnorm ...............   Passed    0.03 sec
+        Start  48: distribution_invexp
+107/127 Test  #13: distribution_cauchy ..............   Passed    0.04 sec
+        Start 104: distribution_unif
+108/127 Test  #57: distribution_laplace .............   Passed    0.04 sec
+        Start 119: distribution_ztbinom_slow
+109/127 Test  #38: distribution_gumbel ..............   Passed    0.04 sec
+        Start   2: sample_tests
+110/127 Test  #63: distribution_logis ...............   Passed    0.04 sec
+        Start 109: distribution_zib_slow
+111/127 Test  #23: distribution_exp .................   Passed    0.03 sec
+        Start  67: distribution_lomax_slow
+112/127 Test #109: distribution_zib_slow ............   Passed    0.02 sec
+        Start  39: distribution_gumbel_slow
+113/127 Test   #2: sample_tests .....................   Passed    0.02 sec
+        Start  58: distribution_laplace_slow
+114/127 Test #119: distribution_ztbinom_slow ........   Passed    0.03 sec
+        Start  74: distribution_norm_slow
+115/127 Test  #48: distribution_invexp ..............   Passed    0.04 sec
+        Start  56: distribution_kumar_slow
+116/127 Test #104: distribution_unif ................   Passed    0.04 sec
+117/127 Test  #67: distribution_lomax_slow ..........   Passed    0.02 sec
+        Start  64: distribution_logis_slow
+        Start  77: distribution_paralogis_slow
+118/127 Test  #39: distribution_gumbel_slow .........   Passed    0.01 sec
+        Start 123: distribution_support
+119/127 Test  #58: distribution_laplace_slow ........   Passed    0.01 sec
+        Start 124: no_throw_tests
+120/127 Test  #74: distribution_norm_slow ...........   Passed    0.01 sec
+        Start   1: bfgs_tests
+121/127 Test #124: no_throw_tests ...................   Passed    0.00 sec
+        Start 126: tails_tests
+122/127 Test  #56: distribution_kumar_slow ..........   Passed    0.01 sec
+123/127 Test   #1: bfgs_tests .......................   Passed    0.00 sec
+124/127 Test #123: distribution_support .............   Passed    0.01 sec
+125/127 Test #126: tails_tests ......................   Passed    0.00 sec
+126/127 Test  #77: distribution_paralogis_slow ......   Passed    0.01 sec
+127/127 Test  #64: distribution_logis_slow ..........   Passed    0.02 sec
+
+98% tests passed, 2 tests failed out of 127
+
+Label Time Summary:
+cran    = 409.01 sec*proc (105 tests)
+dev     = 411.74 sec*proc (106 tests)
+full    = 531.67 sec*proc (127 tests)
+
+Total Test time (real) =  88.64 sec
+
+The following tests FAILED:
+	  4 - distribution_beta (Failed)                        cran dev full
+	 37 - distribution_gpd (Failed)                         cran dev full
+Errors while running CTest
+error: Recipe `cpp-test` failed with exit code 8

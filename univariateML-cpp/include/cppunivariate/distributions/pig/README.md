@@ -26,7 +26,7 @@ r:
   sampler: rpig
   control:
     reltol: "Absolute tolerance on the log parameter in the scalar search."
-    iterlim: "Maximum refinement iterations per bracketed scalar peak."
+    iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
 log_density: "log(2*shape/pi)/2 - loggamma(x+1) + shape/mean + (x-1/2)*log(shape/(2+shape/mean**2))/2 + log(besselk(x-1/2, sqrt(shape*(2+shape/mean**2))))"
 limits:
   - model: pois

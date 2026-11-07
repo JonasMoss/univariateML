@@ -1,0 +1,21 @@
+[  3%] Built target sample_tests
+[  3%] Built target bfgs_tests
+[  5%] Built target cmp_tests
+[  7%] Built target tails_tests
+[  9%] Built target no_throw_tests
+[ 11%] Built target diagnostics_tests
+[ 12%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/gb2/test.cpp.o
+[ 13%] Linking CXX executable distribution_tests
+[100%] Built target distribution_tests
+Test project /home/jmoss/umvl-wt/budget-align/univariateML-cpp/build
+    Start 29: distribution_gb2
+1/1 Test #29: distribution_gb2 .................   Passed    1.76 sec
+
+100% tests passed out of 1
+
+Label Time Summary:
+cran    =   1.76 sec*proc (1 test)
+dev     =   1.76 sec*proc (1 test)
+full    =   1.76 sec*proc (1 test)
+
+Total Test time (real) =   1.77 sec

@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../gev/mle.hpp"
 #include "../invweibull/mle.hpp"
 namespace cppunivariate {
@@ -6,6 +7,7 @@ inline constexpr double kFrechetLambdaLower = 1.0;
 
 inline GevResult frechet_gev_mle(span x, double tol=1e-10, int maxit=100,
                          double xi=std::numeric_limits<double>::quiet_NaN()) {
+  maxit = static_cast<int>(solver_budget(maxit));
   GevResult bad{0,0,xi,0,0,GevStatus::InvalidData};
   if(x.size()<3 || !(tol>0) || !std::isfinite(tol) || maxit<1) return bad;
   if(!std::isnan(xi) && (!std::isfinite(xi) || xi<-.5 || xi>1)) {
@@ -125,6 +127,7 @@ inline double frechet_loglik(span x,double lambda,double mu,double sigma) {
 // Strictly concave shape likelihood with held location and scale.
 inline FrechetResult frechet_shape(span x,double mu,double sigma,double floor,
                                    double tol,int maxit) {
+  maxit = static_cast<int>(solver_budget(maxit));
  bool constant_at_scale=true;
  for(double v:x) constant_at_scale=constant_at_scale && v-mu==sigma;
  if(constant_at_scale) return {0,mu,sigma,0,0,FrechetStatus::InvalidData};
@@ -139,7 +142,7 @@ inline FrechetResult frechet_shape(span x,double mu,double sigma,double floor,
  double lo=floor,hi=std::max(1.,floor*2);
  if(floor>0 && score(floor)<=0)
    return {floor,mu,sigma,frechet_loglik(x,floor,mu,sigma),0,FrechetStatus::Ok};
- while(score(hi)>0 && hi<1e16) hi*=2;
+ for(std::int64_t bracket_pass=0; bracket_pass<solver_budget(maxit) && (score(hi)>0 && hi<1e16); ++bracket_pass) hi*=2;
  if(score(hi)>0) return {hi,mu,sigma,0,0,FrechetStatus::IterationFailure};
  int it=0;
  for(;it<maxit;++it) {
@@ -166,6 +169,7 @@ inline double frechet_scale(span x,double lambda,double mu) {
 }
 inline FrechetResult frechet_held_mle(span x,double tol,int maxit,double mu,
                                      double lambda,double sigma) {
+  maxit = static_cast<int>(solver_budget(maxit));
  const double nan=std::numeric_limits<double>::quiet_NaN();
  FrechetResult bad{lambda,mu,sigma,nan,0,FrechetStatus::InvalidData};
  const bool hm=!std::isnan(mu),hl=!std::isnan(lambda),hs=!std::isnan(sigma);
@@ -212,6 +216,7 @@ inline FrechetResult frechet_mle_impl(span x, double tol=1e-10, int maxit=100,
  double mu=std::numeric_limits<double>::quiet_NaN(),
  double lambda=std::numeric_limits<double>::quiet_NaN(),
  double sigma=std::numeric_limits<double>::quiet_NaN()) {
+  maxit = static_cast<int>(solver_budget(maxit));
  if(!std::isnan(lambda) || !std::isnan(sigma)) return frechet_held_mle(x,tol,maxit,mu,lambda,sigma);
  const double nan=std::numeric_limits<double>::quiet_NaN();
  FrechetResult bad{nan,mu,nan,nan,0,FrechetStatus::InvalidData};
@@ -236,6 +241,7 @@ inline FrechetResult frechet_mle_impl(span x, double tol=1e-10, int maxit=100,
 }
 
 inline FrechetResult frechet_mle(span x,double tol=1e-10,int maxit=100,double mu=std::numeric_limits<double>::quiet_NaN(),double lambda=std::numeric_limits<double>::quiet_NaN(),double sigma=std::numeric_limits<double>::quiet_NaN()) {
+  maxit = static_cast<int>(solver_budget(maxit));
   auto r=frechet_mle_impl(x,tol,maxit,mu,lambda,sigma);
   if(r.status==FrechetStatus::Ok && (std::isnan(lambda) && std::isnan(mu)) && r.lambda==kFrechetLambdaLower) r.restricted|=1u;
   return r;

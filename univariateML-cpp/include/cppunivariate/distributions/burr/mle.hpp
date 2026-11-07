@@ -1,5 +1,6 @@
 // Three-parameter Burr XII MLE, with shape1 profiled exactly.
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
 #include "cppunivariate/core/constants.hpp"
 #include "../../core/multistart.hpp"
@@ -123,6 +124,7 @@ inline BurrMLE burr_mle_legacy(span x, double tol, int maxit,
     double shape10 = std::numeric_limits<double>::quiet_NaN(),
     double shape20 = std::numeric_limits<double>::quiet_NaN(),
     double scale0 = std::numeric_limits<double>::quiet_NaN(), double reltol = 1e-12) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const double nan = std::numeric_limits<double>::quiet_NaN();
   if (x.size() < 2) return {nan,nan,nan,nan,0,BurrStatus::InvalidInit};
   std::vector<double> logs;
@@ -183,7 +185,7 @@ inline BurrMLE burr_mle_legacy(span x, double tol, int maxit,
   }
   const double n = static_cast<double>(x.size());
   const double ll = -n*(attempted.f+center);
-  const auto w = weibull_mle(x,1e-10,std::max(maxit,100));
+  const auto w = weibull_mle(x,1e-10,maxit);
   const auto p = pareto_mle(x);
   const double tie = 1e-8*n;
   if (w.logLik >= ll-tie && w.logLik >= p.logLik-tie)
@@ -206,7 +208,8 @@ inline BurrMLE burr_mle_certified(span x, double tol, int maxit,
     double shape10 = std::numeric_limits<double>::quiet_NaN(),
     double shape20 = std::numeric_limits<double>::quiet_NaN(),
     double scale0 = std::numeric_limits<double>::quiet_NaN(), double reltol = 1e-12,
-    int certificate_budget = 4096) {
+    std::int64_t work_budget = -1) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const double nan=std::numeric_limits<double>::quiet_NaN();
   if(!(tol>0)||!std::isfinite(tol)||maxit<1||!(reltol>0)||!std::isfinite(reltol))
     return {nan,nan,nan,nan,0,BurrStatus::InvalidInit};
@@ -214,7 +217,8 @@ inline BurrMLE burr_mle_certified(span x, double tol, int maxit,
     if(!std::isnan(v)&&(!(v>0)||!std::isfinite(v)))
       return {nan,nan,nan,nan,0,BurrStatus::InvalidInit};
   if(maxit==1)return {nan,nan,nan,nan,0,BurrStatus::IterationFailure};
-  const auto r=burr_cert_detail::fit(x,certificate_budget,std::min(maxit,120));
+  if(work_budget<0)work_budget=certificate_budget(maxit);
+  const auto r=burr_cert_detail::fit(x,work_budget,maxit);
   BurrStatus status=BurrStatus::NumericalFailure;
   switch(r.outcome){
     case burr_cert_detail::Outcome::Finite:status=BurrStatus::Ok;break;
@@ -228,6 +232,7 @@ inline BurrMLE burr_mle_certified(span x, double tol, int maxit,
   }
   BurrMLE out{r.k,r.c,r.scale,r.logLik,r.profiles,status};
   if(status!=BurrStatus::Ok)out.stop_detail=r.stop_detail;
+  out.stop_detail.budget_exhausted=r.outcome==burr_cert_detail::Outcome::Budget;
   if(status==BurrStatus::WeibullBoundary || status==BurrStatus::ParetoBoundary) {
     const auto& face=r.stop_detail.candidates[status==BurrStatus::ParetoBoundary?0:1];
     out.stop_detail.limit_coef=face.coef;out.stop_detail.limit_loglik=r.logLik;
@@ -238,12 +243,14 @@ inline BurrMLE burr_mle(span x, double tol, int maxit,
     double shape10 = std::numeric_limits<double>::quiet_NaN(),
     double shape20 = std::numeric_limits<double>::quiet_NaN(),
     double scale0 = std::numeric_limits<double>::quiet_NaN(), double reltol = 1e-12) {
+  maxit = static_cast<int>(solver_budget(maxit));
   return burr_mle_certified(x,tol,maxit,shape10,shape20,scale0,reltol);
 }
 
 // Held-scale likelihood has a strictly concave scalar profile.
 inline BurrMLE burr_mle_fixed_scale(span x, double scale,
     double tol = 1.220703e-4, int maxit = 1000) {
+  maxit = static_cast<int>(solver_budget(maxit));
   double proposal=NAN;
   // Compatibility proposal only: successful or failed historical solves
   // must pass the same independent root bracket and coefficient bounds.
@@ -267,7 +274,8 @@ inline BurrMLE burr_mle_fixed_scale(span x, double scale,
   if(r.outcome==burr_cert_detail::Outcome::Invalid)status=BurrStatus::InvalidInit;
   if(r.outcome==burr_cert_detail::Outcome::Budget)status=BurrStatus::CertificateBudget;
   if(r.outcome==burr_cert_detail::Outcome::Tie)status=BurrStatus::CertificateTie;
-  return {r.k,r.c,scale,r.logLik,r.profiles,status,r.stop_detail};
+  auto detail=r.stop_detail;detail.budget_exhausted=status==BurrStatus::CertificateBudget;
+  return {r.k,r.c,scale,r.logLik,r.profiles,status,detail};
 }
 } // namespace cppunivariate
 
@@ -276,9 +284,10 @@ namespace cppunivariate {
 namespace burr_hold_detail {
 // Monotone decreasing score on log coordinates. Bracket before bisection.
 template<class Score> inline double root(Score score, int maxit=160) {
+  maxit = static_cast<int>(solver_budget(maxit));
   double lo=-1,hi=1;
-  for(int i=0;i<12 && score(lo)<0;++i)lo*=2;
-  for(int i=0;i<12 && score(hi)>0;++i)hi*=2;
+  for(int i=0;i<maxit && score(lo)<0;++i)lo*=2;
+  for(int i=0;i<maxit && score(hi)>0;++i)hi*=2;
   if(!(score(lo)>=0 && score(hi)<=0))return std::numeric_limits<double>::quiet_NaN();
   for(int i=0;i<maxit;++i){double m=(lo+hi)/2;if(m==lo||m==hi)return m;
     const double value=score(m);if(value==0)return m;if(value>0)lo=m;else hi=m;}
@@ -291,6 +300,7 @@ inline double sigmoid(double z){return z>=0?1/(1+std::exp(-z)):std::exp(z)/(1+st
 // exactly, then solve the strictly concave location-scale likelihood in
 // inverse scale and standardized location.
 inline BurrMLE burr_mle_holds(span x,double a,double b,double s,double tol=1e-9,int maxit=1000) {
+  maxit = static_cast<int>(solver_budget(maxit));
  const double nan=std::numeric_limits<double>::quiet_NaN();
  BurrMLE bad{a,b,s,nan,0,BurrStatus::InvalidInit};
  if(x.size()==0||!(tol>0)||!std::isfinite(tol)||maxit<1)return bad;

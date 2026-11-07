@@ -1,0 +1,9 @@
+{"source_headers_sha256": "7349c83fd8ae9cc29c52d42593b53160ba0dbb512a36f265cc84779f652e036f", "probe_sha256": "daf2a55409313c55975c73b9e358862100ebc51d94c7ef37bdf1a0d613fb94e5", "machine": "workstation", "compiler": "c++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0", "seed": 143, "n": 100000, "timeout_seconds": 60, "cmb_timeout_seconds": 180}
+{"family": "dnorm", "mode": 0, "elapsed": 0.205467249999856, "returncode": 0, "output": "dnorm\t0\t100000\t0.0018708869999999999", "stderr": ""}
+{"family": "dnorm", "mode": 1, "elapsed": 0.22466342299958342, "returncode": 0, "output": "dnorm\t1\t100000\t0.001682174", "stderr": ""}
+{"family": "dnorm", "mode": 2, "elapsed": 0.19325191900043137, "returncode": 0, "output": "dnorm\t2\t100000\t0.0012303520000000001", "stderr": ""}
+{"family": "dnorm", "mode": 3, "elapsed": 0.2292165290000412, "returncode": 0, "output": "dnorm\t3\t100000\t0.00180638", "stderr": ""}
+{"family": "dweibull", "mode": 0, "elapsed": 0.1985066810002536, "returncode": 0, "output": "dweibull\t0\t100000\t0.002031185", "stderr": ""}
+{"family": "dweibull", "mode": 1, "elapsed": 0.20444934299939632, "returncode": 0, "output": "dweibull\t1\t100000\t0.0017888820000000001", "stderr": ""}
+{"family": "dweibull", "mode": 2, "elapsed": 0.22748742699968716, "returncode": 0, "output": "dweibull\t2\t100000\t0.0011509440000000001", "stderr": ""}
+{"family": "dweibull", "mode": 3, "elapsed": 0.2207340960003421, "returncode": 0, "output": "dweibull\t3\t100000\t0.0017471570000000001", "stderr": ""}

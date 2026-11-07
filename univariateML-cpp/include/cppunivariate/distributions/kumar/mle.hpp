@@ -7,6 +7,7 @@
 // kept verbatim for golden parity.
 
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
 
 #include "cppunivariate/core/constants.hpp"
@@ -39,6 +40,7 @@ struct KumarResult {
 // Stable profile fallback: b = -n / sum log(1-x^a). Solve the
 // profile score in log(a), preserving the legacy Newton path when it works.
 inline KumarResult kumar_profile_candidate_mle(span x, double tol, int maxit) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const double nan = std::numeric_limits<double>::quiet_NaN();
   const double n = static_cast<double>(x.size());
   const auto evaluate = [&](double p, double &b, double &ll) {
@@ -56,8 +58,8 @@ inline KumarResult kumar_profile_candidate_mle(span x, double tol, int maxit) {
   };
   double b, ll;
   double lo = 0.0, hi = 0.0;
-  for (int i = 0; i < 700 && evaluate(lo, b, ll) <= 0.0; ++i) lo -= 1.0;
-  for (int i = 0; i < 700 && evaluate(hi, b, ll) >= 0.0; ++i) hi += 1.0;
+  for (int i = 0; i < maxit && evaluate(lo, b, ll) <= 0.0; ++i) lo -= 1.0;
+  for (int i = 0; i < maxit && evaluate(hi, b, ll) >= 0.0; ++i) hi += 1.0;
   if (!(evaluate(lo, b, ll) > 0.0 && evaluate(hi, b, ll) < 0.0))
     return {nan, nan, nan, 0, KumarStatus::IterationFailure};
   for (int i = 1; i <= maxit; ++i) {
@@ -77,6 +79,7 @@ inline KumarResult kumar_candidate_mle(span x, double tol, int maxit,
                              double start = std::numeric_limits<double>::quiet_NaN(),
                              double fixed_a = std::numeric_limits<double>::quiet_NaN(),
                              double fixed_b = std::numeric_limits<double>::quiet_NaN()) {
+  maxit = static_cast<int>(solver_budget(maxit));
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
   if (n == 0) return {kNaN, kNaN, kNaN, 0, KumarStatus::InvalidData};
@@ -112,7 +115,7 @@ inline KumarResult kumar_candidate_mle(span x, double tol, int maxit,
         return dn + z * L + (b - 1) * d;
       };
       double lo = 0, hi = 1;
-      while (score(hi) > 0 && hi < 1e300) hi *= 2;
+      for(std::int64_t bracket_pass=0; bracket_pass<solver_budget(maxit) && (score(hi) > 0 && hi < 1e300); ++bracket_pass) hi *= 2;
       if (!(score(hi) <= 0))
         return {kNaN,kNaN,kNaN,0,KumarStatus::IterationFailure};
       for (; it < maxit; ++it) {
@@ -152,7 +155,7 @@ inline KumarResult kumar_candidate_mle(span x, double tol, int maxit,
 
   // Stage 1: Newton on `a` from L-moment estimating equation.
   auto f_over_df_lmom = [&](double a0) {
-    const double b = inverse_digamma_scalar(-0.5772156649015328606 - a0 * mu);
+    const double b = inverse_digamma_scalar(-0.5772156649015328606 - a0 * mu,maxit);
     if (!(b > 0.0) || !std::isfinite(b)) return kNaN;
     const double tri = cppunivariate::special::trigamma(b);
     const double tetra = cppunivariate::special::tetragamma(b);

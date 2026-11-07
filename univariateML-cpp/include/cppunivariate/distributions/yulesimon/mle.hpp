@@ -1,5 +1,6 @@
 // The log-rho score is strictly decreasing; unique counts cache repeated work.
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../../core/discrete_stop.hpp"
 #include "dpqr.hpp"
 #include "../../core/span.hpp"
@@ -19,6 +20,7 @@ inline double score_term(int k,double rho) {
 }
 }
 inline YulesimonResult yulesimon_mle(ispan x,double tol=1e-10,int maxit=200, double held=std::numeric_limits<double>::quiet_NaN()) {
+  maxit = static_cast<int>(solver_budget(maxit));
   auto stopped = [&]() -> YulesimonResult {
   const double nan=special::kNaN;
   if (!x.size() || !(tol>0) || !std::isfinite(tol) || maxit<1)
@@ -45,8 +47,9 @@ inline YulesimonResult yulesimon_mle(ispan x,double tol=1e-10,int maxit=200, dou
     return out;
   };
   double lo=-1,hi=1;
-  while (score(std::exp(lo))<0) lo*=2;
-  while (score(std::exp(hi))>0) hi*=2;
+  for(std::int64_t bracket_pass=0; bracket_pass<solver_budget(maxit) && (score(std::exp(lo))<0); ++bracket_pass) lo*=2;
+  for(std::int64_t bracket_pass=0; bracket_pass<solver_budget(maxit) && (score(std::exp(hi))>0); ++bracket_pass) hi*=2;
+  if(!(score(std::exp(lo))>=0 && score(std::exp(hi))<=0))return {nan,nan,0,YulesimonStatus::IterationFailure};
   double rho=1;
   for (int it=1;it<=maxit;++it) {
     const double mid=lo+(hi-lo)/2;

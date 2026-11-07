@@ -1,0 +1,1555 @@
+cd bindings/r && UMVL_DOSSIER_DIR=/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions Rscript scripts/assemble_package.R
+[1] TRUE
+[1] TRUE
+[1] TRUE
+mkdir -p univariateML-r/inst/include
+rsync -a --delete --prune-empty-dirs --include='*/' --include='*.hpp' --exclude='*' univariateML-cpp/include/cppunivariate univariateML-r/inst/include/
+cd univariateML-r && Rscript -e "Rcpp::compileAttributes()"
+cd bindings/r && UMVL_DOSSIER_DIR=/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions UMVL_PKG_R_DIR=/home/jmoss/umvl-wt/budget-align/univariateML-r/R Rscript scripts/codegen_metadata.R
+cd bindings/r && UMVL_DOSSIER_DIR=/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions UMVL_PKG_R_DIR=/home/jmoss/umvl-wt/budget-align/univariateML-r/R Rscript scripts/codegen_wrappers.R
+cd bindings/r && UMVL_PKG_R_DIR=/home/jmoss/umvl-wt/budget-align/univariateML-r/R Rscript scripts/codegen_links.R
+cd univariateML-r && PKG_BUILD_EXTRA_FLAGS=false Rscript -e "options(pkg.build_extra_flags = FALSE); roxygen2::roxygenise()"
+ℹ Setting Config/roxygen2/version to "8.1.1"
+Writing 'NAMESPACE'
+ℹ Loading univariateML
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_bbinom.cpp:
+   Rcpp::List mlbbinom_(const Rcpp::IntegerVector& x, Rcpp::Nullable<double> size, Rcpp::Nullable<double> alpha = R_NilValue, Rcpp::Nullable<double> beta = R_NilValue, double reltol = 1e-10, int iterlim = 500)
+   Rcpp::NumericVector dbbinom_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool log)
+   Rcpp::NumericVector pbbinom_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qbbinom_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rbbinom_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_beta.cpp:
+   Rcpp::List mlbeta_(const Rcpp::NumericVector& x, double reltol = 1.490116e-08, int iterlim = 100, Rcpp::Nullable<double> shape1 = R_NilValue, Rcpp::Nullable<double> shape2 = R_NilValue)
+   Rcpp::NumericVector core_dbeta_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool log)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_betapr.cpp:
+   Rcpp::List mlbetapr_(const Rcpp::NumericVector& x, double gradtol = 1e-6, int iterlim = 1000, double shape10 = 0, double shape20 = 0, double scale0 = 0, double reltol = 1e-13, double abstol = 1e-10, Rcpp::Nullable<double> scale = R_NilValue, Rcpp::Nullable<double> shape1 = R_NilValue, Rcpp::Nullable<double> shape2 = R_NilValue)
+   Rcpp::NumericVector dbetapr_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool log)
+   Rcpp::NumericVector pbetapr_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qbetapr_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rbetapr_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_bhatt.cpp:
+   Rcpp::List mlbhatt_(const Rcpp::NumericVector& x, Rcpp::Nullable<double> sigma = R_NilValue, Rcpp::Nullable<double> a = R_NilValue, double reltol = 1e-8, int iterlim = 500, Rcpp::Nullable<double> mu = R_NilValue)
+   Rcpp::NumericVector dbhatt_reference_(Rcpp::NumericVector x, Rcpp::NumericVector mu, Rcpp::NumericVector sigma, Rcpp::NumericVector a, bool log = false)
+   Rcpp::NumericVector pbhatt_reference_(Rcpp::NumericVector x, Rcpp::NumericVector mu, Rcpp::NumericVector sigma, Rcpp::NumericVector a, bool lower_tail = true, bool log_p = false)
+   Rcpp::NumericVector dbhatt_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool log)
+   Rcpp::NumericVector pbhatt_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qbhatt_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rbhatt_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_binom.cpp:
+   Rcpp::List mlbinom_(const Rcpp::IntegerVector& x, Rcpp::Nullable<double> size, double abstol = 1.220703e-4, int iterlim = 100, Rcpp::Nullable<double> prob = R_NilValue)
+   Rcpp::NumericVector core_dbinom_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool log)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_bnbinom.cpp:
+   Rcpp::List mlbnbinom_(const Rcpp::IntegerVector& x, Rcpp::Nullable<double> size = R_NilValue, Rcpp::Nullable<double> alpha = R_NilValue, Rcpp::Nullable<double> beta = R_NilValue, double gradtol = 1e-8, int iterlim = 600)
+   Rcpp::NumericVector dbnbinom_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool log)
+   Rcpp::NumericVector pbnbinom_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qbnbinom_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rbnbinom_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_burr.cpp:
+   Rcpp::List mlburr_(const Rcpp::NumericVector& x, double gradtol = 1e-8, int iterlim = 1000, Rcpp::Nullable<double> shape10 = R_NilValue, Rcpp::Nullable<double> shape20 = R_NilValue, Rcpp::Nullable<double> scale0 = R_NilValue, double reltol = 1e-12, Rcpp::Nullable<double> scale = R_NilValue, double abstol = 1.220703e-4, Rcpp::Nullable<double> shape1 = R_NilValue, Rcpp::Nullable<double> shape2 = R_NilValue)
+   Rcpp::NumericVector dburr_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool log)
+   Rcpp::NumericVector pburr_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qburr_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rburr_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_cauchy.cpp:
+   Rcpp::List mlcauchy_(const Rcpp::NumericVector& x, double abstol = 1.220703e-4, int iterlim = 100, Rcpp::Nullable<double> location = R_NilValue, Rcpp::Nullable<double> scale = R_NilValue)
+   Rcpp::NumericVector core_dcauchy_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool log)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_cmb.cpp:
+   Rcpp::List mlcmb_(const Rcpp::IntegerVector& x, Rcpp::Nullable<double> size, Rcpp::Nullable<double> prob = R_NilValue, Rcpp::Nullable<double> nu = R_NilValue, double reltol = 1e-10, int iterlim = 1000)
+   Rcpp::NumericVector dcmb_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool log)
+   Rcpp::NumericVector pcmb_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qcmb_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rcmb_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_cmp.cpp:
+   Rcpp::List mlcmp_(const Rcpp::NumericVector& x, Rcpp::Nullable<double> lambda = R_NilValue, Rcpp::Nullable<double> nu = R_NilValue, double reltol = 1e-10, int iterlim = 100)
+   Rcpp::NumericVector dcmp_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool log)
+   Rcpp::NumericVector pcmp_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qcmp_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rcmp_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_dgamma.cpp:
+   Rcpp::List mldgamma_(const Rcpp::NumericVector& x, Rcpp::Nullable<double> shape = R_NilValue, Rcpp::Nullable<double> rate = R_NilValue, double reltol = 1e-8, int iterlim = 400)
+   Rcpp::NumericVector ddgamma_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool log)
+   Rcpp::NumericVector pdgamma_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qdgamma_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rdgamma_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_dlaplace.cpp:
+   Rcpp::List mldlaplace_(const Rcpp::IntegerVector& x, Rcpp::Nullable<double> location = R_NilValue, Rcpp::Nullable<double> scale = R_NilValue)
+   Rcpp::NumericVector ddlaplace_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool log)
+   Rcpp::NumericVector pdlaplace_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qdlaplace_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rdlaplace_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_dnorm.cpp:
+   Rcpp::List mldnorm_(const Rcpp::NumericVector& x, Rcpp::Nullable<double> mean = R_NilValue, Rcpp::Nullable<double> sd = R_NilValue, double reltol = 1e-9, int iterlim = 200)
+   Rcpp::NumericVector ddnorm_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool log)
+   Rcpp::NumericVector pdnorm_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qdnorm_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rdnorm_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_dunif.cpp:
+   Rcpp::List mldunif_(const Rcpp::IntegerVector& x, Rcpp::Nullable<double> min = R_NilValue, Rcpp::Nullable<double> max = R_NilValue)
+   Rcpp::NumericVector ddunif_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool log)
+   Rcpp::NumericVector pdunif_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qdunif_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rdunif_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_dweibull.cpp:
+   Rcpp::List mldweibull_(const Rcpp::NumericVector& x, Rcpp::Nullable<double> shape1 = R_NilValue, Rcpp::Nullable<double> shape2 = R_NilValue, double reltol = 1e-12, int iterlim = 200)
+   Rcpp::NumericVector ddweibull_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool log)
+   Rcpp::NumericVector pdweibull_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qdweibull_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rdweibull_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_emg.cpp:
+   Rcpp::List mlemg_(const Rcpp::NumericVector& x, Rcpp::Nullable<double> mu = R_NilValue, Rcpp::Nullable<double> sigma = R_NilValue, Rcpp::Nullable<double> lambda = R_NilValue, double reltol = 1e-8, int iterlim = 500)
+   Rcpp::NumericVector demg_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool log)
+   Rcpp::NumericVector pemg_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qemg_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool lower_tail, bool log_p)
+   Rcpp::NumericVector remg_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_exp.cpp:
+   Rcpp::List mlexp_(const Rcpp::NumericVector& x, Rcpp::Nullable<double> rate = R_NilValue)
+   Rcpp::NumericVector core_dexp_(Rcpp::NumericVector value, Rcpp::NumericVector v1, bool log)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_fatigue.cpp:
+   Rcpp::List mlfatigue_(const Rcpp::NumericVector& x, Rcpp::Nullable<double> mu, double abstol = 1.220703e-4, int iterlim = 100, Rcpp::Nullable<double> alpha = R_NilValue, Rcpp::Nullable<double> beta = R_NilValue)
+   Rcpp::NumericVector dfatigue_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool log)
+   Rcpp::NumericVector pfatigue_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qfatigue_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rfatigue_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_foldnorm.cpp:
+   Rcpp::List mlfoldnorm_(const Rcpp::NumericVector& x, Rcpp::Nullable<double> mu = R_NilValue, Rcpp::Nullable<double> sigma = R_NilValue, double reltol = 1e-10, int iterlim = 200)
+   Rcpp::NumericVector dfoldnorm_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool log)
+   Rcpp::NumericVector pfoldnorm_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qfoldnorm_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rfoldnorm_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_fpareto.cpp:
+   Rcpp::List mlfpareto_(const Rcpp::NumericVector& x, double min, double reltol = 1e-7, int iterlim = 1000, Rcpp::Nullable<double> shape1 = R_NilValue, Rcpp::Nullable<double> shape2 = R_NilValue, Rcpp::Nullable<double> shape3 = R_NilValue, Rcpp::Nullable<double> scale = R_NilValue)
+   Rcpp::NumericVector dfpareto_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, Rcpp::NumericVector v4, Rcpp::NumericVector v5, bool log)
+   Rcpp::NumericVector pfpareto_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, Rcpp::NumericVector v4, Rcpp::NumericVector v5, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qfpareto_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, Rcpp::NumericVector v4, Rcpp::NumericVector v5, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rfpareto_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, Rcpp::NumericVector v4, Rcpp::NumericVector v5)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_frechet.cpp:
+   Rcpp::List mlfrechet_(const Rcpp::NumericVector& x, Rcpp::Nullable<double> mu, Rcpp::Nullable<double> lambda = R_NilValue, Rcpp::Nullable<double> sigma = R_NilValue, double reltol = 1e-10, int iterlim = 100)
+   Rcpp::NumericVector dfrechet_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool log)
+   Rcpp::NumericVector pfrechet_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qfrechet_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rfrechet_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_gamma.cpp:
+   Rcpp::List mlgamma_(const Rcpp::NumericVector& x, double abstol = 1.220703e-4, int iterlim = 100, Rcpp::Nullable<double> shape = R_NilValue, Rcpp::Nullable<double> scale = R_NilValue)
+   Rcpp::NumericVector core_dgamma_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool log)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_gb2.cpp:
+   Rcpp::List mlgb2_(const Rcpp::NumericVector& x, double gradtol = 1e-7, int iterlim = 300, Rcpp::Nullable<double> shape1 = R_NilValue, Rcpp::Nullable<double> shape2 = R_NilValue, Rcpp::Nullable<double> shape3 = R_NilValue, Rcpp::Nullable<double> scale = R_NilValue)
+   Rcpp::NumericVector dgb2_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, Rcpp::NumericVector v4, bool log)
+   Rcpp::NumericVector pgb2_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, Rcpp::NumericVector v4, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qgb2_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, Rcpp::NumericVector v4, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rgb2_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, Rcpp::NumericVector v4)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_ged.cpp:
+   Rcpp::List mlged_(const Rcpp::NumericVector& x, double gradtol = 1.220703e-4, int iterlim = 200, Rcpp::Nullable<double> mean = R_NilValue, Rcpp::Nullable<double> sd = R_NilValue, Rcpp::Nullable<double> nu = R_NilValue)
+   Rcpp::NumericVector dged_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool log)
+   Rcpp::NumericVector pged_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qged_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rged_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_genbeta.cpp:
+   Rcpp::List mlgenbeta_(const Rcpp::NumericVector& x, double scale, double gradtol = 1e-7, int iterlim = 300, Rcpp::Nullable<double> shape1 = R_NilValue, Rcpp::Nullable<double> shape2 = R_NilValue, Rcpp::Nullable<double> shape3 = R_NilValue)
+   Rcpp::NumericVector dgenbeta_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, Rcpp::NumericVector v4, bool log)
+   Rcpp::NumericVector pgenbeta_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, Rcpp::NumericVector v4, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qgenbeta_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, Rcpp::NumericVector v4, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rgenbeta_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, Rcpp::NumericVector v4)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_geom.cpp:
+   Rcpp::List mlgeom_(const Rcpp::IntegerVector& x, Rcpp::Nullable<double> prob = R_NilValue)
+   Rcpp::NumericVector core_dgeom_(Rcpp::NumericVector value, Rcpp::NumericVector v1, bool log)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_gev.cpp:
+   Rcpp::List mlgev_(const Rcpp::NumericVector& x, Rcpp::Nullable<double> xi = R_NilValue, Rcpp::Nullable<double> mu = R_NilValue, Rcpp::Nullable<double> sigma = R_NilValue, double reltol = 1e-10, int iterlim = 100)
+   Rcpp::NumericVector dgev_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool log)
+   Rcpp::NumericVector pgev_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qgev_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rgev_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_gompertz.cpp:
+   Rcpp::List mlgompertz_(const Rcpp::NumericVector& x, double reltol = 1.220703e-4, int iterlim = 100, Rcpp::Nullable<double> a = R_NilValue, Rcpp::Nullable<double> b = R_NilValue)
+   Rcpp::NumericVector dgompertz_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool log)
+   Rcpp::NumericVector pgompertz_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qgompertz_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rgompertz_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_gpd.cpp:
+   Rcpp::List mlgpd_(const Rcpp::NumericVector& x, Rcpp::Nullable<double> mu, Rcpp::Nullable<double> xi = R_NilValue, Rcpp::Nullable<double> sigma = R_NilValue, double reltol = 1e-12, int iterlim = 200)
+   Rcpp::NumericVector dgpd_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool log)
+   Rcpp::NumericVector pgpd_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qgpd_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rgpd_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_gumbel.cpp:
+   Rcpp::List mlgumbel_(const Rcpp::NumericVector& x, double reltol = 1.220703e-4, int iterlim = 100, Rcpp::Nullable<double> mu = R_NilValue, Rcpp::Nullable<double> sigma = R_NilValue)
+   Rcpp::NumericVector dgumbel_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool log)
+   Rcpp::NumericVector pgumbel_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qgumbel_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rgumbel_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_hcauchy.cpp:
+   Rcpp::List mlhcauchy_(const Rcpp::NumericVector& x, Rcpp::Nullable<double> mu, Rcpp::Nullable<double> sigma = R_NilValue)
+   Rcpp::NumericVector dhcauchy_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool log)
+   Rcpp::NumericVector phcauchy_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qhcauchy_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rhcauchy_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_hnorm.cpp:
+   Rcpp::List mlhnorm_(const Rcpp::NumericVector& x, Rcpp::Nullable<double> mu, Rcpp::Nullable<double> sigma = R_NilValue)
+   Rcpp::NumericVector dhnorm_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool log)
+   Rcpp::NumericVector phnorm_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qhnorm_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rhnorm_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_ht.cpp:
+   Rcpp::List mlht_(const Rcpp::NumericVector& x, Rcpp::Nullable<double> mu, Rcpp::Nullable<double> nu = R_NilValue, Rcpp::Nullable<double> sigma = R_NilValue)
+   Rcpp::NumericVector dht_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool log)
+   Rcpp::NumericVector pht_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qht_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rht_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_huber.cpp:
+   Rcpp::List mlhuber_(const Rcpp::NumericVector& x, Rcpp::Nullable<Rcpp::NumericVector> epsilon, Rcpp::Nullable<double> mu = R_NilValue, Rcpp::Nullable<double> sigma = R_NilValue, double gradtol = 1e-10, int iterlim = 200)
+   Rcpp::NumericVector dhuber_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool log)
+   Rcpp::NumericVector phuber_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qhuber_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rhuber_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_hyper.cpp:
+   Rcpp::List mlhyper_(const Rcpp::NumericVector& x, Rcpp::Nullable<double> k, Rcpp::Nullable<double> N, Rcpp::Nullable<double> m = R_NilValue)
+   Rcpp::NumericVector core_dhyper_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool log)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_invburr.cpp:
+   Rcpp::List mlinvburr_(const Rcpp::NumericVector& x, double gradtol = 1e-8, int iterlim = 1000, Rcpp::Nullable<double> shape10 = R_NilValue, Rcpp::Nullable<double> shape20 = R_NilValue, Rcpp::Nullable<double> scale0 = R_NilValue, double reltol = 1e-12, Rcpp::Nullable<double> scale = R_NilValue, double abstol = 1.220703e-4, Rcpp::Nullable<double> shape1 = R_NilValue, Rcpp::Nullable<double> shape2 = R_NilValue)
+   Rcpp::NumericVector dinvburr_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool log)
+   Rcpp::NumericVector pinvburr_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qinvburr_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rinvburr_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_invexp.cpp:
+   Rcpp::List mlinvexp_(const Rcpp::NumericVector& x, Rcpp::Nullable<double> scale = R_NilValue)
+   Rcpp::NumericVector dinvexp_(Rcpp::NumericVector value, Rcpp::NumericVector v1, bool log)
+   Rcpp::NumericVector pinvexp_(Rcpp::NumericVector value, Rcpp::NumericVector v1, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qinvexp_(Rcpp::NumericVector value, Rcpp::NumericVector v1, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rinvexp_(int count, Rcpp::NumericVector v1)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_invgamma.cpp:
+   Rcpp::List mlinvgamma_(const Rcpp::NumericVector& x, double abstol = 1.220703e-4, int iterlim = 100, Rcpp::Nullable<double> alpha = R_NilValue, Rcpp::Nullable<double> beta = R_NilValue)
+   Rcpp::NumericVector dinvgamma_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool log)
+   Rcpp::NumericVector pinvgamma_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qinvgamma_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rinvgamma_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_invgauss.cpp:
+   Rcpp::List mlinvgauss_(const Rcpp::NumericVector& x, Rcpp::Nullable<double> mean = R_NilValue, Rcpp::Nullable<double> shape = R_NilValue)
+   Rcpp::NumericVector dinvgauss_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool log)
+   Rcpp::NumericVector pinvgauss_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qinvgauss_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rinvgauss_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_invparalogis.cpp:
+   Rcpp::List mlinvparalogis_(const Rcpp::NumericVector& x, Rcpp::Nullable<double> shape0 = R_NilValue, double gradtol = 1.220703e-4, int iterlim = 100, Rcpp::Nullable<double> scale = R_NilValue, Rcpp::Nullable<double> shape = R_NilValue)
+   Rcpp::NumericVector dinvparalogis_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool log)
+   Rcpp::NumericVector pinvparalogis_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qinvparalogis_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rinvparalogis_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_invpareto.cpp:
+   Rcpp::List mlinvpareto_(const Rcpp::NumericVector& x, Rcpp::Nullable<double> scale0 = R_NilValue, double reltol = 1.220703e-4, int iterlim = 100, Rcpp::Nullable<double> shape = R_NilValue, Rcpp::Nullable<double> scale = R_NilValue)
+   Rcpp::NumericVector dinvpareto_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool log)
+   Rcpp::NumericVector pinvpareto_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qinvpareto_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rinvpareto_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_invtrgamma.cpp:
+   Rcpp::List mlinvtrgamma_(const Rcpp::NumericVector& x, Rcpp::Nullable<double> shape1 = R_NilValue, Rcpp::Nullable<double> shape2 = R_NilValue, double reltol = 1e-10, int iterlim = 100, Rcpp::Nullable<double> scale = R_NilValue)
+   Rcpp::NumericVector dinvtrgamma_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool log)
+   Rcpp::NumericVector pinvtrgamma_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qinvtrgamma_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rinvtrgamma_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_invweibull.cpp:
+   Rcpp::List mlinvweibull_(const Rcpp::NumericVector& x, Rcpp::Nullable<double> shape0 = R_NilValue, double reltol = 1.220703e-4, int iterlim = 100, Rcpp::Nullable<double> shape = R_NilValue, Rcpp::Nullable<double> scale = R_NilValue)
+   Rcpp::NumericVector dinvweibull_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool log)
+   Rcpp::NumericVector pinvweibull_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qinvweibull_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rinvweibull_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_kumar.cpp:
+   Rcpp::List mlkumar_(const Rcpp::NumericVector& x, Rcpp::Nullable<double> a0 = R_NilValue, double reltol = 1.220703e-4, int iterlim = 100, Rcpp::Nullable<double> a = R_NilValue, Rcpp::Nullable<double> b = R_NilValue)
+   Rcpp::NumericVector dkumar_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool log)
+   Rcpp::NumericVector pkumar_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qkumar_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rkumar_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_laplace.cpp:
+   Rcpp::List mllaplace_(const Rcpp::NumericVector& x, Rcpp::Nullable<double> mu = R_NilValue, Rcpp::Nullable<double> sigma = R_NilValue)
+   Rcpp::NumericVector dlaplace_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool log)
+   Rcpp::NumericVector plaplace_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qlaplace_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rlaplace_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_lgamma.cpp:
+   Rcpp::List mllgamma_(const Rcpp::NumericVector& x, double abstol = 1.220703e-4, int iterlim = 100, Rcpp::Nullable<double> shapelog = R_NilValue, Rcpp::Nullable<double> ratelog = R_NilValue)
+   Rcpp::NumericVector dlgamma_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool log)
+   Rcpp::NumericVector plgamma_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qlgamma_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rlgamma_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_lgser.cpp:
+   Rcpp::List mllgser_(const Rcpp::IntegerVector& x, Rcpp::Nullable<double> theta = R_NilValue)
+   Rcpp::NumericVector dlgser_(Rcpp::NumericVector value, Rcpp::NumericVector v1, bool log)
+   Rcpp::NumericVector plgser_(Rcpp::NumericVector value, Rcpp::NumericVector v1, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qlgser_(Rcpp::NumericVector value, Rcpp::NumericVector v1, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rlgser_(int count, Rcpp::NumericVector v1)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_llogis.cpp:
+   Rcpp::List mlllogis_(const Rcpp::NumericVector& x, double abstol = 1.220703e-4, int iterlim = 100, Rcpp::Nullable<double> shape = R_NilValue, Rcpp::Nullable<double> scale = R_NilValue)
+   Rcpp::NumericVector dllogis_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool log)
+   Rcpp::NumericVector pllogis_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qllogis_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rllogis_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_lnorm.cpp:
+   Rcpp::List mllnorm_(const Rcpp::NumericVector& x, Rcpp::Nullable<double> meanlog = R_NilValue, Rcpp::Nullable<double> sdlog = R_NilValue)
+   Rcpp::NumericVector core_dlnorm_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool log)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_logis.cpp:
+   Rcpp::List mllogis_(const Rcpp::NumericVector& x, double abstol = 1.220703e-4, int iterlim = 100, Rcpp::Nullable<double> location = R_NilValue, Rcpp::Nullable<double> scale = R_NilValue)
+   Rcpp::NumericVector core_dlogis_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool log)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_logitnorm.cpp:
+   Rcpp::List mllogitnorm_(const Rcpp::NumericVector& x, Rcpp::Nullable<double> mu = R_NilValue, Rcpp::Nullable<double> sigma = R_NilValue)
+   Rcpp::NumericVector dlogitnorm_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool log)
+   Rcpp::NumericVector plogitnorm_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qlogitnorm_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rlogitnorm_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_lomax.cpp:
+   Rcpp::List mllomax_(const Rcpp::NumericVector& x, Rcpp::Nullable<double> lambda0 = R_NilValue, double reltol = 1.220703e-4, int iterlim = 100, Rcpp::Nullable<double> lambda = R_NilValue, Rcpp::Nullable<double> kappa = R_NilValue)
+   Rcpp::NumericVector dlomax_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool log)
+   Rcpp::NumericVector plomax_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qlomax_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rlomax_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_lst.cpp:
+   Rcpp::List mllst_(const Rcpp::NumericVector& x, double gradtol = 1.220703e-4, int iterlim = 200, Rcpp::Nullable<double> df = R_NilValue, Rcpp::Nullable<double> mu = R_NilValue, Rcpp::Nullable<double> sigma = R_NilValue)
+   Rcpp::NumericVector dlst_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool log)
+   Rcpp::NumericVector plst_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qlst_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rlst_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_naka.cpp:
+   Rcpp::List mlnaka_(const Rcpp::NumericVector& x, double abstol = 1.220703e-4, int iterlim = 100, Rcpp::Nullable<double> shape = R_NilValue, Rcpp::Nullable<double> scale = R_NilValue)
+   Rcpp::NumericVector dnaka_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool log)
+   Rcpp::NumericVector pnaka_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qnaka_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rnaka_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_nbinom.cpp:
+   Rcpp::List mlnbinom_(const Rcpp::IntegerVector& x, double reltol = 1.220703e-4, int iterlim = 100, Rcpp::Nullable<double> size = R_NilValue, Rcpp::Nullable<double> prob = R_NilValue)
+   Rcpp::NumericVector core_dnbinom_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool log)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_nhyper.cpp:
+   Rcpp::List mlnhyper_(const Rcpp::NumericVector& x, Rcpp::Nullable<double> r, Rcpp::Nullable<double> N, Rcpp::Nullable<double> m = R_NilValue)
+   Rcpp::NumericVector dnhyper_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool log)
+   Rcpp::NumericVector pnhyper_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qnhyper_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rnhyper_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_norm.cpp:
+   Rcpp::List mlnorm_(const Rcpp::NumericVector& x, Rcpp::Nullable<double> mean = R_NilValue, Rcpp::Nullable<double> sd = R_NilValue)
+   Rcpp::NumericVector core_dnorm_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool log)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_nsbeta.cpp:
+   Rcpp::List mlnsbeta_(const Rcpp::NumericVector& x, double min, double max, double reltol = 1e-10, int iterlim = 1000, Rcpp::Nullable<double> shape1 = R_NilValue, Rcpp::Nullable<double> shape2 = R_NilValue)
+   Rcpp::NumericVector dnsbeta_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, Rcpp::NumericVector v4, bool log)
+   Rcpp::NumericVector pnsbeta_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, Rcpp::NumericVector v4, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qnsbeta_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, Rcpp::NumericVector v4, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rnsbeta_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, Rcpp::NumericVector v4)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_paralogis.cpp:
+   Rcpp::List mlparalogis_(const Rcpp::NumericVector& x, Rcpp::Nullable<double> shape0 = R_NilValue, double gradtol = 1.220703e-4, int iterlim = 100, Rcpp::Nullable<double> scale = R_NilValue, Rcpp::Nullable<double> shape = R_NilValue)
+   Rcpp::NumericVector dparalogis_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool log)
+   Rcpp::NumericVector pparalogis_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qparalogis_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rparalogis_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_pareto.cpp:
+   Rcpp::List mlpareto_(const Rcpp::NumericVector& x, Rcpp::Nullable<double> a = R_NilValue, Rcpp::Nullable<double> b = R_NilValue)
+   Rcpp::NumericVector dpareto_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool log)
+   Rcpp::NumericVector ppareto_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qpareto_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rpareto_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_pareto2.cpp:
+   Rcpp::List mlpareto2_(const Rcpp::NumericVector& x, double min, double reltol = 1e-10, int iterlim = 1000, Rcpp::Nullable<double> shape = R_NilValue, Rcpp::Nullable<double> scale = R_NilValue)
+   Rcpp::NumericVector dpareto2_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool log)
+   Rcpp::NumericVector ppareto2_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qpareto2_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rpareto2_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_pareto3.cpp:
+   Rcpp::List mlpareto3_(const Rcpp::NumericVector& x, double min, double reltol = 1e-10, int iterlim = 1000, Rcpp::Nullable<double> shape = R_NilValue, Rcpp::Nullable<double> scale = R_NilValue)
+   Rcpp::NumericVector dpareto3_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool log)
+   Rcpp::NumericVector ppareto3_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qpareto3_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rpareto3_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_pareto4.cpp:
+   Rcpp::List mlpareto4_(const Rcpp::NumericVector& x, double min, double reltol = 1e-10, int iterlim = 1000, Rcpp::Nullable<double> scale = R_NilValue, Rcpp::Nullable<double> shape1 = R_NilValue, Rcpp::Nullable<double> shape2 = R_NilValue)
+   Rcpp::NumericVector dpareto4_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, Rcpp::NumericVector v4, bool log)
+   Rcpp::NumericVector ppareto4_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, Rcpp::NumericVector v4, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qpareto4_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, Rcpp::NumericVector v4, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rpareto4_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, Rcpp::NumericVector v4)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_pig.cpp:
+   Rcpp::List mlpig_(const Rcpp::IntegerVector& x, double reltol = 1e-9, int iterlim = 200, Rcpp::Nullable<double> mean = R_NilValue, Rcpp::Nullable<double> shape = R_NilValue)
+   Rcpp::NumericVector dpig_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool log)
+   Rcpp::NumericVector ppig_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qpig_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rpig_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_pois.cpp:
+   Rcpp::List mlpois_(const Rcpp::IntegerVector& x, Rcpp::Nullable<double> lambda = R_NilValue)
+   Rcpp::NumericVector core_dpois_(Rcpp::NumericVector value, Rcpp::NumericVector v1, bool log)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_power.cpp:
+   Rcpp::List mlpower_(const Rcpp::NumericVector& x, double epsilon = 1.490116e-08, Rcpp::Nullable<double> alpha = R_NilValue, Rcpp::Nullable<double> beta = R_NilValue)
+   Rcpp::NumericVector dpower_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool log)
+   Rcpp::NumericVector ppower_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qpower_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rpower_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_rayleigh.cpp:
+   Rcpp::List mlrayleigh_(const Rcpp::NumericVector& x, Rcpp::Nullable<double> sigma = R_NilValue)
+   Rcpp::NumericVector drayleigh_(Rcpp::NumericVector value, Rcpp::NumericVector v1, bool log)
+   Rcpp::NumericVector prayleigh_(Rcpp::NumericVector value, Rcpp::NumericVector v1, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qrayleigh_(Rcpp::NumericVector value, Rcpp::NumericVector v1, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rrayleigh_(int count, Rcpp::NumericVector v1)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_sged.cpp:
+   Rcpp::List mlsged_(const Rcpp::NumericVector& x, Rcpp::Nullable<double> mean = R_NilValue, Rcpp::Nullable<double> sd = R_NilValue, Rcpp::Nullable<double> nu = R_NilValue, Rcpp::Nullable<double> xi = R_NilValue, double gradtol = 1.220703e-4, int iterlim = 200)
+   Rcpp::NumericVector dsged_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, Rcpp::NumericVector v4, bool log)
+   Rcpp::NumericVector psged_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, Rcpp::NumericVector v4, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qsged_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, Rcpp::NumericVector v4, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rsged_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, Rcpp::NumericVector v4)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_sgomp.cpp:
+   Rcpp::List mlsgomp_(const Rcpp::NumericVector& x, Rcpp::Nullable<double> b = R_NilValue, Rcpp::Nullable<double> eta = R_NilValue, double reltol = 1e-10, int iterlim = 200)
+   Rcpp::NumericVector dsgomp_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool log)
+   Rcpp::NumericVector psgomp_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qsgomp_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rsgomp_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_skellam.cpp:
+   Rcpp::List mlskellam_(const Rcpp::NumericVector& x, Rcpp::Nullable<double> mu1 = R_NilValue, Rcpp::Nullable<double> mu2 = R_NilValue, double reltol = 1e-9, int iterlim = 150)
+   Rcpp::NumericVector dskellam_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool log)
+   Rcpp::NumericVector pskellam_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qskellam_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rskellam_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_slash.cpp:
+   Rcpp::List mlslash_(const Rcpp::NumericVector& x, Rcpp::Nullable<double> sigma = R_NilValue, double reltol = 1e-8, int iterlim = 500, Rcpp::Nullable<double> mu = R_NilValue)
+   Rcpp::NumericVector dslash_reference_(Rcpp::NumericVector x, Rcpp::NumericVector mu, Rcpp::NumericVector sigma, bool log = false)
+   Rcpp::NumericVector pslash_reference_(Rcpp::NumericVector x, Rcpp::NumericVector mu, Rcpp::NumericVector sigma, bool lower_tail = true, bool log_p = false)
+   Rcpp::NumericVector dslash_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool log)
+   Rcpp::NumericVector pslash_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qslash_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rslash_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_sn.cpp:
+   Rcpp::List mlsn_(const Rcpp::NumericVector& x, Rcpp::Nullable<double> xi = R_NilValue, Rcpp::Nullable<double> omega = R_NilValue, Rcpp::Nullable<double> alpha = R_NilValue, double reltol = 1e-9, int iterlim = 100)
+   Rcpp::NumericVector dsn_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool log)
+   Rcpp::NumericVector psn_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qsn_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rsn_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_snorm.cpp:
+   Rcpp::List mlsnorm_(const Rcpp::NumericVector& x, Rcpp::Nullable<double> mean = R_NilValue, Rcpp::Nullable<double> sd = R_NilValue, Rcpp::Nullable<double> xi = R_NilValue)
+   Rcpp::NumericVector dsnorm_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool log)
+   Rcpp::NumericVector psnorm_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qsnorm_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rsnorm_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_sstd.cpp:
+   Rcpp::List mlsstd_(const Rcpp::NumericVector& x, Rcpp::Nullable<double> mean = R_NilValue, Rcpp::Nullable<double> sd = R_NilValue, Rcpp::Nullable<double> nu = R_NilValue, Rcpp::Nullable<double> xi = R_NilValue, double gradtol = 1.220703e-4, int iterlim = 200)
+   Rcpp::NumericVector dsstd_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, Rcpp::NumericVector v4, bool log)
+   Rcpp::NumericVector psstd_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, Rcpp::NumericVector v4, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qsstd_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, Rcpp::NumericVector v4, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rsstd_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, Rcpp::NumericVector v4)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_st.cpp:
+   Rcpp::List mlst_(const Rcpp::NumericVector& x, Rcpp::Nullable<double> xi = R_NilValue, Rcpp::Nullable<double> omega = R_NilValue, Rcpp::Nullable<double> alpha = R_NilValue, Rcpp::Nullable<double> nu = R_NilValue, double reltol = 1e-6, int iterlim = 200)
+   Rcpp::NumericVector dst_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, Rcpp::NumericVector v4, bool log)
+   Rcpp::NumericVector pst_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, Rcpp::NumericVector v4, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qst_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, Rcpp::NumericVector v4, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rst_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, Rcpp::NumericVector v4)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_std.cpp:
+   Rcpp::List mlstd_(const Rcpp::NumericVector& x, double gradtol = 1.220703e-4, int iterlim = 200, Rcpp::Nullable<double> nu = R_NilValue, Rcpp::Nullable<double> mean = R_NilValue, Rcpp::Nullable<double> sd = R_NilValue)
+   Rcpp::NumericVector dstd_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool log)
+   Rcpp::NumericVector pstd_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qstd_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rstd_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_tbinom.cpp:
+   Rcpp::List mltbinom_(const Rcpp::IntegerVector& x, Rcpp::Nullable<double> a, Rcpp::Nullable<double> b, Rcpp::Nullable<double> size, Rcpp::Nullable<double> prob = R_NilValue)
+   Rcpp::NumericVector dtbinom_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, Rcpp::NumericVector v4, bool log)
+   Rcpp::NumericVector ptbinom_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, Rcpp::NumericVector v4, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qtbinom_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, Rcpp::NumericVector v4, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rtbinom_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, Rcpp::NumericVector v4)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_tlambda.cpp:
+   Rcpp::List mltlambda_(const Rcpp::NumericVector& x, Rcpp::Nullable<double> lambda = R_NilValue, double reltol = 1e-7, int iterlim = 1000, Rcpp::Nullable<double> mu = R_NilValue, Rcpp::Nullable<double> sigma = R_NilValue)
+   Rcpp::NumericVector dtlambda_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool log)
+   Rcpp::NumericVector ptlambda_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qtlambda_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rtlambda_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_tnorm.cpp:
+   Rcpp::List mltnorm_(const Rcpp::NumericVector& x, Rcpp::Nullable<double> a, Rcpp::Nullable<double> b, Rcpp::Nullable<double> mean = R_NilValue, Rcpp::Nullable<double> sd = R_NilValue, double reltol = 1e-12, int iterlim = 100)
+   Rcpp::NumericVector dtnorm_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, Rcpp::NumericVector v4, bool log)
+   Rcpp::NumericVector ptnorm_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, Rcpp::NumericVector v4, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qtnorm_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, Rcpp::NumericVector v4, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rtnorm_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, Rcpp::NumericVector v4)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_tpois.cpp:
+   Rcpp::List mltpois_(const Rcpp::IntegerVector& x, Rcpp::Nullable<double> a, Rcpp::Nullable<double> b, Rcpp::Nullable<double> lambda = R_NilValue)
+   Rcpp::NumericVector dtpois_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool log)
+   Rcpp::NumericVector ptpois_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qtpois_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rtpois_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_trgamma.cpp:
+   Rcpp::List mltrgamma_(const Rcpp::NumericVector& x, Rcpp::Nullable<double> shape1 = R_NilValue, Rcpp::Nullable<double> shape2 = R_NilValue, double reltol = 1e-10, int iterlim = 100, Rcpp::Nullable<double> scale = R_NilValue)
+   Rcpp::NumericVector dtrgamma_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool log)
+   Rcpp::NumericVector ptrgamma_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qtrgamma_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rtrgamma_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_triang.cpp:
+   Rcpp::List mltriang_(const Rcpp::NumericVector& x, Rcpp::Nullable<double> a = R_NilValue, Rcpp::Nullable<double> b = R_NilValue, Rcpp::Nullable<double> c = R_NilValue, double reltol = 1e-12, int iterlim = 100)
+   Rcpp::NumericVector dtriang_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool log)
+   Rcpp::NumericVector ptriang_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qtriang_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rtriang_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_unif.cpp:
+   Rcpp::List mlunif_(const Rcpp::NumericVector& x, Rcpp::Nullable<double> min = R_NilValue, Rcpp::Nullable<double> max = R_NilValue)
+   Rcpp::NumericVector core_dunif_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool log)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_weibull.cpp:
+   Rcpp::List mlweibull_(const Rcpp::NumericVector& x, Rcpp::Nullable<double> shape0 = R_NilValue, double reltol = 1.220703e-4, int iterlim = 100, Rcpp::Nullable<double> shape = R_NilValue, Rcpp::Nullable<double> scale = R_NilValue)
+   Rcpp::NumericVector core_dweibull_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool log)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_yulesimon.cpp:
+   Rcpp::List mlyulesimon_(const Rcpp::IntegerVector& x, Rcpp::Nullable<double> rho = R_NilValue, double reltol = 1e-10, int iterlim = 200)
+   Rcpp::NumericVector dyulesimon_(Rcpp::NumericVector value, Rcpp::NumericVector v1, bool log)
+   Rcpp::NumericVector pyulesimon_(Rcpp::NumericVector value, Rcpp::NumericVector v1, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qyulesimon_(Rcpp::NumericVector value, Rcpp::NumericVector v1, bool lower_tail, bool log_p)
+   Rcpp::NumericVector ryulesimon_(int count, Rcpp::NumericVector v1)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_zeta.cpp:
+   Rcpp::List mlzeta_(const Rcpp::IntegerVector& x, Rcpp::Nullable<double> s = R_NilValue, double reltol = 1e-10, int iterlim = 200)
+   Rcpp::NumericVector dzeta_(Rcpp::NumericVector value, Rcpp::NumericVector v1, bool log)
+   Rcpp::NumericVector pzeta_(Rcpp::NumericVector value, Rcpp::NumericVector v1, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qzeta_(Rcpp::NumericVector value, Rcpp::NumericVector v1, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rzeta_(int count, Rcpp::NumericVector v1)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_zib.cpp:
+   Rcpp::List mlzib_(const Rcpp::IntegerVector& x, Rcpp::Nullable<double> size, double reltol = 1e-10, int iterlim = 200, Rcpp::Nullable<double> prob = R_NilValue, Rcpp::Nullable<double> pi = R_NilValue)
+   Rcpp::NumericVector dzib_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool log)
+   Rcpp::NumericVector pzib_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qzib_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rzib_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_zinb.cpp:
+   Rcpp::List mlzinb_(const Rcpp::IntegerVector& x, double reltol = 1e-10, int iterlim = 200, Rcpp::Nullable<double> size = R_NilValue, Rcpp::Nullable<double> prob = R_NilValue, Rcpp::Nullable<double> pi = R_NilValue)
+   Rcpp::NumericVector dzinb_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool log)
+   Rcpp::NumericVector pzinb_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qzinb_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rzinb_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_zip.cpp:
+   Rcpp::List mlzip_(const Rcpp::IntegerVector& x, Rcpp::Nullable<double> lambda = R_NilValue, Rcpp::Nullable<double> pi = R_NilValue)
+   Rcpp::NumericVector dzip_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool log)
+   Rcpp::NumericVector pzip_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qzip_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rzip_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_zipf.cpp:
+   Rcpp::List mlzipf_(const Rcpp::IntegerVector& x, Rcpp::Nullable<double> N = R_NilValue, Rcpp::Nullable<double> s = R_NilValue, double reltol = 1.220703e-4, int iterlim = 100)
+   Rcpp::NumericVector dzipf_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool log)
+   Rcpp::NumericVector pzipf_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qzipf_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rzipf_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_zmbinom.cpp:
+   Rcpp::List mlzmbinom_(const Rcpp::IntegerVector& x, Rcpp::Nullable<double> size, double reltol = 1e-10, int iterlim = 200, Rcpp::Nullable<double> prob = R_NilValue, Rcpp::Nullable<double> p0 = R_NilValue)
+   Rcpp::NumericVector dzmbinom_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool log)
+   Rcpp::NumericVector pzmbinom_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qzmbinom_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rzmbinom_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_zmgeom.cpp:
+   Rcpp::List mlzmgeom_(const Rcpp::IntegerVector& x, Rcpp::Nullable<double> prob = R_NilValue, Rcpp::Nullable<double> p0 = R_NilValue)
+   Rcpp::NumericVector dzmgeom_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool log)
+   Rcpp::NumericVector pzmgeom_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qzmgeom_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rzmgeom_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_zmlogarithmic.cpp:
+   Rcpp::List mlzmlogarithmic_(const Rcpp::IntegerVector& x, Rcpp::Nullable<double> prob = R_NilValue, Rcpp::Nullable<double> p0 = R_NilValue)
+   Rcpp::NumericVector dzmlogarithmic_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool log)
+   Rcpp::NumericVector pzmlogarithmic_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qzmlogarithmic_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rzmlogarithmic_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_zmnbinom.cpp:
+   Rcpp::List mlzmnbinom_(const Rcpp::IntegerVector& x, Rcpp::Nullable<double> size = R_NilValue, double reltol = 1e-10, int iterlim = 200, Rcpp::Nullable<double> prob = R_NilValue, Rcpp::Nullable<double> p0 = R_NilValue)
+   Rcpp::NumericVector dzmnbinom_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool log)
+   Rcpp::NumericVector pzmnbinom_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qzmnbinom_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rzmnbinom_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2, Rcpp::NumericVector v3)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_zmpois.cpp:
+   Rcpp::List mlzmpois_(const Rcpp::IntegerVector& x, Rcpp::Nullable<double> lambda = R_NilValue, Rcpp::Nullable<double> p0 = R_NilValue)
+   Rcpp::NumericVector dzmpois_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool log)
+   Rcpp::NumericVector pzmpois_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qzmpois_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rzmpois_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_ztbinom.cpp:
+   Rcpp::List mlztbinom_(const Rcpp::IntegerVector& x, Rcpp::Nullable<double> size, double reltol = 1e-10, int iterlim = 200, Rcpp::Nullable<double> prob = R_NilValue)
+   Rcpp::NumericVector dztbinom_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool log)
+   Rcpp::NumericVector pztbinom_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qztbinom_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rztbinom_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_ztgeom.cpp:
+   Rcpp::List mlztgeom_(const Rcpp::IntegerVector& x, Rcpp::Nullable<double> prob = R_NilValue)
+   Rcpp::NumericVector dztgeom_(Rcpp::NumericVector value, Rcpp::NumericVector v1, bool log)
+   Rcpp::NumericVector pztgeom_(Rcpp::NumericVector value, Rcpp::NumericVector v1, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qztgeom_(Rcpp::NumericVector value, Rcpp::NumericVector v1, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rztgeom_(int count, Rcpp::NumericVector v1)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_ztnbinom.cpp:
+   Rcpp::List mlztnbinom_(const Rcpp::IntegerVector& x, Rcpp::Nullable<double> size = R_NilValue, double reltol = 1e-10, int iterlim = 200, Rcpp::Nullable<double> prob = R_NilValue)
+   Rcpp::NumericVector dztnbinom_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool log)
+   Rcpp::NumericVector pztnbinom_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qztnbinom_(Rcpp::NumericVector value, Rcpp::NumericVector v1, Rcpp::NumericVector v2, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rztnbinom_(int count, Rcpp::NumericVector v1, Rcpp::NumericVector v2)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/dist_ztpois.cpp:
+   Rcpp::List mlztpois_(const Rcpp::IntegerVector& x, Rcpp::Nullable<double> lambda = R_NilValue)
+   Rcpp::NumericVector dztpois_(Rcpp::NumericVector value, Rcpp::NumericVector v1, bool log)
+   Rcpp::NumericVector pztpois_(Rcpp::NumericVector value, Rcpp::NumericVector v1, bool lower_tail, bool log_p)
+   Rcpp::NumericVector qztpois_(Rcpp::NumericVector value, Rcpp::NumericVector v1, bool lower_tail, bool log_p)
+   Rcpp::NumericVector rztpois_(int count, Rcpp::NumericVector v1)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/inference.cpp:
+   Rcpp::List univariateML_inference_cpp(Rcpp::NumericVector x, std::string family, Rcpp::NumericVector coefficients, Rcpp::LogicalVector free, bool sandwich)
+
+Exports from /home/jmoss/umvl-wt/budget-align/univariateML-r/src/special_tests.cpp:
+   NumericVector special_digamma_cpp(const NumericVector& x)
+   NumericVector special_trigamma_cpp(const NumericVector& x)
+   NumericVector special_tetragamma_cpp(const NumericVector& x)
+   NumericVector special_lgamma_cpp(const NumericVector& x)
+   NumericVector special_lbeta_cpp(const NumericVector& a, const NumericVector& b)
+   NumericVector special_dnorm_cpp(const NumericVector& x, double mean = 0.0, double sd = 1.0, bool log = false)
+   NumericVector special_dpois_cpp(const IntegerVector& x, double lambda, bool log = false)
+   NumericVector special_dgeom_cpp(const IntegerVector& x, double prob, bool log = false)
+   NumericVector special_psigamma_cpp(const NumericVector& x, int deriv)
+   double student_t_loglik_cpp(const Rcpp::NumericVector& x, double mean, double sd, double nu)
+
+/home/jmoss/umvl-wt/budget-align/univariateML-r/src/RcppExports.cpp updated.
+/home/jmoss/umvl-wt/budget-align/univariateML-r/R/RcppExports.R updated.
+ℹ Re-compiling univariateML
+── R CMD INSTALL ───────────────────────────────────────────────────────────────
+* installing *source* package ‘univariateML’ ...
+** this is package ‘univariateML’ version ‘1.5.0’
+** using staged installation
+** libs
+specified C++17
+using C++ compiler: ‘g++-15 (Ubuntu 15.2.0-14ubuntu1~24~ppa1) 15.2.0’
+using C++17
+ccache g++-15 -std=gnu++17 -I"/opt/R/4.6.1/lib/R/include" -DNDEBUG -I../inst/include -I'/home/jmoss/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/jmoss/R/x86_64-pc-linux-gnu-library/4.6/BH/include' -I/usr/local/include   -fopenmp -fpic  -g -O2   -c inference.cpp -o inference.o
+ccache g++-15 -std=gnu++17 -I"/opt/R/4.6.1/lib/R/include" -DNDEBUG -I../inst/include -I'/home/jmoss/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/jmoss/R/x86_64-pc-linux-gnu-library/4.6/BH/include' -I/usr/local/include   -fopenmp -fpic  -g -O2   -c special_tests.cpp -o special_tests.o
+ccache g++-15 -std=gnu++17 -I"/opt/R/4.6.1/lib/R/include" -DNDEBUG -I../inst/include -I'/home/jmoss/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/jmoss/R/x86_64-pc-linux-gnu-library/4.6/BH/include' -I/usr/local/include   -fopenmp -fpic  -g -O2   -c RcppExports.cpp -o RcppExports.o
+ccache g++-15 -std=gnu++17 -I"/opt/R/4.6.1/lib/R/include" -DNDEBUG -I../inst/include -I'/home/jmoss/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/jmoss/R/x86_64-pc-linux-gnu-library/4.6/BH/include' -I/usr/local/include   -fopenmp -fpic  -g -O2   -c unity_01.cpp -o unity_01.o
+ccache g++-15 -std=gnu++17 -I"/opt/R/4.6.1/lib/R/include" -DNDEBUG -I../inst/include -I'/home/jmoss/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/jmoss/R/x86_64-pc-linux-gnu-library/4.6/BH/include' -I/usr/local/include   -fopenmp -fpic  -g -O2   -c unity_02.cpp -o unity_02.o
+ccache g++-15 -std=gnu++17 -I"/opt/R/4.6.1/lib/R/include" -DNDEBUG -I../inst/include -I'/home/jmoss/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/jmoss/R/x86_64-pc-linux-gnu-library/4.6/BH/include' -I/usr/local/include   -fopenmp -fpic  -g -O2   -c unity_03.cpp -o unity_03.o
+ccache g++-15 -std=gnu++17 -I"/opt/R/4.6.1/lib/R/include" -DNDEBUG -I../inst/include -I'/home/jmoss/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/jmoss/R/x86_64-pc-linux-gnu-library/4.6/BH/include' -I/usr/local/include   -fopenmp -fpic  -g -O2   -c unity_04.cpp -o unity_04.o
+ccache g++-15 -std=gnu++17 -shared -L/opt/R/4.6.1/lib/R/lib -L/usr/local/lib -o univariateML.so inference.o special_tests.o RcppExports.o unity_01.o unity_02.o unity_03.o unity_04.o -fopenmp -llapack -lblas -lgfortran -lm -lquadmath -L/opt/R/4.6.1/lib/R/lib -lR
+installing to /home/jmoss/umvl-wt/budget-align/build/tmp/RtmpIargAJ/devtools_install_26d374d2a9e12/00LOCK-univariateML-r/00new/univariateML/libs
+** checking absolute paths in shared objects and dynamic libraries
+* DONE (univariateML)
+✖ ml02_wrappers.R:3820: @details Could not resolve link to topic "1e-7,1e-6" in
+  the dependencies or base packages..
+ℹ If you haven't documented "1e-7,1e-6" yet, or just changed its name, this is
+  normal. Once "1e-7,1e-6" is documented, this warning goes away.
+ℹ Make sure that the name of the topic is spelled correctly.
+ℹ Always list the linked package as a dependency.
+ℹ Alternatively, you can fully qualify the link with a package name.
+✖ ml02_wrappers.R:5647: @details Could not resolve link to topic "1e-7,1e-6" in
+  the dependencies or base packages..
+ℹ If you haven't documented "1e-7,1e-6" yet, or just changed its name, this is
+  normal. Once "1e-7,1e-6" is documented, this warning goes away.
+ℹ Make sure that the name of the topic is spelled correctly.
+ℹ Always list the linked package as a dependency.
+ℹ Alternatively, you can fully qualify the link with a package name.
+Writing 'NAMESPACE'
+Writing 'bootstrapml.Rd'
+Writing 'MaximumLikelihoodDistribution.Rd'
+Writing 'plot_wrangler.Rd'
+Writing 'plot.univariateML.Rd'
+Writing 'confint.univariateML.Rd'
+Writing 'assert_that.Rd'
+Writing 'decorator.Rd'
+Writing 'univariateML_construct.Rd'
+Writing 'univariateML_fixed.Rd'
+Writing 'univariateML_df.Rd'
+Writing 'univariateML_name.Rd'
+Writing 'univariateML_dpqr_args.Rd'
+Writing 'univariateML_to_string.Rd'
+Writing 'univariateML_to_function.Rd'
+Writing 'to_univariateML.Rd'
+Writing 'ml_check_args.Rd'
+Writing 'listmerge.Rd'
+Writing 'newton_raphson_1d.Rd'
+Writing 'get_start.Rd'
+Writing 'inverse_digamma.Rd'
+Writing 'logmom_burr_c.Rd'
+Writing 'model_select.Rd'
+Writing 'ProbabilityPlots.Rd'
+Writing 'ppqq_wrangler.Rd'
+Writing 'vcov.univariateML.Rd'
+Writing 'corbet.Rd'
+Writing 'egypt.Rd'
+Writing 'mlbbinom.Rd'
+Writing 'mlbeta.Rd'
+Writing 'mlbetapr.Rd'
+Writing 'mlbhatt.Rd'
+Writing 'mlbinom.Rd'
+Writing 'mlbnbinom.Rd'
+Writing 'mlburr.Rd'
+Writing 'mlcauchy.Rd'
+Writing 'mlcmb.Rd'
+Writing 'mlcmp.Rd'
+Writing 'mldgamma.Rd'
+Writing 'mldlaplace.Rd'
+Writing 'mldnorm.Rd'
+Writing 'mldunif.Rd'
+Writing 'mldweibull.Rd'
+Writing 'mlemg.Rd'
+Writing 'mlexp.Rd'
+Writing 'mlfatigue.Rd'
+Writing 'mlfoldnorm.Rd'
+Writing 'mlfpareto.Rd'
+Writing 'mlfrechet.Rd'
+Writing 'mlgamma.Rd'
+Writing 'mlgb2.Rd'
+Writing 'mlged.Rd'
+Writing 'mlgenbeta.Rd'
+Writing 'mlgeom.Rd'
+Writing 'mlgev.Rd'
+Writing 'mlgompertz.Rd'
+Writing 'mlgpd.Rd'
+Writing 'mlgumbel.Rd'
+Writing 'mlhcauchy.Rd'
+Writing 'mlhnorm.Rd'
+Writing 'mlht.Rd'
+Writing 'mlhuber.Rd'
+Writing 'mlhyper.Rd'
+Writing 'mlinvburr.Rd'
+Writing 'mlinvexp.Rd'
+Writing 'mlinvgamma.Rd'
+Writing 'mlinvgauss.Rd'
+Writing 'mlinvparalogis.Rd'
+Writing 'mlinvpareto.Rd'
+Writing 'mlinvtrgamma.Rd'
+Writing 'mlinvweibull.Rd'
+Writing 'mlkumar.Rd'
+Writing 'mllaplace.Rd'
+Writing 'mllgamma.Rd'
+Writing 'mllgser.Rd'
+Writing 'mlllogis.Rd'
+Writing 'mllnorm.Rd'
+Writing 'mllogis.Rd'
+Writing 'mllogitnorm.Rd'
+Writing 'mllomax.Rd'
+Writing 'mllst.Rd'
+Writing 'mlnaka.Rd'
+Writing 'mlnbinom.Rd'
+Writing 'mlnhyper.Rd'
+Writing 'mlnorm.Rd'
+Writing 'mlnsbeta.Rd'
+Writing 'mlparalogis.Rd'
+Writing 'mlpareto.Rd'
+Writing 'mlpareto2.Rd'
+Writing 'mlpareto3.Rd'
+Writing 'mlpareto4.Rd'
+Writing 'mlpig.Rd'
+Writing 'mlpois.Rd'
+Writing 'mlpower.Rd'
+Writing 'mlrayleigh.Rd'
+Writing 'mlsged.Rd'
+Writing 'mlsgomp.Rd'
+Writing 'mlskellam.Rd'
+Writing 'mlslash.Rd'
+Writing 'mlsn.Rd'
+Writing 'mlsnorm.Rd'
+Writing 'mlsstd.Rd'
+Writing 'mlst.Rd'
+Writing 'mlstd.Rd'
+Writing 'mltbinom.Rd'
+Writing 'mltlambda.Rd'
+Writing 'mltnorm.Rd'
+Writing 'mltpois.Rd'
+Writing 'mltrgamma.Rd'
+Writing 'mltriang.Rd'
+Writing 'mlunif.Rd'
+Writing 'mlweibull.Rd'
+Writing 'mlyulesimon.Rd'
+Writing 'mlzeta.Rd'
+Writing 'mlzib.Rd'
+Writing 'mlzinb.Rd'
+Writing 'mlzip.Rd'
+Writing 'mlzipf.Rd'
+Writing 'mlzmbinom.Rd'
+Writing 'mlzmgeom.Rd'
+Writing 'mlzmlogarithmic.Rd'
+Writing 'mlzmnbinom.Rd'
+Writing 'mlzmpois.Rd'
+Writing 'mlztbinom.Rd'
+Writing 'mlztgeom.Rd'
+Writing 'mlztnbinom.Rd'
+Writing 'mlztpois.Rd'
+Writing 'univariateML-package.Rd'
+Writing 'univariateML_exports.Rd'
+cd univariateML-r && UMVL_DISTRIBUTIONS_DIR=/home/jmoss/umvl-wt/budget-align/univariateML-cpp/include/cppunivariate/distributions UMVL_TEST_TIER=${UMVL_TEST_TIER:-dev} PKG_BUILD_EXTRA_FLAGS=false TESTTHAT_CPUS=4 Rscript ../bindings/r/scripts/test_local.R
+Starting 4 test processes.
+✔ | F W  S  OK | Context
+
+⠋ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 0 ] Starting up...                          
+⠙ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 0 ] Starting up...                          
+⠹ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 0 ] Starting up...                          
+⠸ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 0 ] Starting up...                          
+⠼ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 0 ] Starting up...                          
+⠴ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 0 ] Starting up...                          
+⠦ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 0 ] Starting up...                          
+⠧ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 0 ] Starting up...                          
+⠇ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 0 ] Starting up...                          
+⠏ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 0 ] Starting up...                          
+⠋ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 0 ] Starting up...                          
+⠙ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 0 ] Starting up...                          
+⠹ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 2 ] @ argument_names, bootstrap             
+✔ |          5 | bootstrap                                                      
+
+⠸ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 15 ] @ argument_names, closure              
+✔ |          8 | argument_names                                                 
+
+⠼ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 15 ] @ closure                              
+✔ |          5 | confint_nreps                                                  
+
+⠴ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 48 ] @ closure, confint, conformance        
+✔ |         19 | fixed                                                          
+
+⠦ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 233 ] @ closure, confint, conformance       
+✔ |        124 | closure [1.7s]                                                 
+
+⠧ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 287 ] @ confint, conformance, frozen        
+✔ |          4 | functions                                                      
+
+⠇ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 305 ] @ confint, conformance, frozen        
+⠏ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 305 ] @ confint, conformance, frozen        
+> test_generics.R: Maximum likelihood estimates for the Weibull model 
+> test_generics.R: shape  scale  
+> test_generics.R: 2.544  2.899  
+> test_generics.R: 
+> test_generics.R: Maximum likelihood for the Weibull model 
+> test_generics.R:  
+> test_generics.R: Call:  mlweibull(x = x) 
+> test_generics.R: 
+> test_generics.R: Estimates: 
+> test_generics.R:    shape     scale  
+> test_generics.R: 2.544195  2.899315  
+> test_generics.R: 
+> test_generics.R: Data:            x (10 obs.)
+> test_generics.R: Support:         (0, Inf)
+> test_generics.R: Density:         stats::dweibull
+> test_generics.R: Log-likelihood:  -14.54088
+
+✔ |         18 | generics                                                       
+
+⠋ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 406 ] @ confint, conformance, frozen        
+✔ |          6 | confint [3.9s]                                                 
+
+⠙ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 866 ] @ conformance, frozen, golden_regressi
+✔ |         11 | helpers                                                        
+
+⠹ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 916 ] @ conformance, frozen, golden_regressi
+⠸ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 3420 ] @ conformance, frozen, golden_regress
+✔ |        3177 | frozen [29.9s]                                                
+
+⠼ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 4855 ] @ conformance, golden_regression, inp
+✔ |         13 | model_select                                                   
+
+⠴ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 4882 ] @ conformance, golden_regression, inp
+⠦ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 4882 ] @ conformance, golden_regression, inp
+⠧ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 4933 ] @ conformance, golden_regression, inp
+⠇ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 4933 ] @ conformance, golden_regression, inp
+⠏ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 4933 ] @ conformance, golden_regression, inp
+✔ |         17 | parameter_infrastructure [1.0s]                                
+
+⠋ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 4946 ] @ conformance, golden_regression, inp
+⠙ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 4946 ] @ conformance, golden_regression, inp
+✔ |         21 | probability_plots                                              
+
+⠹ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 4974 ] @ conformance, golden_regression, inp
+⠸ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 5101 ] @ conformance, golden_regression, inp
+⠼ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 5103 ] @ conformance, golden_regression, inp
+⠴ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 5157 ] @ conformance, golden_regression, inp
+⠦ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 5158 ] @ conformance, golden_regression, inp
+⠧ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 5158 ] @ conformance, golden_regression, inp
+⠇ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 5158 ] @ conformance, golden_regression, inp
+⠏ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 5166 ] @ conformance, golden_regression, inp
+⠋ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 5166 ] @ conformance, golden_regression, inp
+⠙ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 5170 ] @ conformance, golden_regression, inp
+✔ |         99 | restricted [3.3s]                                              
+
+⠹ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 5284 ] @ conformance, golden_regression, inp
+✔ |        198 | golden_regression [37.1s]                                      
+
+⠸ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 5695 ] @ conformance, input_checks, scale_eq
+✔ |         13 | special                                                        
+
+⠼ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 5728 ] @ conformance, input_checks, scale_eq
+✔ |          4 | utility                                                        
+
+⠴ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 5745 ] @ conformance, input_checks, scale_eq
+⠦ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 5824 ] @ conformance, input_checks, scale_eq
+⠧ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 5824 ] @ conformance, input_checks, scale_eq
+⠇ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 5834 ] @ conformance, input_checks, scale_eq
+⠏ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 5931 ] @ conformance, input_checks, scale_eq
+⠋ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 6056 ] @ conformance, input_checks, scale_eq
+✔ |        202 | audit-input [7.6s]                                             
+
+⠙ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 6070 ] @ conformance, input_checks, scale_eq
+⠹ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 6070 ] @ conformance, input_checks, scale_eq
+✔ |        594 | input_checks [46.0s]                                           
+
+⠸ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 6451 ] @ conformance, scale_equivariance, di
+⠼ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 6452 ] @ conformance, scale_equivariance, di
+✔ |      1 106 | dist-bbinom [2.3s]                                             
+
+⠴ [ FAIL 0 | WARN 0 | SKIP 1 | PASS 6691 ] @ conformance, scale_equivariance, di
+✔ |      1  11 | dist-beta                                                      
+
+⠦ [ FAIL 0 | WARN 0 | SKIP 2 | PASS 6749 ] @ conformance, scale_equivariance, di
+⠧ [ FAIL 0 | WARN 0 | SKIP 2 | PASS 6750 ] @ conformance, scale_equivariance, di
+✔ |      3  17 | dist-betapr                                                    
+
+⠇ [ FAIL 0 | WARN 0 | SKIP 5 | PASS 6808 ] @ conformance, scale_equivariance, di
+⠏ [ FAIL 0 | WARN 0 | SKIP 5 | PASS 6808 ] @ conformance, scale_equivariance, di
+✔ |      4  58 | dist-bhatt [1.0s]                                              
+
+⠋ [ FAIL 0 | WARN 0 | SKIP 9 | PASS 6923 ] @ conformance, scale_equivariance, di
+⠙ [ FAIL 0 | WARN 0 | SKIP 9 | PASS 6923 ] @ conformance, scale_equivariance, di
+✔ |      1  84 | dist-binom                                                     
+
+⠹ [ FAIL 0 | WARN 0 | SKIP 10 | PASS 7042 ] @ conformance, scale_equivariance, d
+⠸ [ FAIL 0 | WARN 0 | SKIP 10 | PASS 7042 ] @ conformance, scale_equivariance, d
+✔ |        396 | diagnostics [9.0s]                                             
+
+⠼ [ FAIL 0 | WARN 0 | SKIP 11 | PASS 7078 ] @ conformance, scale_equivariance, d
+⠴ [ FAIL 0 | WARN 0 | SKIP 11 | PASS 7078 ] @ conformance, scale_equivariance, d
+✔ |      1  42 | dist-bnbinom                                                   
+
+⠦ [ FAIL 0 | WARN 0 | SKIP 12 | PASS 7107 ] @ conformance, scale_equivariance, d
+⠧ [ FAIL 0 | WARN 0 | SKIP 12 | PASS 7107 ] @ conformance, scale_equivariance, d
+✔ |      2 116 | dist-cauchy [1.4s]                                             
+
+⠇ [ FAIL 0 | WARN 0 | SKIP 16 | PASS 7286 ] @ conformance, scale_equivariance, d
+✔ |      3 129 | dist-burr [2.8s]                                               
+
+⠏ [ FAIL 0 | WARN 0 | SKIP 16 | PASS 7433 ] @ conformance, scale_equivariance, d
+⠋ [ FAIL 0 | WARN 0 | SKIP 17 | PASS 7654 ] @ conformance, scale_equivariance, d
+✔ |      1 104 | dist-cmp [2.4s]                                                
+
+⠙ [ FAIL 0 | WARN 0 | SKIP 18 | PASS 7950 ] @ conformance, scale_equivariance, d
+✔ |      1  63 | dist-dgamma [1.6s]                                             
+
+⠹ [ FAIL 0 | WARN 0 | SKIP 19 | PASS 8246 ] @ conformance, scale_equivariance, d
+⠸ [ FAIL 0 | WARN 0 | SKIP 19 | PASS 8246 ] @ conformance, scale_equivariance, d
+✔ |        131 | dist-dlaplace                                                  
+
+⠼ [ FAIL 0 | WARN 0 | SKIP 19 | PASS 8393 ] @ conformance, scale_equivariance, d
+⠴ [ FAIL 0 | WARN 0 | SKIP 19 | PASS 8393 ] @ conformance, scale_equivariance, d
+✔ |         96 | dist-dnorm                                                     
+
+⠦ [ FAIL 0 | WARN 0 | SKIP 19 | PASS 8493 ] @ conformance, scale_equivariance, d
+⠧ [ FAIL 0 | WARN 0 | SKIP 19 | PASS 8493 ] @ conformance, scale_equivariance, d
+✔ |         73 | dist-dunif                                                     
+
+⠇ [ FAIL 0 | WARN 0 | SKIP 19 | PASS 8582 ] @ conformance, scale_equivariance, d
+⠏ [ FAIL 0 | WARN 0 | SKIP 19 | PASS 8582 ] @ conformance, scale_equivariance, d
+✔ |      1  37 | dist-dweibull                                                  
+
+⠋ [ FAIL 0 | WARN 0 | SKIP 20 | PASS 8619 ] @ conformance, scale_equivariance, d
+⠙ [ FAIL 0 | WARN 0 | SKIP 20 | PASS 8619 ] @ conformance, scale_equivariance, d
+⠹ [ FAIL 0 | WARN 0 | SKIP 21 | PASS 8710 ] @ conformance, scale_equivariance, d
+⠸ [ FAIL 0 | WARN 0 | SKIP 21 | PASS 8710 ] @ conformance, scale_equivariance, d
+✔ |      1  89 | dist-emg                                                       
+
+⠼ [ FAIL 0 | WARN 0 | SKIP 21 | PASS 8720 ] @ conformance, scale_equivariance, d
+⠴ [ FAIL 0 | WARN 0 | SKIP 21 | PASS 8720 ] @ conformance, scale_equivariance, d
+✔ |      1  12 | dist-exp                                                       
+
+⠦ [ FAIL 0 | WARN 0 | SKIP 22 | PASS 8740 ] @ conformance, scale_equivariance, d
+⠧ [ FAIL 0 | WARN 0 | SKIP 22 | PASS 8740 ] @ conformance, scale_equivariance, d
+✔ |      1  19 | dist-fatigue                                                   
+
+⠇ [ FAIL 0 | WARN 0 | SKIP 23 | PASS 8759 ] @ conformance, scale_equivariance, d
+⠏ [ FAIL 0 | WARN 0 | SKIP 23 | PASS 8759 ] @ conformance, scale_equivariance, d
+✔ |      1 134 | dist-foldnorm                                                  
+
+⠋ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8893 ] @ conformance, scale_equivariance, d
+⠙ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8893 ] @ conformance, scale_equivariance, d
+⠹ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8894 ] @ conformance, scale_equivariance, d
+⠸ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8894 ] @ conformance, scale_equivariance, d
+⠼ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8894 ] @ conformance, scale_equivariance, d
+⠴ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8950 ] @ conformance, scale_equivariance, d
+⠦ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8950 ] @ conformance, scale_equivariance, d
+⠧ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8951 ] @ conformance, scale_equivariance, d
+⠇ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8951 ] @ conformance, scale_equivariance, d
+⠏ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8952 ] @ conformance, scale_equivariance, d
+⠋ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8953 ] @ conformance, scale_equivariance, d
+⠙ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8954 ] @ conformance, scale_equivariance, d
+⠹ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8954 ] @ conformance, scale_equivariance, d
+⠸ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8955 ] @ conformance, scale_equivariance, d
+⠼ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8955 ] @ conformance, scale_equivariance, d
+⠴ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8955 ] @ conformance, scale_equivariance, d
+⠦ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8959 ] @ conformance, scale_equivariance, d
+⠧ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8959 ] @ conformance, scale_equivariance, d
+⠇ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8959 ] @ conformance, scale_equivariance, d
+⠏ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8959 ] @ conformance, scale_equivariance, d
+⠋ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8959 ] @ conformance, scale_equivariance, d
+⠙ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8959 ] @ conformance, scale_equivariance, d
+⠹ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8959 ] @ conformance, scale_equivariance, d
+⠸ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8959 ] @ conformance, scale_equivariance, d
+⠼ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8959 ] @ conformance, scale_equivariance, d
+⠴ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8959 ] @ conformance, scale_equivariance, d
+⠦ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8959 ] @ conformance, scale_equivariance, d
+⠧ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8959 ] @ conformance, scale_equivariance, d
+⠇ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8959 ] @ conformance, scale_equivariance, d
+⠏ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8959 ] @ conformance, scale_equivariance, d
+⠋ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8959 ] @ conformance, scale_equivariance, d
+⠙ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8959 ] @ conformance, scale_equivariance, d
+⠹ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8960 ] @ conformance, scale_equivariance, d
+⠸ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8960 ] @ conformance, scale_equivariance, d
+⠼ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8960 ] @ conformance, scale_equivariance, d
+⠴ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8960 ] @ conformance, scale_equivariance, d
+⠦ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8960 ] @ conformance, scale_equivariance, d
+⠧ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8960 ] @ conformance, scale_equivariance, d
+⠇ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8960 ] @ conformance, scale_equivariance, d
+⠏ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8960 ] @ conformance, scale_equivariance, d
+⠋ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8960 ] @ conformance, scale_equivariance, d
+⠙ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8960 ] @ conformance, scale_equivariance, d
+⠹ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8960 ] @ conformance, scale_equivariance, d
+⠸ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8960 ] @ conformance, scale_equivariance, d
+⠼ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8960 ] @ conformance, scale_equivariance, d
+⠴ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8960 ] @ conformance, scale_equivariance, d
+⠦ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8960 ] @ conformance, scale_equivariance, d
+⠧ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8960 ] @ conformance, scale_equivariance, d
+⠇ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8960 ] @ conformance, scale_equivariance, d
+⠏ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8960 ] @ conformance, scale_equivariance, d
+⠋ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8960 ] @ conformance, scale_equivariance, d
+⠙ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8960 ] @ conformance, scale_equivariance, d
+⠹ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8960 ] @ conformance, scale_equivariance, d
+⠸ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8960 ] @ conformance, scale_equivariance, d
+⠼ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8960 ] @ conformance, scale_equivariance, d
+⠴ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8960 ] @ conformance, scale_equivariance, d
+⠦ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8960 ] @ conformance, scale_equivariance, d
+⠧ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8960 ] @ conformance, scale_equivariance, d
+⠇ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8960 ] @ conformance, scale_equivariance, d
+⠏ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8960 ] @ conformance, scale_equivariance, d
+⠋ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8960 ] @ conformance, scale_equivariance, d
+⠙ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8961 ] @ conformance, scale_equivariance, d
+⠹ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8961 ] @ conformance, scale_equivariance, d
+⠸ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8961 ] @ conformance, scale_equivariance, d
+⠼ [ FAIL 0 | WARN 0 | SKIP 24 | PASS 8967 ] @ conformance, scale_equivariance, d
+✖ | 2    3 656 | dist-cmb [17.1s]                                               
+────────────────────────────────────────────────────────────────────────────────
+Failure ('test-dist-cmb.R:320:3'): CMB fixed-size normalizers spend the cell budget
+Expected `err` to inherit from "univariateML_budget".
+Actual class: "univariateML".
+
+Error ('test-dist-cmb.R:321:3'): CMB fixed-size normalizers spend the cell budget
+Error in `err$kind`: $ operator is invalid for atomic vectors
+Backtrace:
+    ▆
+ 1. └─testthat::expect_equal(err$kind, "budget") at test-dist-cmb.R:321:3
+ 2.   └─testthat::quasi_label(enquo(object), label)
+ 3.     └─rlang::eval_bare(expr, quo_get_env(quo))
+────────────────────────────────────────────────────────────────────────────────
+
+⠴ [ FAIL 2 | WARN 0 | SKIP 26 | PASS 8996 ] @ conformance, scale_equivariance, d
+⠦ [ FAIL 2 | WARN 0 | SKIP 26 | PASS 8996 ] @ conformance, scale_equivariance, d
+✔ |      2  56 | dist-frechet                                                   
+
+⠧ [ FAIL 2 | WARN 0 | SKIP 28 | PASS 9052 ] @ conformance, scale_equivariance, d
+⠇ [ FAIL 2 | WARN 0 | SKIP 28 | PASS 9052 ] @ conformance, scale_equivariance, d
+✔ |      1  24 | dist-gamma                                                     
+
+⠏ [ FAIL 2 | WARN 0 | SKIP 29 | PASS 9076 ] @ conformance, scale_equivariance, d
+⠋ [ FAIL 2 | WARN 0 | SKIP 29 | PASS 9076 ] @ conformance, scale_equivariance, d
+⠙ [ FAIL 2 | WARN 0 | SKIP 30 | PASS 9076 ] @ conformance, scale_equivariance, d
+⠹ [ FAIL 2 | WARN 0 | SKIP 30 | PASS 9076 ] @ conformance, scale_equivariance, d
+⠸ [ FAIL 2 | WARN 0 | SKIP 30 | PASS 9076 ] @ conformance, scale_equivariance, d
+⠼ [ FAIL 2 | WARN 0 | SKIP 30 | PASS 9076 ] @ conformance, scale_equivariance, d
+⠴ [ FAIL 2 | WARN 0 | SKIP 30 | PASS 9076 ] @ conformance, scale_equivariance, d
+⠦ [ FAIL 2 | WARN 0 | SKIP 30 | PASS 9076 ] @ conformance, scale_equivariance, d
+⠧ [ FAIL 2 | WARN 0 | SKIP 30 | PASS 9084 ] @ conformance, scale_equivariance, d
+⠇ [ FAIL 2 | WARN 0 | SKIP 30 | PASS 9111 ] @ conformance, scale_equivariance, d
+⠏ [ FAIL 2 | WARN 0 | SKIP 30 | PASS 9183 ] @ conformance, scale_equivariance, d
+⠋ [ FAIL 2 | WARN 0 | SKIP 30 | PASS 9183 ] @ conformance, scale_equivariance, d
+⠙ [ FAIL 2 | WARN 0 | SKIP 30 | PASS 9184 ] @ conformance, scale_equivariance, d
+⠹ [ FAIL 2 | WARN 0 | SKIP 30 | PASS 9184 ] @ conformance, scale_equivariance, d
+⠸ [ FAIL 2 | WARN 0 | SKIP 30 | PASS 9184 ] @ conformance, scale_equivariance, d
+⠼ [ FAIL 2 | WARN 0 | SKIP 30 | PASS 9184 ] @ conformance, scale_equivariance, d
+⠴ [ FAIL 2 | WARN 0 | SKIP 30 | PASS 9185 ] @ conformance, scale_equivariance, d
+⠦ [ FAIL 2 | WARN 0 | SKIP 30 | PASS 9185 ] @ conformance, scale_equivariance, d
+⠧ [ FAIL 2 | WARN 0 | SKIP 30 | PASS 9185 ] @ conformance, scale_equivariance, d
+⠇ [ FAIL 2 | WARN 0 | SKIP 30 | PASS 9186 ] @ conformance, scale_equivariance, d
+⠏ [ FAIL 2 | WARN 0 | SKIP 30 | PASS 9186 ] @ conformance, scale_equivariance, d
+✔ |        362 | scale_equivariance [42.9s]                                     
+
+⠋ [ FAIL 2 | WARN 0 | SKIP 30 | PASS 9189 ] @ conformance, dist-fpareto, dist-gb
+⠙ [ FAIL 2 | WARN 0 | SKIP 30 | PASS 9189 ] @ conformance, dist-fpareto, dist-gb
+✔ |      2 123 | dist-ged                                                       
+
+⠹ [ FAIL 2 | WARN 0 | SKIP 32 | PASS 9318 ] @ conformance, dist-fpareto, dist-gb
+⠸ [ FAIL 2 | WARN 0 | SKIP 32 | PASS 9318 ] @ conformance, dist-fpareto, dist-gb
+✔ |      1  74 | dist-fpareto [12.8s]                                           
+
+⠼ [ FAIL 2 | WARN 0 | SKIP 34 | PASS 9347 ] @ conformance, dist-gb2, dist-genbet
+✔ |      2 123 | dist-gb2 [4.0s]                                                
+
+⠴ [ FAIL 2 | WARN 0 | SKIP 34 | PASS 9349 ] @ conformance, dist-genbeta         
+⠦ [ FAIL 2 | WARN 0 | SKIP 34 | PASS 9350 ] @ conformance, dist-genbeta         
+✔ |      1   9 | dist-geom                                                      
+
+⠧ [ FAIL 2 | WARN 0 | SKIP 36 | PASS 9366 ] @ conformance, dist-genbeta, dist-ge
+⠇ [ FAIL 2 | WARN 0 | SKIP 36 | PASS 9367 ] @ conformance, dist-genbeta, dist-ge
+✔ |      1  28 | dist-gompertz                                                  
+
+⠏ [ FAIL 2 | WARN 0 | SKIP 38 | PASS 9443 ] @ conformance, dist-genbeta, dist-ge
+✔ |      2  65 | dist-gev                                                       
+
+⠋ [ FAIL 2 | WARN 0 | SKIP 39 | PASS 9500 ] @ conformance, dist-genbeta, dist-gp
+✔ |      1  30 | dist-gumbel                                                    
+
+⠙ [ FAIL 2 | WARN 0 | SKIP 41 | PASS 9622 ] @ conformance, dist-genbeta, dist-gp
+✔ |      2  50 | dist-gpd                                                       
+
+⠹ [ FAIL 2 | WARN 0 | SKIP 41 | PASS 9628 ] @ conformance, dist-genbeta         
+✔ |      1 123 | dist-genbeta [1.9s]                                            
+
+⠸ [ FAIL 2 | WARN 0 | SKIP 43 | PASS 9676 ] @ conformance, dist-hcauchy, dist-hn
+✔ |      2  45 | dist-hnorm                                                     
+
+⠼ [ FAIL 2 | WARN 0 | SKIP 45 | PASS 9780 ] @ conformance, dist-hcauchy, dist-ht
+✔ |      1  90 | dist-hcauchy                                                   
+
+⠴ [ FAIL 2 | WARN 0 | SKIP 46 | PASS 9838 ] @ conformance, dist-ht, dist-huber  
+✔ |      2  78 | dist-ht [1.1s]                                                 
+
+⠦ [ FAIL 2 | WARN 0 | SKIP 47 | PASS 9987 ] @ conformance, dist-huber, dist-hype
+✔ |        119 | dist-huber [1.1s]                                              
+
+⠧ [ FAIL 2 | WARN 0 | SKIP 48 | PASS 10058 ] @ conformance, dist-hyper, dist-inv
+✔ |      2   4 | dist-invexp                                                    
+
+⠇ [ FAIL 2 | WARN 0 | SKIP 50 | PASS 10097 ] @ conformance, dist-hyper, dist-inv
+✔ |      1  14 | dist-invgamma                                                  
+
+⠏ [ FAIL 2 | WARN 0 | SKIP 51 | PASS 10154 ] @ conformance, dist-hyper, dist-inv
+✔ |      1  21 | dist-invgauss                                                  
+
+⠋ [ FAIL 2 | WARN 0 | SKIP 53 | PASS 10226 ] @ conformance, dist-hyper, dist-inv
+✔ |      3  27 | dist-invparalogis                                              
+
+⠙ [ FAIL 2 | WARN 0 | SKIP 57 | PASS 10303 ] @ conformance, dist-hyper, dist-inv
+✔ |      2  42 | dist-invpareto                                                 
+
+⠹ [ FAIL 2 | WARN 0 | SKIP 59 | PASS 10367 ] @ conformance, dist-hyper, dist-inv
+⠸ [ FAIL 2 | WARN 0 | SKIP 59 | PASS 10367 ] @ conformance, dist-hyper, dist-inv
+✔ |      3  99 | dist-invburr [2.3s]                                            
+
+⠼ [ FAIL 2 | WARN 0 | SKIP 61 | PASS 10398 ] @ conformance, dist-hyper, dist-inv
+✔ |      2  26 | dist-invtrgamma                                                
+
+⠴ [ FAIL 2 | WARN 0 | SKIP 61 | PASS 10416 ] @ conformance, dist-hyper, dist-inv
+✔ |      1  26 | dist-invweibull                                                
+
+⠦ [ FAIL 2 | WARN 0 | SKIP 62 | PASS 10460 ] @ conformance, dist-hyper, dist-kum
+⠧ [ FAIL 2 | WARN 0 | SKIP 62 | PASS 10461 ] @ conformance, dist-hyper, dist-kum
+✔ |      1  15 | dist-laplace                                                   
+
+⠇ [ FAIL 2 | WARN 0 | SKIP 64 | PASS 10496 ] @ conformance, dist-hyper, dist-kum
+✔ |      1  51 | dist-kumar                                                     
+
+⠏ [ FAIL 2 | WARN 0 | SKIP 64 | PASS 10501 ] @ conformance, dist-hyper          
+⠋ [ FAIL 2 | WARN 0 | SKIP 64 | PASS 10501 ] @ conformance, dist-hyper          
+✔ |      1  19 | dist-lgamma                                                    
+
+⠙ [ FAIL 2 | WARN 0 | SKIP 66 | PASS 10541 ] @ conformance, dist-hyper, dist-lgs
+✔ |      1  28 | dist-lgser                                                     
+
+⠹ [ FAIL 2 | WARN 0 | SKIP 66 | PASS 10548 ] @ conformance, dist-hyper          
+⠸ [ FAIL 2 | WARN 0 | SKIP 66 | PASS 10548 ] @ conformance, dist-hyper          
+✔ |      1  18 | dist-lnorm                                                     
+
+⠼ [ FAIL 2 | WARN 0 | SKIP 68 | PASS 10588 ] @ conformance, dist-hyper, dist-llo
+✔ |      1  24 | dist-llogis                                                    
+
+⠴ [ FAIL 2 | WARN 0 | SKIP 68 | PASS 10590 ] @ conformance, dist-hyper          
+⠦ [ FAIL 2 | WARN 0 | SKIP 68 | PASS 10590 ] @ conformance, dist-hyper          
+✔ |      1  30 | dist-logis                                                     
+
+⠧ [ FAIL 2 | WARN 0 | SKIP 69 | PASS 10658 ] @ conformance, dist-hyper, dist-log
+✔ |      1  51 | dist-logitnorm                                                 
+
+⠇ [ FAIL 2 | WARN 0 | SKIP 70 | PASS 10673 ] @ conformance, dist-hyper, dist-lom
+⠏ [ FAIL 2 | WARN 0 | SKIP 70 | PASS 10673 ] @ conformance, dist-hyper, dist-lom
+✔ |      2  84 | dist-lomax                                                     
+
+⠋ [ FAIL 2 | WARN 0 | SKIP 73 | PASS 10755 ] @ conformance, dist-hyper, dist-lst
+⠙ [ FAIL 2 | WARN 0 | SKIP 73 | PASS 10755 ] @ conformance, dist-hyper, dist-lst
+✔ |      1  56 | dist-naka                                                      
+
+⠹ [ FAIL 2 | WARN 0 | SKIP 74 | PASS 10822 ] @ conformance, dist-hyper, dist-lst
+⠸ [ FAIL 2 | WARN 0 | SKIP 74 | PASS 10822 ] @ conformance, dist-hyper, dist-lst
+✔ |      1  77 | dist-nbinom                                                    
+
+⠼ [ FAIL 2 | WARN 0 | SKIP 77 | PASS 10933 ] @ conformance, dist-hyper, dist-lst
+⠴ [ FAIL 2 | WARN 0 | SKIP 77 | PASS 10933 ] @ conformance, dist-hyper, dist-lst
+✔ |      3  50 | dist-lst [2.2s]                                                
+
+⠦ [ FAIL 2 | WARN 0 | SKIP 77 | PASS 10944 ] @ conformance, dist-hyper, dist-nhy
+⠧ [ FAIL 2 | WARN 0 | SKIP 77 | PASS 10945 ] @ conformance, dist-hyper, dist-nhy
+✔ |      1  21 | dist-norm                                                      
+
+⠇ [ FAIL 2 | WARN 0 | SKIP 78 | PASS 11001 ] @ conformance, dist-hyper, dist-nhy
+✔ |      1  31 | dist-nsbeta                                                    
+
+⠏ [ FAIL 2 | WARN 0 | SKIP 79 | PASS 11145 ] @ conformance, dist-hyper, dist-nhy
+✔ |      3  36 | dist-paralogis                                                 
+
+⠋ [ FAIL 2 | WARN 0 | SKIP 82 | PASS 11322 ] @ conformance, dist-hyper, dist-nhy
+✔ |      1  20 | dist-pareto                                                    
+
+⠙ [ FAIL 2 | WARN 0 | SKIP 83 | PASS 11386 ] @ conformance, dist-hyper, dist-nhy
+✔ |      1  31 | dist-pareto2                                                   
+
+⠹ [ FAIL 2 | WARN 0 | SKIP 84 | PASS 11510 ] @ conformance, dist-hyper, dist-nhy
+✔ |      1  24 | dist-pareto3                                                   
+
+⠸ [ FAIL 2 | WARN 0 | SKIP 85 | PASS 11615 ] @ conformance, dist-hyper, dist-nhy
+⠼ [ FAIL 2 | WARN 0 | SKIP 85 | PASS 11688 ] @ conformance, dist-hyper, dist-nhy
+⠴ [ FAIL 2 | WARN 0 | SKIP 85 | PASS 11689 ] @ conformance, dist-hyper, dist-nhy
+⠦ [ FAIL 2 | WARN 0 | SKIP 86 | PASS 11714 ] @ conformance, dist-hyper, dist-nhy
+⠧ [ FAIL 2 | WARN 0 | SKIP 86 | PASS 11715 ] @ conformance, dist-hyper, dist-nhy
+✔ |      1  47 | dist-pareto4 [1.2s]                                            
+
+⠇ [ FAIL 2 | WARN 0 | SKIP 86 | PASS 11725 ] @ conformance, dist-hyper, dist-nhy
+⠏ [ FAIL 2 | WARN 0 | SKIP 86 | PASS 11725 ] @ conformance, dist-hyper, dist-nhy
+✔ |      2  44 | dist-pig                                                       
+
+⠋ [ FAIL 2 | WARN 0 | SKIP 88 | PASS 11772 ] @ conformance, dist-hyper, dist-nhy
+⠙ [ FAIL 2 | WARN 0 | SKIP 88 | PASS 11772 ] @ conformance, dist-hyper, dist-nhy
+✔ |      1  11 | dist-pois                                                      
+
+⠹ [ FAIL 2 | WARN 0 | SKIP 89 | PASS 11792 ] @ conformance, dist-hyper, dist-nhy
+⠸ [ FAIL 2 | WARN 0 | SKIP 89 | PASS 11792 ] @ conformance, dist-hyper, dist-nhy
+✔ |      1  19 | dist-power                                                     
+
+⠼ [ FAIL 2 | WARN 0 | SKIP 90 | PASS 11815 ] @ conformance, dist-hyper, dist-nhy
+⠴ [ FAIL 2 | WARN 0 | SKIP 90 | PASS 11815 ] @ conformance, dist-hyper, dist-nhy
+✔ |      1  19 | dist-rayleigh                                                  
+
+⠦ [ FAIL 2 | WARN 0 | SKIP 91 | PASS 11839 ] @ conformance, dist-hyper, dist-nhy
+⠧ [ FAIL 2 | WARN 0 | SKIP 91 | PASS 11839 ] @ conformance, dist-hyper, dist-nhy
+⠇ [ FAIL 2 | WARN 0 | SKIP 91 | PASS 11840 ] @ conformance, dist-hyper, dist-nhy
+⠏ [ FAIL 2 | WARN 0 | SKIP 91 | PASS 11841 ] @ conformance, dist-hyper, dist-nhy
+⠋ [ FAIL 2 | WARN 0 | SKIP 91 | PASS 11841 ] @ conformance, dist-hyper, dist-nhy
+⠙ [ FAIL 2 | WARN 0 | SKIP 91 | PASS 11841 ] @ conformance, dist-hyper, dist-nhy
+⠹ [ FAIL 2 | WARN 0 | SKIP 91 | PASS 11841 ] @ conformance, dist-hyper, dist-nhy
+⠸ [ FAIL 2 | WARN 0 | SKIP 91 | PASS 11841 ] @ conformance, dist-hyper, dist-nhy
+⠼ [ FAIL 2 | WARN 0 | SKIP 91 | PASS 11841 ] @ conformance, dist-hyper, dist-nhy
+⠴ [ FAIL 2 | WARN 0 | SKIP 91 | PASS 11842 ] @ conformance, dist-hyper, dist-nhy
+⠦ [ FAIL 2 | WARN 0 | SKIP 91 | PASS 11842 ] @ conformance, dist-hyper, dist-nhy
+⠧ [ FAIL 2 | WARN 0 | SKIP 91 | PASS 11843 ] @ conformance, dist-hyper, dist-nhy
+⠇ [ FAIL 2 | WARN 0 | SKIP 91 | PASS 11843 ] @ conformance, dist-hyper, dist-nhy
+⠏ [ FAIL 2 | WARN 0 | SKIP 91 | PASS 11843 ] @ conformance, dist-hyper, dist-nhy
+⠋ [ FAIL 2 | WARN 0 | SKIP 91 | PASS 11843 ] @ conformance, dist-hyper, dist-nhy
+⠙ [ FAIL 2 | WARN 0 | SKIP 91 | PASS 11843 ] @ conformance, dist-hyper, dist-nhy
+⠹ [ FAIL 2 | WARN 0 | SKIP 91 | PASS 11843 ] @ conformance, dist-hyper, dist-nhy
+✔ |        579 | dist-nhyper [7.2s]                                             
+
+⠸ [ FAIL 2 | WARN 0 | SKIP 91 | PASS 11846 ] @ conformance, dist-hyper, dist-sge
+⠼ [ FAIL 2 | WARN 0 | SKIP 91 | PASS 11846 ] @ conformance, dist-hyper, dist-sge
+✔ |      2  69 | dist-sgomp                                                     
+
+⠴ [ FAIL 2 | WARN 0 | SKIP 93 | PASS 11915 ] @ conformance, dist-hyper, dist-sge
+⠦ [ FAIL 2 | WARN 0 | SKIP 93 | PASS 11915 ] @ conformance, dist-hyper, dist-sge
+✔ |        162 | dist-skellam [1.3s]                                            
+
+⠧ [ FAIL 2 | WARN 0 | SKIP 93 | PASS 12091 ] @ conformance, dist-hyper, dist-sge
+⠇ [ FAIL 2 | WARN 0 | SKIP 93 | PASS 12091 ] @ conformance, dist-hyper, dist-sge
+⠏ [ FAIL 2 | WARN 0 | SKIP 95 | PASS 12094 ] @ conformance, dist-hyper, dist-sge
+⠋ [ FAIL 2 | WARN 0 | SKIP 95 | PASS 12094 ] @ conformance, dist-hyper, dist-sge
+⠙ [ FAIL 2 | WARN 0 | SKIP 95 | PASS 12100 ] @ conformance, dist-hyper, dist-sge
+⠹ [ FAIL 2 | WARN 0 | SKIP 95 | PASS 12102 ] @ conformance, dist-hyper, dist-sge
+✔ |      4 175 | dist-sged [6.4s]                                               
+
+⠸ [ FAIL 2 | WARN 0 | SKIP 98 | PASS 12299 ] @ conformance, dist-hyper, dist-sla
+⠼ [ FAIL 2 | WARN 0 | SKIP 98 | PASS 12299 ] @ conformance, dist-hyper, dist-sla
+⠴ [ FAIL 2 | WARN 0 | SKIP 101 | PASS 12453 ] @ conformance, dist-hyper, dist-sl
+⠦ [ FAIL 2 | WARN 0 | SKIP 101 | PASS 12453 ] @ conformance, dist-hyper, dist-sl
+✔ |      1 187 | dist-sn [1.7s]                                                 
+
+⠧ [ FAIL 2 | WARN 0 | SKIP 101 | PASS 12501 ] @ conformance, dist-hyper, dist-sl
+⠇ [ FAIL 2 | WARN 0 | SKIP 101 | PASS 12501 ] @ conformance, dist-hyper, dist-sl
+✔ |      2 141 | dist-snorm [1.1s]                                              
+
+⠏ [ FAIL 2 | WARN 0 | SKIP 103 | PASS 12723 ] @ conformance, dist-hyper, dist-sl
+⠋ [ FAIL 2 | WARN 0 | SKIP 103 | PASS 12723 ] @ conformance, dist-hyper, dist-sl
+⠙ [ FAIL 2 | WARN 0 | SKIP 103 | PASS 12724 ] @ conformance, dist-hyper, dist-sl
+⠹ [ FAIL 2 | WARN 0 | SKIP 103 | PASS 12740 ] @ conformance, dist-hyper, dist-sl
+✔ |        295 | dist-hyper [23.3s]                                             
+
+⠸ [ FAIL 2 | WARN 0 | SKIP 105 | PASS 12910 ] @ conformance, dist-slash, dist-ss
+✔ |          4 | dist-st                                                        
+
+⠼ [ FAIL 2 | WARN 0 | SKIP 106 | PASS 12916 ] @ conformance, dist-slash, dist-ss
+⠴ [ FAIL 2 | WARN 0 | SKIP 106 | PASS 12916 ] @ conformance, dist-slash, dist-ss
+✔ |      4 180 | dist-sstd [2.6s]                                               
+
+⠦ [ FAIL 2 | WARN 0 | SKIP 110 | PASS 12982 ] @ conformance, dist-slash, dist-st
+✔ |      4  68 | dist-slash [8.7s]                                              
+
+⠧ [ FAIL 2 | WARN 0 | SKIP 111 | PASS 13020 ] @ conformance, dist-std, dist-tbin
+✔ |      4 160 | dist-std [3.2s]                                                
+
+⠇ [ FAIL 2 | WARN 0 | SKIP 113 | PASS 13423 ] @ conformance, dist-tbinom, dist-t
+✔ |      2 106 | dist-tlambda [2.7s]                                            
+
+⠏ [ FAIL 2 | WARN 0 | SKIP 116 | PASS 13541 ] @ conformance, dist-tbinom, dist-t
+✔ |      1 312 | dist-tbinom [3.3s]                                             
+
+⠋ [ FAIL 2 | WARN 0 | SKIP 116 | PASS 13627 ] @ conformance, dist-tnorm, dist-tp
+✔ |      1  54 | dist-tnorm [1.0s]                                              
+
+⠙ [ FAIL 2 | WARN 0 | SKIP 116 | PASS 13627 ] @ conformance, dist-tpois         
+✔ |      1  87 | dist-tpois [1.1s]                                              
+
+⠹ [ FAIL 2 | WARN 0 | SKIP 118 | PASS 13810 ] @ conformance, dist-trgamma, dist-
+✔ |      2  74 | dist-trgamma [1.2s]                                            
+
+⠸ [ FAIL 2 | WARN 0 | SKIP 119 | PASS 13916 ] @ conformance, dist-triang, dist-u
+✔ |      1 128 | dist-triang [1.4s]                                             
+
+⠼ [ FAIL 2 | WARN 0 | SKIP 120 | PASS 13954 ] @ conformance, dist-unif, dist-wei
+✔ |      1  31 | dist-weibull                                                   
+
+⠴ [ FAIL 2 | WARN 0 | SKIP 122 | PASS 14107 ] @ conformance, dist-unif, dist-yul
+✔ |        106 | dist-unif [1.4s]                                               
+
+⠦ [ FAIL 2 | WARN 0 | SKIP 122 | PASS 14128 ] @ conformance, dist-yulesimon, dis
+✔ |      1  90 | dist-yulesimon [1.5s]                                          
+
+⠧ [ FAIL 2 | WARN 0 | SKIP 125 | PASS 14308 ] @ conformance, dist-zeta, dist-zib
+✔ |      2  90 | dist-zinb [1.8s]                                               
+
+⠇ [ FAIL 2 | WARN 0 | SKIP 128 | PASS 14687 ] @ conformance, dist-zeta, dist-zib
+✔ |      3 185 | dist-zib [2.9s]                                                
+
+⠏ [ FAIL 2 | WARN 0 | SKIP 129 | PASS 14727 ] @ conformance, dist-zeta, dist-zip
+✔ |      2  32 | dist-zip                                                       
+
+⠋ [ FAIL 2 | WARN 0 | SKIP 131 | PASS 14842 ] @ conformance, dist-zeta, dist-zip
+✔ |      1  83 | dist-zeta [4.0s]                                               
+
+⠙ [ FAIL 2 | WARN 0 | SKIP 132 | PASS 14901 ] @ conformance, dist-zipf, dist-zmb
+✔ |      2  16 | dist-zmgeom                                                    
+
+⠹ [ FAIL 2 | WARN 0 | SKIP 135 | PASS 15026 ] @ conformance, dist-zipf, dist-zmb
+✔ |      2  16 | dist-zmlogarithmic                                             
+
+⠸ [ FAIL 2 | WARN 0 | SKIP 138 | PASS 15142 ] @ conformance, dist-zipf, dist-zmb
+✔ |      3  63 | dist-zmbinom [1.5s]                                            
+
+⠼ [ FAIL 2 | WARN 0 | SKIP 138 | PASS 15158 ] @ conformance, dist-zipf          
+✔ |      2  16 | dist-zmpois                                                    
+
+⠴ [ FAIL 2 | WARN 0 | SKIP 143 | PASS 15265 ] @ conformance, dist-zipf, dist-zmn
+✔ |      3  41 | dist-zmnbinom [1.2s]                                           
+
+⠦ [ FAIL 2 | WARN 0 | SKIP 145 | PASS 15390 ] @ conformance, dist-zipf, dist-ztb
+✔ |      3  16 | dist-ztbinom                                                   
+
+⠧ [ FAIL 2 | WARN 0 | SKIP 147 | PASS 15410 ] @ conformance, dist-zipf, dist-ztg
+✔ |      2   7 | dist-ztgeom                                                    
+
+⠇ [ FAIL 2 | WARN 0 | SKIP 149 | PASS 15455 ] @ conformance, dist-zipf, dist-ztn
+✔ |      2   7 | dist-ztpois                                                    
+
+⠏ [ FAIL 2 | WARN 0 | SKIP 153 | PASS 15517 ] @ conformance, dist-zipf, dist-ztn
+✔ |      2 253 | dist-zipf [4.5s]                                               
+
+⠋ [ FAIL 2 | WARN 0 | SKIP 154 | PASS 15551 ] @ conformance, dist-ztnbinom, gene
+✔ |      3  27 | dist-ztnbinom                                                  
+
+⠙ [ FAIL 2 | WARN 0 | SKIP 154 | PASS 15582 ] @ conformance, generated-dpqr, sto
+✔ |         47 | stops-cont                                                     
+
+⠹ [ FAIL 2 | WARN 0 | SKIP 154 | PASS 15744 ] @ conformance, generated-dpqr, vco
+✔ |         63 | vcov [1.3s]                                                    
+
+⠸ [ FAIL 2 | WARN 0 | SKIP 154 | PASS 15898 ] @ conformance, generated-dpqr     
+✔ |        2572 | conformance [123.1s]                                          
+
+⠼ [ FAIL 2 | WARN 0 | SKIP 154 | PASS 16187 ] @ generated-dpqr                  
+⠴ [ FAIL 2 | WARN 0 | SKIP 154 | PASS 16304 ] @ generated-dpqr                  
+⠦ [ FAIL 2 | WARN 0 | SKIP 154 | PASS 16304 ] @ generated-dpqr                  
+⠧ [ FAIL 2 | WARN 0 | SKIP 154 | PASS 16304 ] @ generated-dpqr                  
+⠇ [ FAIL 2 | WARN 0 | SKIP 154 | PASS 16304 ] @ generated-dpqr                  
+⠏ [ FAIL 2 | WARN 0 | SKIP 154 | PASS 16304 ] @ generated-dpqr                  
+⠋ [ FAIL 2 | WARN 0 | SKIP 154 | PASS 16304 ] @ generated-dpqr                  
+⠙ [ FAIL 2 | WARN 0 | SKIP 154 | PASS 16304 ] @ generated-dpqr                  
+⠹ [ FAIL 2 | WARN 0 | SKIP 154 | PASS 16304 ] @ generated-dpqr                  
+⠸ [ FAIL 2 | WARN 0 | SKIP 154 | PASS 16304 ] @ generated-dpqr                  
+⠼ [ FAIL 2 | WARN 0 | SKIP 154 | PASS 16304 ] @ generated-dpqr                  
+⠴ [ FAIL 2 | WARN 0 | SKIP 154 | PASS 16304 ] @ generated-dpqr                  
+⠦ [ FAIL 2 | WARN 0 | SKIP 154 | PASS 17454 ] @ generated-dpqr                  
+⠧ [ FAIL 2 | WARN 0 | SKIP 154 | PASS 17454 ] @ generated-dpqr                  
+⠇ [ FAIL 2 | WARN 0 | SKIP 154 | PASS 18946 ] @ generated-dpqr                  
+⠏ [ FAIL 2 | WARN 0 | SKIP 154 | PASS 18948 ] @ generated-dpqr                  
+⠋ [ FAIL 2 | WARN 0 | SKIP 154 | PASS 18948 ] @ generated-dpqr                  
+✔ |        4954 | generated-dpqr [30.3s]                                        
+
+⠙ [ FAIL 2 | WARN 0 | SKIP 154 | PASS 20871 ] Starting up...                    
+                                                                                
+══ Results ═════════════════════════════════════════════════════════════════════
+Duration: 152.5 s
+
+── Skipped tests (154) ─────────────────────────────────────────────────────────
+• requires full test tier (154): 'test-dist-bbinom.R:36:3',
+  'test-dist-beta.R:39:3', 'test-dist-betapr.R:23:3',
+  'test-dist-betapr.R:79:3', 'test-dist-betapr.R:116:3',
+  'test-dist-bhatt.R:17:3', 'test-dist-bhatt.R:78:3',
+  'test-dist-bhatt.R:154:3', 'test-dist-bhatt.R:212:3',
+  'test-dist-binom.R:83:3', 'test-dist-bnbinom.R:42:3',
+  'test-dist-burr.R:27:3', 'test-dist-cauchy.R:127:3', 'test-dist-burr.R:87:3',
+  'test-dist-burr.R:137:3', 'test-dist-cauchy.R:262:3', 'test-dist-cmb.R:33:3',
+  'test-dist-cmp.R:33:3', 'test-dist-dgamma.R:2:3',
+  'test-dist-dweibull.R:26:3', 'test-dist-emg.R:37:3', 'test-dist-exp.R:40:3',
+  'test-dist-fatigue.R:54:3', 'test-dist-foldnorm.R:35:3',
+  'test-dist-cmb.R:203:3', 'test-dist-cmb.R:270:3', 'test-dist-frechet.R:63:3',
+  'test-dist-frechet.R:118:3', 'test-dist-gamma.R:71:3', 'test-dist-gb2.R:9:3',
+  'test-dist-ged.R:100:3', 'test-dist-ged.R:195:3', 'test-dist-fpareto.R:83:3',
+  'test-dist-gb2.R:93:3', 'test-dist-geom.R:14:3', 'test-dist-gev.R:15:3',
+  'test-dist-gompertz.R:29:3', 'test-dist-gev.R:78:3', 'test-dist-gpd.R:15:3',
+  'test-dist-gpd.R:57:3', 'test-dist-gumbel.R:101:3',
+  'test-dist-genbeta.R:127:3', 'test-dist-hnorm.R:5:3', 'test-dist-ht.R:10:3',
+  'test-dist-hnorm.R:110:3', 'test-dist-hcauchy.R:64:3',
+  'test-dist-ht.R:152:3', 'test-dist-invburr.R:27:3', 'test-dist-invexp.R:2:3',
+  'test-dist-invexp.R:27:3', 'test-dist-invgamma.R:51:3',
+  'test-dist-invgauss.R:85:3', 'test-dist-invburr.R:75:3',
+  'test-dist-invburr.R:123:3', 'test-dist-invparalogis.R:2:3',
+  'test-dist-invparalogis.R:13:3', 'test-dist-invparalogis.R:52:3',
+  'test-dist-invpareto.R:2:3', 'test-dist-invpareto.R:41:3',
+  'test-dist-invtrgamma.R:2:3', 'test-dist-invtrgamma.R:86:3',
+  'test-dist-invweibull.R:62:3', 'test-dist-laplace.R:55:3',
+  'test-dist-kumar.R:111:3', 'test-dist-lgamma.R:48:3',
+  'test-dist-lgser.R:30:3', 'test-dist-llogis.R:64:3',
+  'test-dist-lnorm.R:52:3', 'test-dist-logis.R:122:3',
+  'test-dist-logitnorm.R:95:3', 'test-dist-lst.R:2:3',
+  'test-dist-lomax.R:132:3', 'test-dist-lomax.R:174:3',
+  'test-dist-naka.R:121:3', 'test-dist-lst.R:58:3', 'test-dist-lst.R:96:3',
+  'test-dist-nbinom.R:63:3', 'test-dist-norm.R:64:3',
+  'test-dist-nsbeta.R:56:3', 'test-dist-paralogis.R:39:3',
+  'test-dist-paralogis.R:77:3', 'test-dist-paralogis.R:87:3',
+  'test-dist-pareto.R:61:3', 'test-dist-pareto2.R:47:3',
+  'test-dist-pareto3.R:40:3', 'test-dist-pareto4.R:55:3',
+  'test-dist-pig.R:15:3', 'test-dist-pig.R:60:3', 'test-dist-pois.R:21:3',
+  'test-dist-power.R:71:3', 'test-dist-rayleigh.R:52:3',
+  'test-dist-sgomp.R:56:3', 'test-dist-sgomp.R:77:3', 'test-dist-slash.R:2:3',
+  'test-dist-sged.R:69:3', 'test-dist-sged.R:113:3', 'test-dist-sged.R:223:3',
+  'test-dist-sged.R:281:3', 'test-dist-sn.R:74:3', 'test-dist-slash.R:126:3',
+  'test-dist-slash.R:189:3', 'test-dist-snorm.R:77:3',
+  'test-dist-snorm.R:212:3', 'test-dist-sstd.R:109:3',
+  'test-dist-sstd.R:152:3', 'test-dist-sstd.R:276:3', 'test-dist-sstd.R:335:3',
+  'test-dist-slash.R:233:3', 'test-dist-std.R:83:3', 'test-dist-std.R:103:3',
+  'test-dist-std.R:137:3', 'test-dist-tlambda.R:66:3', 'test-dist-std.R:255:3',
+  'test-dist-tnorm.R:16:3', 'test-dist-tbinom.R:87:3',
+  'test-dist-tlambda.R:191:3', 'test-dist-trgamma.R:24:3',
+  'test-dist-tpois.R:43:3', 'test-dist-trgamma.R:142:3',
+  'test-dist-triang.R:85:3', 'test-dist-yulesimon.R:2:3',
+  'test-dist-weibull.R:73:3', 'test-dist-zeta.R:2:3', 'test-dist-zib.R:2:3',
+  'test-dist-zib.R:55:3', 'test-dist-zinb.R:18:3', 'test-dist-zib.R:118:3',
+  'test-dist-zinb.R:58:3', 'test-dist-zip.R:10:3', 'test-dist-zip.R:57:3',
+  'test-dist-zipf.R:30:3', 'test-dist-zmbinom.R:2:3',
+  'test-dist-zmbinom.R:52:3', 'test-dist-zmgeom.R:2:3',
+  'test-dist-zmgeom.R:36:3', 'test-dist-zmlogarithmic.R:2:3',
+  'test-dist-zmlogarithmic.R:36:3', 'test-dist-zmbinom.R:115:3',
+  'test-dist-zmnbinom.R:2:3', 'test-dist-zmpois.R:2:3',
+  'test-dist-zmpois.R:36:3', 'test-dist-zmnbinom.R:60:3',
+  'test-dist-zmnbinom.R:75:3', 'test-dist-ztbinom.R:2:3',
+  'test-dist-ztbinom.R:49:3', 'test-dist-ztbinom.R:91:3',
+  'test-dist-ztgeom.R:2:3', 'test-dist-ztgeom.R:33:3',
+  'test-dist-ztnbinom.R:2:3', 'test-dist-ztpois.R:2:3',
+  'test-dist-ztpois.R:33:3', 'test-dist-ztnbinom.R:57:3',
+  'test-dist-ztnbinom.R:72:3', 'test-dist-zipf.R:117:3'
+
+── Failed tests ────────────────────────────────────────────────────────────────
+Failure ('test-dist-cmb.R:320:3'): CMB fixed-size normalizers spend the cell budget
+Expected `err` to inherit from "univariateML_budget".
+Actual class: "univariateML".
+
+Error ('test-dist-cmb.R:321:3'): CMB fixed-size normalizers spend the cell budget
+Error in `err$kind`: $ operator is invalid for atomic vectors
+Backtrace:
+    ▆
+ 1. └─testthat::expect_equal(err$kind, "budget") at test-dist-cmb.R:321:3
+ 2.   └─testthat::quasi_label(enquo(object), label)
+ 3.     └─rlang::eval_bare(expr, quo_get_env(quo))
+
+[ FAIL 2 | WARN 0 | SKIP 154 | PASS 20871 ]
+Error:
+! Test failures.
+Timing stopped at: 563.8 11.8 158.9
+Execution halted
+error: Recipe `test` failed on line 66 with exit code 1

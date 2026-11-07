@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../../core/face_compare.hpp"
 #include "../../core/precision.hpp"
 #include "../../core/span.hpp"
@@ -42,6 +43,7 @@ struct Counts {
 // This is a numerical global search, not an interval-arithmetic certificate.
 template <typename F>
 inline PigResult search(F f, double center, double tol, int maxit, double other_center=std::numeric_limits<double>::quiet_NaN()) {
+  maxit = static_cast<int>(solver_budget(maxit));
   center=std::max(-650.0,std::min(650.0,center));
   other_center=std::isnan(other_center)?center:std::max(-650.0,std::min(650.0,other_center));
   const double step=0.5, lo=std::min(center,other_center)-48.0, hi=std::max(center,other_center)+48.0;
@@ -78,6 +80,7 @@ inline PigResult search(F f, double center, double tol, int maxit, double other_
 inline PigResult pig_mle(ispan x, double tol=1e-9, int maxit=200,
  double mean=std::numeric_limits<double>::quiet_NaN(),
  double shape=std::numeric_limits<double>::quiet_NaN()) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const double nan=std::numeric_limits<double>::quiet_NaN();
   const bool fm=!std::isnan(mean), fs=!std::isnan(shape);
   const auto invalid=PigResult{nan,nan,nan,0,PigStatus::InvalidInput};

@@ -1,0 +1,11 @@
+{
+  "command": [
+    "just",
+    "cpp-test"
+  ],
+  "machine": "simbox",
+  "returncode": 0,
+  "wall_seconds": 79.70610094070435,
+  "started_utc": "2026-11-06T17:40:48.353031+00:00",
+  "revision": "f8f65f9b080c394d11ca9dc178a93219fffee210"
+}

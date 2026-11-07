@@ -1,0 +1,43 @@
+v | F W  S  OK | Context
+
+/ |          0 | dist-cmb                                                       
+/ |          4 | dist-cmb                                                       
+| |         87 | dist-cmb                                                       
+/ |        136 | dist-cmb                                                       
+- |        177 | dist-cmb                                                       
+\ |      1 193 | dist-cmb                                                       
+\ |      1 209 | dist-cmb                                                       
+- |      1 224 | dist-cmb                                                       
+| |      1 226 | dist-cmb                                                       
+| |      1 234 | dist-cmb                                                       
+| |      1 250 | dist-cmb                                                       
+- |      1 268 | dist-cmb                                                       
+- |      1 292 | dist-cmb                                                       
+- |      1 316 | dist-cmb                                                       
+/ |      1 323 | dist-cmb                                                       
+- |      1 340 | dist-cmb                                                       
+| |      1 346 | dist-cmb                                                       
+- |      1 388 | dist-cmb                                                       
+| |      1 418 | dist-cmb                                                       
+- |      1 448 | dist-cmb                                                       
+- |      1 484 | dist-cmb                                                       
+| |      1 514 | dist-cmb                                                       
+- |      1 544 | dist-cmb                                                       
+| |      1 562 | dist-cmb                                                       
+- |      1 580 | dist-cmb                                                       
+- |      1 600 | dist-cmb                                                       
+| |      1 622 | dist-cmb                                                       
+- |      1 628 | dist-cmb                                                       
+\ |      2 644 | dist-cmb                                                       
+- |      3 662 | dist-cmb                                                       
+v |      3 662 | dist-cmb [10.9s]
+
+== Results =====================================================================
+Duration: 10.9 s
+
+-- Skipped tests (3) -----------------------------------------------------------
+* requires full test tier (3): 'test-dist-cmb.R:33:3', 'test-dist-cmb.R:203:3',
+  'test-dist-cmb.R:270:3'
+
+[ FAIL 0 | WARN 0 | SKIP 3 | PASS 662 ]
+Ran 1/1 deferred expressions

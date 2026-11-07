@@ -34,7 +34,7 @@ r:
     sigma: Optional held normal-component standard deviation; NULL estimates it.
     lambda: Optional held exponential rate; NULL estimates it.
     reltol: Tolerance on the log-scale search simplex diameter.
-    iterlim: Maximum iterations per search start.
+    iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
 log_density: log(lambda/2) + lambda*(mu-x) + lambda**2*sigma**2/2 + log(erfc((mu+lambda*sigma**2-x)/(sqrt(2)*sigma)))
 limits:
   - model: norm

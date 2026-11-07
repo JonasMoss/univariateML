@@ -9,6 +9,7 @@
 //   z = (x - mu)/sigma * sigma_u + mu_u.
 
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "cppunivariate/core/constants.hpp"
 #include "../../core/precision.hpp"
 #include "hold_search.hpp"
@@ -346,7 +347,8 @@ struct TwoPieceTCost {
 // likelihood is unbounded in the strict case; equality has a finite
 // unattained scale-zero supremum. Neither case has a positive scale root.
 inline double half_t_profile(const std::vector<double> &y, double eta,
-                             double &log_scale) {
+                             double &log_scale,int maxit=200) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const double dn = static_cast<double>(y.size());
   double second = 0.0;
   double positive = 0.0;
@@ -383,8 +385,8 @@ inline double half_t_profile(const std::vector<double> &y, double eta,
     // sum (nu+1) w^2/(nu+w^2) <= (nu+1)/nu sum w^2, so h(hi) <= 0.
     double hi = u + 0.5 * std::log1p(eta);
     double lo = u - 1.0;
-    for (int k = 0; k < 200 && score(lo, slope) <= 0.0; ++k) lo -= 1.0;
-    for (int k = 0; k < 200; ++k) {
+    for (int k = 0; k < maxit && score(lo, slope) <= 0.0; ++k) lo -= 1.0;
+    for (int k = 0; k < maxit; ++k) {
       const double h = score(u, slope);
       if (h > 0.0) lo = u; else hi = u;
       double next = u - h / slope;
@@ -409,14 +411,15 @@ struct HalfTFit {
 
 // Global search of the half-t profile over eta = 1/nu in [0, 1/2]: a grid,
 // then golden-section refinement around every grid-local maximum.
-inline HalfTFit best_half_t(const std::vector<double> &y) {
+inline HalfTFit best_half_t(const std::vector<double> &y,int maxit=200) {
+  maxit = static_cast<int>(solver_budget(maxit));
   constexpr int kGrid = 200;
   const double step = 0.5 / kGrid;
   std::vector<double> grid(kGrid + 1);
   double log_scale = 0.0;
   HalfTFit best{-kInf, 0.0, 0.0};
   for (int j = 0; j <= kGrid; ++j) {
-    grid[j] = half_t_profile(y, j * step, log_scale);
+    grid[j] = half_t_profile(y, j * step, log_scale,maxit);
     if (grid[j] > best.logLik) best = {grid[j], j * step, log_scale};
   }
   const double ratio = 0.5 * (std::sqrt(5.0) - 1.0);
@@ -427,21 +430,21 @@ inline HalfTFit best_half_t(const std::vector<double> &y) {
     double lo = std::max(0.0, (j - 1) * step);
     double hi = std::min(0.5, (j + 1) * step);
     double l = hi - ratio * (hi - lo), r = lo + ratio * (hi - lo);
-    double fl = half_t_profile(y, l, log_scale);
-    double fr = half_t_profile(y, r, log_scale);
-    for (int k = 0; k < 60; ++k) {
+    double fl = half_t_profile(y, l, log_scale,maxit);
+    double fr = half_t_profile(y, r, log_scale,maxit);
+    for (int k = 0; k < maxit && hi-lo>1e-13; ++k) {
       if (fl > fr) {
         hi = r; r = l; fr = fl;
         l = hi - ratio * (hi - lo);
-        fl = half_t_profile(y, l, log_scale);
+        fl = half_t_profile(y, l, log_scale,maxit);
       } else {
         lo = l; l = r; fl = fr;
         r = lo + ratio * (hi - lo);
-        fr = half_t_profile(y, r, log_scale);
+        fr = half_t_profile(y, r, log_scale,maxit);
       }
     }
     const double eta = 0.5 * (lo + hi);
-    const double ll = half_t_profile(y, eta, log_scale);
+    const double ll = half_t_profile(y, eta, log_scale,maxit);
     if (ll > best.logLik) best = {ll, eta, log_scale};
   }
   return best;
@@ -467,6 +470,7 @@ inline HalfTFit best_half_t(const std::vector<double> &y) {
 // the face (snorm: its sd; df-2 face: inf), nu the face df and xi
 // sqrt(b / a) (inf or 0 on the half faces).
 inline SstdResult sstd_mle_impl(span x, double tol, int maxit, bool standardized) {
+  maxit = static_cast<int>(solver_budget(maxit));
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   constexpr double kInf = sstd_detail::kInf;
   const std::size_t n = x.size();
@@ -590,7 +594,7 @@ inline SstdResult sstd_mle_impl(span x, double tol, int maxit, bool standardized
     const double endpoint = side == 0 ? z.front() : z.back();
     std::vector<double> y;
     for (double v : z) y.push_back(std::abs(v - endpoint));
-    const auto half = sstd_detail::best_half_t(y);
+    const auto half = sstd_detail::best_half_t(y,maxit);
     const double ll = half.logLik - dn * log_sd;
     if (half.eta > 0.0 && ll > face.logLik + tie) {
       face = {side == 0 ? x_min : x_max, sd_x * std::exp(half.log_scale),
@@ -667,6 +671,7 @@ inline SstdResult sstd_mle(span x, double tol, int maxit,
     double fixed_sd=std::numeric_limits<double>::quiet_NaN(),
     double fixed_nu=std::numeric_limits<double>::quiet_NaN(),
     double fixed_xi=std::numeric_limits<double>::quiet_NaN()) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const double nan=std::numeric_limits<double>::quiet_NaN();
   const double inf=std::numeric_limits<double>::infinity();
   const bool hm=!std::isnan(fixed_mean), hs=!std::isnan(fixed_sd);

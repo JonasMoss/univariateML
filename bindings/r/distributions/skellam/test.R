@@ -150,3 +150,12 @@ test_that("Skellam joint fit dominates a profile grid and its faces", {
     expect_gte(as.numeric(logLik(fit)) + 1e-8 * length(x), max(values))
   }
 })
+
+test_that("Skellam tail-cover exhaustion preserves its witness", {
+  err <- tryCatch(mlskellam(c(-1e9,0,1e9),iterlim=1),error=identity)
+  expect_s3_class(err,"univariateML_budget")
+  expect_equal(err$kind,"budget")
+  expect_true(is.finite(err$loglik_lower))
+  expect_equal(err$loglik_upper,Inf)
+  expect_match(conditionMessage(err),"Raising iterlim may resolve")
+})

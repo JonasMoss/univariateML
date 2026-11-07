@@ -1,0 +1,4 @@
+100 budget Beta-binomial free-size search could not exclude the tail within its work budget. Raising iterlim may resolve this stop. 0.10561031399999998
+200 budget Beta-binomial free-size search could not exclude the tail within its work budget. Raising iterlim may resolve this stop. 0.370404858
+500 ok -1129.5877962989728 0.21474678800000005
+1000 ok -1129.5877962989728 0.2164989780000001

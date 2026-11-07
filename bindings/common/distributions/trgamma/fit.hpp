@@ -33,6 +33,7 @@ inline FitResult fit_trgamma(cppunivariate::span x, Held shape1_arg = {}, Held s
     return fail("`shape1` and `shape2` must be positive finite numbers when supplied.");
   const cppunivariate::span xs = x;
   auto res = scale.supplied ? cppunivariate::trgamma_mle_fixed_scale(xs,scale.value,a,b,reltol,iterlim) : cppunivariate::trgamma_mle(xs, reltol, iterlim, a, b);
+  if(res.stop_detail.budget_exhausted)return classify(fail("Constrained likelihood search failed to converge. Raising iterlim may resolve this stop."),res.stop_detail,"budget",{"shape1","shape2","scale"});
   if (res.status == cppunivariate::TrGammaStatus::InvalidData)
     return (x.size()>=2 && std::isfinite(x[0]) && !scale.supplied && (std::isnan(a)||std::isnan(b)) && reltol>0 && std::isfinite(reltol) && iterlim>0 && x[0]>0 && std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];})) ? classify(fail("trgamma requires at least two distinct positive finite observations, "
                "positive `reltol` and positive `iterlim`; constant samples can have unbounded likelihood."),{},"nomle",{}) : fail("trgamma requires at least two distinct positive finite observations, "

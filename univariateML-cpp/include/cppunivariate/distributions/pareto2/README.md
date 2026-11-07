@@ -33,7 +33,7 @@ r:
   control:
     min: Known finite lower endpoint.
     reltol: Delegate fitting tolerance.
-    iterlim: Maximum delegate iterations.
+    iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations."
     shape: Known positive finite coefficient; NULL estimates it.
     scale: Known positive finite coefficient; NULL estimates it.
 log_density: log((1/scale)) + log(shape) - (shape + 1)*log(1 + (1/scale)*(x-min))

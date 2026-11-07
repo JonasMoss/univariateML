@@ -34,7 +34,7 @@ r:
     shape1: Known positive finite coefficient; NULL estimates it.
     abstol: Absolute Newton step tolerance in `log(shape2)` when scale is fixed.
     gradtol: Positive delegate tolerance; the all-free certificate uses deterministic enclosure widths.
-    iterlim: Maximum delegate proposal iterations; the all-free certificate has a separate 4096-profile budget.
+    iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations."
     shape10: Optional positive starting shape1; `NULL` uses automatic starts.
     shape20: Optional positive starting shape2; `NULL` uses automatic starts.
     scale0: Optional positive starting scale; `NULL` uses automatic starts.
@@ -226,7 +226,7 @@ with the practical floating-point margins and libm assumptions in the
 It is not an outward-rounded interval guarantee. Reciprocal or excess
 observations must be representable in binary64; nonfinite transformed
 coefficients or likelihoods cannot become successful fits. Ties (including
-sign-uncertain seams), the 4096-profile budget and arithmetic failures have
+sign-uncertain seams), the `128 * min(iterlim, 100000)` profile budget and arithmetic failures have
 separate diagnostics and never return unchecked estimates. Starting controls
 cannot bypass certification. Held power inherits the Lomax certificate; held scale with both shapes free inherits the strict-concavity scalar certificate.
 The general joint uniqueness theorem remains open; the certificate proves

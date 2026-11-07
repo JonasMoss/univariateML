@@ -41,7 +41,7 @@ r:
     b: Optional held b; `NULL` estimates it.
     c: Optional held c; `NULL` estimates it.
     reltol: Absolute tolerance on the dimensionless concave endpoint Newton step.
-    iterlim: Maximum iterations per endpoint solve.
+    iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
 log_density: log(2) - log(b-a) + Piecewise((log((x-a)/(c-a)), x < c), (log((b-x)/(b-c)), x > c), (0, True))
 holds: []
 limits:

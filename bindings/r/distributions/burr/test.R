@@ -224,7 +224,7 @@ test_that("burr detects constant off-scale collapse only with both shapes free",
 })
 
 test_that("Burr global certificate stops preserve their diagnostics", {
-  expect_error(mlburr(exp(seq(-1e-6,1e-6,length.out=20))), "certificate budget exhausted; no verified MLE")
+  expect_error(mlburr(exp(seq(-1e-6,1e-6,length.out=20))), "certificate unresolved.*no verified MLE")
   expect_error(mlburr(c(.2,.5,1,2,4),iterlim=2), "certificate numerical failure.*no verified MLE")
   # Stored binary64 proxy: its enclosed seam slope contains zero. This is
   # a guarded stop, not an assertion of exact zero slope or a Weibull fit.
@@ -248,8 +248,8 @@ test_that("burr sign-uncertain-seam exposes structured tie diagnostics", {
   expect_true(is.finite(e$loglik_lower))
 })
 
-test_that("burr nearly-constant exposes structured budget diagnostics", {
-  e <- tryCatch(mlburr(c(0.99999900000050002,0.99999910526355817,0.99999921052662744,0.9999993157897078,0.99999942105279915,0.99999952631590161,0.99999963157901528,0.99999973684213994,0.99999984210527559,0.99999994736842246,1.0000000526315804,1.0000001578947493,1.0000002631579294,1.0000003684211205,1.0000004736843227,1.0000005789475359,1.0000006842107605,1.000000789473996,1.0000008947372423,1.0000010000005)),univariateML_budget=identity)
+test_that("burr nearly-constant exposes structured tie diagnostics", {
+  e <- tryCatch(mlburr(c(0.99999900000050002,0.99999910526355817,0.99999921052662744,0.9999993157897078,0.99999942105279915,0.99999952631590161,0.99999963157901528,0.99999973684213994,0.99999984210527559,0.99999994736842246,1.0000000526315804,1.0000001578947493,1.0000002631579294,1.0000003684211205,1.0000004736843227,1.0000005789475359,1.0000006842107605,1.000000789473996,1.0000008947372423,1.0000010000005)),univariateML_tie=identity)
   expect_s3_class(e,"univariateML_stop")
   expect_true(nrow(e$candidates)>=2L)
   expect_true(all(e$candidates$loglik_lower<=e$candidates$loglik_upper))
@@ -277,10 +277,9 @@ test_that("held-scale Burr certifies finite fits and refuses exhausted budgets",
   x <- c(.1,.2,.4,.8)
   a <- mlburr(x,scale=1)
   expect_true(all(is.finite(a)))
-  e <- tryCatch(mlburr(x,scale=1,iterlim=1),univariateML_budget=identity)
-  expect_s3_class(e,"univariateML_budget")
-  expect_true(is.finite(e$loglik_lower))
-  expect_true(nrow(e$candidates)>=1L)
+  e <- mlburr(x,scale=1,iterlim=1)
+  expect_s3_class(e,"univariateML")
+  expect_equal(as.numeric(e),as.numeric(a),tolerance=1e-6)
   p <- tryCatch(mlburr(c(1,1,2,4),scale=1),univariateML_limit=identity)
   expect_equal(p$estimates,c(a=4/log(8),b=1),tolerance=1e-12)
   expect_equal(p$limit_loglik,4*log(4/log(8))-4-log(8)-2*log(2),tolerance=1e-12)

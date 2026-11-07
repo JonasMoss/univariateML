@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../gb2/mle.hpp"
 #include <vector>
 #include <cmath>
@@ -6,6 +7,7 @@ namespace cppunivariate {
 struct FparetoResult { double shape1,shape2,shape3,scale,min,logLik; int iterations; Gb2Status status; StopDetail stop_detail{}; };
 
 inline FparetoResult fpareto_mle(span x, double min, double tol, int maxit, double shape1=std::numeric_limits<double>::quiet_NaN(), double shape2=std::numeric_limits<double>::quiet_NaN(), double shape3=std::numeric_limits<double>::quiet_NaN(), double scale=std::numeric_limits<double>::quiet_NaN()) {
+  maxit = static_cast<int>(solver_budget(maxit));
   std::vector<double> y(x.size());
   for (std::size_t i=0;i<x.size();++i) y[i]=(x[i]-min);
   bool valid=tol>0 && std::isfinite(tol) && maxit>0 && std::isfinite(min);
@@ -31,6 +33,10 @@ inline FparetoResult fpareto_mle(span x, double min, double tol, int maxit, doub
   auto r=gb2_mle(span{y.data(),y.size()},tol,maxit,shape1,shape2,shape3,scale);
   auto detail=r.stop_detail;
   for(auto& c:detail.candidates)if(c.model==StopModel::None && c.coef.size()==4)c.coef.push_back(min);
+  for(auto& c:detail.candidates)if(c.model==StopModel::Trgamma || c.model==StopModel::InvTrgamma) {
+    c.model=c.model==StopModel::Trgamma?StopModel::ShiftedTrgamma:StopModel::ShiftedInvTrgamma;
+    c.coef.push_back(min);
+  }
   return {r.shape1,r.shape2,r.shape3,r.scale,min,r.logLik,r.iterations,r.status,detail};
 }
 }

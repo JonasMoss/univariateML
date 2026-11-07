@@ -15,6 +15,7 @@
 // rejects a NaN step. Callers validate starts and the returned score/domain.
 
 #pragma once
+#include "work_budget.hpp"
 
 #include <cmath>
 
@@ -30,6 +31,7 @@ struct NewtonResult {
 template <typename FOverDf>
 inline NewtonResult newton_raphson_1d(double param0, FOverDf f_over_df,
                                       double reltol, int maxit) {
+  maxit = static_cast<int>(solver_budget(maxit));
   double param = param0;
   int i = 1;
   for (; i <= maxit; ++i) {
@@ -48,6 +50,7 @@ inline NewtonResult newton_raphson_1d(double param0, FOverDf f_over_df,
 template <typename FOverDf>
 inline NewtonResult newton_raphson_1d_abs(double param0, FOverDf f_over_df,
                                           double tol, int maxit) {
+  maxit = static_cast<int>(solver_budget(maxit));
   double param = param0;
   int i = 1;
   for (; i <= maxit; ++i) {

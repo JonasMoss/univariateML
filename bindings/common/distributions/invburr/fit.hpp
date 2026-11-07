@@ -26,7 +26,7 @@ inline FitResult fit_invburr(cppunivariate::span x, Held shape1_arg = {}, Held s
  if (res.status == cppunivariate::InvBurrStatus::InvWeibullBoundary) return stop_failure(fail("The invburr likelihood is maximised at a limit. Use `mlinvweibull` to fit this model."),res.stop_detail,"limit",{"shape1","shape2","scale"},"invweibull");
  if (res.status == cppunivariate::InvBurrStatus::PowerBoundary) return stop_failure(fail("The invburr likelihood is maximised at a limit. Use `mlpower` to fit this model."),res.stop_detail,"limit",{"shape1","shape2","scale"},"power");
  if (res.status == cppunivariate::InvBurrStatus::CertificateTie) return stop_failure(fail("invburr certificate unresolved at a tie or sign-uncertain seam; no verified MLE."),res.stop_detail,"tie",{"shape1","shape2","scale"},"");
- if (res.status == cppunivariate::InvBurrStatus::CertificateBudget) return stop_failure(fail("invburr certificate budget exhausted; no verified MLE."),res.stop_detail,"budget",{"shape1","shape2","scale"},"");
+ if (res.status == cppunivariate::InvBurrStatus::CertificateBudget) return stop_failure(fail("invburr certificate budget exhausted; no verified MLE. Raising iterlim may resolve this stop."),res.stop_detail,"budget",{"shape1","shape2","scale"},"");
  if (res.status == cppunivariate::InvBurrStatus::NumericalFailure) return stop_failure(fail("invburr certificate numerical failure; no verified MLE."),res.stop_detail,"numerical",{"shape1","shape2","scale"},"");
  if (res.status == cppunivariate::InvBurrStatus::IterationFailure) return stop_failure(fail("Constrained likelihood search failed to converge."),res.stop_detail,"unresolved",{"shape1","shape2","scale"},"");
  if (res.status == cppunivariate::InvBurrStatus::InvalidInit ||

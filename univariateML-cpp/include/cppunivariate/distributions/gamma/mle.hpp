@@ -19,6 +19,7 @@
 // Stirling form. Constant data have s = 0: no MLE (point-mass limit).
 
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "cppunivariate/core/constants.hpp"
 #include "../../core/precision.hpp"
 
@@ -93,6 +94,7 @@ inline double robust_s(span x, double mean_hat) {
 }  // namespace gamma_detail
 
 inline GammaResult gamma_mle(span x, double tol, int maxit) {
+  maxit = static_cast<int>(solver_budget(maxit));
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
   if (n == 0) return {0.0, 0.0, kNaN, 0, GammaStatus::InvalidInput};
@@ -140,7 +142,7 @@ inline GammaResult gamma_mle(span x, double tol, int maxit) {
   }
 
   double lo = 0.25 / s, hi = 2.0 / s;
-  for (int i = 0; i < std::min(maxit, 200) && hi / lo - 1.0 > 4.0 * std::numeric_limits<double>::epsilon(); ++i) {
+  for (int i = 0; i < maxit && hi / lo - 1.0 > 4.0 * std::numeric_limits<double>::epsilon(); ++i) {
     const double mid = std::sqrt(lo) * std::sqrt(hi);
     if (gamma_detail::log_minus_digamma(mid) > s) lo = mid; else hi = mid;
     ++iterations;
@@ -167,6 +169,7 @@ inline GammaResult gamma_mle(span x, double tol, int maxit) {
 // is computed internally (1/scale) for the digamma equation and the
 // log-likelihood; a held scale is returned verbatim, never round-tripped.
 inline GammaResult gamma_mle(span x, double tol, int maxit, double shape, double scale) {
+  maxit = static_cast<int>(solver_budget(maxit));
   if (std::isnan(shape) && std::isnan(scale)) return gamma_mle(x,tol,maxit);
   const double nan=std::numeric_limits<double>::quiet_NaN();
   if (x.size()==0 || !(tol>0 && std::isfinite(tol)) || maxit<=0 || (!std::isnan(shape) && !(shape>0 && std::isfinite(shape))) ||

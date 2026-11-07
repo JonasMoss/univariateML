@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
 #include "../../core/face_compare.hpp"
 #include "dpqr.hpp"
@@ -73,6 +74,7 @@ inline std::vector<double> pack(const Cost& c,const double* v) {
 }
 struct Candidate {double v[4]={0,1,0,2};double ll=-INFINITY;bool ok=false;int iterations=0;};
 inline Candidate optimize(Cost c,const double* start,double tol,int maxit) {
+  maxit = static_cast<int>(solver_budget(maxit));
  Candidate out;auto p=pack(c,start);
  if(p.empty()){double q[1]={0};out.ll=-c(q);for(int i=0;i<4;++i)out.v[i]=c.fixed[i];out.ok=std::isfinite(out.ll);return out;}
  BfgsControl ctl;ctl.grad_tol=std::min(tol,1e-5);ctl.maxit=maxit;ctl.reltol=1e-14;ctl.step_tol=1e-10;
@@ -84,6 +86,7 @@ inline Candidate optimize(Cost c,const double* start,double tol,int maxit) {
 }
 }
 inline StResult st_mle(span data,double tol=1e-6,int maxit=200,double xi=special::kNaN,double omega=special::kNaN,double alpha=special::kNaN,double nu=special::kNaN) {
+  maxit = static_cast<int>(solver_budget(maxit));
  const double nan=special::kNaN;StResult bad{nan,nan,nan,nan,nan,0,StStatus::InvalidInput};
  if(data.empty()||!(tol>0)||maxit<=0||(!std::isnan(xi)&&!std::isfinite(xi))||(!std::isnan(omega)&&(!std::isfinite(omega)||omega<=0))||(!std::isnan(alpha)&&!std::isfinite(alpha))||(!std::isnan(nu)&&(!std::isfinite(nu)||nu<=0)))return bad;
  std::vector<double> sorted(data.begin(),data.end());for(double v:sorted)if(!std::isfinite(v))return bad;std::sort(sorted.begin(),sorted.end());
@@ -167,7 +170,7 @@ inline StResult st_mle(span data,double tol=1e-6,int maxit=200,double xi=special
    for(std::size_t j=1;j+1<grid.size();++j)if(vals[j]>=vals[j-1]&&vals[j]>=vals[j+1]){
     double l=grid[j-1],r=grid[j+1],a=r-(r-l)*.6180339887498949,b=l+(r-l)*.6180339887498949;
     double fa=value(std::exp(a)),fb=value(std::exp(b));
-    for(int k=0;k<80&&r-l>1e-9;++k){if(fa>fb){r=b;b=a;fb=fa;a=r-(r-l)*.6180339887498949;fa=value(std::exp(a));}else{l=a;a=b;fa=fb;b=l+(r-l)*.6180339887498949;fb=value(std::exp(b));}}
+    for(int k=0;k<maxit&&r-l>1e-9;++k){if(fa>fb){r=b;b=a;fb=fa;a=r-(r-l)*.6180339887498949;fa=value(std::exp(a));}else{l=a;a=b;fa=fb;b=l+(r-l)*.6180339887498949;fb=value(std::exp(b));}}
     if(r-l>1e-9){failed=true;plain_failure=true;}
    }
    auto h=hnorm_mle(sx,mu,fw);

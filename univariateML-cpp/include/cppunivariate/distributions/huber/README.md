@@ -36,7 +36,7 @@ r:
     mu: Optional held mu; NULL estimates it.
     epsilon: Positive finite tuning constant (required, e.g. 1.345), or NULL to estimate it.
     gradtol: Tolerance on the mean standardized location and scale scores.
-    iterlim: Maximum Newton iterations (and profile iterations if fallback is needed).
+    iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
 log_density: -log(sigma)-log(sqrt(2*pi)*erf(epsilon/sqrt(2))+2*exp(-epsilon**2/2)/epsilon)-Piecewise(((x-mu)**2/(2*sigma**2), Abs((x-mu)/sigma)<=epsilon), (epsilon*Abs((x-mu)/sigma)-epsilon**2/2, True))
 limits:
   - name: scale collapse
@@ -156,3 +156,5 @@ log-shape score gate $|2n\exp(-c^2/2)/(cZ(c))-c\sum_{|z_i|>c}(|z_i|-c)|\le10^{-3
 where $z_i=(x_i-\mu)/\sigma$. A nonfinite or larger residual returns
 `IterationFailure`. This detects a missed finite peak; stationarity alone
 is not a global-optimality proof.
+
+The accelerated free-epsilon fit retains exact-prefix recovery after a cold Newton failure. Its former observation-count ceiling, `max(12, 16000000/n)` steps, no longer shortens the cold solve: that solve uses the caller’s iteration allowance before recovery. The earlier observation-count threshold still selects the recovery path, preserving the direct-solve path for smaller workloads. It no longer truncates a solver loop; longer cold trajectories can therefore cost more near rounding stalls.

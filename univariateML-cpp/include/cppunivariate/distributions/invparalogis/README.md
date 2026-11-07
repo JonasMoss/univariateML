@@ -27,7 +27,7 @@ r:
     shape: Known positive finite coefficient; NULL estimates it.
     shape0: Optional positive finite starting value; NULL uses the automatic start.
     gradtol: Tolerance for the reciprocal paralogistic numerical proposal; success additionally requires the global certificate.
-    iterlim: Maximum proposal iterations; the subsequent global certificate has a separate budget of 32768 boxes.
+    iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations."
 limits:
   - name: unbounded likelihood
     firmness: proved
@@ -149,7 +149,7 @@ comparison transfer. Candidate scale coordinates and likelihood bounds in
 structured stops are transformed in the same way. Held values remain exact.
 
 The parent certifier uses analytic tail bounds, a verified local root box
-and exhaustive exclusion of competing maxima, with a budget of 32768 boxes.
+and exhaustive exclusion of competing maxima, with a budget of `128 * min(iterlim, 100000)` boxes.
 It certifies in exact arithmetic conditional on the computed comparisons,
 using the documented practical 64-epsilon floating-point margin. Its small
 root box bounds relative shape error by $10^{-8}$ and the mapped scale

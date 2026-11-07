@@ -200,12 +200,14 @@ TEST_CASE("nbinom certificate: Poisson stop retains the limit fit") {
   CHECK(r.stop_detail.limit_loglik==doctest::Approx(ll));
 }
 
-TEST_CASE("nbinom certificate: budget never returns unchecked coefficients") {
+TEST_CASE("nbinom certificate: one solver iteration still permits 128 certificate evaluations") {
   const std::vector<int> x{0,0,1,3,6};
   const auto r=cppunivariate::nbinom_mle(as_ispan(x),1e-12,1);
-  CHECK(r.status==cppunivariate::NbinomStatus::PrecisionFailure);
-  CHECK_FALSE(std::isfinite(r.size));
-  CHECK(r.certificate_failure==cppunivariate::NbinomCertificateFailure::Budget);
+  REQUIRE(r.status==cppunivariate::NbinomStatus::Ok);
+  const auto reference=cppunivariate::nbinom_mle(as_ispan(x),1e-12,200);
+  CHECK(r.size==doctest::Approx(reference.size).epsilon(1e-6));
+  CHECK(r.prob==doctest::Approx(reference.prob).epsilon(1e-6));
+  CHECK(r.iterations<=128);
 }
 
 TEST_CASE("nbinom certificate: large-count expansion agrees with integer recurrence") {

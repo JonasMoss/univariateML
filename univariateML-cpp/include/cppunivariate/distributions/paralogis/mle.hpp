@@ -21,6 +21,7 @@
 //               alpha0 = max(1.5, 2 / sd(log(x / theta0))).
 
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../burr/mle.hpp"
 #include "certificate.hpp"
 
@@ -139,6 +140,7 @@ struct ParalogisCost {
 inline ParalogisResult paralogis_shape_proposal(
     span x, double scale, double tol = 1e-10, int maxit = 100,
     double shape0 = 1.0) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const double nan = std::numeric_limits<double>::quiet_NaN();
   if (x.size() == 0 || !(scale > 0) || !std::isfinite(scale))
     return {nan,scale,nan,0,ParalogisStatus::InvalidStart};
@@ -162,10 +164,11 @@ inline ParalogisResult paralogis_shape_proposal(
   };
   double lo = 0, hi = 1, score, hessian;
   evaluate(hi,score,hessian);
-  while (score > 0 && hi < 1e150) {
+  for(std::int64_t bracket_pass=0; bracket_pass<solver_budget(maxit) && (score > 0 && hi < 1e150); ++bracket_pass) {
     hi *= 2;
     evaluate(hi,score,hessian);
   }
+  if(!(score<=0))return {NAN,scale,NAN,0,ParalogisStatus::BfgsFailure};
   double a = shape0 > lo && shape0 < hi ? shape0 : hi/2;
   for (int iter=1; iter<=maxit; ++iter) {
     const double ll = evaluate(a,score,hessian);
@@ -184,6 +187,7 @@ inline ParalogisResult paralogis_shape_proposal(
 inline ParalogisResult paralogis_mle_impl(
     span x, double tol, int maxit,
     double shape0, bool standardized) {
+  maxit = static_cast<int>(solver_budget(maxit));
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
   if (n < 2) return {kNaN, kNaN, kNaN, 0, ParalogisStatus::InvalidStart};
@@ -258,6 +262,7 @@ inline ParalogisResult paralogis_mle_impl(
 
 inline ParalogisResult paralogis_mle(span x, double tol, int maxit,
     double shape0 = std::numeric_limits<double>::quiet_NaN()) {
+  maxit = static_cast<int>(solver_budget(maxit));
   for(double v:x) if(!(v>0)||!std::isfinite(v))
     return {NAN,NAN,NAN,0,ParalogisStatus::InvalidStart};
   if(!x.empty() && std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];})) {
@@ -268,15 +273,16 @@ inline ParalogisResult paralogis_mle(span x, double tol, int maxit,
   auto r = paralogis_mle_impl(x, tol, maxit, shape0, false);
   r.stop_detail=paralogis_cert_detail::witness(x,r.shape,r.scale);
   if (r.status != ParalogisStatus::Ok) return r;
-  const auto certified = paralogis_cert_detail::certify(x,r.shape,r.scale,false);
-  if (!certified.ok) { r.status=certified.budget?ParalogisStatus::CertificateBudget:ParalogisStatus::NumericalFailure; return r; }
+  const auto certified = paralogis_cert_detail::certify(x,r.shape,r.scale,false,certificate_budget(maxit),maxit);
+  if (!certified.ok) { r.status=certified.budget?ParalogisStatus::CertificateBudget:ParalogisStatus::NumericalFailure;r.stop_detail.budget_exhausted=certified.budget; return r; }
   r.shape=certified.shape; r.scale=certified.scale; r.logLik=certified.logLik;
   return r;
 }
 
 // Rescue proposals only: a dyadic scan can miss roots. Global acceptance
 // still requires the complete compact-domain certificate below.
-inline double paralogis_competing_shape(span x,double scale,double initial) {
+inline double paralogis_competing_shape(span x,double scale,double initial,int maxit=100) {
+  maxit = static_cast<int>(solver_budget(maxit));
   std::vector<double> y;
   double distance=0;
   for(double v:x) {y.push_back(std::log(v)-std::log(scale));
@@ -295,14 +301,14 @@ inline double paralogis_competing_shape(span x,double scale,double initial) {
   double score=0,best=evaluate(initial,score),winner=initial;
   double left=std::min(1.,initial),gl=0;
   evaluate(left,gl);
-  for(int i=0;i<1024;++i) {
+  for(int i=0;i<maxit;++i) {
     const double right=2*left;
     if(!std::isfinite(right))break;
     double gr=0;const double value=evaluate(right,gr);
     if(std::isfinite(value)&&value>best){best=value;winner=right;}
     if(gl>0&&gr<0) {
       double lo=left,hi=right;
-      for(int j=0;j<100;++j) {
+      for(int j=0;j<maxit;++j) {
         const double mid=lo+(hi-lo)/2;
         if(!(mid>lo&&mid<hi))break;
         double g=0;evaluate(mid,g);if(g>0)lo=mid;else hi=mid;
@@ -323,16 +329,17 @@ inline double paralogis_competing_shape(span x,double scale,double initial) {
 inline ParalogisResult paralogis_mle_fixed_scale(
     span x, double scale, double tol=1e-10, int maxit=100,
     double shape0=1.0) {
+  maxit = static_cast<int>(solver_budget(maxit));
   auto r=paralogis_shape_proposal(x,scale,tol,maxit,shape0);
   r.stop_detail=paralogis_cert_detail::witness(x,r.shape,r.scale);
   if(r.status!=ParalogisStatus::Ok) return r;
-  auto certified=paralogis_cert_detail::certify(x,r.shape,scale,true);
+  auto certified=paralogis_cert_detail::certify(x,r.shape,scale,true,certificate_budget(maxit),maxit);
   if(!certified.ok) {
-    const double alternative=paralogis_competing_shape(x,scale,r.shape);
+    const double alternative=paralogis_competing_shape(x,scale,r.shape,maxit);
     if(alternative!=r.shape)
-      certified=paralogis_cert_detail::certify(x,alternative,scale,true);
+      certified=paralogis_cert_detail::certify(x,alternative,scale,true,certificate_budget(maxit),maxit);
   }
-  if(!certified.ok) {r.status=certified.budget?ParalogisStatus::CertificateBudget:ParalogisStatus::NumericalFailure;return r;}
+  if(!certified.ok) {r.status=certified.budget?ParalogisStatus::CertificateBudget:ParalogisStatus::NumericalFailure;r.stop_detail.budget_exhausted=certified.budget;return r;}
   r.shape=certified.shape;r.logLik=certified.logLik;
   return r;
 }
@@ -342,6 +349,7 @@ inline ParalogisResult paralogis_mle_fixed_scale(
 namespace cppunivariate {
 
 inline ParalogisResult paralogis_mle_holds(span x,double shape,double scale=std::numeric_limits<double>::quiet_NaN(), double tol=1e-9, int maxit=1000){
+  maxit = static_cast<int>(solver_budget(maxit));
  if(std::isnan(shape)) return std::isnan(scale)?paralogis_mle(x,tol,maxit):paralogis_mle_fixed_scale(x,scale,tol,maxit);
  auto r=burr_mle_holds(x,shape,shape,scale,tol,maxit);
  return {shape,r.scale,r.logLik,r.iterations,r.status==BurrStatus::Ok?ParalogisStatus::Ok:r.status==BurrStatus::IterationFailure?ParalogisStatus::BfgsFailure:ParalogisStatus::InvalidStart};

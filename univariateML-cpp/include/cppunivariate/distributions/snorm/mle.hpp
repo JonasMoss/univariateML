@@ -2,6 +2,7 @@
 // standardised (mean, sd, xi) coordinates.
 
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
 #include "../../core/face_compare.hpp"
 #include "cppunivariate/core/constants.hpp"
@@ -34,34 +35,38 @@ struct SnormResult {
 namespace snorm_detail {
 // Golden-section minimization on a finite bracket; caller establishes tail bounds.
 template <typename Objective>
-inline double minimize(Objective objective, double lo, double hi) {
+inline double minimize(Objective objective, double lo, double hi,int maxit=200) {
+  maxit = static_cast<int>(solver_budget(maxit));
   constexpr double ratio = 0.6180339887498948482;
   double l = hi-ratio*(hi-lo), r = lo+ratio*(hi-lo);
   double fl = objective(l), fr = objective(r);
-  for (int it=0; it<120; ++it) {
+  for (int it=0; it<solver_budget(maxit); ++it) {
     if (hi-lo <= 1e-11*(1+std::abs(l)+std::abs(r))) break;
     if (fl < fr) { hi=r; r=l; fr=fl; l=hi-ratio*(hi-lo); fl=objective(l); }
     else { lo=l; l=r; fl=fr; r=lo+ratio*(hi-lo); fr=objective(r); }
   }
-  return fl < fr ? l : r;
+  return hi-lo<=1e-11*(1+std::abs(l)+std::abs(r))?(fl < fr ? l : r):NAN;
 }
 // Scan before refinement: unlike a single golden search, retains competing modes.
 template <typename Objective>
-inline double scan(Objective objective, double lo, double hi, int cells=160) {
+inline double scan(Objective objective, double lo, double hi, int cells=160,int maxit=200) {
+  maxit = static_cast<int>(solver_budget(maxit));
   std::vector<double> values;
   for (int i=0; i<=cells; ++i) values.push_back(objective(lo+(hi-lo)*i/cells));
   int best=0;
   for (int i=1; i<=cells; ++i) if(values[i]<values[best]) best=i;
   double arg=lo+(hi-lo)*best/cells, value=values[best];
   for (int i=1; i<cells; ++i) if(values[i]<=values[i-1] && values[i]<=values[i+1]) {
-    const double t=minimize(objective,lo+(hi-lo)*(i-1)/cells,lo+(hi-lo)*(i+1)/cells);
+    const double t=minimize(objective,lo+(hi-lo)*(i-1)/cells,lo+(hi-lo)*(i+1)/cells,maxit);
+    if(!std::isfinite(t))return NAN;
     const double f=objective(t);
     if(f<value) { value=f; arg=t; }
   }
   return arg;
 }
 
-inline SnormResult held_fit(span x, double mu, double sd, double xi) {
+inline SnormResult held_fit(span x, double mu, double sd, double xi,int maxit=200) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const double nan=std::numeric_limits<double>::quiet_NaN();
   const double inf=std::numeric_limits<double>::infinity();
   SnormResult out{nan,nan,nan,nan,0,SnormStatus::InvalidStart};
@@ -108,15 +113,15 @@ inline SnormResult held_fit(span x, double mu, double sd, double xi) {
       const double sigma=hs ? sd/unit : std::exp(ls);
       auto location=[&](double mean) { return cost(mean,sigma); };
       // Mode of a location-only log-concave likelihood lies between data extremes.
-      const double mean=hm ? 0 : minimize(location,yl+sigma*shift/scale,yh+sigma*shift/scale);
+      const double mean=hm ? 0 : minimize(location,yl+sigma*shift/scale,yh+sigma*shift/scale,maxit);
       best_mu=mean; best_sd=sigma;
       return cost(mean,sigma);
     };
     if(hs) return at_scale(0);
-    const double ls=minimize(at_scale,-32,32);
+    const double ls=minimize(at_scale,-32,32,maxit);
     return at_scale(ls);
   };
-  const double lx=hx ? std::log(xi) : scan(profile,-18,18,180);
+  const double lx=hx ? std::log(xi) : scan(profile,-18,18,180,maxit);
   const double neg=profile(lx);
   out={hm ? mu : origin+unit*best_mu,hs ? sd : unit*best_sd,
        hx ? xi : std::exp(lx),-neg-n*std::log(unit),0,SnormStatus::Ok};
@@ -169,12 +174,13 @@ inline CPPUNIV_EXTENDED_REAL evaluate(const std::vector<CPPUNIV_EXTENDED_REAL>& 
   for (std::size_t i = p.size(); i-- > 0;) y = y * t + p[i];
   return y;
 }
-inline std::vector<CPPUNIV_EXTENDED_REAL> roots(std::vector<CPPUNIV_EXTENDED_REAL> p) {
+inline std::vector<CPPUNIV_EXTENDED_REAL> roots(std::vector<CPPUNIV_EXTENDED_REAL> p,int maxit,bool& resolved) {
+  maxit = static_cast<int>(solver_budget(maxit));
   while (p.size() > 1 && p.back() == 0) p.pop_back();
   if (p.size() <= 1) return {};
   std::vector<CPPUNIV_EXTENDED_REAL> d(p.size() - 1);
   for (std::size_t i = 1; i < p.size(); ++i) d[i-1] = i * p[i];
-  auto cuts = roots(d);
+  auto cuts = roots(d,maxit,resolved);
   cuts.push_back(0); cuts.push_back(1);
   std::sort(cuts.begin(), cuts.end());
   std::vector<CPPUNIV_EXTENDED_REAL> out = cuts;
@@ -182,12 +188,13 @@ inline std::vector<CPPUNIV_EXTENDED_REAL> roots(std::vector<CPPUNIV_EXTENDED_REA
     CPPUNIV_EXTENDED_REAL l = cuts[i-1], r = cuts[i], fl = evaluate(p, l);
     const CPPUNIV_EXTENDED_REAL fr = evaluate(p, r);
     if ((fl < 0 && fr > 0) || (fl > 0 && fr < 0)) {
-      for (int j = 0; j < 80; ++j) {
+      for (int j = 0; j < solver_budget(maxit); ++j) {
         const CPPUNIV_EXTENDED_REAL m = (l+r)/2, fm = evaluate(p, m);
         if (m == l || m == r) break;
         if ((fl < 0) == (fm < 0)) { l = m; fl = fm; }
         else r = m;
       }
+      if(r-l>1e-12*(1+std::abs(l)+std::abs(r)))resolved=false;
       out.push_back((l+r)/2);
     }
   }
@@ -204,12 +211,13 @@ inline std::vector<CPPUNIV_EXTENDED_REAL> multiply(const std::vector<CPPUNIV_EXT
 }
 } // namespace snorm_detail
 
-inline SnormResult snorm_mle(span x, double /*tol*/, int /*maxit*/,
+inline SnormResult snorm_mle(span x, double /*tol*/, int maxit,
     double fixed_mean=std::numeric_limits<double>::quiet_NaN(),
     double fixed_sd=std::numeric_limits<double>::quiet_NaN(),
     double fixed_xi=std::numeric_limits<double>::quiet_NaN()) {
+  maxit = static_cast<int>(solver_budget(maxit));
   if(!std::isnan(fixed_mean) || !std::isnan(fixed_sd) || !std::isnan(fixed_xi))
-    return snorm_detail::held_fit(x,fixed_mean,fixed_sd,fixed_xi);
+    return snorm_detail::held_fit(x,fixed_mean,fixed_sd,fixed_xi,maxit);
   constexpr double nan = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
   if (n == 0) return {nan,nan,nan,nan,0,SnormStatus::InvalidStart};
@@ -251,7 +259,10 @@ inline SnormResult snorm_mle(span x, double /*tol*/, int /*maxit*/,
     auto p=snorm_detail::multiply(snorm_detail::multiply(snorm_detail::multiply(u,u),u),snorm_detail::multiply(B,B));
     const auto q=snorm_detail::multiply(snorm_detail::multiply(snorm_detail::multiply(v,v),v),snorm_detail::multiply(A,A));
     for (std::size_t j=0; j<p.size(); ++j) p[j]-=q[j];
-    for (CPPUNIV_EXTENDED_REAL t : snorm_detail::roots(p)) consider(l+h*t,k);
+    bool resolved=true;
+    const auto roots=snorm_detail::roots(p,maxit,resolved);
+    if(!resolved)return {nan,nan,nan,nan,maxit,SnormStatus::BfgsFailure};
+    for (CPPUNIV_EXTENDED_REAL t : roots) consider(l+h*t,k);
   }
   const double ll=static_cast<double>(n*(CPPUNIV_EXTENDED_LITERAL(0.5,0.5L)*std::log(CPPUNIV_EXTENDED_LITERAL(2.0,2.0L)/cppunivariate::pi)-std::log(scale)
                      -CPPUNIV_EXTENDED_LITERAL(1.5,1.5L)*std::log(best)+CPPUNIV_EXTENDED_LITERAL(0.5,0.5L)*std::log(static_cast<CPPUNIV_EXTENDED_REAL>(n))-CPPUNIV_EXTENDED_LITERAL(0.5,0.5L)));

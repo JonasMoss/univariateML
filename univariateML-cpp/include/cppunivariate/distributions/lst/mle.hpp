@@ -1,5 +1,6 @@
 // Location-scale Student t, constrained to df >= 1.
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "certificate.hpp"
 #include "../../core/face_compare.hpp"
 #include "cppunivariate/core/constants.hpp"
@@ -70,6 +71,7 @@ struct LstCost {
 // location/scale M-step. Each update increases the observed likelihood.
 // Strict mass inequality gives a regular attained fit for df >= 1.
 inline LstResult lst_mle_fixed_df(span x, double df, double tol, int maxit) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const double nan = std::numeric_limits<double>::quiet_NaN();
   if (!std::isfinite(df) || df <= 0.0)
     return {nan,nan,df,nan,0,LstStatus::InvalidDf};
@@ -133,6 +135,7 @@ inline LstResult lst_mle_fixed_df(span x, double df, double tol, int maxit) {
 }
 
 inline LstResult lst_mle_impl(span x, double tol, int maxit) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const double nan = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
   if (n < 3) return {nan,nan,nan,nan,0,LstStatus::NoMLE};
@@ -222,6 +225,7 @@ namespace lst_detail {
 struct Maximum {double point;bool converged;};
 template <typename F>
 inline Maximum maximize(F f,const std::vector<double>& grid,double tol,int maxit) {
+  maxit = static_cast<int>(solver_budget(maxit));
   // A profile evaluation can itself perform a complete nuisance search.
   // Cache grid values without changing the nominated maxima or refinements.
   std::vector<double> values(grid.size());
@@ -247,6 +251,7 @@ inline Maximum maximize(F f,const std::vector<double>& grid,double tol,int maxit
   return {best,converged};
 }
 inline LstResult conditional(span x,double df,double mu,double sigma,double tol,int maxit) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const double nan=std::numeric_limits<double>::quiet_NaN();
   LstResult bad{nan,nan,df,nan,0,LstStatus::InvalidStart};
   if(x.empty()||!(tol>0)||maxit<1||!std::isfinite(df)||!(df>0))return bad;
@@ -280,8 +285,8 @@ inline LstResult conditional(span x,double df,double mu,double sigma,double tol,
     const double lower=std::log(std::numeric_limits<double>::denorm_min()),upper=std::log(std::numeric_limits<double>::max());
     auto score=[&](double t){double g=-static_cast<double>(y.size());for(double v:y){const double z=2*(log_distance(v,m)-t)-std::log(df);g+=std::exp(std::log1p(df)-std::max(-z,0.0)-std::log1p(std::exp(-std::abs(z))));}return g;};
     double lo=std::max(lower,log_r-350),hi=std::min(upper,log_r+2),step=32;
-    while(score(lo)<=0 && lo>lower){lo=std::max(lower,lo-step);step*=2;}
-    step=32;while(score(hi)>=0 && hi<upper){hi=std::min(upper,hi+step);step*=2;}
+    for(std::int64_t bracket_pass=0; bracket_pass<solver_budget(maxit) && (score(lo)<=0 && lo>lower); ++bracket_pass){lo=std::max(lower,lo-step);step*=2;}
+    step=32;for(std::int64_t bracket_pass=0; bracket_pass<solver_budget(maxit) && (score(hi)>=0 && hi<upper); ++bracket_pass){hi=std::min(upper,hi+step);step*=2;}
     if(!(score(lo)>0 && score(hi)<0)){bad.status=LstStatus::IterationFailure;return bad;}
     for(int it=0;it<maxit && hi-lo>1e-12;++it){const double t=lo/2+hi/2;if(score(t)>0)lo=t;else hi=t;}
     s=std::exp(lo/2+hi/2);
@@ -302,6 +307,7 @@ inline LstResult conditional(span x,double df,double mu,double sigma,double tol,
 }
 }
 inline LstResult lst_mle_impl(span x,double tol,int maxit,double mu,double sigma,double df) {
+  maxit = static_cast<int>(solver_budget(maxit));
   if(std::isnan(mu)&&std::isnan(sigma))return std::isnan(df)?lst_mle_impl(x,tol,maxit):lst_mle_fixed_df(x,df,tol,maxit);
   const double nan=std::numeric_limits<double>::quiet_NaN();
   if(!std::isnan(df)) {
@@ -332,8 +338,10 @@ inline LstResult lst_mle_impl(span x,double tol,int maxit,double mu,double sigma
   return best;
 }
 
-inline LstResult lst_mle_certified(span x,double tol,int maxit,int budget=4096) {
+inline LstResult lst_mle_certified(span x,double tol,int maxit,std::int64_t budget=-1) {
+  maxit = static_cast<int>(solver_budget(maxit));
   if(!(tol>0)||!std::isfinite(tol))return {NAN,NAN,NAN,NAN,0,LstStatus::InvalidStart};
+  if(budget<0)budget=certificate_budget(maxit);
   const auto c=t_certificate(x,1,budget,maxit,std::min(1e-6,std::max(1e-7,tol)));
   LstStatus status=LstStatus::NumericalFailure;
   switch(c.status){
@@ -351,11 +359,13 @@ inline LstResult lst_mle_certified(span x,double tol,int maxit,int budget=4096) 
   return r;
 }
 inline LstResult lst_mle(span x,double tol,int maxit) {
+  maxit = static_cast<int>(solver_budget(maxit));
   auto r=lst_mle_certified(x,tol,maxit);
   if(r.status==LstStatus::Ok && r.df==kLstDfLower) r.restricted|=16u;
   return r;
 }
 inline LstResult lst_mle(span x,double tol,int maxit,double mu,double sigma,double df) {
+  maxit = static_cast<int>(solver_budget(maxit));
   if(std::isnan(mu)&&std::isnan(sigma)&&std::isnan(df))return lst_mle(x,tol,maxit);
   auto r=lst_mle_impl(x,tol,maxit,mu,sigma,df);
   if(r.status==LstStatus::Ok && (std::isnan(df) && std::isnan(mu)) && r.df==kLstDfLower) r.restricted|=16u;

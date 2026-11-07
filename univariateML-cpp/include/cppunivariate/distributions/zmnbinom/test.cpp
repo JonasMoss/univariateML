@@ -142,6 +142,6 @@ TEST_CASE("zmnbinom: certificate details survive default and held zero share") {
  const std::vector<int>finite{0,0,1,2,5};
  const auto fail=cppunivariate::zmnbinom_mle({finite.data(),finite.size()},1e-10,1);
  CHECK(fail.status==cppunivariate::ZmnbinomStatus::IterationFailure);
- CHECK(fail.budget_exhausted);CHECK(std::isnan(fail.size));
+ CHECK_FALSE(fail.budget_exhausted);CHECK(std::isnan(fail.size));
  CHECK(fail.stop_detail.loglik_upper<0);
 }

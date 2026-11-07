@@ -40,7 +40,7 @@ r:
   sampler: rzinb
   control:
     reltol: "Requested bracket tolerance; certificates also enforce the documented floating-point accuracy bounds."
-    iterlim: "Root and global certificate budget control; an unresolved or exhausted certificate stops."
+    iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations."
     size: "Optional fixed finite nonnegative size, including fractional values; NULL estimates size."
     prob: "Optional held prob; NULL estimates it."
     pi: "Optional held pi; NULL estimates it."
@@ -278,7 +278,7 @@ Score and derivative comparisons use $4096\epsilon(1+M\epsilon)$
 times one plus the absolute terms. The signed size enclosure must have
 relative width at most $5\times10^{-8}$; ordinary bisection targets
 `min(tol, 1e-10)`. Each root gets at most `maxit` bisections, within
-an overall budget of `32 * min(maxit, 100000)` score evaluations.
+an overall budget of `128 * min(maxit, 100000)` score evaluations.
 Likelihood enclosures add the root width times $S/r_L+nt$ plus the
 fixed-size arithmetic allowance above. Unresolved peak comparisons retain
 all compared witnesses and stop. A free inflation coordinate must also
@@ -344,7 +344,7 @@ and inflation. Otherwise bounded Newton refinement supplies the proposal.
 Neither Newton convergence nor a small likelihood change accepts a fit.
 
 The joint finite and face covers each use at most
-`64 * min(iterlim, 100000)` rectangle evaluations. Newton proposals have
+`128 * min(iterlim, 100000)` rectangle evaluations. Newton proposals have
 at most 50 steps and 30 line-search trials per step. The historical proposal
 uses at most 1000 iterations and a tolerance no smaller than $10^{-12}$.
 Very weak curvature, unrepresentable coordinates, unresolved signs and

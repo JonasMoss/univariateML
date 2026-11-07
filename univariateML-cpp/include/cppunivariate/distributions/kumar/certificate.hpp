@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/work_budget.hpp"
 namespace cppunivariate {
 namespace kumar_cert_detail {
 struct Sum {
@@ -10,13 +11,21 @@ inline KumarResult kumar_mle(span x,double tol,int maxit,
     double start=std::numeric_limits<double>::quiet_NaN(),
     double fixed_a=std::numeric_limits<double>::quiet_NaN(),
     double fixed_b=std::numeric_limits<double>::quiet_NaN()) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const double nan=std::numeric_limits<double>::quiet_NaN();
+  StopDetail evidence;
   auto fail=[&](int work,KumarCertificateFailure reason=KumarCertificateFailure::Arithmetic) {
     auto out=KumarResult{nan,nan,nan,work,KumarStatus::IterationFailure};
-    out.certificate_failure=reason;return out;
+    out.stop_detail=evidence;
+    out.certificate_failure=reason;out.stop_detail.budget_exhausted=reason==KumarCertificateFailure::Budget;return out;
   };
   if(!(tol>0)||!std::isfinite(tol)||maxit<1)return fail(0);
   auto candidate=kumar_candidate_mle(x,tol,maxit,start,fixed_a,fixed_b);
+  if(std::isfinite(candidate.logLik)) {
+    const double pad=1024*std::numeric_limits<double>::epsilon()*(1+std::abs(candidate.logLik))*(1+x.size());
+    evidence.candidates.push_back({{candidate.a,candidate.b},candidate.logLik-pad,candidate.logLik+pad});
+    evidence.loglik_lower=candidate.logLik-pad;evidence.loglik_upper=INFINITY;
+  }
   if(candidate.status==KumarStatus::InvalidData || candidate.status==KumarStatus::Unbounded ||
       !std::isnan(fixed_a))return candidate;
   const double n=double(x.size());
@@ -41,7 +50,7 @@ inline KumarResult kumar_mle(span x,double tol,int maxit,
   double center=candidate.status==KumarStatus::Ok?candidate.a:1/T;
   if(!(center>0)||!std::isfinite(center))return fail(0);
   double lo=center,hi=center,b,ll,error;int work=0;
-  const int budget=std::min(maxit,100000)*16;
+  const std::int64_t budget=certificate_budget(maxit);
   for(;;) {double s=evaluate(lo,b,ll,error);++work;if(s>error)break;
     if(work>=budget)return fail(work,KumarCertificateFailure::Budget);
     if(!(lo/2>0))return fail(work);
@@ -80,6 +89,7 @@ inline KumarResult kumar_mle(span x,double tol,int maxit,
   return {a,b,ll,work};
 }
 inline KumarResult kumar_profile_mle(span x,double tol,int maxit) {
+  maxit = static_cast<int>(solver_budget(maxit));
   return kumar_mle(x,tol,maxit);
 }
 } // namespace cppunivariate

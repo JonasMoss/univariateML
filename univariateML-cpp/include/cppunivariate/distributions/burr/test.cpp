@@ -339,8 +339,8 @@ TEST_CASE("Burr held-scale strict-concavity certificate covers both sides of sca
  }
  const std::vector<double> x{.5,2,3,4,5};
  const auto budget=cppunivariate::burr_mle_fixed_scale(mltest::as_span(x),1,1e-10,1);
- CHECK(budget.status==cppunivariate::BurrStatus::CertificateBudget);
- CHECK(std::isnan(budget.shape1));CHECK(std::isnan(budget.shape2));
+ CHECK(budget.status==cppunivariate::BurrStatus::Ok);
+ CHECK(std::isfinite(budget.shape1));CHECK(std::isfinite(budget.shape2));
  CHECK(std::isfinite(budget.stop_detail.loglik_lower));
  CHECK(budget.stop_detail.candidates.size()==1);
  for(double tol:std::vector<double>{0.,-1.,INFINITY,NAN})

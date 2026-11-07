@@ -1,0 +1,12 @@
+{
+  "source_sha256": "d08a5fde8ebb56d5575899201d077eb3b77d456c0544d7b9d20b5b57dd351e1b",
+  "command": [
+    "just",
+    "cpp-test-no-long-double"
+  ],
+  "machine": "simbox",
+  "returncode": 0,
+  "wall_seconds": 153.02404069900513,
+  "started_utc": "2026-11-06T18:14:56.993673+00:00",
+  "revision": "f8f65f9b080c394d11ca9dc178a93219fffee210"
+}

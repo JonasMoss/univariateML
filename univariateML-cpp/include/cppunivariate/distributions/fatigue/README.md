@@ -35,7 +35,7 @@ r:
     alpha: Held positive finite shape; NULL estimates it.
     beta: Held positive finite scale; NULL estimates it.
     abstol: Relative Newton step tolerance in `beta` (the argument name is retained for compatibility).
-    iterlim: Maximum number of iterations.
+    iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
 log_density: log(x-mu+beta) - 3*log(x-mu)/2 - log(beta)/2 - log(2*alpha) - log(2*pi)/2 - ((x-mu)/beta + beta/(x-mu)-2)/(2*alpha**2)
 limits:
   - {firmness: proved, name: point mass, kind: nonexistence, fixed: [mu], status: Unbounded, when: '$\alpha \to 0$ with $\beta$ equal to the common value of $x - \mu$', detect: 'all shifted observations $x - \mu$ are equal and $\alpha$ and $\beta$ are free'}

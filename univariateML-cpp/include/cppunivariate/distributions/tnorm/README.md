@@ -43,7 +43,7 @@ r:
     mean: "Optional held parent-normal mean; NULL estimates it."
     sd: "Optional held parent-normal standard deviation; NULL estimates it."
     reltol: Relative tolerance on the Newton step in the natural parameters `mean/sd^2` and `-1/(2*sd^2)` of standardized data.
-    iterlim: Maximum number of Newton iterations.
+    iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
 log_density: -log(sd) - log(2*pi)/2 - (x-mean)**2/(2*sd**2) - log((erf((b-mean)/(sd*sqrt(2))) - erf((a-mean)/(sd*sqrt(2))))/2)
 limits:
   - name: scale collapse

@@ -1,5 +1,6 @@
 // Shared exact conditional-mean equations and scalar profile search.
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../../core/span.hpp"
 #include "../lgser/mle.hpp"
 #include "../../special/special.hpp"
@@ -9,41 +10,45 @@
 #include <vector>
 namespace cppunivariate {
 namespace zero_detail {
-inline double nb_prob(double size, double mean) {
+inline double nb_prob(double size, double mean,int maxit=100) {
   double lo = 0, hi = 1;
-  for (int i = 0; i < 100; ++i) {
+  for (int i = 0; i < solver_budget(maxit); ++i) {
     const double p = (lo + hi) / 2;
+    if(p==lo||p==hi)break;
     const double m = size * (1-p) / (p * (-std::expm1(size * std::log(p))));
     if (m > mean) lo = p; else hi = p;
   }
-  return (lo + hi) / 2;
+  return hi-lo<1e-12?(lo+hi)/2:NAN;
 }
-inline double bin_prob(double size, double mean) {
+inline double bin_prob(double size, double mean,int maxit=100) {
   if (mean == 1) return 0;
   if (mean == size) return 1;
   double lo = 0, hi = 1;
-  for (int i = 0; i < 100; ++i) {
+  for (int i = 0; i < solver_budget(maxit); ++i) {
     const double p = (lo+hi)/2;
+    if(p==lo||p==hi)break;
     const double m = size*p / (-std::expm1(size*std::log1p(-p)));
     if (m < mean) lo=p; else hi=p;
   }
-  return (lo+hi)/2;
+  return hi-lo<1e-12?(lo+hi)/2:NAN;
 }
 inline double mean(ispan x) { double s=0;for(int v:x)s+=v;return s/x.size(); }
 // Reuse the existing logarithmic fitter where its Lambert-W iteration is
 // resolved. Near mean one that iteration can fail; bracket the same exact
 // mean equation instead, without changing the legacy fitter or its golden.
-inline LgserResult logarithmic_fit(ispan x) {
+inline LgserResult logarithmic_fit(ispan x,int maxit=100) {
   auto out=lgser_mle(x);
   const double m=mean(x);
   if(m==1)return {0,0,true};
   if(out.theta>0 && out.theta<1 && std::isfinite(out.logLik) &&
      std::abs(-out.theta/((1-out.theta)*std::log1p(-out.theta))-m)<1e-10*m)return out;
   double lo=0,hi=1;
-  for(int i=0;i<100;++i) {
+  for(int i=0;i<solver_budget(maxit);++i) {
     const double p=(lo+hi)/2;
+    if(p==lo||p==hi)break;
     if(-p/((1-p)*std::log1p(-p))<m)lo=p;else hi=p;
   }
+  if(hi-lo>=1e-12)return {NAN,NAN,false};
   out.theta=(lo+hi)/2;out.logLik=0;out.all_ones=false;
   for(int v:x)out.logLik+=v*std::log(out.theta)-std::log(v)-std::log(-std::log1p(-out.theta));
   return out;
@@ -63,6 +68,7 @@ inline double bin_logpmf(int x, double size, double prob) {
 }
 template <typename F>
 inline double maximize(F f, double lo, double hi, double tol, int maxit) {
+  maxit = static_cast<int>(solver_budget(maxit));
   constexpr double r=.6180339887498948482;
   double c=hi-r*(hi-lo), d=lo+r*(hi-lo), fc=f(c), fd=f(d);
   for(int i=0;i<maxit && hi-lo>tol;++i) {

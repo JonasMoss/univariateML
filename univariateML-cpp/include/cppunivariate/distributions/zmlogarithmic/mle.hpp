@@ -1,10 +1,12 @@
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../zmpois/profile.hpp"
 namespace cppunivariate {
 // Status and result types retain the shared factorised likelihood contract.
 typedef zero_detail::ModifiedStatus ZmlogarithmicStatus;
 typedef zero_detail::ModifiedResult ZmlogarithmicResult;
 inline ZmlogarithmicResult zmlogarithmic_mle(ispan x, double tol=1e-10,int maxit=200,double fixed_prob=std::numeric_limits<double>::quiet_NaN(),double fixed_p0=std::numeric_limits<double>::quiet_NaN()) {
+  maxit = static_cast<int>(solver_budget(maxit));
  if(std::isnan(fixed_prob) && std::isnan(fixed_p0)) {
   return zero_detail::modified_mle(x,4,tol,maxit,std::numeric_limits<double>::quiet_NaN());
  }
@@ -25,7 +27,7 @@ inline ZmlogarithmicResult zmlogarithmic_mle(ispan x, double tol=1e-10,int maxit
  if(fb)out.prob=fixed_prob;
  if(pos.empty()) {out.logLik=n*std::log(out.p0);out.status=ZmlogarithmicStatus::AllZero;return out;}
  const ispan positive{pos.data(),pos.size()};
- if(!fb) {const auto r=zero_detail::logarithmic_fit(positive);out.prob=r.all_ones?0:r.theta;out.logLik=r.all_ones?0:r.logLik;}
+ if(!fb) {const auto r=zero_detail::logarithmic_fit(positive,maxit);out.prob=r.all_ones?0:r.theta;out.logLik=r.all_ones?0:r.logLik;}
  else for(int v:positive)out.logLik+=fixed_prob==0?(v==1?0:-std::numeric_limits<double>::infinity()):
     v*std::log(fixed_prob)-std::log(v)-std::log(-std::log1p(-fixed_prob));
  if(n>k)out.logLik+=(n-k)*std::log(out.p0);

@@ -16,7 +16,8 @@
 // H directly, so the next search direction is one matvec p = -H g.
 //
 // Line search: backtracking Armijo only (no curvature condition). On
-// `max_ls` failure, restart H = I once and retry the same iteration; second
+// Line-search exhaustion after min(maxit, 100000) trials restarts H = I
+// once and retries the same iteration; a second
 // failure returns LineSearchFailure.
 //
 // Convergence (any one fires):
@@ -28,6 +29,7 @@
 // failure status rather than continuing.
 
 #pragma once
+#include "work_budget.hpp"
 
 #include <cmath>
 #include <cstddef>
@@ -61,7 +63,7 @@ struct BfgsControl {
   double grad_tol = 1e-6;
   double step_tol = 1e-8;
   int maxit = 200;
-  int max_ls = 20;
+  int max_ls = 20; // Retained for source compatibility; maxit controls work.
   double ls_armijo = 1e-4;
   double ls_shrink = 0.5;
 };
@@ -126,7 +128,7 @@ inline BfgsResult bfgs_minimize(Cost &cost, const double *theta0,
             BfgsStatus::BadInit};
   }
 
-  for (int iter = 1; iter <= ctl.maxit; ++iter) {
+  for (int iter = 1; iter <= solver_budget(ctl.maxit); ++iter) {
     bool reset_attempted = false;
 
     while (true) {
@@ -155,7 +157,7 @@ inline BfgsResult bfgs_minimize(Cost &cost, const double *theta0,
       double t = 1.0;
       double f_new = 0.0;
       bool accepted = false;
-      for (int ls = 0; ls < ctl.max_ls; ++ls) {
+      for (int ls = 0; ls < solver_budget(ctl.maxit); ++ls) {
         for (int i = 0; i < n; ++i) theta_new[i] = theta[i] + t * p[i];
         f_new = cost(theta_new.data());
         ++fevals;
@@ -242,7 +244,7 @@ inline BfgsResult bfgs_minimize(Cost &cost, const double *theta0,
   }
 
   const double gnorm = detail::l2_norm(grad.data(), n);
-  return {std::move(theta), f, std::move(grad), gnorm, ctl.maxit, fevals,
+  return {std::move(theta), f, std::move(grad), gnorm, static_cast<int>(solver_budget(ctl.maxit)), fevals,
           BfgsStatus::IterationFailure};
 }
 

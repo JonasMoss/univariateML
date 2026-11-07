@@ -1,6 +1,7 @@
 // Log-gamma: Y=log(X) is gamma; log f_X = log f_Y - log(X).
 // Preserve the gamma solver's status and held rate exactly.
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../gamma/mle.hpp"
 #include <vector>
 
@@ -14,6 +15,7 @@ struct LgammaResult {
 inline LgammaResult lgamma_mle(span x, double tol, int maxit,
     double shapelog = std::numeric_limits<double>::quiet_NaN(),
     double ratelog = std::numeric_limits<double>::quiet_NaN()) {
+  maxit = static_cast<int>(solver_budget(maxit));
   std::vector<double> y(x.size());
   double sum_y=0;
   bool constant=true;

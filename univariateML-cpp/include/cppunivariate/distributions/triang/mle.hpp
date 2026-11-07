@@ -1,5 +1,6 @@
 // Exact finite mode enumeration with concave endpoint solves and interval bounds.
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../../core/span.hpp"
 #include <algorithm>
 #include <cmath>
@@ -24,6 +25,7 @@ struct Profile { double a, b, value, upper; int iterations; bool converged; };
 // including when Newton has not converged. Fixed coordinates are omitted.
 inline Profile profile(const std::vector<double>& x, double l, double u,
                        double a, double b, double tol, int maxit, double tilt=0) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const bool fa = !std::isnan(a), fb = !std::isnan(b);
   if (tilt == 0 && l == u && x.front() == x.back() && x.front() != l) {
     const double z = x.front(), n = static_cast<double>(x.size());
@@ -93,7 +95,7 @@ inline Profile profile(const std::vector<double>& x, double l, double u,
     if (dq<0) step=std::min(step,-0.99*q/dq);
     if (dq>0) step=std::min(step,0.99*(1-q)/dq);
     bool accepted=false;
-    for (int j=0;j<60;++j) {
+    for (int j=0;j<maxit;++j) {
       evaluate(p+step*dp,q+step*dq,trial);
       if (trial[0]>=v[0]+1e-4*step*(v[1]*dp+v[2]*dq)-1e-13*n) {
         accepted=true;break;
@@ -118,6 +120,7 @@ inline TriangResult triang_mle(span input, double tol=1e-12, int maxit=100,
     double a=std::numeric_limits<double>::quiet_NaN(),
     double b=std::numeric_limits<double>::quiet_NaN(),
     double c=std::numeric_limits<double>::quiet_NaN(), bool prune=true) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const double nan=std::numeric_limits<double>::quiet_NaN();
   TriangResult out{nan,nan,nan,-INFINITY,0,TriangStatus::InvalidInput,false};
   if(input.empty() || !(tol>0) || !std::isfinite(tol) || maxit<1) return out;

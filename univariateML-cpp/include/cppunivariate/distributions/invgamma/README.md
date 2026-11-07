@@ -32,7 +32,7 @@ r:
     alpha: Optional held alpha; NULL estimates it.
     beta: Optional held beta; NULL estimates it.
     abstol: Absolute step tolerance in alpha.
-    iterlim: Maximum number of iterations.
+    iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
 log_density: alpha*log(beta) - loggamma(alpha) - (alpha + 1)*log(x) - beta/x
 references:
 - 'Choi, S. C, and R. Wette. "Maximum likelihood estimation of the parameters of the gamma distribution and their

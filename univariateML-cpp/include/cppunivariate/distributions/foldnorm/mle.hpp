@@ -1,16 +1,19 @@
 #pragma once
+#include "../../core/work_budget.hpp"
+#include "../../core/discrete_stop.hpp"
 #include "../../core/span.hpp"
 #include "dpqr.hpp"
 #include <vector>
 #include <limits>
 namespace cppunivariate {
 enum class FoldnormStatus { Ok, InvalidInput, Unbounded, IterationFailure };
-struct FoldnormResult { double mu,sigma,logLik; int iterations; FoldnormStatus status; };
+struct FoldnormResult { double mu,sigma,logLik; int iterations; FoldnormStatus status; StopDetail stop_detail{}; };
 namespace foldnorm_detail {
 // Search every sampled local maximum, including both endpoints. Log spacing
 // resolves the weakly identified half-normal face as well as narrow normal fits.
 template <typename Function>
 inline double maximize(Function f,double lo,double hi,double tol,int maxit,int &iterations) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const int grids=512;
   std::vector<double> u(grids+1),v(grids+1);
   double best=lo,bestv=f(lo);
@@ -35,6 +38,7 @@ inline double maximize(Function f,double lo,double hi,double tol,int maxit,int &
 inline FoldnormResult foldnorm_mle(span x,double tol=1e-10,int maxit=200,
     double fixed_mu=std::numeric_limits<double>::quiet_NaN(),
     double fixed_sigma=std::numeric_limits<double>::quiet_NaN()) {
+  maxit = static_cast<int>(solver_budget(maxit));
   FoldnormResult out{special::kNaN,special::kNaN,special::kNaN,0,FoldnormStatus::InvalidInput};
   const bool fm=!std::isnan(fixed_mu),fs=!std::isnan(fixed_sigma);
   if (x.empty() || !(tol>0) || !std::isfinite(tol) || maxit<=0 ||
@@ -83,7 +87,7 @@ inline FoldnormResult foldnorm_mle(span x,double tol=1e-10,int maxit=200,
       struct Interval {double lo,hi;};
       std::vector<Interval> pending{{mu/(m2+mu*mu),mu/residual}};
       double best=ll(mu,s);int visited=0;
-      while (!pending.empty() && visited<512*maxit) {
+      while (!pending.empty() && visited<certificate_budget(maxit)) {
         const Interval iv=pending.back();pending.pop_back();++visited;
         if (iv.lo==iv.hi) continue;
         const double al=correction(iv.lo),ar=correction(iv.hi);
@@ -98,7 +102,13 @@ inline FoldnormResult foldnorm_mle(span x,double tol=1e-10,int maxit=200,
         if (mid<=iv.lo || mid>=iv.hi) continue;
         pending.push_back({iv.lo,mid});pending.push_back({mid,iv.hi});
       }
-      if (!pending.empty()) {out.status=FoldnormStatus::IterationFailure;return out;}
+      if (!pending.empty()) {
+        out.status=FoldnormStatus::IterationFailure;
+        out.stop_detail=discrete_budget(out.stop_detail);
+        const double witness_ll=ll(mu,s)-x.size()*std::log(scale);
+        out.stop_detail.candidates.push_back({{mu*scale,s*scale},witness_ll,witness_ll});
+        out.stop_detail.loglik_lower=witness_ll;return out;
+      }
     }
   } else if (!fs) {
     s=std::sqrt(m2); mu=0;
@@ -118,7 +128,7 @@ inline FoldnormResult foldnorm_mle(span x,double tol=1e-10,int maxit=200,
     struct Interval { double lo,hi; int depth; };
     std::vector<Interval> pending{{0,amax,0}};
     int visited=0;
-    while (!pending.empty() && visited<512*maxit) {
+    while (!pending.empty() && visited<certificate_budget(maxit)) {
       const Interval iv=pending.back();pending.pop_back();++visited;
       const double al=correction(iv.lo),ar=correction(iv.hi);
       const double target=std::max(0.0,std::min(m,m+(ar-al)/((iv.hi-iv.lo)*y.size())));
@@ -133,7 +143,13 @@ inline FoldnormResult foldnorm_mle(span x,double tol=1e-10,int maxit=200,
       if (mid<=iv.lo || mid>=iv.hi) continue;
       pending.push_back({iv.lo,mid,iv.depth+1});pending.push_back({mid,iv.hi,iv.depth+1});
     }
-    if (!pending.empty()) {out.status=FoldnormStatus::IterationFailure;return out;}
+    if (!pending.empty()) {
+        out.status=FoldnormStatus::IterationFailure;
+        out.stop_detail=discrete_budget(out.stop_detail);
+        const double witness_ll=ll(mu,s)-x.size()*std::log(scale);
+        out.stop_detail.candidates.push_back({{mu*scale,s*scale},witness_ll,witness_ll});
+        out.stop_detail.loglik_lower=witness_ll;return out;
+      }
     const double a=std::expm1(t),v=sigma2(a);
     if (best>ll(0,s)+1e-11*y.size()) { mu=a*v;s=std::sqrt(v); }
   }

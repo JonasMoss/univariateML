@@ -1,5 +1,6 @@
 // Global scalar certificates. Proof and binary64 contract: README.md.
 #pragma once
+#include "../../core/work_budget.hpp"
 #include <queue>
 namespace cppunivariate {
 namespace gpd_cert_detail {
@@ -80,6 +81,7 @@ inline Bounds bounds(const Data& d,const Point& a,const Point& b) {
 }
 struct Root {Point p;double lo,hi,upper;};
 inline bool isolate(const Data& d,Point a,Point b,double tol,int maxit,Root& out) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const auto box=bounds(d,a,b);
   const double se=32*d.eta*(1+std::max(std::abs(a.t),std::abs(b.t)));
   if(!(box.curvature.hi< -se && a.score>se && b.score< -se))return false;
@@ -90,7 +92,7 @@ inline bool isolate(const Data& d,Point a,Point b,double tol,int maxit,Root& out
     else if(p.score< -se)b=p;
     else {
       double center=p.t;
-      for(int k=0;k<8;++k) {
+      for(int k=0;k<maxit;++k) {
         const Point q=evaluate(d,center);
         const double e=std::exp(q.t),g=q.score/e;
         const double curvature=e*e*(d.held?2*q.P-(1/d.c+q.b)*q.R:
@@ -101,7 +103,7 @@ inline bool isolate(const Data& d,Point a,Point b,double tol,int maxit,Root& out
       }
       double radius=std::max(1e-11,4*se/(-box.curvature.hi));
       bool signed_box=false;
-      for(int k=0;k<24;++k,radius*=2) {
+      for(int k=0;k<maxit;++k,radius*=2) {
         if(center-radius<=lo || center+radius>=hi)break;
         const Point l=evaluate(d,center-radius),r=evaluate(d,center+radius);
         if(l.score>se && r.score< -se){a=l;b=r;signed_box=true;break;}
@@ -114,7 +116,7 @@ inline bool isolate(const Data& d,Point a,Point b,double tol,int maxit,Root& out
     if(j>0 && (b.t-a.t<2e-7 || coefficient_box)) {
       Point p=evaluate(d,(a.t+b.t)/2);
       // Refine the representative, while retaining the signed enclosure.
-      for(int k=0;k<12;++k) {
+      for(int k=0;k<maxit;++k) {
         const double e=std::exp(p.t),g=p.score/e;
         const double cur=e*e*(d.held?2*p.P-(1/d.c+p.b)*p.R:
             p.P*p.P/(p.D*p.D)-p.R/p.D+2*p.P-p.b*p.R)+e*g;
@@ -131,12 +133,13 @@ inline bool isolate(const Data& d,Point a,Point b,double tol,int maxit,Root& out
   return false;
 }
 inline GpdResult fit(span y,double mu,double tol,int maxit,double sigma=NAN) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const bool held=std::isfinite(sigma);
   double M=0,min=INFINITY;std::size_t ties=0;
   for(double v:y){M=std::max(M,v);if(v>0)min=std::min(min,v);}
   auto stop=[&](GpdCertificateFailure reason,int work=0) {
     GpdResult out{mu,NAN,NAN,NAN,work,GpdStatus::IterationFailure};
-    out.certificate_failure=reason;return out;
+    out.certificate_failure=reason;out.stop_detail.budget_exhausted=reason==GpdCertificateFailure::Budget;return out;
   };
   if(!(M>0)) {
     auto out=stop(GpdCertificateFailure::Tie);
@@ -164,7 +167,7 @@ inline GpdResult fit(span y,double mu,double tol,int maxit,double sigma=NAN) {
     negative_tail_upper=A>=1?0.:-std::log(A)+A-1+left.error;
     if(A>=1) {
       double l=low,h=0;
-      for(int j=0;j<48;++j) {
+      for(int j=0;j<maxit;++j) {
         const double mid=(l+h)/2;const Point p=evaluate(d,mid);
         if(-p.b*p.D*(1-4*d.eta)>1)l=mid;else h=mid;
       }
@@ -173,7 +176,7 @@ inline GpdResult fit(span y,double mu,double tol,int maxit,double sigma=NAN) {
   } else {
     // For t<-1: h'(t)>0 if (1-c)(1-exp(t))*wmax > exp(t)*(-t).
     const double w=static_cast<double>(ties)/y.size();
-    while(low> -32 && !((1-d.c)*(-std::expm1(low))*w>std::exp(low)*(-low)*(1+32*d.eta)))low*=2;
+    for(std::int64_t bracket_pass=0; bracket_pass<solver_budget(maxit) && (low> -32 && !((1-d.c)*(-std::expm1(low))*w>std::exp(low)*(-low)*(1+32*d.eta))); ++bracket_pass)low*=2;
     if(!((1-d.c)*(-std::expm1(low))*w>std::exp(low)*(-low)*(1+32*d.eta)))return stop(GpdCertificateFailure::Arithmetic);
   }
   // sigma=M: the finite uniform boundary is t=-infinity. Shape score
@@ -184,7 +187,7 @@ inline GpdResult fit(span y,double mu,double tol,int maxit,double sigma=NAN) {
     return held ? d.c*b>2*t*(1+32*d.eta) && b*(min/M)>1+32*d.eta:
         b*(min/M)>t*(1+32*d.eta);
   };
-  while(high<64 && !tail(high))high*=2;
+  for(std::int64_t bracket_pass=0; bracket_pass<solver_budget(maxit) && (high<64 && !tail(high)); ++bracket_pass)high*=2;
   if(!tail(high) || !std::isfinite(low))return stop(GpdCertificateFailure::Arithmetic);
   Point a=evaluate(d,low),b=evaluate(d,high);
   if(!std::isfinite(a.h) || !std::isfinite(b.h))return stop(GpdCertificateFailure::Arithmetic);
@@ -192,7 +195,7 @@ inline GpdResult fit(span y,double mu,double tol,int maxit,double sigma=NAN) {
   std::vector<Root> roots;
   std::priority_queue<Segment> queue;
   queue.push({a,b,bounds(d,a,b).upper});
-  int work=2;const int budget=128*std::min(maxit,100000);
+  int work=2;const std::int64_t budget=certificate_budget(maxit);
   double best=floor?0.:-INFINITY;
   Point bestpoint=evaluate(d,0);
   auto failure=[&](GpdCertificateFailure reason,double upper) {

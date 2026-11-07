@@ -1,0 +1,13 @@
+{
+  "command": [
+    "env",
+    "UMVL_TEST_TIER=full",
+    "just",
+    "cpp-test"
+  ],
+  "machine": "simbox",
+  "returncode": 0,
+  "wall_seconds": 153.9736886024475,
+  "started_utc": "2026-11-06T17:51:20.835448+00:00",
+  "revision": "f8f65f9b080c394d11ca9dc178a93219fffee210"
+}

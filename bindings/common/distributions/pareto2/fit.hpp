@@ -26,7 +26,7 @@ inline FitResult fit_pareto2(cppunivariate::span x, Held shape_arg = {}, Held sc
                "whose likelihood is maximized on the exponential face. Use `mlexp(x - min)` to fit an "
                "exponential distribution."),res.stop_detail,"limit",{"shape","scale","min"},"exp");
   }
-  if(res.status==cppunivariate::LomaxStatus::IterationFailure) return stop_failure(fail("Certified Lomax delegate failed; no verified maximum."),res.stop_detail,res.certificate_failure==cppunivariate::LomaxCertificateFailure::Budget?"budget":"numerical",{"shape","scale","min"},"");
+  if(res.status==cppunivariate::LomaxStatus::IterationFailure) return stop_failure(fail("Certified Lomax delegate failed; no verified maximum. Raising iterlim may resolve a budget stop."),res.stop_detail,res.certificate_failure==cppunivariate::LomaxCertificateFailure::Budget?"budget":"numerical",{"shape","scale","min"},"");
   if (res.status != cppunivariate::LomaxStatus::Ok || !std::isfinite(res.scale) || !(res.scale>0) ||
       !std::isfinite(res.shape)) {
     return fail("Lomax MLE failed to converge (check dispersion/inputs)");

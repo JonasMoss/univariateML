@@ -1,0 +1,6 @@
+{
+  "final_headers_sha256": "7349c83fd8ae9cc29c52d42593b53160ba0dbb512a36f265cc84779f652e036f",
+  "virtual_phase8_headers_sha256": "2999d6b67ee164dae06d6ef553c01f0fc8714e4113f8a5a498ac3ffff42bbd4a",
+  "phase8_headers_sha256": "2999d6b67ee164dae06d6ef553c01f0fc8714e4113f8a5a498ac3ffff42bbd4a",
+  "difference": "Only CMB maxit/iterlim defaults changed from 1000 to 2000; all other numerical header bytes are identical."
+}

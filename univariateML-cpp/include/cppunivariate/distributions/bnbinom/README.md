@@ -36,7 +36,7 @@ r:
   sampler: rbnbinom
   control:
     gradtol: "Tolerance on the average log likelihood score in log parameters."
-    iterlim: "Maximum BFGS iterations per deterministic start."
+    iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per negative-binomial face certificate: 128 * min(iterlim, 100000) certificate evaluations."
 log_density: "loggamma(size+x)-loggamma(size)-loggamma(x+1)+loggamma(alpha+size)+loggamma(beta+x)-loggamma(alpha+size+beta+x)-loggamma(alpha)-loggamma(beta)+loggamma(alpha+beta)"
 limits:
   - model: nbinom
@@ -135,3 +135,7 @@ A deterministic multistart search compares finite stationary points with every r
 ## R notes
 
 Supply `size`, `alpha` or `beta` to hold that coefficient. A detected negative binomial limit recommends `mlnbinom`, holding its size at the supplied `size` or `beta` when either was held. A Poisson limit or all-zero free fit recommends `mlpois`. The finite search and limit comparisons do not certify a global maximum.
+
+An unresolved negative-binomial face is not replaced by the Poisson face:
+its certificate failure and any retained face witnesses propagate to the
+parent fit. Both face solvers use the caller's iteration allowance.

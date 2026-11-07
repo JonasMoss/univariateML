@@ -1,5 +1,6 @@
 // Inverse Burr is the reciprocal of a Burr with reciprocal scale.
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
 #include "../burr/mle.hpp"
 #include "../invweibull/mle.hpp"
@@ -17,6 +18,7 @@ struct InvBurrResult {
 };
 
 inline InvBurrResult invburr_mle(span x, double tol, int maxit) {
+  maxit = static_cast<int>(solver_budget(maxit));
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
   if (n == 0) return {0.0, 0.0, kNaN, 0, InvBurrStatus::InvalidInit};
@@ -36,7 +38,7 @@ inline InvBurrResult invburr_mle(span x, double tol, int maxit) {
     invx[i] = 1.0 / x[i];
     sum_log_invx += std::log(invx[i]);
   }
-  const double c0 = burr_mle_start(span{invx.data(), n}, true);
+  const double c0 = burr_mle_start(span{invx.data(), n}, true,maxit);
   BurrMLE res = burr_mle_core(span{invx.data(), n}, c0, tol, maxit);
   if (res.status != BurrStatus::Ok) {
     return {kNaN, kNaN, kNaN, res.iterations, InvBurrStatus::IterationFailure};
@@ -148,6 +150,7 @@ inline InvBurrResult invburr_mle(span x, double tol, int maxit,
     double shape10 = std::numeric_limits<double>::quiet_NaN(),
     double shape20 = std::numeric_limits<double>::quiet_NaN(),
     double scale0 = std::numeric_limits<double>::quiet_NaN(), double reltol = 1e-12) {
+  maxit = static_cast<int>(solver_budget(maxit));
   std::vector<double> reciprocal;
   double jacobian = 0.0, maximum = 0.0;
   for (double v : x) {
@@ -206,6 +209,7 @@ inline InvBurrResult invburr_mle_holds(span x,double a,double b,double s,double 
 // Share the certified reciprocal path with the held-parameter dispatcher.
 inline InvBurrResult invburr_mle_fixed_scale(span x, double scale,
     double tol = 1.220703e-4, int maxit = 1000) {
+  maxit = static_cast<int>(solver_budget(maxit));
   if(!(scale>0)||!std::isfinite(scale))
     return {NAN,NAN,scale,NAN,0,InvBurrStatus::InvalidInit};
   return invburr_mle_holds(x,NAN,NAN,scale,tol,maxit);
@@ -215,6 +219,7 @@ inline InvBurrResult invburr_mle_fixed_scale(span x, double scale,
 namespace cppunivariate {
 
 inline InvBurrResult invburr_mle_holds(span x,double a,double b,double s,double tol=1e-9,int maxit=1000){
+  maxit = static_cast<int>(solver_budget(maxit));
  if(std::isnan(a)&&std::isnan(b)&&std::isnan(s))
    return invburr_mle(x,tol,maxit);
  std::vector<double> y;double jac=0;

@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../burr/mle.hpp"
 #include "../beta/mle.hpp"
 #include <vector>
@@ -7,6 +8,7 @@ namespace cppunivariate {
 struct NsbetaResult { double shape1,shape2,min,max,logLik; int iterations; BetaStatus status; };
 
 inline NsbetaResult nsbeta_mle(span x, double min, double max, double tol, int maxit, double a=std::numeric_limits<double>::quiet_NaN(), double b=std::numeric_limits<double>::quiet_NaN()) {
+  maxit = static_cast<int>(solver_budget(maxit));
   std::vector<double> y(x.size());
   for (std::size_t i=0;i<x.size();++i) y[i]=(x[i]-min)/(max-min);
   bool valid=tol>0 && std::isfinite(tol) && maxit>0 && std::isfinite(min) && std::isfinite(max) && max>min;

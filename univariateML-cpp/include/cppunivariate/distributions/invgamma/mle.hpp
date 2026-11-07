@@ -7,6 +7,7 @@
 // i.e. the reciprocal of GammaResult.scale, via the inverse transform.
 
 #pragma once
+#include "../../core/work_budget.hpp"
 
 #include "../../core/span.hpp"
 #include "../../special/special.hpp"
@@ -28,6 +29,7 @@ struct InvGammaResult {
 };
 
 inline InvGammaResult invgamma_mle(span x, double tol, int maxit) {
+  maxit = static_cast<int>(solver_budget(maxit));
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
   if (n == 0) return {0.0, 0.0, kNaN, 0, GammaStatus::InvalidInput};
@@ -57,6 +59,7 @@ inline InvGammaResult invgamma_mle(span x, double tol, int maxit) {
 }
 
 inline InvGammaResult invgamma_mle(span x,double tol,int maxit,double alpha,double beta) {
+  maxit = static_cast<int>(solver_budget(maxit));
   if(std::isnan(alpha) && std::isnan(beta))return invgamma_mle(x,tol,maxit);
   std::vector<double> y;double jac=0;
   for(double v:x){

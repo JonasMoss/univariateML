@@ -211,7 +211,7 @@ test_that("invburr detects constant off-scale collapse only with both shapes fre
 
  test_that("invburr preserves certificate refusal diagnostics", {
   x <- exp(seq(-1e-6,1e-6,length.out=20))
-  expect_error(mlinvburr(1/x), "certificate budget exhausted; no verified MLE")
+  expect_error(mlinvburr(1/x), "certificate unresolved.*no verified MLE")
   x <- c(.2,.5,1,2,4)
   expect_error(mlinvburr(1/x,iterlim=2), "certificate numerical failure.*no verified MLE")
   x <- c(0.0049057434842350416,0.042501201178458653,0.19481544379842536,0.29869422522389177,0.40386521559557592,0.49096570363940406,0.5326256684997116,0.72206471601197653,0.74104603671600355,0.82688168528714312,0.98659907210500519,1.1056048590023038,1.140076235502067,1.1606952121643113,1.4300263464615877,1.4793399841671804,1.5655241685783525,1.6390163836698108,2.0838622791695847,5.1042846241626947)
@@ -242,8 +242,8 @@ test_that("invburr sign-uncertain-seam exposes structured tie diagnostics", {
   expect_true(is.finite(e$loglik_lower))
 })
 
-test_that("invburr nearly-constant exposes structured budget diagnostics", {
-  e <- tryCatch(mlinvburr(1/c(0.99999900000050002,0.99999910526355817,0.99999921052662744,0.9999993157897078,0.99999942105279915,0.99999952631590161,0.99999963157901528,0.99999973684213994,0.99999984210527559,0.99999994736842246,1.0000000526315804,1.0000001578947493,1.0000002631579294,1.0000003684211205,1.0000004736843227,1.0000005789475359,1.0000006842107605,1.000000789473996,1.0000008947372423,1.0000010000005)),univariateML_budget=identity)
+test_that("invburr nearly-constant exposes structured tie diagnostics", {
+  e <- tryCatch(mlinvburr(1/c(0.99999900000050002,0.99999910526355817,0.99999921052662744,0.9999993157897078,0.99999942105279915,0.99999952631590161,0.99999963157901528,0.99999973684213994,0.99999984210527559,0.99999994736842246,1.0000000526315804,1.0000001578947493,1.0000002631579294,1.0000003684211205,1.0000004736843227,1.0000005789475359,1.0000006842107605,1.000000789473996,1.0000008947372423,1.0000010000005)),univariateML_tie=identity)
   expect_s3_class(e,"univariateML_stop")
   expect_true(nrow(e$candidates)>=2L)
   expect_true(all(e$candidates$loglik_lower<=e$candidates$loglik_upper))
@@ -272,8 +272,7 @@ test_that("held-scale inverse Burr transports scalar certificates and budgets", 
   a <- mlinvburr(1/x,scale=1,abstol=1e-10)
   b <- mlburr(x,scale=1,abstol=1e-10)
   expect_equal(as.numeric(a),as.numeric(b),tolerance=1e-10)
-  e <- tryCatch(mlinvburr(1/x,scale=1,iterlim=1),univariateML_budget=identity)
-  expect_s3_class(e,"univariateML_budget")
-  expect_true(is.finite(e$loglik_lower))
-  expect_true(nrow(e$candidates)>=1L)
+  e <- mlinvburr(1/x,scale=1,iterlim=1)
+  expect_s3_class(e,"univariateML")
+  expect_equal(as.numeric(e),as.numeric(a),tolerance=1e-6)
 })

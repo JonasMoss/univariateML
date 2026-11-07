@@ -215,7 +215,7 @@ test_that("CMB free size with fixed dispersion compares the whole integer tail",
   }
   expect_error(mlcmb(c(0,2),size=NULL,nu=1),"larger finite maximum is not excluded")
   expect_error(mlcmb(c(rep(0,9),6),size=NULL,nu=0.0030483655389936895),"matched the Conway-Maxwell-Poisson face")
-  expect_error(mlcmb(c(0,10000000),size=NULL,nu=1),"work budget")
+  expect_error(mlcmb(c(0,10000000),size=NULL,nu=1,iterlim=1),"work budget")
   expect_equal(mlcmb(c(3,3),size=NULL,nu=-1)[["size"]],3)
 })
 
@@ -262,8 +262,8 @@ test_that("CMB free size attains the empirical uniform likelihood", {
 })
 
 test_that("CMB free dispersion stops on size work exhaustion", {
-  expect_error(mlcmb(c(1,10000000), size=NULL), "work budget")
-  expect_error(mlcmb(c(1,10000000), size=NULL, prob=.3), "work budget")
+  expect_error(mlcmb(c(1,10000000), size=NULL,iterlim=1), "work budget")
+  expect_error(mlcmb(c(1,10000000), size=NULL, prob=.3,iterlim=1), "work budget")
 })
 
 test_that("CMB free-dispersion fits agree with seeded dense-grid profiles", {
@@ -313,4 +313,14 @@ test_that("CMB free-dispersion fits agree with seeded dense-grid profiles", {
   }
   expect_equal(attr(fit2,"logLik"),best2,tolerance=1e-7)
   expect_equal(fit2[["size"]],2)
+})
+
+test_that("CMB fixed-size normalizers spend the cell budget", {
+  err <- tryCatch(mlcmb(c(0,1),size=100001,nu=1,iterlim=1),error=identity)
+  expect_s3_class(err,"univariateML_budget")
+  expect_equal(err$kind,"budget")
+  expect_equal(nrow(err$candidates),0)
+  expect_equal(err$loglik_upper,Inf)
+  expect_match(conditionMessage(err),"Raising iterlim may resolve")
+  expect_true(is.finite(as.numeric(logLik(mlcmb(c(0,1),size=100001,nu=1,iterlim=100)))))
 })

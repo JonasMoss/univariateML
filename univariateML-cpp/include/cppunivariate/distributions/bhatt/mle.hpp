@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
 #include "../../core/face_compare.hpp"
 #include "../emg/logconcave_profile.hpp"
@@ -14,7 +15,7 @@ enum class BhattStatus {Ok,NormalLimit,UniformLimit,Unbounded,InvalidInput,Itera
 struct BhattResult {double mu,sigma,a,logLik;int iterations;BhattStatus status; StopDetail stop_detail{}; };
 namespace bhatt_detail {
 struct Profile {
-  const std::vector<double>& x;double sigma,a,face;double held_mu=special::kNaN;
+  const std::vector<double>& x;double sigma,a,face;double held_mu=special::kNaN; int maxit=500;
   double location(double s,double b) const {
     if(!std::isnan(held_mu))return held_mu;
     if(b/s<1e-7) {double mean=0;for(double z:x)mean+=z/x.size();return mean;}
@@ -26,7 +27,7 @@ struct Profile {
     const CPPUNIV_EXTENDED_REAL log2b=std::log(2*static_cast<CPPUNIV_EXTENDED_REAL>(b));
     const CPPUNIV_EXTENDED_REAL logs=std::log(static_cast<CPPUNIV_EXTENDED_REAL>(s));
     const CPPUNIV_EXTENDED_REAL s2=static_cast<CPPUNIV_EXTENDED_REAL>(s)*s;
-    for(int k=0;k<60;++k) {
+    for(int k=0;k<maxit;++k) {
       CPPUNIV_EXTENDED_REAL score=0,deriv=0;
       for(double z:x) {
         const CPPUNIV_EXTENDED_REAL u=(static_cast<CPPUNIV_EXTENDED_REAL>(z)-m-b)/s,v=(static_cast<CPPUNIV_EXTENDED_REAL>(z)-m+b)/s;
@@ -47,7 +48,7 @@ struct Profile {
       if(std::abs(next-m)<1e-11*std::min(s,1.0))return next;
       m=next;
     }
-    return lo/2+hi/2;
+    return NAN;
   }
 
   // Reuse only identical held-profile coordinates, including across starts.
@@ -85,6 +86,7 @@ struct Profile {
   }
 };
 inline BhattResult search(const Profile& p,std::vector<double> start,double tol,int maxit) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const int d=static_cast<int>(start.size());
   if(!d) return p.evaluate(start);
   std::vector<std::vector<double>> v(d+1,start);
@@ -128,6 +130,7 @@ inline BhattResult search(const Profile& p,std::vector<double> start,double tol,
 }
 }
 inline BhattResult bhatt_mle(span x,double tol=1e-8,int maxit=500,double sigma=special::kNaN,double a=special::kNaN,double mu=special::kNaN) {
+  maxit = static_cast<int>(solver_budget(maxit));
   BhattResult bad={special::kNaN,special::kNaN,special::kNaN,special::kNaN,0,BhattStatus::InvalidInput};
   if(x.empty()||!(tol>0&&std::isfinite(tol))||maxit<1||(!std::isnan(sigma)&&!(sigma>0&&std::isfinite(sigma)))||(!std::isnan(a)&&!(a>=0&&std::isfinite(a))))return bad;
   if(!std::isnan(mu)&&!std::isfinite(mu))return bad;
@@ -166,7 +169,7 @@ inline BhattResult bhatt_mle(span x,double tol=1e-8,int maxit=500,double sigma=s
     face=-n*(std::log(sd)+.91893853320467274178)-n*var/(2*sd*sd);
   }
   if(std::isnan(sigma)&&std::isnan(a))face=std::max(face,-n*std::log(std::isnan(mu)?y.back()-y.front():2*std::max(std::abs(y.front()-held_mu),std::abs(y.back()-held_mu))));
-  bhatt_detail::Profile p{y,held_s,held_a,face,held_mu};
+  bhatt_detail::Profile p{y,held_s,held_a,face,held_mu,maxit};
   BhattResult best={0,0,0,special::kNegInf,0,BhattStatus::IterationFailure};
   auto attempted=best;
   bool faces_only=false;

@@ -238,7 +238,7 @@ test_that("discrete limit stops expose fitted faces without changing messages", 
 })
 
 test_that("discrete preflight budgets are classed without fabricated candidates", {
-  e <- tryCatch(mlbbinom(c(0,1001),size=NULL,alpha=1),error=identity)
+  e <- tryCatch(mlbbinom(c(0,100001),size=NULL,alpha=1,iterlim=1),error=identity)
   expect_s3_class(e,"univariateML_budget")
   expect_length(e$estimates,0)
   expect_equal(nrow(e$candidates),0)

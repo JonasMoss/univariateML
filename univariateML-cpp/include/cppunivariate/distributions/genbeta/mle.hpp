@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
 #include "../../core/face_compare.hpp"
 #include "../../core/precision.hpp"
@@ -19,6 +20,7 @@ struct Point { double a=1,b=1,t=1,ll=-std::numeric_limits<double>::infinity(),sc
 // Concave beta exponential-family problem from sufficient statistics, without
 // rounding exp(-t*y) to a support endpoint. Held shapes restrict its tangent.
 inline Point profile(const std::vector<double>& y,double t,double aa,double bb,int maxit) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const double n=static_cast<double>(y.size());
   CPPUNIV_EXTENDED_REAL ss=0,rr=0,dd=0;
   for(double v:y) {
@@ -56,7 +58,8 @@ inline Point profile(const std::vector<double>& y,double t,double aa,double bb,i
     const double norm=std::max(std::abs(da),std::abs(db));
     if(norm>2){da*=2/norm;db*=2/norm;}
     bool accepted=false;
-    for(double step=1;step>1e-12;step*=.5) {
+    double step=1;
+    for(std::int64_t backtrack=0;backtrack<solver_budget(maxit) && step>1e-12;++backtrack,step*=.5) {
       const double an=a*std::exp(step*da),bn=b*std::exp(step*db);
       if(std::isfinite(an+bn)&&ll(an,bn)>=ll(a,b)-1e-13) {a=an;b=bn;accepted=true;break;}
     }
@@ -71,6 +74,7 @@ inline GenbetaResult genbeta_mle(span x,double scale,double tol=1e-7,int maxit=3
     double a=std::numeric_limits<double>::quiet_NaN(),
     double b=std::numeric_limits<double>::quiet_NaN(),
     double t=std::numeric_limits<double>::quiet_NaN()) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const double nan=std::numeric_limits<double>::quiet_NaN();
   GenbetaResult bad{a,b,t,scale,nan,0,GenbetaStatus::InvalidData};
   if(!(scale>0)||!std::isfinite(scale)){bad.status=GenbetaStatus::InvalidFixed;return bad;}
@@ -93,7 +97,7 @@ inline GenbetaResult genbeta_mle(span x,double scale,double tol=1e-7,int maxit=3
   auto consider=[&](double ll,GenbetaStatus s){if(std::isfinite(ll)&&ll>face){face=ll;fs=s;}};
   if(std::isnan(t)&&std::isnan(a)) {
     if(std::isnan(b)) {
-      const auto g=gamma_mle({y.data(),y.size()},1e-10,300);
+      const auto g=gamma_mle({y.data(),y.size()},1e-10,maxit);
       if(g.status!=GammaStatus::Ok){bad.status=GenbetaStatus::SearchUnresolved;return bad;}
       gamma_shape=g.shape;gamma_scale=g.scale;
       consider(g.logLik,GenbetaStatus::UnitGammaBoundary);
@@ -139,7 +143,7 @@ inline GenbetaResult genbeta_mle(span x,double scale,double tol=1e-7,int maxit=3
       if(cur.ok&&cur.ll>best.ll){best=cur;edge=i==count;}
       if(prev.ok&&cur.ok&&prev.score>0&&cur.score<0) {
         double l=z-(hi-lo)/count,h=z;
-        for(int j=0;j<std::min(maxit,80);++j) {
+        for(int j=0;j<maxit;++j) {
           const double m=(l+h)/2;auto p=at(m);
           if(!p.ok)break;
           if(p.ll>best.ll||(p.ll>=best.ll-1e-12*n&&std::abs(p.score)<std::abs(best.score))){best=p;edge=false;}

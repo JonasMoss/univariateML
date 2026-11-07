@@ -2,6 +2,7 @@
 // as shape = 1/sigma, scale = 1/exp(-mu + s) where s = -mean(log x).
 
 #pragma once
+#include "../../core/work_budget.hpp"
 
 #include "../../core/span.hpp"
 #include "../gumbel/mle.hpp"
@@ -27,6 +28,7 @@ struct InvWeibullResult {
 // shape0 is an optional positive starting shape; NaN keeps the automatic start.
 inline InvWeibullResult invweibull_mle(span x, double tol, int maxit,
                                   double shape0 = std::numeric_limits<double>::quiet_NaN()) {
+  maxit = static_cast<int>(solver_budget(maxit));
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
   if (n == 0) return {0.0, 0.0, kNaN, 0, InvWeibullStatus::InvalidInput};
@@ -64,6 +66,7 @@ inline InvWeibullResult invweibull_mle(span x, double tol, int maxit,
 // so a held scale is converted once and a held weibull scale is converted
 // back once, never round-tripped.
 inline InvWeibullResult invweibull_mle(span x,double tol,int maxit,double shape0,double shape,double scale) {
+  maxit = static_cast<int>(solver_budget(maxit));
   if(std::isnan(shape) && std::isnan(scale))return invweibull_mle(x,tol,maxit,shape0);
   std::vector<double> y;double jac=0;
   for(double v:x){y.push_back(1/v);jac-=2*std::log(v);}

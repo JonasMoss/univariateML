@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../ztpois/mle.hpp"
 #include "../../core/stop_detail.hpp"
 #include "../lgser/mle.hpp"
@@ -9,6 +10,7 @@ struct ZtnbinomResult { double size, prob, logLik; int iterations; ZtnbinomStatu
 inline ZtnbinomResult ztnbinom_candidate_mle(ispan x, double tol=1e-10, int maxit=200,
     double fixed_size=std::numeric_limits<double>::quiet_NaN(),
     double fixed_prob=std::numeric_limits<double>::quiet_NaN()) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const bool fixed=!std::isnan(fixed_size);
   if(fixed && (!(fixed_size>=0)||!std::isfinite(fixed_size)))
     return {0,0,0,0,ZtnbinomStatus::InvalidSize};
@@ -35,8 +37,8 @@ inline ZtnbinomResult ztnbinom_candidate_mle(ispan x, double tol=1e-10, int maxi
     // The size-zero logarithmic member is attained. At infinity the
     // likelihood vanishes for held prob<1. Refine every grid peak.
     double upper=std::max(2.0,std::log(m*fixed_prob/(1-fixed_prob))+2);
-    while(upper<700 && evaluate(std::exp(upper)).logLik>best.logLik-n) upper+=2;
-    if(upper>=700) return {0,0,0,0,ZtnbinomStatus::IterationFailure};
+    for(std::int64_t bracket_pass=0; bracket_pass<solver_budget(maxit) && (upper<700 && evaluate(std::exp(upper)).logLik>best.logLik-n); ++bracket_pass) upper+=2;
+    if(upper>=700 || evaluate(std::exp(upper)).logLik>best.logLik-n) return {0,0,0,0,ZtnbinomStatus::IterationFailure};
     for(double t=-24;t<=upper;t+=0.5) {
       const auto mid=evaluate(std::exp(t));
       if(mid.logLik>best.logLik)best=mid;
@@ -48,10 +50,10 @@ inline ZtnbinomResult ztnbinom_candidate_mle(ispan x, double tol=1e-10, int maxi
     return best;
   }
   if(m==1) return {fixed?fixed_size:1,1,0,0,ZtnbinomStatus::Ok};
-  const auto logarithmic=zero_detail::logarithmic_fit(x);
+  const auto logarithmic=zero_detail::logarithmic_fit(x,maxit);
   auto profile=[&](double r) {
     if(r==0)return ZtnbinomResult{0,1-logarithmic.theta,logarithmic.logLik,0,ZtnbinomStatus::Ok};
-    const double p=zero_detail::nb_prob(r,m);
+    const double p=zero_detail::nb_prob(r,m,maxit);
     double ll=0;
     for(int v:x) ll+=zero_detail::nb_logpmf(v,r,p)-std::log(-std::expm1(r*std::log(p)));
     return ZtnbinomResult{r,p,ll,0,ZtnbinomStatus::Ok};

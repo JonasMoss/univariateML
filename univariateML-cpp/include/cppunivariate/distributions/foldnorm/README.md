@@ -31,7 +31,7 @@ r:
     mu: Optional fixed nonnegative parent location; NULL estimates it.
     sigma: Optional fixed positive parent scale; NULL estimates it.
     reltol: Positive tolerance for the scalar profile search.
-    iterlim: Positive iteration limit for each bracket refinement.
+    iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations."
 log_density: -log(sigma) - log(2*pi)/2 - (x-mu)**2/(2*sigma**2) + log(1+exp(-2*x*mu/sigma**2))
 holds: []
 examples: |

@@ -3,6 +3,7 @@
 // The log-likelihood is rederived in the log-logistic parameterisation.
 
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../../core/precision.hpp"
 
 #include "../../core/span.hpp"
@@ -26,6 +27,7 @@ struct LogLogisticResult {
 };
 
 inline LogLogisticResult loglogistic_mle(span x, double tol, int maxit) {
+  maxit = static_cast<int>(solver_budget(maxit));
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
   if (n == 0) return {0.0, 0.0, kNaN, 0, LogLogisticStatus::InvalidInput};
@@ -57,6 +59,7 @@ inline LogLogisticResult loglogistic_mle(span x, double tol, int maxit) {
 // the bisection equations and the log-likelihood below, which are
 // unchanged from the rate parameterisation.
 inline LogLogisticResult loglogistic_mle(span x,double tol,int maxit,double shape,double scale) {
+  maxit = static_cast<int>(solver_budget(maxit));
   if(std::isnan(shape) && std::isnan(scale))return loglogistic_mle(x,tol,maxit);
   const double nan=std::numeric_limits<double>::quiet_NaN();
   if(x.size()==0 || !(tol>0 && std::isfinite(tol)) || maxit<=0 || (!std::isnan(shape) && !(shape>0 && std::isfinite(shape))) ||

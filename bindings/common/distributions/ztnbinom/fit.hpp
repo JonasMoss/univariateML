@@ -18,7 +18,7 @@ inline FitResult fit_ztnbinom(cppunivariate::ispan x, Held size_arg = {}, Held p
   if(res.status==cppunivariate::ZtnbinomStatus::PoissonLimit)return stop_failure(fail("The maximum likelihood estimator escapes to infinite size. Use `mlztpois`."),res.stop_detail,"limit",{"lambda"},"ztpois");
   if(res.status==cppunivariate::ZtnbinomStatus::IterationFailure) {
     std::string message="Profile certificate has an unresolved floating-point comparison; no verified maximum.";
-    if(res.certificate_failure==cppunivariate::ZtnbinomCertificateFailure::Budget)message="Profile search exhausted: certificate iteration budget exhausted (16 * min(iterlim, 100000)); no verified maximum.";
+    if(res.certificate_failure==cppunivariate::ZtnbinomCertificateFailure::Budget)message="Profile search exhausted: certificate iteration budget exhausted (128 * min(iterlim, 100000)); no verified maximum. Raising iterlim may resolve this stop.";
     if(res.certificate_failure==cppunivariate::ZtnbinomCertificateFailure::Workload)message="Profile certificate workload limit: maximum count 100000 and total count 2^52; no verified maximum.";
     if(res.certificate_failure==cppunivariate::ZtnbinomCertificateFailure::AdditionalExtrema)message="Profile certificate found additional extrema requiring a global likelihood comparison; no verified maximum.";
     return stop_failure(fail(message),res.stop_detail,res.budget_exhausted?"budget":"numerical",{"size","prob"});

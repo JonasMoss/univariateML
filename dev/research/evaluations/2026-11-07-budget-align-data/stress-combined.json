@@ -1,0 +1,2841 @@
+{
+  "source_equivalence": {
+    "final_headers_sha256": "7349c83fd8ae9cc29c52d42593b53160ba0dbb512a36f265cc84779f652e036f",
+    "virtual_phase8_headers_sha256": "2999d6b67ee164dae06d6ef553c01f0fc8714e4113f8a5a498ac3ffff42bbd4a",
+    "phase8_headers_sha256": "2999d6b67ee164dae06d6ef553c01f0fc8714e4113f8a5a498ac3ffff42bbd4a",
+    "difference": "Only CMB maxit/iterlim defaults changed from 1000 to 2000; all other numerical header bytes are identical."
+  },
+  "records": [
+    {
+      "family": "bbinom",
+      "mode": 0,
+      "elapsed": 0.00871718100097496,
+      "returncode": 0,
+      "output": "bbinom\t0\t100000\t0.00068370799999999999",
+      "stderr": ""
+    },
+    {
+      "family": "bbinom",
+      "mode": 1,
+      "elapsed": 0.00922583500505425,
+      "returncode": 0,
+      "output": "bbinom\t1\t100000\t0.00050119599999999998",
+      "stderr": ""
+    },
+    {
+      "family": "bbinom",
+      "mode": 2,
+      "elapsed": 0.007782361004501581,
+      "returncode": 0,
+      "output": "bbinom\t2\t100000\t0.00096572100000000001",
+      "stderr": ""
+    },
+    {
+      "family": "bbinom",
+      "mode": 3,
+      "elapsed": 0.248816266990616,
+      "returncode": 0,
+      "output": "bbinom\t3\t100000\t0.24271546899999999",
+      "stderr": ""
+    },
+    {
+      "family": "betapr",
+      "mode": 0,
+      "elapsed": 2.4945845960028237,
+      "returncode": 0,
+      "output": "betapr\t0\t100000\t2.4904431370000002",
+      "stderr": ""
+    },
+    {
+      "family": "betapr",
+      "mode": 1,
+      "elapsed": 2.5061663090018556,
+      "returncode": 0,
+      "output": "betapr\t1\t100000\t2.49296001",
+      "stderr": ""
+    },
+    {
+      "family": "betapr",
+      "mode": 2,
+      "elapsed": 6.104533404999529,
+      "returncode": 0,
+      "output": "betapr\t2\t100000\t6.1001622549999999",
+      "stderr": ""
+    },
+    {
+      "family": "betapr",
+      "mode": 3,
+      "elapsed": 0.007822564992238767,
+      "returncode": 0,
+      "output": "betapr\t3\t100000\t0.0033751330000000002",
+      "stderr": ""
+    },
+    {
+      "family": "bnbinom",
+      "mode": 0,
+      "elapsed": 0.38724845500837546,
+      "returncode": 0,
+      "output": "bnbinom\t0\t100000\t0.38298853700000002",
+      "stderr": ""
+    },
+    {
+      "family": "bnbinom",
+      "mode": 1,
+      "elapsed": 0.4231097700103419,
+      "returncode": 0,
+      "output": "bnbinom\t1\t100000\t0.41280176699999999",
+      "stderr": ""
+    },
+    {
+      "family": "bnbinom",
+      "mode": 2,
+      "elapsed": 0.20777358800114598,
+      "returncode": 0,
+      "output": "bnbinom\t2\t100000\t0.20208648300000001",
+      "stderr": ""
+    },
+    {
+      "family": "bnbinom",
+      "mode": 3,
+      "elapsed": 0.43933877399831545,
+      "returncode": 0,
+      "output": "bnbinom\t3\t100000\t0.43161306399999999",
+      "stderr": ""
+    },
+    {
+      "family": "burr",
+      "mode": 0,
+      "elapsed": 9.857996970997192,
+      "returncode": 0,
+      "output": "burr\t0\t100000\t9.8516369009999991\tbudget\tBurr global certificate budget exhausted; no verified MLE. Raising iterlim may resolve this stop.",
+      "stderr": ""
+    },
+    {
+      "family": "burr",
+      "mode": 1,
+      "elapsed": 14.563369292998686,
+      "returncode": 0,
+      "output": "burr\t1\t100000\t14.552301331000001\tbudget\tBurr global certificate budget exhausted; no verified MLE. Raising iterlim may resolve this stop.",
+      "stderr": ""
+    },
+    {
+      "family": "burr",
+      "mode": 2,
+      "elapsed": 28.562450514000375,
+      "returncode": 0,
+      "output": "burr\t2\t100000\t28.554340383\ttie\tBurr global certificate unresolved: finite/face tie or sign-uncertain seam; no verified MLE.",
+      "stderr": ""
+    },
+    {
+      "family": "burr",
+      "mode": 3,
+      "elapsed": 0.6510117050056579,
+      "returncode": 0,
+      "output": "burr\t3\t100000\t0.64338125800000001",
+      "stderr": ""
+    },
+    {
+      "family": "cauchy",
+      "mode": 0,
+      "elapsed": 0.023138058997574262,
+      "returncode": 0,
+      "output": "cauchy\t0\t100000\t0.016964252999999999",
+      "stderr": ""
+    },
+    {
+      "family": "cauchy",
+      "mode": 1,
+      "elapsed": 0.032621424994431436,
+      "returncode": 0,
+      "output": "cauchy\t1\t100000\t0.019961283999999999",
+      "stderr": ""
+    },
+    {
+      "family": "cauchy",
+      "mode": 2,
+      "elapsed": 0.021065951994387433,
+      "returncode": 0,
+      "output": "cauchy\t2\t100000\t0.014781371999999999",
+      "stderr": ""
+    },
+    {
+      "family": "cauchy",
+      "mode": 3,
+      "elapsed": 0.13721835101023316,
+      "returncode": 0,
+      "output": "cauchy\t3\t100000\t0.13146469499999999",
+      "stderr": ""
+    },
+    {
+      "family": "dgamma",
+      "mode": 0,
+      "elapsed": 0.4051005279907258,
+      "returncode": 0,
+      "output": "dgamma\t0\t100000\t0.397921515",
+      "stderr": ""
+    },
+    {
+      "family": "dgamma",
+      "mode": 1,
+      "elapsed": 0.34865602100035176,
+      "returncode": 0,
+      "output": "dgamma\t1\t100000\t0.33638828399999998",
+      "stderr": ""
+    },
+    {
+      "family": "dgamma",
+      "mode": 2,
+      "elapsed": 0.5080771010107128,
+      "returncode": 0,
+      "output": "dgamma\t2\t100000\t0.50183488399999998",
+      "stderr": ""
+    },
+    {
+      "family": "dgamma",
+      "mode": 3,
+      "elapsed": 0.4057988300046418,
+      "returncode": 0,
+      "output": "dgamma\t3\t100000\t0.40086904600000001",
+      "stderr": ""
+    },
+    {
+      "family": "foldnorm",
+      "mode": 0,
+      "elapsed": 2.1795620869961567,
+      "returncode": 0,
+      "output": "foldnorm\t0\t100000\t2.1734768710000001",
+      "stderr": ""
+    },
+    {
+      "family": "foldnorm",
+      "mode": 1,
+      "elapsed": 1.995605224990868,
+      "returncode": 0,
+      "output": "foldnorm\t1\t100000\t1.984078821",
+      "stderr": ""
+    },
+    {
+      "family": "foldnorm",
+      "mode": 2,
+      "elapsed": 4.99241837199952,
+      "returncode": 0,
+      "output": "foldnorm\t2\t100000\t4.9868169809999996",
+      "stderr": ""
+    },
+    {
+      "family": "foldnorm",
+      "mode": 3,
+      "elapsed": 1.6485552069934784,
+      "returncode": 0,
+      "output": "foldnorm\t3\t100000\t1.643979004",
+      "stderr": ""
+    },
+    {
+      "family": "fpareto",
+      "mode": 0,
+      "elapsed": 12.327561647005496,
+      "returncode": 0,
+      "output": "fpareto\t0\t100000\t12.322596793000001\t\tGB2 selects the double Pareto limit; this package has no double Pareto fitter.",
+      "stderr": ""
+    },
+    {
+      "family": "fpareto",
+      "mode": 1,
+      "elapsed": 14.461796885996591,
+      "returncode": 0,
+      "output": "fpareto\t1\t100000\t14.453873317999999\t\tGB2 selects the double Pareto limit; this package has no double Pareto fitter.",
+      "stderr": ""
+    },
+    {
+      "family": "fpareto",
+      "mode": 2,
+      "elapsed": 44.57025555700238,
+      "returncode": 0,
+      "output": "fpareto\t2\t100000\t44.566314286999997\t\tGB2 selects the double Pareto limit; this package has no double Pareto fitter.",
+      "stderr": ""
+    },
+    {
+      "family": "fpareto",
+      "mode": 3,
+      "elapsed": 0.549363803002052,
+      "returncode": 0,
+      "output": "fpareto\t3\t100000\t0.54583168299999996",
+      "stderr": ""
+    },
+    {
+      "family": "gb2",
+      "mode": 0,
+      "elapsed": 14.000951187001192,
+      "returncode": 0,
+      "output": "gb2\t0\t100000\t13.996846361999999",
+      "stderr": ""
+    },
+    {
+      "family": "gb2",
+      "mode": 1,
+      "elapsed": 17.247890736995032,
+      "returncode": 0,
+      "output": "gb2\t1\t100000\t17.236358291999998",
+      "stderr": ""
+    },
+    {
+      "family": "gb2",
+      "mode": 2,
+      "elapsed": 16.264926114992704,
+      "returncode": 0,
+      "output": "gb2\t2\t100000\t16.260117296000001",
+      "stderr": ""
+    },
+    {
+      "family": "gb2",
+      "mode": 3,
+      "elapsed": 0.4337223559996346,
+      "returncode": 0,
+      "output": "gb2\t3\t100000\t0.42966470499999998",
+      "stderr": ""
+    },
+    {
+      "family": "gpd",
+      "mode": 0,
+      "elapsed": 0.7889128870010609,
+      "returncode": 0,
+      "output": "gpd\t0\t100000\t0.785261337",
+      "stderr": ""
+    },
+    {
+      "family": "gpd",
+      "mode": 1,
+      "elapsed": 0.6481213259976357,
+      "returncode": 0,
+      "output": "gpd\t1\t100000\t0.64064044099999995",
+      "stderr": ""
+    },
+    {
+      "family": "gpd",
+      "mode": 2,
+      "elapsed": 1.6479440460097976,
+      "returncode": 0,
+      "output": "gpd\t2\t100000\t1.6443192600000001",
+      "stderr": ""
+    },
+    {
+      "family": "gpd",
+      "mode": 3,
+      "elapsed": 0.7599927589908475,
+      "returncode": 0,
+      "output": "gpd\t3\t100000\t0.75619496100000005",
+      "stderr": ""
+    },
+    {
+      "family": "invburr",
+      "mode": 0,
+      "elapsed": 9.78782826999668,
+      "returncode": 0,
+      "output": "invburr\t0\t100000\t9.7837065390000006\tbudget\tinvburr certificate budget exhausted; no verified MLE. Raising iterlim may resolve this stop.",
+      "stderr": ""
+    },
+    {
+      "family": "invburr",
+      "mode": 1,
+      "elapsed": 15.683829458997934,
+      "returncode": 0,
+      "output": "invburr\t1\t100000\t15.674668581000001\tbudget\tinvburr certificate budget exhausted; no verified MLE. Raising iterlim may resolve this stop.",
+      "stderr": ""
+    },
+    {
+      "family": "invburr",
+      "mode": 2,
+      "elapsed": 15.76987363700755,
+      "returncode": 0,
+      "output": "invburr\t2\t100000\t15.765206806\tlimit\tThe invburr likelihood is maximised at a limit. Use `mlinvweibull` to fit this model.",
+      "stderr": ""
+    },
+    {
+      "family": "invburr",
+      "mode": 3,
+      "elapsed": 0.414716439001495,
+      "returncode": 0,
+      "output": "invburr\t3\t100000\t0.410370556",
+      "stderr": ""
+    },
+    {
+      "family": "invparalogis",
+      "mode": 0,
+      "elapsed": 0.1526939739997033,
+      "returncode": 0,
+      "output": "invparalogis\t0\t100000\t0.14847091900000001",
+      "stderr": ""
+    },
+    {
+      "family": "invparalogis",
+      "mode": 1,
+      "elapsed": 0.4691130129940575,
+      "returncode": 0,
+      "output": "invparalogis\t1\t100000\t0.46231759",
+      "stderr": ""
+    },
+    {
+      "family": "invparalogis",
+      "mode": 2,
+      "elapsed": 0.18380525401153136,
+      "returncode": 0,
+      "output": "invparalogis\t2\t100000\t0.17994787500000001",
+      "stderr": ""
+    },
+    {
+      "family": "invparalogis",
+      "mode": 3,
+      "elapsed": 0.04868334000639152,
+      "returncode": 0,
+      "output": "invparalogis\t3\t100000\t0.044855669000000001",
+      "stderr": ""
+    },
+    {
+      "family": "invpareto",
+      "mode": 0,
+      "elapsed": 0.026045840000733733,
+      "returncode": 0,
+      "output": "invpareto\t0\t100000\t0.020745704",
+      "stderr": ""
+    },
+    {
+      "family": "invpareto",
+      "mode": 1,
+      "elapsed": 0.26578450099623296,
+      "returncode": 0,
+      "output": "invpareto\t1\t100000\t0.25830697200000002",
+      "stderr": ""
+    },
+    {
+      "family": "invpareto",
+      "mode": 2,
+      "elapsed": 0.024497020000126213,
+      "returncode": 0,
+      "output": "invpareto\t2\t100000\t0.020231877999999998",
+      "stderr": ""
+    },
+    {
+      "family": "invpareto",
+      "mode": 3,
+      "elapsed": 0.02138544199988246,
+      "returncode": 0,
+      "output": "invpareto\t3\t100000\t0.017414124999999999",
+      "stderr": ""
+    },
+    {
+      "family": "kumar",
+      "mode": 0,
+      "elapsed": 0.09202230100345332,
+      "returncode": 0,
+      "output": "kumar\t0\t100000\t0.088002555999999996",
+      "stderr": ""
+    },
+    {
+      "family": "kumar",
+      "mode": 1,
+      "elapsed": 0.09794001400587149,
+      "returncode": 0,
+      "output": "kumar\t1\t100000\t0.090844640000000004",
+      "stderr": ""
+    },
+    {
+      "family": "kumar",
+      "mode": 2,
+      "elapsed": 0.2295386320038233,
+      "returncode": 0,
+      "output": "kumar\t2\t100000\t0.224725601",
+      "stderr": ""
+    },
+    {
+      "family": "kumar",
+      "mode": 3,
+      "elapsed": 0.15881206600170117,
+      "returncode": 0,
+      "output": "kumar\t3\t100000\t0.155433234",
+      "stderr": ""
+    },
+    {
+      "family": "lomax",
+      "mode": 0,
+      "elapsed": 0.020178214996121824,
+      "returncode": 0,
+      "output": "lomax\t0\t100000\t0.016079115000000001",
+      "stderr": ""
+    },
+    {
+      "family": "lomax",
+      "mode": 1,
+      "elapsed": 0.2674293839954771,
+      "returncode": 0,
+      "output": "lomax\t1\t100000\t0.26025187",
+      "stderr": ""
+    },
+    {
+      "family": "lomax",
+      "mode": 2,
+      "elapsed": 0.06914997499552555,
+      "returncode": 0,
+      "output": "lomax\t2\t100000\t0.065336465999999996",
+      "stderr": ""
+    },
+    {
+      "family": "lomax",
+      "mode": 3,
+      "elapsed": 0.019370605994481593,
+      "returncode": 0,
+      "output": "lomax\t3\t100000\t0.015774592",
+      "stderr": ""
+    },
+    {
+      "family": "lst",
+      "mode": 0,
+      "elapsed": 0.06835672599845566,
+      "returncode": 0,
+      "output": "lst\t0\t100000\t0.064511678000000003",
+      "stderr": ""
+    },
+    {
+      "family": "lst",
+      "mode": 1,
+      "elapsed": 180.1019362740044,
+      "censored": true,
+      "limit_seconds": 180
+    },
+    {
+      "family": "lst",
+      "mode": 2,
+      "elapsed": 0.015524607006227598,
+      "returncode": 0,
+      "output": "lst\t2\t100000\t0.011204834\tnumerical\tStudent-t global certificate numerical failure: score/root, enclosure, domain or linear solve unresolved; no verified MLE.",
+      "stderr": ""
+    },
+    {
+      "family": "lst",
+      "mode": 3,
+      "elapsed": 0.07246120800846256,
+      "returncode": 0,
+      "output": "lst\t3\t100000\t0.067435827000000004",
+      "stderr": ""
+    },
+    {
+      "family": "nbinom",
+      "mode": 0,
+      "elapsed": 0.025319958993350156,
+      "returncode": 0,
+      "output": "nbinom\t0\t100000\t0.020712504999999999",
+      "stderr": ""
+    },
+    {
+      "family": "nbinom",
+      "mode": 1,
+      "elapsed": 0.036327819994767196,
+      "returncode": 0,
+      "output": "nbinom\t1\t100000\t0.023931924",
+      "stderr": ""
+    },
+    {
+      "family": "nbinom",
+      "mode": 2,
+      "elapsed": 0.008883428003173321,
+      "returncode": 0,
+      "output": "nbinom\t2\t100000\t0.0039820869999999996",
+      "stderr": ""
+    },
+    {
+      "family": "nbinom",
+      "mode": 3,
+      "elapsed": 0.32541382900672033,
+      "returncode": 0,
+      "output": "nbinom\t3\t100000\t0.31883678399999998",
+      "stderr": ""
+    },
+    {
+      "family": "paralogis",
+      "mode": 0,
+      "elapsed": 0.1448122349975165,
+      "returncode": 0,
+      "output": "paralogis\t0\t100000\t0.14088392499999999",
+      "stderr": ""
+    },
+    {
+      "family": "paralogis",
+      "mode": 1,
+      "elapsed": 0.49497498499113135,
+      "returncode": 0,
+      "output": "paralogis\t1\t100000\t0.487365667",
+      "stderr": ""
+    },
+    {
+      "family": "paralogis",
+      "mode": 2,
+      "elapsed": 0.1607917590008583,
+      "returncode": 0,
+      "output": "paralogis\t2\t100000\t0.15619106499999999\tnumerical\tParalogis certificate numerical failure: unresolved bounds or fitted parameters exceed double precision; no verified MLE.",
+      "stderr": ""
+    },
+    {
+      "family": "paralogis",
+      "mode": 3,
+      "elapsed": 0.05227735199150629,
+      "returncode": 0,
+      "output": "paralogis\t3\t100000\t0.048372046000000002",
+      "stderr": ""
+    },
+    {
+      "family": "pareto2",
+      "mode": 0,
+      "elapsed": 0.06309672999486793,
+      "returncode": 0,
+      "output": "pareto2\t0\t100000\t0.059540858000000002",
+      "stderr": ""
+    },
+    {
+      "family": "pareto2",
+      "mode": 1,
+      "elapsed": 1.4732818870106712,
+      "returncode": 0,
+      "output": "pareto2\t1\t100000\t1.465796554",
+      "stderr": ""
+    },
+    {
+      "family": "pareto2",
+      "mode": 2,
+      "elapsed": 0.08282276199315675,
+      "returncode": 0,
+      "output": "pareto2\t2\t100000\t0.078125194999999995",
+      "stderr": ""
+    },
+    {
+      "family": "pareto2",
+      "mode": 3,
+      "elapsed": 0.06714860600186512,
+      "returncode": 0,
+      "output": "pareto2\t3\t100000\t0.061616134000000003",
+      "stderr": ""
+    },
+    {
+      "family": "pareto4",
+      "mode": 0,
+      "elapsed": 10.123166029996355,
+      "returncode": 0,
+      "output": "pareto4\t0\t100000\t10.119025914\tbudget\tPareto IV certificate budget exhausted; no verified MLE. Raising iterlim may resolve this stop.",
+      "stderr": ""
+    },
+    {
+      "family": "pareto4",
+      "mode": 1,
+      "elapsed": 14.82255287701264,
+      "returncode": 0,
+      "output": "pareto4\t1\t100000\t14.814217399\tbudget\tPareto IV certificate budget exhausted; no verified MLE. Raising iterlim may resolve this stop.",
+      "stderr": ""
+    },
+    {
+      "family": "pareto4",
+      "mode": 2,
+      "elapsed": 39.70495954299986,
+      "returncode": 0,
+      "output": "pareto4\t2\t100000\t39.700322036000003\ttie\tPareto IV certificate unresolved at a tie or sign-uncertain seam; no verified MLE.",
+      "stderr": ""
+    },
+    {
+      "family": "pareto4",
+      "mode": 3,
+      "elapsed": 0.7758539749920601,
+      "returncode": 0,
+      "output": "pareto4\t3\t100000\t0.76927269399999998",
+      "stderr": ""
+    },
+    {
+      "family": "slash",
+      "mode": 0,
+      "elapsed": 180.10105357698922,
+      "censored": true,
+      "limit_seconds": 180
+    },
+    {
+      "family": "slash",
+      "mode": 1,
+      "elapsed": 60.0995880170085,
+      "censored": true,
+      "limit_seconds": 60
+    },
+    {
+      "family": "slash",
+      "mode": 2,
+      "elapsed": 60.10000261600362,
+      "censored": true,
+      "limit_seconds": 60
+    },
+    {
+      "family": "slash",
+      "mode": 3,
+      "elapsed": 60.09952625600272,
+      "censored": true,
+      "limit_seconds": 60
+    },
+    {
+      "family": "skellam",
+      "mode": 0,
+      "elapsed": 27.64643192299991,
+      "returncode": 0,
+      "output": "skellam\t0\t100000\t27.641679405000001",
+      "stderr": ""
+    },
+    {
+      "family": "skellam",
+      "mode": 1,
+      "elapsed": 27.3550416079961,
+      "returncode": 0,
+      "output": "skellam\t1\t100000\t27.343201728",
+      "stderr": ""
+    },
+    {
+      "family": "skellam",
+      "mode": 2,
+      "elapsed": 9.048196863994235,
+      "returncode": 0,
+      "output": "skellam\t2\t100000\t9.0425766099999993",
+      "stderr": ""
+    },
+    {
+      "family": "skellam",
+      "mode": 3,
+      "elapsed": 27.417770774001838,
+      "returncode": 0,
+      "output": "skellam\t3\t100000\t27.412823848999999",
+      "stderr": ""
+    },
+    {
+      "family": "sn",
+      "mode": 0,
+      "elapsed": 38.725482998008374,
+      "returncode": 0,
+      "output": "sn\t0\t100000\t38.722490979",
+      "stderr": ""
+    },
+    {
+      "family": "sn",
+      "mode": 1,
+      "elapsed": 30.848850445006974,
+      "returncode": 0,
+      "output": "sn\t1\t100000\t30.837644940000001",
+      "stderr": ""
+    },
+    {
+      "family": "sn",
+      "mode": 2,
+      "elapsed": 60.022522122992086,
+      "censored": true,
+      "limit_seconds": 60
+    },
+    {
+      "family": "sn",
+      "mode": 3,
+      "elapsed": 60.100317835007445,
+      "censored": true,
+      "limit_seconds": 60
+    },
+    {
+      "family": "std",
+      "mode": 0,
+      "elapsed": 0.05615625200152863,
+      "returncode": 0,
+      "output": "std\t0\t100000\t0.052249683999999998",
+      "stderr": ""
+    },
+    {
+      "family": "std",
+      "mode": 1,
+      "elapsed": 180.10134370799642,
+      "censored": true,
+      "limit_seconds": 180
+    },
+    {
+      "family": "std",
+      "mode": 2,
+      "elapsed": 0.02757798800303135,
+      "returncode": 0,
+      "output": "std\t2\t100000\t0.020829805\tnumerical\tStudent-t global certificate numerical failure: score/root, enclosure, domain or linear solve unresolved; no verified MLE.",
+      "stderr": ""
+    },
+    {
+      "family": "std",
+      "mode": 3,
+      "elapsed": 0.0710337220079964,
+      "returncode": 0,
+      "output": "std\t3\t100000\t0.066304059999999998",
+      "stderr": ""
+    },
+    {
+      "family": "trgamma",
+      "mode": 0,
+      "elapsed": 0.846798148995731,
+      "returncode": 0,
+      "output": "trgamma\t0\t100000\t0.84215227999999998",
+      "stderr": ""
+    },
+    {
+      "family": "trgamma",
+      "mode": 1,
+      "elapsed": 0.7461331720114686,
+      "returncode": 0,
+      "output": "trgamma\t1\t100000\t0.73397674400000001",
+      "stderr": ""
+    },
+    {
+      "family": "trgamma",
+      "mode": 2,
+      "elapsed": 0.10940084799949545,
+      "returncode": 0,
+      "output": "trgamma\t2\t100000\t0.104147355\tlimit\tThe trgamma likelihood is maximised at a limit. Use `mllnorm` to fit this model.",
+      "stderr": ""
+    },
+    {
+      "family": "trgamma",
+      "mode": 3,
+      "elapsed": 0.8387650410004426,
+      "returncode": 0,
+      "output": "trgamma\t3\t100000\t0.83413383200000002",
+      "stderr": ""
+    },
+    {
+      "family": "invtrgamma",
+      "mode": 0,
+      "elapsed": 1.1573871620057616,
+      "returncode": 0,
+      "output": "invtrgamma\t0\t100000\t1.1534407090000001",
+      "stderr": ""
+    },
+    {
+      "family": "invtrgamma",
+      "mode": 1,
+      "elapsed": 1.0623212349892128,
+      "returncode": 0,
+      "output": "invtrgamma\t1\t100000\t1.0509816439999999",
+      "stderr": ""
+    },
+    {
+      "family": "invtrgamma",
+      "mode": 2,
+      "elapsed": 0.3084842469979776,
+      "returncode": 0,
+      "output": "invtrgamma\t2\t100000\t0.30279621200000001",
+      "stderr": ""
+    },
+    {
+      "family": "invtrgamma",
+      "mode": 3,
+      "elapsed": 1.2609851529996376,
+      "returncode": 0,
+      "output": "invtrgamma\t3\t100000\t1.2549764480000001",
+      "stderr": ""
+    },
+    {
+      "family": "zinb",
+      "mode": 0,
+      "elapsed": 0.037279437005054206,
+      "returncode": 0,
+      "output": "zinb\t0\t100000\t0.029821878",
+      "stderr": ""
+    },
+    {
+      "family": "zinb",
+      "mode": 1,
+      "elapsed": 0.037709172000177205,
+      "returncode": 0,
+      "output": "zinb\t1\t100000\t0.022845774999999999",
+      "stderr": ""
+    },
+    {
+      "family": "zinb",
+      "mode": 2,
+      "elapsed": 1.5710793089965591,
+      "returncode": 0,
+      "output": "zinb\t2\t100000\t1.564505169\tbudget\tZero-inflated negative binomial MLE failed: certificate budget exhausted; no verified maximum. Raising iterlim may resolve this stop.",
+      "stderr": ""
+    },
+    {
+      "family": "zinb",
+      "mode": 3,
+      "elapsed": 0.030015818003448658,
+      "returncode": 0,
+      "output": "zinb\t3\t100000\t0.022729126999999998",
+      "stderr": ""
+    },
+    {
+      "family": "zmnbinom",
+      "mode": 0,
+      "elapsed": 1.2296004030067706,
+      "returncode": 0,
+      "output": "zmnbinom\t0\t100000\t1.224177834",
+      "stderr": ""
+    },
+    {
+      "family": "zmnbinom",
+      "mode": 1,
+      "elapsed": 1.4232464619999519,
+      "returncode": 0,
+      "output": "zmnbinom\t1\t100000\t1.4109713660000001",
+      "stderr": ""
+    },
+    {
+      "family": "zmnbinom",
+      "mode": 2,
+      "elapsed": 1.500120278011309,
+      "returncode": 0,
+      "output": "zmnbinom\t2\t100000\t1.493267525\tbudget\tProfile search exhausted: certificate iteration budget exhausted (128 * min(iterlim, 100000)); no verified maximum. Raising iterlim may resolve this stop.",
+      "stderr": ""
+    },
+    {
+      "family": "zmnbinom",
+      "mode": 3,
+      "elapsed": 1.2188100679923082,
+      "returncode": 0,
+      "output": "zmnbinom\t3\t100000\t1.2109577709999999",
+      "stderr": ""
+    },
+    {
+      "family": "ztnbinom",
+      "mode": 0,
+      "elapsed": 1.8410693289915798,
+      "returncode": 0,
+      "output": "ztnbinom\t0\t100000\t1.8349334049999999",
+      "stderr": ""
+    },
+    {
+      "family": "ztnbinom",
+      "mode": 1,
+      "elapsed": 1.9142888990027132,
+      "returncode": 0,
+      "output": "ztnbinom\t1\t100000\t1.898614603",
+      "stderr": ""
+    },
+    {
+      "family": "ztnbinom",
+      "mode": 2,
+      "elapsed": 2.5204466780123767,
+      "returncode": 0,
+      "output": "ztnbinom\t2\t100000\t2.5149236780000002\tbudget\tProfile search exhausted: certificate iteration budget exhausted (128 * min(iterlim, 100000)); no verified maximum. Raising iterlim may resolve this stop.",
+      "stderr": ""
+    },
+    {
+      "family": "ztnbinom",
+      "mode": 3,
+      "elapsed": 1.8351867480087094,
+      "returncode": 0,
+      "output": "ztnbinom\t3\t100000\t1.8293827069999999",
+      "stderr": ""
+    },
+    {
+      "family": "zib",
+      "mode": 0,
+      "elapsed": 0.010339190004742704,
+      "returncode": 0,
+      "output": "zib\t0\t100000\t0.0051958059999999999",
+      "stderr": ""
+    },
+    {
+      "family": "zib",
+      "mode": 1,
+      "elapsed": 0.02238130700425245,
+      "returncode": 0,
+      "output": "zib\t1\t100000\t0.0078015330000000003",
+      "stderr": ""
+    },
+    {
+      "family": "zib",
+      "mode": 2,
+      "elapsed": 0.009136062988545746,
+      "returncode": 0,
+      "output": "zib\t2\t100000\t0.0020399720000000001",
+      "stderr": ""
+    },
+    {
+      "family": "zib",
+      "mode": 3,
+      "elapsed": 0.01494368699786719,
+      "returncode": 0,
+      "output": "zib\t3\t100000\t0.0073373780000000003",
+      "stderr": ""
+    },
+    {
+      "family": "ztbinom",
+      "mode": 0,
+      "elapsed": 0.017746871992130764,
+      "returncode": 0,
+      "output": "ztbinom\t0\t100000\t0.011807750000000001",
+      "stderr": ""
+    },
+    {
+      "family": "ztbinom",
+      "mode": 1,
+      "elapsed": 0.028610643988940865,
+      "returncode": 0,
+      "output": "ztbinom\t1\t100000\t0.013167778999999999",
+      "stderr": ""
+    },
+    {
+      "family": "ztbinom",
+      "mode": 2,
+      "elapsed": 0.011556475001270883,
+      "returncode": 0,
+      "output": "ztbinom\t2\t100000\t0.0061757110000000004",
+      "stderr": ""
+    },
+    {
+      "family": "ztbinom",
+      "mode": 3,
+      "elapsed": 0.02054519800003618,
+      "returncode": 0,
+      "output": "ztbinom\t3\t100000\t0.012233612",
+      "stderr": ""
+    },
+    {
+      "family": "cmb",
+      "mode": 0,
+      "elapsed": 0.00558936400921084,
+      "returncode": 0,
+      "output": "cmb\t0\t100000\t0.0031217699999999998",
+      "stderr": ""
+    },
+    {
+      "family": "cmb",
+      "mode": 1,
+      "elapsed": 0.00810573500348255,
+      "returncode": 0,
+      "output": "cmb\t1\t100000\t0.003265886",
+      "stderr": ""
+    },
+    {
+      "family": "cmb",
+      "mode": 2,
+      "elapsed": 0.004602223998517729,
+      "returncode": 0,
+      "output": "cmb\t2\t100000\t0.002306574",
+      "stderr": ""
+    },
+    {
+      "family": "cmb",
+      "mode": 3,
+      "elapsed": 24.338016920009977,
+      "returncode": 0,
+      "output": "cmb\t3\t100000\t24.335743294\tbudget\tCMB MLE failed to converge or exhausted its normalizer work budget; a larger finite maximum is not excluded. The Conway-Maxwell-Poisson limit is available: use mlcmp with nu held fixed. Raising iterlim may resolve this stop.",
+      "stderr": ""
+    },
+    {
+      "family": "beta",
+      "mode": 0,
+      "elapsed": 0.2340073290001783,
+      "returncode": 0,
+      "output": "beta\t0\t100000\t0.00074581599999999995",
+      "stderr": ""
+    },
+    {
+      "family": "beta",
+      "mode": 1,
+      "elapsed": 0.230859306000184,
+      "returncode": 0,
+      "output": "beta\t1\t100000\t0.00072986399999999999",
+      "stderr": ""
+    },
+    {
+      "family": "beta",
+      "mode": 2,
+      "elapsed": 0.2541372539999429,
+      "returncode": 0,
+      "output": "beta\t2\t100000\t0.00082438900000000002",
+      "stderr": ""
+    },
+    {
+      "family": "beta",
+      "mode": 3,
+      "elapsed": 0.25058262199991077,
+      "returncode": 0,
+      "output": "beta\t3\t100000\t0.0012375279999999999",
+      "stderr": ""
+    },
+    {
+      "family": "bhatt",
+      "mode": 0,
+      "elapsed": 60.10091038700011,
+      "censored": true,
+      "limit_seconds": 60
+    },
+    {
+      "family": "bhatt",
+      "mode": 1,
+      "elapsed": 60.07454216699989,
+      "censored": true,
+      "limit_seconds": 60
+    },
+    {
+      "family": "bhatt",
+      "mode": 2,
+      "elapsed": 60.07689902199991,
+      "censored": true,
+      "limit_seconds": 60
+    },
+    {
+      "family": "bhatt",
+      "mode": 3,
+      "elapsed": 53.34998888300015,
+      "returncode": 0,
+      "output": "bhatt\t3\t100000\t53.143943798999999",
+      "stderr": ""
+    },
+    {
+      "family": "binom",
+      "mode": 0,
+      "elapsed": 0.20030257000007623,
+      "returncode": 0,
+      "output": "binom\t0\t100000\t0.00052338299999999999",
+      "stderr": ""
+    },
+    {
+      "family": "binom",
+      "mode": 1,
+      "elapsed": 0.2034384260000479,
+      "returncode": 0,
+      "output": "binom\t1\t100000\t0.00050456000000000003",
+      "stderr": ""
+    },
+    {
+      "family": "binom",
+      "mode": 2,
+      "elapsed": 0.1929419770003733,
+      "returncode": 0,
+      "output": "binom\t2\t100000\t0.00048009399999999997",
+      "stderr": ""
+    },
+    {
+      "family": "binom",
+      "mode": 3,
+      "elapsed": 0.22874441399972056,
+      "returncode": 0,
+      "output": "binom\t3\t100000\t0.00050172599999999997",
+      "stderr": ""
+    },
+    {
+      "family": "dnorm",
+      "mode": 0,
+      "elapsed": 0.205467249999856,
+      "returncode": 0,
+      "output": "dnorm\t0\t100000\t0.0018708869999999999",
+      "stderr": ""
+    },
+    {
+      "family": "dnorm",
+      "mode": 1,
+      "elapsed": 0.22466342299958342,
+      "returncode": 0,
+      "output": "dnorm\t1\t100000\t0.001682174",
+      "stderr": ""
+    },
+    {
+      "family": "dnorm",
+      "mode": 2,
+      "elapsed": 0.19325191900043137,
+      "returncode": 0,
+      "output": "dnorm\t2\t100000\t0.0012303520000000001",
+      "stderr": ""
+    },
+    {
+      "family": "dnorm",
+      "mode": 3,
+      "elapsed": 0.2292165290000412,
+      "returncode": 0,
+      "output": "dnorm\t3\t100000\t0.00180638",
+      "stderr": ""
+    },
+    {
+      "family": "dweibull",
+      "mode": 0,
+      "elapsed": 0.1985066810002536,
+      "returncode": 0,
+      "output": "dweibull\t0\t100000\t0.002031185",
+      "stderr": ""
+    },
+    {
+      "family": "dweibull",
+      "mode": 1,
+      "elapsed": 0.20444934299939632,
+      "returncode": 0,
+      "output": "dweibull\t1\t100000\t0.0017888820000000001",
+      "stderr": ""
+    },
+    {
+      "family": "dweibull",
+      "mode": 2,
+      "elapsed": 0.22748742699968716,
+      "returncode": 0,
+      "output": "dweibull\t2\t100000\t0.0011509440000000001",
+      "stderr": ""
+    },
+    {
+      "family": "dweibull",
+      "mode": 3,
+      "elapsed": 0.2207340960003421,
+      "returncode": 0,
+      "output": "dweibull\t3\t100000\t0.0017471570000000001",
+      "stderr": ""
+    },
+    {
+      "family": "emg",
+      "mode": 0,
+      "elapsed": 60.101324591999855,
+      "censored": true,
+      "limit_seconds": 60
+    },
+    {
+      "family": "emg",
+      "mode": 1,
+      "elapsed": 60.10075271100004,
+      "censored": true,
+      "limit_seconds": 60
+    },
+    {
+      "family": "emg",
+      "mode": 2,
+      "elapsed": 60.09635394399993,
+      "censored": true,
+      "limit_seconds": 60
+    },
+    {
+      "family": "emg",
+      "mode": 3,
+      "elapsed": 44.870812613,
+      "returncode": 0,
+      "output": "emg\t3\t100000\t44.667313161999999",
+      "stderr": ""
+    },
+    {
+      "family": "fatigue",
+      "mode": 0,
+      "elapsed": 0.22150153700022202,
+      "returncode": 0,
+      "output": "fatigue\t0\t100000\t0.0031710509999999998",
+      "stderr": ""
+    },
+    {
+      "family": "fatigue",
+      "mode": 1,
+      "elapsed": 0.22154387999989922,
+      "returncode": 0,
+      "output": "fatigue\t1\t100000\t0.003163716",
+      "stderr": ""
+    },
+    {
+      "family": "fatigue",
+      "mode": 2,
+      "elapsed": 0.19575663699970391,
+      "returncode": 0,
+      "output": "fatigue\t2\t100000\t0.0033781560000000002",
+      "stderr": ""
+    },
+    {
+      "family": "fatigue",
+      "mode": 3,
+      "elapsed": 2.010894591000124,
+      "returncode": 0,
+      "output": "fatigue\t3\t100000\t1.7835551359999999",
+      "stderr": ""
+    },
+    {
+      "family": "frechet",
+      "mode": 0,
+      "elapsed": 0.23079637699993327,
+      "returncode": 0,
+      "output": "frechet\t0\t100000\t0.0035439640000000001",
+      "stderr": ""
+    },
+    {
+      "family": "frechet",
+      "mode": 1,
+      "elapsed": 0.23247721100005947,
+      "returncode": 0,
+      "output": "frechet\t1\t100000\t0.0035565900000000001",
+      "stderr": ""
+    },
+    {
+      "family": "frechet",
+      "mode": 2,
+      "elapsed": 0.22331228800021563,
+      "returncode": 0,
+      "output": "frechet\t2\t100000\t0.0039481910000000002",
+      "stderr": ""
+    },
+    {
+      "family": "frechet",
+      "mode": 3,
+      "elapsed": 0.2261776989998907,
+      "returncode": 0,
+      "output": "frechet\t3\t100000\t0.0062758789999999998",
+      "stderr": ""
+    },
+    {
+      "family": "gamma",
+      "mode": 0,
+      "elapsed": 0.19656873700023425,
+      "returncode": 0,
+      "output": "gamma\t0\t100000\t0.00043481599999999998",
+      "stderr": ""
+    },
+    {
+      "family": "gamma",
+      "mode": 1,
+      "elapsed": 0.20081857600007424,
+      "returncode": 0,
+      "output": "gamma\t1\t100000\t0.000425604",
+      "stderr": ""
+    },
+    {
+      "family": "gamma",
+      "mode": 2,
+      "elapsed": 0.22643728000002739,
+      "returncode": 0,
+      "output": "gamma\t2\t100000\t0.00042289600000000002",
+      "stderr": ""
+    },
+    {
+      "family": "gamma",
+      "mode": 3,
+      "elapsed": 0.22889547100021446,
+      "returncode": 0,
+      "output": "gamma\t3\t100000\t0.00076693099999999999",
+      "stderr": ""
+    },
+    {
+      "family": "ged",
+      "mode": 0,
+      "elapsed": 3.9081828399998813,
+      "returncode": 0,
+      "output": "ged\t0\t100000\t3.7159070249999999",
+      "stderr": ""
+    },
+    {
+      "family": "ged",
+      "mode": 1,
+      "elapsed": 4.014548889999787,
+      "returncode": 0,
+      "output": "ged\t1\t100000\t3.7908813669999999",
+      "stderr": ""
+    },
+    {
+      "family": "ged",
+      "mode": 2,
+      "elapsed": 23.083283432999906,
+      "returncode": 0,
+      "output": "ged\t2\t100000\t22.863877610999999",
+      "stderr": ""
+    },
+    {
+      "family": "ged",
+      "mode": 3,
+      "elapsed": 4.201083190999725,
+      "returncode": 0,
+      "output": "ged\t3\t100000\t3.9832049820000002",
+      "stderr": ""
+    },
+    {
+      "family": "genbeta",
+      "mode": 0,
+      "elapsed": 0.5520418090000021,
+      "returncode": 0,
+      "output": "genbeta\t0\t100000\t0.32226721699999999",
+      "stderr": ""
+    },
+    {
+      "family": "genbeta",
+      "mode": 1,
+      "elapsed": 0.5565156279999428,
+      "returncode": 0,
+      "output": "genbeta\t1\t100000\t0.325205574",
+      "stderr": ""
+    },
+    {
+      "family": "genbeta",
+      "mode": 2,
+      "elapsed": 0.5142191219997585,
+      "returncode": 0,
+      "output": "genbeta\t2\t100000\t0.31092816000000001",
+      "stderr": ""
+    },
+    {
+      "family": "genbeta",
+      "mode": 3,
+      "elapsed": 0.5425126290001572,
+      "returncode": 0,
+      "output": "genbeta\t3\t100000\t0.319804912",
+      "stderr": ""
+    },
+    {
+      "family": "gev",
+      "mode": 0,
+      "elapsed": 0.471537890000036,
+      "returncode": 0,
+      "output": "gev\t0\t100000\t0.26852415400000001",
+      "stderr": ""
+    },
+    {
+      "family": "gev",
+      "mode": 1,
+      "elapsed": 0.5003495299997667,
+      "returncode": 0,
+      "output": "gev\t1\t100000\t0.26573328200000002",
+      "stderr": ""
+    },
+    {
+      "family": "gev",
+      "mode": 2,
+      "elapsed": 0.45780268099997556,
+      "returncode": 0,
+      "output": "gev\t2\t100000\t0.25828722100000001",
+      "stderr": ""
+    },
+    {
+      "family": "gev",
+      "mode": 3,
+      "elapsed": 32.623287592,
+      "returncode": 0,
+      "output": "gev\t3\t100000\t32.424036209999997",
+      "stderr": ""
+    },
+    {
+      "family": "gompertz",
+      "mode": 0,
+      "elapsed": 0.24606421999988015,
+      "returncode": 0,
+      "output": "gompertz\t0\t100000\t0.0023280990000000001",
+      "stderr": ""
+    },
+    {
+      "family": "gompertz",
+      "mode": 1,
+      "elapsed": 0.23964676300010979,
+      "returncode": 0,
+      "output": "gompertz\t1\t100000\t0.002354526",
+      "stderr": ""
+    },
+    {
+      "family": "gompertz",
+      "mode": 2,
+      "elapsed": 0.1961148220002542,
+      "returncode": 0,
+      "output": "gompertz\t2\t100000\t0.00077705799999999996\tlimit\tThe Gompertz maximum likelihood estimator escapes to an exponential when the score at b=0 is nonpositive. Use `mlexp` instead.",
+      "stderr": ""
+    },
+    {
+      "family": "gompertz",
+      "mode": 3,
+      "elapsed": 0.39272254700017584,
+      "returncode": 0,
+      "output": "gompertz\t3\t100000\t0.174933222",
+      "stderr": ""
+    },
+    {
+      "family": "gumbel",
+      "mode": 0,
+      "elapsed": 0.19368197500034512,
+      "returncode": 0,
+      "output": "gumbel\t0\t100000\t0.0016556679999999999",
+      "stderr": ""
+    },
+    {
+      "family": "gumbel",
+      "mode": 1,
+      "elapsed": 0.23368853000010859,
+      "returncode": 0,
+      "output": "gumbel\t1\t100000\t0.0016583730000000001",
+      "stderr": ""
+    },
+    {
+      "family": "gumbel",
+      "mode": 2,
+      "elapsed": 0.1990227389997017,
+      "returncode": 0,
+      "output": "gumbel\t2\t100000\t0.0025956719999999998",
+      "stderr": ""
+    },
+    {
+      "family": "gumbel",
+      "mode": 3,
+      "elapsed": 0.40554027700000006,
+      "returncode": 0,
+      "output": "gumbel\t3\t100000\t0.19391766899999999",
+      "stderr": ""
+    },
+    {
+      "family": "huber",
+      "mode": 0,
+      "elapsed": 0.2314527589996942,
+      "returncode": 0,
+      "output": "huber\t0\t100000\t0.0052617710000000002",
+      "stderr": ""
+    },
+    {
+      "family": "huber",
+      "mode": 1,
+      "elapsed": 0.22625695899978382,
+      "returncode": 0,
+      "output": "huber\t1\t100000\t0.0064737359999999999",
+      "stderr": ""
+    },
+    {
+      "family": "huber",
+      "mode": 2,
+      "elapsed": 0.19855990199994267,
+      "returncode": 0,
+      "output": "huber\t2\t100000\t0.0071034510000000002",
+      "stderr": ""
+    },
+    {
+      "family": "huber",
+      "mode": 3,
+      "elapsed": 0.2051156689999516,
+      "returncode": 0,
+      "output": "huber\t3\t100000\t0.0062989359999999998",
+      "stderr": ""
+    },
+    {
+      "family": "invgamma",
+      "mode": 0,
+      "elapsed": 0.23979672399991614,
+      "returncode": 0,
+      "output": "invgamma\t0\t100000\t0.0023553929999999999",
+      "stderr": ""
+    },
+    {
+      "family": "invgamma",
+      "mode": 1,
+      "elapsed": 0.21898908000002848,
+      "returncode": 0,
+      "output": "invgamma\t1\t100000\t0.001154403",
+      "stderr": ""
+    },
+    {
+      "family": "invgamma",
+      "mode": 2,
+      "elapsed": 0.22667990499985535,
+      "returncode": 0,
+      "output": "invgamma\t2\t100000\t0.0011143279999999999",
+      "stderr": ""
+    },
+    {
+      "family": "invgamma",
+      "mode": 3,
+      "elapsed": 0.2473175209997862,
+      "returncode": 0,
+      "output": "invgamma\t3\t100000\t0.001835494",
+      "stderr": ""
+    },
+    {
+      "family": "invweibull",
+      "mode": 0,
+      "elapsed": 0.21854072800033464,
+      "returncode": 0,
+      "output": "invweibull\t0\t100000\t0.0023752809999999999",
+      "stderr": ""
+    },
+    {
+      "family": "invweibull",
+      "mode": 1,
+      "elapsed": 0.22489620599981208,
+      "returncode": 0,
+      "output": "invweibull\t1\t100000\t0.002284351",
+      "stderr": ""
+    },
+    {
+      "family": "invweibull",
+      "mode": 2,
+      "elapsed": 0.23046107000027405,
+      "returncode": 0,
+      "output": "invweibull\t2\t100000\t0.0034222129999999999",
+      "stderr": ""
+    },
+    {
+      "family": "invweibull",
+      "mode": 3,
+      "elapsed": 0.1971805250000216,
+      "returncode": 0,
+      "output": "invweibull\t3\t100000\t0.0056062839999999996",
+      "stderr": ""
+    },
+    {
+      "family": "lgamma",
+      "mode": 0,
+      "elapsed": 0.20265051600017614,
+      "returncode": 0,
+      "output": "lgamma\t0\t100000\t0.001185572",
+      "stderr": ""
+    },
+    {
+      "family": "lgamma",
+      "mode": 1,
+      "elapsed": 0.2283015709999745,
+      "returncode": 0,
+      "output": "lgamma\t1\t100000\t0.00095554699999999995",
+      "stderr": ""
+    },
+    {
+      "family": "lgamma",
+      "mode": 2,
+      "elapsed": 0.21685597600026085,
+      "returncode": 0,
+      "output": "lgamma\t2\t100000\t0.001157992",
+      "stderr": ""
+    },
+    {
+      "family": "lgamma",
+      "mode": 3,
+      "elapsed": 0.22122642499971334,
+      "returncode": 0,
+      "output": "lgamma\t3\t100000\t0.0012328420000000001",
+      "stderr": ""
+    },
+    {
+      "family": "llogis",
+      "mode": 0,
+      "elapsed": 0.3258307299997796,
+      "returncode": 0,
+      "output": "llogis\t0\t100000\t0.096485240999999999",
+      "stderr": ""
+    },
+    {
+      "family": "llogis",
+      "mode": 1,
+      "elapsed": 0.21657351400017433,
+      "returncode": 0,
+      "output": "llogis\t1\t100000\t0.016445622",
+      "stderr": ""
+    },
+    {
+      "family": "llogis",
+      "mode": 2,
+      "elapsed": 0.24525230200015358,
+      "returncode": 0,
+      "output": "llogis\t2\t100000\t0.022883602999999999",
+      "stderr": ""
+    },
+    {
+      "family": "llogis",
+      "mode": 3,
+      "elapsed": 0.2276852219997636,
+      "returncode": 0,
+      "output": "llogis\t3\t100000\t0.031943873999999997",
+      "stderr": ""
+    },
+    {
+      "family": "logis",
+      "mode": 0,
+      "elapsed": 0.23816723299978548,
+      "returncode": 0,
+      "output": "logis\t0\t100000\t0.016147183999999998",
+      "stderr": ""
+    },
+    {
+      "family": "logis",
+      "mode": 1,
+      "elapsed": 0.2115756030002558,
+      "returncode": 0,
+      "output": "logis\t1\t100000\t0.016028218",
+      "stderr": ""
+    },
+    {
+      "family": "logis",
+      "mode": 2,
+      "elapsed": 0.24759044800021002,
+      "returncode": 0,
+      "output": "logis\t2\t100000\t0.024702436000000001",
+      "stderr": ""
+    },
+    {
+      "family": "logis",
+      "mode": 3,
+      "elapsed": 0.324037006999788,
+      "returncode": 0,
+      "output": "logis\t3\t100000\t0.036596185000000003",
+      "stderr": ""
+    },
+    {
+      "family": "naka",
+      "mode": 0,
+      "elapsed": 0.23352022100016256,
+      "returncode": 0,
+      "output": "naka\t0\t100000\t0.0011164840000000001",
+      "stderr": ""
+    },
+    {
+      "family": "naka",
+      "mode": 1,
+      "elapsed": 0.19689156100002947,
+      "returncode": 0,
+      "output": "naka\t1\t100000\t0.0011211579999999999",
+      "stderr": ""
+    },
+    {
+      "family": "naka",
+      "mode": 2,
+      "elapsed": 0.19254855600001974,
+      "returncode": 0,
+      "output": "naka\t2\t100000\t0.0012034070000000001",
+      "stderr": ""
+    },
+    {
+      "family": "naka",
+      "mode": 3,
+      "elapsed": 0.21829495799966026,
+      "returncode": 0,
+      "output": "naka\t3\t100000\t0.00066394999999999996",
+      "stderr": ""
+    },
+    {
+      "family": "nsbeta",
+      "mode": 0,
+      "elapsed": 0.1924600399997871,
+      "returncode": 0,
+      "output": "nsbeta\t0\t100000\t0.0012102110000000001",
+      "stderr": ""
+    },
+    {
+      "family": "nsbeta",
+      "mode": 1,
+      "elapsed": 0.2386482850001812,
+      "returncode": 0,
+      "output": "nsbeta\t1\t100000\t0.001222889",
+      "stderr": ""
+    },
+    {
+      "family": "nsbeta",
+      "mode": 2,
+      "elapsed": 0.19270653200010202,
+      "returncode": 0,
+      "output": "nsbeta\t2\t100000\t0.001174495",
+      "stderr": ""
+    },
+    {
+      "family": "nsbeta",
+      "mode": 3,
+      "elapsed": 0.23487964200012357,
+      "returncode": 0,
+      "output": "nsbeta\t3\t100000\t0.001352039",
+      "stderr": ""
+    },
+    {
+      "family": "pareto3",
+      "mode": 0,
+      "elapsed": 0.2670610810000653,
+      "returncode": 0,
+      "output": "pareto3\t0\t100000\t0.071081395000000006",
+      "stderr": ""
+    },
+    {
+      "family": "pareto3",
+      "mode": 1,
+      "elapsed": 0.21835287599969888,
+      "returncode": 0,
+      "output": "pareto3\t1\t100000\t0.022552421",
+      "stderr": ""
+    },
+    {
+      "family": "pareto3",
+      "mode": 2,
+      "elapsed": 0.3087135529999614,
+      "returncode": 0,
+      "output": "pareto3\t2\t100000\t0.052400832000000001",
+      "stderr": ""
+    },
+    {
+      "family": "pareto3",
+      "mode": 3,
+      "elapsed": 0.22364315499999066,
+      "returncode": 0,
+      "output": "pareto3\t3\t100000\t0.031956406999999999",
+      "stderr": ""
+    },
+    {
+      "family": "pig",
+      "mode": 0,
+      "elapsed": 0.1928697410003224,
+      "returncode": 0,
+      "output": "pig\t0\t100000\t0.00042989699999999999",
+      "stderr": ""
+    },
+    {
+      "family": "pig",
+      "mode": 1,
+      "elapsed": 0.2261768650000704,
+      "returncode": 0,
+      "output": "pig\t1\t100000\t0.00041823199999999999",
+      "stderr": ""
+    },
+    {
+      "family": "pig",
+      "mode": 2,
+      "elapsed": 0.1929042169999775,
+      "returncode": 0,
+      "output": "pig\t2\t100000\t0.00036274199999999999",
+      "stderr": ""
+    },
+    {
+      "family": "pig",
+      "mode": 3,
+      "elapsed": 0.2068791029996646,
+      "returncode": 0,
+      "output": "pig\t3\t100000\t0.00045299000000000001",
+      "stderr": ""
+    },
+    {
+      "family": "sged",
+      "mode": 0,
+      "elapsed": 60.10161428799984,
+      "censored": true,
+      "limit_seconds": 60
+    },
+    {
+      "family": "sged",
+      "mode": 1,
+      "elapsed": 60.04839639900001,
+      "censored": true,
+      "limit_seconds": 60
+    },
+    {
+      "family": "sged",
+      "mode": 2,
+      "elapsed": 60.10189339200042,
+      "censored": true,
+      "limit_seconds": 60
+    },
+    {
+      "family": "sged",
+      "mode": 3,
+      "elapsed": 60.02840848200003,
+      "censored": true,
+      "limit_seconds": 60
+    },
+    {
+      "family": "sgomp",
+      "mode": 0,
+      "elapsed": 3.807366864999949,
+      "returncode": 0,
+      "output": "sgomp\t0\t100000\t3.604631012",
+      "stderr": ""
+    },
+    {
+      "family": "sgomp",
+      "mode": 1,
+      "elapsed": 4.047324637999736,
+      "returncode": 0,
+      "output": "sgomp\t1\t100000\t3.8096474470000001",
+      "stderr": ""
+    },
+    {
+      "family": "sgomp",
+      "mode": 2,
+      "elapsed": 1.2670446560000528,
+      "returncode": 0,
+      "output": "sgomp\t2\t100000\t1.0388819869999999",
+      "stderr": ""
+    },
+    {
+      "family": "sgomp",
+      "mode": 3,
+      "elapsed": 0.2680206059999364,
+      "returncode": 0,
+      "output": "sgomp\t3\t100000\t0.029035287999999999",
+      "stderr": ""
+    },
+    {
+      "family": "sstd",
+      "mode": 0,
+      "elapsed": 3.2718617319997065,
+      "returncode": 0,
+      "output": "sstd\t0\t100000\t3.0618693700000001",
+      "stderr": ""
+    },
+    {
+      "family": "sstd",
+      "mode": 1,
+      "elapsed": 3.16570726000009,
+      "returncode": 0,
+      "output": "sstd\t1\t100000\t2.9209746980000002",
+      "stderr": ""
+    },
+    {
+      "family": "sstd",
+      "mode": 2,
+      "elapsed": 5.271755724000286,
+      "returncode": 0,
+      "output": "sstd\t2\t100000\t4.9932155979999999\t\tThe skew Student-t likelihood is maximised as nu -> 2, i.e. by a two-piece t with 2 degrees of freedom (infinite variance); the MLE does not exist in the mean/sd parameterisation.",
+      "stderr": ""
+    },
+    {
+      "family": "sstd",
+      "mode": 3,
+      "elapsed": 60.04744073799975,
+      "censored": true,
+      "limit_seconds": 60
+    },
+    {
+      "family": "st",
+      "mode": 0,
+      "elapsed": 60.10121672599962,
+      "censored": true,
+      "limit_seconds": 60
+    },
+    {
+      "family": "st",
+      "mode": 1,
+      "elapsed": 60.101821197999925,
+      "censored": true,
+      "limit_seconds": 60
+    },
+    {
+      "family": "st",
+      "mode": 2,
+      "elapsed": 60.10167620899938,
+      "censored": true,
+      "limit_seconds": 60
+    },
+    {
+      "family": "st",
+      "mode": 3,
+      "elapsed": 60.10171829599949,
+      "censored": true,
+      "limit_seconds": 60
+    },
+    {
+      "family": "tlambda",
+      "mode": 0,
+      "elapsed": 60.100879106999855,
+      "censored": true,
+      "limit_seconds": 60
+    },
+    {
+      "family": "tlambda",
+      "mode": 1,
+      "elapsed": 60.10168775400052,
+      "censored": true,
+      "limit_seconds": 60
+    },
+    {
+      "family": "tlambda",
+      "mode": 2,
+      "elapsed": 60.10167491299944,
+      "censored": true,
+      "limit_seconds": 60
+    },
+    {
+      "family": "tlambda",
+      "mode": 3,
+      "elapsed": 60.101231445999474,
+      "censored": true,
+      "limit_seconds": 60
+    },
+    {
+      "family": "tnorm",
+      "mode": 0,
+      "elapsed": 0.2592869990003237,
+      "returncode": 0,
+      "output": "tnorm\t0\t100000\t0.00040699399999999999",
+      "stderr": ""
+    },
+    {
+      "family": "tnorm",
+      "mode": 1,
+      "elapsed": 0.20070066100015538,
+      "returncode": 0,
+      "output": "tnorm\t1\t100000\t0.00031319099999999999",
+      "stderr": ""
+    },
+    {
+      "family": "tnorm",
+      "mode": 2,
+      "elapsed": 0.19912109800043254,
+      "returncode": 0,
+      "output": "tnorm\t2\t100000\t0.00028002600000000001",
+      "stderr": ""
+    },
+    {
+      "family": "tnorm",
+      "mode": 3,
+      "elapsed": 0.19732583699988027,
+      "returncode": 0,
+      "output": "tnorm\t3\t100000\t0.00038733000000000002",
+      "stderr": ""
+    },
+    {
+      "family": "triang",
+      "mode": 0,
+      "elapsed": 1.4177942730002542,
+      "returncode": 0,
+      "output": "triang\t0\t100000\t1.1951597709999999",
+      "stderr": ""
+    },
+    {
+      "family": "triang",
+      "mode": 1,
+      "elapsed": 3.923304670000107,
+      "returncode": 0,
+      "output": "triang\t1\t100000\t3.6986505379999999",
+      "stderr": ""
+    },
+    {
+      "family": "triang",
+      "mode": 2,
+      "elapsed": 4.776678803999857,
+      "returncode": 0,
+      "output": "triang\t2\t100000\t4.5681570809999998",
+      "stderr": ""
+    },
+    {
+      "family": "triang",
+      "mode": 3,
+      "elapsed": 1.3500075359997936,
+      "returncode": 0,
+      "output": "triang\t3\t100000\t1.1419824220000001",
+      "stderr": ""
+    },
+    {
+      "family": "weibull",
+      "mode": 0,
+      "elapsed": 0.23155577099987568,
+      "returncode": 0,
+      "output": "weibull\t0\t100000\t0.00256901",
+      "stderr": ""
+    },
+    {
+      "family": "weibull",
+      "mode": 1,
+      "elapsed": 0.21156716800032882,
+      "returncode": 0,
+      "output": "weibull\t1\t100000\t0.0025885639999999998",
+      "stderr": ""
+    },
+    {
+      "family": "weibull",
+      "mode": 2,
+      "elapsed": 0.22490735100018355,
+      "returncode": 0,
+      "output": "weibull\t2\t100000\t0.0031837459999999999",
+      "stderr": ""
+    },
+    {
+      "family": "weibull",
+      "mode": 3,
+      "elapsed": 0.20126326199988398,
+      "returncode": 0,
+      "output": "weibull\t3\t100000\t0.0047707679999999999",
+      "stderr": ""
+    },
+    {
+      "family": "yulesimon",
+      "mode": 0,
+      "elapsed": 0.22003201200004696,
+      "returncode": 0,
+      "output": "yulesimon\t0\t100000\t0.0011407870000000001",
+      "stderr": ""
+    },
+    {
+      "family": "yulesimon",
+      "mode": 1,
+      "elapsed": 0.1988961590004692,
+      "returncode": 0,
+      "output": "yulesimon\t1\t100000\t0.0011135819999999999",
+      "stderr": ""
+    },
+    {
+      "family": "yulesimon",
+      "mode": 2,
+      "elapsed": 0.22657721799987485,
+      "returncode": 0,
+      "output": "yulesimon\t2\t100000\t0.00074894899999999995",
+      "stderr": ""
+    },
+    {
+      "family": "yulesimon",
+      "mode": 3,
+      "elapsed": 0.2020666620001066,
+      "returncode": 0,
+      "output": "yulesimon\t3\t100000\t0.0040722459999999999",
+      "stderr": ""
+    },
+    {
+      "family": "zeta",
+      "mode": 0,
+      "elapsed": 0.1940004839998437,
+      "returncode": 0,
+      "output": "zeta\t0\t100000\t0.00058288600000000002",
+      "stderr": ""
+    },
+    {
+      "family": "zeta",
+      "mode": 1,
+      "elapsed": 0.22847499400086235,
+      "returncode": 0,
+      "output": "zeta\t1\t100000\t0.00057340799999999997",
+      "stderr": ""
+    },
+    {
+      "family": "zeta",
+      "mode": 2,
+      "elapsed": 0.19878297899958852,
+      "returncode": 0,
+      "output": "zeta\t2\t100000\t0.00050472400000000001",
+      "stderr": ""
+    },
+    {
+      "family": "zeta",
+      "mode": 3,
+      "elapsed": 0.193128634000459,
+      "returncode": 0,
+      "output": "zeta\t3\t100000\t0.00034998499999999998",
+      "stderr": ""
+    },
+    {
+      "family": "zipf",
+      "mode": 0,
+      "elapsed": 0.22573334700064152,
+      "returncode": 0,
+      "output": "zipf\t0\t100000\t0.00040924199999999998",
+      "stderr": ""
+    },
+    {
+      "family": "zipf",
+      "mode": 1,
+      "elapsed": 0.22217872599958355,
+      "returncode": 0,
+      "output": "zipf\t1\t100000\t0.00039746900000000001",
+      "stderr": ""
+    },
+    {
+      "family": "zipf",
+      "mode": 2,
+      "elapsed": 0.1998819350001213,
+      "returncode": 0,
+      "output": "zipf\t2\t100000\t0.000333092",
+      "stderr": ""
+    },
+    {
+      "family": "zipf",
+      "mode": 3,
+      "elapsed": 0.236931476000791,
+      "returncode": 0,
+      "output": "zipf\t3\t100000\t0.00041305900000000002",
+      "stderr": ""
+    },
+    {
+      "family": "zmbinom",
+      "mode": 0,
+      "elapsed": 0.2375642010001684,
+      "returncode": 0,
+      "output": "zmbinom\t0\t100000\t0.0078696200000000008",
+      "stderr": ""
+    },
+    {
+      "family": "zmbinom",
+      "mode": 1,
+      "elapsed": 0.22459447999972326,
+      "returncode": 0,
+      "output": "zmbinom\t1\t100000\t0.0045987129999999999",
+      "stderr": ""
+    },
+    {
+      "family": "zmbinom",
+      "mode": 2,
+      "elapsed": 0.2158717259999321,
+      "returncode": 0,
+      "output": "zmbinom\t2\t100000\t0.00055261299999999998",
+      "stderr": ""
+    },
+    {
+      "family": "zmbinom",
+      "mode": 3,
+      "elapsed": 0.24328039600004558,
+      "returncode": 0,
+      "output": "zmbinom\t3\t100000\t0.0046536190000000003",
+      "stderr": ""
+    }
+  ],
+  "summary": [
+    {
+      "family": "bbinom",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": "",
+      "budget_mode": "",
+      "budget_stops": 0,
+      "longest_returned_seconds": 0.242715469,
+      "unresolved_censored_modes": ""
+    },
+    {
+      "family": "beta",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": "",
+      "budget_mode": "",
+      "budget_stops": 0,
+      "longest_returned_seconds": 0.001237528,
+      "unresolved_censored_modes": ""
+    },
+    {
+      "family": "betapr",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": "",
+      "budget_mode": "",
+      "budget_stops": 0,
+      "longest_returned_seconds": 6.100162255,
+      "unresolved_censored_modes": ""
+    },
+    {
+      "family": "bhatt",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": "",
+      "budget_mode": "",
+      "budget_stops": 0,
+      "longest_returned_seconds": 53.143943799,
+      "unresolved_censored_modes": "0>60s,1>60s,2>60s"
+    },
+    {
+      "family": "binom",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": "",
+      "budget_mode": "",
+      "budget_stops": 0,
+      "longest_returned_seconds": 0.000523383,
+      "unresolved_censored_modes": ""
+    },
+    {
+      "family": "bnbinom",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": "",
+      "budget_mode": "",
+      "budget_stops": 0,
+      "longest_returned_seconds": 0.431613064,
+      "unresolved_censored_modes": ""
+    },
+    {
+      "family": "burr",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": 14.552301331,
+      "budget_mode": 1,
+      "budget_stops": 2,
+      "longest_returned_seconds": 28.554340383,
+      "unresolved_censored_modes": ""
+    },
+    {
+      "family": "cauchy",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": "",
+      "budget_mode": "",
+      "budget_stops": 0,
+      "longest_returned_seconds": 0.131464695,
+      "unresolved_censored_modes": ""
+    },
+    {
+      "family": "cmb",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": 24.335743294,
+      "budget_mode": 3,
+      "budget_stops": 1,
+      "longest_returned_seconds": 24.335743294,
+      "unresolved_censored_modes": ""
+    },
+    {
+      "family": "dgamma",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": "",
+      "budget_mode": "",
+      "budget_stops": 0,
+      "longest_returned_seconds": 0.501834884,
+      "unresolved_censored_modes": ""
+    },
+    {
+      "family": "dnorm",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": "",
+      "budget_mode": "",
+      "budget_stops": 0,
+      "longest_returned_seconds": 0.001870887,
+      "unresolved_censored_modes": ""
+    },
+    {
+      "family": "dweibull",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": "",
+      "budget_mode": "",
+      "budget_stops": 0,
+      "longest_returned_seconds": 0.002031185,
+      "unresolved_censored_modes": ""
+    },
+    {
+      "family": "emg",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": "",
+      "budget_mode": "",
+      "budget_stops": 0,
+      "longest_returned_seconds": 44.667313162,
+      "unresolved_censored_modes": "0>60s,1>60s,2>60s"
+    },
+    {
+      "family": "fatigue",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": "",
+      "budget_mode": "",
+      "budget_stops": 0,
+      "longest_returned_seconds": 1.783555136,
+      "unresolved_censored_modes": ""
+    },
+    {
+      "family": "foldnorm",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": "",
+      "budget_mode": "",
+      "budget_stops": 0,
+      "longest_returned_seconds": 4.986816981,
+      "unresolved_censored_modes": ""
+    },
+    {
+      "family": "fpareto",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": "",
+      "budget_mode": "",
+      "budget_stops": 0,
+      "longest_returned_seconds": 44.566314287,
+      "unresolved_censored_modes": ""
+    },
+    {
+      "family": "frechet",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": "",
+      "budget_mode": "",
+      "budget_stops": 0,
+      "longest_returned_seconds": 0.006275879,
+      "unresolved_censored_modes": ""
+    },
+    {
+      "family": "gamma",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": "",
+      "budget_mode": "",
+      "budget_stops": 0,
+      "longest_returned_seconds": 0.000766931,
+      "unresolved_censored_modes": ""
+    },
+    {
+      "family": "gb2",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": "",
+      "budget_mode": "",
+      "budget_stops": 0,
+      "longest_returned_seconds": 17.236358292,
+      "unresolved_censored_modes": ""
+    },
+    {
+      "family": "ged",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": "",
+      "budget_mode": "",
+      "budget_stops": 0,
+      "longest_returned_seconds": 22.863877611,
+      "unresolved_censored_modes": ""
+    },
+    {
+      "family": "genbeta",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": "",
+      "budget_mode": "",
+      "budget_stops": 0,
+      "longest_returned_seconds": 0.325205574,
+      "unresolved_censored_modes": ""
+    },
+    {
+      "family": "gev",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": "",
+      "budget_mode": "",
+      "budget_stops": 0,
+      "longest_returned_seconds": 32.42403621,
+      "unresolved_censored_modes": ""
+    },
+    {
+      "family": "gompertz",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": "",
+      "budget_mode": "",
+      "budget_stops": 0,
+      "longest_returned_seconds": 0.174933222,
+      "unresolved_censored_modes": ""
+    },
+    {
+      "family": "gpd",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": "",
+      "budget_mode": "",
+      "budget_stops": 0,
+      "longest_returned_seconds": 1.64431926,
+      "unresolved_censored_modes": ""
+    },
+    {
+      "family": "gumbel",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": "",
+      "budget_mode": "",
+      "budget_stops": 0,
+      "longest_returned_seconds": 0.193917669,
+      "unresolved_censored_modes": ""
+    },
+    {
+      "family": "huber",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": "",
+      "budget_mode": "",
+      "budget_stops": 0,
+      "longest_returned_seconds": 0.007103451,
+      "unresolved_censored_modes": ""
+    },
+    {
+      "family": "invburr",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": 15.674668581,
+      "budget_mode": 1,
+      "budget_stops": 2,
+      "longest_returned_seconds": 15.765206806,
+      "unresolved_censored_modes": ""
+    },
+    {
+      "family": "invgamma",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": "",
+      "budget_mode": "",
+      "budget_stops": 0,
+      "longest_returned_seconds": 0.002355393,
+      "unresolved_censored_modes": ""
+    },
+    {
+      "family": "invparalogis",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": "",
+      "budget_mode": "",
+      "budget_stops": 0,
+      "longest_returned_seconds": 0.46231759,
+      "unresolved_censored_modes": ""
+    },
+    {
+      "family": "invpareto",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": "",
+      "budget_mode": "",
+      "budget_stops": 0,
+      "longest_returned_seconds": 0.258306972,
+      "unresolved_censored_modes": ""
+    },
+    {
+      "family": "invtrgamma",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": "",
+      "budget_mode": "",
+      "budget_stops": 0,
+      "longest_returned_seconds": 1.254976448,
+      "unresolved_censored_modes": ""
+    },
+    {
+      "family": "invweibull",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": "",
+      "budget_mode": "",
+      "budget_stops": 0,
+      "longest_returned_seconds": 0.005606284,
+      "unresolved_censored_modes": ""
+    },
+    {
+      "family": "kumar",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": "",
+      "budget_mode": "",
+      "budget_stops": 0,
+      "longest_returned_seconds": 0.224725601,
+      "unresolved_censored_modes": ""
+    },
+    {
+      "family": "lgamma",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": "",
+      "budget_mode": "",
+      "budget_stops": 0,
+      "longest_returned_seconds": 0.001232842,
+      "unresolved_censored_modes": ""
+    },
+    {
+      "family": "llogis",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": "",
+      "budget_mode": "",
+      "budget_stops": 0,
+      "longest_returned_seconds": 0.096485241,
+      "unresolved_censored_modes": ""
+    },
+    {
+      "family": "logis",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": "",
+      "budget_mode": "",
+      "budget_stops": 0,
+      "longest_returned_seconds": 0.036596185,
+      "unresolved_censored_modes": ""
+    },
+    {
+      "family": "lomax",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": "",
+      "budget_mode": "",
+      "budget_stops": 0,
+      "longest_returned_seconds": 0.26025187,
+      "unresolved_censored_modes": ""
+    },
+    {
+      "family": "lst",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": "",
+      "budget_mode": "",
+      "budget_stops": 0,
+      "longest_returned_seconds": 0.067435827,
+      "unresolved_censored_modes": "1>180s"
+    },
+    {
+      "family": "naka",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": "",
+      "budget_mode": "",
+      "budget_stops": 0,
+      "longest_returned_seconds": 0.001203407,
+      "unresolved_censored_modes": ""
+    },
+    {
+      "family": "nbinom",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": "",
+      "budget_mode": "",
+      "budget_stops": 0,
+      "longest_returned_seconds": 0.318836784,
+      "unresolved_censored_modes": ""
+    },
+    {
+      "family": "nsbeta",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": "",
+      "budget_mode": "",
+      "budget_stops": 0,
+      "longest_returned_seconds": 0.001352039,
+      "unresolved_censored_modes": ""
+    },
+    {
+      "family": "paralogis",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": "",
+      "budget_mode": "",
+      "budget_stops": 0,
+      "longest_returned_seconds": 0.487365667,
+      "unresolved_censored_modes": ""
+    },
+    {
+      "family": "pareto2",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": "",
+      "budget_mode": "",
+      "budget_stops": 0,
+      "longest_returned_seconds": 1.465796554,
+      "unresolved_censored_modes": ""
+    },
+    {
+      "family": "pareto3",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": "",
+      "budget_mode": "",
+      "budget_stops": 0,
+      "longest_returned_seconds": 0.071081395,
+      "unresolved_censored_modes": ""
+    },
+    {
+      "family": "pareto4",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": 14.814217399,
+      "budget_mode": 1,
+      "budget_stops": 2,
+      "longest_returned_seconds": 39.700322036,
+      "unresolved_censored_modes": ""
+    },
+    {
+      "family": "pig",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": "",
+      "budget_mode": "",
+      "budget_stops": 0,
+      "longest_returned_seconds": 0.00045299,
+      "unresolved_censored_modes": ""
+    },
+    {
+      "family": "sged",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": "",
+      "budget_mode": "",
+      "budget_stops": 0,
+      "longest_returned_seconds": "",
+      "unresolved_censored_modes": "0>60s,1>60s,2>60s,3>60s"
+    },
+    {
+      "family": "sgomp",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": "",
+      "budget_mode": "",
+      "budget_stops": 0,
+      "longest_returned_seconds": 3.809647447,
+      "unresolved_censored_modes": ""
+    },
+    {
+      "family": "skellam",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": "",
+      "budget_mode": "",
+      "budget_stops": 0,
+      "longest_returned_seconds": 27.641679405,
+      "unresolved_censored_modes": ""
+    },
+    {
+      "family": "slash",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": "",
+      "budget_mode": "",
+      "budget_stops": 0,
+      "longest_returned_seconds": "",
+      "unresolved_censored_modes": "0>180s,1>60s,2>60s,3>60s"
+    },
+    {
+      "family": "sn",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": "",
+      "budget_mode": "",
+      "budget_stops": 0,
+      "longest_returned_seconds": 38.722490979,
+      "unresolved_censored_modes": "2>60s,3>60s"
+    },
+    {
+      "family": "sstd",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": "",
+      "budget_mode": "",
+      "budget_stops": 0,
+      "longest_returned_seconds": 4.993215598,
+      "unresolved_censored_modes": "3>60s"
+    },
+    {
+      "family": "st",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": "",
+      "budget_mode": "",
+      "budget_stops": 0,
+      "longest_returned_seconds": "",
+      "unresolved_censored_modes": "0>60s,1>60s,2>60s,3>60s"
+    },
+    {
+      "family": "std",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": "",
+      "budget_mode": "",
+      "budget_stops": 0,
+      "longest_returned_seconds": 0.06630406,
+      "unresolved_censored_modes": "1>180s"
+    },
+    {
+      "family": "tlambda",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": "",
+      "budget_mode": "",
+      "budget_stops": 0,
+      "longest_returned_seconds": "",
+      "unresolved_censored_modes": "0>60s,1>60s,2>60s,3>60s"
+    },
+    {
+      "family": "tnorm",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": "",
+      "budget_mode": "",
+      "budget_stops": 0,
+      "longest_returned_seconds": 0.000406994,
+      "unresolved_censored_modes": ""
+    },
+    {
+      "family": "trgamma",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": "",
+      "budget_mode": "",
+      "budget_stops": 0,
+      "longest_returned_seconds": 0.84215228,
+      "unresolved_censored_modes": ""
+    },
+    {
+      "family": "triang",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": "",
+      "budget_mode": "",
+      "budget_stops": 0,
+      "longest_returned_seconds": 4.568157081,
+      "unresolved_censored_modes": ""
+    },
+    {
+      "family": "weibull",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": "",
+      "budget_mode": "",
+      "budget_stops": 0,
+      "longest_returned_seconds": 0.004770768,
+      "unresolved_censored_modes": ""
+    },
+    {
+      "family": "yulesimon",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": "",
+      "budget_mode": "",
+      "budget_stops": 0,
+      "longest_returned_seconds": 0.004072246,
+      "unresolved_censored_modes": ""
+    },
+    {
+      "family": "zeta",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": "",
+      "budget_mode": "",
+      "budget_stops": 0,
+      "longest_returned_seconds": 0.000582886,
+      "unresolved_censored_modes": ""
+    },
+    {
+      "family": "zib",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": "",
+      "budget_mode": "",
+      "budget_stops": 0,
+      "longest_returned_seconds": 0.007801533,
+      "unresolved_censored_modes": ""
+    },
+    {
+      "family": "zinb",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": 1.564505169,
+      "budget_mode": 2,
+      "budget_stops": 1,
+      "longest_returned_seconds": 1.564505169,
+      "unresolved_censored_modes": ""
+    },
+    {
+      "family": "zipf",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": "",
+      "budget_mode": "",
+      "budget_stops": 0,
+      "longest_returned_seconds": 0.000413059,
+      "unresolved_censored_modes": ""
+    },
+    {
+      "family": "zmbinom",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": "",
+      "budget_mode": "",
+      "budget_stops": 0,
+      "longest_returned_seconds": 0.00786962,
+      "unresolved_censored_modes": ""
+    },
+    {
+      "family": "zmnbinom",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": 1.493267525,
+      "budget_mode": 2,
+      "budget_stops": 1,
+      "longest_returned_seconds": 1.493267525,
+      "unresolved_censored_modes": ""
+    },
+    {
+      "family": "ztbinom",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": "",
+      "budget_mode": "",
+      "budget_stops": 0,
+      "longest_returned_seconds": 0.013167779,
+      "unresolved_censored_modes": ""
+    },
+    {
+      "family": "ztnbinom",
+      "n": 100000,
+      "seed": 143,
+      "slowest_observed_budget_seconds": 2.514923678,
+      "budget_mode": 2,
+      "budget_stops": 1,
+      "longest_returned_seconds": 2.514923678,
+      "unresolved_censored_modes": ""
+    }
+  ]
+}

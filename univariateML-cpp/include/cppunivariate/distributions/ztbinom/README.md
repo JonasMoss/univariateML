@@ -32,7 +32,7 @@ r:
   control:
     size: "Optional fixed size; NULL estimates size."
     reltol: "Tolerance for scalar profile search."
-    iterlim: "Maximum scalar search iterations."
+    iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per integer scan: 100000 * min(iterlim, 100000) enumeration cells."
     prob: "Optional fixed probability in `[0, 1]`; NULL estimates it."
 log_density: loggamma(size+1)-loggamma(x+1)-loggamma(size-x+1)+x*log(prob)+(size-x)*log(1-prob)-log(1-(1-prob)**size)
 limits:

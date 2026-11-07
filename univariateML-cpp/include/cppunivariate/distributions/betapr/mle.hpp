@@ -1,5 +1,6 @@
 // Three-parameter beta-prime MLE, with explicit likelihood comparisons to faces.
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../../core/face_compare.hpp"
 #include "../../core/precision.hpp"
 #include "../../core/multistart.hpp"
@@ -105,6 +106,7 @@ struct BetaPrimeLogCost {
 // have a unique finite beta MLE; no gamma or inverse-gamma face remains.
 inline BetaPrimeResult betapr_mle_fixed_scale(
     span x, double scale, double tol = 1e-6, int maxit = 1000) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const double nan = std::numeric_limits<double>::quiet_NaN();
   if (!(scale > 0) || !std::isfinite(scale) || x.size() < 2)
     return {nan,nan,scale,nan,0,BetaPrimeStatus::InvalidStart};
@@ -133,6 +135,7 @@ inline BetaPrimeResult betapr_mle_impl(span x, double tol = 1e-6, int maxit = 10
                                   double shape1 = 0.0, double shape2 = 0.0,
                                   double scale = 0.0, double reltol = 1e-13,
                                   double abstol = 1e-10, bool standardized = false) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const double nan = std::numeric_limits<double>::quiet_NaN();
   if (shape1 < 0 || shape2 < 0 || scale < 0 ||
       !std::isfinite(shape1) || !std::isfinite(shape2) || !std::isfinite(scale) ||
@@ -160,8 +163,10 @@ inline BetaPrimeResult betapr_mle_impl(span x, double tol = 1e-6, int maxit = 10
   if (!(lv > 0) || !std::isfinite(lv))
     return {nan,nan,nan,nan,0,BetaPrimeStatus::InvalidStart};
   const double n = static_cast<double>(x.size());
-  auto gamma = gamma_mle(x, 1e-10, 1000);
-  auto inv = invgamma_mle(x, 1e-10, 1000);
+  auto gamma = gamma_mle(x, 1e-10, maxit);
+  auto inv = invgamma_mle(x, 1e-10, maxit);
+  if(gamma.status!=GammaStatus::Ok || inv.status!=GammaStatus::Ok)
+    return {gamma.shape,inv.shape,std::exp(lm),nan,maxit,BetaPrimeStatus::BfgsFailure};
   // The closure's faces: shape2 -> inf (gamma) and shape1 -> inf (inverse
   // gamma). Both shapes -> inf is not a lognormal: Var(log X) =
   // trigamma(shape1) + trigamma(shape2) -> 0, a point mass.
@@ -192,13 +197,13 @@ inline BetaPrimeResult betapr_mle_impl(span x, double tol = 1e-6, int maxit = 10
     auto r = bfgs_minimize(cost, start, ctl);
     consider_bfgs_candidate(best,r,1.0,attempted);
   }
-  if (face_numerical_tie(face.logLik,-attempted.f,1e-8*n)) {face.status=BetaPrimeStatus::BfgsFailure;return face;}
-  if (face.logLik >= -attempted.f - 1e-8*n) return face;
   if (!std::isfinite(best.f)) {
     if(attempted.theta.size()!=3) return {nan,nan,nan,nan,0,BetaPrimeStatus::BfgsFailure};
     return {std::exp(attempted.theta[0]),std::exp(attempted.theta[1]),std::exp(attempted.theta[2]),
       -attempted.f,attempted.iterations,BetaPrimeStatus::BfgsFailure};
   }
+  if (face_numerical_tie(face.logLik,-attempted.f,1e-8*n)) {face.status=BetaPrimeStatus::BfgsFailure;return face;}
+  if (face.logLik >= -attempted.f - 1e-8*n) return face;
   return {std::exp(best.theta[0]),std::exp(best.theta[1]),std::exp(best.theta[2]),
           -best.f,best.iterations,(best.status == BfgsStatus::Ok || (std::isfinite(best.grad_norm) && best.grad_norm < 1e-3)) ?
           BetaPrimeStatus::Ok : BetaPrimeStatus::BfgsFailure};
@@ -206,23 +211,26 @@ inline BetaPrimeResult betapr_mle_impl(span x, double tol = 1e-6, int maxit = 10
 inline BetaPrimeResult betapr_mle(span x, double tol = 1e-6, int maxit = 1000,
     double shape1 = 0.0, double shape2 = 0.0, double scale = 0.0,
     double reltol = 1e-13, double abstol = 1e-10) {
+  maxit = static_cast<int>(solver_budget(maxit));
   return betapr_mle_impl(x, tol, maxit, shape1, shape2, scale, reltol, abstol);
 }
 // Hold-aware profiles. The legacy all-free and fixed-scale paths above are
 // retained verbatim so their golden fits do not change.
 namespace betapr_detail {
-inline double shape_root(double other, double target) {
+inline double shape_root(double other, double target,int maxit=1000) {
+  maxit = static_cast<int>(solver_budget(maxit));
   double lo=-40,hi=std::log(1e8);
-  for(int j=0;j<120;++j) {
+  for(int j=0;j<maxit;++j) {
     const double t=(lo+hi)/2,v=std::exp(t);
     const double score=special::digamma(v+other)-special::digamma(v)-target;
     if(score>0) lo=t;else hi=t;
   }
-  return std::exp((lo+hi)/2);
+  return hi-lo<=1e-10?std::exp((lo+hi)/2):NAN;
 }
 }
 inline BetaPrimeResult betapr_mle_holds(span x, double held_a, double held_b,
     double held_s, double tol=1e-6,int maxit=1000) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const double nan=std::numeric_limits<double>::quiet_NaN();
   const bool fa=!std::isnan(held_a),fb=!std::isnan(held_b),fs=!std::isnan(held_s);
   BetaPrimeResult invalid{nan,nan,nan,nan,0,BetaPrimeStatus::InvalidStart};
@@ -262,8 +270,8 @@ inline BetaPrimeResult betapr_mle_holds(span x, double held_a, double held_b,
       tb+=(std::max(z,0.0)+std::log1p(std::exp(-std::abs(z))))/n;
       ta+=(std::max(-z,0.0)+std::log1p(std::exp(-std::abs(z))))/n;
     }
-    const double a=fa?held_a:betapr_detail::shape_root(held_b,ta);
-    const double b=fb?held_b:betapr_detail::shape_root(held_a,tb);
+    const double a=fa?held_a:betapr_detail::shape_root(held_b,ta,maxit);
+    const double b=fb?held_b:betapr_detail::shape_root(held_a,tb,maxit);
     // Stable density through log(Y) and log(1-Y); no x/scale overflow.
     const CPPUNIV_EXTENDED_REAL la=a,lb=b;
     const CPPUNIV_EXTENDED_REAL logbeta=std::lgamma(la)+std::lgamma(lb)-std::lgamma(la+lb);
@@ -289,9 +297,10 @@ inline BetaPrimeResult betapr_mle_holds(span x, double held_a, double held_b,
       }
       return v;
     };
-    for(int j=0;j<1024&&score(lo)<=0;++j)lo-=2;
-    for(int j=0;j<1024&&score(hi)>=0;++j)hi+=2;
-    for(int j=0;j<120;++j) {const double mid=(lo+hi)/2;if(score(mid)>0)lo=mid;else hi=mid;}
+    for(int j=0;j<maxit&&score(lo)<=0;++j)lo-=2;
+    for(int j=0;j<maxit&&score(hi)>=0;++j)hi+=2;
+    for(int j=0;j<maxit;++j) {const double mid=(lo+hi)/2;if(score(mid)>0)lo=mid;else hi=mid;}
+    if(hi-lo>1e-10)return {nan,nan,nan,nan,maxit,BetaPrimeStatus::BfgsFailure};
     return profile((lo+hi)/2);
   }
   // Only the face opposite the held shape survives. Optimize that face

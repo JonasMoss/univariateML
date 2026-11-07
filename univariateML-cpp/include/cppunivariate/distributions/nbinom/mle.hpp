@@ -10,6 +10,7 @@
 // score is bracketed on a log scale and bisected.
 
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
 
 #include "../../core/span.hpp"
@@ -42,6 +43,7 @@ struct NbinomResult {
 inline NbinomResult nbinom_candidate_mle(ispan x, double tol, int maxit,
     double size_fixed = std::numeric_limits<double>::quiet_NaN(),
     double prob_fixed = std::numeric_limits<double>::quiet_NaN()) {
+  maxit = static_cast<int>(solver_budget(maxit));
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
   if (n == 0) return {0.0, 0.0, kNaN, 0, false, NbinomStatus::InvalidInput};
@@ -83,9 +85,9 @@ inline NbinomResult nbinom_candidate_mle(ispan x, double tol, int maxit,
           return out;
         };
         double lo=0,hi=std::max(1.0,x_bar*prob_fixed/(1-prob_fixed));
-        while(score(hi)>0 && std::isfinite(hi)) hi*=2;
-        if(!std::isfinite(hi)) return invalid;
-        for(int i=0;i<200;++i) {
+        for(std::int64_t bracket_pass=0; bracket_pass<solver_budget(maxit) && (score(hi)>0 && std::isfinite(hi)); ++bracket_pass) hi*=2;
+        if(!std::isfinite(hi) || score(hi)>0) return {kNaN,kNaN,kNaN,0,false,NbinomStatus::PrecisionFailure};
+        for(int i=0;i<maxit;++i) {
           const double mid=lo+(hi-lo)/2;
           if(score(mid)>0)lo=mid;else hi=mid;
         }
@@ -218,11 +220,11 @@ inline NbinomResult nbinom_candidate_mle(ispan x, double tol, int maxit,
   double lo = (std::isfinite(size0) && size0 > 0.0) ? std::min(size0, kSizeMax) : 1.0;
   double hi = lo;
   int evals = 0;
-  while (score(lo) <= 0.0 && lo > 1e-300) {
+  for(std::int64_t bracket_pass=0; bracket_pass<solver_budget(maxit) && (score(lo) <= 0.0 && lo > 1e-300); ++bracket_pass) {
     lo *= 0.5;
     ++evals;
   }
-  while (score(hi) >= 0.0) {
+  for(std::int64_t bracket_pass=0; bracket_pass<solver_budget(maxit) && (score(hi) >= 0.0); ++bracket_pass) {
     if (hi >= kSizeMax * std::max(1.0, x_bar)) {
       return {kNaN, kNaN, kNaN, iter + evals, false, NbinomStatus::PrecisionFailure};
     }
@@ -230,13 +232,15 @@ inline NbinomResult nbinom_candidate_mle(ispan x, double tol, int maxit,
     ++evals;
   }
   if (!(score(lo) > 0.0) || !(score(hi) < 0.0)) return {kNaN, kNaN, kNaN, iter + evals, false, NbinomStatus::PrecisionFailure};
-  for (int k = 0; k < 200 && hi / lo - 1.0 > 4.0 * std::numeric_limits<double>::epsilon(); ++k) {
+  for (int k = 0; k < maxit && hi / lo - 1.0 > 4.0 * std::numeric_limits<double>::epsilon(); ++k) {
     const double mid = std::sqrt(lo) * std::sqrt(hi);
     const double smid = score(mid);
     if (!std::isfinite(smid)) return {kNaN, kNaN, kNaN, iter + evals, false, NbinomStatus::PrecisionFailure};
     if (smid > 0.0) lo = mid; else hi = mid;
     ++evals;
   }
+  if(hi/lo-1.0>4.0*std::numeric_limits<double>::epsilon())
+    return {kNaN,kNaN,kNaN,iter+evals,false,NbinomStatus::PrecisionFailure};
   size = std::sqrt(lo) * std::sqrt(hi);
   const double prob = size / (x_bar + size);
   return {size, prob, log_likelihood(size), iter + evals, false};

@@ -52,7 +52,7 @@ test_that("fpareto: all delegate escapes name the shifted fit", {
    expect_error(mlfpareto(cases[[id]]+2,min=2),if(id=="double") "double Pareto" else
      paste0("ml",id,"\\(x - min\\)"),info=id)
  }
- expect_error(mlfpareto(qfpareto(p = u, shape1 = 0.3, shape2 = 2, shape3 = 0.4, scale = 1/1, min = 0),min=0,iterlim=1),"unresolved")
+ expect_error(mlfpareto(qfpareto(p = u, shape1 = 0.3, shape2 = 2, shape3 = 0.4, scale = 1/1, min = 0),min=0,iterlim=1),"certified delegate budget stop")
 })
 
 test_that("fpareto: reference mapping and unbounded unrestricted path", {
@@ -136,7 +136,7 @@ test_that("Feller Pareto unit shape and held scale inherit scalar certificate", 
   a <- mlfpareto(x+2,min=2,shape3=1,scale=1)
   b <- mlgb2(x+2-2,shape3=1,scale=1)
   expect_equal(as.numeric(a[1:4]),as.numeric(b),tolerance=1e-10)
-  e <- tryCatch(mlfpareto(x+2,min=2,shape3=1,scale=1,iterlim=1),univariateML_budget=identity)
-  expect_s3_class(e,"univariateML_budget")
-  expect_true(is.finite(e$loglik_lower))
+  e <- mlfpareto(x+2,min=2,shape3=1,scale=1,iterlim=1)
+  expect_s3_class(e,"univariateML")
+  expect_equal(as.numeric(e),as.numeric(a),tolerance=1e-6)
 })

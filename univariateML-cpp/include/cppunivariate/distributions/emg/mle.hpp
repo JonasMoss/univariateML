@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
 #include "../../core/face_compare.hpp"
 #include "logconcave_profile.hpp"
@@ -16,7 +17,7 @@ struct EmgResult { double mu,sigma,lambda,logLik; int iterations; EmgStatus stat
 namespace emg_detail {
 struct Profile {
   const std::vector<double>& x;
-  double mu,sigma,lambda;
+  double mu,sigma,lambda;int maxit=500;
   double location(double s,double l) const {
     if(!std::isnan(mu)) return mu;
     auto score=[&](double m) {
@@ -32,10 +33,10 @@ struct Profile {
       return std::array<CPPUNIV_EXTENDED_REAL,2>{{sum,deriv}};
     };
     double step=std::max(s,1/l),lo=x.front()-step,hi=x.back()+step;
-    for(int k=0;k<100 && score(lo)[0]<0;++k) {step*=2;lo-=step;}
-    for(int k=0;k<100 && score(hi)[0]>0;++k) {step*=2;hi+=step;}
+    for(int k=0;k<maxit && score(lo)[0]<0;++k) {step*=2;lo-=step;}
+    for(int k=0;k<maxit && score(hi)[0]>0;++k) {step*=2;hi+=step;}
     double m=lo/2+hi/2;
-    for(int k=0;k<80;++k) {
+    for(int k=0;k<maxit;++k) {
       const auto g=score(m);
       if(g[0]>0)lo=m;else hi=m;
       double next=m-static_cast<double>(g[0]/g[1]);
@@ -43,7 +44,7 @@ struct Profile {
       if(!std::isfinite(next)||next<=lo||next>=hi)next=lo/2+hi/2;
       m=next;
     }
-    return m;
+    return NAN;
   }
   // Reuse only identical held-profile coordinates, including across starts.
   // Clearing the bounded cache changes cost only, never search decisions.
@@ -71,6 +72,7 @@ struct Profile {
 // Nelder-Mead on the one/two remaining log-scale coordinates. Location is
 // profiled exactly (strict log concavity of the normal-exponential convolution).
 inline EmgResult search(const Profile& p,std::vector<double> start,double tol,int maxit) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const int d=static_cast<int>(start.size());
   if(!d) return p.evaluate(start);
   std::vector<std::vector<double>> v(d+1,start);
@@ -117,6 +119,7 @@ inline EmgResult search(const Profile& p,std::vector<double> start,double tol,in
 }
 inline EmgResult emg_mle(span x,double tol=1e-8,int maxit=500,
     double mu=special::kNaN,double sigma=special::kNaN,double lambda=special::kNaN) {
+  maxit = static_cast<int>(solver_budget(maxit));
   EmgResult bad={special::kNaN,special::kNaN,special::kNaN,special::kNaN,0,EmgStatus::InvalidInput};
   if(x.empty() || !(tol>0 && std::isfinite(tol)) || maxit<1 || (!std::isnan(mu)&&!std::isfinite(mu)) || (!std::isnan(sigma)&&!(sigma>0&&std::isfinite(sigma))) || (!std::isnan(lambda)&&!(lambda>0&&std::isfinite(lambda)))) return bad;
   double mean=0;for(double v:x){if(!std::isfinite(v))return bad;mean+=v/x.size();}
@@ -126,7 +129,7 @@ inline EmgResult emg_mle(span x,double tol=1e-8,int maxit=500,
   double scale=std::sqrt(var);
   if(!(scale>0)) scale=!std::isnan(sigma)?sigma:(!std::isnan(lambda)?1/lambda:1);
   std::vector<double> y;for(double v:x)y.push_back((v-mean)/scale);std::sort(y.begin(),y.end());
-  emg_detail::Profile p{y,std::isnan(mu)?mu:(mu-mean)/scale,std::isnan(sigma)?sigma:sigma/scale,std::isnan(lambda)?lambda:lambda*scale};
+  emg_detail::Profile p{y,std::isnan(mu)?mu:(mu-mean)/scale,std::isnan(sigma)?sigma:sigma/scale,std::isnan(lambda)?lambda:lambda*scale,maxit};
   EmgResult best={0,0,0,special::kNegInf,0,EmgStatus::IterationFailure};
   auto attempted=best;
   bool faces_only=false;
@@ -210,6 +213,7 @@ inline EmgResult emg_mle(span x,double tol=1e-8,int maxit=500,
     if(ll>=comparison-((best.status==EmgStatus::NormalLimit)?0:tie))best={m,0,l,ll,0,EmgStatus::TranslatedExponentialLimit};
   }
   };
+  if(maxit==1 && !faces_only && best.status!=EmgStatus::Ok)return {NAN,NAN,NAN,NAN,maxit,EmgStatus::IterationFailure};
   compare_faces();
   if(faces_only && best.status==EmgStatus::IterationFailure) {
     logconcave_detail::record_fallback(logconcave_detail::FallbackReason::UnresolvedFaces);

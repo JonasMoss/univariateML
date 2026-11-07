@@ -34,7 +34,7 @@ r:
     shape2: Known positive finite coefficient; NULL estimates it.
     shape1: Known positive finite coefficient; NULL estimates it.
     reltol: Tolerance in `log(shape2)` for the one-dimensional profile search (free `shape2`).
-    iterlim: Maximum number of iterations per root of the profile score.
+    iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations."
 log_density: log(shape2) + shape1*shape2*log(scale/x) - (scale/x)**shape2 - log(x) - loggamma(shape1)
 limits:
   - name: fixed-endpoint Pareto face
@@ -173,3 +173,5 @@ The C++ face helper `trgamma_faces_log` accepts logarithms of observations
 and returns the maximised lognormal and power likelihoods and their fitted
 parameters. The derivation and numerical search qualifications are in
 `dev/research/evaluations/2026-10-29-trgamma-derivation.md` in the source tree.
+
+A transformed-gamma budget stop retains the reciprocal-scale finite candidates and the mirrored lognormal or Pareto face. Candidate and global likelihood bounds include the reciprocal transformation’s Jacobian.

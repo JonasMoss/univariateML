@@ -8,6 +8,7 @@
 // where f_unit is the standardised t (mean 0, sd 1) used by dstd().
 
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../../core/face_compare.hpp"
 #include "cppunivariate/core/constants.hpp"
 #include "../../core/precision.hpp"
@@ -171,6 +172,7 @@ struct StudentTTwoCost {
 };
 
 inline StudentTResult student_t_mle_fixed_nu(span x, double nu, double tol, int maxit) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const double nan = std::numeric_limits<double>::quiet_NaN();
   if (!std::isfinite(nu) || nu <= 2.0)
     return {nan,nan,nu,nan,0,StudentTStatus::InvalidNu};
@@ -184,6 +186,7 @@ inline StudentTResult student_t_mle_fixed_nu(span x, double nu, double tol, int 
 }
 
 inline StudentTResult student_t_mle_impl(span x, double tol, int maxit, bool standardized) {
+  maxit = static_cast<int>(solver_budget(maxit));
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
   if (n < 2) return {kNaN, kNaN, kNaN, kNaN, 0, StudentTStatus::InvalidStart};
@@ -311,8 +314,10 @@ inline StudentTResult student_t_mle_impl(span x, double tol, int maxit, bool sta
   return {mu, sigma, nu, logLik, r.iterations, StudentTStatus::Ok};
 }
 
-inline StudentTResult student_t_mle_certified(span x, double tol, int maxit,int budget=4096) {
+inline StudentTResult student_t_mle_certified(span x, double tol, int maxit,std::int64_t budget=-1) {
+  maxit = static_cast<int>(solver_budget(maxit));
   if(!(tol>0)||!std::isfinite(tol))return {NAN,NAN,NAN,NAN,0,StudentTStatus::InvalidStart};
+  if(budget<0)budget=certificate_budget(maxit);
   const auto c=t_certificate(x,2,budget,maxit,std::min(1e-6,std::max(1e-7,tol)));
   StudentTStatus status=StudentTStatus::NumericalFailure;
   switch(c.status){
@@ -339,9 +344,11 @@ inline StudentTResult student_t_mle_certified(span x, double tol, int maxit,int 
 }
 
 
-inline StudentTResult student_t_mle(span x,double tol,int maxit){return student_t_mle_certified(x,tol,maxit);}
+inline StudentTResult student_t_mle(span x,double tol,int maxit){
+  maxit = static_cast<int>(solver_budget(maxit));return student_t_mle_certified(x,tol,maxit);}
 
 inline StudentTResult student_t_mle(span x,double tol,int maxit,double mean,double sd,double nu) {
+  maxit = static_cast<int>(solver_budget(maxit));
   if(std::isnan(mean)&&std::isnan(sd))return std::isnan(nu)?student_t_mle(x,tol,maxit):student_t_mle_fixed_nu(x,nu,tol,maxit);
   const double nan=std::numeric_limits<double>::quiet_NaN();
   auto profile=[&](double d){

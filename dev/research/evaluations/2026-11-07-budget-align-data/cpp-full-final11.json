@@ -1,0 +1,16 @@
+{
+  "source_sha256": "850f38bf1fb42b8dcbd66f4e15764efb0de2b2c8473f8794cf685bf18057beab",
+  "source_headers_sha256": "7349c83fd8ae9cc29c52d42593b53160ba0dbb512a36f265cc84779f652e036f",
+  "runner": "/tmp/umvl-cpu/run4",
+  "command": [
+    "env",
+    "UMVL_TEST_TIER=full",
+    "just",
+    "cpp-test"
+  ],
+  "machine": "workstation4",
+  "returncode": 0,
+  "wall_seconds": 205.22260427474976,
+  "started_utc": "2026-11-07T08:30:55.787267+00:00",
+  "revision": "f8f65f9b080c394d11ca9dc178a93219fffee210"
+}

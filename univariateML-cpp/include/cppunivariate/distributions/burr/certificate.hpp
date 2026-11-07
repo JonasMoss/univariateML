@@ -1,5 +1,6 @@
 // TASK-138 practical enclosures. See the Burr dossier for the arithmetic contract.
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
 #include "../../core/span.hpp"
 #include <array>
@@ -54,7 +55,7 @@ inline Interval entropy(Interval a){
   if(!a.valid()||a.lo<0||a.hi>1)return invalid();
   return padded(std::min(entropy(a.lo),entropy(a.hi)),a.lo<=.5&&a.hi>=.5?std::log(2.):std::max(entropy(a.lo),entropy(a.hi)));
 }
-struct Data {std::vector<double> y;std::vector<Interval> box;double center=0,unit=1,jacobian=0;};
+struct Data {int maxit=120;std::vector<double> y;std::vector<Interval> box;double center=0,unit=1,jacobian=0;};
 inline bool data(span x,Data& d){
   if(x.size()<2)return false;
   double total=0;
@@ -71,6 +72,7 @@ inline bool data(span x,Data& d){
 // the decreasing profile power score. Newton proposals stay inside brackets.
 struct Proposal {double k=0,c=0,b=0,value=-INFINITY,score=0;};
 inline bool intercept(const std::vector<double>& y,double k,double c,double& b,double& score,double& deriv,int maxit=120){
+  maxit = static_cast<int>(solver_budget(maxit));
   double lo=-std::log(k)-c*y.back()-1,hi=-std::log(k)-c*y.front()+1;
   if(!std::isfinite(lo)||!std::isfinite(hi)||!(lo<hi))return false;
   const double n=y.size();b=(lo+hi)/2;
@@ -92,11 +94,12 @@ inline bool intercept(const std::vector<double>& y,double k,double c,double& b,d
   return std::isfinite(score)&&std::isfinite(deriv)&&deriv<0;
 }
 inline bool profile(const std::vector<double>& y,double k,Proposal& p,int maxit=120){
+  maxit = static_cast<int>(solver_budget(maxit));
   if(!(k>0)||!std::isfinite(k))return false;
   double lo=1e-8,hi=1,b=0,g=0,h=0;
   if(!intercept(y,k,lo,b,g,h,maxit)||g<=0)return false;
   bool bracket=false;
-  for(int i=0;i<80;++i){if(!intercept(y,k,hi,b,g,h,maxit))return false;if(g<0){bracket=true;break;}hi*=2;}
+  for(int i=0;i<maxit;++i){if(!intercept(y,k,hi,b,g,h,maxit))return false;if(g<0){bracket=true;break;}hi*=2;}
   if(!bracket)return false;
   double c=(lo+hi)/2;bool done=false;
   for(int i=0;i<maxit;++i){
@@ -116,6 +119,7 @@ inline Interval primal(const std::vector<Interval>& y,const Proposal& t){
 }
 struct Node {Proposal p;double lower=0,upper=0;};
 inline bool dual(const Data& d,double k,Node& out,int maxit=120){
+  maxit = static_cast<int>(solver_budget(maxit));
   Proposal t;if(!profile(d.y,k,t,maxit))return false;
   const std::size_t n=d.y.size();std::vector<double> p(n);std::size_t j=0;
   for(std::size_t i=0;i<n;++i){p[i]=sigmoid(t.c*d.y[i]+t.b);if(p[i]*(1-p[i])>p[j]*(1-p[j]))j=i;}
@@ -147,12 +151,12 @@ inline bool weibull(const Data& d,Weibull& w){
   const double n=d.y.size();
   auto score=[&](double c){double s=0,sy=0,total=0;for(double y:d.y){const double e=std::exp(c*(y-d.y.back()));s+=e;sy+=y*e;total+=y;}return n/c+total-n*sy/s;};
   double lo=1e-8,hi=1;if(!(score(lo)>0))return false;
-  int it=0;while(score(hi)>0&&it++<80)hi*=2;
+  int it=0;while(score(hi)>0&&it++<d.maxit)hi*=2;
   if(!std::isfinite(score(hi))||score(hi)>0)return false;
-  for(int i=0;i<90;++i){const double mid=(lo+hi)/2;if(score(mid)>0)lo=mid;else hi=mid;}
+  for(int i=0;i<d.maxit;++i){const double mid=(lo+hi)/2;if(score(mid)>0)lo=mid;else hi=mid;}
   const double c=(lo+hi)/2;w.proposal=c;double width=1e-10*std::max(c,1.);Interval gl,gh,vl,vh;
   bool bracket=false;
-  for(int i=0;i<32;++i){lo=c-width;hi=c+width;if(lo<=0)return false;
+  for(int i=0;i<d.maxit;++i){lo=c-width;hi=c+width;if(lo<=0)return false;
     if(weibull_at(d,Interval(lo),gl,vl)&&weibull_at(d,Interval(hi),gh,vh)&&gl.lo>0&&gh.hi<0){bracket=true;break;}width*=2;}
   if(!bracket)return false;
   w.c={lo,hi};Sum e;for(Interval y:d.box)e.add(exp(w.c*y));w.eta=log(n/e.get());
@@ -169,7 +173,7 @@ inline double signed_tail(const Data& d,const Weibull& w){
     const double R=fraction*std::min(w.c.lo,1.);std::vector<Interval> low,high;
     for(std::size_t i=0;i<d.y.size();++i){const double norm=d.box[i].mag()+1;low.push_back(exp(log(Interval(w.v[i].lo))-R*norm));high.push_back(exp(log(Interval(w.v[i].hi))+R*norm));}
     double h=1;
-    for(int j=0;j<80;++j,h/=2){
+    for(int j=0;j<d.maxit;++j,h/=2){
       Sum aa,bb,ee2;
       for(std::size_t i=0;i<d.y.size();++i){Interval weight=low[i]/(1+h*high[i])/(1+h*high[i]);if(!weight.valid())return 0;Interval ww(weight.lo);aa.add(ww*d.box[i]*d.box[i]);bb.add(ww*d.box[i]);ee2.add(ww);}
       Interval a=n/((Interval(w.c.hi)+R)*(Interval(w.c.hi)+R))+aa.get(),b=bb.get(),e=ee2.get(),det=a*e-b*b;
@@ -223,7 +227,7 @@ struct Root {Proposal t;std::array<double,3> radii{};double delta=0;};
 inline bool isolate(const Data& d,Proposal t,Root& out){
   // Newton only proposes a center. Neither its residual nor convergence is
   // accepted as a certificate; the interval fixed-point test decides.
-  for(int it=0;it<30;++it){std::array<double,3> g;Matrix h,R;numeric(d.y,t,g,h);if(!inverse(h,R,3))return false;
+  for(int it=0;it<d.maxit;++it){std::array<double,3> g;Matrix h,R;numeric(d.y,t,g,h);if(!inverse(h,R,3))return false;
     std::array<double,3> step{};for(int i=0;i<3;++i)for(int j=0;j<3;++j)step[i]+=R.a[i][j]*g[j];
     if(!std::isfinite(step[0])||!std::isfinite(step[1])||!std::isfinite(step[2]))return false;
     if(std::abs(step[0])<1e-13*t.k&&std::abs(step[1])<1e-13*t.c&&std::abs(step[2])<1e-13*(1+std::abs(t.b)))break;
@@ -248,7 +252,7 @@ inline bool isolate(const Data& d,Proposal t,Root& out){
     const double delta=t.k*fraction;std::array<double,3> nr{{0,0,0}};
     for(int i=0;i<2;++i){for(int j=0;j<2;++j)nr[i+1]+=2*std::abs(NR.a[i][j])*std::abs(hn.a[j+1][0])*delta;nr[i+1]+=delta*.001*(i==0?t.c:std::max(1.,std::abs(t.b)));}
     bool contained=false;
-    for(int attempt=0;attempt<6;++attempt){if(nr[1]>=t.c)break;
+    for(int attempt=0;attempt<d.maxit;++attempt){if(nr[1]>=t.c)break;
       std::array<Interval,3> ct{{padded(t.k-delta,t.k+delta),t.c,t.b}},full{{ct[0],padded(t.c-nr[1],t.c+nr[1]),padded(t.b-nr[2],t.b+nr[2])}};
       if(!score_hessian(d,ct,g,hc))break;
       const auto nuisance_g=g;
@@ -280,15 +284,17 @@ struct Result {
   int roots=0,pruned=0;
   double cutoff=NAN,lower=NAN,remaining=NAN;
 };
-inline Result fit(span x,int budget=4096,int maxit=120) {
+inline Result fit(span x,std::int64_t budget=-1,int maxit=120) {
+  maxit = static_cast<int>(solver_budget(maxit));
   Result result;
+  if(budget<0)budget=certificate_budget(maxit);
   if(budget<1){result.outcome=Outcome::Budget;return result;}
   if(x.size()<2){result.outcome=Outcome::Invalid;return result;}
   bool constant=true;
   double minimum=INFINITY;
   for(double v:x){if(!(v>0)||!std::isfinite(v)){result.outcome=Outcome::Invalid;return result;}if(v!=x[0])constant=false;minimum=std::min(minimum,v);}
   if(constant){result.outcome=Outcome::Unbounded;result.logLik=INFINITY;return result;}
-  Data d;if(!data(x,d))return result;
+  Data d;d.maxit=maxit;if(!data(x,d))return result;
   const double n=x.size();int multiplicity=0;for(double v:x)if(v==minimum)++multiplicity;
   const double k0=std::nextafter(multiplicity/(n-multiplicity),0.);
   Sum distances;for(Interval y:d.box)distances.add(y-d.box.front());
@@ -335,7 +341,7 @@ inline Result fit(span x,int budget=4096,int maxit=120) {
     Node node;if(!get(k,node))return result;
     if(i>0&&previous.p.score>0&&node.p.score<0){
       double lo=previous.p.k,hi=node.p.k;Proposal t=node.p;
-      for(int j=0;j<48;++j){const double mid=std::sqrt(lo*hi);if(!profile(d.y,mid,t,maxit))return result;if(t.score>0)lo=mid;else hi=mid;if(hi-lo<1e-10*(1+mid))break;}
+      for(int j=0;j<maxit;++j){const double mid=std::sqrt(lo*hi);if(!profile(d.y,mid,t,maxit))return result;if(t.score>0)lo=mid;else hi=mid;if(hi-lo<1e-10*(1+mid))break;}
       Root root;
       // Root neighborhoods use log(x / proposed_scale). This exact affine
       // coordinate change avoids large correlated c,b interval boxes.
@@ -359,7 +365,7 @@ inline Result fit(span x,int budget=4096,int maxit=120) {
   if(h>0)K=1/h;
   else {
     bool tail=false;
-    for(int i=0;i<80;++i){const Interval error=n*n*(Interval(K)+1)/(2*(Interval(K)+1-n)*(Interval(K)+1-n));
+    for(int i=0;i<maxit;++i){const Interval error=n*n*(Interval(K)+1)/(2*(Interval(K)+1-n)*(Interval(K)+1-n));
       const Interval bound=w.W+error;
       if(bound.valid()&&bound.hi<best){tail=true;break;}K*=2;if(!std::isfinite(K))return result;}
     if(!tail){result.outcome=w.A.lo<=0&&w.A.hi>=0?Outcome::Tie:Outcome::Budget;return result;}

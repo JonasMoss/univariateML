@@ -27,7 +27,7 @@ r:
     mean: "Optional held value; NULL estimates it."
     sd: "Optional positive held value; NULL estimates it."
     reltol: "Tolerance for the Newton decrement."
-    iterlim: "Maximum iterations of Newton fitting."
+    iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
 log_density: "log((erf((x + 1 - mean)/(sqrt(2)*sd)) - erf((x - mean)/(sqrt(2)*sd)))/2)"
 limits:
   - name: point mass

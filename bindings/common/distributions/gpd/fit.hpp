@@ -29,7 +29,7 @@ inline FitResult fit_gpd(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg
     return stop_failure(fail("Generalized Pareto has unbounded likelihood from scale collapse at the threshold."), res.stop_detail, "nomle", {"mu","sigma","xi"});
   }
   if (res.certificate_failure == cppunivariate::GpdCertificateFailure::Budget)
-    return stop_failure(fail("Generalized Pareto MLE failed to converge: global certificate budget exhausted; no verified maximum."), res.stop_detail, "budget", {"mu","sigma","xi"});
+    return stop_failure(fail("Generalized Pareto MLE failed to converge: global certificate budget exhausted; no verified maximum. Raising iterlim may resolve this stop."), res.stop_detail, "budget", {"mu","sigma","xi"});
   if (res.certificate_failure == cppunivariate::GpdCertificateFailure::Tie)
     return stop_failure(fail("Generalized Pareto MLE failed to converge: competing maxima tie within the certificate margin (1e-8 per observation), or shape is unidentified."), res.stop_detail, "tie", {"mu","sigma","xi"});
   if (res.certificate_failure == cppunivariate::GpdCertificateFailure::Arithmetic)

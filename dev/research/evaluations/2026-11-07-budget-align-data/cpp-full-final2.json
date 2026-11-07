@@ -1,0 +1,14 @@
+{
+  "source_sha256": "d08a5fde8ebb56d5575899201d077eb3b77d456c0544d7b9d20b5b57dd351e1b",
+  "command": [
+    "env",
+    "UMVL_TEST_TIER=full",
+    "just",
+    "cpp-test"
+  ],
+  "machine": "simbox",
+  "returncode": 0,
+  "wall_seconds": 71.55568218231201,
+  "started_utc": "2026-11-06T18:13:44.754635+00:00",
+  "revision": "f8f65f9b080c394d11ca9dc178a93219fffee210"
+}

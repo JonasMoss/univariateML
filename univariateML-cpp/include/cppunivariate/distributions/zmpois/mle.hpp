@@ -1,10 +1,12 @@
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../zmpois/profile.hpp"
 namespace cppunivariate {
 // Status and result types retain the shared factorised likelihood contract.
 typedef zero_detail::ModifiedStatus ZmpoisStatus;
 typedef zero_detail::ModifiedResult ZmpoisResult;
 inline ZmpoisResult zmpois_mle(ispan x, double tol=1e-10,int maxit=200,double fixed_lambda=std::numeric_limits<double>::quiet_NaN(),double fixed_p0=std::numeric_limits<double>::quiet_NaN()) {
+  maxit = static_cast<int>(solver_budget(maxit));
  if(std::isnan(fixed_lambda) && std::isnan(fixed_p0)) {
   return zero_detail::modified_mle(x,0,tol,maxit,std::numeric_limits<double>::quiet_NaN());
  }

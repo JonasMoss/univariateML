@@ -70,7 +70,7 @@ r:
     sigma: Positive scale to hold fixed, or NULL to estimate.
     xi: Shape to hold fixed, or NULL to estimate within `[-1, 1]`. Held shapes above one are accepted when the collapse criterion permits.
     reltol: Tolerance for dimensionless profile scores and root brackets.
-    iterlim: Maximum iterations per scalar solve.
+    iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
 log_density: Piecewise((-log(sigma)-(x-mu)/sigma-exp(-(x-mu)/sigma), Eq(xi,0)), (-log(sigma)-(1+1/xi)*log(1+xi*(x-mu)/sigma)-(1+xi*(x-mu)/sigma)**(-1/xi), True))
 limits:
 - {firmness: numerical, name: scale collapse, fixed: [mu], status: NoMLE, message: "minimum multiplicity permits scale collapse", when: '$\sigma \to 0$ with $\mu$ held at the sample minimum', detect: '$\mu$ is held at the sample minimum and at least half of the observations are tied there (with $\xi > 0$ held, already when $\xi k \ge n - k$ for $k$ ties)', numerical: true}

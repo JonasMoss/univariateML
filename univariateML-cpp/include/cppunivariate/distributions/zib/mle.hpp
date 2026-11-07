@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../../core/discrete_stop.hpp"
 #include "../ztbinom/mle.hpp"
 #include "../zip/mle.hpp"
@@ -9,6 +10,7 @@ struct ZibResult {double size, prob, pi, logLik;int iterations;ZibStatus status;
 inline ZibResult zib_mle(ispan x,double tol=1e-10,int maxit=200,
     double fixed_size=std::numeric_limits<double>::quiet_NaN(),
     double fixed_prob=std::numeric_limits<double>::quiet_NaN(),double fixed_pi=std::numeric_limits<double>::quiet_NaN()) {
+  maxit = static_cast<int>(solver_budget(maxit));
   auto stopped = [&]() -> ZibResult {
   const bool fixed=!std::isnan(fixed_size);
   if(fixed && (!(fixed_size>=0)||!std::isfinite(fixed_size)||fixed_size!=std::floor(fixed_size)))
@@ -67,7 +69,7 @@ inline ZibResult zib_mle(ispan x,double tol=1e-10,int maxit=200,
         double lo=points[j-1],hi=points[j];
         if(score(lo)*score(hi)>0)continue;
         const bool positive=score(lo)>0;
-        for(int it=0;it<100;++it) {
+        for(int it=0;it<maxit;++it) {
           const double mid=lo+(hi-lo)/2;
           if((score(mid)>0)==positive)lo=mid;else hi=mid;
         }
@@ -82,7 +84,16 @@ inline ZibResult zib_mle(ispan x,double tol=1e-10,int maxit=200,
     if(fp) {
       auto best=held_profile(mx);
       if(fixed_prob==0 || fixed_prob==1)return best;
-      for(int j=0;j<1000000;++j) {
+      std::int64_t work=x.size();
+      const std::int64_t cap=enumeration_budget(maxit);
+      for(std::int64_t j=0;;++j) {
+        if(static_cast<std::int64_t>(x.size())>cap-work){
+          best.status=ZibStatus::IterationFailure;
+          best.stop_detail=discrete_budget(best.stop_detail);
+          best.stop_detail.candidates.push_back({{best.size,best.prob,best.pi},best.logLik,best.logLik});
+          best.stop_detail.loglik_lower=best.logLik;return best;
+        }
+        work+=x.size();
         const double r=double(mx)+j;
         auto candidate=held_profile(r);if(candidate.logLik>best.logLik)best=candidate;
         // Each positive mass is bounded by the mass at mx beyond mx/p.
@@ -99,7 +110,7 @@ inline ZibResult zib_mle(ispan x,double tol=1e-10,int maxit=200,
     // by the iteration budget `maxit` and `patience` stable cells, not
     // a hardcoded magnitude.
     int since_improvement=0, t=0;
-    const int grid_floor=24, patience=10, cap=std::max(grid_floor,maxit);
+    const int grid_floor=24, patience=10, cap=static_cast<int>(solver_budget(maxit));
     for(; t<=cap; ++t) {
       bool improved=false;
       auto candidate=held_profile(std::floor(mx+std::exp(t)));
@@ -141,7 +152,7 @@ inline ZibResult zib_mle(ispan x,double tol=1e-10,int maxit=200,
       double lo=points[j-1],hi=points[j];
       if(face_score(lo)*face_score(hi)>0)continue;
       const bool positive=face_score(lo)>0;
-      for(int it=0;it<100;++it) {
+      for(int it=0;it<maxit;++it) {
         const double mid=lo+(hi-lo)/2;
         if((face_score(mid)>0)==positive)lo=mid;else hi=mid;
       }
@@ -156,7 +167,7 @@ inline ZibResult zib_mle(ispan x,double tol=1e-10,int maxit=200,
     return best;
   }
   auto profile=[&](double r) {
-    double p=zero_detail::bin_prob(r,pm);
+    double p=zero_detail::bin_prob(r,pm,maxit);
     // If the unconstrained mixture needs negative inflation, pi=0.
     if(std::exp(r*std::log1p(-p))>z)p=m/r;
     const double logf0=r*std::log1p(-p), f0=std::exp(logf0);
@@ -174,7 +185,7 @@ inline ZibResult zib_mle(ispan x,double tol=1e-10,int maxit=200,
   // not certified, grid depth extended via the iteration budget and
   // stabilization rather than a hardcoded magnitude.
   int since_improvement=0, t=0;
-  const int grid_floor=24, patience=10, cap=std::max(grid_floor,maxit);
+  const int grid_floor=24, patience=10, cap=static_cast<int>(solver_budget(maxit));
   for(; t<=cap; ++t) {
     bool improved=false;
     const double r=mx+std::exp(t),ll=profile(r).logLik;

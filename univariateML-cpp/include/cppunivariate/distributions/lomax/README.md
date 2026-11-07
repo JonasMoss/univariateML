@@ -28,7 +28,7 @@ r:
     kappa: Optional held kappa; NULL estimates it.
     lambda0: Optional starting value for `lambda`; `NULL` uses a method-of-moments start.
     reltol: Tolerance for the optional Newton proposal; the global certificate and root enclosure use fixed accuracy requirements.
-    iterlim: Root-isolation iteration limit; the global certificate allows 128 * min(iterlim, 100000) subdivision evaluations.
+    iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations."
 log_density: log(lambda) + log(kappa) - (kappa + 1)*log(1 + lambda*x)
 limits:
   - model: exp

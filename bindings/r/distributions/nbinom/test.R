@@ -186,7 +186,7 @@ test_that("certificate stops carry the Poisson fit", {
   expect_equal(err$estimates,c(lambda=2))
   expect_equal(err$limit_loglik,sum(dpois(0:4,2,log=TRUE)))
   expect_match(conditionMessage(err),"mlpois")
-  expect_error(mlnbinom(c(0,0,1,3,6),iterlim=1),"precision|convergence")
+  expect_equal(as.numeric(mlnbinom(c(0,0,1,3,6),iterlim=1)),as.numeric(mlnbinom(c(0,0,1,3,6))),tolerance=1e-6)
 })
 
 test_that("all-held subnormal members retain finite likelihood evaluation", {

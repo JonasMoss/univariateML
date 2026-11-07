@@ -5,6 +5,7 @@
 // downstream estimators.
 
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "cppunivariate/core/constants.hpp"
 #include "../../core/precision.hpp"
 
@@ -30,6 +31,7 @@ struct GumbelResult {
 
 inline GumbelResult fit_gumbel_newton(span x, double tol, int maxit,
                                       double theta0 = std::numeric_limits<double>::quiet_NaN()) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const std::size_t n = x.size();
   if (n == 0 || !(tol > 0 && std::isfinite(tol)) || maxit < 1)
     return {NAN,NAN,NAN,0,GumbelStatus::InvalidInput};
@@ -116,6 +118,7 @@ inline GumbelResult fit_gumbel_newton(span x, double tol, int maxit,
 
 
 inline GumbelResult fit_gumbel_held(span x,double tol,int maxit,double mu,double sigma) {
+  maxit = static_cast<int>(solver_budget(maxit));
   if(std::isnan(mu)&&std::isnan(sigma))return fit_gumbel_newton(x,tol,maxit);
   const double nan=std::numeric_limits<double>::quiet_NaN();
   if(x.empty()||!(tol>0)||maxit<1)return {nan,nan,nan,0,GumbelStatus::InvalidInput};
@@ -135,7 +138,8 @@ inline GumbelResult fit_gumbel_held(span x,double tol,int maxit,double mu,double
     // n/t - sum d*(1-exp(-t*d)) is strictly decreasing.
     double lo=0,hi=1/radius;
     auto score=[&](double t){CPPUNIV_EXTENDED_REAL g=x.size()/t;for(double v:x){const CPPUNIV_EXTENDED_REAL d=static_cast<CPPUNIV_EXTENDED_REAL>(v)-m;g-=d*(-std::expm1(-t*d));}return g;};
-    while(score(hi)>0 && std::isfinite(hi*2))hi*=2;
+    for(std::int64_t bracket_pass=0; bracket_pass<solver_budget(maxit) && (score(hi)>0 && std::isfinite(hi*2)); ++bracket_pass)hi*=2;
+    if(!(score(hi)<=0))return {nan,nan,nan,it,GumbelStatus::IterationFailure};
     for(;it<maxit;++it){const double t=lo/2+hi/2;if(score(t)>0)lo=t;else hi=t;if(hi-lo<1e-12*hi)break;}
     s=1/(lo/2+hi/2);
   }

@@ -62,7 +62,7 @@ r:
     mu: Optional held mu; NULL estimates it.
     lambda: "Optional finite held shape; NULL estimates it under the applicable fitting bounds."
     reltol: "Tolerance on the standardized search simplex."
-    iterlim: "Maximum simplex iterations per search start."
+    iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
 log_density: "-log(sigma)-log(u**(lambda-1)+(1-u)**(lambda-1))"
 references:
 - Joiner, B. L. and Rosenblatt, J. R. (1971). Some properties of the range in samples from Tukey's symmetric lambda

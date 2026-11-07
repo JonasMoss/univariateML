@@ -27,7 +27,7 @@ r:
     shape: Known positive finite coefficient; NULL estimates it.
     shape0: Optional starting value for the numerical proposal; NULL uses an automatic start.
     gradtol: Tolerance for the numerical proposal; success additionally requires the global certificate, independently of this tolerance.
-    iterlim: Maximum proposal iterations; the subsequent global certificate has a separate budget of 32768 boxes.
+    iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations."
 limits:
   - name: unbounded likelihood
     firmness: proved
@@ -209,7 +209,7 @@ is certification in exact arithmetic conditional on the computed comparisons,
 with this practical margin; it is not outward-rounded interval arithmetic.
 No long-double precision is required. Nonfinite arithmetic, insufficient
 root accuracy, indistinguishable logarithms or an unresolved comparison
-stops with `NumericalFailure`. Exhausting 32768 compact-search boxes stops
+stops with `NumericalFailure`. Exhausting `128 * min(iterlim, 100000)` compact-search boxes stops
 with `CertificateBudget`. Proposal exhaustion retains `BfgsFailure`.
 The bindings provide structured `numerical`, `budget` or `nomle` stops,
 including finite feasible candidates and likelihood bounds when available;

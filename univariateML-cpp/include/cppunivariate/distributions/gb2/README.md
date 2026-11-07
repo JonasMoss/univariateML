@@ -37,7 +37,7 @@ r:
   sampler: rgb2
   control:
     gradtol: Tolerance on the per-observation profile score in log beta shapes.
-    iterlim: Maximum iterations per outer search start.
+    iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations."
 log_density: log(shape2)-log(x)-loggamma(shape3)-loggamma(shape1)+loggamma(shape3+shape1)+shape3*shape2*log(x/scale)-(shape3+shape1)*log(1+(x/scale)**shape2)
 limits:
   - {firmness: proved, model: weibull, when: 'With shape3 held at one, the Burr submodel tends to its Weibull face.', status: WeibullBoundary, fixed: [shape3], numerical: true}
@@ -189,3 +189,17 @@ The held-scale two-shape reduction now inherits the
 including strict endpoint score comparisons, coefficient accuracy checks,
 practical floating-point margins and explicit tie/budget/numerical stops.
 This certifies the unit-beta-shape reductions only. Other numerical subsets remain, so the family-wide certification tag stays partial.
+
+Profile and envelope backtracking stop if both proposed coordinates round to
+the current coordinates. Such stagnation does not establish convergence:
+the existing inner and outer score gates still decide whether that point
+can be used. This prevents repeated evaluation of an identical point when
+an increased work limit cannot produce a representable step.
+
+An outward search-box edge also completes a proposal, using the same
+outward-score condition as the existing completion flag. The final edge
+guard still excludes it from an attained fit. This avoids spending an
+increased iteration allowance repeatedly pursuing an already detected
+search-domain escape.
+
+Shape-box expansion uses the caller’s solver limit. Expansion stops early when a resolved face dominates an explored outward proposal, or when another box would exceed representable positive shapes; the final edge gate still rejects an unresolved edge as a finite fit.

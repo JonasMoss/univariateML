@@ -1,6 +1,7 @@
 // Deterministic multistart likelihood search; no unimodality assumption.
 // NB and Poisson faces are fitted separately, never by huge BNB shapes.
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "../../core/discrete_stop.hpp"
 #include "../../core/precision.hpp"
 #include "dpqr.hpp"
@@ -65,6 +66,7 @@ struct Cost {
 // Small vector BFGS, to retain the core's no-raw-pointer interface.
 inline std::vector<double> optimise(const Cost &c, std::vector<double> u,
                                     double tol, int maxit, int &iterations) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const std::size_t k=u.size();
   std::vector<double> H(k*k,0), g=c.gradient(u);
   for (std::size_t j=0;j<k;++j) H[j*k+j]=1;
@@ -84,7 +86,7 @@ inline std::vector<double> optimise(const Cost &c, std::vector<double> u,
     double step=1, fn=f;
     std::vector<double> next(k);
     bool accepted=false;
-    for (int ls=0;ls<45;++ls) {
+    for (int ls=0;ls<maxit;++ls) {
       for (std::size_t j=0;j<k;++j) next[j]=u[j]+step*v[j];
       fn=c.value(next);
       if (fn<=f+1e-4*step*slope) { accepted=true; break; }
@@ -112,6 +114,7 @@ inline BnbinomResult bnbinom_mle(ispan x, double tol=1e-8, int maxit=600,
     double size_fixed=std::numeric_limits<double>::quiet_NaN(),
     double alpha_fixed=std::numeric_limits<double>::quiet_NaN(),
     double beta_fixed=std::numeric_limits<double>::quiet_NaN()) {
+  maxit = static_cast<int>(solver_budget(maxit));
   auto stopped = [&]() -> BnbinomResult {
   const double nan=std::numeric_limits<double>::quiet_NaN();
   BnbinomResult out{nan,nan,nan,nan,0,BnbinomStatus::InvalidInput};
@@ -137,7 +140,8 @@ inline BnbinomResult bnbinom_mle(ispan x, double tol=1e-8, int maxit=600,
   double poisson_face=-std::numeric_limits<double>::infinity();
   if (fa && (fr || fb)) {
     if (fr && fb) {
-      const auto nb=nbinom_mle(x,1e-10,200);
+      const auto nb=nbinom_mle(x,1e-10,maxit);
+      if(nb.status==NbinomStatus::PrecisionFailure){out.status=BnbinomStatus::IterationFailure;out.stop_detail=nb.stop_detail;return out;}
       if (nb.status==NbinomStatus::Ok && !std::isfinite(nb.logLik)) {
         out.status=BnbinomStatus::IterationFailure; return out;
       }
@@ -150,7 +154,8 @@ inline BnbinomResult bnbinom_mle(ispan x, double tol=1e-8, int maxit=600,
       if (po.logLik>=face) { face=po.logLik; face_status=BnbinomStatus::PoissonLimit; }
     } else {
       const double r=fr ? beta_fixed : size_fixed;
-      const auto nb=nbinom_mle(x,1e-10,200,r);
+      const auto nb=nbinom_mle(x,1e-10,maxit,r);
+      if(nb.status!=NbinomStatus::Ok){out.status=BnbinomStatus::IterationFailure;out.stop_detail=nb.stop_detail;return out;}
       face=nb.logLik;nb_detail=discrete_face(StopModel::Nbinom,{nb.size,nb.prob},nb.logLik);
       if (!std::isfinite(face)) { out.status=BnbinomStatus::IterationFailure; return out; }
       face_status=BnbinomStatus::NegativeBinomialLimit;

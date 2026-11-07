@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/work_budget.hpp"
 // Conditional exact-arithmetic certificate. See README.md for the score,
 // tail inequalities, interval bounds and practical floating-point allowance.
 namespace cppunivariate {
@@ -26,13 +27,14 @@ inline double mean(double r,double t) {
   const double u=r*t;
   return (std::expm1(t)/t)*(u==0?1:u/(-std::expm1(-u)));
 }
-inline Interval theta(double r,double m) {
+inline Interval theta(double r,double m,int maxit=200) {
+  maxit = static_cast<int>(solver_budget(maxit));
   double lo=0,hi=r==0?2*std::log1p(m):std::log1p(m/r);
   if(!std::isfinite(hi)||!(hi>0))return {NAN,NAN};
   hi*=1+4096*std::numeric_limits<double>::epsilon();
   const double pad=256*std::numeric_limits<double>::epsilon()*(1+m);
   if(!(mean(r,hi)>m+pad))return {NAN,NAN};
-  for(int k=0;k<160;++k) {
+  for(int k=0;k<solver_budget(maxit);++k) {
     const double mid=lo+(hi-lo)/2,v=mean(r,mid);
     if(v<m-pad)lo=mid;
     else if(v>m+pad)hi=mid;
@@ -50,9 +52,9 @@ inline Interval theta(double r,double m) {
 struct Data {
   std::vector<double> weights;
   double m=0,k=0,d=0;
-  explicit Data(ispan x) {
+  explicit Data(ispan x,int maxit=200) {
     int largest=1;for(int v:x)largest=std::max(largest,v);
-    if(largest>100000)return;
+    if(largest>enumeration_budget(maxit))return;
     std::vector<double> counts(largest+1,0);
     double total=0;for(int v:x){counts[v]+=1.;total+=v;}
     if(total>4503599627370496.)return;
@@ -88,12 +90,13 @@ inline Interval derivative(const Data& data,double a,double b,Interval ta,Interv
 inline ZtnbinomResult ztnbinom_mle(ispan x,double tol=1e-10,int maxit=200,
     double fixed_size=std::numeric_limits<double>::quiet_NaN(),
     double fixed_prob=std::numeric_limits<double>::quiet_NaN()) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const double nan=std::numeric_limits<double>::quiet_NaN();
   double failure_lower=-std::numeric_limits<double>::infinity();
-  int work=0;const int budget=16*std::min(std::max(maxit,1),100000);
+  int work=0;const std::int64_t budget=certificate_budget(maxit);
   auto fail=[&](bool exhausted=false,ZtnbinomCertificateFailure reason=ZtnbinomCertificateFailure::Arithmetic) {
     ZtnbinomResult out{nan,nan,nan,work,ZtnbinomStatus::IterationFailure};
-    out.budget_exhausted=exhausted;out.certificate_failure=exhausted?ZtnbinomCertificateFailure::Budget:reason;out.stop_detail.loglik_lower=failure_lower;out.stop_detail.loglik_upper=0;return out;
+    out.budget_exhausted=exhausted;out.stop_detail.budget_exhausted=exhausted;out.certificate_failure=exhausted?ZtnbinomCertificateFailure::Budget:reason;out.stop_detail.loglik_lower=failure_lower;out.stop_detail.loglik_upper=0;return out;
   };
   // Domain errors precede workload guards, including mixed invalid inputs.
   if(!std::isnan(fixed_size) && (!(fixed_size>=0)||!std::isfinite(fixed_size)))
@@ -114,8 +117,8 @@ inline ZtnbinomResult ztnbinom_mle(ispan x,double tol=1e-10,int maxit=200,
   if(!(tol>0)||!std::isfinite(tol)||maxit<1)return fail();
   if(zero_detail::mean(x)==1 && std::isnan(fixed_prob))return candidate;
   if(!std::isnan(fixed_size) && !std::isnan(fixed_prob))return std::isfinite(candidate.logLik)?candidate:fail();
-  const ztnbinom_cert_detail::Data data(x);
-  if(data.weights.empty())return fail(false,ZtnbinomCertificateFailure::Workload);
+  const ztnbinom_cert_detail::Data data(x,maxit);
+  if(data.weights.empty())return fail(*std::max_element(x.begin(),x.end())>enumeration_budget(maxit),ZtnbinomCertificateFailure::Workload);
   if(!std::isnan(fixed_prob)) {
     if(fixed_prob==1)return candidate;
     const double t=-std::log(fixed_prob);
@@ -147,7 +150,7 @@ inline ZtnbinomResult ztnbinom_mle(ispan x,double tol=1e-10,int maxit=200,
     return std::isfinite(out.logLik)?out:fail();
   }
   if(!std::isnan(fixed_size)) {
-    const auto t=ztnbinom_cert_detail::theta(fixed_size,data.m);
+    const auto t=ztnbinom_cert_detail::theta(fixed_size,data.m,maxit);
     if(!(t.lo>0) || (t.hi-t.lo)>1e-7*t.lo)return fail();
     const double pc=std::exp(-(t.lo+t.hi)/2);
     if(!(pc>0 && pc<1))return fail();
@@ -155,7 +158,7 @@ inline ZtnbinomResult ztnbinom_mle(ispan x,double tol=1e-10,int maxit=200,
       candidate=ztnbinom_candidate_mle(x,tol,maxit,fixed_size,pc);
     return std::isfinite(candidate.logLik)?candidate:fail();
   }
-  const auto t0=ztnbinom_cert_detail::theta(0,data.m);
+  const auto t0=ztnbinom_cert_detail::theta(0,data.m,maxit);
   if(!(t0.lo>0))return fail();
   const double h0lo=data.a(0)-t0.hi/2,h0hi=data.a(0)-t0.lo/2;
   const double margin=ztnbinom_cert_detail::pad(data.a(0)+t0.hi,data.weights.size());
@@ -166,7 +169,7 @@ inline ZtnbinomResult ztnbinom_mle(ispan x,double tol=1e-10,int maxit=200,
   double lower=1e-3;
   for(;;) {
     if(++work>=budget)return fail(true);
-    const auto t=ztnbinom_cert_detail::theta(lower,data.m);
+    const auto t=ztnbinom_cert_detail::theta(lower,data.m,maxit);
     const double low=data.a(lower)-t0.hi*(1+ztnbinom_cert_detail::e(lower*t0.hi));
     const double high=data.a(0)-t.lo/2;
     if((first>0 && low>margin)||(first<0 && high< -margin))break;
@@ -192,7 +195,7 @@ inline ZtnbinomResult ztnbinom_mle(ispan x,double tol=1e-10,int maxit=200,
   while(!pending.empty()) {
     if(work+2>=budget)return fail(true);
     const auto box=pending.back();pending.pop_back();work+=2;
-    const auto ta=ztnbinom_cert_detail::theta(box.a,data.m),tb=ztnbinom_cert_detail::theta(box.b,data.m);
+    const auto ta=ztnbinom_cert_detail::theta(box.a,data.m,maxit),tb=ztnbinom_cert_detail::theta(box.b,data.m,maxit);
     if(!(tb.lo>0))return fail();
     const auto s=ztnbinom_cert_detail::score(data,box.a,box.b,ta,tb);
     if(s.lo>0 || s.hi<0)continue;
@@ -236,18 +239,18 @@ inline ZtnbinomResult ztnbinom_mle(ispan x,double tol=1e-10,int maxit=200,
   if(roots.size()!=1 || first!=1 || last!=-1)return fail(false,ZtnbinomCertificateFailure::AdditionalExtrema);
   double lo=roots[0].a,hi=roots[0].b;
   auto wide=[&]() {
-    const auto a=ztnbinom_cert_detail::theta(lo,data.m),b=ztnbinom_cert_detail::theta(hi,data.m);
+    const auto a=ztnbinom_cert_detail::theta(lo,data.m,maxit),b=ztnbinom_cert_detail::theta(hi,data.m,maxit);
     return !(b.lo>0) || (hi-lo)/lo>5e-7 || a.hi-b.lo>5e-7;
   };
   while(wide()) {
     if(++work>=budget)return fail(true);
-    const double mid=lo+(hi-lo)/2;const auto t=ztnbinom_cert_detail::theta(mid,data.m);
+    const double mid=lo+(hi-lo)/2;const auto t=ztnbinom_cert_detail::theta(mid,data.m,maxit);
     const auto s=ztnbinom_cert_detail::score(data,mid,mid,t,t);
     if(s.lo>0)lo=mid;
     else if(s.hi<0)hi=mid;
     else {
       const double a=mid*(1-2e-7),b=mid*(1+2e-7);
-      const auto ta=ztnbinom_cert_detail::theta(a,data.m),tb=ztnbinom_cert_detail::theta(b,data.m);
+      const auto ta=ztnbinom_cert_detail::theta(a,data.m,maxit),tb=ztnbinom_cert_detail::theta(b,data.m,maxit);
       if(!(ztnbinom_cert_detail::score(data,a,a,ta,ta).lo>0 && ztnbinom_cert_detail::score(data,b,b,tb,tb).hi<0))return fail();
       lo=a;hi=b;
     }
@@ -261,13 +264,13 @@ inline ZtnbinomResult ztnbinom_mle(ispan x,double tol=1e-10,int maxit=200,
       if(work+2>budget)return fail(true);
       work+=2;
       const double a=candidate.size*(1-1e-6),b=candidate.size*(1+1e-6);
-      const auto ta=ztnbinom_cert_detail::theta(a,data.m),tb=ztnbinom_cert_detail::theta(b,data.m);
+      const auto ta=ztnbinom_cert_detail::theta(a,data.m,maxit),tb=ztnbinom_cert_detail::theta(b,data.m,maxit);
       if(ztnbinom_cert_detail::score(data,a,a,ta,ta).lo>0 &&
          ztnbinom_cert_detail::score(data,b,b,tb,tb).hi<0 && ta.hi-tb.lo<2e-6)r=candidate.size;
     }
   }
   auto out=ztnbinom_candidate_mle(x,tol,maxit,r);out.iterations=work;
-  const auto t=ztnbinom_cert_detail::theta(r,data.m);
+  const auto t=ztnbinom_cert_detail::theta(r,data.m,maxit);
   if(!(t.lo>0) || t.hi-t.lo>1e-7*t.lo)return fail();
   if(!(out.prob>=std::exp(-t.hi) && out.prob<=std::exp(-t.lo)))out=ztnbinom_candidate_mle(x,tol,maxit,r,std::exp(-(t.lo+t.hi)/2));
   out.iterations=work;

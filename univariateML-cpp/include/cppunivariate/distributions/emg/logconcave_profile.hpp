@@ -33,7 +33,7 @@ template<class Density> Result inner(const std::vector<double>& x,double k,Densi
     return ans;
   };
   CPPUNIV_EXTENDED_REAL val=fun(u,b);
-  for(int it=0;it<std::min(maxit,100);++it) {
+  for(int it=0;it<maxit;++it) {
     CPPUNIV_EXTENDED_REAL gu=0,gb=n/b,huu=0,hub=0,hbb=-n/(b*b),su=1,sb=n;
     for(double xval:x) {
       auto v=density(b*xval-u,k);gu-=v[1];gb+=xval*v[1];su+=std::abs(v[1]);sb+=std::abs(b*xval*v[1]);
@@ -45,7 +45,8 @@ template<class Density> Result inner(const std::vector<double>& x,double k,Densi
     const CPPUNIV_EXTENDED_REAL du=newton?((-hbb*gu+hub*gb)/det):gu/n;
     const CPPUNIV_EXTENDED_REAL db=newton?((hub*gu-huu*gb)/det):gb*b*b/n;
     bool accepted=false;
-    for(double step=1;step>=1e-10;step*=0.5) {
+    double step=1;
+    for(std::int64_t backtrack=0;backtrack<solver_budget(maxit) && step>=1e-10;++backtrack,step*=0.5) {
       const CPPUNIV_EXTENDED_REAL aa=u+step*du,bb=b+step*db,ff=fun(aa,bb);
       if(bb>0&&ff>=val-8*std::numeric_limits<CPPUNIV_EXTENDED_REAL>::epsilon()*(1+std::abs(val))&&(aa!=u||bb!=b)) {u=aa;b=bb;val=ff;accepted=true;break;}
     }
@@ -69,7 +70,7 @@ template<class Density> Result search(const std::vector<double>& x,Density densi
     double lo=-8+(i-1)*0.25,hi=lo+0.5;
     double a=hi-(hi-lo)*0.6180339887498949,c=lo+(hi-lo)*0.6180339887498949;
     Result fa=eval(a),fc=eval(c);
-    for(int j=0;j<40;++j) {
+    for(int j=0;j<maxit && hi-lo>1e-9;++j) {
       if(!fa.ok||!fc.ok)return {0,0,0,-std::numeric_limits<double>::infinity(),false};
       if(fa.ll<fc.ll){lo=a;a=c;fa=fc;c=lo+(hi-lo)*0.6180339887498949;fc=eval(c);}
       else{hi=c;c=a;fc=fa;a=hi-(hi-lo)*0.6180339887498949;fa=eval(a);}

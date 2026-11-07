@@ -32,7 +32,7 @@ r:
     scale: Optional held scale; NULL estimates it.
     location: Optional held location; NULL estimates it.
     abstol: Joint-fit absolute step tolerance in (location, log(scale)); conditional certificates use fixed tolerances.
-    iterlim: Maximum iterations (held scale uses this per root and subdivision depth, with at most 64 times iterlim boxes).
+    iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations."
 log_density: -log(pi) - log(scale) - log(1 + ((x-location)/scale)**2)
 references:
 - Johnson, N. L., Kotz, S. and Balakrishnan, N. (1994) Continuous Univariate Distributions, Volume 1, Chapter 16.

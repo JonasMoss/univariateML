@@ -39,7 +39,7 @@ r:
   control:
     min: Known finite lower endpoint.
     reltol: Delegate fitting tolerance.
-    iterlim: Maximum proposal-solve iterations; the joint certificate retains its fixed 4096-profile budget.
+    iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations."
     shape1: Known positive finite coefficient; NULL estimates it.
     shape2: Known positive finite coefficient; NULL estimates it.
 log_density: log(shape1) + log(shape2) - log((x-min)) - shape2*log(scale/(x-min)) - (shape1+1)*log(1+((x-min)/scale)**shape2)

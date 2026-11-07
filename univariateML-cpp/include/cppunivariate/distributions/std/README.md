@@ -34,7 +34,7 @@ r:
     sd: Optional held sd; NULL estimates it.
     mean: Optional held mean; NULL estimates it.
     gradtol: All-free coefficient enclosure width target, clamped between 1e-7 and 1e-6 in normalized location and relative scale/shape units, including the complete sd enclosure. Held fits retain their existing score tolerance.
-    iterlim: Maximum iterations in each nuisance EM and Newton proposal. The all-free global certificate separately allows at most 4096 profile evaluations.
+    iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations."
 log_density: loggamma((nu+1)/2) - loggamma(nu/2) - log((nu-2)*pi)/2 - (nu+1)*log(1+((x-mean)/sd)**2/(nu-2))/2 - log(sd)
 limits:
   - name: scale collapse
@@ -198,7 +198,7 @@ normal. Exact common replication is reduced before fitting and all likelihood
 bounds are multiplied back.
 
 All proposal, line-search and neighborhood loops are bounded. The default
-cache permits 4096 profiles; shapes beyond 1e14 are a numerical-domain
+cache permits `128 * min(iterlim, 100000)` profiles; shapes beyond 1e14 are a numerical-domain
 refusal, never a fitted cap. Unresolved comparisons, singular solves,
 nonfinite/domain errors and insufficient coefficient widths stop with
 `CertificateTie`, `CertificateBudget` or `NumericalFailure`. No certificate

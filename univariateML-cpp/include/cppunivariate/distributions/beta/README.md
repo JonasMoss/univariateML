@@ -32,7 +32,7 @@ r:
     shape1: Optional held shape1; `NULL` estimates it.
     shape2: Optional held shape2; `NULL` estimates it.
     reltol: Relative step tolerance in `log(shape2)`.
-    iterlim: Maximum number of iterations.
+    iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
 log_density: (shape1-1)*log(x) + (shape2-1)*log(1-x) - loggamma(shape1) - loggamma(shape2) + loggamma(shape1+shape2)
 references:
   - "Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995). Continuous Univariate Distributions, Volume 2, Chapter 25. Wiley, New York."
@@ -136,3 +136,5 @@ Empty or invalid input carries a non-success status. Degenerate samples depend
 on which coefficients are free; delegate failures survive transformations.
 See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md)
 and the appended TASK-132 cases in `test.cpp` for the validation scope.
+
+For one held shape $h$, the free-shape bracket starts at $z=\max(1,2h/T)$, with $T$ the negative mean log observation in the corresponding coordinate, subject to representability. The bound $\psi'(z)\le z^{-1}+z^{-2}$ implies $\psi(z+h)-\psi(z)\le2h/z$ for $z\ge1$. Thus tiny log complements retain a signed bracket without requiring hundreds of doubling passes; computed endpoint signs still decide acceptance.

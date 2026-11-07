@@ -15,6 +15,7 @@ inline FitResult fit_skellam(cppunivariate::span x, Held mu1_arg = {}, Held mu2_
   const auto fit=cppunivariate::skellam_mle(x,reltol,iterlim,a,b);
   if(fit.status==cppunivariate::SkellamStatus::InvalidInput) return fail("Skellam requires finite integer observations, positive reltol and positive iterlim.");
   if(fit.status==cppunivariate::SkellamStatus::Impossible) return fail("The fixed rates give zero likelihood for these observations.");
+  if(fit.stop_detail.budget_exhausted)return stop_failure(fail("Skellam search did not converge; increase iterlim. Raising iterlim may resolve this stop."),fit.stop_detail,"budget",{"mu1","mu2"});
   if(fit.status!=cppunivariate::SkellamStatus::Ok) return fail("Skellam search did not converge; increase iterlim.");
   std::vector<std::string> fixed;
   if(mu1.supplied) fixed.push_back("mu1");

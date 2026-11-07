@@ -28,7 +28,7 @@ inline FitResult fit_pareto4(cppunivariate::span x, Held shape1_arg = {}, Held s
  if (res.status == cppunivariate::BurrStatus::WeibullBoundary) return stop_failure(fail("The burr likelihood is maximised at a limit. Use `mlweibull(x - min)` to fit this model."),res.stop_detail,"limit",{"shape1","shape2","scale","min"},"weibull");
  if (res.status == cppunivariate::BurrStatus::ParetoBoundary) return stop_failure(fail("The burr likelihood is maximised at a limit. Use `mlpareto(x - min)` to fit this model."),res.stop_detail,"limit",{"shape1","shape2","scale","min"},"pareto");
  if (res.status == cppunivariate::BurrStatus::CertificateTie) return stop_failure(fail("Pareto IV certificate unresolved at a tie or sign-uncertain seam; no verified MLE."),res.stop_detail,"tie",{"shape1","shape2","scale","min"},"");
- if (res.status == cppunivariate::BurrStatus::CertificateBudget) return stop_failure(fail("Pareto IV certificate budget exhausted; no verified MLE."),res.stop_detail,"budget",{"shape1","shape2","scale","min"},"");
+ if (res.status == cppunivariate::BurrStatus::CertificateBudget) return stop_failure(fail("Pareto IV certificate budget exhausted; no verified MLE. Raising iterlim may resolve this stop."),res.stop_detail,"budget",{"shape1","shape2","scale","min"},"");
  if (res.status == cppunivariate::BurrStatus::NumericalFailure) return stop_failure(fail("Pareto IV certificate numerical failure; no verified MLE."),res.stop_detail,"numerical",{"shape1","shape2","scale","min"},"");
  if (res.status == cppunivariate::BurrStatus::IterationFailure) return stop_failure(fail("Pareto IV delegate search failed to converge."),res.stop_detail,"unresolved",{"shape1","shape2","scale","min"},"");
  if (res.status == cppunivariate::BurrStatus::InvalidInit ||

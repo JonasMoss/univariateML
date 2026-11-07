@@ -1,5 +1,6 @@
 // Scale-1 profile fit recovered from 6c89a8c. Kept separate from the free-scale optimizer.
 #pragma once
+#include "../../core/work_budget.hpp"
 #include "cppunivariate/core/constants.hpp"
 #include "../../core/span.hpp"
 #include "../../special/special.hpp"
@@ -54,6 +55,7 @@ inline double logistic_pdf(double x) {
 }
 
 inline RootResult invert_lower_logit(double cv, double tol, int maxit) {
+  maxit = static_cast<int>(solver_budget(maxit));
   constexpr double NEULER_CST = -0.5772156649015328606;
   constexpr double BASEL_CST = cppunivariate::pi * cppunivariate::pi / 6.0;
   const double loc = -0.5495872;
@@ -101,6 +103,7 @@ inline RootResult invert_lower_logit(double cv, double tol, int maxit) {
 }
 
 inline RootResult invert_lower_log(double cv, double tol, int maxit) {
+  maxit = static_cast<int>(solver_budget(maxit));
   constexpr double NEULER_CST = -0.5772156649015328606;
   constexpr double BASEL_CST = cppunivariate::pi * cppunivariate::pi / 6.0;
   const double loc = -0.5495872;
@@ -148,6 +151,7 @@ inline RootResult invert_lower_log(double cv, double tol, int maxit) {
 }
 
 inline RootResult invert_upper(double cv, double tol, int maxit) {
+  maxit = static_cast<int>(solver_budget(maxit));
   constexpr double NEULER_CST = -0.5772156649015328606;
   constexpr double BASEL_CST = cppunivariate::pi * cppunivariate::pi / 6.0;
   const double thr = 0.2;
@@ -190,7 +194,7 @@ inline RootResult invert_upper(double cv, double tol, int maxit) {
 }  // namespace detail
 
 inline BurrLmomResult burr_lmom_core(double mu, double sigma2,
-                                     bool use_logit_lower) {
+                                     bool use_logit_lower,int maxit=100) {
   constexpr double BASEL_CST = cppunivariate::pi * cppunivariate::pi / 6.0;
   constexpr double kEps = std::numeric_limits<double>::epsilon();
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
@@ -201,7 +205,7 @@ inline BurrLmomResult burr_lmom_core(double mu, double sigma2,
 
   // Match the original tol/maxit defaults from kTolDefault/kMaxIterDefault.
   constexpr double tol_default = 1.22e-4;
-  constexpr int maxit_default = 100;
+  maxit=static_cast<int>(solver_budget(maxit));
 
   if (sigma2 > 0.0 && std::abs(mu) >= kEps) {
     const double cv = (mu * mu) / sigma2;
@@ -211,9 +215,9 @@ inline BurrLmomResult burr_lmom_core(double mu, double sigma2,
       return {kNaN, kNaN, 0};
     RootResult root = (mu > 0.0)
         ? (use_logit_lower
-               ? detail::invert_lower_logit(cv, tol_default, maxit_default)
-               : detail::invert_lower_log(cv, tol_default, maxit_default))
-        : detail::invert_upper(cv, tol_default, maxit_default);
+               ? detail::invert_lower_logit(cv, tol_default, maxit)
+               : detail::invert_lower_log(cv, tol_default, maxit))
+        : detail::invert_upper(cv, tol_default, maxit);
     k_hat = root.k;
     iter = root.iterations;
 
@@ -233,7 +237,8 @@ inline BurrLmomResult burr_lmom_core(double mu, double sigma2,
 
 // Shared start: retain the legacy moment seed whenever it is feasible.
 // inverse_variance preserves the inverse wrapper's centered variance sum.
-inline double burr_mle_start(span x, bool inverse_variance = false) {
+inline double burr_mle_start(span x, bool inverse_variance = false,int maxit=100) {
+  maxit = static_cast<int>(solver_budget(maxit));
   const double nan = std::numeric_limits<double>::quiet_NaN();
   if (x.size() == 0) return nan;
   std::vector<double> logs;
@@ -254,7 +259,7 @@ inline double burr_mle_start(span x, bool inverse_variance = false) {
     for (auto l : logs) squares += (l - mu) * (l - mu);
     variance = squares / n;
   }
-  const double moment = burr_lmom_core(mu, variance, true).c;
+  const double moment = burr_lmom_core(mu, variance, true,maxit).c;
   if (moment > 0.0 && std::isfinite(moment)) return moment;
   if (!(scale > 0.0)) return nan;
 
@@ -284,7 +289,7 @@ inline double burr_mle_start(span x, bool inverse_variance = false) {
     const double direction = left > right ? -1.0 : 1.0;
     double best = middle;
     bool bracketed = false;
-    for (int i = 0; i < 1500; ++i) {
+    for (int i = 0; i < maxit; ++i) {
       const double next = center + direction;
       const double value = profile(next);
       if (value <= best) { bracketed = true; break; }
@@ -297,7 +302,7 @@ inline double burr_mle_start(span x, bool inverse_variance = false) {
   constexpr double ratio = 0.6180339887498948482;
   double u = b - ratio * (b - a), v = a + ratio * (b - a);
   double fu = profile(u), fv = profile(v);
-  for (int i = 0; i < 100 && b - a > 1e-9; ++i) {
+  for (int i = 0; i < maxit && b - a > 1e-9; ++i) {
     if (fu > fv) {
       b = v; v = u; fv = fu;
       u = b - ratio * (b - a); fu = profile(u);
@@ -306,10 +311,11 @@ inline double burr_mle_start(span x, bool inverse_variance = false) {
       v = a + ratio * (b - a); fv = profile(v);
     }
   }
-  return std::exp((a + b) / 2.0);
+  return b-a<=1e-9?std::exp((a + b) / 2.0):NAN;
 }
 
 inline BurrMLE burr_mle_core(span x, double c_start, double tol, int maxit) {
+  maxit = static_cast<int>(solver_budget(maxit));
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
   const double nd = static_cast<double>(n);
@@ -395,7 +401,8 @@ inline BurrMLE burr_mle_core(span x, double c_start, double tol, int maxit) {
 }
 
 inline BurrMLE burr_mle(span x, double tol, int maxit) {
-  return burr_mle_core(x, burr_mle_start(x), tol, maxit);
+  maxit = static_cast<int>(solver_budget(maxit));
+  return burr_mle_core(x, burr_mle_start(x,false,maxit), tol, maxit);
 }
 
 

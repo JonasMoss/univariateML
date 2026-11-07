@@ -56,7 +56,7 @@ test_that("GB2 fixed subsets preserve metadata and constrained likelihood", {
       expect_equal(attr(f,"logLik"),-o$value,tolerance=1e-7)
     }
   }
-  expect_error(mlgb2(x,iterlim=1),"search unresolved")
+  expect_error(mlgb2(x,iterlim=1),"certified delegate budget stop")
   expect_error(mlgb2(x,shape1=-1),"positive finite")
   expect_error(mlgb2(rep(1,5)),"unbounded")
   f <- mlgb2(1,shape1=.3,shape2=2,shape3=.4,scale=1)
@@ -145,7 +145,7 @@ test_that("gb2: P3 unfinished optimizer stops", {
   g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"), "gb2", "golden.json"))
   x <- g$data
   expect_error(mlgb2(x, iterlim=1, gradtol=1e-10),
-               "[Ff]ail|converge|unresolved|exhausted|score check")
+               "certified delegate budget stop")
 })
 
 test_that("gb2: P3 held profile exhaustion stops", {
@@ -157,7 +157,7 @@ test_that("GB2 held unit shape and scale inherit Burr scalar certificate", {
   a <- mlgb2(x,shape3=1,scale=1,gradtol=1e-10)
   b <- mlburr(x,scale=1,abstol=1e-10)
   expect_equal(as.numeric(a[c(1,2,4)]),as.numeric(b),tolerance=1e-10)
-  e <- tryCatch(mlgb2(x,shape3=1,scale=1,iterlim=1),univariateML_budget=identity)
-  expect_s3_class(e,"univariateML_budget")
-  expect_true(is.finite(e$loglik_lower))
+  e <- mlgb2(x,shape3=1,scale=1,iterlim=1)
+  expect_s3_class(e,"univariateML")
+  expect_equal(as.numeric(e),as.numeric(a),tolerance=1e-6)
 })

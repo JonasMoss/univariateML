@@ -1,0 +1,39 @@
+skellam	1		Skellam search did not converge; increase iterlim.	0	nan
+skellam	2		Skellam search did not converge; increase iterlim.	0	nan
+skellam	5		Skellam search did not converge; increase iterlim.	0	nan
+skellam	10		Skellam search did not converge; increase iterlim.	0	nan
+skellam	20		Skellam search did not converge; increase iterlim.	0	nan
+skellam	40		Skellam search did not converge; increase iterlim.	0	nan
+skellam	60			0	nan
+skellam	100			0	nan
+skellam	150			0	nan
+skellam	200			0	nan
+skellam	300			0	nan
+skellam	500			0	nan
+skellam	1000			0	nan
+trgamma	1	budget	Constrained likelihood search failed to converge. Raising iterlim may resolve this stop.	1	-941.243
+trgamma	2	budget	Constrained likelihood search failed to converge. Raising iterlim may resolve this stop.	1	-938.175
+trgamma	5		Constrained likelihood search failed to converge.	0	nan
+trgamma	10			0	nan
+trgamma	20			0	nan
+trgamma	40			0	nan
+trgamma	60			0	nan
+trgamma	100			0	nan
+trgamma	150			0	nan
+trgamma	200			0	nan
+trgamma	300			0	nan
+trgamma	500			0	nan
+trgamma	1000			0	nan
+invtrgamma	1	budget	Constrained likelihood search failed to converge. Raising iterlim may resolve this stop.	1	391.046
+invtrgamma	2	budget	Constrained likelihood search failed to converge. Raising iterlim may resolve this stop.	1	391.509
+invtrgamma	5	budget	Constrained likelihood search failed to converge. Raising iterlim may resolve this stop.	1	396.208
+invtrgamma	10			0	nan
+invtrgamma	20			0	nan
+invtrgamma	40			0	nan
+invtrgamma	60			0	nan
+invtrgamma	100			0	nan
+invtrgamma	150			0	nan
+invtrgamma	200			0	nan
+invtrgamma	300			0	nan
+invtrgamma	500			0	nan
+invtrgamma	1000			0	nan

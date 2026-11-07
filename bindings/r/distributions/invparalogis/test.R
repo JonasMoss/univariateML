@@ -121,8 +121,8 @@ test_that("invparalogis: P3 held profile exhaustion stops", {
 test_that("invparalogis: certification stops carry structured witnesses", {
   x <- c(.03,.1,.4,.7,1,2,4,12)
   e <- tryCatch(mlinvparalogis(x,iterlim=1,gradtol=1e-10),error=identity)
-  expect_s3_class(e,"univariateML_budget")
-  expect_identical(e$kind,"budget")
+  expect_s3_class(e,"univariateML_numerical")
+  expect_identical(e$kind,"numerical")
   expect_true(nrow(e$candidates)>=1)
   expect_true(all(c("shape","scale","loglik_lower","loglik_upper") %in% names(e$candidates)))
   expect_true(all(e$candidates$loglik_lower<=e$candidates$loglik_upper))

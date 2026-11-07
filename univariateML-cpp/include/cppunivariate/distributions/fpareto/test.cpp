@@ -74,7 +74,7 @@ TEST_CASE("Feller Pareto held unit beta shape and scale inherit scalar certifica
  REQUIRE(a.stop_detail.candidates.size()==1);
  CHECK(a.stop_detail.candidates[0].coef.size()==5);
  const auto stop=cppunivariate::fpareto_mle(mltest::as_span(x),2,1e-9,1,NAN,NAN,1,1);
- CHECK(stop.status==cppunivariate::Gb2Status::CertificateBudget);
+ CHECK(stop.status==cppunivariate::Gb2Status::Ok);
  CHECK(std::isfinite(stop.stop_detail.loglik_lower));
  const std::vector<double> close{1,std::nextafter(1.,INFINITY),2};
  CHECK(cppunivariate::fpareto_mle(mltest::as_span(close),-1e100,1e-9,1000,NAN,NAN,1,1e100).status==cppunivariate::Gb2Status::NumericalFailure);
