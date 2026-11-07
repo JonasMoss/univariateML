@@ -1,0 +1,42 @@
+103/106 Test  #24: distribution_exp .................   Passed    0.02 sec
+104/106 Test   #2: sample_tests .....................   Passed    0.02 sec
+105/106 Test #106: distribution_unif ................   Passed    0.02 sec
+106/106 Test  #34: distribution_geom ................   Passed    0.03 sec
+
+100% tests passed out of 106
+
+Label Time Summary:
+cran    = 304.89 sec*proc (105 tests)
+dev     = 307.14 sec*proc (106 tests)
+full    = 307.14 sec*proc (106 tests)
+
+Total Test time (real) =  51.21 sec
+126/129 Test #125: distribution_support .............   Passed    0.00 sec
+127/129 Test #126: no_throw_tests ...................   Passed    0.00 sec
+128/129 Test  #75: distribution_norm_slow ...........   Passed    0.01 sec
+129/129 Test  #57: distribution_kumar_slow ..........   Passed    0.01 sec
+
+100% tests passed out of 129
+
+Label Time Summary:
+cran    = 281.64 sec*proc (105 tests)
+dev     = 283.54 sec*proc (106 tests)
+full    = 351.19 sec*proc (129 tests)
+
+Total Test time (real) =  58.54 sec
+        Start 126: no_throw_tests
+124/129 Test  #75: distribution_norm_slow ...........   Passed    0.01 sec
+125/129 Test #125: distribution_support .............   Passed    0.00 sec
+126/129 Test #128: tails_tests ......................   Passed    0.00 sec
+127/129 Test  #11: distribution_bnbinom_slow ........   Passed    0.01 sec
+128/129 Test #126: no_throw_tests ...................   Passed    0.00 sec
+129/129 Test  #78: distribution_paralogis_slow ......   Passed    0.01 sec
+
+100% tests passed out of 129
+
+Label Time Summary:
+cran    = 190.28 sec*proc (105 tests)
+dev     = 191.80 sec*proc (106 tests)
+full    = 248.99 sec*proc (129 tests)
+
+Total Test time (real) =  41.51 sec

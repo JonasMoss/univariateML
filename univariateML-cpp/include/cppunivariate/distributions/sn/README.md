@@ -38,7 +38,7 @@ r:
     xi: "Optional fixed finite location; NULL estimates it."
     omega: "Optional fixed positive finite scale; NULL estimates it."
     alpha: "Optional fixed finite shape; NULL estimates it."
-    reltol: "Tolerance on the normalized inner likelihood score."
+    reltol: "Newton score tolerance; quantitative likelihood and coordinate acceptance checks also apply."
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations."
 log_density: "log(2)-log(omega)-log(2*pi)/2-((x-xi)/omega)**2/2+log((1+erf(alpha*(x-xi)/(omega*sqrt(2))))/2)"
 limits:
@@ -70,8 +70,8 @@ construction:
 relations: {}
 fit:
   method: profile-search
-  certified: partial
-  note: 'sn/README.md, Details; sn/mle.hpp: free location and shape use interval and tail upper bounds conditional on computed comparisons; held-location and held-shape solves remain numerical.'
+  certified: 'yes'
+  note: 'sn/README.md, Details: all hold subsets use quantitative concave-inner or signed held-location root acceptance, with existing finite-interval and tail bounds when location and shape are free; conditional on computed comparisons and stated floating-point margins. Joint uniqueness is not claimed.'
 areas:
 - robust modelling
 classification: specialist
@@ -133,7 +133,7 @@ $u=\xi/\omega$, the fixed-shape likelihood
 $n\log b+\sum_i\log[2\phi(bx_i-u)\Phi(\alpha(bx_i-u))]$ is strictly
 concave in $(u,b)$ for nonconstant data. At $\alpha=0$ this is the normal
 member; as $\alpha\to\pm\infty$ the corresponding translated half-normal
-is a separate limiting face. The Newton inner solve uses this concavity. Its stopping check is numerical; the outer search bounds the global likelihood gap separately.
+is a separate limiting face. The Newton inner solve uses this concavity. Its acceptance check bounds both likelihood loss and coordinate error using the Gaussian curvature minorant below; the outer search bounds the shape-search gap separately.
 
 ## R notes
 
@@ -145,7 +145,7 @@ result. Use `mu = NULL` when location is free. Pass a held location as
 observations at that location have the
 endpoint penalty described above, so the closed half-normal likelihood
 reported by that separate fit need not equal the skew-normal supremum.
-Unresolved search bounds or an unsuccessful numerical score check stop
+Unresolved search bounds or unsuccessful quantitative acceptance checks stop
 with an error. No penalised likelihood is used.
 
 ## Decision history
@@ -153,13 +153,68 @@ with an error. No penalised likelihood is used.
 | TASK-116 property | Evidence |
 |---|---|
 | Fixed finite shape, nonconstant data | Strict concavity in inverse-scale coordinates, proved as above. |
-| Computed inner maximum | Newton iteration and a floating-point score check; numerical. |
+| Computed inner maximum | Gaussian curvature minorant bounds likelihood loss and inverse-coordinate error. |
 | Free location and shape, including held scale | Interval and tail likelihood bounds, conditional on computed comparisons; finite branch budget. |
-| Fixed location with free shape | Separated concave one-dimensional shape score and a numerical bisection; no likelihood-gap certificate. |
+| Fixed location with free shape | Signed monotone-score bracket bounds the shape root, reconstructed alpha and likelihood loss; scale is analytic. |
 
-An unfinished inner solve is accepted only when the normalized free-coordinate score at the returned point is below `max(reltol, 1e-3/n)` (with `n` observations). This is the Euclidean score norm in log inverse scale and scaled location divided by the sample size, with held coordinates removed.
+### Quantitative conditional acceptance
 
-### Global shape-search bounds (2026-11-02)
+For held finite shape, let $v=(\eta,h)$, $z_i=\eta x_i-h$ and let
+$g=\nabla\ell(v)$ in the standardized data coordinates used by the fitter.
+The Gaussian part supplies the constant curvature minorant
+$G=\sum_i(x_i,-1)^\mathsf T(x_i,-1)$, since $\log\Phi$ and
+$\log\eta$ are concave. For nonconstant data $G$ is positive definite.
+Consequently, for the unique maximizer $v_*$,
+$\ell(v_*)-\ell(v)\leq g^\mathsf T G^{-1}g/2$ and
+$|(v_*-v)_j|\leq\sqrt{(g^\mathsf T G^{-1}g)(G^{-1})_{jj}}$.
+The first follows by maximizing the quadratic upper tangent; the second
+follows from gradient monotonicity in the $G$ norm and Cauchy--Schwarz.
+With held location the scalar minorant is $\sum_i(x_i-\xi)^2$;
+with held scale it is $n$ for $h$. Both coordinates held require no solve.
+These minorants also cover constant observations whenever the remaining
+conditional problem has a maximizer.
+
+Acceptance requires a total likelihood gap at most $5\cdot10^{-9}n$,
+relative scale error at most $5\cdot10^{-7}$, and standardized location
+error at most $5\cdot10^{-7}(1+|h/\eta|)$. If $E,H$ bound the
+inverse-coordinate errors, the scale bound is $E/(\eta-E)$ and the
+location bound is $(H+|h/\eta|E)/(\eta-E)$, requiring $E<\eta$.
+These checks apply even after a small Newton step, a loose user tolerance,
+or exhaustion of the line search. An unchecked iterate cannot be returned.
+The location allowance is in standardized data units and transforms with
+the sample scale; it is not a relative-error assertion near a zero location.
+
+With held location and free shape, $\beta=\alpha\eta$ separates the
+scale and shape objectives. For residuals of both signs, the shape score
+$S(\beta)=\sum_i d_i\phi(\beta d_i)/\Phi(\beta d_i)$ is strictly
+decreasing through a unique zero. Bisection retains $S(L)\geq0\geq S(R)$.
+At the midpoint, monotonicity bounds likelihood loss by
+$(R-L)\max(S(L),-S(R))/2$. Acceptance requires this bound at most
+$5\cdot10^{-9}n$ and $(R-L)/\eta\leq10^{-9}(1+|\alpha|)$.
+The scale is exactly $\sqrt{\sum d_i^2/n}$ when free.
+One-sided nonzero residuals are strictly monotone and select the
+appropriate infinite-shape face, retaining the endpoint factors below.
+The standardized residual comparisons must agree with the original
+observations relative to held location. A lost strict sign produces a
+numerical stop, preventing rounded residuals from fabricating endpoint
+$\log 2$ penalties.
+Finite witnesses and selected faces must also agree with likelihoods
+re-evaluated in original coordinates within $10^{-9}n$. This guards
+roundtrip cancellation amplified by large held shapes. Held face locations
+are retained exactly; free face endpoints use the original sample extremes.
+If every observation equals held location and scale is held, every finite
+shape is a maximizer: two distinct witnesses are returned in a `tie` stop.
+This is an explicit counterexample to unconditional uniqueness.
+
+These are exact-arithmetic certificates conditional on computed scores,
+special functions and comparisons, with the stated practical margins;
+they do not use outward-rounded intervals. Arithmetic or solver failure
+is a structured `numerical` stop, and unresolved outer subdivision is a
+`budget` stop with its finite and face witnesses. Joint uniqueness when
+location and shape are both free remains unproved; a likelihood-gap
+certificate alone does not supply an enclosure of every joint maximizer.
+
+### Global shape-search bounds
 
 The following inequalities hold in exact arithmetic. Write
 $z_i=\eta x_i-h$, with $\eta>0$, and standardize nonconstant data so that
@@ -191,18 +246,19 @@ $\sum_i(x_i-\min x)^2$, so this upper bound tends to the corresponding
 translated half-normal face likelihood. The grid and local refinements supply feasible candidates, and branch-and-bound
 bisects intervals until their upper bounds lie within $5\cdot10^{-9}n$ of
 the largest candidate or face. The two unbounded tails are doubled until
-their bounds meet the same threshold. A budget of 20,000 interval bisections,
+their bounds meet the same threshold. Exhausting `128 * min(iterlim, 100000)` interval bisections,
 unresolved bounds, or an unresolvable midpoint produces `IterationFailure`.
 A face wins when within $10^{-8}n$ of the best finite point; the resulting
 exact-arithmetic gap is at most $1.5\cdot10^{-8}n$. The practical comparison
 allowance is $2\cdot10^{-8}n$ including floating-point effects, conditional on
 the computed special functions and comparisons; it is not an outward-rounded
-interval guarantee. Held location uses the separate score bisection and held
-shape uses the Newton solve, both numerical rather than likelihood-gap bounded.
+interval guarantee. Held location uses the signed score-root enclosure and held
+shape uses the Gaussian curvature minorant described above. Both tail bounds
+must explicitly meet the threshold before subdivision can succeed.
 A [seeded spot check](../../../../../dev/research/evaluations/2026-11-02-sn-cert-data/check_bounds.py)
 examines feasible points under both bounds; it is numerical evidence, not a proof.
 
-### Accepted-point cache (2026-11-01)
+### Accepted-point cache
 
 The analytic Newton solve retains each observation's log-CDF at the last
 accepted objective evaluation. Below the existing tail threshold
@@ -210,12 +266,12 @@ $\alpha z<-10$, the same 24-level continued fraction computes and retains
 both the inverse Mills ratio and its derivative. The next Newton step
 reuses these quantities; rejected line-search trials overwrite the cache,
 and an accepted trial supplies all entries before the next step. If the
-line search fails, the existing independent returned-point score check is
+line search fails, the independent returned-point curvature certificate is
 used. With both location and scale held, the objective is evaluated once
 without computing an unused score or information matrix.
 
 This cache changed evaluation cost, not the objective, shape grid, local
-refinement, score gates or half-normal comparisons at the time. It adds three temporary
+refinement or half-normal comparisons at the time. It adds three temporary
 vectors of length $n$ per inner solve. Warm starts and a coarser outer grid
 were not adopted: their effect on the existing numerical search and status
 behavior would require separate evidence. The cache itself adds no optimality claim; the subsequent shape bounds are described above.
@@ -226,7 +282,7 @@ for paired regression evidence, timings and remaining guarantees.
 
 Probabilities use Owen’s T and quadrature in the direct skew-normal parameters.
 
-### Range portability (2026-11-01)
+### Range portability
 
 Density and CDF standardization use the extended difference when available;
 if a finite input produces an infinite standardized value, they also try

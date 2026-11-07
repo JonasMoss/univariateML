@@ -1,0 +1,10 @@
+Earlier five-trial wall-clock medians, before the original-residual sign guard; same conditional acceptance algorithm.
+mask before_ms after_ms max_coefficient_change
+0 243.847726 479.74728 0
+1 1.871996 3.163813 8.687410790741978e-10
+2 397.038148 391.521719 0
+3 1.850006 3.062765 8.687410790741978e-10
+4 0.179734 0.205430 0
+5 0.041688 0.082820 0
+6 0.167093 0.203666 0
+7 0.034735 0.032407 0
