@@ -207,6 +207,29 @@ invburr (Dagum), llogis (Fisk), gb2, lnorm, gamma, pareto.
 - Out of scope: measurement error (deconvolution), heaping, ranked-set
   sampling.
 
+## Data shape and scope question (2026-11-07, open)
+
+An observation becomes an interval $[l_i, u_i]$ ($l_i = u_i$: exact; $u_i = \infty$:
+right-censored; $l_i = 0$: left-censored), plus an optional truncation
+window $W_i$. Contribution: $P_\theta([l_i,u_i]) / P_\theta(W_i)$, with the density for
+a point. The model stays one univariate law with the same $\theta$; what
+changes is i.i.d. to independent, non-identical observations, valid
+under non-informative censoring (coarsening at random, Heitjan and
+Rubin 1991; reference not checked here).
+
+- Right censoring at varying times keeps the data as (value, flag):
+  the censoring time is the recorded value.
+- The envelope and likelihood-closure lemma in `ml-behaviour.tex` are
+  per sample and do not need i.i.d., so they cover varying windows. The
+  single observed law $T(P)$ and $\partial_T M$ need a common $T$.
+- actuar::coverage builds a modified distribution of the payment for
+  one fixed deductible and limit. With ground-up losses and windows as
+  data, no per-observation distribution is needed.
+
+Candidate scope: interval-valued observations (any censoring, varying
+points) and one common truncation window; per-observation windows
+later or never. Decision: Jonas.
+
 ## Families that become redundant
 
 Truncated and zero-truncated families would become a base family plus
