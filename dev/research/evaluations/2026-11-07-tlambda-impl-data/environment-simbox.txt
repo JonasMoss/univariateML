@@ -1,0 +1,7 @@
+c++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
+Copyright (C) 2023 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+Rscript (R) version 4.6.1 (2026-06-24)
+Linux 6.18.54.1-microsoft-standard-WSL2

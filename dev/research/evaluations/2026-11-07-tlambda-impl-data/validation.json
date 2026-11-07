@@ -1,0 +1,70 @@
+{
+  "base_commit": "017b9f8ec3bed7610ccd41c62738bce1ea987316",
+  "source_manifest": "source-manifest.sha256",
+  "results": {
+    "cpp-complete": {
+      "job": "cpp-complete",
+      "machine": "workstation-fallback",
+      "exit": 0
+    },
+    "remote-final": {
+      "job": "remote-final",
+      "machine": "simbox",
+      "exit": 0
+    },
+    "native-complete": {
+      "job": "native-validation",
+      "machine": "workstation",
+      "exit": 0
+    },
+    "js-build-complete": {
+      "job": "js-build",
+      "machine": "workstation",
+      "exit": 0
+    },
+    "js-test-complete": {
+      "job": "js-test",
+      "machine": "workstation",
+      "exit": 0
+    },
+    "site-complete": {
+      "job": "site-check",
+      "machine": "workstation",
+      "exit": 0
+    }
+  },
+  "R_final_summaries": [
+    "[ FAIL 0 | WARN 0 | SKIP 154 | PASS 21025 ]",
+    "[ FAIL 0 | WARN 0 | SKIP 0 | PASS 43849 ]"
+  ],
+  "C++": {
+    "ordinary_dev": "106/106",
+    "ordinary_full": "129/129",
+    "no_long_double_full": "129/129"
+  },
+  "JS": "440/440; zero failures or skips",
+  "site": "99 family pages, MathML and 99 C++17 snippets pass",
+  "focused_cpp": "21 cases, 3832 assertions pass; one slow golden case excluded here and covered by full suite",
+  "independent_checks": {
+    "precision": 100,
+    "inverse_checks": 57,
+    "fit_checks": 16,
+    "scalar_certificates": 6,
+    "independent_grid_checks": 126,
+    "positive_shape_identity_checks": 20,
+    "worst_relative_inverse_sign_deficit": 3.0787503140059227e-14,
+    "max_free_score": 6.087325138803259e-10,
+    "max_loglik_error": 3.630156026400118e-15,
+    "passed": true
+  },
+  "golden_checks": "golden-check.json; all six masks pass",
+  "environment_local": "environment-local.json",
+  "environment_simbox": "environment-simbox.txt",
+  "policy": "exact arithmetic conditional on computed comparisons, practical 512 epsilon padding; not outward rounded intervals",
+  "open": [
+    "negative fixed-shape joint nuisance global certification outside exact collapse decisions",
+    "free-shape fits with free nuisance coordinates",
+    "general free-location negative-shape collapse equality decision",
+    "shape-only large-sample scalability"
+  ]
+}

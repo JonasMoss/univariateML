@@ -1,0 +1,38 @@
+=== cpp-complete ===
+100% tests passed, 0 tests failed out of 106
+100% tests passed, 0 tests failed out of 129
+100% tests passed, 0 tests failed out of 106
+18ab079ff907397b681762574de1c1d32e52d6b3e7ede604684b1d6ee662e577  univariateML-cpp/include/cppunivariate/distributions/tlambda/mle.hpp
+f6941ad15f32a8e7f20c33748841e78e50670c72fd5a898a9384c1cc8ca5783a  univariateML-cpp/include/cppunivariate/distributions/tlambda/certificate.hpp
+76ca6a141f940647b0e78d0bc5524f30ba73a7db0de2b40ea57f86cd27e758f0  bindings/common/distributions/tlambda/fit.hpp
+5db73e21daee7f576dac5d9374146f36d25edd6c30ec5172169bcb022ebaab36  univariateML-cpp/include/cppunivariate/distributions/tlambda/test.cpp
+
+=== remote-final ===
+100% tests passed out of 129
+18ab079ff907397b681762574de1c1d32e52d6b3e7ede604684b1d6ee662e577  univariateML-cpp/include/cppunivariate/distributions/tlambda/mle.hpp
+f6941ad15f32a8e7f20c33748841e78e50670c72fd5a898a9384c1cc8ca5783a  univariateML-cpp/include/cppunivariate/distributions/tlambda/certificate.hpp
+76ca6a141f940647b0e78d0bc5524f30ba73a7db0de2b40ea57f86cd27e758f0  bindings/common/distributions/tlambda/fit.hpp
+5db73e21daee7f576dac5d9374146f36d25edd6c30ec5172169bcb022ebaab36  univariateML-cpp/include/cppunivariate/distributions/tlambda/test.cpp
+[ FAIL 0 | WARN 0 | SKIP 154 | PASS 21025 ]
+[ FAIL 0 | WARN 0 | SKIP 0 | PASS 43849 ]
+18ab079ff907397b681762574de1c1d32e52d6b3e7ede604684b1d6ee662e577  univariateML-cpp/include/cppunivariate/distributions/tlambda/mle.hpp
+f6941ad15f32a8e7f20c33748841e78e50670c72fd5a898a9384c1cc8ca5783a  univariateML-cpp/include/cppunivariate/distributions/tlambda/certificate.hpp
+76ca6a141f940647b0e78d0bc5524f30ba73a7db0de2b40ea57f86cd27e758f0  bindings/common/distributions/tlambda/fit.hpp
+61dcd868cc691ec7aa0b462a837a1eaafbb783e09607a3fc79b002ea3be52525  bindings/r/distributions/tlambda/test.R
+b8ff16c108a7501ec772e8b11a80dc91f579569c2af356a2d840b331a8f71ed6  univariateML-cpp/include/cppunivariate/distributions/tlambda/README.md
+
+=== js-test-complete ===
+# tests 440
+# pass 440
+# fail 0
+# skipped 0
+
+=== site-complete ===
+PASS: four articles; dossier catalogues: 287 limits, 99 families, 9 fit domains.
+PASS: inference: 355 unique scopes, 99 families; implementation symbols, evidence anchors, calibration and checks resolve; full static table.
+PASS: graph: 99 unique nodes, 277 edges, resolving family links; SVG generated twice byte-identically and matches built HTML.
+PASS: explorer coverage matches binding registry; optional build assets agree.
+PASS: every declared and inverted relation and limit link is rendered and resolves.
+PASS: 99 family pages; MathML on every family; no math runtime or external runtime assets; internal links and fragments resolve.
+PASS: 99 generated C++ snippets compile and link as C++17 (including exp, gamma, gb2).
+PASS: pilot and ten additional HTML spot checks: exp, gamma, gb2, binom, beta, hyper, sstd, gev, gpd, tnorm, pois, unif, pareto

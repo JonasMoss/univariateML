@@ -1,0 +1,12 @@
+{
+  "precision": 100,
+  "inverse_checks": 57,
+  "fit_checks": 16,
+  "scalar_certificates": 6,
+  "independent_grid_checks": 126,
+  "positive_shape_identity_checks": 20,
+  "worst_relative_inverse_sign_deficit": 3.0787503140059227e-14,
+  "max_free_score": 6.087325138803259e-10,
+  "max_loglik_error": 3.630156026400118e-15,
+  "passed": true
+}

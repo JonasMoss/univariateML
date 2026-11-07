@@ -251,3 +251,48 @@ test_that("tlambda conditional collapse, feasibility and invalid holds", {
 test_that("Tukey lambda held-location half ties can have an attained maximum", {
   expect_error(suppressWarnings(mltlambda(c(0,1),mu=0), classes = "univariateML_restricted"), "unbounded")
 })
+
+
+test_that("tlambda certificate stops retain ties, budgets and collapse witnesses", {
+  caught <- function(expr) tryCatch(expr,error=identity)
+  tie <- caught(mltlambda(c(-.25,.25),sigma=1,lambda=1.5))
+  expect_s3_class(tie,"univariateML_stop")
+  expect_identical(tie$kind,"tie")
+  expect_equal(nrow(tie$candidates),2L)
+  expect_equal(sort(tie$candidates$mu),c(-5/12,5/12),tolerance=1e-12)
+  budget <- caught(mltlambda(c(-80/9,80/9),sigma=1,lambda=-1,reltol=1e-12,iterlim=64))
+  expect_s3_class(budget,"univariateML_stop")
+  expect_identical(budget$kind,"budget")
+  expect_true(is.finite(budget$loglik_lower))
+  collapse <- caught(mltlambda(c(2,2,5,9),lambda=-1))
+  expect_s3_class(collapse,"univariateML_stop")
+  expect_identical(collapse$kind,"nomle")
+  expect_equal(collapse$limit_loglik,-6*log(2)-2*log(3)-2*log(7))
+  unresolved <- caught(mltlambda(c(0,1,2),lambda=-2))
+  expect_s3_class(unresolved,"univariateML_stop")
+  expect_identical(unresolved$kind,"numerical")
+  expect_true(is.finite(unresolved$limit_loglik))
+})
+
+test_that("tlambda certificates handle small and repeated nonnegative-shape samples", {
+  expect_equal(as.numeric(mltlambda(c(-.25,.25),sigma=1,lambda=1)),c(0,1,1))
+  f <- mltlambda(rep(2,3),mu=0,lambda=.5)
+  expect_identical(unname(as.numeric(f[c('mu','lambda')])),c(0,.5))
+  expect_true(is.finite(as.numeric(logLik(f))))
+  for(l in c(0,.14,.9)) {
+    x <- c(-2,-1,.5,2)
+    a <- mltlambda(x,lambda=l)
+    b <- mltlambda(3+2*x,lambda=l)
+    expect_equal(unname(b[1]),3+2*unname(a[1]),ignore_attr=TRUE,tolerance=1e-7)
+    expect_equal(unname(b[2]),2*unname(a[2]),ignore_attr=TRUE,tolerance=1e-7)
+    expect_equal(as.numeric(logLik(b)),as.numeric(logLik(a))-length(x)*log(2),tolerance=1e-9)
+  }
+})
+
+test_that("tlambda free-shape half ties do not inherit held-shape nonattainment", {
+  e <- tryCatch(mltlambda(c(0,0,1,2)),error=identity)
+  expect_s3_class(e,"univariateML_numerical")
+  expect_true(is.finite(e$limit_loglik))
+  expect_true(e$loglik_lower>e$limit_loglik)
+  expect_identical(e$loglik_upper,Inf)
+})
