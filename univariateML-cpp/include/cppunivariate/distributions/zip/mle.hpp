@@ -7,7 +7,7 @@
 #include "../../core/lambert_w.hpp"
 #include "../../core/span.hpp"
 #include "../pois/mle.hpp"
-#include "../ztpois/profile.hpp"
+#include "certificate.hpp"
 #include "../../special/special.hpp"
 
 #include <algorithm>
@@ -17,7 +17,7 @@
 
 namespace cppunivariate {
 
-enum class ZipStatus { Ok = 0, InvalidInput, NumericalFailure, ZeroLimit };
+enum class ZipStatus { Ok = 0, InvalidInput, NumericalFailure, ZeroLimit, Budget, Tie };
 
 struct ZipResult {
   double lambda;
@@ -30,7 +30,7 @@ struct ZipResult {
 
 inline ZipResult zip_mle(ispan x,
     double fixed_lambda=std::numeric_limits<double>::quiet_NaN(),
-    double fixed_pi=std::numeric_limits<double>::quiet_NaN()) {
+    double fixed_pi=std::numeric_limits<double>::quiet_NaN(), int maxit=200) {
   auto stopped = [&]() -> ZipResult {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
@@ -53,43 +53,57 @@ inline ZipResult zip_mle(ispan x,
     return {kNaN,kNaN,kNaN,ZipStatus::InvalidInput};
   if(fl || fp) {
     double l=fl?fixed_lambda:1, p=fp?fixed_pi:0;
-    if(!fp) p=std::max(0.0,std::min(1.0,(r0-std::exp(-l))/(-std::expm1(-l))));
+    if(!fp) p=std::max(0.0,std::min(1.0,1-(1-r0)/(-std::expm1(-l))));
     if(!fl && p<1) {
       if(sum_x==0) return {0,p,kNaN,ZipStatus::ZeroLimit};
-      // Bracket a stationary rate; compare every other bracket below.
-      double lo=0,hi=sum_x/(dn-sum_zero);
-      for(int i=0;i<200;++i) {
-        const double mid=lo+(hi-lo)/2;
-        const double w=(1-p)*std::exp(-mid)/(p+(1-p)*std::exp(-mid));
-        if(sum_x/mid-(dn-sum_zero)-sum_zero*w>0)lo=mid;else hi=mid;
-      }
-      l=lo+(hi-lo)/2;
+      l=p==0?x_bar:sum_x/(dn-sum_zero);
     }
     if(!fl && p>0 && p<1 && sum_zero>0) {
-      // A fixed-inflation mixture need not be globally concave. Every
-      // stationary rate lies between the ordinary and positive means.
-      auto objective=[&](double t) {
-        const double rate=std::exp(t);
-        double out=sum_zero*std::log(p+(1-p)*std::exp(-rate));
-        for(int v:x)if(v>0)out+=std::log1p(-p)+pois_detail::logpmf(v,rate);
-        return out;
+      auto objective=[&](double rate) {
+        double value=0,correction=0;
+        const double a=std::log(p), b=std::log1p(-p)-rate;
+        const double zero=std::max(a,b)+std::log1p(std::exp(-std::abs(a-b)));
+        for(int v:x) {
+          const double term=v==0?zero:std::log1p(-p)+pois_detail::logpmf(v,rate);
+          const double y=term-correction,t=value+y;
+          correction=(t-value)-y;value=t;
+        }
+        return value;
       };
-      const double a=std::log(x_bar), b=std::log(sum_x/(dn-sum_zero));
-      double best=objective(std::log(l));
-      const int steps=std::max(2,static_cast<int>(std::ceil((b-a)/.125)));
-      const double step=(b-a)/steps;
-      for(int i=0;i<=steps;++i) {
-        const double t=a+i*step;
-        if(i>0 && objective(t)<objective(t-step))continue;
-        if(i<steps && objective(t)<objective(t+step))continue;
-        const double opt=zero_detail::maximize(objective,std::max(a,t-step),std::min(b,t+step),1e-12,200);
-        const double val=objective(opt);
-        if(val>best){best=val;l=std::exp(opt);}
+      const auto pad=[&](double scale) {
+        return 4096*std::numeric_limits<double>::epsilon()*(1+dn+scale);
+      };
+      const auto cert=zip_certificate_detail::held_rate(dn,dn-sum_zero,sum_x,p,maxit,objective,pad);
+      if(cert.status!=zip_certificate_detail::Status::Ok) {
+        ZipResult out{kNaN,p,kNaN,ZipStatus::NumericalFailure};
+        if(cert.status==zip_certificate_detail::Status::Budget)out.status=ZipStatus::Budget;
+        if(cert.status==zip_certificate_detail::Status::Tie)out.status=ZipStatus::Tie;
+        out.stop_detail.budget_exhausted=out.status==ZipStatus::Budget;
+        out.stop_detail.comparison_tie=out.status==ZipStatus::Tie;
+        out.stop_detail.loglik_upper=cert.upper;
+        for(const auto& peak:cert.peaks) {
+          out.stop_detail.candidates.push_back({{peak.lo+(peak.hi-peak.lo)/2,p},peak.lower,peak.upper});
+          if(std::isnan(out.stop_detail.loglik_lower) || peak.lower>out.stop_detail.loglik_lower)
+            out.stop_detail.loglik_lower=peak.lower;
+        }
+        if(out.stop_detail.candidates.empty()) {
+          const double ll=objective(x_bar),e=pad(std::abs(ll)+sum_x);
+          if(std::isfinite(ll)) {
+            out.stop_detail.candidates.push_back({{x_bar,p},ll-e,ll+e});
+            out.stop_detail.loglik_lower=ll-e;
+          }
+        }
+        return out;
       }
+      const auto& peak=cert.peaks[cert.best];
+      return {peak.lo+(peak.hi-peak.lo)/2,p,peak.ll,ZipStatus::Ok};
     }
+    const double a=std::log(p),b=std::log1p(-p)-l;
+    const double zero=std::max(a,b)+std::log1p(std::exp(-std::abs(a-b)));
     double ll=0;
-    for(int v:x) ll+=v==0?std::log(p+(1-p)*std::exp(-l)):
+    for(int v:x) ll+=v==0?zero:
       std::log1p(-p)+pois_detail::logpmf(v,l);
+    if(!std::isfinite(ll))return {kNaN,p,kNaN,ZipStatus::NumericalFailure};
     return {l,p,ll,ZipStatus::Ok};
   }
   double lambda = 0.0;

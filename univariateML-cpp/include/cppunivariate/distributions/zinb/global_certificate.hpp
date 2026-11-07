@@ -1,6 +1,7 @@
 #pragma once
 #include "../../core/work_budget.hpp"
 #include "certificate.hpp"
+#include "../zip/certificate.hpp"
 #include "../ztnbinom/mle.hpp"
 
 namespace cppunivariate {
@@ -123,47 +124,18 @@ struct Face {
 inline Face zip_upper(const Data& d,int maxit) {
   maxit = static_cast<int>(solver_budget(maxit));
   if(!std::isnan(d.pi) && d.pi>0 && d.n0>0) {
-    const double u=d.S/d.n,v=d.S/d.k;
-    const double B=-d.S*(d.n+d.k),C=d.S*d.S+d.S*(d.n-d.k);
-    const double D=B*B-4*d.n*d.k*C,e=d.pad(B*B+4*d.n*d.k*C);
-    if(!std::isfinite(D) || std::abs(D)<=e || !(u>0 && u<v))return {};
-    std::vector<double> cuts{u};
-    if(D>e) {
-      const double a=(-B-std::sqrt(D))/(2*d.n*d.k),b=(-B+std::sqrt(D))/(2*d.n*d.k);
-      if(a>u && a<v)cuts.push_back(a);
-      if(b>u && b<v)cuts.push_back(b);
-    }
-    cuts.push_back(v);
-    auto h=[&](double t) {
-      if(t==u)return -std::numeric_limits<double>::infinity();
-      if(t==v)return std::numeric_limits<double>::infinity();
-      return -t+std::log(d.n*t-d.S)-std::log(d.S-d.k*t)-std::log(d.pi)+std::log1p(-d.pi);
-    };
-    const double margin=d.pad(d.S+v);
-    for(std::size_t j=1;j+1<cuts.size();++j)if(std::abs(h(cuts[j]))<=margin)return {};
-    Face out;double best=-INFINITY,upper=-INFINITY;std::vector<RatePeak> peaks;
-    for(std::size_t j=1;j<cuts.size();++j) {
-      double lo=cuts[j-1],hi=cuts[j];
-      if(!(h(lo)< -margin && h(hi)>margin))continue;
-      for(int iter=0;iter<maxit;++iter) {
-        const double mid=lo+(hi-lo)/2,value=h(mid);
-        if(value>margin)hi=mid;
-        else if(value< -margin)lo=mid;
-        else {if((hi-lo)/lo<1e-7)break;return {};}
-        if((hi-lo)/lo<1e-10)break;
-      }
-      if((hi-lo)/lo>1e-7)return {};
-      const double lambda=lo+(hi-lo)/2;
-      const double ll=d.n0*zinb_cert_detail::zero_logmass(-lambda,d.pi)+d.k*std::log1p(-d.pi)-d.k*lambda+d.S*std::log(lambda)+d.factorial;
-      const double arithmetic=d.pad(std::abs(ll)+d.k*lambda+d.S*std::abs(std::log(lambda))+std::abs(d.factorial));
-      const double err=(hi-lo)*(d.n+d.S/lo)+arithmetic;
-      if(!std::isfinite(ll)||!std::isfinite(err))return {};
-      upper=std::max(upper,ll+err);
-      peaks.push_back({lo,hi,ll-arithmetic,ll+err});
-      if(ll-arithmetic>best){best=ll-arithmetic;out={lambda,d.pi,ll,ll-arithmetic,ll+err,true};out.lo=lo;out.hi=hi;}
-    }
-    out.upper=upper;out.peaks=peaks;return out;
+    const auto cert=zip_certificate_detail::held_rate(d.n,d.k,d.S,d.pi,maxit,
+      [&](double rate){return d.zip_at(std::log(rate)).ll;},
+      [&](double scale){return d.pad(scale);});
+    if(cert.status!=zip_certificate_detail::Status::Ok &&
+       cert.status!=zip_certificate_detail::Status::Tie)return {};
+    const auto& peak=cert.peaks[cert.best];
+    Face out{peak.lo+(peak.hi-peak.lo)/2,d.pi,peak.ll,peak.lower,cert.upper,true};
+    out.lo=peak.lo;out.hi=peak.hi;
+    for(const auto& p:cert.peaks)out.peaks.push_back({p.lo,p.hi,p.lower,p.upper});
+    return out;
   }
+
   const double mean=d.S/d.n,positive=d.S/d.k;
   double lo=mean,hi=mean;
   if(std::isnan(d.pi) && -std::expm1(-mean)>d.k/d.n) {

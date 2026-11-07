@@ -125,3 +125,81 @@ TEST_CASE("zip: structured stop payloads") {
   CHECK(r.stop_detail.limit_coef[0]==0);
   CHECK(r.stop_detail.limit_loglik==0);
 }
+
+TEST_CASE("zip: certified held-inflation rates and competing peaks") {
+  std::vector<int> x(100,0);x.back()=10;
+  // Independent 80-digit mpmath roots and likelihoods, retained with the report.
+  const std::vector<double> p{.001,.1,.9};
+  const std::vector<double> rate{.10010953222725355,.11229195327730168,9.994983435397758};
+  const std::vector<double> ll{-48.120846640688325,-47.13592437890727,-14.811337135452884};
+  for(std::size_t j=0;j<p.size();++j) {
+    const auto r=cppunivariate::zip_mle(as_ispan(x),NAN,p[j]);
+    REQUIRE(r.status==cppunivariate::ZipStatus::Ok);
+    CHECK(r.lambda==doctest::Approx(rate[j]).epsilon(1e-11));
+    CHECK(r.logLik==doctest::Approx(ll[j]).epsilon(1e-12));
+  }
+  const double tie_pi=.7254971052291191;
+  const auto tie=cppunivariate::zip_mle(as_ispan(x),NAN,tie_pi);
+  REQUIRE(tie.status==cppunivariate::ZipStatus::Tie);
+  REQUIRE(tie.stop_detail.candidates.size()==2);
+  CHECK(tie.stop_detail.comparison_tie);
+  CHECK(tie.stop_detail.candidates[0].coef[0]==doctest::Approx(.5223041246623353).epsilon(1e-11));
+  CHECK(tie.stop_detail.candidates[1].coef[0]==doctest::Approx(9.982727928366345).epsilon(1e-11));
+  const double tied_ll=-35.13856131179308;
+  for(const auto& c:tie.stop_detail.candidates) {
+    CHECK(c.loglik_lower<=tied_ll);
+    CHECK(c.loglik_upper>=tied_ll);
+  }
+  CHECK(tie.stop_detail.loglik_lower<=tied_ll);
+  CHECK(tie.stop_detail.loglik_upper>=tied_ll);
+  for(double p:{tie_pi-1e-6,tie_pi+1e-6}) {
+    const auto r=cppunivariate::zip_mle(as_ispan(x),NAN,p);
+    REQUIRE(r.status==cppunivariate::ZipStatus::Ok);
+    CHECK((r.lambda>5)==(p>tie_pi));
+  }
+}
+
+TEST_CASE("zip: certificate budget and turning-point numerical stops") {
+  std::vector<int> x(100,0);x.back()=10;
+  const auto budget=cppunivariate::zip_mle(as_ispan(x),NAN,.1,1);
+  REQUIRE(budget.status==cppunivariate::ZipStatus::Budget);
+  CHECK(budget.stop_detail.budget_exhausted);
+  CHECK(budget.stop_detail.candidates.size()==2);
+  CHECK(std::isfinite(budget.stop_detail.loglik_lower));
+  CHECK(budget.stop_detail.loglik_upper>=budget.stop_detail.loglik_lower);
+  // A stationary rate at a turning point cannot be classified reliably.
+  const auto tangent=cppunivariate::zip_mle(as_ispan(x),NAN,.7901867873967294);
+  CHECK(tangent.status==cppunivariate::ZipStatus::NumericalFailure);
+  CHECK(tangent.stop_detail.candidates.size()==1);
+  CHECK(std::isinf(tangent.stop_detail.loglik_upper));
+  const std::vector<int> repeated{0,8}; // d=v-u=4: repeated turning point.
+  CHECK(cppunivariate::zip_mle(as_ispan(repeated),NAN,.4).status==cppunivariate::ZipStatus::NumericalFailure);
+  const std::vector<int> monotone{0,1,2}; // d<4, exactly one root.
+  const auto r=cppunivariate::zip_mle(as_ispan(monotone),NAN,.4);
+  REQUIRE(r.status==cppunivariate::ZipStatus::Ok);
+  CHECK(r.lambda>1);
+  CHECK(r.lambda<1.5);
+}
+
+TEST_CASE("zip: stable held likelihoods and analytic submodels") {
+  const std::vector<int> x{0,1,2},positive{1,2,3},zeros{0,0};
+  const auto held=cppunivariate::zip_mle(as_ispan(x),1000,0);
+  REQUIRE(held.status==cppunivariate::ZipStatus::Ok);
+  CHECK(std::isfinite(held.logLik));
+  CHECK(held.logLik==doctest::Approx(-3000+3*std::log(1000)-std::log(2.0)));
+  const auto tiny=cppunivariate::zip_mle(as_ispan(x),2,std::numeric_limits<double>::denorm_min());
+  REQUIRE(tiny.status==cppunivariate::ZipStatus::Ok);
+  CHECK(std::isfinite(tiny.logLik));
+  const auto r=cppunivariate::zip_mle(as_ispan(positive),NAN,.5);
+  REQUIRE(r.status==cppunivariate::ZipStatus::Ok);
+  CHECK(r.lambda==2);
+  CHECK(cppunivariate::zip_mle(as_ispan(zeros),NAN,1).lambda==1);
+}
+
+TEST_CASE("zip: held tiny rate preserves the all-zero inflation maximum") {
+  const std::vector<int> x{0,0};
+  const auto r=cppunivariate::zip_mle(as_ispan(x),1e-20);
+  REQUIRE(r.status==cppunivariate::ZipStatus::Ok);
+  CHECK(r.pi==1);
+  CHECK(r.logLik==0);
+}

@@ -1,0 +1,10 @@
+100% tests passed out of 106
+Total Test time (real) =  71.77 sec
+100% tests passed out of 129
+Total Test time (real) = 105.35 sec
+100% tests passed out of 129
+Total Test time (real) =  82.39 sec
+Duration: 71.1 s
+[ FAIL 0 | WARN 0 | SKIP 154 | PASS 21016 ]
+Duration: 307.0 s
+[ FAIL 0 | WARN 0 | SKIP 0 | PASS 43836 ]

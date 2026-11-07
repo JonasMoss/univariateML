@@ -89,7 +89,7 @@ export interface GeneratedAPI {
   zeta: Family<{s: number}, [s: number], {reltol?: number; iterlim?: number}>;
   zib: Family<{size: number; prob: number; pi: number}, [size: number, prob: number, pi: number], {reltol?: number; iterlim?: number}>;
   zinb: Family<{size: number; prob: number; pi: number}, [size: number, prob: number, pi: number], {reltol?: number; iterlim?: number}>;
-  zip: Family<{lambda: number; pi: number}, [lambda: number, pi: number], Record<string, never>>;
+  zip: Family<{lambda: number; pi: number}, [lambda: number, pi: number], {iterlim?: number}>;
   zipf: Family<{N: number; s: number}, [N: number, s: number], {reltol?: number; iterlim?: number}>;
   zmbinom: Family<{size: number; prob: number; p0: number}, [size: number, prob: number, p0: number], {reltol?: number; iterlim?: number}>;
   zmgeom: Family<{prob: number; p0: number}, [prob: number, p0: number], Record<string, never>>;
