@@ -642,3 +642,39 @@ test('binomial probability solves stop numerically before returning an unresolve
     assert.ok(Math.abs(f.estimates.prob*1e100-limiting.estimates.lambda)<1e-9);
   }
 });
+
+test('EMG certified conditional routes and numerical location stops', async () => {
+  const {default:createApi}=await import('./index.mjs');
+  const api=await createApi();
+  const x=new Float64Array([-2,-1,0,1,2]);
+  const f=api.emg.fit(x,{sigma:1,lambda:1},{reltol:1e-10});
+  assert.equal(f.status,'Ok');
+  assert.equal(f.estimates.sigma,1);assert.equal(f.estimates.lambda,1);
+  for(const controls of [{iterlim:1},{reltol:1e-30}]) {
+    assert.throws(()=>api.emg.fit(x,{sigma:1,lambda:1},controls),e=>{
+      assert.equal(e.kind,'numerical');assert.ok(e.candidates.length>0);
+      assert.ok(e.loglik_lower<=e.loglik_upper);return true;
+    });
+  }
+  assert.throws(()=>api.emg.fit(x,{mu:2}),e=>{
+    assert.equal(e.kind,'limit');assert.equal(e.model,'norm');
+    assert.equal(e.estimates.mean,2);assert.equal(e.estimates.sd,Math.sqrt(6));return true;
+  });
+  assert.throws(()=>api.emg.fit(new Float64Array([4,4,4]),{mu:4,lambda:2}),e=>{
+    assert.equal(e.kind,'limit');assert.equal(e.limit_loglik,0);return true;
+  });
+});
+
+test('EMG outer certificate preserves budget and unresolved witnesses', async () => {
+  const {default:createApi}=await import('./index.mjs');
+  const api=await createApi();
+  const x=new Float64Array([-2,-1,0,1,2]);
+  assert.throws(()=>api.emg.fit(x,{mu:0,sigma:1},{iterlim:2}),e=>{
+    assert.equal(e.kind,'budget');assert.match(e.message,/raising iterlim/);
+    assert.ok(e.candidates.length>=2);assert.ok(e.loglik_lower<=e.loglik_upper);return true;
+  });
+  assert.throws(()=>api.emg.fit(x,{mu:0}),e=>{
+    assert.equal(e.kind,'unresolved');assert.ok(e.candidates.length>=2);
+    assert.ok(e.loglik_lower<=e.loglik_upper);return true;
+  });
+});

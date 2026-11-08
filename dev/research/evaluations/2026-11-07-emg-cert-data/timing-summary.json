@@ -1,0 +1,51 @@
+{
+  "machine": "workstation GCC 15.2.0",
+  "repetitions": 3,
+  "control": {
+    "tol": 1e-10,
+    "maxit": 500
+  },
+  "samples": 500,
+  "rows": [
+    {
+      "held_mask": 0,
+      "before_seconds": 0.378806854,
+      "after_seconds": 0.789885719
+    },
+    {
+      "held_mask": 1,
+      "before_seconds": 0.275177527,
+      "after_seconds": 0.391140299
+    },
+    {
+      "held_mask": 2,
+      "before_seconds": 0.149065466,
+      "after_seconds": 0.305574362
+    },
+    {
+      "held_mask": 3,
+      "before_seconds": 0.015298774,
+      "after_seconds": 0.083569639
+    },
+    {
+      "held_mask": 4,
+      "before_seconds": 0.186593005,
+      "after_seconds": 5.65494371
+    },
+    {
+      "held_mask": 5,
+      "before_seconds": 0.019059776,
+      "after_seconds": 1.114616629
+    },
+    {
+      "held_mask": 6,
+      "before_seconds": 0.000582761,
+      "after_seconds": 0.002721299
+    },
+    {
+      "held_mask": 7,
+      "before_seconds": 6.3768e-05,
+      "after_seconds": 5.2929e-05
+    }
+  ]
+}
