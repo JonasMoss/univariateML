@@ -22,6 +22,15 @@ the queue.
 
 ## Index
 
+- [2026-11-08 — Quantile-defined families](2026-11-08-quantile-defined-families.md)
+  *(banked; not highest priority)*: g-and-k first, then g-and-h and the FKML
+  generalized lambda; shared inverse and profile machinery from TASK-151, the
+  GLD log-concavity proof, GPD face and spacings notes.
+
+- [2026-11-08 — Pre-generated tlambda inverse table](2026-11-08-tlambda-pregenerated-inverse-table.md)
+  *(banked option)*: replace the first-use seed table with generated constants
+  if startup cost matters.
+
 - [2026-11-05 — Censoring and truncation](2026-11-05-censoring-truncation.md)
   *(idea; TASK-142)*: likelihood pieces, Burr worked example, the extra
   Hellinger boundary $\overline{T(M)} \setminus T(\overline{M})$ created by an
