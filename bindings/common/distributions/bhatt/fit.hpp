@@ -27,6 +27,11 @@ inline FitResult fit_bhatt(cppunivariate::span x, Held mu_arg = {}, Held sigma_a
   const double f_mu=mu.supplied?mu.value:cppunivariate::special::kNaN;
   if(mu.supplied&&!std::isfinite(f_mu))return fail("Held mu must be finite.");
   const auto f=cppunivariate::bhatt_mle(x,reltol,iterlim,f_sigma,f_a,f_mu);
+  if(f.status==cppunivariate::BhattStatus::BudgetExhausted)return stop_failure(fail("Bhatt certificate budget exhausted; raising iterlim may resolve the remaining width intervals."),f.stop_detail,"budget",{"mu","sigma","a"});
+  if(f.status==cppunivariate::BhattStatus::Unresolved)return stop_failure(fail("Bhatt normal/uniform comparison unresolved; no global winner has been certified. Use `mlnorm` or `mlunif` only for the compared model, retaining compatible holds."),f.stop_detail,"unresolved",{"mu","sigma","a"});
+  if(f.status==cppunivariate::BhattStatus::Tie)return stop_failure(fail("Bhatt separated surviving maximizers could not be distinguished."),f.stop_detail,"tie",{"mu","sigma","a"});
+  if(f.status==cppunivariate::BhattStatus::NumericalFailure)return classify(fail("Bhatt numerical accuracy failure: score, coefficient enclosure or width bound could not be resolved."),f.stop_detail,"numerical",{"mu","sigma","a"});
+  if(f.status==cppunivariate::BhattStatus::IterationFailure && (!std::isnan(f_sigma)||!std::isnan(f_a)||mu.supplied))return classify(fail("Bhatt certificate solve did not converge; increase iterlim."),f.stop_detail,"numerical",{"mu","sigma","a"});
   if(f.stop_detail.comparison_tie)return classify(fail("Bhatt fit failed: check inputs, reltol and iterlim."),f.stop_detail,"tie",{"mu","sigma","a"});
   if(f.status==cppunivariate::BhattStatus::Unbounded)return nomle("Bhattacharjee likelihood is unbounded for a constant sample.");
   if(f.status==cppunivariate::BhattStatus::NormalLimit) {

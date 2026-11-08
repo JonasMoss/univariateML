@@ -11,7 +11,7 @@
 #include <vector>
 #include <map>
 namespace cppunivariate {
-enum class BhattStatus {Ok,NormalLimit,UniformLimit,Unbounded,InvalidInput,IterationFailure};
+enum class BhattStatus {Ok,NormalLimit,UniformLimit,Unbounded,InvalidInput,IterationFailure,NumericalFailure,BudgetExhausted,Unresolved,Tie};
 struct BhattResult {double mu,sigma,a,logLik;int iterations;BhattStatus status; StopDetail stop_detail{}; };
 namespace bhatt_detail {
 struct Profile {
@@ -129,7 +129,8 @@ inline BhattResult search(const Profile& p,std::vector<double> start,double tol,
   return best;
 }
 }
-inline BhattResult bhatt_mle(span x,double tol=1e-8,int maxit=500,double sigma=special::kNaN,double a=special::kNaN,double mu=special::kNaN) {
+namespace bhatt_detail {
+inline BhattResult legacy_candidate(span x,double tol=1e-8,int maxit=500,double sigma=special::kNaN,double a=special::kNaN,double mu=special::kNaN) {
   maxit = static_cast<int>(solver_budget(maxit));
   BhattResult bad={special::kNaN,special::kNaN,special::kNaN,special::kNaN,0,BhattStatus::InvalidInput};
   if(x.empty()||!(tol>0&&std::isfinite(tol))||maxit<1||(!std::isnan(sigma)&&!(sigma>0&&std::isfinite(sigma)))||(!std::isnan(a)&&!(a>=0&&std::isfinite(a))))return bad;
@@ -285,3 +286,6 @@ inline BhattResult bhatt_mle(span x,double tol=1e-8,int maxit=500,double sigma=s
   return best;
 }
 }
+
+} // namespace cppunivariate
+#include "certificate.hpp"
