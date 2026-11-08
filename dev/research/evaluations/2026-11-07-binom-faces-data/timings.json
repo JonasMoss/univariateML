@@ -1,0 +1,35 @@
+{
+  "machine": "workstation",
+  "compiler": "GCC 15.2, -O2 -std=c++17",
+  "threads": 1,
+  "calls_per_measurement": 3,
+  "statistic": "arithmetic mean, milliseconds; excludes compilation and slot wait",
+  "before_source": "96e493ccafd8f9b3c5c495a394b521523a503aba",
+  "measurements": {
+    "ztbinom face": {
+      "before": 2.47076,
+      "after": 2.5642
+    },
+    "zmbinom face": {
+      "before": 2.42175,
+      "after": 2.75142
+    },
+    "zib face": {
+      "before": 2.53257,
+      "after": 2.02149
+    },
+    "tbinom face": {
+      "before": 1.01135,
+      "after": 3.48511
+    },
+    "ztbinom finite": {
+      "before": 0.33234,
+      "after": 0.324188
+    },
+    "tbinom finite": {
+      "before": 1.98542,
+      "after": 1.53404
+    }
+  },
+  "after_source_manifest_sha256": "c2bf735fab76b7e90f6ebada58d50ec9dcda1f3ca9c51922a4d1d2530fb9096a"
+}

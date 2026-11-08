@@ -39,9 +39,8 @@ limits:
 - model: ztpois
   firmness: proved
   when: As $n\to\infty$ and $p\to0$ with $np\to\lambda>0$, the positive-count law tends to a zero-truncated Poisson law.
-  detect: With both coefficients free and at least one count above one, the fitted zero-truncated Poisson log likelihood is at least the best searched finite-size value minus $10^{-8}$ times sample size.
+  detect: A strict positive factorial-moment gap at the mean-matched positive-Poisson face supplies a signed tail cutoff, and complete finite-prefix coverage excludes every smaller size. Comparisons not passing both checks remain unresolved.
   status: PoissonLimit
-  numerical: true
 fit_args:
   size: ~
 examples: |
@@ -68,7 +67,7 @@ relations:
 fit:
   method: integer-search
   certified: partial
-  note: 'ztbinom/README.md, Details; ztbinom/mle.hpp; ztbinom/test.cpp: Finite free-size winners require retained-support tail exclusion and complete integer-prefix coverage. Fixed size and held probability use their exact profiles. Winning-face comparisons remain unresolved.'
+  note: 'ztbinom/README.md, Details; ztbinom/mle.hpp; ztbinom/test.cpp: Finite free-size winners require retained-support tail exclusion and complete integer-prefix coverage. Fixed size and held probability use their exact profiles. Strict positive factorial-moment gaps permit signed positive-Poisson tail exclusion followed by finite-prefix coverage. Zero-gap or unresolved prefix comparisons still stop.'
 areas:
 - counts and ecology
 classification: specialist
@@ -107,7 +106,11 @@ $$\sup_{A\le N\le B,p}\ell_N(p)\le\sup_p\ell_A(p)+\sum_i r_B(x_i).$$
 
 The bound uses the support at $A$ as a subset of every later support, so it remains valid below a finite upper truncation endpoint. The same bound holds after zero inflation: a zero mass is bounded by $e^{r_B(0)}$ times the corresponding inflated mass at $A$. Blocks that fail strict exclusion are bisected down to singleton sizes. This avoids exhaustive profiling of a long prefix without assuming profile unimodality.
 
-An unsigned tail bound does not establish that the Poisson face wins. Such comparisons stop as unresolved, preserving the finite and Poisson witnesses. The signed-tail and face-tie analysis is open. See the [certificate investigation](../../../../../dev/research/evaluations/2026-11-07-binom-rel-report.md) for the bound proof, coverage checks and remaining limitations.
+The positive-Poisson face can also win by a signed certificate. Let $Q$ be its mean-matched law and set $g=n_{\mathrm{obs}}^{-1}\sum_i x_i(x_i-1)-E_Q[X(X-1)]$. For $g>0$, a mean-preserving compression of the Poisson tail above $K=\lfloor N/2\rfloor$ onto $\{1,K\}$ gives a finite-support comparison law $Q_K$. Jensen's inequality eliminates the trial probability uniformly:
+
+$$\frac{\ell_N(p)-\ell_\infty}{n_{\mathrm{obs}}}\le D(Q_K\Vert Q)-\frac{g}{2N}+\frac{M}{N^2},\qquad M=\tfrac13 E_Q[(X)_3]+\tfrac12 E_Q[(X)_2].$$
+
+The compression error decreases geometrically. The certificate computes a cutoff beyond which it is below $g/(8N)$ and $M/N^2\le g/(8N)$. Complete block coverage below that cutoff must then strictly exclude every feasible integer; it does not infer monotonicity or unimodality of the size profile. A discovered finite improvement returns to finite-winner certification. Near equal prefix values and nonpositive or unresolved gaps retain both witnesses with kind `unresolved`; exhausted coverage stops as budget or numerical failure. Moment comparisons reserve $8192\epsilon(1+\text{moment magnitudes})$, and prefix comparisons use the likelihood margin above. These are conditional exact-arithmetic certificates with practical floating-point margins. The [implementation](face_certificate.hpp) constructs the compression bound; [independent 70-digit checks](../../../../../dev/research/evaluations/2026-11-07-binom-faces-data/check.py) compare it with directly evaluated likelihoods.
 
 With an interior probability held, the integer search bounds the remaining tail before returning. Exhausting its work budget is an error. Probability zero permits only ones. Probability one permits only counts equal to the trial count. These are attained members, not escapes.
 
@@ -115,7 +118,7 @@ The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-bino
 
 ## R notes
 
-A Poisson comparison witness does not assert non-existence; the public condition has kind `unresolved`. The other binomial relatives report such comparisons the same way.
+A proved winning face has kind `limit`, finite global likelihood bounds and advice to use `mlztpois`. A comparison lacking signed-tail or prefix exclusion has kind `unresolved` and an infinite global upper bound.
 
 Supply `size` explicitly. A numeric value holds it, while `size = NULL` estimates it. Supplying `prob` holds the probability exactly. The boundary convention at `prob = 0` agrees with actuar. Unresolved Poisson comparisons retain advice to use `mlztpois` as a comparison model. Iteration exhaustion stops instead of returning a capped size. Increasing `iterlim` raises the certificate and enumeration budgets.
 

@@ -184,13 +184,34 @@ test_that("tbinom J7a certifies infinite conditioning windows", {
   f <- mltbinom(c(1,2,2,3,3,3,4,4,5,5),a=0,b=Inf,size=NULL)
   expect_equal(unname(f["size"]),6)
   e <- tryCatch(mltbinom(1:3,a=NULL,b=NULL,size=NULL),error=identity)
-  expect_s3_class(e,"univariateML_unresolved")
-  expect_equal(e$loglik_upper,Inf)
+  expect_s3_class(e,"univariateML_limit")
+  expect_true(is.finite(e$loglik_upper))
 })
 
 
-test_that("tbinom unresolved size-face comparisons stop as unresolved", {
+test_that("tbinom proved size-face comparisons stop as limits", {
   e <- tryCatch(mltbinom(1:3,a=NULL,b=NULL,size=NULL),error=identity)
-  expect_identical(e$kind,"unresolved")
-  expect_identical(class(e)[1],"univariateML_unresolved")
+  expect_identical(e$kind,"limit")
+  expect_identical(class(e)[1],"univariateML_limit")
+})
+
+test_that("tbinom exact empirical Poisson proportions settle first-order equality", {
+  e <- tryCatch(mltbinom(c(0,1,1,2,2),a=-1,b=2,size=NULL),error=identity)
+  expect_s3_class(e,"univariateML_limit")
+  expect_identical(e$kind,"limit")
+  expect_true(is.finite(e$loglik_upper))
+  expect_equal(unname(e$estimates["lambda"]),2)
+})
+
+test_that("tbinom exact factorial moments settle nonsaturated first-order equality", {
+  e <- tryCatch(mltbinom(c(0,rep(1,9),rep(2,6),rep(3,10)),a=-1,b=3,size=NULL),error=identity)
+  expect_s3_class(e,"univariateML_limit")
+  expect_true(is.finite(e$loglik_upper))
+  expect_gte(nrow(e$candidates),2)
+})
+
+test_that("tbinom mixed higher factorial moments have a signed tail", {
+  e <- tryCatch(mltbinom(c(rep(0,50),rep(1,41),rep(2,33),rep(3,3),rep(4,3)),a=-1,b=4,size=NULL),error=identity)
+  expect_s3_class(e,"univariateML_limit")
+  expect_true(is.finite(e$loglik_upper))
 })

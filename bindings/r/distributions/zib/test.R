@@ -189,15 +189,15 @@ test_that("zib J7a held inflation uses a constrained finite certificate", {
   f <- mlzib(x,size=NULL,pi=.2)
   expect_equal(unname(f["size"]),6)
   e <- tryCatch(mlzib(c(rep(0,8),1,1,1,2,3,7,12),size=NULL,pi=.2),error=identity)
-  expect_s3_class(e,"univariateML_unresolved")
-  expect_equal(e$loglik_upper,Inf)
+  expect_s3_class(e,"univariateML_limit")
+  expect_true(is.finite(e$loglik_upper))
 })
 
 
-test_that("zib unresolved size-face comparisons stop as unresolved", {
+test_that("zib proved held-inflation faces stop as limits", {
   e <- tryCatch(mlzib(c(rep(0,8),1,1,1,2,3,7,12),size=NULL,pi=.2),error=identity)
-  expect_identical(e$kind,"unresolved")
-  expect_identical(class(e)[1],"univariateML_unresolved")
+  expect_identical(e$kind,"limit")
+  expect_identical(class(e)[1],"univariateML_limit")
 })
 
 test_that("zib validates tiny probabilities before selecting the inflation branch", {
@@ -211,4 +211,91 @@ test_that("zib validates tiny probabilities before selecting the inflation branc
   face <- mlzip(x)
   expect_equal(as.numeric(f["prob"])*1e100,as.numeric(face["lambda"]),tolerance=1e-9)
   expect_equal(as.numeric(f["pi"]),as.numeric(face["pi"]),tolerance=1e-9)
+})
+
+test_that("zib signed faces preserve the inflation constraint", {
+  x <- c(rep(0,8),1,1,1,2,3,7,12)
+  for (mix in list(NULL,0)) {
+    e <- tryCatch(mlzib(x,size=NULL,pi=mix),error=identity)
+    expect_s3_class(e,"univariateML_limit")
+    expect_identical(e$kind,"limit")
+    expect_true(is.finite(e$loglik_upper))
+    expect_identical(e$model,"zip")
+    face <- if (is.null(mix)) mlzip(x) else mlzip(x,pi=mix)
+    expect_equal(e$limit_loglik,attr(face,"logLik"),tolerance=1e-9)
+  }
+  positive <- c(1,1,1,2,3,7,12)
+  a <- tryCatch(mlzib(positive,size=NULL,pi=.2),error=identity)
+  b <- tryCatch(mlzib(positive,size=NULL),error=identity)
+  expect_s3_class(a,"univariateML_limit")
+  expect_s3_class(b,"univariateML_limit")
+  expect_equal(a$limit_loglik,b$limit_loglik+length(positive)*log(.8),tolerance=1e-9)
+})
+
+test_that("zib localizes a held face when the inflation-uniform gap is insufficient", {
+  e <- tryCatch(mlzib(c(rep(0,5),1,1,2,2,4),size=NULL,pi=.2),error=identity)
+  expect_s3_class(e,"univariateML_limit")
+  expect_identical(e$kind,"limit")
+  expect_true(is.finite(e$loglik_upper))
+  expect_true(is.finite(e$loglik_lower))
+})
+
+test_that("zib near-zero local face coefficients remain unresolved", {
+  q <- exp(-1.6)
+  e <- tryCatch(mlzib(c(rep(0,5),1,1,2,2,4),size=NULL,pi=.75*q/(.25+.75*q)),error=identity)
+  expect_s3_class(e,"univariateML_unresolved")
+  expect_identical(e$kind,"unresolved")
+  expect_equal(e$loglik_upper,Inf)
+  expect_gte(nrow(e$candidates),2)
+})
+
+test_that("zib proves escape even when the winning ZIP rate is tied", {
+  e <- tryCatch(mlzib(c(rep(0,198),1,19),size=NULL,pi=.7254971052291191),error=identity)
+  expect_s3_class(e,"univariateML_tie")
+  expect_identical(e$kind,"tie")
+  expect_identical(e$model,"zip")
+  expect_true(is.finite(e$loglik_upper))
+  peaks <- e$candidates[e$candidates$model=="zip",]
+  expect_equal(nrow(peaks),2)
+  expect_equal(sort(peaks$lambda),c(.5223041246623353,9.982727928366345),tolerance=1e-9)
+  expect_gte(nrow(e$candidates),3)
+})
+
+test_that("zib certifies noninflated faces including equal mean and variance", {
+  for (x in list(c(0,1,1,1,2,4),c(0,1,1,1,2,3,4,4))) {
+    e <- tryCatch(mlzib(x,size=NULL),error=identity)
+    expect_s3_class(e,"univariateML_limit")
+    expect_identical(e$kind,"limit")
+    expect_true(is.finite(e$loglik_upper))
+    expect_equal(unname(e$estimates["pi"]),0)
+    expect_equal(e$limit_loglik,attr(mlzip(x),"logLik"),tolerance=1e-9)
+  }
+})
+
+test_that("zib retains subnormal zero masses and resolves the held-inflation root", {
+  mix <- .Machine$double.xmin*.Machine$double.eps
+  x <- c(0,500)
+  f <- mlzib(x,size=1075,prob=.5,pi=mix)
+  expect_equal(attr(f,"logLik"),sum(dml(x,f,log=TRUE)),tolerance=1e-10)
+  g <- mlzib(c(rep(535,1000),0),size=1075,pi=mix)
+  expect_equal(unname(g["prob"]),.4971795798757613128165584136,tolerance=1e-10)
+  expect_equal(attr(g,"logLik"),-4455.659181549239638934,tolerance=1e-10)
+  tiny <- mlzib(0,size=1,prob=1e-300,pi=.5)
+  expect_lt(attr(tiny,"logLik"),0)
+  expect_equal(as.numeric(attr(tiny,"logLik"))/(-5e-301),1,tolerance=1e-10)
+})
+
+test_that("zib native binding reports finite log-likelihood overflow numerically", {
+  # The all-held public constructor checks qzib first; its huge-size loop
+  # needs a separate settled-DPQR repair, recorded in the job report.
+  e <- getFromNamespace("mlzib_","univariateML")(0L,size=1e308,prob=.9,pi=0)
+  expect_s3_class(e,"univariateML_numerical")
+  expect_identical(e$kind,"numerical")
+  expect_equal(e$loglik_upper,Inf)
+})
+
+test_that("zib preserves the unique all-zero inflation even for a tiny held probability", {
+  f <- mlzib(0,size=1,prob=1e-300)
+  expect_equal(unname(f["pi"]),1)
+  expect_equal(as.numeric(attr(f,"logLik")),0)
 })

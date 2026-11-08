@@ -1,0 +1,1 @@
+status=4 budget=1 comparison=0 upper=inf candidates=2

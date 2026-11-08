@@ -1,0 +1,17 @@
+{
+  "rate": 4,
+  "counts": [
+    242187,
+    60672,
+    121344,
+    1488980,
+    406274
+  ],
+  "n": 2319457,
+  "mix": "17463/22519",
+  "first_exact": "0",
+  "second_exact": "0",
+  "third_profiled_exact": "443772828460/24004266924673",
+  "third_profiled": 0.01848724769861079,
+  "interpretation": "Exact local expansion only. The sufficient second-order criterion deliberately refuses zero B. The positive formal third coefficient indicates eventual finite improvement; this expansion does not locate or certify the global finite maximizer."
+}

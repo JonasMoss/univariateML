@@ -1,5 +1,5 @@
 #pragma once
-#include "../ztbinom/certificate.hpp"
+#include "face_certificate.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/discrete_stop.hpp"
 #include "../ztpois/mle.hpp"
@@ -148,12 +148,39 @@ inline ZtbinomResult ztbinom_mle(ispan x,double tol=1e-10,int maxit=200,
   if(best.status==ZtbinomStatus::IterationFailure) {
     binomial_certificate_detail::witness(best.stop_detail,{best.size,best.prob},best.logLik,false);return best;
   }
-  // A face is a witness, never a J7a proof that no finite size wins.
-  if(best.status!=ZtbinomStatus::Ok) {
-    binomial_certificate_detail::witness(best.stop_detail,{best.size,best.prob},best.logLik,false,true);return best;
+  binomial_certificate_detail::Work work{0,0,maxit};
+  if(best.status==ZtbinomStatus::PoissonLimit) {
+    const double face=best.stop_detail.limit_loglik;
+    bool exhausted=false;
+    const double end=binomial_certificate_detail::signed_cutoff(x,1,INFINITY,best.stop_detail.limit_coef[0],work,exhausted);
+    if(!std::isfinite(end) && (exhausted || work.numerical)) {
+      best.status=ZtbinomStatus::IterationFailure;
+      binomial_certificate_detail::witness(best.stop_detail,{best.size,best.prob},best.logLik,exhausted);return best;
+    }
+    if(std::isfinite(end)) {
+      bool finite_seen=false;
+      const auto covered=binomial_certificate_detail::cover_face(x,mx,end,face,work,[&](double N) {
+        const auto f=ztbinom_detail::ztbinom_mle_proposal(x,tol,maxit,N,NAN);
+        if(f.status!=ZtbinomStatus::Ok)return double(NAN);
+        if(!finite_seen || f.logLik>best.logLik) {best.size=f.size;best.prob=f.prob;best.logLik=f.logLik;}
+        finite_seen=true;
+        return f.logLik;
+      });
+      if(covered==binomial_certificate_detail::FaceCoverage::Face) {
+        binomial_certificate_detail::certified_face(best.stop_detail,{best.size,best.prob},best.logLik);return best;
+      }
+      if(covered==binomial_certificate_detail::FaceCoverage::Finite) {
+        best.status=ZtbinomStatus::Ok;best.stop_detail={};
+      } else if(covered==binomial_certificate_detail::FaceCoverage::Failure) {
+        best.status=ZtbinomStatus::IterationFailure;
+        binomial_certificate_detail::witness(best.stop_detail,{best.size,best.prob},best.logLik,!work.numerical);return best;
+      }
+    }
+    if(best.status!=ZtbinomStatus::Ok) {
+      binomial_certificate_detail::witness(best.stop_detail,{best.size,best.prob},best.logLik,false,true);return best;
+    }
   }
   if(best.logLik==0)return best;
-  binomial_certificate_detail::Work work{0,0,maxit};
   const double end=binomial_certificate_detail::cutoff(x,1,INFINITY,false,NAN,best.logLik,work);
   if(std::isfinite(end) && best.size>=end)work.numerical=true;
   if(!std::isfinite(end) || work.numerical) {

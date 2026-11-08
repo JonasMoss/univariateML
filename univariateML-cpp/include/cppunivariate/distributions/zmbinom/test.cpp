@@ -119,11 +119,27 @@ TEST_CASE("zmbinom: structured stop payloads") {
 TEST_CASE("zmbinom: certificate stop witnesses include the zero-indicator likelihood") {
   const std::vector<int>x{0,0,1,1,1,2,3,7,12};
   const auto f=cppunivariate::zmbinom_mle({x.data(),x.size()},1e-10,200,NAN,NAN,.2);
-  REQUIRE(f.stop_detail.comparison_tie);
+  REQUIRE_FALSE(f.stop_detail.comparison_tie);
   CHECK(f.stop_detail.limit_model==cppunivariate::StopModel::Zmpois);
   for(const auto& c:f.stop_detail.candidates) {
     REQUIRE(c.coef.size()==(c.model==cppunivariate::StopModel::None?3:2));
     CHECK(c.coef.back()==.2);
   }
-  CHECK(f.stop_detail.loglik_upper==INFINITY);
+  CHECK(std::isfinite(f.stop_detail.loglik_upper));
+}
+
+TEST_CASE("zmbinom: proved faces transport every candidate and global bound") {
+  const std::vector<int>x{0,0,1,1,1,2,2,8},positive{1,1,1,2,2,8};
+  const auto p=cppunivariate::ztbinom_mle({positive.data(),positive.size()});
+  REQUIRE_FALSE(p.stop_detail.comparison_tie);
+  for(double held : {double(NAN),.2}) {
+    const auto f=cppunivariate::zmbinom_mle({x.data(),x.size()},1e-10,200,NAN,NAN,held);
+    REQUIRE(f.status==cppunivariate::ZmbinomStatus::PoissonLimit);
+    CHECK_FALSE(f.stop_detail.comparison_tie);
+    const double shift=2*std::log(f.p0)+6*std::log1p(-f.p0);
+    CHECK(f.stop_detail.loglik_lower==doctest::Approx(p.stop_detail.loglik_lower+shift));
+    CHECK(f.stop_detail.loglik_upper==doctest::Approx(p.stop_detail.loglik_upper+shift));
+    CHECK(f.stop_detail.limit_model==cppunivariate::StopModel::Zmpois);
+    for(const auto& c:f.stop_detail.candidates)CHECK(c.coef.back()==f.p0);
+  }
 }

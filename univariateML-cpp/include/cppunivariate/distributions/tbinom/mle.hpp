@@ -1,5 +1,5 @@
 #pragma once
-#include "../ztbinom/certificate.hpp"
+#include "face_certificate.hpp"
 #include "../../core/discrete_stop.hpp"
 #include "../tpois/profile.hpp"
 #include "../binom/dpqr.hpp"
@@ -265,18 +265,73 @@ inline TbinomDesignResult tbinom_design_mle(ispan x,double a,double b,double siz
   int xmin=x[0],mx=x[0];for(int v:x){xmin=std::min(xmin,v);mx=std::max(mx,v);}
   const double lo=std::max(0.,std::floor(best.a)+1),U=std::floor(best.b);
   if(xmin==mx || U-lo==1 || (lo==0 && U==INFINITY))return best;
-  if(best.status!=TbinomStatus::Ok) {
-    if(best.status==TbinomStatus::TpoisLimit)
-      binomial_certificate_detail::witness(best.stop_detail,{best.prob,best.a,best.b,best.size},best.logLik,false,true);
-    return best;
-  }
-  // This public fitter has no iterlim; retain a stated fixed work budget.
   binomial_certificate_detail::Work work{0,0,512};
+  if(best.status==TbinomStatus::TpoisLimit) {
+    bool exhausted=false;
+    if(U==mx) {
+      double ll=NAN;
+      const double rate=binomial_certificate_detail::saturated_poisson_rate(x,static_cast<int>(lo),mx,work,exhausted,ll);
+      if(std::isfinite(rate)) {
+        best.stop_detail=discrete_face(StopModel::Tpois,{rate,best.a,best.b},ll);
+        binomial_certificate_detail::certified_face(best.stop_detail,{best.prob,best.a,best.b,best.size},best.logLik);return best;
+      }
+      if(exhausted) {
+        best.status=TbinomStatus::NumericalFailure;
+        tbinom_detail::record_witness(best.stop_detail,{best.prob,best.a,best.b,best.size},best.logLik,true);return best;
+      }
+    }
+    double face=best.stop_detail.limit_loglik;
+    double end=binomial_certificate_detail::signed_cutoff(x,static_cast<int>(lo),U,best.stop_detail.limit_coef[0],work,exhausted);
+    if(!std::isfinite(end) && !exhausted && !work.numerical && lo==0 &&
+       std::isfinite(U) && U<=std::numeric_limits<int>::max()) {
+      double ll=NAN;
+      const double rate=tbinom_detail::exact_poisson_moment_face(x,static_cast<int>(U),work,exhausted,ll);
+      if(std::isfinite(rate)) {
+        best.stop_detail=discrete_face(StopModel::Tpois,{rate,best.a,best.b},ll);
+        binomial_certificate_detail::certified_face(best.stop_detail,{best.prob,best.a,best.b,best.size},best.logLik);return best;
+      }
+      if(!exhausted && !work.numerical) {
+        double second_rate=NAN;
+        end=tbinom_detail::second_order_poisson_cutoff(x,static_cast<int>(U),work,exhausted,second_rate,ll);
+        if(std::isfinite(end)) {
+          face=ll;best.stop_detail=discrete_face(StopModel::Tpois,{second_rate,best.a,best.b},ll);
+        }
+      }
+    }
+    if(!std::isfinite(end) && (exhausted || work.numerical)) {
+      best.status=TbinomStatus::NumericalFailure;
+      tbinom_detail::record_witness(best.stop_detail,{best.prob,best.a,best.b,best.size},best.logLik,exhausted);return best;
+    }
+    if(std::isfinite(end)) {
+      bool finite_seen=false;
+      const auto covered=binomial_certificate_detail::cover_face(x,mx,end,face,work,[&](double N) {
+        const auto f=tbinom_detail::profile(x,lo,U,N);
+        if(f.status!=truncated_detail::Status::Ok)return double(NAN);
+        if(!finite_seen || f.logLik>best.logLik) {best.prob=f.parameter;best.size=N;best.logLik=f.logLik;}
+        finite_seen=true;
+        return f.logLik;
+      });
+      if(covered==binomial_certificate_detail::FaceCoverage::Face) {
+        binomial_certificate_detail::certified_face(best.stop_detail,{best.prob,best.a,best.b,best.size},best.logLik);return best;
+      }
+      if(covered==binomial_certificate_detail::FaceCoverage::Finite) {
+        best.status=TbinomStatus::Ok;best.stop_detail={};
+      } else if(covered==binomial_certificate_detail::FaceCoverage::Failure) {
+        best.status=TbinomStatus::NumericalFailure;
+        tbinom_detail::record_witness(best.stop_detail,{best.prob,best.a,best.b,best.size},best.logLik,!work.numerical);return best;
+      }
+    }
+    if(best.status!=TbinomStatus::Ok) {
+      tbinom_detail::record_witness(best.stop_detail,{best.prob,best.a,best.b,best.size},best.logLik,false,true);return best;
+    }
+  }
+  if(best.status!=TbinomStatus::Ok)return best;
+  // This public fitter has no iterlim; retain a stated fixed work budget.
   const double end=binomial_certificate_detail::cutoff(x,static_cast<int>(lo),U,false,NAN,best.logLik,work);
   if(std::isfinite(end) && best.size>=end)work.numerical=true;
   if(!std::isfinite(end) || work.numerical) {
     best.status=TbinomStatus::NumericalFailure;
-    binomial_certificate_detail::witness(best.stop_detail,{best.prob,best.a,best.b,best.size},best.logLik,!work.numerical);return best;
+    tbinom_detail::record_witness(best.stop_detail,{best.prob,best.a,best.b,best.size},best.logLik,!work.numerical);return best;
   }
   double incumbent=best.logLik;
   const bool complete=binomial_certificate_detail::cover(x,mx,end,incumbent,work,[&](double N) {
@@ -287,7 +342,7 @@ inline TbinomDesignResult tbinom_design_mle(ispan x,double a,double b,double siz
   });
   if(!complete) {
     best.status=TbinomStatus::NumericalFailure;
-    binomial_certificate_detail::witness(best.stop_detail,{best.prob,best.a,best.b,best.size},best.logLik,!work.numerical);
+    tbinom_detail::record_witness(best.stop_detail,{best.prob,best.a,best.b,best.size},best.logLik,!work.numerical);
     return best;
   }
 #ifdef CPPUNIV_SIZE_SEARCH_DIAGNOSTICS

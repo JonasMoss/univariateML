@@ -1,0 +1,28 @@
+{
+  "files_scanned": 512,
+  "local_destinations": 2796,
+  "broken": 4,
+  "all_sources_unchanged_from_HEAD": true,
+  "entries": [
+    {
+      "file": "dev/research/evaluations/2026-11-03-boundary-lit-report.md",
+      "line": 5,
+      "target": "../boundary-points.pdf"
+    },
+    {
+      "file": "univariateML-cpp/include/cppunivariate/distributions/nbinom/README.md",
+      "line": 234,
+      "target": "1+m/r"
+    },
+    {
+      "file": "univariateML-cpp/notes/inference.md",
+      "line": 3,
+      "target": "/inference/"
+    },
+    {
+      "file": "univariateML-cpp/notes/inference.md",
+      "line": 95,
+      "target": "/inference/"
+    }
+  ]
+}
