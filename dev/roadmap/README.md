@@ -22,6 +22,11 @@ the queue.
 
 ## Index
 
+- [2026-11-08 — The Pearson system as one family](2026-11-08-pearson-system.md)
+  *(banked)*: types as partial-fraction cases of the Pearson ODE, type
+  boundaries as root collisions, free thresholds, type IV's complex-gamma
+  normaliser, and why one model shows nearly every ML failure.
+
 - [2026-11-08 — Quantile-defined families](2026-11-08-quantile-defined-families.md)
   *(banked; not highest priority)*: g-and-k first, then g-and-h and the FKML
   generalized lambda; shared inverse and profile machinery from TASK-151, the
