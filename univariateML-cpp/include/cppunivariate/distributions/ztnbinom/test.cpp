@@ -205,3 +205,8 @@ TEST_CASE("ztnbinom: unresolved large-count Poisson-tail comparison stops") {
  CHECK(fit.certificate_failure==cppunivariate::ZtnbinomCertificateFailure::Arithmetic);
  CHECK(std::isnan(fit.size));CHECK(std::isnan(fit.prob));
 }
+
+#include "cppunivariate/distributions/ztnbinom/dpqr.hpp"
+TEST_CASE("ztnbinom: quantile search guards and representability") {
+  CHECK(std::isnan(cppunivariate::distributions::qztnbinom(.5,1e308,.1)));
+}

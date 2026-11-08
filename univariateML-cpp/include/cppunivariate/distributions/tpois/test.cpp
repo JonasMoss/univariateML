@@ -73,3 +73,8 @@ TEST_CASE("tpois: structured stop payloads") {
   REQUIRE(f.stop_detail.limit_model==cppunivariate::StopModel::PointMass);
   CHECK(f.stop_detail.limit_loglik==0);
 }
+
+#include "cppunivariate/distributions/tpois/dpqr.hpp"
+TEST_CASE("tpois: quantile search guards and representability") {
+  CHECK(std::isnan(cppunivariate::distributions::qtpois(.5,1e308,-INFINITY,INFINITY)));
+}

@@ -1,6 +1,7 @@
 #pragma once
 #include "../../core/precision.hpp"
 #include "../../special/cmp.hpp"
+#include "../../special/tails.hpp"
 namespace cppunivariate {
 namespace cmp_dpqr_detail {
 inline bool valid(double lambda,double nu) {
@@ -61,20 +62,10 @@ struct Law {
   if (p==(log ? special::kNegInf : 0)) return lower ? 0 : special::kPosInf;
   if (p==(log ? 0 : 1)) return lower ? special::kPosInf : 0;
   const double target=log ? p : std::log(p);
-  double a=-1,b=1;
-  for (;;) {
-   const double f=cdf(b,lower,true);
-   if (std::isnan(f)) return f;
-   if (lower ? f>=target : f<=target) break;
-   a=b; b*=2;
-   if (b>9e15) return special::kNaN;
-  }
-  while (b-a>1) {
-   const double mid=std::floor(a+(b-a)/2),f=cdf(mid,lower,true);
-   if (std::isnan(f)) return f;
-   if (lower ? f>=target : f<=target) b=mid; else a=mid;
-  }
-  return b;
+  return special::discrete_search(0,special::kPosInf,[&](double k) {
+   const double f=cdf(k,lower,true);
+   return std::isnan(f) ? -1 : int(lower ? f>=target : f<=target);
+  });
  }
 };
 }

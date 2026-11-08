@@ -119,3 +119,8 @@ TEST_CASE("zipf: structured stop payloads") {
   CHECK(r.stop_detail.limit_loglik==0);
   CHECK(r.stop_detail.candidates.size()==1);
 }
+
+#include "cppunivariate/distributions/zipf/dpqr.hpp"
+TEST_CASE("zipf: quantile search guards and representability") {
+  CHECK(cppunivariate::distributions::qzipf(.5,2147483647.,0)==1073741824.);
+}

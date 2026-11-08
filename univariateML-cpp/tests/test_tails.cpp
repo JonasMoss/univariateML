@@ -78,3 +78,36 @@ TEST_CASE("tail helpers: portable product and affine range guards") {
   CHECK(cppunivariate::special::scaled_difference(cppunivariate::special::kPosInf,1e308,1e-308) == cppunivariate::special::kPosInf);
   CHECK(cppunivariate::special::scaled_difference(3,1,2) == 1);
 }
+
+TEST_CASE("discrete inversion: failed comparisons, overflowing widths and stagnation") {
+  const auto target=cppunivariate::special::discrete_log_tails(.5,true,false);
+  for(int failed_at : {0,1,2,3,4,5}) {
+    int calls=0;
+    const double q=cppunivariate::special::discrete_quantile(target,0,16,[&](double x) {
+      if(calls++==failed_at) return cppunivariate::special::LogTails{NAN,NAN,false};
+      return cppunivariate::special::tails_from_log(x<7 ? -2.0 : -.1,true);
+    });
+    CHECK(std::isnan(q));
+    CHECK(calls<=failed_at+1);
+  }
+  int calls=0;
+  const double largest=std::numeric_limits<double>::max();
+  CHECK(cppunivariate::special::discrete_bisect(-largest,largest,[&](double x) {
+    ++calls;return int(x>=7);
+  })==7);
+  CHECK(calls<=std::numeric_limits<double>::max_exponent+5);
+  CHECK(std::isnan(cppunivariate::special::discrete_bisect(1e308,largest,
+      [](double x){return int(x>=1.5e308);})));
+  calls=0;
+  CHECK(std::isnan(cppunivariate::special::discrete_search(0,INFINITY,[&](double) {
+    ++calls;return 0;
+  })));
+  CHECK(calls<=std::numeric_limits<double>::max_exponent+2);
+  CHECK(std::isnan(cppunivariate::special::discrete_signed_search(0,1,
+      [](double){return -1;})));
+}
+
+TEST_CASE("gamma ratio recurrence: cancellation cannot stall a discrete CDF") {
+  CHECK(std::isnan(cppunivariate::special::log_gamma_ratio(300,1,1e308)));
+  CHECK(std::isfinite(cppunivariate::special::log_gamma_ratio(1,.5,1)));
+}

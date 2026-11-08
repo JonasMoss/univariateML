@@ -195,3 +195,10 @@ TEST_CASE("CMP geometric tie tolerance and narrow high-count data") {
     CHECK(m.variance < .8);
     CHECK(std::isfinite(f.logLik));
 }
+
+TEST_CASE("CMP residual recurrence: unit spacing must be representable") {
+  const CPPUNIV_EXTENDED_REAL c=std::ldexp(static_cast<CPPUNIV_EXTENDED_REAL>(1),
+      std::numeric_limits<CPPUNIV_EXTENDED_REAL>::digits);
+  const CPPUNIV_EXTENDED_REAL k=std::nextafter(c,std::numeric_limits<CPPUNIV_EXTENDED_REAL>::infinity());
+  CHECK(std::isfinite(cppunivariate::cmp_detail::residual(k,c,std::log(c+1))));
+}

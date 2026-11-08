@@ -29,13 +29,25 @@ ml_fixed_model <- function(name, supplied, call, frozen = FALSE, x = numeric()) 
     if (inherits(old, "error")) stop(old)
   }
   tryCatch(ml_build_fixed_model(name, supplied, call, FALSE, x), error = function(e) {
+    if (inherits(e, "univariateML_evaluation_error") && identical(e$stage, "likelihood")) stop(e)
     old <- diagnose()
-    if (inherits(old, "error")) stop(old)
+    if (inherits(old, "error")) {
+      if (inherits(e, "univariateML_evaluation_error") &&
+          inherits(old, "univariateML_numerical")) {
+        old$message <- paste(conditionMessage(e), conditionMessage(old), sep = "; ")
+        class(old) <- unique(c("univariateML_evaluation_error", class(old)))
+      }
+      stop(old)
+    }
     stop(e)
   })
 }
 
 ml_build_fixed_model <- function(name, supplied, call, frozen, x) {
+  evaluation_error <- function(detail, stage = "median") {
+    stop(structure(list(message = paste0("`", name, "`: ", detail), call = NULL, stage = stage),
+      class = c("univariateML_evaluation_error", "error", "condition")))
+  }
   meta <- univariateML_metadata[[name]]
   if (frozen && length(supplied) &&
       (is.null(names(supplied)) || any(!nzchar(names(supplied)))))
@@ -66,7 +78,8 @@ ml_build_fixed_model <- function(name, supplied, call, frozen, x) {
   # A median evaluation also checks joint parameter constraints and lattice
   # parameters in the reference evaluator, without imposing fit_domain.
   q <- suppressWarnings(qml(0.5, obj))
-  if (length(q) != 1L || is.na(q)) stop("`", name, "`: invalid held coefficients", call. = FALSE)
+  if (length(q) != 1L || !is.finite(q))
+    evaluation_error("median quantile evaluation failed: invalid held coefficients or numerical failure")
   if (frozen) {
     attr(obj, "frozen") <- TRUE
   } else {
@@ -75,7 +88,10 @@ ml_build_fixed_model <- function(name, supplied, call, frozen, x) {
     ld <- do.call(density, c(list(x), values, list(log = TRUE)))
     if (anyNA(ld) || any(ld == -Inf))
       stop("`", name, "`: observations incompatible with held coefficients", call. = FALSE)
-    attr(obj, "logLik") <- sum(ld)
+    ll <- sum(ld)
+    if (!is.finite(ll))
+      evaluation_error("nonfinite log likelihood for held coefficients", "likelihood")
+    attr(obj, "logLik") <- ll
   }
   obj
 }

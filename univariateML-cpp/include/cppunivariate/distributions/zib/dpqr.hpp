@@ -29,13 +29,15 @@ inline double pzib(double q,double size,double prob,double pi,bool lower_tail=tr
 inline double qzib(double p,double size,double prob,double pi,bool lower_tail=true,bool log_p=false) {
   if(!zib_valid(size,prob)||!(pi>=0 && pi<=1)||std::isnan(p)||
       (log_p?p>0:(p<0||p>1)))return std::numeric_limits<double>::quiet_NaN();
-  const double ls=lower_tail ? (log_p?std::log(-std::expm1(p)):std::log1p(-p)) : (log_p?p:std::log(p));
+  const double ls=special::discrete_log_tails(p,lower_tail,log_p).upper;
   if(ls==0)return 0;
   if(std::isinf(ls))return size;
   if(size==0||prob==0||pi==1)return 0;
-  double lo=-1,hi=size;
-  while(hi-lo>1) {const double mid=std::floor((lo+hi)/2);if(pzib(mid,size,prob,pi,false,true)<=ls)hi=mid;else lo=mid;}
-  return hi;
+  if(prob==1 && pi==0)return size;
+  return special::discrete_search(0,size,[&](double x) {
+    const double f=pzib(x,size,prob,pi,false,true);
+    return std::isnan(f) ? -1 : int(f<=ls);
+  });
 }
 template <typename Rng> inline double rzib(Rng &rng,double size,double prob,double pi) {
   if (size==0 || prob==0 || pi==1 || (pi==0 && prob==1))

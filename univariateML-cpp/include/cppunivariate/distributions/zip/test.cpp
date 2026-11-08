@@ -203,3 +203,8 @@ TEST_CASE("zip: held tiny rate preserves the all-zero inflation maximum") {
   CHECK(r.pi==1);
   CHECK(r.logLik==0);
 }
+
+#include "cppunivariate/distributions/zip/dpqr.hpp"
+TEST_CASE("zip: quantile search guards and representability") {
+  CHECK(std::isnan(cppunivariate::distributions::qzip(.5,1e308,.1,true,false)));
+}

@@ -53,6 +53,11 @@ inline double qdnorm(double p, double mean, double sd, bool lower_tail = true, b
     if (lower_tail ? at>=lp : at<=lp) q-=1;
     else break;
   }
+  const double at=pdnorm(q,mean,sd,lower_tail,true);
+  const double before=pdnorm(q-1,mean,sd,lower_tail,true);
+  if (q-1==q || std::isnan(at) || std::isnan(before) ||
+      !(lower_tail ? at>=lp && before<lp : at<=lp && before>lp))
+    return std::numeric_limits<double>::quiet_NaN();
   return q;
 }
 template <typename Rng> inline double rdnorm(Rng &rng, double mean, double sd) {

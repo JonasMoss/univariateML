@@ -216,3 +216,9 @@ TEST_CASE("binom: structured stop payloads") {
   CHECK(r.stop_detail.limit_coef[0]==2);
   CHECK(r.stop_detail.limit_loglik==doctest::Approx(6*std::log(2.)-6-std::lgamma(7.)));
 }
+
+#include "cppunivariate/distributions/binom/dpqr.hpp"
+TEST_CASE("binom: quantile search guards and representability") {
+  CHECK(std::isnan(cppunivariate::special::binomial_quantile(.5,1e308,.9,true)));
+  CHECK(std::isnan(cppunivariate::distributions::qbinom(.5,1e308,.9,true,false)));
+}

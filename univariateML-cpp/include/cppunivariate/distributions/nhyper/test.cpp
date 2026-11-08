@@ -214,3 +214,8 @@ TEST_CASE("nhyper: explicit growing-urn work preflight has an empty budget paylo
   CHECK(r.stop_detail.candidates.empty());
   CHECK(r.stop_detail.loglik_upper==INFINITY);
 }
+
+#include "cppunivariate/distributions/nhyper/dpqr.hpp"
+TEST_CASE("nhyper: quantile search guards and representability") {
+  CHECK(cppunivariate::distributions::qnhyper(.5,9007199254740991.,9007199254740991.,9007199254740990.,true,false)==9007199254740990.);
+}

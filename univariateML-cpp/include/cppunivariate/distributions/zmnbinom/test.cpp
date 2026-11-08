@@ -145,3 +145,8 @@ TEST_CASE("zmnbinom: certificate details survive default and held zero share") {
  CHECK_FALSE(fail.budget_exhausted);CHECK(std::isnan(fail.size));
  CHECK(fail.stop_detail.loglik_upper<0);
 }
+
+#include "cppunivariate/distributions/zmnbinom/dpqr.hpp"
+TEST_CASE("zmnbinom: quantile search guards and representability") {
+  CHECK(std::isnan(cppunivariate::distributions::qzmnbinom(.5,1e308,.1,.1)));
+}

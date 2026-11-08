@@ -449,3 +449,9 @@ TEST_CASE("bbinom: final-cell exhaustion retains finite and face witnesses") {
   CHECK(stopped.stop_detail.limit_model==cppunivariate::StopModel::Binom);
   CHECK(stopped.stop_detail.candidates.size()>=2);
 }
+
+#include "cppunivariate/distributions/bbinom/dpqr.hpp"
+TEST_CASE("bbinom: quantile search guards and representability") {
+  CHECK(cppunivariate::distributions::qbbinom(.5,10,1e308,1e308,true,false)==5);
+  CHECK(cppunivariate::distributions::qbbinom(.5,100,2,2,true,false)==50);
+}

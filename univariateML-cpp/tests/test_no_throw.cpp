@@ -64,3 +64,13 @@ static_assert(std::is_same<cppunivariate::ExtendedReal,double>::value, "Boost se
 static_assert(std::is_same<CPPUNIV_EXTENDED_REAL,long double>::value, "native seam");
 static_assert(std::is_same<cppunivariate::ExtendedReal,long double>::value, "Boost seam agrees");
 #endif
+
+TEST_CASE("discrete backend quantiles: CDF failures never enter Boost rounding") {
+  CHECK(std::isnan(cppunivariate::special::discrete_cdf_quantile(.5,10,true,
+      [](double,bool){return NAN;})));
+  CHECK(cppunivariate::special::binomial_quantile(.5,10,.5,true)==5);
+  CHECK(cppunivariate::special::poisson_quantile(.5,1,true)==1);
+  CHECK(cppunivariate::special::poisson_quantile(.5,0,true)==0);
+  CHECK(cppunivariate::special::negative_binomial_quantile(.5,0,.5,true)==0);
+  CHECK(cppunivariate::special::negative_binomial_quantile(.5,1,.5,true)==0);
+}

@@ -1,0 +1,43 @@
+{
+  "report": "dev/research/evaluations/2026-11-08-qzib-hang-report.md",
+  "report_sha256": "4838387ecd3c77dd4c9b94eb99d1436ba900704ccfadba1a2c271e6ab49e1219",
+  "report_destinations": 16,
+  "report_broken": [],
+  "repository_scan_exit": 1,
+  "repository_reported_destinations": [
+    [
+      "dev/research/evaluations/2026-10-31-inference-6-report.md",
+      "../../../build/scratch/inference-6/desktop.png"
+    ],
+    [
+      "dev/research/evaluations/2026-10-31-inference-6-report.md",
+      "../../../build/scratch/inference-6/mobile-evidence.png"
+    ],
+    [
+      "dev/research/evaluations/2026-11-03-boundary-lit-report.md",
+      "../boundary-points.pdf"
+    ],
+    [
+      "univariateML-cpp/include/cppunivariate/distributions/nbinom/README.md",
+      "1+m/r"
+    ],
+    [
+      "univariateML-cpp/notes/inference.md",
+      "/inference/"
+    ],
+    [
+      "univariateML-cpp/notes/inference.md",
+      "/inference/"
+    ]
+  ],
+  "affected_sources_identical_to_HEAD": {
+    "dev/research/evaluations/2026-10-31-inference-6-report.md": true,
+    "dev/research/evaluations/2026-11-03-boundary-lit-report.md": true,
+    "univariateML-cpp/include/cppunivariate/distributions/nbinom/README.md": true,
+    "univariateML-cpp/notes/inference.md": true
+  },
+  "artifact_viewer": {
+    "status": 403,
+    "reason": "Worktree absent from readable roots"
+  }
+}

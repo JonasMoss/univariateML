@@ -169,9 +169,14 @@ inline LogTails quantile_log_tails(double p, bool lower_tail, bool log_p) {
 // subtraction and retaining the limiting power law at DBL_MAX.
 inline double log_gamma_ratio(double x, double u, double v) {
   double z=x+v, h=u-v, correction=0;
-  while(z<16.0 || z+h<16.0) {
+  if (!(z>0) || !(x+u>0) || !std::isfinite(z) || !std::isfinite(h)) return kNaN;
+  // At most 16 unit shifts put positive arguments in the Stirling range.
+  // Cancellation in z+h can otherwise leave a huge z stuck below that test.
+  for (int i=0; (z<16.0 || z+h<16.0) && i<17; ++i) {
+    if (z+1==z || !(z+h>0)) return kNaN;
     correction+=std::log(z)-std::log(z+h); z+=1.0;
   }
+  if (z<16.0 || z+h<16.0) return kNaN;
   const auto remainder=[](double y) {
     const double t=1.0/y, t2=t*t;
     return t*(1.0/12-t2*(1.0/360-t2*(1.0/1260-t2*(1.0/1680-t2*(1.0/1188-t2*691.0/360360)))));
@@ -217,8 +222,80 @@ inline LogTails discrete_log_tails(double p,bool lower,bool log) {
   }
   return t;
 }
-// Integer inversion uses the accurate smaller log tail throughout. Stops at
-// adjacent representable values once integers cease to be representable.
+// A reached predicate returns -1 on evaluation failure, 0 below the jump,
+// and 1 at/above it. Bounds are integer-valued doubles. In exact arithmetic
+// flooring a midpoint leaves width <= ceil(width/2). The largest finite
+// binary64 bracket has width < 2^(max_exponent+1), so max_exponent+3
+// halvings suffice. Rounded stagnation cannot identify an integer quantile:
+// return NaN instead of an unchecked adjacent representable value.
+template <typename Reached>
+inline double discrete_bisect(double lo, double hi, Reached reached) {
+  if (!std::isfinite(lo) || !std::isfinite(hi) || !(lo<hi)) return kNaN;
+  if (reached(lo)!=0 || reached(hi)!=1) return kNaN;
+  for (int i=0; i<std::numeric_limits<double>::max_exponent+3; ++i) {
+    if (hi-lo<=1) return hi;
+    const double width=hi-lo;
+    const double mid=std::floor(std::isfinite(width) ? lo+width*.5 : lo*.5+hi*.5);
+    if (!(mid>lo && mid<hi)) return kNaN;
+    const int hit=reached(mid);
+    if (hit<0) return kNaN;
+    if (hit) hi=mid; else lo=mid;
+  }
+  return kNaN;
+}
+// Expand an unbounded nonnegative support at most max_exponent+1 times:
+// hi starts >= 1 and doubles, with a final clamped evaluation at DBL_MAX.
+template <typename Reached>
+inline double discrete_search(double minimum, double maximum, Reached reached) {
+  const int first=reached(minimum);
+  if (first<0) return kNaN;
+  if (first) return minimum;
+  double lo=minimum, hi=std::isfinite(maximum) ? maximum : std::max(1.0,minimum+1.0);
+  for (int i=0; i<std::numeric_limits<double>::max_exponent+1; ++i) {
+    const int hit=reached(hi);
+    if (hit<0) return kNaN;
+    if (hit) return discrete_bisect(lo,hi,reached);
+    if (std::isfinite(maximum) || hi==std::numeric_limits<double>::max()) return kNaN;
+    lo=hi;
+    hi=hi>=std::numeric_limits<double>::max()/2 ? std::numeric_limits<double>::max() : hi*2;
+  }
+  return kNaN;
+}
+// Two-sided integer support. Expansion doubles a step >= 1, at most
+// max_exponent+2 times in either direction, clamping before overflow.
+template <typename Reached>
+inline double discrete_signed_search(double centre, double step, Reached reached) {
+  if (!std::isfinite(centre) || !std::isfinite(step) || step<1) return kNaN;
+  const double largest=std::numeric_limits<double>::max();
+  double lo=std::floor(centre), hi=lo, delta=step;
+  bool bracketed=false;
+  for (int i=0; i<std::numeric_limits<double>::max_exponent+2; ++i) {
+    const int hit=reached(lo);
+    if (hit<0) return kNaN;
+    if (!hit) {bracketed=true;break;}
+    hi=lo;
+    const double next=std::floor(centre-delta);
+    const double candidate=std::isfinite(next) ? next : -largest;
+    if (!(candidate<lo)) return kNaN;
+    lo=candidate;
+    delta=delta>=largest/2 ? largest : delta*2;
+  }
+  if (!bracketed) return kNaN;
+  delta=step;bracketed=false;
+  for (int i=0; i<std::numeric_limits<double>::max_exponent+2; ++i) {
+    const int hit=reached(hi);
+    if (hit<0) return kNaN;
+    if (hit) {bracketed=true;break;}
+    lo=hi;
+    const double next=std::ceil(centre+delta);
+    const double candidate=std::isfinite(next) ? next : largest;
+    if (!(candidate>hi)) return kNaN;
+    hi=candidate;
+    delta=delta>=largest/2 ? largest : delta*2;
+  }
+  return bracketed ? discrete_bisect(lo,hi,reached) : kNaN;
+}
+// Integer inversion uses the accurate smaller log tail throughout.
 template <typename Tails>
 inline double discrete_quantile(const LogTails &target, double minimum,
                                 double maximum, Tails tails) {
@@ -226,27 +303,11 @@ inline double discrete_quantile(const LogTails &target, double minimum,
   if (target.lower==kNegInf) return minimum;
   if (target.upper==kNegInf) return maximum;
   const bool lower=target.lower < target.upper;
-  const auto below=[&](double x) {
+  return discrete_search(minimum,maximum,[&](double x) {
     const LogTails t=tails(x);
-    return lower ? t.lower<target.lower : t.upper>target.upper;
-  };
-  if (!below(minimum)) return minimum;
-  double lo=minimum, hi=std::isfinite(maximum) ? maximum : std::max(1.0,minimum+1.0);
-  while (below(hi)) {
-    lo=hi;
-    if (hi>=std::numeric_limits<double>::max()/2.0) {
-      hi=std::numeric_limits<double>::max();
-      if (below(hi)) return kPosInf;
-      break;
-    }
-    hi*=2.0;
-  }
-  while (hi-lo>1.0) {
-    const double mid=std::floor(std::isfinite(hi-lo)?lo+(hi-lo)*0.5:lo*0.5+hi*0.5);
-    if (mid==lo || mid==hi) break;
-    if (below(mid)) lo=mid; else hi=mid;
-  }
-  return hi;
+    if (!t.valid || std::isnan(t.lower) || std::isnan(t.upper)) return -1;
+    return int(lower ? t.lower>=target.lower : t.upper<=target.upper);
+  });
 }
 
 // Standard normal smaller log tail. Mills' continued fraction remains in

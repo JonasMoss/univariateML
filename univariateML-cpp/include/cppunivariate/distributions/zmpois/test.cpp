@@ -107,3 +107,8 @@ TEST_CASE("zmpois: logarithm before subnormal rounding") {
   // print(log((1-p0)*gammainc(134,0,l)/(gamma(134)*(-expm1(-l)))))
   CHECK(cppunivariate::distributions::pzmpois(133,0.2,0.3,false,true)==doctest::Approx(-740.1911143613579).epsilon(1e-10));
 }
+
+#include "cppunivariate/distributions/zmpois/dpqr.hpp"
+TEST_CASE("zmpois: quantile search guards and representability") {
+  CHECK(std::isnan(cppunivariate::distributions::qzmpois(.5,1e308,.1)));
+}

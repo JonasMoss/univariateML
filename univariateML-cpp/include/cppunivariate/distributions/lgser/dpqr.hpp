@@ -34,16 +34,19 @@ inline double qlgser(double p,double theta,bool lower_tail,bool log_p) {
 
 template <typename Rng>
 inline double rlgser(Rng &rng, double theta) {
-  // Single runif call per sample. Matches extraDistr's rng_lgser.
+  // Single runif call per sample; preserve the recurrence on ordinary inputs.
+  if (!(theta>0 && theta<1)) return special::kNaN;
   double u = rng.runif(0.0, 1.0);
   double pk = -theta / std::log(1.0 - theta);
   double k = 1.0;
-  while (u > pk) {
+  int count=0;
+  for (;u>pk && count<1000000;++count) {
+    if (!(pk>0) || !std::isfinite(pk) || k+1==k) return special::kNaN;
     u -= pk;
     pk *= theta * k / (k + 1.0);
     k += 1.0;
   }
-  return k;
+  return count==1000000 || std::isnan(u) ? special::kNaN : k;
 }
 
 } // namespace distributions

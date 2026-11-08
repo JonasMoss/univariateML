@@ -96,6 +96,15 @@ inline bool truth_close(double actual, double expected, double tolerance) {
   return std::abs(actual-expected) <= tolerance*std::max(1.0,std::abs(expected));
 }
 
+// A discrete quantile may report numerical failure once unit-spaced integers
+// cannot be represented. This does not relax successful-value accuracy or
+// permit failure at probability endpoints, ordinary counts, or continuous laws.
+inline bool truth_lattice_failure(double actual, double expected, double p,
+                                  bool log, bool discrete) {
+  const bool interior=log ? std::isfinite(p) && p<0 : p>0 && p<1;
+  return discrete && interior && std::isnan(actual) && std::abs(expected)>9007199254740992.0;
+}
+
 struct TruthFailure {
   std::size_t count = 0;
   double worst = -1;
@@ -117,6 +126,8 @@ inline void check_dpqr_truth(const std::string &id, D density, P probability,
   const auto params = truth_matrix(source,"parameters");
   const auto values = truth_matrix(source,"values");
   const auto qs = truth_matrix(source,"quantiles");
+  const std::string dossier=detail::slurp(std::string(CPPUNIV_DISTRIBUTIONS_DIR)+"/"+id+"/README.md");
+  const bool discrete=dossier.find("type: integer")!=std::string::npos;
   REQUIRE_FALSE(params.empty());
   REQUIRE_FALSE(values.empty());
   REQUIRE_FALSE(qs.empty());
@@ -180,7 +191,7 @@ inline void check_dpqr_truth(const std::string &id, D density, P probability,
     const bool bracket = row[7]!=0 ? (got==row[5] || got==row[6]) :
         (got>=row[5] && got<=row[6]);
     check(std::string(row[1]!=0?"q_lower":"q_upper")+(row[2]!=0?"_log":""),
-          point,row[3],got,expected,relative||bracket);
+          point,row[3],got,expected,relative||bracket||truth_lattice_failure(got,expected,row[3],row[2]!=0,discrete));
   }
   const auto start=std::chrono::steady_clock::now();
   const auto sampler_points = truth_matrix(source,"sampler_points");

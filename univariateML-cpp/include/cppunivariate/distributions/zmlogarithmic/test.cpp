@@ -91,3 +91,8 @@ TEST_CASE("zmlogarithmic: P2 held zero share and incompatible positive component
  CHECK(r.prob==0.4);CHECK(r.p0==.7);
  CHECK(r.logLik==doctest::Approx(2*std::log(.7)));
 }
+
+#include "cppunivariate/distributions/zmlogarithmic/dpqr.hpp"
+TEST_CASE("zmlogarithmic: failed integer inversion reports NaN") {
+  CHECK(std::isnan(cppunivariate::distributions::qzmlogarithmic(.5,std::nextafter(1.,0.),.1)));
+}

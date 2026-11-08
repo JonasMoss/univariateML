@@ -75,6 +75,14 @@ struct Table {
   }
   void cumulative() {
     lc.resize(lp.size()); uc.resize(lp.size());
+    // Do not turn a failed normalization into finite cumulative probabilities.
+    for (double value : lp) {
+      if (!(value<=0)) {
+        std::fill(lc.begin(),lc.end(),special::kNaN);
+        std::fill(uc.begin(),uc.end(),special::kNaN);
+        return;
+      }
+    }
     double below=special::kNegInf,above=special::kNegInf;
     for (std::size_t k=0;k<lp.size();++k) {
       below=logadd(below,lp[k]); lc[k]=std::min(0.0,below);
@@ -105,6 +113,7 @@ struct Table {
     while (b-a>1) {
       const int mid=a+(b-a)/2;
       const double f=cdf(mid,lower,log);
+    if (std::isnan(f)) return std::numeric_limits<double>::quiet_NaN();
       if (lower ? f>=p : f<=p) b=mid; else a=mid;
     }
     return b;

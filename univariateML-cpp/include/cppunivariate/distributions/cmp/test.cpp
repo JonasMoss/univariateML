@@ -175,3 +175,11 @@ TEST_CASE("CMP consumable ledger shares actual 64-bit work and separates numeric
   CHECK(stopped.stop_detail.loglik_upper==INFINITY);
   CHECK(cppunivariate::solver_budget(2147483647)==100000);
 }
+
+#include "cppunivariate/distributions/cmp/dpqr.hpp"
+TEST_CASE("cmp: quantile search guards and representability") {
+  const double q=cppunivariate::distributions::qcmp(.5,std::nextafter(1.,0.),0);
+  REQUIRE(std::isfinite(q));
+  CHECK(cppunivariate::distributions::pcmp(q,std::nextafter(1.,0.),0)>=.5);
+  CHECK(cppunivariate::distributions::pcmp(q-1,std::nextafter(1.,0.),0)<.5);
+}

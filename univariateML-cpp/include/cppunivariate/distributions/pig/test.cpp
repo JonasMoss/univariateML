@@ -474,3 +474,8 @@ TEST_CASE("pig: analytic covariance derivatives and subset projection") {
   CHECK(cppunivariate::join_family_inference({x.data(),x.size()},"pig",bad,1).status==cppunivariate::InferenceStatus::BoundaryOrLimit);
   CHECK(cppunivariate::join_family_inference({x.data(),x.size()},"pig",theta,1u<<2).status==cppunivariate::InferenceStatus::InvalidSubset);
 }
+
+#include "cppunivariate/distributions/pig/dpqr.hpp"
+TEST_CASE("pig: failed integer inversion reports NaN") {
+  CHECK(std::isnan(cppunivariate::distributions::qpig(.5,1e8,1e8,true,false)));
+}

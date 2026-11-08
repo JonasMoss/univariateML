@@ -112,3 +112,8 @@ TEST_CASE("geom: TASK-132 invalid counts and empty input have statuses") {
   CHECK(cppunivariate::geom_mle(cppunivariate::ispan{negative.data(),negative.size()}).status == cppunivariate::GeomStatus::InvalidInput);
   CHECK(cppunivariate::geom_mle(cppunivariate::ispan{zero.data(),zero.size()}).status == cppunivariate::GeomStatus::Ok);
 }
+
+#include "cppunivariate/distributions/geom/dpqr.hpp"
+TEST_CASE("geom: failed integer inversion reports NaN") {
+  CHECK(std::isnan(cppunivariate::distributions::qgeom(.5,std::numeric_limits<double>::denorm_min(),true,false)));
+}

@@ -227,3 +227,9 @@ TEST_CASE("nbinom certificate: cancellation-free near-Poisson root") {
   REQUIRE(r.status==cppunivariate::NbinomStatus::Ok);
   CHECK(r.size>1000);
 }
+
+#include "cppunivariate/distributions/nbinom/dpqr.hpp"
+TEST_CASE("nbinom: quantile search guards and representability") {
+  CHECK(std::isnan(cppunivariate::special::negative_binomial_quantile(.5,1e308,.1,true)));
+  CHECK(std::isnan(cppunivariate::distributions::qnbinom(.5,1e308,.1,true,false)));
+}

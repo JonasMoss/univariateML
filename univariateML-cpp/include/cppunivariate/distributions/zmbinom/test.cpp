@@ -143,3 +143,8 @@ TEST_CASE("zmbinom: proved faces transport every candidate and global bound") {
     for(const auto& c:f.stop_detail.candidates)CHECK(c.coef.back()==f.p0);
   }
 }
+
+#include "cppunivariate/distributions/zmbinom/dpqr.hpp"
+TEST_CASE("zmbinom: quantile search guards and representability") {
+  CHECK(std::isnan(cppunivariate::distributions::qzmbinom(.5,1e308,.9,.1)));
+}

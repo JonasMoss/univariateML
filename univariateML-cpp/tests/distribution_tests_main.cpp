@@ -31,3 +31,13 @@ TEST_CASE("truth table loader accepts range errors and rejects trailing junk") {
   CHECK(mltest::truth_matrix(R"({"cells":[[1abc]]})", "cells").empty());
   CHECK(mltest::truth_matrix("{\"cells\":[[\"1", "cells").empty());
 }
+
+TEST_CASE("truth checks: numerical stops are scoped to unrepresentable integer quantiles") {
+  CHECK(mltest::truth_lattice_failure(NAN,1e30,.5,false,true));
+  CHECK(mltest::truth_lattice_failure(NAN,INFINITY,-800,true,true));
+  CHECK_FALSE(mltest::truth_lattice_failure(NAN,1e30,.5,false,false));
+  CHECK_FALSE(mltest::truth_lattice_failure(NAN,10,.5,false,true));
+  CHECK_FALSE(mltest::truth_lattice_failure(NAN,INFINITY,1,false,true));
+  CHECK_FALSE(mltest::truth_lattice_failure(NAN,INFINITY,0,true,true));
+  CHECK_FALSE(mltest::truth_lattice_failure(1e40,1e30,.5,false,true));
+}

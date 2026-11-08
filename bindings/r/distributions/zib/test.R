@@ -286,8 +286,7 @@ test_that("zib retains subnormal zero masses and resolves the held-inflation roo
 })
 
 test_that("zib native binding reports finite log-likelihood overflow numerically", {
-  # The all-held public constructor checks qzib first; its huge-size loop
-  # needs a separate settled-DPQR repair, recorded in the job report.
+  # Exercise the adapter independently of the public median-evaluation guard.
   e <- getFromNamespace("mlzib_","univariateML")(0L,size=1e308,prob=.9,pi=0)
   expect_s3_class(e,"univariateML_numerical")
   expect_identical(e$kind,"numerical")
@@ -298,4 +297,22 @@ test_that("zib preserves the unique all-zero inflation even for a tiny held prob
   f <- mlzib(0,size=1,prob=1e-300)
   expect_equal(unname(f["pi"]),1)
   expect_equal(as.numeric(attr(f,"logLik")),0)
+})
+
+test_that("zib fixed models surface failed median evaluations", {
+  expect_error(mlzib(0,size=1e308,prob=.9,pi=0),
+               "median quantile evaluation failed.*numerical failure",
+               class="univariateML_evaluation_error")
+  expect_error(mlzib(size=1e308,prob=.9,pi=0),
+               "median quantile evaluation failed.*numerical failure",
+               class="univariateML_evaluation_error")
+  expect_equal(as.numeric(qml(.5,mlzib(size=1e308,prob=1,pi=0))),1e308)
+})
+
+
+test_that("zib log half respects the exact side of a two-point jump", {
+  model <- mlzib(size=10,prob=1,pi=.5)
+  expect_equal(qml(.5,model),0)
+  expect_equal(qml(log(.5),model,log.p=TRUE),10)
+  expect_equal(qml(log(.5),model,lower.tail=FALSE,log.p=TRUE),0)
 })

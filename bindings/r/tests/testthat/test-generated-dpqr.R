@@ -60,29 +60,52 @@ test_that("generated d/p/q/r agree with independent truth tables", {
                            quantiles[, 3] == log_input, , drop = FALSE]
           if (!nrow(q)) next
           q <- q[pick(nrow(q), if (tier_at_least("dev")) 3L else 1L), , drop = FALSE]
-          got <- do.call(fun[[3]], c(list(q[, 4]), theta, list(lower.tail = lower, log.p = log_input)))
-          expect_equal(qml(q[, 4], fit, lower.tail = lower, log.p = log_input), got,
+          got <- suppressWarnings(do.call(fun[[3]], c(list(q[, 4]), theta, list(lower.tail = lower, log.p = log_input))))
+          expect_equal(suppressWarnings(qml(q[, 4], fit, lower.tail = lower, log.p = log_input)), got,
                        info = paste(info, "quantile dispatch", lower, log_input))
           expected <- q[, 5]
           good <- got == expected | (is.finite(got) & is.finite(expected) &
             abs(got - expected) <= pmax(1e-9 * abs(expected), q[, 9])) |
             ifelse(q[, 8] != 0, got == q[, 6] | got == q[, 7],
                    got >= q[, 6] & got <= q[, 7])
-          expect_true(all(good), info = paste(info, "quantile", lower, log_input))
+          # NaN is an explicit numerical stop when unit-spaced integer
+          # inversion is unrepresentable. Endpoints and ordinary counts still
+          # require the oracle value; finite answers keep the same tolerance.
+          discrete <- metadata[[paste0("ml",id)]]$support$type == "Z"
+          interior <- if (log_input) is.finite(q[,4]) & q[,4] < 0 else q[,4] > 0 & q[,4] < 1
+          stopped <- discrete & interior & is.nan(got) & abs(expected) > 2^53
+          good[is.na(good)] <- FALSE
+          expect_true(all(good | stopped), info = paste(info, "quantile", lower, log_input))
         }
       }
-      # Sample size is positional; coefficients follow the truth table names.
+      # These two inverse samplers consume exactly one uniform per draw.
+      # Replay it to distinguish a permitted unrepresentable rank from an
+      # ordinary-count sampler failure; finite draws must also match q exactly.
+      inverse_rng <- id %in% c("zeta", "yulesimon")
+      draw_once <- function() {
+        if (inverse_rng) suppressWarnings(do.call(fun[[4]], c(list(32L), theta)))
+        else do.call(fun[[4]], c(list(32L), theta))
+      }
       set.seed(20261029 + point)
-      draws <- do.call(fun[[4]], c(list(32L), theta))
+      draws <- draw_once()
       set.seed(20261029 + point)
-      expect_identical(do.call(fun[[4]], c(list(32L), theta)), draws, info = info)
+      expect_identical(draw_once(), draws, info = info)
       expect_length(draws, 32L)
-      # Check the sampler against the core quantile support endpoints.
+      stopped <- rep(FALSE, length(draws))
+      if (inverse_rng) {
+        set.seed(20261029 + point)
+        uniforms <- stats::runif(length(draws))
+        replay <- suppressWarnings(do.call(fun[[3]], c(list(uniforms), theta)))
+        expect_identical(draws, replay, info = paste(info, "inverse RNG replay"))
+        edge <- do.call(fun[[2]], c(list(2^53), theta))
+        stopped <- is.nan(draws) & uniforms > edge
+      }
       lo <- do.call(fun[[3]], c(list(0), theta))
       hi <- do.call(fun[[3]], c(list(1), theta))
-      expect_true(all(!is.na(draws) & draws >= lo & draws <= hi), info = paste(info, "sample support"))
+      expect_true(all((!is.na(draws) & draws >= lo & draws <= hi) | stopped),
+                  info = paste(info, "sample support or explicit unrepresentable-rank stop"))
       if (identical(metadata[[paste0("ml", id)]]$support$type, "Z"))
-        expect_true(all(draws == floor(draws)), info = info)
+        expect_true(all((!is.na(draws) & draws == floor(draws)) | stopped), info = info)
     }
   }
   skip_if(checked == 0L, "generated-family truth tables absent")

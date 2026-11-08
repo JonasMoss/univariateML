@@ -74,13 +74,10 @@ inline double qzipf(double p,double N,double s,bool lower_tail=true,bool log_p=f
       (log_p ? p>0 : (p<0 || p>1))) return special::kNaN;
   if (p==(log_p ? special::kNegInf : 0)) return lower_tail ? 1 : N;
   if (p==(log_p ? 0 : 1)) return lower_tail ? N : 1;
-  double lo=0,hi=N;
-  while (hi-lo>1) {
-    const double mid=std::floor(lo+(hi-lo)/2);
-    const double f=pzipf(mid,N,s,lower_tail,log_p);
-    if (lower_tail ? f>=p : f<=p) hi=mid; else lo=mid;
-  }
-  return hi;
+  return special::discrete_search(1,N,[&](double k) {
+    const double f=pzipf(k,N,s,lower_tail,log_p);
+    return std::isnan(f) ? -1 : int(lower_tail ? f>=p : f<=p);
+  });
 }
 inline std::vector<double> zipf_cdf(int N,double s) {
   std::vector<double> out(static_cast<std::size_t>(N));

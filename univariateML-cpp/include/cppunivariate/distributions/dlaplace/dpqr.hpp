@@ -1,4 +1,5 @@
 #pragma once
+#include "../../special/tails.hpp"
 #include <cmath>
 #include <limits>
 namespace cppunivariate { namespace distributions {
@@ -16,11 +17,10 @@ inline double qdlaplace(double p,double location,double scale,bool lower_tail=tr
  double lp=log_p?p:std::log(p);
  if(std::isnan(lp)||lp>0||(!log_p&&p<0)||!(scale>0&&scale<1)||!std::isfinite(location)||location!=std::floor(location))return std::numeric_limits<double>::quiet_NaN();
  if(lp==-INFINITY)return lower_tail?-INFINITY:INFINITY;if(lp==0)return lower_tail?INFINITY:-INFINITY;
- auto reached=[&](double q){double v=pdlaplace(q,location,scale,lower_tail,true);return lower_tail?v>=lp:v<=lp;};
- double a=location-1,b=location,step=1;
- while(reached(a)){b=a;step*=2;a=location-step;if(step>9e15)return -INFINITY;}
- step=1;while(!reached(b)){a=b;step*=2;b=location+step;if(step>9e15)return INFINITY;}
- while(b-a>1){double m=std::floor(a+(b-a)/2);if(reached(m))b=m;else a=m;}return b;
+ return special::discrete_signed_search(location,1,[&](double q) {
+   const double v=pdlaplace(q,location,scale,lower_tail,true);
+   return std::isnan(v) ? -1 : int(lower_tail ? v>=lp : v<=lp);
+ });
 }
 template<typename Rng> inline double rdlaplace(Rng &rng,double location,double scale){return qdlaplace(rng.runif(0,1),location,scale);}
 } }

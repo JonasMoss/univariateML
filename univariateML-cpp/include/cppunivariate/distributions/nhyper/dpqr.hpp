@@ -62,6 +62,7 @@ inline double qnhyper(double p, double m, double N, double r, bool lower_tail, b
   while (lo < hi) {
     const double mid = lo + std::floor((hi-lo)/2);
     const double v = pnhyper(mid,m,N,r,lower_tail,true);
+    if (std::isnan(v)) return std::numeric_limits<double>::quiet_NaN();
     if (lower_tail ? v >= lp - 1000*DBL_EPSILON : v <= lp + 1000*DBL_EPSILON) hi = mid;
     else lo = mid+1;
   }

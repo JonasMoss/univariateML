@@ -410,3 +410,18 @@ TEST_CASE("zib: a rounded base zero mass does not hide the unique all-zero infla
   CHECK(f.pi==1);
   CHECK(f.logLik==0);
 }
+
+#include "cppunivariate/distributions/zib/dpqr.hpp"
+TEST_CASE("zib: quantile search guards and representability") {
+  CHECK(std::isnan(cppunivariate::distributions::qzib(.5,1e308,.9,0)));
+  CHECK(cppunivariate::distributions::qzib(.5,1e308,1,0)==1e308);
+  CHECK(cppunivariate::distributions::qzib(.5,1e308,.9,1)==0);
+}
+
+TEST_CASE("zib: log half stays on the exact side of a two-point jump") {
+  // The binary64 value of -log(2) is above the exact logarithm, so its
+  // exponential is strictly greater than 1/2. All positive mass is at 10.
+  CHECK(cppunivariate::distributions::qzib(.5,10,1,.5)==0);
+  CHECK(cppunivariate::distributions::qzib(-0.69314718055994530942,10,1,.5,true,true)==10);
+  CHECK(cppunivariate::distributions::qzib(-0.69314718055994530942,10,1,.5,false,true)==0);
+}

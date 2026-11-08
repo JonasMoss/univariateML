@@ -270,3 +270,8 @@ TEST_CASE("ztbinom: signed moment enumeration and representation refusals retain
   CHECK_FALSE(std::isfinite(cppunivariate::binomial_certificate_detail::signed_cutoff({x.data(),x.size()},0,1e100,1,huge,budget)));
   CHECK_FALSE(budget);CHECK(huge.numerical);
 }
+
+#include "cppunivariate/distributions/ztbinom/dpqr.hpp"
+TEST_CASE("ztbinom: quantile search guards and representability") {
+  CHECK(std::isnan(cppunivariate::distributions::qztbinom(.5,1e308,.9)));
+}

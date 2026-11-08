@@ -1,0 +1,4 @@
+ztbinom kind=limit model=ztpois upper=-21.393 candidates=2 error=The maximum likelihood estimator escapes to infinite size. Use `mlztpois`.
+zmbinom kind=limit model=zmpois upper=-26.1739 candidates=2 error=The maximum likelihood estimator escapes to infinite size. Use `mlzmpois`.
+zib kind=limit model=zip upper=-35.1904 candidates=2 error=The maximum likelihood estimator escapes to infinite size. Use `mlzip`.
+tbinom kind=limit model=tpois upper=-3.30983 candidates=2 error=The maximum likelihood estimator does not exist: with both `prob` and `size` free, the global likelihood supremum lies at the truncated Poisson distribution as `size` grows. Use `mltpois(x, a = 0, b = 3)` instead.
