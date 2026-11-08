@@ -3,6 +3,7 @@
 #pragma once
 #include "inference.hpp"
 #include "../special/special.hpp"
+#include "../special/skewed_densities.hpp"
 namespace cppunivariate { namespace inference_join_detail {
 // Four is the largest parameter count among these adapters. Hessians are
 // derivatives of log density, not information, until accumulation below.
@@ -52,21 +53,44 @@ inline Jet log1p_ratio(const Jet& t) {
   for(int k=13;k>=0;--k)a=Jet((k%2?-1.:1.)/(k+1))+t*a;
   return a;
 }
+// Large-shape gamma correction evaluated as a jet in reciprocal nu.
+// Its differentiated remainder is bounded by differentiating the same
+// signed Laplace remainder as the scalar series.
+inline Jet half_gamma_correction(const Jet& nu) {
+  const Jet t=reciprocal(nu),t2=t*t;
+  return t*(-.25+t2*(1./24+t2*(-1./20+t2*(17./112-t2*(31./36)))));
+}
+inline Jet std_constant(const Jet& nu) {
+  if(nu.v>=128)
+    return -.5*std::log(2*cppunivariate::pi)-.5*log1p(Jet(-2)/nu)+half_gamma_correction(nu);
+  Jet a=lgamma((nu+1)/2)-lgamma(nu/2)-.5*log((nu-2)*cppunivariate::pi);
+  a.v=dens::log_dstd_unit_const(nu.v);
+  return a;
+}
+inline Jet std_moment(const Jet& nu,const Jet& constant) {
+  if(nu.v>=129)
+    return std::sqrt(2/cppunivariate::pi)*sqrt(1-1/(nu-1))*exp(Jet(0)-half_gamma_correction(nu-1));
+  Jet a=exp(constant)*2*(nu-2)/(nu-1);
+  a.v=dens::std_abs_moment(nu.v);
+  return a;
+}
 inline Jet density(double x,const std::string& f,const std::array<double,inference_max_parameters>& v) {
   std::array<Jet,4> p{};for(std::size_t i=0;i<4;++i)p[i]=variable(v[i],i);
   const double pi=3.14159265358979323846;
   if(f=="snorm" || f=="sstd") {
     const Jet xi=p[f=="snorm"?2:3], nu=p[2];
     const Jet constant=f=="snorm" ? Jet(-.5*std::log(2*pi)) :
-      lgamma((nu+1)/2)-lgamma(nu/2)-.5*log((nu-2)*pi);
-    const Jet moment=f=="snorm" ? Jet(std::sqrt(2/pi)) : exp(constant)*2*(nu-2)/(nu-1);
+      std_constant(nu);
+    const Jet moment=f=="snorm" ? Jet(std::sqrt(2/pi)) : std_moment(nu,constant);
     const Jet m=moment*(xi-1/xi);
     const Jet c=sqrt((1-moment*moment)*(xi*xi+1/(xi*xi))+2*moment*moment-1);
     const Jet z=c*(x-p[0])/p[1]+m;
     // At z=0 choose the right-hand continuation. The score is continuous;
     // the Hessian need not be. This null-set convention is not an average.
     const Jet q=z.v<0 ? z*xi : z/xi;
-    const Jet base=f=="snorm" ? constant-q*q/2 : constant-(nu+1)*log1p(q*q/(nu-2))/2;
+    const Jet base=f=="snorm" ? constant-q*q/2 : nu.v>=128
+      ? constant-.5*q*q*(1+3/(nu-2))*log1p_ratio(q*q/(nu-2))
+      : constant-(nu+1)*log1p(q*q/(nu-2))/2;
     return log(c)-log(p[1])+std::log(2.)-log(xi+1/xi)+base;
   }
   if(f=="huber") {

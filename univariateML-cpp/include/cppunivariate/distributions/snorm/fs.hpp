@@ -20,12 +20,13 @@ inline double logprob(double p, bool log_p) {
 }
 // Log gamma ratios extend GED evaluation below the fitter's nu >= 1 domain.
 inline double ged_logscale(double nu) {
-  return 0.5*(std::lgamma(1.0/nu)-std::lgamma(3.0/nu));
+  return cppunivariate::dens::ged_logscale(nu);
 }
 inline double ged_logdensity(double z, double nu) {
   const double ls=ged_logscale(nu);
   const double power=std::exp(nu*(std::log(std::fabs(z))-ls));
-  return std::log(nu)-std::log(2.0)-ls-std::lgamma(1.0/nu)-power;
+  return (nu >= 1.0 ? -std::log(2.0)-ls-cppunivariate::special::lgamma1p(1.0/nu)
+      : std::log(nu)-std::log(2.0)-ls-std::lgamma(1.0/nu))-power;
 }
 inline double std_logdensity(double z, double nu) {
   const double square=z*z/(nu-2.0);
@@ -38,11 +39,11 @@ inline double skew_sigma(double moment, double xi, double &mu) {
   return std::sqrt((1.0-moment*moment)*(xi*xi+1.0/(xi*xi))+2.0*moment*moment-1.0);
 }
 inline double sstd_sigma(double nu, double xi, double &mu) {
-  const double moment=std::exp(cppunivariate::dens::log_dstd_unit_const(nu))*2.0*(nu-2.0)/(nu-1.0);
+  const double moment=cppunivariate::dens::std_abs_moment(nu);
   return skew_sigma(moment,xi,mu);
 }
 inline double sged_sigma(double nu, double xi, double &mu) {
-  const double moment=std::exp(std::lgamma(2.0/nu)-0.5*(std::lgamma(1.0/nu)+std::lgamma(3.0/nu)));
+  const double moment=cppunivariate::dens::ged_abs_moment(nu);
   return skew_sigma(moment,xi,mu);
 }
 template <typename SymmetricP>

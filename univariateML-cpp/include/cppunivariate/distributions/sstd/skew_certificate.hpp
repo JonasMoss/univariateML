@@ -65,24 +65,6 @@ inline Bounds bounds(span d,double sd,double nu,double m,double l,double h){
 inline SstdResult fit(span x,int maxit,double mean,double sd,double nu){
  SstdResult out{mean,sd,nu,NAN,NAN,0,SstdStatus::CertificateFailure};
  out.stop_detail.loglik_upper=INFINITY;
- // The density seam stabilizes the t normalizer at 128, but still forms
- // the skew moment from a cancelling lgamma difference. Until that settled
- // seam has a stable ratio, do not certify a different numerical family.
- if(nu>=128){
-  out.certificate_reason=4;
-  double ll=0,mag=0;
-  const double normal=dens::log_dstd_unit_const(nu)-std::log(sd);
-  for(double v:x){const double d=(v-mean)/sd;
-   const double term=.5*(nu+1)*std::log1p(d*d/(nu-2));
-   ll+=normal-term;mag+=std::abs(normal)+std::abs(term);
-  }
-  if(std::isfinite(ll)&&std::isfinite(mag)){
-   const double e=skew_scalar_detail::margin(mag);
-   out.stop_detail.candidates.push_back({{mean,sd,nu,1},ll-e,ll+e});
-   out.stop_detail.loglik_lower=ll-e;
-  }
-  return out;
- }
  double shift_at_two=0;dens::sstd_sigma(nu,2,shift_at_two);
  const double m=shift_at_two/1.5;
  if(!(m>0 && m<1) || !std::isfinite(m))return out;

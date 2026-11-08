@@ -1431,3 +1431,32 @@ test('large geometric quantiles preserve the supplied probability scale',()=>{
     }
   }
 });
+
+test('skew-t and skew-GED retain large-shape gamma moments',()=>{
+  for(const [nu,expected] of [[128,.36125492616400606],[1e4,.3597599586665302],
+      [1e8,.359740838771626],[1e12,.35974083685996705],
+      [1e16,.35974083685977598],[1e100,.35974083685977598],[Number.MAX_VALUE,.35974083685977598]]) {
+    const value=m.dsstd(new Float64Array([0]),[0,1,nu,2],true,false)[0];
+    assert.ok(Math.abs(value-expected)<5e-15);
+    if(nu<=1e16) {
+      const ps=new Float64Array([.1,.5,.9]);
+      const qs=m.qsstd(ps,[0,1,nu,2],true,false);
+      const back=m.psstd(qs,[0,1,nu,2],true,false);
+      for(let i=0;i<3;i++)assert.ok(Math.abs(back[i]-ps[i])<1e-11);
+    }
+    // libc++ gamma sampling has a separate overflow loop at DBL_MAX.
+    if(nu<Number.MAX_VALUE) assert.ok([...m.rsstd(10,[0,1,nu,2],31)].every(Number.isFinite));
+  }
+  for(const nu of [1e8,1e16,1e100,Number.MAX_VALUE]) {
+    assert.ok(Math.abs(m.dsged(new Float64Array([0]),[0,1,nu,2],true,false)[0]-.28867513459481288225)<5e-15);
+  }
+});
+
+test('large held skew-t shape retains a certified fit and finite skew covariance',async()=>{
+  const {default:createApi}=await import('./index.mjs');const api=await createApi();
+  const x=new Float64Array([-2,-1,0,1,3]);
+  const fit=api.sstd.fit(x,{mean:0,sd:1,nu:1e12});
+  assert.equal(fit.status,'Ok');assert.ok(fit.estimates.xi>1.2 && fit.estimates.xi<1.4);
+  const covariance=api.sstd.vcov(x,fit);
+  assert.ok(Number.isFinite(covariance.matrix[0][0]) && covariance.matrix[0][0]>0);
+});

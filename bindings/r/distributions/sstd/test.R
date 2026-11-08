@@ -503,7 +503,24 @@ test_that("sstd xi-only certificate compares the complete skew range", {
   expect_error(mlsstd(c(.5,1,1.5,2,2.5,3,10),mean=0,sd=1,nu=5),class="univariateML_limit")
 })
 
-test_that("sstd xi-only large held shape stops on unresolved moment arithmetic", {
-  expect_error(mlsstd(c(-2,-1,0,1,3),mean=0,sd=1,nu=1e12),class="univariateML_numerical")
-  expect_error(mlsstd(c(-2,-1,0,1,3),mean=0,sd=1,nu=1e12),"gamma-ratio")
+test_that("sstd xi-only large held shape uses stable moments", {
+  f <- mlsstd(c(-2,-1,0,1,3),mean=0,sd=1,nu=1e12)
+  expect_true(is.finite(coef(f)["xi"]))
+  expect_true(all(is.finite(vcov(f))))
+  expect_true(vcov(f)[1,1] > 0)
+  expect_equal(as.numeric(logLik(f)),sum(dsstd(c(-2,-1,0,1,3),0,1,1e12,coef(f)["xi"],log=TRUE)),tolerance=1e-12)
+})
+
+test_that("sstd large shapes retain the independent high-precision density", {
+  for (nu in c(128,1e4,1e8,1e12,1e16,1e100,.Machine$double.xmax)) {
+    expected <- switch(as.character(nu), "128"=.36125492616400606,
+      "10000"=.3597599586665302, "1e+08"=.359740838771626,
+      "1e+12"=.35974083685996705, .35974083685977598)
+    expect_equal(dsstd(0,0,1,nu,2),expected,tolerance=5e-15)
+    if (nu <= 1e16) {
+      q <- qsstd(c(.1,.5,.9),0,1,nu,2)
+      expect_equal(psstd(q,0,1,nu,2),c(.1,.5,.9),tolerance=1e-11)
+    }
+    expect_true(all(is.finite(rsstd(10,0,1,nu,2))))
+  }
 })

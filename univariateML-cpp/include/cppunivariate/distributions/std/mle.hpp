@@ -1,7 +1,7 @@
 // Student-t MLE on (mu, sigma, nu).
 //
 // Reparam phi = (mu, log sigma, log(nu - 2)) — keeps sigma > 0 and nu > 2
-// without bounds. Pure-libm log-density via log_dstd_unit (lgamma-based),
+// without bounds. Shared scalar log-density via log_dstd_unit (stable gamma ratio),
 // independent of the math backend.
 //
 // Density at (mu, sigma, nu): f(x) = (1/sigma) * f_unit((x-mu)/sigma; nu),

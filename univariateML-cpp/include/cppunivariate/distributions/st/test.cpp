@@ -206,3 +206,18 @@ TEST_CASE("st: reflected conditional face retains the original endpoint coordina
   CHECK(r.logLik==doctest::Approx(closed-std::log(2.)).epsilon(1e-13));
  }
 }
+
+TEST_CASE("st: large-shape half-step normalizers agree with 80-digit gamma") {
+ const double cases[][2]={
+  {128,-0.92089163833791273864067632770102506772614885708154472477273838375275944563787804},
+  {1e4,-0.91896353320463107511416306972377240262727041098808251502689215054756904085752284},
+  {1e12,-0.9189385332049227417803297364056176398613974736378},
+  {1e100,-0.9189385332046727417803297364056176398613974736378},
+  {1.7976931348623157e308,-0.9189385332046727417803297364056176398613974736378}};
+ for(const auto& c:cases) {
+  CAPTURE(c[0]);
+  CHECK(std::abs(cppunivariate::st_detail::logmode(c[0])-c[1])<4e-16);
+  CHECK(std::abs(cppunivariate::student_detail::logmode(c[0])-c[1])<4e-16);
+  CHECK(std::abs(cppunivariate::special::dt(0,c[0],true)-c[1])<4e-16);
+ }
+}

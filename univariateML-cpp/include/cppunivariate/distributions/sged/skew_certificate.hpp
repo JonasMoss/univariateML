@@ -49,8 +49,8 @@ inline SgedResult subunit(span x,int maxit,double nu) {
   std::size_t knots=1;
   for(std::size_t i=1;i<y.size();++i)if(y[i]!=y[i-1])++knots;
   const bool fundable=knots<=static_cast<std::size_t>(certificate_budget(maxit));
-  const double k=std::exp(std::lgamma(2/nu)-std::lgamma(1/nu));
-  const double v=std::exp(std::lgamma(3/nu)-std::lgamma(1/nu));
+  const double k=std::exp(special::ged_log_gamma_ratio(nu,2));
+  const double v=std::exp(special::ged_log_gamma_ratio(nu,3));
   if(!(v>k*k) || !std::isfinite(v+k))return out;
   std::vector<FitCandidate> candidates;
   SgedResult best=out;double bestll=-INFINITY;

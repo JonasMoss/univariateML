@@ -80,10 +80,66 @@ inline double psigamma(double x, int deriv) {
 
 inline double lgamma(double x) { return std::lgamma(x); }
 
+// log Gamma(1+x) without first rounding 1+x. Taylor degree 12 has
+// absolute remainder <= zeta(13)*x^13/[13*(1-x)] < 2.2e-21 on [0,1/32].
+inline double lgamma1p(double x) {
+  if (x < 0.0 || x > 1.0/32.0) return std::lgamma(1.0+x);
+  return x*(-0.57721566490153286060651209008240243104215933593992359880576723488486772677766467+x*(
+      0.82246703342411321823620758332301259460947495060339921886777911468500373520160044+x*(
+      -0.4006856343865314284665793871704833302549954307801662939307571851139460685954377+x*(
+      0.27058080842778454787900092413529197569368773797968172692074405386103015404674221+x*(
+      -0.2073855510286739852662730972914068336114161839003825623948385355807607179572563+x*(
+      0.16955717699740818995241965496515342131696958167214226030706811066738869715032632+x*(
+      -0.14404989676884611811997107854997096565712336579503410091675473379594306833105082+x*(
+      0.1255096695247430424223356548135815581573700988312312525411387753315728690718436+x*(
+      -0.11133426586956469049087252991471245116506731682165430628317740176775389482113982+x*(
+      0.1000994575127818085337145958900319017006019531564477517257788994636291465151913+x*(
+      -0.090954017145829042232609298411497266951691494159837147010831039645459459981656347+x*(
+      0.083353840546109004024886499837311639246701340704833617044420079344437668306828409))))))))))));
+}
+
+// Gamma(x)/Gamma(x+delta), without subtracting logarithms.
+inline double gamma_delta_ratio(double x, double delta) {
+  return boost::math::tgamma_delta_ratio(x, delta, NoThrowPolicy{});
+}
+
+// log Gamma(nu/2+1/2)/Gamma(nu/2) - log(nu/2)/2.
+// The alternating half-step Stirling expansion has remainder bounded by
+// the first omitted term: 691/(88*nu^11) < 5.2e-23 at nu >= 128.
+inline double log_half_gamma_correction(double nu) {
+  if (nu < 1.0)
+    return std::lgamma(0.5*(nu+1.0))-std::lgamma(1.0+0.5*nu)
+        +0.5*(std::log(nu)-std::log(2.0));
+  if (nu < 128.0)
+    return -std::log(gamma_delta_ratio(0.5*nu, 0.5)*std::sqrt(0.5*nu));
+  const double t = 1.0/nu, t2 = t*t;
+  return t*(-0.25+t2*(1.0/24+t2*(-1.0/20+t2*(17.0/112-t2*31.0/36))));
+}
+
+inline double log_t_mode(double nu) {
+  return -0.5*std::log(2.0*cppunivariate::pi)+log_half_gamma_correction(nu);
+}
+
+// log Gamma(k/nu)/Gamma(1/nu). Recurrence removes the logarithmic
+// singularities as nu grows; keep the original small-shape evaluation.
+inline double ged_log_gamma_ratio(double nu, double k) {
+  if (nu >= 1.0)
+    return -std::log(k)+lgamma1p(k/nu)-lgamma1p(1.0/nu);
+  return std::lgamma(k/nu)-std::lgamma(1.0/nu);
+}
+
 inline double lbeta(double a, double b) {
   if (!std::isfinite(a) || !std::isfinite(b) || a <= 0.0 || b <= 0.0) {
     return kNaN;
   }
+  // Student tails also need the half-step ratio in their log prefactor.
+  // Keep it stable even when lgamma(a) itself would overflow.
+  if (b == 0.5 && a >= 64.0)
+    return 0.5*(std::log(cppunivariate::pi)-std::log(a))
+        -log_half_gamma_correction(2.0*a);
+  if (a == 0.5 && b >= 64.0)
+    return 0.5*(std::log(cppunivariate::pi)-std::log(b))
+        -log_half_gamma_correction(2.0*b);
   return lgamma(a) + lgamma(b) - lgamma(a + b);
 }
 
@@ -221,8 +277,7 @@ inline double dt(double x, double df, bool log) {
   }
   if (log) {
     // Closed-form log-density: tail-stable.
-    return std::lgamma((df + 1.0) / 2.0) - std::lgamma(df / 2.0) -
-           0.5 * std::log(df * cppunivariate::pi) -
+    return log_t_mode(df) -
            ((df + 1.0) / 2.0) * std::log1p(x * x / df);
   }
   return boost::math::pdf(boost::math::students_t_distribution<double, NoThrowPolicy>(df), x);

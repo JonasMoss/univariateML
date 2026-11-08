@@ -15,8 +15,8 @@ inline void sged_face_payload(span x, double mean, double sd, SgedResult& r,int 
   }
   if(r.status!=SgedStatus::RightHalfGedBoundary && r.status!=SgedStatus::LeftHalfGedBoundary)return;
   const double side=r.status==SgedStatus::RightHalfGedBoundary?1:-1,nu=r.nu;
-  const double m=std::exp(special::lgamma(2/nu)-special::lgamma(1/nu));
-  const double v=std::exp(special::lgamma(3/nu)-special::lgamma(1/nu));
+  const double m=std::exp(special::ged_log_gamma_ratio(nu,2));
+  const double v=std::exp(special::ged_log_gamma_ratio(nu,3));
   double c=side>0?*mm.first:*mm.second,a=NAN;
   bool endpoint_solution=false;
   if(hs)a=sd/std::sqrt(v-m*m);

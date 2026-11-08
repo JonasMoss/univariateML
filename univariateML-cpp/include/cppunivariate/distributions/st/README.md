@@ -279,9 +279,10 @@ finite differences for scipy; score and Hessian checks therefore also depend on
 that numerical approximation and require their own validation.
 
 At large df, the Student log-density normalizer uses the gamma-ratio expansion
-`-log(2*pi)/2 - 1/(4*nu) + 1/(24*nu^3)` above 10000. Direct subtraction of
-log-gamma values loses precision near the skew-normal face. This is the same
-expansion used by `ht`; the score check and face comparison remain numerical.
+through the inverse ninth power at nu >= 128; below that it uses the
+no-throw backend gamma ratio. This avoids cancellation near the skew-normal
+face and shares its normalizer with `ht` and `lst`; the score check and face
+comparison remain numerical.
 The new-family golden coefficient tolerance is 1e-5 because the df score is
 finite-differenced and binary64 WebAssembly and native fits showed a small
 coefficient drift. Log likelihood retains the tighter 1e-10 tolerance.

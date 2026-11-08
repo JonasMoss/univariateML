@@ -340,10 +340,9 @@ bounds certify their dominance over the finite stationary regions.
 
 The endpoint with zero shrinking-side residual requires a removable
 $0/0$ calculation: this route stops numerically on an endpoint contact
-within its floating-point margin. At held nu >= 128 it also stops numerically:
-the settled density seam stabilizes the t normalizer there but still computes
-the skew moment by a cancelling log-gamma subtraction. The certificate does
-not endorse that arithmetic as a correctly standardized family. It never substitutes the ordinary half-t
+within its floating-point margin. The skew moment and t normalizer share stable gamma-ratio
+evaluation, including the normal limit; see the
+[accuracy checks](../../../../../dev/research/evaluations/2026-11-08-sstd-moment-data/check.py). It never substitutes the ordinary half-t
 endpoint height. Numerical and budget stops retain a finite witness and an
 infinite global upper bound. Work is bounded by
 $128\min(\mathrm{iterlim},100000)$ cell evaluations. Practical margins

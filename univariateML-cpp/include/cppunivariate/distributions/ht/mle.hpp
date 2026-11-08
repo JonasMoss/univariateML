@@ -18,8 +18,12 @@ struct HtResult { double nu, sigma, logLik; int iterations; HtStatus status; uns
 namespace ht_detail {
 constexpr double inf = std::numeric_limits<double>::infinity();
 inline double log_mode(double nu) {
-  if (nu > 1e4) return -0.5*std::log(2*std::acos(-1.0))-0.25/nu+1/(24*nu*nu*nu);
-  return std::lgamma((nu+1)/2)-std::lgamma(nu/2)-0.5*(std::log(std::acos(-1.0))+std::log(nu));
+  // Preserve the moderate-shape profile's rounding (its value search has
+  // likelihood plateaus); use the stable shared ratio on the large-df path.
+  if (nu < 128.0)
+    return std::lgamma((nu+1)/2)-std::lgamma(nu/2)
+        -0.5*(std::log(std::acos(-1.0))+std::log(nu));
+  return special::log_t_mode(nu);
 }
 inline double softplus(double z) { return std::max(z,0.0)+std::log1p(std::exp(-std::abs(z))); }
 inline double logistic(double z) { return z >= 0 ? 1/(1+std::exp(-z)) : std::exp(z)/(1+std::exp(z)); }

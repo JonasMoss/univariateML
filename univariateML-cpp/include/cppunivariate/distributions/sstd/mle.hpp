@@ -1,8 +1,8 @@
 // Skew Student-t MLE on (mu, sigma, nu, xi).
 //
-// Reparam phi = (mu, log sigma, log(nu - 2), log xi). Pure-libm log-density
+// Reparam phi = (mu, log sigma, log(nu - 2), log xi). Shared scalar log-density
 // via sstd_sigma + log_dsstd_core; sstd's standardised core is the
-// lgamma-based log_dstd_unit, so the standalone fit doesn't pull in Rmath.
+// gamma-ratio-based log_dstd_unit, so the standalone fit doesn't pull in Rmath.
 //
 // f(x; mu, sigma, nu, xi) = (sigma_u / sigma) * f_core(z; nu, xi),
 //   where (sigma_u, mu_u) = sstd_sigma(nu, xi),
@@ -113,10 +113,7 @@ struct SstdCost {
       return;
     }
     // m1(m) = Gamma((m+1)/2) / Gamma((m+2)/2) * sqrt(m / pi).
-    const double log_m1 =
-        std::lgamma(0.5 * (m + 1.0)) - std::lgamma(0.5 * (m + 2.0)) +
-        0.5 * std::log(m / cppunivariate::pi);
-    const double m1 = std::exp(log_m1);
+    const double m1 = cppunivariate::dens::std_abs_moment_from_excess(m);
     const double dlogm1_dm =
         0.5 * (cppunivariate::special::digamma(0.5 * (m + 1.0)) -
                cppunivariate::special::digamma(0.5 * (m + 2.0))) +
@@ -312,11 +309,7 @@ constexpr double kInf = std::numeric_limits<double>::infinity();
 // with z = nu/2.
 inline double log_t_mode(double nu) {
   if (!(nu < kInf)) return -0.5 * std::log(2.0 * kPi);
-  if (nu > 1e4) {
-    return -0.5 * std::log(2.0 * kPi) - 0.25 / nu + 1.0 / (24.0 * nu * nu * nu);
-  }
-  return std::lgamma(0.5 * (nu + 1.0)) - std::lgamma(0.5 * nu) -
-         0.5 * std::log(kPi * nu);
+  return special::log_t_mode(nu);
 }
 
 // log t_nu(w) - log t_nu(0).

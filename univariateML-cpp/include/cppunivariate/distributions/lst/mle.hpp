@@ -38,9 +38,7 @@ struct LstCost {
     if (!(s > 0.0) || !std::isfinite(s) || !std::isfinite(df) || (!exact_fixed && df > 1e7))
       return std::numeric_limits<double>::infinity();
     // Gamma ratio expansion avoids cancellation on the normal approach.
-    const double c = df > 1e4 ? -0.5 * std::log(2.0 * cppunivariate::pi) - 0.25 / df :
-      cppunivariate::special::lgamma((df + 1.0) / 2.0) -
-      cppunivariate::special::lgamma(df / 2.0) - 0.5 * std::log(df * cppunivariate::pi);
+    const double c = cppunivariate::special::log_t_mode(df);
     double f = 0.0;
     for (double v : x) {
       const double z = (v - p[0]) / s;
@@ -352,8 +350,7 @@ inline LstResult conditional(span x,double df,double mu,double sigma,double tol,
   std::vector<double> y(x.begin(),x.end());for(double v:y)if(!std::isfinite(v))return bad;std::sort(y.begin(),y.end());
   // Shape is fixed throughout this nuisance search; preserve LstCost's
   // per-observation grouping and input-order reduction exactly.
-  const double c=df>1e4 ? -0.5*std::log(2.0*cppunivariate::pi)-0.25/df :
-    special::lgamma((df+1.0)/2.0)-special::lgamma(df/2.0)-0.5*std::log(df*cppunivariate::pi);
+  const double c=special::log_t_mode(df);
   auto log_distance=[](double v,double m){
     const double d=std::abs(v-m);
     return std::isfinite(d)?std::log(d):special::log_sum_exp(std::log(std::abs(v)),std::log(std::abs(m)));

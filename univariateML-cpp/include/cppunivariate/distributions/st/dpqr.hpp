@@ -11,8 +11,7 @@ inline bool valid(double xi,double omega,double alpha,double nu) {
 // The direct log-beta difference loses precision at large degrees of
 // freedom. The same gamma-ratio expansion is used by the half-t fitter.
 inline double logmode(double nu) {
- if(nu>1e4)return -0.5*std::log(2*cppunivariate::pi)-0.25/nu+1/(24*nu*nu*nu);
- return student_detail::logmode(nu);
+ return special::log_t_mode(nu);
 }
 inline double log_t_density(double logabs,double nu) {
  return logmode(nu)-0.5*(nu+1)*student_detail::softplus(2*logabs-std::log(nu));
