@@ -491,3 +491,19 @@ test_that("sstd held unit skew retains the certified symmetric closure", {
   expect_error(mlsstd(c(-2,-1,0,1,2),xi=1),class="univariateML_limit")
   expect_error(mlsstd(c(-2,-1,0,1,2),xi=1),"mlnorm")
 })
+
+test_that("sstd xi-only certificate compares the complete skew range", {
+  x <- c(-2,-1,-.4,0,.2,.3,.5,1,2,5)
+  f <- mlsstd(x,mean=0,sd=1,nu=5)
+  expect_equal(unname(coef(f)[c("mean","sd","nu")]),c(0,1,5))
+  reflected <- mlsstd(-x*1e-20,mean=0,sd=1e-20,nu=5)
+  expect_equal(unname(coef(f)["xi"]*coef(reflected)["xi"]),1,tolerance=1e-9)
+  expect_error(mlsstd(x,mean=0,sd=1,nu=5,iterlim=1),class="univariateML_budget")
+  expect_error(mlsstd(c(-1,1),mean=0,sd=1,nu=5),class="univariateML_tie")
+  expect_error(mlsstd(c(.5,1,1.5,2,2.5,3,10),mean=0,sd=1,nu=5),class="univariateML_limit")
+})
+
+test_that("sstd xi-only large held shape stops on unresolved moment arithmetic", {
+  expect_error(mlsstd(c(-2,-1,0,1,3),mean=0,sd=1,nu=1e12),class="univariateML_numerical")
+  expect_error(mlsstd(c(-2,-1,0,1,3),mean=0,sd=1,nu=1e12),"gamma-ratio")
+})

@@ -59,6 +59,7 @@ struct SstdResult {
 };
 
 #include "certificate.hpp"
+#include "skew_certificate.hpp"
 
 // Per-obs nll = ls + F_s(lm, lx) + F_t(lm) + 0.5 (nu+1) log R, where:
 //   F_s(lm, lx) = -log sigma_u(m, xi) + log(xi + 1/xi) - log 2
@@ -725,6 +726,7 @@ inline SstdResult sstd_mle(span x, double tol, int maxit,
     out.certified=status!=SstdStatus::CertificateFailure && status!=SstdStatus::InvalidStart;
     return out;
   }
+  if(hm && hs && hn && !hx) return sstd_skew_cert::fit(x,maxit,fixed_mean,fixed_sd,fixed_nu);
   if(!(hn && hx && (hm || hs))) {
     const auto r=skew_hold_detail::fit(x,true,fixed_mean,fixed_sd,fixed_nu,fixed_xi,tol,maxit);
     const std::vector<SstdStatus> statuses{SstdStatus::Ok,SstdStatus::BfgsFailure,SstdStatus::InvalidStart,SstdStatus::Unbounded,SstdStatus::ScaleBoundary,SstdStatus::SnormBoundary,SstdStatus::SnormBoundary,SstdStatus::RightHalfTBoundary,SstdStatus::LeftHalfTBoundary,SstdStatus::DfTwoBoundary};

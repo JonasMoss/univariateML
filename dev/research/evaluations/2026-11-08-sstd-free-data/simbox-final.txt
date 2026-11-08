@@ -1,0 +1,110 @@
+START cpp-dev
+        Start 126: no_throw_tests
+100/106 Test #126: no_throw_tests ...................   Passed    0.00 sec
+        Start 127: cmp_tests
+101/106 Test #118: distribution_zmnbinom ............   Passed    0.76 sec
+        Start 128: tails_tests
+102/106 Test #128: tails_tests ......................   Passed    0.00 sec
+        Start 129: diagnostics_tests
+103/106 Test #123: distribution_ztnbinom ............   Passed    1.63 sec
+104/106 Test #127: cmp_tests ........................   Passed    2.03 sec
+105/106 Test #129: diagnostics_tests ................   Passed    1.91 sec
+106/106 Test #104: distribution_trgamma .............   Passed   10.88 sec
+
+100% tests passed out of 106
+
+Label Time Summary:
+cran    = 313.64 sec*proc (105 tests)
+dev     = 315.56 sec*proc (106 tests)
+full    = 315.56 sec*proc (106 tests)
+
+Total Test time (real) =  82.77 sec
+PASS cpp-dev
+START cpp-full
+        Start  98: distribution_std_slow
+123/129 Test  #36: distribution_gev_slow ............   Passed    2.25 sec
+        Start 101: distribution_tlambda_slow
+124/129 Test  #70: distribution_lst_slow ............   Passed    5.38 sec
+        Start 111: distribution_zib_slow
+125/129 Test #111: distribution_zib_slow ............   Passed    0.01 sec
+        Start 121: distribution_ztbinom_slow
+126/129 Test #121: distribution_ztbinom_slow ........   Passed    0.02 sec
+127/129 Test   #8: distribution_bhatt_slow ..........   Passed    7.70 sec
+128/129 Test  #98: distribution_std_slow ............   Passed   29.18 sec
+129/129 Test #101: distribution_tlambda_slow ........   Passed  168.43 sec
+
+100% tests passed out of 129
+
+Label Time Summary:
+cran    = 300.85 sec*proc (105 tests)
+dev     = 302.65 sec*proc (106 tests)
+full    = 518.69 sec*proc (129 tests)
+
+Total Test time (real) = 246.41 sec
+PASS cpp-full
+START cpp-no-long-double
+        Start 126: no_throw_tests
+123/129 Test #126: no_throw_tests ...................   Passed    0.00 sec
+        Start 127: cmp_tests
+124/129 Test #127: cmp_tests ........................   Passed    0.38 sec
+        Start 128: tails_tests
+125/129 Test #128: tails_tests ......................   Passed    0.00 sec
+        Start 129: diagnostics_tests
+126/129 Test #129: diagnostics_tests ................   Passed    2.25 sec
+127/129 Test #104: distribution_trgamma .............   Passed   10.89 sec
+128/129 Test  #98: distribution_std_slow ............   Passed   36.67 sec
+129/129 Test #101: distribution_tlambda_slow ........   Passed  180.55 sec
+
+100% tests passed out of 129
+
+Label Time Summary:
+cran    = 286.63 sec*proc (105 tests)
+dev     = 288.88 sec*proc (106 tests)
+full    = 525.00 sec*proc (129 tests)
+
+Total Test time (real) = 255.78 sec
+PASS cpp-no-long-double
+START r-dev
+  'test-dist-zib.R:118:3', 'test-dist-zinb.R:18:3', 'test-dist-zinb.R:58:3',
+  'test-dist-zip.R:10:3', 'test-dist-zip.R:57:3', 'test-dist-zmbinom.R:2:3',
+  'test-dist-zipf.R:30:3', 'test-dist-zmbinom.R:52:3',
+  'test-dist-zmbinom.R:115:3', 'test-dist-zmgeom.R:2:3',
+  'test-dist-zmgeom.R:36:3', 'test-dist-zmlogarithmic.R:2:3',
+  'test-dist-zmlogarithmic.R:36:3', 'test-dist-zipf.R:117:3',
+  'test-dist-zmnbinom.R:2:3', 'test-dist-zmpois.R:2:3',
+  'test-dist-zmnbinom.R:60:3', 'test-dist-zmpois.R:36:3',
+  'test-dist-zmnbinom.R:75:3', 'test-dist-ztbinom.R:2:3',
+  'test-dist-ztbinom.R:49:3', 'test-dist-ztbinom.R:91:3',
+  'test-dist-ztgeom.R:2:3', 'test-dist-ztgeom.R:33:3',
+  'test-dist-ztnbinom.R:2:3', 'test-dist-ztpois.R:2:3',
+  'test-dist-ztpois.R:33:3', 'test-dist-ztnbinom.R:57:3',
+  'test-dist-ztnbinom.R:72:3'
+
+[ FAIL 0 | WARN 0 | SKIP 154 | PASS 22084 ]
+
+🥇 Your tests deserve a gold medal 🥇
+   user  system elapsed 
+401.084   4.493  96.794 
+PASS r-dev
+START r-full
+⠸ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44869 ] @ dist-sged                         
+⠼ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44871 ] @ dist-sged                         
+⠴ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44871 ] @ dist-sged                         
+⠦ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44871 ] @ dist-sged                         
+⠧ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44871 ] @ dist-sged                         
+⠇ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44871 ] @ dist-sged                         
+⠏ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44871 ] @ dist-sged                         
+⠋ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44871 ] @ dist-sged                         
+⠙ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44871 ] @ dist-sged                         
+⠹ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44874 ] @ dist-sged                         
+✔ |        921 | dist-sged [207.8s]                                             
+
+⠸ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44916 ] Starting up...                      
+                                                                                
+══ Results ═════════════════════════════════════════════════════════════════════
+Duration: 332.1 s
+
+[ FAIL 0 | WARN 0 | SKIP 0 | PASS 44916 ]
+    user   system  elapsed 
+1067.913    7.688  334.594 
+PASS r-full

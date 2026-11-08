@@ -454,3 +454,75 @@ TEST_CASE("sstd: near-two location peaks require a likelihood remainder check") 
  double reference=0;for(double v:x)reference+=cppunivariate::distributions::dsstd(v,2,1,nu,1,true);
  CHECK(r.logLik>=reference-1e-10);
 }
+
+TEST_CASE("sstd: compact skew score and likelihood enclose seam crossings") {
+ const std::vector<double> x{-2,-1,-.4,0,.2,.3,.5,1,2,5};
+ for(double nu:{2.1,3.,5.,20.}){
+  double shift=0;cppunivariate::dens::sstd_sigma(nu,2,shift);const double m=shift/1.5;
+  for(const auto& cell:std::vector<std::pair<double,double>>{{0,.01},{.02,.2},{.2,.7},{.98,1},{.49,.51}}){
+   const auto b=cppunivariate::sstd_skew_cert::bounds(mltest::as_span(x),1,nu,m,cell.first,cell.second);
+   for(int j=1;j<20;++j){const double q=cell.first+(cell.second-cell.first)*j/20;
+    const auto p=cppunivariate::sstd_skew_cert::bounds(mltest::as_span(x),1,nu,m,q,q);
+    CHECK(p.value.lo>=b.value.lo-1e-10);CHECK(p.value.hi<=b.value.hi+1e-10);
+    CHECK(p.score.lo>=b.score.lo-1e-10);CHECK(p.score.hi<=b.score.hi+1e-10);
+   }
+  }
+ }
+}
+
+TEST_CASE("sstd: xi-only certificate has finite, reflected and budget outcomes") {
+ const std::vector<double> x{-2,-1,-.4,0,.2,.3,.5,1,2,5};
+ const auto a=cppunivariate::sstd_mle(mltest::as_span(x),1e-6,200,0,1,5);
+ REQUIRE(a.status==cppunivariate::SstdStatus::Ok);CHECK(a.certified);
+ CHECK(a.mu==0);CHECK(a.sigma==1);CHECK(a.nu==5);
+ std::vector<double> y;for(double v:x)y.push_back(-v*1e-20);
+ const auto b=cppunivariate::sstd_mle(mltest::as_span(y),1e-6,200,0,1e-20,5);
+ REQUIRE(b.status==cppunivariate::SstdStatus::Ok);CHECK(b.certified);
+ CHECK(b.xi*a.xi==doctest::Approx(1).epsilon(1e-9));
+ CHECK(b.logLik==doctest::Approx(a.logLik-x.size()*std::log(1e-20)).epsilon(1e-12));
+ const auto low=cppunivariate::sstd_mle(mltest::as_span(x),1e-6,1,0,1,5);
+ REQUIRE(low.status==cppunivariate::SstdStatus::CertificateFailure);
+ CHECK(low.stop_detail.budget_exhausted);CHECK_FALSE(low.stop_detail.candidates.empty());
+ CHECK(std::isinf(low.stop_detail.loglik_upper));
+}
+
+#include "cppunivariate/distributions/ht/dpqr.hpp"
+TEST_CASE("sstd: xi-only constrained faces carry actual held-moment witnesses") {
+ const std::vector<double> x{.5,1,1.5,2,2.5,3,10};
+ const auto r=cppunivariate::sstd_mle(mltest::as_span(x),1e-6,200,0,1,5);
+ REQUIRE(r.status==cppunivariate::SstdStatus::RightHalfTBoundary);CHECK(r.certified);
+ REQUIRE(r.stop_detail.limit_model==cppunivariate::StopModel::Ht);
+ REQUIRE(r.stop_detail.limit_coef.size()==3);
+ const auto& c=r.stop_detail.limit_coef;
+ double ll=0;for(double v:x)ll+=dist::dht(v,c[0],c[1],c[2],true);
+ CHECK(ll==doctest::Approx(r.logLik).epsilon(1e-12));
+ const std::vector<double> tied{-1,1};
+ const auto t=cppunivariate::sstd_mle(mltest::as_span(tied),1e-6,200,0,1,5);
+ REQUIRE(t.stop_detail.comparison_tie);REQUIRE(t.stop_detail.candidates.size()==2);
+ CHECK(t.stop_detail.candidates[0].model!=t.stop_detail.candidates[1].model);
+ double shift=0;cppunivariate::dens::sstd_sigma(5,2,shift);const double m=shift/1.5;
+ const std::vector<double> contact{-m/std::sqrt(1-m*m),1};
+ const auto u=cppunivariate::sstd_mle(mltest::as_span(contact),1e-6,200,0,1,5);
+ CHECK(u.status==cppunivariate::SstdStatus::CertificateFailure);CHECK(u.certificate_reason==3);
+ CHECK_FALSE(u.stop_detail.candidates.empty());CHECK_FALSE(u.certified);
+}
+
+TEST_CASE("sstd: compact skew bounds keep overflow unresolved") {
+ const double v=cppunivariate::sstd_skew_cert::kernel_log(std::log(1e300),5);
+ CHECK(std::isfinite(v));CHECK(v==doctest::Approx(2*std::log(1e300)-std::log(3.)).epsilon(1e-14));
+ const auto r=cppunivariate::sstd_skew_cert::mul({0,1},{-INFINITY,INFINITY});
+ CHECK(r.lo==-INFINITY);CHECK(r.hi==INFINITY);
+ const std::vector<double> x{1e-300,1,1e300};
+ const auto fit=cppunivariate::sstd_mle(mltest::as_span(x),1e-6,1,0,1,5);
+ CHECK(fit.status==cppunivariate::SstdStatus::CertificateFailure);CHECK_FALSE(fit.certified);
+}
+
+TEST_CASE("sstd: xi-only certification does not endorse cancelling skew moments") {
+ const std::vector<double> x{-2,-1,0,1,3};
+ for(double nu:{128.,1e6,1e12,1e17}){
+  const auto r=cppunivariate::sstd_mle(mltest::as_span(x),1e-6,200,0,1,nu);
+  CHECK(r.status==cppunivariate::SstdStatus::CertificateFailure);CHECK_FALSE(r.certified);
+  CHECK(r.certificate_reason==4);CHECK_FALSE(r.stop_detail.candidates.empty());
+  CHECK(std::isinf(r.stop_detail.loglik_upper));
+ }
+}

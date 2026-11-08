@@ -1,0 +1,323 @@
+python3 site/scripts/data.py
+/home/jonas/.bashrc: line 26: /home/jonas/.cargo/env: No such file or directory
+/home/jonas/.bash_profile: line 9: /home/jonas/.cargo/env: No such file or directory
+Data generation: 1.40 s
+Derived 99 families; log-density fallback: cmb, cmp, dweibull, gev, gpd, huber, sged, snorm, sstd, st, tbinom, tpois, triang, zib, zinb, zip, zipf, zmbinom, zmgeom, zmlogarithmic, zmnbinom, zmpois
+cd site && PATH="$PWD/node_modules/.bin:$PATH" RAYON_NUM_THREADS=1 UV_THREADPOOL_SIZE=1 ASTRO_TELEMETRY_DISABLED=1 node scripts/prepare.mjs
+/home/jonas/.bashrc: line 26: /home/jonas/.cargo/env: No such file or directory
+/home/jonas/.bash_profile: line 9: /home/jonas/.cargo/env: No such file or directory
+Setting up EMSDK environment (suppress these messages with EMSDK_QUIET=1)
+Adding directories to PATH:
+PATH += /home/jonas/emsdk
+PATH += /home/jonas/emsdk/upstream/emscripten
+
+Setting environment variables:
+PATH = /home/jonas/emsdk:/home/jonas/emsdk/upstream/emscripten:/home/jonas/Files/programming/univariateML.wt/sstd-free/site/node_modules/.bin:/home/jonas/.elan/bin:/home/jonas/.npm-global/bin:/home/jonas/.local/bin:/home/jonas/bin:/home/jonas/.npm-global/lib/node_modules/@openai/codex/node_modules/@openai/codex-linux-x64/vendor/x86_64-unknown-linux-musl/codex-path:/home/jonas/.venvs/global/bin:/home/jonas/.codex/tmp/arg0-linux/codex-arg0cszdXH:/home/jonas/Files/work/misc/codex-math-web/node_modules/.bin:/home/jonas/Files/work/misc/node_modules/.bin:/home/jonas/Files/work/node_modules/.bin:/home/jonas/Files/node_modules/.bin:/home/jonas/node_modules/.bin:/home/node_modules/.bin:/node_modules/.bin:/usr/share/nodejs/@npmcli/run-script/lib/node-gyp-bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/jonas/mplusdemo:/home/jonas/.fzf/bin
+EMSDK = /home/jonas/emsdk
+EMSDK_NODE = /home/jonas/emsdk/node/24.19.0_64bit/bin/node
+Validated and generated d/p/q/r for 99 families.
+In file included from bindings/js/bindings.cpp:9:
+In file included from build/js/generated/fit_includes.hpp:5:
+In file included from bindings/common/distributions/binom/fit.hpp:3:
+univariateML-cpp/include/cppunivariate/distributions/binom/mle.hpp:160:60: warning: self-comparison always evaluates to true [-Wtautological-compare]
+  160 |     if (std::numeric_limits<CPPUNIV_EXTENDED_REAL>::digits <=
+      |                                                            ^
+1 warning generated.
+cd site && PATH="$PWD/node_modules/.bin:$PATH" RAYON_NUM_THREADS=1 UV_THREADPOOL_SIZE=1 ASTRO_TELEMETRY_DISABLED=1 npm run build
+/home/jonas/.bashrc: line 26: /home/jonas/.cargo/env: No such file or directory
+/home/jonas/.bash_profile: line 9: /home/jonas/.cargo/env: No such file or directory
+npm notice run build
+npm notice run astro build && pagefind --site dist
+15:00:46 [vite] Re-optimizing dependencies because vite config has changed
+15:00:47 [content] Syncing content
+15:00:47 [content] Synced content
+15:00:47 [types] Generated 793ms
+15:00:47 [build] output: "static"
+15:00:47 [build] mode: "static"
+15:00:47 [build] directory: /home/jonas/Files/programming/univariateML.wt/sstd-free/site/dist/
+15:00:47 [build] Collecting build info...
+15:00:47 [build] ✓ Completed in 827ms.
+15:00:47 [build] Building static entrypoints...
+15:00:48 [vite] ✓ built in 450ms
+15:00:48 [vite] ✓ built in 233ms
+15:00:48 [build] Rearranging server assets...
+
+ generating static routes 
+15:00:48   ├─ /articles/validation/index.html (+306ms) 
+15:00:48   ├─ /articles/inference/index.html (+163ms) 
+15:00:49   ├─ /articles/existence/index.html (+147ms) 
+15:00:49   ├─ /articles/limits/index.html (+124ms) 
+15:00:49   ├─ /articles/holds/index.html (+109ms) 
+15:00:49   ├─ /articles/restrictions/index.html (+101ms) 
+15:00:49   ├─ /articles/index.html (+2ms) 
+15:00:49   ├─ /distributions/bbinom/explore/index.html (+8ms) 
+15:00:49   ├─ /distributions/beta/explore/index.html (+5ms) 
+15:00:49   ├─ /distributions/betapr/explore/index.html (+3ms) 
+15:00:49   ├─ /distributions/bhatt/explore/index.html (+3ms) 
+15:00:49   ├─ /distributions/binom/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/bnbinom/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/burr/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/cauchy/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/cmb/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/cmp/explore/index.html (+3ms) 
+15:00:49   ├─ /distributions/dgamma/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/dlaplace/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/dnorm/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/dunif/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/dweibull/explore/index.html (+11ms) 
+15:00:49   ├─ /distributions/emg/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/exp/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/fatigue/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/foldnorm/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/fpareto/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/frechet/explore/index.html (+3ms) 
+15:00:49   ├─ /distributions/gamma/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/gb2/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/ged/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/genbeta/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/geom/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/gev/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/gompertz/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/gpd/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/gumbel/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/hcauchy/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/hnorm/explore/index.html (+4ms) 
+15:00:49   ├─ /distributions/ht/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/huber/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/hyper/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/invburr/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/invexp/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/invgamma/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/invgauss/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/invparalogis/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/invpareto/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/invtrgamma/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/invweibull/explore/index.html (+4ms) 
+15:00:49   ├─ /distributions/kumar/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/laplace/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/lgamma/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/lgser/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/llogis/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/lnorm/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/logis/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/logitnorm/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/lomax/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/lst/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/naka/explore/index.html (+4ms) 
+15:00:49   ├─ /distributions/nbinom/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/nhyper/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/norm/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/nsbeta/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/paralogis/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/pareto/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/pareto2/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/pareto3/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/pareto4/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/pig/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/pois/explore/index.html (+4ms) 
+15:00:49   ├─ /distributions/power/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/rayleigh/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/sged/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/sgomp/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/skellam/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/slash/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/sn/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/snorm/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/sstd/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/st/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/std/explore/index.html (+4ms) 
+15:00:49   ├─ /distributions/tbinom/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/tlambda/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/tnorm/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/tpois/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/trgamma/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/triang/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/unif/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/weibull/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/yulesimon/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/zeta/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/zib/explore/index.html (+5ms) 
+15:00:49   ├─ /distributions/zinb/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/zip/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/zipf/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/zmbinom/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/zmgeom/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/zmlogarithmic/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/zmnbinom/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/zmpois/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/ztbinom/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/ztgeom/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/ztnbinom/explore/index.html (+4ms) 
+15:00:49   ├─ /distributions/ztpois/explore/index.html (+2ms) 
+15:00:49   ├─ /distributions/bbinom/index.html (+37ms) 
+15:00:49   ├─ /distributions/beta/index.html (+14ms) 
+15:00:49   ├─ /distributions/betapr/index.html (+28ms) 
+15:00:49   ├─ /distributions/bhatt/index.html (+14ms) 
+15:00:49   ├─ /distributions/binom/index.html (+12ms) 
+15:00:49   ├─ /distributions/bnbinom/index.html (+31ms) 
+15:00:49   ├─ /distributions/burr/index.html (+23ms) 
+15:00:49   ├─ /distributions/cauchy/index.html (+19ms) 
+15:00:49   ├─ /distributions/cmb/index.html (+22ms) 
+15:00:49   ├─ /distributions/cmp/index.html (+11ms) 
+15:00:49   ├─ /distributions/dgamma/index.html (+21ms) 
+15:00:50   ├─ /distributions/dlaplace/index.html (+7ms) 
+15:00:50   ├─ /distributions/dnorm/index.html (+9ms) 
+15:00:50   ├─ /distributions/dunif/index.html (+4ms) 
+15:00:50   ├─ /distributions/dweibull/index.html (+16ms) 
+15:00:50   ├─ /distributions/emg/index.html (+9ms) 
+15:00:50   ├─ /distributions/exp/index.html (+5ms) 
+15:00:50   ├─ /distributions/fatigue/index.html (+13ms) 
+15:00:50   ├─ /distributions/foldnorm/index.html (+7ms) 
+15:00:50   ├─ /distributions/fpareto/index.html (+27ms) 
+15:00:50   ├─ /distributions/frechet/index.html (+20ms) 
+15:00:50   ├─ /distributions/gamma/index.html (+7ms) 
+15:00:50   ├─ /distributions/gb2/index.html (+25ms) 
+15:00:50   ├─ /distributions/ged/index.html (+29ms) 
+15:00:50   ├─ /distributions/genbeta/index.html (+26ms) 
+15:00:50   ├─ /distributions/geom/index.html (+5ms) 
+15:00:50   ├─ /distributions/gev/index.html (+24ms) 
+15:00:50   ├─ /distributions/gompertz/index.html (+10ms) 
+15:00:50   ├─ /distributions/gpd/index.html (+32ms) 
+15:00:50   ├─ /distributions/gumbel/index.html (+6ms) 
+15:00:50   ├─ /distributions/hcauchy/index.html (+7ms) 
+15:00:50   ├─ /distributions/hnorm/index.html (+5ms) 
+15:00:50   ├─ /distributions/ht/index.html (+29ms) 
+15:00:50   ├─ /distributions/huber/index.html (+15ms) 
+15:00:50   ├─ /distributions/hyper/index.html (+9ms) 
+15:00:50   ├─ /distributions/invburr/index.html (+15ms) 
+15:00:50   ├─ /distributions/invexp/index.html (+4ms) 
+15:00:50   ├─ /distributions/invgamma/index.html (+6ms) 
+15:00:50   ├─ /distributions/invgauss/index.html (+7ms) 
+15:00:50   ├─ /distributions/invparalogis/index.html (+9ms) 
+15:00:50   ├─ /distributions/invpareto/index.html (+7ms) 
+15:00:50   ├─ /distributions/invtrgamma/index.html (+13ms) 
+15:00:50   ├─ /distributions/invweibull/index.html (+6ms) 
+15:00:50   ├─ /distributions/kumar/index.html (+7ms) 
+15:00:50   ├─ /distributions/laplace/index.html (+5ms) 
+15:00:50   ├─ /distributions/lgamma/index.html (+6ms) 
+15:00:50   ├─ /distributions/lgser/index.html (+6ms) 
+15:00:50   ├─ /distributions/llogis/index.html (+9ms) 
+15:00:50   ├─ /distributions/lnorm/index.html (+7ms) 
+15:00:50   ├─ /distributions/logis/index.html (+7ms) 
+15:00:50   ├─ /distributions/logitnorm/index.html (+5ms) 
+15:00:50   ├─ /distributions/lomax/index.html (+15ms) 
+15:00:50   ├─ /distributions/lst/index.html (+15ms) 
+15:00:50   ├─ /distributions/naka/index.html (+6ms) 
+15:00:50   ├─ /distributions/nbinom/index.html (+23ms) 
+15:00:50   ├─ /distributions/nhyper/index.html (+8ms) 
+15:00:50   ├─ /distributions/norm/index.html (+6ms) 
+15:00:50   ├─ /distributions/nsbeta/index.html (+15ms) 
+15:00:50   ├─ /distributions/paralogis/index.html (+16ms) 
+15:00:50   ├─ /distributions/pareto/index.html (+7ms) 
+15:00:50   ├─ /distributions/pareto2/index.html (+9ms) 
+15:00:50   ├─ /distributions/pareto3/index.html (+9ms) 
+15:00:50   ├─ /distributions/pareto4/index.html (+15ms) 
+15:00:50   ├─ /distributions/pig/index.html (+19ms) 
+15:00:50   ├─ /distributions/pois/index.html (+5ms) 
+15:00:50   ├─ /distributions/power/index.html (+5ms) 
+15:00:50   ├─ /distributions/rayleigh/index.html (+3ms) 
+15:00:50   ├─ /distributions/sged/index.html (+54ms) 
+15:00:50   ├─ /distributions/sgomp/index.html (+8ms) 
+15:00:50   ├─ /distributions/skellam/index.html (+9ms) 
+15:00:50   ├─ /distributions/slash/index.html (+20ms) 
+15:00:50   ├─ /distributions/sn/index.html (+17ms) 
+15:00:50   ├─ /distributions/snorm/index.html (+17ms) 
+15:00:50   ├─ /distributions/sstd/index.html (+44ms) 
+15:00:50   ├─ /distributions/st/index.html (+23ms) 
+15:00:50   ├─ /distributions/std/index.html (+15ms) 
+15:00:50   ├─ /distributions/tbinom/index.html (+16ms) 
+15:00:50   ├─ /distributions/tlambda/index.html (+15ms) 
+15:00:50   ├─ /distributions/tnorm/index.html (+19ms) 
+15:00:50   ├─ /distributions/tpois/index.html (+8ms) 
+15:00:50   ├─ /distributions/trgamma/index.html (+13ms) 
+15:00:50   ├─ /distributions/triang/index.html (+7ms) 
+15:00:50   ├─ /distributions/unif/index.html (+4ms) 
+15:00:50   ├─ /distributions/weibull/index.html (+7ms) 
+15:00:50   ├─ /distributions/yulesimon/index.html (+5ms) 
+15:00:50   ├─ /distributions/zeta/index.html (+4ms) 
+15:00:50   ├─ /distributions/zib/index.html (+14ms) 
+15:00:50   ├─ /distributions/zinb/index.html (+27ms) 
+15:00:51   ├─ /distributions/zip/index.html (+11ms) 
+15:00:51   ├─ /distributions/zipf/index.html (+6ms) 
+15:00:51   ├─ /distributions/zmbinom/index.html (+8ms) 
+15:00:51   ├─ /distributions/zmgeom/index.html (+5ms) 
+15:00:51   ├─ /distributions/zmlogarithmic/index.html (+4ms) 
+15:00:51   ├─ /distributions/zmnbinom/index.html (+8ms) 
+15:00:51   ├─ /distributions/zmpois/index.html (+4ms) 
+15:00:51   ├─ /distributions/ztbinom/index.html (+11ms) 
+15:00:51   ├─ /distributions/ztgeom/index.html (+3ms) 
+15:00:51   ├─ /distributions/ztnbinom/index.html (+12ms) 
+15:00:51   ├─ /distributions/ztpois/index.html (+3ms) 
+15:00:51   ├─ /distributions/index.html (+12ms) 
+15:00:51   ├─ /graph/index.html (+81ms) 
+15:00:51   ├─ /inference/index.html (+16ms) 
+15:00:51   ├─ /search/index.html (+2ms) 
+15:00:51   ├─ /theory/index.html (+111ms) 
+15:00:51   ├─ /index.html (+3ms) 
+15:00:51 ✓ Completed in 2.88s.
+
+15:00:51 [build] ✓ Completed in 3.63s.
+15:00:51 [build] 211 page(s) built in 4.45s
+15:00:51 [build] Complete!
+
+Running Pagefind v1.5.2 (Extended)
+Running from: "/home/jonas/Files/programming/univariateML.wt/sstd-free/site"
+Source:       "dist"
+Output:       "dist/pagefind"
+
+[Walking source directory]
+Found 211 files matching **/*.{html}
+
+[Parsing files]
+Found a data-pagefind-body element on the site.
+↳ Ignoring pages without this tag.
+
+[Reading languages]
+Discovered 1 language: en
+
+[Building search indexes]
+Total: 
+  Indexed 1 language
+  Indexed 112 pages
+  Indexed 14805 words
+  Indexed 0 filters
+  Indexed 0 sorts
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│  Pagefind found references to the Default UI (pagefind-ui.js)           │
+│  on your site. The Default UI is supported and will continue            │
+│  to work.                                                               │
+│                                                                         │
+│  As of 1.5.0, if you are setting up a new integration, use the          │
+│  Component UI instead. It includes a search modal, better               │
+│  accessibility and customization: https://pagefind.app/docs/search-ui/  │
+└─────────────────────────────────────────────────────────────────────────┘
+
+Finished in 1.045 seconds
+python3 site/scripts/check.py
+/home/jonas/.bashrc: line 26: /home/jonas/.cargo/env: No such file or directory
+/home/jonas/.bash_profile: line 9: /home/jonas/.cargo/env: No such file or directory
+PASS inference browser: {"rows":353,"families":99,"desktop":[1280,1100],"mobile":[390,1000],"checks":["covariance and combined filters with follow-up evidence","all status filters","combined family/status/regime filters","empty state","reset","native evidence disclosure","no horizontal overflow","all rows and evidence without JavaScript","no page errors"]}
+PASS theory numerical: 5 static/live profiles, 4 escape messages and limit approaches, analytic normal held fits, static/live contours, parser and failed-fit gaps.
+PASS nice linear/log ticks; Gompertz free/held fits, conditional escape, fixed-rate boundary, static/live equality and build-time MathML.
+PASS likelihood windows: 15-unit clipping, low-marker expansion, constant likelihoods, marker clearance, finite SVG coordinates.
+PASS theory browser: desktop/mobile, live profiles and held faces, seeded data, errors, no-JS figures and diagnostics.
+PASS: four articles; dossier catalogues: 288 limits, 99 families, 9 fit domains.
+Covariance scopes: 195 {'implemented': 121, 'historically recoverable': 0, 'available but missing': 0, 'unreviewed': 4, 'invalid for the procedure': 70}
+PASS: inference: 353 unique scopes, 99 families; implementation symbols, evidence anchors, calibration and checks resolve; full static table.
+PASS: graph: 99 unique nodes, 278 edges, resolving family links; SVG generated twice byte-identically and matches built HTML.
+PASS: explorer coverage matches binding registry; optional build assets agree.
+PASS: every declared and inverted relation and limit link is rendered and resolves.
+PASS: 99 family pages; MathML on every family; no math runtime or external runtime assets; internal links and fragments resolve.
+Environment: Python 3.14.5, SymPy 1.14.0; g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0
+Boost headers: /home/jonas/R/x86_64-pc-linux-gnu-library/4.5/BH/include
+PASS: 99 generated C++ snippets compile and link as C++17 (including exp, gamma, gb2).
+PASS: pilot and ten additional HTML spot checks: exp, gamma, gb2, binom, beta, hyper, sstd, gev, gpd, tnorm, pois, unif, pareto
+Log-density fallback: cmb, cmp, dweibull, gev, gpd, huber, sged, snorm, sstd, st, tbinom, tpois, triang, zib, zinb, zip, zipf, zmbinom, zmgeom, zmlogarithmic, zmnbinom, zmpois
+WEIGHT exp: HTML 25426 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+WEIGHT gamma: HTML 29650 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+WEIGHT gb2: HTML 62837 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+WEIGHT binom: HTML 41340 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+WEIGHT hyper: HTML 40160 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+WEIGHT sstd: HTML 141846 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+Total dist: 23066551 B

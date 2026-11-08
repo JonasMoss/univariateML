@@ -23,6 +23,8 @@ inline FitResult fit_sstd(cppunivariate::span x, Held mean_arg = {}, Held sd_arg
   const double held_xi=xi.supplied ? xi.value : nan;
   if(xi.supplied && (!(std::isfinite(held_xi) && held_xi>0))) return fail("Invalid held `xi`: requires a finite value in its parameter domain.");
   auto res=cppunivariate::sstd_mle(x,gradtol,iterlim,held_mean,held_sd,held_nu,held_xi);
+  if(res.certified && (res.stop_detail.limit_model==cppunivariate::StopModel::Ht || res.stop_detail.limit_model==cppunivariate::StopModel::ReflectedHt))
+    return stop_failure(fail("The skew Student-t likelihood has its supremum on the constrained half-t face; no finite skew MLE. Use `mlht` on signed endpoint distances."),res.stop_detail,"limit",{"mean","sd","nu","xi"});
   if(res.certified && res.stop_detail.limit_model==cppunivariate::StopModel::Norm)
     return stop_failure(fail("The symmetric Student-t likelihood is maximised as nu -> Inf; use `mlnorm`."),res.stop_detail,"limit",{"mean","sd","nu","xi"},"norm");
   if(res.certified && res.stop_detail.limit_model==cppunivariate::StopModel::Lst)
@@ -32,7 +34,7 @@ inline FitResult fit_sstd(cppunivariate::span x, Held mean_arg = {}, Held sd_arg
   if(res.status==cppunivariate::SstdStatus::CertificateFailure) {
     const auto& d=res.stop_detail;
     const std::string kind=d.budget_exhausted?"budget":d.comparison_tie?"tie":"numerical";
-    const std::string message=d.budget_exhausted?"Skew Student-t certificate budget exhausted; increase `iterlim`.":d.comparison_tie?"Skew Student-t maxima are tied or numerically indistinguishable.":res.certificate_reason==1?"Nonunit-skew scale-collapse equality needs an unresolved finite/face likelihood comparison.":res.certificate_reason==2?"Skew Student-t exterior scale-score bracket failed; increase `iterlim`.":"Skew Student-t certificate could not resolve the root enclosure or arithmetic; increase `iterlim`.";
+    const std::string message=d.budget_exhausted?"Skew Student-t certificate budget exhausted; increase `iterlim`.":d.comparison_tie?"Skew Student-t maxima are tied or numerically indistinguishable.":res.certificate_reason==1?"Nonunit-skew scale-collapse equality needs an unresolved finite/face likelihood comparison.":res.certificate_reason==4?"Skew Student-t skew-moment gamma-ratio arithmetic is unresolved for held nu >= 128; no skew estimate is certified.":res.certificate_reason==3?"Skew Student-t constrained half-t endpoint contact needs a removable shrinking-side density calculation.":res.certificate_reason==2?"Skew Student-t exterior scale-score bracket failed; increase `iterlim`.":"Skew Student-t certificate could not resolve the root enclosure or arithmetic; increase `iterlim`.";
     return stop_failure(fail(message),d,kind,{"mean","sd","nu","xi"});
   }
   if(res.status==cppunivariate::SstdStatus::UnsupportedHold) return fail("Unsupported conditional fit.");

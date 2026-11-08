@@ -1,0 +1,2 @@
+900 interval checks; roots 8
+golden xi-only check passed; 15 unchanged routes identical

@@ -1,0 +1,7 @@
+univariateML-cpp/include/cppunivariate/distributions/sstd/mle.hpp: OK
+univariateML-cpp/include/cppunivariate/distributions/sstd/skew_certificate.hpp: OK
+univariateML-cpp/include/cppunivariate/distributions/sstd/test.cpp: OK
+univariateML-cpp/include/cppunivariate/distributions/sstd/README.md: OK
+bindings/common/distributions/sstd/fit.hpp: OK
+bindings/r/distributions/sstd/test.R: OK
+bindings/js/fit-test.mjs: OK
