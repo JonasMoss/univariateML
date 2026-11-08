@@ -92,8 +92,8 @@ construction:
 relations: {}
 fit:
   method: profile-search
-  certified: 'partial'
-  note: 'cmb/README.md, Fixed-size coefficient acceptance; cmb/mle.hpp, cmb_mle; cmb/acceptance.hpp, certify: every fixed-size free subset has a concave tangent likelihood bound and score half-space coefficient enclosure, with exact atomic and Bernoulli reductions. Free-size searches retain their entropy and integer-tail certificates, but their internal fixed-size candidates do not all have coefficient enclosures. Budget and unresolved comparisons stop.'
+  certified: 'yes'
+  note: 'cmb/README.md, Fixed-size coefficient acceptance and Free-size acceptance; cmb/mle.hpp, cmb_finish_work and cmb_detail::finish_size: finite winners pass score half-space coefficient enclosures at their selected size, with exact atomic and Bernoulli reductions. Entropy, integer-tail and block bounds exclude other sizes. Unresolved size comparisons, faces, numerical failures and shared-ledger exhaustion stop with witnesses. Certificates are conditional on computed comparisons and practical floating-point margins.'
 areas:
 - counts and ecology
 existence:
@@ -507,7 +507,8 @@ strict improvement is found. The comparison margin is `1e-9*(1+abs(face))`;
 this is a practical floating-point allowance, not a proved rounding bound.
 When the candidate exceeds the face, the algorithm increases the truncation
 point until the truncated profile lies strictly below the candidate, finds a
-tail cutoff, and enumerates every feasible size below it. It charges the
+tail cutoff, and checks every feasible size below it using the block bound
+and individual profiles described below. It charges the
 support length per profile against the cumulative enumeration-cell budget and stops on
 exhaustion, solver failure, or the allocation domain; exhaustion of the cumulative enumeration budget also
 stops. For negative dispersion it enumerates until the endpoint bound falls
@@ -544,7 +545,11 @@ checked numerically.
 
 Held-probability endpoint faces use the support-width power of the held odds. Free-size comparisons retain the evaluated finite witness and fitted CMP or two-point face when available; unresolved tails have infinite global upper bounds.
 
-Fixed-size normalizers, nested mean matches and the historical free-size rescue now share the enumeration ledger with their caller. The rescue no longer reserves work using fixed assumptions about inner iteration counts. A normalizer table is charged by its support cells, including its fixed number of moment/tail passes. Budget witnesses retain a feasible represented probability; the bound $|\partial\ell/\partial\eta|\le nN$ covers conversion from canonical log odds to that probability, in addition to the practical rounding margin. The CMP-face kernel remains a separate dependency with its own work contract.
+Fixed-size normalizers, nested mean matches and the historical free-size rescue now share the enumeration ledger with their caller. The rescue no longer reserves work using fixed assumptions about inner iteration counts. A normalizer table is charged by its support cells, including its fixed number of moment/tail passes. Budget witnesses retain a feasible represented probability; the bound $|\partial\ell/\partial\eta|\le nN$ covers conversion from canonical log odds to that probability, in addition to the practical rounding margin. The CMP-face kernel spends the same remaining 64-bit enumeration ledger.
+
+If a constant sample with held interior probability needs its central design
+beyond the allocation domain, the endpoint face at the smallest feasible size
+is retained as a lower witness; the remaining size comparison stops unresolved.
 
 The default iteration allowance is 2000 so the fixed-dispersion finite-size examples and seeded CMB/binomial samples retain certified fits under shared table-cell accounting.
 
@@ -561,8 +566,9 @@ The canonical half-space and likelihood calculations, including their
 practical floating-point margins, are specified in that header.
 
 A passing historical proposal is retained exactly. If its coefficient enclosure
-fails, one solve at moment tolerance $10^{-14}$ is allowed, sharing the same
-remaining table-cell ledger, and must pass its own certificate. In particular,
+fails, refinement proposals at moment tolerances $10^{-14}$, $10^{-13}$ and
+$10^{-12}$ share the same remaining table-cell ledger. The first that passes
+its own certificate is retained. In particular,
 a small log-binomial residual at large size need not imply accurate dispersion.
 The certificate uses at most `min(iterlim,100000)` refinements, with two or
 three tables per refinement. Every table is charged to the existing enumeration
@@ -572,7 +578,37 @@ certificates stop numerically. No support or dispersion cap becomes an estimate.
 Size zero, endpoint probabilities and Bernoulli size one use their exact law
 reductions. They also supply counterexamples to coefficient uniqueness:
 any dispersion gives the same size-one law, and at size zero both probability
-and dispersion are unidentified. The broader free-size entry points retain
-their existing entropy certificates; their internal candidates have not all
-been upgraded to these coefficient enclosures, so the family-wide flag remains
-partial.
+and dispersion are unidentified. Free-size comparisons also have nonunique examples: all-zero counts with free
+probability, or probability held at zero, have likelihood one at every size.
+The fitter reports a finite-size tie with size-zero and size-one witnesses.
+
+## Free-size acceptance
+
+Every numerical finite winner shares the search's remaining enumeration ledger
+with the fixed-size acceptance and refinement above. Exact uniform and
+size-two symmetric solutions pass the same gate; atomic and Bernoulli laws
+use their exact reductions. Failure retains the finite candidate and available
+face witnesses, with an infinite global upper bound. Refinement never resets
+the work allowance. A runner-up among the evaluated distinct sizes is retained;
+overlap of the likelihood enclosures `logLik +/- 1e-8*(n+abs(logLik))`
+stops as a numerical size comparison, with both witnesses. This is a
+conservative unresolved comparison, not a proof of exact equality. The
+enclosures cover the total profile likelihood errors.
+Tail and block exclusions compare against a feasible incumbent's lower anchor,
+so they do not require coefficient accuracy at discarded sizes.
+
+For positive held dispersion, a block `L <= N <= R`, `L >= K`, has upper
+bound equal to the scalar truncated-profile upper bound at `L` plus
+`nu*sum_i (c_R(x_i)-c_L(x_i))`. Here
+`c_N(k)=sum_{j<k} log(1-j/N)` and the canonical coordinate is
+`a=eta+nu*log(N)`. The difference `c_N(k)-c_L(k)` is nonnegative,
+so the truncated normalizer at `N` is at least that at `L`; dropping its
+increase gives the displayed bound. Replacing the observed differences by
+their values at `R` bounds the entire block. Blocks that cannot be excluded
+are bisected down to individually evaluated sizes. No size unimodality is
+assumed. The scalar truncated likelihood is concave in `a`; a bracket of
+its mean-matching root gives the upper allowance `n*K*bracket_width`.
+Each evaluated normalizer is charged by `K+1` cells; its fixed sufficient
+statistics are computed once. The block comparison adds
+`1e-9*(1+abs(anchor)+abs(correction))`. These are exact-arithmetic bounds
+conditional on computed comparisons, with practical floating-point margins.

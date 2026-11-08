@@ -481,3 +481,107 @@ TEST_CASE("cmb: quantile search guards and representability") {
   t.cumulative();
   CHECK(std::isnan(t.quantile(.5,true,false)));
 }
+
+TEST_CASE("cmb: free-size winners enclose every free coefficient at the selected design") {
+  const auto g=mltest::load_distribution_golden("cmb");
+  std::vector<int> x;for(double v:g.data)x.push_back(int(v));
+  const cppunivariate::ispan data{x.data(),x.size()};
+  for(int mask=0;mask<4;++mask) {
+    const double p=(mask&1)?g.estimates.at("prob"):NAN;
+    const double nu=(mask&2)?g.estimates.at("nu"):NAN;
+    const auto f=(mask&2)?((mask&1)?cppunivariate::cmb_size_mle(data,p,nu):
+      cppunivariate::cmb_size_fixed_nu_mle(data,nu)):cppunivariate::cmb_size_free_nu_mle(data,p);
+    REQUIRE(f.fit.status==cppunivariate::CmbStatus::Ok);
+    CHECK(f.size==((mask==0)?16:10));
+    std::uint64_t used=0;
+    const auto check=cppunivariate::cmb_accept_work(data,int(f.size),f.fit,2000,p,nu,used);
+    CHECK(check.status==cppunivariate::CmbStatus::Ok);
+    const auto fixed=cppunivariate::cmb_mle(data,int(f.size),1e-12,2000,p,nu);
+    REQUIRE(fixed.status==cppunivariate::CmbStatus::Ok);
+    CHECK(f.fit.prob==doctest::Approx(fixed.prob).epsilon(1e-8));
+    CHECK(f.fit.nu==doctest::Approx(fixed.nu).epsilon(1e-8));
+  }
+}
+
+TEST_CASE("cmb: distinct finite-size ties retain both maximizing witnesses") {
+  const std::vector<int> x{1,1},zero{0,0};
+  // Binomial P(X=1) is 1/2 at N=1 and N=2 when p=1/2;
+  // its successive ratio is (N+1)/(2*N), strictly below one for N>1.
+  const auto tie=cppunivariate::cmb_size_mle({x.data(),x.size()},.5,1);
+  REQUIRE(tie.fit.status==cppunivariate::CmbStatus::FaceTie);
+  CHECK(tie.fit.stop_detail.comparison_tie);
+  REQUIRE(tie.fit.stop_detail.candidates.size()==2);
+  CHECK(tie.fit.stop_detail.candidates[0].coef[0]==1);
+  CHECK(tie.fit.stop_detail.candidates[1].coef[0]==2);
+  for(int mask=0;mask<3;++mask) {
+    const auto z=mask==0?cppunivariate::cmb_size_free_nu_mle({zero.data(),zero.size()}):
+      (mask==1?cppunivariate::cmb_size_fixed_nu_mle({zero.data(),zero.size()},2):
+       cppunivariate::cmb_size_mle({zero.data(),zero.size()},0,2));
+    REQUIRE(z.fit.status==cppunivariate::CmbStatus::FaceTie);
+    CHECK(z.fit.stop_detail.comparison_tie);
+    REQUIRE(z.fit.stop_detail.candidates.size()==2);
+    CHECK(z.fit.stop_detail.candidates[0].coef[0]==0);
+    CHECK(z.fit.stop_detail.candidates[1].coef[0]==1);
+    CHECK(z.fit.stop_detail.loglik_lower==0);
+  }
+}
+
+TEST_CASE("cmb: final acceptance preserves the size search ledger and witnesses") {
+  const std::vector<int> x{0,1,2};
+  const cppunivariate::ispan data{x.data(),x.size()};
+  const double ll=-3*std::log(3.);
+  const cppunivariate::CmbSizeResult candidate{2,{.5,0,ll,0,cppunivariate::CmbStatus::Ok}};
+  cppunivariate::StopDetail evidence;
+  evidence.candidates.push_back({{2,.5,0},ll,ll});evidence.loglik_lower=ll;
+  std::uint64_t work=99999;
+  const auto budget=cppunivariate::cmb_detail::finish_size(data,candidate,{},NAN,NAN,1e-10,1,work,evidence);
+  CHECK(budget.fit.status==cppunivariate::CmbStatus::IterationFailure);
+  CHECK(budget.fit.stop_detail.budget_exhausted);
+  CHECK(budget.fit.stop_detail.loglik_upper==INFINITY);
+  CHECK_FALSE(budget.fit.stop_detail.candidates.empty());
+  CHECK(work==99999);
+  auto wrong=candidate;wrong.fit.prob=.8;
+  wrong.fit.logLik=0;for(int v:x)wrong.fit.logLik+=cppunivariate::distributions::dcmb(v,2,.8,0,true);
+  work=0;
+  const auto numerical=cppunivariate::cmb_detail::finish_size(data,wrong,{},NAN,NAN,1e-10,1,work,evidence);
+  CHECK(numerical.fit.status==cppunivariate::CmbStatus::IterationFailure);
+  CHECK_FALSE(numerical.fit.stop_detail.budget_exhausted);
+  CHECK(numerical.fit.stop_detail.loglik_upper==INFINITY);
+  CHECK_FALSE(numerical.fit.stop_detail.candidates.empty());
+}
+
+TEST_CASE("cmb: held-dispersion block anchor bounds explicit finite profiles") {
+  const std::vector<int> x{0,0,1,2,3,4};
+  const cppunivariate::ispan data{x.data(),x.size()};
+  for(double nu:{.5,1.,2.}) {
+    std::uint64_t work=0;cppunivariate::StopDetail evidence;double anchor=0;
+    REQUIRE(cppunivariate::cmb_truncated_fixed_nu_upper(data,8,10,nu,100,
+      work,10000000,evidence,anchor));
+    CHECK(work<10000);
+    double correction=0;
+    for(int v:x)for(int j=0;j<v;++j)
+      correction+=nu*(std::log1p(-double(j)/20)-std::log1p(-double(j)/10));
+    for(int N=10;N<=20;++N) {
+      const auto f=cppunivariate::cmb_mle(data,N,1e-10,100,NAN,nu);
+      REQUIRE(f.status==cppunivariate::CmbStatus::Ok);
+      CHECK(f.logLik<=anchor+correction);
+    }
+  }
+}
+
+TEST_CASE("cmb: constant beyond the central design domain keeps an unresolved face witness") {
+  const std::vector<int> x{6000000,6000000};
+  const auto f=cppunivariate::cmb_size_free_nu_mle({x.data(),x.size()},.5);
+  CHECK(f.fit.status==cppunivariate::CmbStatus::FaceUnresolved);
+  CHECK(f.fit.stop_detail.limit_model==cppunivariate::StopModel::TwoPoint);
+  CHECK(f.fit.stop_detail.limit_loglik==doctest::Approx(-2*std::log(2.)));
+  CHECK(f.fit.stop_detail.loglik_upper==INFINITY);
+}
+
+TEST_CASE("cmb: free-size proposals reject the unsupported allocation domain before work") {
+  const std::vector<int> x{0,1,2};std::uint64_t work=0;
+  const auto f=cppunivariate::cmb_detail::size_candidate({x.data(),x.size()},10000001,NAN,
+    1e-10,2000,work,200000000);
+  CHECK(f.status==cppunivariate::CmbStatus::IterationFailure);
+  CHECK(work==0);
+}

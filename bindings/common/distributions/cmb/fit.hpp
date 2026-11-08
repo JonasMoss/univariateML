@@ -63,6 +63,8 @@ inline FitResult fit_cmb(cppunivariate::ispan x, Held size_arg = {}, Held prob_a
         return stopped_fail("No finite maximum was certified above the limiting faces; a larger finite maximum is not excluded.");
       return stopped_fail("No finite maximum was found in the exploratory search; a larger finite maximum is not excluded. The Conway-Maxwell-Poisson limit is available: use mlcmp with nu held fixed.");
     case cppunivariate::CmbStatus::FaceTie:
+      if(res.stop_detail.comparison_tie)
+        return stopped_fail("Distinct finite sizes have likelihoods indistinguishable within the certificate margin; the maximizing size is not resolved.");
       if (!nu.supplied && !prob.supplied) {
         bool adjacent_zero=!x.empty();
         for(int value:x)adjacent_zero=adjacent_zero && (value==0 || value==1);

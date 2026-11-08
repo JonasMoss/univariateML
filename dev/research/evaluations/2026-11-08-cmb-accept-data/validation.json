@@ -1,0 +1,78 @@
+{
+  "base": "09ab21746631b00f56aed243e16f52066f461be2",
+  "cpp_dev": {
+    "machine": "simbox",
+    "passed": 106
+  },
+  "cpp_full": {
+    "machine": "simbox",
+    "passed": 129
+  },
+  "cpp_no_long_double": [
+    {
+      "machine": "simbox",
+      "passed": 129
+    },
+    {
+      "machine": "workstation",
+      "passed": 129
+    }
+  ],
+  "r_dev": {
+    "machine": "simbox",
+    "fail": 0,
+    "warn": 0,
+    "skip": 154,
+    "pass": 22106
+  },
+  "r_full": {
+    "machine": "simbox",
+    "fail": 0,
+    "warn": 0,
+    "skip": 0,
+    "pass": 44938
+  },
+  "js_build": {
+    "machine": "workstation",
+    "exit": 0
+  },
+  "js_test": {
+    "machine": "workstation",
+    "passed": 548,
+    "failed": 0,
+    "skipped": 0
+  },
+  "site_check": {
+    "machine": "workstation",
+    "family_pages": 99,
+    "cpp17_snippets": 99,
+    "exit": 0
+  },
+  "quality_cmb": {
+    "machine": "workstation",
+    "result": "pass"
+  },
+  "coefficient_check": {
+    "machine": "workstation",
+    "decimal_digits": 60,
+    "max_scaled_error": 4.623800892663986e-11
+  },
+  "nu_held_timing": {
+    "machine": "workstation",
+    "before_seconds": 81.36680399,
+    "before": "budget stop",
+    "after_seconds": 0.12120666,
+    "after": "certified size 10"
+  },
+  "default_golden_record_identical": true,
+  "previous_successful_free_size_records_identical": true,
+  "simbox_fallback_used": false,
+  "commits": false,
+  "board_edits": false,
+  "test_expectation_correction": "The former all-zero probability-zero free-size success expectation now requires the finite-size tie mandated by this task.",
+  "artifact_pane": {
+    "status": "blocked",
+    "http": 403,
+    "reason": "worktree outside viewer readable roots"
+  }
+}

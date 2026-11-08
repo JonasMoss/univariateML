@@ -144,10 +144,14 @@ test_that("CMB: held canonical coordinates give a certified integer profile", {
 
 test_that("CMB: free size validates holds, endpoints and resource failures", {
   for(nu in c(-2,0,2)) for(p in c(0,1)) {
-    f <- mlcmb(rep(3*p,20),size=NULL,prob=p,nu=nu)
-    expect_equal(as.numeric(f),c(3*p,p,nu))
-    expect_equal(attr(f,"logLik"),0)
-    expect_setequal(attr(f,"fixed"),c("prob","nu"))
+    if (p == 0) {
+      expect_error(mlcmb(rep(0,20),size=NULL,prob=0,nu=nu),class="univariateML_tie")
+    } else {
+      f <- mlcmb(rep(3,20),size=NULL,prob=1,nu=nu)
+      expect_equal(as.numeric(f),c(3,1,nu))
+      expect_equal(attr(f,"logLik"),0)
+      expect_setequal(attr(f,"fixed"),c("prob","nu"))
+    }
     expect_error(mlcmb(c(0,1),size=NULL,prob=p,nu=nu),"between zero and size")
   }
   for (p in list(NULL,.3)) {
@@ -340,4 +344,33 @@ test_that("CMB delegated CMP allowance increases with iterlim", {
   b <- mlcmb(x,size=NULL,iterlim=2000)
   expect_identical(as.numeric(a),as.numeric(b))
   expect_identical(as.numeric(logLik(a)),as.numeric(logLik(b)))
+})
+
+test_that("CMB finite-size ties stop with both finite witnesses", {
+  for (args in list(list(x=c(1,1),prob=.5,nu=1),
+                    list(x=c(0,0)),list(x=c(0,0),nu=2),
+                    list(x=c(0,0),prob=0,nu=2))) {
+    e <- tryCatch(do.call(mlcmb,c(args,list(size=NULL))), error=identity)
+    expect_s3_class(e,"univariateML_tie")
+    expect_match(conditionMessage(e),"Distinct finite sizes")
+    expect_equal(nrow(e$candidates),2L)
+    expect_equal(length(unique(e$candidates$size)),2L)
+    expect_true(all(is.finite(e$candidates$loglik_lower)))
+    expect_identical(e$loglik_upper,Inf)
+  }
+})
+
+test_that("CMB census nu-held free size returns a certified finite fit", {
+  g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"),"cmb","golden.json"))
+  f <- mlcmb(g$data,size=NULL,nu=g$estimates$nu)
+  expect_equal(f[["size"]],10)
+  expect_equal(f[["prob"]],g$estimates$prob,tolerance=1e-8)
+  expect_equal(as.numeric(logLik(f)),g$logLik,tolerance=1e-10)
+})
+
+test_that("CMB unsupported central design retains its attainable endpoint-face bound", {
+  e <- tryCatch(mlcmb(c(6000000,6000000),size=NULL,prob=.5),error=identity)
+  expect_s3_class(e,"univariateML_unresolved")
+  expect_equal(e$model,"unavailable:two-point")
+  expect_equal(e$limit_loglik,-2*log(2))
 })
