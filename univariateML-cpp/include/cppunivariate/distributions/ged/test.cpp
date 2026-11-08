@@ -57,7 +57,7 @@ TEST_CASE("ged (Generalized Error Distribution)") {
 TEST_CASE("ged constrained faces and shapes") {
   std::vector<double> uniform, peaked;
   for (int i = 0; i < 40; ++i) uniform.push_back(-1.0 + 2.0*i/39.0);
-  for (int i = 0; i < 18; ++i) peaked.push_back(-0.02 + 0.04*i/17.0);
+  for (int i = 0; i < 19; ++i) peaked.push_back(-0.02 + 0.04*i/18.0);
   peaked.push_back(-10.0); peaked.push_back(10.0);
   auto u = cppunivariate::ged_mle(mltest::as_span(uniform), 1e-6, 500);
   CHECK(u.status == cppunivariate::GedStatus::UniformBoundary);
@@ -113,8 +113,8 @@ TEST_CASE("ged: every held golden subset preserves coefficients and likelihood")
 TEST_CASE("ged: held variance uniform endpoint comparison") {
   const double endpoint=std::sqrt(3.0),nan=std::numeric_limits<double>::quiet_NaN();
   std::vector<double> x;for(int i=0;i<10;++i){x.push_back(-endpoint);x.push_back(endpoint);}
-  CHECK(cppunivariate::ged_mle(mltest::as_span(x),1e-8,200,0,1,nan).status==cppunivariate::GedStatus::UniformBoundary);
-  CHECK(cppunivariate::ged_mle(mltest::as_span(x),1e-8,200,nan,1,nan).status==cppunivariate::GedStatus::UniformBoundary);
+  CHECK(cppunivariate::ged_mle(mltest::as_span(x),1e-8,200,0,1,nan).status==cppunivariate::GedStatus::UniformUnresolved);
+  CHECK(cppunivariate::ged_mle(mltest::as_span(x),1e-8,200,nan,1,nan).status==cppunivariate::GedStatus::UniformUnresolved);
 }
 
 TEST_CASE("ged: held profiles preserve extreme units") {
@@ -187,4 +187,343 @@ TEST_CASE("ged: structured face payloads") {
   REQUIRE(r.stop_detail.limit_coef.size()==2);
   CHECK(r.stop_detail.limit_coef[0]==doctest::Approx(-1));CHECK(r.stop_detail.limit_coef[1]==doctest::Approx(1));
   CHECK(r.stop_detail.limit_loglik==doctest::Approx(-40*std::log(2.)));
+}
+
+TEST_CASE("ged: free-shape power moment bounds include the exact normal profile") {
+  const std::vector<double> x{-3,-1,0,1,4};
+  const auto data=mltest::as_span(x);
+  const auto m=cppunivariate::ged_shape_detail::moment(data,2,NAN,200);
+  REQUIRE(m.valid);
+  const double expected=std::sqrt(5.36); // mean=0.2, population variance=5.36
+  CHECK(m.log_lower<=std::log(expected));
+  CHECK(m.log_upper>=std::log(expected));
+  CHECK(m.log_upper-m.log_lower<1e-8);
+  // Even a single bisection gives bounds rather than an unchecked minimizer.
+  const auto short_run=cppunivariate::ged_shape_detail::moment(data,2,NAN,1);
+  REQUIRE(short_run.valid);
+  CHECK(short_run.log_lower<=std::log(expected));
+  CHECK(short_run.log_upper>=std::log(expected));
+  const auto median=cppunivariate::ged_shape_detail::moment(data,1,NAN,1);
+  REQUIRE(median.valid);
+  CHECK(median.log_lower<=std::log(1.8));
+  CHECK(median.log_upper>=std::log(1.8));
+}
+
+TEST_CASE("ged: finite shape interval bounds cover all four free-shape subsets") {
+  const std::vector<double> x{-3,-1,0,1,4};
+  const auto data=mltest::as_span(x);
+  for(double mean:{double(NAN),.2})for(double sd:{double(NAN),1.3}) {
+    for(double p:{1.,1.2,2.,10.}) {
+      const double q=p+.2;
+      const auto bound=cppunivariate::ged_shape_detail::interval(data,p,q,mean,sd,200);
+      REQUIRE(bound.valid);
+      for(double shape:{p,(p+q)/2,q}) {
+        const auto r=cppunivariate::ged_detail::conditional(data,shape,mean,sd,200);
+        REQUIRE(r.status==cppunivariate::GedStatus::Ok);
+        CHECK(r.logLik<=bound.upper);
+      }
+    }
+  }
+}
+
+TEST_CASE("ged: endpoint power profile includes unequal endpoint counts") {
+  const auto power=[](double p){return cppunivariate::ged_shape_detail::endpoint_power(1,9,p);};
+  CHECK(power(1)==doctest::Approx(2));
+  CHECK(power(2)==doctest::Approx(3.6));
+  CHECK(power(1000000)==doctest::Approx(6).epsilon(1e-6));
+  for(double p:{1.,1.1,2.,10.,1000.}) {
+    CHECK(power(p)<=power(p*2)+1e-12);
+    for(int j=-100;j<=100;++j) {
+      const double u=j/100.;
+      CHECK(power(p)<=std::pow(std::abs(1+u),p)+9*std::pow(std::abs(1-u),p)+1e-10);
+    }
+  }
+}
+
+TEST_CASE("ged: tail bounds enclose optimized moments and endpoint paths") {
+  for(const std::vector<double>& x:{std::vector<double>{-3,-1,0,1,4},
+      std::vector<double>{-1,1,1,1,1,1,1,1,1,1}}) {
+    const auto data=mltest::as_span(x);
+    for(double mean:{double(NAN),0.})for(double sd:{double(NAN),1/std::sqrt(3.),.4,2.}) {
+      for(double p:{1.,2.,10.,100.}) {
+        const auto bound=cppunivariate::ged_shape_detail::tail(data,p,mean,sd,200);
+        REQUIRE(bound.valid);
+        for(double shape:{p,p*2,p*10}) {
+          const auto r=cppunivariate::ged_detail::conditional(data,shape,mean,sd,200);
+          if(std::isfinite(r.logLik))CHECK(r.logLik<=bound.upper);
+        }
+      }
+    }
+  }
+  const std::vector<double> endpoints{-std::sqrt(3.),std::sqrt(3.)};
+  const auto uncertain=cppunivariate::ged_shape_detail::tail(mltest::as_span(endpoints),100,0,1,200);
+  REQUIRE(uncertain.valid);
+  CHECK(uncertain.endpoint_uncertain);
+  // Endpoint comparisons are discontinuous: near-equality drops the penalty.
+  CHECK(uncertain.upper>=-2*std::log(2*std::sqrt(3.)));
+}
+
+TEST_CASE("ged: constant samples with held sd have an analytic free-shape certificate") {
+  const std::vector<double> x{2,2,2};
+  for(double mean:{double(NAN),2.}) {
+    const auto r=cppunivariate::ged_mle(mltest::as_span(x),1e-6,1,mean,1,NAN);
+    REQUIRE(r.status==cppunivariate::GedStatus::Ok);
+    CHECK(r.certified);
+    CHECK(r.mu==2);
+    CHECK(r.sigma==1);
+    CHECK(r.nu==1);
+    CHECK(r.restricted==16u);
+    CHECK(r.logLik==doctest::Approx(-1.5*std::log(2.)));
+    for(double shape:{1.01,2.,10.,1000.}) {
+      const auto other=cppunivariate::ged_detail::conditional(mltest::as_span(x),shape,mean,1,200);
+      CHECK(other.logLik<r.logLik);
+    }
+  }
+}
+
+TEST_CASE("ged: failed free-shape searches retain a witness and global bound") {
+  auto g=mltest::load_distribution_golden("ged");
+  auto r=cppunivariate::ged_mle(mltest::as_span(g.data),1e-8,1,0.,1.,NAN);
+  REQUIRE(r.status==cppunivariate::GedStatus::BfgsFailure);
+  CHECK_FALSE(r.certified);
+  REQUIRE_FALSE(r.stop_detail.candidates.empty());
+  CHECK(r.stop_detail.loglik_lower<=r.stop_detail.loglik_upper);
+  CHECK(r.stop_detail.loglik_upper>=g.logLik);
+  for(const auto& c:r.stop_detail.candidates) {
+    const auto at=cppunivariate::ged_detail::conditional(mltest::as_span(g.data),c.coef[2],c.coef[0],c.coef[1],200);
+    CHECK(c.loglik_lower<=at.logLik);
+    CHECK(c.loglik_upper>=at.logLik);
+  }
+}
+
+TEST_CASE("ged: small held scale certifies the Laplace maximum or its median tie") {
+  const std::vector<double> odd{-3,-1,0,1,4};
+  const auto r=cppunivariate::ged_mle(mltest::as_span(odd),1e-6,1,NAN,.1,NAN);
+  REQUIRE(r.status==cppunivariate::GedStatus::Ok);
+  CHECK(r.certified);
+  CHECK(r.mu==0);
+  CHECK(r.nu==1);
+  CHECK(r.restricted==16u);
+  const std::vector<double> even{-1,1};
+  const auto tied=cppunivariate::ged_mle(mltest::as_span(even),1e-6,1,NAN,.1,NAN);
+  REQUIRE(tied.status==cppunivariate::GedStatus::Nonunique);
+  CHECK(tied.stop_detail.comparison_tie);
+  REQUIRE(tied.stop_detail.candidates.size()==2);
+  CHECK(tied.stop_detail.candidates[0].coef[0]==-1);
+  CHECK(tied.stop_detail.candidates[1].coef[0]==1);
+  CHECK(tied.stop_detail.loglik_lower<=tied.stop_detail.loglik_upper);
+  CHECK(std::isfinite(tied.stop_detail.loglik_upper));
+  for(double mean:{-.8,0.,.7}) {
+    const auto held=cppunivariate::ged_mle(mltest::as_span(even),1e-6,1,mean,.1,NAN);
+    REQUIRE(held.status==cppunivariate::GedStatus::Ok);
+    CHECK(held.certified);
+    CHECK(held.mu==mean);
+    CHECK(held.nu==1);
+    CHECK(held.logLik==doctest::Approx(tied.logLik));
+    for(double shape:{1.01,1.1,2.,10.}) {
+      const auto other=cppunivariate::ged_detail::conditional(mltest::as_span(even),shape,NAN,.1,200);
+      CHECK(other.logLik<tied.logLik);
+    }
+  }
+}
+
+TEST_CASE("ged: rounded held-sd uniform endpoints stop without selecting a face") {
+  const std::vector<double> x{-std::sqrt(3.),std::sqrt(3.)};
+  for(double mean:{double(NAN),0.}) {
+    const auto r=cppunivariate::ged_mle(mltest::as_span(x),1e-6,200,mean,1,NAN);
+    REQUIRE(r.status==cppunivariate::GedStatus::UniformUnresolved);
+    CHECK(r.stop_detail.limit_coef.empty());
+    CHECK_FALSE(r.stop_detail.candidates.empty());
+    CHECK(std::isfinite(r.stop_detail.loglik_upper));
+    CHECK(r.stop_detail.loglik_upper>=-2*std::log(2*std::sqrt(3.)));
+  }
+}
+
+TEST_CASE("ged: a held-sd interior uniform height cannot be selected from a capped shape search") {
+  const std::vector<double> x{-std::sqrt(3.)*(1-1e-8),std::sqrt(3.)*(1-1e-8)};
+  const auto r=cppunivariate::ged_mle(mltest::as_span(x),1e-6,200,0,1,NAN);
+  CHECK(r.status==cppunivariate::GedStatus::UniformUnresolved);
+  CHECK(r.stop_detail.limit_coef.empty());
+  CHECK(r.stop_detail.loglik_upper>=-2*std::log(2*std::sqrt(3.)));
+}
+
+TEST_CASE("ged: a signed free-scale tail bound closes uniform-winning tails") {
+  std::vector<double> x;for(int j=0;j<40;++j)x.push_back(-1.+2.*j/39.);
+  const auto data=mltest::as_span(x);
+  for(double mean:{double(NAN),.2}) {
+    const auto bound=cppunivariate::ged_shape_detail::tail(data,100,mean,NAN,200);
+    REQUIRE(bound.valid);
+    const double radius=std::isnan(mean)?1:1.2;
+    const double uniform=-40*std::log(2*radius);
+    CHECK(bound.upper>=uniform);
+    CHECK(bound.upper<uniform+1e-6);
+    for(double shape:{100.,1000.,10000.}) {
+      const auto finite=cppunivariate::ged_detail::conditional(data,shape,mean,NAN,200);
+      CHECK(finite.logLik<=uniform);
+    }
+  }
+}
+
+TEST_CASE("ged: a constant sample away from a held mean has a certified uniform escape") {
+  const std::vector<double> x{2,2,2};
+  const auto r=cppunivariate::ged_mle(mltest::as_span(x),1e-6,1,0,NAN,NAN);
+  REQUIRE(r.status==cppunivariate::GedStatus::UniformBoundary);
+  CHECK(r.certified);
+  REQUIRE(r.stop_detail.limit_coef.size()==2);
+  CHECK(r.stop_detail.limit_coef[0]==-2);
+  CHECK(r.stop_detail.limit_coef[1]==2);
+  CHECK(r.stop_detail.limit_loglik==doctest::Approx(-3*std::log(4.)));
+  for(double shape:{1.,2.,10.,1000.}) {
+    const auto finite=cppunivariate::ged_detail::conditional(mltest::as_span(x),shape,0,NAN,200);
+    CHECK(finite.logLik<r.stop_detail.limit_loglik);
+  }
+}
+
+TEST_CASE("ged: free-scale uniform decisions require a global finite-interval certificate") {
+  std::vector<double> x;for(int j=0;j<40;++j)x.push_back(-1.+2.*j/39.);
+  const auto data=mltest::as_span(x);
+  for(double mean:{double(NAN),0.}) {
+    const auto r=cppunivariate::ged_mle(data,1e-6,200,mean,NAN,NAN);
+    REQUIRE(r.status==cppunivariate::GedStatus::UniformBoundary);
+    CHECK(r.certified);
+    CHECK(std::isfinite(r.stop_detail.loglik_upper));
+    CHECK(r.stop_detail.loglik_lower<=-40*std::log(2.));
+    CHECK(r.stop_detail.loglik_upper>=-40*std::log(2.));
+  }
+  // A deliberately false face proposed over a known finite normal-like fit
+  // must exhaust or fail the certificate, never become a selected limit.
+  auto g=mltest::load_distribution_golden("ged");
+  const auto mm=std::minmax_element(g.data.begin(),g.data.end());
+  const double ll=-static_cast<double>(g.data.size())*std::log(*mm.second-*mm.first);
+  cppunivariate::GedResult proposal{0,1,2,ll,0,cppunivariate::GedStatus::UniformBoundary};
+  proposal.stop_detail=cppunivariate::limit_detail({*mm.first,*mm.second},ll,cppunivariate::StopModel::Unif);
+  cppunivariate::ged_uniform_certificate(proposal,mltest::as_span(g.data),NAN,1e-6,1);
+  CHECK_FALSE(proposal.certified);
+  CHECK(proposal.status==cppunivariate::GedStatus::BfgsFailure);
+  CHECK(proposal.stop_detail.limit_coef.empty());
+}
+
+TEST_CASE("ged: all four free-shape golden subsets require the global score certificate") {
+  const auto g=mltest::load_distribution_golden("ged");
+  for(int mask=0;mask<4;++mask) {
+    CAPTURE(mask);
+    const auto r=cppunivariate::ged_mle(mltest::as_span(g.data),1.220703e-4,200,
+      mask&1?g.estimates.at("mean"):NAN,mask&2?g.estimates.at("sd"):NAN,NAN);
+    REQUIRE(r.status==cppunivariate::GedStatus::Ok);
+    CHECK(r.certified);
+    CHECK(r.mu==doctest::Approx(g.estimates.at("mean")).epsilon(1e-5));
+    CHECK(r.sigma==doctest::Approx(g.estimates.at("sd")).epsilon(1e-5));
+    CHECK(r.nu==doctest::Approx(g.estimates.at("nu")).epsilon(1e-5));
+    CHECK(r.stop_detail.loglik_lower<=r.logLik);
+    CHECK(r.stop_detail.loglik_upper>=r.logLik);
+    CHECK(r.iterations<=cppunivariate::certificate_budget(200));
+  }
+}
+
+TEST_CASE("ged: score enclosure covers nuisance roots and proves local root isolation") {
+  const std::vector<double> x{-1,-.3,0,.2,.9};const auto data=mltest::as_span(x);
+  for(double mean:{double(NAN),.1})for(double sd:{double(NAN),.7}) {
+    const auto box=cppunivariate::ged_shape_detail::score_box(data,2.9,3.1,mean,sd,200);
+    REQUIRE(box.valid);
+    for(double p:{2.9,3.,3.1}) {
+      const auto r=cppunivariate::ged_detail::conditional(data,p,mean,sd,200);
+      CHECK(r.mu>=box.location.lo);CHECK(r.mu<=box.location.hi);
+      const auto point=cppunivariate::ged_shape_detail::score_box(data,p,p,mean,sd,200);
+      CHECK(point.score.lo>=box.score.lo);CHECK(point.score.hi<=box.score.hi);
+    }
+  }
+  const auto g=mltest::load_distribution_golden("ged");
+  const auto box=cppunivariate::ged_shape_detail::score_box(mltest::as_span(g.data),3.016,3.017,NAN,NAN,200);
+  REQUIRE(box.valid);CHECK(box.derivative.hi<0);
+}
+
+TEST_CASE("ged: globally selected free-shape Laplace median intervals stop with two witnesses") {
+  std::vector<double> x;for(int i=0;i<18;++i)x.push_back(-.02+.04*i/17.);
+  x.push_back(-10);x.push_back(10);
+  const auto r=cppunivariate::ged_mle(mltest::as_span(x),1e-6,200);
+  REQUIRE(r.status==cppunivariate::GedStatus::Nonunique);
+  REQUIRE(r.stop_detail.candidates.size()>=2);
+  CHECK(r.stop_detail.candidates[0].coef[2]==1);
+  CHECK(r.stop_detail.candidates[1].coef[2]==1);
+  CHECK(r.stop_detail.candidates[0].coef[0]!=r.stop_detail.candidates[1].coef[0]);
+}
+
+TEST_CASE("ged: held-shape certificates expose median and knot ties") {
+  const std::vector<double> x{-1,1};const auto data=mltest::as_span(x);
+  for(double nu:{.5,1.}) {
+    const auto r=cppunivariate::ged_mle(data,1e-6,200,NAN,NAN,nu);
+    CHECK(r.status==cppunivariate::GedStatus::Nonunique);
+    CHECK(r.stop_detail.candidates.size()==2);
+  }
+  const auto normal=cppunivariate::ged_mle(data,1e-6,200,NAN,NAN,2.);
+  REQUIRE(normal.status==cppunivariate::GedStatus::Ok);CHECK(normal.certified);
+}
+
+TEST_CASE("ged: separated finite shape maxima stop with competing root witnesses") {
+  // 80-digit raw-likelihood construction: held sd=1, symmetric locations.
+  // Exact inner radius 0.3299866080912000371592... makes the two peaks equal.
+  std::vector<double> x(8,0.);
+  for(int i=0;i<23;++i){x.push_back(-.32998660809120006);x.push_back(.32998660809120006);}
+  for(int i=0;i<12;++i){x.push_back(-1.4239025460520294);x.push_back(1.4239025460520294);}
+  for(double mean:{0.,double(NAN)}) {
+    const auto r=cppunivariate::ged_mle(mltest::as_span(x),1e-6,200,mean,1,NAN);
+    REQUIRE(r.status==cppunivariate::GedStatus::Nonunique);
+    REQUIRE(r.stop_detail.candidates.size()>=2);
+    auto a=r.stop_detail.candidates[0],b=r.stop_detail.candidates[1];
+    if(a.coef[2]>b.coef[2])std::swap(a,b);
+    CHECK(a.coef[2]==doctest::Approx(1.108145553391854).epsilon(1e-5));
+    CHECK(b.coef[2]==doctest::Approx(25.39783214175462).epsilon(1e-5));
+    CHECK(std::abs((a.loglik_lower+a.loglik_upper)-(b.loglik_lower+b.loglik_upper))<1e-5);
+  }
+}
+
+TEST_CASE("ged: inverse normalization cannot certify an unrepresentable location") {
+  const auto g=mltest::load_distribution_golden("ged");
+  auto x=g.data;for(double& v:x)v=1e16+10*v;
+  const auto data=mltest::as_span(x);
+  const auto r=cppunivariate::ged_mle(data,1.220703e-4,200);
+  REQUIRE(r.status==cppunivariate::GedStatus::TransformFailure);
+  CHECK_FALSE(r.certified);
+  REQUIRE_FALSE(r.stop_detail.candidates.empty());
+  for(const auto& c:r.stop_detail.candidates) {
+    const auto actual=cppunivariate::ged_detail::conditional(data,c.coef[2],c.coef[0],c.coef[1],200);
+    CHECK(c.loglik_lower<=actual.logLik);CHECK(c.loglik_upper>=actual.logLik);
+  }
+  const auto normal=cppunivariate::ged_mle(data,1e-6,200,NAN,NAN,2.);
+  CHECK(normal.status==cppunivariate::GedStatus::TransformFailure);
+}
+
+
+TEST_CASE("ged: rounded residual ties cannot select a uniform excluding an observation") {
+  const double u=std::ldexp(1.,-53);
+  const std::vector<double> x{-1+u,1+2*u};
+  const auto r=cppunivariate::ged_mle(mltest::as_span(x),1e-6,200,u,NAN,NAN);
+  CHECK(r.status==cppunivariate::GedStatus::TransformFailure);
+  CHECK_FALSE(r.certified);CHECK(r.stop_detail.limit_coef.empty());
+  CHECK_FALSE(r.stop_detail.candidates.empty());
+}
+
+TEST_CASE("ged: the Laplace median interval retains original observation endpoints") {
+  std::vector<double> x;for(int i=1;i<=19;++i)x.push_back(i);x.push_back(1e308);
+  const auto r=cppunivariate::ged_mle(mltest::as_span(x),1e-6,200);
+  REQUIRE(r.status==cppunivariate::GedStatus::Nonunique);
+  REQUIRE(r.stop_detail.candidates.size()==2);
+  CHECK(r.stop_detail.candidates[0].coef[0]==10);
+  CHECK(r.stop_detail.candidates[1].coef[0]==11);
+}
+
+TEST_CASE("ged: held-shape arithmetic losses are numerical stops rather than certificates") {
+  const double a=1e-320;
+  const std::vector<double> tiny{0,0,a};
+  const auto r=cppunivariate::ged_mle(mltest::as_span(tiny),1e-6,200,NAN,NAN,.5);
+  CHECK(r.status==cppunivariate::GedStatus::TransformFailure);CHECK_FALSE(r.certified);
+  const std::vector<double> small{0,0,1e-200};
+  const auto q=cppunivariate::ged_mle(mltest::as_span(small),1e-6,200,NAN,NAN,.02);
+  CHECK(q.status==cppunivariate::GedStatus::TransformFailure);CHECK(std::isnan(q.sigma));
+  const std::vector<double> underflow{1e-100};
+  const auto h=cppunivariate::ged_mle(mltest::as_span(underflow),1e-6,200,0,1e300,.02);
+  CHECK(h.status==cppunivariate::GedStatus::TransformFailure);CHECK_FALSE(h.certified);
+  const std::vector<double> constant(400,0);
+  const auto c=cppunivariate::ged_mle(mltest::as_span(constant),1e-6,1,NAN,1,.5);
+  CHECK(c.status==cppunivariate::GedStatus::Ok);CHECK(c.certified);
 }

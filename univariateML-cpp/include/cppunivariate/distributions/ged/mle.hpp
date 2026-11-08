@@ -32,7 +32,7 @@ namespace cppunivariate {
 inline constexpr double kGedNuLower = 1.0;
 
 
-enum class GedStatus { Ok = 0, BfgsFailure, InvalidStart, UniformBoundary, InvalidShape };
+enum class GedStatus { Ok = 0, BfgsFailure, InvalidStart, UniformBoundary, InvalidShape, Nonunique, UniformUnresolved, TransformFailure };
 
 struct GedResult {
   double mu;
@@ -41,7 +41,11 @@ struct GedResult {
   double logLik;
   int iterations;
   GedStatus status; unsigned restricted = 0;
- StopDetail stop_detail{}; };
+ StopDetail stop_detail{};
+  // True only after the conditional/global certificate accepts the result.
+  bool certified = false; };
+
+#include "free_shape_bounds.hpp"
 
 // Per-obs nll in phi-space (with a = x - mu, w = |a|/(sigma * lambda),
 // W = 0.5 * w^nu, K = log 2 - psi(1/nu)/2 + 3 psi(3/nu)/2,
@@ -246,8 +250,9 @@ inline GedResult conditional(span x,double nu,double mean,double sd,int maxit=20
       double best=INFINITY;
       const double radius=y.back()-y.front();
       for(double c:y) {
-        double value=0;
-        for(double v:y) value+=std::pow(radius>0 ? std::abs(v-c)/radius : 0,nu);
+        ged_shape_detail::Sum total;
+        for(double v:y) total.add(std::pow(radius>0 ? std::abs(v-c)/radius : 0,nu));
+        const double value=total.value;
         if(value<best){best=value;m=c;}
       }
     }
@@ -256,7 +261,7 @@ inline GedResult conditional(span x,double nu,double mean,double sd,int maxit=20
     else {
       double lo=y.front(),hi=y.back();
 
-      for(int it=0;it<maxit;++it){const double mid=lo/2+hi/2;const double unit=std::max(std::max(std::abs(y.front()-mid),std::abs(y.back()-mid)),std::numeric_limits<double>::denorm_min());CPPUNIV_EXTENDED_REAL score=0;for(double v:y){const double d=(v-mid)/unit;score+=(d>0?1:-1)*std::pow(std::abs(d),nu-1);}if(score>0)lo=mid;else hi=mid;}
+      for(int it=0;it<maxit;++it){const double mid=lo/2+hi/2;if(mid==lo || mid==hi || hi-lo<=8*std::numeric_limits<double>::epsilon()*(y.back()-y.front()))break;const double unit=std::max(std::max(std::abs(y.front()-mid),std::abs(y.back()-mid)),std::numeric_limits<double>::denorm_min());CPPUNIV_EXTENDED_REAL score=0;for(double v:y){const double d=(v-mid)/unit;score+=(d>0?1:-1)*std::pow(std::abs(d),nu-1);}if(score>0)lo=mid;else hi=mid;}
       if(hi-lo>1e-10*(y.back()-y.front()))return {nan,nan,nu,nan,maxit,GedStatus::BfgsFailure};
       m=lo/2+hi/2;
     }
@@ -265,11 +270,11 @@ inline GedResult conditional(span x,double nu,double mean,double sd,int maxit=20
   if(std::isnan(s)) {
     double radius=0;for(double v:y)radius=std::max(radius,std::abs(v-m));
     if(!(radius>0))return {m,0,nu,INFINITY,0,GedStatus::InvalidStart};
-    double sum=0;for(double v:y)sum+=std::pow(std::abs(v-m)/radius,nu);
+    ged_shape_detail::Sum total;for(double v:y)total.add(std::pow(std::abs(v-m)/radius,nu));const double sum=total.value;
     s=radius*std::exp(std::log(nu*sum/(2*y.size()))/nu)/dens::ged_lambda(nu);
   }
-  double ll=0;for(double v:y)ll-=std::log(s)-dens::log_dged_unit((v-m)/s,nu);
-  return {m,s,nu,ll,0,GedStatus::Ok};
+  ged_shape_detail::Sum ll;for(double v:y)ll.add(dens::log_dged_unit((v-m)/s,nu)-std::log(s));
+  return {m,s,nu,ll.value,0,GedStatus::Ok};
 }
 }
 inline GedResult ged_mle_impl(span x,double tol,int maxit,double mean,double sd,double nu) {
@@ -281,6 +286,65 @@ inline GedResult ged_mle_impl(span x,double tol,int maxit,double mean,double sd,
     return ged_detail::conditional(x,nu,mean,sd,maxit);
   }
   if(x.empty()||!(tol>0)||maxit<1)return {nan,nan,nan,nan,0,GedStatus::InvalidStart};
+  // With a held mean different from a constant sample, R_p is independent
+  // of p. The strictly increasing free-scale profile h(p) therefore has its
+  // supremum only at the uniform face, with no finite shape maximizer.
+  if(std::isnan(sd) && std::isfinite(mean) && std::isfinite(tol) &&
+      std::isfinite(x[0]) && x[0]!=mean &&
+      std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];})) {
+    const double other=mean+(mean-x[0]);
+    const double radius=std::abs(x[0]-mean);
+    const double ll=-static_cast<double>(x.size())*(std::log(2.)+std::log(radius));
+    GedResult r{mean,nan,nan,ll,0,GedStatus::UniformBoundary};
+    r.stop_detail=limit_detail({std::min(x[0],other),std::max(x[0],other)},ll,StopModel::Unif);
+    if(r.stop_detail.limit_coef.empty()){r.status=GedStatus::BfgsFailure;return r;}
+    const double pad=ged_shape_detail::margin(std::abs(ll),x.size());
+    r.stop_detail.loglik_lower=ll-pad;r.stop_detail.loglik_upper=ll+pad;
+    r.stop_detail.candidates[0].loglik_lower=ll-pad;r.stop_detail.candidates[0].loglik_upper=ll+pad;
+    r.certified=true;return r;
+  }
+  // For a constant sample at a held/free mean with sd held, the residual
+  // penalty vanishes at its unique optimal location. The standardized peak
+  // decreases strictly in nu>=1, so the attained Laplace shape is global.
+  if(std::isfinite(sd) && sd>0 && std::isfinite(tol) && std::isfinite(x[0]) &&
+      (std::isnan(mean) || mean==x[0]) &&
+      std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];})) {
+    GedResult r{x[0],sd,1,-static_cast<double>(x.size())*(std::log(sd)+std::log(2.)/2),0,GedStatus::Ok};
+    r.certified=std::isfinite(r.logLik);
+    if(!r.certified)r.status=GedStatus::BfgsFailure;
+    return r;
+  }
+  // A power-mean lower bound certifies Laplace when the held scale is
+  // sufficiently small. See the derivative bound in README.md.
+  if(std::isfinite(sd) && sd>0 && std::isfinite(tol)) {
+    const auto moment=ged_shape_detail::moment(x,1,mean,maxit);
+    const double threshold=2.25-ged_shape_detail::euler-ged_shape_detail::log2/2;
+    if(moment.valid && moment.log_lower-std::log(sd)>
+        threshold+ged_shape_detail::margin(std::abs(std::log(sd))+std::abs(moment.log_lower),x.size())) {
+      auto r=ged_detail::conditional(x,1,mean,sd,maxit);
+      if(r.status!=GedStatus::Ok || !std::isfinite(r.logLik)) {
+        r.status=GedStatus::BfgsFailure;return r;
+      }
+      if(std::isnan(mean)) {
+        std::vector<double> sorted(x.begin(),x.end());std::sort(sorted.begin(),sorted.end());
+        const double left=sorted[(sorted.size()-1)/2],right=sorted[sorted.size()/2];
+        if(left<right) {
+          const auto a=ged_detail::conditional(x,1,left,sd,maxit);
+          const auto b=ged_detail::conditional(x,1,right,sd,maxit);
+          if(!std::isfinite(a.logLik) || !std::isfinite(b.logLik)) {
+            r.status=GedStatus::BfgsFailure;return r;
+          }
+          const double pad=ged_shape_detail::margin(std::max(std::abs(a.logLik),std::abs(b.logLik)),x.size());
+          r.status=GedStatus::Nonunique;
+          r.stop_detail=comparison_detail({{left,sd,1},a.logLik-pad,a.logLik+pad},
+              {{right,sd,1},b.logLik-pad,b.logLik+pad});
+          r.stop_detail.loglik_upper=std::max(a.logLik,b.logLik)+pad;
+          return r;
+        }
+      }
+      r.certified=true;return r;
+    }
+  }
   std::vector<double> grid;for(double t=-12;t<=12;t+=.4)grid.push_back(t);
   auto profile=[&](double t){return ged_detail::conditional(x,1+std::exp(t),mean,sd,maxit);};
   const auto optimum=ged_detail::maximize([&](double a){return profile(a).logLik;},grid,1e-8,maxit);
@@ -311,15 +375,117 @@ inline GedResult ged_mle_impl(span x,double tol,int maxit,double mean,double sd,
   return best;
 }
 
+// Preserve an existing numerical stop, with a conservative global upper bound
+// and a separately evaluated finite witness. This does not promote a legacy
+// search result or its uniform-face comparison into a certificate.
+inline void ged_failure_bounds(GedResult& r,span x,double mean,double sd,double tol,int maxit) {
+  if((r.status!=GedStatus::BfgsFailure && r.status!=GedStatus::UniformUnresolved) || !r.stop_detail.candidates.empty() ||
+      !(tol>0) || !std::isfinite(tol) || maxit<1 ||
+      !ged_shape_detail::input(x,mean,sd,1))return;
+  const auto interior=ged_shape_detail::interval(x,1,2,mean,sd,maxit);
+  const auto beyond=ged_shape_detail::tail(x,2,mean,sd,maxit);
+  if(interior.valid && beyond.valid)
+    r.stop_detail.loglik_upper=std::max(interior.upper,beyond.upper);
+  else r.stop_detail.loglik_upper=INFINITY;
+  const auto witness=(std::isfinite(r.mu) && r.sigma>0 && std::isfinite(r.sigma) && r.nu>=1 && std::isfinite(r.nu))?
+      ged_detail::conditional(x,r.nu,r.mu,r.sigma,maxit):ged_detail::conditional(x,1,mean,sd,maxit);
+  if(witness.status==GedStatus::Ok && witness.sigma>0 && std::isfinite(witness.logLik)) {
+    const double pad=ged_shape_detail::margin(std::abs(witness.logLik),x.size())*(1+witness.nu);
+    r.stop_detail.candidates.push_back({{witness.mu,witness.sigma,witness.nu},witness.logLik-pad,witness.logLik+pad});
+    r.stop_detail.loglik_lower=witness.logLik-pad;
+    if(r.stop_detail.loglik_upper<witness.logLik+pad)r.stop_detail.loglik_upper=INFINITY;
+  }
+}
+
+// Certify a selected free-scale uniform face. The signed tail theorem closes
+// nu>=n; every finite segment in [1,n] must lie strictly below the face.
+// Failure is terminal, with the popped and queued bounds retained.
+inline void ged_uniform_certificate(GedResult& r,span x,double mean,double tol,int maxit) {
+  if(r.status!=GedStatus::UniformBoundary || r.certified)return;
+  if(!(tol>0) || !std::isfinite(tol) || maxit<1 ||
+      !ged_shape_detail::input(x,mean,NAN,1))return;
+  double radius=0;
+  std::vector<double> coefficients;
+  if(std::isfinite(mean)) {
+    double farthest=x[0];
+    for(double v:x)if(std::abs(v-mean)>radius){radius=std::abs(v-mean);farthest=v;}
+    const double other=mean+(mean-farthest);
+    coefficients={std::min(farthest,other),std::max(farthest,other)};
+  } else {
+    const auto mm=std::minmax_element(x.begin(),x.end());
+    radius=*mm.second/2-*mm.first/2;
+    coefficients={*mm.first,*mm.second};
+  }
+  const double n=static_cast<double>(x.size());
+  const double face=-n*(ged_shape_detail::log2+std::log(radius));
+  const double pad=ged_shape_detail::margin(std::abs(face),n)*(1+n);
+  // Recover endpoints directly from observations, not a rounded inverse of
+  // the optimizer's normalization. A selected uniform must contain the data.
+  auto original=limit_detail(coefficients,face,StopModel::Unif);
+  if(!(radius>=std::numeric_limits<double>::min()) || !std::isfinite(face) ||
+      original.limit_coef.empty() || !std::all_of(x.begin(),x.end(),[&](double v){return coefficients[0]<=v && v<=coefficients[1];})) {
+    r.status=GedStatus::BfgsFailure;r.stop_detail={};
+    r.stop_detail.loglik_upper=INFINITY;return;
+  }
+  auto stopped=[&](bool budget,double upper) {
+    r.status=GedStatus::BfgsFailure;r.certified=false;r.stop_detail=original;
+    // A face is a witness, never the selected answer on a certificate stop.
+    r.stop_detail.limit_coef.clear();r.stop_detail.limit_loglik=NAN;
+    r.stop_detail.limit_model=StopModel::None;
+    r.stop_detail.budget_exhausted=budget;
+    r.stop_detail.loglik_lower=face-pad;
+    r.stop_detail.loglik_upper=upper;
+  };
+  for(auto& candidate:original.candidates) {
+    candidate.loglik_lower=face-pad;candidate.loglik_upper=face+pad;
+  }
+  struct Segment {double lo,hi,upper;};
+  std::vector<Segment> pending;
+  pending.push_back({1,std::max(1.,n),INFINITY});
+  const auto cap=certificate_budget(maxit);
+  std::int64_t work=0;
+  while(!pending.empty()) {
+    const auto segment=pending.back();
+    if(work>=cap) {
+      double upper=face+pad;
+      for(const auto& v:pending)upper=std::max(upper,v.upper);
+      stopped(true,upper);return;
+    }
+    pending.pop_back();++work;
+    const auto bound=ged_shape_detail::interval(x,segment.lo,segment.hi,mean,NAN,maxit);
+    if(!bound.valid){stopped(false,INFINITY);return;}
+    if(bound.upper<face-pad)continue;
+    const double mid=segment.lo/2+segment.hi/2;
+    if(mid==segment.lo || mid==segment.hi){stopped(false,INFINITY);return;}
+    pending.push_back({mid,segment.hi,bound.upper});
+    pending.push_back({segment.lo,mid,bound.upper});
+  }
+  r.certified=true;r.stop_detail=original;
+  r.stop_detail.loglik_lower=face-pad;r.stop_detail.loglik_upper=face+pad;
+}
+
+#include "shape_certificate.hpp"
+
 inline GedResult ged_mle(span x,double tol,int maxit) {
   maxit = static_cast<int>(solver_budget(maxit));
-  auto r=ged_mle_impl(x,tol,maxit);
+  auto r=ged_shape_certificate(x,tol,maxit,NAN,NAN);
+  ged_uniform_certificate(r,x,NAN,tol,maxit);
+  ged_failure_bounds(r,x,NAN,NAN,tol,maxit);
   if(r.status==GedStatus::Ok && (true) && r.nu==kGedNuLower) r.restricted|=16u;
   return r;
 }
 inline GedResult ged_mle(span x,double tol,int maxit,double mean,double sd,double nu) {
   maxit = static_cast<int>(solver_budget(maxit));
-  auto r=ged_mle_impl(x,tol,maxit,mean,sd,nu);
+  auto r=std::isnan(nu)?ged_shape_certificate(x,tol,maxit,mean,sd):ged_conditional_certificate(x,tol,maxit,mean,sd,nu);
+  if(std::isnan(nu) && std::isfinite(sd) && r.status==GedStatus::UniformBoundary) {
+    // No held-sd uniform escape is certified by this search. Strictly interior
+    // observations admit finite shapes above the unpenalized face; rounded
+    // endpoints cannot justify a discontinuous penalty. Remove the unproved
+    // face payload and retain an evaluated witness plus conservative bounds.
+    r.status=GedStatus::UniformUnresolved;r.stop_detail={};
+  }
+  if(std::isnan(nu) && std::isnan(sd))ged_uniform_certificate(r,x,mean,tol,maxit);
+  if(std::isnan(nu))ged_failure_bounds(r,x,mean,sd,tol,maxit);
   if(r.status==GedStatus::Ok && (std::isnan(nu)) && r.nu==kGedNuLower) r.restricted|=16u;
   return r;
 }

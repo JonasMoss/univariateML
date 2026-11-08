@@ -874,3 +874,158 @@ test('bbinom signed face and small finite gains agree with the shared fitter',as
   assert.ok(Math.abs(fit.estimates.alpha/18749.5-1)<1e-6);
   assert.ok(Math.abs(fit.estimates.beta/18749.5-1)<1e-6);
 });
+test('GED analytic held-sd shape fits and median ties agree across bindings', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  for (const held of [{sd:1},{mean:2,sd:1}]) {
+    const fit=api.ged.fit(new Float64Array([2,2,2]),held,{iterlim:1});
+    assert.equal(fit.estimates.mean,2);
+    assert.equal(fit.estimates.nu,1);
+    assert.ok(Math.abs(fit.logLik+1.5*Math.log(2))<1e-12);
+  }
+  const odd=api.ged.fit(new Float64Array([-3,-1,0,1,4]),{sd:.1},{iterlim:1});
+  assert.equal(odd.estimates.mean,0);
+  assert.equal(odd.estimates.nu,1);
+  assert.throws(()=>api.ged.fit(new Float64Array([-1,1]),{sd:.1},{iterlim:1}),error=>{
+    assert.equal(error.kind,'tie');
+    assert.match(error.message,/median interval/);
+    assert.deepEqual(error.candidates.map(c=>c.mean),[-1,1]);
+    assert.ok(Number.isFinite(error.loglik_upper));
+    assert.ok(error.loglik_lower<=error.loglik_upper);
+    return true;
+  });
+});
+
+test('GED a completed low-budget certificate can prove the Laplace face', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  const x=new Float64Array([-3,-1,0,1,4]);
+  const fit=api.ged.fit(x,{mean:0,sd:1},{iterlim:1});
+  assert.equal(fit.estimates.nu,1);
+  const ll=Array.from(api.ged.d(x,[0,1,1],{log:true})).reduce((a,b)=>a+b,0);
+  assert.ok(Math.abs(fit.logLik-ll)<1e-10);
+});
+
+test('GED rounded held-sd endpoints cannot select a uniform face', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  for (const held of [{sd:1},{mean:0,sd:1}]) {
+    assert.throws(()=>api.ged.fit(new Float64Array([-Math.sqrt(3),Math.sqrt(3)]),held),error=>{
+      assert.equal(error.kind,'numerical');
+      assert.ok(error.candidates.length>0);
+      assert.ok(error.loglik_upper>=-2*Math.log(2*Math.sqrt(3)));
+      return true;
+    });
+  }
+});
+
+test('GED constant data away from a held mean have a uniform limit', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  assert.throws(()=>api.ged.fit(new Float64Array([2,2,2]),{mean:0},{iterlim:1}),error=>{
+    assert.equal(error.kind,'limit');
+    assert.equal(error.model,'unif');
+    assert.deepEqual([error.estimates.min,error.estimates.max],[-2,2]);
+    assert.ok(Math.abs(error.limit_loglik+3*Math.log(4))<1e-12);
+    return true;
+  });
+});
+
+test('GED free-scale uniform stops include certified global bounds', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  const x=Float64Array.from({length:40},(_,j)=>-1+2*j/39);
+  for (const held of [{},{mean:0}]) {
+    assert.throws(()=>api.ged.fit(x,held),error=>{
+      assert.equal(error.kind,'limit');
+      assert.ok(Number.isFinite(error.loglik_upper));
+      assert.ok(error.loglik_lower<=-40*Math.log(2));
+      assert.ok(error.loglik_upper>=-40*Math.log(2));
+      return true;
+    });
+  }
+});
+
+test('GED finite free-shape golden subsets pass the global certificate', async () => {
+  const {default:createApi}=await import('./index.mjs');const api=await createApi();
+  const g=read('ged','golden'),x=new Float64Array(g.data);
+  for(const held of [{},{mean:g.estimates.mean},{sd:g.estimates.sd},{mean:g.estimates.mean,sd:g.estimates.sd}]) {
+    const fit=api.ged.fit(x,held);
+    assert.ok(Math.abs(fit.estimates.nu-g.estimates.nu)<1e-5);
+    assert.ok(Math.abs(fit.logLik-g.logLik)<1e-7);
+  }
+});
+
+test('GED separated finite shape roots stop with both witnesses', async () => {
+  const {default:createApi}=await import('./index.mjs');const api=await createApi();
+  const values=Array(8).fill(0);
+  for(let j=0;j<23;j++)values.push(-.32998660809120006,.32998660809120006);
+  for(let j=0;j<12;j++)values.push(-1.4239025460520294,1.4239025460520294);
+  for(const held of [{mean:0,sd:1},{sd:1}]) {
+    assert.throws(()=>api.ged.fit(new Float64Array(values),held),error=>{
+      assert.equal(error.kind,'tie');
+      const roots=error.candidates.map(c=>c.nu).sort((a,b)=>a-b);
+      assert.ok(Math.abs(roots[0]-1.108145553391854)<1e-5);
+      assert.ok(Math.abs(roots[1]-25.39783214175462)<1e-4);
+      return true;
+    });
+  }
+});
+
+test('GED exhausted finite root certificates stop on budget and retain witnesses', async () => {
+  const {default:createApi}=await import('./index.mjs');const api=await createApi();
+  const g=read('ged','golden'),x=new Float64Array(g.data),held={mean:g.estimates.mean};
+  assert.throws(()=>api.ged.fit(x,held,{iterlim:1}),error=>{
+    assert.equal(error.kind,'budget');
+    assert.ok(error.candidates.length>0);
+    assert.ok(error.loglik_lower<=error.loglik_upper);
+    return true;
+  });
+  const fit=api.ged.fit(x,held,{iterlim:200});
+  assert.ok(Math.abs(fit.estimates.nu-g.estimates.nu)<1e-5);
+});
+
+test('GED inverse normalization rejects a rounded location with a different likelihood', async () => {
+  const {default:createApi}=await import('./index.mjs');const api=await createApi();
+  const g=read('ged','golden'),x=Float64Array.from(g.data,v=>1e16+10*v);
+  for(const held of [{},{nu:2}]) {
+    assert.throws(()=>api.ged.fit(x,held),error=>{
+      assert.equal(error.kind,'numerical');
+      assert.match(error.message,/normalization/);
+      assert.ok(error.candidates.length>0);
+      return true;
+    });
+  }
+});
+
+
+test('GED rounded residual ties cannot select an invalid uniform support', async () => {
+  const {default:createApi}=await import('./index.mjs');const api=await createApi();
+  const u=2**-53;
+  assert.throws(()=>api.ged.fit(new Float64Array([-1+u,1+2*u]),{mean:u}),error=>{
+    assert.equal(error.kind,'numerical');
+    assert.match(error.message,/normalization/);
+    assert.ok(!error.estimates || Object.keys(error.estimates).length===0);
+    return true;
+  });
+});
+
+test('GED Laplace median intervals retain the original observation endpoints', async () => {
+  const {default:createApi}=await import('./index.mjs');const api=await createApi();
+  const x=Float64Array.from([...Array.from({length:19},(_,j)=>j+1),1e308]);
+  assert.throws(()=>api.ged.fit(x),error=>{
+    assert.equal(error.kind,'tie');
+    assert.deepEqual(error.candidates.map(c=>c.mean),[10,11]);
+    return true;
+  });
+});
+
+test('GED held-shape arithmetic losses produce numerical stops', async () => {
+  const {default:createApi}=await import('./index.mjs');const api=await createApi();
+  for(const [x,held] of [
+    [[0,0,1e-320],{nu:.5}], [[0,0,1e-200],{nu:.02}],
+    [[1e-100,1e-100],{mean:0,sd:1e300,nu:.02}]
+  ]) assert.throws(()=>api.ged.fit(new Float64Array(x),held),error=>{
+    assert.equal(error.kind,'numerical');assert.match(error.message,/accuracy/);return true;
+  });
+});

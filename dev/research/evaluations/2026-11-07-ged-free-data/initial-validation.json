@@ -1,0 +1,291 @@
+{
+  "base_commit": "d34a44cd1b0d7324e1f486d66e6b3f7e3db9210a",
+  "source_sha256": {
+    "univariateML-cpp/include/cppunivariate/distributions/ged/mle.hpp": "b98ef81b3a6fc1cd4988d85361cb1364cd5a09938be2e71dc3e3b0ffb477ec8d",
+    "univariateML-cpp/include/cppunivariate/distributions/ged/free_shape_bounds.hpp": "6d38892a5e964c9d313b6b32e47cfb854c3c4cfc119018e10e019a8145e0018e",
+    "univariateML-cpp/include/cppunivariate/distributions/ged/test.cpp": "17a2880fabcbd62f8c0a220a7ddc54c8d5e9c2d6bf6f33866d19bc68ccaa8fe7",
+    "univariateML-cpp/include/cppunivariate/distributions/ged/README.md": "20ab35f987ef37465af9607aa062fbbb6d0d70538d1cd6d0773e5a7f3b69cced",
+    "bindings/common/distributions/ged/fit.hpp": "cc1937de5e00a8c8c5c68e21b2c96553d968a22b300b3f33d85d73e14fc180e5",
+    "bindings/r/distributions/ged/test.R": "b9af209020b0ce0d46461cd757d6e8184a8d48a32306ebcae5ef9799878b1a2f",
+    "bindings/js/test.mjs": "eb19651e94e9670f04c671ce73af98db401909bc695e4d557014fea895754a92"
+  },
+  "family_certified": "partial",
+  "certificate_arithmetic": "Exact arithmetic conditional on computed comparisons, with the dossier practical floating-point margins; no outward-rounded interval claim.",
+  "simbox": {
+    "cpp_compiler": "GCC 13.3.0",
+    "r_cpp_compiler": "g++-15",
+    "cpp_dev": {
+      "passed": 106,
+      "seconds": 54.83
+    },
+    "cpp_full": {
+      "passed": 129,
+      "seconds": 163.55
+    },
+    "cpp_no_long_double": {
+      "passed": 129,
+      "seconds": 162.99
+    },
+    "r_dev": {
+      "fail": 0,
+      "warn": 0,
+      "skip": 154,
+      "pass": 21400,
+      "seconds": 63.5
+    },
+    "r_full": {
+      "fail": 0,
+      "warn": 0,
+      "skip": 0,
+      "pass": 44218,
+      "seconds": 356.7
+    }
+  },
+  "workstation": {
+    "cpp_compiler": "GCC 15.2.0",
+    "cpp_no_long_double": {
+      "passed": 129,
+      "seconds": 230.63
+    },
+    "js": {
+      "tests": 483,
+      "pass": 483,
+      "fail": 0,
+      "seconds": 155.539177034
+    },
+    "site_checks": [
+      "PASS inference browser: {\"rows\":353,\"families\":99,\"desktop\":[1280,1100],\"mobile\":[390,1000],\"checks\":[\"covariance and combined filters with follow-up evidence\",\"all status filters\",\"combined family/status/regime filters\",\"empty state\",\"reset\",\"native evidence disclosure\",\"no horizontal overflow\",\"all rows and evidence without JavaScript\",\"no page errors\"]}",
+      "PASS theory numerical: 5 static/live profiles, 4 escape messages and limit approaches, analytic normal held fits, static/live contours, parser and failed-fit gaps.",
+      "PASS nice linear/log ticks; Gompertz free/held fits, conditional escape, fixed-rate boundary, static/live equality and build-time MathML.",
+      "PASS likelihood windows: 15-unit clipping, low-marker expansion, constant likelihoods, marker clearance, finite SVG coordinates.",
+      "PASS theory browser: desktop/mobile, live profiles and held faces, seeded data, errors, no-JS figures and diagnostics.",
+      "PASS: four articles; dossier catalogues: 287 limits, 99 families, 9 fit domains.",
+      "PASS: inference: 353 unique scopes, 99 families; implementation symbols, evidence anchors, calibration and checks resolve; full static table.",
+      "PASS: graph: 99 unique nodes, 277 edges, resolving family links; SVG generated twice byte-identically and matches built HTML.",
+      "PASS: explorer coverage matches binding registry; optional build assets agree.",
+      "PASS: every declared and inverted relation and limit link is rendered and resolves.",
+      "PASS: 99 family pages; MathML on every family; no math runtime or external runtime assets; internal links and fragments resolve.",
+      "PASS: 99 generated C++ snippets compile and link as C++17 (including exp, gamma, gb2).",
+      "PASS: pilot and ten additional HTML spot checks: exp, gamma, gb2, binom, beta, hyper, sstd, gev, gpd, tnorm, pois, unif, pareto"
+    ]
+  },
+  "golden_file_unchanged": true,
+  "matched_golden_outputs_bitwise_unchanged": true,
+  "benchmark": {
+    "repetitions": 20,
+    "compiler_flags": "-std=c++17 -O2",
+    "machine": "simbox",
+    "gradtol": 0.0001220703,
+    "iterlim": 200,
+    "rows": [
+      {
+        "mask": 0,
+        "free": "mean,sd,nu",
+        "mean": -0.0176989054068299,
+        "sd": 1.0178559408546315,
+        "nu": 3.0166431606716495,
+        "loglik": -711.6934605632764,
+        "status": 0,
+        "baseline_ms": 16.70306855,
+        "current_ms": 15.5334297
+      },
+      {
+        "mask": 1,
+        "free": "sd,nu",
+        "mean": -0.017698887677594307,
+        "sd": 1.0178559585846645,
+        "nu": 3.0166439607507156,
+        "loglik": -711.6934605632729,
+        "status": 0,
+        "baseline_ms": 12.604162200000001,
+        "current_ms": 11.7327731
+      },
+      {
+        "mask": 2,
+        "free": "mean,nu",
+        "mean": -0.01769892703074094,
+        "sd": 1.0178559902092952,
+        "nu": 3.0166442322374163,
+        "loglik": -711.6934605632728,
+        "status": 0,
+        "baseline_ms": 571.21540205,
+        "current_ms": 554.16063935
+      },
+      {
+        "mask": 3,
+        "free": "nu",
+        "mean": -0.017698887677594307,
+        "sd": 1.0178559902092952,
+        "nu": 3.0166443587516882,
+        "loglik": -711.6934605632734,
+        "status": 0,
+        "baseline_ms": 25.07722925,
+        "current_ms": 25.2588866
+      }
+    ]
+  },
+  "oracle": {
+    "precision": 80,
+    "rows": 108,
+    "enclosure_checks": 756,
+    "violations": 0
+  },
+  "analytic_checks": {
+    "analytic_inequalities": 26,
+    "violations": 0
+  },
+  "endpoint_counterexample": {
+    "observation": "1.7320508075688772",
+    "held_mean": 0,
+    "held_sd": 1,
+    "finite_shape": "1e19",
+    "finite_loglik": "-2.4849066497880003102297094798388788407491428045378131668914983528501775357625173",
+    "old_endpoint_face_loglik": "-3.6078256169217706498779959094206404143299116003935662962843725047144574713065697",
+    "improvement": "1.1229189671337703396482864295817615735807687958557531293928741518642799355440524"
+  },
+  "finite_shape_coverage_diagnostic": [
+    {
+      "mask": 0,
+      "free": "mean,sd,nu",
+      "cutoff": 32.0,
+      "evaluations": 25600,
+      "remaining": 8270,
+      "nu_lower": 2.9599685668945312,
+      "nu_upper": 3.0732574462890625,
+      "loglik_gap": 0.00039396793943069497,
+      "arithmetic_failure": false
+    },
+    {
+      "mask": 1,
+      "free": "sd,nu",
+      "cutoff": 32.0,
+      "evaluations": 25600,
+      "remaining": 8272,
+      "nu_lower": 2.9599685668945312,
+      "nu_upper": 3.0732574462890625,
+      "loglik_gap": 0.0003939679347695346,
+      "arithmetic_failure": false
+    },
+    {
+      "mask": 2,
+      "free": "mean,nu",
+      "cutoff": 16.0,
+      "evaluations": 25599,
+      "remaining": 8272,
+      "nu_lower": 2.787109375,
+      "nu_upper": 3.2320556640625,
+      "loglik_gap": 0.0032302133820394374,
+      "arithmetic_failure": false
+    },
+    {
+      "mask": 3,
+      "free": "nu",
+      "cutoff": 8.0,
+      "evaluations": 25600,
+      "remaining": 8224,
+      "nu_lower": 2.69873046875,
+      "nu_upper": 3.308837890625,
+      "loglik_gap": 0.0015074520792950352,
+      "arithmetic_failure": false
+    }
+  ],
+  "common_binding_budget_probe": [
+    {
+      "n": 40,
+      "iterlim": 1,
+      "kind": "limit",
+      "witnesses": 1,
+      "loglik_lower": -27.72588722346898,
+      "loglik_upper": -27.725887221326644
+    },
+    {
+      "n": 40,
+      "iterlim": 2,
+      "kind": "limit",
+      "witnesses": 1,
+      "loglik_lower": -27.72588722346898,
+      "loglik_upper": -27.725887221326644
+    },
+    {
+      "n": 40,
+      "iterlim": 10,
+      "kind": "limit",
+      "witnesses": 1,
+      "loglik_lower": -27.72588722346898,
+      "loglik_upper": -27.725887221326644
+    },
+    {
+      "n": 400,
+      "iterlim": 1,
+      "kind": "limit",
+      "witnesses": 1,
+      "loglik_lower": -277.2588723254612,
+      "loglik_upper": -277.25887212249506
+    },
+    {
+      "n": 400,
+      "iterlim": 2,
+      "kind": "limit",
+      "witnesses": 1,
+      "loglik_lower": -277.2588723254612,
+      "loglik_upper": -277.25887212249506
+    },
+    {
+      "n": 400,
+      "iterlim": 10,
+      "kind": "limit",
+      "witnesses": 1,
+      "loglik_lower": -277.2588723254612,
+      "loglik_upper": -277.25887212249506
+    },
+    {
+      "n": 4000,
+      "iterlim": 1,
+      "kind": "budget",
+      "witnesses": 1,
+      "loglik_lower": -2772.5887323325605,
+      "loglik_upper": -9.717164492796488
+    },
+    {
+      "n": 4000,
+      "iterlim": 2,
+      "kind": "limit",
+      "witnesses": 1,
+      "loglik_lower": -2772.5887323325605,
+      "loglik_upper": -2772.5887121470014
+    },
+    {
+      "n": 4000,
+      "iterlim": 10,
+      "kind": "limit",
+      "witnesses": 1,
+      "loglik_lower": -2772.5887323325605,
+      "loglik_upper": -2772.5887121470014
+    },
+    {
+      "n": 40000,
+      "iterlim": 1,
+      "kind": "budget",
+      "witnesses": 1,
+      "loglik_lower": -27725.88823112131,
+      "loglik_upper": -12.019451096443252
+    },
+    {
+      "n": 40000,
+      "iterlim": 2,
+      "kind": "budget",
+      "witnesses": 1,
+      "loglik_lower": -27725.88823112131,
+      "loglik_upper": -12.019451096443252
+    },
+    {
+      "n": 40000,
+      "iterlim": 10,
+      "kind": "numerical",
+      "witnesses": 1,
+      "loglik_lower": -27725.88823112131,
+      "loglik_upper": "+Inf"
+    }
+  ],
+  "open": "Generic finite-shape global maximizers still lack quantitative root inclusion/global comparisons; nonanalytic finite legacy results are not certified."
+}
