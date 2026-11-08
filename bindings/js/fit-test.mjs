@@ -138,5 +138,9 @@ test('sstd xi-only certificate, reflection, budget and half-t comparison',()=>{
  const face=m.fitsstd(new Float64Array([.5,1,1.5,2,2.5,3,10]),{mean:0,sd:1,nu:5},{});assert.equal(face.kind,'limit');assert.equal(face.model,'ht');assert.equal(face.estimates.nu,5);
  const reflected=m.fitsstd(new Float64Array([-.5,-1,-1.5,-2,-2.5,-3,-10]),{mean:0,sd:1,nu:5},{});
  assert.equal(reflected.kind,'limit');assert.equal(reflected.model,'unavailable:reflected-half-t');assert.equal(reflected.estimates.nu,5);
- const large=m.fitsstd(x,{mean:0,sd:1,nu:1e12},{});assert.equal(large.kind,'numerical');
+ const large=m.fitsstd(x,{mean:0,sd:1,nu:1e12},{});
+ assert.equal(large.error,undefined,large.error);assert.equal(large.status,'Ok');
+ assert.equal(large.estimates.nu,1e12);assert.ok(large.estimates.xi>0 && Number.isFinite(large.estimates.xi));
+ const terms=m.dsstd(x,[0,1,1e12,large.estimates.xi],true,true);
+ assert.ok(Math.abs([...terms].reduce((a,b)=>a+b,0)-large.logLik)<1e-11);
 });

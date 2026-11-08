@@ -687,3 +687,9 @@ test_that("sged fully held tiny-shape evaluation preserves its centering moment"
                  tolerance=2e-11)
   }
 })
+
+
+test_that("sged large shapes retain the high-precision centering moment", {
+  for (nu in c(1e8,1e16,1e100,.Machine$double.xmax))
+    expect_equal(dsged(0,0,1,nu,2),.2886751345948128822545743902509787278,tolerance=5e-15)
+})

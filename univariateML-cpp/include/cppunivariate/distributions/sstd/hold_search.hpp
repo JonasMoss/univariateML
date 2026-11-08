@@ -15,18 +15,16 @@ constexpr double pi = 3.14159265358979323846;
 // coordinates avoids cancellation between sd -> infinity and nu -> 2.
 inline double moment(bool student, double nu) {
   if (student) {
-    if (nu > 1e5) return std::sqrt(2/pi)*(1+0.75/nu);
-    return std::exp(0.5*std::log(nu/pi)+std::lgamma((nu-1)/2)-std::lgamma(nu/2));
+    return dens::std_abs_moment(nu)*std::sqrt(nu/(nu-2));
   }
-  return std::exp(std::lgamma(2/nu)-std::lgamma(1/nu));
+  return std::exp(special::ged_log_gamma_ratio(nu,2));
 }
 inline double variance(bool student, double nu) {
-  return student ? nu/(nu-2) : std::exp(std::lgamma(3/nu)-std::lgamma(1/nu));
+  return student ? nu/(nu-2) : std::exp(special::ged_log_gamma_ratio(nu,3));
 }
 inline double logmode(bool student, double nu) {
-  if (!student) return std::log(nu)-std::log(2.0)-std::lgamma(1/nu);
-  if (nu>1e4) return -0.5*std::log(2*pi)-0.25/nu+1/(24*nu*nu*nu);
-  return std::lgamma((nu+1)/2)-std::lgamma(nu/2)-0.5*std::log(pi*nu);
+  if (!student) return nu>=1 ? -std::log(2.0)-special::lgamma1p(1/nu) : std::log(nu)-std::log(2.0)-std::lgamma(1/nu);
+  return special::log_t_mode(nu);
 }
 inline double kernel(bool student, double nu, double w) {
   if(student) return -0.5*(nu+1)*std::log1p(w*w/nu);

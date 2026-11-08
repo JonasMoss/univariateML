@@ -514,7 +514,7 @@ inline GedResult ged_conditional_certificate(span x,double tol,int maxit,double 
     ged_shape_detail::Sum powers;
     for(double v:x)powers.add(std::pow(std::abs(v-r.mu)/radius,nu));
     const double a=std::log(radius),b=(std::log(nu)+std::log(powers.value)-std::log(double(n)))/nu;
-    const double c=.5*(special::lgamma(1/nu)-special::lgamma(3/nu));
+    const double c=dens::ged_logscale(nu);
     const double error=std::abs(std::log(r.sigma)-(a+b-c));
     const double pad=ged_shape_detail::margin(std::abs(a)+std::abs(b)+std::abs(c),x.size())*(1+1/nu);
     if(!std::isfinite(error) || pad>2e-8 || error>2e-8+pad || nu*(error+pad)>1)return numerical();

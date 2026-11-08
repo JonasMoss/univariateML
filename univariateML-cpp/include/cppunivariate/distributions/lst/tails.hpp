@@ -4,7 +4,7 @@
 namespace cppunivariate { namespace student_detail {
 inline double softplus(double x) { return missing_detail::softplus(x); }
 inline double logmode(double df) {
-  return -0.5*std::log(df)-special::lbeta(df/2,0.5);
+  return special::log_t_mode(df);
 }
 inline double logdensity_log(double logabsx,double df) {
   const double t=2*logabsx-std::log(df);

@@ -104,10 +104,7 @@ struct SgedCost {
     const double tri_1 = cppunivariate::special::trigamma(1.0 / nu);
     const double tri_2 = cppunivariate::special::trigamma(2.0 / nu);
     const double tri_3 = cppunivariate::special::trigamma(3.0 / nu);
-    const double log_m1 = -0.5 * std::lgamma(1.0 / nu) +
-                          std::lgamma(2.0 / nu) -
-                          0.5 * std::lgamma(3.0 / nu);
-    const double m1 = std::exp(log_m1);
+    const double m1 = cppunivariate::dens::ged_abs_moment(nu);
     const double f_val = 0.5 * psi_1 - 2.0 * psi_2 + 1.5 * psi_3;
     const double dlogm1_dln = f_val / nu;
     const double df_dln = (-0.5 * tri_1 + 4.0 * tri_2 - 4.5 * tri_3) / nu;

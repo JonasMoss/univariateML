@@ -1,0 +1,56 @@
+[
+  {
+    "shape": 5.0,
+    "old_t_ns": 116.516,
+    "new_t_ns": 1050.95,
+    "old_ged_ns": 370.098,
+    "new_ged_ns": 170.577,
+    "old_const_ns": 113.627,
+    "new_const_ns": 1074.12
+  },
+  {
+    "shape": 127.0,
+    "old_t_ns": 116.388,
+    "new_t_ns": 969.606,
+    "old_ged_ns": 254.864,
+    "new_ged_ns": 57.6146,
+    "old_const_ns": 104.973,
+    "new_const_ns": 993.172
+  },
+  {
+    "shape": 128.0,
+    "old_t_ns": 116.327,
+    "new_t_ns": 942.618,
+    "old_ged_ns": 228.63,
+    "new_ged_ns": 55.3308,
+    "old_const_ns": 50.5838,
+    "new_const_ns": 20.5544
+  },
+  {
+    "shape": 129.0,
+    "old_t_ns": 122.758,
+    "new_t_ns": 26.8666,
+    "old_ged_ns": 245.12,
+    "new_ged_ns": 55.6862,
+    "old_const_ns": 50.8302,
+    "new_const_ns": 20.6487
+  },
+  {
+    "shape": 10000.0,
+    "old_t_ns": 112.334,
+    "new_t_ns": 27.0945,
+    "old_ged_ns": 245.826,
+    "new_ged_ns": 55.2473,
+    "old_const_ns": 50.5391,
+    "new_const_ns": 20.5891
+  },
+  {
+    "shape": 1000000000000.0,
+    "old_t_ns": 113.623,
+    "new_t_ns": 26.9417,
+    "old_ged_ns": 233.519,
+    "new_ged_ns": 45.9978,
+    "old_const_ns": 53.0555,
+    "new_const_ns": 13.8982
+  }
+]
