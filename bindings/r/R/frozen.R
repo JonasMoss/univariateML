@@ -77,8 +77,10 @@ ml_build_fixed_model <- function(name, supplied, call, frozen, x) {
     data = if (frozen) NULL else x)
   # A median evaluation also checks joint parameter constraints and lattice
   # parameters in the reference evaluator, without imposing fit_domain.
+  # Quantile evaluators signal failure with NaN; an infinite median from
+  # overflow (for example lnorm with a huge meanlog) is a valid answer.
   q <- suppressWarnings(qml(0.5, obj))
-  if (length(q) != 1L || !is.finite(q))
+  if (length(q) != 1L || is.na(q))
     evaluation_error("median quantile evaluation failed: invalid held coefficients or numerical failure")
   if (frozen) {
     attr(obj, "frozen") <- TRUE
