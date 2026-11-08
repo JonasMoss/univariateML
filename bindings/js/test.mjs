@@ -608,7 +608,7 @@ test('betapr flat gamma-adjacent profile retains coefficient accuracy in WASM', 
     assert.match(e.message,/raising iterlim/i);return true;
   });
 });
-test('binomial relatives retain unresolved finite and Poisson witnesses', async () => {
+test('binomial relatives prove their Poisson-type limits with finite witnesses', async () => {
   const {default: createApi} = await import('./index.mjs');
   const api = await createApi();
   for(const [family,x,held] of [
