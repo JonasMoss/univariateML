@@ -187,14 +187,14 @@ TEST_CASE("sged: P0b uniform and forced half-GED faces") {
   }
 }
 
-TEST_CASE("sged: P0b uniform endpoints retain pinned-moment penalties") {
+TEST_CASE("sged: P0b rounded pinned-moment endpoints require numerical stops") {
   const double nan=std::numeric_limits<double>::quiet_NaN();
   const std::vector<double> x{-std::sqrt(3.0),std::sqrt(3.0)};
   const auto pinned=cppunivariate::sged_mle(mltest::as_span(x),1e-6,500,0,1,nan,1);
-  CHECK(pinned.status==cppunivariate::SgedStatus::UniformBoundary);
-  CHECK(pinned.logLik==doctest::Approx(-2*std::log(std::sqrt(12.0))-2*std::exp(-0.5772156649015328606)));
+  CHECK(pinned.status==cppunivariate::SgedStatus::CertificateFailure);
+  CHECK(pinned.stop_detail.limit_coef.empty());
   const auto width=cppunivariate::sged_mle(mltest::as_span(x),1e-6,500,nan,1,nan,1);
-  CHECK(width.status==cppunivariate::SgedStatus::ScaleBoundary);
+  CHECK(width.status==cppunivariate::SgedStatus::CertificateFailure);
 }
 
 TEST_CASE("sged exhausted interior cannot return analytic Laplace as a fit") {
@@ -595,6 +595,180 @@ TEST_CASE("sged normal face conversion rejects rounded subnormal half GED scales
   const auto r=cppunivariate::sged_mle(mltest::as_span(x),1e-8,200,NAN,NAN,2);
   CHECK(r.status==cppunivariate::SgedStatus::CertificateFailure);CHECK_FALSE(r.certified);
   CHECK(r.stop_detail.limit_coef.empty());CHECK(r.stop_detail.loglik_upper==INFINITY);
+}
+
+TEST_CASE("sged held unit skew transports all four free-shape certificates") {
+  const auto g=mltest::load_distribution_golden("ged");
+  const auto x=mltest::as_span(g.data);
+  for(int mask=0;mask<4;++mask) {
+    const double mean=mask&1?g.estimates.at("mean"):NAN;
+    const double sd=mask&2?g.estimates.at("sd"):NAN;
+    const auto a=cppunivariate::sged_mle(x,1e-10,200,mean,sd,NAN,1);
+    const auto b=cppunivariate::ged_mle(x,1e-10,200,mean,sd,NAN);
+    REQUIRE(a.status==cppunivariate::SgedStatus::Ok);CHECK(a.certified);
+    CHECK(a.mu==b.mu);CHECK(a.sigma==b.sigma);CHECK(a.nu==b.nu);
+    CHECK(a.xi==1);CHECK(a.logLik==b.logLik);CHECK(a.restricted==b.restricted);
+    CHECK(a.iterations==b.iterations);
+    const double phi[4]={a.mu,std::log(a.sigma),std::log(a.nu),0};
+    CHECK(-cppunivariate::SgedCost{x}(phi)==doctest::Approx(a.logLik).epsilon(2e-12));
+  }
+}
+TEST_CASE("sged free-shape symmetric stops retain finite and face coordinates") {
+  const std::vector<double> x{-1,1};const auto data=mltest::as_span(x);
+  const auto tie=cppunivariate::sged_mle(data,1e-10,1,NAN,.1,NAN,1);
+  REQUIRE(tie.status==cppunivariate::SgedStatus::CertificateFailure);
+  CHECK_FALSE(tie.certified);CHECK(tie.stop_detail.comparison_tie);
+  REQUIRE(tie.stop_detail.candidates.size()==2);
+  for(const auto& c:tie.stop_detail.candidates) {
+    CHECK(c.model==cppunivariate::StopModel::None);
+    REQUIRE(c.coef.size()==4);CHECK(c.coef[1]==.1);CHECK(c.coef[2]==1);CHECK(c.coef[3]==1);
+  }
+  const auto face=cppunivariate::sged_mle(data,1e-10,200,NAN,NAN,NAN,1);
+  REQUIRE(face.status==cppunivariate::SgedStatus::UniformBoundary);
+  CHECK(face.stop_detail.limit_model==cppunivariate::StopModel::Unif);
+  REQUIRE(face.stop_detail.limit_coef.size()==2);
+  CHECK(face.stop_detail.limit_coef[0]==-1);CHECK(face.stop_detail.limit_coef[1]==1);
+  const std::vector<double> rounded{-std::sqrt(3.),std::sqrt(3.)};
+  for(double mean:{0.,double(NAN)}) {
+    const auto r=cppunivariate::sged_mle(mltest::as_span(rounded),1e-10,200,mean,1,NAN,1);
+    CHECK(r.status==cppunivariate::SgedStatus::CertificateFailure);CHECK_FALSE(r.certified);
+    CHECK(r.stop_detail.limit_coef.empty());CHECK_FALSE(r.stop_detail.candidates.empty());
+    CHECK(r.stop_detail.loglik_lower<=r.stop_detail.loglik_upper);
+    for(const auto& c:r.stop_detail.candidates)if(c.model==cppunivariate::StopModel::None){REQUIRE(c.coef.size()==4);CHECK(c.coef[3]==1);}
+  }
+}
+TEST_CASE("sged symmetric free-shape collapse restrictions and controls") {
+  const std::vector<double> constant{2,2,2},odd{-3,-1,0,1,4};
+  for(double mean:{2.,double(NAN)}) {
+    const auto r=cppunivariate::sged_mle(mltest::as_span(constant),1e-10,200,mean,NAN,NAN,1);
+    CHECK(r.status==cppunivariate::SgedStatus::Unbounded);CHECK_FALSE(r.certified);
+  }
+  const auto r=cppunivariate::sged_mle(mltest::as_span(odd),1e-10,1,NAN,.1,NAN,1);
+  REQUIRE(r.status==cppunivariate::SgedStatus::Ok);CHECK(r.certified);
+  CHECK(r.nu==1);CHECK(r.restricted==16u);
+  CHECK(cppunivariate::sged_mle(mltest::as_span(odd),-1,200,NAN,NAN,NAN,1).status==cppunivariate::SgedStatus::InvalidStart);
+  CHECK(cppunivariate::sged_mle(mltest::as_span(odd),1e-10,0,NAN,NAN,NAN,1).status==cppunivariate::SgedStatus::InvalidStart);
+}
+TEST_CASE("sged symmetric free-shape failed covers preserve the delegate budget") {
+  const auto g=mltest::load_distribution_golden("ged");const auto data=mltest::as_span(g.data);
+  for(int limit:{1,2,10})for(int mask=0;mask<4;++mask) {
+    const double mean=mask&1?g.estimates.at("mean"):NAN,sd=mask&2?g.estimates.at("sd"):NAN;
+    const auto a=cppunivariate::sged_mle(data,1e-10,limit,mean,sd,NAN,1);
+    const auto b=cppunivariate::ged_mle(data,1e-10,limit,mean,sd,NAN);
+    CHECK(a.certified==b.certified);CHECK(a.iterations==b.iterations);
+    CHECK(a.stop_detail.budget_exhausted==b.stop_detail.budget_exhausted);
+    CHECK(a.stop_detail.comparison_tie==b.stop_detail.comparison_tie);
+    REQUIRE(a.stop_detail.candidates.size()==b.stop_detail.candidates.size());
+    for(std::size_t j=0;j<a.stop_detail.candidates.size();++j) {
+      const auto& c=a.stop_detail.candidates[j];const auto& d=b.stop_detail.candidates[j];
+      CHECK(c.loglik_lower==d.loglik_lower);CHECK(c.loglik_upper==d.loglik_upper);
+      if(c.model==cppunivariate::StopModel::None){REQUIRE(c.coef.size()==4);CHECK(c.coef[3]==1);}
+    }
+  }
+}
+TEST_CASE("sged free moments balanced endpoints certify the uniform for any skew") {
+  const std::vector<double> x{-2,-2,3,3};
+  for(double xi:{.01,.4,1.,2.,100.,double(NAN)}) {
+    const auto r=cppunivariate::sged_mle(mltest::as_span(x),1e-10,200,NAN,NAN,NAN,xi);
+    REQUIRE(r.status==cppunivariate::SgedStatus::UniformBoundary);CHECK(r.certified);
+    CHECK(r.logLik==doctest::Approx(-4*std::log(5.)).epsilon(1e-12));
+    REQUIRE(r.stop_detail.limit_coef.size()==2);
+    CHECK(r.stop_detail.limit_coef[0]==-2);CHECK(r.stop_detail.limit_coef[1]==3);
+    CHECK(r.stop_detail.loglik_lower<=r.logLik);CHECK(r.stop_detail.loglik_upper>=r.logLik);
+  }
+  const std::vector<double> huge{-1e308,1e308};
+  const auto r=cppunivariate::sged_mle(mltest::as_span(huge),1e-10,1,NAN,NAN,NAN,2);
+  REQUIRE(r.status==cppunivariate::SgedStatus::UniformBoundary);CHECK(r.certified);
+  CHECK(std::isfinite(r.logLik));
+  const std::vector<double> tiny{0,1e-320};
+  const auto stopped=cppunivariate::sged_mle(mltest::as_span(tiny),1e-10,1,NAN,NAN,NAN,2);
+  CHECK(stopped.status==cppunivariate::SgedStatus::CertificateFailure);CHECK_FALSE(stopped.certified);
+}
+
+TEST_CASE("sged asymmetric held skew certifies the free moment shape profile") {
+  const auto g=mltest::load_distribution_golden("sged");const auto x=mltest::as_span(g.data);
+  const auto r=cppunivariate::sged_mle(x,1e-10,200,NAN,NAN,NAN,1.4);
+  REQUIRE(r.status==cppunivariate::SgedStatus::Ok);CHECK(r.certified);CHECK(r.xi==1.4);
+  CHECK(r.nu==doctest::Approx(3.12977540545).epsilon(2e-8));
+  CHECK(r.logLik==doctest::Approx(-649.7033316424115).epsilon(2e-11));
+  CHECK(r.stop_detail.loglik_lower<=r.logLik);CHECK(r.stop_detail.loglik_upper>=r.logLik);
+  CHECK(r.iterations<=cppunivariate::certificate_budget(200));
+  const double phi[4]={r.mu,std::log(r.sigma),std::log(r.nu),std::log(r.xi)};
+  CHECK(-cppunivariate::SgedCost{x}(phi)==doctest::Approx(r.logLik).epsilon(2e-12));
+}
+TEST_CASE("sged weighted interval scores enclose nested shape boxes and moment maps") {
+  const std::vector<double> y{-1,-.55,-.1,.03,.2,.6,1};const auto data=mltest::as_span(y);
+  for(double xi:{.3,1.4,3.})for(double p:{1.1,1.7,3.,8.}) {
+    const cppunivariate::sged_weighted_shape::Weights w(xi);
+    const auto b=cppunivariate::sged_weighted_shape::box(data,p,p+.01,w,200);
+    REQUIRE(b.valid);
+    for(double shape:{p,p+.005,p+.01}) {
+      const auto point=cppunivariate::sged_weighted_shape::box(data,shape,shape,w,200);
+      REQUIRE(point.valid);CHECK(point.mode.lo>=b.mode.lo);CHECK(point.mode.hi<=b.mode.hi);
+      CHECK(point.score.lo>=b.score.lo);CHECK(point.score.hi<=b.score.hi);
+      CHECK(point.curvature.lo>=b.curvature.lo);CHECK(point.curvature.hi<=b.curvature.hi);
+    }
+  }
+}
+TEST_CASE("sged weighted Laplace median faces and work limits retain witnesses") {
+  std::vector<double> x{-100,-.01,-.01,-.01};for(int j=0;j<15;++j)x.push_back(.01);x.push_back(100);
+  const auto r=cppunivariate::sged_mle(mltest::as_span(x),1e-10,200,NAN,NAN,NAN,2);
+  REQUIRE(r.status==cppunivariate::SgedStatus::CertificateFailure);CHECK(r.stop_detail.comparison_tie);
+  REQUIRE(r.stop_detail.candidates.size()>=2);
+  CHECK(r.stop_detail.candidates[0].coef[2]==1);CHECK(r.stop_detail.candidates[1].coef[2]==1);
+  CHECK(r.stop_detail.candidates[0].coef[0]!=r.stop_detail.candidates[1].coef[0]);
+  const auto g=mltest::load_distribution_golden("sged");
+  const auto budget=cppunivariate::sged_mle(mltest::as_span(g.data),1e-10,1,NAN,NAN,NAN,1.4);
+  CHECK(budget.status==cppunivariate::SgedStatus::CertificateFailure);CHECK_FALSE(budget.certified);
+  CHECK_FALSE(budget.stop_detail.candidates.empty());CHECK(budget.stop_detail.loglik_upper==INFINITY);
+}
+TEST_CASE("sged fixed smooth shape globally profiles both side scales and mode") {
+  const auto g=mltest::load_distribution_golden("sged");
+  for(double p:{1.7,4.}) {
+    const auto r=cppunivariate::sged_mle(mltest::as_span(g.data),1e-10,200,NAN,NAN,p);
+    REQUIRE(r.status==cppunivariate::SgedStatus::Ok);CHECK(r.certified);CHECK(r.nu==p);
+    CHECK(r.stop_detail.loglik_lower<=r.logLik);CHECK(r.stop_detail.loglik_upper>=r.logLik);
+    const double phi[4]={r.mu,std::log(r.sigma),std::log(r.nu),std::log(r.xi)};
+    CHECK(-cppunivariate::SgedCost{mltest::as_span(g.data)}(phi)==doctest::Approx(r.logLik).epsilon(2e-12));
+  }
+}
+TEST_CASE("sged smooth shape compares both half GED faces without assuming uniqueness") {
+  const std::vector<double> x{-1,1};
+  for(double p:{1.1,1.7,4.,20.}) {
+    const auto r=cppunivariate::sged_mle(mltest::as_span(x),1e-10,200,NAN,NAN,p);
+    REQUIRE(r.status==cppunivariate::SgedStatus::CertificateFailure);CHECK(r.stop_detail.comparison_tie);
+    REQUIRE(r.stop_detail.candidates.size()>=2);CHECK(std::isfinite(r.stop_detail.loglik_upper));
+    bool left=false,right=false;
+    for(const auto& c:r.stop_detail.candidates){left=left||c.model==cppunivariate::StopModel::HalfGed;right=right||c.model==cppunivariate::StopModel::ReflectedHalfGed;}
+    CHECK(left);CHECK(right);
+  }
+  std::vector<double> big;for(int j=0;j<100000;++j)big.push_back(j*.1);
+  const auto r=cppunivariate::sged_mle(mltest::as_span(big),1e-10,1,NAN,NAN,4);
+  CHECK(r.stop_detail.budget_exhausted);CHECK(r.iterations==1);REQUIRE(r.stop_detail.candidates.size()==1);
+}
+TEST_CASE("sged weighted mode rescaling closes high shape boxes without losing scores") {
+  const auto g=mltest::load_distribution_golden("sged");cppunivariate::sged_profile::System system(mltest::as_span(g.data));
+  const cppunivariate::sged_weighted_shape::Weights w(1.4);
+  for(double p:{125.75,500.}) {
+    const auto b=cppunivariate::sged_weighted_shape::box(system.data(),p,p,w,200);
+    CHECK(b.valid);CHECK(b.mode.hi-b.mode.lo<2e-8);
+  }
+  const std::vector<double> y{-1,0,1};
+  CHECK_FALSE(cppunivariate::sged_mode_skew::point(mltest::as_span(y),-.999,1000).valid);
+}
+TEST_CASE("sged smooth profile arithmetic failure precedes enumeration preflight") {
+  std::vector<double> x;for(int j=0;j<1000;++j)x.push_back(j*.1);
+  const auto r=cppunivariate::sged_mle(mltest::as_span(x),1e-10,1,NAN,NAN,1e308);
+  CHECK(r.status==cppunivariate::SgedStatus::CertificateFailure);CHECK_FALSE(r.certified);
+  CHECK_FALSE(r.stop_detail.budget_exhausted);CHECK(r.stop_detail.loglik_upper==INFINITY);
+}
+TEST_CASE("sged profile coefficient enclosures include the stored representative") {
+  const std::vector<double> x{-1,1};cppunivariate::sged_profile::System system(mltest::as_span(x));
+  cppunivariate::sged_profile::PublicBox box;box.mean={0,0};box.logsd={0,0};box.logxi={0,0};box.valid=true;
+  cppunivariate::SgedResult r{0,1,2,1,0,0,cppunivariate::SgedStatus::Ok};
+  CHECK(system.compatible(box,r));r.mu=.001;CHECK_FALSE(system.compatible(box,r));
+  r.mu=0;r.sigma=1.001;CHECK_FALSE(system.compatible(box,r));
+  r.sigma=1;r.xi=1.001;CHECK_FALSE(system.compatible(box,r));
 }
 
 TEST_CASE("sged: residual power and tails survive intermediate range loss") {

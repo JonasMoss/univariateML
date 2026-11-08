@@ -19,6 +19,7 @@
 #include "../../core/reparam.hpp"
 #include "../../core/span.hpp"
 #include "../norm/mle.hpp"
+#include "../ged/mle.hpp"
 #include "../snorm/mle.hpp"
 #include "../snorm/fs.hpp"
 #include "../../special/skewed_densities.hpp"
@@ -421,6 +422,7 @@ inline SgedResult sged_mle_free(span x, double tol, int maxit) {
 }
 
 #include "face_payload.hpp"
+#include "free_shape_certificate.hpp"
 
 // Classified holds: fixed shape/skew and either location or scale (or both).
 inline SgedResult sged_mle_impl(span x, double tol, int maxit,
@@ -433,16 +435,22 @@ inline SgedResult sged_mle_impl(span x, double tol, int maxit,
   const double inf=std::numeric_limits<double>::infinity();
   const bool hm=!std::isnan(fixed_mean), hs=!std::isnan(fixed_sd);
   const bool hn=!std::isnan(fixed_nu), hx=!std::isnan(fixed_xi);
-  if(!hm && !hs && !hn && !hx) return sged_mle_free(x,tol,maxit);
   SgedResult out{nan,nan,nan,nan,nan,0,SgedStatus::InvalidStart};
   if((hm && !std::isfinite(fixed_mean)) || (hs && !(fixed_sd>0 && std::isfinite(fixed_sd))) ||
      (hn && !(fixed_nu>0 && std::isfinite(fixed_nu))) ||
      (hx && !(fixed_xi>0 && std::isfinite(fixed_xi))) || x.size()==0 || !(tol>0) || !std::isfinite(tol) || maxit<1) return out;
   for(double v:x) if(!std::isfinite(v)) return out;
+  if(!hn && hx && fixed_xi==1)
+    return sged_free_shape_certificate::symmetric(x,tol,maxit,fixed_mean,fixed_sd);
+  if(!hn && !hm && !hs && sged_free_shape_certificate::balanced_uniform(x,out))return out;
+  if(!hn && hx && !hm && !hs) return sged_weighted_shape::fit(x,tol,maxit,fixed_xi);
+  if(!hm && !hs && !hn && !hx) return sged_mle_free(x,tol,maxit);
   if(hn && !hx && fixed_nu==2)
     return sged_skew_certificate::normal(x,maxit,fixed_mean,fixed_sd);
   if(hn && !hx && !hm && !hs && fixed_nu<=1)
     return sged_skew_certificate::subunit(x,maxit,fixed_nu);
+  if(hn && !hx && !hm && !hs && fixed_nu>1)
+    return sged_mode_skew::fit(x,tol,maxit,fixed_nu);
   if(hn && hx && (!hm || !hs))
     return sged_cert_detail::fit(x,tol,maxit,fixed_mean,fixed_sd,fixed_nu,fixed_xi);
   if(!(hn && hx && (hm || hs))) {

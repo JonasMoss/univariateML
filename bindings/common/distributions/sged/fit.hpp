@@ -38,10 +38,10 @@ inline FitResult fit_sged(cppunivariate::span x, Held mean_arg = {}, Held sd_arg
   if(res.status==cppunivariate::SgedStatus::CertificateFailure) {
     const std::vector<std::string> names{"mean","sd","nu","xi"};
     if(res.stop_detail.budget_exhausted)
-      return classify(fail("SGED held-shape certificate budget exhausted; increase `iterlim`."),res.stop_detail,"budget",names);
+      return classify(fail("SGED certificate budget exhausted; increase `iterlim`."),res.stop_detail,"budget",names);
     if(res.stop_detail.comparison_tie)
-      return classify(fail("SGED held-shape maxima are tied or numerically indistinguishable; no unique MLE returned."),res.stop_detail,"tie",names);
-    return classify(fail("SGED held-shape certificate numerical failure (arithmetic or root enclosure); increase `iterlim`."),res.stop_detail,"numerical",names);
+      return classify(fail("SGED maxima are tied or numerically indistinguishable; no unique MLE returned."),res.stop_detail,"tie",names);
+    return classify(fail("SGED certificate numerical failure (arithmetic or root enclosure); increase `iterlim`."),res.stop_detail,"numerical",names);
   }
   if(res.status==cppunivariate::SgedStatus::UnsupportedHold) return fail("Unsupported conditional fit.");
   if(res.status==cppunivariate::SgedStatus::Unbounded) return nomle("Scale collapse: likelihood is unbounded at the held mean; no MLE.");

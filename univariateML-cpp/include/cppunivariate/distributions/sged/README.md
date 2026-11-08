@@ -132,7 +132,7 @@ relations: {}
 fit:
   method: multistart
   certified: 'partial'
-  note: 'sged/certificate.hpp certifies free location with both shapes held (scale held or free), and free scale with mean and both positive shapes held. sged/skew_certificate.hpp additionally certifies free skew at held nu=2 with either moment held or free, and at 0<nu<=1 with both moments free. Remaining fixed-shape free-skew subsets and the unchanged free-shape default retain uncertified numerical searches; see the fixed-shape free-skew section.'
+  note: 'sged/certificate.hpp certifies free location with both shapes held (scale held or free), and free scale with mean and both positive shapes held. sged/skew_certificate.hpp additionally certifies free skew at held nu=2 with either moment held or free, and at 0<nu<=1 with both moments free. With xi=1 held, sged/free_shape_certificate.hpp delegates all four free-nu subsets to the GED global certificate in identical public moment coordinates. Balanced two-point data with free moments have a certified uniform supremum for every held or free skew. sged/weighted_shape_certificate.hpp certifies asymmetric held xi with nu and both moments free. sged/mode_skew_certificate.hpp completes fixed positive nu with free skew and both moments free. Free nu with a held moment at asymmetric skew, free nu and xi jointly, and nonnormal free-skew fits with held moments retain uncertified numerical searches; the unchanged default is among these open cases.'
 areas:
 - finance
 - measurement and errors
@@ -247,7 +247,8 @@ zero-side and uniform limits also require separate treatment.
 |---|---|
 | Fixed finite $\xi>0$, $\nu\ge1$ | Concavity in inverse-scale coordinates, proved as above. |
 | Held shapes, free location; scale-only with positive held shapes | Global certificates described below. |
-| Remaining conditional fits | Numerical scans and refinements; no global certificate. |
+| Held skew, free shape and both moments; held positive shape, free skew and both moments | Global weighted-shape and mode-profile certificates below. |
+| Remaining held-moment and joint free-shape/skew fits | Numerical scans and refinements; no global certificate. |
 | Default free shapes and limiting faces | Multistart and face comparisons; numerical, with no global shape certificate. |
 
 With mean and shapes held, scale maxima exist unless all observations equal
@@ -505,8 +506,157 @@ interior knots $c=\pm1$. At either interior knot $S<12$; at either
 endpoint $S>20$. These inequalities separate the only four distinct
 knots, and reflection gives the exact tie.
 
-For other held shapes with a held moment, and for $\nu>1$, $\nu\ne2$
-with both moments free, the existing numerical searches remain uncertified.
+For held shapes other than two with a held moment, the existing numerical
+searches remain uncertified. With both moments free, the certificate below
+completes the smooth fixed-shape cases.
 In particular their finite skew scan is not a bound on either infinite
 tail. These open regions and the missing bounds are recorded in the
 [free-skew evidence](../../../../../dev/research/evaluations/2026-11-07-sged-skew-report.md).
+
+
+## Free-shape symmetric submodel
+
+Holding $\xi=1$ gives $\mu_u=0$, $\sigma_u=1$, and equal side
+scales for every $\nu$. The density and its public moment coordinates
+are exactly GED's, including when either moment is held. All four free-shape
+subsets therefore use the public GED certificate at the same controls and
+restriction $\nu\ge1$. Its profile-score bounds, location enclosures,
+curvature contraction and uniform-tail bound supply the global comparison;
+no SGED shape scan participates in these fits. The same conditional-comparison
+certificate and practical floating-point margins apply, including GED's
+coefficient enclosures. This reduction applies only to skew held at exactly
+one, never to an estimated skew near one.
+
+Finite witnesses append the held skew to GED's mean, sd and shape. Uniform
+witnesses retain their two endpoint coordinates, and every likelihood bound,
+tie, work count, budget and numerical stop is preserved. A finite result is
+accepted only if GED certifies it. In particular rounded held-sd endpoint
+comparisons remain numerical stops. Free-shape uniqueness is false: at
+$x=(-1,1)$, held $\sigma=0.1$ and $\xi=1$, the entire Laplace
+median interval maximizes likelihood; the fitter retains its two endpoints
+in a tie stop.
+
+For asymmetric held skew with a held public moment, a free shape changes
+the mode-to-mean and scale-to-sd conversions. Those holds cannot be replaced
+by held kernel coordinates. With both shapes free the uniform face also
+intersects both half-GED faces. These held-moment and joint-shape subsets
+retain the existing uncertified numerical searches, including the default fit. The [free-shape evidence and exact open
+scope](../../../../../dev/research/evaluations/2026-11-08-sged-free-report.md)
+give the constrained objective, tail reductions and missing bounds.
+
+
+With both moments free and equal numbers of observations at two distinct
+values $l<h$, a global face comparison is analytic even for asymmetric held
+or free skew. Log-concavity for $\nu\ge1$ gives
+$1>\int_l^h f(x)\,dx\ge(h-l)\sqrt{f(l)f(h)}$ for every
+finite SGED. Hence $\ell<-n\log(h-l)$. This bound is reachable:
+choose an interior join $c$ with $(h-c)/(c-l)=\xi^2$, and side scales
+$a=(c-l)(1+\delta)$, $b=(h-c)(1+\delta)$, where
+$\delta=\log\nu/\nu$. Both endpoint penalties then vanish and
+the normalizer tends to $1/(h-l)$. Free skew may use $\xi=1$.
+The fitter reports the uniform face without a shape or skew scan.
+This result requires both public moments free; a held moment changes the
+reachable paths. The face likelihood uses the half-width to avoid width
+overflow, with a $4096\epsilon(1+n+|\ell|)$ comparison allowance;
+a subnormal half-width stops numerically.
+
+
+## Asymmetric held-skew free-shape certificate
+
+With both moments free, write $a=h/\xi$, $b=h\xi$ for the two
+kernel side scales. For mode $c$, put $r_i=\xi(c-x_i)$ on the left
+and $r_i=(x_i-c)/\xi$ on the right, and $T=\sum r_i^p$, where
+$p=\nu\ge1$. Scale profiling gives $h^p=pT/n$. Above one the
+mode objective is strictly convex; at one its minimizers are the entire
+weighted-median face with quantile $1/(1+\xi^2)$.
+
+Let $U=\sum r_i^p\log r_i$, $V=\sum r_i^p(\log r_i)^2$,
+$G=\sum\operatorname{sign}(c-x_i)w_i r_i^{p-1}\log r_i$ and
+$H=\sum w_i^2r_i^{p-2}$, with $w_i=\xi$ left and $1/\xi$ right.
+The envelope score and its curvature are
+$$
+ A=p^2\ell'/n=\psi(1+1/p)+\log p-pU/T+\log(T/n),
+$$
+$$
+ A'=1/p-\psi_1(1+1/p)/p^2-p[V/T-(U/T)^2]
+       +p^2G^2/[(p-1)TH].
+$$
+The mode is enclosed over every proposed shape interval using its monotone
+weighted score, without assuming a monotone mode path. Shared positive
+rescaling of residuals prevents high-shape score underflow. Termwise power,
+power-log and power-log-squared ranges enclose these formulas; crossing
+knots include both side weights. An unavailable finite Hessian enclosure
+disables curvature contraction rather than discarding a possible root.
+Definite score signs exclude stationary points, negative upper curvature
+contracts roots, and other cells are subdivided or excluded by likelihood.
+
+For $C=\xi+1/\xi$ and sample range $R>0$, at least one weighted
+extreme residual is at least $R/C$, whatever the mode. Convexity of log gamma
+therefore gives the uniform-in-skew tail bound
+$$
+ \ell(p)/n\le-\log R-
+ [\log p+1-\gamma-\log n]/p.
+$$
+For $p\ge\max(2,n)$ the signed correction is strictly negative.
+The certificate thus covers the entire remaining finite interval, compares
+all retained roots and the weighted-median face at one, and compares the
+reachable uniform face. It does not select a uniform limit from a finite
+shape scan.
+
+## Fixed-shape free-skew mode certificate
+
+For fixed $p>1$, set $A=\sum_{x_i<c}(c-x_i)^p$,
+$B=\sum_{x_i>c}(x_i-c)^p$, $r=1/(p+1)$ and $S=A^r+B^r$.
+The side-scale profile is $a=tA^r$, $b=tB^r$,
+$t=(pS/n)^{1/p}$, and the profile likelihood decreases with $S$.
+Every maximizing mode is in the closed sample range. Its endpoints represent
+the right and reflected half-GED faces.
+
+Writing $C_L=\sum_{x_i<c}(c-x_i)^{p-1}$ and
+$C_R=\sum_{x_i>c}(x_i-c)^{p-1}$, the stationary equation is
+$F=C_L/A^{p/(p+1)}-C_R/B^{p/(p+1)}=0$.
+Monotone side sums enclose $F$ on every mode cell; differentiating these
+sums encloses $F'$. Positive lower curvature permits root contraction.
+The likelihood bound $S(c)\ge A(l)^r+B(h)^r$ controls a whole cell
+$[l,h]$. Before the first distinct knot the left score term is exactly
+$k^r(c-x_{\min})^{-r}$ for its multiplicity $k$; the reflected
+formula closes the other face neighbourhood. Thus neither infinite skew
+tail is represented by a finite skew cutoff.
+
+All distinct knots are evaluated. Above one an interior knot with definite
+nonzero first derivative cannot maximize; stationary or uncertain knots are
+retained along with every surviving root enclosure. Both half-GED faces
+are compared after the complete cover closes. No unimodality is assumed.
+For the two-point sample $(-1,1)$, $S(c)=(c+1)^{p/(p+1)}+
+(1-c)^{p/(p+1)}$ is strictly concave, so its two endpoint minima tie.
+This is an exact nonuniqueness example for every such held shape.
+
+Both certificates recover moments using
+$k=\Gamma(2/p)/\Gamma(1/p)$, $v=\Gamma(3/p)/\Gamma(1/p)$,
+$\mu=c+k(b-a)$ and $\sigma^2=(v-k^2)(b-a)^2+vab$.
+Gamma-ratio enclosures use digamma derivative bounds in $1/p$; these moment
+ratios are not assumed monotone. All possible winners must fit in public
+mean intervals of width $2\times10^{-7}(1+|\mu|)$ and log-sd and
+log-skew intervals of width $2\times10^{-7}$, with shape root width
+$2\times10^{-7}(1+p)$ when free. Representatives are refined further.
+The stored public coefficients must reproduce the profile likelihood within
+the arithmetic allowance; failed recovery stops numerically.
+Separated overlapping candidates stop as ties. A weighted finite tie occurs
+at held $\xi=2$ for $(-100,-.01,-.01,-.01,15\text{ copies of }.01,100)$:
+the winning shape-one weighted-median interval is retained, not one selected
+location.
+
+These are exact-arithmetic certificates conditional on computed comparisons.
+Likelihood and score margins use $4096\epsilon(1+\text{magnitude})
+(1+n\epsilon)(1+p_{\max})$, including normalizer magnitudes.
+Positive side-power sums use relative margins with the same factor and an
+$n$-subnormal allowance, so a rare side is not erased by an absolute margin
+from the opposite side. Positive side sums lost to underflow never become
+half-GED faces. This is not outward-rounded interval arithmetic.
+Both searches meter point, cell and root evaluations against
+$128\min(\mathtt{iterlim},100000)$, with inner solves capped at
+$\min(\mathtt{iterlim},100000)$. Knots cost $O(nk)$ for $k$ distinct
+values; an unfundable knot partition stops after a linear-cost face witness.
+Budget and numerical stops retain feasible witnesses and an infinite upper
+bound until the full cover is closed. The [free-shape report](../../../../../dev/research/evaluations/2026-11-08-sged-free-report.md)
+records independent bounds, coefficient checks, timings and remaining holds.
