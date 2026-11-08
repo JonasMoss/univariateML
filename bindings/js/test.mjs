@@ -1237,3 +1237,21 @@ test('Bhattacharjee physical comparisons and stopped likelihood witnesses', asyn
     return true;
   });
 });
+test('binomial relatives retain proved finite and Poisson witnesses', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  for(const [family,x,held] of [
+    ['ztbinom',[1,1,1,2,3,7,12],{}],
+    ['zmbinom',[0,0,1,1,1,2,3,7,12],{p0:.2}],
+    ['zib',[0,0,0,0,0,0,0,0,1,1,1,2,3,7,12],{pi:.2}],
+    ['tbinom',[1,2,3],{}]
+  ]) {
+    assert.throws(() => api[family].fit(new Float64Array(x),held),error => {
+      assert.equal(error.kind,'limit');
+      assert.ok(Number.isFinite(error.loglik_upper));
+      assert.ok(error.candidates.length>=2);
+      return true;
+    });
+  }
+});
+

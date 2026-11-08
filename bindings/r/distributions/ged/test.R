@@ -418,3 +418,20 @@ test_that("held GED shape arithmetic losses stop numerically", {
   expect_error(mlged(c(0, 0, 1e-200), nu = .02), "accuracy")
   expect_error(mlged(c(0, 1e-100), sd = 1e300, nu = .02), "accuracy")
 })
+
+test_that("ged fully held evaluation retains underflowed residual powers", {
+  x <- c(-1e-100, 1e-100)
+  f <- mlged(x, mean=0, sd=1e300, nu=.02)
+  target <- -612.224579676587918
+  expect_equal(dml(x,f,log=TRUE), rep(target,2), tolerance=2e-12)
+  expect_equal(dml(x,f)/exp(target), c(1,1), tolerance=2e-12)
+  expect_equal(as.numeric(logLik(f)), 2*target, tolerance=2e-12)
+  expect_setequal(attr(f,"fixed"), c("mean","sd","nu"))
+  f <- mlged(x, mean=0, sd=1e300, nu=.0005)
+  for (lower in c(TRUE,FALSE)) {
+    lp <- pml(x,f,lower.tail=lower,log.p=TRUE)
+    expect_equal(lp, if(lower) c(-41.209468768459971,-1.2675208492151555e-18)
+                 else c(-1.2675208492151555e-18,-41.209468768459971), tolerance=2e-10)
+    expect_equal(qml(lp,f,lower.tail=lower,log.p=TRUE)/x,c(1,1),tolerance=2e-10)
+  }
+})

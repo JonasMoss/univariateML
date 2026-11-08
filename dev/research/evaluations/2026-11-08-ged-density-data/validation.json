@@ -1,0 +1,93 @@
+{
+  "task": "TASK-152",
+  "base": "cfb7c4b3",
+  "status": "complete",
+  "header_sha256": {
+    "univariateML-cpp/include/cppunivariate/distributions/ged/dpqr.hpp": "c1f1d7271f00aa1f7a45997caa7566b2a00bbf7cfbc511dcf77e5f326910414f",
+    "univariateML-cpp/include/cppunivariate/distributions/sged/dpqr.hpp": "8b12892868bb1eec8684c392dd402541ff956d263c240c690984d6f668e74574"
+  },
+  "frozen_files_byte_identical": 298,
+  "tests": [
+    {
+      "command": "just cpp-test",
+      "machine": "workstation",
+      "compiler": "GCC 15.2",
+      "passed": 106
+    },
+    {
+      "command": "just cpp-test-no-long-double",
+      "machine": "workstation",
+      "compiler": "GCC 15.2",
+      "passed": 129
+    },
+    {
+      "command": "just cpp-test",
+      "machine": "simbox",
+      "compiler": "GCC 13.3",
+      "passed": 106
+    },
+    {
+      "command": "UMVL_TEST_TIER=full just cpp-test",
+      "machine": "simbox",
+      "compiler": "GCC 13.3",
+      "passed": 129
+    },
+    {
+      "command": "just cpp-test-no-long-double",
+      "machine": "simbox",
+      "compiler": "GCC 13.3",
+      "passed": 129
+    },
+    {
+      "command": "just test",
+      "machine": "simbox",
+      "passed": 21852,
+      "failed": 0,
+      "warnings": 0,
+      "skipped": 154
+    },
+    {
+      "command": "just test-full",
+      "machine": "simbox",
+      "passed": 44675,
+      "failed": 0,
+      "warnings": 0,
+      "skipped": 0
+    },
+    {
+      "command": "just js-build; just js-test",
+      "machine": "workstation",
+      "passed": 536,
+      "failed": 0
+    },
+    {
+      "command": "just site-check",
+      "machine": "workstation",
+      "status": "pass"
+    },
+    {
+      "command": "check.py",
+      "machine": "workstation",
+      "records": 29,
+      "modes": [
+        "native",
+        "no-long-double"
+      ]
+    },
+    {
+      "command": "check_wasm.mjs",
+      "machine": "workstation",
+      "scalar_comparisons": 79
+    },
+    {
+      "command": "check_unchanged.py",
+      "machine": "workstation",
+      "bit_identical_comparisons": 8100
+    }
+  ],
+  "high_precision": {
+    "dps": 100,
+    "max_absolute_logdensity_error": "6.285216032037930639101327464727510223035155795668277764771788360393770309613209403138360764910820587E-12",
+    "max_relative_quantile_error": "5.009298834326233433203037477203504402646093611628485951030429815396790355335848008820245122220765551E-12"
+  }
+}

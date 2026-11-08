@@ -527,3 +527,23 @@ TEST_CASE("ged: held-shape arithmetic losses are numerical stops rather than cer
   const auto c=cppunivariate::ged_mle(mltest::as_span(constant),1e-6,1,NAN,1,.5);
   CHECK(c.status==cppunivariate::GedStatus::Ok);CHECK(c.certified);
 }
+
+TEST_CASE("ged: positive residual kernels survive quotient underflow") {
+  // Independent 100-digit mpmath evaluation at the exact binary64 inputs;
+  // reproducible checker in 2026-11-08-ged-density-data/check.py.
+  for (double x : {-1e-100,1e-100}) {
+    CHECK(cppunivariate::distributions::dged(x,0,1e300,.02,true) == doctest::Approx(-612.224579676587918).epsilon(2e-14));
+    CHECK(cppunivariate::distributions::dged(x,0,1e300,.02,false) == doctest::Approx(std::exp(-612.224579676587918)).epsilon(2e-12));
+    CHECK(cppunivariate::distributions::dged(x,0,1e300,.02,true) < cppunivariate::distributions::dged(0,0,1e300,.02,true)-9e-7);
+    // With a smaller held shape, the lost sign affects a representable tail.
+    const double small=cppunivariate::distributions::pged(x,0,1e300,.0005,x<0,true);
+    CHECK(small == doctest::Approx(-41.209468768459971).epsilon(2e-12));
+    CHECK(cppunivariate::distributions::pged(x,0,1e300,.0005,x>0,true) == doctest::Approx(-1.2675208492151555e-18).epsilon(2e-10));
+    const double recovered=cppunivariate::distributions::qged(small,0,1e300,.0005,x<0,true);
+    CHECK(recovered/x == doctest::Approx(1).epsilon(2e-10));
+  }
+  // A nonzero subnormal quotient has too few significant bits as well.
+  CHECK(cppunivariate::distributions::dged(1e-23,0,1e300,.02,true) == doctest::Approx(-612.224611684520115).epsilon(2e-14));
+  CHECK(cppunivariate::distributions::pged(0,0,1e300,.0005,true,false) == .5);
+  CHECK(cppunivariate::distributions::dged(INFINITY,0,1e300,.02,true) == -INFINITY);
+}

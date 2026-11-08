@@ -1,0 +1,5 @@
+GED residual old=-612.22457872605537 new=-612.22457967658784
+GED negative log-CDF old=-1.2675208492151555e-18 new=-41.209468768459971
+SGED shift old=4796.4333494261427 new=-106.79802510496313
+SGED quantile old=0 new=-7.9457977674755335e-80
+8100 ordinary density/CDF/quantile values are bit-identical to cfb7c4b3

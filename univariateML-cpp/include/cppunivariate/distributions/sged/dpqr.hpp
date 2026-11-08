@@ -4,14 +4,56 @@
 #include "../../special/skewed_densities.hpp"
 #include "../../special/special.hpp"
 #include "../ged/dpqr.hpp"
+#include <algorithm>
+#include <utility>
 namespace cppunivariate {
 namespace distributions {
+namespace sged_detail {
+struct LogResidual { double magnitude; bool negative; };
+// Signed logarithmic addition, used only when an intermediate leaves the
+// normal range. Keeping the magnitude logarithmic also preserves |z|^nu
+// for subunit nu when z itself cannot be represented.
+inline LogResidual add(LogResidual a, LogResidual b) {
+  if (a.magnitude < b.magnitude) std::swap(a,b);
+  if (b.magnitude == special::kNegInf) return a;
+  return {a.magnitude + (a.negative == b.negative
+      ? std::log1p(std::exp(b.magnitude-a.magnitude))
+      : fs::log1mexp(b.magnitude-a.magnitude)), a.negative};
+}
+inline LogResidual log_shift(double nu, double xi, double mu) {
+  if (std::isnormal(mu) || xi==1) return {std::log(std::fabs(mu)),mu<0};
+  // The centering moment may itself underflow for very small held shapes.
+  return {std::lgamma(2.0/nu)-0.5*(std::lgamma(1.0/nu)+std::lgamma(3.0/nu))
+          +std::log(std::fabs(xi-1.0/xi)),xi<1};
+}
+inline LogResidual residual(double x, double mean, double sd, double sigma, double mu,
+                            double nu, double xi) {
+  return add({special::log_abs_difference(x,mean)-std::log(sd)+std::log(sigma),x<mean},
+             log_shift(nu,xi,mu));
+}
+inline bool needs_log(double x, double mean, double sd, double sigma, double z, double v, double mu, double xi) {
+  const double t=(x-mean)/sd;
+  const double tiny=std::numeric_limits<double>::min();
+  return std::isfinite(x) && std::isfinite(sigma) && std::isfinite(mu) && ((!std::isnormal(mu) && xi!=1) || std::isinf(t) || std::isinf(z) || std::isinf(v)
+      || (x!=mean && std::fabs(t)<tiny)
+      || (t!=0 && std::fabs(t*sigma)<tiny)
+      || (z!=0 && std::fabs(v)<tiny));
+}
+} // namespace sged_detail
 inline double dsged(double x, double mean, double sd, double nu, double xi, bool log) {
   if (!(fs::valid(mean, sd, nu, xi)) || std::isnan(x)) return cppunivariate::special::kNaN;
   double mu = 0.0;
   const double sigma = fs::sged_sigma(nu, xi, mu);
   const double z = (x - mean)/sd*sigma + mu;
-  const double ld = (std::log(2.0/(xi+1.0/xi)) + fs::ged_logdensity(z/(z<0.0 ? 1.0/xi : xi), nu)) - std::log(sd) + std::log(sigma);
+  const double v=z/(z<0.0 ? 1.0/xi : xi);
+  double ld = (std::log(2.0/(xi+1.0/xi)) + fs::ged_logdensity(v, nu)) - std::log(sd) + std::log(sigma);
+  if (sged_detail::needs_log(x,mean,sd,sigma,z,v,mu,xi)) {
+    const auto r=sged_detail::residual(x,mean,sd,sigma,mu,nu,xi);
+    const double ls=fs::ged_logscale(nu);
+    const double lv=r.magnitude+(r.negative ? std::log(xi) : -std::log(xi));
+    ld=std::log(2.0/(xi+1.0/xi))-std::log(2.0)-ls-std::lgamma(1+1/nu)
+        -std::exp(nu*(lv-ls))-std::log(sd)+std::log(sigma);
+  }
   return log ? ld : std::exp(ld);
 }
 inline double psged(double q, double mean, double sd, double nu, double xi, bool lower_tail=true, bool log_p=false) {
@@ -19,6 +61,16 @@ inline double psged(double q, double mean, double sd, double nu, double xi, bool
   double mu = 0.0;
   const double sigma = fs::sged_sigma(nu, xi, mu);
   const double z = (q - mean)/sd*sigma + mu;
+  const double v=z/(z<0.0 ? 1.0/xi : xi);
+  if (sged_detail::needs_log(q,mean,sd,sigma,z,v,mu,xi)) {
+    const auto r=sged_detail::residual(q,mean,sd,sigma,mu,nu,xi);
+    const double lscale=r.negative ? -std::log(xi) : std::log(xi);
+    const double la=nu*(r.magnitude-lscale-fs::ged_logscale(nu));
+    const double lp=std::log(2.0)-std::log(xi+1.0/xi)+lscale-std::log(2.0)
+        +ged_detail::gamma_log(la,1.0/nu,false);
+    const double result=(r.negative==lower_tail) ? lp : fs::log1mexp(lp);
+    return log_p ? result : std::exp(result);
+  }
   return fs::skew_p(z, xi, lower_tail, log_p, [&](double v) { return pged(v, 0.0, 1.0, nu, true, true); });
 }
 inline double qsged(double p, double mean, double sd, double nu, double xi, bool lower_tail=true, bool log_p=false) {
@@ -28,7 +80,28 @@ inline double qsged(double p, double mean, double sd, double nu, double xi, bool
   double mu = 0.0;
   const double sigma = fs::sged_sigma(nu, xi, mu);
   const double z = fs::skew_q(p, xi, lower_tail, log_p, [&](double v) { return qged(v, 0.0, 1.0, nu, true, true); });
-  return mean + sd*(z-mu)/sigma;
+  const double offset=sd*(z-mu)/sigma;
+  if (!std::isfinite(sigma) || !std::isfinite(mu)) return mean+offset;
+  if (std::isnormal(mu) && std::isfinite(z) && std::isfinite(offset) &&
+      (z==mu || std::isnormal(z))) return mean+offset;
+  // Form the signed unit quantile and subtract its centering shift in logs
+  // before scaling: either can underflow while the final offset is finite.
+  const double lp=fs::logprob(p,log_p);
+  if (std::isnan(lp)) return lp;
+  const double lc=fs::log1mexp(lp);
+  const double logg=std::log(2.0)-std::log(xi+1.0/xi);
+  const double lleft=logg-std::log(xi)-std::log(2.0);
+  const double lright=logg+std::log(xi)-std::log(2.0);
+  const bool left=lower_tail ? lp<=lleft : lp>=lright;
+  const double lscale=left ? -std::log(xi) : std::log(xi);
+  const double side=(left==lower_tail) ? lp : lc;
+  const double tail=std::min(0.0,side-logg-lscale+std::log(2.0));
+  const double la=ged_detail::gamma_logq(tail,1.0/nu,false);
+  auto shift=sged_detail::log_shift(nu,xi,mu);
+  shift.negative=!shift.negative;
+  const auto r=sged_detail::add({lscale+fs::ged_logscale(nu)+la/nu,left},shift);
+  return mean+std::copysign(std::exp(std::log(sd)-std::log(sigma)+r.magnitude),
+                            r.negative ? -1.0 : 1.0);
 }
 template <typename Rng>
 inline double rsged(Rng &rng, double mean, double sd, double nu, double xi) {

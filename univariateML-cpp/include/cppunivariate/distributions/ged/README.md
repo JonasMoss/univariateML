@@ -423,5 +423,6 @@ An intermediate subnormal product can fail this check even when a positive
 scale is returned: for $x=(0,0,10^{-320})$ and held $\nu=1/2$, the ideal scale
 is $10^{-320}\sqrt{120}/36$. Such losses stop numerically, as do positive
 residuals lost to underflow before a held subunit power is applied. They do
-not imply unbounded likelihood. The settled density primitive's positive
-residual-underflow limitation is recorded separately in the report.
+not imply unbounded likelihood. Density evaluation retains the logarithm of
+nonzero residuals even when their standardized quotient underflows; this does not relax the fitter's
+normalization certificate.

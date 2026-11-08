@@ -560,3 +560,37 @@ test_that("sged normal face conversion reports scale overflow numerically", {
 test_that("sged normal face conversion rejects rounded subnormal scales", {
   expect_error(mlsged(c(0,2^(-1047)),nu=2),class='univariateML_numerical')
 })
+
+test_that("sged fully held evaluation retains underflowed residual powers", {
+  x <- c(-1e-100, 1e-100)
+  for (xi in c(1,1.3)) {
+    f <- mlsged(x,mean=0,sd=1e300,nu=.02,xi=xi)
+    target <- if(xi==1) -612.224579676587918 else -683.90356286107067
+    expect_equal(dml(x,f,log=TRUE),rep(target,2),tolerance=2e-12)
+    expect_equal(dml(x,f)/exp(target),c(1,1),tolerance=2e-12)
+    expect_equal(as.numeric(logLik(f)),2*target,tolerance=2e-12)
+    expect_setequal(attr(f,"fixed"),c("mean","sd","nu","xi"))
+  }
+  f <- mlsged(x,mean=0,sd=1e300,nu=.0005,xi=1)
+  for (lower in c(TRUE,FALSE)) {
+    lp <- pml(x,f,lower.tail=lower,log.p=TRUE)
+    expect_equal(lp,if(lower) c(-41.209468768459971,-1.2675208492151555e-18)
+                  else c(-1.2675208492151555e-18,-41.209468768459971),tolerance=2e-10)
+    expect_equal(qml(lp,f,lower.tail=lower,log.p=TRUE)/x,c(1,1),tolerance=2e-10)
+  }
+})
+
+test_that("sged fully held tiny-shape evaluation preserves its centering moment", {
+  for (xi in c(.7,1.3)) {
+    x <- c(0,1e-100)
+    f <- mlsged(x,mean=0,sd=1e300,nu=.0003,xi=xi)
+    target <- if(xi<1) -107.064723180909907 else -106.798025104960350
+    expect_equal(dml(x,f,log=TRUE),rep(target,2),tolerance=2e-11)
+    expect_equal(as.numeric(logLik(f)),2*target,tolerance=2e-11)
+    quantile <- if(xi<1) 9.98017740400194973e-80 else -7.94579776743636934e-80
+    expect_equal(qml(.1,f)/quantile,1,tolerance=2e-10)
+    expect_equal(pml(x,f,lower.tail=xi<1,log.p=TRUE),
+                 rep(if(xi<1) -288.220156276318788 else -288.181208135391239,2),
+                 tolerance=2e-11)
+  }
+})

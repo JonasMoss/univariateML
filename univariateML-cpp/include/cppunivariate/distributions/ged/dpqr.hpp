@@ -1,6 +1,7 @@
 // Package-defined, mean/standard-deviation parameterisation.
 #pragma once
 #include "../snorm/fs.hpp"
+#include <limits>
 #include "tails.hpp"
 #include "../../special/skewed_densities.hpp"
 #include "../../special/special.hpp"
@@ -10,7 +11,7 @@ inline double dged(double x, double mean, double sd, double nu, bool log) {
   if (!(fs::valid(mean, sd, nu, 1.0)) || std::isnan(x)) return cppunivariate::special::kNaN;
   const double z = (x - mean)/sd;
   const double ls=fs::ged_logscale(nu);
-  const double ld = std::isinf(z) && std::isfinite(x)
+  const double ld = (std::isinf(z) || (x != mean && std::fabs(z) < std::numeric_limits<double>::min())) && std::isfinite(x)
       ? -std::log(2.0)-ls-std::lgamma(1+1/nu)-std::log(sd)
           -std::exp(nu*(special::log_abs_difference(x,mean)-std::log(sd)-ls))
       : fs::ged_logdensity(z, nu) - std::log(sd);
@@ -18,10 +19,9 @@ inline double dged(double x, double mean, double sd, double nu, bool log) {
 }
 inline double pged(double q, double mean, double sd, double nu, bool lower_tail, bool log_p) {
   if (!(fs::valid(mean, sd, nu, 1.0)) || std::isnan(q)) return cppunivariate::special::kNaN;
-  const double z = (q-mean)/sd;
   const double la = nu*(special::log_abs_difference(q,mean)-std::log(sd)-fs::ged_logscale(nu));
   const double small = -std::log(2.0) + ged_detail::gamma_log(la,1.0/nu,false);
-  const double result = ((z < 0.0) == lower_tail) ? small : fs::log1mexp(small);
+  const double result = ((q < mean) == lower_tail) ? small : fs::log1mexp(small);
   return log_p ? result : std::exp(result);
 }
 inline double qged(double p, double mean, double sd, double nu, bool lower_tail, bool log_p) {
