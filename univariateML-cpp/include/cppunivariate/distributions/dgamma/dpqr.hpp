@@ -52,7 +52,13 @@ inline double qdgamma(double p,double shape,double rate,bool lower_tail=true,boo
   if (lp==-INFINITY) return lower_tail ? 0 : INFINITY;
   if (lp==0) return lower_tail ? INFINITY : 0;
   const double z=special::fs_gamma_q(lp,shape,lower_tail)/rate;
-  if (!std::isfinite(z)) return z;
+  const auto search=[&]() {
+    return special::discrete_search(0,INFINITY,[&](double k) {
+      const double f=pdgamma(k,shape,rate,lower_tail,log_p);
+      return std::isnan(f) ? -1 : int(lower_tail ? f>=p : f<=p);
+    });
+  };
+  if (!std::isfinite(z) || std::abs(z)>=9007199254740992.0) return search();
   double q=std::max(0.0,std::ceil(z)-1);
   for (int i=0;i<2;++i) {
     const double at=pdgamma(q,shape,rate,lower_tail,true);
@@ -64,13 +70,13 @@ inline double qdgamma(double p,double shape,double rate,bool lower_tail=true,boo
     if (lower_tail ? at>=lp : at<=lp) q-=1;
     else break;
   }
-  // The seed correction is bounded, so verify both inverse inequalities.
-  // A failed CDF or an unrepresentable predecessor cannot certify a jump.
+  // Verify the bounded seed correction; if it cannot certify the jump,
+  // use guarded inversion. Failed CDF evaluations still propagate.
   const double at=pdgamma(q,shape,rate,lower_tail,true);
   const double before=q>0 ? pdgamma(q-1,shape,rate,lower_tail,true) : (lower_tail ? -INFINITY : 0);
-  if (std::isnan(at) || std::isnan(before) || (q>0 && q-1==q) ||
-      !(lower_tail ? at>=lp && before<lp : at<=lp && before>lp))
-    return std::numeric_limits<double>::quiet_NaN();
+  if (std::isnan(at) || std::isnan(before)) return std::numeric_limits<double>::quiet_NaN();
+  if ((q>0 && q-1==q) || !(lower_tail ? at>=lp && before<lp : at<=lp && before>lp))
+    return search();
   return q;
 }
 template <typename Rng> inline double rdgamma(Rng &rng,double shape,double rate) {

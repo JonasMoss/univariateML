@@ -38,6 +38,10 @@ inline double quantile(double p,double parameter,double a,double b,double size,b
   if(size<0 && parameter==0 && !std::isfinite(hi))return 0;
   if(lp==-INFINITY)return lower?lo:hi;if(lp==0)return lower?hi:lo;
   return special::discrete_search(lo,hi,[&](double q) {
+    if (q>9007199254740992.0) {
+      const double f=evaluate(true,q,parameter,a,b,size,lower,logp);
+      return std::isnan(f) ? -1 : int(lower ? f>=p : f<=p);
+    }
     const double v=evaluate(true,q,parameter,a,b,size,lower,true);
     return std::isnan(v) ? -1 : int(lower ? v>=lp : v<=lp);
   });

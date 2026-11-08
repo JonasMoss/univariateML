@@ -279,7 +279,7 @@ inline double discrete_cdf_quantile(double p, double maximum, bool lower, Cdf cd
     const double small=small_left ? left : cdf(x,false);
     if (!(small>=0 && small<=1)) return LogTails{kNaN,kNaN,false};
     return tails_from_log(std::log(small),small_left);
-  });
+  },p,lower,false);
 }
 
 inline double binomial_quantile(double x, double a, double b, bool lower_tail) {

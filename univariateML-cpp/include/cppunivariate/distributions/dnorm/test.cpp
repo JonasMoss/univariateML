@@ -153,6 +153,35 @@ TEST_CASE("dnorm: held mean zero-scale face uses discretization cells") {
 
 #include "cppunivariate/distributions/dnorm/dpqr.hpp"
 TEST_CASE("dnorm: bounded seed corrections require a representable jump") {
-  CHECK(std::isnan(cppunivariate::distributions::qdnorm(.5,1e308,1)));
+  CHECK(mltest::truth_lattice_quantile(cppunivariate::distributions::qdnorm(.5,1e308,1),.5,true,
+      [](double x) {return cppunivariate::distributions::pdnorm(x,1e308,1,true,false);}));
   CHECK(cppunivariate::distributions::qdnorm(.5,0,1)==-1);
+}
+
+TEST_CASE("dnorm quantiles above 2^53 are minimal representable doubles") {
+  for (bool lower : {false,true}) for (bool log : {false,true}) {
+    const double p=log ? std::log(.75) : .75;
+    const double h=cppunivariate::distributions::qdnorm(p,0,1e20,lower,log);
+    REQUIRE(std::isfinite(h));
+    REQUIRE(std::abs(h)>9007199254740992.0);
+    const double at=cppunivariate::distributions::pdnorm(h,0,1e20,lower,log);
+    const double before=cppunivariate::distributions::pdnorm(std::nextafter(h,-INFINITY),0,1e20,lower,log);
+    CHECK((lower ? at>=p && before<p : at<=p && before>p));
+  }
+}
+
+TEST_CASE("dnorm: rounded seeds cannot bypass inversion at 2^53") {
+  for (double k : {9007199254740990.0,9007199254740992.0,9007199254740994.0}) {
+    for (bool lower : {false,true}) for (bool log : {false,true}) {
+      const double at=cppunivariate::distributions::pdnorm(k,0,1e20,lower,log);
+      const double p=std::nextafter(at,lower ? INFINITY : -INFINITY);
+      const double edge=cppunivariate::distributions::pdnorm(9007199254740992.0,0,1e20,lower,log);
+      if (lower ? edge>=p : edge<=p) continue;
+      const double h=cppunivariate::distributions::qdnorm(p,0,1e20,lower,log);
+      REQUIRE(std::isfinite(h));
+      CHECK(mltest::truth_lattice_quantile(h,p,lower,[&](double x) {
+        return cppunivariate::distributions::pdnorm(x,0,1e20,lower,log);
+      }));
+    }
+  }
 }

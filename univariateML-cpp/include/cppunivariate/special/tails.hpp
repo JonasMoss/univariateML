@@ -4,6 +4,9 @@
 // derive its complement with log1mexp, never 1-p near p=1. Quantiles use
 // the accurate log tail, including log inputs -1e4 and below; do not first
 // exponentiate them. Handle p=0/1 (log p=-Inf/0) at support endpoints.
+// Discrete quantiles return the smallest integer k with F(k) >= p while
+// k <= 2^53; beyond, the smallest representable double h with F(h) >= p
+// (relative error <= 2^-52). NaN only for invalid input or a failed CDF evaluation.
 // Preserve logarithms of underflowed intermediates analytically when needed.
 // Double only: guard range with log-space algebra; CPPUNIV_EXTENDED_REAL equals
 // double on some CRAN platforms. Extended precision may improve rounding,
@@ -226,14 +229,15 @@ inline LogTails discrete_log_tails(double p,bool lower,bool log) {
 // and 1 at/above it. Bounds are integer-valued doubles. In exact arithmetic
 // flooring a midpoint leaves width <= ceil(width/2). The largest finite
 // binary64 bracket has width < 2^(max_exponent+1), so max_exponent+3
-// halvings suffice. Rounded stagnation cannot identify an integer quantile:
-// return NaN instead of an unchecked adjacent representable value.
+// halvings suffice to reach unit width or adjacent representable bounds.
+// The checked invariant reached(lo)==0, reached(hi)==1 then certifies hi
+// on the integer lattice up to 2^53 and the binary64 lattice beyond it.
 template <typename Reached>
 inline double discrete_bisect(double lo, double hi, Reached reached) {
   if (!std::isfinite(lo) || !std::isfinite(hi) || !(lo<hi)) return kNaN;
   if (reached(lo)!=0 || reached(hi)!=1) return kNaN;
   for (int i=0; i<std::numeric_limits<double>::max_exponent+3; ++i) {
-    if (hi-lo<=1) return hi;
+    if (hi-lo<=1 || std::nextafter(lo,hi)==hi) return hi;
     const double width=hi-lo;
     const double mid=std::floor(std::isfinite(width) ? lo+width*.5 : lo*.5+hi*.5);
     if (!(mid>lo && mid<hi)) return kNaN;
@@ -255,7 +259,9 @@ inline double discrete_search(double minimum, double maximum, Reached reached) {
     const int hit=reached(hi);
     if (hit<0) return kNaN;
     if (hit) return discrete_bisect(lo,hi,reached);
-    if (std::isfinite(maximum) || hi==std::numeric_limits<double>::max()) return kNaN;
+    if (std::isfinite(maximum)) return kNaN;
+    if (hi==std::numeric_limits<double>::max())
+      return reached(kPosInf)==1 ? kPosInf : kNaN;
     lo=hi;
     hi=hi>=std::numeric_limits<double>::max()/2 ? std::numeric_limits<double>::max() : hi*2;
   }
@@ -273,9 +279,12 @@ inline double discrete_signed_search(double centre, double step, Reached reached
     const int hit=reached(lo);
     if (hit<0) return kNaN;
     if (!hit) {bracketed=true;break;}
+    if (lo==-largest)
+      return reached(kNegInf)==0 ? lo : kNaN;
     hi=lo;
-    const double next=std::floor(centre-delta);
-    const double candidate=std::isfinite(next) ? next : -largest;
+    const double next=std::floor(lo-delta);
+    const double candidate=next>=lo ? std::nextafter(lo,-largest) :
+                           std::isfinite(next) ? next : -largest;
     if (!(candidate<lo)) return kNaN;
     lo=candidate;
     delta=delta>=largest/2 ? largest : delta*2;
@@ -286,19 +295,23 @@ inline double discrete_signed_search(double centre, double step, Reached reached
     const int hit=reached(hi);
     if (hit<0) return kNaN;
     if (hit) {bracketed=true;break;}
+    if (hi==largest)
+      return reached(kPosInf)==1 ? kPosInf : kNaN;
     lo=hi;
-    const double next=std::ceil(centre+delta);
-    const double candidate=std::isfinite(next) ? next : largest;
+    const double next=std::ceil(hi+delta);
+    const double candidate=next<=hi ? std::nextafter(hi,largest) :
+                           std::isfinite(next) ? next : largest;
     if (!(candidate>hi)) return kNaN;
     hi=candidate;
     delta=delta>=largest/2 ? largest : delta*2;
   }
   return bracketed ? discrete_bisect(lo,hi,reached) : kNaN;
 }
-// Integer inversion uses the accurate smaller log tail throughout.
+// Exact integer inversion uses the accurate smaller log tail.
 template <typename Tails>
 inline double discrete_quantile(const LogTails &target, double minimum,
-                                double maximum, Tails tails) {
+                                double maximum, Tails tails, double p=kNaN,
+                                bool input_lower=true, bool input_log=true) {
   if (!target.valid) return kNaN;
   if (target.lower==kNegInf) return minimum;
   if (target.upper==kNegInf) return maximum;
@@ -306,6 +319,12 @@ inline double discrete_quantile(const LogTails &target, double minimum,
   return discrete_search(minimum,maximum,[&](double x) {
     const LogTails t=tails(x);
     if (!t.valid || std::isnan(t.lower) || std::isnan(t.upper)) return -1;
+    // Above the exact integer range, preserve the selected probability scale:
+    // rounding a complementary tail can move the first representable crossing.
+    if (std::abs(x)>9007199254740992.0 && !std::isnan(p)) {
+      const double f=tail_probability(t,input_lower,input_log);
+      return std::isnan(f) ? -1 : int(input_lower ? f>=p : f<=p);
+    }
     return int(lower ? t.lower>=target.lower : t.upper<=target.upper);
   });
 }

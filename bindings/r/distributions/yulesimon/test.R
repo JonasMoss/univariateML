@@ -29,8 +29,7 @@ test_that("yulesimon density sums, direct tails and inverse inequalities agree",
       u <- c(.001,.1,.5,.9,.999)
       q <- suppressWarnings(qyulesimon(p = if (lg) log(u) else u, rho = shape, lower.tail = tail, log.p = lg))
       target <- if (lg) log(u) else u
-      edge <- pyulesimon(q = 2^53, rho = shape, lower.tail = tail, log.p = lg)
-      expect_true(all(if (tail) edge < target[is.nan(q)] else edge > target[is.nan(q)]))
+      expect_true(all(is.finite(q)))
       use <- is.finite(q) & q<2^53
       f <- pyulesimon(q = q[use], rho = shape, lower.tail = tail, log.p = lg); prev <- pyulesimon(q = q[use] - 1, rho = shape, lower.tail = tail, log.p = lg)
       u <- if (lg) log(u) else u
@@ -89,8 +88,8 @@ test_that("Yule--Simon equals shifted beta negative binomial", {
 })
 test_that("Yule--Simon preserves extreme log probabilities and invalid domains", {
   expect_equal(pyulesimon(q = 1, rho = 1e-300, lower.tail = FALSE, log.p = TRUE)/(-1e-300),1,tolerance=1e-14)
-  expect_warning(expect_true(is.nan(qyulesimon(p = -1e-300, rho = 1, lower.tail = TRUE, log.p = TRUE))),"NaNs")
-  expect_warning(expect_true(is.nan(qyulesimon(p = -1000, rho = 2, lower.tail = FALSE, log.p = TRUE))),"NaNs")
+  expect_true(is.finite(qyulesimon(p = -1e-300, rho = 1, lower.tail = TRUE, log.p = TRUE)))
+  expect_true(is.finite(qyulesimon(p = -1000, rho = 2, lower.tail = FALSE, log.p = TRUE)))
   expect_equal(qyulesimon(p = -1000, rho = 1e-300, lower.tail = TRUE, log.p = TRUE),1)
   expect_warning(dyulesimon(x = 1, rho = 0),"NaNs")
   expect_warning(pyulesimon(q = 1, rho = Inf),"NaNs")

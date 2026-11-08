@@ -15,6 +15,9 @@ const fit = api.gamma.fit(new Float64Array([0.5, 1, 2]), {shape: 2});
 
 Coefficient order comes from dossier front matter. `d` accepts `{log}`;
 `p` and `q` accept `{lower, log}`. Results are owned `Float64Array`s.
+For discrete models, `q` and inverse-CDF sampling return exact integers up to
+2^53 (about 9.0e15); beyond that, the smallest double whose distribution
+function reaches `p`. `NaN` means the evaluation failed.
 Sampling uses a binding-owned C++ `StdRng`, seeded explicitly per call;
 reproducibility is within a build, not across standard library implementations.
 

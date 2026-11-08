@@ -43,7 +43,7 @@ inline double pzip(double q, double lambda, double pi, bool lower_tail, bool log
 inline double qzip(double p, double lambda, double pi, bool lower_tail, bool log_p) {
   if (!(lambda>0) || !std::isfinite(lambda) || !(pi>=0 && pi<=1)) return special::kNaN;
   return special::discrete_quantile(special::discrete_log_tails(p,lower_tail,log_p),0.0,
-      pi==1?0.0:special::kPosInf,[=](double x){return zip_tails(x,lambda,pi);});
+      pi==1?0.0:special::kPosInf,[=](double x){return zip_tails(x,lambda,pi);},p,lower_tail,log_p);
 }
 
 template <typename Rng>

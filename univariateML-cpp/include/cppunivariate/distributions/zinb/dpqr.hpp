@@ -36,7 +36,7 @@ inline double pzinb(double q,double size,double prob,double pi,bool lower_tail,b
 inline double qzinb(double p,double size,double prob,double pi,bool lower_tail,bool log_p) {
   if (!(size>=0) || !std::isfinite(size) || !(prob>0 && prob<=1) || !(pi>=0 && pi<=1)) return special::kNaN;
   return special::discrete_quantile(special::discrete_log_tails(p,lower_tail,log_p),0.0,
-      size==0||pi==1||prob==1?0.0:special::kPosInf,[=](double x){return zinb_tails(x,size,prob,pi);});
+      size==0||pi==1||prob==1?0.0:special::kPosInf,[=](double x){return zinb_tails(x,size,prob,pi);},p,lower_tail,log_p);
 }
 template <typename Rng>
 inline double rzinb(Rng &rng, double size, double prob, double pi) {

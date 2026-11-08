@@ -95,7 +95,7 @@ inline double pbnbinom(double q,double size,double alpha,double beta,bool lower_
 inline double qbnbinom(double p,double size,double alpha,double beta,bool lower_tail,bool log_p) {
   if(!bnbinom_detail::valid(size,alpha,beta)) return special::kNaN;
   return special::discrete_quantile(special::discrete_log_tails(p,lower_tail,log_p),0,special::kPosInf,
-    [&](double x) {return bnbinom_detail::tails(x,size,alpha,beta);});
+    [&](double x) {return bnbinom_detail::tails(x,size,alpha,beta);},p,lower_tail,log_p);
 }
 template <typename Rng>
 inline double rbnbinom(Rng &rng, double size, double alpha, double beta) {

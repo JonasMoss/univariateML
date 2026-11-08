@@ -1,0 +1,90 @@
+{
+  "date": "2026-11-08",
+  "job": "TASK-155 qdiscrete-round",
+  "base_commit": "6977702d",
+  "runs": [
+    {
+      "machine": "workstation",
+      "command": "just cpp-test",
+      "passed": 106,
+      "total": 106
+    },
+    {
+      "machine": "workstation",
+      "command": "just cpp-test-no-long-double",
+      "passed": 129,
+      "total": 129
+    },
+    {
+      "machine": "simbox",
+      "command": "UMVL_TEST_TIER=full just cpp-test",
+      "passed": 129,
+      "total": 129
+    },
+    {
+      "machine": "simbox",
+      "command": "just cpp-test-no-long-double",
+      "passed": 129,
+      "total": 129
+    },
+    {
+      "machine": "workstation",
+      "command": "just js-build; just js-test",
+      "passed": 549,
+      "total": 549
+    },
+    {
+      "machine": "simbox",
+      "command": "run-r-tiers.sh dev full (one worker)",
+      "tier": "dev",
+      "failed": 0,
+      "warnings": 0,
+      "skipped": 154,
+      "passed": 22082
+    },
+    {
+      "machine": "simbox",
+      "command": "run-r-tiers.sh dev full (one worker)",
+      "tier": "full",
+      "failed": 0,
+      "warnings": 0,
+      "skipped": 0,
+      "passed": 44914
+    },
+    {
+      "machine": "workstation",
+      "command": "UMVL_INCLUDE_OVERFLOW=1 python3 check_finite_truth.py",
+      "passed": 142,
+      "total": 142
+    },
+    {
+      "machine": "workstation",
+      "command": "just regen",
+      "exit_code": 0
+    },
+    {
+      "machine": "workstation",
+      "command": "python3 check_report_links.py",
+      "files": 3,
+      "local_destinations": 10,
+      "broken": 0
+    }
+  ],
+  "truth_tables_and_goldens": "byte-identical (git diff --exit-code)",
+  "large_targets": {
+    "finite": 105,
+    "beyond_DBL_MAX": 37
+  },
+  "notes": [
+    "The 2^-52 representation bound is conditional on accurate CDF comparisons.",
+    "See report for the pre-existing dnorm CDF conditioning diagnostic."
+  ],
+  "repository_link_audit": {
+    "broken": 6,
+    "status": "pre-existing findings in four unchanged files; listed in report"
+  },
+  "artifact_viewer": {
+    "status": 403,
+    "reason": "worktree outside configured readable roots; report saved locally"
+  }
+}

@@ -40,7 +40,7 @@ inline double pgeom(double q, double prob, bool lower_tail, bool log_p) {
 inline double qgeom(double p, double prob, bool lower_tail, bool log_p) {
   if (!(prob>0 && prob<=1)) return special::kNaN;
   return special::discrete_quantile(special::discrete_log_tails(p,lower_tail,log_p),0.0,
-      prob==1?0.0:special::kPosInf,[=](double x){return geom_tails(x,prob);});
+      prob==1?0.0:special::kPosInf,[=](double x){return geom_tails(x,prob);},p,lower_tail,log_p);
 }
 
 template <typename Rng>
@@ -48,6 +48,7 @@ inline double rgeom(Rng &rng, double prob) {
   // Inverse-CDF via Uniform.
   const double u = rng.runif(0.0, 1.0);
   const double k = std::ceil(std::log1p(-u) / std::log1p(-prob)) - 1.0;
+  if (k>=9007199254740992.0) return qgeom(u,prob,true,false);
   return k < 0.0 ? 0.0 : k;
 }
 

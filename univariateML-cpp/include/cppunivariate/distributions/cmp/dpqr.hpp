@@ -63,6 +63,10 @@ struct Law {
   if (p==(log ? 0 : 1)) return lower ? special::kPosInf : 0;
   const double target=log ? p : std::log(p);
   return special::discrete_search(0,special::kPosInf,[&](double k) {
+   if (k>9007199254740992.0) {
+     const double f=cdf(k,lower,log);
+     return std::isnan(f) ? -1 : int(lower ? f>=p : f<=p);
+   }
    const double f=cdf(k,lower,true);
    return std::isnan(f) ? -1 : int(lower ? f>=target : f<=target);
   });

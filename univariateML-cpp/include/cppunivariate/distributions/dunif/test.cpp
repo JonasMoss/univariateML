@@ -108,5 +108,6 @@ TEST_CASE("dunif singleton is a point law including RNG endpoints") {
 
 #include "cppunivariate/distributions/dunif/dpqr.hpp"
 TEST_CASE("dunif: quantile search guards and representability") {
-  CHECK(std::isnan(cppunivariate::distributions::qdunif(.5,1e308,std::numeric_limits<double>::max(),true,false)));
+  CHECK(mltest::truth_lattice_quantile(cppunivariate::distributions::qdunif(.5,1e308,std::numeric_limits<double>::max(),true,false),.5,true,
+      [](double x) {return cppunivariate::distributions::pdunif(x,1e308,std::numeric_limits<double>::max(),true,false);}));
 }

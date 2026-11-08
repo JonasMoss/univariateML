@@ -242,12 +242,19 @@ TEST_CASE("dweibull dpqr: stable log pmf, floored CDF, generalized inverse") {
       const double k = d::qdweibull(p, 0.6, b, true, false);
       CHECK(k >= 0);
       CHECK(d::pdweibull(k, 0.6, b, true, false) >= p * (1 - 1e-12));
-      // Beyond 2^53, k-1 can equal k in double precision. There is no
-      // representable predecessor count on which to assert strict inversion.
+      // Ordinary counts retain exact equality across probability scales.
       if (k > 0 && k < 9007199254740992.0)
         CHECK(d::pdweibull(k - 1, 0.6, b, true, false) < p);
-      CHECK(d::qdweibull(std::log(p), 0.6, b, true, true) == k);
-      if (p >= 0.001) CHECK(d::qdweibull(1 - p, 0.6, b, false, false) == k);
+      if (k<=9007199254740992.0) {
+        CHECK(d::qdweibull(std::log(p), 0.6, b, true, true) == k);
+        if (p >= 0.001) CHECK(d::qdweibull(1 - p, 0.6, b, false, false) == k);
+      } else {
+        for (bool lower : {false,true}) for (bool log : {false,true}) {
+          const double target=log ? std::log(lower ? p : 1-p) : lower ? p : 1-p;
+          CHECK(mltest::truth_lattice_quantile(d::qdweibull(target,.6,b,lower,log),target,lower,
+              [&](double x) {return d::pdweibull(x,.6,b,lower,log);}));
+        }
+      }
     }
   }
   CHECK(std::isinf(d::qdweibull(1, 0.6, 1, true, false)));
@@ -316,4 +323,33 @@ TEST_CASE("dweibull: held and fitted Bernoulli faces") {
   REQUIRE(h.status==cppunivariate::DweibullStatus::HeldBernoulliLimit);
   CHECK(h.stop_detail.limit_coef[1]==.4);
   CHECK(h.stop_detail.limit_loglik==doctest::Approx(std::log(.6)+2*std::log(.4)));
+}
+
+TEST_CASE("dweibull quantiles above 2^53 are minimal representable doubles") {
+  for (bool lower : {false,true}) for (bool log : {false,true}) {
+    const double u=lower ? .75 : .25;
+    const double p=log ? std::log(u) : u;
+    const double h=cppunivariate::distributions::qdweibull(p,.5,.01,lower,log);
+    REQUIRE(std::isfinite(h));
+    REQUIRE(std::abs(h)>9007199254740992.0);
+    const double at=cppunivariate::distributions::pdweibull(h,.5,.01,lower,log);
+    const double before=cppunivariate::distributions::pdweibull(std::nextafter(h,-INFINITY),.5,.01,lower,log);
+    CHECK((lower ? at>=p && before<p : at<=p && before>p));
+  }
+}
+
+TEST_CASE("dweibull: rounded seeds cannot bypass inversion at 2^53") {
+  for (double k : {9007199254740990.0,9007199254740992.0,9007199254740994.0}) {
+    for (bool lower : {false,true}) for (bool log : {false,true}) {
+      const double at=cppunivariate::distributions::pdweibull(k,.5,.05,lower,log);
+      const double p=std::nextafter(at,lower ? INFINITY : -INFINITY);
+      const double edge=cppunivariate::distributions::pdweibull(9007199254740992.0,.5,.05,lower,log);
+      if (lower ? edge>=p : edge<=p) continue;
+      const double h=cppunivariate::distributions::qdweibull(p,.5,.05,lower,log);
+      REQUIRE(std::isfinite(h));
+      CHECK(mltest::truth_lattice_quantile(h,p,lower,[&](double x) {
+        return cppunivariate::distributions::pdweibull(x,.5,.05,lower,log);
+      }));
+    }
+  }
 }

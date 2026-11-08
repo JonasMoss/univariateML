@@ -74,7 +74,7 @@ inline double pnbinom(double q, double size, double prob, bool lower_tail, bool 
 inline double qnbinom(double p, double size, double prob, bool lower_tail, bool log_p) {
   if (!(size>=0) || !std::isfinite(size) || !(prob>0 && prob<=1)) return special::kNaN;
   return special::discrete_quantile(special::discrete_log_tails(p,lower_tail,log_p),0.0,
-      (size==0 || prob==1)?0.0:special::kPosInf,[=](double x){return nbinom_tails(x,size,prob);});
+      (size==0 || prob==1)?0.0:special::kPosInf,[=](double x){return nbinom_tails(x,size,prob);},p,lower_tail,log_p);
 }
 
 template <typename Rng>

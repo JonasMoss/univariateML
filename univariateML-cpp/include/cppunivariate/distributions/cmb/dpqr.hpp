@@ -159,7 +159,7 @@ inline double qcmb(double p,double size,double prob,double nu,bool lower_tail=tr
   if(nu==0) {
     const double eta=std::log(prob)-std::log1p(-prob);
     return special::discrete_quantile(special::discrete_log_tails(p,lower_tail,log_p),0,size,
-        [=](double q){return cmb_detail::geometric_tails(q,size,eta);});
+        [=](double q){return cmb_detail::geometric_tails(q,size,eta);},p,lower_tail,log_p);
   }
   return cmb_detail::table(static_cast<int>(size),prob,nu).quantile(p,lower_tail,log_p);
 }

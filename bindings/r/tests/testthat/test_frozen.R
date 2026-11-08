@@ -60,9 +60,10 @@ test_that("frozen models use domains and reject incompatible held data", {
 })
 
 
-test_that("fixed models accept overflowing medians and reject nonfinite likelihood sums", {
-  tiny <- mlgeom(prob=.Machine$double.xmin*.Machine$double.eps)
-  expect_identical(qml(.5, tiny), Inf)
+test_that("fixed models accept overflow medians and reject nonfinite likelihood sums", {
+  model <- mlgeom(prob=.Machine$double.xmin*.Machine$double.eps)
+  expect_s3_class(model,"univariateML")
+  expect_identical(qml(.5,model),Inf)
   expect_error(mlnorm(rep(1e154,4),mean=0,sd=1),
                "nonfinite log likelihood for held coefficients")
 })

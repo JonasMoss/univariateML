@@ -82,6 +82,7 @@ TEST_CASE("zmgeom: P2 held zero share and incompatible positive component") {
 }
 
 #include "cppunivariate/distributions/zmgeom/dpqr.hpp"
-TEST_CASE("zmgeom: failed integer inversion reports NaN") {
-  CHECK(std::isnan(cppunivariate::distributions::qzmgeom(.5,std::numeric_limits<double>::denorm_min(),.1)));
+TEST_CASE("zmgeom: overflow quantiles reach the target beyond DBL_MAX") {
+  CHECK(mltest::truth_lattice_quantile(cppunivariate::distributions::qzmgeom(.5,std::numeric_limits<double>::denorm_min(),.1),.5,true,
+      [](double x) {return cppunivariate::distributions::pzmgeom(x,std::numeric_limits<double>::denorm_min(),.1);},true));
 }

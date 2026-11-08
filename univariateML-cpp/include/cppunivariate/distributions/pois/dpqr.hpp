@@ -66,7 +66,7 @@ inline double ppois(double q, double lambda, bool lower_tail, bool log_p) {
 inline double qpois(double p, double lambda, bool lower_tail, bool log_p) {
   if (!(lambda>=0) || !std::isfinite(lambda)) return special::kNaN;
   return special::discrete_quantile(special::discrete_log_tails(p,lower_tail,log_p),0.0,
-      lambda==0?0.0:special::kPosInf,[=](double x){return pois_tails(x,lambda);});
+      lambda==0?0.0:special::kPosInf,[=](double x){return pois_tails(x,lambda);},p,lower_tail,log_p);
 }
 
 template <typename Rng>

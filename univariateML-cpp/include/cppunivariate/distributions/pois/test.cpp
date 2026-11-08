@@ -204,6 +204,7 @@ TEST_CASE("Poisson exact boundary and nuisance free intervals") {
 
 #include "cppunivariate/distributions/pois/dpqr.hpp"
 TEST_CASE("pois: quantile search guards and representability") {
-  CHECK(std::isnan(cppunivariate::special::poisson_quantile(.5,1e308,true)));
+  CHECK(mltest::truth_lattice_quantile(cppunivariate::special::poisson_quantile(.5,1e308,true),.5,true,
+      [](double x) {return cppunivariate::special::poisson_cdf(x,1e308,true);}));
   CHECK(std::isnan(cppunivariate::distributions::qpois(.5,1e308,true,false)));
 }

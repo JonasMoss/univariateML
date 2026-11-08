@@ -18,6 +18,10 @@ inline double qdlaplace(double p,double location,double scale,bool lower_tail=tr
  if(std::isnan(lp)||lp>0||(!log_p&&p<0)||!(scale>0&&scale<1)||!std::isfinite(location)||location!=std::floor(location))return std::numeric_limits<double>::quiet_NaN();
  if(lp==-INFINITY)return lower_tail?-INFINITY:INFINITY;if(lp==0)return lower_tail?INFINITY:-INFINITY;
  return special::discrete_signed_search(location,1,[&](double q) {
+   if (std::abs(q)>9007199254740992.0) {
+     const double f=pdlaplace(q,location,scale,lower_tail,log_p);
+     return std::isnan(f) ? -1 : int(lower_tail ? f>=p : f<=p);
+   }
    const double v=pdlaplace(q,location,scale,lower_tail,true);
    return std::isnan(v) ? -1 : int(lower_tail ? v>=lp : v<=lp);
  });

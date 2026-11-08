@@ -120,6 +120,10 @@ inline double qskellam(double p,double mu1,double mu2,bool lower_tail=true,bool 
   const bool use_lower=target < -0.6931471805599453;
   const double goal=use_lower ? target : (lower_tail ? (log_p?std::log(-std::expm1(p)):std::log1p(-p)) : (log_p?p:std::log(p)));
   return special::discrete_signed_search(mu1-mu2,std::max(1.0,std::hypot(std::sqrt(mu1),std::sqrt(mu2))),[&](double k) {
+    if (std::abs(k)>9007199254740992.0) {
+      const double f=pskellam(k,mu1,mu2,lower_tail,log_p);
+      return std::isnan(f) ? -1 : int(lower_tail ? f>=p : f<=p);
+    }
     const double f=pskellam(k,mu1,mu2,use_lower,true);
     return std::isnan(f) ? -1 : int(use_lower ? f>=goal : f<=goal);
   });

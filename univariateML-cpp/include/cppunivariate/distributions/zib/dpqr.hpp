@@ -35,6 +35,10 @@ inline double qzib(double p,double size,double prob,double pi,bool lower_tail=tr
   if(size==0||prob==0||pi==1)return 0;
   if(prob==1 && pi==0)return size;
   return special::discrete_search(0,size,[&](double x) {
+    if (x>9007199254740992.0) {
+      const double f=pzib(x,size,prob,pi,lower_tail,log_p);
+      return std::isnan(f) ? -1 : int(lower_tail ? f>=p : f<=p);
+    }
     const double f=pzib(x,size,prob,pi,false,true);
     return std::isnan(f) ? -1 : int(f<=ls);
   });
