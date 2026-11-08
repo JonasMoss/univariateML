@@ -356,3 +356,108 @@ TEST_CASE("bnbinom: alpha-held unrepresentable certificate range stops numerical
     CHECK(std::isfinite(candidate.loglik_lower));CHECK(std::isfinite(candidate.loglik_upper));
   }
 }
+
+TEST_CASE("bnbinom: alpha-free pair certificates transport the held value under swapping") {
+  const auto golden=mltest::load_distribution_golden("bnbinom");
+  std::vector<int> x;for(double v:golden.data)x.push_back(static_cast<int>(v));
+  for(double held:{1.,5.,1.0672234787479615,5.3647338351087397}) {
+    const auto a=cppunivariate::bnbinom_mle({x.data(),x.size()},1e-8,600,held,NAN,NAN);
+    const auto b=cppunivariate::bnbinom_mle({x.data(),x.size()},1e-8,600,NAN,NAN,held);
+    REQUIRE(a.status==cppunivariate::BnbinomStatus::Ok);
+    REQUIRE(b.status==cppunivariate::BnbinomStatus::Ok);
+    CHECK(a.size==held);CHECK(b.beta==held);
+    CHECK(a.alpha==b.alpha);CHECK(a.beta==b.size);CHECK(a.logLik==b.logLik);
+    CHECK(a.stop_detail.loglik_lower<=a.logLik);CHECK(a.stop_detail.loglik_upper>=a.logLik);
+    CHECK(a.stop_detail.limit_model==cppunivariate::StopModel::Nbinom);
+    CHECK(a.stop_detail.limit_coef[0]==held);
+    CHECK(a.stop_detail.limit_loglik<a.stop_detail.loglik_lower);
+    CHECK_FALSE(a.stop_detail.budget_exhausted);
+    CHECK_FALSE(a.stop_detail.candidates.empty());
+    bool root=false;
+    for(const auto &candidate:a.stop_detail.candidates)if(candidate.model==cppunivariate::StopModel::None && candidate.loglik_lower<=a.logLik && candidate.loglik_upper>=a.logLik)root=true;
+    CHECK(root);
+  }
+}
+
+TEST_CASE("bnbinom: alpha-free pair budgets and unproved faces are terminal") {
+  const std::vector<int> x{0,0,1,2,3,6,12,24};
+  for(int mirror=0;mirror<2;++mirror) {
+    const auto f=cppunivariate::bnbinom_mle({x.data(),x.size()},1e-8,1,mirror?NAN:1.,NAN,mirror?1.:NAN);
+    CHECK(f.status==cppunivariate::BnbinomStatus::IterationFailure);
+    CHECK(f.stop_detail.budget_exhausted);
+    CHECK(std::isnan(f.size));CHECK(std::isnan(f.alpha));CHECK(std::isnan(f.beta));
+    CHECK_FALSE(f.stop_detail.candidates.empty());
+    CHECK(f.stop_detail.loglik_upper>=f.stop_detail.loglik_lower);
+  }
+  // A numerical face comparison alone does not prove this sample's supremum.
+  const std::vector<int> under{0,0,5,5};
+  const auto unresolved=cppunivariate::bnbinom_mle({under.data(),under.size()},1e-8,600,1,NAN,NAN);
+  CHECK(unresolved.status==cppunivariate::BnbinomStatus::NumericalFailure);
+  CHECK(std::isnan(unresolved.alpha));CHECK(std::isnan(unresolved.beta));
+  CHECK(unresolved.stop_detail.limit_model==cppunivariate::StopModel::Nbinom);
+}
+
+TEST_CASE("bnbinom: exact mixture face proofs for constant and binary pair samples") {
+  for(const std::vector<int> &x:{std::vector<int>{2,2,2},std::vector<int>{0,0,1,1,1}}) {
+    for(int mirror=0;mirror<2;++mirror) {
+      const auto f=cppunivariate::bnbinom_mle({x.data(),x.size()},1e-8,600,mirror?NAN:.7,NAN,mirror?.7:NAN);
+      CHECK(f.status==cppunivariate::BnbinomStatus::NegativeBinomialLimit);
+      CHECK(f.stop_detail.limit_model==cppunivariate::StopModel::Nbinom);
+      CHECK(f.stop_detail.limit_coef[0]==.7);
+      CHECK(std::isnan(f.alpha));
+    }
+  }
+}
+
+TEST_CASE("bnbinom: alpha-free pair mass and Hessian intervals enclose interior values") {
+  cppunivariate::bnbinom_detail::Data d{{0,1,4,15},{2,1,2,1},6};
+  for(double r:{.2,1.,5.})for(double a:{.3,2.,20.})for(double b:{.2,3.,10.}) {
+    const cppunivariate::bnbinom_detail::AlphaBox q{a*.99,a*1.01,b*.99,b*1.01};
+    const auto bound=cppunivariate::bnbinom_detail::pair_bound(d,r,q);
+    const auto h=cppunivariate::bnbinom_detail::pair_hessian_bounds(d,r,q);
+    for(double u:{.99,1.,1.01})for(double v:{.99,1.,1.01}) {
+      const auto point=cppunivariate::bnbinom_detail::pair_hessian(d,r,a*u,b*v);
+      CHECK(h[0].rr<=point.rr);CHECK(point.rr<=h[1].rr);
+      CHECK(h[0].rb<=point.rb);CHECK(point.rb<=h[1].rb);
+      CHECK(h[0].bb<=point.bb);CHECK(point.bb<=h[1].bb);
+      CHECK(cppunivariate::bnbinom_detail::likelihood(d,{r,a*u,b*v})<=bound.value+bound.margin);
+    }
+  }
+}
+
+TEST_CASE("bnbinom: supporting polynomials prove broader NB and Poisson faces") {
+  const std::vector<int> x{0,1,2,3,4};
+  for(int mirror=0;mirror<2;++mirror) {
+    const auto f=cppunivariate::bnbinom_mle({x.data(),x.size()},1e-8,600,mirror?NAN:1.,NAN,mirror?1.:NAN);
+    CHECK(f.status==cppunivariate::BnbinomStatus::NegativeBinomialLimit);
+    CHECK(f.stop_detail.limit_coef[0]==1);
+  }
+  const auto f=cppunivariate::bnbinom_mle({x.data(),x.size()});
+  CHECK(f.status==cppunivariate::BnbinomStatus::PoissonLimit);
+}
+
+TEST_CASE("bnbinom: all-free numerical candidates retain both labels and a diagonal witness") {
+  const auto golden=mltest::load_distribution_golden("bnbinom");
+  std::vector<int> x;for(double v:golden.data)x.push_back(static_cast<int>(v));
+  const auto f=cppunivariate::bnbinom_mle({x.data(),x.size()});
+  REQUIRE(f.status==cppunivariate::BnbinomStatus::Ok);
+  bool mirror=false,diagonal=false;
+  for(const auto &c:f.stop_detail.candidates) {
+    REQUIRE(c.coef.size()==3);
+    mirror=mirror || (c.coef[0]==f.beta && c.coef[2]==f.size);
+    diagonal=diagonal || (c.coef[0]==c.coef[2]);
+  }
+  CHECK(mirror);CHECK(diagonal);
+  CHECK(f.stop_detail.loglik_upper==0);
+}
+
+TEST_CASE("bnbinom: unrepresentable held-size NB faces preserve numerical stop classification") {
+  const std::vector<int> x{0,1,2,4};
+  for(int mirror=0;mirror<2;++mirror) {
+    const auto f=cppunivariate::bnbinom_mle({x.data(),x.size()},1e-8,600,mirror?NAN:1e308,NAN,mirror?1e308:NAN);
+    CHECK(f.status==cppunivariate::BnbinomStatus::NumericalFailure);
+    CHECK_FALSE(f.stop_detail.budget_exhausted);
+    CHECK(std::isnan(f.size));CHECK(std::isnan(f.alpha));CHECK(std::isnan(f.beta));
+    CHECK(f.stop_detail.loglik_upper==0);
+  }
+}

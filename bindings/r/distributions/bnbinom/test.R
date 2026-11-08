@@ -156,3 +156,48 @@ test_that("alpha-held range exhaustion is a structured numerical condition", {
   expect_true(all(is.finite(e$candidates$loglik_lower)))
   expect_true(all(is.finite(e$candidates$loglik_upper)))
 })
+
+test_that("alpha-free pair certificates transport holds and expose structured stops", {
+  root <- Sys.getenv("UMVL_DISTRIBUTIONS_DIR")
+  skip_if(!nzchar(root), "no distribution goldens")
+  x <- jsonlite::fromJSON(file.path(root,"bnbinom","golden.json"))$data
+  a <- mlbnbinom(x,size=1)
+  b <- mlbnbinom(x,beta=1)
+  expect_equal(unname(a[c("size","alpha","beta")]),unname(b[c("beta","alpha","size")]),tolerance=1e-12)
+  expect_equal(attr(a,"fixed"),"size")
+  expect_equal(attr(b,"fixed"),"beta")
+  expect_equal(attr(logLik(a),"df"),2L)
+  for (fixed in list(list(size=1),list(beta=1))) {
+    e <- tryCatch(do.call(mlbnbinom,c(list(c(0,0,1,2,3,6,12,24),iterlim=1),fixed)),error=identity)
+    expect_s3_class(e,"univariateML_budget")
+    expect_true(all(c("size","alpha","beta") %in% names(e$candidates)))
+    expect_gte(e$loglik_upper,e$loglik_lower)
+    e <- tryCatch(do.call(mlbnbinom,c(list(c(0,0,5,5)),fixed)),error=identity)
+    expect_s3_class(e,"univariateML_numerical")
+    expect_equal(e$kind,"numerical")
+    expect_gte(nrow(e$candidates),2L)
+  }
+})
+
+test_that("supporting-polynomial face certificates cover binary and spread counts", {
+  for (x in list(rep(2L,5),c(0,0,1,1,1),0:4)) {
+    for (fixed in list(list(size=1),list(beta=1))) {
+      e <- tryCatch(do.call(mlbnbinom,c(list(x),fixed)),error=identity)
+      expect_s3_class(e,"univariateML_limit")
+      expect_equal(e$model,"nbinom")
+      expect_equal(unname(e$estimates[1]),1)
+    }
+    e <- tryCatch(mlbnbinom(x),error=identity)
+    expect_s3_class(e,"univariateML_limit")
+    expect_equal(e$model,"pois")
+  }
+})
+
+test_that("unrepresentable NB face probabilities are structured numerical stops", {
+  for (fixed in list(list(size=1e308),list(beta=1e308))) {
+    e <- tryCatch(do.call(mlbnbinom,c(list(c(0,1,2,4)),fixed)),error=identity)
+    expect_s3_class(e,"univariateML_numerical")
+    expect_equal(e$kind,"numerical")
+    expect_equal(e$loglik_upper,0)
+  }
+})

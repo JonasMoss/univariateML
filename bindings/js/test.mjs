@@ -821,3 +821,38 @@ test('GEV two-point count certificate avoids a rounded sample mean', async () =>
     assert.equal(e.kind,'numerical');return true;
   });
 });
+
+test('bnbinom alpha-free pair certificates transport the actual held value',async()=>{
+  const api=await (await import('./index.mjs')).default();
+  const x=read('bnbinom','golden').data;
+  const a=api.bnbinom.fit(x,{size:1}),b=api.bnbinom.fit(x,{beta:1});
+  assert.equal(a.estimates.size,1);
+  assert.equal(b.estimates.beta,1);
+  assert.equal(a.estimates.alpha,b.estimates.alpha);
+  assert.equal(a.estimates.beta,b.estimates.size);
+  for(const held of [{size:1},{beta:1}]) {
+    assert.throws(()=>api.bnbinom.fit([0,0,1,2,3,6,12,24],held,{iterlim:1}),e=>{
+      assert.equal(e.kind,'budget');assert.ok(e.candidates.length>=1);return true;
+    });
+    assert.throws(()=>api.bnbinom.fit([0,0,5,5],held),e=>{
+      assert.equal(e.kind,'numerical');assert.ok(e.candidates.length>=2);return true;
+    });
+  }
+});
+
+test('bnbinom supporting-polynomial proofs select reachable faces',async()=>{
+  const api=await (await import('./index.mjs')).default();
+  for(const x of [[2,2,2],[0,0,1,1,1],[0,1,2,3,4]]) {
+    for(const held of [{size:1},{beta:1}])
+      assert.throws(()=>api.bnbinom.fit(x,held),e=>{assert.equal(e.kind,'limit');assert.equal(e.model,'nbinom');return true;});
+    assert.throws(()=>api.bnbinom.fit(x),e=>{assert.equal(e.kind,'limit');assert.equal(e.model,'pois');return true;});
+  }
+});
+
+test('bnbinom NB delegate precision failures remain structured numerical stops',async()=>{
+  const api=await (await import('./index.mjs')).default();
+  for(const held of [{size:1e308},{beta:1e308}])
+    assert.throws(()=>api.bnbinom.fit([0,1,2,4],held),e=>{
+      assert.equal(e.kind,'numerical');assert.equal(e.loglik_upper,0);return true;
+    });
+});
