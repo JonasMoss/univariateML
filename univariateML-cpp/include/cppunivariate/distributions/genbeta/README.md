@@ -108,8 +108,10 @@ fit:
     padded opposite score signs certify the unique power root. Held shape1 = 1 with shape2 and power free
     delegates to certified Kumaraswamy; held shape2 = 1 is the exact identified-product fit.
     Other held shape1 values use uniform tail bounds and complete interval score/curvature enumeration
-    to certify shape2 and power, or stop with witnesses. Free-shape1/free-power profiles and their winning-face
-    decisions remain numerical, without global certification.'
+    to certify shape2 and power, or stop with witnesses. Held shape2 != 1 with shape1 and power free
+    uses conditional-shape inclusion, uniform gamma/power bounds and complete compact interval coverage;
+    unresolved face neighborhoods stop. The all-free three-shape profile and its winning-face decisions
+    remain numerical, without global certification.'
 areas:
 - actuarial
 - economics and income
@@ -165,10 +167,27 @@ nonzero exponential correction identifies $a$ and $q$. Beta ($a=1$),
 Kumaraswamy ($p=1$), and power ($q=1$) are attained subfamilies.
 
 At fixed $a$, the likelihood is strictly concave in the beta shapes. With
-$p,a$ both free, a logarithmic mesh and an analytic envelope-score root search compare local
-maxima with gamma and power limits, using a log-likelihood tie tolerance
-$10^{-8}n$. The numerical search cannot certify that an arbitrarily narrow
-basin has not been missed. An unresolved search stops.
+all three shapes free, a logarithmic mesh and an analytic envelope-score root
+search compare local maxima with gamma and power limits, using a
+log-likelihood tie tolerance $10^{-8}n$. This all-free search does not certify
+that an arbitrarily narrow basin has not been missed; its estimates and
+winning-face decisions remain numerical.
+
+With $q\ne1$ held and $p,a$ free, the conditional $p$ score decreases strictly
+from positive infinity to a negative value. Independently padded opposite
+signs enclose its unique root. Uniform upper bounds relative to the gamma
+face retaining $q$, and the power face retaining $b$, exclude both tails
+when a finite lower witness dominates them. Complete interval score and
+curvature bounds then isolate and compare all surviving compact maxima,
+without a unimodality assumption. Relative enclosures of both free
+coefficients must be narrower than $\min(\mathrm{gradtol},10^{-9})/2$.
+Unresolved face neighborhoods, coefficient signs and arithmetic stop
+numerically; exhausted coverage stops with a budget. No limit face is
+selected by this route. The
+[held-q proof](../../../../../dev/research/evaluations/2026-11-08-genbeta-rest-data/held-q-proof.md)
+states the bounds and practical floating-point margins. In particular, when
+$q>1$, a sufficiently large finite power strictly improves on the fixed-endpoint
+power face; a tolerance-based power selection can therefore be false.
 
 
 With both beta shapes held, the power likelihood is strictly concave even

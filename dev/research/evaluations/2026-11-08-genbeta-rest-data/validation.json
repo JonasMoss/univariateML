@@ -1,0 +1,106 @@
+{
+  "task": "TASK-116.47",
+  "branch": "codex/genbeta-rest",
+  "starting_commit": "9fee8c34b838db7b11b7518a071f61495d23f282",
+  "commits_made": false,
+  "default_fit_unchanged": true,
+  "golden_files_unchanged": true,
+  "fit_certified": "partial",
+  "runs": [
+    {
+      "command": "just cpp-test",
+      "machine": "simbox, GCC 13.3",
+      "passed": 106,
+      "failed": 0
+    },
+    {
+      "command": "UMVL_TEST_TIER=full just cpp-test",
+      "machine": "simbox, GCC 13.3",
+      "passed": 129,
+      "failed": 0,
+      "final_header": true
+    },
+    {
+      "command": "just cpp-test-no-long-double",
+      "machine": "simbox, GCC 13.3",
+      "passed": 129,
+      "failed": 0,
+      "final_header": true
+    },
+    {
+      "command": "just cpp-test-no-long-double",
+      "machine": "workstation, GCC 15.2",
+      "passed": 129,
+      "failed": 0,
+      "final_header": true
+    },
+    {
+      "command": "just test",
+      "machine": "simbox",
+      "passed": 21959,
+      "failed": 0,
+      "warnings": 0,
+      "skipped": 154,
+      "final_header": true
+    },
+    {
+      "command": "just test-full",
+      "machine": "simbox",
+      "passed": 44782,
+      "failed": 0,
+      "warnings": 0,
+      "skipped": 0,
+      "final_header": true
+    },
+    {
+      "command": "just js-build",
+      "machine": "workstation, Emscripten",
+      "status": "passed",
+      "final_header": true
+    },
+    {
+      "command": "just js-test",
+      "machine": "workstation, WebAssembly",
+      "passed": 541,
+      "failed": 0,
+      "final_header": true
+    },
+    {
+      "command": "just site-check",
+      "machine": "workstation",
+      "status": "passed",
+      "family_pages": 99,
+      "compiled_cpp_examples": 99,
+      "final_header": true
+    }
+  ],
+  "independent_checks": {
+    "stationary_oracle_digits": 70,
+    "stationary_cases": 3,
+    "max_measured_relative_coefficient_error": 1.1479377608406561e-10,
+    "cell_bound_digits": 60,
+    "cells": 40,
+    "derivative_checks": 200,
+    "all_free_seam_digits": 80,
+    "all_free_seam_samples": 4
+  },
+  "scope": {
+    "held_q_free_p_power": "finite global winners certified, otherwise structured terminal stops; q=1 exact ridge unchanged",
+    "all_three_shapes_free": "legacy numerical output preserved; global certification remains open"
+  },
+  "open": [
+    "GENBETA-PA-FACES",
+    "GENBETA-PQA"
+  ],
+  "markdown_links": {
+    "changed_documents_checked": 4,
+    "local_destinations_passed": 23,
+    "repository_wide_preexisting_findings": 4,
+    "finding_source_files_match_HEAD": true
+  },
+  "artifact_display": {
+    "attempted": true,
+    "status": 403,
+    "reason": "Worktree is outside the artifact viewer readable roots"
+  }
+}

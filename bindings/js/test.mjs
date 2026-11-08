@@ -1309,3 +1309,18 @@ test('zib quantiles stop on extreme numerical failure',()=>{
  assert.equal(m.qzib(new Float64Array([.5]),[1e308,1,0],true,false)[0],1e308);
  assert.equal(m.qzib(new Float64Array([Math.log(.5)]),[10,1,.5],true,true)[0],10);
 });
+test('genbeta held q uses certified finite maxima and terminal neighborhood stops', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  const x = new Float64Array(read('genbeta','golden').data);
+  for (const shape2 of [.01,.1,.3]) {
+    const f = api.genbeta.fit(x,{scale:1,shape2});
+    assert.equal(f.estimates.shape2,shape2);
+    assert.ok(Number.isFinite(f.logLik));
+  }
+  assert.throws(()=>api.genbeta.fit(x,{scale:1,shape2:.7}),e=>{
+    assert.equal(e.kind,'numerical');
+    assert.match(e.message,/gamma-limit neighborhood unresolved/);
+    return true;
+  });
+});
