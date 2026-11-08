@@ -1,0 +1,108 @@
+{
+  "machine": "simbox GCC 13.3.0",
+  "repetitions": 3,
+  "control": {
+    "tol": 1e-10,
+    "maxit": 500
+  },
+  "samples": 500,
+  "rows": [
+    {
+      "held_mask": 0,
+      "before_seconds": 0.389464887,
+      "after_seconds": 0.829323115
+    },
+    {
+      "held_mask": 1,
+      "before_seconds": 0.279088361,
+      "after_seconds": 0.503427931
+    },
+    {
+      "held_mask": 2,
+      "before_seconds": 0.154197067,
+      "after_seconds": 0.388591773
+    },
+    {
+      "held_mask": 3,
+      "before_seconds": 0.015497295,
+      "after_seconds": 0.107304165
+    },
+    {
+      "held_mask": 4,
+      "before_seconds": 0.192473755,
+      "after_seconds": 7.441849239
+    },
+    {
+      "held_mask": 5,
+      "before_seconds": 0.019275514,
+      "after_seconds": 1.409016338
+    },
+    {
+      "held_mask": 6,
+      "before_seconds": 0.000599284,
+      "after_seconds": 0.003428846
+    },
+    {
+      "held_mask": 7,
+      "before_seconds": 6.7263e-05,
+      "after_seconds": 6.5265e-05
+    }
+  ]
+}
+{
+  "machine": "simbox GCC 13.3.0",
+  "repetitions": 3,
+  "control": {
+    "tol": 1e-08,
+    "maxit": 500
+  },
+  "samples": 500,
+  "rows": [
+    {
+      "held_mask": 0,
+      "before_seconds": 0.429692327,
+      "after_seconds": 0.970930467
+    },
+    {
+      "held_mask": 1,
+      "before_seconds": 0.289128261,
+      "after_seconds": 0.511851022
+    },
+    {
+      "held_mask": 2,
+      "before_seconds": 0.156698068,
+      "after_seconds": 0.384782665
+    },
+    {
+      "held_mask": 3,
+      "before_seconds": 0.015491593,
+      "after_seconds": 0.098519795
+    },
+    {
+      "held_mask": 4,
+      "before_seconds": 0.192532097,
+      "after_seconds": 7.25508553
+    },
+    {
+      "held_mask": 5,
+      "before_seconds": 0.019194307,
+      "after_seconds": 1.358582502
+    },
+    {
+      "held_mask": 6,
+      "before_seconds": 0.000747042,
+      "after_seconds": 0.002849373
+    },
+    {
+      "held_mask": 7,
+      "before_seconds": 8.0835e-05,
+      "after_seconds": 6.6262e-05
+    }
+  ]
+}
+9 independent location enclosures passed
+24 independent fixed-shape enclosures passed
+7 independent physical coefficient root/enclosure checks passed 
+9 independent location enclosures passed
+24 independent fixed-shape enclosures passed
+7 independent physical coefficient root/enclosure checks passed -double

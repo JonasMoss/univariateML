@@ -50,12 +50,17 @@ const Held a = lambda;
   }
 
   auto r=cppunivariate::emg_mle(x,reltol,iterlim,checked_value_0,checked_value_1,checked_value_2);
+  if(r.status==cppunivariate::EmgStatus::BudgetExhausted)return stop_failure(fail("EMG certificate budget exhausted; raising iterlim may resolve the remaining shape intervals."),r.stop_detail,"budget",{"mu","sigma","lambda"});
+  if(r.status==cppunivariate::EmgStatus::Unresolved)return stop_failure(fail("EMG normal face unresolved: no verified finite winner beats it; use mlnorm only for the compared normal model, retaining its holds."),r.stop_detail,"unresolved",{"mu","sigma","lambda"});
+  if(r.status==cppunivariate::EmgStatus::Tie)return stop_failure(fail("EMG separated surviving maximizers or face comparison could not be separated."),r.stop_detail,"tie",{"mu","sigma","lambda"});
+  if(r.status==cppunivariate::EmgStatus::NumericalFailure)return classify(fail("EMG numerical accuracy failure: score enclosure, shape bound or arithmetic could not be resolved."),r.stop_detail,"numerical",{"mu","sigma","lambda"});
+  if(r.status==cppunivariate::EmgStatus::IterationFailure && !mu.supplied && sigma.supplied && lambda.supplied)return classify(fail("EMG location solve did not converge; increase iterlim."),r.stop_detail,"numerical",{"mu","sigma","lambda"});
   if(r.stop_detail.comparison_tie)return classify(fail("EMG search did not converge; increase iterlim."),r.stop_detail,"tie",{"mu","sigma","lambda"});
   if(r.status==cppunivariate::EmgStatus::NormalLimit)return classify(fail("The EMG MLE does not exist: normal face; use mlnorm for an unrestricted normal fit. The compared face retains held mu/sigma."),r.stop_detail,"limit",{"mean","sd"},"norm");
   if(r.status==cppunivariate::EmgStatus::TranslatedExponentialLimit)return classify(fail("The EMG MLE does not exist: translated exponential face. No translated exponential fitter is available; for a free endpoint fit distances with mlexp(x - min(x))."),r.stop_detail,"limit",{"mu","rate"},"unavailable:translated-exponential");
   if(r.status==cppunivariate::EmgStatus::Unbounded)return nomle("The EMG likelihood is unbounded for these constant observations.");
   if(r.status==cppunivariate::EmgStatus::InvalidInput)return fail("EMG requires finite data, finite mu, positive sigma and lambda, positive reltol and iterlim.");
-  if(r.status==cppunivariate::EmgStatus::IterationFailure)return fail("EMG search did not converge; increase iterlim.");
+  if(r.status==cppunivariate::EmgStatus::IterationFailure)return stop_failure(fail("EMG certificate inner solve did not converge; increase iterlim."),r.stop_detail,"numerical",{"mu","sigma","lambda"});
   std::vector<std::string> fixed;
   if(mu.supplied)fixed.push_back("mu");
   if(sigma.supplied)fixed.push_back("sigma");

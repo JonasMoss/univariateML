@@ -1,0 +1,17 @@
+Workstation GCC 15.2.0; WASM JS build through Emscripten.
+Commands: just cpp-test-no-long-double; just js-build; just js-test; just site-check.
+100% tests passed, 0 tests failed out of 129
+Total Test time (real) = 242.50 sec
+# tests 485
+# pass 485
+# fail 0
+PASS: 99 family pages; MathML on every family; no math runtime or external runtime assets; internal links and fragments resolve.
+PASS: 99 generated C++ snippets compile and link as C++17 (including exp, gamma, gb2).
+Commands: production-evidence.sh; input-margin.py; just quality emg.
+9 independent location enclosures passed
+24 independent fixed-shape enclosures passed
+7 independent physical coefficient root/enclosure checks passed
+9 independent location enclosures passed
+24 independent fixed-shape enclosures passed
+7 independent physical coefficient root/enclosure checks passed -double
+emg pass

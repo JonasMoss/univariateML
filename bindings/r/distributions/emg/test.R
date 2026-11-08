@@ -85,3 +85,50 @@ test_that("emg: P3 unfinished optimizer stops", {
   expect_error(mlemg(x, iterlim=1, reltol=1e-10),
                "[Ff]ail|converge|unresolved|exhausted|score check")
 })
+
+test_that("EMG certified location slice retains holds and structured numerical stops", {
+  x <- qemg((seq_len(17)-.5)/17, mu=2, sigma=1, lambda=1)
+  fit <- mlemg(x, sigma=1, lambda=1, reltol=1e-10)
+  expect_equal(unname(as.numeric(fit)[2:3]), c(1,1))
+  expect_equal(sum(dml(x,fit,log=TRUE)), as.numeric(logLik(fit)), tolerance=1e-12)
+  e <- tryCatch(mlemg(x,sigma=1,lambda=1,iterlim=1),error=identity)
+  expect_s3_class(e,"univariateML_numerical")
+  expect_true(nrow(e$candidates)>=1)
+  expect_lte(e$loglik_lower,e$loglik_upper)
+  e <- tryCatch(mlemg(x,sigma=1,lambda=1,reltol=1e-30),error=identity)
+  expect_s3_class(e,"univariateML_numerical")
+})
+test_that("EMG proved normal domination keeps the conditional normal coefficients", {
+  e <- tryCatch(mlemg(-2:2,mu=2),error=identity)
+  expect_s3_class(e,"univariateML_limit")
+  expect_equal(e$estimates,c(mean=2,sd=sqrt(6)))
+  e <- tryCatch(mlemg(rep(4,3),sigma=2),error=identity)
+  expect_s3_class(e,"univariateML_limit")
+  expect_equal(e$estimates,c(mean=4,sd=2))
+})
+test_that("EMG constant exponential faces preserve the endpoint half-density", {
+  for (held in c(FALSE,TRUE)) {
+    args <- list(x=rep(4,3),lambda=2)
+    if (held) args$mu <- 4
+    e <- tryCatch(do.call(mlemg,args),error=identity)
+    expect_s3_class(e,"univariateML_limit")
+    expect_equal(e$estimates,c(mu=4,rate=2))
+    expect_equal(e$limit_loglik,if(held) 0 else 3*log(2))
+  }
+})
+test_that("EMG constant classification uses the data rather than rounded variance", {
+  e <- tryCatch(mlemg(rep(.1,7),iterlim=1),error=identity)
+  expect_s3_class(e,"univariateML_nomle")
+})
+
+test_that("EMG outer certificate preserves budget and unresolved witnesses", {
+  e <- tryCatch(mlemg(-2:2,mu=0,sigma=1,iterlim=2),error=identity)
+  expect_s3_class(e,"univariateML_budget")
+  expect_match(conditionMessage(e),"raising iterlim")
+  expect_gte(nrow(e$candidates),2)
+  expect_lte(e$loglik_lower,e$loglik_upper)
+  e <- tryCatch(mlemg(-2:2,mu=0),error=identity)
+  expect_s3_class(e,"univariateML_unresolved")
+  expect_gte(nrow(e$candidates),2)
+  expect_lte(e$loglik_lower,e$loglik_upper)
+})

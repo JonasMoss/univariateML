@@ -1,0 +1,72 @@
+{
+  "base": "c118a003f111b0d145f8f8b9385ee0a87c1fd4cd",
+  "branch": "codex/emg-cert",
+  "completed": "2026-11-08",
+  "certified": "yes",
+  "golden": {
+    "all_masks_ok": true,
+    "max_absolute_parameter_drift": 3.21571382855268e-08,
+    "max_relative_parameter_drift": 9.860740095157525e-08,
+    "max_absolute_loglik_drift": 1.0231815394945443e-12,
+    "regenerated": false
+  },
+  "independent_root_max_normalized_error": {
+    "native": 4.38422401120603e-11,
+    "-double": 4.384208178241333e-11
+  },
+  "checks": {
+    "simbox_cpp_dev": 106,
+    "simbox_cpp_full": 129,
+    "simbox_cpp_no_long_double": 129,
+    "workstation_cpp_no_long_double": 129,
+    "emg_cases_each_arithmetic": 31,
+    "emg_assertions_each_arithmetic": 4305,
+    "r_dev": {
+      "fail": 0,
+      "warn": 0,
+      "skip": 154,
+      "pass_count": 21465
+    },
+    "r_full": {
+      "fail": 0,
+      "warn": 0,
+      "skip": 0,
+      "pass_count": 44283
+    },
+    "js": {
+      "tests": 485,
+      "pass_count": 485,
+      "fail": 0
+    },
+    "site_family_pages": 99,
+    "site_cpp_snippets": 99,
+    "quality_emg": "pass"
+  },
+  "source_sha256": {
+    "bindings/common/distributions/emg/fit.hpp": "ba70cd67f5c9deef81fcb6ca9e1a7db4e0cb50af6e3c907d8b0e552c264a648d",
+    "bindings/js/test.mjs": "4cd49b0e546369c3f37e25020a84e18cab607cbcc89338fdcb41b3fe013c2b18",
+    "bindings/r/distributions/emg/test.R": "de3421dd4ebee05957cb9e5e20509419f3fe8f1abd741d5df7b8ba6bce6be28a",
+    "univariateML-cpp/include/cppunivariate/distributions/emg/README.md": "b667568811cda1c4dced04d1630eeb85408c117da1cd4a478a757a5029942266",
+    "univariateML-cpp/include/cppunivariate/distributions/emg/certificate.hpp": "781affc815e4ec8fecc7a636e8f9517f238d80093810c26bfb2184f5bfdb59ca",
+    "univariateML-cpp/include/cppunivariate/distributions/emg/certificate_math.hpp": "6237735f7e3ee16a943926ca4c161131ec5bfea3de64ea598b076ee50e27eb1d",
+    "univariateML-cpp/include/cppunivariate/distributions/emg/dpqr.hpp": "ea779104354696084799640928fb245a2a5994017597e3d9a4bc575509b4dce5",
+    "univariateML-cpp/include/cppunivariate/distributions/emg/fixed_shape_certificate.hpp": "2b0ecca369df7673ad3ba8274805ff061619a7e0d292ccdc302c36e6c1923352",
+    "univariateML-cpp/include/cppunivariate/distributions/emg/location_certificate.hpp": "bb99e65255138999b9fd928aadcb48ca46a4c4aea3b02dc5307e41ff1a1caa67",
+    "univariateML-cpp/include/cppunivariate/distributions/emg/logconcave_profile.hpp": "6ab1e3ad76c3419b4f76ee52ab9cbfefd1a1015516121854e08a2325f1ac7955",
+    "univariateML-cpp/include/cppunivariate/distributions/emg/mle.hpp": "1b06e3a5e202d8feb38174c5ff0b62f099c8b86f7c9bc16931eadeedb3806eb4",
+    "univariateML-cpp/include/cppunivariate/distributions/emg/normal_tail_certificate.hpp": "aa34262c61d50dcf72ac3b99c5b2a21c0b62717506455fbec453b6c6a85dbb32",
+    "univariateML-cpp/include/cppunivariate/distributions/emg/shape_bounds.hpp": "a771370bfebc1a85f0203663cd7ed73858c3ea36150d2577bd740957952c398b",
+    "univariateML-cpp/include/cppunivariate/distributions/emg/test.cpp": "54d3d799bf33eff4f2f4260e8631d2af67e5cb629bbc0dea449a5757adc1860e",
+    "univariateML-cpp/include/cppunivariate/distributions/emg/winner_certificate.hpp": "a75561ba1ca99bbffb5052176879e54ba2f997b9bfa78b56d1647aa653a0a818"
+  },
+  "open": [
+    "Generic signed normal-face domination remains unresolved when the uniform upper bound cannot exclude the face and no finite witness beats it.",
+    "General finite-interior uniqueness is unproved; separated surviving regions stop as comparison ties.",
+    "Held-rate shape curvature bounds remain conservative and substantially slower than the old search."
+  ],
+  "artifact_display": {
+    "status": "viewer_rejected",
+    "http_status": 403,
+    "reason": "worktree absent from viewer readable roots"
+  }
+}

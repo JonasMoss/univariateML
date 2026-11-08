@@ -33,22 +33,22 @@ r:
     mu: Optional held normal-component mean; NULL estimates it.
     sigma: Optional held normal-component standard deviation; NULL estimates it.
     lambda: Optional held exponential rate; NULL estimates it.
-    reltol: Tolerance on the log-scale search simplex diameter.
-    iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
+    reltol: Relative accuracy of every free coefficient; location uses the normal scale as a floor.
+    iterlim: "Work limits: min(iterlim, 100000) iterations per solve; 128 times that many global certificate evaluations."
 log_density: log(lambda/2) + lambda*(mu-x) + lambda**2*sigma**2/2 + log(erfc((mu+lambda*sigma**2-x)/(sqrt(2)*sigma)))
 limits:
   - model: norm
     firmness: proved
     when: 'The rate satisfies $\lambda\to\infty$ with $\mu$ and $\sigma>0$ fixed.'
-    detect: 'With rate free, the conditional normal log likelihood is at least the best numerical interior log likelihood minus $10^{-8}n$.'
+    detect: 'Pointwise domination, or exhaustive exclusion of finite shape intervals and a signed normal-tail proof; otherwise an unexcluded normal face produces an unresolved stop.'
     status: NormalLimit
-    numerical: true
+    numerical: false
   - name: translated exponential
     firmness: proved
     when: 'The normal scale satisfies $\sigma\to0$ with location and positive rate fixed.'
-    detect: 'With scale free and location free or held at or below the sample minimum, the conditional translated-exponential log likelihood is at least the best numerical interior log likelihood minus $10^{-8}n$.'
+    detect: 'Constant-data domination, or exhaustive exclusion of finite shape intervals and both tails using the compatible physical holds and endpoint half-density.'
     status: TranslatedExponentialLimit
-    numerical: true
+    numerical: false
 holds: []
 examples: |
   set.seed(1)
@@ -72,8 +72,8 @@ relations:
         rate: lambda
 fit:
   method: profile-search
-  certified: partial
-  note: 'emg/README.md, Details: fixed-shape location-scale objective is strictly concave; the shape grid and face comparison are numerical.'
+  certified: 'yes'
+  note: 'emg/README.md, Details: location-only has a signed root enclosure; the other six subsets use global shape bounds and validated coefficient enclosures; unexcluded normal faces and exhausted or inseparable searches stop with witnesses.'
 areas:
 - measurement and errors
 classification: specialist
@@ -98,8 +98,9 @@ existence:
     A complete existence criterion and joint uniqueness result are not
     established. Holding $\lambda$ removes the normal escape; holding
     $\sigma$ removes the translated-exponential escape. With both held,
-    free location has a unique finite maximum. Other held subsets are
-    compared with their compatible limits numerically.
+    free location has a unique finite maximum. Other held subsets use
+    conditional global bounds and their compatible limits; an unexcluded
+    normal face stops unresolved.
   reason: >-
     The normal and exponential limits follow from the independent-sum
     representation. Fixed dimensionless shape $\lambda\sigma$ gives a
@@ -112,8 +113,50 @@ The exponentially modified Gaussian is the sum of independent normal and exponen
 
 ## Details
 
-When every coefficient is held, the likelihood is evaluated at those values
-without optimization.
+With positive normal scale and exponential rate held, the free location has a
+unique finite global maximum, including for constant data. Its decreasing
+score is enclosed with a signed bracket; acceptance requires the returned
+location to be within `reltol * max(abs(mu_star), sigma)` of every point in
+that bracket. Score signs use consecutive Mills continued-fraction convergents
+in the positive tail and a practical margin of 128 double epsilons times the
+sum of absolute score and Mills-evaluation operands, with an absolute
+subnormal floor. An
+unresolved sign or unrepresentable result
+stops with numerical failure; exhausting the solver iterations stops without
+an estimate. These certificates are in exact arithmetic conditional on the
+computed comparisons and that margin, rather than outward-rounded intervals.
+
+When location is held at or above the sample maximum and rate is free, each
+normal kernel in the convolution is bounded by its zero-delay value. The
+conditional normal face therefore dominates globally, also when scale is
+free. Constant observations with held scale and free location and rate have
+the same conclusion by the normal peak bound. If all observations equal the
+held location and scale and rate are free, the likelihood is unbounded instead.
+With constant observations, free scale and held rate, the exponential face
+is globally optimal when location is free or held at the observation. Its
+supremum density is the rate with free location, and half the rate with held
+location.
+
+For the other six subsets, the outer shape executor profiles the strictly
+concave fixed-shape problem with public holds imposed as constraints. It
+excludes both shape tails, then subdivides intervals using conditional
+likelihood upper bounds. A surviving finite mode needs a Krawczyk score-root
+enclosure accurate in every free physical coefficient, a negative-definite
+Hessian box, and a uniform nuisance-root inclusion across its shape interval.
+These establish a unique global inner optimizer and a strictly concave local
+profile; every other interval must be excluded. Separated surviving modes
+stop as a tie. A normal face without a strictly better finite witness stops
+unresolved unless a global domination proof succeeds. Budget, numerical and
+unresolved stops retain finite and compatible face witnesses.
+
+The interval operations use a practical
+32-double-epsilon operand margin, Mills evaluations use 64 epsilons, and
+likelihood comparisons use 256 epsilons on separate log-density operands,
+with standardized-coordinate error propagated through the score enclosure. The certificate is in exact arithmetic
+conditional on the computed comparisons and these margins; it does not use
+outward-rounded arithmetic. The [derivations and independent checks](../../../../../dev/research/evaluations/2026-11-07-emg-cert-report.md)
+include the distinct curvature bound for held physical rate, both uniform
+shape tails, endpoint multiplicities and a finite/normal-face tie counterexample.
 
 Write $X=\mu+\sigma Z+E_\lambda$, with $Z$ standard normal and
 $E_\lambda$ independent exponential. For fixed finite $\mu$ and $\sigma>0$,
@@ -123,16 +166,15 @@ fixed finite $\mu$ and $\lambda>0$, $\sigma\to0$ gives the translated exponentia
 the convolution density converges at every $x\ne\mu$ by the approximate
 identity property. Both limits also hold in distribution. At $x=\mu$ the
 latter density tends to half its one-sided value, a distinction relevant
-when an observation lies exactly at the endpoint. These statements do not
-certify the numerical face comparison.
+when an observation lies exactly at the endpoint. The executor retains the endpoint multiplicity in its face bounds.
 
 The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-skewreal.md) describes the limiting paths and the scope of the boundary comparisons.
 
 For fixed dimensionless shape $k=\lambda\sigma$, the log-likelihood is strictly
 concave in $(u,b)=(\mu/\sigma,1/\sigma)$. For nonconstant observations
 it has a unique finite maximum in these coordinates; constant observations
-collapse when location and scale are free. Holding the physical rate fixed is a different constraint. This is a mathematical property,
-not a certificate of the current search over shape. See the [proof and scope](../../../../../dev/research/evaluations/2026-10-31-logconcave-report.md).
+collapse when location and scale are free. Holding the physical rate fixed is a different constraint and uses its own
+shape curvature bound. See the [proof and scope](../../../../../dev/research/evaluations/2026-10-31-logconcave-report.md).
 
 $\mu$ is the normal component mean, $\sigma$ its standard deviation and
 $\lambda$ the exponential rate. The mean delay is $1/\lambda$.
@@ -143,43 +185,9 @@ $1/\overline{(x-\min_i x_i)}$ when both are free.
 With a held endpoint exactly at the minimum the limiting density there is
 half the exponential density. Repeated minima count separately.
 
-The multistart fallback profiles location by a bracketed score solve and searches the remaining log scales. Neither numerical search certifies global optimality. Empirical skewness sign describes local behaviour near the normal
-face and is not used as a global existence criterion.
-
 ## R notes
 
 `mlnorm` fits an unrestricted normal and does not retain held EMG
 coefficients automatically. There is no translated-exponential fitter.
 For a free endpoint, `mlexp(x - min(x))` fits distances from the fitted
 endpoint. Held endpoints or rates require their conditional comparison.
-
-## Decision history
-
-The 2026-10-31 fit-speed revision returns location scores in a fixed-size array
-instead of allocating a vector. Starts, density evaluations, location
-convergence, boundary comparisons and failed-optimizer score checks are
-unchanged. Full-profile caching and likelihood-invariant hoisting were tried
-without a useful default-fit timing improvement. See the [paired evidence and
-rejected
-trials](../../../../../dev/research/evaluations/2026-10-31-fit-speed-report.md).
-
-2026-10-31 (fixed-shape profile search):
-
-For a fully free fit, fix the dimensionless shape $k=\lambda\sigma$ and optimize the
-location and inverse scale jointly. The fixed-shape objective is strictly
-concave, and the inner solve uses analytic derivatives with damped Newton
-steps and a scaled score check. A grid in log shape is traversed outward
-with warm starts; local grid maxima are refined and the best candidate is
-polished by the existing local optimizer. One existing multistart seed is also
-polished and retained when its likelihood is at least as high, preserving the
-established fit precision. If the grid has no interior local
-maximum, the grid-end likelihoods are compared with the normal and translated-exponential faces using
-the existing face rules. This outer search and face comparison are numerical;
-they do not certify that no mode lies beyond or between grid points. Failed
-inner solves, unsuccessful polishing and unresolved face comparisons fall
-back to the existing multistart; held-parameter fits retain that path. A test
-hook counts fallbacks when enabled. See the [round-four evidence](../../../../../dev/research/evaluations/2026-10-31-logconcave-4-report.md).
-
-Face comparisons retain the family tolerance but stop with the existing numerical-failure status when `core/face_compare.hpp` cannot resolve the decision after its floating-point rounding allowance. This allowance concerns computed likelihood comparisons, not optimizer convergence or global optimality; see the [comparison analysis](../../../../../dev/research/evaluations/2026-11-02-face-compare-report.md).
-
-Held-parameter fits reuse evaluations at exactly repeated search coordinates; seeded decisions are identical to the uncached search ([held-subset comparison](../../../../../dev/research/evaluations/2026-11-06-slow-held-report.md)).

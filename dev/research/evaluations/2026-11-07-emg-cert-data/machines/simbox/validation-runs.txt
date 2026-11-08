@@ -1,0 +1,17 @@
+Simbox: standalone C++ GCC 13.3.0; R package compiler GCC 15.2.0.
+Commands: just cpp-test; UMVL_TEST_TIER=full just cpp-test; just cpp-test-no-long-double.
+[doctest] test cases:   31 |   31 passed | 0 failed | 1468 skipped
+[doctest] assertions: 4305 | 4305 passed | 0 failed |
+[doctest] Status: SUCCESS!
+100% tests passed out of 106
+Total Test time (real) =  55.65 sec
+100% tests passed out of 129
+Total Test time (real) = 207.05 sec
+100% tests passed out of 129
+Total Test time (real) = 206.27 sec
+[doctest] test cases:   31 |   31 passed | 0 failed | 1469 skipped
+[doctest] assertions: 4305 | 4305 passed | 0 failed |
+[doctest] Status: SUCCESS!
+Commands: just test; just test-full.
+[ FAIL 0 | WARN 0 | SKIP 154 | PASS 21465 ]
+[ FAIL 0 | WARN 0 | SKIP 0 | PASS 44283 ]

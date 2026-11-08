@@ -1,0 +1,51 @@
+{
+  "machine": "simbox GCC 13.3.0",
+  "repetitions": 3,
+  "control": {
+    "tol": 1e-08,
+    "maxit": 500
+  },
+  "samples": 500,
+  "rows": [
+    {
+      "held_mask": 0,
+      "before_seconds": 0.378916377,
+      "after_seconds": 0.820021963
+    },
+    {
+      "held_mask": 1,
+      "before_seconds": 0.249286281,
+      "after_seconds": 0.432516434
+    },
+    {
+      "held_mask": 2,
+      "before_seconds": 0.134867902,
+      "after_seconds": 0.327286834
+    },
+    {
+      "held_mask": 3,
+      "before_seconds": 0.013386034,
+      "after_seconds": 0.084052047
+    },
+    {
+      "held_mask": 4,
+      "before_seconds": 0.168619758,
+      "after_seconds": 6.097154149
+    },
+    {
+      "held_mask": 5,
+      "before_seconds": 0.016819606,
+      "after_seconds": 1.168278833
+    },
+    {
+      "held_mask": 6,
+      "before_seconds": 0.000652734,
+      "after_seconds": 0.002463026
+    },
+    {
+      "held_mask": 7,
+      "before_seconds": 7.9195e-05,
+      "after_seconds": 5.5534e-05
+    }
+  ]
+}
