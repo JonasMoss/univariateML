@@ -72,3 +72,19 @@ TEST_CASE("dlaplace: large geometric tails use the supplied probability scale") 
     }));
   }
 }
+
+TEST_CASE("dlaplace: overflowing distances retain finite geometric log tails") {
+  const double scale=std::nextafter(1.0,0.0);
+  // Independent 100-digit geometric formula; see pdnorm-fix-data/check.py.
+  const double expected=-2.2204460492503132285e292;
+  for (double sign : {-1.0,1.0}) {
+    const double x=sign*1e308, location=-x;
+    CHECK(cppunivariate::distributions::ddlaplace(x,location,scale,true)
+          ==doctest::Approx(expected).epsilon(3e-15));
+    CHECK(cppunivariate::distributions::pdlaplace(x,location,scale,sign<0,true)
+          ==doctest::Approx(expected).epsilon(3e-15));
+    CHECK(cppunivariate::distributions::pdlaplace(x,location,scale,sign>0,true)==0);
+    CHECK(cppunivariate::distributions::pdlaplace(x,location,scale,sign<0,false)==0);
+    CHECK(cppunivariate::distributions::ddlaplace(x,location,scale,false)==0);
+  }
+}

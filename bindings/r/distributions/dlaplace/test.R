@@ -29,3 +29,12 @@ test_that("discrete Laplace exact median profile and fixed subsets", {
  expect_true(is.finite(pml(10000,f,lower.tail=FALSE,log.p=TRUE)))
  set.seed(4);a<-rml(20,f);set.seed(4);expect_identical(a,rml(20,f))
 })
+
+test_that("discrete Laplace vector wrappers retain overflowing-distance log tails", {
+  x <- c(-1e308,1e308)
+  scale <- 1-2^-53
+  expected <- rep(-2.2204460492503132285e292,2)
+  expect_equal(ddlaplace(x,location=-x,scale=scale,log=TRUE)/expected,c(1,1),tolerance=3e-15)
+  expect_equal(pdlaplace(x[1],location=-x[1],scale=scale,log.p=TRUE)/expected[1],1,tolerance=3e-15)
+  expect_equal(pdlaplace(x[2],location=-x[2],scale=scale,lower.tail=FALSE,log.p=TRUE)/expected[2],1,tolerance=3e-15)
+})

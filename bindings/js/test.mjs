@@ -1431,3 +1431,24 @@ test('large geometric quantiles preserve the supplied probability scale',()=>{
     }
   }
 });
+
+test('translated lattice normal and Laplace tails survive overflowing differences',()=>{
+  for(const sign of [-1,1]) {
+    const x=new Float64Array([sign*1e308]);
+    for(const lower of [false,true]) for(const log of [false,true]) {
+      const tail=((sign<0)===lower)?.0227501319481792072:.977249868051820793;
+      const expected=log?Math.log(tail):tail;
+      assert.ok(Math.abs(m.pdnorm(x,[-sign*1e308,1e308],lower,log)[0]-expected)<2e-14);
+      const p=log?Math.log(.01):.01,mean=lower?1e308:-1e308;
+      const h=m.qdnorm(new Float64Array([p]),[mean,1e308],lower,log)[0];
+      assert.ok(Number.isFinite(h));
+      const f=m.pdnorm(new Float64Array([h,previousDouble(h)]),[mean,1e308],lower,log);
+      assert.ok(lower?f[0]>=p&&f[1]<p:f[0]<=p&&f[1]>p);
+      assert.ok(Math.abs(h/1e308-(mean/1e308+(lower?-1:1)*2.3263478740408408))<2e-14);
+    }
+    assert.ok(Math.abs(m.ddnorm(x,[-sign*1e308,1e308],true,true)[0]+712.11514717537074343)<2e-13);
+    const params=[-sign*1e308,1-2**-53],expected=-2.2204460492503132285e292;
+    assert.ok(Math.abs(m.pdlaplace(x,params,sign<0,true)[0]/expected-1)<3e-15);
+    assert.ok(Math.abs(m.ddlaplace(x,params,true,true)[0]/expected-1)<3e-15);
+  }
+});

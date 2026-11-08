@@ -100,6 +100,11 @@ existence:
 
 The discretized normal distribution is the floor of a continuous normal variable. Each observation records the latent variable in an interval from the observed integer to the next integer. The coefficients $\mu$ and $\sigma$ describe the latent normal location and standard deviation, rather than the moments of the observed integers.
 
+Opposite extreme lattice points and locations can have a difference outside
+binary64 range while their standardized difference is finite. Density and CDF
+evaluation halve those operands before scaling when direct subtraction
+overflows; quantile inversion uses the same CDF.
+
 ## Details
 
 The [existence analysis](../../../../../dev/research/evaluations/2026-10-29-p0-discrete2.md) and the argument below establish the cell-collapse conditions. Strict concavity proves uniqueness of an attained maximum; a numerical iteration can still fail to reach it within its iteration budget.

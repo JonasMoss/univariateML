@@ -353,3 +353,13 @@ TEST_CASE("dweibull: rounded seeds cannot bypass inversion at 2^53") {
     }
   }
 }
+
+TEST_CASE("dweibull: extreme lattice hazards avoid power overflow") {
+  const double h=-std::log(.5)*std::exp(.001*std::log(1e308));
+  CHECK(cppunivariate::distributions::pdweibull(1e308,.5,.001,false,true)
+        ==doctest::Approx(-h).epsilon(2e-14));
+  CHECK(cppunivariate::distributions::pdweibull(1e308,.5,.001,true,false)
+        ==doctest::Approx(-std::expm1(-h)).epsilon(2e-14));
+  CHECK(cppunivariate::distributions::pdweibull(1e308,.5,2,true,false)==1);
+  CHECK(cppunivariate::distributions::pdweibull(1e308,.5,2,false,false)==0);
+}
