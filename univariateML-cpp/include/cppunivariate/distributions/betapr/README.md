@@ -32,13 +32,13 @@ r:
   control:
     shape1: Held positive finite coefficient; NULL estimates it.
     shape2: Held positive finite coefficient; NULL estimates it.
-    gradtol: Tolerance on the total gradient norm in log coordinates after dividing data by their geometric mean; with fixed scale, relative Newton step tolerance on log(shape2). Non-unit held-shape certificates use the fixed accuracy bounds described below.
-    reltol: Relative objective tolerance.
-    abstol: Step tolerance in log coordinates after dividing data by their geometric mean.
+    gradtol: "All-free requested relative coefficient accuracy, capped at 1e-6, and proposal score tolerance. Fixed-scale and non-unit held-shape certificates retain their documented accuracy bounds."
+    reltol: Relative objective tolerance for proposals.
+    abstol: Proposal step tolerance in log coordinates after geometric-mean normalization.
     shape10: Optional positive starting value for shape1 (zero selects automatic starts).
     shape20: Optional positive starting value for shape2 (zero selects automatic starts).
     scale0: Optional positive starting value for scale (zero selects automatic starts).
-    iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations."
+    iterlim: "Default 2000. Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations."
 log_density: (shape1-1)*log(x/scale) - log(scale) - (shape1+shape2)*log(1+x/scale) - loggamma(shape1) - loggamma(shape2) + loggamma(shape1+shape2)
 limits:
   - {firmness: proved, model: exp, when: 'With shape1 held at one, shape2 and scale diverge at fixed ratio.', status: ExpBoundary, fixed: [shape1], numerical: true}
@@ -65,13 +65,13 @@ limits:
   - model: gamma
     firmness: proved
     when: The shape $q$ tends to infinity while $p$ tends to a positive finite shape and $b/q$ tends to a positive gamma scale.
-    detect: A numerical comparison selects the gamma limit within $10^{-8}n$ log-likelihood units. This comparison is not a global certificate.
+    detect: The signed joint gamma tail and compact interior cover exclude finite competitors; likelihood bounds separate this face from the inverse-gamma face. Unresolved comparisons stop.
     status: GammaBoundary
     numerical: true
   - model: invgamma
     firmness: proved
     when: The shape $p$ tends to infinity while $q$ tends to a positive finite shape and $bp$ tends to a positive inverse-gamma scale.
-    detect: A numerical comparison selects the inverse-gamma limit within $10^{-8}n$ log-likelihood units. This comparison is not a global certificate.
+    detect: Reciprocal signed tails and the compact interior cover exclude finite competitors; likelihood bounds separate this face from the gamma face. Unresolved comparisons stop.
     status: InvGammaBoundary
     numerical: true
 references:
@@ -96,9 +96,9 @@ relations:
       shape3: shape1
       scale: scale
 fit:
-  method: multistart
-  certified: partial
-  note: 'betapr/README.md, Details; betapr/mle.hpp (public fitter and held overloads); betapr/test.cpp: Held shape1=1 reduces exactly to certified Lomax and held shape2=1 to inverse Pareto, including all supported further holds and transformed stop bounds. Fixed-scale beta fitting is concave. Non-unit one-held-shape finite fits use a global profile certificate with explicit exterior bounds; constant samples select their gamma face analytically. Nonconstant faces use a signed second-order tail bound; unresolved comparisons stop. The joint three-parameter fit remains numerical.'
+  method: profile-search
+  certified: "yes"
+  note: 'betapr/README.md, Details; betapr/mle.hpp, certificate.hpp and joint_certificate.hpp; betapr/test.cpp: fixed-scale beta concavity, unit-shape delegates and non-unit held-shape certificates cover conditional subsets. The all-free fitter combines uniform harmonic-shape exteriors, signed gamma/inverse-gamma tails and a compact cover of every possible conditional maximizer. Shape-gradient bounds, concave supporting planes and interval-Newton inclusions exclude cells or enclose their unique maxima. Finite fits require relative enclosures in both shapes and scale of at most min(tol, 1e-6); faces require complete interior exclusion and separated likelihood bounds. Unresolved arithmetic, ties and exhausted shared budgets stop with witnesses.'
 areas:
 - actuarial
 - economics and income
@@ -118,8 +118,10 @@ existence:
   statement: >-
     With all coefficients free, constant positive data have unbounded likelihood.
     For nonconstant data the gamma and inverse-gamma limits can compete with
-    finite fits. A complete joint sample criterion and joint uniqueness are
-    not established. With scale held, a unique finite MLE exists exactly when
+    finite fits. The joint exterior bounds prove existence of a finite maximum
+    when a finite witness exceeds both computed face upper bounds.
+    A closed-form joint sample criterion and joint uniqueness are
+    not established. A certified compact cover determines finite fits and winning faces when computed comparisons resolve; otherwise it stops with witnesses. With scale held, a unique finite MLE exists exactly when
     the sample is nonconstant if both shapes are free. With scale and either
     shape held, the remaining shape has a unique finite maximum even for
     constant data. With both shapes held, scale has a unique finite maximum
@@ -290,9 +292,233 @@ under the arithmetic contract above. The numerical crossing
 $t\approx5.64643839503$ has peaks near $q=0.08352763$ and $q=0.16883269$;
 that rounded data set produces a comparison-tie stop, not a uniqueness claim.
 
-The three-free-parameter fit retains its multistart search and
-numerical comparisons with gamma and inverse-gamma limits. Its simultaneous
-escape paths and global optimality remain uncertified.
+The all-free fitter covers the joint exterior and every remaining finite
+stationary maximum. Its proposals do not determine acceptance.
+
+### Joint exterior bounds
+
+Put $y_i=\log x_i$, $h=pq/(p+q)$ and $\bar y=n^{-1}\sum y_i$.
+The density of $Y=\log X$ has mode $m=\log b+\log(p/q)$,
+log derivative between $-q$ and $p$, and mode height at most $h$.
+Indeed its density is at least its mode height times $e^{-p(m-y)}$
+to the left and $e^{-q(y-m)}$ to the right; integrating proves the
+height bound. Consequently, uniformly over scale,
+\[
+ \ell(p,q,b)\le n\log h-\sum_i y_i.
+\]
+A verified likelihood witness $L$ excludes
+$h\le\exp((L+\sum y_i)/n)$ from strictly better fits.
+
+Stirling's remainder $0<w(z)<1/(12z)$ gives the sharper mode-height
+bound $\log g(m)\le\tfrac12\log(h/(2\pi))+1/(48h)$.
+At distance $d$ from the mode, the negative log-density curvature is
+at least $h e^{-d}$. Integration gives a loss at least
+$h\rho(d)$, where $\rho(d)=d-1+e^{-d}\ge d^2/(2(1+d))$.
+The last inequality follows by integrating
+$1-e^{-d}\ge d/(1+d)$, and differentiating
+$d-\log(1+d)-d^2/(2(1+d))$.
+For two observations separated by $D$ in log coordinates, convexity and
+evenness of $\rho(|\cdot|)$ give a combined loss at least
+$2h\rho(D/2)\ge hD^2/(4+2D)$, whatever the mode.
+Pair the ordered smallest and largest logs, then the next smallest and
+largest, and so on. With $J$ the sum of these pair contributions,
+\[
+ \ell(p,q,b)\le
+ U(h):=\frac n2\log\frac{h}{2\pi}+\frac{n}{48h}
+       -hJ-\sum_i y_i.
+\]
+For nonconstant data $J>0$, and $U$ decreases on
+$h\ge\max(1,n/(2J))$ and tends to minus infinity. Doubling $H$ until
+$U(H)<L$ excludes every $h\ge H$, uniformly in scale and shape ratio.
+This closes the simultaneous two-large-shape corner, including paths
+whose scale tends to zero or infinity.
+
+The remaining large-shape tails admit a uniform, unsigned remainder.
+For the gamma side normalize $z_i=x_i/\bar x$, write
+$M=\max z_i$ and $V=n^{-1}\sum z_i^2$.
+At fixed $p,q$, the unique maximizing scale $s$ in these units solves
+$p=(p+q)\overline{z/(s+z)}$.
+Since $\overline{z/(s+z)}\ge1/(s+M)$,
+$q>2pM$ implies $r=q/s\le2p$.
+Using $\log\Gamma(q+p)-\log\Gamma(q)\le p\log(q+p)$ and
+$\log(1+t)\ge t-t^2/2$, dropping the additional negative term
+$-p\sum\log(1+z_i/s)$, gives
+\[
+ \sup_b\ell(p,q,b)\le
+ G(p)+\frac{np^2(1+2V)}q,
+\]
+where $G(p)$ is the gamma likelihood with shape $p$ and its maximizing
+scale. If $h<H$ and $q\ge2H$, then $p<2H$. The small-$h$ bound also
+gives $p>h_{\rm low}$. Thus throughout this tail the remainder is at most
+$4nH^2(1+2V)/q$, uniformly over the other shape and scale.
+$G$ is strictly concave because
+$G''(p)=n(1/p-\psi_1(p))<0$; a supporting tangent bounds its maximum on
+$[h_{\rm low},2H]$. Bisection tightens the tangent without needing to
+assume convergence. If this upper bound is below $L$, another doubling
+loop excludes all $q\ge Q$. Reciprocal log data give the corresponding
+$p\ge P$ inverse-gamma bound with the exact likelihood Jacobian
+$-2\sum\log x_i$. No floating-point reciprocals are required.
+
+The public C++ diagnostic `BetaPrimeResult::joint_exterior` records the
+exterior and cover work, coefficient enclosures and `global_certified`.
+`FiniteExterior` by itself proves finite-MLE existence: competitive shapes
+lie in a compact rectangle bounded away from zero, and their maximizing
+scales lie in $[qx_{\min}/p,qx_{\max}/p]$. Continuity gives attainment.
+The subsequent cover identifies its maxima. Selected faces and finite
+successes set `global_certified` only after the comparisons below resolve.
+Conditional certificates, including the interface used by GB2, are unchanged.
+
+The bounds follow the package's exact-arithmetic, computed-comparison
+contract. Log sums and pair sums are compensated. Pair gaps shrink by
+$64\epsilon(1+|y_i|+|y_j|)$ and their sum by
+$128\epsilon(1+J)$. Likelihood, tangent and tail comparisons carry the
+`4096*epsilon` scale-dependent allowances in `joint_bounds.hpp`; tail
+thresholds and remainders additionally expand by $10^{-10}$.
+Unrepresentable quantities leave the affected bound unavailable.
+Each doubling or scalar bisection uses at most `min(iterlim,100000)`
+iterations; the total is below the certificate-evaluation budget.
+
+There is no nondegenerate lognormal corner in the three-parameter
+beta-prime family: $\operatorname{Var}(\log X)=\psi_1(p)+\psi_1(q)$
+tends to zero when both shapes diverge. Changing $b$ translates $\log X$
+and cannot prevent this concentration. A variable power in GB2 can change
+this conclusion, but beta-prime has no such parameter.
+The signed bound from the conditional certificate also extends uniformly
+in the other shape. Write its per-observation leading coefficient as
+$A(p)=p\{p(V-1)-1\}/2$ and its second-order remainder as $C(p)$ above.
+Around the gamma optimum choose $[u,v]$ on which
+$A(p)\le-a_0<0$ and $C(p)\le C(v)$.
+For $q>2C(v)/a_0$, the entire neighborhood lies strictly below its
+own gamma profile $G(p)$ and therefore below the gamma face supremum.
+Outside $[u,v]$, concave supporting tangents give an upper bound $G_o$
+on the two remaining shape intervals. A gamma witness $G_l>G_o$ gives
+a strict gap $\delta=G_l-G_o$; the unsigned bound excludes those intervals
+below the face for $q>8nH^2(1+2V)/\delta$.
+Taking the larger cutoff and $4HM$ proves a signed joint tail bound
+throughout the retained harmonic region. Reciprocal transport proves the
+inverse-gamma result. The diagnostics `gamma_signed_shape2` and
+`invgamma_signed_shape1` record these thresholds. The sign test inflates
+$V-1$ by $10^{-10}(1+V)$, the gap uses the tangent's practical arithmetic
+allowances, and thresholds expand by $10^{-10}$.
+
+### All-free compact cover
+
+Write $F(p,q)=\sup_t\ell(p,q,e^t)/n$ in geometric-mean units. The inner
+scale score is strictly decreasing. With
+$u_i=(1+\exp(t-y_i))^{-1}$ and $Q=\overline{u_i(1-u_i)}$,
+\[
+ \ell_t/n=-p+(p+q)\bar u,\qquad
+ \ell_{tt}/n=-(p+q)Q<0.
+\]
+The root decreases in $p$ and increases in $q$. Thus a shape cell
+$C=[p_l,p_u]\times[q_l,q_u]$ encloses every conditional maximizing scale
+between its roots at $(p_u,q_l)$ and $(p_l,q_u)$.
+
+The unchanged one-held-shape certificate is evaluated at a proposed $q_0$.
+Its global upper bound includes every conditional branch, including
+nonunique maxima and the inverse-gamma face. On cells containing $q_0$,
+the enclosing $q$-score gives an integrated upper bound anchored at that
+conditional value. The full shape cover retains the possible conditional
+maximizers as multiple $p$ intervals; it does not assume that $p(q)$ is
+single-valued or that the outer profile is unimodal.
+
+The shape scores are
+\[
+ F_p=\psi(p+q)-\psi(p)-\overline{\log(1+e^{t-y_i})},\qquad
+ F_q=\psi(p+q)-\psi(q)-\overline{\log(1+e^{y_i-t})}.
+\]
+Digamma-increment monotonicity and the scale enclosure bound both scores
+throughout $C$. A cell whose gradient enclosure excludes zero cannot contain
+a finite global maximum: all competitive finite maxima are interior to
+the certified exterior cutoffs.
+
+At fixed $t$, $-\log B(p,q)$ is strictly concave. Its supporting plane at
+the cell center $m$ gives the independent value bound
+\[
+ \sup_C F\le \max_{v\in\operatorname{vertices}(C)}
+ \{F(v)+\log B(v)-\log B(m)-\nabla\log B(m)\mathbin{\cdot}(v-m)\}.
+\]
+Scale profiling at each vertex supplies its value enclosure. Cells below
+an incumbent lower bound are discarded. In large-shape cells the uniform
+gamma remainder gives a cheaper bound; a negative leading coefficient
+throughout the cell and its uniform remainder can exclude that cell
+analytically below the gamma supremum. Reciprocal moments supply the other
+tail. A face is selected only after this interior cover closes and its
+likelihood lower bound exceeds all competing upper bounds.
+
+A sharper signed bound uses the gamma optimum $a_*$, enclosed by its
+strictly decreasing score. On a retained interval $p\le h$, let
+$u=\max(h,a_{*,u})$, $\kappa=1/(2u^2)$, and
+$B=1/2+u(V-1)$, where $V$ is the normalized second moment.
+The trigamma inequality $\psi_1(p)>1/p+1/(2p^2)$ gives
+$G(p)\le G(a_*)-\kappa(p-a_*)^2/2$ for the gamma profile $G$.
+The tail coefficient $A(p)=p\{p(V-1)-1\}/2$ obeys
+$A(p)\le A_0+B|p-a_*|$, with $A_0$ bounded over the enclosed optimum.
+Completing the square therefore gives the uniform bound
+\[
+ F(p,q)\le G(a_*)+A_0/q+\{C(h)+B^2u^2\}/q^2.
+\]
+If $A_0<0$, taking $q$ strictly above both $2hM$ and
+$\{C(h)+B^2u^2\}/(-A_0)$ excludes this whole strip below the gamma
+supremum. This works even when $A(p)$ changes sign inside the strip.
+On narrower cells, concavity bounds $G$ and the convex quadratic in $1/q$
+gives the alternative remainder $\max(0,A_u/q_l+C/q_l^2)$.
+The reciprocal argument handles inverse gamma.
+
+The profiled Hessian is the Schur complement
+\[
+ H_{pp}=\psi_1(p+q)-\psi_1(p)+\frac{q^2}{(p+q)^3Q},\quad
+ H_{qq}=\psi_1(p+q)-\psi_1(q)+\frac{p^2}{(p+q)^3Q},\quad
+ H_{pq}=\psi_1(p+q)-\frac{pq}{(p+q)^3Q}.
+\]
+Endpoint scale bounds enclose every $u_i$, hence $Q$; monotonicity encloses
+the trigamma differences. These yield an interval Hessian on each cell.
+An interval-Newton image can exclude the stationary set or contract its
+cell. A fixed direction with a positive lower curvature bound also excludes
+a local maximum.
+
+Around a proposed maximum, use relative shape coordinates and a symmetric
+negative-definite approximate inverse Hessian $C_0$. If
+$\|I-C_0H(C)\|_\infty<1/2$, and the interval fixed-point image lies inside
+the cell, contraction proves existence and uniqueness of its stationary
+point. Negative definiteness follows because $C_0$ is negative definite
+and every eigenvalue of $C_0H$ is positive. The same contraction gives
+componentwise coefficient bounds: with $R=|I-C_0H(C)|$ and
+$d=|C_0g(m)|$, an explicitly checked vector $e>d+Re$ encloses the root.
+Monotone scale roots at the shape-box corners enclose its scale.
+A finite success requires relative error at most
+$\min(\texttt{tol},10^{-6})$ in $p,q,b$, including scale reconstruction.
+The full cell can then be assigned to this unique maximum; neighboring
+cells remain covered independently.
+
+Every surviving maximum is retained. Separated likelihood intervals choose
+the winner; unresolved overlaps stop as comparison ties with the compared
+finite or face witnesses. An early unresolved face comparison has an infinite
+global upper bound and does not assert that either face wins. Failure to
+close an exterior, a root enclosure, or a floating-point comparison gives
+a numerical stop. Exhaustion of the shared work meter gives a budget stop.
+No failed certificate is rescued by a proposal's optimizer score.
+
+The all-free certificate shares `128 * min(iterlim,100000)` evaluations
+across proposal objective/gradient calls, conditional-certificate work,
+exterior evaluations, new scale-profile points and cell/Hessian bounds.
+Each inner solve and refinement uses at most `min(iterlim,100000)`
+iterations. Cached points are reused. The default is 2000: a seeded gamma-face sample needs about 141000 evaluations, above the former 128000 allowance. The fixed proposal grid supplies
+witnesses only; its old large-shape evaluation guard does not restrict the
+certified search domain.
+
+The compact cover uses compensated sums. Normalizers use Stirling differences
+above shape 32, with an analytic truncation allowance $10^{-19}$ per datum.
+Point likelihood margins are $256\epsilon$ times the displayed likelihood
+terms, plus input-log error and enclosed scale-root error. Shape scores use
+the held certificate's digamma-increment bounds. Hessian margins are
+$256\epsilon\{1+\psi_1(p_l)+\psi_1(q_l)+1/((p_l+q_l)Q_l)\}$.
+Interval additions and multiplications expand by $16\epsilon$ times their
+operand/product magnitudes plus one; root-image comparisons expand by
+$128\epsilon$. Scale and reciprocal input transformations carry their
+separate log-data/Jacobian allowances. These are practical floating-point
+margins under the package's computed-comparison contract. Unresolved
+inclusions stop rather than becoming accuracy claims.
 
 ## R notes
 
@@ -300,7 +526,7 @@ Supply `scale` to hold it at a positive finite value. Either shape may also
 be held with `shape1` or `shape2`. A certified conditional face stops with
 its fitted limit coefficients and likelihood. Conditional numerical and budget
 stops retain diagnostic witnesses; they do not select a limit model.
-The all-free path retains its $10^{-8}n$ numerical face preference.
+The all-free path returns finite estimates only after global cover and coefficient inclusion; its face, tie, budget and numerical stops retain structured witnesses. Constant positive data stop with unbounded-likelihood diagnostics.
 
 ## Decision history
 
@@ -308,8 +534,6 @@ univariateML 1.x estimated only the shapes, with scale fixed at 1.
 On 2026-10-30 (TASK-125), identical observations with exactly one held shape
 were assigned directly to the appropriate gamma or inverse-gamma limit using
 the digamma inequality above. This avoids cancellation in the finite grid comparison.
-
-The all-free face comparisons retain the family tolerance but stop with the existing numerical-failure status when `core/face_compare.hpp` cannot resolve the decision after its floating-point rounding allowance. This allowance concerns computed likelihood comparisons, not optimizer convergence or global optimality; see the [comparison analysis](../../../../../dev/research/evaluations/2026-11-02-face-compare-report.md).
 
 The non-unit one-held-shape fit profiles over the free shape, using the unique
 inner scale root at each shape. This gives explicit shape-tail bounds and

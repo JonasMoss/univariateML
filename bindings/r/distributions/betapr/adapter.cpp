@@ -2,7 +2,7 @@
 #include "common_fit.h"
 // [[Rcpp::export]]
 Rcpp::List mlbetapr_(const Rcpp::NumericVector &x, double gradtol = 1e-6,
-                     int iterlim = 1000, double shape10 = 0, double shape20 = 0,
+                     int iterlim = 2000, double shape10 = 0, double shape20 = 0,
                      double scale0 = 0, double reltol = 1e-13, double abstol = 1e-10,
                      Rcpp::Nullable<double> scale = R_NilValue,
                      Rcpp::Nullable<double> shape1 = R_NilValue,

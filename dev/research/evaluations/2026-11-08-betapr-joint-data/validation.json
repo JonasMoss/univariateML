@@ -1,0 +1,58 @@
+{
+  "baseline": "9fee8c34b838db7b11b7518a071f61495d23f282",
+  "source_manifest": "source-sha256.txt",
+  "checks": [
+    {
+      "suite": "C++ dev",
+      "machine": "simbox",
+      "passed": 106,
+      "failed": 0
+    },
+    {
+      "suite": "C++ full",
+      "machine": "simbox",
+      "passed": 129,
+      "failed": 0
+    },
+    {
+      "suite": "C++ no-long-double",
+      "machine": "simbox",
+      "passed": 129,
+      "failed": 0
+    },
+    {
+      "suite": "C++ no-long-double",
+      "machine": "workstation",
+      "passed": 129,
+      "failed": 0
+    },
+    {
+      "suite": "R dev",
+      "machine": "simbox",
+      "passed": 21950,
+      "failed": 0,
+      "warnings": 0,
+      "skipped": 154
+    },
+    {
+      "suite": "R full",
+      "machine": "simbox",
+      "passed": 44773,
+      "failed": 0,
+      "warnings": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "JS build and tests",
+      "machine": "workstation",
+      "passed": 541,
+      "failed": 0
+    },
+    {
+      "suite": "site-check",
+      "machine": "workstation",
+      "passed": true,
+      "summary": "Total dist: 22947803 B"
+    }
+  ]
+}

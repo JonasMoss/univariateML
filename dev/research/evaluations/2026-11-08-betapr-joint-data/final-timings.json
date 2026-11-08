@@ -1,0 +1,82 @@
+{
+  "joint-500": {
+    "machine": "workstation",
+    "n": 500,
+    "before_ms": [
+      22.819572,
+      22.717753,
+      22.678981
+    ],
+    "after_ms": [
+      166.538249,
+      168.125772,
+      169.170469
+    ],
+    "before_median_ms": 22.717753,
+    "after_median_ms": 168.125772,
+    "slowdown": 7.4006338567022905,
+    "evaluations": 5907,
+    "cells": 1246,
+    "profile_points": 1686
+  },
+  "joint-10000": {
+    "machine": "workstation",
+    "n": 10000,
+    "before_ms": [
+      317.345265,
+      202.80399,
+      216.654506
+    ],
+    "after_ms": [
+      3389.553112,
+      3875.476437,
+      7077.601596
+    ],
+    "before_median_ms": 216.654506,
+    "after_median_ms": 3875.476437,
+    "slowdown": 17.88781829905721,
+    "evaluations": 6694,
+    "cells": 1246,
+    "profile_points": 1686
+  },
+  "random-500": {
+    "machine": "simbox",
+    "n": 500,
+    "before_ms": [
+      7.183261,
+      7.265566,
+      7.04899
+    ],
+    "after_ms": [
+      100.959122,
+      100.135172,
+      100.379044
+    ],
+    "before_median_ms": 7.183261,
+    "after_median_ms": 100.379044,
+    "slowdown": 13.974021548152015,
+    "evaluations": 5907,
+    "cells": 1246,
+    "profile_points": 1686
+  },
+  "random-10000": {
+    "machine": "simbox",
+    "n": 10000,
+    "before_ms": [
+      159.480984,
+      160.552554,
+      159.090305
+    ],
+    "after_ms": [
+      2070.223514,
+      2083.249044,
+      2080.836482
+    ],
+    "before_median_ms": 159.480984,
+    "after_median_ms": 2080.836482,
+    "slowdown": 13.047552315077263,
+    "evaluations": 6520,
+    "cells": 1282,
+    "profile_points": 1740
+  }
+}

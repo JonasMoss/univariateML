@@ -1480,3 +1480,19 @@ test('large held skew-t shape retains a certified fit and finite skew covariance
   const covariance=api.sstd.vcov(x,fit);
   assert.ok(Number.isFinite(covariance.matrix[0][0]) && covariance.matrix[0][0]>0);
 });
+test('betapr all-free certificate returns verified fits and structured global stops', async () => {
+  const {default:createApi}=await import('./index.mjs');const api=await createApi();
+  const f=api.betapr.fit(new Float64Array([.03,.1,.4,.7,1,2,4,12]));
+  assert.ok(Math.abs(f.estimates.shape1/.665253303-1)<1e-6);
+  assert.ok(Math.abs(f.estimates.shape2/1.846932901-1)<1e-6);
+  assert.throws(()=>api.betapr.fit(new Float64Array([1,2,3,4])),e=>{
+    assert.equal(e.kind,'limit');assert.equal(e.model,'gamma');assert.ok(Number.isFinite(e.loglik_upper));return true;
+  });
+  assert.throws(()=>api.betapr.fit(new Float64Array([.5,1,2])),e=>{
+    assert.equal(e.kind,'tie');assert.ok(e.candidates.length>=2);return true;
+  });
+  assert.throws(()=>api.betapr.fit(new Float64Array([.03,.1,.4,.7,1,2,4,12]),{},{iterlim:1}),e=>{
+    assert.equal(e.kind,'budget');assert.ok(e.candidates.length>0);return true;
+  });
+  assert.throws(()=>api.betapr.fit(new Float64Array([2,2,2])),e=>{assert.equal(e.kind,'nomle');return true;});
+});
