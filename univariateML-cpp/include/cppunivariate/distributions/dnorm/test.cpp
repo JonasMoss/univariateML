@@ -185,3 +185,41 @@ TEST_CASE("dnorm: rounded seeds cannot bypass inversion at 2^53") {
     }
   }
 }
+
+TEST_CASE("dnorm: overflowing translated lattice differences retain finite standardized points") {
+  // Independent 100-digit references: 2026-11-08-pdnorm-fix-data/check.py.
+  for (double sign : {-1.0,1.0}) {
+    const double x=sign*1e308, mean=-x, sd=1e308;
+    for (bool lower : {false,true}) for (bool log : {false,true}) {
+      const double tail=(sign<0)==lower ? 0.0227501319481792072 : 0.977249868051820793;
+      CHECK(cppunivariate::distributions::pdnorm(x,mean,sd,lower,log)
+            ==doctest::Approx(log ? std::log(tail) : tail).epsilon(2e-14));
+    }
+    CHECK(cppunivariate::distributions::ddnorm(x,mean,sd,true)
+          ==doctest::Approx(-712.11514717537074343).epsilon(2e-15));
+    CHECK(cppunivariate::distributions::ddnorm(x,mean,sd)
+          /std::exp(-712.11514717537074343)==doctest::Approx(1).epsilon(2e-13));
+    CHECK(cppunivariate::distributions::pdnorm(x,mean,1)==(sign<0 ? 0 : 1));
+  }
+  CHECK(cppunivariate::distributions::pdnorm(-7.976931348623157e307,1e308,1e308)
+        ==doctest::Approx(0.03611282497155248489).epsilon(2e-14));
+  const double largest=std::numeric_limits<double>::max();
+  CHECK(cppunivariate::distributions::pdnorm(-largest,largest,largest)
+        ==doctest::Approx(0.0227501319481792072).epsilon(2e-14));
+  CHECK(cppunivariate::distributions::pdnorm(-INFINITY,1e308,1e308)==0);
+  CHECK(cppunivariate::distributions::pdnorm(INFINITY,-1e308,1e308)==1);
+  for (double mean : {-1e308,1e308}) for (bool lower : {false,true}) for (bool log : {false,true}) {
+    const double p=log ? std::log(.01) : .01;
+    const double h=cppunivariate::distributions::qdnorm(p,mean,1e308,lower,log);
+    // Some reflected targets lie beyond the finite binary64 range.
+    if ((mean>0)==lower) {
+      REQUIRE(std::isfinite(h));
+      CHECK(mltest::truth_lattice_quantile(h,p,lower,[&](double x) {
+        return cppunivariate::distributions::pdnorm(x,mean,1e308,lower,log);
+      }));
+      const double z=h/1e308-mean/1e308;
+      CHECK(std::erfc((lower ? -z : z)/std::sqrt(2.0))/2
+            ==doctest::Approx(.01).epsilon(2e-13));
+    }
+  }
+}

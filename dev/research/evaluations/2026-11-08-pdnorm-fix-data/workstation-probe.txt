@@ -1,0 +1,21 @@
+g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0
+Native long-double backend:
+Original standardized point: -1.7976931348623157
+Original standardized predecessor: -inf
+Original CDF at predecessor: 0
+Corrected CDF at reported point: 0.036112824971552479
+Corrected .01 quantile: -1.3263478740408408e+308
+CDF at quantile: 0.010000000000000014
+CDF at previous double: 0.009999999999999995
+Normal log cell mass at x=-1e308, mean=sd=1e308: -712.11514717537079
+Laplace log lower tail at x=-1e308, location=1e308, scale=nextafter(1,0): -2.2204460492503131e+292
+No-long-double backend:
+Original standardized point: -1.7976931348623157
+Original standardized predecessor: -inf
+Original CDF at predecessor: 0
+Corrected CDF at reported point: 0.036112824971552514
+Corrected .01 quantile: -1.326347874040841e+308
+CDF at quantile: 0.010000000000000004
+CDF at previous double: 0.009999999999999995
+Normal log cell mass at x=-1e308, mean=sd=1e308: -712.11514717537079
+Laplace log lower tail at x=-1e308, location=1e308, scale=nextafter(1,0): -2.2204460492503131e+292

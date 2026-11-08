@@ -4,6 +4,13 @@
 #include <cmath>
 #include <limits>
 namespace cppunivariate { namespace distributions {
+// Keep the ordinary lattice arithmetic; halve only an overflowing finite
+// difference. The half-difference fits even for opposite binary64 endpoints.
+inline double dnorm_standardize(double x, double offset, double mean, double sd) {
+  const double delta = x + offset - mean;
+  if (std::isfinite(delta) || !std::isfinite(x)) return delta / sd;
+  return ((x * 0.5 - mean * 0.5) / sd) * 2;
+}
 // Log probability of a standard normal interval. Subtract on the small-tail side.
 inline double dnorm_interval(double a, double b) {
   if (!(a < b)) return -std::numeric_limits<double>::infinity();
@@ -21,20 +28,20 @@ inline double ddnorm(double x, double mean, double sd, bool log = false) {
     return std::numeric_limits<double>::quiet_NaN();
   double lp = -std::numeric_limits<double>::infinity();
   if (std::isfinite(x) && x == std::floor(x)) {
-    const double mid=(x+0.5-mean)/sd, w=1/sd;
+    const double mid=dnorm_standardize(x,0.5,mean,sd), w=1/sd;
     if (w*(1+std::abs(mid))<1e-5)
       lp=-0.5*mid*mid-0.91893853320467274178-std::log(sd)+std::log1p(((mid*w)*(mid*w)-w*w)/24);
     else if (std::abs(mid)>1e16) {
       const double near=std::abs(mid)-0.5*w;
       lp=special::fs_normal_p(near,false,true)+special::log1mexp(-near*w-0.5*w*w);
-    } else lp=dnorm_interval((x-mean)/sd,(x+1-mean)/sd);
+    } else lp=dnorm_interval(dnorm_standardize(x,0,mean,sd),dnorm_standardize(x,1,mean,sd));
   }
   return log ? lp : std::exp(lp);
 }
 inline double pdnorm(double q, double mean, double sd, bool lower_tail = true, bool log_p = false) {
   if (!std::isfinite(mean) || !std::isfinite(sd) || sd <= 0 || std::isnan(q))
     return std::numeric_limits<double>::quiet_NaN();
-  return special::fs_normal_p((std::floor(q)+1-mean)/sd,lower_tail,log_p);
+  return special::fs_normal_p(dnorm_standardize(std::floor(q),1,mean,sd),lower_tail,log_p);
 }
 inline double qdnorm(double p, double mean, double sd, bool lower_tail = true, bool log_p = false) {
   const double lp = log_p && lower_tail && p==-0.69314718055994530942 ? std::nextafter(p,0.0) : (log_p ? p : std::log(p));

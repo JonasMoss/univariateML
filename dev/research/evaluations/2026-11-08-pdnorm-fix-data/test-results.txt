@@ -1,0 +1,26 @@
+TASK-156 final runs, 2026-11-08. All commands exited 0.
+Workstation C++ compiler: GNU 15.2.0. Simbox C++ compiler: GNU 13.3.0.
+Local suites used /tmp/umvl-cpu/run4 (four slots); standalone probe used run.
+Simbox suites used simbox-run with CMAKE_BUILD_PARALLEL_LEVEL=4 and CTEST_PARALLEL_LEVEL=4.
+BLAS/OpenMP workers pinned to one thread; runners applied nice -n 10.
+
+Workstation: just cpp-test: 106/106, 125.61 s test time.
+Simbox: just cpp-test: 106/106, 69.30 s test time.
+Simbox: UMVL_TEST_TIER=full just cpp-test: 129/129, 232.49 s test time.
+Workstation: just cpp-test-no-long-double: 129/129, 290.56 s test time.
+Simbox: just cpp-test-no-long-double: 129/129, 232.71 s test time.
+Simbox: just test: FAIL 0, WARN 0, SKIP 154, PASS 22125; 72.619 s test time.
+Simbox: just test-full: FAIL 0, WARN 0, SKIP 0, PASS 44957; 284.689 s test time.
+Workstation: just js-build: passed.
+Workstation: just js-test: 551/551, no failures, cancellations or skips; 152.686 s.
+Workstation: just site-check: passed; 99 family pages and C++17 snippets, MathML and links checked.
+
+Full command logs remain in build/scratch/ (local files and simbox/).
+Site validation regenerated an unrelated pre-existing screenshot; its original bytes were restored.
+Truth tables and goldens have no differences from HEAD. No fitter or default changes.
+No commits, board edits, installs, pushes or publication.
+
+Additional document check: changed dossiers and report: 7 local destinations, zero broken.
+Repository-wide check_links.py: 4 pre-existing destinations in 3 unrelated files;
+all 3 files verified byte-identical to HEAD. Full output: build/scratch/check-links.log.
+Artifact-pane show: HTTP 403; worktree absent from viewer readable roots.

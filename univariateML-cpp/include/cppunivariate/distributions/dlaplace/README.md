@@ -96,6 +96,10 @@ existence:
 
 The discrete Laplace distribution models integer deviations with symmetric geometric tails. Its location $\mu$ is an integer centre. Its coefficient $b$ lies strictly between zero and one and controls geometric decay, with larger values giving wider tails.
 
+For opposite extreme lattice points and locations, the distance can overflow
+although its product with $\log b$ is finite. Density and CDF evaluation retain
+that finite logarithm by multiplying the half-distance before doubling.
+
 ## Details
 
 Every integer in the sample median interval minimizes the sum of absolute deviations. These are exactly the maximizing locations, whether scale is free or held. The fit returns the smallest integer median. For positive mean absolute deviation $d$, the unique scale estimate is $d/(\sqrt{1+d^2}+1)$.

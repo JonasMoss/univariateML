@@ -182,3 +182,15 @@ TEST_CASE("dgamma: rounded seeds cannot bypass inversion at 2^53") {
     }
   }
 }
+
+TEST_CASE("dgamma: extreme lattice scaling has no translated subtraction") {
+  // Shape one is exponential; multiplication by a reciprocal scale stays finite.
+  const double t=1e308*1e-308;
+  CHECK(cppunivariate::distributions::pdgamma(1e308,1,1e-308)
+        ==doctest::Approx(-std::expm1(-t)).epsilon(2e-14));
+  CHECK(cppunivariate::distributions::pdgamma(1e308,1,1e-308,false,true)
+        ==doctest::Approx(-t).epsilon(2e-14));
+  // A genuinely overflowing positive gamma argument is an endpoint, not cancellation.
+  CHECK(cppunivariate::distributions::pdgamma(1e308,1,2)==1);
+  CHECK(cppunivariate::distributions::pdgamma(1e308,1,2,false)==0);
+}

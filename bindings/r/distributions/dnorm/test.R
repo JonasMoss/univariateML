@@ -105,3 +105,17 @@ test_that("normal held subsets have independent scalar optima", {
   expect_true(is.finite(ref(x = 0, mean = 0, sd = 1e+300, log = TRUE)))
   expect_warning(expect_true(is.nan(ref(x = 0, mean = 0, sd = 0))),"NaNs")
 })
+
+test_that("discretized normal vector wrappers retain extreme translated probabilities", {
+  x <- c(-1e308,1e308)
+  for (lower in c(FALSE,TRUE)) for (logp in c(FALSE,TRUE)) {
+    expected <- stats::pnorm(c(-2,2),lower.tail=lower,log.p=logp)
+    expect_equal(pdnorm(x,mean=-x,sd=1e308,lower.tail=lower,log.p=logp),expected,tolerance=2e-14)
+    p <- if (logp) log(.01) else .01
+    mean <- if (lower) 1e308 else -1e308
+    h <- qdnorm(p,mean=mean,sd=1e308,lower.tail=lower,log.p=logp)
+    expect_true(is.finite(h))
+    expect_equal(stats::pnorm(h/1e308-mean/1e308,lower.tail=lower),.01,tolerance=2e-14)
+  }
+  expect_equal(ddnorm(x,mean=-x,sd=1e308,log=TRUE),rep(-712.11514717537074343,2),tolerance=2e-13)
+})
