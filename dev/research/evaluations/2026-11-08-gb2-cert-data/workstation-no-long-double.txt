@@ -1,0 +1,14 @@
+        Start 129: diagnostics_tests
+126/129 Test  #98: distribution_std_slow ............   Passed   43.51 sec
+127/129 Test #129: diagnostics_tests ................   Passed    2.37 sec
+128/129 Test  #16: distribution_cmb .................   Passed  140.34 sec
+129/129 Test #101: distribution_tlambda_slow ........   Passed  186.15 sec
+
+100% tests passed, 0 tests failed out of 129
+
+Label Time Summary:
+cran    = 419.44 sec*proc (105 tests)
+dev     = 421.81 sec*proc (106 tests)
+full    = 679.11 sec*proc (129 tests)
+
+Total Test time (real) = 279.00 sec

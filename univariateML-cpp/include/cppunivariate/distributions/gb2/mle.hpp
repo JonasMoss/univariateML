@@ -21,6 +21,9 @@ struct Gb2Result {
   Gb2Status status;
   StopDetail stop_detail{};
 };
+} // namespace cppunivariate
+#include "power_certificate.hpp"
+namespace cppunivariate {
 namespace gb2_detail {
 // Shift both shapes to >= 10, then use a cancellation-resistant Stirling
 // expression. The recurrence is exact; only the Stirling remainder is numeric.
@@ -255,6 +258,8 @@ inline Gb2Result gb2_mle(span x,double tol=1e-7,int maxit=300,
   }
   std::vector<double> logs(x.size());
   for(std::size_t i=0;i<x.size();++i){if(!(x[i]>0)||!std::isfinite(x[i]))return bad;logs[i]=std::log(x[i]);}
+  if(!std::isnan(a) && std::isnan(b) && (std::isnan(p)!=std::isnan(q)))
+    return gb2_power_detail::fit(x,q,a,p,tol,maxit);
   const auto solve_root=[&](auto score){return burr_hold_detail::root(score,maxit);};
   // Constant samples still have a finite constrained maximum when only
   // one beta shape, the power, or location is free.

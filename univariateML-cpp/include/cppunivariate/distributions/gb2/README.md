@@ -97,7 +97,7 @@ relations:
 fit:
   method: multistart
   certified: partial
-  note: 'gb2/README.md, Details; gb2/mle.hpp (public fitter and held overloads); gb2/test.cpp: Held shape3=1 reduces exactly to Burr and held shape1=1 to inverse Burr, including certified joint and held-power routes and stop details; their held-scale two-shape profiles are also certified by strict scalar concavity. Holding both beta shapes gives the concave power/location likelihood; holding power and scale gives a concave beta-shape likelihood. Outside the unit-shape reductions, profiles with shape1 and/or shape3 free while shape2 or scale is free retain numerical multibasin searches and face comparisons.'
+  note: 'Certified exact held-unit beta-shape reductions and conditional concave problems; with power held, one non-unit beta shape held and scale free, the beta-prime certificate transports finite maxima, transformed-gamma faces and explicit stops. The seven remaining mixed subsets retain numerical outer searches, including the default joint fit; whole-family certification remains partial.'
 areas:
 - actuarial
 - economics and income
@@ -188,7 +188,7 @@ The held-scale two-shape reduction now inherits the
 [Burr scalar concavity certificate](../burr/README.md#held-scale-certificate-task-1164),
 including strict endpoint score comparisons, coefficient accuracy checks,
 practical floating-point margins and explicit tie/budget/numerical stops.
-This certifies the unit-beta-shape reductions only. Other numerical subsets remain, so the family-wide certification tag stays partial.
+The unit-beta-shape reductions and the held-power certificate below do not cover every mixed subset, so the family-wide certification tag stays partial.
 
 Profile and envelope backtracking stop if both proposed coordinates round to
 the current coordinates. Such stagnation does not establish convergence:
@@ -203,3 +203,59 @@ increased iteration allowance repeatedly pursuing an already detected
 search-domain escape.
 
 Shape-box expansion uses the caller’s solver limit. Expansion stops early when a resolved face dominates an explored outward proposal, or when another box would exceed representable positive shapes; the final edge gate still rejects an unresolved edge as a finite fit.
+
+## Held power and one held beta shape
+
+Here the public order is `(q,a,p,b) = (shape1,shape2,shape3,scale)`.
+For held power $a>0$, choose a fixed log center $m$ and set
+$y_i=\exp\{a(\log x_i-m)\}$ and $s=\exp\{a(\log b-m)\}$.
+Then $y$ has beta-prime parameters $(p,q,s)$ and
+
+\[
+ \ell_{GB2}(p,q,b)=\ell_{BP}(p,q,s)
+ +\sum_i[\log a+(a-1)\log x_i-am].
+\]
+
+The Jacobian does not depend on the free shape or scale, and $b\mapsto s$
+is a bijection. Thus the [beta-prime conditional certificate](../betapr/README.md)
+settles free subsets $\{p,b\}$ and $\{q,b\}$ for every held power,
+subject to representable transformations and coefficient accuracy checks.
+A gamma face $(k,\theta)$ maps to transformed gamma $(k,a,
+\exp(m)\theta^{1/a})$; the inverse-gamma face has the identical scale
+map into inverse transformed gamma. The held power and held beta shape
+must remain held when fitting the proposed limit.
+
+The parent encloses every surviving shape/scale segment, proves negative
+profile curvature on the final root enclosure, and bounds both exteriors.
+Its emitted left endpoints and relative segment widths below $10^{-10}$
+give a conservative log-scale enclosure here. The transported enclosure must
+have relative width at most $10^{-6}$ in $b$; otherwise this route stops
+numerically. This extra check is essential for small $a$. The parent shape
+criterion is also $10^{-6}$; these are golden-accuracy certificates, not a
+claim of arbitrary user-specified coefficient precision.
+
+Certification is in exact arithmetic conditional on the computed comparisons.
+The parent uses its stated practical floating-point margins; transport adds
+$128\epsilon[1+\sum|J_i|+n(1+|am|)]$ to likelihood bounds and rejects
+unrepresentable scales or scale reconstruction error estimates above
+$10^{-7}$. Distinct observations that collapse under the transformation stop
+numerically. These margins are not outward-rounded interval arithmetic or a
+uniform perturbation theorem for arbitrarily ill-conditioned samples.
+The parent's evaluation ledger remains $128\min(\mathrm{iterlim},100000)$;
+transformation and witness transport add no search loop.
+
+Conditional uniqueness fails: the two separated beta-prime maxima in the
+[conditional nonuniqueness example](../../../../../dev/research/evaluations/2026-11-07-betapr-prof-report.md#nonuniqueness)
+transport through $x_i=y_i^{1/a}$ for any held positive power. The continuity
+bracket proving an exact global tie also transports, with a common Jacobian
+added to every competing likelihood. A rounded crossing is only a numerical
+tie stop, not proof that those rounded observations are an exact tie.
+
+The remaining free subsets $\{p,a\}$, $\{q,a\}$, $\{p,q,a\}$,
+$\{p,q,b\}$, $\{p,a,b\}$, $\{q,a,b\}$ and $\{p,q,a,b\}$
+are open outside existing unit-shape reductions. In particular, the
+three-free-parameter beta-prime fit cannot certify $\{p,q,b\}$.
+The held-power reduction supplies neither uniform outer-shape bounds when
+power varies nor effective neighborhoods of intersecting gamma, lognormal
+and power-tail corners. Those subsets keep their numerical
+searches; their small scores do not establish global maxima.

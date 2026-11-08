@@ -29,14 +29,14 @@ inline FitResult fit_fpareto(cppunivariate::span x, Held shape1_arg = {}, Held s
     case cppunivariate::Gb2Status::CertificateTie: return stop_failure(fail("GB2 certified delegate tie stop; no verified maximum."),res.stop_detail,"tie",{"shape1","shape2","shape3","scale","min"},"");
     case cppunivariate::Gb2Status::CertificateBudget: return stop_failure(fail("GB2 certified delegate budget stop; no verified maximum. Raising iterlim may resolve this stop."),res.stop_detail,"budget",{"shape1","shape2","shape3","scale","min"},"");
     case cppunivariate::Gb2Status::NumericalFailure: return stop_failure(fail("GB2 certified delegate numerical stop; no verified maximum."),res.stop_detail,"numerical",{"shape1","shape2","shape3","scale","min"},"");
-    case cppunivariate::Gb2Status::TrGammaBoundary: return fail("GB2 selects a limiting model. Use `mltrgamma(x - min)`.");
-    case cppunivariate::Gb2Status::InvTrGammaBoundary: return fail("GB2 selects a limiting model. Use `mlinvtrgamma(x - min)`.");
+    case cppunivariate::Gb2Status::TrGammaBoundary: return stop_failure(fail("GB2 selects a limiting model. Use `mltrgamma(x - min)`."),res.stop_detail,"limit",{"shape1","shape2","shape3","scale","min"},"trgamma");
+    case cppunivariate::Gb2Status::InvTrGammaBoundary: return stop_failure(fail("GB2 selects a limiting model. Use `mlinvtrgamma(x - min)`."),res.stop_detail,"limit",{"shape1","shape2","shape3","scale","min"},"invtrgamma");
     case cppunivariate::Gb2Status::LognormalBoundary: return fail("GB2 selects a limiting model. Use `mllnorm(x - min)`.");
     case cppunivariate::Gb2Status::ParetoBoundary:
       if(scale.supplied) return stop_failure(fail("Feller-Pareto selects a shifted Pareto with its endpoint held at min + scale; no held-endpoint Pareto fitter is available."),res.stop_detail,"limit",{"shape1","shape2","shape3","scale","min"},"pareto");
       return stop_failure(fail("GB2 selects a limiting model. Use `mlpareto(x - min)`."),res.stop_detail,"limit",{"shape1","shape2","shape3","scale","min"},"pareto");
     case cppunivariate::Gb2Status::PowerBoundary:
-      if(scale.supplied) return stop_failure(fail("Feller-Pareto selects a shifted power distribution on (min, min + scale) with both endpoints held; no fitter for this held-upper-endpoint limit is available."),res.stop_detail,"limit",{"shape1","shape2","shape3","scale","min"},"pareto");
+      if(scale.supplied) return stop_failure(fail("Feller-Pareto selects a shifted power distribution on (min, min + scale) with both endpoints held; no fitter for this held-upper-endpoint limit is available."),res.stop_detail,"limit",{"shape1","shape2","shape3","scale","min"},"power");
       return stop_failure(fail("GB2 selects a limiting model. Use `mlpower(x - min)`."),res.stop_detail,"limit",{"shape1","shape2","shape3","scale","min"},"power");
     case cppunivariate::Gb2Status::DoubleParetoBoundary: return fail("GB2 selects the double Pareto limit; this package has no double Pareto fitter.");
     case cppunivariate::Gb2Status::InvalidData: return fail("GB2 requires positive finite nonconstant observations; constant data have an unbounded free likelihood.");

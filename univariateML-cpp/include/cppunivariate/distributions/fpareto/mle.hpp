@@ -13,8 +13,10 @@ inline FparetoResult fpareto_mle(span x, double min, double tol, int maxit, doub
   bool valid=tol>0 && std::isfinite(tol) && maxit>0 && std::isfinite(min);
   for(double v:x) valid=valid && std::isfinite(v) && v>min;
   if(!valid) y.clear();
-  if(valid && !std::isnan(scale) && std::isnan(shape2) &&
-     ((shape1==1&&std::isnan(shape3))||(shape3==1&&std::isnan(shape1)))) {
+  const bool power_certificate=!std::isnan(shape2) && std::isnan(scale) &&
+    (std::isnan(shape1)!=std::isnan(shape3)) && shape1!=1 && shape3!=1;
+  if(valid && (power_certificate || (!std::isnan(scale) && std::isnan(shape2) &&
+     ((shape1==1&&std::isnan(shape3))||(shape3==1&&std::isnan(shape1)))))) {
     for(double v:y)if(!std::isfinite(v))return {NAN,NAN,NAN,scale,min,NAN,0,Gb2Status::NumericalFailure};
     // A rounded equality at held scale must be an exact subtraction.
     // Error-free TwoSum residual for x[i] + (-min).
@@ -33,10 +35,6 @@ inline FparetoResult fpareto_mle(span x, double min, double tol, int maxit, doub
   auto r=gb2_mle(span{y.data(),y.size()},tol,maxit,shape1,shape2,shape3,scale);
   auto detail=r.stop_detail;
   for(auto& c:detail.candidates)if(c.model==StopModel::None && c.coef.size()==4)c.coef.push_back(min);
-  for(auto& c:detail.candidates)if(c.model==StopModel::Trgamma || c.model==StopModel::InvTrgamma) {
-    c.model=c.model==StopModel::Trgamma?StopModel::ShiftedTrgamma:StopModel::ShiftedInvTrgamma;
-    c.coef.push_back(min);
-  }
   return {r.shape1,r.shape2,r.shape3,r.scale,min,r.logLik,r.iterations,r.status,detail};
 }
 }

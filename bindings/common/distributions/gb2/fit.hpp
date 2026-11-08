@@ -20,8 +20,8 @@ inline FitResult fit_gb2(cppunivariate::span x, Held shape1_arg = {}, Held shape
     case cppunivariate::Gb2Status::CertificateTie: return stop_failure(failure("GB2 certified delegate tie stop; no verified maximum."),r.stop_detail,"tie",{"shape1","shape2","shape3","scale"},"");
     case cppunivariate::Gb2Status::CertificateBudget: return stop_failure(failure("GB2 certified delegate budget stop; no verified maximum. Raising iterlim may resolve this stop."),r.stop_detail,"budget",{"shape1","shape2","shape3","scale"},"");
     case cppunivariate::Gb2Status::NumericalFailure: return stop_failure(failure("GB2 certified delegate numerical stop; no verified maximum."),r.stop_detail,"numerical",{"shape1","shape2","shape3","scale"},"");
-    case cppunivariate::Gb2Status::TrGammaBoundary: return failure("GB2 selects a limiting model. Use `mltrgamma`.");
-    case cppunivariate::Gb2Status::InvTrGammaBoundary: return failure("GB2 selects a limiting model. Use `mlinvtrgamma`.");
+    case cppunivariate::Gb2Status::TrGammaBoundary: return stop_failure(failure("GB2 selects a limiting model. Use `mltrgamma`."),r.stop_detail,"limit",{"shape1","shape2","shape3","scale"},"trgamma");
+    case cppunivariate::Gb2Status::InvTrGammaBoundary: return stop_failure(failure("GB2 selects a limiting model. Use `mlinvtrgamma`."),r.stop_detail,"limit",{"shape1","shape2","shape3","scale"},"invtrgamma");
     case cppunivariate::Gb2Status::LognormalBoundary: return failure("GB2 selects a limiting model. Use `mllnorm`.");
     case cppunivariate::Gb2Status::ParetoBoundary: return stop_failure(failure("GB2 selects a limiting model. Use `mlpareto`."),r.stop_detail,"limit",{"shape1","shape2","shape3","scale"},"pareto");
     case cppunivariate::Gb2Status::PowerBoundary: return stop_failure(failure("GB2 selects a limiting model. Use `mlpower`."),r.stop_detail,"limit",{"shape1","shape2","shape3","scale"},"power");

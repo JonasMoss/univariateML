@@ -1,0 +1,10 @@
+{
+  "univariateML-cpp/include/cppunivariate/distributions/gb2/golden.json": "8bdbf52ac2f4debadd163c93052933a07c6a16cac957d88035cdb753d5ff7419",
+  "univariateML-cpp/include/cppunivariate/distributions/gb2/dpqr.hpp": "16d7470266cd241be612a70a0810b16180daa8728e7298d342a46e0f3af73539",
+  "univariateML-cpp/include/cppunivariate/distributions/gb2/truth.py": "1eef5ac27552f9e6e51a1324e40471b92aa02d55201d033aa1a75b2ec69ca55f",
+  "univariateML-cpp/include/cppunivariate/distributions/gb2/truth.json": "fc384298a44c4786e61387eea27e892f416b3d2dcf0a690ca644172791b3c198",
+  "univariateML-cpp/include/cppunivariate/distributions/fpareto/golden.json": "9b80a2516ffc6fdc7d6f028e10deb5c5af790f4608ec767423bac4a42d27670e",
+  "univariateML-cpp/include/cppunivariate/distributions/fpareto/dpqr.hpp": "643fcec132629b3f70d982729a606f749f18df11805c04b022c70848dcd9c5e2",
+  "univariateML-cpp/include/cppunivariate/distributions/fpareto/truth.py": "d7d2506bc8abda643664a5aaf2a3a09c6fa2b654f17e240c34edb1e35bdf0327",
+  "univariateML-cpp/include/cppunivariate/distributions/fpareto/truth.json": "8f424fc19d03ec8ef5fbfe4fed5b32cb1c61093e1cce8b56b3d9658e013692ab"
+}

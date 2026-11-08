@@ -52,3 +52,28 @@ for(const c of cases) {
   }
  });
 }
+
+test('GB2 held power transfers non-unit conditional certificates and gamma witnesses',()=>{
+ const y=new Float64Array([.03,.1,.3,.7,1,2,5,20]);
+ const parent=m.fitbetapr(y,{shape1:2},{iterlim:1000});
+ assert.equal(parent.error,undefined);
+ for(const a of [.7,1,2]) {
+  const x=y.map(v=>v**(1/a));
+  const r=m.fitgb2(x,{shape2:a,shape3:2},{iterlim:1000});
+  assert.equal(r.error,undefined,r.error);
+  assert.ok(Math.abs(r.estimates.shape1/parent.estimates.shape2-1)<1e-6);
+  assert.ok(Math.abs(r.estimates.scale/(parent.estimates.scale**(1/a))-1)<1e-6);
+ }
+ const r=m.fitgb2(new Float64Array(8).fill(2),{shape2:2,shape3:2},{});
+ assert.equal(r.kind,'limit');assert.equal(r.model,'trgamma');
+ assert.equal(r.estimates.shape1,2);assert.equal(r.estimates.shape2,2);
+ const shifted=m.fitfpareto(new Float64Array(8).fill(4),{min:2,shape2:2,shape3:2},{});
+ assert.equal(shifted.kind,'limit');assert.equal(shifted.model,'trgamma');
+ assert.equal(shifted.estimates.min,undefined);
+});
+
+test('Feller Pareto held-endpoint power face keeps its model identity',()=>{
+ const r=m.fitfpareto(new Float64Array([3,3,2.5,2.25]),{min:2,shape1:1,scale:1},{});
+ assert.equal(r.kind,'limit');assert.equal(r.model,'power');
+ assert.equal(r.estimates.alpha,1);assert.ok(r.estimates.beta>0);
+});
