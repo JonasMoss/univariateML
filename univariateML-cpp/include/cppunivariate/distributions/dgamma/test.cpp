@@ -150,6 +150,35 @@ TEST_CASE("dgamma: translated adjacent limit retains original support") {
 
 #include "cppunivariate/distributions/dgamma/dpqr.hpp"
 TEST_CASE("dgamma: bounded seed corrections require inverse inequalities") {
-  CHECK(std::isnan(cppunivariate::distributions::qdgamma(.5,2,1e-300)));
+  CHECK(mltest::truth_lattice_quantile(cppunivariate::distributions::qdgamma(.5,2,1e-300),.5,true,
+      [](double x) {return cppunivariate::distributions::pdgamma(x,2,1e-300,true,false);}));
   CHECK(cppunivariate::distributions::qdgamma(.5,1,1)==0);
+}
+
+TEST_CASE("dgamma quantiles above 2^53 are minimal representable doubles") {
+  for (bool lower : {false,true}) for (bool log : {false,true}) {
+    const double p=log ? std::log(.75) : .75;
+    const double h=cppunivariate::distributions::qdgamma(p,2,1e-20,lower,log);
+    REQUIRE(std::isfinite(h));
+    REQUIRE(std::abs(h)>9007199254740992.0);
+    const double at=cppunivariate::distributions::pdgamma(h,2,1e-20,lower,log);
+    const double before=cppunivariate::distributions::pdgamma(std::nextafter(h,-INFINITY),2,1e-20,lower,log);
+    CHECK((lower ? at>=p && before<p : at<=p && before>p));
+  }
+}
+
+TEST_CASE("dgamma: rounded seeds cannot bypass inversion at 2^53") {
+  for (double k : {9007199254740990.0,9007199254740992.0,9007199254740994.0}) {
+    for (bool lower : {false,true}) for (bool log : {false,true}) {
+      const double at=cppunivariate::distributions::pdgamma(k,2,1e-16,lower,log);
+      const double p=std::nextafter(at,lower ? INFINITY : -INFINITY);
+      const double edge=cppunivariate::distributions::pdgamma(9007199254740992.0,2,1e-16,lower,log);
+      if (lower ? edge>=p : edge<=p) continue;
+      const double h=cppunivariate::distributions::qdgamma(p,2,1e-16,lower,log);
+      REQUIRE(std::isfinite(h));
+      CHECK(mltest::truth_lattice_quantile(h,p,lower,[&](double x) {
+        return cppunivariate::distributions::pdgamma(x,2,1e-16,lower,log);
+      }));
+    }
+  }
 }

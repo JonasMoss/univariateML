@@ -28,8 +28,7 @@ test_that("zeta density sums, direct tails and inverse inequalities agree", {
       u <- c(.001,.1,.5,.9,.999)
       q <- suppressWarnings(qzeta(p = if (lg) log(u) else u, s = shape, lower.tail = tail, log.p = lg))
       target <- if (lg) log(u) else u
-      edge <- pzeta(q = 2^53, s = shape, lower.tail = tail, log.p = lg)
-      expect_true(all(if (tail) edge < target[is.nan(q)] else edge > target[is.nan(q)]))
+      expect_true(all(is.finite(q)))
       use <- is.finite(q) & q<2^53
       f <- pzeta(q = q[use], s = shape, lower.tail = tail, log.p = lg); prev <- pzeta(q = q[use] - 1, s = shape, lower.tail = tail, log.p = lg)
       u <- if (lg) log(u) else u
@@ -75,11 +74,11 @@ test_that("zeta has correct huge tails and the infinite Zipf face", {
     expect_equal(dzipf(x = 1:10, N = 1e+09, s = s),dzeta(x = 1:10, s = s),tolerance=2e-9)
   expect_true(is.finite(pzeta(q = 1e+308, s = 1 + 1e-12, lower.tail = FALSE, log.p = TRUE)))
   expect_true(is.finite(pzeta(q = 1, s = 1000, lower.tail = FALSE, log.p = TRUE)))
-  expect_warning(expect_true(is.nan(qzeta(p = -1000, s = 2, lower.tail = FALSE, log.p = TRUE))),"NaNs")
+  expect_identical(qzeta(p = -1000, s = 2, lower.tail = FALSE, log.p = TRUE),Inf)
 })
 test_that("zeta preserves extreme log probabilities and invalid domains", {
   expect_equal(qzeta(p = -1000, s = 2, lower.tail = TRUE, log.p = TRUE),1)
-  expect_warning(expect_true(is.nan(qzeta(p = -1e-300, s = 3, lower.tail = TRUE, log.p = TRUE))),"NaNs")
+  expect_true(is.finite(qzeta(p = -1e-300, s = 3, lower.tail = TRUE, log.p = TRUE)))
   expect_warning(dzeta(x = 1, s = 1),"NaNs")
   expect_warning(pzeta(q = 1, s = Inf),"NaNs")
   expect_identical(qzeta(p = 0.5, s = NA_real_),NA_real_)

@@ -94,7 +94,7 @@ inline double quantile(int kind,double p,double a,double b,double p0,bool lower,
   if(start<0) start=p0==0?1:0;
   const double end=kind==3?a:(p0==1?0:(point(kind,a,b)?1:special::kPosInf));
   return special::discrete_quantile(special::discrete_log_tails(p,lower,log),start,end,
-      [=](double x){return zero_tails(kind,x,a,b,p0);});
+      [=](double x){return zero_tails(kind,x,a,b,p0);},p,lower,log);
 }
 }
 }

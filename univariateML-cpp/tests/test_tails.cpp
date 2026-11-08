@@ -96,13 +96,13 @@ TEST_CASE("discrete inversion: failed comparisons, overflowing widths and stagna
     ++calls;return int(x>=7);
   })==7);
   CHECK(calls<=std::numeric_limits<double>::max_exponent+5);
-  CHECK(std::isnan(cppunivariate::special::discrete_bisect(1e308,largest,
-      [](double x){return int(x>=1.5e308);})));
+  CHECK(cppunivariate::special::discrete_bisect(1e308,largest,
+      [](double x){return int(x>=1.5e308);})==1.5e308);
   calls=0;
   CHECK(std::isnan(cppunivariate::special::discrete_search(0,INFINITY,[&](double) {
     ++calls;return 0;
   })));
-  CHECK(calls<=std::numeric_limits<double>::max_exponent+2);
+  CHECK(calls<=std::numeric_limits<double>::max_exponent+3);
   CHECK(std::isnan(cppunivariate::special::discrete_signed_search(0,1,
       [](double){return -1;})));
 }
@@ -110,4 +110,44 @@ TEST_CASE("discrete inversion: failed comparisons, overflowing widths and stagna
 TEST_CASE("gamma ratio recurrence: cancellation cannot stall a discrete CDF") {
   CHECK(std::isnan(cppunivariate::special::log_gamma_ratio(300,1,1e308)));
   CHECK(std::isfinite(cppunivariate::special::log_gamma_ratio(1,.5,1)));
+}
+
+TEST_CASE("discrete inversion certifies adjacent doubles across the integer boundary") {
+  for (double h : {9007199254740991.0,9007199254740992.0,
+                   9007199254740994.0,1e30,1e308,-1e30}) {
+    const double before=std::abs(h)<=9007199254740992.0 ? h-1 : std::nextafter(h,-INFINITY);
+    int calls=0;
+    const double q=cppunivariate::special::discrete_bisect(before,
+        std::nextafter(h,INFINITY),[&](double x) {++calls;return int(x>=h);});
+    CHECK(q==h);
+    CHECK(calls<60);
+  }
+}
+
+TEST_CASE("discrete inversion checks overflow against the last finite predecessor") {
+  const double largest=std::numeric_limits<double>::max();
+  CHECK(cppunivariate::special::discrete_search(0,INFINITY,
+      [=](double x) {return int(x>=largest);})==largest);
+  CHECK(cppunivariate::special::discrete_search(0,INFINITY,
+      [](double x) {return int(x==INFINITY);})==INFINITY);
+  CHECK(std::isnan(cppunivariate::special::discrete_search(0,INFINITY,
+      [](double x) {return x==INFINITY ? -1 : 0;})));
+  CHECK(cppunivariate::special::discrete_signed_search(-largest,1,
+      [](double x) {return int(x!=-INFINITY);})==-largest);
+}
+
+TEST_CASE("signed expansion keeps progressing when the seed step is below one ULP") {
+  const double centre=1e30;
+  for (double h : {centre-1e16,centre+1e16}) {
+    CHECK(cppunivariate::special::discrete_signed_search(centre,1,
+        [=](double x) {return int(x>=h);})==h);
+  }
+}
+
+TEST_CASE("signed expansion crosses zero even when its step reaches DBL_MAX") {
+  const double largest=std::numeric_limits<double>::max();
+  for (double centre : {-largest,largest}) for (double h : {-largest/2,largest/2}) {
+    CHECK(cppunivariate::special::discrete_signed_search(centre,1,
+        [=](double x) {return int(x>=h);})==h);
+  }
 }

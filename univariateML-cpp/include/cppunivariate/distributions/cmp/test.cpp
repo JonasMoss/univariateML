@@ -183,3 +183,16 @@ TEST_CASE("cmp: quantile search guards and representability") {
   CHECK(cppunivariate::distributions::pcmp(q,std::nextafter(1.,0.),0)>=.5);
   CHECK(cppunivariate::distributions::pcmp(q-1,std::nextafter(1.,0.),0)<.5);
 }
+
+TEST_CASE("cmp: large geometric tails use the supplied probability scale") {
+  for (bool lower : {false,true}) for (bool log : {false,true}) {
+    const double u=lower ? .999 : .001;
+    const double p=log ? std::log(u) : u;
+    const double h=cppunivariate::distributions::qcmp(p,std::nextafter(1.0,0.0),0,lower,log);
+    REQUIRE(std::isfinite(h));
+    REQUIRE(h>9007199254740992.0);
+    CHECK(mltest::truth_lattice_quantile(h,p,lower,[&](double x) {
+      return cppunivariate::distributions::pcmp(x,std::nextafter(1.0,0.0),0,lower,log);
+    }));
+  }
+}

@@ -100,8 +100,18 @@ inline double qdweibull(double p, double shape1, double shape2, bool lower_tail,
   } else {
     y = lower_tail ? -std::log1p(-p) : -std::log(p);
   }
-  return dweibull_dpqr_detail::quantile_from_hazard(
+  const double seed=dweibull_dpqr_detail::quantile_from_hazard(
       y, std::log(-std::log(shape1)), shape2);
+  if (y==0 || std::isinf(y)) return seed;
+  if (seed<9007199254740992.0) {
+    const double edge=pdweibull(9007199254740992.0,shape1,shape2,lower_tail,log_p);
+    if (std::isnan(edge)) return kNaN;
+    if (lower_tail ? edge>=p : edge<=p) return seed;
+  }
+  return special::discrete_search(0,INFINITY,[&](double k) {
+    const double f=pdweibull(k,shape1,shape2,lower_tail,log_p);
+    return std::isnan(f) ? -1 : int(lower_tail ? f>=p : f<=p);
+  });
 }
 
 // Inversion: X = floor(scale * E^(1/beta)) with E ~ Exp(1).
@@ -111,8 +121,11 @@ inline double rdweibull(Rng &rng, double shape1, double shape2) {
     return std::numeric_limits<double>::quiet_NaN();
   }
   const double y = -std::log(rng.runif(0.0, 1.0));
-  return dweibull_dpqr_detail::quantile_from_hazard(
+  const double seed=dweibull_dpqr_detail::quantile_from_hazard(
       y, std::log(-std::log(shape1)), shape2);
+  if (seed<9007199254740992.0 &&
+      pdweibull(9007199254740992.0,shape1,shape2,false,true)<=-y) return seed;
+  return qdweibull(-y,shape1,shape2,false,true);
 }
 
 }  // namespace distributions

@@ -96,13 +96,15 @@ inline bool truth_close(double actual, double expected, double tolerance) {
   return std::abs(actual-expected) <= tolerance*std::max(1.0,std::abs(expected));
 }
 
-// A discrete quantile may report numerical failure once unit-spaced integers
-// cannot be represented. This does not relax successful-value accuracy or
-// permit failure at probability endpoints, ordinary counts, or continuous laws.
-inline bool truth_lattice_failure(double actual, double expected, double p,
-                                  bool log, bool discrete) {
-  const bool interior=log ? std::isfinite(p) && p<0 : p>0 && p<1;
-  return discrete && interior && std::isnan(actual) && std::abs(expected)>9007199254740992.0;
+// Check the computed CDF in the caller's selected tail and probability scale.
+// Unlike an oracle tolerance, this rejects every nonminimal representable answer.
+template <typename P>
+inline bool truth_lattice_quantile(double actual, double p, bool lower, P probability,
+                                   bool allow_infinity=false) {
+  if (!std::isfinite(actual) && !(allow_infinity && actual==INFINITY)) return false;
+  const double at=probability(actual);
+  const double before=probability(std::nextafter(actual,-INFINITY));
+  return lower ? at>=p && before<p : at<=p && before>p;
 }
 
 struct TruthFailure {
@@ -191,7 +193,11 @@ inline void check_dpqr_truth(const std::string &id, D density, P probability,
     const bool bracket = row[7]!=0 ? (got==row[5] || got==row[6]) :
         (got>=row[5] && got<=row[6]);
     check(std::string(row[1]!=0?"q_lower":"q_upper")+(row[2]!=0?"_log":""),
-          point,row[3],got,expected,relative||bracket||truth_lattice_failure(got,expected,row[3],row[2]!=0,discrete));
+          point,row[3],got,expected,discrete && std::abs(expected)>9007199254740992.0 &&
+          (row[2]!=0 ? std::isfinite(row[3]) && row[3]<0 : row[3]>0 && row[3]<1)
+          ? (relative||bracket) && truth_lattice_quantile(got,row[3],row[1]!=0,[&](double x) {
+              return probability(x,params[point],row[1]!=0,row[2]!=0);
+            },std::isinf(expected)) : relative||bracket);
   }
   const auto start=std::chrono::steady_clock::now();
   const auto sampler_points = truth_matrix(source,"sampler_points");

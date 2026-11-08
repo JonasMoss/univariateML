@@ -6,6 +6,12 @@ entry stays, marked superseded. Design detail lives in the linked roadmap
 entries, reports and code; this file is the index of what was chosen.
 Active work lives on the board (`~/boards/univariateML`), not here.
 
+## 2026-11-08
+
+- **Discrete quantiles beyond 2^53 return the nearest representable value**
+  (Jonas: "Lets choose B"): choose the smallest double reaching the target CDF;
+  evidence: [qdiscrete-round report](../research/evaluations/2026-11-08-qdiscrete-round-report.md).
+
 ## 2026-11-07
 
 - **Tukey lambda: no further certification or speed work** (Jonas: "lets keep

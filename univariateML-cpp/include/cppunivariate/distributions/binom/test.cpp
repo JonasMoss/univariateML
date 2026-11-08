@@ -219,6 +219,7 @@ TEST_CASE("binom: structured stop payloads") {
 
 #include "cppunivariate/distributions/binom/dpqr.hpp"
 TEST_CASE("binom: quantile search guards and representability") {
-  CHECK(std::isnan(cppunivariate::special::binomial_quantile(.5,1e308,.9,true)));
+  CHECK(mltest::truth_lattice_quantile(cppunivariate::special::binomial_quantile(.5,1e308,.9,true),.5,true,
+      [](double x) {return cppunivariate::special::binomial_cdf(x,1e308,.9,true);}));
   CHECK(std::isnan(cppunivariate::distributions::qbinom(.5,1e308,.9,true,false)));
 }

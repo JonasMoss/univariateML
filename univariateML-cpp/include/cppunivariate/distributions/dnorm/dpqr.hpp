@@ -38,10 +38,17 @@ inline double pdnorm(double q, double mean, double sd, bool lower_tail = true, b
 }
 inline double qdnorm(double p, double mean, double sd, bool lower_tail = true, bool log_p = false) {
   const double lp = log_p && lower_tail && p==-0.69314718055994530942 ? std::nextafter(p,0.0) : (log_p ? p : std::log(p));
-  if (lp > 0 || (!log_p && p < 0) || !std::isfinite(mean) || !(sd > 0) || !std::isfinite(sd))
+  if (std::isnan(lp) || lp > 0 || (!log_p && p < 0) || !std::isfinite(mean) || !(sd > 0) || !std::isfinite(sd))
     return std::numeric_limits<double>::quiet_NaN();
   const double z = mean + sd*special::fs_normal_q(lp,lower_tail);
-  if (!std::isfinite(z)) return z;
+  if (lp==-INFINITY || lp==0) return z;
+  const auto search=[&]() {
+    return special::discrete_signed_search(mean,std::max(1.0,sd),[&](double k) {
+      const double f=pdnorm(k,mean,sd,lower_tail,log_p);
+      return std::isnan(f) ? -1 : int(lower_tail ? f>=p : f<=p);
+    });
+  };
+  if (!std::isfinite(z) || std::abs(z)>=9007199254740992.0) return search();
   double q=std::ceil(z)-1;
   for (int i=0;i<2;++i) {
     const double at=pdnorm(q,mean,sd,lower_tail,true);
@@ -55,9 +62,9 @@ inline double qdnorm(double p, double mean, double sd, bool lower_tail = true, b
   }
   const double at=pdnorm(q,mean,sd,lower_tail,true);
   const double before=pdnorm(q-1,mean,sd,lower_tail,true);
-  if (q-1==q || std::isnan(at) || std::isnan(before) ||
-      !(lower_tail ? at>=lp && before<lp : at<=lp && before>lp))
-    return std::numeric_limits<double>::quiet_NaN();
+  if (std::isnan(at) || std::isnan(before)) return std::numeric_limits<double>::quiet_NaN();
+  if (q-1==q || !(lower_tail ? at>=lp && before<lp : at<=lp && before>lp))
+    return search();
   return q;
 }
 template <typename Rng> inline double rdnorm(Rng &rng, double mean, double sd) {

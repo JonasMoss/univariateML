@@ -1,0 +1,6 @@
+h=-7.976931348623157e+307
+previous=-7.976931348623158e+307
+computed F(h)=0.036112824971552479
+computed F(previous)=0
+stable reference F(h)=0.0361128249715525
+stable reference F(previous)=0.0361128249715525

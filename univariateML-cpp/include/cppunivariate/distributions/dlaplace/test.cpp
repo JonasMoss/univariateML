@@ -55,6 +55,20 @@ TEST_CASE("dlaplace: structured stop payloads") {
 
 #include "cppunivariate/distributions/dlaplace/dpqr.hpp"
 TEST_CASE("dlaplace: quantile search guards and representability") {
-  CHECK(std::isnan(cppunivariate::distributions::qdlaplace(.25,1e308,.5)));
+  CHECK(mltest::truth_lattice_quantile(cppunivariate::distributions::qdlaplace(.25,1e308,.5),.25,true,
+      [](double x) {return cppunivariate::distributions::pdlaplace(x,1e308,.5,true,false);}));
   CHECK(cppunivariate::distributions::qdlaplace(.5,0,.5)==0);
+}
+
+TEST_CASE("dlaplace: large geometric tails use the supplied probability scale") {
+  for (bool lower : {false,true}) for (bool log : {false,true}) {
+    const double u=lower ? .999 : .001;
+    const double p=log ? std::log(u) : u;
+    const double h=cppunivariate::distributions::qdlaplace(p,0,std::nextafter(1.0,0.0),lower,log);
+    REQUIRE(std::isfinite(h));
+    REQUIRE(h>9007199254740992.0);
+    CHECK(mltest::truth_lattice_quantile(h,p,lower,[&](double x) {
+      return cppunivariate::distributions::pdlaplace(x,0,std::nextafter(1.0,0.0),lower,log);
+    }));
+  }
 }

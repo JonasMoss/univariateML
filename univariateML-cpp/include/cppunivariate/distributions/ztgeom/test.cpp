@@ -77,6 +77,7 @@ TEST_CASE("ztgeom: P2 held boundary likelihood and domain") {
 }
 
 #include "cppunivariate/distributions/ztgeom/dpqr.hpp"
-TEST_CASE("ztgeom: failed integer inversion reports NaN") {
-  CHECK(std::isnan(cppunivariate::distributions::qztgeom(.5,std::numeric_limits<double>::denorm_min())));
+TEST_CASE("ztgeom: overflow quantiles reach the target beyond DBL_MAX") {
+  CHECK(mltest::truth_lattice_quantile(cppunivariate::distributions::qztgeom(.5,std::numeric_limits<double>::denorm_min()),.5,true,
+      [](double x) {return cppunivariate::distributions::pztgeom(x,std::numeric_limits<double>::denorm_min());},true));
 }

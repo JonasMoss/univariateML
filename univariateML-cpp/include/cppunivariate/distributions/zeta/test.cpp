@@ -68,5 +68,5 @@ TEST_CASE("zeta: structured stop payloads") {
 
 #include "cppunivariate/distributions/zeta/dpqr.hpp"
 TEST_CASE("zeta: quantile search guards and representability") {
-  CHECK(std::isnan(cppunivariate::distributions::qzeta(.9,1.001)));
+  CHECK(cppunivariate::distributions::qzeta(.9,1.001)==INFINITY);
 }

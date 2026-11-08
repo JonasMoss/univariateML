@@ -54,7 +54,7 @@ inline double pdunif(double q,double min,double max,bool lower_tail,bool log_p) 
 inline double qdunif(double p,double min,double max,bool lower_tail,bool log_p) {
   if(!detail::dunif_valid_params(min,max))return special::kNaN;
   return special::discrete_quantile(special::discrete_log_tails(p,lower_tail,log_p),min,max,
-      [=](double x){return special::LogTails{pdunif(x,min,max,true,true),pdunif(x,min,max,false,true),true};});
+      [=](double x){return special::LogTails{pdunif(x,min,max,true,true),pdunif(x,min,max,false,true),true};},p,lower_tail,log_p);
 }
 
 template <typename Rng>
@@ -62,7 +62,8 @@ inline double rdunif(Rng &rng, double min, double max) {
   if (!detail::dunif_valid_params(min,max)) return special::kNaN;
   if (min==max) return min;
   const double u = rng.runif(0.0, 1.0);
-  return std::ceil(u * (max - min + 1.0) + min - 1.0);
+  const double k=std::ceil(u * (max - min + 1.0) + min - 1.0);
+  return std::abs(k)<9007199254740992.0 ? k : qdunif(u,min,max,true,false);
 }
 
 } // namespace distributions

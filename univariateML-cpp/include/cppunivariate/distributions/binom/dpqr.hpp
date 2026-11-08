@@ -83,7 +83,7 @@ inline double pbinom(double q, double size, double prob, bool lower_tail, bool l
 inline double qbinom(double p, double size, double prob, bool lower_tail, bool log_p) {
   if (!(size>=0) || !std::isfinite(size) || size!=std::floor(size) || !(prob>=0 && prob<=1)) return special::kNaN;
   return special::discrete_quantile(special::discrete_log_tails(p,lower_tail,log_p),0.0,size,
-      [=](double x){return binom_tails(x,size,prob);});
+      [=](double x){return binom_tails(x,size,prob);},p,lower_tail,log_p);
 }
 
 template <typename Rng>

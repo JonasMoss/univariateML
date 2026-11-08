@@ -90,5 +90,5 @@ TEST_CASE("yulesimon: structured stop payloads") {
 
 #include "cppunivariate/distributions/yulesimon/dpqr.hpp"
 TEST_CASE("yulesimon: quantile search guards and representability") {
-  CHECK(std::isnan(cppunivariate::distributions::qyulesimon(.9,.001)));
+  CHECK(cppunivariate::distributions::qyulesimon(.9,.001)==INFINITY);
 }

@@ -163,7 +163,7 @@ inline double qpig(double p,double mean,double shape,bool lower_tail,bool log_p)
      const double lower=ppig(x,mean,shape,true,true);
      return lower<-.6931471805599453 ? special::tails_from_log(lower,true)
        : special::tails_from_log(ppig(x,mean,shape,false,true),false);
-   });
+   },p,lower_tail,log_p);
 }
 template <typename Rng> inline double rpig(Rng &rng,double mean,double shape) {
  if(!(mean>0 && shape>=0) || !std::isfinite(mean) || !std::isfinite(shape)) return std::numeric_limits<double>::quiet_NaN();

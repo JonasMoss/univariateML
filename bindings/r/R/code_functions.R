@@ -17,6 +17,11 @@
 #' for example `mlgamma(shape = 3)`. Unspecified coefficients then use
 #' the defaults listed on that fitter's help page.
 #'
+#' @details
+#' For discrete models, `qml` and `rml` return exact integers up to 2^53
+#' (about 9.0e15); beyond that, the smallest double whose distribution
+#' function reaches `p`. `NaN` means the evaluation failed.
+#'
 #' @param x,q vector of quantiles.
 #' @param p vector of probabilities.
 #' @param n number of observations. If `length(n) > 1`, the length is

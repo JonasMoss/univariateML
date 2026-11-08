@@ -1,3 +1,16 @@
+# Adjacent binary64 value toward -Inf, including powers of two.
+previous_double <- function(x) {
+  overflow <- is.infinite(x) & x>0
+  x[overflow] <- .Machine$double.xmax
+  exponent <- floor(log2(abs(x)))
+  exponent <- exponent - as.integer(2^exponent > abs(x))
+  step <- 2^(exponent - 52)
+  step <- ifelse(x > 0 & x == 2^exponent, step / 2, step)
+  result <- x - step
+  result[overflow] <- .Machine$double.xmax
+  result
+}
+
 # Independent truth checks of the generated R shell, never the selected
 # reference. Per parameter point: five evenly spaced value rows;
 # three evenly spaced quantile rows in EACH tail/scale group; 32 RNG draws.
@@ -68,44 +81,40 @@ test_that("generated d/p/q/r agree with independent truth tables", {
             abs(got - expected) <= pmax(1e-9 * abs(expected), q[, 9])) |
             ifelse(q[, 8] != 0, got == q[, 6] | got == q[, 7],
                    got >= q[, 6] & got <= q[, 7])
-          # NaN is an explicit numerical stop when unit-spaced integer
-          # inversion is unrepresentable. Endpoints and ordinary counts still
-          # require the oracle value; finite answers keep the same tolerance.
           discrete <- metadata[[paste0("ml",id)]]$support$type == "Z"
           interior <- if (log_input) is.finite(q[,4]) & q[,4] < 0 else q[,4] > 0 & q[,4] < 1
-          stopped <- discrete & interior & is.nan(got) & abs(expected) > 2^53
+          large <- discrete & interior & abs(expected) > 2^53
           good[is.na(good)] <- FALSE
-          expect_true(all(good | stopped), info = paste(info, "quantile", lower, log_input))
+          if (any(large)) {
+            at <- do.call(fun[[2]], c(list(got[large]), theta, list(lower.tail=lower, log.p=log_input)))
+            before <- do.call(fun[[2]], c(list(previous_double(got[large])), theta, list(lower.tail=lower, log.p=log_input)))
+            target <- q[large,4]
+            good[large] <- good[large] & (is.finite(got[large]) | (expected[large]==Inf & got[large]==Inf)) & if (lower) at>=target & before<target else at<=target & before>target
+          }
+          expect_true(all(good), info = paste(info, "quantile", lower, log_input))
         }
       }
       # These two inverse samplers consume exactly one uniform per draw.
-      # Replay it to distinguish a permitted unrepresentable rank from an
-      # ordinary-count sampler failure; finite draws must also match q exactly.
+      # Replay it to check every draw against the direct quantile.
       inverse_rng <- id %in% c("zeta", "yulesimon")
-      draw_once <- function() {
-        if (inverse_rng) suppressWarnings(do.call(fun[[4]], c(list(32L), theta)))
-        else do.call(fun[[4]], c(list(32L), theta))
-      }
+      draw_once <- function() do.call(fun[[4]], c(list(32L), theta))
       set.seed(20261029 + point)
       draws <- draw_once()
       set.seed(20261029 + point)
       expect_identical(draw_once(), draws, info = info)
       expect_length(draws, 32L)
-      stopped <- rep(FALSE, length(draws))
       if (inverse_rng) {
         set.seed(20261029 + point)
         uniforms <- stats::runif(length(draws))
-        replay <- suppressWarnings(do.call(fun[[3]], c(list(uniforms), theta)))
+        replay <- do.call(fun[[3]], c(list(uniforms), theta))
         expect_identical(draws, replay, info = paste(info, "inverse RNG replay"))
-        edge <- do.call(fun[[2]], c(list(2^53), theta))
-        stopped <- is.nan(draws) & uniforms > edge
       }
       lo <- do.call(fun[[3]], c(list(0), theta))
       hi <- do.call(fun[[3]], c(list(1), theta))
-      expect_true(all((!is.na(draws) & draws >= lo & draws <= hi) | stopped),
-                  info = paste(info, "sample support or explicit unrepresentable-rank stop"))
+      expect_true(all(!is.na(draws) & draws >= lo & draws <= hi),
+                  info = paste(info, "sample support"))
       if (identical(metadata[[paste0("ml", id)]]$support$type, "Z"))
-        expect_true(all((!is.na(draws) & draws == floor(draws)) | stopped), info = info)
+        expect_true(all(!is.na(draws) & draws == floor(draws)), info = info)
     }
   }
   skip_if(checked == 0L, "generated-family truth tables absent")
@@ -152,4 +161,19 @@ test_that("EMG retains its established R primitive stream", {
   got <- getFromNamespace("remg", "univariateML")(20L, 0.3, 1.7, 2)
   expect_equal(got, expected, tolerance = 1e-14)
   expect_identical(.Random.seed, expected_seed)
+})
+
+test_that("heavy-tail inverse samplers return finite quantiles on replayed uniforms", {
+  for (id in c("zeta", "yulesimon")) {
+    r <- getFromNamespace(paste0("r",id), "univariateML")
+    q <- getFromNamespace(paste0("q",id), "univariateML")
+    shape <- if (id=="zeta") 1.1 else .1
+    set.seed(155)
+    draws <- r(4096L,shape)
+    set.seed(155)
+    uniforms <- runif(4096L)
+    expect_true(all(is.finite(draws)))
+    expect_true(any(draws>2^53))
+    expect_identical(draws,q(uniforms,shape))
+  }
 })

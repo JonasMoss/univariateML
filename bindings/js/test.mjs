@@ -27,7 +27,12 @@ test('public facade',async()=>{
  assert.throws(()=>api.exp.r(-1,[1],1),RangeError);
  assert.throws(()=>api.exp.r(1,[1],-1),RangeError);
 });
-const failures=[];const numericalStops=[];let checks=0;
+const failures=[];let checks=0;
+function previousDouble(x) {
+  const view=new DataView(new ArrayBuffer(8));view.setFloat64(0,x);
+  view.setBigUint64(0,view.getBigUint64(0)+(x>0 ? -1n : 1n));
+  return view.getFloat64(0);
+}
 const dpqrFamilies=JSON.parse(readFileSync(new URL('../../build/js/generated/families.json',import.meta.url),'utf8'));
 for(const f of dpqrFamilies) test(`${f} generated truth and sampler`,()=>checkTruth(f));
 function checkTruth(f) {
@@ -43,9 +48,10 @@ function checkTruth(f) {
   }
   for(const row of t.quantiles){const [i,lower,log,x,b,lo,hi,lattice,abs]=row,a=call('q',x,t.parameters[i],!!lower,!!log);
    const ok=a===b||Number.isFinite(a)&&Number.isFinite(b)&&Math.abs(a-b)<=Math.max(1e-9*Math.abs(b),abs)||(lattice?a===lo||a===hi:a>=lo&&a<=hi);
-   const stopped=discrete&&Number.isNaN(a)&&Math.abs(b)>2**53&&(log?Number.isFinite(x)&&x<0:x>0&&x<1);
-   if(stopped)numericalStops.push({family:f,row});
-   check('q',row,a,b,ok||stopped);
+   const large=discrete&&Math.abs(b)>2**53&&(log?Number.isFinite(x)&&x<0:x>0&&x<1);
+   const at=large?call('p',a,t.parameters[i],!!lower,!!log):NaN;
+   const before=large?call('p',previousDouble(a),t.parameters[i],!!lower,!!log):NaN;
+   check('q',row,a,b,large ? ok&&(Number.isFinite(a)||b===Infinity&&a===Infinity)&&(lower?at>=x&&before<x:at<=x&&before>x) : ok);
   }
   for(const [i] of t.sampler_points){const n=20000,seed=20261029+i,draw=m[`r${f}`](n,t.parameters[i],seed);assert.ok(draw instanceof Float64Array);assert.deepEqual(draw,m[`r${f}`](n,t.parameters[i],seed));assert.ok([...draw].every(x=>!Number.isNaN(x)));
    for(const row of t.values){if(row[0]!==i)continue;const p=Math.exp(row[3]);if(p<1e-3||p>1-1e-3)continue;const got=draw.reduce((s,x)=>s+(x<=row[1]),0)/n;check('r_cdf',row,got,p,Math.abs(got-p)<=5*Math.sqrt(p*(1-p)/n)+1/n);}
@@ -75,7 +81,7 @@ test('diagnostics and vector flags',()=>{
  for(const f of ['exp','gamma','gb2']) {const g=read(f,'golden'),name=Object.keys(g.estimates)[0];assert.throws(()=>m['fit'+f](new Float64Array(g.data),{[name]:NaN},{}),/must be.*positive.*finite/);}
  for(const f of ['exp','gamma','gb2']){const p=Object.values(read(f,'golden').estimates),x=new Float64Array([.2,1,2]);for(const op of ['d','p','q'])for(const lower of [true,false])for(const log of [true,false]){const a=m[op+f](x,p,lower,log);assert.equal(a.length,3);for(let i=0;i<3;i++)assert.equal(a[i],m[op+f](x.slice(i,i+1),p,lower,log)[0]);}}
 });
-process.on('exit',()=>{mkdirSync(new URL('../../build/scratch/',import.meta.url),{recursive:true});writeFileSync(new URL('../../build/scratch/truth-results.json',import.meta.url),JSON.stringify({checks,failures,numericalStops},(_,v)=>typeof v==='number'&&!Number.isFinite(v)?String(v):v,2));});
+process.on('exit',()=>{mkdirSync(new URL('../../build/scratch/',import.meta.url),{recursive:true});writeFileSync(new URL('../../build/scratch/truth-results.json',import.meta.url),JSON.stringify({checks,failures},(_,v)=>typeof v==='number'&&!Number.isFinite(v)?String(v):v,2));});
 
 // Shared-fit goldens, all held subsets and diagnostics for every migrated family.
 await import('./fit-test.mjs');
@@ -1385,4 +1391,28 @@ test('SGED weighted median and smooth reflected half-GED ties retain their witne
       assert.equal(e.kind,'tie');assert.ok(Number.isFinite(e.loglik_upper));
       assert.deepEqual(new Set(e.candidates.map(c=>c.model)),new Set(['unavailable:half-ged','unavailable:reflected-half-ged']));return true;
     });
+});
+
+test('heavy-tail inverse samplers replay finite quantiles beyond 2^53',()=>{
+  const n=4096,seed=155;
+  const uniforms=m.runif(n,[0,1],seed);
+  for(const [family,shape] of [['zeta',1.1],['yulesimon',.1]]) {
+    const draws=m[`r${family}`](n,[shape],seed);
+    assert.ok([...draws].every(Number.isFinite));
+    assert.ok([...draws].some(x=>x>2**53));
+    assert.deepEqual(draws,m[`q${family}`](uniforms,[shape],true,false));
+  }
+});
+
+test('large geometric quantiles preserve the supplied probability scale',()=>{
+  const scale=1-2**-53;
+  for(const [family,parameters] of [['dlaplace',[0,scale]],['cmp',[scale,0]]]) {
+    for(const lower of [false,true]) for(const log of [false,true]) {
+      const u=lower?.999:.001,p=log?Math.log(u):u;
+      const h=m[`q${family}`](new Float64Array([p]),parameters,lower,log)[0];
+      assert.ok(Number.isFinite(h)&&h>2**53);
+      const f=m[`p${family}`](new Float64Array([h,previousDouble(h)]),parameters,lower,log);
+      assert.ok(lower?f[0]>=p&&f[1]<p:f[0]<=p&&f[1]>p);
+    }
+  }
 });
