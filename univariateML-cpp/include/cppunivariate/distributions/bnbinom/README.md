@@ -35,20 +35,20 @@ r:
   density: dbnbinom
   sampler: rbnbinom
   control:
-    gradtol: "Scalar log-parameter bracket width or alpha-held relative root enclosure (at most 1e-8); otherwise tolerance on the average log likelihood score in log parameters."
-    iterlim: "Work limit: 1 * min(iterlim, 100000) solver iterations per solve (scalar refinement, or BFGS per deterministic start); 128 * min(iterlim, 100000) certificate evaluations per scalar, alpha-held, or negative-binomial face certificate. Alpha-held root proposals and isolation have the same solver-iteration limit."
+    gradtol: "Scalar log-parameter bracket width or two-free-shape relative root enclosure (at most 1e-8); otherwise tolerance on the average log likelihood score in log parameters."
+    iterlim: "Work limit: 1 * min(iterlim, 100000) solver iterations per solve (scalar refinement, or BFGS per deterministic start); 128 * min(iterlim, 100000) certificate evaluations per scalar, pair, or negative-binomial face certificate. Pair root proposals and isolation have the same solver-iteration limit."
 log_density: "loggamma(size+x)-loggamma(size)-loggamma(x+1)+loggamma(alpha+size)+loggamma(beta+x)-loggamma(alpha+size+beta+x)-loggamma(alpha)-loggamma(beta)+loggamma(alpha+beta)"
 limits:
   - model: nbinom
     firmness: proved
     when: 'The shapes satisfy $\alpha,\beta\to\infty$ with their ratio and $r>0$ fixed. Exchanging $r$ and $\beta$ gives the corresponding path with $\beta>0$ fixed.'
-    detect: 'The shape $\alpha$ and at least one of $r$ and $\beta$ are free. A reachable negative binomial limit matches or exceeds the best attempted finite log likelihood within $10^{-8}$ times the sample size. This numerical comparison is not a global non-existence proof.'
+    detect: 'With $r$ or $\beta$ held and the other shapes free, a supporting-polynomial test proves the negative binomial face wins. Otherwise the pair must beat the face and complete its finite cover, or stop numerically. With all shapes free, the comparison with attempted finite fits remains numerical'
     status: NegativeBinomialLimit
     numerical: true
   - model: pois
     firmness: proved
     when: 'All three shapes tend to infinity with $r\beta/\alpha$ tending to a finite positive mean.'
-    detect: 'All coefficients are free. The Poisson limit matches or exceeds the best attempted finite log likelihood within $10^{-8}$ times the sample size. This numerical comparison is not a global non-existence proof.'
+    detect: 'All coefficients are free. A supporting-polynomial test proves the Poisson face wins for some samples. Other comparisons with attempted finite fits remain numerical'
     status: PoissonLimit
     numerical: true
   - model: pois
@@ -85,7 +85,7 @@ relations:
 fit:
   method: multistart
   certified: 'partial'
-  note: 'bnbinom/README.md, Scalar certificates; bnbinom/mle.hpp: Every one-free-shape fit has a single-crossing global certificate. The alpha-held size/beta pair has a compact stationary-rectangle and root-cover certificate, retaining both swap-related maxima and the singular-diagonal witness. The other two-free-shape and all-free fits retain the uncertified multistart search; all-held evaluation is not counted as certification.'
+  note: 'bnbinom/README.md, Scalar certificates; bnbinom/mle.hpp: Every one-free-shape fit has a single-crossing global certificate. The alpha-held size/beta pair has a compact stationary-rectangle and root-cover certificate, retaining both swap-related maxima and the singular-diagonal witness. The alpha-free pairs have uniform negative-binomial-neighborhood bounds, a finite rectangle cover and supporting-polynomial face certificates; unresolved faces stop numerically. All-free Poisson faces passing the supporting-polynomial test are certified, but other all-free fits retain the uncertified multistart search; all-held evaluation is not counted as certification.'
 areas:
 - counts and ecology
 classification: specialist
@@ -108,7 +108,7 @@ existence:
     and every one-free-shape fit has a unique finite maximum if at least one
     observation is positive. With alpha held and both other shapes free, a
     finite maximum exists for such samples, but labeled uniqueness need not
-    hold. The alpha-held pair now has a global certificate with numerical and budget stops. The other multivariate searches have no global certificate. Holding all coefficients leaves only
+    hold. All two-free-shape subsets now return certified finite maxima or structured stops. For the alpha-free pairs a supporting-polynomial condition can prove the negative binomial supremum; other unresolved faces stop numerically. All-free finite fits and negative binomial comparisons have no global certificate. Holding all coefficients leaves only
     likelihood evaluation, including for all-zero data.
   reason: >-
     The probability mass is symmetric in $r$ and $\beta$ after expanding
@@ -307,9 +307,114 @@ comparisons use the scalar $128\epsilon$ margin above. The certificate is
 exact in exact arithmetic conditional on the computed comparisons, with
 these practical floating-point margins, rather than outward rounding.
 
+## Alpha-free pair certificates
+
+Fix $r>0$, write $a=\alpha$, $b=\beta$, $s=a+b$ and $p=a/s$.
+The beta-mixture representation gives, with $\delta=\min(r,1)$,
+
+$$
+ p_x\le\min\{1,(r)_xp^\delta/x!\},\qquad
+ P(X>0)\le\min\{1,\max(r,1)(1-p)\},\qquad
+ p_x\le\min\{1,(b)_x/x!\}.
+$$
+
+The first bound uses concavity of $q^\delta$ under the beta mixing law;
+the second uses $1-q^r\le\max(r,1)(1-q)$. Given a finite likelihood
+witness with lower bound $L$, these inequalities give effective exclusions
+$b\le l$, $p\le p_{\min}$ and $1-p\le q_{\min}$. The bounds are uniform
+in the other free coefficient. Integrating
+$|\psi(z+t)-\log z|\le(t+1)/z$ gives
+$|\log(z)_c-c\log z|\le c(c+2)/(2z)$. Therefore
+
+$$
+ |\ell-\ell_{\rm NB}(r,p)|\le C/s,\qquad
+ C=\frac12\sum_x n_x\left\{
+ \frac{r(r+2)}{p_{\min}}+\frac{x(x+2)}{q_{\min}}+(r+x)(r+x+2)\right\}.
+$$
+
+If $L$ exceeds the certified fixed-size NB face upper bound $F$, all global
+maxima lie in $[p_{\min}l,S]\times[l,S]$, where $S=2C/(L-F)$.
+This also excludes every unbounded-alpha neighborhood outside the rectangle.
+The cover uses increasing $p_0$ in $a$, decreasing $p_0$ in $b$, and the
+increasing mass ratio $(b)_x/(a+b+r)_x$ in $b$ and decreasing ratio in $a$.
+The mixed derivative
+$\ell_{ab}/n=\psi_1(a+b)-n^{-1}\sum_xn_x\psi_1(a+b+r+x)>0$
+orders scalar-score signs at opposite corners. These signs and the scalar
+single-crossing theorem exclude boxes without stationary points.
+
+For these coordinates the diagonal Hessian entries are
+
+$$
+ H_{aa}=\psi_1(a+r)-\psi_1(a)+H_{ab},\qquad
+ H_{bb}=H_{ab}-\psi_1(b)+n^{-1}\sum_xn_x\psi_1(b+x).
+$$
+
+Decreasing trigamma supplies their interval bounds. Root isolation, relative
+coefficient enclosures and likelihood comparisons use the contraction argument
+and floating-point margins in the alpha-held section, now in $(a,b)$.
+Every root surviving the completed cover is compared; unresolved identified
+ties stop. A witness that does not beat the face cannot supply this
+compactness certificate and is never returned as an estimate.
+
+For a winning-face certificate, let $p^*=r/(r+\bar x)$ and $q^*=1-p^*$.
+The derivative of
+
+$$
+ D(t)=\frac{(1-t)^r}{(p^*)^r}\sum_xn_x(t/q^*)^x
+$$
+
+has polynomial coefficient signs
+$(k+1)n_{k+1}-(k+r)q^*n_k$. A single change from positive to negative
+proves its unique positive stationary point is $q^*$ and $D(t)\le n$.
+Concavity of log likelihood in the mixing distribution then proves the NB
+face is an upper bound for every mixture. A nondegenerate beta mixing law
+has strictly smaller likelihood, so the supremum is not attained. Unresolved
+coefficient signs do not pass this test. The implementation checks sparse
+coefficients without enumerating the count range. This sufficient condition
+includes positive constant and binary samples; it is not a complete
+classification of winning NB faces.
+
+Holding $\beta=h$ instead transports the actual parameter triple by
+$(r,a,b)\mapsto(b,a,r)$, with canonical held size $h$. The NB face thus has
+size $h$, and the two free coefficients are transported back without sorting.
+Holding size and holding beta at different values are different fitting
+problems.
+
+## All-free face bounds
+
+Every BNB law is mixed Poisson. A supporting-polynomial test with coefficient
+signs $(k+1)n_{k+1}-\bar x n_k$ proves a winning Poisson face when those
+signs change once from positive to negative. It uses the same concavity
+argument with $D(\lambda)=e^{\bar x-\lambda}\sum_xn_x(\lambda/\bar x)^x$.
+Other all-free finite and face decisions remain numerical searches.
+
+Uniform exterior bounds are nevertheless available. Put
+$m=rb/(a+r+b)$ and $\lambda=rb/a$. The trigamma integral for $\log p_0$
+and the count recurrence give
+
+$$
+ \log p_x\le-m+\log(m)_x-\log x!,\qquad
+ \ell\le\ell_{\rm Pois}(\lambda)+
+ \left(n\lambda^2+\tfrac12\sum_xn_xx(x-1)\right)(1/r+1/b).
+$$
+
+The first upper bound decreases to minus infinity once $m>\bar x$, so a
+witness gives an effective $m<M$. If $r,b\ge U\ge4M$, then
+$1/m=1/\lambda+1/r+1/b$ gives $\lambda\le2M$. The second remainder is
+then bounded by $2[4nM^2+\sum_xn_xx(x-1)/2]/U$, uniformly as alpha varies.
+A witness beating Poisson therefore bounds $\min(r,b)$ above. After ordering
+$r\le b$, the small-shape bound and this cutoff put $r$ in a compact
+positive interval. The pair bounds above can then be made uniform in $r$,
+using its upper endpoint for rising factorials and its lower endpoint in
+$\delta$. A witness beating the globally fitted NB face supplies an effective
+finite superlevel box. These inequalities do not complete the all-free
+stationary cover or resolve a winning NB face. The
+[derivations and independent checks](../../../../../dev/research/evaluations/2026-11-08-bnbinom-joint-data/derivations.md)
+state the bounds and remaining obligations.
+
 ## R notes
 
-Supply `size`, `alpha` or `beta` to hold that coefficient. A detected negative binomial limit recommends `mlnbinom`, holding its size at the supplied `size` or `beta` when either was held. A Poisson limit or all-zero free fit recommends `mlpois`. The alpha-free multivariate search and limit comparisons do not certify a global maximum. One-free-shape fits and the alpha-held pair use certificates; their budget and arithmetic stops carry finite diagnostic witnesses when available.
+Supply `size`, `alpha` or `beta` to hold that coefficient. A detected negative binomial limit recommends `mlnbinom`, holding its size at the supplied `size` or `beta` when either was held. A Poisson limit or all-zero free fit recommends `mlpois`. The all-free finite search and its negative binomial comparisons do not certify a global maximum. One-free-shape fits and every two-free-shape route use certificates; their budget and arithmetic stops carry finite diagnostic witnesses when available.
 
 An unresolved negative-binomial face is not replaced by the Poisson face:
 its certificate failure and any retained face witnesses propagate to the

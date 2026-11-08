@@ -1,5 +1,5 @@
-// Deterministic multistart likelihood search; no unimodality assumption.
-// NB and Poisson faces are fitted separately, never by huge BNB shapes.
+// Scalar and two-free-shape global certificates; all-free finite proposals
+// retain their numerical multistart route. Faces are fitted separately.
 #pragma once
 #include "../../core/work_budget.hpp"
 #include "../../core/discrete_stop.hpp"
@@ -505,6 +505,9 @@ inline BnbinomResult alpha_fit(const Cost &c,double tol,int maxit) {
 }
 
 }
+} // namespace cppunivariate
+#include "pair_certificate.hpp"
+namespace cppunivariate {
 inline BnbinomResult bnbinom_mle(ispan x, double tol=1e-8, int maxit=600,
     double size_fixed=std::numeric_limits<double>::quiet_NaN(),
     double alpha_fixed=std::numeric_limits<double>::quiet_NaN(),
@@ -539,9 +542,9 @@ inline BnbinomResult bnbinom_mle(ispan x, double tol=1e-8, int maxit=600,
   if (fa && (fr || fb)) {
     if (fr && fb) {
       const auto nb=nbinom_mle(x,1e-10,maxit);
-      if(nb.status==NbinomStatus::PrecisionFailure){out.status=BnbinomStatus::IterationFailure;out.stop_detail=nb.stop_detail;return out;}
+      if(nb.status==NbinomStatus::PrecisionFailure){out.status=nb.stop_detail.budget_exhausted?BnbinomStatus::IterationFailure:BnbinomStatus::NumericalFailure;out.stop_detail=nb.stop_detail;out.stop_detail.loglik_upper=0;return out;}
       if (nb.status==NbinomStatus::Ok && !std::isfinite(nb.logLik)) {
-        out.status=BnbinomStatus::IterationFailure; return out;
+        out.status=BnbinomStatus::NumericalFailure;out.stop_detail.loglik_upper=0;return out;
       }
       if (nb.status==NbinomStatus::Ok && std::isfinite(nb.logLik)) {
         nb_detail=discrete_face(StopModel::Nbinom,{nb.size,nb.prob},nb.logLik);
@@ -553,15 +556,32 @@ inline BnbinomResult bnbinom_mle(ispan x, double tol=1e-8, int maxit=600,
     } else {
       const double r=fr ? beta_fixed : size_fixed;
       const auto nb=nbinom_mle(x,1e-10,maxit,r);
-      if(nb.status!=NbinomStatus::Ok){out.status=BnbinomStatus::IterationFailure;out.stop_detail=nb.stop_detail;return out;}
+      if(nb.status!=NbinomStatus::Ok){out.status=nb.stop_detail.budget_exhausted?BnbinomStatus::IterationFailure:BnbinomStatus::NumericalFailure;out.stop_detail=nb.stop_detail;out.stop_detail.loglik_upper=0;return out;}
       face=nb.logLik;nb_detail=discrete_face(StopModel::Nbinom,{nb.size,nb.prob},nb.logLik);
-      if (!std::isfinite(face)) { out.status=BnbinomStatus::IterationFailure; return out; }
+      if (!std::isfinite(face)) {out.status=BnbinomStatus::NumericalFailure;out.stop_detail.loglik_upper=0;return out;}
       face_status=BnbinomStatus::NegativeBinomialLimit;
     }
   }
+  if(cost.free.size()==2 && fa) {
+    const bool mirror=fr;
+    bnbinom_detail::Cost canonical{d,{mirror?beta_fixed:size_fixed,NAN,NAN},{1,2}};
+    auto fitted=bnbinom_detail::pair_fit(canonical,tol,maxit,face,nb_detail.limit_coef[1]);
+    if(mirror) {
+      std::swap(fitted.size,fitted.beta);
+      for(auto &candidate:fitted.stop_detail.candidates)
+        if(candidate.model==StopModel::None && candidate.coef.size()==3)
+          std::swap(candidate.coef[0],candidate.coef[2]);
+    }
+    return fitted;
+  }
+  if(fr && fa && fb && bnbinom_detail::mixture_face(d,0,true)) {
+    out.logLik=poisson_face;out.status=BnbinomStatus::PoissonLimit;out.stop_detail=po_detail;
+    return out;
+  }
   double attempted=-std::numeric_limits<double>::infinity();
   double best=-std::numeric_limits<double>::infinity();
-  std::vector<double> best_u;
+  std::vector<double> best_u,diagonal;
+  double diagonal_ll=-INFINITY;
   // Include the diagonal and asymmetric starts; mirror-equivalent starts
   // are omitted only when both interchangeable shapes are free.
   for (double r:{.15,1.,6.,40.}) for (double b:{.15,1.,6.,40.}) {
@@ -575,6 +595,10 @@ inline BnbinomResult bnbinom_mle(ispan x, double tol=1e-8, int maxit=600,
       u=bnbinom_detail::optimise(cost,u,tol,maxit,out.iterations);
       const double value=-d.n*cost.value(u);
       attempted=std::max(attempted,value);
+      const auto proposed=cost.decode(u);
+      if(fr && fb && proposed[0]==proposed[2] && value>diagonal_ll) {
+        diagonal=proposed;diagonal_ll=value;
+      }
       const auto g=cost.gradient(u);
       double norm=0; for(double v:g) norm=std::hypot(norm,v);
       bool in_range=true; for(double v:u) in_range=in_range && std::isfinite(v) && std::abs(v)<=27;
@@ -595,6 +619,16 @@ inline BnbinomResult bnbinom_mle(ispan x, double tol=1e-8, int maxit=600,
   auto p=cost.decode(best_u);
   if (fr && fb && p[0]>p[2]) std::swap(p[0],p[2]);
   out.size=p[0]; out.alpha=p[1]; out.beta=p[2]; out.status=BnbinomStatus::Ok;
+  // These all-free candidates are numerical witnesses, not a global cover.
+  const auto retain=[&](const std::vector<double> &v,double ll) {
+    const double error=bnbinom_detail::alpha_likelihood_bound(d,v[1],{v[0],v[0],v[2],v[2]}).margin;
+    if(std::isfinite(ll-error) && std::isfinite(ll+error))
+      out.stop_detail.candidates.push_back({v,ll-error,ll+error,StopModel::None});
+  };
+  retain(p,out.logLik);if(fr && fb && p[0]!=p[2])retain({p[2],p[1],p[0]},out.logLik);
+  if(!diagonal.empty())retain(diagonal,diagonal_ll);
+  out.stop_detail.loglik_lower=out.logLik-bnbinom_detail::alpha_likelihood_bound(d,p[1],{p[0],p[0],p[2],p[2]}).margin;
+  out.stop_detail.loglik_upper=0;
   return out;
 
   }();

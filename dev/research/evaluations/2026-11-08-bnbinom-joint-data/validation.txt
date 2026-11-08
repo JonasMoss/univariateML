@@ -1,0 +1,67 @@
+Final validation: TASK-116.42, branch codex/bnbinom-joint, base 1c61c57dbe83a726adca4ebe1bc8f2dca490e213.
+All listed foreground commands completed with exit status 0. No exit-75 fallback was needed.
+
+SIMBOX: /tmp/umvl-cpu/simbox-run sh dev/research/evaluations/2026-11-08-bnbinom-joint-data/final-simbox.sh
+START oracle 2026-11-08T02:15:25Z
+Uniform inequality checks: 600
+GREEN oracle 2026-11-08T02:15:27Z
+START targeted 2026-11-08T02:15:27Z
+[doctest] test cases:     29 |     29 passed | 0 failed | 0 skipped
+[doctest] assertions: 188381 | 188381 passed | 0 failed |
+GREEN targeted 2026-11-08T02:15:38Z
+START cpp-dev 2026-11-08T02:15:38Z
+100% tests passed out of 106
+GREEN cpp-dev 2026-11-08T02:17:27Z
+START cpp-full 2026-11-08T02:17:27Z
+100% tests passed out of 129
+GREEN cpp-full 2026-11-08T02:20:11Z
+START cpp-no-long-double 2026-11-08T02:20:11Z
+100% tests passed out of 129
+GREEN cpp-no-long-double 2026-11-08T02:22:54Z
+START r-dev 2026-11-08T02:22:54Z
+GREEN r-dev 2026-11-08T02:24:58Z
+START r-full 2026-11-08T02:24:58Z
+GREEN r-full 2026-11-08T02:29:41Z
+r-dev: [ FAIL 0 | WARN 0 | SKIP 154 | PASS 21610 ]
+r-full: [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44425 ]
+Source fingerprints before/after are identical and match every current file and source.json.
+
+WORKSTATION: /tmp/umvl-cpu/run4 sh dev/research/evaluations/2026-11-08-bnbinom-joint-data/workstation-suites.sh
+START workstation-cpp-test-no-long-double 2026-11-08T02:13:11Z
+100% tests passed, 0 tests failed out of 129
+GREEN workstation-cpp-test-no-long-double 2026-11-08T02:18:29Z
+START workstation-js-build 2026-11-08T02:18:29Z
+GREEN workstation-js-build 2026-11-08T02:19:18Z
+START workstation-js-test 2026-11-08T02:19:18Z
+# tests 505
+# pass 505
+# fail 0
+# skipped 0
+GREEN workstation-js-test 2026-11-08T02:21:52Z
+START workstation-site-check 2026-11-08T02:21:52Z
+PASS: four articles; dossier catalogues: 287 limits, 99 families, 9 fit domains.
+PASS: inference: 353 unique scopes, 99 families; implementation symbols, evidence anchors, calibration and checks resolve; full static table.
+PASS: graph: 99 unique nodes, 277 edges, resolving family links; SVG generated twice byte-identically and matches built HTML.
+PASS: explorer coverage matches binding registry; optional build assets agree.
+PASS: every declared and inverted relation and limit link is rendered and resolves.
+PASS: 99 family pages; MathML on every family; no math runtime or external runtime assets; internal links and fragments resolve.
+PASS: 99 generated C++ snippets compile and link as C++17 (including exp, gamma, gb2).
+PASS: pilot and ten additional HTML spot checks: exp, gamma, gb2, binom, beta, hyper, sstd, gev, gpd, tnorm, pois, unif, pareto
+GREEN workstation-site-check 2026-11-08T02:23:03Z
+
+WORKSTATION: /tmp/umvl-cpu/run sh dev/research/evaluations/2026-11-08-bnbinom-joint-data/targeted.sh
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases:     29 |     29 passed | 0 failed | 0 skipped
+[doctest] assertions: 188381 | 188381 passed | 0 failed |
+[doctest] Status: SUCCESS!
+
+WORKSTATION: /tmp/umvl-cpu/run sh -c <benchmark.sh followed by profile-probe.sh>
+Three paired timings, five calls per timing, all eight subsets; unchanged routes identical; new pairs within golden tolerance and independent 70-digit roots.
+Six conditional-alpha probes: two certified roots and four expected NumericalFailure stops (status 6); JSON validates.
+PASS: settled files and golden byte-identical; test files append-only; tracked scope and source identity match; whitespace clean.
+
+The site checker refreshed an unrelated archived screenshot; its original HEAD bytes were restored.
+Final code and tests stayed fixed during all final suites.
+Final report local links resolve. Artifact-pane display was rejected with HTTP 403 (worktree outside viewer roots).

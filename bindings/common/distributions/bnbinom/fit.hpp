@@ -47,7 +47,7 @@ inline FitResult fit_bnbinom(cppunivariate::ispan x, Held size_arg = {}, Held al
     case cppunivariate::BnbinomStatus::PointMass:
       return stopped_fail("The maximum likelihood estimator does not exist: all observations are zero (point mass). Use `mlpois` instead.");
     case cppunivariate::BnbinomStatus::NumericalFailure:
-      return stopped_fail("Beta negative binomial certificate failed: unresolved score comparisons or floating-point range.");
+      return stopped_fail("Beta negative binomial certificate failed: unresolved global or score comparisons, coefficient enclosure, or floating-point range.");
     case cppunivariate::BnbinomStatus::ComparisonTie:
       return stopped_fail("Beta negative binomial certificate cannot separate competing identified maxima within the floating-point margin.");
     case cppunivariate::BnbinomStatus::InvalidInput:
@@ -62,7 +62,7 @@ inline FitResult fit_bnbinom(cppunivariate::ispan x, Held size_arg = {}, Held al
   if (alpha.supplied) fixed.push_back("alpha");
   if (beta.supplied) fixed.push_back("beta");
   return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"size",fit.size},{"alpha",fit.alpha},{"beta",fit.beta}}; out.logLik = fit.logLik; out.iterations = fit.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true;
-    if(alpha.supplied && !size.supplied && !beta.supplied) {
+    if(!size.supplied && !beta.supplied) {
       out.extra_vectors.emplace_back("swap_maximum",std::vector<double>{fit.beta,fit.alpha,fit.size});
       for(const auto &candidate:fit.stop_detail.candidates)
         if(candidate.coef.size()==3 && candidate.coef[0]==candidate.coef[2]) {
