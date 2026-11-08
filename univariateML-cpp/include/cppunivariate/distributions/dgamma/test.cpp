@@ -147,3 +147,9 @@ TEST_CASE("dgamma: translated adjacent limit retains original support") {
   CHECK(r.stop_detail.limit_coef[2]==doctest::Approx(1./3));
   CHECK(r.stop_detail.limit_loglik==doctest::Approx(2*std::log(2./3)+std::log(1./3)));
 }
+
+#include "cppunivariate/distributions/dgamma/dpqr.hpp"
+TEST_CASE("dgamma: bounded seed corrections require inverse inequalities") {
+  CHECK(std::isnan(cppunivariate::distributions::qdgamma(.5,2,1e-300)));
+  CHECK(cppunivariate::distributions::qdgamma(.5,1,1)==0);
+}

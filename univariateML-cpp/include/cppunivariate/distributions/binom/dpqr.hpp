@@ -48,13 +48,25 @@ inline special::LogTails binom_tails(double q,double size,double prob) {
   if(prob==1) return special::tails_from_log(special::kNegInf,true);
   q=std::floor(q);
   const double lower=special::binomial_cdf(q,size,prob,true);
+  if (std::isnan(lower)) return {special::kNaN,special::kNaN,false};
   const bool small_lower=lower<=0.5;
   const double small=small_lower?lower:special::binomial_cdf(q,size,prob,false);
+  if (std::isnan(small)) return {special::kNaN,special::kNaN,false};
   double lp;
   if(small>1e-280) lp=std::log(small);
   else if(small_lower) {
     double k=q,term=1,total=1;
-    while(k>0) {term*=k*(1-prob)/((size-k+1)*prob);total+=term;--k;const double r=k*(1-prob)/((size-k+1)*prob);if(r<1 && term*r<=total*2e-16*(1-r))break;}
+    // Structural evaluator guard, as in log_series; no fitting iterlim.
+    int count=0;
+    for (;k>0 && count<1000000;++count) {
+      term*=k*(1-prob)/((size-k+1)*prob);total+=term;
+      if (k-1==k) return {special::kNaN,special::kNaN,false};
+      --k;
+      const double r=k*(1-prob)/((size-k+1)*prob);
+      if(r<1 && term*r<=total*2e-16*(1-r))break;
+      if (!std::isfinite(term) || !std::isfinite(total)) return {special::kNaN,special::kNaN,false};
+    }
+    if (count==1000000) return {special::kNaN,special::kNaN,false};
     lp=dbinom(q,size,prob,true)+std::log(total);
   } else {
     const double k=q+1;

@@ -111,3 +111,8 @@ TEST_CASE("ztpois: tiny conditional lower tail") {
   // from mpmath import *; mp.dps=100; print(log(20)-20-log(-expm1(-20)))
   CHECK(cppunivariate::distributions::pztpois(1,20.0,true,true)==doctest::Approx(-17.004267724384857).epsilon(1e-10));
 }
+
+#include "cppunivariate/distributions/ztpois/dpqr.hpp"
+TEST_CASE("ztpois: quantile search guards and representability") {
+  CHECK(std::isnan(cppunivariate::distributions::qztpois(.5,1e308)));
+}

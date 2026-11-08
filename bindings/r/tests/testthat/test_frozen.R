@@ -58,3 +58,11 @@ test_that("frozen models use domains and reject incompatible held data", {
   grDevices::dev.off()
   unlink(file)
 })
+
+
+test_that("fixed models reject infinite medians and nonfinite likelihood sums", {
+  expect_error(mlgeom(prob=.Machine$double.xmin*.Machine$double.eps),
+               "median quantile evaluation failed",class="univariateML_evaluation_error")
+  expect_error(mlnorm(rep(1e154,4),mean=0,sd=1),
+               "nonfinite log likelihood for held coefficients")
+})

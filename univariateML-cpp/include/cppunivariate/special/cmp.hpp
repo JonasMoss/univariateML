@@ -56,7 +56,9 @@ inline CPPUNIV_EXTENDED_REAL stirling_correction(CPPUNIV_EXTENDED_REAL k) {
 inline CPPUNIV_EXTENDED_REAL residual(CPPUNIV_EXTENDED_REAL k, CPPUNIV_EXTENDED_REAL c, CPPUNIV_EXTENDED_REAL a) {
     const CPPUNIV_EXTENDED_REAL d=k-c;
     if (d == 0) return 0;
-    if (std::abs(d) < 1024 && k == std::floor(k) && c == std::floor(c)) {
+    // The short recurrence needs representable unit steps at both endpoints.
+    if (std::abs(d) < 1024 && k == std::floor(k) && c == std::floor(c) &&
+        k+1>k && c+1>c) {
         CPPUNIV_EXTENDED_REAL r=0;
         const CPPUNIV_EXTENDED_REAL baseline=std::log(c+1)-a;
         if (d > 0) for (CPPUNIV_EXTENDED_REAL j=c+1;j<=k;++j)

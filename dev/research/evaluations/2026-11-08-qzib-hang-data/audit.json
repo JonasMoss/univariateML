@@ -1,0 +1,1219 @@
+{
+  "head": "cfb7c4b37d13d1f23ca8ceb546333eb87290b1f6",
+  "dpqr_families": 99,
+  "fixture_files": 297,
+  "fixture_changes": [],
+  "fixture_aggregate_sha256": "7d6868570e0d008679d5340fe9dd1bcf445f9d38968ed963d298b4d1ab1943cc",
+  "source_inventory": [
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/bbinom/dpqr.hpp",
+      "sha256": "1e1b53e7d9eb67cf2e1f3c67802cd16dd9be7681c74fccb7ad94d217fa6615b0",
+      "loops": [
+        {
+          "line": 38,
+          "text": "for (int j = 0; j < x; ++j) ll += std::log(alpha + j);"
+        },
+        {
+          "line": 39,
+          "text": "for (int j = 0; j < size - x; ++j) ll += std::log(beta + j);"
+        },
+        {
+          "line": 40,
+          "text": "for (int j = 0; j < size; ++j) ll -= std::log(alpha + beta + j);"
+        },
+        {
+          "line": 43,
+          "text": "for (int j = 0; j < x; ++j) ll += std::log(p + j * s);"
+        },
+        {
+          "line": 44,
+          "text": "for (int j = 0; j < size - x; ++j) ll += std::log(q + j * s);"
+        },
+        {
+          "line": 45,
+          "text": "for (int j = 1; j < size; ++j) ll -= std::log1p(j * s);"
+        },
+        {
+          "line": 53,
+          "text": "for (int x = 0; x < size; ++x) {"
+        },
+        {
+          "line": 64,
+          "text": "for (int x = from; x <= to; ++x) acc += std::exp(lf[x] - m);"
+        },
+        {
+          "line": 113,
+          "text": "while (hi - lo > 1) {"
+        }
+      ]
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/beta/dpqr.hpp",
+      "sha256": "f7b22b784818e789cb89543dd59a765d35f9e25eb788db4c2509a7f00d51f5a6",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/betapr/dpqr.hpp",
+      "sha256": "5c6bf958c50e9334d317157ff4588d2197c752b46e2bf63739132e0b96705a2f",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/bhatt/dpqr.hpp",
+      "sha256": "48507a2f577f445355f78fd626fa6de46bc7650342d4db78d0b698c9b36480c6",
+      "loops": [
+        {
+          "line": 11,
+          "text": "double r=0;for(int k=40;k>=1;--k)r=k/(t+r);return 1/(t+r);"
+        },
+        {
+          "line": 26,
+          "text": "CPPUNIV_EXTENDED_REAL r=0;for(int k=40;k>=1;--k)r=k/(t+r);return 1/(t+r);"
+        },
+        {
+          "line": 33,
+          "text": "if(z>=12){CPPUNIV_EXTENDED_REAL r=0;for(int k=40;k>=2;--k)r=k/(z+r);const CPPUNIV_EXTENDED_REAL h=1/(z+r);return logphi_extended(z)+std::log(h/(z+h));}"
+        },
+        {
+          "line": 43,
+          "text": "for(int i=0;i<4;++i)for(int sign:{-1,1}) {const double t=z+sign*a*nodes[i];sum+=weights[i]*std::exp((cdf?logQ(t):logphi(t))-anchor)/2;}"
+        },
+        {
+          "line": 50,
+          "text": "for(int i=0;i<4;++i)for(int sign:{-1,1}) {const CPPUNIV_EXTENDED_REAL t=z+sign*a*nodes[i];sum+=weights[i]*std::exp((cdf?logQ_extended(t):logphi_extended(t))-anchor)/2;}"
+        },
+        {
+          "line": 140,
+          "text": "for(int k=0;k<1100&&(lower_tail?at(lo)>lp:at(lo)<lp);++k){lo*=2;if(!std::isfinite(lo))return special::kNegInf;}"
+        },
+        {
+          "line": 141,
+          "text": "for(int k=0;k<1100&&(lower_tail?at(hi)<lp:at(hi)>lp);++k){hi*=2;if(!std::isfinite(hi))return special::kPosInf;}"
+        },
+        {
+          "line": 142,
+          "text": "for(int k=0;k<1100;++k){const double m=lo/2+hi/2;if(lower_tail?at(m)<lp:at(m)>lp)lo=m;else hi=m;if(hi-lo<4e-14*std::max(1.0,std::abs(m)))break;}"
+        }
+      ]
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/binom/dpqr.hpp",
+      "sha256": "8f225b2de1002648a053e34b1beb00761adea741d856f805e0754adb83f19833",
+      "loops": [
+        {
+          "line": 61,
+          "text": "for (;k>0 && count<1000000;++count) {"
+        }
+      ]
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/bnbinom/dpqr.hpp",
+      "sha256": "fe1815df835e856950acf92f4251449526534ad012f5c35ff7c557dd528e41df",
+      "loops": [
+        {
+          "line": 18,
+          "text": "while (z < 16) { correction -= std::log1p(h/z); z += 1; }"
+        },
+        {
+          "line": 25,
+          "text": "while (a < 16) {"
+        },
+        {
+          "line": 53,
+          "text": "for(int j=0;j<x;++j) {"
+        },
+        {
+          "line": 61,
+          "text": "for(int j=static_cast<int>(x);j<300;++j) {"
+        },
+        {
+          "line": 73,
+          "text": "for(int j=0;j<100000;++j) {"
+        }
+      ]
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/burr/dpqr.hpp",
+      "sha256": "4bea7523d3acfb4f0c400952ce93682d0426f76f5f4148a5baf1f6049b263649",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/cauchy/dpqr.hpp",
+      "sha256": "a69a5eb2f179e3b3013e4d23815e4a572c7b71ee0adf2dd3d7c637db72fd3f47",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/cmb/dpqr.hpp",
+      "sha256": "de28ef3f1f66cf5a4309ebf257c5bee044008073213e53c6c7d1f62b33cf1f6b",
+      "loops": [
+        {
+          "line": 47,
+          "text": "for (int k=0;k<=N;++k) {"
+        },
+        {
+          "line": 53,
+          "text": "for (int k=0;k<=N;++k) {"
+        },
+        {
+          "line": 61,
+          "text": "for (int k=0;k<=N;++k) {"
+        },
+        {
+          "line": 65,
+          "text": "for (int k=0;k<=N;++k) {"
+        },
+        {
+          "line": 79,
+          "text": "for (double value : lp) {"
+        },
+        {
+          "line": 87,
+          "text": "for (std::size_t k=0;k<lp.size();++k) {"
+        },
+        {
+          "line": 113,
+          "text": "while (b-a>1) {"
+        },
+        {
+          "line": 125,
+          "text": "for (int k=0;k<=N;++k) t.lp[k]=((p==0 && k==0) || (p==1 && k==N)) ? 0 : special::kNegInf;"
+        }
+      ]
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/cmp/dpqr.hpp",
+      "sha256": "bb86611ca658bb93c3d4f16b8d413363436c226883c6d2530e40c535cabf51ab",
+      "loops": [
+        {
+          "line": 47,
+          "text": "for (int i=0;i<1000000;++i) {"
+        }
+      ]
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/dgamma/dpqr.hpp",
+      "sha256": "bb21bc7a47faa4b7c952e0e6dc50fdc96c716d25172c4da61dcf2f1f544df89a",
+      "loops": [
+        {
+          "line": 14,
+          "text": "for (int j=1;j<=100000;++j) {"
+        },
+        {
+          "line": 57,
+          "text": "for (int i=0;i<2;++i) {"
+        },
+        {
+          "line": 62,
+          "text": "for (int i=0;i<2 && q>0;++i) {"
+        }
+      ]
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/dlaplace/dpqr.hpp",
+      "sha256": "87b24555343d0efc6638a93457c259e1ce8a86834ee5d383d5b803e49d2e9175",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/dnorm/dpqr.hpp",
+      "sha256": "40572f1192a5f5a86ce85b586119a004366311568ac402a8362e9ae7875737c8",
+      "loops": [
+        {
+          "line": 46,
+          "text": "for (int i=0;i<2;++i) {"
+        },
+        {
+          "line": 51,
+          "text": "for (int i=0;i<2;++i) {"
+        }
+      ]
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/dunif/dpqr.hpp",
+      "sha256": "cfc7b6a861a76748e1f5479af70bcd6fda0d98b67465ed8e6266cd140275a9f0",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/dweibull/dpqr.hpp",
+      "sha256": "393e1ae312258aa401b8723e467de7e4a11e54d408a41803bfe4e1c6277cff70",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/emg/dpqr.hpp",
+      "sha256": "ea779104354696084799640928fb245a2a5994017597e3d9a4bc575509b4dce5",
+      "loops": [
+        {
+          "line": 18,
+          "text": "for(int k=40;k>=1;--k) r=k/(t+r);"
+        },
+        {
+          "line": 44,
+          "text": "for(int k=40;k>=2;--k) r=k/(t+r);"
+        },
+        {
+          "line": 63,
+          "text": "for(int k=0;k<4;++k) {"
+        },
+        {
+          "line": 103,
+          "text": "for(int k=0;k<4096 && (lower_tail?pemg(lo,mu,sigma,lambda,true,true)>target:pemg(lo,mu,sigma,lambda,false,true)<target);++k) {"
+        },
+        {
+          "line": 108,
+          "text": "for(int k=0;k<4096 && (lower_tail?pemg(hi,mu,sigma,lambda,true,true)<target:pemg(hi,mu,sigma,lambda,false,true)>target);++k) {"
+        },
+        {
+          "line": 113,
+          "text": "for(int k=0;k<200;++k) {"
+        }
+      ]
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/exp/dpqr.hpp",
+      "sha256": "29197cb4f7ba4941a3335806dc8585ce9d5f776ed974499d371a44af7c4865da",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/fatigue/dpqr.hpp",
+      "sha256": "5b203725c8f647b0e8e70bf6fd11e131e1b65646d6964b1825310842d55753a8",
+      "loops": [
+        {
+          "line": 25,
+          "text": "for (int k=1;k<=16;++k) { term*=-(2*k-1)*inv; sum+=term; }"
+        }
+      ]
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/foldnorm/dpqr.hpp",
+      "sha256": "3d7861fb569e967c6af5a1f8ba79460fa1d26917004c2f4d0d903819a8275cc8",
+      "loops": [
+        {
+          "line": 25,
+          "text": "for (int k=1;k<18;++k) { term*=-(2*k-1)*t; sum+=term; }"
+        },
+        {
+          "line": 50,
+          "text": "for (int k=0;k<4;++k) { const double u=h*nodes[k]; s+=weights[k]*std::exp(-.5*u*u)*2*std::cosh(m*u); }"
+        },
+        {
+          "line": 79,
+          "text": "while (lower_tail ? pfoldnorm(hi,mu,sigma,true,true)<lp : pfoldnorm(hi,mu,sigma,false,true)>lp) {"
+        },
+        {
+          "line": 84,
+          "text": "for (int k=0;k<2200;++k) {"
+        }
+      ]
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/fpareto/dpqr.hpp",
+      "sha256": "643fcec132629b3f70d982729a606f749f18df11805c04b022c70848dcd9c5e2",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/frechet/dpqr.hpp",
+      "sha256": "f68fa78cca65626a1a94d994368022db33baa6f2e55a5a985a5c96bd2ce8025f",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gamma/dpqr.hpp",
+      "sha256": "176930a987665caa53be81710dd253349a7718108de7e05a1733ccd898d6817f",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gb2/dpqr.hpp",
+      "sha256": "16d7470266cd241be612a70a0810b16180daa8728e7298d342a46e0f3af73539",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/ged/dpqr.hpp",
+      "sha256": "c3b9c86dc973d1486bbdfdca5ca2296376d29d708b7ac6e1b684b1f2f58083b4",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/genbeta/dpqr.hpp",
+      "sha256": "65eb7553ee9c5c3464f58e7ec5aac08393ece39166da099aa886715bd6219203",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/geom/dpqr.hpp",
+      "sha256": "b23964e15f04d622f4ab65c281a364d0b1a307cb23eb2cd896d6e0a00e33b032",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gev/dpqr.hpp",
+      "sha256": "6a359d93a728c18e9c3216b42a90ea09ae74c788cb9387f59541bcf8b98f4070",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gompertz/dpqr.hpp",
+      "sha256": "d1c53445a79a3def3c6137cbe7688c4df885580decbf59132b4436dec7d3748c",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gpd/dpqr.hpp",
+      "sha256": "8965f9f8b0a13e950632b14baa1e95f8ef4ce5ac7b6b0b8d85aef5f9297625f3",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gumbel/dpqr.hpp",
+      "sha256": "a1328e970546f2b24a3e292fca4426efc228286ac66e44afec27cfdb76f0352a",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/hcauchy/dpqr.hpp",
+      "sha256": "9fe1cc1a7bec0aa3b46444c664f9c455d2f4a1344299ddf7a8c64ba74ebfda70",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/hnorm/dpqr.hpp",
+      "sha256": "ed3bfa86456b98c75d01d9838833db478ce3166593180ae069e3da8ec2b81375",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/ht/dpqr.hpp",
+      "sha256": "a045edcc1ce86cbc2684d35df9f02ef27ab9f388753624d606450c9255e790d9",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/huber/dpqr.hpp",
+      "sha256": "9fe212d7fde412d529af7987ebc61bf017a93677fcfe97a38cace5d97f0f5f35",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/hyper/dpqr.hpp",
+      "sha256": "5d8d3d5205eff59976ffcec778b736088e098c1a83aa2298271bb9780c92691b",
+      "loops": [
+        {
+          "line": 34,
+          "text": "for (double x = from; x <= to; x += 1.0) {"
+        },
+        {
+          "line": 73,
+          "text": "for (double x = lo; x < hi; x += 1.0) {"
+        }
+      ]
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/invburr/dpqr.hpp",
+      "sha256": "76bbebe932c5d35cca193500dd82d98b45f79aa38153d761ebdb122e62b2db47",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/invexp/dpqr.hpp",
+      "sha256": "ade0960b3037d3fd0c57e674926a6579439ebfb52e0d057257662d3c4644c74f",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/invgamma/dpqr.hpp",
+      "sha256": "a1b352b1865279ad6f401b8a3087ce68d6ecf40cb9262fbcecef3c3f145838ce",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/invgauss/dpqr.hpp",
+      "sha256": "a2ba299c25711393a68eca0058e36df1c37132afab517f8722f6b99671ea1739",
+      "loops": [
+        {
+          "line": 67,
+          "text": "for (int k=0;k<160;++k) {"
+        }
+      ]
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/invparalogis/dpqr.hpp",
+      "sha256": "8b62f24c5fb75760c048132e9daf845fd6c9fa579cb8c334a0ceb4533de207ce",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/invpareto/dpqr.hpp",
+      "sha256": "744d4f70e242951b954aa6c5c710d7cba2920e384b2f4501b16d83ff3faf6097",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/invtrgamma/dpqr.hpp",
+      "sha256": "2da868aa185c7adc56160abd0f7327482b3b9909e2bcd1a1187026967a9145a0",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/invweibull/dpqr.hpp",
+      "sha256": "77a6bc732462b501aca9df998daf14e4a677281ace9ef4ff31e9ac812bfbef00",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/kumar/dpqr.hpp",
+      "sha256": "644e5b9f9694d08e0320e08c0e1537cb4517259f7621dccf4a5d1848cf32a57f",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/laplace/dpqr.hpp",
+      "sha256": "77e1dcbd0d584cfe5453f01101d5b6d424106e577e365bb3dff8dacf90dcff30",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/lgamma/dpqr.hpp",
+      "sha256": "ce54ebbd8fc4fb9bbc1bf11afaf9c1818a7144cd96ee60db63b7455817003f52",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/lgser/dpqr.hpp",
+      "sha256": "aed41ccd9a9716738481154317a338f43a4e467e953a7955e063f09bb7dfc9c2",
+      "loops": [
+        {
+          "line": 43,
+          "text": "for (;u>pk && count<1000000;++count) {"
+        }
+      ]
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/llogis/dpqr.hpp",
+      "sha256": "4a3f029e59228efa744c33d4efbb418f318100abec97d1f7f1cb5400226d131e",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/lnorm/dpqr.hpp",
+      "sha256": "fb82b873601584cb2e50b610fe26a8acc213c72aa71f1d4509e8b0eb080873b3",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/logis/dpqr.hpp",
+      "sha256": "eb780b1667e2043f01d218775171df1c00f92b091ede5750d3aacf653c6f3cf8",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/logitnorm/dpqr.hpp",
+      "sha256": "7af4493399be7e07115b0281b9539b2fe798ec4444f2c4639463989efbb2cdeb",
+      "loops": [
+        {
+          "line": 44,
+          "text": "for (int i=0;i<1100;++i) {"
+        }
+      ]
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/lomax/dpqr.hpp",
+      "sha256": "77b5bc873dab6d0662dd4dcaec10141206fe134da4b17a3c4f3e5db2cf8e9bfd",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/lst/dpqr.hpp",
+      "sha256": "bb74f02e293f037cf71b7d4b3f5d8febec4876d5864745ed03b57ab739d4c548",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/naka/dpqr.hpp",
+      "sha256": "c9a055160d6e46bebac3e70654d19ae98ff9373dd58ce4c43496c0815b14dee8",
+      "loops": [
+        {
+          "line": 18,
+          "text": "for (int i=1;i<10000;++i) {"
+        },
+        {
+          "line": 29,
+          "text": "for (int i=1;i<10000;++i) {"
+        },
+        {
+          "line": 85,
+          "text": "for (int i=0;i<100;++i) {"
+        }
+      ]
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/nbinom/dpqr.hpp",
+      "sha256": "5245858d7bc7059a3ca0734f6adadac6fe259b5bc42ebbd5a799d4822f719d97",
+      "loops": [
+        {
+          "line": 52,
+          "text": "for (;k>0 && count<1000000;++count) {"
+        }
+      ]
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/nhyper/dpqr.hpp",
+      "sha256": "93b94bb906a457afa5e0c4f17456c7ba3030263093fb53f6b93d50694a26c04c",
+      "loops": [
+        {
+          "line": 42,
+          "text": "for (double v = from; v <= to; ++v)"
+        },
+        {
+          "line": 62,
+          "text": "while (lo < hi) {"
+        }
+      ]
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/norm/dpqr.hpp",
+      "sha256": "cba6422998ecd3277ea81dbe0fc6c972b8028d82c7510f0b5565c3a913988d03",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/nsbeta/dpqr.hpp",
+      "sha256": "bb76581f93b11fe11600665ec384eece1f1aec89b5f386c6bbb1af9670182cf8",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/paralogis/dpqr.hpp",
+      "sha256": "f4fb1844c7787be6cae163b9fa2b4f835305a35991d22d0985ed7146be0b2529",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/pareto/dpqr.hpp",
+      "sha256": "ac050caefbef594feacead6e111fb0bf343f3ea5ad5020ef49e2b3ad78531d2e",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/pareto2/dpqr.hpp",
+      "sha256": "7c07eac66ca5945afc8910c17d3c3bb5b4508935a459e3a73e212663901c3e69",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/pareto3/dpqr.hpp",
+      "sha256": "8a715f103cb474dbfcbffb4279444891cf6995dc491beee5df3ac156d854528f",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/pareto4/dpqr.hpp",
+      "sha256": "88a970065cc795d7091c4345672d353cd5c30e73348cd602a1f4fbc1a4e172df",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/pig/dpqr.hpp",
+      "sha256": "0c96f5aa429b670b5ccef1d534fa5c964729ad608a304d3a3e8e43bc06620223",
+      "loops": [
+        {
+          "line": 13,
+          "text": "for(int j=1;j<200;++j) {"
+        },
+        {
+          "line": 64,
+          "text": "for (int k=2; k<=maxk; ++k) {"
+        },
+        {
+          "line": 124,
+          "text": "while(s.k<n) {s.next();total=logadd(total,s.lmass);}"
+        },
+        {
+          "line": 129,
+          "text": "while(s.k<=n) s.next();"
+        },
+        {
+          "line": 131,
+          "text": "while(s.k<sum_limit) {"
+        }
+      ]
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/pois/dpqr.hpp",
+      "sha256": "be58eb509a81d659ce111da25a568e73ed1385046994ba372aad0cc28fbd4d90",
+      "loops": [
+        {
+          "line": 46,
+          "text": "for (;k>0 && count<1000000;++count) {"
+        }
+      ]
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/power/dpqr.hpp",
+      "sha256": "5622a890645f104369beed8793262533bc3590f168ecdaef84e088d42187c5a1",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/rayleigh/dpqr.hpp",
+      "sha256": "ada7daf7096fbfa6e58c1db7f8e78333563361736eee26bdb7c7d556b408dba7",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/sged/dpqr.hpp",
+      "sha256": "b12a2a563c37fdf3154e31b95b0f36deebe9880efd488a6169c7827f095462de",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/sgomp/dpqr.hpp",
+      "sha256": "2ed2955034a67c6a77b118b2ff6bd4a054a23d1986ff7a38a1205b8c6a7e459a",
+      "loops": [
+        {
+          "line": 69,
+          "text": "for (int i=0;i<220;++i) {"
+        }
+      ]
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/skellam/dpqr.hpp",
+      "sha256": "fe93ef0200da9b588ec97db73915c1d62ac089073a9b19c3f575834c444b287d",
+      "loops": [
+        {
+          "line": 21,
+          "text": "for(int j=3;j<16;++j) {term*=-v*(j-1)/j;dev+=term;}"
+        },
+        {
+          "line": 49,
+          "text": "for(CPPUNIV_EXTENDED_REAL h=j;h>0;--h) {term*=h*(h+n)/product;total+=term;if(term<total*CPPUNIV_EXTENDED_LITERAL(1e-20,1e-20L)) break;}"
+        },
+        {
+          "line": 54,
+          "text": "for(int count=0;count<1000000;++count,++h) {"
+        },
+        {
+          "line": 94,
+          "text": "for(;count<1000000;++count,--v) {"
+        }
+      ]
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/slash/dpqr.hpp",
+      "sha256": "5461ea7e2135243fa04cb675117929c5ddcf8e86ef3551eb3d30c2c26cb1e9e4",
+      "loops": [
+        {
+          "line": 47,
+          "text": "for(int k=0;k<1100&&(lower_tail?at(lo)>lp:at(lo)<lp);++k){lo*=2;if(!std::isfinite(lo))return special::kNegInf;}"
+        },
+        {
+          "line": 48,
+          "text": "for(int k=0;k<1100&&(lower_tail?at(hi)<lp:at(hi)>lp);++k){hi*=2;if(!std::isfinite(hi))return special::kPosInf;}"
+        },
+        {
+          "line": 49,
+          "text": "for(int k=0;k<1100;++k){const double m=lo/2+hi/2;if(lower_tail?at(m)<lp:at(m)>lp)lo=m;else hi=m;if(hi-lo<4e-14*std::max(1.0,std::abs(m)))break;}"
+        }
+      ]
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/sn/dpqr.hpp",
+      "sha256": "acae38b8a2b3ee4d5a34ff0e705cc2744bd458b90a02fb57bb24588a62fc6c9a",
+      "loops": [
+        {
+          "line": 20,
+          "text": "for (int k=24;k>=1;--k) r=k/(v+r);"
+        },
+        {
+          "line": 26,
+          "text": "for(int k=24;k>=1;--k) f=k/(-t+f);"
+        },
+        {
+          "line": 47,
+          "text": "for (int i=0;i<80;++i) for(int j=0;j<4;++j) for(double sign:{-1.0,1.0}) {"
+        },
+        {
+          "line": 113,
+          "text": "while ((lower_tail ? psn(lo,0,1,alpha,true,true)>lp : psn(lo,0,1,alpha,false,true)<lp)) lo*=2;"
+        },
+        {
+          "line": 114,
+          "text": "while ((lower_tail ? psn(hi,0,1,alpha,true,true)<lp : psn(hi,0,1,alpha,false,true)>lp)) hi*=2;"
+        },
+        {
+          "line": 115,
+          "text": "for(int i=0;i<1200;++i) {"
+        }
+      ]
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/snorm/dpqr.hpp",
+      "sha256": "1a5aeae545a754e41d5cc30815243653d150edc4d28d8fd01de523c033c2e3f7",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/sstd/dpqr.hpp",
+      "sha256": "3c173f5e9a549c96f9597eabe8101ff2cde20463496343ab4fa0cf543ac2f355",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/st/dpqr.hpp",
+      "sha256": "b2a3570f484989d68fbab26e0368e0d176acb6fa19a376d15f575eac4c349c21",
+      "loops": [
+        {
+          "line": 87,
+          "text": "for(int k=0;k<1024;++k){double q=pst(lo,0,1,alpha,nu,lower_tail,true);if(std::isnan(q))return q;if(lower_tail?q<=lp:q>=lp)break;lo*=2;if(!std::isfinite(lo))return special::kNegInf;}"
+        },
+        {
+          "line": 88,
+          "text": "for(int k=0;k<1024;++k){double q=pst(hi,0,1,alpha,nu,lower_tail,true);if(std::isnan(q))return q;if(lower_tail?q>=lp:q<=lp)break;hi*=2;if(!std::isfinite(hi))return special::kPosInf;}"
+        },
+        {
+          "line": 89,
+          "text": "for(int k=0;k<1200;++k){double mid=lo/2+hi/2;if(mid==lo||mid==hi)break;double q=pst(mid,0,1,alpha,nu,lower_tail,true);if(std::isnan(q))return q;if(lower_tail?q<lp:q>lp)lo=mid;else hi=mid;}"
+        }
+      ]
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/std/dpqr.hpp",
+      "sha256": "d27726222f134336b8854dd9265ffa0aff74646b6e5da5cd5a6dcf7c9cba627b",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/tbinom/dpqr.hpp",
+      "sha256": "3d05a2400880131113e34ae2afcce6f2424f1f1f17f3f17170efff28a0334ee6",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/tlambda/dpqr.hpp",
+      "sha256": "9f6866aa44b5302588bfdd9936fd8b6a4818ea2b84bcd8bf1d9e9ea34adcc7df",
+      "loops": [
+        {
+          "line": 60,
+          "text": "while(logdeficit(-hi,lambda)>goal) {"
+        },
+        {
+          "line": 65,
+          "text": "for(int k=0;k<100;++k) {"
+        },
+        {
+          "line": 78,
+          "text": "while(logmag(-hi,lambda)<target) {"
+        },
+        {
+          "line": 83,
+          "text": "for(int k=0;k<100;++k) {"
+        }
+      ]
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/tnorm/dpqr.hpp",
+      "sha256": "903e0a5cf775b34c0485f149b880d4187fe9da450168157acf5dd6d7c5eff5d6",
+      "loops": [
+        {
+          "line": 90,
+          "text": "for (bool low : {true,false}) {"
+        },
+        {
+          "line": 203,
+          "text": "while (h(lo) >= 0 && std::isfinite(lo)) { step *= 2; lo = std::min(centre, hi) - step; }"
+        },
+        {
+          "line": 208,
+          "text": "while (h(hi) <= 0 && std::isfinite(hi)) { step *= 2; hi = std::max(centre, lo) + step; }"
+        },
+        {
+          "line": 211,
+          "text": "for (int it = 0; it < 300; ++it) {"
+        }
+      ]
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/tpois/dpqr.hpp",
+      "sha256": "66b93b68b5bec238f71668a61516c27fc2fd192b1fcef51289f3d6dbb1cb430c",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/tpois/dpqr_core.hpp",
+      "sha256": "74dc7be313534ceb6aaf6cb748f4970a7d0af57cae99c32d916a0afd1a34b9e7",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/trgamma/dpqr.hpp",
+      "sha256": "73cb0d090b6df869172df10e1d81308ff72459e685aa6099238a6cd140ff9c9d",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/triang/dpqr.hpp",
+      "sha256": "6b9f3122c41c2a49ee2329b42a24ad6d6d497e44a41939adda48062c03c7cd8e",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/unif/dpqr.hpp",
+      "sha256": "55e20a973aed1628f22fe53a756e00cb1bfc8a0a3905017b88770233ae694e5f",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/weibull/dpqr.hpp",
+      "sha256": "75ee0f37c2a23cf91c027d203b6a6a6b8292a5c0718121cb91468a09a8a4d1f5",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/yulesimon/dpqr.hpp",
+      "sha256": "c9cbe461bdc4ce827bbc7139d81ed9a9fa1ae316290be7f384b14571b00d7cb7",
+      "loops": [
+        {
+          "line": 15,
+          "text": "for (int j=1;j<=k;++j) out-=std::log1p(static_cast<CPPUNIV_EXTENDED_REAL>(rho)/j);"
+        }
+      ]
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/zeta/dpqr.hpp",
+      "sha256": "131bb9fd86b0a5a558ff771d4f3d23efc5d71c130f7df169dd60df9eac96c8dd",
+      "loops": [
+        {
+          "line": 20,
+          "text": "for (int j=0;j<1024;++j) sum+=std::exp(-s*std::log1p(j/a));"
+        },
+        {
+          "line": 31,
+          "text": "for (int j=1;j<=64 && j<=k;++j) sum+=std::exp(-s*std::log(static_cast<double>(j)));"
+        }
+      ]
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/zib/dpqr.hpp",
+      "sha256": "969c3b48e1f938e047a06c416bbcd3c6d660c05f14ae73a14b12260e17a8c6be",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/zinb/dpqr.hpp",
+      "sha256": "d07bea0b08d1f3d13e9bc79038fff96d5a6e095a9df436687ed35e2646692775",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/zip/dpqr.hpp",
+      "sha256": "bc82b0bda96e6e53b201e5fa06baa1b1e8e7214ee994e5f2ad07e742ef7c05eb",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/zipf/dpqr.hpp",
+      "sha256": "768c152fe77cdf252bfd5c01e95f9ccc8b23548741a4020fba51dfc3ca89575c",
+      "loops": [
+        {
+          "line": 23,
+          "text": "for (double k=2;k<=std::min(b,1024.0);++k) z+=std::exp(-s*std::log(k));"
+        },
+        {
+          "line": 28,
+          "text": "for (double k=a; k<=end; ++k) total += std::exp(-s*std::log1p((k-a)/a));"
+        },
+        {
+          "line": 84,
+          "text": "for (int k=1;k<=N;++k) out[static_cast<std::size_t>(k-1)]=pzipf(k,N,s);"
+        }
+      ]
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/zmbinom/dpqr.hpp",
+      "sha256": "3561c472c0a46ec40ee6505984fa895418916b2ac5fe2cf8fcdb4da75ac3750a",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/zmgeom/dpqr.hpp",
+      "sha256": "a2b72efaad9b64001851f5d2c7efc8d444aaa708bece87adb7ee9c792a983a33",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/zmlogarithmic/dpqr.hpp",
+      "sha256": "a2736c4dbdd3b4da6189ca2145d89a168ef29e66aa041f398192073aba37442c",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/zmnbinom/dpqr.hpp",
+      "sha256": "b3ce5d96f373dc5e4575adff9d9c1f8cd7d0226601bff296ecb8a539cdc29ce4",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/zmpois/dpqr.hpp",
+      "sha256": "0a1071ccc83968ba2de0aa304d76de593ac052f993189b93f30429111bea7735",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/ztbinom/dpqr.hpp",
+      "sha256": "8502c1b0d89eb780d35abcf0c667b4e62b9ea6031866265d9fa9e882429b6d1f",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/ztgeom/dpqr.hpp",
+      "sha256": "69a7e4de44922023d9212779141018066f7ef873615a5b058ab0f080b06500f1",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/ztnbinom/dpqr.hpp",
+      "sha256": "769159bce41344b98e13614cfb8b515a37e8744e5057badbc566f001a0b3089f",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/ztpois/dpqr.hpp",
+      "sha256": "cf46651ca6005c093fb364acb9ba9b88de076975694a80ce24319601449fc1ce",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/ztpois/dpqr_core.hpp",
+      "sha256": "2eae96ddb62e1cbf26cb0cb5473650c29710f2e18ce3e4df879aaf2127f51b22",
+      "loops": [
+        {
+          "line": 59,
+          "text": "for(;k<q && count<1000000;++count,++k) {"
+        }
+      ]
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/special/beta_tails.hpp",
+      "sha256": "b7f6665e3e1e5bd260014508d2b545be49af987e842777394bb71580860585ca",
+      "loops": [
+        {
+          "line": 39,
+          "text": "for(int i=0;i<1024 && (lower ? value(lo)>lp : value(lo)<lp);++i) lo*=2;"
+        },
+        {
+          "line": 40,
+          "text": "for(int i=0;i<1024 && (lower ? value(hi)<lp : value(hi)>lp);++i) hi*=2;"
+        },
+        {
+          "line": 45,
+          "text": "for(int i=0;i<120;++i) {"
+        }
+      ]
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/special/cmp.hpp",
+      "sha256": "b22f33956fd389613f43c69ef84801157638cc9ff129639dc1591ee490fe05d6",
+      "loops": [
+        {
+          "line": 64,
+          "text": "if (d > 0) for (CPPUNIV_EXTENDED_REAL j=c+1;j<=k;++j)"
+        },
+        {
+          "line": 66,
+          "text": "else for (CPPUNIV_EXTENDED_REAL j=k+1;j<=c;++j)"
+        },
+        {
+          "line": 75,
+          "text": "for (int j=2;j<=16;++j) { lm+=(j%2 ? 1 : -1)*term/j; term*=u; }"
+        },
+        {
+          "line": 170,
+          "text": "for (int j=2;j<=32;++j) { lm1+=(j%2 ? 1 : -1)*term/j; term*=u; }"
+        },
+        {
+          "line": 185,
+          "text": "for (int panel=0;panel<panels;++panel) {"
+        },
+        {
+          "line": 187,
+          "text": "for (int j=0;j<8;++j) for (int sign : {-1,1}) {"
+        },
+        {
+          "line": 191,
+          "text": "for (int k=0;k<6;++k) Sums::compensated(sums[k],corrections[k],values[k]);"
+        },
+        {
+          "line": 203,
+          "text": "for (int j=2;j<=32;++j) {"
+        },
+        {
+          "line": 207,
+          "text": "for (int j=1;j<=32;++j)"
+        },
+        {
+          "line": 208,
+          "text": "for (int i=1;i<=j;++i) wbound[j]+=i*ell[i]*wbound[j-i]/j;"
+        },
+        {
+          "line": 211,
+          "text": "for (int j=0;j<=32;++j) for (int i=0;i<=j;++i) r[j]+=a[i]*b[j-i];"
+        },
+        {
+          "line": 222,
+          "text": "for (int p=0;p<6;++p) {"
+        },
+        {
+          "line": 225,
+          "text": "for (int j=1;j<=16;++j) {"
+        },
+        {
+          "line": 243,
+          "text": "for (int sign : {-1,1}) {"
+        },
+        {
+          "line": 311,
+          "text": "for (int direction : {-1,1}) {"
+        },
+        {
+          "line": 314,
+          "text": "while (ledger.remaining() > 0) {"
+        },
+        {
+          "line": 411,
+          "text": "for (int i=0;i<solver_budget(ctl.maxit);++i) {"
+        },
+        {
+          "line": 435,
+          "text": "for (int j=0;j<1024;++j) {"
+        },
+        {
+          "line": 456,
+          "text": "for (double v : x) {"
+        },
+        {
+          "line": 470,
+          "text": "for (double k : x) data_residual+=cmp_detail::residual(k,pivot,adata);"
+        },
+        {
+          "line": 517,
+          "text": "for (int i=0;i<solver_budget(ctl.maxit);++i) {"
+        },
+        {
+          "line": 566,
+          "text": "double sum=0,h=0;for(double v:x){sum+=v;h+=std::lgamma(v+1);}"
+        }
+      ]
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/special/constants.hpp",
+      "sha256": "2e15efdce255d7a6a1c627d68b956a3bc06465948f5fe4c10cd9ef8d0c6d45a2",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/special/skewed_densities.hpp",
+      "sha256": "dae08d60dd1945e5a52149d89b5fd6b392cd2793fea8712d1e4b3182eecc3fd7",
+      "loops": []
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/special/special.hpp",
+      "sha256": "5f7a0c4d9e265fe445d8e5d03dc666492b13f22d413de0bfcced2830b03c9527",
+      "loops": [
+        {
+          "line": 368,
+          "text": "for (int k=1; k<=12; ++k) { term *= -(2*k-1)*inv; sum += term; }"
+        },
+        {
+          "line": 381,
+          "text": "while (tail(hi) > lp) {"
+        },
+        {
+          "line": 386,
+          "text": "for (int i=0; i<1100; ++i) {"
+        },
+        {
+          "line": 412,
+          "text": "for (int m=1;m<=10000;++m) {"
+        },
+        {
+          "line": 462,
+          "text": "for(int k=1;k<=1000000;++k) {"
+        }
+      ]
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/special/tails.hpp",
+      "sha256": "92c7be90b8babba0c2e8a9cbf01cb3aff9d6308e119f16ef4cb988b1f5917235",
+      "loops": [
+        {
+          "line": 175,
+          "text": "for (int i=0; (z<16.0 || z+h<16.0) && i<17; ++i) {"
+        },
+        {
+          "line": 188,
+          "text": "for(int j=2;j<=12;++j) {total+=(j%2 ? 1.0 : -1.0)*power/j;power*=t;}"
+        },
+        {
+          "line": 201,
+          "text": "for (int i=0; i<1000000; ++i) {"
+        },
+        {
+          "line": 235,
+          "text": "for (int i=0; i<std::numeric_limits<double>::max_exponent+3; ++i) {"
+        },
+        {
+          "line": 254,
+          "text": "for (int i=0; i<std::numeric_limits<double>::max_exponent+1; ++i) {"
+        },
+        {
+          "line": 272,
+          "text": "for (int i=0; i<std::numeric_limits<double>::max_exponent+2; ++i) {"
+        },
+        {
+          "line": 285,
+          "text": "for (int i=0; i<std::numeric_limits<double>::max_exponent+2; ++i) {"
+        },
+        {
+          "line": 321,
+          "text": "for (int k = 80; k >= 1; --k) r = k / (z + r);"
+        },
+        {
+          "line": 343,
+          "text": "for (int i = 0; i < 100; ++i) {"
+        },
+        {
+          "line": 356,
+          "text": "for (int k=80;k>=1;--k) r=k/(z+r);"
+        },
+        {
+          "line": 362,
+          "text": "for (int k=80;k>=2;--k) r=k/(z+r);"
+        },
+        {
+          "line": 395,
+          "text": "for (int k=1; k<100000; ++k) {"
+        },
+        {
+          "line": 404,
+          "text": "for (int k=1; k<100000; ++k) {"
+        },
+        {
+          "line": 427,
+          "text": "while (before(hi)) hi=hi*2.0+1.0;"
+        },
+        {
+          "line": 428,
+          "text": "while (!before(lo)) lo=lo*2.0-1.0;"
+        },
+        {
+          "line": 429,
+          "text": "for (int i=0; i<150; ++i) {"
+        }
+      ]
+    }
+  ],
+  "changed_tracked_sha256": {
+    "bindings/js/test.mjs": "2d922a7b4f6606cf812f651cf5fbadf3e701d3a73bb8b5f593ea598783452214",
+    "bindings/r/R/frozen.R": "ed2959ee835dc90e278de49a6d3d1856665e79255e8a5c45ba64f778c981015f",
+    "bindings/r/distributions/yulesimon/test.R": "b9cc458a4b1fc9f43439d5ef573733d6d3ec33a964500aa2ee0b6632d9d605f5",
+    "bindings/r/distributions/zeta/test.R": "a4790ec65d51c3ed2867b98a7d9fe6a93827f2e71c6f862a2bb6f8c7657235a7",
+    "bindings/r/distributions/zib/test.R": "2023d3c905f55b63daaa3094fbf095c433598b5256def4d45d3920473dfbabef",
+    "bindings/r/tests/testthat/test-generated-dpqr.R": "37c9e9cd9f8891fa93c0be8e13a8df454f94284238acfa6ff3dc3bd652738de9",
+    "bindings/r/tests/testthat/test_frozen.R": "4561512b70144274a7bd2d68e076840029e2b568751f22d28351bd6ebfc319fd",
+    "univariateML-cpp/include/cppunivariate/distributions/bbinom/dpqr.hpp": "1e1b53e7d9eb67cf2e1f3c67802cd16dd9be7681c74fccb7ad94d217fa6615b0",
+    "univariateML-cpp/include/cppunivariate/distributions/bbinom/test.cpp": "7bb8819ed4c48ce2f328dc7af535b7bbd26a731b1735a3d464bcc1cbb2007c7b",
+    "univariateML-cpp/include/cppunivariate/distributions/binom/dpqr.hpp": "8f225b2de1002648a053e34b1beb00761adea741d856f805e0754adb83f19833",
+    "univariateML-cpp/include/cppunivariate/distributions/binom/test.cpp": "54792a4fd0061cb9d2007ae317d0eef0a466fda5efc07a2816fa14e72183be62",
+    "univariateML-cpp/include/cppunivariate/distributions/bnbinom/test.cpp": "50dcbb92687fd1c5a85ef5393234dc6d1f5d40e5e11c2c91bbc67ce1e0183ede",
+    "univariateML-cpp/include/cppunivariate/distributions/cmb/dpqr.hpp": "de28ef3f1f66cf5a4309ebf257c5bee044008073213e53c6c7d1f62b33cf1f6b",
+    "univariateML-cpp/include/cppunivariate/distributions/cmb/test.cpp": "fa94b955a300f816d7229a1f10fcf97b9791216a80b78056f6e3fe0d63bff94c",
+    "univariateML-cpp/include/cppunivariate/distributions/cmp/dpqr.hpp": "bb86611ca658bb93c3d4f16b8d413363436c226883c6d2530e40c535cabf51ab",
+    "univariateML-cpp/include/cppunivariate/distributions/cmp/test.cpp": "74f9ad3197ade0104925b11d0f4de5ae9792f1031afea361c235a8afdf239066",
+    "univariateML-cpp/include/cppunivariate/distributions/dgamma/dpqr.hpp": "bb21bc7a47faa4b7c952e0e6dc50fdc96c716d25172c4da61dcf2f1f544df89a",
+    "univariateML-cpp/include/cppunivariate/distributions/dgamma/test.cpp": "3deb29ef7c71869f52af4ddb0868729e4f5efbc8ec70e28496700ec4c57da9c8",
+    "univariateML-cpp/include/cppunivariate/distributions/dlaplace/dpqr.hpp": "87b24555343d0efc6638a93457c259e1ce8a86834ee5d383d5b803e49d2e9175",
+    "univariateML-cpp/include/cppunivariate/distributions/dlaplace/test.cpp": "937f4c71e906eb3ba7ad1aa64eca6149bec82d5e90826a4905f4190291e661e4",
+    "univariateML-cpp/include/cppunivariate/distributions/dnorm/dpqr.hpp": "40572f1192a5f5a86ce85b586119a004366311568ac402a8362e9ae7875737c8",
+    "univariateML-cpp/include/cppunivariate/distributions/dnorm/test.cpp": "806b73a6f7e790c48af6f51ae056b0769877e8cfeef27ff65d8bf3c8f89f0cbb",
+    "univariateML-cpp/include/cppunivariate/distributions/dunif/test.cpp": "85fb300869d63b89314c85c0642e20643dbebe0da5af79a4bdb52bfd0050d663",
+    "univariateML-cpp/include/cppunivariate/distributions/geom/test.cpp": "cf1658462e8da4f48a85733279c0620186148fcac6be0d09146e8aefafa70ea8",
+    "univariateML-cpp/include/cppunivariate/distributions/lgser/dpqr.hpp": "aed41ccd9a9716738481154317a338f43a4e467e953a7955e063f09bb7dfc9c2",
+    "univariateML-cpp/include/cppunivariate/distributions/lgser/test.cpp": "58781dcb0d96a2afd62cbff327cfe476378cd57f16d3770db2116898333f616d",
+    "univariateML-cpp/include/cppunivariate/distributions/nbinom/dpqr.hpp": "5245858d7bc7059a3ca0734f6adadac6fe259b5bc42ebbd5a799d4822f719d97",
+    "univariateML-cpp/include/cppunivariate/distributions/nbinom/test.cpp": "9359fd325dde9efef56740905bbfb3d27f1e4bce85cfcf8805093c4e0ae3e61a",
+    "univariateML-cpp/include/cppunivariate/distributions/nhyper/dpqr.hpp": "93b94bb906a457afa5e0c4f17456c7ba3030263093fb53f6b93d50694a26c04c",
+    "univariateML-cpp/include/cppunivariate/distributions/nhyper/test.cpp": "a8048222ebff63a1110ee139c00678fbf3edc901d37d0b1ad744307472542900",
+    "univariateML-cpp/include/cppunivariate/distributions/pig/test.cpp": "e44b5c089117030597ecbe25abba029c9079b5b3d9d280011283582501a7a96d",
+    "univariateML-cpp/include/cppunivariate/distributions/pois/dpqr.hpp": "be58eb509a81d659ce111da25a568e73ed1385046994ba372aad0cc28fbd4d90",
+    "univariateML-cpp/include/cppunivariate/distributions/pois/test.cpp": "4034a6db7182546f98d12ccca02db9d59ddd78e0a28c93a3e089d2cb71356052",
+    "univariateML-cpp/include/cppunivariate/distributions/skellam/dpqr.hpp": "fe93ef0200da9b588ec97db73915c1d62ac089073a9b19c3f575834c444b287d",
+    "univariateML-cpp/include/cppunivariate/distributions/skellam/test.cpp": "05c686f54460edbc04523b7e9a3d4db3c0d75c74a199dd05e9cf7257cab208ec",
+    "univariateML-cpp/include/cppunivariate/distributions/tbinom/test.cpp": "f2d678b321805fe9bef9a3414ed77752583e671cebfd86e31cad711a267c91f8",
+    "univariateML-cpp/include/cppunivariate/distributions/tpois/dpqr_core.hpp": "74dc7be313534ceb6aaf6cb748f4970a7d0af57cae99c32d916a0afd1a34b9e7",
+    "univariateML-cpp/include/cppunivariate/distributions/tpois/test.cpp": "f3f2493ba308f8ae7901946f672db3930fe7896319f08a052dbeabd9b75e944a",
+    "univariateML-cpp/include/cppunivariate/distributions/yulesimon/dpqr.hpp": "c9cbe461bdc4ce827bbc7139d81ed9a9fa1ae316290be7f384b14571b00d7cb7",
+    "univariateML-cpp/include/cppunivariate/distributions/yulesimon/test.cpp": "b081dd5fee9365c0042b91d6dcf452db7ffa19f85a1f6a6c7a1e277a0a5ba943",
+    "univariateML-cpp/include/cppunivariate/distributions/zeta/dpqr.hpp": "131bb9fd86b0a5a558ff771d4f3d23efc5d71c130f7df169dd60df9eac96c8dd",
+    "univariateML-cpp/include/cppunivariate/distributions/zeta/test.cpp": "7f04d41fc1aaf32f28e31bd3642a711b00b41cb95ede9a8ce37c410b86225959",
+    "univariateML-cpp/include/cppunivariate/distributions/zib/dpqr.hpp": "969c3b48e1f938e047a06c416bbcd3c6d660c05f14ae73a14b12260e17a8c6be",
+    "univariateML-cpp/include/cppunivariate/distributions/zib/test.cpp": "3cb215395991aaef14ddee0fea16e9e8c90e3b37b3e6ca9415d915699ef45fbd",
+    "univariateML-cpp/include/cppunivariate/distributions/zinb/test.cpp": "a6b587e706f1909b049cd6fbb44d21329d487afb3c92045610f383623ec7c255",
+    "univariateML-cpp/include/cppunivariate/distributions/zip/test.cpp": "cb3599fbe1a0c284e096bf11d04e9203be0540df2807318cd87e092f51844e47",
+    "univariateML-cpp/include/cppunivariate/distributions/zipf/dpqr.hpp": "768c152fe77cdf252bfd5c01e95f9ccc8b23548741a4020fba51dfc3ca89575c",
+    "univariateML-cpp/include/cppunivariate/distributions/zipf/test.cpp": "3f551893ad305d543b84731ca3bce44ca4ae738cf0fac1bd83e9453c3c89cd11",
+    "univariateML-cpp/include/cppunivariate/distributions/zmbinom/test.cpp": "88e88fdfa811ad1c5f4f38f4286f66a1c84e330b411095966aa3c6fd557ce5f9",
+    "univariateML-cpp/include/cppunivariate/distributions/zmgeom/test.cpp": "c2ccf4ab90e0db14e45a491c284ab9d81e549c116843c16703d3a716cedb8edc",
+    "univariateML-cpp/include/cppunivariate/distributions/zmlogarithmic/test.cpp": "28577068a6ba943bcfde3c4ead19b3711c28cae07b2f5049530d9b1ae90338ab",
+    "univariateML-cpp/include/cppunivariate/distributions/zmnbinom/test.cpp": "1cff1f4e9f2d70c8241555ef631078c70c5372dc3cee390c158bb466510ce3c3",
+    "univariateML-cpp/include/cppunivariate/distributions/zmpois/test.cpp": "e9a3a2bda05e220f6ca212d6661840a24ad8514e16a05cb812298f833a5266b7",
+    "univariateML-cpp/include/cppunivariate/distributions/ztbinom/test.cpp": "a33a1862cf2a7d0ee24f94ced6bc90d9b6113fc80ac9cf9146c25231b82e1859",
+    "univariateML-cpp/include/cppunivariate/distributions/ztgeom/test.cpp": "1b65ae3c76b0fa7c489ec679c00fa7169c7aa02dcf042ec9b0b571e675340b72",
+    "univariateML-cpp/include/cppunivariate/distributions/ztnbinom/test.cpp": "c21f2c85ce70f8c02420623339f3bb1cffd437a1273dc34eea1166ee8b3f1cb5",
+    "univariateML-cpp/include/cppunivariate/distributions/ztpois/dpqr_core.hpp": "2eae96ddb62e1cbf26cb0cb5473650c29710f2e18ce3e4df879aaf2127f51b22",
+    "univariateML-cpp/include/cppunivariate/distributions/ztpois/test.cpp": "d1b05e7d722ed4d762246d9bb5ded679bf89c64e72de1f98e46e2b29b65695eb",
+    "univariateML-cpp/include/cppunivariate/special/cmp.hpp": "b22f33956fd389613f43c69ef84801157638cc9ff129639dc1591ee490fe05d6",
+    "univariateML-cpp/include/cppunivariate/special/special.hpp": "5f7a0c4d9e265fe445d8e5d03dc666492b13f22d413de0bfcced2830b03c9527",
+    "univariateML-cpp/include/cppunivariate/special/tails.hpp": "92c7be90b8babba0c2e8a9cbf01cb3aff9d6308e119f16ef4cb988b1f5917235",
+    "univariateML-cpp/tests/distribution_tests_main.cpp": "ec1def4381e2ca381befa271b0a5235b495bb37950d2f651794ef6f77715a168",
+    "univariateML-cpp/tests/test_cmp.cpp": "bad95e3f7e98fee240535aa494aee556c9ec69c56aa85eccd8bf6b1b4255cce8",
+    "univariateML-cpp/tests/test_no_throw.cpp": "1d7474f4356ace11e157595a23d60f8e0eb5a1b2aa45360092da906cd4471492",
+    "univariateML-cpp/tests/test_support.hpp": "33488bba7d38acff8e7962725065473b26443d806ff49cb248a33e15bae9b8d1",
+    "univariateML-cpp/tests/test_tails.cpp": "6c92eb680665e790dfc48e72272d9579362d7f17da6c4c7bb6d1241d7b9328f3"
+  }
+}

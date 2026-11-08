@@ -61,24 +61,10 @@ inline double qzeta(double p,double s,bool lower_tail=true,bool log_p=false) {
   if (!zeta_detail::valid(s) || std::isnan(p) || (log_p ? p>0 : (p<0 || p>1))) return special::kNaN;
   if (p==(log_p ? special::kNegInf : 0)) return lower_tail ? 1 : special::kPosInf;
   if (p==(log_p ? 0 : 1)) return lower_tail ? special::kPosInf : 1;
-  // Compare in the supplied scale and tail, so even extreme log input
-  // is preserved and the returned CDF satisfies the inverse inequalities.
-  const auto reached=[&](double k) {
+  return special::discrete_search(1,special::kPosInf,[&](double k) {
     const double f=pzeta(k,s,lower_tail,log_p);
-    return lower_tail ? f>=p : f<=p;
-  };
-  double lo=0,hi=1;
-  while (!reached(hi)) {
-    lo=hi;
-    hi=hi>std::numeric_limits<double>::max()/2 ? std::numeric_limits<double>::max() : hi*2;
-    if (lo==hi) return special::kPosInf;
-  }
-  while (hi-lo>1) {
-    const double mid=std::floor(lo+(hi-lo)/2);
-    if (mid<=lo || mid>=hi) break;
-    if (reached(mid)) hi=mid; else lo=mid;
-  }
-  return hi;
+    return std::isnan(f) ? -1 : int(lower_tail ? f>=p : f<=p);
+  });
 }
 template <typename Rng> inline double rzeta(Rng &rng,double s) { return qzeta(rng.runif(0,1),s); }
 }

@@ -301,3 +301,8 @@ TEST_CASE("tbinom: second-order certificate refuses a positive coefficient") {
   CHECK_FALSE(std::isfinite(cppunivariate::tbinom_detail::second_order_poisson_cutoff({x.data(),x.size()},4,work,budget,rate,ll)));
   CHECK_FALSE(budget);CHECK_FALSE(work.numerical);
 }
+
+#include "cppunivariate/distributions/tbinom/dpqr.hpp"
+TEST_CASE("tbinom: quantile search guards and representability") {
+  CHECK(std::isnan(cppunivariate::distributions::qtbinom(.5,.9,-INFINITY,INFINITY,1e308)));
+}

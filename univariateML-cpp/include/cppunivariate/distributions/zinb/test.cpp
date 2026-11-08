@@ -305,3 +305,8 @@ TEST_CASE("zinb: certified zero-deficit delegate clears proposal diagnostics") {
   REQUIRE(fit.stop_detail.limit_coef.size()==1);
   CHECK(fit.stop_detail.limit_coef[0]==100000);
 }
+
+#include "cppunivariate/distributions/zinb/dpqr.hpp"
+TEST_CASE("zinb: quantile search guards and representability") {
+  CHECK(std::isnan(cppunivariate::distributions::qzinb(.5,1e308,.1,.1,true,false)));
+}

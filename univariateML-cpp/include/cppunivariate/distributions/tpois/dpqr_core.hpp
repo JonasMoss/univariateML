@@ -1,5 +1,6 @@
 #pragma once
 #include "profile.hpp"
+#include "../../special/tails.hpp"
 namespace cppunivariate { namespace truncated_detail {
 inline double evaluate(bool cdf,double x,double parameter,double a,double b,double size,bool lower,bool logarithm) {
   const double nan=std::numeric_limits<double>::quiet_NaN();
@@ -36,10 +37,9 @@ inline double quantile(double p,double parameter,double a,double b,double size,b
   if(std::isnan(evaluate(false,lo,parameter,a,b,size,true,true)))return std::numeric_limits<double>::quiet_NaN();
   if(size<0 && parameter==0 && !std::isfinite(hi))return 0;
   if(lp==-INFINITY)return lower?lo:hi;if(lp==0)return lower?hi:lo;
-  auto reached=[&](double q){double v=evaluate(true,q,parameter,a,b,size,lower,true);return lower?v>=lp:v<=lp;};
-  double left=lo-1,right=std::isfinite(hi)?hi:std::max(1.,lo);
-  while(!reached(right)&&!std::isfinite(hi)){left=right;right=2*right+1;if(right>9e15)return INFINITY;}
-  while(right-left>1){double mid=std::floor(left+(right-left)/2);if(reached(mid))right=mid;else left=mid;}
-  return right;
+  return special::discrete_search(lo,hi,[&](double q) {
+    const double v=evaluate(true,q,parameter,a,b,size,lower,true);
+    return std::isnan(v) ? -1 : int(lower ? v>=lp : v<=lp);
+  });
 }
 } }

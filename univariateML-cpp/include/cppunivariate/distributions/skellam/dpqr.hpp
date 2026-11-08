@@ -89,9 +89,12 @@ inline double pskellam(double q,double mu1,double mu2,bool lower_tail=true,bool 
   if(prob>1e-280 && prob<1) return std::log(prob);
   if(prob==1) return std::log1p(-pskellam(k,mu1,mu2,false,false));
   double total=-INFINITY;
-  for(double v=k;;--v) {
+  double v=k;
+  int count=0;
+  for(;count<1000000;++count,--v) {
     const double term=skellam_detail::logmass(v,mu1,mu2);
     total=skellam_detail::logadd(total,term);
+    if(std::isnan(total)) return special::kNaN;
     // Skellam masses are log-concave (convolution of Poisson sequences).
     // Once descending, the next ratio bounds all remaining ratios.
     // I_(n+1)(z)/I_n(z) <= z/(2(n+1)), termwise in the
@@ -106,7 +109,7 @@ inline double pskellam(double q,double mu1,double mu2,bool lower_tail=true,bool 
     const double ratio=std::exp(next-term);
     if(ratio<1 && next-total<=std::log(2e-16)+std::log1p(-ratio)) break;
   }
-  return total;
+  return count==1000000 ? special::kNaN : total;
 }
 inline double qskellam(double p,double mu1,double mu2,bool lower_tail=true,bool log_p=false) {
   if(!skellam_detail::valid(mu1,mu2) || std::isnan(p) || (log_p ? p>0 : (p<0 || p>1))) return special::kNaN;
@@ -116,14 +119,10 @@ inline double qskellam(double p,double mu1,double mu2,bool lower_tail=true,bool 
   if((log_p && p==0) || (!log_p && p==1)) return lower_tail ? (mu1==0?0:INFINITY) : (mu2==0?0:-INFINITY);
   const bool use_lower=target < -0.6931471805599453;
   const double goal=use_lower ? target : (lower_tail ? (log_p?std::log(-std::expm1(p)):std::log1p(-p)) : (log_p?p:std::log(p)));
-  const auto reached=[&](double k) {const double f=pskellam(k,mu1,mu2,use_lower,true);return use_lower ? f>=goal : f<=goal;};
-  double step=std::max(1.0,std::sqrt(mu1+mu2)),lo=std::floor(mu1-mu2),hi=lo;
-  while(reached(lo)) {hi=lo;lo-=step;step*=2;if(!std::isfinite(lo)) return -INFINITY;}
-  step=std::max(1.0,std::sqrt(mu1+mu2));
-  while(!reached(hi)) {lo=hi;hi+=step;step*=2;if(!std::isfinite(hi)) return INFINITY;}
-  lo=std::floor(lo);hi=std::ceil(hi);
-  while(hi-lo>1) {const double mid=std::floor(lo+(hi-lo)/2);if(mid==lo || mid==hi) break;if(reached(mid)) hi=mid;else lo=mid;}
-  return hi;
+  return special::discrete_signed_search(mu1-mu2,std::max(1.0,std::hypot(std::sqrt(mu1),std::sqrt(mu2))),[&](double k) {
+    const double f=pskellam(k,mu1,mu2,use_lower,true);
+    return std::isnan(f) ? -1 : int(use_lower ? f>=goal : f<=goal);
+  });
 }
 template<class RNG> inline double rskellam(RNG& rng,double mu1,double mu2) {
   if(!skellam_detail::valid(mu1,mu2)) return special::kNaN;

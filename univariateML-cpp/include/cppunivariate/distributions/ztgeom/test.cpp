@@ -75,3 +75,8 @@ TEST_CASE("ztgeom: P2 held boundary likelihood and domain") {
  const auto invalid=cppunivariate::ztgeom_mle({x.data(),x.size()},-1);
  CHECK(invalid.status==cppunivariate::ZtgeomStatus::InvalidInput);
 }
+
+#include "cppunivariate/distributions/ztgeom/dpqr.hpp"
+TEST_CASE("ztgeom: failed integer inversion reports NaN") {
+  CHECK(std::isnan(cppunivariate::distributions::qztgeom(.5,std::numeric_limits<double>::denorm_min())));
+}

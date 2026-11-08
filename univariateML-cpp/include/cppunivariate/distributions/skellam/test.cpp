@@ -134,3 +134,8 @@ TEST_CASE("skellam: tail-cover budget retains the feasible rate witness") {
 TEST_CASE("Skellam nonfinite positive series fails numerically") {
   CHECK(std::isnan(cppunivariate::skellam_detail::logmass(NAN,1,1)));
 }
+
+#include "cppunivariate/distributions/skellam/dpqr.hpp"
+TEST_CASE("skellam: quantile search guards and representability") {
+  CHECK(std::isnan(cppunivariate::distributions::qskellam(.5,1e308,1e308)));
+}

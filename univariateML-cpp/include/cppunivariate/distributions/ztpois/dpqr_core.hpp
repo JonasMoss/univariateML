@@ -48,18 +48,24 @@ inline special::LogTails positive_tails(int kind,double q,double a,double b) {
     upper=special::log_series(logd(kind,k,a,b),k,
         [=](double j){return theta*j/(j+1);},[=](double){return theta;});
   }
+  if(std::isnan(upper)) return {special::kNaN,special::kNaN,false};
   if(upper < -0.6931471805599453) return special::tails_from_log(upper,false);
   // The conditional lower tail may be tiny even when the base CDF is large.
   // Sum it directly rather than subtracting the zero mass or near-one survival.
   double lower=logd(kind,1,a,b), term=lower;
-  for(double k=1;k<q;++k) {
+  double k=1;
+  // Structural CDF guard; an unfinished prefix is a numerical failure.
+  int count=0;
+  for(;k<q && count<1000000;++count,++k) {
     double ratio;
     if(kind==0) ratio=a/(k+1);
     else if(kind==2 && a>0) ratio=(a+k)*(1-b)/(k+1);
     else if(kind==3) ratio=(a-k)*b/((k+1)*(1-b));
     else ratio=(kind==4?a:1-b)*k/(k+1);
     term+=std::log(ratio);lower=special::log_sum_exp(lower,term);
+    if (k+1==k || std::isnan(lower)) return {special::kNaN,special::kNaN,false};
   }
+  if (count==1000000) return {special::kNaN,special::kNaN,false};
   return special::tails_from_log(std::min(0.0,lower),true);
 }
 inline double logsurvival(int kind,double q,double a,double b) {

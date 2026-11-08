@@ -103,3 +103,13 @@ TEST_CASE("lgser: structured stop payloads") {
   CHECK(r.stop_detail.limit_loglik==0);
   CHECK(r.stop_detail.candidates.size()==1);
 }
+
+#include "cppunivariate/distributions/lgser/dpqr.hpp"
+namespace {
+struct LgserQuantileGuardRng { double runif(double,double) {return .999;} };
+}
+TEST_CASE("lgser: inverse sampler stops when its recurrence cannot finish") {
+  LgserQuantileGuardRng rng;
+  CHECK(std::isnan(cppunivariate::distributions::rlgser(rng,std::nextafter(1.,0.))));
+  CHECK(cppunivariate::distributions::rlgser(rng,.1)==3);
+}

@@ -268,10 +268,25 @@ inline double binomial_cdf(double x, double a, double b, bool lower_tail) {
                     : boost::math::cdf(boost::math::complement(d, x));
 }
 
+// Boost's discrete quantile rounding can keep advancing after a failed root
+// or NaN CDF. Keep its no-throw CDF seam, but own bounded integer inversion.
+template <typename Cdf>
+inline double discrete_cdf_quantile(double p, double maximum, bool lower, Cdf cdf) {
+  return discrete_quantile(discrete_log_tails(p,lower,false),0,maximum,[&](double x) {
+    const double left=cdf(x,true);
+    if (!(left>=0 && left<=1)) return LogTails{kNaN,kNaN,false};
+    const bool small_left=left<=.5;
+    const double small=small_left ? left : cdf(x,false);
+    if (!(small>=0 && small<=1)) return LogTails{kNaN,kNaN,false};
+    return tails_from_log(std::log(small),small_left);
+  });
+}
+
 inline double binomial_quantile(double x, double a, double b, bool lower_tail) {
-  const boost::math::binomial_distribution<double, NoThrowPolicy> d(a, b);
-  return lower_tail ? boost::math::quantile(d, x)
-                    : boost::math::quantile(boost::math::complement(d, x));
+  if (!std::isfinite(a) || a<0 || a!=std::floor(a) || !(b>=0 && b<=1)) return kNaN;
+  return discrete_cdf_quantile(x,a,lower_tail,[&](double q,bool lower) {
+    return binomial_cdf(q,a,b,lower);
+  });
 }
 
 inline double inverse_gaussian_pdf(double x, double a, double b) {
@@ -303,9 +318,12 @@ inline double negative_binomial_cdf(double x, double a, double b, bool lower_tai
 }
 
 inline double negative_binomial_quantile(double x, double a, double b, bool lower_tail) {
-  const boost::math::negative_binomial_distribution<double, NoThrowPolicy> d(a, b);
-  return lower_tail ? boost::math::quantile(d, x)
-                    : boost::math::quantile(boost::math::complement(d, x));
+  if (!std::isfinite(a) || a<0 || !(b>0 && b<=1)) return kNaN;
+  if (a==0 || b==1) return discrete_cdf_quantile(x,0,lower_tail,
+      [](double,bool lower){return lower ? 1.0 : 0.0;});
+  return discrete_cdf_quantile(x,kPosInf,lower_tail,[&](double q,bool lower) {
+    return negative_binomial_cdf(q,a,b,lower);
+  });
 }
 
 inline double poisson_pdf(double x, double a) {
@@ -320,9 +338,12 @@ inline double poisson_cdf(double x, double a, bool lower_tail) {
 }
 
 inline double poisson_quantile(double x, double a, bool lower_tail) {
-  const boost::math::poisson_distribution<double, NoThrowPolicy> d(a);
-  return lower_tail ? boost::math::quantile(d, x)
-                    : boost::math::quantile(boost::math::complement(d, x));
+  if (!std::isfinite(a) || a<0) return kNaN;
+  if (a==0) return discrete_cdf_quantile(x,0,lower_tail,
+      [](double,bool lower){return lower ? 1.0 : 0.0;});
+  return discrete_cdf_quantile(x,kPosInf,lower_tail,[&](double q,bool lower) {
+    return poisson_cdf(q,a,lower);
+  });
 }
 
 

@@ -113,6 +113,7 @@ inline double qbbinom(double p, double size, double alpha, double beta, bool low
   while (hi - lo > 1) {
     const int mid = lo + (hi - lo) / 2;
     const double tail = lower_tail ? bbinom_log_sum(lf, 0, mid) : bbinom_log_sum(lf, mid + 1, N);
+    if (std::isnan(tail)) return std::numeric_limits<double>::quiet_NaN();
     const bool hit = lower_tail ? tail >= target : tail <= target;
     if (hit) hi = mid; else lo = mid;
   }

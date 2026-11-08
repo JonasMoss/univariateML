@@ -473,3 +473,11 @@ TEST_CASE("CMB CMP child allowance never shrinks when iterlim rises") {
   CHECK(a.fit.nu==b.fit.nu);
   CHECK(a.fit.logLik==b.fit.logLik);
 }
+
+#include "cppunivariate/distributions/cmb/dpqr.hpp"
+TEST_CASE("cmb: quantile search guards and representability") {
+  cppunivariate::cmb_detail::Table t(10,0,1);
+  t.lp[3]=NAN;
+  t.cumulative();
+  CHECK(std::isnan(t.quantile(.5,true,false)));
+}

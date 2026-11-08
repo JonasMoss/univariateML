@@ -150,3 +150,9 @@ TEST_CASE("dnorm: held mean zero-scale face uses discretization cells") {
   CHECK(seam.stop_detail.limit_coef[2]==.5);
   CHECK(seam.stop_detail.limit_loglik==doctest::Approx(-2*std::log(2.)));
 }
+
+#include "cppunivariate/distributions/dnorm/dpqr.hpp"
+TEST_CASE("dnorm: bounded seed corrections require a representable jump") {
+  CHECK(std::isnan(cppunivariate::distributions::qdnorm(.5,1e308,1)));
+  CHECK(cppunivariate::distributions::qdnorm(.5,0,1)==-1);
+}

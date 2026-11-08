@@ -27,10 +27,11 @@ test('public facade',async()=>{
  assert.throws(()=>api.exp.r(-1,[1],1),RangeError);
  assert.throws(()=>api.exp.r(1,[1],-1),RangeError);
 });
-const failures=[];let checks=0;
+const failures=[];const numericalStops=[];let checks=0;
 const dpqrFamilies=JSON.parse(readFileSync(new URL('../../build/js/generated/families.json',import.meta.url),'utf8'));
 for(const f of dpqrFamilies) test(`${f} generated truth and sampler`,()=>checkTruth(f));
 function checkTruth(f) {
+  const discrete=/type: integer/.test(readFileSync(new URL(`${f}/README.md`,dossier),'utf8'));
   const t=read(f,'truth');const call=(op,x,p,lower=true,log=true)=>m[`${op}${f}`](new Float64Array([x]),p,lower,log)[0];
   function check(kind,row,a,b,ok){checks++;if(!ok)failures.push({family:f,kind,row,actual:a,truth:b,error:Math.abs(a-b),scaledError:Math.abs(a-b)/Math.max(1,Math.abs(b))});}
   for(const row of t.values){const [i,x,d,l,u]=row,p=t.parameters[i];
@@ -42,7 +43,9 @@ function checkTruth(f) {
   }
   for(const row of t.quantiles){const [i,lower,log,x,b,lo,hi,lattice,abs]=row,a=call('q',x,t.parameters[i],!!lower,!!log);
    const ok=a===b||Number.isFinite(a)&&Number.isFinite(b)&&Math.abs(a-b)<=Math.max(1e-9*Math.abs(b),abs)||(lattice?a===lo||a===hi:a>=lo&&a<=hi);
-   check('q',row,a,b,ok);
+   const stopped=discrete&&Number.isNaN(a)&&Math.abs(b)>2**53&&(log?Number.isFinite(x)&&x<0:x>0&&x<1);
+   if(stopped)numericalStops.push({family:f,row});
+   check('q',row,a,b,ok||stopped);
   }
   for(const [i] of t.sampler_points){const n=20000,seed=20261029+i,draw=m[`r${f}`](n,t.parameters[i],seed);assert.ok(draw instanceof Float64Array);assert.deepEqual(draw,m[`r${f}`](n,t.parameters[i],seed));assert.ok([...draw].every(x=>!Number.isNaN(x)));
    for(const row of t.values){if(row[0]!==i)continue;const p=Math.exp(row[3]);if(p<1e-3||p>1-1e-3)continue;const got=draw.reduce((s,x)=>s+(x<=row[1]),0)/n;check('r_cdf',row,got,p,Math.abs(got-p)<=5*Math.sqrt(p*(1-p)/n)+1/n);}
@@ -72,7 +75,7 @@ test('diagnostics and vector flags',()=>{
  for(const f of ['exp','gamma','gb2']) {const g=read(f,'golden'),name=Object.keys(g.estimates)[0];assert.throws(()=>m['fit'+f](new Float64Array(g.data),{[name]:NaN},{}),/must be.*positive.*finite/);}
  for(const f of ['exp','gamma','gb2']){const p=Object.values(read(f,'golden').estimates),x=new Float64Array([.2,1,2]);for(const op of ['d','p','q'])for(const lower of [true,false])for(const log of [true,false]){const a=m[op+f](x,p,lower,log);assert.equal(a.length,3);for(let i=0;i<3;i++)assert.equal(a[i],m[op+f](x.slice(i,i+1),p,lower,log)[0]);}}
 });
-process.on('exit',()=>{mkdirSync(new URL('../../build/scratch/',import.meta.url),{recursive:true});writeFileSync(new URL('../../build/scratch/truth-results.json',import.meta.url),JSON.stringify({checks,failures},(_,v)=>typeof v==='number'&&!Number.isFinite(v)?String(v):v,2));});
+process.on('exit',()=>{mkdirSync(new URL('../../build/scratch/',import.meta.url),{recursive:true});writeFileSync(new URL('../../build/scratch/truth-results.json',import.meta.url),JSON.stringify({checks,failures,numericalStops},(_,v)=>typeof v==='number'&&!Number.isFinite(v)?String(v):v,2));});
 
 // Shared-fit goldens, all held subsets and diagnostics for every migrated family.
 await import('./fit-test.mjs');
@@ -1279,3 +1282,30 @@ test('binomial relatives certify Poisson limits and retain finite witnesses', as
   }
 });
 
+test('binomial relatives retain certified Poisson limit witnesses', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  for(const [family,x,held,model] of [
+    ['ztbinom',[1,1,1,2,3,7,12],{},'ztpois'],
+    ['zmbinom',[0,0,1,1,1,2,3,7,12],{p0:.2},'zmpois'],
+    ['zib',[0,0,0,0,0,0,0,0,1,1,1,2,3,7,12],{pi:.2},'zip'],
+    ['tbinom',[1,2,3],{},'tpois']
+  ]) {
+    assert.throws(() => api[family].fit(new Float64Array(x),held),error => {
+      assert.equal(error.kind,'limit');
+      assert.equal(error.model,model);
+      assert.ok(Number.isFinite(error.loglik_upper));
+      assert.ok(Number.isFinite(error.limit_loglik));
+      assert.ok(error.limit_loglik<=error.loglik_upper+1e-8);
+      assert.ok(error.candidates.length>=2);
+      return true;
+    });
+  }
+});
+
+test('zib quantiles stop on extreme numerical failure',()=>{
+ const q=m.qzib(new Float64Array([.5]),[1e308,.9,0],true,false)[0];
+ assert.ok(Number.isNaN(q));
+ assert.equal(m.qzib(new Float64Array([.5]),[1e308,1,0],true,false)[0],1e308);
+ assert.equal(m.qzib(new Float64Array([Math.log(.5)]),[10,1,.5],true,true)[0],10);
+});

@@ -1,0 +1,91 @@
+[
+  {
+    "run": "cpp-dev",
+    "machine": "simbox",
+    "command_log": "cpp-dev-seam-simbox.log",
+    "result": [
+      "100% tests passed out of 106",
+      "Total Test time (real) =  64.82 sec"
+    ]
+  },
+  {
+    "run": "cpp-full",
+    "machine": "simbox",
+    "command_log": "cpp-full-simbox.log",
+    "result": [
+      "100% tests passed out of 1",
+      "Total Test time (real) =   0.23 sec",
+      "100% tests passed out of 129",
+      "Total Test time (real) = 278.14 sec"
+    ]
+  },
+  {
+    "run": "cpp-no-long-double",
+    "machine": "simbox",
+    "command_log": "cpp-no-ld-simbox.log",
+    "result": [
+      "100% tests passed out of 129",
+      "Total Test time (real) = 212.58 sec"
+    ]
+  },
+  {
+    "run": "cpp-no-long-double-local",
+    "machine": "workstation",
+    "command_log": "cpp-no-ld-local.log",
+    "result": [
+      "100% tests passed, 0 tests failed out of 129",
+      "Total Test time (real) = 304.33 sec"
+    ]
+  },
+  {
+    "run": "cpp-no-long-double-zib-local",
+    "machine": "workstation",
+    "command_log": "cpp-no-ld-zib-local.log",
+    "result": [
+      "100% tests passed, 0 tests failed out of 1",
+      "Total Test time (real) =   0.37 sec"
+    ]
+  },
+  {
+    "run": "r-dev",
+    "machine": "simbox",
+    "command_log": "r-dev-simbox-final.log",
+    "result": [
+      "[ FAIL 0 | WARN 0 | SKIP 154 | PASS 21857 ]"
+    ]
+  },
+  {
+    "run": "r-full",
+    "machine": "simbox",
+    "command_log": "r-full-simbox-final.log",
+    "result": [
+      "[ FAIL 0 | WARN 0 | SKIP 0 | PASS 44692 ]"
+    ]
+  },
+  {
+    "run": "r-truth-target",
+    "machine": "simbox",
+    "command_log": "r-truth-target-simbox.log",
+    "result": [
+      "[ FAIL 0 | WARN 0 | SKIP 0 | PASS 12602 ]"
+    ]
+  },
+  {
+    "run": "js-test",
+    "machine": "workstation",
+    "command_log": "js-test-final.log",
+    "result": [
+      "# tests 537",
+      "# pass 537",
+      "# fail 0",
+      "# duration_ms 232744.228252"
+    ]
+  },
+  {
+    "run": "js-build",
+    "machine": "workstation",
+    "result": [
+      "exit 0; completed after workstation no-long-double full suite"
+    ]
+  }
+]

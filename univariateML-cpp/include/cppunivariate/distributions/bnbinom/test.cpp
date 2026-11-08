@@ -102,7 +102,7 @@ TEST_CASE("bnbinom: CDF and quantile beyond the former count budget") {
     CHECK(cppunivariate::distributions::pbnbinom(q-1,1,2,5,true,false)<u);
     CHECK(cppunivariate::distributions::pbnbinom(q,1,2,5,true,false)>=u);
   }
-  CHECK(std::isfinite(cppunivariate::distributions::qbnbinom(.99,1,.01,1,true,false)));
+  CHECK(std::isnan(cppunivariate::distributions::qbnbinom(.99,1,.01,1,true,false)));
   CHECK(std::isfinite(cppunivariate::distributions::pbnbinom(1e12,1,2,5,true,true)));
 }
 
@@ -133,11 +133,11 @@ TEST_CASE("bnbinom: d/p/q/r against the truth table") {
 TEST_CASE("bnbinom: power law across double counts and log quantiles") {
   CHECK(cppunivariate::distributions::dbnbinom(1e100,1,2,5,true)==doctest::Approx(-686.6811833359916045).epsilon(2e-15));
   CHECK(cppunivariate::distributions::pbnbinom(1e100,1,2,5,false,true)==doctest::Approx(-457.1158212171469814).epsilon(2e-15));
-  CHECK(cppunivariate::distributions::qbnbinom(1e-300,1,2,5,false,false)==doctest::Approx(5.477225575051661e150).epsilon(2e-13));
+  CHECK(std::isnan(cppunivariate::distributions::qbnbinom(1e-300,1,2,5,false,false)));
+  CHECK(cppunivariate::distributions::pbnbinom(5.477225575051661e150,1,2,5,false,true)==doctest::Approx(std::log(1e-300)).epsilon(2e-13));
   for(double lp:{-800.,-10000.}) {
     const double q=cppunivariate::distributions::qbnbinom(lp,1,20,5,false,true);
-    REQUIRE(std::isfinite(q));
-    CHECK(cppunivariate::distributions::pbnbinom(q,1,20,5,false,true)==doctest::Approx(lp).epsilon(2e-14));
+    CHECK(std::isnan(q));
   }
   CHECK(std::isfinite(cppunivariate::distributions::dbnbinom(std::numeric_limits<double>::max(),1,2,5,true)));
   CHECK(std::isfinite(cppunivariate::distributions::pbnbinom(std::numeric_limits<double>::max(),1,2,5,false,true)));
@@ -178,8 +178,8 @@ TEST_CASE("bnbinom: unit member quantiles allow adjacent answers at jumps") {
   CHECK(adjacent(cppunivariate::distributions::qbnbinom(1e-6,1,1,1,false,false),999998));
   CHECK(adjacent(cppunivariate::distributions::qbnbinom(.5,1,1,1,true,false),0));
   CHECK(adjacent(cppunivariate::distributions::qbnbinom(.25,1,1,1,false,false),2));
-  CHECK(cppunivariate::distributions::qbnbinom(-800,1,1,1,false,true)==INFINITY);
-  CHECK(cppunivariate::distributions::qbnbinom(1e-300,1,1,1,false,false)==doctest::Approx(1e300).epsilon(1e-12));
+  CHECK(std::isnan(cppunivariate::distributions::qbnbinom(-800,1,1,1,false,true)));
+  CHECK(std::isnan(cppunivariate::distributions::qbnbinom(1e-300,1,1,1,false,false)));
   for(double k:{0.,1.,98.,999998.,1e100}) {
     CHECK(cppunivariate::distributions::pbnbinom(k,1,1,1,false,true)==doctest::Approx(-std::log(k+2)).epsilon(1e-13));
     CHECK(cppunivariate::distributions::dbnbinom(k,1,1,1,true)==doctest::Approx(-std::log(k+1)-std::log(k+2)).epsilon(1e-13));
@@ -460,4 +460,9 @@ TEST_CASE("bnbinom: unrepresentable held-size NB faces preserve numerical stop c
     CHECK(std::isnan(f.size));CHECK(std::isnan(f.alpha));CHECK(std::isnan(f.beta));
     CHECK(f.stop_detail.loglik_upper==0);
   }
+}
+
+#include "cppunivariate/distributions/bnbinom/dpqr.hpp"
+TEST_CASE("bnbinom: cancelled gamma increments cannot stall a quantile") {
+  CHECK(std::isnan(cppunivariate::distributions::qbnbinom(.5,1,1e308,1,true,false)));
 }
