@@ -1,0 +1,24 @@
+n=101 l0=0.14  density: 1579.2 ns/obs
+  mask 0:   1.2435 s  status=0 cert=0 it=4132  mu=-1.296319896e-08 sigma=1.049873229 lambda=0.1786420716 ll=-180.338212198
+  mask 1:   0.0000 s  status=4 cert=0 it=0  mu=nan sigma=nan lambda=nan ll=nan
+  mask 2:   0.5328 s  status=0 cert=0 it=13987  mu=-6.374666486e-08 sigma=1 lambda=0.1519400451 ll=-180.386173279
+  mask 3:  18.6820 s  status=0 cert=1 it=36589  mu=0 sigma=1 lambda=0.1519400477 ll=-180.386173279
+  mask 4:   0.0046 s  status=0 cert=1 it=5  mu=8.696948298e-16 sigma=0.9921584831 lambda=0.14 ll=-180.41814995
+  mask 5:   0.0045 s  status=0 cert=1 it=5  mu=0 sigma=0.9921584831 lambda=0.14 ll=-180.41814995
+  mask 6:   0.0008 s  status=0 cert=1 it=0  mu=-8.881784197e-16 sigma=1 lambda=0.14 ll=-180.424403423
+n=101 l0=-0.5  density: 799.2 ns/obs
+  mask 0:   0.7503 s  status=0 cert=0 it=5051  mu=-6.784370399e-08 sigma=1.029632292 lambda=-0.4740396349 ll=-278.855342828
+  mask 1:   0.0000 s  status=4 cert=0 it=0  mu=nan sigma=nan lambda=nan ll=nan
+  mask 2:   0.3186 s  status=0 cert=0 it=18712  mu=6.493937543e-08 sigma=1 lambda=-0.4905301924 ll=-278.86587282
+  mask 3:  25.1108 s  status=0 cert=1 it=82720  mu=0 sigma=1 lambda=-0.4905302429 ll=-278.86587282
+  mask 4:   0.0235 s  status=0 cert=0 it=154  mu=2.003134014e-08 sigma=0.9994731433 lambda=-0.5 ll=-278.872129914
+  mask 5:  21.1235 s  status=0 cert=1 it=72069  mu=0 sigma=0.9994731629 lambda=-0.5 ll=-278.872129914
+  mask 6:   9.2289 s  status=0 cert=1 it=26448  mu=-5.329070518e-15 sigma=1 lambda=-0.5 ll=-278.872139557
+n=101 l0=0.7  density: 1164.7 ns/obs
+  mask 0:   1.0150 s  status=0 cert=0 it=4688  mu=1.360183077e-10 sigma=1.162188792 lambda=0.8336959068 ll=-103.081130756
+  mask 1:   0.0000 s  status=4 cert=0 it=0  mu=nan sigma=nan lambda=nan ll=nan
+  mask 2:   0.7954 s  status=0 cert=0 it=9477  mu=-2.894712258e-08 sigma=1 lambda=0.7116192812 ll=-103.343854828
+  mask 3:   2.6257 s  status=0 cert=1 it=7876  mu=0 sigma=1 lambda=0.7116192627 ll=-103.343854828
+  mask 4:   0.0042 s  status=0 cert=1 it=6  mu=5.650783755e-17 sigma=0.985845707 lambda=0.7 ll=-103.405630277
+  mask 5:   0.0041 s  status=0 cert=1 it=6  mu=0 sigma=0.985845707 lambda=0.7 ll=-103.405630277
+  mask 6:   0.0007 s  status=0 cert=1 it=0  mu=0 sigma=1 lambda=0.7 ll=-103.695982309

@@ -1,0 +1,4 @@
+lambda=-0.70 points=400  max rel err: dtlambda 7.78e-15   table+Halley 6.02e-16
+lambda=-0.05 points=400  max rel err: dtlambda 1.03e-14   table+Halley 2.92e-16
+lambda= 0.14 points=392  max rel err: dtlambda 1.91e-14   table+Halley 3.60e-16
+lambda= 0.70 points=212  max rel err: dtlambda 2.75e-15   table+Halley 3.27e-16

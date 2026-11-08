@@ -1,0 +1,2 @@
+(1) -z psi increasing: checked 1400298, violations 2, worst drop 98 at l=-0.01 z=3.26e+03
+(2) log g concave in lambda: checked 196786, violations 50343, worst d2 92.9 at l=0.995 z=1
