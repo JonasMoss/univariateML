@@ -73,13 +73,12 @@ limits:
     detect: 'A numerical comparison selects the Gumbel face over the finite candidates when location, scale and shape are free.'
     status: GumbelLimit
     numerical: true
-  - firmness: numerical
+  - firmness: proved
     name: free collapse
     status: NoMLE
     message: "minimum multiplicity permits scale collapse"
     when: 'The location $\mu$ approaches the sample minimum from below, $\lambda$ tends to one, and $\sigma$ decreases proportionally to the location gap.'
-    detect: 'All coefficients are free, the minimum occurs exactly $n/2$ times, and no numerically found finite candidate beats the collapse face. This comparison does not certify that every finite competitor has been found.'
-    numerical: true
+    detect: 'All coefficients are free and the minimum occurs exactly $n/2$ times. A global pair bound proves that no finite competitor attains the collapse supremum.'
 fit_args:
   mu: ~
 examples: |
@@ -107,7 +106,7 @@ relations:
 fit:
   method: delegation
   certified: 'partial'
-  note: 'frechet/README.md, Details; frechet/mle.hpp (public fitter and held overloads); frechet/test.cpp: Every subset with mu held is an inverse-Weibull fit (joint concave log profile, held-shape closed form or held-scale monotone shape score). Held lambda with free mu has a monotone-location certificate when sigma is held and a monotone profiled-scale certificate when sigma is free. Free lambda with free mu remains numerical, whether sigma is held or free.'
+  note: 'frechet/README.md, Details; frechet/mle.hpp (public fitter and held overloads); frechet/test.cpp: Every subset with mu held is an inverse-Weibull fit (joint concave log profile, held-shape closed form or held-scale monotone shape score). Held lambda with free mu has a monotone-location certificate when sigma is held and a monotone profiled-scale certificate when sigma is free. All-free exact half-minimum ties have a proved finite unattained global supremum by the pair bound. Other free-lambda/free-mu searches remain numerical, whether sigma is held or free.'
 areas:
 - extremes and environment
 classification: specialist
@@ -149,8 +148,8 @@ existence:
     to $\varepsilon^{\lambda(n-k)-k}$ at fixed shape.
     The Gumbel path and the half-tie collapse face are derived in Details.
     These paths prove obstructions and construct limiting competitors.
-    They do not prove that the numerical profile search exhausts all maxima
-    or all joint escape paths.
+    Away from the proved half-minimum case, the numerical profile search
+    does not exhaustively bound all maxima or all joint escape paths.
 ---
 
 The Fréchet distribution models extreme maxima with heavy right tails. The threshold $\mu$ sets the lower endpoint, $\sigma$ sets the scale above it, and $\lambda$ controls the tail decay.
@@ -169,9 +168,8 @@ $\lambda=1$, and $\sigma=(n/k)\varepsilon$, where $k$ observations equal
 $m$. The minimum density is $(n/k)e^{-n/k}/\varepsilon$, and each
 nonminimum density is asymptotic to $(n/k)\varepsilon/(x_i-m)^2$.
 Thus the likelihood is asymptotic to a positive constant times
-$\varepsilon^{n-2k}$; at $k=n/2$ it has a finite positive limit. This
-constructs the face but does not prove that a numerical search has found
-the best finite competitor or that all joint escape paths are exhausted.
+$\varepsilon^{n-2k}$; at $k=n/2$ it has a finite positive limit. The pair bound below proves that this is the global supremum at an exact
+half tie, and that no finite Fréchet fit attains it.
 
 The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-extreme.md) describes the limiting paths and the scope of the boundary comparisons.
 
@@ -181,7 +179,8 @@ With shape and scale free, a held-location fit requires a nonconstant sample str
 $\hat\sigma=(n/\sum_i(x_i-\mu)^{-\lambda})^{1/\lambda}$.
 Holding location and scale leaves a strictly concave shape likelihood, solved by bisection. These conditional cases allow a single observation and constants unless the stated shape divergence applies.
 
-When location and shape are free, the fitted shape is restricted to $\lambda\ge1$. The attained member $\lambda=1$ is included. The joint fitter requires at least three observations. A minimum repeated more than half the time always gives unbounded likelihood under this restriction. At an exact half tie, the fitter compares the numerically found finite candidates against the finite collapse face derived above. No interior candidate beat this face in the extensive tests recorded in the [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-extreme.md). This is numerical evidence, not a proof that the face always wins.
+When location and shape are free, the fitted shape is restricted to $\lambda\ge1$. The attained member $\lambda=1$ is included. The joint fitter requires at least three observations. A minimum repeated more than half the time always gives unbounded likelihood under this restriction. At an exact half tie, the fitter stops with the proved finite unattained
+supremum $A=n\log2-n-2\sum_{x_i>m}\log(x_i-m)$ in its stop details.
 
 For a minimum repeated $k$ times, the fixed-shape collapse exponent is $\lambda(n-k)-k$. Strictly negative values give divergence, including every positive shape for constant data. With only shape held, the fitter requires $\lambda(n-k)>k$ and rejects equality as an unattained collapse face. In this fixed-shape case the rejection also follows from a global derivative bound. Put $r_i=\varepsilon/(x_i-m+\varepsilon)$ and profile out scale. Then
 $\varepsilon\ell'(\varepsilon)=n\lambda\sum_i r_i^{\lambda+1}/\sum_i r_i^\lambda-(\lambda+1)\sum_i r_i$.
@@ -238,7 +237,22 @@ An exhausted bracket or root solve stops as non-convergence, with a structured
 retaining its finite witness in original units. These monotone certificates
 establish no joint free-shape result.
 
-The joint fit uses the generalized extreme-value coordinates: location $\mu+\sigma$, scale $\sigma/\lambda$, and shape $1/\lambda$. It scans profile score roots and compares finite candidates with the Gumbel and collapse faces. Root discovery and the face comparison have no global certificate. Unresolved scalar solves stop fitting.
+
+For the half-tie bound, pair each minimum with one nonminimum distance $d$
+away. After optimizing each pair's scale separately, its density product
+is at most $4e^{-2}/d^2$ times
+$[a\sinh u/\cosh(au)]^2$, where $a=\lambda\ge1$ and
+$e^{-2u}=(m-\mu)/(m+d-\mu)$. Convexity of $\sinh$ gives
+$a\sinh u\le\sinh(au)<\cosh(au)$, so the bound is strict for every
+finite fit. Multiplying over all pairs bounds the global likelihood
+strictly by $\exp(A)$. The shape-one collapse path attains $A$ in the limit,
+proving the finite unattained supremum without a search or nuisance cutoff.
+This proof covers all joint paths, including diverging shape. It makes no
+claim about free-shape fits without an exact half-minimum tie, or about the
+held-scale problem. The GEV map used below preserves the all-free likelihood;
+it does not preserve public location or scale holds.
+
+The joint fit uses the generalized extreme-value coordinates: location $\mu+\sigma$, scale $\sigma/\lambda$, and shape $1/\lambda$. It scans profile score roots and compares finite candidates with the Gumbel and collapse faces. Root discovery and the Gumbel comparison have no global certificate. Exact half-minimum ties are resolved before that search. Unresolved scalar solves stop fitting.
 
 ## R notes
 

@@ -1,0 +1,73 @@
+{
+  "defaults_bit_identical": true,
+  "default_golden_tolerance": 1e-10,
+  "scalar_reference": "0.30843601546575407414414057145477165268237668091511",
+  "scalar_relative_error": 1.4309665578039664e-11,
+  "timings": [
+    {
+      "workload": "GEV default n=7",
+      "before_us": 23.70275,
+      "before_status": 0,
+      "after_us": 47.467150000000004,
+      "after_status": 0
+    },
+    {
+      "workload": "GEV shape-only n=7",
+      "before_us": 17.415119999999998,
+      "before_status": 0,
+      "after_us": 2201.86332,
+      "after_status": 0
+    },
+    {
+      "workload": "GEV half tie n=4",
+      "before_us": 11.16494,
+      "before_status": 4,
+      "after_us": 0.07551999999999999,
+      "after_status": 4
+    },
+    {
+      "workload": "Frechet default n=7",
+      "before_us": 49.39326,
+      "before_status": 0,
+      "after_us": 48.25415,
+      "after_status": 0
+    },
+    {
+      "workload": "Frechet half tie n=4",
+      "before_us": 28.351309999999998,
+      "before_status": 4,
+      "after_us": 0.07187,
+      "after_status": 4
+    },
+    {
+      "workload": "GEV default n=500",
+      "before_us": 1399.33041,
+      "before_status": 0,
+      "after_us": 1421.2165599999998,
+      "after_status": 0
+    },
+    {
+      "workload": "Frechet default n=500",
+      "before_us": 3170.6912800000005,
+      "before_status": 0,
+      "after_us": 3193.75616,
+      "after_status": 0
+    },
+    {
+      "workload": "GEV shape-only n=500",
+      "before_us": 1017.869,
+      "before_status": 0,
+      "after_us": 232705.84833333336,
+      "after_status": 0
+    },
+    {
+      "workload": "GEV two-point n=10001",
+      "before_us": 15765.109666666665,
+      "before_status": 0,
+      "after_us": 87.82966666666665,
+      "after_status": 0
+    }
+  ],
+  "before_two_point_sigma_relative_error": 1.1301539704078323e-09,
+  "after_two_point_sigma_relative_error": 0.0
+}

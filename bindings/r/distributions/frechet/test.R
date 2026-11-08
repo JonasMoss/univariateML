@@ -223,3 +223,10 @@ test_that("Frechet rejects an unresolved enormous held power", {
   e <- tryCatch(mlfrechet(c(0,.2,.5,1,3,20),mu=NULL,lambda=1e100),error=identity)
   expect_s3_class(e,"univariateML_numerical")
 })
+
+test_that("Frechet half-minimum pair certificate stops for equal and unequal upper values", {
+  for(x in list(c(0,0,1,2),c(0,0,2,2))) {
+    e <- tryCatch(mlfrechet(x,mu=NULL),error=identity)
+    expect_s3_class(e,"univariateML_nomle")
+  }
+})

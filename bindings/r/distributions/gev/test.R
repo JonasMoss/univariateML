@@ -223,3 +223,39 @@ test_that("GEV location certificate rejects a rounded location", {
   e <- tryCatch(mlgev(1e300,sigma=1,xi=-.3),error=identity)
   expect_s3_class(e,"univariateML_numerical")
 })
+
+test_that("GEV half-minimum pair certificate records the supremum and attained exception", {
+  x <- c(0,0,1,2)
+  e <- tryCatch(mlgev(x),error=identity)
+  expect_s3_class(e,"univariateML_nomle")
+  f <- suppressWarnings(mlgev(c(0,0,2,2)))
+  expect_equal(unname(f[c("mu","sigma","xi")]),c(1,1,-1))
+  expect_equal(as.numeric(logLik(f)),-4)
+})
+
+test_that("GEV shape-only certificate preserves holds and handles flat shapes", {
+  f <- suppressWarnings(mlgev(c(-.7,-.2,0,.4,.8,1.5,3),mu=.1,sigma=1.3,iterlim=1000))
+  expect_equal(unname(f[c("mu","sigma")]),c(.1,1.3))
+  f <- mlgev(rep(4,3),mu=4,sigma=2)
+  expect_equal(unname(f["xi"]),0)
+  e <- tryCatch(mlgev(c(-.5,-.3,0,.2,.5),mu=0,sigma=1,iterlim=1),error=identity)
+  expect_s3_class(e,"univariateML_numerical")
+})
+
+test_that("GEV held-minimum half ties distinguish the attained reverse exponential", {
+  e <- tryCatch(mlgev(c(0,0,1,2),mu=0),error=identity)
+  expect_s3_class(e,"univariateML_nomle")
+  expect_equal(e$loglik_upper,-2-2*log(2))
+  for(s in list(NULL,2)) {
+    f <- suppressWarnings(mlgev(c(0,0,2,2),mu=0,sigma=s))
+    expect_equal(unname(f[c("mu","sigma","xi")]),c(0,2,-1))
+    expect_equal(as.numeric(logLik(f)),-2-4*log(2))
+  }
+})
+
+test_that("GEV two-point minority fits use the certified count formula", {
+  f <- suppressWarnings(mlgev(c(0,rep(1,100))))
+  expect_equal(unname(f[c("mu","sigma","xi")]),c(100/101,1/101,-1),tolerance=1e-10)
+  e <- tryCatch(mlgev(c(-9,rep(1,9))),error=identity)
+  expect_s3_class(e,"univariateML_numerical")
+})

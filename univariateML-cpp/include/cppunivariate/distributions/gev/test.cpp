@@ -390,3 +390,95 @@ TEST_CASE("gev: rounded solver witness bounds include its original-coordinate li
  const double ll=cppunivariate::gev_loglik(mltest::as_span(x),c.coef[0],c.coef[1],c.coef[2]);
  CHECK(std::isfinite(ll));CHECK(c.loglik_lower<=ll);CHECK(c.loglik_upper>=ll);
 }
+
+TEST_CASE("gev: half-minimum pair bound distinguishes attainment") {
+ for(auto x:{std::vector<double>{0,0,1,2},std::vector<double>{0,0,.01,100},std::vector<double>{-1e308,-1e308,0,1e308}}) {
+   const auto f=cppunivariate::gev_mle(mltest::as_span(x));
+   CHECK(f.status==cppunivariate::GevStatus::NoMLE);
+   CHECK(std::isfinite(f.stop_detail.loglik_upper));
+   CHECK(f.stop_detail.loglik_lower==f.stop_detail.loglik_upper);
+ }
+ for(double scale:{1e-100,1.,1e100}) {
+   const std::vector<double> x{2*scale,2*scale,6*scale,6*scale};
+   const auto f=cppunivariate::gev_mle(mltest::as_span(x));
+   REQUIRE(f.status==cppunivariate::GevStatus::Ok);
+   CHECK(f.xi== -1);CHECK(f.mu==4*scale);CHECK(f.sigma==doctest::Approx(2*scale).epsilon(1e-15));
+   CHECK(f.restricted==16u);
+ }
+}
+
+TEST_CASE("gev: shape-only global coverage and nonunique flat likelihood") {
+ for(auto x:{std::vector<double>{.1,.2,.3},std::vector<double>{-.3,-.2,-.1},
+             std::vector<double>{-.5,-.3,0,.2,.5},std::vector<double>{-.7,-.2,0,.4,.8,1.5,3}}) {
+   const auto data=mltest::as_span(x);
+   const auto f=cppunivariate::gev_mle(data,1e-10,1000,NAN,.1,1.3);
+   REQUIRE(f.status==cppunivariate::GevStatus::Ok);
+   CHECK(f.mu==.1);CHECK(f.sigma==1.3);
+   for(int j=0;j<=4000;++j)
+     CHECK(cppunivariate::gev_loglik(data,.1,1.3,-1+j/2000.)<=f.logLik+1e-10);
+ }
+ const std::vector<double> x{4,4,4};
+ const auto f=cppunivariate::gev_mle(mltest::as_span(x),1e-10,100,NAN,4,2);
+ REQUIRE(f.status==cppunivariate::GevStatus::Ok);
+ CHECK(f.xi==0);
+ for(double xi:{-1.,-.5,0.,.5,1.})CHECK(cppunivariate::gev_loglik(mltest::as_span(x),4,2,xi)==f.logLik);
+ const std::vector<double> y{-.5,-.3,0,.2,.5};
+ const auto stop=cppunivariate::gev_mle(mltest::as_span(y),1e-10,1,NAN,0,1);
+ CHECK(stop.status==cppunivariate::GevStatus::IterationFailure);
+ CHECK(std::isinf(stop.stop_detail.loglik_upper));
+}
+
+TEST_CASE("gev: half-tie attained maximum survives an overflowing data range") {
+ const std::vector<double> x{-1e308,-1e308,1e308,1e308};
+ const auto f=cppunivariate::gev_mle(mltest::as_span(x));
+ REQUIRE(f.status==cppunivariate::GevStatus::Ok);
+ CHECK(f.mu==0);CHECK(f.sigma==1e308);CHECK(f.xi== -1);
+ CHECK(std::isfinite(f.logLik));
+}
+
+TEST_CASE("gev: shape-only common reverse endpoint attains the uniform density bound") {
+ const std::vector<double> x{6,6,6};
+ const auto f=cppunivariate::gev_mle(mltest::as_span(x),1e-10,100,NAN,4,2);
+ REQUIRE(f.status==cppunivariate::GevStatus::Ok);
+ CHECK(f.xi== -1);CHECK(f.logLik==doctest::Approx(-3*std::log(2.)));
+}
+
+TEST_CASE("gev: held-minimum half ties use the sharp tail bound and retain attainment") {
+ const std::vector<double> unequal{0,0,1,2},equal{0,0,2,2};
+ const auto a=cppunivariate::gev_mle(mltest::as_span(unequal),1e-10,100,NAN,0);
+ REQUIRE(a.status==cppunivariate::GevStatus::NoMLE);
+ CHECK(a.stop_detail.loglik_upper==doctest::Approx(-2-2*std::log(2.)));
+ CHECK(a.stop_detail.loglik_lower==a.stop_detail.loglik_upper);
+ for(double scale:{std::numeric_limits<double>::quiet_NaN(),2.}) {
+   const auto f=cppunivariate::gev_mle(mltest::as_span(equal),1e-10,100,NAN,0,scale);
+   REQUIRE(f.status==cppunivariate::GevStatus::Ok);
+   CHECK(f.mu==0);CHECK(f.sigma==2);CHECK(f.xi== -1);
+   CHECK(f.logLik==doctest::Approx(-2-4*std::log(2.)));
+ }
+ const std::vector<double> wide{-1e308,-1e308,0,1e308};
+ const auto w=cppunivariate::gev_mle(mltest::as_span(wide),1e-10,100,NAN,-1e308);
+ CHECK(w.status==cppunivariate::GevStatus::NoMLE);
+ CHECK(std::isfinite(w.stop_detail.loglik_upper));
+}
+
+TEST_CASE("gev: two-point certificate uses counts and a stable midpoint") {
+ std::vector<double> x(10001,1);x[0]=0;
+ const auto f=cppunivariate::gev_mle(mltest::as_span(x));
+ REQUIRE(f.status==cppunivariate::GevStatus::Ok);
+ CHECK(f.xi== -1);
+ CHECK(f.sigma==doctest::Approx(1./10001).epsilon(1e-10));
+ CHECK(f.mu==doctest::Approx(1-1./10001).epsilon(1e-10));
+ for(double M:{1e300,1e308}) {
+   const double m=std::nextafter(-M,0.);
+   const std::vector<double> y{m,m,M,M};
+   const auto h=cppunivariate::gev_mle(mltest::as_span(y));
+   REQUIRE(h.status==cppunivariate::GevStatus::Ok);
+   CHECK(h.mu==(m+M)/2);CHECK(h.mu!=0);
+ }
+ const double normal=std::numeric_limits<double>::min(),tiny=std::numeric_limits<double>::denorm_min();
+ const std::vector<double> y{-normal+tiny,-normal+tiny,normal,normal};
+ const auto h=cppunivariate::gev_mle(mltest::as_span(y));
+ CHECK(h.status==cppunivariate::GevStatus::NumericalFailure);
+ const std::vector<double> centered{-9,1,1,1,1,1,1,1,1,1};
+ CHECK(cppunivariate::gev_mle(mltest::as_span(centered)).status==cppunivariate::GevStatus::NumericalFailure);
+}

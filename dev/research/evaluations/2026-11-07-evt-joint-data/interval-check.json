@@ -1,0 +1,5 @@
+{
+  "precision": 60,
+  "checks": 900,
+  "absolute_comparison_margin": 1e-10
+}
