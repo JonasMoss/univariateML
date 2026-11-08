@@ -55,7 +55,7 @@ expect_equal(class(attr(est, "support"))[[1]], "numeric")
 
 # Decision D6: attained Laplace, uniform and constrained interior oracle.
 expect_error(suppressWarnings(mlged(seq(-1, 1, length.out = 40)), classes = "univariateML_restricted"), "Use `mlunif`")
-x <- c(seq(-.02, .02, length.out = 18), -10, 10)
+x <- c(seq(-.02, .02, length.out = 19), -10, 10)
 f <- suppressWarnings(mlged(x), classes = "univariateML_restricted")
 expect_equal(unname(f["nu"]), 1)
 expect_equal(attr(f, "logLik"), sum(dged(x = x, mean = f[1], sd = f[2], nu = 1, log = TRUE)))
@@ -203,7 +203,7 @@ test_that("ged new holds agree with independent multistart likelihoods", {
     args <- as.list(held_values[held])
     f <- tryCatch(suppressWarnings(do.call(mlged,c(list(x=x),args))),error=identity)
     if(inherits(f,"error")) {
-      expect_match(conditionMessage(f),"[Uu]se `ml|unbounded|collapse|support cannot contain|does not exist|positive")
+      expect_match(conditionMessage(f),"[Uu]se `ml|unbounded|collapse|support cannot contain|does not exist|positive|did not converge|not unique|unresolved|work budget")
       next
     }
     expect_identical(unname(as.numeric(f[held])),unname(held_values[held]))
@@ -253,8 +253,8 @@ test_that("ged conditional collapse, feasibility and invalid holds", {
 
 test_that("GED held variance uniform endpoints have the conditional limiting penalty", {
   x<-rep(c(-sqrt(3),sqrt(3)),10)
-  expect_error(suppressWarnings(mlged(x,mean=0,sd=1), classes = "univariateML_restricted"),"mlunif")
-  expect_error(suppressWarnings(mlged(x,sd=1), classes = "univariateML_restricted"),"mlunif")
+  expect_error(suppressWarnings(mlged(x,mean=0,sd=1), classes = "univariateML_restricted"),"unresolved")
+  expect_error(suppressWarnings(mlged(x,sd=1), classes = "univariateML_restricted"),"unresolved")
   # From log Gamma(epsilon)=-log(epsilon)-gamma*epsilon+O(epsilon^2):
   # lambda=sqrt(3)*exp((gamma-log(2))/nu+O(nu^-2)), hence W -> exp(-gamma).
   nu<-1e6
@@ -276,4 +276,145 @@ test_that("ged held profiles preserve tiny and large units", {
     expect_equal(unname(fit["sd"])/unit,unname(base["sd"]),tolerance=1e-8)
     expect_equal(as.numeric(logLik(fit))+length(x)*log(unit),as.numeric(logLik(base)),tolerance=1e-8)
   }
+})
+
+
+test_that("ged constant held-sd free-shape submodels attain Laplace", {
+  for (args in list(list(sd=1), list(mean=2,sd=1))) {
+    f <- suppressWarnings(do.call(mlged,c(list(x=rep(2,3),iterlim=1L),args)),
+                          classes="univariateML_restricted")
+    expect_equal(unname(as.numeric(f)), c(2,1,1))
+    expect_equal(as.numeric(logLik(f)), -1.5*log(2))
+    expect_equal(attr(f,"restricted")[["nu"]], "lower")
+  }
+})
+
+test_that("ged a completed low-budget certificate can prove the Laplace face", {
+  x <- c(-3,-1,0,1,4)
+  f <- suppressWarnings(mlged(x,mean=0,sd=1,iterlim=1L),classes="univariateML_restricted")
+  expect_equal(unname(f["nu"]),1)
+  expect_equal(as.numeric(logLik(f)),sum(dged(x=x,mean=0,sd=1,nu=1,log=TRUE)))
+})
+
+
+test_that("ged small held sd returns the proved Laplace maximum or a median tie", {
+  f <- suppressWarnings(mlged(c(-3,-1,0,1,4),sd=.1,iterlim=1L),
+                        classes="univariateML_restricted")
+  expect_equal(unname(f["mean"]),0)
+  expect_equal(unname(f["nu"]),1)
+  e <- tryCatch(mlged(c(-1,1),sd=.1,iterlim=1L),error=identity)
+  expect_s3_class(e,"univariateML_tie")
+  expect_match(conditionMessage(e),"median interval")
+  expect_equal(e$candidates$mean,c(-1,1))
+  expect_true(is.finite(e$loglik_upper))
+  expect_lte(e$loglik_lower,e$loglik_upper)
+  h <- suppressWarnings(mlged(c(-1,1),mean=.3,sd=.1,iterlim=1L),
+                        classes="univariateML_restricted")
+  expect_equal(unname(h["mean"]),.3)
+  expect_equal(unname(h["nu"]),1)
+})
+
+
+test_that("ged rounded held-sd endpoints produce numerical conditions", {
+  x <- c(-sqrt(3),sqrt(3))
+  for (args in list(list(sd=1),list(mean=0,sd=1))) {
+    e <- tryCatch(do.call(mlged,c(list(x=x),args)),error=identity)
+    expect_s3_class(e,"univariateML_numerical")
+    expect_length(e$estimates,0)
+    expect_true(nrow(e$candidates)>0)
+    expect_gte(e$loglik_upper,-2*log(2*sqrt(3)))
+  }
+})
+
+
+test_that("ged constant data away from a held mean have a certified uniform escape", {
+  e <- tryCatch(mlged(rep(2,3),mean=0,iterlim=1L),error=identity)
+  expect_s3_class(e,"univariateML_limit")
+  expect_identical(e$model,"unif")
+  expect_equal(unname(e$estimates),c(-2,2))
+  expect_equal(e$limit_loglik,-3*log(4))
+})
+
+
+test_that("ged free-scale uniform stops have certified global bounds", {
+  x <- seq(-1,1,length.out=40)
+  for (args in list(list(),list(mean=0))) {
+    e <- tryCatch(do.call(mlged,c(list(x=x),args)),error=identity)
+    expect_s3_class(e,"univariateML_limit")
+    expect_true(is.finite(e$loglik_upper))
+    expect_lte(e$loglik_lower,-40*log(2))
+    expect_gte(e$loglik_upper,-40*log(2))
+  }
+})
+
+
+test_that("ged score certificate accepts every free-shape golden subset", {
+  skip_if_not_installed("jsonlite")
+  root <- Sys.getenv("UMVL_DISTRIBUTIONS_DIR")
+  if(!nzchar(root)) root <- testthat::test_path("fixtures")
+  g <- jsonlite::fromJSON(file.path(root,"ged","golden.json"))
+  for(args in list(list(),list(mean=g$estimates$mean),list(sd=g$estimates$sd),
+                   list(mean=g$estimates$mean,sd=g$estimates$sd))) {
+    f <- suppressWarnings(do.call(mlged,c(list(x=g$data),args)),classes="univariateML_restricted")
+    expect_equal(unname(f["nu"]),g$estimates$nu,tolerance=1e-5)
+    expect_equal(as.numeric(logLik(f)),g$logLik,tolerance=1e-8)
+  }
+})
+
+
+test_that("ged globally selected Laplace faces expose their whole median interval", {
+  x <- c(seq(-.02,.02,length.out=18),-10,10)
+  e <- tryCatch(mlged(x),error=identity)
+  expect_s3_class(e,"univariateML_tie")
+  expect_equal(e$candidates$nu,c(1,1))
+  expect_true(diff(e$candidates$mean)!=0)
+})
+
+
+test_that("ged separated finite shape maxima carry both root witnesses", {
+  x <- c(rep(0,8),rep(c(-.32998660809120006,.32998660809120006),23),
+         rep(c(-1.4239025460520294,1.4239025460520294),12))
+  for(args in list(list(mean=0,sd=1),list(sd=1))) {
+    e <- tryCatch(do.call(mlged,c(list(x=x),args)),error=identity)
+    expect_s3_class(e,"univariateML_tie")
+    expect_equal(sort(e$candidates$nu),c(1.108145553391854,25.39783214175462),tolerance=1e-5)
+  }
+})
+
+
+test_that("ged inverse normalization does not return an unchecked rounded location", {
+  skip_if_not_installed("jsonlite")
+  root <- Sys.getenv("UMVL_DISTRIBUTIONS_DIR")
+  if(!nzchar(root)) root <- testthat::test_path("fixtures")
+  g <- jsonlite::fromJSON(file.path(root,"ged","golden.json"))
+  x <- 1e16+10*g$data
+  for(args in list(list(),list(nu=2))) {
+    e <- tryCatch(do.call(mlged,c(list(x=x),args)),error=identity)
+    expect_s3_class(e,"univariateML_numerical")
+    expect_match(conditionMessage(e),"normalization")
+    expect_true(nrow(e$candidates)>0)
+  }
+})
+
+
+
+test_that("ged uniform witnesses contain the original observations", {
+  u <- 2^-53
+  e <- tryCatch(mlged(c(-1+u,1+2*u),mean=u),error=identity)
+  expect_s3_class(e,"univariateML_numerical")
+  expect_match(conditionMessage(e),"normalization")
+  expect_length(e$estimates,0)
+})
+
+
+test_that("ged Laplace median intervals retain original observations", {
+  e <- tryCatch(mlged(c(1:19,1e308)),error=identity)
+  expect_s3_class(e,"univariateML_tie")
+  expect_equal(e$candidates$mean,c(10,11))
+})
+
+test_that("held GED shape arithmetic losses stop numerically", {
+  expect_error(mlged(c(0, 0, 1e-320), nu = .5), "accuracy")
+  expect_error(mlged(c(0, 0, 1e-200), nu = .02), "accuracy")
+  expect_error(mlged(c(0, 1e-100), sd = 1e300, nu = .02), "accuracy")
 })

@@ -1,0 +1,17 @@
+mask	iterlim	status	certified	budget	witnesses	lower	upper
+0	1	1	False	False	1	-717.921	+Inf
+0	2	1	False	False	1	-717.921	+Inf
+0	10	1	False	False	1	-717.921	+Inf
+0	200	0	True	False	0	-711.693	-711.693
+1	1	1	False	True	1	-711.694	+Inf
+1	2	1	False	False	1	-711.694	+Inf
+1	10	1	False	False	1	-711.694	+Inf
+1	200	0	True	False	0	-711.693	-711.693
+2	1	1	False	False	1	-717.921	+Inf
+2	2	1	False	False	1	-717.921	+Inf
+2	10	1	False	False	1	-717.921	+Inf
+2	200	0	True	False	0	-711.693	-711.693
+3	1	1	False	True	1	-711.781	+Inf
+3	2	1	False	False	1	-711.696	+Inf
+3	10	1	False	False	1	-711.696	+Inf
+3	200	0	True	False	0	-711.693	-711.693
