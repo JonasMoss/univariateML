@@ -371,3 +371,190 @@ TEST_CASE("betapr reciprocal face enclosures retain large-Jacobian accuracy") {
   CHECK(r.stop_detail.loglik_upper>=exact);
   CHECK(r.stop_detail.loglik_upper-r.stop_detail.loglik_lower<1e-4);
 }
+
+TEST_CASE("betapr joint exteriors bound small and simultaneously large shapes") {
+  const std::vector<double> x{.03,.1,.4,.7,1,2,4,12};
+  const auto fit=cppunivariate::betapr_mle(mltest::as_span(x));
+  REQUIRE(fit.status==cppunivariate::BetaPrimeStatus::Ok);
+  const auto& b=fit.joint_exterior;
+  REQUIRE(b.status==cppunivariate::BetaPrimeJointBoundStatus::FiniteExterior);
+  CHECK(b.witness_lower<fit.logLik);
+  const double h=fit.alpha/(1+fit.alpha/fit.beta);
+  CHECK(h>b.harmonic_lower);
+  CHECK(h<b.harmonic_upper);
+  CHECK(b.gamma_tail_upper<b.witness_lower);
+  CHECK(b.invgamma_tail_upper<b.witness_lower);
+  // These are uniform over scale, including arbitrarily unequal shapes.
+  for(double p:{.01,.3,1.,10.,100.})for(double q:{.02,.5,2.,20.,200.})
+    for(double scale:{.001,.3,1.,100.,1e6}) {
+      const double harmonic=p/(1+p/q);
+      double ll=0;for(double v:x)ll+=cppunivariate::distributions::dbetapr(v,p,q,scale,true);
+      const double small=x.size()*(std::log(harmonic)-b.logmean);
+      CHECK(ll<=small+1e-9);
+      const double large=cppunivariate::betapr_joint_detail::large_upper(
+        harmonic,x.size(),b.logmean,b.pair_loss);
+      CHECK(ll<=large+1e-9);
+    }
+}
+
+TEST_CASE("betapr joint exterior encloses the frozen golden without moving its fit") {
+  const auto g=mltest::load_distribution_golden("betapr");
+  const auto r=cppunivariate::betapr_mle(mltest::as_span(g.data));
+  const auto& b=r.joint_exterior;
+  REQUIRE(b.status==cppunivariate::BetaPrimeJointBoundStatus::FiniteExterior);
+  CHECK(r.alpha==doctest::Approx(g.estimates.at("shape1")).epsilon(1e-6));
+  CHECK(r.beta==doctest::Approx(g.estimates.at("shape2")).epsilon(1e-6));
+  CHECK(r.scale==doctest::Approx(g.estimates.at("scale")).epsilon(1e-6));
+  CHECK(r.alpha<b.invgamma_shape1);
+  CHECK(r.beta<b.gamma_shape2);
+  CHECK(b.evaluations<=cppunivariate::certificate_budget(1000));
+}
+
+TEST_CASE("betapr joint bounds commute with reciprocals and extreme rescaling") {
+  const std::vector<double> x{.03,.1,.4,.7,1,2,4,12};
+  const double p=.7,q=1.7,s=3.1;
+  const auto b=cppunivariate::betapr_joint_exterior_bounds(mltest::as_span(x),p,q,s);
+  REQUIRE(b.status==cppunivariate::BetaPrimeJointBoundStatus::FiniteExterior);
+  std::vector<double> reciprocal,scaled;double jac=0;
+  for(double v:x){reciprocal.push_back(1/v);scaled.push_back(v*1e200);jac+=2*std::log(v);}
+  const auto inv=cppunivariate::betapr_joint_exterior_bounds(mltest::as_span(reciprocal),q,p,1/s);
+  const auto big=cppunivariate::betapr_joint_exterior_bounds(mltest::as_span(scaled),p,q,s*1e200);
+  REQUIRE(inv.status==cppunivariate::BetaPrimeJointBoundStatus::FiniteExterior);
+  REQUIRE(big.status==cppunivariate::BetaPrimeJointBoundStatus::FiniteExterior);
+  CHECK(inv.harmonic_upper==doctest::Approx(b.harmonic_upper).epsilon(1e-10));
+  CHECK(inv.gamma_upper==doctest::Approx(b.invgamma_upper+jac).epsilon(1e-9));
+  CHECK(inv.invgamma_upper==doctest::Approx(b.gamma_upper+jac).epsilon(1e-9));
+  CHECK(big.harmonic_upper==doctest::Approx(b.harmonic_upper).epsilon(1e-10));
+  CHECK(big.gamma_upper==doctest::Approx(b.gamma_upper-x.size()*200*std::log(10.)).epsilon(1e-9));
+}
+
+TEST_CASE("betapr joint bounds distinguish geometric exclusion from face selection") {
+  const std::vector<double> x{1,2,3,4},constant{2,2},invalid{0,1};
+  const auto b=cppunivariate::betapr_joint_exterior_bounds(mltest::as_span(x),1,1,2);
+  CHECK(b.status==cppunivariate::BetaPrimeJointBoundStatus::Geometry);
+  CHECK(std::isinf(b.gamma_shape2));
+  CHECK(std::isinf(b.invgamma_shape1));
+  CHECK(cppunivariate::betapr_joint_exterior_bounds(mltest::as_span(constant),1,1,2).status==
+    cppunivariate::BetaPrimeJointBoundStatus::Arithmetic);
+  CHECK(cppunivariate::betapr_joint_exterior_bounds(mltest::as_span(invalid),1,1,2).status==
+    cppunivariate::BetaPrimeJointBoundStatus::Arithmetic);
+  CHECK(cppunivariate::betapr_joint_exterior_bounds(mltest::as_span(x),1,1,2,0).status==
+    cppunivariate::BetaPrimeJointBoundStatus::Budget);
+}
+
+TEST_CASE("betapr joint harmonic exclusion avoids overflowing an unequal shape ratio") {
+  cppunivariate::BetaPrimeJointBounds b;
+  b.harmonic_lower=.01;b.harmonic_upper=1;
+  CHECK_FALSE(b.excludes(1e308,.1));
+  CHECK_FALSE(b.excludes(.1,1e308));
+  CHECK(b.excludes(1e308,.001));
+  CHECK(b.excludes(.001,1e308));
+}
+
+TEST_CASE("betapr joint signed gamma tail is uniform in the other shape") {
+  const std::vector<double> x{1,2,3,4};
+  const auto b=cppunivariate::betapr_joint_exterior_bounds(mltest::as_span(x),1,1,2);
+  CHECK(std::isfinite(b.gamma_signed_shape2));
+  CHECK(b.gamma_signed_shape2>2*b.harmonic_upper);
+  // An exterior signed bound alone does not select a face or close the box.
+  CHECK(b.status==cppunivariate::BetaPrimeJointBoundStatus::Geometry);
+  std::vector<double> inverse;for(double v:x)inverse.push_back(1/v);
+  const auto inv=cppunivariate::betapr_joint_exterior_bounds(mltest::as_span(inverse),1,1,.5);
+  CHECK(inv.invgamma_signed_shape1==doctest::Approx(b.gamma_signed_shape2).epsilon(1e-9));
+  CHECK(b.evaluations<=cppunivariate::certificate_budget(1000));
+}
+
+TEST_CASE("betapr joint gamma tangent cannot hide unavailable arithmetic in a maximum") {
+  int evaluations=0;
+  const auto failed=cppunivariate::betapr_joint_detail::gamma_tangent(
+    1,1e308,0,1,2,1,evaluations);
+  CHECK(failed.upper==INFINITY);
+  CHECK(failed.lower==-INFINITY);
+  CHECK(std::isnan(failed.shape));
+  CHECK(evaluations<=1);
+}
+
+TEST_CASE("betapr joint witness retains both practical likelihood bounds") {
+  const std::vector<double> x{.03,.1,.4,.7,1,2,4,12};
+  const auto r=cppunivariate::betapr_mle(mltest::as_span(x));
+  CHECK(r.joint_exterior.witness_lower<=r.logLik);
+  CHECK(r.joint_exterior.witness_upper>=r.logLik);
+  CHECK(std::isfinite(r.joint_exterior.witness_upper));
+}
+
+TEST_CASE("betapr all-free cover encloses the global golden maximizer") {
+  const auto g=mltest::load_distribution_golden("betapr");
+  const auto r=cppunivariate::betapr_mle(mltest::as_span(g.data));
+  REQUIRE(r.status==cppunivariate::BetaPrimeStatus::Ok);
+  REQUIRE(r.joint_exterior.global_certified);
+  REQUIRE(r.joint_exterior.coefficient_lower.size()==3);
+  REQUIRE(r.joint_exterior.coefficient_upper.size()==3);
+  const std::vector<double> estimates{r.alpha,r.beta,r.scale};
+  for(std::size_t k=0;k<3;++k) {
+    CHECK(r.joint_exterior.coefficient_lower[k]<=estimates[k]);
+    CHECK(r.joint_exterior.coefficient_upper[k]>=estimates[k]);
+    CHECK(r.joint_exterior.coefficient_upper[k]/r.joint_exterior.coefficient_lower[k]-1<1e-6);
+  }
+  CHECK(r.iterations<=cppunivariate::certificate_budget(1000));
+  CHECK(r.stop_detail.loglik_lower<=r.logLik);
+  CHECK(r.stop_detail.loglik_upper>=r.logLik);
+  CHECK(r.joint_exterior.retained_maxima==1);
+}
+
+TEST_CASE("betapr all-free face selection has a closed cover and proper witnesses") {
+  const std::vector<double> x{1,2,3,4};
+  const auto g=cppunivariate::betapr_mle(mltest::as_span(x));
+  REQUIRE(g.status==cppunivariate::BetaPrimeStatus::GammaBoundary);
+  CHECK(g.joint_exterior.global_certified);
+  CHECK(g.stop_detail.limit_model==cppunivariate::StopModel::Gamma);
+  REQUIRE(g.stop_detail.limit_coef.size()==2);
+  CHECK(g.stop_detail.limit_coef[0]==doctest::Approx(4.26542805477655).epsilon(1e-9));
+  CHECK(std::isfinite(g.stop_detail.loglik_upper));
+  std::vector<double> y;for(double v:x)y.push_back(1/v);
+  const auto ig=cppunivariate::betapr_mle(mltest::as_span(y));
+  REQUIRE(ig.status==cppunivariate::BetaPrimeStatus::InvGammaBoundary);
+  CHECK(ig.joint_exterior.global_certified);
+  CHECK(ig.stop_detail.limit_model==cppunivariate::StopModel::InvGamma);
+}
+
+TEST_CASE("betapr all-free unresolved symmetric faces stop as a comparison tie") {
+  const std::vector<double> x{.5,1,2};
+  const auto r=cppunivariate::betapr_mle(mltest::as_span(x));
+  CHECK(r.status==cppunivariate::BetaPrimeStatus::BfgsFailure);
+  CHECK_FALSE(r.joint_exterior.global_certified);
+  CHECK(r.stop_detail.comparison_tie);
+  CHECK(r.stop_detail.limit_model==cppunivariate::StopModel::None);
+  bool gamma=false,invgamma=false;
+  for(const auto& c:r.stop_detail.candidates){gamma=gamma||c.model==cppunivariate::StopModel::Gamma;invgamma=invgamma||c.model==cppunivariate::StopModel::InvGamma;}
+  CHECK(gamma);CHECK(invgamma);
+}
+
+TEST_CASE("betapr all-free budget stops retain witnesses and never bless a proposal") {
+  const auto g=mltest::load_distribution_golden("betapr");
+  const auto r=cppunivariate::betapr_mle(mltest::as_span(g.data),1e-6,16);
+  REQUIRE(r.status==cppunivariate::BetaPrimeStatus::BfgsFailure);
+  CHECK(r.certificate_failure==cppunivariate::LomaxCertificateFailure::Budget);
+  CHECK(r.stop_detail.budget_exhausted);
+  CHECK_FALSE(r.joint_exterior.global_certified);
+  CHECK(r.iterations<=cppunivariate::certificate_budget(16));
+  CHECK(!r.stop_detail.candidates.empty());
+  CHECK(std::isinf(r.stop_detail.loglik_upper));
+}
+
+TEST_CASE("betapr strict all-free coefficient requests cannot bless a wider enclosure") {
+  const auto g=mltest::load_distribution_golden("betapr");
+  const auto r=cppunivariate::betapr_mle(mltest::as_span(g.data),1e-14,1000);
+  CHECK(r.status==cppunivariate::BetaPrimeStatus::BfgsFailure);
+  CHECK(r.certificate_failure==cppunivariate::LomaxCertificateFailure::Arithmetic);
+  CHECK_FALSE(r.joint_exterior.global_certified);
+  CHECK(!r.stop_detail.candidates.empty());
+}
+
+TEST_CASE("betapr completed-square tail closes a nearly flat gamma-face sample") {
+  const std::vector<double> x{.5785984598506846,6.444883202937109,5.775033695452986,.8258634064615794,1.0870520306262386,2.0005965476322385,5.747358256019271,4.559600112478463,1.2019432688689116,1.6187100158941814,2.1690795112119656,1.4243459092803628,.9863928238183352,2.8868931810321508,1.1828957819270425,.4462530309097321,5.002827229326903,1.8897560739317296,5.678764367303953,2.6395434132700193};
+  const auto r=cppunivariate::betapr_mle(mltest::as_span(x));
+  REQUIRE(r.status==cppunivariate::BetaPrimeStatus::GammaBoundary);
+  CHECK(r.joint_exterior.global_certified);
+  CHECK(r.iterations<=cppunivariate::certificate_budget(2000));
+  CHECK(r.stop_detail.limit_coef[0]==doctest::Approx(1.86080018422581).epsilon(1e-9));
+}

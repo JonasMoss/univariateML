@@ -207,3 +207,17 @@ test_that("beta-prime certificate budget stops preserve witnesses", {
   expect_true(nrow(e$candidates)>0)
   expect_match(conditionMessage(e),"raising iterlim")
 })
+
+test_that("all-free certificate stops carry witnesses and selected faces are proper", {
+  g <- tryCatch(mlbetapr(1:4), error=identity)
+  expect_s3_class(g,"univariateML_limit")
+  expect_identical(g$model,"gamma")
+  expect_true(is.finite(g$loglik_upper))
+  e <- tryCatch(mlbetapr(c(.5,1,2)), error=identity)
+  expect_s3_class(e,"univariateML_tie")
+  expect_true(nrow(e$candidates)>=2)
+  e <- tryCatch(mlbetapr(c(.03,.1,.4,.7,1,2,4,12),iterlim=1),error=identity)
+  expect_s3_class(e,"univariateML_budget")
+  expect_true(nrow(e$candidates)>0)
+  expect_error(mlbetapr(rep(2,3)),class="univariateML_nomle")
+})

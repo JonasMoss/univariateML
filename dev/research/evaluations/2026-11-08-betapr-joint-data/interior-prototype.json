@@ -1,0 +1,38 @@
+[
+  {
+    "n": 8,
+    "cells": 38253,
+    "profile_evaluations": 48790,
+    "queue_left": 0,
+    "retained_cells": 587,
+    "discard_gradient": 17010,
+    "discard_value": 1518,
+    "seconds": 3.892754888001946,
+    "retained_cells_enclosure": [
+      0.6652533020797393,
+      0.6652533039433042,
+      1.846932893113358,
+      1.8469329090788236,
+      3.7692162110241734,
+      3.7692162734862666
+    ]
+  },
+  {
+    "n": 500,
+    "cells": 56453,
+    "profile_evaluations": 71548,
+    "queue_left": 1187,
+    "retained_cells": 1963,
+    "discard_gradient": 23248,
+    "discard_value": 1808,
+    "seconds": 9.463692829987849,
+    "retained_cells_enclosure": [
+      2.0142714368732335,
+      2.0142714498608063,
+      3.2600098493434833,
+      3.2600098846351857,
+      1.0594104383013772,
+      1.0594104600430512
+    ]
+  }
+]

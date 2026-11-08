@@ -1,5 +1,6 @@
-// Three-parameter beta-prime MLE, with explicit likelihood comparisons to faces.
+// Beta-prime fitters: certified conditional profiles and all-free cover.
 #pragma once
+#include "joint_bounds.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/face_compare.hpp"
 #include "../../core/precision.hpp"
@@ -26,6 +27,7 @@ struct BetaPrimeResult {
   BetaPrimeStatus status;
   StopDetail stop_detail{};
   LomaxCertificateFailure certificate_failure=LomaxCertificateFailure::None;
+  BetaPrimeJointBounds joint_exterior{};
 };
 // Negative log-likelihood in the two shapes at a supplied scale.
 // Default scale 1 also preserves the legacy validation-harness seam.
@@ -79,8 +81,16 @@ struct BetaPrimeCost {
 // Log coordinates; the fixed-scale shape cost is also the production objective.
 struct BetaPrimeLogCost {
   span x;
+  mutable std::int64_t evaluations=0;
+  std::int64_t evaluation_limit=std::numeric_limits<std::int64_t>::max();
+  mutable bool exhausted=false;
+  bool tick() const {
+    if(evaluations>=evaluation_limit){exhausted=true;return false;}
+    ++evaluations;return true;
+  }
   int dim() const { return 3; }
   double operator()(const double *phi) const {
+    if(!tick())return INFINITY;
     const double a = std::exp(phi[0]), b = std::exp(phi[1]);
     const double scale = std::exp(phi[2]);
     // Avoid cancellation at numerically indistinguishable infinite-shape faces.
@@ -90,6 +100,7 @@ struct BetaPrimeLogCost {
     return BetaPrimeCost{x, scale}(theta);
   }
   void gradient(const double *phi, double *g) const {
+    if(!tick()){g[0]=g[1]=g[2]=INFINITY;return;}
     const double a = std::exp(phi[0]), b = std::exp(phi[1]);
     const double scale = std::exp(phi[2]);
     const double theta[2] = {a, b};
@@ -128,97 +139,16 @@ inline BetaPrimeResult betapr_mle_fixed_scale(
   const double ll = (r.alpha-1)*lx - (r.alpha+r.beta)*l1p -
       x.size()*(special::lbeta(r.alpha,r.beta)+std::log(scale));
   return {r.alpha,r.beta,scale,ll,r.iterations,
-      std::isfinite(ll) ? BetaPrimeStatus::Ok : BetaPrimeStatus::BfgsFailure};
+      r.status==BetaStatus::Ok && std::isfinite(ll) ? BetaPrimeStatus::Ok : BetaPrimeStatus::BfgsFailure};
 }
 
-inline BetaPrimeResult betapr_mle_impl(span x, double tol = 1e-6, int maxit = 1000,
-                                  double shape1 = 0.0, double shape2 = 0.0,
-                                  double scale = 0.0, double reltol = 1e-13,
-                                  double abstol = 1e-10, bool standardized = false) {
-  maxit = static_cast<int>(solver_budget(maxit));
-  const double nan = std::numeric_limits<double>::quiet_NaN();
-  if (shape1 < 0 || shape2 < 0 || scale < 0 ||
-      !std::isfinite(shape1) || !std::isfinite(shape2) || !std::isfinite(scale) ||
-      x.size() < 2) return {nan,nan,nan,nan,0,BetaPrimeStatus::InvalidStart};
-  if (std::all_of(x.begin(), x.end(), [&](double v) { return v == x[0]; }))
-    return {nan,nan,nan,nan,0,BetaPrimeStatus::InvalidStart};
-  double lm = 0.0;
-  for (double v : x) {
-    if (!(v > 0) || !std::isfinite(v))
-      return {nan,nan,nan,nan,0,BetaPrimeStatus::InvalidStart};
-    lm += std::log(v) / static_cast<double>(x.size());
-  }
-  if (!standardized) {
-    const double unit = std::exp(lm);
-    std::vector<double> z(x.size());
-    for (std::size_t i = 0; i < x.size(); ++i) z[i] = x[i] / unit;
-    auto r = betapr_mle_impl(span{z.data(), z.size()}, tol, maxit,
-        shape1, shape2, scale / unit, reltol, abstol, true);
-    r.scale *= unit;
-    r.logLik -= static_cast<double>(x.size()) * std::log(unit);
-    return r;
-  }
-  double lv = 0;
-  for (double v : x) lv += (std::log(v)-lm)*(std::log(v)-lm) / x.size();
-  if (!(lv > 0) || !std::isfinite(lv))
-    return {nan,nan,nan,nan,0,BetaPrimeStatus::InvalidStart};
-  const double n = static_cast<double>(x.size());
-  auto gamma = gamma_mle(x, 1e-10, maxit);
-  auto inv = invgamma_mle(x, 1e-10, maxit);
-  if(gamma.status!=GammaStatus::Ok || inv.status!=GammaStatus::Ok)
-    return {gamma.shape,inv.shape,std::exp(lm),nan,maxit,BetaPrimeStatus::BfgsFailure};
-  // The closure's faces: shape2 -> inf (gamma) and shape1 -> inf (inverse
-  // gamma). Both shapes -> inf is not a lognormal: Var(log X) =
-  // trigamma(shape1) + trigamma(shape2) -> 0, a point mass.
-  BetaPrimeResult face{gamma.shape,INFINITY,INFINITY,
-      gamma.logLik,0,BetaPrimeStatus::GammaBoundary};
-  if (inv.logLik > face.logLik) face = {INFINITY,inv.shape,0,
-      inv.logLik,0,BetaPrimeStatus::InvGammaBoundary};
-  BetaPrimeLogCost cost{x};
-  BfgsControl ctl;
-  ctl.grad_tol = tol; ctl.maxit = maxit; ctl.reltol = reltol; ctl.step_tol = abstol;
-  BfgsResult attempted{}; attempted.f=INFINITY;
-  BfgsResult best;
-  best.f = INFINITY;
-  for (double a : {0.2, 1.0, 5.0, 20.0, 100.0}) {
-    for (double b : {0.2, 1.0, 5.0, 20.0, 100.0}) {
-      const double start[3] = {std::log(a),std::log(b),
-          lm - special::digamma(a) + special::digamma(b)};
-      auto r = bfgs_minimize(cost, start, ctl);
-      consider_bfgs_candidate(best,r,1.0,attempted);
-    }
-  }
-  if (shape1 > 0 || shape2 > 0 || scale > 0) {
-    const double a = shape1 > 0 ? shape1 : 2.0;
-    const double b = shape2 > 0 ? shape2 : 2.0;
-    const double ls = scale > 0 ? std::log(scale) :
-        lm - special::digamma(a) + special::digamma(b);
-    const double start[3] = {std::log(a),std::log(b),ls};
-    auto r = bfgs_minimize(cost, start, ctl);
-    consider_bfgs_candidate(best,r,1.0,attempted);
-  }
-  if (!std::isfinite(best.f)) {
-    if(attempted.theta.size()!=3) return {nan,nan,nan,nan,0,BetaPrimeStatus::BfgsFailure};
-    return {std::exp(attempted.theta[0]),std::exp(attempted.theta[1]),std::exp(attempted.theta[2]),
-      -attempted.f,attempted.iterations,BetaPrimeStatus::BfgsFailure};
-  }
-  if (face_numerical_tie(face.logLik,-attempted.f,1e-8*n)) {face.status=BetaPrimeStatus::BfgsFailure;return face;}
-  if (face.logLik >= -attempted.f - 1e-8*n) return face;
-  return {std::exp(best.theta[0]),std::exp(best.theta[1]),std::exp(best.theta[2]),
-          -best.f,best.iterations,(best.status == BfgsStatus::Ok || (std::isfinite(best.grad_norm) && best.grad_norm < 1e-3)) ?
-          BetaPrimeStatus::Ok : BetaPrimeStatus::BfgsFailure};
-}
-inline BetaPrimeResult betapr_mle(span x, double tol = 1e-6, int maxit = 1000,
+inline BetaPrimeResult betapr_mle(span x, double tol = 1e-6, int maxit = 2000,
     double shape1 = 0.0, double shape2 = 0.0, double scale = 0.0,
-    double reltol = 1e-13, double abstol = 1e-10) {
-  maxit = static_cast<int>(solver_budget(maxit));
-  return betapr_mle_impl(x, tol, maxit, shape1, shape2, scale, reltol, abstol);
-}
+    double reltol = 1e-13, double abstol = 1e-10);
 } // namespace cppunivariate
 #include "certificate.hpp"
 namespace cppunivariate {
-// Hold-aware profiles. The legacy all-free and fixed-scale paths above are
-// retained verbatim so their golden fits do not change.
+// Hold-aware profiles. The conditional interface is also used by GB2.
 namespace betapr_detail {
 inline double shape_root(double other, double target,int maxit=1000) {
   maxit = static_cast<int>(solver_budget(maxit));
@@ -346,3 +276,5 @@ inline BetaPrimeResult betapr_mle_holds(span x, double held_a, double held_b,
 }
 
 } // namespace cppunivariate
+
+#include "joint_certificate.hpp"

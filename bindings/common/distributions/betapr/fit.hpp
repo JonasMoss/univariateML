@@ -3,7 +3,7 @@
 #include "cppunivariate/distributions/betapr/mle.hpp"
 #include <cmath>
 namespace umvl_binding {
-inline FitResult fit_betapr(cppunivariate::span x, Held shape1_arg = {}, Held shape2_arg = {}, Held scale_arg = {}, double gradtol = 1e-6, int iterlim = 1000, double shape10 = 0, double shape20 = 0, double scale0 = 0, double reltol = 1e-13, double abstol = 1e-10) {
+inline FitResult fit_betapr(cppunivariate::span x, Held shape1_arg = {}, Held shape2_arg = {}, Held scale_arg = {}, double gradtol = 1e-6, int iterlim = 2000, double shape10 = 0, double shape20 = 0, double scale0 = 0, double reltol = 1e-13, double abstol = 1e-10) {
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& message) { return failure(message, warnings); };
   const Held shape1 = shape1_arg;
@@ -38,9 +38,12 @@ inline FitResult fit_betapr(cppunivariate::span x, Held shape1_arg = {}, Held sh
   if (res.status == cppunivariate::BetaPrimeStatus::InvGammaBoundary)
     return stop_failure(fail("The beta-prime likelihood selects the inverse-gamma limit. Use `mlinvgamma` to fit this model."),res.stop_detail,"limit",{"shape1","shape2","scale"},"invgamma");
   if (res.status == cppunivariate::BetaPrimeStatus::BfgsFailure && res.certificate_failure==cppunivariate::LomaxCertificateFailure::Budget)
-    return stop_failure(fail("Beta-prime global certificate budget exhausted (128 * min(iterlim, 100000) evaluations); raising iterlim may resolve this stop."),res.stop_detail,"budget",{"shape1","shape2","scale"},"");
+    return stop_failure(fail("Beta-prime BfgsFailure: global certificate budget exhausted (128 * min(iterlim, 100000) evaluations); raising iterlim may resolve this stop."),res.stop_detail,"budget",{"shape1","shape2","scale"},"");
   if (res.status == cppunivariate::BetaPrimeStatus::BfgsFailure)
     return stop_failure(fail("Beta-prime optimizer BfgsFailure: profile did not converge or its global certificate is unresolved; increase iterlim. An unresolved gamma or inverse-gamma comparison does not select `mlgamma` or `mlinvgamma`."),res.stop_detail,res.certificate_failure==cppunivariate::LomaxCertificateFailure::Budget?"budget":res.stop_detail.comparison_tie?"tie":res.certificate_failure==cppunivariate::LomaxCertificateFailure::Arithmetic?"numerical":"unresolved",{"shape1","shape2","scale"},"");
+  if(res.status==cppunivariate::BetaPrimeStatus::InvalidStart && !shape1.supplied && !shape2.supplied && !x.empty() &&
+      std::all_of(x.begin(),x.end(),[&](double v){return v>0&&std::isfinite(v)&&v==x[0];}))
+    return stop_failure(fail("Beta-prime finite MLEs require positive log-variance; constant positive observations have unbounded likelihood."),res.stop_detail,"nomle",{"shape1","shape2","scale"},"");
   if (res.status == cppunivariate::BetaPrimeStatus::InvalidStart ||
       !std::isfinite(res.alpha) || !std::isfinite(res.beta) || !std::isfinite(res.scale))
     return fail("Beta-prime MLE requires positive finite observations with positive log-variance.");
