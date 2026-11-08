@@ -206,11 +206,9 @@ inline CmbResult cmb_accept_work(ispan x,int N,CmbResult out,int maxit,
   return out;
 }
 
-inline CmbResult cmb_mle(ispan x,int N,double tol=1e-10,int maxit=2000,
-                        double prob=std::numeric_limits<double>::quiet_NaN(),
-                        double nu=std::numeric_limits<double>::quiet_NaN()) {
-  std::uint64_t work=0;
-  const auto proposed=cmb_mle_work(x,N,tol,maxit,prob,nu,work,enumeration_budget(maxit));
+// Acceptance and optional refinement spend the caller's remaining ledger.
+inline CmbResult cmb_finish_work(ispan x,int N,CmbResult proposed,double tol,int maxit,
+                                 double prob,double nu,std::uint64_t& work) {
   auto out=cmb_accept_work(x,N,proposed,maxit,prob,nu,work);
   // A flat profile can meet the historical moment tolerance before its
   // coefficients are accurate. Retain passing proposals exactly; otherwise
@@ -236,9 +234,75 @@ inline CmbResult cmb_mle(ispan x,int N,double tol=1e-10,int maxit=2000,
   return out;
 }
 
+inline CmbResult cmb_mle(ispan x,int N,double tol=1e-10,int maxit=2000,
+                        double prob=std::numeric_limits<double>::quiet_NaN(),
+                        double nu=std::numeric_limits<double>::quiet_NaN()) {
+  std::uint64_t work=0;
+  const auto proposed=cmb_mle_work(x,N,tol,maxit,prob,nu,work,enumeration_budget(maxit));
+  return cmb_finish_work(x,N,proposed,tol,maxit,prob,nu,work);
+}
+
 struct CmbSizeResult { double size; CmbResult fit; };
 
 namespace cmb_detail {
+// Every enumerated profile has likelihood error at most 1e-8*(n+|ell|)
+// (entropy dual for free nu, scalar tangent bound for held nu). Keep the
+// largest competing value; disjoint enumeration ranges visit each N once.
+struct SizeRunner {
+  CmbSizeResult runner{NAN,{NAN,NAN,-INFINITY,0,CmbStatus::IterationFailure}};
+  void observe(int N,const CmbResult& f,const CmbSizeResult& best) {
+    if(N==best.size)return;
+    const CmbSizeResult other=f.logLik>best.fit.logLik?best:CmbSizeResult{double(N),f};
+    if(other.fit.logLik>runner.fit.logLik)runner=other;
+  }
+};
+inline CmbSizeResult finish_size(ispan x,CmbSizeResult best,const SizeRunner& seen,
+    double prob,double nu,double tol,int maxit,std::uint64_t& work,const StopDetail& evidence) {
+  const double before=best.fit.logLik;
+  best.fit=cmb_finish_work(x,int(best.size),best.fit,tol,maxit,prob,nu,work);
+  if(best.fit.status!=CmbStatus::Ok) {
+    const auto acceptance=best.fit.stop_detail;
+    best.fit.stop_detail=evidence;
+    best.fit.stop_detail.candidates.insert(best.fit.stop_detail.candidates.end(),
+      acceptance.candidates.begin(),acceptance.candidates.end());
+    best.fit.stop_detail.loglik_lower=std::fmax(evidence.loglik_lower,acceptance.loglik_lower);
+    best.fit.stop_detail.loglik_upper=INFINITY;
+    best.fit.stop_detail.budget_exhausted=evidence.budget_exhausted || acceptance.budget_exhausted;
+    return best;
+  }
+  // A refinement cannot invalidate the tail's lower anchor. A larger
+  // numerical discrepancy stops rather than reusing an unchecked cutoff.
+  const double margin=2e-8*(double(x.size())+std::max(std::abs(before),std::abs(best.fit.logLik)));
+  if(best.fit.logLik<before-margin) {
+    best.fit.status=CmbStatus::IterationFailure;best.fit.stop_detail=evidence;
+    best.fit.stop_detail.loglik_upper=INFINITY;return best;
+  }
+  if(std::isfinite(seen.runner.fit.logLik)) {
+    const auto candidate=[&](const CmbSizeResult& r) {
+      const double pad=1e-8*(double(x.size())+std::abs(r.fit.logLik));
+      return FitCandidate{{r.size,r.fit.prob,r.fit.nu},r.fit.logLik-pad,r.fit.logLik+pad};
+    };
+    const auto first=candidate(best),second=candidate(seen.runner);
+    if(first.loglik_lower<=second.loglik_upper) {
+      best.fit.stop_detail=comparison_detail(first,second);
+      best.fit.status=CmbStatus::FaceTie;
+    }
+  }
+  return best;
+}
+inline CmbSizeResult accept_exact_size(ispan x,CmbSizeResult best,double prob,double nu,
+                                       double tol,int maxit) {
+  std::uint64_t work=0;
+  return finish_size(x,best,SizeRunner{},prob,nu,tol,maxit,work,StopDetail{});
+}
+// Zero counts with free probability or held probability zero admit atoms
+// at every size. Exhibit two distinct finite global maximizers explicitly.
+inline CmbSizeResult zero_size_tie(double prob,double nu) {
+  const double p=std::isnan(prob)?0:prob,v=std::isnan(nu)?1:nu;
+  CmbSizeResult out{NAN,{p,v,0,0,CmbStatus::FaceTie}};
+  out.fit.stop_detail=comparison_detail({{0,p,v},0,0},{{1,0,v},0,0});
+  return out;
+}
 // A likelihood superlevel also bounds the probability of every observed
 // category. Maximizing the other probabilities at fixed p[value] gives a
 // binary relative-entropy inequality. Return the lower bracket endpoint.
@@ -292,6 +356,9 @@ inline CmbResult size_candidate(ispan x,int N,double prob,double tol,int maxit,
   maxit = static_cast<int>(solver_budget(maxit));
   const double nan=std::numeric_limits<double>::quiet_NaN();
   const auto fail=[&](CmbStatus s){return CmbResult{nan,nan,nan,0,s};};
+  // Exploratory ranges may cross the allocation domain near its endpoint.
+  // Such a profile is a numerical stop, never an out-of-domain winner.
+  if(N<1 || N>10000000)return fail(CmbStatus::IterationFailure);
   const bool fixed=!std::isnan(prob);
   const std::size_t cost=std::size_t(N)+1;
   if(N==1) {
@@ -530,11 +597,12 @@ inline CmbSizeResult cmb_size_adjacent_fixed_prob(ispan x,int low,double prob,
   const std::uint64_t budget=enumeration_budget(maxit);
   std::uint64_t work=0;
   CmbSizeResult best{nan,{nan,nan,-INFINITY,0,CmbStatus::IterationFailure}};
+  cmb_detail::SizeRunner seen;
   const auto evaluate=[&](int N) {
     const auto f=cmb_detail::size_candidate_rescue(x,N,prob,tol,maxit,work,budget);
     if(f.status==CmbStatus::AdjacentLimit || f.status==CmbStatus::EndpointLimit)return true;
-    if(f.stop_detail.budget_exhausted) {
-      evidence=discrete_budget(evidence);
+    if(f.status!=CmbStatus::Ok) {
+      if(f.stop_detail.budget_exhausted)evidence=discrete_budget(evidence);
       evidence.candidates.insert(evidence.candidates.end(),f.stop_detail.candidates.begin(),f.stop_detail.candidates.end());
       if(std::isfinite(f.stop_detail.loglik_lower) && (!std::isfinite(evidence.loglik_lower)||f.stop_detail.loglik_lower>evidence.loglik_lower))evidence.loglik_lower=f.stop_detail.loglik_lower;
     }
@@ -544,6 +612,7 @@ inline CmbSizeResult cmb_size_adjacent_fixed_prob(ispan x,int low,double prob,
     double upper=0;
     if(!cmb_detail::fixed_profile_upper(x,N,f,true,upper) ||
        std::abs(upper-f.logLik)>1e-8*(1+std::abs(f.logLik)))return false;
+    seen.observe(N,f,best);
     if(f.logLik>best.fit.logLik) {
       best={double(N),f};
       evidence.candidates.erase(std::remove_if(evidence.candidates.begin(),evidence.candidates.end(),
@@ -602,7 +671,7 @@ inline CmbSizeResult cmb_size_adjacent_fixed_prob(ispan x,int low,double prob,
     for(std::int64_t bracket_pass=0; bracket_pass<solver_budget(maxit) && (right-left>1); ++bracket_pass){const int mid=left+(right-left)/2;if(bound(mid)<B)right=mid;else left=mid;}
     if(right-left>1)return fail(CmbStatus::IterationFailure);
     for(int N=initial+1;N<right;++N)if(!evaluate(N))return fail(CmbStatus::IterationFailure);
-    return best;
+    return cmb_detail::finish_size(x,best,seen,prob,NAN,tol,maxit,work,evidence);
   }
   return fail(CmbStatus::FaceUnresolved);
 }
@@ -635,12 +704,13 @@ inline CmbSizeResult cmb_size_nonconstant_free_nu(ispan x,int mn,int mx,
     face=double(count_v)*z-n*std::max(0.,z)-n*std::log1p(std::exp(-std::abs(z)));
     evidence=discrete_two_point(x,0,mx,cmb_detail::probability(z),z);
   }
+  cmb_detail::SizeRunner seen;
   const auto evaluate=[&](int N) {
     const auto f=cmb_detail::size_candidate_rescue(x,N,prob,tol,maxit,work,budget);
     if(f.status==CmbStatus::EndpointLimit || f.status==CmbStatus::AdjacentLimit || f.status==CmbStatus::PointMass)
       return true; // The only possible face here is the endpoint above.
-    if(f.stop_detail.budget_exhausted) {
-      evidence=discrete_budget(evidence);
+    if(f.status!=CmbStatus::Ok) {
+      if(f.stop_detail.budget_exhausted)evidence=discrete_budget(evidence);
       evidence.candidates.insert(evidence.candidates.end(),f.stop_detail.candidates.begin(),f.stop_detail.candidates.end());
       if(std::isfinite(f.stop_detail.loglik_lower) && (!std::isfinite(evidence.loglik_lower)||f.stop_detail.loglik_lower>evidence.loglik_lower))evidence.loglik_lower=f.stop_detail.loglik_lower;
     }
@@ -650,6 +720,7 @@ inline CmbSizeResult cmb_size_nonconstant_free_nu(ispan x,int mn,int mx,
     double upper=0;
     if(!cmb_detail::fixed_profile_upper(x,N,f,fixed,upper) ||
        std::abs(upper-f.logLik)>1e-8*(1+std::abs(f.logLik)))return false;
+    seen.observe(N,f,best);
     if(f.logLik>best.fit.logLik) {
       best={double(N),f};
       evidence.candidates.erase(std::remove_if(evidence.candidates.begin(),evidence.candidates.end(),
@@ -756,9 +827,52 @@ inline CmbSizeResult cmb_size_nonconstant_free_nu(ispan x,int mn,int mx,
         blocks.push_back({mid+1,R});blocks.push_back({L,mid});
       }
     }
-    return best;
+    return cmb_detail::finish_size(x,best,seen,prob,NAN,tol,maxit,work,evidence);
   }
   return fail(CmbStatus::FaceUnresolved);
+}
+
+// Scalar truncated profile with nu held. Concavity in a and a bracket of
+// its mean root give upper <= f(mid)+n*K*width. Reuse h and charge each
+// normalizer actually evaluated, not a worst-case maxit reservation.
+inline bool cmb_truncated_fixed_nu_upper(ispan x,int K,int anchor,double nu,int maxit,
+    std::uint64_t& work,std::uint64_t budget,StopDetail& evidence,double& upper) {
+  // This table must fit the family's declared allocation domain. A larger
+  // truncation is an unsupported certificate, never a capped estimate.
+  if(K<1 || K>10000000 || (anchor && anchor<K))return false;
+  const std::uint64_t cost=static_cast<std::uint64_t>(K)+1;
+  if(cost>budget-work){evidence=discrete_budget(evidence);return false;}
+  work+=cost;
+  std::vector<double> h(K+1);double correction=0;
+  for(int k=0;k<=K;++k) {
+    if(anchor && k>0)correction+=std::log1p(-double(k-1)/anchor);
+    h[k]=-std::lgamma(k+1.)+correction;
+  }
+  double sx=0,sh=0;for(int v:x){sx+=v;sh+=h[v];}
+  const double n=double(x.size()),mean=sx/n;
+  const auto objective=[&](double a,double& m,double& f) {
+    if(cost>budget-work){evidence=discrete_budget(evidence);return false;}
+    work+=cost;
+    double peak=-INFINITY;
+    for(int k=0;k<=K;++k)peak=std::max(peak,k*a+nu*h[k]);
+    double z=0,moment=0;
+    for(int k=0;k<=K;++k){const double q=std::exp(k*a+nu*h[k]-peak);z+=q;moment+=k*q;}
+    m=moment/z;f=sx*a+nu*sh-n*(peak+std::log(z));
+    return std::isfinite(m) && std::isfinite(f);
+  };
+  double lo=-64,hi=64,m=0,f=0;
+  if(!objective(lo,m,f) || !(m<mean))return false;
+  if(!objective(hi,m,f) || !(m>mean))return false;
+  for(std::int64_t i=0;i<solver_budget(maxit);++i) {
+    const double mid=lo+(hi-lo)/2;
+    if(!objective(mid,m,f))return false;
+    const double remainder=n*K*(hi-lo);
+    if(remainder<=1e-10*(1+std::abs(f))) {
+      upper=f+remainder+1e-9*(1+std::abs(f));return true;
+    }
+    if(m<mean)lo=mid;else hi=mid;
+  }
+  return false;
 }
 
 // Constant samples have an exact solution (or point-mass supremum). Other
@@ -796,7 +910,7 @@ inline CmbSizeResult cmb_size_free_nu_mle(ispan x,
       for(std::size_t c:counts)uniform=uniform && c==counts[0];
       if(uniform) {
         if(mx==1 && !fixed){evidence=discrete_two_point(x,0,1);return fail(CmbStatus::FaceTie);}
-        return {double(mx),{.5,mx==1?1.:0.,-double(x.size())*std::log(double(mx)+1),0,CmbStatus::Ok}};
+        return cmb_detail::accept_exact_size(x,{double(mx),{.5,mx==1?1.:0.,-double(x.size())*std::log(double(mx)+1),0,CmbStatus::Ok}},prob,NAN,tol,maxit);
       }
     }
     if(fixed && prob==.5 && mn==0 && mx==1) {
@@ -805,10 +919,13 @@ inline CmbSizeResult cmb_size_free_nu_mle(ispan x,
       const double n=zero+one;
       const double ll1=-n*std::log(2.);
       const double ll2=zero*std::log(zero/(2*n))+one*std::log(one/n);
-      if(std::abs(ll2-ll1)<=1e-12*(1+std::max(std::abs(ll1),std::abs(ll2))))
-        return fail(CmbStatus::IterationFailure);
+      if(std::abs(ll2-ll1)<=1e-12*(1+std::max(std::abs(ll1),std::abs(ll2)))) {
+        evidence=comparison_detail({{1,.5,1},ll1,ll1},
+          {{2,.5,std::log(2*one/zero)/std::log(2.)},ll2,ll2});
+        return fail(CmbStatus::FaceTie);
+      }
       if(ll2>ll1)
-        return {2.,{.5,std::log(2*one/zero)/std::log(2.),ll2,0,CmbStatus::Ok}};
+        return cmb_detail::accept_exact_size(x,{2.,{.5,std::log(2*one/zero)/std::log(2.),ll2,0,CmbStatus::Ok}},prob,NAN,tol,maxit);
       return {1.,{.5,1.,ll1,0,CmbStatus::Ok}};
     }
     // With odds one, equally frequent observations on the two central
@@ -845,12 +962,18 @@ inline CmbSizeResult cmb_size_free_nu_mle(ispan x,
     }
     return cmb_size_nonconstant_free_nu(x,mn,mx,prob,tol,maxit);
   }
+  if(mx==0 && (!fixed || prob==0))return cmb_detail::zero_size_tie(prob,NAN);
   if(!fixed || mx==0 || prob==1)
     return {double(mx),{fixed?prob:(mx==0?0.:1.),1.,0.,0,CmbStatus::Ok}};
   // If 2*mx is in the supported size range, nu -> +infinity at size
   // 2*mx concentrates on mx. No finite interior-probability member does.
   if(mx<=5000000){evidence=discrete_point(mx);return fail(CmbStatus::PointMass);}
-  return fail(CmbStatus::NotImplemented);
+  // The exposing central design lies beyond the allocation domain. The
+  // endpoint face at the smallest design remains a valid lower witness,
+  // but does not exclude a finite maximum at another supported size.
+  const double eta=mx*(std::log(prob)-std::log1p(-prob));
+  evidence=discrete_two_point(x,0,mx,cmb_detail::probability(eta),eta);
+  return fail(CmbStatus::FaceUnresolved);
 }
 
 // Free probability and fixed dispersion. All finite-size profiles are checked;
@@ -873,20 +996,24 @@ inline CmbSizeResult cmb_size_fixed_nu_mle(ispan x,double nu,
     if(v<0 || v>10000000)return fail(CmbStatus::InvalidInput);
     mn=std::min(mn,v);mx=std::max(mx,v);sx+=v;sh+=std::lgamma(v+1.0);
   }
+  if(mx==0)return cmb_detail::zero_size_tie(NAN,nu);
   if(mn==mx) return {double(mx),{mx==0?0.:1.,nu,0.,0,CmbStatus::Ok}};
   const double n=double(x.size()),mean=sx/n;
   const std::uint64_t budget=enumeration_budget(maxit);
   std::uint64_t work=0;
   CmbSizeResult best{nan,{nan,nu,-INFINITY,0,CmbStatus::IterationFailure}};
+  cmb_detail::SizeRunner seen;
   const auto evaluate=[&](int N) {
     if(N>10000000)return false;
-    const auto f=cmb_mle_work(x,N,tol,maxit,nan,nu,work,budget);
-    if(f.stop_detail.budget_exhausted) {
-      evidence=discrete_budget(evidence);
+    auto f=cmb_mle_work(x,N,tol,maxit,nan,nu,work,budget);
+    f=cmb_finish_work(x,N,f,tol,maxit,nan,nu,work);
+    if(f.status!=CmbStatus::Ok) {
+      if(f.stop_detail.budget_exhausted)evidence=discrete_budget(evidence);
       evidence.candidates.insert(evidence.candidates.end(),f.stop_detail.candidates.begin(),f.stop_detail.candidates.end());
       if(std::isfinite(f.stop_detail.loglik_lower) && (!std::isfinite(evidence.loglik_lower)||f.stop_detail.loglik_lower>evidence.loglik_lower))evidence.loglik_lower=f.stop_detail.loglik_lower;
     }
     if(f.status!=CmbStatus::Ok || !std::isfinite(f.logLik))return false;
+    seen.observe(N,f,best);
     if(f.logLik>best.fit.logLik) {
       best={double(N),f};
       evidence.candidates.erase(std::remove_if(evidence.candidates.begin(),evidence.candidates.end(),
@@ -897,13 +1024,13 @@ inline CmbSizeResult cmb_size_fixed_nu_mle(ispan x,double nu,
     return true;
   };
   if(!evaluate(mx))return fail(CmbStatus::IterationFailure);
-  if(nu==0)return best;
+  if(nu==0)return cmb_detail::finish_size(x,best,seen,NAN,nu,tol,maxit,work,evidence);
   // The endpoint terms imply L_N <= prod choose(N,x_i)^nu for nu<0.
   if(nu<0) {
     for(int N=mx+1;N<=10000000;++N) {
       double upper=0;
       for(int v:x)upper+=nu*cmb_detail::logchoose(N,v);
-      if(upper<best.fit.logLik-1e-9*(1+std::abs(best.fit.logLik)))return best;
+      if(upper<best.fit.logLik-1e-9*(1+std::abs(best.fit.logLik)))return cmb_detail::finish_size(x,best,seen,NAN,nu,tol,maxit,work,evidence);
       if(!evaluate(N))return fail(CmbStatus::IterationFailure);
     }
     return fail(CmbStatus::IterationFailure);
@@ -932,21 +1059,8 @@ inline CmbSizeResult cmb_size_fixed_nu_mle(ispan x,double nu,
   int K=std::max(mx+1,32);
   double truncated=INFINITY;
   for(;;K*=2) {
-    const std::uint64_t cost=(static_cast<std::uint64_t>(K)+1)*2*(static_cast<std::uint64_t>(maxit)+3);
-    if(cost>budget-work){evidence=discrete_budget(evidence);return fail(CmbStatus::IterationFailure);}
-    work+=cost;
-    double lo=-64,hi=64;
-    const auto objective=[&](double a,double& m) {
-      double top=-INFINITY;
-      for(int k=0;k<=K;++k)top=std::max(top,k*a-nu*std::lgamma(k+1.));
-      double z=0,s=0;
-      for(int k=0;k<=K;++k) {const double w=std::exp(k*a-nu*std::lgamma(k+1.)-top);z+=w;s+=k*w;}
-      m=s/z; return sx*a-n*(top+std::log(z))-nu*sh;
-    };
-    double ml=0,mh=0; objective(lo,ml);objective(hi,mh);
-    if(!(ml<mean && mh>mean))return fail(CmbStatus::IterationFailure);
-    for(int i=0;i<maxit;++i) {double m=0;const double mid=(lo+hi)/2;objective(mid,m);if(m<mean)lo=mid;else hi=mid;}
-    double m=0;truncated=objective((lo+hi)/2,m)+n*K*(hi-lo)+margin;
+    if(!cmb_truncated_fixed_nu_upper(x,K,0,nu,maxit,work,budget,evidence,truncated))
+      return fail(CmbStatus::IterationFailure);
     if(truncated<best.fit.logLik-margin)break;
   }
   if(K>10000000)return fail(CmbStatus::IterationFailure);
@@ -965,9 +1079,34 @@ inline CmbSizeResult cmb_size_fixed_nu_mle(ispan x,double nu,
   int lo=std::max(K,mx+256);
   for(std::int64_t bracket_pass=0; bracket_pass<solver_budget(maxit) && (hi-lo>1); ++bracket_pass) {const int mid=lo+(hi-lo)/2;if(bound(mid)<best.fit.logLik-margin)hi=mid;else lo=mid;}
   if(hi-lo>1)return fail(CmbStatus::IterationFailure);
-  // No feasible size is skipped, including sizes below K.
-  for(int N=mx+256;N<hi;++N)if(!evaluate(N))return fail(CmbStatus::IterationFailure);
-  return best;
+  // Bound integer blocks by a scalar truncated profile at their left
+  // endpoint. For nu>0, c_R-c_L is increasing; dropping the nonnegative
+  // normalizer correction leaves upper(L)+nu*sum_i (c_R-c_L)(x_i).
+  std::vector<std::pair<int,int>> blocks;
+  if(mx+256<hi)blocks.push_back({mx+256,hi-1});
+  while(!blocks.empty()) {
+    const int L=blocks.back().first,R=blocks.back().second;blocks.pop_back();
+    if(L<K || L==R) {
+      if(!evaluate(L))return fail(CmbStatus::IterationFailure);
+      if(L<R)blocks.push_back({L+1,R});
+      continue;
+    }
+    double anchor=0;
+    if(!cmb_truncated_fixed_nu_upper(x,K,L,nu,maxit,work,budget,evidence,anchor))
+      return fail(CmbStatus::IterationFailure);
+    const std::uint64_t cost=static_cast<std::uint64_t>(K)+1;
+    if(cost>budget-work){evidence=discrete_budget(evidence);return fail(CmbStatus::IterationFailure);}
+    work+=cost;
+    std::vector<double> diff(K+1,0.);
+    for(int k=1;k<=K;++k)
+      diff[k]=diff[k-1]+std::log1p(-double(k-1)/R)-std::log1p(-double(k-1)/L);
+    double correction=0;for(int v:x)correction+=nu*diff[v];
+    const double upper=anchor+correction+1e-9*(1+std::abs(anchor)+std::abs(correction));
+    if(upper<best.fit.logLik-margin)continue;
+    const int mid=L+(R-L)/2;
+    blocks.push_back({mid+1,R});blocks.push_back({L,mid});
+  }
+  return cmb_detail::finish_size(x,best,seen,NAN,nu,tol,maxit,work,evidence);
 }
 // Both canonical coordinates held. Enumerate all integers, and bound the
 // entire remaining tail by a single normalizer term. This does not assume
@@ -982,6 +1121,7 @@ inline CmbSizeResult cmb_size_mle(ispan x,double prob,double nu,
      !(tol>0)||!std::isfinite(tol)||maxit<1)return fail(CmbStatus::InvalidInput);
   int mx=0;double sx=0;
   for(int v:x){if(v<0)return fail(CmbStatus::InvalidInput);mx=std::max(mx,v);sx+=v;}
+  if(mx==0 && prob==0)return cmb_detail::zero_size_tie(prob,nu);
   if(prob==0 || prob==1) {
     for(int v:x)if(v!=(prob==0 ? 0 : mx))return fail(CmbStatus::InvalidInput);
     return {double(mx),{prob,nu,0,0,CmbStatus::Ok}};
@@ -992,6 +1132,7 @@ inline CmbSizeResult cmb_size_mle(ispan x,double prob,double nu,
   // Work budget counts enumerated normalizer terms, not size magnitude.
   // Table also computes moments and tails, so charge its full support.
   std::uint64_t work=0;
+  cmb_detail::SizeRunner seen;
   for(int N=mx;;++N) {
     const auto f=cmb_mle_work(x,N,tol,maxit,prob,nu,work,enumeration_budget(maxit));
     if(f.stop_detail.budget_exhausted){
@@ -1001,6 +1142,7 @@ inline CmbSizeResult cmb_size_mle(ispan x,double prob,double nu,
     }
     if(f.status!=CmbStatus::Ok)return {double(N),f};
     if(!std::isfinite(f.logLik))return fail(CmbStatus::IterationFailure);
+    seen.observe(N,f,best);
     if(f.logLik>best.fit.logLik) {
       best={double(N),f};
       evidence.candidates.erase(std::remove_if(evidence.candidates.begin(),evidence.candidates.end(),
@@ -1010,7 +1152,7 @@ inline CmbSizeResult cmb_size_mle(ispan x,double prob,double nu,
     }
     // nu=0: weights r^x are independent of size and the normalizer strictly
     // increases, so the first feasible size is the exact optimum.
-    if(nu==0)return best;
+    if(nu==0)return cmb_detail::finish_size(x,best,seen,prob,nu,tol,maxit,work,evidence);
     double upper=0;
     if(nu>0) {
       const double next=double(N)+1;
@@ -1028,7 +1170,7 @@ inline CmbSizeResult cmb_size_mle(ispan x,double prob,double nu,
       for(int v:x)upper+=nu*cmb_detail::logchoose(N+1,v);
       upper+=eta*sx-n*std::max(0.,(N+1.)*eta);
     }
-    if(upper<best.fit.logLik-1e-10*n)return best;
+    if(upper<best.fit.logLik-1e-10*n)return cmb_detail::finish_size(x,best,seen,prob,nu,tol,maxit,work,evidence);
   }
 }
 }
