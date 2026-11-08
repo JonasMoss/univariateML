@@ -283,3 +283,53 @@ TEST_CASE("genbeta certificate: rounded logarithms do not prove constant-data no
     CHECK(r.certificate_failure==cppunivariate::GenbetaCertificateFailure::Arithmetic);
   }
 }
+
+TEST_CASE("genbeta held q: free p and power certify finite frozen-sample maxima") {
+  const auto g=mltest::load_distribution_golden("genbeta");
+  for(double q:{.01,.1,.3}) {
+    const auto r=cppunivariate::genbeta_mle(mltest::as_span(g.data),1,1e-7,300,NAN,q);
+    CAPTURE(q); CAPTURE(static_cast<int>(r.certificate_failure)); CAPTURE(r.iterations);
+    REQUIRE(r.status==cppunivariate::GenbetaStatus::Ok);
+    CHECK(r.shape2==q);
+    double ll=0,sp=0,sa=1;
+    for(double x:g.data) {
+      const double y=-std::log(x),z=r.shape3*y;
+      ll+=cppunivariate::distributions::dgenbeta(x,r.shape1,q,r.shape3,1,true);
+      sp-=z/g.data.size();
+      sa+=(-r.shape1*z+(q-1)*z/std::expm1(z))/g.data.size();
+    }
+    sp+=cppunivariate::special::digamma(r.shape1+q)-cppunivariate::special::digamma(r.shape1);
+    CHECK(ll==doctest::Approx(r.logLik).epsilon(1e-10));
+    CHECK(std::abs(sp*r.shape1)<1e-9);
+    CHECK(std::abs(sa)<1e-9);
+  }
+}
+
+TEST_CASE("genbeta held q: unresolved neighborhoods and precision remain terminal") {
+  const auto g=mltest::load_distribution_golden("genbeta");
+  const auto s=mltest::as_span(g.data);
+  for(int limit:{1,2,300}) {
+    const auto r=cppunivariate::genbeta_mle(s,1,1e-7,limit,NAN,.7);
+    CHECK(r.status==cppunivariate::GenbetaStatus::SearchUnresolved);
+    CHECK(r.status!=cppunivariate::GenbetaStatus::UnitGammaBoundary);
+    if(!r.stop_detail.candidates.empty()) {
+      CHECK(r.stop_detail.candidates[0].coef.size()==4);
+      CHECK(r.stop_detail.candidates[0].coef[1]==.7);
+      CHECK(std::isfinite(r.stop_detail.loglik_lower));
+      CHECK(std::isinf(r.stop_detail.loglik_upper));
+    }
+  }
+  const auto r=cppunivariate::genbeta_mle(s,1,1e-20,300,NAN,.3);
+  CHECK(r.status==cppunivariate::GenbetaStatus::SearchUnresolved);
+}
+
+TEST_CASE("genbeta held q: q above one power face has a finite improvement") {
+  // q=2, v=(.5,1.5), h=100 and p=1/h: per-observation log likelihood
+  // equals -1 + log(1+1/h) + mean(log(1-exp(-h*v))) > -1.
+  const std::vector<double> x{std::exp(-.5),std::exp(-1.5)};
+  const auto r=cppunivariate::genbeta_mle(mltest::as_span(x),1,1e-7,300,NAN,2);
+  CHECK(r.status!=cppunivariate::GenbetaStatus::PowerBoundary);
+  double normalized=0;
+  for(double v:x)normalized+=(cppunivariate::distributions::dgenbeta(v,.01,2,100,1,true)+std::log(v))/2;
+  CHECK(normalized> -1+.009);
+}

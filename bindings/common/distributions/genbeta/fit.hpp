@@ -79,6 +79,8 @@ const std::string name = "shape3";
       switch(r.certificate_failure) {
         case cppunivariate::GenbetaCertificateFailure::ShapeSolve:message="Generalized beta conditional shape solve unresolved; increase iterlim.";break;
         case cppunivariate::GenbetaCertificateFailure::ShapeSigns:message="Generalized beta conditional shape signs unresolved at floating-point precision; hold shapes.";break;
+        case cppunivariate::GenbetaCertificateFailure::GammaNeighborhood:message="Generalized beta gamma-limit neighborhood unresolved; the held-shape limit is not certified. `mllgamma` fits an unrestricted shape; hold shapes to resolve this fit.";break;
+        case cppunivariate::GenbetaCertificateFailure::PowerNeighborhood:message="Generalized beta held-endpoint power neighborhood unresolved; increase iterlim or hold shapes.";break;
         case cppunivariate::GenbetaCertificateFailure::Tail:message="Generalized beta certificate tail bound unresolved; increase iterlim or hold shapes.";break;
         case cppunivariate::GenbetaCertificateFailure::RootSigns:message="Generalized beta power-root signs unresolved at floating-point precision; hold shapes.";break;
         case cppunivariate::GenbetaCertificateFailure::CoefficientInclusion:message="Generalized beta coefficient enclosure unresolved; increase iterlim or hold shapes.";break;

@@ -12,7 +12,7 @@ namespace cppunivariate {
 enum class GenbetaStatus { Ok, UnitGammaBoundary, PowerBoundary, InvalidData,
   InvalidFixed, SearchUnresolved, Unbounded };
 enum class GenbetaCertificateFailure { None, Arithmetic, ShapeSolve, ShapeSigns,
-  Tail, RootSigns, CoefficientInclusion, Budget };
+  Tail, RootSigns, CoefficientInclusion, Budget, GammaNeighborhood, PowerNeighborhood };
 struct GenbetaResult {
   double shape1, shape2, shape3, scale, logLik;
   int iterations;
@@ -76,6 +76,7 @@ inline Point profile(const std::vector<double>& y,double t,double aa,double bb,i
 } // namespace cppunivariate
 
 #include "power_profile_certificate.hpp"
+#include "free_p_certificate.hpp"
 
 namespace cppunivariate {
 
@@ -244,6 +245,8 @@ inline GenbetaResult genbeta_mle(span x,double scale,double tol=1e-7,int maxit=3
     }
     return out;
   }
+  if(std::isnan(t)&&std::isnan(a)&&!std::isnan(b))
+    return genbeta_free_p_cert::fit(y,b,scale,mean,static_cast<double>(jac),tol,maxit);
   int evals=0;
   auto at=[&](double z){++evals;return genbeta_detail::profile(y,std::exp(z),a,b,maxit);};
   genbeta_detail::Point best;

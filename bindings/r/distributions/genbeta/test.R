@@ -277,3 +277,20 @@ test_that("genbeta rounded transformed ties stop numerically", {
   e <- tryCatch(mlgenbeta(x,scale=1,shape1=.4),error=identity)
   expect_s3_class(e,"univariateML_numerical")
 })
+
+test_that("genbeta held q certificates fit finite maxima and preserve stop witnesses", {
+  g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"),"genbeta","golden.json"))
+  for(q in c(.01,.1,.3)) {
+    f <- mlgenbeta(g$data,scale=1,shape2=q)
+    expect_identical(unname(f["shape2"]),q)
+    expect_equal(attr(f,"logLik"),genbeta_ll(g$data,f),tolerance=1e-9)
+    expect_identical(attr(f,"fixed"),c("shape2","scale"))
+    expect_equal(attr(logLik(f),"df"),2L)
+  }
+  e <- tryCatch(mlgenbeta(g$data,scale=1,shape2=.7),error=identity)
+  expect_s3_class(e,"univariateML_numerical")
+  expect_match(conditionMessage(e),"gamma-limit neighborhood unresolved")
+  expect_identical(e$candidates$shape2,.7)
+  expect_identical(e$loglik_upper,Inf)
+  expect_error(mlgenbeta(g$data,scale=1,shape2=.3,iterlim=1),"shape solve unresolved")
+})

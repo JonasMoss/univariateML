@@ -1,0 +1,34 @@
+{
+  "evidence": "70-digit local stationary oracle; no independent global claim",
+  "cases": [
+    {
+      "q": 0.01,
+      "p": 0.001820953726105412,
+      "power": 781.6212350789639,
+      "p_relative_error": 9.94478199437183e-11,
+      "power_relative_error": 1.1479377608406561e-10,
+      "logLik_absolute_error": 2.2724526900103627e-12,
+      "work": 305
+    },
+    {
+      "q": 0.1,
+      "p": 0.05222558092412122,
+      "power": 21.40299930777512,
+      "p_relative_error": 2.871468945425365e-11,
+      "power_relative_error": 3.8146512594037535e-11,
+      "logLik_absolute_error": 6.308405634033269e-13,
+      "work": 319
+    },
+    {
+      "q": 0.3,
+      "p": 0.36629221905654674,
+      "power": 2.5357314620951628,
+      "p_relative_error": 6.404496824986708e-12,
+      "power_relative_error": 8.472120243030194e-12,
+      "logLik_absolute_error": 4.3463706267447677e-13,
+      "work": 569
+    }
+  ],
+  "machine": "simbox, GCC 13.3",
+  "capture": "Foreground oracle stdout matched oracle-local.json exactly. This record preserves those observed values after the next simbox mirror removed the remote output file."
+}
