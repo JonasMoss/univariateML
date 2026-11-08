@@ -49,14 +49,14 @@ r:
     size: "Required number of trials; NULL estimates size when either shape is held."
     alpha: "Optional fixed positive alpha; NULL estimates it."
     beta: "Optional fixed value of `beta`; `NULL` (the default) estimates it."
-    reltol: "Relative tolerance on the Newton steps in the logarithm of the free concentration or shape."
+    reltol: "Relative accuracy required in every free shape coefficient; a curvature and score enclosure must pass before acceptance."
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations (default iterlim 500); per certificate: 128 * min(iterlim, 100000) certificate evaluations; per enumeration: 100000 * min(iterlim, 100000) enumeration cells."
 log_density: "loggamma(size + 1) - loggamma(x + 1) - loggamma(size - x + 1) + loggamma(x + alpha) + loggamma(size - x + beta) - loggamma(size + alpha + beta) - loggamma(alpha) - loggamma(beta) + loggamma(alpha + beta)"
 limits:
   - model: binom
     firmness: proved
     when: '$\alpha + \beta \to \infty$ with $\alpha/(\alpha + \beta)$ fixed'
-    detect: no beta-binomial fit beats the binomial with success probability $\bar x / n$ (up to $10^{-8}$ per observation)
+    detect: signed uniform near-face exclusion and strict tangent/chord bounds exclude every finite shape pair
     status: BinomialLimit
     numerical: true
   - name: two-point law on 0 and n
@@ -101,8 +101,8 @@ relations:
         shape2: beta
 fit:
   method: profile-search
-  certified: partial
-  note: "bbinom/mle.hpp, bbinom_detail::face_neighbourhood and certify: Fixed-size binomial-limit stops require a signed uniform near-face bound and strict tangent/chord exclusion elsewhere; uncertain comparisons stop with witnesses. At size two an overdispersed empirical table attains the saturated multinomial bound exactly. Other finite and held-shape profiles retain a 1e-8 per-observation global likelihood allowance, which does not certify coefficient accuracy or uniqueness. Supported free-size fits use integer tail bounds; unresolved profiles and budgets stop. The unrestricted free-size fit is unsupported. See Details, Signed binomial-face certificate."
+  certified: 'yes'
+  note: "bbinom/mle.hpp and acceptance.hpp: Fixed-size finite fits require a negative-curvature region, score-based enclosures transported to every free public shape, and strict tangent/chord exclusion outside that region. Binomial-limit stops use a signed uniform near-face bound; size-two saturated fits are algebraic. Certificates are conditional on computed comparisons with practical floating-point margins. Unresolved finite or face comparisons, coefficient precision and work limits stop with witnesses. Supported free-size fits retain their integer tail certificates; the unrestricted free-size fit is unsupported. See Details, Fixed-size coefficient acceptance."
 areas:
 - counts and ecology
 classification: specialist
@@ -190,9 +190,9 @@ For $N=2$, an overdispersed empirical table is itself a beta-binomial law,
 so its shapes are obtained algebraically and its likelihood attains the
 saturated multinomial upper bound. For $N>2$, finite candidates must beat
 the face by a $1024\epsilon$
-likelihood-scale margin. Their global tangent/chord check retains the
-$10^{-8}h$ likelihood allowance; this is not a proof of coefficient accuracy
-or uniqueness. For example, at $N=2$, frequencies $(25001,50000,25001)$
+likelihood-scale margin. Their global tangent/chord check strictly excludes every point outside
+a region whose curvature proves a unique stationary maximum, and the score
+encloses its public coefficients as described below. For example, at $N=2$, frequencies $(25001,50000,25001)$
 have the exact finite fit $\alpha=\beta=25000$, although its improvement is
 below the former face preference. At $N=1$ every pair with the same shape
 ratio gives the same fitted Bernoulli law, providing a continuum of maxima.
@@ -229,9 +229,8 @@ likelihood times $(\log N)^m$ tends to
 $e^{-ht}t^m/\prod_{x_i>0}x_i$.
 
 The earlier bound alone does not certify the integer profile comparison: the
-existing fixed-size shape optimizer supplies an approximate profile with a
-nonzero likelihood allowance, and those upper allowances must be retained
-when comparing sizes and point-mass faces. Held alpha has a fixed-shape
+fixed-size coefficient enclosures alone do not order different integer sizes;
+the free-size comparisons retain their separate likelihood margins. Held alpha has a fixed-shape
 negative-binomial face, while the unrestricted subset also has arbitrary
 negative-binomial and Poisson faces and fixed-size binomial and endpoint
 faces. A uniform tail correction when both shapes are free and a global
@@ -251,13 +250,9 @@ not generally concave in $\log a$: for one observation $x=N=2$ and
 $b=10$, its second derivative in $\log a$ is positive for sufficiently
 small $a$, with leading coefficient $1-1/10-1/11$ times $a$. Its score is
 a sum of positive numerator terms and negative denominator terms. The
-implementation brackets all stationary points using score bounds, scans and
-refines candidates, and bounds every intervening interval by a tangent to
-the concave numerator minus a chord of the concave denominator. It accepts
-a profile within $10^{-8}h$ log-likelihood units, with the floating-point
-margin in `shape_bound`; failure to establish this stops. This is an
-exact-arithmetic certificate conditional on computed comparisons, not
-outward-rounded arithmetic.
+implementation uses the analytic score signs to bound the search domain,
+proposes roots on a log grid, and accepts only after the fixed-size coefficient
+certificate below. No grid spacing is assumed to isolate every mode.
 
 At fixed $N>0$, $a\to0$ gives a point mass at zero and $a\to\infty$
 a point mass at $N$. For nonconstant data both faces have zero likelihood.
@@ -281,8 +276,8 @@ holds for all subsequent sizes. The search enumerates up to the first such
 $N$, subject to the enumeration-cell budget, and stops on exhaustion. It compares profile values
 with a $2\cdot10^{-8}h$ ambiguity margin and stops on a numerical tie.
 The cutoff inequality uses an additional floating-point margin; neither
-margin is an interval-arithmetic guarantee. The fixed-size profile allowance
-is propagated in the comparison. See the task report for measurements.
+margin is an interval-arithmetic guarantee. Each visited fixed-size profile
+also passes the coefficient certificate.
 
 
 ## Held alpha: negative-binomial face and uniform size bound
@@ -332,8 +327,8 @@ $$
  +\frac{ha^2}{2}\left(\frac1{cN}+\frac1{(cN)^2}\right).
 $$
 Both upper bounds decrease with $N$. A finite fit strictly above both
-bounds at the next size excludes every subsequent size; its fixed-size
-profile allowance and cross-size ambiguity margin are included. The code
+bounds at the next size excludes every subsequent size, using the retained
+cross-size ambiguity margin. The code
 selects $c$ by bisection, enumerates finite sizes subject to the enumeration-cell budget, and stops on a
 numerical tie or failure. Before enumeration, it requires the first profile
 to exclude the tail beyond the budget; otherwise it reports a budget stop,
@@ -364,3 +359,39 @@ certificate-bound scans by their support cells, sharing the cell budget
 across recursively fitted sizes. A size profile is not an O(1) cell. An
 exhausted cell ledger stops with its evaluated candidates retained; no
 size-profile unimodality is assumed.
+
+
+## Fixed-size coefficient acceptance
+
+For a finite both-shapes-free proposal, `acceptance.hpp` brackets the profiled
+mean throughout a dispersion interval by decreasing rational score bounds.
+On the resulting rectangle it bounds $-\ell_{pp}\ge M>0$,
+$|\ell_{ps}|\le B$, and
+$\ell_{ss}+\ell_{ps}^2/(-\ell_{pp})\le-K<0$.
+The residual profile score, including the mean bracket's contribution,
+therefore bounds the root's dispersion error by $\delta_s=|L'|/K$;
+the mean error is at most its bracket radius plus $B\delta_s/M$.
+The image of this rectangle under $\alpha=p/s$, $\beta=(1-p)/s$
+must meet the requested relative accuracy in each free public shape.
+With one shape held, a negative scalar-curvature bound gives the analogous
+score-to-root enclosure directly in the other shape.
+
+The region has at most one stationary maximum. The enclosed root lies strictly
+inside it; strict tangent/chord bounds exclude its entire complement in the
+analytic compact search domain. Thus acceptance proves global optimality and
+uniqueness for that sample, conditional on the comparisons. Grid proposals
+never substitute for these exclusions. Separated proposed maxima with
+indistinguishable likelihoods stop as a tie. Precision failures and exhausted
+certificates also stop, retaining available feasible witnesses. The
+size-two saturated solution retains its algebraic reduction.
+
+Near the binomial face the dispersion score subtracts its face value
+symbolically, using the integer moment numerator above and a rational
+remainder, to avoid cancellation of large summands. Score margins use
+$32\epsilon_L$ absolute sums, curvature uses $128\epsilon_L$, and public
+coefficient conversion reserves $8\epsilon$; $\epsilon_L$ is the arithmetic
+precision of the intermediates. Global comparisons include the existing
+$128\epsilon$ upper padding and an additional feasible-anchor margin.
+These are practical floating-point margins, not outward-rounded intervals.
+A general symbolic uniqueness theorem remains unknown; at sizes zero and
+one the previously described continua are explicit counterexamples.

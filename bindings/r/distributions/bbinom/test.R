@@ -173,3 +173,26 @@ test_that("curvature closes near-zero negative face comparisons", {
   expect_true(all(is.finite(e$candidates$loglik_lower)))
   expect_true(all(is.finite(e$candidates$size)))
 })
+
+test_that("fixed-size saturated tables enclose the public coefficients", {
+  for (case in list(list(n=3,a=2,b=3,f=c(10,12,9,4)),
+                    list(n=6,a=1,b=1,f=rep(1,7)))) {
+    x <- rep(0:case$n,case$f)
+    for (held in list(list(),list(alpha=case$a),list(beta=case$b))) {
+      f <- do.call(mlbbinom,c(list(x=x,size=case$n),held))
+      expect_equal(unname(f[c("alpha","beta")]),c(case$a,case$b),tolerance=1e-10)
+    }
+  }
+})
+
+test_that("unattainable coefficient accuracy gives a structured numerical stop", {
+  x <- c(0,1,1,2,2,3,4,5,7,10)
+  for (held in list(list(),list(alpha=2),list(beta=3))) {
+    e <- tryCatch(do.call(mlbbinom,c(list(x=x,size=10,reltol=1e-18),held)),error=identity)
+    expect_s3_class(e,"univariateML_numerical")
+    expect_equal(e$kind,"numerical")
+    expect_true(is.infinite(e$loglik_upper))
+    expect_true(nrow(e$candidates)>0)
+    expect_true(all(is.finite(e$candidates$loglik_lower)))
+  }
+})

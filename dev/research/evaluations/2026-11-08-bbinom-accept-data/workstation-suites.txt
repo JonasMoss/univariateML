@@ -1,0 +1,52 @@
+build/scratch/accept-local-no-long-double.log
+127/129 Test  #98: distribution_std_slow ............   Passed   47.61 sec
+128/129 Test #104: distribution_trgamma .............   Passed   19.01 sec
+129/129 Test #101: distribution_tlambda_slow ........   Passed  178.48 sec
+
+100% tests passed, 0 tests failed out of 129
+
+Label Time Summary:
+cran    = 453.01 sec*proc (105 tests)
+dev     = 455.84 sec*proc (106 tests)
+full    = 706.37 sec*proc (129 tests)
+
+Total Test time (real) = 292.01 sec
+build/scratch/accept-js-build.log
+cache:INFO: generating system library: sysroot/lib/wasm32-emscripten/libclang_rt.builtins.a... (this will be cached in "/home/jonas/Files/programming/univariateML.wt/bbinom-accept/build/em-cache/sysroot/lib/wasm32-emscripten/libclang_rt.builtins.a" for subsequent builds)
+system_libs:INFO: compiled 184 inputs in 1.50s
+cache:INFO:  - ok
+cache:INFO: generating system library: sysroot/lib/wasm32-emscripten/libc++-noexcept.a... (this will be cached in "/home/jonas/Files/programming/univariateML.wt/bbinom-accept/build/em-cache/sysroot/lib/wasm32-emscripten/libc++-noexcept.a" for subsequent builds)
+system_libs:INFO: compiled 57 inputs in 11.26s
+cache:INFO:  - ok
+cache:INFO: generating system library: sysroot/lib/wasm32-emscripten/libc++abi-noexcept.a... (this will be cached in "/home/jonas/Files/programming/univariateML.wt/bbinom-accept/build/em-cache/sysroot/lib/wasm32-emscripten/libc++abi-noexcept.a" for subsequent builds)
+system_libs:INFO: compiled 16 inputs in 1.61s
+cache:INFO:  - ok
+cache:INFO: generating system library: sysroot/lib/wasm32-emscripten/libsockets.a... (this will be cached in "/home/jonas/Files/programming/univariateML.wt/bbinom-accept/build/em-cache/sysroot/lib/wasm32-emscripten/libsockets.a" for subsequent builds)
+system_libs:INFO: compiled 27 inputs in 0.48s
+cache:INFO:  - ok
+build/scratch/accept-js-test.log
+  duration_ms: 0.35324
+  type: 'test'
+  ...
+1..552
+# tests 552
+# suites 0
+# pass 552
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 151929.277955
+build/scratch/accept-site.log
+Environment: Python 3.14.5, SymPy 1.14.0; g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0
+Boost headers: /home/jonas/R/x86_64-pc-linux-gnu-library/4.5/BH/include
+PASS: 99 generated C++ snippets compile and link as C++17 (including exp, gamma, gb2).
+PASS: pilot and ten additional HTML spot checks: exp, gamma, gb2, binom, beta, hyper, sstd, gev, gpd, tnorm, pois, unif, pareto
+Log-density fallback: cmb, cmp, dweibull, gev, gpd, huber, sged, snorm, sstd, st, tbinom, tpois, triang, zib, zinb, zip, zipf, zmbinom, zmgeom, zmlogarithmic, zmnbinom, zmpois
+WEIGHT exp: HTML 25426 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+WEIGHT gamma: HTML 29650 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+WEIGHT gb2: HTML 62837 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+WEIGHT binom: HTML 41341 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+WEIGHT hyper: HTML 40161 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+WEIGHT sstd: HTML 134469 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+Total dist: 23082904 B

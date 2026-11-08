@@ -1,0 +1,72 @@
+{
+  "base": "a6ce88a30535bed8aa6ba719f20dda92b1f4021e",
+  "cpp_dev": {
+    "machine": "simbox",
+    "passed": 106
+  },
+  "cpp_full": {
+    "machine": "simbox",
+    "passed": 129
+  },
+  "cpp_no_long_double": [
+    {
+      "machine": "simbox",
+      "passed": 129
+    },
+    {
+      "machine": "workstation",
+      "passed": 129
+    }
+  ],
+  "r_dev": {
+    "machine": "simbox",
+    "pass": 22130,
+    "fail": 0,
+    "warn": 0,
+    "skip": 154
+  },
+  "r_full": {
+    "machine": "simbox",
+    "pass": 44962,
+    "fail": 0,
+    "warn": 0,
+    "skip": 0
+  },
+  "js_build": {
+    "machine": "workstation",
+    "exit": 0
+  },
+  "js_test": {
+    "machine": "workstation",
+    "passed": 552,
+    "failed": 0
+  },
+  "site_check": {
+    "machine": "workstation",
+    "exit": 0,
+    "cpp17_examples": 99
+  },
+  "oracle": {
+    "machine": "workstation",
+    "precision": 70,
+    "finite_cases": 60,
+    "max_relative_error": 2.513667854922699e-12,
+    "golden_relative_drift": 0.0
+  },
+  "timing_ms_per_fit": {
+    "before": {
+      "0": 0.309106,
+      "1": 0.0626605,
+      "2": 0.0198703,
+      "3": 0.0321557,
+      "4": 0.0249157
+    },
+    "after": {
+      "0": 0.26749599999999996,
+      "1": 0.0627485,
+      "2": 0.0199519,
+      "3": 0.0140088,
+      "4": 0.00955159
+    }
+  }
+}
