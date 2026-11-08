@@ -1,0 +1,88 @@
+==> /home/jmoss/umvl-wt/bbinom-face/build/scratch/closure-cpp-dev.log <==
+104/106 Test #126: no_throw_tests ...................   Passed    0.01 sec
+105/106 Test #128: tails_tests ......................   Passed    0.00 sec
+106/106 Test   #2: sample_tests .....................   Passed    0.01 sec
+
+100% tests passed out of 106
+
+Label Time Summary:
+cran    = 237.93 sec*proc (105 tests)
+dev     = 239.69 sec*proc (106 tests)
+full    = 239.69 sec*proc (106 tests)
+
+Total Test time (real) =  79.91 sec
+
+==> /home/jmoss/umvl-wt/bbinom-face/build/scratch/moment-cpp-full.log <==
+        Start 128: tails_tests
+128/129 Test #128: tails_tests ......................   Passed    0.00 sec
+129/129 Test #101: distribution_tlambda_slow ........   Passed  197.59 sec
+
+100% tests passed out of 129
+
+Label Time Summary:
+cran    = 296.28 sec*proc (105 tests)
+dev     = 298.48 sec*proc (106 tests)
+full    = 548.56 sec*proc (129 tests)
+
+Total Test time (real) = 197.59 sec
+
+==> /home/jmoss/umvl-wt/bbinom-face/build/scratch/closure-no-long-double.log <==
+127/129 Test #126: no_throw_tests ...................   Passed    0.01 sec
+128/129 Test #128: tails_tests ......................   Passed    0.00 sec
+129/129 Test #101: distribution_tlambda_slow ........   Passed  206.72 sec
+
+100% tests passed out of 129
+
+Label Time Summary:
+cran    = 272.57 sec*proc (105 tests)
+dev     = 274.83 sec*proc (106 tests)
+full    = 535.17 sec*proc (129 tests)
+
+Total Test time (real) = 206.72 sec
+
+==> /home/jmoss/umvl-wt/bbinom-face/build/scratch/moment-no-long-double-bbinom.log <==
+Test project /home/jmoss/umvl-wt/bbinom-face/build/cpp-no-long-double
+    Start 3: distribution_bbinom
+1/1 Test #3: distribution_bbinom ..............   Passed    0.35 sec
+
+100% tests passed out of 1
+
+Label Time Summary:
+cran    =   0.35 sec*proc (1 test)
+dev     =   0.35 sec*proc (1 test)
+full    =   0.35 sec*proc (1 test)
+
+Total Test time (real) =   0.36 sec
+
+==> /home/jmoss/umvl-wt/bbinom-face/build/scratch/closure-r-dev.log <==
+  'test-dist-zmnbinom.R:2:3', 'test-dist-zmpois.R:2:3',
+  'test-dist-zmnbinom.R:60:3', 'test-dist-zmpois.R:36:3',
+  'test-dist-zmnbinom.R:75:3', 'test-dist-ztbinom.R:2:3',
+  'test-dist-ztbinom.R:49:3', 'test-dist-ztbinom.R:91:3',
+  'test-dist-ztgeom.R:2:3', 'test-dist-ztgeom.R:33:3',
+  'test-dist-ztnbinom.R:2:3', 'test-dist-ztpois.R:2:3',
+  'test-dist-ztpois.R:33:3', 'test-dist-ztnbinom.R:57:3',
+  'test-dist-ztnbinom.R:72:3'
+
+[ FAIL 0 | WARN 0 | SKIP 154 | PASS 21519 ]
+   user  system elapsed 
+365.618   4.244  89.530 
+
+==> /home/jmoss/umvl-wt/bbinom-face/build/scratch/moment-r-full.log <==
+✔ |        817 | dist-sged [221.0s]                                             
+
+⠧ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44334 ] Starting up...                      
+                                                                                
+══ Results ═════════════════════════════════════════════════════════════════════
+Duration: 306.4 s
+
+[ FAIL 0 | WARN 0 | SKIP 0 | PASS 44334 ]
+
+HUH - awe-inspiring code.
+   user  system elapsed 
+903.128   6.821 309.797 
+2 0 25000 25000 0 0
+3 0 18749.500000047123 18749.500000047141 2.5133228831464294e-12 2.5142110615661295e-12
+near-zero 3
+reflected-near-zero 3
+budget 58710 7 2

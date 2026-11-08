@@ -376,3 +376,76 @@ TEST_CASE("bbinom: structured stop payloads") {
   const auto budget=cppunivariate::bbinom_mle({spread.data(),spread.size()},NAN,1e-10,100,.1,NAN);
   if(budget.status==cppunivariate::BbinomStatus::SizeBudget)CHECK(budget.stop_detail.loglik_upper==INFINITY);
 }
+
+TEST_CASE("bbinom: signed binomial face including zero score") {
+  for(const auto& x:std::vector<std::vector<int>>{{0,1,1,2},{4,5,5,6,5,4,6,5,5,5},{1,1,1}}) {
+    const int N=x.size()==4?2:10;
+    const auto r=fit(x,N);
+    CHECK(r.status==cppunivariate::BbinomStatus::BinomialLimit);
+    CHECK(r.stop_detail.limit_model==cppunivariate::StopModel::Binom);
+  }
+}
+
+TEST_CASE("bbinom: finite gain below the former face preference is retained") {
+  std::vector<int>x(100002,1);
+  for(int i=0;i<25001;++i){x[i]=0;x[x.size()-1-i]=2;}
+  const auto r=cppunivariate::bbinom_mle({x.data(),x.size()},2);
+  REQUIRE(r.status==cppunivariate::BbinomStatus::Ok);
+  // Symmetry and the saturated N=2 frequencies give rho=1/50001.
+  CHECK(r.alpha==doctest::Approx(25000).epsilon(1e-7));
+  CHECK(r.beta==doctest::Approx(25000).epsilon(1e-7));
+}
+
+TEST_CASE("bbinom: signed face neighbourhood has no positive-score shortcut") {
+  cppunivariate::bbinom_detail::Data d;
+  d.size=2;d.n=4;d.sum=4;d.total=4;d.A={3,1};d.C={3,1};
+  CHECK(cppunivariate::bbinom_detail::face_neighbourhood(d,6)>0);
+  d.A={2,2};d.C={2,2};
+  CHECK(cppunivariate::bbinom_detail::face_neighbourhood(d,8)==0);
+  d.A={4,0};d.C={4,0};
+  CHECK(cppunivariate::bbinom_detail::face_neighbourhood(d,4)>0);
+}
+
+TEST_CASE("bbinom: general profile preserves a small positive finite gain") {
+  std::vector<int>x;
+  for(int v=0;v<4;++v)
+    x.insert(x.end(),(v==0 || v==3)?12501:37499,v);
+  const auto r=cppunivariate::bbinom_mle({x.data(),x.size()},3);
+  REQUIRE(r.status==cppunivariate::BbinomStatus::Ok);
+  // This symmetric four-cell table is exactly on the beta-binomial surface.
+  CHECK(r.alpha==doctest::Approx(18749.5).epsilon(1e-6));
+  CHECK(r.beta==doctest::Approx(18749.5).epsilon(1e-6));
+}
+
+TEST_CASE("bbinom: curvature closes a near-zero negative face score") {
+  std::vector<int>x;
+  const int frequencies[]{1000,3001,2999,1000};
+  for(int v=0;v<4;++v)x.insert(x.end(),frequencies[v],v);
+  const auto r=cppunivariate::bbinom_mle({x.data(),x.size()},3,1e-10,100);
+  // The exact face-score numerator is -2. Curvature enlarges the tiny
+  // first-order strip enough to close the strict comparison.
+  REQUIRE(r.status==cppunivariate::BbinomStatus::BinomialLimit);
+  for(int& value:x)value=3-value;
+  const auto reflected=cppunivariate::bbinom_mle({x.data(),x.size()},3,1e-10,100);
+  REQUIRE(reflected.status==cppunivariate::BbinomStatus::BinomialLimit);
+  CHECK(reflected.logLik==doctest::Approx(r.logLik).epsilon(1e-12));
+  CHECK(reflected.stop_detail.limit_coef[1]==doctest::Approx(1-r.stop_detail.limit_coef[1]).epsilon(1e-14));
+  REQUIRE(!r.stop_detail.candidates.empty());
+  for(const auto& c:r.stop_detail.candidates) {
+    for(double coefficient:c.coef)CHECK(std::isfinite(coefficient));
+    CHECK(std::isfinite(c.loglik_lower));
+  }
+}
+
+TEST_CASE("bbinom: final-cell exhaustion retains finite and face witnesses") {
+  const std::vector<int>x{0,1,1,2,2,3,4,5,7,10};
+  cppunivariate::bbinom_detail::CellWork reference(1000000000);
+  const auto fitted=cppunivariate::bbinom_mle_work({x.data(),x.size()},10,1e-10,100,kNaN,kNaN,reference);
+  REQUIRE(fitted.status==cppunivariate::BbinomStatus::Ok);
+  cppunivariate::bbinom_detail::CellWork limited(reference.used-1);
+  const auto stopped=cppunivariate::bbinom_mle_work({x.data(),x.size()},10,1e-10,100,kNaN,kNaN,limited);
+  CHECK(stopped.status==cppunivariate::BbinomStatus::SizeBudget);
+  CHECK(stopped.stop_detail.budget_exhausted);
+  CHECK(stopped.stop_detail.limit_model==cppunivariate::StopModel::Binom);
+  CHECK(stopped.stop_detail.candidates.size()>=2);
+}

@@ -13,8 +13,8 @@
 // maximiser lies in [0, h H_{N-1} / m]. The search scans a log-grid of s on
 // that interval, refines every grid local maximum by safeguarded Newton on
 // the profile score, and compares the best interior value with the binomial
-// face L(0); the face wins ties at 1e-8 h. Tangent/chord bounds certify
-// every interval including s = 0; an unresolved bound returns IterationFailure.
+// face L(0). A signed uniform expansion excludes a neighbourhood of s=0
+// before a strict face comparison; unresolved comparisons stop with witnesses.
 // Endpoint-only samples (all x_i in
 // {0, N}, both present) have l(p, s) strictly increasing in s: the supremum is
 // the two-point law on {0, N}. All-0 / all-N samples reach a point mass.
@@ -100,6 +100,7 @@ struct Data {
   int size = 0;
   int maxit = 500;
   double n = 0, interior = 0, zeros = 0, tops = 0, sum = 0;
+  long double squares = 0, total = 0;
   double log_choose = 0;  // sum_i log C(N, x_i)
   std::vector<double> A, C;  // length N
 };
@@ -211,7 +212,11 @@ inline double maximise_on_grid(const std::vector<double> &grid, double tol, int 
   maxit = static_cast<int>(solver_budget(maxit));
   double best = -std::numeric_limits<double>::infinity();
   std::vector<double> g(grid.size()), H(grid.size());
-  for (std::size_t k = 0; k < grid.size(); ++k) deriv(grid[k], g[k], H[k]);
+  for (std::size_t k = 0; k < grid.size(); ++k) {
+    deriv(grid[k], g[k], H[k]);
+    if(!std::isfinite(g[k]) || !std::isfinite(H[k]))
+      return std::numeric_limits<double>::quiet_NaN();
+  }
   for (std::size_t k = 0; k + 1 < grid.size(); ++k) {
     if (!(g[k] > 0 && g[k + 1] <= 0)) continue;
     double a = grid[k], b = grid[k + 1];
@@ -300,6 +305,50 @@ inline double shape_bound(const Data &d, double k, double a, double m, double b)
   const double rounding = 128 * std::numeric_limits<double>::epsilon() *
                           (1 + std::abs(value) + d.n * d.size);
   return value + std::max(vs * (a - m) - da, vs * (b - m) - db) + rounding;
+}
+
+// Signed face expansion, uniform over the profiled mean. For a strictly
+// negative face score, the tangent to the jointly concave numerator gives
+// L(s)-L(0) <= g0*s + B*s*s/2, B=h*sum(j*j). No restriction on p is used.
+// At zero or small negative score, score signs enclose p(s), and its Schur
+// curvature can enlarge the first-order strip.
+// A zero integer numerator is accepted only when its integer arithmetic is
+// exactly representable. All other comparisons include a practical margin.
+inline double face_neighbourhood(const Data& d, long double squares) {
+  const long double h=d.n, N=d.size, S=d.total;
+  const long double a=N*h*squares, b=(N-1)*S*S, c=N*h*S;
+  const long double numerator=a-b-c;
+  const long double eps=std::numeric_limits<long double>::epsilon();
+  const long double error=64*eps*(a+b+c);
+  const long double p=S/(h*N), q=1-p;
+  const long double g=(numerator+error)/(2*h*N*p*q);
+  const double B=d.n*(N-1)*N*(2*N-1)/6;
+  const double fallback=g<0 && B>0?static_cast<double>(-g/B):0;
+  const bool exact_zero=numerator==0 && a+b+c<std::ldexp(1.0L,std::numeric_limits<long double>::digits);
+  if(!(fallback>0 || exact_zero)) return 0;
+  double radius=static_cast<double>(std::min(p,q))/4;
+  double t=radius/(4*d.size);
+  for(int it=0;it<d.maxit && t>fallback;++it,t*=0.25,radius*=0.5) {
+    if(!d.work.consume(d.size))return fallback;
+    const double lo=static_cast<double>(p)-radius, hi=static_cast<double>(p)+radius;
+    double gl=0, gu=0, pp=0, ss=0, pslo=0, pshi=0, scale=0;
+    for(int j=0;j<d.size;++j) {
+      const double A=d.A[j], C=d.C[j], jt=j*t;
+      gl+=A/(lo+jt)-C/(1-lo);
+      gu+=A/hi-C/(1-hi+jt);
+      const double al=A/((hi+jt)*(hi+jt)), au=A/(lo*lo);
+      const double cl=C/((1-lo+jt)*(1-lo+jt)), cu=C/((1-hi)*(1-hi));
+      pp+=al+cl;
+      ss+=j*static_cast<double>(j)*(d.n-al-cl);
+      pslo+=j*(cl-au); pshi+=j*(cu-al);
+      scale+=j*static_cast<double>(j)*(d.n+au+cu);
+    }
+    const double cross=std::max(std::abs(pslo),std::abs(pshi));
+    const double curvature=ss+cross*cross/pp;
+    const double margin=1024*std::numeric_limits<double>::epsilon()*(1+scale+cross*cross/pp);
+    if(gl>margin && gu< -margin && curvature< -margin)return t;
+  }
+  return fallback;
 }
 
 // Grid of n points from lo to hi inclusive, at most `step` apart.
@@ -474,9 +523,15 @@ inline BbinomResult bbinom_mle_work(ispan x, double size, double tol, int maxit,
   d.tops = counts[N];
   d.interior = N >= 1 ? d.n - d.zeros - d.tops : 0;
   const double lgN = special::lgamma(size + 1);
+  long double reflected_squares=0, reflected_total=0;
   for (int v = 0; v <= N; ++v) {
     if (counts[v] == 0) continue;
     d.sum += counts[v] * v;
+    d.squares += static_cast<long double>(counts[v])*v*v;
+    d.total += static_cast<long double>(counts[v])*v;
+    // Direct positive sums avoid cancellation when observations are near N.
+    reflected_squares += static_cast<long double>(counts[v])*(N-v)*(N-v);
+    reflected_total += static_cast<long double>(counts[v])*(N-v);
     if (v > 0 && v < N)
       d.log_choose += counts[v] * (lgN - special::lgamma(v + 1.0) - special::lgamma(N - v + 1.0));
   }
@@ -507,7 +562,10 @@ inline BbinomResult bbinom_mle_work(ispan x, double size, double tol, int maxit,
       d.A[j] = mirror ? below : above;
       d.C[j] = mirror ? above : below;
     }
-    if (mirror) { std::swap(d.zeros, d.tops); d.sum = d.n * N - d.sum; }
+    if (mirror) { std::swap(d.zeros, d.tops);
+      d.squares=reflected_squares;
+      d.total=reflected_total;
+      d.sum=static_cast<double>(reflected_total); }
   }
   auto finish = [&](double a, double c, double value, int iterations, BbinomStatus status) {
     BbinomResult r{size, mirror ? c : a, mirror ? a : c, value + d.log_choose, iterations, status};
@@ -550,12 +608,32 @@ inline BbinomResult bbinom_mle_work(ispan x, double size, double tol, int maxit,
 
   // Free fit, N >= 2, both 0 < xbar < N.
   const double face = bbinom_detail::binomial_face(d);
-  const double tie = 1e-8 * d.n;
+  const double tie = 1024 * std::numeric_limits<double>::epsilon() *
+                     (1 + std::abs(face) + d.n * N);
   if (d.interior == 0) {
     // Endpoint-only: l increases strictly in s; supremum at the two-point law.
     out.logLik = d.tops * std::log(d.tops / d.n) + d.zeros * std::log(d.zeros / d.n);
     out.status = BbinomStatus::TwoPointLimit;
     return out;
+  }
+  // N=2 has two independent cell probabilities. When overdispersed,
+  // the empirical frequencies themselves are a beta-binomial law, hence
+  // attain the saturated multinomial upper bound (no search or tolerance).
+  if(N==2) {
+    const long double h=d.n, S=d.total, middle=d.interior;
+    const long double left=4*static_cast<long double>(d.zeros)*d.tops;
+    const long double right=middle*middle, delta=left-right;
+    const long double margin=64*std::numeric_limits<long double>::epsilon()*(left+right);
+    if(delta>margin) {
+      const double a=static_cast<double>(S*middle/delta);
+      const double b=static_cast<double>((2*h-S)*middle/delta);
+      double value=0;
+      for(double count:{d.zeros,d.interior,d.tops})
+        if(count>0)value+=count*std::log(count/d.n);
+      if(a>0 && b>0 && std::isfinite(a) && std::isfinite(b))
+        return finish(a,b,value-d.log_choose,0,BbinomStatus::Ok);
+      out.status=BbinomStatus::IterationFailure;return out;
+    }
   }
   out.logLik = face + d.log_choose;
   double harmonic = 0;
@@ -576,25 +654,45 @@ inline BbinomResult bbinom_mle_work(ispan x, double size, double tol, int maxit,
   int iterations = 0;
   const double best = bbinom_detail::maximise_on_grid(u, tol, maxit, deriv, best_u, iterations);
   if (std::isnan(best)) { out.status=BbinomStatus::IterationFailure; return out; }
-  // Include s = 0: no arbitrary lower concentration cutoff in the certificate.
-  std::vector<double> intervals{0};
-  for (double uu : u) intervals.push_back(std::exp(uu));
+  // A finite candidate must beat the face by a floating-point margin. A
+  // near equality is a comparison stop, never a nonexistence declaration.
+  const bool finite_wins=best>face+tie;
+  const double neighbourhood=finite_wins?0:bbinom_detail::face_neighbourhood(d,d.squares);
+  out.stop_detail=discrete_face(StopModel::Binom,{size,mirror?1-p0:p0},out.logLik);
+  if(std::isfinite(best)) {
+    const double bs=std::exp(best_u), bp=bbinom_detail::solve_p(d,bs,p0);
+    if(!(std::isfinite(bs) && bs>0 && std::isfinite(bp) && bp>0 && bp<1)) {
+      out.status=BbinomStatus::IterationFailure;return out;
+    }
+    out.stop_detail.candidates.push_back({{size,(mirror?1-bp:bp)/bs,(mirror?bp:1-bp)/bs},
+                                        best+d.log_choose,best+d.log_choose});
+  }
+  if(!finite_wins && !(neighbourhood>0)) {
+    out.stop_detail.comparison_tie=std::isfinite(best);
+    out.status=std::isfinite(best)?BbinomStatus::ProfileTie:BbinomStatus::FaceUnresolved;return out;
+  }
+  std::vector<double> intervals{neighbourhood};
+  for(double uu:u)if(std::exp(uu)>neighbourhood)intervals.push_back(std::exp(uu));
   bool exhausted=false;
-  if (!bbinom_detail::certify(intervals, std::max(best, face), tie * 0.25,
-      [&](double l, double m, double h) { return bbinom_detail::profile_bound(d, l, m, h); },maxit,exhausted)) {
+  // For a face winner there is NO positive likelihood allowance. The
+  // near-face signed expansion is strict for s>0; all remaining intervals
+  // must lie strictly below the face, including the bound's rounding margin.
+  if(!bbinom_detail::certify(intervals,finite_wins?best:face,
+      finite_wins?1e-8*d.n:-tie,
+      [&](double l,double m,double h){return bbinom_detail::profile_bound(d,l,m,h);},maxit,exhausted)) {
     if(exhausted)out.stop_detail=discrete_budget(out.stop_detail);
-    out.status = BbinomStatus::IterationFailure;
+    out.status=finite_wins?BbinomStatus::IterationFailure:BbinomStatus::FaceUnresolved;
     return out;
   }
-  // Compare maximised likelihoods, independently of the boundary score.
-  if (!(best > face + tie)) {
-    out.iterations = iterations;
-    out.status = BbinomStatus::BinomialLimit;
-    return out;
+  if(!finite_wins) {
+    out.iterations=iterations;out.status=BbinomStatus::BinomialLimit;return out;
   }
   const double s = std::exp(best_u);
   const double p = bbinom_detail::solve_p(d, s, p_last);
   const double value = bbinom_detail::loglik(d, p, 1 - p, s);
+  if(!(std::isfinite(p) && p>0 && p<1 && std::isfinite(value))) {
+    out.status=BbinomStatus::IterationFailure;return out;
+  }
   return finish(p / s, (1 - p) / s, value, iterations, BbinomStatus::Ok);
 
   }();
@@ -615,7 +713,9 @@ inline BbinomResult bbinom_mle_work(ispan x, double size, double tol, int maxit,
     for(const auto& c:stopped.stop_detail.candidates)
       if(std::isnan(stopped.stop_detail.loglik_lower) || c.loglik_lower>stopped.stop_detail.loglik_lower)
         stopped.stop_detail.loglik_lower=c.loglik_lower;
-    if(std::isfinite(stopped.logLik)) stopped.stop_detail.candidates.push_back({{stopped.size,stopped.alpha,stopped.beta},stopped.logLik,stopped.logLik});
+    if(std::isfinite(stopped.size) && std::isfinite(stopped.alpha) &&
+       std::isfinite(stopped.beta) && std::isfinite(stopped.logLik))
+      stopped.stop_detail.candidates.push_back({{stopped.size,stopped.alpha,stopped.beta},stopped.logLik,stopped.logLik});
   }
   if(work.exhausted){stopped.status=BbinomStatus::SizeBudget;stopped.stop_detail=discrete_budget(stopped.stop_detail);}
   return stopped;

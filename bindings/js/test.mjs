@@ -856,3 +856,21 @@ test('EMG outer certificate preserves budget and unresolved witnesses', async ()
     assert.ok(e.loglik_lower<=e.loglik_upper);return true;
   });
 });
+test('bbinom signed face and small finite gains agree with the shared fitter',async()=>{
+  const api=await (await import('./index.mjs')).default();
+  assert.throws(()=>api.bbinom.fit([0,1,1,2],{size:2}),e=>{
+    assert.equal(e.kind,'limit');assert.equal(e.model,'binom');
+    assert.equal(e.estimates.size,2);assert.equal(e.estimates.prob,.5);
+    assert.ok(e.candidates.length>0);return true;
+  });
+  const saturated=api.bbinom.fit([0,0,1,2,2],{size:2});
+  assert.ok(Math.abs(saturated.estimates.alpha-1/3)<1e-12);
+  assert.ok(Math.abs(saturated.estimates.beta-1/3)<1e-12);
+  const x=new Float64Array(100000);let offset=0;
+  for(const [v,n] of [[0,12501],[1,37499],[2,37499],[3,12501]]) {
+    x.fill(v,offset,offset+n);offset+=n;
+  }
+  const fit=api.bbinom.fit(x,{size:3});
+  assert.ok(Math.abs(fit.estimates.alpha/18749.5-1)<1e-6);
+  assert.ok(Math.abs(fit.estimates.beta/18749.5-1)<1e-6);
+});
