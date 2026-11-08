@@ -1,0 +1,3 @@
+n=101 proto 0.04s passes=306 lambda=0.178642032452
+n=10000 proto 2.32s passes=459 lambda=0.140804935921
+n=100000 proto 20.75s passes=591 lambda=0.140121239680

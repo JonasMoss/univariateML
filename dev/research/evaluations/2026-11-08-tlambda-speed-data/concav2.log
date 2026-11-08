@@ -1,0 +1,8 @@
+lambda in [-3.00,-2.00): checked  56481 violations      0  z range of violations [1e+09, 0] min l*z 1e+09
+lambda in [-2.00,-1.00): checked  56481 violations   1200  z range of violations [0.0101, 0.951] min l*z -0.951
+lambda in [-1.00,-0.50): checked  28100 violations  11456  z range of violations [0.00303, 1.57] min l*z -1.16
+lambda in [-0.50, 0.00): checked  28100 violations  12857  z range of violations [0.00248, 1.57] min l*z -0.784
+lambda in [ 0.00, 0.25): checked   8486 violations   6371  z range of violations [0.00248, 1.42] min l*z 0
+lambda in [ 0.25, 0.50): checked   7032 violations   6281  z range of violations [0.00248, 1.35] min l*z 0.00062
+lambda in [ 0.50, 0.75): checked   6504 violations   6187  z range of violations [0.00248, 1.22] min l*z 0.00124
+lambda in [ 0.75, 1.00): checked   6164 violations   6083  z range of violations [0.00248, 1.11] min l*z 0.00186

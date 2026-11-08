@@ -1,0 +1,4 @@
+NL=17 NT=33 c=1.00  table 561 doubles (4.4 KB), build 0.4 ms | max guess err 4.29e-02 (l=0.874 eta=5.75) over 182138 pts | Halley steps/obs 1.102 | 458 ns vs dtlambda 1562 ns | max |diff| vs dtlambda 9.3e-13
+NL=33 NT=65 c=1.00  table 2145 doubles (16.8 KB), build 1.7 ms | max guess err 5.19e-02 (l=0.934 eta=6.61) over 182138 pts | Halley steps/obs 1.044 | 448 ns vs dtlambda 1563 ns | max |diff| vs dtlambda 9.3e-13
+NL=33 NT=65 c=0.25  table 2145 doubles (16.8 KB), build 1.6 ms | max guess err 5.06e-03 (l=0.944 eta=24) over 182138 pts | Halley steps/obs 1.000 | 427 ns vs dtlambda 1564 ns | max |diff| vs dtlambda 9.3e-13
+NL=65 NT=129 c=0.25  table 8385 doubles (65.5 KB), build 6.4 ms | max guess err 8.92e-03 (l=0.974 eta=28.2) over 182138 pts | Halley steps/obs 1.000 | 431 ns vs dtlambda 1575 ns | max |diff| vs dtlambda 9.3e-13
