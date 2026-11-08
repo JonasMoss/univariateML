@@ -385,3 +385,25 @@ test('Fully held CMP evaluation uses its fixed cap and fails numerically', () =>
     assert.equal(e.kind,'numerical');assert.doesNotMatch(e.message,/Raising iterlim/);return true;
   });
 });
+
+test('bbinom fixed-size coefficient certificate and numerical accuracy stop', () => {
+  const x=[...Array(10).fill(0),...Array(12).fill(1),...Array(9).fill(2),...Array(4).fill(3)];
+  for(const held of [{size:3},{size:3,alpha:2},{size:3,beta:3}]) {
+    const f=api.bbinom.fit(x,held);
+    assert.ok(Math.abs(f.estimates.alpha-2)<2e-10);
+    assert.ok(Math.abs(f.estimates.beta-3)<3e-10);
+  }
+  for(const held of [{size:10},{size:10,alpha:2},{size:10,beta:3}]) {
+    assert.throws(()=>api.bbinom.fit([0,1,1,2,2,3,4,5,7,10],held,{reltol:1e-18}),e=>{
+      assert.equal(e.kind,'numerical');assert.equal(e.loglik_upper,Infinity);
+      assert.ok(e.candidates.length>0);return true;
+    });
+  }
+});
+
+test('bbinom near-binomial shape enclosure survives double-width WASM arithmetic', () => {
+  const x=[...Array(12501).fill(0),...Array(37499).fill(1),...Array(37499).fill(2),...Array(12501).fill(3)];
+  const f=api.bbinom.fit(x,{size:3});
+  assert.ok(Math.abs(f.estimates.alpha/18749.5-1)<1e-10);
+  assert.ok(Math.abs(f.estimates.beta/18749.5-1)<1e-10);
+});

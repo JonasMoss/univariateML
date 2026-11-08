@@ -1,0 +1,65 @@
+build/scratch/accept-cpp-dev.log
+104/106 Test   #2: sample_tests .....................   Passed    0.01 sec
+105/106 Test  #24: distribution_exp .................   Passed    0.02 sec
+106/106 Test #106: distribution_unif ................   Passed    0.02 sec
+
+100% tests passed out of 106
+
+Label Time Summary:
+cran    = 264.50 sec*proc (105 tests)
+dev     = 266.17 sec*proc (106 tests)
+full    = 266.17 sec*proc (106 tests)
+
+Total Test time (real) =  66.55 sec
+build/scratch/accept-cpp-full.log
+127/129 Test #128: tails_tests ......................   Passed    0.00 sec
+128/129 Test #126: no_throw_tests ...................   Passed    0.00 sec
+129/129 Test #101: distribution_tlambda_slow ........   Passed  165.09 sec
+
+100% tests passed out of 129
+
+Label Time Summary:
+cran    = 260.55 sec*proc (105 tests)
+dev     = 262.22 sec*proc (106 tests)
+full    = 474.04 sec*proc (129 tests)
+
+Total Test time (real) = 165.09 sec
+build/scratch/accept-no-long-double.log
+127/129 Test #126: no_throw_tests ...................   Passed    0.00 sec
+128/129 Test  #59: distribution_laplace_slow ........   Passed    0.01 sec
+129/129 Test #101: distribution_tlambda_slow ........   Passed  181.81 sec
+
+100% tests passed out of 129
+
+Label Time Summary:
+cran    = 261.90 sec*proc (105 tests)
+dev     = 263.77 sec*proc (106 tests)
+full    = 499.05 sec*proc (129 tests)
+
+Total Test time (real) = 181.82 sec
+build/scratch/accept-r-dev.log
+  'test-dist-zipf.R:117:3', 'test-dist-zmnbinom.R:2:3',
+  'test-dist-zmpois.R:2:3', 'test-dist-zmpois.R:36:3',
+  'test-dist-zmnbinom.R:60:3', 'test-dist-zmnbinom.R:75:3',
+  'test-dist-ztbinom.R:2:3', 'test-dist-ztbinom.R:49:3',
+  'test-dist-ztbinom.R:91:3', 'test-dist-ztgeom.R:2:3',
+  'test-dist-ztgeom.R:33:3', 'test-dist-ztnbinom.R:2:3',
+  'test-dist-ztpois.R:2:3', 'test-dist-ztpois.R:33:3',
+  'test-dist-ztnbinom.R:57:3', 'test-dist-ztnbinom.R:72:3'
+
+[ FAIL 0 | WARN 0 | SKIP 154 | PASS 22130 ]
+   user  system elapsed 
+282.061   3.000  70.951 
+build/scratch/accept-r-full.log
+⠙ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44917 ] @ dist-sged                         
+⠹ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44920 ] @ dist-sged                         
+✔ |        921 | dist-sged [206.6s]                                             
+
+⠸ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44962 ] Starting up...                      
+                                                                                
+══ Results ═════════════════════════════════════════════════════════════════════
+Duration: 294.3 s
+
+[ FAIL 0 | WARN 0 | SKIP 0 | PASS 44962 ]
+   user  system elapsed 
+877.947   6.467 296.615 

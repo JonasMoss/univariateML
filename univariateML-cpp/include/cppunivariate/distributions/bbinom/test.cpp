@@ -455,3 +455,72 @@ TEST_CASE("bbinom: quantile search guards and representability") {
   CHECK(cppunivariate::distributions::qbbinom(.5,10,1e308,1e308,true,false)==5);
   CHECK(cppunivariate::distributions::qbbinom(.5,100,2,2,true,false)==50);
 }
+
+TEST_CASE("bbinom: coefficient enclosures contain a saturated size-three maximizer") {
+  cppunivariate::bbinom_detail::Data d;
+  d.size=3;d.n=6;d.sum=9;d.total=9;d.squares=19;
+  d.A={5,3,1};d.C={5,3,1}; // frequencies (1,2,2,1): alpha=beta=4
+  cppunivariate::bbinom_detail::Enclosure box;
+  REQUIRE(cppunivariate::bbinom_detail::profile_enclosure(d,.126,1e-10,box));
+  CHECK(box.alpha_lo<=4);CHECK(box.alpha_hi>=4);
+  CHECK(box.beta_lo<=4);CHECK(box.beta_hi>=4);
+  CHECK(box.alpha_hi-box.alpha_lo<=4e-10);
+  CHECK(box.beta_hi-box.beta_lo<=4e-10);
+  CHECK(box.p/box.s==doctest::Approx(4).epsilon(1e-10));
+  bool exhausted=false;
+  // The region around the certified root cannot conceal a better outside mode.
+  CHECK_FALSE(cppunivariate::bbinom_detail::exclude_outside(
+    std::vector<double>{0,1},box,0,
+    [](double,double,double){return 1.;},2,exhausted));
+}
+
+TEST_CASE("bbinom: rational saturated tables certify every fixed-size free subset") {
+  // Integer beta-binomial shapes give rational probabilities. Frequencies
+  // below are exact, not simulated: they attain the multinomial upper bound.
+  const std::vector<std::vector<int>> tables{{10,12,9,4},{1,1,1,1,1,1,1}};
+  const std::vector<double> aa{2,1},bb{3,1};
+  for(std::size_t k=0;k<tables.size();++k) {
+    std::vector<int>x;
+    for(std::size_t j=0;j<tables[k].size();++j)x.insert(x.end(),tables[k][j],static_cast<int>(j));
+    const int size=static_cast<int>(tables[k].size())-1;
+    for(int mask=0;mask<3;++mask) {
+      auto result=fit(x,size,mask==1?aa[k]:kNaN,mask==2?bb[k]:kNaN);
+      REQUIRE(result.status==cppunivariate::BbinomStatus::Ok);
+      CHECK(result.alpha==doctest::Approx(aa[k]).epsilon(1e-10));
+      CHECK(result.beta==doctest::Approx(bb[k]).epsilon(1e-10));
+    }
+  }
+}
+
+TEST_CASE("bbinom: impossible coefficient precision stops with a finite witness") {
+  const std::vector<int>x{0,1,1,2,2,3,4,5,7,10};
+  for(int mask=0;mask<3;++mask) {
+    const auto result=cppunivariate::bbinom_mle({x.data(),x.size()},10,1e-18,500,
+      mask==1?2:kNaN,mask==2?3:kNaN);
+    CHECK(result.status==cppunivariate::BbinomStatus::IterationFailure);
+    CHECK(result.stop_detail.loglik_upper==INFINITY);
+    REQUIRE(!result.stop_detail.candidates.empty());
+    CHECK(std::isfinite(result.stop_detail.candidates.back().loglik_lower));
+  }
+}
+
+TEST_CASE("bbinom: one held shape has an identified Bernoulli maximum") {
+  const std::vector<int>x{0,0,1,1,1};
+  const auto a=fit(x,1,2,kNaN),b=fit(x,1,kNaN,3);
+  REQUIRE(a.status==cppunivariate::BbinomStatus::Ok);
+  REQUIRE(b.status==cppunivariate::BbinomStatus::Ok);
+  CHECK(a.beta==doctest::Approx(4./3).epsilon(1e-10));
+  CHECK(b.alpha==doctest::Approx(4.5).epsilon(1e-10));
+}
+
+
+TEST_CASE("bbinom: non-finite held-shape search bounds stop before grid allocation") {
+  const std::vector<int>x{0,1,2,4};
+  for(double held:{1e-320,1e308}) {
+    const auto a=fit(x,10,held,kNaN),b=fit(x,10,kNaN,held);
+    CHECK(a.status==cppunivariate::BbinomStatus::IterationFailure);
+    CHECK(b.status==cppunivariate::BbinomStatus::IterationFailure);
+    CHECK(a.stop_detail.loglik_upper==INFINITY);
+    CHECK(b.stop_detail.loglik_upper==INFINITY);
+  }
+}

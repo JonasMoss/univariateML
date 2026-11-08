@@ -74,14 +74,14 @@ inline FitResult fit_bbinom(cppunivariate::ispan x, Held size_arg = {}, Held alp
     case cppunivariate::BbinomStatus::SizeBudget:
       return stopped_fail("Beta-binomial search exhausted its work budget before certifying the maximum. Raising iterlim may resolve this stop.");
     case cppunivariate::BbinomStatus::ProfileTie:
-      return stopped_fail(size.supplied ? "Beta-binomial finite and binomial-face likelihoods have an unresolved numerical tie." : "Beta-binomial free-size profiles have an unresolved numerical tie.");
+      return stopped_fail(size.supplied ? "Beta-binomial finite maxima or a limit face have an unresolved numerical tie." : "Beta-binomial free-size profiles have an unresolved numerical tie.");
     case cppunivariate::BbinomStatus::FaceUnresolved:
       return stopped_fail(size.supplied ? "Beta-binomial fixed-size search cannot resolve the binomial face against finite shapes within numerical precision or the work budget." : "Beta-binomial free-size search cannot resolve the negative binomial face against larger finite sizes.");
     default:
-      return stopped_fail("Beta-binomial MLE failed.");
+      return stopped_fail("Beta-binomial MLE failed to certify the maximum and coefficient accuracy.");
   }
   if (!std::isfinite(res.alpha) || !std::isfinite(res.beta) || !std::isfinite(res.logLik))
-    return stopped_fail("Beta-binomial MLE failed.");
+    return stopped_fail("Beta-binomial MLE failed to certify the maximum and coefficient accuracy.");
   std::vector<std::string> fixed;
   if (size.supplied) fixed.push_back("size");
   if (alpha.supplied) fixed.push_back("alpha");

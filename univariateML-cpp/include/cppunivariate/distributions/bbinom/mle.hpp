@@ -26,6 +26,8 @@
 // refinement. Only all-0 / all-N samples escape (to a point mass). Fixing
 // beta is the mirror image (x -> N - x).
 //
+// Finite proposals also require a negative-curvature region and public-shape
+// score enclosures; every point outside that region is excluded strictly.
 // Cost: O(N) per likelihood evaluation, adaptive certificate work (at most
 // 128 * min(maxit, 100000) interval evaluations); no unimodality assumption is made.
 
@@ -208,7 +210,7 @@ inline void shape_derivs(const Data &d, const std::vector<double> &W, double k, 
 // (-inf when no sign change exists) and its location.
 template <typename Deriv>
 inline double maximise_on_grid(const std::vector<double> &grid, double tol, int maxit,
-                               Deriv deriv, double &best_u, int &iterations) {
+                               Deriv deriv, double &best_u, int &iterations, std::vector<Point>& candidates) {
   maxit = static_cast<int>(solver_budget(maxit));
   double best = -std::numeric_limits<double>::infinity();
   std::vector<double> g(grid.size()), H(grid.size());
@@ -235,6 +237,7 @@ inline double maximise_on_grid(const std::vector<double> &grid, double tol, int 
     }
     if (!converged && !(std::isfinite(gu) && std::abs(gu) < 1e-3))
       return std::numeric_limits<double>::quiet_NaN();
+    candidates.push_back({std::exp(u),0,value});
     if (value > best) { best = value; best_u = u; }
   }
   return best;
@@ -359,11 +362,13 @@ inline std::vector<double> log_grid(double lo, double hi, double step) {
   return u;
 }
 
+#include "acceptance.hpp"
+
 }  // namespace bbinom_detail
 
 // size: known number of trials (required). alpha_fixed / beta_fixed: NaN to
-// estimate; both may be held. With size NaN, at least one shape must be held. tol: relative tolerance on log shape
-// steps in the Newton refinement; maxit: iterations per refinement.
+// estimate; both may be held. With size NaN, at least one shape must be held.
+// tol: relative public-shape enclosure width; maxit: work limit per solve.
 inline BbinomResult bbinom_mle_work(ispan x, double size, double tol, int maxit,
                                double alpha_fixed,double beta_fixed, const bbinom_detail::CellWork& work) {
   maxit = static_cast<int>(solver_budget(maxit));
@@ -506,6 +511,7 @@ inline BbinomResult bbinom_mle_work(ispan x, double size, double tol, int maxit,
       for(int j=0;j<v;++j) ll+=std::log((size-j)/(j+1.)) + std::log(alpha_fixed+j)-std::log(alpha_fixed+beta_fixed+j);
       for(int j=0;j<size-v;++j) ll+=std::log(beta_fixed+j)-std::log(alpha_fixed+beta_fixed+v+j);
     }
+    if(!std::isfinite(ll)){out.status=BbinomStatus::IterationFailure;return out;}
     return {size,alpha_fixed,beta_fixed,ll,0,BbinomStatus::Ok};
   }
   if(!work.consume(static_cast<std::int64_t>(size)*4)){out.status=BbinomStatus::SizeBudget;return out;}
@@ -579,6 +585,9 @@ inline BbinomResult bbinom_mle_work(ispan x, double size, double tol, int maxit,
     for (int j = 0; j < N; ++j) inv += 1 / (a + j);
     const double c_lo = d.C[0] / (d.n * inv);
     const double c_hi = (d.n * N - d.sum) * (a + N) / d.sum;
+    if(!(c_lo>0 && c_hi>0 && std::isfinite(c_lo) && std::isfinite(c_hi))) {
+      out.status=BbinomStatus::IterationFailure;return out;
+    }
     const double lo = std::log(c_lo) - 0.25, hi = std::log(c_hi) + 0.25;
     // Grid step 0.2 < 0.25: the end points lie where the sign of the score is known.
     const std::vector<double> u = bbinom_detail::log_grid(lo, hi, 0.2);
@@ -589,21 +598,37 @@ inline BbinomResult bbinom_mle_work(ispan x, double size, double tol, int maxit,
     };
     double best_u = 0;
     int iterations = 0;
-    const double best = bbinom_detail::maximise_on_grid(u, tol, maxit, deriv, best_u, iterations);
+    std::vector<bbinom_detail::Point> candidates;
+    const double best = bbinom_detail::maximise_on_grid(u, tol, maxit, deriv, best_u, iterations,candidates);
     if (!std::isfinite(best)) {
       out.status = BbinomStatus::IterationFailure;
       return out;
     }
     std::vector<double> intervals;
     for (double uu : u) intervals.push_back(std::exp(uu));
+    out=finish(a,std::exp(best_u),best,iterations,BbinomStatus::IterationFailure);
+    out.stop_detail.candidates.push_back({{out.size,out.alpha,out.beta},out.logLik,out.logLik});
+    bbinom_detail::Enclosure enclosure;
+    if(!bbinom_detail::shape_enclosure(d,a,std::exp(best_u),tol,enclosure)) return out;
+    const double margin=256*std::numeric_limits<double>::epsilon()*(1+std::abs(best)+d.n*N);
+    for(const auto& candidate:candidates) {
+      if((candidate.s<enclosure.lo || candidate.s>enclosure.hi) && candidate.value+margin>=best) {
+        auto witness=finish(a,candidate.s,candidate.value,iterations,BbinomStatus::ProfileTie);
+        out.stop_detail.candidates.push_back({{size,witness.alpha,witness.beta},witness.logLik,witness.logLik});
+        out.stop_detail.comparison_tie=true;out.status=BbinomStatus::ProfileTie;return out;
+      }
+    }
     bool exhausted=false;
-    if (!bbinom_detail::certify(intervals, best, 1e-8 * d.n,
+    if (!bbinom_detail::exclude_outside(intervals, enclosure, best-margin,
         [&](double l, double m, double h) { return bbinom_detail::shape_bound(d, a, l, m, h); },maxit,exhausted)) {
     if(exhausted)out.stop_detail=discrete_budget(out.stop_detail);
       out.status = BbinomStatus::IterationFailure;
       return out;
     }
-    return finish(a, std::exp(best_u), best, iterations, BbinomStatus::Ok);
+    const double c=enclosure.shape;
+    const double value=bbinom_detail::loglik(d,a/(a+c),c/(a+c),1/(a+c));
+    if(!std::isfinite(value)){out.status=BbinomStatus::IterationFailure;return out;}
+    return finish(a, c, value, iterations, BbinomStatus::Ok);
   }
 
   // Free fit, N >= 2, both 0 < xbar < N.
@@ -630,8 +655,14 @@ inline BbinomResult bbinom_mle_work(ispan x, double size, double tol, int maxit,
       double value=0;
       for(double count:{d.zeros,d.interior,d.tops})
         if(count>0)value+=count*std::log(count/d.n);
-      if(a>0 && b>0 && std::isfinite(a) && std::isfinite(b))
-        return finish(a,b,value-d.log_choose,0,BbinomStatus::Ok);
+      if(a>0 && b>0 && std::isfinite(a) && std::isfinite(b)) {
+        const bool exact=left+right<std::ldexp(1.0L,std::numeric_limits<long double>::digits-2);
+        const long double error=(exact?0:margin/delta)+8*std::numeric_limits<double>::epsilon();
+        if(error<=tol)return finish(a,b,value-d.log_choose,0,BbinomStatus::Ok);
+        auto failed=finish(a,b,value-d.log_choose,0,BbinomStatus::IterationFailure);
+        failed.stop_detail.candidates.push_back({{size,failed.alpha,failed.beta},value,value});
+        return failed;
+      }
       out.status=BbinomStatus::IterationFailure;return out;
     }
   }
@@ -652,7 +683,8 @@ inline BbinomResult bbinom_mle_work(ispan x, double size, double tol, int maxit,
   };
   double best_u = u[0];
   int iterations = 0;
-  const double best = bbinom_detail::maximise_on_grid(u, tol, maxit, deriv, best_u, iterations);
+  std::vector<bbinom_detail::Point> candidates;
+  const double best = bbinom_detail::maximise_on_grid(u, tol, maxit, deriv, best_u, iterations,candidates);
   if (std::isnan(best)) { out.status=BbinomStatus::IterationFailure; return out; }
   // A finite candidate must beat the face by a floating-point margin. A
   // near equality is a comparison stop, never a nonexistence declaration.
@@ -677,9 +709,24 @@ inline BbinomResult bbinom_mle_work(ispan x, double size, double tol, int maxit,
   // For a face winner there is NO positive likelihood allowance. The
   // near-face signed expansion is strict for s>0; all remaining intervals
   // must lie strictly below the face, including the bound's rounding margin.
-  if(!bbinom_detail::certify(intervals,finite_wins?best:face,
-      finite_wins?1e-8*d.n:-tie,
-      [&](double l,double m,double h){return bbinom_detail::profile_bound(d,l,m,h);},maxit,exhausted)) {
+  bbinom_detail::Enclosure enclosure;
+  if(finite_wins && !bbinom_detail::profile_enclosure(d,std::exp(best_u),tol,enclosure)) {
+    out.status=BbinomStatus::IterationFailure;return out;
+  }
+  if(finite_wins)for(const auto& candidate:candidates) {
+    if((candidate.s<enclosure.lo || candidate.s>enclosure.hi) && candidate.value+tie>=best) {
+      const double cp=bbinom_detail::solve_p(d,candidate.s,p0);
+      if(!std::isfinite(cp)){out.status=BbinomStatus::IterationFailure;return out;}
+      auto witness=finish(cp/candidate.s,(1-cp)/candidate.s,candidate.value,iterations,BbinomStatus::ProfileTie);
+      out.stop_detail.candidates.push_back({{size,witness.alpha,witness.beta},witness.logLik,witness.logLik});
+      out.stop_detail.comparison_tie=true;out.status=BbinomStatus::ProfileTie;return out;
+    }
+  }
+  const auto bound=[&](double l,double m,double h){return bbinom_detail::profile_bound(d,l,m,h);};
+  const bool certified=finite_wins?
+    bbinom_detail::exclude_outside(intervals,enclosure,best-tie,bound,maxit,exhausted):
+    bbinom_detail::certify(intervals,face,-tie,bound,maxit,exhausted);
+  if(!certified) {
     if(exhausted)out.stop_detail=discrete_budget(out.stop_detail);
     out.status=finite_wins?BbinomStatus::IterationFailure:BbinomStatus::FaceUnresolved;
     return out;
@@ -687,8 +734,8 @@ inline BbinomResult bbinom_mle_work(ispan x, double size, double tol, int maxit,
   if(!finite_wins) {
     out.iterations=iterations;out.status=BbinomStatus::BinomialLimit;return out;
   }
-  const double s = std::exp(best_u);
-  const double p = bbinom_detail::solve_p(d, s, p_last);
+  const double s = enclosure.s;
+  const double p = enclosure.p;
   const double value = bbinom_detail::loglik(d, p, 1 - p, s);
   if(!(std::isfinite(p) && p>0 && p<1 && std::isfinite(value))) {
     out.status=BbinomStatus::IterationFailure;return out;
@@ -708,7 +755,7 @@ inline BbinomResult bbinom_mle_work(ispan x, double size, double tol, int maxit,
     const double N=std::isnan(size)?0:size;
     stopped.stop_detail=N==0?discrete_point(0):discrete_two_point(x,0,1);
   }
-  if(stopped.status==BbinomStatus::SizeBudget || stopped.status==BbinomStatus::ProfileTie || stopped.status==BbinomStatus::FaceUnresolved) {
+  if(stopped.status==BbinomStatus::SizeBudget || stopped.status==BbinomStatus::ProfileTie || stopped.status==BbinomStatus::FaceUnresolved || stopped.status==BbinomStatus::IterationFailure) {
     stopped.stop_detail.loglik_upper=INFINITY;
     for(const auto& c:stopped.stop_detail.candidates)
       if(std::isnan(stopped.stop_detail.loglik_lower) || c.loglik_lower>stopped.stop_detail.loglik_lower)
