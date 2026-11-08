@@ -161,3 +161,26 @@ test_that("GB2 held unit shape and scale inherit Burr scalar certificate", {
   expect_s3_class(e,"univariateML")
   expect_equal(as.numeric(e),as.numeric(a),tolerance=1e-6)
 })
+
+test_that("GB2 held power transports non-unit beta-prime finite certificates", {
+  y <- c(.03,.1,.3,.7,1,2,5,20)
+  parent <- mlbetapr(y,shape1=2,iterlim=1000)
+  for(a in c(.7,1,2)) {
+    x <- y^(1/a)
+    fit <- mlgb2(x,shape2=a,shape3=2,iterlim=1000)
+    expect_equal(unname(fit['shape1']),unname(parent['shape2']),tolerance=1e-6)
+    expect_equal(unname(fit['scale']),unname(parent['scale'])^(1/a),tolerance=1e-6)
+    expect_equal(attr(fit,'logLik'),sum(dgb2(x,fit[1],fit[2],fit[3],fit[4],log=TRUE)),tolerance=1e-9)
+  }
+})
+
+test_that("GB2 held-power gamma faces have structured stop details", {
+  for(inverse in c(FALSE,TRUE)) {
+    args <- if(inverse) list(shape1=2) else list(shape3=2)
+    e <- tryCatch(do.call(mlgb2,c(list(x=rep(2,8),shape2=2),args)),error=identity)
+    expect_s3_class(e,'univariateML_limit')
+    expect_equal(e$model,if(inverse) 'invtrgamma' else 'trgamma')
+    expect_equal(unname(e$estimates[c('shape1','shape2')]),c(2,2))
+    expect_true(nrow(e$candidates)>0)
+  }
+})

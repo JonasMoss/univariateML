@@ -200,7 +200,7 @@ relations:
 fit:
   method: delegation
   certified: partial
-  note: 'fpareto/README.md, Details; fpareto/mle.hpp (public fitter and held overloads); fpareto/test.cpp: With min held, GB2 on excesses transfers certified Burr and inverse Burr submodels when shape3=1 or shape1=1 is held. The parent held-scale two-shape profiles are also certified by strict scalar concavity. Holding both beta shapes gives a concave power/location likelihood, and holding power and scale gives a concave beta-shape likelihood. Outside unit-shape reductions, free-beta-shape profiles with power or scale free retain numerical searches and face comparisons. Face coefficients refer to excess data.'
+  note: 'With min held, GB2 certificates transfer to positive excesses, including the non-unit one-held-beta-shape, held-power, free-scale certificate. Finite witnesses retain min; face witnesses remain in excess-data coordinates. Seven mixed subsets still use numerical outer searches. Free min remains structurally unsupported; whole-family certification remains partial.'
 areas:
 - actuarial
 - economics and income
@@ -278,6 +278,22 @@ The held-scale two-shape reduction now inherits the
 [Burr scalar concavity certificate](../burr/README.md#held-scale-certificate-task-1164),
 including strict endpoint score comparisons, coefficient accuracy checks,
 practical floating-point margins and explicit tie/budget/numerical stops.
-This certifies the unit-beta-shape reductions only. Other numerical subsets remain, so the family-wide certification tag stays partial.
+These unit-shape reductions do not cover every subset; the held-power route below adds the two non-unit conditional shape/scale subsets.
 
 Arithmetic that rounds a distinct observation onto a held scale stops numerically: reciprocation checks equality against the original scale, and threshold subtraction checks its error-free sum residual. This protects the exact endpoint classification and its tied-observation penalty.
+
+## Held-power certificate transport
+
+With threshold held, the [GB2 held-power certificate](../gb2/README.md)
+applies to one free beta shape and free scale on positive excesses. Translation
+has unit Jacobian. Finite family witnesses append held `min`; transformed-gamma
+and inverse transformed-gamma witnesses retain three
+coordinates in excess-data units. Limit advice must retain held power and
+held shape. Nonfinite subtraction or subtraction that merges distinct
+observations stops numerically before invoking the parent. The existing
+held-scale endpoint subtraction guard is preserved.
+
+The seven unresolved mixed GB2 subsets remain unresolved after translation.
+Free-threshold subsets remain structural unsupported stops; they are not all
+claims of universal nonexistence. Nonuniqueness of the conditional shape/scale
+profile transfers through the same fixed translation.

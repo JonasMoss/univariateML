@@ -1,0 +1,45 @@
+cpp-dev PASS
+100% tests passed out of 106
+
+Label Time Summary:
+cran    = 254.00 sec*proc (105 tests)
+dev     = 255.88 sec*proc (106 tests)
+full    = 255.88 sec*proc (106 tests)
+
+Total Test time (real) =  63.98 sec
+cpp-full PASS
+100% tests passed out of 129
+
+Label Time Summary:
+cran    = 292.41 sec*proc (105 tests)
+dev     = 294.68 sec*proc (106 tests)
+full    = 539.80 sec*proc (129 tests)
+
+Total Test time (real) = 192.71 sec
+cpp-no-long-double PASS
+100% tests passed out of 129
+
+Label Time Summary:
+cran    = 328.46 sec*proc (105 tests)
+dev     = 330.84 sec*proc (106 tests)
+full    = 613.66 sec*proc (129 tests)
+
+Total Test time (real) = 209.04 sec
+r-dev PASS
+  'test-dist-ztgeom.R:33:3', 'test-dist-ztbinom.R:49:3',
+  'test-dist-ztbinom.R:91:3', 'test-dist-ztnbinom.R:2:3',
+  'test-dist-ztnbinom.R:57:3', 'test-dist-ztnbinom.R:72:3',
+  'test-dist-ztpois.R:2:3', 'test-dist-ztpois.R:33:3'
+
+[ FAIL 0 | WARN 0 | SKIP 154 | PASS 21574 ]
+   user  system elapsed 
+332.975   3.673  80.767 
+r-full PASS
+⠧ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44389 ] Starting up...                      
+                                                                                
+══ Results ═════════════════════════════════════════════════════════════════════
+Duration: 271.0 s
+
+[ FAIL 0 | WARN 0 | SKIP 0 | PASS 44389 ]
+   user  system elapsed 
+795.137   5.930 273.645 

@@ -140,3 +140,23 @@ test_that("Feller Pareto unit shape and held scale inherit scalar certificate", 
   expect_s3_class(e,"univariateML")
   expect_equal(as.numeric(e),as.numeric(a),tolerance=1e-6)
 })
+
+test_that("Feller Pareto transports held-power finite fits and excess gamma faces", {
+  x <- c(.03,.1,.3,.7,1,2,5,20)
+  a <- mlfpareto(x+2,min=2,shape2=.7,shape3=2,iterlim=1000)
+  b <- mlgb2(x+2-2,shape2=.7,shape3=2,iterlim=1000)
+  expect_equal(as.numeric(a[1:4]),as.numeric(b),tolerance=1e-10)
+  e <- tryCatch(mlfpareto(rep(4,8),min=2,shape2=2,shape3=2),error=identity)
+  expect_s3_class(e,'univariateML_limit')
+  expect_equal(e$model,'trgamma')
+  expect_equal(unname(e$estimates[c('shape1','shape2')]),c(2,2))
+  expect_false('min' %in% names(e$estimates))
+})
+
+test_that("Feller Pareto held-endpoint power stops retain their model identity", {
+  e <- tryCatch(mlfpareto(c(3,3,2.5,2.25),min=2,shape1=1,scale=1),error=identity)
+  expect_s3_class(e,'univariateML_limit')
+  expect_identical(e$model,'power')
+  expect_identical(names(e$estimates),c('alpha','beta'))
+  expect_equal(unname(e$estimates['alpha']),1)
+})

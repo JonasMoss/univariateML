@@ -1,0 +1,61 @@
+{
+  "source_manifest": "source-sha256.txt",
+  "source_unchanged_during_simbox_run": true,
+  "local_source_matches_manifest": true,
+  "runs": [
+    {
+      "command": "just cpp-test",
+      "machine": "simbox",
+      "passed": 106
+    },
+    {
+      "command": "UMVL_TEST_TIER=full just cpp-test",
+      "machine": "simbox",
+      "passed": 129
+    },
+    {
+      "command": "just cpp-test-no-long-double",
+      "machine": "simbox",
+      "passed": 129
+    },
+    {
+      "command": "just cpp-test-no-long-double",
+      "machine": "workstation",
+      "passed": 129
+    },
+    {
+      "command": "just test",
+      "machine": "simbox",
+      "fail": 0,
+      "warn": 0,
+      "skip": 154,
+      "pass": 21574
+    },
+    {
+      "command": "just test-full",
+      "machine": "simbox",
+      "fail": 0,
+      "warn": 0,
+      "skip": 0,
+      "pass": 44389
+    },
+    {
+      "command": "just js-build",
+      "machine": "workstation",
+      "status": "passed"
+    },
+    {
+      "command": "just js-test",
+      "machine": "workstation",
+      "pass": 500,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "command": "just site-check",
+      "machine": "workstation",
+      "status": "passed",
+      "families": 99
+    }
+  ]
+}

@@ -233,3 +233,91 @@ TEST_CASE("gb2: transformed-gamma budget keeps its face witness coordinates") {
   CHECK(found);
   CHECK(r.stop_detail.loglik_upper==INFINITY);
 }
+
+#include "cppunivariate/distributions/invtrgamma/dpqr.hpp"
+
+TEST_CASE("GB2 held power transports non-unit beta-prime certificates") {
+ const std::vector<double> y{.03,.1,.3,.7,1,2,5,20};
+ for(double a:{.7,1.,2.})for(bool reciprocal:{false,true}) {
+  std::vector<double>x;for(double v:y)x.push_back(std::pow(v,reciprocal?-1/a:1/a));
+  const auto parent=cppunivariate::betapr_mle_holds(mltest::as_span(y),2,NAN,NAN,1e-7,1000);
+  const auto r=cppunivariate::gb2_mle(mltest::as_span(x),1e-7,1000,reciprocal?2:NAN,a,reciprocal?NAN:2,NAN);
+  REQUIRE(parent.status==cppunivariate::BetaPrimeStatus::Ok);
+  REQUIRE(r.status==cppunivariate::Gb2Status::Ok);
+  CHECK(r.shape1==doctest::Approx(reciprocal?2:parent.beta).epsilon(1e-6));
+  CHECK(r.shape3==doctest::Approx(reciprocal?parent.beta:2).epsilon(1e-6));
+  CHECK(r.shape2==a);
+  CHECK(r.scale==doctest::Approx(std::pow(parent.scale,reciprocal?-1/a:1/a)).epsilon(1e-6));
+  double ll=0;for(double v:x)ll+=cppunivariate::distributions::dgb2(v,r.shape1,r.shape2,r.shape3,r.scale,true);
+  CHECK(r.logLik==doctest::Approx(ll).epsilon(1e-10));
+  CHECK(ll>=r.stop_detail.loglik_lower-1e-8);
+  CHECK(ll<=r.stop_detail.loglik_upper+1e-8);
+  for(const auto& c:r.stop_detail.candidates) {
+   REQUIRE(cppunivariate::valid_stop_coefficients(c.model,c.coef));
+   double value=0;
+   for(double v:x) value+=c.model==cppunivariate::StopModel::None?
+    cppunivariate::distributions::dgb2(v,c.coef[0],c.coef[1],c.coef[2],c.coef[3],true):
+    c.model==cppunivariate::StopModel::Trgamma?
+    cppunivariate::distributions::dtrgamma(v,c.coef[0],c.coef[1],c.coef[2],true):
+    cppunivariate::distributions::dinvtrgamma(v,c.coef[0],c.coef[1],c.coef[2],true);
+   CHECK(value>=c.loglik_lower-1e-8);CHECK(value<=c.loglik_upper+1e-8);
+  }
+ }
+}
+
+TEST_CASE("GB2 held power transports gamma faces and exhausted budgets") {
+ for(bool inverse:{false,true}) {
+  const std::vector<double>x(8,2);
+  const auto r=cppunivariate::gb2_mle(mltest::as_span(x),1e-7,300,inverse?2:NAN,2,inverse?NAN:2,NAN);
+  REQUIRE(r.status==(inverse?cppunivariate::Gb2Status::InvTrGammaBoundary:cppunivariate::Gb2Status::TrGammaBoundary));
+  CHECK(r.stop_detail.limit_model==(inverse?cppunivariate::StopModel::InvTrgamma:cppunivariate::StopModel::Trgamma));
+  REQUIRE(r.stop_detail.limit_coef.size()==3);
+  CHECK(r.stop_detail.limit_coef[0]==2);CHECK(r.stop_detail.limit_coef[1]==2);
+  double ll=0;for(double v:x)ll+=inverse?
+   cppunivariate::distributions::dinvtrgamma(v,2,2,r.stop_detail.limit_coef[2],true):
+   cppunivariate::distributions::dtrgamma(v,2,2,r.stop_detail.limit_coef[2],true);
+  CHECK(ll==doctest::Approx(r.logLik).epsilon(1e-12));
+ }
+ const std::vector<double>wide{1e-300,1e300};
+ CHECK(cppunivariate::gb2_mle(mltest::as_span(wide),1e-7,300,2,10,NAN,NAN).status==cppunivariate::Gb2Status::NumericalFailure);
+ const std::vector<double>ordinary{.03,.1,.3,.7,1,2,5,20};
+ const auto stopped=cppunivariate::gb2_mle(mltest::as_span(ordinary),1e-7,1,2,2,NAN,NAN);
+ CHECK(stopped.status!=cppunivariate::Gb2Status::Ok);
+ CHECK(stopped.iterations<=128);
+}
+
+TEST_CASE("GB2 held-power nonunique profiles retain both separated witnesses") {
+ for(double t:{5.6463,5.646438395028704,5.6466}) {
+  std::vector<double>x{1.9901008294052028e-5,2.209857117039297e-5,.0002450722434289249,
+   12.288342947780086,942.976056905759,16.239512580216314,2.898690421966857,
+   1.2684036923492177,400970.63293690106*std::exp(t)};
+  for(double& v:x)v=std::sqrt(v);
+  const auto r=cppunivariate::gb2_mle(mltest::as_span(x),1e-7,1000,NAN,2,.22690393135372058,NAN);
+  if(t==5.646438395028704) {
+   REQUIRE(r.status==cppunivariate::Gb2Status::CertificateTie);
+   bool left=false,right=false;
+   for(const auto& c:r.stop_detail.candidates)if(c.model==cppunivariate::StopModel::None) {
+    REQUIRE(c.coef.size()==4);left=left||c.coef[0]<.12;right=right||c.coef[0]>.12;
+   }
+   CHECK(left);CHECK(right);
+  } else {
+   REQUIRE(r.status==cppunivariate::Gb2Status::Ok);
+   CHECK((r.shape1>.12)==(t<5.6464));
+  }
+ }
+}
+
+TEST_CASE("GB2 unresolved reciprocal certificate does not select an empty gamma face") {
+ const std::vector<double>x{.03,.1,.3,.7,1,2,5,20};
+ const auto r=cppunivariate::gb2_mle(mltest::as_span(x),1e-7,1,2,2,NAN,NAN);
+ REQUIRE(r.status!=cppunivariate::Gb2Status::Ok);
+ CHECK(r.stop_detail.limit_coef.empty());
+ CHECK(r.stop_detail.limit_model==cppunivariate::StopModel::None);
+}
+
+TEST_CASE("GB2 held-power transport rejects overflowing Jacobian arithmetic") {
+ const std::vector<double>x(2,1e300);
+ const auto r=cppunivariate::gb2_mle(mltest::as_span(x),1e-7,300,NAN,1e308,2,NAN);
+ CHECK(r.status==cppunivariate::Gb2Status::NumericalFailure);
+ CHECK(r.stop_detail.limit_coef.empty());
+}

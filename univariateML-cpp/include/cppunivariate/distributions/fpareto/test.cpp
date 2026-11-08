@@ -84,3 +84,43 @@ TEST_CASE("Feller Pareto refuses inexact threshold subtraction onto held scale")
  const std::vector<double> x{1.1,2,3};
  CHECK(cppunivariate::fpareto_mle(mltest::as_span(x),.1,1e-9,1000,NAN,NAN,1,1).status==cppunivariate::Gb2Status::NumericalFailure);
 }
+
+TEST_CASE("Feller Pareto transports held-power certificates and excess face coordinates") {
+ const std::vector<double>x{2.03,2.1,2.3,2.7,3,4,7,22};
+ std::vector<double> y;for(double v:x)y.push_back(v-2);
+ const auto a=cppunivariate::fpareto_mle(mltest::as_span(x),2,1e-7,1000,NAN,.7,2,NAN);
+ const auto b=cppunivariate::gb2_mle(mltest::as_span(y),1e-7,1000,NAN,.7,2,NAN);
+ CHECK(a.status==b.status);CHECK(a.logLik==b.logLik);
+ REQUIRE(a.stop_detail.candidates.size()==b.stop_detail.candidates.size());
+ for(std::size_t i=0;i<a.stop_detail.candidates.size();++i) {
+  auto expected=b.stop_detail.candidates[i].coef;
+  if(b.stop_detail.candidates[i].model==cppunivariate::StopModel::None)expected.push_back(2);
+  CHECK(a.stop_detail.candidates[i].coef==expected);
+  CHECK(a.stop_detail.candidates[i].model==b.stop_detail.candidates[i].model);
+ }
+ const std::vector<double>constant(5,4);
+ const auto face=cppunivariate::fpareto_mle(mltest::as_span(constant),2,1e-7,300,NAN,2,2,NAN);
+ CHECK(face.status==cppunivariate::Gb2Status::TrGammaBoundary);
+ CHECK(face.stop_detail.limit_model==cppunivariate::StopModel::Trgamma);
+ REQUIRE_FALSE(face.stop_detail.candidates.empty());
+ CHECK(face.stop_detail.candidates[0].model==cppunivariate::StopModel::Trgamma);
+ CHECK(face.stop_detail.candidates[0].coef.size()==3);
+}
+
+TEST_CASE("Feller Pareto held-power subtraction cannot invent a gamma face") {
+ const std::vector<double>x{1,std::nextafter(1.,2.)};
+ const auto r=cppunivariate::fpareto_mle(mltest::as_span(x),-1e100,1e-7,300,NAN,2,2,NAN);
+ CHECK(r.status==cppunivariate::Gb2Status::NumericalFailure);
+}
+
+TEST_CASE("Feller Pareto generic budget faces also stay on the excess scale") {
+ const auto g=mltest::load_distribution_golden("trgamma");
+ auto x=g.data;for(double& v:x)v+=2;
+ const auto r=cppunivariate::fpareto_mle(mltest::as_span(x),2,1e-8,1);
+ REQUIRE(r.status==cppunivariate::Gb2Status::CertificateBudget);
+ bool found=false;
+ for(const auto& c:r.stop_detail.candidates)if(c.model==cppunivariate::StopModel::Trgamma) {
+  found=true;CHECK(c.coef.size()==3);
+ }
+ CHECK(found);
+}
