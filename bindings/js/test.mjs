@@ -1183,7 +1183,7 @@ test('ZIB tiny held probabilities preserve the unique all-zero inflation', async
   assert.equal(f.estimates.pi,1);
   assert.equal(f.logLik,0);
 });
-test('binomial relatives retain unresolved finite and Poisson witnesses', async () => {
+test('binomial relatives retain proved finite and Poisson witnesses', async () => {
   const {default: createApi} = await import('./index.mjs');
   const api = await createApi();
   for(const [family,x,held] of [
@@ -1193,8 +1193,8 @@ test('binomial relatives retain unresolved finite and Poisson witnesses', async 
     ['tbinom',[1,2,3],{}]
   ]) {
     assert.throws(() => api[family].fit(new Float64Array(x),held),error => {
-      assert.equal(error.kind,'unresolved');
-      assert.equal(error.loglik_upper,Infinity);
+      assert.equal(error.kind,'limit');
+      assert.ok(Number.isFinite(error.loglik_upper));
       assert.ok(error.candidates.length>=2);
       return true;
     });

@@ -596,3 +596,45 @@ TEST_CASE("sged normal face conversion rejects rounded subnormal half GED scales
   CHECK(r.status==cppunivariate::SgedStatus::CertificateFailure);CHECK_FALSE(r.certified);
   CHECK(r.stop_detail.limit_coef.empty());CHECK(r.stop_detail.loglik_upper==INFINITY);
 }
+
+TEST_CASE("sged: residual power and tails survive intermediate range loss") {
+  for (double x : {-1e-100,1e-100}) {
+    CHECK(dist::dsged(x,0,1e300,.02,1,true) == doctest::Approx(-612.224579676587918).epsilon(2e-14));
+    CHECK(dist::dsged(x,0,1e300,.02,1,false) == doctest::Approx(std::exp(-612.224579676587918)).epsilon(2e-12));
+    CHECK(dist::dsged(x,0,1e300,.02,1.3,true) == doctest::Approx(-683.90356286107067).epsilon(2e-13));
+    CHECK(dist::psged(x,0,1e300,.02,1.3,true,true) == doctest::Approx(-.0017894880664470457).epsilon(2e-10));
+    const double small=dist::psged(x,0,1e300,.0005,1,x<0,true);
+    CHECK(small == doctest::Approx(-41.209468768459971).epsilon(2e-12));
+    CHECK(dist::qsged(small,0,1e300,.0005,1,x<0,true)/x == doctest::Approx(1).epsilon(2e-10));
+  }
+  // A nonzero subnormal quotient has too few significant bits as well.
+  CHECK(dist::dsged(1e-23,0,1e300,.02,1,true) == doctest::Approx(-612.224611684520115).epsilon(2e-14));
+  // Overflow before division is the other side of the same range loss.
+  CHECK(dist::dsged(-1e308,1e308,1e308,.02,1.3,true) == doctest::Approx(-727.68316868801662).epsilon(2e-13));
+  CHECK(dist::psged(-1e308,1e308,1e308,.02,1.3,true,true) == doctest::Approx(-17.775086035882197).epsilon(2e-12));
+  CHECK(dist::dsged(INFINITY,0,1e300,.02,1.3,true) == -INFINITY);
+}
+
+TEST_CASE("sged: logarithmic centering survives a vanished moment") {
+  // At nu=.0003 the nonzero moment is below binary64's minimum subnormal.
+  // Independent 100-digit gamma-CDF and bracketed-quantile references.
+  for (double x : {0.,1e-100}) {
+    CHECK(dist::dsged(x,0,1e300,.0003,.7,true) == doctest::Approx(-107.064723180909907).epsilon(2e-12));
+    CHECK(dist::dsged(x,0,1e300,.0003,1.3,true) == doctest::Approx(-106.798025104960350).epsilon(2e-12));
+    CHECK(dist::psged(x,0,1e300,.0003,.7,true,true) == doctest::Approx(-288.220156276318788).epsilon(2e-12));
+    CHECK(dist::psged(x,0,1e300,.0003,1.3,false,true) == doctest::Approx(-288.181208135391239).epsilon(2e-12));
+  }
+  CHECK(dist::qsged(.1,0,1e300,.0003,.7,true,false)/9.98017740400194973e-80 == doctest::Approx(1).epsilon(2e-10));
+  CHECK(dist::qsged(.1,0,1e300,.0003,1.3,true,false)/-7.94579776743636934e-80 == doctest::Approx(1).epsilon(2e-10));
+  // Here the centering moment is nonzero but subnormal, so log(mu) would
+  // retain its already rounded relative error.
+  CHECK(dist::qsged(.1,0,1e300,.00036,.7,true,false)/1.32559402858106150e-16 == doctest::Approx(1).epsilon(2e-10));
+  CHECK(dist::qsged(.1,0,1e300,.00036,1.3,true,false)/-1.05538224887693826e-16 == doctest::Approx(1).epsilon(2e-10));
+  for (double xi : {.7,1.3}) {
+    CHECK(dist::qsged(0,0,1e300,.0003,xi,true,false) == -INFINITY);
+    CHECK(dist::qsged(1,0,1e300,.0003,xi,true,false) == INFINITY);
+    CHECK(std::isnan(dist::qsged(-.1,0,1e300,.0003,xi,true,false)));
+  }
+  // A nonfinite normalizer must retain its failure, not become the mean.
+  CHECK(std::isnan(dist::qsged(.1,0,1e300,.02,1e200,true,false)));
+}
