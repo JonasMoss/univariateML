@@ -188,3 +188,98 @@ TEST_CASE("genbeta certificate: critical p one half retains the quadratic score"
     CHECK(r.shape3/std::sqrt(q)==doctest::Approx(std::sqrt(12/second)).epsilon(1e-12));
   }
 }
+
+TEST_CASE("genbeta certificate: held p one transports the Kumaraswamy certificate") {
+  const std::vector<double> u{.02,.2,.6,.9};
+  const auto parent=cppunivariate::kumar_mle(mltest::as_span(u),1e-7,300);
+  REQUIRE(parent.status==cppunivariate::KumarStatus::Ok);
+  for(double scale:{1e-200,1.,7.,1e200}) {
+    std::vector<double> x;for(double v:u)x.push_back(scale*v);
+    const auto r=cppunivariate::genbeta_mle(mltest::as_span(x),scale,1e-7,300,1);
+    REQUIRE(r.status==cppunivariate::GenbetaStatus::Ok);
+    CHECK(r.shape1==1);
+    CHECK(r.shape2==doctest::Approx(parent.b).epsilon(1e-6));
+    CHECK(r.shape3==doctest::Approx(parent.a).epsilon(1e-6));
+    CHECK(r.logLik+u.size()*std::log(scale)==doctest::Approx(parent.logLik).epsilon(1e-10));
+    double ll=0;for(double v:x)ll+=cppunivariate::distributions::dgenbeta(v,1,r.shape2,r.shape3,scale,true);
+    CHECK(ll==doctest::Approx(r.logLik).epsilon(1e-10));
+  }
+}
+
+TEST_CASE("genbeta certificate: held p one preserves parent stops and witness coordinates") {
+  const std::vector<double> u{.02,.2,.6,.9};
+  for(int maxit:{1,2,3}) {
+    const auto k=cppunivariate::kumar_mle(mltest::as_span(u),1e-7,maxit);
+    std::vector<double> x;for(double v:u)x.push_back(7*v);
+    const auto r=cppunivariate::genbeta_mle(mltest::as_span(x),7,1e-7,maxit,1);
+    CHECK((r.status==cppunivariate::GenbetaStatus::Ok)==(k.status==cppunivariate::KumarStatus::Ok));
+    CHECK(r.stop_detail.budget_exhausted==k.stop_detail.budget_exhausted);
+    REQUIRE(r.stop_detail.candidates.size()==k.stop_detail.candidates.size());
+    for(std::size_t i=0;i<k.stop_detail.candidates.size();++i) {
+      const auto& c=r.stop_detail.candidates[i];const auto& p=k.stop_detail.candidates[i];
+      REQUIRE(c.coef.size()==4);
+      CHECK(c.coef[0]==1);CHECK(c.coef[1]==p.coef[1]);CHECK(c.coef[2]==p.coef[0]);CHECK(c.coef[3]==7);
+      CHECK(c.loglik_lower==doctest::Approx(p.loglik_lower-u.size()*std::log(7.)).epsilon(1e-12));
+      CHECK(c.loglik_upper==doctest::Approx(p.loglik_upper-u.size()*std::log(7.)).epsilon(1e-12));
+    }
+  }
+}
+
+TEST_CASE("genbeta certificate: unresolvable scalar coefficient inclusion stops") {
+  const std::vector<double> x{.02,.2,.6,.9};
+  const auto r=cppunivariate::genbeta_mle(mltest::as_span(x),1,1e-20,300,2,.7);
+  CHECK(r.status==cppunivariate::GenbetaStatus::SearchUnresolved);
+  REQUIRE(r.stop_detail.candidates.size()==1);
+  CHECK(r.stop_detail.candidates[0].coef.size()==4);
+  CHECK(std::isinf(r.stop_detail.loglik_upper));
+}
+
+TEST_CASE("genbeta certificate: parent budget and numerical stops are terminal") {
+  const std::vector<double> x{.5,.500000000001};
+  const auto short_fit=cppunivariate::genbeta_mle(mltest::as_span(x),1,1e-7,1,1);
+  CHECK(short_fit.status==cppunivariate::GenbetaStatus::SearchUnresolved);
+  CHECK(short_fit.stop_detail.budget_exhausted);
+  const auto r=cppunivariate::genbeta_mle(mltest::as_span(x),1,1e-7,300,1);
+  CHECK(r.status==cppunivariate::GenbetaStatus::SearchUnresolved);
+  CHECK_FALSE(r.stop_detail.budget_exhausted);
+  REQUIRE(r.stop_detail.candidates.size()==1);
+  CHECK(r.stop_detail.candidates[0].coef.size()==4);
+  CHECK(r.stop_detail.candidates[0].coef[0]==1);
+  CHECK(r.stop_detail.candidates[0].coef[3]==1);
+}
+
+TEST_CASE("genbeta certificate: held p free q and power has a complete finite search") {
+  const auto g=mltest::load_distribution_golden("genbeta");
+  double mean=0,jac=0;for(double v:g.data){mean-=std::log(v)/g.data.size();jac-=std::log(v);}
+  const double exponential=g.data.size()*(-std::log(mean)-1)+jac;
+  for(double p:{.1,.4,.5,2.,10.}) {
+    CAPTURE(p);
+    const auto r=cppunivariate::genbeta_mle(mltest::as_span(g.data),1,1e-7,300,p);
+    CAPTURE(static_cast<int>(r.certificate_failure));
+    REQUIRE(r.status==cppunivariate::GenbetaStatus::Ok);
+    CHECK(r.shape1==p);
+    CHECK(r.logLik>=exponential-1e-8);
+    double power_score=1-p*r.shape3*mean,q_score=0;
+    for(double v:g.data) {
+      const double z=-r.shape3*std::log(v);
+      power_score+=(r.shape2-1)*z/std::expm1(z)/g.data.size();
+      q_score+=std::log(-std::expm1(-z))/g.data.size();
+    }
+    q_score+=cppunivariate::special::digamma(p+r.shape2)-cppunivariate::special::digamma(r.shape2);
+    CHECK(std::abs(power_score)<1e-9);
+    CHECK(std::abs(q_score)<1e-9);
+  }
+  CHECK(cppunivariate::genbeta_mle(mltest::as_span(g.data),1,1e-7,1,.4).status==cppunivariate::GenbetaStatus::SearchUnresolved);
+}
+
+TEST_CASE("genbeta certificate: rounded logarithms do not prove constant-data nonexistence") {
+  const double v=std::exp(-700.);
+  const std::vector<double> x{v,std::nextafter(v,1.)};
+  REQUIRE(x[0]!=x[1]);
+  REQUIRE(std::log(x[0])==std::log(x[1]));
+  for(double p:{.4,std::numeric_limits<double>::quiet_NaN()}) {
+    const auto r=cppunivariate::genbeta_mle(mltest::as_span(x),1,1e-7,300,p);
+    CHECK(r.status==cppunivariate::GenbetaStatus::SearchUnresolved);
+    CHECK(r.certificate_failure==cppunivariate::GenbetaCertificateFailure::Arithmetic);
+  }
+}

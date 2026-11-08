@@ -43,8 +43,8 @@ r:
   sampler: rgenbeta
   control:
     scale: Known positive finite upper endpoint, strictly above every observation.
-    gradtol: Tolerance on the per-observation log-shape3 profile score.
-    iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
+    gradtol: Relative coefficient tolerance for certified power searches; profile-score tolerance for remaining numerical searches. Held shape1 = 1 inherits the Kumaraswamy coefficient bounds.
+    iterlim: "Work limit: min(iterlim, 100000) iterations per solve and 128 * min(iterlim, 100000) certificate evaluations."
 log_density: log(shape3)-log(x)-loggamma(shape1)-loggamma(shape2)+loggamma(shape1+shape2)+shape1*shape3*log(x/scale)+(shape2-1)*log(1-(x/scale)**shape3)
 limits:
   - name: unbounded likelihood
@@ -104,9 +104,12 @@ relations:
 fit:
   method: profile-search
   certified: partial
-  note: 'genbeta/README.md, Details; genbeta/mle.hpp (public fitter and held overloads); genbeta/test.cpp: With
-    endpoint and power held, beta-shape fitting is strictly concave; with both beta shapes held,
-    the unique power root is bracketed and certified. Other free-power profiles remain numerical.'
+  note: 'With endpoint and power held, beta-shape fitting is strictly concave. With both beta shapes held,
+    padded opposite score signs certify the unique power root. Held shape1 = 1 with shape2 and power free
+    delegates to certified Kumaraswamy; held shape2 = 1 is the exact identified-product fit.
+    Other held shape1 values use uniform tail bounds and complete interval score/curvature enumeration
+    to certify shape2 and power, or stop with witnesses. Free-shape1/free-power profiles and their winning-face
+    decisions remain numerical, without global certification.'
 areas:
 - actuarial
 - economics and income
@@ -131,7 +134,8 @@ existence:
     prevent attainment. No general uniqueness theorem is established for
     the three-shape fit. With $b$ and $a$ held, the two beta shapes have a
     unique finite MLE for nonconstant data; holding either beta shape as
-    well gives a unique finite MLE even for constant data. When $q=1$,
+    well gives a unique finite MLE even for constant data. With $p,b$ held
+    and $q,a$ free, every nonconstant sample has a finite maximum. When $q=1$,
     only the product $pa$ is identified if both factors are free.
   reason: >-
     For $0<q<1$, moving $b$ down to the sample maximum makes its density
@@ -151,14 +155,17 @@ Each shape may be held. The endpoint is held strictly above every observation.
 At fixed $a$, constant samples have unbounded likelihood when both beta shapes
 are free. Holding either beta shape gives a finite fit. With $a,q$ free,
 concentration remains possible on constant samples even with $p$ held.
+Distinct observations whose logarithms round to a constant stop numerically
+when concentration remains free; rounded transformed ties do not establish
+an unbounded likelihood for the original sample.
 
 For $q=1$, only $pa$ is identified if both factors are free. Away from this
 ridge, the exponential tail of $Y=-\log(X/b)$ identifies $pa$, and its first
 nonzero exponential correction identifies $a$ and $q$. Beta ($a=1$),
 Kumaraswamy ($p=1$), and power ($q=1$) are attained subfamilies.
 
-At fixed $a$, the likelihood is strictly concave in the beta shapes. A
-logarithmic mesh and an analytic envelope-score root search compare local
+At fixed $a$, the likelihood is strictly concave in the beta shapes. With
+$p,a$ both free, a logarithmic mesh and an analytic envelope-score root search compare local
 maxima with gamma and power limits, using a log-likelihood tie tolerance
 $10^{-8}n$. The numerical search cannot certify that an arbitrarily narrow
 basin has not been missed. An unresolved search stops.
@@ -171,8 +178,14 @@ The inequality $(z/(2\sinh(z/2)))^2<1$ makes this less than
 $-nq/a^2$ when $q<1$. The score changes from positive to negative at the
 two ends, so signed bracketing and bisection give the unique global maximum,
 including constant samples. The power bracket is refined to relative width
-$2\cdot10^{-13}$, conditional on the double precision score comparisons;
-nonconvergence or an unrepresentable bracket stops numerically. This route
+$2\cdot10^{-13}$. Acceptance also requires opposite signs outside a practical
+rounding allowance at the proposal times $1\pm\min(\mathrm{gradtol},10^{-10})/4$.
+Strict concavity then encloses the unique maximizer within that relative
+coefficient radius, conditional on the computed comparisons. Nonconvergence,
+unresolved signs or an unrepresentable bracket stops numerically and retains
+a finite witness when available. The allowance is $64\epsilon$ times the
+absolute score terms, with the exponential-tail terms weighted by their
+logarithm/exponent magnitudes, plus the Bernoulli truncation bound. This route
 uses at most $\min(\mathrm{iterlim},100000)$ steps per bracketing or root solve. For $q<1$, the score is evaluated as
 $q-pa\bar y+(q-1)\overline{r(ay)}$, where
 $r(z)=z/\operatorname{expm1}(z)-1$. Below $z=0.01$ an eighth-order Bernoulli
@@ -185,6 +198,31 @@ avoids subtracting quantities of size $q$. At large $z$ it is evaluated as
 $z\exp\{\log(q-1)-z\}$ before summation, retaining a material weighted
 exponential tail even above $z=700$. The discarded denominator correction
 for $z>50$ is below $2\cdot10^{-22}$ relatively.
+
+Held $p=1$ with $q,a$ free uses the Kumaraswamy certificate on $x/b$,
+with coefficients $(a,q)$ and likelihood shift $-n\log b$. Its coefficient
+inclusion tolerance is inherited from Kumaraswamy (relative power bracket
+at most $5\cdot10^{-7}/\max(1,a\bar y)$ and relative $q$ enclosure below
+$10^{-6}$), rather than the tighter scalar-power tolerance above. Parent
+numerical and budget failures remain failures; their witnesses are reordered
+to $(p,q,a,b)$ and shifted to the original likelihood. If division by $b$
+rounds an observation to zero or one, this route stops numerically. A free
+$p$ whose estimate happens to equal one does not qualify for the reduction.
+
+With $p,b$ held and $q,a$ free, every nonconstant sample has a finite
+global maximum. Uniform bounds exclude both power tails, including arbitrary
+variation in $q$. On the remaining interval, bounds on the profile score and
+curvature exclude monotone cells and minima, and isolate every retained
+maximum in a strictly concave cell. Both coefficients are enclosed to relative
+width at most $\min(\mathrm{gradtol},10^{-9})/2$. Overlapping objective
+intervals stop as a tie; certificate exhaustion stops as a budget; uncertain
+signs or failed inner solves stop numerically. Finite witnesses remain diagnostic.
+The [bounds and proof](../../../../../dev/research/evaluations/2026-11-07-genbeta-cert-data/bounds.md)
+do not assume uniqueness. Computed signs use practical allowances of
+$64\epsilon$ for the beta-shape score, $256\epsilon$ for the profile score,
+and $512\epsilon$ or $1024\epsilon$ for interval and curvature comparisons,
+scaled by the absolute terms. These are conditional floating-point
+certificates, without outward-rounded arithmetic.
 
 The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-genbeta.md)
 describes the limiting paths and boundary comparisons. The transformed density is

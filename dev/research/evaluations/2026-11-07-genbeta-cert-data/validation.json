@@ -1,0 +1,70 @@
+{
+  "base_commit": "e99856a8c168473c120eed343593f98dca00e8b1",
+  "golden_default_coefficients_and_loglik_identical": true,
+  "runs": [
+    {
+      "command": "just cpp-test",
+      "machine": "simbox; GCC 13.3",
+      "passed": 106,
+      "failed": 0
+    },
+    {
+      "command": "UMVL_TEST_TIER=full just cpp-test",
+      "machine": "simbox; GCC 13.3",
+      "passed": 129,
+      "failed": 0
+    },
+    {
+      "command": "just cpp-test-no-long-double",
+      "machine": "simbox; GCC 13.3",
+      "passed": 129,
+      "failed": 0
+    },
+    {
+      "command": "just cpp-test-no-long-double",
+      "machine": "workstation; GCC 15.2",
+      "passed": 129,
+      "failed": 0
+    },
+    {
+      "command": "just test",
+      "machine": "simbox",
+      "passed": 21532,
+      "failed": 0,
+      "warnings": 0,
+      "skipped": 154
+    },
+    {
+      "command": "just test-full",
+      "machine": "simbox",
+      "passed": 44347,
+      "failed": 0,
+      "warnings": 0,
+      "skipped": 0
+    },
+    {
+      "command": "just js-build && just js-test",
+      "machine": "workstation; WebAssembly",
+      "passed": 496,
+      "failed": 0
+    },
+    {
+      "command": "just site-check",
+      "machine": "workstation",
+      "status": "green; 99 generated C++ snippets and site checks"
+    },
+    {
+      "command": "targeted genbeta standalone doctest",
+      "machine": "workstation; GCC 15.2",
+      "test_cases_passed": 24,
+      "assertions_passed": 3421,
+      "failed": 0
+    }
+  ],
+  "scalar_oracle_max_relative_error": 8.040221408854747e-14,
+  "pair_oracle_max_relative_error_simbox": 2.0404795546398807e-10,
+  "pair_oracle_max_relative_error_workstation_double": 2.0404795546398807e-10,
+  "conditional_bounds_checks": "70 decimal digits; held-p tail/chord/derivative bounds and 16 remaining-profile checks passed",
+  "constraints": "No commits, pushes, board edits, package installs, or settled dpqr/special/truth/codegen changes. Historical site-check screenshot restored.",
+  "markdown_links_resolved": 16
+}

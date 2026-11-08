@@ -224,3 +224,56 @@ test_that("generalized beta preserves the critical small-power quadratic score",
   f <- mlgenbeta(x,scale=1,shape1=.5,shape2=q)
   expect_equal(unname(f["shape3"])/sqrt(q),sqrt(12/mean(log(x)^2)),tolerance=1e-12)
 })
+
+test_that("genbeta held p one inherits the certified Kumaraswamy fit", {
+  u <- c(.02,.2,.6,.9)
+  parent <- mlkumar(u)
+  for (b in c(1e-200,1,7,1e200)) {
+    f <- mlgenbeta(b*u,scale=b,shape1=1)
+    expect_equal(as.numeric(f[c("shape3","shape2")]),as.numeric(parent),tolerance=1e-6)
+    expect_equal(attr(f,"logLik")+length(u)*log(b),attr(parent,"logLik"),tolerance=1e-10)
+    expect_identical(attr(f,"fixed"),c("shape1","scale"))
+    expect_equal(attr(logLik(f),"df"),2L)
+  }
+  # One solver iteration can still leave enough certificate evaluations.
+  g <- mlgenbeta(u,scale=1,shape1=1,iterlim=1)
+  k <- mlkumar(u,iterlim=1)
+  expect_equal(as.numeric(g[c("shape3","shape2")]),as.numeric(k),tolerance=1e-6)
+})
+
+test_that("genbeta scalar certificate refuses an unrepresentable coefficient radius", {
+  e <- tryCatch(mlgenbeta(c(.02,.2,.6,.9),scale=1,shape1=2,shape2=.7,gradtol=1e-20),error=identity)
+  expect_s3_class(e,"univariateML_numerical")
+  expect_equal(nrow(e$candidates),1L)
+  expect_true(is.finite(e$candidates$loglik_lower))
+  expect_identical(e$loglik_upper,Inf)
+})
+
+test_that("genbeta retains empty parent budgets and numerical witness payloads", {
+  x <- c(.5,.500000000001)
+  e <- tryCatch(mlgenbeta(x,scale=1,shape1=1,iterlim=1),error=identity)
+  expect_s3_class(e,"univariateML_budget")
+  expect_equal(nrow(e$candidates),0L)
+  e <- tryCatch(mlgenbeta(x,scale=1,shape1=1),error=identity)
+  expect_s3_class(e,"univariateML_numerical")
+  expect_equal(nrow(e$candidates),1L)
+  expect_equal(e$candidates$shape1,1)
+  expect_equal(e$candidates$scale,1)
+})
+
+test_that("genbeta held p certificates retain the frozen sample likelihood", {
+  g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"),"genbeta","golden.json"))
+  for (p in c(.1,.4,.5,2,10)) {
+    f <- mlgenbeta(g$data,scale=1,shape1=p)
+    expect_identical(as.numeric(f["shape1"]),p)
+    expect_equal(attr(f,"logLik"),genbeta_ll(g$data,f),tolerance=1e-9)
+  }
+  expect_error(mlgenbeta(g$data,scale=1,shape1=.4,iterlim=1),"shape solve unresolved")
+})
+
+test_that("genbeta rounded transformed ties stop numerically", {
+  x <- exp(-700)*c(1,1+.Machine$double.eps)
+  expect_false(x[1]==x[2])
+  e <- tryCatch(mlgenbeta(x,scale=1,shape1=.4),error=identity)
+  expect_s3_class(e,"univariateML_numerical")
+})

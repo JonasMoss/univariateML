@@ -1,0 +1,50 @@
+{
+  "evidence": "70-digit local stationary oracle; global completeness is the separate interval certificate",
+  "cases": [
+    {
+      "p": 0.1,
+      "q": 0.20035573437969134,
+      "power": 10.877686859522653,
+      "power_relative_error": 1.3717726359319434e-10,
+      "q_relative_error": 2.1659998350891568e-11,
+      "loglik_absolute_error": 1.0004259574723566e-12,
+      "work": 137
+    },
+    {
+      "p": 0.4,
+      "q": 0.2641003559118431,
+      "power": 2.1437441885358104,
+      "power_relative_error": 9.618359778198416e-11,
+      "q_relative_error": 1.9510915115969482e-11,
+      "loglik_absolute_error": 2.8567283426748884e-13,
+      "work": 126
+    },
+    {
+      "p": 0.5,
+      "q": 0.2706186198816525,
+      "power": 1.620377090858207,
+      "power_relative_error": 2.0404795546398807e-10,
+      "q_relative_error": 4.325430183760936e-11,
+      "loglik_absolute_error": 4.3235516729520314e-13,
+      "work": 126
+    },
+    {
+      "p": 2.0,
+      "q": 0.2834334909875835,
+      "power": 0.28504346704230893,
+      "power_relative_error": 1.1415610251003306e-11,
+      "q_relative_error": 2.854460055031239e-12,
+      "loglik_absolute_error": 1.6480459961227903e-12,
+      "work": 162
+    },
+    {
+      "p": 10.0,
+      "q": 0.28387492222778743,
+      "power": 0.049504996339181796,
+      "power_relative_error": 1.1034188067842619e-10,
+      "q_relative_error": 2.843385548737274e-11,
+      "loglik_absolute_error": 2.0667091281027263e-12,
+      "work": 363
+    }
+  ]
+}
