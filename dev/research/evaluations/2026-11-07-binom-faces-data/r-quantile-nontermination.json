@@ -1,0 +1,13 @@
+{
+  "trigger": "mlzib(0,size=1e308,prob=.9,pi=0)",
+  "route": "all-held R constructor -> ml_build_fixed_model -> qml(.5) -> qzib",
+  "source": "univariateML-cpp/include/cppunivariate/distributions/zib/dpqr.hpp",
+  "unchecked_midpoint": "floor((lo+hi)/2)",
+  "failure": "Midpoint overflow and lack of stagnation/NaN checks can prevent termination; the target R test remained busy after 43487 user CPU ticks.",
+  "stopped_own_worker": 544216,
+  "parent": 544199,
+  "signal": "SIGTERM",
+  "scope": "Only this worktree test worker was signalled after cwd, parent, executable and CPU-time checks.",
+  "needed_change": "Settled DPQR repair: safe midpoint, representability/stagnation stop and NaN-CDF handling. No DPQR file changed under this brief.",
+  "native_binding_test": "getFromNamespace(\"mlzib_\",\"univariateML\")(0L,size=1e308,prob=.9,pi=0)"
+}

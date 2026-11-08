@@ -222,3 +222,82 @@ TEST_CASE("tbinom: a very large finite upper window needs only a small retained 
   REQUIRE(f.status==cppunivariate::TbinomStatus::Ok);
   CHECK(f.size==6);
 }
+
+TEST_CASE("tbinom: signed face bounds cover finite and infinite upper windows") {
+  const std::vector<int>finite{2,3,4},infinite{1,1,1,2,3,7,12};
+  const auto a=cppunivariate::tbinom_design_mle({finite.data(),finite.size()},NAN,NAN,NAN);
+  REQUIRE(a.status==cppunivariate::TbinomStatus::TpoisLimit);
+  CHECK_FALSE(a.stop_detail.comparison_tie);
+  CHECK(std::isfinite(a.stop_detail.loglik_upper));
+  const auto b=cppunivariate::tbinom_design_mle({infinite.data(),infinite.size()},0,INFINITY,NAN);
+  REQUIRE(b.status==cppunivariate::TbinomStatus::TpoisLimit);
+  CHECK_FALSE(b.stop_detail.comparison_tie);
+  CHECK(std::isfinite(b.stop_detail.loglik_upper));
+}
+
+TEST_CASE("tbinom: zero first-order gap can have an exact saturated-face certificate") {
+  // Exactly the Poisson(rate=2) probabilities on {0,1,2}: (.2,.4,.4).
+  // The sufficient first-order bound must refuse, rather than infer a sign.
+  const std::vector<int>x{0,1,1,2,2};
+  cppunivariate::binomial_certificate_detail::Work work{0,0,512};
+  CHECK_FALSE(std::isfinite(cppunivariate::binomial_certificate_detail::signed_cutoff({x.data(),x.size()},0,2,2,work)));
+  CHECK_FALSE(work.numerical);
+  const auto f=cppunivariate::tbinom_design_mle({x.data(),x.size()},-1,2,NAN);
+  CHECK_FALSE(f.stop_detail.comparison_tie);
+  CHECK(std::isfinite(f.stop_detail.loglik_upper));
+  CHECK(f.stop_detail.limit_coef[0]==2);
+}
+
+TEST_CASE("tbinom: exact saturated-face test rejects nearly matching proportions") {
+  const std::vector<int>exact{0,1,1,2,2},near{0,1,1,2,2,2};
+  cppunivariate::binomial_certificate_detail::Work work{0,0,512};bool budget=false;double ll=NAN;
+  CHECK(cppunivariate::binomial_certificate_detail::saturated_poisson_rate({exact.data(),exact.size()},0,2,work,budget,ll)==2);
+  CHECK(ll==doctest::Approx(std::log(.2)+4*std::log(.4)));
+  CHECK_FALSE(std::isfinite(cppunivariate::binomial_certificate_detail::saturated_poisson_rate({near.data(),near.size()},0,2,work,budget,ll)));
+  CHECK_FALSE(budget);
+}
+
+TEST_CASE("tbinom: nonsaturated first-order equality has exact factorial-moment exclusion") {
+  // Same first two moments as Poisson(3) conditioned on {0,1,2,3},
+  // but different proportions: (1,9,6,10) versus (2,6,9,9).
+  std::vector<int>x{0};x.insert(x.end(),9,1);x.insert(x.end(),6,2);x.insert(x.end(),10,3);
+  const auto f=cppunivariate::tbinom_design_mle({x.data(),x.size()},-1,3,NAN);
+  CHECK_FALSE(f.stop_detail.comparison_tie);
+  CHECK(std::isfinite(f.stop_detail.loglik_upper));
+}
+
+TEST_CASE("tbinom: exact factorial-moment face test has checked integer arithmetic") {
+  std::vector<int>x{0};x.insert(x.end(),9,1);x.insert(x.end(),6,2);x.insert(x.end(),10,3);
+  cppunivariate::binomial_certificate_detail::Work work{0,0,512};bool budget=false;double ll=NAN;
+  CHECK(cppunivariate::tbinom_detail::exact_poisson_moment_face({x.data(),x.size()},3,work,budget,ll)==3);
+  CHECK(std::isfinite(ll));CHECK_FALSE(budget);
+  x.push_back(3);
+  CHECK_FALSE(std::isfinite(cppunivariate::tbinom_detail::exact_poisson_moment_face({x.data(),x.size()},3,work,budget,ll)));
+  // Factorial overflow refuses this sufficient criterion without wrapping.
+  CHECK_FALSE(std::isfinite(cppunivariate::tbinom_detail::exact_poisson_moment_face({x.data(),x.size()},30,work,budget,ll)));
+  CHECK_FALSE(budget);
+}
+
+TEST_CASE("tbinom: mixed higher factorial moments have a signed second-order tail") {
+  std::vector<int>x(50,0);x.insert(x.end(),41,1);x.insert(x.end(),33,2);x.insert(x.end(),3,3);x.insert(x.end(),3,4);
+  const auto f=cppunivariate::tbinom_design_mle({x.data(),x.size()},-1,4,NAN);
+  CHECK_FALSE(f.stop_detail.comparison_tie);
+  CHECK(std::isfinite(f.stop_detail.loglik_upper));
+  CHECK(f.stop_detail.limit_coef[0]==1);
+}
+
+TEST_CASE("tbinom: unresolved witnesses preserve proper infinite truncation bounds") {
+  auto d=cppunivariate::discrete_face(cppunivariate::StopModel::Tpois,{2,0,INFINITY},-10);
+  cppunivariate::tbinom_detail::record_witness(d,{.1,0,INFINITY,20},-11,false,true);
+  REQUIRE(d.candidates.size()==2);
+  CHECK(d.candidates.back().coef[2]==INFINITY);
+  CHECK(d.comparison_tie);CHECK(d.loglik_upper==INFINITY);
+}
+
+TEST_CASE("tbinom: second-order certificate refuses a positive coefficient") {
+  std::vector<int>x(104,0);x.insert(x.end(),608,3);x.insert(x.end(),112,4);
+  cppunivariate::binomial_certificate_detail::Work work{0,0,512};
+  bool budget=false;double rate=NAN,ll=NAN;
+  CHECK_FALSE(std::isfinite(cppunivariate::tbinom_detail::second_order_poisson_cutoff({x.data(),x.size()},4,work,budget,rate,ll)));
+  CHECK_FALSE(budget);CHECK_FALSE(work.numerical);
+}

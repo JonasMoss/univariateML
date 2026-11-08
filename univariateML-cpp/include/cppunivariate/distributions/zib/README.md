@@ -68,13 +68,20 @@ limits:
 - model: zip
   firmness: proved
   when: 'The trial count $n$ tends to infinity and $p$ tends to zero with $np$ tending to a finite positive rate.'
-  detect: 'Size and probability are free, and the fitted zero-inflated Poisson boundary has log likelihood at least the best finite value found minus $10^{-8}$ times sample size. This numerical comparison does not certify non-existence.'
+  detect: 'The relaxed zero-modified signed-tail and finite-prefix certificate proves an admissible ZIP face wins; samples without zeros delegate to the ordinary binomial certificate. Noninflated faces also use a compact rate certificate that proves inflation is inactive near the Poisson optimum. Other comparisons remain unresolved.'
   status: ZipLimit
 - model: zip
   firmness: proved
   when: 'The trial count $n$ tends to infinity and $p$ tends to zero with $np$ tending to a finite positive rate.'
-  detect: 'Inflation is held, size and probability are free, and the zero-inflated Poisson boundary with that same inflation has log likelihood at least the best finite value found minus $10^{-8}$ times sample size. This numerical comparison does not certify non-existence.'
+  detect: 'Zero inflation or a sample without zeros delegates to the binomial face decision, retaining held inflation. With observed zeros and nonzero held inflation, an inflation-uniform or localized signed rate bound and complete prefix exclusion prove the held ZIP face wins; otherwise the comparison remains unresolved.'
   status: ZipLimit
+  fixed:
+  - pi
+- model: zip
+  firmness: proved
+  when: As trial count tends to infinity and success probability tends to zero with their product fixed, the law tends to zero-inflated Poisson with the same inflation.
+  detect: Signed tail and complete finite-prefix exclusion prove escape, while the held-inflation ZIP certificate cannot order multiple face-rate maxima at its comparison margin.
+  status: FaceTie
   fixed:
   - pi
 fit_args:
@@ -98,7 +105,7 @@ relations:
 fit:
   method: multistart
   certified: partial
-  note: 'zib/README.md, Details; zib/mle.hpp; zib/test.cpp: Finite free-size winners require constrained retained-support tail exclusion and complete integer-prefix coverage; held-inflation ZIP witnesses use the ZIP certificate. Winning-face comparisons remain unresolved.'
+  note: 'zib/README.md, Details; zib/mle.hpp; zib/test.cpp: Finite free-size winners require constrained retained-support tail exclusion and complete integer-prefix coverage; held-inflation ZIP witnesses use the ZIP certificate. Free inflation inherits admissible signed positive-Poisson face certificates; zero inflation and no-zero samples reduce to binomial. Held inflation uses an inflation-uniform normalized-pmf tail for sufficiently dispersed positive counts and a localized rate-interval certificate otherwise; globally winning tied ZIP faces retain both rate candidates; noninflated free-inflation faces use a binomial submodel certificate and an explicit zero-mass bound. Unresolved higher-order signs and near-branch comparisons still stop.'
 areas:
 - counts and ecology
 classification: specialist
@@ -116,8 +123,9 @@ existence:
     With all coefficients free, all-zero data attain a nonunique maximum. For
     positive data, finite-size attainment must be distinguished from a supremum on
     the infinite-size zero-inflated Poisson boundary. Retained-support certificates
-    settle strict finite winners within their work budgets; winning-face decisions
-    remain unresolved. With size held at an integer at
+    settle strict finite winners within their work budgets. Signed positive-count
+    certificates also settle admissible free-inflation ZIP faces; remaining
+    comparisons stop explicitly. With size held at an integer at
     least the largest count, a maximum always exists for compatible data, but it
     need not be unique. With $0<p<1$ held, a finite integer maximum exists.
     Holding only inflation retains the infinite-size comparison with that same
@@ -149,7 +157,7 @@ Holding size removes the infinite-size escape. The binomial member at $\pi=0$ re
 
 A held probability is preserved. With $0<p<1$ and at least one positive count, the integer search bounds the remaining likelihood tail before returning. Exhausting its work budget is a numerical failure. Boundary probabilities must assign positive likelihood to the observations.
 
-Holding inflation leaves a scalar probability profile at each integer size. Its stationary points are isolated using a quadratic turning-point equation. Root brackets must resolve relative to the probability: an absolute-width test can accept an unchecked tiny probability at a large held size. An unfinished solve stops numerically and retains its evaluated finite witness. The turning-point polynomial is formed in $u=Np$, with coefficients $n_{\mathrm{obs}}n_+$, $-S(n_{\mathrm{obs}}+n_+)-Sn_0/N$ and $S^2+Sn_0$, where $S$ is the count sum and $n_0,n_+$ are zero and positive sample counts. Differencing polynomial values in probability coordinates loses its linear coefficient at large size. Discriminants within $4096\epsilon(1+b^2+4ac)$ of zero stop numerically. Zero probabilities use `exp(N*log1p(-p))`; forming `1-p` first can round it to one and change the score. With no zeros, inflation is zero when free and contributes only a constant when held; the ordinary-binomial mean fit applies. The infinite-size comparison uses the zero-inflated Poisson boundary with the same held inflation.
+Holding inflation leaves a scalar probability profile at each integer size. Its stationary points are isolated using a quadratic turning-point equation. Root brackets must resolve relative to the probability: an absolute-width test can accept an unchecked tiny probability at a large held size. An unfinished solve stops numerically and retains its evaluated finite witness. The turning-point polynomial is formed in $u=Np$, with coefficients $n_{\mathrm{obs}}n_+$, $-S(n_{\mathrm{obs}}+n_+)-Sn_0/N$ and $S^2+Sn_0$, where $S$ is the count sum and $n_0,n_+$ are zero and positive sample counts. Differencing polynomial values in probability coordinates loses its linear coefficient at large size. Discriminants within $4096\epsilon(1+b^2+4ac)$ of zero stop numerically. The necessary interval $[S/(n_{\mathrm{obs}}N),S/(n_+N)]$ does not introduce parameter boundaries: its interior endpoints must not replace a stationary point merely because their likelihoods round alike. Only $p=1$ can compete as a physical upper boundary. Zero mixtures also need log-scale arithmetic. For $\pi=2^{-1074}$, $N=1075$ and $p=1/2$, the base zero mass is $\pi/2$ and the inflated mass is $3\pi/2-\pi^2/2$; materializing the base mass as a double before mixing can change its logarithm by an order-one amount. The score needs a common log scale for the same reason. With no zeros, inflation is zero when free and contributes only a constant when held; the ordinary-binomial mean fit applies. The infinite-size comparison uses the zero-inflated Poisson boundary with the same held inflation.
 
 When size and probability are free, the grid supplies a proposal. Success requires the retained-support correction $D_{N,K}$ from [ztbinom](../ztbinom/README.md), retaining $0,\ldots,K$, and complete evaluation or bounded block exclusion of all feasible sizes below the resulting tail cutoff. Positive counts have the same correction bound. At zero, the inflated mass is at most $e^{-c_N(K)}[\pi+(1-\pi)/Z_K]$, so the same total correction applies with inflation held or free.
 
@@ -157,7 +165,11 @@ The positive-mean root is checked before deciding whether the unconstrained infl
 
 The retained likelihood factors into the positive conditional likelihood and a Bernoulli zero-indicator likelihood. On a log-rate interval the first has a concave tangent upper bound. The second is maximized over its attainable zero-mass interval: $[\pi+(1-\pi)/Z_K(\eta_+),\pi+(1-\pi)/Z_K(\eta_-)]$ when inflation is held and $[1/Z_K(\eta_+),1]$ when free. Subdivision bounds all branches without assuming unimodality. The base conditional mean brackets every maximum between the full and positive sample means. The work units and floating-point margins are those of the shared retained-support certificate.
 
-The held-inflation ZIP face uses [ZIP's root certificate](../zip/README.md). Neither it nor a nearly equal face value establishes that no finite size wins. Unresolved face comparisons preserve both witnesses and an infinite global upper bound; signed-tail decisions are open. For data on $\{0,1\}$, size one is saturated; with inflation held, choose $p=\min(1,\bar x/(1-\pi))$. This also attains the best constrained zero frequency when held inflation exceeds the observed zero fraction. With both probabilities free only their product is identified.
+The held-inflation ZIP face uses [ZIP's root certificate](../zip/README.md). When its two rate peaks cannot be ordered, a completed signed-tail and finite-prefix certificate still proves that no finite size wins. The stop then has kind `tie`, finite global likelihood bounds and both ZIP rate intervals; no exact equality is asserted for the supplied floating-point inflation. With free inflation, dropping its nonnegativity constraint gives the zero-modified likelihood as a global upper bound. If its positive-count signed certificate proves a winning positive-Poisson face, and that face has admissible inflation and agrees with the fitted ZIP face, the bound is attained in the closure and proves the ZIP limit. Holding inflation at zero delegates to the ordinary binomial certificate. A sample without zeros has the same binomial profile, plus the constant $n\log(1-\pi)$ when inflation is held; free inflation is then zero. There is also a tail bound uniform in held or free inflation. Write $S=\sum x_i$, $k=n_+$, $v=S/k$ and $G=\sum x_i(x_i-1)-S^2/k$. At every sufficiently large-size probability maximum, $u=Np\in[S/n,v]$. For $N\ge2v$, direct normalized-pmf comparison with ZIP at rate $u$ gives
+
+$$\ell_N-\sup\ell_{\mathrm{ZIP}}\le-\frac{G}{2N}+\frac{C}{N^2},\qquad C=Sv^2+n_0v^4/32.$$
+
+Thus $G>0$ excludes every size beyond $\max(\max x_i+1,2v,4C/G)$, uniformly in inflation; the held face comes from ZIP's all-branches certificate. Complete finite-prefix coverage is still mandatory. The zero-mass bound uses the fact that the second derivative of $\log(1-w+w e^t)$ is at most $1/4$. When $G$ is nonpositive and inflation is held, the implementation subdivides $[S/n,v]$. On each interval it bounds the actual coefficient $A(u)=-\sum x_i(x_i-1)/2+uS-(k+n_0w(u))u^2/2$, with $w(u)=(1-\pi)e^{-u}/[\pi+(1-\pi)e^{-u}]$. A negative coefficient bound gives a signed tail relative to the certified global ZIP face. Other intervals need a strict ZIP likelihood gap; their upper bounds combine the concave positive-count tangent with the convex zero-term chord. The resulting finitely many cutoffs cover the entire necessary rate interval, including every face mode. Near-winning points without a negative coefficient margin retain an unresolved comparison. For a free-inflation face with $\pi=0$, the fitter first checks the ordinary binomial submodel. A finite improvement becomes the incumbent for full ZIB certification. If the binomial certificate proves Poisson escape, set $z=n_0/n$ and $t=-\log z$. On a rate interval $[a,b]$ with $b<t$, the bound $(1-u/N)^N\ge\exp(-b-b^2/N)>z$ for $N\ge\max(2v,2b^2/(t-b))$ forces the profiled inflation to zero. The binomial certificate then excludes the entire interval. Other rate intervals need a strict face-likelihood gap; an upper bound combines a tangent to the positive conditional Poisson likelihood in log rate with the best zero-indicator likelihood over $q\ge e^{-b}$. Subdivision covers the full necessary rate interval. Higher-order equality cases and nearly active branch comparisons without a strict numerical margin remain unresolved. Unresolved face comparisons preserve both witnesses and an infinite global upper bound. For data on $\{0,1\}$, size one is saturated; with inflation held, choose $p=\min(1,\bar x/(1-\pi))$. This also attains the best constrained zero frequency when held inflation exceeds the observed zero fraction. With both probabilities free only their product is identified.
 
 ## R notes
 

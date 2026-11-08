@@ -185,11 +185,11 @@ TEST_CASE("ztbinom: retained-support certificate bounds the entire tail") {
   }
   for(int N=5;N<end;++N)CHECK(cppunivariate::ztbinom_mle(sample,1e-10,200,N).logLik<=f.logLik+1e-9);
 }
-TEST_CASE("ztbinom: J7a does not claim that its Poisson witness wins") {
+TEST_CASE("ztbinom: signed certificate proves its Poisson witness wins") {
   const std::vector<int>x{1,1,1,2,3,7,12};
   const auto f=cppunivariate::ztbinom_mle({x.data(),x.size()});
-  CHECK(f.stop_detail.comparison_tie);
-  CHECK(f.stop_detail.loglik_upper==INFINITY);
+  CHECK_FALSE(f.stop_detail.comparison_tie);
+  CHECK(std::isfinite(f.stop_detail.loglik_upper));
   CHECK(f.stop_detail.candidates.size()>=2);
   // Size one leaves probability unidentified: distinct finite maximizers.
   CHECK(cppunivariate::ztbinom_mle({x.data(),1},1e-10,200,1,.2).logLik==0);
@@ -217,4 +217,56 @@ TEST_CASE("ztbinom: an unresolved tiny probability never becomes a successful fi
     CHECK(f.stop_detail.loglik_upper==INFINITY);
     REQUIRE(f.stop_detail.candidates.size()==1);
   }
+}
+
+TEST_CASE("ztbinom: signed infinite tail and complete prefix certify a strict face") {
+  const std::vector<int>x{1,1,1,2,2,8};
+  const cppunivariate::ispan sample{x.data(),x.size()};
+  const auto face=cppunivariate::ztpois_mle(sample);
+  cppunivariate::binomial_certificate_detail::Work work{0,0,200};
+  const double end=cppunivariate::binomial_certificate_detail::signed_cutoff(sample,1,INFINITY,face.lambda,work);
+  REQUIRE(std::isfinite(end));
+  for(int N=8;N<end;++N)CHECK(cppunivariate::ztbinom_mle(sample,1e-10,200,N).logLik<face.logLik);
+  for(double N : {end,end*2,end*8}) {
+    const auto f=cppunivariate::ztbinom_mle(sample,1e-10,1000,N);
+    REQUIRE(f.status==cppunivariate::ZtbinomStatus::Ok);
+    CHECK(f.logLik<face.logLik);
+  }
+  const auto f=cppunivariate::ztbinom_mle(sample);
+  REQUIRE(f.status==cppunivariate::ZtbinomStatus::PoissonLimit);
+  CHECK_FALSE(f.stop_detail.comparison_tie);
+  CHECK(f.stop_detail.loglik_lower==doctest::Approx(face.logLik));
+  CHECK(f.stop_detail.loglik_upper>=face.logLik);
+  CHECK(std::isfinite(f.stop_detail.loglik_upper));
+}
+
+TEST_CASE("ztbinom: signed bound refuses nonpositive gaps and inaccurate face means") {
+  const std::vector<int>x{1,2,2,3,3,3,4,4,5,5};
+  const cppunivariate::ispan sample{x.data(),x.size()};
+  const auto face=cppunivariate::ztpois_mle(sample);
+  cppunivariate::binomial_certificate_detail::Work work{0,0,200};
+  CHECK_FALSE(std::isfinite(cppunivariate::binomial_certificate_detail::signed_cutoff(sample,1,INFINITY,face.lambda,work)));
+  CHECK_FALSE(work.numerical);
+  CHECK_FALSE(std::isfinite(cppunivariate::binomial_certificate_detail::signed_cutoff(sample,1,INFINITY,face.lambda*1.01,work)));
+  CHECK(work.numerical);
+}
+
+TEST_CASE("ztbinom: face prefix keeps hidden improvements ambiguity and budgets distinct") {
+  const std::vector<int>x{1,3};const cppunivariate::ispan sample{x.data(),x.size()};
+  cppunivariate::binomial_certificate_detail::Work work{0,0,200};
+  CHECK(cppunivariate::binomial_certificate_detail::cover_face(sample,3,5,-10.995,work,[](double N){return N==4?-10.99:-11.;})==cppunivariate::binomial_certificate_detail::FaceCoverage::Finite);
+  CHECK(cppunivariate::binomial_certificate_detail::cover_face(sample,2,3,-10,work,[](double){return -10.;})==cppunivariate::binomial_certificate_detail::FaceCoverage::Unresolved);
+  cppunivariate::binomial_certificate_detail::Work exhausted{0,0,0};
+  CHECK(cppunivariate::binomial_certificate_detail::cover_face(sample,2,3,-10,exhausted,[](double){return -11.;})==cppunivariate::binomial_certificate_detail::FaceCoverage::Failure);
+  CHECK_FALSE(exhausted.numerical);
+}
+
+TEST_CASE("ztbinom: signed moment enumeration and representation refusals retain their reason") {
+  const std::vector<int>x{0,0,2};
+  cppunivariate::binomial_certificate_detail::Work work{0,0,0};bool budget=false;
+  CHECK_FALSE(std::isfinite(cppunivariate::binomial_certificate_detail::signed_cutoff({x.data(),x.size()},0,2,1,work,budget)));
+  CHECK(budget);CHECK_FALSE(work.numerical);
+  cppunivariate::binomial_certificate_detail::Work huge{0,0,200};
+  CHECK_FALSE(std::isfinite(cppunivariate::binomial_certificate_detail::signed_cutoff({x.data(),x.size()},0,1e100,1,huge,budget)));
+  CHECK_FALSE(budget);CHECK(huge.numerical);
 }

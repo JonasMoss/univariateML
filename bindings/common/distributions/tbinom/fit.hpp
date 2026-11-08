@@ -46,7 +46,7 @@ inline FitResult fit_tbinom(cppunivariate::ispan x, Held prob_arg = {}, Held a_a
   if(r.status==cppunivariate::TbinomStatus::TpoisLimit) {
     std::ostringstream os;
     os << "The maximum likelihood estimator does not exist: with both `prob` and `size` "
-          "free, the likelihood increases toward the truncated Poisson distribution as "
+          "free, the global likelihood supremum lies at the truncated Poisson distribution as "
           "`size` grows. Use `mltpois(x, a = " << lower << ", b = " << upper << ")` instead.";
     return stopped_fail(os.str());
   }

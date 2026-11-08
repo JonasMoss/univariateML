@@ -63,17 +63,15 @@ limits:
 - model: zmpois
   firmness: proved
   when: As $n\to\infty$ and $p\to0$ with $np\to\lambda>0$, the positive-count law tends to a zero-truncated Poisson law. The zero probability $p_0$ remains fixed, giving a zero-modified Poisson law.
-  detect: With both base coefficients free and at least one count above one, the fitted zero-modified Poisson log likelihood is at least the best searched finite-size value minus $10^{-8}$ times the number of positive observations.
+  detect: The positive-count fit passes the signed-tail and complete finite-prefix face certificate in ztbinom; the Bernoulli zero-indicator likelihood is added with the same held or fitted zero probability.
   status: PoissonLimit
-  numerical: true
 - model: zmpois
   firmness: proved
   when: As $n\to\infty$ and $p\to0$ with $np\to\lambda>0$, the positive-count law tends to a zero-truncated Poisson law. The zero probability $p_0$ remains fixed, giving a zero-modified Poisson law.
-  detect: With $p_0$ held, at least one count above one and both base coefficients free, the matching zero-modified Poisson log likelihood is at least the best searched finite-size value minus $10^{-8}$ times the number of positive observations.
+  detect: The positive-count fit passes the signed-tail and complete finite-prefix face certificate in ztbinom; the Bernoulli zero-indicator likelihood is added with the same held or fitted zero probability.
   status: PoissonLimit
   fixed:
   - p0
-  numerical: true
 fit_args:
   size: ~
 examples: |
@@ -95,7 +93,7 @@ relations:
 fit:
   method: delegation
   certified: partial
-  note: 'zmbinom/README.md, Details; zmbinom/mle.hpp; zmbinom/test.cpp: The certified positive-count ztbinom routes transfer with the Bernoulli zero-indicator factor, including stop witnesses. Winning-face comparisons remain unresolved.'
+  note: 'zmbinom/README.md, Details; zmbinom/mle.hpp; zmbinom/test.cpp: The certified positive-count ztbinom routes transfer with the Bernoulli zero-indicator factor, including stop witnesses. Signed positive-Poisson face certificates transfer with the same factor; nonpositive-gap or ambiguous-prefix comparisons remain unresolved.'
 areas:
 - counts and ecology
 classification: specialist
@@ -126,10 +124,10 @@ With no positives the base coefficients are unidentified. With no zeros the free
 
 A held interior probability is preserved and the integer search bounds the remaining tail before returning. Exhausting its work budget is an error. Boundary probabilities must give positive likelihood to the observations. A held zero probability of zero is incompatible with observed zeros, and a held zero probability of one is incompatible with positives.
 
-The free-size positive-count certificate and its unresolved face comparisons transfer from [ztbinom](../ztbinom/README.md). The zero-indicator log likelihood is added to every candidate and bound, with `p0` appended to its coefficients. A positive-Poisson face becomes a zero-modified Poisson face with the same `p0`. This transfer applies with `p0` held or fitted; it supplies no general uniqueness theorem for the integer size.
+The free-size positive-count finite-winner and signed-face certificates, and unresolved comparisons, transfer from [ztbinom](../ztbinom/README.md). The zero-indicator log likelihood is added to every candidate and bound, with `p0` appended to its coefficients. A positive-Poisson face becomes a zero-modified Poisson face with the same `p0`. This transfer applies with `p0` held or fitted; it supplies no general uniqueness theorem for the integer size.
 
 ## R notes
 
-Unresolved Poisson comparisons retain diagnostic witnesses and do not assert non-existence.
+A signed positive-count certificate produces a proved zero-modified Poisson limit with finite global bounds. Unresolved comparisons retain diagnostic witnesses and an infinite upper bound.
 
 Supply `size` explicitly. A numeric value holds it, while `size = NULL` estimates it. Supplying `prob` or `p0` holds that coefficient. With no positives the fitter preserves supplied base coefficients and chooses conventional representatives for free ones. With both `prob` and `p0` free it warns about unidentified base coefficients on all-zero data. With both free and positive counts all equal to one it warns that `mlbinom(x, size = 1)` fits the attained law exactly. A held `size` is preserved at these boundaries. Unresolved infinite-size comparisons retain the fitted zero-modified Poisson witness with the same `p0`, and stop with kind `unresolved`. Incompatible held values stop.

@@ -618,8 +618,8 @@ test('binomial relatives retain unresolved finite and Poisson witnesses', async 
     ['tbinom',[1,2,3],{}]
   ]) {
     assert.throws(() => api[family].fit(new Float64Array(x),held),error => {
-      assert.equal(error.kind,'unresolved');
-      assert.equal(error.loglik_upper,Infinity);
+      assert.equal(error.kind,'limit');
+      assert.ok(Number.isFinite(error.loglik_upper));
       assert.ok(error.candidates.length>=2);
       return true;
     });
@@ -1062,4 +1062,124 @@ test('bnbinom NB delegate precision failures remain structured numerical stops',
     assert.throws(()=>api.bnbinom.fit([0,1,2,4],held),e=>{
       assert.equal(e.kind,'numerical');assert.equal(e.loglik_upper,0);return true;
     });
+});
+test('signed binomial face certificates have finite global bounds', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  for(const [family,x,held,model] of [
+    ['ztbinom',[1,1,1,2,2,8],{},'ztpois'],
+    ['zmbinom',[0,0,1,1,1,2,2,8],{p0:.2},'zmpois'],
+    ['tbinom',[0,1,1,2,2],{a:-1,b:2},'tpois'],
+    ['zib',[0,0,0,0,0,1,1,2,2,4],{pi:.2},'zip']
+  ]) {
+    assert.throws(() => api[family].fit(new Float64Array(x),held),error => {
+      assert.equal(error.kind,'limit');
+      assert.equal(error.model,model);
+      assert.ok(Number.isFinite(error.loglik_upper));
+      assert.ok(error.loglik_upper>=error.loglik_lower);
+      assert.ok(error.candidates.length>=1);
+      if(family==='tbinom')assert.equal(error.estimates.lambda,2);
+      if(family==='zib') {
+        assert.equal(error.estimates.pi,.2);
+        assert.ok(Math.abs(error.estimates.lambda-1.3184257723276573)<1e-9);
+      }
+      return true;
+    });
+  }
+});
+
+test('higher-order binomial face signs retain certified or unresolved witnesses', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  const q=Math.exp(-1.6),pi=.75*q/(.25+.75*q);
+  for(const [family,x,held] of [
+    ['tbinom',[...Array(50).fill(0),...Array(41).fill(1),...Array(33).fill(2),...Array(3).fill(3),...Array(3).fill(4)],{a:-1,b:4}],
+    ['zib',[0,0,0,0,0,1,1,2,2,4],{pi}]
+  ]) {
+    assert.throws(() => api[family].fit(new Float64Array(x),held),error => {
+      assert.equal(error.kind,family==='tbinom'?'limit':'unresolved');
+      if(family==='tbinom')assert.ok(Number.isFinite(error.loglik_upper));
+      else assert.equal(error.loglik_upper,Infinity);
+      assert.ok(Number.isFinite(error.loglik_lower));
+      assert.ok(error.candidates.length>=2);
+      return true;
+    });
+  }
+});
+
+test('two-point binomial windows attain a finite member despite their face tie', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  const fit=api.tbinom.fit(new Float64Array([2,2,3,3]),{a:1,b:3});
+  assert.equal(fit.estimates.size,3);
+  assert.ok(Math.abs(fit.logLik+4*Math.log(2))<1e-10);
+});
+
+test('exact factorial moments certify a nonsaturated truncated Poisson face', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  const x=[0,...Array(9).fill(1),...Array(6).fill(2),...Array(10).fill(3)];
+  assert.throws(() => api.tbinom.fit(new Float64Array(x),{a:-1,b:3}),error => {
+    assert.equal(error.kind,'limit');
+    assert.equal(error.estimates.lambda,3);
+    assert.ok(Number.isFinite(error.loglik_upper));
+    return true;
+  });
+});
+
+test('globally winning tied ZIP faces retain both rate candidates', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  assert.throws(() => api.zib.fit(new Float64Array([...Array(198).fill(0),1,19]),{pi:.7254971052291191}),error => {
+    assert.equal(error.kind,'tie');
+    assert.equal(error.model,'zip');
+    assert.ok(Number.isFinite(error.loglik_upper));
+    assert.ok(error.candidates.length>=3);
+    return true;
+  });
+});
+
+test('noninflated ZIP faces include the equal-moment binomial escape', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  for(const x of [[0,1,1,1,2,4],[0,1,1,1,2,3,4,4]]) {
+    assert.throws(() => api.zib.fit(new Float64Array(x)),error => {
+      assert.equal(error.kind,'limit');
+      assert.equal(error.estimates.pi,0);
+      assert.ok(Number.isFinite(error.loglik_upper));
+      return true;
+    });
+  }
+});
+
+test('ZIB subnormal held inflation preserves log masses and its probability root', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  const mix=Number.MIN_VALUE;
+  const f=api.zib.fit(new Float64Array([0,500]),{size:1075,prob:.5,pi:mix});
+  assert.ok(Math.abs(f.logLik+750.36663618821149)<1e-9);
+  const g=api.zib.fit(new Float64Array([...Array(1000).fill(535),0]),{size:1075,pi:mix});
+  assert.ok(Math.abs(g.estimates.prob/.4971795798757613128165584136-1)<1e-10);
+  assert.ok(Math.abs(g.logLik+4455.659181549239638934)<1e-7);
+  const tiny=api.zib.fit(new Float64Array([0]),{size:1,prob:1e-300,pi:.5});
+  assert.ok(tiny.logLik<0);
+  assert.ok(Math.abs(tiny.logLik/(-5e-301)-1)<1e-10);
+});
+
+test('ZIB unrepresentable finite log likelihoods stop numerically', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  assert.throws(() => api.zib.fit(new Float64Array([0]),{size:1e308,prob:.9,pi:0}),error => {
+    assert.equal(error.kind,'numerical');
+    assert.equal(error.loglik_upper,Infinity);
+    return true;
+  });
+});
+
+test('ZIB tiny held probabilities preserve the unique all-zero inflation', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  const f=api.zib.fit(new Float64Array([0]),{size:1,prob:1e-300});
+  assert.equal(f.estimates.pi,1);
+  assert.equal(f.logLik,0);
 });

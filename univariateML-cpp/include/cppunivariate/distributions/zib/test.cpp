@@ -202,8 +202,8 @@ TEST_CASE("zib: constrained retained-support finite winner and J1 face witness")
   }
   const std::vector<int>tail{0,0,0,0,0,0,0,0,1,1,1,2,3,7,12};
   const auto f=cppunivariate::zib_mle({tail.data(),tail.size()},1e-10,200,NAN,NAN,.2);
-  CHECK(f.stop_detail.comparison_tie);
-  CHECK(f.stop_detail.loglik_upper==INFINITY);
+  CHECK_FALSE(f.stop_detail.comparison_tie);
+  CHECK(std::isfinite(f.stop_detail.loglik_upper));
 }
 
 TEST_CASE("zib: distinct coefficients can describe the same saturated maximum") {
@@ -265,4 +265,148 @@ TEST_CASE("zib: no-zero data use the exact ordinary-binomial reduction") {
     CHECK(f.prob*1e100==doctest::Approx(2).epsilon(1e-12));
     CHECK(f.pi==(std::isnan(pi)?0:pi));
   }
+}
+
+TEST_CASE("zib: admissible relaxed positive face and ordinary binomial reductions") {
+  const std::vector<int>x{0,0,0,0,0,0,0,0,1,1,1,2,3,7,12};
+  const auto f=cppunivariate::zib_mle({x.data(),x.size()});
+  REQUIRE(f.status==cppunivariate::ZibStatus::ZipLimit);
+  CHECK_FALSE(f.stop_detail.comparison_tie);
+  CHECK(std::isfinite(f.stop_detail.loglik_upper));
+  CHECK(f.stop_detail.limit_coef[1]>0);
+  const auto zero=cppunivariate::zib_mle({x.data(),x.size()},1e-10,200,NAN,NAN,0);
+  REQUIRE(zero.status==cppunivariate::ZibStatus::ZipLimit);
+  CHECK_FALSE(zero.stop_detail.comparison_tie);
+  CHECK(zero.stop_detail.limit_coef[1]==0);
+  CHECK(std::isfinite(zero.stop_detail.loglik_upper));
+  const std::vector<int>positive{1,1,1,2,3,7,12};
+  const auto a=cppunivariate::zib_mle({positive.data(),positive.size()},1e-10,200,NAN,NAN,.2);
+  const auto b=cppunivariate::zib_mle({positive.data(),positive.size()});
+  REQUIRE(a.status==cppunivariate::ZibStatus::ZipLimit);
+  REQUIRE(b.status==cppunivariate::ZibStatus::ZipLimit);
+  CHECK(a.stop_detail.limit_coef[1]==.2);
+  CHECK(b.stop_detail.limit_coef[1]==0);
+  CHECK(a.stop_detail.limit_loglik==doctest::Approx(b.stop_detail.limit_loglik+positive.size()*std::log(.8)));
+  CHECK_FALSE(a.stop_detail.comparison_tie);
+  const auto held=cppunivariate::zib_mle({x.data(),x.size()},1e-10,200,NAN,NAN,.2);
+  CHECK_FALSE(held.stop_detail.comparison_tie);
+  CHECK(std::isfinite(held.stop_detail.loglik_upper));
+}
+
+TEST_CASE("zib: inflation-uniform signed cutoff and held ZIP faces") {
+  const std::vector<int>x{0,0,0,0,0,0,0,0,1,1,1,2,3,7,12};
+  const cppunivariate::ispan sample{x.data(),x.size()};
+  cppunivariate::binomial_certificate_detail::Work work{0,0,200};bool budget=false;
+  const double end=cppunivariate::zib_fit_detail::signed_zip_cutoff(sample,work,budget);
+  REQUIRE(std::isfinite(end));CHECK_FALSE(budget);
+  for(double pi : {.01,.2,.8}) {
+    const auto f=cppunivariate::zib_mle(sample,1e-10,200,NAN,NAN,pi);
+    REQUIRE(f.status==cppunivariate::ZibStatus::ZipLimit);
+    CHECK_FALSE(f.stop_detail.comparison_tie);
+    CHECK(std::isfinite(f.stop_detail.loglik_upper));
+    CHECK(f.stop_detail.limit_coef[1]==pi);
+    const auto face=cppunivariate::zip_mle(sample,NAN,pi);
+    REQUIRE(face.status==cppunivariate::ZipStatus::Ok);
+    CHECK(f.stop_detail.limit_loglik==doctest::Approx(face.logLik).epsilon(1e-10));
+    for(double N : {end,end*2,end*8}) {
+      const auto finite=cppunivariate::zib_mle(sample,1e-10,200,N,NAN,pi);
+      REQUIRE(finite.status==cppunivariate::ZibStatus::Ok);
+      CHECK(finite.logLik<face.logLik);
+    }
+  }
+}
+
+TEST_CASE("zib: localization resolves a held-inflation face outside the uniform moment gap") {
+  const std::vector<int>x{0,0,0,0,0,1,1,2,2,4};
+  const auto f=cppunivariate::zib_mle({x.data(),x.size()},1e-10,200,NAN,NAN,.2);
+  CHECK_FALSE(f.stop_detail.comparison_tie);
+  CHECK(std::isfinite(f.stop_detail.loglik_upper));
+  CHECK(f.stop_detail.limit_coef[1]==.2);
+}
+
+TEST_CASE("zib: localized held-face tails and near-zero coefficients are distinguished") {
+  const std::vector<int>x{0,0,0,0,0,1,1,2,2,4};
+  const cppunivariate::ispan sample{x.data(),x.size()};
+  const auto face=cppunivariate::zip_mle(sample,NAN,.2);
+  REQUIRE(face.status==cppunivariate::ZipStatus::Ok);
+  cppunivariate::binomial_certificate_detail::Work work{0,0,200};bool budget=false;
+  const double end=cppunivariate::zib_fit_detail::localized_zip_cutoff(sample,.2,face.logLik,work,budget);
+  REQUIRE(std::isfinite(end));CHECK_FALSE(budget);
+  for(double N : {end,end*2,end*8}) {
+    const auto finite=cppunivariate::zib_mle(sample,1e-10,200,N,NAN,.2);
+    REQUIRE(finite.status==cppunivariate::ZibStatus::Ok);
+    CHECK(finite.logLik<face.logLik);
+  }
+  const double q=std::exp(-1.6),pi=.75*q/(.25+.75*q);
+  const auto near=cppunivariate::zib_mle(sample,1e-10,200,NAN,NAN,pi);
+  CHECK(near.stop_detail.comparison_tie);
+  CHECK(near.stop_detail.loglik_upper==INFINITY);
+}
+
+TEST_CASE("zib: globally winning tied ZIP faces retain both rate candidates") {
+  std::vector<int>x(198,0);x.push_back(1);x.push_back(19);
+  const auto f=cppunivariate::zib_mle({x.data(),x.size()},1e-10,200,NAN,NAN,.7254971052291191);
+  REQUIRE(f.status==cppunivariate::ZibStatus::FaceTie);
+  CHECK_FALSE(f.stop_detail.comparison_tie);
+  CHECK(std::isfinite(f.stop_detail.loglik_upper));
+  int faces=0;for(const auto& c:f.stop_detail.candidates)if(c.model==cppunivariate::StopModel::Zip)++faces;
+  CHECK(faces==2);
+  CHECK(f.stop_detail.candidates.size()>=3);
+}
+
+TEST_CASE("zib: a strict finite winner is retained above tied ZIP rates") {
+  std::vector<int>x(99,0);x.push_back(10);
+  const double pi=.7254971052291191;
+  const auto f=cppunivariate::zib_mle({x.data(),x.size()},1e-10,200,NAN,NAN,pi);
+  REQUIRE(f.status==cppunivariate::ZibStatus::Ok);
+  CHECK(f.logLik>=99*std::log(pi)+std::log1p(-pi)-1e-10);
+}
+
+TEST_CASE("zib: noninflated faces use the binomial escape including equality") {
+  for(const std::vector<int> x : {std::vector<int>{0,1,1,1,2,4},std::vector<int>{0,1,1,1,2,3,4,4}}) {
+    const auto f=cppunivariate::zib_mle({x.data(),x.size()});
+    REQUIRE(f.status==cppunivariate::ZibStatus::ZipLimit);
+    CHECK_FALSE(f.stop_detail.comparison_tie);
+    CHECK(std::isfinite(f.stop_detail.loglik_upper));
+    CHECK(f.stop_detail.limit_coef[1]==0);
+    const auto face=cppunivariate::zip_mle({x.data(),x.size()});
+    REQUIRE(face.status==cppunivariate::ZipStatus::Ok);
+    CHECK(f.stop_detail.limit_loglik==doctest::Approx(face.logLik).epsilon(1e-10));
+  }
+}
+
+TEST_CASE("zib: subnormal held inflation retains log masses and the probability root") {
+  const double pi=std::numeric_limits<double>::denorm_min();
+  const std::vector<int> x{0,500};
+  const auto f=cppunivariate::zib_mle({x.data(),x.size()},1e-10,200,1075,.5,pi);
+  REQUIRE(f.status==cppunivariate::ZibStatus::Ok);
+  double ll=0;for(int v:x)ll+=cppunivariate::distributions::dzib(v,1075,.5,pi,true);
+  CHECK(std::abs(f.logLik-ll)<1e-9);
+  std::vector<int> y(1000,535);y.push_back(0);
+  const auto g=cppunivariate::zib_mle({y.data(),y.size()},1e-10,200,1075,NAN,pi);
+  REQUIRE(g.status==cppunivariate::ZibStatus::Ok);
+  // 70-digit root; the exact turning discriminant is -1461373763040000/1849.
+  CHECK(g.prob==doctest::Approx(.4971795798757613128165584136).epsilon(1e-10));
+  CHECK(std::abs(g.logLik+4455.659181549239638934)<1e-7);
+  const std::vector<int> zero{0};
+  const auto tiny=cppunivariate::zib_mle({zero.data(),zero.size()},1e-10,200,1,1e-300,.5);
+  REQUIRE(tiny.status==cppunivariate::ZibStatus::Ok);
+  CHECK(tiny.logLik<0);
+  CHECK(tiny.logLik/(-5e-301)==doctest::Approx(1).epsilon(1e-10));
+}
+
+TEST_CASE("zib: an unrepresentable finite log likelihood is a numerical stop") {
+  const std::vector<int> x{0};
+  const auto f=cppunivariate::zib_mle({x.data(),x.size()},1e-10,200,1e308,.9,0);
+  CHECK(f.status==cppunivariate::ZibStatus::IterationFailure);
+  CHECK(f.stop_detail.loglik_upper==INFINITY);
+  CHECK_FALSE(f.stop_detail.budget_exhausted);
+}
+
+TEST_CASE("zib: a rounded base zero mass does not hide the unique all-zero inflation") {
+  const std::vector<int> x{0};
+  const auto f=cppunivariate::zib_mle({x.data(),x.size()},1e-10,200,1,1e-300);
+  REQUIRE(f.status==cppunivariate::ZibStatus::Ok);
+  CHECK(f.pi==1);
+  CHECK(f.logLik==0);
 }

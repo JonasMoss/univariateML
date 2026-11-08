@@ -1,0 +1,19 @@
+ztbinom max=12 status=3 tie=0 upper=-21.393000768215195 ll=-28.965556568194078 face=-21.393000769235563 signed_end=24
+ztbinom max=8 status=3 tie=0 upper=-12.65830689493349 ll=-16.566170461479103 face=-12.658306895945913 signed_end=16
+ztbinom max=5 status=0 tie=0 upper=nan ll=-16.1529165670933 face=-17.022957429144018 signed_end=inf
+tbinom max=3 status=6 tie=0 upper=-3.3098289573591493 face=-3.3098289583630693
+tbinom max=4 status=6 tie=0 upper=-3.3028396876750108 face=-3.3028396886789242
+tbinom max=8 status=6 tie=0 upper=-15.272682682976408 face=-15.272682683991208
+zib pi=nan status=3 tie=0 upper=-31.756850407913042
+zib pi=0 status=3 tie=0 upper=-42.127042554118866
+zib pi=0.20000000000000001 status=3 tie=0 upper=-35.190420994897082
+zmbinom status=3 tie=0 upper=-35.830508926887461
+open zib status=3 tie=0 upper=-13.916714425884493 rate=1.3184257723276573
+exact moment tbinom status=6 tie=0 upper=-32.735934346535906
+near-zero local coefficient zib pi=0.3772146069463776 status=3 tie=1 upper=inf
+free ZIP boundary status=3 tie=0 upper=-9.2220150369251144 pi=0
+mixed higher moments tbinom status=6 tie=0 upper=-167.30664399725299
+winning tied ZIP status=5 comparison=0 upper=-79.408181663561408 face_modes=2
+finite winner above tied ZIP status=0 size=10 ll=-33.061714945925985
+noninflated equality face status=3 comparison=0 upper=-13.750659420511351 pi=0
+signed Jensen and mean-preserving compression checks passed; 48 likelihood inequalities

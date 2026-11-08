@@ -1,0 +1,24 @@
+--- bindings/r/distributions/binom/test.R
++++ bindings/r/distributions/binom/test.R
+@@ -232,7 +232,7 @@
+   expect_identical(e$model,"binom")
+   expect_equal(e$estimates,c(size=1,prob=.5))
+   e <- tryCatch(mlztbinom(c(1,1,1,2,3,7,12),size=NULL),error=identity)
+-  expect_s3_class(e,"univariateML_unresolved")
++  expect_s3_class(e,"univariateML_limit")
+   expect_identical(e$model,"ztpois")
+   expect_equal(e$estimates,unclass(mlztpois(c(1,1,1,2,3,7,12)))["lambda"],ignore_attr=TRUE)
+ })
+--- bindings/js/test.mjs
++++ bindings/js/test.mjs
+@@ -618,8 +618,8 @@
+     ['tbinom',[1,2,3],{}]
+   ]) {
+     assert.throws(() => api[family].fit(new Float64Array(x),held),error => {
+-      assert.equal(error.kind,'unresolved');
+-      assert.equal(error.loglik_upper,Infinity);
++      assert.equal(error.kind,'limit');
++      assert.ok(Number.isFinite(error.loglik_upper));
+       assert.ok(error.candidates.length>=2);
+       return true;
+     });

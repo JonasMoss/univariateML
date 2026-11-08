@@ -133,20 +133,20 @@ test_that("ztbinom attained point member evaluates and samples exactly", {
   expect_equal(rml(10,fit),rep(5,10))
 })
 
-test_that("ztbinom J7a face comparison is unresolved and retains both witnesses", {
+test_that("ztbinom signed face comparison is proved and retains both witnesses", {
   e <- tryCatch(mlztbinom(c(1,1,1,2,3,7,12),size=NULL),error=identity)
-  expect_s3_class(e,"univariateML_unresolved")
-  expect_equal(e$kind,"unresolved")
+  expect_s3_class(e,"univariateML_limit")
+  expect_equal(e$kind,"limit")
   expect_gte(nrow(e$candidates),2)
-  expect_equal(e$loglik_upper,Inf)
+  expect_true(is.finite(e$loglik_upper))
   expect_true(is.finite(e$loglik_lower))
 })
 
 
-test_that("ztbinom unresolved size-face comparisons stop as unresolved", {
+test_that("ztbinom proved size-face comparisons stop as limits", {
   e <- tryCatch(mlztbinom(c(1,1,1,2,3,7,12),size=NULL),error=identity)
-  expect_identical(e$kind,"unresolved")
-  expect_identical(class(e)[1],"univariateML_unresolved")
+  expect_identical(e$kind,"limit")
+  expect_identical(class(e)[1],"univariateML_limit")
 })
 
 test_that("ztbinom tiny-probability work stops retain witnesses and can be resolved", {
@@ -160,4 +160,13 @@ test_that("ztbinom tiny-probability work stops retain witnesses and can be resol
   face <- mlztpois(x)
   expect_equal(as.numeric(f["prob"])*1e100,as.numeric(face["lambda"]),tolerance=1e-9)
   expect_equal(attr(f,"logLik"),attr(face,"logLik"),tolerance=1e-9)
+})
+
+test_that("ztbinom proved limits keep strict finite witnesses below the global face", {
+  e <- tryCatch(mlztbinom(c(1,1,1,2,2,8),size=NULL),error=identity)
+  expect_s3_class(e,"univariateML_limit")
+  expect_identical(e$kind,"limit")
+  expect_gte(e$loglik_upper,e$limit_loglik)
+  expect_gte(e$loglik_lower,e$limit_loglik-1e-10)
+  expect_true(all(e$candidates$loglik_lower<=e$loglik_upper))
 })
