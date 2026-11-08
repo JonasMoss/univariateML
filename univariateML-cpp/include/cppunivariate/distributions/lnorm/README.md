@@ -118,3 +118,5 @@ Holding $\mu$ makes the scale estimate the root mean square log residual about t
 2026-10-30 (TASK-125): when squared log residuals overflow, divide them by their maximum magnitude before summation, then restore the scale. The held-mean 1e300 regression exercises this path.
 
 2026-10-31 (TASK-132): the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md) records invalid-input, degeneracy and delegate-failure behavior. The appended cases in `test.cpp` establish the tested scope.
+
+Conditional fits delegate to the normal residual profile on $\log x$; this also covers held log-locations far outside the transformed sample.

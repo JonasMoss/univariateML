@@ -382,3 +382,17 @@ TEST_CASE("snorm constant sample away from held mean has a sharp half-normal bou
     CHECK(r.stop_detail.loglik_upper>=r.stop_detail.loglik_lower);
   }
 }
+
+TEST_CASE("snorm scaled residuals: physical side scales are never squared") {
+  const std::vector<double> base={-1,0,0,0,0,0,0,0,0,0,0,1};
+  const auto reference=cppunivariate::snorm_mle(mltest::as_span(base),1e-10,200);
+  REQUIRE(reference.status==cppunivariate::SnormStatus::Ok);
+  for(double unit:{1e-200,1e200}) {
+    std::vector<double> x;for(double v:base)x.push_back(v*unit);
+    const auto r=cppunivariate::snorm_mle(mltest::as_span(x),1e-10,200);
+    REQUIRE(r.status==cppunivariate::SnormStatus::Ok);
+    CHECK(r.sigma/unit==doctest::Approx(reference.sigma).epsilon(1e-12));
+    CHECK(r.xi==doctest::Approx(reference.xi).epsilon(1e-12));
+    CHECK(r.logLik==doctest::Approx(reference.logLik-base.size()*std::log(unit)).epsilon(1e-12));
+  }
+}

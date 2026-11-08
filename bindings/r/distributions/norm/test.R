@@ -116,3 +116,63 @@ test_that("norm conditional collapse, feasibility and invalid holds", {
   expect_error(mlnorm(1:4,mean=Inf),"finite")
   expect_error(mlnorm(1:4,sd=0),"positive")
 })
+
+test_that("scaled residuals preserve every normal hold at extreme units", {
+  for (unit in c(1e-200, 1e200)) for (mask in 0:3) {
+    args <- list(x = c(1, 2) * unit)
+    m <- if (bitwAnd(mask, 1L)) 0 else 1.5
+    s <- if (bitwAnd(mask, 2L)) 1 else if (bitwAnd(mask, 1L)) sqrt(2.5) else .5
+    if (bitwAnd(mask, 1L)) args$mean <- 0
+    if (bitwAnd(mask, 2L)) args$sd <- unit
+    f <- do.call(mlnorm, args)
+    expect_equal(unname(f["mean"]) / unit, m, tolerance = 1e-14)
+    expect_equal(unname(f["sd"]) / unit, s, tolerance = 1e-14)
+    ll <- -2 * (log(unit) + log(s) + log(2*pi)/2) - sum((c(1,2)-m)^2)/(2*s*s)
+    expect_equal(attr(f, "logLik"), ll, tolerance = 1e-14)
+    t <- do.call(mltnorm, c(args, list(a=-Inf, b=Inf)))
+    expect_equal(as.numeric(t[c("mean", "sd")]) / unit, c(m,s), tolerance=1e-14)
+    expect_equal(attr(t, "logLik"), ll, tolerance=1e-14)
+  }
+  expect_error(mlnorm(c(0,0), mean=0), "unbounded")
+  expect_true(is.finite(attr(mlnorm(c(0,0), mean=0, sd=1e-200), "logLik")))
+})
+
+test_that("transformed normal and normalized scale families keep extreme units", {
+  for (unit in c(1e-200, 1e200)) {
+    for (held in c(FALSE, TRUE)) {
+      a <- list(x=c(1,1), meanlog=unit)
+      b <- list(x=c(.5,.5), mu=unit)
+      if (held) { a$sdlog <- unit; b$sigma <- unit }
+      l <- do.call(mllnorm,a); g <- do.call(mllogitnorm,b)
+      expect_equal(unname(l["sdlog"])/unit, 1, tolerance=1e-14)
+      expect_equal(unname(g["sigma"])/unit, 1, tolerance=1e-14)
+      ll <- -2*(log(unit)+log(2*pi)/2+.5)
+      expect_equal(attr(l,"logLik"), ll, tolerance=1e-14)
+      expect_equal(attr(g,"logLik"), ll+2*log(4), tolerance=1e-14)
+    }
+    h <- mlhnorm(c(1,2)*unit,mu=0)
+    f <- mlfoldnorm(c(1,2)*unit,mu=0)
+    b <- mlbhatt(c(1,2)*unit,mu=0,a=0)
+    for (fit in list(h,f,b)) {
+      expect_equal(unname(fit["sigma"])/unit,sqrt(2.5),tolerance=1e-12)
+      expect_true(is.finite(attr(fit,"logLik")))
+    }
+    s <- mlsnorm(c(-1,rep(0,10),1)*unit)
+    expect_equal(unname(s["sd"])/unit,sqrt(1/6),tolerance=1e-12)
+    expect_true(is.finite(attr(s,"logLik")))
+  }
+})
+
+test_that("Gaussian limit witnesses retain extreme residual scales", {
+  for (unit in c(1e-200,1e200)) {
+    h <- tryCatch(mlhuber(c(-1,1)*unit,epsilon=NULL),error=identity)
+    e <- tryCatch(mlemg(c(-1,-2)*unit,mu=0),error=identity)
+    for (stop in list(h,e)) {
+      expect_s3_class(stop,"univariateML_limit")
+      expect_equal(stop$model,"norm")
+      expect_true(is.finite(stop$limit_loglik))
+    }
+    expect_equal(unname(h$estimates["sd"])/unit,1,tolerance=1e-12)
+    expect_equal(unname(e$estimates["sd"])/unit,sqrt(2.5),tolerance=1e-12)
+  }
+})

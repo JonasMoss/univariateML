@@ -664,3 +664,30 @@ TEST_CASE("stop payloads reject unrepresentable or improper face parameters") {
   const auto invalid=cppunivariate::comparison_detail({{0,1},-1,-1,cppunivariate::StopModel::Norm},{{2,0,1},0,0,cppunivariate::StopModel::UnitGamma});
   CHECK_FALSE(invalid.comparison_tie);CHECK(invalid.candidates.empty());
 }
+
+TEST_CASE("norm scaled residuals: every held subset at extreme units") {
+  for(double unit:{1e-200,1e200}) {
+    const std::vector<double> x={unit,2*unit};
+    for(int mask=0;mask<4;++mask) {
+      const auto r=cppunivariate::norm_mle(mltest::as_span(x),mask&1?0:NAN,mask&2?unit:NAN);
+      REQUIRE(r.status==cppunivariate::NormStatus::Ok);
+      const double m=mask&1?0:1.5,s=mask&2?1:(mask&1?std::sqrt(2.5):.5);
+      CHECK(r.mean/unit==doctest::Approx(m).epsilon(1e-14));
+      CHECK(r.sd/unit==doctest::Approx(s).epsilon(1e-14));
+      const double ll=-2*(std::log(unit)+std::log(s)+.5*std::log(2*cppunivariate::pi))-
+          ((1-m)*(1-m)+(2-m)*(2-m))/(2*s*s);
+      CHECK(r.logLik==doctest::Approx(ll).epsilon(1e-14));
+    }
+  }
+  const double max=std::numeric_limits<double>::max();
+  const std::vector<double> wide={-max,max,max};
+  const auto w=cppunivariate::norm_mle(mltest::as_span(wide));
+  REQUIRE(w.status==cppunivariate::NormStatus::Ok);
+  CHECK(w.mean/max==doctest::Approx(1./3).epsilon(1e-14));
+  CHECK(w.sd/max==doctest::Approx(std::sqrt(8./9)).epsilon(1e-14));
+  const std::vector<double> zero={0,0};
+  CHECK(cppunivariate::norm_mle(mltest::as_span(zero),0,NAN).status==cppunivariate::NormStatus::Unbounded);
+  CHECK(cppunivariate::norm_mle(mltest::as_span(zero),0,1e-200).status==cppunivariate::NormStatus::Ok);
+  const std::vector<double> sub={0,std::numeric_limits<double>::denorm_min()};
+  CHECK(cppunivariate::norm_mle(mltest::as_span(sub),0,NAN).status!=cppunivariate::NormStatus::Unbounded);
+}

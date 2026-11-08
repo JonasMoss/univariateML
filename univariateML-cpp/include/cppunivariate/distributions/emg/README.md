@@ -191,3 +191,5 @@ half the exponential density. Repeated minima count separately.
 coefficients automatically. There is no translated-exponential fitter.
 For a free endpoint, `mlexp(x - min(x))` fits distances from the fitted
 endpoint. Held endpoints or rates require their conditional comparison.
+
+The dominating normal face uses the conditional normal fitter. Its large-shape envelope forms Gaussian residual moments after division by the largest residual.

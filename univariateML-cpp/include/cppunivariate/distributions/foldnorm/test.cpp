@@ -70,3 +70,13 @@ TEST_CASE("foldnorm R6 constant free and held-location collapse") {
     CHECK(cppunivariate::foldnorm_mle(mltest::as_span(x),1e-8,100,value).status==cppunivariate::FoldnormStatus::Unbounded);
   }
 }
+
+TEST_CASE("foldnorm scaled residuals: normal scale at extreme units") {
+  for(double unit:{1e-200,1e200}) {
+    const std::vector<double> x={unit,2*unit};
+    const auto r=cppunivariate::foldnorm_mle(mltest::as_span(x),1e-10,200,0);
+    REQUIRE(r.status==cppunivariate::FoldnormStatus::Ok);
+    CHECK(r.sigma/unit==doctest::Approx(std::sqrt(2.5)).epsilon(1e-12));
+    CHECK(std::isfinite(r.logLik));
+  }
+}

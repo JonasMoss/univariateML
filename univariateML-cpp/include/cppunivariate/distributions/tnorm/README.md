@@ -235,3 +235,5 @@ below $10^{-7}$ in near-face examples; the final quantitative certificate
 still decides acceptance. A finite solve within the face likelihood tolerance
 is reported as a numerical tie with both witnesses, rather than asserting
 that a finite MLE does not exist.
+
+The data normalization uses the residual root mean square directly, including with a held parent mean. Neither the Newton equations nor the final score enclosure require a variance in physical units.

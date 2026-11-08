@@ -398,3 +398,13 @@ TEST_CASE("bhatt certificate: default representability checks do not invent none
   CHECK(f.status==cppunivariate::BhattStatus::NumericalFailure);
   REQUIRE(!f.stop_detail.candidates.empty());
 }
+
+TEST_CASE("bhatt scaled residuals: normal scale at extreme units") {
+  for(double unit:{1e-200,1e200}) {
+    const std::vector<double> x={unit,2*unit};
+    const auto r=cppunivariate::bhatt_mle(mltest::as_span(x),1e-10,500,NAN,0,0);
+    REQUIRE(r.status==cppunivariate::BhattStatus::Ok);
+    CHECK(r.sigma/unit==doctest::Approx(std::sqrt(2.5)).epsilon(1e-12));
+    CHECK(std::isfinite(r.logLik));
+  }
+}

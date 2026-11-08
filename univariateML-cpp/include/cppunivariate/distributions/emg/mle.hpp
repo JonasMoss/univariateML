@@ -1,4 +1,5 @@
 #pragma once
+#include "../norm/mle.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
 #include "../../core/face_compare.hpp"
@@ -49,10 +50,9 @@ inline EmgResult emg_mle(span x,double tol=1e-8,int maxit=500,
   if(std::isnan(lambda) && ((!std::isnan(mu)&&mu>=maximum) ||
       (std::isnan(mu)&&!std::isnan(sigma)&&smallest==maximum))) {
     const double m=std::isnan(mu)?smallest:mu;
-    CPPUNIV_EXTENDED_REAL square=0;
-    for(double v:x) {const CPPUNIV_EXTENDED_REAL d=static_cast<CPPUNIV_EXTENDED_REAL>(v)-m;square+=d*d/x.size();}
-    const double s=std::isnan(sigma)?static_cast<double>(std::sqrt(square)):sigma;
-    if(square==0 && std::isnan(sigma)) {bad.status=EmgStatus::NumericalFailure;return bad;}
+    const auto gaussian=norm_mle(x,m,sigma);
+    const double s=gaussian.sd;
+    if(gaussian.status!=NormStatus::Ok) {bad.status=EmgStatus::NumericalFailure;return bad;}
     CPPUNIV_EXTENDED_REAL ll=0;
     if(!(s>0&&std::isfinite(s))||(std::isnan(sigma)&&s<std::numeric_limits<double>::min())) {bad.status=EmgStatus::NumericalFailure;return bad;}
     for(double v:x) {const CPPUNIV_EXTENDED_REAL z=(static_cast<CPPUNIV_EXTENDED_REAL>(v)-m)/s;ll+=emg_detail::logphi(z)-std::log(s);}

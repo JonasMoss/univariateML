@@ -521,9 +521,24 @@ TEST_CASE("tnorm: quantitative natural-parameter acceptance on held affine subse
   }
 }
 
-TEST_CASE("tnorm: squared-distance underflow is numerical rather than a collapse proof") {
+TEST_CASE("tnorm: scaled squared distances retain an attained fit") {
   const std::vector<double> distinct{0,1e-200},offset{1e-200,1e-200};
-  CHECK(cppunivariate::tnorm_mle({distinct.data(),distinct.size()}).status==cppunivariate::TnormStatus::IterationFailure);
+  CHECK(cppunivariate::tnorm_mle({distinct.data(),distinct.size()}).status==cppunivariate::TnormStatus::Ok);
   CHECK(cppunivariate::tnorm_mle({offset.data(),offset.size()},-INFINITY,INFINITY,
-    1e-12,100,0).status==cppunivariate::TnormStatus::IterationFailure);
+    1e-12,100,0).status==cppunivariate::TnormStatus::Ok);
+}
+
+TEST_CASE("tnorm scaled residuals: all normal-member held subsets") {
+  for(double unit:{1e-200,1e200}) {
+    const std::vector<double> x={unit,2*unit};
+    for(int mask=0;mask<4;++mask) {
+      const double mean=mask&1?0:NAN,sd=mask&2?unit:NAN;
+      const auto r=cppunivariate::tnorm_mle(mltest::as_span(x),-INFINITY,INFINITY,1e-12,100,mean,sd);
+      const auto n=cppunivariate::norm_mle(mltest::as_span(x),mean,sd);
+      REQUIRE(r.status==cppunivariate::TnormStatus::Ok);
+      CHECK(r.mean/unit==doctest::Approx(n.mean/unit).epsilon(1e-14));
+      CHECK(r.sd/unit==doctest::Approx(n.sd/unit).epsilon(1e-14));
+      CHECK(r.logLik==doctest::Approx(n.logLik).epsilon(1e-14));
+    }
+  }
 }

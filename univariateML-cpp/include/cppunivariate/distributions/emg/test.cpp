@@ -412,3 +412,27 @@ TEST_CASE("emg outer certificate: tail refinement finds a finite witness above t
     CHECK(r.stop_detail.budget_exhausted);
   }
 }
+
+TEST_CASE("emg scaled residuals: normal escape at extreme units") {
+  for(double unit:{1e-200,1e200}) {
+    const std::vector<double> x={-unit,-2*unit};
+    const auto r=cppunivariate::emg_mle(mltest::as_span(x),1e-8,500,0);
+    REQUIRE(r.status==cppunivariate::EmgStatus::NormalLimit);
+    CHECK(r.sigma/unit==doctest::Approx(std::sqrt(2.5)).epsilon(1e-14));
+    CHECK(std::isfinite(r.logLik));
+  }
+}
+
+TEST_CASE("emg scaled residuals: large shape Gaussian bound commutes with units") {
+  const std::vector<double> base={-2,-1,0,1,2};
+  const auto data=mltest::as_span(base);
+  const double reference=cppunivariate::emg_detail::large_shape_upper(data,1e8,-100,500,0,NAN);
+  REQUIRE(std::isfinite(reference));
+  for(double unit:{1e-200,1e200}) {
+    std::vector<double> x;for(double v:base)x.push_back(v*unit);
+    const double shift=-static_cast<double>(base.size())*std::log(unit);
+    const double upper=cppunivariate::emg_detail::large_shape_upper(mltest::as_span(x),1e8,-100+shift,500,0,NAN);
+    REQUIRE(std::isfinite(upper));
+    CHECK(upper-shift==doctest::Approx(reference).epsilon(1e-9));
+  }
+}

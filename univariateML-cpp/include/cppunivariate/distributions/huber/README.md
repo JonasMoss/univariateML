@@ -210,3 +210,5 @@ Supply `epsilon = 1.345` for a held tuning value, or `epsilon = NULL` to
 estimate shape. Certified normal and Laplace faces stop with advice to use
 `mlnorm` or `mllaplace`. Failed nuisance solves stop; work-budget and comparison
 stops carry structured evidence through the shared R/JavaScript fit layer.
+
+Both Gaussian-face comparisons obtain their conditional location and residual scale from the normal fitter; physical residuals are never squared to obtain that face scale.

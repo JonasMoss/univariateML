@@ -133,3 +133,14 @@ TEST_CASE("lnorm: TASK-132 unresolved likelihood has numerical failure status") 
   const cppunivariate::span x{data.data(),data.size()};
   CHECK(cppunivariate::lognormal_mle(x,0.0,1e-300).status == cppunivariate::LognormalStatus::IterationFailure);
 }
+
+TEST_CASE("lnorm scaled residuals: extreme held transformed location") {
+  const std::vector<double> x={1,1};
+  for(double unit:{1e-200,1e200})for(bool held:{false,true}) {
+    const auto r=cppunivariate::lognormal_mle(mltest::as_span(x),unit,held?unit:NAN);
+    REQUIRE(r.status==cppunivariate::LognormalStatus::Ok);
+    CHECK(r.sdlog/unit==doctest::Approx(1).epsilon(1e-14));
+    const double jac=0;
+    CHECK(r.logLik==doctest::Approx(-2*(std::log(unit)+.5*std::log(2*cppunivariate::pi)+.5)+jac).epsilon(1e-14));
+  }
+}

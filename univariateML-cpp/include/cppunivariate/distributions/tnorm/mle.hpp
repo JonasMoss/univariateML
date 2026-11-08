@@ -20,6 +20,7 @@
 #include "../cmb/acceptance.hpp"
 
 #include "../../core/span.hpp"
+#include "../norm/mle.hpp"
 #include "../../special/special.hpp"
 #include <algorithm>
 #include <cmath>
@@ -388,7 +389,6 @@ inline TnormResult tnorm_mle_impl(span x,
     return res;
   }
   const double n = static_cast<double>(x.size());
-  double sum = 0;
   bool constant = true;
   for (double v : x) {
     if (!std::isfinite(v)) return res;
@@ -397,17 +397,14 @@ inline TnormResult tnorm_mle_impl(span x,
       return res;
     }
     constant = constant && v == x[0];
-    sum += v - x[0];
   }
-  const double xbar = x[0] + sum / n;
-  double ss = 0;
-  for (double v : x) ss += (v - xbar) * (v - xbar);
-  const double var = ss / n;
+  const auto moments = norm_detail::moments(x);
+  const double xbar = moments.mean;
   const bool lower = std::isfinite(a), upper = std::isfinite(b);
 
   if (hold_mean && hold_sd) {
     const double sd = fixed_sd, mu = fixed_mean;
-    const double m2 = (var + (xbar - mu) * (xbar - mu)) / (sd * sd);
+    const double m2 = norm_detail::residuals(x,mu).standardized_square(sd) / n;
     const auto m = tnorm_detail::mass(0, -0.5, (a - mu) / sd, (b - mu) / sd, false);
     if (!m.ok) { res.status = TnormStatus::IterationFailure; return res; }
     res.mean = mu;
@@ -434,7 +431,7 @@ inline TnormResult tnorm_mle_impl(span x,
     // sufficient statistic mean(x) lies inside (a, b) after the endpoint test.
     const double sd = fixed_sd;
     res.sd = sd;
-    const double m2 = var / (sd * sd);
+    const double m2 = norm_detail::residuals(x,xbar).standardized_square(sd) / n;
     double t1 = 0;
     if (lower || upper) {
       if (!tnorm_detail::newton_location((a - xbar) / sd, (b - xbar) / sd, -0.5, tol, maxit,
@@ -455,7 +452,7 @@ inline TnormResult tnorm_mle_impl(span x,
     // mean(u^2) = 1. Natural parameter t2 = -1/(2 sd_u^2) for u^2.
     const double mu = fixed_mean;
     res.mean = mu;
-    const double s = std::sqrt(var + (xbar - mu) * (xbar - mu));
+    const double s = norm_detail::residuals(x,mu).rms(x.size());
     if (!(s > 0)) {
       res.status = TnormStatus::DegenerateData;
       return res;
@@ -487,11 +484,12 @@ inline TnormResult tnorm_mle_impl(span x,
   }
 
   // Both free.
-  if (!(ss > 0)) {
+  if (constant) {
     res.status = TnormStatus::DegenerateData;
     return res;
   }
-  const double s = std::sqrt(var);
+  const double s = moments.sd;
+  if (!(s>0 && std::isfinite(s))) {res.status=TnormStatus::IterationFailure;return res;}
   if (!lower && !upper) {
     res.mean = xbar;
     res.sd = s;
@@ -567,10 +565,9 @@ inline TnormResult tnorm_mle(span x,double a=-INFINITY,double b=INFINITY,double 
      (std::isfinite(r.a) || std::isfinite(r.b))) {
     const bool fm=!std::isnan(mean),fs=!std::isnan(sd);
     const double n=double(x.size());
-    double shifted_sum=0;for(double k:x)shifted_sum+=k-x[0];
-    const double origin=fm?mean:x[0]+shifted_sum/n;
-    double square=0;for(double k:x)square+=(k-origin)*(k-origin)/n;
-    const double scale=square>0?std::sqrt(square):r.sd;
+    const double origin=fm?mean:norm_detail::moments(x).mean;
+    const double rms=norm_detail::residuals(x,origin).rms(x.size());
+    const double scale=rms>0?rms:r.sd;
     double u1=0,u2=0;for(double k:x){const double u=(k-origin)/scale;u1+=u/n;u2+=u*u/n;}
     const double lo=(r.a-origin)/scale,hi=(r.b-origin)/scale;
     const double theta2=-.5*(scale/r.sd)*(scale/r.sd);
