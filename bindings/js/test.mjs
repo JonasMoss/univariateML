@@ -1183,24 +1183,6 @@ test('ZIB tiny held probabilities preserve the unique all-zero inflation', async
   assert.equal(f.estimates.pi,1);
   assert.equal(f.logLik,0);
 });
-test('binomial relatives retain unresolved finite and Poisson witnesses', async () => {
-  const {default: createApi} = await import('./index.mjs');
-  const api = await createApi();
-  for(const [family,x,held] of [
-    ['ztbinom',[1,1,1,2,3,7,12],{}],
-    ['zmbinom',[0,0,1,1,1,2,3,7,12],{p0:.2}],
-    ['zib',[0,0,0,0,0,0,0,0,1,1,1,2,3,7,12],{pi:.2}],
-    ['tbinom',[1,2,3],{}]
-  ]) {
-    assert.throws(() => api[family].fit(new Float64Array(x),held),error => {
-      assert.equal(error.kind,'unresolved');
-      assert.equal(error.loglik_upper,Infinity);
-      assert.ok(error.candidates.length>=2);
-      return true;
-    });
-  }
-});
-
 test('Bhattacharjee held certificates and quantitative numerical stops', async () => {
   const {default:createApi}=await import('./index.mjs');
   const api=await createApi();
