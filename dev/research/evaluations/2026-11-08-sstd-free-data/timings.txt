@@ -1,0 +1,16 @@
+0 none 62.412 59.894 False
+1 mean 910.232 897.215 False
+2 sd 123.314 123.141 False
+3 mean,sd 47.337 47.337 False
+4 nu 38.902 38.912 False
+5 mean,nu 1437.446 1422.025 False
+6 sd,nu 36.295 37.875 False
+7 mean,sd,nu 3.580 206.098 True
+8 xi 31.419 32.772 False
+9 mean,xi 13.231 17.736 False
+10 sd,xi 9.022 19.358 False
+11 mean,sd,xi 2.609 4.939 False
+12 nu,xi 4665.897 3888.378 False
+13 mean,nu,xi 6.566 3.412 True
+14 sd,nu,xi 4.008 2.055 True
+15 mean,sd,nu,xi 0.016 0.009 True

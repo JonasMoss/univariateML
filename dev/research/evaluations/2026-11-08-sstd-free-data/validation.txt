@@ -1,0 +1,58 @@
+{
+  "cpp-dev": {
+    "machine": "simbox GCC 13.3",
+    "passed": 106,
+    "failed": 0,
+    "seconds": 74.79
+  },
+  "cpp-full": {
+    "machine": "simbox GCC 13.3",
+    "passed": 129,
+    "failed": 0,
+    "seconds": 170.1
+  },
+  "cpp-no-long-double": {
+    "machine": "simbox GCC 13.3",
+    "passed": 129,
+    "failed": 0,
+    "seconds": 171.37
+  },
+  "r-dev": {
+    "machine": "simbox",
+    "passed": 22086,
+    "failed": 0,
+    "warnings": 0,
+    "skipped": 154,
+    "test_duration_seconds": 72.4
+  },
+  "r-full": {
+    "machine": "simbox",
+    "passed": 44918,
+    "failed": 0,
+    "warnings": 0,
+    "skipped": 0,
+    "test_duration_seconds": 271.5
+  },
+  "cpp-no-long-double-local": {
+    "machine": "workstation GCC 15.2",
+    "passed": 129,
+    "failed": 0,
+    "log_source": "persisted CTest LastTest.log"
+  },
+  "js-test": {
+    "machine": "workstation",
+    "tests": 548,
+    "pass": 548,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0
+  },
+  "js-build": {
+    "machine": "workstation",
+    "passed": true
+  },
+  "site-check": {
+    "machine": "workstation",
+    "passed": true
+  }
+}

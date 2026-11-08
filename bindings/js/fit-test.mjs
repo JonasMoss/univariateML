@@ -126,3 +126,17 @@ test('Gaussian face witnesses retain extreme residual scales',()=>{
   assert.ok(Math.abs(r.estimates.sd/unit-sd)<1e-12);
  }
 });
+
+test('sstd xi-only certificate, reflection, budget and half-t comparison',()=>{
+ const x=new Float64Array([-2,-1,-.4,0,.2,.3,.5,1,2,5]);
+ const a=m.fitsstd(x,{mean:0,sd:1,nu:5},{});
+ assert.equal(a.error,undefined,a.error);
+ const b=m.fitsstd(Float64Array.from(x,v=>-v*1e-20),{mean:0,sd:1e-20,nu:5},{});
+ assert.equal(b.error,undefined,b.error);assert.ok(Math.abs(a.estimates.xi*b.estimates.xi-1)<1e-9);
+ const budget=m.fitsstd(x,{mean:0,sd:1,nu:5},{iterlim:1});assert.equal(budget.kind,'budget');
+ const tied=m.fitsstd(new Float64Array([-1,1]),{mean:0,sd:1,nu:5},{});assert.equal(tied.kind,'tie');
+ const face=m.fitsstd(new Float64Array([.5,1,1.5,2,2.5,3,10]),{mean:0,sd:1,nu:5},{});assert.equal(face.kind,'limit');assert.equal(face.model,'ht');assert.equal(face.estimates.nu,5);
+ const reflected=m.fitsstd(new Float64Array([-.5,-1,-1.5,-2,-2.5,-3,-10]),{mean:0,sd:1,nu:5},{});
+ assert.equal(reflected.kind,'limit');assert.equal(reflected.model,'unavailable:reflected-half-t');assert.equal(reflected.estimates.nu,5);
+ const large=m.fitsstd(x,{mean:0,sd:1,nu:1e12},{});assert.equal(large.kind,'numerical');
+});

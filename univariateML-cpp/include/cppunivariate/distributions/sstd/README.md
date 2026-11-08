@@ -157,7 +157,7 @@ fit:
   certified: 'partial'
   note: 'certificate.hpp and README.md, Held-shape scalar certificates. Fixed nu and xi: mean-only and sd-only searches use exhaustive score enclosures with budget,
     tie and numerical stops. Symmetric scale equality has an exact unattained supremum. Held xi=1 with mean, sd and nu free delegates to the certified std parent. Other subsets,
-    including xi-only with held moments and all-free fits, remain uncertified.'
+    including free shape at asymmetric held skew, free skew with free moments, and all-free fits, remain uncertified. Fixed nu with both moments held uses skew_certificate.hpp to enclose the complete skew range and compare its constrained half-t faces.'
 areas:
 - finance
 - measurement and errors
@@ -219,7 +219,7 @@ This is a multistart comparison, not a certificate of the global maximum. The re
 
 
 Every coefficient may be held, singly or jointly; held values are returned
-exactly. Except for the held-shape scalar certificates below, conditional fits compare multistart interior searches with every
+exactly. Except for the held-shape and fixed-moment scalar certificates below, conditional fits compare multistart interior searches with every
 reachable half-family and shape boundary, retaining the held mean and standard deviation
 constraints on those faces. The fixed-shape, fixed-skew location-scale fit
 profiles scale and scans location, including observation kinks. Remaining scalar
@@ -303,7 +303,7 @@ $\xi=1$ and equality, the inverse-scale score is strictly positive, so the
 explicit finite collapse supremum is unattained. At nonunit skew, equality
 stops numerically: the collapse value still needs comparison with finite
 branches. With both shapes held, all-held evaluation is exact up to density
-arithmetic. Xi-only fitting, free-shape searches and larger free subsets
+arithmetic. Free-shape searches and larger free subsets
 retain the previous numerical methods and have no new certificate, except
 that exactly held $\xi=1$ with mean, sd and nu free delegates to
 `student_t_mle_certified`. This is the identical std likelihood and parameter
@@ -316,3 +316,45 @@ The [implementation record](../../../../../dev/research/evaluations/2026-11-07-s
 retains the scan replacement rationale, checks and remaining obligations;
 the [closure and endpoint analysis](../../../../../dev/research/evaluations/2026-11-07-skew-theory-data/proofs.md)
 supplies the held-moment half-face factors needed by future profilers.
+
+
+## Fixed-moment skew certificate
+
+With mean, sd and nu held, `skew_certificate.hpp` uses
+$q=\xi^2/(1+\xi^2)\in(0,1)$. Let $m=E|Z_\nu|$ for the
+unit-variance t, $d=(x-\mu)/\sigma$,
+$H=1-m^2+(4m^2-3)q(1-q)$ and $N=d\sqrt H+m(2q-1)$.
+The density is $2\sqrt H/\sigma$ times the unit-variance t density at
+$N/q$ when $N>0$, and at $N/(1-q)$ otherwise. This identity preserves
+both held moments throughout the search. Rational and square-root interval
+bounds enclose its likelihood and score, including seam crossings.
+Subdivision excludes a cell only by a likelihood upper bound or a definite
+score sign; both skew endpoints are included as constrained half-t faces.
+
+Finite root components are resolved in q and merged only when their full
+span is at most $10^{-10}\min(q,1-q)$, implying a log-skew span of at
+most approximately $10^{-10}$. Distinct unresolved winners return a tie.
+For data $(-1,1)$ with mean zero, sd one and nu five, the two reflected
+half-t faces tie; reflection proves their exact equality, while the computed
+bounds certify their dominance over the finite stationary regions.
+
+The endpoint with zero shrinking-side residual requires a removable
+$0/0$ calculation: this route stops numerically on an endpoint contact
+within its floating-point margin. At held nu >= 128 it also stops numerically:
+the settled density seam stabilizes the t normalizer there but still computes
+the skew moment by a cancelling log-gamma subtraction. The certificate does
+not endorse that arithmetic as a correctly standardized family. It never substitutes the ordinary half-t
+endpoint height. Numerical and budget stops retain a finite witness and an
+infinite global upper bound. Work is bounded by
+$128\min(\mathrm{iterlim},100000)$ cell evaluations. Practical margins
+are 128 binary64 epsilons times one plus the sum of absolute interval-term
+bounds. As with the held-shape scalar certificates, the proof is conditional
+on computed comparisons; arithmetic is not outward rounded.
+
+Free shape at asymmetric held skew still needs uniform shape-tail bounds
+and constrained-face profile comparisons. Free skew with either moment free
+needs exhaustive joint stationary-region enclosures. The all-free fit
+additionally needs uniform bounds at joint shape/skew corners. Those routes
+retain their numerical methods and are not certified. The
+[derivation and remaining obligations](../../../../../dev/research/evaluations/2026-11-08-sstd-free-data/derivation.md)
+records the precise remaining obligations and independent checks.

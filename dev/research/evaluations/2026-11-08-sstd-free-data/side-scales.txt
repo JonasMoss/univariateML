@@ -1,0 +1,1 @@
+9 fixed-mode scale roots checked; monotone mode-to-r ordering; 225 grid comparisons
