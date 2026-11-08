@@ -713,3 +713,61 @@ test('bnbinom alpha-held range exhaustion has numerical stop details',async()=>{
     return true;
   });
 });
+test('genbeta held p one shares the Kumaraswamy certificate and stop transport', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  const u = [.02,.2,.6,.9];
+  const parent = api.kumar.fit(new Float64Array(u));
+  for (const scale of [1e-200,1,7,1e200]) {
+    const f = api.genbeta.fit(new Float64Array(u.map(v=>scale*v)),{scale,shape1:1});
+    assert.ok(Math.abs(f.estimates.shape3/parent.estimates.a-1)<1e-6);
+    assert.ok(Math.abs(f.estimates.shape2/parent.estimates.b-1)<1e-6);
+    assert.ok(Math.abs(f.logLik+u.length*Math.log(scale)-parent.logLik)<1e-9);
+  }
+  const k = api.kumar.fit(new Float64Array(u),{},{iterlim:1});
+  const g = api.genbeta.fit(new Float64Array(u),{scale:1,shape1:1},{iterlim:1});
+  assert.ok(Math.abs(g.estimates.shape3/k.estimates.a-1)<1e-6);
+  assert.throws(()=>api.genbeta.fit(new Float64Array(u),{scale:1,shape1:2,shape2:.7},{gradtol:1e-20}),e=>{
+    assert.equal(e.kind,'numerical');assert.equal(e.candidates.length,1);
+    assert.equal(e.loglik_upper,Infinity);return true;
+  });
+});
+
+test('genbeta preserves a parent budget without a finite witness', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  const x = new Float64Array([.5,.500000000001]);
+  assert.throws(()=>api.genbeta.fit(x,{scale:1,shape1:1},{iterlim:1}),e=>{
+    assert.equal(e.kind,'budget');assert.equal(e.candidates.length,0);return true;
+  });
+  assert.throws(()=>api.genbeta.fit(x,{scale:1,shape1:1}),e=>{
+    assert.equal(e.kind,'numerical');assert.equal(e.candidates.length,1);
+    assert.equal(e.candidates[0].shape1,1);assert.equal(e.candidates[0].scale,1);return true;
+  });
+});
+
+test('genbeta held p uses the complete power-profile certificate', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  const x = new Float64Array(read('genbeta','golden').data);
+  for (const shape1 of [.1,.4,.5,2,10]) {
+    const f = api.genbeta.fit(x,{scale:1,shape1});
+    assert.equal(f.estimates.shape1,shape1);
+    assert.ok(Number.isFinite(f.logLik));
+    const held = api.genbeta.fit(x,{scale:1,...f.estimates});
+    assert.ok(Math.abs(held.logLik-f.logLik)<1e-8);
+  }
+  assert.throws(()=>api.genbeta.fit(x,{scale:1,shape1:.4},{iterlim:1}),e=>{
+    assert.equal(e.kind,'numerical');assert.match(e.message,/shape solve unresolved/);return true;
+  });
+});
+
+test('genbeta rounded log ties are a numerical stop', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  const v = Math.exp(-700),x = new Float64Array([v,v*(1+Number.EPSILON)]);
+  assert.notEqual(x[0],x[1]);
+  assert.throws(()=>api.genbeta.fit(x,{scale:1,shape1:.4}),e=>{
+    assert.equal(e.kind,'numerical');assert.match(e.message,/arithmetic unresolved/);return true;
+  });
+});

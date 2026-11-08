@@ -11,6 +11,7 @@ inline FitResult fit_genbeta(cppunivariate::span x, Held shape1_arg = {}, Held s
     if(!(gradtol>0 && std::isfinite(gradtol) && iterlim>0))return out;
     if(x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return out;
     if(kind=="nomle" && !std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return out;
+    if(kind=="budget"&&detail.budget_exhausted&&detail.candidates.empty())return stop_failure(out,detail,kind,names,model);
     if(!finite_stop_payload(detail,kind))return out;
     return stop_failure(out,detail,kind,names,model);
   };
@@ -60,6 +61,7 @@ const std::string name = "shape3";
   if(b==1&&std::isnan(a)&&std::isnan(t))fixed.push_back("shape3");
   fixed.push_back("scale");
   const auto r=cppunivariate::genbeta_mle(x,scale,gradtol,iterlim,a,b,t);
+  if(r.stop_detail.budget_exhausted)return classify(fail("Generalized beta certificate budget exhausted; increase iterlim."),r.stop_detail,"budget",{"shape1","shape2","shape3","scale"});
   if(r.stop_detail.comparison_tie)return classify(fail("Generalized beta search unresolved; increase iterlim or hold shapes."),r.stop_detail,"tie",{"shape1","shape2","shape3","scale"});
   switch(r.status) {
     case cppunivariate::GenbetaStatus::Ok:break;
@@ -72,7 +74,19 @@ const std::string name = "shape3";
     case cppunivariate::GenbetaStatus::Unbounded:return classify(fail("Generalized beta requires observations strictly between 0 and scale; constant samples with free beta shapes are not supported (the unrestricted likelihood is unbounded)."),{},"nomle",{});
     case cppunivariate::GenbetaStatus::InvalidData:return fail("Generalized beta requires observations strictly between 0 and scale; constant samples with free beta shapes are not supported (the unrestricted likelihood is unbounded).");
     case cppunivariate::GenbetaStatus::InvalidFixed:return fail("Generalized beta held parameters must be positive finite numbers.");
-    case cppunivariate::GenbetaStatus::SearchUnresolved:return classify(fail("Generalized beta search unresolved; increase iterlim or hold shapes."),r.stop_detail,"numerical",{"shape1","shape2","shape3","scale"});
+    case cppunivariate::GenbetaStatus::SearchUnresolved: {
+      const char* message="Generalized beta search unresolved; increase iterlim or hold shapes.";
+      switch(r.certificate_failure) {
+        case cppunivariate::GenbetaCertificateFailure::ShapeSolve:message="Generalized beta conditional shape solve unresolved; increase iterlim.";break;
+        case cppunivariate::GenbetaCertificateFailure::ShapeSigns:message="Generalized beta conditional shape signs unresolved at floating-point precision; hold shapes.";break;
+        case cppunivariate::GenbetaCertificateFailure::Tail:message="Generalized beta certificate tail bound unresolved; increase iterlim or hold shapes.";break;
+        case cppunivariate::GenbetaCertificateFailure::RootSigns:message="Generalized beta power-root signs unresolved at floating-point precision; hold shapes.";break;
+        case cppunivariate::GenbetaCertificateFailure::CoefficientInclusion:message="Generalized beta coefficient enclosure unresolved; increase iterlim or hold shapes.";break;
+        case cppunivariate::GenbetaCertificateFailure::Arithmetic:message="Generalized beta certificate arithmetic unresolved; hold shapes.";break;
+        default:break;
+      }
+      return classify(fail(message),r.stop_detail,"numerical",{"shape1","shape2","shape3","scale"});
+    }
   }
   return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"shape1",r.shape1},{"shape2",r.shape2},{"shape3",r.shape3},{"scale",r.scale}}; out.logLik = r.logLik; out.iterations = r.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; out.extra_vectors.emplace_back("support", std::vector<double>{0,scale}); return out; }();
 

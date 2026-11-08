@@ -1,0 +1,45 @@
+{
+  "evidence": "numerical checks of exact-arithmetic inequalities",
+  "cases": [
+    {
+      "p": 0.1,
+      "minimum_bound_slack": 1.23350359804435e-05,
+      "small_cutoff": 0.001,
+      "small_upper": -2.4756120674735835,
+      "large_cutoff": 22.22222222222222,
+      "large_upper": -0.24324893570980416
+    },
+    {
+      "p": 0.5,
+      "minimum_bound_slack": 1.2417132929620876e-05,
+      "small_cutoff": 0.001,
+      "small_upper": -2.4760120674735835,
+      "large_cutoff": 13.862943611198906,
+      "large_upper": -2.8348966247119085
+    },
+    {
+      "p": 1.0,
+      "minimum_bound_slack": 1.2417132929620876e-05,
+      "small_cutoff": 0.001,
+      "small_upper": -2.4765120674735837,
+      "large_cutoff": 13.862943611198906,
+      "large_upper": -7.461135535986799
+    },
+    {
+      "p": 2.0,
+      "minimum_bound_slack": 1.2417132929620876e-05,
+      "small_cutoff": 0.001,
+      "small_upper": -2.2892209269489485,
+      "large_cutoff": 13.862943611198906,
+      "large_upper": -17.165196063826034
+    },
+    {
+      "p": 10.0,
+      "minimum_bound_slack": 1.2417132929620876e-05,
+      "small_cutoff": 0.001,
+      "small_upper": 4.269369968920099,
+      "large_cutoff": 13.862943611198906,
+      "large_upper": -97.05030608675993
+    }
+  ]
+}

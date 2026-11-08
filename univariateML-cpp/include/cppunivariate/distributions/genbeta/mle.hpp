@@ -5,16 +5,20 @@
 #include "../../core/precision.hpp"
 #include "../gb2/mle.hpp"
 #include "../gamma/mle.hpp"
+#include "../kumar/mle.hpp"
 #include <array>
 
 namespace cppunivariate {
 enum class GenbetaStatus { Ok, UnitGammaBoundary, PowerBoundary, InvalidData,
   InvalidFixed, SearchUnresolved, Unbounded };
+enum class GenbetaCertificateFailure { None, Arithmetic, ShapeSolve, ShapeSigns,
+  Tail, RootSigns, CoefficientInclusion, Budget };
 struct GenbetaResult {
   double shape1, shape2, shape3, scale, logLik;
   int iterations;
   GenbetaStatus status;
- StopDetail stop_detail{}; };
+ StopDetail stop_detail{};
+ GenbetaCertificateFailure certificate_failure=GenbetaCertificateFailure::None; };
 namespace genbeta_detail {
 struct Point { double a=1,b=1,t=1,ll=-std::numeric_limits<double>::infinity(),score=0; bool ok=false; };
 // Concave beta exponential-family problem from sufficient statistics, without
@@ -69,6 +73,11 @@ inline Point profile(const std::vector<double>& y,double t,double aa,double bb,i
   return {a,b,t,value,1-a*s+(b-1)*static_cast<double>(dd/n),ok&&std::isfinite(value)&&std::isfinite(a)&&std::isfinite(b)};
 }
 } // namespace genbeta_detail
+} // namespace cppunivariate
+
+#include "power_profile_certificate.hpp"
+
+namespace cppunivariate {
 
 inline GenbetaResult genbeta_mle(span x,double scale,double tol=1e-7,int maxit=300,
     double a=std::numeric_limits<double>::quiet_NaN(),
@@ -90,7 +99,12 @@ inline GenbetaResult genbeta_mle(span x,double scale,double tol=1e-7,int maxit=3
   bool constant=true;for(double v:y)constant=constant&&v==y[0];
   // Free concentration can collapse on constant samples. With both beta
   // shapes held, the one-dimensional scale-in-y problem remains meaningful.
-  if(constant&&std::isnan(b)&&(std::isnan(a)||std::isnan(t))){bad.status=GenbetaStatus::Unbounded;return bad;}
+  if(constant&&std::isnan(b)&&(std::isnan(a)||std::isnan(t))) {
+    bool identical=true;for(double v:x)identical=identical&&v==x[0];
+    bad.status=identical?GenbetaStatus::Unbounded:GenbetaStatus::SearchUnresolved;
+    if(!identical)bad.certificate_failure=GenbetaCertificateFailure::Arithmetic;
+    return bad;
+  }
   double face=-std::numeric_limits<double>::infinity();
   GenbetaStatus fs=GenbetaStatus::SearchUnresolved;
   double gamma_shape=nan,gamma_scale=nan;
@@ -123,30 +137,71 @@ inline GenbetaResult genbeta_mle(span x,double scale,double tol=1e-7,int maxit=3
     const double value=n*(std::log(a*t)-a*t*mean)+static_cast<double>(jac);
     return {a,b,t,scale,value,0,std::isfinite(value)&&std::isfinite(a)&&std::isfinite(t)?GenbetaStatus::Ok:GenbetaStatus::SearchUnresolved};
   }
+  // Held p=1 is exactly Kumaraswamy, not a numerical free-power profile.
+  // Keep the held-q scalar route below: it resolves much smaller q than
+  // the general Kumaraswamy proposer. A free fitted p near one is not enough.
+  if(a==1&&std::isnan(b)&&std::isnan(t)) {
+    std::vector<double> u;u.reserve(x.size());
+    for(double v:x) {
+      const double value=v/scale;
+      if(!(value>0&&value<1)) {
+        bad.status=GenbetaStatus::SearchUnresolved;bad.certificate_failure=GenbetaCertificateFailure::Arithmetic;return bad;
+      }
+      u.push_back(value);
+    }
+    const auto k=kumar_mle({u.data(),u.size()},tol,maxit);
+    const double shift=-n*std::log(scale);
+    GenbetaResult out{1,k.b,k.a,scale,k.logLik+shift,k.iterations,
+      k.status==KumarStatus::Ok?GenbetaStatus::Ok:GenbetaStatus::SearchUnresolved};
+    out.stop_detail=k.stop_detail;
+    if(k.status!=KumarStatus::Ok)out.certificate_failure=k.stop_detail.budget_exhausted?
+      GenbetaCertificateFailure::Budget:GenbetaCertificateFailure::Arithmetic;
+    // Parent candidates are (power,q); all likelihoods must be in X units.
+    for(auto& c:out.stop_detail.candidates) {
+      if(c.coef.size()!=2){out.stop_detail={};return out;}
+      c.coef={1,c.coef[1],c.coef[0],scale};
+      c.loglik_lower+=shift;c.loglik_upper+=shift;
+    }
+    out.stop_detail.loglik_lower+=shift;
+    out.stop_detail.loglik_upper+=shift;
+    out.stop_detail.segment_loglik_upper+=shift;
+    return out;
+  }
+  if(std::isnan(t)&&!std::isnan(a)&&std::isnan(b))
+    return genbeta_power_cert::fit(y,a,scale,mean,static_cast<double>(jac),tol,maxit);
   // Held beta shapes: strictly concave in power, including 0 < b < 1.
   // The dimensionless score is t*L'(t)/n; its sign brackets the sole root.
   if(std::isnan(t)&&!std::isnan(a)&&!std::isnan(b)) {
     const double ymax=*std::max_element(y.begin(),y.end());
+    double score_error=INFINITY;
     const auto score=[&](double power) {
       const bool centered=b<1&&power*ymax<.01;
-      CPPUNIV_EXTENDED_REAL correction=0;
+      CPPUNIV_EXTENDED_REAL correction=0,magnitude=0,omitted=0;
       for(double v:y) {
         const double z=power*v;
         if(b<1) {
           // z/expm1(z)-1, without subtracting two numbers near one.
           const double z2=z*z;
           const double remainder=z2*(1.0/12+z2*(-1.0/720+z2*(1.0/30240-z2/1209600)));
-          correction+=centered ? remainder : (z<.01 ? -.5*z+remainder : (z>700 ? -1 : z/std::expm1(z)-1));
+          const double term=centered ? remainder : (z<.01 ? -.5*z+remainder : (z>700 ? -1 : z/std::expm1(z)-1));
+          correction+=term;magnitude+=std::abs(term);
+          if(z<.01)omitted+=z2*z2*z2*z2*z2/47900160;
         } else {
           // Weight before the exponential tail underflows: a large held q
           // can make (q-1)*z/expm1(z) material even beyond z=700.
           const double term=z<=50 ? (b-1)*(z/std::expm1(z)) :
             (std::isfinite(z)?z*std::exp(std::log(b-1)-z):0);
           correction+=term/n;
+          magnitude+=std::abs(term)*(1+(z>50?std::abs(std::log(b-1))+z:0));
         }
       }
-      if(centered)return b-(a-.5+.5*b)*power*mean+(b-1)*static_cast<double>(correction/n);
-      return (b<1?b:1)-a*power*mean+(b<1?(b-1)*static_cast<double>(correction/n):static_cast<double>(correction));
+      const double linear=centered?(a-.5+.5*b)*power*mean:a*power*mean;
+      const double base=b<1?b:1;
+      const double weight=b<1?std::abs(b-1):1;
+      score_error=64*std::numeric_limits<double>::epsilon()*
+        (std::abs(base)+std::abs(linear)+weight*static_cast<double>(magnitude/n))+
+        weight*static_cast<double>(omitted/n);
+      return base-linear+(b<1?(b-1)*static_cast<double>(correction/n):static_cast<double>(correction));
     };
     double lo=0,hi=(b<1?b:1+std::log(b))/(a*mean);
     bool bracket=std::isfinite(hi)&&hi>0;
@@ -171,7 +226,23 @@ inline GenbetaResult genbeta_mle(span x,double scale,double tol=1e-7,int maxit=3
       return bad;
     }
     const auto p=genbeta_detail::profile(y,lo+(hi-lo)/2,a,b,maxit);
-    return {a,b,p.t,scale,p.ll+static_cast<double>(jac),iterations,p.ok?GenbetaStatus::Ok:GenbetaStatus::SearchUnresolved};
+    // Bisection proposes; padded opposite signs certify coefficient inclusion.
+    // Do not use a raw rounded zero as evidence of an exact root. The narrow
+    // final bracket stays inside this tol-relative enclosure of the proposal.
+    const double radius=std::min(tol,1e-10)*.25;
+    const double left=p.t*(1-radius),right=p.t*(1+radius);
+    const double sl=score(left),el=score_error;
+    const double sr=score(right),er=score_error;
+    const bool certified=left>0&&right>left&&std::isfinite(el)&&std::isfinite(er)&&sl>el&&sr< -er;
+    GenbetaResult out{a,b,p.t,scale,p.ll+static_cast<double>(jac),iterations,
+      p.ok&&certified?GenbetaStatus::Ok:GenbetaStatus::SearchUnresolved};
+    if(out.status!=GenbetaStatus::Ok&&p.ok&&std::isfinite(out.logLik)) {
+      out.certificate_failure=GenbetaCertificateFailure::CoefficientInclusion;
+      const double pad=128*std::numeric_limits<double>::epsilon()*(1+std::abs(out.logLik));
+      out.stop_detail.candidates={{{a,b,p.t,scale},out.logLik-pad,out.logLik+pad,StopModel::None}};
+      out.stop_detail.loglik_lower=out.logLik-pad;out.stop_detail.loglik_upper=INFINITY;
+    }
+    return out;
   }
   int evals=0;
   auto at=[&](double z){++evals;return genbeta_detail::profile(y,std::exp(z),a,b,maxit);};
@@ -220,7 +291,13 @@ inline GenbetaResult genbeta_mle(span x,double scale,double tol=1e-7,int maxit=3
     return r;
   }
   const bool ok=best.ok&&!edge&&(!std::isnan(t)||std::abs(best.score)<tol);
-  return {best.a,best.b,best.t,scale,best.ll+static_cast<double>(jac),evals,
+  GenbetaResult out{best.a,best.b,best.t,scale,best.ll+static_cast<double>(jac),evals,
     ok?GenbetaStatus::Ok:GenbetaStatus::SearchUnresolved};
+  if(!ok&&best.ok&&std::isfinite(out.logLik)) {
+    const double pad=128*std::numeric_limits<double>::epsilon()*(1+std::abs(out.logLik));
+    out.stop_detail.candidates={{{best.a,best.b,best.t,scale},out.logLik-pad,out.logLik+pad,StopModel::None}};
+    out.stop_detail.loglik_lower=out.logLik-pad;out.stop_detail.loglik_upper=INFINITY;
+  }
+  return out;
 }
 } // namespace cppunivariate
