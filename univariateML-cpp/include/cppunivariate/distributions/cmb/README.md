@@ -545,7 +545,7 @@ checked numerically.
 
 Held-probability endpoint faces use the support-width power of the held odds. Free-size comparisons retain the evaluated finite witness and fitted CMP or two-point face when available; unresolved tails have infinite global upper bounds.
 
-Fixed-size normalizers, nested mean matches and the historical free-size rescue now share the enumeration ledger with their caller. The rescue no longer reserves work using fixed assumptions about inner iteration counts. A normalizer table is charged by its support cells, including its fixed number of moment/tail passes. Budget witnesses retain a feasible represented probability; the bound $|\partial\ell/\partial\eta|\le nN$ covers conversion from canonical log odds to that probability, in addition to the practical rounding margin. The CMP-face kernel spends the same remaining 64-bit enumeration ledger.
+Fixed-size normalizers, nested mean matches and the free-size rescue share the enumeration ledger with their caller. A normalizer table is charged by its support cells, including its fixed number of moment/tail passes. Budget witnesses retain a feasible represented probability; the bound $|\partial\ell/\partial\eta|\le nN$ covers conversion from canonical log odds to that probability, in addition to the practical rounding margin. The CMP-face kernel spends the same remaining 64-bit enumeration ledger.
 
 If a constant sample with held interior probability needs its central design
 beyond the allocation domain, the endpoint face at the smallest feasible size
