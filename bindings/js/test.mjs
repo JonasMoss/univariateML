@@ -771,3 +771,53 @@ test('genbeta rounded log ties are a numerical stop', async () => {
     assert.equal(e.kind,'numerical');assert.match(e.message,/arithmetic unresolved/);return true;
   });
 });
+test('GEV and Frechet half-minimum certificates distinguish attainment', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  for(const family of ['gev','frechet']) {
+    assert.throws(() => api[family].fit(new Float64Array([0,0,1,2]),{}), e => {
+      assert.equal(e.kind,'nomle');
+      assert.ok(Math.abs(e.loglik_upper-(4*Math.log(2)-4-2*Math.log(2)))<1e-12);
+      assert.equal(e.loglik_lower,e.loglik_upper);
+      return true;
+    });
+  }
+  const f=api.gev.fit(new Float64Array([0,0,2,2]));
+  assert.deepEqual(f.estimates,{mu:1,sigma:1,xi:-1});
+  assert.equal(f.logLik,-4);
+});
+
+test('GEV shape-only certificate handles flat shapes and typed solve failure', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  const f=api.gev.fit(new Float64Array([4,4,4]),{mu:4,sigma:2});
+  assert.equal(f.estimates.xi,0);
+  assert.throws(() => api.gev.fit(new Float64Array([-.5,-.3,0,.2,.5]),{mu:0,sigma:1},{iterlim:1}), e => {
+    assert.equal(e.kind,'numerical');assert.equal(e.loglik_upper,Infinity);return true;
+  });
+});
+
+test('GEV held-minimum half ties retain the attained member', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api=await createApi();
+  assert.throws(() => api.gev.fit(new Float64Array([0,0,1,2]),{mu:0}),e => {
+    assert.equal(e.kind,'nomle');assert.ok(Math.abs(e.loglik_upper+2+2*Math.log(2))<1e-12);return true;
+  });
+  for(const held of [{mu:0},{mu:0,sigma:2}]) {
+    const f=api.gev.fit(new Float64Array([0,0,2,2]),held);
+    assert.deepEqual(f.estimates,{mu:0,sigma:2,xi:-1});
+    assert.ok(Math.abs(f.logLik+2+4*Math.log(2))<1e-12);
+  }
+});
+
+test('GEV two-point count certificate avoids a rounded sample mean', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api=await createApi();
+  const f=api.gev.fit(new Float64Array([0,...Array(100).fill(1)]));
+  assert.equal(f.estimates.xi,-1);
+  assert.ok(Math.abs(f.estimates.sigma*101-1)<1e-10);
+  assert.ok(Math.abs(f.estimates.mu-100/101)<1e-10);
+  assert.throws(() => api.gev.fit(new Float64Array([-9,...Array(9).fill(1)])),e => {
+    assert.equal(e.kind,'numerical');return true;
+  });
+});

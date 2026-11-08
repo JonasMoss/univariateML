@@ -1,0 +1,36 @@
+[
+  {
+    "family": "gev",
+    "n": 500,
+    "largest_multiplicity": 1,
+    "minimum_spacing": 8.289757564172717e-06,
+    "incumbent": -874.7638844318301,
+    "scale_upper": 5.751885814988527,
+    "original_scale_lower": 7.035202455019533e-13,
+    "conservative_optimized_scale_lower": 0.00026871318344047306,
+    "strengthened_scale_lower": 0.0015873706202541094,
+    "selected_near_count": 90,
+    "Z": 18485.939625060604,
+    "T": 25733.000571757162,
+    "log_gumbel_error_constant": 36991.52878152488,
+    "reverse_error_constant": 13449751468.253092,
+    "log_shape_slab_for_one_loglik_unit": -36997.743389623305
+  },
+  {
+    "family": "frechet",
+    "n": 500,
+    "largest_multiplicity": 1,
+    "minimum_spacing": 8.593507944354428e-06,
+    "incumbent": -608.4546481271123,
+    "scale_upper": 3.376735101121283,
+    "original_scale_lower": 1.2907404018297514e-12,
+    "conservative_optimized_scale_lower": 7.823988682580107e-05,
+    "strengthened_scale_lower": 0.0004444435792382346,
+    "selected_near_count": 84,
+    "Z": 77342.17294280576,
+    "T": 92537.5104788274,
+    "log_gumbel_error_constant": 154706.857874933,
+    "reverse_error_constant": 195846592999.86108,
+    "log_shape_slab_for_one_loglik_unit": -154713.0724830314
+  }
+]

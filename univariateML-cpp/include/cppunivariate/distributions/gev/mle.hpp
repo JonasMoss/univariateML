@@ -38,6 +38,9 @@ inline double gev_loglik(span x, double mu, double sigma, double xi) {
   }
   return ll;
 }
+} // namespace cppunivariate
+#include "shape_certificate.hpp"
+namespace cppunivariate {
 // Hold-specific scalar search. Enumerate sampled local maxima and refine
 // each bracket; this is numerical root discovery, not a global certificate.
 namespace extreme_detail {
@@ -169,13 +172,37 @@ inline GevResult gev_held_mle(span x,double tol,int maxit,double xi,double mu,do
   for(double v:y) if(!std::isfinite(v)) return bad;
   std::sort(y.begin(),y.end());
   if(!std::isnan(xi) && xi < -1 && !(hm && (hs || y.back()<=mu))) {bad.status=GevStatus::InvalidShape;return bad;}
-  bool collapse_face=false;
+  if(std::isnan(xi) && hm && mu==y[0]) {
+    const auto k=static_cast<std::size_t>(std::count(y.begin(),y.end(),y[0]));
+    if(2*k==y.size()) {
+      bool two_point=true;
+      for(std::size_t j=k;j<y.size();++j)two_point=two_point && y[j]==y.back();
+      double face=-static_cast<double>(k);
+      for(double v:y)if(v>mu) {
+        const double gap=v-mu;
+        face-=2*(std::isfinite(gap)?std::log(gap):std::log(v/2-mu/2)+std::log(2.));
+      }
+      const double endpoint_scale=y.back()-mu;
+      if(two_point && (!hs || sigma==endpoint_scale)) {
+        const double ll=gev_loglik(x,mu,endpoint_scale,-1);
+        GevResult result{mu,endpoint_scale,-1,ll,0,GevStatus::NumericalFailure};
+        if(endpoint_scale>0 && std::isfinite(endpoint_scale) && std::isfinite(ll) &&
+           std::abs(ll-face)<=1e-7*x.size())result.status=GevStatus::Ok;
+        return result;
+      }
+      if(!hs) {
+        bad.status=GevStatus::NoMLE;
+        bad.stop_detail.loglik_lower=face;bad.stop_detail.loglik_upper=face;
+        return bad;
+      }
+    }
+  }
+  if(std::isnan(xi) && hm && hs)return gev_shape_certificate(x,mu,sigma,tol,maxit);
   if(!hs && hm && mu==y[0]) {
     std::size_t k=0;for(double v:y) if(v==y[0]) ++k;
     if(k==y.size() || (std::isnan(xi) ? 2*k>y.size() : (xi>0 && xi*k>=y.size()-k))) {
       bad.status=GevStatus::NoMLE;return bad;
     }
-    collapse_face=std::isnan(xi) && 2*k==y.size();
   }
   const double origin=y[0];
   const double scale=hs ? sigma : std::max(y.back()-origin,std::abs(origin-mu));
@@ -228,11 +255,6 @@ inline GevResult gev_held_mle(span x,double tol,int maxit,double xi,double mu,do
   if(hs && !hm && !std::isnan(xi) && xi>-1 && xi<0 && fit.status==GevStatus::Ok &&
      (!std::isfinite(fit.logLik) || std::abs(fit.logLik-(standardized_ll-x.size()*std::log(scale)))>1e-7*x.size()))
     fit.status=GevStatus::NumericalFailure;
-  if(collapse_face) {
-    double face=0;
-    for(double v:x) face+=v==mu ? -1 : -2*std::log(v-mu);
-    if(fit.logLik<=face+tol*x.size()) fit.status=GevStatus::NoMLE;
-  }
   if(fit.status==GevStatus::Ok && !std::isfinite(fit.logLik)) fit.status=GevStatus::InvalidData;
   return fit;
 }
@@ -293,6 +315,55 @@ inline GevProfile gev_profile(span x, double xi, double tol, int maxit) {
   return {{mu,s0*std::exp(xi*e.g),xi,e.ll,it+1,
     done && std::isfinite(e.ll) ? GevStatus::Ok : GevStatus::IterationFailure},e.shape,e.curvature};
 }
+// Weighted pair bounds prove this global member for two distinct values,
+// with minimum fraction p<=1/2. Counts avoid cancellation in M-mean(x).
+inline GevResult gev_two_point_certificate(span x,double minimum,double maximum,
+                                           std::size_t k,double tol) {
+  const double n=static_cast<double>(x.size()),p=static_cast<double>(k)/n;
+  const double range=maximum-minimum;
+  const double half=std::isfinite(range)?range/2:maximum/2-minimum/2;
+  const double log_range=std::isfinite(range)?std::log(range):std::log(half)+std::log(2.);
+  const double face=-n*(std::log(p)+log_range+1);
+  double scale=std::isfinite(range)?p*range:(2*p)*half;
+  double location=maximum-scale;
+  const double precision_tol=std::min(tol,.01);
+  const double margin=64*std::numeric_limits<double>::epsilon();
+  bool precise=precision_tol>=16*margin && scale>0 && std::isfinite(scale);
+  // Error-free TwoDiff, conditional on finite IEEE round-to-nearest operations.
+  auto difference_error=[](double a,double b,double value) {
+    const double virtual_b=a-value,virtual_a=value+virtual_b;
+    return (a-virtual_a)+(virtual_b-b);
+  };
+  if(2*k==x.size()) {
+    if(std::isfinite(range))
+      precise=precise && std::abs(std::fma(2.,scale,-range))<=precision_tol*.25*range;
+    if(std::signbit(minimum)!=std::signbit(maximum)) {
+      const double sum=minimum+maximum;
+      location=sum/2;
+      precise=precise && std::abs(std::fma(2.,location,-sum))<=precision_tol*.25*std::abs(sum);
+    }
+    // Preserve the accurate midpoint while making the stored endpoint feasible.
+    const double gap=maximum-location,error=difference_error(maximum,location,gap);
+    const double upper_gap=error>0?std::nextafter(gap,INFINITY):gap;
+    const double adjusted=std::max(scale,upper_gap);
+    precise=precise && std::isfinite(error) && std::isfinite(adjusted) &&
+      adjusted-scale<=precision_tol*.25*scale;
+    scale=adjusted;
+  } else {
+    // Round location upwards if necessary so mu+sigma contains the maximum.
+    const double error=difference_error(maximum,scale,location);
+    if(error>0)location=std::nextafter(location,INFINITY);
+    const double uncertainty=margin*std::abs(maximum)+margin*scale;
+    precise=precise && std::isfinite(error) && std::isnormal(scale) && location!=0 &&
+      uncertainty<=precision_tol*.25*std::abs(location);
+  }
+  const double ll=gev_loglik(x,location,scale,-1);
+  GevResult result{location,scale,-1,ll,0,GevStatus::NumericalFailure};
+  result.stop_detail.loglik_lower=face;result.stop_detail.loglik_upper=face;
+  if(precise && std::isfinite(location) && std::isfinite(ll) &&
+     std::abs(ll-face)<=1e-7*n) {result.status=GevStatus::Ok;result.stop_detail={};}
+  return result;
+}
 inline GevResult gev_mle_impl(span x, double tol=1e-10, int maxit=100,
                          double xi=std::numeric_limits<double>::quiet_NaN(),
                          double mu=std::numeric_limits<double>::quiet_NaN(),
@@ -309,23 +380,29 @@ inline GevResult gev_mle_impl(span x, double tol=1e-10, int maxit=100,
   std::sort(y.begin(),y.end());
   std::size_t minimum_count=1;
   while(minimum_count<y.size() && y[minimum_count]==y[0]) ++minimum_count;
-  // At positive xi the lower-endpoint collapse is controlled only by
-  // the multiplicity of the minimum. A strict majority (k>n/2) diverges
-  // to infinity regardless of xi -- genuinely no MLE. Exact equality
-  // (k==n/2, only possible for even n) is different when xi is also
-  // free: the xi->1 collapse face then has a finite but unattained
-  // supremum (A_free below, notes/evaluations/2026-10-29-p0-extreme.md),
-  // and the ordinary profile search over xi in (-1,1) can still find a
-  // genuinely attained interior maximum elsewhere that beats it -- TASK-85/87
-  // used to reject this case outright (conservatively, as InvalidData)
-  // without ever comparing against that face. Held xi has no such
-  // escape hatch (there is no "elsewhere" to search), so xi*q==1 (q=1 at
-  // k=n/2) stays "never" there, unchanged.
+  // A strict minimum majority diverges. Exact half ties are resolved by
+  // the global pair bound below, including its attained two-point exception.
   const bool tie_half = std::isnan(xi) && 2*minimum_count==y.size();
   if(std::isnan(xi) ? 2*minimum_count>y.size() :
       (xi>0 && xi*static_cast<double>(minimum_count)>=y.size()-minimum_count)) return bad;
   // Standardization prevents scale and translation from setting tolerances.
   const double origin=y[0],range=y.back()-origin;
+  if(std::isnan(xi)) {
+    bool two_point=true;
+    for(std::size_t j=minimum_count;j<y.size();++j)if(y[j]!=y.back()) {two_point=false;break;}
+    if(two_point)return gev_two_point_certificate(x,origin,y.back(),minimum_count,tol);
+  }
+  if(tie_half) {
+    const double n=static_cast<double>(y.size());
+    double face=n*std::log(2.)-n;
+    for(double v:y)if(v>origin) {
+      const double gap=v-origin;
+      face-=2*(std::isfinite(gap)?std::log(gap):std::log(v/2-origin/2)+std::log(2.));
+    }
+    bad.status=GevStatus::NoMLE;
+    bad.stop_detail.loglik_lower=face;bad.stop_detail.loglik_upper=face;
+    return bad;
+  }
   if(!(range>0) || !std::isfinite(range)) return bad;
   for(double &v:y) v=(v-origin)/range;
   const span data{y.data(),y.size()};
@@ -363,17 +440,7 @@ inline GevResult gev_mle_impl(span x, double tol=1e-10, int maxit=100,
   // Enumerate profile-score sign changes, retaining both attained bounds.
   // Curvature turns also expose pairs of roots within a single mesh cell.
   // This is root discovery, not an assumption of global concavity.
-  //
-  // At the k==n/2 tie, xi=1 itself is the unattained collapse face: the
-  // mu/sigma profile search run there (gev_profile's own Newton solve
-  // for a stationary score) has no root to find, since the supremum is
-  // only approached, never attained, even at this one fixed xi (the
-  // held-xi row's "xi*q==1: never, finite unattained collapse face",
-  // q=k/(n-k)=1 here). So the scan's upper end is nudged strictly below
-  // 1 -- mirroring the existing "-1+1e-6" nudge off the opposite boundary
-  // a few lines up -- and the known closed-form supremum A_free is
-  // compared against the best genuinely attained interior point instead.
-  const double xi_hi = tie_half ? kGevXiUpper-1e-6 : kGevXiUpper;
+  const double xi_hi = kGevXiUpper;
   const int cells=8;
   for(int j=1;j<=cells;++j) {
     const auto next=gev_profile(data,-1+(xi_hi+1.0)*j/cells,tol,maxit);
@@ -398,23 +465,6 @@ inline GevResult gev_mle_impl(span x, double tol=1e-10, int maxit=100,
   }
   if(failed) best.status=GevStatus::IterationFailure;
   GevResult result=restore(best);
-  if(result.status==GevStatus::Ok && tie_half) {
-    // A_free = n*log(2) - n - 2*sum_{x_i>m} log(x_i-m), m=min(x): the
-    // xi->1 collapse face's limiting log-likelihood with mu and sigma
-    // both free (notes/evaluations/2026-10-29-p0-extreme.md; verified
-    // numerically here against a direct 2D Nelder-Mead optimization of
-    // gev_loglik at xi=.9,.99,...,.999999, converging to this value
-    // from below as xi->1 -- see the derivation in
-    // notes/evaluations/2026-10-29-tail85-report.md). Computed on the
-    // original data (matching gev_held_mle's analogous `face` for held
-    // mu), directly comparable to `result.logLik`, which restore()
-    // above already carries back to the original scale.
-    double sum_log_d=0;
-    for(double v:x) if(v>origin) sum_log_d+=std::log(v-origin);
-    const double n=static_cast<double>(y.size());
-    const double a_free=n*std::log(2.0)-n-2.0*sum_log_d;
-    if(!(result.logLik>a_free+tol*n)) result.status=GevStatus::NoMLE;
-  }
   return result;
 }
 

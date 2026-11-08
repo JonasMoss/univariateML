@@ -17,7 +17,6 @@ inline FitResult fit_gev(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg
   };
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
-  const auto nomle = [&](const std::string& format, const auto&... arguments) { return classify(failure(binding_message(format, arguments...), warnings), {}, "nomle", {}); };
   const Held mu = mu_arg;
   const Held sigma = sigma_arg;
   const Held xi = xi_arg;
@@ -34,11 +33,15 @@ inline FitResult fit_gev(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg
   if(sigma.supplied) fixed.push_back("sigma");
   if(xi.supplied) fixed.push_back("xi");
   const auto r=cppunivariate::gev_mle(x,reltol,iterlim,shape,location,scale);
+  if(r.stop_detail.budget_exhausted)
+    return stop_failure(fail("Generalized extreme value certificate exhausted its work budget; raise iterlim."),r.stop_detail,"budget",{"mu","sigma","xi"});
+  if(r.stop_detail.comparison_tie)
+    return stop_failure(fail("Generalized extreme value certificate cannot separate competing shape maxima within its floating-point margin."),r.stop_detail,"tie",{"mu","sigma","xi"});
   if(r.status==cppunivariate::GevStatus::NumericalFailure ||
      (r.status==cppunivariate::GevStatus::IterationFailure && std::isinf(r.stop_detail.loglik_upper)))
     return stop_failure(fail("Generalized extreme value certificate failed to converge or resolve the maximum numerically; raise iterlim for an exhausted solve."),r.stop_detail,"numerical",{"mu","sigma","xi"});
   if(r.status==cppunivariate::GevStatus::NoMLE)
-    return nomle("Generalized extreme value has no finite maximum: minimum multiplicity permits scale collapse.");
+    return classify(fail("Generalized extreme value has no finite maximum: minimum multiplicity permits scale collapse."),r.stop_detail,"nomle",{"mu","sigma","xi"});
   const bool valid_sample=x.size()>=3 && reltol>0 && std::isfinite(reltol) && iterlim>0 &&
     std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);});
   bool minimum_collapse=false;

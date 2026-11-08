@@ -235,3 +235,18 @@ TEST_CASE("frechet: enormous held powers do not return a rounded-log point fit")
  const auto f=cppunivariate::frechet_mle(mltest::as_span(x),1e-10,100,NAN,1e100);
  CHECK(f.status==cppunivariate::FrechetStatus::NumericalFailure);
 }
+
+TEST_CASE("frechet: half-minimum pair bound is the global unattained supremum") {
+ for(auto x:{std::vector<double>{0,0,1,2},std::vector<double>{0,0,2,2},std::vector<double>{-1e308,-1e308,0,1e308}}) {
+   const auto data=mltest::as_span(x);const auto f=cppunivariate::frechet_mle(data);
+   REQUIRE(f.status==cppunivariate::FrechetStatus::NoMLE);
+   CHECK(std::isfinite(f.stop_detail.loglik_upper));
+   CHECK(f.stop_detail.loglik_lower==f.stop_detail.loglik_upper);
+   if(x.back()<1e300) {
+     for(double a:{1.,1.1,2.,10.})for(double gap:{1e-5,.1,1.,100.}) {
+       const double m=x.front()-gap,s=cppunivariate::frechet_scale(data,a,m);
+       CHECK(cppunivariate::frechet_loglik(data,a,m,s)<f.stop_detail.loglik_upper);
+     }
+   }
+ }
+}

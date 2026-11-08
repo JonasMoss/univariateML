@@ -1,0 +1,11 @@
+{
+  "seed": 11638,
+  "pair_checks": 20000,
+  "weighted_pair_checks": 20000,
+  "max_pair_ratio": 0.9978230245144779,
+  "envelope_checks": 3000,
+  "reverse_face_checks": 3000,
+  "gumbel_face_checks": 3000,
+  "left_tail_checks": 1292,
+  "margin": 1e-12
+}

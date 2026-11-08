@@ -69,11 +69,11 @@ r:
     sigma: Positive scale to hold fixed, or NULL to estimate.
     xi: Shape to hold fixed, or NULL to estimate within `[-1, 1]`. Held shapes above one are accepted when the collapse criterion permits.
     reltol: Tolerance for dimensionless profile scores and root brackets.
-    iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
+    iterlim: "Work limit per solve: min(iterlim, 100000) solver iterations; shape certificates allow 128 * min(iterlim, 100000) segment evaluations."
 log_density: Piecewise((-log(sigma)-(x-mu)/sigma-exp(-(x-mu)/sigma), Eq(xi,0)), (-log(sigma)-(1+1/xi)*log(1+xi*(x-mu)/sigma)-(1+xi*(x-mu)/sigma)**(-1/xi), True))
 limits:
-- {firmness: numerical, name: scale collapse, fixed: [mu], status: NoMLE, message: "minimum multiplicity permits scale collapse", when: '$\sigma \to 0$ with $\mu$ held at the sample minimum', detect: '$\mu$ is held at the sample minimum and at least half of the observations are tied there (with $\xi > 0$ held, already when $\xi k \ge n - k$ for $k$ ties)', numerical: true}
-- {firmness: numerical, name: scale collapse, status: NoMLE, message: "minimum multiplicity permits scale collapse", when: '$\xi \to 1$ and $\sigma \to 0$, with the lower end of the support at the sample minimum', detect: 'at least half of the observations equal the sample minimum and, at exactly half, no interior fit beats this limit', numerical: true}
+- {firmness: proved, name: held-minimum half tie, fixed: [mu], status: NoMLE, message: "minimum multiplicity permits scale collapse", when: '$\sigma \to 0$ with $\mu$ held at the sample minimum and $\xi=1$', detect: 'Shape and scale are free and exactly half the observations equal held mu, except two distinct values with equal counts: that case attains the supremum at xi=-1.'}
+- {firmness: proved, name: scale collapse, status: NoMLE, message: "minimum multiplicity permits scale collapse", when: '$\xi \to 1$ and $\sigma \to 0$, with the lower end of the support at the sample minimum', detect: 'All coefficients are free and exactly half of the observations equal the minimum, except two distinct values with equal counts: that case attains the supremum at xi=-1.'}
 examples: |
   set.seed(1)
   x <- rml(200, mlgev())
@@ -98,7 +98,7 @@ relations: {}
 fit:
   method: profile-search
   certified: 'partial'
-  note: "gev/mle.hpp, gev_held_profile and gev_profile: Held xi=-1 has closed-form shifted reverse-exponential fits; held xi=0 and sigma give analytic location; held sigma and -1<xi<0 give a strictly concave, bracketed location solve. These nontrivial submodels are certified. General free and conditional fits use scalar profiles, finite scans and root discovery without a global enumeration certificate; half-tie face comparisons remain numerical."
+  note: "gev/mle.hpp, gev_held_profile and gev_profile: Held xi=-1 has closed-form shifted reverse-exponential fits; held xi=0 and sigma give analytic location; held sigma and -1<xi<0 give a strictly concave, bracketed location solve. These nontrivial submodels are certified. Shape-only fits with mu and sigma held use derivative interval coverage and explicit support-edge envelopes, with numerical or budget stops if unresolved. All-free two-point samples with minimum fraction at most one half have a unique reverse-exponential maximum, computed from counts with coefficient precision guards. Exact half-minimum ties have proved global bounds both with all coefficients free and with mu held at the minimum; attained members are retained. Other free and conditional fits retain finite scans and root discovery without global coverage."
 areas:
 - extremes and environment
 existence:
@@ -108,8 +108,8 @@ existence:
     fits keep the shape in $-1 \le \xi \le 1$. Within that range the only
     known obstacle is a tie at the sample minimum. If more than half of the
     observations equal the minimum, no MLE exists. If exactly half do, the
-    supremum is approached as $\xi \to 1$ and the scale shrinks, unless an
-    interior fit does better.
+    supremum is approached as $\xi \to 1$ and the scale shrinks. It is
+    attained only for two distinct values with equal counts, at $\xi=-1$.
   reason: >-
     Near an end point of the support the density behaves like a power of the
     distance to it. For $\xi < -1$ that power is negative at the upper end,
@@ -134,18 +134,26 @@ $\sigma^{(n-k)/\xi-k}$. Equality has a finite positive path limit,
 not a proof that the global likelihood is maximized there. With location
 free and $\xi=1$, set $\mu=m+\sigma/2$; the minimum terms become
 $4e^{-2}/\sigma$ and the remaining terms are asymptotic to
-$\sigma/d_i^2$, again giving a finite limit at $k=n/2$. Optimization
-over all finite parameters and all joint paths is a separate open step.
+$\sigma/d_i^2$, again giving a finite limit at $k=n/2$. The pair bound below proves the global supremum for all-free half ties.
+The held-minimum half-tie bound below resolves the corresponding public hold separately.
 
 The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-extreme.md) describes the limiting paths and the scope of the boundary comparisons.
 
 Fits restrict the shape to $-1 \le \xi \le 1$, because outside that range the likelihood can be made unbounded: at the upper end of the support for $\xi < -1$, and at a tied sample minimum for large $\xi$. At $\xi = -1$ the upper end point belongs to the support, so the boundary fit, the reversed exponential distribution, is a proper member of the family. Fits with $-1 \le \xi < -1/2$ are non-regular: the usual asymptotic theory for the MLE does not apply there.
 
-Only ties at the sample minimum matter. Let $k$ observations equal the minimum. With $\xi > 0$ held and $\mu$ and $\sigma$ free, the likelihood is bounded only if $\xi k < n - k$. With all three coefficients free, more than $n/2$ ties always make it unbounded. At exactly $k = n/2$ the collapse path has a finite limit; the fit compares the best interior fit with that limit and stops unless the interior fit is strictly better. The path alone does not establish the global supremum or its attainment. In every sample tried so far the limit has won, but no proof covers all samples. The same conditions apply with $\mu$ held at the sample minimum and $\sigma$ free.
+Only ties at the sample minimum matter. Let $k$ observations equal the minimum. With $\xi > 0$ held and $\mu$ and $\sigma$ free, a finite maximum requires $\xi k < n - k$. With all three coefficients free, more than $n/2$ ties always make it unbounded. At exactly $k=n/2$, the global log-likelihood supremum is
+$A=n\log2-n-2\sum_{x_i>m}\log(x_i-m)$, by the pair bound below.
+It is attained only when all nonminimum observations equal a common $M$:
+then $\xi=-1$, $\sigma=(M-m)/2$ and $\mu=(M+m)/2$ maximize globally.
+Otherwise the fitter stops with the finite unattained supremum in its details.
+With $\mu=m$ held, the distinct supremum is
+$A_m=-n/2-2\sum_{x_i>m}\log(x_i-m)$. It is attained precisely for the
+two-point sample, now at $\sigma=M-m$, $\xi=-1$. This is a direct
+held-coordinate bound, not an unconstrained Fréchet transport.
 
 Held shapes above 1 are accepted when the tie condition allows them. A held shape below $-1$ is accepted only when $\mu$ is held at or above the sample maximum, or when every coefficient is held.
 
-With the shape held, holding the scale leaves a one-dimensional fit for the location (certified for nonpositive shape), and holding the location leaves one for the scale. With the shape free, the fit profiles over $\xi$ and compares interior maxima with both shape bounds. The search is checked against independent multistart fits; it is not certified. The default fit needs three finite, non-constant observations.
+With the shape held, holding the scale leaves a one-dimensional fit for the location (certified for nonpositive shape), and holding the location leaves one for the scale. With the shape free, the fit profiles over $\xi$ and compares interior maxima with both shape bounds. The shape-only search is certified as described below. Searches with free nuisance coefficients remain numerical except for the proved half-tie case. The default fit needs three finite, non-constant observations.
 
 
 At fixed scale and $-1<\xi<0$, set
@@ -168,6 +176,140 @@ unrepresentable interior solution stop numerically. At $\xi=-1$ the
 linear likelihood selects $\mu=\max x-\sigma$; at zero the analytic
 Gumbel location applies. Positive held shape can have changing curvature
 and retains the numerical scalar search.
+
+
+### Shape-only coverage
+
+With location and scale held, put $z_i=(x_i-\mu)/\sigma$ and
+$L_i(\xi)=\log(1+\xi z_i)/\xi$. The support interval is the intersection
+of $[-1,1]$ and $1+\xi z_i>0$, with the reverse-exponential endpoint
+included. On compact interior segments, interval automatic differentiation
+bounds $\ell$, $\ell'$ and $\ell''$. Across zero shape the series
+$L_i=\sum_{j\ge0}(-\xi z_i)^j z_i/(j+1)$ removes the singularity.
+After degree $N$, absolute remainder bounds for value, first and second
+derivatives are respectively
+$|z|r^{N+1}/[(N+2)(1-r)]$, $z^2r^N/(1-r)$ and
+$2|z|^3(N+1)r^{N-1}/(1-r)^3$, where $r=\max|\xi z|<1$.
+Segments separated from zero use the logarithmic formula directly.
+
+At an open support edge, write $y=\exp(-L)$ and $c=1+\xi$.
+Each term $c\log y-y$ is at most $c\log c-c$, whose maximum over
+a shape interval is at an endpoint. For the observation defining a negative
+shape edge $a=-1/z$, its term is at most
+$-(1+1/a)\log(1+bz)$ throughout $(a,b]$. For a positive edge $b=-1/z$,
+put $Y=(1+az)^{-1/b}$; when $Y>1+b$ its term is at most
+$(1+b)\log Y-Y$ throughout $[a,b)$. Adding the universal bounds for the
+other observations excludes an edge neighbourhood only if its upper bound
+is below a finite incumbent. No endpoint neighbourhood is omitted by a nudge.
+The critical edge $a=-1,z=1$ can remain unresolved and then stops numerically.
+
+The remaining boxes are discarded by a likelihood bound or a strictly signed
+score. Negative curvature plus opposite endpoint scores isolates exactly one
+maximum. Bisection bounds its coefficient to relative `reltol`; all isolated candidates
+and attained endpoints are compared. Unresolved comparisons stop numerically.
+For $x_i=\mu$ throughout, the likelihood is identically
+$-n(1+\log\sigma)$: every shape is a maximizer and the fitter returns zero.
+This is a counterexample to unconditional uniqueness. If every standardized
+observation is one, the uniform density bound $h_\xi(z)\le1$ proves that
+$\xi=-1$ is the global maximizer, returned without differentiating the endpoint.
+
+These are exact-arithmetic bounds conditional on computed comparisons,
+with practical margin $4096\epsilon_{\rm mach}n$ in comparisons and
+$32\epsilon_{\rm mach}n$ in the curvature-based root enclosure. They are
+not outward-rounded intervals. The series and root loops each have
+`min(iterlim,100000)` iterations; segment and edge evaluations share
+`128*min(iterlim,100000)`. Exhaustion gives a structured `budget` stop;
+an unresolved inner solve or arithmetic comparison gives `numerical`.
+Successful original-coordinate likelihoods must agree with standardized
+values within $10^{-7}n$. Stopped witnesses are never estimates.
+
+### Half-minimum pair bound
+
+For two observations distance $d>0$ apart, optimize the scale of a Weibull
+or Fréchet density with shape $a\ge1$ and endpoint distances having ratio
+$r\in(0,1)$. The maximum product is
+
+$$\frac{4e^{-2}}{d^2}
+ \left[\frac{a r^{(a-1)/2}(1-r)}{1+r^a}\right]^2
+ =\frac{4e^{-2}}{d^2}
+ \left[\frac{a\sinh u}{\cosh(au)}\right]^2,
+ \qquad r=e^{-2u}.$$
+
+Convexity gives $\sinh(au)\ge a\sinh u$ and
+$\cosh(au)>\sinh(au)$, so the bracket is strictly less than one.
+The only attained endpoint equality is Weibull shape one, one observation
+at its endpoint, and scale $d/2$. GEV positive shapes correspond to Fréchet
+with $a=1/\xi\ge1$; negative shapes correspond to reflected Weibull with
+$a=-1/\xi\ge1$. At zero shape, optimizing Gumbel location gives the same
+bound times $[t/\cosh t]^2<1$, $t=d/(2\sigma)$.
+
+Pair each of the $k=n/2$ minima with one nonminimum and multiply the bounds.
+This gives $A$ above for every finite GEV fit, irrespective of joint paths.
+The positive-shape collapse approaches $A$. Equality at finite parameters
+requires every pair to have the same distance and the same reverse-exponential
+scale; this is precisely the two-point exception. No global uniqueness claim
+is made outside these half-tie and scalar certificates.
+
+Explicit uniform location and scale bounds for samples whose largest value
+multiplicity is below half are proved in the
+[nuisance-bound derivation](../../../../../dev/research/evaluations/2026-11-07-evt-joint-data/nuisance-bounds.md).
+They also bound the constrained held-scale Fréchet problem. Combined with
+upper semicontinuity, they prove finite GEV attainment in that multiplicity
+regime, but do not locate or certify the remaining joint fits.
+
+
+
+For any all-free two-point sample, let $p=k/n\le1/2$ be the fraction at its
+minimum and $d=M-m$. The unique global maximum is
+$\xi=-1$, $\sigma=pd$, $\mu=M-pd$, with log likelihood
+$-n[1+\log(pd)]$. To see this, profile scale in the reflected Weibull and
+Fréchet representations. Relative to that member, the likelihood's $n$th
+root is respectively
+
+$$R_W=\frac{ap(1-r)r^{(a-1)(1-p)}}{p+(1-p)r^a},\qquad
+R_F=R_W r^{1-2p}.$$
+
+For $p\le1/2$, each is at most the strict pair ratio
+$a r^{(a-1)/2}(1-r)/(1+r^a)<1$. The zero-shape limit is strictly below
+one as well, since the pair ratio tends to $t/\cosh t<1$ for finite Gumbel
+scale. Equality occurs only at reflected Weibull shape one and its attained
+endpoint. The code uses $pd$ directly, instead of subtracting the sample
+mean from $M$.
+
+For a half tie, opposite-sign endpoints use $(m+M)/2$ to preserve a small
+location; subnormal halving residuals are checked with `fma`. Endpoint
+feasibility is enforced using a TwoDiff rounding residual, with any scale
+adjustment limited to `reltol/4` relative to the initial scale. Outside the
+half tie, a $64\epsilon_{\rm mach}(|M|+\sigma)$ location-error allowance
+must be below `reltol*abs(mu)/4`; subnormal scale or unresolved near-zero
+location stops numerically. The analytic precision control is at most
+$10^{-2}$ and requires at least $1024\epsilon_{\rm mach}$; successful
+likelihoods agree with the analytic supremum within $10^{-7}n$. These
+safeguards can reject a known finite maximum whose relative coefficient
+accuracy cannot be justified by the implemented double-arithmetic guard.
+
+### Sharp density bound and the held-minimum half tie
+
+The standardized density obeys the sharp uniform bounds
+$h_\xi(z)\le1$ and $z^2h_\xi(z)\le1$ for $-1\le\xi\le1$.
+For the second, put $L=\log(1+\xi z)/\xi$, $y=e^{-L}$. Then
+
+$$z^2h_\xi(z)=4\left[\frac{\sinh(\xi L/2)}{\xi}\right]^2
+ e^{-L-e^{-L}}\le(1-y)^2e^{-y}\le1.$$
+
+The first inequality follows from convexity of $\sinh$ and $|\xi|\le1$,
+including zero shape by continuity. For $0<y\le1$ the last expression is
+strictly below one; for $y\ge1$ its maximum is $4e^{-3}<1$. Finite equality
+occurs only at the closed reverse-exponential endpoint $\xi=-1,z=1$.
+
+If public location is held at $m=\min x$, the $k=n/2$ minimum densities
+are exactly $e^{-1}/\sigma$ and every nonminimum density is at most
+$\sigma/(x_i-m)^2$. Multiplying proves the global bound $A_m$ above.
+Equality requires every nonminimum to equal $m+\sigma$ and $\xi=-1$.
+Otherwise the $\xi=1$, $\sigma\downarrow0$ path approaches $A_m$ without
+attaining it. The fitter resolves this before the numerical scale/shape
+search and reports the finite supremum. If scale is also held at the
+attaining value, the same finite member remains a certified maximum.
 
 ## R notes
 
