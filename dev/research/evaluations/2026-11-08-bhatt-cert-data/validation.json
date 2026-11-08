@@ -1,0 +1,90 @@
+{
+  "date": "2026-11-08",
+  "task": "TASK-116.43",
+  "base": "7d877b7005048ccd22106f15e5fd8af5757f5ea2",
+  "runs": [
+    {
+      "machine": "workstation GCC 15.2",
+      "command": "just cpp-test-no-long-double",
+      "passed": 129,
+      "failed": 0
+    },
+    {
+      "machine": "workstation Emscripten/Node",
+      "command": "just js-build",
+      "exit_code": 0
+    },
+    {
+      "machine": "workstation Emscripten/Node",
+      "command": "just js-test",
+      "passed": 508,
+      "failed": 0
+    },
+    {
+      "machine": "workstation",
+      "command": "just site-check",
+      "exit_code": 0,
+      "families": 99,
+      "cpp_snippets": 99
+    },
+    {
+      "machine": "simbox GCC 13.3",
+      "command": "UMVL_TEST_TIER=dev just cpp-test",
+      "passed": 106,
+      "failed": 0
+    },
+    {
+      "machine": "simbox GCC 13.3",
+      "command": "UMVL_TEST_TIER=full just cpp-test",
+      "passed": 129,
+      "failed": 0
+    },
+    {
+      "machine": "simbox GCC 13.3",
+      "command": "just cpp-test-no-long-double",
+      "passed": 129,
+      "failed": 0
+    },
+    {
+      "machine": "simbox R 4.6.1",
+      "command": "just test",
+      "passed": 21613,
+      "failed": 0,
+      "warnings": 0,
+      "skipped": 154
+    },
+    {
+      "machine": "simbox R 4.6.1",
+      "command": "just test-full",
+      "passed": 44448,
+      "failed": 0,
+      "warnings": 0,
+      "skipped": 0
+    }
+  ],
+  "protected_files_unchanged_sha256": {
+    "univariateML-cpp/include/cppunivariate/distributions/bhatt/golden.json": "7d27bbac4e44adc6aadc6791660767695605c452352d088d040cf78fdb8b1975",
+    "univariateML-cpp/include/cppunivariate/distributions/bhatt/dpqr.hpp": "48507a2f577f445355f78fd626fa6de46bc7650342d4db78d0b698c9b36480c6",
+    "univariateML-cpp/include/cppunivariate/distributions/bhatt/truth.py": "6f655af5494b679b8f7f46cc4a681b661f35c57eaa3e74514523db11b4306761",
+    "univariateML-cpp/include/cppunivariate/distributions/bhatt/truth.json": "9874fdb659d0611b6714bd21b99c4f56e1de79cacca7bef3d93c8fb7bcf5f9ce",
+    "univariateML-cpp/include/cppunivariate/distributions/emg/logconcave_profile.hpp": "6ab1e3ad76c3419b4f76ee52ab9cbfefd1a1015516121854e08a2325f1ac7955"
+  },
+  "source_sha256": {
+    "bindings/common/distributions/bhatt/fit.hpp": "15e79d249ca01173294a182ecf19d605d202d874367a8c34441de0073826d8b8",
+    "bindings/js/test.mjs": "5b797704430d3ab37eeec4a5736e8b99ff2f46b2536e4fce5bd63c25514bfbb4",
+    "bindings/r/distributions/bhatt/test.R": "588e00600b5767a257dd29d179369be3700ce2ef480cd48c7c74f6e54176b694",
+    "univariateML-cpp/include/cppunivariate/distributions/bhatt/README.md": "e346fb4812c5c9ce966d2c01ce0a4feea9a6f33e18b03d2d993379c459bf3321",
+    "univariateML-cpp/include/cppunivariate/distributions/bhatt/mle.hpp": "a9527a457d8537c8633c8012792b89cd26a5a25462dd1b8c99b5f9f1967106c1",
+    "univariateML-cpp/include/cppunivariate/distributions/bhatt/test.cpp": "ad50cd5376000bea5218f4d62d5fa09b5f670bed0df552c9624e1b9beb42ce57",
+    "univariateML-cpp/include/cppunivariate/distributions/bhatt/certificate.hpp": "bfe8d1ad86c1402e881a6e633a7dcb47c97ad28892755f2486bfec3d3d516127",
+    "univariateML-cpp/include/cppunivariate/distributions/bhatt/certificate_math.hpp": "bed6a6cfbb42f0c250465e81ceacea87cde39fb89af2a1e6117ba85403d1d98a",
+    "univariateML-cpp/include/cppunivariate/distributions/bhatt/winner_certificate.hpp": "76a26d1b5b01b6e03f5386d749e312316b8feb607067138a784488586c235d84"
+  },
+  "scope": "No shared header changes; JS tests append-only; no golden changes; no commits, board edits or publication.",
+  "supplementary_links": {
+    "changed_new_destinations": 16,
+    "changed_new_broken": 0,
+    "repository_diagnostics": 4,
+    "all_diagnostic_files_identical_to_HEAD": true
+  }
+}

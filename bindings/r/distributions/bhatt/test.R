@@ -162,7 +162,23 @@ test_that("bhatt new holds agree with independent multistart likelihoods", {
     args <- as.list(held_values[held])
     f <- tryCatch(suppressWarnings(do.call(mlbhatt,c(list(x=x),args))),error=identity)
     if(inherits(f,"error")) {
-      expect_match(conditionMessage(f),"[Uu]se `ml|unbounded|collapse|support cannot contain|does not exist|positive")
+      if(inherits(f,c("univariateML_numerical","univariateML_budget","univariateML_unresolved","univariateML_tie"))) {
+        expect_s3_class(f,"univariateML_stop")
+        expect_gt(nrow(f$candidates),0)
+        expect_true(all(is.finite(f$candidates$loglik_lower)))
+        expect_true(all(f$candidates$loglik_lower<=f$candidates$loglik_upper))
+        expect_lte(f$loglik_lower,f$loglik_upper)
+        for(j in seq_len(nrow(f$candidates))) {
+          candidate <- unlist(f$candidates[j,c("mu","sigma","a")])
+          if(all(is.finite(candidate))) {
+            evaluated <- sum(ld(x,unname(candidate)))
+            expect_lte(f$candidates$loglik_lower[j],evaluated+1e-8)
+            expect_gte(f$candidates$loglik_upper[j],evaluated-1e-8)
+          }
+        }
+      } else {
+        expect_match(conditionMessage(f),"[Uu]se `ml|unbounded|collapse|support cannot contain|does not exist|positive")
+      }
       next
     }
     expect_identical(unname(as.numeric(f[held])),unname(held_values[held]))
@@ -225,4 +241,54 @@ test_that("P3 bhatt returns the normal maximum as an attained member", {
  f<-mlbhatt(x,mu=1,sigma=4,a=0)
  expect_equal(as.numeric(f),c(1,4,0))
  expect_equal(attr(f,"logLik"),sum(dnorm(x,1,4,log=TRUE)))
+})
+
+
+test_that("bhatt held certificates require quantitative convergence", {
+  x <- c(-3,-1,0,1,2)
+  f <- mlbhatt(x,sigma=1,a=2,reltol=1e-10)
+  expect_equal(attr(f,"fixed"),c("sigma","a"))
+  expect_equal(as.numeric(logLik(f)),sum(bhatt_oracle_density(x,f[["mu"]],1,2)),tolerance=1e-10)
+  for(controls in list(list(iterlim=1),list(reltol=1e-30))) {
+    e <- tryCatch(do.call(mlbhatt,c(list(x=x,sigma=1,a=2),controls)),error=identity)
+    expect_s3_class(e,"univariateML_numerical")
+    expect_gt(nrow(e$candidates),0)
+    expect_true(all(is.finite(e$candidates$loglik_lower)))
+    expect_lte(e$loglik_lower,e$loglik_upper)
+  }
+})
+
+test_that("bhatt unexcluded normal member is a witnessed unresolved stop", {
+  x <- c(-10,rep(0,20),10)
+  e <- tryCatch(mlbhatt(x,mu=0,sigma=4),error=identity)
+  expect_s3_class(e,"univariateML_unresolved")
+  expect_match(conditionMessage(e),"unresolved")
+  expect_gt(nrow(e$candidates),1)
+  expect_true(any(e$candidates$a==0,na.rm=TRUE))
+  expect_lte(e$loglik_lower,e$loglik_upper)
+  # This comparison does not claim that the face is globally winning.
+  expect_length(e$estimates,0)
+})
+
+test_that("bhatt held certificates transport endpoint penalties and units", {
+  x <- c(-1,-1,1)
+  e <- tryCatch(mlbhatt(x,a=1),error=identity)
+  expect_s3_class(e,"univariateML_limit")
+  expect_equal(e$limit_loglik,-3*log(2)+2*log(2/3)+log(1/3),tolerance=1e-12)
+  x <- c(-3,-2,-1,0,.5,1,2,3)
+  f <- mlbhatt(x,a=.5,reltol=1e-10)
+  for(s in c(1e-100,1e100)) {
+    g <- mlbhatt(s*x,a=.5*s,reltol=1e-10)
+    expect_equal(as.numeric(g)/s,as.numeric(f),tolerance=1e-9)
+    expect_equal(as.numeric(logLik(g))+length(x)*log(s),as.numeric(logLik(f)),tolerance=1e-10)
+  }
+})
+
+
+test_that("bhatt conditional normal RMS distinguishes underflow from collapse", {
+  x <- c(1e-200,2e-200)
+  f <- mlbhatt(x,mu=0,a=0,reltol=1e-10)
+  expect_equal(f[["sigma"]]/1e-200,sqrt(2.5),tolerance=1e-12)
+  expect_true(is.finite(as.numeric(logLik(f))))
+  expect_error(mlbhatt(rep(1e-200,2),mu=1e-200,a=0),"unbounded")
 })

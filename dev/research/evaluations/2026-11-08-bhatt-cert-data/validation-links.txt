@@ -1,0 +1,6 @@
+Changed/new Markdown: 16 local destinations; 0 broken. All four repository-wide diagnostics occur in files identical to HEAD.
+524 Markdown files; 2938 local destinations; 4 broken
+dev/research/evaluations/2026-11-03-boundary-lit-report.md:5: ../boundary-points.pdf
+univariateML-cpp/include/cppunivariate/distributions/nbinom/README.md:234: 1+m/r
+univariateML-cpp/notes/inference.md:3: /inference/
+univariateML-cpp/notes/inference.md:95: /inference/

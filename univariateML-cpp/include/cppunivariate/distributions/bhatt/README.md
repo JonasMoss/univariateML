@@ -37,14 +37,14 @@ r:
     mu: Optional held mu; NULL estimates it.
     sigma: Optional positive held sigma; NULL estimates it.
     a: Optional nonnegative held a; NULL estimates it.
-    reltol: Relative search tolerance in standardized coordinates.
-    iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
+    reltol: Relative coefficient tolerance with at least one coefficient held; search tolerance with every coefficient free.
+    iterlim: "Work limit: 1 * min(iterlim, 100000) iterations per solve and 128 * min(iterlim, 100000) certificate evaluations."
 log_density: log((erf((x-mu+a)/(sqrt(2)*sigma))-erf((x-mu-a)/(sqrt(2)*sigma)))/(4*a))
 limits:
   - model: unif
     firmness: proved
     when: 'The normal scale satisfies $\sigma\to0$ with positive half-width $a$ fixed or approaching a positive limit.'
-    detect: 'With normal scale free, the compatible uniform-face log likelihood is at least the best numerical interior log likelihood minus $10^{-8}n$. Endpoint penalties depend on held coefficients.'
+    detect: 'Positive held a uses proved covering and endpoint bounds. Held mu with free a uses a global width certificate. Only the all-free route retains the numerical interior comparison within $10^{-8}n$.'
     status: UniformLimit
     numerical: true
 holds: []
@@ -73,7 +73,7 @@ relations:
 fit:
   method: profile-search
   certified: partial
-  note: 'bhatt/README.md, Details: fixed-shape location-scale objective is strictly concave; the shape grid and face comparison are numerical.'
+  note: 'bhatt/README.md, Details: held positive a uses a concave endpoint certificate; held sigma or held mu uses a global width certificate. The all-free subset retains the numerical search and face comparisons without a certificate.'
 areas:
 - measurement and errors
 classification: uncommon
@@ -97,7 +97,7 @@ existence:
     exactly when the sample range exceeds $2a$; otherwise the uniform
     supremum is unattained. Holding $\sigma>0$ guarantees attainment,
     whether location is held or free.
-    With both scales held, free location has a unique finite maximum.
+    With positive a held, an attained maximum is unique, whether location is held or free. With both scales held, free location has a unique finite maximum.
     Holding $a=0$ gives the corresponding normal fitting problem.
   reason: >-
     The density is bounded by both $1/(2a)$ for $a>0$ and
@@ -115,70 +115,102 @@ physical value, rather than a dimensionless shape ratio.
 
 ## Details
 
-When every coefficient is held, the likelihood is evaluated at those values
-without optimization.
+At $a=0$ fitting reduces to the conditional normal problem. Positive held
+$a$ has an additional concavity structure: in $(u,b)=(\mu/\sigma,1/\sigma)$,
 
-The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-locscale.md) describes the limiting paths and the scope of the boundary comparisons.
+$$
+L(u,b)=-n\log(2a)+\sum_i\log\{\Phi(b(x_i+a)-u)-\Phi(b(x_i-a)-u)\}.
+$$
 
-For fixed dimensionless shape $k=a/\sigma$, the log-likelihood is strictly
-concave in $(u,b)=(\mu/\sigma,1/\sigma)$. For nonconstant observations
-it has a unique finite maximum in these coordinates; constant observations
-collapse when location and scale are free. Holding the physical half-width fixed is a different constraint. This is a mathematical property,
-not a certificate of the current search over shape. See the [proof and scope](../../../../../dev/research/evaluations/2026-10-31-logconcave-report.md).
+Normal interval probability is log concave in its two endpoints, by
+Prékopa's theorem. Both endpoints are affine here. Holding $\mu$ imposes
+$u=b\mu$; holding $\sigma$ fixes $b$. Thus the held-width problems are
+concave on convex domains, including the location-only slice. An enclosed
+score root with negative definite local Hessian proves a unique global
+maximum. The numerical certificate requires a coefficient enclosure within
+`reltol`, with $\sigma$ as the natural location floor; a small score alone
+does not suffice. With free $\mu$, positive held $a$ and range greater than $2a$, the maximum is attained and unique.
+Holding $k=a/\sigma$ instead specifies a different concave slice.
 
-A constant sample has unbounded likelihood when both scales are free and location is free or held at the common value. The normal and uniform faces are fitted conditionally on held scales and compared with the interior within $10^{-8}n$. Holding sigma removes the uniform face; holding positive a removes the normal member. With a held and sample range exactly 2a, endpoint masses contribute an optimized binomial penalty on the uniform face. For fixed positive scales the location likelihood is strictly log concave; the multistart fallback uses a grid of simplex starts and does not certify exclusion of other scale modes.
+With $\sigma$ held and $a$ free, put $k=a/\sigma$. At each fixed $k$,
+location is strictly log concave. The profiled objective $P(k)$ satisfies
+$P(k)+n\log k$ concave. Supporting tangents of this adjusted profile give
+upper bounds for every width interval, using enclosed inner optima.
+Negative definite Hessian boxes and uniform nuisance inclusions isolate
+stationary winners; every other interval must be excluded before accepting
+a finite fit. Large widths are bounded by $f\le1/(2a)$. For small widths,
+Hoeffding's inequality bounds the convolution by the corresponding normal
+likelihood plus $k^2\sum_i((x_i-\mu)/\sigma)^2/2$, optimized at the
+conditional normal mean. A normal comparison that cannot be excluded stops
+unresolved, with both normal-member and finite witnesses. It does not assert
+that the normal member wins. If location is held and all standardized
+distances are at most one, or location is free and range is at most
+$\sigma$, pointwise domination proves the normal winner directly.
 
-Identification follows from $E[X]=\mu$, $\kappa_4=-2a^4/15$ and $\operatorname{Var}(X)=\sigma^2+a^2/3$. For $a>0$, the density is bounded above by both $1/(2a)$ and $1/(\sqrt{2\pi}\sigma)$, so either scale tending to infinity forces likelihood to zero, including joint scale divergence. With bounded scales, location escaping to infinity also forces likelihood to zero. Joint scale collapse is unbounded only for constant data; for nonconstant data the normal and uniform faces exhaust the remaining nonzero limits. These are direct arguments using the [extraDistr density definition](https://search.r-project.org/CRAN/refmans/extraDistr/html/Bhattacharjee.html).
+The normal-interval and score comparisons use practical binary64 margins,
+conditional on computed comparisons. Their scope is the enclosed score root
+and the likelihood bounds above. Coefficient enclosures are checked in original
+units, and finite stopped witnesses are evaluated at their recovered physical
+coefficients. An unresolved face comparison retains witnesses without selecting a face.
 
-The normal member uses the conditional normal maximum, respecting held mu and sigma. The unrestricted uniform face uses the midrange and half-range; it is approached with endpoints expanded by an amount tending to zero more slowly than sigma. With a held and range less than 2a the face likelihood is $(2a)^{-n}$; with range greater than 2a it is zero. At equality, with endpoint multiplicities k and l, multiply $(2a)^{-n}$ by $(k/(k+l))^k(l/(k+l))^l$. This follows by shifting the centre by order sigma and optimizing the two normal endpoint probabilities. A held subset therefore changes the boundary comparison. Held mu conditions both normal and uniform face fits on that location.
+With $\mu$ held and both scales free, the width certificate profiles the
+location-scale coordinates subject to $u=b\mu$, comparing the conditional
+normal and uniform faces. For $k\ge2n$, put $r=\max_i|x_i-\mu|$:
+the peak bound covers $a\ge r$, and for $a<r$ one extreme contributes
+$\Phi(-k(r/a-1))$. Its inverse Mills ratio bounds the derivative of
+$n\log(r/a)+\log\Phi(-k(r/a-1))$ by a negative number, proving the
+uniform-face upper bound on this whole small-$\sigma$ neighbourhood.
 
-With mu free, positive a held and sigma free, range at most 2a always selects the uniform face: each interior density is at most $1/(2a)$, and at exact range 2a the endpoint probabilities are bounded by complementary normal probabilities. These pointwise bounds give precisely the face value above. Range greater than 2a instead guarantees an attained positive-sigma maximum, since both scale endpoints then have zero likelihood. With both scales held, location is always attained, including for constant samples.
+With every coefficient free, the fitter retains the existing fixed-shape
+grid or multistart search. This subset has neither a global nor a
+quantitative coefficient certificate; representability checks reject false
+collapse or invalid finite/face outputs. On the golden sample its result differs
+from the independent stationary point by up to $1.8\times10^{-7}$ relative
+([comparison](../../../../../dev/research/evaluations/2026-11-08-bhatt-cert-data/golden-score.json)).
+The family's `fit.certified` therefore remains `partial`.
 
-The conditional uniform comparison respects held coefficients. The normal boundary is returned as a=0, preserving held mu and sigma.
+Identification follows from $E[X]=\mu$, $\kappa_4=-2a^4/15$ and
+$\operatorname{Var}(X)=\sigma^2+a^2/3$. The bounds $f\le1/(2a)$ and
+$f\le1/(\sqrt{2\pi}\sigma)$ exclude diverging scales on a positive
+likelihood level set. With bounded scales, escaping location loses
+likelihood. Joint scale collapse is unbounded only when location can
+coincide with a constant sample; for nonconstant data, the only nonzero
+faces are normal ($a=0$, attained) and uniform ($\sigma\to0$, unattained).
+These facts do not establish joint uniqueness with both scales free.
 
-Evaluation and fitting at $a=0$ give the attained normal member.
+For free width the uniform face uses the midrange and half-range, or the
+maximum distance from held $\mu$. Endpoints can expand more slowly than
+$\sigma$ vanishes. For held positive $a$, range below $2a$ gives face
+likelihood $(2a)^{-n}$. At range $2a$, endpoint multiplicities $j,l$ give
+the additional factor $(j/(j+l))^j(l/(j+l))^l$, by optimizing the two
+complementary normal endpoint probabilities. With location held instead,
+each observation exactly at an endpoint contributes $1/2$. Pointwise and
+complementary endpoint bounds prove that these held-width faces dominate
+every positive-scale fit. Range greater than $2a$, or a distance greater
+than $a$ with location held, instead forces likelihood to zero as
+$\sigma\to0$ and gives an attained positive-scale maximum.
 
-The uniform face is always a local maximum of the likelihood closure. If r is the sample half-range, the peak-density bound rules out improvement for $a\ge r$, while the extreme-pair CDF bound rules it out for $r4^{-1/n}\le a<r$. It need not be global: for a sample of twenty zeros and one observation at each of $-10$ and $10$, the fitted normal face has higher likelihood. Thus boundary multimodality is genuine even though location is conditionally unique; an exhaustive classification of multiple finite scale modes is not claimed.
+Winning uniform faces need not have a unique centre. For data
+$\{-1,0,1\}$ with $a=2$ held, every centre in $(-1,1)$ gives the same
+unattained supremum $-3\log4$ as $\sigma\to0$. This does not contradict
+uniqueness of an attained positive-scale maximum with width held.
 
-Holding mu conditions both face comparisons on that exact centre. For held positive a, sigma can tend to zero with nonzero likelihood precisely when every distance from the held mu is at most a; observations exactly at an endpoint contribute a factor 1/2 each. Holding sigma removes this uniform escape. The proper boundary a=0 is returned as the attained normal member. Constant samples have unbounded likelihood when normal scale is free, location can coincide with the common observation, and uniform width is free or held at zero. Holding a positive width rules out this divergence.
+With $\sigma>0$ held, compactness and continuity give attainment with
+location held or free, since width divergence loses likelihood and $a=0$
+is included. Attainment alone does not certify the width search or imply
+uniqueness.
 
-With $\sigma>0$ held, an MLE is attained for every nonempty finite sample,
-with location held or free. The width cannot diverge on a positive likelihood
-level set because $f\le1/(2a)$. With bounded width and fixed positive
-normal scale, escaping location loses likelihood. The remaining width domain
-includes $a=0$, so compactness and continuity give attainment. If location
-and positive width are both held instead, a positive-scale MLE exists exactly
-when some observed distance from that location exceeds $a$. Otherwise every
-finite-scale density is strictly below its uniform-face value, including the
-half-density factors at endpoints. Outside that case, both zero and infinite
-normal scale lose likelihood, which gives attainment. These arguments do not
-prove uniqueness of the fitted scales.
+The unrestricted uniform face is always a local maximum of the likelihood
+closure. Writing $r$ for the sample half-range, the peak bound rules out
+improvement for $a\ge r$, and the extreme-pair probability bound does so
+for $r4^{-1/n}\le a<r$. This closure maximum need not be global: twenty
+zeros with one observation at each of $-10$ and $10$ have a normal-member
+witness with higher likelihood. Conditional location uniqueness therefore
+does not imply a single maximum of the likelihood closure. No example of
+multiple finite global scale maximizers is asserted.
 
 ## R notes
 
-The suggested `mlunif` alternative fits unrestricted endpoints and does not
-preserve held `mu` or `a`. The normal member is returned with `a = 0`,
-preserving held `mu` and `sigma`.
-
-## Decision history
-
-2026-10-31 (fixed-shape profile search):
-
-For a fully free fit, fix the dimensionless shape $k=a/\sigma$ and optimize the
-location and inverse scale jointly. The fixed-shape objective is strictly
-concave, and the inner solve uses analytic derivatives with damped Newton
-steps and a scaled score check. A grid in log shape is traversed outward
-with warm starts; local grid maxima are refined and the best candidate is
-polished by the existing local optimizer. One central multistart seed is also
-polished and retained when its likelihood is at least as high, preserving the
-established fit precision. If the grid has no interior local
-maximum, the grid-end likelihoods are compared with the normal and uniform faces using
-the existing face rules. This outer search and face comparison are numerical;
-they do not certify that no mode lies beyond or between grid points. Failed
-inner solves, unsuccessful polishing and unresolved face comparisons fall
-back to the existing multistart; held-parameter fits retain that path. A test
-hook counts fallbacks when enabled. See the [round-four evidence](../../../../../dev/research/evaluations/2026-10-31-logconcave-4-report.md).
-
-Face comparisons retain the family tolerance but stop with the existing numerical-failure status when `core/face_compare.hpp` cannot resolve the decision after its floating-point rounding allowance. This allowance concerns computed likelihood comparisons, not optimizer convergence or global optimality; see the [comparison analysis](../../../../../dev/research/evaluations/2026-11-02-face-compare-report.md).
-
-Held-parameter fits reuse evaluations at exactly repeated search coordinates; seeded decisions are identical to the uncached search ([held-subset comparison](../../../../../dev/research/evaluations/2026-11-06-slow-held-report.md)).
+`mlunif` fits unrestricted endpoints and does not preserve held `mu` or `a`.
+Normal-member comparisons retain held `mu` and `sigma`. A proved normal
+winner is returned with `a = 0`; an unresolved comparison remains a stop.

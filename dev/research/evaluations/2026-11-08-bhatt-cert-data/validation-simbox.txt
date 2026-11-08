@@ -1,0 +1,63 @@
+Machine: MeanMachine
+g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
+R version 4.6.1 (2026-06-24) 
+104/106 Test #128: tails_tests ......................   Passed    0.00 sec
+105/106 Test #126: no_throw_tests ...................   Passed    0.00 sec
+106/106 Test   #2: sample_tests .....................   Passed    0.01 sec
+
+100% tests passed out of 106
+
+Label Time Summary:
+cran    = 240.86 sec*proc (105 tests)
+dev     = 242.61 sec*proc (106 tests)
+full    = 242.61 sec*proc (106 tests)
+
+Total Test time (real) =  60.67 sec
+127/129 Test #125: distribution_support .............   Passed    0.00 sec
+128/129 Test #126: no_throw_tests ...................   Passed    0.00 sec
+129/129 Test #101: distribution_tlambda_slow ........   Passed  162.79 sec
+
+100% tests passed out of 129
+
+Label Time Summary:
+cran    = 242.43 sec*proc (105 tests)
+dev     = 244.18 sec*proc (106 tests)
+full    = 456.35 sec*proc (129 tests)
+
+Total Test time (real) = 162.79 sec
+127/129 Test #128: tails_tests ......................   Passed    0.00 sec
+128/129 Test   #1: bfgs_tests .......................   Passed    0.00 sec
+129/129 Test #101: distribution_tlambda_slow ........   Passed  162.80 sec
+
+100% tests passed out of 129
+
+Label Time Summary:
+cran    = 204.10 sec*proc (105 tests)
+dev     = 205.70 sec*proc (106 tests)
+full    = 415.45 sec*proc (129 tests)
+
+Total Test time (real) = 162.80 sec
+  'test-dist-zmpois.R:2:3', 'test-dist-zmpois.R:36:3',
+  'test-dist-ztbinom.R:2:3', 'test-dist-ztgeom.R:2:3',
+  'test-dist-ztgeom.R:33:3', 'test-dist-ztbinom.R:49:3',
+  'test-dist-ztbinom.R:91:3', 'test-dist-ztnbinom.R:2:3',
+  'test-dist-ztnbinom.R:57:3', 'test-dist-ztpois.R:2:3',
+  'test-dist-ztnbinom.R:72:3', 'test-dist-ztpois.R:33:3'
+
+[ FAIL 0 | WARN 0 | SKIP 154 | PASS 21613 ]
+
+🥳
+   user  system elapsed 
+278.189   2.997  70.619 
+⠋ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44247 ] @ dist-sged                         
+⠙ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44254 ] @ dist-sged                         
+✔ |        817 | dist-sged [177.8s]                                             
+
+⠹ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44448 ] Starting up...                      
+                                                                                
+══ Results ═════════════════════════════════════════════════════════════════════
+Duration: 255.5 s
+
+[ FAIL 0 | WARN 0 | SKIP 0 | PASS 44448 ]
+   user  system elapsed 
+759.322   5.297 257.809 
