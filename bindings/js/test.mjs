@@ -1255,3 +1255,66 @@ test('Bhattacharjee physical comparisons and stopped likelihood witnesses', asyn
     return true;
   });
 });
+
+test('SGED symmetric free-shape delegate transports fits and structured stops', async () => {
+  const {default:createApi}=await import('./index.mjs');
+  const api=await createApi(),g=read('ged','golden'),x=new Float64Array(g.data);
+  for(const held of [{},{mean:g.estimates.mean},{sd:g.estimates.sd},{mean:g.estimates.mean,sd:g.estimates.sd}]) {
+    const a=api.sged.fit(x,{...held,xi:1}),b=api.ged.fit(x,held);
+    assert.equal(a.status,'Ok');
+    for(const name of ['mean','sd','nu'])assert.equal(a.estimates[name],b.estimates[name]);
+    assert.equal(a.estimates.xi,1);assert.equal(a.logLik,b.logLik);
+  }
+  assert.throws(()=>api.sged.fit(new Float64Array([-1,1]),{sd:.1,xi:1},{iterlim:1}),e=>{
+    assert.equal(e.kind,'tie');assert.equal(e.candidates.length,2);
+    for(const c of e.candidates){assert.equal(c.xi,1);assert.equal(c.nu,1);}
+    return true;
+  });
+  assert.throws(()=>api.sged.fit(new Float64Array([-1,1]),{xi:1}),e=>{
+    assert.equal(e.kind,'limit');assert.equal(e.model,'unif');
+    assert.deepEqual(Object.values(e.estimates),[-1,1]);return true;
+  });
+  assert.throws(()=>api.sged.fit(new Float64Array([-Math.sqrt(3),Math.sqrt(3)]),{sd:1,xi:1}),e=>{
+    assert.equal(e.kind,'numerical');assert.ok(e.candidates.length>0);
+    for(const c of e.candidates)if(c.model==='')assert.equal(c.xi,1);
+    return true;
+  });
+});
+test('SGED balanced endpoint uniform proof covers asymmetric and free skew', async () => {
+  const {default:createApi}=await import('./index.mjs');const api=await createApi();
+  for(const held of [{},{xi:.1},{xi:2},{xi:100}])
+    assert.throws(()=>api.sged.fit(new Float64Array([-2,-2,3,3]),held,{iterlim:1}),e=>{
+      assert.equal(e.kind,'limit');assert.equal(e.model,'unif');
+      assert.deepEqual(Object.values(e.estimates),[-2,3]);
+      assert.ok(Math.abs(e.limit_loglik+4*Math.log(5))<1e-12);return true;
+    });
+});
+
+test('SGED weighted free-shape and smooth free-skew profiles certify golden fits', async()=>{
+  const {default:createApi}=await import('./index.mjs');const api=await createApi();
+  const g=read('sged','golden'),x=new Float64Array(g.data);
+  const weighted=api.sged.fit(x,{xi:1.4});
+  assert.ok(Math.abs(weighted.estimates.nu-3.12977540545)<2e-8);
+  assert.ok(Math.abs(weighted.logLik+649.7033316424115)<2e-8);
+  for(const held of [{xi:1.4},{nu:1.7},{nu:4}]) {
+    const f=api.sged.fit(x,held);assert.equal(f.status,'Ok');
+    const params=['mean','sd','nu','xi'].map(k=>f.estimates[k]);
+    const actual=api.sged.d(x,params,{log:true}).reduce((a,b)=>a+b,0);
+    assert.ok(Math.abs(actual-f.logLik)<2e-7);
+    assert.throws(()=>api.sged.fit(x,held,{iterlim:1}),e=>{
+      assert.ok(['budget','numerical'].includes(e.kind));assert.ok(e.candidates.length>0);return true;
+    });
+  }
+});
+test('SGED weighted median and smooth reflected half-GED ties retain their witnesses', async()=>{
+  const {default:createApi}=await import('./index.mjs');const api=await createApi();
+  assert.throws(()=>api.sged.fit(new Float64Array([-100,...Array(3).fill(-.01),...Array(15).fill(.01),100]),{xi:2}),e=>{
+    assert.equal(e.kind,'tie');assert.ok(e.candidates.length>=2);
+    for(const c of e.candidates){assert.equal(c.nu,1);assert.equal(c.xi,2);}return true;
+  });
+  for(const nu of [1.1,1.7,4,20])
+    assert.throws(()=>api.sged.fit(new Float64Array([-1,1]),{nu}),e=>{
+      assert.equal(e.kind,'tie');assert.ok(Number.isFinite(e.loglik_upper));
+      assert.deepEqual(new Set(e.candidates.map(c=>c.model)),new Set(['unavailable:half-ged','unavailable:reflected-half-ged']));return true;
+    });
+});

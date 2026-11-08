@@ -323,6 +323,29 @@ test_that("sged P0b subsets agree with independent README oracles", {
       c(list(x=x,gradtol=1e-6,iterlim=1000),as.list(p[held]))),
       classes='univariateML_restricted'),error=identity)
     if(inherits(fit,'error')) {
+      if(inherits(fit,'univariateML_tie')) {
+        expect_gte(nrow(fit$candidates),2L)
+        expect_true(is.finite(fit$loglik_upper))
+        expect_gte(fit$loglik_upper,-min(refs)-1e-5*length(x))
+        for(index in seq_len(nrow(fit$candidates))) {
+          row <- fit$candidates[index,]
+          if(row$model=='') {
+            q <- c(mean=row$mean,sd=row$sd,nu=row$nu,xi=row$xi)
+            value <- sum(sged_hold_logref(x,q))
+          } else if(row$model %in% c('unavailable:half-ged','unavailable:reflected-half-ged')) {
+            side <- if(row$model=='unavailable:half-ged') 1 else -1
+            z <- side*(x-row$mu)/row$scale
+            expect_true(all(z>=0))
+            value <- length(x)*(log(row$nu)-lgamma(1/row$nu)-log(row$scale))-sum(z^row$nu)
+          } else if(row$model=='unif') {
+            expect_true(all(x>=row$a & x<=row$b))
+            value <- -length(x)*log(row$b-row$a)
+          } else stop('Unexpected SGED comparison model in independent oracle test')
+          expect_gte(value,row$loglik_lower-1e-8*length(x))
+          expect_lte(value,row$loglik_upper+1e-8*length(x))
+        }
+        next
+      }
       expect_match(conditionMessage(fit),'half|uniform|skew-normal|nu -> 2|unbounded|collapse|score check')
       message <- conditionMessage(fit)
       expect_false(grepl('score check',message),
@@ -447,10 +470,10 @@ test_that("sged P0b collapse, restriction and forced half faces are enforced", {
     expect_error(mlsged(side*c(.5,1,1.5,2,2.5,3,10),mean=0,sd=1,nu=2),'half-GED')
 })
 
-test_that("sged exact uniform endpoints retain conditional penalties", {
+test_that("sged rounded uniform endpoints stop while finite-shape penalties remain", {
   x <- c(-sqrt(3),sqrt(3))
-  expect_error(mlsged(x,sd=1,xi=1),'uniform endpoint')
-  expect_error(mlsged(x,mean=0,sd=1,xi=1),'uniform')
+  expect_error(mlsged(x,sd=1,xi=1),class='univariateML_numerical')
+  expect_error(mlsged(x,mean=0,sd=1,xi=1),class='univariateML_numerical')
   # Direct README limit with both moments pinned, independently evaluated.
   target <- -2*log(sqrt(12))-2*exp(digamma(1))
   p <- c(mean=0,sd=1,nu=100000,xi=1)
@@ -559,4 +582,74 @@ test_that("sged normal face conversion reports scale overflow numerically", {
 
 test_that("sged normal face conversion rejects rounded subnormal scales", {
   expect_error(mlsged(c(0,2^(-1047)),nu=2),class='univariateML_numerical')
+})
+
+test_that("SGED held unit skew transports the four free-shape GED fits", {
+  skip_if_not_installed("jsonlite")
+  root <- Sys.getenv("UMVL_DISTRIBUTIONS_DIR")
+  if(!nzchar(root)) root <- testthat::test_path("fixtures")
+  g <- jsonlite::fromJSON(file.path(root,"ged","golden.json"))
+  for (held in list(list(),list(mean=g$estimates$mean),list(sd=g$estimates$sd),list(mean=g$estimates$mean,sd=g$estimates$sd))) {
+    a <- do.call(mlsged,c(list(x=g$data,xi=1),held))
+    b <- do.call(mlged,c(list(x=g$data),held))
+    expect_identical(as.numeric(a[c("mean","sd","nu")]),as.numeric(b))
+    expect_identical(as.numeric(logLik(a)),as.numeric(logLik(b)))
+    expect_identical(unname(a['xi']),1)
+    expect_setequal(attr(a,'fixed'),c(names(held),'xi'))
+    expect_equal(as.numeric(logLik(a)),sum(dml(g$data,a,log=TRUE)),tolerance=2e-9)
+  }
+})
+test_that("SGED symmetric free-shape stops carry SGED and uniform coordinates", {
+  e <- tryCatch(mlsged(c(-1,1),sd=.1,xi=1,iterlim=1),error=identity)
+  expect_s3_class(e,'univariateML_tie')
+  expect_equal(e$candidates$xi,c(1,1))
+  expect_equal(e$candidates$nu,c(1,1))
+  e <- tryCatch(mlsged(c(-1,1),xi=1),error=identity)
+  expect_s3_class(e,'univariateML_limit')
+  expect_identical(e$model,'unif')
+  expect_equal(unname(e$estimates),c(-1,1))
+  for (held in list(list(sd=1),list(mean=0,sd=1)))
+    expect_error(do.call(mlsged,c(list(x=c(-sqrt(3),sqrt(3)),xi=1),held)),class='univariateML_numerical')
+  expect_error(mlsged(rep(2,3),xi=1),class='univariateML_nomle')
+  fit <- suppressWarnings(mlsged(c(-3,-1,0,1,4),sd=.1,xi=1,iterlim=1))
+  expect_identical(unname(fit['nu']),1)
+  expect_identical(unname(attr(fit,'restricted')['nu']),'lower')
+})
+test_that("SGED balanced two-point likelihood has a certified uniform supremum", {
+  for (xi in list(NULL,.1,.4,2,100)) {
+    e <- tryCatch(mlsged(c(-2,-2,3,3),xi=xi,iterlim=1),error=identity)
+    expect_s3_class(e,'univariateML_limit')
+    expect_identical(e$model,'unif')
+    expect_equal(unname(e$estimates),c(-2,3))
+    expect_equal(e$limit_loglik,-4*log(5),tolerance=1e-12)
+  }
+})
+
+test_that("SGED asymmetric held skew and smooth free skew use global free-moment profiles", {
+  skip_if_not_installed('jsonlite')
+  root <- Sys.getenv('UMVL_DISTRIBUTIONS_DIR');if(!nzchar(root))root <- testthat::test_path('fixtures')
+  g <- jsonlite::fromJSON(file.path(root,'sged','golden.json'))
+  weighted <- mlsged(g$data,xi=1.4)
+  expect_equal(unname(weighted['nu']),3.12977540545,tolerance=2e-8)
+  expect_equal(as.numeric(logLik(weighted)),-649.7033316424115,tolerance=2e-9)
+  for (held in list(list(xi=1.4),list(nu=1.7),list(nu=4))) {
+    f <- do.call(mlsged,c(list(x=g$data),held))
+    expect_equal(as.numeric(logLik(f)),sum(dml(g$data,f,log=TRUE)),tolerance=2e-8)
+    expect_setequal(attr(f,'fixed'),names(held))
+    expect_error(do.call(mlsged,c(list(x=g$data,iterlim=1),held)),class='univariateML_stop')
+  }
+})
+test_that("SGED profile certificates preserve weighted median and reflected face ties", {
+  x <- c(-100,rep(-.01,3),rep(.01,15),100)
+  e <- tryCatch(mlsged(x,xi=2),error=identity)
+  expect_s3_class(e,'univariateML_tie')
+  expect_true(all(e$candidates$nu==1))
+  expect_true(all(e$candidates$xi==2))
+  expect_gte(length(unique(e$candidates$mean)),2)
+  for(p in c(1.1,1.7,4,20)) {
+    e <- tryCatch(mlsged(c(-1,1),nu=p),error=identity)
+    expect_s3_class(e,'univariateML_tie')
+    expect_setequal(e$candidates$model,c('unavailable:half-ged','unavailable:reflected-half-ged'))
+    expect_true(is.finite(e$loglik_upper))
+  }
 })

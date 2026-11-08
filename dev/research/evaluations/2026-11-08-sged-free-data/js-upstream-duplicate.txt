@@ -1,0 +1,28 @@
+# Subtest: binomial relatives retain unresolved finite and Poisson witnesses
+not ok 532 - binomial relatives retain unresolved finite and Poisson witnesses
+  ---
+  duration_ms: 24.150441
+  type: 'test'
+  location: '/home/jonas/Files/programming/univariateML.wt/sged-free/bindings/js/test.mjs:1186:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'limit'
+    - 'unresolved'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'unresolved'
+  actual: 'limit'
+  operator: 'strictEqual'
+  stack: |-
+    Object.<anonymous> (file:///home/jonas/Files/programming/univariateML.wt/sged-free/bindings/js/test.mjs:1196:14)
+    expectedException (node:assert:576:17)
+    expectsError (node:assert:701:21)
+    Function.throws (node:assert:757:3)
+    TestContext.<anonymous> (file:///home/jonas/Files/programming/univariateML.wt/sged-free/bindings/js/test.mjs:1195:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...

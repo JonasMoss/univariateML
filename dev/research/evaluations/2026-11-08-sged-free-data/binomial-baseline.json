@@ -1,0 +1,24 @@
+{
+  "base": "cfb7c4b37d13d1f23ca8ceb546333eb87290b1f6",
+  "source_sha256": {
+    "bindings/common/distributions/ztbinom/fit.hpp": "3d607d61adbd6e25ba205179c2e3a9c10b91e8998c5d4efbae48a5006d812b3f",
+    "univariateML-cpp/include/cppunivariate/distributions/ztbinom/mle.hpp": "14f0b9d72da01e613bce4bb9cc9ee82825c0daba244d8adb4c4730a6999ac49e",
+    "bindings/common/distributions/zmbinom/fit.hpp": "b2289c7a10fa75abfb2a5214874c32025b119c6b00186739d557b5777a1552c5",
+    "univariateML-cpp/include/cppunivariate/distributions/zmbinom/mle.hpp": "0d3313ba4be3c238870a6b370f4b00708cfebf1e231d83b6b4f370ac5c7471d8",
+    "bindings/common/distributions/zib/fit.hpp": "0a1bb7c576863b77937d681dfa26d5d9ff165f01992c0d66777f84f1fdf27079",
+    "univariateML-cpp/include/cppunivariate/distributions/zib/mle.hpp": "940f933cec05ec501ee9b0ff2afff6c53cc1386edf2dca4bd940188048e8044c",
+    "bindings/common/distributions/tbinom/fit.hpp": "586dbfedc85a87d236d55d15ac133c0574f9d3f3f7e3c4943c2d4fbd9663446d",
+    "univariateML-cpp/include/cppunivariate/distributions/tbinom/mle.hpp": "78504880e1dac0a5675b2f9539dfe2e127e52e38f5f2315ef7c3c048da641c2c"
+  },
+  "protected_sources_equal_head": true,
+  "no_sged_header_dependency": true,
+  "native_and_wasm_cases": 4,
+  "expected_models": {
+    "ztbinom": "ztpois",
+    "zmbinom": "zmpois",
+    "zib": "zip",
+    "tbinom": "tpois"
+  },
+  "proposed_patch_applied": false,
+  "maintainer_instruction": "Leave the stale shared JS duplicate unchanged; it has been removed on master and disappears at merge."
+}

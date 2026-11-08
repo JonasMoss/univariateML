@@ -1,0 +1,55 @@
+SIMBOX
+c++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
+db192525cb599b31668a38fbe696e3b59ca2612d82f989b58397b4adb44d9f48  univariateML-cpp/include/cppunivariate/distributions/sged/mle.hpp
+ff350e8630ed2e8a5d656db8f24ae60b59b6631adc835d11a59235d43740c79c  univariateML-cpp/include/cppunivariate/distributions/sged/free_shape_certificate.hpp
+14d7d74dab0911e8b7ab7bf572469cb1642f587ef6b925665d1804db09438aba  univariateML-cpp/include/cppunivariate/distributions/sged/profile_bounds.hpp
+6ed62166446001e4edadfd98655832e62a6a9d00c82ffa8b7f3f9429fe22aea1  univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp
+d36bbdaef34973935d3a7be393711790ce8637e3db9dd7e5885b3f9d94158098  univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp
+16034f3f0c2f56e22ea6568251a7a3d1090d4af8cd3edaf8b5e5883abd07681f  univariateML-cpp/include/cppunivariate/distributions/sged/test.cpp
+b9b86bc85d41c7c353cea278bc6dc586b602be5b6a6695c7724e16035f801ab5  univariateML-cpp/include/cppunivariate/distributions/sged/README.md
+f0ea8326dcbb9ebc697d8c355b90f922a6f2871099353f8780330ecccc58f332  univariateML-cpp/include/cppunivariate/distributions/sged/golden.json
+e34bfff6e9a9a59959966987306c5a791bd8c058345d720288e9366f7a985935  bindings/common/distributions/sged/fit.hpp
+b45c488ad08786fdd790f1b7c3571bf550fa26870feb73ef14cd0f4899805f6c  bindings/r/distributions/sged/test.R
+100% tests passed out of 106
+Total Test time (real) = 111.51 sec
+100% tests passed out of 129
+Total Test time (real) = 184.60 sec
+100% tests passed out of 129
+Total Test time (real) = 172.23 sec
+Duration: 82.2 s
+[ FAIL 0 | WARN 0 | SKIP 154 | PASS 21902 ]
+Duration: 306.1 s
+[ FAIL 0 | WARN 0 | SKIP 0 | PASS 44731 ]
+WORKSTATION
+c++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0
+db192525cb599b31668a38fbe696e3b59ca2612d82f989b58397b4adb44d9f48  univariateML-cpp/include/cppunivariate/distributions/sged/mle.hpp
+ff350e8630ed2e8a5d656db8f24ae60b59b6631adc835d11a59235d43740c79c  univariateML-cpp/include/cppunivariate/distributions/sged/free_shape_certificate.hpp
+14d7d74dab0911e8b7ab7bf572469cb1642f587ef6b925665d1804db09438aba  univariateML-cpp/include/cppunivariate/distributions/sged/profile_bounds.hpp
+6ed62166446001e4edadfd98655832e62a6a9d00c82ffa8b7f3f9429fe22aea1  univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp
+d36bbdaef34973935d3a7be393711790ce8637e3db9dd7e5885b3f9d94158098  univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp
+16034f3f0c2f56e22ea6568251a7a3d1090d4af8cd3edaf8b5e5883abd07681f  univariateML-cpp/include/cppunivariate/distributions/sged/test.cpp
+b9b86bc85d41c7c353cea278bc6dc586b602be5b6a6695c7724e16035f801ab5  univariateML-cpp/include/cppunivariate/distributions/sged/README.md
+f0ea8326dcbb9ebc697d8c355b90f922a6f2871099353f8780330ecccc58f332  univariateML-cpp/include/cppunivariate/distributions/sged/golden.json
+e34bfff6e9a9a59959966987306c5a791bd8c058345d720288e9366f7a985935  bindings/common/distributions/sged/fit.hpp
+b45c488ad08786fdd790f1b7c3571bf550fa26870feb73ef14cd0f4899805f6c  bindings/r/distributions/sged/test.R
+d2f85dbf9a8a0eca80b1bbf23cbcf355db95805d3786b6e08cb3696ecd3d4d0a  bindings/js/test.mjs
+100% tests passed, 0 tests failed out of 129
+Total Test time (real) = 256.39 sec
+# tests 540
+# pass 539
+# fail 1
+# duration_ms 165601.546357
+KNOWN upstream stale duplicate only; maintainer instructed leaving it unchanged for merge.
+PASS inference browser: {"rows":353,"families":99,"desktop":[1280,1100],"mobile":[390,1000],"checks":["covariance and combined filters with follow-up evidence","all status filters","combined family/status/regime filters","empty state","reset","native evidence disclosure","no horizontal overflow","all rows and evidence without JavaScript","no page errors"]}
+PASS theory numerical: 5 static/live profiles, 4 escape messages and limit approaches, analytic normal held fits, static/live contours, parser and failed-fit gaps.
+PASS nice linear/log ticks; Gompertz free/held fits, conditional escape, fixed-rate boundary, static/live equality and build-time MathML.
+PASS likelihood windows: 15-unit clipping, low-marker expansion, constant likelihoods, marker clearance, finite SVG coordinates.
+PASS theory browser: desktop/mobile, live profiles and held faces, seeded data, errors, no-JS figures and diagnostics.
+PASS: four articles; dossier catalogues: 288 limits, 99 families, 9 fit domains.
+PASS: inference: 353 unique scopes, 99 families; implementation symbols, evidence anchors, calibration and checks resolve; full static table.
+PASS: graph: 99 unique nodes, 278 edges, resolving family links; SVG generated twice byte-identically and matches built HTML.
+PASS: explorer coverage matches binding registry; optional build assets agree.
+PASS: every declared and inverted relation and limit link is rendered and resolves.
+PASS: 99 family pages; MathML on every family; no math runtime or external runtime assets; internal links and fragments resolve.
+PASS: 99 generated C++ snippets compile and link as C++17 (including exp, gamma, gb2).
+PASS: pilot and ten additional HTML spot checks: exp, gamma, gb2, binom, beta, hyper, sstd, gev, gpd, tnorm, pois, unif, pareto
