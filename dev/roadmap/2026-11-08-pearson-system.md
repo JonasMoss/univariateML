@@ -59,6 +59,9 @@ and the joint parameter space.
 * Which subsets have attained maxima once thresholds are free, and whether
   spacings or a structured unbounded stop is the right contract.
 
+Literature on type IV (ML, computation, software, the type V boundary):
+[TASK-160 literature check](../research/evaluations/2026-11-08-pearson4-lit-report.md).
+
 ## Trigger to revisit
 
 After the [quantile-defined families](2026-11-08-quantile-defined-families.md),
