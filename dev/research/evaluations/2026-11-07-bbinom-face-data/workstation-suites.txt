@@ -1,0 +1,69 @@
+==> build/scratch/cpp-dev.log <==
+104/106 Test #129: diagnostics_tests ................   Passed    3.41 sec
+105/106 Test #104: distribution_trgamma .............   Passed   13.99 sec
+106/106 Test  #97: distribution_std .................   Passed   30.83 sec
+
+100% tests passed, 0 tests failed out of 106
+
+Label Time Summary:
+cran    = 467.64 sec*proc (105 tests)
+dev     = 471.04 sec*proc (106 tests)
+full    = 471.04 sec*proc (106 tests)
+
+Total Test time (real) = 126.57 sec
+
+==> build/scratch/local-no-long-double-final.log <==
+127/129 Test #126: no_throw_tests ...................   Passed    0.00 sec
+128/129 Test  #78: distribution_paralogis_slow ......   Passed    0.02 sec
+129/129 Test #101: distribution_tlambda_slow ........   Passed  250.61 sec
+
+100% tests passed, 0 tests failed out of 129
+
+Label Time Summary:
+cran    = 381.09 sec*proc (105 tests)
+dev     = 384.36 sec*proc (106 tests)
+full    = 768.83 sec*proc (129 tests)
+
+Total Test time (real) = 250.61 sec
+
+==> build/scratch/local-no-long-double-bbinom-final.log <==
+Test project /home/jonas/Files/programming/univariateML.wt/bbinom-face/build/cpp-no-long-double
+    Start 3: distribution_bbinom
+1/1 Test #3: distribution_bbinom ..............   Passed    0.39 sec
+
+100% tests passed, 0 tests failed out of 1
+
+Label Time Summary:
+cran    =   0.39 sec*proc (1 test)
+dev     =   0.39 sec*proc (1 test)
+full    =   0.39 sec*proc (1 test)
+
+Total Test time (real) =   0.39 sec
+
+==> build/scratch/local-js-test.log <==
+  duration_ms: 20.200766
+  type: 'test'
+  ...
+1..495
+# tests 495
+# suites 0
+# pass 495
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 155150.254173
+
+==> build/scratch/local-site-check.log <==
+Environment: Python 3.14.5, SymPy 1.14.0; g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0
+Boost headers: /home/jonas/R/x86_64-pc-linux-gnu-library/4.5/BH/include
+PASS: 99 generated C++ snippets compile and link as C++17 (including exp, gamma, gb2).
+PASS: pilot and ten additional HTML spot checks: exp, gamma, gb2, binom, beta, hyper, sstd, gev, gpd, tnorm, pois, unif, pareto
+Log-density fallback: cmb, cmp, dweibull, gev, gpd, huber, sged, snorm, sstd, st, tbinom, tpois, triang, zib, zinb, zip, zipf, zmbinom, zmgeom, zmlogarithmic, zmnbinom, zmpois
+WEIGHT exp: HTML 25427 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+WEIGHT gamma: HTML 29650 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+WEIGHT gb2: HTML 51508 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+WEIGHT binom: HTML 41340 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+WEIGHT hyper: HTML 40161 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+WEIGHT sstd: HTML 134468 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+Total dist: 22154755 B

@@ -1,0 +1,25 @@
+{
+  "search_budget": 5,
+  "queries": [
+    "beta binomial maximum likelihood existence necessary sufficient Tarone 1979 overdispersion",
+    "beta binomial likelihood multiple maxima underdispersion maximum likelihood existence",
+    "\"beta binomial\" \"likelihood\" \"unique\" Griffiths 1973",
+    "\"beta binomial\" \"existence\" \"maximum\" likelihood shapes",
+    "\"Maximum Likelihood Estimation of the Parameters of the Beta Binomial Distribution\" 1983 abstract"
+  ],
+  "records": [
+    {
+      "citation": "Tarone, R. E. (1979), Testing the goodness of fit of the binomial distribution, Biometrika 66(3), 585-590",
+      "url": "https://doi.org/10.1093/biomet/66.3.585",
+      "access": "Publisher abstract exposed by search; full publisher open failed",
+      "use": "Background on local binomial-variance score tests against beta-binomial alternatives; not a global MLE existence theorem"
+    },
+    {
+      "citation": "Smith, D. M. (1983), Maximum Likelihood Estimation of the Parameters of the Beta Binomial Distribution, JRSS C 32(2), 196-204",
+      "url": "https://doi.org/10.2307/2347299",
+      "access": "Bibliographic identity from publisher search and RePEc metadata; full publisher open failed; no abstract available from RePEc",
+      "use": "Relevant lead only; no mathematical claim imported"
+    }
+  ],
+  "conclusion": "No verified necessary-and-sufficient global existence condition was obtained within this search budget. The implemented inequalities are derived directly from the likelihood, independently of these references. This is not a claim that the literature has no such theorem."
+}

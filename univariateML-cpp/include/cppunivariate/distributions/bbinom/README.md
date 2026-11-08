@@ -102,7 +102,7 @@ relations:
 fit:
   method: profile-search
   certified: partial
-  note: "bbinom/mle.hpp, bbinom_mle and bbinom_detail::certify: Fixed-size free-shape profiles use tangent/chord bounds, including the binomial face, with a 1e-8 per-observation face preference; this numerical preference is not an exact nonexistence test. Supported free-size fits use integer tail bounds, including free alpha with beta held; unresolved profile ties and budgets stop. Other free-size profiles remain unsupported."
+  note: "bbinom/mle.hpp, bbinom_detail::face_neighbourhood and certify: Fixed-size binomial-limit stops require a signed uniform near-face bound and strict tangent/chord exclusion elsewhere; uncertain comparisons stop with witnesses. At size two an overdispersed empirical table attains the saturated multinomial bound exactly. Other finite and held-shape profiles retain a 1e-8 per-observation global likelihood allowance, which does not certify coefficient accuracy or uniqueness. Supported free-size fits use integer tail bounds; unresolved profiles and budgets stop. The unrestricted free-size fit is unsupported. See Details, Signed binomial-face certificate."
 areas:
 - counts and ecology
 classification: specialist
@@ -114,7 +114,7 @@ key_references:
 existence:
   uniqueness: unknown
   statement: >-
-    Take $n$ known and both shapes free. If every count is 0 or $n$, no MLE
+    Take $n \ge 2$ known and both shapes free. If every count is 0 or $n$, no MLE
     exists: the likelihood is maximised in the limit by a two-point law on 0
     and $n$ when both values occur, and by a point mass when only one does.
     Otherwise the only possible escape is to the binomial, and an MLE exists
@@ -124,7 +124,8 @@ existence:
     observations as divisor, is sufficient. For $n = 2$ it is also necessary;
     for $n \ge 3$ that is a conjecture. Holding one shape leaves only the
     point-mass case. With $n = 1$ the shapes are not identified, because the
-    model is a Bernoulli distribution. With beta held and size free,
+    model is a Bernoulli distribution. At $n=0$ both shapes are also
+    unidentified. With beta held and size free,
     constant positive data have only a point-mass supremum; all-zero data
     attain likelihood one at size zero with alpha unidentified. For other
     samples a finite maximum exists, though the numerical search may stop
@@ -145,11 +146,59 @@ The beta-binomial distribution is a binomial distribution whose success probabil
 
 ## Details
 
-The limit and sample conditions are supported by the [existence analysis](../../../../../dev/research/evaluations/2026-10-31-open-existence-report.md); numerical face searches do not certify global optimality.
-
-The number of trials $n$ is normally known. The fit with both shapes free does not test for overdispersion; it compares the best interior fit with the binomial likelihood, within $10^{-8}$ per observation. Evidence for the existence results: `dev/research/evaluations/2026-10-31-open-existence-report.md`.
+The limit and sample conditions are supported by the [existence analysis](../../../../../dev/research/evaluations/2026-10-31-open-existence-report.md). The number of trials $n$ is normally known. A binomial-limit declaration requires the signed certificate below; a small finite likelihood gain is never discarded in favour of that limit.
 
 With both shapes held it can also be estimated: each observed probability decreases in $n$ once $n + 1 \ge x(\alpha + \beta - 1)/\alpha$, so a finite search over $n$ finds the maximum. The search shares the enumeration-cell budget across candidate likelihoods. With $n$ also held, the likelihood is simply evaluated. Estimating $n$ with $\alpha$ held uses a negative-binomial face and a uniform tail bound; with both shapes free it remains unsupported. Holding $\beta$ is not equivalent to holding $\alpha$ after reflecting the counts, because the reflection $x \mapsto n - x$ depends on the unknown $n$.
+
+## Signed binomial-face certificate
+
+Write $h$ for the number of observations, $N$ for the known size,
+$S=\sum x_i$, $Q=\sum x_i^2$, and $p_0=S/(hN)$. For a sample with
+an interior count the only escape is $s=0$. With the rising-factorial
+numerator denoted by $V(p,s)$ and the denominator by
+$D(s)=h\sum_j\log(1+js)$, $V$ is jointly concave. Its tangent at
+$(p_0,0)$ has zero $p$ slope. Since $-D''(s)\le B=h\sum_j j^2$,
+this gives the bound, uniform over every $0<p<1$,
+
+$$
+L(s)-L(0)\le g_0s+\tfrac12 Bs^2,\qquad
+ g_0=\frac{NhQ-(N-1)S^2-NhS}{2hNp_0(1-p_0)}.
+$$
+
+If $g_0<0$, the interval $0<s\le -g_0/B$ is strictly below the face.
+The score numerator is evaluated with extended intermediates and a
+$64\epsilon$ absolute-sum margin. An exactly zero numerator is used only
+when the integer products and their sum fit the intermediate mantissa.
+For a zero score, or to enlarge a small negative-score strip, the solver
+brackets every profiled mean in a rectangle by
+uniform signs of the mean score. Rational endpoint bounds on that rectangle
+bound $L''=\ell_{ss}+\ell_{ps}^2/(-\ell_{pp})$. A strictly negative bound
+proves that its positive-$s$ portion also lies below the face whenever
+$g_0\le0$. The curvature
+and score comparisons include a $1024\epsilon$ scale margin. If neither
+argument closes a neighbourhood, the comparison remains unresolved.
+
+Outside that neighbourhood, the tangent/chord upper bounds must be strictly
+below the face, including their rounding margin. The tail beyond
+$hH_{N-1}/\#\{0<x_i<N\}$ has negative dispersion score for every mean.
+Together these bounds prove nonattainment at finite shapes, conditional on
+computed comparisons. They use practical floating-point margins rather than
+outward rounding. A negative boundary score by itself is not treated as a
+global criterion.
+
+For $N=2$, an overdispersed empirical table is itself a beta-binomial law,
+so its shapes are obtained algebraically and its likelihood attains the
+saturated multinomial upper bound. For $N>2$, finite candidates must beat
+the face by a $1024\epsilon$
+likelihood-scale margin. Their global tangent/chord check retains the
+$10^{-8}h$ likelihood allowance; this is not a proof of coefficient accuracy
+or uniqueness. For example, at $N=2$, frequencies $(25001,50000,25001)$
+have the exact finite fit $\alpha=\beta=25000$, although its improvement is
+below the former face preference. At $N=1$ every pair with the same shape
+ratio gives the same fitted Bernoulli law, providing a continuum of maxima.
+Other unresolved comparisons and exhausted certificates stop with their
+finite and face witnesses. Proof details and reproducible checks are in the
+[face report](../../../../../dev/research/evaluations/2026-11-07-bbinom-face-report.md).
 
 ## Free-size research: joint held-beta tail
 

@@ -24,7 +24,7 @@ inline FitResult fit_bbinom(cppunivariate::ispan x, Held size_arg = {}, Held alp
   if (beta.supplied && !(std::isfinite(b) && b > 0))
     return failure("`beta` must be a finite positive number.");
   const auto res = cppunivariate::bbinom_mle(x, N, reltol, iterlim, a, b);
-  if(res.stop_detail.budget_exhausted)return stop_failure(failure("Beta-binomial free-size search could not exclude the tail within its work budget. Raising iterlim may resolve this stop."),res.stop_detail,"budget",{"size","alpha","beta"});
+  if(res.stop_detail.budget_exhausted)return stop_failure(failure("Beta-binomial search exhausted its work budget before certifying the maximum. Raising iterlim may resolve this stop."),res.stop_detail,"budget",{"size","alpha","beta"});
   std::string stop_kind;
   switch(res.status) {
     case cppunivariate::BbinomStatus::BinomialLimit: stop_kind="limit";break;
@@ -34,6 +34,7 @@ inline FitResult fit_bbinom(cppunivariate::ispan x, Held size_arg = {}, Held alp
     case cppunivariate::BbinomStatus::SizeBudget: stop_kind="budget";break;
     case cppunivariate::BbinomStatus::ProfileTie: stop_kind="tie";break;
     case cppunivariate::BbinomStatus::FaceUnresolved: stop_kind="unresolved";break;
+    case cppunivariate::BbinomStatus::IterationFailure: stop_kind="numerical";break;
     default:break;
   }
   const auto stopped_fail = [&](const std::string& format, const auto&... arguments) {
@@ -49,8 +50,7 @@ inline FitResult fit_bbinom(cppunivariate::ispan x, Held size_arg = {}, Held alp
       return stopped_fail("`size` is smaller than `max(x)`.");
     case cppunivariate::BbinomStatus::BinomialLimit:
       return stopped_fail("The maximum likelihood estimator does not exist: the likelihood increases "
-                 "toward the binomial distribution as `alpha + beta` grows (the data are not "
-                 "overdispersed enough). Use `mlbinom(x, size = " + n_txt + ")` instead.");
+                 "toward the binomial distribution as `alpha + beta` grows. Use `mlbinom(x, size = " + n_txt + ")` instead.");
     case cppunivariate::BbinomStatus::TwoPointLimit:
       return stopped_fail("The maximum likelihood estimator does not exist: every observation is 0 or "
                  "`size`, and the likelihood increases toward the two-point distribution on "
@@ -72,11 +72,11 @@ inline FitResult fit_bbinom(cppunivariate::ispan x, Held size_arg = {}, Held alp
       return stopped_fail("Beta-binomial fitting needs nonempty nonnegative counts, positive "
                  "`reltol` and positive `iterlim`.");
     case cppunivariate::BbinomStatus::SizeBudget:
-      return stopped_fail("Beta-binomial free-size search could not exclude the tail within its work budget. Raising iterlim may resolve this stop.");
+      return stopped_fail("Beta-binomial search exhausted its work budget before certifying the maximum. Raising iterlim may resolve this stop.");
     case cppunivariate::BbinomStatus::ProfileTie:
-      return stopped_fail("Beta-binomial free-size profiles have an unresolved numerical tie.");
+      return stopped_fail(size.supplied ? "Beta-binomial finite and binomial-face likelihoods have an unresolved numerical tie." : "Beta-binomial free-size profiles have an unresolved numerical tie.");
     case cppunivariate::BbinomStatus::FaceUnresolved:
-      return stopped_fail("Beta-binomial free-size search cannot resolve the negative binomial face against larger finite sizes.");
+      return stopped_fail(size.supplied ? "Beta-binomial fixed-size search cannot resolve the binomial face against finite shapes within numerical precision or the work budget." : "Beta-binomial free-size search cannot resolve the negative binomial face against larger finite sizes.");
     default:
       return stopped_fail("Beta-binomial MLE failed.");
   }

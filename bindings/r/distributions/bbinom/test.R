@@ -143,3 +143,33 @@ test_that("held alpha free-size certificates and stopping outcomes", {
   expect_error(mlbbinom(c(0,1001),size=NULL,alpha=1), "work budget")
   expect_error(mlbbinom(c(0,0,0,10),size=NULL,alpha=1), "cannot resolve the negative binomial face")
 })
+
+test_that("signed zero-score face and small finite gains are distinguished", {
+  expect_error(mlbbinom(c(0,1,1,2),size=2), "Use `mlbinom")
+  x <- c(rep(0L,25001),rep(1L,50000),rep(2L,25001))
+  f <- mlbbinom(x,size=2)
+  expect_equal(unname(f[c("alpha","beta")]),c(25000,25000),tolerance=1e-7)
+})
+
+test_that("binomial certificate exposes its face witness", {
+  e <- tryCatch(mlbbinom(c(0,1,1,2),size=2),error=identity)
+  expect_s3_class(e,"univariateML_limit")
+  expect_equal(e$model,"binom")
+  expect_equal(unname(e$estimates),c(2,.5))
+  expect_true(nrow(e$candidates)>=1)
+})
+
+test_that("general-size profiles retain finite gains below the old preference", {
+  x <- rep(0:3,c(12501,37499,37499,12501))
+  f <- mlbbinom(x,size=3)
+  expect_equal(unname(f[c("alpha","beta")]),c(18749.5,18749.5),tolerance=1e-6)
+})
+
+test_that("curvature closes near-zero negative face comparisons", {
+  x <- rep(0:3,c(1000,3001,2999,1000))
+  e <- tryCatch(mlbbinom(x,size=3),error=identity)
+  expect_s3_class(e,"univariateML_limit")
+  expect_equal(e$kind,"limit")
+  expect_true(all(is.finite(e$candidates$loglik_lower)))
+  expect_true(all(is.finite(e$candidates$size)))
+})
