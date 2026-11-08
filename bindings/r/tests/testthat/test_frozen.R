@@ -60,9 +60,9 @@ test_that("frozen models use domains and reject incompatible held data", {
 })
 
 
-test_that("fixed models reject infinite medians and nonfinite likelihood sums", {
-  expect_error(mlgeom(prob=.Machine$double.xmin*.Machine$double.eps),
-               "median quantile evaluation failed",class="univariateML_evaluation_error")
+test_that("fixed models accept overflowing medians and reject nonfinite likelihood sums", {
+  tiny <- mlgeom(prob=.Machine$double.xmin*.Machine$double.eps)
+  expect_identical(qml(.5, tiny), Inf)
   expect_error(mlnorm(rep(1e154,4),mean=0,sd=1),
                "nonfinite log likelihood for held coefficients")
 })
