@@ -467,25 +467,12 @@ TEST_CASE("huber: finite stationary witness indistinguishable from the normal fa
   CHECK(interior);
 }
 
-TEST_CASE("huber: unavailable Gaussian arithmetic retains proper numerical witnesses") {
-  for(double scale:{1e-300,1e300}) {
+TEST_CASE("huber: Gaussian face preserves extreme residual scales") {
+  for(double scale:{1e-300,1e-200,1e200,1e300}) {
     const std::vector<double> x{-scale,scale};
     const auto r=cppunivariate::huber_mle(mltest::as_span(x),1e-10,200,NAN);
-#if defined(BOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS) || LDBL_MANT_DIG <= DBL_MANT_DIG
-    REQUIRE(r.status==cppunivariate::HuberStatus::IterationFailure);
-    CHECK_FALSE(r.stop_detail.comparison_tie);
-    CHECK_FALSE(r.stop_detail.budget_exhausted);
-    CHECK(std::isfinite(r.stop_detail.loglik_lower));
-    CHECK(r.stop_detail.loglik_upper==INFINITY);
-    REQUIRE_FALSE(r.stop_detail.candidates.empty());
-    for(const auto& p:r.stop_detail.candidates) {
-      CHECK(cppunivariate::valid_stop_coefficients(p.model,p.coef));
-      CHECK(std::isfinite(p.loglik_lower));CHECK(std::isfinite(p.loglik_upper));
-    }
-#else
     REQUIRE(r.status==cppunivariate::HuberStatus::NormalLimit);
     CHECK(r.stop_detail.limit_coef[1]/scale==doctest::Approx(1).epsilon(1e-10));
-#endif
   }
 }
 

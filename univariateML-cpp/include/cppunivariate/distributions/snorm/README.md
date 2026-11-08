@@ -280,3 +280,5 @@ is free or held at $x$.
 This is the two-piece normal family. `mlsn` fits the Azzalini skew-normal family. Any subset of `mean`, `sd`, and `xi` can be held. Evaluation uses the fGarch mean and standard deviation parameterization.
 
 Use `mlhnorm(x, mu = NULL)` for the right half-normal boundary. For the left boundary, fit `mlhnorm(-x, mu = NULL)` and reflect the resulting distribution back to the original axis.
+
+The free-profile conversion to standard deviation forms the side-scale variance in normalized coordinates before restoring the physical scale.

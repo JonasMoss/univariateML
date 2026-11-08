@@ -50,22 +50,11 @@ inline LognormalResult lognormal_mle(span x,double meanlog,double sdlog) {
      (!std::isnan(sdlog) && !(sdlog>0 && std::isfinite(sdlog))))return {nan,nan,nan,LognormalStatus::InvalidInput};
   std::vector<double> y;double jac=0;
   for(double v:x){if(!(v>0 && std::isfinite(v)))return {nan,nan,nan,LognormalStatus::InvalidInput}; y.push_back(std::log(v));jac-=std::log(v);}
-  const double n=static_cast<double>(x.size());
-  if(std::isnan(meanlog))meanlog=norm_detail::moments(span{y.data(),y.size()}).mean;
-  CPPUNIV_EXTENDED_REAL ss=0;for(double v:y){const CPPUNIV_EXTENDED_REAL d=static_cast<CPPUNIV_EXTENDED_REAL>(v)-meanlog;ss+=d*d;}
-  if (!std::isfinite(ss)) {
-    // Scale residuals before squaring; the normalized sum is at most n.
-    double big=0; for (double v:y) big=std::max(big,std::abs(v-meanlog));
-    double scaled=0; for (double v:y) { const double d=(v-meanlog)/big; scaled+=d*d; }
-    if (std::isnan(sdlog)) sdlog=big*std::sqrt(scaled/n);
-    if (!(sdlog>0 && std::isfinite(sdlog))) return {meanlog,sdlog,nan,LognormalStatus::IterationFailure};
-    const double ratio=big/sdlog;
-    return {meanlog,sdlog,jac-n*(std::log(sdlog)+0.5*std::log(2*cppunivariate::pi))-0.5*scaled*ratio*ratio};
-  }
-  if(std::isnan(sdlog))sdlog=static_cast<double>(std::sqrt(ss/n));
-  if(!(sdlog>0))return {meanlog,sdlog,nan,LognormalStatus::Unbounded};
-  const double ll=static_cast<double>(jac-n*(std::log(sdlog)+0.5*std::log(2*cppunivariate::pi))-ss/(2*static_cast<CPPUNIV_EXTENDED_REAL>(sdlog)*sdlog));
-  return {meanlog,sdlog,ll,std::isfinite(ll) ? LognormalStatus::Ok : LognormalStatus::IterationFailure};
+  const auto r=norm_mle(span{y.data(),y.size()},meanlog,sdlog);
+  const LognormalStatus status = r.status == NormStatus::Ok ? LognormalStatus::Ok :
+    r.status == NormStatus::Unbounded ? LognormalStatus::Unbounded :
+    r.status == NormStatus::InvalidInput ? LognormalStatus::InvalidInput : LognormalStatus::IterationFailure;
+  return {r.mean,r.sd,r.logLik+jac,status};
 }
 
 }  // namespace cppunivariate

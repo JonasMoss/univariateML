@@ -112,3 +112,13 @@ TEST_CASE("hnorm held-scale likelihood matches previous adapter arithmetic") {
     CHECK(r.logLik==ll);
   }
 }
+
+TEST_CASE("hnorm scaled residuals: normal scale at extreme units") {
+  for(double unit:{1e-200,1e200}) {
+    const std::vector<double> x={unit,2*unit};
+    const auto r=cppunivariate::hnorm_mle(mltest::as_span(x),0);
+    REQUIRE(r.status==cppunivariate::HnormStatus::Ok);
+    CHECK(r.sigma/unit==doctest::Approx(std::sqrt(2.5)).epsilon(1e-12));
+    CHECK(std::isfinite(r.logLik));
+  }
+}

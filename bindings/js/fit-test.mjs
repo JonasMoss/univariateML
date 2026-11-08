@@ -77,3 +77,52 @@ test('Feller Pareto held-endpoint power face keeps its model identity',()=>{
  assert.equal(r.kind,'limit');assert.equal(r.model,'power');
  assert.equal(r.estimates.alpha,1);assert.ok(r.estimates.beta>0);
 });
+
+test('scaled normal residuals preserve extreme units in every held subset',()=>{
+ for(const unit of [1e-200,1e200]) for(let mask=0;mask<4;mask++) {
+  const held={};if(mask&1)held.mean=0;if(mask&2)held.sd=unit;
+  const mean=mask&1?0:1.5,sd=mask&2?1:mask&1?Math.sqrt(2.5):.5;
+  const ll=-2*(Math.log(unit)+Math.log(sd)+.5*Math.log(2*Math.PI))-((1-mean)**2+(2-mean)**2)/(2*sd*sd);
+  for(const [family,extra] of [['norm',{}],['tnorm',{a:-Infinity,b:Infinity}]]) {
+   const r=m['fit'+family](new Float64Array([unit,2*unit]),{...held,...extra},{});
+   assert.equal(r.error,undefined,r.error);assert.equal(r.status,'Ok');
+   assert.ok(Math.abs(r.estimates.mean/unit-mean)<1e-13);
+   assert.ok(Math.abs(r.estimates.sd/unit-sd)<1e-13);
+   assert.ok(Math.abs(r.logLik-ll)<1e-10);
+  }
+ }
+ const collapsed=m.fitnorm(new Float64Array([0,0]),{mean:0},{});
+ assert.ok(collapsed.error);
+ assert.equal(m.fitnorm(new Float64Array([0,0]),{mean:0,sd:1e-200},{}).status,'Ok');
+});
+
+test('transformed normal and normalized scale families preserve extreme units',()=>{
+ for(const unit of [1e-200,1e200]) {
+  for(const [family,data,location,scale,jac] of [['lnorm',[1,1],'meanlog','sdlog',0],['logitnorm',[.5,.5],'mu','sigma',2*Math.log(4)]]) for(const held of [false,true]) {
+   const args={[location]:unit};if(held)args[scale]=unit;
+   const r=m['fit'+family](new Float64Array(data),args,{});
+   assert.equal(r.error,undefined,r.error);assert.equal(r.status,'Ok');
+   assert.ok(Math.abs(r.estimates[scale]/unit-1)<1e-13);
+   assert.ok(Math.abs(r.logLik-(-2*(Math.log(unit)+.5*Math.log(2*Math.PI)+.5)+jac))<1e-10);
+  }
+  for(const [family,held] of [['hnorm',{mu:0}],['foldnorm',{mu:0}],['bhatt',{mu:0,a:0}]]) {
+   const r=m['fit'+family](new Float64Array([unit,2*unit]),held,{});
+   assert.equal(r.error,undefined,r.error);assert.equal(r.status,'Ok');
+   assert.ok(Math.abs(r.estimates.sigma/unit-Math.sqrt(2.5))<1e-12);
+   assert.ok(Number.isFinite(r.logLik));
+  }
+  const r=m.fitsnorm(new Float64Array([-1,...Array(10).fill(0),1].map(v=>v*unit)),{},{});
+  assert.equal(r.error,undefined,r.error);assert.equal(r.status,'Ok');
+  assert.ok(Math.abs(r.estimates.sd/unit-Math.sqrt(1/6))<1e-12);
+ }
+});
+
+test('Gaussian face witnesses retain extreme residual scales',()=>{
+ for(const unit of [1e-200,1e200]) for(const [family,data,held,sd] of [
+  ['huber',[-unit,unit],{},1],['emg',[-unit,-2*unit],{mu:0},Math.sqrt(2.5)]]) {
+  const r=m['fit'+family](new Float64Array(data),held,{});
+  assert.equal(r.kind,'limit',JSON.stringify(r));assert.equal(r.model,'norm');
+  assert.ok(Number.isFinite(r.limit_loglik));
+  assert.ok(Math.abs(r.estimates.sd/unit-sd)<1e-12);
+ }
+});

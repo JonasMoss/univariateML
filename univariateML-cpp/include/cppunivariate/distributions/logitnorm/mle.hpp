@@ -41,24 +41,13 @@ inline LogitnormResult logitnorm_mle(span x,
     y[i] = std::log(v / (1.0 - v));
     sum_log_jac += std::log(v * (1.0 - v));
   }
-  const auto r = norm_mle(span{y.data(), n});
-  if (std::isnan(mu) && std::isnan(sigma))
-    return {r.mean, r.sd, r.logLik - sum_log_jac,
-      r.status == NormStatus::Ok ? LogitnormStatus::Ok :
-      r.status == NormStatus::Unbounded ? LogitnormStatus::Unbounded :
-      r.status == NormStatus::InvalidInput ? LogitnormStatus::InvalidInput : LogitnormStatus::IterationFailure};
-  if (std::isnan(mu)) mu = r.mean;
-  CPPUNIV_EXTENDED_REAL ss = 0;
-  for (double z : y) {
-    const CPPUNIV_EXTENDED_REAL d = static_cast<CPPUNIV_EXTENDED_REAL>(z) - mu;
-    ss += d*d;
-  }
-  if (std::isnan(sigma)) sigma = std::sqrt(ss / n);
-  if (!std::isfinite(mu) || !(sigma > 0) || !std::isfinite(sigma))
-    return {kNaN,kNaN,kNaN,sigma == 0 ? LogitnormStatus::Unbounded : LogitnormStatus::IterationFailure};
-  const double ll = -static_cast<double>(n) * (std::log(sigma) + .5*std::log(2*cppunivariate::pi)) -
-                    CPPUNIV_EXTENDED_LITERAL(.5,.5L)*ss/(static_cast<CPPUNIV_EXTENDED_REAL>(sigma)*sigma) - sum_log_jac;
-  return {mu,sigma,ll,std::isfinite(ll) ? LogitnormStatus::Ok : LogitnormStatus::IterationFailure};
+  const auto r = norm_mle(span{y.data(), n},mu,sigma);
+  if(r.status==NormStatus::Unbounded && (!std::isnan(mu) || !std::isnan(sigma)))
+    return {kNaN,kNaN,kNaN,LogitnormStatus::Unbounded};
+  return {r.mean, r.sd, r.logLik - sum_log_jac,
+    r.status == NormStatus::Ok ? LogitnormStatus::Ok :
+    r.status == NormStatus::Unbounded ? LogitnormStatus::Unbounded :
+    r.status == NormStatus::InvalidInput ? LogitnormStatus::InvalidInput : LogitnormStatus::IterationFailure};
 }
 
 }  // namespace cppunivariate

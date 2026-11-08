@@ -175,10 +175,10 @@ inline SnormResult snorm_mle(span x, double /*tol*/, int maxit,
   }
   // For the two-piece normal: E[X]=c+m1*(b-a),
   // Var[X]=a*a-a*b+b*b-m1*m1*(b-a)^2, xi=sqrt(b/a).
-  const CPPUNIV_EXTENDED_REAL factor=scale*std::sqrt(best/n), a=ca*factor, b=cb*factor;
+  const CPPUNIV_EXTENDED_REAL factor=std::sqrt(best/n), a=ca*factor, b=cb*factor;
   const CPPUNIV_EXTENDED_REAL m1=std::sqrt(CPPUNIV_EXTENDED_LITERAL(2.0,2.0L)/cppunivariate::pi);
-  const double mu=static_cast<double>(origin+scale*mode+m1*(b-a));
-  const double sigma=static_cast<double>(std::sqrt(a*a-a*b+b*b-m1*m1*(b-a)*(b-a)));
+  const double mu=static_cast<double>(origin+scale*(mode+m1*(b-a)));
+  const double sigma=static_cast<double>(scale*std::sqrt(a*a-a*b+b*b-m1*m1*(b-a)*(b-a)));
   return {mu,sigma,static_cast<double>(std::sqrt(b/a)),ll,0,SnormStatus::Ok};
 }
 

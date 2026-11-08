@@ -137,7 +137,11 @@ inline BhattResult legacy_candidate(span x,double tol=1e-8,int maxit=500,double 
   if(!std::isnan(mu)&&!std::isfinite(mu))return bad;
   if(a==0) {
     const auto r=norm_mle(x,mu,sigma);
-    if(!(r.sd>0)){bad.status=BhattStatus::Unbounded;return bad;}
+    if(r.status!=NormStatus::Ok) {
+      bad.status=r.status==NormStatus::Unbounded ? BhattStatus::Unbounded :
+          r.status==NormStatus::InvalidInput ? BhattStatus::InvalidInput : BhattStatus::NumericalFailure;
+      return bad;
+    }
     return {r.mean,r.sd,0,r.logLik,0,BhattStatus::Ok};
   }
   std::vector<double> y(x.begin(),x.end());for(double v:y)if(!std::isfinite(v))return bad;std::sort(y.begin(),y.end());

@@ -110,11 +110,18 @@ inline double large_shape_upper(span x,double kmin,double threshold,int maxit=50
   if(!(zmax<kmin))return INFINITY;
   CPPUNIV_EXTENDED_REAL normal_mu=mu;
   if(std::isnan(mu)) {normal_mu=0;for(double v:x)normal_mu+=static_cast<CPPUNIV_EXTENDED_REAL>(v)/n;}
+  CPPUNIV_EXTENDED_REAL largest=0;
+  for(double v:x) largest=std::max(largest,std::abs(static_cast<CPPUNIV_EXTENDED_REAL>(v)-normal_mu));
+  if(!std::isfinite(largest))return INFINITY;
   CPPUNIV_EXTENDED_REAL square=0;
-  for(double v:x) {const CPPUNIV_EXTENDED_REAL d=static_cast<CPPUNIV_EXTENDED_REAL>(v)-normal_mu;square+=d*d/n;}
-  const CPPUNIV_EXTENDED_REAL sd=std::isnan(sigma)?std::sqrt(square):static_cast<CPPUNIV_EXTENDED_REAL>(sigma);
+  if(largest>0)for(double v:x) {
+    const CPPUNIV_EXTENDED_REAL z=(static_cast<CPPUNIV_EXTENDED_REAL>(v)-normal_mu)/largest;
+    square+=z*z/n;
+  }
+  const CPPUNIV_EXTENDED_REAL sd=std::isnan(sigma)?largest*std::sqrt(square):static_cast<CPPUNIV_EXTENDED_REAL>(sigma);
   if(!(sd>0&&std::isfinite(sd)))return INFINITY;
-  CPPUNIV_EXTENDED_REAL normal=n*(normal_constant-std::log(sd)-square/(2*sd*sd));
+  const CPPUNIV_EXTENDED_REAL ratio=largest/sd;
+  CPPUNIV_EXTENDED_REAL normal=n*(normal_constant-std::log(sd)-square*ratio*ratio/2);
   if(!std::isnan(normal_upper)){if(!std::isfinite(normal_upper))return INFINITY;normal=std::max(normal,static_cast<CPPUNIV_EXTENDED_REAL>(normal_upper));}
   // M(t) <= 1/t: f_k(z) <= phi(z)/(1-z/k) for z<k.
   const CPPUNIV_EXTENDED_REAL upper=normal-n*std::log1p(-zmax/kmin);

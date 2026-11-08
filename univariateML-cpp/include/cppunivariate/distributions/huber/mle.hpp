@@ -4,6 +4,7 @@
 #include "../../core/face_compare.hpp"
 #include "../../core/precision.hpp"
 #include "../../core/span.hpp"
+#include "../norm/mle.hpp"
 #include <algorithm>
 #include <cmath>
 #include <limits>
@@ -356,14 +357,9 @@ inline HuberResult huber_candidate_mle(span x, double tol=1e-10, int maxit=200,
   const bool fm=!std::isnan(mu), fs=!std::isnan(sigma);
   const double n=static_cast<double>(y.size());
   // Analytic Gaussian face under the same held-coordinate constraints.
-  CPPUNIV_EXTENDED_REAL total=0;
-  for (double v:y) total+=static_cast<CPPUNIV_EXTENDED_REAL>(v)-y[0];
-  const double nm=fm ? mu : static_cast<double>(y[0]+total/n);
-  CPPUNIV_EXTENDED_REAL ss=0;
-  for (double v:y) { const CPPUNIV_EXTENDED_REAL d=static_cast<CPPUNIV_EXTENDED_REAL>(v)-nm; ss+=d*d; }
-  const double ns=fs ? sigma : static_cast<double>(std::sqrt(ss/n));
-  const double normal=-n*(std::log(ns)+.5*std::log(2*std::acos(-1.0)))-
-      static_cast<double>(ss/(2*static_cast<CPPUNIV_EXTENDED_REAL>(ns)*ns));
+  const auto gaussian=norm_mle(data,mu,sigma);
+  const double nm=gaussian.mean, ns=gaussian.sd;
+  const double normal=gaussian.status==NormStatus::Ok ? gaussian.logLik : NAN;
   double laplace=-std::numeric_limits<double>::infinity();
   if (!fs) {
     const double lm=fm ? mu : y[y.size()/2];
@@ -670,12 +666,8 @@ inline HuberResult huber_mle(span x,double tol=1e-10,int maxit=200,
   }
   // Recompute both faces even when the proposer stopped on one of them.
   const double n=x.size();
-  CPPUNIV_EXTENDED_REAL sum=0;
-  for(double v:x)sum+=static_cast<CPPUNIV_EXTENDED_REAL>(v)-x[0];
-  const double nm=fm ? mu : static_cast<double>(x[0]+sum/n);
-  CPPUNIV_EXTENDED_REAL ss=0;
-  for(double v:x){const CPPUNIV_EXTENDED_REAL d=static_cast<CPPUNIV_EXTENDED_REAL>(v)-nm;ss+=d*d;}
-  const double ns=fs ? sigma : static_cast<double>(std::sqrt(ss/n));
+  const auto gaussian=norm_mle(x,mu,sigma);
+  const double nm=gaussian.mean, ns=gaussian.sd;
   CPPUNIV_EXTENDED_REAL normal_h=0,normal_g=0;
   if(ns>0 && std::isfinite(ns) && std::isfinite(nm))for(double v:x) {
     const CPPUNIV_EXTENDED_REAL z=(static_cast<CPPUNIV_EXTENDED_REAL>(v)-nm)/ns;

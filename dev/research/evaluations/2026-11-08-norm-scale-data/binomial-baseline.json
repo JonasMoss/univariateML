@@ -1,0 +1,77 @@
+{
+  "revision": "cfb7c4b37d13d1f23ca8ceb546333eb87290b1f6",
+  "all_headers_unchanged": true,
+  "headers": {
+    "bindings/common/distributions/ztbinom/fit.hpp": "3d607d61adbd6e25ba205179c2e3a9c10b91e8998c5d4efbae48a5006d812b3f",
+    "bindings/common/fit.hpp": "f96cb05a2b5b3902de6790f4117e855e0af221b4ec33d7c51d344ff891a65387",
+    "univariateML-cpp/include/cppunivariate/core/span.hpp": "a7278c93af8c45e62426c312ae87a3e14dc1dd45329faeccab8f6472a709c918",
+    "univariateML-cpp/include/cppunivariate/core/stop_detail.hpp": "daf8960a1afe6c14d69658c547d96a4724c5935d501571b4933b4daffbdbe00b",
+    "univariateML-cpp/include/cppunivariate/distributions/ztbinom/mle.hpp": "14f0b9d72da01e613bce4bb9cc9ee82825c0daba244d8adb4c4730a6999ac49e",
+    "univariateML-cpp/include/cppunivariate/distributions/ztbinom/face_certificate.hpp": "53382b672d15ac433ed1d1689f7b12ab784328f5d6ed271a0718f4276209cd21",
+    "univariateML-cpp/include/cppunivariate/distributions/ztbinom/certificate.hpp": "133a01fd3a8e2cf65f332941b19a81f6af9653f9a8a5516befdf373b4adf9ac8",
+    "univariateML-cpp/include/cppunivariate/core/work_budget.hpp": "8b57c4eeb0900dd19d11a226bd19cc240b8c7f6674aba8ee285feec6c1ca3043",
+    "univariateML-cpp/include/cppunivariate/core/discrete_stop.hpp": "03b245470be8cb47f6edecb2340f2d5f371199de860d2afdd7080b2734149dab",
+    "univariateML-cpp/include/cppunivariate/special/special.hpp": "8d8fdb7d62e158b6f7ddbc042dbb8fec8e35474218ae2ae328f1ad9dd01f3fa6",
+    "univariateML-cpp/include/cppunivariate/core/constants.hpp": "a088bca460d9aeead92456ffb2c6e88080c3702a5bc1ed220503a1f2b849b2bd",
+    "univariateML-cpp/include/cppunivariate/core/precision.hpp": "592be80dea12fb6feff33c2bd338853399040616e34fdc54fc7d97adde747a72",
+    "univariateML-cpp/include/cppunivariate/special/constants.hpp": "2e15efdce255d7a6a1c627d68b956a3bc06465948f5fe4c10cd9ef8d0c6d45a2",
+    "univariateML-cpp/include/cppunivariate/special/tails.hpp": "4aac592bb3c167880f9d32f639f23e99591d1a2a60b6186ad0437161cbd6de30",
+    "univariateML-cpp/include/cppunivariate/distributions/pois/dpqr.hpp": "8c411df7fa5af1d5714060ee9f1f2aa56e64d8f7c467fb559cf28620978b2fb0",
+    "univariateML-cpp/include/cppunivariate/distributions/ztpois/mle.hpp": "712769e7529fbb91c47c37eb3d4cede0278964cda066a7900b46f64ab7896fc8",
+    "univariateML-cpp/include/cppunivariate/distributions/ztpois/profile.hpp": "bbc4d804008068ecbea4560e1b3e56a54123a127ebb7aa94b4acedecaf75904b",
+    "univariateML-cpp/include/cppunivariate/distributions/lgser/mle.hpp": "c47baf11ead3f7fd35a5f734189791b6ed3b165bbdbea2db497655b51b217841",
+    "bindings/common/distributions/zmbinom/fit.hpp": "b2289c7a10fa75abfb2a5214874c32025b119c6b00186739d557b5777a1552c5",
+    "univariateML-cpp/include/cppunivariate/distributions/zmbinom/mle.hpp": "0d3313ba4be3c238870a6b370f4b00708cfebf1e231d83b6b4f370ac5c7471d8",
+    "univariateML-cpp/include/cppunivariate/distributions/zmpois/profile.hpp": "7f910f1b9a81005af8f291d047d0cc92b4bd04288d107c286aa2fa8db4735f35",
+    "univariateML-cpp/include/cppunivariate/distributions/ztgeom/mle.hpp": "d6171145b9f14722e894436e102ac2b5b12d7542fdc7ab849abb7083d14416da",
+    "univariateML-cpp/include/cppunivariate/distributions/ztnbinom/mle.hpp": "58a0573cdb049b0e5f83e3417d9b5bb5c5b241385280ec7914e6dfa96fb945b3",
+    "univariateML-cpp/include/cppunivariate/distributions/ztnbinom/certificate.hpp": "b1e53c14ec132f8d45b371302a4042bad93fa7d34e8dccd54f33970914f8ae6f",
+    "bindings/common/distributions/zib/fit.hpp": "0a1bb7c576863b77937d681dfa26d5d9ff165f01992c0d66777f84f1fdf27079",
+    "univariateML-cpp/include/cppunivariate/distributions/zib/mle.hpp": "940f933cec05ec501ee9b0ff2afff6c53cc1386edf2dca4bd940188048e8044c",
+    "univariateML-cpp/include/cppunivariate/distributions/zib/face_certificate.hpp": "aa4a6403813c66e0d63f5dc797dcdbe44863c6509b69e16c05dcaeafa7a7031a",
+    "univariateML-cpp/include/cppunivariate/distributions/zip/mle.hpp": "d0166c9ab66168b028b7809180923433befa5b6e2cdc72ea1ad31ce9a771b26d",
+    "univariateML-cpp/include/cppunivariate/core/lambert_w.hpp": "92bfdf2c649ab9017645b978ed39b5a4948a0c692431bea6253c6a14590d6259",
+    "univariateML-cpp/include/cppunivariate/distributions/pois/mle.hpp": "74f7ebf7eddcdb0e93c120f2ac3c52cc2db3908b225e301622d15d4dac9a1b11",
+    "univariateML-cpp/include/cppunivariate/distributions/zip/certificate.hpp": "99b5e573fb832e304318c1f18ef722caa275c30b9e4451e05a38806ef1b7d0f9",
+    "univariateML-cpp/include/cppunivariate/distributions/binom/mle.hpp": "0bc92517acd38dce85566d7b5340ea2aca84b66cf1beea3c348d85652f1ac1d8",
+    "bindings/common/distributions/tbinom/fit.hpp": "586dbfedc85a87d236d55d15ac133c0574f9d3f3f7e3c4943c2d4fbd9663446d",
+    "univariateML-cpp/include/cppunivariate/distributions/tbinom/mle.hpp": "78504880e1dac0a5675b2f9539dfe2e127e52e38f5f2315ef7c3c048da641c2c",
+    "univariateML-cpp/include/cppunivariate/distributions/tbinom/face_certificate.hpp": "2dad7ea3e22cadb5e099acdcf22e766ad1a47ed87c27af54ca1049ddb5423861",
+    "univariateML-cpp/include/cppunivariate/distributions/tpois/profile.hpp": "3a9727406279cc4c91d4197378680ff3719825442a8934204428ce74705e9465",
+    "univariateML-cpp/include/cppunivariate/distributions/binom/dpqr.hpp": "3b3b7504418e58e9cd3dea28e2927cd6cd1e477718db02637be683255670c6b0"
+  },
+  "results": [
+    {
+      "family": "ztbinom",
+      "kind": "limit",
+      "model": "ztpois",
+      "lower": -21.393000769235563,
+      "upper": -21.393000768215195,
+      "candidates": 2
+    },
+    {
+      "family": "zmbinom",
+      "kind": "limit",
+      "model": "zmpois",
+      "lower": -26.173881453303235,
+      "upper": -26.173881452282867,
+      "candidates": 2
+    },
+    {
+      "family": "zib",
+      "kind": "limit",
+      "model": "zip",
+      "lower": -35.19042099592999,
+      "upper": -35.19042099489708,
+      "candidates": 2
+    },
+    {
+      "family": "tbinom",
+      "kind": "limit",
+      "model": "tpois",
+      "lower": -3.3098289583630693,
+      "upper": -3.3098289573591493,
+      "candidates": 2
+    }
+  ]
+}

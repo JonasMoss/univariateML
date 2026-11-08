@@ -1255,3 +1255,27 @@ test('binomial relatives retain proved finite and Poisson witnesses', async () =
   }
 });
 
+test('binomial relatives certify Poisson limits and retain finite witnesses', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  for(const [family,x,held,model] of [
+    ['ztbinom',[1,1,1,2,3,7,12],{},'ztpois'],
+    ['zmbinom',[0,0,1,1,1,2,3,7,12],{p0:.2},'zmpois'],
+    ['zib',[0,0,0,0,0,0,0,0,1,1,1,2,3,7,12],{pi:.2},'zip'],
+    ['tbinom',[1,2,3],{},'tpois']
+  ]) {
+    assert.throws(() => api[family].fit(new Float64Array(x),held),error => {
+      assert.equal(error.kind,'limit');
+      assert.equal(error.model,model);
+      assert.ok(Number.isFinite(error.loglik_lower));
+      assert.ok(Number.isFinite(error.loglik_upper));
+      assert.ok(error.loglik_lower<=error.limit_loglik);
+      assert.ok(error.limit_loglik<=error.loglik_upper);
+      assert.ok(error.loglik_upper-error.loglik_lower<1e-7);
+      assert.ok(error.candidates.some(c=>c.model===model));
+      assert.ok(error.candidates.some(c=>c.model===''));
+      return true;
+    });
+  }
+});
+

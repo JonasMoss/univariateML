@@ -107,3 +107,5 @@ Held `mu` and `sigma` apply on the logit scale. Both-held fits evaluate the like
 On 2026-10-30 (TASK-125), normal log tails began using the shared normal-tail helper, including its Mills expansion before subnormal loss. Quantile inversion uses the same calculation and checks a monotone bracket until adjacent floating-point endpoints are reached, otherwise returning NaN. Truth rows and extreme round trips validate selected tails.
 
 The 2026-10-31 diagnostic audit checks that empty or invalid input has a non-success status and that delegate failures survive transformations. See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md) and the TASK-132 cases in the family C++ tests.
+
+Held-coordinate fits use the same normal residual profile as the free fit on the logit observations, with the logit Jacobian added afterward.
