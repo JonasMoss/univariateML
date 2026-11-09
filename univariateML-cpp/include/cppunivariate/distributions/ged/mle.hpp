@@ -239,6 +239,16 @@ inline Maximum maximize(F f,const std::vector<double>& grid,double tol,int maxit
   return {best,converged};
 }
 
+// Same per-observation arithmetic as log_dged_unit, with shape constants
+// evaluated once for the whole fit witness rather than once per observation.
+inline double conditional_loglik(span x,double mean,double sd,double nu) {
+  const double lambda=dens::ged_lambda(nu),logg=std::log(dens::ged_g(nu,lambda));
+  const double logsd=std::log(sd);
+  ged_shape_detail::Sum ll;
+  for(double v:x)ll.add(logg-.5*std::pow(std::abs(((v-mean)/sd)/lambda),nu)-logsd);
+  return ll.value;
+}
+
 inline GedResult conditional(span x,double nu,double mean,double sd,int maxit=200) {
   maxit = static_cast<int>(solver_budget(maxit));
   const double nan=std::numeric_limits<double>::quiet_NaN();
@@ -273,8 +283,7 @@ inline GedResult conditional(span x,double nu,double mean,double sd,int maxit=20
     ged_shape_detail::Sum total;for(double v:y)total.add(std::pow(std::abs(v-m)/radius,nu));const double sum=total.value;
     s=radius*std::exp(std::log(nu*sum/(2*y.size()))/nu)/dens::ged_lambda(nu);
   }
-  ged_shape_detail::Sum ll;for(double v:y)ll.add(dens::log_dged_unit((v-m)/s,nu)-std::log(s));
-  return {m,s,nu,ll.value,0,GedStatus::Ok};
+  return {m,s,nu,conditional_loglik({y.data(),y.size()},m,s,nu),0,GedStatus::Ok};
 }
 }
 inline GedResult ged_mle_impl(span x,double tol,int maxit,double mean,double sd,double nu) {

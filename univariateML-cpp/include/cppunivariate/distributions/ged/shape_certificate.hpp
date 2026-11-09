@@ -31,6 +31,31 @@ inline Range residual_hessian(double a,double b,double p,double q) {
   if(a>0)return {std::min({std::pow(a,p-2),std::pow(a,q-2),std::pow(b,p-2),std::pow(b,q-2)}),std::max({std::pow(a,p-2),std::pow(a,q-2),std::pow(b,p-2),std::pow(b,q-2)})};
   return {q>2?0:(b>0?std::min(std::pow(b,p-2),std::pow(b,q-2)):0),p<2?INFINITY:std::max({1.,std::pow(b,p-2),std::pow(b,q-2)})};
 }
+// Endpoint powers/logs shared by the value, score and curvature moments.
+// Keep powers in libm (rather than dividing by residuals) so a zero or an
+// underflowed high power cannot erase a representable lower power.
+struct ResidualPowers {
+  double a,b,la,lb,ap,aq,bp,bq;
+  ResidualPowers(double lower,double upper,double p,double q):
+    a(lower),b(upper),la(a==0?0:std::log(a)),lb(b==a?la:(b==0?0:std::log(b))),
+    ap(a==0?0:std::pow(a,p)),aq(p==q?ap:(a==0?0:std::pow(a,q))),
+    bp(b==a?ap:std::pow(b,p)),bq(b==a?aq:(p==q?bp:std::pow(b,q))) {}
+  Range value() const {return {std::min(ap,aq),std::max(bp,bq)};}
+  Range logmoment(double p,int degree) const {
+    const double u=ap*la,v=aq*la,w=bp*lb,z=bq*lb;
+    if(degree==1) {
+      Range out{std::min({u,v,w,z}),std::max({u,v,w,z})};
+      const double c=std::exp(-1/p);
+      if(a<=c && c<=b)out.lo=std::min(out.lo,-1/(std::exp(1.)*p));
+      return out;
+    }
+    Range out{std::min({u*la,v*la,w*lb,z*lb}),std::max({u*la,v*la,w*lb,z*lb})};
+    if(a<=1 && b>=1)out.lo=0;
+    const double c=std::exp(-2/p);
+    if(a<=c && c<=b)out.hi=std::max(out.hi,4/(std::exp(2.)*p*p));
+    return out;
+  }
+};
 struct ShapeBox {
   Range location{NAN,NAN},score{-INFINITY,INFINITY},logscale{-INFINITY,INFINITY};
   Range derivative{-INFINITY,INFINITY};
@@ -49,11 +74,16 @@ inline Range location_score(span y,double m,double p,double q) {
   const double pad=margin(absolute.value,y.size())*(1+q);
   return {lower.value-pad,upper.value+pad};
 }
-inline Range locations(span y,double p,double q,double held,int maxit) {
+inline Range locations(span y,double p,double q,double held,int maxit,Range enclosure={NAN,NAN}) {
   if(std::isfinite(held))return {held,held};
   const auto mm=std::minmax_element(y.begin(),y.end());
   const double tolerance=std::max(2e-13,std::min(1e-4,(q-p)*.02));
   double a=*mm.first,b=*mm.second;
+  // A parent shape interval encloses the location for every child shape.
+  // Short budgets retain the cold-start path, including its stop semantics.
+  if(solver_budget(maxit)>=std::numeric_limits<double>::digits && std::isfinite(enclosure.lo) && std::isfinite(enclosure.hi) && enclosure.lo<=enclosure.hi) {
+    a=std::max(a,enclosure.lo);b=std::min(b,enclosure.hi);
+  }
   for(std::int64_t k=0;k<solver_budget(maxit) && b-a>tolerance;++k) {
     const double c=a/2+b/2;
     const auto g=location_score(y,c,p,q);
@@ -104,8 +134,8 @@ inline Range locations(span y,double p,double q,double held,int maxit) {
   }
   return {a,b};
 }
-inline ShapeBox score_box(span y,double p,double q,double mean,double sd,int maxit) {
-  ShapeBox out;out.location=locations(y,p,q,mean,maxit);
+inline ShapeBox score_box(span y,double p,double q,double mean,double sd,int maxit,Range enclosure={NAN,NAN}) {
+  ShapeBox out;out.location=locations(y,p,q,mean,maxit,enclosure);
   if(!(p>=1 && q>=p) || !std::isfinite(q+out.location.lo+out.location.hi))return out;
   const Range psi1{special::digamma(1+1/q),special::digamma(1+1/p)};
   Range logb{0,0},B{0,0};
@@ -120,12 +150,15 @@ inline ShapeBox score_box(span y,double p,double q,double mean,double sd,int max
   }
   Sum lowerT,upperT,lowerU,upperU,lowerV,upperV,lowerH,upperH,lowerG,upperG;
   bool finiteH=true;
+  std::vector<ResidualPowers> residuals;residuals.reserve(y.size());
+  const double inverse_upper_scale=std::exp(-logb.hi),inverse_lower_scale=std::exp(-logb.lo);
   for(double v:y) {
     const double a=v<out.location.lo?out.location.lo-v:(v>out.location.hi?v-out.location.hi:0);
     const double b=std::max(std::abs(v-out.location.lo),std::abs(v-out.location.hi));
-    const double ra=a*std::exp(-logb.hi),rb=b*std::exp(-logb.lo);
+    const double ra=a*inverse_upper_scale,rb=b*inverse_lower_scale;
     if(!std::isfinite(rb))return out;
-    const auto t=power(ra,rb,p,q),u=powerlog(ra,rb,p,q);
+    residuals.emplace_back(ra,rb,p,q);
+    const auto t=residuals.back().value(),u=residuals.back().logmoment(p,1);
     lowerT.add(t.lo);upperT.add(t.hi);lowerU.add(u.lo);upperU.add(u.hi);
 
   }
@@ -150,11 +183,11 @@ inline ShapeBox score_box(span y,double p,double q,double mean,double sd,int max
     out.score=add(add(psi1,neg(B)),add(mul(mul({p,q},B),{T.lo/n,T.hi/n}),neg(mul({p*p,q*q},{U.lo/n,U.hi/n}))));
   }
   if(p>1 && T.lo>0 && out.score.lo<=0 && out.score.hi>=0) {
-    for(double v:y) {
-      const double a=v<out.location.lo?out.location.lo-v:(v>out.location.hi?v-out.location.hi:0);
-      const double b=std::max(std::abs(v-out.location.lo),std::abs(v-out.location.hi));
-      const double ra=a*std::exp(-logb.hi),rb=b*std::exp(-logb.lo);
-      const auto v2=powerlog2(ra,rb,p,q),hh=residual_hessian(ra,rb,p,q);
+    for(std::size_t j=0;j<y.size();++j) {
+      const double v=y[j];
+      const auto& cached=residuals[j];
+      const double ra=cached.a,rb=cached.b;
+      const auto v2=cached.logmoment(p,2),hh=residual_hessian(ra,rb,p,q);
       auto gg=powerlog(ra,rb,p-1,q-1);
       if(v>out.location.hi)gg=neg(gg);
       else if(v>=out.location.lo){const double size=std::max(std::abs(gg.lo),std::abs(gg.hi));gg={-size,size};}
@@ -228,9 +261,7 @@ inline GedResult ged_shape_certificate(span x,double tol,int maxit,double mean,d
   if(best.status!=GedStatus::Ok || !std::isfinite(best.logLik))return failed;
   const auto actual_loglik=[&](double location,double scale,double shape) {
     if(!std::isfinite(location) || !(scale>0 && std::isfinite(scale)) || !std::isfinite(shape))return nan;
-    ged_shape_detail::Sum sum;
-    for(double v:x)sum.add(dens::log_dged_unit((v-location)/scale,shape)-std::log(scale));
-    return sum.value;
+    return ged_detail::conditional_loglik(x,location,scale,shape);
   };
   const auto restore=[&](GedResult r) {
     r.mu=std::isfinite(mean)?mean:origin+unit*r.mu;
@@ -299,20 +330,20 @@ inline GedResult ged_shape_certificate(span x,double tol,int maxit,double mean,d
     }
     cutoff*=2;
   }
-  struct Segment {double lo,hi;};
+  struct Segment {double lo,hi;ged_shape_detail::Range location{NAN,NAN};};
   std::vector<Segment> pending{{1,cutoff}},retained;
   double cover_upper=tail_upper;
   while(!pending.empty()) {
     if(work>=cap)return stop(true,INFINITY);
     const auto cell=pending.back();pending.pop_back();++work;
-    const auto box=ged_shape_detail::score_box(y,cell.lo,cell.hi,m,s,maxit);
+    const auto box=ged_shape_detail::score_box(y,cell.lo,cell.hi,m,s,maxit,cell.location);
     // A definite sign excludes stationary points, not the shape-one endpoint.
     if(box.valid && (box.score.lo>0 || box.score.hi<0))continue;
     if(box.valid && box.derivative.hi<0 && cell.lo>1) {
       if(work+2>cap)return stop(true,INFINITY);
       work+=2;
-      const auto left=ged_shape_detail::score_box(y,cell.lo,cell.lo,m,s,maxit);
-      const auto right=ged_shape_detail::score_box(y,cell.hi,cell.hi,m,s,maxit);
+      const auto left=ged_shape_detail::score_box(y,cell.lo,cell.lo,m,s,maxit,box.location);
+      const auto right=ged_shape_detail::score_box(y,cell.hi,cell.hi,m,s,maxit,box.location);
       if((left.valid && left.score.hi<0) || (right.valid && right.score.lo>0))continue;
       double a=cell.lo,b=cell.hi;
       bool isolated=false;
@@ -320,7 +351,7 @@ inline GedResult ged_shape_certificate(span x,double tol,int maxit,double mean,d
         if(work>=cap)return stop(true,INFINITY);
         ++work;
         const double c=a/2+b/2;
-        const auto point=ged_shape_detail::score_box(y,c,c,m,s,maxit);
+        const auto point=ged_shape_detail::score_box(y,c,c,m,s,maxit,box.location);
         if(!point.valid)break;
         if(point.score.lo>0)a=c;
         else if(point.score.hi<0)b=c;
@@ -333,7 +364,7 @@ inline GedResult ged_shape_certificate(span x,double tol,int maxit,double mean,d
       if(isolated){retained.push_back({a,b});continue;}
       return stop(false,INFINITY);
     }
-    const auto bound=ged_shape_detail::interval(y,cell.lo,cell.hi,m,s,maxit);
+    const auto bound=ged_shape_detail::interval(y,cell.lo,cell.hi,m,s,maxit,box.location.lo,box.location.hi);
     const double incumbent=tail_face?std::max(best.logLik,face):best.logLik;
     const double pad=ged_shape_detail::likelihood_margin(std::abs(incumbent),n)*(1+cell.hi);
     if(bound.valid && bound.upper<incumbent-pad)continue;
@@ -346,7 +377,7 @@ inline GedResult ged_shape_certificate(span x,double tol,int maxit,double mean,d
     // A single certificate evaluation also supplies a feasible witness.
     const auto r=evaluate(mid);
     if(r.status==GedStatus::Ok && std::isfinite(r.logLik) && r.logLik>best.logLik)best=r;
-    pending.push_back({mid,cell.hi});pending.push_back({cell.lo,mid});
+    pending.push_back({mid,cell.hi,box.location});pending.push_back({cell.lo,mid,box.location});
   }
   std::sort(retained.begin(),retained.end(),[](const Segment&a,const Segment&b){return a.lo<b.lo;});
   std::vector<Segment> clusters;
@@ -369,13 +400,13 @@ inline GedResult ged_shape_certificate(span x,double tol,int maxit,double mean,d
     for(std::int64_t k=0;k<solver_budget(maxit) && b-a>2e-12*(1+a);++k) {
       if(work>=cap)return stop(true,INFINITY);
       ++work;
-      const double c=a/2+b/2;const auto sc=ged_shape_detail::score_box(y,c,c,m,s,maxit);
+      const double c=a/2+b/2;const auto sc=ged_shape_detail::score_box(y,c,c,m,s,maxit,box.location);
       if(!sc.valid)break;
       if(sc.score.lo>0)a=c;else if(sc.score.hi<0)b=c;else break;
     }
     const auto r=evaluate(a/2+b/2);
     if(r.status!=GedStatus::Ok || !std::isfinite(r.logLik))return stop(false,INFINITY);
-    const auto bound=ged_shape_detail::interval(y,cluster.lo,cluster.hi,m,s,maxit);
+    const auto bound=ged_shape_detail::interval(y,cluster.lo,cluster.hi,m,s,maxit,box.location.lo,box.location.hi);
     if(!bound.valid)return stop(false,INFINITY);
     roots.push_back(r);uppers.push_back(bound.upper);
   }

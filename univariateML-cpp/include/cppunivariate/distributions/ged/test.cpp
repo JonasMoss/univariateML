@@ -547,3 +547,50 @@ TEST_CASE("ged: positive residual kernels survive quotient underflow") {
   CHECK(cppunivariate::distributions::pged(0,0,1e300,.0005,true,false) == .5);
   CHECK(cppunivariate::distributions::dged(INFINITY,0,1e300,.02,true) == -INFINITY);
 }
+
+TEST_CASE("ged: inherited location enclosures retain all child-shape minimizers") {
+  const std::vector<double> x{-1,-.7,-.7,-.1,0,.2,.8,1};
+  const auto y=mltest::as_span(x);
+  for(const auto shapes:std::vector<std::pair<double,double>>{{1,1.1},{1.1,1.9},{1.9,2.1},{3,4},{20,30}}) {
+    const auto parent=cppunivariate::ged_shape_detail::locations(y,shapes.first,shapes.second,NAN,200);
+    for(int j=0;j<=8;++j) {
+      const double p=shapes.first+(shapes.second-shapes.first)*j/8;
+      const auto child=cppunivariate::ged_shape_detail::locations(y,p,p,NAN,200,parent);
+      const auto point=cppunivariate::ged_detail::conditional(y,p,NAN,1,200);
+      REQUIRE(point.status==cppunivariate::GedStatus::Ok);
+      CHECK(child.lo>=parent.lo);CHECK(child.hi<=parent.hi);
+      CHECK(point.mu>=child.lo-2e-12);CHECK(point.mu<=child.hi+2e-12);
+      const auto enclosed=cppunivariate::ged_shape_detail::moment(y,p,NAN,200,child.lo,child.hi);
+      const auto independent=cppunivariate::ged_shape_detail::moment(y,p,point.mu,200);
+      REQUIRE(enclosed.valid);REQUIRE(independent.valid);
+      CHECK(enclosed.log_lower<=independent.log_upper);
+      CHECK(enclosed.log_upper>=independent.log_lower);
+    }
+  }
+}
+
+TEST_CASE("ged: shared residual powers preserve zero and underflow curvature bounds") {
+  // T can underflow while r^(p-2) is still representable. Curvature must
+  // evaluate that lower power directly, rather than recovering it from T.
+  const std::vector<double> x{-1e-160,0,1e-160};
+  const auto box=cppunivariate::ged_shape_detail::score_box(mltest::as_span(x),2.1,2.1,0,1,200);
+  REQUIRE(box.valid);
+  CHECK(std::isfinite(box.score.lo));CHECK(std::isfinite(box.score.hi));
+  const auto h=cppunivariate::ged_shape_detail::residual_hessian(1e-160,1e-160,2.1,2.1);
+  CHECK(h.lo>0);CHECK(std::isfinite(h.hi));
+  const std::vector<double> tied{-1,0,0,0,1};
+  for(double p:{1.,1.001,2.,3.,30.}) {
+    const auto b=cppunivariate::ged_shape_detail::score_box(mltest::as_span(tied),p,p,0,1,200);
+    REQUIRE(b.valid);CHECK(std::isfinite(b.score.lo+b.score.hi));
+  }
+}
+
+TEST_CASE("ged: location reuse preserves short-budget numerical stops") {
+  const std::vector<double> x{-.8,0,0,0,.9};
+  for(int maxit:{1,2})for(double sd:{std::numeric_limits<double>::quiet_NaN(),.1}) {
+    const auto r=cppunivariate::ged_mle(mltest::as_span(x),1e-10,maxit,NAN,sd,NAN);
+    CHECK(r.status==cppunivariate::GedStatus::BfgsFailure);
+    CHECK_FALSE(r.certified);
+    CHECK_FALSE(r.stop_detail.budget_exhausted);
+  }
+}

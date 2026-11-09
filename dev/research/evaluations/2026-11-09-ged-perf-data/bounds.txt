@@ -1,0 +1,21 @@
+{
+  "precision": 80,
+  "rows": 108,
+  "enclosure_checks": 756,
+  "violations": 0
+}
+{
+  "analytic_inequalities": 26,
+  "violations": 0
+}
+{
+  "rounded_endpoint_counterexample": {
+    "observation": "1.7320508075688772",
+    "held_mean": 0,
+    "held_sd": 1,
+    "finite_shape": "1e19",
+    "finite_loglik": "-2.4849066497880003102297094798388788407491428045378131668914983528501775357625173",
+    "old_endpoint_face_loglik": "-3.6078256169217706498779959094206404143299116003935662962843725047144574713065697",
+    "improvement": "1.1229189671337703396482864295817615735807687958557531293928741518642799355440524"
+  }
+}

@@ -31,7 +31,8 @@ struct Moment {
 };
 // Enclose log(min_m mean |x-m|^p) / p, or the held-location moment.
 // Convex supporting lines give a lower bound even if the location solve stops.
-inline Moment moment(span x,double p,double held_mean,int maxit) {
+inline Moment moment(span x,double p,double held_mean,int maxit,
+                     double location_lo=NAN,double location_hi=NAN) {
   Moment out;
   if(x.empty() || !(p>=1) || !std::isfinite(p) ||
       (!std::isnan(held_mean) && !std::isfinite(held_mean)))return out;
@@ -47,6 +48,14 @@ inline Moment moment(span x,double p,double held_mean,int maxit) {
   if(!held && p==1) {
     std::sort(y.begin(),y.end());
     a=y[(y.size()-1)/2];b=y[y.size()/2];
+  } else if(!held && solver_budget(maxit)>=std::numeric_limits<double>::digits && std::isfinite(location_lo) && std::isfinite(location_hi) && location_lo<=location_hi) {
+    // Preserve the cold-start path for budgets shorter than a binary64
+    // bisection; enclosure reuse must not rescue the existing short-budget stops.
+    // Caller supplies an enclosure of the convex minimizer in x coordinates.
+    // Supporting lines below remain valid over this (possibly wide) bracket.
+    a=std::max(a,(location_lo-origin)/unit);
+    b=std::min(b,(location_hi-origin)/unit);
+    if(a>b)return out;
   } else if(!held) {
     for(std::int64_t k=0;k<solver_budget(maxit);++k) {
       const double c=a/2+b/2;
@@ -194,10 +203,11 @@ inline Bound tail(span x,double p,double mean,double sd,int maxit) {
 }
 // Entire finite interval [p,q], including the Laplace seam p=1. The moment
 // lower bound is valid without assuming convergence of a numerical minimizer.
-inline Bound interval(span x,double p,double q,double mean,double sd,int maxit) {
+inline Bound interval(span x,double p,double q,double mean,double sd,int maxit,
+                      double location_lo=NAN,double location_hi=NAN) {
   Bound out;
   if(!input(x,mean,sd,p) || !(q>=p) || !std::isfinite(q))return out;
-  const auto m=moment(x,p,mean,maxit);out.iterations=m.iterations;
+  const auto m=moment(x,p,mean,maxit,location_lo,location_hi);out.iterations=m.iterations;
   if(!m.valid)return out;
   const double n=static_cast<double>(x.size());
   if(std::isnan(sd))out.upper=n*(h(q)-m.log_lower);
