@@ -1,0 +1,52 @@
+{
+  "commit": "a99ca0dc92043120455401108cee5eeda17cafc4",
+  "cases": 11185,
+  "families": 99,
+  "subsets": 579,
+  "legacy_classifications": {
+    "ok": 8314,
+    "non-Ok": 2305,
+    "silent failure": 354,
+    "loud failure": 182,
+    "open": 30
+  },
+  "strict_classifications": {
+    "ok": 7773,
+    "non-Ok": 2305,
+    "silent failure": 895,
+    "loud failure": 182,
+    "open": 30
+  },
+  "old_silent_transitions": {
+    "ok": 144,
+    "silent failure": 344,
+    "non-Ok": 39,
+    "loud failure": 5,
+    "open": 1
+  },
+  "new_legacy_silent": [
+    1374,
+    1375,
+    4941,
+    4952,
+    6736,
+    6960,
+    6962,
+    7026,
+    7220,
+    7249
+  ],
+  "new_1e10_findings": 541,
+  "strict_route_counts": {
+    "declared certified": 455,
+    "conditional certified": 149,
+    "uncertified numerical": 268,
+    "fixed evaluation": 5,
+    "runtime certified": 18
+  },
+  "strict_categories": {
+    "likelihood / ascent": 71,
+    "wrong status / invalid Ok payload": 8,
+    "coefficient only": 816
+  }
+}

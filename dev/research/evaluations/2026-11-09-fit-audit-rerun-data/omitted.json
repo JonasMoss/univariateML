@@ -1,0 +1,122 @@
+[
+  {
+    "family": "beta",
+    "sample": "upper-1e-17",
+    "reason": "binary64 endpoint rounding or support incompatibility"
+  },
+  {
+    "family": "beta",
+    "sample": "upper-1e-200",
+    "reason": "binary64 endpoint rounding or support incompatibility"
+  },
+  {
+    "family": "frechet",
+    "sample": "lower-1e-200",
+    "reason": "binary64 endpoint rounding or support incompatibility"
+  },
+  {
+    "family": "genbeta",
+    "sample": "upper-1e-17",
+    "reason": "binary64 endpoint rounding or support incompatibility"
+  },
+  {
+    "family": "genbeta",
+    "sample": "upper-1e-200",
+    "reason": "binary64 endpoint rounding or support incompatibility"
+  },
+  {
+    "family": "hnorm",
+    "sample": "lower-1e-200",
+    "reason": "binary64 endpoint rounding or support incompatibility"
+  },
+  {
+    "family": "kumar",
+    "sample": "upper-1e-17",
+    "reason": "binary64 endpoint rounding or support incompatibility"
+  },
+  {
+    "family": "kumar",
+    "sample": "upper-1e-200",
+    "reason": "binary64 endpoint rounding or support incompatibility"
+  },
+  {
+    "family": "lgamma",
+    "sample": "lower-1e-17",
+    "reason": "binary64 endpoint rounding or support incompatibility"
+  },
+  {
+    "family": "lgamma",
+    "sample": "lower-1e-200",
+    "reason": "binary64 endpoint rounding or support incompatibility"
+  },
+  {
+    "family": "logitnorm",
+    "sample": "upper-1e-17",
+    "reason": "binary64 endpoint rounding or support incompatibility"
+  },
+  {
+    "family": "logitnorm",
+    "sample": "upper-1e-200",
+    "reason": "binary64 endpoint rounding or support incompatibility"
+  },
+  {
+    "family": "nsbeta",
+    "sample": "upper-1e-17",
+    "reason": "binary64 endpoint rounding or support incompatibility"
+  },
+  {
+    "family": "nsbeta",
+    "sample": "upper-1e-200",
+    "reason": "binary64 endpoint rounding or support incompatibility"
+  },
+  {
+    "family": "pareto",
+    "sample": "lower-1e-17",
+    "reason": "binary64 endpoint rounding or support incompatibility"
+  },
+  {
+    "family": "pareto",
+    "sample": "lower-1e-200",
+    "reason": "binary64 endpoint rounding or support incompatibility"
+  },
+  {
+    "family": "power",
+    "sample": "upper-1e-17",
+    "reason": "binary64 endpoint rounding or support incompatibility"
+  },
+  {
+    "family": "power",
+    "sample": "upper-1e-200",
+    "reason": "binary64 endpoint rounding or support incompatibility"
+  },
+  {
+    "family": "triang",
+    "sample": "upper-1e-17",
+    "reason": "binary64 endpoint rounding or support incompatibility"
+  },
+  {
+    "family": "triang",
+    "sample": "lower-1e-200",
+    "reason": "binary64 endpoint rounding or support incompatibility"
+  },
+  {
+    "family": "triang",
+    "sample": "upper-1e-200",
+    "reason": "binary64 endpoint rounding or support incompatibility"
+  },
+  {
+    "family": "unif",
+    "sample": "upper-1e-17",
+    "reason": "binary64 endpoint rounding or support incompatibility"
+  },
+  {
+    "family": "unif",
+    "sample": "lower-1e-200",
+    "reason": "binary64 endpoint rounding or support incompatibility"
+  },
+  {
+    "family": "unif",
+    "sample": "upper-1e-200",
+    "reason": "binary64 endpoint rounding or support incompatibility"
+  }
+]

@@ -1,0 +1,182 @@
+fit 0 bbinom
+fit 100 beta
+fit 200 betapr
+fit 300 betapr
+fit 400 bhatt
+fit 500 bnbinom
+fit 600 bnbinom
+fit 700 burr
+fit 800 cauchy
+fit 900 cmb
+fit 1000 dgamma
+fit 1100 dnorm
+fit 1200 dunif
+fit 1300 emg
+fit 1400 exp
+fit 1500 fatigue
+fit 1600 fpareto
+fit 1700 fpareto
+fit 1800 fpareto
+fit 1900 frechet
+fit 2000 gamma
+fit 2100 gb2
+fit 2200 gb2
+fit 2300 gb2
+fit 2400 ged
+fit 2500 genbeta
+fit 2600 genbeta
+fit 2700 gev
+fit 2800 gompertz
+fit 2900 gpd
+fit 3000 gumbel
+fit 3100 hnorm
+fit 3200 ht
+fit 3300 ht
+fit 3400 huber
+fit 3500 hyper
+fit 3600 invburr
+fit 3700 invburr
+fit 3800 invgamma
+fit 3900 invgauss
+fit 4000 invpareto
+fit 4100 invtrgamma
+fit 4200 invtrgamma
+fit 4300 kumar
+fit 4400 laplace
+fit 4500 lgser
+fit 4600 lnorm
+fit 4700 logis
+fit 4800 logitnorm
+fit 4900 lst
+fit 5000 lst
+fit 5100 nbinom
+fit 5200 nhyper
+fit 5300 norm
+fit 5400 paralogis
+fit 5500 pareto
+fit 5600 pareto3
+fit 5700 pareto4
+fit 5800 pig
+fit 5900 power
+fit 6000 sged
+fit 6100 sged
+fit 6200 sged
+fit 6300 skellam
+fit 6400 slash
+fit 6500 sn
+fit 6600 snorm
+fit 6700 sstd
+fit 6800 sstd
+fit 6900 sstd
+fit 7000 st
+fit 7100 st
+fit 7200 std
+fit 7300 std
+fit 7400 tbinom
+fit 7500 tbinom
+fit 7600 tlambda
+fit 7700 tnorm
+fit 7800 tnorm
+fit 7900 tnorm
+fit 8000 tpois
+fit 8100 trgamma
+fit 8200 triang
+fit 8300 triang
+fit 8400 weibull
+fit 8500 zib
+fit 8600 zinb
+fit 8700 zip
+fit 8800 zmbinom
+fit 8900 zmgeom
+fit 9000 zmlogarithmic
+fit 9100 zmnbinom
+fit 9200 ztbinom
+fit 9300 ztpois
+fit 9400 gompertz
+fit 9500 gb2
+fit 9600 fpareto
+fit 9700 bbinom
+fit 9800 invweibull
+fit 9900 gb2
+fit 10000 fpareto
+fit 10100 genbeta
+fit 10200 huber
+fit 10300 fpareto
+fit 10400 gb2
+fit 10500 invburr
+fit 10600 naka
+fit 10700 weibull
+fit 10800 nsbeta
+fit 10900 unif
+fit 11000 nhyper
+fit 11100 tlambda
+{'index': 537, 'family': 'bnbinom', 'seconds': 5.13821850498789, 'wall_budget': 20.0, 'status': 6}
+{'index': 837, 'family': 'cmb', 'seconds': 20.10345231500105, 'wall_budget': 20.0, 'status': -997}
+{'index': 852, 'family': 'cmb', 'seconds': 7.637890706973849, 'wall_budget': 20.0, 'status': 6}
+{'index': 863, 'family': 'cmb', 'seconds': 20.10491394199198, 'wall_budget': 20.0, 'status': -997}
+{'index': 889, 'family': 'cmb', 'seconds': 20.10136970700114, 'wall_budget': 20.0, 'status': -997}
+{'index': 915, 'family': 'cmb', 'seconds': 20.10100006000721, 'wall_budget': 20.0, 'status': -997}
+{'index': 997, 'family': 'dgamma', 'seconds': 20.100543862004997, 'wall_budget': 20.0, 'status': -997}
+{'index': 1311, 'family': 'emg', 'seconds': 9.736622951022582, 'wall_budget': 20.0, 'status': 6}
+{'index': 1588, 'family': 'fpareto', 'seconds': 5.628994350001449, 'wall_budget': 20.0, 'status': 6}
+{'index': 1594, 'family': 'fpareto', 'seconds': 2.3656104609835893, 'wall_budget': 20.0, 'status': 4}
+{'index': 1595, 'family': 'fpareto', 'seconds': 9.905492856021738, 'wall_budget': 20.0, 'status': 4}
+{'index': 1596, 'family': 'fpareto', 'seconds': 2.3655023149913177, 'wall_budget': 20.0, 'status': 4}
+{'index': 1597, 'family': 'fpareto', 'seconds': 2.1908128669892903, 'wall_budget': 20.0, 'status': 4}
+{'index': 1598, 'family': 'fpareto', 'seconds': 9.911412074987311, 'wall_budget': 20.0, 'status': 4}
+{'index': 1599, 'family': 'fpareto', 'seconds': 20.10057084201253, 'wall_budget': 20.0, 'status': -997}
+{'index': 1600, 'family': 'fpareto', 'seconds': 20.100719156005653, 'wall_budget': 20.0, 'status': -997}
+{'index': 1749, 'family': 'fpareto', 'seconds': 20.10122162499465, 'wall_budget': 20.0, 'status': -997}
+{'index': 1750, 'family': 'fpareto', 'seconds': 20.082262651005294, 'wall_budget': 20.0, 'status': -997}
+{'index': 2066, 'family': 'gb2', 'seconds': 8.805105409002863, 'wall_budget': 20.0, 'status': 5}
+{'index': 2067, 'family': 'gb2', 'seconds': 4.663121971010696, 'wall_budget': 20.0, 'status': 2}
+{'index': 2068, 'family': 'gb2', 'seconds': 4.389358145010192, 'wall_budget': 20.0, 'status': 2}
+{'index': 2069, 'family': 'gb2', 'seconds': 1.4158427689981181, 'wall_budget': 20.0, 'status': 9}
+{'index': 2256, 'family': 'gb2', 'seconds': 3.296319244982442, 'wall_budget': 20.0, 'status': 0}
+{'index': 3461, 'family': 'hyper', 'seconds': 1.8049489969853312, 'wall_budget': 20.0, 'status': 0}
+{'index': 7325, 'family': 'tbinom', 'seconds': 20.101165786996717, 'wall_budget': 20.0, 'status': -997}
+{'index': 7339, 'family': 'tbinom', 'seconds': 20.100428253004793, 'wall_budget': 20.0, 'status': -997}
+{'index': 7353, 'family': 'tbinom', 'seconds': 20.10099238398834, 'wall_budget': 20.0, 'status': -997}
+{'index': 7366, 'family': 'tbinom', 'seconds': 20.10100239800522, 'wall_budget': 20.0, 'status': -997}
+{'index': 8511, 'family': 'zib', 'seconds': 20.100649997009896, 'wall_budget': 20.0, 'status': -997}
+{'index': 8563, 'family': 'zib', 'seconds': 20.1005377760157, 'wall_budget': 20.0, 'status': -997}
+{'index': 8805, 'family': 'zmbinom', 'seconds': 3.554265293001663, 'wall_budget': 20.0, 'status': 6}
+{'index': 8831, 'family': 'zmbinom', 'seconds': 20.100918537995312, 'wall_budget': 20.0, 'status': -997}
+{'index': 8857, 'family': 'zmbinom', 'seconds': 3.103873629006557, 'wall_budget': 20.0, 'status': 6}
+{'index': 8883, 'family': 'zmbinom', 'seconds': 20.10090685801697, 'wall_budget': 20.0, 'status': -997}
+{'index': 9189, 'family': 'ztbinom', 'seconds': 3.1355315059772693, 'wall_budget': 20.0, 'status': 4}
+{'index': 9213, 'family': 'ztbinom', 'seconds': 20.10068408897496, 'wall_budget': 20.0, 'status': -997}
+{'index': 9452, 'family': 'gb2', 'seconds': 0.7933055629837327, 'wall_budget': 20.0, 'status': 2}
+{'index': 9484, 'family': 'gb2', 'seconds': 2.8583215700055007, 'wall_budget': 20.0, 'status': 9}
+{'index': 9488, 'family': 'gb2', 'seconds': 0.6681195450073574, 'wall_budget': 20.0, 'status': 9}
+{'index': 9500, 'family': 'gb2', 'seconds': 2.4863559619989246, 'wall_budget': 20.0, 'status': 9}
+{'index': 9516, 'family': 'gb2', 'seconds': 1.2145516269956715, 'wall_budget': 20.0, 'status': 6}
+{'index': 9532, 'family': 'fpareto', 'seconds': 4.038716093986295, 'wall_budget': 20.0, 'status': 1}
+{'index': 9548, 'family': 'fpareto', 'seconds': 4.562630352011183, 'wall_budget': 20.0, 'status': 2}
+{'index': 9564, 'family': 'fpareto', 'seconds': 3.4663428220083006, 'wall_budget': 20.0, 'status': 3}
+{'index': 9580, 'family': 'fpareto', 'seconds': 10.095879670989234, 'wall_budget': 20.0, 'status': 9}
+{'index': 9596, 'family': 'fpareto', 'seconds': 7.662230437010294, 'wall_budget': 20.0, 'status': 9}
+{'index': 9597, 'family': 'fpareto', 'seconds': 1.90004494599998, 'wall_budget': 20.0, 'status': 9}
+{'index': 9612, 'family': 'fpareto', 'seconds': 5.065765329985879, 'wall_budget': 20.0, 'status': 6}
+{'index': 9724, 'family': 'bhatt', 'seconds': 2.643445885012625, 'wall_budget': 20.0, 'status': 8}
+{'index': 9912, 'family': 'gb2', 'seconds': 2.4171426690008957, 'wall_budget': 20.0, 'status': 2}
+{'index': 9976, 'family': 'gb2', 'seconds': 3.691411881998647, 'wall_budget': 20.0, 'status': 4}
+{'index': 9992, 'family': 'fpareto', 'seconds': 3.9685680179973133, 'wall_budget': 20.0, 'status': 1}
+{'index': 10008, 'family': 'fpareto', 'seconds': 3.8705678450060077, 'wall_budget': 20.0, 'status': 2}
+{'index': 10024, 'family': 'fpareto', 'seconds': 3.9575028920080513, 'wall_budget': 20.0, 'status': 3}
+{'index': 10072, 'family': 'fpareto', 'seconds': 2.476214317983249, 'wall_budget': 20.0, 'status': 4}
+{'index': 10084, 'family': 'fpareto', 'seconds': 4.10390277398983, 'wall_budget': 20.0, 'status': 14}
+{'index': 10184, 'family': 'bhatt', 'seconds': 2.8609336060180794, 'wall_budget': 20.0, 'status': 8}
+{'index': 10298, 'family': 'fpareto', 'seconds': 2.457611244986765, 'wall_budget': 20.0, 'status': 4}
+{'index': 10299, 'family': 'fpareto', 'seconds': 1.9206976059940644, 'wall_budget': 20.0, 'status': 4}
+{'index': 10300, 'family': 'fpareto', 'seconds': 2.434152444009669, 'wall_budget': 20.0, 'status': 4}
+{'index': 10310, 'family': 'fpareto', 'seconds': 1.1012685409805272, 'wall_budget': 20.0, 'status': 9}
+{'index': 10311, 'family': 'fpareto', 'seconds': 1.0756544320029207, 'wall_budget': 20.0, 'status': 9}
+{'index': 10717, 'family': 'fpareto', 'seconds': 20.100808624003548, 'wall_budget': 20.0, 'status': -997}
+{'index': 10757, 'family': 'fpareto', 'seconds': 20.10019307397306, 'wall_budget': 20.0, 'status': -997}
+{'index': 10762, 'family': 'fpareto', 'seconds': 4.489329289004672, 'wall_budget': 20.0, 'status': 14}
+{'index': 10763, 'family': 'fpareto', 'seconds': 3.612453644978814, 'wall_budget': 20.0, 'status': 14}
+{'index': 10764, 'family': 'fpareto', 'seconds': 2.9343914949859027, 'wall_budget': 20.0, 'status': 14}
+{'index': 10971, 'family': 'hyper', 'seconds': 15.568376916984562, 'wall_budget': 20.0, 'status': 9}
+Reused 9354 references; 1831 new references required
+PASS 41 independent oracle checks
