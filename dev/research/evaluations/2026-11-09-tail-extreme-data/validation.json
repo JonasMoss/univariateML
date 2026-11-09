@@ -1,0 +1,98 @@
+{
+  "head": "072822a2",
+  "runs": [
+    {
+      "name": "cpp-dev",
+      "machine": "workstation, GCC 15.2",
+      "command": "/tmp/umvl-cpu/run4 just cpp-test",
+      "exit_code": 0,
+      "result": "106/106 shards"
+    },
+    {
+      "name": "cpp-full",
+      "machine": "simbox, GCC 13.3",
+      "command": "/tmp/umvl-cpu/simbox-run env CMAKE_BUILD_PARALLEL_LEVEL=4 CTEST_PARALLEL_LEVEL=4 UMVL_TEST_TIER=full just cpp-test",
+      "exit_code": 0,
+      "result": "129/129 shards"
+    },
+    {
+      "name": "cpp-no-long-double",
+      "machine": "workstation, GCC 15.2",
+      "command": "/tmp/umvl-cpu/run4 just cpp-test-no-long-double",
+      "exit_code": 0,
+      "result": "129/129 shards"
+    },
+    {
+      "name": "simbox-no-long-double",
+      "machine": "simbox, GCC 13.3",
+      "command": "/tmp/umvl-cpu/simbox-run env CMAKE_BUILD_PARALLEL_LEVEL=4 CTEST_PARALLEL_LEVEL=4 just cpp-test-no-long-double",
+      "exit_code": 0,
+      "result": "129/129 shards"
+    },
+    {
+      "name": "r-dev",
+      "machine": "simbox",
+      "command": "/tmp/umvl-cpu/simbox-run just test",
+      "exit_code": 0,
+      "result": "FAIL 0, WARN 0, SKIP 154, PASS 22269"
+    },
+    {
+      "name": "r-full",
+      "machine": "simbox",
+      "command": "/tmp/umvl-cpu/simbox-run just test-full",
+      "exit_code": 0,
+      "result": "FAIL 0, WARN 0, SKIP 0, PASS 45101"
+    },
+    {
+      "name": "js-build",
+      "machine": "workstation, Emscripten",
+      "command": "/tmp/umvl-cpu/run4 just js-build",
+      "exit_code": 0,
+      "result": "success"
+    },
+    {
+      "name": "js-test",
+      "machine": "workstation, WASM/libc++",
+      "command": "/tmp/umvl-cpu/run4 just js-test",
+      "exit_code": 0,
+      "result": "557 passed, 0 failed, 0 skipped; bounded child passed"
+    },
+    {
+      "name": "site-check",
+      "machine": "workstation",
+      "command": "/tmp/umvl-cpu/run4 taskset -c 0-3 just site-check",
+      "exit_code": 0,
+      "result": "success; 99 generated C++ snippets compile/link; browser checks pass"
+    },
+    {
+      "name": "evidence",
+      "machine": "workstation, native and no-long-double",
+      "command": "/tmp/umvl-cpu/run4 sh dev/research/evaluations/2026-11-09-tail-extreme-data/run-evidence.sh",
+      "exit_code": 0,
+      "result": "98 reference comparisons passed"
+    }
+  ],
+  "changed_file_sha256": {
+    "bindings/js/test.mjs": "20b833dd244aaebd45f440cc04089917f7fa599450b0d21bad7bf309784796a8",
+    "bindings/r/distributions/ged/test.R": "d02d8d591e8c2d2b04a115895a7bdc809a1682fde208956750f0220f70645c12",
+    "bindings/r/distributions/lst/test.R": "bb65b28022b0ca96d74fc160a8bad0dd6683124c7562bb51b02b1ac3bada8a21",
+    "univariateML-cpp/include/cppunivariate/distributions/ged/README.md": "69d77ee7a80e51e36215e8eae07ba6ae88fdea7782564c51b5c254c0cbdc4c16",
+    "univariateML-cpp/include/cppunivariate/distributions/ged/dpqr.hpp": "87a4da43c25c517335a99eb28c5523fcb63cb00e4a7d408767566c1f4bd3fe44",
+    "univariateML-cpp/include/cppunivariate/distributions/ged/tails.hpp": "72338d1c08dcb071220db2c0de45e16be23631a6fe12e3f80db1934c5a0bd5f0",
+    "univariateML-cpp/include/cppunivariate/distributions/ged/test.cpp": "b81f341c4bd3f889327bde32c4de15f200beb6bf19ad6c3db76aac32c5043665",
+    "univariateML-cpp/include/cppunivariate/distributions/ht/dpqr.hpp": "e9c539456ac1c1d02bb37f31380d2895b44105d948031725a36ed2a597aed8df",
+    "univariateML-cpp/include/cppunivariate/distributions/lst/README.md": "6aa94b572359aa37541eb9284fac05c8d8b739dd3b1fe1d2295c838cae6aa276",
+    "univariateML-cpp/include/cppunivariate/distributions/lst/tails.hpp": "1dd011f626041a7863e8d50d5fd2c58d5ba5b728759a316b0fbc2b2bdd5f4707",
+    "univariateML-cpp/include/cppunivariate/distributions/lst/test.cpp": "0be655481bc27204872d4fd408764b313aae63ff07492268ad5e5829eed148da",
+    "univariateML-cpp/include/cppunivariate/distributions/rng_std.hpp": "786a9cd5623b84b3739d7b27155abca0c12dd41347f65083fca6ba7b301a0ace",
+    "univariateML-cpp/include/cppunivariate/distributions/sged/dpqr.hpp": "569ff92113b57f844b6324eab5ab912ffaf229f67a94cd18b1c6f8dee815de3e",
+    "univariateML-cpp/include/cppunivariate/distributions/snorm/fs.hpp": "c70313c00931bbe917d03190fce09bef38e085f0fd791ce4b7879ebb8c52c93f",
+    "univariateML-cpp/include/cppunivariate/distributions/sstd/dpqr.hpp": "c903c3996ffcb5fa640b35c4ebb2c90f1350189d1ec4007726509589e8b92036",
+    "univariateML-cpp/include/cppunivariate/distributions/st/dpqr.hpp": "8e48e156cce9f18f031e3572c3dfbb532bf4095b53dfd3cf8841cfbe0c874035",
+    "univariateML-cpp/include/cppunivariate/distributions/st/wedge.hpp": "eade10238e407f2538a73122c7a301af38cb289ce22feed9fd6e54bec005bbc6",
+    "univariateML-cpp/include/cppunivariate/distributions/std/README.md": "e9e6d3b26e8473793812ce2ed8d472d2215e310d347c99d148a2e6f411bff458",
+    "univariateML-cpp/include/cppunivariate/special/special.hpp": "464d2798159e9a87f9269404f04d216f8a24cd8fd46808afa8f225345ad46bc7"
+  },
+  "truth_and_golden_changes": false,
+  "fitter_changes": false
+}

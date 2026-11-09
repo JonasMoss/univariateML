@@ -39,13 +39,26 @@ inline bool needs_log(double x, double mean, double sd, double sigma, double z, 
       || (t!=0 && std::fabs(t*sigma)<tiny)
       || (z!=0 && std::fabs(v)<tiny));
 }
+inline double input_error(double x,double mean,double sd,double sigma,double mu,
+                          double xi,double z,double v) {
+  if(!std::isfinite(x)) return 0;
+  const double part=(x-mean)/sd*sigma;
+  const double dz=32*std::numeric_limits<double>::epsilon()
+      *(1+std::abs(part)+std::abs(mu)+(std::abs(x)+std::abs(mean))/sd*std::abs(sigma));
+  const double scale=std::abs(z)>dz ? (z<0?1/xi:xi) : std::min(xi,1/xi);
+  return dz/scale+32*std::numeric_limits<double>::epsilon()*std::abs(v);
+}
 } // namespace sged_detail
 inline double dsged(double x, double mean, double sd, double nu, double xi, bool log) {
   if (!(fs::valid(mean, sd, nu, xi)) || std::isnan(x)) return cppunivariate::special::kNaN;
+  if(nu>=1e6 && xi==1) return dged(x,mean,sd,nu,log);
   double mu = 0.0;
   const double sigma = fs::sged_sigma(nu, xi, mu);
   const double z = (x - mean)/sd*sigma + mu;
   const double v=z/(z<0.0 ? 1.0/xi : xi);
+  if(nu>=1e6 && (sged_detail::needs_log(x,mean,sd,sigma,z,v,mu,xi) ||
+      !fs::ged_radius_precise(std::abs(v),fs::ged_log_radius(v,nu,fs::ged_logscale(nu)),nu,
+          sged_detail::input_error(x,mean,sd,sigma,mu,xi,z,v)))) return special::kNaN;
   double ld = (std::log(2.0/(xi+1.0/xi)) + fs::ged_logdensity(v, nu)) - std::log(sd) + std::log(sigma);
   if (sged_detail::needs_log(x,mean,sd,sigma,z,v,mu,xi)) {
     const auto r=sged_detail::residual(x,mean,sd,sigma,mu,nu,xi);
@@ -58,16 +71,20 @@ inline double dsged(double x, double mean, double sd, double nu, double xi, bool
 }
 inline double psged(double q, double mean, double sd, double nu, double xi, bool lower_tail=true, bool log_p=false) {
   if (!(fs::valid(mean, sd, nu, xi)) || std::isnan(q)) return cppunivariate::special::kNaN;
+  if(nu>=1e6 && xi==1) return pged(q,mean,sd,nu,lower_tail,log_p);
   double mu = 0.0;
   const double sigma = fs::sged_sigma(nu, xi, mu);
   const double z = (q - mean)/sd*sigma + mu;
   const double v=z/(z<0.0 ? 1.0/xi : xi);
+  if(nu>=1e6 && (sged_detail::needs_log(q,mean,sd,sigma,z,v,mu,xi) ||
+      !fs::ged_radius_precise(std::abs(v),fs::ged_log_radius(v,nu,fs::ged_logscale(nu)),nu,
+          sged_detail::input_error(q,mean,sd,sigma,mu,xi,z,v)))) return special::kNaN;
   if (sged_detail::needs_log(q,mean,sd,sigma,z,v,mu,xi)) {
     const auto r=sged_detail::residual(q,mean,sd,sigma,mu,nu,xi);
     const double lscale=r.negative ? -std::log(xi) : std::log(xi);
-    const double la=nu*(r.magnitude-lscale-fs::ged_logscale(nu));
+    const double la=r.magnitude-lscale-fs::ged_logscale(nu);
     const double lp=std::log(2.0)-std::log(xi+1.0/xi)+lscale-std::log(2.0)
-        +ged_detail::gamma_log(la,1.0/nu,false);
+        +ged_detail::gamma_power_log(la,nu,false);
     const double result=(r.negative==lower_tail) ? lp : fs::log1mexp(lp);
     return log_p ? result : std::exp(result);
   }
@@ -96,10 +113,10 @@ inline double qsged(double p, double mean, double sd, double nu, double xi, bool
   const double lscale=left ? -std::log(xi) : std::log(xi);
   const double side=(left==lower_tail) ? lp : lc;
   const double tail=std::min(0.0,side-logg-lscale+std::log(2.0));
-  const double la=ged_detail::gamma_logq(tail,1.0/nu,false);
+  const double la=ged_detail::gamma_power_logq(tail,nu,false);
   auto shift=sged_detail::log_shift(nu,xi,mu);
   shift.negative=!shift.negative;
-  const auto r=sged_detail::add({lscale+fs::ged_logscale(nu)+la/nu,left},shift);
+  const auto r=sged_detail::add({lscale+fs::ged_logscale(nu)+la,left},shift);
   return mean+std::copysign(std::exp(std::log(sd)-std::log(sigma)+r.magnitude),
                             r.negative ? -1.0 : 1.0);
 }

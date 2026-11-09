@@ -436,3 +436,17 @@ residuals lost to underflow before a held subunit power is applied. They do
 not imply unbounded likelihood. Density evaluation retains the logarithm of
 nonzero residuals even when their standardized quotient underflows; this does not relax the fitter's
 normalization certificate.
+
+## d/p/q/r
+
+Gamma inversion retains $\log(G)/\nu$ through the GED power transform.
+Gamma augmentation preserves the random amplitude when $G$ itself underflows;
+this matters near the uniform limit, including for skew-GED consumers.
+The [high-precision comparisons](../../../../../dev/research/evaluations/2026-11-09-tail-extreme-data/oracle.py)
+and [regressions](../../../../../dev/research/evaluations/2026-11-09-tail-extreme-data/run-targeted.sh)
+cover the uniform-limit paths and skew-GED consumers.
+
+At very large shape, the density and log tail can change within one double
+spacing near the uniform edge. The [edge references](../../../../../dev/research/evaluations/2026-11-09-tail-extreme-data/edge-oracle.py)
+use the exact binary64 observation. Affine or skew transforms that cannot
+resolve the relevant side of this edge return NaN.
