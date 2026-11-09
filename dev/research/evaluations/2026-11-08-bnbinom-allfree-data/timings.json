@@ -1,0 +1,113 @@
+{
+  "machine": "simbox",
+  "repeats_per_timing": 5,
+  "paired_runs": 3,
+  "unchanged_outputs_held_subsets": true,
+  "allfree_coefficients_within_golden_tolerance": true,
+  "records": [
+    {
+      "held_mask": 0,
+      "before_ms": 207.8067086,
+      "after_ms": 2883.8239464,
+      "before_range": [
+        205.462007,
+        210.735159
+      ],
+      "after_range": [
+        2883.4767558,
+        2889.1944312
+      ]
+    },
+    {
+      "held_mask": 1,
+      "before_ms": 159.560423,
+      "after_ms": 159.7454018,
+      "before_range": [
+        157.47023919999998,
+        162.8502798
+      ],
+      "after_range": [
+        159.7431012,
+        160.1704862
+      ]
+    },
+    {
+      "held_mask": 2,
+      "before_ms": 355.6442672,
+      "after_ms": 354.877516,
+      "before_range": [
+        351.3278108,
+        359.0321884
+      ],
+      "after_range": [
+        353.9645258,
+        355.6170766
+      ]
+    },
+    {
+      "held_mask": 3,
+      "before_ms": 1.114523,
+      "after_ms": 1.0995234,
+      "before_range": [
+        1.0964589999999999,
+        1.1206188
+      ],
+      "after_range": [
+        1.0939885999999999,
+        1.11456
+      ]
+    },
+    {
+      "held_mask": 4,
+      "before_ms": 70.434409,
+      "after_ms": 70.2497988,
+      "before_range": [
+        70.15175880000001,
+        70.5997116
+      ],
+      "after_range": [
+        69.8943994,
+        70.4264254
+      ]
+    },
+    {
+      "held_mask": 5,
+      "before_ms": 1.0210424,
+      "after_ms": 1.0173572,
+      "before_range": [
+        1.018303,
+        1.023141
+      ],
+      "after_range": [
+        1.006776,
+        1.0221306000000001
+      ]
+    },
+    {
+      "held_mask": 6,
+      "before_ms": 1.0234204,
+      "after_ms": 1.0316662,
+      "before_range": [
+        1.0088066,
+        1.0234375999999998
+      ],
+      "after_range": [
+        1.0288207999999999,
+        1.050248
+      ]
+    },
+    {
+      "held_mask": 7,
+      "before_ms": 0.0332804,
+      "after_ms": 0.0335366,
+      "before_range": [
+        0.0330716,
+        0.0333878
+      ],
+      "after_range": [
+        0.0331906,
+        0.033935
+      ]
+    }
+  ]
+}

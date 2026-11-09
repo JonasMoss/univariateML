@@ -1,5 +1,6 @@
 // Included by mle.hpp after the scalar and alpha-held helpers.
 #pragma once
+#include "face_certificate.hpp"
 namespace cppunivariate {
 namespace bnbinom_detail {
 // PairBox reuses the four-field rectangle, with (rl,rh) denoting alpha.
@@ -125,7 +126,7 @@ inline double pair_nb_remainder(const Data &d,double r,double pmin,double qmin) 
 // A supporting-hyperplane certificate over all mixtures of the face law.
 // The derivative of its directional-likelihood polynomial has at most one
 // positive root when its nonzero coefficients change sign once, + to -.
-inline bool mixture_face(const Data &d,double r,bool poisson=false) {
+inline bool single_crossing_mixture_face(const Data &d,double r,bool poisson=false) {
   double mean=0;for(std::size_t i=0;i<d.x.size();++i)mean+=d.count[i]*d.x[i]/d.n;
   std::map<long long,std::array<double,2>> coefficients;
   for(std::size_t i=0;i<d.x.size();++i) {
@@ -143,6 +144,10 @@ inline bool mixture_face(const Data &d,double r,bool poisson=false) {
     else return false;
   }
   return positive && negative;
+}
+inline bool mixture_face(const Data &d,double r,bool poisson=false,int maxit=600) {
+  return single_crossing_mixture_face(d,r,poisson) ||
+    polynomial_mixture_face(d,r,poisson,maxit).proved;
 }
 inline BnbinomResult pair_fit(const Cost &c,double tol,int maxit,double face,double prob) {
   BnbinomResult out{NAN,NAN,NAN,NAN,0,BnbinomStatus::NumericalFailure};
@@ -169,7 +174,7 @@ inline BnbinomResult pair_fit(const Cost &c,double tol,int maxit,double face,dou
   };
   // Supporting-hyperplane bound over all mixtures, with strict inequality
   // for the nondegenerate beta mixing distribution.
-  if(mixture_face(c.d,r)) {
+  if(mixture_face(c.d,r,false,maxit)) {
     out.status=BnbinomStatus::NegativeBinomialLimit;out.logLik=face;
     out.stop_detail=discrete_face(StopModel::Nbinom,{r,prob},face);return out;
   }

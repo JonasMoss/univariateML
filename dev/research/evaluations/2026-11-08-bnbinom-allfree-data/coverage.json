@@ -1,0 +1,266 @@
+{
+  "design": "fixed grid, two seeds per cell; descriptive frequencies",
+  "tol": 1e-08,
+  "iterlim": 600,
+  "machines": [
+    "simbox"
+  ],
+  "overall": {
+    "samples": 270,
+    "counts": {
+      "certified_finite": 88,
+      "proved_face": 7,
+      "uncertified_legacy": 175,
+      "search_failure": 0
+    },
+    "fractions": {
+      "certified_finite": 0.32592592592592595,
+      "proved_face": 0.025925925925925925,
+      "uncertified_legacy": 0.6481481481481481,
+      "search_failure": 0.0
+    },
+    "mean_ms": 1920.4110750962964,
+    "median_ms": 964.988376,
+    "maximum_ms": 44495.669139,
+    "total_seconds": 518.510990276
+  },
+  "by_source": {
+    "bnbinom": {
+      "samples": 216,
+      "counts": {
+        "certified_finite": 88,
+        "proved_face": 3,
+        "uncertified_legacy": 125,
+        "search_failure": 0
+      },
+      "fractions": {
+        "certified_finite": 0.4074074074074074,
+        "proved_face": 0.013888888888888888,
+        "uncertified_legacy": 0.5787037037037037,
+        "search_failure": 0.0
+      },
+      "mean_ms": 2240.6144450925926,
+      "median_ms": 1138.438624,
+      "maximum_ms": 44495.669139,
+      "total_seconds": 483.97272014
+    },
+    "nbinom": {
+      "samples": 36,
+      "counts": {
+        "certified_finite": 0,
+        "proved_face": 0,
+        "uncertified_legacy": 36,
+        "search_failure": 0
+      },
+      "fractions": {
+        "certified_finite": 0.0,
+        "proved_face": 0.0,
+        "uncertified_legacy": 1.0,
+        "search_failure": 0.0
+      },
+      "mean_ms": 773.6227023611111,
+      "median_ms": 165.2769755,
+      "maximum_ms": 4558.396354,
+      "total_seconds": 27.850417285
+    },
+    "pois": {
+      "samples": 18,
+      "counts": {
+        "certified_finite": 0,
+        "proved_face": 4,
+        "uncertified_legacy": 14,
+        "search_failure": 0
+      },
+      "fractions": {
+        "certified_finite": 0.0,
+        "proved_face": 0.2222222222222222,
+        "uncertified_legacy": 0.7777777777777778,
+        "search_failure": 0.0
+      },
+      "mean_ms": 371.5473806111111,
+      "median_ms": 31.437459000000004,
+      "maximum_ms": 2763.453917,
+      "total_seconds": 6.687852851
+    }
+  },
+  "by_source_n": {
+    "bnbinom-n30": {
+      "samples": 72,
+      "counts": {
+        "certified_finite": 15,
+        "proved_face": 3,
+        "uncertified_legacy": 54,
+        "search_failure": 0
+      },
+      "fractions": {
+        "certified_finite": 0.20833333333333334,
+        "proved_face": 0.041666666666666664,
+        "uncertified_legacy": 0.75,
+        "search_failure": 0.0
+      },
+      "mean_ms": 458.1550110972222,
+      "median_ms": 92.007931,
+      "maximum_ms": 3206.137129,
+      "total_seconds": 32.987160798999994
+    },
+    "bnbinom-n200": {
+      "samples": 72,
+      "counts": {
+        "certified_finite": 35,
+        "proved_face": 0,
+        "uncertified_legacy": 37,
+        "search_failure": 0
+      },
+      "fractions": {
+        "certified_finite": 0.4861111111111111,
+        "proved_face": 0.0,
+        "uncertified_legacy": 0.5138888888888888,
+        "search_failure": 0.0
+      },
+      "mean_ms": 1640.1639533333334,
+      "median_ms": 1282.3660795,
+      "maximum_ms": 9279.946072,
+      "total_seconds": 118.09180464
+    },
+    "bnbinom-n1000": {
+      "samples": 72,
+      "counts": {
+        "certified_finite": 38,
+        "proved_face": 0,
+        "uncertified_legacy": 34,
+        "search_failure": 0
+      },
+      "fractions": {
+        "certified_finite": 0.5277777777777778,
+        "proved_face": 0.0,
+        "uncertified_legacy": 0.4722222222222222,
+        "search_failure": 0.0
+      },
+      "mean_ms": 4623.524370847223,
+      "median_ms": 2907.352433,
+      "maximum_ms": 44495.669139,
+      "total_seconds": 332.893754701
+    },
+    "nbinom-n30": {
+      "samples": 12,
+      "counts": {
+        "certified_finite": 0,
+        "proved_face": 0,
+        "uncertified_legacy": 12,
+        "search_failure": 0
+      },
+      "fractions": {
+        "certified_finite": 0.0,
+        "proved_face": 0.0,
+        "uncertified_legacy": 1.0,
+        "search_failure": 0.0
+      },
+      "mean_ms": 611.73618675,
+      "median_ms": 64.71494949999999,
+      "maximum_ms": 3164.924192,
+      "total_seconds": 7.340834241
+    },
+    "nbinom-n200": {
+      "samples": 12,
+      "counts": {
+        "certified_finite": 0,
+        "proved_face": 0,
+        "uncertified_legacy": 12,
+        "search_failure": 0
+      },
+      "fractions": {
+        "certified_finite": 0.0,
+        "proved_face": 0.0,
+        "uncertified_legacy": 1.0,
+        "search_failure": 0.0
+      },
+      "mean_ms": 441.5817148333333,
+      "median_ms": 122.3816635,
+      "maximum_ms": 3110.079516,
+      "total_seconds": 5.298980578
+    },
+    "nbinom-n1000": {
+      "samples": 12,
+      "counts": {
+        "certified_finite": 0,
+        "proved_face": 0,
+        "uncertified_legacy": 12,
+        "search_failure": 0
+      },
+      "fractions": {
+        "certified_finite": 0.0,
+        "proved_face": 0.0,
+        "uncertified_legacy": 1.0,
+        "search_failure": 0.0
+      },
+      "mean_ms": 1267.5502055,
+      "median_ms": 937.352143,
+      "maximum_ms": 4558.396354,
+      "total_seconds": 15.210602466000001
+    },
+    "pois-n30": {
+      "samples": 6,
+      "counts": {
+        "certified_finite": 0,
+        "proved_face": 1,
+        "uncertified_legacy": 5,
+        "search_failure": 0
+      },
+      "fractions": {
+        "certified_finite": 0.0,
+        "proved_face": 0.16666666666666666,
+        "uncertified_legacy": 0.8333333333333334,
+        "search_failure": 0.0
+      },
+      "mean_ms": 273.9626945,
+      "median_ms": 26.078222500000003,
+      "maximum_ms": 1533.706519,
+      "total_seconds": 1.643776167
+    },
+    "pois-n200": {
+      "samples": 6,
+      "counts": {
+        "certified_finite": 0,
+        "proved_face": 3,
+        "uncertified_legacy": 3,
+        "search_failure": 0
+      },
+      "fractions": {
+        "certified_finite": 0.0,
+        "proved_face": 0.5,
+        "uncertified_legacy": 0.5,
+        "search_failure": 0.0
+      },
+      "mean_ms": 347.03767933333336,
+      "median_ms": 16.507675000000003,
+      "maximum_ms": 1994.372938,
+      "total_seconds": 2.082226076
+    },
+    "pois-n1000": {
+      "samples": 6,
+      "counts": {
+        "certified_finite": 0,
+        "proved_face": 0,
+        "uncertified_legacy": 6,
+        "search_failure": 0
+      },
+      "fractions": {
+        "certified_finite": 0.0,
+        "proved_face": 0.0,
+        "uncertified_legacy": 1.0,
+        "search_failure": 0.0
+      },
+      "mean_ms": 493.64176799999996,
+      "median_ms": 35.013358499999995,
+      "maximum_ms": 2763.453917,
+      "total_seconds": 2.9618506079999998
+    }
+  },
+  "uncertified_by_status": {
+    "2": 85,
+    "0": 77,
+    "3": 13
+  },
+  "certified_finite_with_inner_profile": 53,
+  "failure_ids": []
+}

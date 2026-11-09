@@ -34,7 +34,9 @@ inline FitResult fit_bnbinom(cppunivariate::ispan x, Held size_arg = {}, Held al
   }
   if(fit.stop_detail.budget_exhausted)stop_kind="budget";
   const auto stopped_fail = [&](const std::string& format, const auto&... arguments) {
-    auto out=fail(binding_message(format,arguments...));
+    const std::string qualification=stop_kind=="limit"?(fit.certified?"Certified global comparison: ":"Uncertified legacy comparison: "):"";
+    auto out=fail(qualification+binding_message(format,arguments...));
+    out.extra.emplace_back("certified",fit.certified?1.:0.);
     return stop_kind.empty()?out:stop_failure(out,fit.stop_detail,stop_kind,{"size","alpha","beta"});
   };
 
@@ -62,6 +64,18 @@ inline FitResult fit_bnbinom(cppunivariate::ispan x, Held size_arg = {}, Held al
   if (alpha.supplied) fixed.push_back("alpha");
   if (beta.supplied) fixed.push_back("beta");
   return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"size",fit.size},{"alpha",fit.alpha},{"beta",fit.beta}}; out.logLik = fit.logLik; out.iterations = fit.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true;
+    out.extra.emplace_back("certified",fit.certified?1.:0.);
+    if(std::isfinite(fit.global_interval[0])) {
+      out.extra_vectors.emplace_back("global_loglik_interval",std::vector<double>{fit.global_interval[0],fit.global_interval[1]});
+      const double radius=std::min(gradtol,1e-8)*.25;
+      out.extra_vectors.emplace_back("global_coefficient_lower",std::vector<double>{fit.size*(1-radius),fit.alpha*(1-radius),fit.beta*(1-radius)});
+      out.extra_vectors.emplace_back("global_coefficient_upper",std::vector<double>{fit.size*(1+radius),fit.alpha*(1+radius),fit.beta*(1+radius)});
+    }
+    if(std::isfinite(fit.profile_alpha[0])) {
+      out.extra_vectors.emplace_back("profile_alpha_interval",std::vector<double>{fit.profile_alpha[0],fit.profile_alpha[1]});
+      out.extra_vectors.emplace_back("profile_mode_lower",std::vector<double>{fit.profile_mode[0],fit.profile_alpha[0],fit.profile_mode[2]});
+      out.extra_vectors.emplace_back("profile_mode_upper",std::vector<double>{fit.profile_mode[1],fit.profile_alpha[1],fit.profile_mode[3]});
+    }
     if(!size.supplied && !beta.supplied) {
       out.extra_vectors.emplace_back("swap_maximum",std::vector<double>{fit.beta,fit.alpha,fit.size});
       for(const auto &candidate:fit.stop_detail.candidates)

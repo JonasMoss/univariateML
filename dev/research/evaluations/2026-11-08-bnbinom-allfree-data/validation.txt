@@ -1,0 +1,105 @@
+Final validation results. The launchers in this directory document CPU reservations.
+Final runs after restoring the explicitly uncertified legacy fallback; earlier runs are superseded.
+
+final-cpp-dev.log
+START simbox-cpp-dev 2026-11-09T15:00:54Z
+100% tests passed out of 106
+GREEN simbox-cpp-dev 2026-11-09T15:03:29Z
+
+final-cpp-full.log
+START simbox-cpp-full 2026-11-09T15:04:42Z
+100% tests passed out of 129
+GREEN simbox-cpp-full 2026-11-09T15:09:14Z
+
+final-cpp-no-long-double.log
+START workstation-cpp-no-long-double 2026-11-09T15:00:17Z
+100% tests passed, 0 tests failed out of 129
+GREEN workstation-cpp-no-long-double 2026-11-09T15:06:39Z
+
+final-r-dev.log
+test: [ FAIL 0 | WARN 0 | SKIP 154 | PASS 22194 ]
+START simbox-test 2026-11-09T15:16:19Z
+GREEN simbox-test 2026-11-09T15:18:28Z
+
+final-r-full.log
+test-full: [ FAIL 0 | WARN 0 | SKIP 0 | PASS 45026 ]
+START simbox-test-full 2026-11-09T15:20:57Z
+GREEN simbox-test-full 2026-11-09T15:26:31Z
+
+final-simbox-no-long-double.log
+START simbox-cpp-no-long-double 2026-11-09T15:11:45Z
+100% tests passed out of 129
+GREEN simbox-cpp-no-long-double 2026-11-09T15:15:46Z
+
+js-build-final.log
+START workstation-js-build 2026-11-09T14:59:18Z
+GREEN workstation-js-build 2026-11-09T15:00:17Z
+
+js-test-final.log
+START workstation-js-test 2026-11-09T16:17:26Z
+# tests 560
+# pass 560
+# fail 0
+GREEN workstation-js-test 2026-11-09T16:20:51Z
+
+site-final-current.log
+START workstation-site-check 2026-11-09T16:22:28Z
+PASS inference browser: {"rows":353,"families":99,"desktop":[1280,1100],"mobile":[390,1000],"checks":["covariance and combined filters with follow-up evidence","all status filters","combined family/status/regime filters","empty state","reset","native evidence disclosure","no horizontal overflow","all rows and evidence without JavaScript","no page errors"]}
+PASS theory numerical: 5 static/live profiles, 4 escape messages and limit approaches, analytic normal held fits, static/live contours, parser and failed-fit gaps.
+PASS nice linear/log ticks; Gompertz free/held fits, conditional escape, fixed-rate boundary, static/live equality and build-time MathML.
+PASS likelihood windows: 15-unit clipping, low-marker expansion, constant likelihoods, marker clearance, finite SVG coordinates.
+PASS theory browser: desktop/mobile, live profiles and held faces, seeded data, errors, no-JS figures and diagnostics.
+PASS: four articles; dossier catalogues: 288 limits, 99 families, 9 fit domains.
+PASS: inference: 353 unique scopes, 99 families; implementation symbols, evidence anchors, calibration and checks resolve; full static table.
+PASS: graph: 99 unique nodes, 278 edges, resolving family links; SVG generated twice byte-identically and matches built HTML.
+PASS: explorer coverage matches binding registry; optional build assets agree.
+PASS: every declared and inverted relation and limit link is rendered and resolves.
+PASS: 99 family pages; MathML on every family; no math runtime or external runtime assets; internal links and fragments resolve.
+PASS: 99 generated C++ snippets compile and link as C++17 (including exp, gamma, gb2).
+PASS: pilot and ten additional HTML spot checks: exp, gamma, gb2, binom, beta, hyper, sstd, gev, gpd, tnorm, pois, unif, pareto
+GREEN workstation-site-check 2026-11-09T16:23:55Z
+
+native-targeted.txt
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases:     45 |     45 passed | 0 failed | 0 skipped
+[doctest] assertions: 206758 | 206758 passed | 0 failed |
+[doctest] Status: SUCCESS!
+
+no-long-double-targeted.txt
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases:     45 |     45 passed | 0 failed | 0 skipped
+[doctest] assertions: 206758 | 206758 passed | 0 failed |
+[doctest] Status: SUCCESS!
+oracle.json: valid JSON
+timings.json: valid JSON
+profile.json: valid JSON
+joint.json: valid JSON
+diagonal-probe.json: valid JSON
+root-probe.json: valid JSON
+r-targeted.json: valid JSON
+source.json: valid JSON
+compound-poisson.json: valid JSON
+coverage.json: valid JSON
+coverage-source.json: valid JSON
+
+Report and changed-family links: PASS; four unchanged repository findings.
+Coverage experiment: 270 complete outcomes; final production-source fingerprints match.
+Change scope, frozen inputs, append-only shared tests, source identity and whitespace: PASS.
+551 Markdown files; 3252 local destinations; 4 broken
+dev/research/evaluations/2026-11-03-boundary-lit-report.md:5: ../boundary-points.pdf
+univariateML-cpp/include/cppunivariate/distributions/nbinom/README.md:234: 1+m/r
+univariateML-cpp/notes/inference.md:3: /inference/
+univariateML-cpp/notes/inference.md:95: /inference/
+
+Report and changed-family links: PASS; four unchanged repository findings.
+Coverage experiment: 270 complete outcomes; final production-source fingerprints match.
+Change scope, frozen inputs, append-only shared tests, source identity and whitespace: PASS.
+551 Markdown files; 3252 local destinations; 4 broken
+dev/research/evaluations/2026-11-03-boundary-lit-report.md:5: ../boundary-points.pdf
+univariateML-cpp/include/cppunivariate/distributions/nbinom/README.md:234: 1+m/r
+univariateML-cpp/notes/inference.md:3: /inference/
+univariateML-cpp/notes/inference.md:95: /inference/

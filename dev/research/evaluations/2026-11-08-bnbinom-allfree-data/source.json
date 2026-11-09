@@ -1,0 +1,20 @@
+{
+  "base": "ddb399172bd99091c8d1b04dbf7fe329c8adc43e",
+  "sha256": {
+    "univariateML-cpp/include/cppunivariate/distributions/bnbinom/mle.hpp": "6f33903f5b06375ab6fc5f77a7da7d72c7556bde9b25b49a2ef7ae5c34b495ca",
+    "univariateML-cpp/include/cppunivariate/distributions/bnbinom/pair_certificate.hpp": "01ad6178683a4ebcbee195162bca00ec46abc06581cec02ac8401886cc5acae0",
+    "univariateML-cpp/include/cppunivariate/distributions/bnbinom/face_certificate.hpp": "39ead13ed28c4caae4ce50c3918ecdd1f6ff0fb92c3fc9d6a83f353606f8230b",
+    "univariateML-cpp/include/cppunivariate/distributions/bnbinom/alpha_interval_certificate.hpp": "3cb9587a4dc1497a45fb205b58e5868dafac12611a48fda721f4638513e0cf20",
+    "univariateML-cpp/include/cppunivariate/distributions/bnbinom/joint_certificate.hpp": "8ea6426f49bd855893c974b6c33ded7221cee646aa3af55539a9aa49e0d7b764",
+    "univariateML-cpp/include/cppunivariate/distributions/bnbinom/README.md": "6af52531e6a5cdddd58b3ab975525ff59cdbe109845bfa87d158344a18570eed",
+    "univariateML-cpp/include/cppunivariate/distributions/bnbinom/test.cpp": "33c4af4596ba659529936f17c383a4f9058de376e29e8f1575f0eff6de2f015f",
+    "univariateML-cpp/include/cppunivariate/distributions/bnbinom/golden.json": "0de183786766e278851859371879fae2338fabaab9249dd714cd808edaa36e00",
+    "univariateML-cpp/include/cppunivariate/distributions/bnbinom/dpqr.hpp": "289e8b72a2682720dffbc7654082771cc76e122f6b6d378a5f07a99c7d9ed271",
+    "univariateML-cpp/include/cppunivariate/distributions/bnbinom/truth.py": "e16f24064f9bb2ac395faf6a2ba1dc0e4f17083de45e2e7e5a063356716323e9",
+    "univariateML-cpp/include/cppunivariate/distributions/bnbinom/truth.json": "f8ea7d662422ca8039e0337a3c4bf365b595fee46d190a7dd2304c449fddb03c",
+    "bindings/common/distributions/bnbinom/fit.hpp": "a03a2a850e8552ddbc4f87839b274c2c1f3e601fcefe0b5bf70e0ee7b717dff8",
+    "bindings/r/distributions/bnbinom/test.R": "c17c31733087f3352e5c20a2fb54d01d613e174d77d4fb960b8894ec8bd62d0a",
+    "bindings/r/distributions/bnbinom/adapter.cpp": "d916500061282856129dcccd47a6bae491bb9956a743e751270c6388001465f2",
+    "bindings/js/test.mjs": "96ac1d8b4b3b3ea1544cf26dc2888c6cfe13279c5ed27ae97dfd7a8393d0c6ab"
+  }
+}

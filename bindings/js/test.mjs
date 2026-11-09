@@ -1671,3 +1671,78 @@ test('GB2 held-scale free-power profiles use global coefficient enclosures',asyn
     assert.equal(error.kind,'limit');assert.equal(error.model,'power');return true;
   });
 });
+test('bnbinom Bernstein supporting polynomials prove additional all-free and pair faces',async()=>{
+  const api=await (await import('./index.mjs')).default();
+  const x=[0,0,0,...Array(10).fill(1),3];
+  assert.throws(()=>api.bnbinom.fit(x),e=>{
+    assert.equal(e.kind,'limit');assert.equal(e.model,'pois');
+    assert.ok(Math.abs(e.estimates.lambda-13/14)<1e-14);return true;
+  });
+  for(const held of [{size:1},{beta:1}]){
+    assert.throws(()=>api.bnbinom.fit(x,held),e=>{
+      assert.equal(e.kind,'limit');assert.equal(e.model,'nbinom');
+      assert.equal(e.estimates.size,1);
+      assert.ok(Math.abs(e.estimates.prob-14/27)<1e-14);return true;
+    });
+  }
+});
+
+test('bnbinom all-free results expose a certified global inner profile interval',async()=>{
+  const api=await (await import('./index.mjs')).default();
+  const f=api.bnbinom.fit(read('bnbinom','golden').data);
+  assert.ok(f.profile_alpha_interval[0]<f.estimates.alpha);
+  assert.ok(f.profile_alpha_interval[1]>f.estimates.alpha);
+  const values=[f.estimates.size,f.estimates.alpha,f.estimates.beta];
+  for(let j=0;j<3;++j){
+    assert.ok(f.profile_mode_lower[j]<=values[j]);
+    assert.ok(values[j]<=f.profile_mode_upper[j]);
+  }
+});
+
+test('bnbinom all-free finite certificate bounds an independent high-precision maximizer',async()=>{
+  const api=await (await import('./index.mjs')).default();
+  const f=api.bnbinom.fit(read('bnbinom','golden').data);
+  const truth=[1.0672234392758119184,2.1419792202550637215,5.3647342962537853096];
+  for(let j=0;j<3;++j){
+    assert.ok(f.global_coefficient_lower[j]<=truth[j]);
+    assert.ok(truth[j]<=f.global_coefficient_upper[j]);
+  }
+  assert.ok(f.global_loglik_interval[0]<=-1275.6474863695586167);
+  assert.ok(f.global_loglik_interval[1]>=-1275.6474863695586167);
+});
+
+test('bnbinom unproved all-free face comparisons retain the legacy limit',async()=>{
+  const api=await (await import('./index.mjs')).default();
+  assert.throws(()=>api.bnbinom.fit([0,0,5,5]),e=>{
+    assert.equal(e.kind,'limit');assert.equal(e.model,'nbinom');
+    assert.ok(e.candidates.length>=2);assert.ok(e.loglik_upper>=e.loglik_lower);return true;
+  });
+});
+
+test('bnbinom delegated NB precision failures retain NB candidate names',async()=>{
+  const api=await (await import('./index.mjs')).default();
+  const x=[[969,3182],[970,1816],[1001,1],[1003,1],[1004,1],[1032,1785],[1033,3215]].flatMap(([value,n])=>Array(n).fill(value));
+  assert.throws(()=>api.bnbinom.fit(x),e=>{
+    assert.equal(e.kind,'numerical');assert.ok(e.candidates.length>=1);
+    for(const c of e.candidates){assert.equal(c.model,'nbinom');assert.ok(c.size>0);assert.ok(c.prob>0 && c.prob<1);}
+    return true;
+  });
+});
+
+test('bnbinom legacy fallbacks and proved decisions expose certification labels',async()=>{
+  const api=await (await import('./index.mjs')).default();
+  for(const x of [[0,0,5,5],[...Array(20).fill(0),...Array(20).fill(5)]]){
+    assert.throws(()=>api.bnbinom.fit(x),e=>{
+      assert.equal(e.kind,'limit');assert.equal(e.model,'nbinom');
+      assert.match(e.message,/Uncertified legacy comparison/);return true;
+    });
+  }
+  assert.throws(()=>api.bnbinom.fit([0,1,2,3,4]),e=>{
+    assert.equal(e.kind,'limit');assert.match(e.message,/Certified global comparison/);return true;
+  });
+  const x=read('bnbinom','golden').data;
+  const legacy=api.bnbinom.fit(x,{}, {iterlim:200});
+  assert.equal(legacy.certified,0);
+  assert.equal(legacy.global_coefficient_lower,undefined);
+  assert.equal(api.bnbinom.fit(x).certified,1);
+});

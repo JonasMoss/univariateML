@@ -35,22 +35,20 @@ r:
   density: dbnbinom
   sampler: rbnbinom
   control:
-    gradtol: "Scalar log-parameter bracket width or two-free-shape relative root enclosure (at most 1e-8); otherwise tolerance on the average log likelihood score in log parameters."
-    iterlim: "Work limit: 1 * min(iterlim, 100000) solver iterations per solve (scalar refinement, or BFGS per deterministic start); 128 * min(iterlim, 100000) certificate evaluations per scalar, pair, or negative-binomial face certificate. Pair root proposals and isolation have the same solver-iteration limit."
+    gradtol: "Relative coefficient tolerance: scalar log brackets, pair root enclosures and the all-free global coefficient box (at most 1e-8)."
+    iterlim: "Work limit: 1 * min(iterlim, 100000) solver iterations per solve (scalar refinement, or BFGS per deterministic start); 128 * min(iterlim, 100000) certificate evaluations per scalar, pair, all-free stationary cover, alpha-interval cover, negative-binomial face, or supporting-polynomial certificate (including each Bernstein coefficient update). Pair root proposals and isolation have the same solver-iteration limit."
 log_density: "loggamma(size+x)-loggamma(size)-loggamma(x+1)+loggamma(alpha+size)+loggamma(beta+x)-loggamma(alpha+size+beta+x)-loggamma(alpha)-loggamma(beta)+loggamma(alpha+beta)"
 limits:
   - model: nbinom
     firmness: proved
     when: 'The shapes satisfy $\alpha,\beta\to\infty$ with their ratio and $r>0$ fixed. Exchanging $r$ and $\beta$ gives the corresponding path with $\beta>0$ fixed.'
-    detect: 'With $r$ or $\beta$ held and the other shapes free, a supporting-polynomial test proves the negative binomial face wins. Otherwise the pair must beat the face and complete its finite cover, or stop numerically. With all shapes free, the comparison with attempted finite fits remains numerical'
+    detect: 'With $r$ or $\beta$ held and the other shapes free, a supporting-polynomial test proves the negative binomial face wins. Otherwise the pair must beat the face and complete its finite cover, or stop numerically. With all shapes free, an unresolved negative binomial comparison retains the legacy numerical face or finite result, explicitly uncertified'
     status: NegativeBinomialLimit
-    numerical: true
   - model: pois
     firmness: proved
     when: 'All three shapes tend to infinity with $r\beta/\alpha$ tending to a finite positive mean.'
-    detect: 'All coefficients are free. A supporting-polynomial test proves the Poisson face wins for some samples. Other comparisons with attempted finite fits remain numerical'
+    detect: 'All coefficients are free. Supporting-polynomial tests or the compound-Poisson bound for equal frequencies at 0,...,4 prove the Poisson face wins for some samples. Other unresolved all-free faces retain explicitly uncertified legacy comparisons'
     status: PoissonLimit
-    numerical: true
   - model: pois
     firmness: proved
     when: 'A free shape satisfies $r\to0$, $\beta\to0$, or $\alpha\to\infty$, while the other two coefficients stay fixed and positive.'
@@ -85,7 +83,7 @@ relations:
 fit:
   method: multistart
   certified: 'partial'
-  note: 'bnbinom/README.md, Scalar certificates; bnbinom/mle.hpp: Every one-free-shape fit has a single-crossing global certificate. The alpha-held size/beta pair has a compact stationary-rectangle and root-cover certificate, retaining both swap-related maxima and the singular-diagonal witness. The alpha-free pairs have uniform negative-binomial-neighborhood bounds, a finite rectangle cover and supporting-polynomial face certificates; unresolved faces stop numerically. All-free Poisson faces passing the supporting-polynomial test are certified, but other all-free fits retain the uncertified multistart search; all-held evaluation is not counted as certification.'
+  note: 'bnbinom/README.md, Scalar certificates and Finite all-free certificate; bnbinom/mle.hpp: Every scalar and pair subset retains its global certificate or structured stop. All-free finite results are certified when the compact superlevel and full stationary cover close to coefficient accuracy; a uniform inner size/beta enclosure over alpha intervals is retained when its certificate closes. Supporting-polynomial and equal-frequency compound-Poisson Poisson-face decisions are proved. Other all-free finite and NB/Poisson face results retain the legacy score-checked search and likelihood comparison, explicitly uncertified. All-zero point-mass decisions are proved; all-held evaluation is excluded from fitting certification.'
 areas:
 - counts and ecology
 classification: specialist
@@ -108,7 +106,7 @@ existence:
     and every one-free-shape fit has a unique finite maximum if at least one
     observation is positive. With alpha held and both other shapes free, a
     finite maximum exists for such samples, but labeled uniqueness need not
-    hold. All two-free-shape subsets now return certified finite maxima or structured stops. For the alpha-free pairs a supporting-polynomial condition can prove the negative binomial supremum; other unresolved faces stop numerically. All-free finite fits and negative binomial comparisons have no global certificate. Holding all coefficients leaves only
+    hold. All two-free-shape subsets now return certified finite maxima or structured stops. For the alpha-free pairs a supporting-polynomial condition can prove the negative binomial supremum; other unresolved faces stop numerically. All-free finite fits can complete a global stationary-cover certificate. Otherwise the score-checked legacy finite or face comparison is retained as uncertified, including all-free negative binomial faces and Poisson faces outside the proved sufficient conditions. Holding all coefficients leaves only
     likelihood evaluation, including for all-zero data.
   reason: >-
     The probability mass is symmetric in $r$ and $\beta$ after expanding
@@ -131,7 +129,7 @@ Any subset of $r$, $\alpha$ and $\beta$ may be held fixed. When $r$ and $\beta$ 
 
 On the diagonal $r=\beta$ the swap fixes the law, so the score along $(1,0,-1)$ in $(r,\alpha,\beta)$ vanishes and the Fisher information has rank 2 of 3. The diagonal is therefore a singular boundary of the identified set $r\le\beta$: Wald intervals for $r$ and $\beta$ separately are unreliable near it. Elsewhere in the interior the information is nonsingular ([classification](../../../../../dev/research/evaluations/2026-11-04-dqm-c-report.md)).
 
-With alpha free and at least one other shape free, a deterministic multistart search compares finite stationary points with every reachable negative binomial and Poisson face. Limiting models win computed likelihood ties within $10^{-8}$ times the sample size. This search does not certify global optimality or assume unimodality. An unresolved score or range endpoint stops the fit. With all coefficients supplied, the likelihood is evaluated directly. For all-zero data, any free coefficient allows the likelihood to approach one only at an excluded boundary. With every coefficient held, the all-zero likelihood is evaluated at the supplied positive values.
+Multistart runs propose finite witnesses. Closed certificates verify their global coefficient enclosures or prove a limit decision. An all-free certificate that cannot close retains the legacy score-checked finite result or face comparison as uncertified; actual search failures stop. With all coefficients supplied, the likelihood is evaluated directly. For all-zero data, any free coefficient allows the likelihood to approach one only at an excluded boundary. With every coefficient held, the all-zero likelihood is evaluated at the supplied positive values.
 
 
 ## Scalar certificates
@@ -307,6 +305,40 @@ comparisons use the scalar $128\epsilon$ margin above. The certificate is
 exact in exact arithmetic conditional on the computed comparisons, with
 these practical floating-point margins, rather than outward rounding.
 
+## Alpha intervals for the inner profile
+
+The alpha-held cover extends to a closed positive interval $[a_l,a_h]$.
+Both size/beta scores increase in alpha, so their extremal corner signs use
+$a_h$ at the lower size/beta corner and $a_l$ at the upper corner. A
+uniform stationary rectangle follows from the same small-shape bound and
+a negative size score at $(U,a_h,l)$. Its finite witness lower bound uses
+$p_0$ at $a_l$ and count-ratio denominators at $a_h$; this bounds the
+witness likelihood throughout the alpha interval.
+
+The midpoint's certified global inner mode proposes a root neighborhood.
+Decreasing trigamma bounds its Hessian uniformly in all three coordinates.
+The fixed inverse Hessian at the center gives a contraction for every alpha
+in the interval when both endpoint score residuals and all interval Hessians
+map the same rectangle strictly into itself. Negative definiteness makes
+the enclosed root a strict conditional maximum. The stationary cover then
+excludes every other box uniformly, including the diagonal. Closure proves
+that every conditional global maximum in the entire alpha interval is in
+this neighborhood or its swap. Unresolved additional branches, wide
+intervals and seams stop rather than being interpolated from endpoint fits.
+Hessian margins are $512\epsilon$ absolute-term sums as for fixed alpha;
+the witness lower bound uses $10^{-9}n$ times its recorded likelihood and
+zero-mass magnitudes.
+
+All-free finite proposals attempt this additional inner certificate on
+$a[1-w,1+w]$, where $w=\min(10^{-6},\sqrt{\mathrm{tol}})$.
+The binding-neutral result exposes `profile_alpha_interval`,
+`profile_mode_lower` and `profile_mode_upper` (coefficient order size,
+alpha, beta). The fixed-alpha certificate and the interval cover each have
+$128\min(\mathrm{iterlim},100000)$ evaluations; nested root solves keep
+the solver-iteration allowance. A closed slab certifies the inner profile enclosure.
+The separate three-dimensional cover below certifies finite all-free fits even
+when this additional slab cannot close; general winning NB faces remain unresolved.
+
 ## Alpha-free pair certificates
 
 Fix $r>0$, write $a=\alpha$, $b=\beta$, $s=a+b$ and $p=a/s$.
@@ -368,9 +400,8 @@ $(k+1)n_{k+1}-(k+r)q^*n_k$. A single change from positive to negative
 proves its unique positive stationary point is $q^*$ and $D(t)\le n$.
 Concavity of log likelihood in the mixing distribution then proves the NB
 face is an upper bound for every mixture. A nondegenerate beta mixing law
-has strictly smaller likelihood, so the supremum is not attained. Unresolved
-coefficient signs do not pass this test. The implementation checks sparse
-coefficients without enumerating the count range. This sufficient condition
+has strictly smaller likelihood, so the supremum is not attained. The first test checks sparse coefficients without enumerating the count range.
+If it fails, a bounded quotient-polynomial test below can still prove the face. This sufficient condition
 includes positive constant and binary samples; it is not a complete
 classification of winning NB faces.
 
@@ -386,7 +417,58 @@ Every BNB law is mixed Poisson. A supporting-polynomial test with coefficient
 signs $(k+1)n_{k+1}-\bar x n_k$ proves a winning Poisson face when those
 signs change once from positive to negative. It uses the same concavity
 argument with $D(\lambda)=e^{\bar x-\lambda}\sum_xn_x(\lambda/\bar x)^x$.
-Other all-free finite and face decisions remain numerical searches.
+The single-sign-change condition is sufficient but not necessary. Write either
+face derivative in the normalized variable $y$ with its known fitted root at
+$y=1$. For Poisson, its polynomial is
+$P(y)=\sum_k[(k+1)n_{k+1}-\bar x n_k]y^k$; for held size $r$, replace
+$\bar x n_k$ by $(k+r)q^*n_k$. In exact arithmetic $P(1)=0$.
+For $Q(y)=P(y)/(1-y)$, the coefficient of $y^j$ is the prefix sum of
+these derivative coefficients. If $Q>0$ on $[0,\infty)$, the face directional
+likelihood increases up to $y=1$ and decreases afterwards. This proves the
+same strict mixture bound; for NB the required domain is the smaller
+$0<y<1/q^*$.
+
+For degree $m$ quotient coefficients $Q_j$, the transformed polynomial
+$(1-z)^m Q(z/(1-z))$ has Bernstein coefficients
+$Q_j/\binom{m}{j}$ on $[0,1]$. Positive coefficient lower bounds certify
+positivity throughout an interval; de Casteljau subdivision can establish
+this even when the original coefficients have mixed signs. The test stops
+without a proof on unresolved endpoints, unrepresentable coefficients or
+exhaustion of its certificate allowance. Failure of this sufficient test
+says nothing about which face wins. The existing search then continues.
+
+Coefficient prefix sums use a $(1024+16h)\epsilon$ absolute-term margin,
+where $h$ bounds the number of accumulated support terms; inverse binomial
+weights accumulate an additional $8\epsilon$ relative margin per update;
+subdivision adds $8\epsilon$ times the absolute parent endpoints at each
+update. These are practical floating-point margins under the conditional
+exact-arithmetic contract, not outward rounding. Dense storage is bounded
+before allocation by the same $128\min(\mathrm{iterlim},100000)$ allowance
+that counts construction, subdivision nodes and individual coefficient updates.
+
+For example, counts $n_0=3,n_1=10,n_3=1$ give
+$Q(y)=(101-29y+13y^2)/14$ for Poisson. Its negative discriminant
+proves strict positivity despite three derivative coefficient sign changes.
+Both the all-free Poisson face and the held-size-one NB face are certified
+for this sample. Winning all-free faces not passing the sufficient conditions below or these tests
+retain the legacy comparison, explicitly marked uncertified.
+
+Equal positive frequencies at $0,1,2,3,4$ have a separate exact sufficient
+condition. Every BNB is compound Poisson because its Poisson mixing variable
+is a product and ratio of independent gamma variables, hence has an HCM
+density and a generalized-gamma-convolution law
+([Behme and Bondesson, Propositions 1 and 3](https://arxiv.org/abs/1507.04017)).
+Over compound-Poisson laws the equal-frequency likelihood is uniquely
+maximized by Poisson(2). After removing jumps above four and optimizing an
+exponential tilt, the mean-two simplex has a radial dispersion derivative
+whose negative numerator is a degree-11 polynomial. Homogenization and four
+degree elevations give 759 positive coefficients and 57 zero coefficients,
+proving its nonnegativity on the entire simplex. Strictness near the Poisson
+endpoint excludes every nonzero dispersion ray. The exact algebra and its
+runtime frequency condition are documented in the
+[derivation](../../../../../dev/research/evaluations/2026-11-08-bnbinom-allfree-data/derivations.md#equal-frequencies-through-four-a-stronger-poisson-theorem).
+This proves the Poisson face even though its mixed-Poisson supporting test
+fails: at zero that test gives $D(0)=e^2>5$.
 
 Uniform exterior bounds are nevertheless available. Put
 $m=rb/(a+r+b)$ and $\lambda=rb/a$. The trigamma integral for $\log p_0$
@@ -407,15 +489,76 @@ $r\le b$, the small-shape bound and this cutoff put $r$ in a compact
 positive interval. The pair bounds above can then be made uniform in $r$,
 using its upper endpoint for rising factorials and its lower endpoint in
 $\delta$. A witness beating the globally fitted NB face supplies an effective
-finite superlevel box. These inequalities do not complete the all-free
-stationary cover or resolve a winning NB face. The
+finite superlevel box. These inequalities supply the exterior exclusions for the all-free
+stationary cover; they do not resolve a winning NB face. The
 [derivations and independent checks](../../../../../dev/research/evaluations/2026-11-08-bnbinom-joint-data/derivations.md)
 state the bounds and remaining obligations.
 
+## Finite all-free certificate
+
+A finite witness strictly above certified upper bounds for both fitted faces
+makes the effective canonical superlevel box compact. The NB face is
+evaluated on its stable mean profile; its height bound includes the delegated
+size-root enclosure error, not just likelihood evaluation error. The cover retains
+$r\le b$ without discarding boxes crossing the diagonal. Monotone corner
+score signs, uniform alpha-mode brackets, the mass-ratio bounds and local
+NB-neighborhood remainders exclude boxes. Every global maximum is an
+interior stationary point and survives those exclusions.
+
+In small boxes the full three-coordinate average-log-likelihood Hessian is bounded using decreasing
+trigamma. For any fixed matrix $M$ and center $c$, a stationary point $p$
+satisfies
+
+$$
+ p=c-MS(c)+(I-M\bar H)(p-c),
+$$
+
+where $\bar H$ is an average Hessian along the segment from $c$ to $p$.
+The computed inverse center Hessian merely chooses $M$; the identity and
+root exclusions do not require that inverse to be accurate. The enclosure
+is also intersected with each box before splitting it further. Interval bounds
+on the right side exclude boxes or shrink their stationary-point enclosures.
+Hessian bounds use $1024\epsilon$ absolute-term margins. Matrix products
+receive $64\epsilon$ absolute-term margins and the resulting mapping
+receives $4096\epsilon$ times its accumulated absolute terms.
+
+Newton proposes a center only. The cover must close with every remaining
+canonical global maximum in a box of relative radius
+$\min(\mathrm{tol},10^{-8})/4$ about that center. Compactness and a
+nonempty witness superlevel ensure that a global maximum exists there.
+Thus all three returned coefficients meet the requested relative accuracy
+without assuming uniqueness or accepting a capped Newton iterate. The
+swapped box supplies the other label. If this cover cannot close, the successful
+legacy result is retained as uncertified. A proved strict advantage overrides a
+legacy face choice; an actually failed legacy solve still stops. The diagonal
+witness remains available independently of selection.
+
+The Newton proposal and each coarse alpha bracket have
+$\min(\mathrm{iterlim},100000)$ solver steps. Cutoff tests and covering
+boxes share $128\min(\mathrm{iterlim},100000)$ certificate evaluations.
+Bounds for a winning face require a different argument when the strict
+witness gap vanishes. These unresolved comparisons retain the legacy likelihood
+comparison with its $10^{-8}n$ face tolerance and Poisson tie preference,
+explicitly uncertified. Proven strict finite or face inequalities override that
+preference. A finite legacy candidate must pass the existing finite-difference
+average-score gate and lie strictly inside the search range.
+
+`global_loglik_interval` records the certified maximum-likelihood bounds.
+`global_coefficient_lower` and `global_coefficient_upper` enclose every
+canonical global maximizer; reflecting size and beta gives the other labels.
+These fields are available through the binding-neutral result, public JS fit
+and internal R adapter result. The proof is conditional exact arithmetic with
+the stated practical floating-point margins, rather than outward rounding. The
+[derivations and reproducible checks](../../../../../dev/research/evaluations/2026-11-08-bnbinom-allfree-data/derivations.md)
+include the independent high-precision roots and nonuniqueness witness.
+
 ## R notes
 
-Supply `size`, `alpha` or `beta` to hold that coefficient. A detected negative binomial limit recommends `mlnbinom`, holding its size at the supplied `size` or `beta` when either was held. A Poisson limit or all-zero free fit recommends `mlpois`. The all-free finite search and its negative binomial comparisons do not certify a global maximum. One-free-shape fits and every two-free-shape route use certificates; their budget and arithmetic stops carry finite diagnostic witnesses when available.
+Supply `size`, `alpha` or `beta` to hold that coefficient. A detected negative binomial limit recommends `mlnbinom`, holding its size at the supplied `size` or `beta` when either was held. A Poisson limit or all-zero free fit recommends `mlpois`. All-free fits attempt the global stationary cover and retain uncertified legacy finite or face decisions when certification cannot close. One-free-shape fits and every two-free-shape route use certificates; their budget and arithmetic stops carry finite diagnostic witnesses when available.
 
-An unresolved negative-binomial face is not replaced by the Poisson face:
-its certificate failure and any retained face witnesses propagate to the
-parent fit. Both face solvers use the caller's iteration allowance.
+Failed negative-binomial solvers still stop, preserving their typed witnesses.
+Successful all-free comparisons expose `certified` through the existing scalar
+extra channel (0/1 in JS, logical in the R adapter). The R estimate retains a
+logical `certified` attribute through the standard constructor. Limit conditions
+state `Certified global comparison` or `Uncertified legacy comparison`; R
+conditions also carry the logical flag. Both face solvers use the caller's iteration allowance.
