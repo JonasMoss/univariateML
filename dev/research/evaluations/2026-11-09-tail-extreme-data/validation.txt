@@ -1,0 +1,126 @@
+cpp-dev | workstation, GCC 15.2
+/tmp/umvl-cpu/run4 just cpp-test
+106/106 shards
+106/106 Test  #24: distribution_exp .................   Passed    0.03 sec
+
+100% tests passed, 0 tests failed out of 106
+
+Label Time Summary:
+cran    = 549.67 sec*proc (105 tests)
+dev     = 554.06 sec*proc (106 tests)
+full    = 554.06 sec*proc (106 tests)
+
+Total Test time (real) = 138.55 sec
+
+cpp-full | simbox, GCC 13.3
+/tmp/umvl-cpu/simbox-run env CMAKE_BUILD_PARALLEL_LEVEL=4 CTEST_PARALLEL_LEVEL=4 UMVL_TEST_TIER=full just cpp-test
+129/129 shards
+129/129 Test #101: distribution_tlambda_slow ........   Passed  161.40 sec
+
+100% tests passed out of 129
+
+Label Time Summary:
+cran    = 323.84 sec*proc (105 tests)
+dev     = 326.19 sec*proc (106 tests)
+full    = 540.63 sec*proc (129 tests)
+
+Total Test time (real) = 242.22 sec
+
+cpp-no-long-double | workstation, GCC 15.2
+/tmp/umvl-cpu/run4 just cpp-test-no-long-double
+129/129 shards
+129/129 Test #101: distribution_tlambda_slow ........   Passed  294.59 sec
+
+100% tests passed, 0 tests failed out of 129
+
+Label Time Summary:
+cran    = 572.87 sec*proc (105 tests)
+dev     = 576.28 sec*proc (106 tests)
+full    = 972.09 sec*proc (129 tests)
+
+Total Test time (real) = 434.20 sec
+
+simbox-no-long-double | simbox, GCC 13.3
+/tmp/umvl-cpu/simbox-run env CMAKE_BUILD_PARALLEL_LEVEL=4 CTEST_PARALLEL_LEVEL=4 just cpp-test-no-long-double
+129/129 shards
+129/129 Test #101: distribution_tlambda_slow ........   Passed  171.73 sec
+
+100% tests passed out of 129
+
+Label Time Summary:
+cran    = 233.26 sec*proc (105 tests)
+dev     = 235.19 sec*proc (106 tests)
+full    = 456.32 sec*proc (129 tests)
+
+Total Test time (real) = 232.19 sec
+
+r-dev | simbox
+/tmp/umvl-cpu/simbox-run just test
+FAIL 0, WARN 0, SKIP 154, PASS 22269
+
+[ FAIL 0 | WARN 0 | SKIP 154 | PASS 22269 ]
+   user  system elapsed 
+321.592   3.945  79.724 
+
+r-full | simbox
+/tmp/umvl-cpu/simbox-run just test-full
+FAIL 0, WARN 0, SKIP 0, PASS 45101
+
+[ FAIL 0 | WARN 0 | SKIP 0 | PASS 45101 ]
+   user  system elapsed 
+932.019   6.397 303.889 
+
+js-build | workstation, Emscripten
+/tmp/umvl-cpu/run4 just js-build
+success
+  160 |     if (std::numeric_limits<CPPUNIV_EXTENDED_REAL>::digits <=
+      |                                                            ^
+1 warning generated.
+
+js-test | workstation, WASM/libc++
+/tmp/umvl-cpu/run4 just js-test
+557 passed, 0 failed, 0 skipped; bounded child passed
+  duration_ms: 0.555334
+  type: 'test'
+  ...
+# Subtest: large held skew-t shape retains a certified fit and finite skew covariance
+ok 556 - large held skew-t shape retains a certified fit and finite skew covariance
+  ---
+  duration_ms: 21.756332
+  type: 'test'
+  ...
+# Subtest: extreme t and GED shapes terminate in WASM and retain inversion
+ok 557 - extreme t and GED shapes terminate in WASM and retain inversion
+  ---
+  duration_ms: 168.8023
+  type: 'test'
+  ...
+1..557
+# tests 557
+# suites 0
+# pass 557
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 159145.428507
+
+site-check | workstation
+/tmp/umvl-cpu/run4 taskset -c 0-3 just site-check
+success; 99 generated C++ snippets compile/link; browser checks pass
+Environment: Python 3.14.5, SymPy 1.14.0; g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0
+Boost headers: /home/jonas/R/x86_64-pc-linux-gnu-library/4.5/BH/include
+PASS: 99 generated C++ snippets compile and link as C++17 (including exp, gamma, gb2).
+PASS: pilot and ten additional HTML spot checks: exp, gamma, gb2, binom, beta, hyper, sstd, gev, gpd, tnorm, pois, unif, pareto
+Log-density fallback: cmb, cmp, dweibull, gev, gpd, huber, sged, snorm, sstd, st, tbinom, tpois, triang, zib, zinb, zip, zipf, zmbinom, zmgeom, zmlogarithmic, zmnbinom, zmpois
+WEIGHT exp: HTML 25425 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+WEIGHT gamma: HTML 29649 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+WEIGHT gb2: HTML 62836 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+WEIGHT binom: HTML 41341 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+WEIGHT hyper: HTML 40161 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+WEIGHT sstd: HTML 141791 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+Total dist: 23257423 B
+
+evidence | workstation, native and no-long-double
+/tmp/umvl-cpu/run4 sh dev/research/evaluations/2026-11-09-tail-extreme-data/run-evidence.sh
+98 reference comparisons passed

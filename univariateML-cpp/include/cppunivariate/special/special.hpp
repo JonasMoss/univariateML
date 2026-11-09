@@ -433,7 +433,10 @@ inline double fs_normal_p(double x, bool lower, bool log_p) {
 template <typename LogTail>
 inline double fs_log_quantile(double lp, LogTail tail) {
   double hi = 1.0;
-  while (tail(hi) > lp) {
+  for (;;) {
+    const double value=tail(hi);
+    if (std::isnan(value)) return kNaN;
+    if (value<=lp) break;
     if (hi >= std::numeric_limits<double>::max()/2.0) return kPosInf;
     hi *= 2.0;
   }
@@ -481,6 +484,11 @@ inline double fs_beta_fraction(double a, double b, double x) {
 }
 inline double fs_t_p(double x, double nu, bool lower, bool log_p) {
   const double a = std::fabs(x);
+  // In this range the first relative tail correction is bounded in size
+  // by O((1+x^2)^2/nu), below binary64 tail accuracy. Crucially, do not
+  // form x^2/nu first: it can underflow before multiplication by nu.
+  if (nu>=1e16 && 4*std::log1p(a)<std::log(nu)+std::log(1e-16))
+    return tail_probability(tails_from_log(normal_log_upper(a),x<0),lower,log_p);
   const boost::math::students_t_distribution<ExtendedReal, NoThrowPolicy> d(nu);
   const ExtendedReal tail = boost::math::cdf(boost::math::complement(d, (ExtendedReal)a));
   double lp = (double)std::log(tail);
@@ -489,11 +497,13 @@ inline double fs_t_p(double x, double nu, bool lower, bool log_p) {
     const double stable_logz = std::isfinite(logz) ? logz : std::log(nu)-2.0*std::log(a);
     const double z = std::exp(stable_logz);
     const double aa=nu/2.0;
+    if (z==1.0) return kNaN; // complementary beta argument was rounded away
     // Gamma ratio from Boost avoids cancellation at large degrees of freedom.
     const double logbeta = std::log(boost::math::tgamma_delta_ratio(aa,0.5,NoThrowPolicy{})) + 0.5*std::log(cppunivariate::pi);
     lp = -std::log(2.0) + aa*stable_logz + 0.5*std::log1p(-z)
         - logbeta + std::log(fs_beta_fraction(aa,0.5,z)/aa);
   }
+  if (!(lp<=0)) return kNaN;
   if ((x < 0.0) != lower) lp=fs_log1mexp(lp);
   return log_p ? lp : std::exp(lp);
 }

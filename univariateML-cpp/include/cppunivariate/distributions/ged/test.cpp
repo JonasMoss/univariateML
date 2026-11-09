@@ -547,3 +547,94 @@ TEST_CASE("ged: positive residual kernels survive quotient underflow") {
   CHECK(cppunivariate::distributions::pged(0,0,1e300,.0005,true,false) == .5);
   CHECK(cppunivariate::distributions::dged(INFINITY,0,1e300,.02,true) == -INFINITY);
 }
+
+#include "cppunivariate/distributions/sged/dpqr.hpp"
+TEST_CASE("GED extreme shapes preserve inversion and random amplitude") {
+  for(double nu:{1e8,1e100,std::numeric_limits<double>::max()}) {
+    for(double p:{.01,.25,.5,.75,.99}) {
+      const double q=cppunivariate::distributions::qged(p,0,1,nu,true,false);
+      CHECK(q==doctest::Approx(std::sqrt(3.)*(2*p-1)).epsilon(5e-7));
+      CHECK(cppunivariate::distributions::pged(q,0,1,nu,true,false)==doctest::Approx(p).epsilon(1e-12));
+      const double s=cppunivariate::distributions::qsged(p,0,1,nu,2);
+      CHECK(s==doctest::Approx(std::sqrt(3.)*(2*p-1)).epsilon(5e-7));
+      CHECK(cppunivariate::distributions::psged(s,0,1,nu,2)==doctest::Approx(p).epsilon(1e-12));
+    }
+    cppunivariate::distributions::StdRng<> rng(163);
+    double sum=0,square=0;int below=0;
+    for(int i=0;i<10000;++i) {
+      const double x=cppunivariate::distributions::rsged(rng,0,1,nu,2);
+      REQUIRE(std::isfinite(x));sum+=x;square+=x*x;below+=x<0;
+    }
+    CHECK(std::abs(sum/10000)<.04);
+    CHECK(std::abs(square/10000-1)<.05);
+    CHECK(std::abs(below/10000.-.5)<.025);
+  }
+}
+
+TEST_CASE("GED tiny gamma shapes retain logarithmic upper tails") {
+  for(double nu:{1e8,1e100,std::numeric_limits<double>::max()}) {
+    const double a=1/nu;
+    for(double x:{1.,2.}) {
+      const double e1=x==1 ? .21938393439552027368 : .048900510708061119567;
+      const double lp=cppunivariate::ged_detail::gamma_power_log(std::log(x)/nu,nu,false);
+      CHECK(lp==doctest::Approx(std::log(a)+std::log(e1)).epsilon(1e-8));
+    }
+    for(double lp:{std::log(a)-2,std::log(a)-1000}) {
+      const double w=cppunivariate::ged_detail::gamma_power_logq(lp,nu,false);
+      CHECK(std::isfinite(w));
+      CHECK(cppunivariate::ged_detail::gamma_power_log(w,nu,false)==doctest::Approx(lp).epsilon(1e-12));
+    }
+  }
+}
+
+TEST_CASE("GED unsupported log-scale overflow is a numerical failure") {
+  CHECK(std::isnan(cppunivariate::distributions::pged(1,0,1,4e-306,false,true)));
+  CHECK(std::isfinite(cppunivariate::distributions::pged(1,0,1,1e-300,false,true)));
+}
+
+TEST_CASE("GED uniform-edge neighbors match high precision") {
+  // Independent 360-digit gamma-integral values: tail-extreme-data/edge-oracle.py.
+  struct Row {double nu,x,ld,lp;};
+  const Row rows[]={
+    {100000000,1.732050807568877,-1.8039128164814298,-19.824051526222767},
+    {100000000,1.7320508075688772,-1.803912823679201,-19.824051541098797},
+    {100000000,1.7320508075688774,-1.8039128308769721,-19.824051555974826},
+    {1e+100,1.732050807568877,-1.2424533248940002,-36.913206110018642},
+    {1e+100,1.7320508075688772,-1.2424533248940002,-38.080312530773824},
+    {1e+100,1.7320508075688774,-std::numeric_limits<double>::infinity(),-std::numeric_limits<double>::infinity()},
+    {1.7976931348623157e+308,1.732050807568877,-1.2424533248940002,-36.913206110018642},
+    {1.7976931348623157e+308,1.7320508075688772,-1.2424533248940002,-38.080312530773824},
+    {1.7976931348623157e+308,1.7320508075688774,-std::numeric_limits<double>::infinity(),-std::numeric_limits<double>::infinity()},
+  };
+  for(const auto& row:rows) {
+    CAPTURE(row.nu);CAPTURE(row.x);
+    const double ld=cppunivariate::distributions::dged(row.x,0,1,row.nu,true);
+    const double lp=cppunivariate::distributions::pged(row.x,0,1,row.nu,false,true);
+    if(std::isinf(row.ld)) {CHECK(ld==row.ld);CHECK(lp==row.lp);}
+    else {
+      CHECK(ld==doctest::Approx(row.ld).epsilon(1e-12));
+      CHECK(lp==doctest::Approx(row.lp).epsilon(1e-12));
+      CHECK(cppunivariate::distributions::pged(row.x,0,1,row.nu,false,false)/std::exp(row.lp)==doctest::Approx(1.).epsilon(1e-10));
+    }
+    CHECK(cppunivariate::distributions::dsged(row.x,0,1,row.nu,1,true)==ld);
+    CHECK(cppunivariate::distributions::psged(-row.x,0,1,row.nu,1,true,true)==lp);
+  }
+}
+TEST_CASE("GED uncertain transformed uniform edges report failure") {
+  const double nu=std::numeric_limits<double>::max(),x=std::sqrt(3.);
+  CHECK(std::isnan(cppunivariate::distributions::pged(1+x,1,1,nu,false,true)));
+  CHECK(std::isnan(cppunivariate::distributions::dged(1+x,1,1,nu,true)));
+  for(double sign:{-1.,1.}) {
+    CHECK(std::isnan(cppunivariate::distributions::psged(sign*x,0,1,nu,2)));
+    CHECK(std::isnan(cppunivariate::distributions::dsged(sign*x,0,1,nu,2,true)));
+  }
+}
+
+TEST_CASE("GED subnormal gamma draws report failure") {
+  struct SubnormalRng {
+    double rgamma(double,double) {return std::numeric_limits<double>::denorm_min();}
+    double runif(double a,double b) {return (a+b)/2;}
+  } rng;
+  for(double nu:{10.,1e8,std::numeric_limits<double>::max()})
+    CHECK(std::isnan(cppunivariate::distributions::rged(rng,0,1,nu)));
+}

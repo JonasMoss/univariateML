@@ -1464,7 +1464,7 @@ test('skew-t and skew-GED retain large-shape gamma moments',()=>{
       const back=m.psstd(qs,[0,1,nu,2],true,false);
       for(let i=0;i<3;i++)assert.ok(Math.abs(back[i]-ps[i])<1e-11);
     }
-    // libc++ gamma sampling has a separate overflow loop at DBL_MAX.
+    // The largest shape is exercised in the bounded child process below.
     if(nu<Number.MAX_VALUE) assert.ok([...m.rsstd(10,[0,1,nu,2],31)].every(Number.isFinite));
   }
   for(const nu of [1e8,1e16,1e100,Number.MAX_VALUE]) {
@@ -1479,4 +1479,57 @@ test('large held skew-t shape retains a certified fit and finite skew covariance
   assert.equal(fit.status,'Ok');assert.ok(fit.estimates.xi>1.2 && fit.estimates.xi<1.4);
   const covariance=api.sstd.vcov(x,fit);
   assert.ok(Number.isFinite(covariance.matrix[0][0]) && covariance.matrix[0][0]>0);
+});
+
+// A process timeout is essential: a synchronous WASM rejection loop blocks
+// node:test's in-process timeout too.
+test('extreme t and GED shapes terminate in WASM and retain inversion', async()=>{
+  const {spawnSync}=await import('node:child_process');
+  const source=`import create from './build/js/univariateML.mjs';
+import assert from 'node:assert/strict';
+const m=await create();
+for(const [x,ld] of [[1.3407807929942597e+154,-6.2303296397089188e+307],[1.4e+154,-6.6272046396795535e+307]]) {
+ const q=new Float64Array([x]),p=[0,1,Number.MAX_VALUE];
+ assert.ok(Math.abs(m.dstd(q,p,true,true)[0]/ld-1)<1e-12,'Student density overflow');
+ assert.equal(m.dstd(q,p,true,false)[0],0,'Student density underflow');
+ assert.ok(Math.abs(m.dsstd(q,[...p,1],true,true)[0]/ld-1)<1e-12,'skew Student density overflow');
+}
+const edgeRows=[[100000000,-1.803912823679201,-19.824051541098797],[1e+100,-1.2424533248940002,-38.080312530773824],[1.7976931348623157e+308,-1.2424533248940002,-38.080312530773824]];
+for(const [nu,ld,lp] of edgeRows) {
+ const x=new Float64Array([Math.sqrt(3)]),p=[0,1,nu];
+ assert.ok(Math.abs(m.dged(x,p,true,true)[0]-ld)<1e-11,'GED edge density');
+ assert.ok(Math.abs(m.pged(x,p,false,true)[0]-lp)<1e-11,'GED edge tail');
+ assert.ok(Math.abs(m.pged(x,p,false,false)[0]/Math.exp(lp)-1)<1e-10,'GED edge natural tail');
+}
+assert.ok(Number.isNaN(m.psged(new Float64Array([Math.sqrt(3)]),[0,1,Number.MAX_VALUE,2],true,false)[0]),'uncertain skew-GED edge');
+assert.ok(Number.isNaN(m.pged(new Float64Array([1]),[0,1,4e-306],false,true)[0]),'GED unsupported log scale');
+for(const [f,p] of [['lst',[0,1,Number.MIN_VALUE]],['ht',[0,Number.MIN_VALUE,1]],['st',[0,1,2,Number.MIN_VALUE]]])
+ assert.ok([...m['r'+f](1,p,163)].every(Number.isNaN),f+' subnormal gamma shape');
+for(const nu of [1e8,1e100,Number.MAX_VALUE]) {
+ for(const [f,p] of [['lst',[0,1,nu]],['std',[0,1,nu]],['sstd',[0,1,nu,2]],['ht',[0,nu,1]],['st',[0,1,2,nu]],['ged',[0,1,nu]],['sged',[0,1,nu,2]]]) {
+  assert.ok(Number.isFinite(m['p'+f](new Float64Array([0]),p,true,false)[0]),f+' origin CDF');
+  const probs=new Float64Array([.01,.25,.5,.75,.99]);
+  const q=m['q'+f](probs,p,true,false), got=m['p'+f](q,p,true,false);
+  got.forEach((v,i)=>assert.ok(Math.abs(v-probs[i])<1e-9,f+' inversion '+nu+' '+v));
+  const draw=m['r'+f](1000,p,163);
+  assert.ok([...draw].every(Number.isFinite),f+' draws');
+  assert.ok(new Set(draw).size>900,f+' spread');
+  if(f==='ged'||f==='sged') {
+   q.forEach((v,i)=>assert.ok(Math.abs(v-Math.sqrt(3)*(2*probs[i]-1))<1e-6,f+' uniform limit'));
+   const mean=draw.reduce((s,v)=>s+v,0)/draw.length;
+   const square=draw.reduce((s,v)=>s+v*v,0)/draw.length;
+   assert.ok(Math.abs(mean)<.12 && Math.abs(square-1)<.15,f+' moments');
+  }
+  if(f==='lst' && nu>1e99) {
+   const x=new Float64Array([40,100,1000]);
+   const lp=m.plst(x,p,false,true);
+   const back=m.qlst(lp,p,false,true);
+   back.forEach((v,i)=>assert.ok(Math.abs(v/x[i]-1)<1e-10,'log tails'));
+  }
+ }
+}`;
+  const r=spawnSync(process.execPath,['--v8-pool-size=1','--input-type=module','-e',source],
+    {cwd:new URL('../../',import.meta.url),timeout:30000,killSignal:'SIGKILL',encoding:'utf8'});
+  assert.equal(r.error,undefined,String(r.error));
+  assert.equal(r.status,0,r.stderr);
 });

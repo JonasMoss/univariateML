@@ -308,3 +308,12 @@ Location accuracy with scale held is measured against empirical data spread,
 so a large held scale cannot mask an inaccurate location. Scale estimates
 must survive logarithmic round-trip checks after conversion to physical
 coordinates; an unrepresentable accurate estimate causes a numerical stop.
+
+## d/p/q/r
+
+At large degrees of freedom, direct Student tails avoid a beta argument whose
+complement has rounded away. A normal-tail bridge covers the region where
+its relative correction is below binary64 accuracy; unsupported tail
+calculations return NaN. The
+[extreme-shape checks](../../../../../dev/research/evaluations/2026-11-09-tail-extreme-data/run-targeted.sh)
+cover the half-t, standardized-t and skew-t consumers as well.

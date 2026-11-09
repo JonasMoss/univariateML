@@ -435,3 +435,37 @@ test_that("ged fully held evaluation retains underflowed residual powers", {
     expect_equal(qml(lp,f,lower.tail=lower,log.p=TRUE)/x,c(1,1),tolerance=2e-10)
   }
 })
+
+test_that("extreme GED shapes retain quantiles and sampling spread", {
+  for (nu in c(1e8, 1e100, .Machine$double.xmax)) {
+    for (f in list(mlged(mean=0, sd=1, nu=nu), mlsged(mean=0, sd=1, nu=nu, xi=2))) {
+      p <- c(.01,.25,.5,.75,.99)
+      expect_equal(pml(qml(p,f),f),p,tolerance=1e-10)
+      set.seed(163)
+      x <- rml(10000,f)
+      expect_true(all(is.finite(x)))
+      expect_lt(abs(mean(x)),.04)
+      expect_lt(abs(mean(x*x)-1),.05)
+    }
+  }
+})
+
+test_that("GED log-scale overflow produces NaN rather than a false endpoint", {
+  expect_warning(expect_true(is.nan(pged(1,0,1,4e-306,lower.tail=FALSE,log.p=TRUE))),
+                 "NaNs produced")
+  expect_true(is.finite(pged(1,0,1,1e-300,lower.tail=FALSE,log.p=TRUE)))
+})
+
+test_that("GED uniform edges retain the side of adjacent doubles", {
+  # Independent 360-digit references from tail-extreme-data/edge-oracle.py.
+  nu <- c(1e8,1e100,.Machine$double.xmax)
+  ld <- c(-1.803912823679201,-1.2424533248940002,-1.2424533248940002)
+  lp <- c(-19.824051541098797,-38.080312530773824,-38.080312530773824)
+  for (i in seq_along(nu)) {
+    expect_equal(dged(sqrt(3),0,1,nu[i],log=TRUE),ld[i],tolerance=1e-12)
+    expect_equal(pged(sqrt(3),0,1,nu[i],lower.tail=FALSE,log.p=TRUE),lp[i],tolerance=1e-12)
+    expect_equal(pged(sqrt(3),0,1,nu[i],lower.tail=FALSE)/exp(lp[i]),1,tolerance=1e-10)
+  }
+  expect_warning(expect_true(is.nan(pged(1+sqrt(3),1,1,.Machine$double.xmax))),"NaNs produced")
+  expect_warning(expect_true(is.nan(psged(sqrt(3),0,1,.Machine$double.xmax,2))),"NaNs produced")
+})

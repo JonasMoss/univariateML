@@ -14,7 +14,7 @@ inline double logmode(double nu) {
  return special::log_t_mode(nu);
 }
 inline double log_t_density(double logabs,double nu) {
- return logmode(nu)-0.5*(nu+1)*student_detail::softplus(2*logabs-std::log(nu));
+ return student_detail::logdensity_log(logabs,nu);
 }
 inline double standardize(double x,double xi,double omega) {
  double z=static_cast<double>((static_cast<CPPUNIV_EXTENDED_REAL>(x)-xi)/omega);

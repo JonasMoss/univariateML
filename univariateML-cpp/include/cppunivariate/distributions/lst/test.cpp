@@ -527,3 +527,111 @@ TEST_CASE("lst: uncertified free-shape searches still stop on solver exhaustion"
     CHECK(r.status==(mask==2?cppunivariate::LstStatus::CertificateBudget:cppunivariate::LstStatus::IterationFailure));
   }
 }
+
+#include "cppunivariate/distributions/std/dpqr.hpp"
+#include "cppunivariate/distributions/sstd/dpqr.hpp"
+#include "cppunivariate/distributions/ht/dpqr.hpp"
+#include "cppunivariate/distributions/st/dpqr.hpp"
+#include "cppunivariate/distributions/rng_std.hpp"
+TEST_CASE("Student extreme shapes retain normal tails and terminating samplers") {
+  for(double nu:{1e8,1e16,1e100,std::numeric_limits<double>::max()}) {
+    CHECK(std::isfinite(cppunivariate::distributions::psstd(0,0,1,nu,2)));
+    for(double p:{.01,.25,.5,.75,.99}) {
+      CAPTURE(nu);CAPTURE(p);
+      const double q=cppunivariate::distributions::qlst(p,0,1,nu,true,false);
+      CHECK(q==doctest::Approx(cppunivariate::special::qnorm(p,0,1,true,false)).epsilon(1e-6));
+      CHECK(cppunivariate::distributions::plst(q,0,1,nu,true,false)==doctest::Approx(p).epsilon(1e-10));
+      const double s=cppunivariate::distributions::qsstd(p,0,1,nu,2);
+      CHECK(cppunivariate::distributions::psstd(s,0,1,nu,2)==doctest::Approx(p).epsilon(1e-10));
+      const double h=cppunivariate::distributions::qht(p,0,nu,1,true,false);
+      CHECK(cppunivariate::distributions::pht(h,0,nu,1,true,false)==doctest::Approx(p).epsilon(1e-10));
+      const double t=cppunivariate::distributions::qst(p,0,1,2,nu,true,false);
+      CAPTURE(t);
+      if(nu>1e99) {
+        const double expected=cppunivariate::distributions::qsn(p,0,1,2,true,false);
+        CHECK(t==doctest::Approx(expected).epsilon(1e-9));
+      }
+      CHECK(cppunivariate::distributions::pst(t,0,1,2,nu,true,false)==doctest::Approx(p).epsilon(1e-9));
+    }
+    cppunivariate::distributions::StdRng<> rng(163);
+    for(int i=0;i<100;++i) {
+      CHECK(std::isfinite(cppunivariate::distributions::rstd(rng,0,1,nu)));
+      CHECK(std::isfinite(cppunivariate::distributions::rsstd(rng,0,1,nu,2)));
+      CHECK(std::isfinite(cppunivariate::distributions::rst(rng,0,1,2,nu)));
+      CHECK(std::isfinite(cppunivariate::distributions::rht(rng,0,nu,1)));
+    }
+  }
+}
+
+TEST_CASE("Student huge-shape logarithmic tails survive backend underflow") {
+  for(double nu:{1e100,std::numeric_limits<double>::max()}) {
+    for(double x:{10.,40.,100.,1000.}) {
+      const double lp=cppunivariate::distributions::plst(x,0,1,nu,false,true);
+      CHECK(lp==doctest::Approx(cppunivariate::special::normal_log_upper(x)).epsilon(1e-12));
+      CHECK(cppunivariate::distributions::qlst(lp,0,1,nu,false,true)==doctest::Approx(x).epsilon(1e-10));
+    }
+    CHECK(cppunivariate::distributions::dlst(1e-10,0,1,nu,true)==doctest::Approx(cppunivariate::special::log_t_mode(nu)).epsilon(1e-14));
+  }
+}
+
+TEST_CASE("half Student huge shapes retain relative accuracy near zero") {
+  for(double nu:{1e8,1e100,std::numeric_limits<double>::max()}) {
+    for(double p:{1e-100,1e-12,1e-8,1e-4}) {
+      const double x=cppunivariate::distributions::qht(p,0,nu,1,true,false);
+      const double got=cppunivariate::distributions::pht(x,0,nu,1,true,false);
+      CHECK(got/p==doctest::Approx(1.).epsilon(1e-10));
+    }
+  }
+}
+
+TEST_CASE("Student samplers reject an unrepresentable gamma shape") {
+  cppunivariate::distributions::StdRng<> rng(163);
+  const double nu=std::numeric_limits<double>::denorm_min();
+  CHECK(std::isnan(cppunivariate::distributions::rlst(rng,0,1,nu)));
+  CHECK(std::isnan(cppunivariate::distributions::rht(rng,0,nu,1)));
+  CHECK(std::isnan(cppunivariate::distributions::rst(rng,0,1,2,nu)));
+}
+
+TEST_CASE("large gamma sampler retains its scaled fluctuations") {
+  cppunivariate::distributions::StdRng<> rng(163);
+  double sum=0,square=0;
+  for(int i=0;i<10000;++i) {
+    const double z=(rng.rgamma(1e6,2)/2-1e6)/1000;
+    REQUIRE(std::isfinite(z));sum+=z;square+=z*z;
+  }
+  CHECK(std::abs(sum/10000)<.04);
+  CHECK(std::abs(square/10000-1)<.05);
+}
+
+#include "cppunivariate/distributions/sged/dpqr.hpp"
+TEST_CASE("skew samplers reject overflowing standardization") {
+  struct FixedRng {
+    double rt(double) {return .5;}
+    double rgamma(double,double) {return 1e-10;}
+    double runif(double a,double b) {return (a+b)/2;}
+  } rng;
+  for(double nu:{10.,std::numeric_limits<double>::max()}) {
+    CHECK(std::isnan(cppunivariate::distributions::rsstd(rng,0,1,nu,std::numeric_limits<double>::max())));
+    CHECK(std::isnan(cppunivariate::distributions::rsged(rng,0,1,nu,std::numeric_limits<double>::max())));
+  }
+}
+
+TEST_CASE("Student density square overflow retains the scaled radius") {
+  const double nu=std::numeric_limits<double>::max();
+  // Independent 360-digit values: tail-extreme-data/std-overflow-oracle.py.
+  const double rows[][2]={
+    {1.3407807929942597e+154,-6.2303296397089188e+307},
+    {1.4e+154,-6.6272046396795535e+307},
+  };
+  for(const auto& row:rows) {
+    CHECK(cppunivariate::distributions::dstd(row[0],0,1,nu,true)/row[1]==doctest::Approx(1.).epsilon(1e-12));
+    CHECK(cppunivariate::distributions::dsstd(row[0],0,1,nu,1,true)/row[1]==doctest::Approx(1.).epsilon(1e-12));
+    CHECK(cppunivariate::distributions::dlst(row[0],0,1,nu,true)/row[1]==doctest::Approx(1.).epsilon(1e-12));
+    CHECK(cppunivariate::distributions::dht(row[0],0,nu,1,true)/row[1]==doctest::Approx(1.).epsilon(1e-12));
+    CHECK(cppunivariate::distributions::dstd(row[0],0,1,nu,false)==0);
+  }
+  CHECK(std::isnan(cppunivariate::distributions::psstd(1e308,-1e308,1e308,nu,2)));
+  CHECK(std::isnan(cppunivariate::distributions::dsstd(1e308,-1e308,1e308,nu,2,true)));
+  CHECK(std::isnan(cppunivariate::distributions::pht(1e308,-1e308,nu,1e308,true,false)));
+  CHECK(std::isnan(cppunivariate::distributions::dht(1e308,-1e308,nu,1e308,true)));
+}

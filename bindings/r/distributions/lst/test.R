@@ -256,3 +256,35 @@ test_that("held solver exhaustion carries structured numerical details", {
     expect_identical(e$loglik_upper,Inf)
   }
 })
+
+test_that("extreme Student shapes retain tails and finite draws", {
+  for (nu in c(1e8, 1e100, .Machine$double.xmax)) {
+    for (f in list(mllst(mu=0,sigma=1,df=nu), mlstd(mean=0,sd=1,nu=nu),
+                   mlsstd(mean=0,sd=1,nu=nu,xi=2), mlht(mu=0,nu=nu,sigma=1),
+                   mlst(xi=0,omega=1,alpha=2,nu=nu))) {
+      p <- c(.01,.25,.5,.75,.99)
+      expect_equal(pml(qml(p,f),f),p,tolerance=1e-9)
+      expect_true(all(is.finite(pml(0,f))))
+      set.seed(163)
+      expect_true(all(is.finite(rml(100,f))))
+    }
+  }
+})
+
+test_that("huge Student shapes preserve logarithmic tails", {
+  f <- mllst(mu=0,sigma=1,df=.Machine$double.xmax)
+  x <- c(10,40,100,1000)
+  lp <- pml(x,f,lower.tail=FALSE,log.p=TRUE)
+  expect_equal(lp,pnorm(x,lower.tail=FALSE,log.p=TRUE),tolerance=1e-12)
+  expect_equal(qml(lp,f,lower.tail=FALSE,log.p=TRUE),x,tolerance=1e-10)
+})
+
+test_that("Student density overflow preserves the scaled squared radius", {
+  nu <- .Machine$double.xmax
+  x <- c(1.3407807929942597e+154,1.4e+154)
+  target <- c(-6.2303296397089188e+307,-6.6272046396795535e+307)
+  expect_equal(dstd(x,0,1,nu,log=TRUE)/target,c(1,1),tolerance=1e-12)
+  expect_equal(dsstd(x,0,1,nu,1,log=TRUE)/target,c(1,1),tolerance=1e-12)
+  expect_equal(dlst(x,0,1,nu,log=TRUE)/target,c(1,1),tolerance=1e-12)
+  expect_equal(dstd(x,0,1,nu),c(0,0))
+})

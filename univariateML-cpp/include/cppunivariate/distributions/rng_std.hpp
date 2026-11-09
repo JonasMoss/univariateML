@@ -34,10 +34,36 @@ struct StdRng {
   }
   inline double rnorm() { return norm_(gen); }
   inline double rgamma(double shape, double scale = 1.0) {
-    return std::gamma_distribution<>(shape, scale)(gen);
+    if(!(shape>0 && scale>0) || !std::isfinite(shape) || !std::isfinite(scale))
+      return std::numeric_limits<double>::quiet_NaN();
+    if(shape<1e6) return std::gamma_distribution<>(shape, scale)(gen);
+    // Marsaglia--Tsang, without libc++'s overflowing 3*shape proposal.
+    const double d=shape-1.0/3, c=(1.0/3)/std::sqrt(d);
+    const auto scaled=[&](double v) {
+      const double base=d*scale;
+      return std::isinf(base) && v<1 ? (d*v)*scale : base*v;
+    };
+    for(int k=0;k<10000;++k) {
+      const double z=rnorm(), t=c*z;
+      if(t<=-1) continue;
+      const double v=(1+t)*(1+t)*(1+t), u=runif(0,1);
+      if(u<1-.0331*z*z*z*z) return scaled(v);
+      const double h=v-1;
+      double remainder;
+      if(std::abs(h)<.01) {
+        double term=-h*h/2;remainder=term;
+        for(int n=3;n<=12;++n) {term*=-h*(n-1)/n;remainder+=term;}
+      } else remainder=std::log1p(h)-h;
+      if(std::log(u)<.5*z*z+d*remainder) return scaled(v);
+    }
+    return std::numeric_limits<double>::quiet_NaN();
   }
   inline double rt(double df) {
-    return std::student_t_distribution<>(df)(gen);
+    if(!(df>0) || !std::isfinite(df) || df/2==0)
+      return std::numeric_limits<double>::quiet_NaN();
+    if(df<2e6) return std::student_t_distribution<>(df)(gen);
+    const double z=rnorm();
+    return z/std::sqrt(rgamma(df/2,1)/(df/2));
   }
   inline double rpois(double lambda) {
     if(!(lambda>=0) || !std::isfinite(lambda))

@@ -291,3 +291,10 @@ accuracy, including for subnormal coefficients. If a held standard deviation
 maps to a nonnormal ordinary scale, nonconstant location search refuses;
 all-held points and constant-sample location maxima are evaluated directly
 in standardized coordinates.
+
+## d/p/q/r
+
+Normal convergence at fixed standardized observations is not uniform at
+observations of order $\sqrt{\nu}$. The [overflow checks](../../../../../dev/research/evaluations/2026-11-09-tail-extreme-data/std-overflow-oracle.py)
+cover densities where the observation's square overflows but its ratio to
+shape remains finite.
