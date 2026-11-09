@@ -74,3 +74,64 @@ TEST_CASE("nsbeta: TASK-132 empty and invalid delegates preserve non-success") {
     CHECK(cppunivariate::nsbeta_mle(x,0,1,1e-8,200).status != cppunivariate::BetaStatus::Ok);
   }
 }
+
+TEST_CASE("nsbeta held-shape solve forwards the iteration budget") {
+  const std::vector<double> x{1e-200,2e-200,3e-200,5e-200,9e-200};
+  const auto limited=cppunivariate::nsbeta_mle(mltest::as_span(x),0,1,1e-10,1,2,NAN);
+  CHECK(limited.status==cppunivariate::BetaStatus::IterationFailure);
+  const auto solved=cppunivariate::nsbeta_mle(mltest::as_span(x),0,1,1e-10,1000,2,NAN);
+  REQUIRE(solved.status==cppunivariate::BetaStatus::Ok);
+  CHECK(solved.shape2>1e199);
+  CHECK(solved.iterations>1);
+}
+
+// Raw score roots checked independently at 350 and 700 digits.
+TEST_CASE("nsbeta: TASK-101.7.3 raw likelihood regressions") {
+  struct Fixture { int index; std::vector<double> x; double a,b,lo,hi,ll; };
+  const std::vector<Fixture> fixtures{
+    {5348,{3.279712609634442e-151,7.163848556685424e-151,3.247469053643058e-151,1.3428490451384639e-151,5.302279618623525e-151,5.9296803360997277e-151,5.249832294577309e-151,3.503576195388067e-151,5.430978029647745e-151,7.340437563236251e-151,8.133244607203068e-152,2.243783898794992e-151},2.0063421787377256,4.7349382987329286e+150,0.0,1.0,4145.549562030085},
+    {10791,{1e-17,2e-17,3e-17,5.0000000000000005e-17,9.000000000000001e-17},2.0063421787377256,5.015855446844314e+16,0.0,1.0,184.38678752333837},
+    {10792,{1e-200,2e-200,3e-200,5e-200,9e-200},2.0063421787377256,5.015855446844314e+199,0.0,1.0,2291.25214761289},
+    {10799,{0.999999999999,0.999999999998,0.999999999997,0.999999999995,0.999999999991},761512504326.9779,3.0460502693524503,0.0,1.0,126.54970076195625},
+    {11011,{0.9999999999999999,0.9999999999999998,0.9999999999999997,0.9999999999999994,0.999999999999999},6859095429003744.0,3.0460502693524503,0.0,1.0,172.07865397295913},
+  };
+  for(const auto& f:fixtures) {
+    CAPTURE(f.index);
+    const bool first=f.index==5348 || f.index==10791 || f.index==10792;
+    const auto r=cppunivariate::nsbeta_mle(mltest::as_span(f.x),f.lo,f.hi,1e-10,1000,first?f.a:NAN,first?NAN:f.b);
+    REQUIRE(r.status==cppunivariate::BetaStatus::Ok);
+    CHECK(r.shape1==doctest::Approx(f.a).epsilon(1e-10));
+    CHECK(r.shape2==doctest::Approx(f.b).epsilon(1e-10));
+    CHECK(r.min==doctest::Approx(f.lo).epsilon(1e-10));
+    CHECK(r.max==doctest::Approx(f.hi).epsilon(1e-10));
+    CHECK(r.logLik==doctest::Approx(f.ll).epsilon(1e-10));
+  }
+}
+
+TEST_CASE("nsbeta all-held overflow remains a non-success evaluation") {
+  const std::vector<double> x{.5};
+  const auto r=cppunivariate::nsbeta_mle(mltest::as_span(x),0,1,1e-10,1000,1e308,1e308);
+  CHECK(r.status==cppunivariate::BetaStatus::IterationFailure);
+}
+
+TEST_CASE("nsbeta held-shape score rejects insufficient subnormal signal") {
+  for(double unit:{1e-320,1e-311}) {
+    const std::vector<double> x{unit,2*unit,3*unit,5*unit,9*unit};
+    const auto r=cppunivariate::nsbeta_mle(mltest::as_span(x),0,1,1e-10,1000,1e-320,NAN);
+    CHECK(r.status==cppunivariate::BetaStatus::IterationFailure);
+  }
+}
+
+TEST_CASE("nsbeta tiny held shape with a resolved score remains estimable") {
+  const std::vector<double> x{.1,.2,.3,.5,.9};
+  double target=0;for(double v:x)target-=std::log1p(-v)/x.size();
+  const double held=1e-320;
+  const auto r=cppunivariate::nsbeta_mle(mltest::as_span(x),0,1,1e-10,1000,held,NAN);
+  REQUIRE(r.status==cppunivariate::BetaStatus::Ok);
+  // psi(b+h)-psi(b) ~ h/b^2 here. The omitted relative correction
+  // is order sqrt(h), below 1e-150; form the square roots separately.
+  CHECK(r.shape2==doctest::Approx(std::sqrt(held)/std::sqrt(target)).epsilon(1e-10));
+  double ll=x.size()*std::log(held);
+  for(double v:x)ll-=std::log(v)+std::log1p(-v);
+  CHECK(r.logLik==doctest::Approx(ll).epsilon(1e-10));
+}

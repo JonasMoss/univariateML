@@ -136,7 +136,7 @@ relations:
 fit:
   method: delegation
   certified: 'yes'
-  note: 'pareto4/README.md, Details; pareto4/mle.hpp (public fitter and held overloads); pareto4/test.cpp: With min held, every regular subset delegates to the corresponding Burr fit on x-min. Joint and held-power fits are certified conditional on computed comparisons and the parent floating-point margin. Held scale with both shapes free inherits the strictly concave scalar-profile certificate. Face coefficients refer to excess data.'
+  note: 'pareto4/README.md, Details; pareto4/mle.hpp (public fitter and held overloads); pareto4/test.cpp: With min held, the regular likelihood is Burr on x-min. The concentrated held-first-shape profile uses pareto4/centered.hpp to retain raw spacings. Joint and held-power fits are certified conditional on computed comparisons and the parent floating-point margin. Held scale with both shapes free inherits the strictly concave scalar-profile certificate. Face coefficients refer to excess data.'
 areas:
 - actuarial
 - economics and income
@@ -188,9 +188,11 @@ For the fully free model, choose $\gamma<1$ and let the threshold approach the s
 
 The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-genbeta.md) gives the boundary arguments and their held-parameter conditions.
 
+For tightly clustered excesses with $\alpha$ held and scale and power free, the location/power profile uses centered $\log(1+(x_i-x_0)/(x_0-\mu))$ values, scaled by their range. This retains raw spacings when separate log-excess values would round them away. Strict concavity in power and power times log scale identifies the unique finite root. The likelihood is reevaluated at the represented scale using the same centered differences; restoration of a latent profile root alone does not determine the returned likelihood. A distant held threshold can make the optimal scale unrepresentable at the data’s resolution. A separated likelihood loss after restoring that scale gives a numerical failure. The [concentrated held-shape checks](../../../../../dev/research/evaluations/2026-11-09-audit-beta-data/reference.json) distinguish power accuracy from rounding the restored scale.
+
 ## R notes
 
-With `min = 0`, the fit agrees with `mlburr(x)` for the same holds. The joint regular fit certifies the finite winner or limiting face and refuses unresolved ties. Held power inherits the certified Lomax face comparison; held scale with both shapes free uses a strictly concave scalar certificate. Detected faces stop with a recommendation to use `mlweibull(x - min)` or `mlpareto(x - min)`, as applicable. Held-scale endpoint faces preserve `min + scale`. Unresolved searches stop.
+With `min = 0`, the model is Burr. The concentrated held-first-shape profile retains centered raw-excess spacings. The joint regular fit certifies the finite winner or limiting face and refuses unresolved ties. Held power inherits the certified Lomax face comparison; held scale with both shapes free uses a strictly concave scalar certificate. Detected faces stop with a recommendation to use `mlweibull(x - min)` or `mlpareto(x - min)`, as applicable. Held-scale endpoint faces preserve `min + scale`. Unresolved searches stop.
 
 ## Decision history
 

@@ -143,3 +143,25 @@ test_that("held-scale Pareto IV transports scalar certificates and budgets", {
   expect_s3_class(e,"univariateML")
   expect_equal(as.numeric(e),as.numeric(a),tolerance=1e-6)
 })
+
+test_that("pareto4: TASK-101.7.3 raw likelihood regressions", {
+  fixtures <- list(
+    list(index=5666, x=c(57.95719829085132,57.95719829090928,57.95719829096724,57.9571982910252,57.95719829114111),
+         held=list(shape1=0.3157266252310832,min=0.0),
+         theta=c(shape1=0.3157266252310832,shape2=1813936513691.6501,scale=57.95719829088866,min=0.0), logLik=108.0395367269637),
+    list(index=5669, x=c(57.95719829085132,57.95719829090928,57.95719829096724,57.9571982910252,57.95719829114111),
+         held=list(shape1=0.3157266252310832,min=0.0),
+         theta=c(shape1=0.3157266252310832,shape2=1813936513691.6501,scale=57.95719829088866,min=0.0), logLik=108.0395367269637)
+  )
+  for (f in fixtures) {
+    fit <- do.call(mlpareto4, c(list(x=f$x), f$held))
+    expect_equal(as.numeric(fit[names(f$theta)])/pmax(abs(unname(f$theta)),1e-300),
+                 unname(f$theta)/pmax(abs(unname(f$theta)),1e-300), tolerance=1e-10)
+    expect_equal(attr(fit,"logLik")/f$logLik, 1, tolerance=1e-10)
+  }
+})
+
+test_that("Pareto IV rejects a separated scale restoration loss", {
+  expect_error(mlpareto4(c(1,1.5,2),min=-1e100,shape1=.3157266252310832),
+               "numerical failure")
+})

@@ -98,7 +98,7 @@ relations:
 fit:
   method: profile-search
   certified: "yes"
-  note: 'betapr/README.md, Details; betapr/mle.hpp, certificate.hpp and joint_certificate.hpp; betapr/test.cpp: fixed-scale beta concavity, unit-shape delegates and non-unit held-shape certificates cover conditional subsets. The all-free fitter combines uniform harmonic-shape exteriors, signed gamma/inverse-gamma tails and a compact cover of every possible conditional maximizer. Shape-gradient bounds, concave supporting planes and interval-Newton inclusions exclude cells or enclose their unique maxima. Finite fits require relative enclosures in both shapes and scale of at most min(tol, 1e-6); faces require complete interior exclusion and separated likelihood bounds. Unresolved arithmetic, ties and exhausted shared budgets stop with witnesses.'
+  note: 'betapr/README.md, Details; betapr/mle.hpp, centered.hpp, certificate.hpp and joint_certificate.hpp; betapr/test.cpp: fixed-scale beta concavity, unit-shape delegates and non-unit held-shape certificates cover conditional subsets. The all-free fitter combines uniform harmonic-shape exteriors, signed gamma/inverse-gamma tails and a compact cover of every possible conditional maximizer. Shape-gradient bounds, concave supporting planes and interval-Newton inclusions exclude cells or enclose their unique maxima. Finite fits require relative enclosures in both shapes and scale of at most min(tol, 1e-6); faces require complete interior exclusion and separated likelihood bounds. Unresolved arithmetic, ties and exhausted shared budgets stop with witnesses.'
 areas:
 - actuarial
 - economics and income
@@ -520,6 +520,8 @@ $128\epsilon$. Scale and reciprocal input transformations carry their
 separate log-data/Jacobian allowances. These are practical floating-point
 margins under the package's computed-comparison contract. Unresolved
 inclusions stop rather than becoming accuracy claims.
+
+With scale held, the likelihood is evaluated in beta mean/precision coordinates and transported by the log Jacobian, rather than reconstructed from separate log-gamma terms. For concentrated raw data, differences in the beta coordinate are formed directly as $s(x_i-x_0)/[(s+x_i)(s+x_0)]$. Profiling the centered mean displacement retains dispersion below one ulp of the absolute transformed mean. The scalar signs inherit beta strict concavity; they are computed comparisons, with numerical series evaluation rather than outward-rounded bounds. At concentration $t$, a mean perturbation $Delta\mu$ has leading likelihood cost $n t(\Delta\mu)^2/[2\mu(1-\mu)]$. Thus independently rounding the two shapes can matter even when each coefficient is accurate. Joint ratio assembly is checked against the centered optimum in log-X coordinates; a separated deficit in that unit-invariant likelihood gives an arithmetic failure. The [raw beta-prime checks](../../../../../dev/research/evaluations/2026-11-09-audit-beta-data/reference.json) include relative dispersions of order $10^{-12}$.
 
 ## R notes
 

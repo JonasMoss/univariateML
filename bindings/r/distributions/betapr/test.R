@@ -221,3 +221,66 @@ test_that("all-free certificate stops carry witnesses and selected faces are pro
   expect_true(nrow(e$candidates)>0)
   expect_error(mlbetapr(rep(2,3)),class="univariateML_nomle")
 })
+
+test_that("betapr: TASK-101.7.3 raw likelihood regressions", {
+  fixtures <- list(
+    list(index=248, x=c(0.6510020100386483,0.6510020165486686,0.6510020230586888,0.651002029568709,0.6510020425887495),
+         held=list(scale=1.0594104501122898),
+         theta=c(shape1=5454373785714345.0,shape2=8876194498901787.0,scale=1.0594104501122898), logLik=84.44195054705918),
+    list(index=249, x=c(0.6510020230573869,0.6510020230580378,0.6510020230586888,0.6510020230593399,0.6510020230606418),
+         held=list(scale=1.0594104501122898),
+         theta=c(shape1=5.454453294772166e+23,shape2=8.876323905999515e+23,scale=1.0594104501122898), logLik=130.4936888613748),
+    list(index=251, x=c(0.99999998,0.99999999,1.0,1.00000001,1.00000003),
+         held=list(scale=1.0594104501122898),
+         theta=c(shape1=6567301472501320.0,shape2=6957467795090793.0,scale=1.0594104501122898), logLik=82.29573789639241),
+    list(index=252, x=c(0.999999999998,0.999999999999,1.0,1.000000000001,1.000000000003),
+         held=list(scale=1.0594104501122898),
+         theta=c(shape1=6.56723725758789e+23,shape2=6.957399779053996e+23,scale=1.0594104501122898), logLik=128.34741532364148),
+    list(index=254, x=c(1e-12,2e-12,3e-12,5e-12,9e-12),
+         held=list(scale=1.0594104501122898),
+         theta=c(shape1=2.0262551677149374,shape2=536658974818.8154,scale=1.0594104501122898), logLik=126.82230092559585),
+    list(index=255, x=c(1e-17,2e-17,3e-17,5.0000000000000005e-17,9.000000000000001e-17),
+         held=list(scale=1.0594104501122898),
+         theta=c(shape1=2.0262551677082414,shape2=5.366589748160354e+16,scale=1.0594104501122898), logLik=184.38692825044689),
+    list(index=256, x=c(1e-200,2e-200,3e-200,5e-200,9e-200),
+         held=list(scale=1.0594104501122898),
+         theta=c(shape1=2.0262551677082414,shape2=5.366589748160354e+199,scale=1.0594104501122898), logLik=2291.252288339999),
+    list(index=257, x=c(1.8666916871781815e-151,2.7261096086292664e-151,1.484646969214721e-151,3.988768449995832e-151,4.39429737837367e-151,1.901375652366606e-150,8.50681333541539e-151,1.0314927998288996e-151,1.7856179604413502e-150,1.5002084830804323e-150,1.3375151204526194e-150,6.510020230586889e-151),
+         held=list(scale=1.0594104501122898),
+         theta=c(shape1=1.3768062808236863,shape2=1.8278993726688574e+150,scale=1.0594104501122898), logLik=4135.705570780781),
+    list(index=260, x=c(0.6510007210546427,0.6510013720566658,0.6510020230586888,0.6510026740607118,0.651003325062735),
+         held=list(scale=1.0594104501122898),
+         theta=c(shape1=807247310521.9342,shape2=1313676772576.6814,scale=1.0594104501122898), logLik=62.39620481822838)
+  )
+  for (f in fixtures) {
+    fit <- do.call(mlbetapr, c(list(x=f$x), f$held))
+    expect_equal(as.numeric(fit[names(f$theta)])/pmax(abs(unname(f$theta)),1e-300),
+                 unname(f$theta)/pmax(abs(unname(f$theta)),1e-300), tolerance=1e-10)
+    expect_equal(attr(fit,"logLik")/f$logLik, 1, tolerance=1e-10)
+  }
+})
+
+test_that("betapr: TASK-101.7.3 held-shape scale increment regression", {
+  fit <- mlbetapr(c(1e-06,2e-06,3e-06,4.9999999999999996e-06,9e-06),shape1=2.014271442794272,scale=1.0594104501122898)
+  expect_equal(unname(as.numeric(fit))/c(2.014271442794272,533486.0575303183,1.0594104501122898),rep(1,3),tolerance=1e-10)
+  expect_equal(attr(fit,"logLik")/57.74469737827288,1,tolerance=1e-10)
+})
+
+test_that("betapr centered fit tolerates overflowing scale plus data", {
+  x <- c(.99999998,.99999999,1,1.00000001,1.00000003)
+  scale <- 1.0594104501122898
+  a <- mlbetapr(x,scale=scale)
+  b <- mlbetapr(x*2^1023,scale=scale*2^1023)
+  expect_equal(as.numeric(b[1:2])/as.numeric(a[1:2]),rep(1,2),tolerance=1e-10)
+  expect_equal(attr(b,"logLik"),attr(a,"logLik")-length(x)*1023*log(2),tolerance=1e-10)
+})
+
+test_that("betapr rejects a separated shape restoration loss", {
+  e <- .Machine$double.eps
+  expect_error(mlbetapr(c(1-2*e,1-e,1,1+e,1+3*e),scale=1),"BfgsFailure")
+})
+
+test_that("betapr held-shape score rejects an underflowed statistic", {
+  expect_error(mlbetapr(c(1e-100,2e-100,3e-100,5e-100,9e-100),
+                       shape1=1e-320,scale=1e300),"BfgsFailure")
+})

@@ -558,3 +558,75 @@ TEST_CASE("betapr completed-square tail closes a nearly flat gamma-face sample")
   CHECK(r.iterations<=cppunivariate::certificate_budget(2000));
   CHECK(r.stop_detail.limit_coef[0]==doctest::Approx(1.86080018422581).epsilon(1e-9));
 }
+
+TEST_CASE("betapr centered shape roots reject an exhausted search") {
+  const std::vector<double> x{.999999999998,.999999999999,1.,1.000000000001,1.000000000003};
+  const auto r=cppunivariate::betapr_mle_fixed_scale(mltest::as_span(x),1.0594104501122898,1e-10,1);
+  CHECK(r.status==cppunivariate::BetaPrimeStatus::BfgsFailure);
+  CHECK(std::isnan(r.logLik));
+}
+
+// Raw score roots checked independently at 350 and 700 digits.
+TEST_CASE("betapr: TASK-101.7.3 raw likelihood regressions") {
+  struct Fixture { int index; std::vector<double> x; double a,b,s,ll; };
+  const std::vector<Fixture> fixtures{
+    {248,{0.6510020100386483,0.6510020165486686,0.6510020230586888,0.651002029568709,0.6510020425887495},5454373785714345.0,8876194498901787.0,1.0594104501122898,84.44195054705918},
+    {249,{0.6510020230573869,0.6510020230580378,0.6510020230586888,0.6510020230593399,0.6510020230606418},5.454453294772166e+23,8.876323905999515e+23,1.0594104501122898,130.4936888613748},
+    {251,{0.99999998,0.99999999,1.0,1.00000001,1.00000003},6567301472501320.0,6957467795090793.0,1.0594104501122898,82.29573789639241},
+    {252,{0.999999999998,0.999999999999,1.0,1.000000000001,1.000000000003},6.56723725758789e+23,6.957399779053996e+23,1.0594104501122898,128.34741532364148},
+    {254,{1e-12,2e-12,3e-12,5e-12,9e-12},2.0262551677149374,536658974818.8154,1.0594104501122898,126.82230092559585},
+    {255,{1e-17,2e-17,3e-17,5.0000000000000005e-17,9.000000000000001e-17},2.0262551677082414,5.366589748160354e+16,1.0594104501122898,184.38692825044689},
+    {256,{1e-200,2e-200,3e-200,5e-200,9e-200},2.0262551677082414,5.366589748160354e+199,1.0594104501122898,2291.252288339999},
+    {257,{1.8666916871781815e-151,2.7261096086292664e-151,1.484646969214721e-151,3.988768449995832e-151,4.39429737837367e-151,1.901375652366606e-150,8.50681333541539e-151,1.0314927998288996e-151,1.7856179604413502e-150,1.5002084830804323e-150,1.3375151204526194e-150,6.510020230586889e-151},1.3768062808236863,1.8278993726688574e+150,1.0594104501122898,4135.705570780781},
+    {260,{0.6510007210546427,0.6510013720566658,0.6510020230586888,0.6510026740607118,0.651003325062735},807247310521.9342,1313676772576.6814,1.0594104501122898,62.39620481822838},
+  };
+  for(const auto& f:fixtures) {
+    CAPTURE(f.index);
+    const auto r=cppunivariate::betapr_mle_holds(mltest::as_span(f.x),NAN,NAN,f.s);
+    REQUIRE(r.status==cppunivariate::BetaPrimeStatus::Ok);
+    CHECK(r.alpha==doctest::Approx(f.a).epsilon(1e-10));
+    CHECK(r.beta==doctest::Approx(f.b).epsilon(1e-10));
+    CHECK(r.scale==doctest::Approx(f.s).epsilon(1e-10));
+    CHECK(r.logLik==doctest::Approx(f.ll).epsilon(1e-10));
+  }
+}
+
+TEST_CASE("betapr: TASK-101.7.3 held-shape scale increment regression") {
+  const std::vector<double> x{1e-06,2e-06,3e-06,4.9999999999999996e-06,9e-06};
+  const auto r=cppunivariate::betapr_mle_holds(mltest::as_span(x),2.014271442794272,NAN,1.0594104501122898);
+  REQUIRE(r.status==cppunivariate::BetaPrimeStatus::Ok);
+  CHECK(r.alpha==doctest::Approx(2.014271442794272).epsilon(1e-10));
+  CHECK(r.beta==doctest::Approx(533486.0575303183).epsilon(1e-10));
+  CHECK(r.scale==doctest::Approx(1.0594104501122898).epsilon(1e-10));
+  CHECK(r.logLik==doctest::Approx(57.74469737827288).epsilon(1e-10));
+}
+
+TEST_CASE("betapr centered fit keeps finite scales when scale plus data overflows") {
+  const std::vector<double> x{.99999998,.99999999,1,1.00000001,1.00000003};
+  std::vector<double> large;
+  for(double v:x)large.push_back(std::ldexp(v,1023));
+  const double scale=1.0594104501122898;
+  const auto a=cppunivariate::betapr_mle_fixed_scale(mltest::as_span(x),scale,1e-10,1000);
+  const auto b=cppunivariate::betapr_mle_fixed_scale(mltest::as_span(large),std::ldexp(scale,1023),1e-10,1000);
+  REQUIRE(a.status==cppunivariate::BetaPrimeStatus::Ok);
+  REQUIRE(b.status==cppunivariate::BetaPrimeStatus::Ok);
+  CHECK(b.alpha==doctest::Approx(a.alpha).epsilon(1e-10));
+  CHECK(b.beta==doctest::Approx(a.beta).epsilon(1e-10));
+  CHECK(b.logLik==doctest::Approx(a.logLik-x.size()*1023*std::log(2.0)).epsilon(1e-10));
+}
+
+TEST_CASE("betapr centered profile rejects a separated shape restoration loss") {
+  const double e=std::numeric_limits<double>::epsilon();
+  const std::vector<double> x{1-2*e,1-e,1,1+e,1+3*e};
+  // Both shapes occupy the same binary exponent bin. Their ratio cannot
+  // encode the much smaller centered mean displacement at this precision.
+  const auto r=cppunivariate::betapr_mle_fixed_scale(mltest::as_span(x),1,1e-10,1000);
+  CHECK(r.status==cppunivariate::BetaPrimeStatus::BfgsFailure);
+  CHECK(r.certificate_failure==cppunivariate::LomaxCertificateFailure::Arithmetic);
+}
+
+TEST_CASE("betapr held-shape score rejects an underflowed data statistic") {
+  const std::vector<double> x{1e-100,2e-100,3e-100,5e-100,9e-100};
+  const auto r=cppunivariate::betapr_mle_holds(mltest::as_span(x),1e-320,NAN,1e300);
+  CHECK(r.status==cppunivariate::BetaPrimeStatus::BfgsFailure);
+}
