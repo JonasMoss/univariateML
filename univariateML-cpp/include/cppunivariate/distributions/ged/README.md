@@ -366,6 +366,16 @@ interior extrema $r=e^{-1/p}$ and $r=e^{-2/p}$. Negative residual powers
 retain infinite upper bounds when needed. These elementary bounds enclose
 $A$ and $A'$ without differentiating a numerical location fit.
 
+A location enclosure on a parent shape interval also encloses the minimizer
+on every child interval and at its endpoint shapes. Child score boxes start
+from that enclosure; likelihood bounds use it in the convex supporting-line
+moment bound instead of solving the same location problem again. Budgets
+shorter than the binary64 mantissa retain the cold-start enclosure route,
+preserving short-budget stops. Residual
+endpoint powers and logarithms are shared between the value, score and
+curvature moments. Lower powers in the location Hessian are evaluated
+directly: an underflowed $r^p$ does not justify a zero $r^{p-2}$.
+
 Every finite shape is either excluded by a likelihood upper bound, excluded
 from the stationary set by a definite score sign, or retained in a root
 box. A strictly negative upper bound for $A'$ permits monotone contraction;
