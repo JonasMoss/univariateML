@@ -1,0 +1,96 @@
+TASK-137 final validation, 2026-11-09
+Worktree: /home/jonas/Files/programming/univariateML.wt/slash-perf
+Baseline: dcf0832a; no commit, merge or rebase performed.
+Every listed command finished with exit status 0.
+Full build/test logs: build/scratch/slash-perf/ (ignored scratch).
+
+Workstation environment before commands:
+  export TMPDIR=$PWD/build/tmp
+  export JUST_TEMPDIR=$PWD/build/tmp
+  export XDG_RUNTIME_DIR=$PWD/build/tmp
+  mkdir -p "$TMPDIR"
+The CPU wrappers set nice priority and one-thread BLAS/OpenMP settings.
+
+1. Targeted slash, workstation GCC 15.2.0:
+  /tmp/umvl-cpu/run bash build/scratch/slash-perf/targeted.sh
+  Log: final-targeted-slash.log
+  [doctest] test cases:    21 |    21 passed | 0 failed | 0 skipped
+  [doctest] assertions: 33584 | 33584 passed | 0 failed |
+  [doctest] Status: SUCCESS!
+  The script compiled the existing slash/test.cpp alone with doctest, C++17,
+  -O2, the BH include path and CPPUNIV_DISTRIBUTIONS_DIR pointing at this tree.
+
+2. C++ dev, workstation GCC 15.2.0:
+  /tmp/umvl-cpu/run4 env CMAKE_BUILD_PARALLEL_LEVEL=2 CTEST_PARALLEL_LEVEL=2 just cpp-test
+  Log: final-cpp-dev.log
+  100% tests passed, 0 tests failed out of 106
+  Total Test time (real) = 213.38 sec
+
+3. C++ full, simbox GCC 13.3.0:
+  /tmp/umvl-cpu/simbox-run env UMVL_TEST_TIER=full CMAKE_BUILD_PARALLEL_LEVEL=1 CTEST_PARALLEL_LEVEL=1 just cpp-test
+  Log: final-cpp-full-simbox.log
+  100% tests passed out of 129
+  Total Test time (real) = 449.54 sec
+
+4. C++ no-long-double full, workstation GCC 15.2.0:
+  /tmp/umvl-cpu/run4 env CMAKE_BUILD_PARALLEL_LEVEL=2 CTEST_PARALLEL_LEVEL=2 just cpp-test-no-long-double
+  Log: final-cpp-no-long-double-local.log
+  100% tests passed, 0 tests failed out of 129
+  Total Test time (real) = 347.24 sec
+
+5. C++ no-long-double full, simbox GCC 13.3.0:
+  /tmp/umvl-cpu/simbox-run env CMAKE_BUILD_PARALLEL_LEVEL=1 CTEST_PARALLEL_LEVEL=1 just cpp-test-no-long-double
+  Log: final-cpp-no-long-double-simbox.log
+  100% tests passed out of 129
+  Total Test time (real) = 398.34 sec
+
+6. R dev, simbox, four workers:
+  /tmp/umvl-cpu/simbox-run env CMAKE_BUILD_PARALLEL_LEVEL=4 CTEST_PARALLEL_LEVEL=4 just test
+  Log: final-r-dev.log
+  [ FAIL 0 | WARN 0 | SKIP 154 | PASS 22218 ]
+     user  system elapsed
+  367.920   4.504  92.907
+
+7. R full, simbox, four workers:
+  /tmp/umvl-cpu/simbox-run env CMAKE_BUILD_PARALLEL_LEVEL=4 CTEST_PARALLEL_LEVEL=4 just test-full
+  Log: final-r-full.log
+  [ FAIL 0 | WARN 0 | SKIP 0 | PASS 45053 ]
+      user   system  elapsed
+  1039.702    7.408  341.875
+
+8. Site, workstation:
+  /tmp/umvl-cpu/run4 env GOMAXPROCS=1 just site-check
+  Log: final-site-check.log
+  PASS: 99 family pages; MathML on every family; no math runtime or external runtime assets; internal links and fragments resolve.
+  PASS: 99 generated C++ snippets compile and link as C++17 (including exp, gamma, gb2).
+  Inference, graph, explorer coverage, relations, HTML spot checks and assets passed.
+
+9. Paired regression, workstation:
+  /tmp/umvl-cpu/run python3 dev/research/evaluations/2026-11-09-slash-perf-data/compare.py
+  Log: comparison.log
+  All 44 paired fits match exactly, including every timing repetition (88 rows).
+  Checked: status, budget flag, mu, sigma, logLik, profile calls, score passes,
+  score observation contributions, cell attempts, residual-bound calls, max depth.
+
+10. Whitespace/scope inspection, workstation:
+  git diff --check
+  No errors. Tracked edits: slash/mle.hpp, slash/test.cpp and slash/README.md.
+  New files: the dated report and its dated evidence directory.
+  No golden, truth, dpqr, shared core, binding, message or prohibited file edits.
+  Site-check regenerated the historical after-mobile-held-face.png screenshot;
+  only that generated image was restored from HEAD using read-only git show.
+  Final status again contains only the scoped slash/report/evidence changes.
+
+11. Retained evidence and report link inspection, workstation:
+  /tmp/umvl-cpu/run python3 <inline validation script>
+  PASS: report/dossier links, canonical evidence copy, 88 rows, and git diff --check
+  Separately confirmed baseline-mle.hpp exactly matches git show dcf0832a's fitter.
+
+Delivery note (not a test failure):
+  The standard artifact-pane show helper returned HTTP 403: the viewer's roots
+  omit this worktree. The report is written at the requested location. No
+  configuration or files outside the worktree were changed to bypass this.
+
+The final suite runs followed the last numerical-code change. Later changes
+only added the dossier's explanation (covered by site-check), this evidence
+record and the report. Build/test duration above excludes queue and build time.

@@ -225,3 +225,27 @@ TEST_CASE("slash: exhausted certificate retains its witness and an unclosed uppe
   CHECK(best.stop_detail.candidates[0].loglik_lower==best.logLik);
   CHECK(std::isinf(best.stop_detail.loglik_upper));
 }
+
+TEST_CASE("slash: cached scale scores preserve the uncached summation") {
+  const double big=std::numeric_limits<double>::max();
+  const std::vector<double> x{-big,-2,-1e-300,0,1e-300,2,big};
+  for(double m:{-big,0.,big}) {
+    const cppunivariate::slash_detail::ScaleScore cached{x,m};
+    for(double ls:{-740.,-350.,-10.,0.,10.,350.,710.}) {
+      double direct=0;
+      for(double v:x) {
+        const double logt=2*cppunivariate::distributions::slash_log_distance_cached(v,m,ls)-std::log(2.0);
+        const double t=std::exp(std::min(logt,4.0));
+        direct+=t<1e-7?-1+t-t*t/6:(t>=42?1:1-2*t/std::expm1(t));
+      }
+      CHECK(cached(ls)==direct);
+    }
+    CHECK(std::isnan(cached(cppunivariate::special::kNaN)));
+  }
+  // Both sides of the new shortcut.
+  for(double logt:{std::nextafter(4.,0.),4.,std::nextafter(4.,5.)}) {
+    const std::vector<double> d{std::sqrt(2*std::exp(logt))};
+    const cppunivariate::slash_detail::ScaleScore cached{d,0};
+    CHECK(cached(0)==1.);
+  }
+}
