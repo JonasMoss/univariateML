@@ -1481,8 +1481,6 @@ test('large held skew-t shape retains a certified fit and finite skew covariance
   assert.ok(Number.isFinite(covariance.matrix[0][0]) && covariance.matrix[0][0]>0);
 });
 
-// A process timeout is essential: a synchronous WASM rejection loop blocks
-// node:test's in-process timeout too.
 test('betapr all-free certificate returns verified fits and structured global stops', async () => {
   const {default:createApi}=await import('./index.mjs');const api=await createApi();
   const f=api.betapr.fit(new Float64Array([.03,.1,.4,.7,1,2,4,12]));
@@ -1564,6 +1562,8 @@ test('GEV negative-shape coefficient corners preserve the gap dependency',async(
   for(const [name,expected] of Object.entries({mu:.35972611509033436,sigma:.33733043138434093,xi:-.31554486140157456}))
     assert.ok(Math.abs(f.estimates[name]-expected)<1e-10);
 });
+// A process timeout is essential: a synchronous WASM rejection loop blocks
+// node:test's in-process timeout too.
 test('extreme t and GED shapes terminate in WASM and retain inversion', async()=>{
   const {spawnSync}=await import('node:child_process');
   const source=`import create from './build/js/univariateML.mjs';
