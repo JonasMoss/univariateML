@@ -19,13 +19,15 @@ inline FitResult fit_st(cppunivariate::span x,Held xi_arg={},Held omega_arg={},H
  if((xi_arg.supplied&&!std::isfinite(xi))||(omega_arg.supplied&&(!std::isfinite(omega)||omega<=0))||(alpha_arg.supplied&&!std::isfinite(alpha))||(nu_arg.supplied&&(!std::isfinite(nu)||nu<=0)))return fail("Held xi and alpha must be finite; omega and nu must be finite and positive.");
  const auto r=cppunivariate::st_mle(x,reltol,iterlim,xi,omega,alpha,nu);
  if(r.stop_detail.comparison_tie || r.budget_exhausted) {
-  const std::string message=r.budget_exhausted?"Skew-t certificate budget exhausted; increase `iterlim`.":r.reason==2?"Skew-normal limiting-face comparison failed.":r.reason==3?"Half-t limiting-face comparison failed.":"Skew-t numerical search reached an unresolved limiting region.";
+  const std::string message=r.certified&&r.stop_detail.comparison_tie?"Skew-t constant-data supremum is tied between the two limiting faces.":r.budget_exhausted?"Skew-t certificate budget exhausted; increase `iterlim`.":r.reason==2?"Skew-normal limiting-face comparison failed.":r.reason==3?"Half-t limiting-face comparison failed.":"Skew-t numerical search reached an unresolved limiting region.";
   return classify(fail(message),r.stop_detail,r.stop_detail.comparison_tie?"tie":"budget",{"xi","omega","alpha","nu"});
  }
  switch(r.status){
  case cppunivariate::StStatus::InvalidInput:return fail("Skew-t fitting requires finite data and valid parameters.");
- case cppunivariate::StStatus::Unbounded:return classify(fail("Skew-t likelihood is unbounded through scale collapse at a tied observation."),{},"nomle",{},"");
- case cppunivariate::StStatus::ScaleBoundary:return fail("Skew-t scale collapse is at equality; a regular maximum is not resolved.");
+ case cppunivariate::StStatus::Unbounded:return classify(fail("Skew-t likelihood is unbounded through scale collapse at a tied observation."),r.stop_detail,"nomle",{},"");
+ case cppunivariate::StStatus::ScaleBoundary:
+  if(r.reason==6)return stop_failure(fail("Skew-t likelihood has an unattained scale-collapse supremum."),r.stop_detail,"nomle",{"xi","omega","alpha","nu"});
+  return fail("Skew-t scale collapse is at equality; a regular maximum is not resolved.");
  case cppunivariate::StStatus::NumericalFailure:
   if(r.reason==1)return fail("Skew-t location-scale profiles failed the score check.");
   if(r.reason==2)return fail("Skew-normal limiting-face comparison failed.");
