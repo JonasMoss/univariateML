@@ -1,0 +1,5 @@
+{
+  "cases": 11185,
+  "sha256": "e35b7fee4b278b80e829d39341be3c1947dce7df981c00ab3dfabaa0bc249972",
+  "replay": "cases.json is the frozen binary64 input inventory; generation preserves it unless AUDIT_RESET_CASES=1"
+}

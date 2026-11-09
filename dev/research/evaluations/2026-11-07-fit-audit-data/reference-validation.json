@@ -1,0 +1,169 @@
+{
+  "validation": "PASS",
+  "checks": [
+    {
+      "check": "dnorm integral",
+      "relative_error": "1.131959884853339045938639911360973972585316399767392273697826861241938e-72"
+    },
+    {
+      "check": "dgamma integral",
+      "relative_error": "2.263919769706678091877279822721947945170632799534784547395653722483875e-72"
+    },
+    {
+      "check": "bhatt convolution",
+      "relative_error": "1.131959884853339045938639911360973972585316399767392273697826861241938e-72"
+    },
+    {
+      "check": "slash integral",
+      "relative_error": "3.395879654560017137815919734082921917755949199302176821093480583725813e-72"
+    },
+    {
+      "check": "tlambda quantile Jacobian -0.5 0.2",
+      "relative_error": "5.433407447296027420505471574532675068409518718883482913749568933961301e-71"
+    },
+    {
+      "check": "tlambda quantile Jacobian -0.5 0.5",
+      "relative_error": "9.055679078826712367509119290887791780682531198139138189582614889935501e-72"
+    },
+    {
+      "check": "tlambda quantile Jacobian -0.5 0.8",
+      "relative_error": "3.622271631530684947003647716355116712273012479255655275833045955974201e-71"
+    },
+    {
+      "check": "tlambda quantile Jacobian 0.0 0.2",
+      "relative_error": "2.71670372364801371025273578726633753420475935944174145687478446698065e-71"
+    },
+    {
+      "check": "tlambda quantile Jacobian 0.0 0.5",
+      "relative_error": "0.0"
+    },
+    {
+      "check": "tlambda quantile Jacobian 0.0 0.8",
+      "relative_error": "2.71670372364801371025273578726633753420475935944174145687478446698065e-71"
+    },
+    {
+      "check": "tlambda quantile Jacobian 0.5 0.2",
+      "relative_error": "0.0"
+    },
+    {
+      "check": "tlambda quantile Jacobian 0.5 0.5",
+      "relative_error": "0.0"
+    },
+    {
+      "check": "tlambda quantile Jacobian 0.5 0.8",
+      "relative_error": "0.0"
+    },
+    {
+      "check": "tlambda quantile Jacobian 1.0 0.2",
+      "relative_error": "9.055679078826712367509119290887791780682531198139138189582614889935501e-72"
+    },
+    {
+      "check": "tlambda quantile Jacobian 1.0 0.5",
+      "relative_error": "9.055679078826712367509119290887791780682531198139138189582614889935501e-72"
+    },
+    {
+      "check": "tlambda quantile Jacobian 1.0 0.8",
+      "relative_error": "9.055679078826712367509119290887791780682531198139138189582614889935501e-72"
+    },
+    {
+      "check": "cmb normalization",
+      "relative_error": "0.0"
+    },
+    {
+      "check": "tbinom normalization",
+      "relative_error": "0.0"
+    },
+    {
+      "check": "tpois normalization",
+      "relative_error": "0.0"
+    },
+    {
+      "check": "zipf normalization",
+      "relative_error": "0.0"
+    },
+    {
+      "check": "cmp Poisson member",
+      "relative_error": "0.0"
+    },
+    {
+      "check": "tnorm integral ratio",
+      "relative_error": "0.0"
+    },
+    {
+      "check": "gpd uniform closed endpoint",
+      "relative_error": "0.0"
+    },
+    {
+      "check": "gev closed endpoint",
+      "relative_error": "0.0"
+    },
+    {
+      "check": "zmgeom finite atom normalization",
+      "relative_error": "0.0"
+    },
+    {
+      "check": "zmpois finite atom normalization",
+      "relative_error": "0.0"
+    },
+    {
+      "check": "zmlogarithmic finite atom normalization",
+      "relative_error": "0.0"
+    },
+    {
+      "check": "zmbinom finite atom normalization",
+      "relative_error": "0.0"
+    },
+    {
+      "check": "beta large-shape digit escalation",
+      "relative_error": "0.000000000000000000000000000000000000000000000000000000000000000000000000000000001922025599369373544794462831368897221927417613946990180787498276366216657335460617415685653142212405314108297017080985731199013425194786301185241415265036891577923002896403704871425649307872183063912909593816114844312154898469606725065160410268926328187724634651638706227817852892"
+    },
+    {
+      "check": "pig Bessel vs independent polynomial at count 100",
+      "relative_error": "0.0"
+    },
+    {
+      "check": "emg independent convolution integral",
+      "relative_error": "2.263919769706678091877279822721947945170632799534784547395653722483875e-72"
+    },
+    {
+      "check": "emg extreme normal limit",
+      "relative_error": "0.0"
+    },
+    {
+      "check": "tnorm extreme exponential tilt limit",
+      "relative_error": "0.000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001512635831959998950421239016014470681163994695428702264763231857650473879635761946539694371219497349954885841139660160516821297505229907909251091509161467565052820947944336735778886593925622744916000769124153306412005976254667618325901761118792800487629760641977070098904580639443739724291886469311322767276889853644733382135129488775428731254155144379746344882321742523062493122601249836552317696407"
+    },
+    {
+      "check": "triangular endpoint mode",
+      "relative_error": "0.0"
+    },
+    {
+      "check": "zero-modified NB logarithmic member",
+      "relative_error": "1.248911668681564988537711471226124410539010574673947601702148957703004e-71"
+    },
+    {
+      "check": "CMP independent Bessel normalizer",
+      "relative_error": "0.0"
+    },
+    {
+      "check": "CMP centered series at mode one million",
+      "relative_error": "1.9411655286418984305434833461186738199386317870561401567871877296142e-65"
+    },
+    {
+      "check": "Zipf Hurwitz identity .3",
+      "relative_error": "9.388888295755423455088703425881947157473720062937258719798173578552133e-72"
+    },
+    {
+      "check": "Zipf Hurwitz identity 1",
+      "relative_error": "0.0"
+    },
+    {
+      "check": "Zipf Hurwitz identity 1.7",
+      "relative_error": "0.0"
+    },
+    {
+      "check": "truncated-normal dual-boundary attainment criteria",
+      "relative_error": "theoretical sign tests passed"
+    }
+  ]
+}

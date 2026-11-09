@@ -1,0 +1,16 @@
+{
+  "cases": 11185,
+  "families": 99,
+  "subsets": 579,
+  "independent_simple_likelihood_checks": 142,
+  "classifications": {
+    "ok": 8244,
+    "non-Ok": 2203,
+    "silent failure": 533,
+    "loud failure": 168,
+    "open": 37
+  },
+  "validation": "PASS",
+  "native_census_machine": "workstation",
+  "validator_host": "JonasBI"
+}

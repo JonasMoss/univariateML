@@ -1,0 +1,25 @@
+{
+  "validation": "PASS",
+  "report_links": "PASS",
+  "silent_reproductions": 533,
+  "family_tables": 99,
+  "evaluation_script_sha256": {
+    "focused_references.py": "3865189545d4bc79e2c14f3fd99a33d707d4433a1f135c82efcd7d4a58038cd9",
+    "limit_samples.py": "2a087eb793462907aa82af535c9c1f1da0b8f488cbfee460c535de61779d5da8",
+    "report.py": "9b9cb09040888c4e9d69b4af0f39ecb12d95966b9b154f9bf0819e686be3eff1",
+    "audit.py": "48492f467aee130bb46f4bf23f34b4ae13dfdf9b329298f8e3f98ea66fe62e7d",
+    "tnorm_existence.py": "f687c6094a522069fd8fb8bba2fd283b9e97b89d4a66aacea5f03b9c8ae1c883",
+    "check_reference.py": "4f6cd01bd81bf70aacb40bb19c9af638a68e2c9ee9a4b11bbbb03eaf03d68202",
+    "additional_samples.py": "5926eee95b477811035e9384e720cc83fda924b0fd051319a06e956e91bf36e1",
+    "check_findings.py": "2b74b1abe63dc5bd30b8a1a715d0bc52c81c071e57a5c6b39e2e39c17040009a",
+    "held_support.py": "3a496be48cb6f3af22af6670ddc207227393b99119a0a509e0c9b2bc26cf74c5",
+    "support_samples.py": "ae7ca70148e748e917734e93736e10a91d0ee10b05fb943ad2353bfb192efa3b",
+    "reproduce.py": "a35e53a11743fbe8620555e26c9377df7235073c8c355773e54fb848500102b0",
+    "support_geometry.py": "3c9550604c04a0d33a7a30faf16d4249948131f5afcda46fb1d732cee945d544",
+    "finalize.py": "9b93643e3e45b0269b872ce4903082c49138b5d27d6cf55c726ecb208c5a10c5",
+    "validate.py": "2d74b20b653dbe6edae4cde8807f9d244e3fcf4300682a1fa4e9a420d02bf00b",
+    "existence.py": "60304a2fc933fa04bb27ccbc1bcb0bde48623be80ad2e3078b4276be19a0bfb0",
+    "retry_fit.py": "79170cd901b80f6579f44e01afbfa83bd083312fbb72795f416ff586cc387993",
+    "reference_extra.py": "8fa1d7977aba486d8d234061bfa4cc83de4a87640f08d47f1d2337f333bf52e2"
+  }
+}
