@@ -1,0 +1,20 @@
+small gap Delta = 1e-3, alpha = 1: H^2/(Delta^2/4) vs I = d(d+1)/(d+3)
+  d=0.5   H^2/(Delta^2/4)=0.214286  I=0.214286
+  d=0.1   H^2/(Delta^2/4)=0.035484  I=0.035484
+  d=0.01  H^2/(Delta^2/4)=0.003355  I=0.003355
+gaps Delta, alpha = 1: H^2, H^2/d, and H^2/d - 2 log Delta (should settle as d -> 0, Delta -> inf)
+  d=0.1    Delta=1        H^2=0.00814  H^2/d=  0.0814  H^2/d-2logDelta=  0.0814
+  d=0.1    Delta=10       H^2=0.15855  H^2/d=  1.5855  H^2/d-2logDelta= -3.0197
+  d=0.1    Delta=100      H^2=0.45912  H^2/d=  4.5912  H^2/d-2logDelta= -4.6191
+  d=0.1    Delta=10000    H^2=1.00423  H^2/d= 10.0423  H^2/d-2logDelta= -8.3784
+  d=0.1    Delta=1e+06    H^2=1.36984  H^2/d= 13.6984  H^2/d-2logDelta=-13.9326
+  d=0.01   Delta=1        H^2=0.00077  H^2/d=  0.0772  H^2/d-2logDelta=  0.0772
+  d=0.01   Delta=10       H^2=0.01599  H^2/d=  1.5991  H^2/d-2logDelta= -3.0061
+  d=0.01   Delta=100      H^2=0.05102  H^2/d=  5.1016  H^2/d-2logDelta= -4.1088
+  d=0.01   Delta=10000    H^2=0.13467  H^2/d= 13.4674  H^2/d-2logDelta= -4.9533
+  d=0.01   Delta=1e+06    H^2=0.21823  H^2/d= 21.8231  H^2/d-2logDelta= -5.8079
+  d=0.001  Delta=1        H^2=0.00008  H^2/d=  0.0768  H^2/d-2logDelta=  0.0768
+  d=0.001  Delta=10       H^2=0.00160  H^2/d=  1.5999  H^2/d-2logDelta= -3.0053
+  d=0.001  Delta=100      H^2=0.00516  H^2/d=  5.1558  H^2/d-2logDelta= -4.0546
+  d=0.001  Delta=10000    H^2=0.01389  H^2/d= 13.8924  H^2/d-2logDelta= -4.5283
+  d=0.001  Delta=1e+06    H^2=0.02297  H^2/d= 22.9750  H^2/d-2logDelta= -4.6560
