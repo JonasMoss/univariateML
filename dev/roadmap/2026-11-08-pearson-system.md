@@ -122,6 +122,41 @@ $H^2(f,g)=\int(\sqrt f-\sqrt g)^2$.
   Smith's (1985) rate. This non-regular part is an open region (types I,
   III, VI with some free endpoint exponent below 1), not a lower-dimensional
   set. [numeric for gamma at p = -0.5, 0, 0.5, 1, 1.5; lit]
+* What "fractional Brownian" means here; nothing is random. Translations act
+  isometrically on $\gamma(\tau)=\sqrt{f_\tau}$, so the curve's geometry is
+  fixed by $\varphi(h)=H^2(h)$, and polarization gives every chord inner
+  product,
+  $\langle\gamma(b)-\gamma(a),\gamma(d)-\gamma(c)\rangle=\tfrac12[\varphi(d-a)+\varphi(c-b)-\varphi(c-a)-\varphi(d-b)]$.
+  A centred Gaussian process is a curve in $L^2(\Omega)$, and fBm is the curve
+  with $\varphi(h)=|h|^{2H}$ (Kolmogorov's "Wiener spirals", 1940; H = 1/2 is
+  Halmos's crinkled arc $t\mapsto\mathbf 1_{[0,t]}$). Near the endpoint
+  $\sqrt{f_\tau(x)}\approx(x-\tau)_+^{p/2}g(x-\tau)$ with g smooth and
+  g(0) > 0: the Mandelbrot-Van Ness kernel with $H-\tfrac12=p/2$. The Wiener
+  isometry $X_\tau=\int\sqrt{f_\tau}\,dW$ gives a stationary Gaussian process
+  with $\mathbb E(X_\tau-X_\sigma)^2=H^2(f_\tau,f_\sigma)$ whose small-scale
+  increments are fBm's; for the uniform, $X_\tau=W(\tau+1)-W(\tau)$. Blowing
+  the curve up at a point gives a line where DQM holds and a Wiener spiral for
+  p < 1. [algebra; numeric through the chord cosines]
+* Spectral form, with $\hat g(\omega)=\int g(x)e^{-i\omega x}dx$ and
+  $g=\sqrt f$:
+  $\varphi(h)=\frac1\pi\int(1-\cos\omega h)\,|\hat g(\omega)|^2d\omega$ and
+  $I=4\int(g')^2=\frac2\pi\int\omega^2|\hat g(\omega)|^2d\omega$. A power
+  endpoint gives $|\hat g(\omega)|^2\sim|\omega|^{-(p+2)}$, fBm's exponent
+  $2H+1$, and finite information iff p > 1: Hajek's location-family DQM
+  criterion read in frequency space. For the gamma,
+  $|\hat g(\omega)|^2=\Gamma(p/2+1)^2/(\Gamma(p+1)(1/4+\omega^2)^{p/2+1})$
+  exactly. The parameter rate solves $n\,\varphi(h_n)\asymp1$.
+  [algebra; numeric: spectral and direct $\varphi$ agree to 8-10 digits,
+  spectral I = 2 at p = 1.5]
+* Limit experiments, from memory and unverified. For a two-sided cusp
+  ($f\approx a-b|x|^\kappa$) the local log-likelihood ratio converges to
+  $B_H(u)-\tfrac12|u|^{2H}$, literally fBm (Ibragimov-Has'minskii). At a
+  one-sided endpoint the support moves too: observations in the uncovered
+  sliver matter, and the limit is driven by a Poisson process near the
+  endpoint with intensity proportional to $x^p$. Its Hellinger geometry is
+  the same spiral, since Poisson processes have affinity
+  $\exp(-\tfrac12\int(\sqrt{\lambda_u}-\sqrt{\lambda_v})^2)$: one geometry,
+  realised with Gaussian or with Poisson noise.
 
 **Closure, injectivity and the inverse modulus.** The property wanted is
 "Hellinger-close implies parameter-close", $d(\theta,\theta')\le\omega(H)$.
