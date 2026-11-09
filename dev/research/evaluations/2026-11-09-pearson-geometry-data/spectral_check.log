@@ -1,0 +1,5 @@
+p=0.5 h=0.1: spectral phi=2.6197063138e-02  direct H2=2.6197063537e-02
+p=0.5 h=0.01: spectral phi=9.3622842435e-04  direct H2=9.3622843697e-04
+p=1.5 h=0.1: spectral phi=4.1467936891e-03  direct H2=4.1467936891e-03
+p=1.5 h=0.01: spectral phi=4.7296287862e-05  direct H2=4.7296287862e-05
+p=1.5: spectral I=2.0000000000  target 1/(p-1)=2.0000000000
