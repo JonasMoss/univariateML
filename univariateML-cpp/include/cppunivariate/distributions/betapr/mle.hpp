@@ -10,6 +10,7 @@
 #include "../../special/special.hpp"
 #include "../gamma/mle.hpp"
 #include "../beta/mle.hpp"
+#include "centered.hpp"
 #include <vector>
 #include <algorithm>
 #include "../invgamma/mle.hpp"
@@ -121,25 +122,36 @@ inline BetaPrimeResult betapr_mle_fixed_scale(
   const double nan = std::numeric_limits<double>::quiet_NaN();
   if (!(scale > 0) || !std::isfinite(scale) || x.size() < 2)
     return {nan,nan,scale,nan,0,BetaPrimeStatus::InvalidStart};
+  if (!(tol>0) || !std::isfinite(tol) || maxit<=0)
+    return {nan,nan,scale,nan,0,BetaPrimeStatus::InvalidStart};
   std::vector<double> y;
   bool different = false;
-  double lx = 0, l1p = 0;
+  double jacobian=0, relative_spread=0;
+  const bool flip=x[0]>scale;
   for (double v : x) {
     if (!(v > 0) || !std::isfinite(v))
       return {nan,nan,scale,nan,0,BetaPrimeStatus::InvalidStart};
     different = different || v != x[0];
-    const double z = v / scale;
-    y.push_back(z / (1 + z));
-    lx += std::log(z);
-    l1p += std::log1p(z);
+    relative_spread=std::max(relative_spread,std::abs((v-x[0])/x[0]));
+    // Transform the smaller tail; either orientation has the same Jacobian.
+    const double z=flip?scale/v:v/scale;
+    y.push_back(z/(1+z));
+    jacobian+=std::log(scale)-2*(std::max(std::log(scale),std::log(v))+
+        std::log1p(std::min(scale,v)/std::max(scale,v)));
   }
   if (!different)
     return {nan,nan,scale,nan,0,BetaPrimeStatus::InvalidStart};
-  const auto r = beta_mle(span{y.data(), y.size()}, tol, maxit);
-  const double ll = (r.alpha-1)*lx - (r.alpha+r.beta)*l1p -
-      x.size()*(special::lbeta(r.alpha,r.beta)+std::log(scale));
-  return {r.alpha,r.beta,scale,ll,r.iterations,
+  const bool centered=relative_spread<=1e-3;
+  bool arithmetic_failure=false;
+  auto r=centered?betapr_detail::centered_shapes(x,scale,tol,maxit,arithmetic_failure):
+      beta_mle(span{y.data(),y.size()},std::min(tol,1e-12),maxit);
+  if(flip && !centered)std::swap(r.alpha,r.beta);
+  const double ll=r.logLik+jacobian;
+  BetaPrimeResult result{r.alpha,r.beta,scale,ll,r.iterations,
       r.status==BetaStatus::Ok && std::isfinite(ll) ? BetaPrimeStatus::Ok : BetaPrimeStatus::BfgsFailure};
+  if(arithmetic_failure || (r.status==BetaStatus::Ok && !std::isfinite(ll)))
+    result.certificate_failure=LomaxCertificateFailure::Arithmetic;
+  return result;
 }
 
 inline BetaPrimeResult betapr_mle(span x, double tol = 1e-6, int maxit = 2000,
@@ -149,16 +161,24 @@ inline BetaPrimeResult betapr_mle(span x, double tol = 1e-6, int maxit = 2000,
 #include "certificate.hpp"
 namespace cppunivariate {
 // Hold-aware profiles. The conditional interface is also used by GB2.
+namespace betapr_joint_cert { inline double log_beta(double p,double q); }
 namespace betapr_detail {
 inline double shape_root(double other, double target,int maxit=1000) {
   maxit = static_cast<int>(solver_budget(maxit));
+  // An underflowed statistic cannot determine a relative shape root. Keep
+  // at least 128 subnormal quanta inside the requested score resolution.
+  if(!(target>128*std::numeric_limits<double>::denorm_min()/1e-10) || !std::isfinite(target))return NAN;
   double lo=-40,hi=std::log(1e8);
   for(int j=0;j<maxit;++j) {
     const double t=(lo+hi)/2,v=std::exp(t);
-    const double score=special::digamma(v+other)-special::digamma(v)-target;
+    const double score=beta_detail::psi_increment(v,other)-target;
     if(score>0) lo=t;else hi=t;
   }
-  return hi-lo<=1e-10?std::exp((lo+hi)/2):NAN;
+  if(hi-lo>1e-13)return NAN;
+  const double value=std::exp((lo+hi)/2);
+  if(value<20 && other<.01*value &&
+      other/(value+other)<128*std::numeric_limits<double>::denorm_min()/1e-10)return NAN;
+  return value;
 }
 }
 inline BetaPrimeResult betapr_mle_holds(span x, double held_a, double held_b,
@@ -207,7 +227,7 @@ inline BetaPrimeResult betapr_mle_holds(span x, double held_a, double held_b,
     const double b=fb?held_b:betapr_detail::shape_root(held_a,tb,maxit);
     // Stable density through log(Y) and log(1-Y); no x/scale overflow.
     const CPPUNIV_EXTENDED_REAL la=a,lb=b;
-    const CPPUNIV_EXTENDED_REAL logbeta=std::lgamma(la)+std::lgamma(lb)-std::lgamma(la+lb);
+    const CPPUNIV_EXTENDED_REAL logbeta=betapr_joint_cert::log_beta(a,b);
     const double ll=static_cast<double>(n*(-logbeta-la*ta-lb*tb-lm));
     const bool bad_a=!fa&&(a>=.999e8 || a<=std::exp(-39.99) ||
       std::abs(special::digamma(a+b)-special::digamma(a)-ta)>1e-7*std::max(1.0,ta));

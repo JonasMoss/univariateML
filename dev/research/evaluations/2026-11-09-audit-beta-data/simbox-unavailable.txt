@@ -1,0 +1,7 @@
+Simbox SSH connected, but /usr/bin/ps, /usr/bin/head and /usr/bin/df returned Input/output error.
+A slot-creation probe failed:
+mkdir: cannot create directory /home/jmoss/umvl-wt/.slot3: Read-only file system
+The job launcher was verified sleeping in its slot-retry loop; no remote fit had started.
+Only this worktree’s queued launcher and its sleep child were terminated.
+Local fallback is used. The required GCC 13 no-long-double run cannot be claimed.
+Recheck at 2026-11-09 23:08 UTC: SSH port 22 timed out (exit 255); machine no longer reachable.

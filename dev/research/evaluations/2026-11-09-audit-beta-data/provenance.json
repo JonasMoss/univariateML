@@ -1,0 +1,88 @@
+{
+  "base_commit": "594c491dd495892b9cffd8977fcc9809fcbec151",
+  "before_sha256": {
+    "univariateML-cpp/include/cppunivariate/distributions/betapr/mle.hpp": "17a09c3a3d45b13903951340186aa9e0ce42385515bacc7fb6061e8ae7bb4600",
+    "univariateML-cpp/include/cppunivariate/distributions/nsbeta/mle.hpp": "c48e2cfa4d2c33d3070b8154b0720f8d1c30d169dc4e18dca6f0a01df881e901",
+    "univariateML-cpp/include/cppunivariate/distributions/pareto4/mle.hpp": "5e3fab98b4ebd74c589c6388dfc61df340bbb30b88a7572a4f8f9b90b865a609"
+  },
+  "frozen_harness": "2026-11-09-fit-audit-rerun-data/harness.cpp.gz",
+  "target_indices": [
+    248,
+    249,
+    251,
+    252,
+    254,
+    255,
+    256,
+    257,
+    260,
+    5348,
+    10791,
+    10792,
+    10799,
+    11011,
+    5666,
+    5669
+  ],
+  "additional_reference_index": 272,
+  "after_sha256": {
+    "univariateML-cpp/include/cppunivariate/distributions/betapr/README.md": "3f5cf4516956b8494d7b9b8876a9a046f481fc37a7a7000ea50c38a00d49007a",
+    "univariateML-cpp/include/cppunivariate/distributions/betapr/centered.hpp": "819ed435a71cfeec80dbfa78b57a8b591884a699d98f65b99710af879275bd5d",
+    "univariateML-cpp/include/cppunivariate/distributions/betapr/mle.hpp": "1c35ada55033f7efc6972c82c191dfe2cabd17a847dcfae801aab8a9528efac3",
+    "univariateML-cpp/include/cppunivariate/distributions/betapr/test.cpp": "f6617d82ba6c582224c18c6ef1e91839e526382eb0c8899403a7aded5bed8414",
+    "univariateML-cpp/include/cppunivariate/distributions/nsbeta/README.md": "f645ed42641493caa0bfe2d3cc2bd63081dc247ccfe16b3912e0ed3cee2d5b8f",
+    "univariateML-cpp/include/cppunivariate/distributions/nsbeta/mle.hpp": "88094bd984ed0528ec38395dea8e6534164d7a496474a59365295b244f074101",
+    "univariateML-cpp/include/cppunivariate/distributions/nsbeta/test.cpp": "2ad449fb9f8887e2a783d648e15f83347856cbba058905c46a3178fce77b549e",
+    "univariateML-cpp/include/cppunivariate/distributions/pareto4/README.md": "685be82e3e2ff30ad03499ca2ec0fa442bd5d61876b3620ddbaf2f6c9c893b25",
+    "univariateML-cpp/include/cppunivariate/distributions/pareto4/centered.hpp": "477058ccce162fd3852ed5b82f0d7c1cb3c0171edfb7c35ac5d2dec61e8147c6",
+    "univariateML-cpp/include/cppunivariate/distributions/pareto4/mle.hpp": "1b7883278606331f1003429325cbb5d014e39e44454cac077c1a925c56b4d0ca",
+    "univariateML-cpp/include/cppunivariate/distributions/pareto4/test.cpp": "11d675b8eec05ad39925c560c12de4ad07ae7158f82d550fd3038f243ee6a638",
+    "bindings/r/distributions/betapr/test.R": "e38f7dbb1f834778fcaf23ba280bcf7720e3c283d8b92c65651ad9921ef08574",
+    "bindings/r/distributions/nsbeta/test.R": "98b125ede9c79dfd2f946f9a02e5604d5e6d65cde40a336a39fec6e48048d420",
+    "bindings/r/distributions/pareto4/test.R": "8da7742836f8766a873aaa7889416da4decc76b92b4b8ba3ab924020a5377559"
+  },
+  "input_sha256": {
+    "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/harness.cpp.gz": "b73b8152fbf2e153730a493a2d2213e383af4d8a77c6a0f7a5da4a1040a65722",
+    "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/reproduce.py": "a35e53a11743fbe8620555e26c9377df7235073c8c355773e54fb848500102b0",
+    "dev/research/evaluations/2026-11-07-fit-audit-data/cases.json.gz": "aa3b053c49681fb06f28cfdceebb0ee2c10ec950f4bb34af94352fc652227df7"
+  },
+  "final_validation": {
+    "machine": "workstation",
+    "compiler": "GCC 15.2.0",
+    "R": "4.6.1",
+    "BH": "1.90.0.1",
+    "slot_command": "/tmp/umvl-cpu/run4 bash build/scratch/final-suites.sh",
+    "suite_exit_code": 0,
+    "r_dev": {
+      "fail": 0,
+      "warn": 0,
+      "skip": 154,
+      "pass": 22503,
+      "elapsed_seconds": 151.531
+    },
+    "cpp_dev": {
+      "pass": 106,
+      "total": 106,
+      "elapsed_seconds": 183.98
+    },
+    "cpp_full": {
+      "pass": 129,
+      "total": 129,
+      "elapsed_seconds": 407.28
+    },
+    "cpp_no_long_double": {
+      "pass": 129,
+      "total": 129,
+      "elapsed_seconds": 382.58
+    },
+    "r_full": {
+      "fail": 0,
+      "warn": 0,
+      "skip": 0,
+      "pass": 45338,
+      "elapsed_seconds": 488.688
+    },
+    "site_check": "passed; 99 family pages and 99 compiled C++ snippets",
+    "simbox": "unavailable: read-only filesystem, later SSH timeout; GCC 13 no-long-double not run"
+  }
+}

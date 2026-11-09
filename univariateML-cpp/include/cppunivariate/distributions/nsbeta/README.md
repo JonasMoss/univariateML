@@ -179,6 +179,8 @@ Hold the opposite endpoint beyond the sample. If the shape $s$ associated with t
 
 With both bounds held, either held beta shape leaves a strictly decreasing score with one root for the other shape, even on constant samples strictly inside the bounds.
 
+With one shape held, the free shape uses the same monotone beta score solve as the unit-interval family, with the caller’s iteration budget. This matters near a held endpoint: the free shape may exceed $10^{150}$ while the observations remain finite. The score uses a digamma increment, and the normalizer uses a log-beta difference, so neither is recovered by subtracting nearly equal special-function values. The [endpoint reference cases](../../../../../dev/research/evaluations/2026-11-09-audit-beta-data/reference.json) cover both tails and include a free shape above $10^{150}$.
+
 ## R notes
 
 Supply min and max. Passing NULL for either stops with the endpoint

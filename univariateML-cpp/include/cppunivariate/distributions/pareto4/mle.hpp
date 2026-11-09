@@ -5,6 +5,9 @@
 #include <cmath>
 namespace cppunivariate {
 struct Pareto4Result { double shape1,shape2,scale,min,logLik; int iterations; BurrStatus status; StopDetail stop_detail{}; };
+} // namespace cppunivariate
+#include "centered.hpp"
+namespace cppunivariate {
 
 inline Pareto4Result pareto4_mle_certified(span x, double min, double tol, int maxit);
 
@@ -32,6 +35,12 @@ inline Pareto4Result pareto4_mle(span x, double min, double tol, int maxit, doub
     for(std::size_t i=1;i<order.size();++i)
       if(x[order[i]]!=x[order[i-1]]&&y[order[i]]==y[order[i-1]])
         return {NAN,NAN,scale,min,NAN,0,BurrStatus::NumericalFailure};
+  }
+  if(valid && shape1>0 && std::isfinite(shape1) && std::isnan(shape2) && std::isnan(scale) && !x.empty()) {
+    double relative_spread=0;
+    for(double v:x)relative_spread=std::max(relative_spread,std::abs((v-x[0])/y[0]));
+    if(relative_spread>0 && relative_spread<=1e-3)
+      return pareto4_detail::centered_shape(x,min,shape1,tol,maxit);
   }
   auto r=(!std::isnan(shape1)||!std::isnan(shape2)) ? burr_mle_holds(span{y.data(),y.size()},shape1,shape2,scale,tol,maxit) : std::isnan(scale) ? burr_mle_legacy(span{y.data(),y.size()},tol,maxit) : burr_mle_fixed_scale(span{y.data(),y.size()},scale,tol,maxit);
   auto detail=r.stop_detail;

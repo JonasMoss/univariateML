@@ -106,3 +106,50 @@ test_that("P2 nsbeta constant samples with coercive holds fit", {
   expect_true(is.finite(attr(mlnsbeta(rep(.4,5),min=0,max=1,shape2=3),"logLik")))
   expect_true(is.finite(attr(mlnsbeta(rep(.4,5),min=0,max=1,shape1=2,shape2=3),"logLik")))
 })
+
+test_that("nsbeta held-shape solve forwards iterlim", {
+  x <- c(1e-200,2e-200,3e-200,5e-200,9e-200)
+  expect_error(mlnsbeta(x,min=0,max=1,shape1=2,iterlim=1),"failed to converge")
+  expect_gt(mlnsbeta(x,min=0,max=1,shape1=2)[["shape2"]],1e199)
+})
+
+test_that("nsbeta: TASK-101.7.3 raw likelihood regressions", {
+  fixtures <- list(
+    list(index=5348, x=c(3.279712609634442e-151,7.163848556685424e-151,3.247469053643058e-151,1.3428490451384639e-151,5.302279618623525e-151,5.9296803360997277e-151,5.249832294577309e-151,3.503576195388067e-151,5.430978029647745e-151,7.340437563236251e-151,8.133244607203068e-152,2.243783898794992e-151),
+         held=list(shape1=2.0063421787377256,min=0.0,max=1.0),
+         theta=c(shape1=2.0063421787377256,shape2=4.7349382987329286e+150,min=0.0,max=1.0), logLik=4145.549562030085),
+    list(index=10791, x=c(1e-17,2e-17,3e-17,5.0000000000000005e-17,9.000000000000001e-17),
+         held=list(shape1=2.0063421787377256,min=0.0,max=1.0),
+         theta=c(shape1=2.0063421787377256,shape2=5.015855446844314e+16,min=0.0,max=1.0), logLik=184.38678752333837),
+    list(index=10792, x=c(1e-200,2e-200,3e-200,5e-200,9e-200),
+         held=list(shape1=2.0063421787377256,min=0.0,max=1.0),
+         theta=c(shape1=2.0063421787377256,shape2=5.015855446844314e+199,min=0.0,max=1.0), logLik=2291.25214761289),
+    list(index=10799, x=c(0.999999999999,0.999999999998,0.999999999997,0.999999999995,0.999999999991),
+         held=list(shape2=3.0460502693524503,min=0.0,max=1.0),
+         theta=c(shape1=761512504326.9779,shape2=3.0460502693524503,min=0.0,max=1.0), logLik=126.54970076195625),
+    list(index=11011, x=c(0.9999999999999999,0.9999999999999998,0.9999999999999997,0.9999999999999994,0.999999999999999),
+         held=list(shape2=3.0460502693524503,min=0.0,max=1.0),
+         theta=c(shape1=6859095429003744.0,shape2=3.0460502693524503,min=0.0,max=1.0), logLik=172.07865397295913)
+  )
+  for (f in fixtures) {
+    fit <- do.call(mlnsbeta, c(list(x=f$x), f$held))
+    expect_equal(as.numeric(fit[names(f$theta)])/pmax(abs(unname(f$theta)),1e-300),
+                 unname(f$theta)/pmax(abs(unname(f$theta)),1e-300), tolerance=1e-10)
+    expect_equal(attr(fit,"logLik")/f$logLik, 1, tolerance=1e-10)
+  }
+})
+
+test_that("nsbeta held-shape score rejects insufficient subnormal signal", {
+  for (unit in c(1e-320,1e-311))
+    expect_error(mlnsbeta(c(1,2,3,5,9)*unit,min=0,max=1,shape1=1e-320),
+                 "failed to converge")
+})
+
+test_that("nsbeta a tiny held shape with a resolved score is estimable", {
+  x <- c(.1,.2,.3,.5,.9)
+  h <- 1e-320
+  fit <- mlnsbeta(x,min=0,max=1,shape1=h)
+  # Leading asymptotic error is order sqrt(h), below 1e-150.
+  expect_equal(fit[["shape2"]]/(sqrt(h)/sqrt(-mean(log1p(-x)))),1,tolerance=1e-10)
+  expect_equal(attr(fit,"logLik"),length(x)*log(h)-sum(log(x)+log1p(-x)),tolerance=1e-10)
+})

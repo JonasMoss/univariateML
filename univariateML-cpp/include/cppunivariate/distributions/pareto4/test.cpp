@@ -191,3 +191,39 @@ TEST_CASE("Pareto IV refuses inexact threshold subtraction onto held scale") {
  const std::vector<double> x{1.1,2,3};
  CHECK(cppunivariate::pareto4_mle(mltest::as_span(x),.1,1e-9,1000,1).status==cppunivariate::BurrStatus::NumericalFailure);
 }
+
+TEST_CASE("Pareto IV centered held-shape roots reject an exhausted search") {
+  const std::vector<double> x{57.95719829085132,57.95719829090928,57.95719829096724,57.9571982910252,57.95719829114111};
+  const auto r=cppunivariate::pareto4_mle(mltest::as_span(x),0,1e-10,1,NAN,.3157266252310832,NAN);
+  CHECK(r.status==cppunivariate::BurrStatus::IterationFailure);
+  CHECK(std::isnan(r.logLik));
+}
+
+// Raw score roots checked independently at 350 and 700 digits.
+TEST_CASE("pareto4: TASK-101.7.3 raw likelihood regressions") {
+  struct Fixture { int index; std::vector<double> x; double a,b,s,lo,ll; };
+  const std::vector<Fixture> fixtures{
+    {5666,{57.95719829085132,57.95719829090928,57.95719829096724,57.9571982910252,57.95719829114111},0.3157266252310832,1813936513691.6501,57.95719829088866,0.0,108.0395367269637},
+    {5669,{57.95719829085132,57.95719829090928,57.95719829096724,57.9571982910252,57.95719829114111},0.3157266252310832,1813936513691.6501,57.95719829088866,0.0,108.0395367269637},
+  };
+  for(const auto& f:fixtures) {
+    CAPTURE(f.index);
+    const auto r=cppunivariate::pareto4_mle(mltest::as_span(f.x),f.lo,1e-10,1000,NAN,f.a,NAN);
+    REQUIRE(r.status==cppunivariate::BurrStatus::Ok);
+    CHECK(r.shape1==doctest::Approx(f.a).epsilon(1e-10));
+    CHECK(r.shape2==doctest::Approx(f.b).epsilon(1e-10));
+    CHECK(r.scale==doctest::Approx(f.s).epsilon(1e-10));
+    CHECK(r.min==doctest::Approx(f.lo).epsilon(1e-10));
+    CHECK(r.logLik==doctest::Approx(f.ll).epsilon(1e-10));
+  }
+}
+
+TEST_CASE("Pareto IV centered profile rejects a separated scale restoration loss") {
+  const std::vector<double> x{1,1.5,2};
+  // The ideal scale is 1e100 plus an order-one displacement, which cannot
+  // survive restoration to binary64. The profile likelihood separates it
+  // from the likelihood at the rounded scale.
+  const auto r=cppunivariate::pareto4_mle(mltest::as_span(x),-1e100,1e-10,1000,NAN,.3157266252310832,NAN);
+  CHECK(r.status==cppunivariate::BurrStatus::NumericalFailure);
+  CHECK(std::isnan(r.logLik));
+}
