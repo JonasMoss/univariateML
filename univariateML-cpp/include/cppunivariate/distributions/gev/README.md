@@ -68,8 +68,8 @@ r:
     mu: Location to hold fixed, or NULL to estimate.
     sigma: Positive scale to hold fixed, or NULL to estimate.
     xi: Shape to hold fixed, or NULL to estimate within `[-1, 1]`. Held shapes above one are accepted when the collapse criterion permits.
-    reltol: Tolerance for dimensionless profile scores and root brackets.
-    iterlim: "Work limit per solve: min(iterlim, 100000) solver iterations; shape certificates allow 128 * min(iterlim, 100000) segment evaluations."
+    reltol: Requested relative coefficient accuracy; conditional point-profile solves also use dimensionless scores.
+    iterlim: "Work limit per solve: min(iterlim, 100000) solver iterations; certificates allow 128 * min(iterlim, 100000) slab, box or profile evaluations."
 log_density: Piecewise((-log(sigma)-(x-mu)/sigma-exp(-(x-mu)/sigma), Eq(xi,0)), (-log(sigma)-(1+1/xi)*log(1+xi*(x-mu)/sigma)-(1+xi*(x-mu)/sigma)**(-1/xi), True))
 limits:
 - {firmness: proved, name: held-minimum half tie, fixed: [mu], status: NoMLE, message: "minimum multiplicity permits scale collapse", when: '$\sigma \to 0$ with $\mu$ held at the sample minimum and $\xi=1$', detect: 'Shape and scale are free and exactly half the observations equal held mu, except two distinct values with equal counts: that case attains the supremum at xi=-1.'}
@@ -98,7 +98,7 @@ relations: {}
 fit:
   method: profile-search
   certified: 'partial'
-  note: "gev/mle.hpp, gev_held_profile and gev_profile: Held xi=-1 has closed-form shifted reverse-exponential fits; held xi=0 and sigma give analytic location; held sigma and -1<xi<0 give a strictly concave, bracketed location solve. These nontrivial submodels are certified. Shape-only fits with mu and sigma held use derivative interval coverage and explicit support-edge envelopes, with numerical or budget stops if unresolved. All-free two-point samples with minimum fraction at most one half have a unique reverse-exponential maximum, computed from counts with coefficient precision guards. Exact half-minimum ties have proved global bounds both with all coefficients free and with mu held at the minimum; attained members are retained. Other free and conditional fits retain finite scans and root discovery without global coverage."
+  note: "gev/mle.hpp, gev_held_profile and gev_profile: Held xi=-1 has closed-form shifted reverse-exponential fits; held xi=0 and sigma give analytic location; held sigma and -1<xi<0 give a strictly concave, bracketed location solve. These nontrivial submodels are certified. Shape-only fits with mu and sigma held use derivative interval coverage and explicit support-edge envelopes, with numerical or budget stops if unresolved. All-free two-point samples with minimum fraction at most one half have a unique reverse-exponential maximum, computed from counts with coefficient precision guards; exact public location or scale holds containing that member inherit its certificate. Exact half-minimum ties have proved global bounds both with all coefficients free and with mu held at the minimum; attained members are retained. The general all-free fit uses joint_certificate.hpp: a shape-slab cover, monotone endpoint-gap brackets, a minimum-pivot Gumbel seam and a one-sided reverse-exponential face envelope. Interior maxima require joint coefficient inclusion and global candidate comparison; unresolved coverage stops numerically or on budget. Other conditional fits retain numerical root discovery without global coverage."
 areas:
 - extremes and environment
 existence:
@@ -153,7 +153,7 @@ held-coordinate bound, not an unconstrained Fréchet transport.
 
 Held shapes above 1 are accepted when the tie condition allows them. A held shape below $-1$ is accepted only when $\mu$ is held at or above the sample maximum, or when every coefficient is held.
 
-With the shape held, holding the scale leaves a one-dimensional fit for the location (certified for nonpositive shape), and holding the location leaves one for the scale. With the shape free, the fit profiles over $\xi$ and compares interior maxima with both shape bounds. The shape-only search is certified as described below. Searches with free nuisance coefficients remain numerical except for the proved half-tie case. The default fit needs three finite, non-constant observations.
+With the shape held, holding the scale leaves a one-dimensional fit for the location (certified for nonpositive shape), and holding the location leaves one for the scale. With the shape free, the fit profiles over $\xi$ and compares interior maxima with both shape bounds. The shape-only search is certified as described below. The general all-free fit uses the global cover below. Conditional searches with a free shape and one held nuisance coefficient remain numerical outside the proved compatible-member and half-tie cases. The default fit needs three finite, non-constant observations.
 
 
 At fixed scale and $-1<\xi<0$, set
@@ -247,15 +247,15 @@ Pair each of the $k=n/2$ minima with one nonminimum and multiply the bounds.
 This gives $A$ above for every finite GEV fit, irrespective of joint paths.
 The positive-shape collapse approaches $A$. Equality at finite parameters
 requires every pair to have the same distance and the same reverse-exponential
-scale; this is precisely the two-point exception. No global uniqueness claim
-is made outside these half-tie and scalar certificates.
+scale; this is precisely the two-point exception. These pair bounds do not
+establish uniqueness for general samples.
 
 Explicit uniform location and scale bounds for samples whose largest value
 multiplicity is below half are proved in the
 [nuisance-bound derivation](../../../../../dev/research/evaluations/2026-11-07-evt-joint-data/nuisance-bounds.md).
 They also bound the constrained held-scale Fréchet problem. Combined with
 upper semicontinuity, they prove finite GEV attainment in that multiplicity
-regime, but do not locate or certify the remaining joint fits.
+regime. These uniform bounds alone do not locate the joint maxima.
 
 
 
@@ -311,6 +311,51 @@ attaining it. The fitter resolves this before the numerical scale/shape
 search and reports the finite supremum. If scale is also held at the
 attaining value, the same finite member remains a certified maximum.
 
+
+### General all-free shape cover
+
+For a nonconstant sample with fewer than half its observations at the minimum,
+the all-free fit covers the fitted shape interval $[-1,1]$. At each nonzero
+shape, scale profiling leaves a unique monotone endpoint-gap root. Its gap
+increases with reciprocal absolute shape, so brackets at two shape endpoints
+enclose all nuisance optima between them. The cover uses reflected-Weibull
+gap coordinates near the upper endpoint and minimum-pivot coordinates around
+zero and on the positive branch. The pivot form keeps all exponential terms
+at most one and permits power-of-radius Taylor bounds through the Gumbel seam.
+
+A slab is excluded by a likelihood upper bound, a definite profile-score sign,
+or strict profile convexity. Strict negative profile curvature and opposite
+endpoint scores isolate a stationary maximum. A joint interval-Newton step
+then bounds all three public coefficients. The closed reverse-exponential
+face is compared through a one-sided envelope that avoids derivatives at its
+moving support endpoint. Every surviving maximum is compared globally;
+separated candidates that cannot be ordered within the arithmetic margin
+produce a tie stop with witnesses. Exhausted coverage produces a budget stop,
+and unresolved coefficient precision produces a numerical stop.
+
+These are exact-arithmetic certificates conditional on computed comparisons,
+with compensated sums and explicit practical floating-point margins, rather
+than outward-rounded arithmetic. The certificate budget is
+$128\min(\mathrm{iterlim},100000)$; inner sign brackets and contractions have
+solver budgets $\min(\mathrm{iterlim},100000)$. A point-profile Newton solve
+may improve a feasible lower witness but never certifies a returned fit.
+The [derivation and independent checks](../../../../../dev/research/evaluations/2026-11-08-gev-allfree-data/joint-proof.md)
+state the nuisance, face, Taylor and coefficient-inclusion arguments.
+General public nuisance holds require their own constrained cover and remain
+outside this all-free certificate.
+
+
 ## R notes
 
 Estimated coefficients on a `fit_domain` bound carry `restricted` and emit a warning of class `univariateML_restricted`; held coefficients are not flagged. Failed optimizers return a failure status unless the score norm in fitting coordinates is below `1e-3`; unresolved scalar searches stop.
+
+
+The unique all-free two-point member also solves any held subset containing
+it: holding public location at $M-p(M-m)$ or scale at $p(M-m)$ preserves the
+global maximum and uniqueness. Exact range, integer-product and subtraction residuals verify that the held
+value contains the real member; equality to a rounded free estimate alone
+does not qualify. General
+held values still require their own constrained global search.
+
+Recognized exact holds preserve the two-point certificate's precision stop;
+failure does not fall through to a numerical conditional search.

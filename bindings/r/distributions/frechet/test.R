@@ -230,3 +230,55 @@ test_that("Frechet half-minimum pair certificate stops for equal and unequal upp
     expect_s3_class(e,"univariateML_nomle")
   }
 })
+
+test_that("Frechet all-free two-point face comparison is certified and typed", {
+  x <- c(rep(0,9),rep(1,11))
+  f <- suppressWarnings(mlfrechet(x,mu=NULL),classes="univariateML_restricted")
+  expect_equal(unname(f["lambda"]),1)
+  expect_equal(unname(f["sigma"]),.1,tolerance=1e-10)
+  e <- tryCatch(mlfrechet(c(0,rep(1,19)),mu=NULL),error=identity)
+  expect_s3_class(e,"univariateML_limit")
+  expect_identical(e$model,"gumbel")
+  expect_true(all(c("mu","sigma") %in% names(e$estimates)))
+  expect_lt(e$loglik_upper-e$loglik_lower,1e-7)
+  e <- tryCatch(mlfrechet(c(0,rep(1,19)),mu=NULL,iterlim=1),error=identity)
+  expect_s3_class(e,"univariateML_numerical")
+})
+
+test_that("Frechet compatible public scale keeps the certified member", {
+  f <- suppressWarnings(mlfrechet(c(rep(0,7),rep(1,9)),mu=NULL,sigma=.125),classes="univariateML_restricted")
+  expect_equal(unname(f["sigma"]),.125)
+  expect_equal(unname(f["lambda"]),1)
+})
+
+test_that("Frechet two-point solver stops preserve finite supremum bounds", {
+  e <- tryCatch(mlfrechet(c(0,rep(1,19)),mu=NULL,iterlim=10),error=identity)
+  expect_s3_class(e,"univariateML_numerical")
+  expect_true(is.finite(e$loglik_upper))
+  expect_gt(nrow(e$candidates),0)
+})
+
+test_that("Frechet compatible hold failures retain constrained witnesses", {
+  e <- tryCatch(mlfrechet(c(rep(0,7),rep(1,9)),mu=NULL,sigma=.125,reltol=1e-15),error=identity)
+  expect_s3_class(e,"univariateML_numerical")
+  e <- tryCatch(mlfrechet(c(0,rep(1,15)),mu=NULL,sigma=.875,iterlim=10),error=identity)
+  expect_s3_class(e,"univariateML_numerical")
+  expect_equal(e$loglik_lower,max(e$candidates$loglik_lower))
+  expect_true(all(e$candidates$sigma==.875))
+})
+
+test_that("general Frechet certificate reports a proper Gumbel closure maximum", {
+  x <- -log(-log(((1:80)-.5)/80))
+  e <- tryCatch(mlfrechet(x,mu=NULL),error=identity)
+  expect_s3_class(e,"univariateML_limit")
+  expect_equal(e$model,"gumbel")
+  expect_true(is.finite(e$loglik_upper))
+  expect_true(e$loglik_lower<=e$loglik_upper)
+  expect_true(e$estimates[["sigma"]]>0)
+})
+
+test_that("all-free Frechet minimum majorities are statistical nonexistence stops", {
+  e <- tryCatch(mlfrechet(c(0,0,0,1,2),mu=NULL),error=identity)
+  expect_s3_class(e,"univariateML_nomle")
+  expect_match(conditionMessage(e),"minimum majority")
+})

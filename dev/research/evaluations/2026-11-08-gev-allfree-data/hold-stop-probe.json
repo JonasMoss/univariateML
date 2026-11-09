@@ -1,0 +1,6 @@
+{
+  "passed": true,
+  "assertions": 7,
+  "source": "hold-stop-probe.cpp",
+  "scope": "binding-neutral numerical stops and held-feasible lower witnesses"
+}

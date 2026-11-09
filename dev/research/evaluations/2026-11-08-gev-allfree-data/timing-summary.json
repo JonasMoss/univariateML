@@ -1,0 +1,89 @@
+{
+  "defaults_bit_identical": true,
+  "goldens_relative_tolerance": 1e-10,
+  "held_frechet_exact_mu": "-(sqrt(63)-7)/16",
+  "held_frechet_reference_mu": "-0.05857837082461073571905295380736132982067359682795940881906271110020038",
+  "timings": [
+    {
+      "subset": "GEV default n=7",
+      "before_us": 64.6556,
+      "after_us": 64.64142
+    },
+    {
+      "subset": "GEV shape-only n=7",
+      "before_us": 3012.7198,
+      "after_us": 5951.33184
+    },
+    {
+      "subset": "GEV half tie n=4",
+      "before_us": 0.10201,
+      "after_us": 0.15134999999999998
+    },
+    {
+      "subset": "Frechet default n=7",
+      "before_us": 63.95437,
+      "after_us": 148.29287
+    },
+    {
+      "subset": "Frechet half tie n=4",
+      "before_us": 0.09364,
+      "after_us": 0.17550000000000002
+    },
+    {
+      "subset": "GEV default n=500",
+      "before_us": 1881.93459,
+      "after_us": 2578.43354
+    },
+    {
+      "subset": "Frechet default n=500",
+      "before_us": 4331.45083,
+      "after_us": 4465.70958
+    },
+    {
+      "subset": "GEV shape-only n=500",
+      "before_us": 583974.6673333334,
+      "after_us": 351102.602
+    },
+    {
+      "subset": "GEV two-point n=10001",
+      "before_us": 164.617,
+      "after_us": 121.782
+    },
+    {
+      "subset": "Frechet two-point n=20 k=1",
+      "before_us": 365.71794,
+      "after_us": 3.798,
+      "before_status": 2,
+      "after_status": 2
+    },
+    {
+      "subset": "Frechet two-point n=20 k=4",
+      "before_us": 310.82385,
+      "after_us": 3.12317,
+      "before_status": 2,
+      "after_status": 2
+    },
+    {
+      "subset": "Frechet two-point n=20 k=9",
+      "before_us": 298.45481,
+      "after_us": 0.9545699999999999,
+      "before_status": 0,
+      "after_status": 0
+    },
+    {
+      "subset": "GEV two-point held mu n=4",
+      "before_us": 4020.61112,
+      "after_us": 0.82112
+    },
+    {
+      "subset": "GEV two-point held sigma n=4",
+      "before_us": 5336.305899999999,
+      "after_us": 0.23382999999999998
+    },
+    {
+      "subset": "Frechet two-point held sigma n=16",
+      "before_us": 219.96277999999998,
+      "after_us": 1.03573
+    }
+  ]
+}
