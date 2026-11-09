@@ -1,0 +1,69 @@
+{
+  "source_fingerprints_match": true,
+  "runs": [
+    {
+      "command": "just cpp-test",
+      "machine": "workstation",
+      "exit": 0,
+      "sha256": "38ef50d65d3b4067f771ef4ab2dc1f2f67220f56434a26d3f334535174f66b7f",
+      "shards": 106
+    },
+    {
+      "command": "UMVL_TEST_TIER=full just cpp-test",
+      "machine": "workstation",
+      "exit": 0,
+      "sha256": "69c9b18c254c2f8b895763e20c5f866510f81d8c085f25b901d1fa895159dfb9",
+      "shards": 129
+    },
+    {
+      "command": "just cpp-test-no-long-double",
+      "machine": "workstation",
+      "exit": 0,
+      "sha256": "f24247303616add0528def6d6529ebad7684007de974242211da136c362c1639",
+      "shards": 129
+    },
+    {
+      "command": "just test",
+      "machine": "workstation",
+      "exit": 0,
+      "sha256": "eabcc1f7d00f8f66b28aeb2bfd01f56fa37c67f40c46cf3b2f9aea22c8d6b19b",
+      "fail": 0,
+      "warn": 0,
+      "skip": 154,
+      "pass": 22450
+    },
+    {
+      "command": "just test-full",
+      "machine": "workstation",
+      "exit": 0,
+      "sha256": "5bf89386f58e624a5556642180eb48b47cbb13424cf1f02315b4a97b55c03aa7",
+      "fail": 0,
+      "warn": 0,
+      "skip": 0,
+      "pass": 45285
+    },
+    {
+      "command": "just js-build; just js-test",
+      "machine": "workstation",
+      "exit": 0,
+      "tests": 582
+    },
+    {
+      "command": "just site-check",
+      "machine": "workstation",
+      "exit": 0,
+      "sha256": "a3ff21b8574c1963c713d9b6578bc24f587fa69f1d7cb90a7b760ad98c803c1e"
+    },
+    {
+      "command": "targeted.sh",
+      "machine": "workstation",
+      "modes": [
+        "native",
+        "double-width"
+      ],
+      "cases_per_mode": 51,
+      "exit": 0
+    }
+  ],
+  "simbox": "Open: remote system commands return I/O errors; no suite started. See simbox-health.txt."
+}

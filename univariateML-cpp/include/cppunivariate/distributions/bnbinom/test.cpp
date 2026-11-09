@@ -669,12 +669,12 @@ TEST_CASE("bnbinom: equal frequencies through four have a compound Poisson certi
   CHECK(f.stop_detail.limit_coef[0]==2);
 }
 
-TEST_CASE("bnbinom: unproved all-free legacy decisions retain explicit certification flags") {
+TEST_CASE("bnbinom: all-free decisions retain explicit certification flags") {
   for(int repeats:{2,20}) {
     std::vector<int> x(repeats,0);x.insert(x.end(),repeats,5);
     const auto f=cppunivariate::bnbinom_mle({x.data(),x.size()});
     CHECK(f.status==cppunivariate::BnbinomStatus::NegativeBinomialLimit);
-    CHECK_FALSE(f.certified);CHECK_FALSE(f.stop_detail.budget_exhausted);
+    CHECK(f.certified);CHECK_FALSE(f.stop_detail.budget_exhausted);
     CHECK(f.stop_detail.limit_model==cppunivariate::StopModel::Nbinom);
   }
   for(const std::vector<int> &x:{std::vector<int>{0,1,2,3,4},std::vector<int>{0,0,0,1,1,1,1,1,1,1,1,1,1,3}}) {
@@ -714,4 +714,52 @@ TEST_CASE("bnbinom: an unfinished joint cover retains its proved finite face adv
   const auto &p=proof.witness_coef;
   for(double v:p)CHECK(std::isfinite(v));
   CHECK(cppunivariate::bnbinom_detail::likelihood(d,{p[0],p[1],p[2]})>=proof.loglik_lower);
+}
+
+TEST_CASE("bnbinom: signed concentration bounds enclose the NB likelihood difference") {
+  const cppunivariate::bnbinom_detail::Data d{{0,1,4,15},{2,1,2,1},6};
+  for(double r:{.2,1.,5.})for(double p:{.1,.5,.9}) {
+    const auto bound=cppunivariate::bnbinom_detail::signed_nb_bound(d,r*.99,r*1.01,p*.99,p*1.01);
+    for(double u:{.99,1.,1.01})for(double v:{.99,1.,1.01})for(double s:{10.,100.,1000.}) {
+      const double rr=r*u,pp=p*v;
+      double nb=0;
+      for(std::size_t i=0;i<d.x.size();++i)nb+=d.count[i]*cppunivariate::special::dnbinom(d.x[i],rr,pp,true);
+      const double bnb=cppunivariate::bnbinom_detail::likelihood(d,{rr,s*pp,s*(1-pp)});
+      CHECK(bnb-nb<=bound.coefficient/s+bound.remainder/(s*s)+1e-8);
+    }
+  }
+}
+
+TEST_CASE("bnbinom: signed mixed Poisson bound holds away from and near the face") {
+  const cppunivariate::bnbinom_detail::Data d{{0,1,4,15},{2,1,2,1},6};
+  for(double r:{.2,2.,20.,200.})for(double b:{.3,3.,30.,300.})for(double lambda:{.1,2.,10.}) {
+    double po=0,B=0;
+    for(std::size_t i=0;i<d.x.size();++i) {
+      const double x=d.x[i];
+      po+=d.count[i]*(-lambda+x*std::log(lambda)-cppunivariate::special::lgamma(x+1));
+      B+=d.count[i]*((x-lambda)*(x-lambda)-x)/2;
+    }
+    const double h=1/r+1/b,R=cppunivariate::bnbinom_detail::signed_poisson_remainder(d,lambda,h);
+    const double ll=cppunivariate::bnbinom_detail::likelihood(d,{r,r*b/lambda,b});
+    CHECK(ll<=po+B*h+R*h*h+1e-8);
+  }
+}
+
+TEST_CASE("bnbinom: signed global cover certifies NB and Poisson beyond mixture supports") {
+  const cppunivariate::bnbinom_detail::Data not_supported{{0,2},{1,3},4};
+  CHECK_FALSE(cppunivariate::bnbinom_detail::mixture_face(not_supported,0,true));
+  for(const std::vector<int> &x:{std::vector<int>{0,0,5,5},std::vector<int>{0,2,2,2}}) {
+    const auto fit=cppunivariate::bnbinom_mle({x.data(),x.size()});
+    CHECK(fit.certified);
+    CHECK(fit.status==(x.back()==5?cppunivariate::BnbinomStatus::NegativeBinomialLimit:cppunivariate::BnbinomStatus::PoissonLimit));
+    CHECK_FALSE(fit.stop_detail.budget_exhausted);
+    CHECK(fit.stop_detail.loglik_lower<=fit.stop_detail.loglik_upper);
+  }
+  const std::vector<int> x{0,0,5,5};
+  const auto fallback=cppunivariate::bnbinom_mle({x.data(),x.size()},1e-8,100);
+  CHECK(fallback.status==cppunivariate::BnbinomStatus::NegativeBinomialLimit);
+  CHECK_FALSE(fallback.certified);CHECK_FALSE(fallback.stop_detail.budget_exhausted);
+  const cppunivariate::bnbinom_detail::Data equal_dispersion{{0,2},{1,1},2};
+  const auto unresolved=cppunivariate::bnbinom_detail::signed_face_cover(equal_dispersion,NAN,-2.,-2.,600);
+  CHECK_FALSE(unresolved.proved);CHECK_FALSE(unresolved.budget_exhausted);
 }

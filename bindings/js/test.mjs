@@ -1734,7 +1734,7 @@ test('bnbinom legacy fallbacks and proved decisions expose certification labels'
   for(const x of [[0,0,5,5],[...Array(20).fill(0),...Array(20).fill(5)]]){
     assert.throws(()=>api.bnbinom.fit(x),e=>{
       assert.equal(e.kind,'limit');assert.equal(e.model,'nbinom');
-      assert.match(e.message,/Uncertified legacy comparison/);return true;
+      assert.match(e.message,/Certified global comparison/);return true;
     });
   }
   assert.throws(()=>api.bnbinom.fit([0,1,2,3,4]),e=>{
@@ -1745,4 +1745,17 @@ test('bnbinom legacy fallbacks and proved decisions expose certification labels'
   assert.equal(legacy.certified,0);
   assert.equal(legacy.global_coefficient_lower,undefined);
   assert.equal(api.bnbinom.fit(x).certified,1);
+});
+
+
+test('bnbinom signed Poisson faces and budget fallbacks keep their labels',async()=>{
+  const api=await (await import('./index.mjs')).default();
+  assert.throws(()=>api.bnbinom.fit([0,2,2,2]),e=>{
+    assert.equal(e.kind,'limit');assert.equal(e.model,'pois');
+    assert.match(e.message,/Certified global comparison/);return true;
+  });
+  assert.throws(()=>api.bnbinom.fit([0,0,5,5],{}, {iterlim:100}),e=>{
+    assert.equal(e.kind,'limit');assert.equal(e.model,'nbinom');
+    assert.match(e.message,/Uncertified legacy comparison/);return true;
+  });
 });

@@ -264,8 +264,8 @@ test_that("legacy all-free decisions retain results with certification labels", 
   for (x in list(c(0L,0L,5L,5L),rep(c(0L,5L),each=20))) {
     e <- tryCatch(mlbnbinom(x),error=identity)
     expect_s3_class(e,"univariateML_limit")
-    expect_false(e$certified)
-    expect_match(conditionMessage(e),"Uncertified legacy comparison")
+    expect_true(e$certified)
+    expect_match(conditionMessage(e),"Certified global comparison")
     expect_match(conditionMessage(e),"Use `mlnbinom`")
   }
   e <- tryCatch(mlbnbinom(0:4),error=identity)
@@ -278,4 +278,18 @@ test_that("legacy all-free decisions retain results with certification labels", 
   expect_false(attr(f,"certified"))
   expect_true(attr(mlbnbinom(x),"certified"))
   expect_equal(as.numeric(f),c(1.0672234787479615,2.1419791546447171,5.3647338351087397),tolerance=2e-6)
+})
+
+test_that("signed face cover certifies new faces and preserves budget fallback", {
+  for (x in list(c(0L,0L,5L,5L),c(0L,2L,2L,2L))) {
+    e <- tryCatch(mlbnbinom(x),error=identity)
+    expect_s3_class(e,"univariateML_limit")
+    expect_true(e$certified)
+    expect_match(conditionMessage(e),"Certified global comparison")
+    expect_equal(e$model,if (max(x)==5L) "nbinom" else "pois")
+  }
+  e <- tryCatch(mlbnbinom(c(0L,0L,5L,5L),iterlim=100),error=identity)
+  expect_s3_class(e,"univariateML_limit")
+  expect_false(e$certified)
+  expect_match(conditionMessage(e),"Uncertified legacy comparison")
 })
