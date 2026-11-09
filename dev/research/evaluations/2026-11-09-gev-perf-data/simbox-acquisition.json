@@ -1,0 +1,9 @@
+{
+  "suite_started": false,
+  "reason": "Remote mkdir failed with Input/output error despite two free remote slots and no active compute jobs.",
+  "action": "Ended only this job's guarded, sleeping acquisition helper; no remote locks or other jobs changed.",
+  "driver_exit_code": 143,
+  "preserved_successful_suites": ["cpp-dev", "cpp-full", "cpp-no-long-double"],
+  "remaining_suites": "remaining-suites.sh; local fallback",
+  "fault_evidence": "remote-health-20261109-184211.json"
+}

@@ -1,0 +1,4 @@
+{"case":"gev","n":500,"iterlim":100,"status":0,"coef":[0.0066230742236845774,0.99558001317326628,0.3084360154657565],"logLik":-874.76388443183066,"evaluations_or_iterations":511,"budget":false,"microseconds":294808.02899999998}
+{"case":"frechet","n":500,"iterlim":100,"status":0,"coef":[1.7802216014234673,0.06127683692505026,0.90011114966596306],"logLik":-608.45464812711248,"evaluations_or_iterations":390,"budget":false,"microseconds":217872.739}
+{"case":"gev","n":10000,"iterlim":100,"status":0,"coef":[0.021302107259159264,1.0163418825323749,0.30753477300544574],"logLik":-17706.885825533038,"evaluations_or_iterations":673,"budget":false,"microseconds":5871564.733}
+{"case":"frechet","n":10000,"iterlim":100,"status":0,"coef":[1.4632947023819114,0.013948228083579539,0.99879960032725468],"logLik":-15879.589405988903,"evaluations_or_iterations":448,"budget":false,"microseconds":3297231.3900000001}

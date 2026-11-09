@@ -1,0 +1,666 @@
+{
+  "baseline": [
+    {
+      "case": "gev",
+      "n": 500,
+      "scopes": {
+        "coefficients": {
+          "calls": 8,
+          "inclusive_seconds": 0.000431806
+        },
+        "evaluate": {
+          "calls": 2807,
+          "inclusive_seconds": 1.2449
+        },
+        "face_upper": {
+          "calls": 1,
+          "inclusive_seconds": 0.0156972
+        },
+        "gev_joint_certificate": {
+          "calls": 1,
+          "inclusive_seconds": 1.28622
+        },
+        "gev_profile": {
+          "calls": 260,
+          "inclusive_seconds": 0.0394902
+        },
+        "inner": {
+          "calls": 248,
+          "inclusive_seconds": 0.553623
+        },
+        "inner_bracket": {
+          "calls": 248,
+          "inclusive_seconds": 0.179805
+        },
+        "inner_refine": {
+          "calls": 447,
+          "inclusive_seconds": 0.339438
+        },
+        "interval_newton": {
+          "calls": 241,
+          "inclusive_seconds": 0.0837408
+        },
+        "isolation": {
+          "calls": 5,
+          "inclusive_seconds": 0.00175978
+        },
+        "negative_upper": {
+          "calls": 36,
+          "inclusive_seconds": 0.152796
+        },
+        "precise": {
+          "calls": 6,
+          "inclusive_seconds": 0.0003167
+        },
+        "public_bounds": {
+          "calls": 7,
+          "inclusive_seconds": 0.000364309
+        },
+        "region": {
+          "calls": 242,
+          "inclusive_seconds": 0.963234
+        },
+        "series": {
+          "calls": 659202,
+          "inclusive_seconds": 0.938088
+        },
+        "slab": {
+          "calls": 251,
+          "inclusive_seconds": 1.26313
+        }
+      },
+      "depth_counts": {
+        "0": 5,
+        "1": 6,
+        "2": 12,
+        "3": 20,
+        "4": 40,
+        "5": 62,
+        "6": 32,
+        "7": 24,
+        "8": 22,
+        "9": 16,
+        "10": 8,
+        "11": 4
+      }
+    },
+    {
+      "case": "frechet",
+      "n": 500,
+      "scopes": {
+        "coefficients": {
+          "calls": 10,
+          "inclusive_seconds": 0.000358306
+        },
+        "evaluate": {
+          "calls": 1634,
+          "inclusive_seconds": 0.457789
+        },
+        "gev_joint_certificate": {
+          "calls": 1,
+          "inclusive_seconds": 0.48834
+        },
+        "gev_profile": {
+          "calls": 204,
+          "inclusive_seconds": 0.0298122
+        },
+        "inner": {
+          "calls": 193,
+          "inclusive_seconds": 0.219835
+        },
+        "inner_bracket": {
+          "calls": 193,
+          "inclusive_seconds": 0.0958076
+        },
+        "inner_refine": {
+          "calls": 193,
+          "inclusive_seconds": 0.0956159
+        },
+        "interval_newton": {
+          "calls": 202,
+          "inclusive_seconds": 0.0497039
+        },
+        "isolation": {
+          "calls": 5,
+          "inclusive_seconds": 0.00133219
+        },
+        "precise": {
+          "calls": 7,
+          "inclusive_seconds": 0.000252899
+        },
+        "public_bounds": {
+          "calls": 8,
+          "inclusive_seconds": 0.000287845
+        },
+        "region": {
+          "calls": 189,
+          "inclusive_seconds": 0.394394
+        },
+        "series": {
+          "calls": 174771,
+          "inclusive_seconds": 0.269189
+        },
+        "slab": {
+          "calls": 189,
+          "inclusive_seconds": 0.484875
+        }
+      },
+      "depth_counts": {
+        "0": 3,
+        "1": 4,
+        "2": 8,
+        "3": 16,
+        "4": 32,
+        "5": 32,
+        "6": 38,
+        "7": 20,
+        "8": 14,
+        "9": 10,
+        "10": 8,
+        "11": 4
+      }
+    },
+    {
+      "case": "gev",
+      "n": 10000,
+      "scopes": {
+        "coefficients": {
+          "calls": 9,
+          "inclusive_seconds": 0.00569676
+        },
+        "evaluate": {
+          "calls": 3415,
+          "inclusive_seconds": 30.7753
+        },
+        "face_upper": {
+          "calls": 1,
+          "inclusive_seconds": 0.25855
+        },
+        "gev_joint_certificate": {
+          "calls": 1,
+          "inclusive_seconds": 32.0708
+        },
+        "gev_profile": {
+          "calls": 349,
+          "inclusive_seconds": 1.26617
+        },
+        "inner": {
+          "calls": 337,
+          "inclusive_seconds": 18.5865
+        },
+        "inner_bracket": {
+          "calls": 337,
+          "inclusive_seconds": 4.71104
+        },
+        "inner_refine": {
+          "calls": 826,
+          "inclusive_seconds": 12.6537
+        },
+        "interval_newton": {
+          "calls": 325,
+          "inclusive_seconds": 2.02223
+        },
+        "isolation": {
+          "calls": 6,
+          "inclusive_seconds": 0.0296962
+        },
+        "negative_upper": {
+          "calls": 48,
+          "inclusive_seconds": 7.63139
+        },
+        "precise": {
+          "calls": 7,
+          "inclusive_seconds": 0.00445807
+        },
+        "public_bounds": {
+          "calls": 8,
+          "inclusive_seconds": 0.00509854
+        },
+        "region": {
+          "calls": 331,
+          "inclusive_seconds": 20.3482
+        },
+        "series": {
+          "calls": 12602540,
+          "inclusive_seconds": 22.3304
+        },
+        "slab": {
+          "calls": 347,
+          "inclusive_seconds": 31.748
+        }
+      },
+      "depth_counts": {
+        "0": 5,
+        "1": 6,
+        "2": 10,
+        "3": 18,
+        "4": 36,
+        "5": 70,
+        "6": 68,
+        "7": 38,
+        "8": 38,
+        "9": 28,
+        "10": 16,
+        "11": 10,
+        "12": 4
+      }
+    },
+    {
+      "case": "frechet",
+      "n": 10000,
+      "scopes": {
+        "coefficients": {
+          "calls": 11,
+          "inclusive_seconds": 0.00670002
+        },
+        "evaluate": {
+          "calls": 2012,
+          "inclusive_seconds": 9.51972
+        },
+        "gev_joint_certificate": {
+          "calls": 1,
+          "inclusive_seconds": 10.3117
+        },
+        "gev_profile": {
+          "calls": 232,
+          "inclusive_seconds": 0.78225
+        },
+        "inner": {
+          "calls": 221,
+          "inclusive_seconds": 4.54885
+        },
+        "inner_bracket": {
+          "calls": 221,
+          "inclusive_seconds": 1.89853
+        },
+        "inner_refine": {
+          "calls": 221,
+          "inclusive_seconds": 1.90126
+        },
+        "interval_newton": {
+          "calls": 218,
+          "inclusive_seconds": 0.932914
+        },
+        "isolation": {
+          "calls": 6,
+          "inclusive_seconds": 0.0272152
+        },
+        "precise": {
+          "calls": 8,
+          "inclusive_seconds": 0.00482677
+        },
+        "public_bounds": {
+          "calls": 9,
+          "inclusive_seconds": 0.00542304
+        },
+        "region": {
+          "calls": 217,
+          "inclusive_seconds": 8.46036
+        },
+        "series": {
+          "calls": 4630710,
+          "inclusive_seconds": 5.18515
+        },
+        "slab": {
+          "calls": 217,
+          "inclusive_seconds": 10.2403
+        }
+      },
+      "depth_counts": {
+        "0": 3,
+        "1": 6,
+        "2": 8,
+        "3": 16,
+        "4": 32,
+        "5": 36,
+        "6": 42,
+        "7": 24,
+        "8": 16,
+        "9": 12,
+        "10": 10,
+        "11": 8,
+        "12": 4
+      }
+    }
+  ],
+  "final": [
+    {
+      "case": "gev",
+      "n": 500,
+      "scopes": {
+        "coefficients": {
+          "calls": 8,
+          "inclusive_seconds": 0.000372909
+        },
+        "evaluate": {
+          "calls": 745,
+          "inclusive_seconds": 0.107753
+        },
+        "face_upper": {
+          "calls": 1,
+          "inclusive_seconds": 0.0022316
+        },
+        "gev_joint_certificate": {
+          "calls": 1,
+          "inclusive_seconds": 0.294628
+        },
+        "gev_profile": {
+          "calls": 258,
+          "inclusive_seconds": 0.0817765
+        },
+        "inner": {
+          "calls": 246,
+          "inclusive_seconds": 0.145468
+        },
+        "inner_bracket": {
+          "calls": 246,
+          "inclusive_seconds": 0.0277153
+        },
+        "inner_refine": {
+          "calls": 445,
+          "inclusive_seconds": 0.0406298
+        },
+        "interval_newton": {
+          "calls": 240,
+          "inclusive_seconds": 0.0404526
+        },
+        "isolation": {
+          "calls": 5,
+          "inclusive_seconds": 0.00114025
+        },
+        "negative_upper": {
+          "calls": 36,
+          "inclusive_seconds": 0.0166272
+        },
+        "nuisance_evaluate": {
+          "calls": 1772,
+          "inclusive_seconds": 0.102954
+        },
+        "precise": {
+          "calls": 6,
+          "inclusive_seconds": 0.000286597
+        },
+        "public_bounds": {
+          "calls": 7,
+          "inclusive_seconds": 0.000335967
+        },
+        "region": {
+          "calls": 240,
+          "inclusive_seconds": 0.202328
+        },
+        "series": {
+          "calls": 82369,
+          "inclusive_seconds": 0.0565421
+        },
+        "slab": {
+          "calls": 249,
+          "inclusive_seconds": 0.286648
+        }
+      },
+      "depth_counts": {
+        "0": 5,
+        "1": 6,
+        "2": 12,
+        "3": 20,
+        "4": 40,
+        "5": 62,
+        "6": 30,
+        "7": 24,
+        "8": 22,
+        "9": 16,
+        "10": 8,
+        "11": 4
+      }
+    },
+    {
+      "case": "frechet",
+      "n": 500,
+      "scopes": {
+        "coefficients": {
+          "calls": 10,
+          "inclusive_seconds": 0.000408235
+        },
+        "evaluate": {
+          "calls": 620,
+          "inclusive_seconds": 0.0820986
+        },
+        "gev_joint_certificate": {
+          "calls": 1,
+          "inclusive_seconds": 0.217796
+        },
+        "gev_profile": {
+          "calls": 202,
+          "inclusive_seconds": 0.0760502
+        },
+        "inner": {
+          "calls": 191,
+          "inclusive_seconds": 0.119947
+        },
+        "inner_bracket": {
+          "calls": 191,
+          "inclusive_seconds": 0.0238197
+        },
+        "inner_refine": {
+          "calls": 191,
+          "inclusive_seconds": 0.0235557
+        },
+        "interval_newton": {
+          "calls": 200,
+          "inclusive_seconds": 0.0294623
+        },
+        "isolation": {
+          "calls": 5,
+          "inclusive_seconds": 0.000964307
+        },
+        "nuisance_evaluate": {
+          "calls": 924,
+          "inclusive_seconds": 0.0585911
+        },
+        "precise": {
+          "calls": 7,
+          "inclusive_seconds": 0.0003184
+        },
+        "public_bounds": {
+          "calls": 8,
+          "inclusive_seconds": 0.000354215
+        },
+        "region": {
+          "calls": 187,
+          "inclusive_seconds": 0.159785
+        },
+        "series": {
+          "calls": 39182,
+          "inclusive_seconds": 0.0352304
+        },
+        "slab": {
+          "calls": 187,
+          "inclusive_seconds": 0.212541
+        }
+      },
+      "depth_counts": {
+        "0": 3,
+        "1": 4,
+        "2": 8,
+        "3": 16,
+        "4": 32,
+        "5": 30,
+        "6": 38,
+        "7": 20,
+        "8": 14,
+        "9": 10,
+        "10": 8,
+        "11": 4
+      }
+    },
+    {
+      "case": "gev",
+      "n": 10000,
+      "scopes": {
+        "coefficients": {
+          "calls": 9,
+          "inclusive_seconds": 0.00571625
+        },
+        "evaluate": {
+          "calls": 963,
+          "inclusive_seconds": 1.69067
+        },
+        "face_upper": {
+          "calls": 1,
+          "inclusive_seconds": 0.0482779
+        },
+        "gev_joint_certificate": {
+          "calls": 1,
+          "inclusive_seconds": 5.87034
+        },
+        "gev_profile": {
+          "calls": 335,
+          "inclusive_seconds": 2.16572
+        },
+        "inner": {
+          "calls": 323,
+          "inclusive_seconds": 3.71915
+        },
+        "inner_bracket": {
+          "calls": 323,
+          "inclusive_seconds": 0.650731
+        },
+        "inner_refine": {
+          "calls": 812,
+          "inclusive_seconds": 1.01672
+        },
+        "interval_newton": {
+          "calls": 311,
+          "inclusive_seconds": 0.628398
+        },
+        "isolation": {
+          "calls": 6,
+          "inclusive_seconds": 0.0188066
+        },
+        "negative_upper": {
+          "calls": 48,
+          "inclusive_seconds": 0.412024
+        },
+        "nuisance_evaluate": {
+          "calls": 2214,
+          "inclusive_seconds": 1.9875
+        },
+        "precise": {
+          "calls": 7,
+          "inclusive_seconds": 0.00444158
+        },
+        "public_bounds": {
+          "calls": 8,
+          "inclusive_seconds": 0.00507692
+        },
+        "region": {
+          "calls": 317,
+          "inclusive_seconds": 4.20679
+        },
+        "series": {
+          "calls": 1278755,
+          "inclusive_seconds": 0.462838
+        },
+        "slab": {
+          "calls": 333,
+          "inclusive_seconds": 5.6847
+        }
+      },
+      "depth_counts": {
+        "0": 5,
+        "1": 6,
+        "2": 10,
+        "3": 18,
+        "4": 36,
+        "5": 70,
+        "6": 54,
+        "7": 38,
+        "8": 38,
+        "9": 28,
+        "10": 16,
+        "11": 10,
+        "12": 4
+      }
+    },
+    {
+      "case": "frechet",
+      "n": 10000,
+      "scopes": {
+        "coefficients": {
+          "calls": 11,
+          "inclusive_seconds": 0.00530412
+        },
+        "evaluate": {
+          "calls": 684,
+          "inclusive_seconds": 0.992893
+        },
+        "gev_joint_certificate": {
+          "calls": 1,
+          "inclusive_seconds": 3.29635
+        },
+        "gev_profile": {
+          "calls": 230,
+          "inclusive_seconds": 1.38604
+        },
+        "inner": {
+          "calls": 219,
+          "inclusive_seconds": 2.13912
+        },
+        "inner_bracket": {
+          "calls": 219,
+          "inclusive_seconds": 0.394364
+        },
+        "inner_refine": {
+          "calls": 219,
+          "inclusive_seconds": 0.393117
+        },
+        "interval_newton": {
+          "calls": 217,
+          "inclusive_seconds": 0.350898
+        },
+        "isolation": {
+          "calls": 6,
+          "inclusive_seconds": 0.018613
+        },
+        "nuisance_evaluate": {
+          "calls": 1050,
+          "inclusive_seconds": 0.908858
+        },
+        "precise": {
+          "calls": 8,
+          "inclusive_seconds": 0.00418543
+        },
+        "public_bounds": {
+          "calls": 9,
+          "inclusive_seconds": 0.00479619
+        },
+        "region": {
+          "calls": 215,
+          "inclusive_seconds": 2.60149
+        },
+        "series": {
+          "calls": 761063,
+          "inclusive_seconds": 0.21422
+        },
+        "slab": {
+          "calls": 215,
+          "inclusive_seconds": 3.24608
+        }
+      },
+      "depth_counts": {
+        "0": 3,
+        "1": 6,
+        "2": 8,
+        "3": 16,
+        "4": 32,
+        "5": 34,
+        "6": 42,
+        "7": 24,
+        "8": 16,
+        "9": 12,
+        "10": 10,
+        "11": 8,
+        "12": 4
+      }
+    }
+  ]
+}

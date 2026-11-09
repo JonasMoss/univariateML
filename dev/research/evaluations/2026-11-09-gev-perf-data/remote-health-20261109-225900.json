@@ -1,0 +1,15 @@
+{
+  "at_utc": "2026-11-09T22:59:00.632126+00:00",
+  "checks": {
+    "own_scratch_directory": {
+      "returncode": 255,
+      "stdout": "",
+      "stderr": "ssh: connect to host simbox port 22: Connection timed out\n"
+    },
+    "slots_and_processes": {
+      "returncode": 255,
+      "stdout": "",
+      "stderr": "ssh: connect to host simbox port 22: Connection timed out\n"
+    }
+  }
+}
