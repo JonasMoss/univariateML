@@ -1,0 +1,3572 @@
+[
+  {
+    "index": 177,
+    "family": "betapr",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 179,
+    "family": "betapr",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 180,
+    "family": "betapr",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 185,
+    "family": "betapr",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 196,
+    "family": "betapr",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 197,
+    "family": "betapr",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 198,
+    "family": "betapr",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 199,
+    "family": "betapr",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 200,
+    "family": "betapr",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 201,
+    "family": "betapr",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 202,
+    "family": "betapr",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 204,
+    "family": "betapr",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 215,
+    "family": "betapr",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 216,
+    "family": "betapr",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 217,
+    "family": "betapr",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 218,
+    "family": "betapr",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 219,
+    "family": "betapr",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 220,
+    "family": "betapr",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 221,
+    "family": "betapr",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 350,
+    "family": "bhatt",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 363,
+    "family": "bhatt",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 370,
+    "family": "bhatt",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 386,
+    "family": "bhatt",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 394,
+    "family": "bhatt",
+    "reason": [
+      "stable boundary/implicit-density or increased-budget reference recheck"
+    ]
+  },
+  {
+    "index": 396,
+    "family": "bhatt",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 399,
+    "family": "bhatt",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 410,
+    "family": "bhatt",
+    "reason": [
+      "stable boundary/implicit-density or increased-budget reference recheck"
+    ]
+  },
+  {
+    "index": 512,
+    "family": "bnbinom",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 529,
+    "family": "bnbinom",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 537,
+    "family": "bnbinom",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 555,
+    "family": "bnbinom",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 932,
+    "family": "cmp",
+    "reason": [
+      "stable boundary/implicit-density or increased-budget reference recheck"
+    ]
+  },
+  {
+    "index": 957,
+    "family": "cmp",
+    "reason": [
+      "stable boundary/implicit-density or increased-budget reference recheck"
+    ]
+  },
+  {
+    "index": 1015,
+    "family": "dgamma",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1016,
+    "family": "dgamma",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1018,
+    "family": "dgamma",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1025,
+    "family": "dgamma",
+    "reason": [
+      "stable boundary/implicit-density or increased-budget reference recheck"
+    ]
+  },
+  {
+    "index": 1130,
+    "family": "dnorm",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1207,
+    "family": "dunif",
+    "reason": [
+      "check finite likelihood at the sole fully held point"
+    ]
+  },
+  {
+    "index": 1208,
+    "family": "dunif",
+    "reason": [
+      "check finite likelihood at the sole fully held point"
+    ]
+  },
+  {
+    "index": 1209,
+    "family": "dunif",
+    "reason": [
+      "check finite likelihood at the sole fully held point"
+    ]
+  },
+  {
+    "index": 1283,
+    "family": "emg",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1284,
+    "family": "emg",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1285,
+    "family": "emg",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1286,
+    "family": "emg",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1287,
+    "family": "emg",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1288,
+    "family": "emg",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1290,
+    "family": "emg",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1291,
+    "family": "emg",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1295,
+    "family": "emg",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1297,
+    "family": "emg",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1298,
+    "family": "emg",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1316,
+    "family": "emg",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1318,
+    "family": "emg",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1327,
+    "family": "emg",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1329,
+    "family": "emg",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1333,
+    "family": "emg",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1342,
+    "family": "emg",
+    "reason": [
+      "stable boundary/implicit-density or increased-budget reference recheck"
+    ]
+  },
+  {
+    "index": 1346,
+    "family": "emg",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1349,
+    "family": "emg",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1351,
+    "family": "emg",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1352,
+    "family": "emg",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1354,
+    "family": "emg",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1355,
+    "family": "emg",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1357,
+    "family": "emg",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1358,
+    "family": "emg",
+    "reason": [
+      "stable boundary/implicit-density or increased-budget reference recheck"
+    ]
+  },
+  {
+    "index": 1361,
+    "family": "emg",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1514,
+    "family": "foldnorm",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1523,
+    "family": "foldnorm",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1524,
+    "family": "foldnorm",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1525,
+    "family": "foldnorm",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1526,
+    "family": "foldnorm",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1532,
+    "family": "foldnorm",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1533,
+    "family": "foldnorm",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1535,
+    "family": "foldnorm",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1588,
+    "family": "fpareto",
+    "reason": [
+      "native core retry changed status"
+    ]
+  },
+  {
+    "index": 1595,
+    "family": "fpareto",
+    "reason": [
+      "native core retry changed status"
+    ]
+  },
+  {
+    "index": 1598,
+    "family": "fpareto",
+    "reason": [
+      "native core retry changed status"
+    ]
+  },
+  {
+    "index": 1614,
+    "family": "fpareto",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1615,
+    "family": "fpareto",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1633,
+    "family": "fpareto",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1681,
+    "family": "fpareto",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1682,
+    "family": "fpareto",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1690,
+    "family": "fpareto",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1708,
+    "family": "fpareto",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1711,
+    "family": "fpareto",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1712,
+    "family": "fpareto",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1721,
+    "family": "fpareto",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1726,
+    "family": "fpareto",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1729,
+    "family": "fpareto",
+    "reason": [
+      "native core retry changed status"
+    ]
+  },
+  {
+    "index": 1735,
+    "family": "fpareto",
+    "reason": [
+      "stable boundary/implicit-density or increased-budget reference recheck"
+    ]
+  },
+  {
+    "index": 1738,
+    "family": "fpareto",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1740,
+    "family": "fpareto",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1741,
+    "family": "fpareto",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1742,
+    "family": "fpareto",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1749,
+    "family": "fpareto",
+    "reason": [
+      "native core retry changed status"
+    ]
+  },
+  {
+    "index": 1751,
+    "family": "fpareto",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1759,
+    "family": "fpareto",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1760,
+    "family": "fpareto",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1762,
+    "family": "fpareto",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1763,
+    "family": "fpareto",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1765,
+    "family": "fpareto",
+    "reason": [
+      "stable boundary/implicit-density or increased-budget reference recheck"
+    ]
+  },
+  {
+    "index": 1800,
+    "family": "fpareto",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1847,
+    "family": "frechet",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1848,
+    "family": "frechet",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1849,
+    "family": "frechet",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1852,
+    "family": "frechet",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1853,
+    "family": "frechet",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1854,
+    "family": "frechet",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1855,
+    "family": "frechet",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1856,
+    "family": "frechet",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1857,
+    "family": "frechet",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1861,
+    "family": "frechet",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1863,
+    "family": "frechet",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1865,
+    "family": "frechet",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1873,
+    "family": "frechet",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1876,
+    "family": "frechet",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1902,
+    "family": "frechet",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1903,
+    "family": "frechet",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1904,
+    "family": "frechet",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1906,
+    "family": "frechet",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1907,
+    "family": "frechet",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1910,
+    "family": "frechet",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1913,
+    "family": "frechet",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1919,
+    "family": "frechet",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1920,
+    "family": "frechet",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1921,
+    "family": "frechet",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1922,
+    "family": "frechet",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1923,
+    "family": "frechet",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1925,
+    "family": "frechet",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1938,
+    "family": "frechet",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 1993,
+    "family": "gamma",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 2066,
+    "family": "gb2",
+    "reason": [
+      "native core retry changed status"
+    ]
+  },
+  {
+    "index": 2067,
+    "family": "gb2",
+    "reason": [
+      "native core retry changed status"
+    ]
+  },
+  {
+    "index": 2068,
+    "family": "gb2",
+    "reason": [
+      "native core retry changed status"
+    ]
+  },
+  {
+    "index": 2101,
+    "family": "gb2",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 2102,
+    "family": "gb2",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 2109,
+    "family": "gb2",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 2113,
+    "family": "gb2",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 2181,
+    "family": "gb2",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 2182,
+    "family": "gb2",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 2215,
+    "family": "gb2",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 2239,
+    "family": "gb2",
+    "reason": [
+      "stable boundary/implicit-density or increased-budget reference recheck"
+    ]
+  },
+  {
+    "index": 2242,
+    "family": "gb2",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 2254,
+    "family": "gb2",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 2256,
+    "family": "gb2",
+    "reason": [
+      "native core retry changed status"
+    ]
+  },
+  {
+    "index": 2257,
+    "family": "gb2",
+    "reason": [
+      "stable boundary/implicit-density or increased-budget reference recheck"
+    ]
+  },
+  {
+    "index": 2258,
+    "family": "gb2",
+    "reason": [
+      "stable boundary/implicit-density or increased-budget reference recheck"
+    ]
+  },
+  {
+    "index": 2264,
+    "family": "gb2",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 2277,
+    "family": "gb2",
+    "reason": [
+      "stable boundary/implicit-density or increased-budget reference recheck"
+    ]
+  },
+  {
+    "index": 2283,
+    "family": "gb2",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 2291,
+    "family": "gb2",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 2293,
+    "family": "gb2",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 2322,
+    "family": "gb2",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 2331,
+    "family": "gb2",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 2333,
+    "family": "gb2",
+    "reason": [
+      "stable boundary/implicit-density or increased-budget reference recheck"
+    ]
+  },
+  {
+    "index": 2372,
+    "family": "ged",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 2384,
+    "family": "ged",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 2388,
+    "family": "ged",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 2389,
+    "family": "ged",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 2390,
+    "family": "ged",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 2391,
+    "family": "ged",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 2404,
+    "family": "ged",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 2405,
+    "family": "ged",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 2406,
+    "family": "ged",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 2407,
+    "family": "ged",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 2408,
+    "family": "ged",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 2412,
+    "family": "ged",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 2413,
+    "family": "ged",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 2414,
+    "family": "ged",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 2484,
+    "family": "genbeta",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 2486,
+    "family": "genbeta",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 2487,
+    "family": "genbeta",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 2524,
+    "family": "genbeta",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 2525,
+    "family": "genbeta",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 2680,
+    "family": "gev",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 2694,
+    "family": "gev",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 2696,
+    "family": "gev",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 2700,
+    "family": "gev",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 2709,
+    "family": "gev",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 2710,
+    "family": "gev",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 2712,
+    "family": "gev",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 2749,
+    "family": "gev",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 2750,
+    "family": "gev",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 2757,
+    "family": "gev",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 2758,
+    "family": "gev",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 2760,
+    "family": "gev",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 2761,
+    "family": "gev",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 2762,
+    "family": "gev",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 2763,
+    "family": "gev",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 2788,
+    "family": "gev",
+    "reason": [
+      "check finite likelihood at the sole fully held point"
+    ]
+  },
+  {
+    "index": 2793,
+    "family": "gompertz",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 2865,
+    "family": "gompertz",
+    "reason": [
+      "check finite likelihood at the sole fully held point"
+    ]
+  },
+  {
+    "index": 2866,
+    "family": "gompertz",
+    "reason": [
+      "check finite likelihood at the sole fully held point"
+    ]
+  },
+  {
+    "index": 2992,
+    "family": "gumbel",
+    "reason": [
+      "stable boundary/implicit-density or increased-budget reference recheck"
+    ]
+  },
+  {
+    "index": 3166,
+    "family": "ht",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 3177,
+    "family": "ht",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 3178,
+    "family": "ht",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 3179,
+    "family": "ht",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 3180,
+    "family": "ht",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 3181,
+    "family": "ht",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 3182,
+    "family": "ht",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 3183,
+    "family": "ht",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 3186,
+    "family": "ht",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 3189,
+    "family": "ht",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 3201,
+    "family": "ht",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 3202,
+    "family": "ht",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 3204,
+    "family": "ht",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 3246,
+    "family": "ht",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 3263,
+    "family": "ht",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 3266,
+    "family": "ht",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 3271,
+    "family": "ht",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 3272,
+    "family": "ht",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 3273,
+    "family": "ht",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 3274,
+    "family": "ht",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 3275,
+    "family": "ht",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 3276,
+    "family": "ht",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 3285,
+    "family": "ht",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 3835,
+    "family": "invgauss",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 3838,
+    "family": "invgauss",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 4217,
+    "family": "invweibull",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 4218,
+    "family": "invweibull",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 4220,
+    "family": "invweibull",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 4221,
+    "family": "invweibull",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 4222,
+    "family": "invweibull",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 4301,
+    "family": "kumar",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 4303,
+    "family": "kumar",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 4535,
+    "family": "llogis",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 4745,
+    "family": "logitnorm",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 4818,
+    "family": "lomax",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 4831,
+    "family": "lomax",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 4906,
+    "family": "lst",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 4909,
+    "family": "lst",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 4918,
+    "family": "lst",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 4922,
+    "family": "lst",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 4938,
+    "family": "lst",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 4951,
+    "family": "lst",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 5020,
+    "family": "naka",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 5256,
+    "family": "nhyper",
+    "reason": [
+      "check finite likelihood at the sole fully held point"
+    ]
+  },
+  {
+    "index": 5257,
+    "family": "nhyper",
+    "reason": [
+      "check finite likelihood at the sole fully held point"
+    ]
+  },
+  {
+    "index": 5375,
+    "family": "nsbeta",
+    "reason": [
+      "check finite likelihood at the sole fully held point"
+    ]
+  },
+  {
+    "index": 5376,
+    "family": "nsbeta",
+    "reason": [
+      "check finite likelihood at the sole fully held point"
+    ]
+  },
+  {
+    "index": 5377,
+    "family": "nsbeta",
+    "reason": [
+      "check finite likelihood at the sole fully held point"
+    ]
+  },
+  {
+    "index": 5379,
+    "family": "nsbeta",
+    "reason": [
+      "check finite likelihood at the sole fully held point"
+    ]
+  },
+  {
+    "index": 5380,
+    "family": "nsbeta",
+    "reason": [
+      "check finite likelihood at the sole fully held point"
+    ]
+  },
+  {
+    "index": 6078,
+    "family": "sged",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6124,
+    "family": "sged",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6126,
+    "family": "sged",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6139,
+    "family": "sged",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6142,
+    "family": "sged",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6143,
+    "family": "sged",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6144,
+    "family": "sged",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6145,
+    "family": "sged",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6146,
+    "family": "sged",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6147,
+    "family": "sged",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6148,
+    "family": "sged",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6149,
+    "family": "sged",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6150,
+    "family": "sged",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6151,
+    "family": "sged",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6152,
+    "family": "sged",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6218,
+    "family": "sged",
+    "reason": [
+      "check finite likelihood at the sole fully held point"
+    ]
+  },
+  {
+    "index": 6222,
+    "family": "sgomp",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6223,
+    "family": "sgomp",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6224,
+    "family": "sgomp",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6234,
+    "family": "sgomp",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6237,
+    "family": "sgomp",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6238,
+    "family": "sgomp",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6298,
+    "family": "skellam",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6300,
+    "family": "skellam",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6301,
+    "family": "skellam",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6302,
+    "family": "skellam",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6354,
+    "family": "slash",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6355,
+    "family": "slash",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6357,
+    "family": "slash",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6365,
+    "family": "slash",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6366,
+    "family": "slash",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6368,
+    "family": "slash",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6386,
+    "family": "slash",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6389,
+    "family": "slash",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6394,
+    "family": "slash",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6400,
+    "family": "slash",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6543,
+    "family": "sn",
+    "reason": [
+      "check finite likelihood at the sole fully held point"
+    ]
+  },
+  {
+    "index": 6544,
+    "family": "sn",
+    "reason": [
+      "check finite likelihood at the sole fully held point"
+    ]
+  },
+  {
+    "index": 6599,
+    "family": "snorm",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6600,
+    "family": "snorm",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6601,
+    "family": "snorm",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6605,
+    "family": "snorm",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6609,
+    "family": "snorm",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6610,
+    "family": "snorm",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6621,
+    "family": "snorm",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6622,
+    "family": "snorm",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6627,
+    "family": "snorm",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6629,
+    "family": "snorm",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6634,
+    "family": "snorm",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6635,
+    "family": "snorm",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6636,
+    "family": "snorm",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6637,
+    "family": "snorm",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6638,
+    "family": "snorm",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6639,
+    "family": "snorm",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6642,
+    "family": "snorm",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6646,
+    "family": "snorm",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6656,
+    "family": "snorm",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6734,
+    "family": "sstd",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6786,
+    "family": "sstd",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6789,
+    "family": "sstd",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6797,
+    "family": "sstd",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6798,
+    "family": "sstd",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6800,
+    "family": "sstd",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6802,
+    "family": "sstd",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6813,
+    "family": "sstd",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6814,
+    "family": "sstd",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6815,
+    "family": "sstd",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6818,
+    "family": "sstd",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6830,
+    "family": "sstd",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6834,
+    "family": "sstd",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6835,
+    "family": "sstd",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6836,
+    "family": "sstd",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6837,
+    "family": "sstd",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6847,
+    "family": "sstd",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6850,
+    "family": "sstd",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6869,
+    "family": "sstd",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6878,
+    "family": "sstd",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6880,
+    "family": "sstd",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6930,
+    "family": "st",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6941,
+    "family": "st",
+    "reason": [
+      "stable boundary/implicit-density or increased-budget reference recheck"
+    ]
+  },
+  {
+    "index": 6942,
+    "family": "st",
+    "reason": [
+      "stable boundary/implicit-density or increased-budget reference recheck"
+    ]
+  },
+  {
+    "index": 6943,
+    "family": "st",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6946,
+    "family": "st",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6948,
+    "family": "st",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6950,
+    "family": "st",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6958,
+    "family": "st",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6990,
+    "family": "st",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 6994,
+    "family": "st",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 7005,
+    "family": "st",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 7006,
+    "family": "st",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 7007,
+    "family": "st",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 7012,
+    "family": "st",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 7014,
+    "family": "st",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 7022,
+    "family": "st",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 7069,
+    "family": "st",
+    "reason": [
+      "stable boundary/implicit-density or increased-budget reference recheck"
+    ]
+  },
+  {
+    "index": 7070,
+    "family": "st",
+    "reason": [
+      "stable boundary/implicit-density or increased-budget reference recheck"
+    ]
+  },
+  {
+    "index": 7076,
+    "family": "st",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 7077,
+    "family": "st",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 7078,
+    "family": "st",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 7086,
+    "family": "st",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 7093,
+    "family": "st",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 7122,
+    "family": "st",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 7123,
+    "family": "st",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 7124,
+    "family": "st",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 7125,
+    "family": "st",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 7126,
+    "family": "st",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 7127,
+    "family": "st",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 7128,
+    "family": "st",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 7129,
+    "family": "st",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 7130,
+    "family": "st",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 7131,
+    "family": "st",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 7132,
+    "family": "st",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 7133,
+    "family": "st",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 7134,
+    "family": "st",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 7135,
+    "family": "st",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 7136,
+    "family": "st",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 7139,
+    "family": "st",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 7140,
+    "family": "st",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 7142,
+    "family": "st",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 7144,
+    "family": "st",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 7145,
+    "family": "st",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 7146,
+    "family": "st",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 7149,
+    "family": "st",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 7151,
+    "family": "st",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 7152,
+    "family": "st",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 7155,
+    "family": "st",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 7157,
+    "family": "st",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 7202,
+    "family": "std",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 7205,
+    "family": "std",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 7206,
+    "family": "std",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 7214,
+    "family": "std",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 7219,
+    "family": "std",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 7221,
+    "family": "std",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 7232,
+    "family": "std",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 7236,
+    "family": "std",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 7240,
+    "family": "std",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 7550,
+    "family": "tlambda",
+    "reason": [
+      "stable boundary/implicit-density or increased-budget reference recheck"
+    ]
+  },
+  {
+    "index": 7645,
+    "family": "tlambda",
+    "reason": [
+      "check finite likelihood at the sole fully held point"
+    ]
+  },
+  {
+    "index": 7646,
+    "family": "tlambda",
+    "reason": [
+      "check finite likelihood at the sole fully held point"
+    ]
+  },
+  {
+    "index": 7647,
+    "family": "tlambda",
+    "reason": [
+      "check finite likelihood at the sole fully held point"
+    ]
+  },
+  {
+    "index": 7648,
+    "family": "tlambda",
+    "reason": [
+      "check finite likelihood at the sole fully held point"
+    ]
+  },
+  {
+    "index": 7693,
+    "family": "tnorm",
+    "reason": [
+      "stable boundary/implicit-density or increased-budget reference recheck"
+    ]
+  },
+  {
+    "index": 7945,
+    "family": "tpois",
+    "reason": [
+      "stable boundary/implicit-density or increased-budget reference recheck"
+    ]
+  },
+  {
+    "index": 7958,
+    "family": "tpois",
+    "reason": [
+      "stable boundary/implicit-density or increased-budget reference recheck"
+    ]
+  },
+  {
+    "index": 8155,
+    "family": "trgamma",
+    "reason": [
+      "check finite likelihood at the sole fully held point"
+    ]
+  },
+  {
+    "index": 8195,
+    "family": "triang",
+    "reason": [
+      "stable boundary/implicit-density or increased-budget reference recheck"
+    ]
+  },
+  {
+    "index": 8363,
+    "family": "unif",
+    "reason": [
+      "check finite likelihood at the sole fully held point"
+    ]
+  },
+  {
+    "index": 8364,
+    "family": "unif",
+    "reason": [
+      "check finite likelihood at the sole fully held point"
+    ]
+  },
+  {
+    "index": 8365,
+    "family": "unif",
+    "reason": [
+      "check finite likelihood at the sole fully held point"
+    ]
+  },
+  {
+    "index": 8366,
+    "family": "unif",
+    "reason": [
+      "check finite likelihood at the sole fully held point"
+    ]
+  },
+  {
+    "index": 8367,
+    "family": "unif",
+    "reason": [
+      "check finite likelihood at the sole fully held point"
+    ]
+  },
+  {
+    "index": 8368,
+    "family": "unif",
+    "reason": [
+      "check finite likelihood at the sole fully held point"
+    ]
+  },
+  {
+    "index": 8485,
+    "family": "zib",
+    "reason": [
+      "native core retry changed status"
+    ]
+  },
+  {
+    "index": 8581,
+    "family": "zinb",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 8634,
+    "family": "zinb",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 8687,
+    "family": "zinb",
+    "reason": [
+      "check finite likelihood at the sole fully held point"
+    ]
+  },
+  {
+    "index": 8757,
+    "family": "zipf",
+    "reason": [
+      "stable boundary/implicit-density or increased-budget reference recheck"
+    ]
+  },
+  {
+    "index": 8781,
+    "family": "zipf",
+    "reason": [
+      "stable boundary/implicit-density or increased-budget reference recheck"
+    ]
+  },
+  {
+    "index": 8805,
+    "family": "zmbinom",
+    "reason": [
+      "native core retry changed status"
+    ]
+  },
+  {
+    "index": 8857,
+    "family": "zmbinom",
+    "reason": [
+      "native core retry changed status"
+    ]
+  },
+  {
+    "index": 9010,
+    "family": "zmnbinom",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9012,
+    "family": "zmnbinom",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9013,
+    "family": "zmnbinom",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9038,
+    "family": "zmnbinom",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9039,
+    "family": "zmnbinom",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9040,
+    "family": "zmnbinom",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9041,
+    "family": "zmnbinom",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9050,
+    "family": "zmnbinom",
+    "reason": [
+      "stable boundary/implicit-density or increased-budget reference recheck"
+    ]
+  },
+  {
+    "index": 9051,
+    "family": "zmnbinom",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9066,
+    "family": "zmnbinom",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9068,
+    "family": "zmnbinom",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9069,
+    "family": "zmnbinom",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9094,
+    "family": "zmnbinom",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9095,
+    "family": "zmnbinom",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9096,
+    "family": "zmnbinom",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9097,
+    "family": "zmnbinom",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9106,
+    "family": "zmnbinom",
+    "reason": [
+      "stable boundary/implicit-density or increased-budget reference recheck"
+    ]
+  },
+  {
+    "index": 9107,
+    "family": "zmnbinom",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9119,
+    "family": "zmnbinom",
+    "reason": [
+      "check finite likelihood at the sole fully held point"
+    ]
+  },
+  {
+    "index": 9169,
+    "family": "zmpois",
+    "reason": [
+      "check finite likelihood at the sole fully held point"
+    ]
+  },
+  {
+    "index": 9170,
+    "family": "zmpois",
+    "reason": [
+      "check finite likelihood at the sole fully held point"
+    ]
+  },
+  {
+    "index": 9171,
+    "family": "zmpois",
+    "reason": [
+      "check finite likelihood at the sole fully held point"
+    ]
+  },
+  {
+    "index": 9189,
+    "family": "ztbinom",
+    "reason": [
+      "native core retry changed status"
+    ]
+  },
+  {
+    "index": 9240,
+    "family": "ztnbinom",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9243,
+    "family": "ztnbinom",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9266,
+    "family": "ztnbinom",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9268,
+    "family": "ztnbinom",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9270,
+    "family": "ztnbinom",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9271,
+    "family": "ztnbinom",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9272,
+    "family": "ztnbinom",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9273,
+    "family": "ztnbinom",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9274,
+    "family": "ztnbinom",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9275,
+    "family": "ztnbinom",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9276,
+    "family": "ztnbinom",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9278,
+    "family": "ztnbinom",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9290,
+    "family": "ztnbinom",
+    "reason": [
+      "check finite likelihood at the sole fully held point"
+    ]
+  },
+  {
+    "index": 9334,
+    "family": "weibull",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9338,
+    "family": "invweibull",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9366,
+    "family": "std",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9374,
+    "family": "lst",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9406,
+    "family": "betapr",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9413,
+    "family": "betapr",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9414,
+    "family": "betapr",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9440,
+    "family": "gb2",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9453,
+    "family": "gb2",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9482,
+    "family": "gb2",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9495,
+    "family": "gb2",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9518,
+    "family": "gb2",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9524,
+    "family": "gb2",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9532,
+    "family": "fpareto",
+    "reason": [
+      "native core retry changed status"
+    ]
+  },
+  {
+    "index": 9533,
+    "family": "fpareto",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9541,
+    "family": "fpareto",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9548,
+    "family": "fpareto",
+    "reason": [
+      "native core retry changed status"
+    ]
+  },
+  {
+    "index": 9552,
+    "family": "fpareto",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9558,
+    "family": "fpareto",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9559,
+    "family": "fpareto",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9564,
+    "family": "fpareto",
+    "reason": [
+      "native core retry changed status"
+    ]
+  },
+  {
+    "index": 9565,
+    "family": "fpareto",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9567,
+    "family": "fpareto",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9580,
+    "family": "fpareto",
+    "reason": [
+      "native core retry changed status"
+    ]
+  },
+  {
+    "index": 9596,
+    "family": "fpareto",
+    "reason": [
+      "native core retry changed status"
+    ]
+  },
+  {
+    "index": 9610,
+    "family": "fpareto",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9612,
+    "family": "fpareto",
+    "reason": [
+      "native core retry changed status"
+    ]
+  },
+  {
+    "index": 9616,
+    "family": "fpareto",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9620,
+    "family": "fpareto",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9680,
+    "family": "zmnbinom",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9682,
+    "family": "zmnbinom",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9684,
+    "family": "zmnbinom",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9686,
+    "family": "zmnbinom",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9688,
+    "family": "ztnbinom",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9690,
+    "family": "ztnbinom",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9719,
+    "family": "emg",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9732,
+    "family": "ged",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9733,
+    "family": "ged",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9747,
+    "family": "foldnorm",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9794,
+    "family": "weibull",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9798,
+    "family": "invweibull",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9806,
+    "family": "logitnorm",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9826,
+    "family": "std",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9834,
+    "family": "lst",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9873,
+    "family": "betapr",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9874,
+    "family": "betapr",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9900,
+    "family": "gb2",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9913,
+    "family": "gb2",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9942,
+    "family": "gb2",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 9976,
+    "family": "gb2",
+    "reason": [
+      "native core retry changed status"
+    ]
+  },
+  {
+    "index": 9992,
+    "family": "fpareto",
+    "reason": [
+      "native core retry changed status"
+    ]
+  },
+  {
+    "index": 9993,
+    "family": "fpareto",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 10008,
+    "family": "fpareto",
+    "reason": [
+      "native core retry changed status"
+    ]
+  },
+  {
+    "index": 10012,
+    "family": "fpareto",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 10017,
+    "family": "fpareto",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 10024,
+    "family": "fpareto",
+    "reason": [
+      "native core retry changed status"
+    ]
+  },
+  {
+    "index": 10026,
+    "family": "fpareto",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 10027,
+    "family": "fpareto",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 10034,
+    "family": "fpareto",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 10084,
+    "family": "fpareto",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 10140,
+    "family": "zmnbinom",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 10142,
+    "family": "zmnbinom",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 10144,
+    "family": "zmnbinom",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 10146,
+    "family": "zmnbinom",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 10148,
+    "family": "ztnbinom",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 10150,
+    "family": "ztnbinom",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 10171,
+    "family": "emg",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 10175,
+    "family": "emg",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  },
+  {
+    "index": 10177,
+    "family": "emg",
+    "reason": [
+      "recheck with per-observation stationary residual and signed-coordinate error normalization"
+    ]
+  }
+]

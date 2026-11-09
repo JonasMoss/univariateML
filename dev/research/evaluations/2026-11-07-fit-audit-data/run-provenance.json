@@ -1,0 +1,60 @@
+{
+  "job": "TASK-101.7.1 fit-audit",
+  "date": "2026-11-07",
+  "primary_native": {
+    "machine": "workstation",
+    "compiler": "Ubuntu GCC 15.2.0-16ubuntu1",
+    "cases": 11185,
+    "commands": [
+      "audit.py generate",
+      "c++ -std=c++17 -O1 (diagnostics-derived routes)",
+      "audit.py fit",
+      "retry_fit.py"
+    ],
+    "reservation": "/tmp/umvl-cpu/run",
+    "default_controls": "unchanged shared binding defaults",
+    "initial_wall_seconds": 3,
+    "retry_wall_seconds": 20
+  },
+  "secondary_native": {
+    "machine": "simbox",
+    "compiler": "GCC 13",
+    "cases": 10238,
+    "files": [
+      "fits-simbox.csv",
+      "cases-simbox.json"
+    ],
+    "reservation": "/tmp/umvl-cpu/simbox-run",
+    "comparison_caveat": "Compare exact input/mask/hold matches only; SciPy-generated face quantiles can differ by an ULP between machines. Audit wall guards are not native statuses."
+  },
+  "independent_reference": {
+    "machines": [
+      "workstation",
+      "simbox"
+    ],
+    "primary_census_inputs": "saved workstation cases.json and fits.csv",
+    "arithmetic": "mpmath >=70 digits; magnitude-adaptive escalation, finite failure witnesses repeated at doubled precision",
+    "initial_wall_seconds": 2,
+    "targeted_retry_wall_seconds": [
+      10,
+      15,
+      20
+    ],
+    "local_information_wall_seconds": 20,
+    "focused_nsbeta": "350-digit bracket, signs checked at 700 digits",
+    "support": "exact binary64 rational comparisons for strict support exclusion"
+  },
+  "oracle_checks": {
+    "workstation": "41/41 PASS",
+    "simbox": "41/41 PASS"
+  },
+  "resource_policy": "single-thread BLAS/OpenMP, nice -n 10 via supplied reservation wrappers; no packages installed",
+  "production_test_suites": "not required: changes confined to dev/research/evaluations/",
+  "source_changes": "none outside evaluation artifacts",
+  "final_integrity": {
+    "numeric_validation": "simbox and workstation",
+    "report_render_host": "JonasBI",
+    "independent_simple_checks": 142,
+    "syntax_checks": "PASS"
+  }
+}
