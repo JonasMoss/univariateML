@@ -1,0 +1,61 @@
+{
+  "base_commit": "2ed5514b32ec72ded95809c834453d24f025f850",
+  "worktree_head": "2ed5514b32ec72ded95809c834453d24f025f850",
+  "compiler": "c++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "flags": "-std=c++17 -O2; temporary counters in both binaries",
+  "controls": {
+    "tol": 1e-08,
+    "maxit": 500
+  },
+  "n500": "frozen EMG golden sample",
+  "n10000": "seed-162 mt19937_64; Box-Muller normal plus independent exponential at golden coefficients; same sample in both binaries",
+  "comparisons": [
+    {
+      "repetition": 0,
+      "max_normalized_before_after_coefficient_drift": 0.0,
+      "max_absolute_loglik_drift": 0.0,
+      "max_relative_golden_drift": 9.860740095157525e-08
+    },
+    {
+      "repetition": 1,
+      "max_normalized_before_after_coefficient_drift": 0.0,
+      "max_absolute_loglik_drift": 0.0,
+      "max_relative_golden_drift": 9.860740095157525e-08
+    },
+    {
+      "repetition": 2,
+      "max_normalized_before_after_coefficient_drift": 0.0,
+      "max_absolute_loglik_drift": 0.0,
+      "max_relative_golden_drift": 9.860740095157525e-08
+    }
+  ],
+  "source_sha256": {
+    "univariateML-cpp/include/cppunivariate/distributions/emg/test.cpp": "a5ec6c37fa0e4e6cc3ffc786697c7163af9c939495d23117cfce0d9335dd2376",
+    "univariateML-cpp/include/cppunivariate/distributions/emg/truth.py": "57a9a5cfcae350aae453607c69fc0f2111855ca3f886b169eade27d3a8623bb9",
+    "univariateML-cpp/include/cppunivariate/distributions/emg/dpqr.hpp": "ea779104354696084799640928fb245a2a5994017597e3d9a4bc575509b4dce5",
+    "univariateML-cpp/include/cppunivariate/distributions/emg/certificate_math.hpp": "e5120533966b84ceed76e36d3fda33ef2f6c60353541fc20618f23fa76c096f3",
+    "univariateML-cpp/include/cppunivariate/distributions/emg/winner_certificate.hpp": "a75561ba1ca99bbffb5052176879e54ba2f997b9bfa78b56d1647aa653a0a818",
+    "univariateML-cpp/include/cppunivariate/distributions/emg/normal_tail_certificate.hpp": "aa34262c61d50dcf72ac3b99c5b2a21c0b62717506455fbec453b6c6a85dbb32",
+    "univariateML-cpp/include/cppunivariate/distributions/emg/golden.json": "f5b23432d5904db50b57a54e32c4c26923829cd6d661c191626f8bd402047208",
+    "univariateML-cpp/include/cppunivariate/distributions/emg/location_certificate.hpp": "bb99e65255138999b9fd928aadcb48ca46a4c4aea3b02dc5307e41ff1a1caa67",
+    "univariateML-cpp/include/cppunivariate/distributions/emg/mle.hpp": "13a16d6cae20ce45163ad520276184d0ea0da70c9f59cf628adf8321001c6efd",
+    "univariateML-cpp/include/cppunivariate/distributions/emg/fixed_shape_certificate.hpp": "2b0ecca369df7673ad3ba8274805ff061619a7e0d292ccdc302c36e6c1923352",
+    "univariateML-cpp/include/cppunivariate/distributions/emg/shape_bounds.hpp": "cbf0477e69d5ecafdf2b5ad55d3bf233769be3f1e263c2746c8635c1fe248cf2",
+    "univariateML-cpp/include/cppunivariate/distributions/emg/certificate.hpp": "287498d37b160c67e1bff84cb215c3c92b64f908feaac83cff056944b954b7f1",
+    "univariateML-cpp/include/cppunivariate/distributions/emg/logconcave_profile.hpp": "6ab1e3ad76c3419b4f76ee52ab9cbfefd1a1015516121854e08a2325f1ac7955",
+    "univariateML-cpp/include/cppunivariate/distributions/emg/truth.json": "2d56f65347eb5c56b06d3114bde9cc6e4b473720473ade168766d6bf7101af2b",
+    "univariateML-cpp/include/cppunivariate/distributions/emg/README.md": "461220e4658d653bf625042b00ba9e1c40d7bf3c092fd2627050655676032967"
+  },
+  "evidence_sha256": {
+    "instrument.py": "86e51d9b6effb403bc3e9920317356e67fd51da0c7f8812cfa2a05dfe62116c1",
+    "focused.py": "38a4146661e998e657c6d06745c951d744fc03379b40bfd2000ecdbb50abe6cd",
+    "reproduce.py": "e6ae4878903d472d4f311fc3e2ac7b29c380dc88950368188b99e576a273fbf3",
+    "targeted.py": "4d8d44e67edf5d05220fd5da2dbe096b46bddb548c55083364bf015053c4f60e",
+    "validate-results.py": "18dcf3d46c204e7bb628fb52a6a5ce34c93b37431101df12a44e8b25d2fc675f",
+    "add-cpu-timing.py": "82fa6ca0f571c53d19d2691d320f0ff691c27b4800f2501c04718dffd6b0ea26",
+    "validate-stops.py": "d1cc8554d0fd0a0f7ab50ae16e412237bc44b62445e6a14806d270cae1dbd398",
+    "validate-gap.py": "2dce0c225f199d9276c5935368aa52aa23dd34835931abf12529de2a93bd3772",
+    "outer-oracle.py": "b0462a4a8d6d5230418dfcfe893e4ce5c023bdf53380b7776dff7fbd451661dc",
+    "final-suites.py": "0f2e46558258208c75a128f68f5ca6ea1fa69ab56fffba54c04cfe223c417816"
+  }
+}

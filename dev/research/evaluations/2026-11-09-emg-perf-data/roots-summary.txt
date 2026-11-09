@@ -1,0 +1,2 @@
+7 independent physical coefficient root/enclosure checks passed 
+7 independent physical coefficient root/enclosure checks passed -double

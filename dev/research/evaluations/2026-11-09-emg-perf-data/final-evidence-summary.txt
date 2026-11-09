@@ -1,0 +1,37 @@
+[
+  {
+    "repetition": 0,
+    "max_normalized_before_after_coefficient_drift": 0.0,
+    "max_absolute_loglik_drift": 0.0,
+    "max_relative_golden_drift": 9.860740095157525e-08
+  },
+  {
+    "repetition": 1,
+    "max_normalized_before_after_coefficient_drift": 0.0,
+    "max_absolute_loglik_drift": 0.0,
+    "max_relative_golden_drift": 9.860740095157525e-08
+  },
+  {
+    "repetition": 2,
+    "max_normalized_before_after_coefficient_drift": 0.0,
+    "max_absolute_loglik_drift": 0.0,
+    "max_relative_golden_drift": 9.860740095157525e-08
+  }
+]
+All eight final suites green; all profiling counters repeat across three pairs; compiled source hashes unchanged.
+n = 500
+mu wall 0.003137 -> 0.003146; CPU 0.003338 -> 0.003674; work 31 -> 31; profiles 0 -> 0
+sigma wall 1.498787 -> 0.077088; CPU 1.532179 -> 0.090539; work 914 -> 132; profiles 201 -> 30
+lambda wall 0.282709 -> 0.051629; CPU 0.110582 -> 0.061171; work 147 -> 147; profiles 33 -> 33
+mu,sigma wall 9.503093 -> 0.155380; CPU 8.184655 -> 0.186317; work 1693 -> 136; profiles 357 -> 31
+mu,lambda wall 0.984739 -> 0.202105; CPU 0.424435 -> 0.235395; work 231 -> 231; profiles 52 -> 52
+sigma,lambda wall 1.641734 -> 0.253836; CPU 0.562526 -> 0.293557; work 229 -> 229; profiles 52 -> 52
+all wall 1.182849 -> 0.633530; CPU 1.107024 -> 0.727606; work 554 -> 554; profiles 127 -> 127
+n = 10000
+mu wall 0.070025 -> 0.069310; CPU 0.082604 -> 0.079691; work 32 -> 32; profiles 0 -> 0
+sigma wall 88.488527 -> 1.683569; CPU 88.476087 -> 1.683467; work 1474 -> 129; profiles 326 -> 29
+lambda wall 2.082841 -> 1.025399; CPU 2.082544 -> 1.206083; work 151 -> 151; profiles 33 -> 33
+mu,sigma wall 768.476650 -> 3.893109; CPU 768.291066 -> 3.892753; work 3541 -> 134; profiles 740 -> 30
+mu,lambda wall 9.334770 -> 5.273215; CPU 9.333086 -> 5.550254; work 256 -> 256; profiles 57 -> 57
+sigma,lambda wall 11.585966 -> 6.070412; CPU 11.584953 -> 6.069947; work 237 -> 237; profiles 53 -> 53
+all wall 24.409716 -> 35.476635; CPU 24.407664 -> 35.471482; work 582 -> 582; profiles 132 -> 132

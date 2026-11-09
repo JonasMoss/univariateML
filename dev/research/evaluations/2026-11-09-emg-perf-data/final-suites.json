@@ -1,0 +1,85 @@
+[
+  {
+    "name": "cpp-dev",
+    "command": [
+      "just",
+      "cpp-test"
+    ],
+    "machine": "workstation",
+    "exit_code": 0,
+    "elapsed_seconds": 4280.442860126495
+  },
+  {
+    "name": "cpp-full",
+    "command": [
+      "env",
+      "UMVL_TEST_TIER=full",
+      "just",
+      "cpp-test"
+    ],
+    "machine": "workstation",
+    "exit_code": 0,
+    "elapsed_seconds": 3499.497447013855
+  },
+  {
+    "name": "cpp-no-long-double",
+    "command": [
+      "just",
+      "cpp-test-no-long-double"
+    ],
+    "machine": "simbox",
+    "exit_code": 0,
+    "elapsed_seconds": 1041.989693403244
+  },
+  {
+    "name": "cpp-no-long-double-workstation",
+    "command": [
+      "just",
+      "cpp-test-no-long-double"
+    ],
+    "machine": "workstation",
+    "exit_code": 0,
+    "elapsed_seconds": 5090.490333080292
+  },
+  {
+    "name": "r-dev",
+    "command": [
+      "just",
+      "test"
+    ],
+    "machine": "simbox",
+    "exit_code": 0,
+    "elapsed_seconds": 145.7684805393219
+  },
+  {
+    "name": "r-full",
+    "command": [
+      "just",
+      "test-full"
+    ],
+    "machine": "simbox",
+    "exit_code": 0,
+    "elapsed_seconds": 303.9459044933319
+  },
+  {
+    "name": "site",
+    "command": [
+      "just",
+      "site-check"
+    ],
+    "machine": "workstation",
+    "exit_code": 0,
+    "elapsed_seconds": 3684.2433531284332
+  },
+  {
+    "name": "quality-emg",
+    "command": [
+      "just",
+      "quality",
+      "emg"
+    ],
+    "machine": "workstation",
+    "exit_code": 0,
+    "elapsed_seconds": 4117.0940952301025
+  }
+]

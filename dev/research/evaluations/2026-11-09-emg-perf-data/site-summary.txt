@@ -1,0 +1,100 @@
+15:15:01   ├─ /distributions/snorm/index.html (+17ms) 
+15:15:01   ├─ /distributions/sstd/index.html (+43ms) 
+15:15:01   ├─ /distributions/st/index.html (+22ms) 
+15:15:01   ├─ /distributions/std/index.html (+15ms) 
+15:15:01   ├─ /distributions/tbinom/index.html (+16ms) 
+15:15:01   ├─ /distributions/tlambda/index.html (+15ms) 
+15:15:01   ├─ /distributions/tnorm/index.html (+18ms) 
+15:15:01   ├─ /distributions/tpois/index.html (+8ms) 
+15:15:01   ├─ /distributions/trgamma/index.html (+13ms) 
+15:15:01   ├─ /distributions/triang/index.html (+7ms) 
+15:15:01   ├─ /distributions/unif/index.html (+5ms) 
+15:15:01   ├─ /distributions/weibull/index.html (+6ms) 
+15:15:01   ├─ /distributions/yulesimon/index.html (+5ms) 
+15:15:01   ├─ /distributions/zeta/index.html (+5ms) 
+15:15:01   ├─ /distributions/zib/index.html (+15ms) 
+15:15:01   ├─ /distributions/zinb/index.html (+28ms) 
+15:15:01   ├─ /distributions/zip/index.html (+11ms) 
+15:15:01   ├─ /distributions/zipf/index.html (+6ms) 
+15:15:01   ├─ /distributions/zmbinom/index.html (+7ms) 
+15:15:01   ├─ /distributions/zmgeom/index.html (+5ms) 
+15:15:01   ├─ /distributions/zmlogarithmic/index.html (+4ms) 
+15:15:01   ├─ /distributions/zmnbinom/index.html (+8ms) 
+15:15:01   ├─ /distributions/zmpois/index.html (+4ms) 
+15:15:01   ├─ /distributions/ztbinom/index.html (+11ms) 
+15:15:01   ├─ /distributions/ztgeom/index.html (+4ms) 
+15:15:01   ├─ /distributions/ztnbinom/index.html (+12ms) 
+15:15:01   ├─ /distributions/ztpois/index.html (+3ms) 
+15:15:01   ├─ /distributions/index.html (+13ms) 
+15:15:01   ├─ /graph/index.html (+82ms) 
+15:15:02   ├─ /inference/index.html (+16ms) 
+15:15:02   ├─ /search/index.html (+2ms) 
+15:15:02   ├─ /theory/index.html (+109ms) 
+15:15:02   ├─ /index.html (+2ms) 
+15:15:02 ✓ Completed in 2.95s.
+
+15:15:02 [build] ✓ Completed in 3.99s.
+15:15:02 [build] 211 page(s) built in 4.92s
+15:15:02 [build] Complete!
+
+Running Pagefind v1.5.2 (Extended)
+Running from: "/home/jonas/Files/programming/univariateML.wt/emg-perf/site"
+Source:       "dist"
+Output:       "dist/pagefind"
+
+[Walking source directory]
+Found 211 files matching **/*.{html}
+
+[Parsing files]
+Found a data-pagefind-body element on the site.
+↳ Ignoring pages without this tag.
+
+[Reading languages]
+Discovered 1 language: en
+
+[Building search indexes]
+Total: 
+  Indexed 1 language
+  Indexed 112 pages
+  Indexed 14839 words
+  Indexed 0 filters
+  Indexed 0 sorts
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│  Pagefind found references to the Default UI (pagefind-ui.js)           │
+│  on your site. The Default UI is supported and will continue            │
+│  to work.                                                               │
+│                                                                         │
+│  As of 1.5.0, if you are setting up a new integration, use the          │
+│  Component UI instead. It includes a search modal, better               │
+│  accessibility and customization: https://pagefind.app/docs/search-ui/  │
+└─────────────────────────────────────────────────────────────────────────┘
+
+Finished in 0.950 seconds
+python3 site/scripts/check.py
+/home/jonas/.bashrc: line 26: /home/jonas/.cargo/env: No such file or directory
+/home/jonas/.bash_profile: line 9: /home/jonas/.cargo/env: No such file or directory
+PASS inference browser: {"rows":353,"families":99,"desktop":[1280,1100],"mobile":[390,1000],"checks":["covariance and combined filters with follow-up evidence","all status filters","combined family/status/regime filters","empty state","reset","native evidence disclosure","no horizontal overflow","all rows and evidence without JavaScript","no page errors"]}
+PASS theory numerical: 5 static/live profiles, 4 escape messages and limit approaches, analytic normal held fits, static/live contours, parser and failed-fit gaps.
+PASS nice linear/log ticks; Gompertz free/held fits, conditional escape, fixed-rate boundary, static/live equality and build-time MathML.
+PASS likelihood windows: 15-unit clipping, low-marker expansion, constant likelihoods, marker clearance, finite SVG coordinates.
+PASS theory browser: desktop/mobile, live profiles and held faces, seeded data, errors, no-JS figures and diagnostics.
+PASS: four articles; dossier catalogues: 288 limits, 99 families, 9 fit domains.
+Covariance scopes: 195 {'implemented': 121, 'historically recoverable': 0, 'available but missing': 0, 'unreviewed': 4, 'invalid for the procedure': 70}
+PASS: inference: 353 unique scopes, 99 families; implementation symbols, evidence anchors, calibration and checks resolve; full static table.
+PASS: graph: 99 unique nodes, 278 edges, resolving family links; SVG generated twice byte-identically and matches built HTML.
+PASS: explorer coverage matches binding registry; optional build assets agree.
+PASS: every declared and inverted relation and limit link is rendered and resolves.
+PASS: 99 family pages; MathML on every family; no math runtime or external runtime assets; internal links and fragments resolve.
+Environment: Python 3.14.5, SymPy 1.14.0; g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0
+Boost headers: /home/jonas/R/x86_64-pc-linux-gnu-library/4.5/BH/include
+PASS: 99 generated C++ snippets compile and link as C++17 (including exp, gamma, gb2).
+PASS: pilot and ten additional HTML spot checks: exp, gamma, gb2, binom, beta, hyper, sstd, gev, gpd, tnorm, pois, unif, pareto
+Log-density fallback: cmb, cmp, dweibull, gev, gpd, huber, sged, snorm, sstd, st, tbinom, tpois, triang, zib, zinb, zip, zipf, zmbinom, zmgeom, zmlogarithmic, zmnbinom, zmpois
+WEIGHT exp: HTML 25427 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+WEIGHT gamma: HTML 29649 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+WEIGHT gb2: HTML 62836 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+WEIGHT binom: HTML 41342 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+WEIGHT hyper: HTML 40161 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+WEIGHT sstd: HTML 141846 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+Total dist: 23159462 B

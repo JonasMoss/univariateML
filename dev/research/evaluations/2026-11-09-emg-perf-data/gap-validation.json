@@ -1,0 +1,16 @@
+[
+  {
+    "mode": "native",
+    "precision_digits": 100,
+    "finite_bounds_checked": 140,
+    "safe_unavailable_bounds": 0,
+    "minimum_upper_surplus": "0.0000000000006249649750808985937618153532882437113551895846315706974567355124398866548002035990648202623053980717"
+  },
+  {
+    "mode": "double",
+    "precision_digits": 100,
+    "finite_bounds_checked": 136,
+    "safe_unavailable_bounds": 4,
+    "minimum_upper_surplus": "0.0000000000006249649750808985937618153532882437113551895846315706974567355124398866548002035990648202623053980717"
+  }
+]

@@ -1,0 +1,7 @@
+Architecture:                            x86_64
+CPU(s):                                  12
+Model name:                              13th Gen Intel(R) Core(TM) i7-1355U
+Thread(s) per core:                      2
+Core(s) per socket:                      10
+Socket(s):                               1
+CPU(s) scaling MHz:                      51%

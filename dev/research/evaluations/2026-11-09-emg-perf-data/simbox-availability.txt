@@ -1,0 +1,18 @@
+The prescribed simbox-run helper returned exit 75 (unreachable) on initial
+and final-suite attempts. A direct read-only connection check also failed:
+
+ssh -F /home/jonas/.ssh/config -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=8 simbox true
+exit 255: ssh: connect to host simbox port 22: Connection timed out
+
+Those initial suite attempts entered the prescribed workstation run4 fallback,
+but the usage interruption occurred before a final suite result was saved.
+
+The same read-only SSH check was repeated outside the execution sandbox to
+rule out sandbox networking. It also exited 255 with a port-22 connection
+timeout. Host lock inspection confirmed live C++ tests (rather than stale
+locks) holding the local four-slot reservation.
+
+On resumption on 2026-11-09, the same direct SSH connection check succeeded
+(exit 0). The final driver uses simbox for the remote precision suite and R
+suites. final-suites.json records the actual machine and exit status of each
+completed command; it supersedes the initial availability observations.

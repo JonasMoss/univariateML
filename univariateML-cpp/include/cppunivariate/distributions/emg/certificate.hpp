@@ -145,7 +145,8 @@ struct OuterCertificate {
     if(!work.charge())return false;
     double upper;
     if(std::isnan(lambda))upper=std::min(shape_chord_upper(left,right,x.size(),lo,hi),shape_interval_upper(left,x.size(),lo,hi));
-    else upper=fixed_rate_shape_chord_upper(left,right,x,lo,hi,lambda,mu);
+    else upper=std::min(fixed_rate_shape_chord_upper(left,right,x,lo,hi,lambda,mu),
+      fixed_rate_precision_chord_upper(left,right,x.size(),lo,hi));
     if(!std::isfinite(upper)){inner_failure=true;return false;}
     queue.push({lo,hi,left,right,upper});return true;
   }

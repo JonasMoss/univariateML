@@ -436,3 +436,43 @@ TEST_CASE("emg scaled residuals: large shape Gaussian bound commutes with units"
     CHECK(upper-shift==doctest::Approx(reference).epsilon(1e-9));
   }
 }
+
+TEST_CASE("emg held-rate precision chord bounds conditional profiles") {
+  const std::vector<double> x{-2,-1,0,1,4};
+  const auto data=emg_span(x);
+  for(double mu:{static_cast<double>(NAN),0.})for(const auto interval:std::array<std::array<double,2>,3>{{{{.1,.3}},{{.7,1.4}},{{3.,6.}}}}) {
+    const double lo=interval[0],hi=interval[1],lambda=.7;
+    const auto left=cppunivariate::emg_detail::fixed_shape_certificate(data,lo,1e-8,500,mu,NAN,lambda);
+    const auto right=cppunivariate::emg_detail::fixed_shape_certificate(data,hi,1e-8,500,mu,NAN,lambda);
+    REQUIRE(left.ok);REQUIRE(right.ok);
+    const double upper=cppunivariate::emg_detail::fixed_rate_precision_chord_upper(left.loglik_upper,right.loglik_upper,x.size(),lo,hi);
+    REQUIRE(std::isfinite(upper));
+    for(double fraction:{.2,.5,.8}) {
+      const double k=lo*std::pow(hi/lo,fraction);
+      const auto point=cppunivariate::emg_detail::fixed_shape_certificate(data,k,1e-8,500,mu,NAN,lambda);
+      REQUIRE(point.ok);
+      CHECK(point.loglik_upper<=upper);
+    }
+  }
+}
+
+TEST_CASE("emg precision log chord covers narrow and extreme shape ratios") {
+  for(double ratio:{1.,1.+1e-12,1.001,1.01,2.,100.,1e150}) {
+    const double upper=cppunivariate::emg_detail::fixed_rate_precision_chord_upper(-10,-10,7,1,ratio);
+    REQUIRE(std::isfinite(upper));
+    // Independent evaluation of the logarithm's Jensen gap at 99 weights.
+    const long double t=2*std::log(static_cast<long double>(ratio));
+    for(int j=1;j<100;++j) {
+      const long double w=j/100.L;
+      const long double gap=std::log((1-w)*std::exp(-t)+w)-(1-w)*(-t);
+      CHECK(-10+7*gap/2<=upper);
+    }
+  }
+  CHECK(std::isinf(cppunivariate::emg_detail::fixed_rate_precision_chord_upper(-10,-10,7,0,1)));
+  CHECK(std::isinf(cppunivariate::emg_detail::fixed_rate_precision_chord_upper(-10,INFINITY,7,1,2)));
+}
+
+TEST_CASE("emg precision chord never treats an overflowing ratio as a zero gap") {
+  const double upper=cppunivariate::emg_detail::fixed_rate_precision_chord_upper(-10,-10,7,1e-300,1e300);
+  CHECK(upper>1000); // Infinity is a safe unavailable bound in double mode.
+}
