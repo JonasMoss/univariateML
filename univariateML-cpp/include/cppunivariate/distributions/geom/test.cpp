@@ -20,8 +20,8 @@ namespace {
   auto g = mltest::load_distribution_golden("geom");
   auto v = as_ints(g.data);
   auto r = cppunivariate::geom_mle(as_ispan(v));
-  CHECK(r.prob == D_APPROX(g.estimates.at("prob")));
-  CHECK(r.logLik == D_APPROX(g.logLik));
+  CHECK(r.prob == doctest::Approx(g.estimates.at("prob")).epsilon(mltest::kGolden_geom).scale(0));
+  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kGolden_geom).scale(0));
 }
 
 TEST_CASE("geom all zeros") {

@@ -25,10 +25,10 @@ TEST_CASE("invtrgamma: golden, score gate and reciprocal of trgamma") {
   auto g = mltest::load_distribution_golden("invtrgamma");
   auto r = cppunivariate::invtrgamma_mle(mltest::as_span(g.data));
   REQUIRE(r.status == cppunivariate::InvTrGammaStatus::Ok);
-  CHECK(r.shape1 == doctest::Approx(g.estimates.at("shape1")).epsilon(mltest::kTol));
-  CHECK(r.shape2 == doctest::Approx(g.estimates.at("shape2")).epsilon(mltest::kTol));
-  CHECK(r.scale == doctest::Approx(g.estimates.at("scale")).epsilon(mltest::kTol));
-  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kTol));
+  CHECK(r.shape1 == doctest::Approx(g.estimates.at("shape1")).epsilon(mltest::kGolden_invtrgamma).scale(0));
+  CHECK(r.shape2 == doctest::Approx(g.estimates.at("shape2")).epsilon(mltest::kGolden_invtrgamma).scale(0));
+  CHECK(r.scale == doctest::Approx(g.estimates.at("scale")).epsilon(mltest::kGolden_invtrgamma).scale(0));
+  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kGolden_invtrgamma).scale(0));
   CHECK(invtrgamma_loglik(g.data, r.shape1, r.shape2, r.scale) ==
         doctest::Approx(r.logLik).epsilon(1e-12));
   const double h = 1e-5;

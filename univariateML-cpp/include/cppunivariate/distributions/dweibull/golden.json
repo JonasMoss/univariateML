@@ -9,11 +9,33 @@
     "shape2": 1.5
   },
   "estimates": {
-    "shape1": 0.80662684163002563,
+    "shape1": 0.8066268416300256,
     "shape2": 1.5688432472349678
   },
   "fixed": [],
-  "logLik": -879.24051857626193,
+  "logLik": -879.240518576262,
   "n_obs": 500,
-  "data": [4, 5, -0, 1, 3, 1, 2, -0, 2, -0, 2, 1, 4, 4, 2, 1, 1, 2, 1, 2, 4, 1, -0, 1, -0, 2, -0, 2, 1, 3, 2, 4, 5, -0, 3, 1, 2, 3, 1, 3, 2, 4, 1, 2, 2, -0, 5, -0, -0, 1, 1, 2, 4, 1, 3, 3, 2, 5, -0, -0, 1, -0, 1, 2, 6, 3, 1, 1, 1, 1, 1, 2, 1, -0, -0, 4, 2, -0, 2, 2, 5, 2, 2, -0, 1, -0, -0, 3, -0, 1, 8, 1, 1, 1, 3, 3, 1, 1, -0, -0, 4, 5, 1, 3, 1, 4, 1, -0, 2, 1, 2, 2, 2, 1, 3, 1, 1, 4, 4, 1, 2, 2, -0, 2, -0, 1, 2, 1, -0, -0, 4, 5, 4, 3, -0, 1, 4, 3, 1, -0, 2, 1, 2, 1, 4, 2, 1, -0, 8, -0, -0, -0, 1, 3, 1, 2, 1, -0, 2, 2, 3, -0, 1, -0, 3, -0, 3, 1, 1, 2, 3, 2, 2, -0, 1, 5, 2, 1, 2, 2, 4, 2, 1, 1, 1, 2, 2, 1, 3, 1, -0, 1, 1, 3, 1, 4, -0, 2, 1, 5, -0, 1, 1, 4, -0, -0, 5, 4, 2, 2, 2, 1, -0, -0, 2, 1, 4, 1, 2, 3, -0, 3, 1, 3, 1, 2, -0, 4, 4, 1, 3, 1, 4, 2, 2, 2, 3, 3, 1, 2, 2, 1, 7, 2, 3, -0, 4, 3, 2, 1, -0, 3, 4, -0, 4, -0, -0, -0, 1, 3, 1, 3, 1, 2, 1, 5, 2, 4, 4, 3, 2, -0, -0, 4, -0, 5, -0, 5, 1, 1, -0, 1, -0, 2, 3, -0, -0, 1, 3, 3, 4, 1, 1, 1, -0, -0, 4, 2, 6, -0, 2, 5, 1, -0, 2, 2, 1, 1, 1, 2, -0, 4, 3, 1, -0, 7, 3, 3, 2, -0, 1, 1, -0, 1, 6, 2, 3, 3, 1, 3, 1, 1, 3, 4, 3, 2, -0, -0, -0, -0, 1, 1, -0, 3, 2, -0, 1, 1, 1, 3, -0, 1, -0, 3, 2, 2, 4, 2, 4, 2, 2, -0, 1, 3, 9, 3, 1, 2, 1, -0, -0, 3, -0, 3, 3, 4, 1, 1, 1, -0, 1, 1, 1, 4, 4, 2, 4, 2, 2, 2, 4, 2, -0, 2, 1, 7, 4, -0, 4, 4, 4, 1, 3, 2, 1, 4, 2, 1, 3, 1, -0, 1, 3, 2, 3, 2, 5, 5, 1, 1, 2, 3, 1, 3, -0, 1, 3, 3, 4, 3, 4, 3, 1, 2, -0, 1, 1, 1, 2, 1, 2, 2, 1, 1, 4, 1, 2, 1, 2, 1, 2, -0, 4, 1, 3, 2, 2, -0, 1, 1, 2, 1, 3, -0, -0, 6, 1, 2, 3, 5, 1, 1, 2, 4, 1, 1, 5, 2, -0, 3, 2, 1, 4, 1, 5, -0, 1, 5, 1, 1, -0, -0, 2, 4, 1, 4, 2, 3, 2, 1]
+  "data": [4, 5, -0, 1, 3, 1, 2, -0, 2, -0, 2, 1, 4, 4, 2, 1, 1, 2, 1, 2, 4, 1, -0, 1, -0, 2, -0, 2, 1, 3, 2, 4, 5, -0, 3, 1, 2, 3, 1, 3, 2, 4, 1, 2, 2, -0, 5, -0, -0, 1, 1, 2, 4, 1, 3, 3, 2, 5, -0, -0, 1, -0, 1, 2, 6, 3, 1, 1, 1, 1, 1, 2, 1, -0, -0, 4, 2, -0, 2, 2, 5, 2, 2, -0, 1, -0, -0, 3, -0, 1, 8, 1, 1, 1, 3, 3, 1, 1, -0, -0, 4, 5, 1, 3, 1, 4, 1, -0, 2, 1, 2, 2, 2, 1, 3, 1, 1, 4, 4, 1, 2, 2, -0, 2, -0, 1, 2, 1, -0, -0, 4, 5, 4, 3, -0, 1, 4, 3, 1, -0, 2, 1, 2, 1, 4, 2, 1, -0, 8, -0, -0, -0, 1, 3, 1, 2, 1, -0, 2, 2, 3, -0, 1, -0, 3, -0, 3, 1, 1, 2, 3, 2, 2, -0, 1, 5, 2, 1, 2, 2, 4, 2, 1, 1, 1, 2, 2, 1, 3, 1, -0, 1, 1, 3, 1, 4, -0, 2, 1, 5, -0, 1, 1, 4, -0, -0, 5, 4, 2, 2, 2, 1, -0, -0, 2, 1, 4, 1, 2, 3, -0, 3, 1, 3, 1, 2, -0, 4, 4, 1, 3, 1, 4, 2, 2, 2, 3, 3, 1, 2, 2, 1, 7, 2, 3, -0, 4, 3, 2, 1, -0, 3, 4, -0, 4, -0, -0, -0, 1, 3, 1, 3, 1, 2, 1, 5, 2, 4, 4, 3, 2, -0, -0, 4, -0, 5, -0, 5, 1, 1, -0, 1, -0, 2, 3, -0, -0, 1, 3, 3, 4, 1, 1, 1, -0, -0, 4, 2, 6, -0, 2, 5, 1, -0, 2, 2, 1, 1, 1, 2, -0, 4, 3, 1, -0, 7, 3, 3, 2, -0, 1, 1, -0, 1, 6, 2, 3, 3, 1, 3, 1, 1, 3, 4, 3, 2, -0, -0, -0, -0, 1, 1, -0, 3, 2, -0, 1, 1, 1, 3, -0, 1, -0, 3, 2, 2, 4, 2, 4, 2, 2, -0, 1, 3, 9, 3, 1, 2, 1, -0, -0, 3, -0, 3, 3, 4, 1, 1, 1, -0, 1, 1, 1, 4, 4, 2, 4, 2, 2, 2, 4, 2, -0, 2, 1, 7, 4, -0, 4, 4, 4, 1, 3, 2, 1, 4, 2, 1, 3, 1, -0, 1, 3, 2, 3, 2, 5, 5, 1, 1, 2, 3, 1, 3, -0, 1, 3, 3, 4, 3, 4, 3, 1, 2, -0, 1, 1, 1, 2, 1, 2, 2, 1, 1, 4, 1, 2, 1, 2, 1, 2, -0, 4, 1, 3, 2, 2, -0, 1, 1, 2, 1, 3, -0, -0, 6, 1, 2, 3, 5, 1, 1, 2, 4, 1, 1, 5, 2, -0, 3, 2, 1, 4, 1, 5, -0, 1, 5, 1, 1, -0, -0, 2, 4, 1, 4, 2, 3, 2, 1],
+  "reference": {
+    "method": "damped Newton at 50 digits on the README log density, from the fitted values",
+    "precision_digits": 50,
+    "estimates": {
+      "shape1": "0.806626841630025627474551",
+      "shape2": "1.568843247234967916936298"
+    },
+    "logLik": "-879.2405185762620754899357",
+    "free": [
+      "shape1",
+      "shape2"
+    ],
+    "not_refined": {},
+    "score_norm": "4.45e-58",
+    "information_negative_definite": true,
+    "global": {
+      "kind": "dossier optimality/uniqueness proof",
+      "statement": "With both coefficients free, a unique finite MLE exists exactly when $\\max_i x_i-\\min_i x_i\\ge2$. Constant samples and samples on two adjacent counts have only an excluded limiting maximum. Holding $\\beta$ gives a unique finite estimate of $q$ exactly when at least one observation is positive. Holding $q$ and observing at least one positive count gives a unique finite estimate of $\\beta$ exactly when some observation is at least two. If $q$ is held and all observations are zero, every positive $\\beta$ maximizes the likelihood. Holding both leaves only likelihood evaluation.",
+      "reason": "The log likelihood is strictly concave in $(\\alpha,\\beta)$, where $\\alpha=\\log(-\\log q)$, whenever a count is positive. The Hessian argument in Details proves this directly. Either hold is an affine restriction in these coordinates. As $\\beta$ decreases to zero, positive-count masses vanish uniformly over $q$. At the other parameter boundaries the only proper limits are point masses or adjacent two-point laws. A sample range of at least two therefore forces attainment on a compact likelihood level set. The declared limits cover the remaining cases. With $q$ held, all-zero data have likelihood $(1-q)^n$, independent of $\\beta$."
+    },
+    "input_sha256": "c533e394bea6affe96200ba13bb1f52c80886e7a7797c18fdbea7ef4574a4687"
+  }
 }

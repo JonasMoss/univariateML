@@ -12,10 +12,10 @@ TEST_CASE("zinb: golden and independent natural parameter scores") {
   for (double v : g.data) x.push_back(static_cast<int>(v));
   const auto fit = cppunivariate::zinb_mle({x.data(), x.size()});
   REQUIRE(fit.status == cppunivariate::ZinbStatus::Ok);
-  CHECK(fit.size == doctest::Approx(g.estimates.at("size")).epsilon(3e-9));
-  CHECK(fit.prob == doctest::Approx(g.estimates.at("prob")).epsilon(1e-10));
-  CHECK(fit.pi == doctest::Approx(g.estimates.at("pi")).epsilon(1e-10));
-  CHECK(fit.logLik == doctest::Approx(g.logLik).epsilon(1e-10));
+  CHECK(fit.size == doctest::Approx(g.estimates.at("size")).epsilon(mltest::kGolden_zinb).scale(0));
+  CHECK(fit.prob == doctest::Approx(g.estimates.at("prob")).epsilon(mltest::kGolden_zinb).scale(0));
+  CHECK(fit.pi == doctest::Approx(g.estimates.at("pi")).epsilon(mltest::kGolden_zinb).scale(0));
+  CHECK(fit.logLik == doctest::Approx(g.logLik).epsilon(mltest::kGolden_zinb).scale(0));
   auto ll = [&](const std::vector<double> &p) {
     double out = 0;
     for (int v : x) out += cppunivariate::distributions::dzinb(v,p[0],p[1],p[2],true);

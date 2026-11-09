@@ -35,10 +35,10 @@ TEST_CASE("rsnorm samples have unit variance and skew with xi") {
 TEST_CASE("snorm (skew-normal)") {
   auto g = mltest::load_distribution_golden("snorm");
   auto r = cppunivariate::snorm_mle(mltest::as_span(g.data), mltest::kFitTol, 200);
-  CHECK(r.mu == C_APPROX(g.estimates.at("mean")));
-  CHECK(r.sigma == C_APPROX(g.estimates.at("sd")));
-  CHECK(r.xi == C_APPROX(g.estimates.at("xi")));
-  CHECK(r.logLik == C_APPROX(g.logLik));
+  CHECK(r.mu == doctest::Approx(g.estimates.at("mean")).epsilon(mltest::kGolden_snorm).scale(0));
+  CHECK(r.sigma == doctest::Approx(g.estimates.at("sd")).epsilon(mltest::kGolden_snorm).scale(0));
+  CHECK(r.xi == doctest::Approx(g.estimates.at("xi")).epsilon(mltest::kGolden_snorm).scale(0));
+  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kGolden_snorm).scale(0));
 }
 
 TEST_CASE("snorm profile endpoints and direct grid") {

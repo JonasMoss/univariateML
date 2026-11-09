@@ -11,9 +11,9 @@
 TEST_CASE("lnorm") {
   auto g = mltest::load_distribution_golden("lnorm");
   auto r = cppunivariate::lognormal_mle(mltest::as_span(g.data));
-  CHECK(r.meanlog == doctest::Approx(g.estimates.at("meanlog")).epsilon(mltest::kTol));
-  CHECK(r.sdlog == doctest::Approx(g.estimates.at("sdlog")).epsilon(mltest::kTol));
-  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kTol));
+  CHECK(r.meanlog == doctest::Approx(g.estimates.at("meanlog")).epsilon(mltest::kGolden_lnorm).scale(0));
+  CHECK(r.sdlog == doctest::Approx(g.estimates.at("sdlog")).epsilon(mltest::kGolden_lnorm).scale(0));
+  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kGolden_lnorm).scale(0));
 }
 
 TEST_CASE("lnorm: seeded sample with outlier") {

@@ -68,11 +68,11 @@ TEST_CASE("st: native golden fit") {
  REQUIRE(f.status==cppunivariate::StStatus::Ok);
  // The df score uses finite differences and WebAssembly uses binary64
  // intermediates. The tolerance covers measured cross-platform score drift.
- CHECK(f.xi==doctest::Approx(g.estimates.at("xi")).epsilon(1e-5));
- CHECK(f.omega==doctest::Approx(g.estimates.at("omega")).epsilon(1e-5));
- CHECK(f.alpha==doctest::Approx(g.estimates.at("alpha")).epsilon(1e-5));
- CHECK(f.nu==doctest::Approx(g.estimates.at("nu")).epsilon(1e-5));
- CHECK(f.logLik==doctest::Approx(g.logLik).epsilon(1e-10));
+ CHECK(f.xi==doctest::Approx(g.estimates.at("xi")).epsilon(mltest::kGolden_st).scale(0));
+ CHECK(f.omega==doctest::Approx(g.estimates.at("omega")).epsilon(mltest::kGolden_st).scale(0));
+ CHECK(f.alpha==doctest::Approx(g.estimates.at("alpha")).epsilon(mltest::kGolden_st).scale(0));
+ CHECK(f.nu==doctest::Approx(g.estimates.at("nu")).epsilon(mltest::kGolden_st).scale(0));
+ CHECK(f.logLik==doctest::Approx(g.logLik).epsilon(mltest::kGolden_st).scale(0));
 }
 
 TEST_CASE("st: active degrees-of-freedom restriction is flagged") {

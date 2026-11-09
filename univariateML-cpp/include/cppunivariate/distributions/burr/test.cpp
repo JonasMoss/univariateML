@@ -14,10 +14,10 @@ TEST_CASE("burr three parameter golden and reciprocal fit") {
  // own default, used here directly); a golden comparison tighter than
  // that -- 1e-12 chases whichever platform's BFGS/finite-difference-
  // gradient trajectory landed closest to, not a real difference.
- CHECK(r.shape1 == doctest::Approx(g.estimates.at("shape1")).epsilon(mltest::kBurrGoldenTol));
- CHECK(r.shape2 == doctest::Approx(g.estimates.at("shape2")).epsilon(mltest::kBurrGoldenTol));
- CHECK(r.scale == doctest::Approx(g.estimates.at("scale")).epsilon(mltest::kBurrGoldenTol));
- CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(1e-8));
+ CHECK(r.shape1 == doctest::Approx(g.estimates.at("shape1")).epsilon(mltest::kGolden_burr).scale(0));
+ CHECK(r.shape2 == doctest::Approx(g.estimates.at("shape2")).epsilon(mltest::kGolden_burr).scale(0));
+ CHECK(r.scale == doctest::Approx(g.estimates.at("scale")).epsilon(mltest::kGolden_burr).scale(0));
+ CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kGolden_burr).scale(0));
  // Independent full actuar multistart oracle on this ordinary sample.
  CHECK(r.logLik == doctest::Approx(-613.67979675083461).epsilon(1e-8));
  // Independent full likelihood scores, including the freely fitted scale.

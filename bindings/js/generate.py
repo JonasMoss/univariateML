@@ -84,25 +84,22 @@ if __name__ == '__main__':
         golden = json.loads((DOSSIERS / family / 'golden.json').read_text())
         coefficient_names = [p['name'] for p in metadata['params']]
         fit_args = golden.get('fit_args', {})
-        golden_test = (DOSSIERS / family / 'test.cpp').read_text()
-        for variable in re.findall(r'(\w+)\s*=\s*mltest::load_distribution_golden\("' + re.escape(family) + r'"\)', golden_test):
-            golden_test = re.sub(r'\b' + re.escape(variable) + r'\.', 'g.', golden_test)
-        for macro, tolerance in re.findall(r'#define (\w+)\(x\) doctest::Approx\(x\)\.epsilon\(([^)]+)\)', golden_test):
-            pattern = r'\b' + macro + r'\((g\.estimates\.at\("[^"\n]+"\)|g\.logLik)\)'
-            golden_test = re.sub(pattern, lambda match: 'doctest::Approx(' + match[1] + ').epsilon(' + tolerance + ')', golden_test)
-        tolerances, tolerance_scales = {}, {}
-        for match in re.finditer(r'g\.estimates\.at\("([^"\n]+)"\).*?\.epsilon\(([^)]+)\)', golden_test):
-            key, value = match.groups()
-            if key not in tolerances:
-                tolerances[key] = golden_tolerance(value, golden_test)
-                tolerance_scales[key] = 1
-        for match in re.finditer(r'std::abs\(\([^\n;]*?-g\.estimates\.at\("([^"\n]+)"\)\)/g\.estimates\.at\("\1"\)\)\s*<\s*([^;]+)\);', golden_test):
-            key, value = match.groups()
-            tolerances[key] = golden_tolerance(value.strip(), golden_test)
-            tolerance_scales[key] = 0
-        ll_match = re.search(r'g\.logLik\).*?\.epsilon\(([^)]+)\)', golden_test)
-        ll_tol = golden_tolerance(ll_match[1], golden_test) if ll_match else 1e-10
-        fit_cases.append(dict(id=family, g=golden, held={k:v for k,v in fit_args.items() if k in coefficient_names}, control={k:v for k,v in fit_args.items() if k not in coefficient_names}, holds=metadata.get('holds', []), limits=metadata.get('limits', []), tol=1e-10, tolerances=tolerances, tolerance_scales=tolerance_scales, ll_tol=ll_tol, ll_scale=1 if ll_match else 0))
+        # One calibrated policy for default golden fits across bindings. Native
+        # and double/WASM captures (including reasons) are retained in the
+        # TASK-149.1 report. Compare componentwise, with no additive unit scale.
+        tol = golden_tolerance('mltest::kGolden_' + family, '')
+        # Bhatt is owned by the concurrent all-free job. Preserve the existing
+        # WASM coefficient/likelihood widths and additive scales for that family.
+        deferred = family == 'bhatt'
+        coefficient_tol = golden_tolerance('mltest::kBhattGoldenTol', '') if deferred else tol
+        fit_cases.append(dict(id=family, g=golden,
+            held={k:v for k,v in fit_args.items() if k in coefficient_names},
+            control={k:v for k,v in fit_args.items() if k not in coefficient_names},
+            holds=metadata.get('holds', []), limits=metadata.get('limits', []),
+            tol=1e-10 if deferred else tol,
+            tolerances={k:coefficient_tol for k in coefficient_names},
+            tolerance_scales={k:int(deferred) for k in coefficient_names},
+            ll_tol=1e-7 if deferred else tol, ll_scale=int(deferred)))
 
         header = path.read_text()
         signature = re.search(r'inline FitResult fit_' + family + r'\((.*?)\) \{', header, re.S)[1]

@@ -9,9 +9,9 @@ TEST_CASE("ht: golden and scores (mu held at 0)") {
   const auto r=cppunivariate::ht_mle(mltest::as_span(g.data),0.0,nan,nan);
   CHECK(r.status==cppunivariate::HtStatus::Ok);
   CHECK(r.mu==0.0);
-  CHECK(r.nu==doctest::Approx(g.estimates.at("nu")).epsilon(1e-7));
-  CHECK(r.sigma==doctest::Approx(g.estimates.at("sigma")).epsilon(1e-8));
-  CHECK(r.logLik==doctest::Approx(g.logLik).epsilon(1e-10));
+  CHECK(r.nu==doctest::Approx(g.estimates.at("nu")).epsilon(mltest::kGolden_ht).scale(0));
+  CHECK(r.sigma==doctest::Approx(g.estimates.at("sigma")).epsilon(mltest::kGolden_ht).scale(0));
+  CHECK(r.logLik==doctest::Approx(g.logLik).epsilon(mltest::kGolden_ht).scale(0));
   double ls=std::log(r.sigma), l1=ls,l2=ls;
   CHECK(std::abs((cppunivariate::ht_detail::profile(mltest::as_span(g.data),r.nu*std::exp(1e-5),l1,true)-cppunivariate::ht_detail::profile(mltest::as_span(g.data),r.nu*std::exp(-1e-5),l2,true))/2e-5)<1e-3);
 }

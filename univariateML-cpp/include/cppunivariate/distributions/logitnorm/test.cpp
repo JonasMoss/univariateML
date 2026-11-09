@@ -28,9 +28,9 @@ TEST_CASE("rlogitnorm samples lie in (0, 1) and match the CDF at median") {
 TEST_CASE("logitnorm") {
   auto g = mltest::load_distribution_golden("logitnorm");
   auto r = cppunivariate::logitnorm_mle(mltest::as_span(g.data));
-  CHECK(r.mu == doctest::Approx(g.estimates.at("mu")).epsilon(mltest::kTol));
-  CHECK(r.sigma == doctest::Approx(g.estimates.at("sigma")).epsilon(mltest::kTol));
-  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kTol));
+  CHECK(r.mu == doctest::Approx(g.estimates.at("mu")).epsilon(mltest::kGolden_logitnorm).scale(0));
+  CHECK(r.sigma == doctest::Approx(g.estimates.at("sigma")).epsilon(mltest::kGolden_logitnorm).scale(0));
+  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kGolden_logitnorm).scale(0));
 }
 
 TEST_CASE("logitnorm dpqr support and extreme log probabilities") {

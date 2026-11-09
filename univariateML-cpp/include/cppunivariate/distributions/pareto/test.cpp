@@ -26,9 +26,9 @@ TEST_CASE("pareto") {
   auto g = mltest::load_distribution_golden("pareto");
   auto r = cppunivariate::pareto_mle(mltest::as_span(g.data));
   // golden "a" → ParetoResult.shape, "b" → .min
-  CHECK(r.shape == doctest::Approx(g.estimates.at("a")).epsilon(mltest::kTol));
-  CHECK(r.min == doctest::Approx(g.estimates.at("b")).epsilon(mltest::kTol));
-  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kTol));
+  CHECK(r.shape == doctest::Approx(g.estimates.at("a")).epsilon(mltest::kGolden_pareto).scale(0));
+  CHECK(r.min == doctest::Approx(g.estimates.at("b")).epsilon(mltest::kGolden_pareto).scale(0));
+  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kGolden_pareto).scale(0));
 }
 
 // Independent high-precision oracle; see quality/truth.py.

@@ -16,9 +16,9 @@ TEST_CASE("lomax: golden") {
   auto r = cppunivariate::lomax_mle(mltest::as_span(g.data), mltest::kFitTol,
                                     mltest::kFitMaxit);
   CHECK(r.status == cppunivariate::LomaxStatus::Ok);
-  CHECK(r.lambda == doctest::Approx(g.estimates.at("lambda")).epsilon(mltest::kTol));
-  CHECK(r.kappa == doctest::Approx(g.estimates.at("kappa")).epsilon(mltest::kTol));
-  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kTol));
+  CHECK(r.lambda == doctest::Approx(g.estimates.at("lambda")).epsilon(mltest::kGolden_lomax).scale(0));
+  CHECK(r.kappa == doctest::Approx(g.estimates.at("kappa")).epsilon(mltest::kGolden_lomax).scale(0));
+  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kGolden_lomax).scale(0));
 }
 
 TEST_CASE("lomax: an explicit start converges to the same fit") {
@@ -215,8 +215,8 @@ TEST_CASE("lomax: P3 Newton candidate and compressed profile reject exhaustion")
   CHECK(cppunivariate::lomax_mle(mltest::as_span(large),1e-10,1).status==cppunivariate::LomaxStatus::IterationFailure);
   const auto fit=cppunivariate::lomax_mle(mltest::as_span(large),1e-10,100);
   CHECK(fit.status==cppunivariate::LomaxStatus::Ok);
-  CHECK(fit.lambda==doctest::Approx(g.estimates.at("lambda")).epsilon(1e-5));
-  CHECK(fit.kappa==doctest::Approx(g.estimates.at("kappa")).epsilon(1e-5));
+  CHECK(fit.lambda==doctest::Approx(g.estimates.at("lambda")).epsilon(1e-13).scale(0));
+  CHECK(fit.kappa==doctest::Approx(g.estimates.at("kappa")).epsilon(1e-13).scale(0));
 }
 
 TEST_CASE("lomax: verified extreme conditional bracket") {

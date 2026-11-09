@@ -59,11 +59,11 @@ TEST_CASE("tnorm: golden for the default normal member") {
   const auto g = mltest::load_distribution_golden("tnorm");
   const auto r = cppunivariate::tnorm_mle(mltest::as_span(g.data), -kInf, kInf);
   REQUIRE(r.status == cppunivariate::TnormStatus::Ok);
-  CHECK(r.mean == doctest::Approx(g.estimates.at("mean")).epsilon(mltest::kTol));
-  CHECK(r.sd == doctest::Approx(g.estimates.at("sd")).epsilon(mltest::kTol));
+  CHECK(r.mean == doctest::Approx(g.estimates.at("mean")).epsilon(mltest::kGolden_tnorm).scale(0));
+  CHECK(r.sd == doctest::Approx(g.estimates.at("sd")).epsilon(mltest::kGolden_tnorm).scale(0));
   CHECK(r.a == g.estimates.at("a"));
   CHECK(r.b == g.estimates.at("b"));
-  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kTol));
+  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kGolden_tnorm).scale(0));
   check_regular_max(g.data, r);
 }
 

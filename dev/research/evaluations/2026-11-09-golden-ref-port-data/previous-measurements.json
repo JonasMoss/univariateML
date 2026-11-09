@@ -1,0 +1,398 @@
+{
+  "bbinom": {
+    "max_error": 8.051562744859961e-16,
+    "tolerance": 1e-15
+  },
+  "beta": {
+    "max_error": 4.423422586890133e-15,
+    "tolerance": 5.000000000000001e-15
+  },
+  "betapr": {
+    "max_error": 1.4487153059168702e-07,
+    "tolerance": 2e-07
+  },
+  "bhatt": {
+    "max_error": 2.007601901464251e-07,
+    "tolerance": 3e-07
+  },
+  "binom": {
+    "max_error": 1.557349969794359e-16,
+    "tolerance": 2e-16
+  },
+  "bnbinom": {
+    "max_error": 3.0845738504281623e-07,
+    "tolerance": 5e-07
+  },
+  "burr": {
+    "max_error": 1.9798116371231836e-14,
+    "tolerance": 2e-14
+  },
+  "cauchy": {
+    "max_error": 2.31370087243388e-12,
+    "tolerance": 3e-12
+  },
+  "cmb": {
+    "max_error": 2.964823103873376e-10,
+    "tolerance": 3e-10
+  },
+  "cmp": {
+    "max_error": 9.34509074654458e-16,
+    "tolerance": 1e-15
+  },
+  "dgamma": {
+    "max_error": 2.1701062087111946e-08,
+    "tolerance": 3.0000000000000004e-08
+  },
+  "dlaplace": {
+    "max_error": 1.357688261585832e-16,
+    "tolerance": 2e-16
+  },
+  "dnorm": {
+    "max_error": 6.978793891093446e-13,
+    "tolerance": 1e-12
+  },
+  "dunif": {
+    "max_error": 2.069644384907491e-16,
+    "tolerance": 3e-16
+  },
+  "dweibull": {
+    "max_error": 1.609701597850372e-16,
+    "tolerance": 2e-16
+  },
+  "emg": {
+    "max_error": 1.7109975286776608e-07,
+    "tolerance": 2e-07
+  },
+  "exp": {
+    "max_error": 4.355170135578423e-16,
+    "tolerance": 5e-16
+  },
+  "fatigue": {
+    "max_error": 3.1396832118167923e-09,
+    "tolerance": 5e-09
+  },
+  "foldnorm": {
+    "max_error": 2.7428277417029357e-09,
+    "tolerance": 3.0000000000000004e-09
+  },
+  "fpareto": {
+    "max_error": 5.750776396214774e-12,
+    "tolerance": 1e-11
+  },
+  "frechet": {
+    "max_error": 1.3316841469764182e-13,
+    "tolerance": 2e-13
+  },
+  "gamma": {
+    "max_error": 6.100287349969971e-16,
+    "tolerance": 1e-15
+  },
+  "gb2": {
+    "max_error": 3.1106114327469314e-08,
+    "tolerance": 5e-08
+  },
+  "ged": {
+    "max_error": 2.2463148394732192e-06,
+    "tolerance": 3e-06
+  },
+  "genbeta": {
+    "max_error": 3.8502579751657625e-09,
+    "tolerance": 5e-09
+  },
+  "geom": {
+    "max_error": 4.212007091716065e-15,
+    "tolerance": 5.000000000000001e-15
+  },
+  "gev": {
+    "max_error": 3.6435646444386285e-11,
+    "tolerance": 4.9999999999999995e-11
+  },
+  "gompertz": {
+    "max_error": 3.877046646097958e-13,
+    "tolerance": 5e-13
+  },
+  "gpd": {
+    "max_error": 1.3626787561972801e-15,
+    "tolerance": 2e-15
+  },
+  "gumbel": {
+    "max_error": 2.332576272670715e-10,
+    "tolerance": 3e-10
+  },
+  "hcauchy": {
+    "max_error": 4.710101952829268e-15,
+    "tolerance": 5.000000000000001e-15
+  },
+  "hnorm": {
+    "max_error": 1.8474978674966135e-16,
+    "tolerance": 2e-16
+  },
+  "ht": {
+    "max_error": 7.896379109807988e-08,
+    "tolerance": 1e-07
+  },
+  "huber": {
+    "max_error": 6.151347403506357e-13,
+    "tolerance": 1e-12
+  },
+  "hyper": {
+    "max_error": 1.3167773057857013e-16,
+    "tolerance": 2e-16
+  },
+  "invburr": {
+    "max_error": 7.271228675002552e-16,
+    "tolerance": 1e-15
+  },
+  "invexp": {
+    "max_error": 7.299578527434272e-16,
+    "tolerance": 1e-15
+  },
+  "invgamma": {
+    "max_error": 1.7912863984605255e-15,
+    "tolerance": 2e-15
+  },
+  "invgauss": {
+    "max_error": 1.0787327220326364e-15,
+    "tolerance": 2e-15
+  },
+  "invparalogis": {
+    "max_error": 2.1854650856998913e-15,
+    "tolerance": 3.0000000000000002e-15
+  },
+  "invpareto": {
+    "max_error": 5.180104824482633e-11,
+    "tolerance": 9.999999999999999e-11
+  },
+  "invtrgamma": {
+    "max_error": 5.809833487882303e-14,
+    "tolerance": 1e-13
+  },
+  "invweibull": {
+    "max_error": 9.524688825560946e-15,
+    "tolerance": 1.0000000000000002e-14
+  },
+  "kumar": {
+    "max_error": 4.963822093233017e-09,
+    "tolerance": 5e-09
+  },
+  "laplace": {
+    "max_error": 8.357434445909786e-16,
+    "tolerance": 1e-15
+  },
+  "lgamma": {
+    "max_error": 1.4012034177244782e-15,
+    "tolerance": 2e-15
+  },
+  "lgser": {
+    "max_error": 4.360599074338488e-16,
+    "tolerance": 5e-16
+  },
+  "llogis": {
+    "max_error": 1.9125746973434317e-13,
+    "tolerance": 2e-13
+  },
+  "lnorm": {
+    "max_error": 6.0357229213542285e-15,
+    "tolerance": 1.0000000000000002e-14
+  },
+  "logis": {
+    "max_error": 4.059585025423331e-14,
+    "tolerance": 5e-14
+  },
+  "logitnorm": {
+    "max_error": 1.1825203948514923e-15,
+    "tolerance": 2e-15
+  },
+  "lomax": {
+    "max_error": 7.85728441804392e-08,
+    "tolerance": 1e-07
+  },
+  "lst": {
+    "max_error": 1.6717095983709405e-13,
+    "tolerance": 2e-13
+  },
+  "naka": {
+    "max_error": 1.9823895340341415e-15,
+    "tolerance": 2e-15
+  },
+  "nbinom": {
+    "max_error": 5.512072703022292e-11,
+    "tolerance": 9.999999999999999e-11
+  },
+  "nhyper": {
+    "max_error": 1.910543857022213e-16,
+    "tolerance": 2e-16
+  },
+  "norm": {
+    "max_error": 1.2379810560083115e-14,
+    "tolerance": 2e-14
+  },
+  "nsbeta": {
+    "max_error": 1.934639585657889e-15,
+    "tolerance": 2e-15
+  },
+  "paralogis": {
+    "max_error": 1.922958169715251e-15,
+    "tolerance": 2e-15
+  },
+  "pareto": {
+    "max_error": 4.949412045730998e-16,
+    "tolerance": 5e-16
+  },
+  "pareto2": {
+    "max_error": 1.151801142179693e-15,
+    "tolerance": 2e-15
+  },
+  "pareto3": {
+    "max_error": 1.1988099922790077e-08,
+    "tolerance": 2e-08
+  },
+  "pareto4": {
+    "max_error": 4.562309989628469e-15,
+    "tolerance": 5.000000000000001e-15
+  },
+  "pig": {
+    "max_error": 1.8918672717474896e-10,
+    "tolerance": 2e-10
+  },
+  "pois": {
+    "max_error": 2.2842544771627193e-15,
+    "tolerance": 3.0000000000000002e-15
+  },
+  "power": {
+    "max_error": 1.3315964183564148e-15,
+    "tolerance": 2e-15
+  },
+  "rayleigh": {
+    "max_error": 1.1158295993148064e-16,
+    "tolerance": 2e-16
+  },
+  "sged": {
+    "max_error": 2.275302672152713e-06,
+    "tolerance": 3e-06
+  },
+  "sgomp": {
+    "max_error": 2.8750483640080803e-08,
+    "tolerance": 3.0000000000000004e-08
+  },
+  "skellam": {
+    "max_error": 3.958580224213763e-08,
+    "tolerance": 5e-08
+  },
+  "slash": {
+    "max_error": 1.519256083182389e-05,
+    "tolerance": 2e-05
+  },
+  "sn": {
+    "max_error": 4.3212834584604337e-07,
+    "tolerance": 5e-07
+  },
+  "snorm": {
+    "max_error": 2.33371033295798e-13,
+    "tolerance": 3.0000000000000003e-13
+  },
+  "sstd": {
+    "max_error": 4.988628213944425e-06,
+    "tolerance": 4.9999999999999996e-06
+  },
+  "st": {
+    "max_error": 1.3140101112847197e-06,
+    "tolerance": 2e-06
+  },
+  "std": {
+    "max_error": 2.5917251185533614e-13,
+    "tolerance": 3.0000000000000003e-13
+  },
+  "tbinom": {
+    "max_error": 3.911648887606374e-15,
+    "tolerance": 5.000000000000001e-15
+  },
+  "tlambda": {
+    "max_error": 9.922018655802897e-08,
+    "tolerance": 1e-07
+  },
+  "tnorm": {
+    "max_error": 1.0229805491612111e-14,
+    "tolerance": 2e-14
+  },
+  "tpois": {
+    "max_error": 2.5629241062365705e-15,
+    "tolerance": 3.0000000000000002e-15
+  },
+  "trgamma": {
+    "max_error": 2.0526501687320986e-14,
+    "tolerance": 3e-14
+  },
+  "triang": {
+    "max_error": 7.05927747770763e-13,
+    "tolerance": 1e-12
+  },
+  "unif": {
+    "max_error": 5.916004227378366e-17,
+    "tolerance": 1.0000000000000001e-16
+  },
+  "weibull": {
+    "max_error": 2.958944330293114e-09,
+    "tolerance": 3.0000000000000004e-09
+  },
+  "yulesimon": {
+    "max_error": 4.5253857208314874e-11,
+    "tolerance": 4.9999999999999995e-11
+  },
+  "zeta": {
+    "max_error": 5.161181127680237e-12,
+    "tolerance": 1e-11
+  },
+  "zib": {
+    "max_error": 3.742800549709353e-15,
+    "tolerance": 5.000000000000001e-15
+  },
+  "zinb": {
+    "max_error": 3.788535747169134e-08,
+    "tolerance": 5e-08
+  },
+  "zip": {
+    "max_error": 3.3575696652342798e-15,
+    "tolerance": 5.000000000000001e-15
+  },
+  "zipf": {
+    "max_error": 5.179915954115999e-14,
+    "tolerance": 1e-13
+  },
+  "zmbinom": {
+    "max_error": 4.988314169019064e-16,
+    "tolerance": 5e-16
+  },
+  "zmgeom": {
+    "max_error": 1.848579449763994e-15,
+    "tolerance": 2e-15
+  },
+  "zmlogarithmic": {
+    "max_error": 4.7635229469078046e-17,
+    "tolerance": 5.0000000000000005e-17
+  },
+  "zmnbinom": {
+    "max_error": 3.7933355114238233e-07,
+    "tolerance": 5e-07
+  },
+  "zmpois": {
+    "max_error": 3.1796188588261186e-15,
+    "tolerance": 5.000000000000001e-15
+  },
+  "ztbinom": {
+    "max_error": 5.342449326890951e-16,
+    "tolerance": 1e-15
+  },
+  "ztgeom": {
+    "max_error": 8.881784166601253e-18,
+    "tolerance": 1e-17
+  },
+  "ztnbinom": {
+    "max_error": 2.7131058136828183e-07,
+    "tolerance": 3e-07
+  },
+  "ztpois": {
+    "max_error": 3.0193167178304737e-16,
+    "tolerance": 5e-16
+  }
+}

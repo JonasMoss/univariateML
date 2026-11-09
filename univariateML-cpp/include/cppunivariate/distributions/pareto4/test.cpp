@@ -68,10 +68,10 @@ TEST_CASE("pareto4: default golden coefficients and likelihood") {
   const auto g = mltest::load_distribution_golden("pareto4");
   const auto r = cppunivariate::pareto4_mle(mltest::as_span(g.data), g.estimates.at("min"), 1e-10, 1000);
   REQUIRE(r.status == cppunivariate::BurrStatus::Ok);
-  CHECK(r.shape1 == doctest::Approx(g.estimates.at("shape1")).epsilon(mltest::kPareto4GoldenTol));
-  CHECK(r.shape2 == doctest::Approx(g.estimates.at("shape2")).epsilon(mltest::kPareto4GoldenTol));
-  CHECK(r.scale == doctest::Approx(g.estimates.at("scale")).epsilon(mltest::kPareto4GoldenTol));
-  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kTol));
+  CHECK(r.shape1 == doctest::Approx(g.estimates.at("shape1")).epsilon(mltest::kGolden_pareto4).scale(0));
+  CHECK(r.shape2 == doctest::Approx(g.estimates.at("shape2")).epsilon(mltest::kGolden_pareto4).scale(0));
+  CHECK(r.scale == doctest::Approx(g.estimates.at("scale")).epsilon(mltest::kGolden_pareto4).scale(0));
+  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kGolden_pareto4).scale(0));
 }
 
 TEST_CASE("pareto4: TASK-132 precision comparison retains independent likelihood and score") {

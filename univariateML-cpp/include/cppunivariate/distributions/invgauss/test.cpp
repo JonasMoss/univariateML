@@ -25,9 +25,9 @@ TEST_CASE("rinvgauss samples are positive; sample mean ~ mu") {
 TEST_CASE("invgauss") {
   auto g = mltest::load_distribution_golden("invgauss");
   auto r = cppunivariate::invgauss_mle(mltest::as_span(g.data));
-  CHECK(r.mu == doctest::Approx(g.estimates.at("mean")).epsilon(mltest::kTol));
-  CHECK(r.lambda == doctest::Approx(g.estimates.at("shape")).epsilon(mltest::kTol));
-  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kTol));
+  CHECK(r.mu == doctest::Approx(g.estimates.at("mean")).epsilon(mltest::kGolden_invgauss).scale(0));
+  CHECK(r.lambda == doctest::Approx(g.estimates.at("shape")).epsilon(mltest::kGolden_invgauss).scale(0));
+  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kGolden_invgauss).scale(0));
 }
 
 // Independent high-precision oracle; see quality/truth.py.

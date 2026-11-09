@@ -20,9 +20,9 @@ namespace {
   auto g = mltest::load_distribution_golden("dunif");
   auto v = as_ints(g.data);
   auto r = cppunivariate::dunif_mle(as_ispan(v));
-  CHECK(r.min == D_APPROX(g.estimates.at("min")));
-  CHECK(r.max == D_APPROX(g.estimates.at("max")));
-  CHECK(r.logLik == D_APPROX(g.logLik));
+  CHECK(r.min == doctest::Approx(g.estimates.at("min")).epsilon(mltest::kGolden_dunif).scale(0));
+  CHECK(r.max == doctest::Approx(g.estimates.at("max")).epsilon(mltest::kGolden_dunif).scale(0));
+  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kGolden_dunif).scale(0));
 }
 
 TEST_CASE("rdunif samples are integers in [min, max]") {

@@ -35,10 +35,10 @@ TEST_CASE("rstd samples have unit variance and a symmetric CDF") {
 TEST_CASE("std (Student-t with location/scale)") {
   auto g = mltest::load_distribution_golden("std");
   auto r = cppunivariate::student_t_mle(mltest::as_span(g.data), mltest::kFitTol, 200);
-  CHECK(r.mu == C_APPROX_FD(g.estimates.at("mean")));
-  CHECK(r.sigma == C_APPROX_FD(g.estimates.at("sd")));
-  CHECK(r.nu == C_APPROX_FD(g.estimates.at("nu")));
-  CHECK(r.logLik == C_APPROX_FD(g.logLik));
+  CHECK(r.mu == doctest::Approx(g.estimates.at("mean")).epsilon(mltest::kGolden_std).scale(0));
+  CHECK(r.sigma == doctest::Approx(g.estimates.at("sd")).epsilon(mltest::kGolden_std).scale(0));
+  CHECK(r.nu == doctest::Approx(g.estimates.at("nu")).epsilon(mltest::kGolden_std).scale(0));
+  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kGolden_std).scale(0));
 
   cppunivariate::StudentTCost cost{mltest::as_span(g.data)};
   const double phi_hat[3] = {r.mu, std::log(r.sigma), std::log(r.nu - 2.0)};

@@ -9,11 +9,33 @@
     "nu": 1.5
   },
   "estimates": {
-    "lambda": 4.8929110545673415,
+    "lambda": 4.892911054567342,
     "nu": 1.6896118716342547
   },
   "fixed": [],
   "logLik": -804.7902049621714,
   "n_obs": 500,
-  "data": [3, 6, 1, 1, 2, 4, 2, 2, 1, 1, 2, 1, 2, 1, 2, 5, 3, 2, 3, 4, 4, 4, 2, 2, 2, 1, 4, 2, 2, 2, 2, 2, 3, 4, 1, 2, 3, 3, 4, 2, 3, 6, 2, 3, 5, 3, 2, 4, 4, 1, 2, 3, 1, 5, 1, 8, 3, 1, 2, 3, 0, 1, 2, 4, 2, 2, 1, 4, 5, 4, 2, 0, 2, 4, 2, 3, 1, 5, 2, 1, 2, 4, 5, 3, 2, 1, 2, 2, 3, 2, 1, 2, 5, 3, 3, 2, 3, 3, 2, 4, 1, 3, 1, 1, 3, 2, 2, 2, 2, 1, 1, 1, 3, 2, 2, 2, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 3, 4, 1, 3, 2, 2, 3, 1, 4, 2, 1, 8, 2, 2, 2, 3, 2, 1, 1, 2, 3, 2, 3, 1, 3, 2, 2, 3, 3, 3, 3, 2, 3, 0, 4, 3, 3, 2, 3, 1, 1, 3, 2, 3, 0, 2, 3, 1, 3, 2, 2, 3, 3, 4, 3, 3, 2, 2, 4, 1, 1, 3, 4, 1, 2, 1, 2, 4, 1, 2, 2, 3, 3, 2, 2, 3, 1, 3, 4, 4, 1, 3, 1, 3, 1, 2, 3, 1, 5, 2, 1, 2, 3, 1, 2, 5, 3, 2, 2, 2, 2, 3, 3, 2, 1, 2, 2, 2, 3, 1, 2, 0, 2, 1, 1, 3, 4, 4, 4, 4, 1, 2, 2, 4, 4, 3, 3, 3, 4, 2, 1, 3, 3, 1, 1, 4, 1, 0, 3, 1, 2, 3, 1, 0, 5, 3, 1, 4, 2, 3, 0, 1, 1, 2, 4, 4, 4, 2, 2, 1, 2, 0, 1, 1, 3, 4, 1, 2, 0, 2, 2, 2, 3, 3, 4, 3, 2, 1, 6, 3, 1, 1, 1, 1, 2, 1, 4, 1, 2, 2, 1, 1, 1, 2, 2, 2, 1, 1, 4, 3, 0, 2, 4, 1, 1, 2, 0, 1, 3, 2, 3, 2, 4, 4, 2, 2, 1, 2, 2, 4, 1, 2, 4, 3, 3, 4, 2, 4, 1, 2, 3, 3, 1, 3, 2, 1, 4, 4, 2, 1, 3, 2, 2, 4, 2, 0, 2, 1, 1, 2, 0, 4, 1, 5, 1, 3, 3, 1, 4, 1, 3, 0, 2, 3, 1, 4, 0, 1, 3, 2, 3, 3, 1, 2, 6, 2, 3, 1, 1, 4, 1, 0, 2, 3, 1, 3, 2, 1, 5, 2, 1, 3, 4, 2, 2, 2, 0, 1, 3, 2, 2, 2, 2, 4, 1, 2, 4, 3, 3, 2, 2, 1, 2, 2, 0, 6, 2, 3, 4, 3, 2, 3, 2, 2, 2, 2, 2, 4, 3, 1, 2, 2, 3, 1, 4, 1, 2, 2, 4, 3, 4, 1, 3, 3, 4, 4, 2, 1, 1, 1, 4, 3, 3, 2, 2, 2, 3, 3, 2, 3, 2, 4, 4, 5, 2, 4, 2, 2, 2, 2, 3, 1]
+  "data": [3, 6, 1, 1, 2, 4, 2, 2, 1, 1, 2, 1, 2, 1, 2, 5, 3, 2, 3, 4, 4, 4, 2, 2, 2, 1, 4, 2, 2, 2, 2, 2, 3, 4, 1, 2, 3, 3, 4, 2, 3, 6, 2, 3, 5, 3, 2, 4, 4, 1, 2, 3, 1, 5, 1, 8, 3, 1, 2, 3, 0, 1, 2, 4, 2, 2, 1, 4, 5, 4, 2, 0, 2, 4, 2, 3, 1, 5, 2, 1, 2, 4, 5, 3, 2, 1, 2, 2, 3, 2, 1, 2, 5, 3, 3, 2, 3, 3, 2, 4, 1, 3, 1, 1, 3, 2, 2, 2, 2, 1, 1, 1, 3, 2, 2, 2, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 3, 4, 1, 3, 2, 2, 3, 1, 4, 2, 1, 8, 2, 2, 2, 3, 2, 1, 1, 2, 3, 2, 3, 1, 3, 2, 2, 3, 3, 3, 3, 2, 3, 0, 4, 3, 3, 2, 3, 1, 1, 3, 2, 3, 0, 2, 3, 1, 3, 2, 2, 3, 3, 4, 3, 3, 2, 2, 4, 1, 1, 3, 4, 1, 2, 1, 2, 4, 1, 2, 2, 3, 3, 2, 2, 3, 1, 3, 4, 4, 1, 3, 1, 3, 1, 2, 3, 1, 5, 2, 1, 2, 3, 1, 2, 5, 3, 2, 2, 2, 2, 3, 3, 2, 1, 2, 2, 2, 3, 1, 2, 0, 2, 1, 1, 3, 4, 4, 4, 4, 1, 2, 2, 4, 4, 3, 3, 3, 4, 2, 1, 3, 3, 1, 1, 4, 1, 0, 3, 1, 2, 3, 1, 0, 5, 3, 1, 4, 2, 3, 0, 1, 1, 2, 4, 4, 4, 2, 2, 1, 2, 0, 1, 1, 3, 4, 1, 2, 0, 2, 2, 2, 3, 3, 4, 3, 2, 1, 6, 3, 1, 1, 1, 1, 2, 1, 4, 1, 2, 2, 1, 1, 1, 2, 2, 2, 1, 1, 4, 3, 0, 2, 4, 1, 1, 2, 0, 1, 3, 2, 3, 2, 4, 4, 2, 2, 1, 2, 2, 4, 1, 2, 4, 3, 3, 4, 2, 4, 1, 2, 3, 3, 1, 3, 2, 1, 4, 4, 2, 1, 3, 2, 2, 4, 2, 0, 2, 1, 1, 2, 0, 4, 1, 5, 1, 3, 3, 1, 4, 1, 3, 0, 2, 3, 1, 4, 0, 1, 3, 2, 3, 3, 1, 2, 6, 2, 3, 1, 1, 4, 1, 0, 2, 3, 1, 3, 2, 1, 5, 2, 1, 3, 4, 2, 2, 2, 0, 1, 3, 2, 2, 2, 2, 4, 1, 2, 4, 3, 3, 2, 2, 1, 2, 2, 0, 6, 2, 3, 4, 3, 2, 3, 2, 2, 2, 2, 2, 4, 3, 1, 2, 2, 3, 1, 4, 1, 2, 2, 4, 3, 4, 1, 3, 3, 4, 4, 2, 1, 1, 1, 4, 3, 3, 2, 2, 2, 3, 3, 2, 3, 2, 4, 4, 5, 2, 4, 2, 2, 2, 2, 3, 1],
+  "reference": {
+    "method": "damped Newton at 50 digits on the README log density, from the fitted values",
+    "precision_digits": 50,
+    "estimates": {
+      "lambda": "4.892911054567342301041942",
+      "nu": "1.68961187163425477244443"
+    },
+    "logLik": "-804.790204962171364537093",
+    "free": [
+      "lambda",
+      "nu"
+    ],
+    "not_refined": {},
+    "score_norm": "1.55e-58",
+    "information_negative_definite": true,
+    "global": {
+      "kind": "dossier optimality/uniqueness proof",
+      "statement": "With both coefficients free, all-zero samples attain their maximum at $\\lambda=0$, with $\\nu$ unidentified. Positive constants and samples supported on two adjacent integers have an unattained supremum. Other samples have a unique finite maximum, possibly at the geometric boundary $\\nu=0$. With finite $\\nu$ held, the free rate has a unique maximum, including zero for all-zero data. With positive $\\lambda$ held, a unique finite dispersion maximum exists when some observation exceeds one. Samples supported on zero and one instead approach their supremum as $\\nu\\to\\infty$. Holding $\\lambda=0$ requires all-zero data and leaves dispersion unidentified. Holding both coefficients requires only a valid law and compatible data.",
+      "reason": "The sufficient statistics are $x$ and $\\log(x!)$. Their covariance is positive definite at positive rate and dispersion, giving strict concavity in $(\\log\\lambda,-\\nu)$. At a fixed positive mean, the fitted mean log factorial decreases strictly with dispersion, from its geometric value to the linear interpolation between the two neighboring integer log factorials. Data above that lower hull give an interior moment solution or the constrained geometric maximum. Data on the hull give the stated exposed-face limits. With rate held, the mean log factorial decreases strictly to zero as dispersion grows; at its lower domain endpoint it is finite for rate below one and diverges otherwise."
+    },
+    "input_sha256": "10c3accaa731e8e5c3a514f5aae57b98a7f972e9c851b333504b58d1fb1412f7"
+  }
 }

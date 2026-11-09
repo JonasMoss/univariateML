@@ -22,8 +22,8 @@ TEST_CASE("tlambda: golden and fixed shape") {
   auto g=mltest::load_distribution_golden("tlambda");
   auto f=cppunivariate::tlambda_mle(mltest::as_span(g.data));
   REQUIRE(f.status==cppunivariate::TlambdaStatus::Ok);
-  CHECK(f.logLik==doctest::Approx(g.logLik).epsilon(1e-9));
-  CHECK(f.lambda==doctest::Approx(g.estimates.at("lambda")).epsilon(1e-6));
+  CHECK(f.logLik==doctest::Approx(g.logLik).epsilon(mltest::kGolden_tlambda).scale(0));
+  CHECK(f.lambda==doctest::Approx(g.estimates.at("lambda")).epsilon(mltest::kGolden_tlambda).scale(0));
   double norm2=0;
   for(int j=0;j<3;++j) {
     std::array<double,3> a{f.mu,f.sigma,f.lambda},b=a;

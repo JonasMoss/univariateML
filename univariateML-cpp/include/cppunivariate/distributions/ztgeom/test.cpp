@@ -9,8 +9,8 @@ TEST_CASE("ztgeom: golden, score and distribution") {
  std::vector<int> x;for(double v:g.data)x.push_back(static_cast<int>(v));
  const auto fit=cppunivariate::ztgeom_mle({x.data(),x.size()});
  REQUIRE(fit.status==cppunivariate::ZtgeomStatus::Ok);
- CHECK(fit.prob==doctest::Approx(g.estimates.at("prob")).epsilon(1e-10));
- CHECK(fit.logLik==doctest::Approx(g.logLik).epsilon(1e-10));
+ CHECK(fit.prob==doctest::Approx(g.estimates.at("prob")).epsilon(mltest::kGolden_ztgeom).scale(0));
+ CHECK(fit.logLik==doctest::Approx(g.logLik).epsilon(mltest::kGolden_ztgeom).scale(0));
  std::vector<double> p{fit.prob};
  auto ll=[&](const std::vector<double> &par){double l=0;for(int v:x)l+=cppunivariate::distributions::dztgeom(v,par[0],true);return l;};
  CHECK(ll(p)==doctest::Approx(fit.logLik).epsilon(1e-10));

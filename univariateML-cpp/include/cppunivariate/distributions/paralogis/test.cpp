@@ -12,9 +12,9 @@ TEST_CASE("paralogis: golden and score residual") {
   auto r = cppunivariate::paralogis_mle(mltest::as_span(g.data), mltest::kFitTol,
                                         mltest::kFitMaxit);
   CHECK(r.status == cppunivariate::ParalogisStatus::Ok);
-  CHECK(r.shape == doctest::Approx(g.estimates.at("shape")).epsilon(mltest::kFdTol));
-  CHECK(r.scale == doctest::Approx(g.estimates.at("scale")).epsilon(mltest::kFdTol));
-  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kFdTol));
+  CHECK(r.shape == doctest::Approx(g.estimates.at("shape")).epsilon(mltest::kGolden_paralogis).scale(0));
+  CHECK(r.scale == doctest::Approx(g.estimates.at("scale")).epsilon(mltest::kGolden_paralogis).scale(0));
+  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kGolden_paralogis).scale(0));
 
   // A parameter silently held fixed (the old 1-D fit held scale at 1)
   // leaves a non-zero score component; both components must vanish.

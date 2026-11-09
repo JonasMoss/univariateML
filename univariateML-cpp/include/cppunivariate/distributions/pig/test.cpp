@@ -11,9 +11,9 @@ TEST_CASE("pig: golden and independent score gate") {
   for (double v:g.data) x.push_back(static_cast<int>(v));
   const auto r=cppunivariate::pig_mle(pig_span(x));
   REQUIRE(r.status==cppunivariate::PigStatus::Ok);
-  CHECK(r.mean==doctest::Approx(g.estimates.at("mean")).epsilon(1e-8));
-  CHECK(r.shape==doctest::Approx(g.estimates.at("shape")).epsilon(1e-6));
-  CHECK(r.logLik==doctest::Approx(g.logLik).epsilon(1e-10));
+  CHECK(r.mean==doctest::Approx(g.estimates.at("mean")).epsilon(mltest::kGolden_pig).scale(0));
+  CHECK(r.shape==doctest::Approx(g.estimates.at("shape")).epsilon(mltest::kGolden_pig).scale(0));
+  CHECK(r.logLik==doctest::Approx(g.logLik).epsilon(mltest::kGolden_pig).scale(0));
   const cppunivariate::pig_detail::Counts c(pig_span(x));
   const double h=1e-5;
   const double sm=(c.likelihood(r.mean*std::exp(h),r.shape)-c.likelihood(r.mean*std::exp(-h),r.shape))/(2*h);

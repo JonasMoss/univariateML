@@ -9,9 +9,9 @@
 TEST_CASE("unif") {
   auto g = mltest::load_distribution_golden("unif");
   auto r = cppunivariate::unif_mle(mltest::as_span(g.data));
-  CHECK(r.min == doctest::Approx(g.estimates.at("min")).epsilon(mltest::kTol));
-  CHECK(r.max == doctest::Approx(g.estimates.at("max")).epsilon(mltest::kTol));
-  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kTol));
+  CHECK(r.min == doctest::Approx(g.estimates.at("min")).epsilon(mltest::kGolden_unif).scale(0));
+  CHECK(r.max == doctest::Approx(g.estimates.at("max")).epsilon(mltest::kGolden_unif).scale(0));
+  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kGolden_unif).scale(0));
 }
 
 TEST_CASE("unif dpqr: density, CDF, quantile") {

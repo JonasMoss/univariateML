@@ -13,11 +13,11 @@ namespace dist = cppunivariate::distributions;
 TEST_CASE("sged (skew GED)") {
   auto g = mltest::load_distribution_golden("sged");
   auto r = cppunivariate::sged_mle(mltest::as_span(g.data), mltest::kFitTol, 200);
-  CHECK(r.mu == D_APPROX_FD(g.estimates.at("mean")));
-  CHECK(r.sigma == D_APPROX_FD(g.estimates.at("sd")));
-  CHECK(r.nu == D_APPROX_FD(g.estimates.at("nu")));
-  CHECK(r.xi == D_APPROX_FD(g.estimates.at("xi")));
-  CHECK(r.logLik == D_APPROX_FD(g.logLik));
+  CHECK(r.mu == doctest::Approx(g.estimates.at("mean")).epsilon(mltest::kGolden_sged).scale(0));
+  CHECK(r.sigma == doctest::Approx(g.estimates.at("sd")).epsilon(mltest::kGolden_sged).scale(0));
+  CHECK(r.nu == doctest::Approx(g.estimates.at("nu")).epsilon(mltest::kGolden_sged).scale(0));
+  CHECK(r.xi == doctest::Approx(g.estimates.at("xi")).epsilon(mltest::kGolden_sged).scale(0));
+  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kGolden_sged).scale(0));
 
   cppunivariate::SgedCost cost{mltest::as_span(g.data)};
   const double phi_hat[4] = {r.mu, std::log(r.sigma), std::log(r.nu),

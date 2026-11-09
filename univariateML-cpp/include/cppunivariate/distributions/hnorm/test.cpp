@@ -8,9 +8,9 @@ TEST_CASE("hnorm: closed form and golden") {
   const auto g = mltest::load_distribution_golden("hnorm");
   const auto r = cppunivariate::hnorm_mle(mltest::as_span(g.data));
   CHECK(r.status == cppunivariate::HnormStatus::Ok);
-  CHECK(r.mu == doctest::Approx(g.estimates.at("mu")).epsilon(1e-12));
-  CHECK(r.sigma == doctest::Approx(g.estimates.at("sigma")).epsilon(1e-12));
-  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(1e-12));
+  CHECK(r.mu == doctest::Approx(g.estimates.at("mu")).epsilon(mltest::kGolden_hnorm).scale(0));
+  CHECK(r.sigma == doctest::Approx(g.estimates.at("sigma")).epsilon(mltest::kGolden_hnorm).scale(0));
+  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kGolden_hnorm).scale(0));
   const std::vector<double> x = {-2, -2, 1, 2};
   const auto fit = cppunivariate::hnorm_mle(mltest::as_span(x));
   CHECK(fit.mu == -2);

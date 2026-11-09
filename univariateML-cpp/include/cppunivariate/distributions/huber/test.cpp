@@ -7,9 +7,9 @@ TEST_CASE("huber: golden and joint scores") {
   auto g=mltest::load_distribution_golden("huber");
   auto r=cppunivariate::huber_mle(mltest::as_span(g.data));
   REQUIRE(r.status==cppunivariate::HuberStatus::Ok);
-  CHECK(r.mu==doctest::Approx(g.estimates.at("mu")).epsilon(1e-10));
-  CHECK(r.sigma==doctest::Approx(g.estimates.at("sigma")).epsilon(1e-10));
-  CHECK(r.logLik==doctest::Approx(g.logLik).epsilon(1e-10));
+  CHECK(r.mu==doctest::Approx(g.estimates.at("mu")).epsilon(mltest::kGolden_huber).scale(0));
+  CHECK(r.sigma==doctest::Approx(g.estimates.at("sigma")).epsilon(mltest::kGolden_huber).scale(0));
+  CHECK(r.logLik==doctest::Approx(g.logLik).epsilon(mltest::kGolden_huber).scale(0));
   double a=0,b=0;
   for (double v:g.data) { double z=(v-r.mu)/r.sigma;
     a+=cppunivariate::huber_psi(z,r.epsilon);

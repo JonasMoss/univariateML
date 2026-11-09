@@ -20,9 +20,9 @@ namespace {
   auto g = mltest::load_distribution_golden("zipf");
   auto v = as_ints(g.data);
   auto r = cppunivariate::zipf_mle(as_ispan(v), mltest::kFitTol, mltest::kFitMaxit);
-  CHECK(r.N == D_APPROX(g.estimates.at("N")));
-  CHECK(r.shape == D_APPROX(g.estimates.at("s")));
-  CHECK(r.logLik == D_APPROX(g.logLik));
+  CHECK(r.N == doctest::Approx(g.estimates.at("N")).epsilon(mltest::kGolden_zipf).scale(0));
+  CHECK(r.shape == doctest::Approx(g.estimates.at("s")).epsilon(mltest::kGolden_zipf).scale(0));
+  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kGolden_zipf).scale(0));
 }
 
 TEST_CASE("rzipf samples lie in {1, ..., N} and match the PMF") {

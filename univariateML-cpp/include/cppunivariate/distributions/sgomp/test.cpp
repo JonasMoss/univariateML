@@ -29,9 +29,9 @@ TEST_CASE("sgomp golden and independent score") {
   const auto g=mltest::load_distribution_golden("sgomp");
   const auto f=cppunivariate::sgomp_mle({g.data.data(),g.data.size()});
   REQUIRE(f.status==cppunivariate::SgompStatus::Ok);
-  CHECK(f.b==doctest::Approx(g.estimates.at("b")).epsilon(1e-8));
-  CHECK(f.eta==doctest::Approx(g.estimates.at("eta")).epsilon(1e-8));
-  CHECK(f.logLik==doctest::Approx(g.logLik).epsilon(1e-10));
+  CHECK(f.b==doctest::Approx(g.estimates.at("b")).epsilon(mltest::kGolden_sgomp).scale(0));
+  CHECK(f.eta==doctest::Approx(g.estimates.at("eta")).epsilon(mltest::kGolden_sgomp).scale(0));
+  CHECK(f.logLik==doctest::Approx(g.logLik).epsilon(mltest::kGolden_sgomp).scale(0));
   double sb=0,se=0;
   for (double x:g.data) {
     const double v=std::exp(-f.b*x),a=-std::expm1(-f.b*x);

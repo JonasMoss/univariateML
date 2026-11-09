@@ -8,8 +8,8 @@ TEST_CASE("hcauchy: golden and exact pair (mu held at 0)") {
   const auto r=cppunivariate::hcauchy_mle(mltest::as_span(g.data),0.0);
   CHECK(r.status==cppunivariate::HcauchyStatus::Ok);
   CHECK(r.mu==0.0);
-  CHECK(r.sigma==doctest::Approx(g.estimates.at("sigma")).epsilon(1e-10));
-  CHECK(r.logLik==doctest::Approx(g.logLik).epsilon(1e-10));
+  CHECK(r.sigma==doctest::Approx(g.estimates.at("sigma")).epsilon(mltest::kGolden_hcauchy).scale(0));
+  CHECK(r.logLik==doctest::Approx(g.logLik).epsilon(mltest::kGolden_hcauchy).scale(0));
   for(double factor:{1e-200,1.0,1e200}) {
     const std::vector<double> x={factor,4*factor};
     CHECK(cppunivariate::hcauchy_mle(mltest::as_span(x),0.0).sigma/factor==doctest::Approx(2).epsilon(1e-11));

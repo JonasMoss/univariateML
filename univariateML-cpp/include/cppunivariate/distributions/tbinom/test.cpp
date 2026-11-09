@@ -29,8 +29,8 @@ TEST_CASE("tbinom: golden regression") {
   auto g=mltest::load_distribution_golden("tbinom");std::vector<int>x;
   for(double v:g.data)x.push_back(static_cast<int>(v));
   auto f=cppunivariate::tbinom_mle({x.data(),x.size()},0,10,12);
-  CHECK(f.logLik==doctest::Approx(g.logLik).epsilon(1e-10));
-  CHECK(f.parameter==doctest::Approx(g.estimates.at("prob")).epsilon(1e-10));
+  CHECK(f.logLik==doctest::Approx(g.logLik).epsilon(mltest::kGolden_tbinom).scale(0));
+  CHECK(f.parameter==doctest::Approx(g.estimates.at("prob")).epsilon(mltest::kGolden_tbinom).scale(0));
 }
 
 // Independent high-precision oracle; see quality/truth.py.

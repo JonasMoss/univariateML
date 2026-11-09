@@ -9,10 +9,32 @@
     "pi": 0.5
   },
   "estimates": {
-    "lambda": 0.92708584481775502,
-    "pi": 0.46714751092213069
+    "lambda": 0.9270858448177547,
+    "pi": 0.4671475109221305
   },
-  "logLik": -475.97811488355859,
+  "logLik": -475.9781148835602,
   "n_obs": 500,
-  "data": [1, 1, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 2, 0, 1, 0, 3, 0, 0, 2, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 3, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 1, 0, 1, 3, 0, 0, 0, 2, 3, 0, 0, 0, 0, 0, 2, 0, 0, 0, 1, 0, 2, 0, 0, 0, 1, 0, 1, 0, 3, 1, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 2, 3, 0, 0, 0, 1, 1, 1, 1, 0, 1, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 2, 1, 0, 0, 1, 1, 0, 0, 0, 0, 3, 0, 0, 1, 0, 2, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 2, 1, 0, 0, 0, 0, 0, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 0, 0, 0, 0, 0, 0, 3, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 1, 2, 0, 0, 0, 1, 0, 0, 0, 2, 0, 2, 0, 2, 0, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 3, 5, 1, 0, 2, 2, 0, 0, 1, 0, 2, 0, 0, 1, 1, 0, 1, 0, 1, 1, 2, 3, 0, 0, 1, 0, 1, 0, 2, 3, 2, 2, 0, 0, 1, 2, 0, 1, 0, 0, 1, 2, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 0, 0, 6, 1, 0, 2, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 3, 1, 0, 2, 0, 1, 0, 1, 1, 0, 0, 0, 1, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 3, 0, 0, 0, 1, 0, 0, 0, 0, 0, 2, 0, 0, 0, 2, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 4, 1, 0, 0, 0]
+  "data": [1, 1, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 2, 0, 1, 0, 3, 0, 0, 2, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 3, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 1, 0, 1, 3, 0, 0, 0, 2, 3, 0, 0, 0, 0, 0, 2, 0, 0, 0, 1, 0, 2, 0, 0, 0, 1, 0, 1, 0, 3, 1, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 2, 3, 0, 0, 0, 1, 1, 1, 1, 0, 1, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 2, 1, 0, 0, 1, 1, 0, 0, 0, 0, 3, 0, 0, 1, 0, 2, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 2, 1, 0, 0, 0, 0, 0, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 0, 0, 0, 0, 0, 0, 3, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 1, 2, 0, 0, 0, 1, 0, 0, 0, 2, 0, 2, 0, 2, 0, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 3, 5, 1, 0, 2, 2, 0, 0, 1, 0, 2, 0, 0, 1, 1, 0, 1, 0, 1, 1, 2, 3, 0, 0, 1, 0, 1, 0, 2, 3, 2, 2, 0, 0, 1, 2, 0, 1, 0, 0, 1, 2, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 0, 0, 6, 1, 0, 2, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 3, 1, 0, 2, 0, 1, 0, 1, 1, 0, 0, 0, 1, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 3, 0, 0, 0, 1, 0, 0, 0, 0, 0, 2, 0, 0, 0, 2, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 4, 1, 0, 0, 0],
+  "reference": {
+    "method": "damped Newton at 50 digits on the README log density, from the fitted values",
+    "precision_digits": 50,
+    "estimates": {
+      "lambda": "0.9270858448177546894180023",
+      "pi": "0.4671475109221305526821123"
+    },
+    "logLik": "-475.9781148835601876836933",
+    "free": [
+      "lambda",
+      "pi"
+    ],
+    "not_refined": {},
+    "score_norm": "6.31e-60",
+    "information_negative_definite": true,
+    "global": {
+      "kind": "dossier optimality/uniqueness proof",
+      "statement": "With both coefficients free, every nonempty count sample has a finite maximum. If a count is positive, the maximizing pair is unique. All-zero data are maximized by $\\pi=1$ with any $\\lambda>0$. With $\\lambda>0$ held, free inflation has a unique maximum. With $\\pi<1$ held, a finite rate maximum exists whenever a count is positive, but two global maxima can tie. For all-zero data and held $\\pi<1$, the supremum requires $\\lambda\\downarrow0$ and is not attained in the declared domain. Held $\\pi=1$ permits only zeros and leaves a free rate unidentified. Holding both coefficients leaves likelihood evaluation, subject to compatibility.",
+      "reason": "Write $z$ for the empirical zero fraction. At a held rate, the inflation maximum is $\\max\\{0,(z-e^{-\\lambda})/(1-e^{-\\lambda})\\}$, with value one for all-zero data. In the positive-inflation branch, the rate solves $\\lambda/(1-e^{-\\lambda})=\\bar x/(1-z)$, whose left side is strictly increasing. If this branch is infeasible, the unique maximum is the Poisson member $\\pi=0,\\lambda=\\bar x$. For held $\\pi<1$ and a positive count, the likelihood tends to zero at both ends of the rate domain, so a finite maximum exists. Its score has at most three roots; two separated maxima can tie."
+    },
+    "input_sha256": "8c309047ff7bc4630e1584bf0026d53fb8137317a052240b46ee45ec68af1210"
+  }
 }

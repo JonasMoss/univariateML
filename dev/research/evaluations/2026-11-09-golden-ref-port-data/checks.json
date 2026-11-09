@@ -1,0 +1,94 @@
+[
+  {
+    "name": "cpp-dev",
+    "command": [
+      "just",
+      "cpp-test"
+    ],
+    "machine": "workstation GCC 15.2",
+    "exit_code": 0,
+    "seconds": 294.96
+  },
+  {
+    "name": "r-dev",
+    "command": [
+      "just",
+      "test"
+    ],
+    "machine": "workstation GCC 15.2",
+    "exit_code": 0,
+    "seconds": 197.64
+  },
+  {
+    "name": "js-build",
+    "command": [
+      "just",
+      "js-build"
+    ],
+    "machine": "workstation GCC 15.2",
+    "exit_code": 0,
+    "seconds": 69.9
+  },
+  {
+    "name": "js-test",
+    "command": [
+      "just",
+      "js-test"
+    ],
+    "machine": "workstation GCC 15.2",
+    "exit_code": 0,
+    "seconds": 226.27
+  },
+  {
+    "name": "cpp-full",
+    "command": [
+      "env",
+      "UMVL_TEST_TIER=full",
+      "just",
+      "cpp-test"
+    ],
+    "machine": "workstation GCC 15.2",
+    "exit_code": 0,
+    "seconds": 538.9
+  },
+  {
+    "name": "r-full",
+    "command": [
+      "just",
+      "test-full"
+    ],
+    "machine": "workstation GCC 15.2",
+    "exit_code": 0,
+    "seconds": 584.35
+  },
+  {
+    "name": "cpp-no-long-double",
+    "command": [
+      "just",
+      "cpp-test-no-long-double"
+    ],
+    "machine": "workstation GCC 15.2",
+    "exit_code": 0,
+    "seconds": 523.85
+  },
+  {
+    "name": "js-build",
+    "command": [
+      "just",
+      "js-build"
+    ],
+    "machine": "workstation GCC 15.2",
+    "exit_code": 0,
+    "seconds": 72.54
+  },
+  {
+    "name": "js-test",
+    "command": [
+      "just",
+      "js-test"
+    ],
+    "machine": "workstation GCC 15.2",
+    "exit_code": 0,
+    "seconds": 176.78
+  }
+]

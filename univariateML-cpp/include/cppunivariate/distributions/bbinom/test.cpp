@@ -61,9 +61,9 @@ TEST_CASE("bbinom: golden and score gate") {
   const double size = g.estimates.at("size");
   const auto r = fit(x, size);
   REQUIRE(r.status == cppunivariate::BbinomStatus::Ok);
-  CHECK(r.alpha == doctest::Approx(g.estimates.at("alpha")).epsilon(mltest::kTol));
-  CHECK(r.beta == doctest::Approx(g.estimates.at("beta")).epsilon(mltest::kTol));
-  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kTol));
+  CHECK(r.alpha == doctest::Approx(g.estimates.at("alpha")).epsilon(mltest::kGolden_bbinom).scale(0));
+  CHECK(r.beta == doctest::Approx(g.estimates.at("beta")).epsilon(mltest::kGolden_bbinom).scale(0));
+  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kGolden_bbinom).scale(0));
   CHECK(r.logLik == doctest::Approx(bb_loglik(x, size, r.alpha, r.beta)).epsilon(1e-12));
   CHECK(score_norm(x, size, r.alpha, r.beta, true, true) < 1e-3);
 }

@@ -9,8 +9,8 @@ TEST_CASE("yulesimon: golden, boundary and invalid data") {
   for (double k:g.data) x.push_back(static_cast<int>(k));
   const auto fit=cppunivariate::yulesimon_mle({x.data(),x.size()},1e-10,200);
   CHECK(fit.status==cppunivariate::YulesimonStatus::Ok);
-  CHECK(fit.rho==doctest::Approx(g.estimates.at("rho")).epsilon(1e-8));
-  CHECK(fit.logLik==doctest::Approx(g.logLik).epsilon(1e-10));
+  CHECK(fit.rho==doctest::Approx(g.estimates.at("rho")).epsilon(mltest::kGolden_yulesimon).scale(0));
+  CHECK(fit.logLik==doctest::Approx(g.logLik).epsilon(mltest::kGolden_yulesimon).scale(0));
   const std::vector<int> one={1,1},constant={2,2},bad={0,1};
   CHECK(cppunivariate::yulesimon_mle({one.data(),one.size()}).status==cppunivariate::YulesimonStatus::PointMass);
   CHECK(cppunivariate::yulesimon_mle({constant.data(),constant.size()}).status==cppunivariate::YulesimonStatus::Ok);

@@ -26,8 +26,8 @@ TEST_CASE("rrayleigh samples are positive; mean = sigma * sqrt(pi/2)") {
 TEST_CASE("rayleigh") {
   auto g = mltest::load_distribution_golden("rayleigh");
   auto r = cppunivariate::rayleigh_mle(mltest::as_span(g.data));
-  CHECK(r.sigma == doctest::Approx(g.estimates.at("sigma")).epsilon(mltest::kTol));
-  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kTol));
+  CHECK(r.sigma == doctest::Approx(g.estimates.at("sigma")).epsilon(mltest::kGolden_rayleigh).scale(0));
+  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kGolden_rayleigh).scale(0));
 }
 
 // Independent high-precision oracle; see quality/truth.py.

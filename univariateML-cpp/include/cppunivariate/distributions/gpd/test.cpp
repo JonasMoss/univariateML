@@ -9,9 +9,9 @@ TEST_CASE("gpd: golden") {
   auto r=cppunivariate::gpd_mle(mltest::as_span(g.data));
   CHECK(r.status==cppunivariate::GpdStatus::Ok);
   CHECK(r.mu==g.estimates.at("mu"));
-  CHECK(r.sigma==doctest::Approx(g.estimates.at("sigma")).epsilon(1e-12));
-  CHECK(r.xi==doctest::Approx(g.estimates.at("xi")).epsilon(1e-12));
-  CHECK(r.logLik==doctest::Approx(g.logLik).epsilon(1e-12));
+  CHECK(r.sigma==doctest::Approx(g.estimates.at("sigma")).epsilon(mltest::kGolden_gpd).scale(0));
+  CHECK(r.xi==doctest::Approx(g.estimates.at("xi")).epsilon(mltest::kGolden_gpd).scale(0));
+  CHECK(r.logLik==doctest::Approx(g.logLik).epsilon(mltest::kGolden_gpd).scale(0));
 }
 TEST_CASE("gpd: shape regimes, scores, fixed shape and threshold") {
   for(double xi : {0.3,0.0,-0.3,-0.8}) {

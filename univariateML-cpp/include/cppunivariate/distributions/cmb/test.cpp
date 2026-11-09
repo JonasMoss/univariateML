@@ -7,9 +7,9 @@ TEST_CASE("cmb golden and moment score") {
   std::vector<int> x; for (double v:g.data) x.push_back(static_cast<int>(v));
   const auto f=cppunivariate::cmb_mle({x.data(),x.size()},10);
   REQUIRE(f.status==cppunivariate::CmbStatus::Ok);
-  CHECK(f.prob==doctest::Approx(g.estimates.at("prob")).epsilon(1e-8));
-  CHECK(f.nu==doctest::Approx(g.estimates.at("nu")).epsilon(1e-8));
-  CHECK(f.logLik==doctest::Approx(g.logLik).epsilon(1e-10));
+  CHECK(f.prob==doctest::Approx(g.estimates.at("prob")).epsilon(mltest::kGolden_cmb).scale(0));
+  CHECK(f.nu==doctest::Approx(g.estimates.at("nu")).epsilon(mltest::kGolden_cmb).scale(0));
+  CHECK(f.logLik==doctest::Approx(g.logLik).epsilon(mltest::kGolden_cmb).scale(0));
   const auto t=cppunivariate::cmb_detail::Table(10,std::log(f.prob/(1-f.prob)),f.nu);
   double m=0,h=0; for (int v:x) {m+=v; h+=cppunivariate::cmb_detail::logchoose(10,v);}
   CHECK(std::abs(m/x.size()-t.mean)<1e-8);

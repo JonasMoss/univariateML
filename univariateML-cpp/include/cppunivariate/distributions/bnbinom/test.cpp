@@ -24,10 +24,10 @@ TEST_CASE("bnbinom: golden, exact masses, score gate") {
   // Independent nlminb + lgamma/lbeta oracle, seed 13086; replay with
   // notes/evaluations/2026-10-29-bnbinom-oracle.R.
   CHECK(fit.logLik==doctest::Approx(-1275.6474863695578).epsilon(1e-10));
-  CHECK(fit.logLik==doctest::Approx(golden.logLik).epsilon(1e-10));
-  CHECK(fit.size==doctest::Approx(golden.estimates.at("size")).epsilon(2e-6));
-  CHECK(fit.alpha==doctest::Approx(golden.estimates.at("alpha")).epsilon(2e-6));
-  CHECK(fit.beta==doctest::Approx(golden.estimates.at("beta")).epsilon(2e-6));
+  CHECK(fit.logLik==doctest::Approx(golden.logLik).epsilon(mltest::kGolden_bnbinom).scale(0));
+  CHECK(fit.size==doctest::Approx(golden.estimates.at("size")).epsilon(mltest::kGolden_bnbinom).scale(0));
+  CHECK(fit.alpha==doctest::Approx(golden.estimates.at("alpha")).epsilon(mltest::kGolden_bnbinom).scale(0));
+  CHECK(fit.beta==doctest::Approx(golden.estimates.at("beta")).epsilon(mltest::kGolden_bnbinom).scale(0));
   cppunivariate::bnbinom_detail::Data d;
   d.n=x.size();
   for (int v:x) { d.x.push_back(v); d.count.push_back(1); }

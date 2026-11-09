@@ -30,8 +30,8 @@ TEST_CASE("dlaplace: golden regression") {
   auto g=mltest::load_distribution_golden("dlaplace");std::vector<int>x;
   for(double v:g.data)x.push_back(static_cast<int>(v));
   auto f=cppunivariate::dlaplace_mle({x.data(),x.size()});
-  CHECK(f.logLik==doctest::Approx(g.logLik).epsilon(1e-10));
-  CHECK(f.scale==doctest::Approx(g.estimates.at("scale")).epsilon(1e-10));
+  CHECK(f.logLik==doctest::Approx(g.logLik).epsilon(mltest::kGolden_dlaplace).scale(0));
+  CHECK(f.scale==doctest::Approx(g.estimates.at("scale")).epsilon(mltest::kGolden_dlaplace).scale(0));
 }
 
 // Independent high-precision oracle; see quality/truth.py.

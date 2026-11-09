@@ -9,9 +9,9 @@ TEST_CASE("dgamma: golden and independent score") {
   const auto g=mltest::load_distribution_golden("dgamma");
   const auto r=cppunivariate::dgamma_mle({g.data.data(),g.data.size()});
   REQUIRE(r.status==cppunivariate::DgammaStatus::Ok);
-  CHECK(r.shape==doctest::Approx(g.estimates.at("shape")).epsilon(2e-6));
-  CHECK(r.rate==doctest::Approx(g.estimates.at("rate")).epsilon(2e-6));
-  CHECK(r.logLik==doctest::Approx(g.logLik).epsilon(1e-9));
+  CHECK(r.shape==doctest::Approx(g.estimates.at("shape")).epsilon(mltest::kGolden_dgamma).scale(0));
+  CHECK(r.rate==doctest::Approx(g.estimates.at("rate")).epsilon(mltest::kGolden_dgamma).scale(0));
+  CHECK(r.logLik==doctest::Approx(g.logLik).epsilon(mltest::kGolden_dgamma).scale(0));
   const double h=1e-5;
   double ga=0,gb=0;
   for (double x:g.data) {

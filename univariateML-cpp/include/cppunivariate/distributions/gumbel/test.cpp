@@ -31,9 +31,9 @@ TEST_CASE("rgumbel samples; mean = mu + sigma*gamma_const, var = pi^2*sigma^2/6"
 TEST_CASE("gumbel") {
   auto g = mltest::load_distribution_golden("gumbel");
   auto r = cppunivariate::fit_gumbel_newton(mltest::as_span(g.data), mltest::kFitTol, mltest::kFitMaxit);
-  CHECK(r.mu == doctest::Approx(g.estimates.at("mu")).epsilon(mltest::kTol));
-  CHECK(r.sigma == doctest::Approx(g.estimates.at("sigma")).epsilon(mltest::kTol));
-  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kTol));
+  CHECK(r.mu == doctest::Approx(g.estimates.at("mu")).epsilon(mltest::kGolden_gumbel).scale(0));
+  CHECK(r.sigma == doctest::Approx(g.estimates.at("sigma")).epsilon(mltest::kGolden_gumbel).scale(0));
+  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kGolden_gumbel).scale(0));
 }
 
 TEST_CASE("gumbel: seeded sample with outlier") {

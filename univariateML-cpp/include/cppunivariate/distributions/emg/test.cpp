@@ -46,10 +46,10 @@ TEST_CASE("emg golden") {
   const auto g=mltest::load_distribution_golden("emg");
   const auto r=cppunivariate::emg_mle(emg_span(g.data));
   CHECK(r.status==cppunivariate::EmgStatus::Ok);
-  CHECK(r.mu==doctest::Approx(g.estimates.at("mu")).epsilon(1e-6));
-  CHECK(r.sigma==doctest::Approx(g.estimates.at("sigma")).epsilon(1e-6));
-  CHECK(r.lambda==doctest::Approx(g.estimates.at("lambda")).epsilon(1e-6));
-  CHECK(r.logLik==doctest::Approx(g.logLik).epsilon(1e-10));
+  CHECK(r.mu==doctest::Approx(g.estimates.at("mu")).epsilon(mltest::kGolden_emg).scale(0));
+  CHECK(r.sigma==doctest::Approx(g.estimates.at("sigma")).epsilon(mltest::kGolden_emg).scale(0));
+  CHECK(r.lambda==doctest::Approx(g.estimates.at("lambda")).epsilon(mltest::kGolden_emg).scale(0));
+  CHECK(r.logLik==doctest::Approx(g.logLik).epsilon(mltest::kGolden_emg).scale(0));
   double mean=0;for(double x:g.data)mean+=x/g.data.size();
   CHECK(r.mu+1/r.lambda==doctest::Approx(mean).epsilon(1e-6));
   double score2=0;

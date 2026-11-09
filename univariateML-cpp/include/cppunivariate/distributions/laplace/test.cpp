@@ -29,9 +29,9 @@ TEST_CASE("rlaplace samples are symmetric around mu, var = 2*sigma^2") {
 TEST_CASE("laplace") {
   auto g = mltest::load_distribution_golden("laplace");
   auto r = cppunivariate::laplace_mle(mltest::as_span(g.data));
-  CHECK(r.mu == doctest::Approx(g.estimates.at("mu")).epsilon(mltest::kTol));
-  CHECK(r.sigma == doctest::Approx(g.estimates.at("sigma")).epsilon(mltest::kTol));
-  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kTol));
+  CHECK(r.mu == doctest::Approx(g.estimates.at("mu")).epsilon(mltest::kGolden_laplace).scale(0));
+  CHECK(r.sigma == doctest::Approx(g.estimates.at("sigma")).epsilon(mltest::kGolden_laplace).scale(0));
+  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kGolden_laplace).scale(0));
 }
 
 TEST_CASE("laplace: seeded sample with outlier") {

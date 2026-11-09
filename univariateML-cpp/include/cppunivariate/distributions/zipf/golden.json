@@ -10,9 +10,32 @@
   },
   "estimates": {
     "N": 3,
-    "s": 0.39796269460901867
+    "s": 0.3979626946089981
   },
-  "logLik": -540.96363778119894,
+  "logLik": -540.9636377811988,
   "n_obs": 500,
-  "data": [1, 1, 2, 1, 3, 2, 3, 1, 2, 3, 3, 1, 1, 1, 1, 2, 1, 1, 1, 1, 3, 2, 1, 2, 1, 2, 1, 3, 2, 3, 1, 1, 3, 3, 3, 3, 2, 2, 1, 2, 1, 1, 2, 2, 2, 1, 2, 1, 3, 2, 1, 1, 3, 1, 2, 2, 1, 2, 2, 1, 3, 2, 3, 1, 2, 1, 2, 1, 2, 2, 3, 2, 3, 3, 1, 1, 1, 1, 1, 3, 1, 1, 3, 3, 2, 1, 1, 2, 2, 1, 2, 1, 2, 3, 3, 3, 2, 1, 3, 3, 2, 1, 1, 2, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 3, 1, 2, 3, 1, 3, 1, 3, 1, 1, 1, 2, 2, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 2, 2, 1, 1, 1, 3, 2, 2, 2, 1, 1, 1, 2, 2, 3, 3, 1, 2, 3, 1, 2, 2, 2, 2, 1, 1, 1, 3, 2, 1, 3, 1, 2, 2, 3, 1, 3, 1, 2, 2, 3, 1, 2, 3, 2, 1, 1, 2, 2, 3, 1, 1, 2, 2, 2, 3, 2, 3, 1, 1, 1, 1, 1, 3, 3, 1, 1, 1, 3, 2, 2, 3, 3, 3, 3, 1, 2, 1, 1, 2, 2, 2, 3, 1, 2, 1, 2, 2, 1, 1, 1, 3, 3, 2, 1, 2, 2, 3, 2, 3, 2, 3, 1, 1, 1, 1, 2, 1, 2, 1, 3, 2, 1, 3, 1, 2, 1, 1, 2, 1, 3, 1, 3, 3, 3, 1, 1, 1, 2, 2, 3, 1, 2, 3, 1, 1, 2, 2, 1, 1, 3, 1, 3, 3, 1, 1, 2, 1, 2, 2, 2, 1, 1, 2, 3, 2, 2, 3, 1, 2, 1, 1, 2, 3, 3, 3, 3, 3, 3, 2, 3, 1, 1, 1, 3, 1, 3, 1, 1, 1, 1, 1, 3, 2, 1, 3, 3, 2, 1, 2, 2, 1, 3, 2, 1, 2, 2, 2, 1, 1, 1, 3, 3, 2, 2, 1, 3, 1, 3, 1, 2, 3, 2, 1, 2, 1, 3, 3, 1, 3, 2, 3, 2, 1, 1, 1, 2, 1, 2, 1, 3, 3, 2, 2, 3, 1, 1, 1, 1, 1, 2, 3, 1, 1, 3, 2, 2, 1, 1, 3, 2, 1, 2, 3, 1, 3, 3, 2, 1, 3, 2, 1, 3, 2, 1, 1, 1, 2, 1, 1, 3, 3, 2, 2, 2, 2, 3, 2, 3, 1, 1, 2, 2, 1, 3, 3, 1, 3, 2, 2, 2, 1, 1, 3, 1, 3, 2, 1, 2, 3, 1, 2, 2, 2, 1, 3, 2, 3, 1, 1, 1, 2, 1, 3, 2, 3, 2, 1, 2, 3, 3, 1, 2, 1, 2, 1, 1, 3, 1, 2, 2, 1, 3, 1, 1, 1, 2, 2, 1, 2, 1, 2, 1, 2, 3, 2, 1, 3, 2, 3, 2, 3, 3, 1, 1, 1, 3, 3, 3, 1, 1, 3, 3]
+  "data": [1, 1, 2, 1, 3, 2, 3, 1, 2, 3, 3, 1, 1, 1, 1, 2, 1, 1, 1, 1, 3, 2, 1, 2, 1, 2, 1, 3, 2, 3, 1, 1, 3, 3, 3, 3, 2, 2, 1, 2, 1, 1, 2, 2, 2, 1, 2, 1, 3, 2, 1, 1, 3, 1, 2, 2, 1, 2, 2, 1, 3, 2, 3, 1, 2, 1, 2, 1, 2, 2, 3, 2, 3, 3, 1, 1, 1, 1, 1, 3, 1, 1, 3, 3, 2, 1, 1, 2, 2, 1, 2, 1, 2, 3, 3, 3, 2, 1, 3, 3, 2, 1, 1, 2, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 3, 1, 2, 3, 1, 3, 1, 3, 1, 1, 1, 2, 2, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 2, 2, 1, 1, 1, 3, 2, 2, 2, 1, 1, 1, 2, 2, 3, 3, 1, 2, 3, 1, 2, 2, 2, 2, 1, 1, 1, 3, 2, 1, 3, 1, 2, 2, 3, 1, 3, 1, 2, 2, 3, 1, 2, 3, 2, 1, 1, 2, 2, 3, 1, 1, 2, 2, 2, 3, 2, 3, 1, 1, 1, 1, 1, 3, 3, 1, 1, 1, 3, 2, 2, 3, 3, 3, 3, 1, 2, 1, 1, 2, 2, 2, 3, 1, 2, 1, 2, 2, 1, 1, 1, 3, 3, 2, 1, 2, 2, 3, 2, 3, 2, 3, 1, 1, 1, 1, 2, 1, 2, 1, 3, 2, 1, 3, 1, 2, 1, 1, 2, 1, 3, 1, 3, 3, 3, 1, 1, 1, 2, 2, 3, 1, 2, 3, 1, 1, 2, 2, 1, 1, 3, 1, 3, 3, 1, 1, 2, 1, 2, 2, 2, 1, 1, 2, 3, 2, 2, 3, 1, 2, 1, 1, 2, 3, 3, 3, 3, 3, 3, 2, 3, 1, 1, 1, 3, 1, 3, 1, 1, 1, 1, 1, 3, 2, 1, 3, 3, 2, 1, 2, 2, 1, 3, 2, 1, 2, 2, 2, 1, 1, 1, 3, 3, 2, 2, 1, 3, 1, 3, 1, 2, 3, 2, 1, 2, 1, 3, 3, 1, 3, 2, 3, 2, 1, 1, 1, 2, 1, 2, 1, 3, 3, 2, 2, 3, 1, 1, 1, 1, 1, 2, 3, 1, 1, 3, 2, 2, 1, 1, 3, 2, 1, 2, 3, 1, 3, 3, 2, 1, 3, 2, 1, 3, 2, 1, 1, 1, 2, 1, 1, 3, 3, 2, 2, 2, 2, 3, 2, 3, 1, 1, 2, 2, 1, 3, 3, 1, 3, 2, 2, 2, 1, 1, 3, 1, 3, 2, 1, 2, 3, 1, 2, 2, 2, 1, 3, 2, 3, 1, 1, 1, 2, 1, 3, 2, 3, 2, 1, 2, 3, 3, 1, 2, 1, 2, 1, 1, 3, 1, 2, 2, 1, 3, 1, 1, 1, 2, 2, 1, 2, 1, 2, 1, 2, 3, 2, 1, 3, 2, 3, 2, 3, 3, 1, 1, 1, 3, 3, 3, 1, 1, 3, 3],
+  "reference": {
+    "method": "sample-extreme closed form (support monotonicity); damped Newton at 50 digits on the README log density, from the fitted values",
+    "precision_digits": 50,
+    "estimates": {
+      "N": "3.0",
+      "s": "0.3979626946089980604077251"
+    },
+    "logLik": "-540.9636377811988459994496",
+    "free": [
+      "s"
+    ],
+    "not_refined": {
+      "N": "closed form or exhaustive enumeration (independently checked)"
+    },
+    "score_norm": "5.94e-59",
+    "information_negative_definite": true,
+    "global": {
+      "kind": "dossier optimality/uniqueness proof",
+      "statement": "With both coefficients free, a finite MLE exists for every nonempty positive integer sample. If any observation exceeds one, the endpoint $\\hat N=\\max_i x_i$ and the shape estimate are unique. All-ones data give $\\hat N=1$ with every finite $s\\ge0$ maximizing the likelihood. With $N>1$ held, the shape MLE is finite and unique unless all observations are one, when only an unattained point-mass supremum exists. With $N=1$ held the shape is unidentified. With shape held, the unique endpoint MLE is the sample maximum. Holding both coefficients leaves only likelihood evaluation on the retained support.",
+      "reason": "At every finite shape, the normalizing sum strictly increases with $N$, so the smallest data-compatible endpoint maximizes the likelihood. For $N>1$, the shape score per observation is $E_{N,s}[\\log X]-\\overline{\\log x}$, with derivative $-\\operatorname{Var}_{N,s}(\\log X)<0$. Its model mean tends to zero at infinity. The maximum is $s=0$ if $\\overline{\\log x}\\ge\\log(N!)/N$, and otherwise is the unique positive root, unless the empirical log mean is zero."
+    },
+    "input_sha256": "f63bf34b15efd61e9e601e3a11e3e1853ff25974265ce01a719765c8667220c9"
+  }
 }
