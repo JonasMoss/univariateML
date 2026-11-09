@@ -15,8 +15,8 @@ inline FparetoResult fpareto_mle(span x, double min, double tol, int maxit, doub
   if(!valid) y.clear();
   const bool power_certificate=!std::isnan(shape2) && std::isnan(scale) &&
     (std::isnan(shape1)!=std::isnan(shape3)) && shape1!=1 && shape3!=1;
-  if(valid && (power_certificate || (!std::isnan(scale) && std::isnan(shape2) &&
-     ((shape1==1&&std::isnan(shape3))||(shape3==1&&std::isnan(shape1)))))) {
+  if(valid && ((!std::isnan(shape1)&&!std::isnan(shape3)) || power_certificate || (!std::isnan(scale) && std::isnan(shape2) &&
+     ((!std::isnan(shape1)&&std::isnan(shape3))||(!std::isnan(shape3)&&std::isnan(shape1)))))) {
     for(double v:y)if(!std::isfinite(v))return {NAN,NAN,NAN,scale,min,NAN,0,Gb2Status::NumericalFailure};
     // A rounded equality at held scale must be an exact subtraction.
     // Error-free TwoSum residual for x[i] + (-min).

@@ -97,7 +97,7 @@ relations:
 fit:
   method: multistart
   certified: partial
-  note: 'Certified exact held-unit beta-shape reductions and conditional concave problems; with power held, one non-unit beta shape held and scale free, the beta-prime certificate transports finite maxima, transformed-gamma faces and explicit stops. The seven remaining mixed subsets retain numerical outer searches, including the default joint fit; whole-family certification remains partial.'
+  note: 'One free beta shape with free power and held scale uses a global profile certificate in either orientation. Held beta shapes use a strict-concavity coefficient enclosure. Held unit shapes and held-power conditional shape/scale fits retain certified delegates. Five larger mixed subsets retain numerical searches; whole-family certification remains partial.'
 areas:
 - actuarial
 - economics and income
@@ -137,7 +137,7 @@ Each coefficient may be held at a positive finite value. The numerical search
 compares proper limiting models and stops when a face wins; a search that
 cannot resolve an interior maximum reports an error.
 
-The fit standardizes log observations and profiles the power and location
+Outside the certificates below, the fit standardizes log observations and profiles the power and location
 for each pair of beta shapes. The inner objective is strictly concave; the
 outer search uses a grid and member-family starts, refines distinct basins
 with Newton or BFGS, and expands the search box when needed. This reduces
@@ -251,11 +251,170 @@ bracket proving an exact global tie also transports, with a common Jacobian
 added to every competing likelihood. A rounded crossing is only a numerical
 tie stop, not proof that those rounded observations are an exact tie.
 
-The remaining free subsets $\{p,a\}$, $\{q,a\}$, $\{p,q,a\}$,
-$\{p,q,b\}$, $\{p,a,b\}$, $\{q,a,b\}$ and $\{p,q,a,b\}$
-are open outside existing unit-shape reductions. In particular, the
+The remaining free subsets $\{p,q,a\}$, $\{p,q,b\}$, $\{p,a,b\}$,
+$\{q,a,b\}$ and $\{p,q,a,b\}$ are open outside existing unit-shape
+reductions. The held-scale $\{p,a\}$ and $\{q,a\}$ certificates are described below. In particular, the
 three-free-parameter beta-prime fit cannot certify $\{p,q,b\}$.
 The held-power reduction supplies neither uniform outer-shape bounds when
 power varies nor effective neighborhoods of intersecting gamma, lognormal
 and power-tail corners. Those subsets keep their numerical
 searches; their small scores do not establish global maxima.
+
+## Held beta shapes: power/scale certificate
+
+For held positive $p,q$, write $z_i=(\log x_i-m)/s$, $A=as>0$ and
+$c=a(\log b-m)$. Apart from the data Jacobian, the log likelihood is
+$n\log A-n\log B(p,q)-\sum_i[p\,\operatorname{softplus}(-t_i)+q\,\operatorname{softplus}(t_i)]$,
+where $t_i=Az_i-c$. Its negative Hessian is
+$\operatorname{diag}(n/A^2,0)+(p+q)\sum_i w(t_i)(z_i,-1)(z_i,-1)^T$,
+with $w(t)=e^{-|t|}/(1+e^{-|t|})^2$. It is positive definite.
+Holding scale restricts this function to $c=A(\log b-m)/s$; holding
+power restricts it to a vertical line. Thus any enclosed stationary point
+is the unique global maximizer on its supported affine domain.
+
+`concave_certificate.hpp` bounds each weight on a Euclidean ball of radius
+$r$ around the Newton candidate using
+$|t_i|+r(|z_i|+1)$ (the held-scale line instead uses $z_i+(m-\log b)/s$).
+The resulting positive matrix bounds negative curvature throughout that ball;
+its determinant divided by its trace bounds its least eigenvalue $M$.
+If the score norm, including its arithmetic margin, is less than $Mr/2$,
+the likelihood decreases in every outward direction on the ball boundary.
+It therefore has an interior stationary point there; strict concavity proves
+globality without any exterior search or assumption about other profiles.
+The radius bounds relative power error and log-scale error under
+$a=A/s$, $\log b=m+sc/A$ by $\min(\mathrm{tol},10^{-9})/2$.
+The likelihood upper bound follows from the supporting tangent at the center
+and the enclosed maximum.
+
+This is an exact-arithmetic certificate conditional on the computed
+comparisons. Practical margins are $8\epsilon$ times an absolute score
+scale, a $128\epsilon(1+n)$ curvature discount, and $128\epsilon$
+likelihood and coefficient-transport allowances. These are not directed
+rounding bounds. Free-scale floating-point spacing must also be below one quarter of the target relative accuracy. Ill-conditioned arithmetic or stagnation stops numerically;
+exhausting the solver allowance stops numerically with its finite witness.
+Newton and line search each use at most $\min(\mathrm{iterlim},100000)$
+iterations. Distinct observations collapsed by logarithms stop numerically instead of acquiring a constant-data classification. For constant data with exactly one free power/scale coefficient, the same certificate uses unit log scale. Jointly free power/scale retains its analytic unbounded stop. Exact unit-shape delegates precede this certificate.
+
+## Subunit held shape: endpoint domination
+
+If $0<q<1$ is held, $a,p$ are free, scale $b$ is held and every
+observation lies at or below $b$, with at least one strictly below it, the global supremum is the power
+law on $(0,b)$ with exponent $r=-n/\sum_i\log(x_i/b)$. Indeed
+$B(p,q)>\int_0^1 t^{p-1}\,dt=1/p$, so for $r=ap$ the ratio of
+each GB2 density to the power density is
+$\{pB(p,q)\}^{-1}\{1+(x/b)^a\}^{-(p+q)}<1$.
+For a tied observation the density ratio is bounded by $2^{-q}$. Taking
+$a\to\infty$, $p=r/a$ attains these bounds in the limit. Maximizing the power likelihood over $r$ therefore proves
+the face selection, without a finite search or uniqueness assumption about
+the mixed profile. If $Z$ observations equal $b$, the reported supremum is
+the power log likelihood minus $Zq\log2$, using the same pointwise endpoint
+convention as [Burr](../burr/README.md). A refitted power density has the
+unpenalized endpoint value. The endpoint remains held. Samples crossing $b$
+are excluded.
+Reciprocation gives the Pareto face with held endpoint $b$ when $0<p<1$
+is held and $a,q$ are free and every observation is at least $b$, with one
+strictly above it; its tie penalty is $Zp\log2$.
+
+The face certificate uses compensated sums and checks that the relative
+rate uncertainty from $128\epsilon\sum_i(1+|\log x_i|+|\log b|)$ is below
+$\min(\mathrm{tol},10^{-9})$. Unresolved log differences stop numerically.
+Power witnesses follow public order `(alpha = b, beta = r)`; Pareto
+witnesses follow `(a = r, b = b)`. These pointwise bounds cover the one-sided data regimes; the global profile certificate below handles the other samples.
+
+For constant observations below held scale and held $q>1$, with $p,a$
+free, a finite maximum exists. Put $u=a|\log(x/b)|$. The inner $p$
+maximum is unique. Its power profile tends to minus infinity as $u$ tends
+to zero and approaches the power supremum from above as $u$ tends to
+infinity: its first correction is $n\{\gamma+\psi(q)\}/u>0$,
+where $\gamma$ is Euler’s constant and $\psi$ is the digamma function.
+The beta expansion at $p=0$ and the inner score give $p=1/u+O(u^{-2})$.
+Continuity and these exterior limits force a finite global maximum. Its coefficients are enclosed by the global profile certificate below,
+instead of classifying these constant data as unbounded. Reciprocation
+gives the corresponding result above held scale when $p>1$ is held.
+
+The curvature ball includes log-coordinate uncertainty: each normalized
+observation has allowance $8\epsilon(1+|m|+s|z_i|+|\log b|)/s$.
+Multiplication by $A$ and a $16\epsilon$ arithmetic allowance give an
+argument error $\delta t_i$. The score margin uses the logistic bound
+$|\delta u_i|\le\min(1,\delta t_i/4)$; likelihood bounds add
+$(p+q)\sum_i\delta t_i$ and the log-Jacobian error. Weight bounds include
+these argument errors, and the least-curvature bound subtracts the
+spectral perturbation from uncertainty in $(z_i,-1)$. Thus a large power
+cannot turn unresolved input logarithms into a coefficient certificate.
+
+## Held-scale mixed-power global certificate
+
+`shape_power_certificate.hpp` covers free $(p,a)$ with $q,b$ held; swapping
+the beta shapes and reversing log ratios covers free $(q,a)$ with $p,b$ held.
+Put $w_i=\log(x_i/b)$ and $S_\pm(a)=\sum_i\operatorname{softplus}(\pm aw_i)$.
+For each $a>0$, the strictly decreasing score
+$n\{\psi(p+q)-\psi(p)\}-S_-(a)$ has exactly one positive root.
+It is enclosed by signed scores, using
+$p\{\psi_1(p)-\psi_1(p+q)\}\ge q/(p+q)$ and the first trigamma-series
+term as lower derivative bounds in log shape. Inner enclosures remain
+bounds when their refinement allowance ends; no unchecked inner estimate
+is accepted.
+
+Write $H(p)=\log\{pB(p,q)\}$. For $q\le1$, $H(p)\ge0$. For $q>1$,
+$H$ is convex with $H(0)=0$, $H'(0)=-C$, where
+$C=\psi(q)-\psi(1)>0$; consequently $H(p)\ge-Cp$. Let
+$L=\sum_{w_i<0}|w_i|$, $R=\sum_{w_i>0}w_i$, and let $Z$ count endpoint ties.
+On a one-sided lower sample ($R=0<L$), $nC-Z\log2\le0$ proves endpoint
+domination even for a held shape above one. A signed practical margin is
+required to select that face. If this coefficient is positive, the profile
+approaches the penalized power supremum from above, so a finite point can
+beat it. With $r=ap$, the uniform upper bound
+$n\log r-r\{L-(nC-Z\log2)/a\}-\sum\log x_i-Zq\log2$
+then closes the large-power exterior once a feasible lower witness beats
+the face.
+
+For crossing samples ($L,R>0$), the same inequality gives, for
+$a\ge2n\max(C,0)/L$, the upper bound
+$n\log(2n/L)-n-qaR-\sum\log x_i$, which tends to minus infinity.
+For an upper one-sided sample,
+$B(p,q)\ge\Gamma(q)/(p+q)^q$ follows by integrating
+$\psi(t)<\log t$. Maximizing over $p+q$ and bounding
+$\log(1+e^{-aw_{\min}})\ge e^{-aw_{\min}}/2$ gives
+$n\log a-qaD+K$, where $D=\sum_i(w_i-w_{\min})>0$ for nonconstant data
+and $K=nq\{\log(2nq)-1\}-n\log\Gamma(q)-\sum\log x_i$.
+Constant upper-side data instead have unbounded likelihood: choose
+$p=q e^{aw}$ and let $a$ grow. The endpoint case also concentrates.
+
+At small power, $S_-(a)/n\ge\log2/2$ whenever
+$a\sum|w_i|\le n\log2/2$. Maximizing the strictly concave shape
+function $-\log B(p,q)-p\log2/2$ gives a finite constant $M$, hence the
+upper bound $n\log a+nM-\sum\log x_i$. These exterior bounds produce
+a compact power interval whose complement is strictly below a feasible
+witness; they do not use profile unimodality.
+
+Inside it, convexity bounds $S_-$ on each power segment and encloses every
+inner shape root. Both diagonal entries of the joint $(a,p)$ Hessian are
+negative. Its cross entry $\sum_i w_i/(1+e^{aw_i})$ decreases with $a$;
+its endpoint bounds therefore give a supporting-plane likelihood upper
+bound with remainder $K_{\rm cross}|\Delta a\Delta p|$. The power score
+decreases in $a$ at fixed $p$ and is affine in $p$, so signed corner bounds
+exclude root-free segments. Likelihood bounds discard dominated stationary
+regions. Every remaining global maximum lies in the retained coefficient
+envelope; success requires relative spans below $\min(\mathrm{tol},10^{-9})/8$
+in both free coefficients. Separated unresolved maxima stop as a tie;
+precision/range failures and exhausted work stop without an estimate.
+
+This is an exact-arithmetic certificate conditional on the computed
+comparisons. Practical allowances include $8\epsilon$ log-input errors,
+$16\epsilon$ transform/reduction errors, $128\epsilon$ special-function,
+normalizer and enclosure-transport margins, and subnormal floors. Input
+uncertainty enters the likelihood and both score bounds. It is not
+outward-rounded arithmetic. Every profile point/segment consumes the
+shared $128\min(\mathrm{iterlim},100000)$ ledger; each scalar bracketing
+or refinement pass uses at most $\min(\mathrm{iterlim},100000)$ steps.
+Large intermediate shapes outside the working range stop numerically.
+The five larger mixed subsets still require their own global certificates.
+
+A cell contracts by interval Newton only when an upper bound on the
+profile Schur complement $L_{aa}-L_{ap}^2/L_{pp}$ is strictly negative
+throughout the cell. Logistic weight bounds enclose $L_{aa}$; the trigamma
+series bounds $-L_{pp}$; the decreasing cross score bounds $L_{ap}$.
+A lower derivative bound is supplied by $L_{aa}$ itself. Midpoint score
+intervals then contract every possible stationary point in that cell;
+likelihood and inner-shape bounds are recomputed on the contracted interval.
+Cells without a verified sign retain the general global subdivision.

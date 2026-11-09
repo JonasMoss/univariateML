@@ -23,6 +23,7 @@ struct Gb2Result {
 };
 } // namespace cppunivariate
 #include "power_certificate.hpp"
+#include "endpoint_certificate.hpp"
 namespace cppunivariate {
 namespace gb2_detail {
 // Shift both shapes to >= 10, then use a cancellation-resistant Stirling
@@ -217,6 +218,10 @@ inline Point refine(const trgamma_detail::LogData &d,std::array<double,2> v,
 }
 } // namespace gb2_detail
 
+} // namespace cppunivariate
+#include "concave_certificate.hpp"
+#include "shape_power_certificate.hpp"
+namespace cppunivariate {
 inline Gb2Result gb2_mle(span x,double tol=1e-7,int maxit=300,
     double q=std::numeric_limits<double>::quiet_NaN(),
     double a=std::numeric_limits<double>::quiet_NaN(),
@@ -226,7 +231,17 @@ inline Gb2Result gb2_mle(span x,double tol=1e-7,int maxit=300,
   const double nan=std::numeric_limits<double>::quiet_NaN();
   Gb2Result bad{q,a,p,b,nan,0,Gb2Status::InvalidData};
   for(double v:{q,a,p,b}) if(!std::isnan(v) && (!(v>0)||!std::isfinite(v))){bad.status=Gb2Status::InvalidFixed;return bad;}
-  if(!(tol>0)||!std::isfinite(tol)||maxit<1)return bad;
+  if(!(tol>0)||!std::isfinite(tol)||maxit<1||x.empty())return bad;
+  std::vector<double> logs(x.size());
+  for(std::size_t i=0;i<x.size();++i){if(!(x[i]>0)||!std::isfinite(x[i]))return bad;logs[i]=std::log(x[i]);}
+  if(!logs.empty()&&std::isnan(a)) {
+    bool original_constant=true,log_constant=true;
+    for(std::size_t i=1;i<x.size();++i) {
+      original_constant=original_constant&&x[i]==x[0];
+      log_constant=log_constant&&logs[i]==logs[0];
+    }
+    if(log_constant&&!original_constant){bad.status=Gb2Status::NumericalFailure;return bad;}
+  }
   // Exact held unit beta-shape submodels. Never use these as certificates
   // when that beta shape is free: the constrained and joint maxima differ.
   if(p==1 || q==1) {
@@ -256,15 +271,22 @@ inline Gb2Result gb2_mle(span x,double tol=1e-7,int maxit=300,
     }
     return out;
   }
-  std::vector<double> logs(x.size());
-  for(std::size_t i=0;i<x.size();++i){if(!(x[i]>0)||!std::isfinite(x[i]))return bad;logs[i]=std::log(x[i]);}
   if(!std::isnan(a) && std::isnan(b) && (std::isnan(p)!=std::isnan(q)))
     return gb2_power_detail::fit(x,q,a,p,tol,maxit);
+  if(std::isnan(a)&&!std::isnan(b)&&(std::isnan(p)!=std::isnan(q)))
+    return gb2_shape_power_detail::fit(x,span{logs.data(),logs.size()},q,p,b,tol,maxit);
   const auto solve_root=[&](auto score){return burr_hold_detail::root(score,maxit);};
   // Constant samples still have a finite constrained maximum when only
   // one beta shape, the power, or location is free.
   bool constant=!logs.empty();for(double v:logs)constant=constant&&v==logs[0];
   if(constant){
+    if(!std::isnan(p)&&!std::isnan(q)&&(std::isnan(a)!=std::isnan(b))) {
+      if(std::isnan(a)&&x[0]==b)return bad;
+      trgamma_detail::LogData cd;
+      cd.n=logs.size();cd.mean=logs[0];cd.sd=1;cd.sum=logs.size()*logs[0];
+      cd.u.assign(logs.size(),0);
+      return gb2_concave_detail::fit(cd,q,a,p,b,tol,maxit);
+    }
     if(!std::isnan(a)&&!std::isnan(b)&&(!std::isnan(p)||!std::isnan(q))){
       const double u=a*(logs[0]-std::log(b));
       if(std::isnan(p))p=std::exp(solve_root([&](double z){double v=std::exp(z);return special::digamma(v+q)-special::digamma(v)-gb2_detail::softplus(-u);}));
@@ -299,6 +321,8 @@ inline Gb2Result gb2_mle(span x,double tol=1e-7,int maxit=300,
     }
     return bad;
   }
+  if(!std::isnan(p)&&!std::isnan(q)&&(std::isnan(a)||std::isnan(b)))
+    return gb2_concave_detail::fit(d,q,a,p,b,tol,maxit);
   double face=-std::numeric_limits<double>::infinity();
   Gb2Status fs=Gb2Status::SearchUnresolved;
   bool face_failure=false;

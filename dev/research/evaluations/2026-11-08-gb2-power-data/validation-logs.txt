@@ -1,0 +1,119 @@
+
+cpp-dev (workstation): /tmp/umvl-cpu/run4 just cpp-test
+exit code 0
+100% tests passed, 0 tests failed out of 106
+100% tests passed, 0 tests failed out of 106
+
+Label Time Summary:
+cran    = 636.56 sec*proc (105 tests)
+dev     = 640.09 sec*proc (106 tests)
+full    = 640.09 sec*proc (106 tests)
+
+Total Test time (real) = 176.63 sec
+
+r-dev-simbox (simbox): /tmp/umvl-cpu/simbox-run env CMAKE_BUILD_PARALLEL_LEVEL=4 CTEST_PARALLEL_LEVEL=4 just test
+exit code 0
+[ FAIL 0 | WARN 0 | SKIP 154 | PASS 22177 ]
+  'test-dist-ztgeom.R:33:3', 'test-dist-ztbinom.R:91:3',
+  'test-dist-ztnbinom.R:2:3', 'test-dist-ztpois.R:2:3',
+  'test-dist-ztpois.R:33:3', 'test-dist-ztnbinom.R:57:3',
+  'test-dist-ztnbinom.R:72:3'
+
+[ FAIL 0 | WARN 0 | SKIP 154 | PASS 22177 ]
+   user  system elapsed 
+351.115   4.310  89.742 
+
+cpp-full-simbox (simbox): /tmp/umvl-cpu/simbox-run env CMAKE_BUILD_PARALLEL_LEVEL=4 CTEST_PARALLEL_LEVEL=4 UMVL_TEST_TIER=full just cpp-test
+exit code 0
+100% tests passed out of 129
+100% tests passed out of 129
+
+Label Time Summary:
+cran    = 283.78 sec*proc (105 tests)
+dev     = 285.33 sec*proc (106 tests)
+full    = 506.32 sec*proc (129 tests)
+
+Total Test time (real) = 170.76 sec
+
+no-long-double-local (workstation): /tmp/umvl-cpu/run4 just cpp-test-no-long-double
+exit code 0
+100% tests passed, 0 tests failed out of 129
+100% tests passed, 0 tests failed out of 129
+
+Label Time Summary:
+cran    = 638.71 sec*proc (105 tests)
+dev     = 641.99 sec*proc (106 tests)
+full    = 1192.62 sec*proc (129 tests)
+
+Total Test time (real) = 424.76 sec
+
+no-long-double-simbox (simbox): /tmp/umvl-cpu/simbox-run env CMAKE_BUILD_PARALLEL_LEVEL=4 CTEST_PARALLEL_LEVEL=4 just cpp-test-no-long-double
+exit code 0
+100% tests passed out of 129
+100% tests passed out of 129
+
+Label Time Summary:
+cran    = 276.20 sec*proc (105 tests)
+dev     = 278.19 sec*proc (106 tests)
+full    = 524.64 sec*proc (129 tests)
+
+Total Test time (real) = 184.98 sec
+
+r-full-simbox (simbox): /tmp/umvl-cpu/simbox-run just test-full
+exit code 75
+⠦ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 31496 ] @ dist-sged, dist-slash, generated-d
+⠧ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 32282 ] @ dist-sged, dist-slash, generated-d
+⠇ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 32286 ] @ dist-sged, dist-slash, generated-d
+⠏ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 32288 ] @ dist-sged, dist-slash, generated-d
+⠋ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 32292 ] @ dist-sged, dist-slash, generated-d
+⠙ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 33957 ] @ dist-sged, dist-slash, generated-dRead from remote host simbox: Connection reset by peer
+client_loop: send disconnect: Broken pipe
+simbox-run: connection lost; rerun locally
+
+r-full-local (workstation): /tmp/umvl-cpu/run4 just test-full
+exit code 0
+[ FAIL 0 | WARN 0 | SKIP 0 | PASS 45009 ]
+══ Results ═════════════════════════════════════════════════════════════════════
+Duration: 805.1 s
+
+[ FAIL 0 | WARN 0 | SKIP 0 | PASS 45009 ]
+
+Your tests are super-duper!
+    user   system  elapsed 
+2007.564   10.144  809.846 
+
+js-build (workstation): /tmp/umvl-cpu/run4 just js-build
+exit code 0
+Validated and generated d/p/q/r for 99 families.
+In file included from bindings/js/bindings.cpp:9:
+In file included from build/js/generated/fit_includes.hpp:5:
+In file included from bindings/common/distributions/binom/fit.hpp:3:
+univariateML-cpp/include/cppunivariate/distributions/binom/mle.hpp:160:60: warning: self-comparison always evaluates to true [-Wtautological-compare]
+  160 |     if (std::numeric_limits<CPPUNIV_EXTENDED_REAL>::digits <=
+      |                                                            ^
+1 warning generated.
+
+js-test (workstation): /tmp/umvl-cpu/run4 just js-test
+exit code 0
+# tests 559
+# pass 559
+# fail 0
+# tests 559
+# suites 0
+# pass 559
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 156741.142726
+
+site-check (workstation): /tmp/umvl-cpu/run4 just site-check
+exit code 0
+Log-density fallback: cmb, cmp, dweibull, gev, gpd, huber, sged, snorm, sstd, st, tbinom, tpois, triang, zib, zinb, zip, zipf, zmbinom, zmgeom, zmlogarithmic, zmnbinom, zmpois
+WEIGHT exp: HTML 25426 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+WEIGHT gamma: HTML 29650 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+WEIGHT gb2: HTML 112489 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+WEIGHT binom: HTML 41341 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+WEIGHT hyper: HTML 40162 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+WEIGHT sstd: HTML 141847 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+Total dist: 23298204 B

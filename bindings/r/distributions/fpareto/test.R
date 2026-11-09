@@ -160,3 +160,19 @@ test_that("Feller Pareto held-endpoint power stops retain their model identity",
   expect_identical(names(e$estimates),c('alpha','beta'))
   expect_equal(unname(e$estimates['alpha']),1)
 })
+
+test_that("held beta shapes transport coefficient certificate solver stop witnesses", {
+  x <- c(.03,.1,.3,.7,1,2,5,20)+2
+  e <- tryCatch(mlfpareto(x,min=2,shape1=2,shape3=3,iterlim=1),error=identity)
+  expect_s3_class(e,'univariateML_numerical')
+  expect_equal(nrow(e$candidates),1L)
+  expect_equal(e$candidates$min,2)
+})
+
+test_that("subunit opposite shape endpoint certificate preserves shifted advice", {
+  e <- tryCatch(mlfpareto(2+c(.1,.2,.4,.8),min=2,shape1=.4,scale=1,iterlim=1),error=identity)
+  expect_s3_class(e,'univariateML_limit')
+  expect_equal(e$model,'power')
+  expect_equal(unname(e$estimates['alpha']),1)
+  expect_match(conditionMessage(e),'both endpoints held')
+})

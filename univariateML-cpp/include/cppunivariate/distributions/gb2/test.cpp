@@ -321,3 +321,150 @@ TEST_CASE("GB2 held-power transport rejects overflowing Jacobian arithmetic") {
  CHECK(r.status==cppunivariate::Gb2Status::NumericalFailure);
  CHECK(r.stop_detail.limit_coef.empty());
 }
+
+TEST_CASE("GB2 held beta shapes certify power and scale coefficient accuracy") {
+ const std::vector<double>x{.03,.1,.3,.7,1,2,5,20};
+ for(int subset=0;subset<3;++subset) {
+  const auto r=cppunivariate::gb2_mle(mltest::as_span(x),1e-7,300,2,subset==2?2:NAN,3,subset==1?1:NAN);
+  REQUIRE(r.status==cppunivariate::Gb2Status::Ok);
+  REQUIRE(r.stop_detail.candidates.size()==1);
+  double ll=0;for(double v:x)ll+=cppunivariate::distributions::dgb2(v,r.shape1,r.shape2,r.shape3,r.scale,true);
+  CHECK(ll>=r.stop_detail.loglik_lower);CHECK(ll<=r.stop_detail.loglik_upper);
+  if(subset==0) {
+   CHECK(r.shape2==doctest::Approx(.50129405191849408).epsilon(1e-10));
+   CHECK(r.scale==doctest::Approx(.28999624187971024).epsilon(1e-10));
+  }
+  auto y=x;for(double&v:y)v=7/v;
+  const auto s=cppunivariate::gb2_mle(mltest::as_span(y),1e-7,300,3,subset==2?2:NAN,2,subset==1?7:NAN);
+  REQUIRE(s.status==cppunivariate::Gb2Status::Ok);
+  CHECK(s.shape2==doctest::Approx(r.shape2).epsilon(1e-10));
+  CHECK(s.scale==doctest::Approx(7/r.scale).epsilon(1e-10));
+ }
+ const auto low=cppunivariate::gb2_mle(mltest::as_span(x),1e-7,1,2,NAN,3,NAN);
+ CHECK(low.status==cppunivariate::Gb2Status::NumericalFailure);
+ CHECK_FALSE(low.stop_detail.budget_exhausted);
+ CHECK(low.stop_detail.candidates.size()==1);
+ CHECK(cppunivariate::gb2_mle(mltest::as_span(x),1e-30,300,2,NAN,3,NAN).status!=cppunivariate::Gb2Status::Ok);
+}
+
+TEST_CASE("GB2 subunit held beta shape certifies strict endpoint domination") {
+ const std::vector<double>x{.1,.2,.4,.8};
+ for(bool inverse:{false,true}) {
+  auto y=x;if(inverse)for(double&v:y)v=1/v;
+  const auto r=cppunivariate::gb2_mle(mltest::as_span(y),1e-7,1,inverse?NAN:.4,NAN,inverse?.4:NAN,1);
+  REQUIRE(r.status==(inverse?cppunivariate::Gb2Status::ParetoBoundary:cppunivariate::Gb2Status::PowerBoundary));
+  REQUIRE(r.stop_detail.limit_coef.size()==2);
+  CHECK(r.stop_detail.limit_coef[inverse?1:0]==1);
+  double sum=0;for(double v:x)sum-=std::log(v);
+  CHECK(r.stop_detail.limit_coef[inverse?0:1]==doctest::Approx(4/sum).epsilon(1e-14));
+  for(double a:{1.,10.,100.}) {
+   const double shape=r.stop_detail.limit_coef[inverse?0:1]/a;
+   double ll=0;for(double v:y)ll+=cppunivariate::distributions::dgb2(v,inverse?shape:.4,a,inverse?.4:shape,1,true);
+   CHECK(ll<r.stop_detail.loglik_upper);
+   if(a==100)CHECK(r.logLik-ll<.1);
+  }
+ }
+ // A tie or a sample crossing the endpoint is outside this theorem.
+ const std::vector<double>cross{.5,2};
+ const auto r=cppunivariate::gb2_mle(mltest::as_span(cross),1e-7,1,.4,NAN,NAN,1);
+ CHECK(r.stop_detail.limit_model!=cppunivariate::StopModel::Power);
+}
+
+TEST_CASE("GB2 held beta shapes reject subnormal scale coefficient spacing") {
+ std::vector<double>x{.03,.1,.3,.7,1,2,5,20};
+ for(double&v:x)v*=1e-320;
+ const auto r=cppunivariate::gb2_mle(mltest::as_span(x),1e-7,300,2,NAN,3,NAN);
+ CHECK(r.status==cppunivariate::Gb2Status::NumericalFailure);
+}
+
+TEST_CASE("GB2 held beta shapes do not classify log collapse as constant data") {
+ const std::vector<double>x{1e300,std::nextafter(1e300,INFINITY)};
+ REQUIRE(x[0]!=x[1]);
+ REQUIRE(std::log(x[0])==std::log(x[1]));
+ CHECK(cppunivariate::gb2_mle(mltest::as_span(x),1e-7,300,2,NAN,3,NAN).status==cppunivariate::Gb2Status::NumericalFailure);
+}
+
+TEST_CASE("GB2 constant held-shape scale cannot hide an unrepresentable log ratio") {
+ const std::vector<double>x(5,2);
+ const auto r=cppunivariate::gb2_mle(mltest::as_span(x),1e-7,300,10,1e-300,std::nextafter(10.,INFINITY),NAN);
+ CHECK(r.status==cppunivariate::Gb2Status::NumericalFailure);
+ for(bool held_power:{false,true}) {
+  const auto s=cppunivariate::gb2_mle(mltest::as_span(x),1e-7,300,2,held_power?3:NAN,3,held_power?NAN:1);
+  CHECK(s.status==cppunivariate::Gb2Status::Ok);
+  CHECK(s.stop_detail.candidates.size()==1);
+ }
+}
+
+TEST_CASE("GB2 subunit held beta shape retains the exact endpoint tie penalty") {
+ const std::vector<double>x{.25,.5,1,1};
+ for(bool inverse:{false,true}) {
+  auto y=x;if(inverse)for(double&v:y)v=1/v;
+  const auto r=cppunivariate::gb2_mle(mltest::as_span(y),1e-7,1,inverse?NAN:.4,NAN,inverse?.4:NAN,1);
+  REQUIRE(r.status==(inverse?cppunivariate::Gb2Status::ParetoBoundary:cppunivariate::Gb2Status::PowerBoundary));
+  const double rate=4/(3*std::log(2.));
+  double logs=0;for(double v:y)logs+=std::log(v);
+  const double ll=4*std::log(rate)-4-logs-.8*std::log(2.);
+  CHECK(r.logLik==doctest::Approx(ll).epsilon(1e-12));
+  CHECK(ll>=r.stop_detail.loglik_lower);CHECK(ll<=r.stop_detail.loglik_upper);
+  double finite=0;for(double v:y)finite+=cppunivariate::distributions::dgb2(v,inverse?rate/1000:.4,1000,inverse?.4:rate/1000,1,true);
+  CHECK(finite<ll);CHECK(ll-finite<.05);
+ }
+}
+
+TEST_CASE("GB2 constant mixed-power finite regimes have certified finite maxima") {
+ const std::vector<double>below(5,.5),above(5,2);
+ const auto r=cppunivariate::gb2_mle(mltest::as_span(below),1e-7,300,2,NAN,NAN,1);
+ const auto s=cppunivariate::gb2_mle(mltest::as_span(above),1e-7,300,NAN,NAN,2,1);
+ REQUIRE(r.status==cppunivariate::Gb2Status::Ok);
+ REQUIRE(s.status==cppunivariate::Gb2Status::Ok);
+ CHECK(r.shape2==doctest::Approx(s.shape2).epsilon(1e-7));
+ CHECK(r.shape3==doctest::Approx(s.shape1).epsilon(1e-7));
+ const double u=r.shape2*std::log(2.),p=r.shape3;
+ CHECK(std::abs(1/p+1/(p+1)-std::log1p(std::exp(u)))<1e-6);
+ CHECK(std::abs(1/u-p+(p+2)/(1+std::exp(u)))<1e-6);
+ CHECK(r.stop_detail.loglik_lower>5*(-std::log(std::log(2.))-1+std::log(2.)));
+ CHECK(r.stop_detail.loglik_upper-r.stop_detail.loglik_lower<1e-6);
+}
+
+TEST_CASE("GB2 held power cannot amplify collapsed logs into a certificate") {
+ const std::vector<double>x{1e300,std::nextafter(1e300,INFINITY)};
+ CHECK(cppunivariate::gb2_mle(mltest::as_span(x),1e-7,300,2,1e100,3,NAN).status==cppunivariate::Gb2Status::NumericalFailure);
+}
+
+TEST_CASE("GB2 held-scale mixed profiles certify both beta-shape orientations") {
+ const std::vector<double>x{.03,.1,.3,.7,1,2,5,20};
+ for(bool inverse:{false,true}) {
+  const auto r=cppunivariate::gb2_mle(mltest::as_span(x),1e-7,300,inverse?NAN:2,NAN,inverse?3:NAN,1);
+  REQUIRE(r.status==cppunivariate::Gb2Status::Ok);
+  CHECK(r.shape2==doctest::Approx(inverse?.43155118384080654:.57834363213651174).epsilon(1e-7));
+  CHECK((inverse?r.shape1:r.shape3)==doctest::Approx(inverse?3.3085427329308605:1.7944752190424211).epsilon(1e-7));
+  double ll=0;for(double v:x)ll+=cppunivariate::distributions::dgb2(v,r.shape1,r.shape2,r.shape3,r.scale,true);
+  CHECK(r.logLik==doctest::Approx(ll).epsilon(1e-10));
+  CHECK(r.stop_detail.loglik_lower<=r.stop_detail.loglik_upper);
+  const auto low=cppunivariate::gb2_mle(mltest::as_span(x),1e-7,1,inverse?NAN:2,NAN,inverse?3:NAN,1);
+  CHECK(low.status!=cppunivariate::Gb2Status::Ok);
+ }
+}
+
+TEST_CASE("GB2 endpoint ties can dominate even with held opposite shape above one") {
+ const std::vector<double>x{.25,.5,1,1};
+ const auto r=cppunivariate::gb2_mle(mltest::as_span(x),1e-7,1,1.1,NAN,NAN,1);
+ REQUIRE(r.status==cppunivariate::Gb2Status::PowerBoundary);
+ const double rate=4/(3*std::log(2.));
+ CHECK(r.logLik==doctest::Approx(4*std::log(rate)-4+3*std::log(2.)-2.2*std::log(2.)).epsilon(1e-12));
+}
+
+TEST_CASE("GB2 mixed-power coefficient certificates meet independent golden precision") {
+ const std::vector<double>x{.03,.1,.3,.7,1,2,5,20};
+ for(bool inverse:{false,true}) {
+  const auto r=cppunivariate::gb2_mle(mltest::as_span(x),1e-7,300,inverse?NAN:2,NAN,inverse?3:NAN,1);
+  REQUIRE(r.status==cppunivariate::Gb2Status::Ok);
+  CHECK(r.shape2==doctest::Approx(inverse?.431551183840810324:.578343632137284815).epsilon(5e-10));
+  CHECK((inverse?r.shape1:r.shape3)==doctest::Approx(inverse?3.308542732930816109:1.794475219041363996).epsilon(5e-10));
+ }
+ const std::vector<double>constant(5,.5);
+ const auto r=cppunivariate::gb2_mle(mltest::as_span(constant),1e-7,300,2,NAN,NAN,1);
+ REQUIRE(r.status==cppunivariate::Gb2Status::Ok);
+ CHECK(r.shape2==doctest::Approx(4.929391514647968975).epsilon(5e-10));
+ CHECK(r.shape3==doctest::Approx(.3679117637748129625).epsilon(5e-10));
+}
