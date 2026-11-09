@@ -132,7 +132,7 @@ relations: {}
 fit:
   method: multistart
   certified: 'partial'
-  note: 'sged/certificate.hpp certifies free location with both shapes held (scale held or free), and free scale with mean and both positive shapes held. sged/skew_certificate.hpp additionally certifies free skew at held nu=2 with either moment held or free, and at 0<nu<=1 with both moments free. With xi=1 held, sged/free_shape_certificate.hpp delegates all four free-nu subsets to the GED global certificate in identical public moment coordinates. Balanced two-point data with free moments have a certified uniform supremum for every held or free skew. sged/weighted_shape_certificate.hpp certifies asymmetric held xi with nu and both moments free. sged/mode_skew_certificate.hpp completes fixed positive nu with free skew and both moments free. Free nu with a held moment at asymmetric skew, free nu and xi jointly, and nonnormal free-skew fits with held moments retain uncertified numerical searches; the unchanged default is among these open cases.'
+  note: 'sged/certificate.hpp certifies free location with both shapes held (scale held or free), and free scale with mean and both positive shapes held. sged/skew_certificate.hpp additionally certifies free skew at held nu=2 with either moment held or free, and at 0<nu<=1 with both moments free. With xi=1 held, sged/free_shape_certificate.hpp delegates all four free-nu subsets to the GED global certificate in identical public moment coordinates. Balanced two-point data with free moments have a certified uniform supremum for every held or free skew. sged/weighted_shape_certificate.hpp certifies asymmetric held xi with nu and both moments free. sged/mode_skew_certificate.hpp completes fixed positive nu with free skew and both moments free. sged/held_moment_certificate.hpp covers fixed positive nu other than 2 with both moments held by compact skew subdivision; finite winners require a full coefficient enclosure, strict-support half-GED faces are compared globally, and unresolved endpoint contacts or arithmetic stop numerically. Free nu with a held moment at asymmetric skew, free nu and xi jointly, and nonnormal free-skew fits with exactly one moment held retain uncertified numerical searches; the unchanged default is among these open cases.'
 areas:
 - finance
 - measurement and errors
@@ -248,6 +248,7 @@ zero-side and uniform limits also require separate treatment.
 | Fixed finite $\xi>0$, $\nu\ge1$ | Concavity in inverse-scale coordinates, proved as above. |
 | Held shapes, free location; scale-only with positive held shapes | Global certificates described below. |
 | Held skew, free shape and both moments; held positive shape, free skew and both moments | Global weighted-shape and mode-profile certificates below. |
+| Held positive shape, both moments held, free skew | Compact skew cover; enclosed finite winner, strict-support half-GED face, tie, or explicit numerical/budget stop. |
 | Remaining held-moment and joint free-shape/skew fits | Numerical scans and refinements; no global certificate. |
 | Default free shapes and limiting faces | Multistart and face comparisons; numerical, with no global shape certificate. |
 
@@ -506,7 +507,7 @@ interior knots $c=\pm1$. At either interior knot $S<12$; at either
 endpoint $S>20$. These inequalities separate the only four distinct
 knots, and reflection gives the exact tie.
 
-For held shapes other than two with a held moment, the existing numerical
+For held shapes other than two with exactly one held moment, the existing numerical
 searches remain uncertified. With both moments free, the certificate below
 completes the smooth fixed-shape cases.
 In particular their finite skew scan is not a bound on either infinite
@@ -660,3 +661,69 @@ values; an unfundable knot partition stops after a linear-cost face witness.
 Budget and numerical stops retain feasible witnesses and an infinite upper
 bound until the full cover is closed. The [free-shape report](../../../../../dev/research/evaluations/2026-11-08-sged-free-report.md)
 records independent bounds, coefficient checks, timings and remaining holds.
+
+
+## Fixed shape with both moments held
+
+Writing $z=(b-a)/(a+b)$, $k=\Gamma(2/p)/\Gamma(1/p)$,
+$v=\Gamma(3/p)/\Gamma(1/p)$ and $D=3v-4k^2$, the held moments force
+$s=a+b=2\sigma/\sqrt{v+Dz^2}$ and $c=\mu-kzs$.
+For $d_i=(x_i-\mu)/\sigma$ put $q_i=d_i\sqrt{v+Dz^2}/2+kz$.
+The constrained likelihood on $-1<z<1$ is
+$$
+\ell=n[\log p-\log\Gamma(1/p)-\log(2\sigma)
+       +\tfrac12\log(v+Dz^2)]
+-\sum_i\left(\frac{2|q_i|}{1+\operatorname{sign}(q_i)z}\right)^p.
+$$
+Interval residual lower bounds give a likelihood upper bound even on cells
+that touch either infinite-skew endpoint. On smooth interior cells, interval
+first derivatives exclude stationary maxima. Cells crossing a join retain
+both signs and receive no derivative exclusion. No finite skew cutoff or
+uniqueness assumption is used. For a finite result, all surviving cells must fit
+in a log-skew interval of width at most $\min(\mathtt{tol},2\times10^{-7})$; the returned representative
+is reevaluated in the public coordinates and retains the exact held values.
+If a connected union is wider than the coefficient target, its surviving cells
+are refined again; individually narrow cells never suffice by themselves.
+
+
+At $z=\mathrm{side}\in\{-1,1\}$, the held moments determine the
+half-GED scale $b=\sigma/\sqrt{v-k^2}$ and endpoint
+$c=\mu-\mathrm{side}\,kb$. When every observation is strictly on the
+supported side beyond a $128\epsilon(1+p+1/p)$ componentwise margin, the profile and
+score extend continuously to that endpoint;
+all denominators in the occupied-side penalty stay positive. A definite
+outward score therefore excludes an entire endpoint cell in favor of its
+recovered face. Both faces and every interior region are compared globally.
+The stored face must preserve the held moments within the coefficient margin
+and reproduce its ideal likelihood within the comparison allowance.
+A winning face carries its endpoint, kernel scale, shape and finite global
+supremum bounds. Exact contacts receive no endpoint substitution: their
+vanishing-side penalties remain an unresolved numerical comparison.
+
+This is an exact-arithmetic certificate conditional on computed comparisons,
+with a practical $4096\epsilon(1+\text{magnitude})(1+n\epsilon)
+(1+p+1/p)$ allowance for score and likelihood comparisons. Residuals use $64\epsilon$
+times the sum of their absolute component magnitudes plus one, with the same
+$1+p+1/p$ conditioning factor.
+It does not use directed rounding. An unresolved endpoint contact, lost moment representation or failed public likelihood
+reconstruction returns a numerical stop with an infinite unresolved upper bound,
+retaining feasible witnesses when available. After a closed cover, separated possible winners return
+a tie with their witnesses and a finite global upper bound. Work exhaustion returns a budget stop; point and cell evaluations
+share $128\min(\mathtt{iterlim},100000)$ units. Strict-support half-GED faces extend the same profile to its endpoints and are
+compared against all retained interior regions after the cover closes.
+The [independent checker](../../../../../dev/research/evaluations/2026-11-08-sged-held-data/check_math.py)
+compares the density, smooth scores and selected coefficient references at 70 digits.
+
+
+Finite uniqueness fails even with both moments held. For $p=1$, $\mu=0$,
+$\sigma=1$ and observations $(-d,d)$ with $1<d<5/(3\sqrt2)$, the
+likelihood is even in $z$ and has precisely two maximizing skew values.
+With $t=z^2$, its derivative vanishes when
+$$
+d=\frac{t^2+2t+5}{(t+3)\sqrt{2(1+t)}}.
+$$
+The right side decreases strictly from $5/(3\sqrt2)$ to $1$ on $(0,1)$:
+its derivative has the sign of $(t-1)(t^2+10t+13)$.
+The unique root in $t$ gives two reciprocal skews; $z=0$ is a strict local
+minimum and both skew tails have likelihood tending to negative infinity.
+The tests use $d=1.1$ and retain both finite witnesses.

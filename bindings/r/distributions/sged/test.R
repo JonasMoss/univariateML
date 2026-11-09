@@ -346,6 +346,11 @@ test_that("sged P0b subsets agree with independent README oracles", {
         }
         next
       }
+      if(identical(held,c('mean','sd','nu')) && inherits(fit,c('univariateML_numerical','univariateML_budget'))) {
+        expect_gte(nrow(fit$candidates),1L)
+        expect_identical(fit$loglik_upper,Inf)
+        next
+      }
       expect_match(conditionMessage(fit),'half|uniform|skew-normal|nu -> 2|unbounded|collapse|score check')
       message <- conditionMessage(fit)
       expect_false(grepl('score check',message),
@@ -686,4 +691,53 @@ test_that("sged fully held tiny-shape evaluation preserves its centering moment"
                  rep(if(xi<1) -288.220156276318788 else -288.181208135391239,2),
                  tolerance=2e-11)
   }
+})
+
+
+test_that("SGED fixed-shape held-moment skew fits use the constrained global cover", {
+  x <- c(-3,-1,-.2,0,.3,.4,2)
+  for(p in c(1,1.7)) {
+    f <- mlsged(x,mean=.1,sd=1.4,nu=p,gradtol=1e-10)
+    ref <- optimize(function(t)-sum(sged_hold_logref(x,c(mean=.1,sd=1.4,nu=p,xi=exp(t)))),c(-2,2),tol=1e-11)
+    expect_identical(as.numeric(f[c('mean','sd','nu')]),c(.1,1.4,p))
+    expect_setequal(attr(f,'fixed'),c('mean','sd','nu'))
+    expect_equal(unname(f['xi']),exp(ref$minimum),tolerance=2e-7)
+    expect_equal(as.numeric(logLik(f)),-ref$objective,tolerance=2e-10)
+    expect_equal(as.numeric(logLik(f)),sum(dml(x,f,log=TRUE)),tolerance=2e-10)
+  }
+  expect_error(mlsged(x,mean=.1,sd=1.4,nu=1.7,iterlim=1),class='univariateML_budget')
+  expect_error(mlsged(x,mean=.1,sd=1.4,nu=1e308),class='univariateML_numerical')
+})
+
+test_that("SGED held moments retain the two finite Laplace skew maxima", {
+  e <- tryCatch(mlsged(c(-1.1,1.1),mean=0,sd=1,nu=1,gradtol=1e-9),error=identity)
+  expect_s3_class(e,'univariateML_tie')
+  expect_gte(nrow(e$candidates),2L)
+  expect_true(is.finite(e$loglik_upper))
+  expect_true(all(e$candidates$mean==0 & e$candidates$sd==1 & e$candidates$nu==1))
+  expect_equal(min(e$candidates$xi)*max(e$candidates$xi),1,tolerance=2e-8)
+})
+
+test_that("SGED held moments certify strict-support half-GED winners", {
+  p <- 20
+  k <- exp(lgamma(2/p)-lgamma(1/p)); v <- exp(lgamma(3/p)-lgamma(1/p))
+  for(sign in c(-1,1)) {
+    x <- rep(sign*.2,2)
+    e <- tryCatch(mlsged(x,mean=0,sd=1,nu=p,gradtol=1e-10),error=identity)
+    expect_s3_class(e,'univariateML_limit')
+    expect_identical(e$model,if(sign>0) 'unavailable:reflected-half-ged' else 'unavailable:half-ged')
+    c <- e$estimates
+    expect_equal(unname(c['mu']-sign*k*c['scale']),0,tolerance=1e-12)
+    expect_equal(unname(c['scale']*sqrt(v-k*k)),1,tolerance=1e-12)
+    reference <- length(x)*(log(p)-lgamma(1/p)-log(c['scale']))-sum((-sign*(x-c['mu'])/c['scale'])^p)
+    expect_equal(e$limit_loglik,unname(reference),tolerance=1e-10)
+    expect_true(is.finite(e$loglik_upper))
+  }
+  e <- tryCatch(mlsged(c(0,0),mean=0,sd=1,nu=p,gradtol=1e-10),error=identity)
+  expect_s3_class(e,'univariateML_tie')
+  expect_setequal(e$candidates$model,c('unavailable:half-ged','unavailable:reflected-half-ged'))
+})
+
+test_that("SGED held moment half-GED endpoint contacts remain explicit stops", {
+  expect_error(mlsged(c(-1,.2),mean=0,sd=1,nu=1,gradtol=1e-10),class='univariateML_numerical')
 })

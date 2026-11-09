@@ -423,6 +423,7 @@ inline SgedResult sged_mle_free(span x, double tol, int maxit) {
 
 #include "face_payload.hpp"
 #include "free_shape_certificate.hpp"
+#include "held_moment_certificate.hpp"
 
 // Classified holds: fixed shape/skew and either location or scale (or both).
 inline SgedResult sged_mle_impl(span x, double tol, int maxit,
@@ -445,6 +446,8 @@ inline SgedResult sged_mle_impl(span x, double tol, int maxit,
   if(!hn && !hm && !hs && sged_free_shape_certificate::balanced_uniform(x,out))return out;
   if(!hn && hx && !hm && !hs) return sged_weighted_shape::fit(x,tol,maxit,fixed_xi);
   if(!hm && !hs && !hn && !hx) return sged_mle_free(x,tol,maxit);
+  if(hn && !hx && hm && hs && fixed_nu!=2)
+    return sged_held_moment::fit(x,tol,maxit,fixed_mean,fixed_sd,fixed_nu);
   if(hn && !hx && fixed_nu==2)
     return sged_skew_certificate::normal(x,maxit,fixed_mean,fixed_sd);
   if(hn && !hx && !hm && !hs && fixed_nu<=1)
