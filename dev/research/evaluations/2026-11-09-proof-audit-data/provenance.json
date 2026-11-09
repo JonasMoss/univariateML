@@ -1,0 +1,110 @@
+{
+  "environment": {
+    "revision": "e638713c52ee730ef0ba2ce483fd79d1053c3900",
+    "compiler": "c++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+    "R": "R version 4.6.1 (2026-06-24) -- \"Happy Hop\"",
+    "just": "just 1.45.0",
+    "cmake": "cmake version 4.2.3",
+    "python": "3.14.5",
+    "platform": "Linux-7.0.0-42-generic-x86_64-with-glibc2.43"
+  },
+  "sources": {
+    "AGENTS.md": "45b3ea7a77c58a8d44e6edb5b6c7ece5c8e8ac343f9c5b992b3785dcf766b1aa",
+    "dev/research/showcase.md": "dd8ebbcab3a8efedfe60b13abe5d12a55abe192f4e73c16ce8ba15451127a91f",
+    "dev/validation/diagnostics.md": "6b96211b3b4380c38387859903ee5a47157ebf8f8f372ddb1796ffe3f9f59922",
+    "dev/roadmap/2026-10-29-parameter-rules.md": "47b7c1b4b9ca1e8380c3d5d584590ead7655c84cdcc421d49d470f354012319a",
+    "dev/design/work-budgets.md": "66f5ad6fe7cca7c3fde1cb6a1edf4acfe204388bb28a3a26da419a49107ced98",
+    "univariateML-cpp/include/cppunivariate/distributions/README_SCHEMA.md": "d41be3a395cff2a34b208434444870722c3aa53c1dfe1e9f9e513f935a12620e",
+    "univariateML-cpp/include/cppunivariate/distributions/pig/README.md": "372efdb4e6705ff02001f72391d4f462d8996de0aaf8122fb6ff3d18d82b5e26",
+    "univariateML-cpp/include/cppunivariate/distributions/frechet/README.md": "87d12a3505a257fac44a2adeb82c4eb5fa221e3e10702797113101d165953b6f",
+    "univariateML-cpp/include/cppunivariate/distributions/nbinom/README.md": "d904451e9b6df5a64fbb2a252a2e0a5d2538e5af168a589d0d4914733e231ab8",
+    "univariateML-cpp/include/cppunivariate/distributions/sged/README.md": "095cd8d1191a08b020a54bd04cafc5a11fd8465453e8fac353a6b7da541baa63",
+    "univariateML-cpp/include/cppunivariate/distributions/betapr/README.md": "ac12dc313e4bcd21e924a4b9f0f163ea2e4347ca3a3aa9dc58f813cb98f1c21f",
+    "univariateML-cpp/include/cppunivariate/distributions/bbinom/README.md": "c7c41c254cead5a718656b7115d2804648496d6d3d16089ed1dca7c6000f2177",
+    "dev/research/evaluations/2026-11-06-pig-cert-report.md": "7ce00d3549a1f9df25b6891d0c51621646297ed382e208206a095e82f327ab9c",
+    "dev/research/evaluations/2026-11-07-evt-scalar-report.md": "73bcd6a2c3c088db614bfd5d486e27503b436dbce4c9b0aa6d8853360abf22f2",
+    "dev/research/evaluations/2026-11-07-nb-proof-report.md": "88e2f5f558b872859549d0dfdf23f2fc25e419612e1b6cbd3ea5bcfda94e6554",
+    "dev/research/evaluations/2026-11-07-sged-subunit-report.md": "2bef3e262e20a0b264c063b58da627cfb21f8535e0d39413b245a386933a1967",
+    "dev/research/evaluations/2026-11-07-betapr-prof-report.md": "58741c80746284e7bf180c6d1d8b89a8f3536d218bf9d072087945377e08d53f",
+    "dev/research/evaluations/2026-11-08-betapr-joint-report.md": "94c8240d3af3f9133a9a26429603c38281790a48a51e9550c2d19b88df13a098",
+    "dev/research/evaluations/2026-11-07-bbinom-face-report.md": "49a2480803c1945bed7ea3a4466de5c6d13d3503c53b423fb50b8a1e67a2ab3d",
+    "univariateML-cpp/include/cppunivariate/distributions/betapr/certificate.hpp": "a12261f5a0d5190e4007288acb55f47006b42a4cf8f867ca19d48bb985c9d6de",
+    "dev/research/evaluations/2026-11-06-pig-cert-data/concavity-proof.md": "706b7aa23368239158ebb085958890beaaa0d8ebd44970e35d23c2a7ed863531",
+    "dev/research/evaluations/2026-10-29-pig/analysis.md": "4838af36bb5f178d23f9674e0d19e77498c9724af386ee023e2139f0128f86ab",
+    "dev/research/evaluations/2026-11-07-betapr-prof-data/counterexample-refined.json": "36222a1cb59bcc5ecf8bcdccce17267a0859aca5eb09a0641f55187664f93457"
+  },
+  "logs": {
+    "check.log.gz": {
+      "uncompressed_sha256": "7b49e4b1bb0e3b41714b456b002cf5c83bfa11bd8842f1531839cbd2ad9ec8b5",
+      "bytes": 144
+    },
+    "simbox-cpp-double.log.gz": {
+      "uncompressed_sha256": "4c10e247a3973c69926c27ffd34c2de6f522a62a3c4f2522746e20733a170ef3",
+      "bytes": 194478
+    },
+    "simbox-r-dev.log.gz": {
+      "uncompressed_sha256": "7765366b4764c8efb754bdfe3bb7e09ea99583b11d910d7418678f5bcd2d553b",
+      "bytes": 251770
+    },
+    "simbox-r-full.log.gz": {
+      "uncompressed_sha256": "811f3857300825929328e6d82ca3ef8c9dbf37bf38679138f17b0216938931f5",
+      "bytes": 582826
+    },
+    "workstation-boundaries.log.gz": {
+      "uncompressed_sha256": "d755f390fb6fd3e176429aefb296c2394e9aa321af7711444a8475730fab5240",
+      "bytes": 1531
+    },
+    "workstation-check.log.gz": {
+      "uncompressed_sha256": "ad4ba2d58cf61034c57eb00894c44aa10e17f687de6b867f81b2851da43c9c56",
+      "bytes": 145
+    },
+    "workstation-cpp-dev.log.gz": {
+      "uncompressed_sha256": "8bfed8bb1a515a4a5c07bbde9c61ad23fbd710b3f9d9e6768e1353309af568e9",
+      "bytes": 177501
+    },
+    "workstation-cpp-double.log.gz": {
+      "uncompressed_sha256": "ff71d4f944e4f79f6c0eaf3a7ca211b9eb471b84a196ff6176d5cfee2127316f",
+      "bytes": 192642
+    },
+    "workstation-cpp-full.log.gz": {
+      "uncompressed_sha256": "dfb3e91501387d4ae407abc67632d83fdfbf1dd0adc3d1167e4417cdef0f28dc",
+      "bytes": 15536
+    },
+    "workstation-final.log.gz": {
+      "uncompressed_sha256": "aa2bf92a47dcdf88a6346c11c64affd9e2b3557eceec8bb4aed1741ac44c6ab1",
+      "bytes": 4184
+    },
+    "workstation-r-dev.log.gz": {
+      "uncompressed_sha256": "09393f78ee194632e242e4f7063b73ea0461a01370d8d1b19fd9266c8114c219",
+      "bytes": 501035
+    },
+    "workstation-r-full.log.gz": {
+      "uncompressed_sha256": "1512f8d1d8931712859032a07ea86ba47e09c946b5c55191f0aa9e6d0f7710c5",
+      "bytes": 424409
+    }
+  },
+  "AEE": {
+    "url": "https://stacks.stanford.edu/file/druid:gy645ty0351/gy645ty0351_OLK-NSF-282.pdf",
+    "sha256": "c72d3287383342be240aaa46396ca9dd034925142851d0670671cdcc9cd8868a",
+    "bytes": 272448,
+    "inspected": "PDF pages 5, 8, 9; printed pages 3, 6, 7. Equation (4) and Case 3 cancellation read directly from page images.",
+    "retention": "Copyrighted PDF and page images only in ignored build/scratch/proof-audit; not part of the deliverable."
+  },
+  "numerical_results": {
+    "results.json": "4a5505bbcf6946c21e91bd395cec3de274c47092bfb5de8d48237804daeafe70",
+    "boundaries.json": "9840378ef7bee02cce16b50708d641e61f527f4776e38179f38567b43542752c"
+  },
+  "audit_scripts": {
+    "boundaries.py": "d970dbfc5167c2595cb080e059b30488c8e87cb92ff3c965e801f983c899848b",
+    "check.py": "65091dd917df21cf1e8c014cfc32ca51336aa91183c039c0fc4bec141aa2fb73",
+    "record.py": "f2410bc3e09baadead10fcc4205f9cf526b92a4a8e7303c1271a5ae1c331a63f",
+    "validate.py": "96030b88d7a7bc0d2553f2f8647fee4f8e9854e97ea1ddddce12775d27b7b4c7",
+    "local-check.sh": "89cda624bd7b98baf294a001d7071fa5288888039b453551e5345aacfcedbd84",
+    "remote-check.sh": "e95205e904b6a84ec7917833fc874b1f32f402c5b716f5e143f6b69b9011fa49",
+    "remote-suite.sh": "e4ac1dd1424dadd55049b400b6ebf89c754e734f0986df547435cef58bc26d43",
+    "simbox-final.sh": "bf6005880f07c3e0995dc5a4cb8131f78bf99ca9d4487f7cde1af335b78c210b",
+    "suite.sh": "4149352f8f6d0293413305d423b155a31c0615be6e4dce6e4284b005ace1612d",
+    "workstation-final.sh": "c00866eaf3f284feb9f194d21ed30c5bcc7568b87802ed7135c25f468916fd5b",
+    "single-thread.R": "fcda9cb0da26b9c3129b34c35bd70fd45915039b854b6367dfaf8001307a56c6"
+  }
+}

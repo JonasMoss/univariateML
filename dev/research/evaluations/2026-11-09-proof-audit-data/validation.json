@@ -1,0 +1,58 @@
+{
+  "result": "PASS",
+  "report_sha256": "5963560752e46f99a49b0bb311b094e7953b48a3582c4c7ed5852f64250b8e23",
+  "source_revision": "e638713c52ee730ef0ba2ce483fd79d1053c3900",
+  "recorded_main_comparisons": 56036,
+  "cover_cells": 150,
+  "recorded_boundary_comparisons": 1070,
+  "root_brackets": 160,
+  "suites": [
+    {
+      "machine": "workstation",
+      "suite": "cpp-dev",
+      "shards": 106
+    },
+    {
+      "machine": "workstation",
+      "suite": "cpp-full",
+      "shards": 129
+    },
+    {
+      "machine": "workstation",
+      "suite": "cpp-double",
+      "shards": 129
+    },
+    {
+      "machine": "workstation",
+      "suite": "r-dev",
+      "pass": 22218,
+      "skip": 154,
+      "fail": 0,
+      "warn": 0
+    },
+    {
+      "machine": "simbox",
+      "suite": "r-dev",
+      "pass": 22218,
+      "skip": 154,
+      "fail": 0,
+      "warn": 0
+    },
+    {
+      "machine": "simbox",
+      "suite": "r-full",
+      "pass": 45053,
+      "skip": 0,
+      "fail": 0,
+      "warn": 0
+    },
+    {
+      "machine": "simbox",
+      "suite": "cpp-double",
+      "shards": 129
+    }
+  ],
+  "local_links_checked": 32,
+  "production_diff": "empty",
+  "audit_script_count": 11
+}
