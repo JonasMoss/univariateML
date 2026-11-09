@@ -11,17 +11,35 @@ namespace cppunivariate {
 enum class SlashStatus { Ok, Unbounded, CollapseLimit, InvalidInput, IterationFailure };
 struct SlashResult {double mu,sigma,logLik;int iterations;SlashStatus status;StopDetail stop_detail{};bool budget_exhausted=false;};
 namespace slash_detail {
-// Evaluate on the original observations again after affine back-transformation:
-// subnormal rounding of the returned scale can invalidate an internal root.
+// A scale-score pass uses only log distances. Keep their subtraction and
+// summation order identical to the uncached expression, including zeros and
+// overflow-safe opposite-sign distances.
+struct ScaleScore {
+  std::vector<double> log_distance;
+  template <typename Sample>
+  ScaleScore(const Sample& x,double m) {
+    log_distance.reserve(x.size());
+    for(double v:x)log_distance.push_back(distributions::slash_log_distance_cached(v,m,0));
+  }
+  double operator()(double log_s) const {
+    double g=0;
+    for(double d:log_distance) {
+      const double logt=2*(d-log_s)-std::log(2.0);
+      // The saturated branch is exactly one in binary64; do not evaluate
+      // exp merely to discover that branch. Compare at 4, the old clamp,
+      // rather than at log(42), to avoid changing a switch comparison.
+      if(logt>=4){g+=1;continue;}
+      const double t=std::exp(logt);
+      g+=t<1e-7?-1+t-t*t/6:(t>=42?1:1-2*t/std::expm1(t));
+    }
+    return g;
+  }
+};
+// Re-evaluate after affine back-transformation: subnormal rounding of the
+// returned scale can invalidate an internal root.
 template <typename Sample>
 inline double scale_score(const Sample& x,double m,double log_s) {
-  double g=0;
-  for(double v:x) {
-    const double logt=2*distributions::slash_log_distance_cached(v,m,log_s)-std::log(2.0);
-    const double t=std::exp(std::min(logt,4.0));
-    g+=t<1e-7?-1+t-t*t/6:(t>=42?1:1-2*t/std::expm1(t));
-  }
-  return g;
+  return ScaleScore(x,m)(log_s);
 }
 struct Profile {
   const std::vector<double>& x; double held; int maxit=65;
@@ -33,17 +51,7 @@ struct Profile {
       // bracket the unique scale maximum; the gate uses the represented scale.
       const double lower=std::log(std::numeric_limits<double>::denorm_min()),upper=std::log(std::numeric_limits<double>::max());
       double lo=std::max(lower,-350.0),hi=std::min(upper,static_cast<double>(std::log(radius))+1);
-      std::vector<double> log_distance;log_distance.reserve(x.size());
-      for(double v:x)log_distance.push_back(distributions::slash_log_distance_cached(v,m,0));
-      auto score=[&](double mid){
-        double g=0;
-        for(double d:log_distance) {
-          const double logt=2*(d-mid)-std::log(2.0);
-          const double t=std::exp(std::min(logt,4.0));
-          g+=t<1e-7?-1+t-t*t/6:(t>=42?1:1-2*t/std::expm1(t));
-        }
-        return g;
-      };
+      const ScaleScore score{x,m};
       double step=32;for(std::int64_t bracket_pass=0; bracket_pass<solver_budget(maxit) && (score(lo)<=0 && lo>lower); ++bracket_pass){lo=std::max(lower,lo-step);step*=2;}
       step=32;for(std::int64_t bracket_pass=0; bracket_pass<solver_budget(maxit) && (score(hi)>=0 && hi<upper); ++bracket_pass){hi=std::min(upper,hi+step);step*=2;}
       if(!(score(lo)>0 && score(hi)<0))return {m,s,-INFINITY,0,SlashStatus::IterationFailure};
@@ -136,20 +144,24 @@ inline bool certify_held(const Profile& p,const std::vector<double>& grid,
 
 // Score bracket for a vector of nonnegative residuals. The log likelihood is
 // n-Lipschitz in log scale, so the final bracket also bounds root error.
-inline bool residual_root(const std::vector<double>& d,double& lo,double& hi,int maxit=200) {
+inline bool residual_root(const ScaleScore& score,double& lo,double& hi,int maxit=200) {
   maxit = static_cast<int>(solver_budget(maxit));
   lo=-740;hi=710;
-  if(!(scale_score(d,0,lo)>0 && scale_score(d,0,hi)<0))return false;
+  if(!(score(lo)>0 && score(hi)<0))return false;
   for(int j=0;j<maxit;++j) {
     const double mid=lo/2+hi/2;
     if(mid==lo||mid==hi)break;
-    if(scale_score(d,0,mid)>0)lo=mid;else hi=mid;
+    if(score(mid)>0)lo=mid;else hi=mid;
   }
   return true;
 }
 
+inline bool residual_root(const std::vector<double>& d,double& lo,double& hi,int maxit=200) {
+  return residual_root(ScaleScore(d,0),lo,hi,maxit);
+}
+
 // A pointwise density bound, including the finite half-mass scale limit.
-inline double residual_upper(const std::vector<double>& d,int maxit=200) {
+inline double residual_upper(const std::vector<double>& d,const ScaleScore& score,int maxit=200) {
   maxit = static_cast<int>(solver_budget(maxit));
   const std::size_t n=d.size(),k=std::count(d.begin(),d.end(),0.0);
   if(2*k>n)return INFINITY;
@@ -159,11 +171,15 @@ inline double residual_upper(const std::vector<double>& d,int maxit=200) {
     return v;
   }
   double lo,hi;
-  if(!residual_root(d,lo,hi,maxit))return INFINITY;
+  if(!residual_root(score,lo,hi,maxit))return INFINITY;
   const double z=lo/2+hi/2,s=std::exp(z);
   if(!(s>0&&std::isfinite(s)))return INFINITY;
   double v=0;for(double a:d)v+=distributions::slash_log_density_cached(a,0,s,z);
   return v+n*(hi-lo);
+}
+
+inline double residual_upper(const std::vector<double>& d,int maxit=200) {
+  return residual_upper(d,ScaleScore(d,0),maxit);
 }
 
 inline bool certify_free(const Profile& p,const std::vector<double>& grid,const std::vector<double>& ll,
@@ -188,12 +204,13 @@ inline bool certify_free(const Profile& p,const std::vector<double>& grid,const 
       near.push_back(x<q.lo?q.lo-x:(x>q.hi?x-q.hi:0));
       far.push_back(std::max(std::abs(x-q.lo),std::abs(x-q.hi)));
     }
+    const ScaleScore near_score{near,0};
     const double raw_margin=1e-9*(1+std::abs(best.logLik-offset));
     const double margin=std::isfinite(boundary)?std::min(raw_margin,1e-9*n):raw_margin;
     const double cutoff=best.logLik<=boundary+1e-8*n?boundary+1e-8*n:best.logLik+margin;
     double lower=best.sigma/2;
-    for(int j=0;j<p.maxit&&lower>0&&scale_score(near,0,std::log(lower))<=0;++j)lower/=2;
-    const bool have_lower=lower>0&&scale_score(near,0,std::log(lower))>0;
+    for(int j=0;j<p.maxit&&lower>0&&near_score(std::log(lower))<=0;++j)lower/=2;
+    const bool have_lower=lower>0&&near_score(std::log(lower))>0;
     if(have_lower) {
       const double lip=n*1.4142135623730951/lower,width=q.hi-q.lo;
       const double err=n*1500*std::ldexp(1.0,-p.maxit);
@@ -204,7 +221,7 @@ inline bool certify_free(const Profile& p,const std::vector<double>& grid,const 
         bound=std::min(bound,std::max(std::max(q.flo,q.fhi),(q.flo/2+q.fhi/2)+lip*width/2)+err);
       if(bound<=cutoff)continue;
     }
-    double upper=have_lower?INFINITY:residual_upper(near,p.maxit);
+    double upper=have_lower?INFINITY:residual_upper(near,near_score,p.maxit);
     if(upper<=cutoff)continue;
     if(!(mid>q.lo&&mid<q.hi))return false;
     const auto f=p(mid);
@@ -212,10 +229,11 @@ inline bool certify_free(const Profile& p,const std::vector<double>& grid,const 
     if(f.logLik>best.logLik+1e-12*(1+std::abs(best.logLik))){best=f;polish_lo=q.lo;polish_hi=q.hi;}
     // Establish uniform scale bounds by score signs for the closest and
     // furthest residual vectors. Failure only disables this sharper bound.
+    const ScaleScore far_score{far,0};
     double sl=f.sigma/2,sh=f.sigma*2;
-    for(int j=0;j<p.maxit&&sl>0&&scale_score(near,0,std::log(sl))<=0;++j)sl/=2;
-    for(int j=0;j<p.maxit&&std::isfinite(sh)&&scale_score(far,0,std::log(sh))>=0;++j)sh*=2;
-    if(sl>0&&std::isfinite(sh)&&scale_score(near,0,std::log(sl))>0&&scale_score(far,0,std::log(sh))<0) {
+    for(int j=0;j<p.maxit&&sl>0&&near_score(std::log(sl))<=0;++j)sl/=2;
+    for(int j=0;j<p.maxit&&std::isfinite(sh)&&far_score(std::log(sh))>=0;++j)sh*=2;
+    if(sl>0&&std::isfinite(sh)&&near_score(std::log(sl))>0&&far_score(std::log(sh))<0) {
       double slope=0,curv=0,cross=0,info=0;
       for(std::size_t i=0;i<p.x.size();++i) {
         const double z=(p.x[i]-mid)/f.sigma,t=z*z/2;
@@ -244,7 +262,7 @@ inline bool certify_free(const Profile& p,const std::vector<double>& grid,const 
     const double current_margin=std::isfinite(boundary)?std::min(current_raw,1e-9*n):current_raw;
     const double current_cutoff=best.logLik<=boundary+1e-8*n?boundary+1e-8*n:best.logLik+current_margin;
     if(upper<=current_cutoff)continue;
-    if(have_lower && residual_upper(near,p.maxit)<=current_cutoff)continue;
+    if(have_lower && residual_upper(near,near_score,p.maxit)<=current_cutoff)continue;
     stack.push_back({q.lo,mid,q.flo,f.logLik});stack.push_back({mid,q.hi,f.logLik,q.fhi});
   }
   return true;

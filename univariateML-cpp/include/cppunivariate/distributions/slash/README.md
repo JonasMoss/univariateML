@@ -252,3 +252,11 @@ The free-scale profile caches each observation's log distance from the
 current location before bracketing and bisecting its scale root. The cached
 distances are reused only at that location; score signs, brackets, stopping
 rules and the location certificate are unchanged.
+
+Subtracting zero from a cached log distance is exact in binary64; the
+subsequent subtraction of log scale and ordered score sum therefore reproduce
+the uncached computation. At `log(t) >= 4`, the previous clamped argument gives
+`exp(4) > 42`, so the score term is exactly one without exponentiation.
+[Paired records](../../../../../dev/research/evaluations/2026-11-09-slash-perf-data/benchmark.py)
+test this arithmetic identity and its fit-level consequences for every held
+subset.
