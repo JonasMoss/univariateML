@@ -1,0 +1,7 @@
+{
+  "status": 403,
+  "reason": "Worktree is outside the artifact viewer readable roots. Register this worktree in the viewer configuration to display it.",
+  "report": "dev/research/evaluations/2026-11-08-tlambda-speed-impl-report.md",
+  "viewer_configuration_changed": false,
+  "other_checkouts_changed": false
+}

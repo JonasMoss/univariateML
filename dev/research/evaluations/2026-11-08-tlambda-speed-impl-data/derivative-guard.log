@@ -1,0 +1,19 @@
+In file included from univariateML-cpp/include/cppunivariate/distributions/tlambda/dpqr.hpp:3,
+                 from univariateML-cpp/include/cppunivariate/distributions/tlambda/mle.hpp:4,
+                 from dev/research/evaluations/2026-11-08-tlambda-speed-impl-data/extended.cpp:4:
+univariateML-cpp/include/cppunivariate/distributions/tlambda/../../special/tails.hpp:377:15: warning: inline function ‘double cppunivariate::special::gamma_p(double, double)’ used but never defined
+  377 | inline double gamma_p(double a, double x);
+      |               ^~~~~~~
+univariateML-cpp/include/cppunivariate/distributions/tlambda/../../special/tails.hpp:378:15: warning: inline function ‘double cppunivariate::special::gamma_q(double, double)’ used but never defined
+  378 | inline double gamma_q(double a, double x);
+      |               ^~~~~~~
+In file included from univariateML-cpp/include/cppunivariate/distributions/tlambda/dpqr.hpp:3,
+                 from univariateML-cpp/include/cppunivariate/distributions/tlambda/mle.hpp:4,
+                 from dev/research/evaluations/2026-11-08-tlambda-speed-impl-data/derivative_guard.cpp:1:
+univariateML-cpp/include/cppunivariate/distributions/tlambda/../../special/tails.hpp:377:15: warning: inline function ‘double cppunivariate::special::gamma_p(double, double)’ used but never defined
+  377 | inline double gamma_p(double a, double x);
+      |               ^~~~~~~
+univariateML-cpp/include/cppunivariate/distributions/tlambda/../../special/tails.hpp:378:15: warning: inline function ‘double cppunivariate::special::gamma_q(double, double)’ used but never defined
+  378 | inline double gamma_q(double a, double x);
+      |               ^~~~~~~
+PASS: finite likelihood 708.396; nonfinite derivatives rejected before damping, iterations=0

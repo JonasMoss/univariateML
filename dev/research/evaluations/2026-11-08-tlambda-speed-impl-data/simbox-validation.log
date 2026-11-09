@@ -1,0 +1,80 @@
+univariateML-cpp/include/cppunivariate/distributions/tlambda/mle.hpp: OK
+univariateML-cpp/include/cppunivariate/distributions/tlambda/profile.hpp: OK
+univariateML-cpp/include/cppunivariate/distributions/tlambda/fit_inverse.hpp: OK
+univariateML-cpp/include/cppunivariate/distributions/tlambda/certificate.hpp: OK
+univariateML-cpp/include/cppunivariate/distributions/tlambda/dpqr.hpp: OK
+univariateML-cpp/include/cppunivariate/distributions/tlambda/test.cpp: OK
+univariateML-cpp/include/cppunivariate/distributions/tlambda/README.md: OK
+univariateML-cpp/include/cppunivariate/distributions/tlambda/golden.json: OK
+bindings/r/tests/testthat/test_frozen.R: OK
+bindings/js/fit-test.mjs: OK
+univariateML-cpp/include/cppunivariate/distributions/tlambda/mle.hpp: OK
+univariateML-cpp/include/cppunivariate/distributions/tlambda/profile.hpp: OK
+univariateML-cpp/include/cppunivariate/distributions/tlambda/fit_inverse.hpp: OK
+univariateML-cpp/include/cppunivariate/distributions/tlambda/certificate.hpp: OK
+univariateML-cpp/include/cppunivariate/distributions/tlambda/dpqr.hpp: OK
+univariateML-cpp/include/cppunivariate/distributions/tlambda/test.cpp: OK
+univariateML-cpp/include/cppunivariate/distributions/tlambda/README.md: OK
+univariateML-cpp/include/cppunivariate/distributions/tlambda/golden.json: OK
+bindings/r/tests/testthat/test_frozen.R: OK
+bindings/js/fit-test.mjs: OK
+102/106 Test #126: no_throw_tests ...................   Passed    0.00 sec
+        Start 128: tails_tests
+103/106 Test #128: tails_tests ......................   Passed    0.00 sec
+104/106 Test   #2: sample_tests .....................   Passed    0.01 sec
+105/106 Test  #24: distribution_exp .................   Passed    0.02 sec
+106/106 Test #106: distribution_unif ................   Passed    0.02 sec
+
+100% tests passed out of 106
+
+Label Time Summary:
+cran    = 267.79 sec*proc (105 tests)
+dev     = 269.37 sec*proc (106 tests)
+full    = 269.37 sec*proc (106 tests)
+
+Total Test time (real) =  67.35 sec
+125/129 Test   #1: bfgs_tests .......................   Passed    0.00 sec
+        Start 128: tails_tests
+126/129 Test #126: no_throw_tests ...................   Passed    0.00 sec
+127/129 Test #128: tails_tests ......................   Passed    0.00 sec
+128/129 Test #125: distribution_support .............   Passed    0.00 sec
+129/129 Test #101: distribution_tlambda_slow ........   Passed  160.39 sec
+
+100% tests passed out of 129
+
+Label Time Summary:
+cran    = 220.78 sec*proc (105 tests)
+dev     = 222.28 sec*proc (106 tests)
+full    = 426.05 sec*proc (129 tests)
+
+Total Test time (real) = 160.40 sec
+  'test-dist-zmbinom.R:115:3', 'test-dist-zipf.R:117:3',
+  'test-dist-zmgeom.R:2:3', 'test-dist-zmgeom.R:36:3',
+  'test-dist-zmlogarithmic.R:2:3', 'test-dist-zmlogarithmic.R:36:3',
+  'test-dist-zmnbinom.R:2:3', 'test-dist-zmpois.R:2:3',
+  'test-dist-zmnbinom.R:60:3', 'test-dist-zmpois.R:36:3',
+  'test-dist-zmnbinom.R:75:3', 'test-dist-ztbinom.R:2:3',
+  'test-dist-ztbinom.R:49:3', 'test-dist-ztbinom.R:91:3',
+  'test-dist-ztgeom.R:2:3', 'test-dist-ztgeom.R:33:3',
+  'test-dist-ztnbinom.R:2:3', 'test-dist-ztpois.R:2:3',
+  'test-dist-ztpois.R:33:3', 'test-dist-ztnbinom.R:57:3',
+  'test-dist-ztnbinom.R:72:3'
+
+[ FAIL 0 | WARN 0 | SKIP 154 | PASS 22079 ]
+   user  system elapsed 
+299.129   3.355  72.807 
+⠧ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44866 ] @ dist-sged                         
+⠇ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44866 ] @ dist-sged                         
+⠏ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44866 ] @ dist-sged                         
+⠋ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44869 ] @ dist-sged                         
+⠙ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44872 ] @ dist-sged                         
+✔ |        921 | dist-sged [198.5s]                                             
+
+⠹ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44911 ] Starting up...                      
+                                                                                
+══ Results ═════════════════════════════════════════════════════════════════════
+Duration: 291.3 s
+
+[ FAIL 0 | WARN 0 | SKIP 0 | PASS 44911 ]
+   user  system elapsed 
+857.568   5.848 293.747 
