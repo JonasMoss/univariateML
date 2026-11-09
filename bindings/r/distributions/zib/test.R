@@ -316,3 +316,16 @@ test_that("zib log half respects the exact side of a two-point jump", {
   expect_equal(qml(log(.5),model,log.p=TRUE),10)
   expect_equal(qml(log(.5),model,lower.tail=FALSE,log.p=TRUE),0)
 })
+
+test_that("zib preserves unresolved stops at both adjacent critical inflations", {
+  x <- c(0,0,0,0,0,1,1,2,2,4)
+  for (pi in c(.3772146069463776,.37721460694637765)) {
+    e <- tryCatch(mlzib(x,size=NULL,pi=pi),error=identity)
+    expect_s3_class(e,"univariateML_unresolved")
+    expect_identical(e$kind,"unresolved")
+    expect_identical(e$model,"zip")
+    expect_equal(unname(e$estimates["pi"]),pi,tolerance=0)
+    expect_equal(e$loglik_upper,Inf)
+    expect_gte(nrow(e$candidates),2)
+  }
+})

@@ -1,0 +1,33 @@
+{
+  "finite": {
+    "n": 2319457.0,
+    "status": 0.0,
+    "size": 7.0,
+    "prob": 0.4471565933560298,
+    "logLik": -3379063.9196042535,
+    "upper": null,
+    "comparison": 0.0,
+    "cutoff": 907.0,
+    "cells": 3946841.0,
+    "budget": 0.0,
+    "ms": 12839.300334
+  },
+  "face": {
+    "n": 445970.0,
+    "status": 6.0,
+    "size": 669.0,
+    "prob": 0.008918131129957442,
+    "logLik": -546802.8936551434,
+    "upper": -546802.8936451954,
+    "comparison": 0.0,
+    "cutoff": 26593.0,
+    "cells": 11163059.0,
+    "budget": 0.0,
+    "ms": 2109.564133
+  },
+  "relative_probability_error": 2.5579538487363607e-12,
+  "relative_loglik_error": 2.220446049250313e-16,
+  "append_only_tests": true,
+  "unchanged_goldens": true,
+  "report_links": 30
+}

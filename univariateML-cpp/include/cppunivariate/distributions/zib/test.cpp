@@ -425,3 +425,30 @@ TEST_CASE("zib: log half stays on the exact side of a two-point jump") {
   CHECK(cppunivariate::distributions::qzib(-0.69314718055994530942,10,1,.5,true,true)==10);
   CHECK(cppunivariate::distributions::qzib(-0.69314718055994530942,10,1,.5,false,true)==0);
 }
+
+TEST_CASE("zib: adjacent near-critical binary64 inflations retain unresolved comparisons") {
+  const std::vector<int>x{0,0,0,0,0,1,1,2,2,4};
+  for(double pi : {.3772146069463776,.37721460694637765}) {
+    const auto f=cppunivariate::zib_mle({x.data(),x.size()},1e-10,200,NAN,NAN,pi);
+    CHECK(f.status!=cppunivariate::ZibStatus::Ok);
+    CHECK(f.stop_detail.limit_model==cppunivariate::StopModel::Zip);
+    CHECK(f.stop_detail.limit_coef[1]==pi);
+    CHECK(f.stop_detail.comparison_tie);
+    CHECK(f.stop_detail.loglik_upper==INFINITY);
+    CHECK_FALSE(f.stop_detail.budget_exhausted);
+    CHECK(f.stop_detail.candidates.size()>=2);
+  }
+}
+
+TEST_CASE("zib: large held evaluator and quantile remain consistent") {
+  const std::vector<int>x{0,1,2,3,4};
+  const auto f=cppunivariate::zib_mle({x.data(),x.size()},1e-10,200,1e100,NAN,.2);
+  REQUIRE(f.status==cppunivariate::ZibStatus::Ok);
+  double ll=0;for(int v:x)ll+=cppunivariate::distributions::dzib(v,f.size,f.prob,f.pi,true);
+  CHECK(ll==doctest::Approx(f.logLik).epsilon(1e-10));
+  for(double p : {.01,.5,.99}) {
+    const double q=cppunivariate::distributions::qzib(p,100,.02,.2);
+    CHECK(cppunivariate::distributions::pzib(q,100,.02,.2)>=p);
+    if(q>0)CHECK(cppunivariate::distributions::pzib(q-1,100,.02,.2)<p);
+  }
+}

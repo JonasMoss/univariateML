@@ -35,7 +35,7 @@ inline FitResult fit_tbinom(cppunivariate::ispan x, Held prob_arg = {}, Held a_a
   if(r.stop_detail.budget_exhausted)stop_kind="budget";
   if(stop_kind.empty() && !r.stop_detail.candidates.empty())stop_kind="numerical";
   const auto stopped_fail = [&](const std::string& format, const auto&... arguments) {
-    auto out=fail(stop_kind=="unresolved" ? "Finite-size versus limit comparison is unresolved; no maximizer is certified. Use `mltpois` only to fit the comparison face." : binding_message(format,arguments...));
+    auto out=fail(stop_kind=="unresolved" ? "Global likelihood comparison is unresolved; no maximizer is certified. Use `mltpois` only to fit the comparison face." : binding_message(format,arguments...));
     return stop_kind.empty()?out:stop_failure(out,r.stop_detail,stop_kind,{"prob","a","b","size"});
   };
 

@@ -1,0 +1,4 @@
+n 2319457 status 5 size 7 prob 0.44715659335717367 logLik -3379063.9197994056 upper inf comparison 0 cutoff 0 cells 0 budget 1 ms 15886.229321999999
+n 445970 status 6 size 669 prob 0.0089181311300051361 logLik -546802.89365413133 upper inf comparison 1 cutoff 0 cells 0 budget 0 ms 2527.158214
+pi 0.3772146069463776 status 3 upper inf comparison 1 ms 10.736812
+pi 0.37721460694637765 status 3 upper inf comparison 1 ms 9.4605289999999993

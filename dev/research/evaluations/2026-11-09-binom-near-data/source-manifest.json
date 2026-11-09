@@ -1,0 +1,11 @@
+{
+  "bindings/common/distributions/tbinom/fit.hpp": "e7b03e8102c34d0e7f06bef8fa35325b66902b8799375139d975df843d5f12ab",
+  "bindings/js/test.mjs": "3ff5ad2ed0e2f0656831e4d5ecae652a6c5eaea77d35224250aff6c687315294",
+  "bindings/r/distributions/tbinom/test.R": "f6f8bf16e0efc126769d5443115e720fe298cfce1a7c926188f5660ec88bdfbc",
+  "bindings/r/distributions/zib/test.R": "9ebe1b013e4782a674b828cd324114b6ae080a9b1be2fddb2486448005972c1a",
+  "univariateML-cpp/include/cppunivariate/distributions/tbinom/README.md": "8223ed6444579b97f288b80f48f1aa3f77183bd751ea57c3eb702322887b82f7",
+  "univariateML-cpp/include/cppunivariate/distributions/tbinom/face_certificate.hpp": "0feda0e73177f4600bb074d0b9e55bff89e972771294d30774956aa402210658",
+  "univariateML-cpp/include/cppunivariate/distributions/tbinom/mle.hpp": "ed0e58ea40447c1e58c6014e36da28b91cd2ef1ca7864d92771b0517c99576bf",
+  "univariateML-cpp/include/cppunivariate/distributions/tbinom/test.cpp": "994512a90076b9732668ebbc442c607fc080851338b7acedce8d79babedb8e45",
+  "univariateML-cpp/include/cppunivariate/distributions/zib/test.cpp": "82d019c3f58a2b9dd5b0e604c0d7311af634e0b1a9e961b9a31186c0c6b67481"
+}
