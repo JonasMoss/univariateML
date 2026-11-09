@@ -1,0 +1,20 @@
+[
+  {
+    "n": 500,
+    "core": 0,
+    "before_cpu_seconds": 1.187991,
+    "before_wall_seconds": 1.18867746,
+    "after_cpu_seconds": 0.677881,
+    "after_wall_seconds": 0.678429386,
+    "cpu_speedup": 1.7525067084045727
+  },
+  {
+    "n": 10000,
+    "core": 0,
+    "before_cpu_seconds": 23.821475,
+    "before_wall_seconds": 23.838082598,
+    "after_cpu_seconds": 14.355462,
+    "after_wall_seconds": 14.358253504,
+    "cpu_speedup": 1.6594014877403458
+  }
+]

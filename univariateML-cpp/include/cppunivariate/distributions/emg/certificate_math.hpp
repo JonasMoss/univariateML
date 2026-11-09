@@ -280,8 +280,8 @@ struct CertRoot {
   double radius=0,error=INFINITY,ll_lower=-INFINITY,ll_upper=INFINITY;
   bool ok=false,accurate=false;
 };
-inline CertRoot cert_validate_root(const CertModel& model,const std::array<double,3>& p,double tol,int maxit) {
-  CertRoot out;out.center=p;out.evaluation=cert_evaluate(model,p);if(!out.evaluation.ok)return out;
+inline CertRoot cert_validate_evaluated_root(const CertModel& model,const std::array<double,3>& p,double tol,int maxit,const CertEvaluation& evaluation) {
+  CertRoot out;out.center=p;out.evaluation=evaluation;if(!out.evaluation.ok)return out;
   if(model.dim==0){out.ok=out.accurate=true;out.ll_lower=out.evaluation.ll-out.evaluation.ll_error;out.ll_upper=out.evaluation.ll+out.evaluation.ll_error;return out;}
   std::array<std::array<double,3>,3> point{},inverse{};
   for(int i=0;i<model.dim;++i)out.scale[i]=(i==model.scale||i==model.shape)?p[i]:std::max(1.,std::abs(p[i]));
@@ -336,11 +336,18 @@ inline CertRoot cert_validate_root(const CertModel& model,const std::array<doubl
   }
   return out;
 }
+inline CertRoot cert_validate_root(const CertModel& model,const std::array<double,3>& p,double tol,int maxit) {
+  return cert_validate_evaluated_root(model,p,tol,maxit,cert_evaluate(model,p));
+}
 inline CertRoot cert_newton(const CertModel& model,std::array<double,3> p,double tol,int maxit) {
   CertRoot last;
+  // The line search already computes every operand needed by the next root
+  // validation and Newton step. Reuse it at exactly the same coordinates;
+  // Hessian-box inclusion and all accuracy/comparison margins are unchanged.
+  auto e=cert_evaluate(model,p);
   for(int it=0;it<solver_budget(maxit);++it) {
-    const auto e=cert_evaluate(model,p);if(!e.ok)return last;
-    auto validated=cert_validate_root(model,p,tol,maxit);
+    if(!e.ok)return last;
+    auto validated=cert_validate_evaluated_root(model,p,tol,maxit,e);
     if(validated.ok&&validated.accurate)return validated;
     if(validated.ok)last=validated;
     std::array<std::array<double,3>,3> h{},inverse{};
@@ -356,7 +363,7 @@ inline CertRoot cert_newton(const CertModel& model,std::array<double,3> p,double
       bool changed=false;for(int i=0;i<model.dim;++i)changed=changed||next[i]!=p[i];
       if(!changed)return last;
       const auto candidate=cert_evaluate(model,next);
-      if(candidate.ok&&candidate.ll>=e.ll-8*std::numeric_limits<double>::epsilon()*(1+std::abs(e.ll))) {p=next;accepted=true;break;}
+      if(candidate.ok&&candidate.ll>=e.ll-8*std::numeric_limits<double>::epsilon()*(1+std::abs(e.ll))) {p=next;e=candidate;accepted=true;break;}
     }
     if(!accepted)return last;
   }

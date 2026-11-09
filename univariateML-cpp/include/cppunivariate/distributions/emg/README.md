@@ -73,7 +73,7 @@ relations:
 fit:
   method: profile-search
   certified: 'yes'
-  note: 'emg/README.md, Details: location-only has a signed root enclosure; the other six subsets use global shape bounds and validated coefficient enclosures; unexcluded normal faces and exhausted or inseparable searches stop with witnesses.'
+  note: 'emg/README.md, Details: location-only has a signed root enclosure; the other six subsets use global shape bounds (including a held-rate inverse-variance chord) and validated coefficient enclosures; unexcluded normal faces and exhausted or inseparable searches stop with witnesses.'
 areas:
 - measurement and errors
 classification: specialist
@@ -144,7 +144,13 @@ likelihood upper bounds. A surviving finite mode needs a Krawczyk score-root
 enclosure accurate in every free physical coefficient, a negative-definite
 Hessian box, and a uniform nuisance-root inclusion across its shape interval.
 These establish a unique global inner optimizer and a strictly concave local
-profile; every other interval must be excluded. Separated surviving modes
+profile; every other interval must be excluded. With physical rate held, writing
+$\tau=1/(\lambda\sigma)^2$ makes the profiled log-likelihood minus
+$n\log(\tau)/2$ convex: the remaining log convolution integral is a log
+Laplace transform. Taking its endpoint chord and restoring the logarithmic
+term bounds every intermediate profile without a residual-dependent curvature
+envelope. The executor takes the
+smaller of this bound and its original shape-curvature bound. Separated surviving modes
 stop as a tie. A normal face without a strictly better finite witness stops
 unresolved unless a global domination proof succeeds. Budget, numerical and
 unresolved stops retain finite and compatible face witnesses.

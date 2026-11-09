@@ -1,0 +1,100 @@
+⠹ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44089 ] @ dist-sged                         
+⠸ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44089 ] @ dist-sged                         
+⠼ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44089 ] @ dist-sged                         
+⠴ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44089 ] @ dist-sged                         
+⠦ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44089 ] @ dist-sged                         
+⠧ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44089 ] @ dist-sged                         
+⠇ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44089 ] @ dist-sged                         
+⠏ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44089 ] @ dist-sged                         
+⠋ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44089 ] @ dist-sged                         
+⠙ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44089 ] @ dist-sged                         
+⠹ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44089 ] @ dist-sged                         
+⠸ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44089 ] @ dist-sged                         
+⠼ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44089 ] @ dist-sged                         
+⠴ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44089 ] @ dist-sged                         
+⠦ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44089 ] @ dist-sged                         
+⠧ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44089 ] @ dist-sged                         
+⠇ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44089 ] @ dist-sged                         
+⠏ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44089 ] @ dist-sged                         
+⠋ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44089 ] @ dist-sged                         
+⠙ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44089 ] @ dist-sged                         
+⠹ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44089 ] @ dist-sged                         
+⠸ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44089 ] @ dist-sged                         
+⠼ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44089 ] @ dist-sged                         
+⠴ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44089 ] @ dist-sged                         
+⠦ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44089 ] @ dist-sged                         
+⠧ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44089 ] @ dist-sged                         
+⠇ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44089 ] @ dist-sged                         
+⠏ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44089 ] @ dist-sged                         
+⠋ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44089 ] @ dist-sged                         
+⠙ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44089 ] @ dist-sged                         
+⠹ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44089 ] @ dist-sged                         
+⠸ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44089 ] @ dist-sged                         
+⠼ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44089 ] @ dist-sged                         
+⠴ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44089 ] @ dist-sged                         
+⠦ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44089 ] @ dist-sged                         
+⠧ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44089 ] @ dist-sged                         
+⠇ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44089 ] @ dist-sged                         
+⠏ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44089 ] @ dist-sged                         
+⠋ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44089 ] @ dist-sged                         
+⠙ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44089 ] @ dist-sged                         
+⠹ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44089 ] @ dist-sged                         
+⠸ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44089 ] @ dist-sged                         
+⠼ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44089 ] @ dist-sged                         
+⠴ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44089 ] @ dist-sged                         
+⠦ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44089 ] @ dist-sged                         
+⠧ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44143 ] @ dist-sged                         
+⠇ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44143 ] @ dist-sged                         
+⠏ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44372 ] @ dist-sged                         
+⠋ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44450 ] @ dist-sged                         
+⠙ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44452 ] @ dist-sged                         
+⠹ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44468 ] @ dist-sged                         
+⠸ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44472 ] @ dist-sged                         
+⠼ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44478 ] @ dist-sged                         
+⠴ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44504 ] @ dist-sged                         
+⠦ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44548 ] @ dist-sged                         
+⠧ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44567 ] @ dist-sged                         
+⠇ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44611 ] @ dist-sged                         
+⠏ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44630 ] @ dist-sged                         
+⠋ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44633 ] @ dist-sged                         
+⠙ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44683 ] @ dist-sged                         
+⠹ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44686 ] @ dist-sged                         
+⠸ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44693 ] @ dist-sged                         
+⠼ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44723 ] @ dist-sged                         
+⠴ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44887 ] @ dist-sged                         
+⠦ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44887 ] @ dist-sged                         
+⠧ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44887 ] @ dist-sged                         
+⠇ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44887 ] @ dist-sged                         
+⠏ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44887 ] @ dist-sged                         
+⠋ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44897 ] @ dist-sged                         
+⠙ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44897 ] @ dist-sged                         
+⠹ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44897 ] @ dist-sged                         
+⠸ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44897 ] @ dist-sged                         
+⠼ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44897 ] @ dist-sged                         
+⠴ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44938 ] @ dist-sged                         
+⠦ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44938 ] @ dist-sged                         
+⠧ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44938 ] @ dist-sged                         
+⠇ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44938 ] @ dist-sged                         
+⠏ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44938 ] @ dist-sged                         
+⠋ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44938 ] @ dist-sged                         
+⠙ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44938 ] @ dist-sged                         
+⠹ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44940 ] @ dist-sged                         
+⠸ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44940 ] @ dist-sged                         
+⠼ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44940 ] @ dist-sged                         
+⠴ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44940 ] @ dist-sged                         
+⠦ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44940 ] @ dist-sged                         
+⠧ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44940 ] @ dist-sged                         
+⠇ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44940 ] @ dist-sged                         
+⠏ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44943 ] @ dist-sged                         
+✔ |        921 | dist-sged [186.5s]                                             
+
+⠋ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 44985 ] Starting up...                      
+                                                                                
+══ Results ═════════════════════════════════════════════════════════════════════
+Duration: 278.1 s
+
+[ FAIL 0 | WARN 0 | SKIP 0 | PASS 44985 ]
+
+🥇 Your tests deserve a gold medal 🥇
+   user  system elapsed 
+811.294   5.253 280.248 

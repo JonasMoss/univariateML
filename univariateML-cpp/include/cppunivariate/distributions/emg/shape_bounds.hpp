@@ -205,5 +205,31 @@ inline double fixed_rate_shape_chord_upper(double left,double right,span x,doubl
   const double value=static_cast<double>(top+extra+256*std::numeric_limits<double>::epsilon()*(n+std::abs(top)+extra));
   return std::isfinite(value)?value:INFINITY;
 }
+// With physical rate held, tau=1/k^2 gives
+// f(x)=lambda*sqrt(tau/(2*pi))*int_0^inf exp(-y-tau*(d-y)^2/2)dy,
+// d=lambda*(x-mu). The log integral is convex in tau (its second
+// derivative is a variance). Supremizing over the same location domain
+// preserves convexity of P(tau)-n*log(tau)/2. Thus endpoint profile upper
+// bounds plus n/2 times the maximum log-versus-chord gap bound the segment.
+// Unlike the k-curvature bound this needs no residual/location envelope.
+inline double fixed_rate_precision_chord_upper(double left,double right,std::size_t n,double lo,double hi) {
+  if(!(lo>0&&hi>=lo&&std::isfinite(hi))||!std::isfinite(left)||!std::isfinite(right))return INFINITY;
+  const CPPUNIV_EXTENDED_REAL t=2*std::log1p((static_cast<CPPUNIV_EXTENDED_REAL>(hi)-lo)/lo);
+  if(!std::isfinite(t))return INFINITY;
+  CPPUNIV_EXTENDED_REAL gap=0;
+  if(t<=CPPUNIV_EXTENDED_LITERAL(.01,.01L)) {
+    // log''(tau) >= -1/A^2 on [A,B]; avoid cancellation as B/A -> 1.
+    const CPPUNIV_EXTENDED_REAL width=std::expm1(t);
+    gap=width*width/8;
+  } else {
+    const CPPUNIV_EXTENDED_REAL e=std::exp(-t),den=-std::expm1(-t);
+    // The maximum occurs at tau/A=(exp(t)-1)/t. This form avoids exp(t).
+    gap=t+std::log(den)-std::log(t)-1+t*e/den;
+  }
+  if(!std::isfinite(gap))return INFINITY;
+  const CPPUNIV_EXTENDED_REAL top=std::max(left,right),extra=static_cast<CPPUNIV_EXTENDED_REAL>(n)*std::max(CPPUNIV_EXTENDED_LITERAL(0.0,0.0L),gap)/2;
+  const double value=static_cast<double>(top+extra+256*std::numeric_limits<double>::epsilon()*(n+std::abs(top)+extra));
+  return std::isfinite(value)?value:INFINITY;
+}
 }
 }

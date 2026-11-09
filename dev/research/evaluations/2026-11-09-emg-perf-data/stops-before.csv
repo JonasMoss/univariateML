@@ -1,0 +1,14 @@
+case,status,candidates,lower,upper,budget,tie
+exponential-face,2,1,nan,nan,0,0
+signed-normal-face,1,1,nan,nan,0,0
+unresolved-normal-face,8,2,-8.8275606174240355,inf,0,0
+dominated-normal-face,1,1,nan,nan,0,0
+endpoint-multiplicity,2,1,nan,nan,0,0
+constant-unbounded,3,0,nan,nan,0,0
+constant-normal-face,1,1,nan,nan,0,0
+constant-exponential-face,2,1,nan,nan,0,0
+constant-held-endpoint,2,1,nan,nan,0,0
+budget-witness,7,2,-9.5946926660242156,inf,1,0
+invalid-rate,4,0,nan,nan,0,0
+solver-failure,5,3,-848.09281943922838,inf,0,0
+unrepresentable-tolerance,6,4,-846.75971897555394,-846.75971897537113,0,0
