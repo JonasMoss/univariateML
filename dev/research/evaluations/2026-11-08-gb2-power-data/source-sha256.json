@@ -1,0 +1,16 @@
+{
+  "bindings/common/distributions/fpareto/fit.hpp": "931b5655b6a98d00e57af8bfc5debbb9e3ce20b63eb978c4b6cea62271226eec",
+  "bindings/common/distributions/gb2/fit.hpp": "0db0ecd70038bccc3353a3dff0dbc05e5ae0e45622eb04f95e97c0956f115353",
+  "bindings/js/test.mjs": "ed5da6407c5096df0544d92ff8d0f33faf7fedb812209948f22b428c74f49768",
+  "bindings/r/distributions/fpareto/test.R": "c3bd1f31bc6bffc8914e39a94110f3cc0016b9abf98172a07e9244bb7849eb19",
+  "bindings/r/distributions/gb2/test.R": "821599148a97fdf9baff16312d290e3adc9bc1fd7d56ef6ef48988df3a929f4d",
+  "univariateML-cpp/include/cppunivariate/distributions/fpareto/README.md": "6e2bcd42ad73ef989b188f1abf8b9c7fd277858963ea7b7e841f2bbae44b8725",
+  "univariateML-cpp/include/cppunivariate/distributions/fpareto/mle.hpp": "e664ce0cbc812a6dbaeaa519d9256a569a4c0e230e76697a80be8ff18a5ea95c",
+  "univariateML-cpp/include/cppunivariate/distributions/fpareto/test.cpp": "7a38d5329f368156f3f3d1802b47007bc8e17040a64630d605c197088e4a0235",
+  "univariateML-cpp/include/cppunivariate/distributions/gb2/README.md": "ea8fd264004d00a48a0cd4435d430b7e6e42fb60ac5b66cc14bd65445ac13f42",
+  "univariateML-cpp/include/cppunivariate/distributions/gb2/concave_certificate.hpp": "d603acf43a2dbc6a1e2a2e08f3351c62a5a609d1dda159bc15caec286c922061",
+  "univariateML-cpp/include/cppunivariate/distributions/gb2/endpoint_certificate.hpp": "8946a7f7ce15a77916e54ac63bf92b60dd5ce461a5a5bb9b05031cdea2c875b7",
+  "univariateML-cpp/include/cppunivariate/distributions/gb2/mle.hpp": "800d4b2fb7bd1b76176e7ef19b2d610bbec5fb8c6af433e9a3bb83a2cc5c7086",
+  "univariateML-cpp/include/cppunivariate/distributions/gb2/shape_power_certificate.hpp": "a7a1cfcb3b2d017605d8e8ea299e24798987b195db41e15e31320c9eb9d296cc",
+  "univariateML-cpp/include/cppunivariate/distributions/gb2/test.cpp": "c02086be6db497ee6bbea5165becb91f26919b5eac5e60fe8dff44cf4e049346"
+}

@@ -124,3 +124,41 @@ TEST_CASE("Feller Pareto generic budget faces also stay on the excess scale") {
  }
  CHECK(found);
 }
+
+TEST_CASE("Feller Pareto transports held-shape concavity certificate and numerical stop") {
+ const std::vector<double>x{2.03,2.1,2.3,2.7,3,4,7,22};
+ auto y=x;for(double&v:y)v-=2;
+ const auto a=cppunivariate::fpareto_mle(mltest::as_span(x),2,1e-7,300,2,NAN,3,NAN);
+ const auto b=cppunivariate::gb2_mle(mltest::as_span(y),1e-7,300,2,NAN,3,NAN);
+ REQUIRE(a.status==cppunivariate::Gb2Status::Ok);
+ CHECK(a.shape2==b.shape2);CHECK(a.scale==b.scale);CHECK(a.logLik==b.logLik);
+ REQUIRE(a.stop_detail.candidates.size()==1);
+ CHECK(a.stop_detail.candidates[0].coef.size()==5);
+ CHECK(a.stop_detail.candidates[0].coef.back()==2);
+ const auto low=cppunivariate::fpareto_mle(mltest::as_span(x),2,1e-7,1,2,NAN,3,NAN);
+ CHECK(low.status==cppunivariate::Gb2Status::NumericalFailure);
+ CHECK_FALSE(low.stop_detail.budget_exhausted);
+}
+
+TEST_CASE("Feller Pareto subunit held beta shape selects the excess endpoint face") {
+ const std::vector<double>x{2.1,2.2,2.4,2.8};
+ const auto r=cppunivariate::fpareto_mle(mltest::as_span(x),2,1e-7,1,.4,NAN,NAN,1);
+ REQUIRE(r.status==cppunivariate::Gb2Status::PowerBoundary);
+ REQUIRE(r.stop_detail.limit_coef.size()==2);
+ CHECK(r.stop_detail.limit_coef[0]==1);
+ CHECK(r.stop_detail.limit_model==cppunivariate::StopModel::Power);
+ REQUIRE(r.stop_detail.candidates.size()==1);
+ CHECK(r.stop_detail.candidates[0].coef.size()==2);
+}
+
+TEST_CASE("Feller Pareto transports global held-scale mixed-power certificates") {
+ const std::vector<double>x{2.03,2.1,2.3,2.7,3,4,7,22};
+ auto y=x;for(double&v:y)v-=2;
+ const auto r=cppunivariate::fpareto_mle(mltest::as_span(x),2,1e-7,300,2,NAN,NAN,1);
+ const auto s=cppunivariate::gb2_mle(mltest::as_span(y),1e-7,300,2,NAN,NAN,1);
+ REQUIRE(r.status==cppunivariate::Gb2Status::Ok);
+ CHECK(r.shape2==s.shape2);CHECK(r.shape3==s.shape3);CHECK(r.logLik==s.logLik);
+ REQUIRE(r.stop_detail.candidates.size()==1);
+ REQUIRE(r.stop_detail.candidates[0].coef.size()==5);
+ CHECK(r.stop_detail.candidates[0].coef.back()==2);
+}

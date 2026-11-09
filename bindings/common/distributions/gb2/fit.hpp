@@ -23,8 +23,12 @@ inline FitResult fit_gb2(cppunivariate::span x, Held shape1_arg = {}, Held shape
     case cppunivariate::Gb2Status::TrGammaBoundary: return stop_failure(failure("GB2 selects a limiting model. Use `mltrgamma`."),r.stop_detail,"limit",{"shape1","shape2","shape3","scale"},"trgamma");
     case cppunivariate::Gb2Status::InvTrGammaBoundary: return stop_failure(failure("GB2 selects a limiting model. Use `mlinvtrgamma`."),r.stop_detail,"limit",{"shape1","shape2","shape3","scale"},"invtrgamma");
     case cppunivariate::Gb2Status::LognormalBoundary: return failure("GB2 selects a limiting model. Use `mllnorm`.");
-    case cppunivariate::Gb2Status::ParetoBoundary: return stop_failure(failure("GB2 selects a limiting model. Use `mlpareto`."),r.stop_detail,"limit",{"shape1","shape2","shape3","scale"},"pareto");
-    case cppunivariate::Gb2Status::PowerBoundary: return stop_failure(failure("GB2 selects a limiting model. Use `mlpower`."),r.stop_detail,"limit",{"shape1","shape2","shape3","scale"},"power");
+    case cppunivariate::Gb2Status::ParetoBoundary:
+      if(scale_arg.supplied) return stop_failure(failure("GB2 selects a Pareto limit. Use `mlpareto(x, b = scale)` with the endpoint held."),r.stop_detail,"limit",{"shape1","shape2","shape3","scale"},"pareto");
+      return stop_failure(failure("GB2 selects a limiting model. Use `mlpareto`."),r.stop_detail,"limit",{"shape1","shape2","shape3","scale"},"pareto");
+    case cppunivariate::Gb2Status::PowerBoundary:
+      if(scale_arg.supplied) return stop_failure(failure("GB2 selects a power limit. Use `mlpower(x, alpha = scale)` with the upper endpoint held."),r.stop_detail,"limit",{"shape1","shape2","shape3","scale"},"power");
+      return stop_failure(failure("GB2 selects a limiting model. Use `mlpower`."),r.stop_detail,"limit",{"shape1","shape2","shape3","scale"},"power");
     case cppunivariate::Gb2Status::DoubleParetoBoundary: return failure("GB2 selects the double Pareto limit; this package has no double Pareto fitter.");
     case cppunivariate::Gb2Status::InvalidData: return failure("GB2 requires positive finite nonconstant observations; constant data have an unbounded free likelihood.");
     case cppunivariate::Gb2Status::InvalidFixed: return failure("GB2 fixed parameters must be positive and finite.");

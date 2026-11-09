@@ -184,3 +184,53 @@ test_that("GB2 held-power gamma faces have structured stop details", {
     expect_true(nrow(e$candidates)>0)
   }
 })
+
+test_that("held beta shapes use coefficient certificate and structured solver stop", {
+  x <- c(.03,.1,.3,.7,1,2,5,20)
+  f <- mlgb2(x,shape1=2,shape3=3)
+  expect_equal(unname(f[c('shape2','scale')]),c(.50129405191849408,.28999624187971024),tolerance=1e-10)
+  e <- tryCatch(mlgb2(x,shape1=2,shape3=3,iterlim=1),error=identity)
+  expect_s3_class(e,'univariateML_numerical')
+  expect_equal(nrow(e$candidates),1L)
+})
+
+test_that("subunit opposite shape selects the held-endpoint face by domination", {
+  x <- c(.1,.2,.4,.8)
+  e <- tryCatch(mlgb2(x,shape1=.4,scale=1,iterlim=1),error=identity)
+  expect_s3_class(e,'univariateML_limit')
+  expect_equal(e$model,'power')
+  expect_equal(unname(e$estimates),c(1,-4/sum(log(x))))
+  e <- tryCatch(mlgb2(1/x,shape3=.4,scale=1,iterlim=1),error=identity)
+  expect_s3_class(e,'univariateML_limit')
+  expect_equal(e$model,'pareto')
+})
+
+test_that("constant held-shape scale rejects tiny-power log-ratio amplification", {
+  e <- tryCatch(mlgb2(rep(2,5),shape1=10,shape2=1e-300,shape3=10+2e-15),error=identity)
+  expect_s3_class(e,'univariateML_numerical')
+})
+
+test_that("subunit held-shape face likelihood retains endpoint ties", {
+  x <- c(.25,.5,1,1)
+  e <- tryCatch(mlgb2(x,shape1=.4,scale=1,iterlim=1),error=identity)
+  expect_s3_class(e,'univariateML_limit')
+  expected <- 4*log(-4/sum(log(x)))-4-sum(log(x))-.8*log(2)
+  expect_equal(e$limit_loglik,expected,tolerance=1e-12)
+})
+
+test_that("constant mixed-power finite regimes return certified finite fits", {
+  f <- mlgb2(rep(.5,5),shape1=2,scale=1)
+  expect_s3_class(f,'univariateML')
+  expect_true(is.finite(attr(f,'logLik')))
+  p <- unname(f['shape3']);u <- unname(f['shape2'])*log(2)
+  expect_lt(abs(1/p+1/(p+1)-log1p(exp(u))),1e-6)
+  expect_lt(abs(1/u-p+(p+2)/(1+exp(u))),1e-6)
+})
+
+test_that("held-scale free-power profiles are globally enclosed", {
+  x <- c(.03,.1,.3,.7,1,2,5,20)
+  f <- mlgb2(x,shape1=2,scale=1)
+  expect_equal(unname(f[c('shape2','shape3')]),c(.57834363213651174,1.7944752190424211),tolerance=1e-7)
+  f <- mlgb2(x,shape3=3,scale=1)
+  expect_equal(unname(f[c('shape1','shape2')]),c(3.3085427329308605,.43155118384080654),tolerance=1e-7)
+})

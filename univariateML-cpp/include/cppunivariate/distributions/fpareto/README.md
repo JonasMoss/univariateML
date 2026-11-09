@@ -200,7 +200,7 @@ relations:
 fit:
   method: delegation
   certified: partial
-  note: 'With min held, GB2 certificates transfer to positive excesses, including the non-unit one-held-beta-shape, held-power, free-scale certificate. Finite witnesses retain min; face witnesses remain in excess-data coordinates. Seven mixed subsets still use numerical outer searches. Free min remains structurally unsupported; whole-family certification remains partial.'
+  note: 'With min held, GB2 certificates transfer to positive excesses, including the non-unit one-held-beta-shape, held-power, free-scale certificate. Finite witnesses retain min; face witnesses remain in excess-data coordinates. Held beta shapes additionally use the power/scale strict-concavity coefficient enclosure. The held-scale one-free-beta-shape, free-power global profile certificates also transfer. Five larger mixed subsets still use numerical outer searches. Free min remains structurally unsupported; whole-family certification remains partial.'
 areas:
 - actuarial
 - economics and income
@@ -251,7 +251,7 @@ The Feller–Pareto distribution models sizes above a threshold $\mu$ with indep
 
 Fitting requires finite observations strictly above a held threshold. Subtracting the threshold gives [GB2](../gb2/README.md). In the usual GB2 coordinates $(a,b,p,q)$, the mapping is $(\gamma,\sigma,\tau,\alpha)$. Identification and conditional existence results transfer through this shift.
 
-The fit profiles power and log scale for each pair of beta shapes. The inner problem is strictly concave; the outer search explores and refines several numerical basins. It compares transformed gamma, inverse transformed gamma, lognormal, Pareto, power and double-Pareto faces as allowed by the held coefficients. Neither global optimality nor exhaustion of all possible faces is proved. A small score and an interior location are required for a returned interior candidate; unresolved searches stop.
+Outside the certificates below, the fit profiles power and log scale for each pair of beta shapes. The inner problem is strictly concave; the outer search explores and refines several numerical basins. It compares transformed gamma, inverse transformed gamma, lognormal, Pareto, power and double-Pareto faces as allowed by the held coefficients. Neither global optimality nor exhaustion of all possible faces is proved. A small score and an interior location are required for a returned interior candidate; unresolved searches stop.
 
 Holding both beta shapes gives a unique power/scale maximum on nonconstant excesses. Constant excesses allow power to grow and scale to concentrate at the common value. Holding power too gives a unique scale maximum even for constant data. With power and scale held, both beta shapes have a finite unique maximum for nonconstant excesses. If only one beta shape remains free, its strictly decreasing score also permits constant excesses.
 
@@ -293,7 +293,25 @@ held shape. Nonfinite subtraction or subtraction that merges distinct
 observations stops numerically before invoking the parent. The existing
 held-scale endpoint subtraction guard is preserved.
 
-The seven unresolved mixed GB2 subsets remain unresolved after translation.
+The remaining open mixed GB2 regimes stay open after translation.
 Free-threshold subsets remain structural unsupported stops; they are not all
 claims of universal nonexistence. Nonuniqueness of the conditional shape/scale
 profile transfers through the same fixed translation.
+
+The held-beta-shapes [GB2 coefficient enclosure](../gb2/README.md)
+also transfers with unit translation Jacobian. Finite witnesses append held
+`min`, including numerical-stop witnesses. Nonfinite or collapsing excess subtraction
+stops numerically before this certificate is called.
+
+The GB2 one-sided endpoint subunit-shape density domination theorem transfers
+on excesses, with the face endpoint held at `min + scale`. Its power
+witness has `alpha = scale` in excess-data coordinates; its Pareto
+witness has `b = scale`. Refitting the endpoint changes the held model.
+
+Held-endpoint ties retain the GB2 pointwise likelihood penalty in excess coordinates; the weak limiting power/Pareto law has the usual endpoint density when refitted.
+
+The [held-scale mixed-power global certificate](../gb2/README.md)
+transfers on positive excesses, including finite constant-excess maxima,
+upper-side concentration, endpoint ties and above-one held-shape endpoint
+domination. Finite witnesses append held `min`; face witnesses retain their
+excess-data coordinates.

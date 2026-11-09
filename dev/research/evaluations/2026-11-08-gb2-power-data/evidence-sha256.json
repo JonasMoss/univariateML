@@ -1,0 +1,21 @@
+{
+  "accuracy.json": "5b34cf001755bebbd7239daf5335b6d08541957f0ffcd877845fa92b63a0681d",
+  "accuracy.py": "5b7adaec3bddcd7d475f1a3e156a62bedb4462eef37663c4aa6c95dac0177bf2",
+  "after.txt": "cb002c688554a32104e3f256c74715695201774f5f52ece99b1596018135a38d",
+  "before.txt": "5155ccbbcfd843cd4016fc5b54ca4ddf1eecaaf3e6f5da1fbd222f15012d7780",
+  "check.cpp": "570215c69eaa97c7778dabe524c69904371aab4b275c8bbefa68590ebcab17fb",
+  "check.sh": "a63e2c64f8f2df71cb31c831db1fab7a9e12062be348adbf595c73e5b9f772d2",
+  "curvature.json": "46066add7cf7bab3f8d52e05dba59e43fd1fe550298718fcbbf4c24faf361fb2",
+  "curvature.py": "664a0c62cc72f55a5c9bca5877be50ad7640aab97800e5c5e61d55a9d0567a1c",
+  "environment-local.txt": "dcbed25b7a8a72967d2310f776a3fd2146baf517a5cd8346687696df09a334ae",
+  "free-scale-bound.json": "ac4a2aa2ff2ec562eb1f836fd5bd0b5dca65bebee7105e01ee88403b1304accf",
+  "free_scale_bound.py": "d8192ef5e2d3316c54d9f4f35df6c324c498503484672a1ff73aa1c773c07423",
+  "high-precision.json": "077ac9c1122df4693ca98aebe8e2fb374eb58b548c464babe5a824a0b387289d",
+  "high_precision.py": "fb358fab4544cacfa35b89ed6529db88e36cd14ee17e6373fd6f1f17179700d0",
+  "open-analysis.md": "d245d8c6f58cb26712304f65905b3f351f8396b219662c25c06ec1f246a9d1ca",
+  "settled-files.json": "fa2bbf496ca7d8191275b9f13d3ee92a1ea1d5d907671cdcb956d556c66633e6",
+  "source-sha256.json": "83e013db085953ce79bf177ec55df28f7ef6a9733cc33001d956d527bd2014bd",
+  "timings.sh": "24d7a17dfd5407b7bbb3eb2cd72063e372713b57c3364401a1834073bf0b854f",
+  "validation-logs.txt": "927add0766b4ce2c0e661fcca934097be2252111c6a97d16bd7d8561838f7f2d",
+  "validation.json": "5147975cb11b010b5763c73223e041e46a75645ee72e3f0326bfd1c7daa544d5"
+}

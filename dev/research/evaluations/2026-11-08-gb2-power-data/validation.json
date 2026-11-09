@@ -1,0 +1,101 @@
+{
+  "date": "2026-11-09",
+  "source_manifest": "source-sha256.json",
+  "base": "ddb399172bd99091c8d1b04dbf7fe329c8adc43e",
+  "runs": [
+    {
+      "name": "cpp-dev",
+      "machine": "workstation",
+      "command": "/tmp/umvl-cpu/run4 just cpp-test",
+      "exit_code": 0,
+      "result": "106/106",
+      "original_log": "build/scratch/gb2-resume-cpp-dev.log"
+    },
+    {
+      "name": "r-dev-simbox",
+      "machine": "simbox",
+      "command": "/tmp/umvl-cpu/simbox-run env CMAKE_BUILD_PARALLEL_LEVEL=4 CTEST_PARALLEL_LEVEL=4 just test",
+      "exit_code": 0,
+      "result": "FAIL 0 | WARN 0 | SKIP 154 | PASS 22177",
+      "original_log": "build/scratch/gb2-resume-r-dev-simbox.log"
+    },
+    {
+      "name": "cpp-full-simbox",
+      "machine": "simbox",
+      "command": "/tmp/umvl-cpu/simbox-run env CMAKE_BUILD_PARALLEL_LEVEL=4 CTEST_PARALLEL_LEVEL=4 UMVL_TEST_TIER=full just cpp-test",
+      "exit_code": 0,
+      "result": "129/129",
+      "original_log": "build/scratch/gb2-resume-cpp-full-simbox.log"
+    },
+    {
+      "name": "no-long-double-local",
+      "machine": "workstation",
+      "command": "/tmp/umvl-cpu/run4 just cpp-test-no-long-double",
+      "exit_code": 0,
+      "result": "129/129",
+      "original_log": "build/scratch/gb2-resume-no-long-double-local.log"
+    },
+    {
+      "name": "no-long-double-simbox",
+      "machine": "simbox",
+      "command": "/tmp/umvl-cpu/simbox-run env CMAKE_BUILD_PARALLEL_LEVEL=4 CTEST_PARALLEL_LEVEL=4 just cpp-test-no-long-double",
+      "exit_code": 0,
+      "result": "129/129",
+      "original_log": "build/scratch/gb2-resume-no-long-double-simbox.log"
+    },
+    {
+      "name": "r-full-simbox",
+      "machine": "simbox",
+      "command": "/tmp/umvl-cpu/simbox-run just test-full",
+      "exit_code": 75,
+      "result": "Connection reset; superseded by local full run",
+      "original_log": "build/scratch/gb2-resume-r-full-simbox.log"
+    },
+    {
+      "name": "r-full-local",
+      "machine": "workstation",
+      "command": "/tmp/umvl-cpu/run4 just test-full",
+      "exit_code": 0,
+      "result": "FAIL 0 | WARN 0 | SKIP 0 | PASS 45009",
+      "original_log": "build/scratch/gb2-resume-r-full-local.log"
+    },
+    {
+      "name": "js-build",
+      "machine": "workstation",
+      "command": "/tmp/umvl-cpu/run4 just js-build",
+      "exit_code": 0,
+      "result": "Build completed; existing binom self-comparison warning",
+      "original_log": "build/scratch/gb2-resume-js-build.log"
+    },
+    {
+      "name": "js-test",
+      "machine": "workstation",
+      "command": "/tmp/umvl-cpu/run4 just js-test",
+      "exit_code": 0,
+      "result": "559/559; fail 0, skipped 0",
+      "original_log": "build/scratch/gb2-resume-js-test.log"
+    },
+    {
+      "name": "site-check",
+      "machine": "workstation",
+      "command": "/tmp/umvl-cpu/run4 just site-check",
+      "exit_code": 0,
+      "result": "Site checks and build passed",
+      "original_log": "build/scratch/gb2-resume-site-check.log"
+    },
+    {
+      "name": "research",
+      "machine": "workstation",
+      "command": "/tmp/umvl-cpu/run sh dev/research/evaluations/2026-11-08-gb2-power-data/timings.sh",
+      "exit_code": 0,
+      "result": "Independent coefficient errors <5e-10; 2160 free-scale exterior sanity points passed",
+      "original_log": "build/scratch/gb2-resume-research.log"
+    }
+  ],
+  "integrity": {
+    "source_hashes_verified": 14,
+    "settled_files_verified": 8,
+    "append_only_test_files_verified": 5,
+    "git_diff_check": "passed"
+  }
+}

@@ -33,10 +33,10 @@ inline FitResult fit_fpareto(cppunivariate::span x, Held shape1_arg = {}, Held s
     case cppunivariate::Gb2Status::InvTrGammaBoundary: return stop_failure(fail("GB2 selects a limiting model. Use `mlinvtrgamma(x - min)`."),res.stop_detail,"limit",{"shape1","shape2","shape3","scale","min"},"invtrgamma");
     case cppunivariate::Gb2Status::LognormalBoundary: return fail("GB2 selects a limiting model. Use `mllnorm(x - min)`.");
     case cppunivariate::Gb2Status::ParetoBoundary:
-      if(scale.supplied) return stop_failure(fail("Feller-Pareto selects a shifted Pareto with its endpoint held at min + scale; no held-endpoint Pareto fitter is available."),res.stop_detail,"limit",{"shape1","shape2","shape3","scale","min"},"pareto");
+      if(scale.supplied) return stop_failure(fail("Feller-Pareto selects a shifted Pareto. Use `mlpareto(x - min, b = scale)` with its endpoint held at min + scale."),res.stop_detail,"limit",{"shape1","shape2","shape3","scale","min"},"pareto");
       return stop_failure(fail("GB2 selects a limiting model. Use `mlpareto(x - min)`."),res.stop_detail,"limit",{"shape1","shape2","shape3","scale","min"},"pareto");
     case cppunivariate::Gb2Status::PowerBoundary:
-      if(scale.supplied) return stop_failure(fail("Feller-Pareto selects a shifted power distribution on (min, min + scale) with both endpoints held; no fitter for this held-upper-endpoint limit is available."),res.stop_detail,"limit",{"shape1","shape2","shape3","scale","min"},"power");
+      if(scale.supplied) return stop_failure(fail("Feller-Pareto selects a shifted power distribution. Use `mlpower(x - min, alpha = scale)` to retain both endpoints held."),res.stop_detail,"limit",{"shape1","shape2","shape3","scale","min"},"power");
       return stop_failure(fail("GB2 selects a limiting model. Use `mlpower(x - min)`."),res.stop_detail,"limit",{"shape1","shape2","shape3","scale","min"},"power");
     case cppunivariate::Gb2Status::DoubleParetoBoundary: return fail("GB2 selects the double Pareto limit; this package has no double Pareto fitter.");
     case cppunivariate::Gb2Status::InvalidData: return fail("GB2 requires positive finite nonconstant observations; constant data have an unbounded free likelihood.");

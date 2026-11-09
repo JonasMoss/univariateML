@@ -1452,3 +1452,61 @@ test('translated lattice normal and Laplace tails survive overflowing difference
     assert.ok(Math.abs(m.ddlaplace(x,params,true,true)[0]/expected-1)<3e-15);
   }
 });
+
+test('GB2 subunit held shapes certify endpoint faces with held-endpoint advice',async()=>{
+  const {default:createApi}=await import('./index.mjs');const api=await createApi();
+  const x=new Float64Array([.1,.2,.4,.8]);
+  assert.throws(()=>api.gb2.fit(x,{shape1:.4,scale:1},{iterlim:1}),e=>{
+    assert.equal(e.kind,'limit');assert.equal(e.model,'power');
+    assert.equal(e.estimates.alpha,1);
+    assert.ok(Math.abs(e.estimates.beta+4/[...x].reduce((s,v)=>s+Math.log(v),0))<1e-12);
+    assert.match(e.message,/alpha = scale/);return true;
+  });
+  assert.throws(()=>api.gb2.fit(Float64Array.from(x,v=>1/v),{shape3:.4,scale:1},{iterlim:1}),e=>{
+    assert.equal(e.kind,'limit');assert.equal(e.model,'pareto');
+    assert.equal(e.estimates.b,1);assert.match(e.message,/b = scale/);return true;
+  });
+  assert.throws(()=>api.fpareto.fit(Float64Array.from(x,v=>v+2),{min:2,shape1:.4,scale:1},{iterlim:1}),e=>{
+    assert.equal(e.kind,'limit');assert.equal(e.model,'power');
+    assert.equal(e.estimates.alpha,1);return true;
+  });
+  assert.throws(()=>api.gb2.fit(x,{shape1:2,shape3:3},{iterlim:1}),e=>{
+    assert.equal(e.kind,'numerical');assert.equal(e.candidates.length,1);return true;
+  });
+});
+
+test('GB2 constant held-shape scale rejects tiny-power log-ratio amplification',async()=>{
+  const {default:createApi}=await import('./index.mjs');const api=await createApi();
+  assert.throws(()=>api.gb2.fit(new Float64Array([2,2,2,2,2]),{shape1:10,shape2:1e-300,shape3:10+2e-15}),e=>{
+    assert.equal(e.kind,'numerical');return true;
+  });
+});
+
+test('GB2 subunit held-shape endpoint ties retain their likelihood penalty',async()=>{
+  const {default:createApi}=await import('./index.mjs');const api=await createApi();
+  const x=new Float64Array([.25,.5,1,1]),logs=[...x].reduce((s,v)=>s+Math.log(v),0);
+  assert.throws(()=>api.gb2.fit(x,{shape1:.4,scale:1},{iterlim:1}),e=>{
+    assert.equal(e.kind,'limit');assert.equal(e.model,'power');
+    assert.ok(Math.abs(e.limit_loglik-(4*Math.log(-4/logs)-4-logs-.8*Math.log(2)))<1e-12);return true;
+  });
+});
+
+test('GB2 constant mixed-power finite regime has a certified fit',async()=>{
+  const {default:createApi}=await import('./index.mjs');const api=await createApi();
+  const f=api.gb2.fit(new Float64Array([.5,.5,.5,.5,.5]),{shape1:2,scale:1});
+  assert.equal(f.status,'Ok');
+  const p=f.estimates.shape3,u=f.estimates.shape2*Math.log(2);
+  assert.ok(Math.abs(1/p+1/(p+1)-Math.log1p(Math.exp(u)))<1e-6);
+  assert.ok(Math.abs(1/u-p+(p+2)/(1+Math.exp(u)))<1e-6);
+});
+
+test('GB2 held-scale free-power profiles use global coefficient enclosures',async()=>{
+  const {default:createApi}=await import('./index.mjs');const api=await createApi();
+  const x=new Float64Array([.03,.1,.3,.7,1,2,5,20]);
+  const f=api.gb2.fit(x,{shape1:2,scale:1});
+  assert.equal(f.status,'Ok');assert.ok(Math.abs(f.estimates.shape2/.57834363213651174-1)<1e-7);
+  const e=new Float64Array([.25,.5,1,1]);
+  assert.throws(()=>api.fpareto.fit(Float64Array.from(e,v=>v+2),{min:2,shape1:1.1,scale:1},{iterlim:1}),error=>{
+    assert.equal(error.kind,'limit');assert.equal(error.model,'power');return true;
+  });
+});
