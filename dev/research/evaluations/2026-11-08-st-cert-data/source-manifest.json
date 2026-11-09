@@ -1,0 +1,108 @@
+{
+  "base": "ddb399172bd99091c8d1b04dbf7fe329c8adc43e",
+  "timestamp_utc": "2026-11-09T13:13:48.490575+00:00",
+  "source_sha256": {
+    "bindings/common/distributions/st/fit.hpp": "8ff388297b4b17b83ce6904bc8ce58a05f0ea670828e1a4de51deb014eb0845f",
+    "bindings/js/stop-test.mjs": "c29e6d340c4c46dd463f8e734d5ec1a97eb37c381561701538605d4f86a74dee",
+    "bindings/r/distributions/st/test.R": "5378c81e8b657123fd9e0a86686366d0a808ff4ddc2fe6e612b17467c791a4b5",
+    "univariateML-cpp/include/cppunivariate/distributions/st/README.md": "8817b91a12cb651767b37e66932fcd83d59557022f2ae0952507c3101fe1514a",
+    "univariateML-cpp/include/cppunivariate/distributions/st/certificate.hpp": "65b334b1c6c01fd2fe566c371eceeb913d1e369dbcf832477af40bd0426003f9",
+    "univariateML-cpp/include/cppunivariate/distributions/st/mle.hpp": "8550a4e96cb2d5bdc2e81d88650307d2ab9db47a6b989b01e83193c553ed2da7",
+    "univariateML-cpp/include/cppunivariate/distributions/st/test.cpp": "0614142d2b8ee849e28bfcf09148b8135597cfb9faf5aa0c73d49b4d5dbb86bf"
+  },
+  "append_only_tests": {
+    "bindings/js/stop-test.mjs": true,
+    "bindings/r/distributions/st/test.R": true,
+    "univariateML-cpp/include/cppunivariate/distributions/st/test.cpp": true
+  },
+  "unchanged_family_files": {
+    "golden.json": "f1657b3af1c91560bcd56a386c086793d07fcd7d2b10ca07feef7788c04e9262",
+    "dpqr.hpp": "b2a3570f484989d68fbab26e0368e0d176acb6fa19a376d15f575eac4c349c21",
+    "truth.py": "d91686f0c7ad8bc6c8e78481d569412cca2c701e4f850583ba8e15765ebf37ff",
+    "truth.json": "0d249faa57ca25507189824e0d808876dc2643d99abb809c5e5f50cee89c3e66"
+  },
+  "default_replay": {
+    "7": {
+      "before": [
+        "7",
+        "15",
+        "8",
+        "0",
+        "-3",
+        "3.9621422776790118",
+        "inf",
+        "inf",
+        "-14.718033475925409"
+      ],
+      "after": [
+        "7",
+        "15",
+        "8",
+        "0",
+        "-3",
+        "3.9621422776790118",
+        "inf",
+        "inf",
+        "-14.718033475925409"
+      ],
+      "identical_printed_values": true
+    },
+    "500": {
+      "before": [
+        "500",
+        "15",
+        "5",
+        "0",
+        "-1.3332776160385",
+        "2.1634483793428347",
+        "2.1684289856430579",
+        "inf",
+        "-898.66707882324715"
+      ],
+      "after": [
+        "500",
+        "15",
+        "5",
+        "0",
+        "-1.3332776160385",
+        "2.1634483793428347",
+        "2.1684289856430579",
+        "inf",
+        "-898.66707882324715"
+      ],
+      "identical_printed_values": true
+    }
+  },
+  "r": {
+    "dev": {
+      "fail": 0,
+      "warn": 0,
+      "skip": 154,
+      "passed": 22181
+    },
+    "full": {
+      "fail": 0,
+      "warn": 0,
+      "skip": 0,
+      "passed": 45013
+    }
+  },
+  "js": {
+    "tests": 559,
+    "pass": 559,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0
+  },
+  "numerical_checks": {
+    "fits": 12,
+    "scales": 4,
+    "range_points": 2000,
+    "max_xi_error": 2.6199853945088413e-12,
+    "max_scale_relative_error": 3.965404890554209e-12,
+    "max_unpadded_term_violation": 7.605803995652019e-16,
+    "thin_points": 37,
+    "thin_unresolved": 6,
+    "thin_incorrect_bounds": 0
+  }
+}

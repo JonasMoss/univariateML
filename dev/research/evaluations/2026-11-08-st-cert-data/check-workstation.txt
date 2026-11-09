@@ -1,0 +1,1 @@
+{"fits": 12, "scales": 4, "range_points": 2000, "max_unpadded_violation": 7.605803995652019e-16, "max_xi_error": 2.6199853945088413e-12}

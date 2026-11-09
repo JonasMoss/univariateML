@@ -5,6 +5,7 @@
 #include "../../core/face_compare.hpp"
 #include "dpqr.hpp"
 #include "../sn/mle.hpp"
+#include "../lst/mle.hpp"
 #include "../ht/mle.hpp"
 #include "../hnorm/mle.hpp"
 #include "../../core/bfgs.hpp"
@@ -92,13 +93,21 @@ inline Candidate optimize(Cost c,const double* start,double tol,int maxit) {
 inline StResult st_mle(span data,double tol=1e-6,int maxit=200,double xi=special::kNaN,double omega=special::kNaN,double alpha=special::kNaN,double nu=special::kNaN) {
   maxit = static_cast<int>(solver_budget(maxit));
  const double nan=special::kNaN;StResult bad{nan,nan,nan,nan,nan,0,StStatus::InvalidInput};
- if(data.empty()||!(tol>0)||maxit<=0||(!std::isnan(xi)&&!std::isfinite(xi))||(!std::isnan(omega)&&(!std::isfinite(omega)||omega<=0))||(!std::isnan(alpha)&&!std::isfinite(alpha))||(!std::isnan(nu)&&(!std::isfinite(nu)||nu<=0)))return bad;
+ if(data.empty()||!(tol>0)||!std::isfinite(tol)||maxit<=0||(!std::isnan(xi)&&!std::isfinite(xi))||(!std::isnan(omega)&&(!std::isfinite(omega)||omega<=0))||(!std::isnan(alpha)&&!std::isfinite(alpha))||(!std::isnan(nu)&&(!std::isfinite(nu)||nu<=0)))return bad;
  std::vector<double> sorted(data.begin(),data.end());for(double v:sorted)if(!std::isfinite(v))return bad;std::sort(sorted.begin(),sorted.end());
  if(std::isfinite(xi)&&std::isfinite(omega)&&std::isfinite(alpha)&&std::isfinite(nu)) {
   StResult out{xi,omega,alpha,nu,0,0,StStatus::Ok};for(double v:data)out.logLik+=st_detail::logdensity(v,xi,omega,alpha,nu);
   out.certified=std::isfinite(out.logLik);if(!out.certified)out.status=StStatus::NumericalFailure;return out;
  }
+ if(alpha==0&&std::isnan(xi)&&std::isnan(omega)&&std::isnan(nu))return st_cert_detail::symmetric_joint_fit(data,tol,maxit);
  if(std::isfinite(xi)&&std::isfinite(omega)&&std::isnan(alpha)&&std::isfinite(nu))return st_cert_detail::skew_fit(data,xi,omega,nu,maxit);
+ if(std::isnan(xi)&&std::isfinite(omega)&&std::isnan(alpha)&&sorted.front()==sorted.back())return st_cert_detail::constant_location_skew(data,omega,nu);
+ if(std::isnan(xi)&&std::isfinite(omega)&&std::isfinite(alpha)&&std::isfinite(nu))return st_cert_detail::location_fit(data,omega,alpha,nu,maxit);
+ if(std::isfinite(xi)&&std::isnan(omega)&&std::isfinite(nu)) {
+  if(alpha==0)return st_cert_detail::symmetric_scale_fit(data,xi,nu,maxit);
+  bool pos=false,neg=false;for(double x:data){pos=pos||x>xi;neg=neg||x<xi;}
+  if(std::isnan(alpha)&&!(pos&&neg))return st_cert_detail::one_sign_scale_fit(data,xi,nu,maxit);
+ }
  const std::size_t n=sorted.size();std::size_t maxrun=1,run=1;for(std::size_t i=1;i<n;++i){run=sorted[i]==sorted[i-1]?run+1:1;maxrun=std::max(maxrun,run);}
  if(std::isnan(omega)) {
   std::size_t k=std::isnan(xi)?maxrun:std::count(sorted.begin(),sorted.end(),xi);

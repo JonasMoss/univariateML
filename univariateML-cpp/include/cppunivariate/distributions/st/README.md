@@ -61,7 +61,7 @@ relations:
 fit:
   method: multistart
   certified: 'partial'
-  note: certificate.hpp and README.md, Conditional skew certificate. Conditional alpha-only fitting has a global score-enclosure certificate and exact monotone half-face stops; larger free subsets retain numerical profiling and face comparison without a global certificate.
+  note: certificate.hpp and README.md, Conditional certificates. Global certificates cover alpha-only, location-only, symmetric scale-only, one-sign alpha/scale fits, and constant-data location/alpha faces with df held or free, plus the exact symmetric all-nuisance Student reduction; other subsets retain numerical profiling and face comparisons.
 areas: [robust modelling]
 classification: specialist
 classification_reason: Flexible heavy-tailed Azzalini skew model.
@@ -211,7 +211,7 @@ one-sided df score, including transformed iterates that round to the bound. Succ
 check; failed searches stop. It compares the skew-normal, half-t, reflected
 half-t and half-normal faces. Half-t face profiling with a held endpoint
 retains the same df restriction. Face comparisons use numerical tolerance;
-these are multistart searches, not global certificates. Subsets other than alpha-only retain the free-coordinate search. No penalized likelihood is used.
+these are multistart searches, not global certificates. Location-only, symmetric scale-only and one-sign alpha/scale subsets use the conditional certificates below; other subsets retain the free-coordinate search. No penalized likelihood is used.
 
 | TASK-116 property | Evidence |
 |---|---|
@@ -331,12 +331,86 @@ likelihoods plus integrated score bounds. The coordinate width, grouping,
 128-epsilon term-sum allowance and certificate work budget are those of the
 sstd scalar search helper. No Student-CDF root-count assumption is made;
 multiple or poorly separated stationary components can stop on tie or budget.
-Nonfinite bounds stop numerically. At huge objective magnitudes, a lost
+The weighted pdf/CDF ratios are formed in log space, with the working log
+magnitudes included in the 128-epsilon allowance before exponentiation;
+large thin-tail logs must not silently lose their difference. Nonfinite
+ratio bounds stop numerically. At huge objective magnitudes, a lost
 face gain retains the numerical tie stop and its finite/face witnesses.
 
 The certificate is conditional on the computed ranges and comparisons in
 exact arithmetic, with the stated practical binary64 allowance; it does not
-claim outward rounding. Held df may be any positive value. Free df and all
-larger subsets remain uncertified. See the
+claim outward rounding. Held df may be any positive value. The additional
+conditional routes and symmetric Student reduction are described below. See the
 [proof of the skew bracket](../../../../../dev/research/evaluations/2026-11-07-skew-theory-data/proofs.md)
 and [implementation record](../../../../../dev/research/evaluations/2026-11-07-skew-impl-report.md).
+
+
+## Conditional location and scale certificates
+
+With omega, alpha and nu held, location fitting encloses every stationary
+component on a compact interval. Write m=nu+1 and c=t_m(0). For alpha>0,
+the log-density derivative g_z is positive on z<0. On z>0, the CDF ratio
+is at most 2c, so g_z<0 once
+z sqrt(nu+z²)>2c alpha nu/sqrt(m). Thus every location maximum lies between
+min(x)-omega R and max(x), with R²=4c alpha nu/sqrt(m). Reflection gives
+the interval for negative alpha; alpha=0 uses [min(x),max(x)]. These bounds
+exclude whole exterior half-lines, not just selected probes. Rational-score
+extrema at z=±sqrt(nu), Student pdf unimodality and CDF monotonicity give
+interval score bounds. Subdivision retains connected stationary-component hulls to public location
+width 4e-11 (1+abs(xi)); wider components stop. Point likelihoods plus integrated
+score remainders supply the comparison bounds. No log-CDF concavity or uniqueness is assumed.
+For x=(-2,2), omega=1, alpha=0 and nu=1, the two global location maxima
+are exactly ±sqrt(3); the fitter stops with both witnesses.
+
+With xi and nu held and alpha exactly zero, the log-scale score is
+-n+(nu+1) sum d_i²/(nu omega²+d_i²), d_i=x_i-xi.
+It is strictly decreasing whenever at least one residual is nonzero.
+Its limits are nu(n-k)-k at zero scale and -n at infinite scale, where
+k counts zero residuals. A positive first limit gives a unique finite
+scale, bracketed with sign margins and bisected to log-scale width 2e-11.
+A negative first limit proves unboundedness; equality gives a strictly
+decreasing likelihood in scale and an unattained finite collapse supremum.
+The equality stop reports likelihood bounds, rather than a zero-scale fit.
+
+When alpha and omega are free, xi and nu are held, and all nonzero residuals
+have the same sign, strict monotonicity in alpha reduces the global supremum
+to that same symmetric scale problem plus (n-k) log(2). The finite-scale
+supremum is a half-t limit stop; equality is an unattained collapse stop.
+The held-endpoint observations retain factor one, including on reflection.
+Mixed-sign alpha/scale fitting does not use this reduction.
+
+For constant data and held omega,nu, freeing xi and alpha gives the sharp
+upper bound n log(2 t_nu(0)/omega). No finite coefficients attain it:
+at z=0 the skew factor is one, and at nonzero z the symmetric density is
+strictly smaller than its mode. Approaching the datum from either side
+while alpha z tends to positive infinity reaches the bound. The two
+half-t faces therefore tie; both witnesses and finite global bounds are
+reported. This moving-location endpoint factor is two per datum, whereas
+the held-location factor above is one. If nu is also free, the sharp bound
+is n log(2 phi(0)/omega), and the two half-normal faces tie. Indeed,
+t_nu(0)=phi(0) E sqrt(V/nu) for V chi-squared with nu degrees of freedom;
+strict Jensen gives t_nu(0)<phi(0) at every finite nu, with equality only
+in the normal limit. The bound is approached jointly by nu tending to
+infinity, xi approaching the datum from either side and alpha z tending
+to positive infinity.
+
+When alpha is held exactly at zero and xi,omega,nu are all free, the fitter
+delegates to `lst_mle_certified` with the same nu>=1 restriction. Student
+candidate models, budget/tie witnesses and collapse bounds are preserved;
+the normal face is skew-normal with alpha=0, and the df=1 restriction is
+retained. This does not certify arbitrary held Student
+subsets or license reducing a small estimated alpha to zero.
+
+General scale-only fitting at nonzero held alpha, mixed-sign alpha/scale,
+nonconstant moving-location joint fits and other free-nu fits remain uncertified.
+
+
+For mixed-sign residuals with xi,nu held and e=nu(n-k)-k>0, attainment
+can be proved without a unimodality assumption: uniform density bounds
+exclude both scale tails relative to a finite incumbent, and the conditional
+alpha tail bounds can be made uniform on the remaining scale interval.
+This gives a compact rectangle containing every maximizer. The
+[conditional proofs](../../../../../dev/research/evaluations/2026-11-08-st-cert-data/proofs.md)
+give explicit endpoints. A two-dimensional certificate on that rectangle
+is still required; this existence result does not certify the numerical
+mixed-sign alpha/scale output.

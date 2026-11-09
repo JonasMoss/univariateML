@@ -407,3 +407,45 @@ test('bbinom near-binomial shape enclosure survives double-width WASM arithmetic
   assert.ok(Math.abs(f.estimates.alpha/18749.5-1)<1e-10);
   assert.ok(Math.abs(f.estimates.beta/18749.5-1)<1e-10);
 });
+
+test('st conditional location and alpha-scale certificates retain stops', () => {
+  assert.throws(()=>api.st.fit([-2,2],{omega:1,alpha:0,nu:1}), e=>{
+    assert.equal(e.kind,'tie');
+    assert.ok(e.candidates.some(c=>Math.abs(c.xi-Math.sqrt(3))<1e-8));
+    assert.ok(e.candidates.some(c=>Math.abs(c.xi+Math.sqrt(3))<1e-8));return true;
+  });
+  assert.throws(()=>api.st.fit([-3,-1,-.2,.1,.8,2,4],{omega:1,alpha:2,nu:4},{iterlim:1}), e=>e.kind==='budget' && e.candidates.length>0);
+  for(const sign of [-1,1]) {
+    assert.throws(()=>api.st.fit([2,2+sign,2+2*sign,2+4*sign],{xi:2,nu:4}), e=>{
+      assert.equal(e.kind,'limit');assert.equal(e.estimates.mu,2);assert.ok(e.estimates.sigma>0);return true;
+    });
+  }
+  for(const held of [{xi:0,alpha:0,nu:1},{xi:0,nu:1}]) {
+    assert.throws(()=>api.st.fit([0,1],held),e=>e.kind==='nomle' && Number.isFinite(e.loglik_lower) && Number.isFinite(e.loglik_upper));
+  }
+});
+
+test('st constant-data location-skew faces retain the sharp global bound',()=>{
+  assert.throws(()=>api.st.fit([2,2,2],{omega:1,nu:4}),e=>{
+    assert.equal(e.kind,'tie');assert.deepEqual(e.candidates.map(c=>c.model),['ht','unavailable:reflected-half-t']);
+    assert.ok(Number.isFinite(e.loglik_lower));assert.ok(Number.isFinite(e.loglik_upper));return true;
+  });
+});
+
+test('st symmetric all-nuisance reduction transports the normal face',()=>{
+  assert.throws(()=>api.st.fit([-2,-1,0,1,2],{alpha:0}),e=>{
+    assert.equal(e.kind,'limit');assert.equal(e.model,'sn');assert.equal(e.estimates.alpha,0);
+    assert.ok(e.estimates.omega>0);return true;
+  });
+});
+
+test('st unresolved thin-tail score arithmetic remains a numerical stop',()=>{
+  assert.throws(()=>api.st.fit([-1000,-10,0,1,2],{omega:1,alpha:1e30,nu:1e20}),e=>e.kind==='numerical');
+});
+
+test('st constant-data free-nu corner keeps both half-normal faces',()=>{
+  assert.throws(()=>api.st.fit([2,2,2],{omega:1}),e=>{
+    assert.equal(e.kind,'tie');assert.deepEqual(e.candidates.map(c=>c.model),['hnorm','unavailable:reflected-half-normal']);
+    assert.ok(Number.isFinite(e.loglik_lower));assert.ok(Number.isFinite(e.loglik_upper));return true;
+  });
+});
