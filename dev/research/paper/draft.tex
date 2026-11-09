@@ -1,0 +1,1441 @@
+\documentclass[12pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs,array,longtable}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue}
+\linespread{1.00}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+\newcommand{\E}{\mathbb E}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\argmax}{\operatorname*{arg\,max}}
+\newcommand{\todo}[1]{\par\smallskip\noindent\textcolor{red!65!black}{\textbf{Author decision:} #1}\par\smallskip}
+\newcommand{\code}[1]{\nolinkurl{#1}}
+\newcommand{\source}[1]{\par\smallskip\noindent{\small\raggedright\textit{Project evidence:} #1\par}\smallskip}
+\title{A maximum likelihood estimate or a correct stop:\\certification for univariate distribution families}
+\author{Author names pending}
+\date{First draft, 8 November 2026}
+\begin{document}
+\maketitle
+\todo{Confirm authorship, affiliations, and acknowledgements.}
+\begin{abstract}
+A converged optimizer need not return a maximum likelihood estimate. Even for
+familiar univariate distributions, the likelihood can have several local
+maxima, a finite unattained supremum, or an unbounded concentration path.
+Numerical tolerances can turn a small finite improvement into a false report
+of nonexistence. We describe a software contract that treats these outcomes
+as part of the statistical calculation: return a globally certified maximizer
+to a stated coefficient accuracy, or stop with a reason and, where available,
+competing witnesses and likelihood bounds. Certificates are valid in exact
+arithmetic conditional on computed comparisons, with documented practical
+floating-point margins; they are not outward-rounded interval proofs.
+We develop existence and uniqueness arguments for negative binomial,
+Poisson--inverse Gaussian, Fr\'echet, Kumaraswamy and conditional Burr
+likelihoods, and give explicit constructions separating multimodality,
+nonidentification and equal global maxima. Zero-inflated counts connect the
+computational problem to the unresolved remainder of Sampford's truncated
+negative-binomial conjecture. Boundary likelihoods and local experiments show
+why successful optimization and valid inference require separate guarantees.
+The accompanying library covers 99 families, with certification coverage
+reported as a dated, changing inventory rather than a universal accuracy claim.
+\end{abstract}
+
+\section{What should a likelihood fit return?}\label{sec:intro}
+Maximum likelihood is a definition of an estimator, not an optimization
+algorithm. For observations $x=(x_1,\ldots,x_n)$ and a declared parameter
+space $\Theta$, write
+\[
+ \ell_x(\theta)=\sum_{i=1}^n\log f_\theta(x_i),\qquad
+ L_x^*=\sup_{\theta\in\Theta}\ell_x(\theta).
+\]
+A finite vector with a small score need not attain $L_x^*$. A local maximum
+can be inferior to another finite maximum or to a limiting model. A sequence
+of improving estimates can leave every compact parameter set. A failed solve
+can nevertheless return a plausible vector. None of these difficulties
+requires regression, latent random effects or a high-dimensional model.
+
+Our setting is independent observations from a univariate parametric family,
+usually with one to five coefficients. The analyst may hold any supported
+subset of coefficients. This qualification matters: holding a mean is not
+holding a mode, and holding a standard deviation is not holding the scale of
+an unstandardized kernel. A model that has no finite maximum with all
+coefficients free may have a unique maximum after one coefficient is held.
+Conversely, a conditional one-dimensional likelihood may already be bimodal.
+
+Examples below make the distinction concrete. One paralogistic observation
+at held scale gives three stationary points, with the larger likelihood far
+from the first local maximum. A zero-inflated negative-binomial sample has a
+proved finite optimum whose entire improvement over the zero-inflated Poisson
+face is smaller than a historical face-comparison tolerance. A generalized
+Pareto sample has two exactly equal global maxima, one uniform and the other
+interior. A beta-negative-binomial likelihood has distinct coefficient
+maximizers representing the same probability law. These are different
+statistical outcomes and should be reported differently.
+
+The organizing contract is therefore: \emph{return a certified global
+maximizer to a stated accuracy, or a correct stop}. A stop can identify a
+limiting model, prove unboundedness or nonattainment, retain unresolved
+competitors, record an exhausted work budget, or report numerical failure.
+An unresolved comparison does not justify selecting its preferred witness.
+A budget stop does not establish nonexistence. The desired contract is
+stronger than an optimizer's convergence flag and stronger than a local score
+gate. Section~\ref{sec:standard} distinguishes this target from the coverage
+of the present implementation.
+
+The library is evidence for the contract rather than the definition of its
+truth. Its header-only C++17 core fits without R, and its R and JavaScript
+bindings transport outcomes. Family dossiers hold likelihood arguments,
+parameter conventions, limiting faces and certificate scopes. Symbolic
+densities, independent high-precision calculations and regression fixtures
+supply different kinds of validation. A frozen regression value checks
+stability; it cannot prove that the value is an MLE.
+
+\subsection{Scope and prior work}
+The ordinary negative-binomial existence problem has a long history
+\cite{anscombe,levin,aragon,wang}. Multiple Cauchy likelihood roots are
+classical \cite{reeds}; scalar generalized Pareto reductions are established
+\cite{grimshaw}. Boundary asymptotics and nonregular endpoint models likewise
+have established theories \cite{self,smith}. We use these connections to
+locate mathematical dependencies, not to claim a new general theory of global
+optimization.
+
+All priority language in this draft follows the project's literature ledger.
+A 40-query search completed on 8 November 2026 covered the 13 showcase rows
+then requiring further search, and beta-prime limiting behavior. It included
+Fr\'echet held-shape existence, skew exponential-power ties, beta-prime profile
+ties, PIG uniqueness, truncated and inflated count likelihoods, half-$t$
+profiles and constrained endpoint likelihoods. Earlier targeted searches
+examined negative-binomial proofs, truncated-NB conjectures and inference.
+A source was classified by what was actually obtained: theorem text,
+preprint, abstract, metadata or failed retrieval. ``Not located after search''
+means just that. It is not a novelty assertion or an exhaustive absence claim.
+
+For example, Jones \cite{jones} gives the Kumaraswamy shape profile; the
+strict-concavity conclusion below was not located in the inspected material.
+Wingo's abstracts \cite{wingo83,wingo93} explicitly concern Burr modality and
+uniqueness, leaving exact theorem overlap open. Willmot \cite{willmot} was
+metadata-only in the PIG search; Carlson's relevant article could not be
+retrieved. The PIG theorem therefore has a local mathematical proof but no
+settled priority assessment. The Fr\'echet search read a fixed-location theorem,
+a different problem from the held-shape theorem below. These limits belong
+beside the claims they qualify.
+\todo{Choose the final Statistical Science emphasis: a theorem-led account with software evidence, or a broader review with these results as examples. The current draft follows the former.}
+
+\section{The certificate standard}\label{sec:standard}
+\subsection{Statistical and numerical claims}
+\begin{definition}[Conditional certificate]
+For a declared family, coefficient holds, parameter domain and sample, a
+conditional certificate consists of mathematical inequalities that imply the
+reported global outcome, together with the computed comparisons on which
+those inequalities depend. Numerical comparisons are accepted only with the
+family's stated practical floating-point margins. The implication is an
+exact-arithmetic statement conditional on those comparisons.
+\end{definition}
+This standard leaves an explicit arithmetic assumption. Elementary functions,
+recurrence sums and restored coefficients are evaluated in floating-point
+arithmetic. Practical allowances account for cancellation, accumulation and
+coordinate transformations; uncertain signs cause a stop. The allowances are
+not universal error theorems for the platform's mathematical library.
+Outward-rounded interval arithmetic would remove some of this conditionality,
+but is not claimed here. A 70-digit repetition corroborates a comparison; it
+does not turn it into a theorem about all arithmetic errors.
+For example, the held-scale Burr certificate uses $64\epsilon(1+\max_j|a_j|)$
+for elementary operations and transcendental values, and
+$64\epsilon(q+1)(1+\sum_j|a_j|)$ for a $q$-term sum, with binary64
+machine epsilon $\epsilon=2^{-52}$. Other families use different documented
+allowances adapted to their scores and conditioning. These practical
+margins are assumptions of the conditional implication, not a uniform
+outward-rounding guarantee.
+
+A successful fit needs both a global argument and a coefficient enclosure.
+Suppose strict concavity gives a unique root $\theta_*$, and signed comparisons
+place it in $[a,b]$. Then a sufficiently narrow image of $[a,b]$ under every
+public coefficient map supplies coefficient accuracy. A short interval in
+$\log r$ can be useful; a short interval in a badly conditioned transformed
+coordinate may say little about the requested coefficient. For a scalar
+positive coefficient, a log bracket of width $w$ bounds the relative error of
+its geometric midpoint by $e^{w/2}-1$.
+
+With several maxima, a lower bound at a feasible point and upper bounds over
+all competitors can certify a global winner. A Taylor envelope over a compact
+cover is useful only after all exterior paths have been bounded. A local
+Hessian can certify an isolated maximizer inside a box; it does not exclude
+maxima outside the box. The limiting faces are part of that exclusion
+problem. Restricting a grid to a convenient finite window supplies no such
+argument.
+
+The intended uniform accuracy control is relative \code{tol}, with target
+default $10^{-10}$ in every free coefficient, and \code{iterlim} for work.
+The source snapshot contains certificates with older, explicitly wider
+coefficient bounds. For example, the held-scale Burr report certifies relative
+coefficient-image widths $10^{-6}$; the PIG dossier describes a log-shape
+bracket target at least $2\times10^{-7}$ before polishing. Polishing can
+improve a representative without narrowing the global enclosure. Thus
+``globally certified'' and ``certified to $10^{-10}$ in every coefficient''
+are separate claims in this draft.
+\todo{Reconcile the uniform $10^{-10}$ accuracy target with each delivered certificate before presenting that target as an achieved library-wide guarantee. Decide the treatment of coefficients equal or close to zero.}
+
+\subsection{Typed outcomes and finite work}
+A finite fit returns a verified representative and its certificate scope.
+An attained domain endpoint, such as an NB point mass at zero, is a model
+member. An infinite parameter corresponding to a Poisson law is a limit face,
+not a finite NB estimate. A restricted estimate is labeled as constrained;
+the restriction is not silently interpreted as a theorem about the
+unrestricted family. Invalid observations are distinguished from valid data
+whose likelihood has no maximum.
+
+A tie stop means that separated competitors cannot be ordered at the stated
+arithmetic resolution. It need not mean an exact mathematical tie. Exact ties
+below are established by analytic constructions or continuity arguments,
+separately from rounded tie stops. A stopped witness is an evaluated feasible
+point, not an accepted estimate. Its likelihood can have finite bounds even
+when the unclosed global upper bound remains infinite.
+
+Work is controlled by $K_u\min(\mathtt{iterlim},100000)$, using 64-bit counters:
+$K_u=1$ for a solver iteration, $128$ for a certificate segment, box or profile
+point, and $100000$ for an exact enumeration cell. Inner solver loops have
+their own solver caps. Exhausted certificate or enumeration work produces a
+budget stop with available witnesses; solver exhaustion produces a numerical
+nonconvergence outcome. Closed forms and special-function evaluators have
+separate documented evaluation conventions. A larger budget can resolve an
+unfinished cover but cannot resolve an unrepresentable coefficient or an
+arithmetic comparison below available precision. These counts limit work
+units, not uniform wall-clock cost: an evaluation may scan the whole sample.
+
+\subsection{Evidence that should accompany a result}
+We use ``proved'' for a real-arithmetic argument covering the stated sample
+class; ``certified'' for a concrete sample covered by analytic inequalities
+and computed comparisons; and ``numerical'' for exploratory roots, profiles
+and simulations without an exhaustive exclusion argument. A proof sketch
+below names the reduction and the inequality doing the work. The linked
+project reports retain the longer derivations and computations.
+
+The historical wrapper rule allowed a failed optimizer only after a documented
+score gate, commonly total score norm below $10^{-3}$ in fitter coordinates.
+That gate checks local stationarity. It supplies neither global optimality
+nor the parameter-accuracy enclosure demanded here. Partially certified
+families still contain numerical routes, so the contract is a design standard
+and a scoped achieved guarantee, not a claim that every current successful
+route already meets it.
+\source{\code{dev/design/work-budgets.md}; \code{dev/validation/diagnostics.md}; family dossiers and the coverage inventory in Section~\ref{sec:software}.}
+
+\section{Existence and uniqueness from the likelihood}\label{sec:exist}
+Throughout this section a count sample has $x_i\in\{0,1,\ldots\}$,
+$m=n^{-1}\sum_i x_i$ and $v=n^{-1}\sum_i(x_i-m)^2$. The divisor in $v$ is
+$n$, not $n-1$. All-zero samples are separated whenever a zero-law boundary
+makes coefficients unidentified.
+
+\subsection{Negative binomial: a complete proof dependency}
+Use the success-probability convention
+\[
+ f(x;r,p)=\frac{\Gamma(r+x)}{\Gamma(r)x!}p^r(1-p)^x,
+ \qquad r>0,\quad 0<p<1.
+\]
+\begin{theorem}[Ordinary NB]\label{thm:nb}
+For $m>0$, a finite joint NB maximum exists if and only if $v>m$, and is then
+unique. For $v\le m$ the profile increases strictly to an unattained Poisson
+supremum. All-zero samples instead attain a zero-law member in the package's
+extended domain and have nonunique coefficients.
+\end{theorem}
+\begin{proof}[Proof sketch expanding Br\o ns and Jensen's convexity argument]
+Strict conditional concavity gives $p(r)=r/(r+m)$. For $f=-\ell_{\rm prof}$,
+\[
+ f'=n\log(1+m/r)-\sum_i\sum_{j=0}^{x_i-1}\frac1{r+j},\qquad
+ f''=-\frac{nm}{r(r+m)}+\sum_i\sum_{j=0}^{x_i-1}\frac1{(r+j)^2}.
+\]
+Set $b=r\log(1+m/r)/m$. It increases from zero to one and
+$b''=-m/[r(r+m)^2]<0$. The finite-sum lemma in the dossier proves strict
+convexity of
+\[
+ T_q(r)=r(r+m)^2\sum_{j=0}^{q-1}(r+j)^{-2},\qquad q\ge1.
+\]
+The proof splits the telescoping sum at $\min(q-1,\lfloor m\rfloor)$;
+positive second derivatives of the remaining factors give strictness,
+including $m<1$ and $q=1$. Hence
+\[
+ h=\frac{f''}{b''}=n(r+m)-\frac1m\sum_iT_{x_i}(r)
+\]
+is strictly concave and tends to $n(v-m)/m$. A strictly concave function
+with a finite limit at infinity has $h'>0$: a nonpositive derivative would,
+by strict decrease of the derivative, force a negative eventual slope.
+
+Let $G=f'/b'$. Since $f'$ and $b'$ vanish at infinity, $G$ is the weighted
+tail average of $h$ with positive weight $-b''$. Thus $G>h$ and
+$G'=(b''/b')(h-G)>0$. Its endpoint limits are
+\[
+ G(0+)=-\infty,\qquad G(\infty)=n(v-m)/m.
+\]
+There is exactly one zero if $v>m$, and no zero otherwise. At equality $G$
+is strictly below its zero limit at every finite $r$. Reversing the sign from
+$f$ to $\ell$ proves the stated monotonicity and globality. Along $p(r)$,
+the masses converge to Poisson masses with mean $m$.
+\end{proof}
+This is a classical conclusion \cite{anscombe,levin,aragon}, not a priority
+claim. The project's proof report inspected the complete 1988 Br\o ns--Jensen
+preprint \cite{brons}. Wang's abstract \cite{wang} reports a major problem with the 1992
+proof. Independently, the accessible 1991 preprint has a fixed-coordinate
+boundary cancellation gap: in its notation, at $M=3$ and held $a=F_2$,
+\[
+ u(z,0,a)=-\frac{a}{2(1+z)}.
+\]
+For $a=1/4$, the boundary values at $z=1,2$ are $-1/16,-1/24$, with difference
+$1/48$, rather than zero. Replacing them by boundary values at $a=0$ changes
+the integration slice. This diagnoses that preprint step; it is not a
+counterexample to Theorem~\ref{thm:nb}.
+\todo{Obtain Wang's full note and the published Arag\'on--Eberly--Eberly proof before identifying this preprint gap with Wang's exact objection.}
+\source{\code{2026-11-07-nb-proof-report.md} and the NB dossier, ``Existence and uniqueness proof''. All dated report names here and below are relative to \code{dev/research/evaluations/}.}
+
+\subsection{Poisson--inverse Gaussian}
+For the PIG family let $\mu>0$ be the mean and $\lambda>0$ the mixing shape
+in the dossier's parametrization. The Poisson face is $\lambda\to\infty$.
+\begin{theorem}[PIG dispersion criterion]\label{thm:pig}
+For a count sample with $m>0$, the free-mean PIG likelihood has a finite
+maximum exactly when $v>m$, and that maximum is unique with $\widehat\mu=m$.
+With $\mu$ held positive, the corresponding criterion is
+\[
+ v+(m-\mu)^2>m,
+\]
+and the finite shape maximum is again unique. Equality and the reversed
+inequality give the Poisson supremum with the same held mean.
+\end{theorem}
+\begin{proof}[Proof sketch]
+The finite half-integer Bessel polynomial $Q_{k-1}(1/z)$ has positive term
+weights. Under their normalized distribution let $E_k,V_k$ be the mean and
+variance of the term index. Its polynomial differential equation gives, for
+$k\ge2$ and $c=k(k-1)$,
+\[
+ \frac{dE_k}{d\log z}=-V_k,\qquad
+ V_k=c-(2z+1)E_k-E_k^2.
+\]
+The essential inequality is
+\begin{equation}\label{eq:bessel}
+ V_k< B(E_k):=\frac{E_k(k^2-E_k^2)}{k^2+E_k^2}.
+\end{equation}
+To verify it, put $F=V_k-B(E_k)$. At any zero,
+\[
+ zF'(z)=\frac{2E_k k(E_k+k)^2
+ (E_k^3+E_k^2k-E_kk^2+k^3)}{(E_k^2+k^2)^3}>0.
+\]
+Here $0<E_k<k-1<k$, making the last polynomial positive. But the finite
+polynomial expansion at infinity gives $F=-c/(2z^2)+O(z^{-3})<0$ eventually.
+Every zero would cross upwards; returning to this negative tail is
+impossible. This proves \eqref{eq:bessel}.
+
+For held $\mu$ set
+\[
+ w=\frac{\sqrt{1+2\mu^2/\lambda}-1}{\sqrt{1+2\mu^2/\lambda}+1},
+ \qquad z=\frac{\mu(1-w^2)}{2w},\quad 0<w<1.
+\]
+The individual log mass for $k\ge1$ is
+\[
+ -\mu(1-w)+k\log\frac{\mu(1-w)}{1+w}
+ +\log Q_{k-1}(1/z)-\log(k!).
+\]
+Its second derivative, multiplied by $(1-w^2)^2$, is
+\[
+ -4kw+2E_k(3+w^2)+(V_k-E_k)(1+w^2)^2/w^2.
+\]
+Substitute \eqref{eq:bessel} and put $a=E_k/k$. Dividing by $k$, the upper
+bound factors as
+\[
+ \frac{2(a-w)^2(aw^2-a-2w)}{w^2(1+a^2)}\le0.
+\]
+Strictness holds before this last weak inequality. For $k=1$ the scaled
+second derivative is $-4w<0$; for $k=0$ the log mass is linear. Thus a sample
+containing a positive count has a strictly concave $w$ likelihood. Its
+one-sided derivative at zero is
+\[
+ n\mu-2\sum_i x_i+\frac1\mu\sum_i x_i(x_i-1)
+ =\frac n\mu\{v+(m-\mu)^2-m\}.
+\]
+The likelihood tends to $-\infty$ at $w=1$. The sign at zero therefore
+decides existence, including equality.
+
+For the joint problem, the fixed-$z$ mean reduction is separate from this
+held-mean calculation. With $t=\lambda/\mu$ and
+$\lambda=(z^2-t^2)/2$, the $t$-dependent log likelihood is
+$nt+(\sum_i x_i)\log\lambda$. Its unique conditional maximum gives $\mu=m$;
+the inward derivative also excludes the infinite-mean face. The remaining
+profile is precisely the held-$m$ problem just proved.
+\end{proof}
+The proof uses a stronger variance bound than $V_k\le E_k$. The latter is
+useful for a held-positive-shape mean solve but does not establish joint
+profile uniqueness. Decreasing terms in a score difference cannot by
+themselves determine its crossings. The source report records that rejected
+shortcut and the subsequent analytic repair.
+
+The criterion and polynomial inequality were not located after the bounded
+search. Willmot \cite{willmot} remains contextual metadata; failed retrieval
+of Carlson is not evidence that the result is absent there.
+\source{\code{2026-11-06-pig-cert-report.md}; its data directory's \code{concavity-proof.md}; PIG dossier.}
+
+\subsection{Two concave shape profiles}
+\begin{theorem}[Kumaraswamy]\label{thm:kumar}
+For every nonconstant sample in $(0,1)$, the two-free-shape Kumaraswamy
+likelihood has a unique finite global maximizer. Constant interior samples
+have unbounded likelihood when both shapes are free.
+\end{theorem}
+\begin{proof}
+Write $t_i=-\log x_i>0$, $T=\sum_i t_i$ and
+$G(a)=\sum_i-\log(1-e^{-at_i})$. Profiling the second shape gives
+$\widehat b=n/G(a)$ and
+\[
+ h(a)=n\log a-n\log G(a)-aT+G(a)+C.
+\]
+Each summand of $G$ is $\sum_{j\ge1}e^{-jat_i}/j$, so $G$ is a positive
+Laplace transform. Cauchy--Schwarz gives $(\log G)''\ge0$. Moreover
+\[
+ G''(a)=\sum_i\frac{t_i^2e^{at_i}}{(e^{at_i}-1)^2}<n/a^2,
+\]
+because $2\sinh(u/2)>u$ for $u>0$. Hence
+$h''=-n/a^2-n(\log G)''+G''<0$.
+At zero $h(a)\to-\infty$. At infinity the leading linear term is
+$a(nt_{\min}-T)$, strictly negative for nonconstant data. Both tails are
+therefore coercive and there is one maximum. For constant data this linear
+term vanishes and the remaining $n\log a$ divergence is unbounded.
+\end{proof}
+Jones \cite{jones} supplies the profiled likelihood; strict concavity and the
+all-nonconstant-sample conclusion were not located in the inspected preview.
+\source{Kumaraswamy dossier, ``Scalar certificate and uniqueness proof''.}
+
+\begin{theorem}[Burr XII, scale held]\label{thm:burr}
+Hold $s>0$ in the Burr XII density with shapes $c,k>0$. A nonconstant positive
+sample containing an observation below $s$ has a unique finite two-shape
+maximum. Constant samples at or below $s$ have unbounded likelihood. If all
+observations are at least $s$ and some exceed it, the supremum is a Pareto
+path at endpoint $s$, with the endpoint penalty specified below.
+\end{theorem}
+\begin{proof}[Proof sketch]
+Let $z_i=\log(x_i/s)$,
+$G(c)=\sum_i\log(1+e^{cz_i})$ and $R(c)=\sum_i\log(1+e^{-cz_i})$.
+Then $\widehat k=n/G(c)$ and
+\[
+ \ell_p(c)=n\log n-n-\sum_i\log x_i-n\log\{G(c)/c\}-R(c).
+\]
+For $A(u)=\log(1+e^{-u})$, $u>0$, the dossier proves
+\[
+ (\log(A(u)/u))''\ge u^{-2}-e^{-u}>0.
+\]
+For positive log arguments add the constant term one to $A(u)/u$; sums
+preserve log convexity. A zero argument contributes $\log2/c$.
+Thus $G(c)/c$ is strictly log convex, and $R$ is convex, giving
+$\ell_p''<0$. At $c\downarrow0$ the profile tends to $-\infty$.
+If some $z_i<0$ and the sample is nonconstant, its large-$c$ asymptotics also
+tend to $-\infty$; a negative log observation supplies the linear decay when
+positive logs occur, while an all-negative nonconstant sample has
+$\sum z_i<n\max z_i$. Constant nonpositive logs instead give divergence.
+
+When every $z_i\ge0$, let $S=\sum_i z_i>0$ and
+$Z=\#\{i:x_i=s\}$. The large-$c$ limit is
+\[
+ n\log(n/S)-n-\sum_i\log x_i-Z\log2.
+\]
+Strict concavity and this finite limit imply that the profile increases
+strictly to it. Each tied endpoint observation contributes the extra
+$-\log2$, so the reachable likelihood is not simply the closed Pareto
+likelihood.
+\end{proof}
+The exact overlap with Wingo \cite{wingo83,wingo93} is open because only the
+abstracts were inspected. No priority claim for Burr uniqueness is warranted.
+Reciprocal and threshold transformations transport the result only with the
+held scale and the likelihood Jacobian correctly retained.
+\source{\code{2026-11-06-burr-scale-report.md} and Burr dossier.}
+
+\subsection{Fr\'echet and minimum multiplicity}
+Use the dossier's Fr\'echet density with positive held shape $\lambda$,
+location $\mu<\min_i x_i$ and scale $\sigma>0$:
+\[
+ f(x)=\lambda\sigma^{\lambda}(x-\mu)^{-\lambda-1}
+       \exp\{-[\sigma/(x-\mu)]^\lambda\}.
+\]
+Here $\sigma$ is the public ordinary scale, so $(X-\mu)/\sigma$ has
+unit-scale Fr\'echet distribution.
+\begin{theorem}[Held-shape Fr\'echet]\label{thm:frechet}
+Let $k$ be the multiplicity of the sample minimum. With location and scale
+free and $\lambda$ held, a finite MLE exists if and only if
+$\lambda(n-k)>k$, and is then unique. At equality the supremum is finite
+but unattained; below equality the likelihood is unbounded.
+\end{theorem}
+\begin{proof}
+Set $\epsilon=\min_i x_i-\mu$, $g_i=x_i-\min_j x_j$ and
+$S_p=\sum_i(g_i+\epsilon)^{-p}$. Profiling gives
+$\widehat\sigma^\lambda=n/S_\lambda$. The gap score has the sign of
+\[
+ n\lambda R-(\lambda+1),\qquad
+ R=\frac{S_{\lambda+1}}{S_\lambda S_1}.
+\]
+For $q_i=(g_i+\epsilon)^{-1}$ put
+$E_p=\sum_iq_i^{p+1}/\sum_iq_i^p$. Weighted covariance of $q$ and $\log q$
+is strictly positive for nonconstant data, so $E_p$ increases with $p$.
+Consequently
+\[
+ \frac{d\log R}{d\epsilon}
+ =-(\lambda+1)E_{\lambda+1}+\lambda E_\lambda+E_1<0.
+\]
+The limits of $R$ are $1/k$ and $1/n$. A unique downward score crossing
+exists precisely under the stated strict inequality. At the small gap,
+the coefficient of $\log\epsilon$ in the profile is
+$\lambda(n-k)-k$. This gives unboundedness below the threshold and a finite
+limit at equality; the strictly negative gap score at equality excludes
+attainment. Constants have $k=n$ and fall in the unbounded case.
+\end{proof}
+For equality, the finite supremum is
+\[
+ n\log(n\lambda)-n-n\log k
+   -(\lambda+1)\sum_{g_i>0}\log g_i.
+\]
+At held $\lambda=1$, $(0,0,1,2)$ gives $2\log2-4$, unattained;
+$(0,0,0,1)$ is unbounded. Holding scale as well gives a unique finite
+location fit even for constants: the relevant ratio
+$S_{\lambda+1}/S_1$ decreases from infinity to zero.
+
+The searched Fr\'echet theorem with location fixed \cite{frechet2016} does not imply this
+minimum-multiplicity criterion. The exact threshold and equality case were
+not located after search; full comparisons with Smith \cite{smith}, Cheng
+and Iles \cite{cheng}, and Hall and Wang \cite{hallwang} remain open.
+\source{\code{2026-11-07-evt-scalar-report.md} and Fr\'echet dossier.}
+
+\subsection{Conditional count likelihoods}
+\begin{theorem}[ZTNB and conditional ZINB]\label{thm:conditional}
+For zero-truncated NB with $0<p<1$ held, the size log likelihood is strictly
+concave on $r>0$; on the extended domain $r\ge0$ the maximum is unique for
+positive samples of mean greater than one, possibly at the logarithmic-series
+member $r=0$. For ZINB data containing a positive count, free inflation with
+either positive size held or interior probability held has a unique maximizer.
+\end{theorem}
+\begin{proof}
+With $t=-\log p$, the ZTNB size curvature is
+\[
+ -\frac n{r^2}-\sum_i\sum_{j=1}^{x_i-1}(r+j)^{-2}
+       +\frac{nt^2}{4\sinh^2(rt/2)}<0.
+\]
+The inequality again follows from $2\sinh(u/2)>u$. Continuity at zero and
+vanishing likelihood at infinite size complete the extended-domain claim.
+All-one samples have the separate point-mass nonidentification when
+probability is free.
+
+For ZINB put $z=n_0/n$. At fixed base parameters the inflation maximum is
+\[
+ \widehat\pi=\max\{0,(z-p^r)/(1-p^r)\}.
+\]
+In the positive-inflation region the likelihood separates into a saturated
+zero/nonzero likelihood and a positive-count truncated-NB likelihood.
+With size held, ordinary and truncated NB are strictly concave in the
+probability natural parameter; their scores agree at $p^r=z$, giving a
+unique joined maximum. With probability held, both size branches are
+strictly concave by the displayed curvature and the ordinary NB curvature.
+Their scores again agree at the join. Positive observations make the ZINB
+likelihood vanish at either size extreme in this held-probability problem.
+This gives existence and uniqueness.
+\end{proof}
+The separation is partly known \cite{haslett}; the held-parameter uniqueness
+theorems were not located after search. Separate concavity does not establish
+joint size/probability uniqueness. The latter distinction leads to
+Section~\ref{sec:zinb}.
+\source{ZTNB and ZINB dossiers; \code{2026-11-06-zinb-cert-report.md}.}
+
+\section{Explicit failures of uniqueness}\label{sec:modes}
+A multiple-root likelihood, a tie between distinct distributions and
+coefficient nonidentification are different phenomena. We state each example
+with its evidence level. Decimal values illustrate the retained calculations;
+only exact definitions or the stated conditional certificates support exact
+claims.
+
+\subsection{An exact generalized Pareto tie}
+For strictly positive excesses, threshold zero and $\xi\ge-1$, use
+$f(y;\sigma,\xi)=\sigma^{-1}(1+\xi y/\sigma)^{-1-1/\xi}$, with the
+exponential limit at zero and the closed uniform endpoint at $\xi=-1$.
+Grimshaw's scalar reduction is established prior work \cite{grimshaw}.
+\begin{theorem}[GPD scalar reduction]\label{thm:gpdprofile}
+For $b>-1$, write $M=\max_i y_i$, $v_i=y_i/M$, $b=\xi M/\sigma$, and define
+\[
+ D(b)=\overline{\int_0^{v_i}(1+bs)^{-1}\,ds}.
+\]
+It is continuous through $b=0$. The conditional joint optimum is
+$\xi=bD$, $\sigma=MD$ when $bD\ge-1$, with mean log likelihood
+$-\log M-\log D-bD-1$. Otherwise the constrained uniform branch cannot
+beat the uniform member on $[0,M]$.
+\end{theorem}
+\begin{proof}
+At fixed $b$ put $u=\sigma/M$. The mean log likelihood is
+$-\log M-\log u-bD-D/u$. Its derivative in $u$ is $(D-u)/u^2$,
+so the unique unconstrained maximum is $u=D$. If it violates
+$\xi=bu\ge-1$, the constrained maximum is the uniform branch
+$\xi=-1$, $\sigma=-M/b\ge M$. Its density cannot exceed $1/M$.
+The integral representation defines $D$ and this optimization continuously
+at $b=0$.
+\end{proof}
+
+\begin{proposition}[GPD equal global maxima]\label{prop:gpd}
+Put $b(k)=ke^{1+k}$ and
+\[
+ a(k)=\frac{\exp\{[3k-\log(1+b(k))]/2\}-1}{b(k)},\qquad
+ a(0)=(3/e-1)/2.
+\]
+Let $a_* =\max_{k>-1}a(k)$ and choose any maximizer $k_*$. For the sample
+$(a_*,a_*,1)$ the distinct members $(\sigma,\xi)=(1,-1)$ and
+$(e^{-1-k_*},k_*)$ are global maximizers, each with total log likelihood zero.
+\end{proposition}
+\begin{proof}[Proof sketch]
+The continuous function $a$ tends to $-\infty$ at $-1$ and to zero at
+infinity, is less than one everywhere, and has
+$a'(0)=3(e^2-2e-1)/(8e)>0$. Thus $0<a_*<1$ is attained away from zero.
+At fixed $b$, $h=-\log D-bD-1$ decreases with $D$ on its admissible
+range, while $D$ increases with the smaller datum $a$ with derivative
+$2/[3(1+ba)]$. Solving $h=0$ gives $D=e^{-1-k}$ and $b=ke^{1+k}$;
+substitution gives precisely $a=a(k)$. Since $k\mapsto b(k)$ maps
+$(-1,\infty)$ increasingly onto $(-1,\infty)$, $a_*\ge a(k)$ bounds
+every admissible profile value by zero. The constrained uniform branch is
+also bounded by zero. Both displayed members attain the bound.
+\end{proof}
+The numerical illustration is
+\[
+\begin{split}
+ a&\approx0.07880675592383729,\\
+ \xi&\approx0.5808198884419236,\qquad
+ \sigma\approx0.2058062908136120.
+\end{split}
+\]
+The max-defined sample, not its rounded approximation, defines the exact tie.
+Multiple GPD profile roots are known; this restricted-endpoint global tie was
+not located in the inspected Grimshaw text.
+\source{GPD dossier, ``Nonuniqueness''; \code{2026-11-05-gpd-cert-data/check_uniqueness.py}.}
+
+\subsection{Zeros supporting two explanations}
+\begin{proposition}[ZINB held-inflation crossover]\label{prop:zinbtie}
+For 99 zeros and one count of ten, with size $r=10$ held, the probability
+likelihood can have two local maxima. Their order reverses as held inflation
+passes a value near $0.7683947756875808$. A value in the certified crossover
+interval has two equal global maxima.
+\end{proposition}
+\begin{proof}[Branch count and continuity]
+For general $n_0$, $k=n-n_0>0$, $S=\sum_i x_i$, let
+$a=\pi/(1-\pi)$, $u=kr/(kr+S)$ and $v=nr/(nr+S)$. The probability score
+has the sign of
+\[
+ a[kr-(kr+S)p]+p^r[nr-(nr+S)p].
+\]
+It is positive below $u$ and negative above $v$. Between them its zeros
+solve
+\[
+ R(p)=\frac{p^r(nr+S)(v-p)}{(kr+S)(p-u)}=a.
+\]
+The sign of $R'$ is that of
+$-rp^2+[r(u+v)-(v-u)]p-ruv$. Its two possible turning points partition
+all monotone branches, so at most three score roots occur. The retained
+branch comparisons give opposite orderings of the two maxima at inflation
+values bracketing the crossover. Endpoints have zero likelihood, and all
+branches are covered. Continuity gives a global equal-height value between
+the brackets. Rounded agreement at the displayed inflation is not itself
+the exact tie proof.
+\end{proof}
+Structural versus sampling zeros are familiar \cite{ridout98}. The fixed
+inflation three-root bound and equal-height crossover were not located after
+search. Freeing inflation instead leads to Theorem~\ref{thm:conditional}.
+\source{ZINB dossier; \code{2026-11-06-zinb-cert-report.md}; \code{2026-11-06-nbfam-cert-data/zinb-tie.json}.}
+
+\subsection{An analytic SGED scale tie}
+\begin{proposition}[Two global SGED scales]\label{prop:sged}
+Take any number of repeated observations $x_i=-1$, held mean zero and
+held power $\nu=1/2$ in the standardized Fern\'andez--Steel SGED. Let
+$R\in(4,6)$ solve $\log R=2(1-1/R)$, put
+\[
+ K=2\sqrt{R-1}/R,\qquad \xi=\sqrt{1+K^2/6}.
+\]
+At this held skew, two separated scales are global maximizers, although no
+observation equals the held mean.
+\end{proposition}
+\begin{proof}
+Use the dossier's dimensionless inverse-scale coordinate $r$, in which the
+observation crosses the kernel cusp at $r=1$. Beyond the cusp, the cost
+relative to that point is
+\[
+ n\{-\log r+K\sqrt{r-1}\},\qquad r\ge1.
+\]
+The score equation is quadratic in $\sqrt{r-1}$; the first stationary
+point is a maximum of cost, the second a minimum at $R$. The defining
+equation makes the cost at $R$ equal the zero cost at the cusp. Cost tends
+to infinity on the far tail and decreases towards the cusp on $(0,1)$.
+Thus no lower cost occurs, and the two scales tie globally.
+\end{proof}
+The retained 70-digit check gives $R=4.921553634567505$ and
+$\xi=1.0525849322732358$ as numerical illustrations. The SGED scale map
+uses fixed mean and standard deviation coordinates, not a held raw mode.
+Schoups and Vrugt \cite{schoups} give related standardization formulas;
+their stated power range excludes this subunit example. This tie was not
+located after search.
+\source{\code{2026-11-07-sged-subunit-report.md} and SGED dossier.}
+
+\subsection{A beta-prime tie obtained by continuity}
+For shape $a$ held, free shape $b$ and scale $s$, the beta-prime density is
+$x^{a-1}s^{-a}/\{B(a,b)(1+x/s)^{a+b}\}$.
+\begin{proposition}[Conditional beta-prime global tie]\label{prop:betapr}
+Hold $a=0.22690393135372058$ and take the nine observations
+\begin{align*}
+(&1.9901008294052028\,10^{-5},\ 2.209857117039297\,10^{-5},\\
+ &0.0002450722434289249,\ 12.288342947780086,\\
+ &942.976056905759,\ 16.239512580216314,\\
+ &2.898690421966857,\ 1.2684036923492177,\ 400970.63293690106).
+\end{align*}
+Multiply the last observation by $e^t$. Conditional on the retained endpoint
+certificates and uniform gap comparisons, some $t\in(5.6463,5.6466)$ gives
+at least two separated global maxima in $(b,s)$, on opposite sides of
+$b=0.12$.
+\end{proposition}
+\begin{proof}[Certificate and continuity]
+For each $b$, the log-scale score has a unique root. Profile derivative and
+Schur-complement bounds isolate competing maxima without assuming profile
+unimodality. The endpoint certificates select opposite sides of $b=0.12$.
+Throughout the $t$ bracket, Lipschitz bounds keep a finite witness at least
+$0.17569$ above the barrier profile and $17.33799$ above the gamma face;
+both shape exteriors are uniformly excluded. On the resulting compact sets
+the two side maxima are continuous in $t$. Their difference changes sign,
+so it vanishes somewhere. The barrier and face gaps keep the tied maxima
+separated and global.
+\end{proof}
+At $t=0$ the two local profiles are approximately
+\[
+\begin{array}{rrr}
+ b&s&\ell\\
+ 0.09175915065&0.000500743658&-29.14985912088\\
+ 0.22150182273&2.54933710323&-28.55611432402.
+\end{array}
+\]
+Near the numerical crossing $t=5.64643839503$ the implementation gives a tie
+stop with two witnesses. That decimal is not asserted to be an exact
+crossing. Tulupyev et al.\ \cite{tulupyev} hold the numerator shape at 2;
+their critical-point analysis does not settle this arbitrary-held-shape
+example. An equivalent global tie was not located after search.
+\source{\code{2026-11-07-betapr-prof-report.md}; \code{counterexample-refined.json} in its data directory.}
+
+\subsection{Beta negative binomial: labeled nonuniqueness}
+The pmf
+\[
+ f(x;r,\alpha,\beta)=\frac{(r)_x}{x!}
+             \frac{B(\alpha+r,\beta+x)}{B(\alpha,\beta)}
+\]
+is invariant under exchanging $r$ and $\beta$. This known nonidentifiability
+\cite{ueki} alone does not exclude a maximum on the fixed diagonal.
+\begin{proposition}[An off-diagonal BNB maximum]\label{prop:bnb}
+Hold $\alpha=2$ and use the sample specified by the following count-frequency
+pairs (all omitted counts have frequency zero):
+\[
+\begin{array}{rrrrrrrrr}
+ x&0&1&2&3&4&5&6&7\\
+ n_x&135&84&57&39&35&38&18&14\\[2pt]
+ x&8&9&10&11&12&13&14&15\\
+ n_x&14&7&4&9&6&6&3&1\\[2pt]
+ x&16&17&18&20&21&22&23&28\\
+ n_x&3&2&2&2&1&3&1&1\\[2pt]
+ x&29&31&35&36&42&46&47&48\\
+ n_x&1&1&2&2&1&1&1&1\\[2pt]
+ x&51&64&125&175&&&&\\
+ n_x&1&2&1&1&&&&
+\end{array}
+\]
+These 500 observations have at least two distinct labeled global maximizers
+in $(r,\beta)$, representing the same law, conditional on the retained
+diagonal-exclusion comparisons.
+\end{proposition}
+\begin{proof}[Proof sketch]
+The fixed-$\alpha$ likelihood attains its maximum: a shape tending to zero
+makes every positive-count mass vanish uniformly in the other shape; a
+shape diverging with the other bounded away from zero gives stochastic
+escape. The report's superlevel-set argument excludes the simultaneous
+escapes too. The witness $(r,\alpha,\beta)=(1,2,5)$ has
+$f(x)=60/\{(x+5)(x+6)(x+7)\}$ and total log likelihood
+$-1276.345658177647696$. The upper bound over the entire diagonal is
+$-1276.445827365689238$, leaving a gap at least $0.10016918804154$.
+
+For diagonal shape $s$, factor the mass as $f(0;s)R_x(s)$; the first
+factor decreases, the second increases. Thus
+$f(x;s)\le f(0;l)R_x(h)$ on $[l,h]$. The 60-digit certificate covers 861
+segments of $[10^{-6},256]$ and bounds both exterior tails, with absolute
+log-likelihood padding $10^{-20}$. No diagonal maximizer remains. An
+attained off-diagonal maximum and its swap are distinct labeled maximizers.
+The witness itself is not claimed to maximize.
+\end{proof}
+Scalar uniqueness with only one free shape is proved separately by a
+single-crossing digamma-integral argument. It cannot be substituted for
+multivariate uniqueness. Uniqueness after imposing $r\le\beta$ remains open.
+\source{\code{2026-11-06-bnbinom-cert-report.md}; its \code{nonuniqueness.json}; the frozen BNB \code{golden.json}.}
+
+\subsection{Multimodality without equal global values}
+\begin{proposition}[One-observation paralogistic likelihood]\label{prop:para}
+With scale held at one and $x=e^{-0.001}$, the paralogistic shape likelihood
+has stationary points near
+\[
+\begin{array}{rrl}
+ a&\ell&\text{type}\\
+ 2.895379787257729&-0.5700990971060364&\text{local maximum}\\
+ 1140.924271780363&-303.6829139605954&\text{local minimum}\\
+ 9262.778134534774&8.126729864909167&\text{global maximum}.
+\end{array}
+\]
+The globality statement is conditional on the certificate's computed
+comparisons. The root values have an independent 70-digit numerical check using the
+stored binary64 evaluation of $e^{-0.001}$.
+\end{proposition}
+The held-scale log density, with $z=\log x$, is
+\[
+ 2\log a+(a-1)z-(a+1)\log(1+e^{az}).
+\]
+Differentiation supplies the score and curvature. The certificate combines
+root inclusion, likelihood bounds and analytic tail exclusion; the three
+numerically stationary points alone would not prove completeness. A single
+observation can therefore invalidate an assumed one-root shape solve.
+Starting-values documentation gives the likelihood and gradients, but this
+one-observation result was not located after search.
+\source{\code{2026-11-06-paralogis-modes-report.md}; its \code{oracle.py} and \code{modes.tsv}.}
+
+\begin{proposition}[Location-scale $t$ profiles]\label{prop:t}
+For the following weighted samples, a location-scale $t$ likelihood with
+ordinary scale and $\nu\ge1$ has the indicated certified global interior
+maximum, conditional on the retained comparisons:
+\[
+\begin{array}{rr|rr}
+\multicolumn{2}{c|}{\text{two interior maxima}}&
+\multicolumn{2}{c}{\text{stable Cauchy competitor}}\\
+ x&n_x&x&n_x\\
+ -2.5267827738984026&2&-3.3753182637169354&1\\
+ -1.3086958612269082&1&-1.2713352565886626&11\\
+ -0.917311177389449&4&-0.8001089566898665&8\\
+ -0.7470612434645413&4&0.4550011648748676&11\\
+ -0.6822670978323393&1&0.4631607376683885&7\\
+ 0.5175256317384838&8&0.48440591294209223&8\\
+ 0.8692557396694677&11&1.2931658287635732&9
+\end{array}
+\]
+The first has two interior profile maxima, near $\nu=1.0102899103927294$
+and $49.705241724$; the second has its global maximum at $33.905406907$,
+although the profile initially decreases from the restricted Cauchy member.
+\end{proposition}
+At fixed shape, certified nuisance solutions, profile envelopes and exterior
+bounds compare all shapes and the normal and lower faces. The final replay
+certifies the larger-shape winner in both cases. For the first sample the
+small maximum has log likelihood $-46.21889676163025$, while the larger has
+$-43.980462713143716$ in the original numerical fixture. For the second,
+the Cauchy endpoint has log likelihood $-83.65806430406303$ and the interior
+maximum $-77.96128211222002$. The final certificate report supplies the
+winning shapes above; exploratory root decimals do not assert exact roots.
+
+The standardized-$t$ domain $\nu>2$ uses the same ordinary-scale likelihood
+with a different coefficient map; both retained winners are also certified
+there. General profile unimodality is not assumed. Fern\'andez and Steel
+\cite{fernandez} supply classical context for $t$ boundary pathologies;
+the inspected abstract does not establish these interior examples.
+\source{\code{2026-11-06-t-close-report.md}; \code{2026-11-04-t-closure-data/fixtures.json}.}
+
+For comparison, the half-$t$ sample
+$(0.12773,12.5979,3.91782,2.58658,0.138212)$ has numerical profile maxima
+at $\nu=0.41508$ and $1.17074$, with log likelihoods $-11.72979$ and
+$-11.98253$. A heterogeneous scan found 32 multimodal profiles among 1200
+samples. This is a numerical finding, not a prevalence estimate under a
+single sampling design. The failure gallery's rounded sample and scan do
+not supply a universal half-$t$ mode-count theorem. For completeness, with held mean zero, $\nu=3$ and $\xi=10$, the six-point
+Fern\'andez--Steel skew-$t$ sample
+\begin{align*}
+ (&-35.321072334324725,\ 11.459074428000962,\\
+ &-0.015351125824354262,\ -0.2513099360462538,\\
+ &-297.3459307209368,\ 0.5881721220894813)
+\end{align*}
+has the following numerical stationary points:
+\[
+\begin{array}{rrl}
+ \log\sigma&\ell&\text{type}\\
+ 3.764665559514996&-50.43173618293705&\text{maximum}\\
+ 4.850139380730862&-51.428090712695514&\text{minimum}\\
+ 5.894765235143508&-38.8073025560888&\text{maximum}.
+\end{array}
+\] At symmetry the scale score
+is strictly monotone; skewing with the public mean held creates the extra
+mode. This numerical construction is not an exact-tie theorem.
+\source{\code{2026-11-06-sstd-cert-report.md}; its \code{skew-scale.json}; \code{failure-gallery.tex}, half-$t$ section.}
+
+\section{Boundaries, reachable likelihoods and limit models}\label{sec:zinb}
+\subsection{A face score can be sufficient without being decisive}
+Let $n_0$ be the zero count, $k=n-n_0>0$, $S=\sum_i x_i$,
+$z=n_0/n$, $q=k/n$ and $m_+=S/k$. In this section the full-sample mean is
+$\bar x=S/n$, so $m_+$ is not the $m$ of Theorem~\ref{thm:nb}.
+Profiling inflation yields either the ordinary NB branch or
+\[
+ B+T(r),\qquad B=n_0\log z+k\log q,
+\]
+where $T$ is the probability-profiled positive-count ZTNB log likelihood.
+After maximizing the positive-count probability, $B+T(r)$ is an upper
+bound for every fixed-size ZINB fit, including those for which saturation
+would imply negative inflation.
+
+\begin{theorem}[Established all-free ZINB regions]\label{thm:zinb}
+For data containing a positive count:
+\begin{enumerate}
+\item If $z\le e^{-\bar x}$, a finite ZINB maximum exists exactly when
+$v>\bar x$ and is then unique, at inflation zero.
+\item Let $(\lambda_*,\pi_*)$ be the admissible maximized ZIP fit and put
+$A=\sum_i x_i(x_i-1)/2$, $C=A-S\lambda_*/2$. Then $C>0$ is sufficient
+for a finite ZINB maximum. On the positive-inflation ZIP face, $C\ne0$
+for integer empirical data.
+\item If every positive count equals $j\ge2$, define
+$\lambda_j/(1-e^{-\lambda_j})=j$. If $q\le1-e^{-\lambda_j}$,
+no finite ZINB maximum exists.
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+The ordinary NB zero mass at its fixed-$r$ probability optimum is
+$(1+\bar x/r)^{-r}>e^{-\bar x}$. In the zero-deficit region, inflation is
+therefore zero for every $r$; Theorem~\ref{thm:nb} applies.
+
+Along $p=\exp(-\lambda_*/r)$ with inflation $\pi_*$ held,
+\begin{equation}\label{eq:zipgain}
+ \ell_{\rm ZINB}-\ell_{\rm ZIP}=C/r+O(r^{-2}).
+\end{equation}
+For each positive count the first coefficient is
+$x(x-1)/2-x\lambda_*/2$; the zero mass is exactly unchanged.
+If $C>0$, a finite witness beats the global ZIP face. The size profile is
+continuous, tends to that face at infinity and to $-\infty$ at zero, giving
+attainment. At positive ZIP inflation, $C=0$ would make
+$\lambda_*=2A/S$ rational and the conditional-mean equation would make
+$e^{-\lambda_*}=1-\lambda_*/m_+$ rational. Hermite--Lindemann excludes
+this for positive rational $\lambda_*$.
+
+For the third assertion, an NB positive-count law is a nondegenerate
+mixture of truncated Poisson laws. The conditional mass at $j$ has a
+unique maximum at $\lambda_j$. Every nondegenerate mixture has strictly
+smaller mass there. The assumption on $q$ makes the saturating ZIP fit
+admissible; it reaches the universal indicator/conditional-mass bound in
+the closure. No finite NB mixture attains it.
+\end{proof}
+Thus $(0,0,0,4)$ has $\bar x=1$, $v=3$, yet no finite ZINB maximum. The
+ordinary NB variance rule cannot be transferred by analogy. The
+admissibility requirement is also essential: with $(1,4)$ the unconstrained
+positive-count Poisson fit suggests a positive inward coefficient, but
+would require negative inflation. The admissible ZIP fit has
+$\lambda_*=5/2$, $\pi_*=0$ and $C=-1/4$; the zero-deficit theorem correctly
+gives nonexistence.
+
+In the excess-zero region, the full profile has a single join from ordinary
+NB to saturated ZTNB because $(1+\bar x/r)^{-r}$ decreases strictly from
+one to $e^{-\bar x}$. The profile and its derivative agree at the join.
+For $C<0$, \eqref{eq:zipgain} establishes only a local preference for ZIP
+near infinite size. It does not exclude a distant finite maximum. The
+published ZIP-versus-ZINB score-test connection is partly known
+\cite{ridout01}; it does not by itself supply this global exclusion.
+\source{\code{2026-11-07-zinb-theory-report.md}; ZINB dossier.}
+
+\subsection{A certified finite optimum too close to the face}
+\begin{proposition}[Near-ZIP sample]\label{prop:near}
+For 5000 zeros, 3958 ones, 4063 twos and 1979 fours, the independent
+65-digit padded certificate gives a unique finite global ZINB maximum:
+\[
+\begin{array}{lr}
+ r&8108.2388581481329544584742965\\
+ p&0.999803508015713486829597414531\\
+ \pi&0.163276396309303523872445174295.
+\end{array}
+\]
+The total log likelihood comparison is
+\[
+\begin{array}{lr}
+ \text{finite ZINB}&-22998.0004858914916933762597635\\
+ \text{ZIP face}&-22998.0005325865669794057284629\\
+ \text{finite gain}&0.0000466950752860294686993812113.
+\end{array}
+\]
+\end{proposition}
+The certificate is conditional on comparisons padded by $10^{-45}$, not on
+outward rounding. With dispersion $d=1/r$ and $u=-r\log p$, the positive
+likelihood is evaluated without large gamma differences:
+\begin{align*}
+ L(d,u)={}&\sum_{x_i>0}\sum_{j=0}^{x_i-1}\log(1+jd)
+ +S\log u+S h(ud)-ku\\
+ &-k\log(1-e^{-u})-\sum_{x_i>0}\log(x_i!),\qquad
+ h(v)=\log\{(1-e^{-v})/v\},\quad h(0)=0.
+\end{align*}
+A compact cover excludes sizes below 100. On the remaining region the
+reported bounds prove a negative-definite Hessian in a dispersion/mean box,
+and a signed bracket encloses the sole maximum. This is a global
+sample-specific argument; it does not prove the general ZINB conjecture.
+
+The historical fitter's face allowance $10^{-8}n=0.00015$ is larger than
+the complete finite gain. That explains its false ZIP classification.
+The certified fitter instead stops on budget when its cover cannot be
+closed. At the optimum the profile curvature in $\log r$ is
+$-9.33482447\times10^{-5}$; the total observed negative Hessian in
+$(\log r,\log u,\pi)$ has condition number about $5.29\times10^8$.
+These coordinate-dependent optimization diagnostics are not a claim about
+Fisher covariance. The gain per observation is $3.11\times10^{-9}$.
+Increasing work alone cannot repair a size-score comparison beneath its
+practical binary64 resolution.
+\source{\code{2026-11-07-zinb-theory-report.md}, Sections 4--5 and \code{near-certificate.json}.}
+
+\subsection{Reachable boundary likelihood is path-dependent}
+Within a common dominating measure, the Hellinger closure of the family
+supplies candidate limiting models such as Poisson and exponential faces.
+Concentration paths with unbounded likelihood require separate analysis;
+they need not converge to a dominated law in that closure. Closure of
+probability laws does not determine the pointwise density at an observed
+support endpoint. Even weak
+convergence, and even a density equivalence almost everywhere, leaves those
+values undecided. A certificate must use the likelihood reachable through
+the actual held-coordinate paths.
+
+For standardized Fern\'andez--Steel skew $t$ with mean and standard deviation
+held, shrink one half-width with degrees of freedom $\nu$ fixed. Define the kernel moment
+$h_\nu=\Gamma((\nu-1)/2)/\{\sqrt\pi\Gamma(\nu/2)\}$, the first absolute
+moment of $t_\nu/\sqrt\nu$, and put
+\[
+ v=1/(\nu-2)-h_\nu^2,\qquad
+ \rho=\frac{h_\nu}{2(\nu-2)v},
+\]
+The same kernel has second moment $1/(\nu-2)$. Each observation at the resulting half-$t$ endpoint has a
+multiplier $(1+\rho^2)^{-(\nu+1)/2}$ relative to its closed limiting density.
+It is $0.6042259416$ at $\nu=3$. At the joint normal corner the largest
+reachable multiplier is
+\[
+ e^{-\rho_N^2/2}=0.5473573954,\qquad
+ \rho_N=\frac{\sqrt{2/\pi}}{2(1-2/\pi)}.
+\]
+Allowing degrees of freedom to vary toward a finite half-$t$ face can restore the full endpoint factor;
+so can releasing appropriate moment holds. In Azzalini's skew $t$, free
+location can approach the favorable endpoint side; location held exactly
+there instead halves each tied observation's density. The distinction is
+between paths satisfying constraints, not between equivalent labels for
+the same unconstrained limiting law.
+\todo{Choose whether to retain the endpoint-factor derivation in the paper or a supplement.}
+\source{\code{2026-11-07-skew-theory-report.md}, especially its endpoint-path proofs.}
+
+A second warning is supplied by standardized $t$. For masses $2/3$ at $b$
+and $1/6$ at each of $b\pm d$, the normal-seam first coefficient is exactly
+zero and the second coefficient is $n/4>0$. Nevertheless the optimized
+profile decreases strictly with $\nu$ on $(2,\infty)$ and its supremum
+is the collapse value $-n\log(2d)$ at $\nu\downarrow2$. Its ordinary
+scale satisfies $s^2=d^2(\nu-2)/(3\nu)$ while standard deviation stays
+$d/\sqrt3$. A zero boundary slope does not certify a face, and a finite
+limiting standard deviation does not exclude concentration in the kernel
+scale. The exact three-point result was not located after search.
+\source{Standardized-$t$ dossier and \code{2026-11-05-t-root-data/derivation.md}.}
+
+\section{Interior regularity and inference}\label{sec:inference}
+A global MLE certificate is not an inferential calibration theorem. It does
+not assert differentiability in quadratic mean (DQM), positive information,
+consistency, an asymptotic distribution, or validity of a numerical Hessian.
+The project's pointwise classification considers these questions separately
+for 99 all-free family models; roughly 80 are regular and smooth, but that
+summary is not a count of implemented covariance procedures.
+
+Use $H^2(p,q)=\int(\sqrt p-\sqrt q)^2$, without a factor $1/2$. At a regular
+point, per-observation information $I$ satisfies
+\[
+ H^2(p_\theta,p_{\theta+h})=h^TIh/4+o(\|h\|^2).
+\]
+Write the two sample matrices as
+\[
+ J=\sum_i s_i s_i^T,\qquad H=-\sum_i\partial^2\log f_\theta(x_i).
+\]
+Their distinct consistency
+conditions matter. The outer product of the total score is not $J$.
+
+\subsection{Symmetry and moving joins}
+Azzalini skew normal has singular information at symmetry
+\cite{hallin}. The mean/standard-deviation parametrized
+Fern\'andez--Steel two-piece normal behaves differently. At standard
+location and scale and $\xi=1$, in coordinates $(\mu,\log\sigma,\log\xi)$,
+\[
+ I=\operatorname{diag}(1,2,3-8/\pi).
+\]
+With $m_0=\sqrt{2/\pi}$, the skew score is
+$\operatorname{sign}(z)z^2-2m_0z$. Its covariance with the location score
+is $\E|Z|^3-2m_0\E Z^2=0$; symmetry makes it orthogonal to scale.
+Its variance is $3-8/\pi>0$. Thus it is regular at symmetry. Nonsingular
+two-piece information is partly known \cite{rubio}; the displayed constant
+is a coordinate specialization, not a priority claim.
+
+A moving join in a second derivative need not break DQM. The two-piece
+normal, skew $t$ and Huber model have regular interior regimes with a valid
+piecewise Hessian. But a generic finite-difference stencil crossing a join
+need not have the formal smooth error order. A density theorem and a
+validated production derivative method are separate dependencies.
+
+\subsection{Cusp thresholds and endpoints}
+For the exponential-power kernel
+$f(x)=\nu\exp(-|(x-\mu)/a|^\nu)/\{2a\Gamma(1/\nu)\}$,
+location information is finite exactly for $\nu>1/2$, with
+\[
+ I_{\mu\mu}=\frac{\nu^2}{a^2}
+             \frac{\Gamma(2-1/\nu)}{\Gamma(1/\nu)}.
+\]
+The ordinary location Hessian has the correct integrable expectation only
+for $\nu>1$. When $1<\nu\le2$ and location and shape are jointly fitted,
+the source report leaves fitted-Hessian consistency open. At the critical
+held power $\nu=1/2$, in its $a=1$ normalization, likelihood information at
+rate $\sqrt{n\log n}$ is $1/16$, while raw $J/(n\log n)\to1/8$.
+Rescaling the raw outer-product estimator would require its own argument.
+The thresholds above $1/2$ are partly known from exponential-power work \cite{bottazzi};
+the critical constants and fitted-Hessian issue were not located there.
+
+For density proportional to $d^{\alpha-1}$ near a moving endpoint, with
+controlled differentiated remainders, splitting the Hellinger integral at
+distance of order $|h|$ gives
+\[
+ H^2\asymp
+ \begin{cases}
+ |h|^\alpha,&\alpha<2,\\
+ h^2\log(1/|h|),&\alpha=2,\\
+ h^2,&\alpha>2.
+ \end{cases}
+\]
+These orders attach to endpoint-moving coordinates. At GEV shape $-3/4$,
+one endpoint coordinate is fast at $n^{3/4}$; the two complementary smooth
+coordinates retain $\sqrt n$. At the critical endpoint exponent two, the
+endpoint experiment is Gaussian at $\sqrt{n\log n}$, not at $\sqrt n$.
+Smith \cite{smith} supplies established nonregular context; exact coordinate
+specializations and uniform transfer to each numerical estimator need
+separate checking \cite{bucher}.
+
+Other interior rank losses include BNB's $r=\beta$ and generalized beta's
+second shape equal to one with its upper endpoint held. Tukey lambda's
+uniform members at shapes one and two instead have a singular formal
+pointwise score second moment; the all-free endpoint-moving model is not
+DQM there. Formal scores must not be called regular Fisher information. The BNB symmetry explains a vanishing antisymmetric score on the
+diagonal, but does not make the entire model regular after arbitrary
+relabeling. Fixing a redundant parameter and estimating all of them are
+different inferential problems.
+\source{\code{2026-11-04-infer-moving-report.md}; \code{2026-11-04-dqm-a-report.md}, \code{2026-11-04-dqm-b-report.md}, \code{2026-11-04-dqm-c-report.md}; canonical pointwise inference classification.}
+
+\subsection{Local experiments at closure points}
+The source reports derive the following candidate specializations of
+boundary likelihood experiments. They concern correctly specified iid
+sampling with positive nondegenerate face parameters and the face nuisance
+parameters fitted. The binomial comparison requires known size at least two;
+the NB and unknown-size binomial alternatives to Poisson are tested
+separately, rather than as their union. They are not blanket approvals of
+the library's tests or confidence intervals.
+\begin{center}
+\small
+\begin{tabular}{p{.37\textwidth}p{.23\textwidth}p{.29\textwidth}}
+\toprule
+Null versus enlargement&Local geometry&Likelihood-ratio limit\\
+\midrule
+Exponential versus Lomax; Poisson versus NB or unknown-size binomial;
+binomial versus beta-binomial&Gaussian ray&$\tfrac12\chi_0^2+\tfrac12\chi_1^2$\\
+Weibull versus Burr&Gaussian ray, efficient information $1-6/\pi^2$&Same mixture\\
+Poisson versus beta-binomial with size and both shapes free&Gaussian half-plane&$\tfrac12\chi_1^2+\tfrac12\chi_2^2$\\
+Pareto versus Burr with endpoint fitted&Endpoint Poisson process and independent Gaussian tail factor&Point-process supremum\\
+\bottomrule
+\end{tabular}
+\end{center}
+The ray mixture is standard once the local geometry and nuisance
+regularity are established \cite{self}. The efficient Burr constant
+$1-6/\pi^2\approx0.392$ and the beta-binomial half-plane were not located
+in the inspected literature. For a fitted Pareto endpoint the $n^{-1}$
+endpoint displacement produces a point-process likelihood, so the ordinary
+chi-bar-square conclusion cannot be inferred from the parameter being on
+a boundary. Individual family assumptions and uniform estimator transfer
+remain to be checked.
+\todo{Decide which derived closure experiments belong in the main paper. Obtain theorem-level comparisons and verify each family's assumptions before stating inferential calibration as established.}
+\source{\code{2026-11-04-infer-closure-report.md}; \code{boundary-points.tex}.}
+
+\section{Software findings and coverage}\label{sec:software}
+\subsection{What the inventory counts}
+A family-level certification entry aggregates its supported held subsets.
+A fully certified entry asserts global reasoning for each such route under
+its arithmetic convention; it does not assert that every input produces a
+finite fit, that all parameter holds are supported, or that all coefficient
+accuracy targets have already been unified. Partial certification means
+some routes have certificates and others still have numerical searches.
+\begin{center}
+\begin{tabular}{lrrr}
+\toprule
+Inventory, 8 November 2026&Full&Partial&Total\\
+\midrule
+Showcase snapshot&79&20&99\\
+Dossier \code{fit.certified} fields in this worktree&81&18&99\\
+\bottomrule
+\end{tabular}
+\end{center}
+Both inventories have zero families with no certified subset. These are
+moving counts on the same date, not confidence bounds or two replications.
+The second row is a read-only census of 99 canonical dossier front matters;
+the first is exactly the supplied showcase statement. The difference is
+retained rather than silently rewriting the showcase. The census records
+metadata, not an independent audit of every proof and implementation.
+\todo{Choose and freeze the release revision for the coverage table, reconcile 79 versus 81 with the showcase, and audit whole-family claims against supported holds and delivered coefficient bounds.}
+
+The architecture keeps the statistical outcome in the core. C++ fitters
+report status enums without printing or exceptions; adapters turn them
+into public conditions. Structured stop details carry model identities,
+finite witnesses and likelihood bounds where available. Jacobians and
+coefficient maps must be transported along reciprocal and threshold
+reductions. A failed parent fit must remain failed after transformation.
+
+The family's density and its fitted domain are also explicit. Finite proper
+discrete point masses can be attained members; continuous zero-scale point
+masses are outside the Lebesgue-dominated family. Shape restrictions are
+chosen for existence and are flagged at a fitted restriction. A restriction
+such as GPD $\xi\ge-1$ does not imply regular inference throughout that
+range. Holding a threshold by interface policy is not itself a theorem
+that a free threshold never has a maximum.
+
+\subsection{Failure examples and evaluation layers}
+The failure gallery reproduces ten textbook likelihood pathologies and
+historical implementation failures. They include start values returned as
+fits, local maxima selected without global comparison, and false reports
+of Poisson or ZIP escape. The near-face sample in
+Proposition~\ref{prop:near} shows why a likelihood-gain tolerance proportional
+to $n$ is not a statistical nonexistence criterion. The paralogistic and
+$t$ examples show why multiple starts and stable Cauchy-like endpoints
+do not certify the shape profile.
+
+Density evaluation is an additional dependency. A finite log mass should
+remain finite even when the mass itself underflows. The retained
+extraDistr 1.10.0.5 reproducer reports \code{-Inf} for
+\begin{quote}\small
+\verb|extraDistr::dzinb(10000, 2, 0.5, 0.1, log = TRUE)|
+\end{quote}
+with expected value about $-6923.75$. This is the positional call in the
+saved verification script. The installed 1.10.0.5 signature names its third
+argument \code{prob}, not \code{mu}. Thus the expected value here uses
+base probability $p=0.5$. The showcase names \code{mu} instead; that
+transcription is not the retained reproducer. Computing a small probability and then taking its logarithm can produce
+this failure even when the true log mass is finite. Such an evaluation
+failure is distinct from an optimization failure.
+
+The retained actuar 3.3.7 calculation provides a separate PIG example:
+\begin{quote}\small
+\verb|dpoisinvgauss(2, mean = 2, shape = 1e20, log = TRUE)|
+\end{quote}
+returned $0.6931471806$, whereas the reported reference is approximately
+$-1.306852819$. A positive log mass is already impossible for a discrete
+probability law. The reference is consistent with the Poisson limit at
+large shape. The same archive records underflow in logarithmic truncated
+count masses and upper-tail CDFs. These are versioned historical findings;
+no claim about a later release is implied.
+\todo{Choose whether to retain the versioned external-package defect examples. Confirm the archived versions and parameter conventions for publication, and do not imply that a historical defect persists in later releases.}
+
+The validation hierarchy is deliberately heterogeneous. A symbolic-density
+comparison can detect a parameter-map error; a high-precision independent
+root can check coefficient accuracy; tail truth tables test distribution
+functions; regression goldens detect drift. A complete root bracket plus a
+uniqueness theorem can prove globality conditional on signs. A compact
+cover plus tail inequalities can do the same without uniqueness. No one
+layer replaces the others. The mathematical assertions in this paper cite
+their reports rather than using the number of passing tests as proof.
+
+Performance evidence is sample-specific. Grouping repeated observations can
+reduce the cost of valid bound evaluations without changing the statistical
+problem. Conversely a nearly flat likelihood can make certification expensive
+even for a short coefficient vector. Budget and numerical stops expose this
+cost instead of converting it into an unchecked estimate. A reported
+finite witness is useful for diagnosis but must not be silently coerced
+into an MLE by a downstream binding.
+\source{\code{failure-gallery.tex}; \code{dev/research/upstream/extraDistr.md}, \code{actuar.md} and \code{verify.R}; family certificate reports; read-only dossier census accompanying this draft's report.}
+
+\section{Open problems and discussion}\label{sec:open}
+\subsection{Sampford's conjecture: an exact remaining inequality}
+Sampford \cite{sampford}, Section 8, left necessity and uniqueness for the
+two-parameter truncated-NB likelihood conjectural. A later settlement was
+not located in the bounded searches; the source ledger distinguishes later works
+actually read from inaccessible leads. That access history does not establish that
+the conjecture is still open in all published literature.
+
+Let $P$ be the empirical distribution of positive counts, with mean $m>1$.
+At size $r>0$, the conditional probability maximum $p=e^{-t(r)}$ solves
+\[
+ m=\frac{r(e^t-1)}{1-e^{-rt}}.
+\]
+Put $h_r(x)=\sum_{i=1}^{x-1}i/(r+i)$,
+$b_r(x)=\sum_{i=1}^{x-1}i/(r+i)^2$, $J(t)=1-t/(e^t-1)$, and
+$E(u)=1/(e^u-1)-1/u$. For the profile $T$,
+\begin{align*}
+ F(r):=rT'(r)/k&=mJ(t)-\E_P h_r(X),\\
+ t'(r)&=\frac{tE(rt)}{1+E(t)-rE(rt)}<0,\\
+ F'(r)&=\E_Pb_r(X)-\mathcal D(r,m),\qquad
+ \mathcal D=-mJ'(t)t'(r)>0.
+\end{align*}
+A sufficient strict stationary-curvature inequality is
+\begin{equation}\label{eq:conjecture}
+ \E_P h_r(X)=mJ(t)\quad\Longrightarrow\quad
+ \E_P b_r(X)<\mathcal D(r,m).
+\end{equation}
+It would force every stationary point to be a downward crossing, giving
+uniqueness and the missing necessity of the admissible ZIP-face condition
+$C>0$ in the ZINB excess-zero region. It has not been proved here.
+
+\begin{theorem}[Proved reductions for the ZTNB remainder]\label{thm:reduction}
+At a fixed positive mean, truncated-NB laws strictly decrease in convex
+order as size grows and dominate the corresponding truncated Poisson.
+If the empirical positive-count law is below its fitted truncated Poisson
+in convex order, its size profile increases strictly, so no finite-size
+maximum exists. This covers every sample on two adjacent positive integers.
+Further, maximizing $\E_Pb_r(X)$ with prescribed $\E_PX=m$ and
+$\E_Ph_r(X)=H$ reduces exactly to a law supported on $\{1,j,j+1\}$ for
+an appropriate $j\ge2$.
+\end{theorem}
+\begin{proof}[Proof sketch]
+For sizes $r_1<r_2$ at fixed mean, the ratio of successive mass ratios
+is $(1-e^{-t_2})(r_2+x)/\{(1-e^{-t_1})(r_1+x)\}$, decreasing in $x$.
+Equal means and normalization give the two-crossing sign pattern that
+implies convex order; the Poisson comparison follows by the limiting
+ratio. The score kernel $h_r$ is strictly convex in the integer count.
+Its expected value is strictly larger under the finite-size model than
+under the fitted Poisson, and no smaller under that Poisson than under
+$P$. The score identity then gives $F(r)>0$.
+
+For the sharp reduction, with $\Delta g_x=g_{x+1}-g_x$, direct differences
+give
+\[
+ \frac{\Delta^2 b_r(x)}{\Delta^2 h_r(x)}
+   =\frac1{r+x}+\frac1{r+x+1}-\frac1r,
+\]
+a strictly decreasing sequence. The plane
+$b_r(x)\le\alpha_jh_r(x)+\beta_j(x-1)$ interpolating at $1,j,j+1$
+therefore dominates at all other positive integers, strictly. Prescribing
+$\eta=H/(m-1)$, choose $j$ so that
+$h_r(j)/(j-1)\le\eta\le h_r(j+1)/j$. The unique mixture at those three
+points with the prescribed moments is nonnegative, by convexity of $h_r$,
+and attains the supporting-plane bound. Taking expectations proves the
+reduction.
+\end{proof}
+The remaining scalar inequality is
+\[
+ \mathcal D(r,m)>\alpha_j(r)mJ(t(r,m))+\beta_j(r)(m-1).
+\]
+Even its $j=2$ specialization remains unproved over its full feasible
+region. The retained calculation found positivity at 1,012 evaluations,
+with sizes $10^{-12}$ to $10^{12}$, means from $1.00000001$ to $1000001$,
+and extremal indices up to $1,802,147$. This is numerical evidence,
+not a cover of a continuous domain. A computational proof would need
+validated region bounds and all four limiting regimes. Real-frequency
+extremizers also require care: a real-weight equality is not automatically
+an empirical rational-frequency counterexample.
+
+The attained size-zero logarithmic-series member must remain in the domain
+statement. In the classical positive-size problem there are two endpoint
+conditions; in the package's extended nonnegative-size domain, a finite
+maximum can instead be the logarithmic member. All-one samples form a
+separate point-mass nonidentification case. Confusing these versions would
+state the wrong conjecture.
+\source{\code{2026-11-07-ztnb-conjecture-report.md}, including supporting-plane proof and source ledger.}
+
+\subsection{Unfinished global covers and arithmetic}
+The all-free GEV problem still needs a certificate that closes coupled
+shape, location and scale paths. The held-shape Fr\'echet theorem and
+held-scale/nonpositive-shape GEV location concavity do not settle that
+problem. Partial certificates for beta prime, BNB, GB2, skew-GED and skew-$t$
+also leave joint or held-moment profiles outside their proved routes.
+These are explicit missing global covers, not excuses to return an
+unchecked optimizer iterate. For the skew families, the supplied polynomial
+stationarity equations still need multiple-root and critical-component
+handling, convergent compact-box bounds, quantitative face-neighborhood
+remainders, and globally certified constrained limit-model profilers.
+They do not establish all-free uniqueness or a useful worst-case cost bound.
+
+The paralogistic report records a finite-MLE availability limit at
+$x=\operatorname{nextafter}(1,0)$ with scale one. A candidate near
+$3.6445696825298163\times10^{17}$ has a narrow root enclosure, but the
+padded witness lower bound is too weak to close the small-shape tail.
+A tighter stable feasible-likelihood bound is needed. The correct present
+outcome is numerical failure, despite existence of a finite maximizer.
+Scalar BNB fits can likewise have unique mathematical roots too flat for
+the current digamma differences to resolve. Stable differences could
+improve availability without changing the theorem.
+
+Accuracy certification near a zero coefficient, almost equal maxima, or
+a limiting face needs a deliberate metric. A relative error contract
+cannot be read literally at zero; an $O(n)$ likelihood allowance cannot
+be substituted for coefficient accuracy or for the $O(1)$ local likelihood
+scale needed by asymptotic inference. Uniform arithmetic proofs and
+outward-rounded implementations are possible further standards, but the
+conditional convention here should be stated honestly before either is
+attempted.
+
+\subsection{What remains between a fit and an inference procedure}
+For GED with location and power jointly fitted at $1<\nu\le2$, the
+fitted-point Hessian proof is missing. For nonregular endpoint and cusp
+models, localization and optimization error must be controlled on the
+local-experiment scale. For moving joins, derivative adapters and
+calibration must respect the piecewise model. Uniform results near
+transitions, misspecification and bootstrap validity remain separate
+questions. The Pareto/Burr point-process supremum still needs certified
+critical-value computation with controlled compact-search error, residual
+point-process tail error and Monte Carlo quantile uncertainty. Exact
+face-selection probabilities require finer analysis than the first local
+experiment; a limiting projection atom is not a finite-sample selection law. A complete maximization certificate does not settle them.
+
+The software contract changes which failures are acceptable. Statistical
+nonexistence, a proved tie and a well-diagnosed finite-work refusal are
+informative results. A plausible unchecked coefficient vector is not.
+The strongest reusable tools in these examples are modest ones: an exact
+profile, a monotone score, a convex coordinate, a bound for every escape,
+and a comparison whose uncertainty is allowed to stop the calculation.
+The resulting library is a collection of stated mathematical problems and
+verified routes through them, with its remaining gaps visible.
+\todo{Before circulation, settle the main-text versus supplement allocation, select a reproducibility release and archive, and review every open mathematical and literature qualification with the authors. No priority claim is proposed.}
+
+\appendix
+\section{Source map and reproducibility of the draft}\label{app:sources}
+The manuscript is a synthesis of the 8 November showcase and the named
+project reports, not a rerun of their mathematical searches. For concrete
+samples taken from floating-point fixtures, printed decimals specify their
+round-trip binary64 inputs, not exact rational replacements for those inputs;
+certificate comparisons inherit the source's arithmetic convention. The
+BNB frequency table is a lossless grouping of its frozen 500-count sample.
+The two $t$ samples are the retained weighted fixtures. The beta-prime
+sample is the exact decimal list in its refined counterexample file.
+Analytic ties use the defining equations instead of pretending that
+rounded decimal approximations are exact solutions.
+
+The companion draft report records the source-to-section map, every author
+decision, verification discrepancies, commands and final outcomes. PDF
+build products live under \code{build/paper-draft/}; the source is
+\code{dev/research/paper/draft.tex}. Bibliography entries are embedded so
+the document compiles without a separate reference database. DOIs are
+included where the inspected records supply them; preprints and conference
+papers without verified DOIs retain explicit access descriptions.
+
+A final paper should freeze the mathematical sources, versioned code and
+certificate outputs together. Historical failure descriptions should stay
+attached to their tested software versions. A source ledger should retain
+what theorem text was read, rather than promoting a DOI resolution or an
+abstract into proof verification. No source in this draft is described as
+novel solely because a bounded search did not find a predecessor.
+
+\begin{thebibliography}{99}
+\bibitem{anscombe} Anscombe, F. J. (1950). Sampling theory of the negative binomial and logarithmic series distributions. \textit{Biometrika} \textbf{37}, 358--382. \href{https://doi.org/10.1093/biomet/37.3-4.358}{doi:10.1093/biomet/37.3-4.358}.
+\bibitem{aragon} Arag\'on, J., Eberly, D. and Eberly, S. (1992). Existence and uniqueness of the maximum likelihood estimator for the two-parameter negative binomial distribution. \textit{Statistics \& Probability Letters} \textbf{15}, 375--379. \href{https://doi.org/10.1016/0167-7152(92)90157-Z}{doi:10.1016/0167-7152(92)90157-Z}. Project proof comparison used the accessible 1991 Stanford preprint, not verified published proof text.
+\bibitem{levin} Levin, B. and Reeds, J. (1977). Compound multinomial likelihood functions are unimodal: proof of a conjecture of I. J. Good. \textit{Annals of Statistics} \textbf{5}, 79--87. \href{https://doi.org/10.1214/aos/1176343741}{doi:10.1214/aos/1176343741}.
+\bibitem{wang} Wang, Y. (1996). Estimation problems for the two-parameter negative binomial distribution. \textit{Statistics \& Probability Letters}. \href{https://doi.org/10.1016/0167-7152(94)00259-2}{doi:10.1016/0167-7152(94)00259-2}. Abstract and metadata inspected; full objection not acquired.
+\bibitem{brons} Br\o ns, H. and Jensen, S. T. (1988). Maximum likelihood estimation in the negative binomial distribution. University of Copenhagen, Institute of Mathematical Statistics, Preprint 1988 No. 8. Complete preprint inspected in the project NB proof report; no DOI verified.
+\bibitem{willmot} Willmot, G. E. (1987). The Poisson-inverse Gaussian distribution as an alternative to the negative binomial. \textit{Scandinavian Actuarial Journal}, 113--127. \href{https://doi.org/10.1080/03461238.1987.10413823}{doi:10.1080/03461238.1987.10413823}.
+\bibitem{jones} Jones, M. C. (2009). Kumaraswamy's distribution: a beta-type distribution with some tractability advantages. \textit{Statistical Methodology} \textbf{6}, 70--81. \href{https://doi.org/10.1016/j.stamet.2008.04.001}{doi:10.1016/j.stamet.2008.04.001}.
+\bibitem{wingo83} Wingo, D. R. (1983). Maximum likelihood methods for fitting the Burr type XII distribution to life test data. \textit{Biometrical Journal} \textbf{25}, 77--84. \href{https://doi.org/10.1002/bimj.19830250109}{doi:10.1002/bimj.19830250109}.
+\bibitem{wingo93} Wingo, D. R. (1993). Maximum likelihood estimation of Burr XII distribution parameters under Type II censoring. \textit{Microelectronics Reliability} \textbf{33}, 1251--1257. \href{https://doi.org/10.1016/0026-2714(93)90126-J}{doi:10.1016/0026-2714(93)90126-J}.
+\bibitem{grimshaw} Grimshaw, S. D. (1993). Computing maximum likelihood estimates for the generalized Pareto distribution. \textit{Technometrics} \textbf{35}, 185--191. \href{https://doi.org/10.1080/00401706.1993.10485040}{doi:10.1080/00401706.1993.10485040}.
+\bibitem{haslett} Haslett, J., Parnell, A. C., Hinde, J. and de Andrade Moral, R. (2022). Modelling excess zeros in count data: a new perspective on modelling approaches. \textit{International Statistical Review}. \href{https://doi.org/10.1111/insr.12479}{doi:10.1111/insr.12479}.
+\bibitem{ridout98} Ridout, M., Dem\'etrio, C. G. B. and Hinde, J. (1998). Models for count data with many zeros. International Biometric Conference, Cape Town. Author-hosted conference paper inspected; proceedings pagination and DOI not verified.
+\bibitem{ridout01} Ridout, M., Hinde, J. and Dem\'etrio, C. G. B. (2001). A score test for testing a zero-inflated Poisson regression model against zero-inflated negative binomial alternatives. \textit{Biometrics} \textbf{57}, 219--223. \href{https://doi.org/10.1111/j.0006-341X.2001.00219.x}{doi:10.1111/j.0006-341X.2001.00219.x}.
+\bibitem{sampford} Sampford, M. R. (1955). The truncated negative binomial distribution. \textit{Biometrika} \textbf{42}, 58--69. \href{https://doi.org/10.1093/biomet/42.1-2.58}{doi:10.1093/biomet/42.1-2.58}.
+\bibitem{fernandez} Fern\'andez, C. and Steel, M. F. J. (1999). Multivariate Student-t regression models: pitfalls and inference. \textit{Biometrika} \textbf{86}, 153--167. \href{https://doi.org/10.1093/biomet/86.1.153}{doi:10.1093/biomet/86.1.153}.
+\bibitem{reeds} Reeds, J. A. (1985). Asymptotic number of roots of Cauchy location likelihood equations. \textit{Annals of Statistics} \textbf{13}, 775--784. \href{https://doi.org/10.1214/aos/1176349554}{doi:10.1214/aos/1176349554}.
+\bibitem{schoups} Schoups, G. and Vrugt, J. A. (2010). A formal likelihood function for parameter and predictive inference of hydrologic models with correlated, heteroscedastic, and non-Gaussian errors. \textit{Water Resources Research} \textbf{46}, W10531. \href{https://doi.org/10.1029/2009WR008933}{doi:10.1029/2009WR008933}.
+\bibitem{tulupyev} Tulupyev, A., Suvorova, A., Sousa, J. and Zelterman, D. (2013). Beta prime regression with application to risky behavior frequency screening. \textit{Statistics in Medicine} \textbf{32}, 4044--4056. \href{https://doi.org/10.1002/sim.5820}{doi:10.1002/sim.5820}.
+\bibitem{ueki} Ueki, M. (2023; online 2022). Beta-negative binomial nonlinear spatio-temporal random effects modeling of COVID-19 case counts in Japan. \textit{Journal of Applied Statistics} \textbf{50}, 1650--1663. \href{https://doi.org/10.1080/02664763.2022.2064439}{doi:10.1080/02664763.2022.2064439}.
+\bibitem{hallin} Hallin, M. and Ley, C. (2012). Skew-symmetric distributions and Fisher information: a tale of two densities. \textit{Bernoulli} \textbf{18}, 747--763. \href{https://doi.org/10.3150/12-BEJ346}{doi:10.3150/12-BEJ346}.
+\bibitem{rubio} Rubio, F. J. and Steel, M. F. J. (2014). Inference in two-piece location-scale models with Jeffreys priors. \textit{Bayesian Analysis} \textbf{9}, 1--22. \href{https://doi.org/10.1214/13-BA849}{doi:10.1214/13-BA849}.
+\bibitem{smith} Smith, R. L. (1985). Maximum likelihood estimation in a class of nonregular cases. \textit{Biometrika} \textbf{72}, 67--90. \href{https://doi.org/10.1093/biomet/72.1.67}{doi:10.1093/biomet/72.1.67}.
+\bibitem{bucher} B\"ucher, A. and Segers, J. (2017). On the maximum likelihood estimator for the generalized extreme-value distribution. \textit{Extremes} \textbf{20}, 839--872. \href{https://doi.org/10.1007/s10687-017-0292-6}{doi:10.1007/s10687-017-0292-6}.
+\bibitem{frechet2016} B\"ucher, A. and Segers, J. (2016 manuscript). Maximum likelihood estimation for the Fr\'echet distribution based on block maxima extracted from a time series. \href{https://arxiv.org/abs/1511.07613}{arXiv:1511.07613v2}. Inspected manuscript version; no journal DOI assigned here.
+\bibitem{bottazzi} Bottazzi, G. and Secchi, A. (2008 working-paper version, 4 December). Maximum likelihood estimation of the symmetric and asymmetric exponential power distribution. LEM Working Paper 2006/19. Theorems 2.1--2.2 inspected in the project literature ledger; no DOI verified for this version.
+\bibitem{cheng} Cheng, R. C. H. and Iles, T. C. (1987). Corrected maximum likelihood in non-regular problems. \textit{Journal of the Royal Statistical Society, Series B} \textbf{49}, 95--101. \href{https://doi.org/10.1111/j.2517-6161.1987.tb01430.x}{doi:10.1111/j.2517-6161.1987.tb01430.x}. Summary and metadata only in the project search.
+\bibitem{hallwang} Hall, P. and Wang, J. (2005). Bayesian likelihood methods for estimating the end point of a distribution. \href{https://doi.org/10.1111/j.1467-9868.2005.00523.x}{doi:10.1111/j.1467-9868.2005.00523.x}. Abstract and metadata only in the project search.
+\bibitem{self} Self, S. G. and Liang, K.-Y. (1987). Asymptotic properties of maximum likelihood estimators and likelihood ratio tests under nonstandard conditions. \textit{Journal of the American Statistical Association} \textbf{82}, 605--610. \href{https://doi.org/10.1080/01621459.1987.10478472}{doi:10.1080/01621459.1987.10478472}.
+\end{thebibliography}
+\end{document}

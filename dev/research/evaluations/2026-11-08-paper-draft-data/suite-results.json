@@ -1,0 +1,73 @@
+{
+  "completed_at": "2026-11-09T02:36:29.465183+00:00",
+  "base_revision": "e8f019799955bdb62cab27be4cd015cd69682348",
+  "branch": "codex/paper-draft",
+  "source_sha256": "1415943f431b56ce913ac65d461a7ff46e26f130e1b28907b19c12c02ad2e288",
+  "pdf_sha256": "0de4164f629871197f1135dcac399669cbd83bf6a9c18ee4c702542a4edc5f72",
+  "checks": [
+    {
+      "command": "just cpp-test",
+      "machine": "simbox",
+      "compiler": "GCC 13.3.0",
+      "result": "106/106 dev shards passed",
+      "exit_code": 0
+    },
+    {
+      "command": "just cpp-test-no-long-double",
+      "machine": "simbox",
+      "compiler": "GCC 13.3.0",
+      "result": "129/129 passed",
+      "exit_code": 0
+    },
+    {
+      "command": "just cpp-test-no-long-double",
+      "machine": "workstation",
+      "compiler": "GCC 15.2.0",
+      "result": "129/129 passed",
+      "exit_code": 0
+    },
+    {
+      "command": "just test",
+      "machine": "workstation",
+      "affinity": "0,1,2; four test workers; four-slot reservation",
+      "result": "FAIL 0, WARN 0, SKIP 154, PASS 22153",
+      "exit_code": 0
+    },
+    {
+      "command": "two pdflatex passes",
+      "machine": "workstation",
+      "result": "29 pages; no undefined citations/references, rerun warnings or overfull boxes",
+      "exit_code": 0
+    },
+    {
+      "command": "python3 dev/research/evaluations/2026-11-08-paper-draft-data/validate.py",
+      "machine": "workstation",
+      "result": "9 theorems, 8 propositions, 9 todos; input transcriptions, 45 showcase local destinations, bibliography and PDF checks passed",
+      "exit_code": 0
+    }
+  ],
+  "wrappers": {
+    "simbox_cpp": "/tmp/umvl-cpu/simbox-run env CMAKE_BUILD_PARALLEL_LEVEL=3 CTEST_PARALLEL_LEVEL=3 bash -c \"set -e; just cpp-test; just cpp-test-no-long-double\"",
+    "workstation_cpp": "/tmp/umvl-cpu/run just cpp-test-no-long-double",
+    "workstation_r": "/tmp/umvl-cpu/run4 taskset -c 0,1,2 just test",
+    "document": "/tmp/umvl-cpu/run bash -c \"pdflatex ...; pdflatex ...; python3 .../validate.py\""
+  },
+  "thread_policy": "nice 10 via wrappers; BLAS/OpenMP one thread; at most four computing CPUs for this job",
+  "temporary_paths": "build/tmp for TMPDIR, JUST_TEMPDIR and XDG_RUNTIME_DIR on workstation; build/scratch/paper-draft for logs",
+  "superseded_runs": [
+    "One intermediate TeX pass failed when a URL-formatting macro was used in math; replaced with mathtt and final passes passed.",
+    "The document checker initially assumed UTF-8 for the TeX log; it now reads Latin-1 and passed.",
+    "Simbox R dev disconnected after partial progress. A fresh SSH probe timed out (exit 255); the lost connection was stopped (exit 130), and the complete dev tier passed locally. No incomplete remote R result is counted."
+  ],
+  "viewer": {
+    "pdf": "HTTP 403: worktree outside viewer readable roots",
+    "report": "HTTP 403: worktree outside viewer readable roots"
+  },
+  "log_sha256": {
+    "simbox-cpp.txt": "c246fbb2077f6b6a48834d844899c6c2c90fb701b989b2c592ccb94eada92f69",
+    "workstation-no-long-double.txt": "3f06768a40db0306a5b4a86f25adedc1f48144fbbb49ef88a2bcc5bb39560c4a",
+    "workstation-r-dev.txt": "b75f066a2bb92322865cd088490b041d8b694ee20e8ad12eadea3ff8905145ca"
+  },
+  "scope": "Research manuscript, report and small evidence only; pre-existing tracked files unchanged; no commits, board edits, installs, sub-agents, publication, default-fit or golden changes.",
+  "report_sha256": "fd2cf4178770b1df90904ef63c58df68c97e587d666eea01dbb91cf74d31aea8"
+}

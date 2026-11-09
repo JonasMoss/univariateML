@@ -1,0 +1,6 @@
+version  1.10.0.5 
+function (x, size, prob, pi, log = FALSE) 
+NULL
+positional actual  -Inf 
+prob reference  -6923.753 
+mu reference  -16085.72 
