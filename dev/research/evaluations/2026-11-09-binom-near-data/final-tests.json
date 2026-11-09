@@ -1,0 +1,115 @@
+{
+  "js-test": {
+    "machine": "workstation Node/WASM",
+    "exit_code": 0,
+    "pass": 556,
+    "fail": 0,
+    "skip": 0,
+    "test_seconds": 170.276104337,
+    "compute_wall_seconds": 170.45,
+    "command": "just js-test",
+    "wrapper": "/tmp/umvl-cpu/run4",
+    "log": "logs/js-test.log.gz"
+  },
+  "js-build": {
+    "machine": "workstation Emscripten",
+    "exit_code": 0,
+    "compute_wall_seconds": 96.32,
+    "command": "just js-build",
+    "wrapper": "/tmp/umvl-cpu/run4",
+    "log": "logs/js-build.log.gz"
+  },
+  "oracle": {
+    "machine": "workstation",
+    "exit_code": 0,
+    "compute_wall_seconds": 0.82,
+    "exact_ZIP_signs": [
+      -1,
+      1
+    ],
+    "upper_ZIP_gain_at_4e16": "1.704828461356264776e-33",
+    "command": "python3 dev/research/evaluations/2026-11-09-binom-near-data/check.py",
+    "wrapper": "/tmp/umvl-cpu/run",
+    "log": "logs/oracle.log.gz"
+  },
+  "r-dev": {
+    "machine": "simbox R 4.6.1 GCC15",
+    "pass": 22172,
+    "skip": 154,
+    "fail": 0,
+    "warn": 0,
+    "test_seconds": 89.953,
+    "outer_wall_seconds": 4357.64,
+    "command": "just test",
+    "wrapper": "/tmp/umvl-cpu/simbox-run",
+    "log": "logs/r-dev.log.gz",
+    "exit_code": 0
+  },
+  "r-full": {
+    "machine": "simbox R 4.6.1 GCC15",
+    "pass": 45004,
+    "skip": 0,
+    "fail": 0,
+    "warn": 0,
+    "test_seconds": 366.276,
+    "outer_wall_seconds": 804.72,
+    "command": "just test-full",
+    "wrapper": "/tmp/umvl-cpu/simbox-run",
+    "log": "logs/r-full.log.gz",
+    "exit_code": 0
+  },
+  "cpp-dev": {
+    "machine": "workstation GCC15.2",
+    "pass": 106,
+    "fail": 0,
+    "test_seconds": 199.09,
+    "outer_wall_seconds": 6069.53,
+    "command": "just cpp-test",
+    "wrapper": "/tmp/umvl-cpu/run4",
+    "log": "logs/cpp-dev.log.gz",
+    "exit_code": 0
+  },
+  "cpp-full": {
+    "machine": "simbox GCC13.3",
+    "pass": 129,
+    "fail": 0,
+    "test_seconds": 207.04,
+    "compute_wall_seconds": 291.17,
+    "command": "env UMVL_TEST_TIER=full just cpp-test",
+    "wrapper": "/tmp/umvl-cpu/simbox-run",
+    "log": "logs/cpp-full.log.gz",
+    "exit_code": 0
+  },
+  "cpp-no-long-double-local": {
+    "machine": "workstation GCC15.2",
+    "pass": 129,
+    "fail": 0,
+    "test_seconds": 311.25,
+    "compute_wall_seconds": 429.26,
+    "command": "just cpp-test-no-long-double",
+    "wrapper": "/tmp/umvl-cpu/run4",
+    "log": "logs/cpp-no-long-double-local.log.gz",
+    "exit_code": 0
+  },
+  "cpp-no-long-double-simbox": {
+    "machine": "simbox GCC13.3",
+    "pass": 129,
+    "fail": 0,
+    "test_seconds": 206.11,
+    "compute_wall_seconds": 285.3,
+    "command": "just cpp-test-no-long-double",
+    "wrapper": "/tmp/umvl-cpu/simbox-run",
+    "log": "logs/cpp-no-long-double-simbox.log.gz",
+    "exit_code": 0
+  },
+  "site-check": {
+    "machine": "workstation GCC15.2 / Node",
+    "exit_code": 0,
+    "family_pages": 99,
+    "cpp_snippets": 99,
+    "compute_wall_seconds": 100.17,
+    "command": "just site-check",
+    "wrapper": "/tmp/umvl-cpu/run4",
+    "log": "logs/site-check.log.gz"
+  }
+}

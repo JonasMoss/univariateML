@@ -1452,3 +1452,24 @@ test('translated lattice normal and Laplace tails survive overflowing difference
     assert.ok(Math.abs(m.ddlaplace(x,params,true,true)[0]/expected-1)<3e-15);
   }
 });
+
+test('binomial near-critical ZIP inputs preserve unresolved witnesses',async()=>{
+  const {default:createApi}=await import('./index.mjs');const api=await createApi();
+  for(const pi of [.3772146069463776,.37721460694637765])
+    assert.throws(()=>api.zib.fit(new Float64Array([0,0,0,0,0,1,1,2,2,4]),{size:null,pi}),e=>{
+      assert.equal(e.kind,'unresolved');assert.equal(e.model,'zip');
+      assert.equal(e.estimates.pi,pi);assert.equal(e.loglik_upper,Infinity);
+      assert.ok(e.candidates.length>=2);return true;
+    });
+});
+
+test('truncated binomial certifies the finite zero-second-order boundary',async()=>{
+  const {default:createApi}=await import('./index.mjs');const api=await createApi();
+  const counts=[242187,60672,121344,1488980,406274];
+  const x=new Float64Array(counts.reduce((a,b)=>a+b,0));let at=0;
+  for(let k=0;k<counts.length;++k){x.fill(k,at,at+counts[k]);at+=counts[k];}
+  const f=api.tbinom.fit(x,{a:-1,b:4,size:null});
+  assert.equal(f.status,'Ok');assert.equal(f.estimates.size,7);
+  assert.ok(Math.abs(f.estimates.prob-.44715659335717363398)<1e-10);
+  assert.ok(Math.abs(f.logLik+3379063.91960425442105)<1e-7);
+});

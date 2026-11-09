@@ -215,3 +215,20 @@ test_that("tbinom mixed higher factorial moments have a signed tail", {
   expect_s3_class(e,"univariateML_limit")
   expect_true(is.finite(e$loglik_upper))
 })
+
+test_that("tbinom certifies a finite winner at the zero-second-order face", {
+  x <- rep.int(0:4,c(242187,60672,121344,1488980,406274))
+  f <- mltbinom(x,a=-1,b=4,size=NULL)
+  expect_equal(unname(f["size"]),7)
+  expect_equal(unname(f["prob"]),.4471565933571736339834998905,tolerance=1e-10)
+  expect_lt(abs(as.numeric(attr(f,"logLik"))+3379063.91960425442105),1e-7)
+})
+
+test_that("tbinom certifies the negative third-order face", {
+  x <- rep.int(0:4,c(21251,11790,0,244158,168771))
+  e <- tryCatch(mltbinom(x,a=-1,b=4,size=NULL),error=identity)
+  expect_s3_class(e,"univariateML_limit")
+  expect_identical(e$model,"tpois")
+  expect_equal(unname(e$estimates["lambda"]),6)
+  expect_true(is.finite(e$loglik_upper))
+})

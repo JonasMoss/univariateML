@@ -306,3 +306,91 @@ TEST_CASE("tbinom: second-order certificate refuses a positive coefficient") {
 TEST_CASE("tbinom: quantile search guards and representability") {
   CHECK(std::isnan(cppunivariate::distributions::qtbinom(.5,.9,-INFINITY,INFINITY,1e308)));
 }
+
+TEST_CASE("tbinom: checked rational third-order cancellation and overflow") {
+  const auto zero=cppunivariate::tbinom_detail::face_minus(
+    cppunivariate::tbinom_detail::FaceRational(1,3),
+    cppunivariate::tbinom_detail::face_plus(cppunivariate::tbinom_detail::FaceRational(1,6),cppunivariate::tbinom_detail::FaceRational(1,6)));
+  CHECK(zero.ok);CHECK(zero.n==0);
+  const auto overflow=cppunivariate::tbinom_detail::face_multiply(
+    cppunivariate::tbinom_detail::FaceRational(INT64_MAX),cppunivariate::tbinom_detail::FaceRational(2));
+  CHECK_FALSE(overflow.ok);
+  // These rational weights have rate 6 on {0,...,4}. Both leading
+  // coefficients vanish exactly; the third is -226332657/36450495095.
+  const std::vector<std::uint64_t> count{21251,11790,0,244158,168771},weight{24,144,432,864,1296};
+  cppunivariate::binomial_certificate_detail::Work work{0,0,512};bool budget=false;
+  const double end=cppunivariate::tbinom_detail::third_order_window_cutoff(count,weight,445970,2760,work,budget);
+  CHECK(std::isfinite(end));CHECK(end>=26593);CHECK(end<=26594);
+  CHECK_FALSE(budget);CHECK_FALSE(work.numerical);
+  // A one-cell change is not an exact second-order zero.
+  auto near=count;++near[0];
+  CHECK_FALSE(std::isfinite(cppunivariate::tbinom_detail::third_order_window_cutoff(near,weight,445971,2760,work,budget)));
+}
+
+TEST_CASE("tbinom: positive third-order boundary cannot become a face certificate") {
+  const std::vector<std::uint64_t> count{242187,60672,121344,1488980,406274},weight{24,96,192,256,256};
+  cppunivariate::binomial_certificate_detail::Work work{0,0,512};bool budget=false;
+  cppunivariate::tbinom_detail::FaceRational m,aa,beta;
+  CHECK(cppunivariate::tbinom_detail::zero_second_window(count,weight,2319457,824,m,aa,beta));
+  CHECK_FALSE(std::isfinite(cppunivariate::tbinom_detail::third_order_window_cutoff(count,weight,2319457,824,work,budget)));
+  CHECK_FALSE(budget);CHECK_FALSE(work.numerical);
+  cppunivariate::binomial_certificate_detail::Work tiny{cppunivariate::enumeration_budget(1),0,1};
+  CHECK_FALSE(std::isfinite(cppunivariate::tbinom_detail::third_order_window_cutoff(count,weight,2319457,824,tiny,budget)));
+  CHECK(budget);
+}
+
+TEST_CASE("tbinom: exact zero first and second coefficients certify finite and face winners") {
+  for(const auto& count : {std::vector<int>{242187,60672,121344,1488980,406274},std::vector<int>{21251,11790,0,244158,168771}}) {
+    std::vector<int>x;for(int k=0;k<5;++k)x.insert(x.end(),count[k],k);
+    const auto f=cppunivariate::tbinom_design_mle({x.data(),x.size()},-1,4,NAN);
+    if(count[0]!=242187) {
+      REQUIRE(f.status==cppunivariate::TbinomStatus::TpoisLimit);
+      CHECK(std::isfinite(f.stop_detail.loglik_upper));
+      CHECK_FALSE(f.stop_detail.comparison_tie);
+      CHECK(f.stop_detail.limit_coef[0]==6);
+      continue;
+    }
+    REQUIRE(f.status==cppunivariate::TbinomStatus::Ok);
+    CHECK(f.size==7);
+    // Independent 80-digit root of the finite-window binomial mean equation.
+    CHECK(f.prob==doctest::Approx(.4471565933571736339834998905046751).epsilon(1e-10));
+    CHECK(std::abs(f.logLik+3379063.919604254421050967086)<1e-7);
+    cppunivariate::binomial_certificate_detail::Work work{0,0,512};
+    std::vector<std::uint64_t> weights(count.begin(),count.end());
+    const auto g=cppunivariate::tbinom_detail::compact_profile(weights,f.size,work);
+    REQUIRE(g.ok);CHECK(f.prob==doctest::Approx(g.prob).epsilon(1e-10));
+    for(int N=4;N<=24;++N) {
+      const auto h=cppunivariate::tbinom_detail::compact_profile(weights,N,work);
+      REQUIRE(h.ok);CHECK(h.ll<=f.logLik+1e-8);
+    }
+    // Exhaustion never accepts the initial witness as a maximizer.
+    auto witness=f;cppunivariate::binomial_certificate_detail::Work tiny{cppunivariate::enumeration_budget(1),0,1};
+    CHECK(cppunivariate::tbinom_detail::compact_boundary_certificate({x.data(),x.size()},4,witness,tiny));
+    CHECK(witness.status!=cppunivariate::TbinomStatus::Ok);
+    CHECK(witness.stop_detail.budget_exhausted);
+    CHECK(witness.stop_detail.loglik_upper==INFINITY);
+    // Exhaustion during prefix coverage preserves both the face and the
+    // finite incumbent, plus the strongest evaluated finite competitor.
+    witness=f;
+    cppunivariate::binomial_certificate_detail::Work middle{
+      cppunivariate::enumeration_budget(512)-static_cast<std::int64_t>(x.size())-100000,0,512};
+    CHECK(cppunivariate::tbinom_detail::compact_boundary_certificate({x.data(),x.size()},4,witness,middle));
+    CHECK(middle.evaluations>1);
+    CHECK(witness.status!=cppunivariate::TbinomStatus::Ok);
+    CHECK(witness.stop_detail.budget_exhausted);
+    CHECK(witness.stop_detail.loglik_upper==INFINITY);
+    CHECK(witness.stop_detail.limit_model==cppunivariate::StopModel::Tpois);
+    CHECK(witness.stop_detail.candidates.size()>=3);
+  }
+}
+
+TEST_CASE("tbinom: histogram certificate profiles sizes below the held upper bound") {
+  cppunivariate::binomial_certificate_detail::Work work{0,0,512};
+  const std::vector<std::uint64_t> count{1,1,1,1,0};
+  const auto f=cppunivariate::tbinom_detail::compact_profile(count,3,work);
+  REQUIRE(f.ok);
+  CHECK(f.prob==doctest::Approx(.5).epsilon(1e-10));
+  const double exact=2*std::log(.125)+2*std::log(.375);
+  CHECK(std::abs(f.ll-exact)<1e-12);
+  CHECK(f.upper>=exact-1e-12);
+}

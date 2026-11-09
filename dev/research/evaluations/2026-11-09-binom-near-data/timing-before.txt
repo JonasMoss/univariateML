@@ -1,0 +1,7 @@
+ztbinom face 4.39991 ms
+zmbinom face 4.42468 ms
+zib face 6.22758 ms
+tbinom face 8.47247 ms
+ztbinom finite 1.15217 ms
+tbinom finite 5.20706 ms
+tbinom zero-inclusive 4.7039 ms

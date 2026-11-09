@@ -258,6 +258,148 @@ inline TbinomDesignResult tbinom_design_proposal(ispan x,double a,double b,doubl
   return stopped;
 }
 
+// Histogram profile for exact higher-order finite-window boundaries. The
+// sufficient statistics are unchanged; repeated observations cost one cell.
+struct CompactProfile {double prob=NAN,ll=NAN,upper=INFINITY;bool ok=false;};
+inline CompactProfile compact_profile(const std::vector<std::uint64_t>& count,
+    double N,binomial_certificate_detail::Work& work) {
+  const int U=static_cast<int>(count.size())-1;
+  double n=0,S=0;for(int k=0;k<=U;++k){n+=count[k];S+=count[k]*double(k);}
+  const double mu=S/n;
+  if(!(N>=0 && mu>0 && mu<std::min(double(U),N))){work.numerical=true;return {};}
+  const auto evaluate=[&](double eta,double& mean,double& variance,double& ll) {
+    if(!work.charge((4+static_cast<std::int64_t>(count.size()))*static_cast<std::int64_t>(count.size())))return false;
+    std::vector<double> logw(count.size()),q(count.size());double top=-INFINITY;
+    for(int k=0;k<=U;++k){logw[k]=k>N?-INFINITY:kernel(k,eta,N);top=std::max(top,logw[k]);}
+    double z=0;for(int k=0;k<=U;++k){q[k]=std::exp(logw[k]-top);z+=q[k];}
+    mean=0;for(int k=0;k<=U;++k){q[k]/=z;mean+=k*q[k];}
+    variance=0;ll=0;
+    for(int k=0;k<=U;++k){variance+=q[k]*(k-mean)*(k-mean);if(count[k])ll+=count[k]*(logw[k]-top-std::log(z));}
+    if(!std::isfinite(ll) || !(variance>0)){work.numerical=true;return false;}
+    return true;
+  };
+  double a=std::log(mu)-std::log1p(-mu/N)-1,b=a+2,va=0,vb=0,ma=0,mb=0,ll=0;
+  bool bracket=false;
+  for(std::int64_t j=0;j<solver_budget(work.maxit);++j) {
+    if(!evaluate(a,ma,va,ll)||!evaluate(b,mb,vb,ll))return {};
+    if(ma<mu && mb>mu){bracket=true;break;}
+    const double width=b-a;if(ma>=mu)a-=width;if(mb<=mu)b+=width;
+  }
+  if(!bracket){work.numerical=true;return {};}
+  for(std::int64_t j=0;j<solver_budget(work.maxit);++j) {
+    const double eta=a+(b-a)/2;double mean=0,variance=0,value=0;
+    if(!evaluate(eta,mean,variance,value))return {};
+    // In this finite exponential family |d log Var / d eta| <= U.
+    // Hence the centre variance gives a lower bound throughout the bracket.
+    const double vlower=variance*std::exp(-U*(b-a)/2);
+    const double pad=64*std::numeric_limits<double>::epsilon()*(1+U);
+    if(b-a+2*pad/vlower<2.5e-11) {
+      const double p=1/(1+N*std::exp(-eta));
+      const double upper=value+n*(std::abs(mean-mu)+pad)*(b-a)/2;
+      return {p,value,upper,std::isfinite(p) && p>0 && p<1};
+    }
+    if(mean<mu)a=eta;else b=eta;
+    if(eta==a && eta==b)break;
+  }
+  work.numerical=true;return {};
+}
+// An exact rational face with zero first two coefficients can nevertheless
+// have a finite global winner. Cover its entire integer prefix using counts,
+// and exclude its tail by Jensen and exact first-order cancellation:
+// (LL_N-LL_face)/n <= E_Q sum_{j<X} j^2 / N^2, N>=2U.
+// This argument does not use the sign of the third coefficient.
+inline bool compact_boundary_certificate(ispan x,int U,TbinomDesignResult& best,
+    binomial_certificate_detail::Work& work) {
+  std::vector<std::uint64_t> count,weight;std::uint64_t Z=0,num=0,den=0;
+  bool exhausted=false;
+  if(!rational_window_data(x,U,work,exhausted,count,weight,Z,num,den)) {
+    if(!exhausted)return false;
+  } else {
+    FaceRational m,aa,beta;
+    if(!work.charge(16*static_cast<std::int64_t>(count.size())))exhausted=true;
+    else if(!zero_second_window(count,weight,x.size(),Z,m,aa,beta))return false;
+    if(!exhausted) {
+      const double face=[&] {double v=0;for(int k=0;k<=U;++k)if(count[k])v+=count[k]*std::log(double(weight[k])/Z);return v;}();
+      const auto initial=compact_profile(count,best.size,work);
+      if(initial.ok){best.prob=initial.prob;best.logLik=initial.ll;}
+      const double margin=1e-9*x.size()+8192*std::numeric_limits<double>::epsilon()*(1+std::abs(face));
+      if(initial.ok && initial.ll>face+4*margin) {
+        double moment=0;int mx=0;
+        for(int k=0;k<=U;++k){moment+=(double(weight[k])/Z)*k*(k-1)*(2.*k-1)/6;if(count[k])mx=k;}
+        const double end=std::ceil(std::max(2.*U,std::sqrt(4*x.size()*moment/(initial.ll-face-2*margin))));
+        if(!std::isfinite(end) || end>=4503599627370496. || best.size>=end)work.numerical=true;
+        else {
+          bool ambiguous=false,complete=true;
+          double runner=-INFINITY,runner_size=NAN;
+          CompactProfile runner_profile;
+          const auto retain_runner=[&](CompactProfile f,double N) {
+            if(f.upper>runner){runner=f.upper;runner_size=N;runner_profile=f;}
+          };
+          for(double N=mx;N<end;++N) {
+            if(++work.evaluations>certificate_budget(work.maxit)){complete=false;break;}
+            const auto f=compact_profile(count,N,work);
+            if(!f.ok){complete=false;break;}
+            if(N==best.size)continue;
+            if(f.ll>best.logLik+margin) {
+              retain_runner({best.prob,best.logLik,best.logLik+margin,true},best.size);
+              best.size=N;best.prob=f.prob;best.logLik=f.ll;
+            } else retain_runner(f,N);
+          }
+          ambiguous=runner+2*margin>=best.logLik;
+          if(complete && !ambiguous) {
+#ifdef CPPUNIV_SIZE_SEARCH_DIAGNOSTICS
+            size_search_diagnostic={true,end,double(work.cells)};
+#endif
+            best.status=TbinomStatus::Ok;best.stop_detail={};return true;
+          }
+          exhausted=!complete && !work.numerical;
+          best.stop_detail=discrete_face(StopModel::Tpois,{double(num)/den,best.a,best.b},face);
+          best.status=TbinomStatus::NumericalFailure;
+          record_witness(best.stop_detail,{best.prob,best.a,best.b,best.size},best.logLik,exhausted,ambiguous);
+          if(runner_profile.ok)best.stop_detail.candidates.push_back({{runner_profile.prob,best.a,best.b,runner_size},runner_profile.ll,runner_profile.upper});
+          return true;
+        }
+      } else if(initial.ok) {
+        const double end=third_order_window_cutoff(count,weight,x.size(),Z,work,exhausted);
+        if(!std::isfinite(end)) {
+          if(!exhausted && !work.numerical)return false;
+        } else {
+          int mx=0;for(int k=0;k<=U;++k)if(count[k])mx=k;
+          bool complete=true,ambiguous=false;
+          for(double N=mx;N<end;++N) {
+            if(++work.evaluations>certificate_budget(work.maxit)){complete=false;break;}
+            const double upper=scaled_third_jensen(count,weight,x.size(),Z,m,aa,beta,N,work);
+            if(upper<0)continue;
+            if(work.cells>=enumeration_budget(work.maxit)){complete=false;break;}
+            const auto f=compact_profile(count,N,work);
+            if(!f.ok){complete=false;break;}
+            if(f.ll>face+margin) {
+              best.size=N;best.prob=f.prob;best.logLik=f.ll;best.status=TbinomStatus::Ok;best.stop_detail={};
+              return false; // the ordinary finite-winner certificate must still cover globally
+            }
+            if(!(f.upper+margin<face))ambiguous=true;
+          }
+          best.stop_detail=discrete_face(StopModel::Tpois,{double(num)/den,best.a,best.b},face);
+          if(complete && !ambiguous) {
+            best.status=TbinomStatus::TpoisLimit;
+            binomial_certificate_detail::certified_face(best.stop_detail,{best.prob,best.a,best.b,best.size},best.logLik);
+#ifdef CPPUNIV_SIZE_SEARCH_DIAGNOSTICS
+            size_search_diagnostic={true,end,double(work.cells)};
+#endif
+            return true;
+          }
+          best.status=TbinomStatus::NumericalFailure;
+          record_witness(best.stop_detail,{best.prob,best.a,best.b,best.size},best.logLik,!complete && !work.numerical,ambiguous);
+          return true;
+        }
+      }
+      exhausted=!work.numerical;
+    }
+  }
+  best.status=TbinomStatus::NumericalFailure;
+  record_witness(best.stop_detail,{best.prob,best.a,best.b,best.size},best.logLik,exhausted);
+  return true;
+}
 } // namespace tbinom_detail
 inline TbinomDesignResult tbinom_design_mle(ispan x,double a,double b,double size,double prob=NAN) {
   auto best=tbinom_detail::tbinom_design_proposal(x,a,b,size,prob);
@@ -266,6 +408,8 @@ inline TbinomDesignResult tbinom_design_mle(ispan x,double a,double b,double siz
   const double lo=std::max(0.,std::floor(best.a)+1),U=std::floor(best.b);
   if(xmin==mx || U-lo==1 || (lo==0 && U==INFINITY))return best;
   binomial_certificate_detail::Work work{0,0,512};
+  if(lo==0 && std::isfinite(U) && U<=std::numeric_limits<int>::max() &&
+     tbinom_detail::compact_boundary_certificate(x,static_cast<int>(U),best,work))return best;
   if(best.status==TbinomStatus::TpoisLimit) {
     bool exhausted=false;
     if(U==mx) {

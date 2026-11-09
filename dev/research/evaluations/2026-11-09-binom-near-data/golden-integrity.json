@@ -1,0 +1,18 @@
+{
+  "ztbinom": {
+    "unchanged": true,
+    "sha256": "73386ada833c676422d92b4d3014f580f30f24e2355b4e0d1df3105a61235ef8"
+  },
+  "zmbinom": {
+    "unchanged": true,
+    "sha256": "8b2690d8c5da8f68cc32e7ad28b62b7b0f2bc04617a201c5095333c3fb5b6bf5"
+  },
+  "tbinom": {
+    "unchanged": true,
+    "sha256": "547e37e883640dd4ed29b0a13ffe684f94383731186d4602559f8f2d0ec2e255"
+  },
+  "zib": {
+    "unchanged": true,
+    "sha256": "1bf64b76d724ebffdadc8cea4d2baef0f20f2fdcb4bfdea6ceb0564b102a1b67"
+  }
+}
