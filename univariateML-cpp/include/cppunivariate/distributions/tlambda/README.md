@@ -61,7 +61,7 @@ r:
     sigma: Optional held sigma; NULL estimates it.
     mu: Optional held mu; NULL estimates it.
     lambda: "Optional finite held shape; NULL estimates it under the applicable fitting bounds."
-    reltol: "Tolerance on the standardized search simplex."
+    reltol: "Relative coefficient tolerance for profile proposals; likelihood-gap tolerance for certificate routes."
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
 log_density: "-log(sigma)-log(u**(lambda-1)+(1-u)**(lambda-1))"
 references:
@@ -95,12 +95,12 @@ construction:
 - generalisation
 relations: {}
 fit:
-  method: multistart
+  method: profile-search
   certified: 'partial'
   note: 'tlambda/certificate.hpp and Details: held nonnegative shapes (concavity below 1, exact uniforms at 1 and 2,
     support-contact reductions above 1), scalar negative-shape fits and shape-only fits
     have conditional arithmetic certificates or structured stops. Free-shape fits with free
-    nuisance coordinates and negative-shape joint location-scale fits retain uncertified searches. All-held evaluation is not counted as fitting certification.'
+    nuisance coordinates and negative-shape joint location-scale fits use uncertified profile searches. All-held evaluation is not counted as fitting certification.'
 areas:
 - robust modelling
 classification: specialist
@@ -131,7 +131,7 @@ The fitted branch excludes the U-shaped interval $1<\lambda<2$ and the subsequen
 
 For held $\lambda=-a<0$, collapse at a location of multiplicity $k$ has likelihood proportional to $\sigma^{(n-k)/a-k}$. A negative exponent gives unbounded likelihood. At held location, equality gives an unattained collapse supremum. With shape free and location held, even one observation at that location permits collapse through a sufficiently negative shape. Holding scale prevents scale collapse and permits small or tied samples. Positive held shape requires support containment, strictly inside the endpoints when $0<\lambda<1$; endpoints with positive limiting density are allowed for $\lambda\ge1$.
 
-On the fitted branch with location and scale free, the default tie guard is sufficient for existence, not necessary. The legacy negative-shape joint search still rejects some tied configurations. Held nonnegative shapes instead use their exact existence conditions, including small samples and repeated observations. Standardization must preserve distinct values.
+On the fitted branch with location and scale free, the default tie guard is sufficient for existence, not necessary. The negative-shape joint proposal still rejects some tied configurations. Held nonnegative shapes instead use their exact existence conditions, including small samples and repeated observations. Standardization must preserve distinct values.
 
 The [certificate theory](../../../../../dev/research/evaluations/2026-11-07-tlambda-theory-data/proofs.md) supplies the reductions in `certificate.hpp`:
 
@@ -203,13 +203,25 @@ floor; it does not prove unique coordinates. Certificate evaluations use
 $128\min(\texttt{iterlim},100000)$ and solver/inverse iterations use
 $\min(\texttt{iterlim},100000)$. The box allowance stops with budget witnesses when exhausted; a solver cap stops as numerical non-convergence.
 
-The other fits retain the standardized multistart search, including the
-lower shape face and exact uniform candidate. Its $10^{-8}n$ preference for
-the uniform is historical numerical behavior, without a global certificate.
-In particular, free shape with a free nuisance, negative-shape joint nuisance
-fits remain uncertified. The
-[implementation validation](../../../../../dev/research/evaluations/2026-11-07-tlambda-impl-report.md)
-records the scope, coefficient comparisons, performance and open work.
+Free shape with a free nuisance and held negative shape with both nuisances
+free use a shape profile with analytic envelope derivatives. The nonnegative
+sub-uniform inner problem is concave in inverse scale and standardized
+location; negative shapes use several inner starts. The lower fitted face and
+exact uniform member are compared explicitly. At held location, the bound
+$|x-\mu|f(x)<1/(2a)$ for $\lambda=-a$ gives a finite, incumbent-dependent
+negative shape cutoff without restricting the parameter domain. Ties at held
+location retain the collapse decisions above. A shape grid and stationary
+profile brackets do not prove global coverage, so these routes remain
+uncertified. The
+[profile validation](../../../../../dev/research/evaluations/2026-11-08-tlambda-speed-impl-data/README.md)
+distinguishes coefficient accuracy checks from global certificates.
+
+Fitting uses a separate logarithmic-tail inverse with a table seed and
+safeguarded Halley steps. A candidate root must have a small residual and a
+narrow sign bracket under computed comparisons, with a practical floating
+point margin. Endpoint calculations use the affine support residual. The
+table affects starts only; it does not change the inverse equation or the
+public density evaluator.
 
 The log density uses $u=F(x)$, defined implicitly by the quantile function. The quality specification differentiates this inverse implicitly and uses independent SciPy and mpmath evaluations. The $\lambda=0$ member is logistic. Quantile inversion uses the smaller logarithmic tail in safeguarded Newton steps.
 
@@ -217,7 +229,14 @@ The log density uses $u=F(x)$, defined implicitly by the quantile function. The 
 
 Estimated coefficients on an applicable `fit_domain` bound carry `restricted`
 and emit a warning of class `univariateML_restricted`. Held coefficients are
-not flagged. The declared hold exemptions apply to free coefficients. In the remaining multistart routes, a search start converges when its simplex diameter and log-likelihood spread meet the `reltol` criteria. Fitting stops if no start converges, or if an unresolved start exceeds the best converged likelihood by more than $10^{-8}n$. This family has no score-based rescue of failed starts.
+not flagged. The declared hold exemptions apply to free coefficients. Profile inner solves require an undamped Newton correction below the requested
+coefficient tolerance in every free nuisance coordinate after full steps enter
+the quadratic convergence regime. Location uses fitted scale as its natural
+zero floor. Stationary shape candidates require a contracted derivative-sign
+bracket, including the variation of the free nuisance coefficients across it. A failed or capped
+solve cannot supply a successful candidate. Negative-shape multiple modes and
+undetected shape modes remain limitations of the uncertified routes. The
+certificate routes retain their separate likelihood-gap contract.
 
 
 ## Decision history
@@ -241,5 +260,3 @@ the half displacement is `(sigma/2)/lambda`; at interior probabilities it is
 unchanged. Symmetric binary64 regression cases use `sigma=1e308`,
 `mu=+/-1e308`, `lambda=.5`, endpoints and probabilities .001/.999;
 these are numerical checks, not general floating-point error bounds.
-
-Sigma-held fits reuse evaluations at exactly repeated search coordinates; seeded decisions are identical to the uncached search ([held-subset comparison](../../../../../dev/research/evaluations/2026-11-06-slow-held-report.md)).

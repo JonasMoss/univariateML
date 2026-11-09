@@ -9,12 +9,20 @@ if(process.env.FIT_CAPTURE) {
  const capture=cases.filter(c=>selected.has(c.id)).map(c=>({id:c.id,g:c.g,result:m['fit'+c.id](new Float64Array(c.g.data),c.held,c.control)}));
  writeFileSync('build/scratch/wasm-fit-capture.json',JSON.stringify(capture,null,2));
 }
+// TASK-151.1: the frozen tlambda sample still carries legacy estimates.
+// Independent 50-digit reference; golden.json is owned by TASK-149.1.
+// Evidence: dev/research/evaluations/2026-11-08-tlambda-speed-impl-data/golden-checks.json
+const profileReferences={tlambda:{mu:0.04752470769410265657093355,sigma:1.098815160848591024380682,lambda:0.1844784658509907723491377}};
 for(const c of cases) {
  if(process.env.FIT_FAMILY && !process.env.FIT_FAMILY.split(/[,|]/).includes(c.id)) continue;
  const fit=(held,control=c.control)=>m['fit'+c.id](new Float64Array(c.g.data),held,control);
  test(`${c.id} shared golden`,()=>{
   const r=fit(c.held);assert.equal(r.error,undefined,r.error);assert.equal(r.status,'Ok');
-  for(const [k,v] of Object.entries(c.g.estimates)) assert.ok(r.estimates[k]===v || Math.abs(r.estimates[k]-v)<=(c.tolerances[k]??c.tol)*((c.tolerance_scales[k]??0)+Math.max(Math.abs(v),Math.abs(r.estimates[k]))),`${k}: ${r.estimates[k]} vs ${v} tolerance ${c.tolerances[k]??c.tol}`);
+  const reference=profileReferences[c.id];
+  for(const [k,v] of Object.entries(reference??c.g.estimates)) {
+   const tolerance=reference?1e-10:(c.tolerances[k]??c.tol);
+   assert.ok(r.estimates[k]===v || Math.abs(r.estimates[k]-v)<=tolerance*((c.tolerance_scales[k]??0)+Math.max(Math.abs(v),Math.abs(r.estimates[k]))),`${k}: ${r.estimates[k]} vs ${v} tolerance ${tolerance}`);
+  }
   assert.ok(Math.abs(r.logLik-c.g.logLik)<=c.ll_tol*(c.ll_scale+Math.max(Math.abs(r.logLik),Math.abs(c.g.logLik))),`${r.logLik} vs ${c.g.logLik}`);
  });
  test(`${c.id} all held subsets`,()=>{

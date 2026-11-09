@@ -1,0 +1,12 @@
+{
+  "precision": 420,
+  "x": 1,
+  "mu": "2^-1074",
+  "sigma": 1.0000000000000002,
+  "shape": 1.0000000000000002,
+  "reference_interior_logdensity": "-0.693147180559862805056211046256740595397086198998796992053911699493649765191109112919112244",
+  "fitting_inverse_error": 8.400176712392513e-18,
+  "public_endpoint_alias_logdensity": -2.2204460492503128e-16,
+  "expected_public_alias_difference": 0.6931471805598626,
+  "public_convention_unchanged": true
+}

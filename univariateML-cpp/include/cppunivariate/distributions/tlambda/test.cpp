@@ -283,3 +283,79 @@ TEST_CASE("tlambda: unrepresentable uniform midpoints stop instead of widening s
   double top=lo;for(int i=0;i<3;++i)top=std::nextafter(top,INFINITY);
   CHECK(cppunivariate::tlambda_detail::uniform_fit(lo,top,4,1,1000).status==cppunivariate::TlambdaStatus::CertificateFailure);
 }
+
+// 420-digit independent bisection references and binary64 input records:
+// dev/research/evaluations/2026-11-08-tlambda-speed-impl-data/check_inverse.py
+TEST_CASE("tlambda: fitting inverse verifies centre tail and endpoint regimes") {
+  const std::vector<std::array<double,5>> rows{
+    {-32.0,1e+100,NAN,-7.303882662568884,241.02812786477318},
+    {-0.7,1e+300,NAN,-986.3126470775358,1676.7315000318108},
+    {-1.0,10.0,NAN,-2.4068567723080196,4.823470652913973},
+    {-1e-12,10.0,NAN,-10.000045398849219,10.000090797758437},
+    {0.0,10.0,NAN,-10.000045398899218,10.000090797798434},
+    {1e-12,0.1,-1.000310945187316e-13,-0.7443966600736074,1.3887933201464484},
+    {0.14,1e-20,0.0,-0.6931471805599453,1.2892537558414983},
+    {0.5,2.0,-744.4400719213812,-1488.8801438427624,744.4400719213812},
+    {0.9,1.11111111111111,-34.538776394910684,-38.39771139809301,3.8610418271520444},
+    {0.999999999999,1.000000000001,-230.25850929940458,-230.9516564800795,0.6931471806754188},
+    {1.5,0.1,-0.16251892949777494,-0.8457623164193767,0.3440503704037633},
+    {3.0,0.1,-0.35667494393873245,-1.1735938032645383,-0.5572737977379317},
+    {16.0,0.0625,-744.4400719213812,-747.212660643621,-5e-324},
+  };
+  for(const auto& row:rows){
+    CAPTURE(row[0]);CAPTURE(row[1]);CAPTURE(row[2]);
+    const auto r=cppunivariate::tlambda_fit_detail::inverse(row[1],row[0],row[2]);
+    REQUIRE(r.ok);
+    CHECK(std::abs(r.logp-row[3])<=5e-13*(1+std::abs(row[3])));
+    CHECK(std::abs(r.logd-row[4])<=5e-13*(1+std::abs(row[4])));
+  }
+  const double x=std::nextafter(2.,0.);
+  CHECK(cppunivariate::tlambda_fit_detail::logdensity(x,0,1,.5)==doctest::Approx(cppunivariate::distributions::dtlambda(x,0,1,.5,true)).epsilon(1e-12));
+  CHECK_FALSE(cppunivariate::tlambda_fit_detail::inverse(1.,.14,NAN,1).ok);
+}
+TEST_CASE("tlambda: profile golden coefficients meet the relative accuracy contract") {
+  const auto g=mltest::load_distribution_golden("tlambda");
+  const std::array<double,3> ref{0.04752470769410265657093355,1.098815160848591024380682,0.1844784658509907723491377};
+  for(int mask:{0,1,2}){
+    const auto f=cppunivariate::tlambda_mle(mltest::as_span(g.data),1e-10,2000,NAN,mask==1?ref[0]:NAN,mask==2?ref[1]:NAN);
+    REQUIRE(f.status==cppunivariate::TlambdaStatus::Ok);
+    CHECK_FALSE(f.certified);
+    const std::array<double,3> got{f.mu,f.sigma,f.lambda};
+    for(int j=0;j<3;++j)CHECK(std::abs(got[j]/ref[j]-1)<1e-10);
+    CHECK(std::abs(f.logLik+911.4099114230672826896986)<2e-10);
+  }
+}
+TEST_CASE("tlambda: profile routes retain feasible likelihood and both fitted faces") {
+  for(double shape:{-.8,.14,.7}) {
+    std::vector<double> x;
+    for(int i=0;i<100;++i)x.push_back(cppunivariate::distributions::qtlambda((i+.5)/100,0,1,shape));
+    const auto data=mltest::as_span(x);
+    const double generating=cppunivariate::tlambda_detail::likelihood(data,0,1,shape);
+    for(int mask:{0,1,2,4}) {
+      const auto f=cppunivariate::tlambda_mle(data,1e-10,2000,mask==4?shape:NAN,mask==1?0:NAN,mask==2?1:NAN);
+      REQUIRE(f.status==cppunivariate::TlambdaStatus::Ok);
+      CHECK(f.logLik>=generating-1e-7);
+    }
+  }
+  for(double shape:{-2.,1.}){
+    std::vector<double> x;
+    for(int i=0;i<31;++i)x.push_back(cppunivariate::distributions::qtlambda((i+.5)/31,0,1,shape));
+    const auto f=cppunivariate::tlambda_mle(mltest::as_span(x),1e-10,2000);
+    REQUIRE(f.status==cppunivariate::TlambdaStatus::Ok);
+    CHECK(f.lambda==(shape<0?-1:1));
+    CHECK(f.restricted==(shape<0?16u:32u));
+  }
+}
+
+TEST_CASE("tlambda: profile affine frame retains extreme-tail information") {
+  // At lambda=-1 the exact density is 1/(sqrt(z*z+4)*(sqrt(z*z+4)+2)).
+  // Its tail score is -2/z+O(z^-2), curvature 2/z^2+O(z^-3).
+  const std::vector<double> x{1e150,2e150};
+  const auto v=cppunivariate::tlambda_fit_detail::value(x,1,0,-1,1000);
+  REQUIRE(v.ok);
+  CHECK(std::abs(v.gu/(-2)-1)<1e-10);
+  CHECK(std::abs(v.gv/(3e-150)-1)<1e-10);
+  CHECK(std::abs(v.huu/2-1)<1e-10);
+  CHECK(std::abs(v.huv/(-3e-150)-1)<1e-10);
+  CHECK(std::abs(v.hvv/(2.5e-300)-1)<1e-10);
+}

@@ -1,0 +1,9 @@
+build/scratch/final-site-check.log:PASS: 99 family pages; MathML on every family; no math runtime or external runtime assets; internal links and fragments resolve.
+build/scratch/final-site-check.log:PASS: 99 generated C++ snippets compile and link as C++17 (including exp, gamma, gb2).
+build/scratch/final-js-test.log:# tests 547
+build/scratch/final-js-test.log:# pass 547
+build/scratch/final-js-test.log:# fail 0
+build/scratch/workstation-no-long-double-final.log:100% tests passed, 0 tests failed out of 129
+build/scratch/workstation-no-long-double-final.log:Total Test time (real) = 281.04 sec
+build/scratch/workstation-cpp-dev-final.log:100% tests passed, 0 tests failed out of 106
+build/scratch/workstation-cpp-dev-final.log:Total Test time (real) = 143.62 sec

@@ -1,0 +1,92 @@
+{
+  "passed": true,
+  "baseline": "6977702df860d9fbc20cc681507b927cd8565f87",
+  "source_manifest_sha256": "9c4f42525fcc301905198b8dd4624107183645da3f242998a326be879374d226",
+  "machines": {
+    "workstation": "GCC 15.2.0, R 4.6.1, Node 22.22.1",
+    "simbox": "GCC 13.3.0; R package compiler g++-15, R 4.6.1"
+  },
+  "runs": [
+    {
+      "command": "just cpp-test",
+      "machine": "workstation",
+      "passed": 106,
+      "seconds": 143.62
+    },
+    {
+      "command": "just cpp-test-no-long-double",
+      "machine": "workstation",
+      "passed": 129,
+      "seconds": 281.04
+    },
+    {
+      "command": "just cpp-test",
+      "machine": "simbox",
+      "passed": 106,
+      "seconds": 67.35
+    },
+    {
+      "command": "just cpp-test-no-long-double",
+      "machine": "simbox",
+      "passed": 129,
+      "seconds": 160.4
+    },
+    {
+      "command": "just test",
+      "machine": "simbox",
+      "passed": 22079,
+      "fail": 0,
+      "warn": 0,
+      "skip": 154,
+      "seconds": 72.807
+    },
+    {
+      "command": "just test-full",
+      "machine": "simbox",
+      "passed": 44911,
+      "fail": 0,
+      "warn": 0,
+      "skip": 0,
+      "seconds": 293.747
+    },
+    {
+      "command": "just js-build; just js-test",
+      "machine": "workstation",
+      "passed": 547,
+      "fail": 0,
+      "skip": 0,
+      "seconds": 549.368086282
+    },
+    {
+      "command": "just site-check",
+      "machine": "workstation",
+      "pages": 99,
+      "cpp17_snippets": 99,
+      "passed": true
+    }
+  ],
+  "targeted": {
+    "family_cases": 25,
+    "assertions": 3927,
+    "filter": "tlambda source file; excludes the one slow held-subset case, covered by both full no-long-double runs"
+  },
+  "comparison_fits": 704,
+  "comparison_failures": 0,
+  "comparison_worse_than_1e_7": 0,
+  "inverse_checks": 179,
+  "mpmath_inverse_precision": 420,
+  "mpmath_golden_precision": 80,
+  "mpmath_held_precision": 90,
+  "simbox_fallback": false,
+  "resource_policy": "slot wrappers and nice +10; native suites four workers; web final suite one pinned CPU; BLAS/OpenMP one thread",
+  "notes": [
+    "Final source hashes checked before and after suite batches.",
+    "Earlier expected/stale golden and frozen-model regression failures are retained separately.",
+    "Site-generated unrelated PNG restored byte-for-byte from read-only git show output.",
+    "No commits or board edits."
+  ],
+  "artifact_pane": {
+    "status": 403,
+    "numerical_validation_affected": false
+  }
+}
