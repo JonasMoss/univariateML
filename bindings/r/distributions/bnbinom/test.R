@@ -201,3 +201,81 @@ test_that("unrepresentable NB face probabilities are structured numerical stops"
     expect_equal(e$loglik_upper,0)
   }
 })
+
+test_that("Bernstein supporting polynomials certify additional all-free and pair faces", {
+  x <- c(rep(0L,3),rep(1L,10),3L)
+  e <- tryCatch(mlbnbinom(x),error=identity)
+  expect_s3_class(e,"univariateML_limit")
+  expect_equal(e$model,"pois")
+  expect_equal(unname(e$estimates),13/14)
+  for (held in list(list(size=1),list(beta=1))) {
+    e <- tryCatch(do.call(mlbnbinom,c(list(x),held)),error=identity)
+    expect_s3_class(e,"univariateML_limit")
+    expect_equal(e$model,"nbinom")
+    expect_equal(unname(e$estimates),c(1,14/27))
+  }
+})
+
+test_that("all-free raw results expose the certified inner alpha interval", {
+  root <- Sys.getenv("UMVL_DISTRIBUTIONS_DIR")
+  skip_if(!nzchar(root), "no distribution goldens")
+  x <- jsonlite::fromJSON(file.path(root,"bnbinom","golden.json"))$data
+  f <- getFromNamespace("mlbnbinom_","univariateML")(as.integer(x))
+  expect_lt(f$profile_alpha_interval[1],f$estimates["alpha"])
+  expect_gt(f$profile_alpha_interval[2],f$estimates["alpha"])
+  expect_true(all(f$profile_mode_lower<=f$estimates))
+  expect_true(all(f$profile_mode_upper>=f$estimates))
+})
+
+test_that("all-free finite certificates bound the independent high-precision maximizer", {
+  root <- Sys.getenv("UMVL_DISTRIBUTIONS_DIR")
+  skip_if(!nzchar(root), "no distribution goldens")
+  x <- jsonlite::fromJSON(file.path(root,"bnbinom","golden.json"))$data
+  f <- getFromNamespace("mlbnbinom_","univariateML")(as.integer(x))
+  truth <- c(1.0672234392758119184,2.1419792202550637215,5.3647342962537853096)
+  expect_true(all(f$global_coefficient_lower<=truth))
+  expect_true(all(truth<=f$global_coefficient_upper))
+  expect_lte(f$global_loglik_interval[1],-1275.6474863695586167)
+  expect_gte(f$global_loglik_interval[2],-1275.6474863695586167)
+})
+
+test_that("unproved all-free face comparisons retain the legacy limit", {
+  e <- tryCatch(mlbnbinom(c(0,0,5,5)),error=identity)
+  expect_s3_class(e,"univariateML_limit")
+  expect_equal(e$kind,"limit")
+  expect_equal(e$model,"nbinom")
+  expect_gte(nrow(e$candidates),2L)
+  expect_gte(e$loglik_upper,e$loglik_lower)
+})
+
+test_that("delegated NB precision failures label NB candidate coefficients", {
+  x <- rep(c(969L,970L,1001L,1003L,1004L,1032L,1033L),c(3182,1816,1,1,1,1785,3215))
+  n <- as.double(length(x)); s <- as.double(sum(x)); q <- sum(as.double(x)^2)
+  expect_equal(n*q-s*s-n*s,1)
+  e <- tryCatch(mlbnbinom(x),error=identity)
+  expect_s3_class(e,"univariateML_numerical")
+  expect_gte(nrow(e$candidates),1L)
+  expect_true(all(e$candidates$model=="nbinom"))
+  expect_true("prob" %in% names(e$candidates))
+  expect_true(all(e$candidates$prob>0 & e$candidates$prob<1))
+})
+
+test_that("legacy all-free decisions retain results with certification labels", {
+  for (x in list(c(0L,0L,5L,5L),rep(c(0L,5L),each=20))) {
+    e <- tryCatch(mlbnbinom(x),error=identity)
+    expect_s3_class(e,"univariateML_limit")
+    expect_false(e$certified)
+    expect_match(conditionMessage(e),"Uncertified legacy comparison")
+    expect_match(conditionMessage(e),"Use `mlnbinom`")
+  }
+  e <- tryCatch(mlbnbinom(0:4),error=identity)
+  expect_true(e$certified)
+  expect_match(conditionMessage(e),"Certified global comparison")
+  root <- Sys.getenv("UMVL_DISTRIBUTIONS_DIR")
+  skip_if(!nzchar(root),"no distribution goldens")
+  x <- jsonlite::fromJSON(file.path(root,"bnbinom","golden.json"))$data
+  f <- mlbnbinom(x,iterlim=200)
+  expect_false(attr(f,"certified"))
+  expect_true(attr(mlbnbinom(x),"certified"))
+  expect_equal(as.numeric(f),c(1.0672234787479615,2.1419791546447171,5.3647338351087397),tolerance=2e-6)
+})

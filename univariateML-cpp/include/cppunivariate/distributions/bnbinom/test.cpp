@@ -470,3 +470,248 @@ TEST_CASE("bnbinom: unrepresentable held-size NB faces preserve numerical stop c
 TEST_CASE("bnbinom: cancelled gamma increments cannot stall a quantile") {
   CHECK(std::isnan(cppunivariate::distributions::qbnbinom(.5,1,1e308,1,true,false)));
 }
+
+TEST_CASE("bnbinom: Bernstein face proof handles multiple derivative sign changes") {
+  // mean=13/14. After removing the known root y=1, the Poisson
+  // derivative quotient is (101-29*y+13*y*y)/14. Its negative
+  // discriminant proves positivity independently of the subdivision code.
+  cppunivariate::bnbinom_detail::Data d{{0,1,3},{3,10,1},14};
+  CHECK_FALSE(cppunivariate::bnbinom_detail::single_crossing_mixture_face(d,0,true));
+  CHECK_FALSE(cppunivariate::bnbinom_detail::single_crossing_mixture_face(d,1,false));
+  for(bool poisson:{false,true}) {
+    const auto proof=cppunivariate::bnbinom_detail::polynomial_mixture_face(d,1,poisson,600);
+    CHECK(proof.proved);CHECK_FALSE(proof.budget_exhausted);
+    CHECK(proof.evaluations>4);CHECK(proof.evaluations<=cppunivariate::certificate_budget(600));
+  }
+  const std::vector<int> x{0,0,0,1,1,1,1,1,1,1,1,1,1,3};
+  const auto all=cppunivariate::bnbinom_mle({x.data(),x.size()});
+  CHECK(all.status==cppunivariate::BnbinomStatus::PoissonLimit);
+  CHECK(all.stop_detail.limit_model==cppunivariate::StopModel::Pois);
+  REQUIRE(all.stop_detail.limit_coef.size()==1);
+  CHECK(all.stop_detail.limit_coef[0]==doctest::Approx(13./14));
+  CHECK(std::isnan(all.size));CHECK(std::isnan(all.alpha));CHECK(std::isnan(all.beta));
+  for(int mirror=0;mirror<2;++mirror) {
+    const auto pair=cppunivariate::bnbinom_mle({x.data(),x.size()},1e-8,600,mirror?NAN:1,NAN,mirror?1:NAN);
+    CHECK(pair.status==cppunivariate::BnbinomStatus::NegativeBinomialLimit);
+    CHECK(pair.stop_detail.limit_model==cppunivariate::StopModel::Nbinom);
+    REQUIRE(pair.stop_detail.limit_coef.size()==2);
+    CHECK(pair.stop_detail.limit_coef[0]==1);
+    CHECK(pair.stop_detail.limit_coef[1]==doctest::Approx(14./27));
+  }
+}
+
+TEST_CASE("bnbinom: unsuccessful Bernstein proof never implies a winning face") {
+  cppunivariate::bnbinom_detail::Data over{{0,5},{2,2},4};
+  for(bool poisson:{false,true}) {
+    const auto proof=cppunivariate::bnbinom_detail::polynomial_mixture_face(over,1,poisson,600);
+    CHECK_FALSE(proof.proved);CHECK_FALSE(proof.budget_exhausted);
+  }
+  // Bound dense storage before allocation; raising iterlim raises this cap.
+  cppunivariate::bnbinom_detail::Data large{{0,129},{1,1},2};
+  const auto proof=cppunivariate::bnbinom_detail::polynomial_mixture_face(large,1,true,1);
+  CHECK_FALSE(proof.proved);CHECK(proof.budget_exhausted);
+  CHECK(proof.evaluations==0);
+  // An exact zero quotient endpoint is unresolved, not a strict certificate.
+  cppunivariate::bnbinom_detail::Data zero{{0,1,2},{1,1,1},3};
+  CHECK_FALSE(cppunivariate::bnbinom_detail::polynomial_mixture_face(zero,1,true,600).proved);
+}
+
+TEST_CASE("bnbinom: all-free proposals pass a parameter-uniform global inner certificate") {
+  const auto golden=mltest::load_distribution_golden("bnbinom");
+  std::vector<int> x;for(double v:golden.data)x.push_back(static_cast<int>(v));
+  const auto f=cppunivariate::bnbinom_mle({x.data(),x.size()});
+  REQUIRE(f.status==cppunivariate::BnbinomStatus::Ok);
+  REQUIRE(std::isfinite(f.profile_alpha[0]));
+  CHECK(f.profile_alpha[0]<f.alpha);CHECK(f.alpha<f.profile_alpha[1]);
+  for(double a:{f.profile_alpha[0],f.alpha,f.profile_alpha[1]}) {
+    const auto inner=cppunivariate::bnbinom_mle({x.data(),x.size()},1e-8,600,NAN,a,NAN);
+    REQUIRE(inner.status==cppunivariate::BnbinomStatus::Ok);
+    CHECK(f.profile_mode[0]<=inner.size);CHECK(inner.size<=f.profile_mode[1]);
+    CHECK(f.profile_mode[2]<=inner.beta);CHECK(inner.beta<=f.profile_mode[3]);
+  }
+  cppunivariate::bnbinom_detail::Data d;d.n=x.size();
+  std::map<int,double> counts;for(int v:x)counts[v]++;
+  for(const auto &kv:counts){d.x.push_back(kv.first);d.count.push_back(kv.second);}
+  const auto wide=cppunivariate::bnbinom_detail::alpha_interval_profile(d,{f.size,f.alpha,f.beta},.01,100,1e-8,600);
+  CHECK_FALSE(wide.proved);CHECK_FALSE(wide.budget_exhausted);
+  const auto budget=cppunivariate::bnbinom_detail::alpha_interval_profile(d,{f.size,f.alpha,f.beta},f.profile_alpha[0],f.profile_alpha[1],1e-8,1);
+  CHECK_FALSE(budget.proved);CHECK(budget.budget_exhausted);
+}
+
+TEST_CASE("bnbinom: alpha-slab mass and Hessian bounds contain every sampled interior") {
+  cppunivariate::bnbinom_detail::Data d{{0,1,4,15},{2,1,2,1},6};
+  for(double a:{.3,2.,20.})for(double r:{.2,1.,5.})for(double b:{.2,3.,10.}) {
+    const cppunivariate::bnbinom_detail::AlphaBox q{r*.99,r*1.01,b*.99,b*1.01};
+    const auto bound=cppunivariate::bnbinom_detail::alpha_interval_bound(d,a*.99,a*1.01,q);
+    const auto h=cppunivariate::bnbinom_detail::alpha_interval_hessian(d,a*.99,a*1.01,q);
+    for(double u:{.99,1.,1.01})for(double v:{.99,1.,1.01})for(double w:{.99,1.,1.01}) {
+      const auto point=cppunivariate::bnbinom_detail::alpha_hessian(d,a*u,r*v,b*w);
+      CHECK(h[0].rr<=point.rr);CHECK(point.rr<=h[1].rr);
+      CHECK(h[0].rb<=point.rb);CHECK(point.rb<=h[1].rb);
+      CHECK(h[0].bb<=point.bb);CHECK(point.bb<=h[1].bb);
+      CHECK(cppunivariate::bnbinom_detail::likelihood(d,{r*v,a*u,b*w})<=bound.value+bound.margin);
+    }
+  }
+}
+
+TEST_CASE("bnbinom: uniform inner gate rejects a proposal on another conditional branch") {
+  cppunivariate::bnbinom_detail::Data d{{0,1,2,3,6,12,24},{2,1,1,1,1,1,1},8};
+  // The independently checked global inner maximum at alpha=.5 is near
+  // size=beta=1.1088. A proof about that root cannot validate (100,.5,100).
+  const auto proof=cppunivariate::bnbinom_detail::alpha_interval_profile(d,{100,.5,100},.4999995,.5000005,1e-8,600);
+  CHECK_FALSE(proof.proved);CHECK_FALSE(proof.budget_exhausted);
+}
+
+TEST_CASE("bnbinom: complete all-free cover encloses the independent 80-digit maximizer") {
+  const auto golden=mltest::load_distribution_golden("bnbinom");
+  std::vector<int> x;for(double v:golden.data)x.push_back(static_cast<int>(v));
+  const auto f=cppunivariate::bnbinom_mle({x.data(),x.size()});
+  REQUIRE(f.status==cppunivariate::BnbinomStatus::Ok);
+  const std::array<double,3> truth{{1.0672234392758119184,2.1419792202550637215,5.3647342962537853096}};
+  const std::array<double,3> estimate{{f.size,f.alpha,f.beta}};
+  for(int j=0;j<3;++j) {
+    CHECK(std::abs(estimate[j]/truth[j]-1)<1e-8);
+    CHECK(estimate[j]*(1-2.5e-9)<=truth[j]);
+    CHECK(truth[j]<=estimate[j]*(1+2.5e-9));
+  }
+  CHECK(std::isfinite(f.global_interval[0]));CHECK(std::isfinite(f.global_interval[1]));
+  CHECK(f.global_interval[0]<=-1275.6474863695586167);
+  CHECK(f.global_interval[1]>=-1275.6474863695586167);
+}
+
+TEST_CASE("bnbinom: joint Hessian intervals agree with independently validated pair derivatives") {
+  cppunivariate::bnbinom_detail::Data d{{0,1,4,15},{2,1,2,1},6};
+  for(double r:{.2,1.,5.})for(double a:{.3,2.,20.})for(double b:{.2,3.,10.}) {
+    const std::array<double,3> lo{{r*.99,a*.99,b*.99}},hi{{r*1.01,a*1.01,b*1.01}};
+    const auto bounds=cppunivariate::bnbinom_detail::joint_hessian_bounds(d,lo,hi);
+    for(double u:{.99,1.,1.01})for(double v:{.99,1.,1.01})for(double w:{.99,1.,1.01}) {
+      const auto rb=cppunivariate::bnbinom_detail::alpha_hessian(d,a*v,r*u,b*w);
+      const auto ab=cppunivariate::bnbinom_detail::pair_hessian(d,r*u,a*v,b*w);
+      const auto ar=cppunivariate::bnbinom_detail::pair_hessian(d,b*w,a*v,r*u);
+      const std::array<std::array<double,3>,3> h{{{{rb.rr,ar.rb,rb.rb}},{{ar.rb,ab.rr,ab.rb}},{{rb.rb,ab.rb,rb.bb}}}};
+      for(int i=0;i<3;++i)for(int j=0;j<3;++j) {
+        CHECK(bounds[0].v[i][j]<=h[i][j]);CHECK(h[i][j]<=bounds[1].v[i][j]);
+      }
+    }
+  }
+}
+
+TEST_CASE("bnbinom: joint Newton reduction preserves a known stationary root") {
+  const auto golden=mltest::load_distribution_golden("bnbinom");
+  cppunivariate::bnbinom_detail::Data d;d.n=golden.data.size();std::map<int,double> counts;
+  for(double v:golden.data)counts[static_cast<int>(v)]++;
+  for(const auto &kv:counts){d.x.push_back(kv.first);d.count.push_back(kv.second);}
+  const std::array<double,3> p{{1.0672234392758119184,2.1419792202550637215,5.3647342962537853096}};
+  std::array<double,3> lo{},hi{};for(int j=0;j<3;++j){lo[j]=p[j]*.99999;hi[j]=p[j]*1.00002;}
+  CHECK_FALSE(cppunivariate::bnbinom_detail::joint_reduce(d,lo,hi));
+  for(int j=0;j<3;++j){CHECK(lo[j]<=p[j]);CHECK(p[j]<=hi[j]);}
+  const auto budget=cppunivariate::bnbinom_detail::joint_cover(d,{p[0],p[1],p[2]},-1303.7427190771177,-3336.7458743346015,1e-8,1);
+  CHECK_FALSE(budget.proved);CHECK(budget.budget_exhausted);
+  for(double v:budget.coef)CHECK(std::isnan(v));
+}
+
+TEST_CASE("bnbinom: unresolved all-free faces retain legacy limits with face witnesses") {
+  const std::vector<int> x{0,0,5,5};
+  const auto f=cppunivariate::bnbinom_mle({x.data(),x.size()});
+  CHECK(f.status==cppunivariate::BnbinomStatus::NegativeBinomialLimit);
+  CHECK_FALSE(f.stop_detail.budget_exhausted);
+  CHECK(std::isnan(f.size));CHECK(std::isnan(f.alpha));CHECK(std::isnan(f.beta));
+  CHECK(f.stop_detail.limit_model==cppunivariate::StopModel::Nbinom);
+  CHECK_FALSE(f.stop_detail.candidates.empty());
+  CHECK(f.stop_detail.loglik_lower<=f.stop_detail.loglik_upper);
+}
+
+TEST_CASE("bnbinom: NB face height includes delegated size-root uncertainty") {
+  const auto golden=mltest::load_distribution_golden("bnbinom");
+  std::vector<int> x;std::map<int,double> counts;
+  for(double v:golden.data){x.push_back(static_cast<int>(v));counts[static_cast<int>(v)]++;}
+  cppunivariate::bnbinom_detail::Data d;d.n=x.size();
+  for(const auto &kv:counts){d.x.push_back(kv.first);d.count.push_back(kv.second);}
+  const auto nb=cppunivariate::nbinom_mle({x.data(),x.size()},1e-10,600);
+  REQUIRE(nb.status==cppunivariate::NbinomStatus::Ok);
+  const auto bound=cppunivariate::bnbinom_detail::joint_nb_profile_bound(d,nb.size);
+  CHECK(std::isfinite(bound.value+bound.margin));
+  CHECK(bound.value-bound.margin<=-1303.7427190771177);
+  CHECK(bound.value+bound.margin>=-1303.7427190771177);
+}
+
+TEST_CASE("bnbinom: delegated NB precision failures retain correctly typed witnesses") {
+  std::vector<int> x;
+  for(const auto &p:std::array<std::array<int,2>,7>{{{{969,3182}},{{970,1816}},{{1001,1}},{{1003,1}},{{1004,1}},{{1032,1785}},{{1033,3215}}}})
+    x.insert(x.end(),p[1],p[0]);
+  long long sum=0,squares=0;
+  for(int v:x){sum+=v;squares+=static_cast<long long>(v)*v;}
+  const long long n=static_cast<long long>(x.size());
+  REQUIRE(n*squares-sum*sum-n*sum==1);
+  const auto f=cppunivariate::bnbinom_mle({x.data(),x.size()});
+  CHECK(f.status==cppunivariate::BnbinomStatus::NumericalFailure);
+  CHECK(std::isnan(f.size));CHECK(std::isnan(f.alpha));CHECK(std::isnan(f.beta));
+  REQUIRE_FALSE(f.stop_detail.candidates.empty());
+  for(const auto &c:f.stop_detail.candidates) {
+    CHECK(c.model==cppunivariate::StopModel::Nbinom);
+    REQUIRE(c.coef.size()==2);
+    CHECK(c.coef[0]>0);CHECK(c.coef[1]>0);CHECK(c.coef[1]<1);
+  }
+}
+
+TEST_CASE("bnbinom: equal frequencies through four have a compound Poisson certificate") {
+  const cppunivariate::bnbinom_detail::Data d{{0,1,2,3,4},{7,7,7,7,7},35};
+  CHECK(cppunivariate::bnbinom_detail::compound_poisson_uniform_four_face(d));
+  CHECK_FALSE(cppunivariate::bnbinom_detail::mixture_face(d,0,true,600));
+  auto unequal=d;unequal.count[0]+=1;unequal.n+=1;
+  CHECK_FALSE(cppunivariate::bnbinom_detail::compound_poisson_uniform_four_face(unequal));
+  auto shifted=d;for(auto &v:shifted.x)++v;
+  CHECK_FALSE(cppunivariate::bnbinom_detail::compound_poisson_uniform_four_face(shifted));
+  std::vector<int> x;for(int j=0;j<5;++j)for(int k=0;k<7;++k)x.push_back(j);
+  const auto f=cppunivariate::bnbinom_mle({x.data(),x.size()});
+  CHECK(f.status==cppunivariate::BnbinomStatus::PoissonLimit);
+  REQUIRE(f.stop_detail.limit_coef.size()==1);
+  CHECK(f.stop_detail.limit_coef[0]==2);
+}
+
+TEST_CASE("bnbinom: unproved all-free legacy decisions retain explicit certification flags") {
+  for(int repeats:{2,20}) {
+    std::vector<int> x(repeats,0);x.insert(x.end(),repeats,5);
+    const auto f=cppunivariate::bnbinom_mle({x.data(),x.size()});
+    CHECK(f.status==cppunivariate::BnbinomStatus::NegativeBinomialLimit);
+    CHECK_FALSE(f.certified);CHECK_FALSE(f.stop_detail.budget_exhausted);
+    CHECK(f.stop_detail.limit_model==cppunivariate::StopModel::Nbinom);
+  }
+  for(const std::vector<int> &x:{std::vector<int>{0,1,2,3,4},std::vector<int>{0,0,0,1,1,1,1,1,1,1,1,1,1,3}}) {
+    const auto f=cppunivariate::bnbinom_mle({x.data(),x.size()});
+    CHECK(f.status==cppunivariate::BnbinomStatus::PoissonLimit);CHECK(f.certified);
+  }
+}
+
+TEST_CASE("bnbinom: insufficient certificate work preserves a successful finite legacy search") {
+  const auto golden=mltest::load_distribution_golden("bnbinom");
+  std::vector<int> x;for(double v:golden.data)x.push_back(static_cast<int>(v));
+  const auto legacy=cppunivariate::bnbinom_mle({x.data(),x.size()},1e-8,200);
+  REQUIRE(legacy.status==cppunivariate::BnbinomStatus::Ok);
+  CHECK_FALSE(legacy.certified);CHECK_FALSE(legacy.stop_detail.budget_exhausted);
+  CHECK(std::isnan(legacy.global_interval[0]));
+  CHECK(legacy.size==doctest::Approx(1.0672234787479615).epsilon(2e-6));
+  CHECK(legacy.alpha==doctest::Approx(2.1419791546447171).epsilon(2e-6));
+  CHECK(legacy.beta==doctest::Approx(5.3647338351087397).epsilon(2e-6));
+  const auto verified=cppunivariate::bnbinom_mle({x.data(),x.size()});
+  REQUIRE(verified.status==cppunivariate::BnbinomStatus::Ok);
+  CHECK(verified.certified);CHECK(std::isfinite(verified.global_interval[0]));
+  CHECK(verified.logLik>=legacy.logLik-1e-8);
+}
+
+TEST_CASE("bnbinom: an unfinished joint cover retains its proved finite face advantage") {
+  const auto golden=mltest::load_distribution_golden("bnbinom");
+  cppunivariate::bnbinom_detail::Data d;d.n=golden.data.size();std::map<int,double> counts;
+  for(double v:golden.data)counts[static_cast<int>(v)]++;
+  for(const auto &kv:counts){d.x.push_back(kv.first);d.count.push_back(kv.second);}
+  const auto proof=cppunivariate::bnbinom_detail::joint_cover(d,
+    {1.0672234787479615,2.1419791546447171,5.3647338351087397},
+    -1303.7427190771177,-3336.7458743346015,1e-8,1);
+  CHECK_FALSE(proof.proved);CHECK(proof.budget_exhausted);
+  for(double v:proof.coef)CHECK(std::isnan(v));
+  CHECK(proof.loglik_lower>-1303.7427190771177);
+  CHECK(proof.loglik_lower<-1275.6474863695586167);
+  const auto &p=proof.witness_coef;
+  for(double v:p)CHECK(std::isfinite(v));
+  CHECK(cppunivariate::bnbinom_detail::likelihood(d,{p[0],p[1],p[2]})>=proof.loglik_lower);
+}

@@ -1,0 +1,7 @@
+{
+  "base": "ddb399172bd99091c8d1b04dbf7fe329c8adc43e",
+  "sha256": {
+    "mle.hpp": "16a066aacb76776281fbd9996d7b39297e70bd9d1b89466850a4fa8f96630414",
+    "pair_certificate.hpp": "a2615334b08079168d890c84e8dd1f2af875b47b56646b86b51655f3f8e87953"
+  }
+}

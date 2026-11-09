@@ -1,0 +1,16 @@
+{
+  "arithmetic": "exact rational/integer",
+  "degree": 15,
+  "negative_coefficients_by_elevation": [
+    21,
+    11,
+    4,
+    1,
+    0
+  ],
+  "positive_coefficients": 759,
+  "zero_coefficients": 57,
+  "denominator": 27,
+  "minimum_positive_integer": 9,
+  "integer_coefficient_sha256": "a6a9d92223c63cafb831629fac9f61bef4e4a630db42fc658e3d1ef6e498fed3"
+}
