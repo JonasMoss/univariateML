@@ -1,0 +1,37 @@
+p=-0.5  Hurst s=0.25  predicted chord cosine -0.048
+   h=1e-2: H2/h^(p+1)=1.35180  chord cos -0.0483  
+   h=1e-3: H2/h^(p+1)=1.35195  chord cos -0.0482  slope 0.5000
+   h=1e-4: H2/h^(p+1)=1.35196  chord cos -0.0482  slope 0.5000
+   h=1e-5: H2/h^(p+1)=1.35196  chord cos -0.0482  slope 0.5000
+   h=1e-6: H2/h^(p+1)=1.35196  chord cos -0.0482  slope 0.5000
+   h=1e-7: H2/h^(p+1)=1.35196  chord cos -0.0482  slope 0.5000
+p=+0.0  Hurst s=0.50  predicted chord cosine +0.000
+   h=1e-2: H2/h^(p+1)=0.99750  chord cos -0.0025  
+   h=1e-3: H2/h^(p+1)=0.99975  chord cos -0.0002  slope 0.9990
+   h=1e-4: H2/h^(p+1)=0.99998  chord cos -0.0000  slope 0.9999
+   h=1e-5: H2/h^(p+1)=1.00000  chord cos -0.0000  slope 1.0000
+   h=1e-6: H2/h^(p+1)=1.00000  chord cos -0.0000  slope 1.0000
+   h=1e-7: H2/h^(p+1)=1.00000  chord cos -0.0000  slope 1.0000
+p=+0.5  Hurst s=0.75  predicted chord cosine +0.270
+   h=1e-2: H2/h^(p+1)=0.93623  chord cos +0.2307  
+   h=1e-3: H2/h^(p+1)=0.97041  chord cos +0.2577  slope 1.4844
+   h=1e-4: H2/h^(p+1)=0.98123  chord cos +0.2659  slope 1.4952
+   h=1e-5: H2/h^(p+1)=0.98464  chord cos +0.2685  slope 1.4985
+   h=1e-6: H2/h^(p+1)=0.98573  chord cos +0.2693  slope 1.4995
+   h=1e-7: H2/h^(p+1)=0.98607  chord cos +0.2695  slope 1.4998
+p=+1.0  Hurst s=1.00  predicted chord cosine +1.000
+   h=1e-2: H2/(h^2 log(1/h))=0.32107  chord cos +0.6330  
+   h=1e-3: H2/(h^2 log(1/h))=0.29738  chord cos +0.7358  slope 1.8572
+   h=1e-4: H2/(h^2 log(1/h))=0.28553  chord cos +0.7936  slope 1.8927
+   h=1e-5: H2/(h^2 log(1/h))=0.27843  chord cos +0.8307  slope 1.9140
+   h=1e-6: H2/(h^2 log(1/h))=0.27369  chord cos +0.8564  slope 1.9283
+   h=1e-7: H2/(h^2 log(1/h))=0.27030  chord cos +0.8754  slope 1.9385
+   target 1/4 (approached slowly: H2 = h^2 (log(1/h) + O(1))/4)
+p=+1.5  Hurst s=1.00  predicted chord cosine +1.000
+   h=1e-2: H2/h^2=0.47296  chord cos +0.9065  
+   h=1e-3: H2/h^2=0.49145  chord cos +0.9715  slope 1.9833
+   h=1e-4: H2/h^2=0.49730  chord cos +0.9911  slope 1.9949
+   h=1e-5: H2/h^2=0.49914  chord cos +0.9972  slope 1.9984
+   h=1e-6: H2/h^2=0.49973  chord cos +0.9991  slope 1.9995
+   h=1e-7: H2/h^2=0.49991  chord cos +0.9997  slope 1.9998
+   target I/4 = 0.50000

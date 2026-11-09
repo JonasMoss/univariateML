@@ -1,0 +1,5 @@
+type III: beta2 = 3*beta1/2 + 3   type V slope k (beta2 = 3 + k beta1): [15/8]
+in signed skewness gamma1 (beta1 = gamma1^2) both curves are 3 + k gamma1^2: tangent at the normal
+gradient of the discriminant at [1:0:0]: [0, 0, -4] -> tangent line c2 = 0
+Lomax point / lam with alpha = r lam, lam -> oo: [0, r, 0, 1, 0] = exponential with rate r, threshold 0
+all algebra checks passed
