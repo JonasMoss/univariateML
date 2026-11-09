@@ -1,0 +1,84 @@
+{
+  "seed": 161,
+  "decimal_digits": 80,
+  "rows": [
+    {
+      "m": ".5001",
+      "nu": "0",
+      "accepted": 64,
+      "proposals": 221,
+      "theoretical_mean_proposals": "2.71844870077691809",
+      "largest_logaccept": "-1.0002",
+      "proposal_inverse_error": "1.05421979432e-81",
+      "sample_log_absolute_values": [
+        "3286.87289325",
+        "3686.15472622",
+        "4554.37058808",
+        "4092.32544108"
+      ]
+    },
+    {
+      "m": ".7",
+      "nu": "40",
+      "accepted": 64,
+      "proposals": 150,
+      "theoretical_mean_proposals": "2.5796155388989937",
+      "largest_logaccept": "-0.000605422085625",
+      "proposal_inverse_error": "5.27109897162e-82",
+      "sample_log_absolute_values": [
+        "5.82061239184",
+        "10.5368310671",
+        "3.56147758326",
+        "13.8225336892"
+      ]
+    },
+    {
+      "m": "1",
+      "nu": "-1000",
+      "accepted": 64,
+      "proposals": 242,
+      "theoretical_mean_proposals": "4.00000266665795558",
+      "largest_logaccept": "-0.0247116676627",
+      "proposal_inverse_error": "1.05421979432e-81",
+      "sample_log_absolute_values": [
+        "9.25249053773",
+        "6.08758674208",
+        "10.32984418",
+        "6.2180755606"
+      ]
+    },
+    {
+      "m": "10",
+      "nu": "3",
+      "accepted": 64,
+      "proposals": 670,
+      "theoretical_mean_proposals": "8.01742827917221301",
+      "largest_logaccept": "-1.39743192911",
+      "proposal_inverse_error": "1.05421979432e-81",
+      "sample_log_absolute_values": [
+        "-1.04179218681",
+        "-2.90322391388",
+        "-6.7546935101",
+        "-2.30853312161"
+      ]
+    },
+    {
+      "m": "10000",
+      "nu": "1e8",
+      "accepted": 64,
+      "proposals": 508,
+      "theoretical_mean_proposals": "8.33720534526264191",
+      "largest_logaccept": "-1.41637873017",
+      "proposal_inverse_error": "1.05421979432e-81",
+      "sample_log_absolute_values": [
+        "8.51067117367",
+        "8.52035900141",
+        "8.51923471675",
+        "8.51346036134"
+      ]
+    }
+  ],
+  "passed": 320,
+  "script_sha256": "d474f0196da0196b96d0f72bffbc79a60bab86434373e50a46bbca2838d10897",
+  "interpretation": "Envelope and proposal-transform checks; acceptance counts are numerical, not a distributional proof."
+}

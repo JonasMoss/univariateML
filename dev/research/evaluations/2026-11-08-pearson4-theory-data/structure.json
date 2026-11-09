@@ -1,0 +1,738 @@
+{
+  "decimal_digits": 90,
+  "checks": [
+    {
+      "name": "complete-log-normalizer",
+      "error": "4.0934644404012e-56",
+      "bound": "2.8631021701789e-53",
+      "m": ".500000000001",
+      "nu": "0"
+    },
+    {
+      "name": "complete-log-normalizer",
+      "error": "1.2835751031412e-64",
+      "bound": "1.5755589773985e-51",
+      "m": ".51",
+      "nu": "1000"
+    },
+    {
+      "name": "complete-log-normalizer",
+      "error": "4.3010802606142e-61",
+      "bound": "4.8366782034431e-54",
+      "m": "3.2",
+      "nu": "7"
+    },
+    {
+      "name": "complete-log-normalizer",
+      "error": "1.4887937221238e-60",
+      "bound": "1.5689006805575e-48",
+      "m": "100",
+      "nu": "1e6"
+    },
+    {
+      "name": "complete-log-normalizer",
+      "error": "1.3136993614764e-60",
+      "bound": "6.184084039498e-54",
+      "m": "1e5",
+      "nu": "2"
+    },
+    {
+      "name": "gamma-product",
+      "error": "0.0",
+      "bound": "1.0e-70"
+    },
+    {
+      "name": "gamma-product",
+      "error": "1.8409100494866e-90",
+      "bound": "1.0e-70"
+    },
+    {
+      "name": "positive-panel-relative-width",
+      "error": "2.4237363319308e-6",
+      "bound": "0.003",
+      "m": ".5001",
+      "nu": "0",
+      "panels": 2048,
+      "lower": "0.99999755765314385989",
+      "reference": "0.99999950181505963211",
+      "upper": "0.9999999813835561859"
+    },
+    {
+      "name": "positive-panel-relative-width",
+      "error": "0.00058704234213387",
+      "bound": "0.003",
+      "m": ".51",
+      "nu": "80",
+      "panels": 2048,
+      "lower": "1.0192182433031736621",
+      "reference": "1.0195156373431888054",
+      "upper": "1.0198165675678679237"
+    },
+    {
+      "name": "positive-panel-relative-width",
+      "error": "4.6656159768354e-5",
+      "bound": "0.003",
+      "m": "12",
+      "nu": "-100",
+      "panels": 2048,
+      "lower": "1.100529791569230899",
+      "reference": "1.1005722014553784016",
+      "upper": "1.1005811380630161861"
+    },
+    {
+      "name": "three-scale-roots",
+      "m": 1,
+      "nu": 10,
+      "residuals": [
+        -1,
+        10
+      ],
+      "score_signs": [
+        "+",
+        "-",
+        "+",
+        "-"
+      ],
+      "scales": [
+        0,
+        1,
+        10,
+        100
+      ]
+    },
+    {
+      "name": "Cauchy-continuum",
+      "error": "0.0",
+      "bound": "1.0e-75"
+    },
+    {
+      "name": "Cauchy-continuum",
+      "error": "0.0",
+      "bound": "1.0e-75"
+    },
+    {
+      "name": "Cauchy-continuum",
+      "error": "0.0",
+      "bound": "1.0e-75"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "1.9176146348819e-93",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "1.2272733663244e-91",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "1.5340917079055e-92",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "1.5340917079055e-92",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "1.2272733663244e-91",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "1.9176146348819e-93",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "1.9176146348819e-93",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "9.8181869305955e-91",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "0.0",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "9.2045502474332e-92",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "6.1363668316222e-92",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "1.9176146348819e-93",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "1.9176146348819e-93",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "3.0681834158111e-92",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "6.1363668316222e-92",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "1.0738641955339e-91",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "1.4727280395893e-90",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "0.0",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "1.9176146348819e-93",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "9.2045502474332e-92",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "6.1363668316222e-92",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "1.2272733663244e-91",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "0.0",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "1.9176146348819e-93",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "1.9176146348819e-93",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "1.2272733663244e-91",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "1.5340917079055e-92",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "1.5340917079055e-92",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "1.2272733663244e-91",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "1.9176146348819e-93",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "1.9176146348819e-93",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "4.418184118768e-90",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "1.5340917079055e-92",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "2.4545467326489e-91",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "0.0",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "0.0",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "1.9176146348819e-93",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "0.0",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "1.380682537115e-91",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "1.6875008786961e-91",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "9.8181869305955e-91",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "1.9176146348819e-93",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "0.0",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "6.1363668316222e-92",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "3.0681834158111e-92",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "7.6704585395277e-92",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "1.9636373861191e-90",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "1.9176146348819e-93",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "0.0",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "1.2272733663244e-91",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "1.5340917079055e-92",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "1.5340917079055e-92",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "1.2272733663244e-91",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "0.0",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "0.0",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "8.8363682375359e-90",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "1.0738641955339e-91",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "6.1363668316222e-92",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "1.2272733663244e-91",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "0.0",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "0.0",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "0.0",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "1.2272733663244e-91",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "3.0681834158111e-92",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "2.3563648633429e-89",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "3.8352292697638e-93",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "3.8352292697638e-93",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "6.1363668316222e-92",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "3.0681834158111e-92",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "7.6704585395277e-92",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "3.5345472950144e-89",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "3.8352292697638e-93",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "1.5340917079055e-92",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "2.4545467326489e-91",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "3.0681834158111e-92",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "3.0681834158111e-92",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "2.4545467326489e-91",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "1.5340917079055e-92",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "1.5340917079055e-92",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "9.8181869305955e-91",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "3.0681834158111e-92",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "1.9943192202772e-91",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "1.2272733663244e-91",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "1.5340917079055e-92",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "0.0",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "2.4545467326489e-91",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "1.5340917079055e-92",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "3.0681834158111e-92",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "2.5527286019548e-89",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "0.0",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "0.0",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "2.4545467326489e-91",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "4.6022751237166e-92",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "7.6704585395277e-92",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "7.8545495444764e-90",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "1.5340917079055e-92",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "1.5709099088953e-89",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "2.4545467326489e-91",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "1.5340917079055e-92",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "1.5340917079055e-92",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "2.4545467326489e-91",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "1.5709099088953e-89",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "1.5709099088953e-89",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "7.3636401979466e-91",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "3.0681834158111e-92",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "4.6022751237166e-92",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "7.3636401979466e-91",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "1.5709099088953e-89",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "2.3563648633429e-89",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "9.8181869305955e-91",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "3.9886384405544e-91",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "3.9886384405544e-91",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "4.9090934652977e-91",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "3.1418198177905e-89",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "7.8545495444764e-90",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "5.8909121583573e-90",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "1.5969894679297e-89",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "1.6015917430534e-89",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "6.8727308514168e-90",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "mode-chart-score",
+      "error": "2.0107646833859e-87",
+      "bound": "1.0e-60"
+    },
+    {
+      "name": "uniform-envelope-grid",
+      "points": 120,
+      "max_ratio": "0.9901449318708853833"
+    },
+    {
+      "name": "score-evaluation-rank",
+      "m": "0.7",
+      "nu": "0.0",
+      "determinant": "-4.766459428137915554"
+    },
+    {
+      "name": "score-evaluation-rank",
+      "m": "1.3",
+      "nu": "2.1",
+      "determinant": "-1.8132777854747129434"
+    }
+  ],
+  "passed": 137,
+  "script_sha256": "7f36d2b4a25f68c06f64bc1235e1b966b6927b83e51a50e93d12633633e3209a"
+}

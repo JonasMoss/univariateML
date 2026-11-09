@@ -1,0 +1,52 @@
+{
+  "reference_digits": 90,
+  "working_digits": 65,
+  "checks": [
+    {
+      "m": "2.3",
+      "nu": "4",
+      "z": ".4",
+      "w": "0.5",
+      "error": "2.0180292953567e-60",
+      "mathematical_bound": "2.0740509388425e-60",
+      "working_arithmetic_allowance": "9.3389400920944e-61",
+      "terms": 204,
+      "cancellation_condition": "2.6081962042721"
+    },
+    {
+      "m": "2.3",
+      "nu": "4",
+      "z": ".4",
+      "w": "(0.5 - 0.2j)",
+      "error": "4.0087782516486e-61",
+      "mathematical_bound": "4.8427200766665e-61",
+      "working_arithmetic_allowance": "1.6971967157818e-60",
+      "terms": 231,
+      "cancellation_condition": "9.0039139262817"
+    },
+    {
+      "m": ".7",
+      "nu": "-1.2",
+      "z": "-.3",
+      "w": "0.5",
+      "error": "5.3419644039017e-61",
+      "mathematical_bound": "5.4232086212625e-61",
+      "working_arithmetic_allowance": "2.5574908228309e-61",
+      "terms": 191,
+      "cancellation_condition": "1.2522576969024"
+    },
+    {
+      "m": ".7",
+      "nu": "-1.2",
+      "z": "-.3",
+      "w": "(0.5 + 0.15j)",
+      "error": "7.2613193957813e-61",
+      "mathematical_bound": "8.0541485111269e-61",
+      "working_arithmetic_allowance": "2.7490889050669e-61",
+      "terms": 203,
+      "cancellation_condition": "1.42384809102"
+    }
+  ],
+  "passed": 4,
+  "script_sha256": "027b9e48a0c04454434fa11e00c000d0651737cf4d882eafaa8c434b7744c325"
+}

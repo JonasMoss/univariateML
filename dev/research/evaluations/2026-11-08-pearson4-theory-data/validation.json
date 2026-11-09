@@ -1,0 +1,63 @@
+{
+  "completed_utc": "2026-11-09T00:07:13.046011+00:00",
+  "machine": "workstation; no simbox run",
+  "cpu": "one slot via /tmp/umvl-cpu/run; nice -n 10; OMP/BLAS one thread",
+  "python": "3.14.5",
+  "runs": [
+    {
+      "script": "check.py",
+      "result": "checks.json",
+      "sha256": "6749ee8ff445db0ab475a1ffbc378baff89ca50bdb33d4a3377806b53625fa66",
+      "exit_code": 0,
+      "records": 53
+    },
+    {
+      "script": "sampler.py",
+      "result": "sampler.json",
+      "sha256": "d474f0196da0196b96d0f72bffbc79a60bab86434373e50a46bbca2838d10897",
+      "exit_code": 0,
+      "records": 320
+    },
+    {
+      "script": "structure.py",
+      "result": "structure.json",
+      "sha256": "7f36d2b4a25f68c06f64bc1235e1b966b6927b83e51a50e93d12633633e3209a",
+      "exit_code": 0,
+      "records": 137
+    },
+    {
+      "script": "hyper.py",
+      "result": "hyper.json",
+      "sha256": "027b9e48a0c04454434fa11e00c000d0651737cf4d882eafaa8c434b7744c325",
+      "exit_code": 0,
+      "records": 4
+    }
+  ],
+  "free_subsets": 16,
+  "scoped_links": {
+    "checked": 16,
+    "broken": 0
+  },
+  "repository_link_check": {
+    "exit_code": 1,
+    "broken": 6,
+    "classification": "Existing issues outside this job; no new bundle destination failed.",
+    "issues": [
+      "2026-10-31-inference-6-report.md: missing desktop.png and mobile-evidence.png in ignored build scratch",
+      "2026-11-03-boundary-lit-report.md: missing generated boundary-points.pdf",
+      "nbinom/README.md: parser treats the mathematical expression 1+m/r as a destination",
+      "notes/inference.md: two site-root /inference/ links interpreted as filesystem paths"
+    ]
+  },
+  "evidence": "All four retained numerical jobs exited zero; source hashes match their outputs.",
+  "package_suites": "Not required or run: no tracked production code, fitting, dpqr, bindings, test infrastructure or dossiers changed.",
+  "scope": "Only the requested report and evidence directory; no commit, board edit, install or sub-agent.",
+  "initial_failure": "The first check.py run failed an invalid tail-only quantile test bracket. Corrected script then passed; details in numerics.md.",
+  "open_entries": [
+    "E: exact attained-point decisions in general boundary ties",
+    "N: uniform normal-face local experiment and inference calibration",
+    "G: production combined gamma branches, derivative bounds and floating-point margins",
+    "H: full published global hypergeometric transformations as optional accelerators"
+  ],
+  "success": true
+}
