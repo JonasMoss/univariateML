@@ -1,0 +1,8 @@
+[
+{"sample":"zero-five","maxit":600,"proved":true,"budget":false,"evaluations":19986,"size_upper":763.18118075590564,"concentration_cutoff":7.5557863725914458e+22,"milliseconds":481.34553099999999},
+{"sample":"zero-five","maxit":6000,"proved":true,"budget":false,"evaluations":19986,"size_upper":763.18118075590564,"concentration_cutoff":7.5557863725914458e+22,"milliseconds":469.23612600000001},
+{"sample":"zero-two-two-two","maxit":600,"proved":true,"budget":false,"evaluations":18400,"size_upper":2678.055770171025,"concentration_cutoff":9007233614610432,"milliseconds":275.80624},
+{"sample":"zero-two-two-two","maxit":6000,"proved":true,"budget":false,"evaluations":18400,"size_upper":2678.055770171025,"concentration_cutoff":9007233614610432,"milliseconds":275.054326},
+{"sample":"zero-through-five","maxit":600,"proved":false,"budget":true,"evaluations":76801,"size_upper":46233.034392625545,"concentration_cutoff":4.6116861558663455e+18,"milliseconds":3198.0854570000001},
+{"sample":"zero-through-five","maxit":6000,"proved":false,"budget":true,"evaluations":768001,"size_upper":46233.034392625545,"concentration_cutoff":4.6116861558663455e+18,"milliseconds":17055.786671999998}
+]

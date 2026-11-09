@@ -1,0 +1,12 @@
+{
+  "global_exit": 1,
+  "global_findings": 12,
+  "all_reported_files_identical_to_base": true,
+  "changed_markdown_files": [
+    "/home/jonas/Files/programming/univariateML.wt/bnbinom-face/dev/research/evaluations/2026-11-09-bnbinom-face-report.md",
+    "/home/jonas/Files/programming/univariateML.wt/bnbinom-face/dev/research/evaluations/2026-11-09-bnbinom-face-data/derivations.md",
+    "univariateML-cpp/include/cppunivariate/distributions/bnbinom/README.md"
+  ],
+  "changed_local_destinations": 31,
+  "changed_errors": []
+}

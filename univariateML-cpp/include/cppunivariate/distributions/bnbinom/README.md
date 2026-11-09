@@ -42,12 +42,12 @@ limits:
   - model: nbinom
     firmness: proved
     when: 'The shapes satisfy $\alpha,\beta\to\infty$ with their ratio and $r>0$ fixed. Exchanging $r$ and $\beta$ gives the corresponding path with $\beta>0$ fixed.'
-    detect: 'With $r$ or $\beta$ held and the other shapes free, a supporting-polynomial test proves the negative binomial face wins. Otherwise the pair must beat the face and complete its finite cover, or stop numerically. With all shapes free, an unresolved negative binomial comparison retains the legacy numerical face or finite result, explicitly uncertified'
+    detect: 'With $r$ or $\beta$ held and the other shapes free, a supporting-polynomial test proves the negative binomial face wins. Otherwise the pair must beat the face and complete its finite cover, or stop numerically. With all shapes free, a signed concentration bound and complete stationary cover can prove the negative binomial face wins. An unresolved comparison retains the legacy numerical face or finite result, explicitly uncertified'
     status: NegativeBinomialLimit
   - model: pois
     firmness: proved
     when: 'All three shapes tend to infinity with $r\beta/\alpha$ tending to a finite positive mean.'
-    detect: 'All coefficients are free. Supporting-polynomial tests or the compound-Poisson bound for equal frequencies at 0,...,4 prove the Poisson face wins for some samples. Other unresolved all-free faces retain explicitly uncertified legacy comparisons'
+    detect: 'All coefficients are free. Supporting-polynomial tests, the compound-Poisson bound for equal frequencies at 0,...,4, or a signed mixed-Poisson bound with a complete stationary cover prove the Poisson face wins for some samples. Other unresolved all-free faces retain explicitly uncertified legacy comparisons'
     status: PoissonLimit
   - model: pois
     firmness: proved
@@ -83,7 +83,7 @@ relations:
 fit:
   method: multistart
   certified: 'partial'
-  note: 'bnbinom/README.md, Scalar certificates and Finite all-free certificate; bnbinom/mle.hpp: Every scalar and pair subset retains its global certificate or structured stop. All-free finite results are certified when the compact superlevel and full stationary cover close to coefficient accuracy; a uniform inner size/beta enclosure over alpha intervals is retained when its certificate closes. Supporting-polynomial and equal-frequency compound-Poisson Poisson-face decisions are proved. Other all-free finite and NB/Poisson face results retain the legacy score-checked search and likelihood comparison, explicitly uncertified. All-zero point-mass decisions are proved; all-held evaluation is excluded from fitting certification.'
+  note: 'bnbinom/README.md, Scalar certificates and Finite all-free certificate; bnbinom/mle.hpp: Every scalar and pair subset retains its global certificate or structured stop. All-free finite results are certified when the compact superlevel and full stationary cover close to coefficient accuracy; a uniform inner size/beta enclosure over alpha intervals is retained when its certificate closes. Supporting-polynomial, equal-frequency compound-Poisson, and signed NB/Poisson face decisions with completed stationary covers are proved. Other all-free finite and NB/Poisson face results retain the legacy score-checked search and likelihood comparison, explicitly uncertified. All-zero point-mass decisions are proved; all-held evaluation is excluded from fitting certification.'
 areas:
 - counts and ecology
 classification: specialist
@@ -551,6 +551,69 @@ and internal R adapter result. The proof is conditional exact arithmetic with
 the stated practical floating-point margins, rather than outward rounding. The
 [derivations and reproducible checks](../../../../../dev/research/evaluations/2026-11-08-bnbinom-allfree-data/derivations.md)
 include the independent high-precision roots and nonuniqueness witness.
+
+## Signed face comparison
+
+Put $s=\alpha+\beta$, $p=\alpha/s$, $q=1-p$, and
+$F_2=\sum_i x_i(x_i-1)$. The exact log-gamma expression yields
+
+$$
+ \ell_{\rm BNB}(r,sp,sq)-\ell_{\rm NB}(r,p)
+ =\frac{C(r,p)}s+E,\qquad
+ C(r,p)=\frac12\left\{nr(r-1)\frac qp+F_2\frac pq-2r\sum_i x_i\right\}.
+$$
+
+For $H(u)=u^3/6+u^2/4+u/12$,
+
+$$
+ |E|\le\frac1{s^2}\sum_i\left\{
+ \frac{H(r)}{p^2}+\frac{H(x_i)}{q^2}+H(r+x_i)\right\}.
+$$
+
+This holds for all positive shapes, uniformly on any bounded size interval
+and any closed subinterval of $0<p<1$. At the fitted NB law the coefficient
+of $1/\alpha$ is $c_1=pC$. If $c_1<0$, continuity supplies a neighbourhood
+where the signed bound is negative for sufficiently large concentration.
+Outside it, the strict NB likelihood deficit dominates the absolute
+remainder. The certified NB size profile and its exact fitted probability
+supply the deficit bound. Exchanging $r$ and $\beta$ proves the other
+labelling without an additional asymptotic assumption.
+
+For the Poisson corner, put $\lambda=r\beta/\alpha$ and
+$h=1/r+1/\beta$. For $0<h\le h_0$,
+
+$$
+ \ell_{\rm BNB}\le\ell_{\rm Pois}(\lambda)+B(\lambda)h+R(\lambda,h_0)h^2,
+$$
+
+where
+
+$$
+ B(\lambda)=\frac n2\{(\lambda-\bar x)^2+v-\bar x\},\qquad
+ R(\lambda,h_0)=\frac{\lambda^2}{2}\sum_i x_i
+ \left(1+\frac{(x_i-1)_+h_0}{4}\right)^2.
+$$
+
+Thus strictly underdispersed samples have a signed exclusion near the fitted
+Poisson mean. A zero or unresolved dispersion sign does not establish one.
+
+The global comparison orders $r\le\beta$ and covers the compactified
+coordinates $(r,\log(p/q),1/s)$. Small-shape, extreme-probability and
+Poisson-corner inequalities exclude the exterior. Signed bounds handle the
+NB boundary $1/s=0$. Every remaining finite global maximizer must be
+stationary; likelihood bounds, monotone score signs and the full Hessian
+root exclusion cover its remaining region. A certificate succeeds only when
+every box is excluded. In particular a negative asymptotic coefficient
+alone never certifies a global face win. The examples with equal frequencies
+at zero and five pass this complete comparison.
+
+Each signed cover has $128\min(\mathrm{iterlim},100000)$ evaluations.
+Failure to close, including a zero sign, retains the existing uncertified
+result. No search coefficient or default fitting tolerance changes.
+The additional signed arithmetic uses $4096\epsilon$ absolute-term or relative
+margins; the inherited likelihood, score and Hessian margins also apply.
+The [derivation and independent checks](../../../../../dev/research/evaluations/2026-11-09-bnbinom-face-data/derivations.md)
+state the conditional exact-arithmetic claim and the limits of numerical evidence.
 
 ## R notes
 

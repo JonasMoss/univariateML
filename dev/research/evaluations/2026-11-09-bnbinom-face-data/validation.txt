@@ -1,0 +1,128 @@
+START workstation cpp-dev 2026-11-09T19:42:39Z
+GREEN workstation cpp-dev 2026-11-09T19:48:56Z
+START workstation cpp-full 2026-11-09T19:48:56Z
+GREEN workstation cpp-full 2026-11-09T19:58:36Z
+START workstation cpp-no-long-double 2026-11-09T19:58:36Z
+GREEN workstation cpp-no-long-double 2026-11-09T20:09:11Z
+START workstation test 2026-11-09T20:09:11Z
+GREEN workstation test 2026-11-09T20:14:55Z
+START workstation test-full 2026-11-09T20:14:55Z
+GREEN workstation test-full 2026-11-09T20:26:07Z
+
+
+cpp-dev
+102/106 Test #128: tails_tests ......................   Passed    0.00 sec
+        Start 129: diagnostics_tests
+103/106 Test #127: cmp_tests ........................   Passed    3.52 sec
+104/106 Test #129: diagnostics_tests ................   Passed    3.41 sec
+105/106 Test  #97: distribution_std .................   Passed   36.83 sec
+106/106 Test #104: distribution_trgamma .............   Passed   22.80 sec
+
+100% tests passed, 0 tests failed out of 106
+
+Label Time Summary:
+cran    = 871.46 sec*proc (105 tests)
+dev     = 874.87 sec*proc (106 tests)
+full    = 874.87 sec*proc (106 tests)
+
+Total Test time (real) = 220.35 sec
+
+cpp-full
+125/129 Test #111: distribution_zib_slow ............   Passed    0.02 sec
+        Start 121: distribution_ztbinom_slow
+126/129 Test #121: distribution_ztbinom_slow ........   Passed    0.03 sec
+127/129 Test  #98: distribution_std_slow ............   Passed  155.47 sec
+128/129 Test  #36: distribution_gev_slow ............   Passed  280.09 sec
+129/129 Test #101: distribution_tlambda_slow ........   Passed  337.62 sec
+
+100% tests passed, 0 tests failed out of 129
+
+Label Time Summary:
+cran    = 907.11 sec*proc (105 tests)
+dev     = 911.81 sec*proc (106 tests)
+full    = 1725.35 sec*proc (129 tests)
+
+Total Test time (real) = 579.84 sec
+
+cpp-no-long-double
+125/129 Test #128: tails_tests ......................   Passed    0.00 sec
+        Start 129: diagnostics_tests
+126/129 Test #104: distribution_trgamma .............   Passed   19.52 sec
+127/129 Test #129: diagnostics_tests ................   Passed    2.10 sec
+128/129 Test  #36: distribution_gev_slow ............   Passed  351.74 sec
+129/129 Test #101: distribution_tlambda_slow ........   Passed  254.38 sec
+
+100% tests passed, 0 tests failed out of 129
+
+Label Time Summary:
+cran    = 738.49 sec*proc (105 tests)
+dev     = 740.59 sec*proc (106 tests)
+full    = 1455.16 sec*proc (129 tests)
+
+Total Test time (real) = 499.63 sec
+
+test
+  'test-dist-zmgeom.R:2:3', 'test-dist-zmgeom.R:36:3',
+  'test-dist-zmbinom.R:52:3', 'test-dist-zmlogarithmic.R:2:3',
+  'test-dist-zmlogarithmic.R:36:3', 'test-dist-zmnbinom.R:2:3',
+  'test-dist-zmnbinom.R:60:3', 'test-dist-zmnbinom.R:75:3',
+  'test-dist-zmbinom.R:115:3', 'test-dist-zmpois.R:2:3',
+  'test-dist-ztbinom.R:2:3', 'test-dist-zmpois.R:36:3',
+  'test-dist-ztbinom.R:49:3', 'test-dist-ztbinom.R:91:3',
+  'test-dist-ztgeom.R:2:3', 'test-dist-ztgeom.R:33:3',
+  'test-dist-ztnbinom.R:2:3', 'test-dist-ztnbinom.R:57:3',
+  'test-dist-ztpois.R:2:3', 'test-dist-ztnbinom.R:72:3',
+  'test-dist-ztpois.R:33:3'
+
+[ FAIL 0 | WARN 0 | SKIP 154 | PASS 22450 ]
+   user  system elapsed 
+465.411   3.103 230.201 
+
+test-full
+⠹ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 45204 ] @ dist-sged                         
+⠸ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 45204 ] @ dist-sged                         
+⠼ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 45204 ] @ dist-sged                         
+⠴ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 45207 ] @ dist-sged                         
+⠦ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 45210 ] @ dist-sged                         
+✔ |        960 | dist-sged [391.7s]                                             
+
+⠧ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 45285 ] Starting up...                      
+                                                                                
+══ Results ═════════════════════════════════════════════════════════════════════
+Duration: 635.7 s
+
+[ FAIL 0 | WARN 0 | SKIP 0 | PASS 45285 ]
+    user   system  elapsed 
+1988.026    9.681  639.592 
+
+JS
+  type: 'test'
+  ...
+1..582
+# tests 582
+# suites 0
+# pass 582
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 274452.02348
+GREEN workstation js-test 2026-11-09T18:34:40Z
+
+SITE
+PASS: graph: 99 unique nodes, 278 edges, resolving family links; SVG generated twice byte-identically and matches built HTML.
+PASS: explorer coverage matches binding registry; optional build assets agree.
+PASS: every declared and inverted relation and limit link is rendered and resolves.
+PASS: 99 family pages; MathML on every family; no math runtime or external runtime assets; internal links and fragments resolve.
+Environment: Python 3.14.5, SymPy 1.14.0; g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0
+Boost headers: /home/jonas/R/x86_64-pc-linux-gnu-library/4.5/BH/include
+PASS: 99 generated C++ snippets compile and link as C++17 (including exp, gamma, gb2).
+PASS: pilot and ten additional HTML spot checks: exp, gamma, gb2, binom, beta, hyper, sstd, gev, gpd, tnorm, pois, unif, pareto
+Log-density fallback: cmb, cmp, dweibull, gev, gpd, huber, sged, snorm, sstd, st, tbinom, tpois, triang, zib, zinb, zip, zipf, zmbinom, zmgeom, zmlogarithmic, zmnbinom, zmpois
+WEIGHT exp: HTML 25426 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+WEIGHT gamma: HTML 29650 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+WEIGHT gb2: HTML 112489 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+WEIGHT binom: HTML 41341 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+WEIGHT hyper: HTML 40161 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+WEIGHT sstd: HTML 141790 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+Total dist: 23853733 B

@@ -513,6 +513,7 @@ inline BnbinomResult alpha_fit(const Cost &c,double tol,int maxit) {
 #include "pair_certificate.hpp"
 #include "alpha_interval_certificate.hpp"
 #include "joint_certificate.hpp"
+#include "signed_face_certificate.hpp"
 namespace cppunivariate {
 inline BnbinomResult bnbinom_mle(ispan x, double tol=1e-8, int maxit=600,
     double size_fixed=std::numeric_limits<double>::quiet_NaN(),
@@ -673,6 +674,22 @@ inline BnbinomResult bnbinom_mle(ispan x, double tol=1e-8, int maxit=600,
     const auto nb=face_bound(nb_detail),po=face_bound(po_detail);
     if(std::isfinite(nb.value-nb.margin) && nb.value-nb.margin>po.value+po.margin) {
       legacy_status=BnbinomStatus::NegativeBinomialLimit;legacy_detail=nb_detail;legacy_ll=nb_detail.limit_loglik;
+    }
+  }
+  if(legacy_face) {
+    const auto bound=face_bound(legacy_detail),po=face_bound(po_detail);
+    const double nb_size=legacy_status==BnbinomStatus::NegativeBinomialLimit?
+      legacy_detail.limit_coef[0]:NAN;
+    const auto proof=bnbinom_detail::signed_face_cover(d,nb_size,
+      bound.value-bound.margin,po.value+po.margin,maxit);
+    if(proof.proved) {
+      auto result=unresolved(false);
+      result.status=legacy_status;result.logLik=legacy_ll;result.certified=true;
+      result.stop_detail.limit_model=legacy_detail.limit_model;
+      result.stop_detail.limit_coef=legacy_detail.limit_coef;
+      result.stop_detail.limit_loglik=legacy_detail.limit_loglik;
+      result.stop_detail.loglik_upper=bound.value+bound.margin;
+      return result;
     }
   }
   bool rejected_face=false;

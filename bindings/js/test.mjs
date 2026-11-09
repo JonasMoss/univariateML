@@ -1736,7 +1736,7 @@ test('bnbinom legacy fallbacks and proved decisions expose certification labels'
   for(const x of [[0,0,5,5],[...Array(20).fill(0),...Array(20).fill(5)]]){
     assert.throws(()=>api.bnbinom.fit(x),e=>{
       assert.equal(e.kind,'limit');assert.equal(e.model,'nbinom');
-      assert.match(e.message,/Uncertified legacy comparison/);return true;
+      assert.match(e.message,/Certified global comparison/);return true;
     });
   }
   assert.throws(()=>api.bnbinom.fit([0,1,2,3,4]),e=>{
@@ -1748,6 +1748,8 @@ test('bnbinom legacy fallbacks and proved decisions expose certification labels'
   assert.equal(legacy.global_coefficient_lower,undefined);
   assert.equal(api.bnbinom.fit(x).certified,1);
 });
+
+
 test('binomial near-critical ZIP inputs preserve unresolved witnesses',async()=>{
   const {default:createApi}=await import('./index.mjs');const api=await createApi();
   for(const pi of [.3772146069463776,.37721460694637765])
@@ -1767,4 +1769,15 @@ test('truncated binomial certifies the finite zero-second-order boundary',async(
   assert.equal(f.status,'Ok');assert.equal(f.estimates.size,7);
   assert.ok(Math.abs(f.estimates.prob-.44715659335717363398)<1e-10);
   assert.ok(Math.abs(f.logLik+3379063.91960425442105)<1e-7);
+});
+test('bnbinom signed Poisson faces and budget fallbacks keep their labels',async()=>{
+  const api=await (await import('./index.mjs')).default();
+  assert.throws(()=>api.bnbinom.fit([0,2,2,2]),e=>{
+    assert.equal(e.kind,'limit');assert.equal(e.model,'pois');
+    assert.match(e.message,/Certified global comparison/);return true;
+  });
+  assert.throws(()=>api.bnbinom.fit([0,0,5,5],{}, {iterlim:100}),e=>{
+    assert.equal(e.kind,'limit');assert.equal(e.model,'nbinom');
+    assert.match(e.message,/Uncertified legacy comparison/);return true;
+  });
 });

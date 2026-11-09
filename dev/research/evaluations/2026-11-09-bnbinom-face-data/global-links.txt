@@ -1,0 +1,13 @@
+586 Markdown files; 3518 local destinations; 12 broken
+dev/research/evaluations/2026-11-03-boundary-lit-report.md:5: ../boundary-points.pdf
+dev/research/evaluations/2026-11-07-fit-audit-data/static-inventory.md:198: double
+dev/research/evaluations/2026-11-07-fit-audit-data/static-inventory.md:316: double
+dev/research/evaluations/2026-11-07-fit-audit-data/static-inventory.md:317: double
+dev/research/evaluations/2026-11-07-fit-audit-data/static-inventory.md:416: double
+dev/research/evaluations/2026-11-07-fit-audit-data/static-inventory.md:571: double
+dev/research/evaluations/2026-11-07-fit-audit-data/static-inventory.md:572: double
+dev/research/evaluations/2026-11-07-fit-audit-data/static-inventory.md:596: const
+dev/research/evaluations/2026-11-07-fit-audit-data/static-inventory.md:672: double
+univariateML-cpp/include/cppunivariate/distributions/nbinom/README.md:234: 1+m/r
+univariateML-cpp/notes/inference.md:3: /inference/
+univariateML-cpp/notes/inference.md:95: /inference/

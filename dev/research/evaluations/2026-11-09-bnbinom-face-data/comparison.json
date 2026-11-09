@@ -1,0 +1,165 @@
+{
+  "samples_identical": true,
+  "status_changes": [],
+  "promotions": [
+    {
+      "id": 0,
+      "source": "bnbinom",
+      "n": 30,
+      "model": "nbinom"
+    },
+    {
+      "id": 1,
+      "source": "bnbinom",
+      "n": 30,
+      "model": "nbinom"
+    },
+    {
+      "id": 2,
+      "source": "bnbinom",
+      "n": 200,
+      "model": "nbinom"
+    },
+    {
+      "id": 6,
+      "source": "bnbinom",
+      "n": 30,
+      "model": "nbinom"
+    },
+    {
+      "id": 18,
+      "source": "bnbinom",
+      "n": 30,
+      "model": "nbinom"
+    },
+    {
+      "id": 27,
+      "source": "bnbinom",
+      "n": 200,
+      "model": "nbinom"
+    },
+    {
+      "id": 30,
+      "source": "bnbinom",
+      "n": 30,
+      "model": "nbinom"
+    },
+    {
+      "id": 42,
+      "source": "bnbinom",
+      "n": 30,
+      "model": "nbinom"
+    },
+    {
+      "id": 55,
+      "source": "bnbinom",
+      "n": 30,
+      "model": "nbinom"
+    },
+    {
+      "id": 72,
+      "source": "bnbinom",
+      "n": 30,
+      "model": "nbinom"
+    },
+    {
+      "id": 73,
+      "source": "bnbinom",
+      "n": 30,
+      "model": "nbinom"
+    },
+    {
+      "id": 74,
+      "source": "bnbinom",
+      "n": 200,
+      "model": "nbinom"
+    },
+    {
+      "id": 85,
+      "source": "bnbinom",
+      "n": 30,
+      "model": "nbinom"
+    },
+    {
+      "id": 91,
+      "source": "bnbinom",
+      "n": 30,
+      "model": "nbinom"
+    },
+    {
+      "id": 96,
+      "source": "bnbinom",
+      "n": 30,
+      "model": "nbinom"
+    },
+    {
+      "id": 115,
+      "source": "bnbinom",
+      "n": 30,
+      "model": "nbinom"
+    },
+    {
+      "id": 126,
+      "source": "bnbinom",
+      "n": 30,
+      "model": "pois"
+    },
+    {
+      "id": 127,
+      "source": "bnbinom",
+      "n": 30,
+      "model": "nbinom"
+    },
+    {
+      "id": 145,
+      "source": "bnbinom",
+      "n": 30,
+      "model": "nbinom"
+    },
+    {
+      "id": 163,
+      "source": "nbinom",
+      "n": 30,
+      "model": "nbinom"
+    },
+    {
+      "id": 199,
+      "source": "pois",
+      "n": 30,
+      "model": "pois"
+    },
+    {
+      "id": 202,
+      "source": "pois",
+      "n": 1000,
+      "model": "pois"
+    },
+    {
+      "id": 216,
+      "source": "bnbinom",
+      "n": 30,
+      "model": "nbinom"
+    },
+    {
+      "id": 234,
+      "source": "bnbinom",
+      "n": 30,
+      "model": "nbinom"
+    }
+  ],
+  "promoted_by_model": {
+    "nbinom": 21,
+    "pois": 3
+  },
+  "promoted_by_source": {
+    "bnbinom": 21,
+    "nbinom": 1,
+    "pois": 2
+  },
+  "maximum_relative_finite_coefficient_change": 1.5385156159852981e-06,
+  "maximum_loglik_change": 1.5243131201714277e-08,
+  "csv_sha256": {
+    "/home/jonas/Files/programming/univariateML.wt/bnbinom-face/dev/research/evaluations/2026-11-08-bnbinom-allfree-data/coverage.csv": "0d6dff6529665a083e93033f85317cd87bd885dd3f20d209a2569d80bac36acc",
+    "/home/jonas/Files/programming/univariateML.wt/bnbinom-face/dev/research/evaluations/2026-11-09-bnbinom-face-data/coverage.csv": "bca2509708bd44fc76eb47da7e4c83504c5840080d606ac54706e1815208a0ce"
+  }
+}

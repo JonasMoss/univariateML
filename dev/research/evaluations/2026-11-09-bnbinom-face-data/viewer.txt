@@ -1,0 +1,10 @@
+The requested bin/show invocation returned HTTP 403:
+"That path is outside every readable root. Open an agent thread there, or add
+it to CODEX_MATH_WEB_VIEW_ROOTS."
+
+The rejected file is this worktree's
+  dev/research/evaluations/2026-11-09-bnbinom-face-report.md
+
+The viewer's registered roots do not contain this worktree. No report was
+copied into the main checkout or elsewhere, no extra agent was created, and
+no viewer configuration was changed. The report remains at the requested path.

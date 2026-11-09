@@ -1,0 +1,20 @@
+Read-only reservation health check, 2026-11-09:
+
+timeout 15 ssh -F /home/jonas/.ssh/config -o BatchMode=yes simbox \
+  'date -u; stat -c "%n %y" ~/umvl-wt/.slot1 ~/umvl-wt/.slot2 ~/umvl-wt/.slot3'
+
+Exit: 126
+Stderr:
+/bin/bash: line 1: /usr/bin/date: Input/output error
+/bin/bash: line 1: /usr/bin/stat: Input/output error
+
+Both owned simbox-run commands remained in their reservation retry loops.
+No suite or seeded sample had started there (both logs remained empty).
+The helper initially tests SSH with the shell builtin `true`; later external
+mkdir failures are redirected to /dev/null while it retries slot acquisition.
+
+Automatic review rejected sending SIGTERM to the two verified launcher PIDs
+(1385155 and 1388610). Reason: the user explicitly prohibited interrupting
+waiting commands; local fallback authorization did not authorize cancellation.
+No signal was sent. Explicit approval was requested; both launchers remained
+running. Local CPU waits were left untouched.

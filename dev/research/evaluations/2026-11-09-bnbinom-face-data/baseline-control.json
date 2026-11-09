@@ -1,0 +1,57 @@
+{
+  "compiler": "GCC 15.2.0",
+  "machine": "workstation",
+  "samples": 270,
+  "status_changes": [],
+  "certificate_downgrades": [],
+  "promoted_ids": [
+    0,
+    1,
+    2,
+    6,
+    18,
+    27,
+    30,
+    42,
+    55,
+    72,
+    73,
+    74,
+    85,
+    91,
+    96,
+    115,
+    126,
+    127,
+    145,
+    163,
+    199,
+    202,
+    216,
+    234
+  ],
+  "fit_differences": [],
+  "all_finite_coefficients_and_likelihoods_identical": true,
+  "before": {
+    "counts": {
+      "uncertified_legacy": 175,
+      "certified_finite": 88,
+      "proved_face": 7
+    },
+    "mean_ms": 4918.835019748148,
+    "median_ms": 1972.1636330000001,
+    "max_ms": 148227.289478,
+    "total_seconds": 1328.085455332
+  },
+  "after": {
+    "counts": {
+      "proved_face": 31,
+      "certified_finite": 88,
+      "uncertified_legacy": 151
+    },
+    "mean_ms": 6776.039222551852,
+    "median_ms": 4037.8653645000004,
+    "max_ms": 124165.229378,
+    "total_seconds": 1829.530590089
+  }
+}

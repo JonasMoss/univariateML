@@ -1,0 +1,12 @@
+{
+  "univariateML-cpp/include/cppunivariate/distributions/bnbinom/mle.hpp": "48d387774789dd4265908eaf681c9b46717db8aa5a8fd04d910aca7a122f006f",
+  "univariateML-cpp/include/cppunivariate/distributions/bnbinom/signed_face_certificate.hpp": "76d48366ced0ce7542f44dd606d094509ac287eeb3ca69bed89cab015aa8854b",
+  "univariateML-cpp/include/cppunivariate/distributions/bnbinom/README.md": "7968ca61189ca03d932649b0a1bd961a62b7e7fd829a23f4b9dcbcd97b77fa4a",
+  "univariateML-cpp/include/cppunivariate/distributions/bnbinom/test.cpp": "c0d496234867c1a4c5aa86f5fcbba18860a848f8b10f3c2bd985743480acac29",
+  "univariateML-cpp/include/cppunivariate/distributions/bnbinom/golden.json": "0de183786766e278851859371879fae2338fabaab9249dd714cd808edaa36e00",
+  "univariateML-cpp/include/cppunivariate/distributions/bnbinom/dpqr.hpp": "289e8b72a2682720dffbc7654082771cc76e122f6b6d378a5f07a99c7d9ed271",
+  "univariateML-cpp/include/cppunivariate/distributions/bnbinom/truth.py": "e16f24064f9bb2ac395faf6a2ba1dc0e4f17083de45e2e7e5a063356716323e9",
+  "univariateML-cpp/include/cppunivariate/distributions/bnbinom/truth.json": "f8ea7d662422ca8039e0337a3c4bf365b595fee46d190a7dd2304c449fddb03c",
+  "bindings/r/distributions/bnbinom/test.R": "63205413f6edaec04d72a529565219e7e7a9990a31af06eee32fb7f36153f743",
+  "bindings/js/test.mjs": "ccaae5b4c575cfc0f6bcec93aba5abb79b0bbd125cc603552fa8b4c7851153bc"
+}
