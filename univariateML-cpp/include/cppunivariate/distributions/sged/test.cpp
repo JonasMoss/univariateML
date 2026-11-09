@@ -867,3 +867,80 @@ TEST_CASE("sged: small-increment log gamma agrees with 80-digit references") {
   CHECK(std::abs(cppunivariate::special::lgamma1p(c[0])-c[1])<=4*ulp);
  }
 }
+
+TEST_CASE("sged fixed shape and both held moments enclose free skew globally") {
+  const std::vector<double> x{-3,-1,-.2,0,.3,.4,2};const auto data=mltest::as_span(x);
+  for(double p:{1.,1.7}) {
+    const auto r=cppunivariate::sged_mle(data,1e-10,200,.1,1.4,p);
+    REQUIRE(r.status==cppunivariate::SgedStatus::Ok);CHECK(r.certified);
+    CHECK(r.mu==.1);CHECK(r.sigma==1.4);CHECK(r.nu==p);
+    CHECK(r.stop_detail.loglik_lower<=r.logLik);CHECK(r.stop_detail.loglik_upper>=r.logLik);
+    const cppunivariate::sged_held_moment::Profile profile(data,.1,1.4,p);
+    CHECK(profile.value(std::tanh(std::log(r.xi)))==doctest::Approx(r.logLik).epsilon(2e-12));
+    for(double xi:{.2,.7,1.,2.,10.})CHECK(profile.value(std::tanh(std::log(xi)))<=r.logLik+1e-9);
+  }
+  const auto r=cppunivariate::sged_mle(data,1e-10,1,.1,1.4,1.7);
+  CHECK(r.status==cppunivariate::SgedStatus::CertificateFailure);CHECK_FALSE(r.certified);
+  CHECK(r.stop_detail.budget_exhausted);CHECK_FALSE(r.stop_detail.candidates.empty());
+  CHECK(r.stop_detail.loglik_upper==INFINITY);CHECK(r.iterations<=128);
+}
+TEST_CASE("sged constrained skew interval values and scores cover smooth samples") {
+  const std::vector<double> x{-3,-1,-.2,0,.3,.4,2};const auto data=mltest::as_span(x);
+  for(double p:{.5,1.,1.7,4.,10.}) {
+    const cppunivariate::sged_held_moment::Profile profile(data,.1,1.4,p);REQUIRE(profile.valid);
+    for(double z:{-.9,-.4,.05,.6,.95}) {
+      const auto b=profile.box(z-.001,z+.001);REQUIRE(b.valid);
+      for(double t:{z-.001,z,z+.001}) {
+        CHECK(profile.value(t)<=b.upper);
+        const double h=1e-6,score=(profile.value(t+h)-profile.value(t-h))/(2*h);
+        CHECK(score>=b.score.lo-1e-5);CHECK(score<=b.score.hi+1e-5);
+      }
+    }
+    for(const auto& b:{profile.box(-1,-.99),profile.box(.99,1)}) {
+      REQUIRE(b.valid);
+      for(double fraction:{.1,.5,.9})CHECK(profile.value(b.lo+fraction*(b.hi-b.lo))<=b.upper);
+    }
+  }
+  const auto r=cppunivariate::sged_mle(data,1e-10,200,.1,1.4,1e308);
+  CHECK(r.status==cppunivariate::SgedStatus::CertificateFailure);CHECK_FALSE(r.certified);
+}
+TEST_CASE("sged both held moments admit two distinct finite Laplace skew maxima") {
+  const std::vector<double> x{-1.1,1.1};
+  const auto r=cppunivariate::sged_mle(mltest::as_span(x),1e-9,200,0,1,1);
+  REQUIRE(r.status==cppunivariate::SgedStatus::CertificateFailure);
+  CHECK(r.stop_detail.comparison_tie);CHECK_FALSE(r.certified);
+  REQUIRE(r.stop_detail.candidates.size()>=2);CHECK(std::isfinite(r.stop_detail.loglik_upper));
+  double smallest=INFINITY,largest=0;
+  for(const auto& c:r.stop_detail.candidates) {
+    REQUIRE(c.coef.size()==4);CHECK(c.coef[0]==0);CHECK(c.coef[1]==1);CHECK(c.coef[2]==1);
+    smallest=std::min(smallest,c.coef[3]);largest=std::max(largest,c.coef[3]);
+  }
+  CHECK(smallest<.8);CHECK(largest>1.25);CHECK(smallest*largest==doctest::Approx(1).epsilon(2e-8));
+}
+TEST_CASE("sged both held moments certify strict support half GED endpoints") {
+  for(double sign:{-1.,1.}) {
+    const std::vector<double> x{sign*.2,sign*.2};
+    const auto r=cppunivariate::sged_mle(mltest::as_span(x),1e-10,200,0,1,20);
+    REQUIRE(r.status==(sign>0?cppunivariate::SgedStatus::LeftHalfGedBoundary:cppunivariate::SgedStatus::RightHalfGedBoundary));
+    CHECK(r.certified);REQUIRE(r.stop_detail.limit_coef.size()==3);
+    const auto& c=r.stop_detail.limit_coef;
+    const double k=std::exp(cppunivariate::special::lgamma(.1)-cppunivariate::special::lgamma(.05));
+    const double v=std::exp(cppunivariate::special::lgamma(.15)-cppunivariate::special::lgamma(.05));
+    CHECK(std::abs(c[0]-sign*k*c[1])<=1e-12);
+    CHECK(c[1]*std::sqrt(v-k*k)==doctest::Approx(1).epsilon(1e-12));
+    double ll=2*(std::log(20.)-cppunivariate::special::lgamma(.05)-std::log(c[1]));
+    for(double t:x){const double distance=-sign*(t-c[0])/c[1];CHECK(distance>0);ll-=std::pow(distance,20);}
+    CHECK(ll==doctest::Approx(r.logLik).epsilon(1e-12));
+    CHECK(r.stop_detail.loglik_lower<=ll);CHECK(r.stop_detail.loglik_upper>=ll);
+  }
+  const std::vector<double> x{0,0};
+  const auto r=cppunivariate::sged_mle(mltest::as_span(x),1e-10,200,0,1,20);
+  CHECK(r.stop_detail.comparison_tie);REQUIRE(r.stop_detail.candidates.size()==2);
+  CHECK(r.stop_detail.candidates[0].model!=r.stop_detail.candidates[1].model);
+}
+TEST_CASE("sged held moment half GED contacts never use a closed support substitute") {
+  const std::vector<double> x{-1,.2};
+  const auto r=cppunivariate::sged_mle(mltest::as_span(x),1e-10,200,0,1,1);
+  CHECK(r.status==cppunivariate::SgedStatus::CertificateFailure);CHECK_FALSE(r.certified);
+  CHECK_FALSE(r.stop_detail.budget_exhausted);CHECK(r.stop_detail.loglik_upper==INFINITY);
+}

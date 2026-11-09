@@ -1,0 +1,7 @@
+{
+  "exit_code": 75,
+  "command": "/tmp/umvl-cpu/simbox-run env CMAKE_BUILD_PARALLEL_LEVEL=4 CTEST_PARALLEL_LEVEL=4 just cpp-test-no-long-double",
+  "output": "simbox-run: simbox unreachable; run locally",
+  "recorded_at_utc": "2026-11-09T01:20:16.138136+00:00",
+  "workstation_fallback_passed": 129
+}

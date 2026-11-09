@@ -1,0 +1,23 @@
+{
+  "passed": 8,
+  "cases": [
+    "finite-1",
+    "finite-1.7",
+    "finite-tie",
+    "half-ged--1",
+    "half-ged-1",
+    "face-tie",
+    "budget",
+    "endpoint-contact"
+  ],
+  "errors": [
+    {
+      "nu": 1,
+      "relative_xi_error": 1.6371348721122558e-12
+    },
+    {
+      "nu": 1.7,
+      "relative_xi_error": 1.9551027463649007e-12
+    }
+  ]
+}
