@@ -41,65 +41,19 @@ inline GevResult frechet_gev_mle(span x, double tol=1e-10, int maxit=100,
   const span data{y.data(),y.size()};
   auto restore=[&](GevResult r) {
     r.mu=origin+range*r.mu;r.sigma*=range;
-    r.logLik-=y.size()*std::log(range);return r;
+    const double jac=y.size()*std::log(range);
+    r.logLik-=jac;
+    if(!std::isnan(r.stop_detail.loglik_lower))r.stop_detail.loglik_lower-=jac;
+    if(!std::isnan(r.stop_detail.loglik_upper))r.stop_detail.loglik_upper-=jac;
+    if(!std::isnan(r.stop_detail.segment_loglik_upper))r.stop_detail.segment_loglik_upper-=jac;
+    for(auto& c:r.stop_detail.candidates) {
+      c.coef[0]=origin+range*c.coef[0];c.coef[1]*=range;
+      c.loglik_lower-=jac;c.loglik_upper-=jac;
+    }
+    return r;
   };
   if(!std::isnan(xi)) return restore(gev_profile(data,xi,tol,maxit).fit);
-  auto prev=gev_profile(data,0,tol,maxit);
-  const auto gumbel=prev.fit;
-  auto best=prev.fit;
-  bool failed=best.status!=GevStatus::Ok;
-  auto retain=[&](const GevProfile &p) {
-    failed=failed || p.fit.status!=GevStatus::Ok;
-    if(p.fit.logLik>best.logLik) best=p.fit;
-  };
-  auto root=[&](GevProfile left,GevProfile right) {
-    double l=left.fit.xi,h=right.fit.xi;
-    double mid=(l*right.score-h*left.score)/(right.score-left.score);
-    bool done=false;
-    for(int k=0;k<maxit;++k) {
-      if(!std::isfinite(mid) || mid<=l || mid>=h) mid=(l+h)/2;
-      const auto candidate=gev_profile(data,mid,tol,maxit);
-      retain(candidate);
-      if(std::abs(candidate.score)<tol*y.size() || h-l<tol) {
-        // Prefer the score-converged point over rounding ties in logLik.
-        if(candidate.fit.logLik>=best.logLik-1e-12*y.size()) best=candidate.fit;
-        done=true;break;
-      }
-      if(candidate.score>0) l=mid; else h=mid;
-      mid-=candidate.score/candidate.curvature;
-    }
-    failed=failed || !done;
-  };
-  // Enumerate profile-score sign changes, retaining both attained bounds.
-  // Curvature turns also expose pairs of roots within a single mesh cell.
-  // This remains root discovery, not a global certificate.
-  const double xi_hi = kGevXiUpper;
-  const int cells=32;
-  for(int j=1;j<=cells;++j) {
-    const auto next=gev_profile(data,xi_hi*j/cells,tol,maxit);
-    retain(next);
-    if(prev.score>0 && next.score<0) root(prev,next);
-    else if((prev.score>0)==(next.score>0) &&
-            ((prev.score>0 && prev.curvature<0 && next.curvature>0) ||
-             (prev.score<0 && prev.curvature>0 && next.curvature<0))) {
-      auto l=prev,h=next;
-      for(int k=0;k<maxit;++k) {
-        const auto mid=gev_profile(data,(l.fit.xi+h.fit.xi)/2,tol,maxit);
-        retain(mid);
-        if((mid.score>0)!=(prev.score>0)) {
-          if(prev.score>0) root(prev,mid); else root(mid,next);
-          break;
-        }
-        if(h.fit.xi-l.fit.xi<tol) break;
-        if((mid.curvature>0)==(l.curvature>0)) l=mid; else h=mid;
-      }
-    }
-    prev=next;
-  }
-  if(best.logLik <= gumbel.logLik+1e-8*y.size()) best=gumbel;
-  if(failed) best.status=GevStatus::IterationFailure;
-  GevResult result=restore(best);
-  return result;
+  return restore(gev_joint_certificate(data,tol,maxit,true));
 }
 
 enum class FrechetStatus { Ok, InvalidData, GumbelLimit, IterationFailure, NoMLE, NumericalFailure };
@@ -175,6 +129,28 @@ inline FrechetResult frechet_held_mle(span x,double tol,int maxit,double mu,
    m=std::min(m,v);M=std::max(M,v);
  }
  if(!hm && !hl && m==M) return bad; // shape spike with held scale
+ if(!hm && !hl && hs && m<M && x.size()>=3) {
+   std::size_t k=0;bool two_point=true;
+   for(double v:x) {if(v==m)++k;else if(v!=M)two_point=false;}
+   if(two_point && 2*k<x.size()) {
+     auto member=frechet_two_point_certificate(x,m,M,k,tol,maxit);
+     if(member.sigma==sigma &&
+        extreme_detail::exact_count_scale(m,M,x.size()-2*k,x.size(),sigma)) {
+       if(member.status==FrechetStatus::Ok)return member;
+       if(member.status!=FrechetStatus::GumbelLimit) {
+         // An unconstrained face is not a feasible lower witness under this
+         // hold. Its global upper bound still bounds the constrained fit.
+         member.stop_detail.loglik_lower=NAN;
+         for(const auto& c:member.stop_detail.candidates)
+           member.stop_detail.loglik_lower=std::isnan(member.stop_detail.loglik_lower) ?
+             c.loglik_lower : std::max(member.stop_detail.loglik_lower,c.loglik_lower);
+         member.stop_detail.comparison_tie=false;
+         return member;
+       }
+     }
+   }
+ }
+
  if(hm) {
    std::vector<double> excess;for(double v:x)excess.push_back(v-mu);
    const auto r=invweibull_mle(span{excess.data(),excess.size()},tol,maxit,NAN,lambda,sigma);
@@ -275,12 +251,66 @@ inline FrechetResult frechet_mle_impl(span x, double tol=1e-10, int maxit=100,
    if(!(r.shape>0) || !(r.scale>0) || !std::isfinite(r.shape) || !std::isfinite(r.scale) || !std::isfinite(r.logLik)) return bad;
    return {r.shape,mu,r.scale,r.logLik,r.iterations,r.status==InvWeibullStatus::Ok ? FrechetStatus::Ok : FrechetStatus::IterationFailure};
  }
+ // The two-point reduction applies only with every public coefficient free.
+ if(x.size()>=3) {
+   double minimum=INFINITY,maximum=-INFINITY;
+   bool finite=true;
+   for(double v:x) {finite=finite && std::isfinite(v);minimum=std::min(minimum,v);maximum=std::max(maximum,v);}
+   std::size_t k=0;bool two_point=minimum<maximum;
+   for(double v:x) {if(v==minimum)++k;else if(v!=maximum)two_point=false;}
+   if(finite && two_point && 2*k<x.size())
+     return frechet_two_point_certificate(x,minimum,maximum,k,tol,maxit);
+ }
  const auto r=frechet_gev_mle(x,tol,maxit);
  if(r.status==GevStatus::InvalidData) return bad;
  if(r.status==GevStatus::NoMLE) {bad.status=FrechetStatus::NoMLE;bad.stop_detail=r.stop_detail;return bad;}
- if(r.status!=GevStatus::Ok) {bad.status=FrechetStatus::IterationFailure;return bad;}
- if(r.xi==0) {bad.status=FrechetStatus::GumbelLimit;return bad;}
- return {1/r.xi,r.mu-r.sigma/r.xi,r.sigma/r.xi,r.logLik,r.iterations,FrechetStatus::Ok};
+ auto detail=r.stop_detail;
+ std::vector<FitCandidate> mapped;
+ for(const auto& c:detail.candidates) {
+   if(c.coef.size()!=3)continue;
+   const double shape=c.coef[2];
+   if(shape==0 && c.coef[1]>0) {
+     const double ll=gev_loglik(x,c.coef[0],c.coef[1],0);
+     if(std::isfinite(ll)) {detail.limit_coef={c.coef[0],c.coef[1]};detail.limit_loglik=ll;}
+   } else if(shape>0) {
+     const double scale=c.coef[1]/shape,location=c.coef[0]-scale,lambda=1/shape;
+     const double ll=frechet_loglik(x,lambda,location,scale);
+     if(std::isfinite(lambda)&&std::isfinite(location)&&scale>0&&std::isfinite(scale)&&std::isfinite(ll)) {
+       const double margin=4096*std::numeric_limits<double>::epsilon()*(x.size()+std::abs(ll));
+       mapped.push_back({{lambda,location,scale},ll,std::max(ll,c.loglik_upper)+margin});
+     }
+   }
+ }
+ detail.candidates=std::move(mapped);
+ bad.iterations=r.iterations;bad.stop_detail=detail;
+ if(r.status!=GevStatus::Ok) {
+   bad.status=r.status==GevStatus::NumericalFailure?FrechetStatus::NumericalFailure:FrechetStatus::IterationFailure;
+   return bad;
+ }
+ if(r.xi==0) {
+   const double ll=gev_loglik(x,r.mu,r.sigma,0);
+   if(!(r.sigma>0)||!std::isfinite(r.mu)||!std::isfinite(ll)||std::abs(ll-r.logLik)>1e-7*x.size()) {
+     bad.status=FrechetStatus::NumericalFailure;return bad;
+   }
+   bad.status=FrechetStatus::GumbelLimit;
+   bad.logLik=ll;
+   bad.stop_detail=limit_detail({r.mu,r.sigma},ll);
+   bad.stop_detail.loglik_lower=r.stop_detail.loglik_lower;
+   bad.stop_detail.loglik_upper=r.stop_detail.loglik_upper;
+   return bad;
+ }
+ const double scale=r.sigma/r.xi,location=r.mu-scale,shape=1/r.xi;
+ const double ll=frechet_loglik(x,shape,location,scale);
+ const double eps=256*std::numeric_limits<double>::epsilon();
+ if(!std::isnormal(scale)||!std::isfinite(shape)||!std::isfinite(location)||!std::isfinite(ll)||
+     eps>tol*.25 || eps*(std::abs(r.mu)+scale)>tol*.25*std::max(std::abs(location),scale)||
+     std::abs(ll-r.logLik)>1e-7*x.size()) {
+   bad.status=FrechetStatus::NumericalFailure;
+   if(std::isfinite(shape)&&std::isfinite(location)&&scale>0&&std::isfinite(scale)&&std::isfinite(ll))
+     bad.stop_detail.candidates.push_back({{shape,location,scale},ll,ll});
+   return bad;
+ }
+ return {shape,location,scale,ll,r.iterations,FrechetStatus::Ok};
 }
 
 inline FrechetResult frechet_mle(span x,double tol=1e-10,int maxit=100,double mu=std::numeric_limits<double>::quiet_NaN(),double lambda=std::numeric_limits<double>::quiet_NaN(),double sigma=std::numeric_limits<double>::quiet_NaN()) {

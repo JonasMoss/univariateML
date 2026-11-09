@@ -259,3 +259,38 @@ test_that("GEV two-point minority fits use the certified count formula", {
   e <- tryCatch(mlgev(c(-9,rep(1,9))),error=identity)
   expect_s3_class(e,"univariateML_numerical")
 })
+
+test_that("GEV two-point compatible holds inherit the global certificate", {
+  for(h in list(list(mu=1.5),list(sigma=.5),list(mu=1.5,sigma=.5))) {
+    f <- suppressWarnings(do.call(mlgev,c(list(x=c(0,2,2,2)),h)),classes="univariateML_restricted")
+    expect_equal(as.numeric(f),c(1.5,.5,-1))
+  }
+})
+
+test_that("GEV compatible holds preserve certificate precision stops", {
+  e <- tryCatch(mlgev(c(0,2,2,2),mu=1.5,sigma=.5,reltol=1e-15),error=identity)
+  expect_s3_class(e,"univariateML_numerical")
+  expect_true(is.finite(e$loglik_upper))
+})
+
+test_that("GEV joint certificate covers the seam and preserves numerical witnesses", {
+  x <- c(0,1,1,1,2,3,4)
+  f <- mlgev(x)
+  expect_equal(unname(f["xi"]),0.022797535412548,tolerance=1e-10)
+  for(k in c(-1,0,1)) {
+    fixed <- suppressWarnings(mlgev(x,xi=k))
+    expect_gte(as.numeric(logLik(f)),as.numeric(logLik(fixed))-1e-8)
+  }
+  e <- tryCatch(mlgev(x,reltol=1e-16),error=identity)
+  expect_s3_class(e,"univariateML_numerical")
+  expect_true(length(e$candidates)>0)
+  expect_false(inherits(e,"univariateML_tie"))
+  face <- suppressWarnings(mlgev(c(0,1,2,3,3)))
+  expect_equal(unname(face["xi"]),-1)
+})
+
+test_that("GEV negative-shape coefficient corners preserve the gap dependency", {
+  x <- c(0,.22725282343514291,.56276665892011701,.58275143915118077,1)
+  f <- mlgev(x)
+  expect_equal(as.numeric(f),c(.35972611509033436,.33733043138434093,-.31554486140157456),tolerance=1e-10)
+})

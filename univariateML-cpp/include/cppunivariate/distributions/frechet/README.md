@@ -49,8 +49,8 @@ r:
     mu: Threshold to hold fixed; NULL estimates it.
     lambda: Positive shape to hold fixed, or NULL to estimate.
     sigma: Positive scale to hold fixed, or NULL to estimate.
-    reltol: Profile score and root bracket tolerance.
-    iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
+    reltol: Requested relative coefficient accuracy; conditional point-profile solves also use dimensionless scores.
+    iterlim: "Work limit per solve: min(iterlim, 100000) solver iterations; the all-free certificate allows 128 * min(iterlim, 100000) slab, box or profile evaluations."
 log_density: log(lambda)-log(sigma)-(lambda+1)*log((x-mu)/sigma)-((x-mu)/sigma)**(-lambda)
 limits:
   - firmness: proved
@@ -70,9 +70,8 @@ limits:
   - firmness: proved
     model: gumbel
     when: 'The shape $\lambda$ tends to infinity with $\sigma/\lambda=a>0$ and $\mu+\sigma=b$ fixed.'
-    detect: 'A numerical comparison selects the Gumbel face over the finite candidates when location, scale and shape are free.'
+    detect: 'A certified global comparison selects the Gumbel face over the finite candidates when location, scale and shape are free.'
     status: GumbelLimit
-    numerical: true
   - firmness: proved
     name: free collapse
     status: NoMLE
@@ -106,7 +105,7 @@ relations:
 fit:
   method: delegation
   certified: 'partial'
-  note: 'frechet/README.md, Details; frechet/mle.hpp (public fitter and held overloads); frechet/test.cpp: Every subset with mu held is an inverse-Weibull fit (joint concave log profile, held-shape closed form or held-scale monotone shape score). Held lambda with free mu has a monotone-location certificate when sigma is held and a monotone profiled-scale certificate when sigma is free. All-free exact half-minimum ties have a proved finite unattained global supremum by the pair bound. Other free-lambda/free-mu searches remain numerical, whether sigma is held or free.'
+  note: 'frechet/README.md, Details; frechet/mle.hpp (public fitter and held overloads); frechet/test.cpp: Every subset with mu held is an inverse-Weibull fit (joint concave log profile, held-shape closed form or held-scale monotone shape score). Held lambda with free mu has a monotone-location certificate when sigma is held and a monotone profiled-scale certificate when sigma is free. All-free exact half-minimum ties have a proved finite unattained global supremum by the pair bound. All-free two-point minimum minorities compare the unique shape-one member against the Gumbel face by inverse-shape convexity and a bounded concave scalar solve. An exact public scale hold containing a certified finite two-point member inherits its certificate. General all-free fits use the positive-shape GEV slab cover in gev/joint_certificate.hpp, with direct Frechet coefficient enclosures and global Gumbel comparison. Free-lambda/free-mu searches with public sigma held remain numerical outside the compatible two-point members.'
 areas:
 - extremes and environment
 classification: specialist
@@ -148,8 +147,9 @@ existence:
     to $\varepsilon^{\lambda(n-k)-k}$ at fixed shape.
     The Gumbel path and the half-tie collapse face are derived in Details.
     These paths prove obstructions and construct limiting competitors.
-    Away from the proved half-minimum case, the numerical profile search
-    does not exhaustively bound all maxima or all joint escape paths.
+    The all-free profile cover compares every surviving finite maximum with
+    the Gumbel face. General held-scale joint fits still need a constrained
+    certificate that respects the public scale.
 ---
 
 The Fréchet distribution models extreme maxima with heavy right tails. The threshold $\mu$ sets the lower endpoint, $\sigma$ sets the scale above it, and $\lambda$ controls the tail decay.
@@ -184,7 +184,7 @@ supremum $A=n\log2-n-2\sum_{x_i>m}\log(x_i-m)$ in its stop details.
 
 For a minimum repeated $k$ times, the fixed-shape collapse exponent is $\lambda(n-k)-k$. Strictly negative values give divergence, including every positive shape for constant data. With only shape held, the fitter requires $\lambda(n-k)>k$ and rejects equality as an unattained collapse face. In this fixed-shape case the rejection also follows from a global derivative bound. Put $r_i=\varepsilon/(x_i-m+\varepsilon)$ and profile out scale. Then
 $\varepsilon\ell'(\varepsilon)=n\lambda\sum_i r_i^{\lambda+1}/\sum_i r_i^\lambda-(\lambda+1)\sum_i r_i$.
-Since $r_i\le1$, the ratio is at most one, while $\sum_i r_i>k$ for nonconstant data. Thus the derivative is negative whenever $n\lambda\le(\lambda+1)k$, including equality. The supremum is confined to the unattained collapse face. If $\lambda(n-k)>k$, the profiled likelihood tends to zero both as the location gap decreases to zero and as it grows without bound. It therefore attains a finite maximum. This fixed-shape argument does not certify the search with shape free.
+Since $r_i\le1$, the ratio is at most one, while $\sum_i r_i>k$ for nonconstant data. Thus the derivative is negative whenever $n\lambda\le(\lambda+1)k$, including equality. The supremum is confined to the unattained collapse face. If $\lambda(n-k)>k$, the profiled likelihood tends to zero both as the location gap decreases to zero and as it grows without bound. It therefore attains a finite maximum. Global shape coverage also needs the outer certificate below.
 
 Holding shape and scale leaves a scalar location fit and permits every positive shape, including values below one. Its likelihood tends to zero at both ends of the location domain, so a finite maximum exists. Uniqueness follows by writing $d_i=x_i-\mu$ and $R=\sum_i d_i^{-\lambda-1}/\sum_i d_i^{-1}$. As the location gap increases, $R$ decreases strictly from infinity to zero. Indeed, under weights proportional to $d_i^{-1}$, its derivative is
 $-(\lambda+1)E_w(d^{-\lambda-1})+E_w(d^{-\lambda})E_w(d^{-1})<0$,
@@ -252,10 +252,76 @@ claim about free-shape fits without an exact half-minimum tie, or about the
 held-scale problem. The GEV map used below preserves the all-free likelihood;
 it does not preserve public location or scale holds.
 
-The joint fit uses the generalized extreme-value coordinates: location $\mu+\sigma$, scale $\sigma/\lambda$, and shape $1/\lambda$. It scans profile score roots and compares finite candidates with the Gumbel and collapse faces. Root discovery and the Gumbel comparison have no global certificate. Exact half-minimum ties are resolved before that search. Unresolved scalar solves stop fitting.
+The all-free fit uses generalized extreme-value coordinates: location $\mu+\sigma$, scale $\sigma/\lambda$, and shape $1/\lambda$. A global slab cover on $0\le\xi\le1$ compares isolated finite maxima with the Gumbel face. Exact half-minimum ties and two-point minimum minorities retain their separate analytic certificates. Unresolved coverage, coefficient precision or candidate comparisons stop fitting.
+
+
+### General all-free public-coordinate certificate
+
+At minimum pivot $m$, let $v=\xi(m-\mu)$ and
+$g=-\log\operatorname{mean}\exp[-\log(1+\xi(x_i-m)/v)/\xi]$.
+The direct public map is
+
+$$\lambda=1/\xi,\qquad \mu=m-v/\xi,\qquad
+  \sigma=v e^{\xi g}/\xi.$$
+
+The positive-shape GEV cover isolates roots until enclosures of these
+Fréchet coefficients meet the requested accuracy. Accuracy of GEV location
+and scale alone would be insufficient near the singular map at zero shape.
+The $\xi=0$ candidate is a proper Gumbel limit, with finite location and
+scale, and never a capped finite Fréchet estimate. Candidate and limit
+witnesses use their own public coordinates in both bindings.
+
+The [profile-cover derivation](../../../../../dev/research/evaluations/2026-11-08-gev-allfree-data/joint-proof.md)
+provides the monotone inner roots, minimum-pivot Taylor bounds and global
+comparisons. Holding public Fréchet scale constrains the GEV orbit and
+changes the inner equation; this all-free cover is not reused for that
+hold. Its existing compatible-member shortcuts remain separate.
+
 
 ## R notes
 
 All hold combinations are supported. Supply `mu` explicitly: a value holds the threshold, and `mu = NULL` estimates it. With `mu` free and `lambda` free, the fit restricts `lambda >= 1`. With `mu` held, `mlinvweibull` on `x - mu` gives the corresponding two-parameter fit.
 
-The Gumbel face wins ties within $10^{-8}n$ log-likelihood units, and fitting stops with advice to use `mlgumbel`. Estimated coefficients on an applicable `fit_domain` bound carry a `restricted` attribute and emit a warning of class `univariateML_restricted`. Held coefficients are not flagged. Restriction exemptions apply to free coefficients. Failed optimizers and unresolved scalar searches stop. A small score alone does not establish global optimality.
+A strictly winning Gumbel face produces a limit stop with proper Gumbel coefficients and advice to use `mlgumbel`. Separated candidates that cannot be ordered within the arithmetic margin produce a tie stop. Estimated coefficients on an applicable `fit_domain` bound carry a `restricted` attribute and emit a warning of class `univariateML_restricted`. Held coefficients are not flagged. Restriction exemptions apply to free coefficients. Failed optimizers and unresolved scalar searches stop. A small score alone does not establish global optimality.
+
+
+### All-free two-point comparison
+
+Let the data take values $m<M$, with minimum fraction $p<1/2$,
+$q=1-p$, and $d=M-m$. Write $b=1/\lambda\in(0,1]$ and
+$t=\lambda\log((M-\mu)/(m-\mu))>0$. After profiling scale,
+
+$$\ell/n=\log\frac{e^{bt}-1}{b}-q(1+b)t
+ -\log(p+qe^{-t})-1-\log d.$$
+
+For fixed $t$ its second derivative in $b$ is
+$1/b^2-t^2/[4\sinh^2(bt/2)]>0$. Consequently only $b=1$ and
+$b=0$ can maximize the closure likelihood. On $b=1$ the unique maximum is
+
+$$h=\frac{p(1-2p)}{\sqrt{pq}+p},\quad
+ \lambda=1,\quad\mu=m-dh,\quad
+ \sigma=d\frac{h(1+h)}{p+h}.$$
+
+On the Gumbel face the strictly concave scalar objective is
+$\log t-qt-\log(p+qe^{-t})-1-\log d$.
+Its decreasing score brackets its unique root. Tangent upper bounds on that
+bracket separate the face from the finite candidate; unresolved comparisons
+stop, rather than applying the ordinary face tolerance. Strict convexity
+excludes every finite interior shape, so a winning Gumbel face is unattained.
+A finite winner is unique. The comparison margin is
+$4096\epsilon n(1+|\log d|+|\log h|)$; a separate propagated arithmetic
+guard checks the relative public-coefficient accuracy. These certificates
+are exact-arithmetic statements conditional on computed comparisons with
+practical floating-point margins. The Gumbel stop retains its coefficients
+and finite supremum bounds in both bindings. An exact scale hold containing the finite winner preserves its maximum;
+range and fused integer-product residuals verify this identity, so equality
+to a rounded free estimate alone does not qualify.
+Other held-scale values require a constrained search; the Gumbel face does
+not satisfy a finite public scale hold.
+The [derivation and independent checks](../../../../../dev/research/evaluations/2026-11-08-gev-allfree-data/two-point-proof.md)
+also describe the remaining general-profile obstruction.
+
+For a recognized exact scale hold, a failed free certificate retains a numerical
+stop and only candidates satisfying that hold contribute to the likelihood
+lower bound. An unconstrained Gumbel winner cannot be transported to a finite
+held scale; that case remains a separate constrained search.

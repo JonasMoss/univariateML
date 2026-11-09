@@ -250,3 +250,126 @@ TEST_CASE("frechet: half-minimum pair bound is the global unattained supremum") 
    }
  }
 }
+
+TEST_CASE("frechet: all-free two-point convex-shape certificate") {
+ for(int k:{1,4,8,9}) {
+   std::vector<double> x(20,1);std::fill_n(x.begin(),k,0.);
+   const auto data=mltest::as_span(x);
+   const auto f=cppunivariate::frechet_mle(data);
+   CAPTURE(k);
+   if(k<9) {
+     REQUIRE(f.status==cppunivariate::FrechetStatus::GumbelLimit);
+     REQUIRE(f.stop_detail.limit_coef.size()==2);
+     CHECK(f.stop_detail.loglik_upper-f.stop_detail.loglik_lower<1e-7);
+     const double mu=f.stop_detail.limit_coef[0],sigma=f.stop_detail.limit_coef[1];
+     CHECK(cppunivariate::gev_loglik(data,mu,sigma,0)==doctest::Approx(f.stop_detail.limit_loglik).epsilon(1e-12));
+     for(double a:{10.,100.,1000.}) {
+       const double ll=cppunivariate::frechet_loglik(data,a,mu-a*sigma,a*sigma);
+       CHECK(ll<f.stop_detail.loglik_upper);
+     }
+   } else {
+     REQUIRE(f.status==cppunivariate::FrechetStatus::Ok);
+     CHECK(f.lambda==1);CHECK(f.restricted==1u);
+     const double p=k/20.,h=p*(1-2*p)/(std::sqrt(p*(1-p))+p);
+     CHECK(f.mu==doctest::Approx(-h).epsilon(1e-12));
+     CHECK(f.sigma==doctest::Approx(h*(1+h)/(p+h)).epsilon(1e-12));
+   }
+   const double upper=f.status==cppunivariate::FrechetStatus::Ok?f.logLik+1e-8:f.stop_detail.loglik_upper;
+   for(double a:{1.,1.01,1.2,2.,5.,20.,100.})for(int j=-100;j<=100;++j) {
+     const double m=-std::exp(j*.1),s=cppunivariate::frechet_scale(data,a,m);
+     CHECK(cppunivariate::frechet_loglik(data,a,m,s)<=upper);
+   }
+ }
+}
+
+TEST_CASE("frechet: two-point certificate preserves precision and solve stops") {
+ std::vector<double> x(20,1);std::fill_n(x.begin(),9,0.);
+ CHECK(cppunivariate::frechet_mle(mltest::as_span(x),1e-15).status==cppunivariate::FrechetStatus::NumericalFailure);
+ std::fill_n(x.begin(),9,1.);x[0]=0;
+ const auto low=cppunivariate::frechet_mle(mltest::as_span(x),1e-10,1);
+ CHECK(low.status==cppunivariate::FrechetStatus::IterationFailure);
+ CHECK_FALSE(low.stop_detail.budget_exhausted);
+ CHECK(std::isinf(low.stop_detail.loglik_upper));
+ for(double scale:{1e-100,1.,1e100}) {
+   std::vector<double> y(20,3*scale);std::fill_n(y.begin(),9,2*scale);
+   const auto f=cppunivariate::frechet_mle(mltest::as_span(y));
+   REQUIRE(f.status==cppunivariate::FrechetStatus::Ok);
+   CHECK(f.lambda==1);CHECK(f.mu>scale);CHECK(f.sigma>0);
+ }
+ // Constraints not containing the unconstrained winner use their own route.
+ std::vector<double> y(20,1);std::fill_n(y.begin(),9,0.);
+ const auto held=cppunivariate::frechet_mle(mltest::as_span(y),1e-10,100,-1);
+ REQUIRE(held.status==cppunivariate::FrechetStatus::Ok);CHECK(held.mu== -1);
+}
+
+TEST_CASE("frechet: exact public scale hold preserves the certified two-point winner") {
+ std::vector<double> x(16,1);std::fill_n(x.begin(),7,0.);
+ const auto f=cppunivariate::frechet_mle(mltest::as_span(x),1e-10,100,NAN,NAN,.125);
+ REQUIRE(f.status==cppunivariate::FrechetStatus::Ok);
+ CHECK(f.sigma==.125);CHECK(f.lambda==1);CHECK(f.restricted==1u);
+}
+
+TEST_CASE("frechet: two-point Gumbel witness lost on translation stops numerically") {
+ const double m=1e300,M=std::nextafter(m,INFINITY);
+ std::vector<double> x(20,M);x[0]=m;
+ const auto f=cppunivariate::frechet_mle(mltest::as_span(x));
+ CHECK(f.status==cppunivariate::FrechetStatus::NumericalFailure);
+ CHECK(f.stop_detail.limit_coef.empty());
+}
+
+TEST_CASE("frechet: two-point solver cap retains a finite global upper bound") {
+ std::vector<double> x(20,1);x[0]=0;
+ const auto f=cppunivariate::frechet_mle(mltest::as_span(x),1e-10,10);
+ CHECK(f.status==cppunivariate::FrechetStatus::IterationFailure);
+ CHECK(std::isfinite(f.stop_detail.loglik_upper));
+ CHECK_FALSE(f.stop_detail.candidates.empty());
+}
+
+TEST_CASE("frechet: tight Gumbel root precision is numerical rather than a face tie") {
+ std::vector<double> x(20,1);x[0]=0;
+ const auto f=cppunivariate::frechet_mle(mltest::as_span(x),1e-15,100);
+ CHECK(f.status==cppunivariate::FrechetStatus::NumericalFailure);
+ CHECK_FALSE(f.stop_detail.comparison_tie);
+}
+
+TEST_CASE("frechet: compatible hold failures preserve only feasible lower witnesses") {
+ std::vector<double> x(16,1);std::fill_n(x.begin(),7,0.);
+ const auto tight=cppunivariate::frechet_mle(mltest::as_span(x),1e-15,100,NAN,NAN,.125);
+ CHECK(tight.status==cppunivariate::FrechetStatus::NumericalFailure);
+ x.assign(16,1);x[0]=0;
+ const auto low=cppunivariate::frechet_mle(mltest::as_span(x),1e-10,10,NAN,NAN,.875);
+ CHECK(low.status==cppunivariate::FrechetStatus::IterationFailure);
+ REQUIRE(low.stop_detail.candidates.size()==1);
+ CHECK(low.stop_detail.candidates[0].coef[2]==.875);
+ CHECK(low.stop_detail.loglik_lower==low.stop_detail.candidates[0].loglik_lower);
+ CHECK_FALSE(low.stop_detail.comparison_tie);
+}
+
+TEST_CASE("frechet: general all-free cover checks public coefficients and proper Gumbel face") {
+ const auto g=mltest::load_distribution_golden("frechet");
+ const auto fit=cppunivariate::frechet_mle(mltest::as_span(g.data));
+ REQUIRE(fit.status==cppunivariate::FrechetStatus::Ok);
+ CHECK(fit.iterations>0);
+ CHECK(fit.iterations<=cppunivariate::certificate_budget(100));
+ CHECK(fit.lambda==doctest::Approx(g.estimates.at("lambda")).epsilon(1e-10));
+ CHECK(fit.mu==doctest::Approx(g.estimates.at("mu")).epsilon(1e-10));
+ CHECK(fit.sigma==doctest::Approx(g.estimates.at("sigma")).epsilon(1e-10));
+ std::vector<double> x;
+ for(int j=0;j<80;++j)x.push_back(-std::log(-std::log((j+.5)/80)));
+ const auto face=cppunivariate::frechet_mle(mltest::as_span(x));
+ REQUIRE(face.status==cppunivariate::FrechetStatus::GumbelLimit);
+ REQUIRE(face.stop_detail.limit_coef.size()==2);
+ CHECK(face.stop_detail.limit_coef[1]>0);
+ CHECK(std::isfinite(face.stop_detail.loglik_lower));
+ CHECK(std::isfinite(face.stop_detail.loglik_upper));
+ CHECK(face.stop_detail.loglik_lower<=face.stop_detail.loglik_upper);
+ CHECK(face.stop_detail.limit_loglik==doctest::Approx(cppunivariate::gev_loglik(mltest::as_span(x),face.stop_detail.limit_coef[0],face.stop_detail.limit_coef[1],0)).epsilon(1e-12));
+ const auto stopped=cppunivariate::frechet_mle(mltest::as_span(g.data),1e-16,100);
+ CHECK(stopped.status!=cppunivariate::FrechetStatus::Ok);
+ CHECK_FALSE(stopped.stop_detail.comparison_tie);
+ for(const auto& c:stopped.stop_detail.candidates) {
+   REQUIRE(c.coef.size()==3);
+   CHECK(c.coef[0]>=1);CHECK(c.coef[2]>0);
+   CHECK(c.loglik_lower==doctest::Approx(cppunivariate::frechet_loglik(mltest::as_span(g.data),c.coef[0],c.coef[1],c.coef[2])).epsilon(1e-10));
+ }
+}

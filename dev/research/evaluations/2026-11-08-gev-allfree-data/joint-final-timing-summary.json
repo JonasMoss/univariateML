@@ -1,0 +1,38 @@
+[
+  {
+    "family": "gev",
+    "n": 500,
+    "before_seconds": 0.007938663666666667,
+    "after_seconds": 2.868485347333333,
+    "certificate_evaluations": 515,
+    "default_budget": 12800,
+    "ratio": 361.33100831286
+  },
+  {
+    "family": "frechet",
+    "n": 500,
+    "before_seconds": 0.01821976166666667,
+    "after_seconds": 1.204227395,
+    "certificate_evaluations": 394,
+    "default_budget": 12800,
+    "ratio": 66.09457450824685
+  },
+  {
+    "family": "gev",
+    "n": 10000,
+    "before_seconds": 0.17771281400000002,
+    "after_seconds": 55.552555849,
+    "certificate_evaluations": 701,
+    "default_budget": 12800,
+    "ratio": 312.5973563673354
+  },
+  {
+    "family": "frechet",
+    "n": 10000,
+    "before_seconds": 0.160228324,
+    "after_seconds": 15.373612767000001,
+    "certificate_evaluations": 452,
+    "default_budget": 12800,
+    "ratio": 95.94815937162272
+  }
+]

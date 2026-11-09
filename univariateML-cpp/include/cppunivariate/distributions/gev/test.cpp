@@ -482,3 +482,96 @@ TEST_CASE("gev: two-point certificate uses counts and a stable midpoint") {
  const std::vector<double> centered{-9,1,1,1,1,1,1,1,1,1};
  CHECK(cppunivariate::gev_mle(mltest::as_span(centered)).status==cppunivariate::GevStatus::NumericalFailure);
 }
+
+TEST_CASE("gev: two-point global member certifies compatible public holds") {
+ const std::vector<double> x{0,2,2,2};const auto data=mltest::as_span(x);
+ for(bool hm:{false,true})for(bool hs:{false,true}) {
+   const auto f=cppunivariate::gev_mle(data,1e-10,100,NAN,hm?1.5:NAN,hs?.5:NAN);
+   REQUIRE(f.status==cppunivariate::GevStatus::Ok);
+   CHECK(f.mu==1.5);CHECK(f.sigma==.5);CHECK(f.xi== -1);CHECK(f.restricted==16u);
+ }
+}
+
+TEST_CASE("gev: compatible holds require the exact count identity") {
+ CHECK(cppunivariate::extreme_detail::exact_count_scale(0,2,1,4,.5));
+ CHECK(cppunivariate::extreme_detail::exact_count_scale(0,1,2,16,.125));
+ CHECK_FALSE(cppunivariate::extreme_detail::exact_count_scale(0,1,2,20,.1));
+ CHECK_FALSE(cppunivariate::extreme_detail::exact_count_scale(0,2,1,4,std::nextafter(.5,INFINITY)));
+ CHECK_FALSE(cppunivariate::extreme_detail::exact_count_scale(-1e308,1e308,1,4,5e307));
+}
+
+TEST_CASE("gev: compatible hold precision failure remains a certificate stop") {
+ const std::vector<double> x{0,2,2,2};
+ const auto f=cppunivariate::gev_mle(mltest::as_span(x),1e-15,100,NAN,1.5,.5);
+ CHECK(f.status==cppunivariate::GevStatus::NumericalFailure);
+ CHECK(std::isfinite(f.stop_detail.loglik_upper));
+}
+
+TEST_CASE("gev: joint certificate retains inner roots across the Gumbel seam") {
+  std::vector<double> x{0,.03,.11,.2,.31,.6,1};
+  const auto data=mltest::as_span(x);
+  auto get=[&](double xi){return cppunivariate::gev_joint_detail::inner(data,xi,100);};
+  for(const auto slab:{std::pair<double,double>{-.001,.001},{0,1e-12},{1e-18,2e-18}}) {
+    const auto box=cppunivariate::gev_joint_detail::region(data,slab.first,slab.second,100,get,false);
+    REQUIRE(box.ok);
+    const auto jet=cppunivariate::gev_joint_detail::evaluate(data,{slab.first,slab.second},box.v,100);
+    REQUIRE(jet.ok);
+    for(double fraction:{0.,.25,.5,.75,1.}) {
+      const double xi=slab.first+(slab.second-slab.first)*fraction;
+      const auto root=get(xi);REQUIRE(root.ok);
+      CHECK(root.v.lo>=box.v.lo-1e-13);
+      CHECK(root.v.hi<=box.v.hi+1e-13);
+      const auto point=cppunivariate::gev_joint_detail::evaluate(data,{xi,xi},root.v,100);
+      CHECK(point.value.lo>=jet.value.lo-1e-12);
+      CHECK(point.value.hi<=jet.value.hi+1e-12);
+    }
+  }
+}
+
+TEST_CASE("gev: joint certificate compares the closed face and isolates public coefficients") {
+  std::vector<double> face{0,1,2,3,3};
+  const auto f=cppunivariate::gev_mle(mltest::as_span(face));
+  REQUIRE(f.status==cppunivariate::GevStatus::Ok);
+  CHECK(f.xi== -1);
+  CHECK((f.restricted&16u)!=0);
+  const auto g=mltest::load_distribution_golden("gev");
+  const auto r=cppunivariate::gev_mle(mltest::as_span(g.data));
+  REQUIRE(r.status==cppunivariate::GevStatus::Ok);
+  CHECK(r.iterations>0);
+  CHECK(r.iterations<=cppunivariate::certificate_budget(100));
+  CHECK(r.mu==doctest::Approx(g.estimates.at("mu")).epsilon(1e-10));
+  CHECK(r.sigma==doctest::Approx(g.estimates.at("sigma")).epsilon(1e-10));
+  CHECK(r.xi==doctest::Approx(g.estimates.at("xi")).epsilon(1e-10));
+  const auto tight=cppunivariate::gev_mle(mltest::as_span(g.data),1e-16,100);
+  CHECK(tight.status!=cppunivariate::GevStatus::Ok);
+  CHECK_FALSE(tight.stop_detail.comparison_tie);
+  CHECK_FALSE(tight.stop_detail.candidates.empty());
+  for(const auto& c:tight.stop_detail.candidates) {
+    REQUIRE(c.coef.size()==3);
+    CHECK(c.loglik_lower==doctest::Approx(cppunivariate::gev_loglik(mltest::as_span(g.data),c.coef[0],c.coef[1],c.coef[2])).epsilon(1e-10));
+  }
+}
+
+TEST_CASE("gev: negative-shape public corners retain the endpoint-gap dependency") {
+  const std::vector<double> x{0,.22725282343514291,.56276665892011701,.58275143915118077,1};
+  const auto fit=cppunivariate::gev_mle(mltest::as_span(x));
+  REQUIRE(fit.status==cppunivariate::GevStatus::Ok);
+  CHECK(fit.mu==doctest::Approx(.35972611509033436).epsilon(1e-10));
+  CHECK(fit.sigma==doctest::Approx(.33733043138434093).epsilon(1e-10));
+  CHECK(fit.xi==doctest::Approx(-.31554486140157456).epsilon(1e-10));
+  CHECK_FALSE(fit.stop_detail.budget_exhausted);
+}
+
+TEST_CASE("gev: positive pivot slabs expand the nuisance bracket inside support") {
+  const std::vector<double> x{0,.001,.01,.03,1};
+  const auto data=mltest::as_span(x);
+  auto get=[&](double xi){return cppunivariate::gev_joint_detail::inner(data,xi,100);};
+  const auto region=cppunivariate::gev_joint_detail::region(data,.001,.25,100,get,false);
+  REQUIRE(region.ok);
+  CHECK(region.v.lo>0);
+  for(double xi:{.001,.05,.15,.25}) {
+    const auto root=get(xi);REQUIRE(root.ok);
+    CHECK(root.v.lo>=region.v.lo);
+    CHECK(root.v.hi<=region.v.hi);
+  }
+}

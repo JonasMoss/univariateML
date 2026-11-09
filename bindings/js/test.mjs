@@ -1496,3 +1496,68 @@ test('betapr all-free certificate returns verified fits and structured global st
   });
   assert.throws(()=>api.betapr.fit(new Float64Array([2,2,2])),e=>{assert.equal(e.kind,'nomle');return true;});
 });
+test('EVT two-point certificates preserve public holds and typed Gumbel face',async()=>{
+  const {default:createApi}=await import('./index.mjs');const api=await createApi();
+  const f=api.frechet.fit(new Float64Array([...Array(9).fill(0),...Array(11).fill(1)]));
+  assert.equal(f.estimates.lambda,1);assert.ok(Math.abs(f.estimates.sigma-.1)<1e-12);
+  assert.throws(()=>api.frechet.fit(new Float64Array([0,...Array(19).fill(1)])),e=>{
+    assert.equal(e.kind,'limit');assert.equal(e.model,'gumbel');
+    assert.ok(e.estimates.sigma>0);assert.ok(e.loglik_upper-e.loglik_lower<1e-7);return true;
+  });
+  assert.throws(()=>api.frechet.fit(new Float64Array([0,...Array(19).fill(1)]),{},{iterlim:1}),e=>e.kind==='numerical');
+  for(const held of [{mu:1.5},{sigma:.5},{mu:1.5,sigma:.5}]) {
+    const g=api.gev.fit(new Float64Array([0,2,2,2]),held);
+    assert.deepEqual(g.estimates,{mu:1.5,sigma:.5,xi:-1});
+  }
+});
+
+test('Frechet bounded two-point solve cap preserves numerical stop details',async()=>{
+  const {default:createApi}=await import('./index.mjs');const api=await createApi();
+  assert.throws(()=>api.frechet.fit(new Float64Array([0,...Array(19).fill(1)]),{},{iterlim:10}),e=>{
+    assert.equal(e.kind,'numerical');assert.ok(Number.isFinite(e.loglik_upper));assert.ok(e.candidates.length>0);return true;
+  });
+});
+
+test('EVT compatible holds keep certificate failures and constrained witnesses',async()=>{
+  const {default:createApi}=await import('./index.mjs');const api=await createApi();
+  assert.throws(()=>api.gev.fit(new Float64Array([0,2,2,2]),{mu:1.5,sigma:.5},{reltol:1e-15}),e=>e.kind==='numerical');
+  assert.throws(()=>api.frechet.fit(new Float64Array([...Array(7).fill(0),...Array(9).fill(1)]),{sigma:.125},{reltol:1e-15}),e=>e.kind==='numerical');
+  assert.throws(()=>api.frechet.fit(new Float64Array([0,...Array(15).fill(1)]),{sigma:.875},{iterlim:10}),e=>{
+    assert.equal(e.kind,'numerical');assert.equal(e.loglik_lower,Math.max(...e.candidates.map(c=>c.loglik_lower)));
+    assert.ok(e.candidates.every(c=>c.sigma===.875));return true;
+  });
+});
+
+test('GEV joint cover isolates the seam maximum and keeps precision stops',async()=>{
+  const {default:createApi}=await import('./index.mjs');const api=await createApi();
+  const x=new Float64Array([0,1,1,1,2,3,4]);
+  const fit=api.gev.fit(x);
+  assert.ok(Math.abs(fit.estimates.xi-.022797535412548)<1e-10);
+  assert.throws(()=>api.gev.fit(x,{},{reltol:1e-16}),e=>{
+    assert.equal(e.kind,'numerical');assert.ok(e.candidates.length>0);return true;
+  });
+  const face=api.gev.fit(new Float64Array([0,1,2,3,3]));
+  assert.equal(face.estimates.xi,-1);
+});
+
+test('general Frechet certificate transports the Gumbel closure in public coordinates',async()=>{
+  const {default:createApi}=await import('./index.mjs');const api=await createApi();
+  const x=Float64Array.from({length:80},(_,i)=>-Math.log(-Math.log((i+.5)/80)));
+  assert.throws(()=>api.frechet.fit(x),e=>{
+    assert.equal(e.kind,'limit');assert.equal(e.model,'gumbel');
+    assert.ok(e.estimates.sigma>0);assert.ok(Number.isFinite(e.loglik_upper));
+    assert.ok(e.loglik_lower<=e.loglik_upper);return true;
+  });
+});
+
+test('all-free Frechet minimum-majority collapse is typed nonexistence',async()=>{
+  const {default:createApi}=await import('./index.mjs');const api=await createApi();
+  assert.throws(()=>api.frechet.fit(new Float64Array([0,0,0,1,2])),e=>e.kind==='nomle');
+});
+
+test('GEV negative-shape coefficient corners preserve the gap dependency',async()=>{
+  const {default:createApi}=await import('./index.mjs');const api=await createApi();
+  const f=api.gev.fit(new Float64Array([0,.22725282343514291,.56276665892011701,.58275143915118077,1]));
+  for(const [name,expected] of Object.entries({mu:.35972611509033436,sigma:.33733043138434093,xi:-.31554486140157456}))
+    assert.ok(Math.abs(f.estimates[name]-expected)<1e-10);
+});

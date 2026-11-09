@@ -4,7 +4,9 @@
 #include "../../core/span.hpp"
 #include <algorithm>
 #include <cmath>
+#include <cstdint>
 #include <limits>
+#include <utility>
 #include <vector>
 
 namespace cppunivariate {
@@ -78,6 +80,20 @@ inline Maximum maximize(F f, double lo, double hi, double tol, int maxit,
   if(!closed && (f(lo)>best.value || f(hi)>best.value)) best.ok=false;
   if(maxit<2) best.ok=false;
   return best;
+}
+// Verify a public held scale is the exact rational count multiple of the
+// exact data range, rather than merely the rounded unconstrained coefficient.
+inline bool exact_count_scale(double minimum,double maximum,std::size_t numerator,
+                              std::size_t denominator,double scale) {
+  if(static_cast<std::uint64_t>(numerator)>9007199254740992ULL ||
+     static_cast<std::uint64_t>(denominator)>9007199254740992ULL)return false;
+  const double range=maximum-minimum,virtual_b=maximum-range;
+  const double error=(maximum-(range+virtual_b))+(virtual_b-minimum);
+  const double a=static_cast<double>(numerator),b=static_cast<double>(denominator);
+  const double product=a*range;
+  return std::isnormal(range) && std::isfinite(error) && error==0 &&
+    std::isfinite(product) && std::isfinite(scale) && scale>0 &&
+    std::fma(a,range,-product)==0 && std::fma(b,scale,-product)==0;
 }
 } // namespace extreme_detail
 
@@ -159,6 +175,8 @@ inline GevResult gev_held_profile(span x,double mu,double sigma,double xi,
   return {hm ? mu : location(opt.x),hs ? sigma : low+std::exp(opt.x),xi,
           opt.value,opt.iterations,opt.ok ? GevStatus::Ok : GevStatus::IterationFailure};
 }
+inline GevResult gev_two_point_certificate(span x,double minimum,double maximum,
+                                           std::size_t k,double tol);
 inline GevResult gev_held_mle(span x,double tol,int maxit,double xi,double mu,double sigma) {
   maxit = static_cast<int>(solver_budget(maxit));
   GevResult bad{mu,sigma,xi,0,0,GevStatus::InvalidData};
@@ -172,6 +190,22 @@ inline GevResult gev_held_mle(span x,double tol,int maxit,double xi,double mu,do
   for(double v:y) if(!std::isfinite(v)) return bad;
   std::sort(y.begin(),y.end());
   if(!std::isnan(xi) && xi < -1 && !(hm && (hs || y.back()<=mu))) {bad.status=GevStatus::InvalidShape;return bad;}
+  // A hold containing the unique unconstrained member preserves its global
+  // certificate. Require exact public-coordinate equality, never a near hold.
+  if(std::isnan(xi) && y.size()>=3 && y.front()<y.back()) {
+    const auto k=static_cast<std::size_t>(std::count(y.begin(),y.end(),y.front()));
+    bool two_point=2*k<=y.size();
+    for(double v:y)two_point=two_point && (v==y.front() || v==y.back());
+    if(two_point) {
+      const auto member=gev_two_point_certificate(x,y.front(),y.back(),k,tol);
+      const double location=y.back()-member.sigma;
+      const double virtual_b=y.back()-location;
+      const double error=(y.back()-(location+virtual_b))+(virtual_b-member.sigma);
+      if(extreme_detail::exact_count_scale(y.front(),y.back(),k,y.size(),member.sigma) &&
+         (!hm || (mu==member.mu && member.mu==location && error==0)) &&
+         (!hs || sigma==member.sigma))return member;
+    }
+  }
   if(std::isnan(xi) && hm && mu==y[0]) {
     const auto k=static_cast<std::size_t>(std::count(y.begin(),y.end(),y[0]));
     if(2*k==y.size()) {
@@ -364,6 +398,7 @@ inline GevResult gev_two_point_certificate(span x,double minimum,double maximum,
      std::abs(ll-face)<=1e-7*n) {result.status=GevStatus::Ok;result.stop_detail={};}
   return result;
 }
+#include "joint_certificate.hpp"
 inline GevResult gev_mle_impl(span x, double tol=1e-10, int maxit=100,
                          double xi=std::numeric_limits<double>::quiet_NaN(),
                          double mu=std::numeric_limits<double>::quiet_NaN(),
@@ -407,65 +442,43 @@ inline GevResult gev_mle_impl(span x, double tol=1e-10, int maxit=100,
   for(double &v:y) v=(v-origin)/range;
   const span data{y.data(),y.size()};
   auto restore=[&](GevResult r) {
+    const double standardized_mu=r.mu;
     r.mu=origin+range*r.mu;r.sigma*=range;
-    r.logLik-=y.size()*std::log(range);return r;
+    const double jac=y.size()*std::log(range);
+    r.logLik-=jac;
+    if(!std::isnan(r.stop_detail.loglik_lower))r.stop_detail.loglik_lower-=jac;
+    if(!std::isnan(r.stop_detail.loglik_upper))r.stop_detail.loglik_upper-=jac;
+    if(!std::isnan(r.stop_detail.segment_loglik_upper))r.stop_detail.segment_loglik_upper-=jac;
+    for(auto& c:r.stop_detail.candidates) {
+      c.coef[0]=origin+range*c.coef[0];c.coef[1]*=range;
+      c.loglik_lower-=jac;c.loglik_upper-=jac;
+    }
+    if(std::isnan(xi) && r.status==GevStatus::Ok) {
+      if(r.xi== -1) {
+        // One upward location ulp contains the rounded endpoint difference
+        // without corrupting a much smaller, accurately estimated scale.
+        const double maximum=*std::max_element(x.begin(),x.end());
+        const double gap=maximum-r.sigma;
+        if(std::isfinite(gap))r.mu=std::max(r.mu,std::nextafter(gap,INFINITY));
+      }
+      const double eps=32*std::numeric_limits<double>::epsilon();
+      const double error=eps*std::abs(origin)+(eps*range)*std::abs(standardized_mu);
+      const double actual=gev_loglik(x,r.mu,r.sigma,r.xi);
+      if(!std::isfinite(actual) || error>tol*.25*std::max(std::abs(r.mu),r.sigma) || eps>tol*.25 ||
+          std::abs(actual-r.logLik)>1e-7*y.size()) {
+        r.status=GevStatus::NumericalFailure;
+        r.stop_detail.loglik_upper=INFINITY;
+        if(std::isfinite(actual)) {
+          r.stop_detail.loglik_lower=actual;
+          r.stop_detail.candidates.push_back({{r.mu,r.sigma,r.xi},actual,actual});
+        }
+      }
+      r.logLik=actual;
+    }
+    return r;
   };
   if(!std::isnan(xi)) return restore(gev_profile(data,xi,tol,maxit).fit);
-  auto prev=gev_profile(data,-1+1e-6,tol,maxit);
-  auto best=gev_profile(data,-1,tol,maxit).fit;
-  if(prev.fit.logLik>best.logLik) best=prev.fit;
-  bool failed=best.status!=GevStatus::Ok;
-  auto retain=[&](const GevProfile &p) {
-    failed=failed || p.fit.status!=GevStatus::Ok;
-    if(p.fit.logLik>best.logLik) best=p.fit;
-  };
-  auto root=[&](GevProfile left,GevProfile right) {
-    double l=left.fit.xi,h=right.fit.xi;
-    double mid=(l*right.score-h*left.score)/(right.score-left.score);
-    bool done=false;
-    for(int k=0;k<maxit;++k) {
-      if(!std::isfinite(mid) || mid<=l || mid>=h) mid=(l+h)/2;
-      const auto candidate=gev_profile(data,mid,tol,maxit);
-      retain(candidate);
-      if(std::abs(candidate.score)<tol*y.size() || h-l<tol) {
-        // Prefer the score-converged point over rounding ties in logLik.
-        if(candidate.fit.logLik>=best.logLik-1e-12*y.size()) best=candidate.fit;
-        done=true;break;
-      }
-      if(candidate.score>0) l=mid; else h=mid;
-      mid-=candidate.score/candidate.curvature;
-    }
-    failed=failed || !done;
-  };
-  // Enumerate profile-score sign changes, retaining both attained bounds.
-  // Curvature turns also expose pairs of roots within a single mesh cell.
-  // This is root discovery, not an assumption of global concavity.
-  const double xi_hi = kGevXiUpper;
-  const int cells=8;
-  for(int j=1;j<=cells;++j) {
-    const auto next=gev_profile(data,-1+(xi_hi+1.0)*j/cells,tol,maxit);
-    retain(next);
-    if(prev.score>0 && next.score<0) root(prev,next);
-    else if((prev.score>0)==(next.score>0) &&
-            ((prev.score>0 && prev.curvature<0 && next.curvature>0) ||
-             (prev.score<0 && prev.curvature>0 && next.curvature<0))) {
-      auto l=prev,h=next;
-      for(int k=0;k<maxit;++k) {
-        const auto mid=gev_profile(data,(l.fit.xi+h.fit.xi)/2,tol,maxit);
-        retain(mid);
-        if((mid.score>0)!=(prev.score>0)) {
-          if(prev.score>0) root(prev,mid); else root(mid,next);
-          break;
-        }
-        if(h.fit.xi-l.fit.xi<tol) break;
-        if((mid.curvature>0)==(l.curvature>0)) l=mid; else h=mid;
-      }
-    }
-    prev=next;
-  }
-  if(failed) best.status=GevStatus::IterationFailure;
-  GevResult result=restore(best);
-  return result;
+  return restore(gev_joint_certificate(data,tol,maxit));
 }
 
 inline GevResult gev_mle(span x,double tol=1e-10,int maxit=100,double xi=std::numeric_limits<double>::quiet_NaN(),double mu=std::numeric_limits<double>::quiet_NaN(),double sigma=std::numeric_limits<double>::quiet_NaN()) {

@@ -38,7 +38,7 @@ inline FitResult fit_gev(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg
   if(r.stop_detail.comparison_tie)
     return stop_failure(fail("Generalized extreme value certificate cannot separate competing shape maxima within its floating-point margin."),r.stop_detail,"tie",{"mu","sigma","xi"});
   if(r.status==cppunivariate::GevStatus::NumericalFailure ||
-     (r.status==cppunivariate::GevStatus::IterationFailure && std::isinf(r.stop_detail.loglik_upper)))
+     (r.status==cppunivariate::GevStatus::IterationFailure && !std::isnan(r.stop_detail.loglik_upper)))
     return stop_failure(fail("Generalized extreme value certificate failed to converge or resolve the maximum numerically; raise iterlim for an exhausted solve."),r.stop_detail,"numerical",{"mu","sigma","xi"});
   if(r.status==cppunivariate::GevStatus::NoMLE)
     return classify(fail("Generalized extreme value has no finite maximum: minimum multiplicity permits scale collapse."),r.stop_detail,"nomle",{"mu","sigma","xi"});
