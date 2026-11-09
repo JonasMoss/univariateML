@@ -195,8 +195,9 @@ No unimodality assumption is used. For flat profiles a sharper enclosure
 uses the Schur complement
 $D'(b)=\psi'(a+b)-\psi'(b)+a^2/\{(a+b)^3Q(b)\}$, where
 $Q(b)=\overline{q_i(1-q_i)}$ and $q_i=x_i/(s(b)+x_i)$.
-Each $q_i$ decreases on a shape interval, so its two endpoint values enclose
-$q_i(1-q_i)$, with maximum $1/4$ if they straddle $1/2$.
+Each $q_i$ decreases on a shape interval. The products $q_i(1-q_i)$ at its two
+endpoint values give the minimum, and the larger product or $1/4$ (if the
+endpoint values straddle $1/2$) the maximum.
 The trigamma difference increases with $b$. These facts enclose $D'$;
 integrating from either endpoint tightens the derivative bounds. This
 avoids treating the two nearly cancelling terms in $D$ independently
