@@ -1,0 +1,30 @@
+{
+  "target_commit": "a99ca0dc92043120455401108cee5eeda17cafc4",
+  "baseline_commit": "4b6a66ea",
+  "native_machine": "workstation",
+  "native_compiler": "c++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "compile_flags": [
+    "-std=c++17",
+    "-O1"
+  ],
+  "cpp_test_machine": "simbox (GCC 13)",
+  "cpp_test": "106/106 dev shards passed",
+  "frozen_cases_sha256": "e35b7fee4b278b80e829d39341be3c1947dce7df981c00ab3dfabaa0bc249972",
+  "compiled_harness_sha256": "2d2aa2974c20a3542dea378bec647fdee7201e10ae134deb30ef8d8bd1c95497",
+  "frozen_reference_matches": 9354,
+  "new_points": 1831,
+  "core_wall_seconds": [
+    3,
+    20
+  ],
+  "reference_wall_seconds": [
+    2,
+    20
+  ],
+  "minimum_precision_digits": 70,
+  "legacy_coefficient_target": 1e-08,
+  "supplementary_coefficient_target": 1e-10,
+  "cpu_reservations": "run for one worker; run4 for four-worker reconciliation; nice 10 and BLAS/OpenMP one thread",
+  "production_edits": false,
+  "commits": false
+}

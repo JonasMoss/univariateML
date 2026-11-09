@@ -1,0 +1,28 @@
+{
+  "validation": "PASS",
+  "report_links": "PASS",
+  "reproductions": 895,
+  "family_transitions": 99,
+  "python_syntax": "PASS",
+  "evaluation_script_sha256": {
+    "contract.py": "b11e90365603999cf5704e37a7dce0a051e117ab3cef9eb754ccc9ebcc94138a",
+    "diagnostics_local.py": "9d6d08dfaf65ca6cc731cf2a978e8c769cca8c3e13f10a0702e88864779f55f3",
+    "reference_parallel.py": "daa84d8d42d97f6d08c4102f5e41df422585c158779fff50ecfd43564bf5b7ca",
+    "route_rules.py": "2d24aee5548c47573436cf333ab919c3ed1bc18a7b6f74bf3d8588f6b5809026",
+    "report_current.py": "6449434ffba32621ec760adcba61860bfb1f23e63deab4b7f8b9b449bb38ead0",
+    "cache.py": "ce96418ce02b4518622b561637d131e6486871d690b3ccc58d515d0ad88dcf64",
+    "audit.py": "06bfe74c430914289c72952f7e5dc738987dd9646aaf6a98c88d52a2620d04d6",
+    "tnorm_existence.py": "f687c6094a522069fd8fb8bba2fd283b9e97b89d4a66aacea5f03b9c8ae1c883",
+    "check_reference.py": "4f6cd01bd81bf70aacb40bb19c9af638a68e2c9ee9a4b11bbbb03eaf03d68202",
+    "check_findings.py": "0ece4439a2d04dc56107af2954a6f0aa915c11c7c909bc16d361062c9e9cda6e",
+    "held_support.py": "3a496be48cb6f3af22af6670ddc207227393b99119a0a509e0c9b2bc26cf74c5",
+    "source_notes.py": "155f82ccf8d04a2388e9a788230293e40ee9103553ab1e6ff3e4c479e74c0cb7",
+    "reproduce.py": "a35e53a11743fbe8620555e26c9377df7235073c8c355773e54fb848500102b0",
+    "retry_references.py": "2a34de7713e2eb67dbe89c085a666aa020608749330ba186228b870b2a70320b",
+    "support_geometry.py": "3c9550604c04a0d33a7a30faf16d4249948131f5afcda46fb1d732cee945d544",
+    "validate.py": "ef290d6cc6a542f7fc27c8cefe837e1bd94029da801eb1a087209e33541bbe34",
+    "existence.py": "60304a2fc933fa04bb27ccbc1bcb0bde48623be80ad2e3078b4276be19a0bfb0",
+    "retry_fit.py": "3f54fb732037bb048afde996d6636577dcefae966f6d6cc3ad61f40b5e4908a2",
+    "reference_extra.py": "8fa1d7977aba486d8d234061bfa4cc83de4a87640f08d47f1d2337f333bf52e2"
+  }
+}

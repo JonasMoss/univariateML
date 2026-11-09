@@ -1,0 +1,301 @@
+Retrying 25 numerical reference gaps at 20 seconds
+reference bbinom 
+reference beta 
+reference betapr 
+reference bhatt 
+reference binom 
+reference bnbinom 
+reference burr 
+reference cauchy 
+reference cmb 
+reference cmp 
+reference dgamma 
+reference dlaplace 
+reference dnorm 
+reference dunif 
+reference dweibull 
+reference emg 
+reference exp 
+reference fatigue 
+reference foldnorm 
+reference fpareto 
+reference frechet 
+reference gamma 
+reference gb2 
+reference ged 
+reference genbeta 
+reference geom 
+reference gev 
+reference gompertz 
+reference gpd 
+reference gumbel 
+reference hcauchy 
+reference hnorm 
+reference ht 
+reference huber 
+reference hyper 
+reference invburr 
+reference invexp 
+reference invgamma 
+reference invgauss 
+reference invparalogis 
+reference invpareto 
+reference invtrgamma 
+reference invweibull 
+reference kumar 
+reference laplace 
+reference lgamma 
+reference lgser 
+reference llogis 
+reference lnorm 
+reference logis 
+reference logitnorm 
+reference lomax 
+reference lst 
+reference naka 
+reference nbinom 
+reference nhyper 
+reference norm 
+reference nsbeta 
+reference paralogis 
+reference pareto 
+reference pareto2 
+reference pareto3 
+reference pareto4 
+reference pig 
+reference pois 
+reference power 
+reference rayleigh 
+reference sged 
+reference sgomp 
+reference skellam 
+reference slash 
+reference sn 
+reference snorm 
+reference sstd 
+reference st 
+reference std 
+reference tbinom 
+reference tlambda 
+reference tnorm 
+reference tpois 
+reference trgamma 
+reference triang 
+reference unif 
+reference weibull 
+reference yulesimon 
+reference zeta 
+reference zib 
+reference zinb 
+reference zip 
+reference zipf 
+reference zmbinom 
+reference zmgeom 
+reference zmlogarithmic 
+reference zmnbinom 
+reference zmpois 
+reference ztbinom 
+reference ztgeom 
+reference ztnbinom 
+reference ztpois 
+findings validation bbinom {}
+findings validation beta {}
+findings validation betapr {}
+findings validation bhatt {}
+findings validation binom {}
+findings validation bnbinom {}
+findings validation burr {}
+findings validation cauchy {}
+findings validation cmb {}
+findings validation cmp {}
+findings validation dgamma {}
+findings validation dlaplace {}
+findings validation dnorm {}
+findings validation dunif {}
+findings validation dweibull {}
+findings validation emg {}
+findings validation exp {}
+findings validation fatigue {}
+findings validation foldnorm {}
+findings validation fpareto {}
+findings validation frechet {}
+findings validation gamma {}
+findings validation gb2 {}
+findings validation ged {}
+findings validation genbeta {}
+findings validation geom {}
+findings validation gev {}
+findings validation gompertz {}
+findings validation gpd {}
+findings validation gumbel {}
+findings validation hcauchy {}
+findings validation hnorm {}
+findings validation ht {}
+findings validation huber {}
+findings validation hyper {}
+findings validation invburr {}
+findings validation invexp {}
+findings validation invgamma {}
+findings validation invgauss {}
+findings validation invparalogis {}
+findings validation invpareto {}
+findings validation invtrgamma {}
+findings validation invweibull {}
+findings validation kumar {}
+findings validation laplace {}
+findings validation lgamma {}
+findings validation lgser {}
+findings validation llogis {}
+findings validation lnorm {}
+findings validation logis {}
+findings validation logitnorm {}
+findings validation lomax {}
+findings validation lst {'silent failure': 5}
+findings validation naka {'silent failure': 5}
+findings validation nbinom {'silent failure': 5}
+findings validation nhyper {'silent failure': 5}
+findings validation norm {'silent failure': 5}
+findings validation nsbeta {'silent failure': 5}
+findings validation paralogis {'silent failure': 5}
+findings validation pareto {'silent failure': 5}
+findings validation pareto2 {'silent failure': 5}
+findings validation pareto3 {'silent failure': 5}
+findings validation pareto4 {'silent failure': 5}
+findings validation pig {'silent failure': 5}
+findings validation pois {'silent failure': 5}
+findings validation power {'silent failure': 5}
+findings validation rayleigh {'silent failure': 5}
+findings validation sged {'silent failure': 17}
+findings validation sgomp {'silent failure': 17}
+findings validation skellam {'silent failure': 17}
+findings validation slash {'silent failure': 17}
+findings validation sn {'silent failure': 17}
+findings validation snorm {'silent failure': 17}
+findings validation sstd {'silent failure': 30}
+findings validation st {'silent failure': 44}
+findings validation std {'silent failure': 51}
+findings validation tbinom {'silent failure': 51}
+findings validation tlambda {'silent failure': 51}
+findings validation tnorm {'silent failure': 51}
+findings validation tpois {'silent failure': 51}
+findings validation trgamma {'silent failure': 51}
+findings validation triang {'silent failure': 51}
+findings validation unif {'silent failure': 51}
+findings validation weibull {'silent failure': 51}
+findings validation yulesimon {'silent failure': 51}
+findings validation zeta {'silent failure': 51}
+findings validation zib {'silent failure': 51}
+findings validation zinb {'silent failure': 51}
+findings validation zip {'silent failure': 51}
+findings validation zipf {'silent failure': 51}
+findings validation zmbinom {'silent failure': 51}
+findings validation zmgeom {'silent failure': 51}
+findings validation zmlogarithmic {'silent failure': 51}
+findings validation zmnbinom {'silent failure': 51}
+findings validation zmpois {'silent failure': 51}
+findings validation ztbinom {'silent failure': 51}
+findings validation ztgeom {'silent failure': 51}
+findings validation ztnbinom {'silent failure': 51}
+findings validation ztpois {'silent failure': 51}
+PASS findings validation {'silent failure': 51}
+findings validation bbinom {}
+findings validation beta {'silent failure': 2}
+findings validation betapr {'silent failure': 3}
+findings validation bhatt {'silent failure': 14}
+findings validation binom {'silent failure': 14}
+findings validation bnbinom {'silent failure': 53}
+findings validation burr {'silent failure': 60}
+findings validation cauchy {'silent failure': 64}
+findings validation cmb {'silent failure': 79}
+findings validation cmp {'silent failure': 79}
+findings validation dgamma {'silent failure': 91}
+findings validation dlaplace {'silent failure': 91}
+findings validation dnorm {'silent failure': 98}
+findings validation dunif {'silent failure': 98}
+findings validation dweibull {'silent failure': 98}
+findings validation emg {'silent failure': 135}
+findings validation exp {'silent failure': 135}
+findings validation fatigue {'silent failure': 138}
+findings validation foldnorm {'silent failure': 152}
+findings validation fpareto {'silent failure': 188}
+findings validation frechet {'silent failure': 197}
+findings validation gamma {'silent failure': 201}
+findings validation gb2 {'silent failure': 240}
+findings validation ged {'silent failure': 240}
+findings validation genbeta {'silent failure': 257}
+findings validation geom {'silent failure': 257}
+findings validation gev {'silent failure': 287}
+findings validation gompertz {'silent failure': 287}
+findings validation gpd {'silent failure': 287}
+findings validation gumbel {'silent failure': 289}
+findings validation hcauchy {'silent failure': 289}
+findings validation hnorm {'silent failure': 289}
+findings validation ht {'silent failure': 290}
+findings validation huber {'silent failure': 290}
+findings validation hyper {'silent failure': 290}
+findings validation invburr {'silent failure': 297}
+findings validation invexp {'silent failure': 297}
+findings validation invgamma {'silent failure': 300}
+findings validation invgauss {'silent failure': 301}
+findings validation invparalogis {'silent failure': 301}
+findings validation invpareto {'silent failure': 301}
+findings validation invtrgamma {'silent failure': 301}
+findings validation invweibull {'silent failure': 309}
+findings validation kumar {'silent failure': 311}
+findings validation laplace {'silent failure': 311}
+findings validation lgamma {'silent failure': 315}
+findings validation lgser {'silent failure': 315}
+findings validation llogis {'silent failure': 322}
+findings validation lnorm {'silent failure': 324}
+findings validation logis {'silent failure': 326}
+findings validation logitnorm {'silent failure': 328}
+findings validation lomax {'silent failure': 329}
+findings validation lst {'silent failure': 331}
+findings validation naka {'silent failure': 338}
+findings validation nbinom {'silent failure': 340}
+findings validation nhyper {'silent failure': 340}
+findings validation norm {'silent failure': 340}
+findings validation nsbeta {'silent failure': 343}
+findings validation paralogis {'silent failure': 343}
+findings validation pareto {'silent failure': 343}
+findings validation pareto2 {'silent failure': 343}
+findings validation pareto3 {'silent failure': 346}
+findings validation pareto4 {'silent failure': 349}
+findings validation pig {'silent failure': 363}
+findings validation pois {'silent failure': 363}
+findings validation power {'silent failure': 363}
+findings validation rayleigh {'silent failure': 363}
+findings validation sged {'silent failure': 385}
+findings validation sgomp {'silent failure': 390}
+findings validation skellam {'silent failure': 412}
+findings validation slash {'silent failure': 422}
+findings validation sn {'silent failure': 451}
+findings validation snorm {'silent failure': 451}
+findings validation sstd {'silent failure': 471}
+findings validation st {'silent failure': 495}
+findings validation std {'silent failure': 507}
+findings validation tbinom {'silent failure': 507}
+findings validation tlambda {'silent failure': 507}
+findings validation tnorm {'silent failure': 514}
+findings validation tpois {'silent failure': 514}
+findings validation trgamma {'silent failure': 514}
+findings validation triang {'silent failure': 514}
+findings validation unif {'silent failure': 514}
+findings validation weibull {'silent failure': 524}
+findings validation yulesimon {'silent failure': 524}
+findings validation zeta {'silent failure': 524}
+findings validation zib {'silent failure': 524}
+findings validation zinb {'silent failure': 524}
+findings validation zip {'silent failure': 524}
+findings validation zipf {'silent failure': 525}
+findings validation zmbinom {'silent failure': 525}
+findings validation zmgeom {'silent failure': 525}
+findings validation zmlogarithmic {'silent failure': 525}
+findings validation zmnbinom {'silent failure': 539}
+findings validation zmpois {'silent failure': 539}
+findings validation ztbinom {'silent failure': 539}
+findings validation ztgeom {'silent failure': 539}
+findings validation ztnbinom {'silent failure': 541}
+findings validation ztpois {'silent failure': 541}
+PASS findings validation {'silent failure': 541}
+Completed reference validation and strict-contract supplement
