@@ -1,0 +1,8 @@
+cpp-dev	workstation	3576
+cpp-full	simbox	587
+cpp-no-long-double	workstation	9561
+r-dev	workstation-fallback	8568
+r-full	workstation-fallback	6379
+js-build	workstation	130
+js-test	workstation	232
+site-check	workstation	149

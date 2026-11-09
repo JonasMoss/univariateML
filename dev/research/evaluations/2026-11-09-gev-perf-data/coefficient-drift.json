@@ -1,0 +1,16 @@
+{
+  "cases": 189,
+  "maximum_relative_coefficient_drift": 4.330686554058724e-14,
+  "witness": {
+    "generating_shape_n_rep": [
+      "0.29999999999999999",
+      "4",
+      "0"
+    ],
+    "parameter": "xi",
+    "before": 0.17304428114744108,
+    "after": 0.17304428114744858
+  },
+  "zero_coefficients_preserved": 0,
+  "passed": true
+}

@@ -8,10 +8,21 @@ inline Range add(Range a,Range b) {return {a.lo+b.lo,a.hi+b.hi};}
 inline Range neg(Range a) {return {-a.hi,-a.lo};}
 inline Range sub(Range a,Range b) {return add(a,neg(b));}
 inline Range mul(Range a,Range b) {
-  return {std::min({a.lo*b.lo,a.lo*b.hi,a.hi*b.lo,a.hi*b.hi}),
-          std::max({a.lo*b.lo,a.lo*b.hi,a.hi*b.lo,a.hi*b.hi})};
+  if(a.lo>=0) {
+    if(b.lo>=0)return {a.lo*b.lo,a.hi*b.hi};
+    if(b.hi<=0)return {a.hi*b.lo,a.lo*b.hi};
+    return {a.hi*b.lo,a.hi*b.hi};
+  }
+  if(a.hi<=0) {
+    if(b.lo>=0)return {a.lo*b.hi,a.hi*b.lo};
+    if(b.hi<=0)return {a.hi*b.hi,a.lo*b.lo};
+    return {a.lo*b.hi,a.lo*b.lo};
+  }
+  if(b.lo>=0)return {a.lo*b.hi,a.hi*b.hi};
+  if(b.hi<=0)return {a.hi*b.lo,a.lo*b.lo};
+  return {std::min(a.lo*b.hi,a.hi*b.lo),std::max(a.lo*b.lo,a.hi*b.hi)};
 }
-inline Range scale(Range a,double b) {return mul(a,point(b));}
+inline Range scale(Range a,double b) {return b>=0?Range{a.lo*b,a.hi*b}:Range{a.hi*b,a.lo*b};}
 inline Range inv(Range a) {return {1/a.hi,1/a.lo};}
 inline Range div(Range a,Range b) {return mul(a,inv(b));}
 inline Range square(Range a) {
@@ -63,25 +74,33 @@ inline Bounds evaluate(span data,Range xi,Range v,int maxit) {
     Range L,Lx,Lxx;
     const double radius=magnitude(q);
     if(radius<=.25) {
-      // Power-of-radius remainder bounds, including two shape derivatives.
-      // z is an interval independent of xi in these partial derivatives.
-      L=z;Lx=scale(square(z),-.5);Lxx=scale(mul(square(z),z),2./3);
-      Range power=point(1);bool converged=d==0;
-      for(int j=1;!converged && j<=maxit;++j) {
-        power=mul(power,neg(q));
-        L=add(L,scale(mul(z,power),1./(j+1)));
-        // For Lx and Lxx sum their own series to avoid division by xi.
-        Lx=add(Lx,scale(mul(square(z),power),-(j+1.)/(j+2.)));
-        Lxx=add(Lxx,scale(mul(mul(square(z),z),power),(j+1.)*(j+2.)/(j+3.)));
-        const double Z=z.hi,r=radius;
-        const double e0=Z*std::pow(r,j+1)/((j+2)*(1-r));
-        const double e1=Z*Z*std::pow(r,j+1)/(1-r);
-        const double e2=Z*Z*Z*std::pow(r,j+1)*((j+3)/(1-r)+r/((1-r)*(1-r)));
-        if(std::max({e0,e1,e2})<=4*std::numeric_limits<double>::epsilon()) {
-          L=pad(L,e0);Lx=pad(Lx,e1);Lxx=pad(Lxx,e2);converged=true;
+      // Integral representations show that L, -L_x and L_xx increase
+      // with z>=0 and decrease with xi. Evaluate their two common corners;
+      // scalar series retain these dependencies instead of expanding boxes.
+      auto jet=[&](double Z,double X) {
+        const double q=X*Z,r=std::abs(q);
+        double l=Z,lx=-Z*Z/2,lxx=2*Z*Z*Z/3,power=1,remainder=r;
+        Bounds result{};
+        for(int j=1;j<=maxit;++j) {
+          power*= -q;
+          l+=Z*power/(j+1);
+          lx-=Z*Z*power*(j+1.)/(j+2.);
+          lxx+=Z*Z*Z*power*(j+1.)*(j+2.)/(j+3.);
+          remainder*=r;
+          const double e0=Z*remainder/((j+2)*(1-r));
+          const double e1=Z*Z*remainder/(1-r);
+          const double e2=Z*Z*Z*remainder*((j+3)/(1-r)+r/((1-r)*(1-r)));
+          if(std::max({e0,e1,e2})<=4*std::numeric_limits<double>::epsilon()) {
+            result.value=pad(point(l),e0);result.x=pad(point(lx),e1);
+            result.xx=pad(point(lxx),e2);result.ok=true;break;
+          }
         }
-      }
-      if(!converged)return out;
+        return result;
+      };
+      const auto low=jet(z.lo,xi.hi),high=jet(z.hi,xi.lo);
+      if(!low.ok||!high.ok)return out;
+      L={low.value.lo,high.value.hi};
+      Lx={high.x.lo,low.x.hi};Lxx={low.xx.lo,high.xx.hi};
     } else {
       if(xi.lo<=0 && xi.hi>=0)return out;
       L=div(log(t),xi);
@@ -123,6 +142,50 @@ inline Bounds evaluate(span data,Range xi,Range v,int maxit) {
   out.xv=pad(out.xv,eps*(1+magnitude(out.xv)+magnitude(mv)));
   out.ok=finite(out.value)&&finite(out.x)&&finite(out.v)&&finite(out.xx)&&finite(out.vv)&&finite(out.xv);
   return out;
+}
+// Only f_v and f_vv are needed to bracket the unique inner optimum.
+// L(z,xi) increases in z and decreases in xi, including its removable zero.
+// These corner bounds avoid all shape-derivative jets during sign checks.
+inline Bounds nuisance_evaluate(span data,Range xi,Range v,int maxit) {
+  Bounds out{};
+  if(!(v.lo>0) || 1+std::min(0.,xi.lo)/v.lo<=0)return out;
+  Sum se,sev,sevv,sev2,sv,svv;
+  const Range iv=inv(v),iv2=square(iv),one=add(point(1),xi);
+  auto ratio=[](double z,double x) {
+    const double q=x*z;
+    return q==0?z:(std::abs(q)<1e-4?z*(std::log1p(q)/q):std::log1p(q)/x);
+  };
+  for(double d:data) {
+    const Range z=scale(iv,d),q=mul(xi,z),t=add(point(1),q);
+    if(!(t.lo>0))return out;
+    // Retain the shape-jet work cap even though sign checks do not need
+    // those jets. Otherwise a small maxit can change an iteration stop into
+    // a later numerical stop. Remainders decrease with the series degree.
+    const double radius=magnitude(q);
+    if(radius<=.25 && d!=0) {
+      const double Z=z.hi,r=radius,power=std::pow(r,maxit+1);
+      const double e0=Z*power/((maxit+2.)*(1-r));
+      const double e1=Z*Z*power/(1-r);
+      const double e2=Z*Z*Z*power*((maxit+3.)/(1-r)+r/((1-r)*(1-r)));
+      if(!(std::max({e0,e1,e2})<=4*std::numeric_limits<double>::epsilon()))return out;
+    }
+    const Range L{std::max(0.,ratio(z.lo,xi.hi)),ratio(z.hi,xi.lo)};
+    const Range Lv=neg(div(mul(z,iv),t));
+    const Range Lvv=div(mul(mul(z,add(point(2),q)),iv2),square(t));
+    const Range e=exp(neg(L));
+    se.add(e);sev.add(mul(e,Lv));sevv.add(mul(e,Lvv));
+    sev2.add(mul(e,square(Lv)));sv.add(Lv);svv.add(Lvv);
+  }
+  const double n=static_cast<double>(data.size());
+  Range E=se.value();E.lo=std::max(1.,E.lo);
+  const Range V=div(sev.value(),E),mv=scale(sv.value(),1/n);
+  out.v=sub(sub(V,iv),mul(one,mv));
+  out.vv=sub(add(add(sub(div(sevv.value(),E),div(sev2.value(),E)),square(V)),iv2),
+      mul(one,scale(svv.value(),1/n)));
+  const double eps=128*std::numeric_limits<double>::epsilon();
+  out.v=pad(out.v,eps*(1+1/v.lo+magnitude(V)+magnitude(mul(one,mv))));
+  out.vv=pad(out.vv,eps*(1+magnitude(out.vv)+1/(v.lo*v.lo)));
+  out.ok=finite(out.v)&&finite(out.vv);return out;
 }
 struct Root {Range v; bool ok=false;};
 inline Root coordinate(Root r,double xi,bool gap) {
@@ -179,7 +242,7 @@ inline Root inner(span data,double xi,int maxit) {
   for(;steps<maxit;++steps) {
     lo=std::max(std::nextafter(std::max(0.,-xi),INFINITY),center-step);
     hi=center+step;
-    const auto l=evaluate(data,point(xi),point(lo),maxit),h=evaluate(data,point(xi),point(hi),maxit);
+    const auto l=nuisance_evaluate(data,point(xi),point(lo),maxit),h=nuisance_evaluate(data,point(xi),point(hi),maxit);
     lower=l.ok && l.v.lo>0;upper=h.ok && h.v.hi<0;
     if(lower&&upper)break;
     step*=2;
@@ -187,19 +250,19 @@ inline Root inner(span data,double xi,int maxit) {
   if(!lower || !upper)return {{lo,hi},false};
   for(;steps<maxit;++steps) {
     const double mid=lo+(hi-lo)/2;
-    const auto m=evaluate(data,point(xi),point(mid),maxit);
+    const auto m=nuisance_evaluate(data,point(xi),point(mid),maxit);
     if(!m.ok)return {{lo,hi},false};
     if(m.v.lo>0)lo=mid;
     else if(m.v.hi<0)hi=mid;
     else {
-      const auto box=evaluate(data,point(xi),{lo,hi},maxit);
+      const auto box=nuisance_evaluate(data,point(xi),{lo,hi},maxit);
       if(box.ok && box.vv.hi<0) {
         const Range next=sub(point(mid),div(m.v,box.vv));
         lo=std::max(lo,next.lo);hi=std::min(hi,next.hi);
         return {{lo,hi},lo<=hi};
       }
       const double a=lo+(hi-lo)/4,b=hi-(hi-lo)/4;
-      const auto A=evaluate(data,point(xi),point(a),maxit),B=evaluate(data,point(xi),point(b),maxit);
+      const auto A=nuisance_evaluate(data,point(xi),point(a),maxit),B=nuisance_evaluate(data,point(xi),point(b),maxit);
       bool progress=false;
       if(A.ok&&A.v.lo>0) {lo=a;progress=true;}
       if(B.ok&&B.v.hi<0) {hi=b;progress=true;}
@@ -242,7 +305,7 @@ inline Root region(span data,double lo,double hi,int maxit,F& get,bool gap) {
       // On one-sided slabs the endpoint-gap monotonicity supplies a second
       // proved enclosure. Expansion need not continue beyond that box.
       if(have_corners && a<=corners.lo && b>=corners.hi) {found=true;break;}
-      const auto L=evaluate(data,{lo,hi},point(a),maxit),H=evaluate(data,{lo,hi},point(b),maxit);
+      const auto L=nuisance_evaluate(data,{lo,hi},point(a),maxit),H=nuisance_evaluate(data,{lo,hi},point(b),maxit);
       if(L.ok&&H.ok&&L.v.lo>0&&H.v.hi<0) {found=true;break;}
       // Approach the support floor from above; jumping to it can make
       // inverse powers overflow and never establish the lower score sign.
@@ -512,10 +575,13 @@ inline GevResult gev_joint_certificate(span data,double tol,int maxit,bool frech
     const auto b=root.ok?gev_joint_detail::bounds(data,{s.lo,s.hi},root.v,maxit,gap):gev_joint_detail::Bounds{};
     out.stop_detail.segment_loglik_upper=b.ok?n*b.value.hi:INFINITY;
     if(b.ok && (b.value.hi<incumbent-margin || b.x.lo>margin || b.x.hi< -margin))continue;
+    const double midpoint=s.lo+(s.hi-s.lo)/2;
+    gev_joint_detail::Bounds midpoint_bounds{};
     if(b.ok) {
-      const double mid=s.lo+(s.hi-s.lo)/2,w=(s.hi-s.lo)/2;
+      const double mid=midpoint,w=(s.hi-s.lo)/2;
       const auto r=gev_joint_detail::coordinate(get(mid),mid,gap);
       const auto m=r.ok?gev_joint_detail::bounds(data,{mid,mid},r.v,maxit,gap):gev_joint_detail::Bounds{};
+      midpoint_bounds=m;
       if(m.ok) {
         // Taylor about an exact inner optimum: its v score is zero. This
         // retains the nuisance cancellation even before f_vv is negative
@@ -530,9 +596,8 @@ inline GevResult gev_joint_certificate(span data,double tol,int maxit,bool frech
     if(b.ok && b.vv.hi<0) {
       const auto C=gev_joint_detail::curvature(b);
       if(C.lo>margin)continue; // strict convexity has no interior maximum
-      const double mid=s.lo+(s.hi-s.lo)/2,radius=(s.hi-s.lo)/2;
-      const auto r=gev_joint_detail::coordinate(get(mid),mid,gap);
-      const auto m=r.ok?gev_joint_detail::bounds(data,{mid,mid},r.v,maxit,gap):gev_joint_detail::Bounds{};
+      const double radius=(s.hi-s.lo)/2;
+      const auto m=midpoint_bounds;
       if(m.ok && m.value.hi+gev_joint_detail::magnitude(m.x)*radius+
           .5*std::max(0.,C.hi)*radius*radius<incumbent-margin)continue;
       if(m.ok) {

@@ -323,6 +323,13 @@ gap coordinates near the upper endpoint and minimum-pivot coordinates around
 zero and on the positive branch. The pivot form keeps all exponential terms
 at most one and permits power-of-radius Taylor bounds through the Gumbel seam.
 
+The pivot jets retain a common corner dependency: for $z\ge0$,
+$L$, $-L_\xi$ and $L_{\xi\xi}$ increase in $z$ and decrease in $\xi$.
+This follows by differentiating
+$L=z\int_0^1(1+\xi zt)^{-1}\,dt$ under the integral.
+Scalar series at the two corners therefore bound all three quantities,
+including slabs crossing zero.
+
 A slab is excluded by a likelihood upper bound, a definite profile-score sign,
 or strict profile convexity. Strict negative profile curvature and opposite
 endpoint scores isolate a stationary maximum. A joint interval-Newton step

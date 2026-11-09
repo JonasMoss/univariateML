@@ -575,3 +575,28 @@ TEST_CASE("gev: positive pivot slabs expand the nuisance bracket inside support"
     CHECK(root.v.hi<=region.v.hi);
   }
 }
+
+TEST_CASE("gev: nuisance-only bounds contain independently accumulated scores and curvature") {
+  const std::vector<double> x{0,.000001,.03,.2,.7,1};
+  const auto data=mltest::as_span(x);
+  for(double left:{-.8,-.001,0.,.2,.9}) {
+    const double right=left+.001;
+    const double low=1.2,high=1.21;
+    const auto box=cppunivariate::gev_joint_detail::nuisance_evaluate(data,{left,right},{low,high},100);
+    REQUIRE(box.ok);
+    for(double xi:{left,(left+right)/2,right})for(double v:{low,(low+high)/2,high}) {
+      long double E=0,A=0,B=0,C=0,S=0,T=0;
+      for(double d:x) {
+        const long double k=xi,u=v,t=u+k*d;
+        const long double L=k==0?d/u:std::log1p(k*d/u)/k;
+        const long double lv=-d/(u*t),lvv=d*(2*u+k*d)/(u*u*t*t),e=std::exp(-L);
+        E+=e;A+=e*lv;B+=e*lvv;C+=e*lv*lv;S+=lv;T+=lvv;
+      }
+      const long double score=-1/static_cast<long double>(v)+A/E-(1+static_cast<long double>(xi))*S/x.size();
+      const long double curvature=1/(static_cast<long double>(v)*v)+(B-C)/E+(A/E)*(A/E)
+          -(1+static_cast<long double>(xi))*T/x.size();
+      CHECK(score>=box.v.lo);CHECK(score<=box.v.hi);
+      CHECK(curvature>=box.vv.lo);CHECK(curvature<=box.vv.hi);
+    }
+  }
+}

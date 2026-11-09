@@ -1,0 +1,15 @@
+{
+  "at_utc": "2026-11-09T19:37:01.340690+00:00",
+  "checks": {
+    "own_scratch_directory": {
+      "returncode": 1,
+      "stdout": "",
+      "stderr": "/usr/bin/mkdir: cannot create directory '/home/jmoss/umvl-wt/gev-perf/build/scratch/gev-perf-health-106301': Input/output error\n"
+    },
+    "slots_and_processes": {
+      "returncode": 0,
+      "stdout": "python_running\nslot .slot1 age_minutes 222.78961526155473\ncpu_seconds_pid_name_state (0.11, '459', 'systemd', 'S')\ncpu_seconds_pid_name_state (0.01, '483', 'bash', 'S')\ncpu_seconds_pid_name_state (0.0, '460', '(sd-pam)', 'S')\ncpu_seconds_pid_name_state (0.0, '409', 'sleep', 'S')\ncpu_seconds_pid_name_state (0.0, '106314', 'python3', 'R')\ncpu_seconds_pid_name_state (0.0, '106306', 'tailscaled', 'S')\n",
+      "stderr": ""
+    }
+  }
+}
