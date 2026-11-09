@@ -17,8 +17,8 @@ TEST_CASE("lgamma (wrapper-only: gamma on log(x))") {
   for (double v : g.data) y.push_back(std::log(v));
   auto r = cppunivariate::gamma_mle(mltest::as_span(y), mltest::kFitTol, mltest::kFitMaxit);
   const double rate = 1.0 / r.scale;
-  CHECK(r.shape == doctest::Approx(g.estimates.at("shapelog")).epsilon(mltest::kTol));
-  CHECK(rate == doctest::Approx(g.estimates.at("ratelog")).epsilon(mltest::kTol));
+  CHECK(r.shape == doctest::Approx(g.estimates.at("shapelog")).epsilon(mltest::kGolden_lgamma).scale(0));
+  CHECK(rate == doctest::Approx(g.estimates.at("ratelog")).epsilon(mltest::kGolden_lgamma).scale(0));
   // logLik for log-gamma is recomputed by the wrapper; match here.
   const double dn = static_cast<double>(g.data.size());
   double sum_y = 0.0, sum_log_y = 0.0;
@@ -32,7 +32,7 @@ TEST_CASE("lgamma (wrapper-only: gamma on log(x))") {
   const double logLik =
       dn * (r.shape * std::log(rate) - std::lgamma(r.shape) +
             (r.shape - 1.0) * K - (rate + 1.0) * L);
-  CHECK(logLik == doctest::Approx(g.logLik).epsilon(mltest::kTol));
+  CHECK(logLik == doctest::Approx(g.logLik).epsilon(mltest::kGolden_lgamma).scale(0));
 }
 
 

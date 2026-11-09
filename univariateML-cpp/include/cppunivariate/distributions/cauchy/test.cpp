@@ -12,9 +12,9 @@
 TEST_CASE("cauchy") {
   auto g = mltest::load_distribution_golden("cauchy");
   auto r = cppunivariate::fit_cauchy(mltest::as_span(g.data), mltest::kFitTol, mltest::kFitMaxit);
-  CHECK(r.mu == doctest::Approx(g.estimates.at("location")).epsilon(mltest::kTol));
-  CHECK(r.scale == doctest::Approx(g.estimates.at("scale")).epsilon(mltest::kTol));
-  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kTol));
+  CHECK(r.mu == doctest::Approx(g.estimates.at("location")).epsilon(mltest::kGolden_cauchy).scale(0));
+  CHECK(r.scale == doctest::Approx(g.estimates.at("scale")).epsilon(mltest::kGolden_cauchy).scale(0));
+  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kGolden_cauchy).scale(0));
 }
 
 TEST_CASE("cauchy: seeded sample with outlier") {

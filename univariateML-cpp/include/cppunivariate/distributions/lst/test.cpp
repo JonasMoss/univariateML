@@ -13,10 +13,10 @@ TEST_CASE("lst: golden and analytic score") {
   CHECK(r.status == cppunivariate::LstStatus::Ok);
   // Preserve the frozen BFGS-era golden tolerance. The certificate also
   // checks the complete coefficient box against independent roots below.
-  CHECK(r.mu == doctest::Approx(g.estimates.at("mu")).epsilon(mltest::kFdTol));
-  CHECK(r.sigma == doctest::Approx(g.estimates.at("sigma")).epsilon(mltest::kFdTol));
-  CHECK(r.df == doctest::Approx(g.estimates.at("df")).epsilon(mltest::kFdTol));
-  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kFdTol));
+  CHECK(r.mu == doctest::Approx(g.estimates.at("mu")).epsilon(mltest::kGolden_lst).scale(0));
+  CHECK(r.sigma == doctest::Approx(g.estimates.at("sigma")).epsilon(mltest::kGolden_lst).scale(0));
+  CHECK(r.df == doctest::Approx(g.estimates.at("df")).epsilon(mltest::kGolden_lst).scale(0));
+  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kGolden_lst).scale(0));
   cppunivariate::LstCost cost{mltest::as_span(g.data)};
   double p[3] = {r.mu,std::log(r.sigma),std::log(r.df-1.0)};
   double grad[3], numeric[3];

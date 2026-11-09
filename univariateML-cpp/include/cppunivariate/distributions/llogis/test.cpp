@@ -24,9 +24,9 @@ TEST_CASE("rllogis samples are positive; CDF round-trip at p=0.7") {
 TEST_CASE("llogis") {
   auto g = mltest::load_distribution_golden("llogis");
   auto r = cppunivariate::loglogistic_mle(mltest::as_span(g.data), mltest::kFitTol, mltest::kFitMaxit);
-  CHECK(r.shape == doctest::Approx(g.estimates.at("shape")).epsilon(mltest::kTol));
-  CHECK(r.scale == doctest::Approx(g.estimates.at("scale")).epsilon(mltest::kTol));
-  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kTol));
+  CHECK(r.shape == doctest::Approx(g.estimates.at("shape")).epsilon(mltest::kGolden_llogis).scale(0));
+  CHECK(r.scale == doctest::Approx(g.estimates.at("scale")).epsilon(mltest::kGolden_llogis).scale(0));
+  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kGolden_llogis).scale(0));
 }
 
 TEST_CASE("llogis: seeded sample with outlier") {

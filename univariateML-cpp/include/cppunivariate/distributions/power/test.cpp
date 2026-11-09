@@ -26,9 +26,9 @@ TEST_CASE("rpower samples lie in (0, alpha); mean = alpha*beta/(beta+1)") {
 TEST_CASE("power") {
   auto g = mltest::load_distribution_golden("power");
   auto r = cppunivariate::power_mle(mltest::as_span(g.data), 1.490116e-08);
-  CHECK(r.alpha == doctest::Approx(g.estimates.at("alpha")).epsilon(mltest::kTol));
-  CHECK(r.beta == doctest::Approx(g.estimates.at("beta")).epsilon(mltest::kTol));
-  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kTol));
+  CHECK(r.alpha == doctest::Approx(g.estimates.at("alpha")).epsilon(mltest::kGolden_power).scale(0));
+  CHECK(r.beta == doctest::Approx(g.estimates.at("beta")).epsilon(mltest::kGolden_power).scale(0));
+  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kGolden_power).scale(0));
 }
 
 // Independent high-precision oracle; see quality/truth.py.

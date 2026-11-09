@@ -10,9 +10,9 @@
 TEST_CASE("norm") {
   auto g = mltest::load_distribution_golden("norm");
   auto r = cppunivariate::norm_mle(mltest::as_span(g.data));
-  CHECK(r.mean == doctest::Approx(g.estimates.at("mean")).epsilon(mltest::kTol));
-  CHECK(r.sd == doctest::Approx(g.estimates.at("sd")).epsilon(mltest::kTol));
-  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kTol));
+  CHECK(r.mean == doctest::Approx(g.estimates.at("mean")).epsilon(mltest::kGolden_norm).scale(0));
+  CHECK(r.sd == doctest::Approx(g.estimates.at("sd")).epsilon(mltest::kGolden_norm).scale(0));
+  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kGolden_norm).scale(0));
 }
 
 TEST_CASE("norm: seeded sample with outlier") {

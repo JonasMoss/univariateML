@@ -9,8 +9,8 @@ TEST_CASE("zeta: golden, boundary and invalid data") {
   for (double k:g.data) x.push_back(static_cast<int>(k));
   const auto fit=cppunivariate::zeta_mle({x.data(),x.size()},1e-10,200);
   CHECK(fit.status==cppunivariate::ZetaStatus::Ok);
-  CHECK(fit.s==doctest::Approx(g.estimates.at("s")).epsilon(1e-8));
-  CHECK(fit.logLik==doctest::Approx(g.logLik).epsilon(1e-10));
+  CHECK(fit.s==doctest::Approx(g.estimates.at("s")).epsilon(mltest::kGolden_zeta).scale(0));
+  CHECK(fit.logLik==doctest::Approx(g.logLik).epsilon(mltest::kGolden_zeta).scale(0));
   const std::vector<int> one={1,1},constant={2,2},bad={0,1};
   CHECK(cppunivariate::zeta_mle({one.data(),one.size()}).status==cppunivariate::ZetaStatus::PointMass);
   CHECK(cppunivariate::zeta_mle({constant.data(),constant.size()}).status==cppunivariate::ZetaStatus::Ok);

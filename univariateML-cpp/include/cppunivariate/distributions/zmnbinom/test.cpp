@@ -9,10 +9,10 @@ TEST_CASE("zmnbinom: golden, score and distribution") {
  std::vector<int> x;for(double v:g.data)x.push_back(static_cast<int>(v));
  const auto fit=cppunivariate::zmnbinom_mle({x.data(),x.size()});
  REQUIRE(fit.status==cppunivariate::ZmnbinomStatus::Ok);
- CHECK(fit.size==doctest::Approx(g.estimates.at("size")).epsilon(3e-6));
- CHECK(fit.prob==doctest::Approx(g.estimates.at("prob")).epsilon(3e-6));
- CHECK(fit.p0==doctest::Approx(g.estimates.at("p0")).epsilon(1e-10));
- CHECK(fit.logLik==doctest::Approx(g.logLik).epsilon(1e-10));
+ CHECK(fit.size==doctest::Approx(g.estimates.at("size")).epsilon(mltest::kGolden_zmnbinom).scale(0));
+ CHECK(fit.prob==doctest::Approx(g.estimates.at("prob")).epsilon(mltest::kGolden_zmnbinom).scale(0));
+ CHECK(fit.p0==doctest::Approx(g.estimates.at("p0")).epsilon(mltest::kGolden_zmnbinom).scale(0));
+ CHECK(fit.logLik==doctest::Approx(g.logLik).epsilon(mltest::kGolden_zmnbinom).scale(0));
  std::vector<double> p{fit.size,fit.prob,fit.p0};
  auto ll=[&](const std::vector<double> &par){double l=0;for(int v:x)l+=cppunivariate::distributions::dzmnbinom(v,par[0],par[1],par[2],true);return l;};
  CHECK(ll(p)==doctest::Approx(fit.logLik).epsilon(1e-10));

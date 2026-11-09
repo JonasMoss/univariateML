@@ -7,9 +7,9 @@ TEST_CASE("foldnorm golden and second moment identity") {
   const auto g=mltest::load_distribution_golden("foldnorm");
   const auto r=cppunivariate::foldnorm_mle({g.data.data(),g.data.size()});
   CHECK(r.status==cppunivariate::FoldnormStatus::Ok);
-  CHECK(r.mu==doctest::Approx(g.estimates.at("mu")).epsilon(1e-6));
-  CHECK(r.sigma==doctest::Approx(g.estimates.at("sigma")).epsilon(1e-6));
-  CHECK(r.logLik==doctest::Approx(g.logLik).epsilon(1e-12));
+  CHECK(r.mu==doctest::Approx(g.estimates.at("mu")).epsilon(mltest::kGolden_foldnorm).scale(0));
+  CHECK(r.sigma==doctest::Approx(g.estimates.at("sigma")).epsilon(mltest::kGolden_foldnorm).scale(0));
+  CHECK(r.logLik==doctest::Approx(g.logLik).epsilon(mltest::kGolden_foldnorm).scale(0));
   double score_mu=0,score_sigma=0;
   for (double z:g.data) {
     const double t=std::tanh(z*r.mu/(r.sigma*r.sigma));

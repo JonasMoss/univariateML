@@ -41,10 +41,11 @@ def r_bound_to_sympy(expr):
 def interval(domain, values):
     return tuple((float(sp.sympify(v.strip(), locals={**values, 'inf': sp.oo})) for v in domain[1:-1].split(',')))
 
-def check(id):
+def check(id, golden=None):
     folder = DISTS / id
     meta = yaml.safe_load((folder / 'README.md').read_text().split('---', 2)[1])
-    golden = json.loads((folder / 'golden.json').read_text())
+    if golden is None:
+        golden = json.loads((folder / 'golden.json').read_text())
     params, values = (meta['params'], {k: float(v) if isinstance(v, str) else v for k, v in golden['estimates'].items()})
     domains = [interval(p['domain'], values) for p in params]
     fixed_names = set(golden.get('fixed', [])) | {
@@ -74,7 +75,7 @@ def check(id):
     theta = [values[p['name']] for p in params]
     # Held: support endpoints, integer parameters, and parameters the golden
     # fit held fixed (golden.json `fixed`).
-    held = {syms[i]: theta[i] for i, p in enumerate(params) if p.get('bound') or p.get('integer') or p['name'] in fixed_names}
+    held = {syms[i]: int(theta[i]) if p.get('integer') else theta[i] for i, p in enumerate(params) if p.get('bound') or p.get('integer') or p['name'] in fixed_names}
     expr = expr.subs(held).doit()
     expr = expr.replace(sp.Abs, lambda a: sp.Piecewise((a, a >= 0), (-a, True)))
     if expr.free_symbols - set(syms) - {x}:

@@ -38,9 +38,9 @@ TEST_CASE("skellam: golden") {
   auto g=mltest::load_distribution_golden("skellam");
   auto r=cppunivariate::skellam_mle(mltest::as_span(g.data));
   CHECK(r.status==cppunivariate::SkellamStatus::Ok);
-  CHECK(r.mu1==doctest::Approx(g.estimates.at("mu1")).epsilon(1e-5));
-  CHECK(r.mu2==doctest::Approx(g.estimates.at("mu2")).epsilon(1e-5));
-  CHECK(r.logLik==doctest::Approx(g.logLik).epsilon(1e-8));
+  CHECK(r.mu1==doctest::Approx(g.estimates.at("mu1")).epsilon(mltest::kGolden_skellam).scale(0));
+  CHECK(r.mu2==doctest::Approx(g.estimates.at("mu2")).epsilon(mltest::kGolden_skellam).scale(0));
+  CHECK(r.logLik==doctest::Approx(g.logLik).epsilon(mltest::kGolden_skellam).scale(0));
   for(int coordinate=0;coordinate<2;++coordinate) {
     const double h=1e-4*std::max(1.0,coordinate==0?r.mu1:r.mu2);
     double plus=0,minus=0;

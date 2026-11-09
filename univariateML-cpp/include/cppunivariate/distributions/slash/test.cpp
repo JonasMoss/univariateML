@@ -6,7 +6,7 @@ TEST_CASE("slash: golden and likelihood") {
   const auto g=mltest::load_distribution_golden("slash");
   const auto f=cppunivariate::slash_mle(mltest::as_span(g.data));
   REQUIRE(f.status==cppunivariate::SlashStatus::Ok);
-  CHECK(f.logLik==doctest::Approx(g.logLik).epsilon(1e-7));
+  CHECK(f.logLik==doctest::Approx(g.logLik).epsilon(mltest::kGolden_slash).scale(0));
   double ll=0;for(double x:g.data)ll+=cppunivariate::distributions::dslash(x,f.mu,f.sigma,true);
   CHECK(ll==doctest::Approx(f.logLik).epsilon(1e-12));
   std::vector<double> theta={f.mu,f.sigma};
@@ -248,4 +248,12 @@ TEST_CASE("slash: cached scale scores preserve the uncached summation") {
     const cppunivariate::slash_detail::ScaleScore cached{d,0};
     CHECK(cached(0)==1.);
   }
+}
+
+TEST_CASE("slash: independent golden coefficients") {
+  const auto g=mltest::load_distribution_golden("slash");
+  const auto f=cppunivariate::slash_mle(mltest::as_span(g.data));
+  REQUIRE(f.status==cppunivariate::SlashStatus::Ok);
+  CHECK(f.mu==doctest::Approx(g.estimates.at("mu")).epsilon(mltest::kGolden_slash).scale(0));
+  CHECK(f.sigma==doctest::Approx(g.estimates.at("sigma")).epsilon(mltest::kGolden_slash).scale(0));
 }

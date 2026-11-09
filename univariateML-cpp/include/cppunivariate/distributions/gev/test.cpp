@@ -7,10 +7,10 @@ TEST_CASE("gev: golden and independent scores") {
   const auto g=mltest::load_distribution_golden("gev");
   const auto r=cppunivariate::gev_mle(mltest::as_span(g.data));
   REQUIRE(r.status==cppunivariate::GevStatus::Ok);
-  CHECK(r.mu==doctest::Approx(g.estimates.at("mu")).epsilon(1e-10));
-  CHECK(r.sigma==doctest::Approx(g.estimates.at("sigma")).epsilon(1e-10));
-  CHECK(r.xi==doctest::Approx(g.estimates.at("xi")).epsilon(1e-10));
-  CHECK(r.logLik==doctest::Approx(g.logLik).epsilon(1e-10));
+  CHECK(r.mu==doctest::Approx(g.estimates.at("mu")).epsilon(mltest::kGolden_gev).scale(0));
+  CHECK(r.sigma==doctest::Approx(g.estimates.at("sigma")).epsilon(mltest::kGolden_gev).scale(0));
+  CHECK(r.xi==doctest::Approx(g.estimates.at("xi")).epsilon(mltest::kGolden_gev).scale(0));
+  CHECK(r.logLik==doctest::Approx(g.logLik).epsilon(mltest::kGolden_gev).scale(0));
   double norm=0,h=1e-5;
   for(int j=0;j<3;++j) {
     double p[3]={r.mu,r.sigma,r.xi};p[j]+=h;
@@ -539,9 +539,9 @@ TEST_CASE("gev: joint certificate compares the closed face and isolates public c
   REQUIRE(r.status==cppunivariate::GevStatus::Ok);
   CHECK(r.iterations>0);
   CHECK(r.iterations<=cppunivariate::certificate_budget(100));
-  CHECK(r.mu==doctest::Approx(g.estimates.at("mu")).epsilon(1e-10));
-  CHECK(r.sigma==doctest::Approx(g.estimates.at("sigma")).epsilon(1e-10));
-  CHECK(r.xi==doctest::Approx(g.estimates.at("xi")).epsilon(1e-10));
+  CHECK(r.mu==doctest::Approx(g.estimates.at("mu")).epsilon(mltest::kGolden_gev).scale(0));
+  CHECK(r.sigma==doctest::Approx(g.estimates.at("sigma")).epsilon(mltest::kGolden_gev).scale(0));
+  CHECK(r.xi==doctest::Approx(g.estimates.at("xi")).epsilon(mltest::kGolden_gev).scale(0));
   const auto tight=cppunivariate::gev_mle(mltest::as_span(g.data),1e-16,100);
   CHECK(tight.status!=cppunivariate::GevStatus::Ok);
   CHECK_FALSE(tight.stop_detail.comparison_tie);

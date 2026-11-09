@@ -7,8 +7,8 @@ TEST_CASE("invparalogis: golden, reciprocal agreement and score") {
   // invparalogis_mle is paralogis_mle on 1/x (same finite-difference BFGS,
   // same default gradtol kFitTol); reuse kFdTol like the paralogis golden
   // check for the same reason (test_support.hpp's kFdTol comment).
-  CHECK(r.shape == doctest::Approx(g.estimates.at("shape")).epsilon(mltest::kFdTol)); CHECK(r.scale == doctest::Approx(g.estimates.at("scale")).epsilon(mltest::kFdTol));
-  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kFdTol));
+  CHECK(r.shape == doctest::Approx(g.estimates.at("shape")).epsilon(mltest::kGolden_invparalogis).scale(0)); CHECK(r.scale == doctest::Approx(g.estimates.at("scale")).epsilon(mltest::kGolden_invparalogis).scale(0));
+  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kGolden_invparalogis).scale(0));
   std::vector<double> y; double jac=0;
   for (double x:g.data) { y.push_back(1/x); jac-=2*std::log(x); }
   auto b=cppunivariate::paralogis_mle(mltest::as_span(y), mltest::kFitTol, mltest::kFitMaxit);

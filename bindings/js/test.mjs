@@ -59,13 +59,15 @@ function checkTruth(f) {
   const own=failures.filter(x=>x.family===f);assert.equal(own.length,0,JSON.stringify(own));
 }
 
+const goldenCases=JSON.parse(readFileSync(new URL('../../build/js/generated/fit-cases.json',import.meta.url)));
 const close=(a,b,t)=>a===b||Number.isNaN(a)&&Number.isNaN(b)||Number.isFinite(a)&&Number.isFinite(b)&&Math.abs(a-b)<=t*Math.max(1,Math.abs(b));
 for(const f of ['exp','gamma','gb2']) {
  test(`${f} golden`,()=>{
   const g=read(f,'golden'),r=m[`fit${f}`](new Float64Array(g.data),{},{});
+  const policy=goldenCases.find(c=>c.id===f);
   assert.equal(r.status,'Ok');
-  for(const [k,v] of Object.entries(g.estimates)) assert.ok(Math.abs(r.estimates[k]-v)<=(f==='gb2'?1e-5:1e-10)*Math.max(Math.abs(v),Math.abs(r.estimates[k])),`${k}: ${r.estimates[k]} vs ${v}`);
-  assert.ok(Math.abs(r.logLik-g.logLik)<=(f==='gb2'?1e-9:1e-10)*Math.max(Math.abs(r.logLik),Math.abs(g.logLik)));
+  for(const [k,v] of Object.entries(g.estimates)) assert.ok(Math.abs(r.estimates[k]-v)<=policy.tol*Math.max(Math.abs(v),Math.abs(r.estimates[k])),`${k}: ${r.estimates[k]} vs ${v}`);
+  assert.ok(Math.abs(r.logLik-g.logLik)<=policy.ll_tol*Math.max(Math.abs(r.logLik),Math.abs(g.logLik)));
  });
  test(`${f} every held subset`,()=>{const g=read(f,'golden'),names=Object.keys(g.estimates);for(let mask=1;mask<1<<names.length;mask++){const held=Object.fromEntries(names.filter((_,i)=>mask>>i&1).map(k=>[k,g.estimates[k]]));const r=m[`fit${f}`](new Float64Array(g.data),held,{});for(const [k,v] of Object.entries(held))assert.equal(r.estimates[k],v);assert.equal(r.status,'Ok');}});
 }

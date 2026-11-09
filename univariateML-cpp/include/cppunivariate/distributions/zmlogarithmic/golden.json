@@ -9,11 +9,33 @@
     "p0": 0.29999999999999999
   },
   "estimates": {
-    "prob": 0.3852620621412276,
-    "p0": 0.26400000000000001
+    "prob": 0.38526206214122777,
+    "p0": 0.264
   },
   "fixed": [],
-  "logLik": -540.94911729706337,
+  "logLik": -540.9491172970652,
   "n_obs": 500,
-  "data": [2, 1, 2, 1, 2, 1, 1, 0, 1, 0, 0, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 0, 1, 0, 2, 1, 1, 2, 2, 0, 1, 1, 1, 2, 0, 4, 2, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 4, 0, 0, 1, 4, 1, 1, 0, 0, 1, 0, 1, 1, 0, 1, 1, 2, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 3, 1, 1, 2, 4, 1, 1, 1, 1, 1, 0, 1, 2, 1, 1, 0, 4, 3, 1, 2, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 0, 4, 1, 0, 1, 0, 0, 0, 3, 1, 2, 1, 1, 2, 2, 1, 1, 2, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 0, 1, 2, 1, 0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 2, 1, 1, 2, 1, 1, 1, 1, 2, 0, 3, 2, 1, 1, 1, 1, 2, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 4, 0, 2, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 2, 1, 3, 0, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 2, 1, 0, 1, 1, 2, 1, 2, 0, 0, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 3, 1, 1, 1, 0, 0, 1, 1, 0, 1, 2, 0, 2, 0, 2, 1, 1, 1, 2, 2, 1, 1, 2, 0, 1, 1, 1, 2, 1, 1, 0, 1, 0, 1, 0, 1, 1, 2, 0, 1, 1, 1, 2, 0, 2, 0, 1, 2, 0, 1, 1, 0, 2, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 2, 2, 0, 2, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1, 2, 2, 1, 0, 2, 0, 2, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 3, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 3, 0, 1, 2, 1, 0, 0, 2, 0, 1, 1, 0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 2, 1, 1, 0, 1, 0, 1, 0, 2, 1, 1, 1, 1, 0, 1, 2, 3, 2, 1, 0, 0, 1, 0, 1, 1, 0, 0, 2, 4, 1, 1, 0, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1]
+  "data": [2, 1, 2, 1, 2, 1, 1, 0, 1, 0, 0, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 0, 1, 0, 2, 1, 1, 2, 2, 0, 1, 1, 1, 2, 0, 4, 2, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 4, 0, 0, 1, 4, 1, 1, 0, 0, 1, 0, 1, 1, 0, 1, 1, 2, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 3, 1, 1, 2, 4, 1, 1, 1, 1, 1, 0, 1, 2, 1, 1, 0, 4, 3, 1, 2, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 0, 4, 1, 0, 1, 0, 0, 0, 3, 1, 2, 1, 1, 2, 2, 1, 1, 2, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 0, 1, 2, 1, 0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 2, 1, 1, 2, 1, 1, 1, 1, 2, 0, 3, 2, 1, 1, 1, 1, 2, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 4, 0, 2, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 2, 1, 3, 0, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 2, 1, 0, 1, 1, 2, 1, 2, 0, 0, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 3, 1, 1, 1, 0, 0, 1, 1, 0, 1, 2, 0, 2, 0, 2, 1, 1, 1, 2, 2, 1, 1, 2, 0, 1, 1, 1, 2, 1, 1, 0, 1, 0, 1, 0, 1, 1, 2, 0, 1, 1, 1, 2, 0, 2, 0, 1, 2, 0, 1, 1, 0, 2, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 2, 2, 0, 2, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1, 2, 2, 1, 0, 2, 0, 2, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 3, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 3, 0, 1, 2, 1, 0, 0, 2, 0, 1, 1, 0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 2, 1, 1, 0, 1, 0, 1, 0, 2, 1, 1, 1, 1, 0, 1, 2, 3, 2, 1, 0, 0, 1, 0, 1, 1, 0, 0, 2, 4, 1, 1, 0, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1],
+  "reference": {
+    "method": "damped Newton at 50 digits on the README log density, from the fitted values",
+    "precision_digits": 50,
+    "estimates": {
+      "prob": "0.3852620621412277752953282",
+      "p0": "0.264"
+    },
+    "logLik": "-540.949117297065211762378",
+    "free": [
+      "prob",
+      "p0"
+    ],
+    "not_refined": {},
+    "score_norm": "1.18e-58",
+    "information_negative_definite": true,
+    "global": {
+      "kind": "dossier optimality/uniqueness proof",
+      "statement": "With both coefficients free, every nonempty sample of nonnegative integers has an MLE. The zero probability is the observed zero fraction. If there is a positive observation, the positive-count probability is unique, including $p=0$ when every positive count is one. With all-zero data, $p_0=1$ and $p$ is unidentified. Holding either coefficient leaves the same maximization for the other, provided the held values give positive likelihood. Holding both leaves only likelihood evaluation.",
+      "reason": "The likelihood factors into the Bernoulli likelihood of the zero indicators and a logarithmic-series likelihood for the positive counts. The latter is a one-parameter exponential family with natural parameter $\\log p$. Its mean increases strictly from one to infinity because its derivative in that parameter is its positive variance. Strict concavity therefore gives a unique root for a positive-count mean above one. At mean one the maximum is the attained member $p=0$. With no positive counts this factor is absent."
+    },
+    "input_sha256": "ac3c2c7a7db2c235bbc7dba47f78230af9bc497cb80361e4f614779b65fc44cc"
+  }
 }

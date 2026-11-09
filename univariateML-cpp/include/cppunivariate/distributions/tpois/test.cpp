@@ -31,8 +31,8 @@ TEST_CASE("tpois: golden regression") {
   auto g=mltest::load_distribution_golden("tpois");std::vector<int>x;
   for(double v:g.data)x.push_back(static_cast<int>(v));
   auto f=cppunivariate::tpois_mle({x.data(),x.size()},0,10);
-  CHECK(f.logLik==doctest::Approx(g.logLik).epsilon(1e-10));
-  CHECK(f.parameter==doctest::Approx(g.estimates.at("lambda")).epsilon(1e-10));
+  CHECK(f.logLik==doctest::Approx(g.logLik).epsilon(mltest::kGolden_tpois).scale(0));
+  CHECK(f.parameter==doctest::Approx(g.estimates.at("lambda")).epsilon(mltest::kGolden_tpois).scale(0));
 }
 
 // Independent high-precision oracle; see quality/truth.py.

@@ -20,9 +20,9 @@ namespace {
   auto g = mltest::load_distribution_golden("nbinom");
   auto v = as_ints(g.data);
   auto r = cppunivariate::nbinom_mle(as_ispan(v), mltest::kFitTol, mltest::kFitMaxit);
-  CHECK(r.size == D_APPROX(g.estimates.at("size")));
-  CHECK(r.prob == D_APPROX(g.estimates.at("prob")));
-  CHECK(r.logLik == D_APPROX(g.logLik));
+  CHECK(r.size == doctest::Approx(g.estimates.at("size")).epsilon(mltest::kGolden_nbinom).scale(0));
+  CHECK(r.prob == doctest::Approx(g.estimates.at("prob")).epsilon(mltest::kGolden_nbinom).scale(0));
+  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kGolden_nbinom).scale(0));
 }
 
 TEST_CASE("nbinom all zeros") {

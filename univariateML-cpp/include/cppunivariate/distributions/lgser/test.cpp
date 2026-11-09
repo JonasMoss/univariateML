@@ -20,8 +20,8 @@ namespace {
   auto g = mltest::load_distribution_golden("lgser");
   auto v = as_ints(g.data);
   auto r = cppunivariate::lgser_mle(as_ispan(v));
-  CHECK(r.theta == D_APPROX(g.estimates.at("theta")));
-  CHECK(r.logLik == D_APPROX(g.logLik));
+  CHECK(r.theta == doctest::Approx(g.estimates.at("theta")).epsilon(mltest::kGolden_lgser).scale(0));
+  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kGolden_lgser).scale(0));
 }
 
 TEST_CASE("lgser: mean just above one") {

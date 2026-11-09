@@ -28,9 +28,9 @@ TEST_CASE("rkumar samples lie in (0, 1); CDF round-trip at p=0.3") {
 TEST_CASE("kumar") {
   auto g = mltest::load_distribution_golden("kumar");
   auto r = cppunivariate::kumar_mle(mltest::as_span(g.data), mltest::kFitTol, mltest::kFitMaxit);
-  CHECK(r.a == C_APPROX(g.estimates.at("a")));
-  CHECK(r.b == C_APPROX(g.estimates.at("b")));
-  CHECK(r.logLik == C_APPROX(g.logLik));
+  CHECK(r.a == doctest::Approx(g.estimates.at("a")).epsilon(mltest::kGolden_kumar).scale(0));
+  CHECK(r.b == doctest::Approx(g.estimates.at("b")).epsilon(mltest::kGolden_kumar).scale(0));
+  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kGolden_kumar).scale(0));
 }
 
 #undef C_APPROX
@@ -60,11 +60,11 @@ TEST_CASE("kumar clipped extremes: stable profile oracle and honest exhaustion")
   CHECK(std::isfinite(cppunivariate::kumar_mle(mltest::as_span(x), 1e-12, 1).a));
 }
 
-TEST_CASE("kumar ordinary golden is unchanged to 1e-12") {
+TEST_CASE("kumar ordinary fit against the independent golden reference") {
   const auto g = mltest::load_distribution_golden("kumar");
   const auto r = cppunivariate::kumar_mle(mltest::as_span(g.data), mltest::kFitTol, mltest::kFitMaxit);
-  CHECK(std::abs(r.a - g.estimates.at("a")) < 1e-12);
-  CHECK(std::abs(r.b - g.estimates.at("b")) < 1e-12);
+  CHECK(r.a == doctest::Approx(g.estimates.at("a")).epsilon(mltest::kGolden_kumar).scale(0));
+  CHECK(r.b == doctest::Approx(g.estimates.at("b")).epsilon(mltest::kGolden_kumar).scale(0));
   CHECK(std::abs(r.logLik - g.logLik) < 1e-12);
 }
 

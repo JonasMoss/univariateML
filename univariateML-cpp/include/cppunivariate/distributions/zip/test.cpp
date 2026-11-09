@@ -21,9 +21,9 @@ namespace {
   auto g = mltest::load_distribution_golden("zip");
   auto v = as_ints(g.data);
   auto r = cppunivariate::zip_mle(as_ispan(v));
-  CHECK(r.lambda == D_APPROX(g.estimates.at("lambda")));
-  CHECK(r.pi == D_APPROX(g.estimates.at("pi")));
-  CHECK(r.logLik == D_APPROX(g.logLik));
+  CHECK(r.lambda == doctest::Approx(g.estimates.at("lambda")).epsilon(mltest::kGolden_zip).scale(0));
+  CHECK(r.pi == doctest::Approx(g.estimates.at("pi")).epsilon(mltest::kGolden_zip).scale(0));
+  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kGolden_zip).scale(0));
 }
 
 TEST_CASE("zip ordinary zero inflation") {

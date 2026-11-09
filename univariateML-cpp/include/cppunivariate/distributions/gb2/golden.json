@@ -11,13 +11,13 @@
     "scale": 1
   },
   "estimates": {
-    "shape1": 0.5710330324328029,
-    "shape2": 1.123220989970799,
-    "shape3": 0.71164837657388069,
-    "scale": 1.0079365599415882
+    "shape1": 0.5710330324328211,
+    "shape2": 1.1232209899707157,
+    "shape3": 0.7116483765740074,
+    "scale": 1.0079365599413483
   },
   "fixed": [],
-  "logLik": -1322.5740862676896,
+  "logLik": -1322.5740862676914,
   "n_obs": 500,
   "data": [
     57.435341199768203,
@@ -520,5 +520,40 @@
     1.7248848976641076,
     3.3785345893883165,
     297.72488655732144
-  ]
+  ],
+  "reference": {
+    "method": "damped Newton at 50 digits on the README log density, from the fitted values",
+    "precision_digits": 50,
+    "estimates": {
+      "shape1": "0.5710330324328210574218395",
+      "shape2": "1.123220989970715683920105",
+      "shape3": "0.7116483765740073463418646",
+      "scale": "1.007936559941348243803769"
+    },
+    "logLik": "-1322.574086267691396571832",
+    "free": [
+      "shape1",
+      "shape2",
+      "shape3",
+      "scale"
+    ],
+    "not_refined": {},
+    "score_norm": "1.31e-58",
+    "information_negative_definite": true,
+    "global": {
+      "kind": "numerical multistart, not a proof",
+      "starts": 8,
+      "status": "pass",
+      "gap": 2.2737367544323206e-13,
+      "logLik": -1322.5740862676912,
+      "estimates": {
+        "shape1": 0.5710330324328211,
+        "shape2": 1.1232209899707157,
+        "shape3": 0.7116483765740074,
+        "scale": 1.0079365599413483
+      },
+      "feasible_results": 16
+    },
+    "input_sha256": "b776d1dcc371f7369f1163cc68a9e3c17f794532315b22360548a372b64e6b9c"
+  }
 }

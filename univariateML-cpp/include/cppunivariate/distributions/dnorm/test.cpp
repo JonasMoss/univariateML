@@ -9,9 +9,9 @@ TEST_CASE("dnorm: golden and independent score") {
   const auto g=mltest::load_distribution_golden("dnorm");
   const auto r=cppunivariate::dnorm_mle({g.data.data(),g.data.size()});
   REQUIRE(r.status==cppunivariate::DnormStatus::Ok);
-  CHECK(r.mean==doctest::Approx(g.estimates.at("mean")).epsilon(2e-6));
-  CHECK(r.sd==doctest::Approx(g.estimates.at("sd")).epsilon(2e-6));
-  CHECK(r.logLik==doctest::Approx(g.logLik).epsilon(1e-9));
+  CHECK(r.mean==doctest::Approx(g.estimates.at("mean")).epsilon(mltest::kGolden_dnorm).scale(0));
+  CHECK(r.sd==doctest::Approx(g.estimates.at("sd")).epsilon(mltest::kGolden_dnorm).scale(0));
+  CHECK(r.logLik==doctest::Approx(g.logLik).epsilon(mltest::kGolden_dnorm).scale(0));
   const double h=1e-5;
   double ga=0,gb=0;
   for (double x:g.data) {

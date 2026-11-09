@@ -12,11 +12,11 @@ TEST_CASE("gb2: golden and full score gate") {
     budget_data.push_back(std::sqrt(u/(1-u)));
   }
   CHECK(cppunivariate::gb2_mle(mltest::as_span(budget_data),1e-7,1).status==cppunivariate::Gb2Status::CertificateBudget);
-  CHECK(r.logLik==doctest::Approx(g.logLik).epsilon(1e-9));
-  CHECK(r.shape1==doctest::Approx(g.estimates.at("shape1")).epsilon(1e-5));
-  CHECK(r.shape2==doctest::Approx(g.estimates.at("shape2")).epsilon(1e-5));
-  CHECK(r.shape3==doctest::Approx(g.estimates.at("shape3")).epsilon(1e-5));
-  CHECK(r.scale==doctest::Approx(g.estimates.at("scale")).epsilon(1e-5));
+  CHECK(r.logLik==doctest::Approx(g.logLik).epsilon(mltest::kGolden_gb2).scale(0));
+  CHECK(r.shape1==doctest::Approx(g.estimates.at("shape1")).epsilon(mltest::kGolden_gb2).scale(0));
+  CHECK(r.shape2==doctest::Approx(g.estimates.at("shape2")).epsilon(mltest::kGolden_gb2).scale(0));
+  CHECK(r.shape3==doctest::Approx(g.estimates.at("shape3")).epsilon(mltest::kGolden_gb2).scale(0));
+  CHECK(r.scale==doctest::Approx(g.estimates.at("scale")).epsilon(mltest::kGolden_gb2).scale(0));
   std::vector<double> v{r.shape1,r.shape2,r.shape3,r.scale};
   for(int j=0;j<4;++j) {
     auto p=v,m=v;p[j]*=std::exp(1e-5);m[j]*=std::exp(-1e-5);
@@ -148,10 +148,10 @@ TEST_CASE("gb2: bounded member seeds retain the full-data repeated-sample fit") 
   const auto fit=cppunivariate::gb2_mle(mltest::as_span(repeated));
   REQUIRE(fit.status==cppunivariate::Gb2Status::Ok);
   CHECK(fit.logLik==doctest::Approx(3*g.logLik).epsilon(1e-12));
-  CHECK(fit.shape1==doctest::Approx(g.estimates.at("shape1")).epsilon(1e-7));
-  CHECK(fit.shape2==doctest::Approx(g.estimates.at("shape2")).epsilon(1e-7));
-  CHECK(fit.shape3==doctest::Approx(g.estimates.at("shape3")).epsilon(1e-7));
-  CHECK(fit.scale==doctest::Approx(g.estimates.at("scale")).epsilon(1e-7));
+  CHECK(fit.shape1==doctest::Approx(g.estimates.at("shape1")).epsilon(mltest::kGolden_gb2).scale(0));
+  CHECK(fit.shape2==doctest::Approx(g.estimates.at("shape2")).epsilon(mltest::kGolden_gb2).scale(0));
+  CHECK(fit.shape3==doctest::Approx(g.estimates.at("shape3")).epsilon(mltest::kGolden_gb2).scale(0));
+  CHECK(fit.scale==doctest::Approx(g.estimates.at("scale")).epsilon(mltest::kGolden_gb2).scale(0));
 }
 
 TEST_CASE("gb2: face comparison cannot resolve rounded extreme objectives") {

@@ -10,16 +10,41 @@
     "b": 10
   },
   "estimates": {
-    "lambda": 2.9605593598095785,
-    "a": 0,
-    "b": 10
+    "lambda": 2.960559359809578,
+    "a": 0.0,
+    "b": 10.0
   },
   "fixed": ["a", "b"],
-  "logLik": -907.5998710799106,
+  "logLik": -907.5998710799129,
   "n_obs": 500,
   "data": [5, 2, 2, 3, 2, 3, 5, 3, 2, 3, 3, 4, 1, 4, 2, 3, 3, 4, 2, 6, 1, 3, 2, 2, 2, 8, 4, 2, 3, 4, 3, 3, 2, 5, 2, 1, 2, 3, 5, 1, 5, 8, 3, 1, 1, 3, 3, 1, 4, 1, 5, 5, 7, 3, 2, 2, 3, 2, 3, 4, 1, 5, 2, 2, 4, 3, 4, 1, 5, 5, 4, 8, 3, 1, 3, 2, 2, 5, 2, 4, 4, 1, 3, 4, 2, 2, 2, 6, 1, 3, 3, 5, 2, 2, 4, 1, 4, 1, 1, 6, 2, 4, 2, 4, 5, 1, 4, 2, 5, 2, 3, 6, 4, 1, 3, 6, 2, 4, 1, 1, 2, 4, 2, 2, 5, 7, 1, 2, 1, 2, 1, 6, 2, 4, 3, 3, 2, 3, 1, 4, 5, 4, 3, 2, 6, 4, 6, 7, 2, 2, 2, 3, 1, 1, 2, 2, 4, 4, 7, 4, 2, 3, 2, 2, 3, 3, 1, 4, 1, 2, 5, 3, 3, 3, 1, 3, 5, 7, 2, 5, 1, 4, 1, 3, 2, 4, 5, 1, 4, 2, 2, 1, 1, 3, 3, 7, 4, 7, 1, 3, 5, 2, 3, 3, 2, 3, 4, 2, 2, 2, 3, 3, 3, 2, 2, 5, 4, 3, 6, 1, 2, 4, 1, 2, 4, 4, 6, 1, 2, 1, 2, 4, 2, 1, 5, 1, 3, 3, 1, 2, 4, 6, 2, 1, 4, 1, 3, 6, 5, 3, 3, 4, 3, 3, 2, 3, 3, 3, 4, 1, 1, 5, 4, 2, 2, 1, 5, 2, 1, 1, 2, 2, 2, 5, 2, 5, 1, 5, 4, 9, 6, 5, 2, 1, 7, 2, 3, 1, 5, 3, 4, 2, 4, 4, 1, 4, 7, 1, 3, 3, 2, 6, 3, 3, 2, 5, 2, 7, 3, 4, 2, 1, 8, 4, 5, 3, 4, 3, 3, 5, 2, 3, 3, 1, 2, 2, 2, 4, 4, 3, 4, 4, 1, 3, 3, 2, 2, 4, 5, 4, 2, 3, 3, 3, 3, 4, 2, 5, 3, 2, 3, 3, 4, 2, 3, 3, 4, 5, 2, 4, 3, 5, 1, 5, 3, 5, 4, 2, 3, 2, 4, 2, 3, 4, 4, 2, 3, 1, 2, 3, 4, 2, 3, 2, 2, 3, 5, 1, 6, 3, 3, 1, 6, 1, 3, 3, 2, 8, 2, 2, 1, 5, 3, 1, 8, 1, 5, 4, 4, 2, 3, 4, 4, 2, 4, 5, 2, 3, 2, 3, 1, 2, 6, 3, 3, 7, 4, 2, 3, 3, 2, 4, 3, 4, 4, 7, 2, 2, 1, 1, 1, 2, 3, 2, 5, 3, 6, 3, 2, 4, 2, 4, 2, 2, 3, 3, 2, 4, 1, 1, 3, 3, 1, 1, 5, 2, 2, 5, 2, 1, 6, 7, 3, 4, 3, 2, 3, 5, 3, 2, 4, 3, 1, 3, 8, 4, 2, 2, 6, 3, 3, 3, 1, 1, 4, 4, 3, 3, 7, 6],
   "fit_args": {
     "a": 0,
     "b": 10
+  },
+  "reference": {
+    "method": "damped Newton at 50 digits on the README log density, from the fitted values",
+    "precision_digits": 50,
+    "estimates": {
+      "lambda": "2.960559359809578243287974",
+      "a": "0.0",
+      "b": "10.0"
+    },
+    "logLik": "-907.5998710799129254014951",
+    "free": [
+      "lambda"
+    ],
+    "not_refined": {
+      "a": "held",
+      "b": "held"
+    },
+    "score_norm": "1.09e-59",
+    "information_negative_definite": true,
+    "global": {
+      "kind": "dossier optimality/uniqueness proof",
+      "statement": "With all coefficients free, every nonempty nonnegative integer sample has a finite maximum. A nonconstant sample identifies the rate on the smallest retained integer window, but the real truncation bounds are not unique. A constant sample permits singleton support and does not identify the rate. With data-compatible bounds held, tighten each free bound to the corresponding sample extreme. On a nonsingleton window a unique positive finite rate exists exactly when the sample mean lies strictly between its edges. All-zero data attain rate zero if zero is retained. Other edge-only samples have an unattained point-mass supremum. With the rate held, tightening free bounds maximizes the likelihood whenever the conditioning event and observations have positive probability. Holding all coefficients leaves only likelihood evaluation.",
+      "reason": "Removing unobserved retained counts decreases the conditioning probability and increases the likelihood. Bounds giving the same integer window are equivalent. On a fixed nonsingleton window, the second derivative in $\\log\\lambda$ is minus the sample size times the conditional variance, which is positive. The conditional mean increases from the lower edge to the upper edge (or infinity), giving the stated root criterion. Singleton support has likelihood one for every positive rate. Rate zero is an attained member only when the window contains zero. The uniqueness claim concerns the rate on nonsingleton support, not the complete coefficient vector."
+    },
+    "input_sha256": "784c0ac834b1c0ab14f68cfeca1a6e5bc59087e12f399673fde216a499c3678d"
   }
 }

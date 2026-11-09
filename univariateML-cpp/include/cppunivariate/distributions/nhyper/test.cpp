@@ -26,7 +26,7 @@ TEST_CASE("nhyper: golden and large populations") {
   const auto g=mltest::load_distribution_golden("nhyper");
   const auto a=cppunivariate::nhyper_mle(mltest::as_span(g.data),3,50,std::numeric_limits<double>::quiet_NaN());
   CHECK(a.m==g.estimates.at("m"));
-  CHECK(a.logLik==doctest::Approx(g.logLik).epsilon(1e-12));
+  CHECK(a.logLik==doctest::Approx(g.logLik).epsilon(mltest::kGolden_nhyper).scale(0));
   CHECK(cppunivariate::nhyper_log_pmf(3,1e12,1e12,3)==doctest::Approx(std::log(.125)).epsilon(1e-11));
 }
 TEST_CASE("nhyper: scalar tails, quantiles, RNG and invalid inputs") {

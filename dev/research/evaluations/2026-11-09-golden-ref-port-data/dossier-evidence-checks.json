@@ -1,0 +1,578 @@
+[
+  {
+    "id": "beta",
+    "current_uniqueness": "proved",
+    "current_statement": "For a nonempty sample strictly between zero and one, the MLE with both shapes free exists if and only if the observations are not all equal, and it is then unique. With either finite positive shape held, the remaining shape has a unique finite MLE even for constant data. With both shapes held, the likelihood is evaluated at those values.",
+    "current_reason": "The beta family is a minimal regular exponential family with natural parameter $(\\alpha-1,\\beta-1)$ and statistic $(\\log x,\\log(1-x))$. Its log likelihood is strictly concave. The interior of the convex support is $e^u+e^v<1$. Strict Jensen inequalities put the mean statistic there exactly for nonconstant samples, giving existence of the finite maximum. For constant data $x=c$, the path $(\\alpha,\\beta)=(tc,t(1-c))$ has density at $c$ growing as $\\sqrt{t}$ by Stirling's formula. With one shape $h>0$ held, the free-shape score per observation is $a+\\psi(z+h)-\\psi(z)$, where $a<0$ is the corresponding mean log observation. Its derivative is $\\psi_1(z+h)-\\psi_1(z)<0$, and its limits are positive infinity at zero and $a<0$ at infinity.",
+    "reference": {
+      "kind": "dossier optimality/uniqueness proof",
+      "statement": "For a nonempty sample strictly between zero and one, the MLE with both shapes free exists if and only if the observations are not all equal, and it is then unique. With either finite positive shape held, the remaining shape has a unique finite MLE even for constant data. With both shapes held, the likelihood is evaluated at those values.",
+      "reason": "The beta family is a minimal regular exponential family with natural parameter $(\\alpha-1,\\beta-1)$ and statistic $(\\log x,\\log(1-x))$. Its log likelihood is strictly concave. The interior of the convex support is $e^u+e^v<1$. Strict Jensen inequalities put the mean statistic there exactly for nonconstant samples, giving existence of the finite maximum. For constant data $x=c$, the path $(\\alpha,\\beta)=(tc,t(1-c))$ has density at $c$ growing as $\\sqrt{t}$ by Stirling's formula. With one shape $h>0$ held, the free-shape score per observation is $a+\\psi(z+h)-\\psi(z)$, where $a<0$ is the corresponding mean log observation. Its derivative is $\\psi_1(z+h)-\\psi_1(z)<0$, and its limits are positive infinity at zero and $a<0$ at infinity."
+    },
+    "matches_current_dossier": true
+  },
+  {
+    "id": "cauchy",
+    "current_uniqueness": "proved",
+    "current_statement": "For a nonempty finite sample with both coefficients free, a finite MLE exists uniquely if every distinct value occurs fewer than $n/2$ times. Two distinct values occurring equally often also attain a maximum, with a continuum of maximizing pairs. In every other sample with an atom of multiplicity at least $n/2$, no finite MLE exists. With location held, a unique finite scale MLE exists exactly when fewer than $n/2$ observations equal that location. With positive scale held, a location maximum always exists but need not be unique. Holding both coefficients leaves likelihood evaluation.",
+    "current_reason": "At an atom of multiplicity $k$, collapse has likelihood proportional to $\\sigma^{n-2k}$. When all $2k<n$, the likelihood tends to zero at every boundary, so a maximum is attained in the interior. If $2k=n$ at $a$, put $w=\\mu+i\\sigma$ and $v=-1/(w-a)$. Writing $t=\\operatorname{Im}v$, the likelihood is $\\pi^{-n}t^n/\\prod_{x_i\\ne a}|1+(x_i-a)v|^2$. Each denominator factor is at least $(x_i-a)^2t^2$. The resulting upper bound is attained only if all observations other than $a$ have the same value $b$, with $\\operatorname{Re}v=-1/(b-a)$. Otherwise it is approached only at collapse. With location held, the log-scale score $n-2\\sum_i\\sigma^2/(\\sigma^2+(x_i-\\mu)^2)$ decreases strictly from $n-2k$ to $-n$ when some residual is nonzero. With scale held, continuity and decay at location infinity give attainment, without strict concavity in location. For observations $-a,a$ and held $0<\\sigma<a$, the location maxima are $\\pm\\sqrt{a^2-\\sigma^2}$. For joint uniqueness, join any two upper-half-plane points $(\\mu,\\sigma)$ by a vertical line or a circle orthogonal to the real axis. On a vertical line, put $\\sigma=e^t$. Each negative log-density term, apart from a constant, is $\\log(e^t+(x_i-\\mu)^2e^{-t})$, strictly convex unless $x_i=\\mu$. On a circle with centre $c$ and radius $r>0$, put $\\mu=c+r\\tanh t$ and $\\sigma=r/\\cosh t$. Each term becomes $\\log(A_i\\cosh t-B_i\\sinh t)$, where $A_i=((x_i-c)^2+r^2)/r$ and $B_i=2(x_i-c)$. Its second derivative is $(A_i^2-B_i^2)/(A_i\\cosh t-B_i\\sinh t)^2\\ge0$, with equality only at $x_i=c-r$ or $x_i=c+r$. At least three distinct observations therefore make the sum strictly convex along every such connecting path, excluding two joint maxima. The strict sub-half-mass condition requires at least three distinct values.",
+    "reference": {
+      "kind": "dossier optimality/uniqueness proof",
+      "statement": "For a nonempty finite sample with both coefficients free, a finite MLE exists uniquely if every distinct value occurs fewer than $n/2$ times. Two distinct values occurring equally often also attain a maximum, with a continuum of maximizing pairs. In every other sample with an atom of multiplicity at least $n/2$, no finite MLE exists. With location held, a unique finite scale MLE exists exactly when fewer than $n/2$ observations equal that location. With positive scale held, a location maximum always exists but need not be unique. Holding both coefficients leaves likelihood evaluation.",
+      "reason": "At an atom of multiplicity $k$, collapse has likelihood proportional to $\\sigma^{n-2k}$. When all $2k<n$, the likelihood tends to zero at every boundary, so a maximum is attained in the interior. If $2k=n$ at $a$, put $w=\\mu+i\\sigma$ and $v=-1/(w-a)$. Writing $t=\\operatorname{Im}v$, the likelihood is $\\pi^{-n}t^n/\\prod_{x_i\\ne a}|1+(x_i-a)v|^2$. Each denominator factor is at least $(x_i-a)^2t^2$. The resulting upper bound is attained only if all observations other than $a$ have the same value $b$, with $\\operatorname{Re}v=-1/(b-a)$. Otherwise it is approached only at collapse. With location held, the log-scale score $n-2\\sum_i\\sigma^2/(\\sigma^2+(x_i-\\mu)^2)$ decreases strictly from $n-2k$ to $-n$ when some residual is nonzero. With scale held, continuity and decay at location infinity give attainment, without strict concavity in location. For observations $-a,a$ and held $0<\\sigma<a$, the location maxima are $\\pm\\sqrt{a^2-\\sigma^2}$. For joint uniqueness, join any two upper-half-plane points $(\\mu,\\sigma)$ by a vertical line or a circle orthogonal to the real axis. On a vertical line, put $\\sigma=e^t$. Each negative log-density term, apart from a constant, is $\\log(e^t+(x_i-\\mu)^2e^{-t})$, strictly convex unless $x_i=\\mu$. On a circle with centre $c$ and radius $r>0$, put $\\mu=c+r\\tanh t$ and $\\sigma=r/\\cosh t$. Each term becomes $\\log(A_i\\cosh t-B_i\\sinh t)$, where $A_i=((x_i-c)^2+r^2)/r$ and $B_i=2(x_i-c)$. Its second derivative is $(A_i^2-B_i^2)/(A_i\\cosh t-B_i\\sinh t)^2\\ge0$, with equality only at $x_i=c-r$ or $x_i=c+r$. At least three distinct observations therefore make the sum strictly convex along every such connecting path, excluding two joint maxima. The strict sub-half-mass condition requires at least three distinct values."
+    },
+    "matches_current_dossier": true
+  },
+  {
+    "id": "cmp",
+    "current_uniqueness": "proved",
+    "current_statement": "With both coefficients free, all-zero samples attain their maximum at $\\lambda=0$, with $\\nu$ unidentified. Positive constants and samples supported on two adjacent integers have an unattained supremum. Other samples have a unique finite maximum, possibly at the geometric boundary $\\nu=0$. With finite $\\nu$ held, the free rate has a unique maximum, including zero for all-zero data. With positive $\\lambda$ held, a unique finite dispersion maximum exists when some observation exceeds one. Samples supported on zero and one instead approach their supremum as $\\nu\\to\\infty$. Holding $\\lambda=0$ requires all-zero data and leaves dispersion unidentified. Holding both coefficients requires only a valid law and compatible data.",
+    "current_reason": "The sufficient statistics are $x$ and $\\log(x!)$. Their covariance is positive definite at positive rate and dispersion, giving strict concavity in $(\\log\\lambda,-\\nu)$. At a fixed positive mean, the fitted mean log factorial decreases strictly with dispersion, from its geometric value to the linear interpolation between the two neighboring integer log factorials. Data above that lower hull give an interior moment solution or the constrained geometric maximum. Data on the hull give the stated exposed-face limits. With rate held, the mean log factorial decreases strictly to zero as dispersion grows; at its lower domain endpoint it is finite for rate below one and diverges otherwise.",
+    "reference": {
+      "kind": "dossier optimality/uniqueness proof",
+      "statement": "With both coefficients free, all-zero samples attain their maximum at $\\lambda=0$, with $\\nu$ unidentified. Positive constants and samples supported on two adjacent integers have an unattained supremum. Other samples have a unique finite maximum, possibly at the geometric boundary $\\nu=0$. With finite $\\nu$ held, the free rate has a unique maximum, including zero for all-zero data. With positive $\\lambda$ held, a unique finite dispersion maximum exists when some observation exceeds one. Samples supported on zero and one instead approach their supremum as $\\nu\\to\\infty$. Holding $\\lambda=0$ requires all-zero data and leaves dispersion unidentified. Holding both coefficients requires only a valid law and compatible data.",
+      "reason": "The sufficient statistics are $x$ and $\\log(x!)$. Their covariance is positive definite at positive rate and dispersion, giving strict concavity in $(\\log\\lambda,-\\nu)$. At a fixed positive mean, the fitted mean log factorial decreases strictly with dispersion, from its geometric value to the linear interpolation between the two neighboring integer log factorials. Data above that lower hull give an interior moment solution or the constrained geometric maximum. Data on the hull give the stated exposed-face limits. With rate held, the mean log factorial decreases strictly to zero as dispersion grows; at its lower domain endpoint it is finite for rate below one and diverges otherwise."
+    },
+    "matches_current_dossier": true
+  },
+  {
+    "id": "dlaplace",
+    "current_uniqueness": "proved",
+    "current_statement": "For a nonconstant integer sample with both coefficients free, a finite MLE exists. Every integer in the sample median interval maximizes location, with the same unique scale. Location is unique exactly when that interval contains one integer. Constant samples have only an unattained point-mass supremum. With integer location held, a unique interior scale MLE exists unless all observations equal that location. With scale held strictly between zero and one, the integer medians maximize location even for constant samples. Holding both coefficients leaves likelihood evaluation.",
+    "current_reason": "Writing $p=b$ and $d=n^{-1}\\sum_i|x_i-\\mu|$, the log likelihood per observation is $\\log(1-p)-\\log(1+p)+d\\log p$. Since $\\log p<0$, location maximization is exactly absolute-deviation minimization over the integers. For $d>0$, the scale score vanishes exactly when $d(1-p^2)=2p$, giving the unique maximizer $p=d/(\\sqrt{1+d^2}+1)$. For $d=0$, the likelihood decreases strictly in $p$ and approaches its supremum only as $p\\to0$.",
+    "reference": {
+      "kind": "dossier optimality/uniqueness proof",
+      "statement": "For a nonconstant integer sample with both coefficients free, a finite MLE exists. Every integer in the sample median interval maximizes location, with the same unique scale. Location is unique exactly when that interval contains one integer. Constant samples have only an unattained point-mass supremum. With integer location held, a unique interior scale MLE exists unless all observations equal that location. With scale held strictly between zero and one, the integer medians maximize location even for constant samples. Holding both coefficients leaves likelihood evaluation.",
+      "reason": "Writing $p=b$ and $d=n^{-1}\\sum_i|x_i-\\mu|$, the log likelihood per observation is $\\log(1-p)-\\log(1+p)+d\\log p$. Since $\\log p<0$, location maximization is exactly absolute-deviation minimization over the integers. For $d>0$, the scale score vanishes exactly when $d(1-p^2)=2p$, giving the unique maximizer $p=d/(\\sqrt{1+d^2}+1)$. For $d=0$, the likelihood decreases strictly in $p$ and approaches its supremum only as $p\\to0$."
+    },
+    "matches_current_dossier": true
+  },
+  {
+    "id": "dnorm",
+    "current_uniqueness": "proved",
+    "current_statement": "With both coefficients free, a unique finite MLE exists exactly when the integer sample range is at least two. Constant samples and samples on two adjacent integers have unattained suprema. With $\\sigma>0$ held, free location always has a unique finite maximum. With $\\mu$ held, a unique finite scale maximum exists unless every observed cell closure $[x_i,x_i+1]$ contains $\\mu$; in that case the supremum occurs only at zero scale. Holding both coefficients evaluates the likelihood without optimization.",
+    "current_reason": "The grouped-normal likelihood is strictly concave in $(\\mu/\\sigma,1/\\sigma)$. Holding either coefficient imposes an affine constraint in these coordinates. Away from the stated zero-scale exceptions, escaping parameters lose likelihood, so continuity and compactness give attainment. The direct boundary argument is given below.",
+    "reference": {
+      "kind": "dossier optimality/uniqueness proof",
+      "statement": "With both coefficients free, a unique finite MLE exists exactly when the integer sample range is at least two. Constant samples and samples on two adjacent integers have unattained suprema. With $\\sigma>0$ held, free location always has a unique finite maximum. With $\\mu$ held, a unique finite scale maximum exists unless every observed cell closure $[x_i,x_i+1]$ contains $\\mu$; in that case the supremum occurs only at zero scale. Holding both coefficients evaluates the likelihood without optimization.",
+      "reason": "The grouped-normal likelihood is strictly concave in $(\\mu/\\sigma,1/\\sigma)$. Holding either coefficient imposes an affine constraint in these coordinates. Away from the stated zero-scale exceptions, escaping parameters lose likelihood, so continuity and compactness give attainment. The direct boundary argument is given below."
+    },
+    "matches_current_dossier": true
+  },
+  {
+    "id": "dunif",
+    "current_uniqueness": "proved",
+    "current_statement": "With both integer endpoints free, every nonempty integer sample has a unique MLE at its sample minimum and maximum. Holding either endpoint leaves the other at its sample extreme, provided the held interval contains every observation. With both endpoints held, only compatibility is evaluated.",
+    "current_reason": "The likelihood is $(b-a+1)^{-n}$ on a compatible integer interval. It strictly decreases with its number of integers, so each free endpoint must be its sample extreme. Unlike a continuous interval, a one-point integer interval has positive probability and is admissible.",
+    "reference": {
+      "kind": "dossier optimality/uniqueness proof",
+      "statement": "With both integer endpoints free, every nonempty integer sample has a unique MLE at its sample minimum and maximum. Holding either endpoint leaves the other at its sample extreme, provided the held interval contains every observation. With both endpoints held, only compatibility is evaluated.",
+      "reason": "The likelihood is $(b-a+1)^{-n}$ on a compatible integer interval. It strictly decreases with its number of integers, so each free endpoint must be its sample extreme. Unlike a continuous interval, a one-point integer interval has positive probability and is admissible."
+    },
+    "matches_current_dossier": true
+  },
+  {
+    "id": "dweibull",
+    "current_uniqueness": "proved",
+    "current_statement": "With both coefficients free, a unique finite MLE exists exactly when $\\max_i x_i-\\min_i x_i\\ge2$. Constant samples and samples on two adjacent counts have only an excluded limiting maximum. Holding $\\beta$ gives a unique finite estimate of $q$ exactly when at least one observation is positive. Holding $q$ and observing at least one positive count gives a unique finite estimate of $\\beta$ exactly when some observation is at least two. If $q$ is held and all observations are zero, every positive $\\beta$ maximizes the likelihood. Holding both leaves only likelihood evaluation.",
+    "current_reason": "The log likelihood is strictly concave in $(\\alpha,\\beta)$, where $\\alpha=\\log(-\\log q)$, whenever a count is positive. The Hessian argument in Details proves this directly. Either hold is an affine restriction in these coordinates. As $\\beta$ decreases to zero, positive-count masses vanish uniformly over $q$. At the other parameter boundaries the only proper limits are point masses or adjacent two-point laws. A sample range of at least two therefore forces attainment on a compact likelihood level set. The declared limits cover the remaining cases. With $q$ held, all-zero data have likelihood $(1-q)^n$, independent of $\\beta$.",
+    "reference": {
+      "kind": "dossier optimality/uniqueness proof",
+      "statement": "With both coefficients free, a unique finite MLE exists exactly when $\\max_i x_i-\\min_i x_i\\ge2$. Constant samples and samples on two adjacent counts have only an excluded limiting maximum. Holding $\\beta$ gives a unique finite estimate of $q$ exactly when at least one observation is positive. Holding $q$ and observing at least one positive count gives a unique finite estimate of $\\beta$ exactly when some observation is at least two. If $q$ is held and all observations are zero, every positive $\\beta$ maximizes the likelihood. Holding both leaves only likelihood evaluation.",
+      "reason": "The log likelihood is strictly concave in $(\\alpha,\\beta)$, where $\\alpha=\\log(-\\log q)$, whenever a count is positive. The Hessian argument in Details proves this directly. Either hold is an affine restriction in these coordinates. As $\\beta$ decreases to zero, positive-count masses vanish uniformly over $q$. At the other parameter boundaries the only proper limits are point masses or adjacent two-point laws. A sample range of at least two therefore forces attainment on a compact likelihood level set. The declared limits cover the remaining cases. With $q$ held, all-zero data have likelihood $(1-q)^n$, independent of $\\beta$."
+    },
+    "matches_current_dossier": true
+  },
+  {
+    "id": "exp",
+    "current_uniqueness": "proved",
+    "current_statement": "For a nonempty sample of finite nonnegative observations, the free-rate MLE exists and is unique if and only if at least one observation is positive. Holding a finite positive rate gives a finite likelihood for every such sample.",
+    "current_reason": "For sample size $m$ and sum $S$, the log likelihood is $m\\log\\lambda-\\lambda S$. Its second derivative is $-m/\\lambda^2<0$. If $S>0$, its unique maximum is $\\hat\\lambda=m/S$. If $S=0$, it increases without bound as $\\lambda\\to\\infty$.",
+    "reference": {
+      "kind": "dossier optimality/uniqueness proof",
+      "statement": "For a nonempty sample of finite nonnegative observations, the free-rate MLE exists and is unique if and only if at least one observation is positive. Holding a finite positive rate gives a finite likelihood for every such sample.",
+      "reason": "For sample size $m$ and sum $S$, the log likelihood is $m\\log\\lambda-\\lambda S$. Its second derivative is $-m/\\lambda^2<0$. If $S>0$, its unique maximum is $\\hat\\lambda=m/S$. If $S=0$, it increases without bound as $\\lambda\\to\\infty$."
+    },
+    "matches_current_dossier": true
+  },
+  {
+    "id": "gamma",
+    "current_uniqueness": "proved",
+    "current_statement": "With $k$ and $\\theta$ free, the MLE exists if and only if the observations are not all equal, and it is then unique. With $k$ or $\\theta$ held, it exists and is unique for every positive sample.",
+    "current_reason": "The gamma family is a regular exponential family with sufficient statistic $(\\log x, x)$ and natural parameter $(k, -1/\\theta)$, a one-to-one reparameterization. The log-likelihood is strictly concave in the natural parameter, so it has at most one maximizer. A maximizer exists exactly when the mean sufficient statistic lies in the interior of its convex support, here $\\overline{\\log x} < \\log \\bar x$, which holds by Jensen's inequality unless all observations are equal. Holding one coefficient leaves a concave one-dimensional slice whose score changes sign for every positive sample.",
+    "reference": {
+      "kind": "dossier optimality/uniqueness proof",
+      "statement": "With $k$ and $\\theta$ free, the MLE exists if and only if the observations are not all equal, and it is then unique. With $k$ or $\\theta$ held, it exists and is unique for every positive sample.",
+      "reason": "The gamma family is a regular exponential family with sufficient statistic $(\\log x, x)$ and natural parameter $(k, -1/\\theta)$, a one-to-one reparameterization. The log-likelihood is strictly concave in the natural parameter, so it has at most one maximizer. A maximizer exists exactly when the mean sufficient statistic lies in the interior of its convex support, here $\\overline{\\log x} < \\log \\bar x$, which holds by Jensen's inequality unless all observations are equal. Holding one coefficient leaves a concave one-dimensional slice whose score changes sign for every positive sample."
+    },
+    "matches_current_dossier": true
+  },
+  {
+    "id": "geom",
+    "current_uniqueness": "proved",
+    "current_statement": "For every nonempty sample of nonnegative integer counts, the free-probability MLE exists and is unique. All-zero data give $\\hat p=1$. A held probability $0<p<1$ gives positive likelihood for every such sample. Holding $p=1$ is compatible only with all-zero data.",
+    "current_reason": "For sample size $m$ and sum $S$, the log likelihood is $m\\log p+S\\log(1-p)$. If $S>0$, strict concavity gives the unique maximum $\\hat p=m/(m+S)$. If $S=0$, the likelihood increases strictly up to the included endpoint $p=1$.",
+    "reference": {
+      "kind": "dossier optimality/uniqueness proof",
+      "statement": "For every nonempty sample of nonnegative integer counts, the free-probability MLE exists and is unique. All-zero data give $\\hat p=1$. A held probability $0<p<1$ gives positive likelihood for every such sample. Holding $p=1$ is compatible only with all-zero data.",
+      "reason": "For sample size $m$ and sum $S$, the log likelihood is $m\\log p+S\\log(1-p)$. If $S>0$, strict concavity gives the unique maximum $\\hat p=m/(m+S)$. If $S=0$, the likelihood increases strictly up to the included endpoint $p=1$."
+    },
+    "matches_current_dossier": true
+  },
+  {
+    "id": "gompertz",
+    "current_uniqueness": "proved",
+    "current_statement": "With both coefficients free, a unique finite MLE exists for a nonconstant nonnegative sample exactly when $\\overline{x^2}<2\\bar x^2$. Otherwise a nonconstant sample selects the excluded exponential face. Constant samples have unbounded likelihood. With $a$ held and a positive sample sum, a unique finite estimate of $b$ exists exactly when $\\sum_i x_i>a\\sum_i x_i^2/2$. Otherwise the supremum is at $b=0$. With $a$ held and all observations zero, every positive $b$ is a maximizer. With $b$ held, a unique finite estimate of $a$ exists exactly when the sample sum is positive. Holding both leaves only likelihood evaluation.",
+    "current_reason": "Write $I(b)=\\sum_i\\int_0^{x_i}e^{bt}\\,dt$. Profiling $a$ gives $\\hat a=n/I(b)$ and, up to constants, $b\\sum_i x_i-n\\log I(b)$. The logarithm of this moment-generating integral is strictly convex for positive sample sum. The profile derivative at zero is $n(\\bar x-\\overline{x^2}/(2\\bar x))$, and its limit at infinity is $n(\\bar x-\\max_i x_i)<0$ for nonconstant data. With $a$ held, the second derivative in $b$ is $-a\\sum_i\\int_0^{x_i}t^2e^{bt}\\,dt<0$ and the score at zero is $\\sum_i x_i-a\\sum_i x_i^2/2$. All-zero data instead give likelihood $a^n$, independent of $b$.",
+    "reference": {
+      "kind": "dossier optimality/uniqueness proof",
+      "statement": "With both coefficients free, a unique finite MLE exists for a nonconstant nonnegative sample exactly when $\\overline{x^2}<2\\bar x^2$. Otherwise a nonconstant sample selects the excluded exponential face. Constant samples have unbounded likelihood. With $a$ held and a positive sample sum, a unique finite estimate of $b$ exists exactly when $\\sum_i x_i>a\\sum_i x_i^2/2$. Otherwise the supremum is at $b=0$. With $a$ held and all observations zero, every positive $b$ is a maximizer. With $b$ held, a unique finite estimate of $a$ exists exactly when the sample sum is positive. Holding both leaves only likelihood evaluation.",
+      "reason": "Write $I(b)=\\sum_i\\int_0^{x_i}e^{bt}\\,dt$. Profiling $a$ gives $\\hat a=n/I(b)$ and, up to constants, $b\\sum_i x_i-n\\log I(b)$. The logarithm of this moment-generating integral is strictly convex for positive sample sum. The profile derivative at zero is $n(\\bar x-\\overline{x^2}/(2\\bar x))$, and its limit at infinity is $n(\\bar x-\\max_i x_i)<0$ for nonconstant data. With $a$ held, the second derivative in $b$ is $-a\\sum_i\\int_0^{x_i}t^2e^{bt}\\,dt<0$ and the score at zero is $\\sum_i x_i-a\\sum_i x_i^2/2$. All-zero data instead give likelihood $a^n$, independent of $b$."
+    },
+    "matches_current_dossier": true
+  },
+  {
+    "id": "gumbel",
+    "current_uniqueness": "proved",
+    "current_statement": "With both coefficients free, a unique finite MLE exists for every nonconstant finite sample. Constant samples have unbounded likelihood. With location held, a unique positive scale MLE exists unless every observation equals that location. With positive scale held, the location MLE is unique even for constant data. Holding both coefficients leaves likelihood evaluation.",
+    "current_reason": "Profiling location gives $\\mu(\\sigma)=-\\sigma\\log(n^{-1}\\sum_i e^{-x_i/\\sigma})$. The scale equation is $F(\\sigma)=\\sigma+E_\\sigma[x]-\\bar x=0$, with weights proportional to $e^{-x_i/\\sigma}$. Its derivative is $1+\\operatorname{Var}_\\sigma(x)/\\sigma^2>0$. For nonconstant data, its limit at zero is $\\min_i x_i-\\bar x<0$, and it tends to infinity with scale. The profile score has sign $-F$, giving a unique maximum. With location held, put $t=1/\\sigma$ and $d_i=x_i-\\mu$. The inverse-scale score $n/t-\\sum_i d_i(1-e^{-td_i})$ has derivative $-n/t^2-\\sum_i d_i^2e^{-td_i}<0$ and crosses zero whenever some $d_i\\ne0$. All-zero residuals instead give unbounded collapse.",
+    "reference": {
+      "kind": "dossier optimality/uniqueness proof",
+      "statement": "With both coefficients free, a unique finite MLE exists for every nonconstant finite sample. Constant samples have unbounded likelihood. With location held, a unique positive scale MLE exists unless every observation equals that location. With positive scale held, the location MLE is unique even for constant data. Holding both coefficients leaves likelihood evaluation.",
+      "reason": "Profiling location gives $\\mu(\\sigma)=-\\sigma\\log(n^{-1}\\sum_i e^{-x_i/\\sigma})$. The scale equation is $F(\\sigma)=\\sigma+E_\\sigma[x]-\\bar x=0$, with weights proportional to $e^{-x_i/\\sigma}$. Its derivative is $1+\\operatorname{Var}_\\sigma(x)/\\sigma^2>0$. For nonconstant data, its limit at zero is $\\min_i x_i-\\bar x<0$, and it tends to infinity with scale. The profile score has sign $-F$, giving a unique maximum. With location held, put $t=1/\\sigma$ and $d_i=x_i-\\mu$. The inverse-scale score $n/t-\\sum_i d_i(1-e^{-td_i})$ has derivative $-n/t^2-\\sum_i d_i^2e^{-td_i}<0$ and crosses zero whenever some $d_i\\ne0$. All-zero residuals instead give unbounded collapse."
+    },
+    "matches_current_dossier": true
+  },
+  {
+    "id": "hcauchy",
+    "current_uniqueness": "proved",
+    "current_statement": "With both coefficients free, a unique finite MLE exists exactly when the multiplicity $k$ of the sample minimum satisfies $2k<n$. With endpoint held at $\\mu\\le\\min_i x_i$, the same criterion applies with $k$ counting observations equal to that endpoint. Equality gives a finite unattained scale-zero supremum, and $2k>n$ gives unbounded likelihood. With positive scale held, the free endpoint has the unique estimate $\\min_i x_i$, even for constant data. Holding both coefficients leaves likelihood evaluation on their support.",
+    "current_reason": "For any positive scale the likelihood increases strictly as the endpoint rises to the sample minimum. At that endpoint, or a held endpoint, the log-scale score is $n-2\\sum_i\\sigma^2/(\\sigma^2+(x_i-\\mu)^2)$. If some residual is positive, this score decreases strictly from $n-2k$ to $-n$, giving exactly one root when $2k<n$. The likelihood near zero scale is proportional to $\\sigma^{n-2k}$. At equality the score is negative for every positive scale, so the finite supremum is unattained. All-zero residuals give unbounded collapse.",
+    "reference": {
+      "kind": "dossier optimality/uniqueness proof",
+      "statement": "With both coefficients free, a unique finite MLE exists exactly when the multiplicity $k$ of the sample minimum satisfies $2k<n$. With endpoint held at $\\mu\\le\\min_i x_i$, the same criterion applies with $k$ counting observations equal to that endpoint. Equality gives a finite unattained scale-zero supremum, and $2k>n$ gives unbounded likelihood. With positive scale held, the free endpoint has the unique estimate $\\min_i x_i$, even for constant data. Holding both coefficients leaves likelihood evaluation on their support.",
+      "reason": "For any positive scale the likelihood increases strictly as the endpoint rises to the sample minimum. At that endpoint, or a held endpoint, the log-scale score is $n-2\\sum_i\\sigma^2/(\\sigma^2+(x_i-\\mu)^2)$. If some residual is positive, this score decreases strictly from $n-2k$ to $-n$, giving exactly one root when $2k<n$. The likelihood near zero scale is proportional to $\\sigma^{n-2k}$. At equality the score is negative for every positive scale, so the finite supremum is unattained. All-zero residuals give unbounded collapse."
+    },
+    "matches_current_dossier": true
+  },
+  {
+    "id": "hnorm",
+    "current_uniqueness": "proved",
+    "current_statement": "With both coefficients free, a unique MLE exists exactly when the sample is nonconstant. The endpoint is $\\hat\\mu=\\min_i x_i$. With $\\mu$ held, a unique scale estimate exists when all observations are at least $\\mu$ and at least one exceeds it. With positive $\\sigma$ held, the free endpoint is uniquely estimated by the sample minimum, even for constant data.",
+    "current_reason": "For every positive scale the likelihood increases as the endpoint moves towards the sample minimum. At that endpoint, or at a held compatible endpoint, maximizing over scale gives $\\hat\\sigma^2=n^{-1}\\sum_i(x_i-\\mu)^2$ uniquely when this is positive. If it is zero, the likelihood diverges as $\\sigma\\to0$.",
+    "reference": {
+      "kind": "dossier optimality/uniqueness proof",
+      "statement": "With both coefficients free, a unique MLE exists exactly when the sample is nonconstant. The endpoint is $\\hat\\mu=\\min_i x_i$. With $\\mu$ held, a unique scale estimate exists when all observations are at least $\\mu$ and at least one exceeds it. With positive $\\sigma$ held, the free endpoint is uniquely estimated by the sample minimum, even for constant data.",
+      "reason": "For every positive scale the likelihood increases as the endpoint moves towards the sample minimum. At that endpoint, or at a held compatible endpoint, maximizing over scale gives $\\hat\\sigma^2=n^{-1}\\sum_i(x_i-\\mu)^2$ uniquely when this is positive. If it is zero, the likelihood diverges as $\\sigma\\to0$."
+    },
+    "matches_current_dossier": true
+  },
+  {
+    "id": "invexp",
+    "current_uniqueness": "proved",
+    "current_statement": "Every nonempty finite positive sample has a unique finite scale MLE, including constant samples. Holding scale leaves likelihood evaluation.",
+    "current_reason": "The scale-dependent log likelihood is $n\\log\\theta-\\theta\\sum_i x_i^{-1}$. Its second derivative is $-n/\\theta^2<0$, and its unique stationary point is $\\hat\\theta=n/\\sum_i x_i^{-1}>0$.",
+    "reference": {
+      "kind": "dossier optimality/uniqueness proof",
+      "statement": "Every nonempty finite positive sample has a unique finite scale MLE, including constant samples. Holding scale leaves likelihood evaluation.",
+      "reason": "The scale-dependent log likelihood is $n\\log\\theta-\\theta\\sum_i x_i^{-1}$. Its second derivative is $-n/\\theta^2<0$, and its unique stationary point is $\\hat\\theta=n/\\sum_i x_i^{-1}>0$."
+    },
+    "matches_current_dossier": true
+  },
+  {
+    "id": "invgamma",
+    "current_uniqueness": "proved",
+    "current_statement": "For a nonempty positive sample with both coefficients free, the MLE exists and is unique exactly when the observations are not all equal. Holding either $\\alpha$ or $\\beta$ gives a unique finite estimate of the other coefficient even for constant data. Holding both coefficients leaves only likelihood evaluation.",
+    "current_reason": "The transformation $y_i=1/x_i$ gives a gamma likelihood with shape $\\alpha$ and rate $\\beta$, plus a coefficient-independent Jacobian. Profiling the rate gives $\\beta=\\alpha/\\bar y$ and the equation $\\log\\alpha-\\psi(\\alpha)=\\log\\bar y-\\overline{\\log y}$. The left side decreases strictly from infinity to zero, and Jensen's inequality makes the right side positive exactly for nonconstant data. For constant data the profile is unbounded as $\\alpha\\to\\infty$. With $\\alpha$ held the rate formula still applies. With $\\beta$ held, $\\psi(\\alpha)=\\log\\beta+\\overline{\\log y}$ has a unique root because the digamma function increases from minus infinity to infinity.",
+    "reference": {
+      "kind": "dossier optimality/uniqueness proof",
+      "statement": "For a nonempty positive sample with both coefficients free, the MLE exists and is unique exactly when the observations are not all equal. Holding either $\\alpha$ or $\\beta$ gives a unique finite estimate of the other coefficient even for constant data. Holding both coefficients leaves only likelihood evaluation.",
+      "reason": "The transformation $y_i=1/x_i$ gives a gamma likelihood with shape $\\alpha$ and rate $\\beta$, plus a coefficient-independent Jacobian. Profiling the rate gives $\\beta=\\alpha/\\bar y$ and the equation $\\log\\alpha-\\psi(\\alpha)=\\log\\bar y-\\overline{\\log y}$. The left side decreases strictly from infinity to zero, and Jensen's inequality makes the right side positive exactly for nonconstant data. For constant data the profile is unbounded as $\\alpha\\to\\infty$. With $\\alpha$ held the rate formula still applies. With $\\beta$ held, $\\psi(\\alpha)=\\log\\beta+\\overline{\\log y}$ has a unique root because the digamma function increases from minus infinity to infinity."
+    },
+    "matches_current_dossier": true
+  },
+  {
+    "id": "invgauss",
+    "current_uniqueness": "proved",
+    "current_statement": "For a nonempty positive sample with both coefficients free, the MLE exists and is unique exactly when the observations are not all equal. With $\\mu$ held and $\\lambda$ free, it exists and is unique unless every observation equals $\\mu$. With $\\lambda$ held, the free mean has a unique MLE even for constant data. Holding both coefficients leaves only likelihood evaluation.",
+    "current_reason": "Apart from a constant, the log-likelihood is $(n/2)\\log\\lambda-(\\lambda/2)Q(\\mu)$, where $Q(\\mu)=\\sum_i(x_i-\\mu)^2/(\\mu^2 x_i)$. Its derivative is $Q'(\\mu)=2(n\\mu-\\sum_i x_i)/\\mu^3$, so its unique minimum over positive $\\mu$ is at $\\bar x$. For a fixed or fitted mean, $Q>0$ gives the unique maximum $\\lambda=n/Q$. If $Q=0$, the log-likelihood grows without bound as $\\lambda\\to\\infty$.",
+    "reference": {
+      "kind": "dossier optimality/uniqueness proof",
+      "statement": "For a nonempty positive sample with both coefficients free, the MLE exists and is unique exactly when the observations are not all equal. With $\\mu$ held and $\\lambda$ free, it exists and is unique unless every observation equals $\\mu$. With $\\lambda$ held, the free mean has a unique MLE even for constant data. Holding both coefficients leaves only likelihood evaluation.",
+      "reason": "Apart from a constant, the log-likelihood is $(n/2)\\log\\lambda-(\\lambda/2)Q(\\mu)$, where $Q(\\mu)=\\sum_i(x_i-\\mu)^2/(\\mu^2 x_i)$. Its derivative is $Q'(\\mu)=2(n\\mu-\\sum_i x_i)/\\mu^3$, so its unique minimum over positive $\\mu$ is at $\\bar x$. For a fixed or fitted mean, $Q>0$ gives the unique maximum $\\lambda=n/Q$. If $Q=0$, the log-likelihood grows without bound as $\\lambda\\to\\infty$."
+    },
+    "matches_current_dossier": true
+  },
+  {
+    "id": "invweibull",
+    "current_uniqueness": "proved",
+    "current_statement": "With both coefficients free, a unique finite MLE exists for every nonconstant positive sample. Constant samples have unbounded likelihood. Holding shape gives a unique finite scale estimate, including for constants. Holding scale gives a unique finite shape estimate unless every observation equals that scale, when the likelihood is unbounded. Holding both leaves only likelihood evaluation.",
+    "current_reason": "The reciprocal observations follow a Weibull law with shape $k$ and scale $1/\\lambda$. The reciprocal transformation has a parameter-independent Jacobian and preserves likelihood maximizers and held coordinates. The Weibull profiled shape score has derivative $-n/k^2$ minus a nonnegative weighted variance. With scale held, its shape score has derivative $-n/k^2-\\sum_i r_i^2e^{kr_i}<0$, where $r_i=\\log(\\lambda/x_i)$. These scores cross zero except in the stated constant-sample cases.",
+    "reference": {
+      "kind": "dossier optimality/uniqueness proof",
+      "statement": "With both coefficients free, a unique finite MLE exists for every nonconstant positive sample. Constant samples have unbounded likelihood. Holding shape gives a unique finite scale estimate, including for constants. Holding scale gives a unique finite shape estimate unless every observation equals that scale, when the likelihood is unbounded. Holding both leaves only likelihood evaluation.",
+      "reason": "The reciprocal observations follow a Weibull law with shape $k$ and scale $1/\\lambda$. The reciprocal transformation has a parameter-independent Jacobian and preserves likelihood maximizers and held coordinates. The Weibull profiled shape score has derivative $-n/k^2$ minus a nonnegative weighted variance. With scale held, its shape score has derivative $-n/k^2-\\sum_i r_i^2e^{kr_i}<0$, where $r_i=\\log(\\lambda/x_i)$. These scores cross zero except in the stated constant-sample cases."
+    },
+    "matches_current_dossier": true
+  },
+  {
+    "id": "kumar",
+    "current_uniqueness": "proved",
+    "current_statement": "With both shapes free, a finite MLE exists for every nonconstant sample in $(0,1)$, and it is unique. Constant data have unbounded likelihood. Holding either shape gives a unique finite MLE even for constant interior data. Holding both leaves only likelihood evaluation.",
+    "current_reason": "Put $t_i=-\\log x_i$ and $S(a)=\\sum_i\\log(1-e^{-at_i})$. Profiling gives $\\hat b=-n/S(a)$. As $a\\to0$ the profile behaves like $-n\\log|\\log a|+O(1)$. As $a\\to\\infty$ it is $a(n\\min_i t_i-\\sum_i t_i)+n\\log a+O(1)$, which tends to $-\\infty$ for nonconstant data and to $+\\infty$ for constant data. Hence the continuous profile attains a maximum in the nonconstant case. Strict concavity of this profile, proved below, makes the maximum unique. With $a$ held the likelihood is strictly concave in $b$. With $b$ held the score in $a$ strictly decreases from $+\\infty$ to $-\\sum_i t_i<0$. For $b<1$ its derivative is at most $-nb/a^2<0$, using $(at_i)^2e^{at_i}/(e^{at_i}-1)^2\\le1$.",
+    "reference": {
+      "kind": "dossier optimality/uniqueness proof",
+      "statement": "With both shapes free, a finite MLE exists for every nonconstant sample in $(0,1)$, and it is unique. Constant data have unbounded likelihood. Holding either shape gives a unique finite MLE even for constant interior data. Holding both leaves only likelihood evaluation.",
+      "reason": "Put $t_i=-\\log x_i$ and $S(a)=\\sum_i\\log(1-e^{-at_i})$. Profiling gives $\\hat b=-n/S(a)$. As $a\\to0$ the profile behaves like $-n\\log|\\log a|+O(1)$. As $a\\to\\infty$ it is $a(n\\min_i t_i-\\sum_i t_i)+n\\log a+O(1)$, which tends to $-\\infty$ for nonconstant data and to $+\\infty$ for constant data. Hence the continuous profile attains a maximum in the nonconstant case. Strict concavity of this profile, proved below, makes the maximum unique. With $a$ held the likelihood is strictly concave in $b$. With $b$ held the score in $a$ strictly decreases from $+\\infty$ to $-\\sum_i t_i<0$. For $b<1$ its derivative is at most $-nb/a^2<0$, using $(at_i)^2e^{at_i}/(e^{at_i}-1)^2\\le1$."
+    },
+    "matches_current_dossier": true
+  },
+  {
+    "id": "laplace",
+    "current_uniqueness": "proved",
+    "current_statement": "With both coefficients free, a finite MLE exists exactly for nonconstant samples. Its locations are all sample medians, and its scale is unique. The location is unique exactly when the median interval is a singleton. With location held, a unique positive scale MLE exists unless every observation equals that location, when the likelihood is unbounded. With positive scale held, all sample medians maximize the likelihood, including the unique common value for constant samples. Holding both coefficients leaves likelihood evaluation.",
+    "current_reason": "Let $A(\\mu)=\\sum_i|x_i-\\mu|$. This convex function is minimized precisely on the median interval and is constant there. For $A>0$, maximizing $-n\\log b-A/b$ gives the unique scale $b=A/n$. The profiled likelihood decreases strictly in $A$, so all and only medians maximize it. If $A=0$, the likelihood grows without bound as $b\\to0$.",
+    "reference": {
+      "kind": "dossier optimality/uniqueness proof",
+      "statement": "With both coefficients free, a finite MLE exists exactly for nonconstant samples. Its locations are all sample medians, and its scale is unique. The location is unique exactly when the median interval is a singleton. With location held, a unique positive scale MLE exists unless every observation equals that location, when the likelihood is unbounded. With positive scale held, all sample medians maximize the likelihood, including the unique common value for constant samples. Holding both coefficients leaves likelihood evaluation.",
+      "reason": "Let $A(\\mu)=\\sum_i|x_i-\\mu|$. This convex function is minimized precisely on the median interval and is constant there. For $A>0$, maximizing $-n\\log b-A/b$ gives the unique scale $b=A/n$. The profiled likelihood decreases strictly in $A$, so all and only medians maximize it. If $A=0$, the likelihood grows without bound as $b\\to0$."
+    },
+    "matches_current_dossier": true
+  },
+  {
+    "id": "lgamma",
+    "current_uniqueness": "proved",
+    "current_statement": "For observations above one, the MLE with both coefficients free exists exactly when the sample is nonconstant and is then unique. Holding either $k$ or $\\lambda$ gives a unique finite estimate of the other coefficient for every such sample, including constant samples.",
+    "current_reason": "The one-to-one transformation $y=\\log x$ has a coefficient-independent Jacobian and reduces the problem to gamma estimation with shape $k$ and rate $\\lambda$. Profiling rate gives $\\log k-\\psi(k)=\\log\\bar y-\\overline{\\log y}$. The left side decreases strictly from infinity to zero, and the right side is positive exactly for nonconstant data by strict Jensen inequality. Holding shape gives $\\hat\\lambda=k/\\bar y$; holding rate leaves a strictly increasing digamma equation with one positive root.",
+    "reference": {
+      "kind": "dossier optimality/uniqueness proof",
+      "statement": "For observations above one, the MLE with both coefficients free exists exactly when the sample is nonconstant and is then unique. Holding either $k$ or $\\lambda$ gives a unique finite estimate of the other coefficient for every such sample, including constant samples.",
+      "reason": "The one-to-one transformation $y=\\log x$ has a coefficient-independent Jacobian and reduces the problem to gamma estimation with shape $k$ and rate $\\lambda$. Profiling rate gives $\\log k-\\psi(k)=\\log\\bar y-\\overline{\\log y}$. The left side decreases strictly from infinity to zero, and the right side is positive exactly for nonconstant data by strict Jensen inequality. Holding shape gives $\\hat\\lambda=k/\\bar y$; holding rate leaves a strictly increasing digamma equation with one positive root."
+    },
+    "matches_current_dossier": true
+  },
+  {
+    "id": "lgser",
+    "current_uniqueness": "proved",
+    "current_statement": "With $\\theta$ free, a unique finite MLE exists exactly when $\\bar x>1$. An all-one sample has an unattained supremum as $\\theta\\to0$. Holding $0<\\theta<1$ specifies the law and requires no optimization.",
+    "current_reason": "In the natural parameter $\\eta=\\log\\theta<0$, the second derivative of the log likelihood is minus the sample size times the positive variance. The model mean increases continuously from one to infinity, so mean matching has exactly one solution when the empirical mean exceeds one.",
+    "reference": {
+      "kind": "dossier optimality/uniqueness proof",
+      "statement": "With $\\theta$ free, a unique finite MLE exists exactly when $\\bar x>1$. An all-one sample has an unattained supremum as $\\theta\\to0$. Holding $0<\\theta<1$ specifies the law and requires no optimization.",
+      "reason": "In the natural parameter $\\eta=\\log\\theta<0$, the second derivative of the log likelihood is minus the sample size times the positive variance. The model mean increases continuously from one to infinity, so mean matching has exactly one solution when the empirical mean exceeds one."
+    },
+    "matches_current_dossier": true
+  },
+  {
+    "id": "llogis",
+    "current_uniqueness": "proved",
+    "current_statement": "With both coefficients free, a unique finite MLE exists for every nonconstant positive sample. Constant data have unbounded likelihood. With shape held, the scale estimate exists uniquely even for constant data. With scale held, a unique finite shape estimate exists unless every observation equals that scale. Holding both leaves likelihood evaluation.",
+    "current_reason": "The transformation $y_i=\\log x_i$ gives a logistic likelihood with location $\\mu=\\log\\alpha$ and inverse scale $\\beta$. In coordinates $(a,b)=(\\beta\\mu,\\beta)$ it is, up to a data-only term, $n\\log b-2\\sum_i\\log\\{2\\cosh((by_i-a)/2)\\}$. Its Hessian is negative definite. For nonconstant data it tends to $-\\infty$ at the boundary after profiling $a$, so its maximum exists uniquely. Holding shape fixes $b$. Holding scale imposes $a=b\\log\\alpha$; the same strict concavity and boundary argument applies unless all residuals vanish.",
+    "reference": {
+      "kind": "dossier optimality/uniqueness proof",
+      "statement": "With both coefficients free, a unique finite MLE exists for every nonconstant positive sample. Constant data have unbounded likelihood. With shape held, the scale estimate exists uniquely even for constant data. With scale held, a unique finite shape estimate exists unless every observation equals that scale. Holding both leaves likelihood evaluation.",
+      "reason": "The transformation $y_i=\\log x_i$ gives a logistic likelihood with location $\\mu=\\log\\alpha$ and inverse scale $\\beta$. In coordinates $(a,b)=(\\beta\\mu,\\beta)$ it is, up to a data-only term, $n\\log b-2\\sum_i\\log\\{2\\cosh((by_i-a)/2)\\}$. Its Hessian is negative definite. For nonconstant data it tends to $-\\infty$ at the boundary after profiling $a$, so its maximum exists uniquely. Holding shape fixes $b$. Holding scale imposes $a=b\\log\\alpha$; the same strict concavity and boundary argument applies unless all residuals vanish."
+    },
+    "matches_current_dossier": true
+  },
+  {
+    "id": "lnorm",
+    "current_uniqueness": "proved",
+    "current_statement": "For a nonempty positive sample with both coefficients free, the MLE exists and is unique exactly when the observations are not all equal. With $\\mu$ held and $\\sigma$ free, it exists and is unique unless every $\\log x_i$ equals $\\mu$. With $\\sigma$ held, the free mean has a unique MLE even for constant data. Holding both coefficients leaves only likelihood evaluation.",
+    "current_reason": "Put $y_i = \\log x_i$. The Jacobian is independent of the coefficients, so maximization is the normal likelihood problem. For each positive $\\sigma$, the unique free mean is $\\bar y$. For a fixed or fitted mean, write $Q = \\sum_i(y_i-\\mu)^2$. The scale likelihood is $-n\\log\\sigma-Q/(2\\sigma^2)$ plus a constant. If $Q>0$, its unique maximum is at $\\sigma^2=Q/n$; if $Q=0$, it is unbounded as $\\sigma\\to0$.",
+    "reference": {
+      "kind": "dossier optimality/uniqueness proof",
+      "statement": "For a nonempty positive sample with both coefficients free, the MLE exists and is unique exactly when the observations are not all equal. With $\\mu$ held and $\\sigma$ free, it exists and is unique unless every $\\log x_i$ equals $\\mu$. With $\\sigma$ held, the free mean has a unique MLE even for constant data. Holding both coefficients leaves only likelihood evaluation.",
+      "reason": "Put $y_i = \\log x_i$. The Jacobian is independent of the coefficients, so maximization is the normal likelihood problem. For each positive $\\sigma$, the unique free mean is $\\bar y$. For a fixed or fitted mean, write $Q = \\sum_i(y_i-\\mu)^2$. The scale likelihood is $-n\\log\\sigma-Q/(2\\sigma^2)$ plus a constant. If $Q>0$, its unique maximum is at $\\sigma^2=Q/n$; if $Q=0$, it is unbounded as $\\sigma\\to0$."
+    },
+    "matches_current_dossier": true
+  },
+  {
+    "id": "logis",
+    "current_uniqueness": "proved",
+    "current_statement": "With both coefficients free, a unique finite MLE exists for every nonconstant real sample. Constant data have unbounded likelihood as scale shrinks at their common value. Holding location gives a unique finite scale estimate unless every observation equals that location. Holding scale gives a unique finite location estimate, including for constant data. Holding both leaves only likelihood evaluation.",
+    "current_reason": "In coordinates $a=\\mu/s$ and $b=1/s>0$, the log-likelihood is $n\\log b-2\\sum_i\\log\\{2\\cosh((bx_i-a)/2)\\}$. Its Hessian is negative definite: the first term is strictly concave in $b$, and each summand has strictly negative curvature in $bx_i-a$. For nonconstant data, $\\sum_i|bx_i-a|$ grows at least linearly in $b$ after minimising over $a$, so the likelihood tends to $-\\infty$ as $b\\to\\infty$. It also tends to $-\\infty$ as $b\\to0$ or as $|a|\\to\\infty$ with $b$ bounded away from zero and infinity. Thus a unique maximum is attained. Held scale fixes $b$; held location imposes $a=\\mu b$, and the same argument applies unless all residuals vanish.",
+    "reference": {
+      "kind": "dossier optimality/uniqueness proof",
+      "statement": "With both coefficients free, a unique finite MLE exists for every nonconstant real sample. Constant data have unbounded likelihood as scale shrinks at their common value. Holding location gives a unique finite scale estimate unless every observation equals that location. Holding scale gives a unique finite location estimate, including for constant data. Holding both leaves only likelihood evaluation.",
+      "reason": "In coordinates $a=\\mu/s$ and $b=1/s>0$, the log-likelihood is $n\\log b-2\\sum_i\\log\\{2\\cosh((bx_i-a)/2)\\}$. Its Hessian is negative definite: the first term is strictly concave in $b$, and each summand has strictly negative curvature in $bx_i-a$. For nonconstant data, $\\sum_i|bx_i-a|$ grows at least linearly in $b$ after minimising over $a$, so the likelihood tends to $-\\infty$ as $b\\to\\infty$. It also tends to $-\\infty$ as $b\\to0$ or as $|a|\\to\\infty$ with $b$ bounded away from zero and infinity. Thus a unique maximum is attained. Held scale fixes $b$; held location imposes $a=\\mu b$, and the same argument applies unless all residuals vanish."
+    },
+    "matches_current_dossier": true
+  },
+  {
+    "id": "logitnorm",
+    "current_uniqueness": "proved",
+    "current_statement": "For observations strictly between zero and one, the MLE with both coefficients free exists exactly when the sample is nonconstant, and is unique. With $\\mu$ held it exists uniquely unless every logit equals $\\mu$. With positive $\\sigma$ held the location estimate always exists and is unique, including for constant samples.",
+    "current_reason": "The transformation $y=\\log(x/(1-x))$ is one-to-one and its Jacobian is independent of the coefficients. Maximization therefore reduces to normal likelihood maximization on the logits. The unique location is their mean and the unique squared scale is their mean squared distance from the fitted or held location, unless that distance is zero.",
+    "reference": {
+      "kind": "dossier optimality/uniqueness proof",
+      "statement": "For observations strictly between zero and one, the MLE with both coefficients free exists exactly when the sample is nonconstant, and is unique. With $\\mu$ held it exists uniquely unless every logit equals $\\mu$. With positive $\\sigma$ held the location estimate always exists and is unique, including for constant samples.",
+      "reason": "The transformation $y=\\log(x/(1-x))$ is one-to-one and its Jacobian is independent of the coefficients. Maximization therefore reduces to normal likelihood maximization on the logits. The unique location is their mean and the unique squared scale is their mean squared distance from the fitted or held location, unless that distance is zero."
+    },
+    "matches_current_dossier": true
+  },
+  {
+    "id": "naka",
+    "current_uniqueness": "proved",
+    "current_statement": "With both coefficients free, a unique finite MLE exists for every nonconstant positive sample. Constant samples have unbounded likelihood. Holding shape gives a unique finite scale estimate, including for constants. Holding scale gives a unique finite shape estimate unless every squared observation equals that scale, when the likelihood is unbounded. Holding both leaves only likelihood evaluation.",
+    "current_reason": "Put $y_i=x_i^2$. With scale free, its maximizer is $\\hat\\Omega=\\bar y$. The remaining shape equation is $\\log m-\\psi(m)=s$, where $s=\\log\\bar y-\\overline{\\log y}$ is positive exactly for nonconstant data. With scale held, replace $s$ by the average of $y_i/\\Omega-1-\\log(y_i/\\Omega)$, which is positive unless every $y_i=\\Omega$. The function $\\log m-\\psi(m)$ decreases strictly from infinity to zero because $\\psi'(m)>1/m$. If $s=0$, the likelihood grows without bound as $m$ tends to infinity.",
+    "reference": {
+      "kind": "dossier optimality/uniqueness proof",
+      "statement": "With both coefficients free, a unique finite MLE exists for every nonconstant positive sample. Constant samples have unbounded likelihood. Holding shape gives a unique finite scale estimate, including for constants. Holding scale gives a unique finite shape estimate unless every squared observation equals that scale, when the likelihood is unbounded. Holding both leaves only likelihood evaluation.",
+      "reason": "Put $y_i=x_i^2$. With scale free, its maximizer is $\\hat\\Omega=\\bar y$. The remaining shape equation is $\\log m-\\psi(m)=s$, where $s=\\log\\bar y-\\overline{\\log y}$ is positive exactly for nonconstant data. With scale held, replace $s$ by the average of $y_i/\\Omega-1-\\log(y_i/\\Omega)$, which is positive unless every $y_i=\\Omega$. The function $\\log m-\\psi(m)$ decreases strictly from infinity to zero because $\\psi'(m)>1/m$. If $s=0$, the likelihood grows without bound as $m$ tends to infinity."
+    },
+    "matches_current_dossier": true
+  },
+  {
+    "id": "nbinom",
+    "current_uniqueness": "proved",
+    "current_statement": "With both coefficients free and at least one positive count, a finite MLE exists and is unique if and only if $S^2>\\bar x$, where $S^2=n^{-1}\\sum_i(x_i-\\bar x)^2$. Otherwise the supremum is the Poisson limit. For all-zero data, the maximum is attained by every pair with $r=0$ or $p=1$, so the coefficients are not unique. With $r>0$ held, the free probability has a unique MLE, including $p=1$ for all-zero data. With $0<p<1$ held, the free size has a unique MLE, including $r=0$ for all-zero data. Held $r=0$ or $p=1$ permits only zeros and leaves the other free coefficient unidentified. Holding both coefficients leaves only likelihood evaluation.",
+    "current_reason": "The free-fit criterion and uniqueness for positive-mean samples are proved below by expanding the convexity argument of Br\u00f8ns and Jensen (1988), including strictness and the equality case. Levin and Reeds (1977) is the classical published reference; its proof was not accessible in this check. Arag\u00f3n, Eberly and Eberly (1992) is not used as a proof authority because Wang (1996) reports an error in its argument. For held positive size, maximizing in probability gives $p=r/(r+\\bar x)$. For held $0<p<1$, the size score is $n\\log p+\\sum_i\\sum_{j=0}^{x_i-1}(r+j)^{-1}$. If some count is positive, it decreases strictly from infinity to $n\\log p<0$, so it has one root. If all counts vanish, the likelihood is $p^{nr}$ and its maximum is attained at $r=0$.",
+    "reference": {
+      "kind": "dossier optimality/uniqueness proof",
+      "statement": "With both coefficients free and at least one positive count, a finite MLE exists and is unique if and only if $S^2>\\bar x$, where $S^2=n^{-1}\\sum_i(x_i-\\bar x)^2$. Otherwise the supremum is the Poisson limit. For all-zero data, the maximum is attained by every pair with $r=0$ or $p=1$, so the coefficients are not unique. With $r>0$ held, the free probability has a unique MLE, including $p=1$ for all-zero data. With $0<p<1$ held, the free size has a unique MLE, including $r=0$ for all-zero data. Held $r=0$ or $p=1$ permits only zeros and leaves the other free coefficient unidentified. Holding both coefficients leaves only likelihood evaluation.",
+      "reason": "The free-fit criterion and uniqueness for positive-mean samples are proved below by expanding the convexity argument of Br\u00f8ns and Jensen (1988), including strictness and the equality case. Levin and Reeds (1977) is the classical published reference; its proof was not accessible in this check. Arag\u00f3n, Eberly and Eberly (1992) is not used as a proof authority because Wang (1996) reports an error in its argument. For held positive size, maximizing in probability gives $p=r/(r+\\bar x)$. For held $0<p<1$, the size score is $n\\log p+\\sum_i\\sum_{j=0}^{x_i-1}(r+j)^{-1}$. If some count is positive, it decreases strictly from infinity to $n\\log p<0$, so it has one root. If all counts vanish, the likelihood is $p^{nr}$ and its maximum is attained at $r=0$."
+    },
+    "matches_current_dossier": true
+  },
+  {
+    "id": "norm",
+    "current_uniqueness": "proved",
+    "current_statement": "With $\\mu$ and $\\sigma$ free, the MLE exists if and only if the observations are not all equal; it is then unique, with $\\hat\\mu = \\bar x$ and $\\hat\\sigma^2 = n^{-1}\\sum_i (x_i - \\bar x)^2$. With $\\sigma$ held, $\\hat\\mu = \\bar x$ always. With $\\mu$ held, the MLE exists unless every observation equals $\\mu$.",
+    "current_reason": "The normal family is a regular exponential family with sufficient statistic $(x, x^2)$ and natural parameter $(\\mu/\\sigma^2, -1/(2\\sigma^2))$. The log-likelihood is strictly concave in the natural parameter, so it has at most one maximizer, and one exists exactly when $(\\bar x, \\overline{x^2})$ lies inside the convex hull of the parabola $\\{(x, x^2)\\}$, that is when $\\overline{x^2} > \\bar x^2$; this fails only for constant samples.",
+    "reference": {
+      "kind": "dossier optimality/uniqueness proof",
+      "statement": "With $\\mu$ and $\\sigma$ free, the MLE exists if and only if the observations are not all equal; it is then unique, with $\\hat\\mu = \\bar x$ and $\\hat\\sigma^2 = n^{-1}\\sum_i (x_i - \\bar x)^2$. With $\\sigma$ held, $\\hat\\mu = \\bar x$ always. With $\\mu$ held, the MLE exists unless every observation equals $\\mu$.",
+      "reason": "The normal family is a regular exponential family with sufficient statistic $(x, x^2)$ and natural parameter $(\\mu/\\sigma^2, -1/(2\\sigma^2))$. The log-likelihood is strictly concave in the natural parameter, so it has at most one maximizer, and one exists exactly when $(\\bar x, \\overline{x^2})$ lies inside the convex hull of the parabola $\\{(x, x^2)\\}$, that is when $\\overline{x^2} > \\bar x^2$; this fails only for constant samples."
+    },
+    "matches_current_dossier": true
+  },
+  {
+    "id": "pareto",
+    "current_uniqueness": "proved",
+    "current_statement": "With both coefficients free, every nonconstant positive sample has a unique finite MLE. Constant data have unbounded likelihood. Holding $\\alpha$ gives the unique endpoint estimate $b=\\min_i x_i$, even for constant data. Holding $b\\le\\min_i x_i$ gives a unique finite shape estimate unless every observation equals $b$, when the likelihood is unbounded. A held endpoint above an observation gives zero likelihood. Holding both leaves likelihood evaluation.",
+    "current_reason": "For fixed positive $\\alpha$, the log-likelihood increases strictly in $b$ on $0<b\\le\\min_i x_i$. With $b$ fixed, its shape-dependent part is $n\\log\\alpha-\\alpha\\sum_i\\log(x_i/b)$. It is strictly concave and has maximizer $n/\\sum_i\\log(x_i/b)$ when that sum is positive; otherwise it increases without bound as $\\alpha\\to\\infty$.",
+    "reference": {
+      "kind": "dossier optimality/uniqueness proof",
+      "statement": "With both coefficients free, every nonconstant positive sample has a unique finite MLE. Constant data have unbounded likelihood. Holding $\\alpha$ gives the unique endpoint estimate $b=\\min_i x_i$, even for constant data. Holding $b\\le\\min_i x_i$ gives a unique finite shape estimate unless every observation equals $b$, when the likelihood is unbounded. A held endpoint above an observation gives zero likelihood. Holding both leaves likelihood evaluation.",
+      "reason": "For fixed positive $\\alpha$, the log-likelihood increases strictly in $b$ on $0<b\\le\\min_i x_i$. With $b$ fixed, its shape-dependent part is $n\\log\\alpha-\\alpha\\sum_i\\log(x_i/b)$. It is strictly concave and has maximizer $n/\\sum_i\\log(x_i/b)$ when that sum is positive; otherwise it increases without bound as $\\alpha\\to\\infty$."
+    },
+    "matches_current_dossier": true
+  },
+  {
+    "id": "pareto3",
+    "current_uniqueness": "proved",
+    "current_statement": "With all coefficients free, every nonempty sample has unbounded likelihood. With $\\mu$ held, a unique finite MLE exists for nonconstant observations strictly above $\\mu$. Constant excesses have unbounded likelihood. Holding shape gives a unique scale estimate even for constant data. Holding scale gives a unique shape estimate unless every excess equals that scale, when the likelihood is unbounded. Free-threshold subsets are not supported; their existence depends on the held values. Holding all coefficients leaves likelihood evaluation.",
+    "current_reason": "For $0<\\gamma<1$ the density near $\\mu$ is proportional to $(x-\\mu)^{\\gamma-1}$, so moving $\\mu$ up to the sample minimum makes the unrestricted likelihood unbounded. With $\\mu$ held, put $z_i=\\log(x_i-\\mu)$, $b=\\gamma$ and $a=\\gamma\\log\\sigma$. Apart from a data-only term the likelihood is $n\\log b-2\\sum_i\\log\\{2\\cosh((bz_i-a)/2)\\}$. Its Hessian is negative definite. For nonconstant data its profiled maximum tends to $-\\infty$ as $b$ tends to zero or infinity. Holding shape fixes $b$; holding scale restricts $a=b\\log\\sigma$. Strict concavity gives the stated conditional results.",
+    "reference": {
+      "kind": "dossier optimality/uniqueness proof",
+      "statement": "With all coefficients free, every nonempty sample has unbounded likelihood. With $\\mu$ held, a unique finite MLE exists for nonconstant observations strictly above $\\mu$. Constant excesses have unbounded likelihood. Holding shape gives a unique scale estimate even for constant data. Holding scale gives a unique shape estimate unless every excess equals that scale, when the likelihood is unbounded. Free-threshold subsets are not supported; their existence depends on the held values. Holding all coefficients leaves likelihood evaluation.",
+      "reason": "For $0<\\gamma<1$ the density near $\\mu$ is proportional to $(x-\\mu)^{\\gamma-1}$, so moving $\\mu$ up to the sample minimum makes the unrestricted likelihood unbounded. With $\\mu$ held, put $z_i=\\log(x_i-\\mu)$, $b=\\gamma$ and $a=\\gamma\\log\\sigma$. Apart from a data-only term the likelihood is $n\\log b-2\\sum_i\\log\\{2\\cosh((bz_i-a)/2)\\}$. Its Hessian is negative definite. For nonconstant data its profiled maximum tends to $-\\infty$ as $b$ tends to zero or infinity. Holding shape fixes $b$; holding scale restricts $a=b\\log\\sigma$. Strict concavity gives the stated conditional results."
+    },
+    "matches_current_dossier": true
+  },
+  {
+    "id": "pig",
+    "current_uniqueness": "proved",
+    "current_statement": "With both coefficients free and positive sample mean, a finite MLE exists and is unique exactly when the variance with divisor $n$ exceeds the sample mean. Otherwise the Poisson supremum is unattained. With positive mean $\\mu$ held and any positive count, the finite shape maximum exists and is unique exactly when $v+(\\bar x-\\mu)^2>\\bar x$; equality also selects the unattained Poisson supremum. With positive shape held and any positive count, the mean maximum always exists and is unique. All-zero data with free shape attain the zero mass at $\\lambda=0$, leaving a free mean unidentified; positive held shape instead gives an unattained mean-zero supremum. With $\\lambda=0$ held only all-zero data are compatible, and a free mean is unidentified. Holding both coefficients leaves evaluation.",
+    "current_reason": "At fixed $z=\\sqrt{2\\lambda+\\lambda^2/\\mu^2}$ the unique maximizing mean is $\\bar x$. The Bessel-polynomial degree variance satisfies $V_k<E_k(k^2-E_k^2)/(k^2+E_k^2)$, proving strict shape-profile concavity in the compact coordinate $w$. Its inward Poisson score gives the existence criteria. The weaker bound $V_k\\le E_k$ proves monotonicity and uniqueness of the held-shape mean score. The derivations and floating-point contract are given below.",
+    "reference": {
+      "kind": "dossier optimality/uniqueness proof",
+      "statement": "With both coefficients free and positive sample mean, a finite MLE exists and is unique exactly when the variance with divisor $n$ exceeds the sample mean. Otherwise the Poisson supremum is unattained. With positive mean $\\mu$ held and any positive count, the finite shape maximum exists and is unique exactly when $v+(\\bar x-\\mu)^2>\\bar x$; equality also selects the unattained Poisson supremum. With positive shape held and any positive count, the mean maximum always exists and is unique. All-zero data with free shape attain the zero mass at $\\lambda=0$, leaving a free mean unidentified; positive held shape instead gives an unattained mean-zero supremum. With $\\lambda=0$ held only all-zero data are compatible, and a free mean is unidentified. Holding both coefficients leaves evaluation.",
+      "reason": "At fixed $z=\\sqrt{2\\lambda+\\lambda^2/\\mu^2}$ the unique maximizing mean is $\\bar x$. The Bessel-polynomial degree variance satisfies $V_k<E_k(k^2-E_k^2)/(k^2+E_k^2)$, proving strict shape-profile concavity in the compact coordinate $w$. Its inward Poisson score gives the existence criteria. The weaker bound $V_k\\le E_k$ proves monotonicity and uniqueness of the held-shape mean score. The derivations and floating-point contract are given below."
+    },
+    "matches_current_dossier": true
+  },
+  {
+    "id": "pois",
+    "current_uniqueness": "proved",
+    "current_statement": "For every nonempty sample of nonnegative integer counts, the free-rate MLE exists and is unique, including the boundary estimate $\\hat\\lambda=0$ for all-zero data. A held positive rate gives positive likelihood for every such sample. A held zero rate is compatible only with all-zero data.",
+    "current_reason": "Writing $m$ for sample size and $S$ for the sum, the parameter-dependent log likelihood is $S\\log\\lambda-m\\lambda$ for $\\lambda>0$. If $S>0$, it is strictly concave and maximized at $S/m$. If $S=0$, it decreases strictly and is maximized at the included endpoint zero.",
+    "reference": {
+      "kind": "dossier optimality/uniqueness proof",
+      "statement": "For every nonempty sample of nonnegative integer counts, the free-rate MLE exists and is unique, including the boundary estimate $\\hat\\lambda=0$ for all-zero data. A held positive rate gives positive likelihood for every such sample. A held zero rate is compatible only with all-zero data.",
+      "reason": "Writing $m$ for sample size and $S$ for the sum, the parameter-dependent log likelihood is $S\\log\\lambda-m\\lambda$ for $\\lambda>0$. If $S>0$, it is strictly concave and maximized at $S/m$. If $S=0$, it decreases strictly and is maximized at the included endpoint zero."
+    },
+    "matches_current_dossier": true
+  },
+  {
+    "id": "power",
+    "current_uniqueness": "proved",
+    "current_statement": "With both coefficients free, a positive finite sample has a unique MLE exactly when it is nonconstant. With $a$ held at or above the sample maximum and $b$ free, the MLE exists and is unique unless every observation equals $a$. With $b$ held, the unique free endpoint estimate is the sample maximum, even for constant data. With both held, only support compatibility is evaluated.",
+    "current_reason": "For every $b>0$, likelihood decreases strictly with $a$, so a free endpoint equals the sample maximum. At fixed $a$, the shape log-likelihood is $n\\log b-bS$ plus a constant, where $S=\\sum_i\\log(a/x_i)$. It is strictly concave and has its unique maximum at $b=n/S$ when $S>0$. When $S=0$, it increases without bound.",
+    "reference": {
+      "kind": "dossier optimality/uniqueness proof",
+      "statement": "With both coefficients free, a positive finite sample has a unique MLE exactly when it is nonconstant. With $a$ held at or above the sample maximum and $b$ free, the MLE exists and is unique unless every observation equals $a$. With $b$ held, the unique free endpoint estimate is the sample maximum, even for constant data. With both held, only support compatibility is evaluated.",
+      "reason": "For every $b>0$, likelihood decreases strictly with $a$, so a free endpoint equals the sample maximum. At fixed $a$, the shape log-likelihood is $n\\log b-bS$ plus a constant, where $S=\\sum_i\\log(a/x_i)$. It is strictly concave and has its unique maximum at $b=n/S$ when $S>0$. When $S=0$, it increases without bound."
+    },
+    "matches_current_dossier": true
+  },
+  {
+    "id": "rayleigh",
+    "current_uniqueness": "proved",
+    "current_statement": "Every nonempty strictly positive sample has a unique MLE for the free scale. If any observation is zero, the likelihood is zero for every scale, so every scale ties and there is no unique estimate. Such samples are rejected. With the scale held, only the likelihood is evaluated, and zero observations are still rejected.",
+    "current_reason": "For positive data put $t=\\sigma^2$ and $S=\\sum_i x_i^2>0$. Apart from a constant the log-likelihood is $-n\\log t-S/(2t)$. Its derivative $(S/2-nt)/t^2$ is positive below $S/(2n)$ and negative above it, proving existence and uniqueness. At zero the density is zero for every positive scale, making the entire sample likelihood zero.",
+    "reference": {
+      "kind": "dossier optimality/uniqueness proof",
+      "statement": "Every nonempty strictly positive sample has a unique MLE for the free scale. If any observation is zero, the likelihood is zero for every scale, so every scale ties and there is no unique estimate. Such samples are rejected. With the scale held, only the likelihood is evaluated, and zero observations are still rejected.",
+      "reason": "For positive data put $t=\\sigma^2$ and $S=\\sum_i x_i^2>0$. Apart from a constant the log-likelihood is $-n\\log t-S/(2t)$. Its derivative $(S/2-nt)/t^2$ is positive below $S/(2n)$ and negative above it, proving existence and uniqueness. At zero the density is zero for every positive scale, making the entire sample likelihood zero."
+    },
+    "matches_current_dossier": true
+  },
+  {
+    "id": "tnorm",
+    "current_uniqueness": "proved",
+    "current_statement": "With all coefficients free, the bounds profile to the sample extremes. For a nonconstant sample, a finite parent-normal MLE exists exactly when its empirical variance is smaller than that of the exponential tilt on those bounds having the same empirical mean. It is then unique. The same criterion applies with bounds held, with the one-sided and untruncated cases described below. Constant samples have unbounded likelihood when both parent coefficients are free and the bounds form a nonempty interval. With $\\sigma$ held, a unique finite location estimate exists exactly when the empirical mean is strictly inside the bounds. With $\\mu$ held, the squared-distance criterion below characterizes a unique finite scale estimate. With both parent coefficients held, compatible observations on a nonempty interval require only likelihood evaluation after profiling any free bounds. In every case, coincident profiled bounds give no continuous-density MLE.",
+    "current_reason": "Tightening a free bound to its sample extreme strictly increases likelihood. At fixed bounds the log likelihood is strictly concave in $(\\mu/\\sigma^2,-1/(2\\sigma^2))$, so any finite maximum is unique. Holding either parent coefficient restricts these natural parameters to an affine line. The scores compare the empirical sufficient statistic with its model expectation. The endpoint expectations give the stated existence tests, including the exponential or uniform limit when the quadratic coefficient reaches zero.",
+    "reference": {
+      "kind": "dossier optimality/uniqueness proof",
+      "statement": "With all coefficients free, the bounds profile to the sample extremes. For a nonconstant sample, a finite parent-normal MLE exists exactly when its empirical variance is smaller than that of the exponential tilt on those bounds having the same empirical mean. It is then unique. The same criterion applies with bounds held, with the one-sided and untruncated cases described below. Constant samples have unbounded likelihood when both parent coefficients are free and the bounds form a nonempty interval. With $\\sigma$ held, a unique finite location estimate exists exactly when the empirical mean is strictly inside the bounds. With $\\mu$ held, the squared-distance criterion below characterizes a unique finite scale estimate. With both parent coefficients held, compatible observations on a nonempty interval require only likelihood evaluation after profiling any free bounds. In every case, coincident profiled bounds give no continuous-density MLE.",
+      "reason": "Tightening a free bound to its sample extreme strictly increases likelihood. At fixed bounds the log likelihood is strictly concave in $(\\mu/\\sigma^2,-1/(2\\sigma^2))$, so any finite maximum is unique. Holding either parent coefficient restricts these natural parameters to an affine line. The scores compare the empirical sufficient statistic with its model expectation. The endpoint expectations give the stated existence tests, including the exponential or uniform limit when the quadratic coefficient reaches zero."
+    },
+    "matches_current_dossier": true
+  },
+  {
+    "id": "tpois",
+    "current_uniqueness": "proved",
+    "current_statement": "With all coefficients free, every nonempty nonnegative integer sample has a finite maximum. A nonconstant sample identifies the rate on the smallest retained integer window, but the real truncation bounds are not unique. A constant sample permits singleton support and does not identify the rate. With data-compatible bounds held, tighten each free bound to the corresponding sample extreme. On a nonsingleton window a unique positive finite rate exists exactly when the sample mean lies strictly between its edges. All-zero data attain rate zero if zero is retained. Other edge-only samples have an unattained point-mass supremum. With the rate held, tightening free bounds maximizes the likelihood whenever the conditioning event and observations have positive probability. Holding all coefficients leaves only likelihood evaluation.",
+    "current_reason": "Removing unobserved retained counts decreases the conditioning probability and increases the likelihood. Bounds giving the same integer window are equivalent. On a fixed nonsingleton window, the second derivative in $\\log\\lambda$ is minus the sample size times the conditional variance, which is positive. The conditional mean increases from the lower edge to the upper edge (or infinity), giving the stated root criterion. Singleton support has likelihood one for every positive rate. Rate zero is an attained member only when the window contains zero. The uniqueness claim concerns the rate on nonsingleton support, not the complete coefficient vector.",
+    "reference": {
+      "kind": "dossier optimality/uniqueness proof",
+      "statement": "With all coefficients free, every nonempty nonnegative integer sample has a finite maximum. A nonconstant sample identifies the rate on the smallest retained integer window, but the real truncation bounds are not unique. A constant sample permits singleton support and does not identify the rate. With data-compatible bounds held, tighten each free bound to the corresponding sample extreme. On a nonsingleton window a unique positive finite rate exists exactly when the sample mean lies strictly between its edges. All-zero data attain rate zero if zero is retained. Other edge-only samples have an unattained point-mass supremum. With the rate held, tightening free bounds maximizes the likelihood whenever the conditioning event and observations have positive probability. Holding all coefficients leaves only likelihood evaluation.",
+      "reason": "Removing unobserved retained counts decreases the conditioning probability and increases the likelihood. Bounds giving the same integer window are equivalent. On a fixed nonsingleton window, the second derivative in $\\log\\lambda$ is minus the sample size times the conditional variance, which is positive. The conditional mean increases from the lower edge to the upper edge (or infinity), giving the stated root criterion. Singleton support has likelihood one for every positive rate. Rate zero is an attained member only when the window contains zero. The uniqueness claim concerns the rate on nonsingleton support, not the complete coefficient vector."
+    },
+    "matches_current_dossier": true
+  },
+  {
+    "id": "unif",
+    "current_uniqueness": "proved",
+    "current_statement": "With both endpoints free, a finite MLE exists exactly when the sample is nonconstant, and it is unique. With either endpoint held, each free endpoint is its sample extreme. This gives a unique finite fit exactly when the resulting interval has positive width and contains the sample. With both endpoints held, only compatibility is evaluated.",
+    "current_reason": "For a nonempty finite sample inside the interval, the likelihood is $(b-a)^{-n}$. Each free endpoint must therefore minimize the width. For constant data, a compatible held endpoint strictly outside the observation prevents collapse; otherwise shrinking the width makes the likelihood unbounded.",
+    "reference": {
+      "kind": "dossier optimality/uniqueness proof",
+      "statement": "With both endpoints free, a finite MLE exists exactly when the sample is nonconstant, and it is unique. With either endpoint held, each free endpoint is its sample extreme. This gives a unique finite fit exactly when the resulting interval has positive width and contains the sample. With both endpoints held, only compatibility is evaluated.",
+      "reason": "For a nonempty finite sample inside the interval, the likelihood is $(b-a)^{-n}$. Each free endpoint must therefore minimize the width. For constant data, a compatible held endpoint strictly outside the observation prevents collapse; otherwise shrinking the width makes the likelihood unbounded."
+    },
+    "matches_current_dossier": true
+  },
+  {
+    "id": "weibull",
+    "current_uniqueness": "proved",
+    "current_statement": "With both coefficients free, a unique finite MLE exists for every nonconstant positive sample. Constant data have unbounded likelihood. Holding shape gives a unique finite scale estimate even for constant data. Holding scale gives a unique finite shape estimate unless every observation equals that scale, when the likelihood is unbounded. Holding both leaves only likelihood evaluation.",
+    "current_reason": "Write $z_i=\\log x_i$. After profiling scale, the shape score per observation is $1/k+\\bar z-\\sum_i z_i e^{kz_i}/\\sum_i e^{kz_i}$. Its derivative is $-1/k^2$ minus a weighted variance. For nonconstant data it decreases from $+\\infty$ to $\\bar z-\\max_i z_i<0$. With scale held, put $r_i=\\log(x_i/\\lambda)$. The score $n/k+\\sum_i r_i(1-e^{kr_i})$ has derivative $-n/k^2-\\sum_i r_i^2e^{kr_i}<0$ and crosses zero unless every $r_i=0$. With shape held, $\\hat\\lambda=(n^{-1}\\sum_i x_i^k)^{1/k}$.",
+    "reference": {
+      "kind": "dossier optimality/uniqueness proof",
+      "statement": "With both coefficients free, a unique finite MLE exists for every nonconstant positive sample. Constant data have unbounded likelihood. Holding shape gives a unique finite scale estimate even for constant data. Holding scale gives a unique finite shape estimate unless every observation equals that scale, when the likelihood is unbounded. Holding both leaves only likelihood evaluation.",
+      "reason": "Write $z_i=\\log x_i$. After profiling scale, the shape score per observation is $1/k+\\bar z-\\sum_i z_i e^{kz_i}/\\sum_i e^{kz_i}$. Its derivative is $-1/k^2$ minus a weighted variance. For nonconstant data it decreases from $+\\infty$ to $\\bar z-\\max_i z_i<0$. With scale held, put $r_i=\\log(x_i/\\lambda)$. The score $n/k+\\sum_i r_i(1-e^{kr_i})$ has derivative $-n/k^2-\\sum_i r_i^2e^{kr_i}<0$ and crosses zero unless every $r_i=0$. With shape held, $\\hat\\lambda=(n^{-1}\\sum_i x_i^k)^{1/k}$."
+    },
+    "matches_current_dossier": true
+  },
+  {
+    "id": "yulesimon",
+    "current_uniqueness": "proved",
+    "current_statement": "A unique finite MLE exists exactly when at least one observation exceeds one. All-ones samples have an unattained point-mass supremum as $\\rho\\to\\infty$. Holding $\\rho>0$ leaves only likelihood evaluation and permits all-ones samples.",
+    "current_reason": "The score in $\\log\\rho$ is $m-\\sum_i\\sum_{j=1}^{x_i}\\rho/(\\rho+j)$, where $m$ is sample size. It is strictly decreasing, with limits $m$ at zero and $m-\\sum_i x_i$ at infinity. Thus it has exactly one zero if some observation exceeds one. For all ones the score stays positive and the mass at one tends to one.",
+    "reference": {
+      "kind": "dossier optimality/uniqueness proof",
+      "statement": "A unique finite MLE exists exactly when at least one observation exceeds one. All-ones samples have an unattained point-mass supremum as $\\rho\\to\\infty$. Holding $\\rho>0$ leaves only likelihood evaluation and permits all-ones samples.",
+      "reason": "The score in $\\log\\rho$ is $m-\\sum_i\\sum_{j=1}^{x_i}\\rho/(\\rho+j)$, where $m$ is sample size. It is strictly decreasing, with limits $m$ at zero and $m-\\sum_i x_i$ at infinity. Thus it has exactly one zero if some observation exceeds one. For all ones the score stays positive and the mass at one tends to one."
+    },
+    "matches_current_dossier": true
+  },
+  {
+    "id": "zeta",
+    "current_uniqueness": "proved",
+    "current_statement": "A unique finite MLE exists exactly when at least one observation exceeds one. All-ones samples have an unattained point-mass supremum as $s\\to\\infty$. Holding finite $s>1$ leaves only likelihood evaluation and permits all-ones samples.",
+    "current_reason": "The score per observation is $E_s[\\log X]-\\overline{\\log x}$. Its derivative is $-\\operatorname{Var}_s(\\log X)<0$. The model mean decreases from infinity as $s\\downarrow1$ to zero as $s\\to\\infty$. A positive empirical log mean therefore gives exactly one score root and a strictly concave likelihood. If every observation is one, the score stays positive and the mass at one tends to one.",
+    "reference": {
+      "kind": "dossier optimality/uniqueness proof",
+      "statement": "A unique finite MLE exists exactly when at least one observation exceeds one. All-ones samples have an unattained point-mass supremum as $s\\to\\infty$. Holding finite $s>1$ leaves only likelihood evaluation and permits all-ones samples.",
+      "reason": "The score per observation is $E_s[\\log X]-\\overline{\\log x}$. Its derivative is $-\\operatorname{Var}_s(\\log X)<0$. The model mean decreases from infinity as $s\\downarrow1$ to zero as $s\\to\\infty$. A positive empirical log mean therefore gives exactly one score root and a strictly concave likelihood. If every observation is one, the score stays positive and the mass at one tends to one."
+    },
+    "matches_current_dossier": true
+  },
+  {
+    "id": "zip",
+    "current_uniqueness": "proved",
+    "current_statement": "With both coefficients free, every nonempty count sample has a finite maximum. If a count is positive, the maximizing pair is unique. All-zero data are maximized by $\\pi=1$ with any $\\lambda>0$. With $\\lambda>0$ held, free inflation has a unique maximum. With $\\pi<1$ held, a finite rate maximum exists whenever a count is positive, but two global maxima can tie. For all-zero data and held $\\pi<1$, the supremum requires $\\lambda\\downarrow0$ and is not attained in the declared domain. Held $\\pi=1$ permits only zeros and leaves a free rate unidentified. Holding both coefficients leaves likelihood evaluation, subject to compatibility.",
+    "current_reason": "Write $z$ for the empirical zero fraction. At a held rate, the inflation maximum is $\\max\\{0,(z-e^{-\\lambda})/(1-e^{-\\lambda})\\}$, with value one for all-zero data. In the positive-inflation branch, the rate solves $\\lambda/(1-e^{-\\lambda})=\\bar x/(1-z)$, whose left side is strictly increasing. If this branch is infeasible, the unique maximum is the Poisson member $\\pi=0,\\lambda=\\bar x$. For held $\\pi<1$ and a positive count, the likelihood tends to zero at both ends of the rate domain, so a finite maximum exists. Its score has at most three roots; two separated maxima can tie.",
+    "reference": {
+      "kind": "dossier optimality/uniqueness proof",
+      "statement": "With both coefficients free, every nonempty count sample has a finite maximum. If a count is positive, the maximizing pair is unique. All-zero data are maximized by $\\pi=1$ with any $\\lambda>0$. With $\\lambda>0$ held, free inflation has a unique maximum. With $\\pi<1$ held, a finite rate maximum exists whenever a count is positive, but two global maxima can tie. For all-zero data and held $\\pi<1$, the supremum requires $\\lambda\\downarrow0$ and is not attained in the declared domain. Held $\\pi=1$ permits only zeros and leaves a free rate unidentified. Holding both coefficients leaves likelihood evaluation, subject to compatibility.",
+      "reason": "Write $z$ for the empirical zero fraction. At a held rate, the inflation maximum is $\\max\\{0,(z-e^{-\\lambda})/(1-e^{-\\lambda})\\}$, with value one for all-zero data. In the positive-inflation branch, the rate solves $\\lambda/(1-e^{-\\lambda})=\\bar x/(1-z)$, whose left side is strictly increasing. If this branch is infeasible, the unique maximum is the Poisson member $\\pi=0,\\lambda=\\bar x$. For held $\\pi<1$ and a positive count, the likelihood tends to zero at both ends of the rate domain, so a finite maximum exists. Its score has at most three roots; two separated maxima can tie."
+    },
+    "matches_current_dossier": true
+  },
+  {
+    "id": "zipf",
+    "current_uniqueness": "proved",
+    "current_statement": "With both coefficients free, a finite MLE exists for every nonempty positive integer sample. If any observation exceeds one, the endpoint $\\hat N=\\max_i x_i$ and the shape estimate are unique. All-ones data give $\\hat N=1$ with every finite $s\\ge0$ maximizing the likelihood. With $N>1$ held, the shape MLE is finite and unique unless all observations are one, when only an unattained point-mass supremum exists. With $N=1$ held the shape is unidentified. With shape held, the unique endpoint MLE is the sample maximum. Holding both coefficients leaves only likelihood evaluation on the retained support.",
+    "current_reason": "At every finite shape, the normalizing sum strictly increases with $N$, so the smallest data-compatible endpoint maximizes the likelihood. For $N>1$, the shape score per observation is $E_{N,s}[\\log X]-\\overline{\\log x}$, with derivative $-\\operatorname{Var}_{N,s}(\\log X)<0$. Its model mean tends to zero at infinity. The maximum is $s=0$ if $\\overline{\\log x}\\ge\\log(N!)/N$, and otherwise is the unique positive root, unless the empirical log mean is zero.",
+    "reference": {
+      "kind": "dossier optimality/uniqueness proof",
+      "statement": "With both coefficients free, a finite MLE exists for every nonempty positive integer sample. If any observation exceeds one, the endpoint $\\hat N=\\max_i x_i$ and the shape estimate are unique. All-ones data give $\\hat N=1$ with every finite $s\\ge0$ maximizing the likelihood. With $N>1$ held, the shape MLE is finite and unique unless all observations are one, when only an unattained point-mass supremum exists. With $N=1$ held the shape is unidentified. With shape held, the unique endpoint MLE is the sample maximum. Holding both coefficients leaves only likelihood evaluation on the retained support.",
+      "reason": "At every finite shape, the normalizing sum strictly increases with $N$, so the smallest data-compatible endpoint maximizes the likelihood. For $N>1$, the shape score per observation is $E_{N,s}[\\log X]-\\overline{\\log x}$, with derivative $-\\operatorname{Var}_{N,s}(\\log X)<0$. Its model mean tends to zero at infinity. The maximum is $s=0$ if $\\overline{\\log x}\\ge\\log(N!)/N$, and otherwise is the unique positive root, unless the empirical log mean is zero."
+    },
+    "matches_current_dossier": true
+  },
+  {
+    "id": "zmgeom",
+    "current_uniqueness": "proved",
+    "current_statement": "With both coefficients free, every nonempty count sample has an attained maximum. If positives occur it is unique, with $\\hat p=1/\\bar x_+$ and $\\hat p_0$ the empirical zero fraction, where $\\bar x_+$ is the positive sample mean. All-zero data give $p_0=1$ and leave $p$ unidentified. Holding either coefficient preserves attainment for compatible data. A free $p_0$ is unique, and a free $p$ is unique exactly when positives occur. Holding all coefficients leaves likelihood evaluation. Held $p_0=0$ excludes zeros, held $p_0=1$ excludes positives, and held $p=1$ permits positive counts only at one.",
+    "current_reason": "The likelihood factors into a Bernoulli zero-indicator likelihood and the positive geometric likelihood. For $k>0$ positive observations the latter is $p^k(1-p)^{\\sum_{x_i>0}(x_i-1)}$, uniquely maximized at $p=k/\\sum_{x_i>0}x_i$. This includes the attained endpoint $p=1$ when all positives are one. The Bernoulli factor is uniquely maximized at the empirical zero fraction. Without positives the likelihood is independent of $p$.",
+    "reference": {
+      "kind": "dossier optimality/uniqueness proof",
+      "statement": "With both coefficients free, every nonempty count sample has an attained maximum. If positives occur it is unique, with $\\hat p=1/\\bar x_+$ and $\\hat p_0$ the empirical zero fraction, where $\\bar x_+$ is the positive sample mean. All-zero data give $p_0=1$ and leave $p$ unidentified. Holding either coefficient preserves attainment for compatible data. A free $p_0$ is unique, and a free $p$ is unique exactly when positives occur. Holding all coefficients leaves likelihood evaluation. Held $p_0=0$ excludes zeros, held $p_0=1$ excludes positives, and held $p=1$ permits positive counts only at one.",
+      "reason": "The likelihood factors into a Bernoulli zero-indicator likelihood and the positive geometric likelihood. For $k>0$ positive observations the latter is $p^k(1-p)^{\\sum_{x_i>0}(x_i-1)}$, uniquely maximized at $p=k/\\sum_{x_i>0}x_i$. This includes the attained endpoint $p=1$ when all positives are one. The Bernoulli factor is uniquely maximized at the empirical zero fraction. Without positives the likelihood is independent of $p$."
+    },
+    "matches_current_dossier": true
+  },
+  {
+    "id": "zmlogarithmic",
+    "current_uniqueness": "proved",
+    "current_statement": "With both coefficients free, every nonempty sample of nonnegative integers has an MLE. The zero probability is the observed zero fraction. If there is a positive observation, the positive-count probability is unique, including $p=0$ when every positive count is one. With all-zero data, $p_0=1$ and $p$ is unidentified. Holding either coefficient leaves the same maximization for the other, provided the held values give positive likelihood. Holding both leaves only likelihood evaluation.",
+    "current_reason": "The likelihood factors into the Bernoulli likelihood of the zero indicators and a logarithmic-series likelihood for the positive counts. The latter is a one-parameter exponential family with natural parameter $\\log p$. Its mean increases strictly from one to infinity because its derivative in that parameter is its positive variance. Strict concavity therefore gives a unique root for a positive-count mean above one. At mean one the maximum is the attained member $p=0$. With no positive counts this factor is absent.",
+    "reference": {
+      "kind": "dossier optimality/uniqueness proof",
+      "statement": "With both coefficients free, every nonempty sample of nonnegative integers has an MLE. The zero probability is the observed zero fraction. If there is a positive observation, the positive-count probability is unique, including $p=0$ when every positive count is one. With all-zero data, $p_0=1$ and $p$ is unidentified. Holding either coefficient leaves the same maximization for the other, provided the held values give positive likelihood. Holding both leaves only likelihood evaluation.",
+      "reason": "The likelihood factors into the Bernoulli likelihood of the zero indicators and a logarithmic-series likelihood for the positive counts. The latter is a one-parameter exponential family with natural parameter $\\log p$. Its mean increases strictly from one to infinity because its derivative in that parameter is its positive variance. Strict concavity therefore gives a unique root for a positive-count mean above one. At mean one the maximum is the attained member $p=0$. With no positive counts this factor is absent."
+    },
+    "matches_current_dossier": true
+  },
+  {
+    "id": "zmpois",
+    "current_uniqueness": "proved",
+    "current_statement": "With both coefficients free, every nonempty count sample has an attained maximum. It is unique if a positive count occurs, including $\\lambda=0$ when all positive counts are one. All-zero data give $p_0=1$ and leave the rate unidentified. Holding either coefficient preserves attainment for compatible data. A free zero probability is uniquely the empirical zero fraction. A free rate is unique when positives occur and is unidentified otherwise. Holding all coefficients leaves likelihood evaluation. Held $p_0=0$ excludes zeros, held $p_0=1$ excludes positives, and held $\\lambda=0$ permits positive counts only at one.",
+    "current_reason": "The likelihood factors into a Bernoulli likelihood for the zero indicator and a zero-truncated Poisson likelihood for the positives. The first has its unique maximum at the empirical zero fraction. In the second, the conditional mean $\\lambda/(1-e^{-\\lambda})$ increases strictly from one to infinity: its derivative with respect to log rate is the positive conditional variance. Therefore the positive sample mean determines a unique rate, with the continuous endpoint $\\lambda=0$ for mean one. Without positives the rate drops out of the likelihood.",
+    "reference": {
+      "kind": "dossier optimality/uniqueness proof",
+      "statement": "With both coefficients free, every nonempty count sample has an attained maximum. It is unique if a positive count occurs, including $\\lambda=0$ when all positive counts are one. All-zero data give $p_0=1$ and leave the rate unidentified. Holding either coefficient preserves attainment for compatible data. A free zero probability is uniquely the empirical zero fraction. A free rate is unique when positives occur and is unidentified otherwise. Holding all coefficients leaves likelihood evaluation. Held $p_0=0$ excludes zeros, held $p_0=1$ excludes positives, and held $\\lambda=0$ permits positive counts only at one.",
+      "reason": "The likelihood factors into a Bernoulli likelihood for the zero indicator and a zero-truncated Poisson likelihood for the positives. The first has its unique maximum at the empirical zero fraction. In the second, the conditional mean $\\lambda/(1-e^{-\\lambda})$ increases strictly from one to infinity: its derivative with respect to log rate is the positive conditional variance. Therefore the positive sample mean determines a unique rate, with the continuous endpoint $\\lambda=0$ for mean one. Without positives the rate drops out of the likelihood."
+    },
+    "matches_current_dossier": true
+  },
+  {
+    "id": "ztgeom",
+    "current_uniqueness": "proved",
+    "current_statement": "For every nonempty sample of positive integers, the free-probability MLE exists and is unique, with $\\hat p=1/\\bar x$. All-one data attain $p=1$. Holding the probability leaves only likelihood evaluation. A held value $p=1$ requires all observations to equal one.",
+    "current_reason": "For $m$ observations with total $T$, the log likelihood is $m\\log p+(T-m)\\log(1-p)$. If $T>m$, its derivative vanishes only at $m/T$ and its second derivative is strictly negative. If $T=m$, it increases to its attained maximum at one.",
+    "reference": {
+      "kind": "dossier optimality/uniqueness proof",
+      "statement": "For every nonempty sample of positive integers, the free-probability MLE exists and is unique, with $\\hat p=1/\\bar x$. All-one data attain $p=1$. Holding the probability leaves only likelihood evaluation. A held value $p=1$ requires all observations to equal one.",
+      "reason": "For $m$ observations with total $T$, the log likelihood is $m\\log p+(T-m)\\log(1-p)$. If $T>m$, its derivative vanishes only at $m/T$ and its second derivative is strictly negative. If $T=m$, it increases to its attained maximum at one."
+    },
+    "matches_current_dossier": true
+  },
+  {
+    "id": "ztpois",
+    "current_uniqueness": "proved",
+    "current_statement": "For every nonempty sample of positive integers, the free-rate MLE exists and is unique. It is $\\hat\\lambda=0$ when all observations equal one. Otherwise it is the unique positive solution of $\\lambda/(1-e^{-\\lambda})=\\bar x$. Holding the rate leaves only likelihood evaluation. A held zero rate requires every observation to equal one.",
+    "current_reason": "In the natural parameter $\\eta=\\log\\lambda$, the second derivative of the log likelihood is minus the sample size times the conditional variance, which is strictly negative. The conditional mean increases continuously from one to infinity as the rate increases from zero to infinity. Thus every sample mean above one gives exactly one score root. At mean one the attained zero-rate member maximizes the likelihood.",
+    "reference": {
+      "kind": "dossier optimality/uniqueness proof",
+      "statement": "For every nonempty sample of positive integers, the free-rate MLE exists and is unique. It is $\\hat\\lambda=0$ when all observations equal one. Otherwise it is the unique positive solution of $\\lambda/(1-e^{-\\lambda})=\\bar x$. Holding the rate leaves only likelihood evaluation. A held zero rate requires every observation to equal one.",
+      "reason": "In the natural parameter $\\eta=\\log\\lambda$, the second derivative of the log likelihood is minus the sample size times the conditional variance, which is strictly negative. The conditional mean increases continuously from one to infinity as the rate increases from zero to infinity. Thus every sample mean above one gives exactly one score root. At mean one the attained zero-rate member maximizes the likelihood."
+    },
+    "matches_current_dossier": true
+  }
+]

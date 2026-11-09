@@ -14,9 +14,9 @@ TEST_CASE("CMP golden delegates to existing fitter") {
  const auto g=mltest::load_distribution_golden("cmp");
  const auto f=cppunivariate::cmp_mle({g.data.data(),g.data.size()});
  REQUIRE(f.status==cppunivariate::CmpStatus::Ok);
- CHECK(std::exp(f.eta)==doctest::Approx(g.estimates.at("lambda")).epsilon(1e-8));
- CHECK(f.nu==doctest::Approx(g.estimates.at("nu")).epsilon(1e-8));
- CHECK(f.logLik==doctest::Approx(g.logLik).epsilon(1e-10));
+ CHECK(std::exp(f.eta)==doctest::Approx(g.estimates.at("lambda")).epsilon(mltest::kGolden_cmp).scale(0));
+ CHECK(f.nu==doctest::Approx(g.estimates.at("nu")).epsilon(mltest::kGolden_cmp).scale(0));
+ CHECK(f.logLik==doctest::Approx(g.logLik).epsilon(mltest::kGolden_cmp).scale(0));
 }
 TEST_CASE("CMP tiny log complements and invalid domains") {
  CHECK(cppunivariate::distributions::pcmp(0,1e-100,2,true,true)/(-1e-100)==doctest::Approx(1).epsilon(1e-12));
@@ -119,15 +119,18 @@ TEST_CASE("CMP: public moment-error wrapper bounds all interior hold subsets") {
 
 TEST_CASE("CMP: certified wrapper preserves all golden hold subsets") {
   const auto g=mltest::load_distribution_golden("cmp");
+  // Held-lambda scalar solve: measured relative nu error <=1.11e-12
+  // (default CmpFitControl root tolerance), distinct from the joint solve.
+  constexpr double held_tolerance=2e-12;
   for(bool fl:{false,true})for(bool fn:{false,true}) {
     cppunivariate::CmpFitControl ctl;
     if(fl)ctl.fixed_lambda=g.estimates.at("lambda");
     if(fn)ctl.fixed_nu=g.estimates.at("nu");
     const auto f=cppunivariate::cmp_domain_mle({g.data.data(),g.data.size()},ctl);
     REQUIRE(f.status==cppunivariate::CmpStatus::Ok);
-    CHECK(std::exp(f.eta)==doctest::Approx(g.estimates.at("lambda")).epsilon(1e-8));
-    CHECK(f.nu==doctest::Approx(g.estimates.at("nu")).epsilon(1e-8));
-    CHECK(f.logLik==doctest::Approx(g.logLik).epsilon(1e-10));
+    CHECK(std::exp(f.eta)==doctest::Approx(g.estimates.at("lambda")).epsilon(held_tolerance).scale(0));
+    CHECK(f.nu==doctest::Approx(g.estimates.at("nu")).epsilon(held_tolerance).scale(0));
+    CHECK(f.logLik==doctest::Approx(g.logLik).epsilon(held_tolerance).scale(0));
   }
 }
 

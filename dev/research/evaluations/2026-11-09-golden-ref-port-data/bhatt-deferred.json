@@ -1,0 +1,75 @@
+{
+  "status": "reference and tolerance reserved for bhatt-allfree; canonical fixture unchanged",
+  "reference_source": "2026-11-07 golden-ref independent reference (read only)",
+  "reference": {
+    "method": "damped Newton at 50 digits on the README log density, from the fitted values",
+    "precision_digits": 50,
+    "estimates": {
+      "mu": "-0.003800068921591749713129563",
+      "sigma": "1.05789733329049518933052",
+      "a": "1.733605923867750989913198"
+    },
+    "logLik": "-896.3104598272385777518444",
+    "free": [
+      "mu",
+      "sigma",
+      "a"
+    ],
+    "not_refined": {},
+    "score_norm": "4.54e-59",
+    "information_negative_definite": true,
+    "global": {
+      "kind": "numerical multistart, not a proof",
+      "starts": 8,
+      "status": "pass",
+      "gap": 1.1368683772161603e-13,
+      "logLik": -896.3104598272384,
+      "estimates": {
+        "mu": -0.003800067677662929,
+        "sigma": 1.0578973196686596,
+        "a": 1.733605945144217
+      },
+      "feasible_results": 16
+    },
+    "input_sha256": "00685f345b19642a6bd60577982d4753b2fd0e2b638be61bdec4d09e36dcd695"
+  },
+  "components": {
+    "native": {
+      "mu": 1.8469399494878353e-07,
+      "sigma": 1.605088061916705e-08,
+      "a": 2.6047463281628426e-08,
+      "logLik": 4.001679592798105e-16
+    },
+    "double": {
+      "mu": 2.007601901434379e-07,
+      "sigma": 1.2568198447340762e-08,
+      "a": 3.408974614473913e-08,
+      "logLik": 1.4649059453382983e-16
+    },
+    "wasm": {
+      "mu": 4.264413497021752e-08,
+      "sigma": 6.463536929307876e-09,
+      "a": 2.7493185951466775e-09,
+      "logLik": 2.7332927690682016e-16
+    },
+    "simbox-double": {
+      "mu": 4.26441386222007e-08,
+      "sigma": 6.463536929307876e-09,
+      "a": 2.7493185951466775e-09,
+      "logLik": 2.7332927690682016e-16
+    },
+    "r-native": {
+      "mu": 1.8469399494878353e-07,
+      "sigma": 1.605088061916705e-08,
+      "a": 2.6047463281628426e-08,
+      "logLik": 4.001679592798105e-16
+    }
+  },
+  "measured": {
+    "native": 1.8469399494878353e-07,
+    "double": 2.007601901434379e-07,
+    "wasm": 4.264413497021752e-08,
+    "simbox-double": 4.26441386222007e-08,
+    "r-native": 1.8469399494878353e-07
+  }
+}

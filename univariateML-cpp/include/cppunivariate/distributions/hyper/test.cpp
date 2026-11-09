@@ -71,7 +71,7 @@ TEST_CASE("hyper: golden") {
   CHECK(r.N == g.estimates.at("N"));
   CHECK(r.m == g.estimates.at("m"));
   CHECK(r.k == g.estimates.at("k"));
-  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kTol));
+  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kGolden_hyper).scale(0));
 }
 
 TEST_CASE("hyper: log pmf against independent formulas") {

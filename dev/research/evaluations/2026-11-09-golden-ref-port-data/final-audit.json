@@ -1,0 +1,569 @@
+{
+  "imported_reference_checks": [
+    {
+      "id": "bbinom",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "beta",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "betapr",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "binom",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "bnbinom",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "burr",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "cauchy",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "cmb",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "cmp",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "dgamma",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "dlaplace",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "dnorm",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "dunif",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "dweibull",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "emg",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "exp",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "fatigue",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "foldnorm",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "fpareto",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "frechet",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "gamma",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "gb2",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "ged",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "genbeta",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "geom",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "gev",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "gompertz",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "gpd",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "gumbel",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "hcauchy",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "hnorm",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "ht",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "huber",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "hyper",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "invburr",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "invexp",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "invgamma",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "invgauss",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "invparalogis",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "invpareto",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "invtrgamma",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "invweibull",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "kumar",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "laplace",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "lgamma",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "lgser",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "llogis",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "lnorm",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "logis",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "logitnorm",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "lomax",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "lst",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "naka",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "nbinom",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "nhyper",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "norm",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "nsbeta",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "paralogis",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "pareto",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "pareto2",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "pareto3",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "pareto4",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "pig",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "pois",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "power",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "rayleigh",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "sged",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "sgomp",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "skellam",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "slash",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "sn",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "snorm",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "sstd",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "st",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "std",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "tbinom",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "tlambda",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "tnorm",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "tpois",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "trgamma",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "triang",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "unif",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "weibull",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "yulesimon",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "zeta",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "zib",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "zinb",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "zip",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "zipf",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "zmbinom",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "zmgeom",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "zmlogarithmic",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "zmnbinom",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "zmpois",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "ztbinom",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "ztgeom",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "ztnbinom",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    },
+    {
+      "id": "ztpois",
+      "all_value_strings_identical": true,
+      "max_relative_difference": 0.0
+    }
+  ],
+  "current_oracle_rescoring": {
+    "genbeta": {
+      "precision_digits": 50,
+      "gap": "-3.388128597877919266772423e-10",
+      "comparison_margin": "5.5e-38"
+    }
+  },
+  "integer_comparisons": {
+    "binom": {
+      "precision_digits": 50,
+      "practical_comparison_margin": "9.39e-38",
+      "gaps": {
+        "runner_up_gap": "1.494964911469944892169796",
+        "tail_gap": "19.03147212201093316895164"
+      }
+    },
+    "dlaplace": {
+      "precision_digits": 50,
+      "practical_comparison_margin": "8.38e-38",
+      "gaps": {}
+    },
+    "hyper": {
+      "precision_digits": 50,
+      "practical_comparison_margin": "8.64e-38",
+      "gaps": {
+        "runner_up_gap": "2.825097991684460786048365"
+      }
+    },
+    "nhyper": {
+      "precision_digits": 50,
+      "practical_comparison_margin": "1.19e-37",
+      "gaps": {
+        "runner_up_gap": "1.724720133616149617173858"
+      }
+    },
+    "zib": {
+      "precision_digits": 50,
+      "practical_comparison_margin": "8.51e-38",
+      "gaps": {
+        "runner_up_gap": "0.5163038242094288818391634",
+        "tail_gap": "3.543217405566928331787742"
+      }
+    },
+    "zmbinom": {
+      "precision_digits": 50,
+      "practical_comparison_margin": "9.13e-38",
+      "gaps": {
+        "runner_up_gap": "0.6340066791605447768315708",
+        "tail_gap": "3.612126816487420299132075"
+      }
+    },
+    "ztbinom": {
+      "precision_digits": 50,
+      "practical_comparison_margin": "8.52e-38",
+      "gaps": {
+        "runner_up_gap": "0.3027316252942237810849175",
+        "tail_gap": "0.637372898835331312150227"
+      }
+    }
+  },
+  "bhatt_js_policy_unchanged": {
+    "tol": 1e-10,
+    "tolerances": {
+      "mu": 5e-07,
+      "sigma": 5e-07,
+      "a": 5e-07
+    },
+    "tolerance_scales": {
+      "mu": 1,
+      "sigma": 1,
+      "a": 1
+    },
+    "ll_tol": 1e-07,
+    "ll_scale": 1
+  }
+}

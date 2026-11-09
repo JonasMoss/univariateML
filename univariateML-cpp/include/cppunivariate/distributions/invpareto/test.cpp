@@ -7,8 +7,8 @@
 TEST_CASE("invpareto: golden, reciprocal agreement and score") {
   auto g=mltest::load_distribution_golden("invpareto");
   auto r=cppunivariate::invpareto_mle(mltest::as_span(g.data), mltest::kFitTol, mltest::kFitMaxit);
-  CHECK(r.shape == doctest::Approx(g.estimates.at("shape")).epsilon(1e-12)); CHECK(r.scale == doctest::Approx(g.estimates.at("scale")).epsilon(1e-12));
-  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(1e-12));
+  CHECK(r.shape == doctest::Approx(g.estimates.at("shape")).epsilon(mltest::kGolden_invpareto).scale(0)); CHECK(r.scale == doctest::Approx(g.estimates.at("scale")).epsilon(mltest::kGolden_invpareto).scale(0));
+  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kGolden_invpareto).scale(0));
   std::vector<double> y; double jac=0;
   for (double x:g.data) { y.push_back(1/x); jac-=2*std::log(x); }
   auto b=cppunivariate::lomax_mle(mltest::as_span(y), mltest::kFitTol, mltest::kFitMaxit);

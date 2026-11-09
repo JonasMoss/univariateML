@@ -8,10 +8,10 @@ TEST_CASE("sn golden and regular scores") {
   const auto g=mltest::load_distribution_golden("sn");
   const auto fit=cppunivariate::sn_mle(mltest::as_span(g.data));
   REQUIRE(fit.status==cppunivariate::SnStatus::Ok);
-  CHECK(fit.xi==doctest::Approx(g.estimates.at("xi")).epsilon(1e-6));
-  CHECK(fit.omega==doctest::Approx(g.estimates.at("omega")).epsilon(1e-6));
-  CHECK(fit.alpha==doctest::Approx(g.estimates.at("alpha")).epsilon(1e-6));
-  CHECK(fit.logLik==doctest::Approx(g.logLik).epsilon(1e-10));
+  CHECK(fit.xi==doctest::Approx(g.estimates.at("xi")).epsilon(mltest::kGolden_sn).scale(0));
+  CHECK(fit.omega==doctest::Approx(g.estimates.at("omega")).epsilon(mltest::kGolden_sn).scale(0));
+  CHECK(fit.alpha==doctest::Approx(g.estimates.at("alpha")).epsilon(mltest::kGolden_sn).scale(0));
+  CHECK(fit.logLik==doctest::Approx(g.logLik).epsilon(mltest::kGolden_sn).scale(0));
   for(int j=0;j<3;++j) {
     std::vector<double> theta={fit.xi,fit.omega,fit.alpha};
     const double step=1e-5*(1+std::abs(theta[j]));

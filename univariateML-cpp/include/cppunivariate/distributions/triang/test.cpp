@@ -8,10 +8,10 @@ TEST_CASE("triang: golden") {
   const auto g=mltest::load_distribution_golden("triang");
   const auto r=cppunivariate::triang_mle(mltest::as_span(g.data));
   CHECK(r.status==cppunivariate::TriangStatus::Ok);
-  CHECK(r.a==doctest::Approx(g.estimates.at("a")).epsilon(1e-12));
-  CHECK(r.b==doctest::Approx(g.estimates.at("b")).epsilon(1e-12));
-  CHECK(r.c==doctest::Approx(g.estimates.at("c")).epsilon(1e-12));
-  CHECK(r.logLik==doctest::Approx(g.logLik).epsilon(1e-12));
+  CHECK(r.a==doctest::Approx(g.estimates.at("a")).epsilon(mltest::kGolden_triang).scale(0));
+  CHECK(r.b==doctest::Approx(g.estimates.at("b")).epsilon(mltest::kGolden_triang).scale(0));
+  CHECK(r.c==doctest::Approx(g.estimates.at("c")).epsilon(mltest::kGolden_triang).scale(0));
+  CHECK(r.logLik==doctest::Approx(g.logLik).epsilon(mltest::kGolden_triang).scale(0));
 }
 TEST_CASE("triang: corners, ties, incompatible and constant samples") {
   const double nan=std::numeric_limits<double>::quiet_NaN();

@@ -10,10 +10,10 @@ TEST_CASE("betapr golden and all three scores") {
   auto g = mltest::load_distribution_golden("betapr");
   auto r = cppunivariate::betapr_mle(mltest::as_span(g.data));
   CHECK(r.status == cppunivariate::BetaPrimeStatus::Ok);
-  CHECK(r.alpha == doctest::Approx(g.estimates.at("shape1")).epsilon(1e-6));
-  CHECK(r.beta == doctest::Approx(g.estimates.at("shape2")).epsilon(1e-6));
-  CHECK(r.scale == doctest::Approx(g.estimates.at("scale")).epsilon(1e-6));
-  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(1e-10));
+  CHECK(r.alpha == doctest::Approx(g.estimates.at("shape1")).epsilon(mltest::kGolden_betapr).scale(0));
+  CHECK(r.beta == doctest::Approx(g.estimates.at("shape2")).epsilon(mltest::kGolden_betapr).scale(0));
+  CHECK(r.scale == doctest::Approx(g.estimates.at("scale")).epsilon(mltest::kGolden_betapr).scale(0));
+  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kGolden_betapr).scale(0));
   cppunivariate::BetaPrimeLogCost cost{mltest::as_span(g.data)};
   const double theta[3] = {std::log(r.alpha), std::log(r.beta), std::log(r.scale)};
   double analytic[3], numeric[3];
@@ -402,9 +402,9 @@ TEST_CASE("betapr joint exterior encloses the frozen golden without moving its f
   const auto r=cppunivariate::betapr_mle(mltest::as_span(g.data));
   const auto& b=r.joint_exterior;
   REQUIRE(b.status==cppunivariate::BetaPrimeJointBoundStatus::FiniteExterior);
-  CHECK(r.alpha==doctest::Approx(g.estimates.at("shape1")).epsilon(1e-6));
-  CHECK(r.beta==doctest::Approx(g.estimates.at("shape2")).epsilon(1e-6));
-  CHECK(r.scale==doctest::Approx(g.estimates.at("scale")).epsilon(1e-6));
+  CHECK(r.alpha==doctest::Approx(g.estimates.at("shape1")).epsilon(mltest::kGolden_betapr).scale(0));
+  CHECK(r.beta==doctest::Approx(g.estimates.at("shape2")).epsilon(mltest::kGolden_betapr).scale(0));
+  CHECK(r.scale==doctest::Approx(g.estimates.at("scale")).epsilon(mltest::kGolden_betapr).scale(0));
   CHECK(r.alpha<b.invgamma_shape1);
   CHECK(r.beta<b.gamma_shape2);
   CHECK(b.evaluations<=cppunivariate::certificate_budget(1000));

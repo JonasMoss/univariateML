@@ -23,9 +23,9 @@ namespace {
   auto r = cppunivariate::binom_mle(as_ispan(v),
                              std::numeric_limits<double>::quiet_NaN(),
                              mltest::kFitTol, mltest::kFitMaxit);
-  CHECK(r.size == D_APPROX(g.estimates.at("size")));
-  CHECK(r.prob == D_APPROX(g.estimates.at("prob")));
-  CHECK(r.logLik == D_APPROX(g.logLik));
+  CHECK(r.size == doctest::Approx(g.estimates.at("size")).epsilon(mltest::kGolden_binom).scale(0));
+  CHECK(r.prob == doctest::Approx(g.estimates.at("prob")).epsilon(mltest::kGolden_binom).scale(0));
+  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kGolden_binom).scale(0));
 }
 
 TEST_CASE("binom probability boundaries") {

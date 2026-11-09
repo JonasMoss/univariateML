@@ -351,9 +351,9 @@ TEST_CASE("frechet: general all-free cover checks public coefficients and proper
  REQUIRE(fit.status==cppunivariate::FrechetStatus::Ok);
  CHECK(fit.iterations>0);
  CHECK(fit.iterations<=cppunivariate::certificate_budget(100));
- CHECK(fit.lambda==doctest::Approx(g.estimates.at("lambda")).epsilon(1e-10));
- CHECK(fit.mu==doctest::Approx(g.estimates.at("mu")).epsilon(1e-10));
- CHECK(fit.sigma==doctest::Approx(g.estimates.at("sigma")).epsilon(1e-10));
+ CHECK(fit.lambda==doctest::Approx(g.estimates.at("lambda")).epsilon(mltest::kGolden_frechet).scale(0));
+ CHECK(fit.mu==doctest::Approx(g.estimates.at("mu")).epsilon(mltest::kGolden_frechet).scale(0));
+ CHECK(fit.sigma==doctest::Approx(g.estimates.at("sigma")).epsilon(mltest::kGolden_frechet).scale(0));
  std::vector<double> x;
  for(int j=0;j<80;++j)x.push_back(-std::log(-std::log((j+.5)/80)));
  const auto face=cppunivariate::frechet_mle(mltest::as_span(x));

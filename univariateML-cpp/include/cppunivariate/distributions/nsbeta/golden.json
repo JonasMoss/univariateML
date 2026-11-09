@@ -11,10 +11,10 @@
     "max": 1
   },
   "estimates": {
-    "shape1": 2.0063421787377256,
-    "shape2": 3.0460502693524503,
-    "min": 0,
-    "max": 1
+    "shape1": 2.0063421787377247,
+    "shape2": 3.046050269352448,
+    "min": 0.0,
+    "max": 1.0
   },
   "fixed": ["min", "max"],
   "logLik": 120.28858886997517,
@@ -23,5 +23,41 @@
   "fit_args": {
     "min": 0,
     "max": 1
+  },
+  "reference": {
+    "method": "damped Newton at 50 digits on the README log density, from the fitted values",
+    "precision_digits": 50,
+    "estimates": {
+      "shape1": "2.0063421787377248049339",
+      "shape2": "3.046050269352448160022527",
+      "min": "0.0",
+      "max": "1.0"
+    },
+    "logLik": "120.2885888699751770881637",
+    "free": [
+      "shape1",
+      "shape2"
+    ],
+    "not_refined": {
+      "min": "held",
+      "max": "held"
+    },
+    "score_norm": "3.44e-59",
+    "information_negative_definite": true,
+    "global": {
+      "kind": "numerical multistart, not a proof",
+      "starts": 8,
+      "status": "pass",
+      "gap": 4.263256414560601e-13,
+      "logLik": 120.2885888699756,
+      "estimates": {
+        "shape1": 2.0063421679550077,
+        "shape2": 3.0460501958759654,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "feasible_results": 16
+    },
+    "input_sha256": "48fad4f9ccf5943b380f69a9b4d91916c1c881ac0524f70627c65451968e0012"
   }
 }

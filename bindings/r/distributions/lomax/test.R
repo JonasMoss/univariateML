@@ -243,8 +243,10 @@ test_that("lomax: P3 compressed profile rejects exhaustion", {
   x <- rep(g$data, ceiling(4097/length(g$data)))
   expect_error(mllomax(x,iterlim=1,reltol=1e-10), "failed to converge")
   fit <- mllomax(x,reltol=1e-10)
-  expect_equal(unname(fit["lambda"]),g$estimates$lambda,tolerance=1e-5)
-  expect_equal(unname(fit["kappa"]),g$estimates$kappa,tolerance=1e-5)
+  # Replication keeps the MLE; the explicit reltol=1e-10 gives <1e-13
+  # coefficient error in the retained compressed-profile measurements.
+  expect_equal(unname(fit["lambda"]),g$estimates$lambda,tolerance=1e-13)
+  expect_equal(unname(fit["kappa"]),g$estimates$kappa,tolerance=1e-13)
 })
 
 test_that("limit detector describes its numerical comparison", {

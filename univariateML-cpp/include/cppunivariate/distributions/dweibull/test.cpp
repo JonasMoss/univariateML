@@ -63,9 +63,9 @@ TEST_CASE("dweibull: golden and score gate") {
   const auto g = mltest::load_distribution_golden("dweibull");
   const auto r = fit(g.data);
   REQUIRE(r.status == cppunivariate::DweibullStatus::Ok);
-  CHECK(r.shape1 == doctest::Approx(g.estimates.at("shape1")).epsilon(mltest::kTol));
-  CHECK(r.shape2 == doctest::Approx(g.estimates.at("shape2")).epsilon(mltest::kTol));
-  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kTol));
+  CHECK(r.shape1 == doctest::Approx(g.estimates.at("shape1")).epsilon(mltest::kGolden_dweibull).scale(0));
+  CHECK(r.shape2 == doctest::Approx(g.estimates.at("shape2")).epsilon(mltest::kGolden_dweibull).scale(0));
+  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kGolden_dweibull).scale(0));
   CHECK(r.logLik == doctest::Approx(dweibull_loglik(g.data, r.shape1, r.shape2)).epsilon(1e-13));
   CHECK(score_norm(g.data, r.shape1, r.shape2) < 1e-3);
 }

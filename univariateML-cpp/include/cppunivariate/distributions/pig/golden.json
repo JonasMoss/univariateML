@@ -10,10 +10,32 @@
   },
   "estimates": {
     "mean": 1.978,
-    "shape": 3.5119674554047671
+    "shape": 3.5119672752062097
   },
   "fixed": [],
   "logLik": -930.1830192843388,
   "n_obs": 500,
-  "data": [0, 1, 0, 5, 5, 0, 3, 2, 1, 4, 2, 1, 1, 6, 2, 1, 4, 0, 2, 0, 4, 1, 1, 0, 3, 0, 1, 1, 1, 1, 2, 1, 2, 1, 5, 2, 2, 0, 1, 2, 4, 1, 1, 0, 2, 3, 1, 3, 3, 1, 2, 7, 2, 0, 0, 4, 2, 1, 1, 0, 2, 6, 3, 1, 1, 3, 0, 0, 2, 1, 7, 0, 1, 1, 0, 4, 3, 0, 2, 1, 0, 9, 6, 0, 2, 0, 3, 8, 3, 6, 0, 0, 2, 0, 2, 1, 1, 2, 0, 1, 4, 3, 1, 0, 1, 1, 0, 4, 6, 0, 5, 4, 2, 3, 0, 1, 4, 1, 0, 7, 1, 3, 6, 1, 0, 0, 1, 2, 2, 4, 2, 0, 0, 3, 2, 2, 0, 6, 2, 7, 4, 1, 1, 0, 0, 2, 2, 2, 1, 1, 3, 0, 1, 0, 0, 1, 1, 0, 1, 0, 5, 4, 2, 2, 1, 2, 0, 1, 1, 1, 2, 1, 2, 1, 0, 2, 6, 2, 7, 3, 2, 1, 3, 4, 3, 1, 0, 2, 3, 5, 1, 3, 2, 4, 0, 1, 3, 1, 4, 1, 1, 7, 0, 0, 0, 4, 0, 0, 0, 3, 0, 2, 0, 1, 2, 6, 17, 1, 2, 0, 3, 1, 1, 1, 2, 3, 2, 1, 4, 3, 1, 3, 1, 5, 2, 0, 2, 4, 1, 1, 2, 5, 2, 4, 2, 1, 1, 1, 17, 0, 4, 2, 10, 4, 3, 2, 2, 1, 2, 0, 0, 1, 1, 3, 1, 7, 1, 1, 1, 3, 0, 2, 1, 4, 1, 4, 1, 2, 2, 5, 1, 9, 1, 0, 4, 3, 1, 4, 5, 2, 1, 4, 1, 0, 0, 2, 9, 3, 3, 3, 1, 3, 0, 2, 1, 3, 3, 1, 3, 3, 4, 0, 3, 1, 2, 2, 2, 1, 8, 2, 1, 3, 2, 1, 1, 1, 0, 2, 2, 1, 2, 0, 1, 2, 1, 1, 3, 1, 1, 1, 0, 0, 3, 0, 1, 0, 0, 3, 0, 0, 4, 0, 1, 0, 2, 0, 1, 2, 1, 2, 2, 1, 1, 7, 3, 5, 0, 0, 0, 3, 1, 4, 0, 3, 0, 1, 1, 1, 3, 1, 1, 1, 3, 0, 0, 3, 8, 6, 1, 1, 1, 2, 2, 2, 1, 6, 0, 1, 0, 3, 0, 0, 0, 1, 2, 0, 6, 0, 1, 3, 6, 0, 2, 2, 0, 2, 3, 0, 0, 1, 1, 2, 6, 0, 2, 8, 1, 0, 1, 2, 1, 3, 0, 1, 0, 2, 1, 2, 1, 4, 2, 1, 3, 2, 1, 0, 1, 4, 1, 1, 1, 2, 0, 2, 0, 2, 1, 0, 4, 8, 1, 5, 4, 0, 2, 0, 1, 0, 2, 0, 5, 0, 0, 1, 1, 5, 2, 2, 0, 2, 1, 1, 4, 2, 5, 4, 2, 2, 0, 1, 0, 5, 3, 2, 0, 4, 2, 0, 1, 0]
+  "data": [0, 1, 0, 5, 5, 0, 3, 2, 1, 4, 2, 1, 1, 6, 2, 1, 4, 0, 2, 0, 4, 1, 1, 0, 3, 0, 1, 1, 1, 1, 2, 1, 2, 1, 5, 2, 2, 0, 1, 2, 4, 1, 1, 0, 2, 3, 1, 3, 3, 1, 2, 7, 2, 0, 0, 4, 2, 1, 1, 0, 2, 6, 3, 1, 1, 3, 0, 0, 2, 1, 7, 0, 1, 1, 0, 4, 3, 0, 2, 1, 0, 9, 6, 0, 2, 0, 3, 8, 3, 6, 0, 0, 2, 0, 2, 1, 1, 2, 0, 1, 4, 3, 1, 0, 1, 1, 0, 4, 6, 0, 5, 4, 2, 3, 0, 1, 4, 1, 0, 7, 1, 3, 6, 1, 0, 0, 1, 2, 2, 4, 2, 0, 0, 3, 2, 2, 0, 6, 2, 7, 4, 1, 1, 0, 0, 2, 2, 2, 1, 1, 3, 0, 1, 0, 0, 1, 1, 0, 1, 0, 5, 4, 2, 2, 1, 2, 0, 1, 1, 1, 2, 1, 2, 1, 0, 2, 6, 2, 7, 3, 2, 1, 3, 4, 3, 1, 0, 2, 3, 5, 1, 3, 2, 4, 0, 1, 3, 1, 4, 1, 1, 7, 0, 0, 0, 4, 0, 0, 0, 3, 0, 2, 0, 1, 2, 6, 17, 1, 2, 0, 3, 1, 1, 1, 2, 3, 2, 1, 4, 3, 1, 3, 1, 5, 2, 0, 2, 4, 1, 1, 2, 5, 2, 4, 2, 1, 1, 1, 17, 0, 4, 2, 10, 4, 3, 2, 2, 1, 2, 0, 0, 1, 1, 3, 1, 7, 1, 1, 1, 3, 0, 2, 1, 4, 1, 4, 1, 2, 2, 5, 1, 9, 1, 0, 4, 3, 1, 4, 5, 2, 1, 4, 1, 0, 0, 2, 9, 3, 3, 3, 1, 3, 0, 2, 1, 3, 3, 1, 3, 3, 4, 0, 3, 1, 2, 2, 2, 1, 8, 2, 1, 3, 2, 1, 1, 1, 0, 2, 2, 1, 2, 0, 1, 2, 1, 1, 3, 1, 1, 1, 0, 0, 3, 0, 1, 0, 0, 3, 0, 0, 4, 0, 1, 0, 2, 0, 1, 2, 1, 2, 2, 1, 1, 7, 3, 5, 0, 0, 0, 3, 1, 4, 0, 3, 0, 1, 1, 1, 3, 1, 1, 1, 3, 0, 0, 3, 8, 6, 1, 1, 1, 2, 2, 2, 1, 6, 0, 1, 0, 3, 0, 0, 0, 1, 2, 0, 6, 0, 1, 3, 6, 0, 2, 2, 0, 2, 3, 0, 0, 1, 1, 2, 6, 0, 2, 8, 1, 0, 1, 2, 1, 3, 0, 1, 0, 2, 1, 2, 1, 4, 2, 1, 3, 2, 1, 0, 1, 4, 1, 1, 1, 2, 0, 2, 0, 2, 1, 0, 4, 8, 1, 5, 4, 0, 2, 0, 1, 0, 2, 0, 5, 0, 0, 1, 1, 5, 2, 2, 0, 2, 1, 1, 4, 2, 5, 4, 2, 2, 0, 1, 0, 5, 3, 2, 0, 4, 2, 0, 1, 0],
+  "reference": {
+    "method": "damped Newton at 50 digits on the README log density, from the fitted values",
+    "precision_digits": 50,
+    "estimates": {
+      "mean": "1.978",
+      "shape": "3.511967275206209475136999"
+    },
+    "logLik": "-930.1830192843388298343122",
+    "free": [
+      "mean",
+      "shape"
+    ],
+    "not_refined": {},
+    "score_norm": "3.26e-59",
+    "information_negative_definite": true,
+    "global": {
+      "kind": "dossier optimality/uniqueness proof",
+      "statement": "With both coefficients free and positive sample mean, a finite MLE exists and is unique exactly when the variance with divisor $n$ exceeds the sample mean. Otherwise the Poisson supremum is unattained. With positive mean $\\mu$ held and any positive count, the finite shape maximum exists and is unique exactly when $v+(\\bar x-\\mu)^2>\\bar x$; equality also selects the unattained Poisson supremum. With positive shape held and any positive count, the mean maximum always exists and is unique. All-zero data with free shape attain the zero mass at $\\lambda=0$, leaving a free mean unidentified; positive held shape instead gives an unattained mean-zero supremum. With $\\lambda=0$ held only all-zero data are compatible, and a free mean is unidentified. Holding both coefficients leaves evaluation.",
+      "reason": "At fixed $z=\\sqrt{2\\lambda+\\lambda^2/\\mu^2}$ the unique maximizing mean is $\\bar x$. The Bessel-polynomial degree variance satisfies $V_k<E_k(k^2-E_k^2)/(k^2+E_k^2)$, proving strict shape-profile concavity in the compact coordinate $w$. Its inward Poisson score gives the existence criteria. The weaker bound $V_k\\le E_k$ proves monotonicity and uniqueness of the held-shape mean score. The derivations and floating-point contract are given below."
+    },
+    "input_sha256": "02b7fd0610be767081fbae29a51b512ac7330f6aa93f41313a0392c1f60cea80"
+  }
 }

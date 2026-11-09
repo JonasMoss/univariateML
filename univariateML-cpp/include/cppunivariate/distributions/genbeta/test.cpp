@@ -6,10 +6,10 @@ TEST_CASE("genbeta: golden and held-scale likelihood") {
   const auto g=mltest::load_distribution_golden("genbeta");
   const auto r=cppunivariate::genbeta_mle(mltest::as_span(g.data),1);
   REQUIRE(r.status==cppunivariate::GenbetaStatus::Ok);
-  CHECK(r.shape1==doctest::Approx(g.estimates.at("shape1")).epsilon(1e-5));
-  CHECK(r.shape2==doctest::Approx(g.estimates.at("shape2")).epsilon(1e-5));
-  CHECK(r.shape3==doctest::Approx(g.estimates.at("shape3")).epsilon(1e-5));
-  CHECK(r.logLik==doctest::Approx(g.logLik).epsilon(1e-8));
+  CHECK(r.shape1==doctest::Approx(g.estimates.at("shape1")).epsilon(mltest::kGolden_genbeta).scale(0));
+  CHECK(r.shape2==doctest::Approx(g.estimates.at("shape2")).epsilon(mltest::kGolden_genbeta).scale(0));
+  CHECK(r.shape3==doctest::Approx(g.estimates.at("shape3")).epsilon(mltest::kGolden_genbeta).scale(0));
+  CHECK(r.logLik==doctest::Approx(g.logLik).epsilon(mltest::kGolden_genbeta).scale(0));
   double ll=0;for(double x:g.data)ll+=cppunivariate::distributions::dgenbeta(x,r.shape1,r.shape2,r.shape3,1,true);
   CHECK(ll==doctest::Approx(r.logLik).epsilon(1e-10));
   for(int j=0;j<3;++j) {

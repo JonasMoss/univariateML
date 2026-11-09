@@ -13,7 +13,7 @@ are different kinds of evidence.
 | C++ family cases: holds, limits, closed forms, score residuals | `just cpp-test` | internal identities; closed forms where derived | ordinary |
 | C++ truth tables | `just cpp-test` | independent numerical, given the README density | ordinary |
 | C++ shared targets: BFGS, sampling, no-throw, CMP, tails | `just cpp-test` | internal identities, finite examples | ordinary |
-| R golden regression, conformance | `just test` | regression; interface contracts | ordinary, tarball check |
+| R golden regression, conformance | `just test` | independent reference comparisons; interface contracts | ordinary, tarball check |
 | R generated d/p/q/r against truth tables | `just test` | independent numerical, given the README density | ordinary, tarball check |
 | R reference values (fGarch, logitnorm, nakagami, sads) | `just test` | another implementation, with its own defects | ordinary, tarball check |
 | R scale equivariance, restrictions, parameter infrastructure | `just test` | internal identities; contracts | ordinary (generator test: checkout only) |
@@ -96,15 +96,23 @@ cases, assertions, skips and any `may_fail` cases. Read the individual cases.
   `golden.json`. The samples are frozen fixtures (2026-11-07): `just goldens`
   only creates missing ones, and resampling one takes
   `UMVL_GOLDEN_IDS=<id> UMVL_GOLDEN_RESAMPLE=1`. Goldens carrying a
-  `reference` block store independent 50-digit MLEs from the README density
-  ([reference.py](quality/reference.py), `just golden-reference`), with the
-  coefficients not refined (held, integer, bound, kink) and the global
-  evidence; for those, a test failure means the fitter moved away from the
-  MLE. Goldens without the block still hold our own earlier output.
-  Shared [tolerances](../../univariateML-cpp/tests/test_support.hpp) use a
-  small rounding floor for closed-form fits and a wider finite-difference
-  allowance based on observed cross-machine drift. Some cases choose their
-  own tolerance. Do not regenerate fixtures merely to make a test pass.
+  `reference` block store independent 50-digit references from the README
+  density ([reference.py](quality/reference.py), `just golden-reference`):
+  damped Newton with a score and curvature check, closed forms for median and
+  support endpoints, and exhaustive integer profiles with a finite range or
+  an explicit tail bound. The port covers 98 canonical families; bhatt is reserved for the concurrent all-free fitter job.
+  Held and otherwise unrefined coefficients retain explicit reasons. Local
+  score/curvature evidence, dossier uniqueness statements, and numerical
+  eight-start oracle comparisons are recorded separately; numerical multistart
+  agreement is not proof of global optimality. Laplace records the entire
+  median interval and stores its upper endpoint as a representative.
+  Shared [tolerances](../../univariateML-cpp/tests/test_support.hpp) measure
+  default-fit coefficient error against these references, including native,
+  double-intermediate and WASM observations. Wider allowances name the
+  relevant stopping rule; they are empirical tolerances, not universal error
+  bounds. See the [rollout report](../research/evaluations/2026-11-09-golden-ref-port-report.md)
+  for measurements and their limits. Samples and fitting inputs remain frozen;
+  do not regenerate them merely to make a test pass.
 - Family cases also exercise held subsets, status and limit decisions,
   support, endpoints, analytic cases, independent optimizers and score
   residuals where implemented. For examples see [exp](../../univariateML-cpp/include/cppunivariate/distributions/exp/test.cpp),
@@ -385,9 +393,9 @@ error across estimates and log likelihood, plus its assertion tolerance; zero
 references use absolute error, equal signed infinities count as zero, and
 nonfinite mismatches count as infinity. This metric differs from testthat's
 vector comparison and must not be read as its pass/fail criterion. These are
-frozen-output regressions, not independent accuracy bounds. TASK-129 must inspect
+finite-sample comparisons with independent references, not universal accuracy bounds. TASK-129 must inspect
 the first arm64/Windows artifacts before choosing any tolerance changes. Fit
-errors may leave a partial CSV; the reporting runner requires all 98 rows.
+errors may leave a partial CSV; the reporting runner requires all 99 rows.
 
 The portable scripts in [.github/scripts](../../.github/scripts/) are also local
 entry points: `Rscript .github/scripts/assemble.R`, then
