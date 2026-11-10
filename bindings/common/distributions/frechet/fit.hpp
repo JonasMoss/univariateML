@@ -28,6 +28,8 @@ inline FitResult fit_frechet(cppunivariate::span x, Held lambda_arg = {}, Held m
    }
    return result;
  };
+ if(r.status==cppunivariate::FrechetStatus::SearchContradicted)
+   return certificate_stop(fail("Frechet search is disproved by a certified better feasible point."),"numerical");
  if(r.stop_detail.budget_exhausted)
    return certificate_stop(fail("Frechet certificate exhausted its work budget; raise iterlim."),"budget");
  if(r.stop_detail.comparison_tie)
@@ -59,7 +61,7 @@ inline FitResult fit_frechet(cppunivariate::span x, Held lambda_arg = {}, Held m
   if(r.restricted & 8u) restricted.emplace_back("mu","upper");
   if(r.restricted & 16u) restricted.emplace_back("sigma","lower");
   if(r.restricted & 32u) restricted.emplace_back("sigma","upper");
- return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"lambda",r.lambda},{"mu",r.mu},{"sigma",r.sigma}}; out.logLik = r.logLik; out.iterations = r.iterations; out.has_iterations = true; out.restricted = restricted; out.has_restricted = true; out.fixed = fixed; out.has_fixed = true; return out; }();
+ return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"lambda",r.lambda},{"mu",r.mu},{"sigma",r.sigma}}; out.logLik = r.logLik; out.iterations = r.iterations; out.has_iterations = true; out.restricted = restricted; out.has_restricted = true; out.fixed = fixed; out.has_fixed = true; if(sigma.supplied && !lambda.supplied && !mu.supplied)out.extra.emplace_back("certified",r.certified?1.:0.); return out; }();
 
 }
 }

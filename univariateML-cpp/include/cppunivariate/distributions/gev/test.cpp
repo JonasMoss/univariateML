@@ -834,3 +834,77 @@ TEST_CASE("gev: closed endpoint excludes a negative residual rounded to zero") {
   const auto held=cppunivariate::gev_mle(mltest::as_span(x),1e-10,100,-1,-2,2);
   CHECK(held.status==cppunivariate::GevStatus::InvalidData);
 }
+
+TEST_CASE("gev: held nuisance global cover encloses interior maxima") {
+  std::vector<double> x;
+  for(int i=0;i<50;++i)x.push_back(cppunivariate::distributions::qgev((i+.5)/50,0,1,.5,true,false));
+  for(bool scale:{false,true}) {
+    const auto r=cppunivariate::gev_mle(mltest::as_span(x),1e-10,100,NAN,scale?NAN:0,scale?1:NAN);
+    REQUIRE(r.status==cppunivariate::GevStatus::Ok);
+    REQUIRE(r.certified);
+    CHECK((scale?r.sigma:r.mu)==(scale?1:0));
+    // Independent central differences of the public likelihood.
+    const double h=1e-5;
+    const double shape=(cppunivariate::gev_loglik(mltest::as_span(x),r.mu,r.sigma,r.xi+h)-cppunivariate::gev_loglik(mltest::as_span(x),r.mu,r.sigma,r.xi-h))/(2*h);
+    CHECK(std::abs(shape)<1e-3);
+    const double nuisance=scale?
+      (cppunivariate::gev_loglik(mltest::as_span(x),r.mu+h,r.sigma,r.xi)-cppunivariate::gev_loglik(mltest::as_span(x),r.mu-h,r.sigma,r.xi))/(2*h):
+      (cppunivariate::gev_loglik(mltest::as_span(x),r.mu,r.sigma+h,r.xi)-cppunivariate::gev_loglik(mltest::as_span(x),r.mu,r.sigma-h,r.xi))/(2*h);
+    CHECK(std::abs(nuisance)<1e-3);
+    auto fallback=r;fallback.certified=false;
+    const auto unclosed=cppunivariate::gev_held_certificate(mltest::as_span(x),scale?NAN:0,scale?1:NAN,1e-25,1,fallback);
+    CHECK_FALSE(unclosed.certified);
+    CHECK(unclosed.status==fallback.status);
+    CHECK(unclosed.mu==fallback.mu);
+    CHECK(unclosed.sigma==fallback.sigma);
+    CHECK(unclosed.xi==fallback.xi);
+    CHECK_FALSE(unclosed.stop_detail.budget_exhausted);
+  }
+}
+
+TEST_CASE("gev: constrained jets contain point jets and independent differences") {
+  const std::vector<double> data{-.7,-.2,0,.1,.4,1.5};
+  for(double xi:{-.3,0.,.4})for(bool hm:{false,true}) {
+    const double y=hm?std::log(1.7):.1,h=1e-4;
+    const auto box=cppunivariate::gev_held_detail::gev_evaluate(mltest::as_span(data),{{xi-h,xi+h},{y-h,y+h}},hm,hm?.1:1.7,100);
+    REQUIRE(box.ok);
+    for(double a:{xi-h,xi,xi+h})for(double b:{y-h,y,y+h}) {
+      const auto p=cppunivariate::gev_held_detail::gev_evaluate(mltest::as_span(data),{{a,a},{b,b}},hm,hm?.1:1.7,100);
+      REQUIRE(p.ok);
+      CHECK(p.jet.v.lo>=box.jet.v.lo);CHECK(p.jet.v.hi<=box.jet.v.hi);
+      for(int i=0;i<2;++i) {CHECK(p.jet.g[i].lo>=box.jet.g[i].lo);CHECK(p.jet.g[i].hi<=box.jet.g[i].hi);}
+      for(int i=0;i<3;++i) {CHECK(p.jet.h[i].lo>=box.jet.h[i].lo);CHECK(p.jet.h[i].hi<=box.jet.h[i].hi);}
+    }
+    auto value=[&](double a,double b) {return cppunivariate::gev_loglik(mltest::as_span(data),hm?.1:b,hm?std::exp(b):1.7,a)/data.size();};
+    const double g0=(value(xi+h,y)-value(xi-h,y))/(2*h),g1=(value(xi,y+h)-value(xi,y-h))/(2*h);
+    CHECK(g0>=box.jet.g[0].lo);CHECK(g0<=box.jet.g[0].hi);
+    CHECK(g1>=box.jet.g[1].lo);CHECK(g1<=box.jet.g[1].hi);
+    const double h0=(value(xi+h,y)-2*value(xi,y)+value(xi-h,y))/(h*h);
+    const double h2=(value(xi,y+h)-2*value(xi,y)+value(xi,y-h))/(h*h);
+    const double h1=(value(xi+h,y+h)-value(xi+h,y-h)-value(xi-h,y+h)+value(xi-h,y-h))/(4*h*h);
+    for(int i=0;i<3;++i) {const double v=i==0?h0:(i==1?h1:h2);CHECK(v>=box.jet.h[i].lo);CHECK(v<=box.jet.h[i].hi);}
+  }
+}
+
+TEST_CASE("gev: moving support value envelope includes reverse exponential face") {
+  const std::vector<double> data{0,.2,.7,1};
+  const auto b=cppunivariate::gev_held_detail::gev_evaluate(mltest::as_span(data),{{-1,-.99},{-.001,.001}},false,1,100);
+  CHECK_FALSE(b.ok);
+  CHECK(b.upper>=cppunivariate::gev_loglik(mltest::as_span(data),0,1,-1)/data.size());
+}
+
+TEST_CASE("gev: constrained cover cannot certify a losing stationary maximum") {
+  auto evaluate=[](cppunivariate::gev_held_detail::Box b) {
+    const auto x=cppunivariate::gev_held_detail::variable(b.x,0),y=cppunivariate::gev_held_detail::variable(b.y,1);
+    const auto q=cppunivariate::gev_held_detail::add(cppunivariate::gev_held_detail::mul(x,x),cppunivariate::gev_held_detail::constant(-1));
+    const auto value=cppunivariate::gev_held_detail::margin(cppunivariate::gev_held_detail::add(
+      cppunivariate::gev_held_detail::scale(cppunivariate::gev_held_detail::add(cppunivariate::gev_held_detail::mul(q,q),cppunivariate::gev_held_detail::mul(y,y)),-1),cppunivariate::gev_held_detail::scale(x,.1)));
+    return cppunivariate::gev_held_detail::Evaluation{value,value.v.hi,true};
+  };
+  auto precise=[](cppunivariate::gev_held_detail::Box b,double tol) {return b.x.hi-b.x.lo<tol&&b.y.hi-b.y.lo<tol;};
+  const auto result=cppunivariate::gev_held_detail::cover({{-2,2},{-2,2}},-1,0,1e-10,100,evaluate,precise);
+  CHECK_FALSE(result.certified);
+  REQUIRE(result.contradicted);
+  CHECK(evaluate(result.competitor).jet.v.lo>evaluate(result.root).jet.v.hi);
+  CHECK(result.evaluations<=cppunivariate::certificate_budget(100));
+}

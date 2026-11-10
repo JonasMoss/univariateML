@@ -1,0 +1,13 @@
+{
+  "task_markdown_files": 4,
+  "task_destinations": 19,
+  "task_broken": 0,
+  "repository_wide_existing_hits": 41,
+  "existing_hit_files_unchanged_from_HEAD": [
+    "dev/research/evaluations/2026-11-03-boundary-lit-report.md",
+    "dev/research/evaluations/2026-11-07-fit-audit-data/static-inventory.md",
+    "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+    "univariateML-cpp/include/cppunivariate/distributions/nbinom/README.md",
+    "univariateML-cpp/notes/inference.md"
+  ]
+}

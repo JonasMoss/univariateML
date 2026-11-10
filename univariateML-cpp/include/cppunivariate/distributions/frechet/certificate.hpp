@@ -145,3 +145,66 @@ inline FrechetResult frechet_two_point_certificate(span x,double m,double M,
   out.status=FrechetStatus::IterationFailure;return out;
 }
 } // namespace cppunivariate
+
+namespace cppunivariate {
+namespace frechet_held_detail {
+inline gev_held_detail::Evaluation evaluate(span data,gev_held_detail::Box b) {
+  double D=0,k=0;for(double v:data) {D=std::max(D,v);if(v==0)++k;}
+  const double n=static_cast<double>(data.size()),c=std::asinh(D/2);
+  // A uniform enclosure of the unique inner root on this whole shape slab.
+  const double lower=(std::log(k/n)-std::log1p(1/b.x.lo))/b.x.lo;
+  const double error=128*std::numeric_limits<double>::epsilon()*(1+std::abs(lower));
+  if(b.y.hi<lower-error)return {{},-INFINITY,false};
+  double upper=INFINITY;
+  if(b.x.lo*c>=std::log1p(1/b.x.lo))
+    upper=std::log1p(b.x.hi)+std::max(-(b.x.lo+1)*c,c-1-b.x.lo*b.x.lo*c*c/2)/n;
+
+  const auto a=gev_held_detail::variable(b.x,0),u=gev_held_detail::variable(b.y,1);
+  const auto e=gev_held_detail::exponential(u);
+  gev_held_detail::Accumulator sum;
+  for(double v:data) {
+    const auto z=gev_held_detail::logarithm(gev_held_detail::add(gev_held_detail::constant(v),e));
+    const auto term=gev_held_detail::add(gev_held_detail::mul(gev_held_detail::add(a,gev_held_detail::constant(1)),z),
+      gev_held_detail::exponential(gev_held_detail::scale(gev_held_detail::mul(a,z),-1)));
+    sum.add(gev_held_detail::scale(term,-1));
+  }
+  const auto result=gev_held_detail::margin(gev_held_detail::add(sum.mean(data.size()),gev_held_detail::logarithm(a)));
+  return {result,std::isfinite(result.v.hi)?std::min(upper,result.v.hi):upper,gev_held_detail::finite(result)};
+}
+}
+// Public scale is one in these minimum-pivot coordinates. The fixed-shape
+// location root lies in k/(2n)<=e<=1 for every lambda>=1. The shape tail
+// envelope below excludes lambda=infinity without a free-scale Gumbel face.
+inline FrechetResult frechet_held_scale_certificate(span data,double tol,int maxit,FrechetResult fallback) {
+  if(fallback.status!=FrechetStatus::Ok||!std::isfinite(fallback.logLik)||
+     tol<1024*std::numeric_limits<double>::epsilon())return fallback;
+  const double n=static_cast<double>(data.size());
+  double D=0,k=0;for(double v:data) {D=std::max(D,v);if(v==0)++k;}
+  const double c=std::asinh(D/2);if(!(c>0)||!std::isfinite(c))return fallback;
+  double upper=std::max({2.,2*n/c,2*std::sqrt(n)/c});bool tail=false;
+  for(int it=0;it<maxit;++it) {
+    const double t=upper*c;
+    const double envelope=n*std::log1p(upper)+std::max(-(upper+1)*c,c-1-t*t/2);
+    if(envelope<fallback.logLik-1e-8*(n+std::abs(fallback.logLik))) {tail=true;break;}
+    upper*=2;if(!std::isfinite(upper))break;
+  }
+  if(!tail)return fallback;
+  // Strictly outward bounds; neither location edge can be a maximum.
+  const gev_held_detail::Box domain{{1,upper},{std::log(k/(2*n))-1e-8,1e-8}};
+  auto eval=[&](gev_held_detail::Box b) {return frechet_held_detail::evaluate(data,b);};
+  auto precise=[&](gev_held_detail::Box b,double t) {
+    return b.x.hi-b.x.lo<=t*.25*(b.x.lo+b.x.hi)/2&&std::expm1(b.y.hi-b.y.lo)<=t*.25;
+  };
+  const auto result=gev_held_detail::cover(domain,fallback.lambda,std::log(-fallback.mu),std::min(tol,.01),maxit,eval,precise);
+  if(result.contradicted) {
+    fallback.lambda=result.competitor.x.lo;fallback.mu=-std::exp(result.competitor.y.lo);
+    fallback.logLik=frechet_loglik(data,fallback.lambda,fallback.mu,1);
+    fallback.status=FrechetStatus::SearchContradicted;return fallback;
+  }
+  if(!result.certified)return fallback;
+  fallback.lambda=(result.root.x.lo+result.root.x.hi)/2;
+  fallback.mu=-std::exp((result.root.y.lo+result.root.y.hi)/2);
+  fallback.logLik=frechet_loglik(data,fallback.lambda,fallback.mu,1);
+  fallback.certified=true;return fallback;
+}
+} // namespace cppunivariate

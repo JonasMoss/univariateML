@@ -373,3 +373,30 @@ TEST_CASE("frechet: general all-free cover checks public coefficients and proper
    CHECK(c.loglik_lower==doctest::Approx(cppunivariate::frechet_loglik(mltest::as_span(g.data),c.coef[0],c.coef[1],c.coef[2])).epsilon(1e-10));
  }
 }
+
+TEST_CASE("frechet: held public scale has a constrained global certificate") {
+  std::vector<double> x;
+  for(int i=0;i<50;++i)x.push_back(std::pow(-std::log((i+.5)/50),-.5));
+  const auto r=cppunivariate::frechet_mle(mltest::as_span(x),1e-10,100,NAN,NAN,1);
+  REQUIRE(r.status==cppunivariate::FrechetStatus::Ok);
+  REQUIRE(r.certified);
+  CHECK(r.sigma==1);
+  const double h=1e-5;
+  const double ga=(cppunivariate::frechet_loglik(mltest::as_span(x),r.lambda+h,r.mu,1)-cppunivariate::frechet_loglik(mltest::as_span(x),r.lambda-h,r.mu,1))/(2*h);
+  const double gm=(cppunivariate::frechet_loglik(mltest::as_span(x),r.lambda,r.mu+h,1)-cppunivariate::frechet_loglik(mltest::as_span(x),r.lambda,r.mu-h,1))/(2*h);
+  CHECK(std::abs(ga)<1e-3);CHECK(std::abs(gm)<1e-3);
+  const double minimum=x.front();for(double& v:x)v-=minimum;
+  auto fallback=r;fallback.mu-=minimum;fallback.certified=false;
+  const auto result=cppunivariate::frechet_held_scale_certificate(mltest::as_span(x),1e-25,1,fallback);
+  CHECK(result.status==fallback.status);CHECK_FALSE(result.certified);
+  CHECK(result.lambda==fallback.lambda);CHECK(result.mu==fallback.mu);
+  CHECK_FALSE(result.stop_detail.budget_exhausted);
+}
+
+TEST_CASE("frechet: held-scale certificate covers shape-one boundary") {
+  std::vector<double> x;
+  for(int i=0;i<50;++i)x.push_back(1/-std::log((i+.5)/50));
+  const auto r=cppunivariate::frechet_mle(mltest::as_span(x),1e-10,100,NAN,NAN,1);
+  REQUIRE(r.status==cppunivariate::FrechetStatus::Ok);
+  CHECK(r.certified);CHECK(r.lambda==1);CHECK(r.sigma==1);CHECK((r.restricted&1u)!=0);
+}

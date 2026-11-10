@@ -282,3 +282,10 @@ test_that("all-free Frechet minimum majorities are statistical nonexistence stop
   expect_s3_class(e,"univariateML_nomle")
   expect_match(conditionMessage(e),"minimum majority")
 })
+
+test_that("Frechet held scale exposes the constrained certificate marker", {
+  x <- (-log((seq_len(50) - .5) / 50))^(-.5)
+  fit <- mlfrechet(x, mu = NULL, sigma = 1)
+  expect_identical(attr(fit, "certified"), TRUE)
+  expect_identical(as.numeric(fit["sigma"]), 1)
+})

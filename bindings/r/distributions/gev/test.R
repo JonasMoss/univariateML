@@ -455,3 +455,18 @@ test_that("GEV public support rejects negative zero residuals", {
   expect_error(univariateML:::mlgev_(x, xi = -1, mu = -2, sigma = 2),
                "support")
 })
+
+test_that("GEV held nuisance exposes the constrained certificate marker", {
+  p <- (seq_len(50) - .5) / 50
+  x <- expm1(-.5 * log(-log(p))) / .5
+  for (held in list(list(mu = 0), list(sigma = 1))) {
+    fit <- do.call(mlgev, c(list(x), held))
+    expect_identical(attr(fit, "certified"), TRUE)
+    expect_equal(as.numeric(fit[names(held)]), as.numeric(unlist(held)))
+  }
+  p <- (seq_len(50) - .5) / 50
+  x <- expm1(.9 * log(-log(p))) / -.9
+  fit <- mlgev(x, mu = 0)
+  expect_identical(attr(fit, "certified"), FALSE)
+  expect_true(is.finite(attr(fit, "logLik")))
+})

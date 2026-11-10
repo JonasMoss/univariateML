@@ -98,7 +98,7 @@ relations: {}
 fit:
   method: profile-search
   certified: 'partial'
-  note: "gev/mle.hpp, gev_held_profile and gev_profile: Held xi=-1 has closed-form shifted reverse-exponential fits; held xi=0 and sigma give analytic location; held sigma and -1<xi<0 give a strictly concave, bracketed location solve. These nontrivial submodels are certified. Shape-only fits with mu and sigma held use derivative interval coverage and explicit support-edge envelopes, with numerical or budget stops if unresolved. All-free two-point samples with minimum fraction at most one half have a unique reverse-exponential maximum, computed from counts with coefficient precision guards; exact public location or scale holds containing that member inherit its certificate. Exact half-minimum ties have proved global bounds both with all coefficients free and with mu held at the minimum; attained members are retained. The general all-free fit uses joint_certificate.hpp: a shape-slab cover, monotone endpoint-gap brackets, a minimum-pivot Gumbel seam and a one-sided reverse-exponential face envelope. Interior maxima require joint coefficient inclusion and global candidate comparison; unresolved coverage stops numerically or on budget. Other conditional fits retain numerical root discovery without global coverage."
+  note: "gev/mle.hpp, gev_held_profile and gev_profile: Held xi=-1 has closed-form shifted reverse-exponential fits; held xi=0 and sigma give analytic location; held sigma and -1<xi<0 give a strictly concave, bracketed location solve. These nontrivial submodels are certified. Shape-only fits with mu and sigma held use derivative interval coverage and explicit support-edge envelopes, with numerical or budget stops if unresolved. All-free two-point samples with minimum fraction at most one half have a unique reverse-exponential maximum, computed from counts with coefficient precision guards; exact public location or scale holds containing that member inherit its certificate. Exact half-minimum ties have proved global bounds both with all coefficients free and with mu held at the minimum; attained members are retained. The general all-free fit uses joint_certificate.hpp: a shape-slab cover, monotone endpoint-gap brackets, a minimum-pivot Gumbel seam and a one-sided reverse-exponential face envelope. Interior maxima require joint coefficient inclusion and global candidate comparison; unresolved coverage stops numerically or on budget. Free-shape fits with one nuisance held now attempt the constrained two-coordinate cover in held_certificate.hpp, including the Gumbel seam and moving-support value envelopes; successful search results remain uncertified if the cover cannot close. Other conditional fits retain numerical root discovery without global coverage."
 areas:
 - extremes and environment
 existence:
@@ -153,7 +153,7 @@ held-coordinate bound, not an unconstrained Fréchet transport.
 
 Held shapes above 1 are accepted when the tie condition allows them. A held shape below $-1$ is accepted only when $\mu$ is held at or above the sample maximum, or when every coefficient is held.
 
-With the shape held, holding the scale leaves a one-dimensional fit for the location (certified for nonpositive shape), and holding the location leaves one for the scale. With the shape free, the fit profiles over $\xi$ and compares interior maxima with both shape bounds. The shape-only search is certified as described below. The general all-free fit uses the global cover below. Conditional searches with a free shape and one held nuisance coefficient remain numerical outside the proved compatible-member and half-tie cases. The default fit needs three finite, non-constant observations.
+With the shape held, holding the scale leaves a one-dimensional fit for the location (certified for nonpositive shape), and holding the location leaves one for the scale. With the shape free, the fit profiles over $\xi$ and compares interior maxima with both shape bounds. The shape-only search is certified as described below. The general all-free fit uses the global cover below. Conditional searches with a free shape and one held nuisance coefficient attempt the constrained cover described below; unresolved cases retain the numerical search result. The default fit needs three finite, non-constant observations.
 
 
 At fixed scale and $-1<\xi<0$, set
@@ -372,7 +372,39 @@ it: holding public location at $M-p(M-m)$ or scale at $p(M-m)$ preserves the
 global maximum and uniqueness. Exact range, integer-product and subtraction residuals verify that the held
 value contains the real member; equality to a rounded free estimate alone
 does not qualify. General
-held values still require their own constrained global search.
+held values use the constrained cover below.
 
 Recognized exact holds preserve the two-point certificate's precision stop;
 failure does not fall through to a numerical conditional search.
+
+
+### One public nuisance coefficient held
+
+For free shape with either location or scale held, the constrained likelihood
+is covered in its two free coordinates. The bound
+$f(x)\le\min(1/\sigma,\sigma/(x-\mu)^2)$ confines every point above a
+feasible likelihood level to a finite nuisance interval. With location held,
+this construction requires more than half the observations to differ from the
+held location; collapse equalities retain their separate classifications.
+With scale held, the location interval is always finite for a nonconstant
+sample and finite witness.
+
+The cover includes the Gumbel member under the same hold, both attained shape
+bounds, and value envelopes across moving support. An isolated maximum needs
+an interval negative definite constrained Hessian, root existence and joint
+coefficient inclusion. Completion proves global dominance by a stationary and
+value box cover. This uses the joint certificate's interval machinery without
+assuming the constrained profile is unimodal. Arithmetic margins and the
+compactness proof are given in the
+[constrained-cover proof](../../../../../dev/research/evaluations/2026-11-10-gev-held-data/proof.md).
+
+A successful search remains available when coefficient inclusion, face
+comparison or coverage cannot close within the work allowance. It is then
+uncertified; incomplete coverage creates no stop. A strictly better feasible
+point, verified again in public coordinates, instead disproves the search and
+stops with both point witnesses. The C++ result's
+`certified` field records completion of this held-nuisance cover only; older
+routes do not generally populate that field. The catalogue flag remains partial.
+
+For this hold subset, R attaches the logical `certified` attribute to the fit;
+the common binding result carries the same marker as zero or one.

@@ -33,6 +33,8 @@ inline FitResult fit_gev(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg
   if(sigma.supplied) fixed.push_back("sigma");
   if(xi.supplied) fixed.push_back("xi");
   const auto r=cppunivariate::gev_mle(x,reltol,iterlim,shape,location,scale);
+  if(r.status==cppunivariate::GevStatus::SearchContradicted)
+    return stop_failure(fail("Generalized extreme value search is disproved by a certified better feasible point."),r.stop_detail,"numerical",{"mu","sigma","xi"});
   if(r.stop_detail.budget_exhausted)
     return stop_failure(fail("Generalized extreme value certificate exhausted its work budget; raise iterlim."),r.stop_detail,"budget",{"mu","sigma","xi"});
   if(r.stop_detail.comparison_tie)
@@ -61,7 +63,7 @@ inline FitResult fit_gev(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg
   if(r.restricted & 8u) restricted.emplace_back("sigma","upper");
   if(r.restricted & 16u) restricted.emplace_back("xi","lower");
   if(r.restricted & 32u) restricted.emplace_back("xi","upper");
-  return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"mu",r.mu},{"sigma",r.sigma},{"xi",r.xi}}; out.logLik = r.logLik; out.iterations = r.iterations; out.has_iterations = true; out.restricted = restricted; out.has_restricted = true; out.fixed = fixed; out.has_fixed = true; return out; }();
+  return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"mu",r.mu},{"sigma",r.sigma},{"xi",r.xi}}; out.logLik = r.logLik; out.iterations = r.iterations; out.has_iterations = true; out.restricted = restricted; out.has_restricted = true; out.fixed = fixed; out.has_fixed = true; if(!xi.supplied && mu.supplied!=sigma.supplied)out.extra.emplace_back("certified",r.certified?1.:0.); return out; }();
 
 }
 }

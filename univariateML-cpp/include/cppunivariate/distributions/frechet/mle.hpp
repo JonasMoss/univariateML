@@ -56,8 +56,8 @@ inline GevResult frechet_gev_mle(span x, double tol=1e-10, int maxit=100,
   return restore(gev_joint_certificate(data,tol,maxit,true));
 }
 
-enum class FrechetStatus { Ok, InvalidData, GumbelLimit, IterationFailure, NoMLE, NumericalFailure };
-struct FrechetResult { double lambda, mu, sigma, logLik; int iterations; FrechetStatus status; unsigned restricted = 0; StopDetail stop_detail{}; };
+enum class FrechetStatus { Ok, InvalidData, GumbelLimit, IterationFailure, NoMLE, NumericalFailure, SearchContradicted };
+struct FrechetResult { double lambda, mu, sigma, logLik; int iterations; FrechetStatus status; unsigned restricted = 0; StopDetail stop_detail{}; bool certified = false; };
 inline double frechet_loglik(span x,double lambda,double mu,double sigma) {
  if(!(lambda>0) || !(sigma>0)) return -std::numeric_limits<double>::infinity();
  double ll=x.size()*(std::log(lambda)-std::log(sigma));
@@ -136,7 +136,7 @@ inline FrechetResult frechet_held_mle(span x,double tol,int maxit,double mu,
      auto member=frechet_two_point_certificate(x,m,M,k,tol,maxit);
      if(member.sigma==sigma &&
         extreme_detail::exact_count_scale(m,M,x.size()-2*k,x.size(),sigma)) {
-       if(member.status==FrechetStatus::Ok)return member;
+       if(member.status==FrechetStatus::Ok) {member.certified=true;return member;}
        if(member.status!=FrechetStatus::GumbelLimit) {
          // An unconstrained face is not a feasible lower witness under this
          // hold. Its global upper bound still bounds the constrained fit.
@@ -226,9 +226,37 @@ inline FrechetResult frechet_held_mle(span x,double tol,int maxit,double mu,
  };
  const auto opt=extreme_detail::maximize([&](double u){return candidate(u).logLik;},-32,32,tol,maxit,false);
  auto fit=candidate(opt.x);
+ if(!opt.ok)fit.status=FrechetStatus::IterationFailure;
+ const auto standardized_search=fit;
  fit.mu=m+unit*fit.mu;fit.sigma=hs ? sigma : unit*fit.sigma;
  fit.logLik=frechet_loglik(x,fit.lambda,fit.mu,fit.sigma);
  if(!opt.ok || fit.status!=FrechetStatus::Ok || !std::isfinite(fit.logLik)) fit.status=FrechetStatus::IterationFailure;
+ if(hs && !hl && fit.status==FrechetStatus::Ok) {
+   auto candidate=frechet_held_scale_certificate(data,tol,maxit,standardized_search);
+   if(candidate.status==FrechetStatus::SearchContradicted) {
+     candidate.mu=m+unit*candidate.mu;candidate.sigma=sigma;
+     candidate.logLik=frechet_loglik(x,candidate.lambda,candidate.mu,candidate.sigma);
+     const double error=4096*std::numeric_limits<double>::epsilon()*
+       (x.size()+std::abs(candidate.logLik)+std::abs(fit.logLik));
+     if(std::isfinite(candidate.logLik)&&candidate.logLik>fit.logLik+2*error) {
+       candidate.stop_detail={};candidate.stop_detail.loglik_lower=candidate.logLik-error;
+       candidate.stop_detail.loglik_upper=INFINITY;
+       candidate.stop_detail.candidates.push_back({{fit.lambda,fit.mu,fit.sigma},fit.logLik-error,fit.logLik+error});
+       candidate.stop_detail.candidates.push_back({{candidate.lambda,candidate.mu,candidate.sigma},candidate.logLik-error,candidate.logLik+error});
+       return candidate;
+     }
+   }
+   if(candidate.certified) {
+     const double certificate_tol=std::min(tol,.01);
+     const double expected=candidate.logLik-x.size()*std::log(unit);
+     const double error=256*std::numeric_limits<double>::epsilon()*(std::abs(m)+unit*std::abs(candidate.mu));
+     candidate.mu=m+unit*candidate.mu;candidate.sigma=sigma;
+     candidate.logLik=frechet_loglik(x,candidate.lambda,candidate.mu,candidate.sigma);
+     if(std::isnormal(std::max(std::abs(candidate.mu),sigma))&&
+        error<=certificate_tol*.25*std::max(std::abs(candidate.mu),sigma)&&std::isfinite(candidate.logLik)&&
+        std::abs(candidate.logLik-expected)<=1e-7*x.size())fit=candidate;
+   }
+ }
  return fit;
 }
 inline FrechetResult frechet_mle_impl(span x, double tol=1e-10, int maxit=100,
