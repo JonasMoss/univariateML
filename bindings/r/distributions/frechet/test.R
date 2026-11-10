@@ -289,3 +289,10 @@ test_that("held-location inverse-Weibull restoration preserves certification", {
   expect_false(attr(fit, "certified"))
   expect_true(is.finite(as.numeric(logLik(fit))))
 })
+
+test_that("Frechet held scale exposes the constrained certificate marker", {
+  x <- (-log((seq_len(50) - .5) / 50))^(-.5)
+  fit <- mlfrechet(x, mu = NULL, sigma = 1)
+  expect_identical(attr(fit, "certified"), TRUE)
+  expect_identical(as.numeric(fit["sigma"]), 1)
+})

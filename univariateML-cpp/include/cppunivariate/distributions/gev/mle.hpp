@@ -14,11 +14,11 @@ namespace cppunivariate {
 inline constexpr double kGevXiLower = -1.0;
 inline constexpr double kGevXiUpper = 1.0;
 
-enum class GevStatus { Ok, InvalidData, InvalidShape, IterationFailure, NoMLE, NumericalFailure };
+enum class GevStatus { Ok, InvalidData, InvalidShape, IterationFailure, NoMLE, NumericalFailure, SearchContradicted };
 struct GevResult {
   double mu, sigma, xi, logLik;
   int iterations;
-  GevStatus status; unsigned restricted = 0; StopDetail stop_detail{};
+  GevStatus status; unsigned restricted = 0; StopDetail stop_detail{}; bool certified = false;
 };
 inline double gev_log_ratio(double z, double xi) {
   const double v=xi*z;
@@ -251,6 +251,8 @@ inline GevResult gev_held_profile(span x,double mu,double sigma,double xi,
 }
 inline GevResult gev_two_point_certificate(span x,double minimum,double maximum,
                                            std::size_t k,double tol);
+inline GevResult gev_held_certificate(span data,double mu,double sigma,double tol,int maxit,GevResult fallback,
+                                      double public_origin=0,double public_unit=1);
 inline GevResult gev_held_mle(span x,double tol,int maxit,double xi,double mu,double sigma) {
   maxit = static_cast<int>(solver_budget(maxit));
   GevResult bad{mu,sigma,xi,0,0,GevStatus::InvalidData};
@@ -280,13 +282,13 @@ inline GevResult gev_held_mle(span x,double tol,int maxit,double xi,double mu,do
     bool two_point=2*k<=y.size();
     for(double v:y)two_point=two_point && (v==y.front() || v==y.back());
     if(two_point) {
-      const auto member=gev_two_point_certificate(x,y.front(),y.back(),k,tol);
+      auto member=gev_two_point_certificate(x,y.front(),y.back(),k,tol);
       const double location=y.back()-member.sigma;
       const double virtual_b=y.back()-location;
       const double error=(y.back()-(location+virtual_b))+(virtual_b-member.sigma);
       if(extreme_detail::exact_count_scale(y.front(),y.back(),k,y.size(),member.sigma) &&
          (!hm || (mu==member.mu && member.mu==location && error==0)) &&
-         (!hs || sigma==member.sigma))return member;
+         (!hs || sigma==member.sigma)) {member.certified=member.status==GevStatus::Ok;return member;}
     }
   }
   if(std::isnan(xi) && hm && mu==y[0]) {
@@ -304,7 +306,7 @@ inline GevResult gev_held_mle(span x,double tol,int maxit,double xi,double mu,do
         const double ll=gev_loglik(x,mu,endpoint_scale,-1);
         GevResult result{mu,endpoint_scale,-1,ll,0,GevStatus::NumericalFailure};
         if(endpoint_scale>0 && std::isfinite(endpoint_scale) && std::isfinite(ll) &&
-           std::abs(ll-face)<=1e-7*x.size())result.status=GevStatus::Ok;
+           std::abs(ll-face)<=1e-7*x.size()) {result.status=GevStatus::Ok;result.certified=true;}
         return result;
       }
       if(!hs) {
@@ -343,6 +345,7 @@ inline GevResult gev_held_mle(span x,double tol,int maxit,double xi,double mu,do
     fit=gev_held_profile(data,m,s,opt.x,tol,maxit);
     if(!opt.ok) fit.status=GevStatus::IterationFailure;
   }
+  const auto standardized_search=fit;
   std::vector<FitCandidate> restored;
   bool lost_witness=false;
   for(auto c:fit.stop_detail.candidates) {
@@ -377,6 +380,41 @@ inline GevResult gev_held_mle(span x,double tol,int maxit,double xi,double mu,do
   if(fit.status==GevStatus::Ok &&
      (!std::isfinite(fit.logLik) || std::abs(fit.logLik-predicted)>likelihood_margin))
     fit.status=GevStatus::NumericalFailure;
+  if(fit.status==GevStatus::Ok && std::isnan(xi) && hm!=hs) {
+    auto candidate=gev_held_certificate(data,m,s,tol,maxit,standardized_search,origin,scale);
+    if(candidate.status==GevStatus::SearchContradicted) {
+      candidate.mu=hm?mu:origin+scale*candidate.mu;
+      candidate.sigma=hs?sigma:scale*candidate.sigma;
+      if(gev_restore_support(x,candidate,hm,hs,tol*.5,maxit)) {
+        candidate.logLik=gev_public_loglik(x,candidate.mu,candidate.sigma,candidate.xi);
+        const double error=4096*std::numeric_limits<double>::epsilon()*
+          (x.size()+std::abs(candidate.logLik)+std::abs(fit.logLik));
+        if(std::isfinite(candidate.logLik)&&candidate.logLik>fit.logLik+2*error) {
+          candidate.stop_detail={};candidate.stop_detail.loglik_lower=candidate.logLik-error;
+          candidate.stop_detail.loglik_upper=INFINITY;
+          candidate.stop_detail.candidates.push_back({{fit.mu,fit.sigma,fit.xi},fit.logLik-error,fit.logLik+error});
+          candidate.stop_detail.candidates.push_back({{candidate.mu,candidate.sigma,candidate.xi},candidate.logLik-error,candidate.logLik+error});
+          return candidate;
+        }
+      }
+    }
+    if(candidate.certified) {
+      const double certificate_tol=std::min(tol,.01);
+      const double expected=candidate.logLik-x.size()*std::log(scale);
+      const double location_error=256*std::numeric_limits<double>::epsilon()*
+        (std::abs(origin)+scale*std::abs(candidate.mu));
+      candidate.mu=hm?mu:origin+scale*candidate.mu;
+      candidate.sigma=hs?sigma:scale*candidate.sigma;
+      const bool precise=(hm?std::isnormal(candidate.sigma):
+        (std::isnormal(std::max(std::abs(candidate.mu),candidate.sigma))&&
+         location_error<=certificate_tol*.25*std::max(std::abs(candidate.mu),candidate.sigma)));
+      if(precise && gev_restore_support(x,candidate,hm,hs,certificate_tol*.5,maxit)) {
+        candidate.logLik=gev_public_loglik(x,candidate.mu,candidate.sigma,candidate.xi);
+        if(std::isfinite(candidate.logLik)&&std::abs(candidate.logLik-expected)<=likelihood_margin)
+          fit=candidate;
+      }
+    }
+  }
   return fit;
 }
 struct GevProfile { GevResult fit; double score, curvature; };
@@ -486,6 +524,7 @@ inline GevResult gev_two_point_certificate(span x,double minimum,double maximum,
   return result;
 }
 #include "joint_certificate.hpp"
+#include "held_certificate.hpp"
 inline GevResult gev_mle_impl(span x, double tol=1e-10, int maxit=100,
                          double xi=std::numeric_limits<double>::quiet_NaN(),
                          double mu=std::numeric_limits<double>::quiet_NaN(),

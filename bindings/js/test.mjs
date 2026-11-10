@@ -1912,3 +1912,14 @@ test('genbeta signed squared-power certificate selects a global gamma face', asy
     return true;
   });
 });
+test('GEV and Frechet held nuisance certificate markers cross the common seam',()=>{
+ const p=Array.from({length:50},(_,i)=>(i+.5)/50);
+ const x=new Float64Array(p.map(v=>Math.expm1(-.5*Math.log(-Math.log(v)))/.5));
+ for(const held of [{mu:0},{sigma:1}]) {
+  const r=m.fitgev(x,held,{});
+  assert.equal(r.status,'Ok');assert.equal(r.certified,1);
+  for(const [key,value] of Object.entries(held))assert.equal(r.estimates[key],value);
+ }
+ const f=m.fitfrechet(new Float64Array(p.map(v=>Math.pow(-Math.log(v),-.5))),{sigma:1},{});
+ assert.equal(f.status,'Ok');assert.equal(f.certified,1);assert.equal(f.estimates.sigma,1);
+});

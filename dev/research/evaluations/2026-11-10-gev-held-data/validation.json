@@ -1,0 +1,134 @@
+{
+  "date_utc": "2026-11-10",
+  "base_head": "69c214f3e8ffddde2597cfe6e2b249603dcea039",
+  "branch": "codex/gev-held",
+  "committed": false,
+  "compiler": "GCC 15.2.0",
+  "R": "4.6.1",
+  "node": "22.22.1",
+  "runs": [
+    {
+      "command": "ctest targeted gev/frechet",
+      "machine": "workstation",
+      "exit_code": 0,
+      "passed": 2,
+      "elapsed_seconds": 4.54
+    },
+    {
+      "command": "just cpp-test",
+      "machine": "workstation",
+      "exit_code": 0,
+      "passed": 106,
+      "elapsed_seconds": 187.23
+    },
+    {
+      "command": "UMVL_TEST_TIER=full just cpp-test",
+      "machine": "workstation",
+      "exit_code": 0,
+      "passed": 129,
+      "elapsed_seconds": 286.94
+    },
+    {
+      "command": "just cpp-test-no-long-double",
+      "machine": "workstation",
+      "exit_code": 0,
+      "passed": 129,
+      "elapsed_seconds": 287.8
+    },
+    {
+      "command": "just test",
+      "machine": "workstation",
+      "exit_code": 0,
+      "fail": 0,
+      "warn": 0,
+      "skip": 154,
+      "passed": 22742
+    },
+    {
+      "command": "just test-full",
+      "machine": "workstation",
+      "exit_code": 0,
+      "fail": 0,
+      "warn": 0,
+      "skip": 0,
+      "passed": 45557
+    },
+    {
+      "command": "just js-build",
+      "machine": "workstation",
+      "exit_code": 0
+    },
+    {
+      "command": "just js-test",
+      "machine": "workstation",
+      "exit_code": 0,
+      "counts": {
+        "tests": 588,
+        "pass": 588,
+        "fail": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "command": "just site-check",
+      "machine": "workstation",
+      "exit_code": 0
+    },
+    {
+      "command": "just quality gev frechet",
+      "machine": "workstation",
+      "exit_code": 0,
+      "passed": [
+        "gev",
+        "frechet"
+      ]
+    }
+  ],
+  "simbox": {
+    "wrapper_exit_code": 75,
+    "final_ssh_probe_exit_code": 255,
+    "gcc13_validated": false,
+    "message": "ssh: connect to host simbox port 22: Connection timed out"
+  },
+  "golden_files_unchanged": true,
+  "protected_files_unchanged": true,
+  "sha256": {
+    "bindings/common/distributions/frechet/fit.hpp": "8d50a32b9db989d31fa3706c757254158f356c3da7dda4646e7a6cb3379873ed",
+    "bindings/common/distributions/gev/fit.hpp": "cd9ba9c3566e4d634450efc81a879ea0c7313560f1de9635f14ec2972e9c69f9",
+    "bindings/js/test.mjs": "8c13859fc82a18759179e10488487d79eaedf59b0456abe8f5dd66d25a770753",
+    "bindings/r/distributions/frechet/adapter.cpp": "d22167e3b699fb15dca525409b63c71f5be13704b098ab02ab72f51e916aeaa5",
+    "bindings/r/distributions/frechet/test.R": "adfd5dc58de107ba7eddcb03f9ed246e9e744f557fda9f3382197d3a21ddf2a0",
+    "bindings/r/distributions/gev/adapter.cpp": "e6179e84764a59a82e24a68b0562a43deae0978b1669be2eda9c80b88f85986c",
+    "bindings/r/distributions/gev/test.R": "8c802d7fb09f2774a24ffa1da0aa8770efb5c4b588b9e0060b7cb96f3770cef2",
+    "dev/research/evaluations/2026-11-10-gev-held-data/diagnostics.csv": "d6442923880609f734a1f6752c18f1ccbe6e0e68c80bdd69535537aee39c2045",
+    "dev/research/evaluations/2026-11-10-gev-held-data/plot.py": "cb91d6e79a0cefe7286604bec4af04039299c30e98ba59aaaa99ae5e574893d0",
+    "dev/research/evaluations/2026-11-10-gev-held-data/proof.md": "d6b15c9fe8fec05dfeefaa9dfea4f5b5d89978035edd97a488539456ae06d41c",
+    "dev/research/evaluations/2026-11-10-gev-held-data/study.cpp": "1c850f4eb644f20ecd04cf042d5e3c467775a9c389f843072ef7b56ab7c76070",
+    "dev/research/evaluations/2026-11-10-gev-held-data/study.csv": "cc5514b813b6b9f4f7d4e7c387ea1c234b52e8de59b6d332f03403b99ec475fa",
+    "dev/research/evaluations/2026-11-10-gev-held-data/summarize.py": "ef0c2901d9f45b9ad473c7fc554850e732fe75f443d4f1dd18a598dffaf86a81",
+    "dev/research/evaluations/2026-11-10-gev-held-data/summary.json": "ded3324c9052761a68eeeb11eaeb10d1a8648eed7f8eb56a552ffc70e15d79db",
+    "univariateML-cpp/include/cppunivariate/distributions/frechet/README.md": "f6821b1f7219995844f77d714e91a9e3c7fe20879602cf8dd960e387827e7b01",
+    "univariateML-cpp/include/cppunivariate/distributions/frechet/certificate.hpp": "23dbc096a33ef40af13c5b3af00d5980132818b1f6faf94e440ea139f80c4217",
+    "univariateML-cpp/include/cppunivariate/distributions/frechet/golden.json": "181203b03ea68fc0ac2ec33dbd650c5922132f2fec8f571a1bd2d15683fbab27",
+    "univariateML-cpp/include/cppunivariate/distributions/frechet/mle.hpp": "eeadb18ee1133ccad41ec899a8cce2e18079d661ce0ccca6f3659dedb312a4db",
+    "univariateML-cpp/include/cppunivariate/distributions/frechet/test.cpp": "4d8b6404eae58747d79f73ecbc602aa805802ca3f99bb9fed009bedec34e39dc",
+    "univariateML-cpp/include/cppunivariate/distributions/gev/README.md": "1ca21143b6bb6ed0124b4b3a8661c958a8460025d00cfe40e477f9122de494d9",
+    "univariateML-cpp/include/cppunivariate/distributions/gev/golden.json": "1cdeb63dc72f6a8a8f0f38b166586b8b9c74e4ecfe8519232ec720657340b132",
+    "univariateML-cpp/include/cppunivariate/distributions/gev/held_certificate.hpp": "8cda7a7eb3cc05a352a47d1bb6322f2c19e391bad7f2ea334702d14580cd04fa",
+    "univariateML-cpp/include/cppunivariate/distributions/gev/mle.hpp": "157f38451150b56f8f0a43e972a722547bf89796945bcdc347db375e73e12455",
+    "univariateML-cpp/include/cppunivariate/distributions/gev/test.cpp": "0a4d31cd62ae37bce27d769cc596016637abfa1af68c74141c0d698c9d1f393b"
+  },
+  "links": {
+    "task_markdown_files": 4,
+    "task_destinations": 19,
+    "task_broken": 0,
+    "repository_wide_existing_hits": 41,
+    "existing_hit_files_unchanged_from_HEAD": [
+      "dev/research/evaluations/2026-11-03-boundary-lit-report.md",
+      "dev/research/evaluations/2026-11-07-fit-audit-data/static-inventory.md",
+      "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "univariateML-cpp/include/cppunivariate/distributions/nbinom/README.md",
+      "univariateML-cpp/notes/inference.md"
+    ]
+  }
+}

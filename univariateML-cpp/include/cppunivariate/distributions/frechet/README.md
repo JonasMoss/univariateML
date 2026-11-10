@@ -50,7 +50,7 @@ r:
     lambda: Positive shape to hold fixed, or NULL to estimate.
     sigma: Positive scale to hold fixed, or NULL to estimate.
     reltol: Requested relative coefficient accuracy; conditional point-profile solves also use dimensionless scores.
-    iterlim: "Work limit per solve: min(iterlim, 100000) solver iterations; the all-free certificate allows 128 * min(iterlim, 100000) slab, box or profile evaluations."
+    iterlim: "Work limit per solve: min(iterlim, 100000) solver iterations; certificates allow 128 * min(iterlim, 100000) slab, box or profile evaluations."
 log_density: log(lambda)-log(sigma)-(lambda+1)*log((x-mu)/sigma)-((x-mu)/sigma)**(-lambda)
 limits:
   - firmness: proved
@@ -105,7 +105,7 @@ relations:
 fit:
   method: delegation
   certified: 'partial'
-  note: 'frechet/README.md, Details; frechet/mle.hpp (public fitter and held overloads); frechet/test.cpp: Every subset with mu held is an inverse-Weibull fit (joint concave log profile, held-shape closed form or held-scale monotone shape score). Held lambda with free mu has a monotone-location certificate when sigma is held and a monotone profiled-scale certificate when sigma is free. All-free exact half-minimum ties have a proved finite unattained global supremum by the pair bound. All-free two-point minimum minorities compare the unique shape-one member against the Gumbel face by inverse-shape convexity and a bounded concave scalar solve. An exact public scale hold containing a certified finite two-point member inherits its certificate. General all-free fits use the positive-shape GEV slab cover in gev/joint_certificate.hpp, with direct Frechet coefficient enclosures and global Gumbel comparison. Free-lambda/free-mu searches with public sigma held remain numerical outside the compatible two-point members.'
+  note: 'frechet/README.md, Details; frechet/mle.hpp (public fitter and held overloads); frechet/test.cpp: Every subset with mu held is an inverse-Weibull fit (joint concave log profile, held-shape closed form or held-scale monotone shape score). Held lambda with free mu has a monotone-location certificate when sigma is held and a monotone profiled-scale certificate when sigma is free. All-free exact half-minimum ties have a proved finite unattained global supremum by the pair bound. All-free two-point minimum minorities compare the unique shape-one member against the Gumbel face by inverse-shape convexity and a bounded concave scalar solve. An exact public scale hold containing a certified finite two-point member inherits its certificate. General all-free fits use the positive-shape GEV slab cover in gev/joint_certificate.hpp, with direct Frechet coefficient enclosures and global Gumbel comparison. Free-lambda/free-mu fits with public sigma held now attempt a constrained two-coordinate global cover with a uniform location-root enclosure and an explicit infinite-shape tail bound; a successful search remains uncertified if the cover cannot close.'
 areas:
 - extremes and environment
 classification: specialist
@@ -148,8 +148,8 @@ existence:
     The Gumbel path and the half-tie collapse face are derived in Details.
     These paths prove obstructions and construct limiting competitors.
     The all-free profile cover compares every surviving finite maximum with
-    the Gumbel face. General held-scale joint fits still need a constrained
-    certificate that respects the public scale.
+    the Gumbel face. Held-scale joint fits instead use a constrained
+    location-root rectangle and an infinite-shape likelihood envelope.
 ---
 
 The Fréchet distribution models extreme maxima with heavy right tails. The threshold $\mu$ sets the lower endpoint, $\sigma$ sets the scale above it, and $\lambda$ controls the tail decay.
@@ -188,7 +188,7 @@ Since $r_i\le1$, the ratio is at most one, while $\sum_i r_i>k$ for nonconstant 
 
 Holding shape and scale leaves a scalar location fit and permits every positive shape, including values below one. Its likelihood tends to zero at both ends of the location domain, so a finite maximum exists. Uniqueness follows by writing $d_i=x_i-\mu$ and $R=\sum_i d_i^{-\lambda-1}/\sum_i d_i^{-1}$. As the location gap increases, $R$ decreases strictly from infinity to zero. Indeed, under weights proportional to $d_i^{-1}$, its derivative is
 $-(\lambda+1)E_w(d^{-\lambda-1})+E_w(d^{-\lambda})E_w(d^{-1})<0$,
-since the covariance of the two decreasing powers of $d$ is nonnegative. The gap score changes sign exactly when $R=(\lambda+1)/(\lambda\sigma^\lambda)$. Holding only scale restricts the free shape to $\lambda\ge1$ and rejects constant samples because of shape divergence. The lower shape bound also excludes a different spike that is possible even with scale held. Put $\mu=m-\sigma e^{-L}$ and $\lambda=c/L$ for fixed $c>0$. As $L$ increases, each minimum density is proportional to $e^L/L$, while every other observation contributes a density proportional to $1/L$. Thus the unrestricted likelihood grows as $e^{kL}/L^n$ for any sample with minimum multiplicity $k$. With shape free, the location search profiles the concave shape solve and refines sampled local maxima; its global coverage remains numerical.
+since the covariance of the two decreasing powers of $d$ is nonnegative. The gap score changes sign exactly when $R=(\lambda+1)/(\lambda\sigma^\lambda)$. Holding only scale restricts the free shape to $\lambda\ge1$ and rejects constant samples because of shape divergence. The lower shape bound also excludes a different spike that is possible even with scale held. Put $\mu=m-\sigma e^{-L}$ and $\lambda=c/L$ for fixed $c>0$. As $L$ increases, each minimum density is proportional to $e^L/L$, while every other observation contributes a density proportional to $1/L$. Thus the unrestricted likelihood grows as $e^{kL}/L^n$ for any sample with minimum multiplicity $k$. With shape free, the location search profiles the concave shape solve and refines sampled local maxima. These are proposals for the constrained global cover below; failure to close that cover leaves the successful proposal uncertified.
 
 
 With $\lambda$ and $\sigma$ held, the monotone ratio above is solved in
@@ -319,12 +319,38 @@ to a rounded free estimate alone does not qualify.
 Other held-scale values require a constrained search; the Gumbel face does
 not satisfy a finite public scale hold.
 The [derivation and independent checks](../../../../../dev/research/evaluations/2026-11-08-gev-allfree-data/two-point-proof.md)
-also describe the remaining general-profile obstruction.
+also explain why the all-free orbit does not establish a held-scale certificate.
 
 For a recognized exact scale hold, a failed free certificate retains a numerical
 stop and only candidates satisfying that hold contribute to the likelihood
 lower bound. An unconstrained Gumbel winner cannot be transported to a finite
-held scale; that case remains a separate constrained search.
+held scale; that case uses the constrained search and cover below.
+
+### Free shape and location with public scale held
+
+In units of the held scale, write $x_i\ge0$ relative to the sample minimum
+and $\mu=-e$. Every fixed-shape location maximum satisfies
+$[k/(2n)]^{1/\lambda}\le e<1$, where $k$ is the minimum multiplicity.
+This encloses the constrained inner roots on every shape slab. A separate
+range-dependent likelihood envelope tends to minus infinity as
+$\lambda\to\infty$, giving a finite outer shape bound above a feasible
+likelihood level. The free-scale Gumbel face is not feasible under this hold:
+$\sigma_G=\sigma_F/\lambda$ tends to zero.
+
+The constrained cover uses $(\lambda,\log e)$ jets, interval Newton and
+strict concavity on an isolating rectangle, followed by a complete stationary
+and value box cover. The shape-one boundary remains attained and restricted.
+The [proof and arithmetic margins](../../../../../dev/research/evaluations/2026-11-10-gev-held-data/proof.md)
+state the tail bound and root-existence conditions. A completed cover sets the
+C++ result's `certified` field for this route. If coverage, coefficient inclusion or a comparison remains unresolved,
+the successful search is returned unchanged and uncertified. A strictly better
+feasible point, rechecked in public coordinates, instead stops with both point
+witnesses because it disproves the search. Existing search failures retain their
+status. The catalogue flag remains partial.
+
+R attaches a logical `certified` attribute whenever the result carries the
+marker (every uncertified fit, and every held-scale fit); JavaScript carries
+it as zero or one.
 
 With location held, the inverse-Weibull reduction preserves numerical iteration
 failures and the per-fit uncertified flag for a scale limited by binary64
