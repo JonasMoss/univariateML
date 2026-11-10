@@ -41,7 +41,7 @@ r:
   sampler: rzmnbinom
   control:
     size: Optional fixed size; NULL estimates size.
-    reltol: Tolerance for the positive-count coefficient proposer.
+    reltol: "Relative accuracy of every free coefficient (default 1e-10)."
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations."
     prob: "Optional held prob; NULL estimates it."
     p0: "Optional held p0; NULL estimates it."
@@ -132,3 +132,7 @@ The infinite-size report stops with advice to use `mlzmpois`. A search that exha
 ## Decision history
 
 On 2026-11-06 the dedicated delegate path replaced the shared result alias so that limit coefficients, likelihood bounds and budget diagnostics survive every hold subset. The zero-indicator factor shifts both bounds by its log likelihood, with a practical $1024\epsilon(1+n+|\ell_0|)$ arithmetic allowance on each side. No density, golden fixture or zero-indicator maximizer changed. See the [certificate report](../../../../../dev/research/evaluations/2026-11-06-nbfam-cert-report.md).
+
+Coefficient accuracy for the positive observations follows the
+zero-truncated NB solver. The independent binomial zero-mass factor does not
+propagate error into its size or probability coefficients.

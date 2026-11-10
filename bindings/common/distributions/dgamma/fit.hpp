@@ -4,7 +4,7 @@
 #include <cmath>
 #include <limits>
 namespace umvl_binding {
-inline FitResult fit_dgamma(cppunivariate::span x, Held shape_arg = {}, Held rate_arg = {}, double reltol = 1e-8, int iterlim = 400) {
+inline FitResult fit_dgamma(cppunivariate::span x, Held shape_arg = {}, Held rate_arg = {}, double reltol = 1e-10, int iterlim = 400) {
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
   const Held shape = shape_arg;

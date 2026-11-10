@@ -2,7 +2,7 @@
 #include "../../fit.hpp"
 #include "cppunivariate/distributions/genbeta/mle.hpp"
 namespace umvl_binding {
-inline FitResult fit_genbeta(cppunivariate::span x, Held shape1_arg = {}, Held shape2_arg = {}, Held shape3_arg = {}, Held scale_arg = {}, double gradtol = 1e-7, int iterlim = 300) {
+inline FitResult fit_genbeta(cppunivariate::span x, Held shape1_arg = {}, Held shape2_arg = {}, Held shape3_arg = {}, Held scale_arg = {}, double gradtol = 1e-10, int iterlim = 300) {
   // Invalid controls remain ordinary errors, even if a legacy fitter reports
   // a statistical status before checking them.
   const auto classify = [&](FitResult out, const cppunivariate::StopDetail& detail,

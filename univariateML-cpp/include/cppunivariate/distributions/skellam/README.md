@@ -26,7 +26,7 @@ r:
   control:
     mu1: "Optional fixed nonnegative finite positive-count rate; NULL estimates it."
     mu2: "Optional fixed nonnegative finite negative-count rate; NULL estimates it."
-    reltol: "Relative tolerance for the scalar profile search."
+    reltol: "Relative coefficient accuracy (default 1e-10)."
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations."
 log_density: "-mu1-mu2 + x*log(mu1/mu2)/2 + log(besseli(Abs(x),2*sqrt(mu1*mu2)))"
 references:
@@ -162,3 +162,12 @@ single-term tail at enormous counts where the next integer is not
 representable. It avoids treating representational stagnation as convergence.
 
 The joint-rate cover counts curvature-bounded intervals, rather than local optimizer steps. On exhaustion it retains the best feasible pair of rates and a practical likelihood rounding margin; the global upper bound remains infinite.
+
+Differences of adjacent rounded log masses can leave rate-score errors
+independent of the scalar search width. The positive Bessel series retains the
+conditional-count information needed to convert both rate scores into
+coefficient errors.
+
+On a one-sided Poisson face the free rate is the compensated sample mean.
+For constant integer observations $k>0$, its exact value is $\mu_1=k$,
+$\mu_2=0$, including when the unnormalized integer sum exceeds $2^{53}$.

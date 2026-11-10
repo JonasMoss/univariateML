@@ -1,0 +1,3 @@
+{"id":"skellam","n":10000000,"naive_mean":2000000000.4503601,"mean":2000000001,"reference":2000000001,"status":0}
+{"id":"sgomp","n":10000000,"naive_rate":9.9999910016183424,"rate":9.9999910000080998,"reference":9.9999910000080998,"relative_error":3.7947076036992655e-17,"status":0}
+{"id":"ht","scale_over_denorm":1,"exact_scale_over_denorm":0.76854882140710812,"status":8}

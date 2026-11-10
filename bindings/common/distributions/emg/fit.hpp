@@ -2,7 +2,7 @@
 #include "../../fit.hpp"
 #include "cppunivariate/distributions/emg/mle.hpp"
 namespace umvl_binding {
-inline FitResult fit_emg(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg = {}, Held lambda_arg = {}, double reltol=1e-8, int iterlim=500) {
+inline FitResult fit_emg(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg = {}, Held lambda_arg = {}, double reltol=1e-10, int iterlim=500) {
   // Invalid controls remain ordinary errors, even if a legacy fitter reports
   // a statistical status before checking them.
   const auto classify = [&](FitResult out, const cppunivariate::StopDetail& detail,
@@ -50,6 +50,7 @@ const Held a = lambda;
   }
 
   auto r=cppunivariate::emg_mle(x,reltol,iterlim,checked_value_0,checked_value_1,checked_value_2);
+  if(r.status==cppunivariate::EmgStatus::AccuracyFailure)return fail("emg numerical accuracy failure: coefficients cannot be represented at the requested accuracy.");
   if(r.status==cppunivariate::EmgStatus::BudgetExhausted)return stop_failure(fail("EMG certificate budget exhausted; raising iterlim may resolve the remaining shape intervals."),r.stop_detail,"budget",{"mu","sigma","lambda"});
   if(r.status==cppunivariate::EmgStatus::Unresolved)return stop_failure(fail("EMG normal face unresolved: no verified finite winner beats it; use mlnorm only for the compared normal model, retaining its holds."),r.stop_detail,"unresolved",{"mu","sigma","lambda"});
   if(r.status==cppunivariate::EmgStatus::Tie)return stop_failure(fail("EMG separated surviving maximizers or face comparison could not be separated."),r.stop_detail,"tie",{"mu","sigma","lambda"});
