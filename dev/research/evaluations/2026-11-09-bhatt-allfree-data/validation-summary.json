@@ -1,0 +1,94 @@
+{
+  "machine": "workstation",
+  "compiler": "GCC 15.2.0",
+  "r": "4.6.1",
+  "node_tests": "22.22.1",
+  "emsdk_build_node": "24.19.0",
+  "all_required_runs_completed": true,
+  "results": [
+    {
+      "id": 39467,
+      "name": "cpp-dev",
+      "log": "final-cpp-dev.txt",
+      "exit": 0
+    },
+    {
+      "id": 7165,
+      "name": "cpp-full",
+      "log": "final-cpp-full.txt",
+      "exit": 0
+    },
+    {
+      "id": 18942,
+      "name": "cpp-no-long-double",
+      "log": "final-cpp-no-long-double.txt",
+      "exit": 0
+    },
+    {
+      "id": 1190,
+      "name": "js-build",
+      "log": "final-js-build.txt",
+      "exit": 0
+    },
+    {
+      "id": 57006,
+      "name": "js-test",
+      "log": "final-js-test.txt",
+      "exit": 0
+    },
+    {
+      "id": 17886,
+      "name": "r-targeted",
+      "log": "review-r-targeted.txt",
+      "exit": 0
+    },
+    {
+      "id": 27806,
+      "name": "r-dev",
+      "log": "review-r-dev-final.txt",
+      "exit": 0
+    },
+    {
+      "id": 50349,
+      "name": "r-full",
+      "log": "review-r-full-final.txt",
+      "exit": 0
+    },
+    {
+      "name": "native-preflight",
+      "log": "final-preflight.txt",
+      "exit": 0,
+      "cases": 44,
+      "assertions": 5044
+    },
+    {
+      "name": "site-check",
+      "log": "final-site-check.txt",
+      "exit": 0,
+      "verification": "Original process ended; all terminal success markers checked, including 99 C++ snippets and HTML checks."
+    },
+    {
+      "name": "quality-bhatt",
+      "log": "review-quality.txt",
+      "exit": 0
+    },
+    {
+      "name": "census",
+      "log": "review-census.csv",
+      "exit": 0,
+      "rows": 350
+    },
+    {
+      "name": "final-guard-replay",
+      "log": "guard-replay.csv",
+      "exit": 0,
+      "rows": 350
+    },
+    {
+      "name": "final-pinned-timing-and-integrity",
+      "log": "final-timing.csv",
+      "exit": 0
+    }
+  ],
+  "simbox": "Unavailable: filesystem I/O errors, later SSH timeout; final suites used authorized workstation fallback. Historical GCC13 results are not claimed for final revision."
+}

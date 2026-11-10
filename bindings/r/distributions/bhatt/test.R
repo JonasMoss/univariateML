@@ -249,7 +249,7 @@ test_that("bhatt held certificates require quantitative convergence", {
   f <- mlbhatt(x,sigma=1,a=2,reltol=1e-10)
   expect_equal(attr(f,"fixed"),c("sigma","a"))
   expect_equal(as.numeric(logLik(f)),sum(bhatt_oracle_density(x,f[["mu"]],1,2)),tolerance=1e-10)
-  for(controls in list(list(iterlim=1),list(reltol=1e-30))) {
+  for(controls in list(list(iterlim=1))) {
     e <- tryCatch(do.call(mlbhatt,c(list(x=x,sigma=1,a=2),controls)),error=identity)
     expect_s3_class(e,"univariateML_numerical")
     expect_gt(nrow(e$candidates),0)
@@ -258,16 +258,22 @@ test_that("bhatt held certificates require quantitative convergence", {
   }
 })
 
-test_that("bhatt unexcluded normal member is a witnessed unresolved stop", {
+test_that("bhatt tiny requested tolerance preserves a successful uncertified search", {
+  x <- c(-3,-1,0,1,2)
+  f <- mlbhatt(x,sigma=1,a=2,reltol=1e-30)
+  expect_identical(attr(f,"certified"),FALSE)
+  expect_true(all(is.finite(f)))
+  expect_equal(as.numeric(f)[2:3],c(1,2))
+  expect_equal(attr(f,"logLik"),sum(bhatt_oracle_density(x,f[["mu"]],1,2)),tolerance=1e-10)
+})
+
+test_that("bhatt RMS domination certifies the conditional normal member", {
   x <- c(-10,rep(0,20),10)
-  e <- tryCatch(mlbhatt(x,mu=0,sigma=4),error=identity)
-  expect_s3_class(e,"univariateML_unresolved")
-  expect_match(conditionMessage(e),"unresolved")
-  expect_gt(nrow(e$candidates),1)
-  expect_true(any(e$candidates$a==0,na.rm=TRUE))
-  expect_lte(e$loglik_lower,e$loglik_upper)
-  # This comparison does not claim that the face is globally winning.
-  expect_length(e$estimates,0)
+  f <- mlbhatt(x,mu=0,sigma=4)
+  expect_identical(attr(f,"certified"),TRUE)
+  expect_equal(as.numeric(f),c(0,4,0))
+  expect_equal(attr(f,"fixed"),c("mu","sigma"))
+  expect_equal(attr(f,"logLik"),sum(dnorm(x,0,4,log=TRUE)))
 })
 
 test_that("bhatt held certificates transport endpoint penalties and units", {
@@ -291,4 +297,16 @@ test_that("bhatt conditional normal RMS distinguishes underflow from collapse", 
   expect_equal(f[["sigma"]]/1e-200,sqrt(2.5),tolerance=1e-12)
   expect_true(is.finite(as.numeric(logLik(f))))
   expect_error(mlbhatt(rep(1e-200,2),mu=1e-200,a=0),"unbounded")
+})
+
+
+test_that("bhatt reports per-fit certification without suppressing search results", {
+  f <- mlbhatt(c(-10,rep(0,20),10))
+  expect_identical(attr(f,"certified"),FALSE)
+  expect_identical(attr(mlbhatt(c(-3,-1,0,1,3),a=2,sigma=1),"certified"),TRUE)
+  x <- c(1.5186427188633,-.893644554187554,-1.08058198203889,-.639737926177478,.655034880479549,-2.35672046800855,2.46887599116556,.273853493748292,2.5355294429514,-.299436099194099,-.160890965931292,-.201888161544889,.6721053216777,-.344350831779183,1.51377727236596,.163578425435854,1.41905463032963,.838599300343392,-.0826733918168545,-1.34035410608697,-.343170308885225,.824451373169256,-.404339571078608,.0120556813316649)
+  f <- mlbhatt(x)
+  expect_identical(attr(f,"certified"),FALSE)
+  expect_true(all(is.finite(f)))
+  expect_equal(attr(f,"logLik"),sum(bhatt_oracle_density(x,f[1],f[2],f[3])),tolerance=1e-8)
 })

@@ -1,0 +1,26 @@
+Error while mapping shared library sections:
+Could not open `target:/usr/lib/x86_64-linux-gnu/libstdc++.so.6' as an executable file: Input/output error
+Error while mapping shared library sections:
+Could not open `target:/usr/lib/x86_64-linux-gnu/libm.so.6' as an executable file: Input/output error
+Error while mapping shared library sections:
+Could not open `target:/usr/lib/x86_64-linux-gnu/libgcc_s.so.1' as an executable file: Input/output error
+Error while mapping shared library sections:
+Could not open `target:/usr/lib/x86_64-linux-gnu/libc.so.6' as an executable file: Input/output error
+Error while mapping shared library sections:
+Could not open `target:/lib64/ld-linux-x86-64.so.2' as an executable file: Input/output error
+
+warning: Unable to find dynamic linker breakpoint function.
+GDB will be unable to debug shared library initializers
+and track explicitly loaded dynamic code.
+
+warning: Target and debugger are in different PID namespaces; thread lists and other data are likely unreliable.  Connect to gdbserver inside the container.
+0x0000570d2e99c6b4 in cppunivariate::bhatt_detail::cert_hessian(cppunivariate::bhatt_detail::CertModel const&, std::array<cppunivariate::bhatt_detail::CertInterval, 3ul> const&) ()
+#0  0x0000570d2e99c6b4 in cppunivariate::bhatt_detail::cert_hessian(cppunivariate::bhatt_detail::CertModel const&, std::array<cppunivariate::bhatt_detail::CertInterval, 3ul> const&) ()
+#1  0x0000570d2e9a059b in cppunivariate::bhatt_detail::cert_validate_root(cppunivariate::bhatt_detail::CertModel const&, std::array<double, 3ul> const&, double, int) ()
+#2  0x0000570d2e9a158f in cppunivariate::bhatt_detail::cert_newton(cppunivariate::bhatt_detail::CertModel const&, std::array<double, 3ul>, double, int) ()
+#3  0x0000570d2e9a42ec in cppunivariate::bhatt_detail::WidthCertificate::propose(double, cppunivariate::bhatt_detail::CertRoot const&) ()
+#4  0x0000570d2e9b36dc in cppunivariate::bhatt_detail::WidthCertificate::run() ()
+#5  0x0000570d2e9b6a47 in cppunivariate::bhatt_detail::certificate_mle(cppunivariate::basic_span<double>, double, int, double, double, double) ()
+#6  0x0000570d2e9b6da6 in cppunivariate::bhatt_mle(cppunivariate::basic_span<double>, double, int, double, double, double) ()
+#7  0x0000570d2e9940bd in main ()
+[Inferior 1 (process 1394871) detached]

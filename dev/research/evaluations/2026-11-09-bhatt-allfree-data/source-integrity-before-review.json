@@ -1,0 +1,16 @@
+{
+  "head": "2ed5514b32ec72ded95809c834453d24f025f850",
+  "branch": "codex/bhatt-allfree",
+  "frozen_sample_and_all_other_golden_metadata_unchanged": true,
+  "shared_js_append_only": true,
+  "tracked_changes_within_authorized_scope": true,
+  "source_sha256": {
+    "bindings/common/distributions/bhatt/fit.hpp": "d12fa70ab28fac615d981929cb737374ca8713c4bd2c0ff860cf37d5ab54c4d9",
+    "bindings/js/test.mjs": "0125e6d0616d3e13145195829f08616fb130eec2dcdbceefb9c819b7d8c44ef1",
+    "bindings/r/distributions/bhatt/test.R": "6d09cb7c7468d7968276d2b70d656687deb009b8fa47e6f09883c673d8431a3c",
+    "univariateML-cpp/include/cppunivariate/distributions/bhatt/README.md": "944c3f44edf755795a5614a3d946414d0097615561ee85232a3bb7801b785999",
+    "univariateML-cpp/include/cppunivariate/distributions/bhatt/certificate.hpp": "d389b6745fedfee4f74459b122ea4af3bf80a00e453f6356027b2942058e2b07",
+    "univariateML-cpp/include/cppunivariate/distributions/bhatt/golden.json": "7471f19599ff0aa85c421e493d958331eccdf5379ba2db0ca80ca854d2b733c1",
+    "univariateML-cpp/include/cppunivariate/distributions/bhatt/test.cpp": "eb33c106229cee7957a7bb03e51cd0f00847366aa8012a8d064da7e671149f29"
+  }
+}

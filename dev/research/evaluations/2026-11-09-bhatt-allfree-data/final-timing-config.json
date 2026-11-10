@@ -1,0 +1,15 @@
+{
+  "compiler": "g++15.2 -O2 -std=c++17",
+  "affinity_cpu": 3,
+  "threads": 1,
+  "reservation": "/tmp/umvl-cpu/run",
+  "priority": "nice10 via reservation",
+  "command": "/tmp/umvl-cpu/run taskset -c 3 bash dev/research/evaluations/2026-11-09-bhatt-allfree-data/census.sh timing",
+  "controls": {
+    "tol": 1e-08,
+    "maxit": 500
+  },
+  "repetitions": 3,
+  "unaffinitized_observations_retained": "final-timing-unpinned.csv",
+  "density_and_coefficients": "identical across every paired timing call"
+}

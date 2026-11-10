@@ -207,15 +207,16 @@ TEST_CASE("bhatt certificate: shape curvature and endpoint derivatives") {
   }
 }
 
-TEST_CASE("bhatt certificate: quantitative location and finite precision stops") {
+TEST_CASE("bhatt certificate: quantitative location, precision fallback and iteration failure") {
   const std::vector<double> x{-3,-1,0,1,2};
   const auto f=cppunivariate::bhatt_mle(mltest::as_span(x),1e-10,500,1,2);
   REQUIRE(f.status==cppunivariate::BhattStatus::Ok);
-  const auto impossible=cppunivariate::bhatt_mle(mltest::as_span(x),1e-30,500,1,2);
-  CHECK(impossible.status!=cppunivariate::BhattStatus::Ok);
-  REQUIRE(!impossible.stop_detail.candidates.empty());
-  CHECK(std::isfinite(impossible.stop_detail.loglik_lower));
-  CHECK(impossible.stop_detail.loglik_lower<=impossible.stop_detail.loglik_upper);
+  const auto tiny=cppunivariate::bhatt_mle(mltest::as_span(x),1e-30,500,1,2);
+  const auto searched=cppunivariate::bhatt_detail::legacy_candidate(mltest::as_span(x),1e-30,500,1,2);
+  REQUIRE(tiny.status==cppunivariate::BhattStatus::Ok);
+  CHECK_FALSE(tiny.certified);
+  CHECK(tiny.mu==searched.mu);CHECK(tiny.sigma==searched.sigma);CHECK(tiny.a==searched.a);
+  CHECK(tiny.logLik==searched.logLik);
   const auto shortfit=cppunivariate::bhatt_mle(mltest::as_span(x),1e-10,1,1,2);
   CHECK(shortfit.status==cppunivariate::BhattStatus::IterationFailure);
 }
@@ -248,9 +249,11 @@ TEST_CASE("bhatt certificate: frozen all-free proposal fails quantitative accept
   const auto g=mltest::load_distribution_golden("bhatt");
   const cppunivariate::bhatt_detail::CertModel model(mltest::as_span(g.data),NAN,NAN,NAN,true);
   std::array<double,3> p{};
-  p[model.location]=g.estimates.at("mu")/g.estimates.at("sigma");
-  p[model.scale]=1/g.estimates.at("sigma");
-  p[model.shape]=g.estimates.at("a")/g.estimates.at("sigma");
+  // Historical pre-reference coefficients, deliberately independent of the
+  // now-refined golden: preserve the regression against false acceptance.
+  p[model.location]=-0.0038000682197418395/1.057897350270679;
+  p[model.scale]=1/1.057897350270679;
+  p[model.shape]=1.7336058787117143/1.057897350270679;
   const auto checked=cppunivariate::bhatt_detail::cert_validate_root(model,p,1e-8,500);
   CHECK(!checked.accurate);
   // Independent mpmath 70-digit score root, computed from the binary64
@@ -407,4 +410,135 @@ TEST_CASE("bhatt scaled residuals: normal scale at extreme units") {
     CHECK(r.sigma/unit==doctest::Approx(std::sqrt(2.5)).epsilon(1e-12));
     CHECK(std::isfinite(r.logLik));
   }
+}
+
+TEST_CASE("bhatt all-free certificate: independent reference and competitors") {
+  const auto g=mltest::load_distribution_golden("bhatt");
+  const auto f=cppunivariate::bhatt_mle(mltest::as_span(g.data),1e-10,500);
+  REQUIRE(f.status==cppunivariate::BhattStatus::Ok);
+  CHECK(f.certified);
+  CHECK(f.mu==doctest::Approx(g.estimates.at("mu")).epsilon(1e-12));
+  CHECK(f.sigma==doctest::Approx(g.estimates.at("sigma")).epsilon(1e-12));
+  CHECK(f.a==doctest::Approx(g.estimates.at("a")).epsilon(1e-12));
+  CHECK(f.logLik==doctest::Approx(g.logLik).epsilon(1e-13));
+  const auto normal=cppunivariate::norm_mle(mltest::as_span(g.data));
+  const double uniform=-static_cast<double>(g.data.size())*std::log(*std::max_element(g.data.begin(),g.data.end())-*std::min_element(g.data.begin(),g.data.end()));
+  CHECK(f.logLik>normal.logLik+1e-6);CHECK(f.logLik>uniform+1e-6);
+  // The full outer route, not the reference tool's local Newton refinement,
+  // supplies the evidence that these are the global winning coefficients.
+}
+
+TEST_CASE("bhatt inconclusive normal certificate preserves the existing attained member") {
+  std::vector<double> x(20,0);x.push_back(-10);x.push_back(10);
+  const auto f=cppunivariate::bhatt_mle(mltest::as_span(x));
+  REQUIRE(f.status==cppunivariate::BhattStatus::Ok);
+  CHECK(f.a==0);CHECK_FALSE(f.certified);
+  const auto g=mltest::load_distribution_golden("bhatt");
+  const auto stopped=cppunivariate::bhatt_mle(mltest::as_span(g.data),1e-10,1);
+  REQUIRE(stopped.status==cppunivariate::BhattStatus::Ok);
+  CHECK_FALSE(stopped.certified);
+  const auto existing=cppunivariate::bhatt_detail::legacy_candidate(mltest::as_span(g.data),1e-10,1);
+  CHECK(stopped.a==existing.a);CHECK(stopped.logLik==existing.logLik);
+}
+
+TEST_CASE("bhatt all-free certificate: free centre large-shape bound covers every width") {
+  const std::vector<double> x{-2,-1,0,.5,3};
+  const double radius=2.5,face=-static_cast<double>(x.size())*std::log(2*radius);
+  for(double mu:{-4.,-1.,.5,2.,5.})for(double factor:{.1,.5,.9,1.,1.1,2.})
+    for(double k:{2.*x.size(),4.*x.size(),100.*x.size()}){
+      const double a=radius*factor;double ll=0;
+      for(double v:x)ll+=cppunivariate::distributions::dbhatt(v,mu,a/k,a,true);
+      CHECK(ll<=face+1e-11);
+    }
+}
+
+TEST_CASE("bhatt all-free certificate: early tail bound covers the whole neighbourhood") {
+  const std::vector<double> x{-2,-1,0,.5,3};
+  const double radius=2.5,n=static_cast<double>(x.size()),face=-n*std::log(2*radius);
+  for(double cutoff:{1.,2.,4.,8.}){
+    const double upper=face+std::max(0.,n*n/(2*cutoff*cutoff)-std::log(2.));
+    for(double mu:{-4.,-1.,.5,2.,5.})for(double factor:{.1,.5,.9,1.,1.1,2.})
+      for(double multiple:{1.,2.,10.,100.}){
+        const double a=radius*factor,k=cutoff*multiple;double ll=0;
+        for(double v:x)ll+=cppunivariate::distributions::dbhatt(v,mu,a/k,a,true);
+        CHECK(ll<=upper+1e-11);
+      }
+  }
+}
+
+TEST_CASE("bhatt failed enclosure preserves the successful existing search as uncertified") {
+  // Rounded seed-7, n=24 scale-equivariance sample: both faces are beaten,
+  // but the full stationary solve does not enclose a winner at default work.
+  const std::vector<double> original{1.5186427188633,-.893644554187554,-1.08058198203889,-.639737926177478,.655034880479549,-2.35672046800855,2.46887599116556,.273853493748292,2.5355294429514,-.299436099194099,-.160890965931292,-.201888161544889,.6721053216777,-.344350831779183,1.51377727236596,.163578425435854,1.41905463032963,.838599300343392,-.0826733918168545,-1.34035410608697,-.343170308885225,.824451373169256,-.404339571078608,.0120556813316649};
+  for(double unit:{1.,1e-4,1e4}) {
+    auto x=original;for(double& v:x)v=unit*(v+3);
+    const auto f=cppunivariate::bhatt_mle(mltest::as_span(x));
+    const auto existing=cppunivariate::bhatt_detail::legacy_candidate(mltest::as_span(x));
+    REQUIRE(existing.status==cppunivariate::BhattStatus::Ok);
+    REQUIRE(f.status==cppunivariate::BhattStatus::Ok);
+    CHECK_FALSE(f.certified);
+    CHECK(f.mu==existing.mu);CHECK(f.sigma==existing.sigma);CHECK(f.a==existing.a);
+    CHECK(f.logLik==existing.logLik);
+
+  }
+}
+
+
+TEST_CASE("bhatt uncertified search cannot retain a likelihood at different physical coefficients") {
+  std::vector<double> x(20,1e16);x.push_back(1e16-10);x.push_back(1e16+12);
+  const auto existing=cppunivariate::bhatt_detail::legacy_candidate(mltest::as_span(x));
+  REQUIRE(existing.status==cppunivariate::BhattStatus::Ok);
+  const auto witness=cppunivariate::bhatt_detail::cert_witness(mltest::as_span(x),existing.mu,existing.sigma,existing.a);
+  REQUIRE(cppunivariate::bhatt_detail::cert_valid(witness));
+  CHECK(existing.logLik>witness.loglik_upper+1e-4);
+  const auto f=cppunivariate::bhatt_mle(mltest::as_span(x));
+  CHECK(f.status==cppunivariate::BhattStatus::NumericalFailure);
+  CHECK_FALSE(f.certified);REQUIRE(!f.stop_detail.candidates.empty());
+}
+
+TEST_CASE("bhatt limit endpoints cannot encode a different held width") {
+  const std::vector<double> x{1e16,1e16+6};
+  const auto existing=cppunivariate::bhatt_detail::legacy_candidate(mltest::as_span(x),1e-8,500,NAN,3.1);
+  REQUIRE(existing.status==cppunivariate::BhattStatus::UniformLimit);
+  const auto& c=existing.stop_detail.limit_coef;
+  REQUIRE(c.size()==2);
+  CHECK(std::abs((c[1]-c[0])/2-3.1)>.1);
+  const auto f=cppunivariate::bhatt_mle(mltest::as_span(x),1e-8,500,NAN,3.1);
+  CHECK(f.status==cppunivariate::BhattStatus::NumericalFailure);
+  CHECK_FALSE(f.certified);REQUIRE(!f.stop_detail.candidates.empty());
+}
+
+
+TEST_CASE("bhatt unrestricted uniform metadata retains original physical extrema") {
+  const std::vector<double> x{1e16,1e16+2,1e16+4,1e16+6};
+  const auto f=cppunivariate::bhatt_mle(mltest::as_span(x));
+  REQUIRE(f.status==cppunivariate::BhattStatus::UniformLimit);
+  REQUIRE(f.stop_detail.limit_coef.size()==2);
+  CHECK(f.stop_detail.limit_coef[0]==x.front());CHECK(f.stop_detail.limit_coef[1]==x.back());
+  CHECK(f.stop_detail.limit_loglik==doctest::Approx(-4*std::log(6.)).epsilon(1e-12));
+}
+
+
+TEST_CASE("bhatt held normal scale: RMS domination closes the normal comparison globally") {
+  std::vector<double> x(20,0);x.push_back(-10);x.push_back(10);
+  for(double mu:{std::numeric_limits<double>::quiet_NaN(),1.}){
+    const auto f=cppunivariate::bhatt_mle(mltest::as_span(x),1e-10,500,4,NAN,mu);
+    const auto n=cppunivariate::norm_mle(mltest::as_span(x),mu,4);
+    REQUIRE(f.status==cppunivariate::BhattStatus::Ok);CHECK(f.certified);
+    CHECK(f.a==0);CHECK(f.mu==n.mean);CHECK(f.sigma==4);
+    CHECK(f.logLik==doctest::Approx(n.logLik).epsilon(1e-13));
+  }
+  const std::vector<double> asymmetric{-5,-1,0,1,1,1,1,1,1,1};
+  const auto f=cppunivariate::bhatt_mle(mltest::as_span(asymmetric),1e-10,500,2);
+  REQUIRE(f.status==cppunivariate::BhattStatus::Ok);CHECK(f.certified);
+  CHECK(f.a==0);CHECK(f.mu==doctest::Approx(.1).epsilon(1e-12));
+}
+
+TEST_CASE("bhatt tiny target retains the symmetric location search") {
+  const std::vector<double> x{-3,-1,0,1,3};
+  const auto f=cppunivariate::bhatt_mle(mltest::as_span(x),1e-30,500,1,2);
+  const auto searched=cppunivariate::bhatt_detail::legacy_candidate(mltest::as_span(x),1e-30,500,1,2);
+  REQUIRE(f.status==cppunivariate::BhattStatus::Ok);CHECK_FALSE(f.certified);
+  CHECK(f.mu==searched.mu);CHECK(f.sigma==1);CHECK(f.a==2);
+  CHECK(std::isfinite(f.logLik));
 }
