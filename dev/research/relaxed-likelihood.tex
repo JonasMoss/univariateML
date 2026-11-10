@@ -163,9 +163,12 @@ absolutely continuous part of $\bP$, the \emph{relaxation gap} is
 \[
  \Delta_m(\bP;x)=\log\bL_m(\bP;x)-\sum_{i\le m}\log\bar p(x_i)\in[-\infty,\infty],
 \]
-defined for $\nu^m$-almost every $x$. $\bP$ is \emph{exact} at $x$ if
-$\Delta_m=0$; it has \emph{excess} if $\Delta_m>0$ and \emph{deficit} if
-$\Delta_m<0$. At members $\Delta_m\ge0$ (constant sequences). For the truth
+defined for $\nu^m$-almost every $x$ (for members, with the fixed version
+$p_\theta$, which may be $+\infty$ at a support endpoint). $\bP$ has
+\emph{excess} at $x$ if $\Delta_m>0$, \emph{deficit} if $\Delta_m<0$, and
+\emph{no gap} if $\Delta_m=0$: then weak convergence to $\bP$ and evaluation
+of densities at the data agree. At members $\Delta_m\ge0$ (constant
+sequences). For the truth
 $P_0=P_{\theta_0}$ and open $U$ put
 \[
  \gamma(U)=\lim_{n\to\infty}\frac1n\Bigl(\sup_{\theta\in\Theta_U}\ell_n(\theta)
@@ -194,13 +197,13 @@ $\E_0\bigl[\sup_{\Theta_U}\log\bigl(L_k(\theta)/L_k(\theta_0)\bigr)\bigr]^+<\inf
 \begin{enumerate}
 \item[(i)] $\bL$ is upper semicontinuous on $\bM$ and attains
   $\max_{\bM}\bL=\sup_\theta L_n(\theta;x)\in[0,\infty]$.
-\item[(ii)] An MLE exists iff some maximiser of $\bL$ is a member
-  $P_\theta$ with $\Delta_n(P_\theta;x)=0$.
+\item[(ii)] An MLE exists iff $\sup_\theta L_n<\infty$ and some maximiser
+  of $\bL$ is a member $P_\theta$ with no gap.
 \item[(iii)] Every maximiser has a signature, a value (finite or $+\infty$),
   a gap and a membership status, and the outcomes of
   Table~\ref{tab:outcomes} are exhaustive.
-\item[(iv)] ``Escape to family $F$'' means an exact maximiser that is a
-  member of $F$.
+\item[(iv)] ``Escape to family $F$'' means a finite-valued maximiser with
+  no gap that is a member of $F$.
 \end{enumerate}
 \emph{Asymptotics.} Assume (S), (D), (I) and sample from $P_0=P_{\theta_0}$.
 \begin{enumerate}
@@ -234,9 +237,9 @@ content of Perlman \cite[Thm.~2.2(ii), Thm.~4.1]{perlman} restated}
 of suprema over shrinking sets). Attainment: a maximising sequence has a
 weakly convergent subsequence with limit $\bP$, and
 $\bL(\bP)\ge\sup L_n$; the reverse is immediate.
-(ii) If $\hat\theta$ is an MLE, $\bL(P_{\hat\theta})\ge
-L_n(\hat\theta)=\max\bL\ge\bL(P_{\hat\theta})$, so $\Delta_n=0$; the converse
-is immediate. (iii) is (i) plus case distinction. (iv) is a definition.
+(ii) An MLE has a finite likelihood by definition. If $\hat\theta$ is an
+MLE, $\bL(P_{\hat\theta})\ge L_n(\hat\theta)=\max\bL\ge\bL(P_{\hat\theta})$, so
+$\Delta_n=0$; the converse is immediate. (iii) is (i) plus case distinction. (iv) is a definition.
 
 (v) $Z_{s,t}=\log\sup_{\Theta_U}\prod_{s<i\le t}p_\theta(X_i)
 -\sum_{s<i\le t}\log p_0(X_i)$ is subadditive and stationary, and (D) with
@@ -271,38 +274,44 @@ $P_0$-probability (gaps; the sine family). \status{proved here, given
 Theorem~\ref{thm:main}}
 \end{corollary}
 
-Exact boundary points, proper or defective, never break consistency under
-(D). Excess alone does not imply inconsistency: the per-observation
+Boundary points without excess, proper or defective, never break
+consistency under (D). Excess alone does not imply inconsistency: the per-observation
 supremum need not be jointly achievable, and (v) uses the joint
 $\bL_m$.
 
 \begin{table}[ht]
-\centering
-\begin{tabular}{@{}llll@{}}
+\centering\small
+\begin{tabular}{@{}p{3.6cm}p{2.7cm}p{2.6cm}p{5.4cm}@{}}
 \toprule
-maximiser of $\bL_n$ & signature & value, gap & outcome\\
+maximiser of $\bL_n$ & signature & value & outcome\\
 \midrule
-member, exact & n/a & finite, $\Delta=0$ & MLE (\texttt{Ok})\\
-proper boundary, exact & $(1,0,0)$ & finite, $\Delta=0$ & escape, ``use \texttt{mlX}''\\
-proper boundary, excess & $(1,0,0)$ & finite, $\Delta>0$ & oscillation; no rescue\\
+member, no gap & n/a & finite & MLE (\texttt{Ok})\\
+proper boundary, no gap & $(1,0,0)$ & finite & escape, ``use \texttt{mlX}''\\
+proper boundary, excess & $(1,0,0)$ & finite & oscillation; no rescue\\
 defective boundary & $m_\infty>0$ & finite & escape to a non-model\\
 singular boundary & $m_s>0$ & finite & unattained finite supremum\\
-any & any & $+\infty$ & unbounded likelihood\\
+\midrule
+atom at a data point & $m_s>0$ & $+\infty$ & collapse (normal scale, mixtures, lnorm3)\\
+density pole at a data point & $(1,0,0)$, often a member & $+\infty$, no gap & threshold with shape $<1$ (Weibull3, GEV $\xi<-1$)\\
+vanishing spike & $(1,0,0)$ & $+\infty$, infinite excess & Example~\ref{ex:spike}\\
+\midrule
 several & mixed & tie & multiple maxima, face ties\\
 \bottomrule
 \end{tabular}
 \caption{Finite-sample outcomes, exhaustive by Theorem~\ref{thm:main}(i).
+Infinite values have three mechanisms (Example~\ref{ex:thresholds}); only
+the first is singular.
 The library adds ``budget exhausted'' and ``numerical failure'' for
 computations that cannot decide the row.}
 \label{tab:outcomes}
 \end{table}
 
 \section{Tools}
-\begin{lemma}[Exactness]\label{lem:exact}
+\begin{lemma}[No gap]\label{lem:exact}
 (a) If $p_\theta\to\bar p$ uniformly near each $x_i$ whenever
-$P_\theta\Rightarrow\bP$, then $\bP$ is exact at $x$.
-(b) If $X$ is countable with counting measure, every $\bP\in\bM$ is exact at
-every sample. \status{proved here}
+$P_\theta\Rightarrow\bP$, then $\bP$ has no gap at $x$.
+(b) If $X$ is countable with counting measure, no $\bP\in\bM$ has a gap at
+any sample. \status{proved here}
 \end{lemma}
 \begin{proof}
 (a) is immediate. (b) Each $\{x\}$ is open and closed in $\bX$, so
@@ -312,8 +321,8 @@ Count families therefore have only proper and defective boundary points,
 and no gaps; excess needs continuous data.
 
 \begin{lemma}[Defective limits under normalisation]\label{lem:defective}
-Let $\bP$ be exact at $x$ with $\bar p=c\,g$, $0<c<1$, $\int g=1$. If $g$ is
-a member or an exact point of $\bM$, then $\bL_n(\bP;x)=c^n\bL_n(g;x)$, so
+Let $\bP$ have no gap at $x$, with $\bar p=c\,g$, $0<c<1$, $\int g=1$. If
+$g$ is a member or a point of $\bM$ without gap at $x$, then $\bL_n(\bP;x)=c^n\bL_n(g;x)$, so
 $\bP$ is not a maximiser when $\bL_n(g;x)>0$. \status{proved here}
 \end{lemma}
 
@@ -321,7 +330,7 @@ $\bP$ is not a maximiser when $\bL_n(g;x)>0$. \status{proved here}
 $(1,0,0)$; Hellinger closures are not compact, and a Hellinger limit can
 have infinite excess (Example~\ref{ex:spike}). Locally uniform convergence
 near the data to a density of mass one gives both Hellinger convergence
-(Scheff\'e) and exactness; neither converse holds. Hellinger geometry
+(Scheff\'e) and absence of gaps; neither converse holds. Hellinger geometry
 belongs to inference near a boundary point: DQM, LAN, rates, seams and
 cusps, boundary tests \cite{selfliang}.
 
@@ -348,17 +357,17 @@ estimates $m=\infty$, ``essentially another example of Bahadur''.
 \status{lit, verified}
 \end{example}
 
-\begin{example}[Exact, consistent: Perlman's Example 4]
+\begin{example}[No gap, consistent: Perlman's Example 4]
 $f(x,\theta)\propto1+\frac{a\theta}{1+\theta}\sin(x-\theta)$ on $[0,2\pi]$,
 $0<a<1$. Perlman shows all approximate MLEs are consistent although Wald,
 Kiefer--Wolfowitz and Huber fail with the one-point compactification of
 $\Theta$ \cite{perlman}. In $\bM$ the end $\theta\to\infty$ is the circle
-$\{1+a\sin(x-\varphi)\}$ of proper laws, exact by Lemma~\ref{lem:exact}(a),
+$\{1+a\sin(x-\varphi)\}$ of proper laws without gap (Lemma~\ref{lem:exact}(a)),
 so Theorem~\ref{thm:main}(viii) gives $\gamma<0$ there.
 \status{lit, verified; weak-closure reading sketch}
 \end{example}
 
-\begin{example}[Spikes, exact: Ferguson]\label{ex:ferguson}
+\begin{example}[Spikes without gap: Ferguson]\label{ex:ferguson}
 Ferguson \cite{ferguson}, form confirmed by Le Cam \cite{lecam}
 (\status{lit, verified}); the specific $\delta$ is as recalled
 (\status{lit, unverified}):
@@ -368,7 +377,7 @@ Ferguson \cite{ferguson}, form confirmed by Le Cam \cite{lecam}
  \quad\theta\in[0,1],\quad \delta(\theta)=(1-\theta)e^{1-(1-\theta)^{-4}}.
 \]
 $\Theta$ is compact and $\theta\mapsto P_\theta$ a homeomorphism, so
-$\bM=\cM$, every point is exact, and the MLE always exists. At $\theta=1$ the
+$\bM=\cM$, no point has a gap, and the MLE always exists. At $\theta=1$ the
 relaxed density is $\frac12=p_1$ (no excess), but (D) fails:
 $\E_0\sup_U\log f\gtrsim\int^1(1-x)^{-4}dx=\infty$ for every block size.
 Le Cam: ``all of Wald's conditions, except one, are satisfied''.
@@ -388,12 +397,31 @@ $w,\sigma\to0$, $w/\sigma\to\infty$: Hellinger limit $\varphi(\cdot-\mu)$,
 signature $(1,0,0)$, likelihood $\to\infty$. \status{proved here}
 \end{example}
 
-\begin{example}[Unbounded for every sample: three-parameter lognormal]
-A free threshold $\gamma\uparrow x_{(1)}$ makes the likelihood unbounded for
-every sample (Hill \cite{hill}); only a local root is consistent.
-\status{lit, unverified} Three-parameter Weibull and gamma behave the same
-way with shape below one; the library restricts the shape (Fr\'echet
-$\lambda\ge1$, GEV $\xi\ge-1$; Smith \cite{smith}).
+\begin{example}[Three ways to infinity: thresholds]\label{ex:thresholds}
+With a free threshold the likelihood is unbounded for every sample, but by
+different mechanisms.
+\begin{itemize}
+\item \emph{Weibull3, gamma3 with shape $c<1$; GEV with $\xi<-1$; Fr\'echet
+  with $\lambda<1$}: fix the shape and scale and let the threshold
+  $\gamma\uparrow x_{(1)}$. The parameters converge to a finite member whose
+  density has a pole at its support endpoint, which is a data point.
+  Signature $(1,0,0)$, value $+\infty$, no gap with the endpoint version
+  $p(\gamma)=+\infty$ (the library's \texttt{endpoint\_log\_density}).
+  Restricting the shape removes the pole (Smith \cite{smith}).
+\item \emph{Three-parameter lognormal} (Hill \cite{hill},
+  \status{lit, unverified}): with $\varepsilon=x_{(1)}-\gamma\to0$,
+  $\mu=\log\varepsilon$, $\sigma=|\log\varepsilon|$, the term at $x_{(1)}$ is
+  $\asymp(\varepsilon\sigma)^{-1}$ and the others are $\asymp\sigma^{-1}$, so
+  $L\asymp\varepsilon^{-1}|\log\varepsilon|^{-n}\to\infty$. Since
+  $\log(X-\gamma)=|\log\varepsilon|(Z-1)$, the weak limit is
+  $\Phi(1)\,\delta_{x_{(1)}}+(1-\Phi(1))\,\delta_\infty$: an atom at a data
+  point plus escaped mass, signature $(0,\Phi(1),1-\Phi(1))$. Other ratios
+  $\mu/\sigma$ give other splits. No shape restriction helps; only a local
+  root is consistent. \status{sketch}
+\item \emph{Normal mixture} with a component collapsing on $x_1$: atom of the
+  component's weight (Kiefer--Wolfowitz); with vanishing weight the atom
+  disappears and the infinity is pure excess (Example~\ref{ex:spike}).
+\end{itemize}
 \end{example}
 
 \begin{example}[Defective escape under correct specification: Geyer]
@@ -429,11 +457,12 @@ location-scale $3$, matching $2k<n$).
 \toprule
 example & finite sample & asymptotics\\
 \midrule
-Ferguson & \texttt{Ok}, exact & spikes: (D) fails\\
+Ferguson & \texttt{Ok}, no gap & spikes: (D) fails\\
 sine family; Le Cam's dyadic signs & excess, no MLE & gap: $\gamma(U)>0$\\
-Perlman Ex.~4 & exact circle of limits & consistent\\
-three-parameter lognormal & unbounded & ML undefined; local root consistent\\
-Geyer 4.5 & exact defective escape, positive probability & consistent\\
+Perlman Ex.~4 & circle of limits, no gap & consistent\\
+three-parameter lognormal & unbounded: atom plus escape & ML undefined; local root consistent\\
+Weibull3, shape $<1$ & unbounded: pole at a member & ML undefined; restrict shape\\
+Geyer 4.5 & defective escape, positive probability & consistent\\
 vanishing spike & unbounded at a Hellinger limit & (D) fails\\
 \bottomrule
 \end{tabular}
@@ -492,7 +521,7 @@ local & Hellinger, DQM & rates and inference\\
   semidominance or Perlman's Section~3 uniformity extends the asymptotic
   part beyond (D).
 \item Ferguson: fetch the paper, confirm $\delta$, settle $a=1$.
-\item Library obligations: exactness (Lemma~\ref{lem:exact}) at each escape
+\item Library obligations: no gap (Lemma~\ref{lem:exact}) at each escape
   face before ``use \texttt{mlX}''; defective limits dismissed by
   Lemma~\ref{lem:defective}; completeness of each dossier's face list.
 \item Prior art for the finite-sample relaxed likelihood and outcome table
