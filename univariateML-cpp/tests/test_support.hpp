@@ -55,8 +55,8 @@ constexpr double kGolden_bbinom = 1e-15;
 constexpr double kGolden_beta = 5e-15;
 constexpr double kGolden_betapr = 1e-11;
 constexpr double kGolden_binom = 2e-16;
-// bnbinom: finite-difference BFGS gradtol=1e-8 and profile stopping.
-constexpr double kGolden_bnbinom = 5e-07;
+// bnbinom: joint analytic Newton refinement; measured native/double/R/WASM reference error.
+constexpr double kGolden_bnbinom = 1.5e-13;
 constexpr double kGolden_burr = 2e-14;
 constexpr double kGolden_cauchy = 3e-12;
 constexpr double kGolden_cmb = 2e-13;
@@ -75,8 +75,8 @@ constexpr double kGolden_foldnorm = 1e-14;
 constexpr double kGolden_fpareto = 1e-11;
 constexpr double kGolden_frechet = 2e-14;
 constexpr double kGolden_gamma = 1e-15;
-// gb2: all-free beta-shape profile score stop at gradtol=1e-7; profile curvature amplifies coefficient error.
-constexpr double kGolden_gb2 = 2e-07;
+// gb2: joint analytic Newton refinement; measured native/double/R/WASM reference error.
+constexpr double kGolden_gb2 = 8e-14;
 constexpr double kGolden_ged = 3e-11;
 // genbeta: analytic Newton correction; measured native/double/R/WASM reference checks.
 constexpr double kGolden_genbeta = 1e-14;
@@ -124,21 +124,21 @@ constexpr double kGolden_pig = 1e-12;
 constexpr double kGolden_pois = 3e-15;
 constexpr double kGolden_power = 2e-15;
 constexpr double kGolden_rayleigh = 2e-16;
-// sged: finite-difference BFGS gradtol=1.220703e-4 inherited from CRAN; curvature amplifies coefficient error.
-constexpr double kGolden_sged = 3e-06;
+// sged: joint analytic Newton refinement; measured native/double/R/WASM reference error.
+constexpr double kGolden_sged = 3e-14;
 // sgomp: analytic Newton correction; measured native/double/R/WASM reference checks.
 constexpr double kGolden_sgomp = 1e-15;
 // skellam: analytic Newton correction; measured native/double/R/WASM reference checks.
 constexpr double kGolden_skellam = 5e-15;
-// slash: scalar profile width reltol=1e-8 and likelihood rounding; near-zero location amplifies relative error.
-constexpr double kGolden_slash = 2e-05;
+// slash: joint analytic Newton refinement; measured native/double/R/WASM reference error.
+constexpr double kGolden_slash = 3e-13;
 // sn: analytic Newton correction; measured native/double/R/WASM reference checks.
 constexpr double kGolden_sn = 2e-14;
 constexpr double kGolden_snorm = 3e-13;
-// sstd: finite-difference BFGS gradtol=1.220703e-4 inherited from CRAN; curvature amplifies coefficient error.
-constexpr double kGolden_sstd = 2e-05;
-// st: all-free BFGS score stop at reltol=1e-6; global/face certificate does not impose 1e-10 coefficient accuracy.
-constexpr double kGolden_st = 2e-06;
+// sstd: joint analytic Newton refinement; measured native/double/R/WASM reference error.
+constexpr double kGolden_sstd = 4e-13;
+// st: joint analytic Newton refinement; measured native/double/R/WASM reference error.
+constexpr double kGolden_st = 1.2e-13;
 constexpr double kGolden_std = 3e-13;
 constexpr double kGolden_tbinom = 5e-15;
 constexpr double kGolden_tlambda = 1e-14;

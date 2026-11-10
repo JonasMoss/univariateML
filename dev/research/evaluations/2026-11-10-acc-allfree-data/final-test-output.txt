@@ -1,0 +1,189 @@
+just cpp-test (workstation)
+        Start   2: sample_tests
+ 99/106 Test #108: distribution_unif ................   Passed    0.04 sec
+        Start 127: distribution_support
+100/106 Test   #2: sample_tests .....................   Passed    0.02 sec
+        Start 130: tails_tests
+101/106 Test #130: tails_tests ......................   Passed    0.00 sec
+        Start 128: no_throw_tests
+102/106 Test  #50: distribution_invexp ..............   Passed    0.03 sec
+        Start   1: bfgs_tests
+103/106 Test #128: no_throw_tests ...................   Passed    0.00 sec
+104/106 Test #127: distribution_support .............   Passed    0.01 sec
+105/106 Test   #1: bfgs_tests .......................   Passed    0.00 sec
+106/106 Test  #33: distribution_genbeta .............   Passed  429.38 sec
+
+100% tests passed, 0 tests failed out of 106
+
+Label Time Summary:
+cran    = 1243.97 sec*proc (105 tests)
+dev     = 1246.91 sec*proc (106 tests)
+full    = 1246.91 sec*proc (106 tests)
+
+Total Test time (real) = 429.38 sec
+
+just test (workstation)
+  'test-dist-trgamma.R:24:3', 'test-dist-trgamma.R:142:3',
+  'test-dist-triang.R:85:3', 'test-dist-weibull.R:73:3',
+  'test-dist-yulesimon.R:2:3', 'test-dist-zeta.R:2:3', 'test-dist-zib.R:2:3',
+  'test-dist-zib.R:55:3', 'test-dist-zib.R:118:3', 'test-dist-zinb.R:18:3',
+  'test-dist-zip.R:10:3', 'test-dist-zinb.R:58:3', 'test-dist-zip.R:57:3',
+  'test-dist-zipf.R:30:3', 'test-dist-zmbinom.R:2:3',
+  'test-dist-zmbinom.R:52:3', 'test-dist-zipf.R:117:3',
+  'test-dist-zmgeom.R:2:3', 'test-dist-zmgeom.R:36:3',
+  'test-dist-zmbinom.R:115:3', 'test-dist-zmlogarithmic.R:2:3',
+  'test-dist-zmlogarithmic.R:36:3', 'test-dist-zmnbinom.R:2:3',
+  'test-dist-zmnbinom.R:60:3', 'test-dist-zmnbinom.R:75:3',
+  'test-dist-zmpois.R:2:3', 'test-dist-zmpois.R:36:3',
+  'test-dist-ztbinom.R:2:3', 'test-dist-ztbinom.R:49:3',
+  'test-dist-ztgeom.R:2:3', 'test-dist-ztgeom.R:33:3',
+  'test-dist-ztbinom.R:91:3', 'test-dist-ztnbinom.R:2:3',
+  'test-dist-ztpois.R:2:3', 'test-dist-ztpois.R:33:3',
+  'test-dist-ztnbinom.R:57:3', 'test-dist-ztnbinom.R:72:3',
+  'test-dist-genbeta.R:127:3'
+
+[ FAIL 0 | WARN 0 | SKIP 154 | PASS 23010 ]
+   user  system elapsed 
+748.754   4.683 305.276 
+
+UMVL_TEST_TIER=full just cpp-test (workstation)
+        Start 127: distribution_support
+124/131 Test  #76: distribution_norm_slow ...........   Passed    0.01 sec
+        Start 130: tails_tests
+125/131 Test #127: distribution_support .............   Passed    0.01 sec
+        Start 128: no_throw_tests
+126/131 Test #130: tails_tests ......................   Passed    0.00 sec
+        Start   1: bfgs_tests
+127/131 Test #128: no_throw_tests ...................   Passed    0.00 sec
+        Start  97: distribution_sstd_slow
+128/131 Test   #1: bfgs_tests .......................   Passed    0.00 sec
+129/131 Test   #2: sample_tests .....................   Passed    0.02 sec
+130/131 Test  #11: distribution_bnbinom_slow ........   Passed    0.02 sec
+131/131 Test  #97: distribution_sstd_slow ...........   Passed   12.76 sec
+
+100% tests passed, 0 tests failed out of 131
+
+Label Time Summary:
+cran    = 1640.15 sec*proc (105 tests)
+dev     = 1643.81 sec*proc (106 tests)
+full    = 2395.42 sec*proc (131 tests)
+
+Total Test time (real) = 608.44 sec
+
+just test-full (workstation)
+⠹ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 45744 ] @ dist-sged                         
+⠸ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 45744 ] @ dist-sged                         
+⠼ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 45744 ] @ dist-sged                         
+⠴ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 45744 ] @ dist-sged                         
+⠦ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 45744 ] @ dist-sged                         
+⠧ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 45744 ] @ dist-sged                         
+⠇ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 45744 ] @ dist-sged                         
+⠏ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 45744 ] @ dist-sged                         
+⠋ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 45744 ] @ dist-sged                         
+⠙ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 45744 ] @ dist-sged                         
+⠹ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 45747 ] @ dist-sged                         
+⠸ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 45750 ] @ dist-sged                         
+✔ |        960 | dist-sged [507.8s]                                             
+
+⠼ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 45825 ] Starting up...                      
+                                                                                
+══ Results ═════════════════════════════════════════════════════════════════════
+Duration: 723.4 s
+
+[ FAIL 0 | WARN 0 | SKIP 0 | PASS 45825 ]
+    user   system  elapsed 
+1491.408    8.531  726.384 
+
+just cpp-test-no-long-double (workstation)
+        Start 130: tails_tests
+124/131 Test #130: tails_tests ......................   Passed    0.00 sec
+        Start   1: bfgs_tests
+125/131 Test   #1: bfgs_tests .......................   Passed    0.00 sec
+        Start 127: distribution_support
+126/131 Test  #11: distribution_bnbinom_slow ........   Passed    0.01 sec
+        Start 128: no_throw_tests
+127/131 Test  #76: distribution_norm_slow ...........   Passed    0.02 sec
+        Start  97: distribution_sstd_slow
+128/131 Test #128: no_throw_tests ...................   Passed    0.00 sec
+129/131 Test #127: distribution_support .............   Passed    0.01 sec
+130/131 Test  #97: distribution_sstd_slow ...........   Passed   12.66 sec
+131/131 Test #103: distribution_tlambda_slow ........   Passed  373.07 sec
+
+100% tests passed, 0 tests failed out of 131
+
+Label Time Summary:
+cran    = 917.53 sec*proc (105 tests)
+dev     = 919.74 sec*proc (106 tests)
+full    = 1426.30 sec*proc (131 tests)
+
+Total Test time (real) = 373.07 sec
+
+just js-build (workstation)
+bash bindings/js/build.sh
+/home/jonas/.bashrc: line 26: /home/jonas/.cargo/env: No such file or directory
+/home/jonas/.bash_profile: line 9: /home/jonas/.cargo/env: No such file or directory
+Setting up EMSDK environment (suppress these messages with EMSDK_QUIET=1)
+Adding directories to PATH:
+PATH += /home/jonas/emsdk
+PATH += /home/jonas/emsdk/upstream/emscripten
+
+Setting environment variables:
+PATH = /home/jonas/emsdk:/home/jonas/emsdk/upstream/emscripten:/home/jonas/.elan/bin:/home/jonas/.npm-global/bin:/home/jonas/.local/bin:/home/jonas/bin:/home/jonas/.npm-global/lib/node_modules/@openai/codex/node_modules/@openai/codex-linux-x64/vendor/x86_64-unknown-linux-musl/codex-path:/home/jonas/.venvs/global/bin:/home/jonas/.codex/tmp/arg0-linux/codex-arg0UCKOLT:/home/jonas/Files/work/misc/codex-math-web/node_modules/.bin:/home/jonas/Files/work/misc/node_modules/.bin:/home/jonas/Files/work/node_modules/.bin:/home/jonas/Files/node_modules/.bin:/home/jonas/node_modules/.bin:/home/node_modules/.bin:/node_modules/.bin:/usr/share/nodejs/@npmcli/run-script/lib/node-gyp-bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/jonas/mplusdemo:/home/jonas/.fzf/bin
+EMSDK = /home/jonas/emsdk
+EMSDK_NODE = /home/jonas/emsdk/node/24.19.0_64bit/bin/node
+Validated and generated d/p/q/r for 99 families.
+In file included from bindings/js/bindings.cpp:9:
+In file included from build/js/generated/fit_includes.hpp:5:
+In file included from bindings/common/distributions/binom/fit.hpp:3:
+univariateML-cpp/include/cppunivariate/distributions/binom/mle.hpp:160:60: warning: self-comparison always evaluates to true [-Wtautological-compare]
+  160 |     if (std::numeric_limits<CPPUNIV_EXTENDED_REAL>::digits <=
+      |                                                            ^
+1 warning generated.
+
+just js-test (workstation)
+  ...
+# Subtest: genbeta signed squared-power certificate selects a global gamma face
+ok 594 - genbeta signed squared-power certificate selects a global gamma face
+  ---
+  duration_ms: 13228.332049
+  type: 'test'
+  ...
+# Subtest: GEV and Frechet held nuisance certificate markers cross the common seam
+ok 595 - GEV and Frechet held nuisance certificate markers cross the common seam
+  ---
+  duration_ms: 831.557714
+  type: 'test'
+  ...
+1..595
+# tests 595
+# suites 0
+# pass 595
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 355680.729554
+
+just site-check (workstation)
+PASS nice linear/log ticks; Gompertz free/held fits, conditional escape, fixed-rate boundary, static/live equality and build-time MathML.
+PASS likelihood windows: 15-unit clipping, low-marker expansion, constant likelihoods, marker clearance, finite SVG coordinates.
+PASS theory browser: desktop/mobile, live profiles and held faces, seeded data, errors, no-JS figures and diagnostics.
+PASS: four articles; dossier catalogues: 288 limits, 99 families, 9 fit domains.
+Covariance scopes: 195 {'implemented': 121, 'historically recoverable': 0, 'available but missing': 0, 'unreviewed': 4, 'invalid for the procedure': 70}
+PASS: inference: 353 unique scopes, 99 families; implementation symbols, evidence anchors, calibration and checks resolve; full static table.
+PASS: graph: 99 unique nodes, 278 edges, resolving family links; SVG generated twice byte-identically and matches built HTML.
+PASS: explorer coverage matches binding registry; optional build assets agree.
+PASS: every declared and inverted relation and limit link is rendered and resolves.
+PASS: 99 family pages; MathML on every family; no math runtime or external runtime assets; internal links and fragments resolve.
+Environment: Python 3.14.5, SymPy 1.14.0; g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0
+Boost headers: /home/jonas/R/x86_64-pc-linux-gnu-library/4.5/BH/include
+PASS: 99 generated C++ snippets compile and link as C++17 (including exp, gamma, gb2).
+PASS: pilot and ten additional HTML spot checks: exp, gamma, gb2, binom, beta, hyper, sstd, gev, gpd, tnorm, pois, unif, pareto
+Log-density fallback: cmb, cmp, dweibull, gev, gpd, huber, sged, snorm, sstd, st, tbinom, tpois, triang, zib, zinb, zip, zipf, zmbinom, zmgeom, zmlogarithmic, zmnbinom, zmpois
+WEIGHT exp: HTML 25427 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+WEIGHT gamma: HTML 29650 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+WEIGHT gb2: HTML 113230 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+WEIGHT binom: HTML 41341 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+WEIGHT hyper: HTML 40160 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+WEIGHT sstd: HTML 142337 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+Total dist: 24695648 B

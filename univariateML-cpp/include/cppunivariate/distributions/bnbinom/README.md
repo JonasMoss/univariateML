@@ -35,7 +35,7 @@ r:
   density: dbnbinom
   sampler: rbnbinom
   control:
-    gradtol: "Relative coefficient tolerance: scalar log brackets, pair root enclosures and the all-free global coefficient box (at most 1e-8)."
+    gradtol: "Requested relative coefficient accuracy for all-free fits (default 1e-10); checked by the final observed-information Newton correction."
     iterlim: "Work limit: 1 * min(iterlim, 100000) solver iterations per solve (scalar refinement, or BFGS per deterministic start); 128 * min(iterlim, 100000) certificate evaluations per scalar, pair, all-free stationary cover, alpha-interval cover, negative-binomial face, or supporting-polynomial certificate (including each Bernstein coefficient update). Pair root proposals and isolation have the same solver-iteration limit."
 log_density: "loggamma(size+x)-loggamma(size)-loggamma(x+1)+loggamma(alpha+size)+loggamma(beta+x)-loggamma(alpha+size+beta+x)-loggamma(alpha)-loggamma(beta)+loggamma(alpha+beta)"
 limits:
@@ -122,6 +122,16 @@ existence:
 The beta negative binomial mixes a negative binomial success probability with a beta distribution. Also called the generalized Waring distribution, it models counts with power-law tails. The shape $r$ is the underlying negative binomial size. The shapes $\alpha$ and $\beta$ govern the beta mixing distribution for its success probability.
 
 ## Details
+
+The all-free local accuracy check uses the full three-dimensional observed
+information in log shape coordinates, preserving the size/beta exchange convention.
+It differentiates cancellation-resistant gamma increments and zero masses. Pair and
+all-free global covers keep their previous enclosure target; the separate local
+correction supplies the requested coefficient accuracy.
+A scalar certificate whose rounding margin prevents the tighter enclosure retains
+its previous bracket proposal only after a checked local Newton correction,
+marked uncertified. See the
+[accuracy validation](../../../../../dev/research/evaluations/2026-11-10-acc-allfree-report.md).
 
 The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-discrete2.md) describes the limiting paths and the scope of the boundary comparisons.
 
@@ -279,8 +289,9 @@ infinity-norm contraction and $T(B)\subset\operatorname{int}B$, including
 the scalar-score uncertainty. The contraction theorem proves existence and
 uniqueness of a stationary point. Negative definiteness throughout $B$
 proves that it is its strict maximum. A second contraction box has relative
-radius $\min(\mathtt{gradtol},10^{-8})/4$; both boxes share the center, so
-uniqueness identifies the same root and proves coefficient accuracy.
+radius $\min(\mathrm{tol}_{\rm cover},10^{-8})/4$, with
+$\mathrm{tol}_{\rm cover}=\max(\mathtt{gradtol},10^{-8})$; both boxes share the center, so
+uniqueness identifies the same root and proves the coarse coefficient enclosure.
 Only boxes contained in these certified root neighborhoods can bypass the
 likelihood/score exclusions. Once the entire rectangle is covered, all global
 maxima have been isolated and their likelihoods are compared. The likelihood
@@ -524,10 +535,11 @@ receives $4096\epsilon$ times its accumulated absolute terms.
 
 Newton proposes a center only. The cover must close with every remaining
 canonical global maximum in a box of relative radius
-$\min(\mathrm{tol},10^{-8})/4$ about that center. Compactness and a
+$10^{-8}/4$ about that center. This preserves the global cover's enclosure target independently of the tighter local accuracy control. Compactness and a
 nonempty witness superlevel ensure that a global maximum exists there.
-Thus all three returned coefficients meet the requested relative accuracy
-without assuming uniqueness or accepting a capped Newton iterate. The
+The final observed-information Newton correction supplies the requested
+local coefficient accuracy. The exported global coefficient box retains the
+cover center and radius; it is not recentered on the polished estimate. The
 swapped box supplies the other label. If this cover cannot close, the successful
 legacy result is retained as uncertified. A proved strict advantage overrides a
 legacy face choice; an actually failed legacy solve still stops. The diagonal
@@ -609,7 +621,7 @@ at zero and five pass this complete comparison.
 
 Each signed cover has $128\min(\mathrm{iterlim},100000)$ evaluations.
 Failure to close, including a zero sign, retains the existing uncertified
-result. No search coefficient or default fitting tolerance changes.
+result. The signed cover does not change the finite search or its face tolerance.
 The additional signed arithmetic uses $4096\epsilon$ absolute-term or relative
 margins; the inherited likelihood, score and Hessian margins also apply.
 The [derivation and independent checks](../../../../../dev/research/evaluations/2026-11-09-bnbinom-face-data/derivations.md)

@@ -36,7 +36,7 @@ r:
   density: dgb2
   sampler: rgb2
   control:
-    gradtol: Tolerance on the per-observation profile score in log beta shapes.
+    gradtol: "Requested relative coefficient accuracy for all-free fits (default 1e-10); checked by the final observed-information Newton correction."
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations."
 log_density: log(shape2)-log(x)-loggamma(shape3)-loggamma(shape1)+loggamma(shape3+shape1)+shape3*shape2*log(x/scale)-(shape3+shape1)*log(1+(x/scale)**shape2)
 limits:
@@ -130,6 +130,16 @@ The transformed beta distribution models positive observations with two power ta
 
 ## Details
 
+The final joint correction propagates log beta-shape and standardized power/location
+errors into the public scale. Near a gamma face, centering the log location by
+log(q) removes the leading gamma-limit score before differentiation. When both
+beta shapes are large, centering the logit kernel at their mean removes the
+normalizer/entropy cancellation before taking derivatives. With power
+and scale held, a beta mean/precision solve preserves shape information in
+concentrated samples. These accuracy refinements leave the separate held-subset
+certificate routes intact. See the
+[accuracy validation](../../../../../dev/research/evaluations/2026-11-10-acc-allfree-report.md).
+
 The [family analysis](../../../../../dev/research/evaluations/2026-10-28-gb2.md) describes the limiting paths and the scope of the boundary comparisons.
 
 In the GB2 convention $(a,b,p,q)$, $a$ is the power, $b$ is the scale, and $p,q$ control the lower and upper power tails. Their exponents are $ap$ near zero and $aq$ at infinity.
@@ -142,8 +152,8 @@ for each pair of beta shapes. The inner objective is strictly concave; the
 outer search uses a grid and member-family starts, refines distinct basins
 with Newton or BFGS, and expands the search box when needed. This reduces
 the outer problem to at most two dimensions and improves conditioning.
-A small profile score and an interior position are required for a returned
-interior fit. The multibasin search is numerical: neither global optimality
+Profile scores nominate candidates; the returned numerical interior fit
+also passes the joint coefficient-error check or the beta reduction above. The multibasin search is numerical: neither global optimality
 nor exhaustion of all possible limit faces is proved. An unresolved search
 reports failure. Available transformed-gamma, inverse transformed-gamma,
 lognormal, Pareto, power and double-Pareto faces are compared, as applicable

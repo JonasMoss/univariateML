@@ -26,7 +26,7 @@ r:
   control:
     mu: Optional held mu; NULL estimates it.
     sigma: Optional positive held sigma; NULL estimates it.
-    reltol: Relative search tolerance in standardized coordinates.
+    reltol: "Requested relative coefficient accuracy for all-free fits (default 1e-10); checked by the final observed-information Newton correction."
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations (default iterlim 500); per certificate: 128 * min(iterlim, 100000) certificate evaluations."
 log_density: -log(sigma)-log(2*pi)/2+log(1-exp(-((x-mu)/sigma)**2/2))-2*log(Abs((x-mu)/sigma))
 limits:
@@ -94,6 +94,12 @@ The slash distribution is a normal variate divided by an independent uniform var
 produces heavy tails; $\sigma$ describes scale rather than a standard deviation.
 
 ## Details
+
+The all-free location uses the fitted scale as its accuracy floor. Final joint
+location/log-scale refinement differentiates the slash log density analytically, with
+a power series at zero; this avoids resolving a shallow location maximum by
+likelihood comparisons alone. See the [accuracy
+validation](../../../../../dev/research/evaluations/2026-11-10-acc-allfree-report.md).
 
 When every coefficient is held, the likelihood is evaluated at those values
 without optimization.

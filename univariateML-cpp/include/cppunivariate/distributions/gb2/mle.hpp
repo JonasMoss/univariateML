@@ -1,5 +1,7 @@
 // GB2 in actuar order (q,a,p,b). All optimisation uses standardized logs.
 #pragma once
+#include "local_accuracy.hpp"
+#include "../beta/mle.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/face_compare.hpp"
 #include "../../core/precision.hpp"
@@ -21,6 +23,7 @@ struct Gb2Result {
   Gb2Status status;
   StopDetail stop_detail{};
   bool certified=true;
+  bool accuracy_failure=false;
 };
 } // namespace cppunivariate
 #include "power_certificate.hpp"
@@ -223,7 +226,7 @@ inline Point refine(const trgamma_detail::LogData &d,std::array<double,2> v,
 #include "concave_certificate.hpp"
 #include "shape_power_certificate.hpp"
 namespace cppunivariate {
-inline Gb2Result gb2_mle(span x,double tol=1e-7,int maxit=300,
+inline Gb2Result gb2_mle(span x,double tol=1e-10,int maxit=300,
     double q=std::numeric_limits<double>::quiet_NaN(),
     double a=std::numeric_limits<double>::quiet_NaN(),
     double p=std::numeric_limits<double>::quiet_NaN(),
@@ -463,13 +466,85 @@ inline Gb2Result gb2_mle(span x,double tol=1e-7,int maxit=300,
   }
   if(best.ok && explored && !face_failure && face_numerical_tie(face,best.ll,1e-8*d.n)) return {nan,nan,nan,nan,face,evals,Gb2Status::SearchUnresolved};
   if(best.ok && explored && face>=best.ll-1e-8*d.n && !face_failure) return {nan,nan,nan,nan,face,evals,fs};
+  bool local_done=false;
+  if(best.ok && std::isnan(q)&&!std::isnan(a)&&std::isnan(p)&&!std::isnan(b)) {
+    // With power and scale held, the logit transform is exactly beta. Its
+    // mean/precision solve avoids the singular cancellation of two large
+    // shape scores. Keep endpoint distances on the better represented side.
+    double left=0,right=0;for(double y:logs){double t=a*(y-std::log(b));left=std::min(left,t);right=std::max(right,t);}
+    const bool reflect=right>-left;std::vector<double> probability,uncertainty;bool represented=true;
+    for(std::size_t i=0;i<logs.size();++i){double t=(reflect?-1:1)*a*gb2_accuracy::log_ratio(x[i],b);double e=std::exp(-std::abs(t));double u=t>=0?1/(1+e):e/(1+e);represented=represented&&u>0&&u<1;probability.push_back(u);
+      const double lr=gb2_accuracy::log_ratio(x[i],b),logb=std::log(b);
+      const double error_lr=x[i]>=b*.5&&x[i]<=b*2?gb2_accuracy::spacing((x[i]-b)/b)/(1+(x[i]-b)/b)+gb2_accuracy::spacing(lr):gb2_accuracy::spacing(logs[i])+gb2_accuracy::spacing(logb)+gb2_accuracy::spacing(lr);
+      const double error_t=a*error_lr+gb2_accuracy::spacing(t),den=1+e;
+      uncertainty.push_back((e*error_t+gb2_accuracy::spacing(e)+(t>=0?1:e)*gb2_accuracy::spacing(den))/(den*den)+gb2_accuracy::spacing(u));
+    }
+    if(represented&&tol>=8*std::numeric_limits<double>::epsilon()) {
+      const auto beta=beta_mle(span{probability.data(),probability.size()},std::min(tol,1e-10)*.125,maxit);
+      if(beta.status==BetaStatus::Ok&&gb2_accuracy::input_error(span{probability.data(),probability.size()},span{uncertainty.data(),uncertainty.size()},beta.alpha,beta.beta)<=tol*.5) {
+        best.p=reflect?beta.beta:beta.alpha;best.q=reflect?beta.alpha:beta.beta;
+        best.ll=beta.logLik;for(std::size_t i=0;i<logs.size();++i){double t=a*gb2_accuracy::log_ratio(x[i],b);best.ll+=std::log(a)-logs[i]-gb2_detail::softplus(-t)-gb2_detail::softplus(t);}
+        local_done=true;
+      } else if(beta.status==BetaStatus::Degenerate||(beta.status==BetaStatus::Ok&&std::min(beta.alpha,beta.beta)*std::numeric_limits<double>::epsilon()>tol*.125)) {
+        bad.status=Gb2Status::NumericalFailure;bad.accuracy_failure=true;return bad;
+      }
+    }
+  }
+  const double proposal_score=std::hypot(std::isnan(p)?best.g[0]:0,std::isnan(q)?best.g[1]:0);
+  if(!local_done && best.ok && proposal_score<1e-3/d.n && face<best.ll-1e-8*d.n) {
+    // The shared numerical route (including its held subsets) gets a joint
+    // correction. Earlier held-subset certificate routes are unchanged.
+    const std::array<bool,4> free{{std::isnan(q),std::isnan(a),std::isnan(p),std::isnan(b)}};
+    const bool shifted=best.q>=16&&best.p/best.q<.125;
+    const std::array<double,4> start{{std::log(best.q),std::log(best.A),std::log(best.p),best.c-(shifted?std::log(best.q):0)}};
+    std::array<int,4> index{{-1,-1,-1,-1}};std::array<double,4> v{};int dim=0;
+    for(int j=0;j<4;++j)if(free[j]){index[j]=dim;v[dim++]=start[j];}
+    const auto unpack=[&](const std::array<local_accuracy::Jet,4>& z){
+      const auto Q=free[0]?local_accuracy::exp(z[index[0]]):local_accuracy::Jet(q);
+      const auto A=free[1]?local_accuracy::exp(z[index[1]]):local_accuracy::Jet(a*d.sd);
+      const auto P=free[2]?local_accuracy::exp(z[index[2]]):local_accuracy::Jet(p);
+      const auto C=free[3]?(z[index[3]]+(shifted?local_accuracy::log(Q):local_accuracy::Jet(0))):A*((std::log(b)-d.mean)/d.sd);
+      return std::array<local_accuracy::Jet,4>{{Q,A,P,C}};
+    };
+    const auto objective=[&](const std::array<local_accuracy::Jet,4>& z){
+      const auto t=unpack(z);const auto Q=t[0],A=t[1],P=t[2],C=t[3];
+      if(P.v>=16&&Q.v>=16){
+        const auto S=P+Q,lp=local_accuracy::log(P),lq=local_accuracy::log(Q);
+        local_accuracy::JetSum f(d.n*(.91893853320467274178-.5*(lp+lq-local_accuracy::log(S))+local_accuracy::stirling(P)+local_accuracy::stirling(Q)-local_accuracy::stirling(S)-local_accuracy::log(A)));
+        for(double u:d.u){const auto delta=shifted&&free[3]?A*u-z[index[3]]-lp:A*u-C-lp+lq;
+          f.add(gb2_accuracy::centered_kernel(P,Q,delta));}
+        return f.value();
+      }
+      if(shifted&&Q.v>=16&&P.v/Q.v<.125) {
+        const auto D=free[3]?z[index[3]]:C-local_accuracy::log(Q);
+        local_accuracy::JetSum f(d.n*(gb2_accuracy::rare_normalizer(P,Q)-local_accuracy::log(A)));
+        for(double u:d.u){auto h=A*u-D;if(h.v>std::log(std::numeric_limits<double>::max()))return local_accuracy::Jet(INFINITY);auto w=local_accuracy::exp(h),r=w/Q;
+          f.add(-P*h+(r.v<.125?w+P*local_accuracy::log1p(r)+Q*gb2_accuracy::log1pmx(r):(P+Q)*local_accuracy::log1p(r)));}
+        return f.value();
+      }
+      local_accuracy::JetSum f(d.n*(local_accuracy::logbeta(P,Q)-local_accuracy::log(A)));
+      for(double u:d.u){auto h=A*u-C;f.add(P*local_accuracy::softplus(-h)+Q*local_accuracy::softplus(h));}return f.value();
+    };
+    const auto error=[&](const std::array<double,4>& z,const std::array<double,4>& step){
+      const auto t=unpack(local_accuracy::variables(z));double e=0;
+      for(int j=0;j<3;++j)if(free[j])e=std::max(e,std::abs(step[index[j]]));
+      if(free[3])e=std::max(e,std::abs(d.sd/t[1].v*(step[index[3]]+(shifted&&free[0]?step[index[0]]:0)-t[3].v*(free[1]?step[index[1]]:0))));
+      return e;
+    };
+    if(dim>0&&!local_accuracy::polish(v,dim,tol,maxit,objective,error)){bad.status=Gb2Status::NumericalFailure;bad.accuracy_failure=true;return bad;}
+    const auto t=unpack(local_accuracy::variables(v));
+    local_done=true;best.q=t[0].v;best.A=t[1].v;best.p=t[2].v;best.c=t[3].v;
+    best.ll=-objective(local_accuracy::variables(v)).v-d.n*std::log(d.sd)-d.sum;
+  }
   const double logb=d.mean+d.sd*best.c/best.A;
   const bool edge=(std::isnan(p)&&std::abs(std::log(best.p))>searched_box-0.3)||
                   (std::isnan(q)&&std::abs(std::log(best.q))>searched_box-0.3);
   const double score=std::hypot(std::isnan(p)?best.g[0]:0,std::isnan(q)?best.g[1]:0);
-  Gb2Status status=best.ok&&!edge&&score<tol&&!face_failure?Gb2Status::Ok:Gb2Status::SearchUnresolved;
+  Gb2Status status=best.ok&&!edge&&(local_done||score<tol)&&!face_failure?Gb2Status::Ok:Gb2Status::SearchUnresolved;
   if(status==Gb2Status::Ok&&(!std::isfinite(std::exp(logb))||std::exp(logb)==0))status=Gb2Status::ScaleOutOfRange;
-  return {std::isnan(q)?best.q:q,std::isnan(a)?best.A/d.sd:a,
+  Gb2Result out{std::isnan(q)?best.q:q,std::isnan(a)?best.A/d.sd:a,
     std::isnan(p)?best.p:p,std::isnan(b)?std::exp(logb):b,best.ll,evals,status};
+  if(out.status==Gb2Status::Ok&&std::isnan(b)&&!local_accuracy::represented(out.scale,out.scale,tol)){out.status=Gb2Status::NumericalFailure;out.accuracy_failure=true;}
+  return out;
 }
 } // namespace cppunivariate
