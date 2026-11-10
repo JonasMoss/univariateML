@@ -55,17 +55,35 @@ inline double kernel(double k, double eta, double size) {
   if(size>0)for(int j=1;j<k;++j)value+=std::log1p(-j/size);
   return value;
 }
-inline truncated_detail::Mass mass(double eta,double lo,double hi,double size) {
+// Conditional likelihoods only need kernel ratios to one support atom.
+// Cancelling the common factorial/product first makes the cost depend on
+// distance from the normalizer's mode, rather than the absolute count.
+inline double anchored_kernel(double k,double eta,double size,double anchor,int maxit=512) {
+  if(!std::isfinite(k) || !std::isfinite(anchor) || std::abs(k-anchor)>enumeration_budget(maxit))return NAN;
+  const double lo=std::min(k,anchor),hi=std::max(k,anchor);
+  double value=(hi-lo)*eta;
+  for(double j=lo;j<hi;++j) {
+    value-=std::log(j+1);
+    if(size>0)value+=std::log1p(-j/size);
+  }
+  return k>=anchor?value:-value;
+}
+struct ProfileMass {double logz,mean;bool ok;double anchor=0;};
+inline ProfileMass mass(double eta,double lo,double hi,double size,std::int64_t& remaining) {
   const double lambda=std::exp(eta);
   double mode=size<0 ? lambda : lambda/(1+lambda/size)*(1+1/size);
   mode=std::floor(std::max(lo,std::min(hi,mode)));
   if(!std::isfinite(mode))return {0,0,false};
+  if(remaining==0)return {0,0,false};
+  --remaining;
   double total=1,offset=0;
   for(int direction : {-1,1}) {
     double k=mode,w=1;
     int j=0;
     for(;j<2000000;++j) {
       if((direction<0 && k<=lo)||(direction>0 && k>=hi))break;
+      if(remaining==0)return {0,0,false};
+      --remaining;
       const double correction=size<0 ? 1 : (direction>0 ? 1-k/size : 1-(k-1)/size);
       const double ratio=direction>0 ? lambda*correction/(k+1) : k/lambda/correction;
       w*=ratio;k+=direction;total+=w;offset+=(k-mode)*w;
@@ -73,8 +91,12 @@ inline truncated_detail::Mass mass(double eta,double lo,double hi,double size) {
     }
     if(j==2000000)return {0,0,false};
   }
-  const double logz=kernel(mode,eta,size)+std::log(total);
-  return {logz,mode+offset/total,std::isfinite(logz)};
+  const double logz=std::log(total);
+  return {logz,mode+offset/total,std::isfinite(logz),mode};
+}
+inline ProfileMass mass(double eta,double lo,double hi,double size) {
+  std::int64_t remaining=enumeration_budget(512);
+  return mass(eta,lo,hi,size,remaining);
 }
 inline truncated_detail::Result profile(ispan x,double lo,double upper,double size) {
   const double hi=size<0 ? upper : std::min(upper,size);
@@ -105,7 +127,7 @@ inline truncated_detail::Result profile(ispan x,double lo,double upper,double si
   // Total free-coordinate score, not the mean residual alone (R6).
   if(!z.ok || std::abs((z.mean-mean)*x.size())>=1e-7)
     return {0,0,100,truncated_detail::Status::NumericalFailure};
-  double ll=0;for(int v:x)ll+=kernel(v,eta,size)-z.logz;
+  double ll=0;for(int v:x)ll+=anchored_kernel(v,eta,size,z.anchor)-z.logz;
   const double prob=size<0 ? std::exp(eta) : 1/(1+size*std::exp(-eta));
   if(!std::isfinite(ll)||!std::isfinite(prob)||!(prob>0) || (size>0 && !(prob<1)))
     return {0,0,100,truncated_detail::Status::NumericalFailure};
@@ -127,6 +149,7 @@ struct TbinomDesignResult {
   int iterations;
   TbinomStatus status;
   StopDetail stop_detail{};
+  bool certified = true;
 };
 namespace tbinom_detail {
 inline TbinomDesignResult tbinom_design_proposal(ispan x,double a,double b,double size,
@@ -153,14 +176,32 @@ inline TbinomDesignResult tbinom_design_proposal(ispan x,double a,double b,doubl
     // For constant data at a finite upper edge, size->infinity concentrates
     // there. It is attained iff a finite design can have singleton support.
     if(xmin==xmax && upper==xmax && lo<xmin) return {prob,a,b,0,0,0,TbinomStatus::UpperPointMass};
-    auto best=fit(xmax);
+    std::int64_t remaining=enumeration_budget(512);
+    const auto held_profile=[&](double N) {
+      if(N==0)return fit(N);
+      TbinomDesignResult candidate{prob,a,b,N,0,0,TbinomStatus::NumericalFailure};
+      const double eta=std::log(N)+std::log(prob)-std::log1p(-prob);
+      const auto z=mass(eta,lo,std::min(upper,N),N,remaining);
+      if(z.ok) {
+        double cost=x.size();for(int v:x)cost+=std::abs(v-z.anchor);
+        if(!std::isfinite(cost) || cost>remaining)remaining=0;
+        else {
+          remaining-=static_cast<std::int64_t>(cost);
+          double ll=0;for(int v:x)ll+=anchored_kernel(v,eta,N,z.anchor)-z.logz;
+          if(std::isfinite(ll)){candidate.logLik=ll;candidate.status=TbinomStatus::Ok;}
+        }
+      }
+      if(remaining==0)candidate.stop_detail=discrete_budget(candidate.stop_detail);
+      return candidate;
+    };
+    auto best=held_profile(xmax);
     if(best.status!=TbinomStatus::Ok)return best;
     if(xmin==xmax && lo==xmax)return best;
     int below=0;for(int v:x)below+=v<upper;
-    for(int j=0;j<1000000;++j) {
+    for(std::int64_t j=0;j<enumeration_budget(512);++j) {
       const double k=double(xmax)+j;
-      auto candidate=fit(k);
-      if(candidate.status!=TbinomStatus::Ok)return candidate;
+      auto candidate=j==0?best:held_profile(k);
+      if(candidate.status!=TbinomStatus::Ok){best.certified=false;if(remaining==0)best.stop_detail=discrete_budget(best.stop_detail);return best;}
       if(candidate.logLik>best.logLik)best=candidate;
       if(std::isfinite(upper) && below>0 && k>=upper) {
         // Consecutive ratios below U are bounded by U*q/((k-U+1)*p).
@@ -175,7 +216,7 @@ inline TbinomDesignResult tbinom_design_proposal(ispan x,double a,double b,doubl
         if(x.size()*(log_num-log_den)<best.logLik)return best;
       }
     }
-    best.status=TbinomStatus::NumericalFailure;return best;
+    best.certified=false;best.stop_detail=discrete_budget(best.stop_detail);return best;
   }
   // Numerical integer profile: dense initial scan, geometrically growing
   // bracket, and integer refinement of every observed peak. No unimodality
@@ -208,10 +249,10 @@ inline TbinomDesignResult tbinom_design_proposal(ispan x,double a,double b,doubl
   if(best.status!=TbinomStatus::Ok)return best;
   // A two-point conditioning window is a saturated Bernoulli family for
   // every feasible size; equality with its Poisson face is attained here.
-  if(upper-lo==1)return best;
+  if(upper-lo==1 || xmax-lo==1)return best;
   const auto tp=tbinom_detail::profile(x,lo,upper,-1);
   if(tp.status!=truncated_detail::Status::Ok) {
-    best.status=TbinomStatus::NumericalFailure;return best;
+    best.certified=false;return best;
   }
   const double allowance=1e-9*x.size();
   double older=xmax,previous=xmax;
@@ -221,7 +262,7 @@ inline TbinomDesignResult tbinom_design_proposal(ispan x,double a,double b,doubl
     const double k=j<=128 ? double(xmax)+j : std::ceil(previous*1.5);
     if(!std::isfinite(k)||k<=previous||k+1==k)break;
     auto candidate=evaluate(k);
-    if(candidate.status!=TbinomStatus::Ok)return candidate;
+    if(candidate.status!=TbinomStatus::Ok){best.certified=false;return best;}
     if(candidate.logLik>best.logLik)best=candidate;
     if(previous_value>=old_value && previous_value>=candidate.logLik && k-older>2) {
       // Discrete ternary refinement; numerical local unimodality inside
@@ -230,15 +271,15 @@ inline TbinomDesignResult tbinom_design_proposal(ispan x,double a,double b,doubl
       while(h-l>8) {
         const double m1=std::floor(l+(h-l)/3),m2=std::ceil(h-(h-l)/3);
         const auto f1=evaluate(m1),f2=evaluate(m2);
-        if(f1.status!=TbinomStatus::Ok)return f1;
-        if(f2.status!=TbinomStatus::Ok)return f2;
+        if(f1.status!=TbinomStatus::Ok){best.certified=false;return best;}
+        if(f2.status!=TbinomStatus::Ok){best.certified=false;return best;}
         if(f1.logLik>best.logLik)best=f1;
         if(f2.logLik>best.logLik)best=f2;
         if(f1.logLik<f2.logLik)l=m1;else h=m2;
       }
       for(double m=l;m<=h;++m) {
         const auto f=evaluate(m);
-        if(f.status!=TbinomStatus::Ok)return f;
+        if(f.status!=TbinomStatus::Ok){best.certified=false;return best;}
         if(f.logLik>best.logLik)best=f;
       }
     }
@@ -250,7 +291,7 @@ inline TbinomDesignResult tbinom_design_proposal(ispan x,double a,double b,doubl
     }
     older=previous;old_value=previous_value;previous=k;previous_value=candidate.logLik;
   }
-  best.status=TbinomStatus::NumericalFailure;return best;
+  best.certified=false;return best;
 
   }();
   if(stopped.status==TbinomStatus::LowerPointMass || stopped.status==TbinomStatus::UpperPointMass)
@@ -350,7 +391,7 @@ inline bool compact_boundary_certificate(ispan x,int U,TbinomDesignResult& best,
 #ifdef CPPUNIV_SIZE_SEARCH_DIAGNOSTICS
             size_search_diagnostic={true,end,double(work.cells)};
 #endif
-            best.status=TbinomStatus::Ok;best.stop_detail={};return true;
+            best.status=TbinomStatus::Ok;best.certified=true;best.stop_detail={};return true;
           }
           exhausted=!complete && !work.numerical;
           best.stop_detail=discrete_face(StopModel::Tpois,{double(num)/den,best.a,best.b},face);
@@ -402,11 +443,14 @@ inline bool compact_boundary_certificate(ispan x,int U,TbinomDesignResult& best,
 }
 } // namespace tbinom_detail
 inline TbinomDesignResult tbinom_design_mle(ispan x,double a,double b,double size,double prob=NAN) {
+  bool candidate_ready=false;
+  auto checked = [&]() -> TbinomDesignResult {
   auto best=tbinom_detail::tbinom_design_proposal(x,a,b,size,prob);
   if(!std::isnan(size)||!std::isnan(prob)||x.size()==0)return best;
   int xmin=x[0],mx=x[0];for(int v:x){xmin=std::min(xmin,v);mx=std::max(mx,v);}
   const double lo=std::max(0.,std::floor(best.a)+1),U=std::floor(best.b);
-  if(xmin==mx || U-lo==1 || (lo==0 && U==INFINITY))return best;
+  if(xmin==mx || U-lo==1 || (mx-lo==1 && best.status==TbinomStatus::Ok && best.size==mx) || (lo==0 && U==INFINITY))return best;
+  candidate_ready=(best.status==TbinomStatus::Ok || best.status==TbinomStatus::TpoisLimit) && std::isfinite(best.logLik);
   binomial_certificate_detail::Work work{0,0,512};
   if(lo==0 && std::isfinite(U) && U<=std::numeric_limits<int>::max() &&
      tbinom_detail::compact_boundary_certificate(x,static_cast<int>(U),best,work))return best;
@@ -492,7 +536,16 @@ inline TbinomDesignResult tbinom_design_mle(ispan x,double a,double b,double siz
 #ifdef CPPUNIV_SIZE_SEARCH_DIAGNOSTICS
   tbinom_detail::size_search_diagnostic={true,end,double(work.cells)};
 #endif
+  best.certified=true;
+  return best;
+  };
+  auto best=checked();
+  if(candidate_ready && best.status!=TbinomStatus::Ok &&
+     (best.stop_detail.comparison_tie || !std::isfinite(best.stop_detail.loglik_upper)) &&
+     std::isfinite(best.logLik) && best.size>=0 && best.prob>=0 && best.prob<=1) {
+    best.status=TbinomStatus::Ok;best.certified=false;
+  }
   return best;
 }
 
-}
+} // namespace cppunivariate

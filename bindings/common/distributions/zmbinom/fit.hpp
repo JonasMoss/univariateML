@@ -41,7 +41,7 @@ inline FitResult fit_zmbinom(cppunivariate::ispan x, Held size_arg = {}, Held pr
   if(size.supplied)fixed.push_back("size");
   if(prob.supplied)fixed.push_back("prob");
   if(p0.supplied)fixed.push_back("p0");
-  return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"size",res.size},{"prob",res.prob},{"p0",res.p0}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }();
+  return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"size",res.size},{"prob",res.prob},{"p0",res.p0}}; out.extra.push_back({"certified", res.certified ? 1.0 : 0.0}); out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }();
 
 }
 }

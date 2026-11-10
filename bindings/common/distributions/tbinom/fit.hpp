@@ -56,7 +56,7 @@ inline FitResult fit_tbinom(cppunivariate::ispan x, Held prob_arg = {}, Held a_a
   if(a.supplied)fixed.push_back("a");
   if(b.supplied)fixed.push_back("b");
   if(prob.supplied)fixed.push_back("prob");
-  return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"prob",r.prob},{"a",lower},{"b",upper},{"size",r.size}}; out.logLik = r.logLik; out.iterations = r.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }();
+  return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"prob",r.prob},{"a",lower},{"b",upper},{"size",r.size}}; out.extra.push_back({"certified", r.certified ? 1.0 : 0.0}); out.logLik = r.logLik; out.iterations = r.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }();
 
 }
 }

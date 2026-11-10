@@ -23,7 +23,7 @@ params:
   simulate: 10
   integer: yes
   kind: design
-  advice: Supply N to hold the population size, or set N = NULL to estimate it. A population search stops if it cannot certify the remaining tail.
+  advice: Supply N to hold the population size, or set N = NULL to estimate it. A population search returns its finite prefix winner uncertified if it cannot certify the remaining tail.
 - name: k
   symbol: 'n'
   role: draws
@@ -92,9 +92,9 @@ construction:
 relations: {}
 fit:
   method: integer-search
-  certified: 'yes'
+  certified: partial
   note: 'hyper/README.md, Details; hyper/mle.hpp (public fitter and held overloads); hyper/test.cpp: Supported one-coordinate
-    integer fits are unimodal; joint designs use exhaustive searches with tail bounds or stop. Likelihood comparisons
+    integer fits are unimodal; joint designs use exhaustive searches with tail bounds, otherwise returning the best evaluated finite profile uncertified. Likelihood comparisons
     retain floating-point tie tolerances.'
 areas:
 - sampling and quality control
@@ -186,9 +186,7 @@ checks all populations below it, subject to the 10^7 evaluation budget.
 It requires the tail upper bound to be below the candidate by that margin.
 These floating-point margins are a practical comparison policy, not a
 proved rounding enclosure; the profile searches also use numerical signs.
-If the exploratory search finds no strict improvement, it stops with an
-unresolved face status, or a face-tie status when a finite likelihood matches
-within the margin. Neither status proves a global maximum or escape.
+If exploration finds no strict improvement, or a face matches within the margin, the best finite profile is returned with `certified = FALSE`; neither comparison proves a global maximum or escape.
 The fully free case additionally permits growing binomial sizes and the
 Poisson face; this correction is not uniform in the free size. A separate
 exact-arithmetic envelope covering that region is derived in the
@@ -214,11 +212,8 @@ Each fixed-size profile uses the one-coordinate composition search. The
 bound `-c_N(s) <= s*(s-1)/(2*(N-s+1))` gives a conservative population
 cutoff. Constant samples attain likelihood one. The same 10^7 work budget
 counts profile search and binomial-face evaluations, including exploration; a preflight or
-runtime budget, count representation, or nonfinite failure stops without a
-partial fit. A guard limits `X` and `S` to 100,000. If an explored face is
-at least as good as the candidate, the search reports an unresolved face or
-a numerical face tie and names the binomial or Poisson face; this does not
-establish the global supremum. The `1e-9*(1+abs(face))` comparison margin
+runtime certificate budget returns the best finite profile uncertified. A count representation or nonfinite failure without a finite candidate stops. A guard limits `X` and `S` to 100,000. If an explored face is
+at least as good as the candidate, the search returns its finite winner uncertified; this does not establish the global supremum. The `1e-9*(1+abs(face))` comparison margin
 is a numerical policy, not an outward-rounded error bound. Profile signs,
 face likelihoods and cutoff arithmetic also use floating-point operations.
 

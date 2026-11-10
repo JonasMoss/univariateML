@@ -1,0 +1,1073 @@
+0	bbinom	certified	-26.98699926472294	size=10	alpha=2.6793233513563002	beta=3.3346710950369474	
+1	bbinom	certified	-4.1427068577408335	size=10	alpha=7.4746611583371001	beta=7.4746611583371001	
+2	bbinom	certified	-6.354981829752715	size=10	alpha=5.8705033909692688	beta=3.9418552667132958	
+3	bbinom	certified	-11.716111972348088	size=10	alpha=1.0138496537165953	beta=1.4919156502809003	
+4	bbinom	certified	-12.766820994135038	size=10	alpha=4.8117689540422752	beta=5.8243946227554542	
+5	bbinom	stop:limit	nan	The maximum likelihood estimator does not exist: the likelihood increases toward the binomial distribution as `alpha + beta` grows. Use `mlbinom(x, size = 10)` instead.
+6	bbinom	stop:limit	nan	The maximum likelihood estimator does not exist: the likelihood increases toward the binomial distribution as `alpha + beta` grows. Use `mlbinom(x, size = 10)` instead.
+7	bbinom	stop:limit	nan	The maximum likelihood estimator does not exist: the likelihood increases toward the binomial distribution as `alpha + beta` grows. Use `mlbinom(x, size = 10)` instead.
+8	bbinom	stop:limit	nan	The maximum likelihood estimator does not exist: the likelihood increases toward the binomial distribution as `alpha + beta` grows. Use `mlbinom(x, size = 10)` instead.
+9	bbinom	stop:limit	nan	The maximum likelihood estimator does not exist: the likelihood increases toward the binomial distribution as `alpha + beta` grows. Use `mlbinom(x, size = 10)` instead.
+10	bbinom	stop:limit	nan	The maximum likelihood estimator does not exist: the likelihood increases toward the binomial distribution as `alpha + beta` grows. Use `mlbinom(x, size = 10)` instead.
+11	bbinom	stop:limit	nan	The maximum likelihood estimator does not exist: the likelihood increases toward the binomial distribution as `alpha + beta` grows. Use `mlbinom(x, size = 10)` instead.
+12	bbinom	certified	-26.034148895486055	size=8	alpha=1.9337387365835597	beta=1.4849191146163672	
+13	bbinom	certified	-3.5638118558328586	size=7	alpha=1.9337387365835597	beta=0.5963418817454168	
+14	bbinom	certified	-5.5384856192537351	size=8	alpha=1.9337387365835597	beta=0.61577341493560811	
+15	bbinom	certified	-11.717587561230271	size=8	alpha=1.9337387365835597	beta=1.376468858405554	
+16	bbinom	certified	-12.710915059769452	size=8	alpha=1.9337387365835597	beta=1.4196867854935402	
+17	bbinom	certified	-4.867443260650762	size=5	alpha=1.9337387365835597	beta=0.29723202930295761	
+18	bbinom	certified	-4.867443260650762	size=5	alpha=1.9337387365835597	beta=0.29723202930295761	
+19	bbinom	certified	-4.867443260650762	size=5	alpha=1.9337387365835597	beta=0.29723202930295761	
+20	bbinom	certified	-4.867443260650762	size=5	alpha=1.9337387365835597	beta=0.29723202930295761	
+21	bbinom	certified	-4.867443260650762	size=5	alpha=1.9337387365835597	beta=0.29723202930295761	
+22	bbinom	certified	-4.867443260650762	size=5	alpha=1.9337387365835597	beta=0.29723202930295761	
+23	bbinom	stop:budget	nan	Beta-binomial search exhausted its work budget before certifying the maximum. Raising iterlim may resolve this stop.
+24	bbinom	certified	-2.5020121176909398	size=1	alpha=1.9337387365835597	beta=7.7349549463342431	
+25	bbinom	stop:budget	nan	Beta-binomial search exhausted its work budget before certifying the maximum. Raising iterlim may resolve this stop.
+26	bbinom	certified	-27.103238818165494	size=10	alpha=1.9337387365835597	beta=2.4958334849797907	
+27	bbinom	certified	-4.3824065123945868	size=10	alpha=1.9337387365835597	beta=2.1669870069756705	
+28	bbinom	certified	-6.6624204991737432	size=10	alpha=1.9337387365835597	beta=1.5195836796149542	
+29	bbinom	certified	-11.97711092420105	size=10	alpha=1.9337387365835597	beta=2.5697158800476441	
+30	bbinom	certified	-13.159471079021863	size=10	alpha=1.9337387365835597	beta=2.4982689484533034	
+31	bbinom	certified	-10.200706985083695	size=10	alpha=1.9337387365835597	beta=2.7199315022859776	
+32	bbinom	certified	-10.200706985083695	size=10	alpha=1.9337387365835597	beta=2.7199315022859776	
+33	bbinom	certified	-10.200706985083695	size=10	alpha=1.9337387365835597	beta=2.7199315022859776	
+34	bbinom	certified	-10.200706985083695	size=10	alpha=1.9337387365835597	beta=2.7199315022859776	
+35	bbinom	certified	-10.200706985083695	size=10	alpha=1.9337387365835597	beta=2.7199315022859776	
+36	bbinom	certified	-10.200706985083695	size=10	alpha=1.9337387365835597	beta=2.7199315022859776	
+37	bbinom	certified	-2.6455437238185215	size=10	alpha=1.9337387365835597	beta=94.880306633252772	
+38	bbinom	certified	-26.741925292914502	size=9	alpha=2.8241454184729999	beta=2.9406650178896676	
+39	bbinom	certified	-4.0394398846614559	size=8	alpha=4.852259635272234	beta=2.9406650178896676	
+40	bbinom	certified	-6.2002209001089623	size=8	alpha=8.3295838773139987	beta=2.9406650178896676	
+41	bbinom	certified	-11.97225158769929	size=11	alpha=1.6360355420007484	beta=2.9406650178896676	
+42	bbinom	certified	-12.790570186615053	size=9	alpha=3.0559682562764485	beta=2.9406650178896676	
+43	bbinom	certified	-3.8648382963036134	size=5	alpha=34.025201237834068	beta=2.9406650178896676	
+44	bbinom	certified	-3.8648382963036134	size=5	alpha=34.025201237834068	beta=2.9406650178896676	
+45	bbinom	certified	-3.8648382963036134	size=5	alpha=34.025201237834068	beta=2.9406650178896676	
+46	bbinom	certified	-3.8648382963036134	size=5	alpha=34.025201237834068	beta=2.9406650178896676	
+47	bbinom	certified	-3.8648382963036134	size=5	alpha=34.025201237834068	beta=2.9406650178896676	
+48	bbinom	certified	-3.8648382963036134	size=5	alpha=34.025201237834068	beta=2.9406650178896676	
+49	bbinom	stop:budget	nan	Beta-binomial search exhausted its work budget before certifying the maximum. Raising iterlim may resolve this stop.
+50	bbinom	certified	-2.5020121176909393	size=1	alpha=0.73516625447241679	beta=2.9406650178896676	
+51	bbinom	stop:budget	nan	Beta-binomial search exhausted its work budget before certifying the maximum. Raising iterlim may resolve this stop.
+52	bbinom	certified	-27.004015858772021	size=10	alpha=2.3858691572260864	beta=2.9406650178896676	
+53	bbinom	certified	-4.2439567591629306	size=10	alpha=3.1118614333457395	beta=2.9406650178896676	
+54	bbinom	certified	-6.3737026079738062	size=10	alpha=4.4369530426209227	beta=2.9406650178896676	
+55	bbinom	certified	-12.019273972875709	size=10	alpha=1.8596658606722587	beta=2.9406650178896676	
+56	bbinom	certified	-12.966469395696841	size=10	alpha=2.5885034561662015	beta=2.9406650178896676	
+57	bbinom	certified	-9.7218759743947949	size=10	alpha=2.9551591831213941	beta=2.9406650178896676	
+58	bbinom	certified	-9.7218759743947949	size=10	alpha=2.9551591831213941	beta=2.9406650178896676	
+59	bbinom	certified	-9.7218759743947949	size=10	alpha=2.9551591831213941	beta=2.9406650178896676	
+60	bbinom	certified	-9.7218759743947949	size=10	alpha=2.9551591831213941	beta=2.9406650178896676	
+61	bbinom	certified	-9.7218759743947949	size=10	alpha=2.9551591831213941	beta=2.9406650178896676	
+62	bbinom	certified	-9.7218759743947949	size=10	alpha=2.9551591831213941	beta=2.9406650178896676	
+63	bbinom	certified	-3.258190929632157	size=10	alpha=0.12638897329198837	beta=2.9406650178896676	
+64	bbinom	certified	-27.271970401339924	size=10	alpha=1.9337387365835597	beta=2.9406650178896676	
+65	bbinom	certified	-4.4745240137382174	size=11	alpha=1.9337387365835597	beta=2.9406650178896676	
+66	bbinom	certified	-7.1241666993351389	size=13	alpha=1.9337387365835597	beta=2.9406650178896676	
+67	bbinom	certified	-12.022838422503952	size=10	alpha=1.9337387365835597	beta=2.9406650178896676	
+68	bbinom	certified	-13.242193437950503	size=10	alpha=1.9337387365835597	beta=2.9406650178896676	
+69	bbinom	certified	-10.124098148407489	size=9	alpha=1.9337387365835597	beta=2.9406650178896676	
+70	bbinom	certified	-10.124098148407489	size=9	alpha=1.9337387365835597	beta=2.9406650178896676	
+71	bbinom	certified	-10.124098148407489	size=9	alpha=1.9337387365835597	beta=2.9406650178896676	
+72	bbinom	certified	-10.124098148407489	size=9	alpha=1.9337387365835597	beta=2.9406650178896676	
+73	bbinom	certified	-10.124098148407489	size=9	alpha=1.9337387365835597	beta=2.9406650178896676	
+74	bbinom	certified	-10.124098148407489	size=9	alpha=1.9337387365835597	beta=2.9406650178896676	
+75	bbinom	stop:budget	nan	Beta-binomial search exhausted its work budget before certifying the maximum. Raising iterlim may resolve this stop.
+76	bbinom	certified	-2.9459906434041225	size=1	alpha=1.9337387365835597	beta=2.9406650178896676	
+77	bbinom	certified	-24.620759394888264	size=200	alpha=1.9337387365835597	beta=2.9406650178896676	
+78	bbinom	certified	-27.271970401339924	size=10	alpha=1.9337387365835597	beta=2.9406650178896676	
+79	bbinom	certified	-4.4837499273648014	size=10	alpha=1.9337387365835597	beta=2.9406650178896676	
+80	bbinom	certified	-7.4128943861852168	size=10	alpha=1.9337387365835597	beta=2.9406650178896676	
+81	bbinom	certified	-12.022838422503952	size=10	alpha=1.9337387365835597	beta=2.9406650178896676	
+82	bbinom	certified	-13.242193437950503	size=10	alpha=1.9337387365835597	beta=2.9406650178896676	
+83	bbinom	certified	-10.217046953687646	size=10	alpha=1.9337387365835597	beta=2.9406650178896676	
+84	bbinom	certified	-10.217046953687646	size=10	alpha=1.9337387365835597	beta=2.9406650178896676	
+85	bbinom	certified	-10.217046953687646	size=10	alpha=1.9337387365835597	beta=2.9406650178896676	
+86	bbinom	certified	-10.217046953687646	size=10	alpha=1.9337387365835597	beta=2.9406650178896676	
+87	bbinom	certified	-10.217046953687646	size=10	alpha=1.9337387365835597	beta=2.9406650178896676	
+88	bbinom	certified	-10.217046953687646	size=10	alpha=1.9337387365835597	beta=2.9406650178896676	
+89	bbinom	certified	-12.852131173806491	size=10	alpha=1.9337387365835597	beta=2.9406650178896676	
+90	hyper	stop:input-or-search	nan	No finite maximum was found in the exploratory search; a larger finite maximum is not excluded. The binomial face of size 6 may dominate; use mlbinom for the limit model.
+91	hyper	certified	0	m=5	N=5	k=5	
+92	hyper	stop:input-or-search	nan	No finite maximum was found in the exploratory search; a larger finite maximum is not excluded. The binomial face of size 5 may dominate; use mlbinom for the limit model.
+93	hyper	stop:input-or-search	nan	No finite maximum was found in the exploratory search; a larger finite maximum is not excluded. The binomial face of size 5 may dominate; use mlbinom for the limit model.
+94	hyper	stop:input-or-search	nan	No finite maximum was found in the exploratory search; a larger finite maximum is not excluded. The binomial face of size 5 may dominate; use mlbinom for the limit model.
+95	hyper	certified	-3.3675463373999754	m=5	N=13	k=12	
+96	hyper	certified	-3.3675463373999754	m=5	N=13	k=12	
+97	hyper	certified	-3.3675463373999754	m=5	N=13	k=12	
+98	hyper	certified	-3.3675463373999754	m=5	N=13	k=12	
+99	hyper	certified	-3.3675463373999754	m=5	N=13	k=12	
+100	hyper	certified	-3.3675463373999754	m=5	N=13	k=12	
+101	hyper	stop:budget	nan	Finite-grid numerical failure: 1e7 candidate evaluation budget or representability/nonfinite likelihood limit exceeded.
+102	hyper	stop:input-or-search	nan	A finite likelihood matched the binomial face of size 1 within numerical tolerance; a larger finite maximum is not excluded. Use mlbinom for the limit model.
+103	hyper	stop:budget	nan	Finite-grid numerical failure: 1e7 candidate evaluation budget or representability/nonfinite likelihood limit exceeded.
+104	hyper	certified	-18.177204851791544	m=20	N=31	k=7	
+105	hyper	certified	0	m=20	N=20	k=5	
+106	hyper	certified	-3.8361133525300763	m=20	N=23	k=5	
+107	hyper	certified	-5.4504224393051004	m=20	N=23	k=5	
+108	hyper	certified	-5.7886467414564553	m=20	N=22	k=5	
+109	hyper	certified	-3.5888213824201793	m=20	N=22	k=5	
+110	hyper	certified	-3.5888213824201793	m=20	N=22	k=5	
+111	hyper	certified	-3.5888213824201793	m=20	N=22	k=5	
+112	hyper	certified	-3.5888213824201793	m=20	N=22	k=5	
+113	hyper	certified	-3.5888213824201793	m=20	N=22	k=5	
+114	hyper	certified	-3.5888213824201793	m=20	N=22	k=5	
+115	hyper	stop:nomle	nan	No admissible value of `k` gives every observation positive probability: observations must lie between max(0, k - (N - m)) and min(k, m).
+116	hyper	certified	-2.5020121176909385	m=20	N=100	k=1	
+117	hyper	stop:nomle	nan	No admissible value of `k` gives every observation positive probability: observations must lie between max(0, k - (N - m)) and min(k, m).
+118	hyper	certified	-17.937767998111102	m=6	N=50	k=38	
+119	hyper	certified	0	m=5	N=50	k=50	
+120	hyper	certified	-3.6790376241291565	m=5	N=50	k=43	
+121	hyper	certified	-5.3279632382757303	m=5	N=50	k=44	
+122	hyper	certified	-5.3241983421421475	m=5	N=50	k=46	
+123	hyper	certified	-3.6612249819148075	m=5	N=50	k=46	
+124	hyper	certified	-3.6612249819148075	m=5	N=50	k=46	
+125	hyper	certified	-3.6612249819148075	m=5	N=50	k=46	
+126	hyper	certified	-3.6612249819148075	m=5	N=50	k=46	
+127	hyper	certified	-3.6612249819148075	m=5	N=50	k=46	
+128	hyper	certified	-3.6612249819148075	m=5	N=50	k=46	
+129	hyper	stop:nomle	nan	No admissible value of `k` gives every observation positive probability: observations must lie between max(0, k - (N - m)) and min(k, m).
+130	hyper	certified	-2.5020121176909393	m=1	N=50	k=10	
+131	hyper	stop:nomle	nan	No admissible value of `k` gives every observation positive probability: observations must lie between max(0, k - (N - m)) and min(k, m).
+132	hyper	certified	-19.167188708933001	m=20	N=50	k=11	
+133	hyper	certified	-2.6942021749328191	m=20	N=50	k=12	
+134	hyper	certified	-4.5236427544522479	m=20	N=50	k=11	
+135	hyper	certified	-7.2558294278000881	m=20	N=50	k=11	
+136	hyper	certified	-8.7254120717044366	m=20	N=50	k=11	
+137	hyper	certified	-6.8649631191130762	m=20	N=50	k=11	
+138	hyper	certified	-6.8649631191130762	m=20	N=50	k=11	
+139	hyper	certified	-6.8649631191130762	m=20	N=50	k=11	
+140	hyper	certified	-6.8649631191130762	m=20	N=50	k=11	
+141	hyper	certified	-6.8649631191130762	m=20	N=50	k=11	
+142	hyper	certified	-6.8649631191130762	m=20	N=50	k=11	
+143	hyper	stop:nomle	nan	No admissible value of `k` gives every observation positive probability: observations must lie between max(0, k - (N - m)) and min(k, m).
+144	hyper	certified	-2.9595932269381171	m=20	N=50	k=1	
+145	hyper	stop:nomle	nan	No admissible value of `k` gives every observation positive probability: observations must lie between max(0, k - (N - m)) and min(k, m).
+146	hyper	certified	-18.310958267207113	m=9	N=20	k=10	
+147	hyper	certified	0	m=5	N=10	k=10	
+148	hyper	certified	-4.0168682027854254	m=6	N=14	k=10	
+149	hyper	certified	-5.9567732424784001	m=5	N=12	k=10	
+150	hyper	certified	-6.7588090566077339	m=6	N=13	k=10	
+151	hyper	certified	-3.3953221314394861	m=5	N=11	k=10	
+152	hyper	certified	-3.3953221314394861	m=5	N=11	k=10	
+153	hyper	certified	-3.3953221314394861	m=5	N=11	k=10	
+154	hyper	certified	-3.3953221314394861	m=5	N=11	k=10	
+155	hyper	certified	-3.3953221314394861	m=5	N=11	k=10	
+156	hyper	certified	-3.3953221314394861	m=5	N=11	k=10	
+157	hyper	stop:nomle	nan	No admissible value of `N` gives every observation positive probability: observations must lie between max(0, k - (N - m)) and min(k, m).
+158	hyper	certified	-2.5020121176909402	m=1	N=50	k=10	
+159	hyper	stop:nomle	nan	No admissible value of `N` gives every observation positive probability: observations must lie between max(0, k - (N - m)) and min(k, m).
+160	hyper	certified	-18.876990658490037	m=20	N=43	k=10	
+161	hyper	certified	-2.5205682491812422	m=20	N=39	k=10	
+162	hyper	certified	-4.4641150993199519	m=20	N=46	k=10	
+163	hyper	certified	-7.1367217077300413	m=20	N=45	k=10	
+164	hyper	certified	-8.4338141512836735	m=20	N=43	k=10	
+165	hyper	certified	-6.6371269107840423	m=20	N=43	k=10	
+166	hyper	certified	-6.6371269107840423	m=20	N=43	k=10	
+167	hyper	certified	-6.6371269107840423	m=20	N=43	k=10	
+168	hyper	certified	-6.6371269107840423	m=20	N=43	k=10	
+169	hyper	certified	-6.6371269107840423	m=20	N=43	k=10	
+170	hyper	certified	-6.6371269107840423	m=20	N=43	k=10	
+171	hyper	certified	-2.5947658952423827	m=20	N=1000	k=10	
+172	hyper	certified	-18.954725504010622	m=23	N=50	k=10	
+173	hyper	certified	-2.5834412501002872	m=25	N=50	k=10	
+174	hyper	certified	-4.4857794476706685	m=22	N=50	k=10	
+175	hyper	certified	-7.1800239032090722	m=22	N=50	k=10	
+176	hyper	certified	-8.5272067939787881	m=23	N=50	k=10	
+177	hyper	certified	-6.7219887382130903	m=23	N=50	k=10	
+178	hyper	certified	-6.7219887382130903	m=23	N=50	k=10	
+179	hyper	certified	-6.7219887382130903	m=23	N=50	k=10	
+180	hyper	certified	-6.7219887382130903	m=23	N=50	k=10	
+181	hyper	certified	-6.7219887382130903	m=23	N=50	k=10	
+182	hyper	certified	-6.7219887382130903	m=23	N=50	k=10	
+183	hyper	stop:nomle	nan	No admissible value of `m` gives every observation positive probability: observations must lie between max(0, k - (N - m)) and min(k, m).
+184	hyper	certified	-2.5020121176909402	m=1	N=50	k=10	
+185	hyper	stop:nomle	nan	No admissible value of `m` gives every observation positive probability: observations must lie between max(0, k - (N - m)) and min(k, m).
+186	hyper	certified	-19.962265217802138	m=20	N=50	k=10	
+187	hyper	certified	-3.0734438934839505	m=20	N=50	k=10	
+188	hyper	certified	-4.5609755960351546	m=20	N=50	k=10	
+189	hyper	certified	-7.3704539436846401	m=20	N=50	k=10	
+190	hyper	certified	-9.171141436261081	m=20	N=50	k=10	
+191	hyper	certified	-7.1556786420409466	m=20	N=50	k=10	
+192	hyper	certified	-7.1556786420409466	m=20	N=50	k=10	
+193	hyper	certified	-7.1556786420409466	m=20	N=50	k=10	
+194	hyper	certified	-7.1556786420409466	m=20	N=50	k=10	
+195	hyper	certified	-7.1556786420409466	m=20	N=50	k=10	
+196	hyper	certified	-7.1556786420409466	m=20	N=50	k=10	
+197	hyper	certified	-26.91874181587017	m=20	N=50	k=10	
+198	nhyper	certified	-25.650874488800895	m=3	N=11	r=2	
+199	nhyper	certified	0	m=8	N=8	r=8	
+200	nhyper	certified	0	m=8	N=8	r=8	
+201	nhyper	certified	-8.5207070107160323	m=2	N=8	r=2	
+202	nhyper	certified	0	m=8	N=8	r=8	
+203	nhyper	certified	-3.3650583350462826	m=9	N=10	r=6	
+204	nhyper	certified	-3.3650583350462826	m=9	N=10	r=6	
+205	nhyper	certified	-3.3650583350462826	m=9	N=10	r=6	
+206	nhyper	certified	-3.3650583350462826	m=9	N=10	r=6	
+207	nhyper	certified	-3.3650583350462826	m=9	N=10	r=6	
+208	nhyper	certified	-3.3650583350462826	m=9	N=10	r=6	
+209	nhyper	stop:budget	nan	Finite-grid numerical failure: 1e7 candidate evaluation budget or representability/nonfinite likelihood limit exceeded.
+210	nhyper	stop:nomle	nan	No admissible composition gives every observation positive probability; total draws must lie from r through N - m + r (zero when r = 0).
+211	nhyper	stop:budget	nan	Finite-grid numerical failure: 1e7 candidate evaluation budget or representability/nonfinite likelihood limit exceeded.
+212	nhyper	certified	-26.508003568361413	m=20	N=42	r=3	
+213	nhyper	certified	0	m=20	N=20	r=8	
+214	nhyper	certified	0	m=20	N=20	r=8	
+215	nhyper	certified	-11.09686813275817	m=20	N=44	r=3	
+216	nhyper	certified	0	m=20	N=20	r=8	
+217	nhyper	certified	-4.1376760560540804	m=20	N=22	r=6	
+218	nhyper	certified	-4.1376760560540804	m=20	N=22	r=6	
+219	nhyper	certified	-4.1376760560540804	m=20	N=22	r=6	
+220	nhyper	certified	-4.1376760560540804	m=20	N=22	r=6	
+221	nhyper	certified	-4.1376760560540804	m=20	N=22	r=6	
+222	nhyper	certified	-4.1376760560540804	m=20	N=22	r=6	
+223	nhyper	stop:budget	nan	Finite-grid numerical failure: 1e7 candidate evaluation budget or representability/nonfinite likelihood limit exceeded.
+224	nhyper	stop:nomle	nan	No admissible composition gives every observation positive probability; total draws must lie from r through N - m + r (zero when r = 0).
+225	nhyper	certified	-8.9398253416989526	m=20	N=101	r=20	
+226	nhyper	certified	-26.54433859283823	m=24	N=50	r=3	
+227	nhyper	certified	0	m=50	N=50	r=8	
+228	nhyper	certified	0	m=50	N=50	r=8	
+229	nhyper	certified	-11.125217921151219	m=22	N=50	r=3	
+230	nhyper	certified	0	m=50	N=50	r=8	
+231	nhyper	certified	-4.4612098184970588	m=46	N=50	r=6	
+232	nhyper	certified	-4.4612098184970588	m=46	N=50	r=6	
+233	nhyper	certified	-4.4612098184970588	m=46	N=50	r=6	
+234	nhyper	certified	-4.4612098184970588	m=46	N=50	r=6	
+235	nhyper	certified	-4.4612098184970588	m=46	N=50	r=6	
+236	nhyper	certified	-4.4612098184970588	m=46	N=50	r=6	
+237	nhyper	stop:nomle	nan	No admissible composition gives every observation positive probability; total draws must lie from r through N - m + r (zero when r = 0).
+238	nhyper	stop:nomle	nan	No admissible composition gives every observation positive probability; total draws must lie from r through N - m + r (zero when r = 0).
+239	nhyper	stop:nomle	nan	No admissible composition gives every observation positive probability; total draws must lie from r through N - m + r (zero when r = 0).
+240	nhyper	certified	-27.589068200572953	m=20	N=50	r=3	
+241	nhyper	certified	-4.1804930960751436	m=20	N=50	r=4	
+242	nhyper	certified	-6.2707396441127159	m=20	N=50	r=4	
+243	nhyper	certified	-11.29973821432662	m=20	N=50	r=3	
+244	nhyper	certified	-12.541479288225432	m=20	N=50	r=4	
+245	nhyper	certified	-9.8820128643256133	m=20	N=50	r=3	
+246	nhyper	certified	-9.8820128643256133	m=20	N=50	r=3	
+247	nhyper	certified	-9.8820128643256133	m=20	N=50	r=3	
+248	nhyper	certified	-9.8820128643256133	m=20	N=50	r=3	
+249	nhyper	certified	-9.8820128643256133	m=20	N=50	r=3	
+250	nhyper	certified	-9.8820128643256133	m=20	N=50	r=3	
+251	nhyper	stop:nomle	nan	No admissible composition gives every observation positive probability; total draws must lie from r through N - m + r (zero when r = 0).
+252	nhyper	stop:nomle	nan	No admissible composition gives every observation positive probability; total draws must lie from r through N - m + r (zero when r = 0).
+253	nhyper	stop:nomle	nan	No admissible composition gives every observation positive probability; total draws must lie from r through N - m + r (zero when r = 0).
+254	nhyper	certified	-26.272083785027796	m=7	N=16	r=3	
+255	nhyper	certified	-1.9616585060234524	m=3	N=8	r=3	
+256	nhyper	certified	-2.9424877590351786	m=3	N=8	r=3	
+257	nhyper	certified	-8.690606047511432	m=3	N=8	r=3	
+258	nhyper	certified	-5.8849755180703571	m=3	N=8	r=3	
+259	nhyper	certified	-5.0474195181523474	m=3	N=7	r=3	
+260	nhyper	certified	-5.0474195181523474	m=3	N=7	r=3	
+261	nhyper	certified	-5.0474195181523474	m=3	N=7	r=3	
+262	nhyper	certified	-5.0474195181523474	m=3	N=7	r=3	
+263	nhyper	certified	-5.0474195181523474	m=3	N=7	r=3	
+264	nhyper	certified	-5.0474195181523474	m=3	N=7	r=3	
+265	nhyper	stop:budget	nan	Finite-grid numerical failure: 1e7 candidate evaluation budget or representability/nonfinite likelihood limit exceeded.
+266	nhyper	certified	-17.663351970135828	m=3	N=101	r=3	
+267	nhyper	certified	-26.508003568361413	m=20	N=42	r=3	
+268	nhyper	certified	-4.3348104975273811	m=20	N=53	r=3	
+269	nhyper	certified	-6.5022157462910712	m=20	N=53	r=3	
+270	nhyper	certified	-11.09686813275817	m=20	N=44	r=3	
+271	nhyper	certified	-13.004431492582142	m=20	N=53	r=3	
+272	nhyper	certified	-9.6195654996695428	m=20	N=44	r=3	
+273	nhyper	certified	-9.6195654996695428	m=20	N=44	r=3	
+274	nhyper	certified	-9.6195654996695428	m=20	N=44	r=3	
+275	nhyper	certified	-9.6195654996695428	m=20	N=44	r=3	
+276	nhyper	certified	-9.6195654996695428	m=20	N=44	r=3	
+277	nhyper	certified	-9.6195654996695428	m=20	N=44	r=3	
+278	nhyper	stop:budget	nan	Finite-grid numerical failure: 1e7 candidate evaluation budget or representability/nonfinite likelihood limit exceeded.
+279	nhyper	certified	-24.544012137367112	m=20	N=668	r=3	
+280	nhyper	certified	-26.54433859283823	m=24	N=50	r=3	
+281	nhyper	certified	-4.3256344817448156	m=19	N=50	r=3	
+282	nhyper	certified	-6.4884517226172234	m=19	N=50	r=3	
+283	nhyper	certified	-11.12521792115122	m=22	N=50	r=3	
+284	nhyper	certified	-12.976903445234447	m=19	N=50	r=3	
+285	nhyper	certified	-9.6722239539724058	m=23	N=50	r=3	
+286	nhyper	certified	-9.6722239539724058	m=23	N=50	r=3	
+287	nhyper	certified	-9.6722239539724058	m=23	N=50	r=3	
+288	nhyper	certified	-9.6722239539724058	m=23	N=50	r=3	
+289	nhyper	certified	-9.6722239539724058	m=23	N=50	r=3	
+290	nhyper	certified	-9.6722239539724058	m=23	N=50	r=3	
+291	nhyper	stop:nomle	nan	No admissible composition gives every observation positive probability; total draws must lie from r through N - m + r (zero when r = 0).
+292	nhyper	stop:nomle	nan	No admissible composition gives every observation positive probability; total draws must lie from r through N - m + r (zero when r = 0).
+293	nhyper	certified	-27.589068200572953	m=20	N=50	r=3	
+294	nhyper	certified	-4.3523779556765945	m=20	N=50	r=3	
+295	nhyper	certified	-6.5285669335148917	m=20	N=50	r=3	
+296	nhyper	certified	-11.29973821432662	m=20	N=50	r=3	
+297	nhyper	certified	-13.057133867029783	m=20	N=50	r=3	
+298	nhyper	certified	-9.8820128643256133	m=20	N=50	r=3	
+299	nhyper	certified	-9.8820128643256133	m=20	N=50	r=3	
+300	nhyper	certified	-9.8820128643256133	m=20	N=50	r=3	
+301	nhyper	certified	-9.8820128643256133	m=20	N=50	r=3	
+302	nhyper	certified	-9.8820128643256133	m=20	N=50	r=3	
+303	nhyper	certified	-9.8820128643256133	m=20	N=50	r=3	
+304	nhyper	stop:nomle	nan	No admissible composition gives every observation positive probability; total draws must lie from r through N - m + r (zero when r = 0).
+305	nhyper	stop:nomle	nan	No admissible composition gives every observation positive probability; total draws must lie from r through N - m + r (zero when r = 0).
+306	tbinom	certified	-18.297499702543846	prob=0.50921151244767127	a=2	b=7	size=9	
+307	tbinom	certified	-1.386294361119889	prob=0.83333333333333304	a=3	b=5	size=5	
+308	tbinom	stop:limit	nan	The maximum likelihood estimator does not exist: with both `prob` and `size` free, the global likelihood supremum lies at the truncated Poisson distribution as `size` grows. Use `mltpois(x, a = 3, b = 6)` instead.
+309	tbinom	stop:limit	nan	The maximum likelihood estimator does not exist: with both `prob` and `size` free, the global likelihood supremum lies at the truncated Poisson distribution as `size` grows. Use `mltpois(x, a = 3, b = 6)` instead.
+310	tbinom	stop:limit	nan	The maximum likelihood estimator does not exist: with both `prob` and `size` free, the global likelihood supremum lies at the truncated Poisson distribution as `size` grows. Use `mltpois(x, a = 3, b = 6)` instead.
+311	tbinom	certified	-3.3650583350462782	prob=0.8571428571428571	a=2	b=4	size=4	
+312	tbinom	certified	-3.3650583350462782	prob=0.8571428571428571	a=2	b=4	size=4	
+313	tbinom	certified	-3.3650583350462782	prob=0.8571428571428571	a=2	b=4	size=4	
+314	tbinom	certified	-3.3650583350462782	prob=0.8571428571428571	a=2	b=4	size=4	
+315	tbinom	certified	-3.3650583350462782	prob=0.8571428571428571	a=2	b=4	size=4	
+316	tbinom	certified	-3.3650583350462782	prob=0.8571428571428571	a=2	b=4	size=4	
+317	tbinom	stop:wall-guard	nan
+318	tbinom	certified	-2.5020121176909393	prob=0.19999999999999996	a=-1	b=1	size=1	
+319	tbinom	certified	-2.5020121176909811	prob=0.96190476190476082	a=99	b=101	size=101	
+320	tbinom	certified	-18.371349605600052	prob=0.40046933867469231	a=2	b=7	size=11	
+321	tbinom	certified	-1.387399511152827	prob=0.40046933867469231	a=3	b=5	size=12	
+322	tbinom	certified	-3.304573544269811	prob=0.40046933867469231	a=3	b=6	size=13	
+323	tbinom	certified	-4.994546550193526	prob=0.40046933867469231	a=3	b=6	size=9	
+324	tbinom	certified	-5.5789209773716077	prob=0.40046933867469231	a=3	b=6	size=8	
+325	tbinom	certified	-3.3650606284220093	prob=0.40046933867469231	a=2	b=4	size=12	
+326	tbinom	certified	-3.3650606284220093	prob=0.40046933867469231	a=2	b=4	size=12	
+327	tbinom	certified	-3.3650606284220093	prob=0.40046933867469231	a=2	b=4	size=12	
+328	tbinom	certified	-3.3650606284220093	prob=0.40046933867469231	a=2	b=4	size=12	
+329	tbinom	certified	-3.3650606284220093	prob=0.40046933867469231	a=2	b=4	size=12	
+330	tbinom	certified	-3.3650606284220093	prob=0.40046933867469231	a=2	b=4	size=12	
+331	tbinom	stop:numerical	nan	Truncated normalizer cannot be resolved within numerical precision or work budget.
+332	tbinom	certified	-2.9615507169921869	prob=0.40046933867469231	a=-1	b=1	size=1	
+333	tbinom	certified	-2.5020231546549212	prob=0.40046933867469231	a=99	b=101	size=138	
+334	tbinom	certified	-18.973138425801281	prob=0.67832961922585522	a=0	b=7	size=7	
+335	tbinom	certified	-1.641371816878431	prob=0.89999099594744647	a=0	b=5	size=5	
+336	tbinom	certified	-3.6102277674767294	prob=0.83331546061259587	a=0	b=6	size=6	
+337	tbinom	certified	-6.3814650942266509	prob=0.76654254343346495	a=0	b=6	size=6	
+338	tbinom	certified	-7.6186366769097296	prob=0.74981608482235451	a=0	b=6	size=6	
+339	tbinom	certified	-3.7285698174840682	prob=0.89990967438695701	a=0	b=4	size=4	
+340	tbinom	certified	-3.7285698174840682	prob=0.89990967438695701	a=0	b=4	size=4	
+341	tbinom	certified	-3.7285698174840682	prob=0.89990967438695701	a=0	b=4	size=4	
+342	tbinom	certified	-3.7285698174840682	prob=0.89990967438695701	a=0	b=4	size=4	
+343	tbinom	certified	-3.7285698174840682	prob=0.89990967438695701	a=0	b=4	size=4	
+344	tbinom	certified	-3.7285698174840682	prob=0.89990967438695701	a=0	b=4	size=4	
+345	tbinom	stop:wall-guard	nan
+346	tbinom	certified	-4.8766906286952008	prob=0.99207920792079207	a=0	b=101	size=101	
+347	tbinom	certified	-19.4746636819808	prob=0.40046933867469231	a=0	b=7	size=12	
+348	tbinom	certified	-1.7929655573719145	prob=0.40046933867469231	a=0	b=5	size=22	
+349	tbinom	certified	-3.7942357595616052	prob=0.40046933867469231	a=0	b=6	size=17	
+350	tbinom	certified	-6.8958677614598116	prob=0.40046933867469231	a=0	b=6	size=13	
+351	tbinom	certified	-8.3255864469863141	prob=0.40046933867469231	a=0	b=6	size=13	
+352	tbinom	certified	-3.9580807817572463	prob=0.40046933867469231	a=0	b=4	size=19	
+353	tbinom	certified	-3.9580807817572463	prob=0.40046933867469231	a=0	b=4	size=19	
+354	tbinom	certified	-3.9580807817572463	prob=0.40046933867469231	a=0	b=4	size=19	
+355	tbinom	certified	-3.9580807817572463	prob=0.40046933867469231	a=0	b=4	size=19	
+356	tbinom	certified	-3.9580807817572463	prob=0.40046933867469231	a=0	b=4	size=19	
+357	tbinom	certified	-3.9580807817572463	prob=0.40046933867469231	a=0	b=4	size=19	
+358	tbinom	stop:wall-guard	nan
+359	tbinom	certified	-6.1418288817772009	prob=0.40046933867469231	a=0	b=101	size=433	
+360	tbinom	certified	-18.435821848780115	prob=0.65737326918914563	a=2	b=10	size=7	
+361	tbinom	certified	-1.386294361119889	prob=0.83333333333333304	a=3	b=10	size=5	
+362	tbinom	certified	-3.3624266785349999	prob=0.7947869038423272	a=3	b=10	size=6	
+363	tbinom	certified	-5.1377627902974234	prob=0.5028095855646767	a=3	b=10	size=7	
+364	tbinom	certified	-5.6729989200924775	prob=0.26672051729955026	a=3	b=10	size=10	
+365	tbinom	certified	-3.3650583350462782	prob=0.8571428571428571	a=2	b=10	size=4	
+366	tbinom	certified	-3.3650583350462782	prob=0.8571428571428571	a=2	b=10	size=4	
+367	tbinom	certified	-3.3650583350462782	prob=0.8571428571428571	a=2	b=10	size=4	
+368	tbinom	certified	-3.3650583350462782	prob=0.8571428571428571	a=2	b=10	size=4	
+369	tbinom	certified	-3.3650583350462782	prob=0.8571428571428571	a=2	b=10	size=4	
+370	tbinom	certified	-3.3650583350462782	prob=0.8571428571428571	a=2	b=10	size=4	
+371	tbinom	stop:input-or-search	nan	Invalid design parameters or observations outside truncation bounds a < x <= b.
+372	tbinom	certified	-2.5020121176909393	prob=0.19999999999999996	a=-1	b=10	size=1	
+373	tbinom	stop:input-or-search	nan	Invalid design parameters or observations outside truncation bounds a < x <= b.
+374	tbinom	certified	-18.779155192033471	prob=0.40046933867469231	a=2	b=10	size=11	
+375	tbinom	certified	-1.7233120159705919	prob=0.40046933867469231	a=3	b=10	size=7	
+376	tbinom	certified	-3.7377948455076027	prob=0.40046933867469231	a=3	b=10	size=10	
+377	tbinom	certified	-5.1473489396709917	prob=0.40046933867469231	a=3	b=10	size=8	
+378	tbinom	certified	-5.7068259237508538	prob=0.40046933867469231	a=3	b=10	size=8	
+379	tbinom	certified	-4.5766531225376568	prob=0.40046933867469231	a=2	b=10	size=6	
+380	tbinom	certified	-4.5766531225376568	prob=0.40046933867469231	a=2	b=10	size=6	
+381	tbinom	certified	-4.5766531225376568	prob=0.40046933867469231	a=2	b=10	size=6	
+382	tbinom	certified	-4.5766531225376568	prob=0.40046933867469231	a=2	b=10	size=6	
+383	tbinom	certified	-4.5766531225376568	prob=0.40046933867469231	a=2	b=10	size=6	
+384	tbinom	certified	-4.5766531225376568	prob=0.40046933867469231	a=2	b=10	size=6	
+385	tbinom	stop:input-or-search	nan	Invalid design parameters or observations outside truncation bounds a < x <= b.
+386	tbinom	certified	-2.9615507169921869	prob=0.40046933867469231	a=-1	b=10	size=1	
+387	tbinom	stop:input-or-search	nan	Invalid design parameters or observations outside truncation bounds a < x <= b.
+388	tbinom	certified	-18.973138425801281	prob=0.67832961922585522	a=0	b=10	size=7	
+389	tbinom	certified	-1.641371816878431	prob=0.89999099594744647	a=0	b=10	size=5	
+390	tbinom	certified	-3.6102277674767294	prob=0.83331546061259587	a=0	b=10	size=6	
+391	tbinom	certified	-6.3814650942266509	prob=0.76654254343346495	a=0	b=10	size=6	
+392	tbinom	certified	-7.6186366769097296	prob=0.74981608482235451	a=0	b=10	size=6	
+393	tbinom	certified	-3.7285698174840682	prob=0.89990967438695701	a=0	b=10	size=4	
+394	tbinom	certified	-3.7285698174840682	prob=0.89990967438695701	a=0	b=10	size=4	
+395	tbinom	certified	-3.7285698174840682	prob=0.89990967438695701	a=0	b=10	size=4	
+396	tbinom	certified	-3.7285698174840682	prob=0.89990967438695701	a=0	b=10	size=4	
+397	tbinom	certified	-3.7285698174840682	prob=0.89990967438695701	a=0	b=10	size=4	
+398	tbinom	certified	-3.7285698174840682	prob=0.89990967438695701	a=0	b=10	size=4	
+399	tbinom	stop:input-or-search	nan	Invalid design parameters or observations outside truncation bounds a < x <= b.
+400	tbinom	stop:input-or-search	nan	Invalid design parameters or observations outside truncation bounds a < x <= b.
+401	tbinom	certified	-20.185620631325634	prob=0.40046933867469231	a=0	b=10	size=12	
+402	tbinom	certified	-2.9450192015245094	prob=0.40046933867469231	a=0	b=10	size=11	
+403	tbinom	certified	-4.7552646459070385	prob=0.40046933867469231	a=0	b=10	size=12	
+404	tbinom	certified	-7.7325390781357655	prob=0.40046933867469231	a=0	b=10	size=11	
+405	tbinom	certified	-9.1715298411947401	prob=0.40046933867469231	a=0	b=10	size=11	
+406	tbinom	certified	-6.8471547004456967	prob=0.40046933867469231	a=0	b=10	size=8	
+407	tbinom	certified	-6.8471547004456967	prob=0.40046933867469231	a=0	b=10	size=8	
+408	tbinom	certified	-6.8471547004456967	prob=0.40046933867469231	a=0	b=10	size=8	
+409	tbinom	certified	-6.8471547004456967	prob=0.40046933867469231	a=0	b=10	size=8	
+410	tbinom	certified	-6.8471547004456967	prob=0.40046933867469231	a=0	b=10	size=8	
+411	tbinom	certified	-6.8471547004456967	prob=0.40046933867469231	a=0	b=10	size=8	
+412	tbinom	stop:input-or-search	nan	Invalid design parameters or observations outside truncation bounds a < x <= b.
+413	tbinom	stop:input-or-search	nan	Invalid design parameters or observations outside truncation bounds a < x <= b.
+414	tbinom	certified	-18.345140230661837	prob=0.3827790650242624	a=2	b=7	size=12	
+415	tbinom	certified	-1.386294361119889	prob=0.38461538461538414	a=3	b=5	size=12	
+416	tbinom	certified	-3.3042902797237286	prob=0.42260781014763033	a=3	b=6	size=12	
+417	tbinom	certified	-4.9578502660896397	prob=0.27119384979049549	a=3	b=6	size=12	
+418	tbinom	certified	-5.5149796789354184	prob=0.23266639978645295	a=3	b=6	size=12	
+419	tbinom	certified	-3.3650583350462764	prob=0.39999999999999991	a=2	b=4	size=12	
+420	tbinom	certified	-3.3650583350462764	prob=0.39999999999999991	a=2	b=4	size=12	
+421	tbinom	certified	-3.3650583350462764	prob=0.39999999999999991	a=2	b=4	size=12	
+422	tbinom	certified	-3.3650583350462764	prob=0.39999999999999991	a=2	b=4	size=12	
+423	tbinom	certified	-3.3650583350462764	prob=0.39999999999999991	a=2	b=4	size=12	
+424	tbinom	certified	-3.3650583350462764	prob=0.39999999999999991	a=2	b=4	size=12	
+425	tbinom	stop:input-or-search	nan	Invalid design parameters or observations outside truncation bounds a < x <= b.
+426	tbinom	certified	-2.5020121176909349	prob=0.020408163265306128	a=-1	b=1	size=12	
+427	tbinom	stop:input-or-search	nan	Invalid design parameters or observations outside truncation bounds a < x <= b.
+428	tbinom	certified	-18.396450911246443	prob=0.40046933867469231	a=2	b=7	size=12	
+429	tbinom	certified	-1.387399511152827	prob=0.40046933867469231	a=3	b=5	size=12	
+430	tbinom	certified	-3.3121942987609359	prob=0.40046933867469231	a=3	b=6	size=12	
+431	tbinom	certified	-5.4427426327585025	prob=0.40046933867469231	a=3	b=6	size=12	
+432	tbinom	certified	-6.5080167997572858	prob=0.40046933867469231	a=3	b=6	size=12	
+433	tbinom	certified	-3.3650606284220093	prob=0.40046933867469231	a=2	b=4	size=12	
+434	tbinom	certified	-3.3650606284220093	prob=0.40046933867469231	a=2	b=4	size=12	
+435	tbinom	certified	-3.3650606284220093	prob=0.40046933867469231	a=2	b=4	size=12	
+436	tbinom	certified	-3.3650606284220093	prob=0.40046933867469231	a=2	b=4	size=12	
+437	tbinom	certified	-3.3650606284220093	prob=0.40046933867469231	a=2	b=4	size=12	
+438	tbinom	certified	-3.3650606284220093	prob=0.40046933867469231	a=2	b=4	size=12	
+439	tbinom	stop:input-or-search	nan	Invalid design parameters or observations outside truncation bounds a < x <= b.
+440	tbinom	certified	-8.913416852699001	prob=0.40046933867469231	a=-1	b=1	size=12	
+441	tbinom	stop:input-or-search	nan	Invalid design parameters or observations outside truncation bounds a < x <= b.
+442	tbinom	certified	-19.41321192166253	prob=0.41713052205891027	a=0	b=7	size=12	
+443	tbinom	certified	-1.7739274813121959	prob=0.59017943660342764	a=0	b=5	size=12	
+444	tbinom	certified	-3.7618098747049018	prob=0.52190651730337279	a=0	b=6	size=12	
+445	tbinom	certified	-6.8519053009659761	prob=0.44508581841781608	a=0	b=6	size=12	
+446	tbinom	certified	-8.28884218470359	prob=0.42886112408580856	a=0	b=6	size=12	
+447	tbinom	certified	-3.9364145954351049	prob=0.54818343078370368	a=0	b=4	size=12	
+448	tbinom	certified	-3.9364145954351049	prob=0.54818343078370368	a=0	b=4	size=12	
+449	tbinom	certified	-3.9364145954351049	prob=0.54818343078370368	a=0	b=4	size=12	
+450	tbinom	certified	-3.9364145954351049	prob=0.54818343078370368	a=0	b=4	size=12	
+451	tbinom	certified	-3.9364145954351049	prob=0.54818343078370368	a=0	b=4	size=12	
+452	tbinom	certified	-3.9364145954351049	prob=0.54818343078370368	a=0	b=4	size=12	
+453	tbinom	stop:input-or-search	nan	Invalid design parameters or observations outside truncation bounds a < x <= b.
+454	tbinom	stop:input-or-search	nan	Invalid design parameters or observations outside truncation bounds a < x <= b.
+455	tbinom	certified	-19.4746636819808	prob=0.40046933867469231	a=0	b=7	size=12	
+456	tbinom	certified	-2.2055071180455013	prob=0.40046933867469231	a=0	b=5	size=12	
+457	tbinom	certified	-4.2353666727746848	prob=0.40046933867469231	a=0	b=6	size=12	
+458	tbinom	certified	-6.9813632561147507	prob=0.40046933867469231	a=0	b=6	size=12	
+459	tbinom	certified	-8.3543615477847837	prob=0.40046933867469231	a=0	b=6	size=12	
+460	tbinom	certified	-4.3931333561997228	prob=0.40046933867469231	a=0	b=4	size=12	
+461	tbinom	certified	-4.3931333561997228	prob=0.40046933867469231	a=0	b=4	size=12	
+462	tbinom	certified	-4.3931333561997228	prob=0.40046933867469231	a=0	b=4	size=12	
+463	tbinom	certified	-4.3931333561997228	prob=0.40046933867469231	a=0	b=4	size=12	
+464	tbinom	certified	-4.3931333561997228	prob=0.40046933867469231	a=0	b=4	size=12	
+465	tbinom	certified	-4.3931333561997228	prob=0.40046933867469231	a=0	b=4	size=12	
+466	tbinom	stop:input-or-search	nan	Invalid design parameters or observations outside truncation bounds a < x <= b.
+467	tbinom	stop:input-or-search	nan	Invalid design parameters or observations outside truncation bounds a < x <= b.
+468	tbinom	certified	-18.858821210825532	prob=0.36244473811194683	a=2	b=10	size=12	
+469	tbinom	certified	-1.7860118024594236	prob=0.20890418945158654	a=3	b=10	size=12	
+470	tbinom	certified	-3.7850525796495518	prob=0.32458067071095487	a=3	b=10	size=12	
+471	tbinom	certified	-5.1706144634203994	prob=0.23640392933887197	a=3	b=10	size=12	
+472	tbinom	certified	-5.6738883567967484	prob=0.20890418945158654	a=3	b=10	size=12	
+473	tbinom	certified	-4.8315567146070464	prob=0.18239330344470381	a=2	b=10	size=12	
+474	tbinom	certified	-4.8315567146070464	prob=0.18239330344470381	a=2	b=10	size=12	
+475	tbinom	certified	-4.8315567146070464	prob=0.18239330344470381	a=2	b=10	size=12	
+476	tbinom	certified	-4.8315567146070464	prob=0.18239330344470381	a=2	b=10	size=12	
+477	tbinom	certified	-4.8315567146070464	prob=0.18239330344470381	a=2	b=10	size=12	
+478	tbinom	certified	-4.8315567146070464	prob=0.18239330344470381	a=2	b=10	size=12	
+479	tbinom	certified	-2.6010578931005988	prob=0.016666666666666649	a=-1	b=10	size=12	
+480	tbinom	certified	-19.17212959330697	prob=0.40046933867469231	a=2	b=10	size=12	
+481	tbinom	certified	-2.52215247602871	prob=0.40046933867469231	a=3	b=10	size=12	
+482	tbinom	certified	-3.9993410876345976	prob=0.40046933867469231	a=3	b=10	size=12	
+483	tbinom	certified	-6.5879872808812721	prob=0.40046933867469231	a=3	b=10	size=12	
+484	tbinom	certified	-7.8823103775046093	prob=0.40046933867469231	a=3	b=10	size=12	
+485	tbinom	certified	-8.1240407561067514	prob=0.40046933867469231	a=2	b=10	size=12	
+486	tbinom	certified	-8.1240407561067514	prob=0.40046933867469231	a=2	b=10	size=12	
+487	tbinom	certified	-8.1240407561067514	prob=0.40046933867469231	a=2	b=10	size=12	
+488	tbinom	certified	-8.1240407561067514	prob=0.40046933867469231	a=2	b=10	size=12	
+489	tbinom	certified	-8.1240407561067514	prob=0.40046933867469231	a=2	b=10	size=12	
+490	tbinom	certified	-8.1240407561067514	prob=0.40046933867469231	a=2	b=10	size=12	
+491	tbinom	certified	-28.613479230228933	prob=0.40046933867469231	a=-1	b=10	size=12	
+492	tbinom	certified	-20.176907393385918	prob=0.39502894294992658	a=0	b=10	size=12	
+493	tbinom	certified	-2.9908726579967677	prob=0.37372011376540604	a=0	b=10	size=12	
+494	tbinom	certified	-4.7369885624518577	prob=0.41625785955777039	a=0	b=10	size=12	
+495	tbinom	certified	-7.8070842754467691	prob=0.38225620561559481	a=0	b=10	size=12	
+496	tbinom	certified	-9.2884709234087808	prob=0.37372011376540604	a=0	b=10	size=12	
+497	tbinom	certified	-7.1784703712648081	prob=0.29552582559739893	a=0	b=10	size=12	
+498	tbinom	certified	-7.1784703712648081	prob=0.29552582559739893	a=0	b=10	size=12	
+499	tbinom	certified	-7.1784703712648081	prob=0.29552582559739893	a=0	b=10	size=12	
+500	tbinom	certified	-7.1784703712648081	prob=0.29552582559739893	a=0	b=10	size=12	
+501	tbinom	certified	-7.1784703712648081	prob=0.29552582559739893	a=0	b=10	size=12	
+502	tbinom	certified	-7.1784703712648081	prob=0.29552582559739893	a=0	b=10	size=12	
+503	tbinom	certified	-20.185620631325634	prob=0.40046933867469231	a=0	b=10	size=12	
+504	tbinom	certified	-3.0261015148770039	prob=0.40046933867469231	a=0	b=10	size=12	
+505	tbinom	certified	-4.7552646459070385	prob=0.40046933867469231	a=0	b=10	size=12	
+506	tbinom	certified	-7.8478598780020068	prob=0.40046933867469231	a=0	b=10	size=12	
+507	tbinom	certified	-9.394157494049491	prob=0.40046933867469231	a=0	b=10	size=12	
+508	tbinom	certified	-8.546328688614528	prob=0.40046933867469231	a=0	b=10	size=12	
+509	tbinom	certified	-8.546328688614528	prob=0.40046933867469231	a=0	b=10	size=12	
+510	tbinom	certified	-8.546328688614528	prob=0.40046933867469231	a=0	b=10	size=12	
+511	tbinom	certified	-8.546328688614528	prob=0.40046933867469231	a=0	b=10	size=12	
+512	tbinom	certified	-8.546328688614528	prob=0.40046933867469231	a=0	b=10	size=12	
+513	tbinom	certified	-8.546328688614528	prob=0.40046933867469231	a=0	b=10	size=12	
+514	zib	certified	-20.112201573879126	size=7	prob=0.59069776884521352	pi=0.41554190070326547	
+515	zib	certified	0	size=1	prob=0	pi=0	
+516	zib	certified	-1.9095425048844383	size=6	prob=1	pi=0.66666666666666663	
+517	zib	certified	-7.4833077542462707	size=6	prob=0.77768387437674225	pi=0.3999275514865645	
+518	zib	certified	-2.7033672531978281	size=6	prob=1	pi=0.83333333333333337	
+519	zib	certified	-3.6928924310770626	size=3	prob=0.8666666666666667	pi=0	
+520	zib	certified	-3.6928924310770626	size=3	prob=0.8666666666666667	pi=0	
+521	zib	certified	-3.6928924310770626	size=3	prob=0.8666666666666667	pi=0	
+522	zib	certified	-3.6928924310770626	size=3	prob=0.8666666666666667	pi=0	
+523	zib	certified	-3.6928924310770626	size=3	prob=0.8666666666666667	pi=0	
+524	zib	certified	-3.6928924310770626	size=3	prob=0.8666666666666667	pi=0	
+525	zib	certified	-14.363696716939838	size=1000023	prob=0.99998160042319029	pi=0	
+526	zib	certified	-2.5020121176909393	size=1	prob=0.20000000000000001	pi=0	
+527	zib	certified	-4.8766906286947789	size=101	prob=0.99207920792079207	pi=0	
+528	zib	certified	-20.142653625042914	size=8	prob=0.51630554621150671	pi=0.41491363873595971	
+529	zib	certified	0	size=8	prob=0	pi=0	
+530	zib	certified	-3.0760038899592184	size=8	prob=0.74998855171504397	pi=0.66666157846235119	
+531	zib	certified	-7.833761059800409	size=8	prob=0.58279792083256954	pi=0.39944878406566842	
+532	zib	certified	-3.8698286382726081	size=8	prob=0.74998855171504397	pi=0.83333078923117565	
+533	zib	certified	-6.4827770428847344	size=8	prob=0.32500000000000001	pi=0	
+534	zib	certified	-6.4827770428847344	size=8	prob=0.32500000000000001	pi=0	
+535	zib	certified	-6.4827770428847344	size=8	prob=0.32500000000000001	pi=0	
+536	zib	certified	-6.4827770428847344	size=8	prob=0.32500000000000001	pi=0	
+537	zib	certified	-6.4827770428847344	size=8	prob=0.32500000000000001	pi=0	
+538	zib	certified	-6.4827770428847344	size=8	prob=0.32500000000000001	pi=0	
+539	zib	certified	-2.5968324238214056	size=8	prob=0.025000000000000001	pi=0	
+540	zib	certified	-20.277985563793759	size=10	prob=0.41801297244186852	pi=0.41405456413900238	
+541	zib	certified	0	size=0	prob=0.41801297244186852	pi=0	
+542	zib	certified	-3.4655777176829337	size=14	prob=0.41801297244186852	pi=0.666496102744362	
+543	zib	certified	-8.1197493229455429	size=11	prob=0.41801297244186852	pi=0.39843927703535847	
+544	zib	certified	-4.2594024659963239	size=14	prob=0.41801297244186852	pi=0.83324805137218105	
+545	zib	certified	-6.1380803937990507	size=6	prob=0.41801297244186852	pi=0	
+546	zib	certified	-6.1380803937990507	size=6	prob=0.41801297244186852	pi=0	
+547	zib	certified	-6.1380803937990507	size=6	prob=0.41801297244186852	pi=0	
+548	zib	certified	-6.1380803937990507	size=6	prob=0.41801297244186852	pi=0	
+549	zib	certified	-6.1380803937990507	size=6	prob=0.41801297244186852	pi=0	
+550	zib	certified	-6.1380803937990507	size=6	prob=0.41801297244186852	pi=0	
+551	zib	stop:wall-guard	nan
+552	zib	certified	-2.5020121176909393	size=1	prob=0.41801297244186852	pi=0.52154594908459884	
+553	zib	certified	-14.770034428871945	size=239	prob=0.41801297244186852	pi=0	
+554	zib	certified	-21.200459682890141	size=8	prob=0.41801297244186852	pi=0.40888671035161178	
+555	zib	certified	0	size=8	prob=0.41801297244186852	pi=1	
+556	zib	certified	-4.8801601986409793	size=8	prob=0.41801297244186852	pi=0.66222097734377816	
+557	zib	certified	-9.1205871866840429	size=8	prob=0.41801297244186852	pi=0.3919977592188007	
+558	zib	certified	-5.6739849469543691	size=8	prob=0.41801297244186852	pi=0.83111048867188908	
+559	zib	certified	-7.2139847332908902	size=8	prob=0.41801297244186852	pi=0	
+560	zib	certified	-7.2139847332908902	size=8	prob=0.41801297244186852	pi=0	
+561	zib	certified	-7.2139847332908902	size=8	prob=0.41801297244186852	pi=0	
+562	zib	certified	-7.2139847332908902	size=8	prob=0.41801297244186852	pi=0	
+563	zib	certified	-7.2139847332908902	size=8	prob=0.41801297244186852	pi=0	
+564	zib	certified	-7.2139847332908902	size=8	prob=0.41801297244186852	pi=0	
+565	zib	certified	-5.0707143225884099	size=8	prob=0.41801297244186852	pi=0.79733258640626692	
+566	zib	certified	-20.128491288977703	size=7	prob=0.59056784144556373	pi=0.38997108508286338	
+567	zib	certified	0	size=0	prob=0	pi=0.38997108508286338	
+568	zib	certified	-2.3776142882750566	size=6	prob=1	pi=0.38997108508286338	
+569	zib	certified	-7.484346082552598	size=6	prob=0.77767986974630787	pi=0.38997108508286338	
+570	zib	certified	-5.2026623385356014	size=6	prob=1	pi=0.38997108508286338	
+571	zib	certified	-6.1641370382505283	size=3	prob=0.8666666666666667	pi=0.38997108508286338	
+572	zib	certified	-6.1641370382505283	size=3	prob=0.8666666666666667	pi=0.38997108508286338	
+573	zib	certified	-6.1641370382505283	size=3	prob=0.8666666666666667	pi=0.38997108508286338	
+574	zib	certified	-6.1641370382505283	size=3	prob=0.8666666666666667	pi=0.38997108508286338	
+575	zib	certified	-6.1641370382505283	size=3	prob=0.8666666666666667	pi=0.38997108508286338	
+576	zib	certified	-6.1641370382505283	size=3	prob=0.8666666666666667	pi=0.38997108508286338	
+577	zib	certified	-16.834941324113306	size=1000023	prob=0.99998160042319029	pi=0.38997108508286338	
+578	zib	certified	-2.5020121176909393	size=1	prob=0.32785331171911258	pi=0.38997108508286338	
+579	zib	certified	-7.3479352358682455	size=101	prob=0.99207920792079207	pi=0.38997108508286338	
+580	zib	certified	-20.158111994803644	size=8	prob=0.51613238968779829	pi=0.38997108508286338	
+581	zib	certified	0	size=8	prob=0	pi=0.38997108508286338	
+582	zib	certified	-3.5440431698205148	size=8	prob=0.74996415766544078	pi=0.38997108508286338	
+583	zib	certified	-7.834700134447127	size=8	prob=0.58277607219550864	pi=0.38997108508286338	
+584	zib	certified	-6.3690194693040443	size=8	prob=0.74991024593950284	pi=0.38997108508286338	
+585	zib	certified	-8.9540216500582002	size=8	prob=0.32500000000000001	pi=0.38997108508286338	
+586	zib	certified	-8.9540216500582002	size=8	prob=0.32500000000000001	pi=0.38997108508286338	
+587	zib	certified	-8.9540216500582002	size=8	prob=0.32500000000000001	pi=0.38997108508286338	
+588	zib	certified	-8.9540216500582002	size=8	prob=0.32500000000000001	pi=0.38997108508286338	
+589	zib	certified	-8.9540216500582002	size=8	prob=0.32500000000000001	pi=0.38997108508286338	
+590	zib	certified	-8.9540216500582002	size=8	prob=0.32500000000000001	pi=0.38997108508286338	
+591	zib	certified	-2.6645636028804307	size=8	prob=0.040061535002547874	pi=0.38997108508286338	
+592	zib	certified	-20.292350989808796	size=10	prob=0.41801297244186852	pi=0.38997108508286338	
+593	zib	certified	0	size=0	prob=0.41801297244186852	pi=0.38997108508286338	
+594	zib	certified	-3.9325616490318751	size=14	prob=0.41801297244186852	pi=0.38997108508286338	
+595	zib	certified	-8.1204960511448121	size=11	prob=0.41801297244186852	pi=0.38997108508286338	
+596	zib	certified	-6.7552105798839195	size=14	prob=0.41801297244186852	pi=0.38997108508286338	
+597	zib	certified	-8.6093250009725182	size=6	prob=0.41801297244186852	pi=0.38997108508286338	
+598	zib	certified	-8.6093250009725182	size=6	prob=0.41801297244186852	pi=0.38997108508286338	
+599	zib	certified	-8.6093250009725182	size=6	prob=0.41801297244186852	pi=0.38997108508286338	
+600	zib	certified	-8.6093250009725182	size=6	prob=0.41801297244186852	pi=0.38997108508286338	
+601	zib	certified	-8.6093250009725182	size=6	prob=0.41801297244186852	pi=0.38997108508286338	
+602	zib	certified	-8.6093250009725182	size=6	prob=0.41801297244186852	pi=0.38997108508286338	
+603	zib	stop:wall-guard	nan
+604	zib	certified	-2.5439759762340208	size=1	prob=0.41801297244186852	pi=0.38997108508286338	
+605	zib	certified	-17.241279036045409	size=239	prob=0.41801297244186852	pi=0.38997108508286338	
+606	zib	certified	-21.209141695193541	size=8	prob=0.41801297244186852	pi=0.38997108508286338	
+607	zib	certified	-1.8426065473953985	size=8	prob=0.41801297244186852	pi=0.38997108508286338	
+608	zib	certified	-5.3207220748252553	size=8	prob=0.41801297244186852	pi=0.38997108508286338	
+609	zib	certified	-9.1206289000531076	size=8	prob=0.41801297244186852	pi=0.38997108508286338	
+610	zib	certified	-8.0846318959183527	size=8	prob=0.41801297244186852	pi=0.38997108508286338	
+611	zib	certified	-9.6852293404643568	size=8	prob=0.41801297244186852	pi=0.38997108508286338	
+612	zib	certified	-9.6852293404643568	size=8	prob=0.41801297244186852	pi=0.38997108508286338	
+613	zib	certified	-9.6852293404643568	size=8	prob=0.41801297244186852	pi=0.38997108508286338	
+614	zib	certified	-9.6852293404643568	size=8	prob=0.41801297244186852	pi=0.38997108508286338	
+615	zib	certified	-9.6852293404643568	size=8	prob=0.41801297244186852	pi=0.38997108508286338	
+616	zib	certified	-9.6852293404643568	size=8	prob=0.41801297244186852	pi=0.38997108508286338	
+617	zib	certified	-6.7614131333615832	size=8	prob=0.41801297244186852	pi=0.38997108508286338	
+618	zmbinom	certified	-24.326030933549802	size=27	prob=0.13732502681814179	p0=0.25	
+619	zmbinom	certified	-1.3862943611198906	size=4	prob=1	p0=0.5	
+620	zmbinom	certified	-1.9095425048844383	size=4	prob=1	p0=0.66666666666666663	
+621	zmbinom	certified	-3.3650583350462822	size=4	prob=1	p0=0.59999999999999998	
+622	zmbinom	certified	-2.7033672531978281	size=4	prob=1	p0=0.83333333333333337	
+623	zmbinom	certified	-3.7285698174840705	size=4	prob=0.89990967438695701	p0=0	
+624	zmbinom	certified	-3.7285698174840705	size=4	prob=0.89990967438695701	p0=0	
+625	zmbinom	certified	-3.7285698174840705	size=4	prob=0.89990967438695701	p0=0	
+626	zmbinom	certified	-3.7285698174840705	size=4	prob=0.89990967438695701	p0=0	
+627	zmbinom	certified	-3.7285698174840705	size=4	prob=0.89990967438695701	p0=0	
+628	zmbinom	certified	-3.7285698174840705	size=4	prob=0.89990967438695701	p0=0	
+629	zmbinom	stop:budget	nan	Profile optimizer IterationFailure: iteration limit or floating-point resolution exhausted; increase iterlim. No capped size estimate is returned.
+630	zmbinom	certified	-2.5020121176909393	size=1	prob=0	p0=0.80000000000000004	
+631	zmbinom	certified	-4.8766906286950178	size=101	prob=0.99207920792079207	p0=0	
+632	zmbinom	certified	-24.868395430180296	size=8	prob=0.46924867301372075	p0=0.25	
+633	zmbinom	certified	-2.6789993909355507	size=8	prob=0.49798294482183447	p0=0.5	
+634	zmbinom	certified	-3.2022475347000983	size=8	prob=0.49798294482183447	p0=0.66666666666666663	
+635	zmbinom	certified	-5.9504683946776025	size=8	prob=0.49798294482183447	p0=0.59999999999999998	
+636	zmbinom	certified	-3.996072283013488	size=8	prob=0.49798294482183447	p0=0.83333333333333337	
+637	zmbinom	certified	-6.68609401803689	size=8	prob=0.44600751296534913	p0=0	
+638	zmbinom	certified	-6.68609401803689	size=8	prob=0.44600751296534913	p0=0	
+639	zmbinom	certified	-6.68609401803689	size=8	prob=0.44600751296534913	p0=0	
+640	zmbinom	certified	-6.68609401803689	size=8	prob=0.44600751296534913	p0=0	
+641	zmbinom	certified	-6.68609401803689	size=8	prob=0.44600751296534913	p0=0	
+642	zmbinom	certified	-6.68609401803689	size=8	prob=0.44600751296534913	p0=0	
+643	zmbinom	certified	-2.5020121176909393	size=8	prob=0	p0=0.80000000000000004	
+644	zmbinom	certified	-24.652191395781148	size=9	prob=0.41072177895283224	p0=0.25	
+645	zmbinom	certified	-2.745048605129738	size=9	prob=0.41072177895283224	p0=0.5	
+646	zmbinom	certified	-3.2682967488942856	size=9	prob=0.41072177895283224	p0=0.66666666666666663	
+647	zmbinom	certified	-6.0825668230659762	size=9	prob=0.41072177895283224	p0=0.59999999999999998	
+648	zmbinom	certified	-4.0621214972076753	size=9	prob=0.41072177895283224	p0=0.83333333333333337	
+649	zmbinom	certified	-6.7825341450356458	size=8	prob=0.41072177895283224	p0=0	
+650	zmbinom	certified	-6.7825341450356458	size=8	prob=0.41072177895283224	p0=0	
+651	zmbinom	certified	-6.7825341450356458	size=8	prob=0.41072177895283224	p0=0	
+652	zmbinom	certified	-6.7825341450356458	size=8	prob=0.41072177895283224	p0=0	
+653	zmbinom	certified	-6.7825341450356458	size=8	prob=0.41072177895283224	p0=0	
+654	zmbinom	certified	-6.7825341450356458	size=8	prob=0.41072177895283224	p0=0	
+655	zmbinom	stop:wall-guard	nan
+656	zmbinom	certified	-2.5020121176909393	size=1	prob=0.41072177895283224	p0=0.80000000000000004	
+657	zmbinom	certified	-14.802309629445553	size=243	prob=0.41072177895283224	p0=0	
+658	zmbinom	certified	-25.347814195542121	size=8	prob=0.41072177895283224	p0=0.25	
+659	zmbinom	certified	-2.7979367237682435	size=8	prob=0.41072177895283224	p0=0.5	
+660	zmbinom	certified	-3.3211848675327915	size=8	prob=0.41072177895283224	p0=0.66666666666666663	
+661	zmbinom	certified	-6.188343060342989	size=8	prob=0.41072177895283224	p0=0.59999999999999998	
+662	zmbinom	certified	-4.1150096158461817	size=8	prob=0.41072177895283224	p0=0.83333333333333337	
+663	zmbinom	certified	-6.7825341450356458	size=8	prob=0.41072177895283224	p0=0	
+664	zmbinom	certified	-6.7825341450356458	size=8	prob=0.41072177895283224	p0=0	
+665	zmbinom	certified	-6.7825341450356458	size=8	prob=0.41072177895283224	p0=0	
+666	zmbinom	certified	-6.7825341450356458	size=8	prob=0.41072177895283224	p0=0	
+667	zmbinom	certified	-6.7825341450356458	size=8	prob=0.41072177895283224	p0=0	
+668	zmbinom	certified	-6.7825341450356458	size=8	prob=0.41072177895283224	p0=0	
+669	zmbinom	certified	-4.9997610244570065	size=8	prob=0.41072177895283224	p0=0.80000000000000004	
+670	zmbinom	certified	-24.346747417286849	size=27	prob=0.13732502681814179	p0=0.27600000000000002	
+671	zmbinom	certified	-1.6103182998614076	size=4	prob=1	p0=0.27600000000000002	
+672	zmbinom	certified	-2.8976727131263949	size=4	prob=1	p0=0.27600000000000002	
+673	zmbinom	certified	-4.5079910129878025	size=4	prob=1	p0=0.27600000000000002	
+674	zmbinom	certified	-6.7597359529213561	size=4	prob=1	p0=0.27600000000000002	
+675	zmbinom	certified	-5.3433892504661742	size=4	prob=0.89990967438695701	p0=0.27600000000000002	
+676	zmbinom	certified	-5.3433892504661742	size=4	prob=0.89990967438695701	p0=0.27600000000000002	
+677	zmbinom	certified	-5.3433892504661742	size=4	prob=0.89990967438695701	p0=0.27600000000000002	
+678	zmbinom	certified	-5.3433892504661742	size=4	prob=0.89990967438695701	p0=0.27600000000000002	
+679	zmbinom	certified	-5.3433892504661742	size=4	prob=0.89990967438695701	p0=0.27600000000000002	
+680	zmbinom	certified	-5.3433892504661742	size=4	prob=0.89990967438695701	p0=0.27600000000000002	
+681	zmbinom	stop:budget	nan	Profile optimizer IterationFailure: iteration limit or floating-point resolution exhausted; increase iterlim. No capped size estimate is returned.
+682	zmbinom	certified	-5.4723815396563689	size=1	prob=0	p0=0.27600000000000002	
+683	zmbinom	certified	-6.491510061677122	size=101	prob=0.99207920792079207	p0=0.27600000000000002	
+684	zmbinom	certified	-24.889111913917347	size=8	prob=0.46924867301372075	p0=0.27600000000000002	
+685	zmbinom	certified	-2.903023329677068	size=8	prob=0.49798294482183447	p0=0.27600000000000002	
+686	zmbinom	certified	-4.1903777429420552	size=8	prob=0.49798294482183447	p0=0.27600000000000002	
+687	zmbinom	certified	-7.0934010726191232	size=8	prob=0.49798294482183447	p0=0.27600000000000002	
+688	zmbinom	certified	-8.052440982737016	size=8	prob=0.49798294482183447	p0=0.27600000000000002	
+689	zmbinom	certified	-8.3009134510189941	size=8	prob=0.44600751296534913	p0=0.27600000000000002	
+690	zmbinom	certified	-8.3009134510189941	size=8	prob=0.44600751296534913	p0=0.27600000000000002	
+691	zmbinom	certified	-8.3009134510189941	size=8	prob=0.44600751296534913	p0=0.27600000000000002	
+692	zmbinom	certified	-8.3009134510189941	size=8	prob=0.44600751296534913	p0=0.27600000000000002	
+693	zmbinom	certified	-8.3009134510189941	size=8	prob=0.44600751296534913	p0=0.27600000000000002	
+694	zmbinom	certified	-8.3009134510189941	size=8	prob=0.44600751296534913	p0=0.27600000000000002	
+695	zmbinom	certified	-5.4723815396563689	size=8	prob=0	p0=0.27600000000000002	
+696	zmbinom	certified	-24.672907879518199	size=9	prob=0.41072177895283224	p0=0.27600000000000002	
+697	zmbinom	certified	-2.9690725438712549	size=9	prob=0.41072177895283224	p0=0.27600000000000002	
+698	zmbinom	certified	-4.2564269571362416	size=9	prob=0.41072177895283224	p0=0.27600000000000002	
+699	zmbinom	certified	-7.2254995010074969	size=9	prob=0.41072177895283224	p0=0.27600000000000002	
+700	zmbinom	certified	-8.1184901969312033	size=9	prob=0.41072177895283224	p0=0.27600000000000002	
+701	zmbinom	certified	-8.39735357801775	size=8	prob=0.41072177895283224	p0=0.27600000000000002	
+702	zmbinom	certified	-8.39735357801775	size=8	prob=0.41072177895283224	p0=0.27600000000000002	
+703	zmbinom	certified	-8.39735357801775	size=8	prob=0.41072177895283224	p0=0.27600000000000002	
+704	zmbinom	certified	-8.39735357801775	size=8	prob=0.41072177895283224	p0=0.27600000000000002	
+705	zmbinom	certified	-8.39735357801775	size=8	prob=0.41072177895283224	p0=0.27600000000000002	
+706	zmbinom	certified	-8.39735357801775	size=8	prob=0.41072177895283224	p0=0.27600000000000002	
+707	zmbinom	stop:wall-guard	nan
+708	zmbinom	certified	-5.4723815396563689	size=1	prob=0.41072177895283224	p0=0.27600000000000002	
+709	zmbinom	certified	-16.417129062427655	size=243	prob=0.41072177895283224	p0=0.27600000000000002	
+710	zmbinom	certified	-25.368530679279168	size=8	prob=0.41072177895283224	p0=0.27600000000000002	
+711	zmbinom	certified	-3.0219606625097608	size=8	prob=0.41072177895283224	p0=0.27600000000000002	
+712	zmbinom	certified	-4.309315075774748	size=8	prob=0.41072177895283224	p0=0.27600000000000002	
+713	zmbinom	certified	-7.3312757382845088	size=8	prob=0.41072177895283224	p0=0.27600000000000002	
+714	zmbinom	certified	-8.1713783155697097	size=8	prob=0.41072177895283224	p0=0.27600000000000002	
+715	zmbinom	certified	-8.39735357801775	size=8	prob=0.41072177895283224	p0=0.27600000000000002	
+716	zmbinom	certified	-8.39735357801775	size=8	prob=0.41072177895283224	p0=0.27600000000000002	
+717	zmbinom	certified	-8.39735357801775	size=8	prob=0.41072177895283224	p0=0.27600000000000002	
+718	zmbinom	certified	-8.39735357801775	size=8	prob=0.41072177895283224	p0=0.27600000000000002	
+719	zmbinom	certified	-8.39735357801775	size=8	prob=0.41072177895283224	p0=0.27600000000000002	
+720	zmbinom	certified	-8.39735357801775	size=8	prob=0.41072177895283224	p0=0.27600000000000002	
+721	zmbinom	certified	-7.9701304464224361	size=8	prob=0.41072177895283224	p0=0.27600000000000002	
+722	ztbinom	certified	-19.963079579127626	size=7	prob=0.53312402232078626	
+723	ztbinom	certified	-2.7007969787539077	size=5	prob=0.79974234676516809	
+724	ztbinom	certified	-4.7468580786223598	size=6	prob=0.77768387437674225	
+725	ztbinom	certified	-8.9123123008848353	size=7	prob=0.59899962061183043	
+726	ztbinom	certified	-9.6858857786618966	size=7	prob=0.54542253416285558	
+727	ztbinom	certified	-3.6807397845040568	size=3	prob=0.86451109069775733	
+728	ztbinom	certified	-3.6807397845040568	size=3	prob=0.86451109069775733	
+729	ztbinom	certified	-3.6807397845040568	size=3	prob=0.86451109069775733	
+730	ztbinom	certified	-3.6807397845040568	size=3	prob=0.86451109069775733	
+731	ztbinom	certified	-3.6807397845040568	size=3	prob=0.86451109069775733	
+732	ztbinom	certified	-3.6807397845040568	size=3	prob=0.86451109069775733	
+733	ztbinom	stop:budget	nan	Profile optimizer IterationFailure: iteration limit or floating-point resolution exhausted; increase iterlim. No capped size estimate is returned.
+734	ztbinom	certified	-4.8766906286950178	size=101	prob=0.99207920792079207	
+735	ztbinom	certified	-20.051554896077672	size=8	prob=0.46563359076887834	
+736	ztbinom	certified	-3.0316971622597402	size=8	prob=0.49798294482183447	
+737	ztbinom	certified	-4.9149898273825459	size=8	prob=0.58279792083256954	
+738	ztbinom	certified	-8.9222756823244147	size=8	prob=0.52360722607930787	
+739	ztbinom	certified	-9.7371668552805293	size=8	prob=0.47646226940509429	
+740	ztbinom	certified	-6.2395462013723773	size=8	prob=0.30788831321193644	
+741	ztbinom	certified	-6.2395462013723773	size=8	prob=0.30788831321193644	
+742	ztbinom	certified	-6.2395462013723773	size=8	prob=0.30788831321193644	
+743	ztbinom	certified	-6.2395462013723773	size=8	prob=0.30788831321193644	
+744	ztbinom	certified	-6.2395462013723773	size=8	prob=0.30788831321193644	
+745	ztbinom	certified	-6.2395462013723773	size=8	prob=0.30788831321193644	
+746	ztbinom	certified	-20.161468288737176	size=9	prob=0.40988208060294373	
+747	ztbinom	certified	-3.124883493758869	size=9	prob=0.40988208060294373	
+748	ztbinom	certified	-5.1214701795826718	size=11	prob=0.40988208060294373	
+749	ztbinom	certified	-8.9993625139589408	size=10	prob=0.40988208060294373	
+750	ztbinom	certified	-9.821127827224009	size=9	prob=0.40988208060294373	
+751	ztbinom	certified	-5.9418330274602695	size=6	prob=0.40988208060294373	
+752	ztbinom	certified	-5.9418330274602695	size=6	prob=0.40988208060294373	
+753	ztbinom	certified	-5.9418330274602695	size=6	prob=0.40988208060294373	
+754	ztbinom	certified	-5.9418330274602695	size=6	prob=0.40988208060294373	
+755	ztbinom	certified	-5.9418330274602695	size=6	prob=0.40988208060294373	
+756	ztbinom	certified	-5.9418330274602695	size=6	prob=0.40988208060294373	
+757	ztbinom	stop:wall-guard	nan
+758	ztbinom	certified	-14.804348761504087	size=244	prob=0.40988208060294373	
+759	ztbinom	certified	-20.631369684457795	size=8	prob=0.40988208060294373	
+760	ztbinom	certified	-3.2742144589307891	size=8	prob=0.40988208060294373	
+761	ztbinom	certified	-6.3333746094939807	size=8	prob=0.40988208060294373	
+762	ztbinom	certified	-9.9362833787157889	size=8	prob=0.40988208060294373	
+763	ztbinom	certified	-10.151337687083387	size=8	prob=0.40988208060294373	
+764	ztbinom	certified	-7.020660416564386	size=8	prob=0.40988208060294373	
+765	ztbinom	certified	-7.020660416564386	size=8	prob=0.40988208060294373	
+766	ztbinom	certified	-7.020660416564386	size=8	prob=0.40988208060294373	
+767	ztbinom	certified	-7.020660416564386	size=8	prob=0.40988208060294373	
+768	ztbinom	certified	-7.020660416564386	size=8	prob=0.40988208060294373	
+769	ztbinom	certified	-7.020660416564386	size=8	prob=0.40988208060294373	
+770	zib	certified	-18.640244601299401	size=6	prob=0.31876906337931987	pi=0.25930355785451442	
+771	zib	certified	-18.647229604045464	size=8	prob=0.23420898676532925	pi=0.24390888761768223	
+772	zib	certified	-18.715460431287887	size=5	prob=0.41801297244186852	pi=0.28563694345838514	
+773	zib	certified	-22.599808946484615	size=8	prob=0.41801297244186852	pi=0.32444195468755627	
+774	zib	certified	-18.938374852961672	size=5	prob=0.40370687899259383	pi=0.38997108508286338	
+775	zib	certified	-19.024575476277317	size=8	prob=0.24857405537767496	pi=0.38997108508286338	
+776	zib	certified	-18.953452606014466	size=5	prob=0.41801297244186852	pi=0.38997108508286338	
+777	zib	certified	-22.706834691124193	size=8	prob=0.41801297244186852	pi=0.38997108508286338	
+778	zmbinom	stop:limit	nan	The maximum likelihood estimator escapes to infinite size. Use `mlzmpois`.
+779	zmbinom	certified	-18.181034105175858	size=8	prob=0.24100655805237653	p0=0	
+780	zmbinom	certified	-19.062915399379662	size=5	prob=0.41072177895283224	p0=0	
+781	zmbinom	certified	-23.261667224013017	size=8	prob=0.41072177895283224	p0=0	
+782	zmbinom	stop:limit	nan	The maximum likelihood estimator escapes to infinite size. Use `mlzmpois`.
+783	zmbinom	certified	-22.056600744332908	size=8	prob=0.24100655805237653	p0=0.27600000000000002	
+784	zmbinom	certified	-22.938482038536712	size=5	prob=0.41072177895283224	p0=0.27600000000000002	
+785	zmbinom	certified	-27.137233863170067	size=8	prob=0.41072177895283224	p0=0.27600000000000002	
+786	ztbinom	stop:limit	nan	The maximum likelihood estimator escapes to infinite size. Use `mlztpois`.
+787	ztbinom	certified	-18.181034105175858	size=8	prob=0.24100655805237653	
+788	ztbinom	certified	-19.061150926027288	size=5	prob=0.40988208060294373	
+789	ztbinom	certified	-23.213172343310568	size=8	prob=0.40988208060294373	
+790	bbinom	certified	-21.342160109922716	size=10	alpha=88.146424303528036	beta=205.67398432685277	
+791	bbinom	certified	-21.94322137913429	size=6	alpha=1.9337387365835597	beta=2.0317036126922741	
+792	bbinom	certified	-23.201126625027555	size=10	alpha=1.9337387365835597	beta=4.7783683767572978	
+793	bbinom	certified	-21.553536924870141	size=6	alpha=3.0580479684109676	beta=2.9406650178896676	
+794	bbinom	certified	-24.177566271452278	size=10	alpha=1.5505367188981019	beta=2.9406650178896676	
+795	bbinom	certified	-22.439590289611413	size=7	alpha=1.9337387365835597	beta=2.9406650178896676	
+796	bbinom	certified	-24.502811698986058	size=10	alpha=1.9337387365835597	beta=2.9406650178896676	
+797	bbinom	stop:limit	nan	The maximum likelihood estimator does not exist: every observation is 0 or `size`, and the likelihood increases toward the two-point distribution on {0, size} as `alpha` and `beta` tend to 0 with `alpha / (alpha + beta)` fixed. Its probability of `size` is `mean(x == size)`, the fit of `mlbinom(x / 10, size = 1)`.
+798	bbinom	stop:unresolved	nan	Beta-binomial free-size search cannot resolve the negative binomial face against larger finite sizes.
+799	bbinom	certified	-38.553519683217345	size=10	alpha=1.9337387365835597	beta=1.9137669855772812	
+800	bbinom	certified	-22.297301781231425	size=51	alpha=0.15505600500331171	beta=2.9406650178896676	
+801	bbinom	certified	-32.589972138266219	size=10	alpha=0.46236250481628799	beta=2.9406650178896676	
+802	bbinom	certified	-36.778922662939827	size=12	alpha=1.9337387365835597	beta=2.9406650178896676	
+803	bbinom	certified	-39.326762716131704	size=10	alpha=1.9337387365835597	beta=2.9406650178896676	
+804	zib	certified	-18.640244601299401	size=6	prob=0.31876906337931987	pi=0.25930355785451442	
+805	zib	certified	-18.647229604045464	size=8	prob=0.23420898676532925	pi=0.24390888761768223	
+806	zib	certified	-18.715460431287887	size=5	prob=0.41801297244186852	pi=0.28563694345838514	
+807	zib	certified	-22.599808946484615	size=8	prob=0.41801297244186852	pi=0.32444195468755627	
+808	zib	certified	-18.938374852961672	size=5	prob=0.40370687899259383	pi=0.38997108508286338	
+809	zib	certified	-19.024575476277317	size=8	prob=0.24857405537767496	pi=0.38997108508286338	
+810	zib	certified	-18.953452606014466	size=5	prob=0.41801297244186852	pi=0.38997108508286338	
+811	zib	certified	-22.706834691124193	size=8	prob=0.41801297244186852	pi=0.38997108508286338	
+812	zmbinom	stop:limit	nan	The maximum likelihood estimator escapes to infinite size. Use `mlzmpois`.
+813	zmbinom	certified	-18.181034105175858	size=8	prob=0.24100655805237653	p0=0	
+814	zmbinom	certified	-19.062915399379662	size=5	prob=0.41072177895283224	p0=0	
+815	zmbinom	certified	-23.261667224013017	size=8	prob=0.41072177895283224	p0=0	
+816	zmbinom	stop:limit	nan	The maximum likelihood estimator escapes to infinite size. Use `mlzmpois`.
+817	zmbinom	certified	-22.056600744332908	size=8	prob=0.24100655805237653	p0=0.27600000000000002	
+818	zmbinom	certified	-22.938482038536712	size=5	prob=0.41072177895283224	p0=0.27600000000000002	
+819	zmbinom	certified	-27.137233863170067	size=8	prob=0.41072177895283224	p0=0.27600000000000002	
+820	ztbinom	stop:limit	nan	The maximum likelihood estimator escapes to infinite size. Use `mlztpois`.
+821	ztbinom	certified	-18.181034105175858	size=8	prob=0.24100655805237653	
+822	ztbinom	certified	-19.061150926027288	size=5	prob=0.40988208060294373	
+823	ztbinom	certified	-23.213172343310568	size=8	prob=0.40988208060294373	
+824	bbinom	certified	-21.342160109922716	size=10	alpha=88.146424303528036	beta=205.67398432685277	
+825	bbinom	certified	-21.94322137913429	size=6	alpha=1.9337387365835597	beta=2.0317036126922741	
+826	bbinom	certified	-23.201126625027555	size=10	alpha=1.9337387365835597	beta=4.7783683767572978	
+827	bbinom	certified	-21.553536924870141	size=6	alpha=3.0580479684109676	beta=2.9406650178896676	
+828	bbinom	certified	-24.177566271452278	size=10	alpha=1.5505367188981019	beta=2.9406650178896676	
+829	bbinom	certified	-22.439590289611413	size=7	alpha=1.9337387365835597	beta=2.9406650178896676	
+830	bbinom	certified	-24.502811698986058	size=10	alpha=1.9337387365835597	beta=2.9406650178896676	
+831	bbinom	stop:limit	nan	The maximum likelihood estimator does not exist: every observation is 0 or `size`, and the likelihood increases toward the two-point distribution on {0, size} as `alpha` and `beta` tend to 0 with `alpha / (alpha + beta)` fixed. Its probability of `size` is `mean(x == size)`, the fit of `mlbinom(x / 10, size = 1)`.
+832	bbinom	stop:unresolved	nan	Beta-binomial free-size search cannot resolve the negative binomial face against larger finite sizes.
+833	bbinom	certified	-38.553519683217345	size=10	alpha=1.9337387365835597	beta=1.9137669855772812	
+834	bbinom	certified	-22.297301781231425	size=51	alpha=0.15505600500331171	beta=2.9406650178896676	
+835	bbinom	certified	-32.589972138266219	size=10	alpha=0.46236250481628799	beta=2.9406650178896676	
+836	bbinom	certified	-36.778922662939827	size=12	alpha=1.9337387365835597	beta=2.9406650178896676	
+837	bbinom	certified	-39.326762716131704	size=10	alpha=1.9337387365835597	beta=2.9406650178896676	
+838	bbinom	stop:limit	nan	The maximum likelihood estimator does not exist: the likelihood increases toward the binomial distribution as `alpha + beta` grows. Use `mlbinom(x, size = 10)` instead.
+839	bbinom	certified	-3.4064396536326988	size=10	alpha=1.9337387365835597	beta=0.099934629415376591	
+840	bbinom	certified	-3.4064396536326988	size=10	alpha=1.9337387365835597	beta=0.099934629415376591	
+841	bbinom	certified	-2.630023038931939	size=10	alpha=144.20834845347716	beta=2.9406650178896676	
+842	bbinom	certified	-2.630023038931939	size=10	alpha=144.20834845347716	beta=2.9406650178896676	
+843	bbinom	certified	-13.414617254583675	size=19	alpha=1.9337387365835597	beta=2.9406650178896676	
+844	bbinom	certified	-21.50064233146793	size=10	alpha=1.9337387365835597	beta=2.9406650178896676	
+845	hyper	stop:budget	nan	Finite-grid numerical failure: 1e7 candidate evaluation budget or representability/nonfinite likelihood limit exceeded.
+846	hyper	certified	-3.3284460044295843	m=20	N=21	k=10	
+847	hyper	certified	-2.5020121176909393	m=10	N=50	k=49	
+848	hyper	certified	-7.5777187488939859	m=20	N=50	k=24	
+849	hyper	certified	-2.5020121176909402	m=49	N=50	k=10	
+850	hyper	certified	-3.3284460044295878	m=20	N=21	k=10	
+851	hyper	certified	-2.5020121176909402	m=49	N=50	k=10	
+852	hyper	certified	-51.323729544830499	m=20	N=50	k=10	
+853	nhyper	certified	-2.5020121176909393	m=14	N=15	r=3	
+854	nhyper	certified	-2.5020121176909407	m=39	N=40	r=32	
+855	nhyper	certified	-2.5625128683643466	m=20	N=21	r=3	
+856	nhyper	certified	-3.4046629849006362	m=20	N=33	r=20	
+857	nhyper	certified	-2.6008871567597907	m=47	N=50	r=3	
+858	nhyper	certified	-2.8067996580456596	m=49	N=50	r=32	
+859	nhyper	certified	-8.2800291611360741	m=20	N=50	r=2	
+860	nhyper	certified	-11.84395777661673	m=20	N=50	r=13	
+861	nhyper	certified	-2.5020121176909393	m=14	N=15	r=3	
+862	nhyper	certified	-12.054014885129424	m=3	N=33	r=3	
+863	nhyper	certified	-2.5625128683643466	m=20	N=21	r=3	
+864	nhyper	certified	-18.798583739564062	m=20	N=218	r=3	
+865	nhyper	certified	-2.6008871567597902	m=47	N=50	r=3	
+866	nhyper	certified	-16.544124182435787	m=4	N=50	r=3	
+867	nhyper	certified	-13.57284445053013	m=20	N=50	r=3	
+868	nhyper	certified	-123.56085784056367	m=20	N=50	r=3	
+869	tbinom	certified	-2.5020121176909393	prob=0.33333333333333315	a=0	b=2	size=2	
+870	tbinom	certified	-2.5020121176909385	prob=0.97560975609756084	a=8	b=10	size=10	
+871	tbinom	certified	-2.5375132424645859	prob=0.40046933867469231	a=0	b=2	size=2	
+872	tbinom	certified	-2.5020136462096616	prob=0.40046933867469231	a=8	b=10	size=69	
+873	tbinom	certified	-2.5020121176909393	prob=0.33333333333333315	a=0	b=2	size=2	
+874	tbinom	certified	-2.5993705709925621	prob=0.97999999999999998	a=0	b=10	size=10	
+875	tbinom	certified	-2.5375132424645859	prob=0.40046933867469231	a=0	b=2	size=2	
+876	tbinom	certified	-2.6814188070201226	prob=0.40046933867469231	a=0	b=10	size=95	
+877	tbinom	certified	-2.5020121176909393	prob=0.33333333333333315	a=0	b=10	size=2	
+878	tbinom	certified	-2.5020121176909385	prob=0.97560975609756084	a=8	b=10	size=10	
+879	tbinom	certified	-2.5375132424645859	prob=0.40046933867469231	a=0	b=10	size=2	
+880	tbinom	certified	-2.5020136462096616	prob=0.40046933867469231	a=8	b=10	size=69	
+881	tbinom	certified	-2.5020121176909393	prob=0.33333333333333315	a=0	b=10	size=2	
+882	tbinom	certified	-2.5993705709925621	prob=0.97999999999999998	a=0	b=10	size=10	
+883	tbinom	certified	-2.5375132424645859	prob=0.40046933867469231	a=0	b=10	size=2	
+884	tbinom	certified	-2.6814188070201226	prob=0.40046933867469231	a=0	b=10	size=95	
+885	tbinom	certified	-2.5020121176909349	prob=0.043478260869565168	a=0	b=2	size=12	
+886	tbinom	certified	-2.502012117690942	prob=0.93023255813953476	a=8	b=10	size=12	
+887	tbinom	certified	-6.4086697604677667	prob=0.40046933867469231	a=0	b=2	size=12	
+888	tbinom	certified	-7.3431693073866207	prob=0.40046933867469231	a=8	b=10	size=12	
+889	tbinom	certified	-2.5020121176909349	prob=0.043478260869565168	a=0	b=2	size=12	
+890	tbinom	certified	-2.6415708650072602	prob=0.94660003364339529	a=0	b=10	size=12	
+891	tbinom	certified	-6.4086697604677667	prob=0.40046933867469231	a=0	b=2	size=12	
+892	tbinom	certified	-28.303817827428212	prob=0.40046933867469231	a=0	b=10	size=12	
+893	tbinom	certified	-2.6289048497583636	prob=0.033845858154697019	a=0	b=10	size=12	
+894	tbinom	certified	-2.502012117690942	prob=0.93023255813953476	a=8	b=10	size=12	
+895	tbinom	certified	-18.975856783513613	prob=0.40046933867469231	a=0	b=10	size=12	
+896	tbinom	certified	-7.3431693073866207	prob=0.40046933867469231	a=8	b=10	size=12	
+897	tbinom	certified	-2.6289048497583636	prob=0.033845858154697019	a=0	b=10	size=12	
+898	tbinom	certified	-2.6415708650072602	prob=0.94660003364339529	a=0	b=10	size=12	
+899	tbinom	certified	-18.975856783513613	prob=0.40046933867469231	a=0	b=10	size=12	
+900	tbinom	certified	-28.303817827428212	prob=0.40046933867469231	a=0	b=10	size=12	
+901	zib	certified	-2.5968324238214087	size=8	prob=0.97499999999999998	pi=0	
+902	zib	certified	-2.5968324238214127	size=8	prob=0.97499999999999998	pi=0	
+903	zib	certified	-8.5104379200534268	size=18	prob=0.41801297244186852	pi=0	
+904	zib	certified	-32.479335262409997	size=8	prob=0.41801297244186852	pi=0	
+905	zib	certified	-5.0680770309948748	size=8	prob=0.97499999999999998	pi=0.38997108508286338	
+906	zib	certified	-5.0680770309948802	size=8	prob=0.97499999999999998	pi=0.38997108508286338	
+907	zib	certified	-10.981682527226893	size=18	prob=0.41801297244186852	pi=0.38997108508286338	
+908	zib	certified	-34.950579869583464	size=8	prob=0.41801297244186852	pi=0.38997108508286338	
+909	zmbinom	certified	-2.5968324238206502	size=8	prob=0.9749999999998511	p0=0	
+910	zmbinom	certified	-2.5968324238206502	size=8	prob=0.9749999999998511	p0=0	
+911	zmbinom	certified	-8.5600949304361471	size=19	prob=0.41072177895283224	p0=0	
+912	zmbinom	certified	-33.079911804736859	size=8	prob=0.41072177895283224	p0=0	
+913	zmbinom	certified	-4.2116518568027539	size=8	prob=0.9749999999998511	p0=0.27600000000000002	
+914	zmbinom	certified	-4.2116518568027539	size=8	prob=0.9749999999998511	p0=0.27600000000000002	
+915	zmbinom	certified	-10.174914363418251	size=19	prob=0.41072177895283224	p0=0.27600000000000002	
+916	zmbinom	certified	-34.694731237718962	size=8	prob=0.41072177895283224	p0=0.27600000000000002	
+917	ztbinom	certified	-2.5020121176909393	size=2	prob=0.33333333333333315	
+918	ztbinom	certified	-2.5968324238206502	size=8	prob=0.9749999999998511	
+919	ztbinom	certified	-2.6220825425524659	size=8	prob=0.052851791494234066	
+920	ztbinom	certified	-2.5968324238206502	size=8	prob=0.9749999999998511	
+921	ztbinom	certified	-2.5480695244918907	size=2	prob=0.40988208060294373	
+922	ztbinom	certified	-8.5601629918368651	size=19	prob=0.40988208060294373	
+923	ztbinom	certified	-11.559983740343217	size=8	prob=0.40988208060294373	
+924	ztbinom	certified	-33.157457594432465	size=8	prob=0.40988208060294373	
+925	bbinom	certified	-24.955569300174105	size=4	alpha=0.54313495951647695	beta=0.77265494656787637	
+926	bbinom	certified	-25.432397021341991	size=4	alpha=1	beta=1.3265943941899105	
+927	bbinom	stop:budget	nan	Beta-binomial search exhausted its work budget before certifying the maximum. Raising iterlim may resolve this stop.
+928	hyper	stop:input-or-search	nan	No finite maximum was found in the exploratory search; a larger finite maximum is not excluded. The Poisson face may dominate; use mlpois for the limit model.
+929	hyper	stop:unresolved	nan	No finite maximum was found in the exploratory search; a larger finite maximum is not excluded. The binomial limit is available: use mlbinom(x, size = held count).
+930	nhyper	certified	-25.751006598945608	m=1	N=5	r=1	
+931	tbinom	stop:limit	nan	The maximum likelihood estimator does not exist: with both `prob` and `size` free, the global likelihood supremum lies at the truncated Poisson distribution as `size` grows. Use `mltpois(x, a = -1, b = 4)` instead.
+932	ztbinom	stop:limit	nan	The maximum likelihood estimator escapes to infinite size. Use `mlztpois`.
+933	zib	certified	-27.200253269995692	size=7	prob=0.3234365047977894	pi=0.3772146069463776	
+934	zmbinom	certified	-26.770336974274731	size=12	prob=0.17831054040590388	p0=0.3125	
+935	bbinom	certified	-24.542731295738179	size=4	alpha=2.8482802152454352	beta=1.9529128476168671	
+936	bbinom	certified	-25.522097437881435	size=4	alpha=1	beta=0.80284136608167644	
+937	bbinom	stop:budget	nan	Beta-binomial search exhausted its work budget before certifying the maximum. Raising iterlim may resolve this stop.
+938	hyper	stop:input-or-search	nan	No finite maximum was found in the exploratory search; a larger finite maximum is not excluded. The binomial face of size 5 may dominate; use mlbinom for the limit model.
+939	hyper	stop:unresolved	nan	No finite maximum was found in the exploratory search; a larger finite maximum is not excluded. The binomial limit is available: use mlbinom(x, size = held count).
+940	nhyper	certified	-25.751006598945608	m=1	N=5	r=1	
+941	tbinom	stop:limit	nan	The maximum likelihood estimator does not exist: with both `prob` and `size` free, the global likelihood supremum lies at the truncated Poisson distribution as `size` grows. Use `mltpois(x, a = -1, b = 4)` instead.
+942	ztbinom	certified	-25.30564827712832	size=5	prob=0.67245517767337426	
+943	zib	certified	-30.031642175213523	size=4	prob=0.63209613972040324	pi=0.3772146069463776	
+944	zmbinom	certified	-25.430333255292826	size=4	prob=0.62014803869906054	p0=0.0625	
+945	bbinom	certified	-24.888855232118118	size=4	alpha=2.7135431949154825	beta=2.3680652321716233	
+946	bbinom	certified	-25.746574365717208	size=4	alpha=1	beta=0.96913281737793211	
+947	bbinom	stop:budget	nan	Beta-binomial search exhausted its work budget before certifying the maximum. Raising iterlim may resolve this stop.
+948	hyper	stop:input-or-search	nan	No finite maximum was found in the exploratory search; a larger finite maximum is not excluded. The binomial face of size 6 may dominate; use mlbinom for the limit model.
+949	hyper	stop:unresolved	nan	No finite maximum was found in the exploratory search; a larger finite maximum is not excluded. The binomial limit is available: use mlbinom(x, size = held count).
+950	nhyper	certified	-25.751006598945605	m=1	N=5	r=1	
+951	tbinom	stop:limit	nan	The maximum likelihood estimator does not exist: with both `prob` and `size` free, the global likelihood supremum lies at the truncated Poisson distribution as `size` grows. Use `mltpois(x, a = -1, b = 4)` instead.
+952	ztbinom	certified	-25.441144125245728	size=6	prob=0.51396754528684374	
+953	zib	certified	-30.665235902382079	size=5	prob=0.45104664167790398	pi=0.3772146069463776	
+954	zmbinom	certified	-25.467718000052276	size=7	prob=0.29607908848034992	p0=0.0625	
+955	bbinom	certified	-25.566288921824807	size=4	alpha=0.74552104473811398	beta=0.90366902032264285	
+956	bbinom	certified	-25.66636607461502	size=4	alpha=1	beta=1.1479668663262113	
+957	bbinom	stop:budget	nan	Beta-binomial search exhausted its work budget before certifying the maximum. Raising iterlim may resolve this stop.
+958	hyper	stop:input-or-search	nan	No finite maximum was found in the exploratory search; a larger finite maximum is not excluded. The Poisson face may dominate; use mlpois for the limit model.
+959	hyper	stop:unresolved	nan	No finite maximum was found in the exploratory search; a larger finite maximum is not excluded. The binomial limit is available: use mlbinom(x, size = held count).
+960	nhyper	certified	-25.751006598945605	m=1	N=5	r=1	
+961	tbinom	stop:limit	nan	The maximum likelihood estimator does not exist: with both `prob` and `size` free, the global likelihood supremum lies at the truncated Poisson distribution as `size` grows. Use `mltpois(x, a = -1, b = 4)` instead.
+962	ztbinom	certified	-27.874544006030206	size=17	prob=0.16047225154854744	
+963	zib	certified	-23.825613284167151	size=4	prob=0.67634784500538858	pi=0.3772146069463776	
+964	zmbinom	certified	-23.647154067083839	size=4	prob=0.67412956104439004	p0=0.3125	
+965	bbinom	certified	-25.334697401392489	size=4	alpha=1.2653592751006746	beta=1.6767150034768397	
+966	bbinom	certified	-25.389211781048232	size=4	alpha=1	beta=1.3469459955703598	
+967	bbinom	stop:budget	nan	Beta-binomial search exhausted its work budget before certifying the maximum. Raising iterlim may resolve this stop.
+968	hyper	stop:input-or-search	nan	No finite maximum was found in the exploratory search; a larger finite maximum is not excluded. The Poisson face may dominate; use mlpois for the limit model.
+969	hyper	stop:unresolved	nan	No finite maximum was found in the exploratory search; a larger finite maximum is not excluded. The binomial limit is available: use mlbinom(x, size = held count).
+970	nhyper	certified	-25.751006598945605	m=1	N=5	r=1	
+971	tbinom	stop:limit	nan	The maximum likelihood estimator does not exist: with both `prob` and `size` free, the global likelihood supremum lies at the truncated Poisson distribution as `size` grows. Use `mltpois(x, a = -1, b = 4)` instead.
+972	ztbinom	certified	-25.860712173688242	size=12	prob=0.21090510136576912	
+973	zib	certified	-28.384130818702964	size=7	prob=0.28787089893295637	pi=0.3772146069463776	
+974	zmbinom	stop:limit	nan	The maximum likelihood estimator escapes to infinite size. Use `mlzmpois`.
+975	bbinom	certified	-22.876309150547755	size=4	alpha=25.549201913238523	beta=24.001924335477543	
+976	bbinom	certified	-25.650238885453405	size=4	alpha=1	beta=1.1553214095131978	
+977	bbinom	stop:budget	nan	Beta-binomial search exhausted its work budget before certifying the maximum. Raising iterlim may resolve this stop.
+978	hyper	stop:input-or-search	nan	No finite maximum was found in the exploratory search; a larger finite maximum is not excluded. The binomial face of size 4 may dominate; use mlbinom for the limit model.
+979	hyper	stop:unresolved	nan	No finite maximum was found in the exploratory search; a larger finite maximum is not excluded. The binomial limit is available: use mlbinom(x, size = held count).
+980	nhyper	certified	-25.751006598945605	m=1	N=5	r=1	
+981	tbinom	certified	-22.894717871366321	prob=0.51562499999999989	a=-1	b=4	size=4	
+982	ztbinom	certified	-22.883804997817762	size=5	prob=0.60673881944609342	
+983	zib	certified	-27.864949074712683	size=4	prob=0.54763918992711624	pi=0.3772146069463776	
+984	zmbinom	certified	-22.883676931548266	size=4	prob=0.52106100158087343	p0=0.0625	
+985	bbinom	certified	-23.185508660156891	size=4	alpha=2.8250505737292988	beta=5.3541884252352645	
+986	bbinom	certified	-23.826550979474838	size=4	alpha=1	beta=1.9922532971002453	
+987	bbinom	stop:budget	nan	Beta-binomial search exhausted its work budget before certifying the maximum. Raising iterlim may resolve this stop.
+988	hyper	stop:input-or-search	nan	No finite maximum was found in the exploratory search; a larger finite maximum is not excluded. The binomial face of size 14 may dominate; use mlbinom for the limit model.
+989	hyper	stop:unresolved	nan	No finite maximum was found in the exploratory search; a larger finite maximum is not excluded. The binomial limit is available: use mlbinom(x, size = held count).
+990	nhyper	certified	-23.826615652917827	m=2	N=6	r=1	
+991	tbinom	stop:limit	nan	The maximum likelihood estimator does not exist: with both `prob` and `size` free, the global likelihood supremum lies at the truncated Poisson distribution as `size` grows. Use `mltpois(x, a = -1, b = 4)` instead.
+992	ztbinom	certified	-23.259643023609367	size=7	prob=0.31536462725820169	
+993	zib	certified	-26.388633909605421	size=5	prob=0.32434317170787808	pi=0.3772146069463776	
+994	zmbinom	stop:limit	nan	The maximum likelihood estimator escapes to infinite size. Use `mlzmpois`.
+995	bbinom	certified	-25.637742252910527	size=4	alpha=1.3461744916224041	beta=1.2247144890741539	
+996	bbinom	certified	-25.734434851654903	size=4	alpha=1	beta=0.93948781446713525	
+997	bbinom	stop:budget	nan	Beta-binomial search exhausted its work budget before certifying the maximum. Raising iterlim may resolve this stop.
+998	hyper	stop:input-or-search	nan	No finite maximum was found in the exploratory search; a larger finite maximum is not excluded. The binomial face of size 14 may dominate; use mlbinom for the limit model.
+999	hyper	stop:unresolved	nan	No finite maximum was found in the exploratory search; a larger finite maximum is not excluded. The binomial limit is available: use mlbinom(x, size = held count).
+1000	nhyper	certified	-25.751006598945605	m=1	N=5	r=1	
+1001	tbinom	stop:limit	nan	The maximum likelihood estimator does not exist: with both `prob` and `size` free, the global likelihood supremum lies at the truncated Poisson distribution as `size` grows. Use `mltpois(x, a = -1, b = 4)` instead.
+1002	ztbinom	certified	-26.849241493415029	size=8	prob=0.37375660502105923	
+1003	zib	certified	-30.160101033775216	size=5	prob=0.46700479584683596	pi=0.3772146069463776	
+1004	zmbinom	certified	-26.922849521978453	size=8	prob=0.27118892781715331	p0=0.125	
+1005	bbinom	certified	-25.370712458380765	size=4	alpha=1.8442805227165646	beta=1.8680837587601002	
+1006	bbinom	certified	-25.707926775196775	size=4	alpha=1	beta=1.1017958233876308	
+1007	bbinom	stop:budget	nan	Beta-binomial search exhausted its work budget before certifying the maximum. Raising iterlim may resolve this stop.
+1008	hyper	stop:input-or-search	nan	No finite maximum was found in the exploratory search; a larger finite maximum is not excluded. The binomial face of size 7 may dominate; use mlbinom for the limit model.
+1009	hyper	stop:unresolved	nan	No finite maximum was found in the exploratory search; a larger finite maximum is not excluded. The binomial limit is available: use mlbinom(x, size = held count).
+1010	nhyper	certified	-25.751006598945605	m=1	N=5	r=1	
+1011	tbinom	stop:limit	nan	The maximum likelihood estimator does not exist: with both `prob` and `size` free, the global likelihood supremum lies at the truncated Poisson distribution as `size` grows. Use `mltpois(x, a = -1, b = 4)` instead.
+1012	ztbinom	certified	-26.091211343380806	size=6	prob=0.49133960835799584	
+1013	zib	certified	-26.341649222005451	size=4	prob=0.610214886125797	pi=0.3772146069463776	
+1014	zmbinom	certified	-24.779760167799683	size=4	prob=0.59956158900592271	p0=0.1875	
+1015	bbinom	certified	-24.984073403717542	size=4	alpha=0.51730318567745925	beta=0.70077513500101474	
+1016	bbinom	certified	-25.564352611201887	size=4	alpha=1	beta=1.239450255701668	
+1017	bbinom	stop:budget	nan	Beta-binomial search exhausted its work budget before certifying the maximum. Raising iterlim may resolve this stop.
+1018	hyper	stop:input-or-search	nan	No finite maximum was found in the exploratory search; a larger finite maximum is not excluded. The Poisson face may dominate; use mlpois for the limit model.
+1019	hyper	stop:unresolved	nan	No finite maximum was found in the exploratory search; a larger finite maximum is not excluded. The binomial limit is available: use mlbinom(x, size = held count).
+1020	nhyper	certified	-25.751006598945608	m=1	N=5	r=1	
+1021	tbinom	stop:limit	nan	The maximum likelihood estimator does not exist: with both `prob` and `size` free, the global likelihood supremum lies at the truncated Poisson distribution as `size` grows. Use `mltpois(x, a = -1, b = 4)` instead.
+1022	ztbinom	stop:limit	nan	The maximum likelihood estimator escapes to infinite size. Use `mlztpois`.
+1023	zib	certified	-27.3860581754845	size=6	prob=0.39570631177533988	pi=0.3772146069463776	
+1024	zmbinom	certified	-27.043428321897469	size=8	prob=0.28612306421776756	p0=0.3125	
+1025	bbinom	certified	-24.29756987586747	size=4	alpha=3.1122703835259995	beta=4.2288893851038454	
+1026	bbinom	certified	-25.147307777533531	size=4	alpha=1	beta=1.4571190854837759	
+1027	bbinom	stop:budget	nan	Beta-binomial search exhausted its work budget before certifying the maximum. Raising iterlim may resolve this stop.
+1028	hyper	stop:budget	nan	Finite-grid numerical failure: 1e7 candidate evaluation budget or representability/nonfinite likelihood limit exceeded.
+1029	hyper	stop:unresolved	nan	No finite maximum was found in the exploratory search; a larger finite maximum is not excluded. The binomial limit is available: use mlbinom(x, size = held count).
+1030	nhyper	certified	-25.605952602147322	m=2	N=6	r=1	
+1031	tbinom	certified	-23.946117892134364	prob=0.021927226494622795	a=-1	b=4	size=83	
+1032	ztbinom	certified	-24.409791561798624	size=7	prob=0.3685624924266514	
+1033	zib	certified	-28.286909505019867	size=5	prob=0.37853650265876337	pi=0.3772146069463776	
+1034	zmbinom	certified	-24.156516689532541	size=36	prob=0.042245016254547643	p0=0.125	
+1035	bbinom	certified	-25.351038503822672	size=4	alpha=0.63608211549142701	beta=0.58208480824342557	
+1036	bbinom	certified	-25.617868758385384	size=4	alpha=1	beta=0.83882436458704179	
+1037	bbinom	stop:budget	nan	Beta-binomial search exhausted its work budget before certifying the maximum. Raising iterlim may resolve this stop.
+1038	hyper	stop:input-or-search	nan	No finite maximum was found in the exploratory search; a larger finite maximum is not excluded. The Poisson face may dominate; use mlpois for the limit model.
+1039	hyper	stop:unresolved	nan	No finite maximum was found in the exploratory search; a larger finite maximum is not excluded. The binomial limit is available: use mlbinom(x, size = held count).
+1040	nhyper	certified	-25.751006598945608	m=1	N=5	r=1	
+1041	tbinom	stop:limit	nan	The maximum likelihood estimator does not exist: with both `prob` and `size` free, the global likelihood supremum lies at the truncated Poisson distribution as `size` grows. Use `mltpois(x, a = -1, b = 4)` instead.
+1042	ztbinom	certified	-29.008182126237156	size=17	prob=0.17714113527161679	
+1043	zib	certified	-26.607264661372799	size=4	prob=0.7054467508358091	pi=0.3772146069463776	
+1044	zmbinom	certified	-25.980207291467739	size=4	prob=0.70280761987794627	p0=0.25	
+1045	bbinom	stop:unresolved	nan	Beta-binomial free-size search cannot resolve the negative binomial face against larger finite sizes.
+1046	bbinom	stop:budget	nan	Beta-binomial search exhausted its work budget before certifying the maximum. Raising iterlim may resolve this stop.
+1047	hyper	stop:budget	nan	Finite-grid numerical failure: 1e7 candidate evaluation budget or representability/nonfinite likelihood limit exceeded.
+1048	hyper	stop:unresolved	nan	No finite maximum was found in the exploratory search; a larger finite maximum is not excluded. The binomial limit is available: use mlbinom(x, size = held count).
+1049	hyper	stop:budget	nan	Finite-grid numerical failure: 1e7 candidate evaluation budget or representability/nonfinite likelihood limit exceeded.
+1050	nhyper	stop:unresolved	nan	No finite maximum was found in the exploratory search; a larger finite maximum is not excluded. For the negative-binomial growing-urn limit use mlnbinom(x - r, size = r).
+1051	nhyper	stop:budget	nan	Finite-grid numerical failure: 1e7 candidate evaluation budget or representability/nonfinite likelihood limit exceeded.
+1052	tbinom	stop:limit	nan	The maximum likelihood estimator does not exist: with both `prob` and `size` free, the global likelihood supremum lies at the truncated Poisson distribution as `size` grows. Use `mltpois(x, a = -1, b = 4)` instead.
+1053	zib	stop:unresolved	nan	Finite-size versus limit comparison is unresolved; no maximizer is certified. Use `mlzip` only to fit the comparison face.
+1054	zib	stop:unresolved	nan	Finite-size versus limit comparison is unresolved; no maximizer is certified. Use `mlzip` only to fit the comparison face.
+1055	ztbinom	stop:numerical	nan	Profile optimizer IterationFailure: iteration limit or floating-point resolution exhausted; increase iterlim. No capped size estimate is returned.
+1056	zib	stop:numerical	nan	Profile optimizer IterationFailure: iteration limit, floating-point range or precision exhausted; increase iterlim only for work-limit failures. No capped size estimate is returned.
+1057	zmbinom	stop:numerical	nan	Profile optimizer IterationFailure: iteration limit or floating-point resolution exhausted; increase iterlim. No capped size estimate is returned.
+1058	tbinom	stop:numerical	nan	Truncated normalizer cannot be resolved within numerical precision or work budget.
+1059	bbinom	stop:numerical	nan	Beta-binomial MLE failed to certify the maximum and coefficient accuracy.
+1060	bbinom	stop:numerical	nan	Beta-binomial MLE failed to certify the maximum and coefficient accuracy.
+1061	bbinom	stop:numerical	nan	Beta-binomial MLE failed to certify the maximum and coefficient accuracy.
+1062	zib	stop:numerical	nan	Profile optimizer IterationFailure: iteration limit, floating-point range or precision exhausted; increase iterlim only for work-limit failures. No capped size estimate is returned.
+1063	zib	stop:numerical	nan	Profile optimizer IterationFailure: iteration limit, floating-point range or precision exhausted; increase iterlim only for work-limit failures. No capped size estimate is returned.
+1064	nhyper	stop:input-or-search	nan	Finite-grid numerical failure: 1e7 candidate evaluation budget or representability/nonfinite likelihood limit exceeded.
+1065	tbinom	stop:numerical	nan	Truncated normalizer cannot be resolved within numerical precision or work budget.
+1066	ztbinom	stop:numerical	nan	Profile optimizer IterationFailure: iteration limit or floating-point resolution exhausted; increase iterlim. No capped size estimate is returned.
+1067	zmbinom	stop:numerical	nan	Profile optimizer IterationFailure: iteration limit or floating-point resolution exhausted; increase iterlim. No capped size estimate is returned.
+1068	zib	stop:numerical	nan	Profile optimizer IterationFailure: iteration limit, floating-point range or precision exhausted; increase iterlim only for work-limit failures. No capped size estimate is returned.
+1069	ztbinom	certified	-1.3862943611198904	size=2	prob=0.66666666666666652	
+1070	zmbinom	stop:numerical	nan	Profile optimizer IterationFailure: iteration limit or floating-point resolution exhausted; increase iterlim. No capped size estimate is returned.
+1071	zib	certified	-2.4327906486489863	size=2	prob=0.66666666666666663	pi=0	
+1072	zib	certified	-1.9095425048844386	size=1	prob=1	pi=0.33333333333333331	

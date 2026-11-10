@@ -1,0 +1,59 @@
+"file","context","test","nb","failed","skipped","error","warning","user","system","real","passed"
+"test-dist-zib.R","","zib agrees with a multi-start reference-density oracle",1,0,TRUE,FALSE,0,0.0400000000000009,0.001,0.0399999999999636,0
+"test-dist-zib.R","","zib declares its infinite-size escape",2,0,FALSE,FALSE,0,0.0310000000000006,0,0.271999999999991,2
+"test-dist-zib.R","","zib preserves fixed size at attained boundaries",4,0,FALSE,FALSE,0,0.0119999999999987,0,0.0120000000000005,4
+"test-dist-zib.R","","zib accepts fixed zero size for all-zero data",4,0,FALSE,FALSE,0,0.0129999999999999,0.002,0.0149999999999864,4
+"test-dist-zib.R","","zib: new holds match reference-density integer and multistart oracles",1,0,TRUE,FALSE,0,0.0350000000000001,0.004,0.0409999999999968,0
+"test-dist-zib.R","","zib: held pi profiles the remaining probability",52,0,FALSE,FALSE,0,0.129,0.002,0.29200000000003,52
+"test-dist-zib.R","","zib: free-size held-mixture fits and Poisson escapes",5,0,FALSE,FALSE,0,0.0220000000000002,0.001,0.25,5
+"test-dist-zib.R","","zib: P3 unfinished optimizer stops",1,0,FALSE,FALSE,0,0.00499999999999901,0,0.0279999999999632,1
+"test-dist-zib.R","","zib: free size, probability and mixture agree with a reference-density oracle (n=20, n=100, ties, near-Poisson)",1,0,TRUE,FALSE,0,0.0380000000000003,0.001,0.0470000000000255,0
+"test-dist-zib.R","","zib attained point member evaluates and samples exactly",4,0,FALSE,FALSE,0,0.0150000000000006,0,0.197000000000003,4
+"test-dist-zib.R","","zib all-zero free-size held subsets attain likelihood one",113,0,FALSE,FALSE,0,0.271000000000001,0.002,0.273000000000025,113
+"test-dist-zib.R","","zib J7a held inflation uses a constrained finite certificate",3,0,FALSE,FALSE,0,0.0109999999999992,0,0.0120000000000005,3
+"test-dist-zib.R","","zib proved held-inflation faces stop as limits",2,0,FALSE,FALSE,0,0.0080000000000009,0,0.0180000000000291,2
+"test-dist-zib.R","","zib validates tiny probabilities before selecting the inflation branch",6,0,FALSE,FALSE,0,0.0170000000000012,0,0.0179999999999723,6
+"test-dist-zib.R","","zib signed faces preserve the inflation constraint",13,0,FALSE,FALSE,0,0.0340000000000007,0.00199999999999997,0.0570000000000164,13
+"test-dist-zib.R","","zib localizes a held face when the inflation-uniform gap is insufficient",4,0,FALSE,FALSE,0,0.0139999999999993,0,0.0329999999999586,4
+"test-dist-zib.R","","zib near-zero local face coefficients return an uncertified finite fit",2,0,FALSE,FALSE,0,0.00799999999999912,0,0.0250000000000341,2
+"test-dist-zib.R","","zib proves escape even when the winning ZIP rate is tied",7,0,FALSE,FALSE,0,0.0199999999999996,0,0.0930000000000177,7
+"test-dist-zib.R","","zib certifies noninflated faces including equal mean and variance",10,0,FALSE,FALSE,0,0.0279999999999987,0,0.0419999999999732,10
+"test-dist-zib.R","","zib retains subnormal zero masses and resolves the held-inflation root",5,0,FALSE,FALSE,0,0.0150000000000006,0,0.02800000000002,5
+"test-dist-zib.R","","zib native binding reports finite log-likelihood overflow numerically",3,0,FALSE,FALSE,0,0.0129999999999999,0,0.01400000000001,3
+"test-dist-zib.R","","zib preserves the unique all-zero inflation even for a tiny held probability",2,0,FALSE,FALSE,0,0.00799999999999912,0,0.00900000000001455,2
+"test-dist-zib.R","","zib fixed models surface failed median evaluations",3,0,FALSE,FALSE,0,0.0109999999999992,0.001,0.0389999999999873,3
+"test-dist-zib.R","","zib log half respects the exact side of a two-point jump",3,0,FALSE,FALSE,0,0.00999999999999979,0,0.0100000000000477,3
+"test-dist-zib.R","","zib returns uncertified fits at both adjacent critical inflations",6,0,FALSE,FALSE,0,0.0169999999999995,0,0.0459999999999923,6
+"test-dist-zib.R","","zib exposes the uncertified held-probability prefix",3,0,FALSE,FALSE,0,0.00999999999999979,0,0.0129999999999768,3
+"test-dist-zib.R","","zib retains a stationary fit at an ambiguous turning discriminant",3,0,FALSE,FALSE,0,0.0100000000000016,0,0.0179999999999723,3
+"test-dist-zib.R","","large held counts return the successful zib prefix uncertified",3,0,FALSE,FALSE,0,0.0120000000000005,0,0.149000000000001,3
+"test-dist-zib.R","","an exact turning discriminant leaves a flat probability root uncertified",2,0,FALSE,FALSE,0,0.00699999999999967,0,0.007000000000005,2
+"test-dist-zib.R","","a closed binomial mean respects the requested coefficient precision",4,0,FALSE,FALSE,0,0.0120000000000005,0,0.0120000000000005,4
+"test-dist-zmbinom.R","","zmbinom agrees with a multi-start reference-density oracle",1,0,TRUE,FALSE,0,0.0260000000000016,0,0.0299999999999727,0
+"test-dist-zmbinom.R","","zmbinom declares its infinite-size escape",2,0,FALSE,FALSE,0,0.00699999999999967,0.001,0.0310000000000059,2
+"test-dist-zmbinom.R","","zmbinom preserves fixed size at attained boundaries",6,0,FALSE,FALSE,0,0.0190000000000001,0.001,0.0209999999999582,6
+"test-dist-zmbinom.R","","zmbinom: new holds match reference-density integer and multistart oracles",1,0,TRUE,FALSE,0,0.0249999999999986,0.001,0.0260000000000105,0
+"test-dist-zmbinom.R","","zmbinom: held p0 profiles the remaining probability",45,0,FALSE,FALSE,0,0.117000000000001,0.002,0.25200000000001,45
+"test-dist-zmbinom.R","","zmbinom: free-size held-mixture fits and Poisson escapes",5,0,FALSE,FALSE,0,0.020999999999999,0,0.264999999999986,5
+"test-dist-zmbinom.R","","zmbinom: P3 unfinished optimizer stops",1,0,FALSE,FALSE,0,0.00600000000000023,0,0.01400000000001,1
+"test-dist-zmbinom.R","","zmbinom: free size and probability agree with a reference-density oracle (n=20, n=100, ties, near-Poisson)",1,0,TRUE,FALSE,0,0.0280000000000005,0.001,0.0289999999999964,0
+"test-dist-zmbinom.R","","zmbinom attained point member evaluates and samples exactly",4,0,FALSE,FALSE,0,0.011000000000001,0,0.0110000000000241,4
+"test-dist-zmbinom.R","","zmbinom J7a stop transports the held zero probability",3,0,FALSE,FALSE,0,0.00900000000000034,0,0.00900000000001455,3
+"test-dist-zmbinom.R","","zmbinom proved size-face comparisons stop as limits",2,0,FALSE,FALSE,0,0.00600000000000023,0.001,0.007000000000005,2
+"test-dist-zmbinom.R","","zmbinom propagates positive-count certification",3,0,FALSE,FALSE,0,0.00900000000000034,0,0.00999999999999091,3
+"test-dist-zmbinom.R","","zmbinom carries the zero-ratio precision flag",2,0,FALSE,FALSE,0,0.00699999999999967,0,0.00600000000002865,2
+"test-dist-ztbinom.R","","ztbinom agrees with a multi-start reference-density oracle",1,0,TRUE,FALSE,0,0.0220000000000002,0,0.0249999999999773,0
+"test-dist-ztbinom.R","","ztbinom declares its infinite-size escape",2,0,FALSE,FALSE,0,0.00900000000000034,0,0.0400000000000205,2
+"test-dist-ztbinom.R","","ztbinom preserves fixed size at attained boundaries",4,0,FALSE,FALSE,0,0.0149999999999988,0,0.0149999999999864,4
+"test-dist-ztbinom.R","","ztbinom: new holds match reference-density integer and multistart oracles",1,0,TRUE,FALSE,0,0.020999999999999,0.001,0.021000000000015,0
+"test-dist-ztbinom.R","","ztbinom: held endpoints are attained exactly when feasible",5,0,FALSE,FALSE,0,0.0139999999999993,0,0.0129999999999768,5
+"test-dist-ztbinom.R","","ztbinom: P3 unfinished optimizer stops",1,0,FALSE,FALSE,0,0.00499999999999901,0,0.0120000000000005,1
+"test-dist-ztbinom.R","","ztbinom: free size and probability agree with a reference-density oracle (n=20, n=100, ties, near-Poisson)",1,0,TRUE,FALSE,0,0.0220000000000002,0,0.0240000000000009,0
+"test-dist-ztbinom.R","","ztbinom attained point member evaluates and samples exactly",4,0,FALSE,FALSE,0,0.0120000000000005,0,0.0110000000000241,4
+"test-dist-ztbinom.R","","ztbinom signed face comparison is proved and retains both witnesses",5,0,FALSE,FALSE,0,0.0129999999999999,0,0.01400000000001,5
+"test-dist-ztbinom.R","","ztbinom proved size-face comparisons stop as limits",2,0,FALSE,FALSE,0,0.00700000000000145,0,0.00600000000002865,2
+"test-dist-ztbinom.R","","ztbinom tiny-probability work stops retain witnesses and can be resolved",6,0,FALSE,FALSE,0,0.016,0,0.0149999999999864,6
+"test-dist-ztbinom.R","","ztbinom proved limits keep strict finite witnesses below the global face",5,0,FALSE,FALSE,0,0.0129999999999999,0,0.0129999999999768,5
+"test-dist-ztbinom.R","","ztbinom exposes the uncertified held-probability prefix",3,0,FALSE,FALSE,0,0.00899999999999856,0,0.00999999999999091,3
+"test-dist-ztbinom.R","","the size-one atom certifies a tiny held positive probability",3,0,FALSE,FALSE,0,0.00900000000000034,0,0.00900000000001455,3
+"test-dist-ztbinom.R","","ztbinom does not certify a sub-machine probability target",2,0,FALSE,FALSE,0,0.00499999999999901,0.001,0.007000000000005,2

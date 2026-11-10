@@ -159,7 +159,7 @@ test_that("tbinom: fractional held bounds are exact and work failures stop", {
   f <- mltbinom(c(2,3,3,4),a=1.25,b=4.75,size=NULL)
   expect_identical(unname(f[c("a","b")]),c(1.25,4.75))
   expect_setequal(attr(f,"fixed"),c("a","b"))
-  expect_error(mltbinom(c(2000001,2000002),a=2000000,b=2000005,size=NULL),"work budget")
+  expect_identical(attr(mltbinom(c(2000001,2000002),a=2000000,b=2000005,size=NULL),"certified"), TRUE)
 })
 
 test_that("tbinom attained point member evaluates and samples exactly", {
@@ -231,4 +231,17 @@ test_that("tbinom certifies the negative third-order face", {
   expect_identical(e$model,"tpois")
   expect_equal(unname(e$estimates["lambda"]),6)
   expect_true(is.finite(e$loglik_upper))
+})
+
+test_that("tbinom retains a finite profile when the certificate window is too large", {
+  f <- mltbinom(c(1,1,1,1,1,12),a=0,b=1e100,size=NULL)
+  expect_identical(attr(f,"certified"),FALSE)
+  expect_true(is.finite(as.numeric(logLik(f))))
+})
+
+test_that("large held-probability tbinom search respects its cell allowance", {
+  f <- mltbinom(c(1000000,1000001,1000003,1000008,1000011),a=0,b=1000011,size=NULL,prob=.4)
+  expect_identical(attr(f,"certified"),FALSE)
+  expect_equal(unname(f["prob"]),.4,tolerance=0)
+  expect_true(is.finite(as.numeric(logLik(f))))
 })

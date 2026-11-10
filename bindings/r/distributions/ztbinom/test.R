@@ -170,3 +170,23 @@ test_that("ztbinom proved limits keep strict finite witnesses below the global f
   expect_gte(e$loglik_lower,e$limit_loglik-1e-10)
   expect_true(all(e$candidates$loglik_lower<=e$loglik_upper))
 })
+
+test_that("ztbinom exposes the uncertified held-probability prefix", {
+  f <- mlztbinom(1:3,size=NULL,prob=1e-9,iterlim=1)
+  expect_identical(attr(f,"certified"),FALSE)
+  expect_equal(unname(f["prob"]),1e-9,tolerance=0)
+  expect_true(is.finite(as.numeric(logLik(f))))
+})
+
+test_that("the size-one atom certifies a tiny held positive probability", {
+  f <- mlztbinom(c(1,1,1),size=NULL,prob=1e-9,iterlim=1)
+  expect_identical(attr(f,"certified"),TRUE)
+  expect_equal(unname(f["size"]),1)
+  expect_equal(as.numeric(logLik(f)),0)
+})
+
+test_that("ztbinom does not certify a sub-machine probability target", {
+  f <- mlztbinom(c(1,2),size=NULL,reltol=1e-18)
+  expect_identical(attr(f,"certified"),FALSE)
+  expect_true(is.finite(as.numeric(logLik(f))))
+})

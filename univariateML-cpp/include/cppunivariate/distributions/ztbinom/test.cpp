@@ -275,3 +275,39 @@ TEST_CASE("ztbinom: signed moment enumeration and representation refusals retain
 TEST_CASE("ztbinom: quantile search guards and representability") {
   CHECK(std::isnan(cppunivariate::distributions::qztbinom(.5,1e308,.9)));
 }
+
+TEST_CASE("ztbinom: extended positive-Poisson moment recheck retains strict signs") {
+  const std::vector<int> over{1,1,1,1,1,12},under{1,2,2,3,3,3,4,4,5,5};
+  cppunivariate::binomial_certificate_detail::Work a{0,0,200},b{0,0,200};
+  CHECK(cppunivariate::binomial_certificate_detail::positive_poisson_gap({over.data(),over.size()},a)>0);
+  CHECK(cppunivariate::binomial_certificate_detail::positive_poisson_gap({under.data(),under.size()},b)<0);
+}
+
+TEST_CASE("ztbinom: held-probability prefix returns an uncertified candidate") {
+  const std::vector<int> x{1,2,3};
+  const auto f=cppunivariate::ztbinom_mle({x.data(),x.size()},1e-10,1,NAN,1e-9);
+  REQUIRE(f.status==cppunivariate::ZtbinomStatus::Ok);
+  CHECK_FALSE(f.certified);CHECK(std::isfinite(f.logLik));CHECK(f.prob==1e-9);
+  CHECK(f.stop_detail.budget_exhausted);
+}
+
+TEST_CASE("ztbinom: two observed positive atoms attain the saturated upper bound") {
+  const std::vector<int>x{1,1,2,2,2};
+  const auto f=cppunivariate::ztbinom_mle({x.data(),x.size()});
+  REQUIRE(f.status==cppunivariate::ZtbinomStatus::Ok);CHECK(f.certified);CHECK(f.size==2);
+  CHECK(f.logLik==doctest::Approx(2*std::log(.4)+3*std::log(.6)).epsilon(1e-12));
+}
+
+TEST_CASE("ztbinom: a tiny held probability does not hide the attained size-one atom") {
+  const std::vector<int>x{1,1,1};
+  const auto f=cppunivariate::ztbinom_mle({x.data(),x.size()},1e-10,1,NAN,1e-9);
+  REQUIRE(f.status==cppunivariate::ZtbinomStatus::Ok);CHECK(f.certified);
+  CHECK(f.size==1);CHECK(f.prob==1e-9);CHECK(f.logLik==0);
+}
+
+TEST_CASE("ztbinom: sub-machine probability targets retain the finite fit uncertified") {
+  const std::vector<int> x{1,2};
+  const auto f=cppunivariate::ztbinom_mle({x.data(),x.size()},1e-18);
+  REQUIRE(f.status==cppunivariate::ZtbinomStatus::Ok);
+  CHECK_FALSE(f.certified);CHECK(std::isfinite(f.logLik));
+}

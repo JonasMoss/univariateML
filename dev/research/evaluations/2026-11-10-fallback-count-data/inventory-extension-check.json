@@ -1,0 +1,21 @@
+{
+  "initial_n": 1069,
+  "current_n": 1073,
+  "unchanged_prefix": {
+    "cases.json": {
+      "expected": "0a08de2fb19e90311fc5438fd799248061c7e3dbb3c598f1beddc0c8e23cbdb2",
+      "observed": "0a08de2fb19e90311fc5438fd799248061c7e3dbb3c598f1beddc0c8e23cbdb2",
+      "match": true
+    },
+    "before-final.tsv": {
+      "expected": "c276e78c9b4d2e16187d12c684f2d75141aa3f42c1ac7646be767aaf2ce9f957",
+      "observed": "c276e78c9b4d2e16187d12c684f2d75141aa3f42c1ac7646be767aaf2ce9f957",
+      "match": true
+    },
+    "after-final.tsv": {
+      "expected": "76c5319ecf5b7900786ee2bd782d14a5de8876662493d1652970f09ce37dcfaa",
+      "observed": "76c5319ecf5b7900786ee2bd782d14a5de8876662493d1652970f09ce37dcfaa",
+      "match": true
+    }
+  }
+}
