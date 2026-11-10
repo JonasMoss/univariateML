@@ -19,7 +19,7 @@ GOLDEN_TOLERANCE <- c(
   beta = 5e-15,
   betapr = 1e-11,
   binom = 2e-16,
-  bnbinom = 5e-07, # finite-difference BFGS gradtol=1e-8 and profile stopping
+  bnbinom = 1.5e-13, # analytic Newton refinement; acc-allfree measurements
   burr = 2e-14,
   cauchy = 3e-12,
   cmb = 3e-10, # Newton moment-score stop at reltol=1e-10; inverse curvature amplifies coefficient error
@@ -36,7 +36,7 @@ GOLDEN_TOLERANCE <- c(
   fpareto = 1e-11,
   frechet = 2e-14,
   gamma = 1e-15,
-  gb2 = 2e-07, # all-free beta-shape profile score stop at gradtol=1e-7; profile curvature amplifies coefficient error
+  gb2 = 8e-14, # analytic Newton refinement; acc-allfree measurements
   ged = 3e-11,
   genbeta = 5e-09, # profile score stop gradtol=1e-7; shallow profile amplifies coefficient error
   geom = 5e-15,
@@ -81,14 +81,14 @@ GOLDEN_TOLERANCE <- c(
   pois = 3e-15,
   power = 2e-15,
   rayleigh = 2e-16,
-  sged = 3e-06, # finite-difference BFGS gradtol=1.220703e-4 inherited from CRAN; curvature amplifies coefficient error
+  sged = 3e-14, # analytic Newton refinement; acc-allfree measurements
   sgomp = 3e-08, # scalar profile reltol=1e-10; curvature amplifies coefficient error
   skellam = 5e-08, # scalar profile refinement reltol=1e-9; likelihood rounding limits coefficient resolution
-  slash = 2e-05, # scalar profile width reltol=1e-8 and likelihood rounding; near-zero location amplifies relative error
+  slash = 3e-13, # analytic Newton refinement; acc-allfree measurements
   sn = 5e-07, # scalar profile refinement reltol=1e-9; likelihood rounding limits coefficient resolution
   snorm = 3e-13,
-  sstd = 2e-05, # finite-difference BFGS gradtol=1.220703e-4 inherited from CRAN; curvature amplifies coefficient error
-  st = 2e-06, # all-free BFGS score stop at reltol=1e-6; global/face certificate does not impose 1e-10 coefficient accuracy
+  sstd = 4e-13, # analytic Newton refinement; acc-allfree measurements
+  st = 1.2e-13, # analytic Newton refinement; acc-allfree measurements
   std = 3e-13,
   tbinom = 5e-15,
   tlambda = 1e-14,
@@ -122,7 +122,7 @@ GOLDEN_STOP_TOLERANCE <- c(
   beta = 1.490116e-08,
   betapr = 1e-06,
   binom = 0.0001220703,
-  bnbinom = 1e-08,
+  bnbinom = 1e-10,
   burr = 1e-08,
   cauchy = 0.0001220703,
   cmb = 1e-10,
@@ -139,7 +139,7 @@ GOLDEN_STOP_TOLERANCE <- c(
   fpareto = 1e-07,
   frechet = 1e-10,
   gamma = 0.0001220703,
-  gb2 = 1e-07,
+  gb2 = 1e-10,
   ged = 0.0001220703,
   genbeta = 1e-07,
   geom = 0,
@@ -184,14 +184,14 @@ GOLDEN_STOP_TOLERANCE <- c(
   pois = 0,
   power = 0,
   rayleigh = 0,
-  sged = 0.0001220703,
+  sged = 1e-10,
   sgomp = 1e-10,
   skellam = 1e-09,
-  slash = 1e-08,
+  slash = 1e-10,
   sn = 1e-09,
   snorm = 0,
-  sstd = 0.0001220703,
-  st = 1e-06,
+  sstd = 1e-10,
+  st = 1e-10,
   std = 0.0001220703,
   tbinom = 0,
   tlambda = 1e-07,

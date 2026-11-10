@@ -2,7 +2,7 @@
 #include "../../fit.hpp"
 #include "cppunivariate/distributions/st/mle.hpp"
 namespace umvl_binding {
-inline FitResult fit_st(cppunivariate::span x,Held xi_arg={},Held omega_arg={},Held alpha_arg={},Held nu_arg={},double reltol=1e-6,int iterlim=200) {
+inline FitResult fit_st(cppunivariate::span x,Held xi_arg={},Held omega_arg={},Held alpha_arg={},Held nu_arg={},double reltol=1e-10,int iterlim=200) {
   // Invalid controls remain ordinary errors, even if a legacy fitter reports
   // a statistical status before checking them.
   const auto classify = [&](FitResult out, const cppunivariate::StopDetail& detail,
@@ -18,6 +18,7 @@ inline FitResult fit_st(cppunivariate::span x,Held xi_arg={},Held omega_arg={},H
  const double xi=xi_arg.supplied?xi_arg.value:nan,omega=omega_arg.supplied?omega_arg.value:nan,alpha=alpha_arg.supplied?alpha_arg.value:nan,nu=nu_arg.supplied?nu_arg.value:nan;
  if((xi_arg.supplied&&!std::isfinite(xi))||(omega_arg.supplied&&(!std::isfinite(omega)||omega<=0))||(alpha_arg.supplied&&!std::isfinite(alpha))||(nu_arg.supplied&&(!std::isfinite(nu)||nu<=0)))return fail("Held xi and alpha must be finite; omega and nu must be finite and positive.");
  const auto r=cppunivariate::st_mle(x,reltol,iterlim,xi,omega,alpha,nu);
+  if(r.accuracy_failure)return fail("st numerical accuracy failure: final Newton refinement did not converge to the requested coefficient tolerance; increase iterlim or inspect conditioning.");
  if(r.stop_detail.comparison_tie || r.budget_exhausted) {
   const std::string message=r.certified&&r.stop_detail.comparison_tie?"Skew-t constant-data supremum is tied between the two limiting faces.":r.budget_exhausted?"Skew-t certificate budget exhausted; increase `iterlim`.":r.reason==2?"Skew-normal limiting-face comparison failed.":r.reason==3?"Half-t limiting-face comparison failed.":"Skew-t numerical search reached an unresolved limiting region.";
   return classify(fail(message),r.stop_detail,r.stop_detail.comparison_tie?"tie":"budget",{"xi","omega","alpha","nu"});

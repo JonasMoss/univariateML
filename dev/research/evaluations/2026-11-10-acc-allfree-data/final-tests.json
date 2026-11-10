@@ -1,0 +1,63 @@
+[
+  {
+    "name": "cpp-dev",
+    "command": "just cpp-test",
+    "machine": "workstation",
+    "exit_code": 0,
+    "passed_shards": 106
+  },
+  {
+    "name": "r-dev",
+    "command": "just test",
+    "machine": "workstation",
+    "exit_code": 0,
+    "failures": 0,
+    "warnings": 0,
+    "skips": 154,
+    "passed_assertions": 23010
+  },
+  {
+    "name": "cpp-full",
+    "command": "UMVL_TEST_TIER=full just cpp-test",
+    "machine": "workstation",
+    "exit_code": 0,
+    "passed_shards": 131
+  },
+  {
+    "name": "r-full",
+    "command": "just test-full",
+    "machine": "workstation",
+    "exit_code": 0,
+    "failures": 0,
+    "warnings": 0,
+    "skips": 0,
+    "passed_assertions": 45825
+  },
+  {
+    "name": "cpp-double",
+    "command": "just cpp-test-no-long-double",
+    "machine": "workstation",
+    "exit_code": 0,
+    "passed_shards": 131
+  },
+  {
+    "name": "js-build",
+    "command": "just js-build",
+    "machine": "workstation",
+    "exit_code": 0
+  },
+  {
+    "name": "js-test",
+    "command": "just js-test",
+    "machine": "workstation",
+    "exit_code": 0,
+    "passed_tests": 595
+  },
+  {
+    "name": "site-check",
+    "command": "just site-check",
+    "machine": "workstation",
+    "exit_code": 0,
+    "checked_families": 99
+  }
+]

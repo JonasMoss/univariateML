@@ -1,0 +1,11 @@
+{
+  "tested_bundle_before_site_check": {
+    "build/js/univariateML.wasm": "a7796ce89beeafb36e97db48f4503d959992eed4cfb950df3cf535a0d8b92c2b",
+    "build/js/univariateML.mjs": "392066af53f32627c40066d9714bf73ef3380c74b5ec802c8e49bf1f7a72d856"
+  },
+  "bundle_after_site_check": {
+    "build/js/univariateML.wasm": "a7796ce89beeafb36e97db48f4503d959992eed4cfb950df3cf535a0d8b92c2b",
+    "build/js/univariateML.mjs": "392066af53f32627c40066d9714bf73ef3380c74b5ec802c8e49bf1f7a72d856"
+  },
+  "byte_identical": true
+}

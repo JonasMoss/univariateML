@@ -603,3 +603,43 @@ TEST_CASE("sstd: large-shape inference jets agree with independent 80-digit deri
   for(double v:a.h)CHECK(std::isfinite(v));
  }
 }
+
+TEST_CASE("sstd all-free chain Hessian agrees with the existing symbolic Hessian") {
+  const std::vector<double> x{-2,-.4,.2,1.3,5};
+  for(double shape:{2.7,6.,20.}) {
+    const std::array<double,4> p{{-.3,std::log(1.2),std::log(shape-2),std::log(1.7)}};
+    const auto f=cppunivariate::local_accuracy::skew_objective(x,cppunivariate::local_accuracy::variables(p),true);
+    const cppunivariate::SstdCost cost{mltest::as_span(x)};
+    double h[16];cost.hessian(p.data(),h);
+    CHECK(f.v==doctest::Approx(cost(p.data())).epsilon(2e-13));
+    for(int j=0;j<16;++j)CHECK(f.h[j]==doctest::Approx(h[j]).epsilon(2e-11));
+  }
+}
+
+TEST_CASE("sstd ordinary weak-shape fit agrees with an independent 70-digit root") {
+ const std::vector<double> x{2.4291773262964673,-.73163185976732792,-.93682922797550661,-.26048472949381396,-.95674691470653528,-.78459441323041201,.35700820366317593,-1.6367807511092567,-1.3898330381499311,-.41998156853316515,.40347324334581075,.66523827780574563,.8324664072029595,1.0189818340718511,1.1290436557557941,.054518682776008152,-.24178505202140846,-.33310311771134749,-.41896350134081606,-.66604654971825816};
+ const auto r=cppunivariate::sstd_mle({x.data(),x.size()},1e-10,200);
+ REQUIRE(r.status==cppunivariate::SstdStatus::Ok);
+ CHECK(r.mu==doctest::Approx(-.07871618235652491).epsilon(1e-10).scale(0));
+ CHECK(r.sigma==doctest::Approx(.9390815087264246).epsilon(1e-10).scale(0));
+ CHECK(r.nu==doctest::Approx(84.08872795888163).epsilon(1e-10).scale(0));
+ CHECK(r.xi==doctest::Approx(1.5751160992666097).epsilon(1e-10).scale(0));
+}
+
+TEST_CASE("sstd large-sample compensated derivatives preserve replicated coefficients") {
+ std::vector<double> base;
+ for(int j=0;j<1000;++j)base.push_back(cppunivariate::special::qt((j+.5)/1000.,4.,true,false)/std::sqrt(2.));
+ const auto b=cppunivariate::sstd_mle({base.data(),base.size()},1e-10,200);
+ REQUIRE(b.status==cppunivariate::SstdStatus::Ok);
+ std::vector<double> x;for(int j=0;j<100;++j)x.insert(x.end(),base.begin(),base.end());
+ const auto r=cppunivariate::sstd_mle({x.data(),x.size()},1e-10,200);
+ REQUIRE(r.status==cppunivariate::SstdStatus::Ok);
+ CHECK(std::abs(r.mu)<=1e-10*r.sigma);
+ CHECK(r.sigma==doctest::Approx(.99656856660305998).epsilon(1e-10).scale(0));
+ CHECK(r.nu==doctest::Approx(4.046365436983925).epsilon(1e-10).scale(0));
+ CHECK(r.xi==doctest::Approx(1.).epsilon(1e-10).scale(0));
+ CHECK(r.sigma==doctest::Approx(b.sigma).epsilon(1e-10).scale(0));
+ CHECK(r.nu==doctest::Approx(b.nu).epsilon(1e-10).scale(0));
+ CHECK(r.xi==doctest::Approx(b.xi).epsilon(1e-10).scale(0));
+ CHECK(r.logLik/100==doctest::Approx(b.logLik).epsilon(1e-10));
+}

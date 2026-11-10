@@ -12,6 +12,7 @@
 #include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
 #include "scalar_search.hpp"
+#include "local_accuracy.hpp"
 #include "cppunivariate/core/constants.hpp"
 #include "../../core/precision.hpp"
 #include "hold_search.hpp"
@@ -56,6 +57,7 @@ struct SstdResult {
   StopDetail stop_detail{};
   bool certified=false;
   unsigned certificate_reason=0;
+  bool accuracy_failure=false;
 };
 
 #include "certificate.hpp"
@@ -505,6 +507,7 @@ inline SstdResult sstd_mle_impl(span x, double tol, int maxit, bool standardized
       r.mu = *std::max_element(x.begin(), x.end());
     r.sigma *= moments.sd;
     r.logLik -= static_cast<double>(n)*std::log(moments.sd);
+    if(r.status==SstdStatus::Ok&&(!local_accuracy::represented(r.mu,std::max(std::abs(r.mu),r.sigma),tol)||!local_accuracy::represented(r.sigma,r.sigma,tol))){r.status=SstdStatus::BfgsFailure;r.accuracy_failure=true;}
     return r;
   }
 
@@ -679,14 +682,17 @@ inline SstdResult sstd_mle(span x, double tol, int maxit,
   const bool hn=!std::isnan(fixed_nu), hx=!std::isnan(fixed_xi);
   if(!hm && !hs && !hn && !hx) {
     auto r=sstd_mle_impl(x,tol,maxit,false);
-    if(r.status==SstdStatus::BfgsFailure) {
-      SstdCost cost{x};
-      const double phi[4]={r.mu,std::log(r.sigma),std::log(r.nu-2),std::log(r.xi)};
-      double score[4];
-      finite_diff_gradient(cost,phi,score);
-      double norm=0;
-      for(double v:score) norm+=v*v;
-      if(std::sqrt(norm)<1e-3) r.status=SstdStatus::Ok;
+    if(r.status==SstdStatus::Ok || r.status==SstdStatus::BfgsFailure) {
+      const auto moments=norm_detail::moments(x);
+      std::vector<double> z;for(double v:x)z.push_back((v-moments.mean)/moments.sd);
+      std::array<double,4> p{{(r.mu-moments.mean)/moments.sd,std::log(r.sigma/moments.sd),std::log(r.nu-2),std::log(r.xi)}};
+      const auto objective=[&](const std::array<local_accuracy::Jet,4>& q){return local_accuracy::skew_objective(z,q,true);};
+      if(local_accuracy::polish(p,4,tol,maxit,objective,[&](const std::array<double,4>& v,const std::array<double,4>& step){auto q=v;q[0]+=moments.mean/moments.sd;auto mapped=step;const double excess=std::exp(v[2]);mapped[2]*=excess/(2+excess);return local_accuracy::location_error(q,mapped);})) {
+        r.mu=moments.mean+moments.sd*p[0];r.sigma=moments.sd*std::exp(p[1]);r.nu=2+std::exp(p[2]);r.xi=std::exp(p[3]);
+        r.logLik=-objective(local_accuracy::variables(p)).v-z.size()*std::log(moments.sd);
+        r.accuracy_failure=!local_accuracy::represented(r.mu,std::max(std::abs(r.mu),r.sigma),tol)||!local_accuracy::represented(r.sigma,r.sigma,tol);
+        r.status=r.accuracy_failure?SstdStatus::BfgsFailure:SstdStatus::Ok;
+      } else {r.status=SstdStatus::BfgsFailure;r.accuracy_failure=true;}
     }
     return r;
   }

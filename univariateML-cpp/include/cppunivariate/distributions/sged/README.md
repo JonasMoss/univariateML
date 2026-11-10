@@ -60,7 +60,7 @@ r:
     sd: "Optional held sd; NULL estimates it where the hold subset is supported."
     nu: "Optional held nu; NULL estimates it where the hold subset is supported."
     xi: "Optional held xi; NULL estimates it where the hold subset is supported."
-    gradtol: "Tolerance on the Euclidean norm of the total negative log-likelihood gradient in transformed coordinates; fixed step and objective-decrease criteria can also stop the fit."
+    gradtol: "Requested relative coefficient accuracy for all-free fits (default 1e-10); checked by the final observed-information Newton correction."
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
 log_density: "log(sqrt((1 - (gamma(2/nu)/sqrt(gamma(1/nu)*gamma(3/nu)))**2)*(xi**2 + xi**(-2)) + 2*(gamma(2/nu)/sqrt(gamma(1/nu)*gamma(3/nu)))**2 - 1)) - log(sd) + log(2/(xi + 1/xi)) + log(nu/(sqrt(2**(-2/nu)*gamma(1/nu)/gamma(3/nu))*2**(1 + 1/nu)*gamma(1/nu))) - Abs(Piecewise(((sqrt((1 - (gamma(2/nu)/sqrt(gamma(1/nu)*gamma(3/nu)))**2)*(xi**2 + xi**(-2)) + 2*(gamma(2/nu)/sqrt(gamma(1/nu)*gamma(3/nu)))**2 - 1)*(x - mean)/sd + (gamma(2/nu)/sqrt(gamma(1/nu)*gamma(3/nu)))*(xi - 1/xi))/xi, (sqrt((1 - (gamma(2/nu)/sqrt(gamma(1/nu)*gamma(3/nu)))**2)*(xi**2 + xi**(-2)) + 2*(gamma(2/nu)/sqrt(gamma(1/nu)*gamma(3/nu)))**2 - 1)*(x - mean)/sd + (gamma(2/nu)/sqrt(gamma(1/nu)*gamma(3/nu)))*(xi - 1/xi)) > 0), ((sqrt((1 - (gamma(2/nu)/sqrt(gamma(1/nu)*gamma(3/nu)))**2)*(xi**2 + xi**(-2)) + 2*(gamma(2/nu)/sqrt(gamma(1/nu)*gamma(3/nu)))**2 - 1)*(x - mean)/sd + (gamma(2/nu)/sqrt(gamma(1/nu)*gamma(3/nu)))*(xi - 1/xi))*xi, True)))**nu/(2*(sqrt(2**(-2/nu)*gamma(1/nu)/gamma(3/nu)))**nu)"
 limits:
@@ -132,7 +132,7 @@ relations: {}
 fit:
   method: multistart
   certified: 'partial'
-  note: 'sged/certificate.hpp certifies free location with both shapes held (scale held or free), and free scale with mean and both positive shapes held. sged/skew_certificate.hpp additionally certifies free skew at held nu=2 with either moment held or free, and at 0<nu<=1 with both moments free. With xi=1 held, sged/free_shape_certificate.hpp delegates all four free-nu subsets to the GED global certificate in identical public moment coordinates. Balanced two-point data with free moments have a certified uniform supremum for every held or free skew. sged/weighted_shape_certificate.hpp certifies asymmetric held xi with nu and both moments free. sged/mode_skew_certificate.hpp completes fixed positive nu with free skew and both moments free. sged/held_moment_certificate.hpp covers fixed positive nu other than 2 with both moments held by compact skew subdivision; finite winners require a full coefficient enclosure, strict-support half-GED faces are compared globally, and unresolved endpoint contacts or arithmetic stop numerically. Free nu with a held moment at asymmetric skew, free nu and xi jointly, and nonnormal free-skew fits with exactly one moment held retain uncertified numerical searches; the unchanged default is among these open cases.'
+  note: 'sged/certificate.hpp certifies free location with both shapes held (scale held or free), and free scale with mean and both positive shapes held. sged/skew_certificate.hpp additionally certifies free skew at held nu=2 with either moment held or free, and at 0<nu<=1 with both moments free. With xi=1 held, sged/free_shape_certificate.hpp delegates all four free-nu subsets to the GED global certificate in identical public moment coordinates. Balanced two-point data with free moments have a certified uniform supremum for every held or free skew. sged/weighted_shape_certificate.hpp certifies asymmetric held xi with nu and both moments free. sged/mode_skew_certificate.hpp completes fixed positive nu with free skew and both moments free. sged/held_moment_certificate.hpp covers fixed positive nu other than 2 with both moments held by compact skew subdivision; finite winners require a full coefficient enclosure, strict-support half-GED faces are compared globally, and unresolved endpoint contacts or arithmetic stop numerically. Free nu with a held moment at asymmetric skew, free nu and xi jointly, and nonnormal free-skew fits with exactly one moment held retain uncertified numerical searches; the default remains among these globally open cases.'
 areas:
 - finance
 - measurement and errors
@@ -152,6 +152,12 @@ existence:
 The skew generalized error distribution extends the exponential-power family with Fernandez-Steel asymmetry. Its location and scale parameters are the mean and standard deviation.
 
 ## Details
+
+For an interior all-free shape above one, second-order chain derivatives include the
+GED gamma moments and the shape-dependent variance standardization. The location
+floor is the fitted standard deviation; the attained shape-one face retains its
+separate fit. See the [accuracy
+validation](../../../../../dev/research/evaluations/2026-11-10-acc-allfree-report.md).
 
 The coefficients $\mu$ and $\sigma$ are the mean and standard deviation. Shape $\nu$ controls exponential-power tail thickness, and $\xi$ controls asymmetry. At $\xi=1$ the family reduces to the symmetric generalized error distribution; values above one lengthen the right-hand side, and reciprocal values reflect the standardized law. Holding moments constrains the join point and side scales as shapes vary.
 
