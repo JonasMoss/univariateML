@@ -35,7 +35,7 @@ This note records a discussion of 10 November 2026 (Jonas Moss and Claude).
 The aim is classification and understanding, not novelty: one picture of
 what maximum likelihood (ML) does, at finite $n$ and as $n\to\infty$, built
 on the weak closure of the model in the probability measures on the
-compactified sample space. Most ingredients are classical (Wald, Kiefer and
+compactified sample space. Most ingredients are classical (Wald, Bahadur, Kiefer and
 Wolfowitz, Perlman, Le Cam, Geyer, Csisz\'ar and Mat\'u\v s);
 Section~\ref{sec:attribution} records who did what.
 
@@ -64,7 +64,10 @@ Related material: \texttt{boundary-points.tex} (this folder); the boundary
 catalogue in \url{~/Files/research/00_inactive/ml-existence/notes/};
 literature reports
 \href{evaluations/2026-11-10-defective-limit-lit-report.md}{TASK-171} and
-TASK-173 (running).
+\href{evaluations/2026-11-10-relaxed-likelihood-lit-report.md}{TASK-173}.
+TASK-173 found no exhaustive finite-sample classification in the inspected
+sources; the vocabulary of the envelope is upper semicontinuous
+regularisation and hypoconvergence (Geyer 1994, Rockafellar and Wets).
 
 \section{Setting}\label{sec:setting}
 $X$ is a locally compact separable metric space ($\mathbb R$, an interval,
@@ -95,7 +98,12 @@ direction matters once censoring makes the tail observable.
   the parameterisation.
 \item \emph{Compact}: no problem-specific choice of compactification, the
   difficulty Perlman \cite{perlman} raises against ``suitable
-  compactifications''.
+  compactifications''. Perlman (p.~277) records Bahadur's suggestion to
+  parameterise by the law itself and take the weak closure in the measures
+  of total mass at most one as the natural compactification, under which
+  his conditions \cite[p.~320]{bahadur67} become easy to verify (normal
+  location-scale, Perlman's Example~4). Mass at most one on $X$ is the same
+  as a probability on $\bX$. \status{lit, verified in Perlman}
 \item \emph{Contains the other closures}: variation and Hellinger limits are
   weak limits; pointwise density limits (Geyer \cite{geyer}) appear as the
   absolutely continuous part of a weak limit, or as a relaxation gap
@@ -165,10 +173,13 @@ absolutely continuous part of $\bP$, the \emph{relaxation gap} is
  \Delta_m(\bP;x)=\log\bL_m(\bP;x)-\sum_{i\le m}\log\bar p(x_i)\in[-\infty,\infty],
 \]
 defined for $\nu^m$-almost every $x$ (for members, with the fixed version
-$p_\theta$, which may be $+\infty$ at a support endpoint). $\bP$ has
-\emph{excess} at $x$ if $\Delta_m>0$, \emph{deficit} if $\Delta_m<0$, and
-\emph{no gap} if $\Delta_m=0$: then weak convergence to $\bP$ and evaluation
-of densities at the data agree. At members $\Delta_m\ge0$ (constant
+$p_\theta$, which may be $+\infty$ at a support endpoint). Compare the two
+values in $[0,\infty]$ directly, since $\Delta_m$ is undefined when both are
+$0$ or both are $+\infty$: $\bP$ has \emph{excess} at $x$ if
+$\bL_m(\bP;x)>\prod_i\bar p(x_i)$, \emph{deficit} if $<$, and \emph{no gap}
+if $=$; then weak convergence to $\bP$ and evaluation of densities at the
+data agree. An atom of $\bP$ at a data point counts as excess when
+$\bL_m=+\infty$, since the atom has no density. At members $\Delta_m\ge0$ (constant
 sequences). For the truth
 $P_0=P_{\theta_0}$ and open $U$ put
 \[
@@ -276,7 +287,15 @@ Theorem~\ref{thm:main}}
 \end{corollary}
 
 Boundary points without excess, proper or defective, never break
-consistency under (D). Excess alone does not imply inconsistency: the per-observation
+consistency under (D). The hypothesis must be ``no excess'' relative to the
+absolutely continuous part, not ``$\int\bar p_{\mathrm{relaxed}}\le1$'': the
+TASK-173 report's example $p_k=\frac12(1+\sin2\pi kx)+\frac k2\mathbf
+1_{(0,1/k)}$ on $[0,1]$, truth uniform, has weak limit
+$Q=\frac12U+\frac12\delta_0$ and relaxed density $1=p_0$ a.e., so Jensen gives
+only $\le0$; under our definition $Q$ has excess ($1>\frac12$) and (viii)
+does not apply. Fatou bounds the integral of a pointwise \emph{limit} along
+one path, not of a $\limsup$: one oscillating path already has $\limsup=2$
+in the sine family. Excess alone does not imply inconsistency: the per-observation
 supremum need not be jointly achievable, and (v) uses the joint
 $\bL_m$.
 
@@ -489,12 +508,14 @@ vanishing spike & unbounded at a Hellinger limit & (D) fails\\
 \toprule
 source & compactifies & content used here\\
 \midrule
+Bahadur 1967 \cite{bahadur67} & laws, weak, mass $\le1$ & the natural compactification used here (via Perlman, p.~277)\\
 Wald 1949 \cite{wald} & $\Theta$, one point & ball suprema $f(x,\theta,\rho)$ = relaxed density; domination; density $\to0$ at $\infty$ (no proper escapes)\\
 Kiefer--Wolfowitz 1956 \cite{kw} & $\Theta$, ``suitable'' & extended densities; blocks of observations\\
 Perlman 1972 \cite{perlman} & none & block domination; iff for approximate ML\\
 Le Cam 1953, 1990 \cite{lecam} & none & Bochner domination; counterexamples\\
 Strasser 1981 \cite{strasser} & none & measurability of Perlman's criterion\\
 Geyer 1990 \cite{geyer} & laws, pointwise a.e. & closures of exponential families; defective limits\\
+Geyer 1994 \cite{geyer94} & n/a & hypoconvergence of likelihoods; usc regularisation = closure of the hypograph\\
 Csisz\'ar--Mat\'u\v s 2005 \cite{cm} & laws, variation & faces of the convex core\\
 Chen 2017 \cite{chen} & mixing laws, vague & subdistributions\\
 \bottomrule
@@ -538,8 +559,9 @@ local & Hellinger, DQM & rates and inference\\
 \item Library obligations: no gap (Lemma~\ref{lem:exact}) at each escape
   face before ``use \texttt{mlX}''; defective limits dismissed by
   Lemma~\ref{lem:defective}; completeness of each dossier's face list.
-\item Prior art for the finite-sample relaxed likelihood and outcome table
-  (TASK-173); a journal source for a complete-data defective escape.
+\item Fetch Bahadur (1967, p.~320), Kiefer--Wolfowitz (1956), Le Cam and
+  Schwartz (1960), Csisz\'ar and Mat\'u\v s (2008, generalised MLE); a
+  journal source for a complete-data defective escape.
 \item The block-size conjecture.
 \item Pole pinning: confirm Smith's two-step treatment for shape below one
   \cite{smith}, and whether other pinned-coordinate cases exist among the
@@ -547,6 +569,12 @@ local & Hellinger, DQM & rates and inference\\
 \end{enumerate}
 
 \begin{thebibliography}{99}
+\bibitem{bahadur67} R. R. Bahadur (1967). Rates of convergence of estimates
+and test statistics. \emph{Annals of Mathematical Statistics} 38(2),
+303--324. \doi{10.1214/aoms/1177698949}.
+\bibitem{geyer94} C. J. Geyer (1994). On the convergence of Monte Carlo
+maximum likelihood calculations. \emph{Journal of the Royal Statistical
+Society B} 56(1), 261--274. \doi{10.1111/j.2517-6161.1994.tb01976.x}.
 \bibitem{balzhu} N. Balakrishnan and X. Zhu (2014). On the existence and
 uniqueness of the maximum likelihood estimates of the parameters of
 Birnbaum--Saunders distribution based on Type-I, Type-II and hybrid
@@ -588,7 +616,8 @@ parameters. \emph{Annals of Mathematical Statistics} 27(4), 887--906.
 Technical Report 168.
 \bibitem{lecamschwartz} L. Le Cam and L. Schwartz (1960). A necessary and
 sufficient condition for the existence of consistent estimates.
-\emph{Annals of Mathematical Statistics} 31, 140--150.
+\emph{Annals of Mathematical Statistics} 31(1), 140--150.
+\doi{10.1214/aoms/1177705993}.
 \bibitem{perlman} M. D. Perlman (1972). On the strong consistency of
 approximate maximum likelihood estimators. \emph{Proceedings of the Sixth
 Berkeley Symposium on Mathematical Statistics and Probability} 1, 263--281.
