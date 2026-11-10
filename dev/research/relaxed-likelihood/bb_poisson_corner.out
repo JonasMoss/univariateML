@@ -1,0 +1,4 @@
+n=    1000 R=300  finite 0.543  nb 0.220  binom 0.237  poisson 0.000   median N of finite fits 17  (n^(1/4)=5.6), max N 498
+n=   10000 R=300  finite 0.553  nb 0.213  binom 0.233  poisson 0.000   median N of finite fits 27  (n^(1/4)=10.0), max N 410
+n=  100000 R=300  finite 0.513  nb 0.240  binom 0.247  poisson 0.000   median N of finite fits 47  (n^(1/4)=17.8), max N 11166
+n= 1000000 R=300  finite 0.580  nb 0.203  binom 0.217  poisson 0.000   median N of finite fits 86  (n^(1/4)=31.6), max N 18745

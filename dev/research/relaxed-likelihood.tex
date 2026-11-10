@@ -397,6 +397,7 @@ A3 & member; joint excess at a competitor & a wrong boundary point & R3 with pro
 \midrule
 A4 & boundary point, no gap, seam (Gaussian local experiment) & $P_0$ (as a law) & R2 with probability $\to c\in(0,1)$; $c=\frac12$ in one dimension & NB at a Poisson truth; Lomax at an exponential truth\\
 A4$'$ & boundary point, no gap, cusp (Poisson local experiment) & $P_0$ (as a law) & R2 with probability $\to c$ from a Poisson-process functional & Burr XII at a Pareto truth: $c\approx0.971$, Ex.~\ref{ex:burr-pareto}\\
+A4$''$ & corner of two seams, singular information & $P_0$ (as a law) & R2 with probability $\to\frac12$ after $s=t^2$; finite fits at scale $n^{-1/4}$ & beta-binomial at a Poisson truth, Ex.~\ref{ex:bb-corner}\\
 A5 & boundary point with a deficit & possibly a wrong point & depends on competitors & comb plus $q$, Ex.~\ref{ex:deficit-truth}\\
 \midrule
 A6 & outside $\bM$ (misspecified) & maximisers of $\gamma$ (relaxed KL projection) & R2 with probability $\to1$ if the projection is a face; R1 if it is a member & NB fitted to binomial data (projection: Poisson face)\\
@@ -486,14 +487,55 @@ $0.16$ for $\xi_1\in[3,4)$, $0.75$ for $[4,6)$ and $1$ beyond $6$. The finite
 Burr MLE treats the minimum as lying below a soft endpoint.
 \end{example}
 
+\begin{example}[Beta-binomial at a Poisson truth: a corner]\label{ex:bb-corner}
+$BB(N,a,b)$ with all three free has NB ($N\to\infty$) and free-size binomial
+($a+b\to\infty$) faces, which meet at Poisson. With $u=1/a$, $k=1/N$ and the
+mean held, the closure report's expansion (15) gives
+$(\ell_{BB}-\ell_{\rm Pois})/n=\frac{v-\mu}2(u-k)+B(u^2+k^2)+\frac{\mu v}2uk+\dots$;
+under a Poisson truth the quadratic part tends to
+$-\frac{\mu^2}4(u-k)^2$, which vanishes on the diagonal: singular
+information. In $d=u-k$, $t=(u+k)/2$, the diagonal expansion is even in $t$
+(report eq.~19) and its $t^2$ coefficient is a mean-zero statistic of order
+$n^{-1/2}$. So $d$ lives at scale $n^{-1/2}$ and $s=t^2$ at scale
+$n^{-1/2}$: in $(D,S)=(\sqrt n d,\sqrt n t^2)$ the likelihood ratio is a
+regular quadratic on $S\ge0$, and both faces collapse onto $S=0$ (NB for
+$D>0$, binomial for $D<0$; the constraint $t\ge|d|/2$ is $S\ge O(n^{-1/2})$).
+Prediction: finite fit iff the efficient $S$-score is positive
+(probability $\frac12$); otherwise NB or binomial by the sign of $v-\mu$,
+asymptotically independent ($\frac14$ each); the finite fit beats the face
+by $\frac12\chi^2_1$; $\hat N\asymp n^{1/4}$. \status{sketch}
+
+Simulation (Poisson$(3)$, exact BB fits over $N\le20\,000$;
+\texttt{relaxed-likelihood/bb\_poisson\_corner.py},
+\texttt{bb\_corner\_margins.py}, outputs beside them). Finite fits, counting
+margins above $10^{-3}$ and correcting for the threshold: $0.546, 0.477,
+0.498$ at $n=10^3,10^4,10^5$ ($300$ replicates each), pooled $0.507\pm0.017$.
+Escapes split evenly between NB and binomial ($0.219$ vs $0.233$ of all
+samples, first run). Median $\hat N$ of finite fits $17,27,47,86$ at
+$n=10^3,\dots,10^6$, i.e.\ $\hat N/n^{1/4}\approx2.7$ throughout. Margins:
+tails match $\frac12\chi^2_1$ (quantiles $0.016, 0.056, 0.177, 0.668, 1.435$
+against $0.014, 0.063, 0.247, 0.687, 1.382$), but the centre is lighter
+(Kolmogorov--Smirnov $p\approx0.01$, medians not moving towards $0.247$):
+either slow $O(n^{-1/4})$ corrections or something missing (theory, or
+the fitter's geometric size grid above $120$). At $n=10^6$, $17\%$ of
+``finite'' fits beat the face by less than $10^{-4}$ (about $1\%$ expected):
+a numerical artefact of comparing huge-$N$ BB with the NB formula; excluded.
+\end{example}
+
 \paragraph{Rates at the cusp.} The transition between escape and finite
 fit happens at $k\asymp1/n$, not $1/\sqrt n$: near the Pareto face the shape
 $k$ lives on an endpoint scale. A Burr truth with $k_0=t/n$ gives a
 non-degenerate escape probability depending on $t$.
 
-\paragraph{Open.} Corners with singular information (beta-binomial at the
-Poisson corner): limiting escape frequencies and rates. A proof of the
-Poisson limit for the Burr cusp, and the escape curve in $t$.
+\paragraph{Summary of boundary truths.} Seam: Gaussian, $c=\frac12$, rate
+$n^{-1/2}$. Corner with singular information: Gaussian after squaring the
+singular coordinate, $c=\frac12$, rate $n^{-1/4}$ for the original shape
+and size. Cusp: Poisson-process functional, $c\approx0.971$ for Burr at
+Pareto, rate $n^{-1}$ for $k$.
+
+\paragraph{Open.} The centre of the corner's margin distribution
+(Example~\ref{ex:bb-corner}); a proof of the Poisson limit for the Burr cusp
+and its escape curve in $t$; accurate face comparisons at very large $N$.
 
 \section{Tools}
 \begin{lemma}[No gap]\label{lem:exact}
