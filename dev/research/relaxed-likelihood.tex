@@ -485,19 +485,45 @@ two-point maxima. \status{proved here}
 \end{example}
 
 \begin{example}[Deficit at the maximiser]\label{ex:deficit}
-On $[0,1]$ let $p_k=(1-a_k)\,k^2\mathbf 1_{S_k}+a_k$ for $k\ge2$, with
-$a_k=a(1-1/k)$, $0<a<1$, and $S_k$ a union of $k$ evenly spaced intervals
-of total length $k^{-2}$. Then $p_k\Rightarrow U$, and $\bM$ consists of the
-$p_k$ and $U$. Since $\sum_{k\ge2}k^{-2}=\pi^2/6-1<1$, the event that no
-observation lies in any $S_k$ has probability at least $(2-\pi^2/6)^n>0$
-under $U$ (and under every $p_k$). On that event
-$L_n(p_k)=a_k^n\uparrow a^n$, unattained, so $U$ is the unique maximiser of
-$\bL_n$, with value $a^n$, while $U$'s own likelihood is $1$: a deficit.
-There is no MLE, and the limit is not a rescue in the sense of ``use
-\texttt{mlX}'': it fits better than the model can approach it near the
-data. Deficits need approaching densities that miss the data where the
-limit is positive; none is known among the library's families.
-\status{proved here}
+On $[0,1]$ let
+\[
+ p_k=(1-a_k)\,k^2\mathbf 1_{S_k}+a_k,\qquad k\ge2,\quad a_k=a(1-1/k),\ 0<a<1,
+\]
+with $S_k=\bigcup_{j<k}[j/k,\,j/k+k^{-3}]$: $k$ evenly spaced teeth of
+total length $k^{-2}$. Each $p_k$ integrates to
+$(1-a_k)k^2k^{-2}+a_k=1$: mass $1-a_k$ on the teeth, a floor $a_k$
+everywhere.
+\begin{enumerate}
+\item \emph{Weak limit.} For continuous $g$,
+  $k^2\int_{S_k}g\approx\frac1k\sum_{j<k}g(j/k)\to\int g$ (a Riemann sum), so
+  $p_k\Rightarrow U$. Every $p_k$ is isolated, and $\bM=\{p_k\}\cup\{U\}$.
+\item \emph{The event.} Let $S=\bigcup_kS_k$. Then
+  $|S|\le\sum_{k\ge2}k^{-2}=\pi^2/6-1$ (numerically $|S|\approx0.456$, since
+  the teeth overlap at shared points). The event $A$ that no observation
+  lies in $S$ has probability $(1-|S|)^n>0$ under $U$ and at least
+  $(a_{k_0}(1-|S|))^n>0$ under $p_{k_0}$.
+\item \emph{On $A$.} $p_k(x_i)=a_k$ for all $i,k$, so
+  $L_n(p_k)=a_k^n\uparrow a^n$, never attained: no MLE. Neighbourhoods of
+  $U$ contain all but finitely many $p_k$, so $\bL_n(U)=\lim_k a_k^n=a^n$,
+  while $\bL_n(p_k)=a_k^n<a^n$. $U$ is the unique maximiser, with
+  signature $(1,0,0)$ and value $a^n$, but its own likelihood is $1$.
+\item \emph{Off $A$.} A hit $x_i\in S_k$ gives $p_k$ the factor
+  $(1-a_k)k^2+a_k$ there. Whether that member then wins depends on $k$ and
+  $n$: for $a=\frac12$ and one hit at $k=2$ the member wins for $n\le3$ and
+  $U$ still wins for $n\ge4$. So $A$ is sufficient, not necessary.
+\end{enumerate}
+\emph{Reading.} Weakly, the teeth carry mass $1-a$ spread evenly, so the
+limit is the full uniform. At any observation the teeth miss, the members
+look like the floor $a_k$: the relaxed density at $U$ is $a$ almost
+everywhere, a sub-density from the likelihood's point of view. The missing
+mass $1-a$ hides on sets of vanishing measure inside the support: it does
+not escape to infinity (R4) or concentrate on atoms (R5, R6), so the weak
+limit stays absolutely continuous and reports it as density. ``Use
+\texttt{mlunif}'' would be misleading: the uniform fits better than the
+model can approach it near the data. Deficits need approaching densities
+that miss the data where the limit is positive; densities that converge
+locally uniformly (Lemma~\ref{lem:exact}(a)), as in the library's families,
+cannot produce them. \status{proved here}
 \end{example}
 
 \begin{example}[Infinite excess at a Hellinger limit]\label{ex:spike}
