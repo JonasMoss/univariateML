@@ -511,6 +511,25 @@ everywhere.
   $(1-a_k)k^2+a_k$ there. Whether that member then wins depends on $k$ and
   $n$: for $a=\frac12$ and one hit at $k=2$ the member wins for $n\le3$ and
   $U$ still wins for $n\ge4$. So $A$ is sufficient, not necessary.
+\item \emph{Asymptotics.} Under $p_{k_0}$, (D) holds with $k=1$
+  ($\E\log^+\sup_{k\ge K}p_k\lesssim\sum_kk^{-2}\log k<\infty$), the relaxed
+  density at $U$ is $a$ a.e., and
+  $\gamma(U)=\E_{k_0}\log(a/p_{k_0})\le\log a<0$ because $\E\log p\ge0$ for
+  a density on $[0,1]$. So ML is consistent. Since
+  $\frac1n\log L_n(p_{k_0})\to\E_{k_0}\log p_{k_0}\ge0>\log a$, eventually
+  $L_n(p_{k_0})>a^n$; only finitely many $p_k$ are hit, so the supremum is
+  attained: the MLE exists eventually a.s. No MLE has positive probability
+  for every $n$ (at least $P(A)$), tending to zero. Like Geyer 4.5, a
+  finite-sample phenomenon.
+\item \emph{Conventions.} The pointwise limit of $p_k$ is the sub-density
+  $a$ (mass $a$), not the weak limit's density $1$. In a Kiefer--Wolfowitz
+  or Wald compactification of the index ($k=\infty$ with extended density
+  $a$), or in Geyer's pointwise completion, that boundary point attains the
+  supremum $a^n$ with no gap: a completed MLE that is a sub-density (row
+  R4 in that convention). Weak convergence remembers the mass $1-a$ as
+  spread uniformly; pointwise limits lose it. The deficit measures exactly
+  this disagreement: in Theorem~\ref{thm:universal}, the extended density on
+  the fibre ($a$) falls short of the weak limit's density ($1$).
 \end{enumerate}
 \emph{Reading.} Weakly, the teeth carry mass $1-a$ spread evenly, so the
 limit is the full uniform. At any observation the teeth miss, the members
