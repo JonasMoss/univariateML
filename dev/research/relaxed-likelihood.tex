@@ -198,8 +198,10 @@ whenever the first limit exists almost surely.
 
 A deficit is possible: comb densities $k^2\mathbf 1_{S_k}$, with $S_k$ evenly
 spread intervals of total length $k^{-2}$, converge weakly to the uniform,
-while almost every $x$ leaves $S_k$ for good, so $\bL_1=0<1$. Deficit
-points never win; only excess matters below.
+while almost every $x$ leaves $S_k$ for good, so $\bL_1=0<1$. Members never
+have a deficit (constant sequences), but a boundary point with a deficit
+can be the unique maximiser of $\bL_n$ (Example~\ref{ex:deficit}). For
+consistency only excess matters.
 
 \paragraph{Terminology.} In variational analysis $\bL_n$ is the upper
 semicontinuous hull (hypo-closure) of $L_n$ on $\bM$ \cite{rw}. We keep
@@ -350,12 +352,14 @@ R7 & member with a density pole at a data point & $(1,0,0)$ & $+\infty$; none & 
 R8 & proper boundary, vanishing spike & $(1,0,0)$ & $+\infty$; excess & unbounded at a Hellinger limit & spike mixture; Ex.~\ref{ex:spike}\\
 \midrule
 R9 & several points & mixed & tie & non-unique maximisers & Cauchy with two observations (R1 and R5 tie), Burr finite/face ties; Ex.~\ref{ex:cauchy2}\\
+\midrule
+R10 & boundary point with a deficit & any & finite; deficit & no MLE; the limit overshoots & combs that miss the data; Ex.~\ref{ex:deficit}\\
 \bottomrule
 \end{tabular}
 \caption{Finite-sample outcomes, exhaustive by Theorem~\ref{thm:main}(i).
 Members always have signature $(1,0,0)$. Singular points always show
-excess, since an atom carries no density. Deficit points never maximise
-unless $\sup_\theta L_n=0$. The library adds ``budget exhausted'' and
+excess, since an atom carries no density. Members never show a deficit;
+boundary points can (R10). The library adds ``budget exhausted'' and
 ``numerical failure'' for computations that cannot decide the row.}
 \label{tab:outcomes}
 \end{table}
@@ -478,6 +482,22 @@ $\bL_2=\lim_{\sigma\to0}p(1)p(-1)=1/(4\pi^2)$ as well. So the argmax of $\bL_2$
 is a continuum of members tied with two singular boundary points: rows R1
 and R5 at once. The \href{../../univariateML-cpp/include/cppunivariate/distributions/cauchy/README.md}{\texttt{cauchy}} dossier records these balanced
 two-point maxima. \status{proved here}
+\end{example}
+
+\begin{example}[Deficit at the maximiser]\label{ex:deficit}
+On $[0,1]$ let $p_k=(1-a_k)\,k^2\mathbf 1_{S_k}+a_k$ for $k\ge2$, with
+$a_k=a(1-1/k)$, $0<a<1$, and $S_k$ a union of $k$ evenly spaced intervals
+of total length $k^{-2}$. Then $p_k\Rightarrow U$, and $\bM$ consists of the
+$p_k$ and $U$. Since $\sum_{k\ge2}k^{-2}=\pi^2/6-1<1$, the event that no
+observation lies in any $S_k$ has probability at least $(2-\pi^2/6)^n>0$
+under $U$ (and under every $p_k$). On that event
+$L_n(p_k)=a_k^n\uparrow a^n$, unattained, so $U$ is the unique maximiser of
+$\bL_n$, with value $a^n$, while $U$'s own likelihood is $1$: a deficit.
+There is no MLE, and the limit is not a rescue in the sense of ``use
+\texttt{mlX}'': it fits better than the model can approach it near the
+data. Deficits need approaching densities that miss the data where the
+limit is positive; none is known among the library's families.
+\status{proved here}
 \end{example}
 
 \begin{example}[Infinite excess at a Hellinger limit]\label{ex:spike}
