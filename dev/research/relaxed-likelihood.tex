@@ -323,7 +323,21 @@ Theorem~\ref{thm:main}}
 \end{corollary}
 
 Boundary points without excess, proper or defective, never break
-consistency under (D). The hypothesis must be ``no excess'' relative to the
+consistency under (D). In particular a deficit cannot cause inconsistency
+when the truth is a member: members have no deficit, and a deficit at a
+competitor only lowers its $\gamma$.
+
+\paragraph{Truth on the boundary: the dual failure.} If the truth is a
+boundary point $\bP\in\bM\setminus\cM$ with density $\bar p$ (data from the
+exponential, model Lomax), the same argument gives
+$\gamma(\bP)\le\E_{\bP}\log(r/\bar p)$ with $r=\bL_1(\bP;\cdot)$. With no gap
+at $\bP$ this is $0$, and only excess elsewhere can beat it: ML recovers a
+boundary truth, the usual escape. With a deficit on a set of positive
+probability, $\gamma(\bP)<0$, and any competitor with
+$\gamma\in(\gamma(\bP),0)$ captures ML (Example~\ref{ex:deficit-truth}).
+So the two gaps fail in opposite directions: excess lures ML to a wrong
+boundary point (sine family); deficit hides a boundary truth from ML
+(combs). \status{sketch} The hypothesis must be ``no excess'' relative to the
 absolutely continuous part, not ``$\int\bar p_{\mathrm{relaxed}}\le1$'': the
 TASK-173 report's example $p_k=\frac12(1+\sin2\pi kx)+\frac k2\mathbf
 1_{(0,1/k)}$ on $[0,1]$, truth uniform, has weak limit
@@ -543,6 +557,20 @@ model can approach it near the data. Deficits need approaching densities
 that miss the data where the limit is positive; densities that converge
 locally uniformly (Lemma~\ref{lem:exact}(a)), as in the library's families,
 cannot produce them. \status{proved here}
+\end{example}
+
+\begin{example}[A boundary truth hidden by its deficit]\label{ex:deficit-truth}
+Add to the comb model of Example~\ref{ex:deficit} (with $a=\frac12$) one
+member $q(x)=1+(x-\frac12)$, and let the truth be $U$, which lies in $\bM$
+but not in $\cM$. Then
+$\E_U\log q=\int_{1/2}^{3/2}\log t\,dt\approx-0.045$, while the relaxed value
+at $U$ is $\log a\approx-0.693$ and
+$\E_U\log p_k\in[-0.774,-0.693)$ for all $k$ (numerically). With $p_0=1$ in
+place of $p_{\theta_0}$, Theorem~\ref{thm:main}(vi)--(vii) (whose proof does
+not use $P_0\in\cM$) gives $\gamma(q)\approx-0.045=\max\gamma$, so approximate
+ML converges to $q\ne U$ almost surely. A minimum Kolmogorov distance
+estimator converges weakly to $U$, since $\inf_k\|F_{p_k}-F_U\|_\infty=0$.
+The failure is specific to ML. \status{sketch}
 \end{example}
 
 \begin{example}[Infinite excess at a Hellinger limit]\label{ex:spike}
