@@ -142,3 +142,120 @@ TEST_CASE("naka: TASK-132 constant samples retain analytic nonexistence across r
     CHECK(cppunivariate::naka_mle(mltest::as_span(data),1e-8,200).status == cppunivariate::GammaStatus::Degenerate);
   }
 }
+
+// Independent 180/360-digit raw-model references: TASK-101.7.5 evidence.
+TEST_CASE("naka: raw transform audit case 5025") {
+  const std::vector<double> data{1.6156758120186856, 1.6156758120203014, 1.615675812021917, 1.6156758120235326, 1.615675812026764};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::naka_mle(x, 1e-10, 200);
+  REQUIRE(fit.status==cppunivariate::GammaStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.shape==doctest::Approx(8.445990392402279e+22).epsilon(1e-10).scale(0));
+  CHECK(fit.scale==doctest::Approx(2.610408329553725).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(125.94868625588904).epsilon(1e-10).scale(0));
+}
+TEST_CASE("naka: raw transform audit case 5028") {
+  const std::vector<double> data{1.6156758120186856, 1.6156758120203014, 1.615675812021917, 1.6156758120235326, 1.615675812026764};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::naka_mle(x, 1e-10, 200);
+  REQUIRE(fit.status==cppunivariate::GammaStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.shape==doctest::Approx(8.445990392402279e+22).epsilon(1e-10).scale(0));
+  CHECK(fit.scale==doctest::Approx(2.610408329553725).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(125.94868625588904).epsilon(1e-10).scale(0));
+}
+TEST_CASE("naka: raw transform audit case 5020") {
+  const std::vector<double> data{1.1870206453189427, 1.8063039875699989, 0.4693270808393411};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::naka_mle(x, 1e-10, 200);
+  REQUIRE(fit.status==cppunivariate::GammaStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.shape==doctest::Approx(1.1698574399369313).epsilon(1e-10).scale(0));
+  CHECK(fit.scale==doctest::Approx(1.630673338911285).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(-2.359056308828766).epsilon(1e-10).scale(0));
+}
+TEST_CASE("naka: raw transform audit case 10593") {
+  const std::vector<double> data{0.99999998, 0.99999999, 1.0, 1.00000001, 1.00000003};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::naka_mle(x, 1e-10, 200);
+  REQUIRE(fit.status==cppunivariate::GammaStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.shape==doctest::Approx(844594598752111.4).epsilon(1e-10).scale(0));
+  CHECK(fit.scale==doctest::Approx(1.0000000040000003).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(82.29573788520479).epsilon(1e-10).scale(0));
+}
+TEST_CASE("naka: raw transform audit case 5035") {
+  const std::vector<double> data{1.1870206453189427, 1.8063039875699989, 0.4693270808393411, 2.13423387168775, 1615678.355181381};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::naka_mle(x, 1e-10, 200);
+  REQUIRE(fit.status==cppunivariate::GammaStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.shape==doctest::Approx(0.04235627451635061).epsilon(1e-10).scale(0));
+  CHECK(fit.scale==doctest::Approx(522083309482.21204).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(-32.60680034465681).epsilon(1e-10).scale(0));
+}
+TEST_CASE("naka: raw transform audit case 5024") {
+  const std::vector<double> data{1.6156757797084007, 1.6156757958651589, 1.615675812021917, 1.6156758281786752, 1.6156758604921915};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::naka_mle(x, 1e-10, 200);
+  REQUIRE(fit.status==cppunivariate::GammaStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.shape==doctest::Approx(844594596402047.9).epsilon(1e-10).scale(0));
+  CHECK(fit.scale==doctest::Approx(2.610408339994315).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(79.89697123524273).epsilon(1e-10).scale(0));
+}
+TEST_CASE("naka: raw transform audit case 5027") {
+  const std::vector<double> data{1.6156757797084007, 1.6156757958651589, 1.615675812021917, 1.6156758281786752, 1.6156758604921915};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::naka_mle(x, 1e-10, 200);
+  REQUIRE(fit.status==cppunivariate::GammaStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.shape==doctest::Approx(844594596402047.9).epsilon(1e-10).scale(0));
+  CHECK(fit.scale==doctest::Approx(2.610408339994315).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(79.89697123524273).epsilon(1e-10).scale(0));
+}
+TEST_CASE("naka: raw transform audit case 5033") {
+  const std::vector<double> data{1.1870206453189427e-150, 1.806303987569999e-150, 4.693270808393411e-151, 2.13423387168775e-150, 1.615675812021917e-150, 8.86497002301353e-151, 2.5431594641684416e-150, 1.6267796686030047e-150, 1.3177191226180992e-150, 1.4498034459162533e-150, 7.470853925818136e-151, 1.8750286103803643e-150};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::naka_mle(x, 1e-10, 200);
+  REQUIRE(fit.status==cppunivariate::GammaStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.shape==doctest::Approx(1.6910565415381886).epsilon(1e-10).scale(0));
+  CHECK(fit.scale==doctest::Approx(2.489126186855235e-300).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(4134.409443408661).epsilon(1e-10).scale(0));
+}
+TEST_CASE("naka: raw transform audit case 5034") {
+  const std::vector<double> data{1.1870206453189426e+150, 1.806303987569999e+150, 4.693270808393411e+149, 2.13423387168775e+150, 1.615675812021917e+150, 8.864970023013529e+149, 2.5431594641684415e+150, 1.6267796686030047e+150, 1.3177191226180994e+150, 1.4498034459162531e+150, 7.470853925818136e+149, 1.875028610380364e+150};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::naka_mle(x, 1e-10, 200);
+  REQUIRE(fit.status==cppunivariate::GammaStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.shape==doctest::Approx(1.6910565415381886).epsilon(1e-10).scale(0));
+  CHECK(fit.scale==doctest::Approx(2.489126186855235e+300).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(-4154.896891369904).epsilon(1e-10).scale(0));
+}
+TEST_CASE("naka: raw transform audit case 5018") {
+  const std::vector<double> data{1.1870206453189427, 1.8063039875699989, 0.4693270808393411, 2.13423387168775, 1.615675812021917, 0.886497002301353, 2.5431594641684416, 1.6267796686030047, 1.3177191226180993, 1.4498034459162532, 0.7470853925818136, 1.8750286103803642};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::naka_mle(x, 1e-10, 200);
+  REQUIRE(fit.status==cppunivariate::GammaStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.shape==doctest::Approx(1.6910565415381886).epsilon(1e-10).scale(0));
+  CHECK(fit.scale==doctest::Approx(2.489126186855235).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(-10.24372398062166).epsilon(1e-10).scale(0));
+}
+
+TEST_CASE("naka: finite second moment despite an overflowing reference square") {
+  const std::vector<double> data{1.5e154,1,1,1,1};
+  const auto fit=cppunivariate::naka_mle(mltest::as_span(data),1e-10,200);
+  REQUIRE(fit.status==cppunivariate::GammaStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.scale==doctest::Approx(4.5e307).epsilon(1e-13).scale(0));
+}
+
+TEST_CASE("naka: a broad normalized mean is accumulated without subtracting one") {
+  std::vector<double> data(100001,1);data[0]=1e150;
+  const auto fit=cppunivariate::naka_mle(mltest::as_span(data),1e-12,200);
+  REQUIRE(fit.status==cppunivariate::GammaStatus::Ok);
+  CHECK(fit.scale==doctest::Approx(1e300/data.size()).epsilon(1e-13).scale(0));
+}

@@ -31,7 +31,7 @@ r:
   control:
     shape: Optional held shape; NULL estimates it.
     scale: Optional held scale; NULL estimates it.
-    abstol: Absolute step tolerance in shape (the gamma shape for x^2).
+    abstol: Positive relative accuracy tolerance for the gamma shape bracket.
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
 log_density: log(2) + shape*log(shape) - loggamma(shape) - shape*log(scale) + (2*shape - 1)*log(x) - shape*x**2/scale
 references:
@@ -109,7 +109,7 @@ The shape $m$ may be any positive value, including values below $1/2$. The shape
 
 With scale free, its estimate is the sample second moment. The remaining shape equation is the decreasing gamma log-shape/digamma equation. Holding scale gives the same equation with a different nonnegative right-hand side. It has a unique finite solution unless every squared observation equals the held scale. Holding shape permits constant data. Holding both coefficients evaluates the likelihood.
 
-The joint fit delegates to gamma fitting on squared observations, with the Jacobian included in the likelihood. A failed delegated solve remains a fitting failure. Squaring extremely small or large observations can exceed floating-point range, which is a numerical failure rather than mathematical non-existence.
+The gamma reduction forms relative squared differences as $r_i(2+r_i)$, where $r_i=(x_i-x_0)/x_0$, and accumulates the second moment relative to its anchor. This preserves concentrated samples without first rounding their squares. The likelihood includes the square-transform Jacobian and is evaluated at the returned coefficients. Binary64 spacing of the second moment can prevent transfer of the latent likelihood certificate on ulp-wide samples; these finite fits retain an explicit uncertified indication. An unrepresentable free second moment is a numerical failure; a fully held likelihood can remain finite even when individual squares underflow.
 
 The [positive-family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-positive.md) gives the boundary arguments and their held-parameter conditions.
 

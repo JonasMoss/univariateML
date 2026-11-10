@@ -114,3 +114,57 @@ test_that("invgamma: P3 unfinished optimizer stops", {
   expect_error(mlinvgamma(x, iterlim=1, abstol=1e-10),
                "[Ff]ail|converge|unresolved|exhausted|score check")
 })
+
+# Independent 180/360-digit raw-model references: TASK-101.7.5 evidence.
+test_that("raw transform audit case 3759", {
+  x <- c(1.471602327564204, 1.4716023275656755, 1.4716023275671473, 1.471602327568619, 1.4716023275715622)
+  fit <- mlinvgamma(x, abstol = 1e-10, iterlim = 200)
+  expect_lte(abs(unname(fit["alpha"]) / (3.3782209017569924e+23) - 1), 1e-10)
+  expect_lte(abs(unname(fit["beta"]) / (4.9713977420625715e+23) - 1), 1e-10)
+  expect_lte(abs(as.numeric(logLik(fit)) - (126.41556407783901)) / max(1, abs(126.41556407783901)), 1e-10)
+})
+test_that("raw transform audit case 3762", {
+  x <- c(1.471602327564204, 1.4716023275656755, 1.4716023275671473, 1.471602327568619, 1.4716023275715622)
+  fit <- mlinvgamma(x, abstol = 1e-10, iterlim = 200)
+  expect_lte(abs(unname(fit["alpha"]) / (3.3782209017569924e+23) - 1), 1e-10)
+  expect_lte(abs(unname(fit["beta"]) / (4.9713977420625715e+23) - 1), 1e-10)
+  expect_lte(abs(as.numeric(logLik(fit)) - (126.41556407783901)) / max(1, abs(126.41556407783901)), 1e-10)
+})
+test_that("raw transform audit case 10510", {
+  x <- c(0.999999999998, 0.999999999999, 1.0, 1.000000000001, 1.000000000003)
+  fit <- mlinvgamma(x, abstol = 1e-10, iterlim = 200)
+  expect_lte(abs(unname(fit["alpha"]) / (3.3783453797065964e+23) - 1), 1e-10)
+  expect_lte(abs(unname(fit["beta"]) / (3.378345379707272e+23) - 1), 1e-10)
+  expect_lte(abs(as.numeric(logLik(fit)) - (128.34741532364208)) / max(1, abs(128.34741532364208)), 1e-10)
+})
+test_that("raw transform audit case 10509", {
+  x <- c(0.99999998, 0.99999999, 1.0, 1.00000001, 1.00000003)
+  fit <- mlinvgamma(x, abstol = 1e-10, iterlim = 200)
+  expect_lte(abs(unname(fit["alpha"]) / (3378378418017940.0) - 1), 1e-10)
+  expect_lte(abs(unname(fit["beta"]) / (3378378424774695.5) - 1), 1e-10)
+  expect_lte(abs(as.numeric(logLik(fit)) - (82.29573790223182)) / max(1, abs(82.29573790223182)), 1e-10)
+})
+test_that("raw transform audit case 3758", {
+  x <- c(1.4716022981351007, 1.471602312851124, 1.4716023275671473, 1.4716023422831706, 1.4716023717152171)
+  fit <- mlinvgamma(x, abstol = 1e-10, iterlim = 200)
+  expect_lte(abs(unname(fit["alpha"]) / (3378378416524510.5) - 1), 1e-10)
+  expect_lte(abs(unname(fit["beta"]) / (4971629551103341.0) - 1), 1e-10)
+  expect_lte(abs(as.numeric(logLik(fit)) - (80.36397877160313)) / max(1, abs(80.36397877160313)), 1e-10)
+})
+test_that("raw transform audit case 3761", {
+  x <- c(1.4716022981351007, 1.471602312851124, 1.4716023275671473, 1.4716023422831706, 1.4716023717152171)
+  fit <- mlinvgamma(x, abstol = 1e-10, iterlim = 200)
+  expect_lte(abs(unname(fit["alpha"]) / (3378378416524510.5) - 1), 1e-10)
+  expect_lte(abs(unname(fit["beta"]) / (4971629551103341.0) - 1), 1e-10)
+  expect_lte(abs(as.numeric(logLik(fit)) - (80.36397877160313)) / max(1, abs(80.36397877160313)), 1e-10)
+})
+
+test_that("held-rate shape beyond binary64 stops", {
+  expect_error(mlinvgamma(c(1e-300, 2e-300), beta = 1e300), "fitted coefficients")
+})
+
+test_that("finite public rate survives an overflowing reciprocal reference", {
+  fit <- mlinvgamma(c(1e-309, 1, 1, 1, 1), abstol = 1e-10, iterlim = 200)
+  expect_gt(fit[["beta"]], 0)
+  expect_true(is.finite(as.numeric(logLik(fit))))
+})

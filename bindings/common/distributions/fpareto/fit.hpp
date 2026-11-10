@@ -44,7 +44,7 @@ inline FitResult fit_fpareto(cppunivariate::span x, Held shape1_arg = {}, Held s
     case cppunivariate::Gb2Status::ScaleOutOfRange: return fail("GB2 scale is outside the representable range.");
     default: return stop_failure(fail("GB2 search unresolved: no verified interior maximum; increase iterlim or inspect the limiting models."),res.stop_detail,"unresolved",{"shape1","shape2","shape3","scale","min"},"");
   }
-  return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"shape1",res.shape1},{"shape2",res.shape2},{"shape3",res.shape3},{"scale",res.scale},{"min",min}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }();
+  return [&]() { FitResult out; if(!res.certified)out.extra.push_back({"certified",0}); out.warnings = warnings; out.estimates = {{"shape1",res.shape1},{"shape2",res.shape2},{"shape3",res.shape3},{"scale",res.scale},{"min",min}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }();
 
 }
 }

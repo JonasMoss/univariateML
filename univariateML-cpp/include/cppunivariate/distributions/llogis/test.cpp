@@ -149,3 +149,105 @@ TEST_CASE("llogis R6 all-free constant collapse") {
     CHECK(cppunivariate::loglogistic_mle(mltest::as_span(x),1e-8,100).status==cppunivariate::LogLogisticStatus::Unbounded);
   }
 }
+
+// Independent 180/360-digit raw-model references: TASK-101.7.5 evidence.
+TEST_CASE("llogis: raw transform audit case 4525") {
+  const std::vector<double> data{1.307038121314793, 1.3070381213161002, 1.3070381213174072, 1.307038121318714, 1.3070381213213282};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::loglogistic_mle(x, 1e-10, 200);
+  REQUIRE(fit.status==cppunivariate::LogLogisticStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.shape==doctest::Approx(977338636898.3333).epsilon(1e-10).scale(0));
+  CHECK(fit.scale==doctest::Approx(1.3070381213175297).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(126.83443367637379).epsilon(1e-10).scale(0));
+}
+TEST_CASE("llogis: raw transform audit case 4528") {
+  const std::vector<double> data{1.307038121314793, 1.3070381213161002, 1.3070381213174072, 1.307038121318714, 1.3070381213213282};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::loglogistic_mle(x, 1e-10, 200);
+  REQUIRE(fit.status==cppunivariate::LogLogisticStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.shape==doctest::Approx(977338636898.3333).epsilon(1e-10).scale(0));
+  CHECK(fit.scale==doctest::Approx(1.3070381213175297).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(126.83443367637379).epsilon(1e-10).scale(0));
+}
+TEST_CASE("llogis: raw transform audit case 4535") {
+  const std::vector<double> data{1.4612222342357195, 0.7038909590134532, 0.013073080872494258, 1.3070381213174072, 1307058.4295823444};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::loglogistic_mle(x, 1e-10, 200);
+  REQUIRE(fit.status==cppunivariate::LogLogisticStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.shape==doctest::Approx(0.3040901444416098).epsilon(1e-10).scale(0));
+  CHECK(fit.scale==doctest::Approx(2.201982518014345).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(-26.21124672480389).epsilon(1e-10).scale(0));
+}
+TEST_CASE("llogis: raw transform audit case 4536") {
+  const std::vector<double> data{1.3070355072411646, 1.3070368142792859, 1.3070381213174072, 1.3070394283555284, 1.30704073539365};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::loglogistic_mle(x, 1e-10, 200);
+  REQUIRE(fit.status==cppunivariate::LogLogisticStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.shape==doctest::Approx(1156676.740617789).epsilon(1e-10).scale(0));
+  CHECK(fit.scale==doctest::Approx(1.3070381213165507).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(58.66887513411426).epsilon(1e-10).scale(0));
+}
+TEST_CASE("llogis: raw transform audit case 4533") {
+  const std::vector<double> data{1.4612222342357196e-150, 7.038909590134533e-151, 1.3073080872494259e-152, 1.3070381213174072e-150, 7.555950558444047e-153, 1.6454641076172512e-150, 3.634118342449831e-150, 5.611994994187286e-152, 3.3079750606038745e-150, 2.030826493716806e-149, 6.404111626327396e-151, 2.1198704112740274e-152};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::loglogistic_mle(x, 1e-10, 200);
+  REQUIRE(fit.status==cppunivariate::LogLogisticStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.shape==doctest::Approx(0.6905841610868956).epsilon(1e-10).scale(0));
+  CHECK(fit.scale==doctest::Approx(5.212327592697621e-151).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(4126.668189703903).epsilon(1e-10).scale(0));
+}
+TEST_CASE("llogis: raw transform audit case 4518") {
+  const std::vector<double> data{1.4612222342357195, 0.7038909590134532, 0.013073080872494258, 1.3070381213174072, 0.007555950558444047, 1.6454641076172511, 3.634118342449831, 0.05611994994187286, 3.3079750606038747, 20.308264937168058, 0.6404111626327396, 0.021198704112740274};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::loglogistic_mle(x, 1e-10, 200);
+  REQUIRE(fit.status==cppunivariate::LogLogisticStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.shape==doctest::Approx(0.6905841610868956).epsilon(1e-10).scale(0));
+  CHECK(fit.scale==doctest::Approx(0.5212327592697621).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(-17.98497768537857).epsilon(1e-10).scale(0));
+}
+TEST_CASE("llogis: raw transform audit case 4534") {
+  const std::vector<double> data{1.4612222342357194e+150, 7.038909590134532e+149, 1.307308087249426e+148, 1.307038121317407e+150, 7.555950558444047e+147, 1.6454641076172512e+150, 3.634118342449831e+150, 5.611994994187286e+148, 3.307975060603874e+150, 2.0308264937168056e+151, 6.404111626327396e+149, 2.1198704112740275e+148};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::loglogistic_mle(x, 1e-10, 200);
+  REQUIRE(fit.status==cppunivariate::LogLogisticStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.shape==doctest::Approx(0.6905841610868956).epsilon(1e-10).scale(0));
+  CHECK(fit.scale==doctest::Approx(5.212327592697621e+149).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(-4162.638145074661).epsilon(1e-10).scale(0));
+}
+TEST_CASE("llogis: raw transform audit case 4524") {
+  const std::vector<double> data{1.3070380951766447, 1.307038108247026, 1.3070381213174072, 1.3070381343877884, 1.3070381605285508};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::loglogistic_mle(x, 1e-10, 200);
+  REQUIRE(fit.status==cppunivariate::LogLogisticStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.shape==doctest::Approx(97732768.82081644).epsilon(1e-10).scale(0));
+  CHECK(fit.scale==doctest::Approx(1.3070381225421193).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(80.78268785196853).epsilon(1e-10).scale(0));
+}
+TEST_CASE("llogis: raw transform audit case 4527") {
+  const std::vector<double> data{1.3070380951766447, 1.307038108247026, 1.3070381213174072, 1.3070381343877884, 1.3070381605285508};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::loglogistic_mle(x, 1e-10, 200);
+  REQUIRE(fit.status==cppunivariate::LogLogisticStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.shape==doctest::Approx(97732768.82081644).epsilon(1e-10).scale(0));
+  CHECK(fit.scale==doctest::Approx(1.3070381225421193).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(80.78268785196853).epsilon(1e-10).scale(0));
+}
+TEST_CASE("llogis: raw transform audit case 4522") {
+  const std::vector<double> data{1.4612222342357195, 1.4612222342357195, 1.4612222342357195, 1.4612222342357195, 0.7038909590134532, 0.013073080872494258};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::loglogistic_mle(x, 1e-10, 200);
+  REQUIRE(fit.status==cppunivariate::LogLogisticStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.shape==doctest::Approx(1.2532425554232094).epsilon(1e-10).scale(0));
+  CHECK(fit.scale==doctest::Approx(0.9111157554269419).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(-8.10597742931569).epsilon(1e-10).scale(0));
+}

@@ -234,3 +234,10 @@ test_that("held-scale free-power profiles are globally enclosed", {
   f <- mlgb2(x,shape3=3,scale=1)
   expect_equal(unname(f[c('shape1','shape2')]),c(3.3085427329308605,.43155118384080654),tolerance=1e-7)
 })
+
+test_that("unit-shape inverse-Burr reduction preserves an uncertified restoration", {
+  x <- 1 + (0:4) * .Machine$double.eps
+  fit <- mlgb2(x, shape1 = 1, shape3 = .855, gradtol = 1e-10)
+  expect_false(attr(fit, "certified"))
+  expect_true(is.finite(as.numeric(logLik(fit))))
+})

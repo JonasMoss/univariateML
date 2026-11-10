@@ -78,7 +78,9 @@ TEST_CASE("lnorm P2 every held subset") {
 TEST_CASE("lnorm P2 held boundaries and solver failure") {
   const std::vector<double> x{2,2,2};
   const double nan=std::numeric_limits<double>::quiet_NaN();
-  CHECK_FALSE(std::isfinite(cppunivariate::lognormal_mle(mltest::as_span(x),std::log(2.0),nan).logLik));
+  // The held binary64 log(2) differs from the real logarithm: the
+  // conditional residual and its finite MLE must not be rounded to zero.
+  CHECK(std::isfinite(cppunivariate::lognormal_mle(mltest::as_span(x),std::log(2.0),nan).logLik));
   CHECK(std::isfinite(cppunivariate::lognormal_mle(mltest::as_span(x),nan,1).logLik));
 }
 
@@ -143,4 +145,91 @@ TEST_CASE("lnorm scaled residuals: extreme held transformed location") {
     const double jac=0;
     CHECK(r.logLik==doctest::Approx(-2*(std::log(unit)+.5*std::log(2*cppunivariate::pi)+.5)+jac).epsilon(1e-14));
   }
+}
+
+// Independent 180/360-digit raw-model references: TASK-101.7.5 evidence.
+TEST_CASE("lnorm: raw transform audit case 4601") {
+  const std::vector<double> data{1.445187510724387, 1.445187510725832, 1.4451875107272774, 1.4451875107287226, 1.445187510731613};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::lognormal_mle(x);
+  REQUIRE(fit.status==cppunivariate::LognormalStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.meanlog==doctest::Approx(0.3682390783550075).epsilon(1e-10).scale(0));
+  CHECK(fit.sdlog==doctest::Approx(1.7204957773060616e-12).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(126.50615506228813).epsilon(1e-10).scale(0));
+}
+TEST_CASE("lnorm: raw transform audit case 4604") {
+  const std::vector<double> data{1.445187510724387, 1.445187510725832, 1.4451875107272774, 1.4451875107287226, 1.445187510731613};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::lognormal_mle(x);
+  REQUIRE(fit.status==cppunivariate::LognormalStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.meanlog==doctest::Approx(0.3682390783550075).epsilon(1e-10).scale(0));
+  CHECK(fit.sdlog==doctest::Approx(1.7204957773060616e-12).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(126.50615506228813).epsilon(1e-10).scale(0));
+}
+TEST_CASE("lnorm: raw transform audit case 4611") {
+  const std::vector<double> data{100000001.46643509, 100000000.44635502, 100000001.90765181, 100000002.98407541, 100000001.44518751, 100000000.48315705, 100000001.20661016, 100000000.26392101, 100000004.95617464, 100000000.76818824, 100000001.8055238, 100000000.58251828};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::lognormal_mle(x);
+  REQUIRE(fit.status==cppunivariate::LognormalStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.meanlog==doctest::Approx(18.42068075921553).epsilon(1e-10).scale(0));
+  CHECK(fit.sdlog==doctest::Approx(1.2760092241976638e-08).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(-19.952111548312093).epsilon(1e-10).scale(0));
+}
+TEST_CASE("lnorm: raw transform audit case 4600") {
+  const std::vector<double> data{1.445187481823527, 1.4451874962754023, 1.4451875107272774, 1.4451875251791524, 1.4451875540829027};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::lognormal_mle(x);
+  REQUIRE(fit.status==cppunivariate::LognormalStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.meanlog==doctest::Approx(0.36823908035480735).epsilon(1e-10).scale(0));
+  CHECK(fit.sdlog==doctest::Approx(1.7204650438422402e-08).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(80.45454250892595).epsilon(1e-10).scale(0));
+}
+TEST_CASE("lnorm: raw transform audit case 4603") {
+  const std::vector<double> data{1.445187481823527, 1.4451874962754023, 1.4451875107272774, 1.4451875251791524, 1.4451875540829027};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::lognormal_mle(x);
+  REQUIRE(fit.status==cppunivariate::LognormalStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.meanlog==doctest::Approx(0.36823908035480735).epsilon(1e-10).scale(0));
+  CHECK(fit.sdlog==doctest::Approx(1.7204650438422402e-08).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(80.45454250892595).epsilon(1e-10).scale(0));
+}
+
+TEST_CASE("lnorm: public log-mean restoration retains an uncertified finite fit") {
+  for(double unit:{1e-150,1e150}) {
+    std::vector<double> data;
+    for(double d:{-2.,-1.,0.,1.,3.})data.push_back(unit*(1+d*1e-12));
+    const auto fit=cppunivariate::lognormal_mle(mltest::as_span(data));
+    REQUIRE(fit.status==cppunivariate::LognormalStatus::Ok);
+    CHECK_FALSE(fit.certified);
+    CHECK(std::isfinite(fit.logLik));
+  }
+}
+
+TEST_CASE("lnorm: shared log anchor retains its independent low component") {
+  // mpmath at 100 digits on the exact binary64 inputs. These checks run
+  // unchanged when extended intermediates have only binary64 width.
+  const auto p=cppunivariate::transformed_detail::log_pair(2.);
+  CHECK(p.hi==std::log(2.));
+  CHECK(p.lo==doctest::Approx(2.3190468138462995584e-17).epsilon(1e-14).scale(0));
+  const auto q=cppunivariate::transformed_detail::log_pair(1.5);
+  CHECK(q.lo==doctest::Approx(-2.8811380259626426e-18).epsilon(1e-13).scale(0));
+}
+
+TEST_CASE("lnorm: exactly zero held log residual is analytic nonexistence") {
+  const std::vector<double> data{1,1,1};
+  const auto fit=cppunivariate::lognormal_mle(mltest::as_span(data),0,NAN);
+  CHECK(fit.status==cppunivariate::LognormalStatus::Unbounded);
+}
+
+TEST_CASE("lnorm: held rounded log mean retains the exact log-anchor residual") {
+  const std::vector<double> data{2,2,2};
+  const auto fit=cppunivariate::lognormal_mle(mltest::as_span(data),std::log(2.),NAN);
+  REQUIRE(fit.status==cppunivariate::LognormalStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.sdlog==doctest::Approx(2.3190468138462995584e-17).epsilon(1e-13).scale(0));
 }

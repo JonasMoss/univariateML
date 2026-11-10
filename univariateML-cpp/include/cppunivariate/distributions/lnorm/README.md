@@ -119,4 +119,4 @@ Holding $\mu$ makes the scale estimate the root mean square log residual about t
 
 2026-10-31 (TASK-132): the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md) records invalid-input, degeneracy and delegate-failure behavior. The appended cases in `test.cpp` establish the tested scope.
 
-Conditional fits delegate to the normal residual profile on $\log x$; this also covers held log-locations far outside the transformed sample.
+Log residuals are formed from $\log1p((x_i-x_0)/x_0)$ and a two-component absolute anchor. Scaled sums of squares preserve tiny dispersion and cover held log-locations far outside the sample. The likelihood uses the mean actually returned; a finite fit whose rounded mean loses the likelihood certificate is retained with an explicit uncertified flag.

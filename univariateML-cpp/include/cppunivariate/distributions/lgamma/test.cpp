@@ -140,3 +140,65 @@ TEST_CASE("lgamma R6 constant shape-rate collapse and held exceptions") {
   CHECK(cppunivariate::lgamma_mle(mltest::as_span(x),1e-8,100,2).status==cppunivariate::LgammaStatus::Ok);
   CHECK(cppunivariate::lgamma_mle(mltest::as_span(x),1e-8,100,nan,2).status==cppunivariate::LgammaStatus::Ok);
 }
+
+// Independent 180/360-digit raw-model references: TASK-101.7.5 evidence.
+TEST_CASE("lgamma: raw transform audit case 4435") {
+  const std::vector<double> data{1.953632517309603, 1.9536325173115567, 1.9536325173135103, 1.9536325173154638, 1.9536325173193712};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::lgamma_mle(x, 1e-10, 200);
+  REQUIRE(fit.status==cppunivariate::LgammaStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.shapelog==doctest::Approx(1.515167188134916e+23).epsilon(1e-10).scale(0));
+  CHECK(fit.ratelog==doctest::Approx(2.2624888036389032e+23).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(124.99901060523791).epsilon(1e-10).scale(0));
+}
+TEST_CASE("lgamma: raw transform audit case 4438") {
+  const std::vector<double> data{1.953632517309603, 1.9536325173115567, 1.9536325173135103, 1.9536325173154638, 1.9536325173193712};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::lgamma_mle(x, 1e-10, 200);
+  REQUIRE(fit.status==cppunivariate::LgammaStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.shapelog==doctest::Approx(1.515167188134916e+23).epsilon(1e-10).scale(0));
+  CHECK(fit.ratelog==doctest::Approx(2.2624888036389032e+23).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(124.99901060523791).epsilon(1e-10).scale(0));
+}
+TEST_CASE("lgamma: raw transform audit case 4434") {
+  const std::vector<double> data{1.9536324782408598, 1.953632497777185, 1.9536325173135103, 1.9536325368498355, 1.9536325759224857};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::lgamma_mle(x, 1e-10, 200);
+  REQUIRE(fit.status==cppunivariate::LgammaStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.shapelog==doctest::Approx(1515153157062830.0).epsilon(1e-10).scale(0));
+  CHECK(fit.ratelog==doctest::Approx(2262467845304841.0).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(78.94728556929056).epsilon(1e-10).scale(0));
+}
+TEST_CASE("lgamma: raw transform audit case 4437") {
+  const std::vector<double> data{1.9536324782408598, 1.953632497777185, 1.9536325173135103, 1.9536325368498355, 1.9536325759224857};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::lgamma_mle(x, 1e-10, 200);
+  REQUIRE(fit.status==cppunivariate::LgammaStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.shapelog==doctest::Approx(1515153157062830.0).epsilon(1e-10).scale(0));
+  CHECK(fit.ratelog==doctest::Approx(2262467845304841.0).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(78.94728556929056).epsilon(1e-10).scale(0));
+}
+TEST_CASE("lgamma: raw transform audit case 10557") {
+  const std::vector<double> data{1.99999996, 1.99999998, 2.0, 2.00000002, 2.00000006};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::lgamma_mle(x, 1e-10, 200);
+  REQUIRE(fit.status==cppunivariate::LgammaStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.shapelog==doctest::Approx(1623152109407427.5).epsilon(1e-10).scale(0));
+  CHECK(fit.ratelog==doctest::Approx(2341713492093799.5).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(78.83000201013296).epsilon(1e-10).scale(0));
+}
+TEST_CASE("lgamma: raw transform audit case 4442") {
+  const std::vector<double> data{5.262181501175243, 1.9536325173135103, 2.538689273183437, 1.1505091839279815, 1953637.7794950113};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::lgamma_mle(x, 1e-10, 200);
+  REQUIRE(fit.status==cppunivariate::LgammaStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.shapelog==doctest::Approx(0.5551927127152927).epsilon(1e-10).scale(0));
+  CHECK(fit.ratelog==doctest::Approx(0.15519193754309563).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(-28.521381431876165).epsilon(1e-10).scale(0));
+}

@@ -38,7 +38,7 @@ inline FitResult fit_naka(cppunivariate::span x, Held shape_arg = {}, Held scale
 
   auto res = cppunivariate::naka_mle(x, abstol, iterlim, shape_held, scale_held);
   if (res.status == cppunivariate::GammaStatus::InvalidInput) return fail("Nakagami requires nonempty positive finite data and valid held parameters.");
-  if (res.status == cppunivariate::GammaStatus::TransformFailure) return fail("naka MLE failed: transformed observations exceed double precision.");
+  if (res.status == cppunivariate::GammaStatus::TransformFailure) return fail("naka MLE failed: transformed sufficient statistics or fitted coefficients cannot be resolved in double precision.");
   if (res.status == cppunivariate::GammaStatus::IterationFailure)
     return fail("Gamma delegate optimizer IterationFailure; increase iterlim.");
   if (res.status == cppunivariate::GammaStatus::Degenerate) {
@@ -48,7 +48,7 @@ inline FitResult fit_naka(cppunivariate::span x, Held shape_arg = {}, Held scale
   if (!std::isfinite(res.shape) || !std::isfinite(res.scale) || !std::isfinite(res.logLik)) {
     return fail("Nakagami MLE failed");
   }
-  return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"shape",res.shape},{"scale",res.scale}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }();
+  return [&]() { FitResult out; if(!res.certified)out.extra.push_back({"certified",0}); out.warnings = warnings; out.estimates = {{"shape",res.shape},{"scale",res.scale}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }();
 
 }
 }

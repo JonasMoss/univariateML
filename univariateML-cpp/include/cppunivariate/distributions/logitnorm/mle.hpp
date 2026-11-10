@@ -6,6 +6,7 @@
 #include "../../core/precision.hpp"
 
 #include "../../core/span.hpp"
+#include "../../core/transformed_data.hpp"
 #include "../norm/mle.hpp"
 
 #include <cmath>
@@ -22,32 +23,16 @@ struct LogitnormResult {
   double sigma;
   double logLik;
   LogitnormStatus status = LogitnormStatus::Ok;
+  bool certified=true;
 };
 
 inline LogitnormResult logitnorm_mle(span x,
     double mu = std::numeric_limits<double>::quiet_NaN(),
     double sigma = std::numeric_limits<double>::quiet_NaN()) {
-  constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
-  const std::size_t n = x.size();
-  if (n == 0 || (!std::isnan(mu) && !std::isfinite(mu)) ||
-      (!std::isnan(sigma) && !(sigma > 0 && std::isfinite(sigma))))
-    return {kNaN,kNaN,kNaN,LogitnormStatus::InvalidInput};
-
-  std::vector<double> y(n);
-  double sum_log_jac = 0.0;
-  for (std::size_t i = 0; i < n; ++i) {
-    const double v = x[i];
-    if (!(v > 0 && v < 1)) return {kNaN,kNaN,kNaN,LogitnormStatus::InvalidInput};
-    y[i] = std::log(v / (1.0 - v));
-    sum_log_jac += std::log(v * (1.0 - v));
-  }
-  const auto r = norm_mle(span{y.data(), n},mu,sigma);
-  if(r.status==NormStatus::Unbounded && (!std::isnan(mu) || !std::isnan(sigma)))
-    return {kNaN,kNaN,kNaN,LogitnormStatus::Unbounded};
-  return {r.mean, r.sd, r.logLik - sum_log_jac,
-    r.status == NormStatus::Ok ? LogitnormStatus::Ok :
-    r.status == NormStatus::Unbounded ? LogitnormStatus::Unbounded :
-    r.status == NormStatus::InvalidInput ? LogitnormStatus::InvalidInput : LogitnormStatus::IterationFailure};
+  const auto r=transformed_detail::normal(transformed_detail::logs(x,true),mu,sigma);
+  if(r.status==2 && (!std::isnan(mu) || !std::isnan(sigma)))
+    return {NAN,NAN,NAN,LogitnormStatus::Unbounded};
+  return {r.mean,r.sd,r.ll,r.status==0?LogitnormStatus::Ok:
+    r.status==1?LogitnormStatus::InvalidInput:r.status==2?LogitnormStatus::Unbounded:LogitnormStatus::IterationFailure,r.certified};
 }
-
-}  // namespace cppunivariate
+} // namespace cppunivariate

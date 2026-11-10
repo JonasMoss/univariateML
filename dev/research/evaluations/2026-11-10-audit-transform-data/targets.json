@@ -1,0 +1,1430 @@
+[
+  {
+    "rank": 24,
+    "index": 3759,
+    "family": "invgamma",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "likelihood / ascent",
+    "severity": 1.003407298521424e-06,
+    "legacy_classification": "silent failure",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/invgamma/mle.hpp",
+      "line": 49,
+      "snippet": "invx[i] = 1.0 / x[i];",
+      "likely_fix": "Rounded reciprocals are supplied to gamma before the Jacobian is added. Preserve centered reciprocal sufficient statistics from the raw sample; a stable gamma solve cannot recover information lost before entry.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 25,
+    "index": 3762,
+    "family": "invgamma",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "likelihood / ascent",
+    "severity": 1.003407298521424e-06,
+    "legacy_classification": "silent failure",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/invgamma/mle.hpp",
+      "line": 49,
+      "snippet": "invx[i] = 1.0 / x[i];",
+      "likely_fix": "Rounded reciprocals are supplied to gamma before the Jacobian is added. Preserve centered reciprocal sufficient statistics from the raw sample; a stable gamma solve cannot recover information lost before entry.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 30,
+    "index": 4748,
+    "family": "logitnorm",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "likelihood / ascent",
+    "severity": 5.544689151819634e-07,
+    "legacy_classification": "silent failure",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/logitnorm/mle.hpp",
+      "line": 41,
+      "snippet": "y[i] = std::log(v / (1.0 - v));",
+      "likely_fix": "The ratio/log transformation rounds narrow logit differences before the normal fit. Use centered log/log1p differences, stable sufficient statistics and an original-data likelihood check.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 32,
+    "index": 10483,
+    "family": "invburr",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "likelihood / ascent",
+    "severity": 4.213975178868471e-07,
+    "legacy_classification": "silent failure",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/invburr/mle.hpp",
+      "line": 208,
+      "snippet": "inline InvBurrResult invburr_mle_holds(span x,double a,double b,double s,double tol,int maxit);",
+      "likely_fix": "Reciprocals and the delegated Burr log coordinates/Jacobian can lose nearly constant-data information. Preserve raw reciprocal-log differences and reevaluate at the final inverse-scale coefficients; repair the Burr seam together with this transfer.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 33,
+    "index": 10510,
+    "family": "invgamma",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "likelihood / ascent",
+    "severity": 3.506899287786376e-07,
+    "legacy_classification": "silent failure",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/invgamma/mle.hpp",
+      "line": 49,
+      "snippet": "invx[i] = 1.0 / x[i];",
+      "likely_fix": "Rounded reciprocals are supplied to gamma before the Jacobian is added. Preserve centered reciprocal sufficient statistics from the raw sample; a stable gamma solve cannot recover information lost before entry.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 34,
+    "index": 4219,
+    "family": "invweibull",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "likelihood / ascent",
+    "severity": 2.9507407154114236e-07,
+    "legacy_classification": "silent failure",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/invweibull/mle.hpp",
+      "line": 56,
+      "snippet": "const double logLik = g.logLik + dn * s;",
+      "likely_fix": "The reflected-log/Gumbel delegate and inverse restoration need original-data likelihood and finiteness checks. Preserve centered log differences and stop on an unrepresentable or unchecked payload.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 35,
+    "index": 4435,
+    "family": "lgamma",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "likelihood / ascent",
+    "severity": 2.791256285332727e-07,
+    "legacy_classification": "silent failure",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/lgamma/mle.hpp",
+      "line": 23,
+      "snippet": "y[i]=std::log(x[i]);",
+      "likely_fix": "The transformation to gamma rounds tightly clustered observations before fitting. Preserve centered transformed differences and evaluate the original likelihood at the returned coefficients.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 36,
+    "index": 4438,
+    "family": "lgamma",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "likelihood / ascent",
+    "severity": 2.791256285332727e-07,
+    "legacy_classification": "silent failure",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/lgamma/mle.hpp",
+      "line": 23,
+      "snippet": "y[i]=std::log(x[i]);",
+      "likely_fix": "The transformation to gamma rounds tightly clustered observations before fitting. Preserve centered transformed differences and evaluate the original likelihood at the returned coefficients.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 37,
+    "index": 3588,
+    "family": "invburr",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "likelihood / ascent",
+    "severity": 2.489747544887497e-07,
+    "legacy_classification": "silent failure",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/invburr/mle.hpp",
+      "line": 208,
+      "snippet": "inline InvBurrResult invburr_mle_holds(span x,double a,double b,double s,double tol,int maxit);",
+      "likely_fix": "Reciprocals and the delegated Burr log coordinates/Jacobian can lose nearly constant-data information. Preserve raw reciprocal-log differences and reevaluate at the final inverse-scale coefficients; repair the Burr seam together with this transfer.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 38,
+    "index": 3591,
+    "family": "invburr",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "likelihood / ascent",
+    "severity": 2.489747544887497e-07,
+    "legacy_classification": "silent failure",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/invburr/mle.hpp",
+      "line": 208,
+      "snippet": "inline InvBurrResult invburr_mle_holds(span x,double a,double b,double s,double tol,int maxit);",
+      "likely_fix": "Reciprocals and the delegated Burr log coordinates/Jacobian can lose nearly constant-data information. Preserve raw reciprocal-log differences and reevaluate at the final inverse-scale coefficients; repair the Burr seam together with this transfer.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 43,
+    "index": 5025,
+    "family": "naka",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "likelihood / ascent",
+    "severity": 1.8137225775861872e-07,
+    "legacy_classification": "silent failure",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/naka/mle.hpp",
+      "line": 45,
+      "snippet": "x2[i] = x[i] * x[i];",
+      "likely_fix": "Squared observations are rounded before gamma fitting. Preserve scaled centered squared statistics, guard underflow and reevaluate the original likelihood; stop if the original-data coefficient accuracy cannot be justified.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 44,
+    "index": 5028,
+    "family": "naka",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "likelihood / ascent",
+    "severity": 1.8137225775861872e-07,
+    "legacy_classification": "silent failure",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/naka/mle.hpp",
+      "line": 45,
+      "snippet": "x2[i] = x[i] * x[i];",
+      "likely_fix": "Squared observations are rounded before gamma fitting. Preserve scaled centered squared statistics, guard underflow and reevaluate the original likelihood; stop if the original-data coefficient accuracy cannot be justified.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 45,
+    "index": 4601,
+    "family": "lnorm",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "likelihood / ascent",
+    "severity": 1.6914261837972925e-07,
+    "legacy_classification": "silent failure",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/lnorm/mle.hpp",
+      "line": 36,
+      "snippet": "y[i] = std::log(x[i]);",
+      "likely_fix": "Binary64 log observations lose narrow spreads before the normal fit. Carry a pivot plus log1p((x-pivot)/pivot) residuals, with stable mean/variance and a raw-data likelihood check.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 46,
+    "index": 4604,
+    "family": "lnorm",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "likelihood / ascent",
+    "severity": 1.6914261837972925e-07,
+    "legacy_classification": "silent failure",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/lnorm/mle.hpp",
+      "line": 36,
+      "snippet": "y[i] = std::log(x[i]);",
+      "likely_fix": "Binary64 log observations lose narrow spreads before the normal fit. Carry a pivot plus log1p((x-pivot)/pivot) residuals, with stable mean/variance and a raw-data likelihood check.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 55,
+    "index": 4525,
+    "family": "llogis",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "likelihood / ascent",
+    "severity": 2.4084712286702502e-08,
+    "legacy_classification": "silent failure",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/llogis/mle.hpp",
+      "line": 43,
+      "snippet": "LogisticResult base = logistic_mle(span{y.data(), n}, tol, maxit);",
+      "likely_fix": "Rounded log observations feed the logistic fit and its likelihood/Jacobian. Center logs using raw ratios and preserve the pivot through coefficient restoration.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 56,
+    "index": 4528,
+    "family": "llogis",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "likelihood / ascent",
+    "severity": 2.4084712286702502e-08,
+    "legacy_classification": "silent failure",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/llogis/mle.hpp",
+      "line": 43,
+      "snippet": "LogisticResult base = logistic_mle(span{y.data(), n}, tol, maxit);",
+      "likely_fix": "Rounded log observations feed the logistic fit and its likelihood/Jacobian. Center logs using raw ratios and preserve the pivot through coefficient restoration.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 57,
+    "index": 4611,
+    "family": "lnorm",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "likelihood / ascent",
+    "severity": 1.5041457968014626e-08,
+    "legacy_classification": "silent failure",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/lnorm/mle.hpp",
+      "line": 36,
+      "snippet": "y[i] = std::log(x[i]);",
+      "likely_fix": "Binary64 log observations lose narrow spreads before the normal fit. Carry a pivot plus log1p((x-pivot)/pivot) residuals, with stable mean/variance and a raw-data likelihood check.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 78,
+    "index": 4283,
+    "family": "invweibull",
+    "route": "fixed evaluation",
+    "certificate_basis": "No free coordinate; only parameter payload and likelihood evaluation are checked.",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "wrong status / invalid Ok payload",
+    "severity": Infinity,
+    "legacy_classification": "silent failure",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/invweibull/mle.hpp",
+      "line": 56,
+      "snippet": "const double logLik = g.logLik + dn * s;",
+      "likely_fix": "The reflected-log/Gumbel delegate and inverse restoration need original-data likelihood and finiteness checks. Preserve centered log differences and stop on an unrepresentable or unchecked payload.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 88,
+    "index": 4217,
+    "family": "invweibull",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 3.206787277291396e-07,
+    "legacy_classification": "silent failure",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/invweibull/mle.hpp",
+      "line": 56,
+      "snippet": "const double logLik = g.logLik + dn * s;",
+      "likely_fix": "The reflected-log/Gumbel delegate and inverse restoration need original-data likelihood and finiteness checks. Preserve centered log differences and stop on an unrepresentable or unchecked payload.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 89,
+    "index": 4220,
+    "family": "invweibull",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 3.2067871822513516e-07,
+    "legacy_classification": "silent failure",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/invweibull/mle.hpp",
+      "line": 56,
+      "snippet": "const double logLik = g.logLik + dn * s;",
+      "likely_fix": "The reflected-log/Gumbel delegate and inverse restoration need original-data likelihood and finiteness checks. Preserve centered log differences and stop on an unrepresentable or unchecked payload.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 90,
+    "index": 4221,
+    "family": "invweibull",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 3.1926906095234705e-07,
+    "legacy_classification": "silent failure",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/invweibull/mle.hpp",
+      "line": 56,
+      "snippet": "const double logLik = g.logLik + dn * s;",
+      "likely_fix": "The reflected-log/Gumbel delegate and inverse restoration need original-data likelihood and finiteness checks. Preserve centered log differences and stop on an unrepresentable or unchecked payload.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 92,
+    "index": 4222,
+    "family": "invweibull",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 3.191970039254507e-07,
+    "legacy_classification": "silent failure",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/invweibull/mle.hpp",
+      "line": 56,
+      "snippet": "const double logLik = g.logLik + dn * s;",
+      "likely_fix": "The reflected-log/Gumbel delegate and inverse restoration need original-data likelihood and finiteness checks. Preserve centered log differences and stop on an unrepresentable or unchecked payload.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 93,
+    "index": 4218,
+    "family": "invweibull",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 3.187696437382723e-07,
+    "legacy_classification": "silent failure",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/invweibull/mle.hpp",
+      "line": 56,
+      "snippet": "const double logLik = g.logLik + dn * s;",
+      "likely_fix": "The reflected-log/Gumbel delegate and inverse restoration need original-data likelihood and finiteness checks. Preserve centered log differences and stop on an unrepresentable or unchecked payload.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 104,
+    "index": 4745,
+    "family": "logitnorm",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 1.2175494198516697e-07,
+    "legacy_classification": "silent failure",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/logitnorm/mle.hpp",
+      "line": 41,
+      "snippet": "y[i] = std::log(v / (1.0 - v));",
+      "likely_fix": "The ratio/log transformation rounds narrow logit differences before the normal fit. Use centered log/log1p differences, stable sufficient statistics and an original-data likelihood check.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 178,
+    "index": 9338,
+    "family": "invweibull",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 2.2669616118082925e-08,
+    "legacy_classification": "silent failure",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/invweibull/mle.hpp",
+      "line": 56,
+      "snippet": "const double logLik = g.logLik + dn * s;",
+      "likely_fix": "The reflected-log/Gumbel delegate and inverse restoration need original-data likelihood and finiteness checks. Preserve centered log differences and stop on an unrepresentable or unchecked payload.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 179,
+    "index": 9798,
+    "family": "invweibull",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 2.2669615903433592e-08,
+    "legacy_classification": "silent failure",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/invweibull/mle.hpp",
+      "line": 56,
+      "snippet": "const double logLik = g.logLik + dn * s;",
+      "likely_fix": "The reflected-log/Gumbel delegate and inverse restoration need original-data likelihood and finiteness checks. Preserve centered log differences and stop on an unrepresentable or unchecked payload.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 209,
+    "index": 4535,
+    "family": "llogis",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 1.2904058797903537e-08,
+    "legacy_classification": "silent failure",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/llogis/mle.hpp",
+      "line": 43,
+      "snippet": "LogisticResult base = logistic_mle(span{y.data(), n}, tol, maxit);",
+      "likely_fix": "Rounded log observations feed the logistic fit and its likelihood/Jacobian. Center logs using raw ratios and preserve the pivot through coefficient restoration.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 218,
+    "index": 5020,
+    "family": "naka",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 1.1170351274462137e-08,
+    "legacy_classification": "silent failure",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/naka/mle.hpp",
+      "line": 45,
+      "snippet": "x2[i] = x[i] * x[i];",
+      "likely_fix": "Squared observations are rounded before gamma fitting. Preserve scaled centered squared statistics, guard underflow and reevaluate the original likelihood; stop if the original-data coefficient accuracy cannot be justified.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 363,
+    "index": 9432,
+    "family": "invburr",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 1.994037684804648e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/invburr/mle.hpp",
+      "line": 208,
+      "snippet": "inline InvBurrResult invburr_mle_holds(span x,double a,double b,double s,double tol,int maxit);",
+      "likely_fix": "Reciprocals and the delegated Burr log coordinates/Jacobian can lose nearly constant-data information. Preserve raw reciprocal-log differences and reevaluate at the final inverse-scale coefficients; repair the Burr seam together with this transfer.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 370,
+    "index": 4434,
+    "family": "lgamma",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 1.9272072137511112e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/lgamma/mle.hpp",
+      "line": 23,
+      "snippet": "y[i]=std::log(x[i]);",
+      "likely_fix": "The transformation to gamma rounds tightly clustered observations before fitting. Preserve centered transformed differences and evaluate the original likelihood at the returned coefficients.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 371,
+    "index": 4437,
+    "family": "lgamma",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 1.9272072137511112e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/lgamma/mle.hpp",
+      "line": 23,
+      "snippet": "y[i]=std::log(x[i]);",
+      "likely_fix": "The transformation to gamma rounds tightly clustered observations before fitting. Preserve centered transformed differences and evaluate the original likelihood at the returned coefficients.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 383,
+    "index": 10593,
+    "family": "naka",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 1.508942418407375e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/naka/mle.hpp",
+      "line": 45,
+      "snippet": "x2[i] = x[i] * x[i];",
+      "likely_fix": "Squared observations are rounded before gamma fitting. Preserve scaled centered squared statistics, guard underflow and reevaluate the original likelihood; stop if the original-data coefficient accuracy cannot be justified.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 384,
+    "index": 10509,
+    "family": "invgamma",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 1.483020865656876e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/invgamma/mle.hpp",
+      "line": 49,
+      "snippet": "invx[i] = 1.0 / x[i];",
+      "likely_fix": "Rounded reciprocals are supplied to gamma before the Jacobian is added. Preserve centered reciprocal sufficient statistics from the raw sample; a stable gamma solve cannot recover information lost before entry.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 385,
+    "index": 9892,
+    "family": "invburr",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 1.454587793336611e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/invburr/mle.hpp",
+      "line": 208,
+      "snippet": "inline InvBurrResult invburr_mle_holds(span x,double a,double b,double s,double tol,int maxit);",
+      "likely_fix": "Reciprocals and the delegated Burr log coordinates/Jacobian can lose nearly constant-data information. Preserve raw reciprocal-log differences and reevaluate at the final inverse-scale coefficients; repair the Burr seam together with this transfer.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 427,
+    "index": 4536,
+    "family": "llogis",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 1.0215182728674108e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/llogis/mle.hpp",
+      "line": 43,
+      "snippet": "LogisticResult base = logistic_mle(span{y.data(), n}, tol, maxit);",
+      "likely_fix": "Rounded log observations feed the logistic fit and its likelihood/Jacobian. Center logs using raw ratios and preserve the pivot through coefficient restoration.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 441,
+    "index": 4533,
+    "family": "llogis",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 7.548417818723734e-10,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/llogis/mle.hpp",
+      "line": 43,
+      "snippet": "LogisticResult base = logistic_mle(span{y.data(), n}, tol, maxit);",
+      "likely_fix": "Rounded log observations feed the logistic fit and its likelihood/Jacobian. Center logs using raw ratios and preserve the pivot through coefficient restoration.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 442,
+    "index": 4518,
+    "family": "llogis",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 7.548155910866444e-10,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/llogis/mle.hpp",
+      "line": 43,
+      "snippet": "LogisticResult base = logistic_mle(span{y.data(), n}, tol, maxit);",
+      "likely_fix": "Rounded log observations feed the logistic fit and its likelihood/Jacobian. Center logs using raw ratios and preserve the pivot through coefficient restoration.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 443,
+    "index": 4534,
+    "family": "llogis",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 7.548086292542657e-10,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/llogis/mle.hpp",
+      "line": 43,
+      "snippet": "LogisticResult base = logistic_mle(span{y.data(), n}, tol, maxit);",
+      "likely_fix": "Rounded log observations feed the logistic fit and its likelihood/Jacobian. Center logs using raw ratios and preserve the pivot through coefficient restoration.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 444,
+    "index": 4747,
+    "family": "logitnorm",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 7.472706165594792e-10,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/logitnorm/mle.hpp",
+      "line": 41,
+      "snippet": "y[i] = std::log(v / (1.0 - v));",
+      "likely_fix": "The ratio/log transformation rounds narrow logit differences before the normal fit. Use centered log/log1p differences, stable sufficient statistics and an original-data likelihood check.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 447,
+    "index": 10482,
+    "family": "invburr",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 7.293096458383755e-10,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/invburr/mle.hpp",
+      "line": 208,
+      "snippet": "inline InvBurrResult invburr_mle_holds(span x,double a,double b,double s,double tol,int maxit);",
+      "likely_fix": "Reciprocals and the delegated Burr log coordinates/Jacobian can lose nearly constant-data information. Preserve raw reciprocal-log differences and reevaluate at the final inverse-scale coefficients; repair the Burr seam together with this transfer.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 448,
+    "index": 4228,
+    "family": "invweibull",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 7.266487362006503e-10,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/invweibull/mle.hpp",
+      "line": 56,
+      "snippet": "const double logLik = g.logLik + dn * s;",
+      "likely_fix": "The reflected-log/Gumbel delegate and inverse restoration need original-data likelihood and finiteness checks. Preserve centered log differences and stop on an unrepresentable or unchecked payload.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 449,
+    "index": 4212,
+    "family": "invweibull",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 7.266167903319722e-10,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/invweibull/mle.hpp",
+      "line": 56,
+      "snippet": "const double logLik = g.logLik + dn * s;",
+      "likely_fix": "The reflected-log/Gumbel delegate and inverse restoration need original-data likelihood and finiteness checks. Preserve centered log differences and stop on an unrepresentable or unchecked payload.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 450,
+    "index": 4227,
+    "family": "invweibull",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 7.266103843073827e-10,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/invweibull/mle.hpp",
+      "line": 56,
+      "snippet": "const double logLik = g.logLik + dn * s;",
+      "likely_fix": "The reflected-log/Gumbel delegate and inverse restoration need original-data likelihood and finiteness checks. Preserve centered log differences and stop on an unrepresentable or unchecked payload.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 469,
+    "index": 4214,
+    "family": "invweibull",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 6.45489080535524e-10,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/invweibull/mle.hpp",
+      "line": 56,
+      "snippet": "const double logLik = g.logLik + dn * s;",
+      "likely_fix": "The reflected-log/Gumbel delegate and inverse restoration need original-data likelihood and finiteness checks. Preserve centered log differences and stop on an unrepresentable or unchecked payload.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 470,
+    "index": 4524,
+    "family": "llogis",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 6.360152623970416e-10,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/llogis/mle.hpp",
+      "line": 43,
+      "snippet": "LogisticResult base = logistic_mle(span{y.data(), n}, tol, maxit);",
+      "likely_fix": "Rounded log observations feed the logistic fit and its likelihood/Jacobian. Center logs using raw ratios and preserve the pivot through coefficient restoration.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 471,
+    "index": 4527,
+    "family": "llogis",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 6.360152623970416e-10,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/llogis/mle.hpp",
+      "line": 43,
+      "snippet": "LogisticResult base = logistic_mle(span{y.data(), n}, tol, maxit);",
+      "likely_fix": "Rounded log observations feed the logistic fit and its likelihood/Jacobian. Center logs using raw ratios and preserve the pivot through coefficient restoration.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 472,
+    "index": 3758,
+    "family": "invgamma",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 6.181837877637574e-10,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/invgamma/mle.hpp",
+      "line": 49,
+      "snippet": "invx[i] = 1.0 / x[i];",
+      "likely_fix": "Rounded reciprocals are supplied to gamma before the Jacobian is added. Preserve centered reciprocal sufficient statistics from the raw sample; a stable gamma solve cannot recover information lost before entry.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 473,
+    "index": 3761,
+    "family": "invgamma",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 6.181837877637574e-10,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/invgamma/mle.hpp",
+      "line": 49,
+      "snippet": "invx[i] = 1.0 / x[i];",
+      "likely_fix": "Rounded reciprocals are supplied to gamma before the Jacobian is added. Preserve centered reciprocal sufficient statistics from the raw sample; a stable gamma solve cannot recover information lost before entry.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 475,
+    "index": 10557,
+    "family": "lgamma",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 6.087619530119006e-10,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/lgamma/mle.hpp",
+      "line": 23,
+      "snippet": "y[i]=std::log(x[i]);",
+      "likely_fix": "The transformation to gamma rounds tightly clustered observations before fitting. Preserve centered transformed differences and evaluate the original likelihood at the returned coefficients.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 485,
+    "index": 4522,
+    "family": "llogis",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 5.265346581370388e-10,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/llogis/mle.hpp",
+      "line": 43,
+      "snippet": "LogisticResult base = logistic_mle(span{y.data(), n}, tol, maxit);",
+      "likely_fix": "Rounded log observations feed the logistic fit and its likelihood/Jacobian. Center logs using raw ratios and preserve the pivot through coefficient restoration.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 503,
+    "index": 4744,
+    "family": "logitnorm",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 4.1196141153756236e-10,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/logitnorm/mle.hpp",
+      "line": 41,
+      "snippet": "y[i] = std::log(v / (1.0 - v));",
+      "likely_fix": "The ratio/log transformation rounds narrow logit differences before the normal fit. Use centered log/log1p differences, stable sufficient statistics and an original-data likelihood check.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 523,
+    "index": 3587,
+    "family": "invburr",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 3.6379222330398974e-10,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/invburr/mle.hpp",
+      "line": 208,
+      "snippet": "inline InvBurrResult invburr_mle_holds(span x,double a,double b,double s,double tol,int maxit);",
+      "likely_fix": "Reciprocals and the delegated Burr log coordinates/Jacobian can lose nearly constant-data information. Preserve raw reciprocal-log differences and reevaluate at the final inverse-scale coefficients; repair the Burr seam together with this transfer.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 524,
+    "index": 3590,
+    "family": "invburr",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 3.6379222330398974e-10,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/invburr/mle.hpp",
+      "line": 208,
+      "snippet": "inline InvBurrResult invburr_mle_holds(span x,double a,double b,double s,double tol,int maxit);",
+      "likely_fix": "Reciprocals and the delegated Burr log coordinates/Jacobian can lose nearly constant-data information. Preserve raw reciprocal-log differences and reevaluate at the final inverse-scale coefficients; repair the Burr seam together with this transfer.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 534,
+    "index": 5035,
+    "family": "naka",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 3.464254441524069e-10,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/naka/mle.hpp",
+      "line": 45,
+      "snippet": "x2[i] = x[i] * x[i];",
+      "likely_fix": "Squared observations are rounded before gamma fitting. Preserve scaled centered squared statistics, guard underflow and reevaluate the original likelihood; stop if the original-data coefficient accuracy cannot be justified.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 543,
+    "index": 5024,
+    "family": "naka",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 3.1767899531429514e-10,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/naka/mle.hpp",
+      "line": 45,
+      "snippet": "x2[i] = x[i] * x[i];",
+      "likely_fix": "Squared observations are rounded before gamma fitting. Preserve scaled centered squared statistics, guard underflow and reevaluate the original likelihood; stop if the original-data coefficient accuracy cannot be justified.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 544,
+    "index": 5027,
+    "family": "naka",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 3.1767899531429514e-10,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/naka/mle.hpp",
+      "line": 45,
+      "snippet": "x2[i] = x[i] * x[i];",
+      "likely_fix": "Squared observations are rounded before gamma fitting. Preserve scaled centered squared statistics, guard underflow and reevaluate the original likelihood; stop if the original-data coefficient accuracy cannot be justified.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 558,
+    "index": 4442,
+    "family": "lgamma",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 2.750037227927349e-10,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/lgamma/mle.hpp",
+      "line": 23,
+      "snippet": "y[i]=std::log(x[i]);",
+      "likely_fix": "The transformation to gamma rounds tightly clustered observations before fitting. Preserve centered transformed differences and evaluate the original likelihood at the returned coefficients.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 562,
+    "index": 5033,
+    "family": "naka",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 2.663657667016924e-10,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/naka/mle.hpp",
+      "line": 45,
+      "snippet": "x2[i] = x[i] * x[i];",
+      "likely_fix": "Squared observations are rounded before gamma fitting. Preserve scaled centered squared statistics, guard underflow and reevaluate the original likelihood; stop if the original-data coefficient accuracy cannot be justified.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 563,
+    "index": 5034,
+    "family": "naka",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 2.6636564265714535e-10,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/naka/mle.hpp",
+      "line": 45,
+      "snippet": "x2[i] = x[i] * x[i];",
+      "likely_fix": "Squared observations are rounded before gamma fitting. Preserve scaled centered squared statistics, guard underflow and reevaluate the original likelihood; stop if the original-data coefficient accuracy cannot be justified.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 564,
+    "index": 5018,
+    "family": "naka",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 2.6633802583021975e-10,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/naka/mle.hpp",
+      "line": 45,
+      "snippet": "x2[i] = x[i] * x[i];",
+      "likely_fix": "Squared observations are rounded before gamma fitting. Preserve scaled centered squared statistics, guard underflow and reevaluate the original likelihood; stop if the original-data coefficient accuracy cannot be justified.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 566,
+    "index": 3641,
+    "family": "invburr",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 2.6077143574145063e-10,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/invburr/mle.hpp",
+      "line": 208,
+      "snippet": "inline InvBurrResult invburr_mle_holds(span x,double a,double b,double s,double tol,int maxit);",
+      "likely_fix": "Reciprocals and the delegated Burr log coordinates/Jacobian can lose nearly constant-data information. Preserve raw reciprocal-log differences and reevaluate at the final inverse-scale coefficients; repair the Burr seam together with this transfer.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 603,
+    "index": 3640,
+    "family": "invburr",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 1.886743919125774e-10,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/invburr/mle.hpp",
+      "line": 208,
+      "snippet": "inline InvBurrResult invburr_mle_holds(span x,double a,double b,double s,double tol,int maxit);",
+      "likely_fix": "Reciprocals and the delegated Burr log coordinates/Jacobian can lose nearly constant-data information. Preserve raw reciprocal-log differences and reevaluate at the final inverse-scale coefficients; repair the Burr seam together with this transfer.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 612,
+    "index": 4226,
+    "family": "invweibull",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 1.639669894309517e-10,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/invweibull/mle.hpp",
+      "line": 56,
+      "snippet": "const double logLik = g.logLik + dn * s;",
+      "likely_fix": "The reflected-log/Gumbel delegate and inverse restoration need original-data likelihood and finiteness checks. Preserve centered log differences and stop on an unrepresentable or unchecked payload.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 613,
+    "index": 4225,
+    "family": "invweibull",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 1.6395992040092335e-10,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/invweibull/mle.hpp",
+      "line": 56,
+      "snippet": "const double logLik = g.logLik + dn * s;",
+      "likely_fix": "The reflected-log/Gumbel delegate and inverse restoration need original-data likelihood and finiteness checks. Preserve centered log differences and stop on an unrepresentable or unchecked payload.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 614,
+    "index": 4223,
+    "family": "invweibull",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 1.6395836480106425e-10,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/invweibull/mle.hpp",
+      "line": 56,
+      "snippet": "const double logLik = g.logLik + dn * s;",
+      "likely_fix": "The reflected-log/Gumbel delegate and inverse restoration need original-data likelihood and finiteness checks. Preserve centered log differences and stop on an unrepresentable or unchecked payload.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 615,
+    "index": 4224,
+    "family": "invweibull",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 1.6395807596519278e-10,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/invweibull/mle.hpp",
+      "line": 56,
+      "snippet": "const double logLik = g.logLik + dn * s;",
+      "likely_fix": "The reflected-log/Gumbel delegate and inverse restoration need original-data likelihood and finiteness checks. Preserve centered log differences and stop on an unrepresentable or unchecked payload.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 621,
+    "index": 4600,
+    "family": "lnorm",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 1.5795497078429424e-10,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/lnorm/mle.hpp",
+      "line": 36,
+      "snippet": "y[i] = std::log(x[i]);",
+      "likely_fix": "Binary64 log observations lose narrow spreads before the normal fit. Carry a pivot plus log1p((x-pivot)/pivot) residuals, with stable mean/variance and a raw-data likelihood check.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 622,
+    "index": 4603,
+    "family": "lnorm",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 1.5795497078429424e-10,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/lnorm/mle.hpp",
+      "line": 36,
+      "snippet": "y[i] = std::log(x[i]);",
+      "likely_fix": "Binary64 log observations lose narrow spreads before the normal fit. Carry a pivot plus log1p((x-pivot)/pivot) residuals, with stable mean/variance and a raw-data likelihood check.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  }
+]

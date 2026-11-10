@@ -20,6 +20,7 @@ struct Gb2Result {
   int iterations;
   Gb2Status status;
   StopDetail stop_detail{};
+  bool certified=true;
 };
 } // namespace cppunivariate
 #include "power_certificate.hpp"
@@ -260,6 +261,7 @@ inline Gb2Result gb2_mle(span x,double tol=1e-7,int maxit=300,
     } else {
       const auto r=invburr_mle_holds(x,p,a,b,tol,maxit);
       out={1,r.shape2,r.shape1,r.scale,r.logLik,r.iterations,Gb2Status::SearchUnresolved,r.stop_detail};
+      out.certified=r.certified;
       if(r.status==InvBurrStatus::Ok)out.status=Gb2Status::Ok;
       if(r.status==InvBurrStatus::InvalidInit || r.status==InvBurrStatus::Unbounded)out.status=Gb2Status::InvalidData;
       if(r.status==InvBurrStatus::CertificateTie)out.status=Gb2Status::CertificateTie;

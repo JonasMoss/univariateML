@@ -282,3 +282,10 @@ test_that("all-free Frechet minimum majorities are statistical nonexistence stop
   expect_s3_class(e,"univariateML_nomle")
   expect_match(conditionMessage(e),"minimum majority")
 })
+
+test_that("held-location inverse-Weibull restoration preserves certification", {
+  x <- 1 + (0:4) * .Machine$double.eps
+  fit <- mlfrechet(x, mu = 0, reltol = 1.220703e-4)
+  expect_false(attr(fit, "certified"))
+  expect_true(is.finite(as.numeric(logLik(fit))))
+})

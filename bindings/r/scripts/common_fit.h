@@ -49,13 +49,19 @@ inline Rcpp::List common_result(const umvl_binding::FitResult& fit, bool iterati
     names[i]=fit.estimates[i].first; estimates[i]=fit.estimates[i].second;
   }
   estimates.attr("names")=names;
+  // Keep per-fit certification through the generated wrapper constructor.
+  for(const auto& item:fit.extra)if(item.first=="certified")
+    estimates.attr("certified")=item.second!=0;
   auto out=Rcpp::List::create(Rcpp::_["estimates"]=estimates,Rcpp::_["logLik"]=fit.logLik);
   if (fit.has_restricted) {
     Rcpp::CharacterVector values;
     for (const auto& item : fit.restricted) values.push_back(item.second, item.first);
     out["restricted"] = values;
   }
-  for (const auto& item : fit.extra) out[item.first] = item.second;
+  for (const auto& item : fit.extra) {
+    if(item.first=="certified")out[item.first]=item.second!=0;
+    else out[item.first]=item.second;
+  }
   for (const auto& item : fit.extra_vectors) out[item.first] = Rcpp::wrap(item.second);
   if(iterations) out["iterations"]=fit.iterations;
   out["fixed"]=Rcpp::wrap(fit.fixed);

@@ -49,13 +49,13 @@ inline FitResult fit_invweibull(cppunivariate::span x, Held shape_arg = {}, Held
   if (res.status == cppunivariate::InvWeibullStatus::Unbounded)
     return nomle("The invweibull maximum likelihood estimator does not exist: the likelihood is unbounded when all transformed observations equal the held scale.");
   if (res.status == cppunivariate::InvWeibullStatus::IterationFailure)
-    return fail("Inverse Weibull optimizer IterationFailure: failed to converge; increase iterlim.");
+    return fail("Inverse Weibull MLE failed to converge or cannot resolve the fitted coefficients and likelihood in double precision.");
   if (!std::isfinite(res.shape) || !std::isfinite(res.scale) || !std::isfinite(res.logLik)) {
     if (!shape.supplied && !scale.supplied && std::all_of(x.begin(), x.end(), [&](double v) { return v == x[0]; }))
       return fail("The inverse Weibull maximum likelihood estimator does not exist for constant data: the likelihood is unbounded.");
     return fail("Inverse Weibull MLE failed");
   }
-  return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"shape",res.shape},{"scale",res.scale}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }();
+  return [&]() { FitResult out; if(!res.certified)out.extra.push_back({"certified",0}); out.warnings = warnings; out.estimates = {{"shape",res.shape},{"scale",res.scale}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }();
 
 }
 }

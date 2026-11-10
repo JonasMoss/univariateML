@@ -39,7 +39,7 @@ inline FitResult fit_lnorm(cppunivariate::span x, Held meanlog_arg = {}, Held sd
   if (res.status == cppunivariate::LognormalStatus::InvalidInput) return fail("Lognormal requires nonempty positive finite data and valid held parameters.");
   if (res.status != cppunivariate::LognormalStatus::Ok) return fail("Lognormal likelihood exceeds double precision.");
   if (!std::isfinite(res.meanlog) || !std::isfinite(res.logLik)) return fail("Lognormal likelihood exceeds double precision.");
-  return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"meanlog",res.meanlog},{"sdlog",res.sdlog}}; out.logLik = res.logLik; out.fixed = fixed; out.has_fixed = true; return out; }();
+  return [&]() { FitResult out; if(!res.certified)out.extra.push_back({"certified",0}); out.warnings = warnings; out.estimates = {{"meanlog",res.meanlog},{"sdlog",res.sdlog}}; out.logLik = res.logLik; out.fixed = fixed; out.has_fixed = true; return out; }();
 
 }
 }

@@ -31,7 +31,7 @@ r:
   control:
     shapelog: Optional held shapelog; NULL estimates it.
     ratelog: Optional held ratelog; NULL estimates it.
-    abstol: Absolute step tolerance in shapelog.
+    abstol: Positive relative accuracy tolerance for the shape bracket.
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
 log_density: shapelog*log(ratelog) - loggamma(shapelog) + (shapelog - 1)*log(log(x)) - (ratelog + 1)*log(x)
 limits:
@@ -101,7 +101,7 @@ The log-gamma distribution models observations above one whose logarithms follow
 
 ## Details
 
-The coefficients $k$ and $\lambda$ are the gamma shape and rate of the logarithms. This is the actuarial log-gamma convention. Fitting applies gamma estimation to the logarithms and subtracts their sum from the gamma log likelihood to account for the Jacobian.
+The coefficients $k$ and $\lambda$ are the gamma shape and rate of the logarithms. This is the actuarial log-gamma convention. Fitting forms gamma sufficient statistics from centered log differences $\log1p((x_i-x_0)/x_0)$, without first rounding the absolute logarithms. A two-component log anchor restores the rate and the likelihood is evaluated at the returned coefficients, including the Jacobian. A finite fit whose rounded public rate prevents transfer of the centered-statistic likelihood certificate is retained as uncertified.
 
 Holding either coefficient gives a unique finite estimate of the other, even for constant observations above one. With both free, constant data have unbounded likelihood as shape and rate tend to infinity at a fixed ratio. Both-held fits evaluate the likelihood.
 
@@ -113,6 +113,6 @@ For constant $x_0>1$, put $y_0=\log x_0$ and rate $=k/y_0$. Stirling's formula g
 
 ## Decision history
 
-On 2026-10-30 the core fitter took ownership of the previous R adapter's exact transform and sum order. Internally, NaN marks a free coefficient. Held rate is passed to the gamma fitter as reciprocal scale and returned unchanged. Gamma iteration failure is preserved, and constant samples are distinguished from transforms collapsed by floating-point precision. This adds no search or convergence guarantee beyond the gamma solver. The C++ regression compares all four held subsets with the previous adapter computation; golden agreement is numerical evidence.
+Held rate is returned unchanged. Shape estimation brackets the monotone gamma score; exhaustion preserves iteration failure.
 
 The 2026-10-31 diagnostic audit checks invalid and empty samples, including delegate paths. See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md) and the TASK-132 cases in the family C++ tests.

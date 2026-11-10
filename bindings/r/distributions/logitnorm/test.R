@@ -136,3 +136,42 @@ test_that("P2 held logit location collapse and held scale constant fits", {
   expect_equal(unname(mllogitnorm(rep(.5,5),sigma=2)[1]),0)
   for (bad in c(0,-1)) expect_error(mllogitnorm(c(.2,.8),sigma=bad),"positive")
 })
+
+# Independent 180/360-digit raw-model references: TASK-101.7.5 evidence.
+test_that("raw transform audit case 4748", {
+  x <- c(0.2499999999995, 0.24999999999975, 0.25, 0.25000000000025, 0.25000000000075)
+  fit <- mllogitnorm(x)
+  expect_lte(abs(unname(fit["mu"]) / (-1.0986122886678429) - 1), 1e-10)
+  expect_lte(abs(unname(fit["sigma"]) / (2.293964607844937e-12) - 1), 1e-10)
+  expect_lte(abs(as.numeric(logLik(fit)) - (135.2788871292404)) / max(1, abs(135.2788871292404)), 1e-10)
+})
+test_that("raw transform audit case 4745", {
+  x <- c(0.8401216942096138, 0.8401216942104539, 0.840121694211294, 0.8401216942121341, 0.8401216942138143)
+  fit <- mllogitnorm(x)
+  expect_lte(abs(unname(fit["mu"]) / (1.6591338183876283) - 1), 1e-10)
+  expect_lte(abs(unname(fit["sigma"]) / (1.0760887283831534e-11) - 1), 1e-10)
+  expect_lte(abs(as.numeric(logLik(fit)) - (129.21857717804238)) / max(1, abs(129.21857717804238)), 1e-10)
+})
+test_that("raw transform audit case 4747", {
+  x <- c(0.249999995, 0.2499999975, 0.25, 0.2500000025, 0.2500000075)
+  fit <- mllogitnorm(x)
+  expect_lte(abs(unname(fit["mu"]) / (-1.0986122860014431) - 1), 1e-10)
+  expect_lte(abs(unname(fit["sigma"]) / (2.2939533978240636e-08) - 1), 1e-10)
+  expect_lte(abs(as.numeric(logLik(fit)) - (89.22720969647992)) / max(1, abs(89.22720969647992)), 1e-10)
+})
+test_that("raw transform audit case 4744", {
+  x <- c(0.8401216774088601, 0.8401216858100771, 0.840121694211294, 0.840121702612511, 0.8401217194149448)
+  fit <- mllogitnorm(x)
+  expect_lte(abs(unname(fit["mu"]) / (1.6591338308958958) - 1), 1e-10)
+  expect_lte(abs(unname(fit["sigma"]) / (1.0761091599928096e-07) - 1), 1e-10)
+  expect_lte(abs(as.numeric(logLik(fit)) - (83.16678042701042)) / max(1, abs(83.16678042701042)), 1e-10)
+})
+
+# Independent 180/360-digit raw-model references: TASK-101.7.5 evidence.
+test_that("raw transform audit case 9806", {
+  x <- c(0.49999956708390103, 0.49999971241265495, 0.49999979694554963, 0.49999986286942943, 0.4999999203401591, 0.49999997384163614, 0.5000000261583639, 0.500000079659841, 0.5000001371305707, 0.5000002030544504, 0.500000287587345, 0.500000432916099)
+  fit <- mllogitnorm(x)
+  expect_lte(abs(unname(fit["mu"]) / (7.401486830834707e-17) - 1), 1e-10)
+  expect_lte(abs(unname(fit["sigma"]) / (9.482456548773743e-07) - 1), 1e-10)
+  expect_lte(abs(as.numeric(logLik(fit)) - (166.03209679869155)) / max(1, abs(166.03209679869155)), 1e-10)
+})

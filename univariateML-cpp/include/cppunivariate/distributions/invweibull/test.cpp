@@ -136,3 +136,197 @@ TEST_CASE("invweibull: TASK-132 preserves invalid Gumbel controls") {
   const std::vector<double> data{1,2,3};
   CHECK(cppunivariate::invweibull_mle(cppunivariate::span{data.data(),data.size()},1e-8,0).status == cppunivariate::InvWeibullStatus::InvalidInput);
 }
+
+// Independent 180/360-digit raw-model references: TASK-101.7.5 evidence.
+TEST_CASE("invweibull: raw transform audit case 4219") {
+  const std::vector<double> data{0.5071697345584799, 0.5071697345589871, 0.5071697345594942, 0.5071697345600014, 0.5071697345610158};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::invweibull_mle(x, 1e-10, 200);
+  REQUIRE(fit.status==cppunivariate::InvWeibullStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.shape==doctest::Approx(707675622377.0812).epsilon(1e-10).scale(0));
+  CHECK(fit.scale==doctest::Approx(0.5071697345591792).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(131.91568101929354).epsilon(1e-10).scale(0));
+}
+TEST_CASE("invweibull: raw transform audit case 4283") {
+  const std::vector<double> data{1e-200, 2e-200, 3e-200, 5e-200, 9e-200};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::invweibull_mle(x, 1e-10, 200, NAN, 1.928819454840455, 0.3434414370956311);
+  CHECK(fit.status==cppunivariate::InvWeibullStatus::IterationFailure);
+}
+TEST_CASE("invweibull: raw transform audit case 4217") {
+  const std::vector<double> data{0.5070683006125823, 0.5071190175860383, 0.5071697345594942, 0.5072204515329501, 0.507321885479862};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::invweibull_mle(x, 1e-10, 200);
+  REQUIRE(fit.status==cppunivariate::InvWeibullStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.shape==doctest::Approx(7076.606527224669).epsilon(1e-10).scale(0));
+  CHECK(fit.scale==doctest::Approx(0.5071382319443192).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(39.81219762261764).epsilon(1e-10).scale(0));
+}
+TEST_CASE("invweibull: raw transform audit case 4220") {
+  const std::vector<double> data{0.9998, 0.9999, 1.0, 1.0001, 1.0003};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::invweibull_mle(x, 1e-10, 200);
+  REQUIRE(fit.status==cppunivariate::InvWeibullStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.shape==doctest::Approx(7076.606527223182).epsilon(1e-10).scale(0));
+  CHECK(fit.scale==doctest::Approx(0.9999378854591896).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(36.41764987636973).epsilon(1e-10).scale(0));
+}
+TEST_CASE("invweibull: raw transform audit case 4221") {
+  const std::vector<double> data{0.99999998, 0.99999999, 1.0, 1.00000001, 1.00000003};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::invweibull_mle(x, 1e-10, 200);
+  REQUIRE(fit.status==cppunivariate::InvWeibullStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.shape==doctest::Approx(70766413.46901025).epsilon(1e-10).scale(0));
+  CHECK(fit.scale==doctest::Approx(0.9999999937896172).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(82.46937861550163).epsilon(1e-10).scale(0));
+}
+TEST_CASE("invweibull: raw transform audit case 4222") {
+  const std::vector<double> data{0.999999999998, 0.999999999999, 1.0, 1.000000000001, 1.000000000003};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::invweibull_mle(x, 1e-10, 200);
+  REQUIRE(fit.status==cppunivariate::InvWeibullStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.shape==doctest::Approx(707663145134.7852).epsilon(1e-10).scale(0));
+  CHECK(fit.scale==doctest::Approx(0.999999999999379).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(128.52106495920626).epsilon(1e-10).scale(0));
+}
+TEST_CASE("invweibull: raw transform audit case 4218") {
+  const std::vector<double> data{0.5071697244160995, 0.5071697294877968, 0.5071697345594942, 0.5071697396311916, 0.5071697497745863};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::invweibull_mle(x, 1e-10, 200);
+  REQUIRE(fit.status==cppunivariate::InvWeibullStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.shape==doctest::Approx(70766413.34268498).epsilon(1e-10).scale(0));
+  CHECK(fit.scale==doctest::Approx(0.5071697314097761).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(85.86392635209116).epsilon(1e-10).scale(0));
+}
+TEST_CASE("invweibull: raw transform audit case 9338") {
+  const std::vector<double> data{0.988503900932562, 0.9927057395157377, 0.9955081820301651, 0.9979146225997783, 1.0001935876214705, 1.0024856651664025, 1.004904185632642, 1.0075787228651987, 1.0107036114154169, 1.0146470464667317, 1.0203382467452637, 1.0320720648857378};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::invweibull_mle(x, 1e-10, 200);
+  REQUIRE(fit.status==cppunivariate::InvWeibullStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.shape==doctest::Approx(105.80607046342593).epsilon(1e-10).scale(0));
+  CHECK(fit.scale==doctest::Approx(1.00006845636793).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(36.91980806615555).epsilon(1e-10).scale(0));
+}
+TEST_CASE("invweibull: raw transform audit case 9798") {
+  const std::vector<double> data{0.999998843731662, 0.9999992679008999, 0.9999995498064518, 0.9999997912445391, 1.0000000193568888, 1.0000002482581318, 1.0000004892200485, 1.0000007550151475, 1.0000010646738942, 1.000001454082512, 1.000002013420705, 1.0000031568544765};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::invweibull_mle(x, 1e-10, 200);
+  REQUIRE(fit.status==cppunivariate::InvWeibullStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.shape==doctest::Approx(1058060.7046228813).epsilon(1e-10).scale(0));
+  CHECK(fit.scale==doctest::Approx(1.0000000068454025).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(147.51042142852074).epsilon(1e-10).scale(0));
+}
+TEST_CASE("invweibull: raw transform audit case 4228") {
+  const std::vector<double> data{2.6516987632880034e+149, 2.180658596102709e+149, 9.134933419025255e+149, 4.864424540397452e+149, 5.071697345594942e+149, 6.058163188737759e+149, 6.212659185566571e+149, 1.7898872530714507e+149, 2.8094570154848314e+149, 9.308703872748639e+149, 4.375259238937079e+149, 5.23122126168884e+149};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::invweibull_mle(x, 1e-10, 200);
+  REQUIRE(fit.status==cppunivariate::InvWeibullStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.shape==doctest::Approx(2.0285581651990117).epsilon(1e-10).scale(0));
+  CHECK(fit.scale==doctest::Approx(3.389075478414657e+149).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(-4144.6620460087115).epsilon(1e-10).scale(0));
+}
+TEST_CASE("invweibull: raw transform audit case 4212") {
+  const std::vector<double> data{0.26516987632880035, 0.21806585961027092, 0.9134933419025255, 0.4864424540397452, 0.5071697345594942, 0.6058163188737758, 0.6212659185566571, 0.17898872530714507, 0.28094570154848314, 0.9308703872748638, 0.4375259238937079, 0.523122126168884};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::invweibull_mle(x, 1e-10, 200);
+  REQUIRE(fit.status==cppunivariate::InvWeibullStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.shape==doctest::Approx(2.0285581651990117).epsilon(1e-10).scale(0));
+  CHECK(fit.scale==doctest::Approx(0.3389075478414657).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(-0.008878619429328452).epsilon(1e-10).scale(0));
+}
+TEST_CASE("invweibull: raw transform audit case 4227") {
+  const std::vector<double> data{2.6516987632880036e-151, 2.180658596102709e-151, 9.134933419025255e-151, 4.864424540397452e-151, 5.071697345594942e-151, 6.058163188737759e-151, 6.212659185566572e-151, 1.7898872530714506e-151, 2.8094570154848313e-151, 9.308703872748639e-151, 4.375259238937079e-151, 5.23122126168884e-151};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::invweibull_mle(x, 1e-10, 200);
+  REQUIRE(fit.status==cppunivariate::InvWeibullStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.shape==doctest::Approx(2.0285581651990117).epsilon(1e-10).scale(0));
+  CHECK(fit.scale==doctest::Approx(3.389075478414657e-151).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(4144.644288769853).epsilon(1e-10).scale(0));
+}
+TEST_CASE("invweibull: raw transform audit case 4214") {
+  const std::vector<double> data{0.26516987632880035, 0.21806585961027092, 0.9134933419025255};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::invweibull_mle(x, 1e-10, 200);
+  REQUIRE(fit.status==cppunivariate::InvWeibullStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.shape==doctest::Approx(2.292803066777193).epsilon(1e-10).scale(0));
+  CHECK(fit.scale==doctest::Approx(0.2810958635274569).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(0.44376226468664065).epsilon(1e-10).scale(0));
+}
+TEST_CASE("invweibull: raw transform audit case 4226") {
+  const std::vector<double> data{1e-200, 2e-200, 3e-200, 5e-200, 9e-200};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::invweibull_mle(x, 1e-10, 200);
+  REQUIRE(fit.status==cppunivariate::InvWeibullStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.shape==doctest::Approx(1.4424748841607793).epsilon(1e-10).scale(0));
+  CHECK(fit.scale==doctest::Approx(2.1013325956265178e-200).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(2291.098594735031).epsilon(1e-10).scale(0));
+}
+TEST_CASE("invweibull: raw transform audit case 4225") {
+  const std::vector<double> data{1e-17, 2e-17, 3e-17, 5.0000000000000005e-17, 9.000000000000001e-17};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::invweibull_mle(x, 1e-10, 200);
+  REQUIRE(fit.status==cppunivariate::InvWeibullStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.shape==doctest::Approx(1.4424748841607793).epsilon(1e-10).scale(0));
+  CHECK(fit.scale==doctest::Approx(2.101332595626518e-17).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(184.233234645479).epsilon(1e-10).scale(0));
+}
+TEST_CASE("invweibull: raw transform audit case 4223") {
+  const std::vector<double> data{1e-06, 2e-06, 3e-06, 4.9999999999999996e-06, 9e-06};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::invweibull_mle(x, 1e-10, 200);
+  REQUIRE(fit.status==cppunivariate::InvWeibullStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.shape==doctest::Approx(1.4424748841607793).epsilon(1e-10).scale(0));
+  CHECK(fit.scale==doctest::Approx(2.101332595626518e-06).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(57.59105453080648).epsilon(1e-10).scale(0));
+}
+TEST_CASE("invweibull: raw transform audit case 4224") {
+  const std::vector<double> data{1e-12, 2e-12, 3e-12, 5e-12, 9e-12};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::invweibull_mle(x, 1e-10, 200);
+  REQUIRE(fit.status==cppunivariate::InvWeibullStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.shape==doctest::Approx(1.4424748841607793).epsilon(1e-10).scale(0));
+  CHECK(fit.scale==doctest::Approx(2.1013325956265178e-12).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(126.66860732062784).epsilon(1e-10).scale(0));
+}
+
+TEST_CASE("invweibull: tiny held power retains the geometric-mean scale limit") {
+  const std::vector<double> data{1,4};
+  const auto fit=cppunivariate::invweibull_mle(mltest::as_span(data),1e-10,100,NAN,1e-20,NAN);
+  REQUIRE(fit.status==cppunivariate::InvWeibullStatus::Ok);
+  CHECK(fit.scale==doctest::Approx(2).epsilon(1e-14).scale(0));
+}
+
+TEST_CASE("invweibull: finite restored scale despite an overflowing scale multiplier") {
+  const std::vector<double> data{1e-300,1e300,1e300,1e300};
+  const auto fit=cppunivariate::invweibull_mle(mltest::as_span(data),1e-10,100,NAN,1e-20,NAN);
+  REQUIRE(fit.status==cppunivariate::InvWeibullStatus::Ok);
+  // The finite-power correction to the geometric mean is below 1e-14.
+  CHECK(fit.scale==doctest::Approx(1e150).epsilon(1e-12).scale(0));
+}
+
+TEST_CASE("invweibull: ulp-wide scale restoration retains an explicitly uncertified fit") {
+  const double eps=std::numeric_limits<double>::epsilon();
+  const std::vector<double> data{1,1+eps,1+2*eps,1+3*eps,1+4*eps};
+  const auto fit=cppunivariate::invweibull_mle(mltest::as_span(data),1.220703e-4,100);
+  REQUIRE(fit.status==cppunivariate::InvWeibullStatus::Ok);
+  CHECK_FALSE(fit.certified);
+  CHECK(fit.shape>1e14);
+  CHECK(std::isfinite(fit.logLik));
+  CHECK(fit.logLik>100);
+}

@@ -86,3 +86,12 @@ TEST_CASE("Pareto III constant sample is finite with shape held") {
  CHECK(r.scale==doctest::Approx(2));
  CHECK(r.logLik==doctest::Approx(3*std::log(.25)));
 }
+
+TEST_CASE("pareto3: preserves the log-logistic uncertified restoration flag") {
+  const double e=std::numeric_limits<double>::epsilon();
+  const std::vector<double> data{1,1+e,1+2*e,1+4*e,1+7*e};
+  const auto fit=cppunivariate::pareto3_mle(mltest::as_span(data),0,1e-10,100);
+  REQUIRE(fit.status==cppunivariate::Pareto3Status::Ok);
+  CHECK_FALSE(fit.certified);
+  CHECK(std::isfinite(fit.logLik));
+}

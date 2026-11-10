@@ -162,3 +162,12 @@ TEST_CASE("Feller Pareto transports global held-scale mixed-power certificates")
  REQUIRE(r.stop_detail.candidates[0].coef.size()==5);
  CHECK(r.stop_detail.candidates[0].coef.back()==2);
 }
+
+TEST_CASE("fpareto: preserves the GB2 uncertified restoration flag") {
+  const double e=std::numeric_limits<double>::epsilon();
+  const std::vector<double> data{1,1+e,1+2*e,1+3*e,1+4*e};
+  const auto fit=cppunivariate::fpareto_mle(mltest::as_span(data),0,1e-10,100,1,NAN,.855,NAN);
+  REQUIRE(fit.status==cppunivariate::Gb2Status::Ok);
+  CHECK_FALSE(fit.certified);
+  CHECK(std::isfinite(fit.logLik));
+}

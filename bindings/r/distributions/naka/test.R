@@ -184,3 +184,81 @@ test_that("naka: P3 unfinished optimizer stops", {
   expect_error(mlnaka(x, iterlim=1, abstol=1e-10),
                "[Ff]ail|converge|unresolved|exhausted|score check")
 })
+
+# Independent 180/360-digit raw-model references: TASK-101.7.5 evidence.
+test_that("raw transform audit case 5025", {
+  x <- c(1.6156758120186856, 1.6156758120203014, 1.615675812021917, 1.6156758120235326, 1.615675812026764)
+  fit <- mlnaka(x, abstol = 1e-10, iterlim = 200)
+  expect_lte(abs(unname(fit["shape"]) / (8.445990392402279e+22) - 1), 1e-10)
+  expect_lte(abs(unname(fit["scale"]) / (2.610408329553725) - 1), 1e-10)
+  expect_lte(abs(as.numeric(logLik(fit)) - (125.94868625588904)) / max(1, abs(125.94868625588904)), 1e-10)
+})
+test_that("raw transform audit case 5028", {
+  x <- c(1.6156758120186856, 1.6156758120203014, 1.615675812021917, 1.6156758120235326, 1.615675812026764)
+  fit <- mlnaka(x, abstol = 1e-10, iterlim = 200)
+  expect_lte(abs(unname(fit["shape"]) / (8.445990392402279e+22) - 1), 1e-10)
+  expect_lte(abs(unname(fit["scale"]) / (2.610408329553725) - 1), 1e-10)
+  expect_lte(abs(as.numeric(logLik(fit)) - (125.94868625588904)) / max(1, abs(125.94868625588904)), 1e-10)
+})
+test_that("raw transform audit case 5020", {
+  x <- c(1.1870206453189427, 1.8063039875699989, 0.4693270808393411)
+  fit <- mlnaka(x, abstol = 1e-10, iterlim = 200)
+  expect_lte(abs(unname(fit["shape"]) / (1.1698574399369313) - 1), 1e-10)
+  expect_lte(abs(unname(fit["scale"]) / (1.630673338911285) - 1), 1e-10)
+  expect_lte(abs(as.numeric(logLik(fit)) - (-2.359056308828766)) / max(1, abs(-2.359056308828766)), 1e-10)
+})
+test_that("raw transform audit case 10593", {
+  x <- c(0.99999998, 0.99999999, 1.0, 1.00000001, 1.00000003)
+  fit <- mlnaka(x, abstol = 1e-10, iterlim = 200)
+  expect_lte(abs(unname(fit["shape"]) / (844594598752111.4) - 1), 1e-10)
+  expect_lte(abs(unname(fit["scale"]) / (1.0000000040000003) - 1), 1e-10)
+  expect_lte(abs(as.numeric(logLik(fit)) - (82.29573788520479)) / max(1, abs(82.29573788520479)), 1e-10)
+})
+test_that("raw transform audit case 5035", {
+  x <- c(1.1870206453189427, 1.8063039875699989, 0.4693270808393411, 2.13423387168775, 1615678.355181381)
+  fit <- mlnaka(x, abstol = 1e-10, iterlim = 200)
+  expect_lte(abs(unname(fit["shape"]) / (0.04235627451635061) - 1), 1e-10)
+  expect_lte(abs(unname(fit["scale"]) / (522083309482.21204) - 1), 1e-10)
+  expect_lte(abs(as.numeric(logLik(fit)) - (-32.60680034465681)) / max(1, abs(-32.60680034465681)), 1e-10)
+})
+test_that("raw transform audit case 5024", {
+  x <- c(1.6156757797084007, 1.6156757958651589, 1.615675812021917, 1.6156758281786752, 1.6156758604921915)
+  fit <- mlnaka(x, abstol = 1e-10, iterlim = 200)
+  expect_lte(abs(unname(fit["shape"]) / (844594596402047.9) - 1), 1e-10)
+  expect_lte(abs(unname(fit["scale"]) / (2.610408339994315) - 1), 1e-10)
+  expect_lte(abs(as.numeric(logLik(fit)) - (79.89697123524273)) / max(1, abs(79.89697123524273)), 1e-10)
+})
+test_that("raw transform audit case 5027", {
+  x <- c(1.6156757797084007, 1.6156757958651589, 1.615675812021917, 1.6156758281786752, 1.6156758604921915)
+  fit <- mlnaka(x, abstol = 1e-10, iterlim = 200)
+  expect_lte(abs(unname(fit["shape"]) / (844594596402047.9) - 1), 1e-10)
+  expect_lte(abs(unname(fit["scale"]) / (2.610408339994315) - 1), 1e-10)
+  expect_lte(abs(as.numeric(logLik(fit)) - (79.89697123524273)) / max(1, abs(79.89697123524273)), 1e-10)
+})
+test_that("raw transform audit case 5033", {
+  x <- c(1.1870206453189427e-150, 1.806303987569999e-150, 4.693270808393411e-151, 2.13423387168775e-150, 1.615675812021917e-150, 8.86497002301353e-151, 2.5431594641684416e-150, 1.6267796686030047e-150, 1.3177191226180992e-150, 1.4498034459162533e-150, 7.470853925818136e-151, 1.8750286103803643e-150)
+  fit <- mlnaka(x, abstol = 1e-10, iterlim = 200)
+  expect_lte(abs(unname(fit["shape"]) / (1.6910565415381886) - 1), 1e-10)
+  expect_lte(abs(unname(fit["scale"]) / (2.489126186855235e-300) - 1), 1e-10)
+  expect_lte(abs(as.numeric(logLik(fit)) - (4134.409443408661)) / max(1, abs(4134.409443408661)), 1e-10)
+})
+test_that("raw transform audit case 5034", {
+  x <- c(1.1870206453189426e+150, 1.806303987569999e+150, 4.693270808393411e+149, 2.13423387168775e+150, 1.615675812021917e+150, 8.864970023013529e+149, 2.5431594641684415e+150, 1.6267796686030047e+150, 1.3177191226180994e+150, 1.4498034459162531e+150, 7.470853925818136e+149, 1.875028610380364e+150)
+  fit <- mlnaka(x, abstol = 1e-10, iterlim = 200)
+  expect_lte(abs(unname(fit["shape"]) / (1.6910565415381886) - 1), 1e-10)
+  expect_lte(abs(unname(fit["scale"]) / (2.489126186855235e+300) - 1), 1e-10)
+  expect_lte(abs(as.numeric(logLik(fit)) - (-4154.896891369904)) / max(1, abs(-4154.896891369904)), 1e-10)
+})
+test_that("raw transform audit case 5018", {
+  x <- c(1.1870206453189427, 1.8063039875699989, 0.4693270808393411, 2.13423387168775, 1.615675812021917, 0.886497002301353, 2.5431594641684416, 1.6267796686030047, 1.3177191226180993, 1.4498034459162532, 0.7470853925818136, 1.8750286103803642)
+  fit <- mlnaka(x, abstol = 1e-10, iterlim = 200)
+  expect_lte(abs(unname(fit["shape"]) / (1.6910565415381886) - 1), 1e-10)
+  expect_lte(abs(unname(fit["scale"]) / (2.489126186855235) - 1), 1e-10)
+  expect_lte(abs(as.numeric(logLik(fit)) - (-10.24372398062166)) / max(1, abs(-10.24372398062166)), 1e-10)
+})
+
+test_that("finite second moment survives an overflowing reference square", {
+  fit <- mlnaka(c(1.5e154, 1, 1, 1, 1), abstol = 1e-10, iterlim = 200)
+  expect_lte(abs(unname(fit["scale"]) / 4.5e307 - 1), 1e-13)
+  expect_true(is.finite(as.numeric(logLik(fit))))
+})
