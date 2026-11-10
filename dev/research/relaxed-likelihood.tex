@@ -395,7 +395,8 @@ A1 & member; no excess anywhere; (D) & $P_0$ & R1 with probability $\to1$; other
 A2 & member; (D) fails & a wrong point & R1 for every $n$ & Ferguson, Ex.~\ref{ex:ferguson}\\
 A3 & member; joint excess at a competitor & a wrong boundary point & R3 with probability $1$ & sine family, Ex.~\ref{ex:sine}\\
 \midrule
-A4 & boundary point, no gap (seam) & $P_0$ (as a law) & R2 with probability $\to c\in(0,1)$; $c=\frac12$ in one dimension & NB at a Poisson truth; Lomax at an exponential truth\\
+A4 & boundary point, no gap, seam (Gaussian local experiment) & $P_0$ (as a law) & R2 with probability $\to c\in(0,1)$; $c=\frac12$ in one dimension & NB at a Poisson truth; Lomax at an exponential truth\\
+A4$'$ & boundary point, no gap, cusp (Poisson local experiment) & $P_0$ (as a law) & R2 with probability $\to c$ from a Poisson-process functional & Burr XII at a Pareto truth: $c\approx0.971$, Ex.~\ref{ex:burr-pareto}\\
 A5 & boundary point with a deficit & possibly a wrong point & depends on competitors & comb plus $q$, Ex.~\ref{ex:deficit-truth}\\
 \midrule
 A6 & outside $\bM$ (misspecified) & maximisers of $\gamma$ (relaxed KL projection) & R2 with probability $\to1$ if the projection is a face; R1 if it is a member & NB fitted to binomial data (projection: Poisson face)\\
@@ -415,11 +416,15 @@ finite-sample row is
   look as if it came from elsewhere (an interior truth escaping, Geyer's
   all-origin samples, the comb's no-hit event). A large-deviation
   (Sanov-type) bound is the expected mechanism;
-\item \emph{$\to c\in(0,1)$}: the truth sits on a face with a regular
-  continuation (a seam). The sign of the boundary score is asymptotically
-  symmetric, so $c=\frac12$ in one dimension; chi-bar-squared weights in
-  general \cite{selfliang}. Under local alternatives at distance
-  $h/\sqrt n$ from the face, $c$ becomes a normal probability in $h$;
+\item \emph{$\to c\in(0,1)$}: the truth sits on a face. In general $c$ is
+  the probability that the local limit of the likelihood-ratio process
+  attains its supremum at the face. At a seam (regular continuation) the
+  limit is Gaussian: the sign of the boundary score is asymptotically
+  symmetric, so $c=\frac12$ in one dimension, with chi-bar-squared weights in
+  general \cite{selfliang}; under local alternatives at distance $h/\sqrt n$,
+  $c$ becomes a normal probability in $h$. At a cusp the limit can be a
+  Poisson-process functional, and $c$ is a different universal constant
+  (Example~\ref{ex:burr-pareto});
 \item \emph{$\to1$}: structural failures (A3, A7) and misspecification whose
   projection lies on a face (A6).
 \end{itemize}
@@ -445,9 +450,50 @@ observes ``beyond $C$'' (censoring): then the atom at infinity is
 observable, which is why the published defective cases (Birnbaum--Saunders,
 defective Gompertz) need censoring.
 
-\paragraph{Open.} Boundary truths at cusps (Burr's Pareto face) and at
-corners with singular information (beta-binomial at the Poisson corner):
-limiting escape frequencies and rates.
+\begin{example}[Burr XII at a Pareto truth]\label{ex:burr-pareto}
+Work on the log scale $y=\log x$ with a Pareto truth of endpoint $0$ and
+exponent $\alpha$. The Burr log density is exactly
+$\log g=\log\alpha_B-kz-(1+k)\operatorname{sp}(-z)$ with $z=c(y-b)$,
+$\alpha_B=kc$, $\operatorname{sp}(u)=\log(1+e^u)$: a Pareto with endpoint $b$
+whose edge is softened over a width $1/c$, with mass about $k$ below it
+(closure report \S4: $H(k)=P+nk\log k+\dots$, the face is a local maximum
+for every sample). Measure in units of the typical lower spacing: $\eta=n\alpha
+y$, $c=n\alpha\kappa$ (so $k=1/(n\kappa)$), endpoint $\beta/(n\alpha)$ above the
+sample minimum. The lower order statistics above the minimum converge to a
+unit-rate Poisson process $\xi_1<\xi_2<\cdots$, the Weibull face loses by a
+linear margin, and the Burr-minus-best-Pareto log likelihood near the face
+converges to
+\[
+ \Lambda=\sup_{\kappa>0,\,\beta}\Bigl[\beta-\operatorname{sp}(\kappa\beta)
+ -\sum_{j\ge1}\operatorname{sp}\bigl(-\kappa(\xi_j-\beta)\bigr)\Bigr].
+\]
+Raising the endpoint gains $\beta$ (every Pareto density rises); the minimum
+pays for sitting in the soft tail; every point near the edge pays for the
+softening. The face is $\kappa\to\infty$, value $0$. For $\kappa\ge1$ the
+bracket is negative (the report's bound $k>m/(n-m)$), and its mean at
+$\beta=0$ is $-\log2-\pi^2/(12\kappa)$. A finite MLE exists asymptotically iff
+$\Lambda\ge0$. The constant does not depend on $n$, $\alpha$ or the scale.
+\status{local limit: sketch}
+
+Simulation (\texttt{relaxed-likelihood/burr\_pareto\_face.py}, output beside
+it): $P(\Lambda\ge0)=0.029$ (s.e.\ $0.002$, $10^4$ replicates), so the fit
+escapes to the Pareto face with probability $\approx0.971$. Exact Burr fits
+near the face give $0.038$, $0.032$, $0.022$ at $n=50,200,1000$ ($2000$
+replicates each; the last is about two standard errors below the limit),
+and the Weibull face never wins. The finite fits come from an isolated
+minimum: $P(\Lambda\ge0)$ is $0.004$ when the first spacing $\xi_1<1$,
+$0.16$ for $\xi_1\in[3,4)$, $0.75$ for $[4,6)$ and $1$ beyond $6$. The finite
+Burr MLE treats the minimum as lying below a soft endpoint.
+\end{example}
+
+\paragraph{Rates at the cusp.} The transition between escape and finite
+fit happens at $k\asymp1/n$, not $1/\sqrt n$: near the Pareto face the shape
+$k$ lives on an endpoint scale. A Burr truth with $k_0=t/n$ gives a
+non-degenerate escape probability depending on $t$.
+
+\paragraph{Open.} Corners with singular information (beta-binomial at the
+Poisson corner): limiting escape frequencies and rates. A proof of the
+Poisson limit for the Burr cusp, and the escape curve in $t$.
 
 \section{Tools}
 \begin{lemma}[No gap]\label{lem:exact}
