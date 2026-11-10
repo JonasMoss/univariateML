@@ -419,6 +419,20 @@ different mechanisms.
   point plus escaped mass, signature $(0,\Phi(1),1-\Phi(1))$. Other ratios
   $\mu/\sigma$ give other splits. No shape restriction helps; only a local
   root is consistent. \status{sketch}
+\item[] \emph{Pole pinning.} In the first mechanism the supremum is $+\infty$
+  at ordinary members, not at a boundary point, and the set of such members
+  is $\{\gamma=x_{(1)}\}\times\{c<1\}\times\{\lambda>0\}$ (with the version
+  $p(\gamma)=+\infty$; with the open-support version these members have
+  likelihood $0$ and the infinity is pure excess). The likelihood pins one
+  coordinate, $\hat\gamma=x_{(1)}$, and is silent about the rest. Example:
+  $c=\frac12$, $\lambda=1$, $x=(1,2,3)$, $\gamma\uparrow1$ gives a factor
+  $\frac12(1-\gamma)^{-1/2}e^{-(1-\gamma)^{1/2}}\to\infty$ at $x=1$ while the
+  law converges to the Weibull starting at $1$. ML fails here, and that is
+  the correct verdict. A known remedy, recalled as Smith's
+  \cite{smith} for shape below one (\status{lit, unverified}): take
+  $\hat\gamma=x_{(1)}$, which converges faster than $\sqrt n$, and maximise
+  the likelihood of the remaining observations. The library instead
+  restricts the shape, which removes the pole.
 \item \emph{Normal mixture} with a component collapsing on $x_1$: atom of the
   component's weight (Kiefer--Wolfowitz); with vanishing weight the atom
   disappears and the infinity is pure excess (Example~\ref{ex:spike}).
@@ -527,6 +541,9 @@ local & Hellinger, DQM & rates and inference\\
 \item Prior art for the finite-sample relaxed likelihood and outcome table
   (TASK-173); a journal source for a complete-data defective escape.
 \item The block-size conjecture.
+\item Pole pinning: confirm Smith's two-step treatment for shape below one
+  \cite{smith}, and whether other pinned-coordinate cases exist among the
+  families (an endpoint parameter whose density has a pole).
 \end{enumerate}
 
 \begin{thebibliography}{99}
