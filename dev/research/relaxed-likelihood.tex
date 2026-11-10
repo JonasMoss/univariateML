@@ -53,8 +53,11 @@ or secondhand).
   closure points $\bP$, governs both regimes (Theorem~\ref{thm:main}). At a
   fixed sample it classifies the outcome (MLE, escape, defective escape,
   oscillation, unbounded); its expectation gives the asymptotic rate
-  $\gamma(\bP)$, and approximate ML is consistent iff $\gamma$ is uniquely
-  maximised at the truth (Perlman's theorem in weak-closure form).
+  $\gamma(\bP)$. Almost surely the average log-likelihood ratio
+  hypoconverges on $\bM$ to $\gamma$, so approximate MLEs cluster exactly
+  at the maximisers of $\gamma$, and approximate ML is consistent iff
+  $\gamma$ is uniquely maximised at the truth (Perlman's theorem in
+  weak-closure form).
 \item Under domination, inconsistency needs a positive relaxation gap
   somewhere (Corollary~\ref{cor:spikes-gaps}): ML fails through spikes
   (domination, Ferguson) or excess (gaps, the sine family), nothing else.
@@ -196,6 +199,20 @@ spread intervals of total length $k^{-2}$, converge weakly to the uniform,
 while almost every $x$ leaves $S_k$ for good, so $\bL_1=0<1$. Deficit
 points never win; only excess matters below.
 
+\paragraph{Terminology.} In variational analysis $\bL_n$ is the upper
+semicontinuous hull (hypo-closure) of $L_n$ on $\bM$ \cite{rw}. We keep
+``relaxed likelihood'', after relaxation in the calculus of variations,
+because the variational name reads poorly in statistics. Hypoconvergence,
+the maximisation mirror of epi-convergence, is the mode of convergence in
+the asymptotic part: $f_n$ hypoconverges to $f$ on a first-countable space
+iff for every point $\bP$
+\[
+ \inf_{U\ni\bP}\ \limsup_n\ \sup_U f_n
+ =\inf_{U\ni\bP}\ \liminf_n\ \sup_U f_n=f(\bP).
+\]
+It is used for consistency of estimators by Dupa\v cov\'a and Wets
+\cite{dw} and for Monte Carlo likelihoods by Geyer \cite{geyer94}.
+
 \paragraph{Assumptions for the asymptotic part.}
 (S) \emph{Separability}: a countable $\Theta'\subset\Theta$ with
 $\sup_{\Theta_U}L_m=\sup_{\Theta_U\cap\Theta'}L_m$ for all open $U$, $m$ and
@@ -226,22 +243,27 @@ $\E_0\bigl[\sup_{\Theta_U}\log\bigl(L_k(\theta)/L_k(\theta_0)\bigr)\bigr]^+<\inf
    \E_0\log\frac{\bL_m(\bP;X_{1:m})}{L_m(\theta_0;X_{1:m})}
    \in[-\infty,\infty).
   \]
-\item[(vi)] $\gamma$ is upper semicontinuous on $\bM$, $\gamma(P_0)\ge0$, and
-  $\frac1n(\sup_\theta\ell_n-\ell_n(\theta_0))\to\gamma^*=\max_{\bM}\gamma$
-  almost surely.
-\item[(vii)] Every approximate MLE (log-likelihood within $o(n)$ of the
-  supremum, almost surely) converges weakly to $P_0$ almost surely iff
-  $\gamma$ is uniquely maximised at $P_0$.
+\item[(vi)] Let $f_n(P_\theta)=\frac1n(\ell_n(\theta)-\ell_n(\theta_0))$ on
+  $\cM$ and $f_n=-\infty$ on $\bM\setminus\cM$. Almost surely, $f_n$
+  hypoconverges on $\bM$ to $\gamma$. Hence $\gamma$ is upper
+  semicontinuous, $\gamma(P_0)\ge0$, and
+  $\sup f_n=\frac1n(\sup_\theta\ell_n-\ell_n(\theta_0))\to\gamma^*=\max_{\bM}\gamma$.
+\item[(vii)] The cluster points of approximate MLEs (log-likelihood within
+  $o(n)$ of the supremum) are exactly the maximisers of $\gamma$: every
+  cluster point maximises $\gamma$, and every maximiser is the limit of some
+  approximate MLE. So every approximate MLE converges weakly to $P_0$
+  almost surely iff $\gamma$ is uniquely maximised at $P_0$.
 \item[(viii)] If $\bP$ has no excess for $P_0$-almost every single
-  observation ($\Delta_1(\bP;\cdot)\le0$ a.e.), then
+  observation ($\bL_1(\bP;x)\le\bar p(x)$ for a.e.\ $x$), then
   $\gamma(\bP)\le\E_0\log(\bar p/p_0)$, which is $<0$ unless $\bP=P_0$. In
   particular $\gamma(P_0)=0$ if $P_0$ has no excess, and then (vii) reads:
   $\gamma(\bP)<0$ at every $\bP\ne P_0$ with excess.
 \item[(ix)] If $\theta\mapsto P_\theta$ is a homeomorphism onto $\cM$, weak
   convergence to $P_0$ is convergence of the parameter.
 \end{enumerate}
-\status{(i)--(iv), (viii), (ix): proved here; (v)--(vii): sketch, the
-content of Perlman \cite[Thm.~2.2(ii), Thm.~4.1]{perlman} restated}
+\status{(i)--(iv), (viii), (ix): proved here; (v): sketch; (vi)--(vii):
+proved here given (v) and the standard argmax theorem for hypoconvergence;
+the content of Perlman \cite[Thm.~2.2(ii), Thm.~4.1]{perlman} restated}
 \end{theorem}
 
 \begin{proof}
@@ -251,7 +273,7 @@ weakly convergent subsequence with limit $\bP$, and
 $\bL(\bP)\ge\sup L_n$; the reverse is immediate.
 (ii) An MLE has a finite likelihood by definition. If $\hat\theta$ is an
 MLE, $\bL(P_{\hat\theta})\ge L_n(\hat\theta)=\max\bL\ge\bL(P_{\hat\theta})$, so
-$\Delta_n=0$; the converse is immediate. (iii) is (i) plus case distinction. (iv) is a definition.
+there is no gap; the converse is immediate. (iii) is (i) plus case distinction. (iv) is a definition.
 
 (v) $Z_{s,t}=\log\sup_{\Theta_U}\prod_{s<i\le t}p_\theta(X_i)
 -\sum_{s<i\le t}\log p_0(X_i)$ is subadditive and stationary, and (D) with
@@ -260,16 +282,26 @@ theorem \cite{kingman} (or Perlman's reverse martingale) gives
 $\gamma(U)=\inf_{m\ge k}\frac1m\E Z_{0,m}$. Exchange $\inf_U$ and $\inf_m$;
 for fixed $m\ge k$, $\sup_{\Theta_U}L_m\downarrow\bL_m(\bP)$ with an integrable
 upper bound, so monotone convergence identifies the limit.
-(vi) $\gamma$ is an infimum over neighbourhoods of a set function increasing
-in $U$, hence upper semicontinuous, and attains its maximum on the compact
-$\bM$. Upper bound: cover $\bM$ by finitely many $U_j$ with
-$\gamma(U_j)\le\gamma(\bP_j)+\varepsilon$. Lower bound: any $U$ containing a
-maximiser. (vii) Sufficiency: cover $\bM$ minus a neighbourhood of $P_0$ by
-finitely many $U_j$ with $\gamma(U_j)<\gamma^*$. Necessity: if
-$\gamma(\bP)=\gamma^*$ for some $\bP\ne P_0$, then
-$\sup_{\Theta_U}\ell_n\ge\sup\ell_n-o(n)$ for every $U\ni\bP$; a diagonal
-choice over shrinking $U_j$ gives an approximate MLE converging to $\bP$
-(Perlman's Theorem~4.1 argument).
+(vi) $\bM$ is compact metrisable, so it has a countable base. Subsets of
+dominated sets are dominated, so the dominated basis sets still form a base
+at every point. By (v), almost surely
+$\lim_n\sup_Uf_n=\gamma(U)$ for all of these countably many $U$ at once.
+Then both neighbourhood limits in the Terminology paragraph equal
+$\inf_{U\ni\bP}\gamma(U)=\gamma(\bP)$: $f_n$ hypoconverges to $\gamma$.
+Hypo-limits are upper semicontinuous, and on a compact space
+hypoconvergence gives $\sup f_n\to\max\gamma$ (cover by finitely many
+basis sets for the upper bound; any basis set at a maximiser for the
+lower). $\gamma(P_0)\ge0$ since $\theta_0\in\Theta_U$; so $\gamma^*\ge0$ is
+finite.
+(vii) Let $\hat P_n$ satisfy $f_n(\hat P_n)\ge\sup f_n-\varepsilon_n$,
+$\varepsilon_n\to0$, with a cluster point $\bP$. For every basis set
+$U\ni\bP$, $\sup_Uf_n\ge f_n(\hat P_n)$ along the subsequence, so
+$\gamma(U)\ge\gamma^*$ and $\gamma(\bP)=\gamma^*$. Conversely, if
+$\gamma(\bP)=\gamma^*$, choose shrinking basis sets $U_j\ni\bP$ and $n_j$
+increasing with $\sup_{U_j}f_n\ge\gamma^*-1/j$ for $n\ge n_j$; members
+$\hat P_n\in U_j$ nearly attaining $\sup_{U_j}f_n$ for $n_j\le n<n_{j+1}$
+form an approximate MLE converging to $\bP$. This is Perlman's
+Theorem~4.1 argument in hypoconvergence form.
 (viii) $\bL_m(\bP;x)\le\prod_i\bL_1(\bP;x_i)\le\prod_i\bar p(x_i)$ for a.e.
 $x$, so by (v) and Jensen
 $\gamma(\bP)\le\E_0\log(\bar p/p_0)\le\log\int_{p_0>0}\bar p\le\log m_{ac}\le0$,
@@ -515,7 +547,8 @@ Perlman 1972 \cite{perlman} & none & block domination; iff for approximate ML\\
 Le Cam 1953, 1990 \cite{lecam} & none & Bochner domination; counterexamples\\
 Strasser 1981 \cite{strasser} & none & measurability of Perlman's criterion\\
 Geyer 1990 \cite{geyer} & laws, pointwise a.e. & closures of exponential families; defective limits\\
-Geyer 1994 \cite{geyer94} & n/a & hypoconvergence of likelihoods; usc regularisation = closure of the hypograph\\
+Geyer 1994 \cite{geyer94} & n/a & hypoconvergence of likelihoods; usc hull = closure of the hypograph\\
+Dupa\v cov\'a--Wets 1988 \cite{dw} & n/a & epi-convergence and consistency of estimators (\status{lit, unverified})\\
 Csisz\'ar--Mat\'u\v s 2005 \cite{cm} & laws, variation & faces of the convex core\\
 Chen 2017 \cite{chen} & mixing laws, vague & subdistributions\\
 \bottomrule
@@ -572,6 +605,12 @@ local & Hellinger, DQM & rates and inference\\
 \bibitem{bahadur67} R. R. Bahadur (1967). Rates of convergence of estimates
 and test statistics. \emph{Annals of Mathematical Statistics} 38(2),
 303--324. \doi{10.1214/aoms/1177698949}.
+\bibitem{dw} J. Dupa\v cov\'a and R. J.-B. Wets (1988). Asymptotic behavior
+of statistical estimators and of optimal solutions of stochastic
+optimization problems. \emph{Annals of Statistics} 16(4), 1517--1549.
+\doi{10.1214/aos/1176351052}.
+\bibitem{rw} R. T. Rockafellar and R. J.-B. Wets (1998). \emph{Variational
+Analysis}. Springer. \doi{10.1007/978-3-642-02431-3}.
 \bibitem{geyer94} C. J. Geyer (1994). On the convergence of Monte Carlo
 maximum likelihood calculations. \emph{Journal of the Royal Statistical
 Society B} 56(1), 261--274. \doi{10.1111/j.2517-6161.1994.tb01976.x}.
