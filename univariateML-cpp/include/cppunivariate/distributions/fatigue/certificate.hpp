@@ -15,6 +15,7 @@ inline FatigueResult fit(span x,double tol,int maxit,double alpha,double beta) {
   const double nan=std::numeric_limits<double>::quiet_NaN();
   FatigueResult failure{nan,nan,nan,0,FatigueStatus::SearchFailure};
   if(x.empty()||!(tol>0)||!std::isfinite(tol)||maxit<1) {failure.status=FatigueStatus::InvalidInput;return failure;}
+  tol=std::min(tol,1e-10);
   const bool fa=std::isfinite(alpha),fb=std::isfinite(beta);
   double unit=0;
   for(double v:x){if(!(v>0)||!std::isfinite(v)){failure.status=FatigueStatus::InvalidInput;return failure;}unit=std::max(unit,v);}
@@ -84,7 +85,10 @@ inline FatigueResult fit(span x,double tol,int maxit,double alpha,double beta) {
       if(sl*sh>0)continue;
       if(d.lo>0)continue; // A minimum cannot be a global maximum.
       bool converged=false;
-      for(std::int64_t it=0;it<solver_budget(maxit);++it){double m=std::sqrt(l)*std::sqrt(h);if(score(m)>0)l=m;else h=m;if(h-l<=2e-13*h){converged=true;break;}}
+      for(std::int64_t it=0;it<solver_budget(maxit);++it){double m=std::sqrt(l)*std::sqrt(h);if(score(m)>0)l=m;else h=m;if(h-l<=.01*tol*h) {
+        const auto left=value(l),right=value(h);
+        if(fa || std::abs(left.alpha-right.alpha)<=.01*tol*std::min(left.alpha,right.alpha)) {converged=true;break;}
+      }}
       if(!converged)return failure;
       const auto root=value(std::sqrt(l)*std::sqrt(h));
       if(root.status!=FatigueStatus::Ok)return failure;

@@ -34,7 +34,7 @@ r:
   control:
     alpha: Held positive finite shape; NULL estimates it.
     beta: Held positive finite scale; NULL estimates it.
-    abstol: Relative Newton step tolerance in `beta` (the argument name is retained for compatibility).
+    abstol: "Requested relative accuracy in alpha and beta (default 1e-10); the historical control name is retained."
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
 log_density: log(x-mu+beta) - 3*log(x-mu)/2 - log(beta)/2 - log(2*alpha) - log(2*pi)/2 - ((x-mu)/beta + beta/(x-mu)-2)/(2*alpha**2)
 limits:
@@ -117,8 +117,7 @@ segments before bisection; no sampled sign-change enumeration is assumed complet
 A non-simple root that cannot be isolated stops. Distinct maxima within
 $10^{-10}n$ in log likelihood also stop. Bounds use a practical floating-point
 allowance of $16\epsilon$ times the endpoint magnitude per interval operation;
-the guarantee is conditional on the computed comparisons. The historical joint Newton proposal is retained when both coordinates agree with the isolated winning root within $10^{-8}$ relatively and its likelihood agrees within $10^{-10}n$, preserving default golden rounding. Scale roots are
-refined to relative bracket width $2\cdot10^{-13}$. When $A,H$ coincide to
+the guarantee is conditional on the computed comparisons. The winning scale root is refined until both its relative bracket width and the induced alpha endpoint width are below one hundredth of the requested tolerance. The returned coefficients use this root directly. When $A,H$ coincide to
 rounding accuracy, fitting stops numerically because the induced alpha accuracy
 has not been resolved. Alpha uses original-data squared differences rather than
 a cancelling moment formula or rounded standardized differences. A threshold

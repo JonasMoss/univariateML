@@ -27,7 +27,7 @@ r:
     lambda: Optional held lambda; NULL estimates it.
     kappa: Optional held kappa; NULL estimates it.
     lambda0: Optional starting value for `lambda`; `NULL` uses a method-of-moments start.
-    reltol: Tolerance for the optional Newton proposal; the global certificate and root enclosure use fixed accuracy requirements.
+    reltol: "Requested relative coefficient accuracy for the local profile correction (default 1e-10); global bounds retain their separate tolerance."
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations."
 log_density: log(lambda) + log(kappa) - (kappa + 1)*log(1 + lambda*x)
 limits:
@@ -158,17 +158,31 @@ proves $h''<0$ throughout and signed endpoint scores isolate their unique
 stationary maximum. Overlapping neighborhoods allow isolation when a
 root lies on a subdivision boundary with an uncertain score sign. A narrow signed bracket of width below $7\times10^{-7}$
 in $z$ encloses both coefficients to that relative accuracy, since
-$d\log A/dz=B/A\le1$. Newton refines the returned center. Historical Newton
-coefficients are retained only inside this bracket enlarged by $10^{-7}$
-at either endpoint and within $2\times10^{-7}$ in log shape of the refined
-center,
-which preserves the frozen default golden. Restored coefficients must
-round-trip to their proposed log coordinates within $10^{-8}$; the stored
-historical rate must also lie in the enlarged root bracket after rescaling.
+$d\log A/dz=B/A\le1$. Newton refines the returned center using the analytic profile score and curvature. The relative rate correction and the induced log-kappa correction must both be below one quarter of the requested tolerance, with contraction across the last corrections or corrections at rounding level. A signed local bracket can instead establish both coefficient bounds when arithmetic noise prevents observable contraction. The local refinement runs after selection of the globally certified basin.
 Thus positive subnormal rates are accepted only when their relative
 precision is adequate. A new winner must strictly
 dominate any previously isolated winner; otherwise subdivision stops with
 a budget or arithmetic failure. No general joint uniqueness is claimed.
+
+
+For local arithmetic put $p_i=\lambda x_i/(1+\lambda x_i)$,
+$S=\overline{\log(1+\lambda x)}$, $B=\bar p$, $D=\overline{p^2}$,
+$T=\overline{\log(1+\lambda x)-p}$ and
+$K=\overline{p^2-2\{\log(1+\lambda x)-p\}}$. The scaled profile score and
+curvature are $\lambda f=T/S-B$ and
+$\lambda^2 f'=K/S+D+(T/S)^2$. For $p\le1/2$, positive power series give
+$T_i=\sum_{j\ge2}p_i^j/j$ and $K_i=-2\sum_{j\ge3}p_i^j/j$.
+The degree-64 remainder for $T_i$ is at most
+$p_i^{65}/\{65(1-p_i)\}$; the $K_i$ bound is twice this.
+These forms avoid cancellation of inverse-rate terms near a weak maximum.
+
+For a final local bracket, $S,B,D$ increase with rate, so
+$B_h^2/S_l^2+D_h/S_l+D_h-1$ bounds the scaled curvature from above.
+A negative bound and separately signed endpoint scores isolate one maximum;
+the actual rate and reciprocal-$S$ endpoint errors must both fit the requested
+tolerance. Practical margins are $8\epsilon(|T/S|+|B|)$ for local signs and
+$32\epsilon$ times the absolute curvature-bound contributions. Mean
+normalization sums ratios to the sample maximum, avoiding raw-sum overflow.
 
 Let $M_2=\overline{y^2}$ and $L=-\overline{\log y}$. For the left tail,
 $A\ge q-q^2M_2/2$ gives $h\le-\log(1-qM_2/2)$ when $qM_2<2$.
@@ -197,9 +211,10 @@ on their enclosing the exact normalized moments, scores and gaps.
 Small-$q$ gap evaluation accumulates $A/q-1$ directly; its fourth-order
 logarithm-ratio expansion below $qy=10^{-4}$ has remainder at most
 $(qy)^5/6$. All nonfinite evaluations, subnormal intermediate ratios $x_i/x_{\max}$,
-unrepresentable coefficients, inadequate root isolation and exhausted
-budgets stop with `IterationFailure`. Constant samples have an exact
-exponential outcome. Held-subset algorithms are unchanged.
+unrepresentable certificate coefficients, inadequate root isolation and exhausted
+budgets stop with `IterationFailure`. A failed final coefficient-reconstruction
+check reports `AccuracyFailure`. Constant samples have an exact
+exponential outcome.
 
 The subdivision budget is $128\min(\mathtt{maxit},100000)$ profile
 evaluations; each root-isolation attempt has at most `maxit` bisections
@@ -220,3 +235,5 @@ The `limits.numerical` flag is retained for the tolerance-aware R help
 wording: the generic non-numerical template would assert mathematical
 non-existence even when a finite MLE wins by less than the declared margin.
 The flag does not weaken the global certificate in `fit.certified`.
+
+With kappa held, writing the log-rate score as a count contribution plus signed logistic tails avoids cancellation when probabilities round to one. The count contribution is evaluated by fused multiply-add, so a held kappa near a ratio of integer counts is retained. The remaining terms share a logarithmic scale and use compensated summation. The derivative magnitude at a root is at least half the sum of the unsigned tail terms; this controls the error after scaling. Signs use a practical margin of eight machine epsilons times the logarithmic magnitudes and unsigned sum. An independently signed log-rate enclosure remains valid while a final raw-sign polish selects a point inside it. The physical rate is checked after exponentiation and normalization.

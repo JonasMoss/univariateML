@@ -5,7 +5,7 @@
 #include <algorithm>
 #include <limits>
 namespace umvl_binding {
-inline FitResult fit_fatigue(cppunivariate::span x, Held alpha_arg = {}, Held beta_arg = {}, Held mu_arg = {}, double abstol = 1.220703e-4, int iterlim = 100) {
+inline FitResult fit_fatigue(cppunivariate::span x, Held alpha_arg = {}, Held beta_arg = {}, Held mu_arg = {}, double abstol = 1e-10, int iterlim = 100) {
   // Invalid controls remain ordinary errors, even if a legacy fitter reports
   // a statistical status before checking them.
   const auto classify = [&](FitResult out, const cppunivariate::StopDetail& detail,

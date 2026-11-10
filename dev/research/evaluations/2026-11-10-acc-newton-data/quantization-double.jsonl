@@ -1,0 +1,4 @@
+{"id":"gumbel","status":4,"sigma":0,"mu":0}
+{"id":"weibull","status":4,"scale_in_ulps":2,"shape":3.4615408499207563}
+{"id":"foldnorm","status":4,"sigma_in_ulps":1,"mu_in_ulps":0}
+{"id":"pig","status":5,"shape":9.9999998365971443e-317,"relative_square_error":1.6340285695381519e-08}

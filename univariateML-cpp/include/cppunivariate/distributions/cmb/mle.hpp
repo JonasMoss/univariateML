@@ -206,9 +206,49 @@ inline CmbResult cmb_accept_work(ispan x,int N,CmbResult out,int maxit,
   return out;
 }
 
+// Positive-definite observed information converts moment residuals to
+// coefficient errors. Each full Newton correction must contract, or reach
+// rounding level, before it can justify an Ok local fit.
+inline CmbResult cmb_polish_work(ispan x,int N,CmbResult out,double tol,int maxit,
+                                 double prob,double nu,std::uint64_t& used) {
+  maxit=static_cast<int>(solver_budget(maxit));
+  if(out.status!=CmbStatus::Ok || N<=1 || out.prob==0 || out.prob==1 ||
+     (!std::isnan(prob)&&!std::isnan(nu)))return out;
+  tol=std::min(tol,1e-10);
+  const bool fp=!std::isnan(prob),fn=!std::isnan(nu);
+  std::map<int,std::uint64_t> counts;for(int k:x)++counts[k];
+  cmb_detail::TableWork work{used,static_cast<std::uint64_t>(enumeration_budget(maxit)),counts,prob};
+  CPPUNIV_EXTENDED_REAL sx=0,sh=0;
+  for(int k:x){sx+=k;sh+=cmb_detail::logchoose(N,k);}
+  const double m=static_cast<double>(sx/x.size()),t=static_cast<double>(sh/x.size());
+  double eta=std::log(out.prob)-std::log1p(-out.prob),previous=INFINITY;
+  for(int it=0;it<maxit;++it) {
+    const auto q=work.table(N,eta,out.nu);
+    const double gx=m-q.mean,gh=t-q.mh,det=q.vx*q.vh-q.cov*q.cov;
+    double de=0,dn=0;
+    if(fp)dn=gh/q.vh;
+    else if(fn)de=gx/q.vx;
+    else {de=(q.vh*gx-q.cov*gh)/det;dn=(q.vx*gh-q.cov*gx)/det;}
+    const bool positive_information=fp?q.vh>0:fn?q.vx>0:
+      (q.vx>0 && q.vh>0 && det>0);
+    if(!positive_information || !std::isfinite(de+dn))break;
+    const double error=std::max(std::abs(de)*(1-out.prob),std::abs(dn)/std::max(1.,std::abs(out.nu)));
+    if(error<=.01*tol && ((std::isfinite(previous) && error<=.25*previous) || error<128*std::numeric_limits<double>::epsilon())) {
+      double ll=0;for(const auto& kv:counts)ll+=kv.second*q.lp[kv.first];
+      out.logLik=ll;return out;
+    }
+    previous=error;eta+=de;out.nu+=dn;
+    if(!fp)out.prob=cmb_detail::probability(eta);
+  }
+  out.status=CmbStatus::IterationFailure;
+  if(work.exhausted)out.stop_detail=discrete_budget(out.stop_detail);
+  return out;
+}
+
 // Acceptance and optional refinement spend the caller's remaining ledger.
 inline CmbResult cmb_finish_work(ispan x,int N,CmbResult proposed,double tol,int maxit,
                                  double prob,double nu,std::uint64_t& work) {
+  proposed=cmb_polish_work(x,N,proposed,tol,maxit,prob,nu,work);
   auto out=cmb_accept_work(x,N,proposed,maxit,prob,nu,work);
   // A flat profile can meet the historical moment tolerance before its
   // coefficients are accurate. Retain passing proposals exactly; otherwise

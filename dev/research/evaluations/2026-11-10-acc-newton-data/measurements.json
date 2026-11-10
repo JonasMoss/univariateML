@@ -1,0 +1,172 @@
+{
+  "before-native": {
+    "lomax": {
+      "error": "",
+      "maximum": 7.85728441804392e-08
+    },
+    "kumar": {
+      "error": "",
+      "maximum": 4.963822093233017e-09
+    },
+    "weibull": {
+      "error": "",
+      "maximum": 2.958944330293114e-09
+    },
+    "gumbel": {
+      "error": "",
+      "maximum": 2.332575980917051e-10
+    },
+    "fatigue": {
+      "error": "",
+      "maximum": 3.139683202143486e-09
+    },
+    "cmb": {
+      "error": "",
+      "maximum": 2.964823103873376e-10
+    },
+    "pig": {
+      "error": "",
+      "maximum": 1.8918672717474896e-10
+    },
+    "foldnorm": {
+      "error": "",
+      "maximum": 2.7428277417029357e-09
+    }
+  },
+  "after-native": {
+    "lomax": {
+      "error": "",
+      "maximum": 7.153079557028978e-17
+    },
+    "kumar": {
+      "error": "",
+      "maximum": 1.7534276716013819e-16
+    },
+    "weibull": {
+      "error": "",
+      "maximum": 3.2079575761975932e-15
+    },
+    "gumbel": {
+      "error": "",
+      "maximum": 1.2937967700172467e-15
+    },
+    "fatigue": {
+      "error": "",
+      "maximum": 3.117789696596518e-13
+    },
+    "cmb": {
+      "error": "",
+      "maximum": 5.585360077319882e-15
+    },
+    "pig": {
+      "error": "",
+      "maximum": 4.429026862026149e-13
+    },
+    "foldnorm": {
+      "error": "",
+      "maximum": 6.330248556202921e-15
+    }
+  },
+  "after-double": {
+    "lomax": {
+      "error": "",
+      "maximum": 9.070877120941556e-16
+    },
+    "kumar": {
+      "error": "",
+      "maximum": 1.7534276716013819e-16
+    },
+    "weibull": {
+      "error": "",
+      "maximum": 3.2079575761975932e-15
+    },
+    "gumbel": {
+      "error": "",
+      "maximum": 1.2937967700172467e-15
+    },
+    "fatigue": {
+      "error": "",
+      "maximum": 3.117789696596518e-13
+    },
+    "cmb": {
+      "error": "",
+      "maximum": 7.934976159396902e-14
+    },
+    "pig": {
+      "error": "",
+      "maximum": 4.429026862026149e-13
+    },
+    "foldnorm": {
+      "error": "",
+      "maximum": 6.330248556202921e-15
+    }
+  },
+  "after-r": {
+    "cmb": {
+      "error": "",
+      "maximum": 5.585360077319882e-15
+    },
+    "fatigue": {
+      "error": "",
+      "maximum": 3.117789696596518e-13
+    },
+    "foldnorm": {
+      "error": "",
+      "maximum": 6.330248556202921e-15
+    },
+    "gumbel": {
+      "error": "",
+      "maximum": 1.2937967700172467e-15
+    },
+    "kumar": {
+      "error": "",
+      "maximum": 1.7534276716013819e-16
+    },
+    "lomax": {
+      "error": "",
+      "maximum": 7.153079557028978e-17
+    },
+    "pig": {
+      "error": "",
+      "maximum": 4.429026862026149e-13
+    },
+    "weibull": {
+      "error": "",
+      "maximum": 3.2079575761975932e-15
+    }
+  },
+  "after-wasm": {
+    "cmb": {
+      "error": "",
+      "maximum": 7.19640988399439e-14
+    },
+    "fatigue": {
+      "error": "",
+      "maximum": 3.117789696596518e-13
+    },
+    "foldnorm": {
+      "error": "",
+      "maximum": 6.330248556202921e-15
+    },
+    "gumbel": {
+      "error": "",
+      "maximum": 1.2937967700172467e-15
+    },
+    "kumar": {
+      "error": "",
+      "maximum": 3.3330507441956693e-16
+    },
+    "lomax": {
+      "error": "",
+      "maximum": 9.070877120941556e-16
+    },
+    "pig": {
+      "error": "",
+      "maximum": 4.429026862026149e-13
+    },
+    "weibull": {
+      "error": "",
+      "maximum": 3.2079575761975932e-15
+    }
+  }
+}

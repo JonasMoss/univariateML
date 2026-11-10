@@ -32,7 +32,7 @@ r:
     shape: Optional held shape; NULL estimates it.
     scale: Optional held scale; NULL estimates it.
     shape0: Optional positive finite starting shape; `NULL` uses the automatic start.
-    reltol: Relative step tolerance in log(sigma) of the underlying Gumbel fit.
+    reltol: "Requested relative coefficient accuracy (default 1e-10), propagated through the Gumbel scale and location brackets."
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
 log_density: log(shape) - log(scale) + (shape - 1)*log(x/scale) - (x/scale)**shape
 references:
@@ -134,3 +134,9 @@ The optional `shape0` starting value is used and must be positive and finite.
 The `shape0` argument was documented but ignored in univariateML 1.x; it is functional in the current fitter.
 
 2026-10-31 (diagnostic contract): Empty or invalid input carries a non-success status. Degeneracy depends on the held coefficients, and failures from the Gumbel fit survive transformation. See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md) and the TASK-132 cases in `test.cpp` for the validation scope.
+
+The Gumbel delegate bounds sigma relatively and mu absolutely before applying shape=1/sigma and scale=exp(-mu+s). Thus the transformed scale error is controlled in log scale as well as the reciprocal shape error.
+
+Scale recovery multiplies the data anchor by the fitted log-ratio factor when representable. Reconstruction is checked before accepting a subnormal scale.
+
+With scale held, the shape score uses relative logarithms computed before subtracting large common log scales. Its positive term and negative exponential terms are accumulated with compensation; strict monotonicity gives the final log-shape enclosure. With shape held, the power-mean scale is checked against its ideal log coordinate after reconstruction. A rounded subnormal scale can fail this check even though the mathematical conditional maximum is finite.

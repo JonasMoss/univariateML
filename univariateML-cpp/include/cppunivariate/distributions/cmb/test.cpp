@@ -585,3 +585,14 @@ TEST_CASE("cmb: free-size proposals reject the unsupported allocation domain bef
   CHECK(f.status==cppunivariate::CmbStatus::IterationFailure);
   CHECK(work==0);
 }
+
+TEST_CASE("cmb: held dispersion needs only the free probability information") {
+  const std::vector<int> x{0,5,0,5};
+  const auto r=cppunivariate::cmb_mle({x.data(),x.size()},5,1e-10,200,NAN,-1000);
+  REQUIRE(r.status==cppunivariate::CmbStatus::Ok);
+  // Symmetry gives the exact probability root. The held h statistic has
+  // zero represented variance here and is irrelevant to the free score.
+  CHECK(r.prob==.5);
+  CHECK(r.nu==-1000);
+  CHECK(r.logLik==doctest::Approx(-4*std::log(2.)).epsilon(1e-14));
+}
