@@ -57,7 +57,7 @@ inline GevResult frechet_gev_mle(span x, double tol=1e-10, int maxit=100,
 }
 
 enum class FrechetStatus { Ok, InvalidData, GumbelLimit, IterationFailure, NoMLE, NumericalFailure };
-struct FrechetResult { double lambda, mu, sigma, logLik; int iterations; FrechetStatus status; unsigned restricted = 0; StopDetail stop_detail{}; };
+struct FrechetResult { double lambda, mu, sigma, logLik; int iterations; FrechetStatus status; unsigned restricted = 0; StopDetail stop_detail{}; bool certified=true; };
 inline double frechet_loglik(span x,double lambda,double mu,double sigma) {
  if(!(lambda>0) || !(sigma>0)) return -std::numeric_limits<double>::infinity();
  double ll=x.size()*(std::log(lambda)-std::log(sigma));
@@ -154,9 +154,10 @@ inline FrechetResult frechet_held_mle(span x,double tol,int maxit,double mu,
  if(hm) {
    std::vector<double> excess;for(double v:x)excess.push_back(v-mu);
    const auto r=invweibull_mle(span{excess.data(),excess.size()},tol,maxit,NAN,lambda,sigma);
-   return {r.shape,mu,r.scale,r.logLik,r.iterations,
+   FrechetResult out{r.shape,mu,r.scale,r.logLik,r.iterations,
      r.status==InvWeibullStatus::Ok?FrechetStatus::Ok:
      r.status==InvWeibullStatus::IterationFailure?FrechetStatus::IterationFailure:FrechetStatus::InvalidData};
+   out.certified=r.certified;return out;
  }
  if(hl && !hs) {
    std::size_t k=0;for(double v:x) if(v==m) ++k;
@@ -248,8 +249,12 @@ inline FrechetResult frechet_mle_impl(span x, double tol=1e-10, int maxit=100,
      if(!(y[i]>0) || !std::isfinite(y[i])) return bad;
    }
    const auto r=invweibull_mle(span{y.data(),y.size()},tol,maxit);
+   if(r.status==InvWeibullStatus::IterationFailure) {
+     bad.status=FrechetStatus::IterationFailure;return bad;
+   }
    if(!(r.shape>0) || !(r.scale>0) || !std::isfinite(r.shape) || !std::isfinite(r.scale) || !std::isfinite(r.logLik)) return bad;
-   return {r.shape,mu,r.scale,r.logLik,r.iterations,r.status==InvWeibullStatus::Ok ? FrechetStatus::Ok : FrechetStatus::IterationFailure};
+   FrechetResult out{r.shape,mu,r.scale,r.logLik,r.iterations,r.status==InvWeibullStatus::Ok ? FrechetStatus::Ok : FrechetStatus::IterationFailure};
+   out.certified=r.certified;return out;
  }
  // The two-point reduction applies only with every public coefficient free.
  if(x.size()>=3) {

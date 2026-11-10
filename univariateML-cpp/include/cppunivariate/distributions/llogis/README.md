@@ -31,7 +31,7 @@ r:
   control:
     shape: Optional held shape; NULL estimates it.
     scale: Optional held scale; NULL estimates it.
-    abstol: Absolute step tolerance in (location, log(scale)) of the underlying logistic fit.
+    abstol: Positive accuracy tolerance for the centered logistic score brackets.
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
 log_density: log(shape) - log(scale) + (shape - 1)*log(x/scale) - 2*log(1 + (x/scale)**shape)
 references:
@@ -129,11 +129,11 @@ The log-logistic distribution describes positive data whose logarithm has a logi
 ## Details
 
 Fitting requires a nonempty sample of strictly positive finite observations.
-The fit transforms observations to logarithms and fits a logistic distribution.
+The fit standardizes centered logarithms $\log1p((x_i-x_0)/x_0)$ and solves the logistic location and profile-power scores by bracketing. Strict concavity in power and power times log scale identifies the unique root.
 The Jacobian changes the log-likelihood by a term depending only on the data,
 so it preserves its maximizer. Holding shape fixes the spread on the log axis;
 holding scale fixes its centre. Both conditional scores are monotone and solved
-by bisection. Holding shape permits constant data. With scale held, the
+by bisection. Scale restoration uses expm1 near the anchor; the likelihood is recomputed at that representable scale. Rounding the median can prevent its likelihood certificate from transferring on ulp-wide samples; such finite fits carry an explicit uncertified flag. Holding shape permits constant data. With scale held, the
 likelihood is unbounded only when every observation equals that scale.
 
 The [positive-family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-positive.md) gives the boundary arguments and their held-parameter conditions.

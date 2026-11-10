@@ -1,0 +1,20 @@
+{
+  "base_commit": "c9c073e22be560db48c33fc1f8d8711bcef4b860",
+  "branch": "codex/audit-transform",
+  "ranked_silent_cases": 68,
+  "additional_case": 9806,
+  "family_cases": 824,
+  "frozen_sha256": {
+    "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/harness.cpp.gz": "b73b8152fbf2e153730a493a2d2213e383af4d8a77c6a0f7a5da4a1040a65722",
+    "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/reference.jsonl.gz": "9639814ad6fbcc0f1211ae791f9932b4cb5ca9f75481210827ce2f0600ecb8a3",
+    "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/ranked-silent.json.gz": "f611200df125b87faa619b7551489c9943f22cfa2e741e8e048014c5cbd1a03e",
+    "dev/research/evaluations/2026-11-07-fit-audit-data/cases.json.gz": "aa3b053c49681fb06f28cfdceebb0ee2c10ec950f4bb34af94352fc652227df7"
+  },
+  "scope": "Only audit-transform worktree; no commits, Git writes, board edits, installs or sub-agents.",
+  "reference": "Exact binary64 inputs; independent mpmath 180/360-digit roots; raw likelihood checks at 360 digits",
+  "final_source_files": 62,
+  "validation": "validation.json",
+  "independent_references": 69,
+  "additional_restoration_cases": 18,
+  "simbox_attempts": 4
+}

@@ -43,13 +43,13 @@ inline FitResult fit_llogis(cppunivariate::span x, Held shape_arg = {}, Held sca
   if (res.status == cppunivariate::LogLogisticStatus::Unbounded)
     return nomle("The log-logistic maximum likelihood estimator does not exist: the likelihood is unbounded for these constant transformed observations.");
   if (res.status == cppunivariate::LogLogisticStatus::IterationFailure)
-    return fail("Log-logistic optimizer IterationFailure: failed to converge; increase iterlim.");
+    return fail("Log-logistic MLE failed to converge or cannot resolve the fitted coefficients and likelihood in double precision.");
   if (!(res.shape>0.0) || !(res.scale>0.0) || !std::isfinite(res.shape) || !std::isfinite(res.scale) || !std::isfinite(res.logLik)) {
     if (!shape.supplied && !scale.supplied && std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))
       return fail("The log-logistic maximum likelihood estimator does not exist for constant data: the likelihood is unbounded.");
     return fail("Log-logistic MLE failed: data exceed double precision.");
   }
-  return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"shape",res.shape},{"scale",res.scale}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }();
+  return [&]() { FitResult out; if(!res.certified)out.extra.push_back({"certified",0}); out.warnings = warnings; out.estimates = {{"shape",res.shape},{"scale",res.scale}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }();
 
 }
 }

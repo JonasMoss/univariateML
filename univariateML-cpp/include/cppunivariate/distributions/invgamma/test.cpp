@@ -122,3 +122,79 @@ TEST_CASE("invgamma: TASK-132 constant samples retain analytic nonexistence acro
     CHECK(cppunivariate::invgamma_mle(mltest::as_span(data),1e-8,200).status == cppunivariate::GammaStatus::Degenerate);
   }
 }
+
+// Independent 180/360-digit raw-model references: TASK-101.7.5 evidence.
+TEST_CASE("invgamma: raw transform audit case 3759") {
+  const std::vector<double> data{1.471602327564204, 1.4716023275656755, 1.4716023275671473, 1.471602327568619, 1.4716023275715622};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::invgamma_mle(x, 1e-10, 200);
+  REQUIRE(fit.status==cppunivariate::GammaStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.shape==doctest::Approx(3.3782209017569924e+23).epsilon(1e-10).scale(0));
+  CHECK(fit.scale==doctest::Approx(4.9713977420625715e+23).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(126.41556407783901).epsilon(1e-10).scale(0));
+}
+TEST_CASE("invgamma: raw transform audit case 3762") {
+  const std::vector<double> data{1.471602327564204, 1.4716023275656755, 1.4716023275671473, 1.471602327568619, 1.4716023275715622};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::invgamma_mle(x, 1e-10, 200);
+  REQUIRE(fit.status==cppunivariate::GammaStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.shape==doctest::Approx(3.3782209017569924e+23).epsilon(1e-10).scale(0));
+  CHECK(fit.scale==doctest::Approx(4.9713977420625715e+23).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(126.41556407783901).epsilon(1e-10).scale(0));
+}
+TEST_CASE("invgamma: raw transform audit case 10510") {
+  const std::vector<double> data{0.999999999998, 0.999999999999, 1.0, 1.000000000001, 1.000000000003};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::invgamma_mle(x, 1e-10, 200);
+  REQUIRE(fit.status==cppunivariate::GammaStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.shape==doctest::Approx(3.3783453797065964e+23).epsilon(1e-10).scale(0));
+  CHECK(fit.scale==doctest::Approx(3.378345379707272e+23).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(128.34741532364208).epsilon(1e-10).scale(0));
+}
+TEST_CASE("invgamma: raw transform audit case 10509") {
+  const std::vector<double> data{0.99999998, 0.99999999, 1.0, 1.00000001, 1.00000003};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::invgamma_mle(x, 1e-10, 200);
+  REQUIRE(fit.status==cppunivariate::GammaStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.shape==doctest::Approx(3378378418017940.0).epsilon(1e-10).scale(0));
+  CHECK(fit.scale==doctest::Approx(3378378424774695.5).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(82.29573790223182).epsilon(1e-10).scale(0));
+}
+TEST_CASE("invgamma: raw transform audit case 3758") {
+  const std::vector<double> data{1.4716022981351007, 1.471602312851124, 1.4716023275671473, 1.4716023422831706, 1.4716023717152171};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::invgamma_mle(x, 1e-10, 200);
+  REQUIRE(fit.status==cppunivariate::GammaStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.shape==doctest::Approx(3378378416524510.5).epsilon(1e-10).scale(0));
+  CHECK(fit.scale==doctest::Approx(4971629551103341.0).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(80.36397877160313).epsilon(1e-10).scale(0));
+}
+TEST_CASE("invgamma: raw transform audit case 3761") {
+  const std::vector<double> data{1.4716022981351007, 1.471602312851124, 1.4716023275671473, 1.4716023422831706, 1.4716023717152171};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::invgamma_mle(x, 1e-10, 200);
+  REQUIRE(fit.status==cppunivariate::GammaStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.shape==doctest::Approx(3378378416524510.5).epsilon(1e-10).scale(0));
+  CHECK(fit.scale==doctest::Approx(4971629551103341.0).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(80.36397877160313).epsilon(1e-10).scale(0));
+}
+
+TEST_CASE("invgamma: held-rate shape beyond binary64 is not a capped estimate") {
+  const std::vector<double> data{1e-300,2e-300};
+  const auto fit=cppunivariate::invgamma_mle(mltest::as_span(data),1e-10,200,NAN,1e300);
+  CHECK(fit.status==cppunivariate::GammaStatus::TransformFailure);
+}
+
+TEST_CASE("invgamma: finite public rate despite an overflowing reciprocal reference") {
+  const std::vector<double> data{1e-309,1,1,1,1};
+  const auto fit=cppunivariate::invgamma_mle(mltest::as_span(data),1e-10,200);
+  REQUIRE(fit.status==cppunivariate::GammaStatus::Ok);
+  CHECK(std::isfinite(fit.logLik));
+  CHECK(fit.scale>0);
+}

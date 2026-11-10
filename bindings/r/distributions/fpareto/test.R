@@ -176,3 +176,10 @@ test_that("subunit opposite shape endpoint certificate preserves shifted advice"
   expect_equal(unname(e$estimates['alpha']),1)
   expect_match(conditionMessage(e),'both endpoints held')
 })
+
+test_that("GB2 reduction preserves an uncertified restoration", {
+  x <- 1 + (0:4) * .Machine$double.eps
+  fit <- mlfpareto(x, min = 0, shape1 = 1, shape3 = .855, reltol = 1e-10)
+  expect_false(attr(fit, "certified"))
+  expect_true(is.finite(as.numeric(logLik(fit))))
+})

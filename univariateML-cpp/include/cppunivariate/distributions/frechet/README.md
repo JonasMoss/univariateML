@@ -325,3 +325,7 @@ For a recognized exact scale hold, a failed free certificate retains a numerical
 stop and only candidates satisfying that hold contribute to the likelihood
 lower bound. An unconstrained Gumbel winner cannot be transported to a finite
 held scale; that case remains a separate constrained search.
+
+With location held, the inverse-Weibull reduction preserves numerical iteration
+failures and the per-fit uncertified flag for a scale limited by binary64
+spacing. Such a flag does not assert nonexistence.

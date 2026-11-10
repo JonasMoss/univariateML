@@ -1,0 +1,8 @@
+{
+  "command": "/home/jonas/Files/work/misc/codex-math-web/bin/show /home/jonas/Files/programming/univariateML.wt/audit-transform/dev/research/evaluations/2026-11-10-audit-transform-report.md",
+  "exit_code": 1,
+  "http_status": 403,
+  "reason": "This worktree is absent from every viewer-readable root.",
+  "required_to_close": "Register the existing thread cwd or configure CODEX_MATH_WEB_VIEW_ROOTS on the viewer process.",
+  "copies_or_viewer_configuration_changes": false
+}

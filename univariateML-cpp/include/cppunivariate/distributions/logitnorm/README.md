@@ -108,4 +108,4 @@ On 2026-10-30 (TASK-125), normal log tails began using the shared normal-tail he
 
 The 2026-10-31 diagnostic audit checks that empty or invalid input has a non-success status and that delegate failures survive transformations. See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md) and the TASK-132 cases in the family C++ tests.
 
-Held-coordinate fits use the same normal residual profile as the free fit on the logit observations, with the logit Jacobian added afterward.
+Centered logits use the difference of two log1p terms, retaining raw proportion spacings and their complements. Two-component absolute logit sums retain a fitted mean close to zero. The reported likelihood uses the returned mean and scale with the logit Jacobian; a finite fit whose rounded logit mean loses the likelihood certificate carries an explicit uncertified flag.

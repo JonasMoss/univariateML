@@ -40,12 +40,12 @@ inline FitResult fit_lgamma(cppunivariate::span x, Held shapelog_arg = {}, Held 
   if(res.status==cppunivariate::LgammaStatus::IterationFailure)
     return fail("Gamma delegate optimizer IterationFailure; increase iterlim.");
   if(res.status==cppunivariate::LgammaStatus::TransformFailure)
-    return fail("lgamma MLE failed: transformed observations exceed double precision.");
+    return fail("lgamma MLE failed: transformed sufficient statistics or fitted coefficients cannot be resolved in double precision.");
   if(res.status==cppunivariate::LgammaStatus::Degenerate)
     return nomle("The loggamma maximum likelihood estimator does not exist for constant data: the likelihood is unbounded as the shape grows.");
   if(!std::isfinite(res.shapelog) || !std::isfinite(res.ratelog) || !std::isfinite(res.logLik))
     return fail("Loggamma MLE failed");
-  return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"shapelog",res.shapelog},{"ratelog",res.ratelog}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }();
+  return [&]() { FitResult out; if(!res.certified)out.extra.push_back({"certified",0}); out.warnings = warnings; out.estimates = {{"shapelog",res.shapelog},{"ratelog",res.ratelog}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }();
 
 }
 }

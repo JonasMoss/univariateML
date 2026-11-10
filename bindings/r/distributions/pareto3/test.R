@@ -98,3 +98,10 @@ test_that("P2 pareto3 validates new held values", {
 test_that("pareto3: P3 failed logistic delegate stops", {
   expect_error(mlpareto3(c(.3,.8,1.7,4.2),min=0,iterlim=1), "failed to converge")
 })
+
+test_that("log-logistic reduction preserves an uncertified restoration", {
+  x <- 1 + c(0, 1, 2, 4, 7) * .Machine$double.eps
+  fit <- mlpareto3(x, min = 0)
+  expect_false(attr(fit, "certified"))
+  expect_true(is.finite(as.numeric(logLik(fit))))
+})

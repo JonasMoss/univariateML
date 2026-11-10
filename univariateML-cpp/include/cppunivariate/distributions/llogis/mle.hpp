@@ -1,12 +1,12 @@
-// Log-logistic MLE: y = log(x), then Logistic MLE on y. Parameters are
-// recovered analytically: shape = 1/scale_logistic, scale = exp(mu_logistic).
-// The log-likelihood is rederived in the log-logistic parameterisation.
+// Log-logistic fitting brackets the strictly concave logistic profile
+// in centered raw log ratios, then checks the restored public scale.
 
 #pragma once
 #include "../../core/work_budget.hpp"
 #include "../../core/precision.hpp"
 
 #include "../../core/span.hpp"
+#include "../../core/transformed_location.hpp"
 #include "../logis/mle.hpp"
 
 #include <cmath>
@@ -24,68 +24,13 @@ struct LogLogisticResult {
   double logLik;
   int iterations;
   LogLogisticStatus status = LogLogisticStatus::Ok;
+  bool certified=true;
 };
 
-inline LogLogisticResult loglogistic_mle(span x, double tol, int maxit) {
-  maxit = static_cast<int>(solver_budget(maxit));
-  constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
-  const std::size_t n = x.size();
-  if (n == 0) return {0.0, 0.0, kNaN, 0, LogLogisticStatus::InvalidInput};
-
-  if (std::all_of(x.begin(),x.end(),[&](double v){return v==x[0] && v>0 && std::isfinite(v);}))
-    return {kNaN,kNaN,kNaN,0,LogLogisticStatus::Unbounded};
-
-  for (double v : x) if (!(v > 0 && std::isfinite(v)))
-    return {NAN,NAN,NAN,0,LogLogisticStatus::InvalidInput};
-
-  std::vector<double> y(n);
-  for (std::size_t i = 0; i < n; ++i) y[i] = std::log(x[i]);
-  LogisticResult base = logistic_mle(span{y.data(), n}, tol, maxit);
-
-  const double shape = 1.0 / base.scale;
-  const double rate = std::exp(-base.mu);
-  const double scale = 1.0 / rate;
-  // Change of variables avoids powers of extreme observations.
-  double sum_log_x = 0.0;
-  for (auto v : y) sum_log_x += v;
-  const double logLik = base.logLik - sum_log_x;
-  return {shape, scale, logLik, base.iterations,
-      base.status == LogisticStatus::Ok ? LogLogisticStatus::Ok :
-      LogLogisticStatus::IterationFailure};
-}
-
-// `scale` is actuar's 1/rate; `rate` is computed internally (held exactly,
-// never round-tripped, or derived once from a freshly estimated rate) for
-// the bisection equations and the log-likelihood below, which are
-// unchanged from the rate parameterisation.
 inline LogLogisticResult loglogistic_mle(span x,double tol,int maxit,double shape,double scale) {
-  maxit = static_cast<int>(solver_budget(maxit));
-  if(std::isnan(shape) && std::isnan(scale))return loglogistic_mle(x,tol,maxit);
-  const double nan=std::numeric_limits<double>::quiet_NaN();
-  if(x.size()==0 || !(tol>0 && std::isfinite(tol)) || maxit<=0 || (!std::isnan(shape) && !(shape>0 && std::isfinite(shape))) ||
-     (!std::isnan(scale) && !(scale>0 && std::isfinite(scale))))return {nan,nan,nan,0,LogLogisticStatus::InvalidInput};
-  std::vector<double> y;
-  for(double v:x){if(!(v>0 && std::isfinite(v)))return {nan,nan,nan,0,LogLogisticStatus::InvalidInput};y.push_back(std::log(v));}
-  const double n=static_cast<double>(x.size());int iterations=0;
-  double rate = std::isnan(scale) ? scale : 1.0/scale;
-  if(std::isnan(rate)) {
-    double lo=y[0],hi=y[0];for(double v:y){lo=std::min(lo,v);hi=std::max(hi,v);}
-    for(int j=0;j<maxit && hi-lo>1e-12;++j){double mid=(lo+hi)/2,s=0;for(double v:y)s+=std::tanh(shape*(v-mid)/2);if(s>0)lo=mid;else hi=mid;++iterations;}
-    if(hi-lo>1e-12)return {shape,nan,nan,iterations,LogLogisticStatus::IterationFailure};
-    rate=std::exp(-(lo+hi)/2);
-    scale=1.0/rate;
-  }
-  const double loc=-std::log(rate);
-  if(std::isnan(shape)) {
-    bool equal=true;for(double v:x)equal=equal && v==1/rate;
-    if(equal)return {nan,scale,nan,0,LogLogisticStatus::Unbounded};
-    double lo=-745,hi=710;
-    for(int j=0;j<maxit && hi-lo>1e-12;++j){double mid=(lo+hi)/2,k=std::exp(mid);CPPUNIV_EXTENDED_REAL s=n/k;for(double v:y){double d=v-loc;s-=d*std::tanh(k*d/2);}if(s>0)lo=mid;else hi=mid;++iterations;}
-    if(hi-lo>1e-12)return {nan,scale,nan,iterations,LogLogisticStatus::IterationFailure};
-    shape=std::exp((lo+hi)/2);
-  }
-  double ll=0;for(double v:y){const double z=shape*(v-loc);ll+=std::log(shape)-v-std::abs(z)-2*std::log1p(std::exp(-std::abs(z)));}
-  return {shape,scale,ll,iterations};
+  const auto r=transformed_detail::location_fit(x,shape,scale,1,false,1,tol,maxit);
+  return {r.shape,r.scale,r.ll,0,r.status==0?LogLogisticStatus::Ok:
+    r.status==1?LogLogisticStatus::InvalidInput:r.status==2?LogLogisticStatus::Unbounded:LogLogisticStatus::IterationFailure,r.certified};
 }
-
-}  // namespace cppunivariate
+inline LogLogisticResult loglogistic_mle(span x,double tol,int maxit) {return loglogistic_mle(x,tol,maxit,NAN,NAN);}
+} // namespace cppunivariate

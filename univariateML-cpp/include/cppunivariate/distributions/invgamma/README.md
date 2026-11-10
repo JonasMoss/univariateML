@@ -31,7 +31,7 @@ r:
   control:
     alpha: Optional held alpha; NULL estimates it.
     beta: Optional held beta; NULL estimates it.
-    abstol: Absolute step tolerance in alpha.
+    abstol: Positive relative accuracy tolerance for the shape bracket.
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
 log_density: alpha*log(beta) - loggamma(alpha) - (alpha + 1)*log(x) - beta/x
 references:
@@ -120,11 +120,11 @@ The [positive-family analysis](../../../../../dev/research/evaluations/2026-10-2
 
 The coefficient $\alpha$ controls the shape and the polynomial right tail. The coefficient $\beta$ is a scale: multiplying $\beta$ by a positive constant multiplies the observations by the same constant. It is also the rate of the gamma variable $1/X$.
 
-Fitting takes reciprocals and fits a gamma distribution, retaining the Jacobian in the reported likelihood. The free rate profiles out analytically, leaving a monotone digamma equation for the shape. Holding either coefficient permits constant data. With both free, constant data have unbounded likelihood as both coefficients grow at a fixed ratio. Holding both leaves only likelihood evaluation.
+Fitting uses the gamma sufficient statistics of $1/X$, retaining the Jacobian in the reported likelihood. Relative reciprocal differences are formed as $(x_0-x_i)/x_i$ before summation, preserving the dispersion of nearly equal observations. The likelihood uses the Stirling remainder and is evaluated at the returned shape and scale. The free rate profiles out analytically, leaving a monotone digamma equation for the shape. If rounding the shape/rate pair prevents transfer of its latent likelihood certificate, the finite coefficients and their evaluated likelihood are retained with an explicit uncertified indication. Holding either coefficient permits constant data. With both free, constant data have unbounded likelihood as both coefficients grow at a fixed ratio. Holding both leaves only likelihood evaluation.
 
 ## R notes
 
-`alpha = NULL` and `beta = NULL` estimate the corresponding coefficients. Supplied coefficients are held fixed. Empty or invalid data and unbounded likelihoods stop with an error. A reciprocal transformation outside floating-point range or a failed gamma solve also stops. `abstol` and `iterlim` control the gamma shape solve.
+`alpha = NULL` and `beta = NULL` estimate the corresponding coefficients. Supplied coefficients are held fixed. Empty or invalid data and unbounded likelihoods stop with an error. Unrepresentable coefficients or likelihoods and failed shape solves also stop. `abstol` and `iterlim` control the gamma shape solve.
 
 ## Decision history
 

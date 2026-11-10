@@ -468,3 +468,12 @@ TEST_CASE("GB2 mixed-power coefficient certificates meet independent golden prec
  CHECK(r.shape2==doctest::Approx(4.929391514647968975).epsilon(5e-10));
  CHECK(r.shape3==doctest::Approx(.3679117637748129625).epsilon(5e-10));
 }
+
+TEST_CASE("gb2: unit-shape delegation preserves the inverse-Burr uncertified flag") {
+  const double e=std::numeric_limits<double>::epsilon();
+  const std::vector<double> data{1,1+e,1+2*e,1+3*e,1+4*e};
+  const auto fit=cppunivariate::gb2_mle(mltest::as_span(data),1e-10,100,1,NAN,.855,NAN);
+  REQUIRE(fit.status==cppunivariate::Gb2Status::Ok);
+  CHECK_FALSE(fit.certified);
+  CHECK(std::isfinite(fit.logLik));
+}

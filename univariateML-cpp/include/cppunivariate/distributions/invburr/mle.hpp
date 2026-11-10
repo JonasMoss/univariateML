@@ -2,6 +2,7 @@
 #pragma once
 #include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
+#include "../../core/transformed_location.hpp"
 #include "../burr/mle.hpp"
 #include "../invweibull/mle.hpp"
 #include "../power/mle.hpp"
@@ -129,6 +130,7 @@ struct InvBurrResult {
   int iterations;
   InvBurrStatus status;
   StopDetail stop_detail{};
+  bool certified=true;
 };
 // Reciprocal transport applies to diagnostics as well as successful fits.
 inline StopDetail invburr_stop_detail(StopDetail detail,double jacobian,double endpoint=NAN) {
@@ -220,6 +222,12 @@ namespace cppunivariate {
 
 inline InvBurrResult invburr_mle_holds(span x,double a,double b,double s,double tol=1e-9,int maxit=1000){
   maxit = static_cast<int>(solver_budget(maxit));
+ if(std::isfinite(a) && a>0) {
+   const auto r=transformed_detail::location_fit(x,b,s,a,false,-1,tol,maxit);
+   InvBurrResult out{a,r.shape,r.scale,r.ll,0,r.status==0?InvBurrStatus::Ok:
+     r.status==1?InvBurrStatus::InvalidInit:r.status==2?InvBurrStatus::Unbounded:InvBurrStatus::NumericalFailure};
+   out.certified=r.certified;return out;
+ }
  if(std::isnan(a)&&std::isnan(b)&&std::isnan(s))
    return invburr_mle(x,tol,maxit);
  std::vector<double> y;double jac=0;
@@ -253,6 +261,35 @@ inline InvBurrResult invburr_mle_holds(span x,double a,double b,double s,double 
  if(r.status==BurrStatus::AllGeOne)st=InvBurrStatus::AllLeOne;
  InvBurrResult out{r.shape1,r.shape2,std::isnan(s)?1/r.scale:s,r.logLik+jac,r.iterations,st};
  out.stop_detail=invburr_stop_detail(r.stop_detail,jac,std::isnan(s)?NAN:s);
+ // The reciprocal certificate establishes the unique held-scale maximum;
+ // refine its scalar score using raw log ratios, without preserving the
+ // historical proposal's looser coefficient tolerance. Each scale-point
+ // evaluation is metered as a certificate evaluation, as in its parent.
+ if(st==InvBurrStatus::Ok && std::isnan(a) && std::isnan(b) && !std::isnan(s)) {
+   std::vector<double> logs;double unit=0;
+   for(double v:x){const double l=-transformed_detail::log_ratio(v,s);logs.push_back(l);unit=std::max(unit,std::abs(l));}
+   if(unit>0) {
+     for(double& l:logs)l/=unit;
+     const double z=transformed_detail::root([&](double t){const double power=std::exp(t);
+       return power*burr_cert_detail::scale_point(logs,power).score;
+     },tol,static_cast<int>(certificate_budget(maxit)));
+     const double power=std::exp(z);const auto point=burr_cert_detail::scale_point(logs,power);
+     const double k=x.size()/point.g,c=power/unit;
+     if(std::isfinite(k) && std::isfinite(c)) {
+       out.shape1=k;out.shape2=c;
+     } else out.certified=false;
+   }
+   // A failed precision refinement does not invalidate a successful search.
+   // Retain its coefficients explicitly uncertified and evaluate their raw
+   // likelihood, rather than inheriting a rounded reciprocal likelihood.
+   transformed_detail::Sum ll;
+   for(double v:x){const double u=-out.shape2*transformed_detail::log_ratio(v,s);
+     ll.push(std::log(out.shape1)+std::log(out.shape2)-std::log(v)-transformed_detail::softplus(-u)-out.shape1*transformed_detail::softplus(u));}
+   out.logLik=ll.get();
+   if(!std::isfinite(out.logLik))return {NAN,NAN,s,NAN,r.iterations,InvBurrStatus::NumericalFailure};
+   out.stop_detail.loglik_lower=std::min(out.stop_detail.loglik_lower,out.logLik);
+   out.stop_detail.loglik_upper=std::max(out.stop_detail.loglik_upper,out.logLik);
+ }
  if(!std::isnan(s))for(auto& candidate:out.stop_detail.candidates)
    if(candidate.model==StopModel::None&&candidate.coef.size()==3)candidate.coef[2]=s;
  if(st==InvBurrStatus::InvWeibullBoundary && r.stop_detail.limit_coef.size()==2)

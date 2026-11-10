@@ -1,10 +1,11 @@
-// Inverse Weibull MLE via Gumbel transform on log(x). Parameters recovered
-// as shape = 1/sigma, scale = 1/exp(-mu + s) where s = -mean(log x).
+// Inverse-Weibull fitting brackets the Gumbel profile on centered raw
+// log ratios, with a checked restoration of the public scale.
 
 #pragma once
 #include "../../core/work_budget.hpp"
 
 #include "../../core/span.hpp"
+#include "../../core/transformed_location.hpp"
 #include "../gumbel/mle.hpp"
 #include "../weibull/mle.hpp"
 
@@ -23,61 +24,18 @@ struct InvWeibullResult {
   double logLik;
   int iterations;
   InvWeibullStatus status = InvWeibullStatus::Ok;
+  bool certified=true;
 };
 
-// shape0 is an optional positive starting shape; NaN keeps the automatic start.
-inline InvWeibullResult invweibull_mle(span x, double tol, int maxit,
-                                  double shape0 = std::numeric_limits<double>::quiet_NaN()) {
-  maxit = static_cast<int>(solver_budget(maxit));
-  constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
-  const std::size_t n = x.size();
-  if (n == 0) return {0.0, 0.0, kNaN, 0, InvWeibullStatus::InvalidInput};
-
-  for (double v : x) if (!(v > 0 && std::isfinite(v)))
-    return {NAN,NAN,NAN,0,InvWeibullStatus::InvalidInput};
-
-  std::vector<double> log_x(n);
-  double sum_log_x = 0.0;
-  for (std::size_t i = 0; i < n; ++i) {
-    log_x[i] = std::log(x[i]);
-    sum_log_x += log_x[i];
-  }
-  const double dn = static_cast<double>(n);
-  const double s = -sum_log_x / dn;
-  for (auto &v : log_x) v += s;
-
-  GumbelResult g = fit_gumbel_newton(span{log_x.data(), n}, tol, maxit,
-      std::isnan(shape0) ? shape0 : -std::log(shape0));
-  const double rate_log = -g.mu + s;
-  const double rate = std::exp(rate_log);
-  const double shape = 1.0 / g.sigma;
-  // Transform the fitted Gumbel likelihood, avoiding shape times
-  // a difference of rounded log scales near a point mass.
-  const double logLik = g.logLik + dn * s;
-  return {shape, 1.0 / rate, logLik, g.iterations,
-      g.status == GumbelStatus::Ok ? InvWeibullStatus::Ok :
-      g.status == GumbelStatus::Unbounded ? InvWeibullStatus::Unbounded :
-      g.status == GumbelStatus::InvalidInput ? InvWeibullStatus::InvalidInput :
-      InvWeibullStatus::IterationFailure};
-}
-
-// `scale` is actuar's inverse-Weibull scale (1/rate); the weibull delegate
-// on 1/x uses its own `scale` field directly equal to the old actuar rate,
-// so a held scale is converted once and a held weibull scale is converted
-// back once, never round-tripped.
+// A starting shape is retained in the API; the bracketed profile does not
+// need it. A nonpositive supplied start remains invalid input.
 inline InvWeibullResult invweibull_mle(span x,double tol,int maxit,double shape0,double shape,double scale) {
-  maxit = static_cast<int>(solver_budget(maxit));
-  if(std::isnan(shape) && std::isnan(scale))return invweibull_mle(x,tol,maxit,shape0);
-  std::vector<double> y;double jac=0;
-  for(double v:x){y.push_back(1/v);jac-=2*std::log(v);}
-  const bool scale_held = !std::isnan(scale);
-  const double rate = scale_held ? 1.0/scale : scale;
-  const auto r=weibull_mle(span{y.data(),y.size()},tol,maxit,shape0,shape,rate);
-  const double scale_out = scale_held ? scale : (std::isnan(r.scale) ? r.scale : 1.0/r.scale);
-  return {r.shape,scale_out,r.logLik+jac,r.iterations,
-    r.status==WeibullStatus::Ok ? InvWeibullStatus::Ok :
-    r.status==WeibullStatus::Unbounded ? InvWeibullStatus::Unbounded :
-    r.status==WeibullStatus::IterationFailure ? InvWeibullStatus::IterationFailure : InvWeibullStatus::InvalidInput};
+  if(!std::isnan(shape0) && !(shape0>0 && std::isfinite(shape0)))return {NAN,NAN,NAN,0,InvWeibullStatus::InvalidInput};
+  const auto r=transformed_detail::location_fit(x,shape,scale,1,true,1,tol,maxit);
+  return {r.shape,r.scale,r.ll,0,r.status==0?InvWeibullStatus::Ok:
+    r.status==1?InvWeibullStatus::InvalidInput:r.status==2?InvWeibullStatus::Unbounded:InvWeibullStatus::IterationFailure,r.certified};
 }
-
-}  // namespace cppunivariate
+inline InvWeibullResult invweibull_mle(span x,double tol,int maxit,double shape0=NAN) {
+  return invweibull_mle(x,tol,maxit,shape0,NAN,NAN);
+}
+} // namespace cppunivariate

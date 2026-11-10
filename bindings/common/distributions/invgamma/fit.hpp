@@ -38,7 +38,7 @@ inline FitResult fit_invgamma(cppunivariate::span x, Held alpha_arg = {}, Held b
 
   auto res = cppunivariate::invgamma_mle(x, abstol, iterlim, alpha_held, beta_held);
   if (res.status == cppunivariate::GammaStatus::InvalidInput) return fail("Inverse gamma requires nonempty positive finite data and valid held parameters.");
-  if (res.status == cppunivariate::GammaStatus::TransformFailure) return fail("invgamma MLE failed: transformed observations exceed double precision.");
+  if (res.status == cppunivariate::GammaStatus::TransformFailure) return fail("invgamma MLE failed: transformed sufficient statistics or fitted coefficients cannot be resolved in double precision.");
   if (res.status == cppunivariate::GammaStatus::IterationFailure)
     return fail("Gamma delegate optimizer IterationFailure; increase iterlim.");
   if (res.status == cppunivariate::GammaStatus::Degenerate) {
@@ -48,7 +48,7 @@ inline FitResult fit_invgamma(cppunivariate::span x, Held alpha_arg = {}, Held b
   if (!std::isfinite(res.shape) || !std::isfinite(res.scale) || !std::isfinite(res.logLik)) {
     return fail("Inverse gamma MLE failed");
   }
-  return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"alpha",res.shape},{"beta",res.scale}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }();
+  return [&]() { FitResult out; if(!res.certified)out.extra.push_back({"certified",0}); out.warnings = warnings; out.estimates = {{"alpha",res.shape},{"beta",res.scale}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }();
 
 }
 }

@@ -108,3 +108,63 @@ TEST_CASE("logitnorm scaled residuals: extreme held transformed location") {
     CHECK(r.logLik==doctest::Approx(-2*(std::log(unit)+.5*std::log(2*cppunivariate::pi)+.5)+jac).epsilon(1e-14));
   }
 }
+
+// Independent 180/360-digit raw-model references: TASK-101.7.5 evidence.
+TEST_CASE("logitnorm: raw transform audit case 4748") {
+  const std::vector<double> data{0.2499999999995, 0.24999999999975, 0.25, 0.25000000000025, 0.25000000000075};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::logitnorm_mle(x);
+  REQUIRE(fit.status==cppunivariate::LogitnormStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.mu==doctest::Approx(-1.0986122886678429).epsilon(1e-10).scale(0));
+  CHECK(fit.sigma==doctest::Approx(2.293964607844937e-12).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(135.2788871292404).epsilon(1e-10).scale(0));
+}
+TEST_CASE("logitnorm: raw transform audit case 4745") {
+  const std::vector<double> data{0.8401216942096138, 0.8401216942104539, 0.840121694211294, 0.8401216942121341, 0.8401216942138143};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::logitnorm_mle(x);
+  REQUIRE(fit.status==cppunivariate::LogitnormStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.mu==doctest::Approx(1.6591338183876283).epsilon(1e-10).scale(0));
+  CHECK(fit.sigma==doctest::Approx(1.0760887283831534e-11).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(129.21857717804238).epsilon(1e-10).scale(0));
+}
+TEST_CASE("logitnorm: raw transform audit case 4747") {
+  const std::vector<double> data{0.249999995, 0.2499999975, 0.25, 0.2500000025, 0.2500000075};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::logitnorm_mle(x);
+  REQUIRE(fit.status==cppunivariate::LogitnormStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.mu==doctest::Approx(-1.0986122860014431).epsilon(1e-10).scale(0));
+  CHECK(fit.sigma==doctest::Approx(2.2939533978240636e-08).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(89.22720969647992).epsilon(1e-10).scale(0));
+}
+TEST_CASE("logitnorm: raw transform audit case 4744") {
+  const std::vector<double> data{0.8401216774088601, 0.8401216858100771, 0.840121694211294, 0.840121702612511, 0.8401217194149448};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::logitnorm_mle(x);
+  REQUIRE(fit.status==cppunivariate::LogitnormStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.mu==doctest::Approx(1.6591338308958958).epsilon(1e-10).scale(0));
+  CHECK(fit.sigma==doctest::Approx(1.0761091599928096e-07).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(83.16678042701042).epsilon(1e-10).scale(0));
+}
+
+// Independent 180/360-digit raw-model references: TASK-101.7.5 evidence.
+TEST_CASE("logitnorm: raw transform audit case 9806") {
+  const std::vector<double> data{0.49999956708390103, 0.49999971241265495, 0.49999979694554963, 0.49999986286942943, 0.4999999203401591, 0.49999997384163614, 0.5000000261583639, 0.500000079659841, 0.5000001371305707, 0.5000002030544504, 0.500000287587345, 0.500000432916099};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::logitnorm_mle(x);
+  REQUIRE(fit.status==cppunivariate::LogitnormStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.mu==doctest::Approx(7.401486830834707e-17).epsilon(1e-10).scale(0));
+  CHECK(fit.sigma==doctest::Approx(9.482456548773743e-07).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(166.03209679869155).epsilon(1e-10).scale(0));
+}
+
+TEST_CASE("logitnorm: exactly zero held logit residual is analytic nonexistence") {
+  const std::vector<double> data{.5,.5,.5};
+  const auto fit=cppunivariate::logitnorm_mle(mltest::as_span(data),0,NAN);
+  CHECK(fit.status==cppunivariate::LogitnormStatus::Unbounded);
+}

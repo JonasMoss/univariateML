@@ -37,7 +37,7 @@ inline FitResult fit_logitnorm(cppunivariate::span x, Held mu_arg = {}, Held sig
   if (res.status == cppunivariate::LogitnormStatus::InvalidInput) return fail("Logit-normal requires nonempty finite data strictly between zero and one and valid held parameters.");
   if (res.status != cppunivariate::LogitnormStatus::Ok || !std::isfinite(res.logLik))
     return fail("Logit-normal MLE failed: likelihood cannot be resolved in double precision.");
-  return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"mu",res.mu},{"sigma",res.sigma}}; out.fixed = fixed; out.has_fixed = true; out.logLik = res.logLik; return out; }();
+  return [&]() { FitResult out; if(!res.certified)out.extra.push_back({"certified",0}); out.warnings = warnings; out.estimates = {{"mu",res.mu},{"sigma",res.sigma}}; out.fixed = fixed; out.has_fixed = true; out.logLik = res.logLik; return out; }();
 
 }
 }

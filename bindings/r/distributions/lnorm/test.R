@@ -113,3 +113,55 @@ test_that("P2 distant held lognormal mean retains a finite scale", {
   expect_equal(f[["sdlog"]],1e300)
   expect_true(is.finite(logLik(f)))
 })
+
+# Independent 180/360-digit raw-model references: TASK-101.7.5 evidence.
+test_that("raw transform audit case 4601", {
+  x <- c(1.445187510724387, 1.445187510725832, 1.4451875107272774, 1.4451875107287226, 1.445187510731613)
+  fit <- mllnorm(x)
+  expect_lte(abs(unname(fit["meanlog"]) / (0.3682390783550075) - 1), 1e-10)
+  expect_lte(abs(unname(fit["sdlog"]) / (1.7204957773060616e-12) - 1), 1e-10)
+  expect_lte(abs(as.numeric(logLik(fit)) - (126.50615506228813)) / max(1, abs(126.50615506228813)), 1e-10)
+})
+test_that("raw transform audit case 4604", {
+  x <- c(1.445187510724387, 1.445187510725832, 1.4451875107272774, 1.4451875107287226, 1.445187510731613)
+  fit <- mllnorm(x)
+  expect_lte(abs(unname(fit["meanlog"]) / (0.3682390783550075) - 1), 1e-10)
+  expect_lte(abs(unname(fit["sdlog"]) / (1.7204957773060616e-12) - 1), 1e-10)
+  expect_lte(abs(as.numeric(logLik(fit)) - (126.50615506228813)) / max(1, abs(126.50615506228813)), 1e-10)
+})
+test_that("raw transform audit case 4611", {
+  x <- c(100000001.46643509, 100000000.44635502, 100000001.90765181, 100000002.98407541, 100000001.44518751, 100000000.48315705, 100000001.20661016, 100000000.26392101, 100000004.95617464, 100000000.76818824, 100000001.8055238, 100000000.58251828)
+  fit <- mllnorm(x)
+  expect_lte(abs(unname(fit["meanlog"]) / (18.42068075921553) - 1), 1e-10)
+  expect_lte(abs(unname(fit["sdlog"]) / (1.2760092241976638e-08) - 1), 1e-10)
+  expect_lte(abs(as.numeric(logLik(fit)) - (-19.952111548312093)) / max(1, abs(-19.952111548312093)), 1e-10)
+})
+test_that("raw transform audit case 4600", {
+  x <- c(1.445187481823527, 1.4451874962754023, 1.4451875107272774, 1.4451875251791524, 1.4451875540829027)
+  fit <- mllnorm(x)
+  expect_lte(abs(unname(fit["meanlog"]) / (0.36823908035480735) - 1), 1e-10)
+  expect_lte(abs(unname(fit["sdlog"]) / (1.7204650438422402e-08) - 1), 1e-10)
+  expect_lte(abs(as.numeric(logLik(fit)) - (80.45454250892595)) / max(1, abs(80.45454250892595)), 1e-10)
+})
+test_that("raw transform audit case 4603", {
+  x <- c(1.445187481823527, 1.4451874962754023, 1.4451875107272774, 1.4451875251791524, 1.4451875540829027)
+  fit <- mllnorm(x)
+  expect_lte(abs(unname(fit["meanlog"]) / (0.36823908035480735) - 1), 1e-10)
+  expect_lte(abs(unname(fit["sdlog"]) / (1.7204650438422402e-08) - 1), 1e-10)
+  expect_lte(abs(as.numeric(logLik(fit)) - (80.45454250892595)) / max(1, abs(80.45454250892595)), 1e-10)
+})
+
+test_that("public log-mean restoration retains an uncertified finite fit", {
+  for (unit in c(1e-150, 1e150)) {
+    x <- unit * (1 + c(-2, -1, 0, 1, 3) * 1e-12)
+    fit <- mllnorm(x)
+    expect_false(attr(fit, "certified"))
+    expect_true(is.finite(as.numeric(logLik(fit))))
+  }
+})
+
+test_that("held rounded log mean retains the exact anchor residual", {
+  fit <- mllnorm(rep(2, 3), meanlog = log(2))
+  expect_lte(abs(unname(fit["sdlog"]) / 2.3190468138462995584e-17 - 1), 1e-13)
+  expect_true(is.finite(as.numeric(logLik(fit))))
+})

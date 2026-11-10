@@ -373,3 +373,17 @@ TEST_CASE("frechet: general all-free cover checks public coefficients and proper
    CHECK(c.loglik_lower==doctest::Approx(cppunivariate::frechet_loglik(mltest::as_span(g.data),c.coef[0],c.coef[1],c.coef[2])).epsilon(1e-10));
  }
 }
+
+TEST_CASE("frechet: held-location delegate failures preserve numerical status") {
+  const std::vector<double> data{1,2,4};
+  const auto fit=cppunivariate::frechet_mle(mltest::as_span(data),1e-10,1,0);
+  CHECK(fit.status==cppunivariate::FrechetStatus::IterationFailure);
+}
+
+TEST_CASE("frechet: held-location delegate preserves the uncertified restoration flag") {
+  const double eps=std::numeric_limits<double>::epsilon();
+  const std::vector<double> data{1,1+eps,1+2*eps,1+3*eps,1+4*eps};
+  const auto fit=cppunivariate::frechet_mle(mltest::as_span(data),1.220703e-4,100,0);
+  REQUIRE(fit.status==cppunivariate::FrechetStatus::Ok);
+  CHECK_FALSE(fit.certified);
+}

@@ -380,3 +380,123 @@ TEST_CASE("Inverse Burr rejects reciprocal rounding onto the held scale") {
  }
  CHECK(found);
 }
+
+// Independent 180/360-digit raw-model references: TASK-101.7.5 evidence.
+TEST_CASE("invburr: raw transform audit case 10483") {
+  const std::vector<double> data{0.999999999998, 0.999999999999, 1.0, 1.000000000001, 1.000000000003};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::invburr_mle_holds(x, 0.855256299891619, NAN, NAN, 1e-10, 200);
+  REQUIRE(fit.status==cppunivariate::InvBurrStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.shape1==doctest::Approx(0.855256299891619).epsilon(1e-10).scale(0));
+  CHECK(fit.shape2==doctest::Approx(1019651840251.4617).epsilon(1e-10).scale(0));
+  CHECK(fit.scale==doctest::Approx(1.0000000000003357).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(128.11879065235854).epsilon(1e-10).scale(0));
+}
+TEST_CASE("invburr: raw transform audit case 3588") {
+  const std::vector<double> data{1.121092244780946, 1.121092244782067, 1.1210922447831881, 1.1210922447843092, 1.1210922447865515};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::invburr_mle_holds(x, 0.855256299891619, NAN, NAN, 1e-10, 200);
+  REQUIRE(fit.status==cppunivariate::InvBurrStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.shape1==doctest::Approx(0.855256299891619).epsilon(1e-10).scale(0));
+  CHECK(fit.shape2==doctest::Approx(1019650101014.3536).epsilon(1e-10).scale(0));
+  CHECK(fit.scale==doctest::Approx(1.1210922447835645).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(127.54725664194598).epsilon(1e-10).scale(0));
+}
+TEST_CASE("invburr: raw transform audit case 3591") {
+  const std::vector<double> data{1.121092244780946, 1.121092244782067, 1.1210922447831881, 1.1210922447843092, 1.1210922447865515};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::invburr_mle_holds(x, 0.855256299891619, NAN, NAN, 1e-10, 200);
+  REQUIRE(fit.status==cppunivariate::InvBurrStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.shape1==doctest::Approx(0.855256299891619).epsilon(1e-10).scale(0));
+  CHECK(fit.shape2==doctest::Approx(1019650101014.3536).epsilon(1e-10).scale(0));
+  CHECK(fit.scale==doctest::Approx(1.1210922447835645).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(127.54725664194598).epsilon(1e-10).scale(0));
+}
+TEST_CASE("invburr: raw transform audit case 9432") {
+  const std::vector<double> data{4.846798306840522, 2.735667524057006, 2.067740730246208, 1.7014389169215507, 1.4569306990828055, 1.2751660686582076, 1.1299545222466922, 1.0072505256326596, 0.8981113115208634, 0.7953098508697711, 0.6898664186040794, 0.5564930042509462};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::invburr_mle_holds(x, NAN, NAN, 1.1483262751193506, 1e-10, 200);
+  REQUIRE(fit.status==cppunivariate::InvBurrStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.shape1==doctest::Approx(1.2800549077110803).epsilon(1e-10).scale(0));
+  CHECK(fit.shape2==doctest::Approx(2.804335379571106).epsilon(1e-10).scale(0));
+  CHECK(fit.scale==doctest::Approx(1.1483262751193506).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(-13.928650640271442).epsilon(1e-10).scale(0));
+}
+TEST_CASE("invburr: raw transform audit case 9892") {
+  const std::vector<double> data{4.847313995660762, 2.7365809305442856, 2.0689488347295812, 1.7029066370018815, 1.4586441119184907, 1.2771228967709176, 1.1321617468502887, 1.0097251843067736, 0.9008846541282619, 0.7984385932211183, 0.6934679855358582, 0.5609433843485362};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::invburr_mle_holds(x, NAN, NAN, 1.1483262751193506, 1e-10, 200);
+  REQUIRE(fit.status==cppunivariate::InvBurrStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.shape1==doctest::Approx(1.2865485116424884).epsilon(1e-10).scale(0));
+  CHECK(fit.shape2==doctest::Approx(2.812057492603485).epsilon(1e-10).scale(0));
+  CHECK(fit.scale==doctest::Approx(1.1483262751193506).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(-13.911508890528076).epsilon(1e-10).scale(0));
+}
+TEST_CASE("invburr: raw transform audit case 10482") {
+  const std::vector<double> data{0.99999998, 0.99999999, 1.0, 1.00000001, 1.00000003};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::invburr_mle_holds(x, 0.855256299891619, NAN, NAN, 1e-10, 200);
+  REQUIRE(fit.status==cppunivariate::InvBurrStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.shape1==doctest::Approx(0.855256299891619).epsilon(1e-10).scale(0));
+  CHECK(fit.shape2==doctest::Approx(101966007.86014903).epsilon(1e-10).scale(0));
+  CHECK(fit.scale==doctest::Approx(1.0000000033564398).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(82.06712084330835).epsilon(1e-10).scale(0));
+}
+TEST_CASE("invburr: raw transform audit case 3587") {
+  const std::vector<double> data{1.1210922223613433, 1.1210922335722657, 1.1210922447831881, 1.1210922559941106, 1.1210922784159554};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::invburr_mle_holds(x, 0.855256299891619, NAN, NAN, 1e-10, 200);
+  REQUIRE(fit.status==cppunivariate::InvBurrStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.shape1==doctest::Approx(0.855256299891619).epsilon(1e-10).scale(0));
+  CHECK(fit.shape2==doctest::Approx(101966008.22632757).epsilon(1e-10).scale(0));
+  CHECK(fit.scale==doctest::Approx(1.1210922485460666).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(81.49560371872833).epsilon(1e-10).scale(0));
+}
+TEST_CASE("invburr: raw transform audit case 3590") {
+  const std::vector<double> data{1.1210922223613433, 1.1210922335722657, 1.1210922447831881, 1.1210922559941106, 1.1210922784159554};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::invburr_mle_holds(x, 0.855256299891619, NAN, NAN, 1e-10, 200);
+  REQUIRE(fit.status==cppunivariate::InvBurrStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.shape1==doctest::Approx(0.855256299891619).epsilon(1e-10).scale(0));
+  CHECK(fit.shape2==doctest::Approx(101966008.22632757).epsilon(1e-10).scale(0));
+  CHECK(fit.scale==doctest::Approx(1.1210922485460666).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(81.49560371872833).epsilon(1e-10).scale(0));
+}
+TEST_CASE("invburr: raw transform audit case 3641") {
+  const std::vector<double> data{1.6311139990647936, 3.722402769857163, 0.49959572843217215, 0.6088765095016044, 2.419754129573806};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::invburr_mle_holds(x, NAN, NAN, 1.1483262751193506, 1e-10, 200);
+  REQUIRE(fit.status==cppunivariate::InvBurrStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.shape1==doctest::Approx(1.2575779921548758).epsilon(1e-10).scale(0));
+  CHECK(fit.shape2==doctest::Approx(1.9084982695889698).epsilon(1e-10).scale(0));
+  CHECK(fit.scale==doctest::Approx(1.1483262751193506).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(-7.633207503410568).epsilon(1e-10).scale(0));
+}
+TEST_CASE("invburr: raw transform audit case 3640") {
+  const std::vector<double> data{1.6311139990647936, 3.722402769857163, 0.49959572843217215};
+  const auto x=mltest::as_span(data);
+  const auto fit=cppunivariate::invburr_mle_holds(x, NAN, NAN, 1.1483262751193506, 1e-10, 200);
+  REQUIRE(fit.status==cppunivariate::InvBurrStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.shape1==doctest::Approx(1.3462035118632834).epsilon(1e-10).scale(0));
+  CHECK(fit.shape2==doctest::Approx(1.7734008129755383).epsilon(1e-10).scale(0));
+  CHECK(fit.scale==doctest::Approx(1.1483262751193506).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(-4.959691457402898).epsilon(1e-10).scale(0));
+}
+
+TEST_CASE("invburr: held-scale raw refinement uses the certificate evaluation cap") {
+  const std::vector<double> data{1.6311139990647936,3.722402769857163,0.49959572843217215};
+  const auto fit=cppunivariate::invburr_mle_fixed_scale(mltest::as_span(data),1.1483262751193506,1e-10,1);
+  REQUIRE(fit.status==cppunivariate::InvBurrStatus::Ok);
+  CHECK(fit.shape1==doctest::Approx(1.3462035118632834).epsilon(1e-10).scale(0));
+  CHECK(fit.shape2==doctest::Approx(1.7734008129755383).epsilon(1e-10).scale(0));
+}

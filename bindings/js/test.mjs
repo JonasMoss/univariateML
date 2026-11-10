@@ -1814,3 +1814,30 @@ test('Bhatt per-fit certification preserves successful searches',async ()=>{
   assert.ok(Object.values(seed.estimates).every(Number.isFinite));
   assert.throws(()=>api.bhatt.fit(new Float64Array([-3,-1,0,1,2]),{}, {iterlim:1}));
 });
+test('transformed profiles retain finite ulp-wide fits with explicit uncertified flags',async()=>{
+  const api=await (await import('./index.mjs')).default();
+  const x=Float64Array.from([0,1,2,3,4],v=>1+v*Number.EPSILON);
+  const y=Float64Array.from([0,1,2,4,7],v=>1+v*Number.EPSILON);
+  const fits=[api.invweibull.fit(x),api.frechet.fit(x,{mu:0}),
+    api.llogis.fit(y,{}, {abstol:1e-10}),api.pareto3.fit(y,{min:0}),
+    api.invburr.fit(x,{shape1:.855},{gradtol:1e-10}),
+    api.gb2.fit(x,{shape1:1,shape3:.855},{gradtol:1e-10}),
+    api.fpareto.fit(x,{min:0,shape1:1,shape3:.855},{reltol:1e-10})];
+  for(const fit of fits){assert.equal(fit.status,'Ok');assert.equal(fit.certified,0);assert.ok(Number.isFinite(fit.logLik));}
+});
+
+test('raw transformed sufficient statistics match independent concentrated references',async()=>{
+  const api=await (await import('./index.mjs')).default();
+  const cases=[
+    ['invgamma',[1.471602327564204,1.4716023275656755,1.4716023275671473,1.471602327568619,1.4716023275715622],
+      {alpha:3.3782209017569925e23,beta:4.9713977420625717e23},126.41556407783901],
+    ['lnorm',[1.445187510724387,1.445187510725832,1.4451875107272774,1.4451875107287226,1.445187510731613],
+      {meanlog:.3682390783550075238,sdlog:1.7204957773060615e-12},126.50615506228813],
+    ['invweibull',[.5071697345584799,.5071697345589871,.5071697345594942,.5071697345600014,.5071697345610158],
+      {shape:707675622377.0812,scale:.5071697345591792610},131.91568101929355]];
+  for(const [family,x,coefficients,ll] of cases){
+    const fit=api[family].fit(new Float64Array(x));
+    for(const [name,value] of Object.entries(coefficients))assert.ok(Math.abs(fit.estimates[name]/value-1)<1e-10,`${family}.${name}`);
+    assert.ok(Math.abs(fit.logLik/ll-1)<1e-10,family);
+  }
+});

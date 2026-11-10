@@ -31,8 +31,8 @@ r:
   control:
     shape: Optional held shape; NULL estimates it.
     scale: Optional held scale; NULL estimates it.
-    shape0: Optional positive finite starting shape; `NULL` uses the automatic start.
-    reltol: Relative step tolerance in log(sigma) of the underlying Gumbel fit.
+    shape0: Optional positive finite compatibility hint; the bracketed solve does not require a start.
+    reltol: Positive relative accuracy tolerance for the centered Gumbel shape bracket.
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
 log_density: log(shape) + shape*log(scale) - (shape + 1)*log(x) - (x/scale)**(-shape)
 references:
@@ -125,18 +125,18 @@ The inverse Weibull distribution models heavy-tailed positive measurements, incl
 
 Smaller shape $k$ gives a heavier upper tail.
 
-The joint fit uses a Gumbel model for the logarithms of the observations. Profiling its location leaves a scalar equation with a unique root for nonconstant data. Constant data instead allow the shape to increase without bound with scale at their common value.
+The joint fit uses a Gumbel likelihood on centered log ratios $\log1p((x_i-x_0)/x_0)$, standardized before solving for power. Profiling its location leaves a scalar equation with a unique root for nonconstant data. Constant data instead allow the shape to increase without bound with scale at their common value.
 
-Holding shape leaves an explicit scale estimate. Holding scale leaves a strictly decreasing shape score, solved by bracketing. This conditional fit permits constant data unless their common value equals the held scale. Holding both coefficients evaluates the likelihood. A failed delegated solve remains a fitting failure.
+Holding shape leaves an explicit scale estimate, tending to the geometric mean as shape tends to zero. Holding scale leaves a strictly decreasing shape score, solved by bracketing. This conditional fit permits constant data unless their common value equals the held scale. Holding both coefficients evaluates the likelihood. The monotone score brackets determine convergence. Scale restoration uses expm1 near the raw anchor; likelihood evaluation uses that returned scale. If an ulp-wide sample prevents the Gumbel likelihood certificate from transferring to that scale, the finite fit is retained with an explicit uncertified flag.
 
 The [positive-family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-positive.md) gives the boundary arguments and their held-parameter conditions.
 
 ## R notes
 
-The optional `shape0` starting value is used and must be positive and finite.
+The optional `shape0` compatibility hint must be positive and finite. The bracketed profile solve does not depend on a starting shape.
 
 ## Decision history
 
-The `shape0` argument was documented but ignored in univariateML 1.x; it is functional in the current fitter.
+The former Newton starting control is retained as a validated compatibility argument.
 
 2026-10-31 (diagnostic contract): Empty or invalid input carries a non-success status. Degeneracy depends on which coefficients are free, and delegate failures survive transformations. See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md) and the TASK-132 cases in `test.cpp` for the validation scope.

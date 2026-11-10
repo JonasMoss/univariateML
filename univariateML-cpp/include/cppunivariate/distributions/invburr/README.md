@@ -252,3 +252,15 @@ practical floating-point margins and explicit tie/budget/numerical stops.
 Reciprocation maps the held-scale Pareto face to a power face and adds the reciprocal Jacobian to likelihood bounds. Direct fixed-scale and held-subset entrypoints share this path.
 
 Arithmetic that rounds a distinct observation onto a held scale stops numerically: reciprocation checks equality against the original scale, and threshold subtraction checks its error-free sum residual. This protects the exact endpoint classification and its tied-observation penalty.
+
+With first shape held, the fitter instead works directly on negative centered
+log ratios of the original observations. Strict concavity in power and power
+times log scale gives a unique root without rounding reciprocals. Scale
+restoration uses expm1, and its represented likelihood is checked against the
+latent optimum. With scale held and both shapes free, successful reciprocal
+certificates are refined against the original log-ratio score, removing the
+historical proposal's looser coefficient tolerance.
+
+The held-first-shape route retains finite estimates with an explicit uncertified
+flag when the binary64 scale grid prevents transfer of its latent likelihood
+certificate. The reported likelihood still evaluates the returned coefficients.
