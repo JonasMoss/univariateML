@@ -2,6 +2,7 @@
 #include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
 #include "../../core/span.hpp"
+#include "../../special/tails.hpp"
 #include <algorithm>
 #include <cmath>
 #include <cstdint>
@@ -39,6 +40,79 @@ inline double gev_loglik(span x, double mu, double sigma, double xi) {
     ll-=(1+xi)*L+std::exp(-L);
   }
   return ll;
+}
+// Compare the closed endpoint before division: a negative residual can
+// underflow to negative zero. TwoSum recovers the rounding error of mu+sigma.
+inline bool gev_public_contains(double x,double mu,double sigma,double xi) {
+  if(xi!= -1)return special::support_residual(x,mu,sigma,xi)>0;
+  const double endpoint=mu+sigma;
+  if(x<endpoint)return true;
+  if(x>endpoint)return false;
+  const double b=endpoint-mu;
+  const double error=(mu-(endpoint-b))+(sigma-b);
+  return error>=0;
+}
+inline double gev_public_loglik(span x, double mu, double sigma, double xi) {
+  if (!(sigma>0)) return -std::numeric_limits<double>::infinity();
+  double ll=-static_cast<double>(x.size())*std::log(sigma);
+  for (double v:x) {
+    const double z=special::scaled_difference(v,mu,sigma);
+    const double residual=special::support_residual(v,mu,sigma,xi);
+    if (xi == -1) {
+      if (!gev_public_contains(v,mu,sigma,xi)) return -std::numeric_limits<double>::infinity();
+      ll += z-1;
+      continue;
+    }
+    if (!(residual>0)) return -std::numeric_limits<double>::infinity();
+    const double L=xi==0 ? z : (std::abs(xi*z)<0.5 ? gev_log_ratio(z,xi) : std::log(residual)/xi);
+    ll-=(1+xi)*L+std::exp(-L);
+  }
+  return ll;
+}
+// Public support uses compensated residuals on the original observations.
+// Only free coefficients can move; each repair is followed by the same check.
+inline bool gev_restore_support(span x,GevResult& r,bool held_mu,bool held_sigma,
+                                double tol,int maxit) {
+  const double initial_mu=r.mu,initial_sigma=r.sigma;
+  const auto inside=[&](double v,double location,double scale) {
+    return gev_public_contains(v,location,scale,r.xi);
+  };
+  for(int it=0;it<solver_budget(maxit);++it) {
+    bool contained=true;
+    for(double v:x) {
+      const double t=special::support_residual(v,r.mu,r.sigma,r.xi);
+      if(inside(v,r.mu,r.sigma))continue;
+      contained=false;
+      if(!std::isfinite(t))return false;
+      bool repaired=false;
+      if(!held_sigma) {
+        double scale=r.sigma+std::max(0.,-t)*r.sigma;
+        if(std::isfinite(scale) && !inside(v,r.mu,scale))
+          scale=std::nextafter(scale,INFINITY);
+        if(std::isfinite(scale) && std::abs(scale-initial_sigma)<=tol*initial_sigma) {
+          r.sigma=scale;repaired=true;
+        }
+      }
+      // A location ulp can be harmless after translation while the same
+      // absolute change would spoil a much smaller, accurately fitted scale.
+      if(!repaired && !held_mu && r.xi!=0) {
+        const double direction=r.xi>0 ? -INFINITY : INFINITY;
+        double location=std::fma(t,r.sigma/r.xi,r.mu);
+        if(std::isfinite(location) && !inside(v,location,r.sigma))
+          location=std::nextafter(location,direction);
+        if(std::isfinite(location) && std::abs(location-initial_mu)<=
+            tol*std::max(std::abs(initial_mu),initial_sigma)) {
+          r.mu=location;repaired=true;
+        }
+      }
+      if(!repaired)return false;
+    }
+    if(!(std::isfinite(r.mu)&&std::isfinite(r.sigma)&&r.sigma>0) ||
+       std::abs(r.mu-initial_mu)>tol*std::max(std::abs(initial_mu),initial_sigma) ||
+       std::abs(r.sigma-initial_sigma)>tol*initial_sigma)return false;
+    if(contained)return true;
+  }
+  return false;
 }
 } // namespace cppunivariate
 #include "shape_certificate.hpp"
@@ -190,6 +264,15 @@ inline GevResult gev_held_mle(span x,double tol,int maxit,double xi,double mu,do
   for(double v:y) if(!std::isfinite(v)) return bad;
   std::sort(y.begin(),y.end());
   if(!std::isnan(xi) && xi < -1 && !(hm && (hs || y.back()<=mu))) {bad.status=GevStatus::InvalidShape;return bad;}
+  // A fully held member needs only a raw public-coordinate evaluation.
+  // Standardization near a support endpoint can destroy its small residual.
+  if(hm && hs && !std::isnan(xi)) {
+    const double ll=gev_public_loglik(x,mu,sigma,xi);
+    GevResult member{mu,sigma,xi,ll,0,GevStatus::Ok};
+    if(!gev_restore_support(x,member,true,true,tol,maxit))member.status=GevStatus::InvalidData;
+    else if(!std::isfinite(ll))member.status=GevStatus::NumericalFailure;
+    return member;
+  }
   // A hold containing the unique unconstrained member preserves its global
   // certificate. Require exact public-coordinate equality, never a near hold.
   if(std::isnan(xi) && y.size()>=3 && y.front()<y.back()) {
@@ -265,7 +348,7 @@ inline GevResult gev_held_mle(span x,double tol,int maxit,double xi,double mu,do
   for(auto c:fit.stop_detail.candidates) {
     c.coef[0]=hm ? mu : origin+scale*c.coef[0];c.coef[1]=hs ? sigma : scale*c.coef[1];
     c.loglik_lower-=x.size()*std::log(scale);c.loglik_upper-=x.size()*std::log(scale);
-    const double evaluated=gev_loglik(x,c.coef[0],c.coef[1],c.coef[2]);
+    const double evaluated=gev_public_loglik(x,c.coef[0],c.coef[1],c.coef[2]);
     if(!std::isfinite(c.coef[0]) || !std::isfinite(c.coef[1]) || !std::isfinite(evaluated)) {
       lost_witness=true;continue;
     }
@@ -285,11 +368,15 @@ inline GevResult gev_held_mle(span x,double tol,int maxit,double xi,double mu,do
   const double standardized_ll=fit.logLik;
   fit.mu=hm ? mu : origin+scale*fit.mu;
   fit.sigma=hs ? sigma : scale*fit.sigma;
-  fit.logLik=gev_loglik(x,fit.mu,fit.sigma,fit.xi);
-  if(hs && !hm && !std::isnan(xi) && xi>-1 && xi<0 && fit.status==GevStatus::Ok &&
-     (!std::isfinite(fit.logLik) || std::abs(fit.logLik-(standardized_ll-x.size()*std::log(scale)))>1e-7*x.size()))
+  if(fit.status==GevStatus::Ok && !gev_restore_support(x,fit,hm,hs,tol,maxit))
     fit.status=GevStatus::NumericalFailure;
-  if(fit.status==GevStatus::Ok && !std::isfinite(fit.logLik)) fit.status=GevStatus::InvalidData;
+  fit.logLik=gev_public_loglik(x,fit.mu,fit.sigma,fit.xi);
+  const double predicted=standardized_ll-x.size()*std::log(scale);
+  const double likelihood_margin=std::max(1e-7*x.size(),256*std::numeric_limits<double>::epsilon()*
+      (x.size()+std::abs(predicted)+std::abs(fit.logLik)));
+  if(fit.status==GevStatus::Ok &&
+     (!std::isfinite(fit.logLik) || std::abs(fit.logLik-predicted)>likelihood_margin))
+    fit.status=GevStatus::NumericalFailure;
   return fit;
 }
 struct GevProfile { GevResult fit; double score, curvature; };
@@ -453,19 +540,15 @@ inline GevResult gev_mle_impl(span x, double tol=1e-10, int maxit=100,
       c.coef[0]=origin+range*c.coef[0];c.coef[1]*=range;
       c.loglik_lower-=jac;c.loglik_upper-=jac;
     }
-    if(std::isnan(xi) && r.status==GevStatus::Ok) {
-      if(r.xi== -1) {
-        // One upward location ulp contains the rounded endpoint difference
-        // without corrupting a much smaller, accurately estimated scale.
-        const double maximum=*std::max_element(x.begin(),x.end());
-        const double gap=maximum-r.sigma;
-        if(std::isfinite(gap))r.mu=std::max(r.mu,std::nextafter(gap,INFINITY));
-      }
+    if(r.status==GevStatus::Ok) {
+      if(!gev_restore_support(x,r,false,false,tol,maxit))r.status=GevStatus::NumericalFailure;
       const double eps=32*std::numeric_limits<double>::epsilon();
       const double error=eps*std::abs(origin)+(eps*range)*std::abs(standardized_mu);
-      const double actual=gev_loglik(x,r.mu,r.sigma,r.xi);
+      const double actual=gev_public_loglik(x,r.mu,r.sigma,r.xi);
+      const double likelihood_margin=std::max(1e-7*y.size(),256*std::numeric_limits<double>::epsilon()*
+          (y.size()+std::abs(actual)+std::abs(r.logLik)));
       if(!std::isfinite(actual) || error>tol*.25*std::max(std::abs(r.mu),r.sigma) || eps>tol*.25 ||
-          std::abs(actual-r.logLik)>1e-7*y.size()) {
+          std::abs(actual-r.logLik)>likelihood_margin) {
         r.status=GevStatus::NumericalFailure;
         r.stop_detail.loglik_upper=INFINITY;
         if(std::isfinite(actual)) {
@@ -484,6 +567,28 @@ inline GevResult gev_mle_impl(span x, double tol=1e-10, int maxit=100,
 inline GevResult gev_mle(span x,double tol=1e-10,int maxit=100,double xi=std::numeric_limits<double>::quiet_NaN(),double mu=std::numeric_limits<double>::quiet_NaN(),double sigma=std::numeric_limits<double>::quiet_NaN()) {
   maxit = static_cast<int>(solver_budget(maxit));
   auto r=gev_mle_impl(x,tol,maxit,xi,mu,sigma);
+  if(r.status==GevStatus::Ok) {
+    if(!gev_restore_support(x,r,!std::isnan(mu),!std::isnan(sigma),tol,maxit))
+      r.status=GevStatus::NumericalFailure;
+    const double actual=gev_public_loglik(x,r.mu,r.sigma,r.xi);
+    if(!std::isfinite(actual))r.status=GevStatus::NumericalFailure;
+    r.logLik=actual;
+    // Witness bounds must describe the represented public coefficients too.
+    const double margin=256*std::numeric_limits<double>::epsilon()*(x.size()+std::abs(actual));
+    if(std::isfinite(r.stop_detail.loglik_lower))
+      r.stop_detail.loglik_lower=std::min(r.stop_detail.loglik_lower,actual-margin);
+    if(std::isfinite(r.stop_detail.loglik_upper))
+      r.stop_detail.loglik_upper=std::max(r.stop_detail.loglik_upper,actual+margin);
+    std::vector<FitCandidate> public_candidates;
+    for(auto candidate:r.stop_detail.candidates) {
+      const double value=gev_public_loglik(x,candidate.coef[0],candidate.coef[1],candidate.coef[2]);
+      if(!std::isfinite(value))continue;
+      const double m=256*std::numeric_limits<double>::epsilon()*(x.size()+std::abs(value));
+      candidate.loglik_lower=value-m;candidate.loglik_upper=value+m;
+      public_candidates.push_back(candidate);
+    }
+    r.stop_detail.candidates=std::move(public_candidates);
+  }
   if(r.status==GevStatus::Ok && (std::isnan(xi)) && r.xi==kGevXiLower) r.restricted|=16u;
   if(r.status==GevStatus::Ok && (std::isnan(xi)) && r.xi==kGevXiUpper) r.restricted|=32u;
   return r;

@@ -345,6 +345,16 @@ General public nuisance holds require their own constrained cover and remain
 outside this all-free certificate.
 
 
+Public-coordinate restoration checks compensated support residuals against
+every original observation. At the closed reverse-exponential endpoint an
+error-free sum comparison precedes division, so underflow to negative zero
+cannot admit an excluded observation.
+An inward rounding error can be repaired only through a free location or scale,
+within its coefficient tolerance, followed by a fresh support and raw-likelihood
+check. The restoration comparison allows the larger of $10^{-7}n$ and a
+256-double-epsilon margin on the likelihood operands. Held coefficients remain exact. This restoration check also applies to
+fixed-shape and held-nuisance fits; it adds no global certificate to their search.
+
 ## R notes
 
 Estimated coefficients on a `fit_domain` bound carry `restricted` and emit a warning of class `univariateML_restricted`; held coefficients are not flagged. Failed optimizers return a failure status unless the score norm in fitting coordinates is below `1e-3`; unresolved scalar searches stop.

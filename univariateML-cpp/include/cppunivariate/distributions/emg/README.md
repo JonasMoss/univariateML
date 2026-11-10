@@ -191,6 +191,13 @@ $1/\overline{(x-\min_i x_i)}$ when both are free.
 With a held endpoint exactly at the minimum the limiting density there is
 half the exponential density. Repeated minima count separately.
 
+For held $\sigma$ and $\lambda$, the location score is strictly decreasing.
+Its sign bracket is contracted in coordinates centred at the sample minimum,
+with absolute target $\mathrm{tol}\,\sigma$; translation cannot enlarge that
+target. Public rounding is included in the coefficient error and in the
+concavity tangent bound for the maximum log likelihood. Extreme data units
+therefore do not require subtracting two large locations inside the root solve.
+
 ## R notes
 
 `mlnorm` fits an unrestricted normal and does not retain held EMG

@@ -1,0 +1,1997 @@
+[
+  {
+    "rank": 8,
+    "index": 1374,
+    "family": "emg",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "likelihood / ascent",
+    "severity": 1.0,
+    "legacy_classification": "silent failure",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/emg/location_certificate.hpp",
+      "line": 67,
+      "snippet": "const CPPUNIV_EXTENDED_REAL target=tol*std::max(static_cast<CPPUNIV_EXTENDED_REAL>(sigma),minabs);",
+      "likely_fix": "The location-only certificate scales its coordinate target by the absolute location. With default tol=1e-8, a 1e8 translation permits order-one location uncertainty, and scale-1e150 data permit a huge absolute displacement. The enclosure can meet its declared tolerance while a feasible point has much higher likelihood. Use a translated/compensated local coordinate and propagate both the requested public coefficient width and a likelihood-gap bound; stop when representation cannot resolve the required decision. These witnesses challenge public accuracy/likelihood acceptance, not the conditional sign-enclosure theorem.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 13,
+    "index": 1375,
+    "family": "emg",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "likelihood / ascent",
+    "severity": 0.011473851496648854,
+    "legacy_classification": "silent failure",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/emg/location_certificate.hpp",
+      "line": 67,
+      "snippet": "const CPPUNIV_EXTENDED_REAL target=tol*std::max(static_cast<CPPUNIV_EXTENDED_REAL>(sigma),minabs);",
+      "likely_fix": "The location-only certificate scales its coordinate target by the absolute location. With default tol=1e-8, a 1e8 translation permits order-one location uncertainty, and scale-1e150 data permit a huge absolute displacement. The enclosure can meet its declared tolerance while a feasible point has much higher likelihood. Use a translated/compensated local coordinate and propagate both the requested public coefficient width and a likelihood-gap bound; stop when representation cannot resolve the required decision. These witnesses challenge public accuracy/likelihood acceptance, not the conditional sign-enclosure theorem.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 14,
+    "index": 11130,
+    "family": "triang",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "likelihood / ascent",
+    "severity": 0.0034429504059040887,
+    "legacy_classification": "silent failure",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/triang/mle.hpp",
+      "line": 119,
+      "snippet": "inline TriangResult triang_mle(span input, double tol=1e-12, int maxit=100,",
+      "likely_fix": "Endpoint restoration and candidate likelihood acceptance require a check against every original observation. Project outward when representable, recompute the closed-support likelihood and compare all surviving candidate bounds before Ok.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 17,
+    "index": 11122,
+    "family": "triang",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "likelihood / ascent",
+    "severity": 3.3343357543241646e-05,
+    "legacy_classification": "silent failure",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/triang/mle.hpp",
+      "line": 119,
+      "snippet": "inline TriangResult triang_mle(span input, double tol=1e-12, int maxit=100,",
+      "likely_fix": "Endpoint restoration and candidate likelihood acceptance require a check against every original observation. Project outward when representable, recompute the closed-support likelihood and compare all surviving candidate bounds before Ok.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 18,
+    "index": 11119,
+    "family": "triang",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "likelihood / ascent",
+    "severity": 3.024658348677711e-05,
+    "legacy_classification": "silent failure",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/triang/mle.hpp",
+      "line": 119,
+      "snippet": "inline TriangResult triang_mle(span input, double tol=1e-12, int maxit=100,",
+      "likely_fix": "Endpoint restoration and candidate likelihood acceptance require a check against every original observation. Project outward when representable, recompute the closed-support likelihood and compare all surviving candidate bounds before Ok.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 19,
+    "index": 8194,
+    "family": "triang",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "likelihood / ascent",
+    "severity": 1.9077517180402214e-05,
+    "legacy_classification": "silent failure",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/triang/mle.hpp",
+      "line": 119,
+      "snippet": "inline TriangResult triang_mle(span input, double tol=1e-12, int maxit=100,",
+      "likely_fix": "Endpoint restoration and candidate likelihood acceptance require a check against every original observation. Project outward when representable, recompute the closed-support likelihood and compare all surviving candidate bounds before Ok.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 23,
+    "index": 8289,
+    "family": "triang",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "likelihood / ascent",
+    "severity": 1.0972800323015431e-06,
+    "legacy_classification": "silent failure",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/triang/mle.hpp",
+      "line": 119,
+      "snippet": "inline TriangResult triang_mle(span input, double tol=1e-12, int maxit=100,",
+      "likely_fix": "Endpoint restoration and candidate likelihood acceptance require a check against every original observation. Project outward when representable, recompute the closed-support likelihood and compare all surviving candidate bounds before Ok.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 28,
+    "index": 8173,
+    "family": "triang",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "likelihood / ascent",
+    "severity": 6.279458974026314e-07,
+    "legacy_classification": "silent failure",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/triang/mle.hpp",
+      "line": 119,
+      "snippet": "inline TriangResult triang_mle(span input, double tol=1e-12, int maxit=100,",
+      "likely_fix": "Endpoint restoration and candidate likelihood acceptance require a check against every original observation. Project outward when representable, recompute the closed-support likelihood and compare all surviving candidate bounds before Ok.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 29,
+    "index": 8268,
+    "family": "triang",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "likelihood / ascent",
+    "severity": 6.243483622803524e-07,
+    "legacy_classification": "silent failure",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/triang/mle.hpp",
+      "line": 119,
+      "snippet": "inline TriangResult triang_mle(span input, double tol=1e-12, int maxit=100,",
+      "likely_fix": "Endpoint restoration and candidate likelihood acceptance require a check against every original observation. Project outward when representable, recompute the closed-support likelihood and compare all surviving candidate bounds before Ok.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 48,
+    "index": 11118,
+    "family": "triang",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "likelihood / ascent",
+    "severity": 1.0588344856787841e-07,
+    "legacy_classification": "silent failure",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/triang/mle.hpp",
+      "line": 119,
+      "snippet": "inline TriangResult triang_mle(span input, double tol=1e-12, int maxit=100,",
+      "likely_fix": "Endpoint restoration and candidate likelihood acceptance require a check against every original observation. Project outward when representable, recompute the closed-support likelihood and compare all surviving candidate bounds before Ok.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 49,
+    "index": 11117,
+    "family": "triang",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "likelihood / ascent",
+    "severity": 9.607425067636416e-08,
+    "legacy_classification": "silent failure",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/triang/mle.hpp",
+      "line": 119,
+      "snippet": "inline TriangResult triang_mle(span input, double tol=1e-12, int maxit=100,",
+      "likely_fix": "Endpoint restoration and candidate likelihood acceptance require a check against every original observation. Project outward when representable, recompute the closed-support likelihood and compare all surviving candidate bounds before Ok.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 59,
+    "index": 10966,
+    "family": "gev",
+    "route": "fixed evaluation",
+    "certificate_basis": "No free coordinate; only parameter payload and likelihood evaluation are checked.",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "likelihood / ascent",
+    "severity": 0.109705297300085,
+    "legacy_classification": "silent failure",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gev/mle.hpp",
+      "line": 27,
+      "snippet": "inline double gev_loglik(span x, double mu, double sigma, double xi) {",
+      "likely_fix": "Restoration and boundary likelihood arithmetic must preserve the original-data support, notably the reverse-exponential endpoint. Recheck exact represented feasibility, then recompute the raw likelihood; numerical conditional branches also need complete root/face coverage.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 62,
+    "index": 10965,
+    "family": "gev",
+    "route": "fixed evaluation",
+    "certificate_basis": "No free coordinate; only parameter payload and likelihood evaluation are checked.",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "likelihood / ascent",
+    "severity": 0.0007516563649261996,
+    "legacy_classification": "silent failure",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gev/mle.hpp",
+      "line": 27,
+      "snippet": "inline double gev_loglik(span x, double mu, double sigma, double xi) {",
+      "likely_fix": "Restoration and boundary likelihood arithmetic must preserve the original-data support, notably the reverse-exponential endpoint. Recheck exact represented feasibility, then recompute the raw likelihood; numerical conditional branches also need complete root/face coverage.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 67,
+    "index": 10957,
+    "family": "gev",
+    "route": "uncertified numerical",
+    "certificate_basis": "All-free joint cover; shape-only interval cover; held xi=-1 closed form; held sigma with -1<xi<=0 concave/analytic location. Other conditional searches are numerical outside special two-point certificates.",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "likelihood / ascent",
+    "severity": 5.742457799578566e-06,
+    "legacy_classification": "silent failure",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gev/mle.hpp",
+      "line": 27,
+      "snippet": "inline double gev_loglik(span x, double mu, double sigma, double xi) {",
+      "likely_fix": "Restoration and boundary likelihood arithmetic must preserve the original-data support, notably the reverse-exponential endpoint. Recheck exact represented feasibility, then recompute the raw likelihood; numerical conditional branches also need complete root/face coverage.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 72,
+    "index": 8195,
+    "family": "triang",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "wrong status / invalid Ok payload",
+    "severity": Infinity,
+    "legacy_classification": "silent failure",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/triang/mle.hpp",
+      "line": 119,
+      "snippet": "inline TriangResult triang_mle(span input, double tol=1e-12, int maxit=100,",
+      "likely_fix": "Endpoint restoration and candidate likelihood acceptance require a check against every original observation. Project outward when representable, recompute the closed-support likelihood and compare all surviving candidate bounds before Ok.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 73,
+    "index": 2682,
+    "family": "gev",
+    "route": "uncertified numerical",
+    "certificate_basis": "All-free joint cover; shape-only interval cover; held xi=-1 closed form; held sigma with -1<xi<=0 concave/analytic location. Other conditional searches are numerical outside special two-point certificates.",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "wrong status / invalid Ok payload",
+    "severity": Infinity,
+    "legacy_classification": "silent failure",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gev/mle.hpp",
+      "line": 27,
+      "snippet": "inline double gev_loglik(span x, double mu, double sigma, double xi) {",
+      "likely_fix": "Restoration and boundary likelihood arithmetic must preserve the original-data support, notably the reverse-exponential endpoint. Recheck exact represented feasibility, then recompute the raw likelihood; numerical conditional branches also need complete root/face coverage.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 74,
+    "index": 2695,
+    "family": "gev",
+    "route": "uncertified numerical",
+    "certificate_basis": "All-free joint cover; shape-only interval cover; held xi=-1 closed form; held sigma with -1<xi<=0 concave/analytic location. Other conditional searches are numerical outside special two-point certificates.",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "wrong status / invalid Ok payload",
+    "severity": Infinity,
+    "legacy_classification": "silent failure",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gev/mle.hpp",
+      "line": 27,
+      "snippet": "inline double gev_loglik(span x, double mu, double sigma, double xi) {",
+      "likely_fix": "Restoration and boundary likelihood arithmetic must preserve the original-data support, notably the reverse-exponential endpoint. Recheck exact represented feasibility, then recompute the raw likelihood; numerical conditional branches also need complete root/face coverage.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 75,
+    "index": 2707,
+    "family": "gev",
+    "route": "uncertified numerical",
+    "certificate_basis": "All-free joint cover; shape-only interval cover; held xi=-1 closed form; held sigma with -1<xi<=0 concave/analytic location. Other conditional searches are numerical outside special two-point certificates.",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "wrong status / invalid Ok payload",
+    "severity": Infinity,
+    "legacy_classification": "silent failure",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gev/mle.hpp",
+      "line": 27,
+      "snippet": "inline double gev_loglik(span x, double mu, double sigma, double xi) {",
+      "likely_fix": "Restoration and boundary likelihood arithmetic must preserve the original-data support, notably the reverse-exponential endpoint. Recheck exact represented feasibility, then recompute the raw likelihood; numerical conditional branches also need complete root/face coverage.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 76,
+    "index": 10949,
+    "family": "gev",
+    "route": "uncertified numerical",
+    "certificate_basis": "All-free joint cover; shape-only interval cover; held xi=-1 closed form; held sigma with -1<xi<=0 concave/analytic location. Other conditional searches are numerical outside special two-point certificates.",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "wrong status / invalid Ok payload",
+    "severity": Infinity,
+    "legacy_classification": "silent failure",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gev/mle.hpp",
+      "line": 27,
+      "snippet": "inline double gev_loglik(span x, double mu, double sigma, double xi) {",
+      "likely_fix": "Restoration and boundary likelihood arithmetic must preserve the original-data support, notably the reverse-exponential endpoint. Recheck exact represented feasibility, then recompute the raw likelihood; numerical conditional branches also need complete root/face coverage.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 257,
+    "index": 1349,
+    "family": "emg",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 7.336625598275981e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/emg/location_certificate.hpp",
+      "line": 67,
+      "snippet": "const CPPUNIV_EXTENDED_REAL target=tol*std::max(static_cast<CPPUNIV_EXTENDED_REAL>(sigma),minabs);",
+      "likely_fix": "The location-only certificate scales its coordinate target by the absolute location. With default tol=1e-8, a 1e8 translation permits order-one location uncertainty, and scale-1e150 data permit a huge absolute displacement. The enclosure can meet its declared tolerance while a feasible point has much higher likelihood. Use a translated/compensated local coordinate and propagate both the requested public coefficient width and a likelihood-gap bound; stop when representation cannot resolve the required decision. These witnesses challenge public accuracy/likelihood acceptance, not the conditional sign-enclosure theorem.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 260,
+    "index": 1318,
+    "family": "emg",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 7.0228709560990885e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/emg/location_certificate.hpp",
+      "line": 67,
+      "snippet": "const CPPUNIV_EXTENDED_REAL target=tol*std::max(static_cast<CPPUNIV_EXTENDED_REAL>(sigma),minabs);",
+      "likely_fix": "The location-only certificate scales its coordinate target by the absolute location. With default tol=1e-8, a 1e8 translation permits order-one location uncertainty, and scale-1e150 data permit a huge absolute displacement. The enclosure can meet its declared tolerance while a feasible point has much higher likelihood. Use a translated/compensated local coordinate and propagate both the requested public coefficient width and a likelihood-gap bound; stop when representation cannot resolve the required decision. These witnesses challenge public accuracy/likelihood acceptance, not the conditional sign-enclosure theorem.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 276,
+    "index": 1363,
+    "family": "emg",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 5.6114683421421665e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/emg/location_certificate.hpp",
+      "line": 67,
+      "snippet": "const CPPUNIV_EXTENDED_REAL target=tol*std::max(static_cast<CPPUNIV_EXTENDED_REAL>(sigma),minabs);",
+      "likely_fix": "The location-only certificate scales its coordinate target by the absolute location. With default tol=1e-8, a 1e8 translation permits order-one location uncertainty, and scale-1e150 data permit a huge absolute displacement. The enclosure can meet its declared tolerance while a feasible point has much higher likelihood. Use a translated/compensated local coordinate and propagate both the requested public coefficient width and a likelihood-gap bound; stop when representation cannot resolve the required decision. These witnesses challenge public accuracy/likelihood acceptance, not the conditional sign-enclosure theorem.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 277,
+    "index": 10280,
+    "family": "emg",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 5.571613533709046e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/emg/location_certificate.hpp",
+      "line": 67,
+      "snippet": "const CPPUNIV_EXTENDED_REAL target=tol*std::max(static_cast<CPPUNIV_EXTENDED_REAL>(sigma),minabs);",
+      "likely_fix": "The location-only certificate scales its coordinate target by the absolute location. With default tol=1e-8, a 1e8 translation permits order-one location uncertainty, and scale-1e150 data permit a huge absolute displacement. The enclosure can meet its declared tolerance while a feasible point has much higher likelihood. Use a translated/compensated local coordinate and propagate both the requested public coefficient width and a likelihood-gap bound; stop when representation cannot resolve the required decision. These witnesses challenge public accuracy/likelihood acceptance, not the conditional sign-enclosure theorem.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 278,
+    "index": 1367,
+    "family": "emg",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 5.561720983760065e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/emg/location_certificate.hpp",
+      "line": 67,
+      "snippet": "const CPPUNIV_EXTENDED_REAL target=tol*std::max(static_cast<CPPUNIV_EXTENDED_REAL>(sigma),minabs);",
+      "likely_fix": "The location-only certificate scales its coordinate target by the absolute location. With default tol=1e-8, a 1e8 translation permits order-one location uncertainty, and scale-1e150 data permit a huge absolute displacement. The enclosure can meet its declared tolerance while a feasible point has much higher likelihood. Use a translated/compensated local coordinate and propagate both the requested public coefficient width and a likelihood-gap bound; stop when representation cannot resolve the required decision. These witnesses challenge public accuracy/likelihood acceptance, not the conditional sign-enclosure theorem.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 279,
+    "index": 1370,
+    "family": "emg",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 5.561720983760065e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/emg/location_certificate.hpp",
+      "line": 67,
+      "snippet": "const CPPUNIV_EXTENDED_REAL target=tol*std::max(static_cast<CPPUNIV_EXTENDED_REAL>(sigma),minabs);",
+      "likely_fix": "The location-only certificate scales its coordinate target by the absolute location. With default tol=1e-8, a 1e8 translation permits order-one location uncertainty, and scale-1e150 data permit a huge absolute displacement. The enclosure can meet its declared tolerance while a feasible point has much higher likelihood. Use a translated/compensated local coordinate and propagate both the requested public coefficient width and a likelihood-gap bound; stop when representation cannot resolve the required decision. These witnesses challenge public accuracy/likelihood acceptance, not the conditional sign-enclosure theorem.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 280,
+    "index": 10180,
+    "family": "emg",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 5.46720838659884e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/emg/location_certificate.hpp",
+      "line": 67,
+      "snippet": "const CPPUNIV_EXTENDED_REAL target=tol*std::max(static_cast<CPPUNIV_EXTENDED_REAL>(sigma),minabs);",
+      "likely_fix": "The location-only certificate scales its coordinate target by the absolute location. With default tol=1e-8, a 1e8 translation permits order-one location uncertainty, and scale-1e150 data permit a huge absolute displacement. The enclosure can meet its declared tolerance while a feasible point has much higher likelihood. Use a translated/compensated local coordinate and propagate both the requested public coefficient width and a likelihood-gap bound; stop when representation cannot resolve the required decision. These witnesses challenge public accuracy/likelihood acceptance, not the conditional sign-enclosure theorem.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 281,
+    "index": 1364,
+    "family": "emg",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 5.3262004130007516e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/emg/location_certificate.hpp",
+      "line": 67,
+      "snippet": "const CPPUNIV_EXTENDED_REAL target=tol*std::max(static_cast<CPPUNIV_EXTENDED_REAL>(sigma),minabs);",
+      "likely_fix": "The location-only certificate scales its coordinate target by the absolute location. With default tol=1e-8, a 1e8 translation permits order-one location uncertainty, and scale-1e150 data permit a huge absolute displacement. The enclosure can meet its declared tolerance while a feasible point has much higher likelihood. Use a translated/compensated local coordinate and propagate both the requested public coefficient width and a likelihood-gap bound; stop when representation cannot resolve the required decision. These witnesses challenge public accuracy/likelihood acceptance, not the conditional sign-enclosure theorem.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 287,
+    "index": 1362,
+    "family": "emg",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 4.844571242880762e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/emg/location_certificate.hpp",
+      "line": 67,
+      "snippet": "const CPPUNIV_EXTENDED_REAL target=tol*std::max(static_cast<CPPUNIV_EXTENDED_REAL>(sigma),minabs);",
+      "likely_fix": "The location-only certificate scales its coordinate target by the absolute location. With default tol=1e-8, a 1e8 translation permits order-one location uncertainty, and scale-1e150 data permit a huge absolute displacement. The enclosure can meet its declared tolerance while a feasible point has much higher likelihood. Use a translated/compensated local coordinate and propagate both the requested public coefficient width and a likelihood-gap bound; stop when representation cannot resolve the required decision. These witnesses challenge public accuracy/likelihood acceptance, not the conditional sign-enclosure theorem.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 288,
+    "index": 10172,
+    "family": "emg",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 4.7688458055848266e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/emg/location_certificate.hpp",
+      "line": 67,
+      "snippet": "const CPPUNIV_EXTENDED_REAL target=tol*std::max(static_cast<CPPUNIV_EXTENDED_REAL>(sigma),minabs);",
+      "likely_fix": "The location-only certificate scales its coordinate target by the absolute location. With default tol=1e-8, a 1e8 translation permits order-one location uncertainty, and scale-1e150 data permit a huge absolute displacement. The enclosure can meet its declared tolerance while a feasible point has much higher likelihood. Use a translated/compensated local coordinate and propagate both the requested public coefficient width and a likelihood-gap bound; stop when representation cannot resolve the required decision. These witnesses challenge public accuracy/likelihood acceptance, not the conditional sign-enclosure theorem.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 289,
+    "index": 1366,
+    "family": "emg",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 4.661425128145201e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/emg/location_certificate.hpp",
+      "line": 67,
+      "snippet": "const CPPUNIV_EXTENDED_REAL target=tol*std::max(static_cast<CPPUNIV_EXTENDED_REAL>(sigma),minabs);",
+      "likely_fix": "The location-only certificate scales its coordinate target by the absolute location. With default tol=1e-8, a 1e8 translation permits order-one location uncertainty, and scale-1e150 data permit a huge absolute displacement. The enclosure can meet its declared tolerance while a feasible point has much higher likelihood. Use a translated/compensated local coordinate and propagate both the requested public coefficient width and a likelihood-gap bound; stop when representation cannot resolve the required decision. These witnesses challenge public accuracy/likelihood acceptance, not the conditional sign-enclosure theorem.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 290,
+    "index": 9720,
+    "family": "emg",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 4.637058641256295e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/emg/location_certificate.hpp",
+      "line": 67,
+      "snippet": "const CPPUNIV_EXTENDED_REAL target=tol*std::max(static_cast<CPPUNIV_EXTENDED_REAL>(sigma),minabs);",
+      "likely_fix": "The location-only certificate scales its coordinate target by the absolute location. With default tol=1e-8, a 1e8 translation permits order-one location uncertainty, and scale-1e150 data permit a huge absolute displacement. The enclosure can meet its declared tolerance while a feasible point has much higher likelihood. Use a translated/compensated local coordinate and propagate both the requested public coefficient width and a likelihood-gap bound; stop when representation cannot resolve the required decision. These witnesses challenge public accuracy/likelihood acceptance, not the conditional sign-enclosure theorem.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 298,
+    "index": 1321,
+    "family": "emg",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 4.144901038266196e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/emg/location_certificate.hpp",
+      "line": 67,
+      "snippet": "const CPPUNIV_EXTENDED_REAL target=tol*std::max(static_cast<CPPUNIV_EXTENDED_REAL>(sigma),minabs);",
+      "likely_fix": "The location-only certificate scales its coordinate target by the absolute location. With default tol=1e-8, a 1e8 translation permits order-one location uncertainty, and scale-1e150 data permit a huge absolute displacement. The enclosure can meet its declared tolerance while a feasible point has much higher likelihood. Use a translated/compensated local coordinate and propagate both the requested public coefficient width and a likelihood-gap bound; stop when representation cannot resolve the required decision. These witnesses challenge public accuracy/likelihood acceptance, not the conditional sign-enclosure theorem.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 299,
+    "index": 1324,
+    "family": "emg",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 4.144901038266196e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/emg/location_certificate.hpp",
+      "line": 67,
+      "snippet": "const CPPUNIV_EXTENDED_REAL target=tol*std::max(static_cast<CPPUNIV_EXTENDED_REAL>(sigma),minabs);",
+      "likely_fix": "The location-only certificate scales its coordinate target by the absolute location. With default tol=1e-8, a 1e8 translation permits order-one location uncertainty, and scale-1e150 data permit a huge absolute displacement. The enclosure can meet its declared tolerance while a feasible point has much higher likelihood. Use a translated/compensated local coordinate and propagate both the requested public coefficient width and a likelihood-gap bound; stop when representation cannot resolve the required decision. These witnesses challenge public accuracy/likelihood acceptance, not the conditional sign-enclosure theorem.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 307,
+    "index": 1376,
+    "family": "emg",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 3.6420047395157615e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/emg/location_certificate.hpp",
+      "line": 67,
+      "snippet": "const CPPUNIV_EXTENDED_REAL target=tol*std::max(static_cast<CPPUNIV_EXTENDED_REAL>(sigma),minabs);",
+      "likely_fix": "The location-only certificate scales its coordinate target by the absolute location. With default tol=1e-8, a 1e8 translation permits order-one location uncertainty, and scale-1e150 data permit a huge absolute displacement. The enclosure can meet its declared tolerance while a feasible point has much higher likelihood. Use a translated/compensated local coordinate and propagate both the requested public coefficient width and a likelihood-gap bound; stop when representation cannot resolve the required decision. These witnesses challenge public accuracy/likelihood acceptance, not the conditional sign-enclosure theorem.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 313,
+    "index": 1315,
+    "family": "emg",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 3.1667602835785305e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/emg/location_certificate.hpp",
+      "line": 67,
+      "snippet": "const CPPUNIV_EXTENDED_REAL target=tol*std::max(static_cast<CPPUNIV_EXTENDED_REAL>(sigma),minabs);",
+      "likely_fix": "The location-only certificate scales its coordinate target by the absolute location. With default tol=1e-8, a 1e8 translation permits order-one location uncertainty, and scale-1e150 data permit a huge absolute displacement. The enclosure can meet its declared tolerance while a feasible point has much higher likelihood. Use a translated/compensated local coordinate and propagate both the requested public coefficient width and a likelihood-gap bound; stop when representation cannot resolve the required decision. These witnesses challenge public accuracy/likelihood acceptance, not the conditional sign-enclosure theorem.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 337,
+    "index": 1365,
+    "family": "emg",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 2.608750646902512e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/emg/location_certificate.hpp",
+      "line": 67,
+      "snippet": "const CPPUNIV_EXTENDED_REAL target=tol*std::max(static_cast<CPPUNIV_EXTENDED_REAL>(sigma),minabs);",
+      "likely_fix": "The location-only certificate scales its coordinate target by the absolute location. With default tol=1e-8, a 1e8 translation permits order-one location uncertainty, and scale-1e150 data permit a huge absolute displacement. The enclosure can meet its declared tolerance while a feasible point has much higher likelihood. Use a translated/compensated local coordinate and propagate both the requested public coefficient width and a likelihood-gap bound; stop when representation cannot resolve the required decision. These witnesses challenge public accuracy/likelihood acceptance, not the conditional sign-enclosure theorem.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 378,
+    "index": 9712,
+    "family": "emg",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 1.6239909202929138e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/emg/location_certificate.hpp",
+      "line": 67,
+      "snippet": "const CPPUNIV_EXTENDED_REAL target=tol*std::max(static_cast<CPPUNIV_EXTENDED_REAL>(sigma),minabs);",
+      "likely_fix": "The location-only certificate scales its coordinate target by the absolute location. With default tol=1e-8, a 1e8 translation permits order-one location uncertainty, and scale-1e150 data permit a huge absolute displacement. The enclosure can meet its declared tolerance while a feasible point has much higher likelihood. Use a translated/compensated local coordinate and propagate both the requested public coefficient width and a likelihood-gap bound; stop when representation cannot resolve the required decision. These witnesses challenge public accuracy/likelihood acceptance, not the conditional sign-enclosure theorem.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 387,
+    "index": 1283,
+    "family": "emg",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 1.4120539590399375e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/emg/location_certificate.hpp",
+      "line": 67,
+      "snippet": "const CPPUNIV_EXTENDED_REAL target=tol*std::max(static_cast<CPPUNIV_EXTENDED_REAL>(sigma),minabs);",
+      "likely_fix": "The location-only certificate scales its coordinate target by the absolute location. With default tol=1e-8, a 1e8 translation permits order-one location uncertainty, and scale-1e150 data permit a huge absolute displacement. The enclosure can meet its declared tolerance while a feasible point has much higher likelihood. Use a translated/compensated local coordinate and propagate both the requested public coefficient width and a likelihood-gap bound; stop when representation cannot resolve the required decision. These witnesses challenge public accuracy/likelihood acceptance, not the conditional sign-enclosure theorem.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 390,
+    "index": 10265,
+    "family": "emg",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 1.376387073464078e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/emg/location_certificate.hpp",
+      "line": 67,
+      "snippet": "const CPPUNIV_EXTENDED_REAL target=tol*std::max(static_cast<CPPUNIV_EXTENDED_REAL>(sigma),minabs);",
+      "likely_fix": "The location-only certificate scales its coordinate target by the absolute location. With default tol=1e-8, a 1e8 translation permits order-one location uncertainty, and scale-1e150 data permit a huge absolute displacement. The enclosure can meet its declared tolerance while a feasible point has much higher likelihood. Use a translated/compensated local coordinate and propagate both the requested public coefficient width and a likelihood-gap bound; stop when representation cannot resolve the required decision. These witnesses challenge public accuracy/likelihood acceptance, not the conditional sign-enclosure theorem.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 391,
+    "index": 1287,
+    "family": "emg",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 1.3763860645147186e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/emg/location_certificate.hpp",
+      "line": 67,
+      "snippet": "const CPPUNIV_EXTENDED_REAL target=tol*std::max(static_cast<CPPUNIV_EXTENDED_REAL>(sigma),minabs);",
+      "likely_fix": "The location-only certificate scales its coordinate target by the absolute location. With default tol=1e-8, a 1e8 translation permits order-one location uncertainty, and scale-1e150 data permit a huge absolute displacement. The enclosure can meet its declared tolerance while a feasible point has much higher likelihood. Use a translated/compensated local coordinate and propagate both the requested public coefficient width and a likelihood-gap bound; stop when representation cannot resolve the required decision. These witnesses challenge public accuracy/likelihood acceptance, not the conditional sign-enclosure theorem.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 392,
+    "index": 1290,
+    "family": "emg",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 1.3763860645147186e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/emg/location_certificate.hpp",
+      "line": 67,
+      "snippet": "const CPPUNIV_EXTENDED_REAL target=tol*std::max(static_cast<CPPUNIV_EXTENDED_REAL>(sigma),minabs);",
+      "likely_fix": "The location-only certificate scales its coordinate target by the absolute location. With default tol=1e-8, a 1e8 translation permits order-one location uncertainty, and scale-1e150 data permit a huge absolute displacement. The enclosure can meet its declared tolerance while a feasible point has much higher likelihood. Use a translated/compensated local coordinate and propagate both the requested public coefficient width and a likelihood-gap bound; stop when representation cannot resolve the required decision. These witnesses challenge public accuracy/likelihood acceptance, not the conditional sign-enclosure theorem.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 393,
+    "index": 10266,
+    "family": "emg",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 1.3763766492776454e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/emg/location_certificate.hpp",
+      "line": 67,
+      "snippet": "const CPPUNIV_EXTENDED_REAL target=tol*std::max(static_cast<CPPUNIV_EXTENDED_REAL>(sigma),minabs);",
+      "likely_fix": "The location-only certificate scales its coordinate target by the absolute location. With default tol=1e-8, a 1e8 translation permits order-one location uncertainty, and scale-1e150 data permit a huge absolute displacement. The enclosure can meet its declared tolerance while a feasible point has much higher likelihood. Use a translated/compensated local coordinate and propagate both the requested public coefficient width and a likelihood-gap bound; stop when representation cannot resolve the required decision. These witnesses challenge public accuracy/likelihood acceptance, not the conditional sign-enclosure theorem.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 394,
+    "index": 1289,
+    "family": "emg",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 1.3763766209964211e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/emg/location_certificate.hpp",
+      "line": 67,
+      "snippet": "const CPPUNIV_EXTENDED_REAL target=tol*std::max(static_cast<CPPUNIV_EXTENDED_REAL>(sigma),minabs);",
+      "likely_fix": "The location-only certificate scales its coordinate target by the absolute location. With default tol=1e-8, a 1e8 translation permits order-one location uncertainty, and scale-1e150 data permit a huge absolute displacement. The enclosure can meet its declared tolerance while a feasible point has much higher likelihood. Use a translated/compensated local coordinate and propagate both the requested public coefficient width and a likelihood-gap bound; stop when representation cannot resolve the required decision. These witnesses challenge public accuracy/likelihood acceptance, not the conditional sign-enclosure theorem.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 395,
+    "index": 1292,
+    "family": "emg",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 1.3763766209964211e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/emg/location_certificate.hpp",
+      "line": 67,
+      "snippet": "const CPPUNIV_EXTENDED_REAL target=tol*std::max(static_cast<CPPUNIV_EXTENDED_REAL>(sigma),minabs);",
+      "likely_fix": "The location-only certificate scales its coordinate target by the absolute location. With default tol=1e-8, a 1e8 translation permits order-one location uncertainty, and scale-1e150 data permit a huge absolute displacement. The enclosure can meet its declared tolerance while a feasible point has much higher likelihood. Use a translated/compensated local coordinate and propagate both the requested public coefficient width and a likelihood-gap bound; stop when representation cannot resolve the required decision. These witnesses challenge public accuracy/likelihood acceptance, not the conditional sign-enclosure theorem.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 396,
+    "index": 1297,
+    "family": "emg",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 1.3763765661552233e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/emg/location_certificate.hpp",
+      "line": 67,
+      "snippet": "const CPPUNIV_EXTENDED_REAL target=tol*std::max(static_cast<CPPUNIV_EXTENDED_REAL>(sigma),minabs);",
+      "likely_fix": "The location-only certificate scales its coordinate target by the absolute location. With default tol=1e-8, a 1e8 translation permits order-one location uncertainty, and scale-1e150 data permit a huge absolute displacement. The enclosure can meet its declared tolerance while a feasible point has much higher likelihood. Use a translated/compensated local coordinate and propagate both the requested public coefficient width and a likelihood-gap bound; stop when representation cannot resolve the required decision. These witnesses challenge public accuracy/likelihood acceptance, not the conditional sign-enclosure theorem.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 397,
+    "index": 1295,
+    "family": "emg",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 1.3763765569518905e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/emg/location_certificate.hpp",
+      "line": 67,
+      "snippet": "const CPPUNIV_EXTENDED_REAL target=tol*std::max(static_cast<CPPUNIV_EXTENDED_REAL>(sigma),minabs);",
+      "likely_fix": "The location-only certificate scales its coordinate target by the absolute location. With default tol=1e-8, a 1e8 translation permits order-one location uncertainty, and scale-1e150 data permit a huge absolute displacement. The enclosure can meet its declared tolerance while a feasible point has much higher likelihood. Use a translated/compensated local coordinate and propagate both the requested public coefficient width and a likelihood-gap bound; stop when representation cannot resolve the required decision. These witnesses challenge public accuracy/likelihood acceptance, not the conditional sign-enclosure theorem.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 398,
+    "index": 10267,
+    "family": "emg",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 1.3763765374954585e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/emg/location_certificate.hpp",
+      "line": 67,
+      "snippet": "const CPPUNIV_EXTENDED_REAL target=tol*std::max(static_cast<CPPUNIV_EXTENDED_REAL>(sigma),minabs);",
+      "likely_fix": "The location-only certificate scales its coordinate target by the absolute location. With default tol=1e-8, a 1e8 translation permits order-one location uncertainty, and scale-1e150 data permit a huge absolute displacement. The enclosure can meet its declared tolerance while a feasible point has much higher likelihood. Use a translated/compensated local coordinate and propagate both the requested public coefficient width and a likelihood-gap bound; stop when representation cannot resolve the required decision. These witnesses challenge public accuracy/likelihood acceptance, not the conditional sign-enclosure theorem.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 399,
+    "index": 1288,
+    "family": "emg",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 1.376376511011596e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/emg/location_certificate.hpp",
+      "line": 67,
+      "snippet": "const CPPUNIV_EXTENDED_REAL target=tol*std::max(static_cast<CPPUNIV_EXTENDED_REAL>(sigma),minabs);",
+      "likely_fix": "The location-only certificate scales its coordinate target by the absolute location. With default tol=1e-8, a 1e8 translation permits order-one location uncertainty, and scale-1e150 data permit a huge absolute displacement. The enclosure can meet its declared tolerance while a feasible point has much higher likelihood. Use a translated/compensated local coordinate and propagate both the requested public coefficient width and a likelihood-gap bound; stop when representation cannot resolve the required decision. These witnesses challenge public accuracy/likelihood acceptance, not the conditional sign-enclosure theorem.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 400,
+    "index": 1291,
+    "family": "emg",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 1.376376511011596e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/emg/location_certificate.hpp",
+      "line": 67,
+      "snippet": "const CPPUNIV_EXTENDED_REAL target=tol*std::max(static_cast<CPPUNIV_EXTENDED_REAL>(sigma),minabs);",
+      "likely_fix": "The location-only certificate scales its coordinate target by the absolute location. With default tol=1e-8, a 1e8 translation permits order-one location uncertainty, and scale-1e150 data permit a huge absolute displacement. The enclosure can meet its declared tolerance while a feasible point has much higher likelihood. Use a translated/compensated local coordinate and propagate both the requested public coefficient width and a likelihood-gap bound; stop when representation cannot resolve the required decision. These witnesses challenge public accuracy/likelihood acceptance, not the conditional sign-enclosure theorem.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 436,
+    "index": 10171,
+    "family": "emg",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 7.945733485102558e-10,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/emg/location_certificate.hpp",
+      "line": 67,
+      "snippet": "const CPPUNIV_EXTENDED_REAL target=tol*std::max(static_cast<CPPUNIV_EXTENDED_REAL>(sigma),minabs);",
+      "likely_fix": "The location-only certificate scales its coordinate target by the absolute location. With default tol=1e-8, a 1e8 translation permits order-one location uncertainty, and scale-1e150 data permit a huge absolute displacement. The enclosure can meet its declared tolerance while a feasible point has much higher likelihood. Use a translated/compensated local coordinate and propagate both the requested public coefficient width and a likelihood-gap bound; stop when representation cannot resolve the required decision. These witnesses challenge public accuracy/likelihood acceptance, not the conditional sign-enclosure theorem.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 440,
+    "index": 9711,
+    "family": "emg",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 7.765450311046324e-10,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/emg/location_certificate.hpp",
+      "line": 67,
+      "snippet": "const CPPUNIV_EXTENDED_REAL target=tol*std::max(static_cast<CPPUNIV_EXTENDED_REAL>(sigma),minabs);",
+      "likely_fix": "The location-only certificate scales its coordinate target by the absolute location. With default tol=1e-8, a 1e8 translation permits order-one location uncertainty, and scale-1e150 data permit a huge absolute displacement. The enclosure can meet its declared tolerance while a feasible point has much higher likelihood. Use a translated/compensated local coordinate and propagate both the requested public coefficient width and a likelihood-gap bound; stop when representation cannot resolve the required decision. These witnesses challenge public accuracy/likelihood acceptance, not the conditional sign-enclosure theorem.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 494,
+    "index": 1330,
+    "family": "emg",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 4.553429014845156e-10,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/emg/location_certificate.hpp",
+      "line": 67,
+      "snippet": "const CPPUNIV_EXTENDED_REAL target=tol*std::max(static_cast<CPPUNIV_EXTENDED_REAL>(sigma),minabs);",
+      "likely_fix": "The location-only certificate scales its coordinate target by the absolute location. With default tol=1e-8, a 1e8 translation permits order-one location uncertainty, and scale-1e150 data permit a huge absolute displacement. The enclosure can meet its declared tolerance while a feasible point has much higher likelihood. Use a translated/compensated local coordinate and propagate both the requested public coefficient width and a likelihood-gap bound; stop when representation cannot resolve the required decision. These witnesses challenge public accuracy/likelihood acceptance, not the conditional sign-enclosure theorem.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 518,
+    "index": 1347,
+    "family": "emg",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 3.8325762605589434e-10,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/emg/location_certificate.hpp",
+      "line": 67,
+      "snippet": "const CPPUNIV_EXTENDED_REAL target=tol*std::max(static_cast<CPPUNIV_EXTENDED_REAL>(sigma),minabs);",
+      "likely_fix": "The location-only certificate scales its coordinate target by the absolute location. With default tol=1e-8, a 1e8 translation permits order-one location uncertainty, and scale-1e150 data permit a huge absolute displacement. The enclosure can meet its declared tolerance while a feasible point has much higher likelihood. Use a translated/compensated local coordinate and propagate both the requested public coefficient width and a likelihood-gap bound; stop when representation cannot resolve the required decision. These witnesses challenge public accuracy/likelihood acceptance, not the conditional sign-enclosure theorem.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 571,
+    "index": 1346,
+    "family": "emg",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 2.4754019893221107e-10,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/emg/location_certificate.hpp",
+      "line": 67,
+      "snippet": "const CPPUNIV_EXTENDED_REAL target=tol*std::max(static_cast<CPPUNIV_EXTENDED_REAL>(sigma),minabs);",
+      "likely_fix": "The location-only certificate scales its coordinate target by the absolute location. With default tol=1e-8, a 1e8 translation permits order-one location uncertainty, and scale-1e150 data permit a huge absolute displacement. The enclosure can meet its declared tolerance while a feasible point has much higher likelihood. Use a translated/compensated local coordinate and propagate both the requested public coefficient width and a likelihood-gap bound; stop when representation cannot resolve the required decision. These witnesses challenge public accuracy/likelihood acceptance, not the conditional sign-enclosure theorem.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 591,
+    "index": 1284,
+    "family": "emg",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 2.2263261813063693e-10,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/emg/location_certificate.hpp",
+      "line": 67,
+      "snippet": "const CPPUNIV_EXTENDED_REAL target=tol*std::max(static_cast<CPPUNIV_EXTENDED_REAL>(sigma),minabs);",
+      "likely_fix": "The location-only certificate scales its coordinate target by the absolute location. With default tol=1e-8, a 1e8 translation permits order-one location uncertainty, and scale-1e150 data permit a huge absolute displacement. The enclosure can meet its declared tolerance while a feasible point has much higher likelihood. Use a translated/compensated local coordinate and propagate both the requested public coefficient width and a likelihood-gap bound; stop when representation cannot resolve the required decision. These witnesses challenge public accuracy/likelihood acceptance, not the conditional sign-enclosure theorem.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 641,
+    "index": 1298,
+    "family": "emg",
+    "route": "declared certified",
+    "certificate_basis": "Current fit.certified=yes; analytic or certified route, with runtime flags [-1, -1].",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 1.085348172512666e-10,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/emg/location_certificate.hpp",
+      "line": 67,
+      "snippet": "const CPPUNIV_EXTENDED_REAL target=tol*std::max(static_cast<CPPUNIV_EXTENDED_REAL>(sigma),minabs);",
+      "likely_fix": "The location-only certificate scales its coordinate target by the absolute location. With default tol=1e-8, a 1e8 translation permits order-one location uncertainty, and scale-1e150 data permit a huge absolute displacement. The enclosure can meet its declared tolerance while a feasible point has much higher likelihood. Use a translated/compensated local coordinate and propagate both the requested public coefficient width and a likelihood-gap bound; stop when representation cannot resolve the required decision. These witnesses challenge public accuracy/likelihood acceptance, not the conditional sign-enclosure theorem.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 704,
+    "index": 2694,
+    "family": "gev",
+    "route": "uncertified numerical",
+    "certificate_basis": "All-free joint cover; shape-only interval cover; held xi=-1 closed form; held sigma with -1<xi<=0 concave/analytic location. Other conditional searches are numerical outside special two-point certificates.",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 4.3548150093281166e-08,
+    "legacy_classification": "silent failure",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gev/mle.hpp",
+      "line": 27,
+      "snippet": "inline double gev_loglik(span x, double mu, double sigma, double xi) {",
+      "likely_fix": "Restoration and boundary likelihood arithmetic must preserve the original-data support, notably the reverse-exponential endpoint. Recheck exact represented feasibility, then recompute the raw likelihood; numerical conditional branches also need complete root/face coverage.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 721,
+    "index": 2758,
+    "family": "gev",
+    "route": "uncertified numerical",
+    "certificate_basis": "All-free joint cover; shape-only interval cover; held xi=-1 closed form; held sigma with -1<xi<=0 concave/analytic location. Other conditional searches are numerical outside special two-point certificates.",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 2.6055673414552215e-08,
+    "legacy_classification": "silent failure",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gev/mle.hpp",
+      "line": 27,
+      "snippet": "inline double gev_loglik(span x, double mu, double sigma, double xi) {",
+      "likely_fix": "Restoration and boundary likelihood arithmetic must preserve the original-data support, notably the reverse-exponential endpoint. Recheck exact represented feasibility, then recompute the raw likelihood; numerical conditional branches also need complete root/face coverage.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 725,
+    "index": 2710,
+    "family": "gev",
+    "route": "uncertified numerical",
+    "certificate_basis": "All-free joint cover; shape-only interval cover; held xi=-1 closed form; held sigma with -1<xi<=0 concave/analytic location. Other conditional searches are numerical outside special two-point certificates.",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 2.4747400950829475e-08,
+    "legacy_classification": "silent failure",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gev/mle.hpp",
+      "line": 27,
+      "snippet": "inline double gev_loglik(span x, double mu, double sigma, double xi) {",
+      "likely_fix": "Restoration and boundary likelihood arithmetic must preserve the original-data support, notably the reverse-exponential endpoint. Recheck exact represented feasibility, then recompute the raw likelihood; numerical conditional branches also need complete root/face coverage.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 735,
+    "index": 2750,
+    "family": "gev",
+    "route": "uncertified numerical",
+    "certificate_basis": "All-free joint cover; shape-only interval cover; held xi=-1 closed form; held sigma with -1<xi<=0 concave/analytic location. Other conditional searches are numerical outside special two-point certificates.",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 2.0103934663727548e-08,
+    "legacy_classification": "silent failure",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gev/mle.hpp",
+      "line": 27,
+      "snippet": "inline double gev_loglik(span x, double mu, double sigma, double xi) {",
+      "likely_fix": "Restoration and boundary likelihood arithmetic must preserve the original-data support, notably the reverse-exponential endpoint. Recheck exact represented feasibility, then recompute the raw likelihood; numerical conditional branches also need complete root/face coverage.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 746,
+    "index": 2757,
+    "family": "gev",
+    "route": "uncertified numerical",
+    "certificate_basis": "All-free joint cover; shape-only interval cover; held xi=-1 closed form; held sigma with -1<xi<=0 concave/analytic location. Other conditional searches are numerical outside special two-point certificates.",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 1.5321069275213638e-08,
+    "legacy_classification": "silent failure",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gev/mle.hpp",
+      "line": 27,
+      "snippet": "inline double gev_loglik(span x, double mu, double sigma, double xi) {",
+      "likely_fix": "Restoration and boundary likelihood arithmetic must preserve the original-data support, notably the reverse-exponential endpoint. Recheck exact represented feasibility, then recompute the raw likelihood; numerical conditional branches also need complete root/face coverage.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 748,
+    "index": 2749,
+    "family": "gev",
+    "route": "uncertified numerical",
+    "certificate_basis": "All-free joint cover; shape-only interval cover; held xi=-1 closed form; held sigma with -1<xi<=0 concave/analytic location. Other conditional searches are numerical outside special two-point certificates.",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 1.4261597251676247e-08,
+    "legacy_classification": "silent failure",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gev/mle.hpp",
+      "line": 27,
+      "snippet": "inline double gev_loglik(span x, double mu, double sigma, double xi) {",
+      "likely_fix": "Restoration and boundary likelihood arithmetic must preserve the original-data support, notably the reverse-exponential endpoint. Recheck exact represented feasibility, then recompute the raw likelihood; numerical conditional branches also need complete root/face coverage.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 764,
+    "index": 2762,
+    "family": "gev",
+    "route": "uncertified numerical",
+    "certificate_basis": "All-free joint cover; shape-only interval cover; held xi=-1 closed form; held sigma with -1<xi<=0 concave/analytic location. Other conditional searches are numerical outside special two-point certificates.",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 1.1863740642290125e-08,
+    "legacy_classification": "silent failure",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gev/mle.hpp",
+      "line": 27,
+      "snippet": "inline double gev_loglik(span x, double mu, double sigma, double xi) {",
+      "likely_fix": "Restoration and boundary likelihood arithmetic must preserve the original-data support, notably the reverse-exponential endpoint. Recheck exact represented feasibility, then recompute the raw likelihood; numerical conditional branches also need complete root/face coverage.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 766,
+    "index": 2761,
+    "family": "gev",
+    "route": "uncertified numerical",
+    "certificate_basis": "All-free joint cover; shape-only interval cover; held xi=-1 closed form; held sigma with -1<xi<=0 concave/analytic location. Other conditional searches are numerical outside special two-point certificates.",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 1.1718978068451937e-08,
+    "legacy_classification": "silent failure",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gev/mle.hpp",
+      "line": 27,
+      "snippet": "inline double gev_loglik(span x, double mu, double sigma, double xi) {",
+      "likely_fix": "Restoration and boundary likelihood arithmetic must preserve the original-data support, notably the reverse-exponential endpoint. Recheck exact represented feasibility, then recompute the raw likelihood; numerical conditional branches also need complete root/face coverage.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 768,
+    "index": 2763,
+    "family": "gev",
+    "route": "uncertified numerical",
+    "certificate_basis": "All-free joint cover; shape-only interval cover; held xi=-1 closed form; held sigma with -1<xi<=0 concave/analytic location. Other conditional searches are numerical outside special two-point certificates.",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 1.099114502436423e-08,
+    "legacy_classification": "silent failure",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gev/mle.hpp",
+      "line": 27,
+      "snippet": "inline double gev_loglik(span x, double mu, double sigma, double xi) {",
+      "likely_fix": "Restoration and boundary likelihood arithmetic must preserve the original-data support, notably the reverse-exponential endpoint. Recheck exact represented feasibility, then recompute the raw likelihood; numerical conditional branches also need complete root/face coverage.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 774,
+    "index": 2752,
+    "family": "gev",
+    "route": "uncertified numerical",
+    "certificate_basis": "All-free joint cover; shape-only interval cover; held xi=-1 closed form; held sigma with -1<xi<=0 concave/analytic location. Other conditional searches are numerical outside special two-point certificates.",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 9.563735044900722e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gev/mle.hpp",
+      "line": 27,
+      "snippet": "inline double gev_loglik(span x, double mu, double sigma, double xi) {",
+      "likely_fix": "Restoration and boundary likelihood arithmetic must preserve the original-data support, notably the reverse-exponential endpoint. Recheck exact represented feasibility, then recompute the raw likelihood; numerical conditional branches also need complete root/face coverage.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 775,
+    "index": 2691,
+    "family": "gev",
+    "route": "uncertified numerical",
+    "certificate_basis": "All-free joint cover; shape-only interval cover; held xi=-1 closed form; held sigma with -1<xi<=0 concave/analytic location. Other conditional searches are numerical outside special two-point certificates.",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 9.527009238548835e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gev/mle.hpp",
+      "line": 27,
+      "snippet": "inline double gev_loglik(span x, double mu, double sigma, double xi) {",
+      "likely_fix": "Restoration and boundary likelihood arithmetic must preserve the original-data support, notably the reverse-exponential endpoint. Recheck exact represented feasibility, then recompute the raw likelihood; numerical conditional branches also need complete root/face coverage.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 776,
+    "index": 10959,
+    "family": "gev",
+    "route": "uncertified numerical",
+    "certificate_basis": "All-free joint cover; shape-only interval cover; held xi=-1 closed form; held sigma with -1<xi<=0 concave/analytic location. Other conditional searches are numerical outside special two-point certificates.",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 9.187907321760579e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gev/mle.hpp",
+      "line": 27,
+      "snippet": "inline double gev_loglik(span x, double mu, double sigma, double xi) {",
+      "likely_fix": "Restoration and boundary likelihood arithmetic must preserve the original-data support, notably the reverse-exponential endpoint. Recheck exact represented feasibility, then recompute the raw likelihood; numerical conditional branches also need complete root/face coverage.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 777,
+    "index": 2744,
+    "family": "gev",
+    "route": "uncertified numerical",
+    "certificate_basis": "All-free joint cover; shape-only interval cover; held xi=-1 closed form; held sigma with -1<xi<=0 concave/analytic location. Other conditional searches are numerical outside special two-point certificates.",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 9.042027162578182e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gev/mle.hpp",
+      "line": 27,
+      "snippet": "inline double gev_loglik(span x, double mu, double sigma, double xi) {",
+      "likely_fix": "Restoration and boundary likelihood arithmetic must preserve the original-data support, notably the reverse-exponential endpoint. Recheck exact represented feasibility, then recompute the raw likelihood; numerical conditional branches also need complete root/face coverage.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 782,
+    "index": 10958,
+    "family": "gev",
+    "route": "uncertified numerical",
+    "certificate_basis": "All-free joint cover; shape-only interval cover; held xi=-1 closed form; held sigma with -1<xi<=0 concave/analytic location. Other conditional searches are numerical outside special two-point certificates.",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 8.156603687468425e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gev/mle.hpp",
+      "line": 27,
+      "snippet": "inline double gev_loglik(span x, double mu, double sigma, double xi) {",
+      "likely_fix": "Restoration and boundary likelihood arithmetic must preserve the original-data support, notably the reverse-exponential endpoint. Recheck exact represented feasibility, then recompute the raw likelihood; numerical conditional branches also need complete root/face coverage.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 783,
+    "index": 2759,
+    "family": "gev",
+    "route": "uncertified numerical",
+    "certificate_basis": "All-free joint cover; shape-only interval cover; held xi=-1 closed form; held sigma with -1<xi<=0 concave/analytic location. Other conditional searches are numerical outside special two-point certificates.",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 7.899232644167256e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gev/mle.hpp",
+      "line": 27,
+      "snippet": "inline double gev_loglik(span x, double mu, double sigma, double xi) {",
+      "likely_fix": "Restoration and boundary likelihood arithmetic must preserve the original-data support, notably the reverse-exponential endpoint. Recheck exact represented feasibility, then recompute the raw likelihood; numerical conditional branches also need complete root/face coverage.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 785,
+    "index": 2709,
+    "family": "gev",
+    "route": "uncertified numerical",
+    "certificate_basis": "All-free joint cover; shape-only interval cover; held xi=-1 closed form; held sigma with -1<xi<=0 concave/analytic location. Other conditional searches are numerical outside special two-point certificates.",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 7.793901474746434e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gev/mle.hpp",
+      "line": 27,
+      "snippet": "inline double gev_loglik(span x, double mu, double sigma, double xi) {",
+      "likely_fix": "Restoration and boundary likelihood arithmetic must preserve the original-data support, notably the reverse-exponential endpoint. Recheck exact represented feasibility, then recompute the raw likelihood; numerical conditional branches also need complete root/face coverage.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 786,
+    "index": 2754,
+    "family": "gev",
+    "route": "uncertified numerical",
+    "certificate_basis": "All-free joint cover; shape-only interval cover; held xi=-1 closed form; held sigma with -1<xi<=0 concave/analytic location. Other conditional searches are numerical outside special two-point certificates.",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 7.790698439026186e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gev/mle.hpp",
+      "line": 27,
+      "snippet": "inline double gev_loglik(span x, double mu, double sigma, double xi) {",
+      "likely_fix": "Restoration and boundary likelihood arithmetic must preserve the original-data support, notably the reverse-exponential endpoint. Recheck exact represented feasibility, then recompute the raw likelihood; numerical conditional branches also need complete root/face coverage.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 792,
+    "index": 2680,
+    "family": "gev",
+    "route": "uncertified numerical",
+    "certificate_basis": "All-free joint cover; shape-only interval cover; held xi=-1 closed form; held sigma with -1<xi<=0 concave/analytic location. Other conditional searches are numerical outside special two-point certificates.",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 7.371218428861919e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gev/mle.hpp",
+      "line": 27,
+      "snippet": "inline double gev_loglik(span x, double mu, double sigma, double xi) {",
+      "likely_fix": "Restoration and boundary likelihood arithmetic must preserve the original-data support, notably the reverse-exponential endpoint. Recheck exact represented feasibility, then recompute the raw likelihood; numerical conditional branches also need complete root/face coverage.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 794,
+    "index": 2755,
+    "family": "gev",
+    "route": "uncertified numerical",
+    "certificate_basis": "All-free joint cover; shape-only interval cover; held xi=-1 closed form; held sigma with -1<xi<=0 concave/analytic location. Other conditional searches are numerical outside special two-point certificates.",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 7.120038447521465e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gev/mle.hpp",
+      "line": 27,
+      "snippet": "inline double gev_loglik(span x, double mu, double sigma, double xi) {",
+      "likely_fix": "Restoration and boundary likelihood arithmetic must preserve the original-data support, notably the reverse-exponential endpoint. Recheck exact represented feasibility, then recompute the raw likelihood; numerical conditional branches also need complete root/face coverage.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 795,
+    "index": 2765,
+    "family": "gev",
+    "route": "uncertified numerical",
+    "certificate_basis": "All-free joint cover; shape-only interval cover; held xi=-1 closed form; held sigma with -1<xi<=0 concave/analytic location. Other conditional searches are numerical outside special two-point certificates.",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 7.081729957875018e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gev/mle.hpp",
+      "line": 27,
+      "snippet": "inline double gev_loglik(span x, double mu, double sigma, double xi) {",
+      "likely_fix": "Restoration and boundary likelihood arithmetic must preserve the original-data support, notably the reverse-exponential endpoint. Recheck exact represented feasibility, then recompute the raw likelihood; numerical conditional branches also need complete root/face coverage.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 796,
+    "index": 2753,
+    "family": "gev",
+    "route": "uncertified numerical",
+    "certificate_basis": "All-free joint cover; shape-only interval cover; held xi=-1 closed form; held sigma with -1<xi<=0 concave/analytic location. Other conditional searches are numerical outside special two-point certificates.",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 7.067215536467085e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gev/mle.hpp",
+      "line": 27,
+      "snippet": "inline double gev_loglik(span x, double mu, double sigma, double xi) {",
+      "likely_fix": "Restoration and boundary likelihood arithmetic must preserve the original-data support, notably the reverse-exponential endpoint. Recheck exact represented feasibility, then recompute the raw likelihood; numerical conditional branches also need complete root/face coverage.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 797,
+    "index": 10960,
+    "family": "gev",
+    "route": "uncertified numerical",
+    "certificate_basis": "All-free joint cover; shape-only interval cover; held xi=-1 closed form; held sigma with -1<xi<=0 concave/analytic location. Other conditional searches are numerical outside special two-point certificates.",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 6.89383966674782e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gev/mle.hpp",
+      "line": 27,
+      "snippet": "inline double gev_loglik(span x, double mu, double sigma, double xi) {",
+      "likely_fix": "Restoration and boundary likelihood arithmetic must preserve the original-data support, notably the reverse-exponential endpoint. Recheck exact represented feasibility, then recompute the raw likelihood; numerical conditional branches also need complete root/face coverage.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 800,
+    "index": 2760,
+    "family": "gev",
+    "route": "uncertified numerical",
+    "certificate_basis": "All-free joint cover; shape-only interval cover; held xi=-1 closed form; held sigma with -1<xi<=0 concave/analytic location. Other conditional searches are numerical outside special two-point certificates.",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 6.5618104443324466e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gev/mle.hpp",
+      "line": 27,
+      "snippet": "inline double gev_loglik(span x, double mu, double sigma, double xi) {",
+      "likely_fix": "Restoration and boundary likelihood arithmetic must preserve the original-data support, notably the reverse-exponential endpoint. Recheck exact represented feasibility, then recompute the raw likelihood; numerical conditional branches also need complete root/face coverage.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 802,
+    "index": 2756,
+    "family": "gev",
+    "route": "uncertified numerical",
+    "certificate_basis": "All-free joint cover; shape-only interval cover; held xi=-1 closed form; held sigma with -1<xi<=0 concave/analytic location. Other conditional searches are numerical outside special two-point certificates.",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 6.498126909790625e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gev/mle.hpp",
+      "line": 27,
+      "snippet": "inline double gev_loglik(span x, double mu, double sigma, double xi) {",
+      "likely_fix": "Restoration and boundary likelihood arithmetic must preserve the original-data support, notably the reverse-exponential endpoint. Recheck exact represented feasibility, then recompute the raw likelihood; numerical conditional branches also need complete root/face coverage.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 806,
+    "index": 10947,
+    "family": "gev",
+    "route": "uncertified numerical",
+    "certificate_basis": "All-free joint cover; shape-only interval cover; held xi=-1 closed form; held sigma with -1<xi<=0 concave/analytic location. Other conditional searches are numerical outside special two-point certificates.",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 5.404067651282175e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gev/mle.hpp",
+      "line": 27,
+      "snippet": "inline double gev_loglik(span x, double mu, double sigma, double xi) {",
+      "likely_fix": "Restoration and boundary likelihood arithmetic must preserve the original-data support, notably the reverse-exponential endpoint. Recheck exact represented feasibility, then recompute the raw likelihood; numerical conditional branches also need complete root/face coverage.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 818,
+    "index": 2747,
+    "family": "gev",
+    "route": "uncertified numerical",
+    "certificate_basis": "All-free joint cover; shape-only interval cover; held xi=-1 closed form; held sigma with -1<xi<=0 concave/analytic location. Other conditional searches are numerical outside special two-point certificates.",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 4.217585712948242e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gev/mle.hpp",
+      "line": 27,
+      "snippet": "inline double gev_loglik(span x, double mu, double sigma, double xi) {",
+      "likely_fix": "Restoration and boundary likelihood arithmetic must preserve the original-data support, notably the reverse-exponential endpoint. Recheck exact represented feasibility, then recompute the raw likelihood; numerical conditional branches also need complete root/face coverage.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 819,
+    "index": 2751,
+    "family": "gev",
+    "route": "uncertified numerical",
+    "certificate_basis": "All-free joint cover; shape-only interval cover; held xi=-1 closed form; held sigma with -1<xi<=0 concave/analytic location. Other conditional searches are numerical outside special two-point certificates.",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 4.137525529955245e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gev/mle.hpp",
+      "line": 27,
+      "snippet": "inline double gev_loglik(span x, double mu, double sigma, double xi) {",
+      "likely_fix": "Restoration and boundary likelihood arithmetic must preserve the original-data support, notably the reverse-exponential endpoint. Recheck exact represented feasibility, then recompute the raw likelihood; numerical conditional branches also need complete root/face coverage.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 820,
+    "index": 2696,
+    "family": "gev",
+    "route": "uncertified numerical",
+    "certificate_basis": "All-free joint cover; shape-only interval cover; held xi=-1 closed form; held sigma with -1<xi<=0 concave/analytic location. Other conditional searches are numerical outside special two-point certificates.",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 4.1110990908133095e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gev/mle.hpp",
+      "line": 27,
+      "snippet": "inline double gev_loglik(span x, double mu, double sigma, double xi) {",
+      "likely_fix": "Restoration and boundary likelihood arithmetic must preserve the original-data support, notably the reverse-exponential endpoint. Recheck exact represented feasibility, then recompute the raw likelihood; numerical conditional branches also need complete root/face coverage.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 823,
+    "index": 10946,
+    "family": "gev",
+    "route": "uncertified numerical",
+    "certificate_basis": "All-free joint cover; shape-only interval cover; held xi=-1 closed form; held sigma with -1<xi<=0 concave/analytic location. Other conditional searches are numerical outside special two-point certificates.",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 3.807669733870192e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gev/mle.hpp",
+      "line": 27,
+      "snippet": "inline double gev_loglik(span x, double mu, double sigma, double xi) {",
+      "likely_fix": "Restoration and boundary likelihood arithmetic must preserve the original-data support, notably the reverse-exponential endpoint. Recheck exact represented feasibility, then recompute the raw likelihood; numerical conditional branches also need complete root/face coverage.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 824,
+    "index": 10948,
+    "family": "gev",
+    "route": "uncertified numerical",
+    "certificate_basis": "All-free joint cover; shape-only interval cover; held xi=-1 closed form; held sigma with -1<xi<=0 concave/analytic location. Other conditional searches are numerical outside special two-point certificates.",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 3.777823469464664e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gev/mle.hpp",
+      "line": 27,
+      "snippet": "inline double gev_loglik(span x, double mu, double sigma, double xi) {",
+      "likely_fix": "Restoration and boundary likelihood arithmetic must preserve the original-data support, notably the reverse-exponential endpoint. Recheck exact represented feasibility, then recompute the raw likelihood; numerical conditional branches also need complete root/face coverage.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 828,
+    "index": 2700,
+    "family": "gev",
+    "route": "uncertified numerical",
+    "certificate_basis": "All-free joint cover; shape-only interval cover; held xi=-1 closed form; held sigma with -1<xi<=0 concave/analytic location. Other conditional searches are numerical outside special two-point certificates.",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 3.568917085973851e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gev/mle.hpp",
+      "line": 27,
+      "snippet": "inline double gev_loglik(span x, double mu, double sigma, double xi) {",
+      "likely_fix": "Restoration and boundary likelihood arithmetic must preserve the original-data support, notably the reverse-exponential endpoint. Recheck exact represented feasibility, then recompute the raw likelihood; numerical conditional branches also need complete root/face coverage.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 831,
+    "index": 2748,
+    "family": "gev",
+    "route": "uncertified numerical",
+    "certificate_basis": "All-free joint cover; shape-only interval cover; held xi=-1 closed form; held sigma with -1<xi<=0 concave/analytic location. Other conditional searches are numerical outside special two-point certificates.",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 3.34124904715718e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gev/mle.hpp",
+      "line": 27,
+      "snippet": "inline double gev_loglik(span x, double mu, double sigma, double xi) {",
+      "likely_fix": "Restoration and boundary likelihood arithmetic must preserve the original-data support, notably the reverse-exponential endpoint. Recheck exact represented feasibility, then recompute the raw likelihood; numerical conditional branches also need complete root/face coverage.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 833,
+    "index": 2745,
+    "family": "gev",
+    "route": "uncertified numerical",
+    "certificate_basis": "All-free joint cover; shape-only interval cover; held xi=-1 closed form; held sigma with -1<xi<=0 concave/analytic location. Other conditional searches are numerical outside special two-point certificates.",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 3.2903354317754263e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gev/mle.hpp",
+      "line": 27,
+      "snippet": "inline double gev_loglik(span x, double mu, double sigma, double xi) {",
+      "likely_fix": "Restoration and boundary likelihood arithmetic must preserve the original-data support, notably the reverse-exponential endpoint. Recheck exact represented feasibility, then recompute the raw likelihood; numerical conditional branches also need complete root/face coverage.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 834,
+    "index": 2768,
+    "family": "gev",
+    "route": "uncertified numerical",
+    "certificate_basis": "All-free joint cover; shape-only interval cover; held xi=-1 closed form; held sigma with -1<xi<=0 concave/analytic location. Other conditional searches are numerical outside special two-point certificates.",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 3.271391138276033e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gev/mle.hpp",
+      "line": 27,
+      "snippet": "inline double gev_loglik(span x, double mu, double sigma, double xi) {",
+      "likely_fix": "Restoration and boundary likelihood arithmetic must preserve the original-data support, notably the reverse-exponential endpoint. Recheck exact represented feasibility, then recompute the raw likelihood; numerical conditional branches also need complete root/face coverage.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 843,
+    "index": 2692,
+    "family": "gev",
+    "route": "uncertified numerical",
+    "certificate_basis": "All-free joint cover; shape-only interval cover; held xi=-1 closed form; held sigma with -1<xi<=0 concave/analytic location. Other conditional searches are numerical outside special two-point certificates.",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 2.4723975435818836e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gev/mle.hpp",
+      "line": 27,
+      "snippet": "inline double gev_loglik(span x, double mu, double sigma, double xi) {",
+      "likely_fix": "Restoration and boundary likelihood arithmetic must preserve the original-data support, notably the reverse-exponential endpoint. Recheck exact represented feasibility, then recompute the raw likelihood; numerical conditional branches also need complete root/face coverage.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 859,
+    "index": 2684,
+    "family": "gev",
+    "route": "uncertified numerical",
+    "certificate_basis": "All-free joint cover; shape-only interval cover; held xi=-1 closed form; held sigma with -1<xi<=0 concave/analytic location. Other conditional searches are numerical outside special two-point certificates.",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 1.3777399348907076e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gev/mle.hpp",
+      "line": 27,
+      "snippet": "inline double gev_loglik(span x, double mu, double sigma, double xi) {",
+      "likely_fix": "Restoration and boundary likelihood arithmetic must preserve the original-data support, notably the reverse-exponential endpoint. Recheck exact represented feasibility, then recompute the raw likelihood; numerical conditional branches also need complete root/face coverage.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 861,
+    "index": 2774,
+    "family": "gev",
+    "route": "uncertified numerical",
+    "certificate_basis": "All-free joint cover; shape-only interval cover; held xi=-1 closed form; held sigma with -1<xi<=0 concave/analytic location. Other conditional searches are numerical outside special two-point certificates.",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 1.2650035182840498e-09,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gev/mle.hpp",
+      "line": 27,
+      "snippet": "inline double gev_loglik(span x, double mu, double sigma, double xi) {",
+      "likely_fix": "Restoration and boundary likelihood arithmetic must preserve the original-data support, notably the reverse-exponential endpoint. Recheck exact represented feasibility, then recompute the raw likelihood; numerical conditional branches also need complete root/face coverage.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 866,
+    "index": 2764,
+    "family": "gev",
+    "route": "uncertified numerical",
+    "certificate_basis": "All-free joint cover; shape-only interval cover; held xi=-1 closed form; held sigma with -1<xi<=0 concave/analytic location. Other conditional searches are numerical outside special two-point certificates.",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 8.770991206193727e-10,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gev/mle.hpp",
+      "line": 27,
+      "snippet": "inline double gev_loglik(span x, double mu, double sigma, double xi) {",
+      "likely_fix": "Restoration and boundary likelihood arithmetic must preserve the original-data support, notably the reverse-exponential endpoint. Recheck exact represented feasibility, then recompute the raw likelihood; numerical conditional branches also need complete root/face coverage.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  },
+  {
+    "rank": 872,
+    "index": 2746,
+    "family": "gev",
+    "route": "uncertified numerical",
+    "certificate_basis": "All-free joint cover; shape-only interval cover; held xi=-1 closed form; held sigma with -1<xi<=0 concave/analytic location. Other conditional searches are numerical outside special two-point certificates.",
+    "observed_flags": [
+      -1,
+      -1
+    ],
+    "category": "coefficient only",
+    "severity": 6.819704928323421e-10,
+    "legacy_classification": "ok",
+    "source": {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gev/mle.hpp",
+      "line": 27,
+      "snippet": "inline double gev_loglik(span x, double mu, double sigma, double xi) {",
+      "likely_fix": "Restoration and boundary likelihood arithmetic must preserve the original-data support, notably the reverse-exponential endpoint. Recheck exact represented feasibility, then recompute the raw likelihood; numerical conditional branches also need complete root/face coverage.",
+      "attribution": "arithmetic seam reviewed; fix remains a hypothesis"
+    }
+  }
+]

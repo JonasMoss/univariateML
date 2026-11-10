@@ -476,3 +476,52 @@ TEST_CASE("emg precision chord never treats an overflowing ratio as a zero gap")
   const double upper=cppunivariate::emg_detail::fixed_rate_precision_chord_upper(-10,-10,7,1e-300,1e300);
   CHECK(upper>1000); // Infinity is a safe unavailable bound in double mode.
 }
+
+TEST_CASE("emg: audit-support case 1374 public coordinates") {
+  const std::vector<double> x{2.3413394878482614e+150,2.2897087235884532e+150,1.3183800389288958e+150,6.757171112452496e+149,5.611056796430911e+150,1.1860909484474617e+150,2.1942876383991374e+150,-3.8622205310315114e+149,5.922717764038318e+149,4.933410406124059e+150,3.8273210056823587e+149,-8.891876547554337e+149};
+  const auto data=mltest::as_span(x);
+  const auto fit=cppunivariate::emg_mle(data,1e-10,100,NAN,1.0518147225573364,1.209185930245896);
+  REQUIRE(fit.status==cppunivariate::EmgStatus::Ok);
+  CHECK(fit.mu==*std::min_element(x.begin(),x.end()));
+  if(fit.status==cppunivariate::EmgStatus::Ok) {
+    double raw=0;
+    for(double z:x) {
+      raw+=cppunivariate::distributions::demg(z,fit.mu,fit.sigma,fit.lambda,true);
+    }
+    // Independent precision-checked maximum, including public rounding.
+    CHECK(fit.stop_detail.loglik_lower<=-3.7387832080153480645146915077850578577e151);
+    CHECK(fit.stop_detail.loglik_upper>=-3.7387832080153480645146915077850578577e151);
+    CHECK(std::isfinite(raw));
+    CHECK(fit.logLik==doctest::Approx(raw).epsilon(1e-12));
+  }
+}
+
+TEST_CASE("emg: audit-support case 1375 public coordinates") {
+  const std::vector<double> x{100000002.34133948,100000002.28970872,100000001.31838004,100000000.67571712,100000005.61105679,100000001.18609095,100000002.19428764,99999999.61377795,100000000.59227178,100000004.9334104,100000000.3827321,99999999.11081235};
+  const auto data=mltest::as_span(x);
+  const auto fit=cppunivariate::emg_mle(data,1e-10,100,NAN,1.0518147225573364,1.209185930245896);
+  REQUIRE(fit.status==cppunivariate::EmgStatus::Ok);
+  CHECK(fit.mu==doctest::Approx(100000000.60179031).epsilon(2e-16));
+  if(fit.status==cppunivariate::EmgStatus::Ok) {
+    double raw=0;
+    for(double z:x) {
+      raw+=cppunivariate::distributions::demg(z,fit.mu,fit.sigma,fit.lambda,true);
+    }
+    // Independent precision-checked maximum, including public rounding.
+    CHECK(fit.stop_detail.loglik_lower<=-24.9760935613079637651591383701231849835);
+    CHECK(fit.stop_detail.loglik_upper>=-24.9760935613079637651591383701231849835);
+    CHECK(std::isfinite(raw));
+    CHECK(fit.logLik==doctest::Approx(raw).epsilon(1e-12));
+  }
+}
+
+TEST_CASE("emg: local location bracket retains the one-iteration witness") {
+  const std::vector<double> x{0,2,4,8,16};
+  const auto fit=cppunivariate::emg_mle(mltest::as_span(x),1e-10,1,NAN,1,1);
+  REQUIRE(fit.status==cppunivariate::EmgStatus::IterationFailure);
+  REQUIRE(fit.stop_detail.candidates.size()==1);
+  CHECK(std::isfinite(fit.mu));
+  CHECK(std::isfinite(fit.logLik));
+  CHECK(fit.stop_detail.loglik_lower<=fit.logLik);
+  CHECK(fit.stop_detail.loglik_upper>=fit.logLik);
+}

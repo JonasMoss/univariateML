@@ -11,11 +11,11 @@ namespace emg_detail {
 // continued-fraction convergents enclose h(t)=1/M(t)-t in exact arithmetic.
 // Other branches use the settled Mills evaluator, with a practical margin.
 inline std::array<CPPUNIV_EXTENDED_REAL,2> location_score(
-    span x, CPPUNIV_EXTENDED_REAL mu, double sigma, double lambda) {
+    span x, CPPUNIV_EXTENDED_REAL mu, double sigma, double lambda, CPPUNIV_EXTENDED_REAL origin=0) {
   CPPUNIV_EXTENDED_REAL lower=0,upper=0,magnitude=0;
   const CPPUNIV_EXTENDED_REAL a=static_cast<CPPUNIV_EXTENDED_REAL>(sigma)*lambda;
   for(double v:x) {
-    const CPPUNIV_EXTENDED_REAL z=(static_cast<CPPUNIV_EXTENDED_REAL>(v)-mu)/sigma,t=a-z;
+    const CPPUNIV_EXTENDED_REAL z=((static_cast<CPPUNIV_EXTENDED_REAL>(v)-origin)-mu)/sigma,t=a-z;
     if(t>=12) {
       CPPUNIV_EXTENDED_REAL r0=0,r1=0;
       for(int j=40;j>=2;--j)r0=j/(t+r0);
@@ -44,59 +44,72 @@ inline LocationCertificate location_certificate(span x,double sigma,double lambd
   const double xmin=*std::min_element(x.begin(),x.end()),xmax=*std::max_element(x.begin(),x.end());
   CPPUNIV_EXTENDED_REAL step=std::max(static_cast<CPPUNIV_EXTENDED_REAL>(sigma),
       1/static_cast<CPPUNIV_EXTENDED_REAL>(lambda));
-  CPPUNIV_EXTENDED_REAL lo=static_cast<CPPUNIV_EXTENDED_REAL>(xmin)-step,hi=xmax;
+  const CPPUNIV_EXTENDED_REAL origin=xmin;
+  // The root is below xmax and xmin+n*lambda*sigma^2. At the latter,
+  // the minimum's score is less than -n*lambda, while every other score
+  // is at most lambda (the normal hazard is greater than its argument).
+  // The second cap avoids a huge data range; the first preserves a useful
+  // bracket and finite witness even with a one-iteration budget.
+  CPPUNIV_EXTENDED_REAL lo=-step,hi=std::min(
+      static_cast<CPPUNIV_EXTENDED_REAL>(xmax)-origin,
+      static_cast<CPPUNIV_EXTENDED_REAL>(x.size())*sigma*
+          (static_cast<CPPUNIV_EXTENDED_REAL>(sigma)*lambda));
   bool bracket=false;
   for(int it=0;it<solver_budget(maxit);++it) {
     out.iterations=it+1;
-    const auto left=location_score(x,lo,sigma,lambda),right=location_score(x,hi,sigma,lambda);
+    const auto left=location_score(x,lo,sigma,lambda,origin),right=location_score(x,hi,sigma,lambda,origin);
     if(!(std::isfinite(lo)&&std::isfinite(hi)&&std::isfinite(left[0])&&std::isfinite(right[1]))) {
       out.arithmetic_failure=true;break;
     }
     if(left[0]>0 && right[1]<0) {bracket=true;break;}
     // The mode lies below xmax. Expansion also covers tiny rates.
-    step*=2;lo=static_cast<CPPUNIV_EXTENDED_REAL>(xmin)-step;hi=static_cast<CPPUNIV_EXTENDED_REAL>(xmax)+step;
+    step*=2;lo=-step;hi=step;
   }
   if(!bracket)return out;
   bool enclosed=false;
   for(int it=out.iterations;it<solver_budget(maxit);++it) {
     out.iterations=it+1;
     const CPPUNIV_EXTENDED_REAL mid=lo+(hi-lo)/2;
-    // sigma is the declared location accuracy floor. Using the smallest
-    // absolute value in the bracket makes the test valid at the true root.
-    const CPPUNIV_EXTENDED_REAL minabs=lo<=0&&hi>=0?0:std::min(std::abs(lo),std::abs(hi));
-    const CPPUNIV_EXTENDED_REAL target=tol*std::max(static_cast<CPPUNIV_EXTENDED_REAL>(sigma),minabs);
+    // Solve in compensated local coordinates. Translation must not relax
+    // the absolute location target measured in units of the held sigma.
+    const CPPUNIV_EXTENDED_REAL target=tol*static_cast<CPPUNIV_EXTENDED_REAL>(sigma);
     const double rounded=static_cast<double>(mid);
     if(std::isfinite(rounded) && std::max(std::abs(rounded-lo),std::abs(hi-rounded))<=target) {enclosed=true;break;}
-    const auto score=location_score(x,mid,sigma,lambda);
+    const auto score=location_score(x,mid,sigma,lambda,origin);
     if(score[0]>0)lo=mid;
     else if(score[1]<0)hi=mid;
     else {
       // A small score alone cannot accept a coordinate. Confirm signs at
       // two probes strictly inside the requested error radius instead.
       const CPPUNIV_EXTENDED_REAL radius=target/4;
-      const auto a=location_score(x,mid-radius,sigma,lambda),b=location_score(x,mid+radius,sigma,lambda);
+      const auto a=location_score(x,mid-radius,sigma,lambda,origin),b=location_score(x,mid+radius,sigma,lambda,origin);
       if(radius>0 && mid-radius>lo && mid+radius<hi && a[0]>0 && b[1]<0) {
         lo=mid-radius;hi=mid+radius;
       } else {out.arithmetic_failure=true;break;}
     }
   }
   const CPPUNIV_EXTENDED_REAL mid=lo+(hi-lo)/2;
-  out.mu=static_cast<double>(mid);
-  out.lower=std::nextafter(static_cast<double>(lo),-INFINITY);
-  out.upper=std::nextafter(static_cast<double>(hi),INFINITY);
+  out.mu=static_cast<double>(origin+mid);
+  out.lower=std::nextafter(static_cast<double>(origin+lo),-INFINITY);
+  out.upper=std::nextafter(static_cast<double>(origin+hi),INFINITY);
   if(!std::isfinite(out.mu)) {out.arithmetic_failure=true;return out;}
+  const CPPUNIV_EXTENDED_REAL public_local=static_cast<CPPUNIV_EXTENDED_REAL>(out.mu)-origin;
+  const CPPUNIV_EXTENDED_REAL error=std::max(std::abs(public_local-lo),std::abs(hi-public_local));
+  // Include the affine round trip in the public coefficient contract.
+  enclosed=enclosed && error<=tol*std::max(static_cast<CPPUNIV_EXTENDED_REAL>(sigma),
+      std::min(std::abs(origin+lo),std::abs(origin+hi)));
   CPPUNIV_EXTENDED_REAL ll=0,mag=0;
   for(double v:x) {
     const double value=distributions::demg(v,out.mu,sigma,lambda,true);
     ll+=value;mag+=std::abs(value);
   }
   out.loglik=static_cast<double>(ll);
-  const auto score=location_score(x,out.mu,sigma,lambda);
+  const auto score=location_score(x,public_local,sigma,lambda,origin);
   const CPPUNIV_EXTENDED_REAL margin=128*std::numeric_limits<double>::epsilon()*(x.size()+mag);
   const double lower=static_cast<double>(ll-margin);
   const double upper=static_cast<double>(ll+margin+
       std::max(std::abs(score[0]),std::abs(score[1]))*
-      std::max(std::abs(out.mu-lo),std::abs(hi-out.mu))/sigma);
+      error/sigma);
   if(std::isfinite(out.loglik)&&std::isfinite(lower)&&std::isfinite(upper)) {
     out.detail.candidates.push_back({{out.mu,sigma,lambda},lower,static_cast<double>(ll+margin),StopModel::None});
     out.detail.loglik_lower=lower;out.detail.loglik_upper=upper;

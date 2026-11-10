@@ -575,3 +575,237 @@ TEST_CASE("gev: positive pivot slabs expand the nuisance bracket inside support"
     CHECK(root.v.hi<=region.v.hi);
   }
 }
+
+TEST_CASE("gev: audit-support case 2682 public coordinates") {
+  const std::vector<double> x{-0.6514892575075315,0.7190118994986324,1.1956145927670203};
+  const auto data=mltest::as_span(x);
+  const auto fit=cppunivariate::gev_mle(data,1e-10,100,NAN,0.006623074223695902,NAN);
+  REQUIRE(fit.status==cppunivariate::GevStatus::Ok);
+  if(fit.status==cppunivariate::GevStatus::Ok) {
+    double raw=0;
+    for(double z:x) {
+      const double residual=cppunivariate::special::support_residual(z,fit.mu,fit.sigma,fit.xi);
+      CHECK((residual>0 || (fit.xi== -1 && residual==0)));
+      raw+=cppunivariate::distributions::dgev(z,fit.mu,fit.sigma,fit.xi,true);
+    }
+    CHECK(std::isfinite(raw));
+    CHECK(fit.logLik==doctest::Approx(raw).epsilon(1e-12));
+  }
+}
+
+TEST_CASE("gev: audit-support case 2695 public coordinates") {
+  const std::vector<double> x{0.7950005938035326,0.7950013888057164,0.7950021838079002,0.795002978810084,0.7950037738122678};
+  const auto data=mltest::as_span(x);
+  const auto fit=cppunivariate::gev_mle(data,1e-10,100,NAN,0.006623074223695902,NAN);
+  REQUIRE(fit.status==cppunivariate::GevStatus::Ok);
+  if(fit.status==cppunivariate::GevStatus::Ok) {
+    double raw=0;
+    for(double z:x) {
+      const double residual=cppunivariate::special::support_residual(z,fit.mu,fit.sigma,fit.xi);
+      CHECK((residual>0 || (fit.xi== -1 && residual==0)));
+      raw+=cppunivariate::distributions::dgev(z,fit.mu,fit.sigma,fit.xi,true);
+    }
+    CHECK(std::isfinite(raw));
+    CHECK(fit.logLik==doctest::Approx(raw).epsilon(1e-12));
+  }
+}
+
+TEST_CASE("gev: audit-support case 2707 public coordinates") {
+  const std::vector<double> x{-6.514892575075315e-151,7.190118994986324e-151,1.1956145927670203e-150,2.1354437992679257e-152,1.33255002155901e-150,9.99055037892868e-151,4.443082381781675e-151,1.784490546684275e-150,7.950021838079003e-151,1.1415363726467913e-150,-6.653630472986568e-151,-8.686654093177045e-151};
+  const auto data=mltest::as_span(x);
+  const auto fit=cppunivariate::gev_mle(data,1e-10,100,NAN,NAN,0.9955800131732704);
+  REQUIRE(fit.status==cppunivariate::GevStatus::Ok);
+  if(fit.status==cppunivariate::GevStatus::Ok) {
+    double raw=0;
+    for(double z:x) {
+      const double residual=cppunivariate::special::support_residual(z,fit.mu,fit.sigma,fit.xi);
+      CHECK((residual>0 || (fit.xi== -1 && residual==0)));
+      raw+=cppunivariate::distributions::dgev(z,fit.mu,fit.sigma,fit.xi,true);
+    }
+    CHECK(std::isfinite(raw));
+    CHECK(fit.logLik==doctest::Approx(raw).epsilon(1e-12));
+  }
+}
+
+TEST_CASE("gev: audit-support case 10949 public coordinates") {
+  const std::vector<double> x{-3.2212091334838218,-3.221208133483822,-3.221207133483822,-3.221205133483822,-3.221201133483822};
+  const auto data=mltest::as_span(x);
+  const auto fit=cppunivariate::gev_mle(data,1e-10,100,NAN,NAN,0.9955800131732704);
+  REQUIRE(fit.status==cppunivariate::GevStatus::Ok);
+  if(fit.status==cppunivariate::GevStatus::Ok) {
+    double raw=0;
+    for(double z:x) {
+      const double residual=cppunivariate::special::support_residual(z,fit.mu,fit.sigma,fit.xi);
+      CHECK((residual>0 || (fit.xi== -1 && residual==0)));
+      raw+=cppunivariate::distributions::dgev(z,fit.mu,fit.sigma,fit.xi,true);
+    }
+    CHECK(std::isfinite(raw));
+    CHECK(fit.logLik==doctest::Approx(raw).epsilon(1e-12));
+  }
+}
+
+TEST_CASE("gev: audit-support case 10957 public coordinates") {
+  const std::vector<double> x{-3.221210133483815,-3.2212101334838077,-3.2212101334838006,-3.2212101334837864,-3.221210133483758};
+  const auto data=mltest::as_span(x);
+  const auto fit=cppunivariate::gev_mle(data,1e-10,100,0.30843601546572924,NAN,NAN);
+  REQUIRE(fit.status==cppunivariate::GevStatus::NumericalFailure);
+  if(fit.status==cppunivariate::GevStatus::Ok) {
+    double raw=0;
+    for(double z:x) {
+      const double residual=cppunivariate::special::support_residual(z,fit.mu,fit.sigma,fit.xi);
+      CHECK((residual>0 || (fit.xi== -1 && residual==0)));
+      raw+=cppunivariate::distributions::dgev(z,fit.mu,fit.sigma,fit.xi,true);
+    }
+    CHECK(std::isfinite(raw));
+    CHECK(fit.logLik==doctest::Approx(raw).epsilon(1e-12));
+  }
+}
+
+TEST_CASE("gev: audit-support case 10965 public coordinates") {
+  const std::vector<double> x{-3.221210133482822,-3.2212101334818217,-3.221210133480822,-3.221210133478822,-3.221210133474822};
+  const auto data=mltest::as_span(x);
+  const auto fit=cppunivariate::gev_mle(data,1e-10,100,0.30843601546572924,0.006623074223695902,0.9955800131732704);
+  REQUIRE(fit.status==cppunivariate::GevStatus::Ok);
+  if(fit.status==cppunivariate::GevStatus::Ok) {
+    double raw=0;
+    for(double z:x) {
+      const double residual=cppunivariate::special::support_residual(z,fit.mu,fit.sigma,fit.xi);
+      CHECK((residual>0 || (fit.xi== -1 && residual==0)));
+      raw+=cppunivariate::distributions::dgev(z,fit.mu,fit.sigma,fit.xi,true);
+    }
+    CHECK(std::isfinite(raw));
+    CHECK(fit.logLik==doctest::Approx(raw).epsilon(1e-12));
+  }
+}
+
+TEST_CASE("gev: audit-support case 10966 public coordinates") {
+  const std::vector<double> x{-3.221210133483815,-3.2212101334838077,-3.2212101334838006,-3.2212101334837864,-3.221210133483758};
+  const auto data=mltest::as_span(x);
+  const auto fit=cppunivariate::gev_mle(data,1e-10,100,0.30843601546572924,0.006623074223695902,0.9955800131732704);
+  REQUIRE(fit.status==cppunivariate::GevStatus::Ok);
+  if(fit.status==cppunivariate::GevStatus::Ok) {
+    double raw=0;
+    for(double z:x) {
+      const double residual=cppunivariate::special::support_residual(z,fit.mu,fit.sigma,fit.xi);
+      CHECK((residual>0 || (fit.xi== -1 && residual==0)));
+      raw+=cppunivariate::distributions::dgev(z,fit.mu,fit.sigma,fit.xi,true);
+    }
+    CHECK(std::isfinite(raw));
+    CHECK(fit.logLik==doctest::Approx(raw).epsilon(1e-12));
+  }
+}
+
+TEST_CASE("gev: audit-support case 2708 public coordinates") {
+  const std::vector<double> x{-6.514892575075315e+149,7.190118994986324e+149,1.1956145927670203e+150,2.1354437992679258e+148,1.33255002155901e+150,9.99055037892868e+149,4.443082381781675e+149,1.784490546684275e+150,7.950021838079002e+149,1.1415363726467912e+150,-6.653630472986568e+149,-8.686654093177046e+149};
+  const auto data=mltest::as_span(x);
+  const auto fit=cppunivariate::gev_mle(data,1e-10,100,NAN,NAN,0.9955800131732704);
+  REQUIRE(fit.status==cppunivariate::GevStatus::NumericalFailure);
+  if(fit.status==cppunivariate::GevStatus::Ok) {
+    double raw=0;
+    for(double z:x) {
+      const double residual=cppunivariate::special::support_residual(z,fit.mu,fit.sigma,fit.xi);
+      CHECK((residual>0 || (fit.xi== -1 && residual==0)));
+      raw+=cppunivariate::distributions::dgev(z,fit.mu,fit.sigma,fit.xi,true);
+    }
+    CHECK(std::isfinite(raw));
+    CHECK(fit.logLik==doctest::Approx(raw).epsilon(1e-12));
+  }
+}
+
+TEST_CASE("gev: audit-support case 2772 public coordinates") {
+  const std::vector<double> x{-6.514892575075315e+149,7.190118994986324e+149,1.1956145927670203e+150,2.1354437992679258e+148,1.33255002155901e+150,9.99055037892868e+149,4.443082381781675e+149,1.784490546684275e+150,7.950021838079002e+149,1.1415363726467912e+150,-6.653630472986568e+149,-8.686654093177046e+149};
+  const auto data=mltest::as_span(x);
+  const auto fit=cppunivariate::gev_mle(data,1e-10,100,0.30843601546572924,NAN,0.9955800131732704);
+  REQUIRE(fit.status==cppunivariate::GevStatus::NumericalFailure);
+  if(fit.status==cppunivariate::GevStatus::Ok) {
+    double raw=0;
+    for(double z:x) {
+      const double residual=cppunivariate::special::support_residual(z,fit.mu,fit.sigma,fit.xi);
+      CHECK((residual>0 || (fit.xi== -1 && residual==0)));
+      raw+=cppunivariate::distributions::dgev(z,fit.mu,fit.sigma,fit.xi,true);
+    }
+    CHECK(std::isfinite(raw));
+    CHECK(fit.logLik==doctest::Approx(raw).epsilon(1e-12));
+  }
+}
+
+TEST_CASE("gev: audit-support case 2788 public coordinates") {
+  const std::vector<double> x{-6.514892575075315e+149,7.190118994986324e+149,1.1956145927670203e+150,2.1354437992679258e+148,1.33255002155901e+150,9.99055037892868e+149,4.443082381781675e+149,1.784490546684275e+150,7.950021838079002e+149,1.1415363726467912e+150,-6.653630472986568e+149,-8.686654093177046e+149};
+  const auto data=mltest::as_span(x);
+  const auto fit=cppunivariate::gev_mle(data,1e-10,100,0.30843601546572924,0.006623074223695902,0.9955800131732704);
+  REQUIRE(fit.status==cppunivariate::GevStatus::InvalidData);
+  if(fit.status==cppunivariate::GevStatus::Ok) {
+    double raw=0;
+    for(double z:x) {
+      const double residual=cppunivariate::special::support_residual(z,fit.mu,fit.sigma,fit.xi);
+      CHECK((residual>0 || (fit.xi== -1 && residual==0)));
+      raw+=cppunivariate::distributions::dgev(z,fit.mu,fit.sigma,fit.xi,true);
+    }
+    CHECK(std::isfinite(raw));
+    CHECK(fit.logLik==doctest::Approx(raw).epsilon(1e-12));
+  }
+}
+
+TEST_CASE("gev: audit-support case 10964 public coordinates") {
+  const std::vector<double> x{-3.2212091334838218,-3.221208133483822,-3.221207133483822,-3.221205133483822,-3.221201133483822};
+  const auto data=mltest::as_span(x);
+  const auto fit=cppunivariate::gev_mle(data,1e-10,100,0.30843601546572924,0.006623074223695902,0.9955800131732704);
+  REQUIRE(fit.status==cppunivariate::GevStatus::Ok);
+  if(fit.status==cppunivariate::GevStatus::Ok) {
+    double raw=0;
+    for(double z:x) {
+      const double residual=cppunivariate::special::support_residual(z,fit.mu,fit.sigma,fit.xi);
+      CHECK((residual>0 || (fit.xi== -1 && residual==0)));
+      raw+=cppunivariate::distributions::dgev(z,fit.mu,fit.sigma,fit.xi,true);
+    }
+    CHECK(std::isfinite(raw));
+    CHECK(fit.logLik==doctest::Approx(raw).epsilon(1e-12));
+  }
+}
+
+TEST_CASE("gev: public likelihood margin scales with its operands") {
+  const std::vector<double> x{0,1e150,2e150,3e150,4e150};
+  const auto data=mltest::as_span(x);
+  const auto fit=cppunivariate::gev_mle(data,1e-10,100,-1,NAN,1);
+  REQUIRE(fit.status==cppunivariate::GevStatus::Ok);
+  CHECK(fit.sigma==1);
+  CHECK(fit.mu==4e150);
+  CHECK(fit.logLik==doctest::Approx(-1e151).epsilon(1e-14));
+}
+
+TEST_CASE("gev: support repair can preserve a small scale after translation") {
+  const std::vector<double> x{std::nextafter(1e8+.1,INFINITY)};
+  cppunivariate::GevResult fit{1e8,.1,-1,0,0,cppunivariate::GevStatus::Ok};
+  REQUIRE(cppunivariate::gev_restore_support(mltest::as_span(x),fit,false,false,1e-10,100));
+  CHECK(fit.sigma==.1);
+  CHECK(fit.mu==std::nextafter(1e8,INFINITY));
+  CHECK(cppunivariate::special::support_residual(x[0],fit.mu,fit.sigma,fit.xi)>0);
+}
+
+TEST_CASE("gev: translated reverse exponential retains its accurate scale") {
+  std::vector<double> x{1e8,1e8+.1,1e8+.2,1e8+.3,1e8+.4};
+  x[1]+=std::ldexp(1.,-25);
+  double scale=0;for(double v:x)scale+=(x.back()-v)/x.size();
+  const auto fit=cppunivariate::gev_mle(mltest::as_span(x),1e-10,100,-1);
+  REQUIRE(fit.status==cppunivariate::GevStatus::Ok);
+  CHECK(fit.sigma==doctest::Approx(scale).epsilon(1e-14));
+  double ll=0;for(double v:x)ll+=cppunivariate::distributions::dgev(v,fit.mu,fit.sigma,fit.xi,true);
+  CHECK(std::isfinite(ll));
+  CHECK(fit.logLik==doctest::Approx(ll).epsilon(1e-12));
+}
+
+TEST_CASE("gev: closed endpoint excludes a negative residual rounded to zero") {
+  const std::vector<double> x{-1,0,std::numeric_limits<double>::denorm_min()};
+  const auto fit=cppunivariate::gev_mle(mltest::as_span(x),1e-10,100,-1,NAN,2);
+  REQUIRE(fit.status==cppunivariate::GevStatus::Ok);
+  CHECK(fit.sigma==2);
+  CHECK(fit.mu+fit.sigma>0);
+  double ll=0;
+  for(double v:x) {
+    CHECK(cppunivariate::gev_public_contains(v,fit.mu,fit.sigma,fit.xi));
+    ll+=cppunivariate::distributions::dgev(v,fit.mu,fit.sigma,fit.xi,true);
+  }
+  CHECK(fit.logLik==doctest::Approx(ll).epsilon(1e-12));
+  const auto held=cppunivariate::gev_mle(mltest::as_span(x),1e-10,100,-1,-2,2);
+  CHECK(held.status==cppunivariate::GevStatus::InvalidData);
+}

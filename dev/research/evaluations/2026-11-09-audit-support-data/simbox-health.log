@@ -1,0 +1,2 @@
+/bin/bash: line 1: /usr/bin/uptime: Input/output error
+exit_code=126
