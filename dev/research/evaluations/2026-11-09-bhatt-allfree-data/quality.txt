@@ -1,0 +1,4 @@
+PYTHONPATH=/home/jonas/Files/programming/univariateML.wt/bhatt-allfree/dev/validation python3 -m quality check bhatt
+/home/jonas/.bashrc: line 26: /home/jonas/.cargo/env: No such file or directory
+/home/jonas/.bash_profile: line 9: /home/jonas/.cargo/env: No such file or directory
+bhatt pass 

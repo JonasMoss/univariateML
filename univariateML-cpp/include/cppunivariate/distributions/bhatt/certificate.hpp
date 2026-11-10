@@ -18,6 +18,17 @@ inline FitCandidate cert_witness(span x,double mu,double sigma,double a) {
 inline bool cert_valid(const FitCandidate& c) {
   return valid_stop_coefficients(c.model,c.coef)&&std::isfinite(c.loglik_lower)&&std::isfinite(c.loglik_upper)&&c.loglik_lower<=c.loglik_upper;
 }
+// A limit encoded by endpoints must retain the parent half-width to the
+// requested coefficient accuracy. Large locations can otherwise round the
+// endpoint difference to a substantially different width.
+inline bool uniform_representation_valid(const BhattResult& face,double tol) {
+  const auto& c=face.stop_detail.limit_coef;
+  if(!valid_stop_coefficients(StopModel::Unif,c)||!(face.a>0&&std::isfinite(face.a)))return false;
+  const double span=c[1]-c[0];
+  const double half=std::isfinite(span)?span/2:c[1]/2-c[0]/2;
+  const double relative=std::max(tol,1024*std::numeric_limits<double>::epsilon());
+  return half>0&&std::isfinite(half)&&std::abs(half-face.a)<=relative*std::max(half,face.a);
+}
 inline BhattResult cert_stop(BhattStatus status,const std::vector<FitCandidate>& witnesses,int iterations=0) {
   BhattResult out={NAN,NAN,NAN,NAN,iterations,status};
   auto& d=out.stop_detail;d.loglik_upper=INFINITY;
@@ -85,7 +96,7 @@ inline int cert_range_compare(double xmin,double xmax,double a) {
   if(2*(xmin/2)!=xmin||2*(xmax/2)!=xmax)return 2;
   return cert_difference_compare(xmax/2,xmin/2,a);
 }
-inline BhattResult held_width_face(span x,double mu,double a,int comparison) {
+inline BhattResult held_width_face(span x,double mu,double a,int comparison,double tol) {
   const double xmin=*std::min_element(x.begin(),x.end()),xmax=*std::max_element(x.begin(),x.end());
   const double midpoint=std::isnan(mu)?xmin/2+xmax/2:mu;
   CertSum ll;ll.add(-static_cast<CPPUNIV_EXTENDED_REAL>(x.size())*(std::log(CPPUNIV_EXTENDED_LITERAL(2.,2.L))+std::log(static_cast<CPPUNIV_EXTENDED_REAL>(a))));
@@ -103,6 +114,8 @@ inline BhattResult held_width_face(span x,double mu,double a,int comparison) {
     return cert_stop(BhattStatus::NumericalFailure,{cert_witness(x,midpoint,a,a)});
   BhattResult out={midpoint,0,a,value,0,BhattStatus::UniformLimit};
   out.stop_detail=limit_detail(endpoints,value,StopModel::Unif);
+  if(!uniform_representation_valid(out,tol))
+    return cert_stop(BhattStatus::NumericalFailure,{cert_witness(x,midpoint,a,a)});
   const double margin=1024*std::numeric_limits<double>::epsilon()*(x.size()+std::abs(value));
   out.stop_detail.candidates.front().loglik_lower-=margin;
   out.stop_detail.candidates.front().loglik_upper+=margin;
@@ -238,9 +251,21 @@ struct WidthCertificate {
     if(!work.charge())return false;
     auto p=model.initial(k);
     if(model.location>=0)p[model.location]=inner.center[model.location];
+    if(std::isnan(mu)&&model.scale>=0)p[model.scale]=inner.center[model.scale];
     const auto root=cert_newton(model,p,tol,maxit);
-    if(!root.ok)return true;
+    if(!root.ok){
+      // An unrestricted finite witness beating both faces still needs an
+      // enclosed stationary winner. If none exists yet and this full solve
+      // fails, report the numerical failure instead of repeating it across
+      // the entire outer subdivision budget.
+      if(winners.empty()&&std::isnan(mu)&&std::isnan(sigma)&&has_finite&&
+          finite.loglik_lower>normal_upper&&finite.loglik_lower>uniform.loglik_upper)return false;
+      return true;
+    }
     double m,s,a;model.coordinates(root.center,m,s,a);record(cert_witness(x,m,std::isnan(sigma)?s:sigma,a));
+    // No winner can be accepted without its coefficient enclosure. Preserve
+    // a successful search as uncertified instead of repeating this failure.
+    if(winners.empty()&&!root.accurate)return false;
     auto winner=cert_winner_region(model,root,maxit);
     if(!winner.ok)return true;
     for(auto& old:winners)if(winner.lo<=old.hi&&winner.hi>=old.lo){
@@ -311,6 +336,12 @@ struct WidthCertificate {
     // or face selection from it is used by the acceptance certificate.
     if(std::isnan(sigma)){
       const auto proposed=bhatt_detail::legacy_candidate(x,tol,maxit,sigma,NAN,mu);
+      // This outer certificate isolates positive-width roots; it has no
+      // global normal-neighbourhood domination proof with all scales free.
+      // Do not subdivide merely to rediscover that missing proof. The public
+      // policy retains this successful existing search with certified=false.
+      if(std::isnan(mu)&&proposed.status==BhattStatus::Ok&&proposed.a==0)
+        return stop(BhattStatus::Unresolved);
       if(proposed.sigma>0&&proposed.a>0&&std::isfinite(proposed.sigma)&&std::isfinite(proposed.a))start=proposed.a/proposed.sigma;
     }
     if(!(start>0&&std::isfinite(start)))return stop(BhattStatus::NumericalFailure);
@@ -336,7 +367,21 @@ struct WidthCertificate {
     // For k >= 2n, the universal uniform-face bound holds. If a >= r,
     // use the peak bound. If a < r, retain one extreme's Q(k*(r/a-1));
     // n*log(t)+log Q(k*(t-1)) decreases for t>=1 since R(v)>=sqrt(2/pi).
-    if(std::isnan(sigma)){hi=std::max(hi,2.*x.size());closed=true;}
+    if(std::isnan(sigma)){
+      // For every K>=hi and a<r, Q(K*(t-1)) <= exp(-K^2*(t-1)^2/2)/2.
+      // Since log(t)<=t-1, n*log(t)+log Q <= n^2/(2*hi^2)-log(2).
+      // For a>=r use the uniform peak bound. This closes a whole tail
+      // earlier when an interior witness already dominates the uniform face.
+      for(int it=0;it<solver_budget(maxit);++it,hi*=2){
+        if(!work.charge())return stopped();
+        if(hi>=2.*x.size()){closed=true;break;}
+        const double ratio=static_cast<double>(x.size())/hi;
+        const double extra=std::max(0.,ratio*ratio/2-std::log(2.));
+        const double upper=uniform.loglik_upper+extra;
+        const double margin=256*std::numeric_limits<double>::epsilon()*(x.size()+std::abs(upper)+extra);
+        if(std::isfinite(upper)&&upper+margin<incumbent){closed=true;break;}
+      }
+    }
     for(int it=0;!closed&&it<solver_budget(maxit);++it,hi*=2){
       if(!work.charge())return stopped();
       const double upper=-static_cast<double>(x.size())*(std::log(2.)+std::log(hi)+std::log(sigma));
@@ -355,7 +400,10 @@ struct WidthCertificate {
       for(const auto& w:winners){if(w.lo>segment.lo&&w.lo<segment.hi){middle=w.lo;break;}if(w.hi>segment.lo&&w.hi<segment.hi){middle=w.hi;break;}}
       if(!(middle>segment.lo&&middle<segment.hi)){queue.push(segment);return stop(BhattStatus::NumericalFailure);}
       if(!profile(middle,point)){queue.push(segment);return stopped();}
-      if(winners.empty()||point.ll_upper>=incumbent){if(!propose(middle,point)){queue.push(segment);return stopped();}}
+      // A full stationary proposal is useful only while this profile point
+      // can improve the incumbent. With no enclosed winner yet, repeatedly
+      // solving from already dominated points adds no acceptance evidence.
+      if(point.ll_upper>=incumbent){if(!propose(middle,point)){queue.push(segment);return stopped();}}
       if(covered(segment.lo,segment.hi))continue;
       if(!push(segment.lo,middle,segment.left,point.ll_upper)||!push(middle,segment.hi,point.ll_upper,segment.right)){queue.push(segment);return stopped();}
     }
@@ -376,26 +424,13 @@ struct WidthCertificate {
 };
 } // namespace bhatt_detail
 
-inline BhattResult bhatt_mle(span x,double tol=1e-8,int maxit=500,double sigma=special::kNaN,double a=special::kNaN,double mu=special::kNaN) {
+namespace bhatt_detail {
+inline BhattResult certificate_mle(span x,double tol=1e-8,int maxit=500,double sigma=special::kNaN,double a=special::kNaN,double mu=special::kNaN) {
   const int budget=static_cast<int>(solver_budget(maxit));
   BhattResult bad={NAN,NAN,NAN,NAN,0,BhattStatus::InvalidInput};
   if(x.empty()||!(tol>0&&std::isfinite(tol))||budget<1||(!std::isnan(mu)&&!std::isfinite(mu))||(!std::isnan(sigma)&&!(sigma>0&&std::isfinite(sigma)))||(!std::isnan(a)&&!(a>=0&&std::isfinite(a))))return bad;
   for(double v:x)if(!std::isfinite(v))return bad;
-  // The all-free route retains its frozen output. Its missing global and
-  // coefficient acceptance is explicitly recorded in the dossier.
-  if(std::isnan(sigma)&&std::isnan(a)&&std::isnan(mu)){
-    auto proposed=bhatt_detail::legacy_candidate(x,tol,maxit,sigma,a,mu);
-    const bool false_collapse=proposed.status==BhattStatus::Unbounded&& !std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];});
-    const bool invalid_point=proposed.status==BhattStatus::Ok&&(!bhatt_detail::valid(proposed.mu,proposed.sigma,proposed.a)||!std::isfinite(proposed.logLik));
-    const bool invalid_face=proposed.status==BhattStatus::UniformLimit&&(!valid_stop_coefficients(StopModel::Unif,proposed.stop_detail.limit_coef)||!std::isfinite(proposed.stop_detail.limit_loglik));
-    if(false_collapse||invalid_point||invalid_face){
-      const double largest=*std::max_element(x.begin(),x.end()),smallest=*std::min_element(x.begin(),x.end());
-      const double witness_scale=std::max(largest/2-smallest/2,std::numeric_limits<double>::min());
-      return bhatt_detail::cert_stop(BhattStatus::NumericalFailure,{bhatt_detail::cert_witness(x,x[0],witness_scale,0)});
-    }
-    return proposed;
-  }
-  if(std::isnan(sigma)&&std::isnan(a)&&std::all_of(x.begin(),x.end(),[&](double v){return v==mu;})){
+  if(std::isnan(sigma)&&std::isnan(a)&&std::all_of(x.begin(),x.end(),[&](double v){return v==(std::isnan(mu)?x[0]:mu);})){
     bad.status=BhattStatus::Unbounded;return bad;
   }
   if(!std::isnan(mu)&&!std::isnan(sigma)&&!std::isnan(a)){
@@ -412,12 +447,28 @@ inline BhattResult bhatt_mle(span x,double tol=1e-8,int maxit=500,double sigma=s
     if(std::isnan(mu))comparison=bhatt_detail::cert_difference_compare(*std::max_element(x.begin(),x.end()),*std::min_element(x.begin(),x.end()),sigma);
     else for(double v:x)comparison=std::max(comparison,bhatt_detail::cert_distance_compare(v,mu,sigma));
     if(comparison<=0)return bhatt_detail::normal_member_certificate(x,mu,sigma,tol);
+    // The truncated-normal variance domination argument in the dossier
+    // proves the normal winner whenever the empirical RMS is at most sigma.
+    // For free location, SSE at the rounded mean bounds the minimum SSE
+    // from above. Require separation from the practical summation margin.
+    const double normal_center=std::isnan(mu)?norm_detail::moments(x).mean:mu;
+    CertSum square;bool bounded=std::isfinite(normal_center);
+    if(bounded)for(double v:x){
+      const CPPUNIV_EXTENDED_REAL z=(static_cast<CPPUNIV_EXTENDED_REAL>(v)-normal_center)/sigma;
+      const CPPUNIV_EXTENDED_REAL term=z*z;
+      if(!std::isfinite(term)){bounded=false;break;}
+      square.add(term);
+    }
+    const CPPUNIV_EXTENDED_REAL n=static_cast<CPPUNIV_EXTENDED_REAL>(x.size());
+    const CPPUNIV_EXTENDED_REAL margin=256*std::numeric_limits<double>::epsilon()*(n+std::abs(square.value));
+    if(bounded&&std::isfinite(square.value)&&square.value+margin<n)
+      return bhatt_detail::normal_member_certificate(x,mu,sigma,tol);
   }
   if(std::isnan(sigma)&&!std::isnan(a)){
     int comparison=-1;
     if(std::isnan(mu))comparison=bhatt_detail::cert_range_compare(*std::min_element(x.begin(),x.end()),*std::max_element(x.begin(),x.end()),a);
     else for(double v:x)comparison=std::max(comparison,bhatt_detail::cert_distance_compare(v,mu,a));
-    if(comparison<=0)return bhatt_detail::held_width_face(x,mu,a,comparison);
+    if(comparison<=0)return bhatt_detail::held_width_face(x,mu,a,comparison,tol);
     if(comparison==2)return bhatt_detail::cert_stop(BhattStatus::NumericalFailure,{bhatt_detail::cert_witness(x,*std::min_element(x.begin(),x.end())/2+*std::max_element(x.begin(),x.end())/2,a,a)});
   }
   const double xmin=*std::min_element(x.begin(),x.end()),xmax=*std::max_element(x.begin(),x.end());
@@ -426,7 +477,7 @@ inline BhattResult bhatt_mle(span x,double tol=1e-8,int maxit=500,double sigma=s
   if(!std::isnan(sigma))scale=std::max(scale,sigma);
   if(!std::isnan(a))scale=std::max(scale,a);
   if(!std::isnan(mu))scale=std::max(scale,static_cast<double>(std::abs(static_cast<CPPUNIV_EXTENDED_REAL>(mu)-center)));
-  if(!(scale>0&&std::isfinite(scale)))return bhatt_detail::cert_stop(BhattStatus::NumericalFailure,{});
+  if(!(scale>0&&std::isfinite(scale)))return bhatt_detail::cert_stop(BhattStatus::NumericalFailure,{bhatt_detail::cert_witness(x,std::isnan(mu)?x[0]:mu,std::isnan(sigma)?std::numeric_limits<double>::min():sigma,std::isnan(a)?0:a)});
   std::vector<double> y; y.reserve(x.size());
   for(double v:x)y.push_back(static_cast<double>((static_cast<CPPUNIV_EXTENDED_REAL>(v)-center)/scale));
   const double m=std::isnan(mu)?mu:static_cast<double>((static_cast<CPPUNIV_EXTENDED_REAL>(mu)-center)/scale);
@@ -437,8 +488,11 @@ inline BhattResult bhatt_mle(span x,double tol=1e-8,int maxit=500,double sigma=s
   const double shift=x.size()*std::log(scale);
   if(out.status==BhattStatus::UniformLimit){
     out.mu=std::isnan(mu)?center+scale*out.mu:mu;out.a*=scale;out.logLik-=shift;
-    out.stop_detail=limit_detail({out.mu-out.a,out.mu+out.a},out.logLik,StopModel::Unif);
-    if(out.stop_detail.limit_coef.empty())return bhatt_detail::cert_stop(BhattStatus::NumericalFailure,{bhatt_detail::cert_witness(x,std::isnan(mu)?x[0]:mu,scale,0)});
+    // Unrestricted uniform endpoints are the original extrema. Recovering
+    // them through a rounded centre/half-width can change their span.
+    const std::vector<double> endpoints=std::isnan(mu)&&std::isnan(a)?std::vector<double>{xmin,xmax}:std::vector<double>{out.mu-out.a,out.mu+out.a};
+    out.stop_detail=limit_detail(endpoints,out.logLik,StopModel::Unif);
+    if(!bhatt_detail::uniform_representation_valid(out,tol))return bhatt_detail::cert_stop(BhattStatus::NumericalFailure,{bhatt_detail::cert_witness(x,std::isnan(mu)?x[0]:mu,scale,0)});
     const double margin=1024*std::numeric_limits<double>::epsilon()*(x.size()+std::abs(out.logLik));
     out.stop_detail.candidates.front().loglik_lower-=margin;out.stop_detail.candidates.front().loglik_upper+=margin;
   }else if(out.status==BhattStatus::Ok){
@@ -470,5 +524,58 @@ inline BhattResult bhatt_mle(span x,double tol=1e-8,int maxit=500,double sigma=s
     if(std::isfinite(out.stop_detail.segment_loglik_upper))out.stop_detail.segment_loglik_upper-=shift;
   }
   return out;
+}
+} // namespace bhatt_detail
+
+inline BhattResult bhatt_mle(span x,double tol=1e-8,int maxit=500,double sigma=special::kNaN,double a=special::kNaN,double mu=special::kNaN) {
+  auto certificate=bhatt_detail::certificate_mle(x,tol,maxit,sigma,a,mu);
+  if(certificate.status==BhattStatus::Ok||certificate.status==BhattStatus::UniformLimit||
+      certificate.status==BhattStatus::NormalLimit||certificate.status==BhattStatus::Unbounded){
+    certificate.certified=true;return certificate;
+  }
+  if(certificate.status==BhattStatus::InvalidInput)return certificate;
+  // The normal delegate is the search itself, including its representability
+  // checks. Other inconclusive coefficient enclosures must try the search,
+  // even when the requested target is smaller than the certificate margin.
+  if(a==0)return certificate;
+  // Inconclusive certification must preserve a successful existing search.
+  // Its result has no global or coefficient-enclosure claim: certified=false.
+  auto searched=bhatt_detail::legacy_candidate(x,tol,maxit,sigma,a,mu);
+  const auto reject_search=[&]() {
+    certificate.status=BhattStatus::NumericalFailure;
+    certificate.stop_detail.budget_exhausted=false;
+    certificate.stop_detail.comparison_tie=false;
+    return certificate;
+  };
+  if(searched.status==BhattStatus::Ok){
+    const auto witness=bhatt_detail::cert_witness(x,searched.mu,searched.sigma,searched.a);
+    if(!bhatt_detail::cert_valid(witness))return certificate;
+    // The existing search worked in normalized coordinates. An inconsistent
+    // recovered likelihood proves its physical result wrong; uncertified does
+    // not permit reporting a likelihood at different coefficients.
+    if(!std::isfinite(searched.logLik)||searched.logLik<witness.loglik_lower||searched.logLik>witness.loglik_upper)return reject_search();
+    // For a repeated observation with held centre and sigma, the a^2
+    // coefficient is positive exactly when |x-mu|>sigma. Error-free distance
+    // comparison can prove this even when ordinary subtraction rounds to sigma.
+    if(searched.a==0&&!std::isnan(mu)&&!std::isnan(sigma)&&
+        std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];})&&
+        bhatt_detail::cert_distance_compare(x[0],mu,sigma)>0)return certificate;
+    // A higher finite or reachable-face lower bound refutes this result even
+    // when the outer certificate itself has not closed.
+    if(certificate.stop_detail.loglik_lower>witness.loglik_upper)return certificate;
+    return searched;
+  }
+  if(searched.status==BhattStatus::UniformLimit&&std::isnan(mu)&&std::isnan(a))
+    searched.stop_detail=limit_detail({*std::min_element(x.begin(),x.end()),*std::max_element(x.begin(),x.end())},searched.logLik,StopModel::Unif);
+  if(searched.status==BhattStatus::UniformLimit&&
+      valid_stop_coefficients(StopModel::Unif,searched.stop_detail.limit_coef)&&std::isfinite(searched.logLik)){
+    if(!bhatt_detail::uniform_representation_valid(searched,tol))return reject_search();
+    const double margin=1024*std::numeric_limits<double>::epsilon()*(x.size()+std::abs(searched.logLik));
+    if(certificate.stop_detail.loglik_lower>searched.logLik+margin)return certificate;
+    return searched;
+  }
+  // The search itself failed, or proposed an invalid/unbounded result not
+  // proved by the certificate. Preserve the certificate's physical witnesses.
+  return certificate;
 }
 } // namespace cppunivariate

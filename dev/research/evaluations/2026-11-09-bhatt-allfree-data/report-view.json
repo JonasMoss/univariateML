@@ -1,0 +1,6 @@
+{
+  "report": "../2026-11-09-bhatt-allfree-report.md",
+  "show_exit_code": 1,
+  "http_status": 403,
+  "reason": "Worktree outside configured readable roots; helper supports file paths only. No viewer configuration or other worktree was changed."
+}

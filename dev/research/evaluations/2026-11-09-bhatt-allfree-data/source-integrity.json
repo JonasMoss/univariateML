@@ -1,0 +1,25 @@
+{
+  "head": "2ed5514b32ec72ded95809c834453d24f025f850",
+  "branch": "codex/bhatt-allfree",
+  "frozen_sample_and_all_other_golden_metadata_unchanged": true,
+  "restored_named_tests_byte_identical": {
+    "test_that(\"P3 bhatt returns the normal maximum as an attained member\"": true,
+    "TEST_CASE(\"bhatt P3 normal boundary is attained with conditional coefficients\")": true
+  },
+  "original_face_oracle_test_byte_identical": true,
+  "shared_test_exception": "Existing held-sigma unresolved-stop blocks now expect a proved normal success. Existing tiny-target positive-held-width stops now expect successful uncertified searches. Iteration and normal-delegate failure tests remain; no tests rewritten to accept new stops.",
+  "tracked_changes_within_authorized_scope": true,
+  "frozen_data_sha256": "d5fbd57469b8346e756e0eee20a167f220c3705924a9aaf877e2d7826665ee1f",
+  "source_sha256": {
+    "bindings/common/distributions/bhatt/fit.hpp": "78420c875a8eefe91e59058df43825fa7899a8d8c134009a24e91828e1787e00",
+    "bindings/js/test.mjs": "07aa6cc910a1c1da4541274c630dcef2d16a95f5e4d5ec6050f960eb7f47ff6c",
+    "bindings/r/distributions/bhatt/adapter.cpp": "5918f9c3811477be762d11376b7336e25fb8fca400cc7748b0dcc09ad56f69c6",
+    "bindings/r/distributions/bhatt/test.R": "32457db42a3596e44d6ab4711b58f5e7542b54d176c568c68448495e7f89df94",
+    "univariateML-cpp/include/cppunivariate/distributions/bhatt/README.md": "122bd19fe98e40928c3d6886dc32bfbcd278d57f2fa813204d88ffae5a4346ce",
+    "univariateML-cpp/include/cppunivariate/distributions/bhatt/certificate.hpp": "62b83bb3ece91f46fae1d88c43c5c570433f2e52edfeb02e1ffa60de7217e21c",
+    "univariateML-cpp/include/cppunivariate/distributions/bhatt/certificate_math.hpp": "b4fcae439569a9f7f600c6887814a104709e54d9c09bf42c19fd4d433855b089",
+    "univariateML-cpp/include/cppunivariate/distributions/bhatt/golden.json": "7471f19599ff0aa85c421e493d958331eccdf5379ba2db0ca80ca854d2b733c1",
+    "univariateML-cpp/include/cppunivariate/distributions/bhatt/mle.hpp": "3fe121b3b6c24e344e6f6a0aac4d38ae19e914b8946b16d5215b7a1338cb4bb5",
+    "univariateML-cpp/include/cppunivariate/distributions/bhatt/test.cpp": "709f5e56d549ea2fbc42ab751f69e64b73df9ab204e6749cd02e722be642f418"
+  }
+}

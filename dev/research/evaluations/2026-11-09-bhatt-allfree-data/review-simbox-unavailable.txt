@@ -1,0 +1,7 @@
+Simbox census attempt did not reach computation. SSH read-only health check returned exit126:
+/bin/bash: line 1: /usr/bin/date: Input/output error
+/bin/bash: line 1: /usr/bin/ls: Input/output error
+/bin/bash: line 1: /usr/bin/ps: Input/output error
+/bin/bash: line 1: /usr/bin/sort: Input/output error
+/bin/bash: line 1: /usr/bin/head: Input/output error
+The simbox-run helper was stuck polling slots (external mkdir cannot execute), rather than returning75. Own helper PID1379732 was cwd/argv-verified and terminated. No local CPU reservation wait was interrupted. Census and final suites fall back locally.

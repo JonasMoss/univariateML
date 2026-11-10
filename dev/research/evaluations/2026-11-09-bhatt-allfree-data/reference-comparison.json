@@ -1,0 +1,27 @@
+{
+  "frozen_sample_unchanged": true,
+  "relative_reference_vs_70_digit": {
+    "mu": "1.29486425664e-25",
+    "sigma": "2.19383454777e-25",
+    "a": "1.17164276885e-26"
+  },
+  "reference": {
+    "method": "damped Newton at 50 digits on the README log density, from the fitted values",
+    "estimates": {
+      "mu": "-0.003800068921591749713129563",
+      "sigma": "1.05789733329049518933052",
+      "a": "1.733605923867750989913198"
+    },
+    "logLik": "-896.3104598272385777518444",
+    "free": [
+      "mu",
+      "sigma",
+      "a"
+    ],
+    "not_refined": {},
+    "score_norm": "4.54e-59",
+    "information_negative_definite": true,
+    "global": "local only",
+    "input_sha256": "00685f345b19642a6bd60577982d4753b2fd0e2b638be61bdec4d09e36dcd695"
+  }
+}

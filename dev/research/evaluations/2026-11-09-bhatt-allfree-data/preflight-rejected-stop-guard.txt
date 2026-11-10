@@ -1,0 +1,40 @@
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+univariateML-cpp/include/cppunivariate/distributions/bhatt/test.cpp:5:
+TEST CASE:  bhatt: golden and likelihood
+
+univariateML-cpp/include/cppunivariate/distributions/bhatt/test.cpp:8: FATAL ERROR: REQUIRE( f.status==cppunivariate::BhattStatus::Ok ) is NOT correct!
+  values: REQUIRE( 5 == 0 )
+
+===============================================================================
+univariateML-cpp/include/cppunivariate/distributions/bhatt/test.cpp:108:
+TEST CASE:  bhatt: central density preserves the golden fit
+
+univariateML-cpp/include/cppunivariate/distributions/bhatt/test.cpp:116: ERROR: CHECK( r.mu == doctest::Approx(g.estimates.at("mu")).epsilon(mltest::kBhattGoldenTol) ) is NOT correct!
+  values: CHECK( nan == Approx( -0.00380007 ) )
+
+univariateML-cpp/include/cppunivariate/distributions/bhatt/test.cpp:117: ERROR: CHECK( r.sigma == doctest::Approx(g.estimates.at("sigma")).epsilon(mltest::kBhattGoldenTol) ) is NOT correct!
+  values: CHECK( nan == Approx( 1.0579 ) )
+
+univariateML-cpp/include/cppunivariate/distributions/bhatt/test.cpp:118: ERROR: CHECK( r.a == doctest::Approx(g.estimates.at("a")).epsilon(mltest::kBhattGoldenTol) ) is NOT correct!
+  values: CHECK( nan == Approx( 1.73361 ) )
+
+===============================================================================
+univariateML-cpp/include/cppunivariate/distributions/bhatt/test.cpp:132:
+TEST CASE:  bhatt: free fit is affine equivariant
+
+univariateML-cpp/include/cppunivariate/distributions/bhatt/test.cpp:137: FATAL ERROR: REQUIRE( original.status==cppunivariate::BhattStatus::Ok ) is NOT correct!
+  values: REQUIRE( 5 == 0 )
+
+===============================================================================
+univariateML-cpp/include/cppunivariate/distributions/bhatt/test.cpp:413:
+TEST CASE:  bhatt all-free certificate: independent reference and competitors
+
+univariateML-cpp/include/cppunivariate/distributions/bhatt/test.cpp:416: FATAL ERROR: REQUIRE( f.status==cppunivariate::BhattStatus::Ok ) is NOT correct!
+  values: REQUIRE( 5 == 0 )
+
+===============================================================================
+[doctest] test cases:   38 |   34 passed | 4 failed | 0 skipped
+[doctest] assertions: 4973 | 4967 passed | 6 failed |
+[doctest] Status: FAILURE!

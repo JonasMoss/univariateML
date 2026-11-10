@@ -293,6 +293,15 @@ inline CertRoot cert_newton(const CertModel& model,std::array<double,3> p,double
     double ascent=0;
     for(int i=0;i<model.dim;++i) {for(int j=0;j<model.dim;++j)delta[i]-=inverse[i][j]*(e.gradient[j].lo/2+e.gradient[j].hi/2);ascent+=delta[i]*(e.gradient[i].lo/2+e.gradient[i].hi/2);}
     if(!(ascent>0&&std::isfinite(ascent)))return last;
+    if(validated.ok){
+      // Once the proposed correction is small relative to the enclosure's
+      // uncertainty, more point Newton steps do not supply the missing
+      // coefficient evidence. Keep the valid (possibly inaccurate) enclosure
+      // for profile bounds; public acceptance still requires accurate=true.
+      double relative_step=0;
+      for(int i=0;i<model.dim;++i)relative_step=std::max(relative_step,std::abs(delta[i])/validated.scale[i]);
+      if(relative_step<=validated.error/4)return last;
+    }
     double step=1;bool accepted=false;
     for(int backtrack=0;backtrack<solver_budget(maxit);++backtrack,step*=.5) {
       auto next=p;for(int i=0;i<model.dim;++i)next[i]+=step*delta[i];

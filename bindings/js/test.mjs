@@ -1200,16 +1200,19 @@ test('Bhattacharjee held certificates and quantitative numerical stops', async (
   const x=new Float64Array([-3,-1,0,1,2]);
   const f=api.bhatt.fit(x,{sigma:1,a:2},{reltol:1e-10});
   assert.equal(f.status,'Ok');assert.equal(f.estimates.sigma,1);assert.equal(f.estimates.a,2);
-  for(const controls of [{iterlim:1},{reltol:1e-30}]) {
+  for(const controls of [{iterlim:1}]) {
     assert.throws(()=>api.bhatt.fit(x,{sigma:1,a:2},controls),e=>{
       assert.equal(e.kind,'numerical');assert.ok(e.candidates.length>0);
       assert.ok(e.loglik_lower<=e.loglik_upper);return true;
     });
   }
-  assert.throws(()=>api.bhatt.fit(new Float64Array([-10,...Array(20).fill(0),10]),{mu:0,sigma:4}),e=>{
-    assert.equal(e.kind,'unresolved');assert.ok(e.candidates.length>1);
-    assert.ok(e.candidates.some(c=>c.a===0));assert.ok(e.loglik_lower<=e.loglik_upper);return true;
-  });
+  const tiny=api.bhatt.fit(x,{sigma:1,a:2},{reltol:1e-30});
+  assert.equal(tiny.status,'Ok');assert.equal(tiny.certified,0);
+  assert.equal(tiny.estimates.sigma,1);assert.equal(tiny.estimates.a,2);
+  assert.ok(Number.isFinite(tiny.estimates.mu));
+  const normal=api.bhatt.fit(new Float64Array([-10,...Array(20).fill(0),10]),{mu:0,sigma:4});
+  assert.equal(normal.certified,1);
+  assert.deepEqual(normal.estimates,{mu:0,sigma:4,a:0});
 });
 
 test('Bhattacharjee normal member distinguishes residual underflow and precision', async () => {
@@ -1797,4 +1800,17 @@ test('GEV public support rejects a negative zero residual', async () => {
   assert.equal(f.status,'Ok');
   assert.equal(f.estimates.sigma,2);
   assert.ok(f.estimates.mu+f.estimates.sigma>0);
+});
+test('Bhatt per-fit certification preserves successful searches',async ()=>{
+  const {default:createApi}=await import('./index.mjs');
+  const api=await createApi();
+  const x=new Float64Array([-10,...Array(20).fill(0),10]);
+  const f=api.bhatt.fit(x);
+  assert.equal(f.estimates.a,0);assert.equal(f.certified,0);
+  const g=api.bhatt.fit(new Float64Array(read('bhatt','golden').data));
+  assert.equal(g.certified,1);
+  const seed=api.bhatt.fit(new Float64Array([1.5186427188633,-.893644554187554,-1.08058198203889,-.639737926177478,.655034880479549,-2.35672046800855,2.46887599116556,.273853493748292,2.5355294429514,-.299436099194099,-.160890965931292,-.201888161544889,.6721053216777,-.344350831779183,1.51377727236596,.163578425435854,1.41905463032963,.838599300343392,-.0826733918168545,-1.34035410608697,-.343170308885225,.824451373169256,-.404339571078608,.0120556813316649]));
+  assert.equal(seed.status,"Ok");assert.equal(seed.certified,0);
+  assert.ok(Object.values(seed.estimates).every(Number.isFinite));
+  assert.throws(()=>api.bhatt.fit(new Float64Array([-3,-1,0,1,2]),{}, {iterlim:1}));
 });

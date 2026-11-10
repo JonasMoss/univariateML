@@ -1,0 +1,20 @@
+bash bindings/js/build.sh
+/home/jonas/.bashrc: line 26: /home/jonas/.cargo/env: No such file or directory
+/home/jonas/.bash_profile: line 9: /home/jonas/.cargo/env: No such file or directory
+Setting up EMSDK environment (suppress these messages with EMSDK_QUIET=1)
+Adding directories to PATH:
+PATH += /home/jonas/emsdk
+PATH += /home/jonas/emsdk/upstream/emscripten
+
+Setting environment variables:
+PATH = /home/jonas/emsdk:/home/jonas/emsdk/upstream/emscripten:/home/jonas/.elan/bin:/home/jonas/.npm-global/bin:/home/jonas/.local/bin:/home/jonas/bin:/home/jonas/.npm-global/lib/node_modules/@openai/codex/node_modules/@openai/codex-linux-x64/vendor/x86_64-unknown-linux-musl/codex-path:/home/jonas/.venvs/global/bin:/home/jonas/.codex/tmp/arg0-linux/codex-arg0GGv7yV:/home/jonas/Files/work/misc/codex-math-web/node_modules/.bin:/home/jonas/Files/work/misc/node_modules/.bin:/home/jonas/Files/work/node_modules/.bin:/home/jonas/Files/node_modules/.bin:/home/jonas/node_modules/.bin:/home/node_modules/.bin:/node_modules/.bin:/usr/share/nodejs/@npmcli/run-script/lib/node-gyp-bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/jonas/mplusdemo:/home/jonas/.fzf/bin
+EMSDK = /home/jonas/emsdk
+EMSDK_NODE = /home/jonas/emsdk/node/24.19.0_64bit/bin/node
+Validated and generated d/p/q/r for 99 families.
+In file included from bindings/js/bindings.cpp:9:
+In file included from build/js/generated/fit_includes.hpp:5:
+In file included from bindings/common/distributions/binom/fit.hpp:3:
+univariateML-cpp/include/cppunivariate/distributions/binom/mle.hpp:160:60: warning: self-comparison always evaluates to true [-Wtautological-compare]
+  160 |     if (std::numeric_limits<CPPUNIV_EXTENDED_REAL>::digits <=
+      |                                                            ^
+1 warning generated.

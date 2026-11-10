@@ -1,0 +1,1469 @@
+-- Boost.Math headers: /home/jmoss/R/x86_64-pc-linux-gnu-library/4.6/BH/include
+-- Configuring done (0.0s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/jmoss/umvl-wt/bhatt-allfree/build/cpp-no-long-double
+[  1%] Built target bfgs_tests
+[  3%] Built target sample_tests
+[  5%] Built target no_throw_tests
+[  6%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/beta/test.cpp.o
+[  7%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/bhatt/test.cpp.o
+In file included from ../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/mle.hpp:35,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/hold_search.hpp:4,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/sged/mle.hpp:13,
+                 from ../../../univariateML-cpp/include/cppunivariate/cppunivariate.hpp:62,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/beta/test.cpp:2:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp: In function ‘cppunivariate::snorm_certificate::Poly cppunivariate::snorm_certificate::add(Poly, Poly, double)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:24:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+   24 |   for(std::size_t i=0;i<a.b.size();++i)a.b[i]+=factor*b.b[i];return a;
+      |   ^~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:24:62: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+   24 |   for(std::size_t i=0;i<a.b.size();++i)a.b[i]+=factor*b.b[i];return a;
+      |                                                              ^~~~~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp: In function ‘cppunivariate::snorm_certificate::Poly cppunivariate::snorm_certificate::derivative(const Poly&)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:39:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+   39 |   for(std::size_t i=0;i<n;++i)p.b[i]=n*(a.b[i+1]-a.b[i]);return p;
+      |   ^~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:39:58: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+   39 |   for(std::size_t i=0;i<n;++i)p.b[i]=n*(a.b[i+1]-a.b[i]);return p;
+      |                                                          ^~~~~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp: In function ‘double cppunivariate::snorm_certificate::value(Poly, double)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:42:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+   42 |   for(std::size_t n=p.b.size()-1;n>0;--n)for(std::size_t i=0;i<n;++i)p.b[i]=(1-t)*p.b[i]+t*p.b[i+1];return p.b[0];
+      |   ^~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:42:101: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+   42 |   for(std::size_t n=p.b.size()-1;n>0;--n)for(std::size_t i=0;i<n;++i)p.b[i]=(1-t)*p.b[i]+t*p.b[i+1];return p.b[0];
+      |                                                                                                     ^~~~~~
+In file included from ../../../univariateML-cpp/include/cppunivariate/distributions/sged/free_shape_certificate.hpp:74,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/sged/mle.hpp:425:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp: In function ‘cppunivariate::SgedResult cppunivariate::sged_weighted_shape::fit(cppunivariate::span, double, int, double)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:186:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  186 |     if(work>=cap)return stopped(true);++work;
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:186:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  186 |     if(work>=cap)return stopped(true);++work;
+      |                                       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:190:7: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  190 |       if(work+2>cap)return stopped(true);work+=2;
+      |       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:190:42: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  190 |       if(work+2>cap)return stopped(true);work+=2;
+      |                                          ^~~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:195:9: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  195 |         if(work>=cap)return stopped(true);++work;const double c=a/2+h/2;const auto sc=box(y,c,c,w,maxit);if(!sc.valid)break;
+      |         ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:195:43: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  195 |         if(work>=cap)return stopped(true);++work;const double c=a/2+h/2;const auto sc=box(y,c,c,w,maxit);if(!sc.valid)break;
+      |                                           ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:215:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  215 |     if(work>=cap)return stopped(true);++work;const auto enclosure=box(y,cell.lo,cell.hi,w,maxit);
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:215:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  215 |     if(work>=cap)return stopped(true);++work;const auto enclosure=box(y,cell.lo,cell.hi,w,maxit);
+      |                                       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:220:9: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  220 |         if(work>=cap)return stopped(true);++work;const double mid=a/2+h/2;const auto sc=box(y,mid,mid,w,maxit);if(!sc.valid)break;
+      |         ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:220:43: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  220 |         if(work>=cap)return stopped(true);++work;const double mid=a/2+h/2;const auto sc=box(y,mid,mid,w,maxit);if(!sc.valid)break;
+      |                                           ^~
+In file included from ../../../univariateML-cpp/include/cppunivariate/distributions/sged/free_shape_certificate.hpp:75:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp: In function ‘cppunivariate::SgedResult cppunivariate::sged_mode_skew::fit(cppunivariate::span, double, int, double)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:120:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  120 |     if(work>=cap)return stopped(true);++work;const auto v=point(y,c,p);if(!v.valid)return stopped(false);
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:120:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  120 |     if(work>=cap)return stopped(true);++work;const auto v=point(y,c,p);if(!v.valid)return stopped(false);
+      |                                       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:131:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  131 |     if(work>=cap)return stopped(true);++work;
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:131:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  131 |     if(work>=cap)return stopped(true);++work;
+      |                                       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:135:7: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  135 |       if(work+2>cap)return stopped(true);work+=2;
+      |       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:135:42: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  135 |       if(work+2>cap)return stopped(true);work+=2;
+      |                                          ^~~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:140:9: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  140 |         if(work>=cap)return stopped(true);++work;const double c=a/2+h/2;const auto sc=box(y,c,c,p);if(!sc.valid)break;
+      |         ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:140:43: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  140 |         if(work>=cap)return stopped(true);++work;const double c=a/2+h/2;const auto sc=box(y,c,c,p);if(!sc.valid)break;
+      |                                           ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:156:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  156 |     if(work>=cap)return stopped(true);++work;const auto enclosure=box(y,cell.lo,cell.hi,p);
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:156:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  156 |     if(work>=cap)return stopped(true);++work;const auto enclosure=box(y,cell.lo,cell.hi,p);
+      |                                       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:160:7: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  160 |       if(work>=cap)return stopped(true);++work;const double mid=a/2+h/2;const auto sc=box(y,mid,mid,p);if(!sc.valid)break;
+      |       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:160:41: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  160 |       if(work>=cap)return stopped(true);++work;const double mid=a/2+h/2;const auto sc=box(y,mid,mid,p);if(!sc.valid)break;
+      |                                         ^~
+In file included from ../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/mle.hpp:4,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/mle.hpp:17,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/sstd/mle.hpp:20,
+                 from ../../../univariateML-cpp/include/cppunivariate/cppunivariate.hpp:66:
+../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/certificate.hpp: In function ‘bool cppunivariate::t_cert_detail::data(cppunivariate::span, Data&)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/certificate.hpp:140:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |   ^~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/certificate.hpp:140:42: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |                                          ^
+../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/certificate.hpp: In function ‘bool cppunivariate::t_cert_detail::inverse(const System&, int, std::array<std::array<double, 3>, 3>&)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/certificate.hpp:161:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/certificate.hpp:161:51: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |                                                   ^~~
+[  8%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/burr/test.cpp.o
+../../../univariateML-cpp/include/cppunivariate/distributions/bhatt/test.cpp: In function ‘void DOCTEST_ANON_FUNC_81()’:
+../../../univariateML-cpp/include/cppunivariate/distributions/bhatt/test.cpp:442:18: warning: loop variable ‘controls’ creates a copy from type ‘const std::pair<double, int>’ [-Wrange-loop-construct]
+  442 |   for(const auto controls:std::vector<std::pair<double,int>>{{1e-10,1},{1e-30,8}}){
+      |                  ^~~~~~~~
+../../../univariateML-cpp/include/cppunivariate/distributions/bhatt/test.cpp:442:18: note: use reference type to prevent copying
+  442 |   for(const auto controls:std::vector<std::pair<double,int>>{{1e-10,1},{1e-30,8}}){
+      |                  ^~~~~~~~
+      |                  &
+In file included from ../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/mle.hpp:35,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/hold_search.hpp:4,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/sged/mle.hpp:13,
+                 from ../../../univariateML-cpp/include/cppunivariate/cppunivariate.hpp:62,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/burr/test.cpp:2:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp: In function ‘cppunivariate::snorm_certificate::Poly cppunivariate::snorm_certificate::add(Poly, Poly, double)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:24:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+   24 |   for(std::size_t i=0;i<a.b.size();++i)a.b[i]+=factor*b.b[i];return a;
+      |   ^~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:24:62: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+   24 |   for(std::size_t i=0;i<a.b.size();++i)a.b[i]+=factor*b.b[i];return a;
+      |                                                              ^~~~~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp: In function ‘cppunivariate::snorm_certificate::Poly cppunivariate::snorm_certificate::derivative(const Poly&)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:39:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+   39 |   for(std::size_t i=0;i<n;++i)p.b[i]=n*(a.b[i+1]-a.b[i]);return p;
+      |   ^~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:39:58: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+   39 |   for(std::size_t i=0;i<n;++i)p.b[i]=n*(a.b[i+1]-a.b[i]);return p;
+      |                                                          ^~~~~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp: In function ‘double cppunivariate::snorm_certificate::value(Poly, double)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:42:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+   42 |   for(std::size_t n=p.b.size()-1;n>0;--n)for(std::size_t i=0;i<n;++i)p.b[i]=(1-t)*p.b[i]+t*p.b[i+1];return p.b[0];
+      |   ^~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:42:101: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+   42 |   for(std::size_t n=p.b.size()-1;n>0;--n)for(std::size_t i=0;i<n;++i)p.b[i]=(1-t)*p.b[i]+t*p.b[i+1];return p.b[0];
+      |                                                                                                     ^~~~~~
+In file included from ../../../univariateML-cpp/include/cppunivariate/distributions/sged/free_shape_certificate.hpp:74,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/sged/mle.hpp:425:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp: In function ‘cppunivariate::SgedResult cppunivariate::sged_weighted_shape::fit(cppunivariate::span, double, int, double)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:186:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  186 |     if(work>=cap)return stopped(true);++work;
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:186:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  186 |     if(work>=cap)return stopped(true);++work;
+      |                                       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:190:7: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  190 |       if(work+2>cap)return stopped(true);work+=2;
+      |       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:190:42: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  190 |       if(work+2>cap)return stopped(true);work+=2;
+      |                                          ^~~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:195:9: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  195 |         if(work>=cap)return stopped(true);++work;const double c=a/2+h/2;const auto sc=box(y,c,c,w,maxit);if(!sc.valid)break;
+      |         ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:195:43: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  195 |         if(work>=cap)return stopped(true);++work;const double c=a/2+h/2;const auto sc=box(y,c,c,w,maxit);if(!sc.valid)break;
+      |                                           ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:215:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  215 |     if(work>=cap)return stopped(true);++work;const auto enclosure=box(y,cell.lo,cell.hi,w,maxit);
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:215:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  215 |     if(work>=cap)return stopped(true);++work;const auto enclosure=box(y,cell.lo,cell.hi,w,maxit);
+      |                                       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:220:9: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  220 |         if(work>=cap)return stopped(true);++work;const double mid=a/2+h/2;const auto sc=box(y,mid,mid,w,maxit);if(!sc.valid)break;
+      |         ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:220:43: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  220 |         if(work>=cap)return stopped(true);++work;const double mid=a/2+h/2;const auto sc=box(y,mid,mid,w,maxit);if(!sc.valid)break;
+      |                                           ^~
+In file included from ../../../univariateML-cpp/include/cppunivariate/distributions/sged/free_shape_certificate.hpp:75:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp: In function ‘cppunivariate::SgedResult cppunivariate::sged_mode_skew::fit(cppunivariate::span, double, int, double)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:120:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  120 |     if(work>=cap)return stopped(true);++work;const auto v=point(y,c,p);if(!v.valid)return stopped(false);
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:120:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  120 |     if(work>=cap)return stopped(true);++work;const auto v=point(y,c,p);if(!v.valid)return stopped(false);
+      |                                       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:131:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  131 |     if(work>=cap)return stopped(true);++work;
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:131:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  131 |     if(work>=cap)return stopped(true);++work;
+      |                                       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:135:7: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  135 |       if(work+2>cap)return stopped(true);work+=2;
+      |       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:135:42: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  135 |       if(work+2>cap)return stopped(true);work+=2;
+      |                                          ^~~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:140:9: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  140 |         if(work>=cap)return stopped(true);++work;const double c=a/2+h/2;const auto sc=box(y,c,c,p);if(!sc.valid)break;
+      |         ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:140:43: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  140 |         if(work>=cap)return stopped(true);++work;const double c=a/2+h/2;const auto sc=box(y,c,c,p);if(!sc.valid)break;
+      |                                           ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:156:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  156 |     if(work>=cap)return stopped(true);++work;const auto enclosure=box(y,cell.lo,cell.hi,p);
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:156:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  156 |     if(work>=cap)return stopped(true);++work;const auto enclosure=box(y,cell.lo,cell.hi,p);
+      |                                       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:160:7: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  160 |       if(work>=cap)return stopped(true);++work;const double mid=a/2+h/2;const auto sc=box(y,mid,mid,p);if(!sc.valid)break;
+      |       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:160:41: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  160 |       if(work>=cap)return stopped(true);++work;const double mid=a/2+h/2;const auto sc=box(y,mid,mid,p);if(!sc.valid)break;
+      |                                         ^~
+In file included from ../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/mle.hpp:4,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/mle.hpp:17,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/sstd/mle.hpp:20,
+                 from ../../../univariateML-cpp/include/cppunivariate/cppunivariate.hpp:66:
+../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/certificate.hpp: In function ‘bool cppunivariate::t_cert_detail::data(cppunivariate::span, Data&)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/certificate.hpp:140:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |   ^~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/certificate.hpp:140:42: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |                                          ^
+../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/certificate.hpp: In function ‘bool cppunivariate::t_cert_detail::inverse(const System&, int, std::array<std::array<double, 3>, 3>&)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/certificate.hpp:161:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/certificate.hpp:161:51: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |                                                   ^~~
+[  9%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/fatigue/test.cpp.o
+[ 10%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/ged/test.cpp.o
+In file included from ../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/mle.hpp:35,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/hold_search.hpp:4,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/sged/mle.hpp:13,
+                 from ../../../univariateML-cpp/include/cppunivariate/cppunivariate.hpp:62,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/fatigue/test.cpp:2:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp: In function ‘cppunivariate::snorm_certificate::Poly cppunivariate::snorm_certificate::add(Poly, Poly, double)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:24:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+   24 |   for(std::size_t i=0;i<a.b.size();++i)a.b[i]+=factor*b.b[i];return a;
+      |   ^~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:24:62: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+   24 |   for(std::size_t i=0;i<a.b.size();++i)a.b[i]+=factor*b.b[i];return a;
+      |                                                              ^~~~~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp: In function ‘cppunivariate::snorm_certificate::Poly cppunivariate::snorm_certificate::derivative(const Poly&)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:39:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+   39 |   for(std::size_t i=0;i<n;++i)p.b[i]=n*(a.b[i+1]-a.b[i]);return p;
+      |   ^~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:39:58: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+   39 |   for(std::size_t i=0;i<n;++i)p.b[i]=n*(a.b[i+1]-a.b[i]);return p;
+      |                                                          ^~~~~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp: In function ‘double cppunivariate::snorm_certificate::value(Poly, double)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:42:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+   42 |   for(std::size_t n=p.b.size()-1;n>0;--n)for(std::size_t i=0;i<n;++i)p.b[i]=(1-t)*p.b[i]+t*p.b[i+1];return p.b[0];
+      |   ^~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:42:101: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+   42 |   for(std::size_t n=p.b.size()-1;n>0;--n)for(std::size_t i=0;i<n;++i)p.b[i]=(1-t)*p.b[i]+t*p.b[i+1];return p.b[0];
+      |                                                                                                     ^~~~~~
+In file included from ../../../univariateML-cpp/include/cppunivariate/distributions/sged/free_shape_certificate.hpp:74,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/sged/mle.hpp:425:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp: In function ‘cppunivariate::SgedResult cppunivariate::sged_weighted_shape::fit(cppunivariate::span, double, int, double)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:186:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  186 |     if(work>=cap)return stopped(true);++work;
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:186:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  186 |     if(work>=cap)return stopped(true);++work;
+      |                                       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:190:7: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  190 |       if(work+2>cap)return stopped(true);work+=2;
+      |       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:190:42: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  190 |       if(work+2>cap)return stopped(true);work+=2;
+      |                                          ^~~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:195:9: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  195 |         if(work>=cap)return stopped(true);++work;const double c=a/2+h/2;const auto sc=box(y,c,c,w,maxit);if(!sc.valid)break;
+      |         ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:195:43: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  195 |         if(work>=cap)return stopped(true);++work;const double c=a/2+h/2;const auto sc=box(y,c,c,w,maxit);if(!sc.valid)break;
+      |                                           ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:215:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  215 |     if(work>=cap)return stopped(true);++work;const auto enclosure=box(y,cell.lo,cell.hi,w,maxit);
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:215:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  215 |     if(work>=cap)return stopped(true);++work;const auto enclosure=box(y,cell.lo,cell.hi,w,maxit);
+      |                                       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:220:9: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  220 |         if(work>=cap)return stopped(true);++work;const double mid=a/2+h/2;const auto sc=box(y,mid,mid,w,maxit);if(!sc.valid)break;
+      |         ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:220:43: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  220 |         if(work>=cap)return stopped(true);++work;const double mid=a/2+h/2;const auto sc=box(y,mid,mid,w,maxit);if(!sc.valid)break;
+      |                                           ^~
+In file included from ../../../univariateML-cpp/include/cppunivariate/distributions/sged/free_shape_certificate.hpp:75:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp: In function ‘cppunivariate::SgedResult cppunivariate::sged_mode_skew::fit(cppunivariate::span, double, int, double)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:120:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  120 |     if(work>=cap)return stopped(true);++work;const auto v=point(y,c,p);if(!v.valid)return stopped(false);
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:120:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  120 |     if(work>=cap)return stopped(true);++work;const auto v=point(y,c,p);if(!v.valid)return stopped(false);
+      |                                       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:131:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  131 |     if(work>=cap)return stopped(true);++work;
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:131:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  131 |     if(work>=cap)return stopped(true);++work;
+      |                                       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:135:7: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  135 |       if(work+2>cap)return stopped(true);work+=2;
+      |       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:135:42: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  135 |       if(work+2>cap)return stopped(true);work+=2;
+      |                                          ^~~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:140:9: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  140 |         if(work>=cap)return stopped(true);++work;const double c=a/2+h/2;const auto sc=box(y,c,c,p);if(!sc.valid)break;
+      |         ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:140:43: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  140 |         if(work>=cap)return stopped(true);++work;const double c=a/2+h/2;const auto sc=box(y,c,c,p);if(!sc.valid)break;
+      |                                           ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:156:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  156 |     if(work>=cap)return stopped(true);++work;const auto enclosure=box(y,cell.lo,cell.hi,p);
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:156:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  156 |     if(work>=cap)return stopped(true);++work;const auto enclosure=box(y,cell.lo,cell.hi,p);
+      |                                       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:160:7: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  160 |       if(work>=cap)return stopped(true);++work;const double mid=a/2+h/2;const auto sc=box(y,mid,mid,p);if(!sc.valid)break;
+      |       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:160:41: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  160 |       if(work>=cap)return stopped(true);++work;const double mid=a/2+h/2;const auto sc=box(y,mid,mid,p);if(!sc.valid)break;
+      |                                         ^~
+In file included from ../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/mle.hpp:4,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/mle.hpp:17,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/sstd/mle.hpp:20,
+                 from ../../../univariateML-cpp/include/cppunivariate/cppunivariate.hpp:66:
+../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/certificate.hpp: In function ‘bool cppunivariate::t_cert_detail::data(cppunivariate::span, Data&)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/certificate.hpp:140:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |   ^~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/certificate.hpp:140:42: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |                                          ^
+../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/certificate.hpp: In function ‘bool cppunivariate::t_cert_detail::inverse(const System&, int, std::array<std::array<double, 3>, 3>&)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/certificate.hpp:161:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/certificate.hpp:161:51: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |                                                   ^~~
+In file included from ../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/mle.hpp:35,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/hold_search.hpp:4,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/sged/mle.hpp:13,
+                 from ../../../univariateML-cpp/include/cppunivariate/cppunivariate.hpp:62,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/ged/test.cpp:2:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp: In function ‘cppunivariate::snorm_certificate::Poly cppunivariate::snorm_certificate::add(Poly, Poly, double)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:24:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+   24 |   for(std::size_t i=0;i<a.b.size();++i)a.b[i]+=factor*b.b[i];return a;
+      |   ^~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:24:62: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+   24 |   for(std::size_t i=0;i<a.b.size();++i)a.b[i]+=factor*b.b[i];return a;
+      |                                                              ^~~~~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp: In function ‘cppunivariate::snorm_certificate::Poly cppunivariate::snorm_certificate::derivative(const Poly&)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:39:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+   39 |   for(std::size_t i=0;i<n;++i)p.b[i]=n*(a.b[i+1]-a.b[i]);return p;
+      |   ^~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:39:58: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+   39 |   for(std::size_t i=0;i<n;++i)p.b[i]=n*(a.b[i+1]-a.b[i]);return p;
+      |                                                          ^~~~~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp: In function ‘double cppunivariate::snorm_certificate::value(Poly, double)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:42:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+   42 |   for(std::size_t n=p.b.size()-1;n>0;--n)for(std::size_t i=0;i<n;++i)p.b[i]=(1-t)*p.b[i]+t*p.b[i+1];return p.b[0];
+      |   ^~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:42:101: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+   42 |   for(std::size_t n=p.b.size()-1;n>0;--n)for(std::size_t i=0;i<n;++i)p.b[i]=(1-t)*p.b[i]+t*p.b[i+1];return p.b[0];
+      |                                                                                                     ^~~~~~
+In file included from ../../../univariateML-cpp/include/cppunivariate/distributions/sged/free_shape_certificate.hpp:74,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/sged/mle.hpp:425:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp: In function ‘cppunivariate::SgedResult cppunivariate::sged_weighted_shape::fit(cppunivariate::span, double, int, double)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:186:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  186 |     if(work>=cap)return stopped(true);++work;
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:186:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  186 |     if(work>=cap)return stopped(true);++work;
+      |                                       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:190:7: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  190 |       if(work+2>cap)return stopped(true);work+=2;
+      |       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:190:42: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  190 |       if(work+2>cap)return stopped(true);work+=2;
+      |                                          ^~~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:195:9: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  195 |         if(work>=cap)return stopped(true);++work;const double c=a/2+h/2;const auto sc=box(y,c,c,w,maxit);if(!sc.valid)break;
+      |         ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:195:43: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  195 |         if(work>=cap)return stopped(true);++work;const double c=a/2+h/2;const auto sc=box(y,c,c,w,maxit);if(!sc.valid)break;
+      |                                           ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:215:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  215 |     if(work>=cap)return stopped(true);++work;const auto enclosure=box(y,cell.lo,cell.hi,w,maxit);
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:215:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  215 |     if(work>=cap)return stopped(true);++work;const auto enclosure=box(y,cell.lo,cell.hi,w,maxit);
+      |                                       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:220:9: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  220 |         if(work>=cap)return stopped(true);++work;const double mid=a/2+h/2;const auto sc=box(y,mid,mid,w,maxit);if(!sc.valid)break;
+      |         ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:220:43: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  220 |         if(work>=cap)return stopped(true);++work;const double mid=a/2+h/2;const auto sc=box(y,mid,mid,w,maxit);if(!sc.valid)break;
+      |                                           ^~
+In file included from ../../../univariateML-cpp/include/cppunivariate/distributions/sged/free_shape_certificate.hpp:75:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp: In function ‘cppunivariate::SgedResult cppunivariate::sged_mode_skew::fit(cppunivariate::span, double, int, double)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:120:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  120 |     if(work>=cap)return stopped(true);++work;const auto v=point(y,c,p);if(!v.valid)return stopped(false);
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:120:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  120 |     if(work>=cap)return stopped(true);++work;const auto v=point(y,c,p);if(!v.valid)return stopped(false);
+      |                                       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:131:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  131 |     if(work>=cap)return stopped(true);++work;
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:131:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  131 |     if(work>=cap)return stopped(true);++work;
+      |                                       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:135:7: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  135 |       if(work+2>cap)return stopped(true);work+=2;
+      |       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:135:42: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  135 |       if(work+2>cap)return stopped(true);work+=2;
+      |                                          ^~~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:140:9: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  140 |         if(work>=cap)return stopped(true);++work;const double c=a/2+h/2;const auto sc=box(y,c,c,p);if(!sc.valid)break;
+      |         ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:140:43: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  140 |         if(work>=cap)return stopped(true);++work;const double c=a/2+h/2;const auto sc=box(y,c,c,p);if(!sc.valid)break;
+      |                                           ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:156:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  156 |     if(work>=cap)return stopped(true);++work;const auto enclosure=box(y,cell.lo,cell.hi,p);
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:156:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  156 |     if(work>=cap)return stopped(true);++work;const auto enclosure=box(y,cell.lo,cell.hi,p);
+      |                                       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:160:7: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  160 |       if(work>=cap)return stopped(true);++work;const double mid=a/2+h/2;const auto sc=box(y,mid,mid,p);if(!sc.valid)break;
+      |       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:160:41: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  160 |       if(work>=cap)return stopped(true);++work;const double mid=a/2+h/2;const auto sc=box(y,mid,mid,p);if(!sc.valid)break;
+      |                                         ^~
+In file included from ../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/mle.hpp:4,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/mle.hpp:17,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/sstd/mle.hpp:20,
+                 from ../../../univariateML-cpp/include/cppunivariate/cppunivariate.hpp:66:
+../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/certificate.hpp: In function ‘bool cppunivariate::t_cert_detail::data(cppunivariate::span, Data&)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/certificate.hpp:140:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |   ^~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/certificate.hpp:140:42: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |                                          ^
+../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/certificate.hpp: In function ‘bool cppunivariate::t_cert_detail::inverse(const System&, int, std::array<std::array<double, 3>, 3>&)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/certificate.hpp:161:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/certificate.hpp:161:51: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |                                                   ^~~
+[ 11%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/gompertz/test.cpp.o
+[ 12%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/invburr/test.cpp.o
+In file included from ../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/mle.hpp:35,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/hold_search.hpp:4,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/sged/mle.hpp:13,
+                 from ../../../univariateML-cpp/include/cppunivariate/cppunivariate.hpp:62,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/gompertz/test.cpp:2:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp: In function ‘cppunivariate::snorm_certificate::Poly cppunivariate::snorm_certificate::add(Poly, Poly, double)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:24:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+   24 |   for(std::size_t i=0;i<a.b.size();++i)a.b[i]+=factor*b.b[i];return a;
+      |   ^~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:24:62: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+   24 |   for(std::size_t i=0;i<a.b.size();++i)a.b[i]+=factor*b.b[i];return a;
+      |                                                              ^~~~~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp: In function ‘cppunivariate::snorm_certificate::Poly cppunivariate::snorm_certificate::derivative(const Poly&)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:39:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+   39 |   for(std::size_t i=0;i<n;++i)p.b[i]=n*(a.b[i+1]-a.b[i]);return p;
+      |   ^~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:39:58: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+   39 |   for(std::size_t i=0;i<n;++i)p.b[i]=n*(a.b[i+1]-a.b[i]);return p;
+      |                                                          ^~~~~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp: In function ‘double cppunivariate::snorm_certificate::value(Poly, double)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:42:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+   42 |   for(std::size_t n=p.b.size()-1;n>0;--n)for(std::size_t i=0;i<n;++i)p.b[i]=(1-t)*p.b[i]+t*p.b[i+1];return p.b[0];
+      |   ^~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:42:101: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+   42 |   for(std::size_t n=p.b.size()-1;n>0;--n)for(std::size_t i=0;i<n;++i)p.b[i]=(1-t)*p.b[i]+t*p.b[i+1];return p.b[0];
+      |                                                                                                     ^~~~~~
+In file included from ../../../univariateML-cpp/include/cppunivariate/distributions/sged/free_shape_certificate.hpp:74,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/sged/mle.hpp:425:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp: In function ‘cppunivariate::SgedResult cppunivariate::sged_weighted_shape::fit(cppunivariate::span, double, int, double)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:186:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  186 |     if(work>=cap)return stopped(true);++work;
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:186:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  186 |     if(work>=cap)return stopped(true);++work;
+      |                                       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:190:7: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  190 |       if(work+2>cap)return stopped(true);work+=2;
+      |       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:190:42: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  190 |       if(work+2>cap)return stopped(true);work+=2;
+      |                                          ^~~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:195:9: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  195 |         if(work>=cap)return stopped(true);++work;const double c=a/2+h/2;const auto sc=box(y,c,c,w,maxit);if(!sc.valid)break;
+      |         ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:195:43: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  195 |         if(work>=cap)return stopped(true);++work;const double c=a/2+h/2;const auto sc=box(y,c,c,w,maxit);if(!sc.valid)break;
+      |                                           ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:215:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  215 |     if(work>=cap)return stopped(true);++work;const auto enclosure=box(y,cell.lo,cell.hi,w,maxit);
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:215:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  215 |     if(work>=cap)return stopped(true);++work;const auto enclosure=box(y,cell.lo,cell.hi,w,maxit);
+      |                                       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:220:9: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  220 |         if(work>=cap)return stopped(true);++work;const double mid=a/2+h/2;const auto sc=box(y,mid,mid,w,maxit);if(!sc.valid)break;
+      |         ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:220:43: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  220 |         if(work>=cap)return stopped(true);++work;const double mid=a/2+h/2;const auto sc=box(y,mid,mid,w,maxit);if(!sc.valid)break;
+      |                                           ^~
+In file included from ../../../univariateML-cpp/include/cppunivariate/distributions/sged/free_shape_certificate.hpp:75:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp: In function ‘cppunivariate::SgedResult cppunivariate::sged_mode_skew::fit(cppunivariate::span, double, int, double)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:120:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  120 |     if(work>=cap)return stopped(true);++work;const auto v=point(y,c,p);if(!v.valid)return stopped(false);
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:120:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  120 |     if(work>=cap)return stopped(true);++work;const auto v=point(y,c,p);if(!v.valid)return stopped(false);
+      |                                       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:131:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  131 |     if(work>=cap)return stopped(true);++work;
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:131:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  131 |     if(work>=cap)return stopped(true);++work;
+      |                                       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:135:7: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  135 |       if(work+2>cap)return stopped(true);work+=2;
+      |       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:135:42: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  135 |       if(work+2>cap)return stopped(true);work+=2;
+      |                                          ^~~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:140:9: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  140 |         if(work>=cap)return stopped(true);++work;const double c=a/2+h/2;const auto sc=box(y,c,c,p);if(!sc.valid)break;
+      |         ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:140:43: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  140 |         if(work>=cap)return stopped(true);++work;const double c=a/2+h/2;const auto sc=box(y,c,c,p);if(!sc.valid)break;
+      |                                           ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:156:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  156 |     if(work>=cap)return stopped(true);++work;const auto enclosure=box(y,cell.lo,cell.hi,p);
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:156:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  156 |     if(work>=cap)return stopped(true);++work;const auto enclosure=box(y,cell.lo,cell.hi,p);
+      |                                       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:160:7: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  160 |       if(work>=cap)return stopped(true);++work;const double mid=a/2+h/2;const auto sc=box(y,mid,mid,p);if(!sc.valid)break;
+      |       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:160:41: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  160 |       if(work>=cap)return stopped(true);++work;const double mid=a/2+h/2;const auto sc=box(y,mid,mid,p);if(!sc.valid)break;
+      |                                         ^~
+In file included from ../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/mle.hpp:4,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/mle.hpp:17,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/sstd/mle.hpp:20,
+                 from ../../../univariateML-cpp/include/cppunivariate/cppunivariate.hpp:66:
+../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/certificate.hpp: In function ‘bool cppunivariate::t_cert_detail::data(cppunivariate::span, Data&)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/certificate.hpp:140:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |   ^~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/certificate.hpp:140:42: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |                                          ^
+../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/certificate.hpp: In function ‘bool cppunivariate::t_cert_detail::inverse(const System&, int, std::array<std::array<double, 3>, 3>&)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/certificate.hpp:161:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/certificate.hpp:161:51: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |                                                   ^~~
+In file included from ../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/mle.hpp:35,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/hold_search.hpp:4,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/sged/mle.hpp:13,
+                 from ../../../univariateML-cpp/include/cppunivariate/cppunivariate.hpp:62,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/invburr/test.cpp:2:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp: In function ‘cppunivariate::snorm_certificate::Poly cppunivariate::snorm_certificate::add(Poly, Poly, double)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:24:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+   24 |   for(std::size_t i=0;i<a.b.size();++i)a.b[i]+=factor*b.b[i];return a;
+      |   ^~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:24:62: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+   24 |   for(std::size_t i=0;i<a.b.size();++i)a.b[i]+=factor*b.b[i];return a;
+      |                                                              ^~~~~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp: In function ‘cppunivariate::snorm_certificate::Poly cppunivariate::snorm_certificate::derivative(const Poly&)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:39:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+   39 |   for(std::size_t i=0;i<n;++i)p.b[i]=n*(a.b[i+1]-a.b[i]);return p;
+      |   ^~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:39:58: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+   39 |   for(std::size_t i=0;i<n;++i)p.b[i]=n*(a.b[i+1]-a.b[i]);return p;
+      |                                                          ^~~~~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp: In function ‘double cppunivariate::snorm_certificate::value(Poly, double)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:42:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+   42 |   for(std::size_t n=p.b.size()-1;n>0;--n)for(std::size_t i=0;i<n;++i)p.b[i]=(1-t)*p.b[i]+t*p.b[i+1];return p.b[0];
+      |   ^~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:42:101: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+   42 |   for(std::size_t n=p.b.size()-1;n>0;--n)for(std::size_t i=0;i<n;++i)p.b[i]=(1-t)*p.b[i]+t*p.b[i+1];return p.b[0];
+      |                                                                                                     ^~~~~~
+In file included from ../../../univariateML-cpp/include/cppunivariate/distributions/sged/free_shape_certificate.hpp:74,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/sged/mle.hpp:425:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp: In function ‘cppunivariate::SgedResult cppunivariate::sged_weighted_shape::fit(cppunivariate::span, double, int, double)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:186:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  186 |     if(work>=cap)return stopped(true);++work;
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:186:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  186 |     if(work>=cap)return stopped(true);++work;
+      |                                       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:190:7: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  190 |       if(work+2>cap)return stopped(true);work+=2;
+      |       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:190:42: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  190 |       if(work+2>cap)return stopped(true);work+=2;
+      |                                          ^~~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:195:9: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  195 |         if(work>=cap)return stopped(true);++work;const double c=a/2+h/2;const auto sc=box(y,c,c,w,maxit);if(!sc.valid)break;
+      |         ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:195:43: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  195 |         if(work>=cap)return stopped(true);++work;const double c=a/2+h/2;const auto sc=box(y,c,c,w,maxit);if(!sc.valid)break;
+      |                                           ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:215:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  215 |     if(work>=cap)return stopped(true);++work;const auto enclosure=box(y,cell.lo,cell.hi,w,maxit);
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:215:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  215 |     if(work>=cap)return stopped(true);++work;const auto enclosure=box(y,cell.lo,cell.hi,w,maxit);
+      |                                       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:220:9: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  220 |         if(work>=cap)return stopped(true);++work;const double mid=a/2+h/2;const auto sc=box(y,mid,mid,w,maxit);if(!sc.valid)break;
+      |         ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:220:43: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  220 |         if(work>=cap)return stopped(true);++work;const double mid=a/2+h/2;const auto sc=box(y,mid,mid,w,maxit);if(!sc.valid)break;
+      |                                           ^~
+In file included from ../../../univariateML-cpp/include/cppunivariate/distributions/sged/free_shape_certificate.hpp:75:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp: In function ‘cppunivariate::SgedResult cppunivariate::sged_mode_skew::fit(cppunivariate::span, double, int, double)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:120:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  120 |     if(work>=cap)return stopped(true);++work;const auto v=point(y,c,p);if(!v.valid)return stopped(false);
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:120:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  120 |     if(work>=cap)return stopped(true);++work;const auto v=point(y,c,p);if(!v.valid)return stopped(false);
+      |                                       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:131:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  131 |     if(work>=cap)return stopped(true);++work;
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:131:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  131 |     if(work>=cap)return stopped(true);++work;
+      |                                       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:135:7: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  135 |       if(work+2>cap)return stopped(true);work+=2;
+      |       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:135:42: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  135 |       if(work+2>cap)return stopped(true);work+=2;
+      |                                          ^~~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:140:9: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  140 |         if(work>=cap)return stopped(true);++work;const double c=a/2+h/2;const auto sc=box(y,c,c,p);if(!sc.valid)break;
+      |         ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:140:43: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  140 |         if(work>=cap)return stopped(true);++work;const double c=a/2+h/2;const auto sc=box(y,c,c,p);if(!sc.valid)break;
+      |                                           ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:156:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  156 |     if(work>=cap)return stopped(true);++work;const auto enclosure=box(y,cell.lo,cell.hi,p);
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:156:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  156 |     if(work>=cap)return stopped(true);++work;const auto enclosure=box(y,cell.lo,cell.hi,p);
+      |                                       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:160:7: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  160 |       if(work>=cap)return stopped(true);++work;const double mid=a/2+h/2;const auto sc=box(y,mid,mid,p);if(!sc.valid)break;
+      |       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:160:41: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  160 |       if(work>=cap)return stopped(true);++work;const double mid=a/2+h/2;const auto sc=box(y,mid,mid,p);if(!sc.valid)break;
+      |                                         ^~
+In file included from ../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/mle.hpp:4,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/mle.hpp:17,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/sstd/mle.hpp:20,
+                 from ../../../univariateML-cpp/include/cppunivariate/cppunivariate.hpp:66:
+../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/certificate.hpp: In function ‘bool cppunivariate::t_cert_detail::data(cppunivariate::span, Data&)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/certificate.hpp:140:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |   ^~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/certificate.hpp:140:42: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |                                          ^
+../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/certificate.hpp: In function ‘bool cppunivariate::t_cert_detail::inverse(const System&, int, std::array<std::array<double, 3>, 3>&)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/certificate.hpp:161:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/certificate.hpp:161:51: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |                                                   ^~~
+../../../univariateML-cpp/include/cppunivariate/distributions/invburr/test.cpp: In function ‘void DOCTEST_ANON_FUNC_10()’:
+../../../univariateML-cpp/include/cppunivariate/distributions/invburr/test.cpp:54:2: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+   54 |  for (double &v : w) v=1/v; for (double &v : p) v=1/v;
+      |  ^~~
+../../../univariateML-cpp/include/cppunivariate/distributions/invburr/test.cpp:54:29: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+   54 |  for (double &v : w) v=1/v; for (double &v : p) v=1/v;
+      |                             ^~~
+[ 13%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/kumar/test.cpp.o
+[ 14%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/snorm/test.cpp.o
+In file included from ../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/mle.hpp:35,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/hold_search.hpp:4,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/sged/mle.hpp:13,
+                 from ../../../univariateML-cpp/include/cppunivariate/cppunivariate.hpp:62,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/kumar/test.cpp:2:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp: In function ‘cppunivariate::snorm_certificate::Poly cppunivariate::snorm_certificate::add(Poly, Poly, double)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:24:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+   24 |   for(std::size_t i=0;i<a.b.size();++i)a.b[i]+=factor*b.b[i];return a;
+      |   ^~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:24:62: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+   24 |   for(std::size_t i=0;i<a.b.size();++i)a.b[i]+=factor*b.b[i];return a;
+      |                                                              ^~~~~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp: In function ‘cppunivariate::snorm_certificate::Poly cppunivariate::snorm_certificate::derivative(const Poly&)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:39:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+   39 |   for(std::size_t i=0;i<n;++i)p.b[i]=n*(a.b[i+1]-a.b[i]);return p;
+      |   ^~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:39:58: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+   39 |   for(std::size_t i=0;i<n;++i)p.b[i]=n*(a.b[i+1]-a.b[i]);return p;
+      |                                                          ^~~~~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp: In function ‘double cppunivariate::snorm_certificate::value(Poly, double)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:42:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+   42 |   for(std::size_t n=p.b.size()-1;n>0;--n)for(std::size_t i=0;i<n;++i)p.b[i]=(1-t)*p.b[i]+t*p.b[i+1];return p.b[0];
+      |   ^~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:42:101: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+   42 |   for(std::size_t n=p.b.size()-1;n>0;--n)for(std::size_t i=0;i<n;++i)p.b[i]=(1-t)*p.b[i]+t*p.b[i+1];return p.b[0];
+      |                                                                                                     ^~~~~~
+In file included from ../../../univariateML-cpp/include/cppunivariate/distributions/sged/free_shape_certificate.hpp:74,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/sged/mle.hpp:425:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp: In function ‘cppunivariate::SgedResult cppunivariate::sged_weighted_shape::fit(cppunivariate::span, double, int, double)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:186:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  186 |     if(work>=cap)return stopped(true);++work;
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:186:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  186 |     if(work>=cap)return stopped(true);++work;
+      |                                       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:190:7: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  190 |       if(work+2>cap)return stopped(true);work+=2;
+      |       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:190:42: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  190 |       if(work+2>cap)return stopped(true);work+=2;
+      |                                          ^~~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:195:9: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  195 |         if(work>=cap)return stopped(true);++work;const double c=a/2+h/2;const auto sc=box(y,c,c,w,maxit);if(!sc.valid)break;
+      |         ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:195:43: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  195 |         if(work>=cap)return stopped(true);++work;const double c=a/2+h/2;const auto sc=box(y,c,c,w,maxit);if(!sc.valid)break;
+      |                                           ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:215:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  215 |     if(work>=cap)return stopped(true);++work;const auto enclosure=box(y,cell.lo,cell.hi,w,maxit);
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:215:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  215 |     if(work>=cap)return stopped(true);++work;const auto enclosure=box(y,cell.lo,cell.hi,w,maxit);
+      |                                       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:220:9: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  220 |         if(work>=cap)return stopped(true);++work;const double mid=a/2+h/2;const auto sc=box(y,mid,mid,w,maxit);if(!sc.valid)break;
+      |         ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:220:43: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  220 |         if(work>=cap)return stopped(true);++work;const double mid=a/2+h/2;const auto sc=box(y,mid,mid,w,maxit);if(!sc.valid)break;
+      |                                           ^~
+In file included from ../../../univariateML-cpp/include/cppunivariate/distributions/sged/free_shape_certificate.hpp:75:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp: In function ‘cppunivariate::SgedResult cppunivariate::sged_mode_skew::fit(cppunivariate::span, double, int, double)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:120:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  120 |     if(work>=cap)return stopped(true);++work;const auto v=point(y,c,p);if(!v.valid)return stopped(false);
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:120:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  120 |     if(work>=cap)return stopped(true);++work;const auto v=point(y,c,p);if(!v.valid)return stopped(false);
+      |                                       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:131:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  131 |     if(work>=cap)return stopped(true);++work;
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:131:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  131 |     if(work>=cap)return stopped(true);++work;
+      |                                       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:135:7: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  135 |       if(work+2>cap)return stopped(true);work+=2;
+      |       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:135:42: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  135 |       if(work+2>cap)return stopped(true);work+=2;
+      |                                          ^~~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:140:9: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  140 |         if(work>=cap)return stopped(true);++work;const double c=a/2+h/2;const auto sc=box(y,c,c,p);if(!sc.valid)break;
+      |         ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:140:43: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  140 |         if(work>=cap)return stopped(true);++work;const double c=a/2+h/2;const auto sc=box(y,c,c,p);if(!sc.valid)break;
+      |                                           ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:156:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  156 |     if(work>=cap)return stopped(true);++work;const auto enclosure=box(y,cell.lo,cell.hi,p);
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:156:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  156 |     if(work>=cap)return stopped(true);++work;const auto enclosure=box(y,cell.lo,cell.hi,p);
+      |                                       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:160:7: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  160 |       if(work>=cap)return stopped(true);++work;const double mid=a/2+h/2;const auto sc=box(y,mid,mid,p);if(!sc.valid)break;
+      |       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:160:41: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  160 |       if(work>=cap)return stopped(true);++work;const double mid=a/2+h/2;const auto sc=box(y,mid,mid,p);if(!sc.valid)break;
+      |                                         ^~
+In file included from ../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/mle.hpp:4,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/mle.hpp:17,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/sstd/mle.hpp:20,
+                 from ../../../univariateML-cpp/include/cppunivariate/cppunivariate.hpp:66:
+../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/certificate.hpp: In function ‘bool cppunivariate::t_cert_detail::data(cppunivariate::span, Data&)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/certificate.hpp:140:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |   ^~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/certificate.hpp:140:42: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |                                          ^
+../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/certificate.hpp: In function ‘bool cppunivariate::t_cert_detail::inverse(const System&, int, std::array<std::array<double, 3>, 3>&)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/certificate.hpp:161:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/certificate.hpp:161:51: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |                                                   ^~~
+[ 15%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/std/test.cpp.o
+In file included from ../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/mle.hpp:35,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/hold_search.hpp:4,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/sged/mle.hpp:13,
+                 from ../../../univariateML-cpp/include/cppunivariate/cppunivariate.hpp:62,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/snorm/test.cpp:3:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp: In function ‘cppunivariate::snorm_certificate::Poly cppunivariate::snorm_certificate::add(Poly, Poly, double)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:24:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+   24 |   for(std::size_t i=0;i<a.b.size();++i)a.b[i]+=factor*b.b[i];return a;
+      |   ^~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:24:62: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+   24 |   for(std::size_t i=0;i<a.b.size();++i)a.b[i]+=factor*b.b[i];return a;
+      |                                                              ^~~~~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp: In function ‘cppunivariate::snorm_certificate::Poly cppunivariate::snorm_certificate::derivative(const Poly&)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:39:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+   39 |   for(std::size_t i=0;i<n;++i)p.b[i]=n*(a.b[i+1]-a.b[i]);return p;
+      |   ^~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:39:58: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+   39 |   for(std::size_t i=0;i<n;++i)p.b[i]=n*(a.b[i+1]-a.b[i]);return p;
+      |                                                          ^~~~~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp: In function ‘double cppunivariate::snorm_certificate::value(Poly, double)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:42:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+   42 |   for(std::size_t n=p.b.size()-1;n>0;--n)for(std::size_t i=0;i<n;++i)p.b[i]=(1-t)*p.b[i]+t*p.b[i+1];return p.b[0];
+      |   ^~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:42:101: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+   42 |   for(std::size_t n=p.b.size()-1;n>0;--n)for(std::size_t i=0;i<n;++i)p.b[i]=(1-t)*p.b[i]+t*p.b[i+1];return p.b[0];
+      |                                                                                                     ^~~~~~
+In file included from ../../../univariateML-cpp/include/cppunivariate/distributions/sged/free_shape_certificate.hpp:74,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/sged/mle.hpp:425:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp: In function ‘cppunivariate::SgedResult cppunivariate::sged_weighted_shape::fit(cppunivariate::span, double, int, double)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:186:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  186 |     if(work>=cap)return stopped(true);++work;
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:186:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  186 |     if(work>=cap)return stopped(true);++work;
+      |                                       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:190:7: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  190 |       if(work+2>cap)return stopped(true);work+=2;
+      |       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:190:42: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  190 |       if(work+2>cap)return stopped(true);work+=2;
+      |                                          ^~~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:195:9: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  195 |         if(work>=cap)return stopped(true);++work;const double c=a/2+h/2;const auto sc=box(y,c,c,w,maxit);if(!sc.valid)break;
+      |         ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:195:43: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  195 |         if(work>=cap)return stopped(true);++work;const double c=a/2+h/2;const auto sc=box(y,c,c,w,maxit);if(!sc.valid)break;
+      |                                           ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:215:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  215 |     if(work>=cap)return stopped(true);++work;const auto enclosure=box(y,cell.lo,cell.hi,w,maxit);
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:215:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  215 |     if(work>=cap)return stopped(true);++work;const auto enclosure=box(y,cell.lo,cell.hi,w,maxit);
+      |                                       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:220:9: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  220 |         if(work>=cap)return stopped(true);++work;const double mid=a/2+h/2;const auto sc=box(y,mid,mid,w,maxit);if(!sc.valid)break;
+      |         ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:220:43: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  220 |         if(work>=cap)return stopped(true);++work;const double mid=a/2+h/2;const auto sc=box(y,mid,mid,w,maxit);if(!sc.valid)break;
+      |                                           ^~
+In file included from ../../../univariateML-cpp/include/cppunivariate/distributions/sged/free_shape_certificate.hpp:75:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp: In function ‘cppunivariate::SgedResult cppunivariate::sged_mode_skew::fit(cppunivariate::span, double, int, double)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:120:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  120 |     if(work>=cap)return stopped(true);++work;const auto v=point(y,c,p);if(!v.valid)return stopped(false);
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:120:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  120 |     if(work>=cap)return stopped(true);++work;const auto v=point(y,c,p);if(!v.valid)return stopped(false);
+      |                                       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:131:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  131 |     if(work>=cap)return stopped(true);++work;
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:131:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  131 |     if(work>=cap)return stopped(true);++work;
+      |                                       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:135:7: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  135 |       if(work+2>cap)return stopped(true);work+=2;
+      |       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:135:42: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  135 |       if(work+2>cap)return stopped(true);work+=2;
+      |                                          ^~~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:140:9: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  140 |         if(work>=cap)return stopped(true);++work;const double c=a/2+h/2;const auto sc=box(y,c,c,p);if(!sc.valid)break;
+      |         ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:140:43: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  140 |         if(work>=cap)return stopped(true);++work;const double c=a/2+h/2;const auto sc=box(y,c,c,p);if(!sc.valid)break;
+      |                                           ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:156:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  156 |     if(work>=cap)return stopped(true);++work;const auto enclosure=box(y,cell.lo,cell.hi,p);
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:156:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  156 |     if(work>=cap)return stopped(true);++work;const auto enclosure=box(y,cell.lo,cell.hi,p);
+      |                                       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:160:7: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  160 |       if(work>=cap)return stopped(true);++work;const double mid=a/2+h/2;const auto sc=box(y,mid,mid,p);if(!sc.valid)break;
+      |       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:160:41: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  160 |       if(work>=cap)return stopped(true);++work;const double mid=a/2+h/2;const auto sc=box(y,mid,mid,p);if(!sc.valid)break;
+      |                                         ^~
+In file included from ../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/mle.hpp:4,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/mle.hpp:17,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/sstd/mle.hpp:20,
+                 from ../../../univariateML-cpp/include/cppunivariate/cppunivariate.hpp:66:
+../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/certificate.hpp: In function ‘bool cppunivariate::t_cert_detail::data(cppunivariate::span, Data&)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/certificate.hpp:140:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |   ^~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/certificate.hpp:140:42: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |                                          ^
+../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/certificate.hpp: In function ‘bool cppunivariate::t_cert_detail::inverse(const System&, int, std::array<std::array<double, 3>, 3>&)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/certificate.hpp:161:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/certificate.hpp:161:51: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |                                                   ^~~
+[ 16%] Linking CXX executable distribution_tests
+In file included from ../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/mle.hpp:35,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/hold_search.hpp:4,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/sged/mle.hpp:13,
+                 from ../../../univariateML-cpp/include/cppunivariate/cppunivariate.hpp:62,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/std/test.cpp:2:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp: In function ‘cppunivariate::snorm_certificate::Poly cppunivariate::snorm_certificate::add(Poly, Poly, double)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:24:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+   24 |   for(std::size_t i=0;i<a.b.size();++i)a.b[i]+=factor*b.b[i];return a;
+      |   ^~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:24:62: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+   24 |   for(std::size_t i=0;i<a.b.size();++i)a.b[i]+=factor*b.b[i];return a;
+      |                                                              ^~~~~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp: In function ‘cppunivariate::snorm_certificate::Poly cppunivariate::snorm_certificate::derivative(const Poly&)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:39:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+   39 |   for(std::size_t i=0;i<n;++i)p.b[i]=n*(a.b[i+1]-a.b[i]);return p;
+      |   ^~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:39:58: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+   39 |   for(std::size_t i=0;i<n;++i)p.b[i]=n*(a.b[i+1]-a.b[i]);return p;
+      |                                                          ^~~~~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp: In function ‘double cppunivariate::snorm_certificate::value(Poly, double)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:42:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+   42 |   for(std::size_t n=p.b.size()-1;n>0;--n)for(std::size_t i=0;i<n;++i)p.b[i]=(1-t)*p.b[i]+t*p.b[i+1];return p.b[0];
+      |   ^~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:42:101: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+   42 |   for(std::size_t n=p.b.size()-1;n>0;--n)for(std::size_t i=0;i<n;++i)p.b[i]=(1-t)*p.b[i]+t*p.b[i+1];return p.b[0];
+      |                                                                                                     ^~~~~~
+In file included from ../../../univariateML-cpp/include/cppunivariate/distributions/sged/free_shape_certificate.hpp:74,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/sged/mle.hpp:425:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp: In function ‘cppunivariate::SgedResult cppunivariate::sged_weighted_shape::fit(cppunivariate::span, double, int, double)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:186:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  186 |     if(work>=cap)return stopped(true);++work;
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:186:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  186 |     if(work>=cap)return stopped(true);++work;
+      |                                       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:190:7: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  190 |       if(work+2>cap)return stopped(true);work+=2;
+      |       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:190:42: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  190 |       if(work+2>cap)return stopped(true);work+=2;
+      |                                          ^~~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:195:9: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  195 |         if(work>=cap)return stopped(true);++work;const double c=a/2+h/2;const auto sc=box(y,c,c,w,maxit);if(!sc.valid)break;
+      |         ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:195:43: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  195 |         if(work>=cap)return stopped(true);++work;const double c=a/2+h/2;const auto sc=box(y,c,c,w,maxit);if(!sc.valid)break;
+      |                                           ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:215:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  215 |     if(work>=cap)return stopped(true);++work;const auto enclosure=box(y,cell.lo,cell.hi,w,maxit);
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:215:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  215 |     if(work>=cap)return stopped(true);++work;const auto enclosure=box(y,cell.lo,cell.hi,w,maxit);
+      |                                       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:220:9: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  220 |         if(work>=cap)return stopped(true);++work;const double mid=a/2+h/2;const auto sc=box(y,mid,mid,w,maxit);if(!sc.valid)break;
+      |         ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:220:43: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  220 |         if(work>=cap)return stopped(true);++work;const double mid=a/2+h/2;const auto sc=box(y,mid,mid,w,maxit);if(!sc.valid)break;
+      |                                           ^~
+In file included from ../../../univariateML-cpp/include/cppunivariate/distributions/sged/free_shape_certificate.hpp:75:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp: In function ‘cppunivariate::SgedResult cppunivariate::sged_mode_skew::fit(cppunivariate::span, double, int, double)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:120:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  120 |     if(work>=cap)return stopped(true);++work;const auto v=point(y,c,p);if(!v.valid)return stopped(false);
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:120:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  120 |     if(work>=cap)return stopped(true);++work;const auto v=point(y,c,p);if(!v.valid)return stopped(false);
+      |                                       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:131:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  131 |     if(work>=cap)return stopped(true);++work;
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:131:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  131 |     if(work>=cap)return stopped(true);++work;
+      |                                       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:135:7: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  135 |       if(work+2>cap)return stopped(true);work+=2;
+      |       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:135:42: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  135 |       if(work+2>cap)return stopped(true);work+=2;
+      |                                          ^~~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:140:9: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  140 |         if(work>=cap)return stopped(true);++work;const double c=a/2+h/2;const auto sc=box(y,c,c,p);if(!sc.valid)break;
+      |         ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:140:43: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  140 |         if(work>=cap)return stopped(true);++work;const double c=a/2+h/2;const auto sc=box(y,c,c,p);if(!sc.valid)break;
+      |                                           ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:156:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  156 |     if(work>=cap)return stopped(true);++work;const auto enclosure=box(y,cell.lo,cell.hi,p);
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:156:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  156 |     if(work>=cap)return stopped(true);++work;const auto enclosure=box(y,cell.lo,cell.hi,p);
+      |                                       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:160:7: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  160 |       if(work>=cap)return stopped(true);++work;const double mid=a/2+h/2;const auto sc=box(y,mid,mid,p);if(!sc.valid)break;
+      |       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:160:41: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  160 |       if(work>=cap)return stopped(true);++work;const double mid=a/2+h/2;const auto sc=box(y,mid,mid,p);if(!sc.valid)break;
+      |                                         ^~
+In file included from ../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/mle.hpp:4,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/mle.hpp:17,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/sstd/mle.hpp:20,
+                 from ../../../univariateML-cpp/include/cppunivariate/cppunivariate.hpp:66:
+../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/certificate.hpp: In function ‘bool cppunivariate::t_cert_detail::data(cppunivariate::span, Data&)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/certificate.hpp:140:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |   ^~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/certificate.hpp:140:42: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |                                          ^
+../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/certificate.hpp: In function ‘bool cppunivariate::t_cert_detail::inverse(const System&, int, std::array<std::array<double, 3>, 3>&)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/certificate.hpp:161:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sstd/../std/../lst/certificate.hpp:161:51: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |                                                   ^~~
+[ 94%] Built target distribution_tests
+[ 96%] Built target cmp_tests
+[ 98%] Built target tails_tests
+[ 99%] Building CXX object tests/CMakeFiles/diagnostics_tests.dir/home/jmoss/umvl-wt/bhatt-allfree/dev/validation/diagnostics-audit.cpp.o
+[100%] Linking CXX executable diagnostics_tests
+../../../dev/validation/diagnostics-audit.cpp: In function ‘void audit::observe(const T&, std::initializer_list<Value>)’:
+../../../dev/validation/diagnostics-audit.cpp:16:2: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+   16 |  if(seen)return;seen=true;
+      |  ^~
+../../../dev/validation/diagnostics-audit.cpp:16:17: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+   16 |  if(seen)return;seen=true;
+      |                 ^~~~
+In file included from ../../../univariateML-cpp/include/cppunivariate/distributions/lst/mle.hpp:4,
+                 from ../../../dev/validation/diagnostics-audit.cpp:188:
+../../../univariateML-cpp/include/cppunivariate/distributions/lst/certificate.hpp: In function ‘bool cppunivariate::t_cert_detail::data(cppunivariate::span, Data&)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/lst/certificate.hpp:140:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |   ^~~
+../../../univariateML-cpp/include/cppunivariate/distributions/lst/certificate.hpp:140:42: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |                                          ^
+../../../univariateML-cpp/include/cppunivariate/distributions/lst/certificate.hpp: In function ‘bool cppunivariate::t_cert_detail::inverse(const System&, int, std::array<std::array<double, 3>, 3>&)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/lst/certificate.hpp:161:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/lst/certificate.hpp:161:51: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |                                                   ^~~
+In file included from ../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/mle.hpp:35,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/hold_search.hpp:4,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/sged/mle.hpp:13,
+                 from ../../../dev/validation/diagnostics-audit.cpp:238:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp: In function ‘cppunivariate::snorm_certificate::Poly cppunivariate::snorm_certificate::add(Poly, Poly, double)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:24:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+   24 |   for(std::size_t i=0;i<a.b.size();++i)a.b[i]+=factor*b.b[i];return a;
+      |   ^~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:24:62: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+   24 |   for(std::size_t i=0;i<a.b.size();++i)a.b[i]+=factor*b.b[i];return a;
+      |                                                              ^~~~~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp: In function ‘cppunivariate::snorm_certificate::Poly cppunivariate::snorm_certificate::derivative(const Poly&)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:39:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+   39 |   for(std::size_t i=0;i<n;++i)p.b[i]=n*(a.b[i+1]-a.b[i]);return p;
+      |   ^~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:39:58: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+   39 |   for(std::size_t i=0;i<n;++i)p.b[i]=n*(a.b[i+1]-a.b[i]);return p;
+      |                                                          ^~~~~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp: In function ‘double cppunivariate::snorm_certificate::value(Poly, double)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:42:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+   42 |   for(std::size_t n=p.b.size()-1;n>0;--n)for(std::size_t i=0;i<n;++i)p.b[i]=(1-t)*p.b[i]+t*p.b[i+1];return p.b[0];
+      |   ^~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:42:101: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+   42 |   for(std::size_t n=p.b.size()-1;n>0;--n)for(std::size_t i=0;i<n;++i)p.b[i]=(1-t)*p.b[i]+t*p.b[i+1];return p.b[0];
+      |                                                                                                     ^~~~~~
+In file included from ../../../univariateML-cpp/include/cppunivariate/distributions/sged/free_shape_certificate.hpp:74,
+                 from ../../../univariateML-cpp/include/cppunivariate/distributions/sged/mle.hpp:425:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp: In function ‘cppunivariate::SgedResult cppunivariate::sged_weighted_shape::fit(cppunivariate::span, double, int, double)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:186:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  186 |     if(work>=cap)return stopped(true);++work;
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:186:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  186 |     if(work>=cap)return stopped(true);++work;
+      |                                       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:190:7: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  190 |       if(work+2>cap)return stopped(true);work+=2;
+      |       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:190:42: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  190 |       if(work+2>cap)return stopped(true);work+=2;
+      |                                          ^~~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:195:9: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  195 |         if(work>=cap)return stopped(true);++work;const double c=a/2+h/2;const auto sc=box(y,c,c,w,maxit);if(!sc.valid)break;
+      |         ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:195:43: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  195 |         if(work>=cap)return stopped(true);++work;const double c=a/2+h/2;const auto sc=box(y,c,c,w,maxit);if(!sc.valid)break;
+      |                                           ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:215:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  215 |     if(work>=cap)return stopped(true);++work;const auto enclosure=box(y,cell.lo,cell.hi,w,maxit);
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:215:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  215 |     if(work>=cap)return stopped(true);++work;const auto enclosure=box(y,cell.lo,cell.hi,w,maxit);
+      |                                       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:220:9: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  220 |         if(work>=cap)return stopped(true);++work;const double mid=a/2+h/2;const auto sc=box(y,mid,mid,w,maxit);if(!sc.valid)break;
+      |         ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:220:43: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  220 |         if(work>=cap)return stopped(true);++work;const double mid=a/2+h/2;const auto sc=box(y,mid,mid,w,maxit);if(!sc.valid)break;
+      |                                           ^~
+In file included from ../../../univariateML-cpp/include/cppunivariate/distributions/sged/free_shape_certificate.hpp:75:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp: In function ‘cppunivariate::SgedResult cppunivariate::sged_mode_skew::fit(cppunivariate::span, double, int, double)’:
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:120:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  120 |     if(work>=cap)return stopped(true);++work;const auto v=point(y,c,p);if(!v.valid)return stopped(false);
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:120:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  120 |     if(work>=cap)return stopped(true);++work;const auto v=point(y,c,p);if(!v.valid)return stopped(false);
+      |                                       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:131:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  131 |     if(work>=cap)return stopped(true);++work;
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:131:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  131 |     if(work>=cap)return stopped(true);++work;
+      |                                       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:135:7: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  135 |       if(work+2>cap)return stopped(true);work+=2;
+      |       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:135:42: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  135 |       if(work+2>cap)return stopped(true);work+=2;
+      |                                          ^~~~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:140:9: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  140 |         if(work>=cap)return stopped(true);++work;const double c=a/2+h/2;const auto sc=box(y,c,c,p);if(!sc.valid)break;
+      |         ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:140:43: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  140 |         if(work>=cap)return stopped(true);++work;const double c=a/2+h/2;const auto sc=box(y,c,c,p);if(!sc.valid)break;
+      |                                           ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:156:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  156 |     if(work>=cap)return stopped(true);++work;const auto enclosure=box(y,cell.lo,cell.hi,p);
+      |     ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:156:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  156 |     if(work>=cap)return stopped(true);++work;const auto enclosure=box(y,cell.lo,cell.hi,p);
+      |                                       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:160:7: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  160 |       if(work>=cap)return stopped(true);++work;const double mid=a/2+h/2;const auto sc=box(y,mid,mid,p);if(!sc.valid)break;
+      |       ^~
+../../../univariateML-cpp/include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:160:41: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  160 |       if(work>=cap)return stopped(true);++work;const double mid=a/2+h/2;const auto sc=box(y,mid,mid,p);if(!sc.valid)break;
+      |                                         ^~
+../../../dev/validation/diagnostics-audit.cpp: In function ‘void route_hyper(cppunivariate::span, audit::Held, audit::Held, audit::Held)’:
+../../../dev/validation/diagnostics-audit.cpp:931:14: warning: variable ‘whole’ set but not used [-Wunused-but-set-variable]
+  931 |   const auto whole = [](double v) {
+      |              ^~~~~
+../../../dev/validation/diagnostics-audit.cpp: In function ‘void route_triang(cppunivariate::span, audit::Held, audit::Held, audit::Held, double, int)’:
+../../../dev/validation/diagnostics-audit.cpp:1780:16: warning: unused variable ‘nan’ [-Wunused-variable]
+ 1780 |   const double nan=std::numeric_limits<double>::quiet_NaN();
+      |                ^~~
+[100%] Built target diagnostics_tests
+Test project /home/jmoss/umvl-wt/bhatt-allfree/build/cpp-no-long-double
+        Start   1: bfgs_tests
+  1/129 Test   #1: bfgs_tests .......................   Passed    0.00 sec
+        Start   2: sample_tests
+  2/129 Test   #2: sample_tests .....................   Passed    0.01 sec
+        Start   3: distribution_bbinom
+  3/129 Test   #3: distribution_bbinom ..............   Passed    0.31 sec
+        Start   4: distribution_beta
+  4/129 Test   #4: distribution_beta ................   Passed    0.05 sec
+        Start   5: distribution_betapr
+  5/129 Test   #5: distribution_betapr ..............   Passed    0.20 sec
+        Start   6: distribution_betapr_slow
+  6/129 Test   #6: distribution_betapr_slow .........   Passed    0.02 sec
+        Start   7: distribution_bhatt
+  7/129 Test   #7: distribution_bhatt ...............   Passed   36.32 sec
+        Start   8: distribution_bhatt_slow
+  8/129 Test   #8: distribution_bhatt_slow ..........   Passed    3.03 sec
+        Start   9: distribution_binom
+  9/129 Test   #9: distribution_binom ...............   Passed    0.14 sec
+        Start  10: distribution_bnbinom
+ 10/129 Test  #10: distribution_bnbinom .............   Passed    1.66 sec
+        Start  11: distribution_bnbinom_slow
+ 11/129 Test  #11: distribution_bnbinom_slow ........   Passed    0.01 sec
+        Start  12: distribution_burr
+ 12/129 Test  #12: distribution_burr ................   Passed    2.00 sec
+        Start  13: distribution_burr_slow
+ 13/129 Test  #13: distribution_burr_slow ...........   Passed    0.04 sec
+        Start  14: distribution_cauchy
+ 14/129 Test  #14: distribution_cauchy ..............   Passed    0.02 sec
+        Start  15: distribution_cauchy_slow
+ 15/129 Test  #15: distribution_cauchy_slow .........   Passed    0.35 sec
+        Start  16: distribution_cmb
+ 16/129 Test  #16: distribution_cmb .................   Passed   19.05 sec
+        Start  17: distribution_cmp
+ 17/129 Test  #17: distribution_cmp .................   Passed    0.67 sec
+        Start  18: distribution_dgamma
+ 18/129 Test  #18: distribution_dgamma ..............   Passed    0.23 sec
+        Start  19: distribution_dlaplace
+ 19/129 Test  #19: distribution_dlaplace ............   Passed    0.03 sec
+        Start  20: distribution_dnorm
+ 20/129 Test  #20: distribution_dnorm ...............   Passed    0.02 sec
+        Start  21: distribution_dunif
+ 21/129 Test  #21: distribution_dunif ...............   Passed    0.02 sec
+        Start  22: distribution_dweibull
+ 22/129 Test  #22: distribution_dweibull ............   Passed    0.72 sec
+        Start  23: distribution_emg
+ 23/129 Test  #23: distribution_emg .................   Passed    1.46 sec
+        Start  24: distribution_exp
+ 24/129 Test  #24: distribution_exp .................   Passed    0.02 sec
+        Start  25: distribution_fatigue
+ 25/129 Test  #25: distribution_fatigue .............   Passed    0.03 sec
+        Start  26: distribution_foldnorm
+ 26/129 Test  #26: distribution_foldnorm ............   Passed    0.03 sec
+        Start  27: distribution_fpareto
+ 27/129 Test  #27: distribution_fpareto .............   Passed    4.74 sec
+        Start  28: distribution_frechet
+ 28/129 Test  #28: distribution_frechet .............   Passed    0.02 sec
+        Start  29: distribution_gamma
+ 29/129 Test  #29: distribution_gamma ...............   Passed    0.03 sec
+        Start  30: distribution_gb2
+ 30/129 Test  #30: distribution_gb2 .................   Passed    0.97 sec
+        Start  31: distribution_ged
+ 31/129 Test  #31: distribution_ged .................   Passed    3.03 sec
+        Start  32: distribution_ged_slow
+ 32/129 Test  #32: distribution_ged_slow ............   Passed    0.49 sec
+        Start  33: distribution_genbeta
+ 33/129 Test  #33: distribution_genbeta .............   Passed    0.09 sec
+        Start  34: distribution_geom
+ 34/129 Test  #34: distribution_geom ................   Passed    0.02 sec
+        Start  35: distribution_gev
+ 35/129 Test  #35: distribution_gev .................   Passed    0.07 sec
+        Start  36: distribution_gev_slow
+ 36/129 Test  #36: distribution_gev_slow ............   Passed    1.76 sec
+        Start  37: distribution_gompertz
+ 37/129 Test  #37: distribution_gompertz ............   Passed    0.02 sec
+        Start  38: distribution_gpd
+ 38/129 Test  #38: distribution_gpd .................   Passed    4.91 sec
+        Start  39: distribution_gumbel
+ 39/129 Test  #39: distribution_gumbel ..............   Passed    0.02 sec
+        Start  40: distribution_gumbel_slow
+ 40/129 Test  #40: distribution_gumbel_slow .........   Passed    0.01 sec
+        Start  41: distribution_hcauchy
+ 41/129 Test  #41: distribution_hcauchy .............   Passed    0.04 sec
+        Start  42: distribution_hnorm
+ 42/129 Test  #42: distribution_hnorm ...............   Passed    0.02 sec
+        Start  43: distribution_ht
+ 43/129 Test  #43: distribution_ht ..................   Passed   11.20 sec
+        Start  44: distribution_huber
+ 44/129 Test  #44: distribution_huber ...............   Passed   38.36 sec
+        Start  45: distribution_huber_slow
+ 45/129 Test  #45: distribution_huber_slow ..........   Passed    1.19 sec
+        Start  46: distribution_hyper
+ 46/129 Test  #46: distribution_hyper ...............   Passed    2.93 sec
+        Start  47: distribution_invburr
+ 47/129 Test  #47: distribution_invburr .............   Passed    3.69 sec
+        Start  48: distribution_invburr_slow
+ 48/129 Test  #48: distribution_invburr_slow ........   Passed    0.09 sec
+        Start  49: distribution_invexp
+ 49/129 Test  #49: distribution_invexp ..............   Passed    0.02 sec
+        Start  50: distribution_invgamma
+ 50/129 Test  #50: distribution_invgamma ............   Passed    0.03 sec
+        Start  51: distribution_invgauss
+ 51/129 Test  #51: distribution_invgauss ............   Passed    0.04 sec
+        Start  52: distribution_invparalogis
+ 52/129 Test  #52: distribution_invparalogis ........   Passed    0.17 sec
+        Start  53: distribution_invpareto
+ 53/129 Test  #53: distribution_invpareto ...........   Passed    0.02 sec
+        Start  54: distribution_invtrgamma
+ 54/129 Test  #54: distribution_invtrgamma ..........   Passed    0.09 sec
+        Start  55: distribution_invweibull
+ 55/129 Test  #55: distribution_invweibull ..........   Passed    0.02 sec
+        Start  56: distribution_kumar
+ 56/129 Test  #56: distribution_kumar ...............   Passed    0.02 sec
+        Start  57: distribution_kumar_slow
+ 57/129 Test  #57: distribution_kumar_slow ..........   Passed    0.01 sec
+        Start  58: distribution_laplace
+ 58/129 Test  #58: distribution_laplace .............   Passed    0.02 sec
+        Start  59: distribution_laplace_slow
+ 59/129 Test  #59: distribution_laplace_slow ........   Passed    0.01 sec
+        Start  60: distribution_lgamma
+ 60/129 Test  #60: distribution_lgamma ..............   Passed    0.03 sec
+        Start  61: distribution_lgser
+ 61/129 Test  #61: distribution_lgser ...............   Passed    0.04 sec
+        Start  62: distribution_llogis
+ 62/129 Test  #62: distribution_llogis ..............   Passed    0.02 sec
+        Start  63: distribution_lnorm
+ 63/129 Test  #63: distribution_lnorm ...............   Passed    0.02 sec
+        Start  64: distribution_logis
+ 64/129 Test  #64: distribution_logis ...............   Passed    0.02 sec
+        Start  65: distribution_logis_slow
+ 65/129 Test  #65: distribution_logis_slow ..........   Passed    0.01 sec
+        Start  66: distribution_logitnorm
+ 66/129 Test  #66: distribution_logitnorm ...........   Passed    0.02 sec
+        Start  67: distribution_lomax
+ 67/129 Test  #67: distribution_lomax ...............   Passed    0.12 sec
+        Start  68: distribution_lomax_slow
+ 68/129 Test  #68: distribution_lomax_slow ..........   Passed    0.01 sec
+        Start  69: distribution_lst
+ 69/129 Test  #69: distribution_lst .................   Passed    4.40 sec
+        Start  70: distribution_lst_slow
+ 70/129 Test  #70: distribution_lst_slow ............   Passed    4.27 sec
+        Start  71: distribution_naka
+ 71/129 Test  #71: distribution_naka ................   Passed    0.03 sec
+        Start  72: distribution_nbinom
+ 72/129 Test  #72: distribution_nbinom ..............   Passed    0.05 sec
+        Start  73: distribution_nhyper
+ 73/129 Test  #73: distribution_nhyper ..............   Passed    0.18 sec
+        Start  74: distribution_norm
+ 74/129 Test  #74: distribution_norm ................   Passed    0.56 sec
+        Start  75: distribution_norm_slow
+ 75/129 Test  #75: distribution_norm_slow ...........   Passed    0.01 sec
+        Start  76: distribution_nsbeta
+ 76/129 Test  #76: distribution_nsbeta ..............   Passed    0.06 sec
+        Start  77: distribution_paralogis
+ 77/129 Test  #77: distribution_paralogis ...........   Passed    0.44 sec
+        Start  78: distribution_paralogis_slow
+ 78/129 Test  #78: distribution_paralogis_slow ......   Passed    0.01 sec
+        Start  79: distribution_pareto
+ 79/129 Test  #79: distribution_pareto ..............   Passed    0.02 sec
+        Start  80: distribution_pareto2
+ 80/129 Test  #80: distribution_pareto2 .............   Passed    0.02 sec
+        Start  81: distribution_pareto3
+ 81/129 Test  #81: distribution_pareto3 .............   Passed    0.02 sec
+        Start  82: distribution_pareto4
+ 82/129 Test  #82: distribution_pareto4 .............   Passed    4.32 sec
+        Start  83: distribution_pig
+ 83/129 Test  #83: distribution_pig .................   Passed    3.25 sec
+        Start  84: distribution_pig_slow
+ 84/129 Test  #84: distribution_pig_slow ............   Passed    0.01 sec
+        Start  85: distribution_pois
+ 85/129 Test  #85: distribution_pois ................   Passed    0.12 sec
+        Start  86: distribution_power
+ 86/129 Test  #86: distribution_power ...............   Passed    0.02 sec
+        Start  87: distribution_rayleigh
+ 87/129 Test  #87: distribution_rayleigh ............   Passed    0.02 sec
+        Start  88: distribution_sged
+ 88/129 Test  #88: distribution_sged ................   Passed   24.04 sec
+        Start  89: distribution_sgomp
+ 89/129 Test  #89: distribution_sgomp ...............   Passed    0.10 sec
+        Start  90: distribution_skellam
+ 90/129 Test  #90: distribution_skellam .............   Passed    0.11 sec
+        Start  91: distribution_slash
+ 91/129 Test  #91: distribution_slash ...............   Passed    6.94 sec
+        Start  92: distribution_slash_slow
+ 92/129 Test  #92: distribution_slash_slow ..........   Passed    0.07 sec
+        Start  93: distribution_sn
+ 93/129 Test  #93: distribution_sn ..................   Passed    1.24 sec
+        Start  94: distribution_snorm
+ 94/129 Test  #94: distribution_snorm ...............   Passed    1.15 sec
+        Start  95: distribution_sstd
+ 95/129 Test  #95: distribution_sstd ................   Passed    5.53 sec
+        Start  96: distribution_st
+ 96/129 Test  #96: distribution_st ..................   Passed    2.83 sec
+        Start  97: distribution_std
+ 97/129 Test  #97: distribution_std .................   Passed   13.75 sec
+        Start  98: distribution_std_slow
+ 98/129 Test  #98: distribution_std_slow ............   Passed   25.54 sec
+        Start  99: distribution_tbinom
+ 99/129 Test  #99: distribution_tbinom ..............   Passed    0.75 sec
+        Start 100: distribution_tlambda
+100/129 Test #100: distribution_tlambda .............   Passed    3.14 sec
+        Start 101: distribution_tlambda_slow
+101/129 Test #101: distribution_tlambda_slow ........   Passed  153.99 sec
+        Start 102: distribution_tnorm
+102/129 Test #102: distribution_tnorm ...............   Passed    0.79 sec
+        Start 103: distribution_tpois
+103/129 Test #103: distribution_tpois ...............   Passed    0.20 sec
+        Start 104: distribution_trgamma
+104/129 Test #104: distribution_trgamma .............   Passed    7.04 sec
+        Start 105: distribution_triang
+105/129 Test #105: distribution_triang ..............   Passed    0.09 sec
+        Start 106: distribution_unif
+106/129 Test #106: distribution_unif ................   Passed    0.02 sec
+        Start 107: distribution_weibull
+107/129 Test #107: distribution_weibull .............   Passed    0.02 sec
+        Start 108: distribution_yulesimon
+108/129 Test #108: distribution_yulesimon ...........   Passed    0.03 sec
+        Start 109: distribution_zeta
+109/129 Test #109: distribution_zeta ................   Passed    1.67 sec
+        Start 110: distribution_zib
+110/129 Test #110: distribution_zib .................   Passed    0.20 sec
+        Start 111: distribution_zib_slow
+111/129 Test #111: distribution_zib_slow ............   Passed    0.01 sec
+        Start 112: distribution_zinb
+112/129 Test #112: distribution_zinb ................   Passed    0.37 sec
+        Start 113: distribution_zip
+113/129 Test #113: distribution_zip .................   Passed    0.02 sec
+        Start 114: distribution_zipf
+114/129 Test #114: distribution_zipf ................   Passed    0.06 sec
+        Start 115: distribution_zmbinom
+115/129 Test #115: distribution_zmbinom .............   Passed    0.06 sec
+        Start 116: distribution_zmgeom
+116/129 Test #116: distribution_zmgeom ..............   Passed    0.03 sec
+        Start 117: distribution_zmlogarithmic
+117/129 Test #117: distribution_zmlogarithmic .......   Passed    0.05 sec
+        Start 118: distribution_zmnbinom
+118/129 Test #118: distribution_zmnbinom ............   Passed    0.18 sec
+        Start 119: distribution_zmpois
+119/129 Test #119: distribution_zmpois ..............   Passed    0.10 sec
+        Start 120: distribution_ztbinom
+120/129 Test #120: distribution_ztbinom .............   Passed    0.09 sec
+        Start 121: distribution_ztbinom_slow
+121/129 Test #121: distribution_ztbinom_slow ........   Passed    0.01 sec
+        Start 122: distribution_ztgeom
+122/129 Test #122: distribution_ztgeom ..............   Passed    0.03 sec
+        Start 123: distribution_ztnbinom
+123/129 Test #123: distribution_ztnbinom ............   Passed    0.55 sec
+        Start 124: distribution_ztpois
+124/129 Test #124: distribution_ztpois ..............   Passed    0.10 sec
+        Start 125: distribution_support
+125/129 Test #125: distribution_support .............   Passed    0.00 sec
+        Start 126: no_throw_tests
+126/129 Test #126: no_throw_tests ...................   Passed    0.00 sec
+        Start 127: cmp_tests
+127/129 Test #127: cmp_tests ........................   Passed    0.25 sec
+        Start 128: tails_tests
+128/129 Test #128: tails_tests ......................   Passed    0.00 sec
+        Start 129: diagnostics_tests
+129/129 Test #129: diagnostics_tests ................   Passed    1.36 sec
+
+100% tests passed out of 129
+
+Label Time Summary:
+cran    = 218.90 sec*proc (105 tests)
+dev     = 220.26 sec*proc (106 tests)
+full    = 411.18 sec*proc (129 tests)
+
+Total Test time (real) = 411.21 sec

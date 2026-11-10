@@ -1,0 +1,26 @@
+Error while mapping shared library sections:
+Could not open `target:/usr/lib/x86_64-linux-gnu/libstdc++.so.6' as an executable file: Input/output error
+Error while mapping shared library sections:
+Could not open `target:/usr/lib/x86_64-linux-gnu/libm.so.6' as an executable file: Input/output error
+Error while mapping shared library sections:
+Could not open `target:/usr/lib/x86_64-linux-gnu/libgcc_s.so.1' as an executable file: Input/output error
+Error while mapping shared library sections:
+Could not open `target:/usr/lib/x86_64-linux-gnu/libc.so.6' as an executable file: Input/output error
+Error while mapping shared library sections:
+Could not open `target:/lib64/ld-linux-x86-64.so.2' as an executable file: Input/output error
+
+warning: Unable to find dynamic linker breakpoint function.
+GDB will be unable to debug shared library initializers
+and track explicitly loaded dynamic code.
+
+warning: Target and debugger are in different PID namespaces; thread lists and other data are likely unreliable.  Connect to gdbserver inside the container.
+0x000071b072b9722f in ?? ()
+#0  0x000071b072b9722f in ?? ()
+#1  0x00005cc4834c4730 in cppunivariate::bhatt_detail::cert_evaluate(cppunivariate::bhatt_detail::CertModel const&, std::array<double, 3ul> const&) ()
+#2  0x00005cc4834c728c in cppunivariate::bhatt_detail::cert_newton(cppunivariate::bhatt_detail::CertModel const&, std::array<double, 3ul>, double, int) ()
+#3  0x00005cc4834ce15b in cppunivariate::bhatt_detail::WidthCertificate::profile(double, cppunivariate::bhatt_detail::CertRoot&) ()
+#4  0x00005cc4834d8a01 in cppunivariate::bhatt_detail::WidthCertificate::run() ()
+#5  0x00005cc4834dc347 in cppunivariate::bhatt_detail::certificate_mle(cppunivariate::basic_span<double>, double, int, double, double, double) ()
+#6  0x00005cc4834dc6a6 in cppunivariate::bhatt_mle(cppunivariate::basic_span<double>, double, int, double, double, double) ()
+#7  0x00005cc4834ba052 in main ()
+[Inferior 1 (process 1384852) detached]

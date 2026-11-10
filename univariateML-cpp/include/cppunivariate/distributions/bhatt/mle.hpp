@@ -12,7 +12,7 @@
 #include <map>
 namespace cppunivariate {
 enum class BhattStatus {Ok,NormalLimit,UniformLimit,Unbounded,InvalidInput,IterationFailure,NumericalFailure,BudgetExhausted,Unresolved,Tie};
-struct BhattResult {double mu,sigma,a,logLik;int iterations;BhattStatus status; StopDetail stop_detail{}; };
+struct BhattResult {double mu,sigma,a,logLik;int iterations;BhattStatus status; StopDetail stop_detail{}; bool certified=false; };
 namespace bhatt_detail {
 struct Profile {
   const std::vector<double>& x;double sigma,a,face;double held_mu=special::kNaN; int maxit=500;
