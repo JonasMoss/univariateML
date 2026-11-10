@@ -59,6 +59,8 @@ const Held z = c;
     return fail("Data incompatible with held triangular parameters (outside a held endpoint or zero likelihood).");
   if(r.status==cppunivariate::TriangStatus::InvalidInput)
     return fail("Invalid triangular inputs: require finite data, a < b, a <= c <= b, positive reltol and iterlim.");
+  if(r.status==cppunivariate::TriangStatus::NumericalFailure)
+    return classify(fail("Triangular public coefficients lose likelihood beyond the numerical certificate margin."),{},"numerical",{"a","b","c"});
   if(r.status==cppunivariate::TriangStatus::IterationFailure)
     return fail("Triangular endpoint solve did not converge; increase iterlim.");
   if(r.not_unique) warnings.push_back(binding_message("Triangular maximum likelihood estimate is not unique (candidate log likelihoods within tolerance)."));

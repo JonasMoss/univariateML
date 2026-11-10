@@ -1,0 +1,110 @@
+{
+  "task": "TASK-101.7.4",
+  "base": "594c491dd495892b9cffd8977fcc9809fcbec151",
+  "branch": "codex/audit-support",
+  "recorded_utc": "2026-11-10T01:17:41.225079+00:00",
+  "machine": "workstation; GNU C++ 15.2.0; R 4.6.1; installed BH headers",
+  "source_sha256": {
+    "bindings/common/distributions/triang/fit.hpp": "2a9f55229da985db9cdee4b4ea4afbc70a2ff943a456d98dada12d205e7d1aa4",
+    "bindings/js/test.mjs": "e4829a64c659ba2dff619d032ccf3bfe7db2330736cb4acc95998776d3570c6c",
+    "bindings/r/distributions/emg/test.R": "7bc39d57f41ae42047bffc22a028b81dc508ee3e36b2d121573bbe431c8a6b56",
+    "bindings/r/distributions/gev/test.R": "e2ac58771c11e49916cc065c9b5428ad41c049dfb4cac41095dbccd9fa694213",
+    "bindings/r/distributions/triang/test.R": "fa1c8a852441f93be987c92bf53c24119252379d607cbc184d7a53f1d08461c9",
+    "univariateML-cpp/include/cppunivariate/distributions/emg/README.md": "6bf4070595ece47089e9096a552a4e9a2f43f67624c0b33c175eb443af869c88",
+    "univariateML-cpp/include/cppunivariate/distributions/emg/location_certificate.hpp": "22ec184e06cd73787338d6517eb23cc847287742b511f835d984cc2fb8dd9aa2",
+    "univariateML-cpp/include/cppunivariate/distributions/emg/test.cpp": "47c94f792be489d6c15dcf368b136216d2f032ec3a3ffd7e48ab017005f1461c",
+    "univariateML-cpp/include/cppunivariate/distributions/gev/README.md": "9b4d5be1266604b6407946a475185bfc5969bc54e6b87152a84e5e16f37a72d7",
+    "univariateML-cpp/include/cppunivariate/distributions/gev/mle.hpp": "c1d2e659bd88f8c64ce3130d3af8b4b4e2ad365b1ced53f06b5920ced5475ed5",
+    "univariateML-cpp/include/cppunivariate/distributions/gev/test.cpp": "2771e84d1dd3d9bc63956108745bfe978a52ebe3f9544e4326fe9c7eb264d300",
+    "univariateML-cpp/include/cppunivariate/distributions/triang/README.md": "e47111936191887d4decf620c6561f1d57ee0fef11e7c0b7ef2cefa4829c8255",
+    "univariateML-cpp/include/cppunivariate/distributions/triang/mle.hpp": "0c047fc4a40002a1ea73b21b5f14a504b9066b1b71a9040e5b1841984fc4a1e6",
+    "univariateML-cpp/include/cppunivariate/distributions/triang/test.cpp": "6b860e71dc173c7fedf7fbaf6c8179c7b5b0db2a3062a30aa872ff75c04bc449"
+  },
+  "existing_test_contents_preserved": [
+    "bindings/js/test.mjs",
+    "bindings/r/distributions/emg/test.R",
+    "bindings/r/distributions/gev/test.R",
+    "bindings/r/distributions/triang/test.R",
+    "univariateML-cpp/include/cppunivariate/distributions/emg/test.cpp",
+    "univariateML-cpp/include/cppunivariate/distributions/gev/test.cpp",
+    "univariateML-cpp/include/cppunivariate/distributions/triang/test.cpp"
+  ],
+  "goldens_unchanged_sha256": {
+    "univariateML-cpp/include/cppunivariate/distributions/emg/golden.json": "f5b23432d5904db50b57a54e32c4c26923829cd6d661c191626f8bd402047208",
+    "univariateML-cpp/include/cppunivariate/distributions/triang/golden.json": "c82de3334627f62b2508d2e9bd11357385170abd268e2d33f0228ab7f0f7e209",
+    "univariateML-cpp/include/cppunivariate/distributions/gev/golden.json": "b0467d7ad6e5d0c127711262f8e914aedf8becd3bc2ad39b4135161cffec6c33"
+  },
+  "input_sha256": {
+    "cases.json": "1961201766ce0d068043abc921606b4d0dbb836bf4855fe0a8ea79fee2894da4",
+    "references.json": "f003c61e55aa106b7b7d48b1f8a1d0d58d999057f9469a567a27dd4ff72b6ca3",
+    "findings.json": "ce1807b36d0b4184e534a513d0311055d5360af39a4d980a620855ac85263d38"
+  },
+  "controls": {
+    "native_defaults": {
+      "emg": [
+        1e-08,
+        500
+      ],
+      "triang": [
+        1e-12,
+        100
+      ],
+      "gev": [
+        1e-10,
+        100
+      ]
+    },
+    "uniform": [
+      1e-10,
+      100
+    ]
+  },
+  "results": {
+    "cpp_dev": "106/106",
+    "cpp_full": "129/129",
+    "no_long_double_workstation": "129/129",
+    "r_dev": {
+      "fail": 0,
+      "warn": 0,
+      "skip": 154,
+      "pass": 22548
+    },
+    "r_full": {
+      "fail": 0,
+      "warn": 0,
+      "skip": 0,
+      "pass": 45383
+    },
+    "js": "585/585",
+    "site": "PASS",
+    "simbox_no_long_double": "unavailable; exit 75; local fallback passed"
+  },
+  "logs": {
+    "targeted-final": "7d7ec1bd980d1889f099a1c8900acfd1f03fea9093245a0528c697bbfc652fae",
+    "replay-final": "c410ced0a9f817d304e4ae4263cb82b3c00e243babbe4f610ba9b46cf8a60846",
+    "payload-validation": "b5ae0e342fafc0a875e25942f31374e75c843fd24aaade70c9edda7e6f265ef7",
+    "support-validation": "de6d4c0cc3d265f97c2eec3e579e501ac1737923d6e207112d4666e37639fddd",
+    "cpp-dev": "390b434996c80300dd4647667914facb6e12fc862bf66e1f9a415b4892018b29",
+    "r-dev": "c55f123f1b033a1cf4edd94eb234b666b52321329e5057531ca318234c4beaef",
+    "no-long-double-local": "ca5babdaeb3df8ac3d6755ae536bb4f241116ac61b68e9306c3ab73b612fbb60",
+    "cpp-full": "8d8856b6c374dd4993c331196ea4e5c6e82e94d6cc47e49b570a03d834c998f4",
+    "r-full": "e27821bdb69f75f7caba18dc69271de6e3a5f289f799634ba926996d241e1503",
+    "site": "266b056a9fdc5ea406e47427363e6a8118ab60487e33c33109dd790e42f0adeb",
+    "js-build": "e5dd7c0a750da1a6413caca935f0f68f2f2500b90b9c6cf013683f1ac51b6392",
+    "js-test": "6f0e8afe9f6fcf8ac7bdac4ad0bcc92eede503f4c2f648e7275bd6f8a389245d"
+  },
+  "report_sha256": "d435e1184831964cd9c5b50a8f37cb64a7eb3908bb0dccffdf2e05b7d977a121",
+  "evidence_source_sha256": {
+    "check_job_links.py": "798de269a2347e7856e6316f3b159c454b213786adaf36c3227a1e03a3822cb6",
+    "precision.py": "2f01be163bd571161a1a4d3acae1b9245fd77d0de327ad976607d72bdb412d36",
+    "remaining.py": "ada552be81fd8432b861569e4667ecfc7e9059dc9303a63fcc957a785ca3b995",
+    "replay.cpp": "253fb5ec6939af0c91af63b7bae92acca66ed4df0f4f04e162d2d338ae6e120f",
+    "replay.py": "280cf4b828959290282506207fe8bfda5464b9e75a34e4c3b11205a77d3979ae",
+    "run.sh": "9dd2acd7b2af27ac2be08b200e711129c7e9faf354cc8c1df7cd4a2a070ae333",
+    "settled-seam.cpp": "66105f5b827a4bdd9273d429d2e59bbd88b2b2022e6e333b45ae14238d511613",
+    "subnormal-support.cpp": "dbd91d516aee19f82003c7db34a89ebf6a91f301c5815358f5a791a19ae5055f",
+    "support_validation.py": "ceb5dc3b451540b771fe08a7a7780189da91f1f59ee01ce818227648ef0fad4b",
+    "validate.py": "e43dec58069d2a4ba9501a9f28dd82cd380277ff3bcb15d19b6e49a6e60a2ee4"
+  },
+  "presentation": "HTTP 403: worktree absent from artifact viewer readable roots"
+}

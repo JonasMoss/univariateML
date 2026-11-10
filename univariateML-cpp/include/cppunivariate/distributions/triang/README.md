@@ -107,6 +107,16 @@ Nonuniqueness occurs already for observations $(0,1)$. The reflected fits $(a,b,
 
 For a constant sample at $z$ and held mode $c<z$, a free lower endpoint equals $c$, and a free upper endpoint is $z+\sqrt{(z-a)(z-c)}$. The reflected formulas apply when $c>z$. These attained exterior-mode maxima are evaluated directly.
 
+Near a held endpoint, profile density factors use endpoint distances rather
+than subtracting a ratio from one. A free observation-mode retains the original
+observation exactly after standardization. The restored support must contain
+the original data and its raw log likelihood must agree with the certified
+profile value within a practical 256-double-epsilon operand margin. At tiny
+sample ranges relative to their offset, a continuous optimum can lie between
+widely spaced representable endpoints; a finite likelihood loss beyond this
+margin is a numerical failure, even when the coefficient rounds closely in
+relative public units.
+
 ## R notes
 
 Invalid held ordering is rejected as invalid input. The smallest mode is returned for numerical ties. A warning is emitted when another candidate is within `1e-10 * length(x)` in log likelihood.

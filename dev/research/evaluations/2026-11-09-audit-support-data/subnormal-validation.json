@@ -1,0 +1,22 @@
+{
+  "before": {
+    "free_status": 0,
+    "mu": -2.0,
+    "sigma": 2.0,
+    "logLik": -2.5794415416798357,
+    "all_held_status": 0,
+    "divided_residual": "-0",
+    "residual_signbit": 1,
+    "exact_support_contains_tiny": false
+  },
+  "after": {
+    "free_status": 0,
+    "mu": -1.9999999999999998,
+    "sigma": 2.0,
+    "logLik": -2.5794415416798357,
+    "all_held_status": 1,
+    "divided_residual": "-0",
+    "residual_signbit": 1,
+    "exact_support_contains_tiny": true
+  }
+}

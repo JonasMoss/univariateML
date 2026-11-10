@@ -2,13 +2,14 @@
 #pragma once
 #include "../../core/work_budget.hpp"
 #include "../../core/span.hpp"
+#include "dpqr.hpp"
 #include <algorithm>
 #include <cmath>
 #include <limits>
 #include <vector>
 
 namespace cppunivariate {
-enum class TriangStatus { Ok, InvalidInput, Incompatible, Unbounded, IterationFailure };
+enum class TriangStatus { Ok, InvalidInput, Incompatible, Unbounded, IterationFailure, NumericalFailure };
 struct TriangResult {
   double a, b, c, logLik;
   int iterations;
@@ -65,13 +66,13 @@ inline Profile profile(const std::vector<double>& x, double l, double u,
     }
     for (double z:x) {
       if (z<l) {
-        const double d=(l-z)/L, t=1-pp*d;
+        const double d=(l-z)/L, t=fa?(z-a)/L:1-pp*d;
         if (!(t>0)) {v[0]=-INFINITY; return;}
-        v[0]+=std::log1p(-pp*d); v[1]-=d/t; v[3]-=d*d/(t*t);
+        v[0]+=std::log(t); v[1]-=d/t; v[3]-=d*d/(t*t);
       } else if (z>u) {
-        const double d=(z-u)/R, t=1-qq*d;
+        const double d=(z-u)/R, t=fb?(b-z)/R:1-qq*d;
         if (!(t>0)) {v[0]=-INFINITY; return;}
-        v[0]+=std::log1p(-qq*d); v[2]-=d/t; v[5]-=d*d/(t*t);
+        v[0]+=std::log(t); v[2]-=d/t; v[5]-=d*d/(t*t);
       }
     }
   };
@@ -231,12 +232,34 @@ inline TriangResult triang_mle(span input, double tol=1e-12, int maxit=100,
   if(fc && !fa && ba==bc) out.a=original_c;
   if(fc && !fb && bb==bc) out.b=original_c;
   out.c=fc?original_c:origin+scale*bc;
+  // A free mode is an original observation, not its affine round trip.
+  if(!fc) for(double z:input) if((z-origin)/scale==bc) {out.c=z;break;}
+  if(!fa && ba==bc)out.a=out.c;
+  if(!fb && bb==bc)out.b=out.c;
+  // Rounding a free support endpoint inward must never discard data.
+  const double minimum=*std::min_element(input.begin(),input.end());
+  const double maximum=*std::max_element(input.begin(),input.end());
+  if(!fa && (out.a>minimum || (out.a==minimum && out.c!=minimum)))out.a=std::nextafter(minimum,-INFINITY);
+  if(!fb && (out.b<maximum || (out.b==maximum && out.c!=maximum)))out.b=std::nextafter(maximum,INFINITY);
   if(!(std::isfinite(out.a)&&std::isfinite(out.b)&&std::isfinite(out.c)&&
        out.a<out.b&&out.a<=out.c&&out.c<=out.b)) {
-    out.status=TriangStatus::IterationFailure;return out;
+    out.status=TriangStatus::NumericalFailure;return out;
   }
-  out.logLik=best-input.size()*std::log(scale);
-  out.status=success?TriangStatus::Ok:TriangStatus::IterationFailure;
+  const double predicted=best-input.size()*std::log(scale);
+  double actual=0,magnitude=0;
+  for(double z:input) {
+    const double value=distributions::dtriang(z,out.a,out.b,out.c,true);
+    actual+=value;magnitude+=std::abs(value);
+  }
+  out.logLik=actual;
+  // The local endpoint solve cannot certify a different represented point.
+  // This practical margin covers summation and affine evaluation, not a
+  // finite likelihood loss caused by coarse public endpoint spacing.
+  const double margin=256*std::numeric_limits<double>::epsilon()*
+      (input.size()+magnitude+std::abs(predicted));
+  const bool represented=std::isfinite(actual) && std::abs(actual-predicted)<=margin;
+  out.status=!represented?TriangStatus::NumericalFailure:
+      (success?TriangStatus::Ok:TriangStatus::IterationFailure);
   out.not_unique=second>=best-tie;
   return out;
 }

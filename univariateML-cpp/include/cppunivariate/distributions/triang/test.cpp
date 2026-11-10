@@ -190,3 +190,259 @@ TEST_CASE("triang: TASK-102.5 invalid confidence levels") {
   for(double alpha:std::vector<double>{-1.,0.,1.,2.,NAN,INFINITY})
     CHECK(cppunivariate::triang_mode_wald_interval(data,0,1,alpha).status==cppunivariate::InferenceStatus::InvalidParameter);
 }
+
+TEST_CASE("triang: audit-support case 8173 public coordinates") {
+  const std::vector<double> x{0.03627073533558047,0.036270735335580485,0.03627073533558049,0.03627073533558051,0.036270735335580555};
+  const auto data=mltest::as_span(x);
+  const auto fit=cppunivariate::triang_mle(data,1e-10,100,NAN,NAN,NAN);
+  REQUIRE(fit.status==cppunivariate::TriangStatus::NumericalFailure);
+  if(fit.status==cppunivariate::TriangStatus::Ok) {
+    double raw=0;
+    for(double z:x) {
+      CHECK(z>=fit.a);CHECK(z<=fit.b);
+      raw+=cppunivariate::distributions::dtriang(z,fit.a,fit.b,fit.c,true);
+    }
+    CHECK(std::isfinite(raw));
+    CHECK(fit.logLik==doctest::Approx(raw).epsilon(1e-12));
+  }
+}
+
+TEST_CASE("triang: audit-support case 8194 public coordinates") {
+  const std::vector<double> x{0.03627073533558047,0.036270735335580485,0.03627073533558049,0.03627073533558051,0.036270735335580555};
+  const auto data=mltest::as_span(x);
+  const auto fit=cppunivariate::triang_mle(data,1e-10,100,0.036270735335580465,NAN,NAN);
+  REQUIRE(fit.status==cppunivariate::TriangStatus::NumericalFailure);
+  if(fit.status==cppunivariate::TriangStatus::Ok) {
+    double raw=0;
+    for(double z:x) {
+      CHECK(z>=fit.a);CHECK(z<=fit.b);
+      raw+=cppunivariate::distributions::dtriang(z,fit.a,fit.b,fit.c,true);
+    }
+    CHECK(std::isfinite(raw));
+    CHECK(fit.logLik==doctest::Approx(raw).epsilon(1e-12));
+  }
+}
+
+TEST_CASE("triang: audit-support case 8195 public coordinates") {
+  const std::vector<double> x{2.1270091277547183e+149,5.56117281364277e+149,5.239257282111793e+149,3.8924929029308256e+149,5.514445431996137e+149,5.285874607041478e+149,5.398522144183517e+149,3.251642995048314e+149,6.451318151317536e+149,4.357297092676162e+149,5.2674134634435175e+149,3.8801221367903053e+149};
+  const auto data=mltest::as_span(x);
+  const auto fit=cppunivariate::triang_mle(data,1e-10,100,0.036270735335580465,NAN,NAN);
+  REQUIRE(fit.status==cppunivariate::TriangStatus::Ok);
+  if(fit.status==cppunivariate::TriangStatus::Ok) {
+    double raw=0;
+    for(double z:x) {
+      CHECK(z>=fit.a);CHECK(z<=fit.b);
+      raw+=cppunivariate::distributions::dtriang(z,fit.a,fit.b,fit.c,true);
+    }
+    CHECK(std::isfinite(raw));
+    CHECK(fit.logLik==doctest::Approx(raw).epsilon(1e-12));
+  }
+}
+
+TEST_CASE("triang: audit-support case 8268 public coordinates") {
+  const std::vector<double> x{0.03627073533658046,0.03627073533758046,0.03627073533858047,0.036270735340580465,0.03627073534458047};
+  const auto data=mltest::as_span(x);
+  const auto fit=cppunivariate::triang_mle(data,1e-10,100,0.036270735335580465,NAN,0.3888433021027595);
+  REQUIRE(fit.status==cppunivariate::TriangStatus::Ok);
+  if(fit.status==cppunivariate::TriangStatus::Ok) {
+    double raw=0;
+    for(double z:x) {
+      CHECK(z>=fit.a);CHECK(z<=fit.b);
+      raw+=cppunivariate::distributions::dtriang(z,fit.a,fit.b,fit.c,true);
+    }
+    CHECK(std::isfinite(raw));
+    CHECK(fit.logLik==doctest::Approx(raw).epsilon(1e-12));
+  }
+}
+
+TEST_CASE("triang: audit-support case 8289 public coordinates") {
+  const std::vector<double> x{1.0045256123717767,1.0045256123707769,1.0045256123697768,1.0045256123677768,1.004525612363777};
+  const auto data=mltest::as_span(x);
+  const auto fit=cppunivariate::triang_mle(data,1e-10,100,NAN,1.0045256123727768,0.3888433021027595);
+  REQUIRE(fit.status==cppunivariate::TriangStatus::Ok);
+  if(fit.status==cppunivariate::TriangStatus::Ok) {
+    double raw=0;
+    for(double z:x) {
+      CHECK(z>=fit.a);CHECK(z<=fit.b);
+      raw+=cppunivariate::distributions::dtriang(z,fit.a,fit.b,fit.c,true);
+    }
+    CHECK(std::isfinite(raw));
+    CHECK(fit.logLik==doctest::Approx(raw).epsilon(1e-12));
+  }
+}
+
+TEST_CASE("triang: audit-support case 11117 public coordinates") {
+  const std::vector<double> x{0.03627073533558047,0.03627073533558048,0.036270735335580485,0.0362707353355805,0.03627073533558053};
+  const auto data=mltest::as_span(x);
+  const auto fit=cppunivariate::triang_mle(data,1e-10,100,NAN,NAN,NAN);
+  REQUIRE(fit.status==cppunivariate::TriangStatus::NumericalFailure);
+  if(fit.status==cppunivariate::TriangStatus::Ok) {
+    double raw=0;
+    for(double z:x) {
+      CHECK(z>=fit.a);CHECK(z<=fit.b);
+      raw+=cppunivariate::distributions::dtriang(z,fit.a,fit.b,fit.c,true);
+    }
+    CHECK(std::isfinite(raw));
+    CHECK(fit.logLik==doctest::Approx(raw).epsilon(1e-12));
+  }
+}
+
+TEST_CASE("triang: audit-support case 11118 public coordinates") {
+  const std::vector<double> x{1.0045256123727766,1.0045256123727764,1.0045256123727762,1.0045256123727757,1.0045256123727748};
+  const auto data=mltest::as_span(x);
+  const auto fit=cppunivariate::triang_mle(data,1e-10,100,NAN,NAN,NAN);
+  REQUIRE(fit.status==cppunivariate::TriangStatus::NumericalFailure);
+  if(fit.status==cppunivariate::TriangStatus::Ok) {
+    double raw=0;
+    for(double z:x) {
+      CHECK(z>=fit.a);CHECK(z<=fit.b);
+      raw+=cppunivariate::distributions::dtriang(z,fit.a,fit.b,fit.c,true);
+    }
+    CHECK(std::isfinite(raw));
+    CHECK(fit.logLik==doctest::Approx(raw).epsilon(1e-12));
+  }
+}
+
+TEST_CASE("triang: audit-support case 11119 public coordinates") {
+  const std::vector<double> x{0.03627073533558047,0.03627073533558048,0.036270735335580485,0.0362707353355805,0.03627073533558053};
+  const auto data=mltest::as_span(x);
+  const auto fit=cppunivariate::triang_mle(data,1e-10,100,0.036270735335580465,NAN,NAN);
+  REQUIRE(fit.status==cppunivariate::TriangStatus::NumericalFailure);
+  if(fit.status==cppunivariate::TriangStatus::Ok) {
+    double raw=0;
+    for(double z:x) {
+      CHECK(z>=fit.a);CHECK(z<=fit.b);
+      raw+=cppunivariate::distributions::dtriang(z,fit.a,fit.b,fit.c,true);
+    }
+    CHECK(std::isfinite(raw));
+    CHECK(fit.logLik==doctest::Approx(raw).epsilon(1e-12));
+  }
+}
+
+TEST_CASE("triang: audit-support case 11122 public coordinates") {
+  const std::vector<double> x{1.0045256123727766,1.0045256123727764,1.0045256123727762,1.0045256123727757,1.0045256123727748};
+  const auto data=mltest::as_span(x);
+  const auto fit=cppunivariate::triang_mle(data,1e-10,100,NAN,1.0045256123727768,NAN);
+  REQUIRE(fit.status==cppunivariate::TriangStatus::NumericalFailure);
+  if(fit.status==cppunivariate::TriangStatus::Ok) {
+    double raw=0;
+    for(double z:x) {
+      CHECK(z>=fit.a);CHECK(z<=fit.b);
+      raw+=cppunivariate::distributions::dtriang(z,fit.a,fit.b,fit.c,true);
+    }
+    CHECK(std::isfinite(raw));
+    CHECK(fit.logLik==doctest::Approx(raw).epsilon(1e-12));
+  }
+}
+
+TEST_CASE("triang: audit-support case 11130 public coordinates") {
+  const std::vector<double> x{1.0045256123727766,1.0045256123727764,1.0045256123727762,1.0045256123727757,1.0045256123727748};
+  const auto data=mltest::as_span(x);
+  const auto fit=cppunivariate::triang_mle(data,1e-10,100,NAN,1.0045256123727768,0.3888433021027595);
+  REQUIRE(fit.status==cppunivariate::TriangStatus::Ok);
+  if(fit.status==cppunivariate::TriangStatus::Ok) {
+    double raw=0;
+    for(double z:x) {
+      CHECK(z>=fit.a);CHECK(z<=fit.b);
+      raw+=cppunivariate::distributions::dtriang(z,fit.a,fit.b,fit.c,true);
+    }
+    CHECK(std::isfinite(raw));
+    CHECK(fit.logLik==doctest::Approx(raw).epsilon(1e-12));
+  }
+}
+
+TEST_CASE("triang: audit-support case 8165 public coordinates") {
+  const std::vector<double> x{0.5267413463432983,0.5267413463438251,0.5267413463443518,0.5267413463448785,0.526741346345932};
+  const auto data=mltest::as_span(x);
+  const auto fit=cppunivariate::triang_mle(data,1e-10,100,NAN,NAN,NAN);
+  REQUIRE(fit.status==cppunivariate::TriangStatus::NumericalFailure);
+  if(fit.status==cppunivariate::TriangStatus::Ok) {
+    double raw=0;
+    for(double z:x) {
+      CHECK(z>=fit.a);CHECK(z<=fit.b);
+      raw+=cppunivariate::distributions::dtriang(z,fit.a,fit.b,fit.c,true);
+    }
+    CHECK(std::isfinite(raw));
+    CHECK(fit.logLik==doctest::Approx(raw).epsilon(1e-12));
+  }
+}
+
+TEST_CASE("triang: audit-support case 8168 public coordinates") {
+  const std::vector<double> x{0.999999999998,0.999999999999,1.0,1.000000000001,1.000000000003};
+  const auto data=mltest::as_span(x);
+  const auto fit=cppunivariate::triang_mle(data,1e-10,100,NAN,NAN,NAN);
+  REQUIRE(fit.status==cppunivariate::TriangStatus::NumericalFailure);
+  if(fit.status==cppunivariate::TriangStatus::Ok) {
+    double raw=0;
+    for(double z:x) {
+      CHECK(z>=fit.a);CHECK(z<=fit.b);
+      raw+=cppunivariate::distributions::dtriang(z,fit.a,fit.b,fit.c,true);
+    }
+    CHECK(std::isfinite(raw));
+    CHECK(fit.logLik==doctest::Approx(raw).epsilon(1e-12));
+  }
+}
+
+TEST_CASE("triang: audit-support case 8172 public coordinates") {
+  const std::vector<double> x{1.0045256123717767,1.0045256123707769,1.0045256123697768,1.0045256123677768,1.004525612363777};
+  const auto data=mltest::as_span(x);
+  const auto fit=cppunivariate::triang_mle(data,1e-10,100,NAN,NAN,NAN);
+  REQUIRE(fit.status==cppunivariate::TriangStatus::NumericalFailure);
+  if(fit.status==cppunivariate::TriangStatus::Ok) {
+    double raw=0;
+    for(double z:x) {
+      CHECK(z>=fit.a);CHECK(z<=fit.b);
+      raw+=cppunivariate::distributions::dtriang(z,fit.a,fit.b,fit.c,true);
+    }
+    CHECK(std::isfinite(raw));
+    CHECK(fit.logLik==doctest::Approx(raw).epsilon(1e-12));
+  }
+}
+
+TEST_CASE("triang: audit-support case 8213 public coordinates") {
+  const std::vector<double> x{1.0045256123717767,1.0045256123707769,1.0045256123697768,1.0045256123677768,1.004525612363777};
+  const auto data=mltest::as_span(x);
+  const auto fit=cppunivariate::triang_mle(data,1e-10,100,NAN,1.0045256123727768,NAN);
+  REQUIRE(fit.status==cppunivariate::TriangStatus::NumericalFailure);
+  if(fit.status==cppunivariate::TriangStatus::Ok) {
+    double raw=0;
+    for(double z:x) {
+      CHECK(z>=fit.a);CHECK(z<=fit.b);
+      raw+=cppunivariate::distributions::dtriang(z,fit.a,fit.b,fit.c,true);
+    }
+    CHECK(std::isfinite(raw));
+    CHECK(fit.logLik==doctest::Approx(raw).epsilon(1e-12));
+  }
+}
+
+TEST_CASE("triang: audit-support case 8270 public coordinates") {
+  const std::vector<double> x{0.03627073533558047,0.036270735335580485,0.03627073533558049,0.03627073533558051,0.036270735335580555};
+  const auto data=mltest::as_span(x);
+  const auto fit=cppunivariate::triang_mle(data,1e-10,100,0.036270735335580465,NAN,0.3888433021027595);
+  REQUIRE(fit.status==cppunivariate::TriangStatus::Ok);
+  if(fit.status==cppunivariate::TriangStatus::Ok) {
+    double raw=0;
+    for(double z:x) {
+      CHECK(z>=fit.a);CHECK(z<=fit.b);
+      raw+=cppunivariate::distributions::dtriang(z,fit.a,fit.b,fit.c,true);
+    }
+    CHECK(std::isfinite(raw));
+    CHECK(fit.logLik==doctest::Approx(raw).epsilon(1e-12));
+  }
+}
+
+TEST_CASE("triang: audit-support case 11127 public coordinates") {
+  const std::vector<double> x{0.03627073533558047,0.03627073533558048,0.036270735335580485,0.0362707353355805,0.03627073533558053};
+  const auto data=mltest::as_span(x);
+  const auto fit=cppunivariate::triang_mle(data,1e-10,100,0.036270735335580465,NAN,0.3888433021027595);
+  REQUIRE(fit.status==cppunivariate::TriangStatus::Ok);
+  if(fit.status==cppunivariate::TriangStatus::Ok) {
+    double raw=0;
+    for(double z:x) {
+      CHECK(z>=fit.a);CHECK(z<=fit.b);
+      raw+=cppunivariate::distributions::dtriang(z,fit.a,fit.b,fit.c,true);
+    }
+    CHECK(std::isfinite(raw));
+    CHECK(fit.logLik==doctest::Approx(raw).epsilon(1e-12));
+  }
+}

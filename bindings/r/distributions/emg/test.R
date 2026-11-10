@@ -132,3 +132,30 @@ test_that("EMG outer certificate preserves budget and unresolved witnesses", {
   expect_gte(nrow(e$candidates),2)
   expect_lte(e$loglik_lower,e$loglik_upper)
 })
+
+test_that("emg audit-support case 1374 checks the public fit", {
+  x <- c(2.3413394878482614e+150,2.2897087235884532e+150,1.3183800389288958e+150,6.757171112452496e+149,5.611056796430911e+150,1.1860909484474617e+150,2.1942876383991374e+150,-3.8622205310315114e+149,5.922717764038318e+149,4.933410406124059e+150,3.8273210056823587e+149,-8.891876547554337e+149)
+  fit <- suppressWarnings(tryCatch(mlemg(x,reltol=1e-10,iterlim=100,sigma=1.0518147225573364,lambda=1.209185930245896),error=identity))
+  expect_false(inherits(fit,"error"))
+  if(inherits(fit,"error")) {
+    expect_match(conditionMessage(fit),"numerical|converge|accuracy|certificate",ignore.case=TRUE)
+  } else {
+    raw <- sum(dml(x,fit,log=TRUE))
+    expect_true(is.finite(raw))
+    expect_equal(as.numeric(logLik(fit)),raw,tolerance=1e-11)
+  }
+})
+
+test_that("emg audit-support case 1375 checks the public fit", {
+  x <- c(100000002.34133948,100000002.28970872,100000001.31838004,100000000.67571712,100000005.61105679,100000001.18609095,100000002.19428764,99999999.61377795,100000000.59227178,100000004.9334104,100000000.3827321,99999999.11081235)
+  fit <- suppressWarnings(tryCatch(mlemg(x,reltol=1e-10,iterlim=100,sigma=1.0518147225573364,lambda=1.209185930245896),error=identity))
+  expect_false(inherits(fit,"error"))
+  if(inherits(fit,"error")) {
+    expect_match(conditionMessage(fit),"numerical|converge|accuracy|certificate",ignore.case=TRUE)
+  } else {
+    raw <- sum(dml(x,fit,log=TRUE))
+    expect_true(is.finite(raw))
+    expect_equal(as.numeric(logLik(fit)),raw,tolerance=1e-11)
+    expect_equal(unname(fit["mu"]),100000000.60179031,tolerance=1e-16)
+  }
+})

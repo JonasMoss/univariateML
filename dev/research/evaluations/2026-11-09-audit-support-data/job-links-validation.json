@@ -1,0 +1,35 @@
+{
+  "job_documents": "PASS",
+  "job_files": [
+    "univariateML-cpp/include/cppunivariate/distributions/emg/README.md",
+    "univariateML-cpp/include/cppunivariate/distributions/triang/README.md",
+    "univariateML-cpp/include/cppunivariate/distributions/gev/README.md",
+    "dev/research/evaluations/2026-11-09-audit-support-report.md"
+  ],
+  "local_destinations": 37,
+  "report_checked": true,
+  "global_existing_findings": 41,
+  "unchanged_global_files": [
+    {
+      "path": "dev/research/evaluations/2026-11-03-boundary-lit-report.md",
+      "sha256": "cd351c4120a8ba7d1181ac10498c470cbddfce532947ab4b019380224c24ba3e"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-07-fit-audit-data/static-inventory.md",
+      "sha256": "34ae937b7ec2783016dffa90ee33595a761cceecf62c26efa9f63214ad889c1d"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "sha256": "b8f1c71407be40dd591791b52c669386ddd237b9d0b3465d7c375b5f15915859"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/nbinom/README.md",
+      "sha256": "d904451e9b6df5a64fbb2a252a2e0a5d2538e5af168a589d0d4914733e231ab8"
+    },
+    {
+      "path": "univariateML-cpp/notes/inference.md",
+      "sha256": "9843db90c9a907959bca5b1013da1d5b9379df11db218324d6ed1476601dd9d1"
+    }
+  ],
+  "baseline": "594c491dd495892b9cffd8977fcc9809fcbec151"
+}

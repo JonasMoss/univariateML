@@ -1,0 +1,1017 @@
+[
+  {
+    "index": 1349,
+    "family": "emg",
+    "mask": 5,
+    "unchanged_coefficients": false,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "sigma": "0.00000000000001000752248317655517246309371960133757849422847694520650641218463438054657892453606656606470715193226"
+    },
+    "max_error": "0.00000000000001000752248317655517246309371960133757849422847694520650641218463438054657892453606656606470715193226",
+    "exceeds_1e_10": false,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 1318,
+    "family": "emg",
+    "mask": 3,
+    "unchanged_coefficients": false,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "lambda": "0.00000000000000006470959008096448674688140451809776441253596754189778180836263143343158306881279533142365599538575802"
+    },
+    "max_error": "0.00000000000000006470959008096448674688140451809776441253596754189778180836263143343158306881279533142365599538575802",
+    "exceeds_1e_10": false,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 1363,
+    "family": "emg",
+    "mask": 6,
+    "unchanged_coefficients": false,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "mu": "0.00000000001866102049444919831880183830327378649515705469413146192920106466524858499520566234369530265735546856"
+    },
+    "max_error": "0.00000000001866102049444919831880183830327378649515705469413146192920106466524858499520566234369530265735546856",
+    "exceeds_1e_10": false,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 10280,
+    "family": "emg",
+    "mask": 6,
+    "unchanged_coefficients": false,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "mu": "0.000000000002271632654024796274076436507850963226432944070962172329391915805814648460863461673169368202110373371"
+    },
+    "max_error": "0.000000000002271632654024796274076436507850963226432944070962172329391915805814648460863461673169368202110373371",
+    "exceeds_1e_10": false,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 1367,
+    "family": "emg",
+    "mask": 6,
+    "unchanged_coefficients": false,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "mu": "0.00000000001247847668728848714548654188171120493324112330448084757952137300699513231134720477997122948810318803"
+    },
+    "max_error": "0.00000000001247847668728848714548654188171120493324112330448084757952137300699513231134720477997122948810318803",
+    "exceeds_1e_10": false,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 1370,
+    "family": "emg",
+    "mask": 6,
+    "unchanged_coefficients": false,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "mu": "0.00000000001247847668728848714548654188171120493324112330448084757952137300699513231134720477997122948810318803"
+    },
+    "max_error": "0.00000000001247847668728848714548654188171120493324112330448084757952137300699513231134720477997122948810318803",
+    "exceeds_1e_10": false,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 10180,
+    "family": "emg",
+    "mask": 6,
+    "unchanged_coefficients": false,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "mu": "0.0000000000419602913795516455055630560602776648208363149695973262274719312069156558786790721651327585868687838"
+    },
+    "max_error": "0.0000000000419602913795516455055630560602776648208363149695973262274719312069156558786790721651327585868687838",
+    "exceeds_1e_10": false,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 1364,
+    "family": "emg",
+    "mask": 6,
+    "unchanged_coefficients": false,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "mu": "0.00000000004069113729281075962615526338906877665773287789174558859142629154234125078187973356536693366013316835"
+    },
+    "max_error": "0.00000000004069113729281075962615526338906877665773287789174558859142629154234125078187973356536693366013316835",
+    "exceeds_1e_10": false,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 1362,
+    "family": "emg",
+    "mask": 6,
+    "unchanged_coefficients": false,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "mu": "0.00000000004358366702526252228896677452905568840320962791445795089128915833773879661970856009396876159765245945"
+    },
+    "max_error": "0.00000000004358366702526252228896677452905568840320962791445795089128915833773879661970856009396876159765245945",
+    "exceeds_1e_10": false,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 10172,
+    "family": "emg",
+    "mask": 6,
+    "unchanged_coefficients": false,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "mu": "0.0000000000261913772186881320295421649473547437962254512043961546687838906192469551592227862559255088596007669"
+    },
+    "max_error": "0.0000000000261913772186881320295421649473547437962254512043961546687838906192469551592227862559255088596007669",
+    "exceeds_1e_10": false,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 1366,
+    "family": "emg",
+    "mask": 6,
+    "unchanged_coefficients": false,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "mu": "0.00000000002408622922060831074542485498172963432390209201795240514137613133952008394378423774771489294769109187"
+    },
+    "max_error": "0.00000000002408622922060831074542485498172963432390209201795240514137613133952008394378423774771489294769109187",
+    "exceeds_1e_10": false,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 9720,
+    "family": "emg",
+    "mask": 6,
+    "unchanged_coefficients": false,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "mu": "0.00000000002781644883398216032933231074564776599819488445013645504777728927272289034676000324431076727344345109"
+    },
+    "max_error": "0.00000000002781644883398216032933231074564776599819488445013645504777728927272289034676000324431076727344345109",
+    "exceeds_1e_10": false,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 1321,
+    "family": "emg",
+    "mask": 3,
+    "unchanged_coefficients": false,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "lambda": "0.0000000000000006299083053254035279725621320355965265503456998902470215195762850639329014712793466171102157884895529"
+    },
+    "max_error": "0.0000000000000006299083053254035279725621320355965265503456998902470215195762850639329014712793466171102157884895529",
+    "exceeds_1e_10": false,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 1324,
+    "family": "emg",
+    "mask": 3,
+    "unchanged_coefficients": false,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "lambda": "0.0000000000000006299083053254035279725621320355965265503456998902470215195762850639329014712793466171102157884895529"
+    },
+    "max_error": "0.0000000000000006299083053254035279725621320355965265503456998902470215195762850639329014712793466171102157884895529",
+    "exceeds_1e_10": false,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 1376,
+    "family": "emg",
+    "mask": 6,
+    "unchanged_coefficients": false,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "mu": "0.00000000001244059305597609650699324585773912422977236202976323728712534538777904094800024280423461684550395698"
+    },
+    "max_error": "0.00000000001244059305597609650699324585773912422977236202976323728712534538777904094800024280423461684550395698",
+    "exceeds_1e_10": false,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 1315,
+    "family": "emg",
+    "mask": 3,
+    "unchanged_coefficients": false,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "lambda": "0.00000000000000002182328313267402657688864715086568319989566831608080867787173333455574728915038579027498876402687052"
+    },
+    "max_error": "0.00000000000000002182328313267402657688864715086568319989566831608080867787173333455574728915038579027498876402687052",
+    "exceeds_1e_10": false,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 1365,
+    "family": "emg",
+    "mask": 6,
+    "unchanged_coefficients": false,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "mu": "0.0000000000297575251528906716325966382296225006737553801679200440280604928539471413901530506050364936376869125"
+    },
+    "max_error": "0.0000000000297575251528906716325966382296225006737553801679200440280604928539471413901530506050364936376869125",
+    "exceeds_1e_10": false,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 9712,
+    "family": "emg",
+    "mask": 6,
+    "unchanged_coefficients": false,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "mu": "0.00000000002853703928452746473918437162812508033820329797600309375904913044136553792704218553689392345089958495"
+    },
+    "max_error": "0.00000000002853703928452746473918437162812508033820329797600309375904913044136553792704218553689392345089958495",
+    "exceeds_1e_10": false,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 1283,
+    "family": "emg",
+    "mask": 1,
+    "unchanged_coefficients": false,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "sigma": "0.00000000000000005656855897279635438401479943546529283410538410427254943109933262150328366694246049199420769896134622",
+      "lambda": "0.00000000000000001653037158104669951589789167050751339488909480982317836716296947092904512334848818774905840066218384"
+    },
+    "max_error": "0.00000000000000005656855897279635438401479943546529283410538410427254943109933262150328366694246049199420769896134622",
+    "exceeds_1e_10": false,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 10265,
+    "family": "emg",
+    "mask": 1,
+    "unchanged_coefficients": false,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "sigma": "0.000000000000000006392593602289101792902518816766797202949889985103215195596834246056806737202093141590477410224744547",
+      "lambda": "0.00000000000000003918059453036502110186734459840664129295721270875002616130923248051087971250000773828236301539056076"
+    },
+    "max_error": "0.00000000000000003918059453036502110186734459840664129295721270875002616130923248051087971250000773828236301539056076",
+    "exceeds_1e_10": false,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 1287,
+    "family": "emg",
+    "mask": 1,
+    "unchanged_coefficients": false,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "sigma": "0.0000000000000000005130847753527893311379716725772061630767267075430253862128459585185726265483455852093797590266384436",
+      "lambda": "0.00000000000000006574986886868376643348029304395535650504255727507449826872470829936930810622390824857271992766067421"
+    },
+    "max_error": "0.00000000000000006574986886868376643348029304395535650504255727507449826872470829936930810622390824857271992766067421",
+    "exceeds_1e_10": false,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 1290,
+    "family": "emg",
+    "mask": 1,
+    "unchanged_coefficients": false,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "sigma": "0.0000000000000000005130847753527893311379716725772061630767267075430253862128459585185726265483455852093797590266384436",
+      "lambda": "0.00000000000000006574986886868376643348029304395535650504255727507449826872470829936930810622390824857271992766067421"
+    },
+    "max_error": "0.00000000000000006574986886868376643348029304395535650504255727507449826872470829936930810622390824857271992766067421",
+    "exceeds_1e_10": false,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 10266,
+    "family": "emg",
+    "mask": 1,
+    "unchanged_coefficients": false,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "sigma": "0.00000000000000001896593816254928304206196783934871068972412175927592462983324973488865915744902264065792124155978892",
+      "lambda": "0.0000000000000001325289710409555971850113189686612901304813959371971962464252931960751299234117944480766664415900509"
+    },
+    "max_error": "0.0000000000000001325289710409555971850113189686612901304813959371971962464252931960751299234117944480766664415900509",
+    "exceeds_1e_10": false,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 1289,
+    "family": "emg",
+    "mask": 1,
+    "unchanged_coefficients": false,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "sigma": "0.00000000000000001532384914436673536290896847249544475978243853910086427191181721023237357342257941120360922971435058",
+      "lambda": "0.00000000000000000127920264061144133220710712276348222099859334626208899495045125637314979576459412345627929247181863"
+    },
+    "max_error": "0.00000000000000001532384914436673536290896847249544475978243853910086427191181721023237357342257941120360922971435058",
+    "exceeds_1e_10": false,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 1292,
+    "family": "emg",
+    "mask": 1,
+    "unchanged_coefficients": false,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "sigma": "0.00000000000000001532384914436673536290896847249544475978243853910086427191181721023237357342257941120360922971435058",
+      "lambda": "0.00000000000000000127920264061144133220710712276348222099859334626208899495045125637314979576459412345627929247181863"
+    },
+    "max_error": "0.00000000000000001532384914436673536290896847249544475978243853910086427191181721023237357342257941120360922971435058",
+    "exceeds_1e_10": false,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 1297,
+    "family": "emg",
+    "mask": 1,
+    "unchanged_coefficients": false,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "sigma": "0.00000000000000003952230134184271913352233196070627573018132305028574261908341331527967669709344320771314841422294133",
+      "lambda": "0.00000000000000003039640124414260469193393678793619763959984067845640496652551958292412931276295412797488027882065749"
+    },
+    "max_error": "0.00000000000000003952230134184271913352233196070627573018132305028574261908341331527967669709344320771314841422294133",
+    "exceeds_1e_10": false,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 1295,
+    "family": "emg",
+    "mask": 1,
+    "unchanged_coefficients": false,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "sigma": "0.00000000000000001887713348642391242419718165258360948789105213319171166912388092196525680249455274473222819467976155",
+      "lambda": "0.00000000000000003899990748591381150739701041093615717798295215506616974384143160417772048360127413063437019218649789"
+    },
+    "max_error": "0.00000000000000003899990748591381150739701041093615717798295215506616974384143160417772048360127413063437019218649789",
+    "exceeds_1e_10": false,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 10267,
+    "family": "emg",
+    "mask": 1,
+    "unchanged_coefficients": false,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "sigma": "0.0000000000000001340875439924603375402587472708080382396084796022804139063433868352150813827882954211579609036919939",
+      "lambda": "0.00000000000000008508313345927885804985493084687366735128118305865125156919251742905341408570977824657264052742169972"
+    },
+    "max_error": "0.0000000000000001340875439924603375402587472708080382396084796022804139063433868352150813827882954211579609036919939",
+    "exceeds_1e_10": false,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 1288,
+    "family": "emg",
+    "mask": 1,
+    "unchanged_coefficients": false,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "sigma": "0.000000000000000115308150341972174165980055925559940971813763236502649140931579463078640370833269315124056408770136",
+      "lambda": "0.0000000000000000997289419497987220081358763887777665880502127181178444405663711174381511494463418877102399585033391"
+    },
+    "max_error": "0.000000000000000115308150341972174165980055925559940971813763236502649140931579463078640370833269315124056408770136",
+    "exceeds_1e_10": false,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 1291,
+    "family": "emg",
+    "mask": 1,
+    "unchanged_coefficients": false,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "sigma": "0.000000000000000115308150341972174165980055925559940971813763236502649140931579463078640370833269315124056408770136",
+      "lambda": "0.0000000000000000997289419497987220081358763887777665880502127181178444405663711174381511494463418877102399585033391"
+    },
+    "max_error": "0.000000000000000115308150341972174165980055925559940971813763236502649140931579463078640370833269315124056408770136",
+    "exceeds_1e_10": false,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 10171,
+    "family": "emg",
+    "mask": 5,
+    "unchanged_coefficients": false,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "sigma": "0.00000000000000004840676612418020647030760894537077811972653335171296239010682750594165287697159115802838393936988011"
+    },
+    "max_error": "0.00000000000000004840676612418020647030760894537077811972653335171296239010682750594165287697159115802838393936988011",
+    "exceeds_1e_10": false,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 9711,
+    "family": "emg",
+    "mask": 5,
+    "unchanged_coefficients": false,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "sigma": "0.00000000000000001597847022728272595750674867303360669297723202857505128637837728329365564929026259712367344120356447"
+    },
+    "max_error": "0.00000000000000001597847022728272595750674867303360669297723202857505128637837728329365564929026259712367344120356447",
+    "exceeds_1e_10": false,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 1330,
+    "family": "emg",
+    "mask": 4,
+    "unchanged_coefficients": false,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "mu": "0.0000000000000000171051253451987592919197816564988755012854907029390281662190398591256553981615276091777314388630668",
+      "sigma": "0.000000000000000005676832572653505630398693278550407197354765979605997969455965096369472358861116238497814612885049518"
+    },
+    "max_error": "0.0000000000000000171051253451987592919197816564988755012854907029390281662190398591256553981615276091777314388630668",
+    "exceeds_1e_10": false,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 1347,
+    "family": "emg",
+    "mask": 5,
+    "unchanged_coefficients": false,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "sigma": "0.0000000000000000414031901961132567462546399929464363900042030801911678271601379778800149670404466907037160603101071"
+    },
+    "max_error": "0.0000000000000000414031901961132567462546399929464363900042030801911678271601379778800149670404466907037160603101071",
+    "exceeds_1e_10": false,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 1346,
+    "family": "emg",
+    "mask": 5,
+    "unchanged_coefficients": false,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "sigma": "0.0000000000000000138007224815976168265793255107113970826331847349356766245917001915359600906736067252746089746647857"
+    },
+    "max_error": "0.0000000000000000138007224815976168265793255107113970826331847349356766245917001915359600906736067252746089746647857",
+    "exceeds_1e_10": false,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 1284,
+    "family": "emg",
+    "mask": 1,
+    "unchanged_coefficients": false,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "sigma": "0.00000000000000003357766249738893083048854789713712258450731802874624890310369830207830402296511163728666491536882942",
+      "lambda": "0.0000000000000000376823524151187551590846525475425954259377890956228992010784713582320330747675930679428245458839288"
+    },
+    "max_error": "0.0000000000000000376823524151187551590846525475425954259377890956228992010784713582320330747675930679428245458839288",
+    "exceeds_1e_10": false,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 1298,
+    "family": "emg",
+    "mask": 2,
+    "unchanged_coefficients": false,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "mu": "0.00000000000000001834804216029765087636672242764815260894856865860861897462419952866368519272522624683493446817148458",
+      "lambda": "0.00000000000000006506381019317662900230836310139380599776413164915144305893470188514877320689393922549225791500101953"
+    },
+    "max_error": "0.00000000000000006506381019317662900230836310139380599776413164915144305893470188514877320689393922549225791500101953",
+    "exceeds_1e_10": false,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 2694,
+    "family": "gev",
+    "mask": 1,
+    "unchanged_coefficients": true,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "sigma": "0.00000004354815009328116558119689395650362047838876259316851905086471737051683749578574941867298849107184829",
+      "xi": "0.0"
+    },
+    "max_error": "0.00000004354815009328116558119689395650362047838876259316851905086471737051683749578574941867298849107184829",
+    "exceeds_1e_10": true,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 2758,
+    "family": "gev",
+    "mask": 5,
+    "unchanged_coefficients": true,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "sigma": "0.00000002605567341455221355395655785959861734488061286275364059555243061367376569614162594815325022213390463"
+    },
+    "max_error": "0.00000002605567341455221355395655785959861734488061286275364059555243061367376569614162594815325022213390463",
+    "exceeds_1e_10": true,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 2710,
+    "family": "gev",
+    "mask": 2,
+    "unchanged_coefficients": true,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "mu": "0.00000002485726975569812445375392466594525131447424129996092782172408771347930488780304064485226584965357797",
+      "xi": "0.0"
+    },
+    "max_error": "0.00000002485726975569812445375392466594525131447424129996092782172408771347930488780304064485226584965357797",
+    "exceeds_1e_10": true,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 2750,
+    "family": "gev",
+    "mask": 5,
+    "unchanged_coefficients": true,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "sigma": "0.0000000201039346637275483002077569797584168018226377831158007673988827269071044758223382616804903628154217"
+    },
+    "max_error": "0.0000000201039346637275483002077569797584168018226377831158007673988827269071044758223382616804903628154217",
+    "exceeds_1e_10": true,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 2757,
+    "family": "gev",
+    "mask": 5,
+    "unchanged_coefficients": true,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "sigma": "0.00000001532106927521363646017814939928291980144352690904493179218892958414758267954160292603691766167463914"
+    },
+    "max_error": "0.00000001532106927521363646017814939928291980144352690904493179218892958414758267954160292603691766167463914",
+    "exceeds_1e_10": true,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 2749,
+    "family": "gev",
+    "mask": 5,
+    "unchanged_coefficients": true,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "sigma": "0.00000001426159725167624652073668739342493706356103746818825172760849880717111620312482069239284306724888467"
+    },
+    "max_error": "0.00000001426159725167624652073668739342493706356103746818825172760849880717111620312482069239284306724888467",
+    "exceeds_1e_10": true,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 2762,
+    "family": "gev",
+    "mask": 6,
+    "unchanged_coefficients": true,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "mu": "0.000000011916411022029390226686787295678929039412748843420806513621787551096746209360820102527661092523359"
+    },
+    "max_error": "0.000000011916411022029390226686787295678929039412748843420806513621787551096746209360820102527661092523359",
+    "exceeds_1e_10": true,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 2761,
+    "family": "gev",
+    "mask": 6,
+    "unchanged_coefficients": true,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "mu": "0.00000001177100575884338311977361568119028334990517168390769291316636718548723427075634497114834692500061109"
+    },
+    "max_error": "0.00000001177100575884338311977361568119028334990517168390769291316636718548723427075634497114834692500061109",
+    "exceeds_1e_10": true,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 2763,
+    "family": "gev",
+    "mask": 6,
+    "unchanged_coefficients": true,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "mu": "0.00000001103994142000853369638641123195858890696598124193520346896878645471565313678309311991585926359014289"
+    },
+    "max_error": "0.00000001103994142000853369638641123195858890696598124193520346896878645471565313678309311991585926359014289",
+    "exceeds_1e_10": true,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 2752,
+    "family": "gev",
+    "mask": 5,
+    "unchanged_coefficients": true,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "sigma": "0.000000009563735044900721564349617658707661914020968798818849105805449137461002459000648964612624174224853347"
+    },
+    "max_error": "0.000000009563735044900721564349617658707661914020968798818849105805449137461002459000648964612624174224853347",
+    "exceeds_1e_10": true,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 2691,
+    "family": "gev",
+    "mask": 1,
+    "unchanged_coefficients": true,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "sigma": "0.000000009527009238548834550483698986969170401622665214187938838494883291790696021005099278697583734690318111",
+      "xi": "0.0"
+    },
+    "max_error": "0.000000009527009238548834550483698986969170401622665214187938838494883291790696021005099278697583734690318111",
+    "exceeds_1e_10": true,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 10959,
+    "family": "gev",
+    "mask": 5,
+    "unchanged_coefficients": true,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "sigma": "0.000000009187907321760578233417852172574616440436623581867211398075538730749332514624575788802192711124895678"
+    },
+    "max_error": "0.000000009187907321760578233417852172574616440436623581867211398075538730749332514624575788802192711124895678",
+    "exceeds_1e_10": true,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 2744,
+    "family": "gev",
+    "mask": 5,
+    "unchanged_coefficients": true,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "sigma": "0.000000009042027162578182176603442607279326816675883553119800015382237529725280487864257459636015465011774841"
+    },
+    "max_error": "0.000000009042027162578182176603442607279326816675883553119800015382237529725280487864257459636015465011774841",
+    "exceeds_1e_10": true,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 10958,
+    "family": "gev",
+    "mask": 5,
+    "unchanged_coefficients": true,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "sigma": "0.000000008156603687468424399062612192438134987558846363141407822124921774563114937135384156087586579743113713"
+    },
+    "max_error": "0.000000008156603687468424399062612192438134987558846363141407822124921774563114937135384156087586579743113713",
+    "exceeds_1e_10": true,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 2759,
+    "family": "gev",
+    "mask": 5,
+    "unchanged_coefficients": true,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "sigma": "0.000000007899232644167255275648817125857839900018565278286361322167659090208073134773374242079724633814244533"
+    },
+    "max_error": "0.000000007899232644167255275648817125857839900018565278286361322167659090208073134773374242079724633814244533",
+    "exceeds_1e_10": true,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 2709,
+    "family": "gev",
+    "mask": 2,
+    "unchanged_coefficients": true,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "mu": "0.0000000000000001837386060401824193949057610066158372284419125584438983427285068733329856112106419927690989096799134",
+      "xi": "0.000000007793901474746434646509767775978533283119595895256351386843943699999999999999999999999999999999736818"
+    },
+    "max_error": "0.000000007793901474746434646509767775978533283119595895256351386843943699999999999999999999999999999999736818",
+    "exceeds_1e_10": true,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 2754,
+    "family": "gev",
+    "mask": 5,
+    "unchanged_coefficients": true,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "sigma": "0.000000007790698439026186433999381480314322416800487773934067463473469709123120054508412887231957004582435533"
+    },
+    "max_error": "0.000000007790698439026186433999381480314322416800487773934067463473469709123120054508412887231957004582435533",
+    "exceeds_1e_10": true,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 2680,
+    "family": "gev",
+    "mask": 1,
+    "unchanged_coefficients": true,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "sigma": "0.000000007185918538532787164291280091988557319375614413537192038502591711805724638878720207037579962406034106",
+      "xi": "0.000000007371218428861919000118813614431407507477412116668972600846231799999999999999999999999999999999325063"
+    },
+    "max_error": "0.000000007371218428861919000118813614431407507477412116668972600846231799999999999999999999999999999999325063",
+    "exceeds_1e_10": true,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 2755,
+    "family": "gev",
+    "mask": 5,
+    "unchanged_coefficients": true,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "sigma": "0.000000007120038447521465072749385557291695006145443813512531239983716125561599586604193240459747297494873535"
+    },
+    "max_error": "0.000000007120038447521465072749385557291695006145443813512531239983716125561599586604193240459747297494873535",
+    "exceeds_1e_10": true,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 2765,
+    "family": "gev",
+    "mask": 6,
+    "unchanged_coefficients": true,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "mu": "0.000000007081729957875017508964175593413932925638256763309235668113081847339057742568679811828454920474076251"
+    },
+    "max_error": "0.000000007081729957875017508964175593413932925638256763309235668113081847339057742568679811828454920474076251",
+    "exceeds_1e_10": true,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 2753,
+    "family": "gev",
+    "mask": 5,
+    "unchanged_coefficients": true,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "sigma": "0.000000007067215536467084849087201899363032635807744910780978104524227241233416633700186407467161356949890773"
+    },
+    "max_error": "0.000000007067215536467084849087201899363032635807744910780978104524227241233416633700186407467161356949890773",
+    "exceeds_1e_10": true,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 10960,
+    "family": "gev",
+    "mask": 5,
+    "unchanged_coefficients": true,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "sigma": "0.000000006893839666747819805617845640407782068678487614920278214432988028014904949710111412587602850880621437"
+    },
+    "max_error": "0.000000006893839666747819805617845640407782068678487614920278214432988028014904949710111412587602850880621437",
+    "exceeds_1e_10": true,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 2760,
+    "family": "gev",
+    "mask": 6,
+    "unchanged_coefficients": true,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "mu": "0.000000006590942322573958492940140588620662872209865531823650708411562160094756547723802843577781493601998478"
+    },
+    "max_error": "0.000000006590942322573958492940140588620662872209865531823650708411562160094756547723802843577781493601998478",
+    "exceeds_1e_10": true,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 2756,
+    "family": "gev",
+    "mask": 5,
+    "unchanged_coefficients": true,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "sigma": "0.000000006498126909790625514201117726280376123734465219500185884251814525482867893958871620315634597814009954"
+    },
+    "max_error": "0.000000006498126909790625514201117726280376123734465219500185884251814525482867893958871620315634597814009954",
+    "exceeds_1e_10": true,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 10947,
+    "family": "gev",
+    "mask": 1,
+    "unchanged_coefficients": true,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "sigma": "0.000000005404067651282174502424761783800509250068937807387013446575511062894813533008219383217651533084298102",
+      "xi": "0.0"
+    },
+    "max_error": "0.000000005404067651282174502424761783800509250068937807387013446575511062894813533008219383217651533084298102",
+    "exceeds_1e_10": true,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 2747,
+    "family": "gev",
+    "mask": 5,
+    "unchanged_coefficients": true,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "sigma": "0.000000004217585712948242026395801853652760863684065896471311970730241188562748242338079575346730361450064704"
+    },
+    "max_error": "0.000000004217585712948242026395801853652760863684065896471311970730241188562748242338079575346730361450064704",
+    "exceeds_1e_10": true,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 2751,
+    "family": "gev",
+    "mask": 5,
+    "unchanged_coefficients": true,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "sigma": "0.000000004137525529955244382522686389444686824434313202493997419807323610927388174430867302719322905890975926"
+    },
+    "max_error": "0.000000004137525529955244382522686389444686824434313202493997419807323610927388174430867302719322905890975926",
+    "exceeds_1e_10": true,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 2696,
+    "family": "gev",
+    "mask": 2,
+    "unchanged_coefficients": true,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "mu": "0.000000004129350766805535675435902719023886736967682257634788215883489592712024921313678439481714388854258437",
+      "xi": "0.000000002852759562419299297903589512625076370751926534282678828574981199999999999999999999999999999997843283"
+    },
+    "max_error": "0.000000004129350766805535675435902719023886736967682257634788215883489592712024921313678439481714388854258437",
+    "exceeds_1e_10": true,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 10946,
+    "family": "gev",
+    "mask": 1,
+    "unchanged_coefficients": true,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "sigma": "0.000000003807669733870192396682891794725484577273399235551112055474399833100896545453915057099585949132765703",
+      "xi": "0.0"
+    },
+    "max_error": "0.000000003807669733870192396682891794725484577273399235551112055474399833100896545453915057099585949132765703",
+    "exceeds_1e_10": true,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 10948,
+    "family": "gev",
+    "mask": 1,
+    "unchanged_coefficients": true,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "sigma": "0.000000003777823469464663948680808642823933270311800647420583335726264814906009325206579545685292379149064203",
+      "xi": "0.0"
+    },
+    "max_error": "0.000000003777823469464663948680808642823933270311800647420583335726264814906009325206579545685292379149064203",
+    "exceeds_1e_10": true,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 2700,
+    "family": "gev",
+    "mask": 2,
+    "unchanged_coefficients": true,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "mu": "0.000000003584761685400285483782110378484375124095779746492919188426371711493234769822115225480494254671985495",
+      "xi": "0.0"
+    },
+    "max_error": "0.000000003584761685400285483782110378484375124095779746492919188426371711493234769822115225480494254671985495",
+    "exceeds_1e_10": true,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 2748,
+    "family": "gev",
+    "mask": 5,
+    "unchanged_coefficients": true,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "sigma": "0.000000003341249047157179994453835852656183345840683189734660997632401902672328574755888425214471111020324752"
+    },
+    "max_error": "0.000000003341249047157179994453835852656183345840683189734660997632401902672328574755888425214471111020324752",
+    "exceeds_1e_10": true,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 2745,
+    "family": "gev",
+    "mask": 5,
+    "unchanged_coefficients": true,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "sigma": "0.000000003290335431775426268259540811253557847295442407957863038615028315535281462578837348799762553845952087"
+    },
+    "max_error": "0.000000003290335431775426268259540811253557847295442407957863038615028315535281462578837348799762553845952087",
+    "exceeds_1e_10": true,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 2768,
+    "family": "gev",
+    "mask": 6,
+    "unchanged_coefficients": true,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "mu": "0.000000003271391138276032985604331201657289325122269723029315076007906582942177397465176868210159408131134258"
+    },
+    "max_error": "0.000000003271391138276032985604331201657289325122269723029315076007906582942177397465176868210159408131134258",
+    "exceeds_1e_10": true,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 2692,
+    "family": "gev",
+    "mask": 1,
+    "unchanged_coefficients": true,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "sigma": "0.000000002449601257183499805484763922965702860593455876316569366323024243312377552569420893274513916675824116",
+      "xi": "0.000000002472397543581883754690148634823870573818643946027736370442968880987398400159049348469472148968293749"
+    },
+    "max_error": "0.000000002472397543581883754690148634823870573818643946027736370442968880987398400159049348469472148968293749",
+    "exceeds_1e_10": true,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 2684,
+    "family": "gev",
+    "mask": 1,
+    "unchanged_coefficients": true,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "sigma": "0.000000001377739934890707563840904463299355208985920559868601606506590987659596722652551846046428586726219676",
+      "xi": "0.0"
+    },
+    "max_error": "0.000000001377739934890707563840904463299355208985920559868601606506590987659596722652551846046428586726219676",
+    "exceeds_1e_10": true,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 2774,
+    "family": "gev",
+    "mask": 6,
+    "unchanged_coefficients": true,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "mu": "0.000000001270619640356208248222896841085123747199654906393842986299611760837382857161017824324322581206722667"
+    },
+    "max_error": "0.000000001270619640356208248222896841085123747199654906393842986299611760837382857161017824324322581206722667",
+    "exceeds_1e_10": true,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 2764,
+    "family": "gev",
+    "mask": 6,
+    "unchanged_coefficients": true,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "mu": "0.000000000880993098509223145199543710512163466219536143987974248353946281384339826608837021834998279570365658"
+    },
+    "max_error": "0.000000000880993098509223145199543710512163466219536143987974248353946281384339826608837021834998279570365658",
+    "exceeds_1e_10": true,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  },
+  {
+    "index": 2746,
+    "family": "gev",
+    "mask": 5,
+    "unchanged_coefficients": true,
+    "prior_verified": true,
+    "coefficient_errors": {
+      "sigma": "0.0000000006819704928323420769334515582860098848717140859320715093468500911543791350396404712507076209584751941"
+    },
+    "max_error": "0.0000000006819704928323420769334515582860098848717140859320715093468500911543791350396404712507076209584751941",
+    "exceeds_1e_10": true,
+    "evidence": "numerical comparison with frozen independently precision-checked local refinement; not a new global proof"
+  }
+]
