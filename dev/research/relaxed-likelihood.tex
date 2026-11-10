@@ -4,6 +4,7 @@
 \usepackage{amsmath,amssymb,amsthm,booktabs}
 \usepackage{hyperref}
 \usepackage{url}
+\usepackage{array}
 \title{Maximum likelihood on the weak closure of a model:\\
 existence, escape and consistency}
 \author{}
@@ -42,7 +43,8 @@ Section~\ref{sec:attribution} records who did what.
 Status tags: \status{proved here} (short proof in the note), \status{sketch}
 (argument given, details unchecked), \status{conjecture}, \status{lit,
 verified} (checked in the source text), \status{lit, unverified} (recalled
-or secondhand).
+or secondhand), \status{dossier} (recorded in a family dossier with its own
+firmness grade).
 
 \paragraph{Main points.}
 \begin{enumerate}
@@ -332,29 +334,29 @@ supremum need not be jointly achievable, and (v) uses the joint
 $\bL_m$.
 
 \begin{table}[ht]
-\centering\small
-\begin{tabular}{@{}p{3.6cm}p{2.7cm}p{2.6cm}p{5.4cm}@{}}
+\centering\footnotesize
+\begin{tabular}{@{}p{0.45cm}>{\raggedright\arraybackslash}p{2.8cm}>{\raggedright\arraybackslash}p{1.6cm}>{\raggedright\arraybackslash}p{2.0cm}>{\raggedright\arraybackslash}p{2.8cm}>{\raggedright\arraybackslash}p{4.6cm}@{}}
 \toprule
-maximiser of $\bL_n$ & signature & value & outcome\\
+ & maximiser of $\bL_n$ & signature & value; gap & outcome & examples\\
 \midrule
-member, no gap & n/a & finite & MLE (\texttt{Ok})\\
-proper boundary, no gap & $(1,0,0)$ & finite & escape, ``use \texttt{mlX}''\\
-proper boundary, excess & $(1,0,0)$ & finite & oscillation; no rescue\\
-defective boundary & $m_\infty>0$ & finite & escape to a non-model\\
-singular boundary & $m_s>0$ & finite & unattained finite supremum\\
+R1 & member & $(1,0,0)$ & finite; none & MLE (\texttt{Ok}) & regular samples; Ferguson, Ex.~\ref{ex:ferguson} (no gap, yet inconsistent)\\
+R2 & proper boundary & $(1,0,0)$ & finite; none & escape, ``use \texttt{mlX}'' & NB to Poisson, Lomax to exponential, Burr to Weibull or Pareto; Ex.~\ref{ex:escapes}\\
+R3 & proper boundary & $(1,0,0)$ & finite; excess & oscillation, no rescue & sine family, Le Cam's dyadic signs; Ex.~\ref{ex:sine}\\
+R4 & defective boundary & $m_\infty>0$ & finite; none & escape to a non-model & Geyer 4.5, escaping normal component; Ex.~\ref{ex:geyer}\\
+R5 & singular boundary & $m_s>0$ & finite; excess (atom) & unattained finite supremum & Fr\'echet exact half tie at the minimum; Ex.~\ref{ex:escapes}\\
 \midrule
-atom at a data point & $m_s>0$ & $+\infty$ & collapse (normal scale, mixtures, lnorm3)\\
-density pole at a data point & $(1,0,0)$, often a member & $+\infty$, no gap & threshold with shape $<1$ (Weibull3, GEV $\xi<-1$)\\
-vanishing spike & $(1,0,0)$ & $+\infty$, infinite excess & Example~\ref{ex:spike}\\
+R6 & singular boundary, atom at a data point & $m_s>0$ & $+\infty$; excess & unbounded: collapse & normal with all observations equal; lnorm3 (atom plus escape); normal mixtures; Ex.~\ref{ex:thresholds}\\
+R7 & member with a density pole at a data point & $(1,0,0)$ & $+\infty$; none & unbounded: pole pinning & Weibull3 with shape $<1$, GEV $\xi<-1$; Ex.~\ref{ex:thresholds}\\
+R8 & proper boundary, vanishing spike & $(1,0,0)$ & $+\infty$; excess & unbounded at a Hellinger limit & spike mixture; Ex.~\ref{ex:spike}\\
 \midrule
-several & mixed & tie & multiple maxima, face ties\\
+R9 & several points & mixed & tie & non-unique maximisers & Cauchy with two observations (R1 and R5 tie), Burr finite/face ties; Ex.~\ref{ex:cauchy2}\\
 \bottomrule
 \end{tabular}
 \caption{Finite-sample outcomes, exhaustive by Theorem~\ref{thm:main}(i).
-Infinite values have three mechanisms (Example~\ref{ex:thresholds}); only
-the first is singular.
-The library adds ``budget exhausted'' and ``numerical failure'' for
-computations that cannot decide the row.}
+Members always have signature $(1,0,0)$. Singular points always show
+excess, since an atom carries no density. Deficit points never maximise
+unless $\sup_\theta L_n=0$. The library adds ``budget exhausted'' and
+``numerical failure'' for computations that cannot decide the row.}
 \label{tab:outcomes}
 \end{table}
 
@@ -443,6 +445,41 @@ inconsistent, since $1-M_n\asymp n^{-1}$ gives a spike gain
 $(1-M_n)^{-a}/n\asymp n^{a-1}\to\infty$. $a=1$ is open. \status{sketch}
 \end{proposition}
 
+\begin{example}[Escapes and singular suprema in the library]\label{ex:escapes}
+\status{dossier}
+\begin{itemize}
+\item R2, count data: negative binomial with size and probability free has a
+  finite MLE exactly when the sample variance (divisor $n$) exceeds the
+  mean; otherwise the supremum is the Poisson fit, approached as the size
+  tends to infinity (equality: unattained Poisson supremum). No gap by
+  Lemma~\ref{lem:exact}(b). \href{../../univariateML-cpp/include/cppunivariate/distributions/nbinom/README.md}{\texttt{nbinom}}.
+\item R2, continuous: Lomax escapes to the exponential as $\kappa\to\infty$
+  with $\lambda\kappa$ fixed, depending on the data (\href{../../univariateML-cpp/include/cppunivariate/distributions/lomax/README.md}{\texttt{lomax}});
+  Burr XII has Weibull and Pareto faces and exact finite/face ties
+  (\href{../../univariateML-cpp/include/cppunivariate/distributions/burr/README.md}{\texttt{burr}}).
+\item R5: Fr\'echet with location free and exactly half the sample at its
+  minimum $m$. With $\mu=m-\varepsilon$, shape $1$ and scale
+  $(n/k)\varepsilon$ the likelihood behaves like $\varepsilon^{n-2k}$, a finite
+  positive limit at $k=n/2$; this is the global supremum and no finite fit
+  attains it. The law collapses to $\delta_m$ (\href{../../univariateML-cpp/include/cppunivariate/distributions/frechet/README.md}{\texttt{frechet}}).
+\item R6: normal with all observations equal (\href{../../univariateML-cpp/include/cppunivariate/distributions/norm/README.md}{\texttt{norm}}).
+\end{itemize}
+\end{example}
+
+\begin{example}[Ties: Cauchy with two observations]\label{ex:cauchy2}
+Location-scale Cauchy, $x=(-1,1)$. With $r^2=\mu^2+\sigma^2$,
+\[
+ L(\mu,\sigma)=\frac{\sigma^2}{\pi^2\bigl((1+r^2)^2-4\mu^2\bigr)}\le\frac1{4\pi^2},
+\]
+because $(1+r^2)^2-4\mu^2-4\sigma^2=(1-r^2)^2\ge0$; equality iff $r=1$. The
+maximisers form the semicircle $\mu^2+\sigma^2=1$, $\sigma>0$. Its endpoints
+are the collapse points $\delta_{\pm1}$ (signature $(0,1,0)$), where
+$\bL_2=\lim_{\sigma\to0}p(1)p(-1)=1/(4\pi^2)$ as well. So the argmax of $\bL_2$
+is a continuum of members tied with two singular boundary points: rows R1
+and R5 at once. The \href{../../univariateML-cpp/include/cppunivariate/distributions/cauchy/README.md}{\texttt{cauchy}} dossier records these balanced
+two-point maxima. \status{proved here}
+\end{example}
+
 \begin{example}[Infinite excess at a Hellinger limit]\label{ex:spike}
 $f=w\,\sigma^{-1}\varphi((x-x_1)/\sigma)+(1-w)\varphi(x-\mu)$ with
 $w,\sigma\to0$, $w/\sigma\to\infty$: Hellinger limit $\varphi(\cdot-\mu)$,
@@ -490,7 +527,7 @@ different mechanisms.
 \end{itemize}
 \end{example}
 
-\begin{example}[Defective escape under correct specification: Geyer]
+\begin{example}[Defective escape under correct specification: Geyer]\label{ex:geyer}
 Geyer \cite[Example 4.5]{geyer} (\status{lit, verified}): counting measure on
 $\{(0,0),(0,-1)\}\cup\{(-k,-l):k,l\ge1\}$,
 $P_t(0,0)=(2+e^{-t})^{-1}$, $P_t(0,-1)=e^{-t}(2+e^{-t})^{-1}$,
