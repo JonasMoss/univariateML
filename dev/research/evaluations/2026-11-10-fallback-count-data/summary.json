@@ -1,0 +1,423 @@
+{
+  "seed": 1681,
+  "n": 1073,
+  "outcomes": {
+    "bbinom": {
+      "before": {
+        "certified": 132,
+        "stop:limit": 10,
+        "stop:budget": 18,
+        "stop:unresolved": 3,
+        "stop:numerical": 3
+      },
+      "after": {
+        "certified": 132,
+        "stop:limit": 10,
+        "stop:budget": 2,
+        "uncertified": 22
+      }
+    },
+    "hyper": {
+      "before": {
+        "stop:input-or-search": 16,
+        "certified": 98,
+        "stop:budget": 6,
+        "stop:nomle": 10,
+        "stop:unresolved": 13
+      },
+      "after": {
+        "uncertified": 35,
+        "certified": 98,
+        "stop:nomle": 10
+      }
+    },
+    "nhyper": {
+      "before": {
+        "certified": 119,
+        "stop:budget": 6,
+        "stop:nomle": 12,
+        "stop:unresolved": 1,
+        "stop:input-or-search": 1
+      },
+      "after": {
+        "certified": 120,
+        "uncertified": 7,
+        "stop:nomle": 12
+      }
+    },
+    "tbinom": {
+      "before": {
+        "certified": 219,
+        "stop:limit": 14,
+        "stop:wall-guard": 3,
+        "stop:numerical": 3,
+        "stop:input-or-search": 16
+      },
+      "after": {
+        "certified": 220,
+        "stop:limit": 14,
+        "uncertified": 5,
+        "stop:input-or-search": 16
+      }
+    },
+    "zib": {
+      "before": {
+        "certified": 140,
+        "stop:wall-guard": 2,
+        "stop:unresolved": 2,
+        "stop:numerical": 4
+      },
+      "after": {
+        "certified": 139,
+        "uncertified": 9
+      }
+    },
+    "zmbinom": {
+      "before": {
+        "certified": 130,
+        "stop:budget": 2,
+        "stop:wall-guard": 2,
+        "stop:limit": 6,
+        "stop:numerical": 3
+      },
+      "after": {
+        "certified": 131,
+        "uncertified": 6,
+        "stop:limit": 6
+      }
+    },
+    "ztbinom": {
+      "before": {
+        "certified": 71,
+        "stop:budget": 1,
+        "stop:wall-guard": 1,
+        "stop:limit": 4,
+        "stop:numerical": 2
+      },
+      "after": {
+        "certified": 71,
+        "uncertified": 4,
+        "stop:limit": 4
+      }
+    }
+  },
+  "transitions": [
+    {
+      "family": "bbinom",
+      "before": "certified",
+      "after": "certified",
+      "n": 132
+    },
+    {
+      "family": "bbinom",
+      "before": "stop:budget",
+      "after": "stop:budget",
+      "n": 2
+    },
+    {
+      "family": "bbinom",
+      "before": "stop:budget",
+      "after": "uncertified",
+      "n": 16
+    },
+    {
+      "family": "bbinom",
+      "before": "stop:limit",
+      "after": "stop:limit",
+      "n": 10
+    },
+    {
+      "family": "bbinom",
+      "before": "stop:numerical",
+      "after": "uncertified",
+      "n": 3
+    },
+    {
+      "family": "bbinom",
+      "before": "stop:unresolved",
+      "after": "uncertified",
+      "n": 3
+    },
+    {
+      "family": "hyper",
+      "before": "certified",
+      "after": "certified",
+      "n": 98
+    },
+    {
+      "family": "hyper",
+      "before": "stop:budget",
+      "after": "uncertified",
+      "n": 6
+    },
+    {
+      "family": "hyper",
+      "before": "stop:input-or-search",
+      "after": "uncertified",
+      "n": 16
+    },
+    {
+      "family": "hyper",
+      "before": "stop:nomle",
+      "after": "stop:nomle",
+      "n": 10
+    },
+    {
+      "family": "hyper",
+      "before": "stop:unresolved",
+      "after": "uncertified",
+      "n": 13
+    },
+    {
+      "family": "nhyper",
+      "before": "certified",
+      "after": "certified",
+      "n": 119
+    },
+    {
+      "family": "nhyper",
+      "before": "stop:budget",
+      "after": "uncertified",
+      "n": 6
+    },
+    {
+      "family": "nhyper",
+      "before": "stop:input-or-search",
+      "after": "certified",
+      "n": 1
+    },
+    {
+      "family": "nhyper",
+      "before": "stop:nomle",
+      "after": "stop:nomle",
+      "n": 12
+    },
+    {
+      "family": "nhyper",
+      "before": "stop:unresolved",
+      "after": "uncertified",
+      "n": 1
+    },
+    {
+      "family": "tbinom",
+      "before": "certified",
+      "after": "certified",
+      "n": 219
+    },
+    {
+      "family": "tbinom",
+      "before": "stop:input-or-search",
+      "after": "stop:input-or-search",
+      "n": 16
+    },
+    {
+      "family": "tbinom",
+      "before": "stop:limit",
+      "after": "stop:limit",
+      "n": 14
+    },
+    {
+      "family": "tbinom",
+      "before": "stop:numerical",
+      "after": "certified",
+      "n": 1
+    },
+    {
+      "family": "tbinom",
+      "before": "stop:numerical",
+      "after": "uncertified",
+      "n": 2
+    },
+    {
+      "family": "tbinom",
+      "before": "stop:wall-guard",
+      "after": "uncertified",
+      "n": 3
+    },
+    {
+      "family": "zib",
+      "before": "certified",
+      "after": "certified",
+      "n": 138
+    },
+    {
+      "family": "zib",
+      "before": "certified",
+      "after": "uncertified",
+      "n": 2
+    },
+    {
+      "family": "zib",
+      "before": "stop:numerical",
+      "after": "certified",
+      "n": 1
+    },
+    {
+      "family": "zib",
+      "before": "stop:numerical",
+      "after": "uncertified",
+      "n": 3
+    },
+    {
+      "family": "zib",
+      "before": "stop:unresolved",
+      "after": "uncertified",
+      "n": 2
+    },
+    {
+      "family": "zib",
+      "before": "stop:wall-guard",
+      "after": "uncertified",
+      "n": 2
+    },
+    {
+      "family": "zmbinom",
+      "before": "certified",
+      "after": "certified",
+      "n": 130
+    },
+    {
+      "family": "zmbinom",
+      "before": "stop:budget",
+      "after": "uncertified",
+      "n": 2
+    },
+    {
+      "family": "zmbinom",
+      "before": "stop:limit",
+      "after": "stop:limit",
+      "n": 6
+    },
+    {
+      "family": "zmbinom",
+      "before": "stop:numerical",
+      "after": "certified",
+      "n": 1
+    },
+    {
+      "family": "zmbinom",
+      "before": "stop:numerical",
+      "after": "uncertified",
+      "n": 2
+    },
+    {
+      "family": "zmbinom",
+      "before": "stop:wall-guard",
+      "after": "uncertified",
+      "n": 2
+    },
+    {
+      "family": "ztbinom",
+      "before": "certified",
+      "after": "certified",
+      "n": 70
+    },
+    {
+      "family": "ztbinom",
+      "before": "certified",
+      "after": "uncertified",
+      "n": 1
+    },
+    {
+      "family": "ztbinom",
+      "before": "stop:budget",
+      "after": "uncertified",
+      "n": 1
+    },
+    {
+      "family": "ztbinom",
+      "before": "stop:limit",
+      "after": "stop:limit",
+      "n": 4
+    },
+    {
+      "family": "ztbinom",
+      "before": "stop:numerical",
+      "after": "certified",
+      "n": 1
+    },
+    {
+      "family": "ztbinom",
+      "before": "stop:numerical",
+      "after": "uncertified",
+      "n": 1
+    },
+    {
+      "family": "ztbinom",
+      "before": "stop:wall-guard",
+      "after": "uncertified",
+      "n": 1
+    }
+  ],
+  "route_outcomes": {
+    "fixed-size": {
+      "certified": 12
+    },
+    "held-alpha": {
+      "certified": 12
+    },
+    "held-beta-preflight": {
+      "uncertified": 12
+    },
+    "all-free": {
+      "uncertified": 12
+    },
+    "held-k": {
+      "uncertified": 12
+    },
+    "growing-urn": {
+      "certified": 12
+    },
+    "finite-window": {
+      "stop:limit": 10,
+      "certified": 2
+    },
+    "positive-profile": {
+      "stop:limit": 2,
+      "certified": 10
+    },
+    "held-inflation": {
+      "certified": 12
+    },
+    "modified-profile": {
+      "certified": 10,
+      "stop:limit": 2
+    },
+    "route-regression": {
+      "uncertified": 9,
+      "stop:limit": 1
+    },
+    "held-probability-budget": {
+      "uncertified": 3
+    },
+    "certificate-window": {
+      "uncertified": 1
+    },
+    "coefficient-inclusion": {
+      "uncertified": 3
+    },
+    "zero-turning-discriminant": {
+      "certified": 1
+    },
+    "unclosed-turning-discriminant": {
+      "uncertified": 1
+    },
+    "representable-stopping-count": {
+      "certified": 1
+    },
+    "attained-two-atom-large-count": {
+      "certified": 1
+    },
+    "attained-one-positive-atom": {
+      "certified": 2
+    },
+    "flat-probability-root-inclusion": {
+      "uncertified": 1
+    },
+    "sub-machine-coefficient-target": {
+      "uncertified": 4
+    }
+  },
+  "contract_violations": [],
+  "changed_previously_successful_estimates": []
+}

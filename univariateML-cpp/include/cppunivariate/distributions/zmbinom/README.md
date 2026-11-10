@@ -93,7 +93,7 @@ relations:
 fit:
   method: delegation
   certified: partial
-  note: 'zmbinom/README.md, Details; zmbinom/mle.hpp; zmbinom/test.cpp: The certified positive-count ztbinom routes transfer with the Bernoulli zero-indicator factor, including stop witnesses. Signed positive-Poisson face certificates transfer with the same factor; nonpositive-gap or ambiguous-prefix comparisons remain unresolved.'
+  note: 'zmbinom/README.md, Details; zmbinom/mle.hpp; zmbinom/test.cpp: The certified positive-count ztbinom routes transfer with the Bernoulli zero-indicator factor, including stop witnesses. Signed positive-Poisson face certificates transfer with the same factor; nonpositive-gap or ambiguous-prefix comparisons return the successful positive-count fit uncertified.'
 areas:
 - counts and ecology
 classification: specialist
@@ -122,7 +122,7 @@ The likelihood separates into a zero-indicator part and a positive-count part. H
 
 With no positives the base coefficients are unidentified. With no zeros the free zero probability is zero. Positive counts all equal to one give an attained two-point distribution. Holding the trial count removes the infinite-size escape, and the point mass at one remains attained at every trial count. At trial count one the positive-count probability is unidentified.
 
-A held interior probability is preserved and the integer search bounds the remaining tail before returning. Exhausting its work budget is an error. Boundary probabilities must give positive likelihood to the observations. A held zero probability of zero is incompatible with observed zeros, and a held zero probability of one is incompatible with positives.
+A held interior probability is preserved and the integer search bounds the remaining tail before returning. An unfinished integer search returns its best successful positive-count fit uncertified. Boundary probabilities must give positive likelihood to the observations. A held zero probability of zero is incompatible with observed zeros, and a held zero probability of one is incompatible with positives.
 
 The free-size positive-count finite-winner and signed-face certificates, and unresolved comparisons, transfer from [ztbinom](../ztbinom/README.md). The zero-indicator log likelihood is added to every candidate and bound, with `p0` appended to its coefficients. A positive-Poisson face becomes a zero-modified Poisson face with the same `p0`. This transfer applies with `p0` held or fitted; it supplies no general uniqueness theorem for the integer size.
 
@@ -130,4 +130,8 @@ The free-size positive-count finite-winner and signed-face certificates, and unr
 
 A signed positive-count certificate produces a proved zero-modified Poisson limit with finite global bounds. Unresolved comparisons retain diagnostic witnesses and an infinite upper bound.
 
-Supply `size` explicitly. A numeric value holds it, while `size = NULL` estimates it. Supplying `prob` or `p0` holds that coefficient. With no positives the fitter preserves supplied base coefficients and chooses conventional representatives for free ones. With both `prob` and `p0` free it warns about unidentified base coefficients on all-zero data. With both free and positive counts all equal to one it warns that `mlbinom(x, size = 1)` fits the attained law exactly. A held `size` is preserved at these boundaries. Unresolved infinite-size comparisons retain the fitted zero-modified Poisson witness with the same `p0`, and stop with kind `unresolved`. Incompatible held values stop.
+Supply `size` explicitly. A numeric value holds it, while `size = NULL` estimates it. Supplying `prob` or `p0` holds that coefficient. With no positives the fitter preserves supplied base coefficients and chooses conventional representatives for free ones. With both `prob` and `p0` free it warns about unidentified base coefficients on all-zero data. With both free and positive counts all equal to one it warns that `mlbinom(x, size = 1)` fits the attained law exactly. A held `size` is preserved at these boundaries. Unresolved infinite-size comparisons retain the fitted zero-modified Poisson witness with the same `p0`, and return the finite positive-count fit with `certified = FALSE`. Incompatible held values stop.
+
+Positive observations confined to one and two attain their saturated two-atom likelihood at trial count two. Multiplying by the fitted zero-indicator factor certifies the corresponding zero-modified fit; a compatible held zero probability does not change this positive-count argument.
+
+The factorized zero estimate is $p_0=n_0/n$, even when the positive component is an attained size-one law. The sample $0,1,1$ requires $p_0=1/3$ in real arithmetic; no double meets relative $10^{-18}$ for that coefficient. Settling the positive component therefore need not settle the full fit at the requested precision.

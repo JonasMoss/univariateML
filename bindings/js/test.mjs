@@ -1099,7 +1099,7 @@ test('signed binomial face certificates have finite global bounds', async () => 
   }
 });
 
-test('higher-order binomial face signs retain certified or unresolved witnesses', async () => {
+test('higher-order binomial face signs retain proved stops or uncertified fits', async () => {
   const {default: createApi} = await import('./index.mjs');
   const api = await createApi();
   const q=Math.exp(-1.6),pi=.75*q/(.25+.75*q);
@@ -1107,6 +1107,12 @@ test('higher-order binomial face signs retain certified or unresolved witnesses'
     ['tbinom',[...Array(50).fill(0),...Array(41).fill(1),...Array(33).fill(2),...Array(3).fill(3),...Array(3).fill(4)],{a:-1,b:4}],
     ['zib',[0,0,0,0,0,1,1,2,2,4],{pi}]
   ]) {
+    if(family==='zib') {
+      const f=api[family].fit(new Float64Array(x),held);
+      assert.equal(f.status,'Ok');assert.equal(f.certified,0);
+      assert.equal(f.estimates.pi,pi);assert.ok(Number.isFinite(f.logLik));
+      continue;
+    }
     assert.throws(() => api[family].fit(new Float64Array(x),held),error => {
       assert.equal(error.kind,family==='tbinom'?'limit':'unresolved');
       if(family==='tbinom')assert.ok(Number.isFinite(error.loglik_upper));
@@ -1753,14 +1759,13 @@ test('bnbinom legacy fallbacks and proved decisions expose certification labels'
 });
 
 
-test('binomial near-critical ZIP inputs preserve unresolved witnesses',async()=>{
+test('binomial near-critical ZIP inputs return uncertified fits',async()=>{
   const {default:createApi}=await import('./index.mjs');const api=await createApi();
-  for(const pi of [.3772146069463776,.37721460694637765])
-    assert.throws(()=>api.zib.fit(new Float64Array([0,0,0,0,0,1,1,2,2,4]),{size:null,pi}),e=>{
-      assert.equal(e.kind,'unresolved');assert.equal(e.model,'zip');
-      assert.equal(e.estimates.pi,pi);assert.equal(e.loglik_upper,Infinity);
-      assert.ok(e.candidates.length>=2);return true;
-    });
+  for(const pi of [.3772146069463776,.37721460694637765]) {
+    const f=api.zib.fit(new Float64Array([0,0,0,0,0,1,1,2,2,4]),{size:null,pi});
+    assert.equal(f.status,'Ok');assert.equal(f.certified,0);
+    assert.equal(f.estimates.pi,pi);assert.ok(Number.isFinite(f.logLik));
+  }
 });
 
 test('truncated binomial certifies the finite zero-second-order boundary',async()=>{

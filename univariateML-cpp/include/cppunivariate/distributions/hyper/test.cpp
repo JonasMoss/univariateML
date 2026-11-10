@@ -434,7 +434,8 @@ TEST_CASE("hyper: held population joint finite grid") {
     CHECK(f.m == std::floor(f.m)); CHECK(f.k == std::floor(f.k));
   }
   const std::vector<double> x{0,1};
-  CHECK(cppunivariate::hyper_mle(mltest::as_span(x),kNaN,10000,kNaN).status == cppunivariate::HyperStatus::NumericalFailure);
+  CHECK(cppunivariate::hyper_mle(mltest::as_span(x),kNaN,10000,kNaN).status==cppunivariate::HyperStatus::Ok);
+  CHECK_FALSE(cppunivariate::hyper_mle(mltest::as_span(x),kNaN,10000,kNaN).certified);
 }
 
 // Hyper(N=10,m=5,k=5) is symmetric: F(2)=1/2 exactly.
@@ -466,9 +467,11 @@ TEST_CASE("hyper: certified joint population profiles and unresolved face") {
   const std::vector<double> tie{0,1};
   CHECK(cppunivariate::hyper_mle(mltest::as_span(tie),1,nan,nan).status == cppunivariate::HyperStatus::Ok);
   const std::vector<double> spread{0,0,0,5,5,5};
-  CHECK(cppunivariate::hyper_mle(mltest::as_span(spread),5,nan,nan).status == cppunivariate::HyperStatus::FaceUnresolved);
+  CHECK(cppunivariate::hyper_mle(mltest::as_span(spread),5,nan,nan).status == cppunivariate::HyperStatus::Ok);
+  CHECK_FALSE(cppunivariate::hyper_mle(mltest::as_span(spread),5,nan,nan).certified);
   const std::vector<double> large{0,1};
-  CHECK(cppunivariate::hyper_mle(mltest::as_span(large),100001,nan,nan).status == cppunivariate::HyperStatus::NumericalFailure);
+  CHECK(cppunivariate::hyper_mle(mltest::as_span(large),100001,nan,nan).status == cppunivariate::HyperStatus::Ok);
+  CHECK_FALSE(cppunivariate::hyper_mle(mltest::as_span(large),100001,nan,nan).certified);
 }
 
 TEST_CASE("hyper: fully free search, faces and work limit") {
@@ -485,21 +488,25 @@ TEST_CASE("hyper: fully free search, faces and work limit") {
   }
   const std::vector<double> tie{0,1}, spread{0,0,0,5,5,5};
   const auto t = cppunivariate::hyper_mle(as_span(tie),kNaN,kNaN,kNaN);
-  CHECK(t.status == cppunivariate::HyperStatus::FaceTie);
+  CHECK(t.status == cppunivariate::HyperStatus::Ok);
+  CHECK_FALSE(t.certified);
   CHECK(t.tie == 1);
   const auto s = cppunivariate::hyper_mle(as_span(spread),kNaN,kNaN,kNaN);
-  CHECK(s.status == cppunivariate::HyperStatus::FaceUnresolved);
+  CHECK(s.status == cppunivariate::HyperStatus::Ok);
+  CHECK_FALSE(s.certified);
   CHECK(s.tie == 0);
   const std::vector<double> large{0,100001};
-  CHECK(cppunivariate::hyper_mle(as_span(large),kNaN,kNaN,kNaN).status == cppunivariate::HyperStatus::NumericalFailure);
+  CHECK(cppunivariate::hyper_mle(as_span(large),kNaN,kNaN,kNaN).status == cppunivariate::HyperStatus::Ok);
+  CHECK_FALSE(cppunivariate::hyper_mle(as_span(large),kNaN,kNaN,kNaN).certified);
   const std::vector<double> invalid{1,1.5}, empty;
   CHECK(cppunivariate::hyper_mle(as_span(invalid),kNaN,kNaN,kNaN).status == cppunivariate::HyperStatus::InvalidInput);
   CHECK(cppunivariate::hyper_mle(as_span(empty),kNaN,kNaN,kNaN).status == cppunivariate::HyperStatus::InvalidInput);
   const std::vector<double> budget{8,8,9,9};
   const auto exhausted = cppunivariate::hyper_mle(as_span(budget),kNaN,kNaN,kNaN);
-  CHECK(exhausted.status == cppunivariate::HyperStatus::NumericalFailure);
+  CHECK(exhausted.status == cppunivariate::HyperStatus::Ok);
+  CHECK_FALSE(exhausted.certified);
   CHECK(exhausted.iterations >= cppunivariate::hyper_detail::kGridBudget);
-  CHECK(std::isnan(exhausted.logLik));
+  CHECK(std::isfinite(exhausted.logLik));
 }
 
 TEST_CASE("hyper: fully free seeded fits match independent population grids") {
@@ -544,8 +551,20 @@ TEST_CASE("hyper: zero-count escape has a point-mass witness") {
 TEST_CASE("hyper: explicit exploratory-work preflight has an empty budget payload") {
   const std::vector<double> x{0,100001};
   const auto r=cppunivariate::hyper_mle({x.data(),x.size()},NAN,NAN,NAN);
-  CHECK(r.status==cppunivariate::HyperStatus::NumericalFailure);
+  CHECK(r.status==cppunivariate::HyperStatus::Ok);
+  CHECK_FALSE(r.certified);
   CHECK(r.stop_detail.budget_exhausted);
-  CHECK(r.stop_detail.candidates.empty());
+  CHECK_FALSE(r.stop_detail.candidates.empty());
   CHECK(r.stop_detail.loglik_upper==INFINITY);
+}
+
+TEST_CASE("hyper: uncertified growing-population profiles preserve either held count") {
+  const std::vector<double> x{0,0,0,5,5,5};
+  const auto f=cppunivariate::hyper_mle({x.data(),x.size()},5,NAN,NAN);
+  const auto g=cppunivariate::hyper_mle({x.data(),x.size()},NAN,NAN,5);
+  REQUIRE(f.status==cppunivariate::HyperStatus::Ok);REQUIRE(g.status==cppunivariate::HyperStatus::Ok);
+  CHECK_FALSE(f.certified);CHECK_FALSE(g.certified);CHECK(f.k==5);CHECK(g.m==5);
+  CHECK(f.logLik==doctest::Approx(g.logLik).epsilon(1e-10));
+  double ll=0;for(double v:x)ll+=cppunivariate::hyper_log_pmf(v,g.N,g.m,g.k);
+  CHECK(g.logLik==doctest::Approx(ll).epsilon(1e-10));
 }

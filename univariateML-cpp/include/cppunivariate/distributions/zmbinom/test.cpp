@@ -148,3 +148,17 @@ TEST_CASE("zmbinom: proved faces transport every candidate and global bound") {
 TEST_CASE("zmbinom: quantile search guards and representability") {
   CHECK(std::isnan(cppunivariate::distributions::qzmbinom(.5,1e308,.9,.1)));
 }
+
+TEST_CASE("zmbinom: positive-count uncertified prefix propagates") {
+  const std::vector<int> x{0,1,2,3};
+  const auto f=cppunivariate::zmbinom_mle({x.data(),x.size()},1e-10,1,NAN,1e-9);
+  REQUIRE(f.status==cppunivariate::ZmbinomStatus::Ok);
+  CHECK_FALSE(f.certified);CHECK(std::isfinite(f.logLik));CHECK(f.p0==.25);
+}
+
+TEST_CASE("zmbinom: the zero-probability ratio has its own precision allowance") {
+  const std::vector<int> x{0,1,1};
+  const auto f=cppunivariate::zmbinom_mle({x.data(),x.size()},1e-18,1,NAN,1e-9,NAN);
+  REQUIRE(f.status==cppunivariate::ZmbinomStatus::Ok);
+  CHECK_FALSE(f.certified);CHECK(f.p0==1./3);CHECK(f.prob==1e-9);
+}

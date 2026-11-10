@@ -166,8 +166,8 @@ test_that("three finite nhyper grids match whole-grid enumeration", {
   expect_error(mlnhyper(c(0,1),m=8,N=NULL,r=NULL),"positive probability")
   expect_error(mlnhyper(1,m=8,N=NULL,r=2),"positive probability")
   expect_error(mlnhyper(13,N=12,r=NULL),"positive probability")
-  expect_error(mlnhyper(c(1,2),N=1e7,r=NULL),"numerical failure.*budget")
-  expect_error(mlnhyper(c(1,100),m=1e7,N=NULL,r=1),"numerical failure.*budget")
+  expect_identical(attr(mlnhyper(c(1,2),N=1e7,r=NULL), "certified"), FALSE)
+  expect_identical(attr(mlnhyper(c(1,100),m=1e7,N=NULL,r=1), "certified"), FALSE)
 })
 
 test_that("joint population fits agree with a finite reference grid", {
@@ -181,7 +181,7 @@ test_that("joint population fits agree with a finite reference grid", {
     expect_equal(as.numeric(logLik(f)),best,tolerance=1e-9)
   }
   expect_equal(as.numeric(logLik(mlnhyper(c(2,2),r=2,N=NULL,m=NULL))),0)
-  expect_error(mlnhyper(c(1,100001),r=1,N=NULL,m=NULL),"numerical failure")
+  expect_identical(attr(mlnhyper(c(1,100001),r=1,N=NULL,m=NULL), "certified"), FALSE)
 })
 
 test_that("seeded joint nhyper fits match population grids", {
@@ -197,5 +197,11 @@ test_that("seeded joint nhyper fits match population grids", {
       expect_equal(as.numeric(logLik(f)),best,tolerance=1e-8)
     }
   }
-  expect_error(mlnhyper(c(1,1,1,1,1,30),r=1,N=NULL,m=NULL),"not excluded")
+  expect_identical(attr(mlnhyper(c(1,1,1,1,1,30),r=1,N=NULL,m=NULL), "certified"), FALSE)
+})
+
+test_that("nhyper finds the attained constant law at the representation boundary", {
+  f <- mlnhyper(c(2,2),m=2^53-1,N=NULL,r=NULL)
+  expect_equal(unname(f[c("m","N","r")]),c(2^53-1,2^53-1,2),tolerance=0)
+  expect_equal(as.numeric(logLik(f)),0)
 })

@@ -1,0 +1,15 @@
+{
+  "repository_wide_checker_exit": 1,
+  "repository_wide_broken": 44,
+  "all_reported_problem_files_byte_identical_to_HEAD": [
+    "dev/research/evaluations/2026-11-03-boundary-lit-report.md",
+    "dev/research/evaluations/2026-11-07-fit-audit-data/static-inventory.md",
+    "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+    "dev/research/evaluations/2026-11-10-defective-limit-lit-report.md",
+    "univariateML-cpp/include/cppunivariate/distributions/nbinom/README.md",
+    "univariateML-cpp/notes/inference.md"
+  ],
+  "owned_markdown_files": 8,
+  "owned_destinations": 48,
+  "owned_broken": []
+}

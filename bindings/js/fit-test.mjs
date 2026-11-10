@@ -152,3 +152,14 @@ test('sstd xi-only certificate, reflection, budget and half-t comparison',()=>{
  const terms=m.dsstd(x,[0,1,1e12,large.estimates.xi],true,true);
  assert.ok(Math.abs([...terms].reduce((a,b)=>a+b,0)-large.logLik)<1e-11);
 });
+
+test('count fallback exposes per-fit certification',()=>{
+ const r=m.fithyper(new Float64Array([0,0,0,5,5,5]),{k:5},{});
+ assert.equal(r.status,'Ok');
+ assert.equal(r.error,undefined);
+ assert.equal(r.certified,0);
+ assert.ok(Number.isFinite(r.logLik));
+ assert.equal(r.estimates.k,5);
+ const f=m.fitztbinom(new Float64Array([1,2,2,3]),{size:5},{});
+ assert.equal(f.status,'Ok');assert.equal(f.certified,1);
+});

@@ -430,7 +430,8 @@ TEST_CASE("zib: adjacent near-critical binary64 inflations retain unresolved com
   const std::vector<int>x{0,0,0,0,0,1,1,2,2,4};
   for(double pi : {.3772146069463776,.37721460694637765}) {
     const auto f=cppunivariate::zib_mle({x.data(),x.size()},1e-10,200,NAN,NAN,pi);
-    CHECK(f.status!=cppunivariate::ZibStatus::Ok);
+    CHECK(f.status==cppunivariate::ZibStatus::Ok);
+    CHECK_FALSE(f.certified);
     CHECK(f.stop_detail.limit_model==cppunivariate::StopModel::Zip);
     CHECK(f.stop_detail.limit_coef[1]==pi);
     CHECK(f.stop_detail.comparison_tie);
@@ -451,4 +452,50 @@ TEST_CASE("zib: large held evaluator and quantile remain consistent") {
     CHECK(cppunivariate::distributions::pzib(q,100,.02,.2)>=p);
     if(q>0)CHECK(cppunivariate::distributions::pzib(q-1,100,.02,.2)<p);
   }
+}
+
+TEST_CASE("zib: held-probability uncertified prefix preserves the hold") {
+  const std::vector<int> x{0,1,2,3};
+  const auto f=cppunivariate::zib_mle({x.data(),x.size()},1e-10,1,NAN,1e-9);
+  REQUIRE(f.status==cppunivariate::ZibStatus::Ok);
+  CHECK_FALSE(f.certified);CHECK(std::isfinite(f.logLik));CHECK(f.prob==1e-9);
+}
+
+TEST_CASE("zib: an exact zero turning discriminant admits an exact integer recheck") {
+  std::vector<int>x(17,0);x.insert(x.end(),2,1);x.insert(x.end(),15,2);
+  const auto f=cppunivariate::zib_mle({x.data(),x.size()},1e-10,200,2,NAN,.2);
+  REQUIRE(f.status==cppunivariate::ZibStatus::Ok);CHECK(f.certified);
+  CHECK(f.size==2);CHECK(f.pi==.2);CHECK(std::isfinite(f.logLik));
+  const double logq=2*std::log1p(-f.prob),w=.8*std::exp(logq)/(.2+.8*std::exp(logq));
+  CHECK(std::abs(32-(17+17*w)*2*f.prob)<1e-7);
+  std::vector<int> big;big.reserve(x.size()*2000);
+  for(int j=0;j<2000;++j)big.insert(big.end(),x.begin(),x.end());
+  const auto unresolved=cppunivariate::zib_mle({big.data(),big.size()},1e-10,200,2,NAN,.2);
+  REQUIRE(unresolved.status==cppunivariate::ZibStatus::Ok);CHECK_FALSE(unresolved.certified);
+
+}
+
+TEST_CASE("zib: large held counts consume their falling-factorial work") {
+  const std::vector<int>x{1000000,1000001,1000003,1000008,1000011};
+  const auto f=cppunivariate::zib_mle({x.data(),x.size()},1e-10,200,NAN,.4);
+  REQUIRE(f.status==cppunivariate::ZibStatus::Ok);CHECK_FALSE(f.certified);
+  CHECK(f.stop_detail.budget_exhausted);CHECK(f.prob==.4);CHECK(std::isfinite(f.logLik));
+}
+
+TEST_CASE("zib: an exact turning comparison does not certify a flat probability root") {
+  std::vector<int>x(17,0);x.insert(x.end(),2,1);x.insert(x.end(),15,2);
+  const auto f=cppunivariate::zib_mle({x.data(),x.size()},1e-10,200,2,NAN,54./343);
+  REQUIRE(f.status==cppunivariate::ZibStatus::Ok);CHECK_FALSE(f.certified);
+  CHECK(std::isfinite(f.logLik));CHECK(f.prob>0);CHECK(f.prob<1);
+}
+
+TEST_CASE("zib: a closed binomial mean does not certify sub-machine coefficient accuracy") {
+  const std::vector<int> x{1,1,2};
+  const auto f=cppunivariate::zib_mle({x.data(),x.size()},1e-18,200,2,NAN,0);
+  REQUIRE(f.status==cppunivariate::ZibStatus::Ok);
+  CHECK_FALSE(f.certified);CHECK(std::isfinite(f.logLik));CHECK(f.pi==0);
+  const std::vector<int> binary{0,1,1};
+  const auto g=cppunivariate::zib_mle({binary.data(),binary.size()},1e-18,200,1,1,NAN);
+  REQUIRE(g.status==cppunivariate::ZibStatus::Ok);
+  CHECK_FALSE(g.certified);CHECK(g.prob==1);CHECK(g.pi==1./3);
 }
