@@ -24,7 +24,7 @@ r:
   density: dpig
   sampler: rpig
   control:
-    reltol: "Requested log-parameter tolerance; the general shape certificate uses width max(reltol, 2e-7)."
+    reltol: "Requested relative coefficient accuracy (default 1e-10); local shape refinement stays inside the global sign enclosure."
     iterlim: "Work limit: 1 * min(iterlim, 100000) solver iterations per solve; count recurrences limited to 100000 * min(iterlim, 100000) enumeration cells."
 log_density: "log(2*shape/pi)/2 - loggamma(x+1) + shape/mean + (x-1/2)*log(shape/(2+shape/mean**2))/2 + log(besselk(x-1/2, sqrt(shape*(2+shape/mean**2))))"
 limits:
@@ -167,7 +167,7 @@ $$
 
 The score tends to minus infinity at $w=1$, where the likelihood also tends to minus infinity. These signs prove the stated existence and uniqueness criteria, and exclude every competing peak and both unsearched tails. With both coefficients free, the fixed-$z$ mean reduction completes the joint certificate. The [expanded proof and symbolic checks](../../../../../dev/research/evaluations/2026-11-06-pig-cert-data/concavity-proof.md) retain the crossing argument and factorization.
 
-The implementation uses $\log\lambda$, starting at $2\log\mu$ clipped to representable positive shapes. It expands a bracket with doubling log-steps, then bisects signed score points until the log-width is at most $\max(\mathtt{reltol},2\times10^{-7})$. A point inside that verified box is polished to the requested solver resolution without leaving the enclosure. The global uncertainty remains the certified box width; the polished point preserves the existing golden accuracy. Raw score signs only choose a point within the verified box; they do not replace its global certificate. Solver exhaustion during polishing stops. A small residual alone never supplies the global certificate.
+The implementation uses $\log\lambda$, starting at $2\log\mu$ clipped to representable positive shapes. It expands a bracket with doubling log-steps, then bisects signed score points until the log-width is at most $\max(\mathtt{reltol},2\times10^{-7})$. A point inside that verified box is polished to one hundredth of the requested log-shape tolerance without leaving the enclosure. The global uncertainty remains the certified box width; the polished point supplies the local coefficient refinement. Raw score signs only choose a point within the verified box; they do not replace its global certificate. Solver exhaustion during polishing stops. A small residual alone never supplies the global certificate.
 
 Put $q=(1-w)/(1+w)$ and $\bar E=n^{-1}\sum_i E_{x_i}$. The evaluated score has the sign of
 
@@ -201,3 +201,7 @@ These are exact-arithmetic certificates conditional on computed comparisons, wit
 Each iterative solve uses at most `min(iterlim, 100000)` solver iterations, including shape bracketing and bisection. A needed count recurrence exceeding `100000 * min(iterlim, 100000)` cells stops on budget before scanning the range. Analytic Poisson faces need no count recurrence. The largest representable integer count stops numerically if an interior mass recurrence is required, protecting its existing integer endpoint; a Poisson face can still be evaluated there. Each moment evaluation costs $O(\max x)$ time and constant additional storage. The final likelihood retains the settled log-mass recurrence and its $O(\max x)$ storage; Poisson faces use the existing stable Poisson log-pmf helper.
 
 Core results retain candidates and global bounds on limit, tie and budget stops. Numerical or iteration stops retain any evaluated finite witness. Bounds on stopped finite candidates describe evaluated likelihoods, not a claim that those candidates maximize the model. An unclosed global bound remains infinite. Both R and JavaScript transport the pig-specific payload, with held-mean Poisson advice distinguishing the constrained face from an unrestricted `mlpois` fit.
+
+Near the Poisson face, the local shape score subtracts its limiting value analytically. The Bessel recurrence carries the difference between z E[J] and its factorial-moment limit, rather than subtracting these nearly equal quantities afterwards. This preserves the small finite improvement and the shape root when dispersion is weak. Rounded zero scores require signed neighbours before local refinement can finish.
+
+The Poisson-side cancellation formula is used only when the Bessel argument is at least one. At smaller arguments the original normalized recurrence retains tiny fixed-mean information. The final log-shape round trip rejects a subnormal shape whose binary64 rounding exceeds the requested tolerance.

@@ -6,7 +6,7 @@
 #include <limits>
 #include <vector>
 namespace umvl_binding {
-inline FitResult fit_gumbel(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg = {}, double reltol = 1.220703e-4, int iterlim = 100) {
+inline FitResult fit_gumbel(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg = {}, double reltol = 1e-10, int iterlim = 100) {
   // Invalid controls remain ordinary errors, even if a legacy fitter reports
   // a statistical status before checking them.
   const auto classify = [&](FitResult out, const cppunivariate::StopDetail& detail,
@@ -34,6 +34,8 @@ inline FitResult fit_gumbel(cppunivariate::span x, Held mu_arg = {}, Held sigma_
   if(sigma.supplied)fixed.push_back("sigma");
 
   cppunivariate::GumbelResult res = cppunivariate::fit_gumbel_held(x,reltol,iterlim,held_mu,held_sigma);
+  if (res.status==cppunivariate::GumbelStatus::AccuracyFailure)
+    return stop_failure(fail("Gumbel requested coefficient accuracy cannot be represented after rescaling."),{},"numerical",{"mu","sigma"});
   if (res.status == cppunivariate::GumbelStatus::InvalidInput) return fail("Gumbel requires nonempty finite data, valid held parameters, a positive tolerance and positive iterlim.");
   if (res.status == cppunivariate::GumbelStatus::Unbounded) return nomle("The Gumbel maximum likelihood estimator does not exist for constant data: the likelihood is unbounded.");
   if (res.status == cppunivariate::GumbelStatus::IterationFailure)

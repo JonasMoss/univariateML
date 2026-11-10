@@ -22,7 +22,7 @@ GOLDEN_TOLERANCE <- c(
   bnbinom = 5e-07, # finite-difference BFGS gradtol=1e-8 and profile stopping
   burr = 2e-14,
   cauchy = 3e-12,
-  cmb = 3e-10, # Newton moment-score stop at reltol=1e-10; inverse curvature amplifies coefficient error
+  cmb = 2e-13,
   cmp = 1e-15,
   dgamma = 3e-08, # profile simplex width reltol=1e-8; likelihood rounding limits coefficient resolution
   dlaplace = 2e-16,
@@ -31,8 +31,8 @@ GOLDEN_TOLERANCE <- c(
   dweibull = 2e-16,
   emg = 5e-09, # certified profile with default reltol=1e-8; coefficient resolution and floating-point comparisons
   exp = 5e-16,
-  fatigue = 5e-09, # absolute parameter-step abstol=1.220703e-4 inherited from CRAN
-  foldnorm = 3e-09, # scalar profile refinement reltol=1e-10; likelihood rounding limits coefficient resolution
+  fatigue = 5e-13,
+  foldnorm = 1e-14,
   fpareto = 1e-11,
   frechet = 2e-14,
   gamma = 1e-15,
@@ -43,7 +43,7 @@ GOLDEN_TOLERANCE <- c(
   gev = 1e-13,
   gompertz = 5e-13,
   gpd = 2e-15,
-  gumbel = 3e-10, # Newton relative-step reltol=1.220703e-4 inherited from CRAN
+  gumbel = 2e-15,
   hcauchy = 5e-15,
   hnorm = 2e-16,
   ht = 1e-07, # profile objective/scale stops; small likelihood error does not bound nu error
@@ -57,7 +57,7 @@ GOLDEN_TOLERANCE <- c(
   invpareto = 1e-10,
   invtrgamma = 1e-13,
   invweibull = 1e-14,
-  kumar = 5e-09, # Newton relative-step reltol=1.220703e-4 inherited from CRAN
+  kumar = 5e-16,
   laplace = 1e-15,
   lgamma = 2e-15,
   lgser = 5e-16,
@@ -65,7 +65,7 @@ GOLDEN_TOLERANCE <- c(
   lnorm = 1e-14,
   logis = 5e-14,
   logitnorm = 2e-15,
-  lomax = 1e-07, # Newton relative-step reltol=1.220703e-4 inherited from CRAN
+  lomax = 2e-15,
   lst = 2e-13,
   naka = 2e-15,
   nbinom = 1e-10,
@@ -77,7 +77,7 @@ GOLDEN_TOLERANCE <- c(
   pareto2 = 2e-15,
   pareto3 = 2e-08, # delegated damped logistic Newton step reltol=1e-10; likelihood rounding can shrink the accepted step
   pareto4 = 5e-15,
-  pig = 2e-10, # scalar profile reltol=1e-9; curvature amplifies shape error
+  pig = 1e-12,
   pois = 3e-15,
   power = 2e-15,
   rayleigh = 2e-16,
@@ -97,7 +97,7 @@ GOLDEN_TOLERANCE <- c(
   trgamma = 3e-14,
   triang = 1e-12,
   unif = 1e-16,
-  weibull = 3e-09, # Newton relative-step reltol=1.220703e-4 inherited from CRAN
+  weibull = 5e-15,
   yulesimon = 5e-11,
   zeta = 1e-11,
   zib = 5e-15,
@@ -134,7 +134,7 @@ GOLDEN_STOP_TOLERANCE <- c(
   dweibull = 1e-12,
   emg = 1e-08,
   exp = 0,
-  fatigue = 0.0001220703,
+  fatigue = 1e-10,
   foldnorm = 1e-10,
   fpareto = 1e-07,
   frechet = 1e-10,
@@ -146,7 +146,7 @@ GOLDEN_STOP_TOLERANCE <- c(
   gev = 1e-10,
   gompertz = 0.0001220703,
   gpd = 1e-12,
-  gumbel = 0.0001220703,
+  gumbel = 1e-10,
   hcauchy = 0,
   hnorm = 0,
   ht = 2e-14,
@@ -160,7 +160,7 @@ GOLDEN_STOP_TOLERANCE <- c(
   invpareto = 0.0001220703,
   invtrgamma = 1e-10,
   invweibull = 0.0001220703,
-  kumar = 0.0001220703,
+  kumar = 1e-10,
   laplace = 0,
   lgamma = 0.0001220703,
   lgser = 0,
@@ -168,7 +168,7 @@ GOLDEN_STOP_TOLERANCE <- c(
   lnorm = 0,
   logis = 0.0001220703,
   logitnorm = 0,
-  lomax = 0.0001220703,
+  lomax = 1e-10,
   lst = 0.0001220703,
   naka = 0.0001220703,
   nbinom = 0.0001220703,
@@ -180,7 +180,7 @@ GOLDEN_STOP_TOLERANCE <- c(
   pareto2 = 1e-10,
   pareto3 = 1e-10,
   pareto4 = 1e-10,
-  pig = 1e-09,
+  pig = 1e-10,
   pois = 0,
   power = 0,
   rayleigh = 0,
@@ -200,7 +200,7 @@ GOLDEN_STOP_TOLERANCE <- c(
   trgamma = 1e-10,
   triang = 1e-12,
   unif = 0,
-  weibull = 0.0001220703,
+  weibull = 1e-10,
   yulesimon = 1e-10,
   zeta = 1e-10,
   zib = 1e-10,

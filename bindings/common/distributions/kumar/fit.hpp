@@ -4,7 +4,7 @@
 #include <cmath>
 #include <limits>
 namespace umvl_binding {
-inline FitResult fit_kumar(cppunivariate::span x, Held a_arg = {}, Held b_arg = {}, Held a0 = {}, double reltol = 1.220703e-4, int iterlim = 100) {
+inline FitResult fit_kumar(cppunivariate::span x, Held a_arg = {}, Held b_arg = {}, Held a0 = {}, double reltol = 1e-10, int iterlim = 100) {
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
   const Held a = a_arg;

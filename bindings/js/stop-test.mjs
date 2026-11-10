@@ -449,3 +449,44 @@ test('st constant-data free-nu corner keeps both half-normal faces',()=>{
     assert.ok(Number.isFinite(e.loglik_lower));assert.ok(Number.isFinite(e.loglik_upper));return true;
   });
 });
+
+test('Newton-family unrepresentable coefficients are numerical stops', () => {
+  const u=Number.MIN_VALUE;
+  for(const [family,x,held] of [['gumbel',[0,u],{}],['weibull',[u,2*u],{}],
+      ['foldnorm',[0,u],{}],['pig',[0,2],{mean:1e-158}]]) {
+    assert.throws(()=>api[family].fit(x,held),e=>
+      e.kind==='numerical' && /requested coefficient accuracy/.test(e.message));
+  }
+});
+
+test('folded-normal boundary likelihood tie receives local score polish', () => {
+  const e=.0028867513459481287,r=api.foldnorm.fit([e,e,1]);
+  assert.ok(Math.abs(r.estimates.mu/.0037268054741952707381-1)<1e-10);
+  assert.ok(Math.abs(r.estimates.sigma/.57734305210147493127-1)<1e-10);
+});
+
+test('small positive folded-normal basin retains coefficient accuracy', () => {
+  const r=api.foldnorm.fit([.02,.02,1]);
+  assert.ok(Math.abs(r.estimates.mu/.025828388643715272867-1)<1e-10);
+  assert.ok(Math.abs(r.estimates.sigma/.57700337463490557989-1)<1e-10);
+});
+
+test('unresolved folded-normal quartic identification is numerical', () => {
+  assert.throws(()=>api.foldnorm.fit([1,1,1,Math.sqrt(9+4*Math.sqrt(6))]),e=>e.kind==='numerical');
+  assert.equal(api.foldnorm.fit([0,0,1]).estimates.mu,0);
+});
+
+test('conditional scalar fits retain coefficient accuracy', () => {
+  const x=[2.4349403590372,2.434940359039635,2.43494035904207,2.434940359044505,2.434940359049375];
+  assert.ok(Math.abs(api.weibull.fit(x,{scale:x[0]}).estimates.shape/263511819158.377827834-1)<1e-10);
+  for(const [data,kappa,ref] of [[[1,2,3],1e-14,61111111111110.9798701],
+      [[1e-200,1e200],1,1],[[1e-200,1e200,1e200,1e200],1/3,4.16333634234433733222e183]])
+    assert.ok(Math.abs(api.lomax.fit(data,{kappa}).estimates.lambda/ref-1)<1e-10);
+});
+
+test('conditional free coefficients reject unrepresentable subnormals', () => {
+  const u=Number.MIN_VALUE;
+  for(const [family,data,held] of [['gumbel',[0,u],{sigma:u}],['weibull',[u,2*u],{shape:1}],
+      ['lomax',[1e158,2e158],{kappa:1e158}]])
+    assert.throws(()=>api[family].fit(data,held),e=>e.kind==='numerical');
+});

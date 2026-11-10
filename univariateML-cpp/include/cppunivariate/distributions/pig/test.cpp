@@ -479,3 +479,18 @@ TEST_CASE("pig: analytic covariance derivatives and subset projection") {
 TEST_CASE("pig: failed integer inversion reports NaN") {
   CHECK(std::isnan(cppunivariate::distributions::qpig(.5,1e8,1e8,true,false)));
 }
+
+TEST_CASE("pig: Poisson-side score retains coefficient accuracy") {
+  std::vector<int> x(10002,0);x.insert(x.end(),10000,2);x.push_back(3);
+  const auto r=cppunivariate::pig_mle({x.data(),x.size()});
+  REQUIRE(r.status==cppunivariate::PigStatus::Ok);
+  // Independent 90-digit closed Bessel-polynomial score, retained in
+  // dev/research/evaluations/2026-11-10-acc-newton-data/pig-face.py.
+  CHECK(r.shape==doctest::Approx(6666.41699463070802775319433).epsilon(1e-10).scale(0));
+}
+
+TEST_CASE("pig: unrepresentable subnormal shape is not Ok") {
+  const std::vector<int> x{0,2};
+  const auto r=cppunivariate::pig_mle({x.data(),x.size()},1e-10,200,1e-158,NAN);
+  CHECK(r.status==cppunivariate::PigStatus::AccuracyFailure);
+}

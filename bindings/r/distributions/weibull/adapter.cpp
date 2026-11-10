@@ -2,7 +2,7 @@
 #include "common_fit.h"
 // [[Rcpp::export]]
 Rcpp::List mlweibull_(const Rcpp::NumericVector &x, Rcpp::Nullable<double> shape0 = R_NilValue,
-                         double reltol = 1.220703e-4,
+                         double reltol = 1e-10,
                       int iterlim = 100,
     Rcpp::Nullable<double> shape = R_NilValue,
     Rcpp::Nullable<double> scale = R_NilValue) {

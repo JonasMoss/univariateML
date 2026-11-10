@@ -4,7 +4,7 @@
 #include <limits>
 #include <cmath>
 namespace umvl_binding {
-inline FitResult fit_lomax(cppunivariate::span x, Held lambda_arg = {}, Held kappa_arg = {}, Held lambda0 = {}, double reltol = 1.220703e-4, int iterlim = 100) {
+inline FitResult fit_lomax(cppunivariate::span x, Held lambda_arg = {}, Held kappa_arg = {}, Held lambda0 = {}, double reltol = 1e-10, int iterlim = 100) {
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
   const Held lambda = lambda_arg;
@@ -30,6 +30,8 @@ inline FitResult fit_lomax(cppunivariate::span x, Held lambda_arg = {}, Held kap
     }
   }
   auto res = cppunivariate::lomax_mle(x, reltol, iterlim, start, lambda_held, kappa_held);
+  if (res.status == cppunivariate::LomaxStatus::AccuracyFailure)
+    return stop_failure(fail("Lomax could not verify the requested coefficient accuracy in binary64."),{},"numerical",{"lambda","kappa"});
   if (res.status == cppunivariate::LomaxStatus::ExponentialLimit) {
     return stop_failure(fail("The certified profile bound places every improvement over the exponential limit within its tolerance (1e-8 per observation). Use `mlexp` to fit that limit model."),res.stop_detail,"limit",{"lambda","kappa"},"exp");
   }

@@ -205,3 +205,16 @@ TEST_CASE("kumar certificate: 128 evaluations can certify a one-step proposal") 
   CHECK(r.b==doctest::Approx(reference.b).epsilon(1e-6));
   CHECK(r.iterations<=128);
 }
+
+TEST_CASE("kumar: tail profile propagates accuracy into the large second shape") {
+  const std::vector<double> x{1e-12,2e-12,3e-12,5e-12,9e-12};
+  const auto r=cppunivariate::kumar_mle({x.data(),x.size()},1e-10,100);
+  REQUIRE(r.status==cppunivariate::KumarStatus::Ok);
+  CHECK(r.a==doctest::Approx(1.4811824608110197984639867).epsilon(1e-11).scale(0));
+  CHECK(r.b==doctest::Approx(65142297396084900.0638404).epsilon(1e-11).scale(0));
+}
+
+TEST_CASE("kumar: accuracy capping does not admit an infinite control") {
+  const std::vector<double> x{.2,.4,.9};
+  CHECK(cppunivariate::kumar_mle({x.data(),x.size()},std::numeric_limits<double>::infinity(),100).status!=cppunivariate::KumarStatus::Ok);
+}

@@ -1,0 +1,188 @@
+{
+  "cpp-dev": {
+    "machine": "workstation",
+    "passed": 106,
+    "log": "acc-final-cpp-dev.log",
+    "exit_code": 0,
+    "command": "just cpp-test"
+  },
+  "cpp-full": {
+    "machine": "workstation",
+    "passed": 130,
+    "log": "acc-final-cpp-full.log",
+    "exit_code": 0,
+    "command": "UMVL_TEST_TIER=full just cpp-test"
+  },
+  "cpp-no-long-double": {
+    "machine": "workstation",
+    "passed": 130,
+    "log": "acc-final-cpp-no-long-double.log",
+    "exit_code": 0,
+    "command": "just cpp-test-no-long-double"
+  },
+  "r-dev": {
+    "machine": "workstation",
+    "passed": 23031,
+    "log": "acc-final-r-dev.log",
+    "exit_code": 0,
+    "command": "just test"
+  },
+  "r-full": {
+    "machine": "workstation",
+    "passed": 45846,
+    "log": "acc-final-r-full.log",
+    "exit_code": 0,
+    "command": "just test-full"
+  },
+  "js-test": {
+    "machine": "workstation",
+    "passed": 601,
+    "log": "acc-closure-js-test.log",
+    "exit_code": 0,
+    "command": "just js-test"
+  },
+  "source_hashes_unchanged": true,
+  "frozen_goldens_unchanged": true,
+  "golden_modes_passed": 4,
+  "audit_cases_per_mode": 83,
+  "audit_modes_passed": 4,
+  "golden_allowances": {
+    "lomax": {
+      "before": 1e-07,
+      "after": 2e-15,
+      "maximum_coefficient_error": 9.070877120941556e-16,
+      "multiple": 2.2048584423910706
+    },
+    "kumar": {
+      "before": 5e-09,
+      "after": 5e-16,
+      "maximum_coefficient_error": 3.3330507441956693e-16,
+      "multiple": 1.5001271758935069
+    },
+    "weibull": {
+      "before": 3e-09,
+      "after": 5e-15,
+      "maximum_coefficient_error": 3.2079575761975932e-15,
+      "multiple": 1.5586241031050425
+    },
+    "gumbel": {
+      "before": 3e-10,
+      "after": 2e-15,
+      "maximum_coefficient_error": 1.2937967700172467e-15,
+      "multiple": 1.5458378366281897
+    },
+    "fatigue": {
+      "before": 5e-09,
+      "after": 5e-13,
+      "maximum_coefficient_error": 3.117789696596518e-13,
+      "multiple": 1.603700212832881
+    },
+    "cmb": {
+      "before": 3e-10,
+      "after": 2e-13,
+      "maximum_coefficient_error": 7.934976159396902e-14,
+      "multiple": 2.520486463757706
+    },
+    "pig": {
+      "before": 2e-10,
+      "after": 1e-12,
+      "maximum_coefficient_error": 4.429026862026149e-13,
+      "multiple": 2.2578323210768008
+    },
+    "foldnorm": {
+      "before": 3e-09,
+      "after": 1e-14,
+      "maximum_coefficient_error": 6.330248556202921e-15,
+      "multiple": 1.5797168011990843
+    }
+  },
+  "js-build": {
+    "command": "EMCC_CORES=1 just js-build",
+    "machine": "workstation",
+    "exit_code": 0,
+    "log": "acc-closure-js-build.log"
+  },
+  "site-check": {
+    "command": "just site-check",
+    "machine": "workstation",
+    "exit_code": 0,
+    "log": "acc-final-site.log"
+  },
+  "held_modes_passed": 4,
+  "held_roots_per_mode": 4,
+  "held_numerical_failures_per_mode": 3,
+  "source_base": "c60d92ea667e8dcb55ec6c6cbd1aaae474846d45",
+  "logs": {
+    "acc-final-cpp-dev.log": {
+      "archive": "acc-final-cpp-dev.log.gz",
+      "sha256": "4261b24e199455ebd73382e0e5a5d2274e5be4034685d7f1415e9839577fe8e5",
+      "bytes": 140820
+    },
+    "acc-final-cpp-full.log": {
+      "archive": "acc-final-cpp-full.log.gz",
+      "sha256": "21639fe70ff068a43a25df78c86f9c836ab353573e9dbe9b89ff13c73a960bd6",
+      "bytes": 15657
+    },
+    "acc-final-cpp-no-long-double.log": {
+      "archive": "acc-final-cpp-no-long-double.log.gz",
+      "sha256": "e11eac9ace82d6ae1c22748d7b688d189e117bd0a337ec65ca0338950497f932",
+      "bytes": 153731
+    },
+    "acc-final-r-dev.log": {
+      "archive": "acc-final-r-dev.log.gz",
+      "sha256": "64eab411191d7312d2c49bb1c38966cc81f463e2dd77516f7e13bd0920a4154b",
+      "bytes": 246985
+    },
+    "acc-final-r-full.log": {
+      "archive": "acc-final-r-full.log.gz",
+      "sha256": "1f7d15451cc5e66dffc760c01bf667d5cf0532bdcfe7407f958d4ecae30c7c81",
+      "bytes": 365447
+    },
+    "acc-closure-js-test.log": {
+      "archive": "acc-closure-js-test.log.gz",
+      "sha256": "dbe2855b9effebe63118235ab75b64ba51d4fa449fed914eedc85d2449cfb599",
+      "bytes": 90342
+    },
+    "acc-closure-js-build.log": {
+      "archive": "acc-closure-js-build.log.gz",
+      "sha256": "9e28edd5595e93b4c30e89495bec8c5b43190760211dfa7f14e18f7dd2090a88",
+      "bytes": 1843
+    },
+    "acc-final-site.log": {
+      "archive": "acc-final-site.log.gz",
+      "sha256": "fd9356b69e0ebebc3928ac6dddce0f45e275b57bbd1aced6e998c95c9a4755d5",
+      "bytes": 21179
+    },
+    "acc-target-native-held-final.log": {
+      "archive": "acc-target-native-held-final.log.gz",
+      "sha256": "f54040ed7fbbea8dcb95cc3f665c600ef35ef6bd9d29fb39425cd17967490125",
+      "bytes": 307
+    },
+    "acc-held-target-double.log": {
+      "archive": "acc-held-target-double.log.gz",
+      "sha256": "e872fd491d28760076a62e7f5e1f72207afcbe91673ff12b8fbfd4b6c993be9b",
+      "bytes": 2565
+    },
+    "acc-final-verification.log": {
+      "archive": "acc-final-verification.log.gz",
+      "sha256": "1c6bda94ab67881cc54f50c00915e51b1fc0041ae113f3ef48f6a257f640e0d6",
+      "bytes": 5376
+    },
+    "acc-closure-r.log": {
+      "archive": "acc-closure-r.log.gz",
+      "sha256": "c86c139de13a20bcaac2e51b360da667c8bc808b7f182b4d054e82853c9a2405",
+      "bytes": 4364
+    },
+    "acc-reproduce-native.log": {
+      "archive": "acc-reproduce-native.log.gz",
+      "sha256": "c86c139de13a20bcaac2e51b360da667c8bc808b7f182b4d054e82853c9a2405",
+      "bytes": 4364
+    }
+  },
+  "artifact_pane": {
+    "status": "rejected",
+    "http_status": 403,
+    "reason": "worktree is outside registered readable roots",
+    "report": "2026-11-10-acc-newton-report.md"
+  }
+}

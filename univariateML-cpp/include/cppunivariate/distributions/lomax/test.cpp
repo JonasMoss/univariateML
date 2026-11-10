@@ -328,3 +328,29 @@ TEST_CASE("lomax: structured exponential fit and budget bounds") {
   CHECK(std::isfinite(budget.stop_detail.loglik_lower));
   CHECK(budget.stop_detail.loglik_lower<=budget.stop_detail.loglik_upper);
 }
+
+TEST_CASE("lomax: weak profile root meets the requested coefficient accuracy") {
+  const std::vector<double> x{1,1,1,12,12};
+  const auto r=cppunivariate::lomax_mle({x.data(),x.size()},1e-12,200);
+  REQUIRE(r.status==cppunivariate::LomaxStatus::Ok);
+  // Independent 90-digit profile root; lomax-local.py in the job evidence.
+  CHECK(r.lambda==doctest::Approx(0.0359622986050334729300461578).epsilon(1e-12).scale(0));
+  CHECK(r.kappa==doctest::Approx(6.07161278411248246867320812).epsilon(1e-12).scale(0));
+}
+
+TEST_CASE("lomax: held kappa uses signed scaled logistic tails") {
+  struct Case {std::vector<double> x;double kappa,reference;};
+  for(const auto& c:std::vector<Case>{{{1,2,3},1e-14,61111111111110.9798701},
+      {{1e-200,1e200},1,1.00000000000000002408},
+      {{1e-200,1e200,1e200,1e200},1./3,4.16333634234433733222e183}}) {
+    const auto r=cppunivariate::lomax_mle({c.x.data(),c.x.size()},1e-10,100,NAN,NAN,c.kappa);
+    REQUIRE(r.status==cppunivariate::LomaxStatus::Ok);
+    // Independent 100-digit roots; two-valued cases also have a quadratic oracle.
+    CHECK(r.lambda==doctest::Approx(c.reference).epsilon(1e-10));
+  }
+}
+
+TEST_CASE("lomax: held kappa does not hide an unrepresentable rate") {
+  const std::vector<double> x{1e158,2e158};
+  CHECK(cppunivariate::lomax_mle({x.data(),x.size()},1e-10,100,NAN,NAN,1e158).status==cppunivariate::LomaxStatus::AccuracyFailure);
+}

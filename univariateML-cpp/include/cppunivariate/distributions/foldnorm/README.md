@@ -107,3 +107,17 @@ At constant $x_0=\mu>0$, the positive normal component alone is $1/(\sqrt{2\pi}\
 ## R notes
 
 Either coefficient can be held by supplying its value. `mlhnorm` also allows the half-normal endpoint to be estimated, whereas `mlfoldnorm` keeps the folding point at zero.
+
+After the global likelihood comparison, positive-location fits solve the analytic score in a=mu/sigma^2. The joint profile has sigma^2+a^2 sigma^4=mean(x^2); differentiating this identity propagates the Newton error into both mu and sigma. With positive mu held, the scale correction uses its scalar observed curvature. Likelihood rounding therefore does not determine the final coefficients.
+
+For a positive mode with both the sample minimum and fitted location exceeding forty centered standard deviations, the reflected score correction is below a polynomial factor times exp(-3200). The normal mean and variance are then evaluated from original-data deviations, before normalization can round away the spread. This error bound is far below binary64 resolution at the supported tolerance.
+
+Near the half-normal face, a likelihood difference can round away while the location error remains large. With $b=\mu^2/\overline{x^2}$ and $z_i=x_i/\sqrt{\overline{x^2}}$, the joint profile score has the sign of
+$H(b)=(1-b)^2+\overline{z^4c(bz^2/(1-b)^2)}$, where
+$c(u)=(\tanh(\sqrt u)/\sqrt u-1)/u$ and $c(0)=-1/3$.
+If $H(0)>0$, the boundary is a local minimum. A signed bracket for the adjacent root, with a negative derivative bound throughout the final bracket, replaces that boundary candidate. The power series for $c$ avoids cubic score cancellation; its tail is bounded using $|\tanh t|<3$ on $|t|\le1$. The bracket controls both coefficients, using $\sigma$ as the natural absolute scale for location at zero. The existing global likelihood upper bound remains applicable.
+
+The final conversion from normalized coefficients checks reconstruction error. In particular, subnormal samples whose fitted positive scale lies below the binary64 lattice return a numerical-accuracy failure rather than an `Ok` fit with a rounded or zero scale.
+
+The half-normal quartic coefficient $H(0)=1-\overline{x^4}/(3\overline{x^2}^2)$ uses a practical sign margin of $32\epsilon$. An unresolved quartic sign permits a positive location displacement of order $\sqrt\epsilon$, exceeding the default accuracy target; such a fit reports numerical-accuracy failure. An exact exception is a sample supported on $\{0,c\}$ with positive fraction at most $1/3$: the half-normal maximum follows from
+$\operatorname{atanh}(t)>3t/(3-t^2)$ for $0<t<1$, by comparing the positive power-series coefficients. This reduction preserves the attained boundary without relying on a rounded fourth-moment sign.
