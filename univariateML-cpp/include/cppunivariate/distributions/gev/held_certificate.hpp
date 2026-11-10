@@ -184,8 +184,8 @@ inline bool concave(Jet j) {
 inline bool inside(gev_joint_detail::Range a,gev_joint_detail::Range b) {return a.lo>=b.lo&&a.hi<=b.hi;}
 struct Cover {bool certified=false,contradicted=false;Box root{},competitor{};std::int64_t evaluations=0;};
 // Krawczyk inclusion gives existence; negative Hessian gives uniqueness.
-// Interval Newton then encloses all coefficients. The remaining boxes are
-// removed by values, scores, or inclusion in this strictly concave basin.
+// Interval Newton then encloses all coefficients. The basin is then enlarged
+// piecewise; the remaining boxes are removed by values or scores.
 template<class F,class P>
 inline Cover cover(Box domain,double x,double y,double tol,int maxit,F evaluate,P precise) {
   Cover out;const auto cap=certificate_budget(maxit);
@@ -273,6 +273,42 @@ inline Cover cover(Box domain,double x,double y,double tol,int maxit,F evaluate,
   const auto witness=get({{X,X},{Y,Y}});if(!witness.ok)return out;
   const auto isolated=get(root);if(!isolated.ok)return out;
   const double incumbent=witness.jet.v.lo,slack=512*std::numeric_limits<double>::epsilon()*(1+std::abs(incumbent));
+  // Enlarge the excluded basin. The enclosed root is the unique maximizer of
+  // any box around it on which the basin's criterion holds at every point: a
+  // negative definite Hessian, or at a shape edge an outward shape score with
+  // negative nuisance curvature. Interval bounds on every piece of a
+  // subdivision establish that pointwise. Score and value tests weaken near
+  // a maximum and this one does not, so the cover need not zoom in on a tiny
+  // basin. The radii double until an attempt fails. The basin is verified
+  // already, so an attempt checks only the ring around it. An attempt
+  // examines at most 400 pieces (1/32 of the default allowance): more did not
+  // enlarge the box in the seeded study, and a limit growing with maxit made
+  // fits that already close slower at a large maxit.
+  auto holds=[&](Box whole) {
+    std::vector<Box> pieces;
+    if(whole.x.lo<basin.x.lo)pieces.push_back({{whole.x.lo,basin.x.lo},whole.y});
+    if(whole.x.hi>basin.x.hi)pieces.push_back({{basin.x.hi,whole.x.hi},whole.y});
+    if(whole.y.lo<basin.y.lo)pieces.push_back({basin.x,{whole.y.lo,basin.y.lo}});
+    if(whole.y.hi>basin.y.hi)pieces.push_back({basin.x,{basin.y.hi,whole.y.hi}});
+    for(std::int64_t used=0;!pieces.empty();++used) {
+      if(used>=std::min<std::int64_t>(cap/32,400))return false;
+      const Box q=pieces.back();pieces.pop_back();const auto e=get(q);
+      if(e.ok&&(edge?(left?e.jet.g[0].hi<0:e.jet.g[0].lo>0)&&e.jet.h[2].hi<0:concave(e.jet)))continue;
+      const bool sx=(q.x.hi-q.x.lo)*(whole.y.hi-whole.y.lo)>=(q.y.hi-q.y.lo)*(whole.x.hi-whole.x.lo);
+      const double mid=sx?(q.x.lo+q.x.hi)/2:(q.y.lo+q.y.hi)/2;
+      if(sx) {if(mid==q.x.lo||mid==q.x.hi)return false;pieces.push_back({{q.x.lo,mid},q.y});pieces.push_back({{mid,q.x.hi},q.y});}
+      else {if(mid==q.y.lo||mid==q.y.hi)return false;pieces.push_back({q.x,{q.y.lo,mid}});pieces.push_back({q.x,{mid,q.y.hi}});}
+    }
+    return true;
+  };
+  for(int j=0;j<maxit&&out.evaluations<cap;++j) {
+    rx*=2;ry*=2;
+    const Box next{{std::max(domain.x.lo,x-rx),std::min(domain.x.hi,x+rx)},
+                   {std::max(domain.y.lo,y-ry),std::min(domain.y.hi,y+ry)}};
+    if(next.x.lo==basin.x.lo&&next.x.hi==basin.x.hi&&next.y.lo==basin.y.lo&&next.y.hi==basin.y.hi)break;
+    if(!holds(next))break;
+    basin=next;
+  }
   // Cut along the basin edges so discarded boxes never straddle its boundary.
   std::vector<Box> pending;
   const double xs[4]={domain.x.lo,basin.x.lo,basin.x.hi,domain.x.hi},ys[4]={domain.y.lo,basin.y.lo,basin.y.hi,domain.y.hi};

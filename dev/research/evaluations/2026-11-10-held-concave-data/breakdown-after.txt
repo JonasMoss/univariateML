@@ -1,0 +1,369 @@
+sample 33 gen_lambda=2 n=100 maxit=100 status=0 certified=1 ms=78.8 loglik=-118.0564076379282 lambda=1.99886605107 mu=0.0990424789683 restricted=0
+  cover maxit=100: certified=1 contradicted=0 evaluations=2178 points=585
+  D=10.21 c=2.333 k=1 tail start=85.74 tail cutoff=343  lambda_hat=1.99887 log e_hat=-1.08968  log e domain lower=-5.298
+  boxes by lambda_lo octave: [boxes value yscore xscore notok survive]
+    lambda>=1          692       1     132      90       0     469
+    lambda>=2          762     427     110      57       2     166
+    lambda>=4           19      15       0       4       0       0
+    lambda>=8           10      10       0       0       0       0
+    lambda>=16           6       6       0       0       0       0
+    lambda>=32           7       5       0       0       0       2
+    lambda>=64          15       9       0       0       0       6
+    lambda>=128         59      31       0       0       0      28
+    lambda>=256         23      12       0       0       0      11
+  boxes by distance to the root (max of relative lambda gap, log-e gap), decade:
+    contains         3       0       0       0       0       3
+    1e-6             8       0       0       0       0       8
+    1e-5            14       0       0       0       0      14
+    1e-4            12       0       0       0       0      12
+    1e-3            14       0       0       0       0      14
+    1e-2           162       6      70      34       0      52
+    1e-1          1015     418      91     113       2     391
+    1e0            255      29      81       4       0     141
+    1e1             63      38       0       0       0      25
+    1e2             47      25       0       0       0      22
+sample 35 gen_lambda=2 n=100 maxit=100 status=0 certified=1 ms=73.3 loglik=-122.33440164747714 lambda=1.92152836243 mu=0.00421286132505 restricted=0
+  cover maxit=100: certified=1 contradicted=0 evaluations=2001 points=510
+  D=12.71 c=2.549 k=1 tail start=78.47 tail cutoff=313.9  lambda_hat=1.92153 log e_hat=-0.789739  log e domain lower=-5.298
+  boxes by lambda_lo octave: [boxes value yscore xscore notok survive]
+    lambda>=1          655       3     161      68       0     423
+    lambda>=2          729     442      75      51       2     159
+    lambda>=4           22      14       2       6       0       0
+    lambda>=8            9       9       0       0       0       0
+    lambda>=16           6       6       0       0       0       0
+    lambda>=32           6       5       0       0       0       1
+    lambda>=64          16       9       0       0       0       7
+    lambda>=128         44      23       0       0       0      21
+    lambda>=256          4       3       0       0       0       1
+  boxes by distance to the root (max of relative lambda gap, log-e gap), decade:
+    contains         3       0       0       0       0       3
+    1e-6             8       0       0       0       0       8
+    1e-5            14       0       0       0       0      14
+    1e-4            14       0       0       0       0      14
+    1e-3            12       0       0       0       0      12
+    1e-2           196      14      93      27       0      62
+    1e-1           980     426      73      92       2     387
+    1e0            188      28      72       6       0      82
+    1e1             44      29       0       0       0      15
+    1e2             32      17       0       0       0      15
+sample 37 gen_lambda=2 n=500 maxit=100 status=0 certified=1 ms=1144.7 loglik=-596.50502779001806 lambda=1.96681006178 mu=0.0100535875236 restricted=0
+  cover maxit=100: certified=1 contradicted=0 evaluations=7226 points=2533
+  D=16.92 c=2.832 k=1 tail start=353.1 tail cutoff=2825  lambda_hat=1.96681 log e_hat=-0.829996  log e domain lower=-6.908
+  boxes by lambda_lo octave: [boxes value yscore xscore notok survive]
+    lambda>=1         2721      19     622     255       0    1825
+    lambda>=2         1311     436     119     157      14     585
+    lambda>=4           74      74       0       0       0       0
+    lambda>=8           47      47       0       0       0       0
+    lambda>=16          34      34       0       0       0       0
+    lambda>=32          18      18       0       0       0       0
+    lambda>=64          11      10       0       0       0       1
+    lambda>=128         14       9       0       0       0       5
+    lambda>=256         44      24       0       0       0      20
+    lambda>=512        149      75       0       0       3      71
+    lambda>=1024       269     137       0       0       7     125
+    lambda>=2048         1       1       0       0       0       0
+  boxes by distance to the root (max of relative lambda gap, log-e gap), decade:
+    contains         3       0       0       0       0       3
+    1e-6             8       0       0       0       0       8
+    1e-5            14       0       0       0       0      14
+    1e-4            14       0       0       0       0      14
+    1e-3            12       0       0       0       0      12
+    1e-2           178       5      82      25       2      64
+    1e-1          2428     421     156     382       9    1460
+    1e0           1496     150     503       5       3     835
+    1e1             74      69       0       0       0       5
+    1e2            465     238       0       0      10     217
+    1e3              1       1       0       0       0       0
+sample 39 gen_lambda=2 n=500 maxit=100 status=0 certified=1 ms=1293.4 loglik=-621.05998283955637 lambda=1.89348814099 mu=0.00780854149804 restricted=0
+  cover maxit=100: certified=1 contradicted=0 evaluations=8224 points=2899
+  D=15.84 c=2.767 k=1 tail start=361.5 tail cutoff=2892  lambda_hat=1.89349 log e_hat=-1.13247  log e domain lower=-6.908
+  boxes by lambda_lo octave: [boxes value yscore xscore notok survive]
+    lambda>=1         2941       2     708     348       0    1883
+    lambda>=2         1779     431      90     277      17     964
+    lambda>=4          133     133       0       0       0       0
+    lambda>=8           61      61       0       0       0       0
+    lambda>=16          38      38       0       0       0       0
+    lambda>=32          20      20       0       0       0       0
+    lambda>=64          13      12       0       0       0       1
+    lambda>=128         11       8       0       0       0       3
+    lambda>=256         34      19       0       0       1      14
+    lambda>=512        112      57       0       0       2      53
+    lambda>=1024       182      93       0       0       8      81
+    lambda>=2048         1       1       0       0       0       0
+  boxes by distance to the root (max of relative lambda gap, log-e gap), decade:
+    contains         3       0       0       0       0       3
+    1e-6             8       0       0       0       0       8
+    1e-5            14       0       0       0       0      14
+    1e-4            12       0       0       0       0      12
+    1e-3            14       0       0       0       0      14
+    1e-2           135       0      60      34       0      41
+    1e-1          3495     427     301     578      14    2175
+    1e0           1233     200     437      13       3     580
+    1e1             82      78       0       0       0       4
+    1e2            328     169       0       0      11     148
+    1e3              1       1       0       0       0       0
+sample 53 gen_lambda=2 n=100 maxit=100 status=0 certified=1 ms=62.0 loglik=-128.81291260796812 lambda=1.83362017913 mu=-0.0247450568941 restricted=0
+  cover maxit=100: certified=1 contradicted=0 evaluations=1524 points=295
+  D=73.31 c=4.295 k=1 tail start=46.57 tail cutoff=186.3  lambda_hat=1.83362 log e_hat=-0.766678  log e domain lower=-5.298
+  boxes by lambda_lo octave: [boxes value yscore xscore notok survive]
+    lambda>=1          614      68     195      55       0     296
+    lambda>=2          536     436       4      22       1      73
+    lambda>=4            8       4       0       4       0       0
+    lambda>=8            7       6       0       0       0       1
+    lambda>=16           4       4       0       0       0       0
+    lambda>=32          10       6       0       0       0       4
+    lambda>=64          28      15       0       0       0      13
+    lambda>=128         22      12       0       0       0      10
+  boxes by distance to the root (max of relative lambda gap, log-e gap), decade:
+    contains         3       0       0       0       0       3
+    1e-6             8       0       0       0       0       8
+    1e-5            14       0       0       0       0      14
+    1e-4            14       0       0       0       0      14
+    1e-3            12       0       0       0       0      12
+    1e-2           206      32     102      21       0      51
+    1e-1           823     467      65      55       1     235
+    1e0             85      15      32       5       0      33
+    1e1             64      37       0       0       0      27
+sample 55 gen_lambda=2 n=100 maxit=100 status=0 certified=1 ms=74.8 loglik=-118.17415005297313 lambda=1.98147099146 mu=-0.0316140181023 restricted=0
+  cover maxit=100: certified=1 contradicted=0 evaluations=2005 points=524
+  D=10.74 c=2.383 k=1 tail start=83.94 tail cutoff=335.7  lambda_hat=1.98147 log e_hat=-0.747403  log e domain lower=-5.298
+  boxes by lambda_lo octave: [boxes value yscore xscore notok survive]
+    lambda>=1          654       9     135      64       0     446
+    lambda>=2          674     426      87      39       2     120
+    lambda>=4           13       8       1       4       0       0
+    lambda>=8            7       7       0       0       0       0
+    lambda>=16           5       5       0       0       0       0
+    lambda>=32           7       5       0       0       0       2
+    lambda>=64          24      13       0       0       0      11
+    lambda>=128         65      33       0       0       0      32
+    lambda>=256         32      18       0       0       0      14
+  boxes by distance to the root (max of relative lambda gap, log-e gap), decade:
+    contains         3       0       0       0       0       3
+    1e-6             8       0       0       0       0       8
+    1e-5            14       0       0       0       0      14
+    1e-4            14       0       0       0       0      14
+    1e-3            12       0       0       0       0      12
+    1e-2           177       8      81      24       0      64
+    1e-1           911     416      66      79       2     348
+    1e0            209      26      76       4       0     103
+    1e1             68      40       0       0       0      28
+    1e2             65      34       0       0       0      31
+sample 57 gen_lambda=2 n=500 maxit=100 status=0 certified=1 ms=1354.3 loglik=-557.62057907568476 lambda=2.09219750322 mu=-0.0235125490538 restricted=0
+  cover maxit=100: certified=1 contradicted=0 evaluations=8683 points=3128
+  D=23.72 c=3.168 k=1 tail start=315.6 tail cutoff=2525  lambda_hat=2.0922 log e_hat=-0.869335  log e domain lower=-6.908
+  boxes by lambda_lo octave: [boxes value yscore xscore notok survive]
+    lambda>=1         3692     137     748     302       0    2505
+    lambda>=2         1274     437     188     114      14     521
+    lambda>=4           61      39       4      18       0       0
+    lambda>=8           37      37       0       0       0       0
+    lambda>=16          32      32       0       0       0       0
+    lambda>=32          17      17       0       0       0       0
+    lambda>=64          11      10       0       0       0       1
+    lambda>=128         20      12       0       0       0       8
+    lambda>=256         47      25       0       0       0      22
+    lambda>=512        179      91       0       0       5      83
+    lambda>=1024       185      95       0       0       5      85
+  boxes by distance to the root (max of relative lambda gap, log-e gap), decade:
+    contains         3       0       0       0       0       3
+    1e-6             8       0       0       0       0       8
+    1e-5            14       0       0       0       0      14
+    1e-4            14       0       0       0       0      14
+    1e-3            12       0       0       0       0      12
+    1e-2           192      13      90      25       2      62
+    1e-1          2279     419     113     391       9    1347
+    1e0           2574     250     737      18       3    1566
+    1e1             42      36       0       0       0       6
+    1e2            417     214       0       0      10     193
+sample 59 gen_lambda=2 n=500 maxit=100 status=0 certified=1 ms=1181.4 loglik=-631.15930132023482 lambda=1.86554393817 mu=0.0187193831899 restricted=0
+  cover maxit=100: certified=1 contradicted=0 evaluations=6941 points=2416
+  D=22.45 c=3.113 k=1 tail start=321.2 tail cutoff=2570  lambda_hat=1.86554 log e_hat=-1.04476  log e domain lower=-6.908
+  boxes by lambda_lo octave: [boxes value yscore xscore notok survive]
+    lambda>=1         2368      11     548     297       0    1512
+    lambda>=2         1634     425      76     235      15     883
+    lambda>=4          123     123       0       0       0       0
+    lambda>=8           58      58       0       0       0       0
+    lambda>=16          39      39       0       0       0       0
+    lambda>=32          22      22       0       0       0       0
+    lambda>=64          11      11       0       0       0       0
+    lambda>=128         14      10       0       0       0       4
+    lambda>=256         34      18       0       0       0      16
+    lambda>=512        114      58       0       0       3      53
+    lambda>=1024       108      57       0       0       4      47
+  boxes by distance to the root (max of relative lambda gap, log-e gap), decade:
+    contains         3       0       0       0       0       3
+    1e-6             8       0       0       0       0       8
+    1e-5            14       0       0       0       0      14
+    1e-4            12       0       0       0       0      12
+    1e-3            14       0       0       0       0      14
+    1e-2           141       4      66      32       0      39
+    1e-1          3043     425     247     494      12    1865
+    1e0            948     188     311       6       3     440
+    1e1             83      80       0       0       0       3
+    1e2            258     134       0       0       7     117
+    1e3              1       1       0       0       0       0
+sample 73 gen_lambda=1 n=100 maxit=100 status=0 certified=1 ms=60.0 loglik=-221.31026333695019 lambda=1.00042460857 mu=-0.0399927164076 restricted=0
+  cover maxit=100: certified=1 contradicted=0 evaluations=1718 points=475
+  D=63.2 c=4.146 k=1 tail start=48.23 tail cutoff=192.9  lambda_hat=1.00042 log e_hat=-1.89714  log e domain lower=-5.298
+  boxes by lambda_lo octave: [boxes value yscore xscore notok survive]
+    lambda>=1         1097     177     244     160       1     515
+    lambda>=2           29      18       2       9       0       0
+    lambda>=4           36      36       0       0       0       0
+    lambda>=8           13      13       0       0       0       0
+    lambda>=16           9       8       0       0       0       1
+    lambda>=32           9       6       0       0       0       3
+    lambda>=64          28      15       0       0       0      13
+    lambda>=128         22      12       0       0       0      10
+  boxes by distance to the root (max of relative lambda gap, log-e gap), decade:
+    contains         3       0       0       0       0       3
+    1e-6             6       0       0       0       0       6
+    1e-5            14       0       0       0       0      14
+    1e-4            11       0       0       0       0      11
+    1e-3            10       0       0       0       0      10
+    1e-2           214       1     104      47       1      61
+    1e-1           727     172     129     102       0     324
+    1e0            177      58      13      20       0      86
+    1e1             50      37       0       0       0      13
+    1e2             31      17       0       0       0      14
+sample 75 gen_lambda=1 n=100 maxit=100 status=0 certified=1 ms=27.3 loglik=-236.13891462935925 lambda=1 mu=0.0238455767767 restricted=1
+  cover maxit=100: certified=1 contradicted=0 evaluations=880 points=252
+  D=144.6 c=4.974 k=1 tail start=40.21 tail cutoff=160.8  lambda_hat=1 log e_hat=-1.79533  log e domain lower=-5.298
+  boxes by lambda_lo octave: [boxes value yscore xscore notok survive]
+    lambda>=1          506     191      36      47       1     231
+    lambda>=2           34      23       2       9       0       0
+    lambda>=4           16      16       0       0       0       0
+    lambda>=8           12      12       0       0       0       0
+    lambda>=16           7       7       0       0       0       0
+    lambda>=32          12       8       0       0       0       4
+    lambda>=64          31      16       0       0       0      15
+    lambda>=128         10       6       0       0       0       4
+  boxes by distance to the root (max of relative lambda gap, log-e gap), decade:
+    contains         3       0       0       0       0       3
+    1e-2            10       0       0       4       0       6
+    1e-1           407     187      26      40       1     153
+    1e0            136      43      12      12       0      69
+    1e1             50      37       0       0       0      13
+    1e2             22      12       0       0       0      10
+sample 77 gen_lambda=1 n=500 maxit=100 status=0 certified=1 ms=930.3 loglik=-1053.4504928603567 lambda=1.01279751909 mu=0.0087950115009 restricted=0
+  cover maxit=100: certified=1 contradicted=0 evaluations=6495 points=2231
+  D=167.3 c=5.12 k=1 tail start=195.3 tail cutoff=1563  lambda_hat=1.0128 log e_hat=-1.77773  log e domain lower=-6.908
+  boxes by lambda_lo octave: [boxes value yscore xscore notok survive]
+    lambda>=1         3450     127     605     525      24    2169
+    lambda>=2          108      66      12      30       0       0
+    lambda>=4          244     244       0       0       0       0
+    lambda>=8           76      76       0       0       0       0
+    lambda>=16          38      38       0       0       0       0
+    lambda>=32          22      21       0       0       0       1
+    lambda>=64          16      13       0       0       0       3
+    lambda>=128         29      17       0       0       0      12
+    lambda>=256         89      46       0       0       2      41
+    lambda>=512        191      98       0       0       6      87
+    lambda>=1024         1       1       0       0       0       0
+  boxes by distance to the root (max of relative lambda gap, log-e gap), decade:
+    contains         3       0       0       0       0       3
+    1e-6             6       0       0       0       0       6
+    1e-5            14       0       0       0       0      14
+    1e-4            12       0       0       0       0      12
+    1e-3            16       0       0       1       0      15
+    1e-2           325       0     133      57      10     125
+    1e-1          2307     120     371     411       0    1405
+    1e0           1119     317     113      86      14     589
+    1e1            152     148       0       0       0       4
+    1e2            309     161       0       0       8     140
+    1e3              1       1       0       0       0       0
+sample 79 gen_lambda=1 n=500 maxit=100 status=0 certified=1 ms=554.6 loglik=-1143.4679337306882 lambda=1 mu=0.0236716322499 restricted=1
+  cover maxit=100: certified=1 contradicted=0 evaluations=4130 points=1491
+  D=5484 c=8.61 k=1 tail start=116.1 tail cutoff=929.2  lambda_hat=1 log e_hat=-2.1388  log e domain lower=-6.908
+  boxes by lambda_lo octave: [boxes value yscore xscore notok survive]
+    lambda>=1         2133     168     166     342      17    1440
+    lambda>=2          100     100       0       0       0       0
+    lambda>=4          106     106       0       0       0       0
+    lambda>=8          131     131       0       0       0       0
+    lambda>=16          24      24       0       0       0       0
+    lambda>=32          15      14       0       0       0       1
+    lambda>=64          13       9       0       0       0       4
+    lambda>=128         27      15       0       0       1      11
+    lambda>=256         87      45       0       0       3      39
+    lambda>=512          3       3       0       0       0       0
+  boxes by distance to the root (max of relative lambda gap, log-e gap), decade:
+    contains         3       0       0       0       0       3
+    1e-2            18       0       0       6       2      10
+    1e-1          1288     162      85     239       7     795
+    1e0           1114     296      81      97       8     632
+    1e1             86      85       0       0       0       1
+    1e2            130      72       0       0       4      54
+sample 93 gen_lambda=0.5 n=100 maxit=100 status=0 certified=1 ms=27.7 loglik=-352.53485799576038 lambda=1 mu=-0.206048368959 restricted=1
+  cover maxit=100: certified=1 contradicted=0 evaluations=939 points=55
+  D=4497 c=8.411 k=1 tail start=23.78 tail cutoff=190.2  lambda_hat=1 log e_hat=-1.31127  log e domain lower=-5.298
+  boxes by lambda_lo octave: [boxes value yscore xscore notok survive]
+    lambda>=1          747     550      55      70       1      71
+    lambda>=2           97      97       0       0       0       0
+    lambda>=4            3       3       0       0       0       0
+    lambda>=8            6       6       0       0       0       0
+    lambda>=16           5       5       0       0       0       0
+    lambda>=32           8       5       0       0       0       3
+    lambda>=64          17      10       0       0       0       7
+    lambda>=128          1       1       0       0       0       0
+  boxes by distance to the root (max of relative lambda gap, log-e gap), decade:
+    contains         3       0       0       0       0       3
+    1e-2            14       0       1       9       0       4
+    1e-1           574     417      45      59       1      52
+    1e0            256     233       9       2       0      12
+    1e1             34      24       0       0       0      10
+    1e2              3       3       0       0       0       0
+sample 95 gen_lambda=0.5 n=100 maxit=100 status=0 certified=1 ms=25.1 loglik=-371.77825343558106 lambda=1 mu=-0.201686523862 restricted=1
+  cover maxit=100: certified=1 contradicted=0 evaluations=848 points=34
+  D=5.505e+04 c=10.92 k=1 tail start=18.32 tail cutoff=73.29  lambda_hat=1 log e_hat=-1.45573  log e domain lower=-5.298
+  boxes by lambda_lo octave: [boxes value yscore xscore notok survive]
+    lambda>=1          674     511      48      61       0      54
+    lambda>=2          122     122       0       0       0       0
+    lambda>=8            4       4       0       0       0       0
+    lambda>=16           3       3       0       0       0       0
+    lambda>=32           8       5       0       0       0       3
+    lambda>=64           3       2       0       0       0       1
+  boxes by distance to the root (max of relative lambda gap, log-e gap), decade:
+    contains         3       0       0       0       0       3
+    1e-2            14       0       1       9       0       4
+    1e-1           530     397      40      50       0      43
+    1e0            253     240       7       2       0       4
+    1e1             14      10       0       0       0       4
+sample 97 gen_lambda=0.5 n=500 maxit=100 status=0 certified=1 ms=181.9 loglik=-1734.8305035183237 lambda=1 mu=-0.222795570024 restricted=1
+  cover maxit=100: certified=1 contradicted=0 evaluations=1327 points=167
+  D=6.27e+04 c=11.05 k=1 tail start=90.53 tail cutoff=724.2  lambda_hat=1 log e_hat=-1.40737  log e domain lower=-6.908
+  boxes by lambda_lo octave: [boxes value yscore xscore notok survive]
+    lambda>=1          939     665      59      77       7     131
+    lambda>=2           30      30       0       0       0       0
+    lambda>=4           16      16       0       0       0       0
+    lambda>=8           17      17       0       0       0       0
+    lambda>=16          13      13       0       0       0       0
+    lambda>=32           9       8       0       0       0       1
+    lambda>=64          11       7       0       0       0       4
+    lambda>=128         32      17       0       0       0      15
+    lambda>=256         92      48       0       0       0      44
+    lambda>=512          1       1       0       0       0       0
+  boxes by distance to the root (max of relative lambda gap, log-e gap), decade:
+    contains         3       0       0       0       0       3
+    1e-2            14       0       1       9       0       4
+    1e-1           597     417      46      63       6      65
+    1e0            371     294      12       5       1      59
+    1e1             47      43       0       0       0       4
+    1e2            128      68       0       0       0      60
+sample 99 gen_lambda=0.5 n=500 maxit=100 status=0 certified=1 ms=178.3 loglik=-1985.0913751019345 lambda=1 mu=-0.213744656704 restricted=1
+  cover maxit=100: certified=1 contradicted=0 evaluations=1291 points=163
+  D=1.753e+05 c=12.07 k=1 tail start=82.82 tail cutoff=662.6  lambda_hat=1 log e_hat=-1.45391  log e domain lower=-6.908
+  boxes by lambda_lo octave: [boxes value yscore xscore notok survive]
+    lambda>=1          932     688      53      59       7     125
+    lambda>=2            7       7       0       0       0       0
+    lambda>=4           13      13       0       0       0       0
+    lambda>=8           16      16       0       0       0       0
+    lambda>=16          13      13       0       0       0       0
+    lambda>=32           9       8       0       0       0       1
+    lambda>=64          13       8       0       0       0       5
+    lambda>=128         33      17       0       0       0      16
+    lambda>=256         92      49       0       0       0      43
+  boxes by distance to the root (max of relative lambda gap, log-e gap), decade:
+    contains         3       0       0       0       0       3
+    1e-2            14       0       1       9       0       4
+    1e-1           565     411      39      46       6      63
+    1e0            370     297      13       4       1      55
+    1e1             45      42       0       0       0       3
+    1e2            131      69       0       0       0      62
