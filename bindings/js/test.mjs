@@ -1896,7 +1896,7 @@ test('genbeta shallow coverage retains the uncertified legacy finite fit', async
   const x=api.genbeta.q(u,[3,2,.7,1]);
   const f=api.genbeta.fit(x,{scale:1});
   assert.equal(f.certified,0);
-  assert.ok(Math.abs(f.estimates.shape1/5.3645780153723184-1)<1e-7);
+  assert.ok(Math.abs(f.estimates.shape1/5.364602384807961-1)<1e-10);
   const g=read('genbeta','golden');
   assert.equal(api.genbeta.fit(new Float64Array(g.data),{scale:1}).certified,1);
 });

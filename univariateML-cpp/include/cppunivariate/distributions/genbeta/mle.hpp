@@ -103,7 +103,7 @@ inline Point profile(const std::vector<double>& y,double t,double aa,double bb,i
 
 namespace cppunivariate {
 
-inline GenbetaResult genbeta_mle(span x,double scale,double tol=1e-7,int maxit=300,
+inline GenbetaResult genbeta_accuracy_search(span x,double scale,double tol=1e-7,int maxit=300,
     double a=std::numeric_limits<double>::quiet_NaN(),
     double b=std::numeric_limits<double>::quiet_NaN(),
     double t=std::numeric_limits<double>::quiet_NaN()) {
@@ -113,11 +113,11 @@ inline GenbetaResult genbeta_mle(span x,double scale,double tol=1e-7,int maxit=3
   if(!(scale>0)||!std::isfinite(scale)){bad.status=GenbetaStatus::InvalidFixed;return bad;}
   for(double v:{a,b,t})if(!std::isnan(v)&&(!(v>0)||!std::isfinite(v))){bad.status=GenbetaStatus::InvalidFixed;return bad;}
   if(x.size()==0||!(tol>0)||!std::isfinite(tol)||maxit<1)return bad;
-  std::vector<double> y;CPPUNIV_EXTENDED_REAL jac=0,sy=0;double ymin=std::numeric_limits<double>::infinity();
+  std::vector<double> y;CPPUNIV_EXTENDED_REAL jac=0,sy=0,sy_correction=0;double ymin=std::numeric_limits<double>::infinity();
   for(double v:x) {
     if(!(v>0&&v<scale)||!std::isfinite(v))return bad;
     const double z=v>scale*.5?-std::log1p((v-scale)/scale):std::log(scale)-std::log(v);
-    y.push_back(z);jac-=std::log(v);sy+=z;ymin=std::min(ymin,z);
+    y.push_back(z);jac-=std::log(v);const CPPUNIV_EXTENDED_REAL sy_y=z-sy_correction,sy_t=sy+sy_y;sy_correction=(sy_t-sy)-sy_y;sy=sy_t;ymin=std::min(ymin,z);
   }
   const double n=static_cast<double>(x.size()),mean=static_cast<double>(sy/n);
   bool constant=true;for(double v:y)constant=constant&&v==y[0];
@@ -423,3 +423,83 @@ inline GenbetaResult genbeta_mle(span x,double scale,double tol=1e-7,int maxit=3
   return finish(out);
 }
 } // namespace cppunivariate
+
+#include "accuracy.hpp"
+namespace cppunivariate {
+inline GenbetaResult genbeta_mle(span x,double scale,double tol=1e-10,int maxit=300,double a=NAN,double b=NAN,double t=NAN) {
+  const bool scalar_certificate=(!std::isnan(a)&&!std::isnan(b)&&std::isnan(t)) ||
+    (a==1&&std::isnan(b)&&std::isnan(t)) || b==1;
+  const double search_tol=!scalar_certificate&&tol>0&&std::isfinite(tol)?std::max(tol,1e-7):tol;
+  auto r=genbeta_accuracy_search(x,scale,search_tol,maxit,a,b,t);
+  if(r.status!=GenbetaStatus::Ok||r.shape2==1)return r;
+  const auto accuracy_failure=[&]() {
+    r.status=GenbetaStatus::SearchUnresolved;r.allfree_certified=false;
+    r.certificate_failure=GenbetaCertificateFailure::CoefficientInclusion;
+    const double pad=4096*std::numeric_limits<double>::epsilon()*(1+std::abs(r.logLik));
+    r.stop_detail={};
+    r.stop_detail.candidates={{{r.shape1,r.shape2,r.shape3,scale},r.logLik-pad,r.logLik+pad,StopModel::None}};
+    r.stop_detail.loglik_lower=r.logLik-pad;r.stop_detail.loglik_upper=INFINITY;
+    return r;
+  };
+  // These scalar certificates already propagate coefficient inclusion, and
+  // use centered small-power scores unavailable in the raw joint density.
+  if((!std::isnan(a)&&!std::isnan(b)&&std::isnan(t)) ||
+     (a==1&&std::isnan(b)&&std::isnan(t)))return r;
+  if(!std::isnan(t)) {
+    if(std::isnan(a)&&std::isnan(b)) {
+      std::vector<double> u;for(double v:x)u.push_back(std::pow(v/scale,t));
+      const auto beta=beta_mle({u.data(),u.size()},tol,maxit);
+      if(beta.status!=BetaStatus::Ok){return accuracy_failure();}
+      r.shape1=beta.alpha;r.shape2=beta.beta;
+    } else if(std::isnan(a)||std::isnan(b)) {
+      ExtendedReal statistic=0,correction=0;
+      for(double v:x) {
+        const ExtendedReal y=static_cast<ExtendedReal>(t)*(v>scale*.5?-std::log1p((static_cast<ExtendedReal>(v)-scale)/scale):std::log(static_cast<ExtendedReal>(scale))-std::log(static_cast<ExtendedReal>(v)));
+        const ExtendedReal term=std::isnan(a)?y:-std::log(-std::expm1(-y));
+        const ExtendedReal adjusted=term-correction,total=statistic+adjusted;
+        correction=(total-statistic)-adjusted;statistic=total;
+      }
+      const double target=static_cast<double>(statistic/x.size()),held=std::isnan(a)?b:a;
+      double lo=0,hi=std::isnan(a)?r.shape1:r.shape2;
+      for(std::int64_t j=0;j<solver_budget(maxit)&&beta_detail::psi_increment(hi,held)>target;++j)hi*=2;
+      bool ok=false;
+      if(std::isfinite(hi)&&beta_detail::psi_increment(hi,held)<=target)
+        for(std::int64_t j=0;j<solver_budget(maxit);++j) {
+          const double mid=lo+(hi-lo)/2;
+          if(beta_detail::psi_increment(mid,held)>target)lo=mid;else hi=mid;
+          if(lo>0&&hi-lo<=tol*.125*lo){ok=true;break;}
+        }
+      if(!ok){return accuracy_failure();}
+      if(std::isnan(a))r.shape1=lo+(hi-lo)/2;else r.shape2=lo+(hi-lo)/2;
+    }
+    std::vector<double> logdata;ExtendedReal jacobian=0;
+    for(double v:x){logdata.push_back(v>scale*.5?-std::log1p((v-scale)/scale):std::log(scale)-std::log(v));jacobian-=std::log(v);}
+    r.logLik=genbeta_detail::profile(logdata,r.shape3,r.shape1,r.shape2,maxit).ll+static_cast<double>(jacobian);
+    return r;
+  }
+  // Product coordinates cancel the common gamma-limit score terms.
+  std::array<double,3> q{{std::log(r.shape1)+std::log(r.shape3),std::log(r.shape2),std::log(r.shape3)}};
+  const std::array<bool,3> free{{std::isnan(a),std::isnan(b),std::isnan(t)}};
+  const auto objective=[&](const std::array<accuracy_detail::Jet,3>& z) {
+    const auto power=accuracy_detail::exp(z[2]),qv=accuracy_detail::exp(z[1]);
+    const auto p=std::isnan(a)?accuracy_detail::exp(z[0]-z[2]):accuracy_detail::Jet(a);
+    const auto rate=std::isnan(a)?accuracy_detail::exp(z[0]):p*power;
+    const auto normalizer=accuracy_detail::Jet(x.size())*(qv*accuracy_detail::log(rate)-accuracy_detail::lgamma(qv)-genbeta_detail::gamma_ratio_correction(p,qv));
+    accuracy_detail::JetSum terms;
+    for(double v:x) {
+      const accuracy_detail::Jet y(v>scale*.5?-std::log1p((static_cast<ExtendedReal>(v)-scale)/scale):std::log(static_cast<ExtendedReal>(scale))-std::log(static_cast<ExtendedReal>(v)));
+      terms.add(-rate*y+(qv-accuracy_detail::Jet(1))*(accuracy_detail::log(y)+genbeta_detail::log_relative_exponential(power*y)));
+    }
+    return normalizer+terms.value;
+  };
+  if(!accuracy_detail::polish(q,free,tol,maxit,objective)){return accuracy_failure();}
+  if(free[0])r.shape1=std::exp(q[0]-q[2]);
+  if(free[1])r.shape2=std::exp(q[1]);
+  if(free[2])r.shape3=std::exp(q[2]);
+
+  std::vector<double> logdata;ExtendedReal jacobian=0;
+  for(double v:x){logdata.push_back(v>scale*.5?-std::log1p((v-scale)/scale):std::log(scale)-std::log(v));jacobian-=std::log(v);}
+  r.logLik=genbeta_detail::profile(logdata,r.shape3,r.shape1,r.shape2,maxit).ll+static_cast<double>(jacobian);
+  return r;
+}
+}

@@ -484,7 +484,8 @@ TEST_CASE("genbeta all-free certificate: a shallow gamma-adjacent proposal retai
   CHECK_FALSE(r.allfree_certified);
   CHECK_FALSE(r.stop_detail.candidates.empty());
   CHECK(std::isinf(r.stop_detail.loglik_upper));
-  CHECK(r.shape1==doctest::Approx(5.3645780153723184).epsilon(1e-7));
+  // Independent 90-digit stationary equations: acc-profile-data/shallow-reference.json.
+  CHECK(r.shape1==doctest::Approx(5.364602384807961).epsilon(1e-10));
   CHECK(r.logLik==doctest::Approx(38.823408377416484).epsilon(1e-9));
   CHECK(r.iterations<=cppunivariate::certificate_budget(300)+1);
 }
@@ -534,4 +535,53 @@ TEST_CASE("genbeta all-free: the quadratic-zero gamma seam is not certified by a
   CHECK(bound.kh>=1);
   CHECK(std::abs(bound.quadratic)<1e-8);
   CHECK_FALSE(bound.enclosed);
+}
+
+// Independent 70-digit stationary reference: frozen fit audit case 2565.
+TEST_CASE("genbeta: coefficient accuracy on audit case 2565") {
+  const std::vector<double> x{0.9741401156291772, 0.9742375491274399, 0.9743349826257024, 0.9744324161239649, 0.9746272831204901};
+  const auto r = cppunivariate::genbeta_mle(mltest::as_span(x), 1, 1e-10, 300, NAN, NAN, 4.084996007320842);
+  REQUIRE(r.status == cppunivariate::GenbetaStatus::Ok);
+  CHECK(r.shape1 == doctest::Approx(203511.8113331388).epsilon(1e-10));
+  CHECK(r.shape2 == doctest::Approx(22786.140706643033).epsilon(1e-10));
+}
+
+// Independent 70-digit stationary reference: frozen fit audit case 2568.
+TEST_CASE("genbeta: coefficient accuracy on audit case 2568") {
+  const std::vector<double> x{0.24995, 0.249975, 0.25, 0.250025, 0.250075};
+  const auto r = cppunivariate::genbeta_mle(mltest::as_span(x), 1, 1e-10, 300, NAN, NAN, 4.084996007320842);
+  REQUIRE(r.status == cppunivariate::GenbetaStatus::Ok);
+  CHECK(r.shape1 == doctest::Approx(2017533.826562482).epsilon(1e-10));
+  CHECK(r.shape2 == doctest::Approx(579011618.7379446).epsilon(1e-10));
+}
+
+// Independent 70-digit stationary reference: frozen fit audit case 10941.
+TEST_CASE("genbeta: coefficient accuracy on audit case 10941") {
+  const std::vector<double> x{0.9999999999999999, 0.9999999999999998, 0.9999999999999997, 0.9999999999999994, 0.999999999999999};
+  const auto r = cppunivariate::genbeta_mle(mltest::as_span(x), 1, 1e-10, 300, NAN, 0.24298710443400298, 4.084996007320842);
+  REQUIRE(r.status == cppunivariate::GenbetaStatus::Ok);
+  CHECK(r.shape1 == doctest::Approx(133943415247365.88).epsilon(1e-10));
+  CHECK(r.shape2 == doctest::Approx(0.24298710443400298).epsilon(1e-10));
+}
+
+// Independent 70-digit stationary reference: frozen fit audit case 2613.
+TEST_CASE("genbeta: coefficient accuracy on audit case 2613") {
+  const std::vector<double> x{1e-17, 2e-17, 3e-17, 5.0000000000000005e-17, 9.000000000000001e-17};
+  const auto r = cppunivariate::genbeta_mle(mltest::as_span(x), 1, 1e-10, 300, NAN, 0.24298710443400298, 4.084996007320842);
+  REQUIRE(r.status == cppunivariate::GenbetaStatus::Ok);
+  CHECK(r.shape1 == doctest::Approx(0.00628923008455203).epsilon(1e-10));
+  CHECK(r.shape2 == doctest::Approx(0.24298710443400298).epsilon(1e-10));
+}
+
+// With shape2=2 and power=1, the shape score is
+// 1/a + 1/(a+1) = -mean(log x). Its unique root is analytic.
+TEST_CASE("genbeta: large replication preserves conditional coefficient accuracy") {
+  const std::vector<double> x(10000000,.999999);
+  const long double c=-std::log(static_cast<long double>(x[0]));
+  const double reference=static_cast<double>((2-c+std::sqrt(c*c+4))/(2*c));
+  const auto r=cppunivariate::genbeta_mle(mltest::as_span(x),1,1e-10,300,NAN,2,1);
+  REQUIRE(r.status==cppunivariate::GenbetaStatus::Ok);
+  CHECK(std::abs(r.shape1/reference-1)<=1e-10);
+  CHECK(r.shape2==2);
+  CHECK(r.shape3==1);
 }

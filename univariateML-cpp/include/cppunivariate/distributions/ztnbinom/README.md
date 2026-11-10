@@ -35,7 +35,7 @@ r:
   sampler: rztnbinom
   control:
     size: Optional fixed size; NULL estimates size.
-    reltol: Tolerance for the coefficient proposer; the certificate uses a separate signed enclosure.
+    reltol: "Relative accuracy of every free coefficient (default 1e-10)."
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations; per recurrence: 100000 * min(iterlim, 100000) enumeration cells."
     prob: "Optional held prob; NULL estimates it."
 log_density: loggamma(size+x)-loggamma(size)-loggamma(x+1)+size*log(prob)+x*log(1-prob)-log(1-prob**size)
@@ -133,3 +133,8 @@ Supplying `size` or `prob` holds that coefficient, while `NULL` estimates it. A 
 ## Decision history
 
 On 2026-11-06 the former log-size grid and $10^{-8}n$ face comparison were demoted to a coefficient proposer. That comparison could reject a finite maximum near a face and supplied no global guarantee. The certificate keeps the existing golden coefficients only after a signed accuracy enclosure. The first narrow-bracket prototype moved the historical truncated golden; the independent 60-digit size root differs from it by about $2.71\times10^{-7}$ relatively. The separate signed proposer enclosure preserves that regression without changing its tolerance. Joint uniqueness remains unproved in general; the implemented sample-specific sign and derivative coverage replaces that missing theorem for each successful fit.
+
+The normalization $-\log(1-p^r)$ contributes mixed size/probability
+information. Conditional-mean accuracy alone therefore does not justify size
+accuracy; both errors must be propagated together. Integer rising factorials
+avoid cancellation of nearby size polygammas.

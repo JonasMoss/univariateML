@@ -128,3 +128,11 @@ TEST_CASE("sgomp certificate: unfinished bracket preserves a numerical witness")
   REQUIRE(!r.stop_detail.candidates.empty());
   CHECK(std::isfinite(r.stop_detail.candidates.front().loglik_lower));
 }
+
+TEST_CASE("sgomp: large replication preserves the held exponential mean") {
+  std::vector<double> x(10000000,.1);x.back()=1;
+  const long double reference=x.size()/((x.size()-1)*static_cast<long double>(.1)+1);
+  const auto r=cppunivariate::sgomp_mle(mltest::as_span(x),1e-10,200,NAN,0);
+  REQUIRE(r.status==cppunivariate::SgompStatus::Ok);
+  CHECK(std::abs(r.b/reference-1)<=1e-10L);CHECK(r.eta==0);
+}

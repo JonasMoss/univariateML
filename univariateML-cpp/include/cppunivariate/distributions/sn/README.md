@@ -38,7 +38,7 @@ r:
     xi: "Optional fixed finite location; NULL estimates it."
     omega: "Optional fixed positive finite scale; NULL estimates it."
     alpha: "Optional fixed finite shape; NULL estimates it."
-    reltol: "Newton score tolerance; quantitative likelihood and coordinate acceptance checks also apply."
+    reltol: "Relative coefficient accuracy (default 1e-10); location uses the normal scale as a floor."
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations."
 log_density: "log(2)-log(omega)-log(2*pi)/2-((x-xi)/omega)**2/2+log((1+erf(alpha*(x-xi)/(omega*sqrt(2))))/2)"
 limits:
@@ -291,3 +291,13 @@ quotient is representable. The R density test includes opposite-sign
 `1e308` location and observation with scale `1e308`.
 
 Face comparisons retain the family tolerance but stop with the existing numerical-failure status when `core/face_compare.hpp` cannot resolve the decision after its floating-point rounding allowance. This allowance concerns computed likelihood comparisons, not optimizer convergence or global optimality; see the [comparison analysis](../../../../../dev/research/evaluations/2026-11-02-face-compare-report.md).
+
+Near the half-normal face, a small likelihood gap can conceal appreciable
+shape error and compensating changes in Gaussian location and scale. Their
+joint information is needed to translate scores into coefficient errors. The
+location accuracy floor is the fitted normal scale.
+
+With $\alpha=0$, held $\omega=d$ and observations $(0,0,0,d)$, the
+conditional location maximizer is $d/4$. If $d$ is the smallest positive
+double, no double location meets the scale-relative accuracy contract.
+This is a numerical accuracy failure, rather than nonexistence of the MLE.

@@ -13,7 +13,7 @@
 
 #include "certificate.hpp"
 namespace cppunivariate {
-inline EmgResult emg_mle(span x,double tol=1e-8,int maxit=500,
+inline EmgResult emg_accuracy_search(span x,double tol=1e-8,int maxit=500,
     double mu=special::kNaN,double sigma=special::kNaN,double lambda=special::kNaN) {
   maxit = static_cast<int>(solver_budget(maxit));
   EmgResult bad={special::kNaN,special::kNaN,special::kNaN,special::kNaN,0,EmgStatus::InvalidInput};
@@ -66,5 +66,42 @@ inline EmgResult emg_mle(span x,double tol=1e-8,int maxit=500,
     return {mu,sigma,lambda,(candidate.loglik_lower+candidate.loglik_upper)/2,0,EmgStatus::Ok};
   }
   return emg_detail::outer_certificate(x,tol,maxit,mu,sigma,lambda);
+}
+}
+
+#include "../../core/likelihood_polish.hpp"
+namespace cppunivariate {
+inline EmgResult emg_mle(span x,double tol=1e-10,int maxit=500,double mu=NAN,double sigma=NAN,double lambda=NAN) {
+  // Retain the established global enclosure budget; the joint local solve
+  // below supplies the requested, finer coefficient accuracy.
+  const bool location_only=std::isnan(mu)&&!std::isnan(sigma)&&!std::isnan(lambda);
+  const double search_tol=!location_only&&tol>=4*std::numeric_limits<double>::epsilon()?std::max(tol,1e-8):tol;
+  auto r=emg_accuracy_search(x,search_tol,maxit,mu,sigma,lambda);
+  if(r.status!=EmgStatus::Ok||location_only)return r;
+  const double center=r.mu,unit=r.sigma;
+  std::array<double,3> q{{0,0,std::log(r.lambda*unit)}};
+  const std::array<bool,3> free{{std::isnan(mu),std::isnan(sigma),std::isnan(lambda)}};
+  const auto objective=[&](const std::array<accuracy_detail::Jet,3>& z) {
+    const auto s=accuracy_detail::exp(z[1]),l=accuracy_detail::exp(z[2]),k=l*s;
+    accuracy_detail::JetSum f;
+    for(double v:x){const auto t=(accuracy_detail::Jet((static_cast<ExtendedReal>(v)-center)/unit)-z[0])/s;
+      if((t-k).v < -10) {
+        const auto a=t-k;accuracy_detail::Jet fraction(0);
+        for(int j=48;j>=1;--j)fraction=accuracy_detail::Jet(j)/(-a+fraction);
+        f.add(z[2]-accuracy_detail::Jet(.5)*t*t-accuracy_detail::Jet(.91893853320467274178)-accuracy_detail::log(-a+fraction));
+      } else f.add(z[2]+accuracy_detail::Jet(.5)*k*k-k*t+accuracy_detail::logcdf(t-k));}
+    return f.value;
+  };
+  if(!accuracy_detail::polish(q,free,tol,maxit,objective)){r.status=EmgStatus::NumericalFailure;return r;}
+  if(free[0])r.mu=std::fma(unit,q[0],center);
+  if(free[1])r.sigma=unit*std::exp(q[1]);
+  if(free[2])r.lambda=std::exp(q[2])/unit;
+  if((free[0]&&!accuracy_detail::location_projection(r.mu,center,unit,q[0],r.sigma,tol))||
+     (free[1]&&!accuracy_detail::scale_projection(r.sigma,unit,q[1],tol))||
+     (free[2]&&!accuracy_detail::scale_projection(r.lambda,unit,q[2],tol,true))) {
+    r.status=EmgStatus::AccuracyFailure;return r;
+  }
+  r.logLik=0;for(double v:x)r.logLik+=distributions::demg(v,r.mu,r.sigma,r.lambda,true);
+  return r;
 }
 }

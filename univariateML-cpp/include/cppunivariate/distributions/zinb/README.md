@@ -39,7 +39,7 @@ r:
   density: dzinb
   sampler: rzinb
   control:
-    reltol: "Requested bracket tolerance; certificates also enforce the documented floating-point accuracy bounds."
+    reltol: "Relative accuracy of every free coefficient (default 1e-10)."
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations."
     size: "Optional fixed finite nonnegative size, including fractional values; NULL estimates size."
     prob: "Optional held prob; NULL estimates it."
@@ -470,3 +470,8 @@ not accept a failed optimizer or the parent coefficients without the joint
 certificate. The Newton proposal gate is tighter than final acceptance to
 allow for the probability-coordinate transformation. Delegated and repeated
 certificate work is retained in the reported iteration count.
+
+Profiling inflation or probability does not decouple their coefficient
+errors from size. The full zero-mixture information supplies that propagation;
+integer rising-factorial derivatives avoid subtracting nearby digamma values
+near the Poisson face.

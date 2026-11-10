@@ -2,7 +2,7 @@
 #include "common_fit.h"
 // [[Rcpp::export]]
 Rcpp::List mlgenbeta_(const Rcpp::NumericVector &x, double scale,
-    double gradtol = 1e-7, int iterlim = 300,
+    double gradtol = 1e-10, int iterlim = 300,
     Rcpp::Nullable<double> shape1 = R_NilValue,
     Rcpp::Nullable<double> shape2 = R_NilValue,
     Rcpp::Nullable<double> shape3 = R_NilValue) {

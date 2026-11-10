@@ -139,3 +139,10 @@ TEST_CASE("Skellam nonfinite positive series fails numerically") {
 TEST_CASE("skellam: quantile search guards and representability") {
   CHECK(std::isnan(cppunivariate::distributions::qskellam(.5,1e308,1e308)));
 }
+
+TEST_CASE("skellam: large replication preserves the Poisson boundary mean") {
+  const double k=2000000001.;const std::vector<double> x(10000000,k);
+  const auto r=cppunivariate::skellam_mle(mltest::as_span(x));
+  REQUIRE(r.status==cppunivariate::SkellamStatus::Ok);
+  CHECK(r.mu1==k);CHECK(r.mu2==0);
+}

@@ -2,7 +2,7 @@
 #include "../../fit.hpp"
 #include "cppunivariate/distributions/sn/mle.hpp"
 namespace umvl_binding {
-inline FitResult fit_sn(cppunivariate::span x, Held xi_arg = {}, Held omega_arg = {}, Held alpha_arg = {}, double reltol=1e-9, int iterlim=100) {
+inline FitResult fit_sn(cppunivariate::span x, Held xi_arg = {}, Held omega_arg = {}, Held alpha_arg = {}, double reltol=1e-10, int iterlim=100) {
   // Invalid controls remain ordinary errors, even if a legacy fitter reports
   // a statistical status before checking them.
   const auto classify = [&](FitResult out, const cppunivariate::StopDetail& detail,
@@ -32,6 +32,7 @@ inline FitResult fit_sn(cppunivariate::span x, Held xi_arg = {}, Held omega_arg 
      fit.stop_detail.loglik_lower==fit.stop_detail.loglik_upper)
     return classify(fail("Skew-normal shape is not identifiable when every observation equals the held location."),fit.stop_detail,"tie",{"xi","omega","alpha"});
   if(fit.stop_detail.comparison_tie)return classify(fail("Skew-normal search did not converge or could not certify the maximum; increase iterlim."),fit.stop_detail,"tie",{"xi","omega","alpha"});
+  if(fit.status==cppunivariate::SnStatus::AccuracyFailure)return fail("sn numerical accuracy failure: coefficients cannot be represented at the requested accuracy.");
   if(fit.status==cppunivariate::SnStatus::RightHalfNormalBoundary)
     return classify(fail("The skew-normal MLE is infinite: use `mlhnorm`."),fit.stop_detail,"limit",{"mu","sigma"},"hnorm");
   if(fit.status==cppunivariate::SnStatus::LeftHalfNormalBoundary)

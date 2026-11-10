@@ -24,12 +24,12 @@ GOLDEN_TOLERANCE <- c(
   cauchy = 3e-12,
   cmb = 3e-10, # Newton moment-score stop at reltol=1e-10; inverse curvature amplifies coefficient error
   cmp = 1e-15,
-  dgamma = 3e-08, # profile simplex width reltol=1e-8; likelihood rounding limits coefficient resolution
+  dgamma = 5e-15, # analytic Newton refinement
   dlaplace = 2e-16,
   dnorm = 1e-12,
   dunif = 3e-16,
   dweibull = 2e-16,
-  emg = 5e-09, # certified profile with default reltol=1e-8; coefficient resolution and floating-point comparisons
+  emg = 5e-14, # analytic Newton refinement
   exp = 5e-16,
   fatigue = 5e-09, # absolute parameter-step abstol=1.220703e-4 inherited from CRAN
   foldnorm = 3e-09, # scalar profile refinement reltol=1e-10; likelihood rounding limits coefficient resolution
@@ -38,7 +38,7 @@ GOLDEN_TOLERANCE <- c(
   gamma = 1e-15,
   gb2 = 2e-07, # all-free beta-shape profile score stop at gradtol=1e-7; profile curvature amplifies coefficient error
   ged = 3e-11,
-  genbeta = 5e-09, # profile score stop gradtol=1e-7; shallow profile amplifies coefficient error
+  genbeta = 1e-14, # analytic Newton refinement
   geom = 5e-15,
   gev = 1e-13,
   gompertz = 5e-13,
@@ -46,7 +46,7 @@ GOLDEN_TOLERANCE <- c(
   gumbel = 3e-10, # Newton relative-step reltol=1.220703e-4 inherited from CRAN
   hcauchy = 5e-15,
   hnorm = 2e-16,
-  ht = 1e-07, # profile objective/scale stops; small likelihood error does not bound nu error
+  ht = 1e-14, # analytic Newton refinement
   huber = 1e-12,
   hyper = 2e-16,
   invburr = 1e-15,
@@ -75,17 +75,17 @@ GOLDEN_TOLERANCE <- c(
   paralogis = 2e-15,
   pareto = 5e-16,
   pareto2 = 2e-15,
-  pareto3 = 2e-08, # delegated damped logistic Newton step reltol=1e-10; likelihood rounding can shrink the accepted step
+  pareto3 = 1e-15, # analytic Newton refinement
   pareto4 = 5e-15,
   pig = 2e-10, # scalar profile reltol=1e-9; curvature amplifies shape error
   pois = 3e-15,
   power = 2e-15,
   rayleigh = 2e-16,
   sged = 3e-06, # finite-difference BFGS gradtol=1.220703e-4 inherited from CRAN; curvature amplifies coefficient error
-  sgomp = 3e-08, # scalar profile reltol=1e-10; curvature amplifies coefficient error
-  skellam = 5e-08, # scalar profile refinement reltol=1e-9; likelihood rounding limits coefficient resolution
+  sgomp = 1e-15, # analytic Newton refinement
+  skellam = 5e-15, # analytic Newton refinement
   slash = 2e-05, # scalar profile width reltol=1e-8 and likelihood rounding; near-zero location amplifies relative error
-  sn = 5e-07, # scalar profile refinement reltol=1e-9; likelihood rounding limits coefficient resolution
+  sn = 2e-14, # analytic Newton refinement
   snorm = 3e-13,
   sstd = 2e-05, # finite-difference BFGS gradtol=1.220703e-4 inherited from CRAN; curvature amplifies coefficient error
   st = 2e-06, # all-free BFGS score stop at reltol=1e-6; global/face certificate does not impose 1e-10 coefficient accuracy
@@ -101,17 +101,17 @@ GOLDEN_TOLERANCE <- c(
   yulesimon = 5e-11,
   zeta = 1e-11,
   zib = 5e-15,
-  zinb = 5e-08, # negative-binomial scalar profile width reltol=1e-10 and likelihood rounding
+  zinb = 1e-14, # analytic Newton refinement
   zip = 5e-15,
   zipf = 1e-13,
   zmbinom = 5e-16,
   zmgeom = 2e-15,
   zmlogarithmic = 5e-17,
-  zmnbinom = 5e-07, # delegated positive negative-binomial profile reltol=1e-10
+  zmnbinom = 1e-14, # analytic Newton refinement
   zmpois = 5e-15,
   ztbinom = 1e-15,
   ztgeom = 1e-17,
-  ztnbinom = 3e-07, # positive negative-binomial profile reltol=1e-10
+  ztnbinom = 1e-14, # analytic Newton refinement
   ztpois = 5e-16
   , bhatt = 2e-6 # Deferred to bhatt-allfree
 )
@@ -127,12 +127,12 @@ GOLDEN_STOP_TOLERANCE <- c(
   cauchy = 0.0001220703,
   cmb = 1e-10,
   cmp = 1e-10,
-  dgamma = 1e-08,
+  dgamma = 1e-10,
   dlaplace = 0,
   dnorm = 1e-09,
   dunif = 0,
   dweibull = 1e-12,
-  emg = 1e-08,
+  emg = 1e-10,
   exp = 0,
   fatigue = 0.0001220703,
   foldnorm = 1e-10,
@@ -141,7 +141,7 @@ GOLDEN_STOP_TOLERANCE <- c(
   gamma = 0.0001220703,
   gb2 = 1e-07,
   ged = 0.0001220703,
-  genbeta = 1e-07,
+  genbeta = 1e-10,
   geom = 0,
   gev = 1e-10,
   gompertz = 0.0001220703,
@@ -186,9 +186,9 @@ GOLDEN_STOP_TOLERANCE <- c(
   rayleigh = 0,
   sged = 0.0001220703,
   sgomp = 1e-10,
-  skellam = 1e-09,
+  skellam = 1e-10,
   slash = 1e-08,
-  sn = 1e-09,
+  sn = 1e-10,
   snorm = 0,
   sstd = 0.0001220703,
   st = 1e-06,

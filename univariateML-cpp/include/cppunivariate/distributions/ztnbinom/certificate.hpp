@@ -87,7 +87,7 @@ inline Interval derivative(const Data& data,double a,double b,Interval ta,Interv
   return {low-margin,high+margin};
 }
 }
-inline ZtnbinomResult ztnbinom_mle(ispan x,double tol=1e-10,int maxit=200,
+inline ZtnbinomResult ztnbinom_accuracy_search(ispan x,double tol=1e-10,int maxit=200,
     double fixed_size=std::numeric_limits<double>::quiet_NaN(),
     double fixed_prob=std::numeric_limits<double>::quiet_NaN()) {
   maxit = static_cast<int>(solver_budget(maxit));

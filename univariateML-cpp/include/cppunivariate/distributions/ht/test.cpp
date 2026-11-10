@@ -247,3 +247,19 @@ TEST_CASE("ht: structured face payloads") {
   CHECK(std::isinf(b.stop_detail.loglik_upper));
   CHECK(b.stop_detail.loglik_lower>=b.stop_detail.candidates[0].loglik_lower);
 }
+
+// Independent 90-digit stationary reference: acc-profile-data/ht-references.json.
+TEST_CASE("ht: near-normal shape accuracy on frozen seeded case 363") {
+  const std::vector<double> x{2.104988444536923,0.7717077730136094,0.017140447238676963,0.5909321079716433,2.1683029643067377,0.43266376999880546,0.659343184669405,1.035321373044915,2.01757759419129,0.5546969499995562,0.029293766865368102,0.9093519390011231,0.014900795942212684,1.5863599781454667,1.024104737268502,0.7034879395667673,3.3620473218005626,1.7680898588228702,0.737450005968706,0.9224421310074167,2.4934628988244967,0.6139479682859631,0.9586780363262708,0.1319756970702401};
+  const auto r=cppunivariate::ht_mle(mltest::as_span(x),0,NAN,NAN);
+  REQUIRE(r.status==cppunivariate::HtStatus::Ok);
+  CHECK(r.nu==doctest::Approx(596.0448826782266).epsilon(1e-10).scale(0));
+  CHECK(r.sigma==doctest::Approx(1.3577558822054576).epsilon(1e-10).scale(0));
+}
+
+TEST_CASE("ht: unrepresentable subnormal scale reports an accuracy failure") {
+  const double d=std::numeric_limits<double>::denorm_min();
+  const std::vector<double> x{0,d,2*d};
+  const auto r=cppunivariate::ht_mle(mltest::as_span(x),0,1,NAN);
+  CHECK(r.status==cppunivariate::HtStatus::AccuracyFailure);
+}

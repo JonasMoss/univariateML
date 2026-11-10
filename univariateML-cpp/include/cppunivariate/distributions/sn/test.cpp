@@ -358,3 +358,20 @@ TEST_CASE("sn: held-location root exhaustion retains its actual witness likeliho
   CHECK(ll==c.loglik_lower);
   CHECK(ll==c.loglik_upper);
 }
+
+// Independent 70-digit stationary reference: frozen fit audit case 6448.
+TEST_CASE("sn: coefficient accuracy on audit case 6448") {
+  const std::vector<double> x{0.60490724323222, 0.4288190074283693, 1.7476712955707259, -0.11698994164072135, 1000001.7476712955};
+  const auto r = cppunivariate::sn_mle(mltest::as_span(x), 1e-10, 100, 0.0712306862893739);
+  REQUIRE(r.status == cppunivariate::SnStatus::Ok);
+  CHECK(r.omega == doctest::Approx(447214.34522771905).epsilon(1e-10));
+  CHECK(r.alpha == doctest::Approx(1126792.1138849647).epsilon(1e-10));
+}
+
+TEST_CASE("sn: subnormal location cannot satisfy the coefficient contract") {
+  const double d=std::numeric_limits<double>::denorm_min();
+  const std::vector<double> x{0,0,0,d};
+  // With alpha=0 and omega=d held, xi*=d/4 is not representable.
+  const auto r=cppunivariate::sn_mle(mltest::as_span(x),1e-10,100,NAN,d,0);
+  CHECK((r.status==cppunivariate::SnStatus::AccuracyFailure||r.status==cppunivariate::SnStatus::IterationFailure));
+}
