@@ -259,7 +259,7 @@ test_that("triang audit-support case 11130 checks the public fit", {
 test_that("triang audit-support case 8165 checks the public fit", {
   x <- c(0.5267413463432983,0.5267413463438251,0.5267413463443518,0.5267413463448785,0.526741346345932)
   fit <- suppressWarnings(tryCatch(mltriang(x,reltol=1e-10,iterlim=100),error=identity))
-  expect_true(inherits(fit,"error"))
+  expect_false(inherits(fit,"error"))
   if(inherits(fit,"error")) {
     expect_s3_class(fit,"univariateML_numerical")
     expect_match(conditionMessage(fit),"numerical|converge|accuracy|certificate",ignore.case=TRUE)
@@ -273,7 +273,7 @@ test_that("triang audit-support case 8165 checks the public fit", {
 test_that("triang audit-support case 8168 checks the public fit", {
   x <- c(0.999999999998,0.999999999999,1.0,1.000000000001,1.000000000003)
   fit <- suppressWarnings(tryCatch(mltriang(x,reltol=1e-10,iterlim=100),error=identity))
-  expect_true(inherits(fit,"error"))
+  expect_false(inherits(fit,"error"))
   if(inherits(fit,"error")) {
     expect_s3_class(fit,"univariateML_numerical")
     expect_match(conditionMessage(fit),"numerical|converge|accuracy|certificate",ignore.case=TRUE)
@@ -287,7 +287,7 @@ test_that("triang audit-support case 8168 checks the public fit", {
 test_that("triang audit-support case 8172 checks the public fit", {
   x <- c(1.0045256123717767,1.0045256123707769,1.0045256123697768,1.0045256123677768,1.004525612363777)
   fit <- suppressWarnings(tryCatch(mltriang(x,reltol=1e-10,iterlim=100),error=identity))
-  expect_true(inherits(fit,"error"))
+  expect_false(inherits(fit,"error"))
   if(inherits(fit,"error")) {
     expect_s3_class(fit,"univariateML_numerical")
     expect_match(conditionMessage(fit),"numerical|converge|accuracy|certificate",ignore.case=TRUE)
@@ -301,7 +301,7 @@ test_that("triang audit-support case 8172 checks the public fit", {
 test_that("triang audit-support case 8213 checks the public fit", {
   x <- c(1.0045256123717767,1.0045256123707769,1.0045256123697768,1.0045256123677768,1.004525612363777)
   fit <- suppressWarnings(tryCatch(mltriang(x,reltol=1e-10,iterlim=100,b=1.0045256123727768),error=identity))
-  expect_true(inherits(fit,"error"))
+  expect_false(inherits(fit,"error"))
   if(inherits(fit,"error")) {
     expect_s3_class(fit,"univariateML_numerical")
     expect_match(conditionMessage(fit),"numerical|converge|accuracy|certificate",ignore.case=TRUE)
@@ -338,4 +338,59 @@ test_that("triang audit-support case 11127 checks the public fit", {
     expect_true(is.finite(raw))
     expect_equal(as.numeric(logLik(fit)),raw,tolerance=1e-11)
   }
+})
+
+test_that("triangular endpoint representation agrees with 400-digit profiles", {
+  # Saved case 8165: best public loss = 1.82271526249e-10.
+  x <- c(0.5267413463432983,0.5267413463438251,0.5267413463443518,0.5267413463448785,0.526741346345932)
+  fit <- suppressWarnings(mltriang(x,reltol=1e-10))
+  expect_equal(unname(coef(fit)),c(0.5267413463432983,0.5267413463466865,0.5267413463432983),tolerance=0)
+  expect_equal(as.numeric(logLik(fit)),132.84792080737714,tolerance=1e-13)
+  expect_equal(as.numeric(logLik(fit)),sum(dml(x,fit,log=TRUE)),tolerance=1e-13)
+  expect_error(mltriang(x,reltol=1e-14),class="univariateML_numerical")
+  # Saved case 8168: best public loss = 6.80778730019e-11.
+  x <- c(0.999999999998,0.999999999999,1.0,1.000000000001,1.000000000003)
+  fit <- suppressWarnings(mltriang(x,reltol=1e-10))
+  expect_equal(unname(coef(fit)),c(0.999999999998,1.0000000000044325,0.999999999998),tolerance=0)
+  expect_equal(as.numeric(logLik(fit)),129.6426460734028,tolerance=1e-13)
+  expect_equal(as.numeric(logLik(fit)),sum(dml(x,fit,log=TRUE)),tolerance=1e-13)
+  expect_error(mltriang(x,reltol=1e-14),class="univariateML_numerical")
+  # Saved case 8172: best public loss = 7.82594674304e-10.
+  x <- c(1.0045256123717767,1.0045256123707769,1.0045256123697768,1.0045256123677768,1.004525612363777)
+  fit <- suppressWarnings(mltriang(x,reltol=1e-10))
+  expect_equal(unname(coef(fit)),c(1.004525612361764,1.0045256123717767,1.0045256123717767),tolerance=0)
+  expect_equal(as.numeric(logLik(fit)),127.65928931238614,tolerance=1e-13)
+  expect_equal(as.numeric(logLik(fit)),sum(dml(x,fit,log=TRUE)),tolerance=1e-13)
+  expect_error(mltriang(x,reltol=1e-14),class="univariateML_numerical")
+  # Saved case 8173: best public loss = 0.000116161224635.
+  x <- c(0.03627073533558047,0.036270735335580485,0.03627073533558049,0.03627073533558051,0.036270735335580555)
+  expect_error(mltriang(x,reltol=1e-10),class="univariateML_numerical")
+  expect_error(mltriang(x,reltol=1e-14),class="univariateML_numerical")
+  # Saved case 8194: best public loss = 0.00352298316833.
+  x <- c(0.03627073533558047,0.036270735335580485,0.03627073533558049,0.03627073533558051,0.036270735335580555)
+  expect_error(mltriang(x,reltol=1e-10,a=0.036270735335580465),class="univariateML_numerical")
+  expect_error(mltriang(x,reltol=1e-14,a=0.036270735335580465),class="univariateML_numerical")
+  # Saved case 8213: best public loss = 1.26985670694e-10.
+  x <- c(1.0045256123717767,1.0045256123707769,1.0045256123697768,1.0045256123677768,1.004525612363777)
+  fit <- suppressWarnings(mltriang(x,reltol=1e-10,b=1.0045256123727768))
+  expect_equal(unname(coef(fit)),c(1.0045256123615323,1.0045256123727768,1.0045256123717767),tolerance=0)
+  expect_equal(as.numeric(logLik(fit)),127.1883141769809,tolerance=1e-13)
+  expect_equal(as.numeric(logLik(fit)),sum(dml(x,fit,log=TRUE)),tolerance=1e-13)
+  expect_error(mltriang(x,reltol=1e-14,b=1.0045256123727768),class="univariateML_numerical")
+  # Saved case 11117: best public loss = 1.79707853612e-05.
+  x <- c(0.03627073533558047,0.03627073533558048,0.036270735335580485,0.0362707353355805,0.03627073533558053)
+  expect_error(mltriang(x,reltol=1e-10),class="univariateML_numerical")
+  expect_error(mltriang(x,reltol=1e-14),class="univariateML_numerical")
+  # Saved case 11118: best public loss = 1.79707853612e-05.
+  x <- c(1.0045256123727766,1.0045256123727764,1.0045256123727762,1.0045256123727757,1.0045256123727748)
+  expect_error(mltriang(x,reltol=1e-10),class="univariateML_numerical")
+  expect_error(mltriang(x,reltol=1e-14),class="univariateML_numerical")
+  # Saved case 11119: best public loss = 0.00564341002129.
+  x <- c(0.03627073533558047,0.03627073533558048,0.036270735335580485,0.0362707353355805,0.03627073533558053)
+  expect_error(mltriang(x,reltol=1e-10,a=0.036270735335580465),class="univariateML_numerical")
+  expect_error(mltriang(x,reltol=1e-14,a=0.036270735335580465),class="univariateML_numerical")
+  # Saved case 11122: best public loss = 0.00564341002129.
+  x <- c(1.0045256123727766,1.0045256123727764,1.0045256123727762,1.0045256123727757,1.0045256123727748)
+  expect_error(mltriang(x,reltol=1e-10,b=1.0045256123727768),class="univariateML_numerical")
+  expect_error(mltriang(x,reltol=1e-14,b=1.0045256123727768),class="univariateML_numerical")
 })

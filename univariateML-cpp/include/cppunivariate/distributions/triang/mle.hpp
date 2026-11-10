@@ -114,6 +114,53 @@ inline Profile profile(const std::vector<double>& x, double l, double u,
   upper+=1e-11*n*(1+std::abs(v[0])/n);
   return {fa?a:l-L/p,fb?b:u+R/q,v[0],upper,it,done};
 }
+// For an observation endpoint mode only one endpoint remains to optimize.
+// In reciprocal distance its objective is strictly concave. Signed scores at
+// the two public neighbours bracket its root; log1p differences then identify
+// the best public point without subtracting nearly equal log likelihoods.
+inline bool rounded_endpoint(span x, double a, double b, double c,
+                             bool fa, bool fb) {
+  const double minimum=*std::min_element(x.begin(),x.end());
+  const double maximum=*std::max_element(x.begin(),x.end());
+  const bool reflected=c==maximum;
+  if(reflected ? (fa || (!fb && b!=c)) :
+                 (c!=minimum || fb || (!fa && a!=c))) return false;
+  const double endpoint=reflected?a:b;
+  const double fixed=reflected?b:a;
+  const double distance=reflected?c-endpoint:endpoint-c;
+  const double offset=reflected?fixed-c:c-fixed;
+  auto score=[&](double e) -> double {
+    const double w=reflected?c-e:e-c;
+    // This is w times the derivative in w. Its sign is opposite to
+    // the derivative in reciprocal distance.
+    double value=-static_cast<double>(x.size())*w/(w+offset);
+    for(double z:x) if(z!=c) {
+      const double d=reflected?c-z:z-c;
+      if(!(w>d)) return INFINITY;
+      value+=d/(w-d);
+    }
+    return value;
+  };
+  const double inward=std::nextafter(endpoint,c);
+  const double outward=std::nextafter(endpoint,reflected?-INFINITY:INFINITY);
+  if(!std::isfinite(outward) || !(distance>0) || !(offset>=0)) return false;
+  if(!(score(inward)>=0 && score(outward)<=0)) return false;
+  auto difference=[&](double e) -> double {
+    const double delta=reflected?endpoint-e:e-endpoint;
+    double value=-static_cast<double>(x.size())*std::log1p(delta/(distance+offset));
+    for(double z:x) if(z!=c) {
+      const double gap=reflected?z-endpoint:endpoint-z;
+      if(!(gap+delta>0)) return -INFINITY;
+      value+=std::log1p(delta/gap)-std::log1p(delta/distance);
+    }
+    return value;
+  };
+  // A sign comparison margin in likelihood-difference units, not in the
+  // much larger untranslated log likelihood.
+  const double margin=64*std::numeric_limits<double>::epsilon()*x.size()*
+      std::abs(outward-endpoint)/distance;
+  return difference(inward)<=margin && difference(outward)<=margin;
+}
 } // namespace triang_detail
 
 // NaN means free. prune=false is the exhaustive reference path.
@@ -158,6 +205,7 @@ inline TriangResult triang_mle(span input, double tol=1e-12, int maxit=100,
   const double tie=1e-10*x.size();
   double best=-INFINITY, second=-INFINITY, ba=0,bb=0,bc=0;
   bool success=true;
+  double certificate_upper=-INFINITY;
   std::vector<double> known_ll;
   if(fa&&fb) {
     std::vector<double> prefix(x.size()+1,0), suffix(x.size()+1,0);
@@ -185,6 +233,10 @@ inline TriangResult triang_mle(span input, double tol=1e-12, int maxit=100,
     auto p=fa&&fb ? triang_detail::Profile{a,b,known_ll[k],known_ll[k],0,true}
                         : triang_detail::profile(x,modes[k],modes[k],a,b,tol,maxit);
     out.iterations+=p.iterations;
+    // Strip the deliberately generous pruning allowance; public acceptance
+    // below supplies its own operand-scaled floating-point margin.
+    certificate_upper=std::max(certificate_upper,p.upper-
+        ((fa&&fb)?0:1e-11*x.size()*(1+std::abs(p.value)/x.size())));
     if(!std::isfinite(p.value)) return;
     success=success&&p.converged;
     // Ties at floating-point precision choose the smallest mode.
@@ -216,7 +268,7 @@ inline TriangResult triang_mle(span input, double tol=1e-12, int maxit=100,
           out.iterations+=left.iterations+right.iterations;
           const double upper=std::max(left.upper,right.upper)+
             x.size()*h*h/(2*std::pow(std::min(dl,dr),2));
-          if(upper<best-tie) continue;
+          if(upper<best-tie) {certificate_upper=std::max(certificate_upper,upper);continue;}
         }
       }
       const auto mid=r.lo+(r.hi-r.lo)/2;
@@ -257,7 +309,15 @@ inline TriangResult triang_mle(span input, double tol=1e-12, int maxit=100,
   // finite likelihood loss caused by coarse public endpoint spacing.
   const double margin=256*std::numeric_limits<double>::epsilon()*
       (input.size()+magnitude+std::abs(predicted));
-  const bool represented=std::isfinite(actual) && std::abs(actual-predicted)<=margin;
+  const bool same_point=std::isfinite(actual) && std::abs(actual-predicted)<=margin;
+  // Rounding can lose more than evaluation roundoff while still satisfying
+  // the requested relative likelihood accuracy. Accept only after checking
+  // the best public endpoint and the global continuous optimization bound.
+  const double global_upper=certificate_upper-input.size()*std::log(scale);
+  const bool rounded=!same_point && success && std::isfinite(actual) &&
+      triang_detail::rounded_endpoint(input,out.a,out.b,out.c,fa,fb) &&
+      global_upper-actual<=tol*std::max(1.0,std::abs(actual))+margin;
+  const bool represented=same_point || rounded;
   out.status=!represented?TriangStatus::NumericalFailure:
       (success?TriangStatus::Ok:TriangStatus::IterationFailure);
   out.not_unique=second>=best-tie;

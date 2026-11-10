@@ -1,0 +1,88 @@
+{
+  "completed_utc": "2026-11-10T02:49:57.120241+00:00",
+  "runs": [
+    {
+      "command": "/tmp/umvl-cpu/run4 just cpp-test",
+      "machine": "workstation",
+      "exit_code": 0,
+      "passed": 106,
+      "failed": 0,
+      "log": "logs/cpp-dev.log.gz"
+    },
+    {
+      "command": "/tmp/umvl-cpu/run4 just cpp-test-no-long-double",
+      "machine": "workstation",
+      "exit_code": 0,
+      "passed": 129,
+      "failed": 0,
+      "log": "logs/cpp-no-long-double.log.gz"
+    },
+    {
+      "command": "/tmp/umvl-cpu/run4 just test",
+      "machine": "workstation",
+      "exit_code": 0,
+      "passed": 22731,
+      "failed": 0,
+      "warnings": 0,
+      "skipped": 154,
+      "log": "logs/r-dev.log.gz"
+    },
+    {
+      "command": "/tmp/umvl-cpu/run4 just test-full",
+      "machine": "workstation",
+      "exit_code": 0,
+      "passed": 45566,
+      "failed": 0,
+      "warnings": 0,
+      "skipped": 0,
+      "log": "logs/r-full.log.gz"
+    },
+    {
+      "command": "/tmp/umvl-cpu/run just js-test",
+      "machine": "workstation",
+      "exit_code": 0,
+      "passed": 586,
+      "failed": 0,
+      "skipped": 0,
+      "log": "logs/js-test.log.gz"
+    },
+    {
+      "command": "EMCC_CORES=1 /tmp/umvl-cpu/run just site-check",
+      "machine": "workstation",
+      "exit_code": 0,
+      "log": "logs/site-final.log.gz"
+    },
+    {
+      "command": "targeted triangular doctest executable",
+      "machine": "workstation",
+      "exit_code": 0,
+      "cases": 34,
+      "assertions": 4039,
+      "log": "logs/targeted.log.gz"
+    },
+    {
+      "command": "bash dev/research/evaluations/2026-11-10-triang-endpoint-data/replay.sh",
+      "machine": "workstation",
+      "exit_code": 0,
+      "cases": 168,
+      "fits": 1344,
+      "log": "logs/replay.log.gz"
+    },
+    {
+      "command": "/tmp/umvl-cpu/run python3 dev/research/evaluations/2026-11-10-triang-endpoint-data/validate.py",
+      "machine": "workstation",
+      "exit_code": 0,
+      "log": "logs/replay-validation.log.gz"
+    }
+  ],
+  "simbox": {
+    "exit_code": 75,
+    "attempts": 3,
+    "reason": "simbox unreachable; all final suites ran locally",
+    "logs": [
+      "logs/simbox-no-long-double.log.gz",
+      "logs/simbox-retry.log.gz",
+      "logs/simbox-retry2.log.gz"
+    ]
+  }
+}

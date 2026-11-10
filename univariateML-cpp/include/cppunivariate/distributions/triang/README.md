@@ -40,7 +40,7 @@ r:
     a: Optional held a; `NULL` estimates it.
     b: Optional held b; `NULL` estimates it.
     c: Optional held c; `NULL` estimates it.
-    reltol: Absolute tolerance on the dimensionless concave endpoint Newton step.
+    reltol: Dimensionless endpoint Newton tolerance and relative public log-likelihood tolerance.
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
 log_density: log(2) - log(b-a) + Piecewise((log((x-a)/(c-a)), x < c), (log((b-x)/(b-c)), x > c), (0, True))
 holds: []
@@ -113,9 +113,15 @@ observation exactly after standardization. The restored support must contain
 the original data and its raw log likelihood must agree with the certified
 profile value within a practical 256-double-epsilon operand margin. At tiny
 sample ranges relative to their offset, a continuous optimum can lie between
-widely spaced representable endpoints; a finite likelihood loss beyond this
-margin is a numerical failure, even when the coefficient rounds closely in
-relative public units.
+widely spaced representable endpoints. For an observation endpoint mode,
+reciprocal-width concavity and signed scores at the adjacent public endpoints
+bracket the scalar optimum; `log1p` likelihood differences identify the best
+representable endpoint. Such a point is accepted beyond the evaluation margin
+only when the global continuous upper bound also puts its likelihood loss
+within `reltol * max(1, abs(logLik))`, with the same practical floating-point
+margin. Otherwise the fit reports numerical failure. This distinguishes an
+accurate continuous solve from an unattainable public precision target; see the
+[400-digit endpoint checks](../../../../../dev/research/evaluations/2026-11-10-triang-endpoint-data/reference.json).
 
 ## R notes
 
