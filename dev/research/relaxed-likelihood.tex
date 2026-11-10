@@ -56,9 +56,9 @@ given, details unchecked), \status{conjecture}, \status{lit, verified}
   specification.
 \item Consistency fails through separation (sine family) or domination
   (Ferguson). A block version of Wald's conditions, via Kingman's subadditive
-  ergodic theorem, is proposed as necessary and sufficient for consistency of
-  approximate MLEs (Proposition~\ref{prop:kingman}; \status{sketch}, to be
-  inspected).
+  ergodic theorem, is necessary and sufficient for consistency of
+  approximate MLEs (Proposition~\ref{prop:kingman}). This is Perlman's
+  theorem \cite{perlman} (\status{lit, verified}, Section~\ref{sec:prior}).
 \end{enumerate}
 
 Related material: the mass signature and boundary catalogue in
@@ -228,7 +228,12 @@ density for every real $\theta$ because the sine is odd.
   $\theta_0=0$. \status{sketch}
 \end{enumerate}
 The integer-$\theta$ version also works (discrete Kronecker; then even $n=1$
-fails). Source unknown; possibly folklore (asked in TASK-173). The old
+fails). The same mechanism with a countable parameter is published: Le Cam
+\cite[\S4, after Ferguson]{lecam} takes densities
+$1+\frac12(1-e^{-m})\varphi_{s,m}$ on $(0,1]$, with $\varphi_{s,m}=\pm1$ on a
+balanced selection $s$ of the $2^m$ dyadic intervals; density ratios stay in
+$[\frac12,2]$ and ML estimates $m=+\infty$ (``essentially another example of
+Bahadur''). \status{lit, verified} Exact source of the sine version unknown. The old
 \texttt{ml-existence} notes list it as ``oscillation with weak averaging''.
 \end{example}
 
@@ -263,8 +268,12 @@ supremum is $\prod\frac34\varphi(x_i)$, unattained (ml-existence catalogue).
 \end{example}
 
 \begin{example}[Exact but inconsistent: Ferguson]\label{ex:ferguson}
-Ferguson \cite{ferguson}, as recalled (\status{lit, unverified}; paper not
-yet on disk): $\theta\in[0,1]$,
+Ferguson \cite{ferguson}; the form below is confirmed by Le Cam's
+description \cite{lecam} (\status{lit, verified}), which leaves $\delta$
+unspecified (``continuous, decreasing from $1$ to $0$, fast enough''). The
+specific $\delta$ is as recalled (\status{lit, unverified}); Le Cam notes
+that ``all of Wald's conditions, except one, are satisfied'', matching the
+analysis below: $\theta\in[0,1]$,
 \[
  f(x\mid\theta)=(1-\theta)\frac{1}{\delta(\theta)}
  \Bigl(1-\frac{|x-\theta|}{\delta(\theta)}\Bigr)^{+}+\frac\theta2\mathbf 1_{[-1,1]}(x),
@@ -363,7 +372,7 @@ block size $m$ with
 \[
  \frac1m\,\E_0\log\sup_{\theta\in\Theta_U}L_m(\theta)<\E_0\log p_0 .
 \]
-\status{sketch; to be inspected}
+\status{sketch; essentially Perlman \cite[Thm.~2.2(ii), Thm.~4.1]{perlman}, see Section~\ref{sec:prior}}
 \end{proposition}
 \begin{proof}[Sketch]
 Sufficiency: cover $\bM$ minus a neighbourhood of $P_0$ by finitely many
@@ -393,6 +402,45 @@ At a collapse stratum the minimal block size $m^*$ equals the smallest
 sample size for which the MLE exists almost surely (normal $2$; Cauchy
 location-scale $3$, matching $2k<n$).
 \end{conjecture}
+
+\subsection{Prior art: Perlman 1972}\label{sec:prior}
+Checked in the source text on 10 November 2026 (\status{lit, verified}).
+Perlman \cite{perlman} works with
+$u(x,\theta;\theta_0)=\log f(x,\theta)-\log f(x,\theta_0)$ on the complement
+$\Omega_r$ of a shrinking neighbourhood of $\theta_0$, without compactifying.
+\begin{itemize}
+\item Definition~1: $u$ is \emph{dominated (by $0$)} on $\Gamma$ if for some
+  $k$, $\sup_\Gamma u_k\le s(x_1,\dots,x_k)$ with $\E s<\infty$ ($<0$). This is
+  Wald with blocks of size $k$, after Kiefer and Wolfowitz \cite{kw} and
+  Berk.
+\item Theorem~2.2(ii): if $u$ is dominated and the suprema are measurable,
+  then $\limsup_n\sup_\Gamma\frac1n\sum u=\lim_n\frac1n\E\sup_\Gamma\sum_{i\le n}u$
+  almost surely. Proof by Berk's reverse martingale over $k$-subsets, not
+  Kingman; the content is the same as our $\gamma(U)$.
+\item Assumption $\mathcal D$ (dominance for some $k$) is exactly our
+  integrability hypothesis, point (ii) above. Under $\mathcal D$, Condition~1
+  (dominance by $0$) is necessary and sufficient for the uniform condition
+  (1.7), and by Theorem~4.1 (local regularity: local compactness, local
+  dominance, upper semicontinuity, measurability) for strong consistency of
+  all approximate MLEs.
+\item Without $\mathcal D$: Example~2 (sample median, $w=-|x-\theta|$) is
+  consistent although not dominated; Perlman handles it by semidominance
+  (divide by $b(\theta)$, after Huber \cite{huber}) and, in Section~3, by a
+  uniformity condition on $\sigma$-compact sets. So the hole in point (ii)
+  is real and known.
+\item Perlman warns that the one-point compactification of $\Theta$ is often
+  unsuitable (his Example~4:
+  $f(x,\theta)\propto1+\frac{a\theta}{1+\theta}\sin(x-\theta)$ on
+  $[0,2\pi]$, $0<a<1$; consistent, but Wald, Kiefer--Wolfowitz and Huber
+  fail). Our compactification is of the model in the laws on $\bX$, not of
+  $\Theta$: there the $\theta\to\infty$ end is the circle of proper members
+  $1+a\sin(x-\varphi)$, exact by Lemma~\ref{lem:exact}(a).
+\item Strasser \cite{strasser} cites Perlman's criterion as necessary and
+  sufficient and improves its measurability side.
+\end{itemize}
+What remains ours: the finite-sample relaxed likelihood and outcome table,
+the mass signature, the gap, and the reading of $\gamma$ as the asymptotic
+relaxed likelihood. Prior art for these is the subject of TASK-173.
 
 \section{Rates}
 Rates are local and governed by Hellinger geometry. Given consistency, a
@@ -433,7 +481,8 @@ vanishing spike & unbounded, Hellinger limit proper & domination fails\\
 
 \section{Open items}
 \begin{enumerate}
-\item Inspect Proposition~\ref{prop:kingman} for an iff; check Perlman.
+\item Integrability-free version of Proposition~\ref{prop:kingman}:
+  Perlman's semidominance and Section~3 uniformity; Strasser's measurability.
 \item Ferguson: fetch the paper, confirm $\delta$, settle $a=1$.
 \item Library proof obligations: exactness (Lemma~\ref{lem:exact}) at each
   escape face before ``use \texttt{mlX}''; defective limits dismissed by
@@ -458,7 +507,7 @@ rate modeling with interval-censored data. \emph{Biometrical Journal}
 \href{https://arxiv.org/abs/1607.01251}{arXiv:1607.01251}.
 \bibitem{ferguson} T. S. Ferguson (1982). An inconsistent maximum likelihood
 estimate. \emph{Journal of the American Statistical Association} 77(380),
-831--834. (Details unverified.)
+831--834. \doi{10.1080/01621459.1982.10477894}.
 \bibitem{geyer} C. J. Geyer (1990). \emph{Likelihood and Exponential
 Families}. PhD dissertation, University of Washington.
 \href{https://www.stat.umn.edu/geyer/thesis/}{stat.umn.edu/geyer/thesis}.
@@ -469,7 +518,7 @@ distribution and Bayesian analysis of a point-source epidemic.
 \bibitem{ih} I. A. Ibragimov and R. Z. Has'minskii (1981).
 \emph{Statistical Estimation: Asymptotic Theory}. Springer.
 \bibitem{kingman} J. F. C. Kingman (1973). Subadditive ergodic theory.
-\emph{Annals of Probability} 1(6), 883--909. (Details unverified.)
+\emph{Annals of Probability} 1(6), 883--899. \doi{10.1214/aop/1176996798}.
 \bibitem{lecam} L. Le Cam (1990). Maximum likelihood: an introduction.
 \emph{International Statistical Review} 58(2), 153--171.
 \doi{10.2307/1403464}.
@@ -479,7 +528,17 @@ sufficient condition for the existence of consistent estimates.
 unverified.)
 \bibitem{perlman} M. D. Perlman (1972). On the strong consistency of
 approximate maximum likelihood estimators. \emph{Proceedings of the Sixth
-Berkeley Symposium} 1, 263--281. (Details unverified.)
+Berkeley Symposium on Mathematical Statistics and Probability} 1, 263--281.
+\bibitem{strasser} H. Strasser (1981). Consistency of maximum likelihood and
+Bayes estimates. \emph{Annals of Statistics} 9(5), 1107--1113.
+\doi{10.1214/aos/1176345590}.
+\bibitem{kw} J. Kiefer and J. Wolfowitz (1956). Consistency of the maximum
+likelihood estimator in the presence of infinitely many incidental
+parameters. \emph{Annals of Mathematical Statistics} 27(4), 887--906.
+\doi{10.1214/aoms/1177728066}.
+\bibitem{huber} P. J. Huber (1967). The behavior of maximum likelihood
+estimates under nonstandard conditions. \emph{Proceedings of the Fifth
+Berkeley Symposium} 1, 221--233.
 \bibitem{selfliang} S. G. Self and K.-Y. Liang (1987). Asymptotic properties
 of maximum likelihood estimators and likelihood ratio tests under
 nonstandard conditions. \emph{Journal of the American Statistical
