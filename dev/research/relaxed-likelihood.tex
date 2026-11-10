@@ -378,6 +378,77 @@ boundary points can (R10). The library adds ``budget exhausted'' and
 \label{tab:outcomes}
 \end{table}
 
+\section{Asymptotic table}\label{sec:asymptotic}
+Fix the truth $P_0$ and let $n\to\infty$. Two questions: where the fit goes
+(the maximisers of $\gamma$, Theorem~\ref{thm:main}(vi)--(vii)), and how often
+each finite-sample row of Table~\ref{tab:outcomes} occurs. The answers depend
+on where $P_0$ sits relative to $\bM$ and on the gaps there.
+\status{sketch throughout; simulation where stated}
+
+\begin{table}[ht]
+\centering\footnotesize
+\begin{tabular}{@{}p{0.45cm}>{\raggedright\arraybackslash}p{3.1cm}>{\raggedright\arraybackslash}p{2.6cm}>{\raggedright\arraybackslash}p{3.4cm}>{\raggedright\arraybackslash}p{4.6cm}@{}}
+\toprule
+ & truth & fit converges to & finite-sample rows & examples\\
+\midrule
+A1 & member; no excess anywhere; (D) & $P_0$ & R1 with probability $\to1$; others $\to0$, typically exponentially & NB, interior truth\\
+A2 & member; (D) fails & a wrong point & R1 for every $n$ & Ferguson, Ex.~\ref{ex:ferguson}\\
+A3 & member; joint excess at a competitor & a wrong boundary point & R3 with probability $1$ & sine family, Ex.~\ref{ex:sine}\\
+\midrule
+A4 & boundary point, no gap (seam) & $P_0$ (as a law) & R2 with probability $\to c\in(0,1)$; $c=\frac12$ in one dimension & NB at a Poisson truth; Lomax at an exponential truth\\
+A5 & boundary point with a deficit & possibly a wrong point & depends on competitors & comb plus $q$, Ex.~\ref{ex:deficit-truth}\\
+\midrule
+A6 & outside $\bM$ (misspecified) & maximisers of $\gamma$ (relaxed KL projection) & R2 with probability $\to1$ if the projection is a face; R1 if it is a member & NB fitted to binomial data (projection: Poisson face)\\
+A7 & any; likelihood unbounded for every sample & ML undefined & R6 or R7 with probability $1$ & lnorm3, Weibull3 with shape $<1$, normal mixtures; Ex.~\ref{ex:thresholds}\\
+\bottomrule
+\end{tabular}
+\caption{Asymptotic outcomes by position of the truth.}
+\label{tab:asymptotic}
+\end{table}
+
+\paragraph{Four frequency regimes.} The limiting probability of a
+finite-sample row is
+\begin{itemize}
+\item \emph{exactly $0$}: rows that need ties (R5, R6 by ties, R9 for Cauchy)
+  under a continuous truth;
+\item \emph{$\to0$, typically exponentially}: rows that need the sample to
+  look as if it came from elsewhere (an interior truth escaping, Geyer's
+  all-origin samples, the comb's no-hit event). A large-deviation
+  (Sanov-type) bound is the expected mechanism;
+\item \emph{$\to c\in(0,1)$}: the truth sits on a face with a regular
+  continuation (a seam). The sign of the boundary score is asymptotically
+  symmetric, so $c=\frac12$ in one dimension; chi-bar-squared weights in
+  general \cite{selfliang}. Under local alternatives at distance
+  $h/\sqrt n$ from the face, $c$ becomes a normal probability in $h$;
+\item \emph{$\to1$}: structural failures (A3, A7) and misspecification whose
+  projection lies on a face (A6).
+\end{itemize}
+Simulation (NB with size and probability free; escape iff variance with
+divisor $n$ is at most the mean): Poisson$(3)$ truth $0.614, 0.557, 0.521,
+0.512$ at $n=20,100,500,2000$; NB$(5,\text{mean }3)$ truth $0.159, 0.002, 0,
+0$ (20\,000 replications;
+\texttt{relaxed-likelihood/nb\_escape\_sim.py}). For the Poisson truth,
+$\sqrt n(s_n^2-\bar x)\to N(0,2\mu^2)$, which gives $\frac12$; the excess at
+small $n$ comes from the divisor-$n$ bias of $s_n^2$.
+
+\paragraph{The two axes are independent.} The finite-sample row does not
+diagnose consistency: Ferguson is \texttt{Ok} (R1) for every $n$ and
+inconsistent; Geyer 4.5 and the comb fail at finite $n$ and are
+consistent. What the frequencies do carry is the position of the truth: an
+escape frequency that does not vanish points to a boundary truth (A4) or a
+misspecified model whose projection is a face (A6).
+
+\paragraph{Defective truths.} A defective boundary point puts mass at
+$\infty$, which complete data never show, so it cannot be the truth of a
+complete-data experiment. It can be the truth when the sampling scheme
+observes ``beyond $C$'' (censoring): then the atom at infinity is
+observable, which is why the published defective cases (Birnbaum--Saunders,
+defective Gompertz) need censoring.
+
+\paragraph{Open.} Boundary truths at cusps (Burr's Pareto face) and at
+corners with singular information (beta-binomial at the Poisson corner):
+limiting escape frequencies and rates.
+
 \section{Tools}
 \begin{lemma}[No gap]\label{lem:exact}
 (a) If $p_\theta\to\bar p$ uniformly near each $x_i$ whenever
