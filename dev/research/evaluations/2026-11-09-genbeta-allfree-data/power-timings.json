@@ -1,0 +1,32 @@
+{
+  "before": [
+    2.0,
+    0.0,
+    199.2135089598696,
+    241.0,
+    2.2991046666666666,
+    0.697668611111111,
+    0.5014154152093592
+  ],
+  "after": [
+    2.0,
+    1.0,
+    199.2135089598696,
+    5167.0,
+    1065.593141,
+    0.697668611111111,
+    0.5014154152093592
+  ],
+  "columns": [
+    "status",
+    "allfree_certified",
+    "loglik",
+    "work",
+    "milliseconds",
+    "power_endpoint",
+    "power_shape"
+  ],
+  "repetitions": 3,
+  "sample_size": 300,
+  "compiler": "c++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0"
+}

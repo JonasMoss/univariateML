@@ -1,0 +1,370 @@
+{
+  "task": "TASK-116.57",
+  "completed_utc": "2026-11-10T05:16:33.240349+00:00",
+  "base_commit": "2ed5514b32ec72ded95809c834453d24f025f850",
+  "committed": false,
+  "certificate_scope": {
+    "finite_allfree": "global acceptance certificate, otherwise successful legacy retained uncertified",
+    "moving_power_face": "global acceptance certificate, otherwise proper legacy limit retained uncertified",
+    "gamma_face": "signed quadratic plus uniform fourth-order remainder, joint gamma coefficient inclusion and complete global comparison; zero quadratic seams remain uncertified",
+    "family_flag": "partial"
+  },
+  "runs": [
+    {
+      "label": "r-dev",
+      "command": "just test",
+      "wrapper": "/tmp/umvl-cpu/run4",
+      "machine": "workstation",
+      "exit_code": 0,
+      "log": "build/scratch/review-r-dev.log",
+      "log_sha256": "88bcf29a9c6e132a635744bb5f6d0cbf205e8982ffaa3a0a3e9aa68946afa97d",
+      "result": {
+        "fail": 0,
+        "warn": 0,
+        "skip": 154,
+        "pass_count": 22183
+      }
+    },
+    {
+      "label": "cpp-dev",
+      "command": "just cpp-test",
+      "wrapper": "/tmp/umvl-cpu/run4",
+      "machine": "workstation",
+      "exit_code": 0,
+      "log": "build/scratch/review-final-cpp-dev.log",
+      "log_sha256": "e8681540828f4081c60d3fa16973defb808ada834917ea48cfb1818a09ec2152",
+      "result": {
+        "passed": 106,
+        "total": 106
+      },
+      "ctest_seconds": 439.92,
+      "compiler": "GCC 15.2",
+      "wall_including_cpu_queue_seconds": 6303.087
+    },
+    {
+      "label": "cpp-full",
+      "command": "env UMVL_TEST_TIER=full just cpp-test",
+      "wrapper": "/tmp/umvl-cpu/run4",
+      "machine": "workstation",
+      "exit_code": 0,
+      "log": "build/scratch/review-final-cpp-full.log",
+      "log_sha256": "fbe04d1924c6228b1e3482c5475d0b64faa05802e82bf18a59f8b13938ed16e1",
+      "result": {
+        "passed": 130,
+        "total": 130
+      },
+      "ctest_seconds": 439.64,
+      "compiler": "GCC 15.2",
+      "wall_including_cpu_queue_seconds": 6193.988
+    },
+    {
+      "label": "double",
+      "command": "just cpp-test-no-long-double",
+      "wrapper": "/tmp/umvl-cpu/run4",
+      "machine": "workstation",
+      "exit_code": 0,
+      "log": "build/scratch/review-final-double.log",
+      "log_sha256": "e60425018a9e754043f16802e3a47ba5a9d1ee733755e6f984aecce427192a06",
+      "result": {
+        "passed": 130,
+        "total": 130
+      },
+      "ctest_seconds": 304.96,
+      "compiler": "GCC 15.2",
+      "wall_including_cpu_queue_seconds": 4078.105
+    },
+    {
+      "label": "r-full",
+      "command": "just test-full",
+      "wrapper": "/tmp/umvl-cpu/run4",
+      "machine": "workstation",
+      "exit_code": 0,
+      "log": "build/scratch/review-final-r-full.log",
+      "log_sha256": "ee769c5ba48e962ede8ea470db4f9bef8b758075ea0fd96b58aa4db79ee419bc",
+      "result": {
+        "fail": 0,
+        "warn": 0,
+        "skip": 0,
+        "pass_count": 45015
+      },
+      "wall_including_cpu_queue_seconds": 4003.673
+    },
+    {
+      "label": "js-build",
+      "command": "just js-build",
+      "wrapper": "/tmp/umvl-cpu/run4",
+      "machine": "workstation",
+      "exit_code": 0,
+      "log": "build/scratch/review-final-js-build.log",
+      "log_sha256": "7d05bc5c184cd8552b9646b07185d91990e2364c44c2e0f8c761695c7e3684cc",
+      "result": "exit 0",
+      "wall_including_cpu_queue_seconds": 1996.129
+    },
+    {
+      "label": "js-test",
+      "command": "just js-test",
+      "wrapper": "/tmp/umvl-cpu/run4",
+      "machine": "workstation",
+      "exit_code": 0,
+      "log": "build/scratch/review-final-js-test.log",
+      "log_sha256": "65f1d123b971fdb29a994198a38df50fca040c2eb0b17576a464927c71c0c04b",
+      "result": {
+        "passed": 559,
+        "total": 559
+      },
+      "test_seconds": 217.518888072,
+      "wall_including_cpu_queue_seconds": 661.067
+    },
+    {
+      "label": "site",
+      "command": "just site-check",
+      "wrapper": "/tmp/umvl-cpu/run4",
+      "machine": "workstation",
+      "exit_code": 0,
+      "log": "build/scratch/review-final-site.log",
+      "log_sha256": "3dca51026a3305b4a51a7d44f26aaf043a055d7b3dd49a434827f545494145a8",
+      "result": "exit 0",
+      "wall_including_cpu_queue_seconds": 5263.328
+    }
+  ],
+  "second_machine_attempt": {
+    "command": "/tmp/umvl-cpu/simbox-run just cpp-test-no-long-double",
+    "machine": "simbox",
+    "exit_code": 75,
+    "reason": "unreachable; previously root ext4 emergency_ro",
+    "log": "build/scratch/review-final-simbox-double.log",
+    "log_sha256": "e94e5deb3eaeaa40e634f80e3a542e9e6c8c16ca85a6220daaaa99f42672d050",
+    "local_fallback": "double run above passed 130/130",
+    "current_source_gcc13_validated": false
+  },
+  "evidence_refresh": {
+    "command": "/tmp/umvl-cpu/run env TMPDIR=... JUST_TEMPDIR=... XDG_RUNTIME_DIR=... bash build/scratch/review-final-evidence.sh",
+    "machine": "workstation",
+    "exit_code": 0,
+    "fixtures": 3,
+    "cells": 44,
+    "log": "build/scratch/review-final-evidence.log",
+    "log_sha256": "e7d27bca63b207caf34480d702f55b089b83c0815fea6b31ab7da1865f9ea511"
+  },
+  "seeded_study": {
+    "file": "seeded-study.json",
+    "source_sha256": "386e8c568ed451c6f7913d2e182c111f448c267f2b9c59b73ff338ed4d810ccd",
+    "workers": 4,
+    "compiler": "c++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+    "execution": {
+      "legacy": {
+        "workers": 4,
+        "resumed_rows": 0,
+        "invocation_wall_seconds": 0.13406536501133814,
+        "compilation_excluded": true
+      },
+      "current": {
+        "workers": 4,
+        "resumed_rows": 0,
+        "invocation_wall_seconds": 556.1497939300025,
+        "compilation_excluded": true
+      }
+    },
+    "summary": {
+      "(0, 50)": {
+        "total": 90,
+        "counts": {
+          "certified_finite": 21,
+          "certified_power": 14,
+          "certified_gamma": 18,
+          "uncertified_legacy": 37,
+          "proved_rejection": 0,
+          "legacy_failure": 0
+        },
+        "fractions": {
+          "certified_finite": 0.23333333333333334,
+          "certified_power": 0.15555555555555556,
+          "certified_gamma": 0.2,
+          "uncertified_legacy": 0.4111111111111111,
+          "proved_rejection": 0.0,
+          "legacy_failure": 0.0
+        },
+        "mean_ms": 5288.795305344444,
+        "median_ms": 659.6152035,
+        "max_ms": 117917.993419,
+        "sum_fit_seconds": 475.991577481
+      },
+      "(0, 300)": {
+        "total": 90,
+        "counts": {
+          "certified_finite": 25,
+          "uncertified_legacy": 49,
+          "certified_gamma": 16,
+          "certified_power": 0,
+          "proved_rejection": 0,
+          "legacy_failure": 0
+        },
+        "fractions": {
+          "certified_finite": 0.2777777777777778,
+          "uncertified_legacy": 0.5444444444444444,
+          "certified_gamma": 0.17777777777777778,
+          "certified_power": 0.0,
+          "proved_rejection": 0.0,
+          "legacy_failure": 0.0
+        },
+        "mean_ms": 11475.172795177778,
+        "median_ms": 811.0067035,
+        "max_ms": 134138.96744,
+        "sum_fit_seconds": 1032.7655515659999
+      },
+      "(1, 50)": {
+        "total": 20,
+        "counts": {
+          "certified_gamma": 9,
+          "certified_finite": 3,
+          "certified_power": 7,
+          "uncertified_legacy": 1,
+          "proved_rejection": 0,
+          "legacy_failure": 0
+        },
+        "fractions": {
+          "certified_gamma": 0.45,
+          "certified_finite": 0.15,
+          "certified_power": 0.35,
+          "uncertified_legacy": 0.05,
+          "proved_rejection": 0.0,
+          "legacy_failure": 0.0
+        },
+        "mean_ms": 11553.62469285,
+        "median_ms": 1369.798114,
+        "max_ms": 80448.387061,
+        "sum_fit_seconds": 231.07249385699998
+      },
+      "(1, 300)": {
+        "total": 20,
+        "counts": {
+          "certified_finite": 3,
+          "certified_gamma": 9,
+          "uncertified_legacy": 7,
+          "certified_power": 1,
+          "proved_rejection": 0,
+          "legacy_failure": 0
+        },
+        "fractions": {
+          "certified_finite": 0.15,
+          "certified_gamma": 0.45,
+          "uncertified_legacy": 0.35,
+          "certified_power": 0.05,
+          "proved_rejection": 0.0,
+          "legacy_failure": 0.0
+        },
+        "mean_ms": 20279.9228351,
+        "median_ms": 3192.7198854999997,
+        "max_ms": 90640.910481,
+        "sum_fit_seconds": 405.598456702
+      },
+      "all": {
+        "total": 220,
+        "counts": {
+          "certified_finite": 52,
+          "certified_power": 22,
+          "certified_gamma": 52,
+          "uncertified_legacy": 94,
+          "proved_rejection": 0,
+          "legacy_failure": 0
+        },
+        "fractions": {
+          "certified_finite": 0.23636363636363636,
+          "certified_power": 0.1,
+          "certified_gamma": 0.23636363636363636,
+          "uncertified_legacy": 0.42727272727272725,
+          "proved_rejection": 0.0,
+          "legacy_failure": 0.0
+        },
+        "mean_ms": 9751.94581639091,
+        "median_ms": 1120.5677845,
+        "max_ms": 134138.96744,
+        "sum_fit_seconds": 2145.4280796059998
+      },
+      "legacy": {
+        "total": 220,
+        "counts": {
+          "uncertified_legacy": 220,
+          "certified_finite": 0,
+          "certified_gamma": 0,
+          "certified_power": 0,
+          "proved_rejection": 0,
+          "legacy_failure": 0
+        },
+        "fractions": {
+          "uncertified_legacy": 1.0,
+          "certified_finite": 0.0,
+          "certified_gamma": 0.0,
+          "certified_power": 0.0,
+          "proved_rejection": 0.0,
+          "legacy_failure": 0.0
+        },
+        "mean_ms": 2.2616806772727274,
+        "median_ms": 2.1316935,
+        "max_ms": 7.879589,
+        "sum_fit_seconds": 0.497569749
+      }
+    },
+    "status_changes": []
+  },
+  "source_sha256": {
+    "bindings/common/distributions/genbeta/fit.hpp": "7386cbeaac95eea5f0b2d4574b8c49711e31e43def71fcea7da95f7ea10db42d",
+    "bindings/js/test.mjs": "d597bb9a5aa9dd6952cf93846261ddd9a15b1dc0ae3fd8ddeb72eb5a860d745c",
+    "bindings/r/distributions/genbeta/adapter.cpp": "53fe35c6514491c2bf20e310d331324743b96a4518f31c15bdf31ce350737914",
+    "bindings/r/distributions/genbeta/test.R": "1c505a22405715807da2f9a3629bed717b0d7cbab235bf51db05691ef879811b",
+    "univariateML-cpp/include/cppunivariate/distributions/genbeta/README.md": "103e0c8c9a382c093df7d69ed06574ac06c6616a18ad9aeb51140b9b6535955f",
+    "univariateML-cpp/include/cppunivariate/distributions/genbeta/allfree_bounds.hpp": "9b61db498b856224b5cc28e0d8363a06c74b1f87946e0d67104f1c1fcac48de1",
+    "univariateML-cpp/include/cppunivariate/distributions/genbeta/allfree_certificate.hpp": "cc04f2310e82f73e4a3e0a64a37c5854cc8431468b1f746ae586265681f80740",
+    "univariateML-cpp/include/cppunivariate/distributions/genbeta/dpqr.hpp": "65eb7553ee9c5c3464f58e7ec5aac08393ece39166da099aa886715bd6219203",
+    "univariateML-cpp/include/cppunivariate/distributions/genbeta/free_p_certificate.hpp": "a7868d81419dfd4389ce40eac8bdf639b55f3886f840949b935a06eaae7fa888",
+    "univariateML-cpp/include/cppunivariate/distributions/genbeta/gamma_face_certificate.hpp": "078d36d8d932d5e14b01fe3a66b8beaef4628ce76f85cc4c9da40856d27bb232",
+    "univariateML-cpp/include/cppunivariate/distributions/genbeta/mle.hpp": "169867f8a396c8ab32e4f6b05a6e94e569161f83e7fb0027d3fffb9eb95a92d5",
+    "univariateML-cpp/include/cppunivariate/distributions/genbeta/power_face_certificate.hpp": "6f7661de70726e0854e1e8e0e4294bb8fd0eda344bbf4eb80cdde3002b4de215",
+    "univariateML-cpp/include/cppunivariate/distributions/genbeta/power_profile_certificate.hpp": "ced1bafe08988bc1e0f5cf4ab5dfbe2751185164f5a7ade93581443d8e75f505",
+    "univariateML-cpp/include/cppunivariate/distributions/genbeta/test.cpp": "fcabf4e8077c26cc418cf0137b59b374065e07adda0a480830ac154b68017b46"
+  },
+  "golden_sha256": "0815180e18764c9426d97b5dd9416b7e85fec06c82d575a13fd0d1f1a88b66b7",
+  "baseline_sha256": "c163feb8f692685cdafb33815c4bdfba8b557bc85791e86061147e6798edfe6c",
+  "original_test_prefixes_unchanged": true,
+  "source_snapshot_unchanged": true,
+  "evidence_sha256": {
+    "cell-oracle.cpp": "b9adbe6a616523eaaa6b11e2162d8144a3c7d94950e7cc1a19bd3d586eb3f36b",
+    "cells-double.json": "925573028a3a164f31df99d23d94d466033197d09dcc7ed4aace3d1e00ffed3e",
+    "cells.json": "b5d1a184cadfe3059a4ad923b9b0c8f6177fc93af0b83e2404a2f9cd05ac94f2",
+    "check-cells.py": "a5deefc663f16dfee3cc075422dc7e07abbb46c749059aa1af6a595f576df10a",
+    "check-gamma-bounds.py": "29f5e495c19137d1e27478613107225d7aa2458aa1dcdcc467a157a773dc80d2",
+    "check-gamma-expansion.py": "0ca543e38e5cb3017dbd01ad1542bf9d01c4f333f0d8e722cd8629d55c1f4b4f",
+    "check-golden.py": "b44a3bc02752e904f6ef715c2792597caa3380e4bc2afa0822e0caab84b9d6ac",
+    "check-oracle.py": "ad14726688e1244ce833a2c3e6fe813953332fc1c9a5f0c45bab21bfdc23a8c1",
+    "check-power.py": "cca8394d8e0f256f5828b2d5afaad249671cf454a817feced1c04f1eb7522f4f",
+    "finite-fixtures.cpp": "bf9a3b6825417fffb8b8eded8d261afb48aeae073b19f1fdb62e843ab9d4fa80",
+    "finite-fixtures.txt": "5e07035f0eb22c9c2493fe5bb5f4f194198d1ddc6014e80e9cc4cf858ba98d40",
+    "gamma-bounds-double.json": "11990fb4e84d5927b5a0d2cbe34cc4e047f61ea33aaa3bdcf86bb58e917c82e1",
+    "gamma-bounds.json": "bd15d2524d9fa9aa1efd8f5340523bd70cf0441a7ac3c6ac1e6d4540d3be6adb",
+    "gamma-expansion.json": "d40ea06964a9e56c9b53ef202935bb7e74805d96a882cc65f91f87bee2184df7",
+    "gamma-global-fixtures.cpp": "dfe3b7d08dac4e6781424069e903c2a85d0c424541ec2c4d7b20e4ca1fe8e8ab",
+    "gamma-global-fixtures.json": "c9b314399a4c6ea9f29a8c534b55a23f5ebc1a036f9430fe76a474aa201182e1",
+    "gamma-oracle.cpp": "fa1ae93899f5f3fd2a084db37e73357ae3fa9e69e53afb77b2dab138de44ef6e",
+    "golden-oracle.json": "e76f7f607f17cd8c24aea7271476dc7416bb198bd95f8e1ffada19ae476a1b10",
+    "mle-baseline.hpp.txt": "c163feb8f692685cdafb33815c4bdfba8b557bc85791e86061147e6798edfe6c",
+    "oracle-double.json": "4b74dc12f32c73209087fe9e05c7c69ec898c2668b55cdf78f7558798d475384",
+    "oracle.cpp": "29da38386565dc828bb455b7f5d0d53227945238742b42b8258b8b91576b0c28",
+    "oracle.json": "bd6e656567fc1fd7f1076e6b660bbea689f3cb3c481b729a156e0daf21ce767b",
+    "power-double.json": "0e168fda956955e8a138d1380527bb3ab626298c157e85e8565ec7f71d4abe38",
+    "power-oracle.cpp": "681ac78278a5bb97de9c11c77180f2cf30bf8131d8d2bf9f66789b8cc9967368",
+    "power-timings.json": "499d5eb5e94279533656a870980fede780b87e2be1bfb1937d80914fa5321714",
+    "power-timings.py": "b61fe4e2527818ac592fe23b898a76224279321799885b72446c09245ad85beb",
+    "power.json": "bae6a083eb592ee6ee5422276040aa85decd88bce3ca62f5ea52d05ef765c4c5",
+    "proof.md": "30990b7ad89ff48a1190bd8d9b0a1b5e8431a24d900620f3414df2ef451a10b8",
+    "review-gamma-expansion.md": "9b3ce5f540878725b5623923714600240d78dba20a51e84d57042e291e7efd5e",
+    "seeded-cell-summary.csv": "629e4a41935e0c90f9288a22224a4894f0e330ad72fd33a9a0cecd63f9812fe7",
+    "seeded-study.cpp": "386e8c568ed451c6f7913d2e182c111f448c267f2b9c59b73ff338ed4d810ccd",
+    "seeded-study.json": "16f643ed74760908068226865fce2a6a5dcb302e6ca69b2928ab6a2e7142fd0a",
+    "seeded-study.py": "bb203d95a699c3927d2edd33e1b3cf65c0c980623df8d4c7aeca3d71197caf0e",
+    "summarize-seeded.py": "58846f9778128af820559ec1fa1f2ea5315bdf2834c6b192f60eaf43bd6fcddc",
+    "timings.json": "80b227da6fdf131273321b3f9588b5126668dce2e33fdaf57bdf1a01693bcc45",
+    "timings.py": "2ecf7f98062cff10fe9cfef967702c68a0778e3834fc7da87e1efdbd2907baa4"
+  },
+  "numerical_evidence_scope": "Analytic proofs are conditional exact-arithmetic certificates with stated practical floating-point margins. Independent 70/80/90-digit checks test finite samples of the inequalities, not all libm errors. Gamma bound oracles passed in native and double-width modes; existing finite/power oracle helpers are unchanged.",
+  "report_sha256": "a85ad510592e5a4b156c34a9f2e46085f1e6d968f4e430f6116d30a96b6e7644"
+}

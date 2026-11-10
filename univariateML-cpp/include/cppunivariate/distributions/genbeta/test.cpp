@@ -333,3 +333,205 @@ TEST_CASE("genbeta held q: q above one power face has a finite improvement") {
   for(double v:x)normalized+=(cppunivariate::distributions::dgenbeta(v,.01,2,100,1,true)+std::log(v))/2;
   CHECK(normalized> -1+.009);
 }
+
+TEST_CASE("genbeta all-free: conditional conjugate enclosure preserves the default golden") {
+  const auto g=mltest::load_distribution_golden("genbeta");
+  const auto r=cppunivariate::genbeta_mle(mltest::as_span(g.data),1);
+  REQUIRE(r.status==cppunivariate::GenbetaStatus::Ok);
+  const auto& c=r.conditional_bounds;
+  REQUIRE(c.enclosed);
+  CHECK(c.loglik_lower<=r.logLik);
+  CHECK(c.loglik_upper>=r.logLik);
+  CHECK(c.loglik_upper-c.loglik_lower<1e-6);
+  CHECK(c.shape1_lower<=r.shape1*(1+1e-7));CHECK(c.shape1_upper>=r.shape1*(1-1e-7));
+  CHECK(c.shape2_lower<=r.shape2*(1+1e-7));CHECK(c.shape2_upper>=r.shape2*(1-1e-7));
+  CHECK(r.tail_bounds.small_excluded);
+  CHECK(r.tail_bounds.large_excluded);
+  CHECK(r.tail_bounds.small_upper<r.logLik);
+  CHECK(r.tail_bounds.large_upper<r.logLik);
+}
+
+TEST_CASE("genbeta all-free: inner q-interval enclosure includes corner conditional roots") {
+  for(double h:{.1,1.,10.})for(double q:{.1,1.,10.}) {
+    const auto r=cppunivariate::genbeta_free_p_cert::inner_range(h*.9,h*1.1,q*.8,q*1.2,300);
+    REQUIRE(r.enclosed);
+    for(double s:{h*.9,h*1.1})for(double b:{q*.8,q*1.2}) {
+      CHECK(cppunivariate::special::digamma(r.lower+b)-cppunivariate::special::digamma(r.lower)>s);
+      CHECK(cppunivariate::special::digamma(r.upper+b)-cppunivariate::special::digamma(r.upper)<s);
+    }
+  }
+}
+
+TEST_CASE("genbeta all-free: conjugate upper bound also covers nonstationary proposals") {
+  const std::vector<double> y{.1,.3,1.,2.6};
+  const auto p=cppunivariate::genbeta_detail::profile(y,1,NAN,NAN,300);
+  REQUIRE(p.ok);
+  const auto c=cppunivariate::genbeta_allfree_bounds::conditional(y,1,p.a*1.2,p.b*.8,0,300);
+  REQUIRE(c.enclosed);
+  CHECK(c.loglik_lower<=p.ll);
+  CHECK(c.loglik_upper>=p.ll);
+  const auto bad=cppunivariate::genbeta_allfree_bounds::conditional(y,INFINITY,1,1,0,300);
+  CHECK_FALSE(bad.enclosed);
+  CHECK(std::isinf(bad.loglik_upper));
+}
+
+TEST_CASE("genbeta all-free: small-power shape compactness includes the gamma-rate seam") {
+  const std::vector<double> y{.1,.3,1.,2.6};
+  double c=0;for(double v:y)c-=std::log(v)/y.size();
+  for(double h:{.001,.01,.1}) {
+    const auto p=cppunivariate::genbeta_detail::profile(y,h,NAN,NAN,1000);
+    const auto r=cppunivariate::genbeta_allfree_bounds::conditional(y,h,p.a,p.b,0,300);
+    REQUIRE(r.enclosed);
+    CHECK(r.shape2_lower>=std::exp(-2-c-h)*(1-1e-11));
+    CHECK(r.shape1_lower*h>0);
+    CHECK(r.shape1_upper*h<r.shape2_upper+h+1e-8);
+  }
+}
+
+TEST_CASE("genbeta all-free: a uniform q strip excludes the singular inner ridge") {
+  const std::vector<double> y{.1,.3,1.,2.6};
+  const auto g=cppunivariate::gamma_mle(mltest::as_span(y),1e-10,300);
+  const auto t=cppunivariate::genbeta_allfree_bounds::tails(y,1,0,g.shape,-INFINITY,300);
+  REQUIRE(t.ridge_shape2_lower<1);
+  REQUIRE(t.ridge_shape2_upper>1);
+  CHECK(t.ridge_loglik_upper<y.size()*(-std::log(.9)-1));
+  for(double q:{t.ridge_shape2_lower,1.,t.ridge_shape2_upper})for(double h:{.001,.1,1.,10.,100.}) {
+    const auto p=cppunivariate::genbeta_detail::profile(y,h,NAN,q,300);
+    if(p.ok)CHECK(p.ll<=t.ridge_loglik_upper);
+  }
+}
+
+TEST_CASE("genbeta all-free: held-q ridge nonuniqueness does not imply an all-free maximum") {
+  const std::vector<double> y{1./6,.5};
+  double likelihood=0;for(double v:y)likelihood+=std::log(3.)-3*v;
+  for(double p:{1.,3.,6.}) {
+    double value=0;for(double v:y)value+=std::log(p*(3/p))-p*(3/p)*v;
+    CHECK(value==doctest::Approx(likelihood).epsilon(1e-14));
+  }
+  const double moving=2*(-std::log(1./3-1./6)-1);
+  CHECK(moving>likelihood);
+}
+
+TEST_CASE("genbeta all-free certificate: a tiny ledger never accepts a proposal") {
+  const auto g=mltest::load_distribution_golden("genbeta");
+  const auto r=cppunivariate::genbeta_mle(mltest::as_span(g.data),1);
+  REQUIRE(r.status==cppunivariate::GenbetaStatus::Ok);
+  std::vector<double> y;double mean=0,jac=0;
+  for(double x:g.data){y.push_back(-std::log(x));mean+=y.back()/g.data.size();jac-=std::log(x);}
+  const auto stopped=cppunivariate::genbeta_allfree_cert::verify(y,mean,jac,1e-7,1,r);
+  CHECK(stopped.status==cppunivariate::GenbetaStatus::SearchUnresolved);
+  CHECK(stopped.stop_detail.budget_exhausted);
+  CHECK_FALSE(stopped.stop_detail.candidates.empty());
+  CHECK(std::isinf(stopped.stop_detail.loglik_upper));
+}
+
+TEST_CASE("genbeta all-free certificate: accepted finite fits carry a completed certificate") {
+  const auto g=mltest::load_distribution_golden("genbeta");
+  const auto r=cppunivariate::genbeta_mle(mltest::as_span(g.data),1);
+  REQUIRE(r.status==cppunivariate::GenbetaStatus::Ok);
+  CHECK(r.allfree_certified);
+  CHECK(r.iterations<cppunivariate::certificate_budget(300));
+  CHECK(r.shape1==doctest::Approx(g.estimates.at("shape1")).epsilon(1e-5));
+  CHECK(r.shape2==doctest::Approx(g.estimates.at("shape2")).epsilon(1e-5));
+  CHECK(r.shape3==doctest::Approx(g.estimates.at("shape3")).epsilon(1e-5));
+}
+
+TEST_CASE("genbeta all-free certificate: replication preserves the coefficient certificate") {
+  const auto g=mltest::load_distribution_golden("genbeta");
+  const auto original=cppunivariate::genbeta_mle(mltest::as_span(g.data),1);
+  REQUIRE(original.status==cppunivariate::GenbetaStatus::Ok);
+  std::vector<double> x;for(int i=0;i<20;++i)x.insert(x.end(),g.data.begin(),g.data.end());
+  const auto r=cppunivariate::genbeta_mle(mltest::as_span(x),1);
+  CAPTURE(static_cast<int>(r.certificate_failure));CAPTURE(r.iterations);
+  REQUIRE(r.status==cppunivariate::GenbetaStatus::Ok);
+  CHECK(r.allfree_certified);
+  CHECK(r.shape1==doctest::Approx(original.shape1).epsilon(1e-7));
+  CHECK(r.shape2==doctest::Approx(original.shape2).epsilon(1e-7));
+  CHECK(r.shape3==doctest::Approx(original.shape3).epsilon(1e-7));
+  CHECK(r.logLik==doctest::Approx(20*original.logLik).epsilon(1e-10));
+}
+
+TEST_CASE("genbeta all-free certificate: moving power face has complete compact coverage") {
+  std::vector<double> x;
+  for(int i=0;i<300;++i){const double u=(i+.5)/300;x.push_back(.7*u*u);}
+  const auto r=cppunivariate::genbeta_mle(mltest::as_span(x),1);
+  CAPTURE(static_cast<int>(r.certificate_failure));CAPTURE(r.iterations);
+  REQUIRE(r.status==cppunivariate::GenbetaStatus::PowerBoundary);
+  CHECK(r.allfree_certified);
+  CHECK(r.stop_detail.limit_model==cppunivariate::StopModel::Power);
+  CHECK(std::isfinite(r.stop_detail.loglik_upper));
+  CHECK(r.stop_detail.loglik_upper>=r.logLik);
+  CHECK(r.stop_detail.loglik_lower<=r.logLik);
+  std::vector<double> y;double jac=0;
+  for(double z:x){y.push_back(-std::log(z));jac-=std::log(z);}
+  const auto gamma=cppunivariate::gamma_mle(mltest::as_span(y),1e-10,300);
+  const auto stopped=cppunivariate::genbeta_power_face_cert::verify(y,x.back(),jac,gamma.shape,1,r);
+  CHECK(stopped.status==cppunivariate::GenbetaStatus::SearchUnresolved);
+  CHECK(stopped.stop_detail.budget_exhausted);
+  CHECK_FALSE(stopped.allfree_certified);
+  CHECK(stopped.stop_detail.limit_coef.empty());
+  CHECK(std::isinf(stopped.stop_detail.loglik_upper));
+}
+
+
+TEST_CASE("genbeta all-free certificate: a shallow gamma-adjacent proposal retains its uncertified legacy fit") {
+  std::vector<double> x;
+  for(int i=0;i<300;++i)x.push_back(cppunivariate::distributions::qgenbeta((i+.5)/300,3,2,.7,1,true,false));
+  const auto r=cppunivariate::genbeta_mle(mltest::as_span(x),1);
+  CHECK(r.status==cppunivariate::GenbetaStatus::Ok);
+  CHECK_FALSE(r.stop_detail.budget_exhausted);
+  CHECK(r.certificate_failure==cppunivariate::GenbetaCertificateFailure::Budget);
+  CHECK_FALSE(r.allfree_certified);
+  CHECK_FALSE(r.stop_detail.candidates.empty());
+  CHECK(std::isinf(r.stop_detail.loglik_upper));
+  CHECK(r.shape1==doctest::Approx(5.3645780153723184).epsilon(1e-7));
+  CHECK(r.logLik==doctest::Approx(38.823408377416484).epsilon(1e-9));
+  CHECK(r.iterations<=cppunivariate::certificate_budget(300)+1);
+}
+
+TEST_CASE("genbeta all-free: incomplete gamma certificates preserve the legacy payload") {
+  std::vector<double> x;
+  for(int i=0;i<300;++i)x.push_back(std::exp(-cppunivariate::special::qgamma((i+.5)/300,2,1./3,true,false)));
+  const auto r=cppunivariate::genbeta_mle(mltest::as_span(x),1);
+  CHECK(r.status==cppunivariate::GenbetaStatus::UnitGammaBoundary);
+  CHECK(r.stop_detail.limit_model==cppunivariate::StopModel::UnitGamma);
+  CHECK(r.stop_detail.limit_coef.size()==3);
+  std::vector<double> y;double mean=0,jac=0;
+  for(double z:x){y.push_back(-std::log(z));mean+=y.back()/x.size();jac-=std::log(z);}
+  const auto fallback=cppunivariate::genbeta_gamma_face_cert::verify(y,mean,jac,1e-7,1,r);
+  CHECK(fallback.status==cppunivariate::GenbetaStatus::UnitGammaBoundary);
+  CHECK_FALSE(fallback.allfree_certified);
+  CHECK_FALSE(fallback.stop_detail.budget_exhausted);
+  CHECK(fallback.stop_detail.limit_coef==r.stop_detail.limit_coef);
+  CHECK(std::isinf(fallback.stop_detail.loglik_upper));
+}
+
+TEST_CASE("genbeta all-free: signed squared-power certificate selects a global gamma face") {
+  std::vector<double> x{std::exp(-.001)};
+  for(int i=1;i<100;++i)x.push_back(std::exp(-(.5+(i-.5)/99)));
+  const auto r=cppunivariate::genbeta_mle(mltest::as_span(x),1);
+  REQUIRE(r.status==cppunivariate::GenbetaStatus::UnitGammaBoundary);
+  CHECK(r.allfree_certified);
+  CHECK(r.certificate_failure==cppunivariate::GenbetaCertificateFailure::None);
+  CHECK(r.stop_detail.limit_model==cppunivariate::StopModel::UnitGamma);
+  CHECK(std::isfinite(r.stop_detail.loglik_lower));
+  CHECK(std::isfinite(r.stop_detail.loglik_upper));
+  CHECK(r.stop_detail.loglik_lower<=r.logLik);
+  CHECK(r.stop_detail.loglik_upper>=r.logLik);
+  CHECK(r.iterations<=cppunivariate::certificate_budget(300));
+}
+
+TEST_CASE("genbeta all-free: the quadratic-zero gamma seam is not certified by a rounding sign") {
+  const double c=.5772156649015328606,
+    a=1-std::sqrt(1-std::exp(-2*c));
+  const std::vector<double> y{a,2-a};
+  double contrast=0,m2=0,m4=0;
+  for(double v:y){contrast-=std::log(v)/2;m2+=v*v/2;m4+=v*v*v*v/2;}
+  const auto tail=cppunivariate::genbeta_allfree_bounds::tails(y,1,0,1,-INFINITY,300);
+  std::int64_t work=0;
+  const auto bound=cppunivariate::genbeta_gamma_face_cert::neighborhood(1,contrast,m2,m4,tail,300,work);
+  CHECK(bound.kl<=1);
+  CHECK(bound.kh>=1);
+  CHECK(std::abs(bound.quadratic)<1e-8);
+  CHECK_FALSE(bound.enclosed);
+}

@@ -1,0 +1,440 @@
+{
+  "precision": 80,
+  "double_width": true,
+  "gamma_cell_checks": 36,
+  "beta_profile_points": 102,
+  "cells": [
+    {
+      "sample": 0,
+      "left": 0.29997,
+      "right": 0.30002999999999996,
+      "gamma_available": false,
+      "beta_available": true,
+      "passed": true
+    },
+    {
+      "sample": 0,
+      "left": 0.297,
+      "right": 0.303,
+      "gamma_available": false,
+      "beta_available": true,
+      "passed": true
+    },
+    {
+      "sample": 0,
+      "left": 0.24,
+      "right": 0.36,
+      "gamma_available": false,
+      "beta_available": true,
+      "passed": true
+    },
+    {
+      "sample": 0,
+      "left": 0.9999,
+      "right": 1.0001,
+      "gamma_available": false,
+      "beta_available": true,
+      "passed": true
+    },
+    {
+      "sample": 0,
+      "left": 0.99,
+      "right": 1.01,
+      "gamma_available": false,
+      "beta_available": true,
+      "passed": true
+    },
+    {
+      "sample": 0,
+      "left": 0.8,
+      "right": 1.2,
+      "gamma_available": false,
+      "beta_available": true,
+      "passed": true
+    },
+    {
+      "sample": 0,
+      "left": 9.999,
+      "right": 10.001,
+      "gamma_available": true,
+      "beta_available": true,
+      "passed": true
+    },
+    {
+      "sample": 0,
+      "left": 9.9,
+      "right": 10.1,
+      "gamma_available": true,
+      "beta_available": true,
+      "passed": true
+    },
+    {
+      "sample": 0,
+      "left": 8.0,
+      "right": 12.0,
+      "gamma_available": true,
+      "beta_available": true,
+      "passed": true
+    },
+    {
+      "sample": 0,
+      "left": 99.99,
+      "right": 100.01,
+      "gamma_available": true,
+      "beta_available": true,
+      "passed": true
+    },
+    {
+      "sample": 0,
+      "left": 99.0,
+      "right": 101.0,
+      "gamma_available": true,
+      "beta_available": true,
+      "passed": true
+    },
+    {
+      "sample": 0,
+      "left": 80.0,
+      "right": 120.0,
+      "gamma_available": true,
+      "beta_available": true,
+      "passed": true
+    },
+    {
+      "sample": 0,
+      "left": 999.9,
+      "right": 1000.1,
+      "gamma_available": true,
+      "beta_available": false,
+      "passed": true
+    },
+    {
+      "sample": 0,
+      "left": 990.0,
+      "right": 1010.0,
+      "gamma_available": true,
+      "beta_available": false,
+      "passed": true
+    },
+    {
+      "sample": 0,
+      "left": 800.0,
+      "right": 1200.0,
+      "gamma_available": true,
+      "beta_available": false,
+      "passed": true
+    },
+    {
+      "sample": 0,
+      "left": 9999.0,
+      "right": 10001.0,
+      "gamma_available": true,
+      "beta_available": false,
+      "passed": true
+    },
+    {
+      "sample": 0,
+      "left": 9900.0,
+      "right": 10100.0,
+      "gamma_available": true,
+      "beta_available": false,
+      "passed": true
+    },
+    {
+      "sample": 0,
+      "left": 8000.0,
+      "right": 12000.0,
+      "gamma_available": true,
+      "beta_available": false,
+      "passed": true
+    },
+    {
+      "sample": 1,
+      "left": 0.29997,
+      "right": 0.30002999999999996,
+      "gamma_available": false,
+      "beta_available": true,
+      "passed": true
+    },
+    {
+      "sample": 1,
+      "left": 0.297,
+      "right": 0.303,
+      "gamma_available": false,
+      "beta_available": true,
+      "passed": true
+    },
+    {
+      "sample": 1,
+      "left": 0.24,
+      "right": 0.36,
+      "gamma_available": false,
+      "beta_available": false,
+      "passed": true
+    },
+    {
+      "sample": 1,
+      "left": 0.9999,
+      "right": 1.0001,
+      "gamma_available": false,
+      "beta_available": true,
+      "passed": true
+    },
+    {
+      "sample": 1,
+      "left": 0.99,
+      "right": 1.01,
+      "gamma_available": false,
+      "beta_available": true,
+      "passed": true
+    },
+    {
+      "sample": 1,
+      "left": 0.8,
+      "right": 1.2,
+      "gamma_available": false,
+      "beta_available": false,
+      "passed": true
+    },
+    {
+      "sample": 1,
+      "left": 9.999,
+      "right": 10.001,
+      "gamma_available": true,
+      "beta_available": true,
+      "passed": true
+    },
+    {
+      "sample": 1,
+      "left": 9.9,
+      "right": 10.1,
+      "gamma_available": true,
+      "beta_available": true,
+      "passed": true
+    },
+    {
+      "sample": 1,
+      "left": 8.0,
+      "right": 12.0,
+      "gamma_available": true,
+      "beta_available": true,
+      "passed": true
+    },
+    {
+      "sample": 1,
+      "left": 99.99,
+      "right": 100.01,
+      "gamma_available": true,
+      "beta_available": false,
+      "passed": true
+    },
+    {
+      "sample": 1,
+      "left": 99.0,
+      "right": 101.0,
+      "gamma_available": true,
+      "beta_available": false,
+      "passed": true
+    },
+    {
+      "sample": 1,
+      "left": 80.0,
+      "right": 120.0,
+      "gamma_available": true,
+      "beta_available": false,
+      "passed": true
+    },
+    {
+      "sample": 1,
+      "left": 999.9,
+      "right": 1000.1,
+      "gamma_available": true,
+      "beta_available": false,
+      "passed": true
+    },
+    {
+      "sample": 1,
+      "left": 990.0,
+      "right": 1010.0,
+      "gamma_available": true,
+      "beta_available": false,
+      "passed": true
+    },
+    {
+      "sample": 1,
+      "left": 800.0,
+      "right": 1200.0,
+      "gamma_available": true,
+      "beta_available": false,
+      "passed": true
+    },
+    {
+      "sample": 1,
+      "left": 9999.0,
+      "right": 10001.0,
+      "gamma_available": true,
+      "beta_available": false,
+      "passed": true
+    },
+    {
+      "sample": 1,
+      "left": 9900.0,
+      "right": 10100.0,
+      "gamma_available": true,
+      "beta_available": false,
+      "passed": true
+    },
+    {
+      "sample": 1,
+      "left": 8000.0,
+      "right": 12000.0,
+      "gamma_available": true,
+      "beta_available": false,
+      "passed": true
+    },
+    {
+      "sample": 2,
+      "left": 0.29997,
+      "right": 0.30002999999999996,
+      "gamma_available": false,
+      "beta_available": true,
+      "passed": true
+    },
+    {
+      "sample": 2,
+      "left": 0.297,
+      "right": 0.303,
+      "gamma_available": false,
+      "beta_available": true,
+      "passed": true
+    },
+    {
+      "sample": 2,
+      "left": 0.24,
+      "right": 0.36,
+      "gamma_available": false,
+      "beta_available": true,
+      "passed": true
+    },
+    {
+      "sample": 2,
+      "left": 0.9999,
+      "right": 1.0001,
+      "gamma_available": false,
+      "beta_available": true,
+      "passed": true
+    },
+    {
+      "sample": 2,
+      "left": 0.99,
+      "right": 1.01,
+      "gamma_available": false,
+      "beta_available": true,
+      "passed": true
+    },
+    {
+      "sample": 2,
+      "left": 0.8,
+      "right": 1.2,
+      "gamma_available": false,
+      "beta_available": true,
+      "passed": true
+    },
+    {
+      "sample": 2,
+      "left": 9.999,
+      "right": 10.001,
+      "gamma_available": true,
+      "beta_available": true,
+      "passed": true
+    },
+    {
+      "sample": 2,
+      "left": 9.9,
+      "right": 10.1,
+      "gamma_available": true,
+      "beta_available": true,
+      "passed": true
+    },
+    {
+      "sample": 2,
+      "left": 8.0,
+      "right": 12.0,
+      "gamma_available": true,
+      "beta_available": true,
+      "passed": true
+    },
+    {
+      "sample": 2,
+      "left": 99.99,
+      "right": 100.01,
+      "gamma_available": true,
+      "beta_available": true,
+      "passed": true
+    },
+    {
+      "sample": 2,
+      "left": 99.0,
+      "right": 101.0,
+      "gamma_available": true,
+      "beta_available": true,
+      "passed": true
+    },
+    {
+      "sample": 2,
+      "left": 80.0,
+      "right": 120.0,
+      "gamma_available": true,
+      "beta_available": true,
+      "passed": true
+    },
+    {
+      "sample": 2,
+      "left": 999.9,
+      "right": 1000.1,
+      "gamma_available": true,
+      "beta_available": true,
+      "passed": true
+    },
+    {
+      "sample": 2,
+      "left": 990.0,
+      "right": 1010.0,
+      "gamma_available": true,
+      "beta_available": true,
+      "passed": true
+    },
+    {
+      "sample": 2,
+      "left": 800.0,
+      "right": 1200.0,
+      "gamma_available": true,
+      "beta_available": true,
+      "passed": true
+    },
+    {
+      "sample": 2,
+      "left": 9999.0,
+      "right": 10001.0,
+      "gamma_available": true,
+      "beta_available": false,
+      "passed": true
+    },
+    {
+      "sample": 2,
+      "left": 9900.0,
+      "right": 10100.0,
+      "gamma_available": true,
+      "beta_available": false,
+      "passed": true
+    },
+    {
+      "sample": 2,
+      "left": 8000.0,
+      "right": 12000.0,
+      "gamma_available": true,
+      "beta_available": false,
+      "passed": true
+    }
+  ]
+}

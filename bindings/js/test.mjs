@@ -1452,3 +1452,75 @@ test('translated lattice normal and Laplace tails survive overflowing difference
     assert.ok(Math.abs(m.ddlaplace(x,params,true,true)[0]/expected-1)<3e-15);
   }
 });
+
+test('genbeta all-free finite certificate preserves the golden and never certifies unattainable precision', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  const g = read('genbeta','golden');
+  const x = new Float64Array(g.data);
+  const f = api.genbeta.fit(x,{scale:1});
+  for (const key of ['shape1','shape2','shape3'])
+    assert.ok(Math.abs(f.estimates[key]/g.estimates[key]-1)<1e-5);
+  assert.ok(Math.abs(f.logLik-g.logLik)<1e-8);
+  try {
+    const tight=api.genbeta.fit(x,{scale:1},{gradtol:1e-20});
+    assert.equal(tight.certified,0);
+    for(const key of ['shape1','shape2','shape3'])
+      assert.ok(Math.abs(tight.estimates[key]/g.estimates[key]-1)<1e-5);
+  } catch(e) {
+    assert.ok(['numerical','budget'].includes(e.kind));
+    assert.ok(e.candidates.length>0);
+    assert.equal(e.loglik_upper,Infinity);
+  }
+});
+
+test('genbeta moving-power certificate transports global likelihood bounds', async () => {
+  const {default:createApi}=await import('./index.mjs');
+  const api=await createApi();
+  const x=Array.from({length:300},(_,i)=>.7*((i+.5)/300)**2);
+  assert.throws(()=>api.genbeta.fit(x,{scale:1}),e=>{
+    assert.equal(e.kind,'limit');assert.equal(e.model,'power');
+    assert.ok(Number.isFinite(e.loglik_lower)&&Number.isFinite(e.loglik_upper));
+    assert.ok(e.loglik_lower<=e.limit_loglik&&e.limit_loglik<=e.loglik_upper);
+    return true;
+  });
+});
+
+test('genbeta gamma face preserves its structured legacy payload', async () => {
+  const {default:createApi}=await import('./index.mjs');
+  const api=await createApi();
+  const u=Float64Array.from({length:300},(_,i)=>(i+.5)/300);
+  const x=Float64Array.from(api.gamma.q(u,[2,1/3]),v=>Math.exp(-v));
+  assert.throws(()=>api.genbeta.fit(x,{scale:1}),e=>{
+    assert.equal(e.kind,'limit');assert.equal(e.model,'unavailable:unit-gamma');
+    assert.match(e.message,/unit-gamma limit/);
+    assert.ok(Number.isFinite(e.limit_loglik));
+    assert.ok(e.loglik_upper>=e.limit_loglik);
+    assert.ok(e.candidates.some(c=>c.model==='unavailable:unit-gamma'));
+    return true;
+  });
+});
+
+test('genbeta shallow coverage retains the uncertified legacy finite fit', async () => {
+  const {default:createApi}=await import('./index.mjs');
+  const api=await createApi();
+  const u=Float64Array.from({length:300},(_,i)=>(i+.5)/300);
+  const x=api.genbeta.q(u,[3,2,.7,1]);
+  const f=api.genbeta.fit(x,{scale:1});
+  assert.equal(f.certified,0);
+  assert.ok(Math.abs(f.estimates.shape1/5.3645780153723184-1)<1e-7);
+  const g=read('genbeta','golden');
+  assert.equal(api.genbeta.fit(new Float64Array(g.data),{scale:1}).certified,1);
+});
+
+test('genbeta signed squared-power certificate selects a global gamma face', async () => {
+  const {default:createApi}=await import('./index.mjs');const api=await createApi();
+  const x=[Math.exp(-.001),...Array.from({length:99},(_,i)=>Math.exp(-(.5+(i+.5)/99)))];
+  assert.throws(()=>api.genbeta.fit(x,{scale:1}),e=>{
+    assert.equal(e.kind,'limit');assert.equal(e.model,'unavailable:unit-gamma');
+    assert.doesNotMatch(e.message,/uncertified/);
+    assert.ok(Number.isFinite(e.loglik_lower)&&Number.isFinite(e.loglik_upper));
+    assert.ok(e.loglik_lower<=e.limit_loglik&&e.limit_loglik<=e.loglik_upper);
+    return true;
+  });
+});

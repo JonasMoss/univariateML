@@ -3,6 +3,51 @@
 // Included after power_profile_certificate.hpp; reuse its compensated reductions.
 namespace cppunivariate {
 namespace genbeta_free_p_cert {
+inline double shape_score(double p,double q,double r,double& error) {
+  const double eps=std::numeric_limits<double>::epsilon();
+  const double l=std::log1p(q/p),a=trgamma_detail::log_minus_digamma(p),
+    b=trgamma_detail::log_minus_digamma(q+p);
+  // Below the asymptotic seam, include the uncancelled log/digamma
+  // operands in the practical rounding allowance.
+  const double operands=(p<100?2*std::abs(std::log(p)):0)+
+    (q+p<100?2*std::abs(std::log(q+p)):0);
+  error=64*eps*(std::abs(l)+std::abs(a)+std::abs(b)+r+operands);
+  return l+a-b-r;
+}
+struct ShapeRange { double lower=NAN,upper=NAN; bool enclosed=false; };
+// For all s in [sl,sh], q in [ql,qh], the conditional p root decreases
+// with s and increases with q. Only the two diagonal corner solves are needed.
+inline ShapeRange inner_range(double sl,double sh,double ql,double qh,int maxit) {
+  ShapeRange out;
+  if(!(sl>0&&sh>=sl&&ql>0&&qh>=ql)||!std::isfinite(sh+qh))return out;
+  auto score=[&](double p,double q,double s,double& error) {
+    const double value=shape_score(p,q,s,error);error*=2;return value;
+  };
+  auto corner=[&](double s,double q) {
+    ShapeRange z;
+    double lo=0,hi=std::max(1.,2*q/s),err=0;
+    if(!std::isfinite(hi))return z;
+    // This same upper bracket is used by the held-q certificate.
+    if(!(score(hi,q,s,err)< -err))return z;
+    for(std::int64_t i=0;i<solver_budget(maxit);++i) {
+      const double mid=lo+(hi-lo)/2;
+      if(!(mid>lo&&mid<hi))break;
+      const double value=score(mid,q,s,err);
+      if(!std::isfinite(value+err))return z;
+      if(value>err)lo=mid;
+      else if(value< -err)hi=mid;
+      else break;
+    }
+    // Every retained endpoint was independently sign validated. No rounded
+    // zero is accepted as a root; a wide interval is still a valid enclosure.
+    if(lo>0&&hi>lo){z.lower=lo;z.upper=hi;z.enclosed=true;}
+    return z;
+  };
+  const auto l=corner(sh,ql),h=corner(sl,qh);
+  if(l.enclosed&&h.enclosed)out={l.lower,h.upper,true};
+  return out;
+}
+
 struct Point {
   double h=0,r=0,d=0,k=0,plo=0,phi=0,p=0,value=0,lower=0,upper=0,
     slo=0,shi=0,jlo=0,jhi=0;
@@ -28,14 +73,7 @@ inline GenbetaResult fit(const std::vector<double>& y,double fixed_q,double scal
   if(!(vmin<1)||!std::isfinite(shift))return out;
   const double q=fixed_q; // Held shape2; Point.p encloses the free shape1.
   auto pscore=[&](double p,double r,double& error) {
-    const double l=std::log1p(q/p),a=trgamma_detail::log_minus_digamma(p),
-      b=trgamma_detail::log_minus_digamma(q+p);
-    // Below the asymptotic seam the helper subtracts log(x)-digamma(x).
-    // Its error scales with those operands, not just their small difference.
-    const double operands=(p<100?2*std::abs(std::log(p)):0)+
-      (q+p<100?2*std::abs(std::log(q+p)):0);
-    error=64*eps*(std::abs(l)+std::abs(a)+std::abs(b)+r+operands);
-    return l+a-b-r;
+    return shape_score(p,q,r,error);
   };
   auto evaluate=[&](double h) {
     reason=GenbetaCertificateFailure::Arithmetic;

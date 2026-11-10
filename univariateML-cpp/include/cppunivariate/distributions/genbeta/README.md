@@ -43,7 +43,7 @@ r:
   sampler: rgenbeta
   control:
     scale: Known positive finite upper endpoint, strictly above every observation.
-    gradtol: Relative coefficient tolerance for certified power searches; profile-score tolerance for remaining numerical searches. Held shape1 = 1 inherits the Kumaraswamy coefficient bounds.
+    gradtol: Relative coefficient tolerance for certified power and all-free finite searches. Held shape1 = 1 inherits the Kumaraswamy coefficient bounds.
     iterlim: "Work limit: min(iterlim, 100000) iterations per solve and 128 * min(iterlim, 100000) certificate evaluations."
 log_density: log(shape3)-log(x)-loggamma(shape1)-loggamma(shape2)+loggamma(shape1+shape2)+shape1*shape3*log(x/scale)+(shape2-1)*log(1-(x/scale)**shape3)
 limits:
@@ -53,8 +53,8 @@ limits:
     detect: All observations are equal, $q$ is free, and at least one of $p$ and $a$ is free.
     status: InvalidData
     message: unbounded
-  - {firmness: proved, model: lgamma, name: log-gamma on scale / x, when: 'The shape $p$ tends to infinity and the power $a$ tends to zero with $pa\to\lambda>0$ and $q,b$ fixed. Then $-\log(X/b)$ tends to a gamma law with shape $q$ and rate $\lambda$.', status: UnitGammaBoundary, numerical: true}
-  - {firmness: proved, model: power, when: 'The power $a$ tends to infinity with $pa\to\lambda>0$, while $q$ stays bounded away from zero and $\log(q)/a\to c\ge0$. The limiting power law has upper endpoint $be^{-c}$.', status: PowerBoundary, numerical: true}
+  - {firmness: proved, model: lgamma, name: log-gamma on scale / x, when: 'The shape $p$ tends to infinity and the power $a$ tends to zero with $pa\to\lambda>0$ and $q,b$ fixed. Then $-\log(X/b)$ tends to a gamma law with shape $q$ and rate $\lambda$.', status: UnitGammaBoundary}
+  - {firmness: proved, model: power, when: 'The power $a$ tends to infinity with $pa\to\lambda>0$, while $q$ stays bounded away from zero and $\log(q)/a\to c\ge0$. The limiting power law has upper endpoint $be^{-c}$.', status: PowerBoundary}
 holds:
 - held: []
   status: no-mle
@@ -110,8 +110,18 @@ fit:
     Other held shape1 values use uniform tail bounds and complete interval score/curvature enumeration
     to certify shape2 and power, or stop with witnesses. Held shape2 != 1 with shape1 and power free
     uses conditional-shape inclusion, uniform gamma/power bounds and complete compact interval coverage;
-    unresolved face neighborhoods stop. The all-free three-shape profile and its winning-face decisions
-    remain numerical, without global certification.'
+    unresolved held-shape face neighborhoods stop. Certified finite all-free fits use conditional beta-shape rectangles,
+    conjugate upper bounds, uniform gamma/moving-endpoint tail exclusion and complete scalar interval
+    score/curvature coverage with joint coefficient inclusion. The moving-power boundary uses a signed
+    tail bound and complete compact cell upper bounds, including analytic elimination of shape2 at
+    large power. Incomplete all-free coverage retains the successful legacy result, marked uncertified;
+    only proved contradictions or failed legacy searches stop. Gamma certification uses a signed
+    quadratic power term with an explicit fourth-order
+    remainder, gamma coefficient enclosures, and complete compact comparison. Unclosed gamma
+    cases retain their structured legacy limit payload uncertified. The linear power term cancels
+    after fitting the gamma rate; quadratic-zero seams remain open. A uniform shape2 strip around
+    one is excluded by
+    the moving-endpoint face.'
 areas:
 - actuarial
 - economics and income
@@ -166,12 +176,42 @@ ridge, the exponential tail of $Y=-\log(X/b)$ identifies $pa$, and its first
 nonzero exponential correction identifies $a$ and $q$. Beta ($a=1$),
 Kumaraswamy ($p=1$), and power ($q=1$) are attained subfamilies.
 
-At fixed $a$, the likelihood is strictly concave in the beta shapes. With
-all three shapes free, a logarithmic mesh and an analytic envelope-score root
-search compare local maxima with gamma and power limits, using a
-log-likelihood tie tolerance $10^{-8}n$. This all-free search does not certify
-that an arbitrarily narrow basin has not been missed; its estimates and
-winning-face decisions remain numerical.
+At fixed $a$, the likelihood is strictly concave in the beta shapes. For an
+all-free finite fit, monotone conditional-shape solves over whole intervals of
+the other shape enclose the joint beta maximizer, and concave tangent planes
+bound its likelihood. A feasible finite witness must exclude the small-power
+gamma neighborhood and the moving-endpoint large-power neighborhood uniformly.
+The remaining compact power interval is covered by score and curvature bounds;
+strictly concave cells isolate roots, other cells subdivide, and all maxima
+are compared. Certification requires joint relative coefficient inclusion. A successful legacy
+answer is retained with `allfree_certified=false` when the additional certificate
+cannot close and has not proved it inferior. Finite R and JavaScript results
+expose a numeric `certified` attribute/property (one or zero).
+
+A uniform interval of $q$ around one is inferior to the moving-endpoint face.
+Finite proposals there stop with witnesses, so the attained $q=1$ ridge is a
+non-uniqueness example for the held-$q$ subset, rather than an all-free global
+maximum. The moving-power boundary has its own complete certificate: a signed
+large-power neighborhood and compact cell upper bounds compare every finite
+member against the face. A scalar gamma-conjugate envelope eliminates $q$
+analytically where its moving-endpoint values would otherwise be enormous.
+Incomplete optional coverage retains the legacy selected face, marked uncertified,
+with an infinite global upper bound; proved contradictions still stop.
+
+An all-free gamma-boundary proposal is certified when a signed neighborhood,
+requested gamma coefficient enclosures, the large-power tail and every compact
+cell are verified. The linear power term is a gamma rate score and vanishes at
+its fit for every sample. In squared power, the first coefficient is
+$(q-1)\{\overline{v^2}-(q+1)/q\}/24$, evaluated at the fitted gamma shape $q$
+for mean-one $v$. Gamma curvature
+bounds absorb both nuisance-parameter motions into an explicit fourth-order
+remainder. A strictly negative bound excludes the whole small-power neighborhood.
+Quadratic-zero seams and unfinished coverage retain the legacy `UnitGammaBoundary`
+payload with `allfree_certified=false`; its binding message labels the global
+comparison uncertified and advises `mllgamma(scale / x)`. See the
+[derivation](../../../../../dev/research/evaluations/2026-11-09-genbeta-allfree-data/review-gamma-expansion.md).
+The [all-free proof](../../../../../dev/research/evaluations/2026-11-09-genbeta-allfree-data/proof.md)
+states the bound domains, compact coverage argument and floating-point margins.
 
 With $q\ne1$ held and $p,a$ free, the conditional $p$ score decreases strictly
 from positive infinity to a negative value. Independently padded opposite
@@ -305,4 +345,9 @@ near it, so Wald intervals for shape1 and shape3 separately are unreliable when
 shape2 is close to 1; elsewhere in the interior it is nonsingular
 ([classification](../../../../../dev/research/evaluations/2026-11-04-dqm-a-report.md)).
 
-Face comparisons retain the family tolerance but stop with the existing numerical-failure status when `core/face_compare.hpp` cannot resolve the decision after its floating-point rounding allowance. This allowance concerns computed likelihood comparisons, not optimizer convergence or global optimality; see the [comparison analysis](../../../../../dev/research/evaluations/2026-11-02-face-compare-report.md).
+The initial mesh proposals retain their legacy likelihood tie tolerance.
+Finite and moving-power decisions then pass independent global certificates.
+A completed gamma certificate selects its fitted limit; other gamma proposals
+retain an uncertified legacy payload. Unfinished
+all-free certificates retain successful legacy answers unless contradicted by
+a proved improvement; failures of the legacy search still stop with witnesses.
