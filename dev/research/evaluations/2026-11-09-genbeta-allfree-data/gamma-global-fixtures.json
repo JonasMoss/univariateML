@@ -1,0 +1,41 @@
+{
+  "kind": "default-budget deterministic global-coverage probes; loglik printed to six digits only",
+  "rows": [
+    {
+      "n": 100.0,
+      "minimum_y": 0.001,
+      "status": 1.0,
+      "certified": 1.0,
+      "certificate_reason": 0.0,
+      "work": 5875.0,
+      "loglik_rounded": 45.3959
+    },
+    {
+      "n": 100.0,
+      "minimum_y": 0.05,
+      "status": 1.0,
+      "certified": 1.0,
+      "certificate_reason": 0.0,
+      "work": 19691.0,
+      "loglik_rounded": 65.4253
+    },
+    {
+      "n": 300.0,
+      "minimum_y": 0.001,
+      "status": 1.0,
+      "certified": 1.0,
+      "certificate_reason": 0.0,
+      "work": 18674.0,
+      "loglik_rounded": 197.118
+    },
+    {
+      "n": 300.0,
+      "minimum_y": 0.05,
+      "status": 1.0,
+      "certified": 0.0,
+      "certificate_reason": 7.0,
+      "work": 38401.0,
+      "loglik_rounded": 227.134
+    }
+  ]
+}

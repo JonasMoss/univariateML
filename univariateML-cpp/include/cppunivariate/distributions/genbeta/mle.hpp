@@ -12,13 +12,32 @@ namespace cppunivariate {
 enum class GenbetaStatus { Ok, UnitGammaBoundary, PowerBoundary, InvalidData,
   InvalidFixed, SearchUnresolved, Unbounded };
 enum class GenbetaCertificateFailure { None, Arithmetic, ShapeSolve, ShapeSigns,
-  Tail, RootSigns, CoefficientInclusion, Budget, GammaNeighborhood, PowerNeighborhood };
+  Tail, RootSigns, CoefficientInclusion, Budget, GammaNeighborhood, PowerNeighborhood, LegacyContradicted };
+// Bounds concern the all-free conditional beta problem, at the proposed power.
+// They do not certify maximization over power.
+struct GenbetaConditionalBounds {
+  double shape1_lower=NAN,shape1_upper=NAN,shape2_lower=NAN,shape2_upper=NAN;
+  double loglik_lower=NAN,loglik_upper=INFINITY;
+  bool enclosed=false;
+  double loglik_value=NAN;
+};
+struct GenbetaTailBounds {
+  // h=shape3*mean(log(scale/x)); bounds in original total-likelihood units.
+  double small_cutoff=NAN,small_upper=INFINITY,large_cutoff=NAN,large_upper=INFINITY;
+  bool small_excluded=false,large_excluded=false;
+  double gamma_loglik_upper=INFINITY,small_power_domain=NAN,small_power_slope=INFINITY,
+    small_quadratic_domain=NAN,small_quadratic_coefficient=INFINITY;
+  double ridge_shape2_lower=NAN,ridge_shape2_upper=NAN,ridge_loglik_upper=INFINITY;
+};
 struct GenbetaResult {
   double shape1, shape2, shape3, scale, logLik;
   int iterations;
   GenbetaStatus status;
  StopDetail stop_detail{};
- GenbetaCertificateFailure certificate_failure=GenbetaCertificateFailure::None; };
+ GenbetaCertificateFailure certificate_failure=GenbetaCertificateFailure::None;
+ GenbetaConditionalBounds conditional_bounds{};
+ GenbetaTailBounds tail_bounds{};
+ bool allfree_certified=false; };
 namespace genbeta_detail {
 struct Point { double a=1,b=1,t=1,ll=-std::numeric_limits<double>::infinity(),score=0; bool ok=false; };
 // Concave beta exponential-family problem from sufficient statistics, without
@@ -77,6 +96,10 @@ inline Point profile(const std::vector<double>& y,double t,double aa,double bb,i
 
 #include "power_profile_certificate.hpp"
 #include "free_p_certificate.hpp"
+#include "allfree_bounds.hpp"
+#include "allfree_certificate.hpp"
+#include "power_face_certificate.hpp"
+#include "gamma_face_certificate.hpp"
 
 namespace cppunivariate {
 
@@ -248,7 +271,10 @@ inline GenbetaResult genbeta_mle(span x,double scale,double tol=1e-7,int maxit=3
   if(std::isnan(t)&&std::isnan(a)&&!std::isnan(b))
     return genbeta_free_p_cert::fit(y,b,scale,mean,static_cast<double>(jac),tol,maxit);
   int evals=0;
-  auto at=[&](double z){++evals;return genbeta_detail::profile(y,std::exp(z),a,b,maxit);};
+  auto at=[&](double z){
+    if(evals>=certificate_budget(maxit))return genbeta_detail::Point{};
+    ++evals;return genbeta_detail::profile(y,std::exp(z),a,b,maxit);
+  };
   genbeta_detail::Point best;
   bool edge=false;
   if(!std::isnan(t)){++evals;best=genbeta_detail::profile(y,t,a,b,maxit); }
@@ -259,7 +285,7 @@ inline GenbetaResult genbeta_mle(span x,double scale,double tol=1e-7,int maxit=3
     double hi=std::log(100/ymin);
     if(!std::isnan(a))hi=std::max(hi,std::log(100.0)-std::log(a)-std::log(mean));
     if(!std::isnan(b))hi=std::max(hi,std::log(std::max(100.0,std::log(b)+100))-std::log(ymin));
-    const int count=240;
+    const int count=static_cast<int>(std::min<std::int64_t>(240,certificate_budget(maxit)));
     auto prev=at(lo); if(prev.ok)best=prev;
     for(int i=1;i<=count;++i) {
       const double z=lo+(hi-lo)*i/count;
@@ -278,6 +304,93 @@ inline GenbetaResult genbeta_mle(span x,double scale,double tol=1e-7,int maxit=3
       prev=cur;
     }
   }
+  genbeta_power_cert::Sum certificate_total,certificate_jac;
+  if(std::isnan(a)&&std::isnan(b)&&std::isnan(t)) {
+    for(double z:y)certificate_total.add(z);
+    for(double z:x)certificate_jac.add(-std::log(z));
+  }
+  const double certificate_mean=static_cast<double>(certificate_total.value/n),
+    certificate_shift=static_cast<double>(certificate_jac.value);
+  auto finish=[&](GenbetaResult out) {
+    if(std::isnan(a)&&std::isnan(b)&&std::isnan(t)) {
+      if(best.ok&&!out.conditional_bounds.enclosed)
+        out.conditional_bounds=genbeta_allfree_bounds::conditional(y,best.t,best.a,best.b,
+          certificate_shift,maxit);
+      out.tail_bounds=genbeta_allfree_bounds::tails(y,certificate_mean,certificate_shift,
+        gamma_shape,out.conditional_bounds.enclosed?out.conditional_bounds.loglik_lower:-INFINITY,maxit);
+      // A tolerance-based face proposal cannot survive a proved finite
+      // improvement on its entire tail neighborhood. Retain both witnesses
+      // as an unresolved comparison; compact global coverage is still open.
+      const bool ridge_excluded=out.status==GenbetaStatus::Ok&&
+        best.b>=out.tail_bounds.ridge_shape2_lower&&best.b<=out.tail_bounds.ridge_shape2_upper;
+      if(ridge_excluded) {
+        const double gap=certificate_mean-ymin,endpoint=*std::max_element(x.begin(),x.end());
+        const double value=n*(-std::log(gap)-1)+certificate_shift;
+        const double pad=4096*std::numeric_limits<double>::epsilon()*(1+std::abs(value));
+        out.stop_detail=comparison_detail({{endpoint,1/gap},value-pad,value+pad,StopModel::Power},
+          {{best.a,best.b,best.t,scale},out.conditional_bounds.loglik_lower,
+            out.conditional_bounds.loglik_upper,StopModel::None});
+        out.status=GenbetaStatus::SearchUnresolved;
+        out.certificate_failure=GenbetaCertificateFailure::LegacyContradicted;
+        out.stop_detail.comparison_tie=false;
+      }
+      const bool contradicted=(out.status==GenbetaStatus::UnitGammaBoundary&&out.tail_bounds.small_excluded)||
+        (out.status==GenbetaStatus::PowerBoundary&&out.tail_bounds.large_excluded);
+      if(contradicted&&!out.stop_detail.candidates.empty()) {
+        const auto face_candidate=out.stop_detail.candidates.front();
+        out.stop_detail=comparison_detail(face_candidate,{{best.a,best.b,best.t,scale},
+          out.conditional_bounds.loglik_lower,out.conditional_bounds.loglik_upper,StopModel::None});
+        out.status=GenbetaStatus::SearchUnresolved;
+        out.certificate_failure=GenbetaCertificateFailure::LegacyContradicted;
+        out.stop_detail.comparison_tie=false;
+      }
+      if(out.status==GenbetaStatus::UnitGammaBoundary)
+        return genbeta_gamma_face_cert::verify(y,certificate_mean,certificate_shift,tol,maxit,out);
+      if(out.status==GenbetaStatus::PowerBoundary||out.status==GenbetaStatus::Ok) {
+        const auto legacy=out;
+        auto checked=out.status==GenbetaStatus::PowerBoundary?
+          genbeta_power_face_cert::verify(y,*std::max_element(x.begin(),x.end()),
+            certificate_shift,gamma_shape,maxit,out):
+          genbeta_allfree_cert::verify(y,certificate_mean,certificate_shift,tol,maxit,out);
+        if(checked.allfree_certified)return checked;
+        // A partial certificate may withhold certification, not a successful
+        // legacy answer. A proved improving witness still invalidates it.
+        const double pad=4096*std::numeric_limits<double>::epsilon()*
+          (1+std::abs(legacy.logLik)+std::abs(certificate_shift));
+        for(const auto& candidate:checked.stop_detail.candidates)
+          if(candidate.loglik_lower>legacy.logLik+std::max(pad,1e-8*n)) {
+            checked.certificate_failure=GenbetaCertificateFailure::LegacyContradicted;
+            checked.stop_detail.budget_exhausted=false;
+            checked.stop_detail.comparison_tie=false;
+            return checked;
+          }
+        if(legacy.status==GenbetaStatus::PowerBoundary&&
+           !valid_stop_coefficients(legacy.stop_detail.limit_model,legacy.stop_detail.limit_coef))
+          return checked;
+        out=legacy;out.allfree_certified=false;
+        out.certificate_failure=checked.certificate_failure;
+        out.iterations=checked.iterations;
+        out.stop_detail.candidates=checked.stop_detail.candidates;
+        out.stop_detail.loglik_lower=legacy.logLik-pad;
+        out.stop_detail.loglik_upper=INFINITY;
+        // Exhaustion describes the optional certificate, not the legacy fit.
+        out.stop_detail.budget_exhausted=false;
+        out.stop_detail.comparison_tie=false;
+        return out;
+      }
+    }
+    return out;
+  };
+  if(std::isnan(a)&&std::isnan(b)&&std::isnan(t)&&evals>=certificate_budget(maxit)) {
+    bad.status=GenbetaStatus::SearchUnresolved;bad.iterations=evals;
+    bad.certificate_failure=GenbetaCertificateFailure::Budget;bad.stop_detail.budget_exhausted=true;
+    if(best.ok) {
+      const double value=best.ll+static_cast<double>(jac),pad=2048*std::numeric_limits<double>::epsilon()*(1+std::abs(value));
+      bad.stop_detail.candidates={{{best.a,best.b,best.t,scale},value-pad,value+pad,StopModel::None}};
+      bad.stop_detail.loglik_lower=value-pad;bad.stop_detail.loglik_upper=INFINITY;
+    }
+    return bad;
+  }
   if(best.ok && face_numerical_tie(face,best.ll,1e-8*n)) {
     GenbetaResult r={nan,nan,nan,scale,face+static_cast<double>(jac),evals,GenbetaStatus::SearchUnresolved};
     const double ll=best.ll+static_cast<double>(jac);
@@ -285,22 +398,28 @@ inline GenbetaResult genbeta_mle(span x,double scale,double tol=1e-7,int maxit=3
     face_candidate.loglik_lower=r.logLik;face_candidate.loglik_upper=r.logLik;
     if(fs==GenbetaStatus::UnitGammaBoundary){face_candidate.coef={gamma_shape,gamma_scale,scale};face_candidate.model=StopModel::UnitGamma;}
     if(fs==GenbetaStatus::PowerBoundary){face_candidate.coef={std::isnan(b)?*std::max_element(x.begin(),x.end()):scale,1/(std::isnan(b)?mean-ymin:mean)};face_candidate.model=StopModel::Power;}
-    r.stop_detail=comparison_detail(face_candidate,{{best.a,best.b,best.t,scale},ll,ll,StopModel::None});return r;
+    r.stop_detail=comparison_detail(face_candidate,{{best.a,best.b,best.t,scale},ll,ll,StopModel::None});return finish(r);
   }
   if(best.ok&&face>=best.ll-1e-8*n) {
     GenbetaResult r={nan,nan,nan,scale,face+static_cast<double>(jac),evals,fs};
     if(fs==GenbetaStatus::UnitGammaBoundary)r.stop_detail=limit_detail({gamma_shape,gamma_scale,scale},r.logLik,StopModel::UnitGamma);
     if(fs==GenbetaStatus::PowerBoundary)r.stop_detail=limit_detail({std::isnan(b)?*std::max_element(x.begin(),x.end()):scale,1/(std::isnan(b)?mean-ymin:mean)},r.logLik,StopModel::Power);
-    return r;
+    return finish(r);
   }
+  const bool allfree=std::isnan(a)&&std::isnan(b)&&std::isnan(t);
+  GenbetaConditionalBounds conditional;
+  if(allfree&&best.ok)
+    conditional=genbeta_allfree_bounds::conditional(y,best.t,best.a,best.b,
+      certificate_shift,maxit);
   const bool ok=best.ok&&!edge&&(!std::isnan(t)||std::abs(best.score)<tol);
   GenbetaResult out{best.a,best.b,best.t,scale,best.ll+static_cast<double>(jac),evals,
     ok?GenbetaStatus::Ok:GenbetaStatus::SearchUnresolved};
-  if(!ok&&best.ok&&std::isfinite(out.logLik)) {
+  out.conditional_bounds=conditional;
+  if(out.status!=GenbetaStatus::Ok&&best.ok&&std::isfinite(out.logLik)) {
     const double pad=128*std::numeric_limits<double>::epsilon()*(1+std::abs(out.logLik));
     out.stop_detail.candidates={{{best.a,best.b,best.t,scale},out.logLik-pad,out.logLik+pad,StopModel::None}};
     out.stop_detail.loglik_lower=out.logLik-pad;out.stop_detail.loglik_upper=INFINITY;
   }
-  return out;
+  return finish(out);
 }
 } // namespace cppunivariate

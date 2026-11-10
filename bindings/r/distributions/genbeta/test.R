@@ -294,3 +294,67 @@ test_that("genbeta held q certificates fit finite maxima and preserve stop witne
   expect_identical(e$loglik_upper,Inf)
   expect_error(mlgenbeta(g$data,scale=1,shape2=.3,iterlim=1),"shape solve unresolved")
 })
+
+test_that("genbeta all-free finite certificate retains the golden and never certifies unattainable precision", {
+  g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"),"genbeta","golden.json"))
+  f <- mlgenbeta(g$data,scale=1)
+  expect_equal(as.numeric(f),unname(unlist(g$estimates)),tolerance=1e-5)
+  expect_equal(as.numeric(attr(f,"logLik")),g$logLik,tolerance=1e-8)
+  e <- tryCatch(mlgenbeta(g$data,scale=1,gradtol=1e-20),error=identity)
+  if(inherits(e,"error")) {
+    expect_s3_class(e,"univariateML_stop")
+    expect_true(e$kind %in% c("numerical","budget"))
+    expect_gte(nrow(e$candidates),1L)
+    expect_identical(e$loglik_upper,Inf)
+  } else {
+    expect_equal(as.numeric(attr(e,"certified")),0)
+    expect_equal(as.numeric(e),unname(unlist(g$estimates)),tolerance=1e-5)
+  }
+})
+
+test_that("genbeta moving-power certificate transports global likelihood bounds", {
+  x <- .7*(((seq_len(300)-.5)/300)^2)
+  e <- tryCatch(mlgenbeta(x,scale=1),error=identity)
+  expect_s3_class(e,"univariateML_limit")
+  expect_identical(e$model,"power")
+  expect_true(is.finite(e$loglik_lower))
+  expect_true(is.finite(e$loglik_upper))
+  expect_lte(e$loglik_lower,e$limit_loglik)
+  expect_gte(e$loglik_upper,e$limit_loglik)
+})
+
+test_that("genbeta gamma face preserves its structured legacy payload", {
+  x <- exp(-qgamma(((1:300)-.5)/300,2,rate=3))
+  e <- tryCatch(mlgenbeta(x,scale=1),error=identity)
+  expect_s3_class(e,"univariateML_limit")
+  expect_match(conditionMessage(e),"unit-gamma limit")
+  expect_identical(e$model,"unavailable:unit-gamma")
+  expect_length(e$estimates,3L)
+  expect_true(is.finite(e$limit_loglik))
+  expect_gte(e$loglik_upper,e$limit_loglik)
+  face <- e$candidates[e$candidates$model=="unavailable:unit-gamma",,drop=FALSE]
+  expect_equal(nrow(face),1L)
+  ll <- sum(dgamma(-log(x),shape=face$shape,scale=face$scale,log=TRUE)-log(x))
+  expect_equal(e$limit_loglik,ll,tolerance=1e-8)
+})
+
+test_that("genbeta shallow coverage returns its uncertified legacy finite fit", {
+  x <- qgenbeta(((1:300)-.5)/300,3,2,.7,1)
+  f <- mlgenbeta(x,scale=1)
+  expect_equal(as.numeric(attr(f,"certified")),0)
+  expect_equal(as.numeric(f)[1:3],c(5.3645780153723184,1.9924355221946439,.41118368148382761),tolerance=1e-7)
+  g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"),"genbeta","golden.json"))
+  expect_equal(as.numeric(attr(mlgenbeta(g$data,scale=1),"certified")),1)
+})
+
+test_that("genbeta signed squared-power certificate selects a global gamma face", {
+  x <- exp(-c(.001,.5+((1:99)-.5)/99))
+  e <- tryCatch(mlgenbeta(x,scale=1),error=identity)
+  expect_s3_class(e,"univariateML_limit")
+  expect_identical(e$model,"unavailable:unit-gamma")
+  expect_false(grepl("uncertified",conditionMessage(e)))
+  expect_true(is.finite(e$loglik_lower))
+  expect_true(is.finite(e$loglik_upper))
+  expect_lte(e$loglik_lower,e$limit_loglik)
+  expect_gte(e$loglik_upper,e$limit_loglik)
+})
