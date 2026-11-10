@@ -3,9 +3,8 @@
 \usepackage[margin=2.5cm]{geometry}
 \usepackage{amsmath,amssymb,amsthm,booktabs}
 \usepackage{hyperref}
-\title{The relaxed likelihood:\\
-existence, escape and consistency of maximum likelihood\\
-on the weakly compactified model}
+\title{Maximum likelihood on the weak closure of a model:\\
+existence, escape and consistency}
 \author{}
 \date{10 November 2026}
 \newcommand{\E}{\mathbb E}
@@ -14,11 +13,13 @@ on the weakly compactified model}
 \newcommand{\bX}{\overline{X}}
 \newcommand{\bP}{\overline P}
 \newcommand{\bL}{\overline L}
+\newcommand{\cP}{\mathcal P}
 \newcommand{\doi}[1]{\href{https://doi.org/#1}{doi:#1}}
 \newcommand{\status}[1]{\textsf{[#1]}}
 \newtheorem{theorem}{Theorem}
 \newtheorem{proposition}[theorem]{Proposition}
 \newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
 \newtheorem{conjecture}[theorem]{Conjecture}
 \theoremstyle{definition}
 \newtheorem{definition}[theorem]{Definition}
@@ -28,468 +29,475 @@ on the weakly compactified model}
 \begin{document}
 \maketitle
 
-\section*{Results and status}
+\section*{Purpose and status}
 This note records a discussion of 10 November 2026 (Jonas Moss and Claude).
-It proposes one framework for the finite-sample outcomes of maximum
-likelihood (ML) and for its consistency, organised around the weak closure of
-the model on the compactified sample space. Every claim carries a status tag:
-\status{proved here} (short proof in the note), \status{sketch} (argument
-given, details unchecked), \status{conjecture}, \status{lit, verified}
-(checked in the source text by a literature job), \status{lit, unverified}
-(recalled or cited secondhand).
+The aim is classification and understanding, not novelty: one picture of
+what maximum likelihood (ML) does, at finite $n$ and as $n\to\infty$, built
+on the weak closure of the model in the probability measures on the
+compactified sample space. Most ingredients are classical (Wald, Kiefer and
+Wolfowitz, Perlman, Le Cam, Geyer, Csisz\'ar and Mat\'u\v s);
+Section~\ref{sec:attribution} records who did what.
 
+Status tags: \status{proved here} (short proof in the note), \status{sketch}
+(argument given, details unchecked), \status{conjecture}, \status{lit,
+verified} (checked in the source text), \status{lit, unverified} (recalled
+or secondhand).
+
+\paragraph{Main points.}
 \begin{enumerate}
-\item The weak closure $\bM$ of the model in the probability measures on the
-  compactified sample space is compact. Each boundary point has a mass
-  signature (absolutely continuous, singular, escaped).
-\item The \emph{relaxed likelihood} $\bL$ is upper semicontinuous on $\bM$ and
-  attains $\sup_\theta L$, possibly $+\infty$ (Proposition~\ref{prop:relaxed}).
-  Every finite-sample ML outcome is classified by where $\bL$ is maximised;
-  the list is exhaustive (Table~\ref{tab:outcomes}).
-\item The \emph{relaxation gap} separates genuine escapes from oscillation.
-  An MLE is an exact maximiser inside the model; an escape to $X$ is an exact
-  maximiser inside family $X$. Discrete models have no gap.
-\item Hellinger convergence decides neither existence nor the likelihood
-  value; it governs inference near a boundary point.
-\item Defective limits can win on finite samples under correct specification
-  (Geyer 1990, Example~4.5) but never break consistency under correct
-  specification.
-\item Consistency fails through separation (sine family) or domination
-  (Ferguson). A block version of Wald's conditions, via Kingman's subadditive
-  ergodic theorem, is necessary and sufficient for consistency of
-  approximate MLEs (Proposition~\ref{prop:kingman}). This is Perlman's
-  theorem \cite{perlman} (\status{lit, verified}, Section~\ref{sec:prior}).
+\item The weak closure $\bM$ is compact, depends only on the set of
+  distributions, and is the common image of every parameter
+  compactification (Theorem~\ref{thm:universal}).
+\item One object, the relaxed $m$-sample likelihood $\bL_m(\bP;\cdot)$ at
+  closure points $\bP$, governs both regimes (Theorem~\ref{thm:main}). At a
+  fixed sample it classifies the outcome (MLE, escape, defective escape,
+  oscillation, unbounded); its expectation gives the asymptotic rate
+  $\gamma(\bP)$, and approximate ML is consistent iff $\gamma$ is uniquely
+  maximised at the truth (Perlman's theorem in weak-closure form).
+\item Under domination, inconsistency needs a positive relaxation gap
+  somewhere (Corollary~\ref{cor:spikes-gaps}): ML fails through spikes
+  (domination, Ferguson) or excess (gaps, the sine family), nothing else.
 \end{enumerate}
 
-Related material: the mass signature and boundary catalogue in
-\texttt{\textasciitilde/Files/research/00\_inactive/ml-existence/notes/}
-(\texttt{topology-of-likelihood-boundaries.tex},
-\texttt{catalogue-of-likelihood-boundaries.tex},
-\texttt{censoring-induced-boundary-selection.tex}); the boundary note
-\texttt{boundary-points.tex} in this folder; literature reports
+Related material: \texttt{boundary-points.tex} (this folder); the boundary
+catalogue in \texttt{\textasciitilde/Files/research/00\_inactive/ml-existence/notes/};
+literature reports
 \href{evaluations/2026-11-10-defective-limit-lit-report.md}{TASK-171} and
-TASK-173 (relaxation and Wald literature, running).
+TASK-173 (running).
 
-\section{Setting and mass signature}
-Let $X$ be a locally compact separable metric space ($\mathbb R$, an
-interval, $\mathbb N$) with $\sigma$-finite dominating measure $\nu$, and
-$\cM=\{P_\theta:\theta\in\Theta\}$ a dominated model with fixed density
-versions $p_\theta$. Let $\bX=X\cup\{\infty\}$ be the one-point
-compactification and regard each $P_\theta$ as a law on $\bX$ without mass
-at $\infty$. The space of probability measures on $\bX$ is weakly compact and
-metrisable (Prokhorov), so the weak closure $\bM$ of $\cM$ is compact.
+\section{Setting}\label{sec:setting}
+$X$ is a locally compact separable metric space ($\mathbb R$, an interval,
+$\mathbb N$) with a $\sigma$-finite measure $\nu$.
+$\cM=\{P_\theta:\theta\in\Theta\}$ is a dominated model, $\theta\mapsto
+P_\theta$ injective, with fixed density versions $p_\theta$. Write
+$L_m(\theta;x)=\prod_{i\le m}p_\theta(x_i)$ and
+$\ell_n(\theta)=\log L_n(\theta;X_{1:n})$.
 
-For $\bP\in\bM$ write $\bP|_X=\bar p\,\nu+P_s$ with $P_s\perp\nu$. The
-\emph{mass signature} is
-\[
- (m_{ac},m_s,m_\infty)=\Bigl(\int\bar p\,d\nu,\ P_s(X),\ \bP\{\infty\}\Bigr),
- \qquad m_{ac}+m_s+m_\infty=1.
-\]
-Proper limit: $(1,0,0)$. Collapse: $m_s>0$. Defective: $m_{ac}<1$ with
-$m_\infty>0$. One point at infinity suffices for likelihood purposes since
-data never sit there; direction matters once censoring makes the tail
-observable.
+$\bX=X\cup\{\infty\}$ is the one-point compactification; each $P_\theta$ is
+a law on $\bX$ without mass at $\infty$. The space $\cP(\bX)$ is weakly compact
+and metrisable (Prokhorov). $\bM$ is the weak closure of $\cM$ in
+$\cP(\bX)$; for open $U\subset\cP(\bX)$ put $\Theta_U=\{\theta:P_\theta\in U\}$.
 
-\section{The relaxed likelihood}
-\begin{definition}
-For a sample $x=(x_1,\dots,x_n)$ and $\bP\in\bM$,
-\[
- \bL(\bP;x)=\sup\Bigl\{\limsup_{k\to\infty}L(\theta_k;x):
- P_{\theta_k}\Rightarrow\bP\Bigr\}\in[0,\infty].
-\]
+\begin{definition}[Mass signature]
+For $\bP\in\bM$ write $\bP|_X=\bar p\,\nu+P_s$ with $P_s\perp\nu$. The mass
+signature is
+$(m_{ac},m_s,m_\infty)=(\int\bar p\,d\nu,\ P_s(X),\ \bP\{\infty\})$; the
+three sum to one. Proper: $(1,0,0)$. Collapse: $m_s>0$. Defective:
+$m_\infty>0$.
 \end{definition}
+One point at infinity suffices for likelihoods (data never sit there);
+direction matters once censoring makes the tail observable.
 
-\begin{proposition}[Relaxed existence]\label{prop:relaxed}
-$\bL(\cdot;x)$ is upper semicontinuous on $\bM$, and
-$\max_{\bM}\bL(\cdot;x)=\sup_\theta L(\theta;x)$; the maximum is attained.
+\section{Why the weak closure}\label{sec:why}
+\begin{enumerate}
+\item \emph{Invariant}: $\bM$ depends only on the set $\cM$ of laws, not on
+  the parameterisation.
+\item \emph{Compact}: no problem-specific choice of compactification, the
+  difficulty Perlman \cite{perlman} raises against ``suitable
+  compactifications''.
+\item \emph{Contains the other closures}: variation and Hellinger limits are
+  weak limits; pointwise density limits (Geyer \cite{geyer}) appear as the
+  absolutely continuous part of a weak limit, or as a relaxation gap
+  (Definition~\ref{def:relaxed}). The pointwise closure can miss escapes
+  entirely: the sine family (Example~\ref{ex:sine}) has no pointwise limit as
+  $\theta\to\infty$.
+\item \emph{Names the limit}: boundary points are laws, so an escape can be
+  reported as a model (``use \texttt{mlX}'').
+\end{enumerate}
+
+\begin{theorem}[Universal image]\label{thm:universal}
+Let $\overline\Theta$ be a compact Hausdorff space containing $\Theta$ as a
+dense subspace, to which $\theta\mapsto P_\theta$ extends continuously as
+$t\mapsto P(t)$. Then $P(\overline\Theta)=\bM$. Such spaces exist (the
+Stone--\v Cech compactification; if $\Theta$ is locally compact metrisable,
+the closure of the graph $\{(\theta,P_\theta)\}$ in $\Theta^*\times\cP(\bX)$,
+with $\Theta^*$ the one-point compactification, is a metrisable one). If
+$\overline\Theta$ is metrisable and
+$\tilde L(t;x)=\lim_{V\downarrow t}\sup_{\theta\in V\cap\Theta}L(\theta;x)$,
+then
+\[
+ \bL(\bP;x)=\max\{\tilde L(t;x):P(t)=\bP\}.
+\]
 \status{proved here}
-\end{proposition}
+\end{theorem}
 \begin{proof}
-Upper semicontinuity: let $\bP_j\to\bP$ with $\bL(\bP_j)\ge c_j$. Pick
-$\theta_j$ with $d(P_{\theta_j},\bP_j)<1/j$ and
-$L(\theta_j)\ge\min(c_j,j)-1/j$; then $P_{\theta_j}\Rightarrow\bP$ and
-$\bL(\bP)\ge\limsup_j c_j$. Attainment: a maximising sequence $\theta_k$ has a
-weakly convergent subsequence with limit $\bP$, so
-$\bL(\bP)\ge\sup L$; the reverse inequality is immediate.
+$P(\overline\Theta)$ is compact, hence closed, and contains $\cM$ as a dense
+subset, so it equals $\bM$. Fibre formula: for $t$ in the fibre, a sequence
+$\theta_k\to t$ with $L(\theta_k)\to\tilde L(t)$ has $P_{\theta_k}\to\bP$, so
+$\bL(\bP)\ge\tilde L(t)$. Conversely a sequence with $P_{\theta_k}\to\bP$ and
+$L(\theta_k)\to\bL(\bP)$ has a subsequence $\theta_k\to t$; continuity gives
+$P(t)=\bP$ and $\tilde L(t)\ge\bL(\bP)$. The fibre is compact and $\tilde L$
+is upper semicontinuous, so the maximum is attained.
 \end{proof}
 
-This is the usual relaxation of a functional on a compactification
-(calculus of variations). Existence on $\bM$ is free; the content lies in
-locating the maximiser and its value.
+So the weak closure is the canonical quotient of every parameter
+compactification in the style of Kiefer and Wolfowitz \cite{kw}. A parameter
+compactification can separate points that $\bM$ identifies (the sine family's
+$\theta=0$ and $\theta=\infty$; the circle of limits in Perlman's
+Example~4), and its extended densities carry likelihood values; the
+relaxation gap measures what the quotient forgets.
 
-\begin{definition}[Relaxation gap, exactness]
-For $\bP\in\bM$ with density $\bar p$ on $X$ put
+\begin{remark}[Describing $\bM$]
+Csisz\'ar and Mat\'u\v s \cite{cm} describe variation closures of
+exponential families completely and note that weak closures are harder.
+The extra content is the singular and escaped part: in $\mathbb R^d$ with a
+general dominating measure, singular limits depend on the boundary geometry
+of the support and on path rates (Laplace asymptotics). For univariate
+parametric families the singular part is in practice atoms (collapse,
+partial collapse), and escaped mass is a number. The real obligation is
+completeness: a dossier's face list must cover every limit, including
+rate-indexed families of limits (Birnbaum--Saunders, $\alpha^2\beta\to c$).
+\end{remark}
+
+\section{Main theorem}\label{sec:main}
+\begin{definition}[Relaxed likelihood, gap, rate]\label{def:relaxed}
+For $\bP\in\bM$, $m\ge1$ and $x\in X^m$:
 \[
- \Delta(\bP;x)=\log\bL(\bP;x)-\sum_{i=1}^n\log\bar p(x_i)\ \ge 0 .
+ \bL_m(\bP;x)=\lim_{U\downarrow\bP}\ \sup_{\theta\in\Theta_U}L_m(\theta;x)
+ \in[0,\infty],
 \]
-$\bP$ is \emph{exact} for $x$ if $\Delta(\bP;x)=0$.
+the limit over a neighbourhood base (equivalently, the largest
+$\limsup_kL_m(\theta_k;x)$ over sequences with $P_{\theta_k}\Rightarrow\bP$).
+For $m=1$ this is the relaxed density. With $\bar p$ the density of the
+absolutely continuous part of $\bP$, the \emph{relaxation gap} is
+\[
+ \Delta_m(\bP;x)=\log\bL_m(\bP;x)-\sum_{i\le m}\log\bar p(x_i)\in[-\infty,\infty],
+\]
+defined for $\nu^m$-almost every $x$. $\bP$ is \emph{exact} at $x$ if
+$\Delta_m=0$; it has \emph{excess} if $\Delta_m>0$ and \emph{deficit} if
+$\Delta_m<0$. At members $\Delta_m\ge0$ (constant sequences). For the truth
+$P_0=P_{\theta_0}$ and open $U$ put
+\[
+ \gamma(U)=\lim_{n\to\infty}\frac1n\Bigl(\sup_{\theta\in\Theta_U}\ell_n(\theta)
+ -\ell_n(\theta_0)\Bigr),
+ \qquad
+ \gamma(\bP)=\lim_{U\downarrow\bP}\gamma(U),
+\]
+whenever the first limit exists almost surely.
 \end{definition}
 
-\begin{proposition}[MLE and escape]\label{prop:exact}
-An MLE exists iff some maximiser of $\bL(\cdot;x)$ is a member $P_\theta$
-with $L(\theta;x)=\bL(P_\theta;x)$. \status{proved here}
-\end{proposition}
+A deficit is possible: comb densities $k^2\mathbf 1_{S_k}$, with $S_k$ evenly
+spread intervals of total length $k^{-2}$, converge weakly to the uniform,
+while almost every $x$ leaves $S_k$ for good, so $\bL_1=0<1$. Deficit
+points never win; only excess matters below.
+
+\paragraph{Assumptions for the asymptotic part.}
+(S) \emph{Separability}: a countable $\Theta'\subset\Theta$ with
+$\sup_{\Theta_U}L_m=\sup_{\Theta_U\cap\Theta'}L_m$ for all open $U$, $m$ and
+samples. (D) \emph{Local domination}: every $\bP\in\bM$ has a neighbourhood
+$U$ and a block size $k$ with
+$\E_0\bigl[\sup_{\Theta_U}\log\bigl(L_k(\theta)/L_k(\theta_0)\bigr)\bigr]^+<\infty$.
+(I) $\E_0|\log p_0|<\infty$.
+
+\begin{theorem}[ML on the weak closure]\label{thm:main}
+\emph{Finite sample.} Fix $x\in X^n$ and write $\bL=\bL_n(\cdot;x)$.
+\begin{enumerate}
+\item[(i)] $\bL$ is upper semicontinuous on $\bM$ and attains
+  $\max_{\bM}\bL=\sup_\theta L_n(\theta;x)\in[0,\infty]$.
+\item[(ii)] An MLE exists iff some maximiser of $\bL$ is a member
+  $P_\theta$ with $\Delta_n(P_\theta;x)=0$.
+\item[(iii)] Every maximiser has a signature, a value (finite or $+\infty$),
+  a gap and a membership status, and the outcomes of
+  Table~\ref{tab:outcomes} are exhaustive.
+\item[(iv)] ``Escape to family $F$'' means an exact maximiser that is a
+  member of $F$.
+\end{enumerate}
+\emph{Asymptotics.} Assume (S), (D), (I) and sample from $P_0=P_{\theta_0}$.
+\begin{enumerate}
+\item[(v)] For every $\bP$ with dominated neighbourhood $U$, $\gamma(U)$ exists
+  almost surely, is constant, and
+  \[
+   \gamma(\bP)=\inf_{m\ge k}\ \frac1m\,
+   \E_0\log\frac{\bL_m(\bP;X_{1:m})}{L_m(\theta_0;X_{1:m})}
+   \in[-\infty,\infty).
+  \]
+\item[(vi)] $\gamma$ is upper semicontinuous on $\bM$, $\gamma(P_0)\ge0$, and
+  $\frac1n(\sup_\theta\ell_n-\ell_n(\theta_0))\to\gamma^*=\max_{\bM}\gamma$
+  almost surely.
+\item[(vii)] Every approximate MLE (log-likelihood within $o(n)$ of the
+  supremum, almost surely) converges weakly to $P_0$ almost surely iff
+  $\gamma$ is uniquely maximised at $P_0$.
+\item[(viii)] If $\bP$ has no excess for $P_0$-almost every single
+  observation ($\Delta_1(\bP;\cdot)\le0$ a.e.), then
+  $\gamma(\bP)\le\E_0\log(\bar p/p_0)$, which is $<0$ unless $\bP=P_0$. In
+  particular $\gamma(P_0)=0$ if $P_0$ has no excess, and then (vii) reads:
+  $\gamma(\bP)<0$ at every $\bP\ne P_0$ with excess.
+\item[(ix)] If $\theta\mapsto P_\theta$ is a homeomorphism onto $\cM$, weak
+  convergence to $P_0$ is convergence of the parameter.
+\end{enumerate}
+\status{(i)--(iv), (viii), (ix): proved here; (v)--(vii): sketch, the
+content of Perlman \cite[Thm.~2.2(ii), Thm.~4.1]{perlman} restated}
+\end{theorem}
+
 \begin{proof}
-If $\hat\theta$ is an MLE then
-$\bL(P_{\hat\theta})\ge L(\hat\theta)=\sup L=\max\bL\ge\bL(P_{\hat\theta})$.
-The converse is immediate.
+(i) Upper semicontinuity follows from the neighbourhood definition (a limit
+of suprema over shrinking sets). Attainment: a maximising sequence has a
+weakly convergent subsequence with limit $\bP$, and
+$\bL(\bP)\ge\sup L_n$; the reverse is immediate.
+(ii) If $\hat\theta$ is an MLE, $\bL(P_{\hat\theta})\ge
+L_n(\hat\theta)=\max\bL\ge\bL(P_{\hat\theta})$, so $\Delta_n=0$; the converse
+is immediate. (iii) is (i) plus case distinction. (iv) is a definition.
+
+(v) $Z_{s,t}=\log\sup_{\Theta_U}\prod_{s<i\le t}p_\theta(X_i)
+-\sum_{s<i\le t}\log p_0(X_i)$ is subadditive and stationary, and (D) with
+Perlman's Lemma~2.4(ii) gives $\E Z_{0,m}^+<\infty$ for $m\ge k$. Kingman's
+theorem \cite{kingman} (or Perlman's reverse martingale) gives
+$\gamma(U)=\inf_{m\ge k}\frac1m\E Z_{0,m}$. Exchange $\inf_U$ and $\inf_m$;
+for fixed $m\ge k$, $\sup_{\Theta_U}L_m\downarrow\bL_m(\bP)$ with an integrable
+upper bound, so monotone convergence identifies the limit.
+(vi) $\gamma$ is an infimum over neighbourhoods of a set function increasing
+in $U$, hence upper semicontinuous, and attains its maximum on the compact
+$\bM$. Upper bound: cover $\bM$ by finitely many $U_j$ with
+$\gamma(U_j)\le\gamma(\bP_j)+\varepsilon$. Lower bound: any $U$ containing a
+maximiser. (vii) Sufficiency: cover $\bM$ minus a neighbourhood of $P_0$ by
+finitely many $U_j$ with $\gamma(U_j)<\gamma^*$. Necessity: if
+$\gamma(\bP)=\gamma^*$ for some $\bP\ne P_0$, then
+$\sup_{\Theta_U}\ell_n\ge\sup\ell_n-o(n)$ for every $U\ni\bP$; a diagonal
+choice over shrinking $U_j$ gives an approximate MLE converging to $\bP$
+(Perlman's Theorem~4.1 argument).
+(viii) $\bL_m(\bP;x)\le\prod_i\bL_1(\bP;x_i)\le\prod_i\bar p(x_i)$ for a.e.
+$x$, so by (v) and Jensen
+$\gamma(\bP)\le\E_0\log(\bar p/p_0)\le\log\int_{p_0>0}\bar p\le\log m_{ac}\le0$,
+with equality throughout only if $\bar p=p_0$ a.e., in which case
+$m_{ac}=1$ and $\bP=P_0$. For $P_0$, $\gamma(P_0)\ge0$ since
+$\theta_0\in\Theta_U$. (ix) is the definition of a homeomorphism.
 \end{proof}
 
-By analogy, \emph{escape to family $X$} means an exact maximiser that is a
-member of the named family $X$; this is what a ``use \texttt{mlX}'' message
-asserts. The gap can be positive even at members (the sine family with
-$\theta=0$ admitted, Example~\ref{ex:sine}), so membership alone is not
-enough.
+\begin{corollary}[Spikes or gaps]\label{cor:spikes-gaps}
+Under correct specification, (S) and (I), if approximate ML is inconsistent
+then either (D) fails at some closure point (spikes; Ferguson) or some
+$\bP\ne P_0$ has excess on a set of single observations of positive
+$P_0$-probability (gaps; the sine family). \status{proved here, given
+Theorem~\ref{thm:main}}
+\end{corollary}
 
-\begin{lemma}[Sufficient conditions for exactness]\label{lem:exact}
-(a) If $p_\theta\to\bar p$ uniformly on a neighbourhood of each $x_i$
-whenever $P_\theta\Rightarrow\bP$, then $\bP$ is exact for $x$.
-(b) If $X$ is countable with counting measure, every $\bP\in\bM$ is exact
-for every sample. \status{proved here}
-\end{lemma}
-\begin{proof}
-(a) is immediate. (b) Each $\{x\}$ is open and closed in $\bX$, so
-$P_k\Rightarrow\bP$ implies $P_k\{x\}\to\bP\{x\}$.
-\end{proof}
-
-So count families have only proper and defective boundary points and no
-gaps; oscillation and spikes need continuous data.
-
-\begin{lemma}[Defective limits under normalisation]\label{lem:defective}
-Let $\bP$ be exact with $\bar p=c\,g$, $0<c<1$, $\int g=1$. If $g$ is a model
-member or an exact point of $\bM$, then $\bL(\bP;x)=c^n\bL(g;x)<\bL(g;x)$
-whenever $\bL(g;x)>0$, so $\bP$ is not a maximiser. \status{proved here}
-\end{lemma}
+Exact boundary points, proper or defective, never break consistency under
+(D). Excess alone does not imply inconsistency: the per-observation
+supremum need not be jointly achievable, and (v) uses the joint
+$\bL_m$.
 
 \begin{table}[ht]
 \centering
 \begin{tabular}{@{}llll@{}}
 \toprule
-maximiser of $\bL$ & signature & value, gap & outcome\\
+maximiser of $\bL_n$ & signature & value, gap & outcome\\
 \midrule
 member, exact & n/a & finite, $\Delta=0$ & MLE (\texttt{Ok})\\
 proper boundary, exact & $(1,0,0)$ & finite, $\Delta=0$ & escape, ``use \texttt{mlX}''\\
-proper boundary, gap & $(1,0,0)$ & finite, $\Delta>0$ & oscillation; no rescue\\
+proper boundary, excess & $(1,0,0)$ & finite, $\Delta>0$ & oscillation; no rescue\\
 defective boundary & $m_\infty>0$ & finite & escape to a non-model\\
 singular boundary & $m_s>0$ & finite & unattained finite supremum\\
-singular or spike & any & $+\infty$ & unbounded likelihood\\
+any & any & $+\infty$ & unbounded likelihood\\
 several & mixed & tie & multiple maxima, face ties\\
 \bottomrule
 \end{tabular}
-\caption{Finite-sample outcomes. Exhaustive by Proposition~\ref{prop:relaxed};
-the library adds ``budget exhausted'' and ``numerical failure'' for
+\caption{Finite-sample outcomes, exhaustive by Theorem~\ref{thm:main}(i).
+The library adds ``budget exhausted'' and ``numerical failure'' for
 computations that cannot decide the row.}
 \label{tab:outcomes}
 \end{table}
 
-\section{Hellinger closure}
-Hellinger convergence implies weak convergence, so Hellinger limit points
-are weak limit points of signature $(1,0,0)$. Hellinger closures are not
-compact, so they cannot support Proposition~\ref{prop:relaxed}. They do not
-decide the likelihood value either:
+\section{Tools}
+\begin{lemma}[Exactness]\label{lem:exact}
+(a) If $p_\theta\to\bar p$ uniformly near each $x_i$ whenever
+$P_\theta\Rightarrow\bP$, then $\bP$ is exact at $x$.
+(b) If $X$ is countable with counting measure, every $\bP\in\bM$ is exact at
+every sample. \status{proved here}
+\end{lemma}
+\begin{proof}
+(a) is immediate. (b) Each $\{x\}$ is open and closed in $\bX$, so
+$P_k\Rightarrow\bP$ gives $P_k\{x\}\to\bP\{x\}$.
+\end{proof}
+Count families therefore have only proper and defective boundary points,
+and no gaps; excess needs continuous data.
 
-\begin{example}[Vanishing spike]\label{ex:spike}
-$f(x)=w\,\sigma^{-1}\varphi((x-\nu)/\sigma)+(1-w)\varphi(x-\mu)$ with
-$\nu=x_1$, $w,\sigma\to0$, $w/\sigma\to\infty$. Then
-$f\to\varphi(\cdot-\mu)$ in Hellinger (the spike has mass $w$), while
-$f(x_1)\to\infty$: signature $(1,0,0)$, $\Delta=\infty$. \status{proved here}
-\end{example}
+\begin{lemma}[Defective limits under normalisation]\label{lem:defective}
+Let $\bP$ be exact at $x$ with $\bar p=c\,g$, $0<c<1$, $\int g=1$. If $g$ is
+a member or an exact point of $\bM$, then $\bL_n(\bP;x)=c^n\bL_n(g;x)$, so
+$\bP$ is not a maximiser when $\bL_n(g;x)>0$. \status{proved here}
+\end{lemma}
 
-Hierarchy: locally uniform convergence near the data to a density of mass
-one implies both Hellinger convergence (Scheff\'e) and exactness; neither
-converse holds (sine family; Example~\ref{ex:spike}). Hellinger geometry
-belongs to inference near the boundary: DQM, LAN, rates, seams and cusps,
-boundary tests (Self and Liang \cite{selfliang}).
+\paragraph{Hellinger.} Hellinger limits are weak limits of signature
+$(1,0,0)$; Hellinger closures are not compact, and a Hellinger limit can
+have infinite excess (Example~\ref{ex:spike}). Locally uniform convergence
+near the data to a density of mass one gives both Hellinger convergence
+(Scheff\'e) and exactness; neither converse holds. Hellinger geometry
+belongs to inference near a boundary point: DQM, LAN, rates, seams and
+cusps, boundary tests \cite{selfliang}.
 
 \section{Representative examples}
 
-\begin{example}[Oscillation: sine family]\label{ex:sine}
-$f_\theta(x)=1+\sin(2\pi\theta x)$ on $[-\tfrac12,\tfrac12]$, $\theta>0$; a
-density for every real $\theta$ because the sine is odd.
-\begin{enumerate}
-\item For $n\ge2$ the MLE almost surely does not exist; $\sup L=2^n$ is
-  approached only as $\theta\to\infty$. The $x_i$ are a.s. linearly
-  independent over $\mathbb Q$, so $\{\theta x\bmod 1\}$ is dense in the
-  torus (continuous Kronecker); attainment needs
-  $x_2/x_1=(m'+\frac14)/(m+\frac14)$, a null event. For $n=1$ the
-  supremum is attained. \status{proved here}
-\item $f_\theta\Rightarrow U$ (Riemann--Lebesgue) at both $\theta\to0$ and
-  $\theta\to\infty$; $\bL(U)=2^n$, $L_U=1$, $\Delta=n\log2$.
-  \status{proved here}
-\item Fisher information: $\cos^2u/(1+\sin u)=1-\sin u$ gives
-  $I(\theta)=4\pi^2\int x^2(1-\sin 2\pi\theta x)\,dx=\pi^2/3$. DQM expected
-  (the root density is Lipschitz in $\theta$). \status{sketch}
-\item Consistent estimators exist for $\theta_0>0$: $\|F_\theta-F_U\|_\infty\le
-  1/(\pi\theta)$, the map $\theta\mapsto F_\theta$ is injective and
-  continuous, and both ends tend to $F_U\ne F_{\theta_0}$, so minimum
-  Kolmogorov distance is consistent. A one-step correction should then be
-  efficient. The failure is specific to ML. If $\theta=0$ is admitted, $U$ is
-  a member with $\Delta>0$, and no estimator is parameter-consistent at
-  $\theta_0=0$. \status{sketch}
-\end{enumerate}
-The integer-$\theta$ version also works (discrete Kronecker; then even $n=1$
-fails). The same mechanism with a countable parameter is published: Le Cam
-\cite[\S4, after Ferguson]{lecam} takes densities
-$1+\frac12(1-e^{-m})\varphi_{s,m}$ on $(0,1]$, with $\varphi_{s,m}=\pm1$ on a
-balanced selection $s$ of the $2^m$ dyadic intervals; density ratios stay in
-$[\frac12,2]$ and ML estimates $m=+\infty$ (``essentially another example of
-Bahadur''). \status{lit, verified} Exact source of the sine version unknown. The old
-\texttt{ml-existence} notes list it as ``oscillation with weak averaging''.
+\begin{example}[Excess: sine family]\label{ex:sine}
+$f_\theta(x)=1+\sin(2\pi\theta x)$ on $[-\frac12,\frac12]$, $\theta>0$ (a
+density for every real $\theta$; the sine is odd).
+For $n\ge2$ the MLE a.s.\ does not exist: the $x_i$ are a.s.\ independent
+over $\mathbb Q$, so $\{\theta x\bmod1\}$ is dense in the torus (continuous
+Kronecker), $\sup L=2^n$, and attainment needs a rational ratio
+$x_2/x_1=(m'+\frac14)/(m+\frac14)$. Both ends $\theta\to0,\infty$ converge
+weakly to $U$; $\bL_n(U)=2^n$, so $\Delta_n=n\log2$, and
+$\gamma(U)=\log2-\E_0\log f_{\theta_0}>0$: approximate ML is inconsistent
+for every $\theta_0$. \status{proved here}
+$I(\theta)=4\pi^2\int x^2(1-\sin2\pi\theta x)\,dx=\pi^2/3$; DQM expected.
+Minimum Kolmogorov distance is consistent for $\theta_0>0$
+($\|F_\theta-F_U\|_\infty\le1/(\pi\theta)$), so the failure is specific to ML.
+\status{sketch}
+Published analogue: Le Cam \cite[\S4]{lecam} takes
+$1+\frac12(1-e^{-m})\varphi_{s,m}$ on $(0,1]$ with $\varphi_{s,m}=\pm1$ on a
+balanced selection of dyadic intervals; ratios stay in $[\frac12,2]$ and ML
+estimates $m=\infty$, ``essentially another example of Bahadur''.
+\status{lit, verified}
+\end{example}
+
+\begin{example}[Exact, consistent: Perlman's Example 4]
+$f(x,\theta)\propto1+\frac{a\theta}{1+\theta}\sin(x-\theta)$ on $[0,2\pi]$,
+$0<a<1$. Perlman shows all approximate MLEs are consistent although Wald,
+Kiefer--Wolfowitz and Huber fail with the one-point compactification of
+$\Theta$ \cite{perlman}. In $\bM$ the end $\theta\to\infty$ is the circle
+$\{1+a\sin(x-\varphi)\}$ of proper laws, exact by Lemma~\ref{lem:exact}(a),
+so Theorem~\ref{thm:main}(viii) gives $\gamma<0$ there.
+\status{lit, verified; weak-closure reading sketch}
+\end{example}
+
+\begin{example}[Spikes, exact: Ferguson]\label{ex:ferguson}
+Ferguson \cite{ferguson}, form confirmed by Le Cam \cite{lecam}
+(\status{lit, verified}); the specific $\delta$ is as recalled
+(\status{lit, unverified}):
+\[
+ f(x\mid\theta)=\frac{1-\theta}{\delta(\theta)}
+ \Bigl(1-\frac{|x-\theta|}{\delta(\theta)}\Bigr)^{+}+\frac\theta2\mathbf 1_{[-1,1]}(x),
+ \quad\theta\in[0,1],\quad \delta(\theta)=(1-\theta)e^{1-(1-\theta)^{-4}}.
+\]
+$\Theta$ is compact and $\theta\mapsto P_\theta$ a homeomorphism, so
+$\bM=\cM$, every point is exact, and the MLE always exists. At $\theta=1$ the
+relaxed density is $\frac12=p_1$ (no excess), but (D) fails:
+$\E_0\sup_U\log f\gtrsim\int^1(1-x)^{-4}dx=\infty$ for every block size.
+Le Cam: ``all of Wald's conditions, except one, are satisfied''.
+\status{sketch}
+\end{example}
+
+\begin{proposition}[Ferguson threshold]
+With $\delta_a(\theta)=(1-\theta)\exp(1-(1-\theta)^{-a})$ and $\theta_0>0$:
+for $a<1$ domination holds and ML is consistent; for $a>1$ it is
+inconsistent, since $1-M_n\asymp n^{-1}$ gives a spike gain
+$(1-M_n)^{-a}/n\asymp n^{a-1}\to\infty$. $a=1$ is open. \status{sketch}
+\end{proposition}
+
+\begin{example}[Infinite excess at a Hellinger limit]\label{ex:spike}
+$f=w\,\sigma^{-1}\varphi((x-x_1)/\sigma)+(1-w)\varphi(x-\mu)$ with
+$w,\sigma\to0$, $w/\sigma\to\infty$: Hellinger limit $\varphi(\cdot-\mu)$,
+signature $(1,0,0)$, likelihood $\to\infty$. \status{proved here}
 \end{example}
 
 \begin{example}[Unbounded for every sample: three-parameter lognormal]
-With a free threshold $\gamma\uparrow x_{(1)}$ the likelihood is unbounded for
-every sample (Hill \cite{hill}); only a local maximiser is consistent.
+A free threshold $\gamma\uparrow x_{(1)}$ makes the likelihood unbounded for
+every sample (Hill \cite{hill}); only a local root is consistent.
 \status{lit, unverified} Three-parameter Weibull and gamma behave the same
-way with shape below one; the library already restricts this mechanism
-(Fr\'echet $\lambda\ge1$, GEV $\xi\ge-1$; Smith \cite{smith}). Lognormal has
-no shape to restrict, so it is the clean representative.
+way with shape below one; the library restricts the shape (Fr\'echet
+$\lambda\ge1$, GEV $\xi\ge-1$; Smith \cite{smith}).
 \end{example}
 
-\begin{example}[Defective escape, correct specification: Geyer]\label{ex:geyer}
-Geyer \cite[Example 4.5]{geyer} (\status{lit, verified}; journal version
-unknown): counting measure on $\{(0,0),(0,-1)\}\cup\{(-k,-l):k,l\ge1\}$,
-\[
- P_t(0,0)=\frac{1}{2+e^{-t}},\quad P_t(0,-1)=\frac{e^{-t}}{2+e^{-t}},\quad
- P_t(-k,-l)=\frac{e^{-k\theta_1-lt}}{2+e^{-t}},\quad
- (e^{\theta_1}-1)(e^t-1)=1 .
-\]
-On the event that all observations equal $(0,0)$, which has positive
-probability under every $t$, $L_n(t)=(2+e^{-t})^{-n}\uparrow2^{-n}$ as
-$t\to\infty$, where half the mass escapes ($\theta_1\to0$). The normalised
-limit $\delta_{(0,0)}$ is not in $\bM$, so Lemma~\ref{lem:defective} does not
-apply. The finite-$n$ extension is ours; normalisation checked numerically.
-Censored analogues: Birnbaum--Saunders upper face \cite{balzhu} and
-defective Gompertz cure models \cite{calsavara}.
-A constructed continuous analogue:
-$p_\theta=a_\theta\varphi(x)+(1-a_\theta)\varphi(x-\theta-2)$,
-$a_\theta=\frac34-\frac14e^{-\theta}$; for samples with all $x_i\le0$ the
-supremum is $\prod\frac34\varphi(x_i)$, unattained (ml-existence catalogue).
+\begin{example}[Defective escape under correct specification: Geyer]
+Geyer \cite[Example 4.5]{geyer} (\status{lit, verified}): counting measure on
+$\{(0,0),(0,-1)\}\cup\{(-k,-l):k,l\ge1\}$,
+$P_t(0,0)=(2+e^{-t})^{-1}$, $P_t(0,-1)=e^{-t}(2+e^{-t})^{-1}$,
+$P_t(-k,-l)=e^{-k\theta_1-lt}(2+e^{-t})^{-1}$,
+$(e^{\theta_1}-1)(e^t-1)=1$. If every observation is $(0,0)$ (positive
+probability under every $t$), $L_n(t)=(2+e^{-t})^{-n}\uparrow2^{-n}$ as
+$t\to\infty$ while half the mass escapes; $\delta_{(0,0)}\notin\bM$, so
+Lemma~\ref{lem:defective} does not apply. The event's probability tends to
+zero, consistent with Theorem~\ref{thm:main}(viii). Censored analogues:
+Birnbaum--Saunders \cite{balzhu}, defective Gompertz \cite{calsavara}.
 \end{example}
 
-\begin{example}[Exact but inconsistent: Ferguson]\label{ex:ferguson}
-Ferguson \cite{ferguson}; the form below is confirmed by Le Cam's
-description \cite{lecam} (\status{lit, verified}), which leaves $\delta$
-unspecified (``continuous, decreasing from $1$ to $0$, fast enough''). The
-specific $\delta$ is as recalled (\status{lit, unverified}); Le Cam notes
-that ``all of Wald's conditions, except one, are satisfied'', matching the
-analysis below: $\theta\in[0,1]$,
-\[
- f(x\mid\theta)=(1-\theta)\frac{1}{\delta(\theta)}
- \Bigl(1-\frac{|x-\theta|}{\delta(\theta)}\Bigr)^{+}+\frac\theta2\mathbf 1_{[-1,1]}(x),
- \qquad \delta(\theta)=(1-\theta)e^{1-(1-\theta)^{-4}} .
-\]
-Finite samples: $\theta\mapsto f(x\mid\theta)$ is continuous on $[0,1]$ for
-$x<1$, the parameter space is compact and $\theta\mapsto P_\theta$ is a
-homeomorphism onto $\cM$, so $\bM=\cM$, every point is exact and the MLE
-always exists (\texttt{Ok}). \status{proved here}
-
-Asymptotics: at $\theta=1$ the relaxed density (Section~\ref{sec:consistency})
-is $\bar p=\frac12=p_1$, so the point is exact and separated. Domination
-fails: for every neighbourhood $U$ of $1$,
-$\E_0\sup_{\theta\in U}\log f(X\mid\theta)\gtrsim\int^1(1-x)^{-4}\,dx=\infty$.
+\begin{example}[Domination needs blocks: location-scale collapse]
+Normal: $\sup_U\log p_\theta(x)=\infty$ near collapse, but
+$\sup\varphi_\sigma(x_1-\mu)\varphi_\sigma(x_2-\mu)\lesssim|x_1-x_2|^{-2}$, so
+(D) holds with $k=2$ and $\gamma=-\infty$ at collapse points (Perlman's
+remark after Condition~1). Cauchy: two observations give
+$p(x_1)p(x_2)\to(\pi d)^{-2}$, three give $\sim\sigma\to0$, so $k\le3$.
 \status{sketch}
 \end{example}
-
-\begin{proposition}[Ferguson threshold]\label{prop:ferguson-a}
-With $\delta_a(\theta)=(1-\theta)\exp(1-(1-\theta)^{-a})$ and $\theta_0>0$:
-for $a<1$ Wald's conditions hold and ML is consistent; for $a>1$ ML is
-inconsistent, since $1-M_n\asymp n^{-1}$ makes the spike gain
-$(1-M_n)^{-a}/n\asymp n^{a-1}\to\infty$. The case $a=1$ is open.
-\status{sketch}
-\end{proposition}
-
-\section{Consistency}\label{sec:consistency}
-Let $P_0=P_{\theta_0}$ be the truth. For $\bP\in\bM$ define the relaxed
-density of one observation
-\[
- \bar p(x)=\lim_{U\downarrow\bP}\ \sup_{\theta:\,P_\theta\in U}p_\theta(x).
-\]
-By Jensen, $\E_0\log(\bar p/p_0)\le\log\int\bar p$. Wald's argument
-\cite{wald} needs, at every $\bP\ne P_0$:
-\begin{itemize}
-\item \emph{separation}: $\E_0\log(\bar p/p_0)<0$, implied by
-  $\int\bar p\le1$ with $\bar p\ne p_0$;
-\item \emph{domination}: $\E_0\sup_{U}\log p_\theta(X)<\infty$ for some
-  neighbourhood $U$ (then monotone convergence passes to $\bar p$).
-\end{itemize}
-By Fatou a pointwise limit along one path integrates to at most one, so
-separation fails only when $\bar p$ mixes paths (a gap). Under correct
-specification defective limits never break consistency:
-$\mathrm{KL}(P_0\,\|\,cg)\ge-\log c>0$.
-
-\begin{center}
-\begin{tabular}{@{}lll@{}}
-\toprule
-condition & fails in & mechanism\\
-\midrule
-separation & sine family & $\bar p\equiv2$, jointly achievable (Kronecker)\\
-domination & Ferguson; Le Cam's version of Bahadur \cite[\S4]{lecam} & spikes, mass-integrable, log-nonintegrable\\
-\bottomrule
-\end{tabular}
-\end{center}
-
-Le Cam's version of Bahadur's example (\status{lit, verified} in TASK-171)
-selects a defective density limit asymptotically, with the lost mass
-concentrating at a point (signature $(c,1-c,0)$), not escaping.
-
-\subsection{Wald's conditions are sufficient only}
-\begin{enumerate}
-\item \emph{Per-observation domination can fail while ML is consistent.}
-  Normal location-scale near collapse: $\sup_U\log p_\theta(x)=\infty$, but
-  for a pair
-  $\sup_{\mu,\sigma}\varphi_\sigma(x_1-\mu)\varphi_\sigma(x_2-\mu)\lesssim
-  |x_1-x_2|^{-2}$ and the supremum over small $U$ tends to $0$.
-  \status{sketch}
-\item \emph{Jensen is crude}: separation can hold with $\int\bar p>1$.
-\item \emph{Failed separation alone does not give inconsistency}: $\bar p$
-  lets each observation choose its own $\theta$; the sine family is
-  inconsistent because the choices are jointly achievable.
-\end{enumerate}
-
-\subsection{A block criterion}
-For an open $U\subset\bM$ put $\Theta_U=\{\theta:P_\theta\in U\}$ and
-\[
- Z_{s,t}(U)=\log\sup_{\theta\in\Theta_U}\prod_{s<i\le t}p_\theta(X_i)
- -\sum_{s<i\le t}\log p_0(X_i).
-\]
-Then $Z_{0,n+m}\le Z_{0,n}+Z_{n,n+m}$, and the array is stationary under
-shifts of the i.i.d.\ sequence.
-
-\begin{proposition}[Wald with blocks; proposed iff]\label{prop:kingman}
-Assume separability (suprema over a countable dense set) and
-$\E_0 Z_{0,m}(U)^+<\infty$ for some $m$. Kingman's subadditive ergodic
-theorem \cite{kingman} gives, almost surely,
-\[
- \gamma(U)=\lim_{n\to\infty}\frac1n Z_{0,n}(U)
- =\inf_{m\ge1}\frac1m\,\E_0 Z_{0,m}(U)\in[-\infty,\infty).
-\]
-Put $\gamma(\bP)=\inf_{U\ni\bP}\gamma(U)$ and $\gamma^*=\max_{\bM}\gamma$.
-Then every approximate MLE (slack $o(n)$ in log-likelihood, a.s.) converges
-weakly to $P_0$ iff $\gamma(\bP)<\gamma^*$ for every $\bP\ne P_0$. When
-$\gamma(P_0)=0$ this reads: every $\bP\ne P_0$ has a neighbourhood $U$ and a
-block size $m$ with
-\[
- \frac1m\,\E_0\log\sup_{\theta\in\Theta_U}L_m(\theta)<\E_0\log p_0 .
-\]
-\status{sketch; essentially Perlman \cite[Thm.~2.2(ii), Thm.~4.1]{perlman}, see Section~\ref{sec:prior}}
-\end{proposition}
-\begin{proof}[Sketch]
-Sufficiency: cover $\bM$ minus a neighbourhood of $P_0$ by finitely many
-$U_j$ with $\gamma(U_j)<\gamma^*$; eventually every $\Theta_{U_j}$ loses to the
-global supremum by a linear margin. Necessity: if $\gamma(\bP)=\gamma^*$ for
-some $\bP\ne P_0$, then $\sup_{\Theta_U}\ell_n\ge\sup\ell_n-o(n)$ for every
-$U\ni\bP$, and a diagonal choice over shrinking $U_j$ gives an approximate
-MLE converging to $\bP$.
-\end{proof}
-
-Points to inspect: (i) whether $\frac1n\sup\ell_n-\frac1n\ell_n(\theta_0)\to
-\gamma^*$ holds as claimed (finite cover plus upper semicontinuity of
-$\gamma$); (ii) the integrability hypothesis, and whether $\gamma=+\infty$
-follows when it fails for all $m$; (iii) exact MLE versus slack $o(n)$ at
-ties $\gamma(\bP)=\gamma^*$; (iv) weak versus parameter consistency when a
-boundary point coincides with a member; (v) prior art, especially Perlman
-\cite{perlman}.
-
-Checks: normal collapse $\gamma=-\infty$ with $m=2$; Cauchy location-scale
-collapse: $p(x_1)p(x_2)\to(\pi d)^{-2}$ with $d=|x_1-x_2|$, while three
-observations give $\sim\sigma\to0$, so $m\le3$; sine family $\gamma(U)=\log2
--\E_0\log p_0>0$ near $\theta=\infty$; Ferguson $\gamma=+\infty$ near
-$\theta=1$; Ferguson with $a<1$: $m=1$ suffices. \status{sketch}
 
 \begin{conjecture}[Block size and existence]
-At a collapse stratum the minimal block size $m^*$ equals the smallest
-sample size for which the MLE exists almost surely (normal $2$; Cauchy
+At a collapse stratum the minimal dominating block size equals the smallest
+sample size for which the MLE exists almost surely (normal $2$, Cauchy
 location-scale $3$, matching $2k<n$).
 \end{conjecture}
-
-\subsection{Prior art: Perlman 1972}\label{sec:prior}
-Checked in the source text on 10 November 2026 (\status{lit, verified}).
-Perlman \cite{perlman} works with
-$u(x,\theta;\theta_0)=\log f(x,\theta)-\log f(x,\theta_0)$ on the complement
-$\Omega_r$ of a shrinking neighbourhood of $\theta_0$, without compactifying.
-\begin{itemize}
-\item Definition~1: $u$ is \emph{dominated (by $0$)} on $\Gamma$ if for some
-  $k$, $\sup_\Gamma u_k\le s(x_1,\dots,x_k)$ with $\E s<\infty$ ($<0$). This is
-  Wald with blocks of size $k$, after Kiefer and Wolfowitz \cite{kw} and
-  Berk.
-\item Theorem~2.2(ii): if $u$ is dominated and the suprema are measurable,
-  then $\limsup_n\sup_\Gamma\frac1n\sum u=\lim_n\frac1n\E\sup_\Gamma\sum_{i\le n}u$
-  almost surely. Proof by Berk's reverse martingale over $k$-subsets, not
-  Kingman; the content is the same as our $\gamma(U)$.
-\item Assumption $\mathcal D$ (dominance for some $k$) is exactly our
-  integrability hypothesis, point (ii) above. Under $\mathcal D$, Condition~1
-  (dominance by $0$) is necessary and sufficient for the uniform condition
-  (1.7), and by Theorem~4.1 (local regularity: local compactness, local
-  dominance, upper semicontinuity, measurability) for strong consistency of
-  all approximate MLEs.
-\item Without $\mathcal D$: Example~2 (sample median, $w=-|x-\theta|$) is
-  consistent although not dominated; Perlman handles it by semidominance
-  (divide by $b(\theta)$, after Huber \cite{huber}) and, in Section~3, by a
-  uniformity condition on $\sigma$-compact sets. So the hole in point (ii)
-  is real and known.
-\item Perlman warns that the one-point compactification of $\Theta$ is often
-  unsuitable (his Example~4:
-  $f(x,\theta)\propto1+\frac{a\theta}{1+\theta}\sin(x-\theta)$ on
-  $[0,2\pi]$, $0<a<1$; consistent, but Wald, Kiefer--Wolfowitz and Huber
-  fail). Our compactification is of the model in the laws on $\bX$, not of
-  $\Theta$: there the $\theta\to\infty$ end is the circle of proper members
-  $1+a\sin(x-\varphi)$, exact by Lemma~\ref{lem:exact}(a).
-\item Strasser \cite{strasser} cites Perlman's criterion as necessary and
-  sufficient and improves its measurability side.
-\end{itemize}
-What remains ours: the finite-sample relaxed likelihood and outcome table,
-the mass signature, the gap, and the reading of $\gamma$ as the asymptotic
-relaxed likelihood. Prior art for these is the subject of TASK-173.
-
-\section{Rates}
-Rates are local and governed by Hellinger geometry. Given consistency, a
-regular interior point (DQM, nonsingular information) gives root-$n$
-efficiency. A nonregular point with $h^2(\theta_0,\theta_0+u)\asymp|u|^\alpha$
-has optimal rate $n^{-1/\alpha}$ (Ibragimov and Has'minskii \cite{ih}); ML
-typically attains the rate without efficiency. Near boundary points: seams
-(chi-bar-squared), singular-information corners ($n^{1/4}$), cusps. This
-is TASK-102.
-
-\section{Two levels}
-\begin{center}
-\begin{tabular}{@{}lll@{}}
-\toprule
-level & object & decides\\
-\midrule
-model & $\bM$, signature, members that coincide with boundary points & whether any consistent estimator exists \cite{lecamschwartz}\\
-ML, finite $n$ & $\bL$, $\Delta$, membership & MLE, escape, failure (Table~\ref{tab:outcomes})\\
-ML, $n\to\infty$ & $\bar p$, $\gamma(U)$ & consistency (Proposition~\ref{prop:kingman})\\
-local & Hellinger, DQM & rates and inference\\
-\bottomrule
-\end{tabular}
-\end{center}
 
 \begin{center}
 \begin{tabular}{@{}lll@{}}
 \toprule
 example & finite sample & asymptotics\\
 \midrule
-Ferguson & \texttt{Ok}, exact & domination fails\\
-sine family & gap, no MLE & separation fails\\
+Ferguson & \texttt{Ok}, exact & spikes: (D) fails\\
+sine family; Le Cam's dyadic signs & excess, no MLE & gap: $\gamma(U)>0$\\
+Perlman Ex.~4 & exact circle of limits & consistent\\
 three-parameter lognormal & unbounded & ML undefined; local root consistent\\
-Geyer 4.5 & exact defective escape, positive probability & event vanishes\\
-vanishing spike & unbounded, Hellinger limit proper & domination fails\\
+Geyer 4.5 & exact defective escape, positive probability & consistent\\
+vanishing spike & unbounded at a Hellinger limit & (D) fails\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Attribution}\label{sec:attribution}
+\begin{center}
+\begin{tabular}{@{}lll@{}}
+\toprule
+source & compactifies & content used here\\
+\midrule
+Wald 1949 \cite{wald} & $\Theta$, one point & ball suprema $f(x,\theta,\rho)$ = relaxed density;\\
+ & & domination; density $\to0$ at $\infty$ (no proper escapes)\\
+Kiefer--Wolfowitz 1956 \cite{kw} & $\Theta$, ``suitable'' & extended densities; blocks of observations\\
+Perlman 1972 \cite{perlman} & none & block domination; iff for approximate ML\\
+Le Cam 1953, 1990 \cite{lecam} & none & Bochner domination; counterexamples\\
+Strasser 1981 \cite{strasser} & none & measurability of Perlman's criterion\\
+Geyer 1990 \cite{geyer} & laws, pointwise a.e. & closures of exponential families; defective limits\\
+Csisz\'ar--Mat\'u\v s 2005 \cite{cm} & laws, variation & faces of the convex core\\
+Chen 2017 \cite{chen} & mixing laws, vague & subdistributions\\
+\bottomrule
+\end{tabular}
+\end{center}
+Checked in the source text on 10 November 2026: Wald (Assumptions 1--8,
+ball suprema, Doob's remark on density versions); Perlman (Definition~1,
+Theorem~2.2, Assumption $\mathcal D$, Theorem~4.1, Examples~2 and~4);
+Strasser (abstract and introduction); Le Cam's technical report (Ferguson,
+dyadic example). Perlman's Example~2 (sample median) is consistent without
+(D), handled by semidominance after Huber \cite{huber}; so (D) is
+sufficient, not necessary, for the asymptotic part.
+
+\section{Rates and levels}
+Rates are local and Hellinger-governed: given consistency, a regular
+interior point gives root-$n$ efficiency; $h^2(\theta_0,\theta_0+u)\asymp
+|u|^\alpha$ gives the optimal rate $n^{-1/\alpha}$ (Ibragimov and
+Has'minskii \cite{ih}), typically attained by ML without efficiency; seams,
+singular-information corners and cusps near boundary points (TASK-102).
+
+\begin{center}
+\begin{tabular}{@{}lll@{}}
+\toprule
+level & object & decides\\
+\midrule
+model & $\bM$, signature, members coinciding with boundary points & existence of any consistent estimator \cite{lecamschwartz}\\
+ML, finite $n$ & $\bL_n$, gap, membership & outcome (Table~\ref{tab:outcomes})\\
+ML, $n\to\infty$ & $\E_0\log\bL_m$, $\gamma$ & consistency (Theorem~\ref{thm:main})\\
+local & Hellinger, DQM & rates and inference\\
 \bottomrule
 \end{tabular}
 \end{center}
 
 \section{Open items}
 \begin{enumerate}
-\item Integrability-free version of Proposition~\ref{prop:kingman}:
-  Perlman's semidominance and Section~3 uniformity; Strasser's measurability.
+\item Theorem~\ref{thm:main}(v)--(vii): check the Kingman and
+  monotone-convergence steps in detail against Perlman; whether
+  semidominance or Perlman's Section~3 uniformity extends the asymptotic
+  part beyond (D).
 \item Ferguson: fetch the paper, confirm $\delta$, settle $a=1$.
-\item Library proof obligations: exactness (Lemma~\ref{lem:exact}) at each
-  escape face before ``use \texttt{mlX}''; defective limits dismissed by
-  Lemma~\ref{lem:defective}.
-\item Prior art for relaxed likelihood and exhaustive classification
+\item Library obligations: exactness (Lemma~\ref{lem:exact}) at each escape
+  face before ``use \texttt{mlX}''; defective limits dismissed by
+  Lemma~\ref{lem:defective}; completeness of each dossier's face list.
+\item Prior art for the finite-sample relaxed likelihood and outcome table
   (TASK-173); a journal source for a complete-data defective escape.
-\item Conjecture on block sizes.
+\item The block-size conjecture.
 \end{enumerate}
 
 \begin{thebibliography}{99}
@@ -505,6 +513,9 @@ rate modeling with interval-censored data. \emph{Biometrical Journal}
 \bibitem{chen} J. Chen (2017). Consistency of the MLE under mixture models.
 \emph{Statistical Science} 32(1), 47--63. Preprint
 \href{https://arxiv.org/abs/1607.01251}{arXiv:1607.01251}.
+\bibitem{cm} I. Csisz\'ar and F. Mat\'u\v s (2005). Closures of exponential
+families. \emph{Annals of Probability} 33(2), 582--600.
+\doi{10.1214/009117904000000766}.
 \bibitem{ferguson} T. S. Ferguson (1982). An inconsistent maximum likelihood
 estimate. \emph{Journal of the American Statistical Association} 77(380),
 831--834. \doi{10.1080/01621459.1982.10477894}.
@@ -514,31 +525,27 @@ Families}. PhD dissertation, University of Washington.
 \bibitem{hill} B. M. Hill (1963). The three-parameter lognormal
 distribution and Bayesian analysis of a point-source epidemic.
 \emph{Journal of the American Statistical Association} 58, 72--84.
-(Details unverified.)
+\bibitem{huber} P. J. Huber (1967). The behavior of maximum likelihood
+estimates under nonstandard conditions. \emph{Proceedings of the Fifth
+Berkeley Symposium} 1, 221--233.
 \bibitem{ih} I. A. Ibragimov and R. Z. Has'minskii (1981).
 \emph{Statistical Estimation: Asymptotic Theory}. Springer.
-\bibitem{kingman} J. F. C. Kingman (1973). Subadditive ergodic theory.
-\emph{Annals of Probability} 1(6), 883--899. \doi{10.1214/aop/1176996798}.
-\bibitem{lecam} L. Le Cam (1990). Maximum likelihood: an introduction.
-\emph{International Statistical Review} 58(2), 153--171.
-\doi{10.2307/1403464}.
-\bibitem{lecamschwartz} L. Le Cam and L. Schwartz (1960). A necessary and
-sufficient condition for the existence of consistent estimates.
-\emph{Annals of Mathematical Statistics} 31, 140--150. (Details
-unverified.)
-\bibitem{perlman} M. D. Perlman (1972). On the strong consistency of
-approximate maximum likelihood estimators. \emph{Proceedings of the Sixth
-Berkeley Symposium on Mathematical Statistics and Probability} 1, 263--281.
-\bibitem{strasser} H. Strasser (1981). Consistency of maximum likelihood and
-Bayes estimates. \emph{Annals of Statistics} 9(5), 1107--1113.
-\doi{10.1214/aos/1176345590}.
 \bibitem{kw} J. Kiefer and J. Wolfowitz (1956). Consistency of the maximum
 likelihood estimator in the presence of infinitely many incidental
 parameters. \emph{Annals of Mathematical Statistics} 27(4), 887--906.
 \doi{10.1214/aoms/1177728066}.
-\bibitem{huber} P. J. Huber (1967). The behavior of maximum likelihood
-estimates under nonstandard conditions. \emph{Proceedings of the Fifth
-Berkeley Symposium} 1, 221--233.
+\bibitem{kingman} J. F. C. Kingman (1973). Subadditive ergodic theory.
+\emph{Annals of Probability} 1(6), 883--899. \doi{10.1214/aop/1176996798}.
+\bibitem{lecam} L. Le Cam (1990). Maximum likelihood: an introduction.
+\emph{International Statistical Review} 58(2), 153--171.
+\doi{10.2307/1403464}. Technical report version: UC Berkeley Statistics
+Technical Report 168.
+\bibitem{lecamschwartz} L. Le Cam and L. Schwartz (1960). A necessary and
+sufficient condition for the existence of consistent estimates.
+\emph{Annals of Mathematical Statistics} 31, 140--150.
+\bibitem{perlman} M. D. Perlman (1972). On the strong consistency of
+approximate maximum likelihood estimators. \emph{Proceedings of the Sixth
+Berkeley Symposium on Mathematical Statistics and Probability} 1, 263--281.
 \bibitem{selfliang} S. G. Self and K.-Y. Liang (1987). Asymptotic properties
 of maximum likelihood estimators and likelihood ratio tests under
 nonstandard conditions. \emph{Journal of the American Statistical
@@ -546,6 +553,9 @@ Association} 82(398), 605--610. \doi{10.1080/01621459.1987.10478472}.
 \bibitem{smith} R. L. Smith (1985). Maximum likelihood estimation in a class
 of nonregular cases. \emph{Biometrika} 72(1), 67--90.
 \doi{10.1093/biomet/72.1.67}.
+\bibitem{strasser} H. Strasser (1981). Consistency of maximum likelihood and
+Bayes estimates. \emph{Annals of Statistics} 9(5), 1107--1113.
+\doi{10.1214/aos/1176345590}.
 \bibitem{wald} A. Wald (1949). Note on the consistency of the maximum
 likelihood estimate. \emph{Annals of Mathematical Statistics} 20(4),
 595--601. \doi{10.1214/aoms/1177729952}.
