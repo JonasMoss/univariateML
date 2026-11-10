@@ -1,0 +1,7 @@
+{
+  "command": "/home/jonas/Files/work/misc/codex-math-web/bin/show <report>",
+  "http_status": 403,
+  "reason": "That path is outside every readable root. Open an agent thread there, or add it to CODEX_MATH_WEB_VIEW_ROOTS.",
+  "report": "/home/jonas/Files/programming/univariateML.wt/triang-endpoint/dev/research/evaluations/2026-11-10-triang-endpoint-report.md",
+  "viewer_configuration_changed": false
+}
