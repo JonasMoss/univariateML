@@ -1,0 +1,87 @@
+{
+  "base_commit": "99d64df4",
+  "branch": "codex/ew-dpqr",
+  "machine": "workstation",
+  "compiler": "GCC 15.2.0",
+  "R": "4.6.1",
+  "Python": "3.14.5",
+  "cpp_dev": {
+    "passed": 107,
+    "failed": 0
+  },
+  "cpp_no_long_double_full": {
+    "passed": 131,
+    "failed": 0
+  },
+  "R_dev": {
+    "pass": 23031,
+    "fail": 0,
+    "warn": 0,
+    "skip": 154
+  },
+  "R_full": {
+    "pass": 45846,
+    "fail": 0,
+    "warn": 0,
+    "skip": 0
+  },
+  "JS": {
+    "passed": 601,
+    "failed": 0,
+    "skipped": 0
+  },
+  "site_check": "passed",
+  "relations": {
+    "records": 157,
+    "failed": 0
+  },
+  "truth": {
+    "digits": 80,
+    "points": 12,
+    "values": 228,
+    "quantiles": 528
+  },
+  "focused_cpp": {
+    "cases": 6,
+    "assertions": 15061,
+    "failed": 0
+  },
+  "python_selected": {
+    "tests": 10,
+    "failed": 0
+  },
+  "simbox": {
+    "command": "just cpp-test-no-long-double",
+    "exit": 75,
+    "result": "unreachable; workstation fallback passed"
+  },
+  "truth_check_tolerance": 5e-10,
+  "quantile_check_tolerance": 1e-09,
+  "scipy_max_scaled_error": 6.196479080290814e-16,
+  "open_metadata_audit": {
+    "hardcoded_count": 98,
+    "baseline_tables": 99,
+    "current_tables": 100,
+    "baseline_stale_fingerprints": 87
+  },
+  "source_sha256": {
+    "bindings/js/generate.py": "6367e2a87993a775a9c9bea9dd99c643db0be1db05210c9a993fed526701f209",
+    "bindings/r/scripts/assemble_package.R": "3623dcbcbb987d7fb9fa62de320fdc4fecec6556fd19f88cada8f8f667bee01e",
+    "bindings/r/scripts/load_distributions.R": "820f821061f55b839e473a45d2ff0de42f369f47ae77564b17c715cef8d2653a",
+    "dev/validation/inference_availability.py": "8d3d68c08a7d2e035e7af9c0fcc6b187bd699a6c5669982b0b261e886f0a90d9",
+    "dev/validation/quality/harness/check.py": "319ac296ebcf8089ebe292280478823a24ac76c293ecf09d08b91be291c82986",
+    "dev/validation/quality/truth.py": "3b8f8776011351d53a9f5cc67da1db841dca8fa8fb9da283297c7b930987614c",
+    "site/scripts/data.py": "c24e8840540dbc12bac7ec0af8e1ce42bd0dbb472b63514d24134bf52499d37a",
+    "site/src/pages/distributions/[id].astro": "0862723b9463eb6a60e7dcad5b2f3ac1e1d39f27da5e90a38b78b46ea79e7ed4",
+    "univariateML-cpp/include/cppunivariate/distributions/expweibull/README.md": "000cfb5f2d3d5f022fb9cff2007cf9237c4e82d3eabfe3510dae193c4662943c",
+    "univariateML-cpp/include/cppunivariate/distributions/expweibull/dpqr.hpp": "d8e2ec5acd9d8c3883aceabf14fc15db0eee429a220385aef7f054bf7597d8f3",
+    "univariateML-cpp/include/cppunivariate/distributions/expweibull/test.cpp": "bfe5669638ae5868f6161cd46dda31d19d9645cb53a836f5d5e331abeaf46cb0",
+    "univariateML-cpp/include/cppunivariate/distributions/expweibull/truth.json": "78d4b1f2ebadf01cfedf7bd445585d6c018a756af06c02465dae30babf5a060c",
+    "univariateML-cpp/include/cppunivariate/distributions/expweibull/truth.py": "6af96bb01ed96bb009131001228a2a4bf89750ea57fc0a3d51967f4eb3cce182"
+  },
+  "artifact_viewer": {
+    "status": 403,
+    "reason": "worktree outside readable roots",
+    "report": "/home/jonas/Files/programming/univariateML.wt/ew-dpqr/dev/research/evaluations/2026-11-10-ew-dpqr-report.md"
+  }
+}

@@ -229,7 +229,8 @@ def main():
     out = ROOT / 'build/quality'
     out.mkdir(parents=True, exist_ok=True)
     results = []
-    for id in args.ids or sorted((p.parent.name for p in DISTS.glob('*/README.md'))):
+    for id in args.ids or sorted(p.parent.name for p in DISTS.glob('*/README.md')
+                                 if (p.parent/'mle.hpp').exists()):
         started = time.monotonic()
         try:
             r = check(id)

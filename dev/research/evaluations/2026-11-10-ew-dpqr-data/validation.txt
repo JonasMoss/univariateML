@@ -1,0 +1,96 @@
+ew-cpp-final.log
+        Start 131: diagnostics_tests
+107/107 Test #131: diagnostics_tests ................   Passed    3.15 sec
+
+100% tests passed, 0 tests failed out of 107
+
+Label Time Summary:
+cran    = 1447.97 sec*proc (106 tests)
+dev     = 1451.11 sec*proc (107 tests)
+full    = 1451.11 sec*proc (107 tests)
+
+Total Test time (real) = 1451.15 sec
+
+ew-nold-final.log
+131/131 Test #131: diagnostics_tests ................   Passed    2.15 sec
+
+100% tests passed, 0 tests failed out of 131
+
+Label Time Summary:
+cran    = 1113.21 sec*proc (106 tests)
+dev     = 1115.36 sec*proc (107 tests)
+full    = 1665.11 sec*proc (131 tests)
+
+Total Test time (real) = 1665.15 sec
+
+ew-r-dev.log
+  'test-dist-ztpois.R:33:3', 'test-dist-genbeta.R:127:3'
+
+[ FAIL 0 | WARN 0 | SKIP 154 | PASS 23031 ]
+   user  system elapsed 
+ 80.421   1.702 348.952 
+
+ew-r-full.log
+⠇ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 45846 ] Starting up...                      
+                                                                                
+══ Results ═════════════════════════════════════════════════════════════════════
+Duration: 698.0 s
+
+[ FAIL 0 | WARN 0 | SKIP 0 | PASS 45846 ]
+    user   system  elapsed 
+1539.999    8.080  704.033 
+
+ew-js-test.log
+  ...
+1..601
+# tests 601
+# suites 0
+# pass 601
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 454750.090284
+
+ew-site.log
+WEIGHT gb2: HTML 112490 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+WEIGHT binom: HTML 41341 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+WEIGHT hyper: HTML 40162 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+WEIGHT sstd: HTML 141791 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+Total dist: 24533874 B
+
+ew-relations.log
+ztpois -> zmpois (special_case_of): verified numerically 
+157 edges; 0 failed
+
+ew-truth.log
+expweibull {'id': 'expweibull', 'status': 'generated', 'points': 12, 'sampler_points': 2, 'values': 228, 'quantiles': 528, 'seconds': 11.444515113980742}
+
+ew-final-target.log
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases:     6 |     6 passed | 0 failed | 2019 skipped
+[doctest] assertions: 15061 | 15061 passed | 0 failed |
+[doctest] Status: SUCCESS!
+
+ew-python-final.log
+..........
+----------------------------------------------------------------------
+Ran 10 tests in 0.343s
+
+OK
+
+ew-truth-payload.log
+Numerical payload unchanged; final fingerprint verified.
+
+ew-critical.log
+1 1 1
+0.01 1 1
+9.9999999999999998e-201 1 1
+9.9999999999999991e-309 1 1
+
+ew-scipy.log
+SciPy: 6 cases; max scaled error 6.196479080290814e-16
+
+ew-simbox-nold.log
+simbox-run: simbox unreachable; run locally
