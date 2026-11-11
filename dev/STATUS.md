@@ -96,6 +96,15 @@ The vector-parameter tier (`dcat`, `dmixpois`, `dmixnorm`) was dropped on
 
   Open: the zib/ztbinom size searches remain numerical (unimodality
   unproved).
+- d/p/q accuracy at extreme parameters is unchecked outside the t/GED
+  families, expweibull and gengamma: truth tables span about 0.1 to 10
+  times each default. At large shapes, `shape*(log(x) - log(scale))`
+  loses about `shape * eps * |log(scale)|`; against 60-digit mpmath at
+  `scale = 1000`, `x = scale*(1 + 0.5/shape)`, Weibull's log density is
+  off by 2.7e-9 at shape 1e8 and 1.5e-6 at 1e12, its upper log tail by
+  4.4e-5 at 1e12, log-logistic and inverse Weibull by up to 9e-7 at 1e12.
+  GEV and GPD near `xi = 0` are accurate. Audit and contract: TASK-189;
+  Fréchet: TASK-187.
 - TASK-77 (scale equivariance) is fixed: f9e1222, with
   `test_scale_equivariance.R`.
 - TASK-75, cross-machine fragility, is done: golden tolerances follow
