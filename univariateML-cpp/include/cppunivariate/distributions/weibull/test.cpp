@@ -152,3 +152,136 @@ TEST_CASE("weibull: held shape does not hide an unrepresentable scale") {
   const std::vector<double> x{u,2*u};
   CHECK(cppunivariate::weibull_mle({x.data(),x.size()},1e-10,100,NAN,1,NAN).status==cppunivariate::WeibullStatus::AccuracyFailure);
 }
+
+#include "cppunivariate/distributions/weibull/censored.hpp"
+#include "censored_reference.hpp"
+TEST_CASE("weibull: right censoring independent 50-digit reference") {
+  for(const auto& c:censored_reference::cases()) {
+    if(std::string(c.family)!="weibull")continue;
+    CAPTURE(c.label); CAPTURE(c.held);
+    const auto& v=c.lower;
+    std::vector<double> upper=v;
+    for(std::size_t i=0;i<v.size();++i)if(!c.exact[i])upper[i]=INFINITY;
+    const cppunivariate::CensoredData data{mltest::as_span(v),mltest::as_span(upper)};
+    const auto r=cppunivariate::weibull_censored_mle(data,c.held);
+    REQUIRE(r.status==cppunivariate::WeibullCensoredStatus::Ok);
+    CHECK(r.scale/c.coefficient==doctest::Approx(1).epsilon(1e-10));
+    CHECK(r.logLik==doctest::Approx(c.logLik).epsilon(1e-12));
+    if(std::string(c.label)=="0pct" || std::string(c.label)=="single") {
+      const auto exact=cppunivariate::weibull_mle(mltest::as_span(v),1e-10,1000,NAN,c.held,NAN);
+      CHECK(r.scale/exact.scale==doctest::Approx(1).epsilon(4*std::numeric_limits<double>::epsilon()));
+      CHECK(r.logLik==doctest::Approx(exact.logLik).epsilon(2e-13));
+    }
+  }
+}
+TEST_CASE("weibull: right censoring classifications and refusals") {
+  std::vector<double> lower{1,2},upper{INFINITY,INFINITY};
+  cppunivariate::CensoredData data{mltest::as_span(lower),mltest::as_span(upper)};
+  const auto c=censored_reference::Case{"","",1.,0,0,{},{}};
+  CHECK(cppunivariate::weibull_censored_mle(data,c.held).status==cppunivariate::WeibullCensoredStatus::AllCensored);
+  upper[0]=1;
+  CHECK(cppunivariate::weibull_censored_mle(data,c.held).status==cppunivariate::WeibullCensoredStatus::Ok);
+  lower[0]=-INFINITY;
+  CHECK(cppunivariate::weibull_censored_mle(data,c.held).status==cppunivariate::WeibullCensoredStatus::NotImplemented);
+  lower[0]=1;upper[0]=1.5;
+  CHECK(cppunivariate::weibull_censored_mle(data,c.held).status==cppunivariate::WeibullCensoredStatus::NotImplemented);
+  upper[0]=0;
+  CHECK(cppunivariate::weibull_censored_mle(data,c.held).status==cppunivariate::WeibullCensoredStatus::InvalidInput);
+}
+TEST_CASE("weibull: censored hold sets") {
+  std::vector<double> v{1,2};
+  const cppunivariate::CensoredData x{mltest::as_span(v),mltest::as_span(v)};
+  CHECK(cppunivariate::weibull_censored_mle(x,-1).status==cppunivariate::WeibullCensoredStatus::InvalidInput);
+  CHECK(cppunivariate::weibull_censored_mle(x,NAN,-1).status==cppunivariate::WeibullCensoredStatus::InvalidInput);
+  // All held: evaluation equals the exact-data log likelihood.
+  const auto both=cppunivariate::weibull_censored_mle(x,2,1.5);
+  REQUIRE(both.status==cppunivariate::WeibullCensoredStatus::Ok);
+  const double expected=cppunivariate::distributions::dweibull(1,2,1.5,true)+cppunivariate::distributions::dweibull(2,2,1.5,true);
+  CHECK(both.logLik==doctest::Approx(expected).epsilon(1e-14));
+}
+TEST_CASE("weibull: censored tiny held shape retains logarithmic spread") {
+  std::vector<double> v{1,4};
+  const cppunivariate::CensoredData x{mltest::as_span(v),mltest::as_span(v)};
+  const auto r=cppunivariate::weibull_censored_mle(x,1e-20);
+  REQUIRE(r.status==cppunivariate::WeibullCensoredStatus::Ok);
+  CHECK(r.scale==doctest::Approx(2).epsilon(1e-14));
+}
+TEST_CASE("weibull: right censoring spans the binary64 exponent range") {
+  std::vector<double> l{1e-200,1e200},u{1e-200,INFINITY};
+  const cppunivariate::CensoredData x{mltest::as_span(l),mltest::as_span(u)};
+  const auto r=cppunivariate::weibull_censored_mle(x,.5);
+  REQUIRE(r.status==cppunivariate::WeibullCensoredStatus::Ok);
+  CHECK(r.scale/1e200==doctest::Approx(1).epsilon(1e-14));
+  CHECK(std::isfinite(r.logLik));
+}
+TEST_CASE("weibull: tiny held shape with censoring at zero") {
+  std::vector<double> l{1,4,0},u{1,4,INFINITY};
+  const cppunivariate::CensoredData x{mltest::as_span(l),mltest::as_span(u)};
+  const auto r=cppunivariate::weibull_censored_mle(x,1e-20);
+  REQUIRE(r.status==cppunivariate::WeibullCensoredStatus::Ok);
+  CHECK(r.scale==doctest::Approx(2).epsilon(1e-14));
+}
+TEST_CASE("weibull: tiny normalized power and representable rescaled root") {
+  std::vector<double> l{1e-200,1e200},u{1e-200,INFINITY};
+  const cppunivariate::CensoredData x{mltest::as_span(l),mltest::as_span(u)};
+  const auto r=cppunivariate::weibull_censored_mle(x,.02);
+  REQUIRE(r.status==cppunivariate::WeibullCensoredStatus::Ok);
+  CHECK(r.scale/1e200==doctest::Approx(std::pow(1+1e-8,50)).epsilon(1e-12));
+  l={1e-300,1e-300,1e300};u=l;
+  const cppunivariate::CensoredData y{mltest::as_span(l),mltest::as_span(u)};
+  const auto s=cppunivariate::weibull_censored_mle(y,1e-20);
+  REQUIRE(s.status==cppunivariate::WeibullCensoredStatus::Ok);
+  CHECK(s.scale/1e-100==doctest::Approx(1).epsilon(1e-12));
+}
+
+#include "censored_reference_weibull_free.hpp"
+TEST_CASE("weibull: right censoring with free shape, independent 30-digit reference") {
+  for(const auto& c:censored_reference_weibull_free::cases()) {
+    CAPTURE(c.kind); CAPTURE(c.label); CAPTURE(c.scale);
+    std::vector<double> upper=c.lower;
+    for(std::size_t i=0;i<upper.size();++i)if(!c.exact[i])upper[i]=INFINITY;
+    const cppunivariate::CensoredData data{mltest::as_span(c.lower),mltest::as_span(upper)};
+    const auto r=cppunivariate::weibull_censored_mle(data,NAN,c.held);
+    REQUIRE(r.status==cppunivariate::WeibullCensoredStatus::Ok);
+    CHECK(r.shape/c.shape==doctest::Approx(1).epsilon(1e-10));
+    CHECK(r.scale/c.scale==doctest::Approx(1).epsilon(1e-10));
+    CHECK(r.logLik==doctest::Approx(c.logLik).epsilon(1e-12));
+  }
+}
+TEST_CASE("weibull: right censoring, free shape agrees with the exact-data fitter") {
+  auto g = mltest::load_distribution_golden("weibull");
+  const auto x=mltest::as_span(g.data);
+  const cppunivariate::CensoredData data{x,x};
+  const auto e=cppunivariate::weibull_mle(x,1e-10,1000);
+  const auto r=cppunivariate::weibull_censored_mle(data);
+  REQUIRE(r.status==cppunivariate::WeibullCensoredStatus::Ok);
+  CHECK(r.shape/e.shape==doctest::Approx(1).epsilon(1e-10));
+  CHECK(r.scale/e.scale==doctest::Approx(1).epsilon(1e-10));
+  CHECK(r.logLik==doctest::Approx(e.logLik).epsilon(1e-12));
+  const auto s=cppunivariate::weibull_censored_mle(data,NAN,e.scale);
+  const auto es=cppunivariate::weibull_mle(x,1e-10,1000,NAN,NAN,e.scale);
+  REQUIRE(s.status==cppunivariate::WeibullCensoredStatus::Ok);
+  CHECK(s.shape/es.shape==doctest::Approx(1).epsilon(1e-10));
+}
+TEST_CASE("weibull: right censoring existence boundaries for a free shape") {
+  using S=cppunivariate::WeibullCensoredStatus;
+  const auto fit=[](std::vector<double> l,std::vector<double> u,double scale=NAN) {
+    return cppunivariate::weibull_censored_mle({mltest::as_span(l),mltest::as_span(u)},NAN,scale).status;
+  };
+  const double inf=INFINITY;
+  // Exact cluster with censoring only at or below it: collapse.
+  CHECK(fit({2,2,2,1},{2,2,2,inf})==S::Unbounded);
+  CHECK(fit({2,2,2,2},{2,2,2,inf})==S::Unbounded);
+  CHECK(fit({2},{2})==S::Unbounded);
+  // A censoring time above the cluster bounds the likelihood.
+  CHECK(fit({2,2,2,3},{2,2,2,inf})==S::Ok);
+  CHECK(fit({2,3},{2,inf})==S::Ok);
+  CHECK(fit({2,3},{inf,inf})==S::AllCensored);
+  // Scale held: exact times equal to the scale and nothing above it.
+  CHECK(fit({2,2,1},{2,2,inf},2)==S::Unbounded);
+  CHECK(fit({2,2,3},{2,2,inf},2)==S::Ok);
+  CHECK(fit({1,2},{1,2},2)==S::Ok);
+  // Times censored at zero carry no information but are valid.
+  CHECK(fit({0,1,3},{inf,1,3})==S::Ok);
+  CHECK(fit({0,1},{0,1})==S::InvalidInput);
+}

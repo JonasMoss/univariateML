@@ -116,3 +116,70 @@ TEST_CASE("exp: free rate avoids overflowing the sum") {
   CHECK(fit.rate / 1e-308 == doctest::Approx(1.0).epsilon(1e-14));
   CHECK(std::isfinite(fit.logLik));
 }
+
+#include "cppunivariate/distributions/exp/censored.hpp"
+#include "censored_reference.hpp"
+TEST_CASE("exp: right censoring independent 50-digit reference") {
+  for(const auto& c:censored_reference::cases()) {
+    if(std::string(c.family)!="exp")continue;
+    CAPTURE(c.label); CAPTURE(c.held);
+    const auto& v=c.lower;
+    std::vector<double> upper=v;
+    for(std::size_t i=0;i<v.size();++i)if(!c.exact[i])upper[i]=INFINITY;
+    const cppunivariate::CensoredData data{mltest::as_span(v),mltest::as_span(upper)};
+    const auto r=cppunivariate::exp_censored_mle(data);
+    REQUIRE(r.status==cppunivariate::ExpCensoredStatus::Ok);
+    CHECK(r.rate/c.coefficient==doctest::Approx(1).epsilon(1e-10));
+    CHECK(r.logLik==doctest::Approx(c.logLik).epsilon(1e-12));
+    if(std::string(c.label)=="0pct" || std::string(c.label)=="single") {
+      const auto exact=cppunivariate::exp_mle(mltest::as_span(v));
+      CHECK(r.rate/exact.rate==doctest::Approx(1).epsilon(4*std::numeric_limits<double>::epsilon()));
+      CHECK(r.logLik==doctest::Approx(exact.logLik).epsilon(2e-13));
+    }
+  }
+}
+TEST_CASE("exp: right censoring classifications and refusals") {
+  std::vector<double> lower{1,2},upper{INFINITY,INFINITY};
+  cppunivariate::CensoredData data{mltest::as_span(lower),mltest::as_span(upper)};
+  const auto c=censored_reference::Case{"","",1.,0,0,{},{}};
+  CHECK(cppunivariate::exp_censored_mle(data).status==cppunivariate::ExpCensoredStatus::AllCensored);
+  upper[0]=1;
+  CHECK(cppunivariate::exp_censored_mle(data).status==cppunivariate::ExpCensoredStatus::Ok);
+  lower[0]=-INFINITY;
+  CHECK(cppunivariate::exp_censored_mle(data).status==cppunivariate::ExpCensoredStatus::NotImplemented);
+  lower[0]=1;upper[0]=1.5;
+  CHECK(cppunivariate::exp_censored_mle(data).status==cppunivariate::ExpCensoredStatus::NotImplemented);
+  upper[0]=0;
+  CHECK(cppunivariate::exp_censored_mle(data).status==cppunivariate::ExpCensoredStatus::InvalidInput);
+}
+
+TEST_CASE("censored core: validation and support-aware counts") {
+  std::vector<double> l{1,2,-INFINITY,0,2},u{1,INFINITY,3,2,3};
+  cppunivariate::CensoredData x{mltest::as_span(l),mltest::as_span(u)};
+  auto c=cppunivariate::classify_censored(x,0);
+  CHECK(c.status==cppunivariate::CensoredStatus::Ok);
+  CHECK(c.exact==1);CHECK(c.right==1);CHECK(c.left==2);CHECK(c.interval==1);
+  CHECK(cppunivariate::classify_censored(x,-1).interval==2);
+  l[0]=NAN;CHECK(cppunivariate::classify_censored(x).status==cppunivariate::CensoredStatus::InvalidInput);
+  l[0]=2;CHECK(cppunivariate::classify_censored(x).status==cppunivariate::CensoredStatus::InvalidInput);
+  x.upper={u.data(),u.size()-1};
+  CHECK(cppunivariate::classify_censored(x).status==cppunivariate::CensoredStatus::InvalidInput);
+  x={{nullptr,0},{nullptr,0}};
+  CHECK(cppunivariate::classify_censored(x).status==cppunivariate::CensoredStatus::Ok);
+  CHECK(cppunivariate::exp_censored_mle(x).status==cppunivariate::ExpCensoredStatus::InvalidInput);
+}
+TEST_CASE("exp: censored held likelihood and boundary outcomes") {
+  std::vector<double> l{0,0},u{0,INFINITY};
+  cppunivariate::CensoredData x{mltest::as_span(l),mltest::as_span(u)};
+  CHECK(cppunivariate::exp_censored_mle(x).status==cppunivariate::ExpCensoredStatus::Unbounded);
+  CHECK(cppunivariate::exp_censored_mle(x,2).logLik==doctest::Approx(std::log(2.)));
+  u[0]=INFINITY;
+  CHECK(cppunivariate::exp_censored_mle(x,2).logLik==0);
+  CHECK(cppunivariate::exp_censored_mle(x,0).status==cppunivariate::ExpCensoredStatus::InvalidInput);
+  l={1,2};u={1,INFINITY};
+  CHECK(cppunivariate::exp_censored_mle(x,2).logLik==doctest::Approx(std::log(2.)-6));
+  l={1e308,1e308};u=l;
+  const auto r=cppunivariate::exp_censored_mle(x);
+  REQUIRE(r.status==cppunivariate::ExpCensoredStatus::Ok);
+  CHECK(r.rate/1e-308==doctest::Approx(1));
+}

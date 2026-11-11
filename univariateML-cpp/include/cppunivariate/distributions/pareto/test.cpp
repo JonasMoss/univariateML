@@ -160,3 +160,56 @@ TEST_CASE("pareto: finite support ratios beyond floating-point range") {
   CHECK(fit.shape == doctest::Approx(3.0 / (900 * std::log(10.0))).epsilon(1e-14));
   CHECK(std::isfinite(fit.logLik));
 }
+
+#include "cppunivariate/distributions/pareto/censored.hpp"
+#include "censored_reference.hpp"
+TEST_CASE("pareto: right censoring independent 50-digit reference") {
+  for(const auto& c:censored_reference::cases()) {
+    if(std::string(c.family)!="pareto")continue;
+    CAPTURE(c.label); CAPTURE(c.held);
+    const auto& v=c.lower;
+    std::vector<double> upper=v;
+    for(std::size_t i=0;i<v.size();++i)if(!c.exact[i])upper[i]=INFINITY;
+    const cppunivariate::CensoredData data{mltest::as_span(v),mltest::as_span(upper)};
+    const auto r=cppunivariate::pareto_censored_mle(data,NAN,c.held);
+    REQUIRE(r.status==cppunivariate::ParetoCensoredStatus::Ok);
+    CHECK(r.shape/c.coefficient==doctest::Approx(1).epsilon(1e-10));
+    CHECK(r.logLik==doctest::Approx(c.logLik).epsilon(1e-12));
+    if(std::string(c.label)=="0pct" || std::string(c.label)=="single") {
+      const auto exact=cppunivariate::pareto_mle(mltest::as_span(v),NAN,c.held);
+      CHECK(r.shape/exact.shape==doctest::Approx(1).epsilon(4*std::numeric_limits<double>::epsilon()));
+      CHECK(r.logLik==doctest::Approx(exact.logLik).epsilon(2e-13));
+    }
+  }
+}
+TEST_CASE("pareto: right censoring classifications and refusals") {
+  std::vector<double> lower{1,2},upper{INFINITY,INFINITY};
+  cppunivariate::CensoredData data{mltest::as_span(lower),mltest::as_span(upper)};
+  const auto c=censored_reference::Case{"","",1.,0,0,{},{}};
+  CHECK(cppunivariate::pareto_censored_mle(data,NAN,c.held).status==cppunivariate::ParetoCensoredStatus::AllCensored);
+  upper[0]=1;
+  CHECK(cppunivariate::pareto_censored_mle(data,NAN,c.held).status==cppunivariate::ParetoCensoredStatus::Ok);
+  lower[0]=-INFINITY;
+  CHECK(cppunivariate::pareto_censored_mle(data,NAN,c.held).status==cppunivariate::ParetoCensoredStatus::NotImplemented);
+  lower[0]=1;upper[0]=1.5;
+  CHECK(cppunivariate::pareto_censored_mle(data,NAN,c.held).status==cppunivariate::ParetoCensoredStatus::NotImplemented);
+  upper[0]=0;
+  CHECK(cppunivariate::pareto_censored_mle(data,NAN,c.held).status==cppunivariate::ParetoCensoredStatus::InvalidInput);
+}
+TEST_CASE("pareto: censored minimum and degenerate exposures") {
+  std::vector<double> l{2,2},u{2,INFINITY};
+  const cppunivariate::CensoredData x{mltest::as_span(l),mltest::as_span(u)};
+  CHECK(cppunivariate::pareto_censored_mle(x,NAN,2).status==cppunivariate::ParetoCensoredStatus::Unbounded);
+  CHECK(cppunivariate::pareto_censored_mle(x).status==cppunivariate::ParetoCensoredStatus::NotImplemented);
+  CHECK(cppunivariate::pareto_censored_mle(x,2,2).status==cppunivariate::ParetoCensoredStatus::NotImplemented);
+  CHECK(cppunivariate::pareto_censored_mle(x,NAN,3).status==cppunivariate::ParetoCensoredStatus::InvalidInput);
+  l[1]=1;
+  CHECK(cppunivariate::pareto_censored_mle(x,NAN,2).status==cppunivariate::ParetoCensoredStatus::InvalidInput);
+}
+TEST_CASE("pareto: right censoring overflowing dimensional ratio") {
+  std::vector<double> l{1e200,1e200},u{1e200,INFINITY};
+  const cppunivariate::CensoredData x{mltest::as_span(l),mltest::as_span(u)};
+  const auto r=cppunivariate::pareto_censored_mle(x,NAN,1e-200);
+  REQUIRE(r.status==cppunivariate::ParetoCensoredStatus::Ok);
+  CHECK(r.shape==doctest::Approx(1/(800*std::log(10.))).epsilon(1e-14));
+}
