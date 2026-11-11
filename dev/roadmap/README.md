@@ -22,6 +22,11 @@ the queue.
 
 ## Index
 
+- [2026-11-11 — Sichel (Poisson–GIG counts)](2026-11-11-sichel.md)
+  *(banked; after GIG)*: three-parameter count family with PIG as the
+  $\nu=-1/2$ slice and NB, Poisson and Poisson–inverse-gamma as faces;
+  weak $\nu$ identification, general-order Bessel recurrence.
+
 - [2026-11-11 — Zero modification and truncation as modifiers](2026-11-11-zero-and-truncation-modifiers.md)
   *(proposal; knobs only, decided 2026-11-11)*: `zero` and `truncate` knobs on base families instead of
   zt/zm/t families, derived eligibility and tags, a generated capability
