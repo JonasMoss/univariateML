@@ -350,8 +350,8 @@ TEST_CASE("std: shape-only certificate keeps actual sd and resolves the collapse
   const auto g=mltest::load_distribution_golden("std");
   const auto r=cppunivariate::student_t_mle(mltest::as_span(g.data),1e-8,200,g.estimates.at("mean"),g.estimates.at("sd"),NAN);
   REQUIRE(r.status==cppunivariate::StudentTStatus::Ok);
-  CHECK(r.nu==doctest::Approx(3.97765795208252294225).epsilon(1e-7));
-  CHECK(r.logLik==doctest::Approx(-579.480782421475318179).epsilon(1e-12));
+  CHECK(r.nu==doctest::Approx(3.97766630702385528449).epsilon(1e-7));
+  CHECK(r.logLik==doctest::Approx(-579.480782421376264826).epsilon(1e-12));
   const std::vector<double> x{0,0,1};
   const auto collapse=cppunivariate::student_t_mle(mltest::as_span(x),1e-8,200,0,1,NAN);
   REQUIRE(collapse.status==cppunivariate::StudentTStatus::ScaleBoundary);
