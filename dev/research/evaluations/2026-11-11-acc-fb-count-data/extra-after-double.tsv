@@ -1,0 +1,22 @@
+1245	bnbinom	uncertified	-2.7273820600559864	size=1.0672234787479615	alpha=29.443483121871413	beta=5.3647338351087397	
+1246	bbinom	stop:numerical	nan	Beta-binomial MLE failed to certify the maximum and coefficient accuracy.
+1247	bbinom	uncertified	-12557.019409887747	size=3	alpha=1874.5	beta=1874.5	
+1248	bbinom	stop:numerical	nan	Beta-binomial MLE failed to certify the maximum and coefficient accuracy.
+1249	bbinom	stop:numerical	nan	Beta-binomial MLE failed to certify the maximum and coefficient accuracy.
+1250	zib	uncertified	-21.295169201729724	size=1000023	prob=0.99998160042319029	pi=0.5	
+1251	zib	uncertified	-4580985.9928449504	size=1000013	prob=0.40000000000000002	pi=0.5	
+1252	bbinom	certified	-23.142710681485859	size=10	alpha=0.85630369461897116	beta=1.4484991703216141	
+1253	ztbinom	uncertified	-1.9095425048844383	size=2	prob=0.5	
+1254	zmbinom	uncertified	-1.3862943611198906	size=1	prob=1.0000000000000001e-09	p0=0.5	
+1255	bbinom	uncertified	-12557.019409887747	size=3	alpha=1874.5	beta=1874.5	
+1256	bnbinom	uncertified	-5.1445832666059941	size=2	alpha=3	beta=4	
+1257	bbinom	uncertified	-46.27225278422749	size=3	alpha=2	beta=3	
+1258	zib	uncertified	-39.509389291916904	size=2	prob=0.80000000000000004	pi=0.21875	
+1259	zib	uncertified	-4.422848629194136	size=4	prob=0.5	pi=0.20000000000000001	
+1260	ztbinom	uncertified	-7.0296973113785342	size=3	prob=0.5	
+1261	zib	uncertified	-101.80904211053485	size=3	prob=0.25	pi=0.5	
+1262	zib	stop:numerical	nan	zib numerical accuracy failure: the returned coefficients cannot be resolved to the requested tolerance in the local refinement.
+1263	zib	uncertified	-10.04385860143003	size=3	prob=0.5	pi=0	
+1264	zmbinom	uncertified	-10.043858601430028	size=3	prob=0.5	p0=0.125	
+1265	zib	uncertified	-1.9095425048844383	size=1	prob=0.33333333333333337	pi=1.1102230246251565e-16	
+1266	zib	uncertified	-2.2493405784752332	size=1	prob=0.5	pi=0.5	

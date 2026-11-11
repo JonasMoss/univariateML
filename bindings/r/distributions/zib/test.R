@@ -353,10 +353,19 @@ test_that("an exact turning discriminant leaves a flat probability root uncertif
 })
 
 test_that("a closed binomial mean respects the requested coefficient precision", {
-  f <- mlzib(c(1,1,2),size=2,pi=0,reltol=1e-18)
+  e <- tryCatch(mlzib(c(1,1,2),size=2,pi=0,reltol=1e-18),error=identity)
+  expect_s3_class(e,"univariateML_numerical")
+  expect_match(conditionMessage(e),"numerical accuracy failure")
+  expect_true(any(is.finite(e$candidates$loglik_lower)))
+  g <- tryCatch(mlzib(c(0,1,1),size=1,prob=1,reltol=1e-18),error=identity)
+  expect_s3_class(g,"univariateML_numerical")
+  expect_equal(tail(g$candidates$pi,1),1/3,tolerance=0)
+})
+
+test_that("uncertified zib coefficients meet the local accuracy contract", {
+  f <- mlzib(c(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2),size=2,pi=0.15743440233236153)
   expect_identical(attr(f,"certified"),FALSE)
-  expect_true(is.finite(as.numeric(logLik(f))))
-  g <- mlzib(c(0,1,1),size=1,prob=1,reltol=1e-18)
-  expect_identical(attr(g,"certified"),FALSE)
-  expect_equal(unname(g["pi"]),1/3,tolerance=0)
+  expect_equal(unname(f["size"]),2,tolerance=0)
+  expect_lte(abs(unname(f["prob"])-(0.8235304158971448)),1e-10*1)
+  expect_equal(unname(f["pi"]),0.15743440233236153,tolerance=0)
 })

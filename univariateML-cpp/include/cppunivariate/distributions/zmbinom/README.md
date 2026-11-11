@@ -135,3 +135,8 @@ Supply `size` explicitly. A numeric value holds it, while `size = NULL` estimate
 Positive observations confined to one and two attain their saturated two-atom likelihood at trial count two. Multiplying by the fitted zero-indicator factor certifies the corresponding zero-modified fit; a compatible held zero probability does not change this positive-count argument.
 
 The factorized zero estimate is $p_0=n_0/n$, even when the positive component is an attained size-one law. The sample $0,1,1$ requires $p_0=1/3$ in real arithmetic; no double meets relative $10^{-18}$ for that coefficient. Settling the positive component therefore need not settle the full fit at the requested precision.
+
+The empirical zero mass is a separate count ratio. Its rounding error is
+checked with an FMA residual when the requested tolerance is below ordinary
+binary64 accuracy; uncertainty in the positive-count fit does not alter that
+ratio.

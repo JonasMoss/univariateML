@@ -1,0 +1,318 @@
+{
+  "digits": 80,
+  "rows": [
+    {
+      "index": 1245,
+      "family": "bnbinom",
+      "route": "scalar-rescue",
+      "outcome": "uncertified",
+      "errors": {
+        "alpha": 2.2267019977977655e-15
+      },
+      "max_error": 2.2267019977977655e-15,
+      "reference": {
+        "size": "1.06722347874796152922272085561417043209075927734375",
+        "alpha": "29.44348312187134747111452646641595664806636822434039253866768007994817661545762",
+        "beta": "5.36473383510873969015619877609424293041229248046875"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1247,
+      "family": "bbinom",
+      "route": "joint-route-probe",
+      "outcome": "uncertified",
+      "errors": {
+        "alpha": 2.5351346048351826e-14,
+        "beta": 2.6079135887060493e-14
+      },
+      "max_error": 2.6079135887060493e-14,
+      "reference": {
+        "size": "3.0",
+        "alpha": "1874.5",
+        "beta": "1874.5"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1250,
+      "family": "zib",
+      "route": "interior-inflation-fallback",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 0.0,
+        "prob": 1.9995633770184025e-17,
+        "pi": 0.0
+      },
+      "max_error": 1.9995633770184025e-17,
+      "reference": {
+        "size": "1000023.0",
+        "prob": "0.9999816004231902666238676510440259874022897473358112763406441651842007633824422",
+        "pi": "0.5"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1251,
+      "family": "zib",
+      "route": "interior-inflation-fallback",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 0.0,
+        "pi": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "size": "1000013.0",
+        "prob": "0.40000000000000002220446049250313080847263336181640625",
+        "pi": "0.5"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1252,
+      "family": "bbinom",
+      "route": "joint-Newton-inclusion",
+      "outcome": "certified",
+      "errors": {
+        "alpha": 4.633976131347841e-16,
+        "beta": 7.896447034150175e-16
+      },
+      "max_error": 7.896447034150175e-16,
+      "reference": {
+        "size": "10.0",
+        "alpha": "0.85630369461897069284066089918309834733450408633589480702198476306865249707852603",
+        "beta": "1.4484991703216129829776786956596224378186732346445281440999650514771111437220511"
+      },
+      "tol": 1e-14
+    },
+    {
+      "index": 1253,
+      "family": "ztbinom",
+      "route": "exact-half-probability",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 0.0,
+        "prob": 2.220446049250313e-16
+      },
+      "max_error": 2.220446049250313e-16,
+      "reference": {
+        "size": "2.0",
+        "prob": "0.5"
+      },
+      "tol": 1e-18
+    },
+    {
+      "index": 1254,
+      "family": "zmbinom",
+      "route": "exact-half-zero-mass",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 0.0,
+        "p0": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "size": "1.0",
+        "prob": "0.0000000010000000000000000622815914577798564188970686927859787829220294952392578125",
+        "p0": "0.5"
+      },
+      "tol": 1e-18
+    },
+    {
+      "index": 1255,
+      "family": "bbinom",
+      "route": "exact-symmetric-shapes",
+      "outcome": "uncertified",
+      "errors": {
+        "alpha": 1.9953571411262564e-13,
+        "beta": 2.002635039513343e-13
+      },
+      "max_error": 2.002635039513343e-13,
+      "reference": {
+        "size": "3.0",
+        "alpha": "1874.5",
+        "beta": "1874.5"
+      },
+      "tol": 1e-18
+    },
+    {
+      "index": 1256,
+      "family": "bnbinom",
+      "route": "all-held-evaluation",
+      "outcome": "uncertified",
+      "errors": {},
+      "max_error": 0,
+      "reference": {
+        "size": "2.0",
+        "alpha": "3.0",
+        "beta": "4.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1257,
+      "family": "bbinom",
+      "route": "exact-asymmetric-shapes",
+      "outcome": "uncertified",
+      "errors": {
+        "alpha": 6.661338147750939e-16,
+        "beta": 7.401486830834377e-16
+      },
+      "max_error": 7.401486830834377e-16,
+      "reference": {
+        "size": "3.0",
+        "alpha": "1.9999999999999999999999999999999999999999999999999999999999996863211050706510329",
+        "beta": "2.9999999999999999999999999999999999999999999999999999999999995265171490669267753"
+      },
+      "tol": 1e-18
+    },
+    {
+      "index": 1258,
+      "family": "zib",
+      "route": "exact-flat-root",
+      "outcome": "uncertified",
+      "errors": {
+        "prob": 1.5310954040614888e-06
+      },
+      "max_error": 1.5310954040614888e-06,
+      "reference": {
+        "size": "2.0",
+        "prob": "0.8",
+        "pi": "0.21875"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1259,
+      "family": "zib",
+      "route": "exact-nozero-held-inflation",
+      "outcome": "uncertified",
+      "errors": {
+        "prob": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "size": "4.0",
+        "prob": "0.5",
+        "pi": "0.200000000000000011102230246251565404236316680908203125"
+      },
+      "tol": 1e-18
+    },
+    {
+      "index": 1260,
+      "family": "ztbinom",
+      "route": "exact-size3-conditional-mean",
+      "outcome": "uncertified",
+      "errors": {
+        "prob": 1.1102230246251565e-16
+      },
+      "max_error": 1.1102230246251565e-16,
+      "reference": {
+        "size": "3.0",
+        "prob": "0.5"
+      },
+      "tol": 1e-18
+    },
+    {
+      "index": 1261,
+      "family": "zib",
+      "route": "exact-two-free-coefficients",
+      "outcome": "uncertified",
+      "errors": {
+        "prob": 4.8757776079498756e-82,
+        "pi": 1.1102230246251565e-16
+      },
+      "max_error": 1.1102230246251565e-16,
+      "reference": {
+        "size": "3.0",
+        "prob": "0.25",
+        "pi": "0.5"
+      },
+      "tol": 1e-18
+    },
+    {
+      "index": 1262,
+      "family": "zib",
+      "route": "unrepresentable-three-sevenths",
+      "outcome": "uncertified",
+      "errors": {
+        "pi": 2.3790493384824782e-17
+      },
+      "max_error": 2.3790493384824782e-17,
+      "reference": {
+        "size": "3.0",
+        "prob": "0.5",
+        "pi": "0.42857142857142857142857142857142857142857142857142857142857142857142857142857143"
+      },
+      "tol": 1e-18
+    },
+    {
+      "index": 1263,
+      "family": "zib",
+      "route": "exact-active-binomial-boundary",
+      "outcome": "uncertified",
+      "errors": {
+        "prob": 0.0,
+        "pi": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "size": "3.0",
+        "prob": "0.5",
+        "pi": "0.0"
+      },
+      "tol": 1e-18
+    },
+    {
+      "index": 1264,
+      "family": "zmbinom",
+      "route": "exact-delegated-probability-and-zero-mass",
+      "outcome": "uncertified",
+      "errors": {
+        "prob": 1.1102230246251565e-16,
+        "p0": 0.0
+      },
+      "max_error": 1.1102230246251565e-16,
+      "reference": {
+        "size": "3.0",
+        "prob": "0.5",
+        "p0": "0.125"
+      },
+      "tol": 1e-18
+    },
+    {
+      "index": 1265,
+      "family": "zib",
+      "route": "nonidentified-Bernoulli-curve",
+      "outcome": "uncertified",
+      "errors": {
+        "prob": 1.850371707708594e-17,
+        "pi": 0.0
+      },
+      "max_error": 1.850371707708594e-17,
+      "reference": {
+        "size": "1.0",
+        "prob": "0.33333333333333333333333333333333333333333333333333333333333333333333333333333333",
+        "pi": "0.0"
+      },
+      "tol": 1e-18
+    },
+    {
+      "index": 1266,
+      "family": "zib",
+      "route": "exact-held-inflation-Bernoulli",
+      "outcome": "uncertified",
+      "errors": {
+        "prob": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "size": "1.0",
+        "prob": "0.5",
+        "pi": "0.5"
+      },
+      "tol": 1e-18
+    }
+  ]
+}

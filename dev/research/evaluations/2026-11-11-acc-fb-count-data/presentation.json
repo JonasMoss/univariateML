@@ -1,0 +1,9 @@
+{
+  "report": "/home/jonas/Files/programming/univariateML.wt/acc-fb-count/dev/research/evaluations/2026-11-11-acc-fb-count-report.md",
+  "command": "/home/jonas/Files/work/misc/codex-math-web/bin/show <report>",
+  "exit_code": 1,
+  "http_status": 403,
+  "status": "open: pane display",
+  "reason": "The running viewer's readable roots omit this worktree.",
+  "required": "Register the current worktree as a viewer-readable root, or open a viewer thread there."
+}

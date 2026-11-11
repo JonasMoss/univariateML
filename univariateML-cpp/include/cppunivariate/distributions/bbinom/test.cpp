@@ -502,7 +502,8 @@ TEST_CASE("bbinom: impossible coefficient precision stops with a finite witness"
   for(int mask=0;mask<3;++mask) {
     const auto result=cppunivariate::bbinom_mle({x.data(),x.size()},10,1e-18,500,
       mask==1?2:kNaN,mask==2?3:kNaN);
-    CHECK(result.status==cppunivariate::BbinomStatus::Ok);
+    CHECK(result.status==cppunivariate::BbinomStatus::IterationFailure);
+    CHECK(result.accuracy_failure);
   CHECK_FALSE(result.certified);
     CHECK(result.stop_detail.loglik_upper==INFINITY);
     REQUIRE(!result.stop_detail.candidates.empty());
@@ -549,4 +550,48 @@ TEST_CASE("bbinom: an unclosed size tail retains the best successful prefix prof
     REQUIRE(fixed.status==cppunivariate::BbinomStatus::Ok);
     CHECK(f.logLik>=fixed.logLik-1e-8);
   }
+}
+
+
+TEST_CASE("bbinom: uncertified coefficients meet the local accuracy contract") {
+  {
+    const std::vector<int> x{2,4,0,1,4,0,1,2,1,4,3,3,0,1,0,0};
+    const auto f=cppunivariate::bbinom_mle({x.data(),x.size()},NAN,1e-10,500,NAN,1000000000.0);
+    REQUIRE(f.status==cppunivariate::BbinomStatus::Ok);
+    CHECK_FALSE(f.certified);
+    CHECK(f.size==503.0);
+    CHECK(std::abs(f.alpha-(3241086.8209925364))<=1e-10*3241086.8209925364);
+    CHECK(f.beta==1000000000.0);
+  }
+  {
+    const std::vector<int> x{0,0,0,10};
+    const auto f=cppunivariate::bbinom_mle({x.data(),x.size()},NAN,1e-10,500,1,NAN);
+    REQUIRE(f.status==cppunivariate::BbinomStatus::Ok);
+    CHECK_FALSE(f.certified);
+    CHECK(f.size==399.0);
+    CHECK(f.alpha==1);
+    CHECK(std::abs(f.beta-(158.01982742852525))<=1e-10*158.01982742852525);
+  }
+}
+
+TEST_CASE("bbinom: symmetric near-binomial fallback keeps exact public shapes") {
+  std::vector<int> x;
+  for(int v=0;v<4;++v)x.insert(x.end(),v==0||v==3?1251:3749,v);
+  for(double tol:{1e-10,1e-18}) {
+    const auto f=cppunivariate::bbinom_mle({x.data(),x.size()},3,tol,tol==1e-10?50:500);
+    REQUIRE(f.status==cppunivariate::BbinomStatus::Ok);
+    CHECK_FALSE(f.certified);
+    CHECK(f.alpha==1874.5);CHECK(f.beta==1874.5);
+  }
+  std::vector<int> y(126,0);y.insert(y.end(),248,1);y.insert(y.end(),126,2);
+  const auto f=cppunivariate::bbinom_mle({y.data(),y.size()},2,1e-18);
+  REQUIRE(f.status==cppunivariate::BbinomStatus::Ok);
+  CHECK(f.alpha==62);CHECK(f.beta==62);
+}
+
+TEST_CASE("bbinom: represented asymmetric stationary shapes survive sub-machine tolerance") {
+  std::vector<int>x(10,0);x.insert(x.end(),12,1);x.insert(x.end(),9,2);x.insert(x.end(),4,3);
+  const auto f=cppunivariate::bbinom_mle({x.data(),x.size()},3,1e-18);
+  REQUIRE(f.status==cppunivariate::BbinomStatus::Ok);
+  CHECK(f.alpha==2);CHECK(f.beta==3);
 }

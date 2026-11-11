@@ -159,6 +159,33 @@ TEST_CASE("zmbinom: positive-count uncertified prefix propagates") {
 TEST_CASE("zmbinom: the zero-probability ratio has its own precision allowance") {
   const std::vector<int> x{0,1,1};
   const auto f=cppunivariate::zmbinom_mle({x.data(),x.size()},1e-18,1,NAN,1e-9,NAN);
-  REQUIRE(f.status==cppunivariate::ZmbinomStatus::Ok);
+  REQUIRE(f.status==cppunivariate::ZmbinomStatus::IterationFailure);
+  CHECK(f.accuracy_failure);
   CHECK_FALSE(f.certified);CHECK(f.p0==1./3);CHECK(f.prob==1e-9);
+}
+
+
+TEST_CASE("zmbinom: uncertified coefficients meet the local accuracy contract") {
+  {
+    const std::vector<int> x{1000000,1000001,1000003,1000008,1000011};
+    const auto f=cppunivariate::zmbinom_mle({x.data(),x.size()});
+    REQUIRE(f.status==cppunivariate::ZmbinomStatus::Ok);
+    CHECK_FALSE(f.certified);
+    CHECK(f.size==1000023.0);
+    CHECK(std::abs(f.prob-(0.9999816004231903))<=1e-10*1);
+    CHECK(std::abs(f.p0-(0.0))<=1e-10*1);
+  }
+}
+
+TEST_CASE("zmbinom: exactly represented zero mass meets a sub-machine target") {
+  const std::vector<int>x{0,1};
+  const auto f=cppunivariate::zmbinom_mle({x.data(),x.size()},1e-18,1,NAN,1e-9);
+  REQUIRE(f.status==cppunivariate::ZmbinomStatus::Ok);
+  CHECK(f.p0==.5);CHECK_FALSE(f.accuracy_failure);
+}
+
+TEST_CASE("zmbinom: exact conditional probability transports independently of zero mass") {
+  const std::vector<int>x{0,1,1,1,2,2,2,3};
+  const auto f=cppunivariate::zmbinom_mle({x.data(),x.size()},1e-18,200,3);
+  REQUIRE(f.status==cppunivariate::ZmbinomStatus::Ok);CHECK(f.prob==.5);CHECK(f.p0==.125);
 }

@@ -1,5 +1,6 @@
 #pragma once
 #include "face_certificate.hpp"
+#include "accuracy.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/discrete_stop.hpp"
 #include "../ztpois/mle.hpp"
@@ -7,6 +8,7 @@ namespace cppunivariate {
 enum class ZtbinomStatus { Ok, InvalidInput, InvalidSize, PoissonLimit, IterationFailure };
 struct ZtbinomResult { double size, prob, logLik; int iterations; ZtbinomStatus status;   StopDetail stop_detail{};
   bool certified = true;
+  bool accuracy_failure = false;
 };
 namespace ztbinom_detail {
 template <typename F>
@@ -255,6 +257,20 @@ inline ZtbinomResult ztbinom_mle(ispan x,double tol=1e-10,int maxit=200,
   if(best.status==ZtbinomStatus::Ok && std::isnan(fixed_prob) && best.size>1 &&
      best.prob>0 && best.prob<1 && tol<8*std::numeric_limits<double>::epsilon())
     best.certified=false;
+  if(best.status==ZtbinomStatus::Ok && !best.certified && std::isnan(fixed_prob)) {
+    double sum=0;for(int v:x)sum+=v;
+    if(!binomial_accuracy::positive_probability(best.prob,best.size,sum,x.size(),tol,maxit)) {
+      best.status=ZtbinomStatus::IterationFailure;best.accuracy_failure=true;
+      binomial_certificate_detail::witness(best.stop_detail,{best.size,best.prob},best.logLik,false);
+      return best;
+    }
+    best.logLik=0;
+    for(int v:x) {
+      if(best.prob==0){if(v!=1)best.status=ZtbinomStatus::IterationFailure;}
+      else if(best.prob==1){if(v!=best.size)best.status=ZtbinomStatus::IterationFailure;}
+      else best.logLik+=zero_detail::bin_logpmf(v,best.size,best.prob)-std::log(-std::expm1(best.size*std::log1p(-best.prob)));
+    }
+  }
   return best;
 }
 

@@ -186,7 +186,15 @@ test_that("the size-one atom certifies a tiny held positive probability", {
 })
 
 test_that("ztbinom does not certify a sub-machine probability target", {
-  f <- mlztbinom(c(1,2),size=NULL,reltol=1e-18)
+  e <- tryCatch(mlztbinom(c(1,2),size=NULL,reltol=1e-18),error=identity)
+  expect_s3_class(e,"univariateML_numerical")
+  expect_match(conditionMessage(e),"numerical accuracy failure")
+  expect_true(any(is.finite(e$candidates$loglik_lower)))
+})
+
+test_that("uncertified ztbinom coefficients meet the local accuracy contract", {
+  f <- mlztbinom(c(1000000,1000001,1000003,1000008,1000011),size=NULL)
   expect_identical(attr(f,"certified"),FALSE)
-  expect_true(is.finite(as.numeric(logLik(f))))
+  expect_equal(unname(f["size"]),1000023.0,tolerance=0)
+  expect_lte(abs(unname(f["prob"])-(0.9999816004231903)),1e-10*1)
 })

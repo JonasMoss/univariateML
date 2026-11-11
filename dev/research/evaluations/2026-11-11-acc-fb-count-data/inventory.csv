@@ -1,0 +1,22 @@
+family,route,trigger,previous_local_rule,contract_before,final_rule
+bbinom,free size held alpha,unclosed NB tail or prefix budget,child shape enclosure or profile/search movement,mixed: candidate extraction lacked final check,two-component natural-shape information/Newton correction
+bbinom,free size held beta,large-held-shape preflight or partial prefix,child shape enclosure or profile/search movement,mixed: candidate extraction lacked final check,two-component natural-shape information/Newton correction
+bbinom,free size both shapes held,integer-prefix budget,exact evaluated integer size,yes,no continuous coefficient to refine
+bbinom,fixed size one or two free shapes,unclosed face/tie/enclosure or certificate budget,candidate profile coordinate or scalar movement,no uniform public-coefficient stopping bound,analytic information/Newton or exact symmetric N=2/3 count ratio
+hyper,integer enumeration and witness restoration,incomplete population/count cover,exact evaluated integer coefficients,yes,unchanged
+nhyper,integer enumeration and witness restoration,incomplete population/count cover,exact evaluated integer coefficients,yes,unchanged
+tbinom,held probability integer prefix,enumeration allowance or unresolved size tail,exact size and observed truncation endpoints,yes,unchanged
+tbinom,free probability finite fallback,unclosed finite/Poisson global comparison,100 log-odds bisections and total-score gate,not a checked public-probability error bound,mode-centred conditional-mean bracket with moment-tail and FP margins
+ztbinom,held probability integer prefix,enumeration allowance,exact integer size with probability held,yes,unchanged
+ztbinom,free probability finite fallback,unclosed Poisson/size cover,absolute probability bisection and mean-score gate,not uniform in requested tolerance or transformed inflation,relative probability bracket and centred mean-excess signs
+ztbinom,sub-machine saturation,requested probability precision below rounding allowance,successful point merely marked uncertified,no for nonrepresentable ratios,exact count-ratio rounding residual or numerical accuracy failure
+zib,held inflation probability root,unresolved turning discriminant root enclosure or competing branches,ordinary score signs with a narrow computed bracket,no near the perturbed triple root,two-component cleared-score signs and probability bracket
+zib,held probability integer prefix,enumeration allowance,probability held and closed inflation profile,yes at default tolerance,stable expm1 inflation profile and exact endpoint ratio checks
+zib,free inflation finite fallback,unclosed ZIP face or integer cover,positive-mean solve plus profiled inflation,missing uniform propagated error bound,relative probability bracket propagates through concave truncation mass
+zib,closed binomial/binary sub-machine reductions,requested coefficient precision below rounding allowance,rounded count ratios merely marked uncertified,no for nonrepresentable ratios,FMA rounding residual or numerical accuracy failure
+zmbinom,transported positive-count fallback,ztbinom reports uncertified,copied probability plus independent empirical zero ratio,inherits parent gap,refined parent probability and unchanged count-ratio zero mass
+zmbinom,sub-machine zero ratio,requested zero-mass precision below rounding allowance,rounded count ratio merely marked uncertified,no for nonrepresentable ratios,FMA rounding residual or numerical accuracy failure
+bnbinom,scalar accuracy rescue,scalar certificate sign margin fails at requested tolerance,analytic information/Newton after looser certified proposal,yes,unchanged
+bnbinom,all-free finite legacy fallback,signed face or joint global cover cannot close,full analytic observed-information/Newton correction,yes,unchanged
+bnbinom,all-held evaluation,default result certification flag is false,all public coefficients supplied,yes vacuously,unchanged
+skellam,no public uncertified Ok route,internal tail-certified false returns IterationFailure,successful interior joint/held rates already polished,yes,unchanged and independently checked

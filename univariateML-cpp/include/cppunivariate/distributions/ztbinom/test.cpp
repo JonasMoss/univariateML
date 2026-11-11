@@ -308,6 +308,32 @@ TEST_CASE("ztbinom: a tiny held probability does not hide the attained size-one 
 TEST_CASE("ztbinom: sub-machine probability targets retain the finite fit uncertified") {
   const std::vector<int> x{1,2};
   const auto f=cppunivariate::ztbinom_mle({x.data(),x.size()},1e-18);
-  REQUIRE(f.status==cppunivariate::ZtbinomStatus::Ok);
+  REQUIRE(f.status==cppunivariate::ZtbinomStatus::IterationFailure);
+  CHECK(f.accuracy_failure);
   CHECK_FALSE(f.certified);CHECK(std::isfinite(f.logLik));
+}
+
+
+TEST_CASE("ztbinom: uncertified coefficients meet the local accuracy contract") {
+  {
+    const std::vector<int> x{1000000,1000001,1000003,1000008,1000011};
+    const auto f=cppunivariate::ztbinom_mle({x.data(),x.size()});
+    REQUIRE(f.status==cppunivariate::ZtbinomStatus::Ok);
+    CHECK_FALSE(f.certified);
+    CHECK(f.size==1000023.0);
+    CHECK(std::abs(f.prob-(0.9999816004231903))<=1e-10*1);
+  }
+}
+
+TEST_CASE("ztbinom: an exactly represented probability meets a sub-machine target") {
+  const std::vector<int>x{1,1,2};
+  const auto f=cppunivariate::ztbinom_mle({x.data(),x.size()},1e-18);
+  REQUIRE(f.status==cppunivariate::ZtbinomStatus::Ok);
+  CHECK(f.prob==.5);CHECK_FALSE(f.accuracy_failure);
+}
+
+TEST_CASE("ztbinom: exact conditional means beyond size two meet sub-machine accuracy") {
+  const std::vector<int>x{1,1,1,2,2,2,3};
+  const auto f=cppunivariate::ztbinom_mle({x.data(),x.size()},1e-18,200,3);
+  REQUIRE(f.status==cppunivariate::ZtbinomStatus::Ok);CHECK(f.prob==.5);
 }

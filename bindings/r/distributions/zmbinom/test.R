@@ -183,7 +183,16 @@ test_that("zmbinom propagates positive-count certification", {
 })
 
 test_that("zmbinom carries the zero-ratio precision flag", {
-  f <- mlzmbinom(c(0,1,1),size=NULL,prob=1e-9,iterlim=1,reltol=1e-18)
+  e <- tryCatch(mlzmbinom(c(0,1,1),size=NULL,prob=1e-9,iterlim=1,reltol=1e-18),error=identity)
+  expect_s3_class(e,"univariateML_numerical")
+  expect_match(conditionMessage(e),"numerical accuracy failure")
+  expect_equal(tail(e$candidates$p0,1),1/3,tolerance=0)
+})
+
+test_that("uncertified zmbinom coefficients meet the local accuracy contract", {
+  f <- mlzmbinom(c(1000000,1000001,1000003,1000008,1000011),size=NULL)
   expect_identical(attr(f,"certified"),FALSE)
-  expect_equal(unname(f["p0"]),1/3,tolerance=0)
+  expect_equal(unname(f["size"]),1000023.0,tolerance=0)
+  expect_lte(abs(unname(f["prob"])-(0.9999816004231903)),1e-10*1)
+  expect_lte(abs(unname(f["p0"])-(0.0)),1e-10*1)
 })

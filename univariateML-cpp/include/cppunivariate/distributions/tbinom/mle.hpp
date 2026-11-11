@@ -5,6 +5,7 @@
 #include "../binom/dpqr.hpp"
 #include "../binom/mle.hpp"
 #include <map>
+#include "accuracy.hpp"
 namespace cppunivariate {
 inline truncated_detail::Result tbinom_mle(ispan x, double a, double b, double size, double held=std::numeric_limits<double>::quiet_NaN()) {
   if(x.size()==0)return {0,0,0,truncated_detail::Status::InvalidInput};
@@ -544,6 +545,15 @@ inline TbinomDesignResult tbinom_design_mle(ispan x,double a,double b,double siz
      (best.stop_detail.comparison_tie || !std::isfinite(best.stop_detail.loglik_upper)) &&
      std::isfinite(best.logLik) && best.size>=0 && best.prob>=0 && best.prob<=1) {
     best.status=TbinomStatus::Ok;best.certified=false;
+  }
+  if(best.status==TbinomStatus::Ok && !best.certified && std::isnan(prob)) {
+    if(!tbinom_detail::fallback_accuracy(x,best.size,best.a,best.b,best.prob)) {
+      best.status=TbinomStatus::NumericalFailure;return best;
+    }
+    const double eta=std::log(best.size)+std::log(best.prob)-std::log1p(-best.prob);
+    const auto z=tbinom_detail::mass(eta,std::max(0.,std::floor(best.a)+1),std::floor(best.b),best.size);
+    best.logLik=0;
+    for(int v:x)best.logLik+=tbinom_detail::anchored_kernel(v,eta,best.size,z.anchor)-z.logz;
   }
   return best;
 }

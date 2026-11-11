@@ -1,0 +1,53 @@
+{
+  "r-spots": {
+    "command": [
+      "Rscript",
+      "/home/jonas/Files/programming/univariateML.wt/acc-fb-count/dev/research/evaluations/2026-11-11-acc-fb-count-data/spot.R"
+    ],
+    "machine": "workstation",
+    "exit_code": 0,
+    "seconds": 14.997200434969272,
+    "finished": "2026-11-11T12:33:02.549606+00:00"
+  },
+  "wasm-spots": {
+    "command": [
+      "node",
+      "--v8-pool-size=1",
+      "/home/jonas/Files/programming/univariateML.wt/acc-fb-count/dev/research/evaluations/2026-11-11-acc-fb-count-data/spot.mjs"
+    ],
+    "machine": "workstation",
+    "exit_code": 0,
+    "seconds": 14.995765668048989,
+    "finished": "2026-11-11T12:33:17.545741+00:00"
+  },
+  "binding-references": {
+    "command": [
+      "python3",
+      "/home/jonas/Files/programming/univariateML.wt/acc-fb-count/dev/research/evaluations/2026-11-11-acc-fb-count-data/check-spots.py"
+    ],
+    "machine": "workstation",
+    "exit_code": 0,
+    "seconds": 0.09405168099328876,
+    "finished": "2026-11-11T12:33:17.640135+00:00"
+  },
+  "assessment": {
+    "command": [
+      "python3",
+      "/home/jonas/Files/programming/univariateML.wt/acc-fb-count/dev/research/evaluations/2026-11-11-acc-fb-count-data/assess.py"
+    ],
+    "machine": "workstation",
+    "exit_code": 0,
+    "seconds": 0.10311180999269709,
+    "finished": "2026-11-11T12:33:17.743582+00:00"
+  },
+  "unchanged-source": {
+    "command": [
+      "python3",
+      "/home/jonas/Files/programming/univariateML.wt/acc-fb-count/dev/research/evaluations/2026-11-11-acc-fb-count-data/check-shared.py"
+    ],
+    "machine": "workstation",
+    "exit_code": 0,
+    "seconds": 0.14722145098494366,
+    "finished": "2026-11-11T12:33:17.891164+00:00"
+  }
+}

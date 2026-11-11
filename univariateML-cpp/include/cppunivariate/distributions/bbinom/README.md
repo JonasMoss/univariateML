@@ -391,3 +391,15 @@ $128\epsilon$ upper padding and an additional feasible-anchor margin.
 These are practical floating-point margins, not outward-rounded intervals.
 A general symbolic uniqueness theorem remains unknown; at sizes zero and
 one the previously described continua are explicit counterexamples.
+
+An uncertified finite proposal is refined conditional on its selected integer
+size. The natural-shape score and information are rational rising-factorial
+sums, evaluated with two-component arithmetic. This
+also covers a held shape of order $10^9$; convergence of the old profile
+coordinate alone does not control the other public shape.
+
+For a symmetric histogram with size two or three, the finite shape pair is
+available as an exact count ratio. Reflection gives the stationary mean one
+half; the remaining profile is binomial in the endpoint frequency. This avoids
+amplifying score cancellation near the binomial face in a joint log-shape
+Newton solve.

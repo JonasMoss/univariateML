@@ -420,3 +420,17 @@ TEST_CASE("tbinom: large held-probability search returns its budgeted finite pre
   REQUIRE(f.status==cppunivariate::TbinomStatus::Ok);CHECK_FALSE(f.certified);
   CHECK(f.stop_detail.budget_exhausted);CHECK(f.prob==.4);CHECK(std::isfinite(f.logLik));
 }
+
+
+TEST_CASE("tbinom: uncertified coefficients meet the local accuracy contract") {
+  {
+    const std::vector<int> x{1000000,1000001,1000003,1000008,1000011};
+    const auto f=cppunivariate::tbinom_design_mle({x.data(),x.size()},NAN,NAN,NAN);
+    REQUIRE(f.status==cppunivariate::TbinomStatus::Ok);
+    CHECK_FALSE(f.certified);
+    CHECK(std::abs(f.prob-(0.9999933471248125))<=1e-10*1);
+    CHECK(f.a==999999.0);
+    CHECK(f.b==1000011.0);
+    CHECK(f.size==1000011.0);
+  }
+}

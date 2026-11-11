@@ -1,0 +1,176 @@
+[
+  {
+    "path": "bindings/common/distributions/bbinom/fit.hpp",
+    "identical": true,
+    "baseline_sha256": "0e621ab75387fa23de72e5527f4b5f3c666ea713131b1deae66f0fe3f34c4ac1",
+    "prior_sha256": "0e621ab75387fa23de72e5527f4b5f3c666ea713131b1deae66f0fe3f34c4ac1"
+  },
+  {
+    "path": "bindings/common/distributions/hyper/fit.hpp",
+    "identical": true,
+    "baseline_sha256": "356edf05106690a59e36e7c0af21d37516e365201f90e5608af1b2d5b643d291",
+    "prior_sha256": "356edf05106690a59e36e7c0af21d37516e365201f90e5608af1b2d5b643d291"
+  },
+  {
+    "path": "bindings/common/distributions/nhyper/fit.hpp",
+    "identical": true,
+    "baseline_sha256": "76cb162397b4877f0f49f35cc257c0cd432bb969e958cbbe121357e39de714c5",
+    "prior_sha256": "76cb162397b4877f0f49f35cc257c0cd432bb969e958cbbe121357e39de714c5"
+  },
+  {
+    "path": "bindings/common/distributions/tbinom/fit.hpp",
+    "identical": true,
+    "baseline_sha256": "57e12cb3d26f89406607e106c76fa2223566ed819d638169ed30ef331f5c7155",
+    "prior_sha256": "57e12cb3d26f89406607e106c76fa2223566ed819d638169ed30ef331f5c7155"
+  },
+  {
+    "path": "bindings/common/distributions/zib/fit.hpp",
+    "identical": true,
+    "baseline_sha256": "b3316dbf325b8e0d39dd43f772eaf25a01eac4b13c6f2125d9babe3e98001db9",
+    "prior_sha256": "b3316dbf325b8e0d39dd43f772eaf25a01eac4b13c6f2125d9babe3e98001db9"
+  },
+  {
+    "path": "bindings/common/distributions/zmbinom/fit.hpp",
+    "identical": true,
+    "baseline_sha256": "e1de6d1750a981f341e69c804bd5572021f3a791745cce5c1c4d1335fc345983",
+    "prior_sha256": "e1de6d1750a981f341e69c804bd5572021f3a791745cce5c1c4d1335fc345983"
+  },
+  {
+    "path": "bindings/common/distributions/ztbinom/fit.hpp",
+    "identical": true,
+    "baseline_sha256": "8b5a1af98c07e235ab0d01cc4b657199755b00548ba04298062cc59b2245346e",
+    "prior_sha256": "8b5a1af98c07e235ab0d01cc4b657199755b00548ba04298062cc59b2245346e"
+  },
+  {
+    "path": "univariateML-cpp/include/cppunivariate/distributions/bbinom/README.md",
+    "identical": true,
+    "baseline_sha256": "3f0044f3bcee79c91ea1dee902644c00501d7138102666c090e339fc336c8bce",
+    "prior_sha256": "3f0044f3bcee79c91ea1dee902644c00501d7138102666c090e339fc336c8bce"
+  },
+  {
+    "path": "univariateML-cpp/include/cppunivariate/distributions/bbinom/mle.hpp",
+    "identical": true,
+    "baseline_sha256": "c83cfc308ae78e6a566ad509236e18d6ac413fc0ed37c0e7054420fc10d96e9d",
+    "prior_sha256": "c83cfc308ae78e6a566ad509236e18d6ac413fc0ed37c0e7054420fc10d96e9d"
+  },
+  {
+    "path": "univariateML-cpp/include/cppunivariate/distributions/bbinom/test.cpp",
+    "identical": true,
+    "baseline_sha256": "9270e5114d0457511b3e0d1f672f7ff1b692c66e9520bacd77ba7c6ef0c60ad3",
+    "prior_sha256": "9270e5114d0457511b3e0d1f672f7ff1b692c66e9520bacd77ba7c6ef0c60ad3"
+  },
+  {
+    "path": "univariateML-cpp/include/cppunivariate/distributions/hyper/README.md",
+    "identical": true,
+    "baseline_sha256": "04c27cf5f8ca83fd072fb482dd4912340374fbd8988b7479bbd09ca8d4d5b587",
+    "prior_sha256": "04c27cf5f8ca83fd072fb482dd4912340374fbd8988b7479bbd09ca8d4d5b587"
+  },
+  {
+    "path": "univariateML-cpp/include/cppunivariate/distributions/hyper/mle.hpp",
+    "identical": true,
+    "baseline_sha256": "b3f2b5fe5316eb57d72b875821f46d609e861d1f300d919548791bf19b987741",
+    "prior_sha256": "b3f2b5fe5316eb57d72b875821f46d609e861d1f300d919548791bf19b987741"
+  },
+  {
+    "path": "univariateML-cpp/include/cppunivariate/distributions/hyper/test.cpp",
+    "identical": true,
+    "baseline_sha256": "908d2098894e0973f5bd9d24e8bae0f124e3df142ce5b7d21c3ec6630d91581e",
+    "prior_sha256": "908d2098894e0973f5bd9d24e8bae0f124e3df142ce5b7d21c3ec6630d91581e"
+  },
+  {
+    "path": "univariateML-cpp/include/cppunivariate/distributions/nhyper/README.md",
+    "identical": true,
+    "baseline_sha256": "fc2dd4ec76bc1e63eb52976d72317149dc44f4bca8773dfdb710e0c644a9fc95",
+    "prior_sha256": "fc2dd4ec76bc1e63eb52976d72317149dc44f4bca8773dfdb710e0c644a9fc95"
+  },
+  {
+    "path": "univariateML-cpp/include/cppunivariate/distributions/nhyper/mle.hpp",
+    "identical": true,
+    "baseline_sha256": "40c4fd0ab731ec550336dab41752414cb212599b4da95c073f3f695272701d55",
+    "prior_sha256": "40c4fd0ab731ec550336dab41752414cb212599b4da95c073f3f695272701d55"
+  },
+  {
+    "path": "univariateML-cpp/include/cppunivariate/distributions/nhyper/test.cpp",
+    "identical": true,
+    "baseline_sha256": "87b4d6c5fa009bba42052fd7cd1d5101616893b849991c0bb444c74dc8cf3169",
+    "prior_sha256": "87b4d6c5fa009bba42052fd7cd1d5101616893b849991c0bb444c74dc8cf3169"
+  },
+  {
+    "path": "univariateML-cpp/include/cppunivariate/distributions/tbinom/README.md",
+    "identical": true,
+    "baseline_sha256": "4e3dab620272041874cf2023687ad69b82378333a197ef9a1cf3cf145b777c82",
+    "prior_sha256": "4e3dab620272041874cf2023687ad69b82378333a197ef9a1cf3cf145b777c82"
+  },
+  {
+    "path": "univariateML-cpp/include/cppunivariate/distributions/tbinom/mle.hpp",
+    "identical": true,
+    "baseline_sha256": "d91dd82960c6138766603e1e6204528c95393960f804d5e835464ea98c6f8414",
+    "prior_sha256": "d91dd82960c6138766603e1e6204528c95393960f804d5e835464ea98c6f8414"
+  },
+  {
+    "path": "univariateML-cpp/include/cppunivariate/distributions/tbinom/test.cpp",
+    "identical": true,
+    "baseline_sha256": "aa32e530cc1164d433e2be226f67ff2309d95aa694bdf4363466cb23ef49d05a",
+    "prior_sha256": "aa32e530cc1164d433e2be226f67ff2309d95aa694bdf4363466cb23ef49d05a"
+  },
+  {
+    "path": "univariateML-cpp/include/cppunivariate/distributions/zib/README.md",
+    "identical": true,
+    "baseline_sha256": "833acbcea56d1512d92badb67c0847601d1acd044ae8f18c6c83c6969268994c",
+    "prior_sha256": "833acbcea56d1512d92badb67c0847601d1acd044ae8f18c6c83c6969268994c"
+  },
+  {
+    "path": "univariateML-cpp/include/cppunivariate/distributions/zib/mle.hpp",
+    "identical": true,
+    "baseline_sha256": "a9085598aa8709539679bdf990540098b50bc5e23c05aa9c8a13916f29191ce0",
+    "prior_sha256": "a9085598aa8709539679bdf990540098b50bc5e23c05aa9c8a13916f29191ce0"
+  },
+  {
+    "path": "univariateML-cpp/include/cppunivariate/distributions/zib/test.cpp",
+    "identical": true,
+    "baseline_sha256": "6ec64508bf2a81102e014d11921d7d6e03368d5726a4a32584de11b603ed409d",
+    "prior_sha256": "6ec64508bf2a81102e014d11921d7d6e03368d5726a4a32584de11b603ed409d"
+  },
+  {
+    "path": "univariateML-cpp/include/cppunivariate/distributions/zmbinom/README.md",
+    "identical": true,
+    "baseline_sha256": "3b293053a006dd84be9f4c0119c99486f9e29baa8eda59fb47cac966df8289ae",
+    "prior_sha256": "3b293053a006dd84be9f4c0119c99486f9e29baa8eda59fb47cac966df8289ae"
+  },
+  {
+    "path": "univariateML-cpp/include/cppunivariate/distributions/zmbinom/mle.hpp",
+    "identical": true,
+    "baseline_sha256": "ceb8fc6095d4f1bd03f3e18a63ac892fb624cad68bd28ae20258adfa94f4698f",
+    "prior_sha256": "ceb8fc6095d4f1bd03f3e18a63ac892fb624cad68bd28ae20258adfa94f4698f"
+  },
+  {
+    "path": "univariateML-cpp/include/cppunivariate/distributions/zmbinom/test.cpp",
+    "identical": true,
+    "baseline_sha256": "33af96e1c396c79110f231c25b6f2afdb94b7eaaa7741cfad53acc910b96434b",
+    "prior_sha256": "33af96e1c396c79110f231c25b6f2afdb94b7eaaa7741cfad53acc910b96434b"
+  },
+  {
+    "path": "univariateML-cpp/include/cppunivariate/distributions/ztbinom/README.md",
+    "identical": true,
+    "baseline_sha256": "ddc35b19a331359f5d860724760a650f0b3902fba5f6ea10ede786c9cddbd411",
+    "prior_sha256": "ddc35b19a331359f5d860724760a650f0b3902fba5f6ea10ede786c9cddbd411"
+  },
+  {
+    "path": "univariateML-cpp/include/cppunivariate/distributions/ztbinom/face_certificate.hpp",
+    "identical": true,
+    "baseline_sha256": "ed3d557d7d69403a9664e9bb366f8410fab4da56bd1434d1cfcb799f54408a8f",
+    "prior_sha256": "ed3d557d7d69403a9664e9bb366f8410fab4da56bd1434d1cfcb799f54408a8f"
+  },
+  {
+    "path": "univariateML-cpp/include/cppunivariate/distributions/ztbinom/mle.hpp",
+    "identical": true,
+    "baseline_sha256": "61281172cd8ea9eeb778e3eb292ae8e3ef832f45847343bb9c4c927a62d18726",
+    "prior_sha256": "61281172cd8ea9eeb778e3eb292ae8e3ef832f45847343bb9c4c927a62d18726"
+  },
+  {
+    "path": "univariateML-cpp/include/cppunivariate/distributions/ztbinom/test.cpp",
+    "identical": true,
+    "baseline_sha256": "8940cea518ea7228ad3d7238194db5da4ae7fec9d0aef950035a2900eaa69adf",
+    "prior_sha256": "8940cea518ea7228ad3d7238194db5da4ae7fec9d0aef950035a2900eaa69adf"
+  }
+]

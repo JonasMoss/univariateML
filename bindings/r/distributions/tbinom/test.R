@@ -245,3 +245,13 @@ test_that("large held-probability tbinom search respects its cell allowance", {
   expect_equal(unname(f["prob"]),.4,tolerance=0)
   expect_true(is.finite(as.numeric(logLik(f))))
 })
+
+
+test_that("uncertified tbinom coefficients meet the local accuracy contract", {
+  f <- mltbinom(c(1000000,1000001,1000003,1000008,1000011),a=NULL,b=NULL,size=NULL)
+  expect_identical(attr(f,"certified"),FALSE)
+  expect_lte(abs(unname(f["prob"])-(0.9999933471248125)),1e-10*1)
+  expect_equal(unname(f["a"]),999999.0,tolerance=0)
+  expect_equal(unname(f["b"]),1000011.0,tolerance=0)
+  expect_equal(unname(f["size"]),1000011.0,tolerance=0)
+})

@@ -1,0 +1,440 @@
+[
+  {
+    "index": 927,
+    "family": "bbinom",
+    "certified": 0,
+    "warnings": [],
+    "restricted": {},
+    "estimates": {
+      "size": 503,
+      "alpha": 3241086.8209925364,
+      "beta": 1000000000
+    },
+    "fixed": [
+      "beta"
+    ],
+    "logLik": -27.890523659649293,
+    "iterations": 4,
+    "status": "Ok"
+  },
+  {
+    "index": 90,
+    "family": "hyper",
+    "certified": 0,
+    "warnings": [],
+    "restricted": {},
+    "estimates": {
+      "m": 6,
+      "N": 136,
+      "k": 104
+    },
+    "fixed": [],
+    "logLik": -17.827179753472578,
+    "iterations": 15642,
+    "status": "Ok"
+  },
+  {
+    "index": 209,
+    "family": "nhyper",
+    "certified": 0,
+    "warnings": [],
+    "restricted": {},
+    "estimates": {
+      "m": 1,
+      "N": 1000011,
+      "r": 1
+    },
+    "fixed": [],
+    "logLik": -69.07760778951663,
+    "iterations": 1801,
+    "status": "Ok"
+  },
+  {
+    "index": 317,
+    "family": "tbinom",
+    "certified": 0,
+    "warnings": [],
+    "restricted": {},
+    "estimates": {
+      "prob": 0.00008252462050306608,
+      "a": 999999,
+      "b": 1000011,
+      "size": 11224310574
+    },
+    "fixed": [],
+    "logLik": -12.253430678463442,
+    "iterations": 100,
+    "status": "Ok"
+  },
+  {
+    "index": 733,
+    "family": "ztbinom",
+    "certified": 0,
+    "warnings": [],
+    "restricted": {},
+    "estimates": {
+      "size": 1000023,
+      "prob": 0.9999816004231903
+    },
+    "fixed": [],
+    "logLik": -14.363697392404982,
+    "iterations": 0,
+    "status": "Ok"
+  },
+  {
+    "index": 1068,
+    "family": "zib",
+    "certified": 0,
+    "warnings": [],
+    "restricted": {},
+    "estimates": {
+      "size": 2,
+      "prob": 0.8235304158980628,
+      "pi": 0.15743440233236153
+    },
+    "fixed": [
+      "size",
+      "pi"
+    ],
+    "logLik": -40.016191368841525,
+    "iterations": 0,
+    "status": "Ok"
+  },
+  {
+    "index": 629,
+    "family": "zmbinom",
+    "certified": 0,
+    "warnings": [],
+    "restricted": {},
+    "estimates": {
+      "size": 1000023,
+      "prob": 0.9999816004231903,
+      "p0": 0
+    },
+    "fixed": [],
+    "logLik": -14.363697392404982,
+    "iterations": 0,
+    "status": "Ok"
+  },
+  {
+    "index": 1076,
+    "family": "bnbinom",
+    "certified": 0,
+    "swap_maximum": {
+      "0": 3.27212822306922,
+      "1": 4.520228788614653,
+      "2": 3.2721282230684574
+    },
+    "warnings": [],
+    "restricted": {},
+    "estimates": {
+      "size": 3.2721282230684574,
+      "alpha": 4.520228788614653,
+      "beta": 3.27212822306922
+    },
+    "fixed": [],
+    "logLik": -13.446091514190096,
+    "iterations": 511274,
+    "status": "Ok"
+  },
+  {
+    "index": 1078,
+    "family": "skellam",
+    "warnings": [],
+    "restricted": {},
+    "estimates": {
+      "mu1": 3.230688957613939,
+      "mu2": 2.147355624280606
+    },
+    "fixed": [],
+    "logLik": -53.66807083702196,
+    "iterations": 48,
+    "status": "Ok"
+  },
+  {
+    "index": 1245,
+    "family": "bnbinom",
+    "certified": 0,
+    "warnings": [],
+    "restricted": {},
+    "estimates": {
+      "size": 1.0672234787479615,
+      "alpha": 29.443483121871413,
+      "beta": 5.36473383510874
+    },
+    "fixed": [
+      "size",
+      "beta"
+    ],
+    "logLik": -2.7273820600559864,
+    "iterations": 30,
+    "status": "Ok"
+  },
+  {
+    "index": 1247,
+    "family": "bbinom",
+    "certified": 0,
+    "warnings": [],
+    "restricted": {},
+    "estimates": {
+      "size": 3,
+      "alpha": 1874.5,
+      "beta": 1874.5
+    },
+    "fixed": [
+      "size"
+    ],
+    "logLik": -12557.019409887747,
+    "iterations": 0,
+    "status": "Ok"
+  },
+  {
+    "index": 1250,
+    "family": "zib",
+    "certified": 0,
+    "warnings": [],
+    "restricted": {},
+    "estimates": {
+      "size": 1000023,
+      "prob": 0.9999816004231903,
+      "pi": 0.5
+    },
+    "fixed": [],
+    "logLik": -21.295169198004434,
+    "iterations": 0,
+    "status": "Ok"
+  },
+  {
+    "index": 1252,
+    "family": "bbinom",
+    "certified": 1,
+    "warnings": [],
+    "restricted": {},
+    "estimates": {
+      "size": 10,
+      "alpha": 0.8563036946189712,
+      "beta": 1.4484991703216141
+    },
+    "fixed": [
+      "size"
+    ],
+    "logLik": -23.142710681485845,
+    "iterations": 4,
+    "status": "Ok"
+  },
+  {
+    "index": 1253,
+    "family": "ztbinom",
+    "certified": 0,
+    "warnings": [],
+    "restricted": {},
+    "estimates": {
+      "size": 2,
+      "prob": 0.5
+    },
+    "fixed": [],
+    "logLik": -1.9095425048844383,
+    "iterations": 0,
+    "status": "Ok"
+  },
+  {
+    "index": 1254,
+    "family": "zmbinom",
+    "certified": 0,
+    "warnings": [],
+    "restricted": {},
+    "estimates": {
+      "size": 1,
+      "prob": 1e-9,
+      "p0": 0.5
+    },
+    "fixed": [
+      "prob"
+    ],
+    "logLik": -1.3862943611198906,
+    "iterations": 0,
+    "status": "Ok"
+  },
+  {
+    "index": 1255,
+    "family": "bbinom",
+    "certified": 0,
+    "warnings": [],
+    "restricted": {},
+    "estimates": {
+      "size": 3,
+      "alpha": 1874.5,
+      "beta": 1874.5
+    },
+    "fixed": [
+      "size"
+    ],
+    "logLik": -12557.019409887747,
+    "iterations": 0,
+    "status": "Ok"
+  },
+  {
+    "index": 1257,
+    "family": "bbinom",
+    "certified": 0,
+    "warnings": [],
+    "restricted": {},
+    "estimates": {
+      "size": 3,
+      "alpha": 2,
+      "beta": 3
+    },
+    "fixed": [
+      "size"
+    ],
+    "logLik": -46.27225278422749,
+    "iterations": 0,
+    "status": "Ok"
+  },
+  {
+    "index": 1258,
+    "family": "zib",
+    "certified": 0,
+    "warnings": [],
+    "restricted": {},
+    "estimates": {
+      "size": 2,
+      "prob": 0.8,
+      "pi": 0.21875
+    },
+    "fixed": [
+      "size",
+      "pi"
+    ],
+    "logLik": -39.509389291916904,
+    "iterations": 0,
+    "status": "Ok"
+  },
+  {
+    "index": 1259,
+    "family": "zib",
+    "certified": 0,
+    "warnings": [],
+    "restricted": {},
+    "estimates": {
+      "size": 4,
+      "prob": 0.5,
+      "pi": 0.2
+    },
+    "fixed": [
+      "size",
+      "pi"
+    ],
+    "logLik": -4.422848629194136,
+    "iterations": 0,
+    "status": "Ok"
+  },
+  {
+    "index": 1260,
+    "family": "ztbinom",
+    "certified": 0,
+    "warnings": [],
+    "restricted": {},
+    "estimates": {
+      "size": 3,
+      "prob": 0.5
+    },
+    "fixed": [
+      "size"
+    ],
+    "logLik": -7.029697311378534,
+    "iterations": 0,
+    "status": "Ok"
+  },
+  {
+    "index": 1261,
+    "family": "zib",
+    "certified": 0,
+    "warnings": [],
+    "restricted": {},
+    "estimates": {
+      "size": 3,
+      "prob": 0.25,
+      "pi": 0.5
+    },
+    "fixed": [
+      "size"
+    ],
+    "logLik": -101.80904211053485,
+    "iterations": 0,
+    "status": "Ok"
+  },
+  {
+    "index": 1263,
+    "family": "zib",
+    "certified": 0,
+    "warnings": [],
+    "restricted": {},
+    "estimates": {
+      "size": 3,
+      "prob": 0.5,
+      "pi": 0
+    },
+    "fixed": [
+      "size"
+    ],
+    "logLik": -10.04385860143003,
+    "iterations": 0,
+    "status": "Ok"
+  },
+  {
+    "index": 1264,
+    "family": "zmbinom",
+    "certified": 0,
+    "warnings": [],
+    "restricted": {},
+    "estimates": {
+      "size": 3,
+      "prob": 0.5,
+      "p0": 0.125
+    },
+    "fixed": [
+      "size"
+    ],
+    "logLik": -10.043858601430028,
+    "iterations": 0,
+    "status": "Ok"
+  },
+  {
+    "index": 1265,
+    "family": "zib",
+    "certified": 0,
+    "warnings": [],
+    "restricted": {},
+    "estimates": {
+      "size": 1,
+      "prob": 0.33333333333333337,
+      "pi": 1.1102230246251565e-16
+    },
+    "fixed": [
+      "size"
+    ],
+    "logLik": -1.9095425048844383,
+    "iterations": 0,
+    "status": "Ok"
+  },
+  {
+    "index": 1266,
+    "family": "zib",
+    "certified": 0,
+    "warnings": [],
+    "restricted": {},
+    "estimates": {
+      "size": 1,
+      "prob": 0.5,
+      "pi": 0.5
+    },
+    "fixed": [
+      "size",
+      "pi"
+    ],
+    "logLik": -2.249340578475233,
+    "iterations": 0,
+    "status": "Ok"
+  }
+]
