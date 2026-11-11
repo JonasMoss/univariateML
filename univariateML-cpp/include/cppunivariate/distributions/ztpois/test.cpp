@@ -116,3 +116,36 @@ TEST_CASE("ztpois: tiny conditional lower tail") {
 TEST_CASE("ztpois: quantile search guards and representability") {
   CHECK(std::isnan(cppunivariate::distributions::qztpois(.5,1e308)));
 }
+
+TEST_CASE("ztpois: shared binomial profile avoids factorial cancellation") {
+  // Independent 80-digit log-gamma formula, with exact binary64 inputs;
+  // reproducible grid: 2026-11-11-ztpois-pmf-data/check.py.
+  struct Reference { int x; double size, prob, logpmf; };
+  const Reference refs[] = {
+    {1000, 1000., .999, -1.0005003335835343},
+    {999999, 1000000., .999999, -.99999949999983329},
+    {500000000, 1000000000., .5, -10.587424271367933},
+    {1, 1000000000., 1e-9, -.99999999949999996},
+    {999999999, 1000000000., .999999999, -.9999999995000004},
+    {0, 1000000000., 1e-12, -.0010000000000005001},
+    {16, 1000000000., .001, -1000309.9412668268},
+    {999999984, 1000000000., .9, -105360249.91302635}
+  };
+  for (const auto& ref : refs) {
+    const double actual=cppunivariate::zero_detail::bin_logpmf(ref.x,ref.size,ref.prob);
+    CHECK(std::abs(actual-ref.logpmf)<=1e-12*std::max(1.,std::abs(ref.logpmf)));
+  }
+  CHECK(cppunivariate::zero_detail::bin_logpmf(0,1000,0)==0);
+  CHECK(cppunivariate::zero_detail::bin_logpmf(1000,1000,1)==0);
+  CHECK(cppunivariate::zero_detail::bin_logpmf(1,1000,0)==-INFINITY);
+  CHECK(cppunivariate::zero_detail::bin_logpmf(999,1000,1)==-INFINITY);
+  CHECK(cppunivariate::zero_detail::bin_logpmf(1001,1000,.5)==-INFINITY);
+}
+
+TEST_CASE("ztpois: real-size interpolation shares stable beta kernel") {
+  // Independent 80-digit log-gamma extension, exact binary64 inputs.
+  CHECK(std::abs(cppunivariate::zero_detail::bin_logpmf(1000000,1000023.25,.99998160042319029)
+      -(-3.085115399049207))<1e-12);
+  CHECK(std::abs(cppunivariate::zero_detail::bin_logpmf(500000000,1000000000.25,.5)
+      -(-10.587424271524183))<1e-12);
+}
