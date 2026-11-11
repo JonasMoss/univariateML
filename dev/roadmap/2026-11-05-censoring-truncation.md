@@ -232,10 +232,32 @@ later or never. Decision: Jonas.
 
 ## Families that become redundant
 
-Truncated and zero-truncated families would become a base family plus
-truncation: `tnorm`, `tpois`, `tbinom`, `ztpois`, `ztbinom`, `ztgeom`,
-`ztnbinom`, and arguably `hnorm` (normal truncated at its mean). Keep
-them until the general mechanism has its own goldens and limits.
+Recounted 2026-11-11 from the `relations` front matter (101 families).
+
+- Truncation with a fixed window (8): `tnorm`, `tpois`, `tbinom`, `zipf`
+  (zeta on $\{1,\dots,N\}$), `ztpois`, `ztbinom`, `ztgeom`, `ztnbinom`. A free
+  bound is generic: its MLE is the sample extreme for every parent, because
+  $P(A)$ shrinks with the window. Truncating an exponential family to a fixed
+  window keeps it an exponential family in the same natural parameter, so the
+  concavity certificate carries over for pois, binom, geom, zeta, norm and
+  nbinom with size held (not with size free). `ztgeom` is already `geom`
+  shifted by one.
+- Zero-modified (5), once a hurdle at zero exists next to truncation:
+  `zmpois`, `zmbinom`, `zmgeom`, `zmnbinom`, `zmlogarithmic`. The likelihood
+  factorises into Bernoulli($p_0$) times the zero-truncated part, and the
+  fitters already work this way (`zero_detail::modified_mle`).
+  `zmlogarithmic` needs no truncation since `lgser` starts at 1.
+- Arguable (3): `hnorm`, `hcauchy`, `ht`, the parent truncated at its own
+  location (a tied bound, not a fixed window).
+- Not affected: `zip`, `zib`, `zinb` (mixtures that do not factorise),
+  `foldnorm` (an `abs` transform).
+
+Escape targets among them: `tpois` (from tbinom), `ztpois` (ztbinom,
+ztnbinom), `zmpois` (zmbinom, zmnbinom), `hnorm` (ht, sn, snorm, sstd, st),
+`ht` (sstd, st). Under a generic mechanism these become "base family X,
+truncated", which works if $T(\overline M) \subseteq \overline{T(M)}$ is used to
+carry the base family's limits over. Keep the families until the general
+mechanism has its own goldens and limits.
 
 ## Suggested order
 

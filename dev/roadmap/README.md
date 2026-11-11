@@ -22,6 +22,11 @@ the queue.
 
 ## Index
 
+- [2026-11-11 — Zero modification and truncation as modifiers](2026-11-11-zero-and-truncation-modifiers.md)
+  *(proposal)*: `zero` and `truncate` knobs on base families instead of
+  zt/zm/t families, derived eligibility and tags, a generated capability
+  table for holds and modifiers, and the R naming options.
+
 - [2026-11-08 — The Pearson system as one family](2026-11-08-pearson-system.md)
   *(banked)*: types as partial-fraction cases of the Pearson ODE, type
   boundaries as root collisions, free thresholds, type IV's complex-gamma
