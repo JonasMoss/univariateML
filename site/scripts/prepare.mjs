@@ -8,7 +8,7 @@ cpSync('../dev/design/logo/logo_F.svg','public/logo.svg');
 // Copy only explicitly linked local evidence; no external requests at runtime.
 rmSync('public/sources',{recursive:true,force:true});
 const dossier='univariateML-cpp/include/cppunivariate/distributions';
-const files=readdirSync(path.join(root,dossier),{withFileTypes:true}).filter(x=>x.isDirectory()).map(x=>`${dossier}/${x.name}/README.md`);
+const files=readdirSync(path.join(root,dossier),{withFileTypes:true}).filter(x=>x.isDirectory() && existsSync(path.join(root,dossier,x.name,'mle.hpp'))).map(x=>`${dossier}/${x.name}/README.md`);
 // Family pages link their dossier sources (implementation notes, decision history).
 for(const file of files) for(const name of ['README.md','mle.hpp','dpqr.hpp']) {
  const rel=path.join(path.dirname(file),name);if(!existsSync(path.join(root,rel))) continue;

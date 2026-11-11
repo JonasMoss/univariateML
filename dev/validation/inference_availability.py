@@ -248,6 +248,7 @@ def generate():
     numeric_eligibility = {}
     families = ROOT / PREFIX
     for dossier in sorted(families.glob('*/README.md')):
+        if not (dossier.parent/'mle.hpp').exists(): continue
         parts = dossier.read_text(encoding='utf-8').split('---', 2)
         if len(parts) != 3:
             raise ValueError(f'invalid dossier front matter: {dossier}')

@@ -55,7 +55,15 @@ def encode(v):
 
 def read(folder):
     meta = yaml.safe_load((folder/'README.md').read_text().split('---', 2)[1])
-    g = json.loads((folder/'golden.json').read_text())
+    golden = folder/'golden.json'
+    if golden.exists():
+        g = json.loads(golden.read_text())
+    elif meta.get('stage') == 'dpqr':
+        # A staged probability-only family has no fitted sample yet.
+        values = {p['name']: p['simulate'] for p in meta['params']}
+        g = {'estimates': values, 'sampler_args': values}
+    else:
+        raise FileNotFoundError(golden)
     return meta, g
 
 

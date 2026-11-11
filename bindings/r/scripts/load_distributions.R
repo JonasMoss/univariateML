@@ -340,6 +340,8 @@ load_distributions <- function(dist_dir) {
     id <- basename(folder)
     readme <- file.path(folder, "README.md")
     if (!file.exists(readme)) stop("load_distributions: ", folder, " has no README.md")
+    if (!file.exists(file.path(folder, "mle.hpp")) &&
+        identical(.umvl_read_front_matter(readme)$front$stage, "dpqr")) next
     models[[id]] <- .umvl_from_readme(readme, id)
   }
   models[order(names(models))]
