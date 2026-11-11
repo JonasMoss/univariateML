@@ -40,6 +40,8 @@ inline Rcpp::List common_result(const umvl_binding::FitResult& fit, bool iterati
         Rcpp::_["model"]=fit.model,Rcpp::_["estimates"]=estimates,
         Rcpp::_["limit_loglik"]=fit.limit_loglik,Rcpp::_["loglik_lower"]=fit.loglik_lower,
         Rcpp::_["loglik_upper"]=fit.loglik_upper,Rcpp::_["segment_loglik_upper"]=fit.segment_loglik_upper);
+    // An uncertified limit decision keeps its marker on the condition.
+    for(const auto& item:fit.extra)if(item.first=="certified")condition["certified"]=item.second!=0;
     condition.attr("class")=Rcpp::CharacterVector::create("univariateML_"+fit.error_kind,"univariateML_stop","error","condition");
     return condition;
   }
