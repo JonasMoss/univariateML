@@ -39,7 +39,8 @@ numerical-accuracy failure.
 
 The contract is local: it concerns the maximizer the fit reports. Global
 optimality is a separate claim with its own evidence (the dossier
-`existence:` block and certificates).
+`existence:` block and certificates). It therefore covers uncertified fits
+too: `certified = FALSE` withdraws only the global claim.
 
 ## Controls
 

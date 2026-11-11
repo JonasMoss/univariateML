@@ -6,6 +6,15 @@ entry stays, marked superseded. Design detail lives in the linked roadmap
 entries, reports and code; this file is the index of what was chosen.
 Active work lives on the board (`~/boards/univariateML`), not here.
 
+## 2026-11-11
+
+- **Uncertified fits meet the accuracy contract** (Jonas: "lets go with a").
+  `certified = FALSE` withdraws only the global-optimality claim. Every `Ok`
+  fit, certified or not, is within `tol` of a local maximizer, justified by its
+  stopping rule; fallback searches get a contract-conforming final step, and a
+  fit whose `tol` is unreachable reports a numerical-accuracy failure. Design:
+  [accuracy contract](../design/accuracy-contract.md); work: TASK-150.2.5.
+
 ## 2026-11-09
 
 - **Uncertified fallback instead of refusals** (Jonas). When a certificate

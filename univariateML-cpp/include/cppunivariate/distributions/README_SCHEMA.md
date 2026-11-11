@@ -49,8 +49,8 @@ The dossier's `fit.certified` describes the method's scope. A C++ result that
 can return an uncertified search result carries `bool certified`; its common
 binding emits `extra {"certified", 0/1}` on every such success. `FALSE` means
 the search passed its convergence or score gate, but global comparison or
-coefficient inclusion did not close. It withdraws the global-optimality claim;
-coefficient accuracy is what the search's own stopping rule establishes. A refuted candidate,
+coefficient inclusion did not close. It withdraws only the global-optimality claim;
+the accuracy contract still holds. A refuted candidate,
 failed search, invalid input, proved nonexistence, strictly winning limit or
 proved distinct tied maxima still stops. Shared R `common_result` converts the
 flag to a logical list element and `attr(estimates,"certified")`; JS retains
