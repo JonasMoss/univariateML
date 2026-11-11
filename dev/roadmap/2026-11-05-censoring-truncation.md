@@ -89,6 +89,15 @@ General question: characterise $\partial_T M$ for each family and each
 censoring/truncation scheme, and which faces of $\partial_T M$ attract
 the MLE on which samples.
 
+## Interval conventions (2026-11-11)
+
+Censoring and binning cells are half-open, $(b_{j-1}, b_j]$, so adjacent
+cells partition the line without counting an edge twice. Truncation windows
+are closed, $[a, b] \cap \operatorname{supp}(f)$, so that a free bound's MLE
+(the sample extreme) is attained; see
+[the modifiers entry](2026-11-11-zero-and-truncation-modifiers.md). The two
+are different objects; do not unify them.
+
 ## Grouped data (income brackets), added 2026-11-07
 
 Fixed bins $b_0 < \dots < b_J$ with counts $n_j$: the likelihood is

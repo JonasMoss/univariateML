@@ -53,10 +53,18 @@ For a while both knobs and the old families coexist; `zero = "truncated"` and
 Combining them (zero modification of an upper-truncated count) is refused at
 first with `not-implemented`.
 
-Window convention (decision: Jonas; proposed): closed `[lower, upper]` for
-both continuous and integer families. extraDistr and the current
-`tpois`/`tbinom` use $(a, b]$; `tnorm` uses $[a, b]$. With no aliases, nothing
-needs translating; NEWS states the new convention.
+Window convention (decided, Jonas 2026-11-11): the retained set is
+$A = [a, b] \cap \operatorname{supp}(f)$, closed for continuous and integer
+families alike. For integers $A = \{\lceil a \rceil, \dots, \lfloor b \rfloor\}$
+within the support and $P(A) = F(\lfloor b \rfloor) - F(\lceil a \rceil - 1)$;
+zero truncation is `truncate = c(1, Inf)`. An infinite bound means that side is
+unbounded. Empty $A$ and data outside $A$ are invalid input; a single retained
+integer is a point mass with zero information (the existing tpois regime).
+Reasons: a free bound's MLE $x_{(1)}$ is attained only with a closed window
+(half-open would create a convention-made nonexistence), and integer windows
+read naturally. extraDistr and the current `tpois`/`tbinom` use $(a, b]$; NEWS
+states the change. Censoring and binning cells stay half-open (see the
+censoring entry): they must partition the line, truncation windows need not.
 
 ## Where the knob appears
 
@@ -213,7 +221,7 @@ dgamma and dweibull marginal.
 
 ## Trigger to revisit
 
-The window convention is settled and TASK-150 (accuracy contract, uniform
+TASK-150 (accuracy contract, uniform
 controls) is done, since that also changes every wrapper signature.
 
 ## Verification
