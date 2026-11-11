@@ -22,6 +22,11 @@ the queue.
 
 ## Index
 
+- [2026-11-11 — Poisson–lognormal counts](2026-11-11-poisson-lognormal.md)
+  *(banked; density settled in principle, ML open)*: Lambert-W centred
+  trapezoid rule with a certificate sketch, heat-equation derivative
+  identities, local Poisson criterion, open global existence and uniqueness.
+
 - [2026-11-11 — Sichel (Poisson–GIG counts)](2026-11-11-sichel.md)
   *(banked; after GIG)*: three-parameter count family with PIG as the
   $\nu=-1/2$ slice and NB, Poisson and Poisson–inverse-gamma as faces;
