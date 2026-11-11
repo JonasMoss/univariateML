@@ -256,8 +256,9 @@ test_that("GEV held-minimum half ties distinguish the attained reverse exponenti
 test_that("GEV two-point minority fits use the certified count formula", {
   f <- suppressWarnings(mlgev(c(0,rep(1,100))))
   expect_equal(unname(f[c("mu","sigma","xi")]),c(100/101,1/101,-1),tolerance=1e-10)
-  e <- tryCatch(mlgev(c(-9,rep(1,9))),error=identity)
-  expect_s3_class(e,"univariateML_numerical")
+  e <- suppressWarnings(mlgev(c(-9,rep(1,9))))
+  expect_equal(as.numeric(e),c(0,1,-1))
+  expect_identical(attr(e,"certified"),FALSE)
 })
 
 test_that("GEV two-point compatible holds inherit the global certificate", {
@@ -469,4 +470,22 @@ test_that("GEV held nuisance exposes the constrained certificate marker", {
   fit <- mlgev(x, mu = 0)
   expect_identical(attr(fit, "certified"), FALSE)
   expect_true(is.finite(attr(fit, "logLik")))
+})
+
+test_that("GEV all-free fits expose the certificate flag", {
+  f <- mlgev(c(0,1,1,1,2,3,4))
+  expect_identical(attr(f, "certified"), TRUE)
+})
+
+test_that("GEV coupled support corners survive normalization and outer coverage", {
+  cases <- list(c(-.55225555774106538,1.2538261877399721,.35823280453135459),
+    c(1.696102873837644,-1.2511415791724954,-1.142128614350542),
+    c(36.78357020148276,62.016500801895056,79.137895173444065),
+    c(.47613503331464652,2.0186627711562051,1.3293650873876488))
+  for(x in cases) {
+    f <- suppressWarnings(mlgev(x,mu=0))
+    expect_identical(attr(f,"certified"),TRUE)
+    expect_equal(as.numeric(f),c(0,max(x),-1))
+    expect_equal(as.numeric(logLik(f)),-length(x)*log(max(x))+sum(x/max(x)-1),tolerance=1e-10)
+  }
 })

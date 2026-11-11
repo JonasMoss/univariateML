@@ -1,0 +1,7 @@
+sample_id,hold,phase,evaluations,face_isolated,precision_calls,shape_width,nuisance_width,remaining_xlo,remaining_xhi,remaining_ylo,remaining_yhi,remaining_ok,remaining_upper,face_value
+8,sigma,local_inclusion,14,0,0,0,0,0,0,0,0,0,inf,nan
+10,mu,normalized_support,0,0,0,0,0,0,0,0,0,0,nan,nan
+20,mu,normalized_support,0,0,0,0,0,0,0,0,0,0,nan,nan
+60,mu,global_stagnation,369,1,0,0,0,-0.88888888888888906,-0.88888888888888895,0.50733826333644039,0.5073382633364405,0,-0.82171669313226547,-0.87563642499813088
+80,mu,normalized_support,0,0,0,0,0,0,0,0,0,0,nan,nan
+96,mu,global_budget,12800,0,2,0,9.9475983006414026e-14,0,0,0,0,0,inf,nan

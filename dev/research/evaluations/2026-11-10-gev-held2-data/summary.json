@@ -1,0 +1,369 @@
+{
+  "held-before": {
+    "gev/mu": {
+      "fits": 60,
+      "certified": 33,
+      "uncertified": 27,
+      "stops": 0,
+      "median_ms": 395.8270315,
+      "p95_ms": 8138.138919,
+      "maximum_ms": 8800.973786,
+      "total_ms": 95540.28162,
+      "uncertified_ids": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "13",
+        "20",
+        "42",
+        "60",
+        "72",
+        "74",
+        "76",
+        "78",
+        "80",
+        "86",
+        "88",
+        "90",
+        "92",
+        "94",
+        "96",
+        "98"
+      ],
+      "stop_ids": []
+    },
+    "gev/sigma": {
+      "fits": 60,
+      "certified": 35,
+      "uncertified": 25,
+      "stops": 0,
+      "median_ms": 270.7196215,
+      "p95_ms": 11089.009656,
+      "maximum_ms": 11591.952406,
+      "total_ms": 90001.743523,
+      "uncertified_ids": [
+        "0",
+        "1",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "13",
+        "58",
+        "62",
+        "72",
+        "74",
+        "76",
+        "78",
+        "80",
+        "88",
+        "90",
+        "92",
+        "94",
+        "96",
+        "98"
+      ],
+      "stop_ids": []
+    },
+    "frechet/sigma": {
+      "fits": 40,
+      "certified": 35,
+      "uncertified": 5,
+      "stops": 0,
+      "median_ms": 10.404587,
+      "p95_ms": 1391.046503,
+      "maximum_ms": 1995.823582,
+      "total_ms": 8545.595394,
+      "uncertified_ids": [
+        "37",
+        "39",
+        "57",
+        "59",
+        "77"
+      ],
+      "stop_ids": []
+    }
+  },
+  "study-local-100": {
+    "gev/mu": {
+      "fits": 60,
+      "certified": 44,
+      "uncertified": 16,
+      "stops": 0,
+      "median_ms": 416.714268,
+      "p95_ms": 6741.057442,
+      "maximum_ms": 8573.345037,
+      "total_ms": 80526.64537299999,
+      "uncertified_ids": [
+        "4",
+        "6",
+        "7",
+        "8",
+        "9",
+        "72",
+        "74",
+        "76",
+        "78",
+        "86",
+        "88",
+        "90",
+        "92",
+        "94",
+        "96",
+        "98"
+      ],
+      "stop_ids": []
+    },
+    "gev/sigma": {
+      "fits": 60,
+      "certified": 54,
+      "uncertified": 6,
+      "stops": 0,
+      "median_ms": 156.682662,
+      "p95_ms": 3403.978621,
+      "maximum_ms": 6169.374503,
+      "total_ms": 42032.853496,
+      "uncertified_ids": [
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9"
+      ],
+      "stop_ids": []
+    },
+    "frechet/sigma": {
+      "fits": 40,
+      "certified": 40,
+      "uncertified": 0,
+      "stops": 0,
+      "median_ms": 6.6668255,
+      "p95_ms": 213.382572,
+      "maximum_ms": 219.198181,
+      "total_ms": 1357.292941,
+      "uncertified_ids": [],
+      "stop_ids": []
+    }
+  },
+  "study-local-1000": {
+    "gev/mu": {
+      "fits": 60,
+      "certified": 52,
+      "uncertified": 8,
+      "stops": 0,
+      "median_ms": 446.1532105,
+      "p95_ms": 80073.051274,
+      "maximum_ms": 91246.57495,
+      "total_ms": 534545.843949,
+      "uncertified_ids": [
+        "4",
+        "8",
+        "9",
+        "78",
+        "88",
+        "92",
+        "96",
+        "98"
+      ],
+      "stop_ids": []
+    },
+    "gev/sigma": {
+      "fits": 60,
+      "certified": 56,
+      "uncertified": 4,
+      "stops": 0,
+      "median_ms": 181.77935200000002,
+      "p95_ms": 4736.428976,
+      "maximum_ms": 50503.864557,
+      "total_ms": 97819.012019,
+      "uncertified_ids": [
+        "4",
+        "5",
+        "8",
+        "9"
+      ],
+      "stop_ids": []
+    },
+    "frechet/sigma": {
+      "fits": 40,
+      "certified": 40,
+      "uncertified": 0,
+      "stops": 0,
+      "median_ms": 7.7223315,
+      "p95_ms": 239.421182,
+      "maximum_ms": 313.707985,
+      "total_ms": 1625.03445,
+      "uncertified_ids": [],
+      "stop_ids": []
+    }
+  },
+  "allfree-before": {
+    "gev": {
+      "fits": 60,
+      "certified": 60,
+      "uncertified": 0,
+      "stops": 0,
+      "median_ms": 13.737129,
+      "p95_ms": 316.376874,
+      "maximum_ms": 376.292124,
+      "total_ms": 3429.185388,
+      "uncertified_ids": [],
+      "stop_ids": []
+    },
+    "frechet": {
+      "fits": 40,
+      "certified": 38,
+      "uncertified": 0,
+      "stops": 2,
+      "median_ms": 10.297488999999999,
+      "p95_ms": 149.409784,
+      "maximum_ms": 169.581921,
+      "total_ms": 1271.366653,
+      "uncertified_ids": [],
+      "stop_ids": [
+        "23",
+        "43"
+      ]
+    }
+  },
+  "allfree-local-100": {
+    "gev": {
+      "fits": 60,
+      "certified": 60,
+      "uncertified": 0,
+      "stops": 0,
+      "median_ms": 8.189969999999999,
+      "p95_ms": 222.651149,
+      "maximum_ms": 261.675901,
+      "total_ms": 2292.737443,
+      "uncertified_ids": [],
+      "stop_ids": []
+    },
+    "frechet": {
+      "fits": 40,
+      "certified": 38,
+      "uncertified": 0,
+      "stops": 2,
+      "median_ms": 7.6631979999999995,
+      "p95_ms": 162.589836,
+      "maximum_ms": 172.110197,
+      "total_ms": 931.545752,
+      "uncertified_ids": [],
+      "stop_ids": [
+        "23",
+        "43"
+      ]
+    }
+  },
+  "allfree-local-1000": {
+    "gev": {
+      "fits": 60,
+      "certified": 60,
+      "uncertified": 0,
+      "stops": 0,
+      "median_ms": 9.0300615,
+      "p95_ms": 485.976529,
+      "maximum_ms": 813.845788,
+      "total_ms": 4206.176888,
+      "uncertified_ids": [],
+      "stop_ids": []
+    },
+    "frechet": {
+      "fits": 40,
+      "certified": 38,
+      "uncertified": 0,
+      "stops": 2,
+      "median_ms": 5.4864955,
+      "p95_ms": 85.073572,
+      "maximum_ms": 114.771504,
+      "total_ms": 642.813856,
+      "uncertified_ids": [],
+      "stop_ids": [
+        "23",
+        "43"
+      ]
+    }
+  },
+  "cancellation-before": {
+    "gev": {
+      "fits": 3,
+      "certified": 0,
+      "uncertified": 0,
+      "stops": 3,
+      "median_ms": 0.000659
+    },
+    "frechet": {
+      "fits": 3,
+      "certified": 0,
+      "uncertified": 0,
+      "stops": 3,
+      "median_ms": 0.001565
+    }
+  },
+  "cancellation-after": {
+    "gev": {
+      "fits": 3,
+      "certified": 0,
+      "uncertified": 3,
+      "stops": 0,
+      "median_ms": 0.00113
+    },
+    "frechet": {
+      "fits": 3,
+      "certified": 0,
+      "uncertified": 3,
+      "stops": 0,
+      "median_ms": 0.001817
+    }
+  },
+  "seam-before": {
+    "fits": 4,
+    "certified": 0,
+    "uncertified": 0,
+    "stops": 4,
+    "median_ms": 18.1440405,
+    "maximum_ms": 18.214976,
+    "total_ms": 72.58127
+  },
+  "seam-after-rescue": {
+    "fits": 4,
+    "certified": 0,
+    "uncertified": 4,
+    "stops": 0,
+    "median_ms": 32.593815500000005,
+    "maximum_ms": 53.042925,
+    "total_ms": 140.024025
+  },
+  "seam-before-1000": {
+    "fits": 4,
+    "certified": 0,
+    "uncertified": 0,
+    "stops": 4,
+    "median_ms": 21.826236,
+    "maximum_ms": 44.867703,
+    "total_ms": 105.931637
+  },
+  "seam-after-1000": {
+    "fits": 4,
+    "certified": 0,
+    "uncertified": 4,
+    "stops": 0,
+    "median_ms": 27.988523,
+    "maximum_ms": 37.099556,
+    "total_ms": 113.792238
+  }
+}

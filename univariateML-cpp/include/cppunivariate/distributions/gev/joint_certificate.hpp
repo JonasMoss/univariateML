@@ -458,7 +458,7 @@ inline double face_upper(span data,double xi,int,double face,F& get) {
 // General all-free GEV, compact fitted shape branch. Every discarded slab
 // has a value or profile-score exclusion; every returned interior member is
 // isolated with a strictly negative profile curvature and public bounds.
-inline GevResult gev_joint_certificate(span data,double tol,int maxit,bool frechet=false) {
+inline GevResult gev_joint_certificate_impl(span data,double tol,int maxit,bool frechet=false) {
   gev_joint_detail::Sum gaps;
   for(double x:data)gaps.add(gev_joint_detail::point(1-x));
   const double face_scale=gaps.value().lo/data.size(),face_location=std::nextafter(1-face_scale,INFINITY);
@@ -661,7 +661,7 @@ inline GevResult gev_joint_certificate(span data,double tol,int maxit,bool frech
     bool separated=true;
     for(const auto& c:candidates)if(&c!=&*winner && !(c.lo<=winner->hi&&c.hi>=winner->lo) && c.upper>=winner->ll-margin)separated=false;
     if(separated && winner->fit.status==GevStatus::Ok) {
-      const int work=out.iterations;out=winner->fit;out.iterations=work;out.stop_detail={};
+      const int work=out.iterations;out=winner->fit;out.iterations=work;out.stop_detail={};out.certified=true;
       if(frechet) {out.stop_detail.loglik_lower=winner->ll*n;out.stop_detail.loglik_upper=winner->upper*n;}
     }
     else if(!separated) {
@@ -676,4 +676,53 @@ inline GevResult gev_joint_certificate(span data,double tol,int maxit,bool frech
     }
   }
   return out;
+}
+
+// An unresolved certificate does not invalidate a successful numerical search.
+// This is the existing scalar search over the same profile, with its own
+// convergence test and the R6 total shape-score gate. It supplies no proof
+// of global coverage. The open Frechet seam is never a finite fallback.
+inline GevResult gev_joint_certificate(span data,double tol,int maxit,bool frechet=false) {
+  auto result=gev_joint_certificate_impl(data,tol,maxit,frechet);
+  if(result.status==GevStatus::Ok)return result;
+  const double lower=frechet?0.:-1.;
+  auto objective=[&](double xi) {
+    const auto p=gev_profile(data,xi,1e-12,maxit);
+    return p.fit.status==GevStatus::Ok?p.fit.logLik:-INFINITY;
+  };
+  const auto search=extreme_detail::maximize(objective,lower,1,1e-12,maxit);
+  auto acceptable=[&](const GevProfile& point,bool reverse_face) {
+    if(point.fit.status!=GevStatus::Ok || !std::isfinite(point.fit.logLik) ||
+       (frechet&&!(point.fit.xi>0)))return false;
+    if(point.fit.xi== -1)return reverse_face;
+    if(point.fit.xi==1)return point.score>= -1e-3;
+    return std::abs(point.score)<1e-3;
+  };
+  GevProfile p{{0,0,0,-INFINITY,0,GevStatus::IterationFailure},NAN,NAN};
+  bool found=false;
+  if(search.ok&&std::isfinite(search.value)) {
+    p=gev_profile(data,search.x,1e-12,maxit);found=acceptable(p,true);
+  }
+  if(!found) {
+    // A value-only scan can select the seam when a narrow finite maximum
+    // improves its value by less than floating-point resolution. Preserve
+    // an existing converged stationary proposal instead of losing it.
+    for(const auto& c:result.stop_detail.candidates) {
+      if(c.coef.size()!=3 || c.coef[2]<=lower || c.coef[2]>1)continue;
+      const auto q=gev_profile(data,c.coef[2],1e-12,maxit);
+      if(acceptable(q,false)&&q.curvature<0&&(!found||q.fit.logLik>p.fit.logLik)) {p=q;found=true;}
+    }
+  }
+  if(!found)return result;
+  // A strictly better certified feasible witness refutes this search.
+  const double margin=4096*std::numeric_limits<double>::epsilon()*(data.size()+std::abs(p.fit.logLik));
+  for(const auto& c:result.stop_detail.candidates)
+    if(c.loglik_lower>p.fit.logLik+margin) {
+      result.status=GevStatus::SearchContradicted;
+      result.stop_detail.budget_exhausted=false;result.stop_detail.comparison_tie=false;
+      result.stop_detail.candidates.push_back({{p.fit.mu,p.fit.sigma,p.fit.xi},p.fit.logLik-margin,p.fit.logLik+margin});
+      return result;
+    }
+  p.fit.certified=false;p.fit.stop_detail={};
+  return p.fit;
 }

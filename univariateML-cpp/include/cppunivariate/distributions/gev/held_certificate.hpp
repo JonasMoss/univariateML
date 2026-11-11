@@ -132,7 +132,7 @@ inline Evaluation gev_evaluate(span data,Box b,bool held_mu,double hold,int maxi
     const double m=data[0];double k=0;for(double v:data)if(v==m)++k;
     const double high=m+hold*std::log(2*data.size()/k);
     const double error=128*std::numeric_limits<double>::epsilon()*(1+std::abs(m)+std::abs(high));
-    if(b.y.hi<m-error || b.y.lo>high+error)return {{},-INFINITY,false};
+    if(b.y.lo!=b.y.hi && (b.y.hi<m-error || b.y.lo>high+error))return {{},-INFINITY,false};
   }
   const Jet xi=variable(b.x,0),u=variable(b.y,1);
   const Jet sigma=held_mu?exponential(u):constant(hold),mu=held_mu?constant(hold):u;
@@ -164,6 +164,23 @@ inline Evaluation gev_evaluate(span data,Box b,bool held_mu,double hold,int maxi
   }
   double upper=upper_sum.value().hi/data.size();
   upper+=512*std::numeric_limits<double>::epsilon()*(1+std::abs(upper));
+  if(!held_mu&&b.x.lo>=-1&&b.x.hi<=0&&b.y.lo>data[0]) {
+    // At the minimum observation, u=-L>=q/(1+a*q), where
+    // q=(mu-min)/sigma and a=-xi. Other standardized densities are <=1.
+    // For u>=4, u-exp(u)<=-u*u/4. This also covers xi=0 without
+    // forming its enormous exponential or any derivative of it.
+    const double q=(b.y.lo-data[0])/hold;
+    double u=q/(1-b.x.lo*q);
+    if(std::isfinite(u)) {
+      u=std::min(u,std::sqrt(std::numeric_limits<double>::max())/2);
+      u-=128*std::numeric_limits<double>::epsilon()*(1+std::abs(u));
+      if(u>=4) {
+        const double tail=-std::log(hold)-(u*u/4)/data.size();
+        const double error=512*std::numeric_limits<double>::epsilon()*(1+std::abs(tail));
+        upper=std::min(upper,tail+error);
+      }
+    }
+  }
   if(!smooth)return {{},upper,false};
   Accumulator sum;bool ok=true;
   for(double d:data) {
@@ -187,10 +204,17 @@ struct Cover {bool certified=false,contradicted=false;Box root{},competitor{};st
 // Interval Newton then encloses all coefficients. The remaining boxes are
 // removed by values, scores, or inclusion in this strictly concave basin.
 template<class F,class P>
-inline Cover cover(Box domain,double x,double y,double tol,int maxit,F evaluate,P precise) {
+inline Cover cover(Box domain,double x,double y,double tol,int maxit,F evaluate,P precise,bool profile=false,Box face_basin={},double face_value=NAN,double root_log_fraction=NAN,gev_joint_detail::Range profile_region={-INFINITY,INFINITY},double profile_scale=NAN) {
   Cover out;const auto cap=certificate_budget(maxit);
   auto get=[&](Box b) {if(out.evaluations>=cap)return Evaluation{};++out.evaluations;return evaluate(b);};
   x=std::max(domain.x.lo,std::min(domain.x.hi,x));y=std::max(domain.y.lo,std::min(domain.y.hi,y));
+  Box basin{},root{};Evaluation isolated{},witness{};
+  if(std::isfinite(face_value)) {
+    basin=face_basin;root={{x,x},{y,y}};
+    witness.ok=isolated.ok=true;
+    witness.jet=isolated.jet=constant(face_value);
+    witness.jet=isolated.jet=margin(witness.jet);
+  } else {
   // Newton only proposes; all acceptance comes from subsequent inclusions.
   for(int it=0;it<maxit&&out.evaluations<cap;++it) {
     const auto p=get({{x,x},{y,y}});if(!p.ok)break;
@@ -210,7 +234,7 @@ inline Cover cover(Box domain,double x,double y,double tol,int maxit,F evaluate,
   }
   const double initial=(x==domain.x.lo||x==domain.x.hi)?.02:.000002;
   double rx=initial*(1+std::abs(x)),ry=initial*(1+std::abs(y));
-  Box basin{{std::max(domain.x.lo,x-rx),std::min(domain.x.hi,x+rx)},
+  basin={{std::max(domain.x.lo,x-rx),std::min(domain.x.hi,x+rx)},
             {std::max(domain.y.lo,y-ry),std::min(domain.y.hi,y+ry)}};
   auto B=get(basin);const auto p=get({{x,x},{y,y}});if(!p.ok)return out;
   const bool boundary_proposal=(x==domain.x.lo&&p.jet.g[0].hi<0)||
@@ -230,7 +254,7 @@ inline Cover cover(Box domain,double x,double y,double tol,int maxit,F evaluate,
   if(!basin_ok())return out;
   const bool left=x==domain.x.lo&&B.jet.g[0].hi<0,right=x==domain.x.hi&&B.jet.g[0].lo>0;
   const bool edge=left||right;
-  Box root=basin;bool included=false;
+  root=basin;bool included=false;
   if(edge) {
     root.x={x,x};const auto L=get({root.x,{basin.y.lo,basin.y.lo}}),H=get({root.x,{basin.y.hi,basin.y.hi}});
     included=L.ok&&H.ok&&L.jet.g[1].lo>0&&H.jet.g[1].hi<0;
@@ -270,15 +294,73 @@ inline Cover cover(Box domain,double x,double y,double tol,int maxit,F evaluate,
   }
   if(!solved)return out;
   const double X=(root.x.lo+root.x.hi)/2,Y=(root.y.lo+root.y.hi)/2;
-  const auto witness=get({{X,X},{Y,Y}});if(!witness.ok)return out;
-  const auto isolated=get(root);if(!isolated.ok)return out;
+  witness=get({{X,X},{Y,Y}});if(!witness.ok)return out;
+  isolated=get(root);if(!isolated.ok)return out;
+  }
   const double incumbent=witness.jet.v.lo,slack=512*std::numeric_limits<double>::epsilon()*(1+std::abs(incumbent));
   // Cut along the basin edges so discarded boxes never straddle its boundary.
   std::vector<Box> pending;
   const double xs[4]={domain.x.lo,basin.x.lo,basin.x.hi,domain.x.hi},ys[4]={domain.y.lo,basin.y.lo,basin.y.hi,domain.y.hi};
-  for(int i=0;i<3;++i)for(int j=0;j<3;++j)if(xs[i]<xs[i+1]&&ys[j]<ys[j+1]&&!(i==1&&j==1))pending.push_back({{xs[i],xs[i+1]},{ys[j],ys[j+1]}});
+  for(int i=0;i<3;++i)if(xs[i]<xs[i+1]) {
+    if(profile && xs[i]<0 && xs[i+1]>0) {
+      pending.push_back({{0,xs[i+1]},domain.y});
+      for(int j=0;j<3;++j)if(ys[j]<ys[j+1]&&!(i==1&&j==1))pending.push_back({{xs[i],0},{ys[j],ys[j+1]}});
+    } else if(profile && xs[i]>=0)pending.push_back({{xs[i],xs[i+1]},domain.y});
+    else for(int j=0;j<3;++j)if(ys[j]<ys[j+1]&&!(i==1&&j==1))
+      pending.push_back({{xs[i],xs[i+1]},{ys[j],ys[j+1]}});
+  }
   while(!pending.empty()&&out.evaluations<cap) {
-    const Box b=pending.back();pending.pop_back();const auto e=get(b);
+    Box b=pending.back();pending.pop_back();
+    const bool profiled=profile && b.x.lo>=0;
+    if(profiled) {
+      b.y.lo=std::max(b.y.lo,profile_region.lo);b.y.hi=std::min(b.y.hi,profile_region.hi);
+      if(std::isfinite(profile_scale)&&b.x.lo>0) {
+        const double logratio=(profile_region.hi-profile_region.lo)/profile_scale;
+        const double high=profile_region.lo-profile_scale*std::expm1(-b.x.lo*logratio)/b.x.lo;
+        const double error=128*std::numeric_limits<double>::epsilon()*(1+std::abs(high)+profile_scale);
+        b.y.hi=std::min(b.y.hi,high+error);
+      }
+      if(std::isfinite(root_log_fraction)) {
+        const double low=(root_log_fraction-std::log1p(1/b.x.lo))/b.x.lo;
+        const double error=128*std::numeric_limits<double>::epsilon()*(1+std::abs(low));
+        b.y.lo=std::max(b.y.lo,low-error);
+        b.y.hi=std::min(b.y.hi,0.);
+      }
+      if(b.y.lo>b.y.hi)continue;
+      // For each shape there is exactly one inner root, with score positive
+      // below and negative above it. Uniform signs discard half-lines even
+      // when nuisance curvature is not negative on the initial rectangle.
+      for(int it=0;it<maxit&&out.evaluations+2<cap;++it) {
+        const double mid=(b.y.lo+b.y.hi)/2;
+        const auto m=get({b.x,{mid,mid}});
+        auto next=b.y;
+        if(m.ok&&m.jet.g[1].lo>0)next.lo=mid;
+        else if(m.ok&&m.jet.g[1].hi<0)next.hi=mid;
+        else {
+          const auto h=get(b);
+          if(m.ok&&h.ok&&h.jet.h[2].hi<0) {
+            const auto N=gev_joint_detail::sub({mid,mid},gev_joint_detail::div(m.jet.g[1],h.jet.h[2]));
+            next={std::max(next.lo,N.lo),std::min(next.hi,N.hi)};
+          }
+          // The midpoint may itself be a root while curvature on the
+          // initial bracket changes sign. Quarter-point signs still give
+          // a contraction; splitting shape alone would stagnate here.
+          if(next.hi-next.lo>=.9*(b.y.hi-b.y.lo)&&out.evaluations+2<cap) {
+            const double l=(b.y.lo+mid)/2,r=(mid+b.y.hi)/2;
+            const auto L=get({b.x,{l,l}}),R=get({b.x,{r,r}});
+            if(L.ok&&L.jet.g[1].lo>0)next.lo=std::max(next.lo,l);
+            if(R.ok&&R.jet.g[1].hi<0)next.hi=std::min(next.hi,r);
+          }
+        }
+        if(next.lo>next.hi) {b.y=next;break;}
+        const double old=b.y.hi-b.y.lo;b.y=next;
+        if(b.y.hi-b.y.lo>=.9*old)break;
+      }
+      if(b.y.lo>b.y.hi)continue;
+      if(inside(b.x,basin.x)&&inside(b.y,basin.y))continue;
+    }
+    if(inside(b.x,basin.x)&&inside(b.y,basin.y))continue;
+    const auto e=get(b);
     if(e.upper<incumbent-slack)continue;
     if(e.ok) {
       const double lower_margin=4096*std::numeric_limits<double>::epsilon()*
@@ -303,7 +385,7 @@ inline Cover cover(Box domain,double x,double y,double tol,int maxit,F evaluate,
       if(m.ok&&m.jet.v.hi+gev_joint_detail::magnitude(m.jet.g[0])*dx+gev_joint_detail::magnitude(m.jet.g[1])*dy+
           .5*std::max(0.,e.jet.h[0].hi)*dx*dx+gev_joint_detail::magnitude(e.jet.h[1])*dx*dy+.5*std::max(0.,e.jet.h[2].hi)*dy*dy<incumbent-slack)continue;
     }
-    const bool splitx=(b.x.hi-b.x.lo)/(domain.x.hi-domain.x.lo)>=(b.y.hi-b.y.lo)/(domain.y.hi-domain.y.lo);
+    const bool splitx=profiled || (b.x.hi-b.x.lo)/(domain.x.hi-domain.x.lo)>=(b.y.hi-b.y.lo)/(domain.y.hi-domain.y.lo);
     const double mid=splitx?(b.x.lo+b.x.hi)/2:(b.y.lo+b.y.hi)/2;
     if(splitx) {if(mid==b.x.lo||mid==b.x.hi) {out.root=b;return out;}pending.push_back({{mid,b.x.hi},b.y});pending.push_back({{b.x.lo,mid},b.y});}
     else {if(mid==b.y.lo||mid==b.y.hi) {out.root=b;return out;}pending.push_back({b.x,{mid,b.y.hi}});pending.push_back({b.x,{b.y.lo,mid}});}
@@ -317,14 +399,50 @@ inline GevResult gev_held_certificate(span data,double mu,double sigma,double to
   if(fallback.status!=GevStatus::Ok||!std::isfinite(fallback.logLik)||
      tol<1024*std::numeric_limits<double>::epsilon()||!(public_unit>0)||
      !std::isfinite(public_unit)||!std::isfinite(public_origin))return fallback;
-  for(double d:data)if(!gev_public_contains(d,fallback.mu,fallback.sigma,fallback.xi))return fallback;
-  const bool hm=!std::isnan(mu);const double n=static_cast<double>(data.size()),level=fallback.logLik/n;
+  bool supported=true;
+  for(double d:data)if(!gev_public_contains(d,fallback.mu,fallback.sigma,fallback.xi))supported=false;
+  const bool hm=!std::isnan(mu);const double n=static_cast<double>(data.size());
+  // An exact member is available analytically at an active support corner,
+  // even if its rounded stored coordinates fail the strict support predicate.
+  double face_scale=NAN,S=0,L=0,H=0,k=0,face_height=NAN;
+  if(fallback.xi== -1) {
+    const double M=data[data.size()-1],s0=hm?M-mu:sigma;
+    if(s0>0&&(hm?fallback.sigma==s0:fallback.mu==M-sigma)) {
+      gev_joint_detail::Sum sum_d,sum_log,sum_inverse;
+      for(double v:data) {
+        const double d=(M-v)/s0;sum_d.add(gev_joint_detail::point(d));
+        if(d==0)++k;else {sum_log.add(gev_joint_detail::point(std::log(d)));sum_inverse.add(gev_joint_detail::point(1/d));}
+      }
+      face_scale=s0;S=sum_d.value().lo;L=sum_log.value().lo;H=sum_inverse.value().hi;
+      face_height=-std::log(s0)-S/n;
+    }
+  }
+  if(!supported&&!std::isfinite(face_height))return fallback;
+  const double analytic=n*face_height;
+  const double level_loglik=std::isfinite(analytic)?analytic-
+    512*std::numeric_limits<double>::epsilon()*(n+std::abs(analytic)):fallback.logLik;
+  const double level=level_loglik/n;
   gev_held_detail::Box domain{{-1,1},{0,0}};
   if(hm) {
     double logs=0;std::size_t nonzero=0;
     for(double d:data)if(d!=mu) {logs+=std::log(std::abs(d-mu));++nonzero;}
-    if(2*nonzero<=data.size())return fallback; // unresolved collapse equality
-    domain.y={(fallback.logLik+2*logs)/(2*nonzero-n),-level};
+    if(2*nonzero>data.size())domain.y={(level_loglik+2*logs)/(2*nonzero-n),-level};
+    else {
+      // With data on both sides of the hold, support forces |xi|=O(sigma).
+      // A negative residual then has -L>=C/sigma, uniformly in shape.
+      const double below=mu-data[0],above=data[data.size()-1]-mu;
+      if(!(below>0))return fallback;
+      const bool straddles=above>0;
+      const double C=straddles?std::min(below,above)/(1+std::min(below,above)/std::max(below,above)):below;
+      double t=straddles?std::max(4.,std::sqrt(2*n)):std::max(8.,2*n);bool compact=false;
+      for(int it=0;it<maxit;++it,t*=2) {
+        const double bound=n*(std::log(t)-std::log(C))-(straddles?t*t/4:t/2);
+        if(bound<level_loglik-1e-8*(n+std::abs(level_loglik))) {compact=true;break;}
+        if(!std::isfinite(t))break;
+      }
+      if(!compact)return fallback;
+      domain.y={std::log(C)-std::log(t),-level};
+    }
   } else {
     const double radius=std::sqrt(sigma*std::exp(-level));
     domain.y={data[0]-radius,data[data.size()-1]+radius};
@@ -339,7 +457,29 @@ inline GevResult gev_held_certificate(span data,double mu,double sigma,double to
       (hm ? std::expm1(b.y.hi-b.y.lo)<=t*.25 :
         public_unit*(b.y.hi-b.y.lo)<=t*.25*std::max(std::abs(public_origin+public_unit*y),public_unit*sigma));
   };
-  const auto result=gev_held_detail::cover(domain,fallback.xi,hm?std::log(fallback.sigma):fallback.mu,std::min(tol,.01),maxit,eval,precise);
+  gev_held_detail::Box face_basin{};double face_value=NAN;
+  // No derivative is evaluated at a zero support residual.
+  if(std::isfinite(face_height)) {
+    const double A=2*n-S;double c=1;
+    for(int it=0;it<maxit;++it,c/=2) {
+      const double a=1/(1+c);
+      if(!(a<1))break;
+      const double rate=hm?A/4:a*n/2;
+      const double C=S+n/std::exp(1.)+L+k*(std::log(c*k/rate)-1)+(hm?n-S:0);
+      if(rate>0&&c*H<(hm?A/4:a*n/2)&&C< -1e-8*(n+std::abs(L)+S)) {
+        // Every feasible point here has w>=0. Extend below the support
+        // floor instead of leaving roundoff-sized infeasible boxes to cover.
+        face_basin={{-1,-a},hm?gev_joint_detail::Range{domain.y.lo,std::min(domain.y.hi,std::log(2*a*face_scale))}:domain.y};
+        face_value=face_height;break;
+      }
+    }
+  }
+  if(!supported&&!std::isfinite(face_value))return fallback;
+  double minimum_count=0;for(double v:data)if(v==data[0])++minimum_count;
+  const double location_high=data[0]+sigma*std::log(2*n/minimum_count);
+  const double location_margin=128*std::numeric_limits<double>::epsilon()*(1+std::abs(location_high)+sigma);
+  const gev_joint_detail::Range location_roots{data[0],location_high+location_margin};
+  const auto result=gev_held_detail::cover(domain,fallback.xi,hm?std::log(fallback.sigma):fallback.mu,std::min(tol,.01),maxit,eval,precise,!hm,face_basin,face_value,NAN,location_roots,sigma);
   if(result.contradicted) {
     fallback.xi=result.competitor.x.lo;
     if(hm)fallback.sigma=std::exp(result.competitor.y.lo);
@@ -348,9 +488,12 @@ inline GevResult gev_held_certificate(span data,double mu,double sigma,double to
     fallback.status=GevStatus::SearchContradicted;return fallback;
   }
   if(!result.certified)return fallback;
+  const auto search=fallback;
   fallback.xi=(result.root.x.lo+result.root.x.hi)/2;
   if(hm)fallback.sigma=std::exp((result.root.y.lo+result.root.y.hi)/2);
   else fallback.mu=(result.root.y.lo+result.root.y.hi)/2;
   fallback.logLik=gev_loglik(data,fallback.mu,fallback.sigma,fallback.xi);
+  if(std::isfinite(face_value)&&(!std::isfinite(fallback.logLik)||
+     std::abs(fallback.logLik-n*face_value)>1e-7*n))return search;
   fallback.certified=true;return fallback;
 }

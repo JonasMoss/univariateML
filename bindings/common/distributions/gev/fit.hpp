@@ -63,7 +63,7 @@ inline FitResult fit_gev(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg
   if(r.restricted & 8u) restricted.emplace_back("sigma","upper");
   if(r.restricted & 16u) restricted.emplace_back("xi","lower");
   if(r.restricted & 32u) restricted.emplace_back("xi","upper");
-  return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"mu",r.mu},{"sigma",r.sigma},{"xi",r.xi}}; out.logLik = r.logLik; out.iterations = r.iterations; out.has_iterations = true; out.restricted = restricted; out.has_restricted = true; out.fixed = fixed; out.has_fixed = true; if(!xi.supplied && mu.supplied!=sigma.supplied)out.extra.emplace_back("certified",r.certified?1.:0.); return out; }();
+  return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"mu",r.mu},{"sigma",r.sigma},{"xi",r.xi}}; out.logLik = r.logLik; out.iterations = r.iterations; out.has_iterations = true; out.restricted = restricted; out.has_restricted = true; out.fixed = fixed; out.has_fixed = true; if(!xi.supplied && (!mu.supplied || !sigma.supplied))out.extra.emplace_back("certified",r.certified?1.:0.); return out; }();
 
 }
 }

@@ -50,6 +50,7 @@ inline GevResult frechet_gev_mle(span x, double tol=1e-10, int maxit=100,
       c.coef[0]=origin+range*c.coef[0];c.coef[1]*=range;
       c.loglik_lower-=jac;c.loglik_upper-=jac;
     }
+    gev_verify_contradiction(x,r);
     return r;
   };
   if(!std::isnan(xi)) return restore(gev_profile(data,xi,tol,maxit).fit);
@@ -136,7 +137,7 @@ inline FrechetResult frechet_held_mle(span x,double tol,int maxit,double mu,
      auto member=frechet_two_point_certificate(x,m,M,k,tol,maxit);
      if(member.sigma==sigma &&
         extreme_detail::exact_count_scale(m,M,x.size()-2*k,x.size(),sigma)) {
-       if(member.status==FrechetStatus::Ok) {member.certified=true;return member;}
+       if(member.status==FrechetStatus::Ok)return member;
        if(member.status!=FrechetStatus::GumbelLimit) {
          // An unconstrained face is not a feasible lower witness under this
          // hold. Its global upper bound still bounds the constrained fit.
@@ -320,7 +321,8 @@ inline FrechetResult frechet_mle_impl(span x, double tol=1e-10, int maxit=100,
  detail.candidates=std::move(mapped);
  bad.iterations=r.iterations;bad.stop_detail=detail;
  if(r.status!=GevStatus::Ok) {
-   bad.status=r.status==GevStatus::NumericalFailure?FrechetStatus::NumericalFailure:FrechetStatus::IterationFailure;
+   bad.status=r.status==GevStatus::SearchContradicted?FrechetStatus::SearchContradicted:
+     (r.status==GevStatus::NumericalFailure?FrechetStatus::NumericalFailure:FrechetStatus::IterationFailure);
    return bad;
  }
  if(r.xi==0) {
@@ -346,7 +348,8 @@ inline FrechetResult frechet_mle_impl(span x, double tol=1e-10, int maxit=100,
      bad.stop_detail.candidates.push_back({{shape,location,scale},ll,ll});
    return bad;
  }
- return {shape,location,scale,ll,r.iterations,FrechetStatus::Ok};
+ FrechetResult answer{shape,location,scale,ll,r.iterations,FrechetStatus::Ok};
+ answer.certified=r.certified;return answer;
 }
 
 inline FrechetResult frechet_mle(span x,double tol=1e-10,int maxit=100,double mu=std::numeric_limits<double>::quiet_NaN(),double lambda=std::numeric_limits<double>::quiet_NaN(),double sigma=std::numeric_limits<double>::quiet_NaN()) {

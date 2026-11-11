@@ -152,3 +152,39 @@ test('sstd xi-only certificate, reflection, budget and half-t comparison',()=>{
  const terms=m.dsstd(x,[0,1,1e12,large.estimates.xi],true,true);
  assert.ok(Math.abs([...terms].reduce((a,b)=>a+b,0)-large.logLik)<1e-11);
 });
+
+test('GEV and Frechet all-free fits expose per-fit certificate markers',()=>{
+ const g=m.fitgev(new Float64Array([0,1,1,1,2,3,4]),{},{});
+ assert.equal(g.error,undefined,g.error);assert.equal(g.certified,1);
+ const x=Float64Array.from({length:50},(_,j)=>Math.pow(-Math.log((j+.5)/50),-.5));
+ const f=m.fitfrechet(x,{},{});
+ assert.equal(f.error,undefined,f.error);assert.equal(f.certified,1);
+});
+
+test('Frechet finite two-point cancellation retains an uncertified fit',()=>{
+ const p=.45,mu=p*.1/(Math.sqrt(p*(1-p))+p);
+ const f=m.fitfrechet(new Float64Array([...Array(9).fill(mu),...Array(11).fill(mu+1)]),{},{});
+ assert.equal(f.error,undefined,f.error);assert.equal(f.certified,0);
+ assert.ok(Math.abs(f.estimates.mu)<1e-12);
+});
+
+test('an unordered Frechet Gumbel comparison retains the finite search',()=>{
+ const shape=.0041309589552387081;
+ const x=Float64Array.from({length:80},(_,j)=>Math.expm1(-shape*Math.log(-Math.log((j+.5)/80)))/shape);
+ const f=m.fitfrechet(x,{},{});
+ assert.equal(f.error,undefined,f.error);assert.equal(f.certified,0);
+ assert.ok(f.estimates.lambda>1e5);assert.ok(Number.isFinite(f.logLik));
+});
+
+test('GEV coupled support corners survive normalization and outer coverage',()=>{
+ const cases=[[-.55225555774106538,1.2538261877399721,.35823280453135459],
+  [1.696102873837644,-1.2511415791724954,-1.142128614350542],
+  [36.78357020148276,62.016500801895056,79.137895173444065],
+  [.47613503331464652,2.0186627711562051,1.3293650873876488]];
+ for(const x of cases) {
+  const f=m.fitgev(new Float64Array(x),{mu:0},{});
+  assert.equal(f.error,undefined,f.error);assert.equal(f.certified,1);
+  assert.equal(f.estimates.xi,-1);assert.equal(f.estimates.mu,0);
+  assert.equal(f.estimates.sigma,Math.max(...x));
+ }
+});

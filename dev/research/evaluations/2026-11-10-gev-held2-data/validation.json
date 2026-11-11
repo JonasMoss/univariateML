@@ -1,0 +1,149 @@
+{
+  "head": "af295963493ce0b73f678d1316e5c7355914aa89",
+  "branch": "codex/gev-held2",
+  "checks": {
+    "frozen_sources_match": true,
+    "study_sizes_match": true,
+    "tail_bound_regression_before_after_verified": true,
+    "diagnostic_trace_matches_remaining_open_public_fits": true,
+    "changed_tracked_files_match_snapshot": true,
+    "protected_sources_unchanged": true,
+    "cpp_tests_append_only_except_authorized_gev_fallback_assertion": true,
+    "generated_package_headers_match": true,
+    "baseline_archive_matches_head": true
+  },
+  "runs": [
+    {
+      "check": "cpp-test-no-long-double",
+      "machine": "workstation",
+      "exit": "0"
+    },
+    {
+      "check": "targeted-gev-native-double",
+      "machine": "workstation",
+      "exit": "0"
+    },
+    {
+      "check": "js-build",
+      "machine": "workstation",
+      "exit": "0"
+    },
+    {
+      "check": "targeted-gev-native-double-final",
+      "machine": "workstation",
+      "exit": "0"
+    },
+    {
+      "check": "js-test",
+      "machine": "workstation",
+      "exit": "0"
+    },
+    {
+      "check": "site-check",
+      "machine": "workstation",
+      "exit": "0"
+    },
+    {
+      "check": "js-fit",
+      "machine": "workstation",
+      "exit": "0"
+    },
+    {
+      "check": "quality",
+      "machine": "workstation",
+      "exit": "0"
+    },
+    {
+      "check": "r-dev",
+      "machine": "workstation",
+      "exit": "0"
+    },
+    {
+      "check": "r-dev-current",
+      "machine": "workstation",
+      "exit": "0"
+    },
+    {
+      "check": "r-full",
+      "machine": "workstation",
+      "exit": "0"
+    },
+    {
+      "check": "cpp-dev",
+      "machine": "workstation",
+      "exit": "0"
+    },
+    {
+      "check": "cpp-full",
+      "machine": "workstation",
+      "exit": "0"
+    },
+    {
+      "check": "cpp-double",
+      "machine": "workstation",
+      "exit": "0"
+    }
+  ],
+  "software": {
+    "cpp": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+    "r": "Rscript (R) version 4.6.1 (2026-06-24)",
+    "node": "v22.22.1"
+  },
+  "source_sha256": {
+    "bindings/common/distributions/frechet/fit.hpp": "0e0c2b96a8aac169dc6476b7abb93ad30643184531676b0d56bf3ed72f7a870d",
+    "bindings/common/distributions/gev/fit.hpp": "e60c13b86fcdf8b7eeb9dad65b39fc889baf52881b1130647d4f261275d9eea5",
+    "bindings/js/fit-test.mjs": "441e7999bc3489a6526d16dc0ced0e290c379ad16855ecf0279c7ed2c8c98899",
+    "bindings/js/test.mjs": "74d7793af4c891f37b1fcfb7ebe0aacfe96998db4dc54809726fb410d3e46f35",
+    "bindings/r/distributions/frechet/test.R": "2b075a8f23c3632dbc8a3d9f6a3a2d55e48992b4f1a2ebc81c9593c6fb0d498d",
+    "bindings/r/distributions/gev/test.R": "401d34c982aae6995db0ee2e541122a433ba4ad675f31a637560af1b86ad17c3",
+    "univariateML-cpp/include/cppunivariate/distributions/frechet/README.md": "5a6d7ad908752ace038b3c727e93c7a7844ddb4d34550da985ebb9303f405c04",
+    "univariateML-cpp/include/cppunivariate/distributions/frechet/certificate.hpp": "8535364c3863f09aa402f0214620e87b179feae3d924effe852ae349099e36e8",
+    "univariateML-cpp/include/cppunivariate/distributions/frechet/mle.hpp": "de680a35e5a5ecb0396d2805139dbd469d3f0a409aed67a44fc3575e7cb78f64",
+    "univariateML-cpp/include/cppunivariate/distributions/frechet/test.cpp": "4e3afe5b7869ce0950bd4fe8d00bd9e0b7d39d5462163d0c5a971c170c824708",
+    "univariateML-cpp/include/cppunivariate/distributions/gev/README.md": "f264037f31331652bbfc4bc9ea6494dd5892e3303c033b93ca3e39fa3a7f0c74",
+    "univariateML-cpp/include/cppunivariate/distributions/gev/held_certificate.hpp": "d012770a83ab4df1e48bdcc3a48b375dd24e1f098d4a1166c4ed86187df7d36a",
+    "univariateML-cpp/include/cppunivariate/distributions/gev/joint_certificate.hpp": "e558c061e78c8c3b7ae394923922747a8898747a01b20010189e94a8d78e0164",
+    "univariateML-cpp/include/cppunivariate/distributions/gev/mle.hpp": "16f163d3322e07f399acc9cffe0074dba6c99bc90dc13f644c9a240c305831ac",
+    "univariateML-cpp/include/cppunivariate/distributions/gev/test.cpp": "8fd95bbf8d2ce9deddcb79fcf526ba8a048520fa31198352b79a92eda2652993"
+  },
+  "fixture_sha256": {
+    "univariateML-cpp/include/cppunivariate/distributions/gev/golden.json": "1cdeb63dc72f6a8a8f0f38b166586b8b9c74e4ecfe8519232ec720657340b132",
+    "univariateML-cpp/include/cppunivariate/distributions/gev/dpqr.hpp": "6a359d93a728c18e9c3216b42a90ea09ae74c788cb9387f59541bcf8b98f4070",
+    "univariateML-cpp/include/cppunivariate/distributions/gev/truth.py": "17b32df9b91bfb16ef036532ebcedbe95b179e811e37eed0b7e532f9520d6162",
+    "univariateML-cpp/include/cppunivariate/distributions/gev/truth.json": "722390d297c8b47d31c1318071b0f701836a69c9c3c34e33a6866699c7d743b7",
+    "univariateML-cpp/include/cppunivariate/distributions/frechet/golden.json": "181203b03ea68fc0ac2ec33dbd650c5922132f2fec8f571a1bd2d15683fbab27",
+    "univariateML-cpp/include/cppunivariate/distributions/frechet/dpqr.hpp": "f68fa78cca65626a1a94d994368022db33baa6f2e55a5a985a5c96bd2ce8025f",
+    "univariateML-cpp/include/cppunivariate/distributions/frechet/truth.py": "920b785747ebb6f6e90d4eef5b409bd0b8130e1cc0f96302283e5d6bed6a5944",
+    "univariateML-cpp/include/cppunivariate/distributions/frechet/truth.json": "2fae4d92087c41902593510d392e085ee3968d760c32138fe410e1708c4eceb3"
+  },
+  "baseline_header_sha256": {
+    "cppunivariate/distributions/gev/mle.hpp": "157f38451150b56f8f0a43e972a722547bf89796945bcdc347db375e73e12455",
+    "cppunivariate/distributions/gev/held_certificate.hpp": "8cda7a7eb3cc05a352a47d1bb6322f2c19e391bad7f2ea334702d14580cd04fa",
+    "cppunivariate/distributions/gev/joint_certificate.hpp": "9be54765f043809ed2e59090a2d95520a09d72a6aa024eff76a12896ee540294",
+    "cppunivariate/distributions/frechet/mle.hpp": "a4b174b920d2d5477764a328fffd917008ed69774c3264f7dcc626936ac57a76",
+    "cppunivariate/distributions/frechet/certificate.hpp": "23dbc096a33ef40af13c5b3af00d5980132818b1f6faf94e440ea139f80c4217"
+  },
+  "generated_package_copies": {
+    "univariateML-cpp/include/cppunivariate/distributions/gev/mle.hpp": [
+      "univariateML-r/inst/include/cppunivariate/distributions/gev/mle.hpp"
+    ],
+    "univariateML-cpp/include/cppunivariate/distributions/gev/held_certificate.hpp": [
+      "univariateML-r/inst/include/cppunivariate/distributions/gev/held_certificate.hpp"
+    ],
+    "univariateML-cpp/include/cppunivariate/distributions/gev/joint_certificate.hpp": [
+      "univariateML-r/inst/include/cppunivariate/distributions/gev/joint_certificate.hpp"
+    ],
+    "univariateML-cpp/include/cppunivariate/distributions/frechet/mle.hpp": [
+      "univariateML-r/inst/include/cppunivariate/distributions/frechet/mle.hpp"
+    ],
+    "univariateML-cpp/include/cppunivariate/distributions/frechet/certificate.hpp": [
+      "univariateML-r/inst/include/cppunivariate/distributions/frechet/certificate.hpp"
+    ],
+    "bindings/common/distributions/gev/fit.hpp": [
+      "univariateML-r/src/common/distributions/gev/fit.hpp"
+    ],
+    "bindings/common/distributions/frechet/fit.hpp": [
+      "univariateML-r/src/common/distributions/frechet/fit.hpp"
+    ]
+  }
+}

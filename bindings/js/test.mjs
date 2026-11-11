@@ -828,9 +828,10 @@ test('GEV two-point count certificate avoids a rounded sample mean', async () =>
   assert.equal(f.estimates.xi,-1);
   assert.ok(Math.abs(f.estimates.sigma*101-1)<1e-10);
   assert.ok(Math.abs(f.estimates.mu-100/101)<1e-10);
-  assert.throws(() => api.gev.fit(new Float64Array([-9,...Array(9).fill(1)])),e => {
-    assert.equal(e.kind,'numerical');return true;
-  });
+  const centered=api.gev.fit(new Float64Array([-9,...Array(9).fill(1)]));
+  assert.equal(centered.certified,0);
+  assert.equal(centered.estimates.mu,0);assert.equal(centered.estimates.sigma,1);
+  assert.equal(centered.estimates.xi,-1);
 });
 test('EMG certified conditional routes and numerical location stops', async () => {
   const {default:createApi}=await import('./index.mjs');

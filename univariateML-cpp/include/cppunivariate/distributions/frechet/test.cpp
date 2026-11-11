@@ -414,3 +414,43 @@ TEST_CASE("frechet: held-scale certificate covers shape-one boundary") {
   REQUIRE(r.status==cppunivariate::FrechetStatus::Ok);
   CHECK(r.certified);CHECK(r.lambda==1);CHECK(r.sigma==1);CHECK((r.restricted&1u)!=0);
 }
+
+TEST_CASE("frechet: held-scale profile cover contracts a root at the slab midpoint") {
+  std::vector<double> x;
+  for(int j=0;j<500;++j)x.push_back(std::pow(-std::log((j+.5)/500),-.5));
+  const auto fit=cppunivariate::frechet_mle(mltest::as_span(x),1e-10,100,NAN,NAN,1);
+  REQUIRE(fit.status==cppunivariate::FrechetStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.sigma==1);
+}
+
+TEST_CASE("frechet: failed all-free coefficient inclusion retains a successful search") {
+  const auto g=mltest::load_distribution_golden("frechet");
+  std::vector<double> x=g.data;std::sort(x.begin(),x.end());
+  const double m=x.front(),d=x.back()-m;for(double& v:x)v=(v-m)/d;
+  const auto fit=cppunivariate::gev_joint_certificate(mltest::as_span(x),1e-16,100,true);
+  REQUIRE(fit.status==cppunivariate::GevStatus::Ok);
+  CHECK_FALSE(fit.certified);
+  CHECK(fit.xi>0);
+  CHECK_FALSE(fit.stop_detail.budget_exhausted);
+}
+
+TEST_CASE("frechet: cancellation in a finite two-point location retains an uncertified fit") {
+  const double p=.45,m=p*.1/(std::sqrt(p*(1-p))+p);
+  std::vector<double> x(20,m+1);std::fill_n(x.begin(),9,m);
+  const auto fit=cppunivariate::frechet_mle(mltest::as_span(x));
+  REQUIRE(fit.status==cppunivariate::FrechetStatus::Ok);
+  CHECK_FALSE(fit.certified);CHECK(fit.lambda==1);
+  CHECK(std::abs(fit.mu)<1e-12);CHECK(std::isfinite(fit.logLik));
+}
+
+TEST_CASE("frechet: an unordered Gumbel comparison retains the finite stationary proposal") {
+  const double generating_shape=.0041309589552387081;
+  std::vector<double> x;
+  for(int j=0;j<80;++j)x.push_back(std::expm1(-generating_shape*std::log(-std::log((j+.5)/80)))/generating_shape);
+  const auto fit=cppunivariate::frechet_mle(mltest::as_span(x));
+  REQUIRE(fit.status==cppunivariate::FrechetStatus::Ok);
+  CHECK_FALSE(fit.certified);CHECK(fit.lambda>1e5);CHECK(std::isfinite(fit.logLik));
+  const auto profile=cppunivariate::gev_profile(mltest::as_span(x),1/fit.lambda,1e-12,100);
+  CHECK(std::abs(profile.score)<1e-3);
+}
