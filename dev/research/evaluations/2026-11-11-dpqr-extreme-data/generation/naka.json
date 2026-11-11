@@ -1,0 +1,49 @@
+{
+  "id": "naka",
+  "input_sha256": "df6536c884adc78c22753e14cfe31ca4c6c2d6af8fe169b4fe8f0061c8d7acc4",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 81809,
+    "points": 9,
+    "values": 188,
+    "quantiles": 396
+  },
+  "after": {
+    "bytes": 81809,
+    "points": 9,
+    "values": 188,
+    "quantiles": 396
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "seconds": 120.00021126499996
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms.",
+      "seconds": 0.20574662299986812
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1000.0
+      ],
+      "status": "oracle gap",
+      "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms.",
+      "seconds": 0.07490115099972172
+    }
+  ],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

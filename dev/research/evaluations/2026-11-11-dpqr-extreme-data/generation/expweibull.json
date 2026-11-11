@@ -1,0 +1,21 @@
+{
+  "id": "expweibull",
+  "input_sha256": "1f32ac950cf7e917e77640c05cd68518e047305331acefb70b3572db0e7f9f3a",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 170332,
+    "points": 20,
+    "values": 371,
+    "quantiles": 880
+  },
+  "after": {
+    "bytes": 170332,
+    "points": 20,
+    "values": 371,
+    "quantiles": 880
+  },
+  "records": [],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

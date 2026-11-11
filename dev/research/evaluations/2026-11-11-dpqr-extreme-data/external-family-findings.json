@@ -1,0 +1,3222 @@
+{
+  "checks": 120,
+  "failures": [
+    {
+      "family": "invweibull",
+      "function": "d",
+      "input": 1000.000005,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        1000.0
+      ],
+      "actual": 10.406394783979696,
+      "expected": 10.406394801246138,
+      "error": 1.6592146298284645e-09
+    },
+    {
+      "family": "invweibull",
+      "function": "p",
+      "input": 1000.000005,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        1000.0
+      ],
+      "actual": -0.6065306346203481,
+      "expected": -0.6065306612364681,
+      "error": 2.661612008569847e-08
+    },
+    {
+      "family": "invweibull",
+      "function": "p",
+      "input": 1000.000005,
+      "lower": true,
+      "log": false,
+      "parameters": [
+        100000000.0,
+        1000.0
+      ],
+      "actual": 0.5452392255739031,
+      "expected": 0.5452392110617507,
+      "error": 2.6616120384038257e-08
+    },
+    {
+      "family": "invweibull",
+      "function": "p",
+      "input": 1000.000005,
+      "lower": false,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        1000.0
+      ],
+      "actual": -0.7879837687890529,
+      "expected": -0.7879837368774345,
+      "error": 3.1911618347812976e-08
+    },
+    {
+      "family": "invweibull",
+      "function": "p",
+      "input": 1000.000005,
+      "lower": false,
+      "log": false,
+      "parameters": [
+        100000000.0,
+        1000.0
+      ],
+      "actual": 0.45476077442609686,
+      "expected": 0.45476078893824934,
+      "error": 3.191161778393379e-08
+    },
+    {
+      "family": "invweibull",
+      "function": "d",
+      "input": 1.000000005e+100,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        1e+100
+      ],
+      "actual": -212.94435825792578,
+      "expected": -212.9443592200755,
+      "error": 4.51831516235396e-09
+    },
+    {
+      "family": "invweibull",
+      "function": "p",
+      "input": 1.000000005e+100,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        1e+100
+      ],
+      "actual": -0.6065321430030012,
+      "expected": -0.6065306598503118,
+      "error": 1.4831526893299696e-06
+    },
+    {
+      "family": "invweibull",
+      "function": "p",
+      "input": 1.000000005e+100,
+      "lower": true,
+      "log": false,
+      "parameters": [
+        100000000.0,
+        1e+100
+      ],
+      "actual": 0.5452384031451337,
+      "expected": 0.5452392118175373,
+      "error": 1.4831515893737216e-06
+    },
+    {
+      "family": "invweibull",
+      "function": "p",
+      "input": 1.000000005e+100,
+      "lower": false,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        1e+100
+      ],
+      "actual": -0.7879819603040823,
+      "expected": -0.787983738539378,
+      "error": 1.7782352956796643e-06
+    },
+    {
+      "family": "invweibull",
+      "function": "p",
+      "input": 1.000000005e+100,
+      "lower": false,
+      "log": false,
+      "parameters": [
+        100000000.0,
+        1e+100
+      ],
+      "actual": 0.4547615968548663,
+      "expected": 0.4547607881824626,
+      "error": 1.7782368767623499e-06
+    },
+    {
+      "family": "invweibull",
+      "function": "d",
+      "input": 1.000000005e-100,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        1e-100
+      ],
+      "actual": 247.57265922257798,
+      "expected": 247.57265938011673,
+      "error": 6.36333391739046e-10
+    },
+    {
+      "family": "invweibull",
+      "function": "p",
+      "input": 1.000000005e-100,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        1e-100
+      ],
+      "actual": -0.6065304191374181,
+      "expected": -0.6065306619823857,
+      "error": 2.4284496757953633e-07
+    },
+    {
+      "family": "invweibull",
+      "function": "p",
+      "input": 1.000000005e-100,
+      "lower": true,
+      "log": false,
+      "parameters": [
+        100000000.0,
+        1e-100
+      ],
+      "actual": 0.5452393430636616,
+      "expected": 0.5452392106550471,
+      "error": 2.428449970757922e-07
+    },
+    {
+      "family": "invweibull",
+      "function": "p",
+      "input": 1.000000005e-100,
+      "lower": false,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        1e-100
+      ],
+      "actual": -0.787984027144171,
+      "expected": -0.7879837359831104,
+      "error": 2.911610605949022e-07
+    },
+    {
+      "family": "invweibull",
+      "function": "p",
+      "input": 1.000000005e-100,
+      "lower": false,
+      "log": false,
+      "parameters": [
+        100000000.0,
+        1e-100
+      ],
+      "actual": 0.4547606569363384,
+      "expected": 0.4547607893449529,
+      "error": 2.9116101831878763e-07
+    },
+    {
+      "family": "invweibull",
+      "function": "d",
+      "input": 1000.0000000005,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        1000.0
+      ],
+      "actual": 19.61671768680734,
+      "expected": 19.616737257772808,
+      "error": 9.976666970519134e-07
+    },
+    {
+      "family": "invweibull",
+      "function": "p",
+      "input": 1000.0000000005,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        1000.0
+      ],
+      "actual": -0.6065036998473967,
+      "expected": -0.6065338668735596,
+      "error": 3.0167026162875032e-05
+    },
+    {
+      "family": "invweibull",
+      "function": "p",
+      "input": 1000.0000000005,
+      "lower": true,
+      "log": false,
+      "parameters": [
+        1000000000000.0,
+        1000.0
+      ],
+      "actual": 0.5452539116664306,
+      "expected": 0.5452374632255134,
+      "error": 3.0167481192301555e-05
+    },
+    {
+      "family": "invweibull",
+      "function": "p",
+      "input": 1000.0000000005,
+      "lower": false,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        1000.0
+      ],
+      "actual": -0.7880160634162403,
+      "expected": -0.787979893465863,
+      "error": 3.61699503773627e-05
+    },
+    {
+      "family": "invweibull",
+      "function": "p",
+      "input": 1000.0000000005,
+      "lower": false,
+      "log": false,
+      "parameters": [
+        1000000000000.0,
+        1000.0
+      ],
+      "actual": 0.4547460883335695,
+      "expected": 0.45476253677448664,
+      "error": 3.616929625250779e-05
+    },
+    {
+      "family": "invweibull",
+      "function": "d",
+      "input": 1.0000000000005e+100,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        1e+100
+      ],
+      "actual": -203.72748277763137,
+      "expected": -203.73403575225157,
+      "error": 3.216435877299685e-05
+    },
+    {
+      "family": "invweibull",
+      "function": "p",
+      "input": 1.0000000000005e+100,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        1e+100
+      ],
+      "actual": -0.6168255338379819,
+      "expected": -0.6065045959162713,
+      "error": 0.010320937921710627
+    },
+    {
+      "family": "invweibull",
+      "function": "p",
+      "input": 1.0000000000005e+100,
+      "lower": true,
+      "log": false,
+      "parameters": [
+        1000000000000.0,
+        1e+100
+      ],
+      "actual": 0.5396548373756372,
+      "expected": 0.5452534230815905,
+      "error": 0.010267859804184164
+    },
+    {
+      "family": "invweibull",
+      "function": "p",
+      "input": 1.0000000000005e+100,
+      "lower": false,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        1e+100
+      ],
+      "actual": -0.7757787173422391,
+      "expected": -0.7880149890044089,
+      "error": 0.012236271662169784
+    },
+    {
+      "family": "invweibull",
+      "function": "p",
+      "input": 1.0000000000005e+100,
+      "lower": false,
+      "log": false,
+      "parameters": [
+        1000000000000.0,
+        1e+100
+      ],
+      "actual": 0.46034516262436276,
+      "expected": 0.45474657691840953,
+      "error": 0.012311441119341786
+    },
+    {
+      "family": "invweibull",
+      "function": "d",
+      "input": 1.0000000000005001e-100,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        1e-100
+      ],
+      "actual": 256.7783985575844,
+      "expected": 256.78295983934623,
+      "error": 1.7763179319520217e-05
+    },
+    {
+      "family": "invweibull",
+      "function": "p",
+      "input": 1.0000000000005001e-100,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        1e-100
+      ],
+      "actual": -0.5995410880009562,
+      "expected": -0.6064691369434665,
+      "error": 0.006928048942510312
+    },
+    {
+      "family": "invweibull",
+      "function": "p",
+      "input": 1.0000000000005001e-100,
+      "lower": true,
+      "log": false,
+      "parameters": [
+        1000000000000.0,
+        1e-100
+      ],
+      "actual": 0.5490635501378125,
+      "expected": 0.5452727575506794,
+      "error": 0.0069521033916329095
+    },
+    {
+      "family": "invweibull",
+      "function": "p",
+      "input": 1.0000000000005001e-100,
+      "lower": false,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        1e-100
+      ],
+      "actual": -0.7964288588046005,
+      "expected": -0.7880575069278062,
+      "error": 0.008371351876794275
+    },
+    {
+      "family": "invweibull",
+      "function": "p",
+      "input": 1.0000000000005001e-100,
+      "lower": false,
+      "log": false,
+      "parameters": [
+        1000000000000.0,
+        1e-100
+      ],
+      "actual": 0.4509364498621875,
+      "expected": 0.4547272424493206,
+      "error": 0.008336409683120296
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5e-09,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        -1.0,
+        1.0
+      ],
+      "actual": -0.606530662313883,
+      "expected": -0.6065306604707967,
+      "error": 1.8430862391838332e-09
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5e-09,
+      "lower": true,
+      "log": false,
+      "parameters": [
+        100000000.0,
+        -1.0,
+        1.0
+      ],
+      "actual": 0.5452392104743018,
+      "expected": 0.5452392114792247,
+      "error": 1.8430863032163857e-09
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5e-09,
+      "lower": false,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        -1.0,
+        1.0
+      ],
+      "actual": -0.7879837355856589,
+      "expected": -0.7879837377954425,
+      "error": 2.2097835783441155e-09
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5e-09,
+      "lower": false,
+      "log": false,
+      "parameters": [
+        100000000.0,
+        -1.0,
+        1.0
+      ],
+      "actual": 0.4547607895256982,
+      "expected": 0.45476078852077534,
+      "error": 2.2097834565101278e-09
+    },
+    {
+      "family": "frechet",
+      "function": "d",
+      "input": 1000.000005,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        0.0,
+        1000.0
+      ],
+      "actual": 10.406394783979696,
+      "expected": 10.406394801246138,
+      "error": 1.6592146298284645e-09
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 1000.000005,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        0.0,
+        1000.0
+      ],
+      "actual": -0.6065306346203481,
+      "expected": -0.6065306612364681,
+      "error": 2.661612008569847e-08
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 1000.000005,
+      "lower": true,
+      "log": false,
+      "parameters": [
+        100000000.0,
+        0.0,
+        1000.0
+      ],
+      "actual": 0.5452392255739031,
+      "expected": 0.5452392110617507,
+      "error": 2.6616120384038257e-08
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 1000.000005,
+      "lower": false,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        0.0,
+        1000.0
+      ],
+      "actual": -0.7879837687890529,
+      "expected": -0.7879837368774345,
+      "error": 3.1911618347812976e-08
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 1000.000005,
+      "lower": false,
+      "log": false,
+      "parameters": [
+        100000000.0,
+        0.0,
+        1000.0
+      ],
+      "actual": 0.45476077442609686,
+      "expected": 0.45476078893824934,
+      "error": 3.191161778393379e-08
+    },
+    {
+      "family": "frechet",
+      "function": "d",
+      "input": 5e-06,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        -1000.0,
+        1000.0
+      ],
+      "actual": 10.406394783979696,
+      "expected": 10.406394800749432,
+      "error": 1.6114837216247874e-09
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5e-06,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        -1000.0,
+        1000.0
+      ],
+      "actual": -0.6065306346203481,
+      "expected": -0.6065306604707967,
+      "error": 2.5850448670539095e-08
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5e-06,
+      "lower": true,
+      "log": false,
+      "parameters": [
+        100000000.0,
+        -1000.0,
+        1000.0
+      ],
+      "actual": 0.5452392255739031,
+      "expected": 0.5452392114792247,
+      "error": 2.5850448991285216e-08
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5e-06,
+      "lower": false,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        -1000.0,
+        1000.0
+      ],
+      "actual": -0.7879837687890529,
+      "expected": -0.7879837377954425,
+      "error": 3.099361034486492e-08
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5e-06,
+      "lower": false,
+      "log": false,
+      "parameters": [
+        100000000.0,
+        -1000.0,
+        1000.0
+      ],
+      "actual": 0.45476077442609686,
+      "expected": 0.4547607885207753,
+      "error": 3.099360978381356e-08
+    },
+    {
+      "family": "frechet",
+      "function": "d",
+      "input": 1.000000005e+100,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        0.0,
+        1e+100
+      ],
+      "actual": -212.94435825792578,
+      "expected": -212.9443592200755,
+      "error": 4.51831516235396e-09
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 1.000000005e+100,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        0.0,
+        1e+100
+      ],
+      "actual": -0.6065321430030012,
+      "expected": -0.6065306598503118,
+      "error": 1.4831526893299696e-06
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 1.000000005e+100,
+      "lower": true,
+      "log": false,
+      "parameters": [
+        100000000.0,
+        0.0,
+        1e+100
+      ],
+      "actual": 0.5452384031451337,
+      "expected": 0.5452392118175373,
+      "error": 1.4831515893737216e-06
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 1.000000005e+100,
+      "lower": false,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        0.0,
+        1e+100
+      ],
+      "actual": -0.7879819603040823,
+      "expected": -0.787983738539378,
+      "error": 1.7782352956796643e-06
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 1.000000005e+100,
+      "lower": false,
+      "log": false,
+      "parameters": [
+        100000000.0,
+        0.0,
+        1e+100
+      ],
+      "actual": 0.4547615968548663,
+      "expected": 0.4547607881824626,
+      "error": 1.7782368767623499e-06
+    },
+    {
+      "family": "frechet",
+      "function": "d",
+      "input": 5e+91,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        -1e+100,
+        1e+100
+      ],
+      "actual": -212.94435825792578,
+      "expected": -212.944359219673,
+      "error": 4.516424958506298e-09
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5e+91,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        -1e+100,
+        1e+100
+      ],
+      "actual": -0.6065321430030012,
+      "expected": -0.6065306604707967,
+      "error": 1.4825322044442757e-06
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5e+91,
+      "lower": true,
+      "log": false,
+      "parameters": [
+        100000000.0,
+        -1e+100,
+        1e+100
+      ],
+      "actual": 0.5452384031451337,
+      "expected": 0.5452392114792247,
+      "error": 1.4825311055727311e-06
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5e+91,
+      "lower": false,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        -1e+100,
+        1e+100
+      ],
+      "actual": -0.7879819603040823,
+      "expected": -0.7879837377954425,
+      "error": 1.777491360210881e-06
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5e+91,
+      "lower": false,
+      "log": false,
+      "parameters": [
+        100000000.0,
+        -1e+100,
+        1e+100
+      ],
+      "actual": 0.4547615968548663,
+      "expected": 0.45476078852077534,
+      "error": 1.7774929399029749e-06
+    },
+    {
+      "family": "frechet",
+      "function": "d",
+      "input": 1.000000005e-100,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        0.0,
+        1e-100
+      ],
+      "actual": 247.57265922257798,
+      "expected": 247.57265938011673,
+      "error": 6.36333391739046e-10
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 1.000000005e-100,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        0.0,
+        1e-100
+      ],
+      "actual": -0.6065304191374181,
+      "expected": -0.6065306619823857,
+      "error": 2.4284496757953633e-07
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 1.000000005e-100,
+      "lower": true,
+      "log": false,
+      "parameters": [
+        100000000.0,
+        0.0,
+        1e-100
+      ],
+      "actual": 0.5452393430636616,
+      "expected": 0.5452392106550471,
+      "error": 2.428449970757922e-07
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 1.000000005e-100,
+      "lower": false,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        0.0,
+        1e-100
+      ],
+      "actual": -0.787984027144171,
+      "expected": -0.7879837359831104,
+      "error": 2.911610605949022e-07
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 1.000000005e-100,
+      "lower": false,
+      "log": false,
+      "parameters": [
+        100000000.0,
+        0.0,
+        1e-100
+      ],
+      "actual": 0.4547606569363384,
+      "expected": 0.4547607893449529,
+      "error": 2.9116101831878763e-07
+    },
+    {
+      "family": "frechet",
+      "function": "d",
+      "input": 5e-109,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        -1e-100,
+        1e-100
+      ],
+      "actual": 247.57265922257798,
+      "expected": 247.57265937913613,
+      "error": 6.323725108380492e-10
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5e-109,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        -1e-100,
+        1e-100
+      ],
+      "actual": -0.6065304191374181,
+      "expected": -0.6065306604707967,
+      "error": 2.4133337861442783e-07
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5e-109,
+      "lower": true,
+      "log": false,
+      "parameters": [
+        100000000.0,
+        -1e-100,
+        1e-100
+      ],
+      "actual": 0.5452393430636616,
+      "expected": 0.5452392114792247,
+      "error": 2.4133340767092233e-07
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5e-109,
+      "lower": false,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        -1e-100,
+        1e-100
+      ],
+      "actual": -0.787984027144171,
+      "expected": -0.7879837377954425,
+      "error": 2.893487285327012e-07
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5e-109,
+      "lower": false,
+      "log": false,
+      "parameters": [
+        100000000.0,
+        -1e-100,
+        1e-100
+      ],
+      "actual": 0.4547606569363384,
+      "expected": 0.45476078852077534,
+      "error": 2.8934868678016603e-07
+    },
+    {
+      "family": "frechet",
+      "function": "d",
+      "input": 5e-13,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        -1.0,
+        1.0
+      ],
+      "actual": 26.524472965789528,
+      "expected": 26.524490456215464,
+      "error": 6.594066704085942e-07
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5e-13,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        -1.0,
+        1.0
+      ],
+      "actual": -0.6065036998474725,
+      "expected": -0.6065306597127093,
+      "error": 2.695986523670868e-05
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5e-13,
+      "lower": true,
+      "log": false,
+      "parameters": [
+        1000000000000.0,
+        -1.0,
+        1.0
+      ],
+      "actual": 0.5452539116663891,
+      "expected": 0.5452392118925637,
+      "error": 2.6960228657024873e-05
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5e-13,
+      "lower": false,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        -1.0,
+        1.0
+      ],
+      "actual": -0.7880160634161494,
+      "expected": -0.7879837387043578,
+      "error": 3.2324711791598126e-05
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5e-13,
+      "lower": false,
+      "log": false,
+      "parameters": [
+        1000000000000.0,
+        -1.0,
+        1.0
+      ],
+      "actual": 0.45474608833361085,
+      "expected": 0.4547607881074363,
+      "error": 3.2324189353771355e-05
+    },
+    {
+      "family": "frechet",
+      "function": "d",
+      "input": 1000.0000000005,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        0.0,
+        1000.0
+      ],
+      "actual": 19.61671768680734,
+      "expected": 19.616737257772808,
+      "error": 9.976666970519134e-07
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 1000.0000000005,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        0.0,
+        1000.0
+      ],
+      "actual": -0.6065036998473967,
+      "expected": -0.6065338668735596,
+      "error": 3.0167026162875032e-05
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 1000.0000000005,
+      "lower": true,
+      "log": false,
+      "parameters": [
+        1000000000000.0,
+        0.0,
+        1000.0
+      ],
+      "actual": 0.5452539116664306,
+      "expected": 0.5452374632255134,
+      "error": 3.0167481192301555e-05
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 1000.0000000005,
+      "lower": false,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        0.0,
+        1000.0
+      ],
+      "actual": -0.7880160634162403,
+      "expected": -0.787979893465863,
+      "error": 3.61699503773627e-05
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 1000.0000000005,
+      "lower": false,
+      "log": false,
+      "parameters": [
+        1000000000000.0,
+        0.0,
+        1000.0
+      ],
+      "actual": 0.4547460883335695,
+      "expected": 0.45476253677448664,
+      "error": 3.616929625250779e-05
+    },
+    {
+      "family": "frechet",
+      "function": "d",
+      "input": 5e-10,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        -1000.0,
+        1000.0
+      ],
+      "actual": 19.61671768680734,
+      "expected": 19.616735177233327,
+      "error": 8.916073866386542e-07
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5e-10,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        -1000.0,
+        1000.0
+      ],
+      "actual": -0.6065036998473967,
+      "expected": -0.6065306597127093,
+      "error": 2.6959865312536913e-05
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5e-10,
+      "lower": true,
+      "log": false,
+      "parameters": [
+        1000000000000.0,
+        -1000.0,
+        1000.0
+      ],
+      "actual": 0.5452539116664306,
+      "expected": 0.5452392118925637,
+      "error": 2.6960228732975607e-05
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5e-10,
+      "lower": false,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        -1000.0,
+        1000.0
+      ],
+      "actual": -0.7880160634162403,
+      "expected": -0.7879837387043578,
+      "error": 3.232471188252539e-05
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5e-10,
+      "lower": false,
+      "log": false,
+      "parameters": [
+        1000000000000.0,
+        -1000.0,
+        1000.0
+      ],
+      "actual": 0.4547460883335695,
+      "expected": 0.45476078810743625,
+      "error": 3.232418944458899e-05
+    },
+    {
+      "family": "frechet",
+      "function": "d",
+      "input": 1.0000000000005e+100,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        0.0,
+        1e+100
+      ],
+      "actual": -203.72748277763137,
+      "expected": -203.73403575225157,
+      "error": 3.216435877299685e-05
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 1.0000000000005e+100,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        0.0,
+        1e+100
+      ],
+      "actual": -0.6168255338379819,
+      "expected": -0.6065045959162713,
+      "error": 0.010320937921710627
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 1.0000000000005e+100,
+      "lower": true,
+      "log": false,
+      "parameters": [
+        1000000000000.0,
+        0.0,
+        1e+100
+      ],
+      "actual": 0.5396548373756372,
+      "expected": 0.5452534230815905,
+      "error": 0.010267859804184164
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 1.0000000000005e+100,
+      "lower": false,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        0.0,
+        1e+100
+      ],
+      "actual": -0.7757787173422391,
+      "expected": -0.7880149890044089,
+      "error": 0.012236271662169784
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 1.0000000000005e+100,
+      "lower": false,
+      "log": false,
+      "parameters": [
+        1000000000000.0,
+        0.0,
+        1e+100
+      ],
+      "actual": 0.46034516262436276,
+      "expected": 0.45474657691840953,
+      "error": 0.012311441119341786
+    },
+    {
+      "family": "frechet",
+      "function": "d",
+      "input": 5e+87,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        -1e+100,
+        1e+100
+      ],
+      "actual": -203.72748277763137,
+      "expected": -203.7340188431891,
+      "error": 3.208136566900902e-05
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5e+87,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        -1e+100,
+        1e+100
+      ],
+      "actual": -0.6168255338379819,
+      "expected": -0.6065306597127093,
+      "error": 0.010294874125272635
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5e+87,
+      "lower": true,
+      "log": false,
+      "parameters": [
+        1000000000000.0,
+        -1e+100,
+        1e+100
+      ],
+      "actual": 0.5396548373756372,
+      "expected": 0.5452392118925637,
+      "error": 0.01024206329097782
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5e+87,
+      "lower": false,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        -1e+100,
+        1e+100
+      ],
+      "actual": -0.7757787173422391,
+      "expected": -0.7879837387043578,
+      "error": 0.012205021362118651
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5e+87,
+      "lower": false,
+      "log": false,
+      "parameters": [
+        1000000000000.0,
+        -1e+100,
+        1e+100
+      ],
+      "actual": 0.46034516262436276,
+      "expected": 0.4547607881074363,
+      "error": 0.012279806577358538
+    },
+    {
+      "family": "frechet",
+      "function": "d",
+      "input": 1.0000000000005001e-100,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        0.0,
+        1e-100
+      ],
+      "actual": 256.7783985575844,
+      "expected": 256.78295983934623,
+      "error": 1.7763179319520217e-05
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 1.0000000000005001e-100,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        0.0,
+        1e-100
+      ],
+      "actual": -0.5995410880009562,
+      "expected": -0.6064691369434665,
+      "error": 0.006928048942510312
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 1.0000000000005001e-100,
+      "lower": true,
+      "log": false,
+      "parameters": [
+        1000000000000.0,
+        0.0,
+        1e-100
+      ],
+      "actual": 0.5490635501378125,
+      "expected": 0.5452727575506794,
+      "error": 0.0069521033916329095
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 1.0000000000005001e-100,
+      "lower": false,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        0.0,
+        1e-100
+      ],
+      "actual": -0.7964288588046005,
+      "expected": -0.7880575069278062,
+      "error": 0.008371351876794275
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 1.0000000000005001e-100,
+      "lower": false,
+      "log": false,
+      "parameters": [
+        1000000000000.0,
+        0.0,
+        1e-100
+      ],
+      "actual": 0.4509364498621875,
+      "expected": 0.4547272424493206,
+      "error": 0.008336409683120296
+    },
+    {
+      "family": "frechet",
+      "function": "d",
+      "input": 5.0000000000000003e-113,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        -1e-100,
+        1e-100
+      ],
+      "actual": 256.7783985575844,
+      "expected": 256.78299975562004,
+      "error": 1.7918624052249184e-05
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5.0000000000000003e-113,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        -1e-100,
+        1e-100
+      ],
+      "actual": -0.5995410880009562,
+      "expected": -0.6065306597127093,
+      "error": 0.006989571711753073
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5.0000000000000003e-113,
+      "lower": true,
+      "log": false,
+      "parameters": [
+        1000000000000.0,
+        -1e-100,
+        1e-100
+      ],
+      "actual": 0.5490635501378125,
+      "expected": 0.5452392118925637,
+      "error": 0.0070140557792499935
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5.0000000000000003e-113,
+      "lower": false,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        -1e-100,
+        1e-100
+      ],
+      "actual": -0.7964288588046005,
+      "expected": -0.7879837387043578,
+      "error": 0.008445120100242676
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5.0000000000000003e-113,
+      "lower": false,
+      "log": false,
+      "parameters": [
+        1000000000000.0,
+        -1e-100,
+        1e-100
+      ],
+      "actual": 0.4509364498621875,
+      "expected": 0.45476078810743625,
+      "error": 0.008409560246309664
+    }
+  ],
+  "rows": [
+    {
+      "family": "invweibull",
+      "function": "d",
+      "input": 1.000000005,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        1.0
+      ],
+      "actual": 17.31415008092722,
+      "expected": 17.314150080927217,
+      "error": 2.0519134131302645e-16
+    },
+    {
+      "family": "invweibull",
+      "function": "p",
+      "input": 1.000000005,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        1.0
+      ],
+      "actual": -0.606530662313883,
+      "expected": -0.606530662313883,
+      "error": 0.0
+    },
+    {
+      "family": "invweibull",
+      "function": "p",
+      "input": 1.000000005,
+      "lower": true,
+      "log": false,
+      "parameters": [
+        100000000.0,
+        1.0
+      ],
+      "actual": 0.5452392104743018,
+      "expected": 0.5452392104743018,
+      "error": 0.0
+    },
+    {
+      "family": "invweibull",
+      "function": "p",
+      "input": 1.000000005,
+      "lower": false,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        1.0
+      ],
+      "actual": -0.7879837355856589,
+      "expected": -0.7879837355856589,
+      "error": 0.0
+    },
+    {
+      "family": "invweibull",
+      "function": "p",
+      "input": 1.000000005,
+      "lower": false,
+      "log": false,
+      "parameters": [
+        100000000.0,
+        1.0
+      ],
+      "actual": 0.4547607895256982,
+      "expected": 0.4547607895256982,
+      "error": 0.0
+    },
+    {
+      "family": "invweibull",
+      "function": "d",
+      "input": 1000.000005,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        1000.0
+      ],
+      "actual": 10.406394783979696,
+      "expected": 10.406394801246138,
+      "error": 1.6592146298284645e-09
+    },
+    {
+      "family": "invweibull",
+      "function": "p",
+      "input": 1000.000005,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        1000.0
+      ],
+      "actual": -0.6065306346203481,
+      "expected": -0.6065306612364681,
+      "error": 2.661612008569847e-08
+    },
+    {
+      "family": "invweibull",
+      "function": "p",
+      "input": 1000.000005,
+      "lower": true,
+      "log": false,
+      "parameters": [
+        100000000.0,
+        1000.0
+      ],
+      "actual": 0.5452392255739031,
+      "expected": 0.5452392110617507,
+      "error": 2.6616120384038257e-08
+    },
+    {
+      "family": "invweibull",
+      "function": "p",
+      "input": 1000.000005,
+      "lower": false,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        1000.0
+      ],
+      "actual": -0.7879837687890529,
+      "expected": -0.7879837368774345,
+      "error": 3.1911618347812976e-08
+    },
+    {
+      "family": "invweibull",
+      "function": "p",
+      "input": 1000.000005,
+      "lower": false,
+      "log": false,
+      "parameters": [
+        100000000.0,
+        1000.0
+      ],
+      "actual": 0.45476077442609686,
+      "expected": 0.45476078893824934,
+      "error": 3.191161778393379e-08
+    },
+    {
+      "family": "invweibull",
+      "function": "d",
+      "input": 1.000000005e+100,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        1e+100
+      ],
+      "actual": -212.94435825792578,
+      "expected": -212.9443592200755,
+      "error": 4.51831516235396e-09
+    },
+    {
+      "family": "invweibull",
+      "function": "p",
+      "input": 1.000000005e+100,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        1e+100
+      ],
+      "actual": -0.6065321430030012,
+      "expected": -0.6065306598503118,
+      "error": 1.4831526893299696e-06
+    },
+    {
+      "family": "invweibull",
+      "function": "p",
+      "input": 1.000000005e+100,
+      "lower": true,
+      "log": false,
+      "parameters": [
+        100000000.0,
+        1e+100
+      ],
+      "actual": 0.5452384031451337,
+      "expected": 0.5452392118175373,
+      "error": 1.4831515893737216e-06
+    },
+    {
+      "family": "invweibull",
+      "function": "p",
+      "input": 1.000000005e+100,
+      "lower": false,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        1e+100
+      ],
+      "actual": -0.7879819603040823,
+      "expected": -0.787983738539378,
+      "error": 1.7782352956796643e-06
+    },
+    {
+      "family": "invweibull",
+      "function": "p",
+      "input": 1.000000005e+100,
+      "lower": false,
+      "log": false,
+      "parameters": [
+        100000000.0,
+        1e+100
+      ],
+      "actual": 0.4547615968548663,
+      "expected": 0.4547607881824626,
+      "error": 1.7782368767623499e-06
+    },
+    {
+      "family": "invweibull",
+      "function": "d",
+      "input": 1.000000005e-100,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        1e-100
+      ],
+      "actual": 247.57265922257798,
+      "expected": 247.57265938011673,
+      "error": 6.36333391739046e-10
+    },
+    {
+      "family": "invweibull",
+      "function": "p",
+      "input": 1.000000005e-100,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        1e-100
+      ],
+      "actual": -0.6065304191374181,
+      "expected": -0.6065306619823857,
+      "error": 2.4284496757953633e-07
+    },
+    {
+      "family": "invweibull",
+      "function": "p",
+      "input": 1.000000005e-100,
+      "lower": true,
+      "log": false,
+      "parameters": [
+        100000000.0,
+        1e-100
+      ],
+      "actual": 0.5452393430636616,
+      "expected": 0.5452392106550471,
+      "error": 2.428449970757922e-07
+    },
+    {
+      "family": "invweibull",
+      "function": "p",
+      "input": 1.000000005e-100,
+      "lower": false,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        1e-100
+      ],
+      "actual": -0.787984027144171,
+      "expected": -0.7879837359831104,
+      "error": 2.911610605949022e-07
+    },
+    {
+      "family": "invweibull",
+      "function": "p",
+      "input": 1.000000005e-100,
+      "lower": false,
+      "log": false,
+      "parameters": [
+        100000000.0,
+        1e-100
+      ],
+      "actual": 0.4547606569363384,
+      "expected": 0.4547607893449529,
+      "error": 2.9116101831878763e-07
+    },
+    {
+      "family": "invweibull",
+      "function": "d",
+      "input": 1.0000000000005,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        1.0
+      ],
+      "actual": 26.524472965789528,
+      "expected": 26.52447296578953,
+      "error": 1.339409715466424e-16
+    },
+    {
+      "family": "invweibull",
+      "function": "p",
+      "input": 1.0000000000005,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        1.0
+      ],
+      "actual": -0.6065036998474725,
+      "expected": -0.6065036998474725,
+      "error": 0.0
+    },
+    {
+      "family": "invweibull",
+      "function": "p",
+      "input": 1.0000000000005,
+      "lower": true,
+      "log": false,
+      "parameters": [
+        1000000000000.0,
+        1.0
+      ],
+      "actual": 0.5452539116663891,
+      "expected": 0.5452539116663891,
+      "error": 0.0
+    },
+    {
+      "family": "invweibull",
+      "function": "p",
+      "input": 1.0000000000005,
+      "lower": false,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        1.0
+      ],
+      "actual": -0.7880160634161494,
+      "expected": -0.7880160634161494,
+      "error": 0.0
+    },
+    {
+      "family": "invweibull",
+      "function": "p",
+      "input": 1.0000000000005,
+      "lower": false,
+      "log": false,
+      "parameters": [
+        1000000000000.0,
+        1.0
+      ],
+      "actual": 0.45474608833361085,
+      "expected": 0.45474608833361085,
+      "error": 0.0
+    },
+    {
+      "family": "invweibull",
+      "function": "d",
+      "input": 1000.0000000005,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        1000.0
+      ],
+      "actual": 19.61671768680734,
+      "expected": 19.616737257772808,
+      "error": 9.976666970519134e-07
+    },
+    {
+      "family": "invweibull",
+      "function": "p",
+      "input": 1000.0000000005,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        1000.0
+      ],
+      "actual": -0.6065036998473967,
+      "expected": -0.6065338668735596,
+      "error": 3.0167026162875032e-05
+    },
+    {
+      "family": "invweibull",
+      "function": "p",
+      "input": 1000.0000000005,
+      "lower": true,
+      "log": false,
+      "parameters": [
+        1000000000000.0,
+        1000.0
+      ],
+      "actual": 0.5452539116664306,
+      "expected": 0.5452374632255134,
+      "error": 3.0167481192301555e-05
+    },
+    {
+      "family": "invweibull",
+      "function": "p",
+      "input": 1000.0000000005,
+      "lower": false,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        1000.0
+      ],
+      "actual": -0.7880160634162403,
+      "expected": -0.787979893465863,
+      "error": 3.61699503773627e-05
+    },
+    {
+      "family": "invweibull",
+      "function": "p",
+      "input": 1000.0000000005,
+      "lower": false,
+      "log": false,
+      "parameters": [
+        1000000000000.0,
+        1000.0
+      ],
+      "actual": 0.4547460883335695,
+      "expected": 0.45476253677448664,
+      "error": 3.616929625250779e-05
+    },
+    {
+      "family": "invweibull",
+      "function": "d",
+      "input": 1.0000000000005e+100,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        1e+100
+      ],
+      "actual": -203.72748277763137,
+      "expected": -203.73403575225157,
+      "error": 3.216435877299685e-05
+    },
+    {
+      "family": "invweibull",
+      "function": "p",
+      "input": 1.0000000000005e+100,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        1e+100
+      ],
+      "actual": -0.6168255338379819,
+      "expected": -0.6065045959162713,
+      "error": 0.010320937921710627
+    },
+    {
+      "family": "invweibull",
+      "function": "p",
+      "input": 1.0000000000005e+100,
+      "lower": true,
+      "log": false,
+      "parameters": [
+        1000000000000.0,
+        1e+100
+      ],
+      "actual": 0.5396548373756372,
+      "expected": 0.5452534230815905,
+      "error": 0.010267859804184164
+    },
+    {
+      "family": "invweibull",
+      "function": "p",
+      "input": 1.0000000000005e+100,
+      "lower": false,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        1e+100
+      ],
+      "actual": -0.7757787173422391,
+      "expected": -0.7880149890044089,
+      "error": 0.012236271662169784
+    },
+    {
+      "family": "invweibull",
+      "function": "p",
+      "input": 1.0000000000005e+100,
+      "lower": false,
+      "log": false,
+      "parameters": [
+        1000000000000.0,
+        1e+100
+      ],
+      "actual": 0.46034516262436276,
+      "expected": 0.45474657691840953,
+      "error": 0.012311441119341786
+    },
+    {
+      "family": "invweibull",
+      "function": "d",
+      "input": 1.0000000000005001e-100,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        1e-100
+      ],
+      "actual": 256.7783985575844,
+      "expected": 256.78295983934623,
+      "error": 1.7763179319520217e-05
+    },
+    {
+      "family": "invweibull",
+      "function": "p",
+      "input": 1.0000000000005001e-100,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        1e-100
+      ],
+      "actual": -0.5995410880009562,
+      "expected": -0.6064691369434665,
+      "error": 0.006928048942510312
+    },
+    {
+      "family": "invweibull",
+      "function": "p",
+      "input": 1.0000000000005001e-100,
+      "lower": true,
+      "log": false,
+      "parameters": [
+        1000000000000.0,
+        1e-100
+      ],
+      "actual": 0.5490635501378125,
+      "expected": 0.5452727575506794,
+      "error": 0.0069521033916329095
+    },
+    {
+      "family": "invweibull",
+      "function": "p",
+      "input": 1.0000000000005001e-100,
+      "lower": false,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        1e-100
+      ],
+      "actual": -0.7964288588046005,
+      "expected": -0.7880575069278062,
+      "error": 0.008371351876794275
+    },
+    {
+      "family": "invweibull",
+      "function": "p",
+      "input": 1.0000000000005001e-100,
+      "lower": false,
+      "log": false,
+      "parameters": [
+        1000000000000.0,
+        1e-100
+      ],
+      "actual": 0.4509364498621875,
+      "expected": 0.4547272424493206,
+      "error": 0.008336409683120296
+    },
+    {
+      "family": "frechet",
+      "function": "d",
+      "input": 1.000000005,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        0.0,
+        1.0
+      ],
+      "actual": 17.31415008092722,
+      "expected": 17.314150080927217,
+      "error": 2.0519134131302645e-16
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 1.000000005,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        0.0,
+        1.0
+      ],
+      "actual": -0.606530662313883,
+      "expected": -0.606530662313883,
+      "error": 0.0
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 1.000000005,
+      "lower": true,
+      "log": false,
+      "parameters": [
+        100000000.0,
+        0.0,
+        1.0
+      ],
+      "actual": 0.5452392104743018,
+      "expected": 0.5452392104743018,
+      "error": 0.0
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 1.000000005,
+      "lower": false,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        0.0,
+        1.0
+      ],
+      "actual": -0.7879837355856589,
+      "expected": -0.7879837355856589,
+      "error": 0.0
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 1.000000005,
+      "lower": false,
+      "log": false,
+      "parameters": [
+        100000000.0,
+        0.0,
+        1.0
+      ],
+      "actual": 0.4547607895256982,
+      "expected": 0.4547607895256982,
+      "error": 0.0
+    },
+    {
+      "family": "frechet",
+      "function": "d",
+      "input": 5e-09,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        -1.0,
+        1.0
+      ],
+      "actual": 17.31415008092722,
+      "expected": 17.31415007973157,
+      "error": 6.905632515830257e-11
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5e-09,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        -1.0,
+        1.0
+      ],
+      "actual": -0.606530662313883,
+      "expected": -0.6065306604707967,
+      "error": 1.8430862391838332e-09
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5e-09,
+      "lower": true,
+      "log": false,
+      "parameters": [
+        100000000.0,
+        -1.0,
+        1.0
+      ],
+      "actual": 0.5452392104743018,
+      "expected": 0.5452392114792247,
+      "error": 1.8430863032163857e-09
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5e-09,
+      "lower": false,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        -1.0,
+        1.0
+      ],
+      "actual": -0.7879837355856589,
+      "expected": -0.7879837377954425,
+      "error": 2.2097835783441155e-09
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5e-09,
+      "lower": false,
+      "log": false,
+      "parameters": [
+        100000000.0,
+        -1.0,
+        1.0
+      ],
+      "actual": 0.4547607895256982,
+      "expected": 0.45476078852077534,
+      "error": 2.2097834565101278e-09
+    },
+    {
+      "family": "frechet",
+      "function": "d",
+      "input": 1000.000005,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        0.0,
+        1000.0
+      ],
+      "actual": 10.406394783979696,
+      "expected": 10.406394801246138,
+      "error": 1.6592146298284645e-09
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 1000.000005,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        0.0,
+        1000.0
+      ],
+      "actual": -0.6065306346203481,
+      "expected": -0.6065306612364681,
+      "error": 2.661612008569847e-08
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 1000.000005,
+      "lower": true,
+      "log": false,
+      "parameters": [
+        100000000.0,
+        0.0,
+        1000.0
+      ],
+      "actual": 0.5452392255739031,
+      "expected": 0.5452392110617507,
+      "error": 2.6616120384038257e-08
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 1000.000005,
+      "lower": false,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        0.0,
+        1000.0
+      ],
+      "actual": -0.7879837687890529,
+      "expected": -0.7879837368774345,
+      "error": 3.1911618347812976e-08
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 1000.000005,
+      "lower": false,
+      "log": false,
+      "parameters": [
+        100000000.0,
+        0.0,
+        1000.0
+      ],
+      "actual": 0.45476077442609686,
+      "expected": 0.45476078893824934,
+      "error": 3.191161778393379e-08
+    },
+    {
+      "family": "frechet",
+      "function": "d",
+      "input": 5e-06,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        -1000.0,
+        1000.0
+      ],
+      "actual": 10.406394783979696,
+      "expected": 10.406394800749432,
+      "error": 1.6114837216247874e-09
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5e-06,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        -1000.0,
+        1000.0
+      ],
+      "actual": -0.6065306346203481,
+      "expected": -0.6065306604707967,
+      "error": 2.5850448670539095e-08
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5e-06,
+      "lower": true,
+      "log": false,
+      "parameters": [
+        100000000.0,
+        -1000.0,
+        1000.0
+      ],
+      "actual": 0.5452392255739031,
+      "expected": 0.5452392114792247,
+      "error": 2.5850448991285216e-08
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5e-06,
+      "lower": false,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        -1000.0,
+        1000.0
+      ],
+      "actual": -0.7879837687890529,
+      "expected": -0.7879837377954425,
+      "error": 3.099361034486492e-08
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5e-06,
+      "lower": false,
+      "log": false,
+      "parameters": [
+        100000000.0,
+        -1000.0,
+        1000.0
+      ],
+      "actual": 0.45476077442609686,
+      "expected": 0.4547607885207753,
+      "error": 3.099360978381356e-08
+    },
+    {
+      "family": "frechet",
+      "function": "d",
+      "input": 1.000000005e+100,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        0.0,
+        1e+100
+      ],
+      "actual": -212.94435825792578,
+      "expected": -212.9443592200755,
+      "error": 4.51831516235396e-09
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 1.000000005e+100,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        0.0,
+        1e+100
+      ],
+      "actual": -0.6065321430030012,
+      "expected": -0.6065306598503118,
+      "error": 1.4831526893299696e-06
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 1.000000005e+100,
+      "lower": true,
+      "log": false,
+      "parameters": [
+        100000000.0,
+        0.0,
+        1e+100
+      ],
+      "actual": 0.5452384031451337,
+      "expected": 0.5452392118175373,
+      "error": 1.4831515893737216e-06
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 1.000000005e+100,
+      "lower": false,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        0.0,
+        1e+100
+      ],
+      "actual": -0.7879819603040823,
+      "expected": -0.787983738539378,
+      "error": 1.7782352956796643e-06
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 1.000000005e+100,
+      "lower": false,
+      "log": false,
+      "parameters": [
+        100000000.0,
+        0.0,
+        1e+100
+      ],
+      "actual": 0.4547615968548663,
+      "expected": 0.4547607881824626,
+      "error": 1.7782368767623499e-06
+    },
+    {
+      "family": "frechet",
+      "function": "d",
+      "input": 5e+91,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        -1e+100,
+        1e+100
+      ],
+      "actual": -212.94435825792578,
+      "expected": -212.944359219673,
+      "error": 4.516424958506298e-09
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5e+91,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        -1e+100,
+        1e+100
+      ],
+      "actual": -0.6065321430030012,
+      "expected": -0.6065306604707967,
+      "error": 1.4825322044442757e-06
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5e+91,
+      "lower": true,
+      "log": false,
+      "parameters": [
+        100000000.0,
+        -1e+100,
+        1e+100
+      ],
+      "actual": 0.5452384031451337,
+      "expected": 0.5452392114792247,
+      "error": 1.4825311055727311e-06
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5e+91,
+      "lower": false,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        -1e+100,
+        1e+100
+      ],
+      "actual": -0.7879819603040823,
+      "expected": -0.7879837377954425,
+      "error": 1.777491360210881e-06
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5e+91,
+      "lower": false,
+      "log": false,
+      "parameters": [
+        100000000.0,
+        -1e+100,
+        1e+100
+      ],
+      "actual": 0.4547615968548663,
+      "expected": 0.45476078852077534,
+      "error": 1.7774929399029749e-06
+    },
+    {
+      "family": "frechet",
+      "function": "d",
+      "input": 1.000000005e-100,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        0.0,
+        1e-100
+      ],
+      "actual": 247.57265922257798,
+      "expected": 247.57265938011673,
+      "error": 6.36333391739046e-10
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 1.000000005e-100,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        0.0,
+        1e-100
+      ],
+      "actual": -0.6065304191374181,
+      "expected": -0.6065306619823857,
+      "error": 2.4284496757953633e-07
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 1.000000005e-100,
+      "lower": true,
+      "log": false,
+      "parameters": [
+        100000000.0,
+        0.0,
+        1e-100
+      ],
+      "actual": 0.5452393430636616,
+      "expected": 0.5452392106550471,
+      "error": 2.428449970757922e-07
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 1.000000005e-100,
+      "lower": false,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        0.0,
+        1e-100
+      ],
+      "actual": -0.787984027144171,
+      "expected": -0.7879837359831104,
+      "error": 2.911610605949022e-07
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 1.000000005e-100,
+      "lower": false,
+      "log": false,
+      "parameters": [
+        100000000.0,
+        0.0,
+        1e-100
+      ],
+      "actual": 0.4547606569363384,
+      "expected": 0.4547607893449529,
+      "error": 2.9116101831878763e-07
+    },
+    {
+      "family": "frechet",
+      "function": "d",
+      "input": 5e-109,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        -1e-100,
+        1e-100
+      ],
+      "actual": 247.57265922257798,
+      "expected": 247.57265937913613,
+      "error": 6.323725108380492e-10
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5e-109,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        -1e-100,
+        1e-100
+      ],
+      "actual": -0.6065304191374181,
+      "expected": -0.6065306604707967,
+      "error": 2.4133337861442783e-07
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5e-109,
+      "lower": true,
+      "log": false,
+      "parameters": [
+        100000000.0,
+        -1e-100,
+        1e-100
+      ],
+      "actual": 0.5452393430636616,
+      "expected": 0.5452392114792247,
+      "error": 2.4133340767092233e-07
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5e-109,
+      "lower": false,
+      "log": true,
+      "parameters": [
+        100000000.0,
+        -1e-100,
+        1e-100
+      ],
+      "actual": -0.787984027144171,
+      "expected": -0.7879837377954425,
+      "error": 2.893487285327012e-07
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5e-109,
+      "lower": false,
+      "log": false,
+      "parameters": [
+        100000000.0,
+        -1e-100,
+        1e-100
+      ],
+      "actual": 0.4547606569363384,
+      "expected": 0.45476078852077534,
+      "error": 2.8934868678016603e-07
+    },
+    {
+      "family": "frechet",
+      "function": "d",
+      "input": 1.0000000000005,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        0.0,
+        1.0
+      ],
+      "actual": 26.524472965789528,
+      "expected": 26.52447296578953,
+      "error": 1.339409715466424e-16
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 1.0000000000005,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        0.0,
+        1.0
+      ],
+      "actual": -0.6065036998474725,
+      "expected": -0.6065036998474725,
+      "error": 0.0
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 1.0000000000005,
+      "lower": true,
+      "log": false,
+      "parameters": [
+        1000000000000.0,
+        0.0,
+        1.0
+      ],
+      "actual": 0.5452539116663891,
+      "expected": 0.5452539116663891,
+      "error": 0.0
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 1.0000000000005,
+      "lower": false,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        0.0,
+        1.0
+      ],
+      "actual": -0.7880160634161494,
+      "expected": -0.7880160634161494,
+      "error": 0.0
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 1.0000000000005,
+      "lower": false,
+      "log": false,
+      "parameters": [
+        1000000000000.0,
+        0.0,
+        1.0
+      ],
+      "actual": 0.45474608833361085,
+      "expected": 0.45474608833361085,
+      "error": 0.0
+    },
+    {
+      "family": "frechet",
+      "function": "d",
+      "input": 5e-13,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        -1.0,
+        1.0
+      ],
+      "actual": 26.524472965789528,
+      "expected": 26.524490456215464,
+      "error": 6.594066704085942e-07
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5e-13,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        -1.0,
+        1.0
+      ],
+      "actual": -0.6065036998474725,
+      "expected": -0.6065306597127093,
+      "error": 2.695986523670868e-05
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5e-13,
+      "lower": true,
+      "log": false,
+      "parameters": [
+        1000000000000.0,
+        -1.0,
+        1.0
+      ],
+      "actual": 0.5452539116663891,
+      "expected": 0.5452392118925637,
+      "error": 2.6960228657024873e-05
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5e-13,
+      "lower": false,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        -1.0,
+        1.0
+      ],
+      "actual": -0.7880160634161494,
+      "expected": -0.7879837387043578,
+      "error": 3.2324711791598126e-05
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5e-13,
+      "lower": false,
+      "log": false,
+      "parameters": [
+        1000000000000.0,
+        -1.0,
+        1.0
+      ],
+      "actual": 0.45474608833361085,
+      "expected": 0.4547607881074363,
+      "error": 3.2324189353771355e-05
+    },
+    {
+      "family": "frechet",
+      "function": "d",
+      "input": 1000.0000000005,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        0.0,
+        1000.0
+      ],
+      "actual": 19.61671768680734,
+      "expected": 19.616737257772808,
+      "error": 9.976666970519134e-07
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 1000.0000000005,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        0.0,
+        1000.0
+      ],
+      "actual": -0.6065036998473967,
+      "expected": -0.6065338668735596,
+      "error": 3.0167026162875032e-05
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 1000.0000000005,
+      "lower": true,
+      "log": false,
+      "parameters": [
+        1000000000000.0,
+        0.0,
+        1000.0
+      ],
+      "actual": 0.5452539116664306,
+      "expected": 0.5452374632255134,
+      "error": 3.0167481192301555e-05
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 1000.0000000005,
+      "lower": false,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        0.0,
+        1000.0
+      ],
+      "actual": -0.7880160634162403,
+      "expected": -0.787979893465863,
+      "error": 3.61699503773627e-05
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 1000.0000000005,
+      "lower": false,
+      "log": false,
+      "parameters": [
+        1000000000000.0,
+        0.0,
+        1000.0
+      ],
+      "actual": 0.4547460883335695,
+      "expected": 0.45476253677448664,
+      "error": 3.616929625250779e-05
+    },
+    {
+      "family": "frechet",
+      "function": "d",
+      "input": 5e-10,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        -1000.0,
+        1000.0
+      ],
+      "actual": 19.61671768680734,
+      "expected": 19.616735177233327,
+      "error": 8.916073866386542e-07
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5e-10,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        -1000.0,
+        1000.0
+      ],
+      "actual": -0.6065036998473967,
+      "expected": -0.6065306597127093,
+      "error": 2.6959865312536913e-05
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5e-10,
+      "lower": true,
+      "log": false,
+      "parameters": [
+        1000000000000.0,
+        -1000.0,
+        1000.0
+      ],
+      "actual": 0.5452539116664306,
+      "expected": 0.5452392118925637,
+      "error": 2.6960228732975607e-05
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5e-10,
+      "lower": false,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        -1000.0,
+        1000.0
+      ],
+      "actual": -0.7880160634162403,
+      "expected": -0.7879837387043578,
+      "error": 3.232471188252539e-05
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5e-10,
+      "lower": false,
+      "log": false,
+      "parameters": [
+        1000000000000.0,
+        -1000.0,
+        1000.0
+      ],
+      "actual": 0.4547460883335695,
+      "expected": 0.45476078810743625,
+      "error": 3.232418944458899e-05
+    },
+    {
+      "family": "frechet",
+      "function": "d",
+      "input": 1.0000000000005e+100,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        0.0,
+        1e+100
+      ],
+      "actual": -203.72748277763137,
+      "expected": -203.73403575225157,
+      "error": 3.216435877299685e-05
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 1.0000000000005e+100,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        0.0,
+        1e+100
+      ],
+      "actual": -0.6168255338379819,
+      "expected": -0.6065045959162713,
+      "error": 0.010320937921710627
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 1.0000000000005e+100,
+      "lower": true,
+      "log": false,
+      "parameters": [
+        1000000000000.0,
+        0.0,
+        1e+100
+      ],
+      "actual": 0.5396548373756372,
+      "expected": 0.5452534230815905,
+      "error": 0.010267859804184164
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 1.0000000000005e+100,
+      "lower": false,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        0.0,
+        1e+100
+      ],
+      "actual": -0.7757787173422391,
+      "expected": -0.7880149890044089,
+      "error": 0.012236271662169784
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 1.0000000000005e+100,
+      "lower": false,
+      "log": false,
+      "parameters": [
+        1000000000000.0,
+        0.0,
+        1e+100
+      ],
+      "actual": 0.46034516262436276,
+      "expected": 0.45474657691840953,
+      "error": 0.012311441119341786
+    },
+    {
+      "family": "frechet",
+      "function": "d",
+      "input": 5e+87,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        -1e+100,
+        1e+100
+      ],
+      "actual": -203.72748277763137,
+      "expected": -203.7340188431891,
+      "error": 3.208136566900902e-05
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5e+87,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        -1e+100,
+        1e+100
+      ],
+      "actual": -0.6168255338379819,
+      "expected": -0.6065306597127093,
+      "error": 0.010294874125272635
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5e+87,
+      "lower": true,
+      "log": false,
+      "parameters": [
+        1000000000000.0,
+        -1e+100,
+        1e+100
+      ],
+      "actual": 0.5396548373756372,
+      "expected": 0.5452392118925637,
+      "error": 0.01024206329097782
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5e+87,
+      "lower": false,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        -1e+100,
+        1e+100
+      ],
+      "actual": -0.7757787173422391,
+      "expected": -0.7879837387043578,
+      "error": 0.012205021362118651
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5e+87,
+      "lower": false,
+      "log": false,
+      "parameters": [
+        1000000000000.0,
+        -1e+100,
+        1e+100
+      ],
+      "actual": 0.46034516262436276,
+      "expected": 0.4547607881074363,
+      "error": 0.012279806577358538
+    },
+    {
+      "family": "frechet",
+      "function": "d",
+      "input": 1.0000000000005001e-100,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        0.0,
+        1e-100
+      ],
+      "actual": 256.7783985575844,
+      "expected": 256.78295983934623,
+      "error": 1.7763179319520217e-05
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 1.0000000000005001e-100,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        0.0,
+        1e-100
+      ],
+      "actual": -0.5995410880009562,
+      "expected": -0.6064691369434665,
+      "error": 0.006928048942510312
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 1.0000000000005001e-100,
+      "lower": true,
+      "log": false,
+      "parameters": [
+        1000000000000.0,
+        0.0,
+        1e-100
+      ],
+      "actual": 0.5490635501378125,
+      "expected": 0.5452727575506794,
+      "error": 0.0069521033916329095
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 1.0000000000005001e-100,
+      "lower": false,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        0.0,
+        1e-100
+      ],
+      "actual": -0.7964288588046005,
+      "expected": -0.7880575069278062,
+      "error": 0.008371351876794275
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 1.0000000000005001e-100,
+      "lower": false,
+      "log": false,
+      "parameters": [
+        1000000000000.0,
+        0.0,
+        1e-100
+      ],
+      "actual": 0.4509364498621875,
+      "expected": 0.4547272424493206,
+      "error": 0.008336409683120296
+    },
+    {
+      "family": "frechet",
+      "function": "d",
+      "input": 5.0000000000000003e-113,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        -1e-100,
+        1e-100
+      ],
+      "actual": 256.7783985575844,
+      "expected": 256.78299975562004,
+      "error": 1.7918624052249184e-05
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5.0000000000000003e-113,
+      "lower": true,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        -1e-100,
+        1e-100
+      ],
+      "actual": -0.5995410880009562,
+      "expected": -0.6065306597127093,
+      "error": 0.006989571711753073
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5.0000000000000003e-113,
+      "lower": true,
+      "log": false,
+      "parameters": [
+        1000000000000.0,
+        -1e-100,
+        1e-100
+      ],
+      "actual": 0.5490635501378125,
+      "expected": 0.5452392118925637,
+      "error": 0.0070140557792499935
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5.0000000000000003e-113,
+      "lower": false,
+      "log": true,
+      "parameters": [
+        1000000000000.0,
+        -1e-100,
+        1e-100
+      ],
+      "actual": -0.7964288588046005,
+      "expected": -0.7879837387043578,
+      "error": 0.008445120100242676
+    },
+    {
+      "family": "frechet",
+      "function": "p",
+      "input": 5.0000000000000003e-113,
+      "lower": false,
+      "log": false,
+      "parameters": [
+        1000000000000.0,
+        -1e-100,
+        1e-100
+      ],
+      "actual": 0.4509364498621875,
+      "expected": 0.45476078810743625,
+      "error": 0.008409560246309664
+    }
+  ]
+}

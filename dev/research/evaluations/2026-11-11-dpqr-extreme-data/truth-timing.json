@@ -1,0 +1,7 @@
+{
+  "case": "genbeta: d/p/q/r against the truth table",
+  "mode": "workstation double-only",
+  "elapsed_seconds": 0.1333501010085456,
+  "exit": 0,
+  "output": "[doctest] doctest version is \"2.4.11\"\n[doctest] run with \"--help\" for options\n===============================================================================\n[doctest] test cases:    1 |    1 passed | 0 failed | 2234 skipped\n[doctest] assertions: 6762 | 6762 passed | 0 failed |\n[doctest] Status: SUCCESS!\n"
+}

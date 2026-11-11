@@ -1,0 +1,31 @@
+{
+  "id": "ztbinom",
+  "input_sha256": "a1201793151649158cc9f5afc06953cdbf0e1d8a8490e7ad7c5e23c2be9bfcf3",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 56761,
+    "points": 9,
+    "values": 116,
+    "quantiles": 396
+  },
+  "after": {
+    "bytes": 56761,
+    "points": 9,
+    "values": 116,
+    "quantiles": 396
+  },
+  "records": [
+    {
+      "parameters": [
+        100000000.0,
+        1e-08
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "seconds": 120.05499436599894
+    }
+  ],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

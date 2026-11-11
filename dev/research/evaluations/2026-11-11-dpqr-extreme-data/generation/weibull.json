@@ -1,0 +1,21 @@
+{
+  "id": "weibull",
+  "input_sha256": "17ffc0ca22d303a5194c246724a8957b1fc1d85e2957547602a45441e19127cc",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 121509,
+    "points": 13,
+    "values": 269,
+    "quantiles": 620
+  },
+  "after": {
+    "bytes": 121509,
+    "points": 13,
+    "values": 269,
+    "quantiles": 620
+  },
+  "records": [],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

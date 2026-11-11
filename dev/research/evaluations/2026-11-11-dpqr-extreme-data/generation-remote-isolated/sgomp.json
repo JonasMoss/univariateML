@@ -1,0 +1,57 @@
+{
+  "id": "sgomp",
+  "input_sha256": "9cafbed8e0522aa9b8df7200314d0b7a540d2e024d3191c42fbd66af4c014b81",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 71733,
+    "points": 8,
+    "values": 168,
+    "quantiles": 352
+  },
+  "after": {
+    "bytes": 108022,
+    "points": 12,
+    "values": 252,
+    "quantiles": 528
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.2556146799997805
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.1671324159997312
+    },
+    {
+      "parameters": [
+        1.0,
+        1e-08
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.021468675000051
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.9629320620001636
+    }
+  ]
+}

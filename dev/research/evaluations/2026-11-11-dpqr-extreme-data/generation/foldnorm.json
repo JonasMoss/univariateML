@@ -1,0 +1,21 @@
+{
+  "id": "foldnorm",
+  "input_sha256": "7fb28895d022329f93947334865925b7f78310402df11c224d32392b2e3b3f62",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 107939,
+    "points": 12,
+    "values": 252,
+    "quantiles": 528
+  },
+  "after": {
+    "bytes": 107939,
+    "points": 12,
+    "values": 252,
+    "quantiles": 528
+  },
+  "records": [],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

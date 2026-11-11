@@ -1,0 +1,19 @@
+{
+  "checks": 335830,
+  "failures": 209,
+  "active_failures": 1,
+  "ranked": [
+    [
+      "tbinom",
+      104
+    ],
+    [
+      "tpois",
+      104
+    ],
+    [
+      "sstd",
+      1
+    ]
+  ]
+}

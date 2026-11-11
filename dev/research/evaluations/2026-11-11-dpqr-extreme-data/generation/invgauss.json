@@ -1,0 +1,21 @@
+{
+  "id": "invgauss",
+  "input_sha256": "f8cbebd3caf0d6127e345b641d56cb20922ce12889d04e367b99819006e44116",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 100504,
+    "points": 11,
+    "values": 231,
+    "quantiles": 484
+  },
+  "after": {
+    "bytes": 100504,
+    "points": 11,
+    "values": 231,
+    "quantiles": 484
+  },
+  "records": [],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

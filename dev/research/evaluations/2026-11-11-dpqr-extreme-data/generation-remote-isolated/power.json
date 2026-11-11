@@ -1,0 +1,57 @@
+{
+  "id": "power",
+  "input_sha256": "a692d7a0f712d4787655c8e0a2920dccb622717decc73acc69ddd37c1a4de8ab",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 43182,
+    "points": 5,
+    "values": 88,
+    "quantiles": 220
+  },
+  "after": {
+    "bytes": 67686,
+    "points": 8,
+    "values": 141,
+    "quantiles": 352
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 3.306604281000091
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 3.0885808799998813
+    },
+    {
+      "parameters": [
+        1.0,
+        1e-08
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: normalization quadrature error estimate 0.00000000001",
+      "seconds": 1.4775575559997378
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 2.2491518460001316
+    }
+  ]
+}

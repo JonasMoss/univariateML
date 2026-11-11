@@ -1,0 +1,240 @@
+{
+  "id": "fpareto",
+  "before": {
+    "bytes": 61067,
+    "points": 7,
+    "values": 133,
+    "quantiles": 308
+  },
+  "after": {
+    "bytes": 209910,
+    "points": 24,
+    "values": 446,
+    "quantiles": 1056
+  },
+  "records": [
+    {
+      "parameters": [
+        2e-08,
+        1.0,
+        2.0,
+        1.0,
+        0.0
+      ],
+      "status": "generated",
+      "seconds": 3.5071610280429013
+    },
+    {
+      "parameters": [
+        200000000.0,
+        1.0,
+        2.0,
+        1.0,
+        0.0
+      ],
+      "status": "generated",
+      "seconds": 2.372119218984153
+    },
+    {
+      "parameters": [
+        2.0,
+        1e-08,
+        2.0,
+        1.0,
+        0.0
+      ],
+      "status": "generated",
+      "seconds": 3.306907129008323
+    },
+    {
+      "parameters": [
+        2.0,
+        100000000.0,
+        2.0,
+        1.0,
+        0.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 30 seconds per point",
+      "seconds": 30.000111711968202
+    },
+    {
+      "parameters": [
+        2.0,
+        1.0,
+        2e-08,
+        1.0,
+        0.0
+      ],
+      "status": "generated",
+      "seconds": 5.045172934012953
+    },
+    {
+      "parameters": [
+        2.0,
+        1.0,
+        200000000.0,
+        1.0,
+        0.0
+      ],
+      "status": "generated",
+      "seconds": 2.342968364013359
+    },
+    {
+      "parameters": [
+        2.0,
+        1.0,
+        2.0,
+        1e-08,
+        0.0
+      ],
+      "status": "generated",
+      "seconds": 1.5935091080027632
+    },
+    {
+      "parameters": [
+        2.0,
+        1.0,
+        2.0,
+        100000000.0,
+        0.0
+      ],
+      "status": "generated",
+      "seconds": 1.8427508849999867
+    },
+    {
+      "parameters": [
+        2.0,
+        1.0,
+        2.0,
+        1.0,
+        -1.0
+      ],
+      "status": "generated",
+      "seconds": 1.5663175050285645
+    },
+    {
+      "parameters": [
+        2.0,
+        1.0,
+        2.0,
+        1.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 1.5591171840205789
+    },
+    {
+      "parameters": [
+        200000000.0,
+        1.0,
+        2.0,
+        1000.0,
+        0.0
+      ],
+      "status": "generated",
+      "seconds": 2.235102657985408
+    },
+    {
+      "parameters": [
+        2.0,
+        100000000.0,
+        2.0,
+        1000.0,
+        0.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 30 seconds per point",
+      "seconds": 30.01350269501563
+    },
+    {
+      "parameters": [
+        2.0,
+        1.0,
+        200000000.0,
+        1000.0,
+        0.0
+      ],
+      "status": "generated",
+      "seconds": 2.6017296650097705
+    },
+    {
+      "parameters": [
+        200000000.0,
+        1.0,
+        2.0,
+        100000000.0,
+        -100000000.0
+      ],
+      "status": "generated",
+      "seconds": 2.5039490830386057
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0,
+        2.0,
+        100000000.0,
+        0.0
+      ],
+      "status": "generated",
+      "seconds": 2.543032771034632
+    },
+    {
+      "parameters": [
+        2.0,
+        1.0,
+        100000000.0,
+        1e-08,
+        0.0
+      ],
+      "status": "generated",
+      "seconds": 2.4825168270035647
+    },
+    {
+      "parameters": [
+        100000000.0,
+        0.0001414213562373095,
+        100000000.0,
+        1.0,
+        0.0
+      ],
+      "status": "oracle gap",
+      "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms.",
+      "seconds": 12.798816937021911
+    },
+    {
+      "parameters": [
+        1e-08,
+        100000000.0,
+        2.0,
+        1.0,
+        0.0
+      ],
+      "status": "generated",
+      "seconds": 3.473721457005013
+    },
+    {
+      "parameters": [
+        2.0,
+        100000000.0,
+        1e-08,
+        1.0,
+        0.0
+      ],
+      "status": "generated",
+      "seconds": 3.4938248340040445
+    },
+    {
+      "parameters": [
+        1e-08,
+        100000000.0,
+        1e-08,
+        1.0,
+        0.0
+      ],
+      "status": "generated",
+      "seconds": 4.126628296042327
+    }
+  ]
+}

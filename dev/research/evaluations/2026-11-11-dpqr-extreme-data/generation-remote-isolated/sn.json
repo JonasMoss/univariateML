@@ -1,0 +1,101 @@
+{
+  "id": "sn",
+  "input_sha256": "4a65c7bd5800c4952843209e1becb5be36d7240e1be7bd21688c70790b5ef9a1",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 79563,
+    "points": 9,
+    "values": 171,
+    "quantiles": 396
+  },
+  "after": {
+    "bytes": 142123,
+    "points": 16,
+    "values": 304,
+    "quantiles": 704
+  },
+  "records": [
+    {
+      "parameters": [
+        -1.0,
+        1.0,
+        0.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.9344002009997894
+    },
+    {
+      "parameters": [
+        1.0,
+        1.0,
+        0.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.8267791670000406
+    },
+    {
+      "parameters": [
+        0.0,
+        1e-08,
+        0.0
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: density/antiderivative derivative mismatch",
+      "seconds": 0.5521421339999506
+    },
+    {
+      "parameters": [
+        0.0,
+        100000000.0,
+        0.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.7924858480000694
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        -1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 17.67248763500038
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 16.032855558000392
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 14.773075688000063
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        -100000000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 10.943093652999778
+    }
+  ]
+}

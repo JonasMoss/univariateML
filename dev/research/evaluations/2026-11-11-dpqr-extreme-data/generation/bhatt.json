@@ -1,0 +1,21 @@
+{
+  "id": "bhatt",
+  "input_sha256": "221936ff42f70844b39f637ca83a68f51d56c51dd31dbdfd31ef84c85e8b9cdf",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 140618,
+    "points": 16,
+    "values": 304,
+    "quantiles": 704
+  },
+  "after": {
+    "bytes": 140618,
+    "points": 16,
+    "values": 304,
+    "quantiles": 704
+  },
+  "records": [],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

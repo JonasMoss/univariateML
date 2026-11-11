@@ -1,0 +1,33 @@
+{
+  "id": "cauchy",
+  "before": {
+    "bytes": 52758,
+    "points": 6,
+    "values": 114,
+    "quantiles": 264
+  },
+  "after": {
+    "bytes": 70529,
+    "points": 8,
+    "values": 152,
+    "quantiles": 352
+  },
+  "records": [
+    {
+      "parameters": [
+        0.0,
+        1e-08
+      ],
+      "status": "generated",
+      "seconds": 1.813362244000018
+    },
+    {
+      "parameters": [
+        0.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "seconds": 1.7924135809998916
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "id": "zmlogarithmic",
+  "input_sha256": "2144f23d5c074ea58af331457dceab9e10962b11fd3757387b81f12fceea8283",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 240950,
+    "points": 10,
+    "values": 1676,
+    "quantiles": 440
+  },
+  "after": {
+    "bytes": 296662,
+    "points": 12,
+    "values": 2090,
+    "quantiles": 528
+  },
+  "records": [
+    {
+      "parameters": [
+        5e-09,
+        0.5
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 28.889118147000318
+    },
+    {
+      "parameters": [
+        0.9999999999999999,
+        0.5
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: positive series did not reach certified remainder",
+      "seconds": 12.21416992200011
+    },
+    {
+      "parameters": [
+        0.5,
+        5e-09
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 27.70347463500002
+    }
+  ]
+}

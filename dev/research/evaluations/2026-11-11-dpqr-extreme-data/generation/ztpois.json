@@ -1,0 +1,30 @@
+{
+  "id": "ztpois",
+  "input_sha256": "596eff19315b5e3f7b4f2e880b7db7fd9b2918fa3b5e964d9cca72bb81fd01fe",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 164518,
+    "points": 7,
+    "values": 1241,
+    "quantiles": 308
+  },
+  "after": {
+    "bytes": 164518,
+    "points": 7,
+    "values": 1241,
+    "quantiles": 308
+  },
+  "records": [
+    {
+      "parameters": [
+        100000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: positive series did not reach certified remainder",
+      "seconds": 16.97525419900012
+    }
+  ],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

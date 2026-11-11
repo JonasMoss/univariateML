@@ -1,0 +1,34 @@
+{
+  "id": "zmgeom",
+  "before": {
+    "bytes": 240855,
+    "points": 10,
+    "values": 1677,
+    "quantiles": 440
+  },
+  "after": {
+    "bytes": 270388,
+    "points": 11,
+    "values": 1885,
+    "quantiles": 484
+  },
+  "records": [
+    {
+      "parameters": [
+        5e-09,
+        0.5
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: positive series did not reach certified remainder",
+      "seconds": 10.698147771006916
+    },
+    {
+      "parameters": [
+        0.5,
+        5e-09
+      ],
+      "status": "generated",
+      "seconds": 0.09622306999517605
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "id": "tnorm",
+  "input_sha256": "fc541e924f34592c1733df78da22ef8168c75d31e3f2311780e1922476deb19f",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 79989,
+    "points": 9,
+    "values": 170,
+    "quantiles": 396
+  },
+  "after": {
+    "bytes": 79989,
+    "points": 9,
+    "values": 170,
+    "quantiles": 396
+  },
+  "records": [
+    {
+      "parameters": [
+        -1e+16,
+        100000000.0,
+        0.0,
+        "Inf"
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: normalization failed at {'mean': -1e+16, 'sd': 100000000.0, 'a': 0, 'b': inf}: +inf",
+      "seconds": 0.5635990999999194
+    },
+    {
+      "parameters": [
+        1e+16,
+        100000000.0,
+        "-Inf",
+        0.0
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: normalization failed at {'mean': 1e+16, 'sd': 100000000.0, 'a': -inf, 'b': 0}: +inf",
+      "seconds": 0.5000132060013129
+    },
+    {
+      "parameters": [
+        1e+16,
+        100000000.0,
+        0.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: normalization failed at {'mean': 1e+16, 'sd': 100000000.0, 'a': 0, 'b': 1}: +inf",
+      "seconds": 0.9137872610008344
+    }
+  ],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

@@ -1,0 +1,37 @@
+{
+  "id": "zeta",
+  "input_sha256": "aee040ae44a159e670dd155e5042e9b3ed4b62bdf685c3ade6195b9b37d327bb",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 118218,
+    "points": 4,
+    "values": 842,
+    "quantiles": 176
+  },
+  "after": {
+    "bytes": 172038,
+    "points": 6,
+    "values": 1254,
+    "quantiles": 264
+  },
+  "records": [
+    {
+      "parameters": [
+        1.0000000000000002
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 4.104269432999899
+    },
+    {
+      "parameters": [
+        200000000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.3236562909996792
+    }
+  ]
+}

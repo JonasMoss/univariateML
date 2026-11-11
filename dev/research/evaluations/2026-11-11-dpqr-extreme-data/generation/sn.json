@@ -1,0 +1,55 @@
+{
+  "id": "sn",
+  "input_sha256": "57e9373e3dee22bfb418e511cfc84bb5823f95b1d0c79b4a48ba22c91d39f650",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 124832,
+    "points": 14,
+    "values": 266,
+    "quantiles": 616
+  },
+  "after": {
+    "bytes": 124832,
+    "points": 14,
+    "values": 266,
+    "quantiles": 616
+  },
+  "records": [
+    {
+      "parameters": [
+        0.0,
+        1e-08,
+        0.0
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: density/antiderivative derivative mismatch",
+      "seconds": 1.0026216690002911,
+      "reused": true
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        -1.0
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: Gaussian quantile convergence",
+      "seconds": 4.054833250998854,
+      "reused": true
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: Gaussian quantile convergence",
+      "seconds": 4.382380039000054,
+      "reused": true
+    }
+  ],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

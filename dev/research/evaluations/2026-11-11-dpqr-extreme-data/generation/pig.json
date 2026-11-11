@@ -1,0 +1,58 @@
+{
+  "id": "pig",
+  "input_sha256": "194a262167f7b86c0c98c7ac376219c563cf0eab67ce6e00609cb0b47f0130df",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 205841,
+    "points": 8,
+    "values": 1465,
+    "quantiles": 352
+  },
+  "after": {
+    "bytes": 205841,
+    "points": 8,
+    "values": 1465,
+    "quantiles": 352
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "MemoryError: reference exceeded the recorded address-space limit",
+      "seconds": 60.759705122000014
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: PIG integral remainder",
+      "seconds": 4.738625673999195
+    },
+    {
+      "parameters": [
+        1.0,
+        1e-08
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "seconds": 120.00004943600106
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "MemoryError: reference exceeded the recorded address-space limit",
+      "seconds": 53.563797444001466
+    }
+  ],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

@@ -1,0 +1,88 @@
+{
+  "id": "sstd",
+  "input_sha256": "05d902bf48f401a4c717a80ef0866da2c08371994954caa658cdee4c7672f4dd",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 154881,
+    "points": 17,
+    "values": 323,
+    "quantiles": 748
+  },
+  "after": {
+    "bytes": 164007,
+    "points": 18,
+    "values": 342,
+    "quantiles": 792
+  },
+  "records": [
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        500000000.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms.",
+      "seconds": 13.93801195800188
+    },
+    {
+      "parameters": [
+        0.0,
+        1000.0,
+        500000000.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms.",
+      "seconds": 16.78168697399815
+    },
+    {
+      "parameters": [
+        -100000000.0,
+        100000000.0,
+        500000000.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "ValueError: \nhypercomb() failed to converge to the requested 555 bits of accuracy\nusing a working precision of 7345 bits. The function value may be zero or\ninfinite; try passing zeroprec=N or infprec=M to bound finite values between\n2^(-N) and 2^M. Otherwise try a higher maxprec or maxterms.\n",
+      "seconds": 2.938708742000017
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        100000000.0,
+        100000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms.",
+      "seconds": 11.617256901001383
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        100000000.0,
+        1e-08
+      ],
+      "status": "oracle gap",
+      "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms.",
+      "seconds": 11.849087773000065
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        3.093978716511268,
+        100000000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 7.626003476001642
+    }
+  ],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

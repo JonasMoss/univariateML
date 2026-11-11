@@ -1,0 +1,53 @@
+{
+  "id": "pig",
+  "before": {
+    "bytes": 204997,
+    "points": 8,
+    "values": 1465,
+    "quantiles": 352
+  },
+  "after": {
+    "bytes": 205637,
+    "points": 8,
+    "values": 1465,
+    "quantiles": 352
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 30 seconds per point",
+      "seconds": 30.000050307018682
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: PIG integral remainder",
+      "seconds": 1.3448647379991598
+    },
+    {
+      "parameters": [
+        1.0,
+        1e-08
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 30 seconds per point",
+      "seconds": 30.000056117016356
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 30 seconds per point",
+      "seconds": 30.0000627420377
+    }
+  ]
+}

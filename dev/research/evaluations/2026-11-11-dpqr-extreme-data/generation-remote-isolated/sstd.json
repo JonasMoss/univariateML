@@ -1,0 +1,164 @@
+{
+  "id": "sstd",
+  "input_sha256": "b10a34177a54b519e94ba8f76ab7280bd5a6134a8df49f846f5ab18600a685de",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 80895,
+    "points": 9,
+    "values": 171,
+    "quantiles": 396
+  },
+  "after": {
+    "bytes": 154630,
+    "points": 17,
+    "values": 323,
+    "quantiles": 748
+  },
+  "records": [
+    {
+      "parameters": [
+        -1.0,
+        1.0,
+        5.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 3.686853162999796
+    },
+    {
+      "parameters": [
+        1.0,
+        1.0,
+        5.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 3.437666636999893
+    },
+    {
+      "parameters": [
+        0.0,
+        1e-08,
+        5.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 4.015236043000186
+    },
+    {
+      "parameters": [
+        0.0,
+        100000000.0,
+        5.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 3.9257899679996626
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        2.0000000000000004,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 6.860756295000101
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        500000000.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms.",
+      "seconds": 11.417358198999864
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        5.0,
+        1e-08
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 3.6662633979999555
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        5.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 3.6484351199997036
+    },
+    {
+      "parameters": [
+        0.0,
+        1000.0,
+        500000000.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms.",
+      "seconds": 13.48688355000013
+    },
+    {
+      "parameters": [
+        -100000000.0,
+        100000000.0,
+        500000000.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "ValueError: \nhypercomb() failed to converge to the requested 555 bits of accuracy\nusing a working precision of 7345 bits. The function value may be zero or\ninfinite; try passing zeroprec=N or infprec=M to bound finite values between\n2^(-N) and 2^M. Otherwise try a higher maxprec or maxterms.\n",
+      "seconds": 2.3812425790001726
+    },
+    {
+      "parameters": [
+        0.0,
+        14142.135659086289,
+        2.00000001,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 5.778680008000265
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        100000000.0,
+        100000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms.",
+      "seconds": 9.607761170999765
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        100000000.0,
+        1e-08
+      ],
+      "status": "oracle gap",
+      "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms.",
+      "seconds": 9.756578797999737
+    }
+  ]
+}

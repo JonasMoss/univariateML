@@ -1,0 +1,4 @@
+#include <iostream>
+#include <iomanip>
+#include "cppunivariate/distributions/sged/dpqr.hpp"
+int main(){double nu=3.8792797496374307,xi=1e8;auto m=cppunivariate::special::skew_moments::ged(nu);for(double x:{-1.5461574810135936,-1.5461574810135932}){auto c=cppunivariate::distributions::snorm_detail::coordinate_with_moment(x,0,1,xi,{m.value.high,m.value.low},0,m.error);double ls=cppunivariate::distributions::fs::ged_logscale(nu);double re=c.centering_error/c.square+2*std::numeric_limits<double>::epsilon()*c.value;double low=c.value-re,high=c.value+re;double hazard=std::exp(std::log(nu)+nu*(std::log(high)-ls)-std::log(high))+(nu-1)/low;std::cout<<std::setprecision(17)<<x<<" radius "<<c.value<<" error "<<re<<" margin "<<re*hazard+2e-12<<" result "<<cppunivariate::distributions::psged(x,0,1,nu,xi,true,false)<<"\n";}}

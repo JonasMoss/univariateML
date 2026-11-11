@@ -1,0 +1,42 @@
+{
+  "id": "frechet",
+  "input_sha256": "9cd4997039f8565a858538c646aa79d4f64c49165e580025e65739cbdf8231dd",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 64330,
+    "points": 13,
+    "values": 250,
+    "quantiles": 572
+  },
+  "after": {
+    "bytes": 115094,
+    "points": 13,
+    "values": 250,
+    "quantiles": 572
+  },
+  "records": [
+    {
+      "parameters": [
+        100000000.0,
+        0.0,
+        1000.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "seconds": 120.00332272200103
+    },
+    {
+      "parameters": [
+        100000000.0,
+        -100000000.0,
+        100000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "seconds": 120.0052718930001
+    }
+  ],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

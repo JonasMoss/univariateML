@@ -1,0 +1,71 @@
+{
+  "id": "gpd",
+  "input_sha256": "44ac7f0241508fdf35cf81ae1a2e1cee59f3483994883650e78a2ece916bc8dc",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 79181,
+    "points": 9,
+    "values": 186,
+    "quantiles": 396
+  },
+  "after": {
+    "bytes": 123501,
+    "points": 14,
+    "values": 289,
+    "quantiles": 616
+  },
+  "records": [
+    {
+      "parameters": [
+        0.0,
+        1e-08,
+        0.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.9425377470001877
+    },
+    {
+      "parameters": [
+        0.0,
+        100000000.0,
+        0.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.8579119189998892
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.3350584240001808
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        1e-12
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.4588524369996776
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        -1e-12
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.52661521500022
+    }
+  ]
+}

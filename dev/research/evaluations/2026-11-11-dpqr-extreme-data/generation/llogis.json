@@ -1,0 +1,21 @@
+{
+  "id": "llogis",
+  "input_sha256": "4a86a00b80eb6f3fcf691911db03e2b12853c5aa222544e79715616d72746aaa",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 109472,
+    "points": 13,
+    "values": 251,
+    "quantiles": 572
+  },
+  "after": {
+    "bytes": 109472,
+    "points": 13,
+    "values": 251,
+    "quantiles": 572
+  },
+  "records": [],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

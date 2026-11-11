@@ -1,0 +1,31 @@
+{
+  "id": "dnorm",
+  "input_sha256": "51dd4fe3c54c3aa808d55b597146927cb58fedd79cf042f1deaa0b8a4e123afe",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 179587,
+    "points": 7,
+    "values": 1441,
+    "quantiles": 308
+  },
+  "after": {
+    "bytes": 179587,
+    "points": 7,
+    "values": 1441,
+    "quantiles": 308
+  },
+  "records": [
+    {
+      "parameters": [
+        0.0,
+        100000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "seconds": 120.00034820099972
+    }
+  ],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

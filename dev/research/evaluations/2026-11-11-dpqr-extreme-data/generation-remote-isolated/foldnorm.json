@@ -1,0 +1,57 @@
+{
+  "id": "foldnorm",
+  "input_sha256": "ac8820789db9f2486a0dbeb320599eea4fd0742dd2b8d79402589db493f6890e",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 71845,
+    "points": 8,
+    "values": 168,
+    "quantiles": 352
+  },
+  "after": {
+    "bytes": 107734,
+    "points": 12,
+    "values": 252,
+    "quantiles": 528
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 2.7604539099997965
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 3.0558270760002415
+    },
+    {
+      "parameters": [
+        1.0,
+        1e-08
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 2.8318364509996172
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 2.905672320999656
+    }
+  ]
+}

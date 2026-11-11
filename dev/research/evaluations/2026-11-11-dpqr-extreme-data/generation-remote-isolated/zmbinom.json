@@ -1,0 +1,51 @@
+{
+  "id": "zmbinom",
+  "input_sha256": "ea811812b60c84d50e9c54e34d8e73c764a46cb1167d043170c5c0180de988ae",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 76887,
+    "points": 12,
+    "values": 171,
+    "quantiles": 528
+  },
+  "after": {
+    "bytes": 90559,
+    "points": 14,
+    "values": 203,
+    "quantiles": 616
+  },
+  "records": [
+    {
+      "parameters": [
+        10.0,
+        5e-09,
+        0.5
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.0687774329999229
+    },
+    {
+      "parameters": [
+        10.0,
+        0.5,
+        5e-09
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.03528215899996212
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1e-08,
+        0.5
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "seconds": 120.06336624599999
+    }
+  ]
+}

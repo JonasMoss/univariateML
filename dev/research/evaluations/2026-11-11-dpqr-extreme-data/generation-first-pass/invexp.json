@@ -1,0 +1,31 @@
+{
+  "id": "invexp",
+  "before": {
+    "bytes": 35923,
+    "points": 4,
+    "values": 82,
+    "quantiles": 176
+  },
+  "after": {
+    "bytes": 53662,
+    "points": 6,
+    "values": 124,
+    "quantiles": 264
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08
+      ],
+      "status": "generated",
+      "seconds": 0.8639343439717777
+    },
+    {
+      "parameters": [
+        100000000.0
+      ],
+      "status": "generated",
+      "seconds": 0.8524923340301029
+    }
+  ]
+}

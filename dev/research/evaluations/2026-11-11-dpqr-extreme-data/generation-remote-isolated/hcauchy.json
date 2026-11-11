@@ -1,0 +1,57 @@
+{
+  "id": "hcauchy",
+  "input_sha256": "5011ce0d83aef2ce638f8424730cc3b5b01bc245855e4352637cffe60ff44611",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 36224,
+    "points": 4,
+    "values": 84,
+    "quantiles": 176
+  },
+  "after": {
+    "bytes": 71004,
+    "points": 8,
+    "values": 162,
+    "quantiles": 352
+  },
+  "records": [
+    {
+      "parameters": [
+        -1.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.2876995159999751
+    },
+    {
+      "parameters": [
+        1.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.2375150769998982
+    },
+    {
+      "parameters": [
+        0.0,
+        1e-08
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.1569772040002135
+    },
+    {
+      "parameters": [
+        0.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.1315491430000293
+    }
+  ]
+}

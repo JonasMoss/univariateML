@@ -1,0 +1,33 @@
+{
+  "id": "genbeta",
+  "input_sha256": "993cebfd9f866939e9bc9aa6d8d0f024c0d1c3c828e70586eed3a956afb0226c",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 141857,
+    "points": 18,
+    "values": 280,
+    "quantiles": 792
+  },
+  "after": {
+    "bytes": 150141,
+    "points": 19,
+    "values": 298,
+    "quantiles": 836
+  },
+  "records": [
+    {
+      "parameters": [
+        1.0,
+        2.0,
+        100000000.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 2.355430802999763
+    }
+  ],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

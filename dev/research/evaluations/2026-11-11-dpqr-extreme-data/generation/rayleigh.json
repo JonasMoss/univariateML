@@ -1,0 +1,21 @@
+{
+  "id": "rayleigh",
+  "input_sha256": "5f29722ece307d5207deeefd8f83ba264c8b08c6c03294df5ff5029cc341ff8a",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 63935,
+    "points": 7,
+    "values": 147,
+    "quantiles": 308
+  },
+  "after": {
+    "bytes": 63935,
+    "points": 7,
+    "values": 147,
+    "quantiles": 308
+  },
+  "records": [],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

@@ -1,0 +1,31 @@
+{
+  "id": "dlaplace",
+  "input_sha256": "18f2cc277321e5346931c1756c588de13bbb858ad6d827df39b69ad14dd255fb",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 172165,
+    "points": 6,
+    "values": 1254,
+    "quantiles": 264
+  },
+  "after": {
+    "bytes": 172165,
+    "points": 6,
+    "values": 1254,
+    "quantiles": 264
+  },
+  "records": [
+    {
+      "parameters": [
+        0.0,
+        0.9999999999999999
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "seconds": 120.00908379099928
+    }
+  ],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

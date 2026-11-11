@@ -1,0 +1,30 @@
+{
+  "id": "geom",
+  "input_sha256": "b020bbb789474d0d6230b09b600feef8caa7d1930613a4dd22bc2000fab01bac",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 119593,
+    "points": 5,
+    "values": 838,
+    "quantiles": 220
+  },
+  "after": {
+    "bytes": 119593,
+    "points": 5,
+    "values": 838,
+    "quantiles": 220
+  },
+  "records": [
+    {
+      "parameters": [
+        5e-09
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: positive series did not reach certified remainder",
+      "seconds": 10.268530363000536
+    }
+  ],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

@@ -1,0 +1,25 @@
+{
+  "id": "geom",
+  "before": {
+    "bytes": 119274,
+    "points": 5,
+    "values": 838,
+    "quantiles": 220
+  },
+  "after": {
+    "bytes": 119451,
+    "points": 5,
+    "values": 838,
+    "quantiles": 220
+  },
+  "records": [
+    {
+      "parameters": [
+        5e-09
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: positive series did not reach certified remainder",
+      "seconds": 13.511478251952212
+    }
+  ]
+}

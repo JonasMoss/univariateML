@@ -1,0 +1,31 @@
+{
+  "id": "power",
+  "input_sha256": "dbb64e743b024ab21a2f897dd8e0735f517909de96adc287afed9e19d38987fe",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 67828,
+    "points": 8,
+    "values": 141,
+    "quantiles": 352
+  },
+  "after": {
+    "bytes": 67828,
+    "points": 8,
+    "values": 141,
+    "quantiles": 352
+  },
+  "records": [
+    {
+      "parameters": [
+        1.0,
+        1e-08
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: normalization quadrature error estimate 0.00000000001",
+      "seconds": 2.3622601780007244
+    }
+  ],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

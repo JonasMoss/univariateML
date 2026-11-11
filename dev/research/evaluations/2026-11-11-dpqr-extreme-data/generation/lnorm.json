@@ -1,0 +1,21 @@
+{
+  "id": "lnorm",
+  "input_sha256": "976a1fee755535caa6ff06606397120ac9414078f76747c6fe790962d379348c",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 69831,
+    "points": 8,
+    "values": 154,
+    "quantiles": 352
+  },
+  "after": {
+    "bytes": 69831,
+    "points": 8,
+    "values": 154,
+    "quantiles": 352
+  },
+  "records": [],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

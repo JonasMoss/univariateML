@@ -1,0 +1,51 @@
+{
+  "id": "skellam",
+  "before": {
+    "bytes": 245529,
+    "points": 10,
+    "values": 1771,
+    "quantiles": 440
+  },
+  "after": {
+    "bytes": 299177,
+    "points": 12,
+    "values": 2183,
+    "quantiles": 528
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 0.26449328497983515
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 30 seconds per point",
+      "seconds": 30.000063478015363
+    },
+    {
+      "parameters": [
+        1.0,
+        1e-08
+      ],
+      "status": "generated",
+      "seconds": 0.5398357799858786
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 30 seconds per point",
+      "seconds": 30.000064719992224
+    }
+  ]
+}

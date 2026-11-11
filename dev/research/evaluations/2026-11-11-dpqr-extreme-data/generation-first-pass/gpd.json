@@ -1,0 +1,62 @@
+{
+  "id": "gpd",
+  "before": {
+    "bytes": 79181,
+    "points": 9,
+    "values": 186,
+    "quantiles": 396
+  },
+  "after": {
+    "bytes": 123288,
+    "points": 14,
+    "values": 289,
+    "quantiles": 616
+  },
+  "records": [
+    {
+      "parameters": [
+        0.0,
+        1e-08,
+        0.0
+      ],
+      "status": "generated",
+      "seconds": 1.1277770340093412
+    },
+    {
+      "parameters": [
+        0.0,
+        100000000.0,
+        0.0
+      ],
+      "status": "generated",
+      "seconds": 1.094389075995423
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 1.9387345619616099
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        1e-12
+      ],
+      "status": "generated",
+      "seconds": 2.074033782002516
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        -1e-12
+      ],
+      "status": "generated",
+      "seconds": 2.082464636012446
+    }
+  ]
+}

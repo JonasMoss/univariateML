@@ -1,0 +1,20 @@
+{
+  "id": "dunif",
+  "input_sha256": "613a7ed52f6cc0de0ba17336bad97ab133dd6c1422800e092a054c0a97350e27",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 86247,
+    "points": 6,
+    "values": 462,
+    "quantiles": 264
+  },
+  "after": {
+    "bytes": 86247,
+    "points": 6,
+    "values": 462,
+    "quantiles": 264
+  },
+  "records": []
+}

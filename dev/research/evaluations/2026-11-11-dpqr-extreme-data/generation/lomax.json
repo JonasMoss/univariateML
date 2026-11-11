@@ -1,0 +1,31 @@
+{
+  "id": "lomax",
+  "input_sha256": "d9680740aa98dfa6d6e8df47abeafc07749343f1190fc12b77b1c1ec6cd5300c",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 97088,
+    "points": 11,
+    "values": 227,
+    "quantiles": 484
+  },
+  "after": {
+    "bytes": 97088,
+    "points": 11,
+    "values": 227,
+    "quantiles": 484
+  },
+  "records": [
+    {
+      "parameters": [
+        1.0,
+        1e-08
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: normalization quadrature error estimate 0.00000000001",
+      "seconds": 0.9236563989998103
+    }
+  ],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

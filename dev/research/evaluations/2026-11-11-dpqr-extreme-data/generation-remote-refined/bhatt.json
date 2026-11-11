@@ -1,0 +1,71 @@
+{
+  "id": "bhatt",
+  "before": {
+    "bytes": 87744,
+    "points": 10,
+    "values": 190,
+    "quantiles": 440
+  },
+  "after": {
+    "bytes": 140371,
+    "points": 16,
+    "values": 304,
+    "quantiles": 704
+  },
+  "records": [
+    {
+      "parameters": [
+        -1.0,
+        1.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 5.387065112999835
+    },
+    {
+      "parameters": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 5.259453974999815
+    },
+    {
+      "parameters": [
+        0.0,
+        1e-08,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 3.4985166199999185
+    },
+    {
+      "parameters": [
+        0.0,
+        100000000.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 4.750629961999948
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        1e-08
+      ],
+      "status": "generated",
+      "seconds": 4.531658555999911
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "seconds": 3.739314967000155
+    }
+  ]
+}

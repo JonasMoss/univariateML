@@ -1,0 +1,30 @@
+{
+  "id": "ztgeom",
+  "input_sha256": "69327a9279d2545aee9a7042ae15616a5aa779b56f9d1190502c981fa8387be6",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 148709,
+    "points": 6,
+    "values": 1046,
+    "quantiles": 264
+  },
+  "after": {
+    "bytes": 148709,
+    "points": 6,
+    "values": 1046,
+    "quantiles": 264
+  },
+  "records": [
+    {
+      "parameters": [
+        5e-09
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: positive series did not reach certified remainder",
+      "seconds": 9.744564529000854
+    }
+  ],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

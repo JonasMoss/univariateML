@@ -1,0 +1,39 @@
+{
+  "id": "zipf",
+  "input_sha256": "f39726eee9c01d47025d531844c8bb2dd6beb1854734b6b837f8fe218e91b471",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 41833,
+    "points": 7,
+    "values": 66,
+    "quantiles": 308
+  },
+  "after": {
+    "bytes": 54729,
+    "points": 9,
+    "values": 96,
+    "quantiles": 396
+  },
+  "records": [
+    {
+      "parameters": [
+        10.0,
+        1e-08
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.05461623700011842
+    },
+    {
+      "parameters": [
+        10.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.022625625999808108
+    }
+  ]
+}

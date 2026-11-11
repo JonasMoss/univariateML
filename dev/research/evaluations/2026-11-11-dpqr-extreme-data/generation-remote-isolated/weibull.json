@@ -1,0 +1,75 @@
+{
+  "id": "weibull",
+  "input_sha256": "16dc1ba64b358b4dd15ab6d8696d3820cd6fd6406a26365026fd3952fa6a8969",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 62473,
+    "points": 7,
+    "values": 145,
+    "quantiles": 308
+  },
+  "after": {
+    "bytes": 121325,
+    "points": 13,
+    "values": 269,
+    "quantiles": 620
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.19494470399968122
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.08361734099980822
+    },
+    {
+      "parameters": [
+        1.0,
+        1e-08
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.07990082300011636
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.07674646899977233
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.06443776699961745
+    },
+    {
+      "parameters": [
+        1000000000000.0,
+        1000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.06669763900026737
+    }
+  ]
+}

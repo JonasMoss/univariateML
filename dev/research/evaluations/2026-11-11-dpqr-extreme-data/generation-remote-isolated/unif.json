@@ -1,0 +1,57 @@
+{
+  "id": "unif",
+  "input_sha256": "e74294c3506b37295b7f0922f8e24e22316dee6fd0f5c817d398a8a53275d10d",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 16831,
+    "points": 2,
+    "values": 33,
+    "quantiles": 88
+  },
+  "after": {
+    "bytes": 47214,
+    "points": 6,
+    "values": 89,
+    "quantiles": 264
+  },
+  "records": [
+    {
+      "parameters": [
+        -1.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 3.1585575869999047
+    },
+    {
+      "parameters": [
+        0.9999999999999999,
+        1.0000000000000002
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 4.50194704400019
+    },
+    {
+      "parameters": [
+        0.0,
+        1e-08
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 3.075913512999705
+    },
+    {
+      "parameters": [
+        0.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 3.0046132899997247
+    }
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "id": "llogis",
+  "input_sha256": "ac7c23c52793241e6a6bd9ecb3ded3fe0a39c7cef72f72dc4d5689078d95576a",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 59697,
+    "points": 7,
+    "values": 139,
+    "quantiles": 308
+  },
+  "after": {
+    "bytes": 109288,
+    "points": 13,
+    "values": 251,
+    "quantiles": 572
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.06560246100025324
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.02464207399998486
+    },
+    {
+      "parameters": [
+        1.0,
+        1e-08
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.04481137099992338
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.040795812000396836
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.02193350500010638
+    },
+    {
+      "parameters": [
+        1000000000000.0,
+        1000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.021408179999980348
+    }
+  ]
+}

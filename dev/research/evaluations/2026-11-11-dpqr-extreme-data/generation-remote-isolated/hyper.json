@@ -1,0 +1,31 @@
+{
+  "id": "hyper",
+  "input_sha256": "4dd51dbb7fd105c3a76986ed34ac410d0fe9731d01d64ba0706a55fc9113aa54",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 39461,
+    "points": 7,
+    "values": 47,
+    "quantiles": 308
+  },
+  "after": {
+    "bytes": 45544,
+    "points": 8,
+    "values": 58,
+    "quantiles": 352
+  },
+  "records": [
+    {
+      "parameters": [
+        5.0,
+        100000000.0,
+        5.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.0676905169998463
+    }
+  ]
+}

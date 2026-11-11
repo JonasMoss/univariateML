@@ -1,0 +1,62 @@
+{
+  "id": "huber",
+  "before": {
+    "bytes": 53213,
+    "points": 6,
+    "values": 114,
+    "quantiles": 264
+  },
+  "after": {
+    "bytes": 96992,
+    "points": 11,
+    "values": 205,
+    "quantiles": 484
+  },
+  "records": [
+    {
+      "parameters": [
+        0.0,
+        1e-08,
+        1.345
+      ],
+      "status": "generated",
+      "seconds": 2.168463585956488
+    },
+    {
+      "parameters": [
+        0.0,
+        100000000.0,
+        1.345
+      ],
+      "status": "generated",
+      "seconds": 2.629937996971421
+    },
+    {
+      "parameters": [
+        0.0,
+        1000.0,
+        134500000.0
+      ],
+      "status": "generated",
+      "seconds": 3.5992472780053504
+    },
+    {
+      "parameters": [
+        -100000000.0,
+        100000000.0,
+        134500000.0
+      ],
+      "status": "generated",
+      "seconds": 3.788741812983062
+    },
+    {
+      "parameters": [
+        0.0,
+        1e-08,
+        1e-08
+      ],
+      "status": "generated",
+      "seconds": 1.7904868639889173
+    }
+  ]
+}

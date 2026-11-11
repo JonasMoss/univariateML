@@ -1,0 +1,21 @@
+{
+  "id": "unif",
+  "input_sha256": "b0add5767ecbac497a7e2ff28d851a30ef64a4cfcf43adffe65b67dc07729dff",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 47293,
+    "points": 6,
+    "values": 89,
+    "quantiles": 264
+  },
+  "after": {
+    "bytes": 47293,
+    "points": 6,
+    "values": 89,
+    "quantiles": 264
+  },
+  "records": [],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

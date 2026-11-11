@@ -1,0 +1,101 @@
+{
+  "id": "frechet",
+  "input_sha256": "aa875884f991b41707ad30db0b846dd6458d8deb6d4073eabd7643754b9dcc0c",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 64330,
+    "points": 7,
+    "values": 143,
+    "quantiles": 308
+  },
+  "after": {
+    "bytes": 114910,
+    "points": 13,
+    "values": 250,
+    "quantiles": 572
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        0.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 2.32263905300033
+    },
+    {
+      "parameters": [
+        100000000.0,
+        0.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.7746243900000991
+    },
+    {
+      "parameters": [
+        1.0,
+        -1.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.6740469880001001
+    },
+    {
+      "parameters": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.6755439210000986
+    },
+    {
+      "parameters": [
+        1.0,
+        0.0,
+        1e-08
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.7666408360000787
+    },
+    {
+      "parameters": [
+        1.0,
+        0.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.736220726999818
+    },
+    {
+      "parameters": [
+        100000000.0,
+        0.0,
+        1000.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "seconds": 120.00129636600013
+    },
+    {
+      "parameters": [
+        100000000.0,
+        -100000000.0,
+        100000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "seconds": 120.00299822399984
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "id": "betapr",
+  "input_sha256": "097bccfaee42f0293d326b8df0bfe6328926e54c1ad962ffe75769be81685cf1",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 165952,
+    "points": 19,
+    "values": 370,
+    "quantiles": 836
+  },
+  "after": {
+    "bytes": 165952,
+    "points": 19,
+    "values": 370,
+    "quantiles": 836
+  },
+  "records": [
+    {
+      "parameters": [
+        100000000.0,
+        100000000.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms.",
+      "seconds": 17.1611788160003
+    }
+  ]
+}

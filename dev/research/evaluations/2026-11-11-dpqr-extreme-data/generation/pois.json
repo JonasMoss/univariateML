@@ -1,0 +1,30 @@
+{
+  "id": "pois",
+  "input_sha256": "05ff4000ee78655005c87d944b2585d52407c7e3d5bae0960c4752746315d203",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 164084,
+    "points": 7,
+    "values": 1241,
+    "quantiles": 308
+  },
+  "after": {
+    "bytes": 164084,
+    "points": 7,
+    "values": 1241,
+    "quantiles": 308
+  },
+  "records": [
+    {
+      "parameters": [
+        100000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: positive series did not reach certified remainder",
+      "seconds": 19.72544870300044
+    }
+  ],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

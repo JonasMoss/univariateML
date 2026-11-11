@@ -1,0 +1,110 @@
+{
+  "id": "invburr",
+  "before": {
+    "bytes": 78805,
+    "points": 9,
+    "values": 181,
+    "quantiles": 396
+  },
+  "after": {
+    "bytes": 134918,
+    "points": 16,
+    "values": 298,
+    "quantiles": 704
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: normalization quadrature error estimate 0.00000000001",
+      "seconds": 0.6910618349793367
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 0.9102253169985488
+    },
+    {
+      "parameters": [
+        1.0,
+        1e-08,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 2.9990247979876585
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 0.8085894550313242
+    },
+    {
+      "parameters": [
+        1.0,
+        1.0,
+        1e-08
+      ],
+      "status": "generated",
+      "seconds": 0.8511959130410105
+    },
+    {
+      "parameters": [
+        1.0,
+        1.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "seconds": 0.8287057100096717
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0,
+        1000.0
+      ],
+      "status": "generated",
+      "seconds": 0.9174574799835682
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0,
+        1000.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 30 seconds per point",
+      "seconds": 30.000071320973802
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0,
+        1e-08
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 30 seconds per point",
+      "seconds": 30.067783681035507
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1e-08,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 3.161093722039368
+    }
+  ]
+}

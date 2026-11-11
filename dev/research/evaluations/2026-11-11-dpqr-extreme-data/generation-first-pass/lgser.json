@@ -1,0 +1,32 @@
+{
+  "id": "lgser",
+  "before": {
+    "bytes": 143974,
+    "points": 5,
+    "values": 1047,
+    "quantiles": 220
+  },
+  "after": {
+    "bytes": 169369,
+    "points": 6,
+    "values": 1253,
+    "quantiles": 264
+  },
+  "records": [
+    {
+      "parameters": [
+        5e-09
+      ],
+      "status": "generated",
+      "seconds": 12.250516503001563
+    },
+    {
+      "parameters": [
+        0.9999999999999999
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: positive series did not reach certified remainder",
+      "seconds": 9.744879967009183
+    }
+  ]
+}

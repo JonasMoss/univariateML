@@ -1,0 +1,129 @@
+{
+  "id": "pareto4",
+  "before": {
+    "bytes": 76360,
+    "points": 9,
+    "values": 162,
+    "quantiles": 396
+  },
+  "after": {
+    "bytes": 151834,
+    "points": 18,
+    "values": 323,
+    "quantiles": 792
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0,
+        1.0,
+        0.0
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: normalization quadrature error estimate 0.00000000001",
+      "seconds": 0.8551792069920339
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0,
+        1.0,
+        0.0
+      ],
+      "status": "generated",
+      "seconds": 1.1767997450078838
+    },
+    {
+      "parameters": [
+        1.0,
+        1e-08,
+        1.0,
+        0.0
+      ],
+      "status": "generated",
+      "seconds": 3.3847573549719527
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0,
+        1.0,
+        0.0
+      ],
+      "status": "generated",
+      "seconds": 1.2789586660219356
+    },
+    {
+      "parameters": [
+        1.0,
+        1.0,
+        1e-08,
+        0.0
+      ],
+      "status": "generated",
+      "seconds": 1.2935629019630142
+    },
+    {
+      "parameters": [
+        1.0,
+        1.0,
+        100000000.0,
+        0.0
+      ],
+      "status": "generated",
+      "seconds": 1.2184429820044897
+    },
+    {
+      "parameters": [
+        1.0,
+        1.0,
+        1.0,
+        -1.0
+      ],
+      "status": "generated",
+      "seconds": 1.5799528550123796
+    },
+    {
+      "parameters": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 1.6642016469850205
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0,
+        1000.0,
+        0.0
+      ],
+      "status": "generated",
+      "seconds": 1.2909604430315085
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0,
+        1000.0,
+        0.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 30 seconds per point",
+      "seconds": 30.04472553700907
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0,
+        100000000.0,
+        -100000000.0
+      ],
+      "status": "generated",
+      "seconds": 1.4809371960000135
+    }
+  ]
+}

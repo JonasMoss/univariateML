@@ -1,0 +1,33 @@
+{
+  "id": "slash",
+  "before": {
+    "bytes": 53258,
+    "points": 6,
+    "values": 114,
+    "quantiles": 264
+  },
+  "after": {
+    "bytes": 71070,
+    "points": 8,
+    "values": 152,
+    "quantiles": 352
+  },
+  "records": [
+    {
+      "parameters": [
+        0.0,
+        1e-08
+      ],
+      "status": "generated",
+      "seconds": 5.859258183976635
+    },
+    {
+      "parameters": [
+        0.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "seconds": 5.266017387039028
+    }
+  ]
+}

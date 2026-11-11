@@ -1,0 +1,32 @@
+{
+  "id": "tlambda",
+  "input_sha256": "bd325a779674f17e34fc460d533af382cfca4394bc076237b7f2fd570016d03f",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 114020,
+    "points": 13,
+    "values": 241,
+    "quantiles": 572
+  },
+  "after": {
+    "bytes": 114020,
+    "points": 13,
+    "values": 241,
+    "quantiles": 572
+  },
+  "records": [
+    {
+      "parameters": [
+        0.0,
+        1e-08,
+        0.0
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: density/antiderivative derivative mismatch",
+      "seconds": 1.2363217040001473
+    }
+  ],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

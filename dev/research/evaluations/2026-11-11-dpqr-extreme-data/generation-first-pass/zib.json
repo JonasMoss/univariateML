@@ -1,0 +1,45 @@
+{
+  "id": "zib",
+  "before": {
+    "bytes": 76449,
+    "points": 12,
+    "values": 168,
+    "quantiles": 528
+  },
+  "after": {
+    "bytes": 90151,
+    "points": 14,
+    "values": 200,
+    "quantiles": 616
+  },
+  "records": [
+    {
+      "parameters": [
+        10.0,
+        5e-09,
+        0.5
+      ],
+      "status": "generated",
+      "seconds": 0.04413588100578636
+    },
+    {
+      "parameters": [
+        10.0,
+        0.5,
+        5e-09
+      ],
+      "status": "generated",
+      "seconds": 0.039040472998749465
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1e-08,
+        0.5
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 30 seconds per point",
+      "seconds": 30.025291278026998
+    }
+  ]
+}

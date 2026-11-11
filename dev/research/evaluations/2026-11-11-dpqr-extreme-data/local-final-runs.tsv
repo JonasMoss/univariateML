@@ -1,0 +1,6 @@
+cpp-test	workstation	8
+cpp-test-no-long-double	workstation	8
+js-build	workstation	0
+js-test	workstation	1
+site-check	workstation	0
+relations	workstation	0

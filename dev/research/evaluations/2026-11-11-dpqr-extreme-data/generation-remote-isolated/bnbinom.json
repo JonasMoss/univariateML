@@ -1,0 +1,51 @@
+{
+  "id": "bnbinom",
+  "input_sha256": "b613ba79230576f80d0b4c34ad0a0d3c29d4434355d40af508894c14fe607b14",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 415955,
+    "points": 14,
+    "values": 2947,
+    "quantiles": 616
+  },
+  "after": {
+    "bytes": 415955,
+    "points": 14,
+    "values": 2947,
+    "quantiles": 616
+  },
+  "records": [
+    {
+      "parameters": [
+        1.0,
+        1.0,
+        100000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: beta-mixture remainder",
+      "seconds": 0.2218490989998827
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0,
+        100000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: beta-mixture remainder",
+      "seconds": 0.18630956500010143
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1e+16,
+        100000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: beta-mixture remainder",
+      "seconds": 0.1897468110000773
+    }
+  ]
+}

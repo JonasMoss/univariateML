@@ -1,0 +1,42 @@
+{
+  "id": "zmlogarithmic",
+  "before": {
+    "bytes": 240950,
+    "points": 10,
+    "values": 1676,
+    "quantiles": 440
+  },
+  "after": {
+    "bytes": 295881,
+    "points": 12,
+    "values": 2090,
+    "quantiles": 528
+  },
+  "records": [
+    {
+      "parameters": [
+        5e-09,
+        0.5
+      ],
+      "status": "generated",
+      "seconds": 15.799371443979908
+    },
+    {
+      "parameters": [
+        0.9999999999999999,
+        0.5
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: positive series did not reach certified remainder",
+      "seconds": 12.999439504987095
+    },
+    {
+      "parameters": [
+        0.5,
+        5e-09
+      ],
+      "status": "generated",
+      "seconds": 11.845315952028614
+    }
+  ]
+}

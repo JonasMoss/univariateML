@@ -1,0 +1,31 @@
+{
+  "id": "dweibull",
+  "input_sha256": "e8f5ea93034edaa976b94f8de9f343624a27331d2fcac2adb03c1145156740e8",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 279710,
+    "points": 10,
+    "values": 2086,
+    "quantiles": 440
+  },
+  "after": {
+    "bytes": 279710,
+    "points": 10,
+    "values": 2086,
+    "quantiles": 440
+  },
+  "records": [
+    {
+      "parameters": [
+        0.5,
+        100000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "seconds": 120.00013703399964
+    }
+  ],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

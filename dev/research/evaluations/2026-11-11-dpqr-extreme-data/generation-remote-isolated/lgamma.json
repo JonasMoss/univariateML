@@ -1,0 +1,57 @@
+{
+  "id": "lgamma",
+  "input_sha256": "4aa48a99e42dcdb3676bf008ca4785b1fde75d4bf357d29fd2ad199096336f3a",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 58849,
+    "points": 7,
+    "values": 126,
+    "quantiles": 308
+  },
+  "after": {
+    "bytes": 67574,
+    "points": 8,
+    "values": 143,
+    "quantiles": 352
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "seconds": 120.00006866700005
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms.",
+      "seconds": 0.11835477899967373
+    },
+    {
+      "parameters": [
+        1.0,
+        1e-08
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: normalization quadrature error estimate 0.00000000001",
+      "seconds": 0.8589603639998131
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.1616251400000692
+    }
+  ]
+}

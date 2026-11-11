@@ -1,0 +1,63 @@
+{
+  "id": "cmb",
+  "before": {
+    "bytes": 84908,
+    "points": 11,
+    "values": 354,
+    "quantiles": 484
+  },
+  "after": {
+    "bytes": 111760,
+    "points": 15,
+    "values": 418,
+    "quantiles": 660
+  },
+  "records": [
+    {
+      "parameters": [
+        10.0,
+        5e-09,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 0.1217334289685823
+    },
+    {
+      "parameters": [
+        10.0,
+        0.5,
+        -1.0
+      ],
+      "status": "generated",
+      "seconds": 0.08046287501929328
+    },
+    {
+      "parameters": [
+        10.0,
+        0.5,
+        100000000.0
+      ],
+      "status": "generated",
+      "seconds": 0.07274290797067806
+    },
+    {
+      "parameters": [
+        10.0,
+        0.5,
+        -100000000.0
+      ],
+      "status": "generated",
+      "seconds": 0.07278743200004101
+    },
+    {
+      "parameters": [
+        10000.0,
+        0.0001,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 30 seconds per point",
+      "seconds": 30.018125081027392
+    }
+  ]
+}

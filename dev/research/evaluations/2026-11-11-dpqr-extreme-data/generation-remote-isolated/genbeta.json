@@ -1,0 +1,131 @@
+{
+  "id": "genbeta",
+  "input_sha256": "eccffc28f329626eeefb4a0f35bc7296448185d24bbf31addc64a1a2b2192eca",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 70485,
+    "points": 9,
+    "values": 139,
+    "quantiles": 396
+  },
+  "after": {
+    "bytes": 141658,
+    "points": 18,
+    "values": 280,
+    "quantiles": 792
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        2.0,
+        1.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 7.417730659999961
+    },
+    {
+      "parameters": [
+        100000000.0,
+        2.0,
+        1.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 2.6123485309999523
+    },
+    {
+      "parameters": [
+        1.0,
+        2e-08,
+        1.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 8.277440350000234
+    },
+    {
+      "parameters": [
+        1.0,
+        200000000.0,
+        1.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 2.5348962230000325
+    },
+    {
+      "parameters": [
+        1.0,
+        2.0,
+        1e-08,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 5.024515195999811
+    },
+    {
+      "parameters": [
+        1.0,
+        2.0,
+        100000000.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "MemoryError: ",
+      "seconds": 5.7920149359997595
+    },
+    {
+      "parameters": [
+        1.0,
+        2.0,
+        1.0,
+        1e-08
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 2.206232825999905
+    },
+    {
+      "parameters": [
+        1.0,
+        2.0,
+        1.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 2.157165389000056
+    },
+    {
+      "parameters": [
+        100000000.0,
+        2.0,
+        1e-08,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 3.1162319960003515
+    },
+    {
+      "parameters": [
+        1e-08,
+        2.0,
+        100000000.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 3.6931107989998964
+    }
+  ]
+}

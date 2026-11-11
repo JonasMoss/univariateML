@@ -1,0 +1,21 @@
+{
+  "id": "cauchy",
+  "input_sha256": "8bebf5f944683ee4b7715379b5782095ca63843a3bb0f307d64ab2fc641f498d",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 70692,
+    "points": 8,
+    "values": 152,
+    "quantiles": 352
+  },
+  "after": {
+    "bytes": 70692,
+    "points": 8,
+    "values": 152,
+    "quantiles": 352
+  },
+  "records": [],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

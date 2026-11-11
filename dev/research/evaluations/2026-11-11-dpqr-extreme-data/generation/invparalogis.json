@@ -1,0 +1,40 @@
+{
+  "id": "invparalogis",
+  "input_sha256": "cbe7a8bc2f636876ca473beca8757d1c2c0de1448576927f2294e9cd76ef3a8b",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 78220,
+    "points": 9,
+    "values": 180,
+    "quantiles": 396
+  },
+  "after": {
+    "bytes": 78220,
+    "points": 9,
+    "values": 180,
+    "quantiles": 396
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: normalization quadrature error estimate 0.00000000001",
+      "seconds": 1.3696147259997815
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1000.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "seconds": 120.00225260300067
+    }
+  ],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

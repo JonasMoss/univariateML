@@ -1,0 +1,91 @@
+{
+  "id": "gev",
+  "input_sha256": "f9dae1927ae095ad6193b81a1ebc2800deaa776abf67c84470597703a42cd2bc",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 82502,
+    "points": 9,
+    "values": 180,
+    "quantiles": 396
+  },
+  "after": {
+    "bytes": 145690,
+    "points": 16,
+    "values": 315,
+    "quantiles": 704
+  },
+  "records": [
+    {
+      "parameters": [
+        -1.0,
+        1.0,
+        0.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.5260732360002294
+    },
+    {
+      "parameters": [
+        1.0,
+        1.0,
+        0.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.4825488229998882
+    },
+    {
+      "parameters": [
+        0.0,
+        1e-08,
+        0.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.7246134399997572
+    },
+    {
+      "parameters": [
+        0.0,
+        100000000.0,
+        0.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.7077821990001212
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.1211741220004114
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        1e-12
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.3578628800000843
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        -1e-12
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.3805596869997316
+    }
+  ]
+}

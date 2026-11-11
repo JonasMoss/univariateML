@@ -1,0 +1,21 @@
+{
+  "id": "snorm",
+  "input_sha256": "482aebdce0a17e5e4e2aa915f5d9cc5c801857ed0a644a3550365bc647c7cc75",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 134273,
+    "points": 15,
+    "values": 285,
+    "quantiles": 660
+  },
+  "after": {
+    "bytes": 134273,
+    "points": 15,
+    "values": 285,
+    "quantiles": 660
+  },
+  "records": [],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

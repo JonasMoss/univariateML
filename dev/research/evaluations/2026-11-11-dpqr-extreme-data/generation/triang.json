@@ -1,0 +1,21 @@
+{
+  "id": "triang",
+  "input_sha256": "c650c6e75e3c5bb2711ec08c1fb519535a0bf073eb61e5eac0d32ab0dba3efb9",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 102177,
+    "points": 12,
+    "values": 201,
+    "quantiles": 528
+  },
+  "after": {
+    "bytes": 102177,
+    "points": 12,
+    "values": 201,
+    "quantiles": 528
+  },
+  "records": [],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

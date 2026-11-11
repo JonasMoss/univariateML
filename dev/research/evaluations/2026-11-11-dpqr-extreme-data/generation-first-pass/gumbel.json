@@ -1,0 +1,49 @@
+{
+  "id": "gumbel",
+  "before": {
+    "bytes": 62219,
+    "points": 7,
+    "values": 133,
+    "quantiles": 308
+  },
+  "after": {
+    "bytes": 97878,
+    "points": 11,
+    "values": 209,
+    "quantiles": 484
+  },
+  "records": [
+    {
+      "parameters": [
+        -1.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 1.3947432790300809
+    },
+    {
+      "parameters": [
+        1.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 1.3484400470042601
+    },
+    {
+      "parameters": [
+        0.0,
+        1e-08
+      ],
+      "status": "generated",
+      "seconds": 1.5091065460001118
+    },
+    {
+      "parameters": [
+        0.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "seconds": 1.5244711909908801
+    }
+  ]
+}

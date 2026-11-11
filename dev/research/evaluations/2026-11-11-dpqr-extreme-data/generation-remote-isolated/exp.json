@@ -1,0 +1,20 @@
+{
+  "id": "exp",
+  "input_sha256": "9816968f5fad1a046b6fa61a8a5b8f241f54b3a7177b2d5e942da576366473c4",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 53872,
+    "points": 6,
+    "values": 126,
+    "quantiles": 264
+  },
+  "after": {
+    "bytes": 53872,
+    "points": 6,
+    "values": 126,
+    "quantiles": 264
+  },
+  "records": []
+}

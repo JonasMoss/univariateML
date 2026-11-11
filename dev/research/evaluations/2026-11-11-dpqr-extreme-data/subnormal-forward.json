@@ -1,0 +1,87 @@
+[
+  {
+    "family": "weibull",
+    "function": "p",
+    "input": 710.0,
+    "parameters": [
+      1.0,
+      1.0
+    ],
+    "lower": false,
+    "log": false,
+    "actual": 4.47628622567411e-309,
+    "reference": "4.476286225675129956083160702291322340493612092307113346608851176675869686642551273780440839049211888e-309",
+    "relative_error": 2.274114180054403e-13,
+    "nearest_binary64": 4.47628622567513e-309,
+    "best_binary64_relative_error": 4.096421381234081e-17,
+    "consumer_checks_natural": false
+  },
+  {
+    "family": "weibull",
+    "function": "p",
+    "input": 720.0,
+    "parameters": [
+      1.0,
+      1.0
+    ],
+    "lower": false,
+    "log": false,
+    "actual": 2.0322308024e-313,
+    "reference": "2.032230802424293152866633766414812296724228166012459847311333592365251398554407045431151662386897902e-313",
+    "relative_error": 2.9195686344141477e-12,
+    "nearest_binary64": 2.0322308024e-313,
+    "best_binary64_relative_error": 2.9195686344141477e-12,
+    "consumer_checks_natural": false
+  },
+  {
+    "family": "weibull",
+    "function": "p",
+    "input": 737.123,
+    "parameters": [
+      1.0,
+      1.0
+    ],
+    "lower": false,
+    "log": false,
+    "actual": 7.44e-321,
+    "reference": "7.439583388357276335731348644891171613554948777137283655647856537500005781415439766430632281039617398e-321",
+    "relative_error": 0.00014049684738158666,
+    "nearest_binary64": 7.44e-321,
+    "best_binary64_relative_error": 0.00014049684738158666,
+    "consumer_checks_natural": false
+  },
+  {
+    "family": "weibull",
+    "function": "p",
+    "input": 744.3,
+    "parameters": [
+      1.0,
+      1.0
+    ],
+    "lower": false,
+    "log": false,
+    "actual": 5e-324,
+    "reference": "5.683516424919398885921143895429181176252291611055787478543955543924175318913635247626097029218279346e-324",
+    "relative_error": 0.13070428779793108,
+    "nearest_binary64": 5e-324,
+    "best_binary64_relative_error": 0.13070428779793108,
+    "consumer_checks_natural": false
+  },
+  {
+    "family": "weibull",
+    "function": "p",
+    "input": 800.0,
+    "parameters": [
+      1.0,
+      1.0
+    ],
+    "lower": false,
+    "log": false,
+    "actual": 0.0,
+    "reference": "3.667874584177687213455495654260798215469634226612640705069151310903542448310183622525663193492234051e-348",
+    "relative_error": 1.0,
+    "nearest_binary64": 0.0,
+    "best_binary64_relative_error": 1.0,
+    "consumer_checks_natural": false
+  }
+]

@@ -1,0 +1,63 @@
+{
+  "id": "cmb",
+  "before": {
+    "bytes": 84908,
+    "points": 11,
+    "values": 354,
+    "quantiles": 484
+  },
+  "after": {
+    "bytes": 112080,
+    "points": 15,
+    "values": 418,
+    "quantiles": 660
+  },
+  "records": [
+    {
+      "parameters": [
+        10.0,
+        5e-09,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 0.07665847599992048
+    },
+    {
+      "parameters": [
+        10.0,
+        0.5,
+        -1.0
+      ],
+      "status": "generated",
+      "seconds": 0.03986904500015953
+    },
+    {
+      "parameters": [
+        10.0,
+        0.5,
+        100000000.0
+      ],
+      "status": "generated",
+      "seconds": 0.04094573400016088
+    },
+    {
+      "parameters": [
+        10.0,
+        0.5,
+        -100000000.0
+      ],
+      "status": "generated",
+      "seconds": 0.038248086999828956
+    },
+    {
+      "parameters": [
+        10000.0,
+        0.0001,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "seconds": 120.00009273900014
+    }
+  ]
+}

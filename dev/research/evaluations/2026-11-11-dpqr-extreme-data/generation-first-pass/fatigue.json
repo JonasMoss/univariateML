@@ -1,0 +1,89 @@
+{
+  "id": "fatigue",
+  "before": {
+    "bytes": 63278,
+    "points": 7,
+    "values": 147,
+    "quantiles": 308
+  },
+  "after": {
+    "bytes": 134746,
+    "points": 15,
+    "values": 308,
+    "quantiles": 660
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0,
+        0.0
+      ],
+      "status": "generated",
+      "seconds": 1.6518141700071283
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0,
+        0.0
+      ],
+      "status": "generated",
+      "seconds": 2.1479184009949677
+    },
+    {
+      "parameters": [
+        1.0,
+        1e-08,
+        0.0
+      ],
+      "status": "generated",
+      "seconds": 1.9455377709819004
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0,
+        0.0
+      ],
+      "status": "generated",
+      "seconds": 1.86010069999611
+    },
+    {
+      "parameters": [
+        1.0,
+        1.0,
+        -1.0
+      ],
+      "status": "generated",
+      "seconds": 1.7782749499892816
+    },
+    {
+      "parameters": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 1.6857911760453135
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1000.0,
+        0.0
+      ],
+      "status": "generated",
+      "seconds": 2.072937067016028
+    },
+    {
+      "parameters": [
+        100000000.0,
+        100000000.0,
+        -100000000.0
+      ],
+      "status": "generated",
+      "seconds": 3.7163791959756054
+    }
+  ]
+}

@@ -1,0 +1,117 @@
+[
+  {
+    "command": "just cpp-test",
+    "machine": "workstation",
+    "exit": 8,
+    "counts": {
+      "total": 108,
+      "failed": 1,
+      "passed": 107
+    },
+    "failed_shards": [
+      "distribution_sged"
+    ],
+    "assertion_failure_lines": [
+      "../../include/cppunivariate/distributions/sged/test.cpp:444: ERROR: CHECK( r.logLik==doctest::Approx(ll).epsilon(2e-8) ) is NOT correct!"
+    ],
+    "log": "final-logs/workstation-cpp-test.log.gz"
+  },
+  {
+    "command": "just cpp-test-no-long-double",
+    "machine": "workstation",
+    "exit": 8,
+    "counts": {
+      "total": 135,
+      "failed": 1,
+      "passed": 134
+    },
+    "failed_shards": [
+      "distribution_sged"
+    ],
+    "assertion_failure_lines": [
+      "../../../univariateML-cpp/include/cppunivariate/distributions/sged/test.cpp:444: ERROR: CHECK( r.logLik==doctest::Approx(ll).epsilon(2e-8) ) is NOT correct!"
+    ],
+    "log": "final-logs/workstation-cpp-test-no-long-double.log.gz"
+  },
+  {
+    "command": "just js-build",
+    "machine": "workstation",
+    "exit": 0,
+    "log": "final-logs/workstation-js-build.log.gz"
+  },
+  {
+    "command": "just js-test",
+    "machine": "workstation",
+    "exit": 1,
+    "counts": {
+      "tests": 615,
+      "pass": 614,
+      "fail": 1,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "log": "final-logs/workstation-js-test.log.gz"
+  },
+  {
+    "command": "just site-check",
+    "machine": "workstation",
+    "exit": 0,
+    "log": "final-logs/workstation-site-check.log.gz"
+  },
+  {
+    "command": "just relations",
+    "machine": "workstation",
+    "exit": 0,
+    "log": "final-logs/workstation-relations.log.gz"
+  },
+  {
+    "command": "just cpp-test-no-long-double",
+    "machine": "simbox",
+    "exit": 8,
+    "counts": {
+      "total": 135,
+      "failed": 2,
+      "passed": 133
+    },
+    "failed_shards": [
+      "distribution_bnbinom",
+      "distribution_sged"
+    ],
+    "assertion_failure_lines": [
+      "../../../univariateML-cpp/include/cppunivariate/distributions/bnbinom/test.cpp:373: ERROR: CHECK( a.logLik==b.logLik ) is NOT correct!",
+      "../../../univariateML-cpp/include/cppunivariate/distributions/sged/test.cpp:444: ERROR: CHECK( r.logLik==doctest::Approx(ll).epsilon(2e-8) ) is NOT correct!"
+    ],
+    "log": "final-logs/simbox-cpp-test-no-long-double.log.gz"
+  },
+  {
+    "command": "just test",
+    "machine": "simbox",
+    "exit": 1,
+    "counts": {
+      "fail": 3,
+      "warn": 0,
+      "skip": 154,
+      "pass": 25484
+    },
+    "failure_locations": [
+      "test-dist-sged.R:533:5"
+    ],
+    "log": "final-logs/simbox-test.log.gz"
+  },
+  {
+    "command": "just test-full",
+    "machine": "simbox",
+    "exit": 1,
+    "counts": {
+      "fail": 3,
+      "warn": 0,
+      "skip": 0,
+      "pass": 51623
+    },
+    "failure_locations": [
+      "test-dist-sged.R:533:5"
+    ],
+    "log": "final-logs/simbox-test-full.log.gz"
+  }
+]

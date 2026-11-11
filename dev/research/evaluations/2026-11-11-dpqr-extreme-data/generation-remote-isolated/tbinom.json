@@ -1,0 +1,43 @@
+{
+  "id": "tbinom",
+  "input_sha256": "2a38ff8d41f46d0e7b81964a2f7f1ec15158640fe02ad79ab72150ed03b1e549",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 60003,
+    "points": 8,
+    "values": 110,
+    "quantiles": 352
+  },
+  "after": {
+    "bytes": 66834,
+    "points": 9,
+    "values": 125,
+    "quantiles": 396
+  },
+  "records": [
+    {
+      "parameters": [
+        5e-09,
+        0.0,
+        10.0,
+        10.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.10338277199980439
+    },
+    {
+      "parameters": [
+        1e-08,
+        0.0,
+        10.0,
+        100000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "seconds": 120.00559499400015
+    }
+  ]
+}

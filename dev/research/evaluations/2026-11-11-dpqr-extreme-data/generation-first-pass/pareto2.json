@@ -1,0 +1,99 @@
+{
+  "id": "pareto2",
+  "before": {
+    "bytes": 61010,
+    "points": 7,
+    "values": 138,
+    "quantiles": 308
+  },
+  "after": {
+    "bytes": 130041,
+    "points": 15,
+    "values": 292,
+    "quantiles": 660
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0,
+        0.0
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: normalization quadrature error estimate 0.00000000001",
+      "seconds": 0.7383110229857266
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0,
+        0.0
+      ],
+      "status": "generated",
+      "seconds": 0.9452800280414522
+    },
+    {
+      "parameters": [
+        1.0,
+        1e-08,
+        0.0
+      ],
+      "status": "generated",
+      "seconds": 1.141007053956855
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0,
+        0.0
+      ],
+      "status": "generated",
+      "seconds": 1.0926828170195222
+    },
+    {
+      "parameters": [
+        1.0,
+        1.0,
+        -1.0
+      ],
+      "status": "generated",
+      "seconds": 1.2406343040056527
+    },
+    {
+      "parameters": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 1.334679852006957
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1000.0,
+        0.0
+      ],
+      "status": "generated",
+      "seconds": 1.0275363159598783
+    },
+    {
+      "parameters": [
+        100000000.0,
+        100000000.0,
+        -100000000.0
+      ],
+      "status": "generated",
+      "seconds": 1.1675998749560677
+    },
+    {
+      "parameters": [
+        100000000.0,
+        100000000.0,
+        0.0
+      ],
+      "status": "generated",
+      "seconds": 0.9481794599560089
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "id": "binom",
+  "input_sha256": "774ace8c6a0005c1fd19832f397ca62800a5f25a100accd2d4d5c927a923dae3",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 51615,
+    "points": 8,
+    "values": 116,
+    "quantiles": 352
+  },
+  "after": {
+    "bytes": 51615,
+    "points": 8,
+    "values": 116,
+    "quantiles": 352
+  },
+  "records": [
+    {
+      "parameters": [
+        100000000.0,
+        1e-08
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "seconds": 120.05849919599996
+    }
+  ]
+}

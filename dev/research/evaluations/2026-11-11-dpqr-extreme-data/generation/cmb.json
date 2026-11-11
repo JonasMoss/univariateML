@@ -1,0 +1,32 @@
+{
+  "id": "cmb",
+  "input_sha256": "871d5ac3ea33db99e6ad348ce179191edf97871e924d687366ed921e43f95381",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 112347,
+    "points": 15,
+    "values": 418,
+    "quantiles": 660
+  },
+  "after": {
+    "bytes": 112347,
+    "points": 15,
+    "values": 418,
+    "quantiles": 660
+  },
+  "records": [
+    {
+      "parameters": [
+        10000.0,
+        0.0001,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "seconds": 120.00024357000075
+    }
+  ],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

@@ -1,0 +1,40 @@
+{
+  "id": "paralogis",
+  "input_sha256": "b80292a372ab644e2c23f825a4b24af8e4f812a029c74e6e60e801f4f99b51bd",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 78343,
+    "points": 9,
+    "values": 180,
+    "quantiles": 396
+  },
+  "after": {
+    "bytes": 78343,
+    "points": 9,
+    "values": 180,
+    "quantiles": 396
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: normalization quadrature error estimate 0.00000000001",
+      "seconds": 1.817068348000248
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1000.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "seconds": 120.00786920500104
+    }
+  ],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

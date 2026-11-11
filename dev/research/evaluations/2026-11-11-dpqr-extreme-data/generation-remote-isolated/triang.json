@@ -1,0 +1,71 @@
+{
+  "id": "triang",
+  "input_sha256": "36824c4a67e2e5f9e3c0dac17026c4b1bdfa9983274148973f625371d4673402",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 61372,
+    "points": 7,
+    "values": 123,
+    "quantiles": 308
+  },
+  "after": {
+    "bytes": 101993,
+    "points": 12,
+    "values": 201,
+    "quantiles": 528
+  },
+  "records": [
+    {
+      "parameters": [
+        -1.0,
+        1.0,
+        0.5
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 2.810648114000287
+    },
+    {
+      "parameters": [
+        0.9999999999999999,
+        1.0000000000000002,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 4.129122777000248
+    },
+    {
+      "parameters": [
+        0.0,
+        1e-08,
+        1e-08
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 2.970879571000296
+    },
+    {
+      "parameters": [
+        0.0,
+        100000000.0,
+        0.5
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 2.711387100999673
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        5e-09
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 2.406524372000149
+    }
+  ]
+}

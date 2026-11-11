@@ -1,0 +1,189 @@
+{
+  "id": "gb2",
+  "before": {
+    "bytes": 77845,
+    "points": 9,
+    "values": 169,
+    "quantiles": 396
+  },
+  "after": {
+    "bytes": 209287,
+    "points": 24,
+    "values": 447,
+    "quantiles": 1056
+  },
+  "records": [
+    {
+      "parameters": [
+        2e-08,
+        1.0,
+        2.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 4.141046077013016
+    },
+    {
+      "parameters": [
+        200000000.0,
+        1.0,
+        2.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 2.2813476320006885
+    },
+    {
+      "parameters": [
+        2.0,
+        1e-08,
+        2.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 5.082897257991135
+    },
+    {
+      "parameters": [
+        2.0,
+        100000000.0,
+        2.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 1.386878560995683
+    },
+    {
+      "parameters": [
+        2.0,
+        1.0,
+        2e-08,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 4.026758068008348
+    },
+    {
+      "parameters": [
+        2.0,
+        1.0,
+        200000000.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 2.4456931999884546
+    },
+    {
+      "parameters": [
+        2.0,
+        1.0,
+        2.0,
+        1e-08
+      ],
+      "status": "generated",
+      "seconds": 1.5729269590228796
+    },
+    {
+      "parameters": [
+        2.0,
+        1.0,
+        2.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "seconds": 1.5398533740080893
+    },
+    {
+      "parameters": [
+        200000000.0,
+        1.0,
+        2.0,
+        1000.0
+      ],
+      "status": "generated",
+      "seconds": 2.3333418300026096
+    },
+    {
+      "parameters": [
+        2.0,
+        100000000.0,
+        2.0,
+        1000.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 30 seconds per point",
+      "seconds": 30.068223079957534
+    },
+    {
+      "parameters": [
+        2.0,
+        1.0,
+        200000000.0,
+        1000.0
+      ],
+      "status": "generated",
+      "seconds": 2.505680287955329
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0,
+        2.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "seconds": 2.3188859010115266
+    },
+    {
+      "parameters": [
+        2.0,
+        1.0,
+        100000000.0,
+        1e-08
+      ],
+      "status": "generated",
+      "seconds": 2.515365439001471
+    },
+    {
+      "parameters": [
+        100000000.0,
+        0.0001414213562373095,
+        100000000.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms.",
+      "seconds": 13.183063992997631
+    },
+    {
+      "parameters": [
+        1e-08,
+        100000000.0,
+        2.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 3.3937634880421683
+    },
+    {
+      "parameters": [
+        2.0,
+        100000000.0,
+        1e-08,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 3.279620894987602
+    },
+    {
+      "parameters": [
+        1e-08,
+        100000000.0,
+        1e-08,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 3.851215263013728
+    }
+  ]
+}

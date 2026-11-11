@@ -1,0 +1,58 @@
+{
+  "id": "fpareto",
+  "input_sha256": "862131da66a9edbcbf43ce08d41a328942a543ee4eb696bd50603cfc5999609d",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 208810,
+    "points": 24,
+    "values": 449,
+    "quantiles": 1056
+  },
+  "after": {
+    "bytes": 226447,
+    "points": 26,
+    "values": 491,
+    "quantiles": 1144
+  },
+  "records": [
+    {
+      "parameters": [
+        2.0,
+        100000000.0,
+        2.0,
+        1000.0,
+        0.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.6511584960007895
+    },
+    {
+      "parameters": [
+        100000000.0,
+        0.0001414213562373095,
+        100000000.0,
+        1.0,
+        0.0
+      ],
+      "status": "oracle gap",
+      "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms.",
+      "seconds": 22.595285105000585
+    },
+    {
+      "parameters": [
+        1e-08,
+        100000000.0,
+        2.0,
+        1.0,
+        0.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 2.886714144000507
+    }
+  ],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

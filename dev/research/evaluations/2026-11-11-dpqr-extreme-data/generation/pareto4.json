@@ -1,0 +1,44 @@
+{
+  "id": "pareto4",
+  "input_sha256": "eb1dc15f6a12cf0ea876b7aa3426bcc4e284141069035b472bb9f8be7d282ffb",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 152349,
+    "points": 18,
+    "values": 323,
+    "quantiles": 792
+  },
+  "after": {
+    "bytes": 152349,
+    "points": 18,
+    "values": 323,
+    "quantiles": 792
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0,
+        1.0,
+        0.0
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: normalization quadrature error estimate 0.00000000001",
+      "seconds": 1.3393494739993912
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0,
+        1000.0,
+        0.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "seconds": 120.00359373299943
+    }
+  ],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

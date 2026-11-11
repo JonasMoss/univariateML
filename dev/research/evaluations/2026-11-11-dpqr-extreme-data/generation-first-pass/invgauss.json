@@ -1,0 +1,49 @@
+{
+  "id": "invgauss",
+  "before": {
+    "bytes": 63618,
+    "points": 7,
+    "values": 147,
+    "quantiles": 308
+  },
+  "after": {
+    "bytes": 99996,
+    "points": 11,
+    "values": 231,
+    "quantiles": 484
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 2.4728750390349887
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 3.302884812990669
+    },
+    {
+      "parameters": [
+        1.0,
+        1e-08
+      ],
+      "status": "generated",
+      "seconds": 3.467444945999887
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "seconds": 2.219421281013638
+    }
+  ]
+}

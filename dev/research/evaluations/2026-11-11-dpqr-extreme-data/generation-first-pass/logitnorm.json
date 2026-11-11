@@ -1,0 +1,49 @@
+{
+  "id": "logitnorm",
+  "before": {
+    "bytes": 59663,
+    "points": 7,
+    "values": 128,
+    "quantiles": 308
+  },
+  "after": {
+    "bytes": 92085,
+    "points": 11,
+    "values": 197,
+    "quantiles": 484
+  },
+  "records": [
+    {
+      "parameters": [
+        -1.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 1.6445758449845016
+    },
+    {
+      "parameters": [
+        1.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 1.8040779970469885
+    },
+    {
+      "parameters": [
+        0.0,
+        1e-08
+      ],
+      "status": "generated",
+      "seconds": 1.372893845953513
+    },
+    {
+      "parameters": [
+        0.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "seconds": 5.906913647020701
+    }
+  ]
+}

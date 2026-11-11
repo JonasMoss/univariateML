@@ -1,0 +1,90 @@
+bbinom 0 verified 0.08
+bbinom 0 verified 0.02
+bbinom 0 verified 0.02
+bbinom 0 verified 0.02
+bbinom DONE 4
+binom DONE 0
+bnbinom 0 verified 0.23
+bnbinom 0 verified 0.22
+bnbinom 0 verified 0.11
+bnbinom 0 verified 0.22
+bnbinom DONE 6
+betapr 0 verified 1.76
+burr 0 verified 0.45
+bhatt 0 verified 2.04
+beta 0 verified 2.1
+betapr 0 verified 0.91
+beta 0 verified 0.9
+bhatt 0 verified 2.37
+betapr 0 verified 1.99
+beta 0 verified 1.61
+beta DONE 4
+betapr 0 verified 1.04
+cauchy 0 verified 1.0
+bhatt 0 verified 1.9
+betapr 0 verified 0.6
+cauchy 0 verified 0.71
+cauchy DONE 2
+cmb 0 verified 0.05
+cmb DONE 1
+cmp 0 verified 0.04
+betapr 0 verified 0.59
+betapr DONE 6
+bhatt 0 verified 1.78
+dgamma 0 verified 1.83
+dgamma 0 verified 0.35
+dgamma 0 verified 0.04
+dgamma DONE 4
+dlaplace DONE 0
+dnorm 0 verified 0.08
+bhatt 0 verified 1.89
+bhatt 0 verified 2.1
+bhatt DONE 6
+dunif DONE 0
+dweibull 0 verified 0.06
+cmp 0 verified 0.02
+cmp DONE 4
+emg 0 verified 1.91
+emg 0 verified 1.68
+emg 0 verified 2.26
+emg 0 verified 1.74
+emg DONE 4
+exp 0 verified 0.35
+exp 0 verified 0.33
+exp DONE 2
+expweibull 0 verified 0.25
+expweibull 0 verified 0.27
+expweibull 0 verified 0.34
+burr 0 verified 1.01
+burr 0 verified 0.63
+burr DONE 6
+fatigue 0 verified 1.16
+fatigue 0 verified 1.22
+fatigue 0 verified 1.04
+dnorm DONE 2
+fatigue 0 verified 2.18
+fatigue 0 verified 0.79
+foldnorm 0 verified 1.46
+fatigue 0 verified 1.01
+fatigue DONE 6
+dweibull DONE 2
+frechet 0 verified 0.49
+foldnorm 0 verified 2.14
+frechet 0 verified 0.38
+frechet 0 verified 0.38
+fpareto 0 verified 2.22
+frechet 0 verified 0.43
+frechet 0 verified 0.42
+frechet DONE 6
+foldnorm 0 verified 1.65
+fpareto 0 verified 1.11
+fpareto 0 verified 0.41
+fpareto 0 verified 0.88
+foldnorm 0 verified 1.69
+foldnorm DONE 4
+fpareto 0 verified 2.22
+gb2 0 verified 2.51
+fpareto 0 verified 1.25
+fpareto 0 verified 0.88
+gb2 0 verified 2.77
+simbox-run: connection lost; rerun locally

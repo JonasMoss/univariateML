@@ -1,0 +1,92 @@
+[
+  {
+    "family": "sstd",
+    "category": "values",
+    "parameters": [
+      0.0,
+      1.0,
+      5.0,
+      1e-08
+    ],
+    "input": [
+      1.0842995114720497
+    ],
+    "reason": "TASK-189 open: Extreme skew loses centered residuals; an independent moment expansion with retained low-order centering terms remains needed. Measured worst normalized error 1.556058392958068e-09.",
+    "failed_checks": 2
+  },
+  {
+    "family": "sstd",
+    "category": "values",
+    "parameters": [
+      0.0,
+      1.0,
+      5.0,
+      1e-08
+    ],
+    "input": [
+      1.0843010163861502
+    ],
+    "reason": "TASK-189 open: Extreme skew loses centered residuals; an independent moment expansion with retained low-order centering terms remains needed. Measured worst normalized error 0.0016020437710611737.",
+    "failed_checks": 2
+  },
+  {
+    "family": "sstd",
+    "category": "values",
+    "parameters": [
+      0.0,
+      1.0,
+      5.0,
+      1e-08
+    ],
+    "input": [
+      1.0843010163877849
+    ],
+    "reason": "TASK-189 open: Extreme skew loses centered residuals; an independent moment expansion with retained low-order centering terms remains needed. Measured worst normalized error 0.0013170572240234152.",
+    "failed_checks": 3
+  },
+  {
+    "family": "sstd",
+    "category": "values",
+    "parameters": [
+      0.0,
+      1.0,
+      5.0,
+      100000000.0
+    ],
+    "input": [
+      -1.0843010163877849
+    ],
+    "reason": "TASK-189 open: Extreme skew loses centered residuals; an independent moment expansion with retained low-order centering terms remains needed. Measured worst normalized error 0.009723403742213073.",
+    "failed_checks": 3
+  },
+  {
+    "family": "sstd",
+    "category": "values",
+    "parameters": [
+      0.0,
+      1.0,
+      5.0,
+      100000000.0
+    ],
+    "input": [
+      -1.0843010163861502
+    ],
+    "reason": "TASK-189 open: Extreme skew loses centered residuals; an independent moment expansion with retained low-order centering terms remains needed. Measured worst normalized error 0.0014910260317823683.",
+    "failed_checks": 2
+  },
+  {
+    "family": "sstd",
+    "category": "values",
+    "parameters": [
+      0.0,
+      1.0,
+      5.0,
+      100000000.0
+    ],
+    "input": [
+      -1.0842995114720497
+    ],
+    "reason": "TASK-189 open: Extreme skew loses centered residuals; an independent moment expansion with retained low-order centering terms remains needed. Measured worst normalized error 1.4450377845570172e-09.",
+    "failed_checks": 2
+  }
+]

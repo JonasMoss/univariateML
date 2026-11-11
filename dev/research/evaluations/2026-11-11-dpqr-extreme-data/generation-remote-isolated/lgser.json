@@ -1,0 +1,37 @@
+{
+  "id": "lgser",
+  "input_sha256": "9bca52c9d8a3102c2be4c2f7af9a92e3981d39ba78587d7b5cd80bf8252be82f",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 143974,
+    "points": 5,
+    "values": 1047,
+    "quantiles": 220
+  },
+  "after": {
+    "bytes": 170110,
+    "points": 6,
+    "values": 1253,
+    "quantiles": 264
+  },
+  "records": [
+    {
+      "parameters": [
+        5e-09
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 28.71930439100015
+    },
+    {
+      "parameters": [
+        0.9999999999999999
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: positive series did not reach certified remainder",
+      "seconds": 10.897538888999861
+    }
+  ]
+}

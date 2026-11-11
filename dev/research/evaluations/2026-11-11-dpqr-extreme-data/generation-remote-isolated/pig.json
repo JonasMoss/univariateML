@@ -1,0 +1,6 @@
+{
+  "id": "pig",
+  "status": "worker failed",
+  "exit": 1,
+  "reason": "isolated reference worker failed; no success inferred"
+}

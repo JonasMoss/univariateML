@@ -1,0 +1,21 @@
+{
+  "id": "gompertz",
+  "input_sha256": "5bddeb2ebac9734974b007165707d27968635e8c59c56cea5ab403167e39879b",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 89603,
+    "points": 10,
+    "values": 210,
+    "quantiles": 440
+  },
+  "after": {
+    "bytes": 89603,
+    "points": 10,
+    "values": 210,
+    "quantiles": 440
+  },
+  "records": [],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

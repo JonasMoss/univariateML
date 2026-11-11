@@ -1,0 +1,57 @@
+{
+  "id": "nbinom",
+  "input_sha256": "26cd0ae8eb826fcdc97f3361b031397ddbbb163942582a33c15cf50d4e838f5e",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 213725,
+    "points": 9,
+    "values": 1479,
+    "quantiles": 396
+  },
+  "after": {
+    "bytes": 271910,
+    "points": 11,
+    "values": 1893,
+    "quantiles": 484
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        0.5
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.3798016910000115
+    },
+    {
+      "parameters": [
+        100000000.0,
+        0.5
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: positive series did not reach certified remainder",
+      "seconds": 18.643573146000108
+    },
+    {
+      "parameters": [
+        1.0,
+        5e-09
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: positive series did not reach certified remainder",
+      "seconds": 22.2594785590004
+    },
+    {
+      "parameters": [
+        100000000.0,
+        0.9999999900000001
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.10874603100000968
+    }
+  ]
+}

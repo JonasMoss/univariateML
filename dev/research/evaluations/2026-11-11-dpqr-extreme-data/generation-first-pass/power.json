@@ -1,0 +1,50 @@
+{
+  "id": "power",
+  "before": {
+    "bytes": 43182,
+    "points": 5,
+    "values": 88,
+    "quantiles": 220
+  },
+  "after": {
+    "bytes": 67526,
+    "points": 8,
+    "values": 141,
+    "quantiles": 352
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 3.785885752993636
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 3.004723043006379
+    },
+    {
+      "parameters": [
+        1.0,
+        1e-08
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: normalization quadrature error estimate 0.00000000001",
+      "seconds": 1.383155272982549
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "seconds": 1.958078724972438
+    }
+  ]
+}

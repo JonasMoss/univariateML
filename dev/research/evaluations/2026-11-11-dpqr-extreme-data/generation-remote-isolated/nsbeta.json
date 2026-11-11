@@ -1,0 +1,109 @@
+{
+  "id": "nsbeta",
+  "input_sha256": "2ac5e7aea497dc911f9728df046b9e540735347d7b5d5855c914106f502dd102",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 59166,
+    "points": 7,
+    "values": 129,
+    "quantiles": 308
+  },
+  "after": {
+    "bytes": 119870,
+    "points": 15,
+    "values": 241,
+    "quantiles": 660
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0,
+        0.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 7.534223777999614
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0,
+        0.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 2.794745282999884
+    },
+    {
+      "parameters": [
+        1.0,
+        1e-08,
+        0.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 8.36951857000031
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0,
+        0.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 2.506458104000103
+    },
+    {
+      "parameters": [
+        1.0,
+        1.0,
+        -1.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 2.580059097999765
+    },
+    {
+      "parameters": [
+        1.0,
+        1.0,
+        0.9999999999999999,
+        1.0000000000000002
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 3.9816398709999703
+    },
+    {
+      "parameters": [
+        1.0,
+        1.0,
+        0.0,
+        1e-08
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 2.3845159460001923
+    },
+    {
+      "parameters": [
+        1.0,
+        1.0,
+        0.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 2.3083951399999023
+    }
+  ]
+}

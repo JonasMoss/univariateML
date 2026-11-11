@@ -1,0 +1,42 @@
+{
+  "id": "zmnbinom",
+  "input_sha256": "f1a4a5d927040d1fc6e32d6469ccb0fb92a80114861f61fe813f3cddcd6ae972",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 416706,
+    "points": 16,
+    "values": 2924,
+    "quantiles": 704
+  },
+  "after": {
+    "bytes": 416706,
+    "points": 16,
+    "values": 2924,
+    "quantiles": 704
+  },
+  "records": [
+    {
+      "parameters": [
+        100000000.0,
+        0.5,
+        0.5
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: positive series did not reach certified remainder",
+      "seconds": 24.001721214999634
+    },
+    {
+      "parameters": [
+        1.0,
+        5e-09,
+        0.5
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: positive series did not reach certified remainder",
+      "seconds": 27.221089746999496
+    }
+  ],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

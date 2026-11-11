@@ -1,0 +1,611 @@
+{
+  "commit": "bcea25d29800d4ddf058182c1749584b704cba3b",
+  "families": {
+    "bbinom": {
+      "bytes": 52564,
+      "points": 8,
+      "values": 116,
+      "quantiles": 352
+    },
+    "beta": {
+      "bytes": 58974,
+      "points": 7,
+      "values": 129,
+      "quantiles": 308
+    },
+    "betapr": {
+      "bytes": 80743,
+      "points": 9,
+      "values": 183,
+      "quantiles": 396
+    },
+    "bhatt": {
+      "bytes": 87744,
+      "points": 10,
+      "values": 190,
+      "quantiles": 440
+    },
+    "binom": {
+      "bytes": 44759,
+      "points": 7,
+      "values": 100,
+      "quantiles": 308
+    },
+    "bnbinom": {
+      "bytes": 266131,
+      "points": 9,
+      "values": 1897,
+      "quantiles": 396
+    },
+    "burr": {
+      "bytes": 78891,
+      "points": 9,
+      "values": 181,
+      "quantiles": 396
+    },
+    "cauchy": {
+      "bytes": 52758,
+      "points": 6,
+      "values": 114,
+      "quantiles": 264
+    },
+    "cmb": {
+      "bytes": 84908,
+      "points": 11,
+      "values": 354,
+      "quantiles": 484
+    },
+    "cmp": {
+      "bytes": 217757,
+      "points": 9,
+      "values": 1670,
+      "quantiles": 396
+    },
+    "dgamma": {
+      "bytes": 196777,
+      "points": 7,
+      "values": 1456,
+      "quantiles": 308
+    },
+    "dlaplace": {
+      "bytes": 145262,
+      "points": 5,
+      "values": 1049,
+      "quantiles": 220
+    },
+    "dnorm": {
+      "bytes": 157534,
+      "points": 6,
+      "values": 1236,
+      "quantiles": 264
+    },
+    "dunif": {
+      "bytes": 24243,
+      "points": 4,
+      "values": 38,
+      "quantiles": 176
+    },
+    "dweibull": {
+      "bytes": 193376,
+      "points": 7,
+      "values": 1456,
+      "quantiles": 308
+    },
+    "emg": {
+      "bytes": 70792,
+      "points": 8,
+      "values": 152,
+      "quantiles": 352
+    },
+    "exp": {
+      "bytes": 35887,
+      "points": 4,
+      "values": 84,
+      "quantiles": 176
+    },
+    "expweibull": {
+      "bytes": 102756,
+      "points": 12,
+      "values": 228,
+      "quantiles": 528
+    },
+    "fatigue": {
+      "bytes": 63278,
+      "points": 7,
+      "values": 147,
+      "quantiles": 308
+    },
+    "foldnorm": {
+      "bytes": 71845,
+      "points": 8,
+      "values": 168,
+      "quantiles": 352
+    },
+    "fpareto": {
+      "bytes": 61067,
+      "points": 7,
+      "values": 133,
+      "quantiles": 308
+    },
+    "frechet": {
+      "bytes": 64330,
+      "points": 7,
+      "values": 143,
+      "quantiles": 308
+    },
+    "gamma": {
+      "bytes": 62789,
+      "points": 7,
+      "values": 145,
+      "quantiles": 308
+    },
+    "gb2": {
+      "bytes": 77845,
+      "points": 9,
+      "values": 169,
+      "quantiles": 396
+    },
+    "ged": {
+      "bytes": 79616,
+      "points": 9,
+      "values": 171,
+      "quantiles": 396
+    },
+    "genbeta": {
+      "bytes": 70485,
+      "points": 9,
+      "values": 139,
+      "quantiles": 396
+    },
+    "gengamma": {
+      "bytes": 117396,
+      "points": 13,
+      "values": 267,
+      "quantiles": 572
+    },
+    "geom": {
+      "bytes": 119274,
+      "points": 5,
+      "values": 838,
+      "quantiles": 220
+    },
+    "gev": {
+      "bytes": 82502,
+      "points": 9,
+      "values": 180,
+      "quantiles": 396
+    },
+    "gompertz": {
+      "bytes": 53479,
+      "points": 6,
+      "values": 126,
+      "quantiles": 264
+    },
+    "gpd": {
+      "bytes": 79181,
+      "points": 9,
+      "values": 186,
+      "quantiles": 396
+    },
+    "gumbel": {
+      "bytes": 62219,
+      "points": 7,
+      "values": 133,
+      "quantiles": 308
+    },
+    "hcauchy": {
+      "bytes": 36224,
+      "points": 4,
+      "values": 84,
+      "quantiles": 176
+    },
+    "hnorm": {
+      "bytes": 45395,
+      "points": 5,
+      "values": 93,
+      "quantiles": 220
+    },
+    "ht": {
+      "bytes": 63664,
+      "points": 7,
+      "values": 145,
+      "quantiles": 308
+    },
+    "huber": {
+      "bytes": 53213,
+      "points": 6,
+      "values": 114,
+      "quantiles": 264
+    },
+    "hyper": {
+      "bytes": 39461,
+      "points": 7,
+      "values": 47,
+      "quantiles": 308
+    },
+    "invburr": {
+      "bytes": 78805,
+      "points": 9,
+      "values": 181,
+      "quantiles": 396
+    },
+    "invexp": {
+      "bytes": 35923,
+      "points": 4,
+      "values": 82,
+      "quantiles": 176
+    },
+    "invgamma": {
+      "bytes": 62931,
+      "points": 7,
+      "values": 143,
+      "quantiles": 308
+    },
+    "invgauss": {
+      "bytes": 63618,
+      "points": 7,
+      "values": 147,
+      "quantiles": 308
+    },
+    "invparalogis": {
+      "bytes": 51461,
+      "points": 6,
+      "values": 117,
+      "quantiles": 264
+    },
+    "invpareto": {
+      "bytes": 61642,
+      "points": 7,
+      "values": 143,
+      "quantiles": 308
+    },
+    "invtrgamma": {
+      "bytes": 81383,
+      "points": 9,
+      "values": 185,
+      "quantiles": 396
+    },
+    "invweibull": {
+      "bytes": 63389,
+      "points": 7,
+      "values": 143,
+      "quantiles": 308
+    },
+    "kumar": {
+      "bytes": 59026,
+      "points": 7,
+      "values": 129,
+      "quantiles": 308
+    },
+    "laplace": {
+      "bytes": 52852,
+      "points": 6,
+      "values": 114,
+      "quantiles": 264
+    },
+    "lgamma": {
+      "bytes": 58849,
+      "points": 7,
+      "values": 126,
+      "quantiles": 308
+    },
+    "lgser": {
+      "bytes": 143974,
+      "points": 5,
+      "values": 1047,
+      "quantiles": 220
+    },
+    "llogis": {
+      "bytes": 59697,
+      "points": 7,
+      "values": 139,
+      "quantiles": 308
+    },
+    "lnorm": {
+      "bytes": 54824,
+      "points": 6,
+      "values": 126,
+      "quantiles": 264
+    },
+    "logis": {
+      "bytes": 52680,
+      "points": 6,
+      "values": 114,
+      "quantiles": 264
+    },
+    "logitnorm": {
+      "bytes": 59663,
+      "points": 7,
+      "values": 128,
+      "quantiles": 308
+    },
+    "lomax": {
+      "bytes": 61127,
+      "points": 7,
+      "values": 143,
+      "quantiles": 308
+    },
+    "lst": {
+      "bytes": 79604,
+      "points": 9,
+      "values": 167,
+      "quantiles": 396
+    },
+    "naka": {
+      "bytes": 63060,
+      "points": 7,
+      "values": 146,
+      "quantiles": 308
+    },
+    "nbinom": {
+      "bytes": 213725,
+      "points": 9,
+      "values": 1479,
+      "quantiles": 396
+    },
+    "nhyper": {
+      "bytes": 42686,
+      "points": 7,
+      "values": 74,
+      "quantiles": 308
+    },
+    "norm": {
+      "bytes": 53012,
+      "points": 6,
+      "values": 114,
+      "quantiles": 264
+    },
+    "nsbeta": {
+      "bytes": 59166,
+      "points": 7,
+      "values": 129,
+      "quantiles": 308
+    },
+    "paralogis": {
+      "bytes": 51533,
+      "points": 6,
+      "values": 117,
+      "quantiles": 264
+    },
+    "pareto": {
+      "bytes": 43068,
+      "points": 5,
+      "values": 85,
+      "quantiles": 220
+    },
+    "pareto2": {
+      "bytes": 61010,
+      "points": 7,
+      "values": 138,
+      "quantiles": 308
+    },
+    "pareto3": {
+      "bytes": 61066,
+      "points": 7,
+      "values": 141,
+      "quantiles": 308
+    },
+    "pareto4": {
+      "bytes": 76360,
+      "points": 9,
+      "values": 162,
+      "quantiles": 396
+    },
+    "pig": {
+      "bytes": 204997,
+      "points": 8,
+      "values": 1465,
+      "quantiles": 352
+    },
+    "pois": {
+      "bytes": 137953,
+      "points": 6,
+      "values": 1035,
+      "quantiles": 264
+    },
+    "power": {
+      "bytes": 43182,
+      "points": 5,
+      "values": 88,
+      "quantiles": 220
+    },
+    "rayleigh": {
+      "bytes": 45446,
+      "points": 5,
+      "values": 105,
+      "quantiles": 220
+    },
+    "sged": {
+      "bytes": 80319,
+      "points": 9,
+      "values": 171,
+      "quantiles": 396
+    },
+    "sgomp": {
+      "bytes": 71733,
+      "points": 8,
+      "values": 168,
+      "quantiles": 352
+    },
+    "skellam": {
+      "bytes": 245529,
+      "points": 10,
+      "values": 1771,
+      "quantiles": 440
+    },
+    "slash": {
+      "bytes": 53258,
+      "points": 6,
+      "values": 114,
+      "quantiles": 264
+    },
+    "sn": {
+      "bytes": 79563,
+      "points": 9,
+      "values": 171,
+      "quantiles": 396
+    },
+    "snorm": {
+      "bytes": 80197,
+      "points": 9,
+      "values": 171,
+      "quantiles": 396
+    },
+    "sstd": {
+      "bytes": 80895,
+      "points": 9,
+      "values": 171,
+      "quantiles": 396
+    },
+    "st": {
+      "bytes": 71295,
+      "points": 8,
+      "values": 152,
+      "quantiles": 352
+    },
+    "std": {
+      "bytes": 80153,
+      "points": 9,
+      "values": 171,
+      "quantiles": 396
+    },
+    "tbinom": {
+      "bytes": 60003,
+      "points": 8,
+      "values": 110,
+      "quantiles": 352
+    },
+    "tlambda": {
+      "bytes": 72057,
+      "points": 8,
+      "values": 152,
+      "quantiles": 352
+    },
+    "tnorm": {
+      "bytes": 53164,
+      "points": 6,
+      "values": 114,
+      "quantiles": 264
+    },
+    "tpois": {
+      "bytes": 47579,
+      "points": 6,
+      "values": 79,
+      "quantiles": 264
+    },
+    "trgamma": {
+      "bytes": 80799,
+      "points": 9,
+      "values": 187,
+      "quantiles": 396
+    },
+    "triang": {
+      "bytes": 61372,
+      "points": 7,
+      "values": 123,
+      "quantiles": 308
+    },
+    "unif": {
+      "bytes": 16831,
+      "points": 2,
+      "values": 33,
+      "quantiles": 88
+    },
+    "weibull": {
+      "bytes": 62473,
+      "points": 7,
+      "values": 145,
+      "quantiles": 308
+    },
+    "yulesimon": {
+      "bytes": 147811,
+      "points": 5,
+      "values": 1051,
+      "quantiles": 220
+    },
+    "zeta": {
+      "bytes": 118218,
+      "points": 4,
+      "values": 842,
+      "quantiles": 176
+    },
+    "zib": {
+      "bytes": 76449,
+      "points": 12,
+      "values": 168,
+      "quantiles": 528
+    },
+    "zinb": {
+      "bytes": 304251,
+      "points": 13,
+      "values": 2095,
+      "quantiles": 572
+    },
+    "zip": {
+      "bytes": 189093,
+      "points": 8,
+      "values": 1447,
+      "quantiles": 352
+    },
+    "zipf": {
+      "bytes": 41833,
+      "points": 7,
+      "values": 66,
+      "quantiles": 308
+    },
+    "zmbinom": {
+      "bytes": 76887,
+      "points": 12,
+      "values": 171,
+      "quantiles": 528
+    },
+    "zmgeom": {
+      "bytes": 240855,
+      "points": 10,
+      "values": 1677,
+      "quantiles": 440
+    },
+    "zmlogarithmic": {
+      "bytes": 240950,
+      "points": 10,
+      "values": 1676,
+      "quantiles": 440
+    },
+    "zmnbinom": {
+      "bytes": 328522,
+      "points": 13,
+      "values": 2302,
+      "quantiles": 572
+    },
+    "zmpois": {
+      "bytes": 222489,
+      "points": 10,
+      "values": 1660,
+      "quantiles": 440
+    },
+    "ztbinom": {
+      "bytes": 49776,
+      "points": 8,
+      "values": 101,
+      "quantiles": 352
+    },
+    "ztgeom": {
+      "bytes": 148369,
+      "points": 6,
+      "values": 1046,
+      "quantiles": 264
+    },
+    "ztnbinom": {
+      "bytes": 235682,
+      "points": 9,
+      "values": 1671,
+      "quantiles": 396
+    },
+    "ztpois": {
+      "bytes": 138318,
+      "points": 6,
+      "values": 1035,
+      "quantiles": 264
+    }
+  }
+}

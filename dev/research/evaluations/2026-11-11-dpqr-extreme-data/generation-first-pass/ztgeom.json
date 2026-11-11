@@ -1,0 +1,25 @@
+{
+  "id": "ztgeom",
+  "before": {
+    "bytes": 148369,
+    "points": 6,
+    "values": 1046,
+    "quantiles": 264
+  },
+  "after": {
+    "bytes": 148546,
+    "points": 6,
+    "values": 1046,
+    "quantiles": 264
+  },
+  "records": [
+    {
+      "parameters": [
+        5e-09
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: positive series did not reach certified remainder",
+      "seconds": 7.89593156700721
+    }
+  ]
+}

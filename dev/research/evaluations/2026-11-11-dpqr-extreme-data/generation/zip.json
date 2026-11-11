@@ -1,0 +1,31 @@
+{
+  "id": "zip",
+  "input_sha256": "8d94cf6e61b080abbe2db469c407c3e18dd19f6bd5b7ced1795022d0321581e8",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 243755,
+    "points": 10,
+    "values": 1859,
+    "quantiles": 440
+  },
+  "after": {
+    "bytes": 243755,
+    "points": 10,
+    "values": 1859,
+    "quantiles": 440
+  },
+  "records": [
+    {
+      "parameters": [
+        100000000.0,
+        0.5
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: positive series did not reach certified remainder",
+      "seconds": 14.873806661000344
+    }
+  ],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

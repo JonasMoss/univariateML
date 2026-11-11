@@ -1,0 +1,1987 @@
+{
+  "baseline": "bcea25d29800d4ddf058182c1749584b704cba3b",
+  "ranking": [
+    {
+      "family": "bnbinom",
+      "before": 481,
+      "after": 0,
+      "active_after": 0,
+      "worst_before": 8.910000089100002e-06,
+      "worst_after": 0.0
+    },
+    {
+      "family": "tbinom",
+      "before": 224,
+      "after": 104,
+      "active_after": 0,
+      "worst_before": "Inf",
+      "worst_after": "Inf"
+    },
+    {
+      "family": "fpareto",
+      "before": 190,
+      "after": 0,
+      "active_after": 0,
+      "worst_before": "Inf",
+      "worst_after": 0.0
+    },
+    {
+      "family": "ztnbinom",
+      "before": 181,
+      "after": 0,
+      "active_after": 0,
+      "worst_before": 1.9878429772680428e-07,
+      "worst_after": 0.0
+    },
+    {
+      "family": "nbinom",
+      "before": 180,
+      "after": 0,
+      "active_after": 0,
+      "worst_before": 1.987842976157099e-07,
+      "worst_after": 0.0
+    },
+    {
+      "family": "zinb",
+      "before": 180,
+      "after": 0,
+      "active_after": 0,
+      "worst_before": 1.9878441152098656e-07,
+      "worst_after": 0.0
+    },
+    {
+      "family": "zmnbinom",
+      "before": 180,
+      "after": 0,
+      "active_after": 0,
+      "worst_before": 1.9878429772679335e-07,
+      "worst_after": 0.0
+    },
+    {
+      "family": "fatigue",
+      "before": 131,
+      "after": 0,
+      "active_after": 0,
+      "worst_before": 782295313.392863,
+      "worst_after": 0.0
+    },
+    {
+      "family": "weibull",
+      "before": 121,
+      "after": 0,
+      "active_after": 0,
+      "worst_before": 0.06181547327985707,
+      "worst_after": 0.0
+    },
+    {
+      "family": "tpois",
+      "before": 104,
+      "after": 104,
+      "active_after": 0,
+      "worst_before": "Inf",
+      "worst_after": "Inf"
+    },
+    {
+      "family": "betapr",
+      "before": 97,
+      "after": 0,
+      "active_after": 0,
+      "worst_before": 1.7395564138875918e-08,
+      "worst_after": 0.0
+    },
+    {
+      "family": "pareto3",
+      "before": 93,
+      "after": 0,
+      "active_after": 0,
+      "worst_before": 3855332572.5231376,
+      "worst_after": 0.0
+    },
+    {
+      "family": "gb2",
+      "before": 77,
+      "after": 0,
+      "active_after": 0,
+      "worst_before": "Inf",
+      "worst_after": 0.0
+    },
+    {
+      "family": "llogis",
+      "before": 70,
+      "after": 0,
+      "active_after": 0,
+      "worst_before": 0.00010375166279282873,
+      "worst_after": 0.0
+    },
+    {
+      "family": "sged",
+      "before": 64,
+      "after": 2,
+      "active_after": 0,
+      "worst_before": 6.886122573232457,
+      "worst_after": "Inf"
+    },
+    {
+      "family": "bbinom",
+      "before": 54,
+      "after": 0,
+      "active_after": 0,
+      "worst_before": 1.0,
+      "worst_after": 0.0
+    },
+    {
+      "family": "nsbeta",
+      "before": 30,
+      "after": 0,
+      "active_after": 0,
+      "worst_before": 1.0,
+      "worst_after": 0.0
+    },
+    {
+      "family": "beta",
+      "before": 28,
+      "after": 0,
+      "active_after": 0,
+      "worst_before": 1.7395109401809153e-08,
+      "worst_after": 0.0
+    },
+    {
+      "family": "snorm",
+      "before": 26,
+      "after": 0,
+      "active_after": 0,
+      "worst_before": 5.10399349718396e+25,
+      "worst_after": 0.0
+    },
+    {
+      "family": "invtrgamma",
+      "before": 25,
+      "after": 0,
+      "active_after": 0,
+      "worst_before": "Inf",
+      "worst_after": 0.0
+    },
+    {
+      "family": "sstd",
+      "before": 23,
+      "after": 0,
+      "active_after": 0,
+      "worst_before": "Inf",
+      "worst_after": 0.0
+    },
+    {
+      "family": "trgamma",
+      "before": 23,
+      "after": 0,
+      "active_after": 0,
+      "worst_before": "Inf",
+      "worst_after": 0.0
+    },
+    {
+      "family": "bhatt",
+      "before": 18,
+      "after": 0,
+      "active_after": 0,
+      "worst_before": 4.1843478936703805e-08,
+      "worst_after": 0.0
+    },
+    {
+      "family": "genbeta",
+      "before": 13,
+      "after": 0,
+      "active_after": 0,
+      "worst_before": "Inf",
+      "worst_after": 0.0
+    },
+    {
+      "family": "emg",
+      "before": 8,
+      "after": 0,
+      "active_after": 0,
+      "worst_before": 9.625923449441132e-07,
+      "worst_after": 0.0
+    },
+    {
+      "family": "huber",
+      "before": 8,
+      "after": 0,
+      "active_after": 0,
+      "worst_before": 0.7330465793705098,
+      "worst_after": 0.0
+    },
+    {
+      "family": "tnorm",
+      "before": 7,
+      "after": 0,
+      "active_after": 0,
+      "worst_before": "Inf",
+      "worst_after": 0.0
+    },
+    {
+      "family": "pareto4",
+      "before": 4,
+      "after": 0,
+      "active_after": 0,
+      "worst_before": 1.0,
+      "worst_after": 0.0
+    },
+    {
+      "family": "cmb",
+      "before": 3,
+      "after": 0,
+      "active_after": 0,
+      "worst_before": 1.0,
+      "worst_after": 0.0
+    },
+    {
+      "family": "invburr",
+      "before": 3,
+      "after": 0,
+      "active_after": 0,
+      "worst_before": "Inf",
+      "worst_after": 0.0
+    },
+    {
+      "family": "burr",
+      "before": 2,
+      "after": 0,
+      "active_after": 0,
+      "worst_before": 4.638093665380917e-09,
+      "worst_after": 0.0
+    },
+    {
+      "family": "hcauchy",
+      "before": 2,
+      "after": 0,
+      "active_after": 0,
+      "worst_before": 1.0,
+      "worst_after": 0.0
+    },
+    {
+      "family": "hyper",
+      "before": 2,
+      "after": 0,
+      "active_after": 0,
+      "worst_before": 0.25,
+      "worst_after": 0.0
+    },
+    {
+      "family": "logitnorm",
+      "before": 2,
+      "after": 0,
+      "active_after": 0,
+      "worst_before": 1.4532470803432838e-09,
+      "worst_after": 0.0
+    },
+    {
+      "family": "pareto2",
+      "before": 2,
+      "after": 0,
+      "active_after": 0,
+      "worst_before": 1.0,
+      "worst_after": 0.0
+    },
+    {
+      "family": "triang",
+      "before": 2,
+      "after": 0,
+      "active_after": 0,
+      "worst_before": 4.59447382487074e-09,
+      "worst_after": 0.0
+    },
+    {
+      "family": "unif",
+      "before": 2,
+      "after": 0,
+      "active_after": 0,
+      "worst_before": 1.0,
+      "worst_after": 0.0
+    },
+    {
+      "family": "expweibull",
+      "before": 1,
+      "after": 0,
+      "active_after": 0,
+      "worst_before": 2.6568613851786684e-10,
+      "worst_after": 0.0
+    }
+  ],
+  "before": {
+    "checks": 336560,
+    "failures": 2661,
+    "active_failures": 2447,
+    "ranked": [
+      [
+        "bnbinom",
+        481
+      ],
+      [
+        "tbinom",
+        224
+      ],
+      [
+        "fpareto",
+        190
+      ],
+      [
+        "ztnbinom",
+        181
+      ],
+      [
+        "nbinom",
+        180
+      ],
+      [
+        "zinb",
+        180
+      ],
+      [
+        "zmnbinom",
+        180
+      ],
+      [
+        "fatigue",
+        131
+      ],
+      [
+        "weibull",
+        121
+      ],
+      [
+        "tpois",
+        104
+      ],
+      [
+        "betapr",
+        97
+      ],
+      [
+        "pareto3",
+        93
+      ],
+      [
+        "gb2",
+        77
+      ],
+      [
+        "llogis",
+        70
+      ],
+      [
+        "sged",
+        64
+      ],
+      [
+        "bbinom",
+        54
+      ],
+      [
+        "nsbeta",
+        30
+      ],
+      [
+        "beta",
+        28
+      ],
+      [
+        "snorm",
+        26
+      ],
+      [
+        "invtrgamma",
+        25
+      ],
+      [
+        "sstd",
+        23
+      ],
+      [
+        "trgamma",
+        23
+      ],
+      [
+        "bhatt",
+        18
+      ],
+      [
+        "genbeta",
+        13
+      ],
+      [
+        "emg",
+        8
+      ],
+      [
+        "huber",
+        8
+      ],
+      [
+        "tnorm",
+        7
+      ],
+      [
+        "pareto4",
+        4
+      ],
+      [
+        "cmb",
+        3
+      ],
+      [
+        "invburr",
+        3
+      ],
+      [
+        "burr",
+        2
+      ],
+      [
+        "hcauchy",
+        2
+      ],
+      [
+        "hyper",
+        2
+      ],
+      [
+        "logitnorm",
+        2
+      ],
+      [
+        "pareto2",
+        2
+      ],
+      [
+        "triang",
+        2
+      ],
+      [
+        "unif",
+        2
+      ],
+      [
+        "expweibull",
+        1
+      ]
+    ]
+  },
+  "after": {
+    "checks": 336560,
+    "failures": 210,
+    "active_failures": 0,
+    "ranked": [
+      [
+        "tbinom",
+        104
+      ],
+      [
+        "tpois",
+        104
+      ],
+      [
+        "sged",
+        2
+      ]
+    ]
+  },
+  "after_double": {
+    "checks": 336560,
+    "failures": 210,
+    "active_failures": 0,
+    "ranked": [
+      [
+        "tbinom",
+        104
+      ],
+      [
+        "tpois",
+        104
+      ],
+      [
+        "sged",
+        2
+      ]
+    ]
+  },
+  "sizes": {
+    "bytes": {
+      "before": 9449554,
+      "after": 13720451
+    },
+    "points": {
+      "before": 759,
+      "after": 1158
+    },
+    "values": {
+      "before": 43724,
+      "after": 59333
+    },
+    "quantiles": {
+      "before": 33396,
+      "after": 50936
+    }
+  },
+  "seam": {
+    "records": 9251,
+    "goldens": 99,
+    "mismatches": 426,
+    "attributions": {
+      "fitter": 305,
+      "invalid fit parameters": 104,
+      "named precision-region NaN; fitter": 13,
+      "dossier-excluded model": 4
+    },
+    "fitter_errors": {
+      "sged": 65,
+      "sstd": 61,
+      "gb2": 31,
+      "ged": 29,
+      "fpareto": 26,
+      "snorm": 19,
+      "betapr": 11,
+      "gev": 8,
+      "nsbeta": 8,
+      "genbeta": 7,
+      "tnorm": 7,
+      "trgamma": 4,
+      "triang": 4,
+      "frechet": 3,
+      "invburr": 3,
+      "invgamma": 3,
+      "invparalogis": 3,
+      "burr": 2,
+      "foldnorm": 2,
+      "invgauss": 2,
+      "llogis": 2,
+      "logitnorm": 2,
+      "naka": 2,
+      "weibull": 2,
+      "zmbinom": 2,
+      "beta": 1,
+      "binom": 1,
+      "invtrgamma": 1,
+      "nbinom": 1,
+      "paralogis": 1,
+      "pareto3": 1,
+      "slash": 1,
+      "st": 1,
+      "tpois": 1,
+      "ztbinom": 1
+    },
+    "dpqr_open": []
+  },
+  "stats": {
+    "checks": 32305,
+    "failures": 386,
+    "by_function": {
+      "stats::pweibull": 92,
+      "stats::dweibull": 49,
+      "stats::phyper": 37,
+      "stats::dcauchy": 24,
+      "stats::qhyper": 24,
+      "stats::dbinom": 19,
+      "stats::pbinom": 19,
+      "stats::dhyper": 16,
+      "stats::qweibull": 15,
+      "stats::dnbinom": 14,
+      "stats::qcauchy": 12,
+      "stats::qlogis": 10,
+      "stats::qnorm": 10,
+      "stats::dpois": 7,
+      "stats::dgeom": 5,
+      "stats::pnbinom": 5,
+      "stats::pbeta": 4,
+      "stats::qbeta": 4,
+      "stats::pexp": 3,
+      "stats::pgamma": 3,
+      "stats::dlnorm": 3,
+      "stats::qnbinom": 3,
+      "stats::dgamma": 2,
+      "stats::qlnorm": 2,
+      "stats::qunif": 2,
+      "stats::dbeta": 1,
+      "stats::punif": 1
+    }
+  },
+  "oracle_gaps": [
+    {
+      "family": "beta",
+      "gaps": [
+        {
+          "parameters": [
+            100000000.0,
+            100000000.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        }
+      ]
+    },
+    {
+      "family": "betapr",
+      "gaps": [
+        {
+          "parameters": [
+            100000000.0,
+            100000000.0,
+            1.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        }
+      ]
+    },
+    {
+      "family": "binom",
+      "gaps": [
+        {
+          "parameters": [
+            100000000.0,
+            1e-08
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        }
+      ]
+    },
+    {
+      "family": "bnbinom",
+      "gaps": [
+        {
+          "parameters": [
+            100000000.0,
+            1e+16,
+            100000000.0
+          ],
+          "reason": "ArithmeticError: beta-mixture remainder"
+        }
+      ]
+    },
+    {
+      "family": "burr",
+      "gaps": [
+        {
+          "parameters": [
+            1e-08,
+            1.0,
+            1.0
+          ],
+          "reason": "ArithmeticError: normalization quadrature error estimate 0.00000000001"
+        },
+        {
+          "parameters": [
+            1.0,
+            100000000.0,
+            1.0
+          ],
+          "reason": "MemoryError: reference exceeded the recorded address-space limit"
+        },
+        {
+          "parameters": [
+            1.0,
+            100000000.0,
+            1000.0
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        },
+        {
+          "parameters": [
+            1.0,
+            100000000.0,
+            100000000.0
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        }
+      ]
+    },
+    {
+      "family": "cmb",
+      "gaps": [
+        {
+          "parameters": [
+            10000.0,
+            0.0001,
+            1.0
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        }
+      ]
+    },
+    {
+      "family": "cmp",
+      "gaps": [
+        {
+          "parameters": [
+            100000000.0,
+            1.0
+          ],
+          "reason": "ArithmeticError: positive series did not reach certified remainder"
+        },
+        {
+          "parameters": [
+            1.0,
+            1e-08
+          ],
+          "reason": "ArithmeticError: positive series did not reach certified remainder"
+        }
+      ]
+    },
+    {
+      "family": "dgamma",
+      "gaps": [
+        {
+          "parameters": [
+            100000000.0,
+            1.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        }
+      ]
+    },
+    {
+      "family": "dlaplace",
+      "gaps": [
+        {
+          "parameters": [
+            0.0,
+            0.9999999999999999
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        }
+      ]
+    },
+    {
+      "family": "dnorm",
+      "gaps": [
+        {
+          "parameters": [
+            0.0,
+            100000000.0
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        }
+      ]
+    },
+    {
+      "family": "dweibull",
+      "gaps": [
+        {
+          "parameters": [
+            0.5,
+            100000000.0
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        }
+      ]
+    },
+    {
+      "family": "fpareto",
+      "gaps": [
+        {
+          "parameters": [
+            100000000.0,
+            0.0001414213562373095,
+            100000000.0,
+            1.0,
+            0.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        }
+      ]
+    },
+    {
+      "family": "frechet",
+      "gaps": [
+        {
+          "parameters": [
+            100000000.0,
+            0.0,
+            1000.0
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        },
+        {
+          "parameters": [
+            100000000.0,
+            -100000000.0,
+            100000000.0
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        }
+      ]
+    },
+    {
+      "family": "gamma",
+      "gaps": [
+        {
+          "parameters": [
+            1e-08,
+            1.0
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        },
+        {
+          "parameters": [
+            100000000.0,
+            1.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        },
+        {
+          "parameters": [
+            100000000.0,
+            1000.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        },
+        {
+          "parameters": [
+            100000000.0,
+            1e-08
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        }
+      ]
+    },
+    {
+      "family": "gb2",
+      "gaps": [
+        {
+          "parameters": [
+            100000000.0,
+            0.0001414213562373095,
+            100000000.0,
+            1.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        }
+      ]
+    },
+    {
+      "family": "ged",
+      "gaps": [
+        {
+          "parameters": [
+            0.0,
+            1.0,
+            2e-08
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        },
+        {
+          "parameters": [
+            0.0,
+            1.0,
+            200000000.0
+          ],
+          "reason": "MemoryError: reference exceeded the recorded address-space limit"
+        },
+        {
+          "parameters": [
+            0.0,
+            1000.0,
+            200000000.0
+          ],
+          "reason": "MemoryError: reference exceeded the recorded address-space limit"
+        },
+        {
+          "parameters": [
+            -100000000.0,
+            100000000.0,
+            200000000.0
+          ],
+          "reason": "MemoryError: reference exceeded the recorded address-space limit"
+        }
+      ]
+    },
+    {
+      "family": "gengamma",
+      "gaps": [
+        {
+          "parameters": [
+            -1.0,
+            1.0,
+            0.0
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        },
+        {
+          "parameters": [
+            1.0,
+            1.0,
+            0.0
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        },
+        {
+          "parameters": [
+            0.0,
+            1e-08,
+            0.0
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        },
+        {
+          "parameters": [
+            0.0,
+            100000000.0,
+            0.0
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        }
+      ]
+    },
+    {
+      "family": "geom",
+      "gaps": [
+        {
+          "parameters": [
+            5e-09
+          ],
+          "reason": "ArithmeticError: positive series did not reach certified remainder"
+        }
+      ]
+    },
+    {
+      "family": "ht",
+      "gaps": [
+        {
+          "parameters": [
+            0.0,
+            5e-08,
+            1.0
+          ],
+          "reason": "ArithmeticError: normalization quadrature error estimate 0.0000000001"
+        },
+        {
+          "parameters": [
+            0.0,
+            500000000.0,
+            1.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        },
+        {
+          "parameters": [
+            0.0,
+            500000000.0,
+            1000.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        },
+        {
+          "parameters": [
+            -100000000.0,
+            500000000.0,
+            100000000.0
+          ],
+          "reason": "ValueError: \nhypercomb() failed to converge to the requested 555 bits of accuracy\nusing a working precision of 7345 bits. The function value may be zero or\ninfinite; try passing zeroprec=N or infprec=M to bound finite values between\n2^(-N) and 2^M. Otherwise try a higher maxprec or maxterms.\n"
+        }
+      ]
+    },
+    {
+      "family": "invburr",
+      "gaps": [
+        {
+          "parameters": [
+            1e-08,
+            1.0,
+            1.0
+          ],
+          "reason": "ArithmeticError: normalization quadrature error estimate 0.00000000001"
+        },
+        {
+          "parameters": [
+            1.0,
+            100000000.0,
+            1000.0
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        },
+        {
+          "parameters": [
+            1.0,
+            100000000.0,
+            1e-08
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        }
+      ]
+    },
+    {
+      "family": "invgamma",
+      "gaps": [
+        {
+          "parameters": [
+            1e-08,
+            1.0
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        },
+        {
+          "parameters": [
+            100000000.0,
+            1.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        },
+        {
+          "parameters": [
+            100000000.0,
+            1000.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        },
+        {
+          "parameters": [
+            100000000.0,
+            100000000.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        }
+      ]
+    },
+    {
+      "family": "invparalogis",
+      "gaps": [
+        {
+          "parameters": [
+            1e-08,
+            1.0
+          ],
+          "reason": "ArithmeticError: normalization quadrature error estimate 0.00000000001"
+        },
+        {
+          "parameters": [
+            100000000.0,
+            1000.0
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        }
+      ]
+    },
+    {
+      "family": "invpareto",
+      "gaps": [
+        {
+          "parameters": [
+            1e-08,
+            1.0
+          ],
+          "reason": "ArithmeticError: normalization quadrature error estimate 0.00000000001"
+        }
+      ]
+    },
+    {
+      "family": "invtrgamma",
+      "gaps": [
+        {
+          "parameters": [
+            1e-08,
+            1.0,
+            1.0
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        },
+        {
+          "parameters": [
+            100000000.0,
+            1.0,
+            1.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        },
+        {
+          "parameters": [
+            1.0,
+            100000000.0,
+            1.0
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        },
+        {
+          "parameters": [
+            100000000.0,
+            1.0,
+            1000.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        },
+        {
+          "parameters": [
+            1.0,
+            100000000.0,
+            1000.0
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        },
+        {
+          "parameters": [
+            1e-08,
+            100000000.0,
+            1.0
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        }
+      ]
+    },
+    {
+      "family": "invweibull",
+      "gaps": [
+        {
+          "parameters": [
+            100000000.0,
+            1000.0
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        }
+      ]
+    },
+    {
+      "family": "lgamma",
+      "gaps": [
+        {
+          "parameters": [
+            1e-08,
+            1.0
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        },
+        {
+          "parameters": [
+            100000000.0,
+            1.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        },
+        {
+          "parameters": [
+            1.0,
+            1e-08
+          ],
+          "reason": "ArithmeticError: normalization quadrature error estimate 0.00000000001"
+        }
+      ]
+    },
+    {
+      "family": "lgser",
+      "gaps": [
+        {
+          "parameters": [
+            0.9999999999999999
+          ],
+          "reason": "ArithmeticError: positive series did not reach certified remainder"
+        }
+      ]
+    },
+    {
+      "family": "lomax",
+      "gaps": [
+        {
+          "parameters": [
+            1.0,
+            1e-08
+          ],
+          "reason": "ArithmeticError: normalization quadrature error estimate 0.00000000001"
+        }
+      ]
+    },
+    {
+      "family": "lst",
+      "gaps": [
+        {
+          "parameters": [
+            0.0,
+            1.0,
+            500000000.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        },
+        {
+          "parameters": [
+            0.0,
+            1000.0,
+            500000000.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        },
+        {
+          "parameters": [
+            -100000000.0,
+            100000000.0,
+            500000000.0
+          ],
+          "reason": "ValueError: \nhypercomb() failed to converge to the requested 555 bits of accuracy\nusing a working precision of 7345 bits. The function value may be zero or\ninfinite; try passing zeroprec=N or infprec=M to bound finite values between\n2^(-N) and 2^M. Otherwise try a higher maxprec or maxterms.\n"
+        }
+      ]
+    },
+    {
+      "family": "naka",
+      "gaps": [
+        {
+          "parameters": [
+            1e-08,
+            1.0
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        },
+        {
+          "parameters": [
+            100000000.0,
+            1.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        },
+        {
+          "parameters": [
+            100000000.0,
+            1000.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        }
+      ]
+    },
+    {
+      "family": "nbinom",
+      "gaps": [
+        {
+          "parameters": [
+            100000000.0,
+            0.5
+          ],
+          "reason": "ArithmeticError: positive series did not reach certified remainder"
+        },
+        {
+          "parameters": [
+            1.0,
+            5e-09
+          ],
+          "reason": "ArithmeticError: positive series did not reach certified remainder"
+        }
+      ]
+    },
+    {
+      "family": "nhyper",
+      "gaps": [
+        {
+          "parameters": [
+            5.0,
+            100000000.0,
+            3.0
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        }
+      ]
+    },
+    {
+      "family": "paralogis",
+      "gaps": [
+        {
+          "parameters": [
+            1e-08,
+            1.0
+          ],
+          "reason": "ArithmeticError: normalization quadrature error estimate 0.00000000001"
+        },
+        {
+          "parameters": [
+            100000000.0,
+            1000.0
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        }
+      ]
+    },
+    {
+      "family": "pareto",
+      "gaps": [
+        {
+          "parameters": [
+            1e-08,
+            1.0
+          ],
+          "reason": "ArithmeticError: normalization quadrature error estimate 0.00000000001"
+        }
+      ]
+    },
+    {
+      "family": "pareto2",
+      "gaps": [
+        {
+          "parameters": [
+            1e-08,
+            1.0,
+            0.0
+          ],
+          "reason": "ArithmeticError: normalization quadrature error estimate 0.00000000001"
+        }
+      ]
+    },
+    {
+      "family": "pareto4",
+      "gaps": [
+        {
+          "parameters": [
+            1e-08,
+            1.0,
+            1.0,
+            0.0
+          ],
+          "reason": "ArithmeticError: normalization quadrature error estimate 0.00000000001"
+        },
+        {
+          "parameters": [
+            1.0,
+            100000000.0,
+            1000.0,
+            0.0
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        }
+      ]
+    },
+    {
+      "family": "pig",
+      "gaps": [
+        {
+          "parameters": [
+            1e-08,
+            1.0
+          ],
+          "reason": "MemoryError: reference exceeded the recorded address-space limit"
+        },
+        {
+          "parameters": [
+            100000000.0,
+            1.0
+          ],
+          "reason": "ArithmeticError: PIG integral remainder"
+        },
+        {
+          "parameters": [
+            1.0,
+            1e-08
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        },
+        {
+          "parameters": [
+            1.0,
+            100000000.0
+          ],
+          "reason": "MemoryError: reference exceeded the recorded address-space limit"
+        }
+      ]
+    },
+    {
+      "family": "pois",
+      "gaps": [
+        {
+          "parameters": [
+            100000000.0
+          ],
+          "reason": "ArithmeticError: positive series did not reach certified remainder"
+        }
+      ]
+    },
+    {
+      "family": "power",
+      "gaps": [
+        {
+          "parameters": [
+            1.0,
+            1e-08
+          ],
+          "reason": "ArithmeticError: normalization quadrature error estimate 0.00000000001"
+        }
+      ]
+    },
+    {
+      "family": "sged",
+      "gaps": [
+        {
+          "parameters": [
+            0.0,
+            1.0,
+            2e-08,
+            1.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        },
+        {
+          "parameters": [
+            0.0,
+            1.0,
+            200000000.0,
+            1.0
+          ],
+          "reason": "MemoryError: reference exceeded the recorded address-space limit"
+        },
+        {
+          "parameters": [
+            0.0,
+            1000.0,
+            200000000.0,
+            1.0
+          ],
+          "reason": "MemoryError: reference exceeded the recorded address-space limit"
+        },
+        {
+          "parameters": [
+            -100000000.0,
+            100000000.0,
+            200000000.0,
+            1.0
+          ],
+          "reason": "MemoryError: reference exceeded the recorded address-space limit"
+        },
+        {
+          "parameters": [
+            0.0,
+            1.0,
+            100000000.0,
+            100000000.0
+          ],
+          "reason": "MemoryError: reference exceeded the recorded address-space limit"
+        },
+        {
+          "parameters": [
+            0.0,
+            1.0,
+            100000000.0,
+            1e-08
+          ],
+          "reason": "MemoryError: reference exceeded the recorded address-space limit"
+        }
+      ]
+    },
+    {
+      "family": "skellam",
+      "gaps": [
+        {
+          "parameters": [
+            100000000.0,
+            1.0
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        },
+        {
+          "parameters": [
+            1.0,
+            100000000.0
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        }
+      ]
+    },
+    {
+      "family": "sn",
+      "gaps": [
+        {
+          "parameters": [
+            0.0,
+            1e-08,
+            0.0
+          ],
+          "reason": "ArithmeticError: density/antiderivative derivative mismatch"
+        },
+        {
+          "parameters": [
+            0.0,
+            1.0,
+            -1.0
+          ],
+          "reason": "ArithmeticError: Gaussian quantile convergence"
+        },
+        {
+          "parameters": [
+            0.0,
+            1.0,
+            1.0
+          ],
+          "reason": "ArithmeticError: Gaussian quantile convergence"
+        }
+      ]
+    },
+    {
+      "family": "sstd",
+      "gaps": [
+        {
+          "parameters": [
+            0.0,
+            1.0,
+            500000000.0,
+            1.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        },
+        {
+          "parameters": [
+            0.0,
+            1000.0,
+            500000000.0,
+            1.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        },
+        {
+          "parameters": [
+            -100000000.0,
+            100000000.0,
+            500000000.0,
+            1.0
+          ],
+          "reason": "ValueError: \nhypercomb() failed to converge to the requested 555 bits of accuracy\nusing a working precision of 7345 bits. The function value may be zero or\ninfinite; try passing zeroprec=N or infprec=M to bound finite values between\n2^(-N) and 2^M. Otherwise try a higher maxprec or maxterms.\n"
+        },
+        {
+          "parameters": [
+            0.0,
+            1.0,
+            100000000.0,
+            100000000.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        },
+        {
+          "parameters": [
+            0.0,
+            1.0,
+            100000000.0,
+            1e-08
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        }
+      ]
+    },
+    {
+      "family": "st",
+      "gaps": [
+        {
+          "parameters": [
+            0.0,
+            1e-08,
+            0.0,
+            5.0
+          ],
+          "reason": "ArithmeticError: density/antiderivative derivative mismatch"
+        },
+        {
+          "parameters": [
+            0.0,
+            1.0,
+            0.0,
+            5e-08
+          ],
+          "reason": "ArithmeticError: normalization quadrature error estimate 0.000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001"
+        },
+        {
+          "parameters": [
+            0.0,
+            1.0,
+            0.0,
+            500000000.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        },
+        {
+          "parameters": [
+            0.0,
+            1000.0,
+            0.0,
+            500000000.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        },
+        {
+          "parameters": [
+            -100000000.0,
+            100000000.0,
+            0.0,
+            500000000.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        },
+        {
+          "parameters": [
+            0.0,
+            1.0,
+            100000000.0,
+            100000000.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        },
+        {
+          "parameters": [
+            0.0,
+            1.0,
+            -100000000.0,
+            100000000.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        }
+      ]
+    },
+    {
+      "family": "std",
+      "gaps": [
+        {
+          "parameters": [
+            0.0,
+            1.0,
+            500000000.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        },
+        {
+          "parameters": [
+            0.0,
+            1000.0,
+            500000000.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        },
+        {
+          "parameters": [
+            -100000000.0,
+            100000000.0,
+            500000000.0
+          ],
+          "reason": "ValueError: \nhypercomb() failed to converge to the requested 555 bits of accuracy\nusing a working precision of 7345 bits. The function value may be zero or\ninfinite; try passing zeroprec=N or infprec=M to bound finite values between\n2^(-N) and 2^M. Otherwise try a higher maxprec or maxterms.\n"
+        }
+      ]
+    },
+    {
+      "family": "tlambda",
+      "gaps": [
+        {
+          "parameters": [
+            0.0,
+            1e-08,
+            0.0
+          ],
+          "reason": "ArithmeticError: density/antiderivative derivative mismatch"
+        }
+      ]
+    },
+    {
+      "family": "tnorm",
+      "gaps": [
+        {
+          "parameters": [
+            -1e+16,
+            100000000.0,
+            0.0,
+            "Inf"
+          ],
+          "reason": "ArithmeticError: normalization failed at {'mean': -1e+16, 'sd': 100000000.0, 'a': 0, 'b': inf}: +inf"
+        },
+        {
+          "parameters": [
+            1e+16,
+            100000000.0,
+            "-Inf",
+            0.0
+          ],
+          "reason": "ArithmeticError: normalization failed at {'mean': 1e+16, 'sd': 100000000.0, 'a': -inf, 'b': 0}: +inf"
+        },
+        {
+          "parameters": [
+            1e+16,
+            100000000.0,
+            0.0,
+            1.0
+          ],
+          "reason": "ArithmeticError: normalization failed at {'mean': 1e+16, 'sd': 100000000.0, 'a': 0, 'b': 1}: +inf"
+        }
+      ]
+    },
+    {
+      "family": "trgamma",
+      "gaps": [
+        {
+          "parameters": [
+            1e-08,
+            1.0,
+            1.0
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        },
+        {
+          "parameters": [
+            100000000.0,
+            1.0,
+            1.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        },
+        {
+          "parameters": [
+            1.0,
+            100000000.0,
+            1.0
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        },
+        {
+          "parameters": [
+            100000000.0,
+            1.0,
+            1000.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        },
+        {
+          "parameters": [
+            1.0,
+            100000000.0,
+            1000.0
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        },
+        {
+          "parameters": [
+            1e-08,
+            100000000.0,
+            1.0
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        }
+      ]
+    },
+    {
+      "family": "yulesimon",
+      "gaps": [
+        {
+          "parameters": [
+            1e-08
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        }
+      ]
+    },
+    {
+      "family": "zib",
+      "gaps": [
+        {
+          "parameters": [
+            100000000.0,
+            1e-08,
+            0.5
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        }
+      ]
+    },
+    {
+      "family": "zinb",
+      "gaps": [
+        {
+          "parameters": [
+            100000000.0,
+            0.5,
+            0.5
+          ],
+          "reason": "ArithmeticError: positive series did not reach certified remainder"
+        },
+        {
+          "parameters": [
+            1.0,
+            5e-09,
+            0.5
+          ],
+          "reason": "ArithmeticError: positive series did not reach certified remainder"
+        }
+      ]
+    },
+    {
+      "family": "zip",
+      "gaps": [
+        {
+          "parameters": [
+            100000000.0,
+            0.5
+          ],
+          "reason": "ArithmeticError: positive series did not reach certified remainder"
+        }
+      ]
+    },
+    {
+      "family": "zmbinom",
+      "gaps": [
+        {
+          "parameters": [
+            100000000.0,
+            1e-08,
+            0.5
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        }
+      ]
+    },
+    {
+      "family": "zmgeom",
+      "gaps": [
+        {
+          "parameters": [
+            5e-09,
+            0.5
+          ],
+          "reason": "ArithmeticError: positive series did not reach certified remainder"
+        }
+      ]
+    },
+    {
+      "family": "zmlogarithmic",
+      "gaps": [
+        {
+          "parameters": [
+            0.9999999999999999,
+            0.5
+          ],
+          "reason": "ArithmeticError: positive series did not reach certified remainder"
+        }
+      ]
+    },
+    {
+      "family": "zmnbinom",
+      "gaps": [
+        {
+          "parameters": [
+            100000000.0,
+            0.5,
+            0.5
+          ],
+          "reason": "ArithmeticError: positive series did not reach certified remainder"
+        },
+        {
+          "parameters": [
+            1.0,
+            5e-09,
+            0.5
+          ],
+          "reason": "ArithmeticError: positive series did not reach certified remainder"
+        }
+      ]
+    },
+    {
+      "family": "zmpois",
+      "gaps": [
+        {
+          "parameters": [
+            100000000.0,
+            0.5
+          ],
+          "reason": "ArithmeticError: positive series did not reach certified remainder"
+        }
+      ]
+    },
+    {
+      "family": "ztbinom",
+      "gaps": [
+        {
+          "parameters": [
+            100000000.0,
+            1e-08
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        }
+      ]
+    },
+    {
+      "family": "ztgeom",
+      "gaps": [
+        {
+          "parameters": [
+            5e-09
+          ],
+          "reason": "ArithmeticError: positive series did not reach certified remainder"
+        }
+      ]
+    },
+    {
+      "family": "ztnbinom",
+      "gaps": [
+        {
+          "parameters": [
+            100000000.0,
+            0.5
+          ],
+          "reason": "ArithmeticError: positive series did not reach certified remainder"
+        },
+        {
+          "parameters": [
+            1.0,
+            5e-09
+          ],
+          "reason": "ArithmeticError: positive series did not reach certified remainder"
+        }
+      ]
+    },
+    {
+      "family": "ztpois",
+      "gaps": [
+        {
+          "parameters": [
+            100000000.0
+          ],
+          "reason": "ArithmeticError: positive series did not reach certified remainder"
+        }
+      ]
+    }
+  ],
+  "fresh_exclusions": [
+    {
+      "family": "sged",
+      "function": "p",
+      "input": -1.5461574810135936,
+      "lower": true,
+      "log": false,
+      "parameters": [
+        0.0,
+        1.0,
+        3.8792797496374307,
+        100000000.0
+      ],
+      "actual": "NaN",
+      "expected": 4.111206646631721e-108,
+      "error": "Inf",
+      "category": "values",
+      "row": [
+        17,
+        -1.5461574810135936,
+        -206.26226888330336,
+        -247.26547346994906,
+        -4.111206646631715e-108
+      ],
+      "excluded_reason": "TASK-189 open: natural lower-tail precision gate returns NaN; reference 4.111206646631721e-108; propagated log-tail margin 3.1645e-10 exceeds the 1e-10 contract."
+    },
+    {
+      "family": "sged",
+      "function": "p",
+      "input": -1.5461574810135932,
+      "lower": true,
+      "log": false,
+      "parameters": [
+        0.0,
+        1.0,
+        3.8792797496374307,
+        100000000.0
+      ],
+      "actual": "NaN",
+      "expected": 1.5600541083276566e-34,
+      "error": "Inf",
+      "category": "values",
+      "row": [
+        17,
+        -1.5461574810135932,
+        -38.094821355479475,
+        -77.84317265631219,
+        -1.5600541083276579e-34
+      ],
+      "excluded_reason": "TASK-189 open: natural lower-tail precision gate returns NaN; reference 1.5600541083276566e-34; propagated log-tail margin 9.1662e-11 exceeds the reserved 1e-11 coordinate budget; sharper moment enclosure remains open."
+    }
+  ],
+  "gap_count": 131,
+  "samplers": {
+    "families": 101,
+    "selectors": 214,
+    "draws": 13696
+  }
+}

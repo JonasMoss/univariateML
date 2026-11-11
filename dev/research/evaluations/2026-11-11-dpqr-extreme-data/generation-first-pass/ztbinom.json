@@ -1,0 +1,34 @@
+{
+  "id": "ztbinom",
+  "before": {
+    "bytes": 49776,
+    "points": 8,
+    "values": 101,
+    "quantiles": 352
+  },
+  "after": {
+    "bytes": 56554,
+    "points": 9,
+    "values": 116,
+    "quantiles": 396
+  },
+  "records": [
+    {
+      "parameters": [
+        10.0,
+        5e-09
+      ],
+      "status": "generated",
+      "seconds": 0.04428859002655372
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1e-08
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 30 seconds per point",
+      "seconds": 30.04209057299886
+    }
+  ]
+}

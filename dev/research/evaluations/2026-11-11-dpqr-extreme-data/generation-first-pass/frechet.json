@@ -1,0 +1,91 @@
+{
+  "id": "frechet",
+  "before": {
+    "bytes": 64330,
+    "points": 7,
+    "values": 143,
+    "quantiles": 308
+  },
+  "after": {
+    "bytes": 114703,
+    "points": 13,
+    "values": 250,
+    "quantiles": 572
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        0.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 2.7755773669923656
+    },
+    {
+      "parameters": [
+        100000000.0,
+        0.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 0.934751990949735
+    },
+    {
+      "parameters": [
+        1.0,
+        -1.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 0.901402938994579
+    },
+    {
+      "parameters": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 0.8758159560384229
+    },
+    {
+      "parameters": [
+        1.0,
+        0.0,
+        1e-08
+      ],
+      "status": "generated",
+      "seconds": 0.9905193939921446
+    },
+    {
+      "parameters": [
+        1.0,
+        0.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "seconds": 0.9989951870520599
+    },
+    {
+      "parameters": [
+        100000000.0,
+        0.0,
+        1000.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 30 seconds per point",
+      "seconds": 30.00010389101226
+    },
+    {
+      "parameters": [
+        100000000.0,
+        -100000000.0,
+        100000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 30 seconds per point",
+      "seconds": 30.000116439012345
+    }
+  ]
+}

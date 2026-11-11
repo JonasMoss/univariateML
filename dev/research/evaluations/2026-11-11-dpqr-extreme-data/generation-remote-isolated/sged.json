@@ -1,0 +1,153 @@
+{
+  "id": "sged",
+  "input_sha256": "a04ea810dbcf24cb520edba4c9be05862187d9aa91d46fdeabed7f55b4c5842d",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 80319,
+    "points": 9,
+    "values": 171,
+    "quantiles": 396
+  },
+  "after": {
+    "bytes": 135173,
+    "points": 15,
+    "values": 285,
+    "quantiles": 660
+  },
+  "records": [
+    {
+      "parameters": [
+        -1.0,
+        1.0,
+        2.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 7.276400406999983
+    },
+    {
+      "parameters": [
+        1.0,
+        1.0,
+        2.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 7.0727462560003005
+    },
+    {
+      "parameters": [
+        0.0,
+        1e-08,
+        2.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 7.162629458000083
+    },
+    {
+      "parameters": [
+        0.0,
+        100000000.0,
+        2.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 7.017107933999796
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        2e-08,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms.",
+      "seconds": 2.851489953000055
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        200000000.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "MemoryError: ",
+      "seconds": 19.695799623000312
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        2.0,
+        1e-08
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 5.558188878999772
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        2.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 5.554960053000286
+    },
+    {
+      "parameters": [
+        0.0,
+        1000.0,
+        200000000.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "MemoryError: ",
+      "seconds": 41.39731515199992
+    },
+    {
+      "parameters": [
+        -100000000.0,
+        100000000.0,
+        200000000.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "MemoryError: ",
+      "seconds": 13.105157224999857
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        100000000.0,
+        100000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "MemoryError: ",
+      "seconds": 21.059069084000384
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        100000000.0,
+        1e-08
+      ],
+      "status": "oracle gap",
+      "reason": "MemoryError: ",
+      "seconds": 21.52253656799985
+    }
+  ]
+}

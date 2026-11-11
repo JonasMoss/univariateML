@@ -1,0 +1,93 @@
+{
+  "id": "bnbinom",
+  "before": {
+    "bytes": 266131,
+    "points": 9,
+    "values": 1897,
+    "quantiles": 396
+  },
+  "after": {
+    "bytes": 386584,
+    "points": 13,
+    "values": 2740,
+    "quantiles": 572
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 0.50280490599107
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 0.458854909054935
+    },
+    {
+      "parameters": [
+        1.0,
+        1e-08,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 0.24184697499731556
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: pmf/antiderivative mismatch at 8",
+      "seconds": 0.08525529800681397
+    },
+    {
+      "parameters": [
+        1.0,
+        1.0,
+        1e-08
+      ],
+      "status": "generated",
+      "seconds": 0.48618632595753297
+    },
+    {
+      "parameters": [
+        1.0,
+        1.0,
+        100000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: beta-mixture remainder",
+      "seconds": 0.36631313199177384
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0,
+        100000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: beta-mixture remainder",
+      "seconds": 0.38115684798685834
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1e+16,
+        100000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: beta-mixture remainder",
+      "seconds": 0.4014039909816347
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "id": "gompertz",
+  "before": {
+    "bytes": 53479,
+    "points": 6,
+    "values": 126,
+    "quantiles": 264
+  },
+  "after": {
+    "bytes": 89252,
+    "points": 10,
+    "values": 210,
+    "quantiles": 440
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 1.1472459110082127
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 1.1330343059962615
+    },
+    {
+      "parameters": [
+        1.0,
+        1e-08
+      ],
+      "status": "generated",
+      "seconds": 1.0524678889778443
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "seconds": 1.0976902969996445
+    }
+  ]
+}
