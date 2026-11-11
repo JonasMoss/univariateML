@@ -8,6 +8,14 @@ Active work lives on the board (`~/boards/univariateML`), not here.
 
 ## 2026-11-11
 
+- **Two accuracy-failure kinds** (Jonas: "sounds reasonable"). A `tol`
+  below the binary64 spacing at the maximizer is a `tolerance` stop; noise
+  over curvature above a representable `tol` is a `conditioning` stop. One
+  shared classification replaces the per-family `AccuracyFailure`,
+  `accuracy_failure` flag and `NumericalFailure` variants; R keeps
+  `univariateML_numerical` as their parent class. Design:
+  [accuracy contract](../design/accuracy-contract.md#contract); work:
+  TASK-150.4, sequenced with TASK-150.1.
 - **d/p/q accuracy over the whole parameter domain** (Jonas: "lets go").
   Every `dpqr.hpp` function meets the truth tables' tolerances for the exact
   binary64 inputs at every parameter value, not only at the tabulated points,

@@ -37,6 +37,14 @@ the best accuracy the formulation allows, and either the family reformulates
 the problem (beta: mean and precision coordinates) or the fit reports a
 numerical-accuracy failure.
 
+Accuracy failures come in two kinds, reported separately with the best
+candidate. `tolerance`: the requested `tol` is below the binary64 spacing at
+the maximizer (the nearest double to 2/3 is 3.7e-17 away), which only an
+explicit `tol` can cause; the report gives the smallest attainable `tol`.
+`conditioning`: the score's rounding noise over the curvature exceeds a
+representable `tol`, which can happen at the default and calls for a
+reformulation. Evaluation breakdown (NaN, overflow) stays `numerical`.
+
 The contract is local: it concerns the maximizer the fit reports. Global
 optimality is a separate claim with its own evidence (the dossier
 `existence:` block and certificates). It therefore covers uncertified fits
