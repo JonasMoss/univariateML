@@ -268,6 +268,61 @@ truncated", which works if $T(\overline M) \subseteq \overline{T(M)}$ is used to
 carry the base family's limits over. Keep the families until the general
 mechanism has its own goldens and limits.
 
+## Censoring support tiers (2026-11-11)
+
+Censoring is a property of the data, not of the model: coefficients,
+d/p/q/r, `rml` and the fitted law are unchanged. Only fitting, `logLik`, and
+methods that resample data change. Every family can evaluate a censored log
+likelihood (tail-accurate log CDF and log survival everywhere); what varies is
+whether a fit can be verified.
+
+Per family and scheme (`right`, `left`, `interval`), a `modifiers.censor`
+block declares one of
+
+- `certified`: structure gives a verified MLE. Candidates:
+  - closed forms under right censoring: exp ($\hat\lambda = d/\sum x_i$, all
+    times), pareto with known minimum, weibull and lomax with shape held;
+  - profiles: weibull right-censored (scalar shape profile; uniqueness result
+    to check), burr/lomax/pareto2 $k$-profile under right censoring and left
+    truncation (worked example above);
+  - log-concave location-scale and log-location-scale families under any
+    censoring (right, left, interval, binned): norm, logis, gumbel, laplace
+    and, through $\log x$, lnorm, llogis, weibull, invweibull. Pratt (1981,
+    JASA, "Concavity of the log likelihood") gives concavity for censored and
+    grouped data when the error density is log-concave; the exact
+    parametrisation (we expect $(\mu/\sigma, 1/\sigma)$) is not checked.
+- `local`: generic optimiser with the R6 score gate; reported under whatever
+  TASK-150.2.5 settles for uncertified fits, never as a plain `Ok`.
+- `not-implemented` (the default): refuse.
+
+Generic existence rule: with right censoring and $d = 0$ exact observations,
+report `AllCensored` before any search (finding 2: the all-censored atom).
+
+### API and refusals
+
+- Data: a two-column interval matrix `cbind(lower, upper)` (exact when
+  equal, `upper = Inf` right-censored, `lower` at or below the support's
+  lower bound left-censored), cells half-open per the interval conventions
+  below. Accept `survival::Surv` objects by their structure (class and
+  `type` attribute) without depending on survival.
+- Never fall back silently: censored input to a family or scheme marked
+  `not-implemented` stops with a specific error. Dropping the censoring and
+  fitting the recorded values is the worst bug (principle 1).
+- `model_select` on censored data skips such families and lists them in
+  `skipped`, the mechanism that already exists for missing required
+  coefficients. Log likelihoods on the same censored data stay comparable.
+- Nonparametric bootstrap resamples (interval) rows; parametric bootstrap
+  needs a censoring mechanism and is refused.
+- Holds and truncation compose as for exact data; censoring plus the `zero`
+  knob is `not-implemented` at first.
+
+### Medium-term scope
+
+Right censoring only, `certified` for the families listed above, and
+`not-implemented` everywhere else. Then the log-concave location-scale group
+with interval censoring (the same concavity proof, so cheap), then `local`
+for the rest once TASK-150.2.5 defines uncertified fits.
+
 ## Suggested order
 
 1. Right censoring and fixed left truncation (survival-analysis case).
