@@ -22,6 +22,12 @@ the queue.
 
 ## Index
 
+- [2026-11-11 — Skewed q-Gaussian](2026-11-11-skewed-q-gaussian.md)
+  *(banked; quick survey, not scheduled)*: no canonical skew. The two-piece
+  construction loses identifiability at the uniform, Azzalini perturbation is
+  singular at the normal, and the full continuation is the Pearson system.
+  The symmetric `qgauss` is TASK-201 to TASK-203.
+
 - [2026-11-11 — Poisson–lognormal counts](2026-11-11-poisson-lognormal.md)
   *(banked; density settled in principle, ML open)*: Lambert-W centred
   trapezoid rule with a certificate sketch, heat-equation derivative

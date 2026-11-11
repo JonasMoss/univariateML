@@ -1,7 +1,8 @@
 # Classical ML-failure families, and a failure gallery
 
-**Status:** skew-normal landed as `mlsn` (TASK-63); the threshold families and skew-t remain deferred. Earlier: recorded 2026-10-29. Skew-normal in progress (Codex job `sn`);
-the rest deferred.
+**Status:** skew-normal landed as `mlsn` (TASK-63) and skew-t as `mlst`
+(TASK-110); the q-Gaussian is planned (TASK-201 to TASK-203); the threshold
+families remain deferred. Recorded 2026-10-29.
 
 The univariate families most famous for failing maximum likelihood, which
 the package does not have yet:
@@ -22,13 +23,20 @@ Related, as illustrations of "removable" escapes (see the taxonomy below):
   $q = (1+3\eta)/(1+\eta)$, so $\eta = 0 \leftrightarrow q = 1$. Writing
   $f(z) \propto (1+\eta z^2)^{-(1+\eta)/(2\eta)}$, the endpoint exponent for
   $\eta < 0$ is $m = -(1+\eta)/(2\eta)$: $m > 1$ for $-1/3 < \eta < 0$
-  (Smith-regular), $0 < m < 1$ for $-1 < \eta < -1/3$ (nonregular, bounded),
-  uniform at $\eta = -1$, and spikes (unbounded likelihood) for $\eta < -1$,
-  the same pattern as the generalized Pareto with $\xi < -1$ but with the
-  regularity threshold at $\eta = -1/3$ rather than $-1/2$. (Corrected
-  2026-11-10; the earlier text put the spikes at $-1 < \eta < 0$. The
-  $-1/3$ threshold is derived from Smith's criterion, not yet checked
-  against literature: see the q-Gaussian literature-check card.)
+  (Smith-regular), $m = 1$ at $\eta = -1/3$ (critical, logarithmically
+  divergent endpoint information), $0 < m < 1$ for $-1 < \eta < -1/3$
+  (nonregular, bounded), uniform at $\eta = -1$, and spikes (unbounded
+  likelihood) for $\eta < -1$, the same pattern as the generalized Pareto
+  with $\xi < -1$ but with the regularity threshold at $\eta = -1/3$ rather
+  than $-1/2$. The normal crossing is regular, with efficient shape
+  information $3/2$ per observation in $\eta$. (Corrected 2026-11-10; the
+  earlier text put the spikes at $-1 < \eta < 0$. Confirmed 2026-11-11 by
+  the [literature check](../research/evaluations/2026-11-10-qgauss-lit-report.md)
+  (TASK-184), by direct derivation that agrees with Smith's $\alpha > 2$
+  criterion. The check added the critical case. The joint endpoint
+  asymptotics with the shape free are still open.) Planned as the
+  location-scale family `qgauss` (TASK-201 to TASK-203). Skewed variants are
+  banked in [skewed q-Gaussian](2026-11-11-skewed-q-gaussian.md).
 
 ## Failure gallery
 
