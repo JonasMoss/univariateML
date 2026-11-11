@@ -8,6 +8,13 @@ Active work lives on the board (`~/boards/univariateML`), not here.
 
 ## 2026-11-11
 
+- **d/p/q accuracy over the whole parameter domain** (Jonas: "lets go").
+  Every `dpqr.hpp` function meets the truth tables' tolerances for the exact
+  binary64 inputs at every parameter value, not only at the tabulated points,
+  or returns `NaN` in a region its dossier names. Forward accuracy was chosen
+  over a conditioning-relative bound because fitted parameters are exact
+  doubles. Design: [accuracy contract](../design/accuracy-contract.md#dpq);
+  work: TASK-189, Fréchet TASK-187.
 - **Uncertified fits meet the accuracy contract** (Jonas: "lets go with a").
   `certified = FALSE` withdraws only the global-optimality claim. Every `Ok`
   fit, certified or not, is within `tol` of a local maximizer, justified by its

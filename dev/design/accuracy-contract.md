@@ -42,6 +42,26 @@ optimality is a separate claim with its own evidence (the dossier
 `existence:` block and certificates). It therefore covers uncertified fits
 too: `certified = FALSE` withdraws only the global claim.
 
+## d/p/q
+
+Every `dpqr.hpp` function is accurate for the exact binary64 arguments it
+receives, over the whole parameter domain: log densities and log
+probabilities within `1e-10 * max(1, |v|)` of the exact value `v`, natural
+probabilities within relative `1e-10`, quantiles within relative `1e-9` or
+the table's resolution floor. These are the
+[truth consumer's](../../univariateML-cpp/tests/test_support.hpp)
+tolerances; the contract extends them from the tabulated points to every
+parameter value.
+
+This is forward accuracy, not accuracy relative to the problem's
+conditioning. Fitted parameters are exact doubles, and near limit models the
+amplifying cancellation can usually be removed: for `x/s` in `[1/2, 2]`,
+`x - s` is exact, so `shape * log1p((x - s)/s)` replaces
+`shape * (log(x) - log(s))`. A region that cannot meet the contract returns
+`NaN` and is named in the dossier. The `stats` functions the R package uses
+for its 14 `stats` families are outside this contract; `stats::dweibull` and
+`stats::pweibull` miss it at large shapes.
+
 ## Controls
 
 Every R fitter `ml<id>(x, <held coefficients>, tol = 1e-10, iterlim = 100)` and
