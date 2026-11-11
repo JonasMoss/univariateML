@@ -68,7 +68,7 @@ fixtures <- file.path(PKG_DIR, "tests", "testthat", "fixtures")
 for (folder in list.dirs(dist_dir, full.names = TRUE, recursive = FALSE)) {
   id <- basename(folder)
   readme <- file.path(folder, "README.md")
-  if (!file.exists(readme)) next
+  if (!file.exists(readme) || !file.exists(file.path(folder, "mle.hpp"))) next
   target <- file.path(fixtures, id)
   dir.create(target, recursive = TRUE, showWarnings = FALSE)
   lines <- readLines(readme, warn = FALSE, encoding = "UTF-8")

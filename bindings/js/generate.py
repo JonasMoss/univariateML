@@ -23,7 +23,7 @@ def golden_tolerance(expression, test_source):
 def generate(selected=None):
     wrappers, exports, ids = [], [], []
     for folder in sorted(DOSSIERS.iterdir()):
-        if not (folder / 'README.md').exists():
+        if not (folder / 'README.md').exists() or not (folder / 'mle.hpp').exists():
             continue
         model = yaml.safe_load((folder / 'README.md').read_text().split('---', 2)[1])
         family = model['id']

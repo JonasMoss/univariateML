@@ -109,7 +109,7 @@ inference = inference_availability()
 started=time.monotonic()
 out=[]
 for folder in sorted(FAMILIES.iterdir()):
-    if not (folder/'README.md').exists(): continue
+    if not (folder/'README.md').exists() or not (folder/'mle.hpp').exists(): continue
     _, front, body = (folder/'README.md').read_text().split('---',2)
     m=yaml.safe_load(front)
     for lim in m.get('limits', []):
