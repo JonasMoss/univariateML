@@ -152,7 +152,7 @@ inline double pcmb(double q,double size,double prob,double nu,bool lower_tail=tr
   if(nu==1 || size==1) return pbinom(q,size,prob,lower_tail,log_p);
   return cmb_detail::table(static_cast<int>(size),prob,nu).cdf(q,lower_tail,log_p);
 }
-inline double qcmb(double p,double size,double prob,double nu,bool lower_tail=true,bool log_p=false) {
+inline double cmb_sampling_quantile(double p,double size,double prob,double nu,bool lower_tail=true,bool log_p=false) {
   if (!cmb_detail::valid(size,prob,nu)) return special::kNaN;
   if(size==0 || prob==0 || prob==1 || nu==1 || size==1)
     return qbinom(p,size,prob,lower_tail,log_p);
@@ -163,12 +163,26 @@ inline double qcmb(double p,double size,double prob,double nu,bool lower_tail=tr
   }
   return cmb_detail::table(static_cast<int>(size),prob,nu).quantile(p,lower_tail,log_p);
 }
+inline double qcmb(double p,double size,double prob,double nu,bool lower_tail=true,bool log_p=false) {
+  if(!cmb_detail::valid(size,prob,nu)) return special::kNaN;
+  if(size>1 && prob==.5 && nu<0) {
+    const auto tails=special::quantile_log_tails(p,lower_tail,log_p);
+    if(!tails.valid) return special::kNaN;
+    const double offset=special::probability_offset(p,log_p)*(lower_tail?1:-1);
+    if(offset==0) return std::floor(size/2);
+    // Each interior binomial coefficient is >= size. Normalize by at
+    // least the two endpoint weights; bound the entire omitted body.
+    const double log_body=std::log(size-1)+nu*std::log(size)-std::log(2.0);
+    if(log_body<std::log(std::abs(offset))-std::log(2.0)) return offset<0?0:size;
+  }
+  return cmb_sampling_quantile(p,size,prob,nu,lower_tail,log_p);
+}
 template <typename Rng>
 inline double rcmb(Rng &rng,double size,double prob,double nu) {
   if (!cmb_detail::valid(size,prob,nu)) return special::kNaN;
   if (size==0 || prob==0) return 0;
   if (prob==1) return size;
-  return qcmb(rng.runif(0,1),size,prob,nu);
+  return cmb_sampling_quantile(rng.runif(0,1),size,prob,nu);
 }
 }
 }

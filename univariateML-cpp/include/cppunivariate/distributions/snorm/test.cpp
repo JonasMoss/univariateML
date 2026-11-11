@@ -396,3 +396,12 @@ TEST_CASE("snorm scaled residuals: physical side scales are never squared") {
     CHECK(r.logLik==doctest::Approx(reference.logLik-base.size()*std::log(unit)).epsilon(1e-12));
   }
 }
+
+// Independent 200-digit exact-input normal-member reference.
+TEST_CASE("snorm: compensated thin-side centering") {
+ CHECK(cppunivariate::distributions::psnorm(1.3236080967885124,0.0,1.0,1e-08,false,true)==doctest::Approx(-36.70531113717792).epsilon(1e-10));
+}
+
+TEST_CASE("snorm: named compensated-centering precision region") {
+ CHECK(std::isnan(cppunivariate::distributions::psnorm(1.3236080967885127,9.619220402095527e-18,1.0,1e-12,false,true)));
+}

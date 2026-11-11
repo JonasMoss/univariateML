@@ -116,3 +116,9 @@ The [positive-family analysis](../../../../../dev/research/evaluations/2026-10-2
 ## Decision history
 
 2026-10-31 (diagnostic contract): Empty or invalid input carries a non-success status. Degeneracy depends on which coefficients are free, and delegate failures survive transformations. See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md) and the TASK-132 cases in `test.cpp` for the validation scope.
+
+### Concentrating log density
+
+Near x^2=scale at large shape, rounding x^2 before centering can change the density materially. A binary rescaling and FMA form the squared-radius residual before the shape multiplies its deviance. The density normalizer uses the bounded Stirling remainder; neither the square nor the mean needs to be representable at its original scale.
+
+The large-shape CDF uses the same squared-radius residual to standardize a centered log-gamma integral. Forming a rounded gamma argument from 2*log(q)+log(shape)-log(scale) would lose that displacement before tail evaluation.

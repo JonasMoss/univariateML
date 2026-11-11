@@ -53,7 +53,7 @@ TEST_CASE("naka dpqr support and extreme log probabilities") {
 TEST_CASE("naka tiny shape upper tail avoids cancellation") {
   const double lx=2*std::log(1e-200)+std::log(1e-25);
   CHECK(cppunivariate::distributions::pnaka(1e-200,1e-25,1,false,true)==
-    doctest::Approx(std::log(-std::expm1(1e-25*lx))).epsilon(1e-12));
+    doctest::Approx(std::log(-std::expm1(1e-25*(lx+0.57721566490153286061)))).epsilon(1e-12));
 }
 
 // Independent high-precision oracle; see quality/truth.py.
@@ -258,4 +258,10 @@ TEST_CASE("naka: a broad normalized mean is accumulated without subtracting one"
   const auto fit=cppunivariate::naka_mle(mltest::as_span(data),1e-12,200);
   REQUIRE(fit.status==cppunivariate::GammaStatus::Ok);
   CHECK(fit.scale==doctest::Approx(1e300/data.size()).epsilon(1e-13).scale(0));
+}
+
+// Independent 1600-digit reference; density-smoke.py retains exact inputs.
+TEST_CASE("naka: compensated concentrating density") {
+  CHECK(cppunivariate::distributions::dnaka(31.622776601683793,100000000.0,1000.0,true)==
+        doctest::Approx(5.530671379007053).epsilon(1e-10).scale(0));
 }

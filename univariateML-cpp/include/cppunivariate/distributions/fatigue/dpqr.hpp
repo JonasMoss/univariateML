@@ -26,7 +26,7 @@ inline double fatigue_normal_log_tail(double a) {
   return -(0.5*a)*a-std::log(a)-0.5*std::log(2*cppunivariate::pi)+std::log(sum);
 }
 inline double fatigue_w(double x,double alpha,double beta,double mu) {
-  const double lz=std::log(x-mu)-std::log(beta);
+  const double lz=special::log_shifted_positive_ratio(x,mu,beta);
   const double a=std::fabs(lz)/2;
   const double lw=a+special::log1mexp(-2*a)-std::log(alpha);
   return std::copysign(std::exp(lw),lz);
@@ -36,7 +36,7 @@ inline double dfatigue(double x, double alpha, double beta, double mu,
   if (!(alpha>0 && beta>0 && std::isfinite(alpha) && std::isfinite(beta) && std::isfinite(mu))) return special::kNaN;
   if (std::isnan(x)) return special::kNaN;
   if (x<=mu || x==special::kPosInf) return log ? special::kNegInf : 0;
-  const double lz=std::log(x-mu), a=0.5*(lz-std::log(beta));
+  const double lz=std::log(x-mu), a=0.5*special::log_shifted_positive_ratio(x,mu,beta);
   const double w=fatigue_w(x,alpha,beta,mu);
   const double ld=special::log_sum_exp(a,-a)-std::log(2.0)-std::log(alpha)-lz-0.5*std::log(2*cppunivariate::pi)-(0.5*w)*w;
   return log ? ld : std::exp(ld);
@@ -58,11 +58,15 @@ inline double qfatigue(double p, double alpha, double beta, double mu,
   if (!t.valid) return special::kNaN;
   if (t.lower==special::kNegInf) return mu;
   if (t.upper==special::kNegInf) return special::kPosInf;
-  const double lp=std::min(t.lower,t.upper);
-  const double a=special::fs_log_quantile(lp,[](double z) { return fatigue_normal_log_tail(z); });
-  const double la=std::log(alpha)+std::log(a)-std::log(2.0);
-  const double asinh_a=la>350 ? la+std::log(2.0) : std::asinh(std::exp(la));
-  return mu+std::exp(std::log(beta)+(t.lower<t.upper ? -2 : 2)*asinh_a);
+  const double z=special::normal_quantile(p,lower_tail,log_p);
+  const double aZ=(alpha/2)*z;
+  if(aZ==0 && z!=0) {
+    const double center=mu+beta;
+    return std::fma(beta*alpha,z,center)+special::addition_residual(mu,beta,center);
+  }
+  const double displacement=std::isfinite(aZ)?2*std::asinh(aZ)
+      :std::copysign(2*(std::log(alpha)+std::log(std::abs(z))),z);
+  return special::shifted_scaled_exp(mu,beta,displacement);
 }
 
 template <typename Rng>

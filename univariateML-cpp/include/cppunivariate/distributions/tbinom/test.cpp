@@ -420,3 +420,11 @@ TEST_CASE("tbinom: large held-probability search returns its budgeted finite pre
   REQUIRE(f.status==cppunivariate::TbinomStatus::Ok);CHECK_FALSE(f.certified);
   CHECK(f.stop_detail.budget_exhausted);CHECK(f.prob==.4);CHECK(std::isfinite(f.logLik));
 }
+
+TEST_CASE("tbinom: half probability retains a subnormal conditional odds displacement") {
+ const double n=std::ldexp(1.,1022),p=std::ldexp(1.,-1022);
+ CHECK(cppunivariate::distributions::qtbinom(.5,p,-1,1,n,true,false)==1);
+ CHECK(cppunivariate::distributions::qtbinom(.5,p,-1,1,n,false,false)==1);
+ CHECK(cppunivariate::distributions::qtbinom(std::log(.5),p,-1,1,n,true,true)==1);
+ CHECK(cppunivariate::distributions::qtbinom(std::log(.5),p,-1,1,n,false,true)==0);
+}

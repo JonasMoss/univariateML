@@ -135,3 +135,21 @@ TEST_CASE("nsbeta tiny held shape with a resolved score remains estimable") {
   for(double v:x)ll-=std::log(v)+std::log1p(-v);
   CHECK(r.logLik==doctest::Approx(ll).epsilon(1e-10));
 }
+
+// Independent central log-probability expansion; exact binary64 input.
+TEST_CASE("nsbeta: central inverse retains a translated residual") {
+  CHECK(cppunivariate::distributions::qnsbeta(-0.6931471805599453,1,1,-1,1,true,true) ==
+        doctest::Approx(2.3190468138462996e-17).epsilon(1e-10).scale(0));
+}
+
+// The true upper log tail is approximately -1e274 (Laplace relative remainder O(1e-274)).
+// Rounded beta coordinates would give half the mass; the named unresolved region returns NaN.
+TEST_CASE("nsbeta: concentrating coordinate bridge reports its precision region") {
+  CHECK(std::isnan(cppunivariate::distributions::pnsbeta(1e-17,1e308,1e308,-1,1,false,true)));
+}
+
+// Independent 1600-digit exact-input reference; beta-smoke.py.
+TEST_CASE("nsbeta: centered large-shape density") {
+  CHECK(cppunivariate::distributions::dnsbeta(0.0,100000000.0,100000000.0,-1.0,1.0,true)==
+        doctest::Approx(8.637975427801482).epsilon(1e-10).scale(0));
+}

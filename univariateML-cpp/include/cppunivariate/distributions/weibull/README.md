@@ -140,3 +140,9 @@ The Gumbel delegate bounds sigma relatively and mu absolutely before applying sh
 Scale recovery multiplies the data anchor by the fitted log-ratio factor when representable. Reconstruction is checked before accepting a subnormal scale.
 
 With scale held, the shape score uses relative logarithms computed before subtracting large common log scales. Its positive term and negative exponential terms are accumulated with compensation; strict monotonicity gives the final log-shape enclosure. With shape held, the power-mean scale is checked against its ideal log coordinate after reconstruction. A rounded subnormal scale can fail this check even though the mathematical conditional maximum is finite.
+
+### Probability evaluation at large shape
+
+The power coordinate uses `shape * log1p((x-scale)/scale)` when the two positive inputs differ by at most a factor of two. Sterbenz subtraction preserves the exact binary64 displacement before multiplication by the shape; subtracting their logarithms loses that displacement at large shapes. The log density is grouped as `log(shape)-log(x)+log(h)-h`, so a shape near zero does not require cancellation between the scale term and `(shape-1)*log(x/scale)`.
+
+Near unit hazard, small shape amplifies loss in log(-log(1-p)) or log(-log(p)). The inverse centers the original probability at 1-exp(-1), exp(-1), or log(1-exp(-1)), retaining each constant’s low part before applying log1p/expm1. The usual rounded complementary log tail can otherwise produce a relative quantile error of about 0.4 at shape 1e-16.

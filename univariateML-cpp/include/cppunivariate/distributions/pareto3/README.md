@@ -148,3 +148,7 @@ logistic location. Coefficient accuracy must therefore account for the coupled
 shape/location errors and the exponential map back to the public scale.
 
 When the represented log-logistic scale loses its latent likelihood certificate, a failed correction or scale projection retains the accepted finite parent. A successful correction replaces it only when its finite physical likelihood, evaluated with centered log ratios, is at least as large. Its flag remains uncertified. Certified parent fits keep their existing coefficient refinement and scale-projection checks.
+
+### Concentrating shifted probabilities
+
+When min=-scale, rounding an unshifted quantile and then adding min loses its leading displacement. The inverse uses the centered log odds and transports expm1(log-odds/shape) directly. Forward evaluation preserves the addition residual of min+scale before multiplying the log ratio by the shape.

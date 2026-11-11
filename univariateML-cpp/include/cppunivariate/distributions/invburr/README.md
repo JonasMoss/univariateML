@@ -265,3 +265,7 @@ historical proposal's looser coefficient tolerance.
 The held-first-shape route retains finite estimates with an explicit uncertified
 flag when the binary64 scale grid prevents transfer of its latent likelihood
 certificate. The reported likelihood still evaluates the returned coefficients.
+
+### Extreme d/p/q arithmetic
+
+The shape1 = 1 inverse uses the centered log-logistic inverse. At the origin, a fused product-minus-one determines the endpoint exponent: a rounded shape product equal to one need not have an exact product equal to one.

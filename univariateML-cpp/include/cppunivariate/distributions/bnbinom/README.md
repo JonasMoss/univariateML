@@ -637,3 +637,17 @@ extra channel (0/1 in JS, logical in the R adapter). The R estimate retains a
 logical `certified` attribute through the standard constructor. Limit conditions
 state `Certified global comparison` or `Uncertified legacy comparison`; R
 conditions also carry the logical flag. Both face solvers use the caller's iteration allowance.
+
+### Far-count beta normalization
+
+The beta factor in the far-count tail prefactor is evaluated through a shifted gamma ratio, avoiding cancellation of large log-gamma values when a mixing shape diverges. This addresses the normalizing factor only; the extreme mixing-tail and quantile limitations recorded by the audit remain separate.
+
+On the uniform mixing submodel (alpha=beta=1), the mass is exactly r/((r+x)(r+x+1)); evaluating this rational identity removes gamma cancellation at arbitrarily large r. Interchangeability of r and beta gives the corresponding symmetric case. The remaining beta=1 path uses a short shifted gamma ratio when its relative shift is at most one half.
+
+### Extreme d/p/q arithmetic
+
+When one count-shape is one, the survival function is the beta ratio B(x+1+r,alpha)/B(r,alpha). Computing it directly avoids complementing a lower sum whose rounding error can exceed the entire upper tail. Positive small gamma increments use log1p in their recurrence. For large-count masses in this submodel, NaN is returned if the estimated subtraction margin 16 epsilon times the sum of absolute log-beta terms exceeds the log-density tolerance.
+
+When alpha and one count-shape are one, the two tails are the exact rational weights (x+1)/(r+x+1) and r/(r+x+1). Their log-odds form avoids subtracting two gamma increments near log(r), whose cancellation can spoil a small natural CDF even when the log-tail absolute error is tiny.
+
+The unit count-shape CDF at zero uses alpha/(alpha+r) directly, including when alpha+r overflows. For counts below the existing 100000-term structural guard, the unit count-shape bridge sums the exact product hazard in scaled, compensated coordinates; its mass uses the preceding survival times alpha/(alpha+r+x). For larger counts the beta-ratio bridge returns NaN if x+1+r rounds back to r, if the practical log-beta subtraction margin exceeds the log-tail tolerance, or if a nonpositive/subnormal computed hazard cannot meet its resolution margin. Mass evaluations whose shape sum overflows the original rising-factorial kernel also return NaN. These named precision regions prevent a rounded beta-ratio difference from being reported as an exact zero probability.

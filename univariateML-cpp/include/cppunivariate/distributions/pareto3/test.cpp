@@ -106,3 +106,14 @@ TEST_CASE("Pareto III retains the represented uncertified log-logistic parent") 
   CHECK(r.logLik==doctest::Approx(ll).epsilon(1e-12));
  }
 }
+
+// Independent central log-probability expansion; exact binary64 input.
+TEST_CASE("pareto3: central inverse retains a translated residual") {
+  CHECK(cppunivariate::distributions::qpareto3(-0.6931471805599453,1e8,1e8,-1e8,false,true) ==
+        doctest::Approx(-4.638093627692599e-17).epsilon(1e-10).scale(0));
+}
+
+TEST_CASE("pareto3: the inverse displacement survives an underflowed power coordinate") {
+  CHECK(cppunivariate::distributions::qpareto3(-0.6931471805599453,1e308,1e308,-1e308,false,true)==
+        doctest::Approx(-4.638093627692599e-17).epsilon(1e-10).scale(0));
+}

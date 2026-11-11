@@ -468,7 +468,8 @@ TEST_CASE("bnbinom: unrepresentable held-size NB faces preserve numerical stop c
 
 #include "cppunivariate/distributions/bnbinom/dpqr.hpp"
 TEST_CASE("bnbinom: cancelled gamma increments cannot stall a quantile") {
-  CHECK(std::isnan(cppunivariate::distributions::qbnbinom(.5,1,1e308,1,true,false)));
+  // Exact beta-ratio survival proves that the median is zero.
+  CHECK(cppunivariate::distributions::qbnbinom(.5,1,1e308,1,true,false)==0);
 }
 
 TEST_CASE("bnbinom: Bernstein face proof handles multiple derivative sign changes") {
@@ -778,4 +779,19 @@ TEST_CASE("bnbinom tighter scalar accuracy retains a checked proposal when its s
  const auto r=cppunivariate::bnbinom_mle({x.data(),x.size()},1e-10,600,1.0672234787479615,NAN,5.36473383510874);
  REQUIRE(r.status==cppunivariate::BnbinomStatus::Ok);
  CHECK(r.alpha==doctest::Approx(29.443483121871347).epsilon(1e-10));
+}
+
+// Independent 1600-digit exact-input reference; beta-smoke.py.
+TEST_CASE("bnbinom: centered large-shape density") {
+  CHECK(cppunivariate::distributions::dbnbinom(0.0,100000000.0,1,1,true)==
+        doctest::Approx(-18.420680753952364).epsilon(1e-10).scale(0));
+}
+
+TEST_CASE("bnbinom: rational small natural CDF") {
+ CHECK(cppunivariate::distributions::pbnbinom(0,1e8,1,1,true,false)==doctest::Approx(9.99999990000001e-9).epsilon(1e-10).scale(0));
+}
+
+TEST_CASE("bnbinom: unit-shape zero CDF and unresolved count increment") {
+ CHECK(cppunivariate::distributions::pbnbinom(0,1e308,1e308,1,true,false)==doctest::Approx(.5));
+ CHECK(cppunivariate::distributions::pbnbinom(1,1e308,1e308,1,true,false)==doctest::Approx(.75));
 }

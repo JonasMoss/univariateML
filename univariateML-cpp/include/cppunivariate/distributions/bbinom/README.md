@@ -391,3 +391,7 @@ $128\epsilon$ upper padding and an additional feasible-anchor margin.
 These are practical floating-point margins, not outward-rounded intervals.
 A general symbolic uniqueness theorem remains unknown; at sizes zero and
 one the previously described continua are explicit counterexamples.
+
+### Extreme d/p/q arithmetic
+
+In the mass recurrence the remaining integer count is formed before adding beta. Subtracting the counts after adding a tiny beta can discard its significant digits at the last cell, contaminating both summed tails.

@@ -585,3 +585,16 @@ TEST_CASE("genbeta: large replication preserves conditional coefficient accuracy
   CHECK(r.shape2==2);
   CHECK(r.shape3==1);
 }
+
+// The exact binary64 product 1e8*1e-8 exceeds one, although it rounds to one.
+TEST_CASE("genbeta: exact power side at the support endpoint") {
+  CHECK(cppunivariate::distributions::dgenbeta(0,1e8,2,1e-8,1,true) == -std::numeric_limits<double>::infinity());
+}
+
+TEST_CASE("genbeta: portable small-shape complementary tail") {
+ CHECK(cppunivariate::distributions::pgenbeta(5e-324,1e-08,2.0,1.0,1.0,false,true)==doctest::Approx(-11.809396301153278).epsilon(1e-10));
+}
+
+TEST_CASE("genbeta: compensated nonlinear coordinate from likelihood seam") {
+ CHECK(cppunivariate::distributions::dgenbeta(0.9743349826286254,9105166753969690.0,1020286444033552.8,4.084996007320842,1.0,true)==doctest::Approx(20.03567010654306).epsilon(1e-10));
+}

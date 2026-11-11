@@ -26,8 +26,7 @@ inline double dbeta(double x, double shape1, double shape2, bool log) {
       (shape1 < 1 ? special::kPosInf : special::kNegInf);
   else if (x == 1) ld = shape2 == 1 ? std::log(shape1) :
       (shape2 < 1 ? special::kPosInf : special::kNegInf);
-  else ld = (shape1-1)*std::log(x)+(shape2-1)*std::log1p(-x)
-      -special::lbeta(shape1,shape2);
+  else ld = special::beta_log_density_positive(x,shape1,shape2);
   return log ? ld : std::exp(ld);
 }
 inline double pbeta(double q, double shape1, double shape2, bool lower_tail,
@@ -46,8 +45,9 @@ inline double qbeta(double p, double shape1, double shape2, bool lower_tail,
       !std::isfinite(shape2)) return special::kNaN;
   const auto tails = special::quantile_log_tails(p,lower_tail,log_p);
   if (!tails.valid) return special::kNaN;
-  const double t = missing_detail::beta_logit_q(log_p ? p : std::log(p),
-                                              shape1,shape2,lower_tail);
+  double t;
+  if (!missing_detail::symmetric_beta_logit_quantile(p,shape1,shape2,lower_tail,log_p,t))
+    t=missing_detail::beta_logit_q(log_p ? p : std::log(p),shape1,shape2,lower_tail);
   return std::exp(-missing_detail::softplus(-t));
 }
 

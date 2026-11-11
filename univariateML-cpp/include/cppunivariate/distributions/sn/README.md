@@ -301,3 +301,7 @@ With $\alpha=0$, held $\omega=d$ and observations $(0,0,0,d)$, the
 conditional location maximizer is $d/4$. If $d$ is the smallest positive
 double, no double location meets the scale-relative accuracy contract.
 This is a numerical accuracy failure, rather than nonexistence of the MLE.
+
+### Extreme d/p/q arithmetic
+
+The alpha = 1 member has CDF Phi(z)^2, so its exact quarter quantile is the location (with reflection for alpha = -1). Near these quarter probabilities, the inverse uses the normal inverse of sqrt(p); rationalizing sqrt(p)-1/2 preserves natural-probability offsets, and halving an exact logarithmic input preserves its nonzero offset from the mathematical quarter.

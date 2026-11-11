@@ -105,6 +105,21 @@ inline double qsn(double p,double xi=0,double omega=1,double alpha=0,bool lower_
   if (!sn_detail::valid(xi,omega,alpha) || std::isnan(p) || (log_p ? p>0 : (p<0 || p>1))) return special::kNaN;
   // Exact symmetric member avoids rounded log-tail splitting at the median.
   if (alpha==0) return xi+omega*special::normal_quantile(p,lower_tail,log_p);
+  if(alpha==1 || alpha==-1) {
+    const bool direct=alpha==1?lower_tail:!lower_tail;
+    const double sign=alpha==1?1:-1;
+    if(log_p && direct && std::abs(p+1.3862943611198906)<.01)
+      return std::fma(sign*omega,special::normal_quantile(p/2,true,true),xi);
+    if(!log_p) {
+      const double displacement=direct?p-.25:.75-p;
+      if(std::abs(displacement)<1e-4) {
+        const double root=std::sqrt(direct?p:1-p);
+        const double offset=displacement/(root+.5);
+        const double y=offset*2.5066282746310005024,y2=y*y;
+        return std::fma(sign*omega,y*(1+y2*(1.0/6+y2*7.0/120)),xi);
+      }
+    }
+  }
   double lp=log_p ? p : std::log(p);
   if (lp==special::kNegInf) return lower_tail ? special::kNegInf : -special::kNegInf;
   if (lp==0) return lower_tail ? -special::kNegInf : special::kNegInf;

@@ -529,3 +529,7 @@ TEST_CASE("huber: represented face coordinates are checked before certification"
     }
   }
 }
+
+TEST_CASE("huber: Gaussian core logarithms survive erfc underflow") {
+ CHECK(cppunivariate::distributions::qhuber(-10000,0,1000,134500000,true,true)==doctest::Approx(-141379.83987312717).epsilon(1e-9));
+}

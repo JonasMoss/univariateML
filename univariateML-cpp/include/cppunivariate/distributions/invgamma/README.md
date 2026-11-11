@@ -129,3 +129,9 @@ Fitting uses the gamma sufficient statistics of $1/X$, retaining the Jacobian in
 ## Decision history
 
 2026-10-31 (TASK-132): failures survive the reciprocal transformation. See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md) and the appended cases in `test.cpp` for the validation scope.
+
+### Concentrating log density
+
+The inverse-gamma log density equals the gamma log density at beta with scale x, plus log(beta)-log(x). Evaluating that identity through the compensated gamma deviance preserves the exact beta-versus-alpha*x displacement; the former separate log-gamma terms could cancel the finite density near a concentrating mode.
+
+The probability identity uses the opposite gamma tail at beta with scale q. Passing those original arguments preserves the scale-division residual instead of first rounding beta/q or its logarithm.

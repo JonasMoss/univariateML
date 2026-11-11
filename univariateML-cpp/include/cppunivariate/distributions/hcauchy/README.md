@@ -122,3 +122,7 @@ Let $k$ count observations at the estimated or held endpoint. A finite positive 
 ## R notes
 
 Supply `mu` explicitly. Setting `mu = 0` gives the ordinary half-Cauchy model, while `mu = NULL` estimates the translated endpoint. Supplying `sigma` holds scale. Evaluation uses the internal density, distribution, quantile and random-generation functions.
+
+### Extreme d/p/q arithmetic
+
+Near the median, tan(pi/4+d)-1 = 2 tan(d)/(1-tan(d)) avoids subtracting one from a rounded tangent. The offset is combined with a compensated location-plus-scale.

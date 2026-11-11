@@ -365,3 +365,15 @@ shape3 = 1, setting $c=-\operatorname{mean}\log(x/\mathrm{scale})$ gives
 $1/p+1/(p+1)=c$, hence $p=(2-c+\sqrt{c^2+4})/(2c)$ for shape1. This
 strictly decreasing score has a unique finite root for every $c>0$.
 `gradtol` defaults to `1e-10`.
+
+### Endpoint power
+
+The zero-endpoint classification uses the residual of the exact binary64 shape-times-power product minus one. Rounding that product first can falsely select a finite density when the exact endpoint density is zero or infinite.
+
+For shape2 = 2, write u = (x/scale)^shape3. The CDF u^shape1 (1 + shape1(1-u)) is evaluated through positive logarithmic deviances, with a Taylor remainder bound when the hazard is too small to materialize. This avoids the double-width beta-backend normalization error on reciprocal-power paths. Shape2 one uses the exact power law.
+
+### Concentrating beta coordinates
+
+At unit power the affine beta density retains the physical displacement through compensated products. Other powers use the centered beta log-odds density. Its practical coordinate margin includes amplification by 1/(1-y) when y=(x/scale)^power approaches one. The density returns NaN near concentration if that margin exceeds 1e-12 times its log-density scale; this named precision region requires more accurate transcendental coordinates.
+
+If the ordinary log-odds margin fails, two-word logarithms recompute the centered coordinate before rounding. The beta mean is subtracted in the same arithmetic. The complement uses a direct expm1 series near zero, so forming one minus a rounded exponential cannot erase it. NaN remains confined to cases where this practical two-word margin also fails; the ordinary margin selects the recomputation rather than a refusal.

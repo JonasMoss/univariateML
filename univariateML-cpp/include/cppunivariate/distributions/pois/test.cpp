@@ -208,3 +208,7 @@ TEST_CASE("pois: quantile search guards and representability") {
       [](double x) {return cppunivariate::special::poisson_cdf(x,1e308,true);}));
   CHECK(std::isnan(cppunivariate::distributions::qpois(.5,1e308,true,false)));
 }
+
+TEST_CASE("pois: centered million-count density") {
+ CHECK(cppunivariate::distributions::dpois(1000005.0,1000004.6,true)==doctest::Approx(-7.826696475513097).epsilon(1e-10));
+}

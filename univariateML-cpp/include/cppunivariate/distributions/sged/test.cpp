@@ -955,3 +955,21 @@ TEST_CASE("SGED held unit skew retains an uncertified GED parent") {
  CHECK(r.iterations==p.iterations);CHECK(r.restricted==p.restricted);
  for(const auto& c:r.stop_detail.candidates)if(c.model==cppunivariate::StopModel::None){REQUIRE(c.coef.size()==4);CHECK(c.coef.back()==1);}
 }
+
+// Independent 200-digit exact-input normal-member reference.
+TEST_CASE("sged: compensated thin-side centering") {
+ CHECK(cppunivariate::distributions::psged(1.3236080967885124,0.0,1.0,2.0,1e-08,false,true)==doctest::Approx(-36.70531113717792).epsilon(1e-10));
+}
+
+TEST_CASE("sged: compensated standardized moment at nu 1.0") {
+ CHECK(cppunivariate::distributions::dsged(0.6449948853914544,-0.2940350348824814,0.9390299202739361,1.0,1.522997974471263e-08,true)==doctest::Approx(0.0629079363050169).epsilon(1e-10));
+}
+
+TEST_CASE("sged: compensated standardized moment at nu 3.8792797496374307") {
+ CHECK(cppunivariate::distributions::dsged(-1.4843850018264122,-0.032496865700421936,0.9390299202739361,3.8792797496374307,2915.386800631478,true)==doctest::Approx(-1.4732605478515564).epsilon(1e-10));
+}
+
+TEST_CASE("sged natural thin-tail precision region is explicit") {
+  CHECK(std::isnan(cppunivariate::distributions::psged(-1.5461574810135936,0,1,3.8792797496374307,1e8,true,false)));
+  CHECK(std::isnan(cppunivariate::distributions::psged(-1.5461574810135932,0,1,3.8792797496374307,1e8,true,false)));
+}

@@ -138,3 +138,11 @@ The threshold is not estimated even when $\alpha$ or $\beta$ is held. This is a 
 ## Decision history
 
 2026-10-30 (adapter independence): `fatigue_mle_shifted` owns the held-threshold translation (unit Jacobian), validates the shifted support and preserves the delegate status. Its four held-subset regressions reproduce the former adapter arithmetic.
+
+### Extreme d/p/q arithmetic
+
+The inverse uses the centered normal quantile and the identity log(t) = 2 asinh(alpha z/2). Exponentiating relative to the scale with a compensated location-plus-scale preserves the inverse when its location cancels its scale.
+
+In d/p evaluation the Gaussian argument divides the square-root ratio difference by alpha, so a small alpha amplifies error in separately computed log(x-mu)-log(beta). The translated, compensated log ratio retains the physical difference before division, including when mu+beta cancels.
+
+If alpha z/2 underflows, the inverse multiplies beta and alpha before z. The omitted asinh correction is cubic in the underflowed argument, while the final location-plus-scale can cancel and leave a representable linear displacement.

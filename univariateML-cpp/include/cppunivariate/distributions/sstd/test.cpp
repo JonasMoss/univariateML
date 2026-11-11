@@ -643,3 +643,12 @@ TEST_CASE("sstd large-sample compensated derivatives preserve replicated coeffic
  CHECK(r.xi==doctest::Approx(b.xi).epsilon(1e-10).scale(0));
  CHECK(r.logLik/100==doctest::Approx(b.logLik).epsilon(1e-10));
 }
+
+TEST_CASE("sstd: logarithmic thin-side radius exceeds binary64 range") {
+ CHECK(cppunivariate::distributions::dsstd(1e300,0,1,5,1e-8,true)==doctest::Approx(-4360.482172927685).epsilon(1e-10));
+ CHECK(cppunivariate::distributions::psstd(1e300,0,1,5,1e-8,false,true)==doctest::Approx(-3671.316082941905).epsilon(1e-10));
+}
+
+TEST_CASE("sstd: compensated standardized moment at nu 2.5492086449176115") {
+ CHECK(cppunivariate::distributions::dsstd(-0.6644244801433566,0.012734271748561354,1.0184483076867987,2.5492086449176115,77179.93142228863,true)==doctest::Approx(-0.18927952912370902).epsilon(1e-10));
+}

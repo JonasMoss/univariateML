@@ -1,4 +1,5 @@
 #pragma once
+#include "../pareto3/dpqr.hpp"
 #include "../../special/special.hpp"
 #include <cmath>
 #include <limits>
@@ -31,6 +32,7 @@ inline double qpareto2(double p,double shape,double scale,double min,bool lower_
  if(std::isnan(p) || (log_p ? p>0 : (p<0 || p>1))) return std::numeric_limits<double>::quiet_NaN();
  if(p==(log_p ? -std::numeric_limits<double>::infinity() : 0)) return lower_tail ? min : std::numeric_limits<double>::infinity();
  if(p==(log_p ? 0 : 1)) return lower_tail ? std::numeric_limits<double>::infinity() : min;
+ if(shape==1) return qpareto3(p,1,scale,min,lower_tail,log_p);
  return min+qlomax(p,1/scale,shape,lower_tail,log_p);
 }
 template <typename Rng> inline double rpareto2(Rng &rng,double shape,double scale,double min) {

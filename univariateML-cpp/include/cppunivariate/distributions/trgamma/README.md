@@ -222,3 +222,11 @@ observation and a held endpoint, stop numerically rather than inventing
 multiplicities or endpoint factors. Free power witnesses keep the raw
 sample maximum; reciprocal Pareto witnesses keep the raw minimum, including
 when the corresponding reciprocal endpoint overflows.
+
+### Small-shape inverse normalization
+
+The logarithmic inverse retains log Gamma(1 + shape1) without first rounding 1 + shape1. Error in this normalizer is amplified by 1/(shape1 shape2) in log X. The inverse fallback used by the sampler for shape1 < 0.01 inherits this correction: its numeric draws can change, while its uniform inputs and RNG consumption remain unchanged. The overflow-safe power inverse likewise changes numeric draws when the latent Gamma log coordinate overflows.
+
+### Coupled small-shape and large-power limit
+
+The product shape1*shape2 can remain finite while shape2*log(x/scale) overflows. Small-shape density and tail evaluations retain that product before transforming. The Gamma integral bounds the leading small-u CDF between exp(-u) and one times u^a/Gamma(1+a); the branch requires u below 1e-12 times the smaller tail's logarithmic scale. For quantiles whose latent log coordinate overflows negatively, the same bound makes the omitted remainder negligible before division by the power. This recovers finite power-limit answers, including shape1=1e-309 and shape2=1e308, without forming the latent coordinate.

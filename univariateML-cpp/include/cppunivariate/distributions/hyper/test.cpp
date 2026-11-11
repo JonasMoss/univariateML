@@ -568,3 +568,7 @@ TEST_CASE("hyper: uncertified growing-population profiles preserve either held c
   double ll=0;for(double v:x)ll+=cppunivariate::hyper_log_pmf(v,g.N,g.m,g.k);
   CHECK(g.logLik==doctest::Approx(ll).epsilon(1e-10));
 }
+
+TEST_CASE("hyper: small upper tail inverse retains requested tail") {
+ CHECK(cppunivariate::distributions::qhyper(-69.07755278982137,5,1e8,5,false,true)==4);
+}

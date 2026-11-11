@@ -525,3 +525,7 @@ TEST_CASE("emg: local location bracket retains the one-iteration witness") {
   CHECK(fit.stop_detail.loglik_lower<=fit.logLik);
   CHECK(fit.stop_detail.loglik_upper>=fit.logLik);
 }
+
+TEST_CASE("emg: bounded near-normal median") {
+ CHECK(cppunivariate::distributions::qemg(.5,0,1e8,1,true,false)==doctest::Approx(1.).epsilon(1e-10));
+}

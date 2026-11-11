@@ -14,7 +14,7 @@ inline double dzib(double x,double size,double prob,double pi,bool log=false) {
     const double up=std::log1p(-pi)+special::log1mexp(base);
     l=lo<up ? lo : special::log1mexp(up);
   }
-  else if(x>0 && x<=size && x==std::floor(x))l=std::log1p(-pi)+zero_detail::bin_logpmf(static_cast<int>(x),size,prob);
+  else if(x>0 && x<=size && x==std::floor(x))l=std::log1p(-pi)+dbinom(x,size,prob,true);
   return log?l:std::exp(l);
 }
 inline double pzib(double q,double size,double prob,double pi,bool lower_tail=true,bool log_p=false) {

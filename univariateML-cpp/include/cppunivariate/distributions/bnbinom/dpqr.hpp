@@ -2,6 +2,7 @@
 #pragma once
 #include "../../core/precision.hpp"
 #include "../../special/special.hpp"
+#include "../../special/tails.hpp"
 #include <algorithm>
 #include <cmath>
 #include <limits>
@@ -39,7 +40,42 @@ inline bool valid(double r, double a, double b) {
 }
 }
 namespace bnbinom_detail {
+inline double unit_log_ratio(double a,double b) {
+  const double ratio=a/b;
+  if(std::isnormal(ratio))
+    return std::log(ratio)+std::log1p((std::fma(-ratio,b,a)/b)/ratio);
+  return std::log(a)-std::log(b);
+}
+// S(k)=product_{j=0}^k (r+j)/(r+a+j). Scale its positive
+// log-hazard terms by the first term and compensate their finite sum.
+inline double unit_log_hazard(int cells,double r,double a) {
+  const double anchor=special::log_softplus_product(1,unit_log_ratio(a,r));
+  double sum=0,correction=0;
+  for(int j=0;j<cells;++j) {
+    const double term=std::exp(special::log_softplus_product(1,unit_log_ratio(a,r+j))-anchor);
+    const double adjusted=term-correction,next=sum+adjusted;
+    correction=(next-sum)-adjusted;sum=next;
+  }
+  return anchor+std::log(sum);
+}
 inline double log_mass(double x,double r,double a,double b) {
+  // The two count-shape coordinates are interchangeable.
+  if(r==1) std::swap(r,b);
+  if(a==1 && b==1) {
+    const double lr=std::log(r), lx=x==0?special::kNegInf:std::log(x);
+    const double ls=special::log_sum_exp(lr,lx);
+    return (lr-ls)-special::log_sum_exp(ls,0);
+  }
+  if(b==1 && x<100000) {
+    const double preceding=x==0?0:std::exp(unit_log_hazard(static_cast<int>(x),r,a));
+    return -preceding-special::softplus(-unit_log_ratio(a,r+x));
+  }
+  if(b==1 && x>=100) {
+    const double first=special::log_beta_positive(x+r,a+1), second=special::log_beta_positive(r,a);
+    const double value=first-second;
+    if(16*std::numeric_limits<double>::epsilon()*(std::abs(first)+std::abs(second))>1e-10*std::max(1.0,std::abs(value))) return special::kNaN;
+    return value;
+  }
   if(x<100) return logpmf(static_cast<int>(x),r,a,b);
   return special::lgamma(a+r)+special::lgamma(a+b)-special::lgamma(r)-special::lgamma(a)-special::lgamma(b)
     +special::log_gamma_ratio(x,r,1)+special::log_gamma_ratio(x,b,a+r+b);
@@ -48,6 +84,33 @@ inline special::LogTails tails(double x,double r,double a,double b) {
   if(x<0) return special::tails_from_log(special::kNegInf,true);
   if(x==special::kPosInf) return special::tails_from_log(special::kNegInf,false);
   x=std::floor(x);
+  if(b==1 || r==1) {
+    const double rr=b==1?r:b;
+    if(x==0) {
+      const double odds=special::log_positive_ratio(a,rr);
+      const double lower=-special::softplus(-odds),upper=-special::softplus(odds);
+      return lower<upper?special::tails_from_log(lower,true):special::tails_from_log(upper,false);
+    }
+    if(a==1) {
+      const double odds=special::log_positive_ratio(x+1,rr);
+      const double lower=-special::softplus(-odds), upper=-special::softplus(odds);
+      return lower<upper?special::tails_from_log(lower,true):special::tails_from_log(upper,false);
+    }
+    if(x<100000)
+      return special::tails_from_log_hazard(unit_log_hazard(static_cast<int>(x)+1,rr,a),false);
+    if(x+1+rr==rr) return {special::kNaN,special::kNaN,false};
+    double upper;
+    if(a<16) upper=static_cast<double>(increment(rr,a)-increment(x+1+rr,a));
+    else {
+      const double first=special::log_beta_positive(x+1+rr,a),second=special::log_beta_positive(rr,a);
+      upper=first-second;
+      if(16*std::numeric_limits<double>::epsilon()*(std::abs(first)+std::abs(second))>1e-10*std::max(1.0,std::abs(upper)))
+        return {special::kNaN,special::kNaN,false};
+    }
+    if(upper>=0 || -upper<std::numeric_limits<double>::denorm_min()/1e-12)
+      return {special::kNaN,special::kNaN,false};
+    return special::tails_from_log(upper,false);
+  }
   if(x<300) {
     double lm=log_mass(0,r,a,b), sum=lm;
     for(int j=0;j<x;++j) {
@@ -73,7 +136,8 @@ inline special::LogTails tails(double x,double r,double a,double b) {
   for(int j=0;j<100000;++j) {
     const double next=term*((a+j)/(a+1+j))*((1-b+j)/(j+1.0))*((r+a+j)/(n+r+a+j));
     if(next==0 || (j>=b-1 && std::abs(next)*((j+n+r+a)/(n-1))<std::abs(total)*2e-16)) {
-      const double pref=special::log_gamma_ratio(n,r,r+a)+special::lgamma(r+a)-special::lgamma(r)-std::log(a)-special::lbeta(a,b);
+      const double pref=special::log_gamma_ratio(n+r,0,a)+special::log_gamma_ratio(r,a,0)
+          -(std::log(a)+special::log_beta_positive(a,b));
       return special::tails_from_log(pref+std::log(total),false);
     }
     total+=next;term=next;

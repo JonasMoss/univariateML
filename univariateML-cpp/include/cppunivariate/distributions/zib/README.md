@@ -192,3 +192,8 @@ With probability held, the size scan charges every falling-factorial term in the
 With size two, inflation zero and observations $1,1,2$, the ordinary-binomial reduction has the unique probability $2/3$. Its exact real-valued maximum is known, but the nearest double misses a relative $10^{-18}$ coefficient target. A closed likelihood or size comparison cannot supply that missing probability-precision certificate.
 
 For a ZIP face with $z>0$ observed zeros, $k>0$ positive observations and held rational $0<\pi<1$, write $S=\sum x_i$ and $T=\sum x_i(x_i-1)$. At an interior stationary rate $\lambda$, the posterior base-component probability of a zero is $w=(1-\pi)e^{-\lambda}/[\pi+(1-\pi)e^{-\lambda}]$, and the score gives $S=\lambda(k+zw)$. The first binomial profile coefficient is $(\lambda S-T)/2$. If it vanished, $\lambda=T/S$ would be a nonzero rational (the case $T=0$ would force the inadmissible rate zero). The score would make $w$ rational, and then $e^{-\lambda}=\pi w/[(1-\pi)(1-w)]$ would be rational, contradicting Lindemann's theorem. Thus exact equality is excluded for valid binary held inflation on a mixed sample. This supplies neither a usable separation from zero nor integer-prefix exclusion; the reductions with $\pi=0$ or no observed zeros are outside this argument.
+
+
+### Nonzero masses at large trial counts
+
+At zero inflation, every positive mass is exactly binomial. Its independent rising-factorial normalizer can nevertheless lose several digits near a concentrated large-n fit. Delegating the positive mass to the centered binomial density preserves this identity; the zero-mass mixture still uses its separately computed complementary tails.

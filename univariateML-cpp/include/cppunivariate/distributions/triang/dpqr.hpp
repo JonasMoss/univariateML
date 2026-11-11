@@ -47,7 +47,13 @@ inline double qtriang(double p,double a,double b,double c,bool lower_tail=true,b
   if(c==b) return t.upper<=-0.6931471805599453
       ? b-std::exp(lw+t.upper-std::log1p(std::exp(t.lower/2)))
       : a+std::exp(lw+t.lower/2);
-  return t.lower<=std::log(c-a)-lw ? a+std::exp((t.lower+lw+std::log(c-a))/2) : b-std::exp((t.upper+lw+std::log(b-c))/2);
+  if(t.lower<=std::log(c-a)-lw) return a+std::exp((t.lower+lw+std::log(c-a))/2);
+  if(t.lower < -0.6931471805599453) {
+    const double width=b-a, root=std::sqrt(std::exp(t.upper)*(b-c)/width);
+    // width^2 - S width (b-c) = width * ((c-a)+F*(b-c)).
+    return a+((c-a)+std::exp(t.lower)*(b-c))/(1+root);
+  }
+  return b-std::exp((t.upper+lw+std::log(b-c))/2);
 }
 // Preserve the original inverse transform for seeded sampler draws.
 inline double triang_sampling_quantile(double p,double a,double b,double c,bool lower_tail=true,bool log_p=false) {

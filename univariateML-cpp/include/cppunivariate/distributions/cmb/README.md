@@ -614,3 +614,9 @@ statistics are computed once. The block comparison adds
 conditional on computed comparisons, with practical floating-point margins.
 
 At the selected integer size, a final canonical Newton solve uses the covariance matrix of (X, log choose(size, X)). Its inverse maps both moment residuals to errors in log odds and nu; the probability error includes the logistic derivative. Positive definiteness and contraction of the full corrections are checked before the existing global acceptance check. Held-coordinate fits use the corresponding scalar information.
+
+### Extreme d/p/q arithmetic
+
+For the symmetric overdispersed law, each interior binomial coefficient is at least N. Thus its total interior probability is bounded by (N-1) N^nu / 2. This bound can distinguish a log-probability input from the exact half even when all computed interior masses underflow; exact half inputs use symmetry.
+
+The inverse sampler retains the original enumerated transform, including its rounding, so the public quantile correction does not change seeded draws.

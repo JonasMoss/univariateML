@@ -52,7 +52,7 @@ inline std::vector<double> bbinom_log_pmf_all(int size, double alpha, double bet
   lf[0] = bbinom_log_pmf(0, size, alpha, beta);
   for (int x = 0; x < size; ++x) {
     lf[x + 1] = lf[x] + std::log(static_cast<double>(size - x) / (x + 1.0)) +
-                std::log((alpha + x) / (beta + size - x - 1.0));
+                std::log((alpha + x) / (beta + (size - x - 1.0)));
   }
   return lf;
 }

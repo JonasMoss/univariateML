@@ -144,3 +144,7 @@ The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-genb
 ## R notes
 
 With `min = 0`, the fit agrees with `mllomax(x)` after reciprocal conversion of the rate. Numerical comparisons prefer the exponential face within $10^{-8}n$ log-likelihood units, so a tied or slightly better finite maximum can be rejected. A detected face stops with a recommendation to use `mlexp(x - min)`. Unresolved searches stop.
+
+### Extreme d/p/q arithmetic
+
+At shape one the translated inverse uses the log-logistic member with a compensated location-plus-scale. A final addition to a rounded positive quantile loses a small answer when location and scale cancel.

@@ -144,3 +144,9 @@ The diagnostic contract recorded on 2026-10-31 rejects empty or invalid input,
 distinguishes degenerate samples by the free coefficients and preserves delegate
 failures through transformations. See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md)
 and the TASK-132 cases in `test.cpp` for the validation scope.
+
+### Probability evaluation at large shape
+
+Multiplying by the rounded reciprocal scale perturbs the logistic coordinate by an error proportional to the shape, even at `x=scale`. The coordinate instead uses the shared positive log-ratio helper: within a factor of two, the subtraction `x-scale` is exact by Sterbenz’s lemma, and `log1p` preserves its relative accuracy before multiplication. Density and both tails use this same coordinate.
+
+For small shape, quantile inversion also amplifies cancellation in the difference of the two log tails. Near one half, the inverse uses `2*atanh(2*(p-1/2))`; logarithmic inputs retain the low part of `log(2)` through the shared centered-probability helper.

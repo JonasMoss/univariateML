@@ -365,3 +365,13 @@ additionally needs uniform bounds at joint shape/skew corners. Those routes
 retain their numerical methods and are not certified. The
 [derivation and remaining obligations](../../../../../dev/research/evaluations/2026-11-08-sstd-free-data/derivation.md)
 records the precise remaining obligations and independent checks.
+
+### Extreme d/p/q arithmetic
+
+A finite centered residual can overflow when divided by the thin-side skew scale. The density then retains its logarithmic radius, and the probability uses the Student tail kernel in log-radius coordinates. This avoids squaring or materializing the unrepresentable standardized residual; unresolved extreme-skew centering errors remain separately recorded in the truth exclusions.
+
+### Exact base-moment submodel
+
+At nu=5 the standardized first absolute moment is 4*sqrt(3)/(3*pi). A two-word moment and compensated skew displacement retain the thin-side coordinate. The broad-side central probability uses the incomplete beta at v^2/(3+v^2); its linear branch has relative remainder bounded by v^2. The upper-tail hazard is bounded by 5/v for v>=1 and by 16 below one. The d/p bridge returns NaN if its practical coordinate margin fails or its raw displacement or standardized radius cannot be represented; these are named precision regions. Sampling and the inverse transformation retain their original arithmetic.
+
+For other degrees of freedom, the first absolute moment uses a two-word half-shift gamma ratio. Its alternating Laplace expansion has remainder bounded by the first omitted term; recurrence reaches an argument of at least 32. Gamma log-convexity also bounds the difference from the normal moment by 2/nu, so the limiting constant is used only when that bound is below the two-word rounding margin. The symmetric member delegates directly to std.

@@ -268,3 +268,7 @@ domination. No example of multiple finite global scale maximizers is asserted.
 `mlunif` fits unrestricted endpoints and does not preserve held `mu` or `a`.
 Normal-member comparisons retain held `mu` and `sigma`. A proved normal
 winner is returned with `a = 0`; an unresolved comparison retains a successful search result with `certified=0`.
+
+### Extreme d/p/q arithmetic
+
+Near an edge of the uniform convolution, subtract its physical half-width before dividing by the Gaussian scale. Subtracting two separately standardized coordinates loses the edge distance when the Gaussian scale is small.

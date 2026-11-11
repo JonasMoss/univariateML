@@ -225,3 +225,7 @@ prefix comparison certify its truncated-Poisson supremum. Thus zero first and
 second coefficients allow both finite and limiting winners.
 
 The held-probability integer scan uses the same mode-relative kernels as the free-probability profile. It charges normalizer recurrence cells and kernel-ratio terms against the existing 512-unit default allowance; the supplied probability is never re-optimized during that scan.
+
+### Conditional count coordinates
+
+The positive binomial ratio p*(n-k)/((1-p)*(k+1)) is formed with compensated products before normalization on the retained window. A two-cell law can have a CDF below one half by less than binary64 can represent; quantiles therefore compare unnormalized interval odds rather than rounded normalized tails. The conditional bridge is unavailable when unit count steps disappear, a side needs more than two million cells to bound its remainder, or the far-anchor comparison cannot meet its practical margin.

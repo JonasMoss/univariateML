@@ -174,3 +174,7 @@ $10^{-200}$, near one, at $0.3\pm10^{-8}$, U-shaped data and $n=2$
 (`dev/validation/beta-free-fit-check.py`). The beta, nsbeta and betapr
 fixed-scale golden estimates were updated in place (data unchanged) to values
 that agree with mpmath; the old ones were $10^{-11}$ to $2\times10^{-9}$ off.
+
+### Probability normalization and central inversion
+
+A difference of three log-gamma values loses the beta normalizer when one shape is large. Probability code uses exact unit-shape identities and a shifted gamma ratio or a Stirling expression with an omitted term below 3e-17. Near the median of a symmetric beta, the log-odds density is proportional to cosh(t/2)^(-2a); log(cosh(t/2)) <= t^2/8 bounds the relative error of the local linear inverse. This preserves the offset of an exact binary64 logarithmic probability from one half.

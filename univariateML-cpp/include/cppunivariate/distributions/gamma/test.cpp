@@ -253,3 +253,13 @@ TEST_CASE("gamma nuisance aware inference and profile intervals") {
   CHECK(invalid.status==cppunivariate::InferenceStatus::InvalidParameter);
   CHECK(invalid.score.status!=cppunivariate::InferenceStatus::Ok);
 }
+
+// Independent 1600-digit reference; density-smoke.py retains exact inputs.
+TEST_CASE("gamma: compensated concentrating density") {
+  CHECK(cppunivariate::distributions::dgamma(100000000000.0,100000000.0,1000.0,true)==
+        doctest::Approx(-17.037034184996326).epsilon(1e-10).scale(0));
+}
+
+TEST_CASE("gamma: centered high-shape probability") {
+  CHECK(cppunivariate::distributions::pgamma(1e12,1e12,1,true,true) == doctest::Approx(-0.6931469145984605).epsilon(1e-10));
+}

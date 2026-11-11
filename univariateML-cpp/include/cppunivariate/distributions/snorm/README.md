@@ -282,3 +282,9 @@ This is the two-piece normal family. `mlsn` fits the Azzalini skew-normal family
 Use `mlhnorm(x, mu = NULL)` for the right half-normal boundary. For the left boundary, fit `mlhnorm(-x, mu = NULL)` and reflect the resulting distribution back to the original axis.
 
 The free-profile conversion to standard deviation forms the side-scale variance in normalized coordinates before restoring the physical scale.
+
+### Extreme d/p/q arithmetic
+
+For t = min(xi, 1/xi), normalize the centering moment and standard deviation before forming the residual: m(t²-1) and sqrt((1-m²)(1+t⁴)+(2m²-1)t²), where m = sqrt(2/pi). On the thin side the residual is divided by t², so rounding m or its standard deviation first can create order-one errors at xi = 1e-8. Compensated products, sums, division and a square-root correction retain the low-order terms; the moment constant retains its second binary64 component.
+
+The practical centering margin is 64 epsilon² (1+|w|), with eight epsilon times the standardized radius reserved for its final rounding. Density and tail evaluations return NaN when this propagated margin exceeds 1e-11 in the applicable forward-error metric, or when the compensated location/scale coordinate overflows. These are stated precision regions, not a claim that a wider arithmetic implementation is impossible. On the broad side, the opposite probability is evaluated as (t²+erf(|v|/sqrt(2)))/(1+t²), retaining the thin-side probability at the mode.

@@ -562,3 +562,15 @@ its physical scale is recovered directly. This avoids overflowing a Lomax
 rate whose reciprocal beta-prime scale is representable. A finite face
 value still supplies a lower bound when its coefficients cannot be encoded;
 only representable face coefficients enter the witness list.
+
+### Extreme-shape probability evaluation
+
+Large-shape beta-prime densities require the beta normalizer before the nearly equal log-gamma terms are subtracted. The probability-only normalizer uses the shifted gamma ratio; it leaves the fitter normalizer unchanged. At a symmetric median the inverse retains the original probability offset, rather than subtracting two rounded log tails.
+
+The concentrating symmetric tail uses t=log(x/scale), with a=shape1=shape2. Rounding its two beta coordinates can erase a resolved displacement. This probability bridge returns NaN for sqrt(a)*E > 2.5e-11 and 0 < |t| < 2E/1e-10, where E is eight binary64 machine epsilons. At t=0 the exact symmetric half-probability remains available; the stated margin is practical floating-point evidence.
+
+When shape2 is one or two, the transformed beta coordinate admits an exact power or power-times-linear CDF. The latter uses a positive-deviance hazard rather than subtracting its nearly equal logarithmic terms, retaining small tails without relying on extended-precision beta normalization.
+
+### Unequal concentrating beta shapes
+
+The density normalizer is centered at the beta mean and combined with two nonnegative Bernoulli deviances. In the unit-power submodel, a compensated product expansion retains shape2 times the physical excess minus shape1 times scale before either ratio rounds; a rounded beta coordinate can lose the entire standardized displacement.

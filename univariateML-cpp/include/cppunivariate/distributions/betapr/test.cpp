@@ -696,3 +696,13 @@ TEST_CASE("unit face bounds survive unrepresentable face coefficients") {
    CHECK(r.logLik+margin>=r.stop_detail.loglik_lower);
  } else CHECK(r.status==cppunivariate::BetaPrimeStatus::BfgsFailure);
 }
+
+// Independent 1600-digit exact-input reference; beta-smoke.py.
+TEST_CASE("betapr: centered large-shape density") {
+  CHECK(cppunivariate::distributions::dbetapr(1.0,100000000.0,100000000.0,1,true)==
+        doctest::Approx(7.944828247241538).epsilon(1e-10).scale(0));
+}
+
+TEST_CASE("betapr: exact-input density from likelihood seam replay") {
+ CHECK(cppunivariate::distributions::dbetapr(0.6510020230593399,5.454590759462655e+23,8.876547609650913e+23,1.0594104501122898,true)==doctest::Approx(26.490608930512803).epsilon(1e-10));
+}

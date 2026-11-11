@@ -223,3 +223,7 @@ TEST_CASE("binom: quantile search guards and representability") {
       [](double x) {return cppunivariate::special::binomial_cdf(x,1e308,.9,true);}));
   CHECK(std::isnan(cppunivariate::distributions::qbinom(.5,1e308,.9,true,false)));
 }
+
+TEST_CASE("binom: exact-input density from likelihood seam replay") {
+ CHECK(cppunivariate::distributions::dbinom(1000000,1000023.0,0.9999816004231903,true)==doctest::Approx(-3.0226093617274734).epsilon(1e-10));
+}

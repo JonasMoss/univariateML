@@ -1,4 +1,5 @@
 #pragma once
+#include "../../special/tails.hpp"
 #include "../../core/precision.hpp"
 #include "../../special/constants.hpp"
 #include <algorithm>
@@ -93,6 +94,16 @@ inline double qemg(double p,double mu,double sigma,double lambda,bool lower_tail
   if(!emg_detail::valid(mu,sigma,lambda) || std::isnan(p) || (log_p?p>0:p<0||p>1)) return special::kNaN;
   if(p==(log_p?special::kNegInf:0)) return lower_tail?special::kNegInf:special::kPosInf;
   if(p==(log_p?0:1)) return lower_tail?special::kPosInf:special::kNegInf;
+  const double normal=special::normal_quantile(p,lower_tail,log_p);
+  const double exponential_mean=1/lambda, relative=exponential_mean/sigma;
+  if(std::abs(normal)<=.01 && relative<=.001 && std::isfinite(exponential_mean)) {
+    const double center=mu+exponential_mean;
+    const double candidate=std::fma(sigma,normal,center)+special::addition_residual(mu,exponential_mean,center);
+    // Taylor about the zero-mean exponential displacement. E delta=0,
+    // E delta^2=t^2, E |delta|^3<=16t^3; the central density is >.23/sigma.
+    const double error=8*(sigma*relative)*relative*(std::abs(normal)+relative);
+    if(std::isfinite(candidate) && error<=1e-11*std::abs(candidate)) return candidate;
+  }
   double target=log_p?p:std::log(p);
   // Always invert the smaller tail, including when p was supplied near one.
   if(target> -0.6931471805599453) {target=std::log(-std::expm1(target));lower_tail=!lower_tail;}

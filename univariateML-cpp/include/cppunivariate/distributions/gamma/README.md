@@ -138,3 +138,11 @@ Empty or invalid input carries a non-success status. Degenerate samples depend
 on which coefficients are free; delegate failures survive transformations.
 See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md)
 and the appended TASK-132 cases in `test.cpp` for the validation scope.
+
+### Concentrating log density
+
+For large shape, a log-gamma subtraction can lose the entire finite density near the mode. The density separates its Stirling normalizer from the nonnegative deviance k*(u-log1p(u)). Binary mantissas and an FMA residual retain the exact scale-times-shape center without overflow or subnormal product loss; the finite Taylor polynomial preserves k*u^2 even when u^2 underflows. The omitted Stirling term is below 3e-17 at the regime boundary.
+
+For shape at least 16, probabilities integrate the centered log-gamma density with the bounded Simpson and log-concave tangent construction also used by the Prentice family. The exact binary64 scale-times-shape center is retained before standardization. The smaller-shape path passes a representable unit-scale argument directly to the gamma backend instead of exponentiating its logarithm. A small FMA division residual is transported through the density; the unresolved region where its relative tail correction exceeds 1e-7 returns NaN. Far from the mode, an explicit log-concave Laplace bound controls the tail remainder by 1e-12. Exhausted series or continued fractions also return NaN.
+
+The inverse can return the mean when Chernoff bounds put the requested quantile within relative 1e-10 of it; a factor-two exponent margin reserves floating-point error. This shortcut returns NaN if that bracket intersects the binary64 overflow boundary. It is confined to the gamma inverse, since further power or exponential transforms can amplify its relative allowance.

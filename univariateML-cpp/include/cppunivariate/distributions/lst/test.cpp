@@ -837,8 +837,10 @@ TEST_CASE("Student density square overflow retains the scaled radius") {
     CHECK(cppunivariate::distributions::dht(row[0],0,nu,1,true)/row[1]==doctest::Approx(1.).epsilon(1e-12));
     CHECK(cppunivariate::distributions::dstd(row[0],0,1,nu,false)==0);
   }
-  CHECK(std::isnan(cppunivariate::distributions::psstd(1e308,-1e308,1e308,nu,2)));
-  CHECK(std::isnan(cppunivariate::distributions::dsstd(1e308,-1e308,1e308,nu,2,true)));
+  // The raw difference overflows, but the exact scaled displacement is two.
+  // Independent 240-digit normal-limit oracle: dpqr-extreme-data/skew-overflow.py.
+  CHECK(cppunivariate::distributions::psstd(1e308,-1e308,1e308,nu,2)==doctest::Approx(0.95873377826037).epsilon(1e-12));
+  CHECK(cppunivariate::distributions::dsstd(1e308,-1e308,1e308,nu,2,true)==doctest::Approx(-711.9341554033035).epsilon(1e-12));
   CHECK(std::isnan(cppunivariate::distributions::pht(1e308,-1e308,nu,1e308,true,false)));
   CHECK(std::isnan(cppunivariate::distributions::dht(1e308,-1e308,nu,1e308,true)));
 }

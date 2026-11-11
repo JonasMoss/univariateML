@@ -118,3 +118,7 @@ Invalid endpoint ordering (`min >= max`) is rejected as invalid input. An endpoi
 ## Decision history
 
 The diagnostic contract was recorded on 2026-10-31. Empty or invalid input has a non-success status, and constant-sample behavior depends on the held endpoints. See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md) and the TASK-132 cases in `test.cpp` for the validation scope.
+
+### Logarithmic probabilities near the center
+
+The binary64 value -log(2) represents a probability slightly different from one half. If the endpoints cancel, rounding that probability to one half first loses the entire quantile. Central inversion retains the low part of log(2) and the compensated endpoint midpoint.

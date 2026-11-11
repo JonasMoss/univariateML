@@ -138,3 +138,7 @@ the short distance; the other half of each inverse uses the direct square
 root. Public quantiles use log-tail inputs before exponentiating the required
 small probability. The historical sampling transform is retained for seeded
 sampling compatibility.
+
+### Extreme d/p/q arithmetic
+
+On the right branch with a small lower probability, rationalizing the inverse gives a + ((c-a)+F(b-c))/(1+sqrt(S(b-c)/(b-a))). Its positive numerator avoids cancellation between a support width and its nearly equal square root.

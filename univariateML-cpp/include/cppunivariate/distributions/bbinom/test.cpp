@@ -550,3 +550,7 @@ TEST_CASE("bbinom: an unclosed size tail retains the best successful prefix prof
     CHECK(f.logLik>=fixed.logLik-1e-8);
   }
 }
+
+TEST_CASE("bbinom: exact-input extreme arithmetic regression") {
+  CHECK(cppunivariate::distributions::pbbinom(0.0,10.0,1.0,1e-08,false,true) == doctest::Approx(-9.999999995e-10).epsilon(1e-10));
+}

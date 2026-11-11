@@ -133,3 +133,7 @@ Scalar d/p/q/r share the positive-probability conditioning contract. At `lambda 
 ## Decision history
 
 The normalizer uses mode-centred recurrences with a two-million-term budget per tail. Unresolved normalization stops with numerical failure.
+
+### Relative conditional masses
+
+A rare conditioning event can give a moderate conditional log density while both parent kernel terms are large. Positive Poisson ratios lambda/(k+1), anchored at the retained mode, remove that common kernel before normalizing; monotone ratios give a geometric bound on the omitted tails. Conditional evaluation returns NaN when its unit lattice cannot advance, its two-million-cell side guard cannot close the remainder, or a separated parent-log comparison exceeds its stated practical margin.

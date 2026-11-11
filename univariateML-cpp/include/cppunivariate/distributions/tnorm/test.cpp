@@ -542,3 +542,8 @@ TEST_CASE("tnorm scaled residuals: all normal-member held subsets") {
     }
   }
 }
+
+TEST_CASE("tnorm: uniform-limit endpoint distance") {
+ CHECK(cppunivariate::distributions::ptnorm(0.9999999999999999,0,1e8,0,1,false,true)==
+  doctest::Approx(-36.7368005696771).epsilon(1e-10));
+}

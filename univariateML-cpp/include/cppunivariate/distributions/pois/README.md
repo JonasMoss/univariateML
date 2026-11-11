@@ -99,3 +99,7 @@ Empty or invalid input carries a non-success status. Degenerate samples depend
 on which coefficients are free; delegate failures survive transformations.
 See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md)
 and the appended TASK-132 cases in `test.cpp` for the validation scope.
+
+### Centered count density
+
+At large counts the log mass combines the Stirling remainder with the nonnegative Poisson deviance lambda-k-k*log(lambda/k). Sterbenz subtraction retains lambda-k near the mode. This avoids subtracting a factorial log from two terms of order k*log(k), whose errors can exceed the entire log-density tolerance at million-count fits.

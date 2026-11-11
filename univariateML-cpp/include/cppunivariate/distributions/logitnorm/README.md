@@ -109,3 +109,11 @@ On 2026-10-30 (TASK-125), normal log tails began using the shared normal-tail he
 The 2026-10-31 diagnostic audit checks that empty or invalid input has a non-success status and that delegate failures survive transformations. See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md) and the TASK-132 cases in the family C++ tests.
 
 Centered logits use the difference of two log1p terms, retaining raw proportion spacings and their complements. Two-component absolute logit sums retain a fitted mean close to zero. The reported likelihood uses the returned mean and scale with the logit Jacobian; a finite fit whose rounded logit mean loses the likelihood certificate carries an explicit uncertified flag.
+
+### Extreme d/p/q arithmetic
+
+The normal inverse retains the offset of a log-probability input from exact log(1/2) before multiplication by sigma. Equality with a rounded logarithmic median is insufficient when sigma is large.
+
+### Thin normal images
+
+A rounded logit can equal the supplied normal mean while their exact difference is nonzero. Dividing that lost residual by a tiny standard deviation changes both density and tails. When the ordinary coordinate margin is too large, a two-word atanh-series logarithm retains the residual before division. The only exact rational logit center, x=1/2, is handled directly. Density and tails return NaN when the stated practical two-word margin still cannot resolve the transformed coordinate; this is the remaining named precision region.

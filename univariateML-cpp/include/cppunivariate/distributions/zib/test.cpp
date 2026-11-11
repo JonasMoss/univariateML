@@ -499,3 +499,7 @@ TEST_CASE("zib: a closed binomial mean does not certify sub-machine coefficient 
   REQUIRE(g.status==cppunivariate::ZibStatus::Ok);
   CHECK_FALSE(g.certified);CHECK(g.prob==1);CHECK(g.pi==1./3);
 }
+
+TEST_CASE("zib: exact-input density from likelihood seam replay") {
+ CHECK(cppunivariate::distributions::dzib(1000003,1000023.0,0.9999816004231903,0.0,true)==doctest::Approx(-2.4885944485828846).epsilon(1e-10));
+}

@@ -39,6 +39,8 @@ inline double qunif(double p, double min, double max, bool lower_tail,
   if (!(std::isfinite(min) && std::isfinite(max) && max>min)) return special::kNaN;
   const auto t=special::quantile_log_tails(p,lower_tail,log_p);
   if (!t.valid) return special::kNaN;
+  const double offset=special::probability_minus_half(p,lower_tail,log_p);
+  if (std::abs(offset)<=0.25) return special::centered_interval_quantile(min,max,offset);
   if (!std::isfinite(max-min))
     return min*std::exp(t.upper)+max*std::exp(t.lower);
   const double lw=unif_log_distance(max,min);

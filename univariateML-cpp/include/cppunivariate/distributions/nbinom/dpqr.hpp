@@ -24,12 +24,33 @@ inline double dnbinom(double x, double size, double prob, bool log) {
   if (!(size>=0) || !std::isfinite(size) || !(prob>0 && prob<=1) || std::isnan(x)) return special::kNaN;
   if (!std::isfinite(x) || x<0 || x!=std::floor(x)) return log?special::kNegInf:0;
   if(size==0 || prob==1) return x==0?(log?0:1):(log?special::kNegInf:0);
+  if(x==0) {const double lp=size*std::log(prob);return log?lp:std::exp(lp);}
+  if((x+1)-x==1 && std::isfinite(size+x)) {
+    const double lp=special::beta_log_density_positive(prob,size,x+1)+std::log(prob)-std::log(size+x);
+    return log?lp:std::exp(lp);
+  }
+  if(size>=16 && x>=16) {
+    int exponent=0;std::frexp(std::max(size,x),&exponent);
+    const double nr=std::scalbn(size,-exponent),nx=std::scalbn(x,-exponent);
+    const double d=special::beta_center_residual(prob,nr,nx),delta=std::scalbn(d,exponent);
+    const double u=d/nr,v=-d/nx;
+    const double first=std::abs(u)<=.5?special::scaled_positive_deviance(size,u)
+      :delta-size*(std::log1p(x/size)+std::log(prob));
+    const double second=std::abs(v)<=.5?special::scaled_positive_deviance(x,v)
+      :-delta-x*(std::log1p(size/x)+std::log1p(-prob));
+    const double logsum=std::log(std::max(size,x))+std::log1p(std::min(size,x)/std::max(size,x));
+    const double constant=.5*(std::log(size)-std::log(x)-logsum)-.91893853320467274178
+      +special::density_stirling_remainder(size+x)-special::density_stirling_remainder(size)-special::density_stirling_remainder(x);
+    const double lp=constant-first-second;
+    return log?lp:std::exp(lp);
+  }
   double lp;
   if (x>1e8*std::max(1.0,size*size)) {
     // log Gamma(x+size)/Gamma(x+1), with O(size^3/x^2) omitted.
     lp=(size-1)*std::log(x)+size*(size-1)/(2*x)-special::lgamma(size)
         +size*std::log(prob)+x*std::log1p(-prob);
-  } else lp=special::dnbinom(x,size,prob,true);
+  } else lp=special::log_gamma_ratio(size,x,0)-special::lgamma(x+1)
+      +size*std::log(prob)+x*std::log1p(-prob);
   return log?lp:std::exp(lp);
 }
 

@@ -599,3 +599,8 @@ TEST_CASE("transformed gamma helper inclusion keeps its independent gamma fit") 
  double ll=0;for(double v:x)ll+=cppunivariate::distributions::dtrgamma(v,r.shape1,r.shape2,r.scale,true);
  CHECK(r.logLik==doctest::Approx(ll).epsilon(1e-10));
 }
+
+TEST_CASE("trgamma: finite coupled power survives latent log overflow") {
+ CHECK(cppunivariate::distributions::qtrgamma(.5,1e-309,1e308,1,true,false)==doctest::Approx(0.0009765625).epsilon(1e-9).scale(0));
+ CHECK(cppunivariate::distributions::dtrgamma(1,1e-309,1e308,1,true)==doctest::Approx(-3.302585092994043).epsilon(1e-10));
+}

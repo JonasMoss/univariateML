@@ -193,3 +193,11 @@ explanation. With min = 0 and max = 1 this is the ordinary beta fit.
 Invalid and empty samples carry non-success statuses, including delegate paths.
 See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md)
 and the appended TASK-132 cases in `test.cpp`.
+
+### Translated quantiles and shape extremes
+
+A beta quantile rounded before affine transport can erase a nonzero result when the endpoints straddle zero. Central symmetric inversion retains the offset from one half through the compensated midpoint calculation. The probability normalizer also avoids subtraction of large log-gamma values when one shape diverges.
+
+The concentrating symmetric tail uses t=log((x-min)/(max-x)), with a=shape1=shape2. Rounding its two beta coordinates can erase a resolved displacement. This probability bridge returns NaN for sqrt(a)*E > 2.5e-11 and 0 < |t| < 2E/1e-10, where E is eight binary64 machine epsilons. At t=0 the exact symmetric half-probability remains available; the stated margin is practical floating-point evidence.
+
+The shape2 one/two beta-coordinate reductions retain the cumulative hazard before rescaling the interval. Their closed antiderivatives avoid backend normalizer loss in double-width builds; at shape2 two a positive-deviance sum retains the complement at the upper endpoint.

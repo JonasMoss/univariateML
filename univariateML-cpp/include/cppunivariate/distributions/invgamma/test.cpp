@@ -198,3 +198,9 @@ TEST_CASE("invgamma: finite public rate despite an overflowing reciprocal refere
   CHECK(std::isfinite(fit.logLik));
   CHECK(fit.scale>0);
 }
+
+// Independent 1600-digit reference; density-smoke.py retains exact inputs.
+TEST_CASE("invgamma: compensated concentrating density") {
+  CHECK(cppunivariate::distributions::dinvgamma(1.0,100000000.0,100000000.0,true)==
+        doctest::Approx(8.291401837938176).epsilon(1e-10).scale(0));
+}

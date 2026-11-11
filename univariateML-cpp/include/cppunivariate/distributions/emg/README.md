@@ -211,3 +211,7 @@ Near the normal face, normal scale and exponential rate can compensate
 while likelihood values round identically. In the negative normal-CDF tail,
 the common Gaussian quadratic terms must cancel before score evaluation.
 The location accuracy floor is the normal scale; `reltol` defaults to `1e-10`.
+
+### Near-normal inverse bound
+
+Write the centered exponential displacement in Gaussian units as delta, with t = 1/(lambda sigma). Its mean is zero, variance t², and third absolute moment is at most 16t³. Taylor expansion of Phi and a central convolution density lower bound of 0.23/sigma bound the quantile displacement from mu + 1/lambda + sigma z by 8 sigma t² (|z|+t), for |z| <= 0.01 and t <= 0.001. The inverse uses this approximation only when that bound is below 1e-11 times the returned magnitude.

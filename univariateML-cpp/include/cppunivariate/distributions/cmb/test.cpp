@@ -596,3 +596,12 @@ TEST_CASE("cmb: held dispersion needs only the free probability information") {
   CHECK(r.nu==-1000);
   CHECK(r.logLik==doctest::Approx(-4*std::log(2.)).epsilon(1e-14));
 }
+
+TEST_CASE("cmb: exact-input extreme arithmetic regression") {
+  CHECK(cppunivariate::distributions::qcmb(-0.6931471805599453,10.0,0.5,-100000000.0,true,true) == doctest::Approx(10.0).epsilon(1e-10).scale(0));
+}
+
+TEST_CASE("cmb: symmetric median survives interior underflow") {
+ CHECK(cppunivariate::distributions::qcmb(.5,10,.5,-1e8,true,false)==5);
+ CHECK(cppunivariate::distributions::qcmb(.5,10,.5,-1e8,false,false)==5);
+}

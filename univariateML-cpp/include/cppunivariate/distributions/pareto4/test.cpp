@@ -248,3 +248,7 @@ TEST_CASE("pareto4 transports an unclosed held-power face") {
  REQUIRE(r.status==cppunivariate::BurrStatus::Ok);CHECK_FALSE(r.certified);
  CHECK(std::isfinite(r.logLik));
 }
+
+TEST_CASE("pareto4: exact-input extreme arithmetic regression") {
+  CHECK(cppunivariate::distributions::qpareto4(-0.6931471805599453,1.0,1e-08,1.0,0.0,true,true) == doctest::Approx(1.0000000046380937).epsilon(1e-10).scale(0));
+}

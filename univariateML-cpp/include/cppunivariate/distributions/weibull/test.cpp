@@ -152,3 +152,26 @@ TEST_CASE("weibull: held shape does not hide an unrepresentable scale") {
   const std::vector<double> x{u,2*u};
   CHECK(cppunivariate::weibull_mle({x.data(),x.size()},1e-10,100,NAN,1,NAN).status==cppunivariate::WeibullStatus::AccuracyFailure);
 }
+
+// Independent 100-digit mpmath values; priority.py records exact double inputs.
+TEST_CASE("weibull: exact-input large-shape displacement") {
+  CHECK(cppunivariate::distributions::dweibull(999.9999999999999,1e12,1000.,true) == doctest::Approx(19.72326583048431).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::pweibull(999.9999999999999,1e12,1000.,false,true) == doctest::Approx(-0.999886319624382).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::dweibull(1000.0000000000001,1e12,1000.,true) == doctest::Approx(19.723265830483818).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::pweibull(1000.0000000000001,1e12,1000.,false,true) == doctest::Approx(-1.000113693300315).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::dweibull(1000.0000000005,1e12,1000.,true) == doctest::Approx(19.574547996466492).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::pweibull(1000.0000000005,1e12,1000.,false,true) == doctest::Approx(-1.6487125527789595).epsilon(1e-10));
+}
+
+// Independent 160-digit values, with probabilities rounded before inversion.
+TEST_CASE("weibull: small-shape inverse at unit hazard") {
+  CHECK(cppunivariate::distributions::qweibull(0.6321205588285577,1e-08,1.0,true,false) == doctest::Approx(0.9999999966215145).epsilon(1e-10).scale(0));
+  CHECK(cppunivariate::distributions::qweibull(0.36787944117144233,1e-08,1.0,false,false) == doctest::Approx(0.9999999966215145).epsilon(1e-10).scale(0));
+  CHECK(cppunivariate::distributions::qweibull(-0.4586751453870819,1e-08,1.0,true,true) == doctest::Approx(1.0000000031167178).epsilon(1e-10).scale(0));
+  CHECK(cppunivariate::distributions::qweibull(0.6321205588285577,1e-12,1.0,true,false) == doctest::Approx(0.9999662157154426).epsilon(1e-10).scale(0));
+  CHECK(cppunivariate::distributions::qweibull(0.36787944117144233,1e-12,1.0,false,false) == doctest::Approx(0.9999662157154426).epsilon(1e-10).scale(0));
+  CHECK(cppunivariate::distributions::qweibull(-0.4586751453870819,1e-12,1.0,true,true) == doctest::Approx(1.000031167662517).epsilon(1e-10).scale(0));
+  CHECK(cppunivariate::distributions::qweibull(0.6321205588285577,1e-16,1.0,true,false) == doctest::Approx(0.7133033076559511).epsilon(1e-10).scale(0));
+  CHECK(cppunivariate::distributions::qweibull(0.36787944117144233,1e-16,1.0,false,false) == doctest::Approx(0.7133033076559511).epsilon(1e-10).scale(0));
+  CHECK(cppunivariate::distributions::qweibull(-0.4586751453870819,1e-16,1.0,true,true) == doctest::Approx(1.3657063511383019).epsilon(1e-10).scale(0));
+}

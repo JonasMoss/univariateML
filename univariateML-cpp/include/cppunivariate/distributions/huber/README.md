@@ -212,3 +212,7 @@ estimate shape. Certified normal and Laplace faces stop with advice to use
 stops carry structured evidence through the shared R/JavaScript fit layer.
 
 Both Gaussian-face comparisons obtain their conditional location and residual scale from the normal fitter; physical residuals are never squared to obtain that face scale.
+
+### Extreme d/p/q arithmetic
+
+Within the Gaussian core, the survival numerator is evaluated as a log-domain difference of normal tails plus the exponential-tail mass. Materializing erfc first underflows at standardized arguments around 38, although its logarithm is finite; inversion of that zero previously saturated the quantile at the underflow point even when epsilon was much larger.

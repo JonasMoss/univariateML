@@ -1,5 +1,6 @@
 #pragma once
 #include "mle.hpp"
+#include "../../special/beta_tails.hpp"
 namespace cppunivariate {
 namespace distributions {
 inline double dgenbeta(double x,double shape1,double shape2,double shape3,double scale,bool log) {
@@ -7,15 +8,34 @@ inline double dgenbeta(double x,double shape1,double shape2,double shape3,double
   if(!(shape1>0&&shape2>0&&shape3>0&&scale>0)||!std::isfinite(shape1+shape2+shape3+scale)||std::isnan(x))return std::numeric_limits<double>::quiet_NaN();
   double ll=-inf;
   if(x==0) {
-    if(shape1*shape3<1)ll=inf;
-    else if(shape1*shape3==1)ll=std::log(shape3)-std::log(scale)-gb2_detail::logbeta(shape1,shape2);
+    const double power=std::fma(shape1,shape3,-1.0);
+    if(power<0)ll=inf;
+    else if(power==0)ll=std::log(shape3)-std::log(scale)-gb2_detail::logbeta(shape1,shape2);
   } else if(x==scale) {
     if(shape2<1)ll=inf;
     else if(shape2==1)ll=std::log(shape1)+std::log(shape3)-std::log(scale);
   } else if(x>0&&x<scale) {
-    const double z=shape3*(x>scale*.5?std::log1p((x-scale)/scale):std::log(x)-std::log(scale));
-    const double r=z>-.6931471805599453?std::log(-std::expm1(z)):std::log1p(-std::exp(z));
-    ll=std::log(shape3)-std::log(x)+shape1*z+(shape2-1)*r-gb2_detail::logbeta(shape1,shape2);
+    if(shape3==1) ll=special::affine_beta_log_density_positive(x,shape1,shape2,0,scale);
+    else {
+      const double z=shape3*special::log_positive_ratio(x,scale);
+      const double r=z>-.6931471805599453?std::log(-std::expm1(z)):std::log1p(-std::exp(z));
+      const double t=z-r;
+      const double error=8*std::numeric_limits<double>::epsilon()*((std::abs(z)+shape3)/(-std::expm1(z))+std::abs(r));
+      double kernel=missing_detail::beta_logit_density(t,shape1,shape2,error);
+      double complement=r;
+      if(std::isnan(kernel) && shape1>=16 && shape2>=16) {
+        const auto lr=special::compensated_log::add(special::compensated_log::logarithm(x),special::compensated_log::negative(special::compensated_log::logarithm(scale)));
+        const auto coordinate=special::compensated_log::multiply(lr,{shape3,0});
+        const auto logcomplement=special::compensated_log::log_one_minus_exp(coordinate);
+        const auto logit=special::compensated_log::add(coordinate,special::compensated_log::negative(logcomplement));
+        const double coordinate_error=shape3*special::compensated_log::margin(std::abs(std::log(x))+std::abs(std::log(scale)));
+        const double resolved_error=(coordinate_error+special::compensated_log::margin(0)*std::min(1.0,std::abs(coordinate.high)))/(-std::expm1(coordinate.high))
+            +special::compensated_log::margin(std::abs(logcomplement.high));
+        kernel=missing_detail::compensated_beta_logit_density(logit,shape1,shape2,resolved_error);
+        complement=logcomplement.high+logcomplement.low;
+      }
+      ll=std::log(shape3)-std::log(x)-complement+kernel;
+    }
   }
   return log?ll:std::exp(ll);
 }

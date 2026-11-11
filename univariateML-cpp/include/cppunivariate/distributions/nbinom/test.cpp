@@ -233,3 +233,16 @@ TEST_CASE("nbinom: quantile search guards and representability") {
   CHECK(std::isnan(cppunivariate::special::negative_binomial_quantile(.5,1e308,.1,true)));
   CHECK(std::isnan(cppunivariate::distributions::qnbinom(.5,1e308,.1,true,false)));
 }
+
+// Independent exact-binary64 mpmath reference, 80 decimal digits.
+TEST_CASE("nbinom: finite-size Poisson face log mass and tiny survival") {
+  const double prob=0.9999999900000001;
+  CHECK(cppunivariate::distributions::dnbinom(161,1e8,prob,true)==
+        doctest::Approx(-661.5661332533377).epsilon(1e-12));
+  const double survival=cppunivariate::distributions::pnbinom(161,1e8,prob,false,false);
+  CHECK(std::abs(survival/3.010489309529307e-290-1)<1e-10);
+}
+
+TEST_CASE("nbinom: exact-input density from likelihood seam replay") {
+ CHECK(cppunivariate::distributions::dnbinom(1000001,10.391389312562472,1.0391233533535134e-05,true)==doctest::Approx(-13.571983521811106).epsilon(1e-10));
+}

@@ -75,6 +75,17 @@ inline double dtnorm(double x, double mean, double sd, double a, double b, bool 
 inline double ptnorm(double q, double mean, double sd, double a, double b,
                      bool lower_tail, bool log_p) {
   if (!tnorm_valid(mean, sd, a, b) || std::isnan(q)) return std::numeric_limits<double>::quiet_NaN();
+  if(q>a && q<b && std::isfinite(a) && std::isfinite(b) && std::isfinite(b-a)) {
+    const auto coordinates=tnorm_coordinates(mean,sd,a,b);
+    const double radius=std::max(std::abs(coordinates.lo),std::abs(coordinates.hi));
+    const double variation=std::abs(coordinates.t1)*(coordinates.hi-coordinates.lo)+std::abs(coordinates.t2)*radius*radius;
+    if(variation<=1e-12) {
+      // Every normalized density ratio to uniform lies in exp(+-variation).
+      const double below=std::log(q-a)-std::log(b-a);
+      const double above=std::log(b-q)-std::log(b-a);
+      return special::tail_probability(below<above?special::tails_from_log(below,true):special::tails_from_log(above,false),lower_tail,log_p);
+    }
+  }
   double below, above;  // log P(X <= q), log P(X > q)
   if (q <= a) {
     below = -std::numeric_limits<double>::infinity();
