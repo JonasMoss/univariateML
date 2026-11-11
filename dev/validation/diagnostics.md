@@ -65,8 +65,10 @@ Iterative failure is an error ([parameter rules](../roadmap/2026-10-29-parameter
 
 A certificate that cannot close a global comparison or coefficient inclusion
 returns the successful search result with `certified = FALSE`, including when
-its certificate allowance expires. This flag makes no global or coefficient
-accuracy claim. Stop when a separated feasible likelihood bound refutes the
+its certificate allowance expires. The flag withdraws the global-optimality
+claim; coefficient accuracy is what the fallback search's own stopping rule
+establishes, which the [accuracy contract](../design/accuracy-contract.md)
+requires for every `Ok` fit. Stop when a separated feasible likelihood bound refutes the
 candidate (a reachable face can supply that bound), the search fails, inputs are invalid, or mathematics proves
 nonexistence, a strictly winning limit, or distinct tied maxima. The C++ result's
 `bool certified` travels through the common binding's `extra {"certified",0/1}`.
