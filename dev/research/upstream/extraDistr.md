@@ -437,3 +437,35 @@ extraDistr::qhnorm(-100, lower.tail = FALSE, log.p = TRUE)
 - **Expected:** 0 (all probability at zero when `pi=1`)
 - **Status:** Returns `NA`.
 
+## Issue 13: Fréchet d/p/q lose accuracy at large shapes near the Gumbel limit
+
+**Package version:** extraDistr 1.10.0.5
+
+As the shape grows with `mu = -sigma`, the Fréchet law converges to the
+Gumbel law. The density raises the rounded ratio `z = (x - mu)/sigma`, which
+is close to one, to the power `lambda`, so its rounding error is multiplied
+by `lambda`; the quantile adds `mu` to `sigma * w` with `w` close to one.
+Near this limit `mu + sigma` is exact in binary64 (Sterbenz), so
+`log(z) = log1p((x - (mu + sigma))/sigma)` and
+`q = (mu + sigma) + sigma * expm1(-log(-log(p))/lambda)` keep full accuracy.
+Expected values are 50-digit evaluations at the given binary64 inputs.
+
+**Reproducers:**
+
+```r
+extraDistr::dfrechet(-1, lambda = 1e12, mu = -1e12, sigma = 1e12, log = TRUE)
+# ACTUAL: -1.718243817774324
+# EXPECTED: -1.718281828458904
+
+extraDistr::pfrechet(-1, lambda = 1e12, mu = -1e12, sigma = 1e12,
+                     lower.tail = FALSE, log.p = TRUE)
+# ACTUAL: -0.0682702797447638
+# EXPECTED: -0.06826603124778066
+
+extraDistr::qfrechet(0.5, lambda = 1e12, mu = -1e12, sigma = 1e12)
+# ACTUAL: 0.3665771484375
+# EXPECTED: 0.3665129205817315
+```
+
+The relative error grows in proportion to `lambda`: about 1e-8 at
+`lambda = 1e9` and 1e-5 to 1e-4 at `lambda = 1e12`.
