@@ -1,0 +1,10 @@
+{
+  "base": "6d8a1f06",
+  "original_job": "4a497d0d",
+  "cases": 604,
+  "cases_sha256": "387efba4a9486e1c6cb4a58df206d861d3aa9062d53c77a388135301c8067202",
+  "baseline_archive_sha256": "3c8dc5d3a0b33112b8748c2e239fe8a92df9bcab538a5e84ef29333d0b9c2784",
+  "scope": "8 requested delegates plus 3 inherited Burr/InvBurr/Pareto4 held-power merge regressions",
+  "seed": "16802 for inherited seeded GED replay; frozen audit/goldens and explicit deterministic grids otherwise",
+  "oracle_precision": 100
+}

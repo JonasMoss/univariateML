@@ -7,19 +7,7 @@ Rcpp::List mlbhatt_(const Rcpp::NumericVector& x,
     Rcpp::Nullable<double> a=R_NilValue,
     double reltol=1e-8,int iterlim=500, Rcpp::Nullable<double> mu=R_NilValue) {
   const auto fit=umvl_binding::fit_bhatt(cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())}, common_held(mu), common_held(sigma), common_held(a), reltol, iterlim);
-  auto out=common_result(fit);
-  const Rcpp::RObject classes=out.attr("class");
-  for(const auto& item:fit.extra)if(item.first=="certified") {
-    const bool certified=item.second!=0;
-    out["certified"]=certified;
-    if(fit.error.empty()) {
-      Rcpp::NumericVector estimates=out["estimates"];
-      estimates.attr("certified")=certified;
-      out["estimates"]=estimates;
-    }
-  }
-  if(!classes.isNULL())out.attr("class")=classes;
-  return out;
+  return common_result(fit);
 }
 // [[Rcpp::export]]
 Rcpp::NumericVector dbhatt_reference_(Rcpp::NumericVector x,Rcpp::NumericVector mu,Rcpp::NumericVector sigma,Rcpp::NumericVector a,bool log=false) {

@@ -97,7 +97,7 @@ relations:
 fit:
   method: multistart
   certified: partial
-  note: 'One free beta shape with free power and held scale uses a global profile certificate in either orientation. Held beta shapes use a strict-concavity coefficient enclosure. Held unit shapes and held-power conditional shape/scale fits retain certified delegates. Five larger mixed subsets retain numerical searches; whole-family certification remains partial.'
+  note: 'One free beta shape with free power and held scale uses a global profile certificate in either orientation. Held beta shapes use a strict-concavity coefficient enclosure. Held unit shapes and held-power conditional shape/scale fits preserve the delegate certificate or its successful uncertified search. Five larger mixed subsets retain numerical searches; whole-family certification remains partial.'
 areas:
 - actuarial
 - economics and income
@@ -428,3 +428,5 @@ A lower derivative bound is supplied by $L_{aa}$ itself. Midpoint score
 intervals then contract every possible stationary point in that cell;
 likelihood and inner-shape bounds are recomputed on the contracted interval.
 Cells without a verified sign retain the general global subdivision.
+
+Held-power beta-prime transport applies coefficient enclosures only to certified parents. A rounded crossing between separated stationary profiles does not prove exact equality. Successful uncertified beta-prime and unit-first-beta-shape Burr results retain their flag; nonfinite transformed estimates or likelihoods still fail.

@@ -95,3 +95,14 @@ TEST_CASE("pareto3: preserves the log-logistic uncertified restoration flag") {
   CHECK_FALSE(fit.certified);
   CHECK(std::isfinite(fit.logLik));
 }
+
+TEST_CASE("Pareto III retains the represented uncertified log-logistic parent") {
+ for(double center:{1.,1000.,1e100})for(int n:{2,4}) {
+  std::vector<double> x;double v=center;for(int j=0;j<n;++j){x.push_back(v);v=std::nextafter(v,INFINITY);}const auto d=mltest::as_span(x);
+  const auto p=cppunivariate::loglogistic_mle(d,1e-10,1000);const auto r=cppunivariate::pareto3_mle(d,0,1e-10,1000);
+  REQUIRE(p.status==cppunivariate::LogLogisticStatus::Ok);REQUIRE(r.status==cppunivariate::Pareto3Status::Ok);
+  CHECK_FALSE(p.certified);CHECK(r.certified==p.certified);CHECK(r.logLik>=p.logLik-1e-10);
+  double ll=0;for(double v:x){const double t=r.shape*cppunivariate::transformed_detail::log_ratio(v,r.scale);ll+=std::log(r.shape)-std::log(v)-cppunivariate::transformed_detail::softplus(t)-cppunivariate::transformed_detail::softplus(-t);}
+  CHECK(r.logLik==doctest::Approx(ll).epsilon(1e-12));
+ }
+}

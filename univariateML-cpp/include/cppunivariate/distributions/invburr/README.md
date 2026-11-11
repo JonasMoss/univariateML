@@ -57,13 +57,13 @@ limits:
   - model: 'invweibull'
     firmness: proved
     when: The shape $k$ tends to infinity while $s k^{1/c}$ tends to a positive inverse Weibull scale.
-    detect: With all coefficients free, the reciprocal Burr certificate strictly excludes every finite competitor and the other face; unresolved comparisons stop.
+    detect: With all coefficients free, the reciprocal Burr certificate strictly excludes every finite competitor and the other face; unresolved comparisons retain a successful finite search as uncertified.
     status: 'InvWeibullBoundary'
     numerical: true
   - model: 'power'
     firmness: proved
     when: The power $c$ tends to infinity while $kc$ tends to a positive power shape and $s$ stays at its endpoint.
-    detect: With all coefficients free, the reciprocal Burr certificate strictly excludes every finite competitor and the other face; unresolved comparisons stop.
+    detect: With all coefficients free, the reciprocal Burr certificate strictly excludes every finite competitor and the other face; unresolved comparisons retain a successful finite search as uncertified.
     status: 'PowerBoundary'
     numerical: true
   - model: 'power'
@@ -112,8 +112,8 @@ relations:
       scale: scale
 fit:
   method: delegation
-  certified: 'yes'
-  note: 'invburr/README.md, Details; invburr/mle.hpp (public fitter and held overloads); invburr/test.cpp: All-free and held-power fits inherit Burr and Lomax certificates by reciprocation, including likelihood bounds and inverse-Weibull face coefficients. Held scale with both shapes free inherits the strictly concave scalar-profile certificate; other shape holds use monotone scores or closed forms.'
+  certified: partial
+  note: 'Reciprocal Burr and Lomax fits transport the likelihood Jacobian, inverse-Weibull/power faces and per-fit certification flag. Raw log-ratio refinement checks the physical held-scale root; the held-first-shape location fit has its own flag.'
 areas:
 - actuarial
 - economics and income
@@ -133,7 +133,7 @@ existence:
   statement: >-
     With all coefficients free, constant positive data have unbounded likelihood.
     For nonconstant data, the inverse Weibull and power limits can compete with finite
-    fits. Each accepted finite fit is certified unique and global for that sample;
+    fits. Each certified finite fit is unique and global for that sample;
     each accepted limit is certified globally optimal. A universal joint sample
     criterion and universal joint uniqueness theorem are not established.
     With only scale $s$ held, a unique finite maximum exists for nonconstant data if some observation is
@@ -194,12 +194,13 @@ equals $s$. Holding $c$ and $s$ leaves an explicit estimate of $k$.
 
 Supply `scale = s` to estimate only the shapes. The fixed-scale path reciprocates observations and scale, then delegates
 to the certified Burr scalar profile, including its reciprocal Jacobian.
-The legacy Newton proposal is retained only when it passes the independent
-root-bracket and coefficient checks. Starting
+The Newton proposal becomes certified only after the independent
+root-bracket and coefficient checks; an unclosed check can retain it uncertified. Starting
 controls `shape10`, `shape20`, `scale0` and positive tolerances remain
 accepted and validated for compatibility. The all-free certificate uses its
 own deterministic proposals and enclosure widths. Detected limits stop with
-`mlinvweibull` or `mlpower`; unresolved certificates stop without estimates.
+`mlinvweibull` or `mlpower`; unresolved Burr comparisons retain the converged finite search and transport
+its `certified=false` flag through the reciprocal map.
 
 ## Decision history
 
@@ -227,10 +228,10 @@ It is not an outward-rounded interval guarantee. Reciprocal or excess
 observations must be representable in binary64; nonfinite transformed
 coefficients or likelihoods cannot become successful fits. Ties (including
 sign-uncertain seams), the `128 * min(iterlim, 100000)` profile budget and arithmetic failures have
-separate diagnostics and never return unchecked estimates. Starting controls
-cannot bypass certification. Held power inherits the Lomax certificate; held scale with both shapes free inherits the strict-concavity scalar certificate.
+separate diagnostics and never return unchecked estimates. Joint and held routes
+preserve the delegate's per-fit certification flag. Held power inherits the Lomax certificate; held scale with both shapes free inherits the strict-concavity scalar certificate.
 The general joint uniqueness theorem remains open; the certificate proves
-uniqueness only for each accepted finite sample.
+uniqueness only for each certified finite sample.
 
 This replaces the former multi-start/near-face comparison for the joint fit.
 The [dependency report](../../../../../dev/research/evaluations/2026-11-04-burr-deps-report.md)
@@ -248,7 +249,7 @@ transports the certificate value with the data-only Jacobian.
 The held-scale two-shape reduction now inherits the
 [Burr scalar concavity certificate](../burr/README.md#held-scale-certificate-task-1164),
 including strict endpoint score comparisons, coefficient accuracy checks,
-practical floating-point margins and explicit tie/budget/numerical stops.
+practical floating-point margins and the delegate's uncertified fallback.
 Reciprocation maps the held-scale Pareto face to a power face and adds the reciprocal Jacobian to likelihood bounds. Direct fixed-scale and held-subset entrypoints share this path.
 
 Arithmetic that rounds a distinct observation onto a held scale stops numerically: reciprocation checks equality against the original scale, and threshold subtraction checks its error-free sum residual. This protects the exact endpoint classification and its tied-observation penalty.

@@ -116,3 +116,12 @@ TEST_CASE("inverse Pareto stop bounds include reciprocal Jacobian") {
  CHECK((d.candidates[1].coef==std::vector<double>{4}));
  CHECK(d.candidates[0].loglik_upper==doctest::Approx(-9+jac));
 }
+
+TEST_CASE("inverse Pareto keeps the always-certified Lomax success and likelihood") {
+ const std::vector<double> raw{.03,.1,.4,.7,1,2,4,12};std::vector<double>x,y;double jac=0;
+ for(double v:raw)x.push_back(1/v);for(double v:x){y.push_back(1/v);jac-=2*std::log(v);}
+ const auto p=cppunivariate::lomax_mle(mltest::as_span(y),1e-8,1000);
+ const auto r=cppunivariate::invpareto_mle(mltest::as_span(x),1e-8,1000);
+ REQUIRE(p.status==cppunivariate::LomaxStatus::Ok);REQUIRE(r.status==p.status);
+ CHECK(r.shape==p.kappa);CHECK(r.scale==p.lambda);CHECK(r.logLik==p.logLik+jac);
+}

@@ -1,0 +1,51 @@
+{
+  "betapr": {
+    "stop:limit": 33,
+    "stop:tie": 4,
+    "stop:budget": 2,
+    "stop:numerical": 4,
+    "uncertified": 15,
+    "certified": 135,
+    "stop:unresolved": 8
+  },
+  "bhatt": {
+    "stop:limit": 59,
+    "uncertified": 15,
+    "certified": 77,
+    "stop:numerical": 1
+  },
+  "burr": {
+    "stop:limit": 48,
+    "certified": 141,
+    "uncertified": 7,
+    "stop:numerical": 5,
+    "stop:tie": 1,
+    "stop:unresolved": 1
+  },
+  "ged": {
+    "stop:limit": 33,
+    "certified": 88,
+    "stop:numerical": 14,
+    "uncertified": 14,
+    "stop:tie": 2,
+    "stop:nomle": 2
+  },
+  "invburr": {
+    "certified": 150,
+    "stop:limit": 43,
+    "stop:tie": 4,
+    "stop:unresolved": 1,
+    "uncertified": 4
+  },
+  "paralogis": {
+    "certified": 79,
+    "uncertified": 13
+  },
+  "pareto4": {
+    "stop:limit": 43,
+    "uncertified": 11,
+    "stop:tie": 3,
+    "certified": 126,
+    "stop:numerical": 3
+  }
+}

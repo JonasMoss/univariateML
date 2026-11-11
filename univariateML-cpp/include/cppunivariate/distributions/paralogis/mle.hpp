@@ -47,6 +47,7 @@ struct ParalogisResult {
   int iterations;
   ParalogisStatus status;
   StopDetail stop_detail = {};
+  bool certified=true;
 };
 
 // Negative log-likelihood as a BFGS Cost, parameterised in phi-space:
@@ -260,6 +261,27 @@ inline ParalogisResult paralogis_mle_impl(
   return {shape, scale, logLik, r.iterations, ParalogisStatus::Ok};
 }
 
+namespace paralogis_detail {
+inline ParalogisResult uncertified(ParalogisResult searched,
+    const paralogis_cert_detail::Result& certificate,span x) {
+  searched.certified=false;
+  searched.stop_detail=paralogis_cert_detail::witness(x,searched.shape,searched.scale);
+  if(searched.stop_detail.candidates.empty() || !std::isfinite(searched.logLik)) {
+    searched.status=ParalogisStatus::NumericalFailure;return searched;
+  }
+  const auto physical=searched.stop_detail.candidates[0];
+  if(searched.logLik<physical.loglik_lower || searched.logLik>physical.loglik_upper)
+    searched.status=ParalogisStatus::NumericalFailure;
+  const auto competing=paralogis_cert_detail::witness(x,certificate.shape,certificate.scale);
+  for(const auto& candidate:competing.candidates) {
+    searched.stop_detail.candidates.push_back(candidate);
+    searched.stop_detail.loglik_lower=std::max(searched.stop_detail.loglik_lower,candidate.loglik_lower);
+    if(candidate.loglik_lower>physical.loglik_upper)searched.status=ParalogisStatus::NumericalFailure;
+  }
+  return searched;
+}
+}
+
 inline ParalogisResult paralogis_mle(span x, double tol, int maxit,
     double shape0 = std::numeric_limits<double>::quiet_NaN()) {
   maxit = static_cast<int>(solver_budget(maxit));
@@ -274,7 +296,7 @@ inline ParalogisResult paralogis_mle(span x, double tol, int maxit,
   r.stop_detail=paralogis_cert_detail::witness(x,r.shape,r.scale);
   if (r.status != ParalogisStatus::Ok) return r;
   const auto certified = paralogis_cert_detail::certify(x,r.shape,r.scale,false,certificate_budget(maxit),maxit);
-  if (!certified.ok) { r.status=certified.budget?ParalogisStatus::CertificateBudget:ParalogisStatus::NumericalFailure;r.stop_detail.budget_exhausted=certified.budget; return r; }
+  if (!certified.ok) return paralogis_detail::uncertified(r,certified,x);
   r.shape=certified.shape; r.scale=certified.scale; r.logLik=certified.logLik;
   return r;
 }
@@ -339,7 +361,7 @@ inline ParalogisResult paralogis_mle_fixed_scale(
     if(alternative!=r.shape)
       certified=paralogis_cert_detail::certify(x,alternative,scale,true,certificate_budget(maxit),maxit);
   }
-  if(!certified.ok) {r.status=certified.budget?ParalogisStatus::CertificateBudget:ParalogisStatus::NumericalFailure;r.stop_detail.budget_exhausted=certified.budget;return r;}
+  if(!certified.ok) return paralogis_detail::uncertified(r,certified,x);
   r.shape=certified.shape;r.logLik=certified.logLik;
   return r;
 }

@@ -224,7 +224,9 @@ test_that("burr detects constant off-scale collapse only with both shapes free",
 })
 
 test_that("Burr global certificate stops preserve their diagnostics", {
-  expect_error(mlburr(exp(seq(-1e-6,1e-6,length.out=20))), "certificate unresolved.*no verified MLE")
+  f <- mlburr(exp(seq(-1e-6,1e-6,length.out=20)))
+  expect_s3_class(f,"univariateML")
+  expect_identical(attr(f,"certified"),FALSE)
   expect_error(mlburr(c(.2,.5,1,2,4),iterlim=2), "certificate numerical failure.*no verified MLE")
   # Stored binary64 proxy: its enclosed seam slope contains zero. This is
   # a guarded stop, not an assertion of exact zero slope or a Weibull fit.
@@ -248,12 +250,11 @@ test_that("burr sign-uncertain-seam exposes structured tie diagnostics", {
   expect_true(is.finite(e$loglik_lower))
 })
 
-test_that("burr nearly-constant exposes structured tie diagnostics", {
+test_that("burr nearly-constant retains an uncertified finite search", {
   e <- tryCatch(mlburr(c(0.99999900000050002,0.99999910526355817,0.99999921052662744,0.9999993157897078,0.99999942105279915,0.99999952631590161,0.99999963157901528,0.99999973684213994,0.99999984210527559,0.99999994736842246,1.0000000526315804,1.0000001578947493,1.0000002631579294,1.0000003684211205,1.0000004736843227,1.0000005789475359,1.0000006842107605,1.000000789473996,1.0000008947372423,1.0000010000005)),univariateML_tie=identity)
-  expect_s3_class(e,"univariateML_stop")
-  expect_true(nrow(e$candidates)>=2L)
-  expect_true(all(e$candidates$loglik_lower<=e$candidates$loglik_upper))
-  expect_true(is.finite(e$loglik_lower))
+  expect_s3_class(e,"univariateML")
+  expect_identical(attr(e,"certified"),FALSE)
+  expect_true(is.finite(as.numeric(logLik(e))))
 })
 
 test_that("burr burr-k1000-r0 exposes structured limit diagnostics", {
@@ -285,9 +286,32 @@ test_that("held-scale Burr certifies finite fits and refuses exhausted budgets",
   expect_equal(p$limit_loglik,4*log(4/log(8))-4-log(8)-2*log(2),tolerance=1e-12)
 })
 
-test_that("held-scale Burr refuses sign-uncertain profiles with a tie witness", {
-  e <- tryCatch(mlburr(exp(c(-1.1,-1)),scale=1),univariateML_tie=identity)
-  expect_s3_class(e,"univariateML_tie")
-  expect_true(is.finite(e$loglik_lower))
-  expect_true(nrow(e$candidates)>=1L)
+test_that("held-scale Burr retains sign-uncertain profiles as uncertified", {
+  e <- mlburr(exp(c(-1.1,-1)),scale=1)
+  expect_s3_class(e,"univariateML")
+  expect_identical(attr(e,"certified"),FALSE)
+  expect_true(is.finite(as.numeric(logLik(e))))
+})
+
+test_that("burr short certificate work preserves the joint search", {
+  skip_if_not_installed("jsonlite")
+  root <- Sys.getenv("UMVL_DISTRIBUTIONS_DIR")
+  if(!nzchar(root)) root <- testthat::test_path("fixtures")
+  g <- jsonlite::fromJSON(file.path(root,"burr","golden.json"))
+  f <- mlburr(g$data,gradtol=1e-8,iterlim=16)
+  expect_identical(attr(f,"certified"),FALSE)
+  expect_true(is.finite(as.numeric(logLik(f))))
+})
+
+test_that("Burr held-shape log coalescence is a search failure", {
+  x <- 1e300*c(1,1+.Machine$double.eps)
+  expect_true(x[1]!=x[2])
+  e <- tryCatch(mlburr(x,shape1=2),error=identity)
+  expect_s3_class(e,"univariateML_numerical")
+})
+
+test_that("Burr held power retains a finite fit near the exponential face", {
+  f <- mlburr(c(1,1,1,1,6.0001),shape2=1,gradtol=1e-14)
+  expect_identical(attr(f,"certified"),FALSE)
+  expect_true(is.finite(as.numeric(logLik(f))))
 })

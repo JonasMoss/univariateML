@@ -1,0 +1,604 @@
+audit-1633	fpareto	certified	-29.209758037656179	shape1=0.29999999999999999	shape2=1.9802932530684678	shape3=0.89344043393409178	scale=0.47626422716038253	min=0
+audit-1634	fpareto	stop:limit	nan	message=GB2 selects a limiting model. Use `mlinvtrgamma(x - min)`.
+audit-1635	fpareto	stop:limit	nan	message=GB2 selects a limiting model. Use `mlinvtrgamma(x - min)`.
+audit-1636	fpareto	stop:limit	nan	message=GB2 selects a limiting model. Use `mlinvtrgamma(x - min)`.
+audit-1637	fpareto	stop:limit	nan	message=GB2 selects a limiting model. Use `mlinvtrgamma(x - min)`.
+audit-1638	fpareto	stop:limit	nan	message=GB2 selects a limiting model. Use `mlinvtrgamma(x - min)`.
+audit-1639	fpareto	stop:limit	nan	message=GB2 selects a limiting model. Use `mlinvtrgamma(x - min)`.
+audit-1640	fpareto	stop:limit	nan	message=GB2 selects a limiting model. Use `mlinvtrgamma(x - min)`.
+audit-1641	fpareto	stop:limit	nan	message=GB2 selects a limiting model. Use `mlinvtrgamma(x - min)`.
+audit-1642	fpareto	stop:limit	nan	message=GB2 selects a limiting model. Use `mlinvtrgamma(x - min)`.
+audit-1643	fpareto	stop:limit	nan	message=GB2 selects a limiting model. Use `mlinvtrgamma(x - min)`.
+audit-1644	fpareto	certified	4115.4434093516256	shape1=0.29999999999999999	shape2=1.9802932530684678	shape3=0.89344043393409178	scale=4.7626422716038692e-151	min=0
+audit-1645	fpareto	certified	-4173.8629254269381	shape1=0.29999999999999999	shape2=1.9802932530684678	shape3=0.89344043393409178	scale=4.7626422716037558e+149	min=0
+audit-1646	fpareto	stop:limit	nan	message=GB2 selects a limiting model. Use `mlinvtrgamma(x - min)`.
+audit-1647	fpareto	stop:limit	nan	message=GB2 selects a limiting model. Use `mlinvtrgamma(x - min)`.
+audit-1678	fpareto	certified	-29.813174051013092	shape1=0.35007691979293598	shape2=1.9802932530684678	shape3=0.40000000000000002	scale=1.153894204046344	min=0
+audit-1679	fpareto	stop:limit	nan	message=GB2 selects a limiting model. Use `mltrgamma(x - min)`.
+audit-1680	fpareto	stop:limit	nan	message=GB2 selects a limiting model. Use `mltrgamma(x - min)`.
+audit-1681	fpareto	certified	-11.443680180197283	shape1=0.64127608423617588	shape2=1.9802932530684678	shape3=0.40000000000000002	scale=2.6397054572190433	min=0
+audit-1682	fpareto	certified	-8.6016346309153349	shape1=1.4078264709726238	shape2=1.9802932530684678	shape3=0.40000000000000002	scale=2.4929864622656033	min=0
+audit-1683	fpareto	stop:limit	nan	message=GB2 selects a limiting model. Use `mltrgamma(x - min)`.
+audit-1684	fpareto	stop:limit	nan	message=GB2 selects a limiting model. Use `mltrgamma(x - min)`.
+audit-1685	fpareto	stop:limit	nan	message=GB2 selects a limiting model. Use `mltrgamma(x - min)`.
+audit-1686	fpareto	stop:limit	nan	message=GB2 selects a limiting model. Use `mltrgamma(x - min)`.
+audit-1687	fpareto	stop:limit	nan	message=GB2 selects a limiting model. Use `mltrgamma(x - min)`.
+audit-1688	fpareto	stop:limit	nan	message=GB2 selects a limiting model. Use `mltrgamma(x - min)`.
+audit-1689	fpareto	certified	4114.8399933382689	shape1=0.35007691979293598	shape2=1.9802932530684678	shape3=0.40000000000000002	scale=1.1538942040463097e-150	min=0
+audit-1690	fpareto	certified	-4174.4663414402949	shape1=0.35007691979293598	shape2=1.9802932530684678	shape3=0.40000000000000002	scale=1.153894204046348e+150	min=0
+audit-1691	fpareto	certified	-30.608565838871115	shape1=0.10953119985927026	shape2=1.9802932530684678	shape3=0.40000000000000002	scale=0.78102699610483217	min=0
+audit-1692	fpareto	stop:limit	nan	message=GB2 selects a limiting model. Use `mltrgamma(x - min)`.
+audit-2109	gb2	certified	-45.922782955648337	shape1=0.5710330324328029	shape2=1.123220989970799	shape3=1.0741923555905837	scale=2.0414112073569592
+audit-2110	gb2	certified	-7.7938549672710042	shape1=0.5710330324328029	shape2=1.123220989970799	shape3=0.28417216136267259	scale=31.869501286741475
+audit-2111	gb2	certified	-12.562577696842705	shape1=0.5710330324328029	shape2=1.123220989970799	shape3=0.39410766566602268	scale=21.241190373026857
+audit-2112	gb2	certified	-18.606819666795381	shape1=0.5710330324328029	shape2=1.123220989970799	shape3=0.80575011836554922	scale=3.362219316035723
+audit-2113	gb2	certified	-30.187971362665603	shape1=0.5710330324328029	shape2=1.123220989970799	shape3=0.53959599474480691	scale=33.991082290321167
+audit-2114	gb2	stop:limit	nan	message=GB2 selects a limiting model. Use `mlinvtrgamma`.
+audit-2115	gb2	stop:limit	nan	message=GB2 selects a limiting model. Use `mlinvtrgamma`.
+audit-2116	gb2	stop:limit	nan	message=GB2 selects a limiting model. Use `mlinvtrgamma`.
+audit-2117	gb2	stop:limit	nan	message=GB2 selects a limiting model. Use `mlinvtrgamma`.
+audit-2118	gb2	stop:limit	nan	message=GB2 selects a limiting model. Use `mlinvtrgamma`.
+audit-2119	gb2	stop:limit	nan	message=GB2 selects a limiting model. Use `mlinvtrgamma`.
+audit-2120	gb2	stop:limit	nan	message=GB2 selects a limiting model. Use `mlinvtrgamma`.
+audit-2121	gb2	stop:limit	nan	message=GB2 selects a limiting model. Use `mlinvtrgamma`.
+audit-2122	gb2	stop:limit	nan	message=GB2 selects a limiting model. Use `mlinvtrgamma`.
+audit-2123	gb2	stop:limit	nan	message=GB2 selects a limiting model. Use `mlinvtrgamma`.
+audit-2124	gb2	certified	4098.7303844336338	shape1=0.5710330324328029	shape2=1.123220989970799	shape3=1.0741923555905837	scale=2.0414112073569769e-150
+audit-2125	gb2	certified	-4190.5759503449308	shape1=0.5710330324328029	shape2=1.123220989970799	shape3=1.0741923555905837	scale=2.0414112073569284e+150
+audit-2126	gb2	certified	-39.743753926185612	shape1=0.5710330324328029	shape2=1.123220989970799	shape3=0.41719124102179583	scale=31.238289559678766
+audit-2127	gb2	stop:limit	nan	message=GB2 selects a limiting model. Use `mlinvtrgamma`.
+audit-2166	gb2	certified	-45.997167759669274	shape1=0.71751554907310633	shape2=1.123220989970799	shape3=0.71164837657388069	scale=5.5056514591397816
+audit-2167	gb2	certified	-7.7319169290978635	shape1=0.28296199874455924	shape2=1.123220989970799	shape3=0.71164837657388069	scale=0.35910245676928237
+audit-2168	gb2	stop:limit	nan	message=GB2 selects a limiting model. Use `mltrgamma`.
+audit-2169	gb2	certified	-18.413736903530108	shape1=1.2095787278423742	shape2=1.123220989970799	shape3=0.71164837657388069	scale=12.720516373470932
+audit-2170	gb2	stop:limit	nan	message=GB2 selects a limiting model. Use `mltrgamma`.
+audit-2171	gb2	stop:limit	nan	message=GB2 selects a limiting model. Use `mltrgamma`.
+audit-2172	gb2	stop:limit	nan	message=GB2 selects a limiting model. Use `mltrgamma`.
+audit-2173	gb2	stop:limit	nan	message=GB2 selects a limiting model. Use `mltrgamma`.
+audit-2174	gb2	stop:limit	nan	message=GB2 selects a limiting model. Use `mltrgamma`.
+audit-2175	gb2	stop:limit	nan	message=GB2 selects a limiting model. Use `mltrgamma`.
+audit-2176	gb2	stop:limit	nan	message=GB2 selects a limiting model. Use `mltrgamma`.
+audit-2177	gb2	stop:limit	nan	message=GB2 selects a limiting model. Use `mltrgamma`.
+audit-2178	gb2	stop:limit	nan	message=GB2 selects a limiting model. Use `mltrgamma`.
+audit-2179	gb2	stop:limit	nan	message=GB2 selects a limiting model. Use `mltrgamma`.
+audit-2180	gb2	stop:limit	nan	message=GB2 selects a limiting model. Use `mltrgamma`.
+audit-2181	gb2	certified	4098.6559996296128	shape1=0.71751554907310633	shape2=1.123220989970799	shape3=0.71164837657388069	scale=5.5056514591398552e-150
+audit-2182	gb2	certified	-4190.6503351489519	shape1=0.71751554907310633	shape2=1.123220989970799	shape3=0.71164837657388069	scale=5.5056514591397253e+150
+audit-2183	gb2	certified	-36.721527774998954	shape1=0.16580526608129106	shape2=1.123220989970799	shape3=0.71164837657388069	scale=0.78317314552486583
+audit-2184	gb2	stop:limit	nan	message=GB2 selects a limiting model. Use `mltrgamma`.
+audit-3908	invparalogis	certified	-24.853864159853792	shape=0.93388671970323001	scale=1.1865921914725364
+audit-3909	invparalogis	certified	0.48299328261869068	shape=5.8014897936218883	scale=0.58019680879245961
+audit-3910	invparalogis	certified	-2.045693831744317	shape=1.1313759213217931	scale=0.33637951104933156
+audit-3911	invparalogis	certified	-9.8224320081686756	shape=0.98911525925878818	scale=1.046084039534362
+audit-3912	invparalogis	certified	-4.3281289986478413	shape=1.4351702317797401	scale=0.41798454854962247
+audit-3913	invparalogis	uncertified	36.088045004363323	shape=7077.0549829307092	scale=1.0667279888923979
+audit-3914	invparalogis	uncertified	80.700428309483542	shape=34930359.114531025	scale=1.0681307909804953
+audit-3915	invparalogis	uncertified	-86318.591582508248	shape=1039754769554.3164	scale=1.0681313080646389
+audit-3916	invparalogis	uncertified	36.088045004363323	shape=7077.0549829307092	scale=1.0667279888923979
+audit-3917	invparalogis	uncertified	80.700428309483542	shape=34930359.114531025	scale=1.0681307909804953
+audit-3918	invparalogis	uncertified	-86318.591582508248	shape=1039754769554.3164	scale=1.0681313080646389
+audit-3919	invparalogis	certified	57.610607624352582	shape=1.8548143845543803	scale=1.9163995511562544e-06
+audit-3920	invparalogis	certified	126.68816041417392	shape=1.8548143845543803	scale=1.9163995511562555e-12
+audit-3921	invparalogis	certified	184.25278773902508	shape=1.8548143845543781	scale=1.9163995511562583e-17
+audit-3922	invparalogis	certified	2291.1181478285766	shape=1.8548143845543652	scale=1.9163995511561906e-200
+audit-3923	invparalogis	certified	4119.799303229428	shape=0.93388671970322878	scale=1.1865921914725082e-150
+audit-3924	invparalogis	uncertified	-4169.5070315491357	shape=0.9338867211519456	scale=1.1865921573515948e+150
+audit-3925	invparalogis	certified	-28.123170850277088	shape=0.42958124928211844	scale=55.093207233301804
+audit-3926	invparalogis	uncertified	-2.9974204227772332	shape=3.0395746850509968	scale=1.0530938201340641
+audit-3927	invparalogis	certified	-25.020572868469742	shape=1.0292870573482298	scale=1.0128770180532862
+audit-3928	invparalogis	certified	-2.4192854778432196	shape=1.0292870573482298	scale=0.83518397321037785
+audit-3929	invparalogis	certified	-2.0851813809963629	shape=1.0292870573482298	scale=0.37266835418141037
+audit-3930	invparalogis	certified	-9.8335275813461891	shape=1.0292870573482298	scale=0.98927867780093415
+audit-3931	invparalogis	certified	-5.1390822993604317	shape=1.0292870573482298	scale=0.52535016930686818
+audit-3932	invparalogis	certified	-7.0729058827161753	shape=1.0292870573482298	scale=1.0386124640444125
+audit-3933	invparalogis	certified	-7.0728059279494486	shape=1.0292870573482298	scale=1.0385917098860928
+audit-3934	invparalogis	certified	-7.0728059179504497	shape=1.0292870573482298	scale=1.0385917078091176
+audit-3935	invparalogis	certified	-7.0729058827161753	shape=1.0292870573482298	scale=1.0386124640444125
+audit-3936	invparalogis	certified	-7.0728059279494486	shape=1.0292870573482298	scale=1.0385917098860928
+audit-3937	invparalogis	certified	-7.0728059179504497	shape=1.0292870573482298	scale=1.0385917078091176
+audit-3938	invparalogis	certified	56.00648767828892	shape=1.0292870573482298	scale=2.9722923699845475e-06
+audit-3939	invparalogis	certified	125.08404046811026	shape=1.0292870573482298	scale=2.9722923699845489e-12
+audit-3940	invparalogis	certified	182.64866779296145	shape=1.0292870573482298	scale=2.9722923699845539e-17
+audit-3941	invparalogis	certified	2289.5140278825133	shape=1.0292870573482298	scale=2.9722923699845335e-200
+audit-3942	invparalogis	certified	4119.6325945208127	shape=1.0292870573482298	scale=1.012877018053298e-150
+audit-3943	invparalogis	certified	-4169.6737402577519	shape=1.0292870573482298	scale=1.0128770180532741e+150
+audit-3944	invparalogis	certified	-32.650573385658966	shape=1.0292870573482298	scale=1.0749298454825462
+audit-3945	invparalogis	certified	-7.072805917947135	shape=1.0292870573482298	scale=1.0385917078078557
+audit-3946	invparalogis	certified	-25.050096554438731	shape=0.9736233458346002	scale=0.81280534906591395
+audit-3947	invparalogis	certified	-0.93177612151537215	shape=2.7099325607050413	scale=0.81280534906591395
+audit-3948	invparalogis	certified	-2.4039230961863529	shape=0.95586070037872994	scale=0.81280534906591395
+audit-3949	invparalogis	certified	-9.8672114485788942	shape=1.0196769695425982	scale=0.81280534906591395
+audit-3950	invparalogis	certified	-5.2086322661389381	shape=1.1866347954585477	scale=0.81280534906591395
+audit-3951	invparalogis	certified	5.7413676455569327	shape=11.495212010751104	scale=0.81280534906591395
+audit-3952	invparalogis	certified	5.7420258262031387	shape=11.496270590602936	scale=0.81280534906591395
+audit-3953	invparalogis	certified	5.7420258915864926	shape=11.496270696537973	scale=0.81280534906591395
+audit-3954	invparalogis	certified	5.7413676455569327	shape=11.495212010751104	scale=0.81280534906591395
+audit-3955	invparalogis	certified	5.7420258262031387	shape=11.496270590602936	scale=0.81280534906591395
+audit-3956	invparalogis	certified	5.7420258915864926	shape=11.496270696537973	scale=0.81280534906591395
+audit-3957	invparalogis	certified	45.674956273022644	shape=0.29093332838056085	scale=0.81280534906591395
+audit-3958	invparalogis	certified	111.17313954573726	shape=0.19663026923294832	scale=0.81280534906591395
+audit-3959	invparalogis	certified	166.94516725834185	shape=0.16320932665451288	scale=0.81280534906591395
+audit-3960	invparalogis	certified	2261.3393499250465	shape=0.046666341730810156	scale=0.81280534906591395
+audit-3961	invparalogis	certified	4062.4517582592271	shape=0.053824587260479131	scale=0.81280534906591395
+audit-3962	invparalogis	certified	-4293.757939273587	shape=0.0064189102467420399	scale=0.81280534906591395
+audit-3963	invparalogis	certified	-29.365165921895414	shape=0.53754299015635465	scale=0.81280534906591395
+audit-3964	invparalogis	certified	5.742025891297498	shape=11.496270696593818	scale=0.81280534906591395
+audit-3965	invparalogis	certified	-25.114481872804056	shape=1.0292870573482298	scale=0.81280534906591395
+audit-3966	invparalogis	certified	-2.419676888034489	shape=1.0292870573482298	scale=0.81280534906591395
+audit-3967	invparalogis	certified	-2.4367881717639621	shape=1.0292870573482298	scale=0.81280534906591395
+audit-3968	invparalogis	certified	-9.8679381088503444	shape=1.0292870573482298	scale=0.81280534906591395
+audit-3969	invparalogis	certified	-5.4038878407151554	shape=1.0292870573482298	scale=0.81280534906591395
+audit-3970	invparalogis	certified	-7.1533313591356729	shape=1.0292870573482298	scale=0.81280534906591395
+audit-3971	invparalogis	certified	-7.1532183365617028	shape=1.0292870573482298	scale=0.81280534906591395
+audit-3972	invparalogis	certified	-7.153218325254918	shape=1.0292870573482298	scale=0.81280534906591395
+audit-3973	invparalogis	certified	-7.1533313591356729	shape=1.0292870573482298	scale=0.81280534906591395
+audit-3974	invparalogis	certified	-7.1532183365617028	shape=1.0292870573482298	scale=0.81280534906591395
+audit-3975	invparalogis	certified	-7.153218325254918	shape=1.0292870573482298	scale=0.81280534906591395
+audit-3976	invparalogis	certified	-2.3861448578568911	shape=1.0292870573482298	scale=0.81280534906591395
+audit-3977	invparalogis	certified	-6.4915162068481322	shape=1.0292870573482298	scale=0.81280534906591395
+audit-3978	invparalogis	certified	-9.9126882974833279	shape=1.0292870573482298	scale=0.81280534906591395
+audit-3979	invparalogis	certified	-135.12758681558898	shape=1.0292870573482298	scale=0.81280534906591395
+audit-3980	invparalogis	certified	-242.99228985950322	shape=1.0292870573482298	scale=0.81280534906591395
+audit-3981	invparalogis	certified	-8412.7059947322996	shape=1.0292870573482298	scale=0.81280534906591395
+audit-3982	invparalogis	certified	-32.715287541358734	shape=1.0292870573482298	scale=0.81280534906591395
+audit-3983	invparalogis	certified	-7.1532183252507675	shape=1.0292870573482298	scale=0.81280534906591395
+audit-3984	invpareto	stop:limit	nan	message=The certified profile bound places every improvement over the inverse exponential limit within its tolerance. Use `mlinvexp` to fit that limit model.
+audit-3985	invpareto	stop:limit	nan	message=The certified profile bound places every improvement over the inverse exponential limit within its tolerance. Use `mlinvexp` to fit that limit model.
+audit-3986	invpareto	stop:limit	nan	message=The certified profile bound places every improvement over the inverse exponential limit within its tolerance. Use `mlinvexp` to fit that limit model.
+audit-3987	invpareto	stop:limit	nan	message=The certified profile bound places every improvement over the inverse exponential limit within its tolerance. Use `mlinvexp` to fit that limit model.
+audit-3988	invpareto	stop:limit	nan	message=The certified profile bound places every improvement over the inverse exponential limit within its tolerance. Use `mlinvexp` to fit that limit model.
+audit-3989	invpareto	stop:limit	nan	message=The certified profile bound places every improvement over the inverse exponential limit within its tolerance. Use `mlinvexp` to fit that limit model.
+audit-3990	invpareto	stop:limit	nan	message=The certified profile bound places every improvement over the inverse exponential limit within its tolerance. Use `mlinvexp` to fit that limit model.
+audit-3991	invpareto	stop:limit	nan	message=The certified profile bound places every improvement over the inverse exponential limit within its tolerance. Use `mlinvexp` to fit that limit model.
+audit-3992	invpareto	stop:limit	nan	message=The certified profile bound places every improvement over the inverse exponential limit within its tolerance. Use `mlinvexp` to fit that limit model.
+audit-3993	invpareto	stop:limit	nan	message=The certified profile bound places every improvement over the inverse exponential limit within its tolerance. Use `mlinvexp` to fit that limit model.
+audit-3994	invpareto	stop:limit	nan	message=The certified profile bound places every improvement over the inverse exponential limit within its tolerance. Use `mlinvexp` to fit that limit model.
+audit-3995	invpareto	stop:limit	nan	message=The certified profile bound places every improvement over the inverse exponential limit within its tolerance. Use `mlinvexp` to fit that limit model.
+audit-3996	invpareto	stop:limit	nan	message=The certified profile bound places every improvement over the inverse exponential limit within its tolerance. Use `mlinvexp` to fit that limit model.
+audit-3997	invpareto	stop:limit	nan	message=The certified profile bound places every improvement over the inverse exponential limit within its tolerance. Use `mlinvexp` to fit that limit model.
+audit-3998	invpareto	stop:limit	nan	message=The certified profile bound places every improvement over the inverse exponential limit within its tolerance. Use `mlinvexp` to fit that limit model.
+audit-3999	invpareto	stop:limit	nan	message=The certified profile bound places every improvement over the inverse exponential limit within its tolerance. Use `mlinvexp` to fit that limit model.
+audit-4000	invpareto	stop:limit	nan	message=The certified profile bound places every improvement over the inverse exponential limit within its tolerance. Use `mlinvexp` to fit that limit model.
+audit-4001	invpareto	certified	-35.791419379865047	shape=0.088208448554764673	scale=2839511.9672380094
+audit-4002	invpareto	stop:limit	nan	message=The certified profile bound places every improvement over the inverse exponential limit within its tolerance. Use `mlinvexp` to fit that limit model.
+audit-4003	invpareto	certified	-25.097848220845457	shape=1.8834871898123693	scale=0.72531171972775343
+audit-4004	invpareto	certified	-3.911356590965779	shape=1.8834871898123693	scale=1.0968570937270803
+audit-4005	invpareto	certified	-4.7963078646409825	shape=1.8834871898123693	scale=0.56933211323248445
+audit-4006	invpareto	certified	-11.887317852497146	shape=1.8834871898123693	scale=0.65762858910709143
+audit-4007	invpareto	certified	-10.617070825045126	shape=1.8834871898123693	scale=0.77402270002869822
+audit-4008	invpareto	certified	-9.4407034036640187	shape=1.8834871898123693	scale=1.027377388819197
+audit-4009	invpareto	certified	-9.4406034403266155	shape=1.8834871898123693	scale=1.0273568635992123
+audit-4010	invpareto	certified	-9.4406034303276165	shape=1.8834871898123693	scale=1.0273568615445516
+audit-4011	invpareto	certified	-9.4407034036640187	shape=1.8834871898123693	scale=1.027377388819197
+audit-4012	invpareto	certified	-9.4406034403266155	shape=1.8834871898123693	scale=1.0273568635992123
+audit-4013	invpareto	certified	-9.4406034303276165	shape=1.8834871898123693	scale=1.0273568615445516
+audit-4014	invpareto	certified	56.447735958356148	shape=1.8834871898123693	scale=1.4977379010267364e-06
+audit-4015	invpareto	certified	125.52528874817747	shape=1.8834871898123693	scale=1.4977379010267372e-12
+audit-4016	invpareto	certified	183.08991607302866	shape=1.8834871898123693	scale=1.4977379010267288e-17
+audit-4017	invpareto	certified	2289.955276162581	shape=1.8834871898123693	scale=1.4977379010266654e-200
+audit-4018	invpareto	certified	4119.5553191684376	shape=1.8834871898123693	scale=7.2531171972772834e-151
+audit-4019	invpareto	certified	-4169.7510156101262	shape=1.8834871898123693	scale=7.2531171972775232e+149
+audit-4020	invpareto	certified	-39.078745116338879	shape=1.8834871898123693	scale=1.5704476680738684
+audit-4021	invpareto	certified	-9.4406034303248845	shape=1.8834871898123693	scale=1.0273568615433788
+audit-4022	invpareto	certified	-25.413961865614226	shape=1.6392638330219682	scale=1.0400607444808627
+audit-4023	invpareto	certified	-3.8495586200415461	shape=2.4508784285860998	scale=1.0400607444808627
+audit-4024	invpareto	certified	-4.9565960104620448	shape=1.3887772941729162	scale=1.0400607444808627
+audit-4025	invpareto	certified	-11.999337141648219	shape=1.4844416222853505	scale=1.0400607444808627
+audit-4026	invpareto	certified	-10.755977082184526	shape=1.738809058846897	scale=1.0400607444808627
+audit-4027	invpareto	certified	-9.3375526939545033	shape=2.324782802242606	scale=1.0400607444808627
+audit-4028	invpareto	certified	-9.3374689393927337	shape=2.3247450652506738	scale=1.0400607444808627
+audit-4029	invpareto	certified	-9.3374689310165984	shape=2.3247450614723597	scale=1.0400607444808627
+audit-4030	invpareto	certified	-9.3375526939545033	shape=2.324782802242606	scale=1.0400607444808627
+audit-4031	invpareto	certified	-9.3374689393927337	shape=2.3247450652506738	scale=1.0400607444808627
+audit-4032	invpareto	certified	-9.3374689310165984	shape=2.3247450614723597	scale=1.0400607444808627
+audit-4033	invpareto	certified	45.757298212111266	shape=0.078523080537409556	scale=1.0400607444808627
+audit-4034	invpareto	certified	111.1614189054259	shape=0.037663909789722068	scale=1.0400607444808627
+audit-4035	invpareto	certified	166.92502643069565	shape=0.026271859254761425	scale=1.0400607444808627
+audit-4036	invpareto	certified	2261.3366661089394	shape=0.0021765788163014858	scale=1.0400607444808627
+audit-4037	invpareto	certified	4056.2859315550222	shape=0.0028993374975472856	scale=1.0400607444808627
+audit-4038	invpareto	certified	-4168.531143049915	shape=1.0122911022725784e+150	scale=1.0400607444808627
+audit-4039	invpareto	certified	-39.166399923455295	shape=2.2712315367725471	scale=1.0400607444808627
+audit-4040	invpareto	certified	-9.3374689310153514	shape=2.3247450614688638	scale=1.0400607444808627
+audit-4041	invpareto	certified	-25.535232292984116	shape=1.8834871898123693	scale=1.0400607444808627
+audit-4042	invpareto	certified	-3.9131912188716327	shape=1.8834871898123693	scale=1.0400607444808627
+audit-4043	invpareto	certified	-5.1111515559525742	shape=1.8834871898123693	scale=1.0400607444808627
+audit-4044	invpareto	certified	-12.152999019944186	shape=1.8834871898123693	scale=1.0400607444808627
+audit-4045	invpareto	certified	-10.775661786160887	shape=1.8834871898123693	scale=1.0400607444808627
+audit-4046	invpareto	certified	-9.4409495541870836	shape=1.8834871898123693	scale=1.0400607444808627
+audit-4047	invpareto	certified	-9.440850393600094	shape=1.8834871898123693	scale=1.0400607444808627
+audit-4048	invpareto	certified	-9.4408503836815143	shape=1.8834871898123693	scale=1.0400607444808627
+audit-4049	invpareto	certified	-9.4409495541870836	shape=1.8834871898123693	scale=1.0400607444808627
+audit-4050	invpareto	certified	-9.440850393600094	shape=1.8834871898123693	scale=1.0400607444808627
+audit-4051	invpareto	certified	-9.4408503836815143	shape=1.8834871898123693	scale=1.0400607444808627
+audit-4052	invpareto	certified	-53.287338216427685	shape=1.8834871898123693	scale=1.0400607444808627
+audit-4053	invpareto	certified	-114.3164157615999	shape=1.8834871898123693	scale=1.0400607444808627
+audit-4054	invpareto	certified	-165.17402658937351	shape=1.8834871898123693	scale=1.0400607444808627
+audit-4055	invpareto	certified	-2026.5625828879165	shape=1.8834871898123693	scale=1.0400607444808627
+audit-4056	invpareto	certified	-3649.5182685709824	shape=1.8834871898123693	scale=1.0400607444808627
+audit-4057	invpareto	certified	-8293.7334052365131	shape=1.8834871898123693	scale=1.0400607444808627
+audit-4058	invpareto	certified	-39.248786909746336	shape=1.8834871898123693	scale=1.0400607444808627
+audit-4059	invpareto	certified	-9.4408503836788391	shape=1.8834871898123693	scale=1.0400607444808627
+audit-5524	pareto2	certified	-57.19596687401841	shape=0.32776390148531831	scale=0.67024779710615157	min=0
+audit-5525	pareto2	stop:limit	nan	message=The Lomax maximum likelihood estimator does not exist for data whose likelihood is maximized on the exponential face. Use `mlexp(x - min)` to fit an exponential distribution.
+audit-5526	pareto2	stop:limit	nan	message=The Lomax maximum likelihood estimator does not exist for data whose likelihood is maximized on the exponential face. Use `mlexp(x - min)` to fit an exponential distribution.
+audit-5527	pareto2	certified	-16.506527685409765	shape=1.0354702798229973	scale=3.9369900089393672	min=0
+audit-5528	pareto2	stop:limit	nan	message=The Lomax maximum likelihood estimator does not exist for data whose likelihood is maximized on the exponential face. Use `mlexp(x - min)` to fit an exponential distribution.
+audit-5529	pareto2	stop:limit	nan	message=The Lomax maximum likelihood estimator does not exist for data whose likelihood is maximized on the exponential face. Use `mlexp(x - min)` to fit an exponential distribution.
+audit-5530	pareto2	stop:limit	nan	message=The Lomax maximum likelihood estimator does not exist for data whose likelihood is maximized on the exponential face. Use `mlexp(x - min)` to fit an exponential distribution.
+audit-5531	pareto2	stop:limit	nan	message=The Lomax maximum likelihood estimator does not exist for data whose likelihood is maximized on the exponential face. Use `mlexp(x - min)` to fit an exponential distribution.
+audit-5532	pareto2	stop:limit	nan	message=The Lomax maximum likelihood estimator does not exist for data whose likelihood is maximized on the exponential face. Use `mlexp(x - min)` to fit an exponential distribution.
+audit-5533	pareto2	stop:limit	nan	message=The Lomax maximum likelihood estimator does not exist for data whose likelihood is maximized on the exponential face. Use `mlexp(x - min)` to fit an exponential distribution.
+audit-5534	pareto2	stop:limit	nan	message=The Lomax maximum likelihood estimator does not exist for data whose likelihood is maximized on the exponential face. Use `mlexp(x - min)` to fit an exponential distribution.
+audit-5535	pareto2	certified	4087.4572005152636	shape=0.32776390148531831	scale=6.7024779710615158e-151	min=0
+audit-5536	pareto2	certified	-4201.8491342633006	shape=0.32776390148531831	scale=6.7024779710615154e+149	min=0
+audit-5537	pareto2	certified	-31.635078923454124	shape=0.21121301172369691	scale=0.38196391754232545	min=0
+audit-5538	pareto2	stop:limit	nan	message=The Lomax maximum likelihood estimator does not exist for data whose likelihood is maximized on the exponential face. Use `mlexp(x - min)` to fit an exponential distribution.
+audit-5539	pareto2	certified	-57.229268976831179	shape=0.35988135997576343	scale=0.77305933778085789	min=0
+audit-5540	pareto2	certified	-3.3164933787883664	shape=0.35988135997576343	scale=0.226468687743793	min=0
+audit-5541	pareto2	certified	-7.7570754530076842	shape=0.35988135997576343	scale=0.41292074022107295	min=0
+audit-5542	pareto2	certified	-17.254748112770979	shape=0.35988135997576343	scale=0.80235617221155575	min=0
+audit-5543	pareto2	certified	-15.240665705867054	shape=0.35988135997576343	scale=0.55458578773532408	min=0
+audit-5544	pareto2	certified	-14.614467182439803	shape=0.35988135997576343	scale=1.097588799053739	min=0
+audit-5545	pareto2	certified	-14.614367247852307	shape=0.35988135997576343	scale=1.0975668738007103	min=0
+audit-5546	pareto2	certified	-14.614367237853306	shape=0.35988135997576343	scale=1.0975668716056335	min=0
+audit-5547	pareto2	certified	-14.614467182439803	shape=0.35988135997576343	scale=1.097588799053739	min=0
+audit-5548	pareto2	certified	-14.614367247852307	shape=0.35988135997576343	scale=1.0975668738007103	min=0
+audit-5549	pareto2	certified	-14.614367237853306	shape=0.35988135997576343	scale=1.0975668716056335	min=0
+audit-5550	pareto2	certified	4087.4238984124513	shape=0.35988135997576343	scale=7.7305933778087176e-151	min=0
+audit-5551	pareto2	certified	-4201.8824363661133	shape=0.35988135997576343	scale=7.7305933778089738e+149	min=0
+audit-5552	pareto2	certified	-32.246016299987069	shape=0.35988135997576343	scale=0.82232479305307082	min=0
+audit-5553	pareto2	certified	-14.614367237848633	shape=0.35988135997576343	scale=1.097566871603382	min=0
+audit-5554	pareto2	certified	-57.20821019998732	shape=0.33937346757140452	scale=0.77112132222695795	min=0
+audit-5555	pareto2	certified	-2.6273103742079589	shape=1.2522889255616805	scale=0.77112132222695795	min=0
+audit-5556	pareto2	certified	-7.2759691215671962	shape=0.72979709807385185	scale=0.77112132222695795	min=0
+audit-5557	pareto2	certified	-16.996315057739661	shape=0.50571632044683912	scale=0.77112132222695795	min=0
+audit-5558	pareto2	certified	-13.99118972389512	shape=0.75949217663265212	scale=0.77112132222695795	min=0
+audit-5559	pareto2	certified	-14.053863182828216	shape=0.62483691703623001	scale=0.77112132222695795	min=0
+audit-5560	pareto2	certified	-14.05373358120892	shape=0.62484314530727314	scale=0.77112132222695795	min=0
+audit-5561	pareto2	certified	-14.053733568240972	shape=0.62484314593047952	scale=0.77112132222695795	min=0
+audit-5562	pareto2	certified	-14.053863182828216	shape=0.62483691703623001	scale=0.77112132222695795	min=0
+audit-5563	pareto2	certified	-14.05373358120892	shape=0.62484314530727314	scale=0.77112132222695795	min=0
+audit-5564	pareto2	certified	-14.053733568240972	shape=0.62484314593047952	scale=0.77112132222695795	min=0
+audit-5565	pareto2	certified	4038.1079943085833	shape=2.9202417027255482e+146	scale=0.77112132222695795	min=0
+audit-5566	pareto2	certified	-4254.3237399621357	shape=0.0028741010999985372	scale=0.77112132222695795	min=0
+audit-5567	pareto2	certified	-31.766553112356675	shape=0.23910017080952994	scale=0.77112132222695795	min=0
+audit-5568	pareto2	certified	-14.053733568234497	shape=0.6248431459307906	scale=0.77112132222695795	min=0
+audit-5569	pareto2	certified	-57.229275465902361	shape=0.35988135997576343	scale=0.77112132222695795	min=0
+audit-5570	pareto2	certified	-3.6959758375507015	shape=0.35988135997576343	scale=0.77112132222695795	min=0
+audit-5571	pareto2	certified	-7.8763211823552535	shape=0.35988135997576343	scale=0.77112132222695795	min=0
+audit-5572	pareto2	certified	-17.255457076130316	shape=0.35988135997576343	scale=0.77112132222695795	min=0
+audit-5573	pareto2	certified	-15.315511659990346	shape=0.35988135997576343	scale=0.77112132222695795	min=0
+audit-5574	pareto2	certified	-14.692246804516813	shape=0.35988135997576343	scale=0.77112132222695795	min=0
+audit-5575	pareto2	certified	-14.692138336715107	shape=0.35988135997576343	scale=0.77112132222695795	min=0
+audit-5576	pareto2	certified	-14.692138325861832	shape=0.35988135997576343	scale=0.77112132222695795	min=0
+audit-5577	pareto2	certified	-14.692246804516813	shape=0.35988135997576343	scale=0.77112132222695795	min=0
+audit-5578	pareto2	certified	-14.692138336715107	shape=0.35988135997576343	scale=0.77112132222695795	min=0
+audit-5579	pareto2	certified	-14.692138325861832	shape=0.35988135997576343	scale=0.77112132222695795	min=0
+audit-5580	pareto2	certified	-9.1448555597536352	shape=0.35988135997576343	scale=0.77112132222695795	min=0
+audit-5581	pareto2	certified	-5686.9466279878243	shape=0.35988135997576343	scale=0.77112132222695795	min=0
+audit-5582	pareto2	certified	-32.247838467696958	shape=0.35988135997576343	scale=0.77112132222695795	min=0
+audit-5583	pareto2	certified	-14.692138325856412	shape=0.35988135997576343	scale=0.77112132222695795	min=0
+audit-5584	pareto3	certified	0.50034567856999157	shape=5.4611458473419763	scale=0.69966256706536611	min=0
+audit-5585	pareto3	certified	1.5863176631393292	shape=6.2580389420433562	scale=0.41066998664744164	min=0
+audit-5586	pareto3	certified	0.56410768226972818	shape=4.363087900481716	scale=0.51599259931808938	min=0
+audit-5587	pareto3	certified	-0.12738027294376941	shape=4.3495481309637425	scale=0.63502627960784297	min=0
+audit-5588	pareto3	certified	3.1161138743524441	shape=5.0274305175538689	scale=0.38078028429940058	min=0
+audit-5589	pareto3	certified	37.942843727391235	shape=9773.6715676188524	scale=0.68758405376140663	min=0
+audit-5590	pareto3	certified	83.994408649896826	shape=97732768.856770843	scale=0.68757761750951585	min=0
+audit-5591	pareto3	certified	130.0462211082563	shape=977351131797.74414	scale=0.68757761686531094	min=0
+audit-5592	pareto3	certified	36.069940934616589	shape=9773.6715676225504	scale=1.0000093617011407	min=0
+audit-5593	pareto3	certified	82.121505858940196	shape=97732768.850107417	scale=1.0000000009370131	min=0
+audit-5594	pareto3	certified	128.17317664307606	shape=977320258367.33997	scale=1.0000000000000937	min=0
+audit-5595	pareto3	certified	4145.1535130678521	shape=5.4611458473419763	scale=6.9966256706536617e-151	min=0
+audit-5596	pareto3	certified	-4144.1528217107125	shape=5.4611458473419763	scale=6.9966256706536617e+149	min=0
+audit-5597	pareto3	certified	-27.411887094310224	shape=0.35352506025394637	scale=2.5152608408368735	min=0
+audit-5598	pareto3	certified	61.880595933249197	shape=1156676.7406334842	scale=0.68757761686479602	min=0
+audit-5599	pareto3	certified	-5.2569436113693904	shape=2.0052179168462807	scale=0.69805594616799571	min=0
+audit-5600	pareto3	certified	0.27778778499572854	shape=2.0052179168462807	scale=0.41066998664744159	min=0
+audit-5601	pareto3	certified	-0.46300754590580473	shape=2.0052179168462807	scale=0.51271798763444099	min=0
+audit-5602	pareto3	certified	-1.763898115461191	shape=2.0052179168462807	scale=0.62186753902080194	min=0
+audit-5603	pareto3	certified	0.5678455305785326	shape=2.0052179168462807	scale=0.39960087483159357	min=0
+audit-5604	pareto3	certified	-1.5799053787918613	shape=2.0052179168462807	scale=0.68759135824163631	min=0
+audit-5605	pareto3	certified	-1.5798053150283493	shape=2.0052179168462807	scale=0.68757761824040164	min=0
+audit-5606	pareto3	certified	-1.5798053050293492	shape=2.0052179168462807	scale=0.68757761686538399	min=0
+audit-5607	pareto3	certified	-3.4528081715682926	shape=2.0052179168462807	scale=1.0000199852002924	min=0
+audit-5608	pareto3	certified	-3.4527081078047801	shape=2.0052179168462807	scale=1.0000000019999997	min=0
+audit-5609	pareto3	certified	-3.4527080978057794	shape=2.0052179168462807	scale=1.0000000000002001	min=0
+audit-5610	pareto3	certified	4139.3962237779124	shape=2.0052179168462807	scale=6.980559461679957e-151	min=0
+audit-5611	pareto3	certified	-4149.9101110006523	shape=2.0052179168462807	scale=6.9805594616799568e+149	min=0
+audit-5612	pareto3	certified	-42.999649719677912	shape=2.0052179168462807	scale=0.82535556583878578	min=0
+audit-5613	pareto3	certified	-1.5798053050334009	shape=2.0052179168462807	scale=0.68757761686455898	min=0
+audit-5614	pareto3	certified	-4.5004601059248239	shape=3.4616980731442824	scale=1.0000870964394475	min=0
+audit-5615	pareto3	certified	-1.0332056146436408	shape=1.7060119765151061	scale=1.0000870964394475	min=0
+audit-5616	pareto3	certified	-1.5819151967591139	shape=2.1492345989552226	scale=1.0000870964394475	min=0
+audit-5617	pareto3	certified	-2.3923465004530149	shape=2.783381075988034	scale=1.0000870964394475	min=0
+audit-5618	pareto3	certified	-3.2962419718366514	shape=1.6340567686905201	scale=1.0000870964394475	min=0
+audit-5619	pareto3	certified	-0.70176421558618762	shape=4.1196161384422201	scale=1.0000870964394475	min=0
+audit-5620	pareto3	certified	-0.70193061974327187	shape=4.1193965951030007	scale=1.0000870964394475	min=0
+audit-5621	pareto3	certified	-0.70193063643191911	shape=4.1193965731155986	scale=1.0000870964394475	min=0
+audit-5622	pareto3	certified	35.655220662421939	shape=8883.4667671821117	scale=1.0000870964394475	min=0
+audit-5623	pareto3	certified	39.25939227017178	shape=17721.818396107497	scale=1.0000870964394475	min=0
+audit-5624	pareto3	certified	39.259277537513114	shape=17721.411613417953	scale=1.0000870964394475	min=0
+audit-5625	pareto3	certified	4060.8912296900608	shape=0.0044639303986499053	scale=1.0000870964394475	min=0
+audit-5626	pareto3	certified	-4228.3899281928125	shape=0.0044733058920408061	scale=1.0000870964394475	min=0
+audit-5627	pareto3	certified	-27.513898012291605	shape=0.35882039086400763	scale=1.0000870964394475	min=0
+audit-5628	pareto3	certified	-0.70193063646654674	shape=4.1193965730904134	scale=1.0000870964394475	min=0
+audit-5629	pareto3	certified	-6.6514278369814255	shape=2.0052179168462807	scale=1.0000870964394475	min=0
+audit-5630	pareto3	certified	-1.0791904289878027	shape=2.0052179168462807	scale=1.0000870964394475	min=0
+audit-5631	pareto3	certified	-1.5926917598540753	shape=2.0052179168462807	scale=1.0000870964394475	min=0
+audit-5632	pareto3	certified	-2.7367308536128054	shape=2.0052179168462807	scale=1.0000870964394475	min=0
+audit-5633	pareto3	certified	-3.5182303125631185	shape=2.0052179168462807	scale=1.0000870964394475	min=0
+audit-5634	pareto3	certified	-2.2693854327908953	shape=2.0052179168462807	scale=1.0000870964394475	min=0
+audit-5635	pareto3	certified	-2.2693572964607296	shape=2.0052179168462807	scale=1.0000870964394475	min=0
+audit-5636	pareto3	certified	-2.2693572936581283	shape=2.0052179168462807	scale=1.0000870964394475	min=0
+audit-5637	pareto3	certified	-3.4528081942031186	shape=2.0052179168462807	scale=1.0000870964394475	min=0
+audit-5638	pareto3	certified	-3.4527081459268265	shape=2.0052179168462807	scale=1.0000870964394475	min=0
+audit-5639	pareto3	certified	-3.4527081359295764	shape=2.0052179168462807	scale=1.0000870964394475	min=0
+audit-5640	pareto3	certified	-4162.3022194722535	shape=2.0052179168462807	scale=1.0000870964394475	min=0
+audit-5641	pareto3	certified	-12434.171591040931	shape=2.0052179168462807	scale=1.0000870964394475	min=0
+audit-5642	pareto3	certified	-43.116558078377963	shape=2.0052179168462807	scale=1.0000870964394475	min=0
+audit-5643	pareto3	certified	-2.2693572936652036	shape=2.0052179168462807	scale=1.0000870964394475	min=0
+audit-9439	gb2	stop:limit	nan	message=GB2 selects a limiting model. Use `mlinvtrgamma`.
+audit-9442	gb2	stop:limit	nan	message=GB2 selects a limiting model. Use `mltrgamma`.
+audit-9455	gb2	stop:limit	nan	message=GB2 selects a limiting model. Use `mlinvtrgamma`.
+audit-9458	gb2	stop:limit	nan	message=GB2 selects a limiting model. Use `mltrgamma`.
+audit-9471	gb2	stop:limit	nan	message=GB2 selects a limiting model. Use `mlinvtrgamma`.
+audit-9474	gb2	stop:limit	nan	message=GB2 selects a limiting model. Use `mltrgamma`.
+audit-9487	gb2	stop:limit	nan	message=GB2 selects a limiting model. Use `mlinvtrgamma`.
+audit-9490	gb2	stop:limit	nan	message=GB2 selects a limiting model. Use `mltrgamma`.
+audit-9503	gb2	stop:limit	nan	message=GB2 selects a limiting model. Use `mlinvtrgamma`.
+audit-9506	gb2	stop:limit	nan	message=GB2 selects a limiting model. Use `mltrgamma`.
+audit-9519	gb2	stop:limit	nan	message=GB2 selects a limiting model. Use `mlinvtrgamma`.
+audit-9522	gb2	stop:limit	nan	message=GB2 selects a limiting model. Use `mltrgamma`.
+audit-9535	fpareto	stop:limit	nan	message=GB2 selects a limiting model. Use `mlinvtrgamma(x - min)`.
+audit-9538	fpareto	stop:limit	nan	message=GB2 selects a limiting model. Use `mltrgamma(x - min)`.
+audit-9551	fpareto	stop:limit	nan	message=GB2 selects a limiting model. Use `mlinvtrgamma(x - min)`.
+audit-9554	fpareto	stop:limit	nan	message=GB2 selects a limiting model. Use `mltrgamma(x - min)`.
+audit-9567	fpareto	certified	-18.270973671996426	shape1=0.29999999999999999	shape2=1.9802932530684678	shape3=8.3892568070987164	scale=0.092909927029000514	min=0
+audit-9570	fpareto	certified	-17.506344993089709	shape1=2.0332299843069199	shape2=1.9802932530684678	shape3=0.40000000000000002	scale=3.6255012030635219	min=0
+audit-9583	fpareto	stop:limit	nan	message=GB2 selects a limiting model. Use `mlinvtrgamma(x - min)`.
+audit-9586	fpareto	stop:limit	nan	message=GB2 selects a limiting model. Use `mltrgamma(x - min)`.
+audit-9599	fpareto	stop:limit	nan	message=GB2 selects a limiting model. Use `mlinvtrgamma(x - min)`.
+audit-9602	fpareto	stop:limit	nan	message=GB2 selects a limiting model. Use `mltrgamma(x - min)`.
+audit-9615	fpareto	stop:limit	nan	message=GB2 selects a limiting model. Use `mlinvtrgamma(x - min)`.
+audit-9618	fpareto	stop:limit	nan	message=GB2 selects a limiting model. Use `mltrgamma(x - min)`.
+audit-9899	gb2	stop:limit	nan	message=GB2 selects a limiting model. Use `mlinvtrgamma`.
+audit-9902	gb2	stop:limit	nan	message=GB2 selects a limiting model. Use `mltrgamma`.
+audit-9915	gb2	stop:limit	nan	message=GB2 selects a limiting model. Use `mlinvtrgamma`.
+audit-9918	gb2	stop:limit	nan	message=GB2 selects a limiting model. Use `mltrgamma`.
+audit-9931	gb2	stop:limit	nan	message=GB2 selects a limiting model. Use `mlinvtrgamma`.
+audit-9934	gb2	stop:limit	nan	message=GB2 selects a limiting model. Use `mltrgamma`.
+audit-9947	gb2	stop:limit	nan	message=GB2 selects a limiting model. Use `mlinvtrgamma`.
+audit-9950	gb2	stop:limit	nan	message=GB2 selects a limiting model. Use `mltrgamma`.
+audit-9963	gb2	stop:limit	nan	message=GB2 selects a limiting model. Use `mlinvtrgamma`.
+audit-9966	gb2	stop:limit	nan	message=GB2 selects a limiting model. Use `mltrgamma`.
+audit-9979	gb2	stop:limit	nan	message=GB2 selects a limiting model. Use `mlinvtrgamma`.
+audit-9982	gb2	stop:limit	nan	message=GB2 selects a limiting model. Use `mltrgamma`.
+audit-9995	fpareto	stop:limit	nan	message=GB2 selects a limiting model. Use `mlinvtrgamma(x - min)`.
+audit-9998	fpareto	stop:limit	nan	message=GB2 selects a limiting model. Use `mltrgamma(x - min)`.
+audit-10011	fpareto	stop:limit	nan	message=GB2 selects a limiting model. Use `mlinvtrgamma(x - min)`.
+audit-10014	fpareto	stop:limit	nan	message=GB2 selects a limiting model. Use `mltrgamma(x - min)`.
+audit-10027	fpareto	certified	-18.272987727416332	shape1=0.29999999999999999	shape2=1.9802932530684678	shape3=8.4968219744367808	scale=0.092214936049025642	min=0
+audit-10030	fpareto	certified	-17.509672440889474	shape1=2.0348808675238548	shape2=1.9802932530684678	shape3=0.40000000000000002	scale=3.6290713735470983	min=0
+audit-10043	fpareto	stop:limit	nan	message=GB2 selects a limiting model. Use `mlinvtrgamma(x - min)`.
+audit-10046	fpareto	stop:limit	nan	message=GB2 selects a limiting model. Use `mltrgamma(x - min)`.
+audit-10059	fpareto	stop:limit	nan	message=GB2 selects a limiting model. Use `mlinvtrgamma(x - min)`.
+audit-10062	fpareto	stop:limit	nan	message=GB2 selects a limiting model. Use `mltrgamma(x - min)`.
+audit-10075	fpareto	stop:limit	nan	message=GB2 selects a limiting model. Use `mlinvtrgamma(x - min)`.
+audit-10078	fpareto	stop:limit	nan	message=GB2 selects a limiting model. Use `mltrgamma(x - min)`.
+audit-10307	fpareto	stop:limit	nan	message=GB2 selects a limiting model. Use `mlinvtrgamma(x - min)`.
+audit-10308	fpareto	stop:limit	nan	message=GB2 selects a limiting model. Use `mlinvtrgamma(x - min)`.
+audit-10309	fpareto	stop:limit	nan	message=GB2 selects a limiting model. Use `mlinvtrgamma(x - min)`.
+audit-10316	fpareto	stop:limit	nan	message=GB2 selects a limiting model. Use `mltrgamma(x - min)`.
+audit-10317	fpareto	stop:limit	nan	message=GB2 selects a limiting model. Use `mltrgamma(x - min)`.
+audit-10318	fpareto	stop:limit	nan	message=GB2 selects a limiting model. Use `mltrgamma(x - min)`.
+audit-10391	gb2	stop:limit	nan	message=GB2 selects a limiting model. Use `mlinvtrgamma`.
+audit-10392	gb2	stop:limit	nan	message=GB2 selects a limiting model. Use `mlinvtrgamma`.
+audit-10393	gb2	stop:limit	nan	message=GB2 selects a limiting model. Use `mlinvtrgamma`.
+audit-10400	gb2	stop:limit	nan	message=GB2 selects a limiting model. Use `mltrgamma`.
+audit-10401	gb2	stop:limit	nan	message=GB2 selects a limiting model. Use `mltrgamma`.
+audit-10402	gb2	stop:limit	nan	message=GB2 selects a limiting model. Use `mltrgamma`.
+audit-10532	invparalogis	uncertified	36.417598490681854	shape=7077.0549461455084	scale=0.99868617562700346
+audit-10533	invparalogis	uncertified	-2.8667306743705763	shape=2.8871465419386166	scale=0.99982332859778578
+audit-10534	invparalogis	uncertified	-86313.585673251757	shape=1039736052012.6571	scale=0.99999998334399476
+audit-10535	invparalogis	certified	-6.7433523964000024	shape=1.0292870573482298	scale=0.97236401452039722
+audit-10536	invparalogis	certified	-6.7432524416332758	shape=1.0292870573482298	scale=0.97234458417712621
+audit-10537	invparalogis	certified	-6.7432524316342759	shape=1.0292870573482298	scale=0.97234458223263187
+audit-10538	invparalogis	certified	8.1182104007573539	shape=16.306451795713564	scale=0.81280534906591395
+audit-10539	invparalogis	certified	8.1190220800663084	shape=16.308449832765717	scale=0.81280534906591395
+audit-10540	invparalogis	certified	8.1190221602135875	shape=16.308450032904975	scale=0.81280534906591395
+audit-10541	invparalogis	certified	-6.7864119596532229	shape=1.0292870573482298	scale=0.81280534906591395
+audit-10542	invparalogis	certified	-6.786302422388804	shape=1.0292870573482298	scale=0.81280534906591395
+audit-10543	invparalogis	certified	-6.786302411430845	shape=1.0292870573482298	scale=0.81280534906591395
+audit-10544	invpareto	stop:limit	nan	message=The certified profile bound places every improvement over the inverse exponential limit within its tolerance. Use `mlinvexp` to fit that limit model.
+audit-10545	invpareto	stop:limit	nan	message=The certified profile bound places every improvement over the inverse exponential limit within its tolerance. Use `mlinvexp` to fit that limit model.
+audit-10546	invpareto	stop:limit	nan	message=The certified profile bound places every improvement over the inverse exponential limit within its tolerance. Use `mlinvexp` to fit that limit model.
+audit-10547	invpareto	certified	-6.1401319184453076	shape=1.8834871898123693	scale=0.53094068601879785
+audit-10548	invpareto	certified	-6.140031955107907	shape=1.8834871898123693	scale=0.53093007874390741
+audit-10549	invpareto	certified	-6.1400319451089089	shape=1.8834871898123693	scale=0.53093007768207479
+audit-10550	invpareto	certified	-6.6770673580126498	shape=1.4025847409458905	scale=1.0400607444808627
+audit-10551	invpareto	certified	-6.6769898665763545	shape=1.4025647069061702	scale=1.0400607444808627
+audit-10552	invpareto	certified	-6.6769898588258512	shape=1.4025647049005534	scale=1.0400607444808627
+audit-10553	invpareto	certified	-6.9173701634976377	shape=1.8834871898123693	scale=1.0400607444808627
+audit-10554	invpareto	certified	-6.9173171600183077	shape=1.8834871898123693	scale=1.0400607444808627
+audit-10555	invpareto	certified	-6.917317154719389	shape=1.8834871898123693	scale=1.0400607444808627
+audit-10616	pareto2	stop:limit	nan	message=The Lomax maximum likelihood estimator does not exist for data whose likelihood is maximized on the exponential face. Use `mlexp(x - min)` to fit an exponential distribution.
+audit-10617	pareto2	stop:limit	nan	message=The Lomax maximum likelihood estimator does not exist for data whose likelihood is maximized on the exponential face. Use `mlexp(x - min)` to fit an exponential distribution.
+audit-10618	pareto2	stop:limit	nan	message=The Lomax maximum likelihood estimator does not exist for data whose likelihood is maximized on the exponential face. Use `mlexp(x - min)` to fit an exponential distribution.
+audit-10619	pareto2	certified	-9.0390839202952353	shape=0.35988135997576343	scale=0.35988854976998669	min=0
+audit-10620	pareto2	certified	-9.0389839857077412	shape=0.35988135997576343	scale=0.35988136069560606	min=0
+audit-10621	pareto2	certified	-9.0389839757087422	shape=0.35988135997576343	scale=0.35988135997586196	min=0
+audit-10622	pareto2	certified	-6.9357035427372304	shape=1.2025970665144474	scale=0.77112132222695795	min=0
+audit-10623	pareto2	certified	-6.9355792456454477	shape=1.2026133895329298	scale=0.77112132222695795	min=0
+audit-10624	pareto2	certified	-6.9355792332104276	shape=1.2026133911659453	scale=0.77112132222695795	min=0
+audit-10625	pareto2	certified	-9.4642924433323543	shape=0.35988135997576343	scale=0.77112132222695795	min=0
+audit-10626	pareto2	certified	-9.4642157027089926	shape=0.35988135997576343	scale=0.77112132222695795	min=0
+audit-10627	pareto2	certified	-9.4642156950316796	shape=0.35988135997576343	scale=0.77112132222695795	min=0
+audit-10726	fpareto	stop:limit	nan	message=GB2 selects a limiting model. Use `mlinvtrgamma(x - min)`.
+audit-10727	fpareto	stop:limit	nan	message=GB2 selects a limiting model. Use `mlinvtrgamma(x - min)`.
+audit-10728	fpareto	stop:limit	nan	message=GB2 selects a limiting model. Use `mlinvtrgamma(x - min)`.
+audit-10729	fpareto	stop:limit	nan	message=GB2 selects a limiting model. Use `mlinvtrgamma(x - min)`.
+audit-10738	fpareto	stop:limit	nan	message=GB2 selects a limiting model. Use `mltrgamma(x - min)`.
+audit-10739	fpareto	stop:limit	nan	message=GB2 selects a limiting model. Use `mltrgamma(x - min)`.
+audit-10740	fpareto	stop:limit	nan	message=GB2 selects a limiting model. Use `mltrgamma(x - min)`.
+audit-10741	fpareto	stop:limit	nan	message=GB2 selects a limiting model. Use `mltrgamma(x - min)`.
+audit-10814	pareto2	stop:limit	nan	message=The Lomax maximum likelihood estimator does not exist for data whose likelihood is maximized on the exponential face. Use `mlexp(x - min)` to fit an exponential distribution.
+audit-10815	pareto2	stop:limit	nan	message=The Lomax maximum likelihood estimator does not exist for data whose likelihood is maximized on the exponential face. Use `mlexp(x - min)` to fit an exponential distribution.
+audit-10816	pareto2	stop:limit	nan	message=The Lomax maximum likelihood estimator does not exist for data whose likelihood is maximized on the exponential face. Use `mlexp(x - min)` to fit an exponential distribution.
+audit-10817	pareto2	stop:limit	nan	message=The Lomax maximum likelihood estimator does not exist for data whose likelihood is maximized on the exponential face. Use `mlexp(x - min)` to fit an exponential distribution.
+audit-10818	pareto2	certified	54.078600798109264	shape=0.35988135997576343	scale=9.7013265075356127e-07	min=0
+audit-10819	pareto2	certified	123.15615358793065	shape=0.35988135997576343	scale=9.7013265075356188e-13	min=0
+audit-10820	pareto2	certified	180.72078091278181	shape=0.35988135997576343	scale=9.7013265075355995e-18	min=0
+audit-10821	pareto2	certified	2287.5861410023335	shape=0.35988135997576343	scale=9.7013265075322933e-201	min=0
+audit-10822	pareto2	certified	57.146074500171949	shape=192781.08055484827	scale=0.77112132222695795	min=0
+audit-10823	pareto2	certified	126.2236337740368	shape=192780330557.48944	scale=0.77112132222695795	min=0
+audit-10824	pareto2	certified	183.78826109889442	shape=19278033055673928	scale=0.77112132222695795	min=0
+audit-10825	pareto2	certified	2290.6536211884463	shape=1.9278033055674465e+199	scale=0.77112132222695795	min=0
+audit-10826	pareto2	certified	-3.8103917533245117	shape=0.35988135997576343	scale=0.77112132222695795	min=0
+audit-10827	pareto2	certified	-3.8103564832659513	shape=0.35988135997576343	scale=0.77112132222695795	min=0
+audit-10828	pareto2	certified	-3.8103564832306818	shape=0.35988135997576343	scale=0.77112132222695795	min=0
+audit-10829	pareto2	certified	-3.8103564832306813	shape=0.35988135997576343	scale=0.77112132222695795	min=0
+audit-10830	pareto3	certified	57.596445936798823	shape=2.2047530809180444	scale=3.0792148372480028e-06	min=0
+audit-10831	pareto3	certified	126.6739987266202	shape=2.2047530809180449	scale=3.0792148372480025e-12	min=0
+audit-10832	pareto3	certified	184.23862605147133	shape=2.2047530809180444	scale=3.0792148372480031e-17	min=0
+audit-10833	pareto3	certified	2291.1039861410231	shape=2.2047530809180444	scale=3.0792148372480026e-200	min=0
+audit-10834	pareto3	certified	57.563676164304965	shape=2.0052179168462807	scale=3.0779908355634661e-06	min=0
+audit-10835	pareto3	certified	126.64122895412635	shape=2.0052179168462807	scale=3.0779908355634664e-12	min=0
+audit-10836	pareto3	certified	184.20585627897751	shape=2.0052179168462807	scale=3.0779908355634667e-17	min=0
+audit-10837	pareto3	certified	2291.0712163685293	shape=2.0052179168462807	scale=3.0779908355634663e-200	min=0
+audit-10838	pareto3	certified	43.283243051318614	shape=0.12147965049653532	scale=1.0000870964394475	min=0
+audit-10839	pareto3	certified	108.68399808105801	shape=0.058206993140119796	scale=1.0000870964394475	min=0
+audit-10840	pareto3	certified	164.4460866123934	shape=0.040586650251042244	scale=1.0000870964394475	min=0
+audit-10841	pareto3	certified	2258.853675028779	shape=0.0033596265870799911	scale=1.0000870964394475	min=0
+audit-10842	pareto3	certified	-60.332469148081927	shape=2.0052179168462807	scale=1.0000870964394475	min=0
+audit-10843	pareto3	certified	-129.77046286407963	shape=2.0052179168462807	scale=1.0000870964394475	min=0
+audit-10844	pareto3	certified	-187.63545762759901	shape=2.0052179168462807	scale=1.0000870964394475	min=0
+audit-10845	pareto3	certified	-2305.4942659724074	shape=2.0052179168462807	scale=1.0000870964394475	min=0
+symmetric-2356	sged	stop:limit	nan	message=SGED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+symmetric-2357	sged	stop:limit	nan	message=SGED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+symmetric-2358	sged	stop:limit	nan	message=SGED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+symmetric-2359	sged	stop:limit	nan	message=SGED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+symmetric-2360	sged	certified	-5.6410189731383218	mean=0.73216669611217611	sd=0.66604119138786511	nu=1	xi=1
+symmetric-2361	sged	stop:limit	nan	message=SGED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+symmetric-2362	sged	stop:limit	nan	message=SGED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+symmetric-2363	sged	stop:limit	nan	message=SGED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+symmetric-2364	sged	stop:limit	nan	message=SGED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+symmetric-2365	sged	stop:limit	nan	message=SGED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+symmetric-2366	sged	stop:limit	nan	message=SGED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+symmetric-2367	sged	stop:limit	nan	message=SGED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+symmetric-2368	sged	stop:limit	nan	message=SGED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+symmetric-2369	sged	stop:limit	nan	message=SGED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+symmetric-2370	sged	stop:limit	nan	message=SGED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+symmetric-2371	sged	stop:limit	nan	message=SGED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+symmetric-2372	sged	certified	-16.945758706024662	mean=-0.017698887677594307	sd=0.99472226355732485	nu=1.7774977415101603	xi=1
+symmetric-2373	sged	stop:limit	nan	message=SGED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+symmetric-2374	sged	stop:limit	nan	message=SGED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+symmetric-2375	sged	stop:limit	nan	message=SGED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+symmetric-2376	sged	stop:limit	nan	message=SGED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+symmetric-2377	sged	stop:limit	nan	message=SGED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+symmetric-2378	sged	stop:limit	nan	message=SGED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+symmetric-2379	sged	stop:limit	nan	message=SGED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+symmetric-2380	sged	stop:limit	nan	message=SGED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+symmetric-2381	sged	stop:limit	nan	message=SGED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+symmetric-2382	sged	stop:limit	nan	message=SGED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+symmetric-2383	sged	stop:numerical	nan	message=SGED certificate numerical failure (arithmetic or root enclosure); increase `iterlim`.
+symmetric-2384	sged	certified	-4161.5845528488544	mean=-0.017698887677594307	sd=9.9287277369917624e+149	nu=1.8299548784561921	xi=1
+symmetric-2385	sged	stop:limit	nan	message=SGED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+symmetric-2386	sged	certified	-69.496136458499876	mean=-0.017698887677594307	sd=282844.82407584292	nu=1	xi=1
+symmetric-2387	sged	stop:limit	nan	message=SGED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+symmetric-2388	sged	uncertified	-15.121495715294474	mean=0.57512328045579253	sd=1.0178559902092952	nu=267.11661809568466	xi=1
+symmetric-2389	sged	certified	-2.3779633127826574	mean=1.504385495419206	sd=1.0178559902092952	nu=3.2844817690784112	xi=1
+symmetric-2390	sged	uncertified	-3.7741653666095276	mean=0.8637175657864562	sd=1.0178559902092952	nu=27.497341303893556	xi=1
+symmetric-2391	sged	uncertified	-6.2871556067857641	mean=0.86352652248289674	sd=1.0178559902092952	nu=23.000299729007228	xi=1
+symmetric-2392	sged	certified	-6.1117742050154931	mean=0.73216669611217611	sd=1.0178559902092952	nu=1	xi=1
+symmetric-2393	sged	certified	-1.8213809293308518	mean=-0.021339634443158128	sd=1.0178559902092952	nu=1	xi=1
+symmetric-2394	sged	certified	-1.821360176839341	mean=-0.021339634443158128	sd=1.0178559902092952	nu=1	xi=1
+symmetric-2395	sged	certified	-1.821360174764092	mean=-0.021339634443158128	sd=1.0178559902092952	nu=1	xi=1
+symmetric-2396	sged	certified	-1.8223327578239472	mean=1	sd=1.0178559902092952	nu=1	xi=1
+symmetric-2397	sged	certified	-1.8213602720221904	mean=1	sd=1.0178559902092952	nu=1	xi=1
+symmetric-2398	sged	certified	-1.8213601747736103	mean=1	sd=1.0178559902092952	nu=1	xi=1
+symmetric-2399	sged	stop:tie	nan	message=SGED maxima are tied or numerically indistinguishable; no unique MLE returned.
+symmetric-2400	sged	stop:tie	nan	message=SGED maxima are tied or numerically indistinguishable; no unique MLE returned.
+symmetric-2401	sged	stop:numerical	nan	message=SGED certificate numerical failure (arithmetic or root enclosure); increase `iterlim`.
+symmetric-2402	sged	certified	-1389412.2648690296	mean=1.5779966110538917	sd=1.0178559902092952	nu=1	xi=1
+symmetric-2403	sged	certified	-1.8213603526601727	mean=-0.021339634443158128	sd=1.0178559902092952	nu=1	xi=1
+symmetric-2404	sged	certified	-16.951259267560268	mean=-0.017698887677594307	sd=1.0178559902092952	nu=1.765709863830125	xi=1
+symmetric-2405	sged	certified	-4.6819473422080371	mean=-0.017698887677594307	sd=1.0178559902092952	nu=1.8796682662796229	xi=1
+symmetric-2406	sged	certified	-5.748689637135918	mean=-0.017698887677594307	sd=1.0178559902092952	nu=1.8097631898708642	xi=1
+symmetric-2407	sged	certified	-8.8870363249839652	mean=-0.017698887677594307	sd=1.0178559902092952	nu=1.9581536840996705	xi=1
+symmetric-2408	sged	certified	-9.3742522889533699	mean=-0.017698887677594307	sd=1.0178559902092952	nu=2.1470529850048479	xi=1
+symmetric-2409	sged	certified	-1.8466495571840773	mean=-0.017698887677594307	sd=1.0178559902092952	nu=1	xi=1
+symmetric-2410	sged	certified	-1.8466525218257217	mean=-0.017698887677594307	sd=1.0178559902092952	nu=1	xi=1
+symmetric-2411	sged	certified	-1.8466525221221859	mean=-0.017698887677594307	sd=1.0178559902092952	nu=1	xi=1
+symmetric-2412	sged	uncertified	-6.1907921437201221	mean=-0.017698887677594307	sd=1.0178559902092952	nu=7.1582343992824846	xi=1
+symmetric-2413	sged	uncertified	-6.1907807808274615	mean=-0.017698887677594307	sd=1.0178559902092952	nu=7.1577714256054241	xi=1
+symmetric-2414	sged	uncertified	-6.1907807796961887	mean=-0.017698887677594307	sd=1.0178559902092952	nu=7.1577715034952236	xi=1
+symmetric-2415	sged	certified	-4.6663553623564979	mean=-0.017698887677594307	sd=1.0178559902092952	nu=1	xi=1
+symmetric-2416	sged	certified	-1.313461660839341e+151	mean=-0.017698887677594307	sd=1.0178559902092952	nu=1	xi=1
+symmetric-2417	sged	certified	-1667285252.1373749	mean=-0.017698887677594307	sd=1.0178559902092952	nu=1	xi=1
+symmetric-2418	sged	certified	-1389416.5656683717	mean=-0.017698887677594307	sd=1.0178559902092952	nu=1	xi=1
+symmetric-2419	sged	certified	-1.8466525221222156	mean=-0.017698887677594307	sd=1.0178559902092952	nu=1	xi=1
+symmetric-9730	sged	stop:limit	nan	message=SGED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+symmetric-9731	sged	stop:limit	nan	message=SGED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+symmetric-9732	sged	uncertified	-15.116000145925938	mean=-2.8196653635564969e-15	sd=1.0178559902092952	nu=57.779697714587577	xi=1
+symmetric-9733	sged	uncertified	-15.116531827823019	mean=-0.017698887677594307	sd=1.0178559902092952	nu=60.348278972506705	xi=1
+symmetric-10190	sged	stop:nomle	nan	message=Scale collapse: likelihood is unbounded at the held mean; no MLE.
+symmetric-10191	sged	stop:limit	nan	message=SGED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+symmetric-10192	sged	certified	-4.371264419433321	mean=0	sd=1.0178559902092952	nu=1	xi=1
+symmetric-10193	sged	certified	-4.6663553623564979	mean=-0.017698887677594307	sd=1.0178559902092952	nu=1	xi=1
+symmetric-golden-ged-16	sged	uncertified	-711.69346056327333	mean=-0.017698961289811691	sd=1.0178559625443544	nu=3.0166443291152163	xi=1
+symmetric-golden-ged-64	sged	certified	-711.69346056327277	mean=-0.01769892743468017	sd=1.0178559615983107	nu=3.0166441191540798	xi=1
+symmetric-golden-ged-1000	sged	certified	-711.69346056327277	mean=-0.01769892743468017	sd=1.0178559615983107	nu=3.0166441191540798	xi=1
+symmetric-seed-ged-0	sged	stop:limit	nan	message=SGED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+symmetric-seed-ged-1	sged	stop:limit	nan	message=SGED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+symmetric-seed-ged-2	sged	stop:limit	nan	message=SGED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+symmetric-route-ged-rounded-roots-held-mean	sged	uncertified	-96.739200387761159	mean=0	sd=1	nu=1.1081455616252152	xi=1
+symmetric-route-ged-rounded-roots-free-mean	sged	uncertified	-96.739200387761159	mean=-2.5293590263189525e-15	sd=1	nu=1.1081455628487342	xi=1
+golden-gb2-16	gb2	stop:unresolved	nan	message=GB2 search unresolved: no verified interior maximum; increase iterlim or inspect the limiting models.
+golden-gb2-64	gb2	certified	-1322.5740862676923	shape1=0.57103303243283454	shape2=1.1232209899706949	shape3=0.71164837657402458	scale=1.0079365599413455
+golden-gb2-1000	gb2	certified	-1322.5740862676923	shape1=0.57103303243283454	shape2=1.1232209899706949	shape3=0.71164837657402458	scale=1.0079365599413455
+golden-sged-16	sged	uncertified	-639.48280524083805	mean=-0.032496878459555248	sd=0.93902990474162584	nu=3.4208333438322609	xi=2.5890677274967557
+golden-sged-64	sged	uncertified	-639.48280524083805	mean=-0.032496878459554596	sd=0.93902990474162584	nu=3.4208333438322698	xi=2.5890677274967513
+golden-sged-1000	sged	uncertified	-639.48280524083805	mean=-0.032496878459554596	sd=0.93902990474162584	nu=3.4208333438322698	xi=2.5890677274967513
+golden-invparalogis-16	invparalogis	certified	-902.04995114317751	shape=1.0292871549011848	scale=0.81280494985870611
+golden-invparalogis-64	invparalogis	certified	-902.04995114317751	shape=1.0292871549011848	scale=0.81280494985870611
+golden-invparalogis-1000	invparalogis	certified	-902.04995114317751	shape=1.0292871549011848	scale=0.81280494985870611
+golden-invpareto-16	invpareto	certified	-1413.8211879833157	shape=1.8834871897486209	scale=1.0400607445347547
+golden-invpareto-64	invpareto	certified	-1413.8211879833157	shape=1.8834871897486209	scale=1.0400607445347547
+golden-invpareto-1000	invpareto	certified	-1413.8211879833157	shape=1.8834871897486209	scale=1.0400607445347547
+golden-pareto2-16	pareto2	certified	-2270.3824042475026	shape=0.35988135997576315	scale=0.77112132222695806	min=0
+golden-pareto2-64	pareto2	certified	-2270.3824042475026	shape=0.35988135997576315	scale=0.77112132222695806	min=0
+golden-pareto2-1000	pareto2	certified	-2270.3824042475026	shape=0.35988135997576315	scale=0.77112132222695806	min=0
+golden-pareto3-16	pareto3	stop:input-or-unclassified	nan	message=Pareto III delegate search failed to converge.
+golden-pareto3-64	pareto3	certified	-654.73632164613946	shape=2.0052178953698649	scale=1.0000870844503036	min=0
+golden-pareto3-1000	pareto3	certified	-654.73632164613946	shape=2.0052178953698649	scale=1.0000870844503036	min=0
+golden-trgamma-16	trgamma	stop:numerical	nan	message=Constrained likelihood search failed to converge.
+golden-trgamma-64	trgamma	certified	-912.88518099091107	shape1=1.7142653452622978	shape2=2.0950702312229583	scale=3.3727556843232365
+golden-trgamma-1000	trgamma	certified	-912.88518099091107	shape1=1.7142653452622978	shape2=2.0950702312229583	scale=3.3727556843232365
+golden-fpareto-16	fpareto	certified	-1307.1555233164154	shape1=0.29999999999999999	shape2=1.980293253079856	shape3=0.40000000000000002	scale=1.0087842921178511	min=0
+golden-fpareto-64	fpareto	certified	-1307.1555233164154	shape1=0.29999999999999999	shape2=1.980293253079856	shape3=0.40000000000000002	scale=1.0087842921178511	min=0
+golden-fpareto-1000	fpareto	certified	-1307.1555233164154	shape1=0.29999999999999999	shape2=1.980293253079856	shape3=0.40000000000000002	scale=1.0087842921178511	min=0
+unit-p-burr	gb2	uncertified	5.2687298207552011	shape1=48258140354.190277	shape2=23.993572806535489	shape3=1	scale=1
+unit-p-fpareto	fpareto	uncertified	5.2687298207552011	shape1=48258140354.190277	shape2=23.993572806535489	shape3=1	scale=1	min=0
+reciprocal-joint	invparalogis	uncertified	35.775873318047431	shape=5865.0952858301516	scale=0.99841297870284185
+reciprocal-held-scale	invparalogis	uncertified	-0.57382697827670892	shape=2.8853900817780262	scale=1
+invpareto-success	invpareto	certified	-18.876328338756885	shape=1.1086373308596909	scale=1.071195889546132
+pareto2-success	pareto2	certified	-13.840807389438726	shape=1.1086373308596909	scale=0.93353606913456522	min=0
+trgamma-gamma	trgamma	certified	-13.802451219414166	shape1=0.50971474305681952	shape2=1	scale=4.9611082167935487
+grid-1.0-2	pareto3	uncertified	69.77920668846599	shape=13901753108924282	scale=1	min=0
+grid-1.0-3	pareto3	certified	104.31662371651312	shape=8918740810826757	scale=1.0000000000000002	min=0
+grid-1.0-4	pareto3	uncertified	137.52229556808658	shape=6566026836934039	scale=1.0000000000000002	min=0
+grid-1.0-5	pareto3	certified	171.14840729620425	shape=5209208938089088	scale=1.0000000000000004	min=0
+grid-1000.0-2	pareto3	uncertified	57.30255743838697	shape=27151861540867732	scale=1000.0000000000001	min=0
+grid-1000.0-3	pareto3	certified	73.223750676989127	shape=17416525445767648	scale=1000.0000000000001	min=0
+grid-1000.0-4	pareto3	uncertified	112.56899816357473	shape=12824238585280256	scale=1000.0000000000001	min=0
+grid-1000.0-5	pareto3	certified	127.5218978433246	shape=10174289142051548	scale=1000.0000000000002	min=0
+grid-1e+100-2	pareto3	uncertified	-390.47052120333774	shape=15889528520219620	scale=1e+100	min=0
+grid-1e+100-3	pareto3	certified	-584.35302330320258	shape=10192846640944902	scale=1.0000000000000002e+100	min=0
+grid-1e+100-4	pareto3	uncertified	-782.97711110994487	shape=7504030670781787	scale=1.0000000000000002e+100	min=0
+grid-1e+100-5	pareto3	certified	-976.61008895200041	shape=5953679758552672	scale=1.0000000000000004e+100	min=0
+rounded-power-gb2	gb2	uncertified	-27.983051235186764	shape1=0.16883269135395568	shape2=2	shape3=0.22690393135372058	scale=1.0073726481090985
+rounded-power-fpareto	fpareto	uncertified	-27.983051235186764	shape1=0.16883269135395568	shape2=2	shape3=0.22690393135372058	scale=1.0073726481090985	min=0
+merge-route-held-power-unproved-face	burr	uncertified	-8.465785902174737	shape1=66667.71874428977	shape2=1	scale=133334.77082795431
+merge-route-invburr-held-power-face	invburr	uncertified	-4.8822336306630678	shape1=66667.71874428977	shape2=1	scale=7.4999191417993194e-06
+merge-route-pareto4-held-power-face	pareto4	uncertified	-8.465785902174737	shape1=66667.71874428977	shape2=1	scale=133334.77082795431	min=0

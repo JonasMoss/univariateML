@@ -4,7 +4,7 @@
 #include <vector>
 #include <cmath>
 namespace cppunivariate {
-struct Pareto4Result { double shape1,shape2,scale,min,logLik; int iterations; BurrStatus status; StopDetail stop_detail{}; };
+struct Pareto4Result { double shape1,shape2,scale,min,logLik; int iterations; BurrStatus status; StopDetail stop_detail{}; bool certified=true; };
 } // namespace cppunivariate
 #include "centered.hpp"
 namespace cppunivariate {
@@ -45,7 +45,7 @@ inline Pareto4Result pareto4_mle(span x, double min, double tol, int maxit, doub
   auto r=(!std::isnan(shape1)||!std::isnan(shape2)) ? burr_mle_holds(span{y.data(),y.size()},shape1,shape2,scale,tol,maxit) : std::isnan(scale) ? burr_mle_legacy(span{y.data(),y.size()},tol,maxit) : burr_mle_fixed_scale(span{y.data(),y.size()},scale,tol,maxit);
   auto detail=r.stop_detail;
   for(auto& c:detail.candidates) if(c.model==StopModel::None && c.coef.size()==3)c.coef.push_back(min);
-  return {r.shape1,r.shape2,r.scale,min,r.logLik,r.iterations,r.status,detail};
+  return {r.shape1,r.shape2,r.scale,min,r.logLik,r.iterations,r.status,detail,r.certified};
 }
 // Certified joint excess fit shared by the public all-free regular path.
 inline Pareto4Result pareto4_mle_certified(span x, double min, double tol, int maxit) {
@@ -71,7 +71,7 @@ inline Pareto4Result pareto4_mle_certified(span x, double min, double tol, int m
   const auto r=burr_mle_certified(span{y.data(),y.size()},tol,maxit);
   auto detail=r.stop_detail;
   for(auto& c:detail.candidates) if(c.model==StopModel::None && c.coef.size()==3)c.coef.push_back(min);
-  return {r.shape1,r.shape2,r.scale,min,r.logLik,r.iterations,r.status,detail};
+  return {r.shape1,r.shape2,r.scale,min,r.logLik,r.iterations,r.status,detail,r.certified};
 }
 
 }

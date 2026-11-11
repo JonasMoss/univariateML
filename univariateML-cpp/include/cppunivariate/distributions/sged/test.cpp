@@ -944,3 +944,14 @@ TEST_CASE("sged held moment half GED contacts never use a closed support substit
   CHECK(r.status==cppunivariate::SgedStatus::CertificateFailure);CHECK_FALSE(r.certified);
   CHECK_FALSE(r.stop_detail.budget_exhausted);CHECK(r.stop_detail.loglik_upper==INFINITY);
 }
+
+TEST_CASE("SGED held unit skew retains an uncertified GED parent") {
+ const std::vector<double> x{.7321666961121761,2.2766042947262384,-.5491691631533211};const auto d=mltest::as_span(x);
+ const auto p=cppunivariate::ged_mle(d,1e-8,1000,NAN,1.0178559902092952,NAN);
+ const auto r=cppunivariate::sged_mle(d,1e-8,1000,NAN,1.0178559902092952,NAN,1);
+ REQUIRE(p.status==cppunivariate::GedStatus::Ok);REQUIRE(r.status==cppunivariate::SgedStatus::Ok);
+ CHECK_FALSE(p.certified);CHECK(r.certified==p.certified);CHECK(r.xi==1);
+ CHECK(r.mu==p.mu);CHECK(r.sigma==p.sigma);CHECK(r.nu==p.nu);CHECK(r.logLik==p.logLik);
+ CHECK(r.iterations==p.iterations);CHECK(r.restricted==p.restricted);
+ for(const auto& c:r.stop_detail.candidates)if(c.model==cppunivariate::StopModel::None){REQUIRE(c.coef.size()==4);CHECK(c.coef.back()==1);}
+}

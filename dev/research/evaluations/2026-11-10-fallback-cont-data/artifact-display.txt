@@ -1,0 +1,5 @@
+Artifact pane display attempt: show returned exit 1 / HTTP 403.
+Reason: the fallback-cont worktree is outside the viewer service readable-root list.
+The supported show client has no per-request readable-root override.
+Register this working directory with the viewer, or configure its server-side CODEX_MATH_WEB_VIEW_ROOTS, to preview the report.
+No outside-worktree file or viewer configuration was changed.

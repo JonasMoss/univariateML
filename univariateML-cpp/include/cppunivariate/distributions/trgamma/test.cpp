@@ -592,3 +592,10 @@ TEST_CASE("trgamma: positive near-face improvement is a comparison stop") {
   CHECK(r.stop_detail.loglik_upper-r.stop_detail.loglik_lower<3e-6);
   CHECK(r.stop_detail.candidates.size()>=2);
 }
+
+TEST_CASE("transformed gamma helper inclusion keeps its independent gamma fit") {
+ const std::vector<double> x{.03,.1,.4,.7,1,2,4,12};const auto r=cppunivariate::trgamma_mle(mltest::as_span(x),1e-8,1000,NAN,1);
+ REQUIRE(r.status==cppunivariate::TrGammaStatus::Ok);CHECK(r.shape2==1);CHECK(std::isfinite(r.logLik));
+ double ll=0;for(double v:x)ll+=cppunivariate::distributions::dtrgamma(v,r.shape1,r.shape2,r.scale,true);
+ CHECK(r.logLik==doctest::Approx(ll).epsilon(1e-10));
+}

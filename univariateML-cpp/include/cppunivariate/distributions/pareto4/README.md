@@ -135,8 +135,8 @@ relations:
     shift: min
 fit:
   method: delegation
-  certified: 'yes'
-  note: 'pareto4/README.md, Details; pareto4/mle.hpp (public fitter and held overloads); pareto4/test.cpp: With min held, the regular likelihood is Burr on x-min. The concentrated held-first-shape profile uses pareto4/centered.hpp to retain raw spacings. Joint and held-power fits are certified conditional on computed comparisons and the parent floating-point margin. Held scale with both shapes free inherits the strictly concave scalar-profile certificate. Face coefficients refer to excess data.'
+  certified: partial
+  note: 'Joint and held-scale excess fits transport the Burr certificate or its uncertified search through the held threshold. Concentrated held-first-shape fits preserve centered excess spacings. Subtraction overflow and artificial ties remain representation failures.'
 areas:
 - actuarial
 - economics and income
@@ -178,7 +178,7 @@ Pareto type IV models sizes above a threshold $\mu$ with Burr-distributed excess
 
 ## Details
 
-Fitting requires finite observations strictly above a held threshold. Subtracting that threshold gives [Burr](../burr/README.md) with unchanged shapes and scale. The joint fit uses the Burr global certificate, including root isolation, negative profile curvature, dual/chord envelopes and both tail exclusions. Accepted finite results have a sample-specific unique global maximum certificate; unresolved comparisons stop.
+Fitting requires finite observations strictly above a held threshold. Subtracting that threshold gives [Burr](../burr/README.md) with unchanged shapes and scale. The joint fit uses the Burr global certificate, including root isolation, negative profile curvature, dual/chord envelopes and both tail exclusions. Certified finite results have a sample-specific unique global maximum certificate; unresolved comparisons retain a successful finite search as uncertified.
 
 With only scale held, nonconstant excesses all at least $\sigma$ have a supremum on the endpoint-$\sigma$ Pareto path. Its log-likelihood is the held-endpoint Pareto log-likelihood minus $Z\log2$, where $Z$ counts excesses equal to $\sigma$. The endpoint remains $\mu+\sigma$, so estimating it anew would change the constrained model. For nonconstant data with an excess below $\sigma$, a finite maximum exists. Constant excesses at or below $\sigma$ instead have unbounded likelihood with both shapes free. Constant excesses above it have a finite unattained Pareto path limit.
 
@@ -192,7 +192,7 @@ For tightly clustered excesses with $\alpha$ held and scale and power free, the 
 
 ## R notes
 
-With `min = 0`, the model is Burr. The concentrated held-first-shape profile retains centered raw-excess spacings. The joint regular fit certifies the finite winner or limiting face and refuses unresolved ties. Held power inherits the certified Lomax face comparison; held scale with both shapes free uses a strictly concave scalar certificate. Detected faces stop with a recommendation to use `mlweibull(x - min)` or `mlpareto(x - min)`, as applicable. Held-scale endpoint faces preserve `min + scale`. Unresolved searches stop.
+With `min = 0`, the model is Burr. The concentrated held-first-shape profile retains centered raw-excess spacings. The joint regular fit attempts to certify the finite winner or limiting face; numerical near-ties leave a successful search uncertified. Held power inherits the certified Lomax face comparison; held scale with both shapes free uses a strictly concave scalar certificate. Detected faces stop with a recommendation to use `mlweibull(x - min)` or `mlpareto(x - min)`, as applicable. Held-scale endpoint faces preserve `min + scale`. Unresolved searches stop.
 
 ## Decision history
 
@@ -218,8 +218,8 @@ $\mu$ held, both shapes and scale are unchanged and the Jacobian is one:
 $\ell_x=\ell_y$. Thus every global exclusion, unique finite root and
 Weibull/Pareto face certificate transfers unchanged. The two faces are
 shifted Weibull and shifted Pareto; subtract `min` to fit those models.
-Ties, budget exhaustion and numerical failures preserve the Burr statuses
-and NaN estimates. This entrypoint never fits a free threshold or alters
+A retained Burr search transports its per-fit certification flag. Remaining
+failed or refuted searches preserve the Burr stop statuses and NaN estimates. This entrypoint never fits a free threshold or alters
 held-subset algorithms.
 
 The exact-arithmetic guarantee is conditional on computed comparisons,
@@ -246,7 +246,8 @@ or tied-endpoint certificates. Genuine data ties remain allowed.
 The held-scale two-shape reduction now inherits the
 [Burr scalar concavity certificate](../burr/README.md#held-scale-certificate-task-1164),
 including strict endpoint score comparisons, coefficient accuracy checks,
-practical floating-point margins and explicit tie/budget/numerical stops.
+practical floating-point margins and uncertified fallback. Both joint and
+held-scale excess fits transport Burr's per-fit flag with the held threshold.
 Subtracting the held threshold transports the certificate to excess data with Jacobian one; artificial ties or overflow in this subtraction stop.
 
 Arithmetic that rounds a distinct observation onto a held scale stops numerically: reciprocation checks equality against the original scale, and threshold subtraction checks its error-free sum residual. This protects the exact endpoint classification and its tied-observation penalty.

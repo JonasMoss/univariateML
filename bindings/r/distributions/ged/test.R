@@ -371,13 +371,14 @@ test_that("ged globally selected Laplace faces expose their whole median interva
 })
 
 
-test_that("ged separated finite shape maxima carry both root witnesses", {
+test_that("ged overlapping finite maxima retain an uncertified search", {
   x <- c(rep(0,8),rep(c(-.32998660809120006,.32998660809120006),23),
          rep(c(-1.4239025460520294,1.4239025460520294),12))
   for(args in list(list(mean=0,sd=1),list(sd=1))) {
     e <- tryCatch(do.call(mlged,c(list(x=x),args)),error=identity)
-    expect_s3_class(e,"univariateML_tie")
-    expect_equal(sort(e$candidates$nu),c(1.108145553391854,25.39783214175462),tolerance=1e-5)
+    expect_s3_class(e,"univariateML")
+    expect_identical(attr(e,"certified"),FALSE)
+    expect_true(is.finite(as.numeric(logLik(e))))
   }
 })
 
@@ -468,4 +469,44 @@ test_that("GED uniform edges retain the side of adjacent doubles", {
   }
   expect_warning(expect_true(is.nan(pged(1+sqrt(3),1,1,.Machine$double.xmax))),"NaNs produced")
   expect_warning(expect_true(is.nan(psged(sqrt(3),0,1,.Machine$double.xmax,2))),"NaNs produced")
+})
+
+test_that("GED retains a converged held-sd search with a logical flag", {
+  x <- c(.7321666961121761,2.2766042947262384,-.5491691631533211)
+  f <- mlged(x,sd=1.0178559902092952,gradtol=1e-8,iterlim=1000)
+  expect_identical(attr(f,"certified"),FALSE)
+  expect_true(is.finite(as.numeric(logLik(f))))
+})
+
+test_that("GED short certificate work preserves a converged finite search", {
+  skip_if_not_installed("jsonlite")
+  root <- Sys.getenv("UMVL_DISTRIBUTIONS_DIR")
+  if(!nzchar(root)) root <- testthat::test_path("fixtures")
+  g <- jsonlite::fromJSON(file.path(root,"ged","golden.json"))
+  f <- mlged(g$data,gradtol=1e-8,iterlim=16)
+  expect_identical(attr(f,"certified"),FALSE)
+  expect_true(is.finite(as.numeric(logLik(f))))
+})
+
+test_that("GED point-score enclosure failure preserves its conditional search", {
+  x <- c(-0.02133959176388924,-0.021339613103523683,-0.021339634443158128,-0.02133965578279257,-0.021339677122427014)
+  f <- mlged(x,nu=3.016645308327854,gradtol=1e-8,iterlim=1000)
+  expect_identical(attr(f,"certified"),FALSE)
+  expect_equal(as.numeric(logLik(f)),sum(dged(x,f[1],f[2],f[3],log=TRUE)),tolerance=1e-9)
+})
+
+test_that("GED unresolved central-knot comparison remains uncertified", {
+  t <- .96295235253631053
+  f <- mlged(c(-1,-t,0,t,1),nu=.5,gradtol=1e-8,iterlim=1000)
+  expect_identical(attr(f,"certified"),FALSE)
+  expect_true(is.finite(as.numeric(logLik(f))))
+})
+
+test_that("GED point-score fallback preserves a held shape and scale", {
+  x <- c(-.02133959176388924,-.021339613103523683,-.021339634443158128,-.02133965578279257,-.021339677122427014)
+  f <- mlged(x,sd=1.0178559902092952,nu=3.016645308327854,gradtol=1e-8,iterlim=1000)
+  expect_identical(attr(f,"certified"),FALSE)
+  expect_identical(unname(f["sd"]),1.0178559902092952)
+  expect_identical(unname(f["nu"]),3.016645308327854)
+  expect_true(is.finite(as.numeric(logLik(f))))
 })

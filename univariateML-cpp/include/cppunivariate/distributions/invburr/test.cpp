@@ -500,3 +500,24 @@ TEST_CASE("invburr: held-scale raw refinement uses the certificate evaluation ca
   CHECK(fit.shape1==doctest::Approx(1.3462035118632834).epsilon(1e-10).scale(0));
   CHECK(fit.shape2==doctest::Approx(1.7734008129755383).epsilon(1e-10).scale(0));
 }
+
+TEST_CASE("invburr transports an uncertified held-scale search") {
+ const std::vector<double> x{std::exp(1.1),std::exp(1.)};
+ const auto r=cppunivariate::invburr_mle_fixed_scale(mltest::as_span(x),1);
+ REQUIRE(r.status==cppunivariate::InvBurrStatus::Ok);CHECK_FALSE(r.certified);
+ CHECK(std::isfinite(r.logLik));
+}
+
+TEST_CASE("invburr retains a converged joint search after short certificate work") {
+ const auto g=mltest::load_distribution_golden("invburr");
+ const auto r=cppunivariate::invburr_mle(mltest::as_span(g.data),1e-8,16);
+ REQUIRE(r.status==cppunivariate::InvBurrStatus::Ok);CHECK_FALSE(r.certified);
+ CHECK(std::isfinite(r.logLik));
+}
+
+TEST_CASE("invburr transports an unclosed held-power face") {
+ const std::vector<double> x{1,1,1,1,1/6.0001};
+ const auto r=cppunivariate::invburr_mle_holds(mltest::as_span(x),NAN,1,NAN,1e-14,1000);
+ REQUIRE(r.status==cppunivariate::InvBurrStatus::Ok);CHECK_FALSE(r.certified);
+ CHECK(std::isfinite(r.logLik));
+}

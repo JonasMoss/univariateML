@@ -86,7 +86,7 @@ limits:
   - model: unif
     firmness: proved
     when: 'The shape $\nu$ tends to infinity, retaining finite location and scale.'
-    detect: With free sd, finite-interval subdivision and a signed tail bound exclude every finite shape. With held sd, unresolved uniform comparisons stop numerically.
+    detect: With free sd, finite-interval subdivision and a signed tail bound exclude every finite shape. With held sd, unresolved uniform comparisons try the finite-shape fallback.
     status: UniformBoundary
     numerical: true
 references:
@@ -114,8 +114,8 @@ relations:
       xi: 1
 fit:
   method: profile-search
-  certified: 'yes'
-  note: 'Free shape uses interval profile scores, monotone location enclosures, curvature-based root contraction and global likelihood/tail comparisons for every mean/sd hold subset. Finite successes enclose every potentially winning coefficient to golden accuracy. Separated unresolved maxima, median intervals and observation-knot ties stop with witnesses; exhausted work and unresolved arithmetic stop with budget or numerical details. Held positive shapes use convex or exhaustive observation-knot profiling. No capped numerical proposal is accepted.'
+  certified: partial
+  note: 'Free shape uses profile-score enclosures, root contraction and tail comparisons. Held shapes use convex or observation-knot profiling. Unclosed comparisons retain converged finite searches with certified=false; proved Laplace median intervals and exact reflected knot ties still stop.'
 areas:
 - robust modelling
 classification: specialist
@@ -153,13 +153,13 @@ Density, probability, quantile and random generation functions
 retain the full $\nu>0$ domain. Coefficients follow fGarch's mean and
 standard deviation parameterisation.
 
-The fitter profiles location and scale, covers the finite shape range with score enclosures, and closes the entire tail analytically. Total log-likelihood differences unresolved within $10^{-8}n$ stop as comparisons with witnesses. A winning uniform limit is reported with advice to use `mlunif`. An exhausted certificate stops on budget.
+The fitter profiles location and scale, covers the finite shape range with score enclosures, and closes the entire tail analytically. Total log-likelihood differences unresolved within $10^{-8}n$ leave a successful finite search uncertified. A winning uniform limit is reported with advice to use `mlunif`. An exhausted certificate retains a successful finite search as uncertified.
 
 With location and scale free, at the Laplace face $\mu$ is a sample median and $\sigma$ is $\sqrt{2}$ times
 the mean absolute deviation from that median.
 
 
-For each held or profiled shape, location minimizes the sum of absolute residuals to that power (a median at shape one, or an observation for held shape below one); the free scale has an exact power-mean profile. A held location collapses only when all residuals vanish. Held standard deviation removes scale collapse. Free shape retains the existing restriction $\nu\ge1$ and is compared with the conditional uniform face. With both location and standard deviation held, observations at a uniform endpoint contribute their limiting GED penalty. Held-sd tails that cannot be separated from the finite candidates stop numerically.
+For each held or profiled shape, location minimizes the sum of absolute residuals to that power (a median at shape one, or an observation for held shape below one); the free scale has an exact power-mean profile. A held location collapses only when all residuals vanish. Held standard deviation removes scale collapse. Free shape retains the existing restriction $\nu\ge1$ and is compared with the conditional uniform face. With both location and standard deviation held, observations at a uniform endpoint contribute their limiting GED penalty. Held-sd tails that cannot be separated from finite candidates leave a converged finite search uncertified.
 
 For fixed $\nu\ge1$, the standardized log-density is a constant minus a
 positive multiple of $|z|^\nu$, hence is concave. Consequently the
@@ -182,12 +182,11 @@ With standard deviation held and a limiting uniform endpoint forced onto an obse
 
 Estimated coefficients on an applicable `fit_domain` bound carry `restricted`
 and emit a warning of class `univariateML_restricted`. Held coefficients are
-not flagged. README hold exemptions apply to free coefficients. Failed
-certificates stop; an optimizer score never rescues an incomplete global cover.
+not flagged. README hold exemptions apply to free coefficients.
 
 The fGarch mean and standard deviation convention is used. Its `gedFit` permits positive shapes below one and returns local solutions. A winning uniform limit here stops with advice to use `mlunif`.
 
-Face comparisons retain the family tolerance but stop with the existing numerical-failure status when `core/face_compare.hpp` cannot resolve the decision after its floating-point rounding allowance. This allowance concerns computed likelihood comparisons, not optimizer convergence or global optimality; see the [comparison analysis](../../../../../dev/research/evaluations/2026-11-02-face-compare-report.md).
+Finite/uniform comparisons retain the family tolerance and floating-point rounding allowance. An unresolved comparison leaves a converged finite search uncertified; see the [comparison analysis](../../../../../dev/research/evaluations/2026-11-02-face-compare-report.md).
 
 
 ## Free-shape bounds
@@ -265,7 +264,7 @@ $4096\epsilon(1+\text{magnitude})(1+n\epsilon)$, enlarged by $1+p$
 within this margin omit the endpoint penalty and set `endpoint_uncertain`:
 the limiting penalty is discontinuous there, so adding a small likelihood
 margin would not suffice. Overflow in a penalty computation or a subnormal normalization radius returns an unavailable bound. These are
-not outward-rounded interval bounds. Held-sd tails that remain unresolved stop with `UniformUnresolved` (a numerical binding condition): strictly interior observations admit sufficiently
+not outward-rounded interval bounds. Held-sd tails that remain unresolved trigger the finite-shape fallback: strictly interior observations admit sufficiently
 large finite shapes above the unpenalized uniform height, whereas rounded
 endpoint equalities cannot justify the discontinuous penalty. For example,
 double-precision observations $\pm\operatorname{sqrt}(3)$ with mean zero and
@@ -371,7 +370,7 @@ on every child interval and at its endpoint shapes. Child score boxes start
 from that enclosure; likelihood bounds use it in the convex supporting-line
 moment bound instead of solving the same location problem again. Budgets
 shorter than the binary64 mantissa retain the cold-start enclosure route,
-preserving short-budget stops. Residual
+retaining conservative bounds when work is short. Residual
 endpoint powers and logarithms are shared between the value, score and
 curvature moments. Lower powers in the location Hessian are evaluated
 directly: an underflowed $r^p$ does not justify a zero $r^{p-2}$.
@@ -393,18 +392,23 @@ $2\times10^{-7}(1+\nu_{\rm lower})$, a normalized location width at most $2\time
 mean or sample midrange), and log-sd width at most $2\times10^{-7}$.
 The representative is further refined, but its accuracy claim comes from
 the entire box. Every other root or boundary candidate must be separated
-by likelihood bounds; otherwise the fitter stops with comparison witnesses.
-Nontrivial median intervals and subunit-shape knot ties also stop explicitly.
+by likelihood bounds; otherwise a successful existing search remains uncertified.
+Proved median intervals and exact subunit-shape knot ties stop explicitly.
+For a reflection proof below shape one, a central observation knot must be
+excluded separately: symmetry pairs noncentral minimizers but permits a unique
+central minimizer.
 No general uniqueness theorem is claimed.
 
-All finite `Ok` results and selected uniform limits set `GedResult::certified`.
-Failed certificates never return a numerical proposal as `Ok`. The default
-`iterlim=200` is unchanged. Each shape certificate has at most
-$128\min(\mathrm{iterlim},100000)$ evaluations, with inner brackets and
-root-refinement solves capped by $\min(\mathrm{iterlim},100000)$ iterations.
-Exhaustion retains evaluated witnesses and stops on budget; floating-point
-or unresolved-tail failures stop numerically. Held subunit-shape location
-fits enumerate the observation knots and use the standard enumeration cap.
+Certified finite results and selected uniform limits set `GedResult::certified`.
+Unclosed free-shape comparisons and conditional coefficient inclusions try the
+existing finite search, retaining it with `certified=false` only if its physical
+likelihood agrees and no feasible bound refutes it. An exact Laplace median
+interval remains a nonunique stop; overlapping numerical root bounds alone
+are not an exact-tie proof. The default `iterlim=200` is unchanged. Each shape
+certificate has at most $128\min(\mathrm{iterlim},100000)$ evaluations;
+inner brackets use at most $\min(\mathrm{iterlim},100000)$ iterations.
+Held subunit-shape location fits retain the standard enumeration cap.
+
 The stated practical floating-point margins apply to score and derivative
 comparisons as well as likelihood bounds.
 
@@ -416,7 +420,7 @@ margin. Witness likelihoods are evaluated at those actual coefficients too.
 A large offset with small spread can make a certified normalized location
 unrepresentable; this stops with `TransformFailure`. Fixed convex-shape fits
 also check the returned location's monotone score, including the normal mean
-shortcut. No normalization failure is converted into a finite success.
+shortcut. Physical normalization failures still stop. A point-score enclosure that merely fails to include zero may retain the conditional search when the physical free-coordinate score norm is below $10^{-3}$.
 
 
 Rounded equality of endpoint residuals does not imply containment by a

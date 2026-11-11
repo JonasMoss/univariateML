@@ -1,0 +1,42 @@
+--- a/univariateML-cpp/include/cppunivariate/distributions/gb2/power_certificate.hpp
++++ b/univariateML-cpp/include/cppunivariate/distributions/gb2/power_certificate.hpp
+@@ -32,7 +32,7 @@
+     if(x[order[i]]!=x[order[i-1]] && y[order[i]]==y[order[i-1]])return out;
+   auto r=betapr_mle_holds(span{y.data(),y.size()},p,q,NAN,tol,maxit);
+   out.iterations=r.iterations;out.logLik=r.logLik+jac_sum.value;
+-  out.stop_detail=r.stop_detail;
++  out.stop_detail=r.stop_detail;out.certified=r.certified;
+   if(r.status==BetaPrimeStatus::Ok)out.status=Gb2Status::Ok;
+   else if(r.status==BetaPrimeStatus::GammaBoundary)out.status=Gb2Status::TrGammaBoundary;
+   else if(r.status==BetaPrimeStatus::InvGammaBoundary)out.status=Gb2Status::InvTrGammaBoundary;
+@@ -58,7 +58,7 @@
+     const double s=c.coef[2],e=2e-10+128*eps*(1+std::abs(std::log(s)));
+     sl=std::min(sl,std::log(s)-e);su=std::max(su,std::log(s)+e);
+   }
+-  if(out.status==Gb2Status::Ok && (!(su>=sl)||(su-sl)/a>std::log1p(1e-6)))
++  if(out.status==Gb2Status::Ok && out.certified && (!(su>=sl)||(su-sl)/a>std::log1p(1e-6)))
+     out.status=Gb2Status::NumericalFailure;
+   out.shape1=std::isnan(q)?r.beta:q;out.shape3=std::isnan(p)?r.alpha:p;
+   out.scale=scale(r.scale);
+--- a/univariateML-cpp/include/cppunivariate/distributions/gb2/test.cpp
++++ b/univariateML-cpp/include/cppunivariate/distributions/gb2/test.cpp
+@@ -294,7 +294,8 @@
+   for(double& v:x)v=std::sqrt(v);
+   const auto r=cppunivariate::gb2_mle(mltest::as_span(x),1e-7,1000,NAN,2,.22690393135372058,NAN);
+   if(t==5.646438395028704) {
+-   REQUIRE(r.status==cppunivariate::Gb2Status::CertificateTie);
++   REQUIRE(r.status==cppunivariate::Gb2Status::Ok);
++   CHECK_FALSE(r.certified);
+    bool left=false,right=false;
+    for(const auto& c:r.stop_detail.candidates)if(c.model==cppunivariate::StopModel::None) {
+     REQUIRE(c.coef.size()==4);left=left||c.coef[0]<.12;right=right||c.coef[0]>.12;
+--- a/univariateML-cpp/include/cppunivariate/distributions/gb2/mle.hpp
++++ b/univariateML-cpp/include/cppunivariate/distributions/gb2/mle.hpp
+@@ -250,6 +250,7 @@
+     if(p==1) {
+       const auto r=burr_mle_holds(x,q,a,b,tol,maxit);
+       out={r.shape1,r.shape2,1,r.scale,r.logLik,r.iterations,Gb2Status::SearchUnresolved,r.stop_detail};
++      out.certified=r.certified;
+       if(r.status==BurrStatus::Ok)out.status=Gb2Status::Ok;
+       if(r.status==BurrStatus::InvalidInit || r.status==BurrStatus::Unbounded)out.status=Gb2Status::InvalidData;
+       if(r.status==BurrStatus::CertificateTie)out.status=Gb2Status::CertificateTie;

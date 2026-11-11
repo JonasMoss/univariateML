@@ -542,3 +542,20 @@ TEST_CASE("bhatt tiny target retains the symmetric location search") {
   CHECK(f.mu==searched.mu);CHECK(f.sigma==1);CHECK(f.a==2);
   CHECK(std::isfinite(f.logLik));
 }
+
+TEST_CASE("bhatt normal member retains a closed-form fit below the inclusion margin") {
+ const std::vector<double> x{-3,-1,0,1,3};
+ const auto r=cppunivariate::bhatt_mle(mltest::as_span(x),1e-30,500,NAN,0);
+ REQUIRE(r.status==cppunivariate::BhattStatus::Ok);CHECK_FALSE(r.certified);
+ CHECK(r.mu==0);CHECK(r.sigma==2);CHECK(r.a==0);
+}
+
+TEST_CASE("Bhatt unclosed uniform-margin preference retains its finite search") {
+ const double t=.49161548692487145;std::vector<double> x{-1,1};
+ for(int i=0;i<10;++i){x.push_back(-t);x.push_back(t);}
+ const auto old=cppunivariate::bhatt_detail::legacy_candidate(mltest::as_span(x),1e-14,1000);
+ REQUIRE(old.status==cppunivariate::BhattStatus::UniformLimit);
+ const auto r=cppunivariate::bhatt_mle(mltest::as_span(x),1e-14,1000);
+ REQUIRE(r.status==cppunivariate::BhattStatus::Ok);CHECK_FALSE(r.certified);
+ CHECK(std::isfinite(r.logLik));
+}

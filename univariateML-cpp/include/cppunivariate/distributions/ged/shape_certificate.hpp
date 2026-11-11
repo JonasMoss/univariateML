@@ -276,7 +276,7 @@ inline GedResult ged_shape_certificate(span x,double tol,int maxit,double mean,d
     witness.logLik=actual_loglik(witness.mu,witness.sigma,2);
   }
   if(!std::isfinite(witness.logLik)) {
-    failed.status=GedStatus::TransformFailure;failed.stop_detail.loglik_upper=INFINITY;return failed;
+    failed.status=GedStatus::TransformFailure;failed.search_failed=true;failed.stop_detail.loglik_upper=INFINITY;return failed;
   }
   const auto transform_valid=[&](const GedResult& normalized_result,const GedResult& original_result) {
     if(!std::isfinite(original_result.mu) || !(original_result.sigma>0 && std::isfinite(original_result.sigma)) ||
@@ -300,7 +300,7 @@ inline GedResult ged_shape_certificate(span x,double tol,int maxit,double mean,d
     return r;
   };
   const auto transform_stop=[&]() {
-    auto r=stop(false,INFINITY);r.status=GedStatus::TransformFailure;return r;
+    auto r=stop(false,INFINITY);r.status=GedStatus::TransformFailure;r.search_failed=true;return r;
   };
   // Cheap witnesses only. Completeness comes from the score and tail cover.
   for(double p:{2.,4.}) {
@@ -467,7 +467,7 @@ inline GedResult ged_shape_certificate(span x,double tol,int maxit,double mean,d
       b.mu=hi;b.logLik=actual_loglik(b.mu,b.sigma,1);
       if(!transform_valid(normalized_a,a) || !transform_valid(normalized_b,b))return transform_stop();
       const double tied_pad=ged_shape_detail::likelihood_margin(std::max(std::abs(a.logLik),std::abs(b.logLik))+std::abs(offset),n)*2;
-      auto r=stop(false,cover_upper);r.status=GedStatus::Nonunique;
+      auto r=stop(false,cover_upper);r.status=GedStatus::Nonunique;r.proved_tie=true;
       r.stop_detail=comparison_detail({{a.mu,a.sigma,1},a.logLik-tied_pad,a.logLik+tied_pad},
         {{b.mu,b.sigma,1},b.logLik-tied_pad,b.logLik+tied_pad});
       r.stop_detail.loglik_upper=cover_upper-offset+tied_pad;return r;
@@ -496,6 +496,7 @@ inline GedResult ged_conditional_certificate(span x,double tol,int maxit,double 
   // an underflowed computed scale reach the binding's sigma==0 shortcut.
   auto numerical=[&]() {
     GedResult r{nan,nan,nu,nan,0,GedStatus::TransformFailure};
+    r.search_failed=true;
     r.stop_detail.loglik_upper=INFINITY;return r;
   };
   const double lambda=dens::ged_lambda(nu);
@@ -585,6 +586,32 @@ inline GedResult ged_conditional_certificate(span x,double tol,int maxit,double 
       const auto b=ged_detail::conditional(x,nu,other,sd,maxit);
       const double pad=ged_shape_detail::likelihood_margin(std::max(std::abs(r.logLik),std::abs(b.logLik)),x.size(),r.sigma,nu)*(1+nu);
       r.status=GedStatus::Nonunique;
+      r.proved_tie=nu==1;
+      if(nu<1) {
+        // Error-free TwoSum distinguishes exact reflection from rounded
+        // equal sums, including when extended intermediates are doubles.
+        const auto sum=[](double a,double b) {
+          const double hi=a+b,z=hi-a;
+          return std::array<double,2>{{hi,(a-(hi-z))+(b-z)}};
+        };
+        const auto center=sum(r.mu,other);
+        r.proved_tie=std::isfinite(center[0]);
+        for(std::size_t j=0;j<sorted.size();++j) {
+          const auto pair=sum(sorted[j],sorted[sorted.size()-1-j]);
+          if(pair!=center)r.proved_tie=false;
+        }
+        // Reflection pairs every noncentral minimizer. A central knot
+        // could instead be the unique winner, so exclude it separately.
+        if(r.proved_tie)for(double c:sorted)if(sum(c,c)==center) {
+          ged_shape_detail::Sum central;
+          const double radius=sorted.back()-sorted.front();
+          for(double v:x)central.add(std::pow(std::abs(v-c)/radius,nu));
+          ged_shape_detail::Sum selected;
+          for(double v:x)selected.add(std::pow(std::abs(v-r.mu)/radius,nu));
+          if(!(central.value>selected.value+ged_shape_detail::margin(central.value+selected.value,x.size())*(1+nu)))r.proved_tie=false;
+          break;
+        }
+      }
       r.stop_detail=comparison_detail({{r.mu,r.sigma,nu},r.logLik-pad,r.logLik+pad},{{b.mu,b.sigma,nu},b.logLik-pad,b.logLik+pad});
       if(std::abs(r.logLik-b.logLik)>1e-8*x.size()+2*pad)return numerical();
       r.stop_detail.loglik_upper=nu==1?std::max(r.logLik,b.logLik)+pad:INFINITY;return r;

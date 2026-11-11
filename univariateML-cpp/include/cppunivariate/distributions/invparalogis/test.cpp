@@ -123,3 +123,14 @@ TEST_CASE("invparalogis: competing held-scale winner and reciprocal likelihood")
   CHECK(a.shape==doctest::Approx(b.shape).epsilon(1e-10));
   CHECK(a.logLik==doctest::Approx(b.logLik-2*std::log(x[0])).epsilon(1e-10));
 }
+
+TEST_CASE("inverse paralogistic transport keeps the parent flag on both search routes") {
+ const std::vector<std::vector<double>> samples{{.9998,.9999,1,1.0001,1.0003},{.99999999999999}};
+ for(const auto& raw:samples){
+  std::vector<double> x,y;for(double v:raw)x.push_back(1/v);double jac=0;for(double v:x){y.push_back(1/v);jac-=2*std::log(v);}
+  const auto p=raw.size()==1?cppunivariate::paralogis_mle_fixed_scale(mltest::as_span(y),1,1e-8,1000,NAN):cppunivariate::paralogis_mle(mltest::as_span(y),1e-8,1000);
+  const auto r=raw.size()==1?cppunivariate::invparalogis_mle_fixed_scale(mltest::as_span(x),1,1e-8,1000):cppunivariate::invparalogis_mle(mltest::as_span(x),1e-8,1000);
+  REQUIRE(p.status==cppunivariate::ParalogisStatus::Ok);REQUIRE(r.status==p.status);
+  CHECK_FALSE(p.certified);CHECK(r.certified==p.certified);CHECK(r.shape==p.shape);CHECK(r.scale==1/p.scale);CHECK(r.logLik==p.logLik+jac);
+ }
+}

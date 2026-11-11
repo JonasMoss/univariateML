@@ -537,8 +537,8 @@ one, never to an estimated skew near one.
 Finite witnesses append the held skew to GED's mean, sd and shape. Uniform
 witnesses retain their two endpoint coordinates, and every likelihood bound,
 tie, work count, budget and numerical stop is preserved. A finite result is
-accepted only if GED certifies it. In particular rounded held-sd endpoint
-comparisons remain numerical stops. Free-shape uniqueness is false: at
+accepted with the GED parent's certification flag. Unclosed held-sd endpoint
+comparisons retain an accepted finite GED search as uncertified; failed or refuted parent searches remain stops. Free-shape uniqueness is false: at
 $x=(-1,1)$, held $\sigma=0.1$ and $\xi=1$, the entire Laplace
 median interval maximizes likelihood; the fitter retains its two endpoints
 in a tie stop.

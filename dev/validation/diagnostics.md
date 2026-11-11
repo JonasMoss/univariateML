@@ -60,8 +60,18 @@ Iterative failure is an error ([parameter rules](../roadmap/2026-10-29-parameter
 - A rescue solve must meet its own convergence or score criterion; never return
   an unchecked last iterate.
 - Every loop cap is a multiple of `min(iterlim, 100000)` by work unit;
-  certificate and enumeration caps stop as `budget`
+  exhausted search or enumeration work without a successful candidate stops
   ([work budgets](../design/work-budgets.md)).
+
+A certificate that cannot close a global comparison or coefficient inclusion
+returns the successful search result with `certified = FALSE`, including when
+its certificate allowance expires. This flag makes no global or coefficient
+accuracy claim. Stop when a separated feasible likelihood bound refutes the
+candidate (a reachable face can supply that bound), the search fails, inputs are invalid, or mathematics proves
+nonexistence, a strictly winning limit, or distinct tied maxima. The C++ result's
+`bool certified` travels through the common binding's `extra {"certified",0/1}`.
+Shared R `common_result` supplies a logical element and the estimates attribute;
+JS carries 0/1. No per-family R conversion is needed.
 
 This replaced the nlminb-style rule that returned whatever BFGS landed on, which
 let `mlstd` return its start values (TASK-77). The score gate checks local

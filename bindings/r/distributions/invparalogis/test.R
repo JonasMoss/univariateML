@@ -148,3 +148,9 @@ test_that("invparalogis held-scale competing mode preserves the Jacobian", {
   expect_equal(unname(f["shape"]),unname(g["shape"]),tolerance=1e-10)
   expect_equal(attr(f,"logLik"),attr(g,"logLik")-2*log(x),tolerance=1e-10)
 })
+
+test_that("invparalogis delegate follow-up preserves the accepted fit", {
+  f <- mlinvparalogis(1/c(.9998,.9999,1,1.0001,1.0003),gradtol=1e-8,iterlim=1000)
+  expect_identical(attr(f,"certified"),FALSE)
+  expect_true(is.finite(as.numeric(logLik(f))))
+})

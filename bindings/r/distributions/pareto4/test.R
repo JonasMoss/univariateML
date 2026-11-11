@@ -115,7 +115,9 @@ test_that("P2 pareto4 validates new held values", {
 
  test_that("pareto4 preserves certificate refusal diagnostics", {
   x <- exp(seq(-1e-6,1e-6,length.out=20))
-  expect_error(mlpareto4(x,min=0), "certificate unresolved.*no verified MLE")
+  f <- mlpareto4(x,min=0)
+  expect_s3_class(f,"univariateML")
+  expect_identical(attr(f,"certified"),FALSE)
   x <- c(.2,.5,1,2,4)
   expect_error(mlpareto4(x,min=0,iterlim=2), "certificate numerical failure.*no verified MLE")
   x <- c(0.0049057434842350416,0.042501201178458653,0.19481544379842536,0.29869422522389177,0.40386521559557592,0.49096570363940406,0.5326256684997116,0.72206471601197653,0.74104603671600355,0.82688168528714312,0.98659907210500519,1.1056048590023038,1.140076235502067,1.1606952121643113,1.4300263464615877,1.4793399841671804,1.5655241685783525,1.6390163836698108,2.0838622791695847,5.1042846241626947)
@@ -164,4 +166,27 @@ test_that("pareto4: TASK-101.7.3 raw likelihood regressions", {
 test_that("Pareto IV rejects a separated scale restoration loss", {
   expect_error(mlpareto4(c(1,1.5,2),min=-1e100,shape1=.3157266252310832),
                "numerical failure")
+})
+
+test_that("pareto4 transports the held-scale fallback flag", {
+  f <- mlpareto4(exp(c(-1.1,-1)),min=0,scale=1)
+  expect_s3_class(f,"univariateML")
+  expect_identical(attr(f,"certified"),FALSE)
+  expect_true(is.finite(as.numeric(logLik(f))))
+})
+
+test_that("pareto4 short certificate work preserves the joint search", {
+  skip_if_not_installed("jsonlite")
+  root <- Sys.getenv("UMVL_DISTRIBUTIONS_DIR")
+  if(!nzchar(root)) root <- testthat::test_path("fixtures")
+  g <- jsonlite::fromJSON(file.path(root,"pareto4","golden.json"))
+  f <- mlpareto4(g$data,min=0,reltol=1e-8,iterlim=16)
+  expect_identical(attr(f,"certified"),FALSE)
+  expect_true(is.finite(as.numeric(logLik(f))))
+})
+
+test_that("pareto4 retains an unclosed held-power face as uncertified", {
+  f <- mlpareto4(c(1,1,1,1,6.0001),min=0,shape2=1,reltol=1e-14)
+  expect_identical(attr(f,"certified"),FALSE)
+  expect_true(is.finite(as.numeric(logLik(f))))
 })

@@ -153,6 +153,26 @@ test('sstd xi-only certificate, reflection, budget and half-t comparison',()=>{
  assert.ok(Math.abs([...terms].reduce((a,b)=>a+b,0)-large.logLik)<1e-11);
 });
 
+test('continuous fallback carries the per-fit certification flag',()=>{
+ const x=new Float64Array([Math.exp(-1.1),Math.exp(-1)]);
+ for(const [family,held] of [['burr',{scale:1}],['pareto4',{min:0,scale:1}]]) {
+  const r=m['fit'+family](x,held,{});
+  assert.equal(r.error,undefined,r.error);
+  assert.equal(r.certified,0);
+  assert.ok(Number.isFinite(r.logLik));
+ }
+});
+
+test('unit beta-prime fallback keeps the scalar search beyond the generic shape guard', () => {
+  const x=[1,1,1,1,6.00000001];
+  for(const [data,held,name] of [[x,{shape1:1},'shape2'],[x.map(v=>1/v),{shape2:1},'shape1']]) {
+    const f=m.fitbetapr(new Float64Array(data),held,{});
+    assert.equal(f.error,undefined,f.error);
+    assert.equal(f.status,'Ok');assert.equal(f.certified,0);
+    assert.ok(f.estimates[name]>1e6);assert.ok(Number.isFinite(f.logLik));
+  }
+});
+
 test('count fallback exposes per-fit certification',()=>{
  const r=m.fithyper(new Float64Array([0,0,0,5,5,5]),{k:5},{});
  assert.equal(r.status,'Ok');
@@ -162,4 +182,18 @@ test('count fallback exposes per-fit certification',()=>{
  assert.equal(r.estimates.k,5);
  const f=m.fitztbinom(new Float64Array([1,2,2,3]),{size:5},{});
  assert.equal(f.status,'Ok');assert.equal(f.certified,1);
+});
+
+test('delegate follow-up keeps successful uncertified parent fits',()=>{
+ const cases=[
+  ['gb2',[Math.exp(-1.1),Math.exp(-1)],{shape3:1,scale:1}],
+  ['fpareto',[Math.exp(-1.1),Math.exp(-1)],{min:0,shape3:1,scale:1}],
+  ['sged',[.7321666961121761,2.2766042947262384,-.5491691631533211],{sd:1.0178559902092952,xi:1}],
+  ['invparalogis',[.9998,.9999,1,1.0001,1.0003].map(v=>1/v),{}],
+  ['pareto3',[1,1+Number.EPSILON],{min:0}]
+ ];
+ for(const [id,x,held] of cases){
+  const r=m['fit'+id](new Float64Array(x),held,{gradtol:1e-8,reltol:1e-10,iterlim:1000});
+  assert.equal(r.status,'Ok',id);assert.equal(r.certified,0,id);assert.ok(Number.isFinite(r.logLik),id);
+ }
 });

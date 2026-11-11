@@ -1,0 +1,3 @@
+Underlying final commands: just cpp-test exited 8 (105/106 shards); just cpp-test-no-long-double exited 8 (129/130 shards).
+Only failing shard in each: distribution_gb2, test.cpp:297.
+Temporary runner reported cpp-dev=127 no-long-double=8. Its dev status was overwritten by a stray shell command after an in-flight scratch-runner edit; the completed CTest log records the real dev exit 8. No fitter or test source changed.

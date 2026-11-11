@@ -1,0 +1,33 @@
+{
+  "successful_finite_domain_rows": {
+    "before": 809,
+    "after": 875
+  },
+  "cases": 1189,
+  "counts": {
+    "before": {
+      "stop:limit": 271,
+      "stop:tie": 33,
+      "stop:budget": 5,
+      "stop:numerical": 61,
+      "certified": 796,
+      "stop:unresolved": 7,
+      "uncertified": 13,
+      "stop:nomle": 3
+    },
+    "after": {
+      "stop:limit": 259,
+      "stop:tie": 14,
+      "stop:budget": 2,
+      "stop:numerical": 27,
+      "uncertified": 79,
+      "certified": 796,
+      "stop:unresolved": 10,
+      "stop:nomle": 2
+    }
+  },
+  "previously_certified": 796,
+  "certified_numeric_unchanged": 796,
+  "transitions": 70,
+  "stop_to_uncertified": 66
+}

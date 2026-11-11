@@ -211,7 +211,9 @@ test_that("invburr detects constant off-scale collapse only with both shapes fre
 
  test_that("invburr preserves certificate refusal diagnostics", {
   x <- exp(seq(-1e-6,1e-6,length.out=20))
-  expect_error(mlinvburr(1/x), "certificate unresolved.*no verified MLE")
+  f <- mlinvburr(1/x)
+  expect_s3_class(f,"univariateML")
+  expect_identical(attr(f,"certified"),FALSE)
   x <- c(.2,.5,1,2,4)
   expect_error(mlinvburr(1/x,iterlim=2), "certificate numerical failure.*no verified MLE")
   x <- c(0.0049057434842350416,0.042501201178458653,0.19481544379842536,0.29869422522389177,0.40386521559557592,0.49096570363940406,0.5326256684997116,0.72206471601197653,0.74104603671600355,0.82688168528714312,0.98659907210500519,1.1056048590023038,1.140076235502067,1.1606952121643113,1.4300263464615877,1.4793399841671804,1.5655241685783525,1.6390163836698108,2.0838622791695847,5.1042846241626947)
@@ -242,12 +244,11 @@ test_that("invburr sign-uncertain-seam exposes structured tie diagnostics", {
   expect_true(is.finite(e$loglik_lower))
 })
 
-test_that("invburr nearly-constant exposes structured tie diagnostics", {
+test_that("invburr nearly-constant retains an uncertified finite search", {
   e <- tryCatch(mlinvburr(1/c(0.99999900000050002,0.99999910526355817,0.99999921052662744,0.9999993157897078,0.99999942105279915,0.99999952631590161,0.99999963157901528,0.99999973684213994,0.99999984210527559,0.99999994736842246,1.0000000526315804,1.0000001578947493,1.0000002631579294,1.0000003684211205,1.0000004736843227,1.0000005789475359,1.0000006842107605,1.000000789473996,1.0000008947372423,1.0000010000005)),univariateML_tie=identity)
-  expect_s3_class(e,"univariateML_stop")
-  expect_true(nrow(e$candidates)>=2L)
-  expect_true(all(e$candidates$loglik_lower<=e$candidates$loglik_upper))
-  expect_true(is.finite(e$loglik_lower))
+  expect_s3_class(e,"univariateML")
+  expect_identical(attr(e,"certified"),FALSE)
+  expect_true(is.finite(as.numeric(logLik(e))))
 })
 
 test_that("invburr burr-k1000-r0 exposes structured limit diagnostics", {
@@ -357,4 +358,27 @@ test_that("raw transform audit case 3640", {
   expect_lte(abs(unname(fit["shape2"]) / (1.7734008129755383) - 1), 1e-10)
   expect_lte(abs(unname(fit["scale"]) / (1.1483262751193506) - 1), 1e-10)
   expect_lte(abs(as.numeric(logLik(fit)) - (-4.959691457402898)) / max(1, abs(-4.959691457402898)), 1e-10)
+})
+
+test_that("invburr transports the held-scale fallback flag", {
+  f <- mlinvburr(exp(c(1.1,1)),scale=1)
+  expect_s3_class(f,"univariateML")
+  expect_identical(attr(f,"certified"),FALSE)
+  expect_true(is.finite(as.numeric(logLik(f))))
+})
+
+test_that("invburr short certificate work preserves the joint search", {
+  skip_if_not_installed("jsonlite")
+  root <- Sys.getenv("UMVL_DISTRIBUTIONS_DIR")
+  if(!nzchar(root)) root <- testthat::test_path("fixtures")
+  g <- jsonlite::fromJSON(file.path(root,"invburr","golden.json"))
+  f <- mlinvburr(g$data,gradtol=1e-8,iterlim=16)
+  expect_identical(attr(f,"certified"),FALSE)
+  expect_true(is.finite(as.numeric(logLik(f))))
+})
+
+test_that("invburr retains an unclosed held-power face as uncertified", {
+  f <- mlinvburr(c(1,1,1,1,1/6.0001),shape2=1,gradtol=1e-14)
+  expect_identical(attr(f,"certified"),FALSE)
+  expect_true(is.finite(as.numeric(logLik(f))))
 })

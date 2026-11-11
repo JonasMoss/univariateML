@@ -52,26 +52,26 @@ limits:
     model: gamma
     fixed: [shape1]
     when: With $p$ held, $q$ and $b$ tend to infinity while $b/q$ tends to a positive gamma scale.
-    detect: Constant data select this limit analytically; nonconstant data require the signed gamma-tail and interior profile certificate. Unresolved comparisons stop.
+    detect: Constant data select this limit analytically; nonconstant data require the signed gamma-tail and interior profile certificate. Unresolved comparisons retain a successful finite search as uncertified.
     status: GammaBoundary
     numerical: true
   - firmness: proved
     model: invgamma
     fixed: [shape2]
     when: With $q$ held, $p$ tends to infinity and $b$ tends to zero while $bp$ tends to a positive inverse-gamma scale.
-    detect: Constant data select this limit analytically; nonconstant data use the reciprocal signed gamma-tail and interior certificate. Unresolved comparisons stop.
+    detect: Constant data select this limit analytically; nonconstant data use the reciprocal signed gamma-tail and interior certificate. Unresolved comparisons retain a successful finite search as uncertified.
     status: InvGammaBoundary
     numerical: true
   - model: gamma
     firmness: proved
     when: The shape $q$ tends to infinity while $p$ tends to a positive finite shape and $b/q$ tends to a positive gamma scale.
-    detect: The signed joint gamma tail and compact interior cover exclude finite competitors; likelihood bounds separate this face from the inverse-gamma face. Unresolved comparisons stop.
+    detect: The signed joint gamma tail and compact interior cover exclude finite competitors; likelihood bounds separate this face from the inverse-gamma face. Unresolved comparisons retain a successful finite search as uncertified.
     status: GammaBoundary
     numerical: true
   - model: invgamma
     firmness: proved
     when: The shape $p$ tends to infinity while $q$ tends to a positive finite shape and $bp$ tends to a positive inverse-gamma scale.
-    detect: Reciprocal signed tails and the compact interior cover exclude finite competitors; likelihood bounds separate this face from the gamma face. Unresolved comparisons stop.
+    detect: Reciprocal signed tails and the compact interior cover exclude finite competitors; likelihood bounds separate this face from the gamma face. Unresolved comparisons retain a successful finite search as uncertified.
     status: InvGammaBoundary
     numerical: true
 references:
@@ -97,8 +97,8 @@ relations:
       scale: scale
 fit:
   method: profile-search
-  certified: "yes"
-  note: 'betapr/README.md, Details; betapr/mle.hpp, centered.hpp, certificate.hpp and joint_certificate.hpp; betapr/test.cpp: fixed-scale beta concavity, unit-shape delegates and non-unit held-shape certificates cover conditional subsets. The all-free fitter combines uniform harmonic-shape exteriors, signed gamma/inverse-gamma tails and a compact cover of every possible conditional maximizer. Shape-gradient bounds, concave supporting planes and interval-Newton inclusions exclude cells or enclose their unique maxima. Finite fits require relative enclosures in both shapes and scale of at most min(tol, 1e-6); faces require complete interior exclusion and separated likelihood bounds. Unresolved arithmetic, ties and exhausted shared budgets stop with witnesses.'
+  certified: partial
+  note: 'Fixed-scale fits use beta concavity; unit held shapes use Lomax and inverse Pareto. Conditional and joint covers compare finite roots with gamma/inverse-gamma faces. Unclosed covers or coefficient inclusions retain an unrefuted finite log-coordinate search with certified=false.'
 areas:
 - actuarial
 - economics and income
@@ -121,7 +121,7 @@ existence:
     finite fits. The joint exterior bounds prove existence of a finite maximum
     when a finite witness exceeds both computed face upper bounds.
     A closed-form joint sample criterion and joint uniqueness are
-    not established. A certified compact cover determines finite fits and winning faces when computed comparisons resolve; otherwise it stops with witnesses. With scale held, a unique finite MLE exists exactly when
+    not established. A certified compact cover determines finite fits and winning faces when computed comparisons resolve; otherwise a successful finite search is uncertified. With scale held, a unique finite MLE exists exactly when
     the sample is nonconstant if both shapes are free. With scale and either
     shape held, the remaining shape has a unique finite maximum even for
     constant data. With both shapes held, scale has a unique finite maximum
@@ -228,14 +228,13 @@ $2a^3\overline{x^2}/b^2$. If $A<0$ and $B>2C/(-A)$,
 the entire tail lies strictly below the gamma face. The face is selected only
 when every interior stationary interval is also excluded. The sign of $A$
 alone is not a sample criterion for which model wins. A near-zero $A$, slow
-escape, or unresolved interior comparison can still produce a numerical or
-budget stop.
+escape, or unresolved interior comparison leaves the certificate unclosed.
 
 The certificate is valid in exact arithmetic conditional on the computed
 comparisons. Its practical floating-point allowance per datum is
 $512\epsilon(1+|\ell|+|\log B(a,b)|+a+b)$; arithmetic with allowance
-above $10^{-7}$ stops. Subnormal means or face scales with relative spacing
-above $10^{-7}$ also stop; finite scale reconstruction must retain relative
+above $10^{-7}$ prevents certification. Subnormal means or face scales with relative spacing
+above $10^{-7}$ also prevent certification; certified finite scale reconstruction must retain relative
 accuracy $10^{-6}$. Derivative enclosures use separate increment errors plus
 $128\epsilon(|g(L)|+|g(U)|+m(L)+m(U))+
 2a\{\delta_L/(a+L)+\delta_U/(a+U)\}$,
@@ -291,10 +290,10 @@ least two separated global maxima. This is an exact-arithmetic existence
 argument conditional on the endpoint certificates and computed gap bounds,
 under the arithmetic contract above. The numerical crossing
 $t\approx5.64643839503$ has peaks near $q=0.08352763$ and $q=0.16883269$;
-that rounded data set produces a comparison-tie stop, not a uniqueness claim.
+that rounded data set retains a finite search with `certified=false`, without asserting an exact tie.
 
 The all-free fitter covers the joint exterior and every remaining finite
-stationary maximum. Its proposals do not determine acceptance.
+stationary maximum. Its proposals alone do not determine certification.
 
 ### Joint exterior bounds
 
@@ -487,18 +486,18 @@ and every eigenvalue of $C_0H$ is positive. The same contraction gives
 componentwise coefficient bounds: with $R=|I-C_0H(C)|$ and
 $d=|C_0g(m)|$, an explicitly checked vector $e>d+Re$ encloses the root.
 Monotone scale roots at the shape-box corners enclose its scale.
-A finite success requires relative error at most
+A certified finite success requires relative error at most
 $\min(\texttt{tol},10^{-6})$ in $p,q,b$, including scale reconstruction.
 The full cell can then be assigned to this unique maximum; neighboring
 cells remain covered independently.
 
 Every surviving maximum is retained. Separated likelihood intervals choose
-the winner; unresolved overlaps stop as comparison ties with the compared
-finite or face witnesses. An early unresolved face comparison has an infinite
-global upper bound and does not assert that either face wins. Failure to
-close an exterior, a root enclosure, or a floating-point comparison gives
-a numerical stop. Exhaustion of the shared work meter gives a budget stop.
-No failed certificate is rescued by a proposal's optimizer score.
+the certified winner. Unresolved overlaps, exterior bounds, root enclosures
+or exhausted certificate work try a log-coordinate search over the free
+coefficients. A converged, finite result survives with `certified=false` only
+when no feasible certificate lower bound exceeds its likelihood beyond
+`2048 epsilon * (n + abs(logLik))`. A failed search or a refuted candidate
+still stops. The flag carries no claim that a numerical near-tie is exact.
 
 The all-free certificate shares `128 * min(iterlim,100000)` evaluations
 across proposal objective/gradient calls, conditional-certificate work,
@@ -519,7 +518,7 @@ operand/product magnitudes plus one; root-image comparisons expand by
 $128\epsilon$. Scale and reciprocal input transformations carry their
 separate log-data/Jacobian allowances. These are practical floating-point
 margins under the package's computed-comparison contract. Unresolved
-inclusions stop rather than becoming accuracy claims.
+inclusions leave a successful search uncertified.
 
 With scale held, the likelihood is evaluated in beta mean/precision coordinates and transported by the log Jacobian, rather than reconstructed from separate log-gamma terms. For concentrated raw data, differences in the beta coordinate are formed directly as $s(x_i-x_0)/[(s+x_i)(s+x_0)]$. Profiling the centered mean displacement retains dispersion below one ulp of the absolute transformed mean. The scalar signs inherit beta strict concavity; they are computed comparisons, with numerical series evaluation rather than outward-rounded bounds. At concentration $t$, a mean perturbation $Delta\mu$ has leading likelihood cost $n t(\Delta\mu)^2/[2\mu(1-\mu)]$. Thus independently rounding the two shapes can matter even when each coefficient is accurate. Joint ratio assembly is checked against the centered optimum in log-X coordinates; a separated deficit in that unit-invariant likelihood gives an arithmetic failure. The [raw beta-prime checks](../../../../../dev/research/evaluations/2026-11-09-audit-beta-data/reference.json) include relative dispersions of order $10^{-12}$.
 
@@ -529,7 +528,8 @@ Supply `scale` to hold it at a positive finite value. Either shape may also
 be held with `shape1` or `shape2`. A certified conditional face stops with
 its fitted limit coefficients and likelihood. Conditional numerical and budget
 stops retain diagnostic witnesses; they do not select a limit model.
-The all-free path returns finite estimates only after global cover and coefficient inclusion; its face, tie, budget and numerical stops retain structured witnesses. Constant positive data stop with unbounded-likelihood diagnostics.
+The all-free path attempts global cover and coefficient inclusion before its
+local-search fallback; selected limit faces retain their certified comparisons. Constant positive data stop with unbounded-likelihood diagnostics.
 
 ## Decision history
 
@@ -543,3 +543,22 @@ inner scale root at each shape. This gives explicit shape-tail bounds and
 retains separated stationary intervals; the two-peak example rules out a
 unimodality shortcut. The linked counterexample data, reproducers and
 benchmark driver retain the numerical evidence.
+
+Unit-shape exponential and inverse-exponential recommendations additionally
+require the [strict transformed Lomax face check](../burr/README.md).
+A delegate's likelihood-margin preference alone leaves that comparison
+unclosed and falls back to the finite conditional search.
+
+For an exactly held unit shape, $\log B(1,k)=-\log k$ and
+$\psi(k+1)-\psi(k)=1/k$. These identities keep the free-shape score
+resolvable beyond the two-large-shape arithmetic guard. The existing Lomax
+scalar search nominates finite points for this conditional likelihood;
+complementary logistic terms are evaluated separately when recovering the
+scale score. An unclosed exponential comparison retains the reachable face
+as a lower-bound witness, without selecting it as the global winner.
+
+The scalar proposal is normalized on log data before calling Lomax, then
+its physical scale is recovered directly. This avoids overflowing a Lomax
+rate whose reciprocal beta-prime scale is representable. A finite face
+value still supplies a lower bound when its coefficients cannot be encoded;
+only representable face coefficients enter the witness list.

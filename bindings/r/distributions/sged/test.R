@@ -746,3 +746,13 @@ test_that("sged large shapes retain the high-precision centering moment", {
   for (nu in c(1e8,1e16,1e100,.Machine$double.xmax))
     expect_equal(dsged(0,0,1,nu,2),.2886751345948128822545743902509787278,tolerance=5e-15)
 })
+
+test_that("sged delegate follow-up preserves the accepted fit", {
+  x <- c(.7321666961121761,2.2766042947262384,-.5491691631533211)
+  f <- mlsged(x,sd=1.0178559902092952,xi=1,gradtol=1e-8,iterlim=1000)
+  p <- mlged(x,sd=1.0178559902092952,gradtol=1e-8,iterlim=1000)
+  expect_identical(attr(f,"certified"),FALSE)
+  expect_identical(as.numeric(f)[1:3],as.numeric(p))
+  expect_identical(as.numeric(logLik(f)),as.numeric(logLik(p)))
+  expect_true(is.finite(as.numeric(logLik(f))))
+})

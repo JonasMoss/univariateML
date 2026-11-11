@@ -1,0 +1,69 @@
+family	status / binding kind	trigger	classification / final behavior
+burr	InvalidInit / ordinary error	Empty or too-short joint sample; nonpositive/nonfinite data, held values or starts; invalid controls	proved stop (invalid input): stop
+burr	Unbounded / nomle	Constant joint sample, or constant held-shape sample with freely collapsing power/scale	proved nonexistence: stop
+burr	AllGeOne / limit:pareto	Held scale, all observations >= scale with at least one strictly greater (endpoint ties retain their penalty)	proved limit: stop
+burr	WeibullBoundary / limit:weibull	Closed joint Weibull-face comparison, or strictly closed held-power exponential-face comparison	proved limit: stop
+burr	ParetoBoundary / limit:pareto	Closed joint Pareto-face comparison	proved limit: stop
+burr	CertificateTie / tie	Overlapping finite/face comparisons, uncertain tail signs, unresolved held-scale endpoint or coefficient widths	unclosed certificate: try converged finite search; return Ok,false unless refuted or search fails
+burr	CertificateBudget / budget	Joint/held-scale/Lomax certificate allowance expires	unclosed certificate: same fallback
+burr	NumericalFailure / numerical	Unclosed certificate arithmetic/brackets/linear solves	unclosed certificate: same fallback
+burr	NumericalFailure / numerical	Held-shape logarithms merge distinct observations; held-power transformation underflows; reconstructed coefficients/likelihood nonfinite or inconsistent; feasible lower bound refutes search	search failure or refuted candidate: stop
+burr	IterationFailure / unresolved	maxit=1 joint search, monotone held-coordinate root does not converge, or Lomax search fails	search failure: stop
+invburr	InvalidInit / ordinary error	Invalid data, controls, held coefficients or starts	proved stop (invalid input): stop
+invburr	Unbounded / nomle	Reciprocal Burr collapse or held-first-shape location-scale collapse	proved nonexistence: stop
+invburr	AllLeOne / limit:power	Held scale, all observations <= scale (with strict inequality somewhere)	proved limit: stop
+invburr	InvWeibullBoundary / limit:invweibull	Reciprocal Burr closed Weibull comparison	proved limit: stop
+invburr	PowerBoundary / limit:power	Reciprocal Burr closed Pareto comparison	proved limit: stop
+invburr	CertificateTie,CertificateBudget,NumericalFailure / tie,budget,numerical	Reciprocal Burr certificate does not close	unclosed certificate: delegate fallback and transport flag
+invburr	NumericalFailure / numerical	Reciprocal overflow/underflow, artificial reciprocal ties, rounded held-scale equality, invalid physical recovery; transformed location solve fails	search/representation failure: stop
+invburr	IterationFailure / unresolved	Reciprocal delegate search fails	search failure: stop
+pareto4	No core status / ordinary error	min not held, invalid min/holds, observations outside held support	proved stop (unsupported/invalid input): stop
+pareto4	InvalidInit / ordinary error	Invalid excess data or controls	proved stop (invalid input): stop
+pareto4	Unbounded / nomle	Constant excess joint sample or delegate collapse	proved nonexistence: stop
+pareto4	AllGeOne / limit:pareto	All excesses >= held scale; no held-endpoint Pareto binding is available	proved limit: stop, retaining held endpoint and tie penalty
+pareto4	WeibullBoundary,ParetoBoundary / limit:weibull,pareto	Closed Burr face comparison on excesses	proved limit: stop, shifted-data recommendation
+pareto4	CertificateTie,CertificateBudget,NumericalFailure / tie,budget,numerical	Excess Burr certificate does not close	unclosed certificate: delegate fallback and transport flag
+pareto4	NumericalFailure / numerical	Excess overflow, artificial ties or rounded held-scale equality; centered restoration failure	search/representation failure: stop
+pareto4	IterationFailure / unresolved	Excess/centered delegate search fails	search failure: stop
+paralogis	InvalidStart / ordinary error	Invalid data, controls, held values or starts	proved stop (invalid input): stop
+paralogis	Unbounded / nomle	Constant sample with common shape and scale free	proved nonexistence: stop
+paralogis	CertificateBudget / budget	Compact exclusion allowance exhausted after a successful proposal	unclosed certificate: return proposal Ok,false
+paralogis	NumericalFailure / numerical	Root inclusion, tail bounds or compact cover does not close	unclosed certificate: return proposal Ok,false
+paralogis	NumericalFailure / numerical	Normalization overflow, invalid/nonfinite coefficients or likelihood, inconsistent witness, strictly better certificate point	search failure or refuted candidate: stop
+paralogis	BfgsFailure / numerical	BFGS fails its convergence/score gate, held-scale shape bracket/solve fails	search failure: stop
+betapr	InvalidStart / ordinary error	Invalid positive data, controls, holds or starts; too-short joint/fixed-scale sample	proved stop (invalid input): stop
+betapr	InvalidStart / nomle	Constant positive sample with both shapes free	proved nonexistence: stop
+betapr	ExpBoundary,InvExpBoundary / limit:exp,invexp	Unit held shape selects an exponential limit with a strictly negative finite-profile cover	proved limit: stop
+betapr	GammaBoundary,InvGammaBoundary / limit:gamma,invgamma (ordinary error only when payload absent)	Closed conditional or joint gamma/inverse-gamma face comparison	proved limit: stop
+betapr	BfgsFailure / budget	Certificate work allowance exhausted with finite witnesses	unclosed certificate: try converged free-coordinate search, return Ok,false unless refuted
+betapr	BfgsFailure / tie	Numerical root/face likelihood intervals overlap; rounded crossing is not an exact tie proof	unclosed certificate: same fallback
+betapr	BfgsFailure / numerical	Unclosed exterior, root inclusion, signed tail, or coefficient enclosure	unclosed certificate: same fallback
+betapr	BfgsFailure / numerical	One shape held, scale free, constant data, with unrepresentable gamma/inverse-gamma limit coefficients	proved escape refutes every finite candidate: preserve stop when the limit coefficients cannot be encoded
+betapr	BfgsFailure / unresolved,numerical,budget	Reciprocal transformation/recovery or underflowed score-statistic failure; beta/shape/scale root or BFGS convergence/score failure, search reaches shape guard, nonfinite or unrepresentable result, refuting lower bound	search failure or refuted candidate: stop
+bhatt	InvalidInput / ordinary error	Invalid data/controls/holds	proved stop (invalid input): stop
+bhatt	Unbounded / nomle	Constant data at free/held centre with sigma and a free; normal delegate collapse at a=0	proved nonexistence: stop
+bhatt	NormalLimit,UniformLimit / limit:norm,unif	Closed normal/uniform comparison (compatible held parameters retained)	proved face comparison: stop; normal a=0 is attained Ok
+bhatt	BudgetExhausted,Unresolved,Tie,NumericalFailure,IterationFailure / budget,unresolved,tie,numerical	Unclosed width cover, face comparison or coefficient enclosure	already tries existing search and returns Ok,false when successful and unrefuted
+bhatt	NumericalFailure / numerical	Held a=0 normal member coefficient inclusion is below the practical margin	unclosed certificate: retain the closed-form normal search Ok,false after physical likelihood and residual-score checks
+bhatt	NumericalFailure / numerical	Physical likelihood mismatch, wrong rounded normal winner, inconsistent uniform endpoint encoding, finite lower bound refutes search	refuted/representation failure: stop
+bhatt	BudgetExhausted,Unresolved,Tie,NumericalFailure,IterationFailure / budget,unresolved,tie,numerical	Existing fallback fails or has no valid finite candidate; a=0 normal delegate fails	search failure: stop, retaining certificate diagnostics
+GED	InvalidStart,InvalidShape / ordinary error	Invalid data/controls/holds or unavailable positive-variance fit	proved stop (invalid input): stop
+GED	InvalidStart or sigma=0 / nomle	All data equal fitted/held location with scale free	proved nonexistence: stop
+GED	UniformBoundary / limit:unif	Closed free-scale uniform comparison, including constant data away from a held mean	proved limit: stop
+GED	Nonunique / tie	Globally selected Laplace median interval, held-Laplace median interval or exact reflected subunit knot winners with the central knot excluded	proved distinct maxima: stop
+GED	Nonunique / tie	Overlapping distinct finite root bounds or finite/uniform bounds, without an exact-tie proof	unclosed certificate: try existing finite search and return Ok,false unless refuted
+GED	UniformUnresolved / numerical	Held-sd uniform tail/endpoint comparison does not close	unclosed certificate: same fallback, finite shape only
+GED	BfgsFailure with budget_exhausted / budget	Shape cover or subunit enumeration allowance expires	unclosed certificate: same fallback if the existing search independently converges
+GED	BfgsFailure / numerical,tie	Unclosed root/score/inclusion comparison	unclosed certificate: same fallback
+GED	TransformFailure / numerical	Conditional smooth-location point score enclosure excludes zero without a physical representation failure	unclosed certificate: retain the converged conditional search if physical location/scale scores pass
+GED	TransformFailure / numerical	Normalization/rounding loses physical likelihood/location, support or positive residual information; unrepresentable shape constants or scale	search/representation failure: stop
+GED	BfgsFailure / numerical,budget,tie	No converged finite search, score failure, artificial grid endpoint, nonfinite candidate, or a strictly higher feasible lower bound	search failure or refuted candidate: stop
+burr / betapr	WeibullBoundary / ExpBoundary / InvExpBoundary from delegate	Delegate prefers the exponential face only within its likelihood margin; strict owned cover cannot close	unclosed certificate: retain successful finite search Ok,false; failed search still stops
+bhatt	UniformLimit selected only by the legacy search	Outer certificate unclosed; search face preference within its likelihood margin	unclosed certificate: run the existing finite-only search, return Ok,false when physically consistent and unrefuted; otherwise stop
+bhatt / GED	Non-Ok statistical/numerical status / ordinary error	Invalid controls/data or finite_stop_payload rejects the typed diagnostic (invalid witnesses or unrepresentable limit)	proved invalid-input stop or search/representation failure; the binding suppresses an unsafe typed payload
+betapr	BfgsFailure / unresolved	Unit-shape scalar/generic searches fail or their finite point lies below the reachable exponential/inverse-exponential face beyond the margin; for example {1,1,1,1,5.99998}, unit shape, iterlim16	search failure or refuted search: stop; face remains a witness, not a selected global limit
+betapr	BfgsFailure / unresolved	Unit-shape data {u,u,u,u,6u}, u=1e-320, iterlim16; a finite reachable-face likelihood still refutes the finite search even if its rate coefficient overflows	refuted search: stop; retain the finite likelihood lower bound without encoding invalid face coefficients
+all seven	No core status / ordinary error	Binding/shared-R validation rejects invalid supplied holds, starts or controls before invoking a fitter; Pareto IV additionally requires a held finite threshold and strict held support	proved invalid-input or unsupported fit: stop
+burr / invburr / pareto4 / betapr / GED	Residual core result / ordinary error	Nonfinite recovered coefficients reach the common binding finite-result guard (defensive; normal core return paths classify these earlier)	search/representation failure: stop; not an unclosed-certificate decision
+paralogis	Residual core result / numerical	Nonfinite shape, scale or likelihood reaches the binding finite-result guard before optimizer-status handling	search/representation failure: stop
+paralogis	InvalidStart / ordinary error	With otherwise valid positive data and holds, the held-common-shape dispatcher maps a numerical physical-recovery Burr delegate failure to InvalidStart	search/representation failure: stop; existing ordinary-error mapping retained

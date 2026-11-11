@@ -241,3 +241,18 @@ test_that("unit-shape inverse-Burr reduction preserves an uncertified restoratio
   expect_false(attr(fit, "certified"))
   expect_true(is.finite(as.numeric(logLik(fit))))
 })
+
+test_that("gb2 delegate follow-up preserves the accepted fit", {
+  f <- mlgb2(exp(c(-1.1,-1)),shape3=1,scale=1,gradtol=1e-8,iterlim=1000)
+  expect_identical(attr(f,"certified"),FALSE)
+  expect_true(is.finite(as.numeric(logLik(f))))
+})
+
+test_that("GB2 rounded held-power crossing returns an uncertified fit", {
+  x <- sqrt(c(1.9901008294052028e-5,2.209857117039297e-5,.0002450722434289249,
+    12.288342947780086,942.976056905759,16.239512580216314,2.898690421966857,
+    1.2684036923492177,400970.63293690106*exp(5.646438395028704)))
+  f <- mlgb2(x,shape2=2,shape3=.22690393135372058,gradtol=1e-7,iterlim=1000)
+  expect_identical(attr(f,"certified"),FALSE)
+  expect_true(is.finite(as.numeric(logLik(f))))
+})

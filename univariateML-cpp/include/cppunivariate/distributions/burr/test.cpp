@@ -216,7 +216,9 @@ TEST_CASE("burr: certified retained workloads and guarded stops") {
   for (const auto& fixture : burr_certificate_fixtures) {
     CAPTURE(fixture.name);
     const auto fit=cppunivariate::burr_mle(mltest::as_span(fixture.x),1e-8,1000);
-    CHECK(fit.status==fixture.status);
+    if(fixture.name=="nearly-constant") {
+      REQUIRE(fit.status==cppunivariate::BurrStatus::Ok);CHECK_FALSE(fit.certified);
+    } else CHECK(fit.status==fixture.status);
     if(fit.status==cppunivariate::BurrStatus::Ok){
       CHECK(fit.shape1>0);CHECK(fit.shape2>0);CHECK(fit.scale>0);
       CHECK(std::isfinite(fit.logLik));
@@ -240,8 +242,8 @@ TEST_CASE("burr: certificate arithmetic and failure gates") {
   CHECK_FALSE(cert::inverse(singular,inverse,3));
   const std::vector<double> x={.2,.5,1,2,4};
   auto a=cppunivariate::burr_mle_certified(mltest::as_span(x),1e-8,1000,NAN,NAN,NAN,1e-12,0);
-  CHECK(a.status==cppunivariate::BurrStatus::CertificateBudget);
-  CHECK(std::isnan(a.shape1));
+  REQUIRE(a.status==cppunivariate::BurrStatus::Ok);
+  CHECK_FALSE(a.certified);CHECK(std::isfinite(a.logLik));
   for(const std::vector<double>& bad:std::vector<std::vector<double>>{{},{1},{0,1},{1,INFINITY},{1,NAN}})
     CHECK(cppunivariate::burr_mle(mltest::as_span(bad),1e-8,1000).status==cppunivariate::BurrStatus::InvalidInit);
   for(double tol:std::array<double,4>{{0.,-1.,INFINITY,NAN}})
@@ -368,11 +370,55 @@ TEST_CASE("Burr held-scale log arithmetic avoids overflowing ratios") {
  CHECK(std::isnan(stop.shape1));CHECK(std::isnan(stop.shape2));
 }
 
-TEST_CASE("Burr held-scale sign uncertainty returns a tie with a finite witness") {
+TEST_CASE("Burr held-scale sign uncertainty retains its converged search") {
  const std::vector<double> x{std::exp(-1.1),std::exp(-1.)};
  const auto r=cppunivariate::burr_mle_fixed_scale(mltest::as_span(x),1);
- CHECK(r.status==cppunivariate::BurrStatus::CertificateTie);
- CHECK(std::isnan(r.shape1));CHECK(std::isnan(r.shape2));
- CHECK(std::isfinite(r.stop_detail.loglik_lower));
- CHECK(r.stop_detail.candidates.size()==1);
+ REQUIRE(r.status==cppunivariate::BurrStatus::Ok);
+ CHECK_FALSE(r.certified);
+ CHECK(std::isfinite(r.shape1));CHECK(std::isfinite(r.shape2));CHECK(std::isfinite(r.logLik));
+}
+
+TEST_CASE("Burr uncertified fallback rejects a refuted or failed search") {
+ const std::vector<double> x{.2,.5,1,2,4};
+ const auto data=mltest::as_span(x);
+ auto candidate=cppunivariate::burr_mle_legacy(data,1e-8,1000,NAN,NAN,NAN,1e-12,true);
+ REQUIRE(candidate.status==cppunivariate::BurrStatus::Ok);
+ cppunivariate::BurrMLE certificate{NAN,NAN,NAN,NAN,0,cppunivariate::BurrStatus::CertificateBudget};
+ auto fallback=cppunivariate::burr_uncertified(certificate,candidate,data);
+ REQUIRE(fallback.status==cppunivariate::BurrStatus::Ok);CHECK_FALSE(fallback.certified);
+ certificate.stop_detail.loglik_lower=candidate.logLik+1;
+ CHECK(cppunivariate::burr_uncertified(certificate,candidate,data).status==certificate.status);
+ candidate.status=cppunivariate::BurrStatus::IterationFailure;
+ CHECK(cppunivariate::burr_uncertified(certificate,candidate,data).status==certificate.status);
+}
+
+TEST_CASE("burr retains a converged joint search after short certificate work") {
+ const auto g=mltest::load_distribution_golden("burr");
+ const auto r=cppunivariate::burr_mle(mltest::as_span(g.data),1e-8,16);
+ REQUIRE(r.status==cppunivariate::BurrStatus::Ok);CHECK_FALSE(r.certified);
+ CHECK(std::isfinite(r.logLik));
+}
+
+TEST_CASE("Burr held-shape logarithm coalescence is not a constant-data proof") {
+ const double a=1e300;
+ const std::vector<double> x{a,std::nextafter(a,INFINITY)};
+ REQUIRE(x[0]!=x[1]);REQUIRE(std::log(x[0])==std::log(x[1]));
+ CHECK(cppunivariate::burr_mle_holds(mltest::as_span(x),2,NAN,NAN).status==cppunivariate::BurrStatus::NumericalFailure);
+}
+
+TEST_CASE("Burr held-power tolerance-face preference retains the finite search") {
+ const std::vector<double> x{1,1,1,1,6.0001};
+ const auto r=cppunivariate::burr_mle_holds(mltest::as_span(x),NAN,1,NAN,1e-14,1000);
+ REQUIRE(r.status==cppunivariate::BurrStatus::Ok);CHECK_FALSE(r.certified);
+ CHECK(std::isfinite(r.logLik));
+ CHECK(cppunivariate::fallback_lomax_face_proved(mltest::as_span(std::vector<double>{1,2,3,4}),1000));
+}
+
+TEST_CASE("held-power fallback score gate rejects an unchecked finite Lomax point") {
+ const std::vector<double> x{.03,.1,.4,.7,1,2,4,12};
+ const cppunivariate::LomaxResult bad{1,100,0,1,cppunivariate::LomaxStatus::IterationFailure};
+ CHECK_FALSE(cppunivariate::fallback_lomax_search_accepted(mltest::as_span(x),bad));
+ const std::vector<double> near{1,1,1,1,6.0001};
+ const auto r=cppunivariate::lomax_newton_candidate(mltest::as_span(near),1e-14,1000);
+ CHECK(cppunivariate::fallback_lomax_search_accepted(mltest::as_span(near),r));
 }

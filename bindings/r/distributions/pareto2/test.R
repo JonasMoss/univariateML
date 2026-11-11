@@ -109,3 +109,8 @@ test_that("Pareto II carries the shifted exponential stop", {
   expect_equal(e$estimates, c(rate = .5))
   expect_equal(e$limit_loglik, -3 * (1 + log(2)))
 })
+
+test_that("pareto2 delegate follow-up preserves the accepted fit", {
+  f <- mlpareto2(c(.03,.1,.4,.7,1,2,4,12),min=0,reltol=1e-8,iterlim=1000)
+  expect_true(is.finite(as.numeric(logLik(f))))
+})

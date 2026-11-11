@@ -41,7 +41,7 @@ inline FitResult fit_invparalogis(cppunivariate::span x, Held shape_arg = {}, He
   std::vector<std::string> fixed;
   if(shape.supplied) fixed.push_back("shape");
   if(scale.supplied) fixed.push_back("scale");
-  return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"shape",res.shape},{"scale",res.scale}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }();
+  return [&]() { FitResult out; out.extra.push_back({"certified",res.certified?1.:0.}); out.warnings = warnings; out.estimates = {{"shape",res.shape},{"scale",res.scale}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }();
 
 }
 }
