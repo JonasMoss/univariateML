@@ -197,3 +197,47 @@ test('delegate follow-up keeps successful uncertified parent fits',()=>{
   assert.equal(r.status,'Ok',id);assert.equal(r.certified,0,id);assert.ok(Number.isFinite(r.logLik),id);
  }
 });
+test('GEV and Frechet all-free fits expose per-fit certificate markers',()=>{
+ const g=m.fitgev(new Float64Array([0,1,1,1,2,3,4]),{},{});
+ assert.equal(g.error,undefined,g.error);assert.equal(g.certified,1);
+ const x=Float64Array.from({length:50},(_,j)=>Math.pow(-Math.log((j+.5)/50),-.5));
+ const f=m.fitfrechet(x,{},{});
+ assert.equal(f.error,undefined,f.error);assert.equal(f.certified,1);
+});
+
+test('Frechet finite two-point cancellation retains an uncertified fit',()=>{
+ const p=.45,mu=p*.1/(Math.sqrt(p*(1-p))+p);
+ const f=m.fitfrechet(new Float64Array([...Array(9).fill(mu),...Array(11).fill(mu+1)]),{},{});
+ assert.equal(f.error,undefined,f.error);assert.equal(f.certified,0);
+ assert.ok(Math.abs(f.estimates.mu)<1e-12);
+});
+
+test('an unordered Frechet Gumbel comparison retains the finite search',()=>{
+ const shape=.0041309589552387081;
+ const x=Float64Array.from({length:80},(_,j)=>Math.expm1(-shape*Math.log(-Math.log((j+.5)/80)))/shape);
+ const f=m.fitfrechet(x,{},{});
+ assert.equal(f.error,undefined,f.error);assert.equal(f.certified,0);
+ assert.ok(f.estimates.lambda>1e5);assert.ok(Number.isFinite(f.logLik));
+});
+
+test('GEV coupled support corners survive normalization and outer coverage',()=>{
+ const cases=[[-.55225555774106538,1.2538261877399721,.35823280453135459],
+  [1.696102873837644,-1.2511415791724954,-1.142128614350542],
+  [36.78357020148276,62.016500801895056,79.137895173444065],
+  [.47613503331464652,2.0186627711562051,1.3293650873876488]];
+ for(const x of cases) {
+  const f=m.fitgev(new Float64Array(x),{mu:0},{});
+  assert.equal(f.error,undefined,f.error);assert.equal(f.certified,1);
+  assert.equal(f.estimates.xi,-1);assert.equal(f.estimates.mu,0);
+  assert.equal(f.estimates.sigma,Math.max(...x));
+ }
+});
+
+test('Frechet held scale keeps coefficient accuracy at large shape',()=>{
+ const data=new Float64Array([0,2.439431989742502e-10,3.8143577185678623e-10,4.835630784683076e-10,5.672827763092414e-10,6.39559960546876e-10,7.039885341342256e-10,7.626852482900404e-10,8.170100151971837e-10,8.678938678841064e-10,9.160041614109105e-10,9.618379426257206e-10,1.0057765731374957e-09,1.0481199241851868e-09,1.0891091362097427e-09,1.1289412737980342e-09,1.167780427913101e-09,1.2057650433661138e-09,1.2430135809538e-09,1.279628292216728e-09,1.3156989941975894e-09,1.3513048457980403e-09,1.3865166792470518e-09,1.4213985544131447e-09,1.4560084249382044e-09,1.4903998035720178e-09,1.5246223172837858e-09,1.5587222623736352e-09,1.5927433816287362e-09,1.6267270863679073e-09,1.6607136776869424e-09,1.6947413472578887e-09,1.7288476206189785e-09,1.763069801263839e-09,1.7974443045076782e-09,1.8320075456657037e-09,1.866796162097728e-09,1.9018474572973787e-09,1.937198734758283e-09,1.972889074330908e-09,2.008958221999535e-09,2.04544747806068e-09,2.082400141212304e-09,2.119861508553811e-09,2.157879541719865e-09,2.196504644835784e-09,2.2357909967851697e-09,2.2757963291653027e-09,2.316582592420957e-09,2.358217510156635e-09,2.4007736909581467e-09,2.4443308488386606e-09,2.488976247327912e-09,2.5348062537844385e-09,2.5819267834847892e-09,2.630456852337204e-09,2.6805287989262183e-09,2.732291171092527e-09,2.7859131668250825e-09,2.8415866326625405e-09,2.8995313927637767e-09,2.96000213229064e-09,3.0232943926122857e-09,3.0897556735354215e-09,3.159798533935998e-09,3.2339161348815537e-09,3.3127082188499912e-09,3.3969117518850567e-09,3.4874473309187692e-09,3.5854869073759232e-09,3.692554373380119e-09,3.810682325244841e-09,3.9426680809029335e-09,4.092513772313566e-09,4.266237030314812e-09,4.4735025683806384e-09,4.731339875441165e-09,5.074264231019754e-09,5.591473173360839e-09,6.696401322336953e-09]);
+ const f=m.fitfrechet(data,{sigma:1},{});
+ assert.equal(f.error,undefined,f.error);
+ assert.ok(Math.abs(f.estimates.lambda/1008905594.239193-1)<1e-10);
+ assert.ok(Math.abs(f.estimates.mu+.99999999837500435)<1e-10);
+ assert.equal(f.estimates.sigma,1);
+});

@@ -296,3 +296,25 @@ test_that("Frechet held scale exposes the constrained certificate marker", {
   expect_identical(attr(fit, "certified"), TRUE)
   expect_identical(as.numeric(fit["sigma"]), 1)
 })
+
+test_that("Frechet all-free fits expose the certificate flag", {
+  x <- (-log(((1:50)-.5)/50))^(-.5)
+  f <- suppressWarnings(mlfrechet(x, mu=NULL))
+  expect_identical(attr(f, "certified"), TRUE)
+})
+
+test_that("Frechet finite two-point cancellation retains an uncertified fit", {
+  m <- .45*.1/(sqrt(.45*.55)+.45)
+  f <- suppressWarnings(mlfrechet(c(rep(m,9),rep(m+1,11)),mu=NULL))
+  expect_identical(attr(f,"certified"),FALSE)
+  expect_lt(abs(f[["mu"]]),1e-12)
+})
+
+test_that("an unordered Frechet Gumbel comparison retains the finite search", {
+  shape <- .0041309589552387081
+  x <- expm1(-shape*log(-log(((1:80)-.5)/80)))/shape
+  f <- mlfrechet(x,mu=NULL)
+  expect_identical(attr(f,"certified"),FALSE)
+  expect_gt(f[["lambda"]],1e5)
+  expect_true(is.finite(as.numeric(logLik(f))))
+})

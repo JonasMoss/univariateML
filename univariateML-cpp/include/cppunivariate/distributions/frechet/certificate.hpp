@@ -89,6 +89,14 @@ inline FrechetResult frechet_two_point_certificate(span x,double m,double M,
     out.stop_detail.loglik_lower=out.logLik-margin;
   }
   out.stop_detail.loglik_upper=INFINITY;
+  auto finite_fallback=[&]() {
+    const double eps=256*std::numeric_limits<double>::epsilon();
+    if(tol<4*eps || !std::isnormal(out.sigma) || !std::isnormal(d*h) ||
+       !std::isfinite(out.mu) || !std::isfinite(out.logLik) ||
+       eps*(std::abs(m)+d*h)>tol*.25*std::max(std::abs(out.mu),out.sigma) ||
+       std::abs(out.logLik-l1)>margin)return false;
+    out.status=FrechetStatus::Ok;out.certified=false;out.stop_detail={};return true;
+  };
   // Strictly concave Gumbel objective; derivative is decreasing from +inf
   // to -q. This bracket and all refinements are solver-budget work.
   auto score=[&](double t) {
@@ -119,7 +127,7 @@ inline FrechetResult frechet_two_point_certificate(span x,double m,double M,
       if(tol<4*eps || !std::isnormal(out.sigma) || !std::isnormal(d*h) ||
          !std::isfinite(out.mu) || !std::isfinite(out.logLik) ||
          eps*(std::abs(m)+d*h)>tol*.25*std::abs(out.mu) ||
-         std::abs(out.logLik-l1)>margin)return out;
+         std::abs(out.logLik-l1)>margin) {finite_fallback();return out;}
       out.status=FrechetStatus::Ok;out.stop_detail={};return out;
     }
     if(l0>l1+2*margin && hi-lo<=std::min(tol,1e-8)*t) {
@@ -138,6 +146,7 @@ inline FrechetResult frechet_two_point_certificate(span x,double m,double M,
     if(hi-lo<=32*std::numeric_limits<double>::epsilon()*t) {
       out.stop_detail.comparison_tie=!out.stop_detail.candidates.empty() &&
         !(l0>l1+2*margin);
+      if(out.stop_detail.comparison_tie)finite_fallback();
       return out;
     }
     if(derivative>0)lo=t;else hi=t;
@@ -148,13 +157,38 @@ inline FrechetResult frechet_two_point_certificate(span x,double m,double M,
 
 namespace cppunivariate {
 namespace frechet_held_detail {
+inline bool polish(span data,FrechetResult& fit,double tol,int maxit) {
+  std::array<double,3> q{std::log(fit.lambda),std::log(-fit.mu),0};
+  const std::array<bool,3> free{fit.lambda!=1,true,false};
+  auto objective=[&](const std::array<accuracy_detail::Jet,3>& a) {
+    const auto lambda=accuracy_detail::exp(a[0]),gap=accuracy_detail::exp(a[1]);
+    if(lambda.v<1)return accuracy_detail::Jet(NAN);
+    accuracy_detail::JetSum sum;
+    for(double d:data) {
+      const auto L=d>gap.v ? accuracy_detail::log(accuracy_detail::Jet(d))+
+        accuracy_detail::log1p(gap/accuracy_detail::Jet(d)) :
+        a[1]+accuracy_detail::log1p(accuracy_detail::Jet(d)/gap);
+      sum.add(a[0]-(lambda+accuracy_detail::Jet(1))*L-accuracy_detail::exp(-lambda*L));
+    }
+    return sum.value/accuracy_detail::Jet(static_cast<ExtendedReal>(data.size()));
+  };
+  if(!accuracy_detail::polish(q,free,tol,maxit,objective))return false;
+  if(!free[0]) {
+    std::array<accuracy_detail::Jet,3> a;
+    for(int i=0;i<3;++i)a[i]=accuracy_detail::variable(q[i],i,true);
+    if(!(objective(a).g[0]<=0))return false;
+  }
+  fit.lambda=std::exp(q[0]);fit.mu=-std::exp(q[1]);
+  fit.logLik=frechet_loglik(data,fit.lambda,fit.mu,1);
+  return std::isfinite(fit.logLik);
+}
 inline gev_held_detail::Evaluation evaluate(span data,gev_held_detail::Box b) {
   double D=0,k=0;for(double v:data) {D=std::max(D,v);if(v==0)++k;}
   const double n=static_cast<double>(data.size()),c=std::asinh(D/2);
   // A uniform enclosure of the unique inner root on this whole shape slab.
   const double lower=(std::log(k/n)-std::log1p(1/b.x.lo))/b.x.lo;
   const double error=128*std::numeric_limits<double>::epsilon()*(1+std::abs(lower));
-  if(b.y.hi<lower-error)return {{},-INFINITY,false};
+  if(b.y.lo!=b.y.hi && b.y.hi<lower-error)return {{},-INFINITY,false};
   double upper=INFINITY;
   if(b.x.lo*c>=std::log1p(1/b.x.lo))
     upper=std::log1p(b.x.hi)+std::max(-(b.x.lo+1)*c,c-1-b.x.lo*b.x.lo*c*c/2)/n;
@@ -195,7 +229,9 @@ inline FrechetResult frechet_held_scale_certificate(span data,double tol,int max
   auto precise=[&](gev_held_detail::Box b,double t) {
     return b.x.hi-b.x.lo<=t*.25*(b.x.lo+b.x.hi)/2&&std::expm1(b.y.hi-b.y.lo)<=t*.25;
   };
-  const auto result=gev_held_detail::cover(domain,fallback.lambda,std::log(-fallback.mu),std::min(tol,.01),maxit,eval,precise);
+  // The profile already covers the attained shape-one edge cheaply; the
+  // piecewise growth is useful for interior roots and unnecessary at this edge.
+  const auto result=gev_held_detail::cover(domain,fallback.lambda,std::log(-fallback.mu),std::min(tol,.01),maxit,eval,precise,true,{},NAN,std::log(k/n),{-INFINITY,INFINITY},NAN,false);
   if(result.contradicted) {
     fallback.lambda=result.competitor.x.lo;fallback.mu=-std::exp(result.competitor.y.lo);
     fallback.logLik=frechet_loglik(data,fallback.lambda,fallback.mu,1);

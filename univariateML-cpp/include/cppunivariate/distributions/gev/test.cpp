@@ -480,7 +480,9 @@ TEST_CASE("gev: two-point certificate uses counts and a stable midpoint") {
  const auto h=cppunivariate::gev_mle(mltest::as_span(y));
  CHECK(h.status==cppunivariate::GevStatus::NumericalFailure);
  const std::vector<double> centered{-9,1,1,1,1,1,1,1,1,1};
- CHECK(cppunivariate::gev_mle(mltest::as_span(centered)).status==cppunivariate::GevStatus::NumericalFailure);
+ const auto centered_fit=cppunivariate::gev_mle(mltest::as_span(centered));
+ CHECK(centered_fit.status==cppunivariate::GevStatus::Ok);
+ CHECK_FALSE(centered_fit.certified);
 }
 
 TEST_CASE("gev: two-point global member certifies compatible public holds") {
@@ -909,6 +911,83 @@ TEST_CASE("gev: constrained cover cannot certify a losing stationary maximum") {
   CHECK(result.evaluations<=cppunivariate::certificate_budget(100));
 }
 
+TEST_CASE("gev: active support face has a one-sided held-nuisance isolator") {
+  const std::vector<double> x{0,1,2,3,3};
+  for(bool held_mu:{false,true}) {
+    const auto fit=cppunivariate::gev_mle(mltest::as_span(x),1e-10,100,NAN,held_mu?2:NAN,held_mu?NAN:1);
+    REQUIRE(fit.status==cppunivariate::GevStatus::Ok);
+    CHECK(fit.certified);
+    CHECK(fit.xi== -1);
+    CHECK(fit.mu==doctest::Approx(2));
+    CHECK(fit.sigma==doctest::Approx(1));
+  }
+}
+
+TEST_CASE("gev: failed all-free coefficient inclusion retains a successful search") {
+  const std::vector<double> x{0,.22725282343514291,.56276665892011701,.58275143915118077,1};
+  const auto fit=cppunivariate::gev_joint_certificate(mltest::as_span(x),1e-16,100);
+  REQUIRE(fit.status==cppunivariate::GevStatus::Ok);
+  CHECK_FALSE(fit.certified);
+  CHECK(std::isfinite(fit.logLik));
+  CHECK_FALSE(fit.stop_detail.budget_exhausted);
+}
+
+TEST_CASE("gev: held-location majority at an interior observation has a compact scale region") {
+  const std::vector<double> x{-1,0,0,0,1};
+  const auto fit=cppunivariate::gev_mle(mltest::as_span(x),1e-10,100,NAN,0,NAN);
+  REQUIRE(fit.status==cppunivariate::GevStatus::Ok);
+  CHECK(std::isfinite(fit.logLik));
+  CHECK(fit.mu==0);
+}
+
+TEST_CASE("gev: a held maximum with a tied majority has a finite scale superlevel region") {
+  const std::vector<double> x{-1,0,0,0,0};
+  const auto fit=cppunivariate::gev_mle(mltest::as_span(x),1e-10,100,NAN,0,NAN);
+  REQUIRE(fit.status==cppunivariate::GevStatus::Ok);
+  CHECK(fit.mu==0);CHECK(fit.sigma>0);CHECK(std::isfinite(fit.logLik));
+}
+
+TEST_CASE("gev: all-free fallback rejection rechecks feasible public witnesses") {
+  const std::vector<double> x{0,1,2};
+  cppunivariate::GevResult r{1,1,0,0,0,cppunivariate::GevStatus::SearchContradicted};
+  r.stop_detail.candidates={{{1,1,0},0,0},{{0,1,0},0,0}};
+  cppunivariate::gev_verify_contradiction(mltest::as_span(x),r);
+  CHECK(r.status==cppunivariate::GevStatus::SearchContradicted);
+  r.stop_detail.candidates={{{1e-15,1,0},0,0},{{0,1,0},0,0}};
+  cppunivariate::gev_verify_contradiction(mltest::as_span(x),r);
+  CHECK(r.status==cppunivariate::GevStatus::Ok);
+  CHECK_FALSE(r.certified);CHECK(r.mu==0);
+}
+
+TEST_CASE("gev: one-sided corners survive normalized support rounding and outer-cover boundaries") {
+  const std::vector<std::vector<double>> cases{
+    {-.55225555774106538,1.2538261877399721,.35823280453135459},
+    {1.696102873837644,-1.2511415791724954,-1.142128614350542},
+    {36.78357020148276,62.016500801895056,79.137895173444065},
+    {.47613503331464652,2.0186627711562051,1.3293650873876488}};
+  for(const auto& x:cases) {
+    const auto fit=cppunivariate::gev_mle(mltest::as_span(x),1e-10,100,NAN,0,NAN);
+    REQUIRE(fit.status==cppunivariate::GevStatus::Ok);
+    CHECK(fit.certified);CHECK(fit.xi== -1);CHECK(fit.mu==0);
+    CHECK(fit.sigma==*std::max_element(x.begin(),x.end()));
+  }
+}
+
+TEST_CASE("gev: lower-tail values exclude remote held-scale boxes across the Gumbel seam") {
+  std::vector<double> x(500);
+  for(std::size_t i=0;i<x.size();++i)x[i]=static_cast<double>(i)/5000;
+  const auto e=cppunivariate::gev_held_detail::gev_evaluate(mltest::as_span(x),
+    {{-1e-16,0},{704,705}},false,1,100);
+  REQUIRE(std::isfinite(e.upper));
+  CHECK(e.upper< -200);
+  for(double shape:{-1e-16,0.}) {
+    double value=0;
+    for(double v:x)value+=cppunivariate::distributions::dgev(v,704,1,shape,true)/x.size();
+    REQUIRE(std::isfinite(value));
+    CHECK(value<=e.upper);
+  }
+}
+
 TEST_CASE("gev: constrained cover excludes an enlarged concave basin") {
   // A strictly concave quadratic: the piecewise Hessian check covers the
   // whole domain, so no zoom toward the root is needed (251 evaluations
@@ -941,4 +1020,56 @@ TEST_CASE("gev: constrained cover excludes an enlarged concave basin") {
   CHECK(winner.root.x.lo>1);CHECK(winner.root.x.hi<1.02);
   const auto loser=cppunivariate::gev_held_detail::cover({{-2,2},{-2,2}},-1,0,1e-10,100,wells,precise);
   CHECK_FALSE(loser.certified);CHECK(loser.contradicted);
+}
+
+TEST_CASE("gev: one-sided face basin is independent of smooth enlargement") {
+  int face_queries=0;
+  auto objective=[&](cppunivariate::gev_held_detail::Box b) {
+    if(b.x.lo== -1) {++face_queries;return cppunivariate::gev_held_detail::Evaluation{};}
+    const auto x=cppunivariate::gev_held_detail::variable(b.x,0),y=cppunivariate::gev_held_detail::variable(b.y,1);
+    const auto v=cppunivariate::gev_held_detail::margin(cppunivariate::gev_held_detail::scale(
+      cppunivariate::gev_held_detail::add(cppunivariate::gev_held_detail::add(x,cppunivariate::gev_held_detail::constant(1)),
+        cppunivariate::gev_held_detail::mul(y,y)),-1));
+    return cppunivariate::gev_held_detail::Evaluation{v,v.v.hi,true};
+  };
+  auto precise=[](cppunivariate::gev_held_detail::Box,double) {return true;};
+  const auto result=cppunivariate::gev_held_detail::cover({{-1,1},{-2,2}},-1,0,1e-10,100,
+    objective,precise,false,{{-1,-.5},{-2,2}},0);
+  CHECK(result.certified);CHECK_FALSE(result.contradicted);CHECK(face_queries==0);
+}
+
+TEST_CASE("gev: numerical fallback refinement resolves coefficient error") {
+  // Deliberately perturb the local solution; this test exercises the local
+  // rule independently of whether the global cover closes on this sample.
+  std::vector<double> x;
+  for(int j=0;j<80;++j)x.push_back(cppunivariate::distributions::qgev((j+.5)/80,0,1,.3,true,false));
+  auto fit=cppunivariate::gev_mle(mltest::as_span(x),1e-10,100,NAN,NAN,1);
+  REQUIRE(fit.status==cppunivariate::GevStatus::Ok);
+  fit.mu+=1e-7;fit.xi+=1e-7;
+  REQUIRE(cppunivariate::gev_accuracy_detail::polish(mltest::as_span(x),fit,false,true,1e-10,100));
+  const auto first=fit;fit.mu+=1e-8;fit.xi-=1e-8;
+  REQUIRE(cppunivariate::gev_accuracy_detail::polish(mltest::as_span(x),fit,false,true,1e-10,100));
+  CHECK(std::abs(fit.mu-first.mu)<1e-11);CHECK(std::abs(fit.xi-first.xi)<1e-11);
+  CHECK_FALSE(cppunivariate::gev_accuracy_detail::polish(mltest::as_span(x),fit,false,true,1e-17,100));
+}
+
+TEST_CASE("gev: inactive reverse-exponential support uses the smooth edge refinement") {
+  const std::vector<double> x{-.17938596721603867,.1130377306010223,-.4313460426939293};
+  const double scale=-(x[0]+x[1]+x[2])/3;
+  cppunivariate::GevResult fit{0,scale*(1+1e-8),-1,0,0,cppunivariate::GevStatus::Ok};
+  REQUIRE(fit.sigma>x[1]);
+  REQUIRE(cppunivariate::gev_accuracy_detail::polish(mltest::as_span(x),fit,true,false,1e-10,100));
+  CHECK(fit.mu==0);CHECK(fit.xi== -1);
+  CHECK(std::abs(fit.sigma/scale-1)<1e-11);
+}
+
+TEST_CASE("gev rejects a subnormal restoration outside coefficient tolerance") {
+  const double unit=200000*std::numeric_limits<double>::denorm_min();
+  const std::vector<double> x{-unit,unit,-4*unit};
+  const auto all=cppunivariate::gev_mle(mltest::as_span(x));
+  const auto held=cppunivariate::gev_mle(mltest::as_span(x),1e-10,100,NAN,0);
+  CHECK(all.status==cppunivariate::GevStatus::NumericalFailure);
+  CHECK_FALSE(all.certified);
+  CHECK(held.status==cppunivariate::GevStatus::NumericalFailure);
+  CHECK_FALSE(held.certified);
 }

@@ -1,0 +1,9 @@
+check,machine,exit
+cpp-test-no-long-double,workstation,0
+targeted-gev-native-double,workstation,0
+js-build,workstation,0
+targeted-gev-native-double-final,workstation,0
+js-test,workstation,0
+site-check,workstation,0
+js-fit,workstation,0
+quality,workstation,0

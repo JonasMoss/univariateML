@@ -105,7 +105,7 @@ relations:
 fit:
   method: delegation
   certified: 'partial'
-  note: 'frechet/README.md, Details; frechet/mle.hpp (public fitter and held overloads); frechet/test.cpp: Every subset with mu held is an inverse-Weibull fit (joint concave log profile, held-shape closed form or held-scale monotone shape score). Held lambda with free mu has a monotone-location certificate when sigma is held and a monotone profiled-scale certificate when sigma is free. All-free exact half-minimum ties have a proved finite unattained global supremum by the pair bound. All-free two-point minimum minorities compare the unique shape-one member against the Gumbel face by inverse-shape convexity and a bounded concave scalar solve. An exact public scale hold containing a certified finite two-point member inherits its certificate. General all-free fits use the positive-shape GEV slab cover in gev/joint_certificate.hpp, with direct Frechet coefficient enclosures and global Gumbel comparison. Free-lambda/free-mu fits with public sigma held now attempt a constrained two-coordinate global cover with a uniform location-root enclosure and an explicit infinite-shape tail bound; a successful search remains uncertified if the cover cannot close.'
+  note: 'frechet/README.md, Details; frechet/mle.hpp (public fitter and held overloads); frechet/test.cpp: Every subset with mu held is an inverse-Weibull fit (joint concave log profile, held-shape closed form or held-scale monotone shape score). Held lambda with free mu has a monotone-location certificate when sigma is held and a monotone profiled-scale certificate when sigma is free. All-free exact half-minimum ties have a proved finite unattained global supremum by the pair bound. All-free two-point minimum minorities compare the unique shape-one member against the Gumbel face by inverse-shape convexity and a bounded concave scalar solve. An exact public scale hold containing a certified finite two-point member inherits its certificate. General all-free fits use the positive-shape GEV slab cover in gev/joint_certificate.hpp, with direct Frechet coefficient enclosures and global Gumbel comparison; unresolved covers retain a locally accurate numerical search with a per-fit uncertified flag. Free-lambda/free-mu fits with public sigma held use a one-dimensional shape profile cover with a uniform location-root enclosure and an explicit infinite-shape tail bound; a successful search remains uncertified if the cover cannot close.'
 areas:
 - extremes and environment
 classification: specialist
@@ -252,7 +252,7 @@ claim about free-shape fits without an exact half-minimum tie, or about the
 held-scale problem. The GEV map used below preserves the all-free likelihood;
 it does not preserve public location or scale holds.
 
-The all-free fit uses generalized extreme-value coordinates: location $\mu+\sigma$, scale $\sigma/\lambda$, and shape $1/\lambda$. A global slab cover on $0\le\xi\le1$ compares isolated finite maxima with the Gumbel face. Exact half-minimum ties and two-point minimum minorities retain their separate analytic certificates. Unresolved coverage, coefficient precision or candidate comparisons stop fitting.
+The all-free fit uses generalized extreme-value coordinates: location $\mu+\sigma$, scale $\sigma/\lambda$, and shape $1/\lambda$. A global slab cover on $0\le\xi\le1$ compares isolated finite maxima with the Gumbel face. Exact half-minimum ties and two-point minimum minorities retain their separate analytic certificates. Unresolved coverage, coefficient inclusion or candidate comparisons retain a successful profile search marked uncertified; proved Gumbel escapes, nonexistence and failed searches still stop.
 
 
 ### General all-free public-coordinate certificate
@@ -282,7 +282,7 @@ hold. Its existing compatible-member shortcuts remain separate.
 
 All hold combinations are supported. Supply `mu` explicitly: a value holds the threshold, and `mu = NULL` estimates it. With `mu` free and `lambda` free, the fit restricts `lambda >= 1`. With `mu` held, `mlinvweibull` on `x - mu` gives the corresponding two-parameter fit.
 
-A strictly winning Gumbel face produces a limit stop with proper Gumbel coefficients and advice to use `mlgumbel`. Separated candidates that cannot be ordered within the arithmetic margin produce a tie stop. Estimated coefficients on an applicable `fit_domain` bound carry a `restricted` attribute and emit a warning of class `univariateML_restricted`. Held coefficients are not flagged. Restriction exemptions apply to free coefficients. Failed optimizers and unresolved scalar searches stop. A small score alone does not establish global optimality.
+A strictly winning Gumbel face produces a limit stop with proper Gumbel coefficients and advice to use `mlgumbel`. Unordered finite-versus-face comparisons within the arithmetic margin retain a successful finite search uncertified; proved exact ties retain their separate stops. Estimated coefficients on an applicable `fit_domain` bound carry a `restricted` attribute and emit a warning of class `univariateML_restricted`. Held coefficients are not flagged. Restriction exemptions apply to free coefficients. Failed optimizers and unresolved scalar searches stop. A small score alone does not establish global optimality.
 
 
 ### All-free two-point comparison
@@ -305,10 +305,14 @@ $$h=\frac{p(1-2p)}{\sqrt{pq}+p},\quad
 On the Gumbel face the strictly concave scalar objective is
 $\log t-qt-\log(p+qe^{-t})-1-\log d$.
 Its decreasing score brackets its unique root. Tangent upper bounds on that
-bracket separate the face from the finite candidate; unresolved comparisons
-stop, rather than applying the ordinary face tolerance. Strict convexity
+bracket separate the face from the finite candidate. An unresolved comparison
+at arithmetic stagnation retains the finite analytic candidate uncertified
+when its public coefficients and likelihood pass the numerical checks. Strict convexity
 excludes every finite interior shape, so a winning Gumbel face is unattained.
-A finite winner is unique. The comparison margin is
+A finite winner is unique. Cancellation in its location formula can defeat
+relative-location inclusion; the explicit finite candidate is then retained
+uncertified if location measured against scale and the public likelihood pass
+the numerical checks. The comparison margin is
 $4096\epsilon n(1+|\log d|+|\log h|)$; a separate propagated arithmetic
 guard checks the relative public-coefficient accuracy. These certificates
 are exact-arithmetic statements conditional on computed comparisons with
@@ -339,29 +343,54 @@ $\sigma_G=\sigma_F/\lambda$ tends to zero.
 
 The constrained cover uses $(\lambda,\log e)$ jets, interval Newton and
 strict concavity on an isolating rectangle, followed by a complete stationary
-and value box cover. The shape-one boundary remains attained and restricted.
-Once the root is enclosed, the excluded rectangle is enlarged: a negative
-definite interval Hessian on every piece of a subdivision makes that root the
-unique maximizer of the larger rectangle (at the shape-one edge, an outward
-shape score with negative location curvature). Without this step the cover
-excluded a rectangle of relative radius $2\times10^{-6}$ and spent about
-three quarters of its work approaching it, which left ordinary samples of
-size 500 uncertified at the default `iterlim`. The
-[measurements](../../../../../dev/research/evaluations/2026-11-10-held-concave-report.md)
-record this and the remaining limit: the work still grows with the sample
-size, and samples of size 1000 and 2000 need `iterlim` 200 and 400.
+and value profile cover. Each shape slab encloses the unique inner location
+root by uniform score signs and interval Newton; it does not assume profile
+unimodality. The shape-one boundary remains attained and restricted.
+For interior roots, a negative definite interval Hessian on every piece of a
+subdivision enlarges the excluded rectangle while preserving its unique
+maximizer. The shape-one edge uses the profile cover directly, with its
+outward shape score and negative nuisance curvature on the initial basin.
+Deterministic quantile samples with generating shapes 1.25, 2 and 4 certify
+at the default `iterlim` through sample size 5000. The number of certificate
+evaluations stays roughly constant over sizes 500 to 5000; observation-wise
+work, and hence computing time, still grows with sample size. The
+[measurements](../../../../../dev/research/evaluations/2026-11-10-gev-held2-report.md)
+compare this profile cover with the box cover.
 The [proof and arithmetic margins](../../../../../dev/research/evaluations/2026-11-10-gev-held-data/proof.md)
 state the tail bound and root-existence conditions. A completed cover sets the
 C++ result's `certified` field for this route. If coverage, coefficient inclusion or a comparison remains unresolved,
-the successful search is returned unchanged and uncertified. A strictly better
+the locally refined search is returned uncertified. A strictly better
 feasible point, rechecked in public coordinates, instead stops with both point
 witnesses because it disproves the search. Existing search failures retain their
 status. The catalogue flag remains partial.
 
+Uncertified results meet the same local coefficient tolerance as certified
+ones. Analytic-jet Newton refinement checks the full inverse-information
+score correction and contraction. Held-scale fits use log shape and log
+location gap; the log ratio is evaluated as `u + log1p(d*exp(-u))`
+to preserve small observation gaps at large shape, switching to
+`log(d)+log1p(exp(u)/d)` when `d` is larger to keep the quotient bounded.
+All-free fits near the Gumbel seam refine on the original
+observations, with a compensated small-shape score and fitter log likelihood;
+this protects relative accuracy of large Fréchet coefficients. Failure to
+meet local accuracy remains a numerical failure, independent of coverage.
+
+The public density evaluator uses a separate log-ratio formula. At very large
+shape near the Gumbel limit, subtraction of nearly equal logarithms can lose
+accuracy there, even when the fitted coefficients and fitter likelihood meet
+their targets. The [density comparison](../../../../../dev/research/evaluations/2026-11-10-gev-held2-data/combination-density-check.csv)
+quantifies this remaining density-evaluation issue.
+
 R attaches a logical `certified` attribute whenever the result carries the
-marker (every uncertified fit, and every held-scale fit); JavaScript carries
+marker (every uncertified fit, and every all-free or held-scale fit); JavaScript carries
 it as zero or one.
 
 With location held, the inverse-Weibull reduction preserves numerical iteration
 failures and the per-fit uncertified flag for a scale limited by binary64
 spacing. Such a flag does not assert nonexistence.
+
+The [shape-slab argument](../../../../../dev/research/evaluations/2026-11-10-gev-held2-data/proof.md)
+retains the infinite-shape tail exclusion and the attained shape-one face.
+Unresolved all-free certificates use the numerical profile search only after
+its own convergence and total shape-score check; its per-fit flag is false.
+A completed all-free certificate has the flag true.

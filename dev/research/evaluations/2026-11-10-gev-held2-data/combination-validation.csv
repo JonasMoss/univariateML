@@ -1,0 +1,10 @@
+check,machine,exit
+cpp-test,workstation,0
+cpp-full,workstation,0
+cpp-test-no-long-double,workstation,0
+test,workstation,0
+test-full,workstation,0
+js-build,workstation,0
+js-test,workstation,0
+site-check,workstation,0
+quality,workstation,0

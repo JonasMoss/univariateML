@@ -1,0 +1,20 @@
+{
+  "head": "af295963493ce0b73f678d1316e5c7355914aa89",
+  "sha256": {
+    "bindings/common/distributions/frechet/fit.hpp": "0e0c2b96a8aac169dc6476b7abb93ad30643184531676b0d56bf3ed72f7a870d",
+    "bindings/common/distributions/gev/fit.hpp": "e60c13b86fcdf8b7eeb9dad65b39fc889baf52881b1130647d4f261275d9eea5",
+    "bindings/js/fit-test.mjs": "d2bd0b9b77c72514cac5159986fba1152893cebb4e3df7bd63973a882195ed94",
+    "bindings/js/test.mjs": "74d7793af4c891f37b1fcfb7ebe0aacfe96998db4dc54809726fb410d3e46f35",
+    "bindings/r/distributions/frechet/test.R": "e96ed156f3f33bff997657da52adb60b4f27e2ce6b6eee6d65be33e86c44396e",
+    "bindings/r/distributions/gev/test.R": "fc3a9baa8a70c8ed5d68f846938537bb3e5e91387d873acf78422f0586fa2015",
+    "univariateML-cpp/include/cppunivariate/distributions/frechet/README.md": "5a6d7ad908752ace038b3c727e93c7a7844ddb4d34550da985ebb9303f405c04",
+    "univariateML-cpp/include/cppunivariate/distributions/frechet/certificate.hpp": "8535364c3863f09aa402f0214620e87b179feae3d924effe852ae349099e36e8",
+    "univariateML-cpp/include/cppunivariate/distributions/frechet/mle.hpp": "de680a35e5a5ecb0396d2805139dbd469d3f0a409aed67a44fc3575e7cb78f64",
+    "univariateML-cpp/include/cppunivariate/distributions/frechet/test.cpp": "aeb3018ca3d91c0bb118bf41255afca022b21091451c10ce55d5db6ea6328adf",
+    "univariateML-cpp/include/cppunivariate/distributions/gev/README.md": "401288600dbfcd154a113aaa8f9ebbb8333ea2f5ae21e86e9ebb4bf681c2bc7f",
+    "univariateML-cpp/include/cppunivariate/distributions/gev/held_certificate.hpp": "8ed463917a404ac5bd63c915090b7869746ccadf29bb805b591a43fbfc78231b",
+    "univariateML-cpp/include/cppunivariate/distributions/gev/joint_certificate.hpp": "fa8096c9871793423232366dc7e0f237ebc049661b9ff23a3f8521e794ad9625",
+    "univariateML-cpp/include/cppunivariate/distributions/gev/mle.hpp": "c17962c11bc6f8b24964135169cdb13b147fc7df34d1287d5f04f5654f95dfcf",
+    "univariateML-cpp/include/cppunivariate/distributions/gev/test.cpp": "3bd54abeea6d7389837c381847f7bb65cf228df1041b01cfb1b5a8d95b395baf"
+  }
+}

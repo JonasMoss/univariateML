@@ -50,10 +50,13 @@ inline GevResult frechet_gev_mle(span x, double tol=1e-10, int maxit=100,
       c.coef[0]=origin+range*c.coef[0];c.coef[1]*=range;
       c.loglik_lower-=jac;c.loglik_upper-=jac;
     }
+    gev_verify_contradiction(x,r);
+    if(std::isnan(xi)&&r.status==GevStatus::Ok&&!r.certified&&r.xi>0 &&
+       !gev_accuracy_detail::polish(x,r,false,false,tol,maxit,true))r.status=GevStatus::NumericalFailure;
     return r;
   };
   if(!std::isnan(xi)) return restore(gev_profile(data,xi,tol,maxit).fit);
-  return restore(gev_joint_certificate(data,tol,maxit,true));
+  return restore(gev_joint_certificate(data,tol,maxit,true,tol));
 }
 
 enum class FrechetStatus { Ok, InvalidData, GumbelLimit, IterationFailure, NoMLE, NumericalFailure, SearchContradicted };
@@ -63,7 +66,12 @@ inline double frechet_loglik(span x,double lambda,double mu,double sigma) {
  double ll=x.size()*(std::log(lambda)-std::log(sigma));
  for(double v:x) {
    if(!(v>mu)) return -std::numeric_limits<double>::infinity();
-   const double z=std::log(v-mu)-std::log(sigma);
+   double z=std::log(v-mu)-std::log(sigma);
+   if(lambda>1e4&&std::abs((v-mu)/sigma-1)<.5) {
+     const auto r=(gev_accuracy_detail::Pair(v)-gev_accuracy_detail::Pair(mu)-
+       gev_accuracy_detail::Pair(sigma))/gev_accuracy_detail::Pair(sigma);
+     z=std::log1p(r.hi)+r.lo/(1+r.hi);
+   }
    ll-=(lambda+1)*z+std::exp(-lambda*z);
  }
  return ll;
@@ -136,7 +144,7 @@ inline FrechetResult frechet_held_mle(span x,double tol,int maxit,double mu,
      auto member=frechet_two_point_certificate(x,m,M,k,tol,maxit);
      if(member.sigma==sigma &&
         extreme_detail::exact_count_scale(m,M,x.size()-2*k,x.size(),sigma)) {
-       if(member.status==FrechetStatus::Ok) {member.certified=true;return member;}
+       if(member.status==FrechetStatus::Ok)return member;
        if(member.status!=FrechetStatus::GumbelLimit) {
          // An unconstrained face is not a feasible lower witness under this
          // hold. Its global upper bound still bounds the constrained fit.
@@ -228,10 +236,16 @@ inline FrechetResult frechet_held_mle(span x,double tol,int maxit,double mu,
  const auto opt=extreme_detail::maximize([&](double u){return candidate(u).logLik;},-32,32,tol,maxit,false);
  auto fit=candidate(opt.x);
  if(!opt.ok)fit.status=FrechetStatus::IterationFailure;
+ if(hs&&!hl&&fit.status==FrechetStatus::Ok &&
+    !frechet_held_detail::polish(data,fit,tol,maxit))fit.status=FrechetStatus::NumericalFailure;
  const auto standardized_search=fit;
  fit.mu=m+unit*fit.mu;fit.sigma=hs ? sigma : unit*fit.sigma;
  fit.logLik=frechet_loglik(x,fit.lambda,fit.mu,fit.sigma);
- if(!opt.ok || fit.status!=FrechetStatus::Ok || !std::isfinite(fit.logLik)) fit.status=FrechetStatus::IterationFailure;
+ if(!opt.ok)fit.status=FrechetStatus::IterationFailure;
+ else if(fit.status==FrechetStatus::Ok &&
+   (!std::isfinite(fit.logLik) || (hs&&!hl&&
+    !accuracy_detail::location_projection(fit.mu,m,unit,standardized_search.mu,sigma,tol))))
+   fit.status=FrechetStatus::NumericalFailure;
  if(hs && !hl && fit.status==FrechetStatus::Ok) {
    // The search result is uncertified unless the held-scale cover closes.
    fit.certified=false;
@@ -320,7 +334,8 @@ inline FrechetResult frechet_mle_impl(span x, double tol=1e-10, int maxit=100,
  detail.candidates=std::move(mapped);
  bad.iterations=r.iterations;bad.stop_detail=detail;
  if(r.status!=GevStatus::Ok) {
-   bad.status=r.status==GevStatus::NumericalFailure?FrechetStatus::NumericalFailure:FrechetStatus::IterationFailure;
+   bad.status=r.status==GevStatus::SearchContradicted?FrechetStatus::SearchContradicted:
+     (r.status==GevStatus::NumericalFailure?FrechetStatus::NumericalFailure:FrechetStatus::IterationFailure);
    return bad;
  }
  if(r.xi==0) {
@@ -346,7 +361,8 @@ inline FrechetResult frechet_mle_impl(span x, double tol=1e-10, int maxit=100,
      bad.stop_detail.candidates.push_back({{shape,location,scale},ll,ll});
    return bad;
  }
- return {shape,location,scale,ll,r.iterations,FrechetStatus::Ok};
+ FrechetResult answer{shape,location,scale,ll,r.iterations,FrechetStatus::Ok};
+ answer.certified=r.certified;return answer;
 }
 
 inline FrechetResult frechet_mle(span x,double tol=1e-10,int maxit=100,double mu=std::numeric_limits<double>::quiet_NaN(),double lambda=std::numeric_limits<double>::quiet_NaN(),double sigma=std::numeric_limits<double>::quiet_NaN()) {

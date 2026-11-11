@@ -98,7 +98,7 @@ relations: {}
 fit:
   method: profile-search
   certified: 'partial'
-  note: "gev/mle.hpp, gev_held_profile and gev_profile: Held xi=-1 has closed-form shifted reverse-exponential fits; held xi=0 and sigma give analytic location; held sigma and -1<xi<0 give a strictly concave, bracketed location solve. These nontrivial submodels are certified. Shape-only fits with mu and sigma held use derivative interval coverage and explicit support-edge envelopes, with numerical or budget stops if unresolved. All-free two-point samples with minimum fraction at most one half have a unique reverse-exponential maximum, computed from counts with coefficient precision guards; exact public location or scale holds containing that member inherit its certificate. Exact half-minimum ties have proved global bounds both with all coefficients free and with mu held at the minimum; attained members are retained. The general all-free fit uses joint_certificate.hpp: a shape-slab cover, monotone endpoint-gap brackets, a minimum-pivot Gumbel seam and a one-sided reverse-exponential face envelope. Interior maxima require joint coefficient inclusion and global candidate comparison; unresolved coverage stops numerically or on budget. Free-shape fits with one nuisance held now attempt the constrained two-coordinate cover in held_certificate.hpp, including the Gumbel seam and moving-support value envelopes; successful search results remain uncertified if the cover cannot close. Other conditional fits retain numerical root discovery without global coverage."
+  note: "gev/mle.hpp, gev_held_profile and gev_profile: Held xi=-1 has closed-form shifted reverse-exponential fits; held xi=0 and sigma give analytic location; held sigma and -1<xi<0 give a strictly concave, bracketed location solve. These nontrivial submodels are certified. Shape-only fits with mu and sigma held use derivative interval coverage and explicit support-edge envelopes, with numerical or budget stops if unresolved. All-free two-point samples with minimum fraction at most one half have a unique reverse-exponential maximum, computed from counts with coefficient precision guards; exact public location or scale holds containing that member inherit its certificate. Exact half-minimum ties have proved global bounds both with all coefficients free and with mu held at the minimum; attained members are retained. The general all-free fit uses joint_certificate.hpp: a shape-slab cover, monotone endpoint-gap brackets, a minimum-pivot Gumbel seam and a one-sided reverse-exponential face envelope. Interior maxima require joint coefficient inclusion and global candidate comparison; unresolved coverage or coefficient inclusion retains a successful numerical search with certified=false. Free-shape fits with one nuisance held attempt a constrained profile/box cover in held_certificate.hpp, including the Gumbel seam and moving-support value envelopes; successful search results remain uncertified if the cover cannot close. Other conditional fits retain numerical root discovery without global coverage."
 areas:
 - extremes and environment
 existence:
@@ -281,8 +281,10 @@ location; subnormal halving residuals are checked with `fma`. Endpoint
 feasibility is enforced using a TwoDiff rounding residual, with any scale
 adjustment limited to `reltol/4` relative to the initial scale. Outside the
 half tie, a $64\epsilon_{\rm mach}(|M|+\sigma)$ location-error allowance
-must be below `reltol*abs(mu)/4`; subnormal scale or unresolved near-zero
-location stops numerically. The analytic precision control is at most
+must be below `reltol*abs(mu)/4`; subnormal scale or unresolved public
+representation stops numerically. A near-zero location with normal
+scale and a resolved feasible face likelihood is instead returned uncertified.
+The analytic precision control is at most
 $10^{-2}$ and requires at least $1024\epsilon_{\rm mach}$; successful
 likelihoods agree with the analytic supremum within $10^{-7}n$. These
 safeguards can reject a known finite maximum whose relative coefficient
@@ -336,9 +338,11 @@ endpoint scores isolate a stationary maximum. A joint interval-Newton step
 then bounds all three public coefficients. The closed reverse-exponential
 face is compared through a one-sided envelope that avoids derivatives at its
 moving support endpoint. Every surviving maximum is compared globally;
-separated candidates that cannot be ordered within the arithmetic margin
-produce a tie stop with witnesses. Exhausted coverage produces a budget stop,
-and unresolved coefficient precision produces a numerical stop.
+unordered comparisons within the arithmetic margin, exhausted coverage and
+coefficient inclusion failures retain a successful profile search with
+`certified=false`. Failed searches and proved nonexistence still stop. An
+interior fallback must pass the total shape-score gate; it supplies no global
+or coefficient certificate.
 
 These are exact-arithmetic certificates conditional on computed comparisons,
 with compensated sums and explicit practical floating-point margins, rather
@@ -381,24 +385,26 @@ failure does not fall through to a numerical conditional search.
 ### One public nuisance coefficient held
 
 For free shape with either location or scale held, the constrained likelihood
-is covered in its two free coordinates. The bound
+uses a constrained stationary/value cover in shape and the free nuisance
+coefficient. The bound
 $f(x)\le\min(1/\sigma,\sigma/(x-\mu)^2)$ confines every point above a
 feasible likelihood level to a finite nuisance interval. With location held,
-this construction requires more than half the observations to differ from the
-held location; collapse equalities retain their separate classifications.
+the universal bound requires $2j>n$, where $j$ counts observations different
+from the held location. The sharper negative-residual bound below fills the
+remaining compactness cases; collapse equalities retain their separate
+classifications.
 With scale held, the location interval is always finite for a nonconstant
 sample and finite witness.
 
 The cover includes the Gumbel member under the same hold, both attained shape
-bounds, and value envelopes across moving support. An isolated maximum needs
-an interval negative definite constrained Hessian, root existence and joint
-coefficient inclusion. The excluded rectangle around that maximum is then
-enlarged: the same criterion, verified on every piece of a subdivision, makes
-the enclosed root the unique maximizer of the larger rectangle, so the cover
-does not have to approach a rectangle of relative radius $2\times10^{-6}$
-with score and value tests that weaken near a maximum
-([measurements](../../../../../dev/research/evaluations/2026-11-10-held-concave-report.md)).
-Completion proves global dominance by a stationary and
+bounds, and value envelopes across moving support. An interior isolated
+maximum needs an interval negative definite constrained Hessian, root
+existence and joint coefficient inclusion. Piecewise support-valid Hessian
+checks enlarge the excluded rectangle while preserving its unique maximizer;
+at an attained shape edge, an outward shape score and negative nuisance
+curvature give the corresponding criterion
+([measurements](../../../../../dev/research/evaluations/2026-11-10-gev-held2-report.md)). Support corners use the one-sided
+bounds below. Completion proves global dominance by a stationary and
 value box cover. This uses the joint certificate's interval machinery without
 assuming the constrained profile is unimodal. Arithmetic margins and the
 compactness proof are given in the
@@ -409,8 +415,32 @@ comparison or coverage cannot close within the work allowance. It is then
 uncertified; incomplete coverage creates no stop. A strictly better feasible
 point, verified again in public coordinates, instead disproves the search and
 stops with both point witnesses. The C++ result's
-`certified` field records completion of this held-nuisance cover only; older
-routes do not generally populate that field. The catalogue flag remains partial.
+`certified` field records completion for all-free and held-nuisance covers;
+older conditional routes do not generally populate that field. The catalogue flag remains partial.
 
-For this hold subset, R attaches the logical `certified` attribute to the fit;
+Successful numerical fallbacks meet the requested local coefficient accuracy
+independently of the global certificate. Analytic second-order jets refine
+scaled location, log scale and shape; positive observed information and the
+undamped Newton correction with contraction control the stopping rule.
+Attained shape edges refine only free nuisance coordinates and check the
+outward score. Reverse-exponential support corners retain their analytic
+conditional coefficients. A local accuracy failure remains a numerical
+failure; an incomplete global cover alone does not stop a successful fit.
+
+For all-free and these held-nuisance fits, R attaches the logical `certified` attribute to the fit;
 the common binding result carries the same marker as zero or one.
+
+The [profile and support-face extension](../../../../../dev/research/evaluations/2026-11-10-gev-held2-data/proof.md)
+contracts the unique fixed-scale location root on nonnegative shape slabs.
+Negative-shape and held-location fits retain the two-coordinate cover.
+For nonpositive shape, a one-observation lower-tail value bound also excludes
+remote location boxes where likelihood derivatives overflow at the Gumbel seam.
+Their root enclosures can remain broad near moving support; uniqueness
+alone does not make the profile cover cheaper. An active reverse-exponential support corner has a one-sided value isolator on
+the feasible portion of an extended corner rectangle, avoiding derivatives
+at zero residual. Its public coordinates use the original sample maximum
+and the hold. Data with an observation below a held
+location have a compact scale superlevel region even when at least half the observations equal that
+location. Together with the minimum-tie classifiers this closes the
+$2j\le n$ compactness gap in exact arithmetic; general inner scale-root
+uniqueness is not assumed.
