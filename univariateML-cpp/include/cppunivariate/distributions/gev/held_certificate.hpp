@@ -204,11 +204,12 @@ struct Cover {bool certified=false,contradicted=false;Box root{},competitor{};st
 // Interval Newton then encloses all coefficients. The basin is then enlarged
 // piecewise; the remaining boxes are removed by values or scores.
 template<class F,class P>
-inline Cover cover(Box domain,double x,double y,double tol,int maxit,F evaluate,P precise,bool profile=false,Box face_basin={},double face_value=NAN,double root_log_fraction=NAN,gev_joint_detail::Range profile_region={-INFINITY,INFINITY},double profile_scale=NAN) {
+inline Cover cover(Box domain,double x,double y,double tol,int maxit,F evaluate,P precise,bool profile=false,Box face_basin={},double face_value=NAN,double root_log_fraction=NAN,gev_joint_detail::Range profile_region={-INFINITY,INFINITY},double profile_scale=NAN,bool enlarge_edge=true) {
   Cover out;const auto cap=certificate_budget(maxit);
   auto get=[&](Box b) {if(out.evaluations>=cap)return Evaluation{};++out.evaluations;return evaluate(b);};
   x=std::max(domain.x.lo,std::min(domain.x.hi,x));y=std::max(domain.y.lo,std::min(domain.y.hi,y));
   Box basin{},root{};Evaluation isolated{},witness{};
+  double rx=0,ry=0;bool left=false,edge=false;
   if(std::isfinite(face_value)) {
     basin=face_basin;root={{x,x},{y,y}};
     witness.ok=isolated.ok=true;
@@ -233,7 +234,7 @@ inline Cover cover(Box domain,double x,double y,double tol,int maxit,F evaluate,
     if(!accepted||std::max(std::abs(dx),std::abs(dy))<1e-13)break;
   }
   const double initial=(x==domain.x.lo||x==domain.x.hi)?.02:.000002;
-  double rx=initial*(1+std::abs(x)),ry=initial*(1+std::abs(y));
+  rx=initial*(1+std::abs(x));ry=initial*(1+std::abs(y));
   basin={{std::max(domain.x.lo,x-rx),std::min(domain.x.hi,x+rx)},
             {std::max(domain.y.lo,y-ry),std::min(domain.y.hi,y+ry)}};
   auto B=get(basin);const auto p=get({{x,x},{y,y}});if(!p.ok)return out;
@@ -252,8 +253,8 @@ inline Cover cover(Box domain,double x,double y,double tol,int maxit,F evaluate,
     B=get(basin);
   }
   if(!basin_ok())return out;
-  const bool left=x==domain.x.lo&&B.jet.g[0].hi<0,right=x==domain.x.hi&&B.jet.g[0].lo>0;
-  const bool edge=left||right;
+  left=x==domain.x.lo&&B.jet.g[0].hi<0;
+  edge=left||(x==domain.x.hi&&B.jet.g[0].lo>0);
   root=basin;bool included=false;
   if(edge) {
     root.x={x,x};const auto L=get({root.x,{basin.y.lo,basin.y.lo}}),H=get({root.x,{basin.y.hi,basin.y.hi}});
@@ -326,7 +327,7 @@ inline Cover cover(Box domain,double x,double y,double tol,int maxit,F evaluate,
     }
     return true;
   };
-  for(int j=0;j<maxit&&out.evaluations<cap;++j) {
+  for(int j=0;!std::isfinite(face_value)&&(enlarge_edge||!edge)&&j<maxit&&out.evaluations<cap;++j) {
     rx*=2;ry*=2;
     const Box next{{std::max(domain.x.lo,x-rx),std::min(domain.x.hi,x+rx)},
                    {std::max(domain.y.lo,y-ry),std::min(domain.y.hi,y+ry)}};

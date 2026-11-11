@@ -105,7 +105,7 @@ relations:
 fit:
   method: delegation
   certified: 'partial'
-  note: 'frechet/README.md, Details; frechet/mle.hpp (public fitter and held overloads); frechet/test.cpp: Every subset with mu held is an inverse-Weibull fit (joint concave log profile, held-shape closed form or held-scale monotone shape score). Held lambda with free mu has a monotone-location certificate when sigma is held and a monotone profiled-scale certificate when sigma is free. All-free exact half-minimum ties have a proved finite unattained global supremum by the pair bound. All-free two-point minimum minorities compare the unique shape-one member against the Gumbel face by inverse-shape convexity and a bounded concave scalar solve. An exact public scale hold containing a certified finite two-point member inherits its certificate. General all-free fits use the positive-shape GEV slab cover in gev/joint_certificate.hpp, with direct Frechet coefficient enclosures and global Gumbel comparison; unresolved covers retain a successful numerical search with a per-fit uncertified flag. Free-lambda/free-mu fits with public sigma held now attempt a one-dimensional shape profile cover with a uniform location-root enclosure and an explicit infinite-shape tail bound; a successful search remains uncertified if the cover cannot close.'
+  note: 'frechet/README.md, Details; frechet/mle.hpp (public fitter and held overloads); frechet/test.cpp: Every subset with mu held is an inverse-Weibull fit (joint concave log profile, held-shape closed form or held-scale monotone shape score). Held lambda with free mu has a monotone-location certificate when sigma is held and a monotone profiled-scale certificate when sigma is free. All-free exact half-minimum ties have a proved finite unattained global supremum by the pair bound. All-free two-point minimum minorities compare the unique shape-one member against the Gumbel face by inverse-shape convexity and a bounded concave scalar solve. An exact public scale hold containing a certified finite two-point member inherits its certificate. General all-free fits use the positive-shape GEV slab cover in gev/joint_certificate.hpp, with direct Frechet coefficient enclosures and global Gumbel comparison; unresolved covers retain a locally accurate numerical search with a per-fit uncertified flag. Free-lambda/free-mu fits with public sigma held use a one-dimensional shape profile cover with a uniform location-root enclosure and an explicit infinite-shape tail bound; a successful search remains uncertified if the cover cannot close.'
 areas:
 - extremes and environment
 classification: specialist
@@ -346,23 +346,40 @@ strict concavity on an isolating rectangle, followed by a complete stationary
 and value profile cover. Each shape slab encloses the unique inner location
 root by uniform score signs and interval Newton; it does not assume profile
 unimodality. The shape-one boundary remains attained and restricted.
-Once the root is enclosed, the excluded rectangle is enlarged: a negative
-definite interval Hessian on every piece of a subdivision makes that root the
-unique maximizer of the larger rectangle (at the shape-one edge, an outward
-shape score with negative location curvature). Without this step the cover
-excluded a rectangle of relative radius $2\times10^{-6}$ and spent about
-three quarters of its work approaching it, which left ordinary samples of
-size 500 uncertified at the default `iterlim`. The
-[measurements](../../../../../dev/research/evaluations/2026-11-10-held-concave-report.md)
-record this and the remaining limit: the work still grows with the sample
-size, and samples of size 1000 and 2000 need `iterlim` 200 and 400.
+For interior roots, a negative definite interval Hessian on every piece of a
+subdivision enlarges the excluded rectangle while preserving its unique
+maximizer. The shape-one edge uses the profile cover directly, with its
+outward shape score and negative nuisance curvature on the initial basin.
+Deterministic quantile samples with generating shapes 1.25, 2 and 4 certify
+at the default `iterlim` through sample size 5000. The number of certificate
+evaluations stays roughly constant over sizes 500 to 5000; observation-wise
+work, and hence computing time, still grows with sample size. The
+[measurements](../../../../../dev/research/evaluations/2026-11-10-gev-held2-report.md)
+compare this profile cover with the box cover.
 The [proof and arithmetic margins](../../../../../dev/research/evaluations/2026-11-10-gev-held-data/proof.md)
 state the tail bound and root-existence conditions. A completed cover sets the
 C++ result's `certified` field for this route. If coverage, coefficient inclusion or a comparison remains unresolved,
-the successful search is returned unchanged and uncertified. A strictly better
+the locally refined search is returned uncertified. A strictly better
 feasible point, rechecked in public coordinates, instead stops with both point
 witnesses because it disproves the search. Existing search failures retain their
 status. The catalogue flag remains partial.
+
+Uncertified results meet the same local coefficient tolerance as certified
+ones. Analytic-jet Newton refinement checks the full inverse-information
+score correction and contraction. Held-scale fits use log shape and log
+location gap; the log ratio is evaluated as `u + log1p(d*exp(-u))`
+to preserve small observation gaps at large shape, switching to
+`log(d)+log1p(exp(u)/d)` when `d` is larger to keep the quotient bounded.
+All-free fits near the Gumbel seam refine on the original
+observations, with a compensated small-shape score and fitter log likelihood;
+this protects relative accuracy of large Fréchet coefficients. Failure to
+meet local accuracy remains a numerical failure, independent of coverage.
+
+The public density evaluator uses a separate log-ratio formula. At very large
+shape near the Gumbel limit, subtraction of nearly equal logarithms can lose
+accuracy there, even when the fitted coefficients and fitter likelihood meet
+their targets. The [density comparison](../../../../../dev/research/evaluations/2026-11-10-gev-held2-data/combination-density-check.csv)
+quantifies this remaining density-evaluation issue.
 
 R attaches a logical `certified` attribute whenever the result carries the
 marker (every uncertified fit, and every all-free or held-scale fit); JavaScript carries

@@ -399,12 +399,11 @@ sample and finite witness.
 The cover includes the Gumbel member under the same hold, both attained shape
 bounds, and value envelopes across moving support. An interior isolated
 maximum needs an interval negative definite constrained Hessian, root
-existence and joint coefficient inclusion. The excluded rectangle around that maximum is then
-enlarged: the same criterion, verified on every piece of a subdivision, makes
-the enclosed root the unique maximizer of the larger rectangle, so the cover
-does not have to approach a rectangle of relative radius $2\times10^{-6}$
-with score and value tests that weaken near a maximum
-([measurements](../../../../../dev/research/evaluations/2026-11-10-held-concave-report.md)). Support corners use the one-sided
+existence and joint coefficient inclusion. Piecewise support-valid Hessian
+checks enlarge the excluded rectangle while preserving its unique maximizer;
+at an attained shape edge, an outward shape score and negative nuisance
+curvature give the corresponding criterion
+([measurements](../../../../../dev/research/evaluations/2026-11-10-gev-held2-report.md)). Support corners use the one-sided
 bounds below. Completion proves global dominance by a stationary and
 value box cover. This uses the joint certificate's interval machinery without
 assuming the constrained profile is unimodal. Arithmetic margins and the
@@ -418,6 +417,15 @@ point, verified again in public coordinates, instead disproves the search and
 stops with both point witnesses. The C++ result's
 `certified` field records completion for all-free and held-nuisance covers;
 older conditional routes do not generally populate that field. The catalogue flag remains partial.
+
+Successful numerical fallbacks meet the requested local coefficient accuracy
+independently of the global certificate. Analytic second-order jets refine
+scaled location, log scale and shape; positive observed information and the
+undamped Newton correction with contraction control the stopping rule.
+Attained shape edges refine only free nuisance coordinates and check the
+outward score. Reverse-exponential support corners retain their analytic
+conditional coefficients. A local accuracy failure remains a numerical
+failure; an incomplete global cover alone does not stop a successful fit.
 
 For all-free and these held-nuisance fits, R attaches the logical `certified` attribute to the fit;
 the common binding result carries the same marker as zero or one.

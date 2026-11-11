@@ -1021,3 +1021,55 @@ TEST_CASE("gev: constrained cover excludes an enlarged concave basin") {
   const auto loser=cppunivariate::gev_held_detail::cover({{-2,2},{-2,2}},-1,0,1e-10,100,wells,precise);
   CHECK_FALSE(loser.certified);CHECK(loser.contradicted);
 }
+
+TEST_CASE("gev: one-sided face basin is independent of smooth enlargement") {
+  int face_queries=0;
+  auto objective=[&](cppunivariate::gev_held_detail::Box b) {
+    if(b.x.lo== -1) {++face_queries;return cppunivariate::gev_held_detail::Evaluation{};}
+    const auto x=cppunivariate::gev_held_detail::variable(b.x,0),y=cppunivariate::gev_held_detail::variable(b.y,1);
+    const auto v=cppunivariate::gev_held_detail::margin(cppunivariate::gev_held_detail::scale(
+      cppunivariate::gev_held_detail::add(cppunivariate::gev_held_detail::add(x,cppunivariate::gev_held_detail::constant(1)),
+        cppunivariate::gev_held_detail::mul(y,y)),-1));
+    return cppunivariate::gev_held_detail::Evaluation{v,v.v.hi,true};
+  };
+  auto precise=[](cppunivariate::gev_held_detail::Box,double) {return true;};
+  const auto result=cppunivariate::gev_held_detail::cover({{-1,1},{-2,2}},-1,0,1e-10,100,
+    objective,precise,false,{{-1,-.5},{-2,2}},0);
+  CHECK(result.certified);CHECK_FALSE(result.contradicted);CHECK(face_queries==0);
+}
+
+TEST_CASE("gev: numerical fallback refinement resolves coefficient error") {
+  // Deliberately perturb the local solution; this test exercises the local
+  // rule independently of whether the global cover closes on this sample.
+  std::vector<double> x;
+  for(int j=0;j<80;++j)x.push_back(cppunivariate::distributions::qgev((j+.5)/80,0,1,.3,true,false));
+  auto fit=cppunivariate::gev_mle(mltest::as_span(x),1e-10,100,NAN,NAN,1);
+  REQUIRE(fit.status==cppunivariate::GevStatus::Ok);
+  fit.mu+=1e-7;fit.xi+=1e-7;
+  REQUIRE(cppunivariate::gev_accuracy_detail::polish(mltest::as_span(x),fit,false,true,1e-10,100));
+  const auto first=fit;fit.mu+=1e-8;fit.xi-=1e-8;
+  REQUIRE(cppunivariate::gev_accuracy_detail::polish(mltest::as_span(x),fit,false,true,1e-10,100));
+  CHECK(std::abs(fit.mu-first.mu)<1e-11);CHECK(std::abs(fit.xi-first.xi)<1e-11);
+  CHECK_FALSE(cppunivariate::gev_accuracy_detail::polish(mltest::as_span(x),fit,false,true,1e-17,100));
+}
+
+TEST_CASE("gev: inactive reverse-exponential support uses the smooth edge refinement") {
+  const std::vector<double> x{-.17938596721603867,.1130377306010223,-.4313460426939293};
+  const double scale=-(x[0]+x[1]+x[2])/3;
+  cppunivariate::GevResult fit{0,scale*(1+1e-8),-1,0,0,cppunivariate::GevStatus::Ok};
+  REQUIRE(fit.sigma>x[1]);
+  REQUIRE(cppunivariate::gev_accuracy_detail::polish(mltest::as_span(x),fit,true,false,1e-10,100));
+  CHECK(fit.mu==0);CHECK(fit.xi== -1);
+  CHECK(std::abs(fit.sigma/scale-1)<1e-11);
+}
+
+TEST_CASE("gev rejects a subnormal restoration outside coefficient tolerance") {
+  const double unit=200000*std::numeric_limits<double>::denorm_min();
+  const std::vector<double> x{-unit,unit,-4*unit};
+  const auto all=cppunivariate::gev_mle(mltest::as_span(x));
+  const auto held=cppunivariate::gev_mle(mltest::as_span(x),1e-10,100,NAN,0);
+  CHECK(all.status==cppunivariate::GevStatus::NumericalFailure);
+  CHECK_FALSE(all.certified);
+  CHECK(held.status==cppunivariate::GevStatus::NumericalFailure);
+  CHECK_FALSE(held.certified);
+}

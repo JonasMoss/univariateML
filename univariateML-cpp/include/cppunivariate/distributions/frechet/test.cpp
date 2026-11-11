@@ -468,3 +468,59 @@ TEST_CASE("frechet: held-scale certificate closes n=500 within the default allow
   const double gm=(cppunivariate::frechet_loglik(mltest::as_span(x),r.lambda,r.mu+h,1)-cppunivariate::frechet_loglik(mltest::as_span(x),r.lambda,r.mu-h,1))/(2*h);
   CHECK(std::abs(ga)<1e-2);CHECK(std::abs(gm)<1e-2);
 }
+
+TEST_CASE("frechet: held-scale local refinement is independent of global coverage") {
+  std::vector<double> x;for(int i=0;i<20;++i)x.push_back(std::pow(-std::log((i+.5)/20),-.5));
+  const double minimum=x.front();for(double& d:x)d-=minimum;
+  auto fit=cppunivariate::frechet_mle(mltest::as_span(x),1e-10,100,NAN,NAN,1);
+  REQUIRE(fit.status==cppunivariate::FrechetStatus::Ok);
+  fit.lambda*=1+1e-8;fit.mu*=1-1e-8;
+  REQUIRE(cppunivariate::frechet_held_detail::polish(mltest::as_span(x),fit,1e-10,100));
+  const auto first=fit;fit.lambda*=1+1e-8;fit.mu*=1-1e-8;
+  REQUIRE(cppunivariate::frechet_held_detail::polish(mltest::as_span(x),fit,1e-10,100));
+  CHECK(std::abs(fit.lambda-first.lambda)<1e-11*fit.lambda);
+  CHECK(std::abs(fit.mu-first.mu)<1e-11);
+  CHECK_FALSE(cppunivariate::frechet_held_detail::polish(mltest::as_span(x),fit,1e-17,100));
+}
+
+#include "cppunivariate/distributions/gev/dpqr.hpp"
+TEST_CASE("frechet: uncertified near-Gumbel coefficients meet the local accuracy contract") {
+  // Independent 70-digit roots on these exact binary64 quantile samples:
+  // combination-seam-reference-{native,double}.jsonl in TASK-174 evidence.
+  for(const auto pair:{std::pair<double,double>{.0041309589552387081,1440050.7584512701},
+                      std::pair<double,double>{.0041302801977122581,1440049688.4791629}}) {
+    std::vector<double> x;
+    for(int j=0;j<80;++j)x.push_back(cppunivariate::distributions::qgev((j+.5)/80,0,1,pair.first,true,false));
+    const auto fit=cppunivariate::frechet_mle(mltest::as_span(x),1e-10,100);
+    REQUIRE(fit.status==cppunivariate::FrechetStatus::Ok);CHECK_FALSE(fit.certified);
+    CHECK(std::abs(fit.lambda/pair.second-1)<1e-10);
+    CHECK(std::isfinite(fit.logLik));
+  }
+}
+
+TEST_CASE("frechet: restoration retains an explicit internal GEV shape hold") {
+  std::vector<double> x;
+  for(int j=0;j<80;++j)x.push_back(cppunivariate::distributions::qgev((j+.5)/80,0,1,.5,true,false));
+  const auto fit=cppunivariate::frechet_gev_mle(mltest::as_span(x),1e-10,100,.3);
+  REQUIRE(fit.status==cppunivariate::GevStatus::Ok);
+  CHECK(fit.xi==.3);
+}
+
+TEST_CASE("frechet: held scale keeps coefficient accuracy for a large shape") {
+  std::vector<double> x;
+  for(int j=0;j<80;++j)x.push_back(std::pow(-std::log((j+.5)/80),-1e-9));
+  const double minimum=x.front();for(double& d:x)d-=minimum;
+  cppunivariate::FrechetResult fit{1e9,-minimum,1,0,0,cppunivariate::FrechetStatus::Ok};
+  REQUIRE(cppunivariate::frechet_held_detail::polish(mltest::as_span(x),fit,1e-10,100));
+  // Independent 70-digit score root on the exact doubles, not on their
+  // generating distribution (combination-held-reference-*.jsonl).
+  CHECK(std::abs(fit.lambda/1008905594.239193-1)<1e-10);
+  CHECK(std::abs(fit.mu+.99999999837500435)<1e-10);
+}
+
+TEST_CASE("frechet: local log ratio avoids overflow across a finite extreme gap") {
+  const std::vector<double> x{0,1e308};
+  cppunivariate::FrechetResult fit{1,-.5,1,0,0,cppunivariate::FrechetStatus::Ok};
+  REQUIRE(cppunivariate::frechet_held_detail::polish(mltest::as_span(x),fit,1e-10,100));
+  CHECK(fit.lambda==1);CHECK(fit.mu==-.5);CHECK(std::isfinite(fit.logLik));
+}

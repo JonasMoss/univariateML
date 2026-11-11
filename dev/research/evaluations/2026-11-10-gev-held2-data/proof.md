@@ -259,3 +259,107 @@ sqrt(DBL_MAX)/2 solely to prevent squaring overflow; decreasing u0 weakens
 the bound. The resulting value upper bound receives the existing upward
 512-epsilon margin. No search coefficient is capped. The box's second
 coordinate here is normalized location.
+
+## Combined smooth basin and local accuracy
+
+The smooth basin is a rectangle containing the included stationary root. The
+four strips checked by `holds` cover the proposed enlarged rectangle minus
+the already verified rectangle, with overlaps only on edges. A negative
+definite Hessian on every strip subdivision makes the objective strictly
+concave on the entire rectangle. At an attained shape edge, the corresponding
+uniform outward shape score reduces the maximization to that edge, where
+negative nuisance curvature and the enclosed nuisance root give uniqueness.
+Every smooth evaluation requires the entire piece to be within support.
+Pieces crossing a moving support boundary fail the smooth test.
+
+A separately proved one-sided support-face basin is never enlarged with this
+criterion. It has no smooth root or Hessian at the corner. Its strip is
+excluded only by the original one-sided value inequality. The associated
+smooth-basin radii and edge flags have outer scope and are initialized, but
+are not used by the face branch. Thus the merged enlargement cannot turn a
+support-corner value proof into an unchecked Hessian exclusion.
+
+Profiling encloses every unique inner nuisance root on each shape slab.
+Discarding a slab enclosure contained in the verified basin is valid because
+any maximizer outside the basin would require another inner root. Slabs in
+the basin's shape range are initially retained with the whole nuisance range;
+no stationary root is excluded merely because its shape lies in that range.
+The negative-shape GEV and held-location regions retain their box covers.
+
+Local coefficient accuracy is a separate condition from this global proof.
+The numerical incumbent uses analytic second-order jets and a Newton solve
+with positive definite observed information. Coordinates are scaled location,
+log scale and shape (log relative shape for a Fréchet image), or log shape and
+log location gap for held-scale Fréchet. The core polisher checks the full,
+undamped inverse-information score correction with a factor-16 accuracy
+margin, and requires two small corrections or quadratic contraction to the
+rounding floor. A failed refinement remains a numerical accuracy failure.
+Closed reverse-exponential support corners use their analytic conditional
+coefficients, without differentiating through zero support residuals.
+
+For a small positive all-free GEV shape mapped to Fréchet, relative accuracy
+of Fréchet shape requires relative accuracy in the small GEV shape, not just
+an absolute shape tolerance. The final refinement evaluates the original
+binary64 observations, before any data normalization can round their score.
+Two-component arithmetic with FMA product residuals protects the small shape
+score; an analytic series supplies the ratio and its shape derivative. Range
+reduction and a convergent exponential series avoid losing that score to
+cancellation in an elementary function call. The Hessian still comes from
+analytic jets. The local coordinate correction, positive information and
+contraction tests remain mandatory, including in double-only builds.
+A compensated log-ratio in the fitter's Fréchet likelihood avoids subtracting
+two nearly equal large logarithms; the public d/p/q/r code is unchanged.
+
+Independent roots computed at 70-digit working precision use exact rational conversions of the input
+doubles, direct score formulas, and mpmath root finding. They do not reuse
+production jets, profile searches, interval arithmetic or the two-component
+implementation. The resulting root comparisons are numerical evidence for
+local accuracy, not proofs of global coverage.
+
+For held-scale Fréchet, the attained shape-one edge uses the initial
+outward-score basin and the profile directly. Piecewise enlargement is
+reserved for its interior roots. On the unchanged 40-case Fréchet grid,
+13 edge fits need 3,544 evaluations without growth and 9,781 with it; the
+27 interior fits need 37,593 without growth and 31,326 with it. All
+variants certify all 40 cases. The selected policy therefore requires
+34,870 evaluations, versus 41,107 for growth everywhere and 41,137 for
+no growth. These counts include every cover evaluation and are independent
+of workstation load. The counting copies of the headers live only in
+scratch directories; production headers contain no counters or logging.
+
+At `xi=-1`, only an analytically coupled active support corner bypasses
+smooth derivatives. If the reverse-exponential support is inactive, the
+conditional scale is refined with the smooth edge objective and the lower
+outward shape score is checked. This distinction is covered by a regression
+that perturbs the inactive-face scale by 1e-8 before refinement.
+
+
+The held-scale local polisher evaluates its log ratio as
+`L=u+log1p(d/exp(u))`. Forming `log(d+exp(u))` loses small observation
+gaps when the normalized location gap is close to one. On 80 deterministic
+quantiles with generating shape 1e9, the latter formulation returned a
+double-only shape estimate with relative error 1.968e-9 despite a small
+computed Newton correction. The stable identity reduces the error to
+1.608e-15 in both native and double-only arithmetic. Four large-shape
+private-refinement and four public-fit checks in each arithmetic mode are
+compared with independent roots at 70-digit working precision. These are
+local-accuracy checks, separate from global inclusion of the large-shape
+root. The public JavaScript regression uses the frozen exact input doubles.
+
+For `d>exp(u)`, the same local log ratio uses
+`log(d)+log1p(exp(u)/d)`; both branches keep their quotient at most one.
+This preserves the small-gap identity while avoiding an overflowing
+`d/exp(u)` for a finite extreme observation, as tested on `{0,1e308}`.
+The formulas agree analytically at the switch, including both derivatives.
+
+Public restoration is also checked in dimensionless coordinates against the
+refined normalized coefficients. The core location and scale projection
+checks use extended differences and logarithmic ratios, so a physical-unit
+rounding error cannot vanish merely because its absolute bound underflows.
+On a three-observation subnormal sample whose reverse-exponential scale is
+not representable to the requested relative tolerance, both all-free and
+held-location GEV now return numerical failure. The corresponding held-scale
+Fréchet location also fails the projection check. These are representation
+failures, independent of certificate completion; ordinary study outcomes are
+unchanged. The probe and its before/after records are retained as
+`combination-projection.cpp` and `combination-projection-{before,after}.csv`.

@@ -1,0 +1,4 @@
+route,status,certified,mu_over_unit,sigma_over_unit,shape
+gev_all,5,0,-1.3333349999999999,2.3333349999999999,-1
+gev_mu,5,0,0,1.3333349999999999,-1
+frechet_sigma,5,1,-4.4248000000000003,1,1

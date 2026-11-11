@@ -51,10 +51,12 @@ inline GevResult frechet_gev_mle(span x, double tol=1e-10, int maxit=100,
       c.loglik_lower-=jac;c.loglik_upper-=jac;
     }
     gev_verify_contradiction(x,r);
+    if(std::isnan(xi)&&r.status==GevStatus::Ok&&!r.certified&&r.xi>0 &&
+       !gev_accuracy_detail::polish(x,r,false,false,tol,maxit,true))r.status=GevStatus::NumericalFailure;
     return r;
   };
   if(!std::isnan(xi)) return restore(gev_profile(data,xi,tol,maxit).fit);
-  return restore(gev_joint_certificate(data,tol,maxit,true));
+  return restore(gev_joint_certificate(data,tol,maxit,true,tol));
 }
 
 enum class FrechetStatus { Ok, InvalidData, GumbelLimit, IterationFailure, NoMLE, NumericalFailure, SearchContradicted };
@@ -64,7 +66,12 @@ inline double frechet_loglik(span x,double lambda,double mu,double sigma) {
  double ll=x.size()*(std::log(lambda)-std::log(sigma));
  for(double v:x) {
    if(!(v>mu)) return -std::numeric_limits<double>::infinity();
-   const double z=std::log(v-mu)-std::log(sigma);
+   double z=std::log(v-mu)-std::log(sigma);
+   if(lambda>1e4&&std::abs((v-mu)/sigma-1)<.5) {
+     const auto r=(gev_accuracy_detail::Pair(v)-gev_accuracy_detail::Pair(mu)-
+       gev_accuracy_detail::Pair(sigma))/gev_accuracy_detail::Pair(sigma);
+     z=std::log1p(r.hi)+r.lo/(1+r.hi);
+   }
    ll-=(lambda+1)*z+std::exp(-lambda*z);
  }
  return ll;
@@ -229,10 +236,16 @@ inline FrechetResult frechet_held_mle(span x,double tol,int maxit,double mu,
  const auto opt=extreme_detail::maximize([&](double u){return candidate(u).logLik;},-32,32,tol,maxit,false);
  auto fit=candidate(opt.x);
  if(!opt.ok)fit.status=FrechetStatus::IterationFailure;
+ if(hs&&!hl&&fit.status==FrechetStatus::Ok &&
+    !frechet_held_detail::polish(data,fit,tol,maxit))fit.status=FrechetStatus::NumericalFailure;
  const auto standardized_search=fit;
  fit.mu=m+unit*fit.mu;fit.sigma=hs ? sigma : unit*fit.sigma;
  fit.logLik=frechet_loglik(x,fit.lambda,fit.mu,fit.sigma);
- if(!opt.ok || fit.status!=FrechetStatus::Ok || !std::isfinite(fit.logLik)) fit.status=FrechetStatus::IterationFailure;
+ if(!opt.ok)fit.status=FrechetStatus::IterationFailure;
+ else if(fit.status==FrechetStatus::Ok &&
+   (!std::isfinite(fit.logLik) || (hs&&!hl&&
+    !accuracy_detail::location_projection(fit.mu,m,unit,standardized_search.mu,sigma,tol))))
+   fit.status=FrechetStatus::NumericalFailure;
  if(hs && !hl && fit.status==FrechetStatus::Ok) {
    // The search result is uncertified unless the held-scale cover closes.
    fit.certified=false;

@@ -682,7 +682,9 @@ inline GevResult gev_joint_certificate_impl(span data,double tol,int maxit,bool 
 // This is the existing scalar search over the same profile, with its own
 // convergence test and the R6 total shape-score gate. It supplies no proof
 // of global coverage. The open Frechet seam is never a finite fallback.
-inline GevResult gev_joint_certificate(span data,double tol,int maxit,bool frechet=false) {
+// The inclusion tolerance is independently stress-tested below rounding in
+// certificate tests. Public fitters pass their requested local accuracy too.
+inline GevResult gev_joint_certificate(span data,double tol,int maxit,bool frechet=false,double local_tol=1e-10) {
   auto result=gev_joint_certificate_impl(data,tol,maxit,frechet);
   if(result.status==GevStatus::Ok)return result;
   const double lower=frechet?0.:-1.;
@@ -714,6 +716,12 @@ inline GevResult gev_joint_certificate(span data,double tol,int maxit,bool frech
     }
   }
   if(!found)return result;
+  if(!gev_accuracy_detail::polish(data,p.fit,false,false,local_tol,maxit,frechet)) {
+    p.fit.status=GevStatus::NumericalFailure;p.fit.certified=false;p.fit.stop_detail={};
+    p.fit.stop_detail.loglik_lower=p.fit.logLik;p.fit.stop_detail.loglik_upper=INFINITY;
+    p.fit.stop_detail.candidates.push_back({{p.fit.mu,p.fit.sigma,p.fit.xi},p.fit.logLik,p.fit.logLik});
+    return p.fit;
+  }
   // A strictly better certified feasible witness refutes this search.
   const double margin=4096*std::numeric_limits<double>::epsilon()*(data.size()+std::abs(p.fit.logLik));
   for(const auto& c:result.stop_detail.candidates)

@@ -1,5 +1,6 @@
 #pragma once
 #include "../../core/work_budget.hpp"
+#include "../../core/likelihood_polish.hpp"
 #include "../../core/stop_detail.hpp"
 #include "../../core/span.hpp"
 #include "../../special/tails.hpp"
@@ -275,6 +276,7 @@ inline GevResult gev_held_profile(span x,double mu,double sigma,double xi,
   return {hm ? mu : location(opt.x),hs ? sigma : low+std::exp(opt.x),xi,
           opt.value,opt.iterations,opt.ok ? GevStatus::Ok : GevStatus::IterationFailure};
 }
+#include "accuracy.hpp"
 inline GevResult gev_two_point_certificate(span x,double minimum,double maximum,
                                            std::size_t k,double tol);
 inline GevResult gev_held_certificate(span data,double mu,double sigma,double tol,int maxit,GevResult fallback,
@@ -371,6 +373,8 @@ inline GevResult gev_held_mle(span x,double tol,int maxit,double xi,double mu,do
     fit=gev_held_profile(data,m,s,opt.x,tol,maxit);
     if(!opt.ok) fit.status=GevStatus::IterationFailure;
   }
+  if(fit.status==GevStatus::Ok&&std::isnan(xi)&&hm!=hs &&
+     !gev_accuracy_detail::polish(data,fit,hm,hs,tol,maxit))fit.status=GevStatus::NumericalFailure;
   const auto standardized_search=fit;
   std::vector<FitCandidate> restored;
   bool lost_witness=false;
@@ -405,6 +409,10 @@ inline GevResult gev_held_mle(span x,double tol,int maxit,double xi,double mu,do
       (x.size()+std::abs(predicted)+std::abs(fit.logLik)));
   if(fit.status==GevStatus::Ok &&
      (!std::isfinite(fit.logLik) || std::abs(fit.logLik-predicted)>likelihood_margin))
+    fit.status=GevStatus::NumericalFailure;
+  if(fit.status==GevStatus::Ok && std::isnan(xi) && hm!=hs &&
+     ((!hm&&!accuracy_detail::location_projection(fit.mu,origin,scale,standardized_search.mu,fit.sigma,tol)) ||
+      (!hs&&!accuracy_detail::scale_projection(fit.sigma,scale,std::log(standardized_search.sigma),tol))))
     fit.status=GevStatus::NumericalFailure;
   if(fit.status==GevStatus::Ok && std::isnan(xi) && hm!=hs) {
     auto candidate=gev_held_certificate(data,m,s,tol,maxit,standardized_search,origin,scale);
@@ -610,6 +618,7 @@ inline GevResult gev_mle_impl(span x, double tol=1e-10, int maxit=100,
   const span data{y.data(),y.size()};
   auto restore=[&](GevResult r) {
     const double standardized_mu=r.status==GevStatus::SearchContradicted&&!r.stop_detail.candidates.empty()?r.stop_detail.candidates.back().coef[0]:r.mu;
+    const double standardized_sigma=r.status==GevStatus::SearchContradicted&&!r.stop_detail.candidates.empty()?r.stop_detail.candidates.back().coef[1]:r.sigma;
     r.mu=origin+range*r.mu;r.sigma*=range;
     const double jac=y.size()*std::log(range);
     r.logLik-=jac;
@@ -628,9 +637,12 @@ inline GevResult gev_mle_impl(span x, double tol=1e-10, int maxit=100,
       const double actual=gev_public_loglik(x,r.mu,r.sigma,r.xi);
       const double likelihood_margin=std::max(1e-7*y.size(),256*std::numeric_limits<double>::epsilon()*
           (y.size()+std::abs(actual)+std::abs(r.logLik)));
-      if(!std::isfinite(actual) || error>tol*.25*std::max(std::abs(r.mu),r.sigma) || eps>tol*.25 ||
+      if(!std::isfinite(actual) ||
+          !accuracy_detail::location_projection(r.mu,origin,range,standardized_mu,r.sigma,tol) ||
+          !accuracy_detail::scale_projection(r.sigma,range,std::log(standardized_sigma),tol) ||
+          error>tol*.25*std::max(std::abs(r.mu),r.sigma) || eps>tol*.25 ||
           std::abs(actual-r.logLik)>likelihood_margin) {
-        r.status=GevStatus::NumericalFailure;
+        r.status=GevStatus::NumericalFailure;r.certified=false;
         r.stop_detail.loglik_upper=INFINITY;
         if(std::isfinite(actual)) {
           r.stop_detail.loglik_lower=actual;
@@ -642,7 +654,7 @@ inline GevResult gev_mle_impl(span x, double tol=1e-10, int maxit=100,
     return r;
   };
   if(!std::isnan(xi)) return restore(gev_profile(data,xi,tol,maxit).fit);
-  return restore(gev_joint_certificate(data,tol,maxit));
+  return restore(gev_joint_certificate(data,tol,maxit,false,tol));
 }
 
 inline GevResult gev_mle(span x,double tol=1e-10,int maxit=100,double xi=std::numeric_limits<double>::quiet_NaN(),double mu=std::numeric_limits<double>::quiet_NaN(),double sigma=std::numeric_limits<double>::quiet_NaN()) {
