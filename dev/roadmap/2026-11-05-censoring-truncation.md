@@ -303,7 +303,7 @@ report `AllCensored` before any search (finding 2: the all-censored atom).
 - Data: a two-column interval matrix `cbind(lower, upper)` (exact when
   equal, `upper = Inf` right-censored, `lower` at or below the support's
   lower bound left-censored), cells half-open per the interval conventions
-  below. Accept `survival::Surv` objects by their structure (class and
+  above. Accept `survival::Surv` objects by their structure (class and
   `type` attribute) without depending on survival.
 - Never fall back silently: censored input to a family or scheme marked
   `not-implemented` stops with a specific error. Dropping the censoring and
