@@ -1,0 +1,78 @@
+cpp-dev
+100% tests passed out of 108
+Total Test time (real) = 419.54 sec
+
+cpp-full
+100% tests passed out of 135
+Total Test time (real) = 541.32 sec
+
+cpp-double-simbox
+100% tests passed out of 135
+Total Test time (real) = 377.72 sec
+
+cpp-double-local
+100% tests passed, 0 tests failed out of 135
+Total Test time (real) = 750.34 sec
+
+r-dev
+⠹ [ FAIL 0 | WARN 1 | SKIP 154 | PASS 25704 ] @ dist-genbeta                    
+⠸ [ FAIL 0 | WARN 1 | SKIP 154 | PASS 25704 ] @ dist-genbeta                    
+⠼ [ FAIL 0 | WARN 1 | SKIP 154 | PASS 25704 ] @ dist-genbeta                    
+⠴ [ FAIL 0 | WARN 1 | SKIP 154 | PASS 25704 ] @ dist-genbeta                    
+⠦ [ FAIL 0 | WARN 1 | SKIP 154 | PASS 25704 ] @ dist-genbeta                    
+⠧ [ FAIL 0 | WARN 1 | SKIP 154 | PASS 25704 ] @ dist-genbeta                    
+⠇ [ FAIL 0 | WARN 1 | SKIP 154 | PASS 25704 ] @ dist-genbeta                    
+⠏ [ FAIL 0 | WARN 1 | SKIP 154 | PASS 25704 ] @ dist-genbeta                    
+⠋ [ FAIL 0 | WARN 1 | SKIP 154 | PASS 25704 ] @ dist-genbeta                    
+⠙ [ FAIL 0 | WARN 1 | SKIP 154 | PASS 25704 ] @ dist-genbeta                    
+⠹ [ FAIL 0 | WARN 1 | SKIP 154 | PASS 25704 ] @ dist-genbeta                    
+⠸ [ FAIL 0 | WARN 1 | SKIP 154 | PASS 25704 ] @ dist-genbeta                    
+⠼ [ FAIL 0 | WARN 1 | SKIP 154 | PASS 25704 ] @ dist-genbeta                    
+⠴ [ FAIL 0 | WARN 1 | SKIP 154 | PASS 25704 ] @ dist-genbeta                    
+⠦ [ FAIL 0 | WARN 1 | SKIP 154 | PASS 25704 ] @ dist-genbeta                    
+⠧ [ FAIL 0 | WARN 1 | SKIP 154 | PASS 25704 ] @ dist-genbeta                    
+⠇ [ FAIL 0 | WARN 1 | SKIP 154 | PASS 25704 ] @ dist-genbeta                    
+[ FAIL 0 | WARN 1 | SKIP 154 | PASS 25711 ]
+
+r-full
+⠸ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 52263 ] @ dist-sged                         
+⠼ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 52263 ] @ dist-sged                         
+⠴ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 52263 ] @ dist-sged                         
+⠦ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 52263 ] @ dist-sged                         
+⠧ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 52263 ] @ dist-sged                         
+⠇ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 52263 ] @ dist-sged                         
+⠏ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 52265 ] @ dist-sged                         
+⠋ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 52265 ] @ dist-sged                         
+⠙ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 52265 ] @ dist-sged                         
+⠹ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 52265 ] @ dist-sged                         
+⠸ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 52265 ] @ dist-sged                         
+⠼ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 52265 ] @ dist-sged                         
+⠴ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 52265 ] @ dist-sged                         
+⠦ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 52265 ] @ dist-sged                         
+⠧ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 52268 ] @ dist-sged                         
+⠇ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 52271 ] @ dist-sged                         
+⠏ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 52434 ] @ dist-sged                         
+[ FAIL 0 | WARN 1 | SKIP 0 | PASS 52469 ]
+
+targeted-final
+100% tests passed, 0 tests failed out of 1
+Total Test time (real) =  67.32 sec
+100% tests passed, 0 tests failed out of 1
+Total Test time (real) = 112.25 sec
+[ FAIL 0 | WARN 0 | SKIP 0 | PASS 1100 ]
+
+site
+PASS inference browser: {"rows":353,"families":99,"desktop":[1280,1100],"mobile":[390,1000],"checks":["covariance and combined filters with follow-up evidence","all status filters","combined family/status/regime filters","empty state","reset","native evidence disclosure","no horizontal overflow","all rows and evidence without JavaScript","no page errors"]}
+PASS theory numerical: 5 static/live profiles, 4 escape messages and limit approaches, analytic normal held fits, static/live contours, parser and failed-fit gaps.
+PASS nice linear/log ticks; Gompertz free/held fits, conditional escape, fixed-rate boundary, static/live equality and build-time MathML.
+PASS likelihood windows: 15-unit clipping, low-marker expansion, constant likelihoods, marker clearance, finite SVG coordinates.
+PASS theory browser: desktop/mobile, live profiles and held faces, seeded data, errors, no-JS figures and diagnostics.
+PASS: four articles; dossier catalogues: 289 limits, 99 families, 9 fit domains.
+PASS: inference: 353 unique scopes, 99 families; implementation symbols, evidence anchors, calibration and checks resolve; full static table.
+PASS: graph: 99 unique nodes, 278 edges, resolving family links; SVG generated twice byte-identically and matches built HTML.
+PASS: explorer coverage matches binding registry; optional build assets agree.
+PASS: every declared and inverted relation and limit link is rendered and resolves.
+PASS: 99 family pages; MathML on every family; no math runtime or external runtime assets; internal links and fragments resolve.
+PASS: 99 generated C++ snippets compile and link as C++17 (including exp, gamma, gb2).
+PASS: pilot and ten additional HTML spot checks: exp, gamma, gb2, binom, beta, hyper, sstd, gev, gpd, tnorm, pois, unif, pareto
+

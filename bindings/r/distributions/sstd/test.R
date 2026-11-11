@@ -524,3 +524,10 @@ test_that("sstd large shapes retain the independent high-precision density", {
     expect_true(all(is.finite(rsstd(10,0,1,nu,2))))
   }
 })
+
+test_that("sstd refitted likelihood seam agrees at returned coefficients", {
+  x <- c(0.999999999998,0.999999999999,1.0,1.000000000001,1.000000000003)
+  f <- mlsstd(x,nu=2.9622019441967624,xi=1.9114750836827714)
+  ll <- sum(dsstd(x,mean=f[["mean"]],sd=f[["sd"]],nu=f[["nu"]],xi=f[["xi"]],log=TRUE))
+  expect_lte(abs(as.numeric(logLik(f))-ll),1e-10*max(1,abs(ll)))
+})

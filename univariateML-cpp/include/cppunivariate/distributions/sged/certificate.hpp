@@ -6,14 +6,15 @@ struct Sum {
   double value=0,correction=0;
   void add(double v) {const double y=v-correction,t=value+y;correction=(t-value)-y;value=t;}
 };
-inline SgedResult scale_fit(span x,int maxit,double mean,double nu,double xi);
-inline SgedResult fit(span x, double /*tol*/, int maxit, double mean,
+inline SgedResult scale_fit(span x,double tol,int maxit,double mean,double nu,double xi);
+inline SgedResult fit(span x, double tol, int maxit, double mean,
     double sd, double nu, double xi) {
   SgedResult out{mean,sd,nu,xi,NAN,0,SgedStatus::CertificateFailure};
   const bool hm=std::isfinite(mean), hs=std::isfinite(sd);
-  if(hm && !hs && xi!=1) return scale_fit(x,maxit,mean,nu,xi);
+  if(hm && !hs && xi!=1) return scale_fit(x,tol,maxit,mean,nu,xi);
   const double n=static_cast<double>(x.size());
   const double eps=std::numeric_limits<double>::epsilon();
+  const double accuracy=std::min(tol,1e-7);
   double shift=0;
   const double su=distributions::fs::sged_sigma(nu,xi,shift), lambda=dens::ged_lambda(nu);
   const double normal=dens::ged_g(nu,lambda);
@@ -35,7 +36,7 @@ inline SgedResult fit(span x, double /*tol*/, int maxit, double mean,
   const double logxi=std::log(xi);
   const double lognormal=std::log(su)+std::log(2/(xi+1/xi))+distributions::fs::ged_logdensity(0,nu);
   if(!std::isfinite(lognormal))return out;
-  auto result_at=[&](double c) {
+  auto result_at=[&](double c,double retained_scale=NAN) {
     SgedResult r=out;
     double mode=hm?mean:origin+unit*c;
     if(!hm) {
@@ -43,7 +44,8 @@ inline SgedResult fit(span x, double /*tol*/, int maxit, double mean,
       if(knot!=y.end() && *knot==c)mode=raw[static_cast<std::size_t>(knot-y.begin())];
     }
     r.mu=mode;
-    if(!hs) {
+    if(!hs && std::isfinite(retained_scale))r.sigma=retained_scale;
+    else if(!hs) {
       // Profile ordinary scale: sigma^nu=nu su^nu Q/(2 n lambda^nu).
       bool distinct=false;for(double v:x)if(v!=mode)distinct=true;
       if(!distinct){r.status=SgedStatus::Unbounded;return r;}
@@ -59,11 +61,16 @@ inline SgedResult fit(span x, double /*tol*/, int maxit, double mean,
     if(!hm) {
       r.mu=mode+r.sigma*shift/su;
       const double roundoff=32*eps*(std::abs(origin)+std::abs(unit*c)+std::abs(r.sigma*shift/su));
-      if(roundoff>1e-7*(1+std::abs(r.mu)))return r;
+      if(roundoff>accuracy*.25*std::max(std::abs(r.mu),r.sigma))return r;
       const double recovered=(r.mu-origin-r.sigma*shift/su)/unit;
-      if(!std::isfinite(recovered) || std::abs(recovered-c)>1e-9)return r;
+      if(!std::isfinite(recovered) || std::abs(recovered-c)>1e-9 ||
+          std::abs(recovered-c)*unit>accuracy*.25*std::max(std::abs(r.mu),r.sigma))return r;
     }
     if(!std::isfinite(r.mu) || !(r.sigma>0) || !std::isfinite(r.sigma))return r;
+    if((!hm && !local_accuracy::represented(r.mu,std::max(std::abs(r.mu),r.sigma),accuracy)) ||
+       (!hs && !local_accuracy::represented(r.sigma,r.sigma,accuracy))) {
+      r.accuracy_failure=true;return r;
+    }
     double penalty=0,ideal_penalty=0;
     for(double v:x) {
       const double z=(v-r.mu)/r.sigma*su+shift;
@@ -92,7 +99,7 @@ inline SgedResult fit(span x, double /*tol*/, int maxit, double mean,
     if(r.status==SgedStatus::Ok)r.certified=true;
     return r;
   }
-  double a=y.front(),b=y.back(),c=a;
+  double a=y.front(),b=y.back(),c=a,retained_scale=NAN;
   if(a==b) c=a;
   else if(nu==1) {
     // Weighted median: left slope xi, right slope -1/xi.
@@ -141,7 +148,7 @@ inline SgedResult fit(span x, double /*tol*/, int maxit, double mean,
         const double value=std::exp((nu-1)*std::log(std::abs(t-v))+(t>v?nu*logxi:-nu*logxi)-largest);
         if(t>v)left.add(value);else right.add(value);
       }
-      const double pad=512*eps*(1+nu+nu*std::abs(logxi))*(left.value+right.value)*(1+n*eps);
+      const double pad=64*eps*(1+nu+nu*std::abs(logxi))*(left.value+right.value)*(1+n*eps);
       return left.value-right.value>pad?1:(right.value-left.value>pad?-1:0);
     };
     // Bound the public coefficients too: a small normalized mode interval
@@ -169,13 +176,15 @@ inline SgedResult fit(span x, double /*tol*/, int maxit, double mean,
         const double base=std::log(unit)+std::log(su)-std::log(lambda);
         slo=std::exp(base+(std::log(nu/2)+lm+std::log(ls))/nu);
         shi=std::exp(base+(std::log(nu/2)+um+std::log(us))/nu);
-        if(!(slo>0) || !std::isfinite(shi) || shi-slo>1e-7*(1+std::abs(r.sigma)))return false;
+        if(!(slo>0) || !std::isfinite(shi) ||
+            std::max(shi,r.sigma)-std::min(slo,r.sigma)>accuracy*.25*r.sigma)return false;
       }
       const double mlo=origin+unit*left+std::min(slo*shift/su,shi*shift/su);
       const double mhi=origin+unit*right+std::max(slo*shift/su,shi*shift/su);
-      return std::isfinite(mlo) && std::isfinite(mhi) && mhi-mlo<=1e-7*(1+std::abs(r.mu));
+      return std::isfinite(mlo) && std::isfinite(mhi) &&
+          std::max(mhi,r.mu)-std::min(mlo,r.mu)<=accuracy*.25*std::max(std::abs(r.mu),r.sigma);
     };
-    const double width=1e-9;
+    const double width=std::min(1e-9,accuracy*.125);
     bool closed=false;
     for(int k=0;k<std::min(maxit,100000);++k) {
       out.iterations=k+1;
@@ -188,6 +197,11 @@ inline SgedResult fit(span x, double /*tol*/, int maxit, double mean,
         if(sign(l)<0 && sign(r)>0){a=l;b=r;}
         else return out;
       }
+      // Once the mode is localized, the profiled scale is stationary in it.
+      // Keep that representative when subsequent refinement changes it only
+      // at the rounding level, rather than needlessly toggling its last bit.
+      if(!hs && !std::isfinite(retained_scale) && b-a<=1e-9)
+        retained_scale=result_at(a+(b-a)/2).sigma;
       if(b-a<=width && coordinates_closed(a,b)){closed=true;break;}
     }
     c=a+(b-a)/2;
@@ -196,17 +210,21 @@ inline SgedResult fit(span x, double /*tol*/, int maxit, double mean,
     if(!closed)return stopped(r,false,false,{witness(r)});
     // Certify the stored location too; cancellation must not lose the enclosure.
     const double recovered=(r.mu-origin-r.sigma*shift/su)/unit;
-    if(!std::isfinite(recovered) || std::abs(recovered-c)>width)return out;
+    if(!std::isfinite(recovered) ||
+        std::abs(recovered-c)*unit>accuracy*.25*std::max(std::abs(r.mu),r.sigma))return out;
   }
   auto r=result_at(c);
+  if(r.status==SgedStatus::Ok && std::isfinite(retained_scale) &&
+      std::abs(retained_scale-r.sigma)<=std::min(accuracy*.125,32*eps)*r.sigma)
+    r=result_at(c,retained_scale);
   if(r.status==SgedStatus::Ok)r.certified=true;
   return r;
 }
 #include "subunit_certificate.hpp"
 // With held mean, nu>=1 gives a strictly convex objective in inverse sd.
-inline SgedResult scale_fit(span x,int maxit,double mean,double nu,double xi) {
+inline SgedResult scale_fit(span x,double tol,int maxit,double mean,double nu,double xi) {
   SgedResult out{mean,NAN,nu,xi,NAN,0,SgedStatus::CertificateFailure};
-  if(nu<1)return subunit_scale_fit(x,maxit,mean,nu,xi);
+  if(nu<1)return subunit_scale_fit(x,tol,maxit,mean,nu,xi);
   const int cap=std::min(maxit,100000);
   double unit=0,shift=0;
   for(double v:x)unit=std::max(unit,std::abs(v-mean));
@@ -253,7 +271,8 @@ inline SgedResult scale_fit(span x,int maxit,double mean,double nu,double xi) {
     else {b+=1;sb=sign(b);if(sb==0)return out;}
     ++work;
   }
-  const double width=1e-9;
+  const double width=std::min(1e-9,tol*.75);
+  double representative=NAN;
   while(b-a>width) {
     if(work>=cap)return out;
     ++work;
@@ -265,11 +284,16 @@ inline SgedResult scale_fit(span x,int maxit,double mean,double nu,double xi) {
       const double l=std::max(a,mid-width/4),r=std::min(b,mid+width/4);
       if(sign(l)<0 && sign(r)>0){a=l;b=r;}else return out;
     }
+    if(!std::isfinite(representative) && b-a<=1e-9)representative=a+(b-a)/2;
   }
-  const double ls=std::log(unit)-(a+(b-a)/2),sd=std::exp(ls);
-  if(!(sd>0) || !std::isfinite(sd) || std::abs(std::log(sd)-ls)>1e-8)return out;
+  // Projection onto a nested root interval cannot increase distance to its
+  // root. Retain an already enclosed representative instead of replacing a
+  // fortuitously accurate coarse midpoint by a less accurate fine midpoint.
+  const double chosen=std::isfinite(representative)?std::max(a,std::min(b,representative)):a+(b-a)/2;
+  const double ls=std::log(unit)-chosen,sd=std::exp(ls);
+  if(!(sd>0) || !std::isfinite(sd) || std::abs(std::log(sd)-ls)>tol*.125)return out;
   // Evaluate only after enclosing the unique root; recursive call has sd held.
-  auto r=fit(x,1e-8,maxit,mean,sd,nu,xi);
+  auto r=fit(x,tol,maxit,mean,sd,nu,xi);
   r.iterations=work;
   return r;
 }

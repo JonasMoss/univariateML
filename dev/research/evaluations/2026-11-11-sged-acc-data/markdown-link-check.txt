@@ -1,0 +1,49 @@
+return code: 1
+635 Markdown files; 4391 local destinations; 45 broken
+dev/research/evaluations/2026-11-03-boundary-lit-report.md:5: ../boundary-points.pdf
+dev/research/evaluations/2026-11-07-fit-audit-data/static-inventory.md:198: double
+dev/research/evaluations/2026-11-07-fit-audit-data/static-inventory.md:316: double
+dev/research/evaluations/2026-11-07-fit-audit-data/static-inventory.md:317: double
+dev/research/evaluations/2026-11-07-fit-audit-data/static-inventory.md:416: double
+dev/research/evaluations/2026-11-07-fit-audit-data/static-inventory.md:571: double
+dev/research/evaluations/2026-11-07-fit-audit-data/static-inventory.md:572: double
+dev/research/evaluations/2026-11-07-fit-audit-data/static-inventory.md:596: const
+dev/research/evaluations/2026-11-07-fit-audit-data/static-inventory.md:672: double
+dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md:939: double
+dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md:1055: double
+dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md:1077: double
+dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md:1112: double
+dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md:1186: double
+dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md:1446: double
+dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md:9947: double
+dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md:10911: double
+dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md:12511: double
+dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md:13402: double
+dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md:13836: double
+dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md:13857: double
+dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md:14277: double
+dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md:14415: double
+dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md:14524: double
+dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md:14876: double
+dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md:15756: double
+dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md:15795: double
+dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md:15888: double
+dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md:16243: double
+dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md:16365: double
+dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md:16546: double
+dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md:17137: double
+dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md:17283: double
+dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md:17377: double
+dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md:17735: double
+dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md:17836: double
+dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md:17899: double
+dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md:17917: double
+dev/research/evaluations/2026-11-10-defective-limit-lit-report.md:70: ../../../local/literature/1990-geyer-likelihood-exponential-families.pdf
+dev/research/evaluations/2026-11-10-defective-limit-lit-report.md:71: ../../../local/literature/2016-chen-consistency-mixture-models.pdf
+dev/research/evaluations/2026-11-10-defective-limit-lit-report.md:72: ../../../local/literature/1990-lecam-maximum-likelihood.pdf
+dev/research/evaluations/2026-11-10-relaxed-likelihood-lit-report.md:13: ../../../local/literature/
+univariateML-cpp/include/cppunivariate/distributions/nbinom/README.md:234: 1+m/r
+univariateML-cpp/notes/inference.md:3: /inference/
+univariateML-cpp/notes/inference.md:95: /inference/
+All 7 files with reported findings equal HEAD byte-for-byte.
+All 19 report destinations exist.

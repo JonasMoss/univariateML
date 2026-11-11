@@ -405,3 +405,13 @@ TEST_CASE("snorm: compensated thin-side centering") {
 TEST_CASE("snorm: named compensated-centering precision region") {
  CHECK(std::isnan(cppunivariate::distributions::psnorm(1.3236080967885127,9.619220402095527e-18,1.0,1e-12,false,true)));
 }
+
+TEST_CASE("snorm exact-coefficient logLik seam replay 6631") {
+ const std::vector<double> x{-0.1400741601380333,-0.14006015552294254,-0.14004615090785175,-0.14003214629276095,-0.1400041370625794};
+ const auto r=cppunivariate::snorm_mle({x.data(),x.size()},1e-10,200,-0.020798452221064478,NAN,3.394979982095818);
+ REQUIRE(r.status==cppunivariate::SnormStatus::Ok);
+ double ll=0;
+ for(double v:x)ll+=cppunivariate::distributions::dsnorm(v,r.mu,r.sigma,r.xi,true);
+ CHECK(std::abs(r.logLik-ll)<=1e-10*std::max(1.0,std::abs(ll)));
+ CHECK(std::abs(r.logLik-(7.540112841515992))<=1e-10*7.540112841515992);
+}

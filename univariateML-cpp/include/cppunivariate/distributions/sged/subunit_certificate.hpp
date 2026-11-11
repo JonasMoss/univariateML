@@ -1,7 +1,7 @@
 #pragma once
 // Included within sged_cert_detail. Compact-domain certificate for held mean
 // and asymmetric subunit shapes; see README.md for bounds and arithmetic scope.
-inline SgedResult subunit_scale_fit(span x,int maxit,double mean,double nu,double xi) {
+inline SgedResult subunit_scale_fit(span x,double tol,int maxit,double mean,double nu,double xi) {
   SgedResult out{mean,NAN,nu,xi,NAN,0,SgedStatus::CertificateFailure};
   double unit=0,shift=0;
   for(double v:x)unit=std::max(unit,std::abs(v-mean));
@@ -38,7 +38,7 @@ inline SgedResult subunit_scale_fit(span x,int maxit,double mean,double nu,doubl
   };
   const auto weight=[&](double z){return k*std::exp((z>0)==(shift>0)?-wx:wx);};
   std::int64_t work=0;
-  const auto cap=certificate_budget(maxit)-12; // reserve public-coordinate witness evaluations
+  const auto cap=certificate_budget(maxit)-13; // refined representative and public witnesses
   double initial_cost=NAN;
   bool incumbent_recovered=false;
   double best=INFINITY,best_r=NAN;
@@ -94,7 +94,10 @@ inline SgedResult subunit_scale_fit(span x,int maxit,double mean,double nu,doubl
       }
       const double ideal=constant-cost;
       if(evaluated.status==SgedStatus::Ok && std::abs(evaluated.logLik-ideal)<=1e-7*(n+std::abs(ideal))) {
-        r.sigma=evaluated.sigma;r.logLik=evaluated.logLik;
+        // The public coefficients incur a non-Lipschitz rounding loss at a
+        // knot. Report the certified ideal maximum, not a residual left by
+        // the certificate's rounded public-coordinate density evaluation.
+        r.sigma=evaluated.sigma;r.logLik=ideal;
         const double allowance=1e-7*(n+std::abs(ideal))+pad(cost);
         r.stop_detail.candidates.push_back({{mean,r.sigma,nu,xi},std::min(ideal,r.logLik)-allowance,std::max(ideal,r.logLik)+allowance});
         r.stop_detail.loglik_lower=r.stop_detail.candidates.back().loglik_lower;
@@ -165,10 +168,10 @@ inline SgedResult subunit_scale_fit(span x,int maxit,double mean,double nu,doubl
       return Derivative{p.value,magnitude};
     };
     const auto dl=derivative(l,true),dh=derivative(h,false);
-    const double conditioning=4096*eps*(1+std::abs(wx)+1/nu);
+    const double conditioning=64*eps*(1+std::abs(wx)+1/nu);
     if((std::isfinite(dh.magnitude) && dh.value-n/l>conditioning*(dh.magnitude+n/l)) ||
        (std::isfinite(dl.magnitude) && dl.value-n/h < -conditioning*(dl.magnitude+n/h)))continue;
-    if(std::log(h)-std::log(l)<=1e-10) {
+    if(std::log(h)-std::log(l)<=std::min(1e-10,tol*.125)) {
       possible.push_back({l,h,lower,box.l.cost});continue;
     }
     if(work>=cap)return finish(true,false);
@@ -181,8 +184,29 @@ inline SgedResult subunit_scale_fit(span x,int maxit,double mean,double nu,doubl
   possible.erase(std::remove_if(possible.begin(),possible.end(),[&](const Enclosure& a){return a.lower>best+pad(best);}),possible.end());
   // Point witnesses need not enclose stationary points. The surviving boxes
   // and points together enclose every global minimizer, including cusp knots.
-  double rlo=best_r,rhi=best_r;
+  if(possible.empty())return finish(false,false);
+  double rlo=possible.front().l,rhi=possible.front().h;
   for(const auto& a:possible){rlo=std::min(rlo,a.l);rhi=std::max(rhi,a.h);}
+  // Objective rounding can leave an incumbent sqrt(eps) from a smooth
+  // minimum even after derivative bounds have excluded that point. Select
+  // the coefficient from the surviving root enclosure instead of extending
+  // the enclosure to include an already excluded point witness.
+  if(std::log(rhi)-std::log(rlo)<=tol*.25) {
+    // The hull may span distinct surviving cells. Project onto an actual
+    // cell, preserving a feasible incumbent already in one, rather than
+    // evaluating an unchecked point in the gap between two cells.
+    double refined=std::max(possible.front().l,std::min(possible.front().h,best_r));
+    double distance=std::abs(std::log(refined)-std::log(best_r));
+    for(const auto& a:possible) {
+      const double point=std::max(a.l,std::min(a.h,best_r));
+      const double d=std::abs(std::log(point)-std::log(best_r));
+      if(d<distance){refined=point;distance=d;}
+    }
+    const double incumbent=best;
+    const auto p=evaluate(refined);
+    if(!std::isfinite(p.cost) || p.cost>incumbent+pad(incumbent)+pad(p.cost))return finish(false,false);
+    best_r=refined;best=p.cost;
+  }
   auto r=finish(false,false);
   if(r.stop_detail.candidates.empty() || !incumbent_recovered)return r;
   const double logfactor=std::log(unit)+std::log(su)-std::log(std::abs(shift));
@@ -191,8 +215,9 @@ inline SgedResult subunit_scale_fit(span x,int maxit,double mean,double nu,doubl
   double global_lower=best-pad(best);
   for(const auto& a:possible)global_lower=std::min(global_lower,a.lower);
   r.stop_detail.loglik_upper=constant-global_lower+1e-7*(n+std::abs(constant-best));
-  if(std::log(rhi)-std::log(rlo)>1e-7 ||
-     std::max(shi,r.sigma)-std::min(slo,r.sigma)>1e-7*(1+std::abs(r.sigma))) {
+  const double inclusion=std::min(1e-7,tol*.5);
+  if(std::log(rhi)-std::log(rlo)>inclusion ||
+     std::max(shi,r.sigma)-std::min(slo,r.sigma)>inclusion*r.sigma) {
     r.stop_detail.comparison_tie=true;
     // Preserve separated competing witnesses, without turning their diagnostic
     // coordinates into estimates. The bound covers the entire root box.
