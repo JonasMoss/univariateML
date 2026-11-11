@@ -1,0 +1,182 @@
+[
+  {
+    "index": 34000,
+    "family": "sged",
+    "held": {
+      "mean": 0.0,
+      "nu": 0.8
+    },
+    "data": [
+      -100.0,
+      -2.0,
+      -0.01,
+      0.0,
+      0.01,
+      2.0,
+      100.0
+    ],
+    "sample": "held-subunit-corner-0.8"
+  },
+  {
+    "index": 34001,
+    "family": "sged",
+    "held": {
+      "sd": 1.0,
+      "nu": 0.8
+    },
+    "data": [
+      -100.0,
+      -2.0,
+      -0.01,
+      0.0,
+      0.01,
+      2.0,
+      100.0
+    ],
+    "sample": "held-subunit-corner-0.8"
+  },
+  {
+    "index": 34002,
+    "family": "sged",
+    "held": {
+      "mean": 0.0,
+      "nu": 0.5
+    },
+    "data": [
+      -100.0,
+      -2.0,
+      -0.01,
+      0.0,
+      0.01,
+      2.0,
+      100.0
+    ],
+    "sample": "held-subunit-corner-0.5"
+  },
+  {
+    "index": 34003,
+    "family": "sged",
+    "held": {
+      "sd": 1.0,
+      "nu": 0.5
+    },
+    "data": [
+      -100.0,
+      -2.0,
+      -0.01,
+      0.0,
+      0.01,
+      2.0,
+      100.0
+    ],
+    "sample": "held-subunit-corner-0.5"
+  },
+  {
+    "index": 34004,
+    "family": "sged",
+    "held": {
+      "mean": 0.0,
+      "nu": 0.1
+    },
+    "data": [
+      -100.0,
+      -2.0,
+      -0.01,
+      0.0,
+      0.01,
+      2.0,
+      100.0
+    ],
+    "sample": "held-subunit-corner-0.1"
+  },
+  {
+    "index": 34005,
+    "family": "sged",
+    "held": {
+      "sd": 1.0,
+      "nu": 0.1
+    },
+    "data": [
+      -100.0,
+      -2.0,
+      -0.01,
+      0.0,
+      0.01,
+      2.0,
+      100.0
+    ],
+    "sample": "held-subunit-corner-0.1"
+  },
+  {
+    "index": 34006,
+    "family": "sged",
+    "held": {
+      "mean": 0.0,
+      "nu": 0.01
+    },
+    "data": [
+      -100.0,
+      -2.0,
+      -0.01,
+      0.0,
+      0.01,
+      2.0,
+      100.0
+    ],
+    "sample": "held-subunit-corner-0.01"
+  },
+  {
+    "index": 34007,
+    "family": "sged",
+    "held": {
+      "sd": 1.0,
+      "nu": 0.01
+    },
+    "data": [
+      -100.0,
+      -2.0,
+      -0.01,
+      0.0,
+      0.01,
+      2.0,
+      100.0
+    ],
+    "sample": "held-subunit-corner-0.01"
+  },
+  {
+    "index": 34008,
+    "family": "sged",
+    "held": {
+      "mean": 0.0,
+      "nu": 0.001
+    },
+    "data": [
+      -100.0,
+      -2.0,
+      -0.01,
+      0.0,
+      0.01,
+      2.0,
+      100.0
+    ],
+    "sample": "held-subunit-corner-0.001"
+  },
+  {
+    "index": 34009,
+    "family": "sged",
+    "held": {
+      "sd": 1.0,
+      "nu": 0.001
+    },
+    "data": [
+      -100.0,
+      -2.0,
+      -0.01,
+      0.0,
+      0.01,
+      2.0,
+      100.0
+    ],
+    "sample": "held-subunit-corner-0.001"
+  }
+]

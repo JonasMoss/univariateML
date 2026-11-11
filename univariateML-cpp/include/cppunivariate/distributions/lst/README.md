@@ -42,7 +42,7 @@ r:
     df: Optional held df; NULL estimates it.
     sigma: Optional held sigma; NULL estimates it.
     mu: Optional held mu; NULL estimates it.
-    gradtol: All-free coefficient enclosure width target, clamped between 1e-7 and 1e-6 in normalized location and relative scale/shape units. Held joint fits use the score tolerance for EM nominations and require root inclusion; scalar held fits require coefficient brackets. Shape-only brackets target relative width min(gradtol, 1e-10) and require relative width at most min(gradtol, 1e-7).
+    gradtol: All-free coefficient enclosure width target, clamped between 1e-7 and 1e-6 in normalized location and relative scale/shape units. Held joint fits use EM nominations and root inclusion when it closes, with analytic Newton accuracy checks for uncertified searches; scalar held fits require coefficient brackets. Shape-only brackets target relative width min(gradtol, 1e-10) and require relative width at most min(gradtol, 1e-7).
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations."
 log_density: loggamma((df+1)/2) - loggamma(df/2) - log(df*pi)/2 - log(sigma) - (df+1)*log(1+((x-mu)/sigma)**2/df)/2
 limits:
@@ -81,7 +81,7 @@ relations: {}
 fit:
   method: profile-search
   certified: partial
-  note: 'lst/certificate.hpp; lst/shape_certificate.hpp; lst/signed_face_certificate.hpp: All-free, fixed-shape scalar and closed shape-only fits use global certificates conditional on practical arithmetic bounds. Joint held-shape fits at shape >= 1 and a held-scale Cauchy regime retain their certificates. Constrained normal limits use signed profile tails and compact covers. Unresolved finite or limit nominations retain converged legacy decisions marked uncertified. Symmetric subunit samples can prove global nonuniqueness; generic subunit joint fits remain unresolved.'
+  note: 'lst/certificate.hpp; lst/shape_certificate.hpp; lst/signed_face_certificate.hpp: All-free, fixed-shape scalar and closed shape-only fits use global certificates conditional on practical arithmetic bounds. Joint held-shape fits at shape >= 1 and a held-scale Cauchy regime retain their certificates. Constrained normal limits use signed profile tails and compact covers. Unresolved finite or limit nominations retain converged legacy decisions marked uncertified. Symmetric subunit samples can prove global nonuniqueness; generic subunit joint fits use a locally accurate search without a global certificate.'
 areas:
 - measurement and errors
 classification: classical
@@ -118,9 +118,7 @@ $\sigma$ is a scale, not a standard deviation. With location free, estimating sh
 
 The all-free fitter uses the certificate described below. A grid nominates roots; acceptance requires root inclusion, a uniform profile neighborhood and exclusion of every other shape interval and the normal tail. No fitted shape cap, local residual exception or numerical tie is accepted as a maximum.
 
-With $\nu$ held fixed, only location and scale are estimated by monotone
-EM, stopping when the norm of the scale-standardized location and log-scale
-scores is below the requested score tolerance. For held shape at least one, this nominates a point for the root inclusion below. Failure to reach the score tolerance is an error; a small residual alone is not the certificate.
+With $\nu\ge1$ held fixed, monotone EM nominates location and scale when the norm of the scale-standardized location and log-scale scores is below the requested score tolerance. For held shape at least one, this nominates a point for the root inclusion below. Failure to reach the score tolerance is an error; a small residual alone is not the certificate.
 The normal escape does not apply to this subset.
 Fixed $\nu$ may be any positive finite value when its collapse condition
 permits a finite MLE.
@@ -272,7 +270,7 @@ inequality, geodesic convexity makes an included stationary root global.
 EM nominates the point; Newton refinement and a two-dimensional contraction
 inclusion verify it. The complete location and relative scale widths must
 be below $10^{-6}$. The balanced two-point Cauchy equality keeps its existing
-attained, nonunique route after verifying its maximizing curve in physical coordinates. An endpoint-rounded midpoint stops numerically. Subunit-shape joint fits use the symmetry exclusion below when it proves nonuniqueness; other cases stop numerically rather than returning an unchecked EM result.
+attained, nonunique route after verifying its maximizing curve in physical coordinates. An endpoint-rounded midpoint stops numerically. Subunit-shape joint fits retain the symmetry exclusion when it proves nonuniqueness. Otherwise quantile starts nominate local maxima, checked with analytic observed information and contracting Newton corrections. Failed joint inclusion at shape at least one retains the locally accurate search point without a global certificate.
 
 The [held-subset derivation and validation](../../../../../dev/research/evaluations/2026-11-07-std-held-report.md)
 records the proofs, actual-hold normal-seam coefficients, unresolved
@@ -305,7 +303,7 @@ multiply-add for $\nu(n-k)-k$. A rounded product can otherwise manufacture
 equality; for example, stored `8/3` is slightly below the exact 8-to-3
 critical ratio and gives strict unboundedness.
 
-Location accuracy with scale held is measured against empirical data spread,
+Location accuracy with scale held uses the sample range as its floor (the supplied scale for a constant sample),
 so a large held scale cannot mask an inaccurate location. Scale estimates
 must survive logarithmic round-trip checks after conversion to physical
 coordinates; an unrepresentable accurate estimate causes a numerical stop.
@@ -318,8 +316,9 @@ centered scale profile using its monotone scale score. If reflected finite
 witnesses both strictly beat that bound, symmetry proves at least two distinct
 global maximizers. For example, $(-100,-99,0,99,100)$ at shape $1/2$ passes this
 test. Candidate coefficients in this stop are likelihood witnesses, not
-maximizer enclosures. Unresolved symmetric and asymmetric cases retain a
-numerical stop. Exact symmetry is verified on binary64 input sums.
+maximizer enclosures. If the symmetry proof does not close, the joint search
+retains a locally checked uncertified fit when it converges. Exact symmetry
+is verified on binary64 input sums.
 
 For held location and free scale, the first normal-profile coefficient is
 $n(b_2-3)/4$ about the supplied centre. For held ordinary scale it is

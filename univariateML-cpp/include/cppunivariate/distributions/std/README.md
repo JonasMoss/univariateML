@@ -326,3 +326,5 @@ Normal convergence at fixed standardized observations is not uniform at
 observations of order $\sqrt{\nu}$. The [overflow checks](../../../../../dev/research/evaluations/2026-11-09-tail-extreme-data/std-overflow-oracle.py)
 cover densities where the observation's square overflows but its ratio to
 shape remains finite.
+
+With held standard deviation, shape refinement differentiates the ordinary scale factor $\sqrt{(\nu-2)/\nu}$ as well as the Student kernel; treating that factor as constant solves a different likelihood.

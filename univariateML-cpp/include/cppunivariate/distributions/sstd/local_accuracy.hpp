@@ -127,12 +127,26 @@ inline bool polish(std::array<double,4>& p,int n,double tol,int maxit,Objective 
   previous=e;full=damping==1;p=q;
  }return false;
 }
+// Pack only free coordinates; held values are constants in both derivative
+// orders. The error map is evaluated in the original public coordinates.
+template<class Objective,class Error>
+inline bool subset(std::array<double,4>& p,const std::array<bool,4>& free,
+                   double tol,int maxit,Objective objective,Error error){
+ std::array<int,4> index{};int n=0;std::array<double,4> packed{};
+ for(int j=0;j<4;++j)if(free[j]){index[n]=j;packed[n++]=p[j];}
+ if(!n)return true;
+ const auto unpack=[&](const std::array<double,4>& q){auto out=p;for(int j=0;j<n;++j)out[index[j]]=q[j];return out;};
+ const auto f=[&](const std::array<Jet,4>& q){std::array<Jet,4> out;for(int j=0;j<4;++j)out[j]=p[j];for(int j=0;j<n;++j)out[index[j]]=q[j];return objective(out);};
+ const auto e=[&](const std::array<double,4>& q,const std::array<double,4>& step){std::array<double,4> mapped{};for(int j=0;j<n;++j)mapped[index[j]]=step[j];return error(unpack(q),mapped);};
+ if(!polish(packed,n,tol,maxit,f,e))return false;
+ p=unpack(packed);return true;
+}
 inline double log_error(const std::array<double,4>&,const std::array<double,4>& s){double e=0;for(double x:s)e=std::max(e,std::abs(x));return e;}
 // Variance-standardized two-piece t / GED objective in (location, log sd,
 // log(nu-offset), log skew). Constants are differentiated before summation.
 template<class Sample>
-inline Jet skew_objective(const Sample& x,const std::array<Jet,4>& p,bool student){
- const Jet sigma=exp(p[1]),nu=(student?2.:1.)+exp(p[2]),xi=exp(p[3]);
+inline Jet skew_objective(const Sample& x,const std::array<Jet,4>& p,bool student,double held_nu=std::numeric_limits<double>::quiet_NaN(),bool raw_shape=false){
+ const Jet sigma=exp(p[1]),nu=raw_shape?p[2]:std::isnan(held_nu)?(student?2.:1.)+exp(p[2]):Jet(held_nu),xi=exp(p[3]);
  Jet m,logscale,constant;
  if(student){
   m=exp(nu.v>=33?.5*std::log(2/3.14159265358979323846)+.5*log1p(-1/(nu-1))-half_gamma_correction(2/(nu-1)):.5*log((nu-2)/3.14159265358979323846)-half_gamma_ratio((nu-1)/2));
@@ -143,7 +157,8 @@ inline Jet skew_objective(const Sample& x,const std::array<Jet,4>& p,bool studen
  const Jet base=p[1]-log(su)+log(xi+1/xi)-std::log(2.)-constant;
  JetSum f(double(x.size())*base);
  for(double v:x){Jet z=(v-p[0])*su/sigma+mu;Jet w=z.v>0?z/xi:z*xi;
-  if(student){auto square=w*w,y=square/(nu-2);f.add(y.v<.125?square/2+1.5*log1p(y)+(nu-2)/2*log1pmx(y):(nu+1)/2*log1p(y));}
+  if(student&&std::abs(w.v)>1e70)f.add((nu+1)/2*softplus(2*log(abs(w))-log(nu-2)));
+  else if(student){auto square=w*w,y=square/(nu-2);f.add(y.v<.125?square/2+1.5*log1p(y)+(nu-2)/2*log1pmx(y):(nu+1)/2*log1p(y));}
   else if(w.v!=0)f.add(exp(nu*(log(abs(w))-logscale)));
  }
  return f.value();

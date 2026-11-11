@@ -1,0 +1,248 @@
+{
+  "baseline": "bc8ff7be2e3bc4b9186a56fc4f2e8ee45c163714",
+  "global": {
+    "files": 625,
+    "destinations": 4281,
+    "errors": [
+      {
+        "file": "dev/research/evaluations/2026-11-03-boundary-lit-report.md",
+        "line": 5,
+        "url": "../boundary-points.pdf"
+      },
+      {
+        "file": "dev/research/evaluations/2026-11-07-fit-audit-data/static-inventory.md",
+        "line": 198,
+        "url": "double"
+      },
+      {
+        "file": "dev/research/evaluations/2026-11-07-fit-audit-data/static-inventory.md",
+        "line": 316,
+        "url": "double"
+      },
+      {
+        "file": "dev/research/evaluations/2026-11-07-fit-audit-data/static-inventory.md",
+        "line": 317,
+        "url": "double"
+      },
+      {
+        "file": "dev/research/evaluations/2026-11-07-fit-audit-data/static-inventory.md",
+        "line": 416,
+        "url": "double"
+      },
+      {
+        "file": "dev/research/evaluations/2026-11-07-fit-audit-data/static-inventory.md",
+        "line": 571,
+        "url": "double"
+      },
+      {
+        "file": "dev/research/evaluations/2026-11-07-fit-audit-data/static-inventory.md",
+        "line": 572,
+        "url": "double"
+      },
+      {
+        "file": "dev/research/evaluations/2026-11-07-fit-audit-data/static-inventory.md",
+        "line": 596,
+        "url": "const"
+      },
+      {
+        "file": "dev/research/evaluations/2026-11-07-fit-audit-data/static-inventory.md",
+        "line": 672,
+        "url": "double"
+      },
+      {
+        "file": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+        "line": 939,
+        "url": "double"
+      },
+      {
+        "file": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+        "line": 1055,
+        "url": "double"
+      },
+      {
+        "file": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+        "line": 1077,
+        "url": "double"
+      },
+      {
+        "file": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+        "line": 1112,
+        "url": "double"
+      },
+      {
+        "file": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+        "line": 1186,
+        "url": "double"
+      },
+      {
+        "file": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+        "line": 1446,
+        "url": "double"
+      },
+      {
+        "file": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+        "line": 9947,
+        "url": "double"
+      },
+      {
+        "file": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+        "line": 10911,
+        "url": "double"
+      },
+      {
+        "file": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+        "line": 12511,
+        "url": "double"
+      },
+      {
+        "file": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+        "line": 13402,
+        "url": "double"
+      },
+      {
+        "file": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+        "line": 13836,
+        "url": "double"
+      },
+      {
+        "file": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+        "line": 13857,
+        "url": "double"
+      },
+      {
+        "file": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+        "line": 14277,
+        "url": "double"
+      },
+      {
+        "file": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+        "line": 14415,
+        "url": "double"
+      },
+      {
+        "file": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+        "line": 14524,
+        "url": "double"
+      },
+      {
+        "file": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+        "line": 14876,
+        "url": "double"
+      },
+      {
+        "file": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+        "line": 15756,
+        "url": "double"
+      },
+      {
+        "file": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+        "line": 15795,
+        "url": "double"
+      },
+      {
+        "file": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+        "line": 15888,
+        "url": "double"
+      },
+      {
+        "file": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+        "line": 16243,
+        "url": "double"
+      },
+      {
+        "file": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+        "line": 16365,
+        "url": "double"
+      },
+      {
+        "file": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+        "line": 16546,
+        "url": "double"
+      },
+      {
+        "file": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+        "line": 17137,
+        "url": "double"
+      },
+      {
+        "file": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+        "line": 17283,
+        "url": "double"
+      },
+      {
+        "file": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+        "line": 17377,
+        "url": "double"
+      },
+      {
+        "file": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+        "line": 17735,
+        "url": "double"
+      },
+      {
+        "file": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+        "line": 17836,
+        "url": "double"
+      },
+      {
+        "file": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+        "line": 17899,
+        "url": "double"
+      },
+      {
+        "file": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+        "line": 17917,
+        "url": "double"
+      },
+      {
+        "file": "dev/research/evaluations/2026-11-10-defective-limit-lit-report.md",
+        "line": 70,
+        "url": "../../../local/literature/1990-geyer-likelihood-exponential-families.pdf"
+      },
+      {
+        "file": "dev/research/evaluations/2026-11-10-defective-limit-lit-report.md",
+        "line": 71,
+        "url": "../../../local/literature/2016-chen-consistency-mixture-models.pdf"
+      },
+      {
+        "file": "dev/research/evaluations/2026-11-10-defective-limit-lit-report.md",
+        "line": 72,
+        "url": "../../../local/literature/1990-lecam-maximum-likelihood.pdf"
+      },
+      {
+        "file": "dev/research/evaluations/2026-11-10-relaxed-likelihood-lit-report.md",
+        "line": 13,
+        "url": "../../../local/literature/"
+      },
+      {
+        "file": "univariateML-cpp/include/cppunivariate/distributions/nbinom/README.md",
+        "line": 234,
+        "url": "1+m/r"
+      },
+      {
+        "file": "univariateML-cpp/notes/inference.md",
+        "line": 3,
+        "url": "/inference/"
+      },
+      {
+        "file": "univariateML-cpp/notes/inference.md",
+        "line": 95,
+        "url": "/inference/"
+      }
+    ]
+  },
+  "broken_source_byte_identical_to_baseline": {
+    "dev/research/evaluations/2026-11-03-boundary-lit-report.md": true,
+    "dev/research/evaluations/2026-11-07-fit-audit-data/static-inventory.md": true,
+    "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md": true,
+    "dev/research/evaluations/2026-11-10-defective-limit-lit-report.md": true,
+    "dev/research/evaluations/2026-11-10-relaxed-likelihood-lit-report.md": true,
+    "univariateML-cpp/include/cppunivariate/distributions/nbinom/README.md": true,
+    "univariateML-cpp/notes/inference.md": true
+  },
+  "scoped": {
+    "files": 7,
+    "destinations": 55,
+    "errors": []
+  }
+}

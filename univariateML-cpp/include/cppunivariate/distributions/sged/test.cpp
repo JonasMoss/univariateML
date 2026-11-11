@@ -955,3 +955,139 @@ TEST_CASE("SGED held unit skew retains an uncertified GED parent") {
  CHECK(r.iterations==p.iterations);CHECK(r.restricted==p.restricted);
  for(const auto& c:r.stop_detail.candidates)if(c.model==cppunivariate::StopModel::None){REQUIRE(c.coef.size()==4);CHECK(c.coef.back()==1);}
 }
+
+// Independent 70-digit direct-density roots: acc-fb-t-data/oracle.py.
+TEST_CASE("sged held accuracy stationary reference 6026") {
+ const std::vector<double> x{6.449948853914544e+149,5.314175321796899e+149,1.0643637622867162e+149,3.5784486371116986e+149,4.912947510231833e+149,-1.4843850018264121e+150,-9.29136424879163e+149,-1.0582726819365746e+149,-8.768581195832416e+149,-1.8968909122061467e+149,1.5580291981210541e+150,-1.2217397805116431e+150};
+ const auto r=cppunivariate::sged_mle({x.data(),x.size()},1e-10,200,-0.032496865700421936,0.9390299202739361,NAN,NAN);
+ REQUIRE(r.status==cppunivariate::SgedStatus::Ok);
+ CHECK_FALSE(r.certified);
+ CHECK(r.mu==-0.032496865700421936);
+ CHECK(r.sigma==0.9390299202739361);
+ CHECK(std::abs(r.nu-(1.0))<=1e-10*1.0);
+ CHECK(std::abs(r.xi-(0.9568623825650684))<=1e-10*0.9568623825650684);
+}
+TEST_CASE("sged held accuracy stationary reference 6142") {
+ const std::vector<double> x{0.6449948853914544,0.5314175321796899,0.10643637622867162,0.35784486371116986,0.4912947510231833,-1.4843850018264122,-0.929136424879163,-0.10582726819365745,-0.8768581195832416,-0.18968909122061467,1.5580291981210541,-1.2217397805116432};
+ const auto r=cppunivariate::sged_mle({x.data(),x.size()},1e-10,200,-0.032496865700421936,0.9390299202739361,NAN,2.5890673965717057);
+ REQUIRE(r.status==cppunivariate::SgedStatus::Ok);
+ CHECK_FALSE(r.certified);
+ CHECK(r.mu==-0.032496865700421936);
+ CHECK(r.sigma==0.9390299202739361);
+ CHECK(std::abs(r.nu-(842.7118213067299))<=1e-10*842.7118213067299);
+ CHECK(r.xi==2.5890673965717057);
+}
+
+// Seventy-digit knot-constrained or near-restriction references.
+TEST_CASE("sged corner and near restriction accuracy 32003") {
+ const std::vector<double> x{-100.0,-2.0,-0.01,0.0,0.01,2.0,100.0};
+ const auto r=cppunivariate::sged_mle({x.data(),x.size()},1e-10,200,NAN,1.0,NAN,2.0);
+ REQUIRE(r.status==cppunivariate::SgedStatus::Ok);
+ CHECK_FALSE(r.certified);
+ CHECK(std::abs(r.mu-(-1.272393124891001))<=1e-10*1.272393124891001);
+ CHECK(r.sigma==1.0);
+ CHECK(std::abs(r.nu-(1.0))<=1e-10*1.0);
+ CHECK(r.xi==2.0);
+}
+TEST_CASE("sged corner and near restriction accuracy 32006") {
+ const std::vector<double> x{-100.0,-2.0,-0.01,0.0,0.01,2.0,50.0};
+ const auto r=cppunivariate::sged_mle({x.data(),x.size()},1e-10,200,0.0,NAN,1.0,NAN);
+ REQUIRE(r.status==cppunivariate::SgedStatus::Ok);
+ CHECK_FALSE(r.certified);
+ CHECK(r.mu==0.0);
+ CHECK(std::abs(r.sigma-(31.114167098370125))<=1e-10*31.114167098370125);
+ CHECK(r.nu==1.0);
+ CHECK(std::abs(r.xi-(0.999772763813277))<=1e-10*0.999772763813277);
+}
+TEST_CASE("sged corner and near restriction accuracy 32007") {
+ const std::vector<double> x{-100.0,-2.0,-0.01,0.0,0.01,2.0,50.0};
+ const auto r=cppunivariate::sged_mle({x.data(),x.size()},1e-10,200,NAN,1.0,1.0,NAN);
+ REQUIRE(r.status==cppunivariate::SgedStatus::Ok);
+ CHECK_FALSE(r.certified);
+ CHECK(std::abs(r.mu-(-0.1588666326673655))<=1e-10*1.0);
+ CHECK(r.sigma==1.0);
+ CHECK(r.nu==1.0);
+ CHECK(std::abs(r.xi-(0.892671524325583))<=1e-10*0.892671524325583);
+}
+TEST_CASE("sged corner and near restriction accuracy 32013") {
+ const std::vector<double> x{-4.0,-1.0,-0.2,0.1,0.6,1.0,18.0};
+ const auto r=cppunivariate::sged_mle({x.data(),x.size()},1e-10,200,NAN,1.0,1.0,NAN);
+ REQUIRE(r.status==cppunivariate::SgedStatus::Ok);
+ CHECK_FALSE(r.certified);
+ CHECK(std::abs(r.mu-(0.1604255296812283))<=1e-10*1.0);
+ CHECK(r.sigma==1.0);
+ CHECK(r.nu==1.0);
+ CHECK(std::abs(r.xi-(1.3098769330753937))<=1e-10*1.3098769330753937);
+}
+TEST_CASE("sged corner and near restriction accuracy 32018") {
+ const std::vector<double> x{-100.0,-2.0,-0.01,0.0,0.01,2.0,100.0};
+ const auto r=cppunivariate::sged_mle({x.data(),x.size()},1e-10,200,NAN,NAN,NAN,NAN);
+ REQUIRE(r.status==cppunivariate::SgedStatus::Ok);
+ CHECK_FALSE(r.certified);
+ CHECK(std::abs(r.mu-(0.0))<=1e-10*41.21826442790841);
+ CHECK(std::abs(r.sigma-(41.21826442790841))<=1e-10*41.21826442790841);
+ CHECK(std::abs(r.nu-(1.0))<=1e-10*1.0);
+ CHECK(std::abs(r.xi-(1.0))<=1e-10*1.0);
+}
+TEST_CASE("sged corner and near restriction accuracy 33002") {
+ const std::vector<double> x{-1.3302852625722716,-1.0638326444675554,-0.9399392325228962,-0.8583327283065975,-0.7973800263628392,-0.7487102338124508,-0.7071820680732311,-0.6649953128569133,-0.6208903316075456,-0.5746843370840657,-0.5261671026344442,-0.47509517941391244,-0.4211845050818803,-0.3641008352798302,-0.30344717984798025,-0.23874704305370972,-0.1694216650782764,-0.09475848821668513,-0.013866445654413787,0.07438914269675652,0.17148435940441928,0.27938907513050476,0.40081515956195174,0.5396433697844207,0.7017096371390348,0.8963888073405886,1.1401996151156215,1.4666256319808169,1.9621992797594536,3.8343717772420995};
+ const auto r=cppunivariate::sged_mle({x.data(),x.size()},1e-10,200,0.0,1.0,NAN,2.0);
+ REQUIRE(r.status==cppunivariate::SgedStatus::Ok);
+ CHECK_FALSE(r.certified);
+ CHECK(r.mu==0.0);
+ CHECK(r.sigma==1.0);
+ CHECK(std::abs(r.nu-(1.0001))<=1e-10*1.0001);
+ CHECK(r.xi==2.0);
+}
+
+// Independent 90-digit roots of the raw side-scale density at the data knot.
+TEST_CASE("sged held subunit corner accuracy 34000") {
+ const std::vector<double> x{-100.0,-2.0,-0.01,0.0,0.01,2.0,100.0};
+ const auto r=cppunivariate::sged_mle({x.data(),x.size()},1e-10,200,0.0,NAN,0.8,NAN);
+ REQUIRE(r.status==cppunivariate::SgedStatus::Ok);
+ CHECK_FALSE(r.certified);
+ CHECK(r.mu==0.0);
+ CHECK(std::abs(r.sigma-(36.858732959670114))<=1e-10*36.858732959670114);
+ CHECK(r.nu==0.8);
+ CHECK(std::abs(r.xi-(1.0))<=1e-10*1.0);
+}
+TEST_CASE("sged held subunit corner accuracy 34002") {
+ const std::vector<double> x{-100.0,-2.0,-0.01,0.0,0.01,2.0,100.0};
+ const auto r=cppunivariate::sged_mle({x.data(),x.size()},1e-10,200,0.0,NAN,0.5,NAN);
+ REQUIRE(r.status==cppunivariate::SgedStatus::Ok);
+ CHECK_FALSE(r.certified);
+ CHECK(r.mu==0.0);
+ CHECK(std::abs(r.sigma-(29.638969765220526))<=1e-10*29.638969765220526);
+ CHECK(r.nu==0.5);
+ CHECK(std::abs(r.xi-(1.0))<=1e-10*1.0);
+}
+TEST_CASE("sged held subunit corner accuracy 34004") {
+ const std::vector<double> x{-100.0,-2.0,-0.01,0.0,0.01,2.0,100.0};
+ const auto r=cppunivariate::sged_mle({x.data(),x.size()},1e-10,200,0.0,NAN,0.1,NAN);
+ REQUIRE(r.status==cppunivariate::SgedStatus::Ok);
+ CHECK_FALSE(r.certified);
+ CHECK(r.mu==0.0);
+ CHECK(std::abs(r.sigma-(263.9543789741712))<=1e-10*263.9543789741712);
+ CHECK(r.nu==0.1);
+ CHECK(std::abs(r.xi-(1.0))<=1e-10*1.0);
+}
+TEST_CASE("sged held subunit corner accuracy 34010") {
+ const std::vector<double> x{-100.0,-2.0,-0.01,0.0,0.01,2.0,50.0};
+ const auto r=cppunivariate::sged_mle({x.data(),x.size()},1e-10,200,0.0,NAN,0.5,NAN);
+ REQUIRE(r.status==cppunivariate::SgedStatus::Ok);
+ CHECK_FALSE(r.certified);
+ CHECK(r.mu==0.0);
+ CHECK(std::abs(r.sigma-(22.579007131227304))<=1e-10*22.579007131227304);
+ CHECK(r.nu==0.5);
+ CHECK(std::abs(r.xi-(1.0))<=1e-10*1.0);
+}
+TEST_CASE("sged held subunit corner accuracy 34011") {
+ const std::vector<double> x{-100.0,-2.0,-0.01,0.0,0.01,2.0,50.0};
+ const auto r=cppunivariate::sged_mle({x.data(),x.size()},1e-10,200,NAN,1.0,0.5,NAN);
+ REQUIRE(r.status==cppunivariate::SgedStatus::Ok);
+ CHECK_FALSE(r.certified);
+ CHECK(std::abs(r.mu-(-0.054880714236549846))<=1e-10*1.0);
+ CHECK(r.sigma==1.0);
+ CHECK(r.nu==0.5);
+ CHECK(std::abs(r.xi-(0.9509870560295084))<=1e-10*0.9509870560295084);
+}

@@ -28,6 +28,7 @@ inline FitResult fit_lst(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg
   if(df.supplied)fixed.push_back("df");
   auto r=cppunivariate::lst_mle(x,gradtol,iterlim,held_mu,held_sigma,df.supplied?df.value:nan);
   certified=r.certified?1.:0.;
+  if(r.accuracy_failure)return stop_failure(fail("Student-t numerical accuracy failure: observed-information Newton refinement could not justify the requested coefficient tolerance; increase iterlim or inspect conditioning."),r.stop_detail,"numerical",{"mu","sigma","df"});
   face_flag=r.status==cppunivariate::LstStatus::NormalBoundary||r.status==cppunivariate::LstStatus::ScaleBoundary;
   if(r.status==cppunivariate::LstStatus::CertificateBudget)return stop_failure(fail("Student-t global certificate budget exhausted; no verified MLE. Raising iterlim may resolve this stop."),r.stop_detail,"budget",{"mu","sigma","df"});
   if(r.status==cppunivariate::LstStatus::NonUniqueSymmetry)return stop_failure(fail("At this held shape, symmetry and a strict likelihood comparison prove distinct global location-scale t maximizers. Candidates are finite likelihood witnesses."),r.stop_detail,"tie",{"mu","sigma","df"});

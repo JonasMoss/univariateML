@@ -756,3 +756,21 @@ test_that("sged delegate follow-up preserves the accepted fit", {
   expect_identical(as.numeric(logLik(f)),as.numeric(logLik(p)))
   expect_true(is.finite(as.numeric(logLik(f))))
 })
+
+test_that("held shape one uses the data corner and an accurate side-scale root", {
+  f <- mlsged(c(-100,-2,-.01,0,.01,2,50),sd=1,nu=1,gradtol=1e-10)
+  expect_identical(attr(f,"certified"),FALSE)
+  expect_equal(unname(f[["mean"]]),-.15886663266736545,tolerance=1e-10)
+  expect_equal(unname(f[["xi"]]),.892671524325583,tolerance=1e-10)
+  expect_identical(unname(f[["sd"]]),1)
+  expect_identical(unname(f[["nu"]]),1)
+})
+
+test_that("held subunit shape has an accurate corner tangent fit", {
+  f <- mlsged(c(-100,-2,-.01,0,.01,2,50),sd=1,nu=.5,gradtol=1e-10)
+  expect_identical(attr(f,"certified"),FALSE)
+  expect_equal(unname(f[["mean"]]),-0.054880714236549846,tolerance=1e-10)
+  expect_equal(unname(f[["xi"]]),0.9509870560295084,tolerance=1e-10)
+  expect_identical(unname(f[["sd"]]),1)
+  expect_identical(unname(f[["nu"]]),.5)
+})

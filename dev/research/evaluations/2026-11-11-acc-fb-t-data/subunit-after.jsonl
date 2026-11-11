@@ -1,0 +1,10 @@
+{"index":34000,"error":"","estimates":{ "mean":0,"sd":36.858732959670114,"nu":0.80000000000000004,"xi":1},"logLik":-34.177974356379409,"iterations":0,"certified":0}
+{"index":34001,"error":"","estimates":{ "mean":0,"sd":1,"nu":0.80000000000000004,"xi":1},"logLik":-156.94017434505801,"iterations":1,"certified":0}
+{"index":34002,"error":"","estimates":{ "mean":0,"sd":29.638969765220516,"nu":0.5,"xi":1},"logLik":-30.671469719059782,"iterations":0,"certified":0}
+{"index":34003,"error":"","estimates":{ "mean":0,"sd":1,"nu":0.5,"xi":1},"logLik":-69.166197282251773,"iterations":1,"certified":0}
+{"index":34004,"error":"","estimates":{ "mean":0,"sd":263.95437897417219,"nu":0.10000000000000001,"xi":1},"logLik":-15.020112039727593,"iterations":0,"certified":0}
+{"index":34005,"error":"","estimates":{ "mean":0,"sd":1,"nu":0.10000000000000001,"xi":1},"logLik":-28.240257760018924,"iterations":484,"certified":0}
+{"index":34006,"error":"The likelihood is maximised by a translated half-GED with reflected endpoint constrained by the held moments; no MLE in the skewed family.","estimates":{ },"logLik":null,"iterations":0,"certified":null}
+{"index":34007,"error":"Skew GED MLE requires at least 2 finite observations with positive variance.","estimates":{ },"logLik":null,"iterations":0,"certified":null}
+{"index":34008,"error":"Skew GED MLE requires at least 2 finite observations with positive variance.","estimates":{ },"logLik":null,"iterations":0,"certified":null}
+{"index":34009,"error":"Skew GED MLE requires at least 2 finite observations with positive variance.","estimates":{ },"logLik":null,"iterations":0,"certified":null}

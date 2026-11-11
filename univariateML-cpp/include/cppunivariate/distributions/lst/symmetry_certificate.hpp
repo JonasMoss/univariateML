@@ -49,7 +49,7 @@ inline bool symmetric(span sorted,double center) {
   }
   return true;
 }
-inline Result subunit(span x,span sorted,double df,int maxit) {
+inline Result subunit(span x,span sorted,double df,int maxit,double witness_mu=NAN,double witness_scale=NAN) {
   Result out;out.detail.loglik_upper=INFINITY;
   maxit=static_cast<int>(solver_budget(maxit));
   if(x.size()<3||sorted.size()!=x.size()||!(df>0&&df<1)||maxit<1)return out;
@@ -128,6 +128,19 @@ inline Result subunit(span x,span sorted,double df,int maxit) {
     t_shape_detail::retain_point(x,right_mu,right_scale,df,false,right);
     if(right.candidates.empty()||!(right.loglik_lower>centered.hi))continue;
     combine(out,left,right);return out;
+  }
+  // The joint search can nominate a narrower witness than adjacent-atom
+  // midpoints. The centered-profile upper bound and exact input symmetry
+  // still supply the proof; the optimizer supplies no global claim.
+  if(std::isfinite(witness_mu)&&witness_mu!=center&&witness_scale>0&&std::isfinite(witness_scale)){
+    StopDetail left,right;
+    if(!charge())return out;
+    t_shape_detail::retain_point(x,witness_mu,witness_scale,df,false,left);
+    if(!left.candidates.empty()&&left.loglik_lower>centered.hi){
+      if(!charge())return out;
+      t_shape_detail::retain_point(x,center+(center-witness_mu),witness_scale,df,false,right);
+      if(!right.candidates.empty()&&right.loglik_lower>centered.hi){combine(out,left,right);return out;}
+    }
   }
   return out;
 }

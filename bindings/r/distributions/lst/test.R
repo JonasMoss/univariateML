@@ -337,3 +337,12 @@ test_that("Student density overflow preserves the scaled squared radius", {
   expect_equal(dlst(x,0,1,nu,log=TRUE)/target,c(1,1),tolerance=1e-12)
   expect_equal(dstd(x,0,1,nu),c(0,0))
 })
+
+test_that("subunit Student joint search returns an accurate uncertified fit", {
+  x <- c(-3,-1,-.4,.2,.8,1.1,2,5)
+  f <- mllst(x,df=.4,gradtol=1e-10)
+  expect_identical(attr(f,"certified"),FALSE)
+  expect_equal(unname(f[["mu"]]),.58152104884899293051,tolerance=1e-10)
+  expect_equal(unname(f[["sigma"]]),.74878786032077519987,tolerance=1e-10)
+  expect_identical(unname(f[["df"]]),.4)
+})

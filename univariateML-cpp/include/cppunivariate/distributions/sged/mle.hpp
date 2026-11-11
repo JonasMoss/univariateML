@@ -450,6 +450,7 @@ inline SgedResult sged_mle_free(span x, double tol, int maxit) {
 #include "face_payload.hpp"
 #include "free_shape_certificate.hpp"
 #include "held_moment_certificate.hpp"
+#include "accuracy.hpp"
 
 // Classified holds: fixed shape/skew and either location or scale (or both).
 inline SgedResult sged_mle_impl(span x, double tol, int maxit,
@@ -541,6 +542,31 @@ inline SgedResult sged_mle_impl(span x, double tol, int maxit,
 inline SgedResult sged_mle(span x,double tol,int maxit,double mean= std::numeric_limits<double>::quiet_NaN(),double sd= std::numeric_limits<double>::quiet_NaN(),double nu= std::numeric_limits<double>::quiet_NaN(),double xi= std::numeric_limits<double>::quiet_NaN()) {
   maxit = static_cast<int>(solver_budget(maxit));
   auto r=sged_mle_impl(x,tol,maxit,mean,sd,nu,xi);
+  // GED delegation owns its accuracy check. Other uncertified held searches
+  // use the same analytic density, with held coordinates differentiated as constants.
+  if(r.status==SgedStatus::Ok&&!r.certified && !(xi==1&&std::isnan(nu)) &&
+      !(std::isnan(mean)&&std::isnan(sd)&&std::isnan(nu)&&std::isnan(xi))){
+    if(r.nu<=1&&sged_local_accuracy::corner(r,x,mean,sd,xi,!std::isnan(nu),tol,maxit)){
+      if(std::isnan(nu))r.restricted|=16u;
+      return r;
+    }
+    const double origin=r.mu,unit=r.sigma;
+    std::vector<double> y;for(double v:x)y.push_back((v-origin)/unit);
+    const bool hn=!std::isnan(nu),edge=!hn&&r.nu<1.001;
+    std::array<double,4> p{{(r.mu-origin)/unit,std::log(r.sigma/unit),hn?0:edge?r.nu:std::log(r.nu-1),std::log(r.xi)}};
+    const auto objective=[&](const std::array<local_accuracy::Jet,4>& q){if(edge&&q[2].v<1)return local_accuracy::Jet(NAN);return local_accuracy::skew_objective(y,q,false,hn?r.nu:NAN,edge);};
+    const auto error=[&](const std::array<double,4>& q,const std::array<double,4>& step){auto v=q;v[0]+=origin/unit;auto t=step;if(!hn)t[2]*=edge?1/q[2]:std::exp(q[2])/(1+std::exp(q[2]));return local_accuracy::location_error(v,t);};
+    bool boundary=false;
+    if(edge){auto at=p;at[2]=1;boundary=objective(local_accuracy::variables(at)).g[2]>=0;if(boundary)p[2]=1;}
+    bool free_shape=!hn&&(!edge||!boundary);
+    bool accurate=local_accuracy::subset(p,{{std::isnan(mean),std::isnan(sd),free_shape,std::isnan(xi)}},tol,maxit,objective,error);
+    if(accurate&&edge&&!free_shape&&objective(local_accuracy::variables(p)).g[2]<0)
+      accurate=local_accuracy::subset(p,{{std::isnan(mean),std::isnan(sd),true,std::isnan(xi)}},tol,maxit,objective,error);
+    if(accurate){
+      r.mu=std::isnan(mean)?origin+unit*p[0]:mean;r.sigma=std::isnan(sd)?unit*std::exp(p[1]):sd;r.nu=hn?r.nu:edge?p[2]:1+std::exp(p[2]);r.xi=std::isnan(xi)?std::exp(p[3]):xi;r.logLik=-objective(local_accuracy::variables(p)).v-x.size()*std::log(unit);
+      if((std::isnan(mean)&&!local_accuracy::represented(r.mu,std::max(std::abs(r.mu),r.sigma),tol))||(std::isnan(sd)&&!local_accuracy::represented(r.sigma,r.sigma,tol))){r.status=SgedStatus::BfgsFailure;r.accuracy_failure=true;}
+    }else{r.status=SgedStatus::BfgsFailure;r.accuracy_failure=true;}
+  }
   if(r.status==SgedStatus::Ok && (std::isnan(nu)) && r.nu==kSgedNuLower) r.restricted|=16u;
   return r;
 }

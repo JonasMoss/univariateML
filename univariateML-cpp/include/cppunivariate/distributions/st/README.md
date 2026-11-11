@@ -421,3 +421,10 @@ This gives a compact rectangle containing every maximizer. The
 give explicit endpoints. A two-dimensional certificate on that rectangle
 is still required; this existence result does not certify the numerical
 mixed-sign alpha/scale output.
+
+Held-subset refinement uses a coordinate system centred and scaled at the candidate. This prevents data spread many orders of magnitude below a held location from erasing the scale information. Held degrees of freedom are differentiated as constants, including values below one.
+
+When only df is free, derivative convergence in the Student-CDF fractions
+follows the packed df axis. Near the normal face its practical arithmetic
+floor scales with df; the final information-weighted score check still
+controls the public df error.

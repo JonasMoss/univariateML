@@ -733,3 +733,18 @@ its derivative has the sign of $(t-1)(t^2+10t+13)$.
 The unique root in $t$ gives two reciprocal skews; $z=0$ is a strict local
 minimum and both skew tails have likelihood tending to negative infinity.
 The tests use $d=1.1$ and retain both finite witnesses.
+
+The unit-skew free-shape route transports the GED parent’s coefficients and certification flag directly; its accuracy depends on that parent’s refinement.
+
+At shape one, a density corner fixes the mode at an observation. In side-scale
+coordinates the mean is $c+b-a$ and variance is $a^2+b^2$. Held moments reduce
+the remaining fit to one smooth coordinate or closed forms. Left and right
+mode scores verify the corner; a free shape additionally requires a positive
+one-sided profile cost score. Smooth shape fits near one use the natural
+shape coordinate, so a likelihood tie cannot silently replace an interior
+stationary point by the restriction.
+
+For held shapes below one, the mode corner has opposing infinite one-sided
+scores: the positive $|c-x_i|^p$ cost dominates smooth perturbations. The
+tangent fit uses variance-scaled side lengths to avoid overflowing gamma
+moments when the shape is small.

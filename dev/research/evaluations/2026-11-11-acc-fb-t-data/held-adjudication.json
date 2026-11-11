@@ -1,0 +1,1091 @@
+[
+  {
+    "index": 6026,
+    "family": "sged",
+    "before-native": 2.3742837584297816e-09,
+    "after-native": 1.1654869660103185e-15,
+    "after-double": 1.1654869660103185e-15,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6124,
+    "family": "sged",
+    "before-native": 7.540056959153917e-09,
+    "after-native": 2.9026556585202533e-16,
+    "after-double": 2.9026556585202533e-16,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6126,
+    "family": "sged",
+    "before-native": 9.471090015319398e-08,
+    "after-native": 8.491577062935642e-15,
+    "after-double": 1.4959341704876004e-13,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6139,
+    "family": "sged",
+    "before-native": 2.2018106846367712e-08,
+    "after-native": 2.312372195192458e-13,
+    "after-double": 1.2669957147399732e-13,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6142,
+    "family": "sged",
+    "before-native": 2.035427317734845e-06,
+    "after-native": 1.3035340292403252e-12,
+    "after-double": 4.36898214886609e-13,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6143,
+    "family": "sged",
+    "before-native": 4.1500533171898874e-08,
+    "after-native": 2.546043267337919e-15,
+    "after-double": 2.546043267337919e-15,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6144,
+    "family": "sged",
+    "before-native": 6.558268608167811e-09,
+    "after-native": 3.464899593104039e-15,
+    "after-double": 1.361995841713719e-15,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6145,
+    "family": "sged",
+    "before-native": 4.8031493911788666e-08,
+    "after-native": 2.4424008405209545e-16,
+    "after-double": 1.263146573139803e-15,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6146,
+    "family": "sged",
+    "before-native": 3.7792867637187596e-08,
+    "after-native": 1.984968735666166e-15,
+    "after-double": 3.480487077574257e-15,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6147,
+    "family": "sged",
+    "before-native": 2.223619210456031e-08,
+    "after-native": 1.318239410078029e-15,
+    "after-double": 8.233650359240433e-17,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6148,
+    "family": "sged",
+    "before-native": 9.311051193072265e-08,
+    "after-native": 2.2995108773041854e-15,
+    "after-double": 4.3205332972293275e-16,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6149,
+    "family": "sged",
+    "before-native": 9.385061094774504e-08,
+    "after-native": 3.0310403108593874e-15,
+    "after-double": 2.370104014323038e-16,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6150,
+    "family": "sged",
+    "before-native": 2.034406938658653e-08,
+    "after-native": 5.059056277176042e-15,
+    "after-double": 4.761425076918421e-15,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6151,
+    "family": "sged",
+    "before-native": 6.175689287962502e-08,
+    "after-native": 9.513096165358541e-16,
+    "after-double": 9.513096165358541e-16,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6152,
+    "family": "sged",
+    "before-native": 6.764541206311921e-08,
+    "after-native": 4.212952013657846e-15,
+    "after-double": 4.212952013657846e-15,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6157,
+    "family": "sged",
+    "before-native": 5.566297001088853e-09,
+    "after-native": 2.2032238326618992e-16,
+    "after-double": 1.6209155456771262e-15,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6158,
+    "family": "sged",
+    "before-native": 7.97896923383994e-10,
+    "after-native": 7.97896923383994e-10,
+    "after-double": 7.97896923383994e-10,
+    "before_miss_confirmed": true,
+    "preserved_certified": true
+  },
+  {
+    "index": 6170,
+    "family": "sged",
+    "before-native": 7.979474832513266e-10,
+    "after-native": 7.979474832513266e-10,
+    "after-double": 7.979474832513266e-10,
+    "before_miss_confirmed": true,
+    "preserved_certified": true
+  },
+  {
+    "index": 6174,
+    "family": "sged",
+    "before-native": 2.6835537461686934e-10,
+    "after-native": 2.6835537461686934e-10,
+    "after-double": 2.6835537461686934e-10,
+    "before_miss_confirmed": true,
+    "preserved_certified": true
+  },
+  {
+    "index": 6175,
+    "family": "sged",
+    "before-native": 2.400976269763976e-10,
+    "after-native": 2.400976269763976e-10,
+    "after-double": 2.400976269763976e-10,
+    "before_miss_confirmed": true,
+    "preserved_certified": true
+  },
+  {
+    "index": 6176,
+    "family": "sged",
+    "before-native": 4.5107459437458613e-10,
+    "after-native": 4.5107459437458613e-10,
+    "after-double": 4.5107459437458613e-10,
+    "before_miss_confirmed": true,
+    "preserved_certified": true
+  },
+  {
+    "index": 6177,
+    "family": "sged",
+    "before-native": 1.9481643967960047e-10,
+    "after-native": 1.9481643967960047e-10,
+    "after-double": 1.9481643967960047e-10,
+    "before_miss_confirmed": true,
+    "preserved_certified": true
+  },
+  {
+    "index": 6179,
+    "family": "sged",
+    "before-native": 2.877511005868781e-10,
+    "after-native": 2.877511005868781e-10,
+    "after-double": 2.877511005868781e-10,
+    "before_miss_confirmed": true,
+    "preserved_certified": true
+  },
+  {
+    "index": 6181,
+    "family": "sged",
+    "before-native": 4.36938196622457e-10,
+    "after-native": 4.36938196622457e-10,
+    "after-double": 4.36938196622457e-10,
+    "before_miss_confirmed": true,
+    "preserved_certified": true
+  },
+  {
+    "index": 6182,
+    "family": "sged",
+    "before-native": 1.7352744887443214e-10,
+    "after-native": 1.7352744887443214e-10,
+    "after-double": 1.7352744887443214e-10,
+    "before_miss_confirmed": true,
+    "preserved_certified": true
+  },
+  {
+    "index": 6183,
+    "family": "sged",
+    "before-native": 3.8615820212631945e-10,
+    "after-native": 3.8615820212631945e-10,
+    "after-double": 3.8615820212631945e-10,
+    "before_miss_confirmed": true,
+    "preserved_certified": true
+  },
+  {
+    "index": 6184,
+    "family": "sged",
+    "before-native": 4.37505077023936e-10,
+    "after-native": 4.37505077023936e-10,
+    "after-double": 4.37505077023936e-10,
+    "before_miss_confirmed": true,
+    "preserved_certified": true
+  },
+  {
+    "index": 6186,
+    "family": "sged",
+    "before-native": 1.646768177843881e-10,
+    "after-native": 1.646768177843881e-10,
+    "after-double": 1.646768177843881e-10,
+    "before_miss_confirmed": true,
+    "preserved_certified": true
+  },
+  {
+    "index": 6187,
+    "family": "sged",
+    "before-native": 1.8262595645002726e-10,
+    "after-native": 1.8262595645002726e-10,
+    "after-double": 1.8262595645002726e-10,
+    "before_miss_confirmed": true,
+    "preserved_certified": true
+  },
+  {
+    "index": 6188,
+    "family": "sged",
+    "before-native": 1.4111270714212156e-10,
+    "after-native": 1.4111270714212156e-10,
+    "after-double": 1.4111270714212156e-10,
+    "before_miss_confirmed": true,
+    "preserved_certified": true
+  },
+  {
+    "index": 6189,
+    "family": "sged",
+    "before-native": 3.2969152495598044e-10,
+    "after-native": 3.2969152495598044e-10,
+    "after-double": 3.2969152495598044e-10,
+    "before_miss_confirmed": true,
+    "preserved_certified": true
+  },
+  {
+    "index": 6190,
+    "family": "sged",
+    "before-native": 7.413416175396514e-10,
+    "after-native": 7.413416175396514e-10,
+    "after-double": 7.413416175396514e-10,
+    "before_miss_confirmed": true,
+    "preserved_certified": true
+  },
+  {
+    "index": 6204,
+    "family": "sged",
+    "before-native": 2.9767611088428367e-10,
+    "after-native": 2.9767611088428367e-10,
+    "after-double": 2.9767611088428367e-10,
+    "before_miss_confirmed": true,
+    "preserved_certified": true
+  },
+  {
+    "index": 6386,
+    "family": "slash",
+    "before-native": 4.128356046419965e-08,
+    "after-native": 4.976347147349336e-16,
+    "after-double": 3.55524735685051e-15,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6387,
+    "family": "slash",
+    "before-native": 3.5390226270302884e-09,
+    "after-native": 5.202935343219362e-16,
+    "after-double": 5.202935343219362e-16,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6388,
+    "family": "slash",
+    "before-native": 3.3229459911088844e-10,
+    "after-native": 8.283970718995952e-16,
+    "after-double": 8.283970718995952e-16,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6389,
+    "family": "slash",
+    "before-native": 1.2246376775106575e-08,
+    "after-native": 2.1379283597555603e-14,
+    "after-double": 2.4242238364168865e-14,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6390,
+    "family": "slash",
+    "before-native": 6.514099191748425e-09,
+    "after-native": 8.994374762823383e-16,
+    "after-double": 8.994374762823383e-16,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6394,
+    "family": "slash",
+    "before-native": 1.2270308432788328e-08,
+    "after-native": 9.271777674740517e-18,
+    "after-double": 9.271777674740517e-18,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6400,
+    "family": "slash",
+    "before-native": 5.1179348191117437e-08,
+    "after-native": 3.0034994911999583e-14,
+    "after-double": 3.0034994911999583e-14,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6734,
+    "family": "sstd",
+    "before-native": 1.123159970497895e-07,
+    "after-native": 1.5201790699269737e-16,
+    "after-double": 1.5201790699269737e-16,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6736,
+    "family": "sstd",
+    "before-native": 1.6599970313583873e-08,
+    "after-native": 2.7834888765576165e-16,
+    "after-double": 1.1953908284414169e-16,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6802,
+    "family": "sstd",
+    "before-native": 4.702143951530167e-07,
+    "after-native": 2.7459556768435225e-14,
+    "after-double": 2.796929156466184e-15,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6813,
+    "family": "sstd",
+    "before-native": 2.234046879057758e-07,
+    "after-native": 5.508153006820348e-15,
+    "after-double": 2.4585368014048783e-14,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6814,
+    "family": "sstd",
+    "before-native": 3.730491677557251e-07,
+    "after-native": 1.223523376208373e-14,
+    "after-double": 2.003643180199409e-14,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6815,
+    "family": "sstd",
+    "before-native": 4.2167450131193197e-07,
+    "after-native": 1.694089073982408e-14,
+    "after-double": 1.7460319399626318e-14,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6818,
+    "family": "sstd",
+    "before-native": 1.4306146188364176e-07,
+    "after-native": 2.480435641044208e-15,
+    "after-double": 1.1192561813524847e-15,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6830,
+    "family": "sstd",
+    "before-native": 4.140883766127231e-08,
+    "after-native": 1.4008620694884962e-14,
+    "after-double": 7.676780323712983e-15,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6834,
+    "family": "sstd",
+    "before-native": 2.9908004031535705e-08,
+    "after-native": 8.22778025570209e-15,
+    "after-double": 2.1399396807347256e-15,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6835,
+    "family": "sstd",
+    "before-native": 1.6392829961562624e-09,
+    "after-native": 2.4525487194327702e-17,
+    "after-double": 7.903110207167016e-17,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6836,
+    "family": "sstd",
+    "before-native": 1.2243891817510254e-08,
+    "after-native": 8.191473395500415e-16,
+    "after-double": 6.056422642470685e-17,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6837,
+    "family": "sstd",
+    "before-native": 5.901578484014812e-09,
+    "after-native": 4.809320321710814e-17,
+    "after-double": 9.342801396926636e-17,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6847,
+    "family": "sstd",
+    "before-native": 1.7918553359150606e-07,
+    "after-native": 1.6932350658982146e-15,
+    "after-double": 1.0748028628058509e-14,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6850,
+    "family": "sstd",
+    "before-native": 4.76228317887187e-09,
+    "after-native": 3.702818986674909e-17,
+    "after-double": 8.670880049179925e-16,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6851,
+    "family": "sstd",
+    "before-native": 2.1891850487254342e-09,
+    "after-native": 2.1566792534024196e-16,
+    "after-double": 3.7683351883059817e-16,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6852,
+    "family": "sstd",
+    "before-native": 2.020617831176924e-09,
+    "after-native": 1.1271056135049012e-16,
+    "after-double": 1.1271056135049012e-16,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6853,
+    "family": "sstd",
+    "before-native": 4.7046782984359535e-09,
+    "after-native": 2.1946810100440257e-16,
+    "after-double": 3.247387879889225e-16,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6854,
+    "family": "sstd",
+    "before-native": 6.3240974418386255e-09,
+    "after-native": 5.32928186745285e-16,
+    "after-double": 5.32928186745285e-16,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6856,
+    "family": "sstd",
+    "before-native": 1.0680407239167486e-10,
+    "after-native": 1.518013834182412e-16,
+    "after-double": 1.518013834182412e-16,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6862,
+    "family": "sstd",
+    "before-native": 1.2919646740859746e-10,
+    "after-native": 3.665581383491604e-17,
+    "after-double": 3.665581383491604e-17,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6863,
+    "family": "sstd",
+    "before-native": 2.1815692685191922e-09,
+    "after-native": 8.464820695594538e-17,
+    "after-double": 8.464820695594538e-17,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6864,
+    "family": "sstd",
+    "before-native": 5.050011886028163e-09,
+    "after-native": 5.661743076421014e-17,
+    "after-double": 5.661743076421014e-17,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6866,
+    "family": "sstd",
+    "before-native": 5.867413199503982e-10,
+    "after-native": 3.0943545928013305e-16,
+    "after-double": 3.0943545928013305e-16,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6867,
+    "family": "sstd",
+    "before-native": 5.885400226574911e-10,
+    "after-native": 3.8213481385043657e-16,
+    "after-double": 3.8213481385043657e-16,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6868,
+    "family": "sstd",
+    "before-native": 2.217187159369175e-09,
+    "after-native": 5.64784022146439e-16,
+    "after-double": 5.64784022146439e-16,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6869,
+    "family": "sstd",
+    "before-native": 4.768550229918224e-09,
+    "after-native": 3.3058726319108476e-16,
+    "after-double": 3.3058726319108476e-16,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6870,
+    "family": "sstd",
+    "before-native": 7.555334475689188e-09,
+    "after-native": 1.618249270678215e-16,
+    "after-double": 1.618249270678215e-16,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6871,
+    "family": "sstd",
+    "before-native": 1.5005491645243718e-09,
+    "after-native": 1.6628300060999322e-16,
+    "after-double": 1.6628300060999322e-16,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6872,
+    "family": "sstd",
+    "before-native": 5.631110336521555e-10,
+    "after-native": 8.887000404569042e-17,
+    "after-double": 8.887000404569042e-17,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6875,
+    "family": "sstd",
+    "before-native": 2.7660528962802815e-10,
+    "after-native": 3.6364163557429713e-16,
+    "after-double": 3.6364163557429713e-16,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6877,
+    "family": "sstd",
+    "before-native": 1.6799436147287827e-09,
+    "after-native": 1.8102456997075074e-16,
+    "after-double": 1.8102456997075074e-16,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6878,
+    "family": "sstd",
+    "before-native": 2.9451349047277695e-09,
+    "after-native": 3.1959488557481305e-16,
+    "after-double": 3.1959488557481305e-16,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6879,
+    "family": "sstd",
+    "before-native": 7.912038246882597e-10,
+    "after-native": 8.060132601700217e-17,
+    "after-double": 8.060132601700217e-17,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6880,
+    "family": "sstd",
+    "before-native": 2.2780275150639374e-07,
+    "after-native": 4.1538256625026865e-16,
+    "after-double": 4.1538256625026865e-16,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6881,
+    "family": "sstd",
+    "before-native": 4.269604201901308e-10,
+    "after-native": 1.904674999546247e-16,
+    "after-double": 1.904674999546247e-16,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6946,
+    "family": "st",
+    "before-native": 4.362354174969755e-09,
+    "after-native": 9.03849576445442e-15,
+    "after-double": 4.579491839415188e-15,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6948,
+    "family": "st",
+    "before-native": 1.5758846034445495e-10,
+    "after-native": 6.53475981208671e-16,
+    "after-double": 6.53475981208671e-16,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6950,
+    "family": "st",
+    "before-native": 4.0105431890028e-09,
+    "after-native": 9.392591688531285e-16,
+    "after-double": 4.385273538865724e-16,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6958,
+    "family": "st",
+    "before-native": 7.848651444568516e-09,
+    "after-native": 5.3432409744807965e-15,
+    "after-double": 7.597649767849285e-15,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6960,
+    "family": "st",
+    "before-native": 6.330541261736159e-08,
+    "after-native": 2.944122445442211e-16,
+    "after-double": 1.8338994208170544e-16,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6962,
+    "family": "st",
+    "before-native": 2.875903289414523e-09,
+    "after-native": 2.9558823174537122e-15,
+    "after-double": 5.4327358999278705e-15,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6975,
+    "family": "st",
+    "before-native": 2.6136190767606176e-09,
+    "after-native": 1.1971659943460653e-15,
+    "after-double": 3.4354309453870358e-15,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6978,
+    "family": "st",
+    "before-native": 8.904806489220596e-10,
+    "after-native": 2.6175667348003904e-15,
+    "after-double": 3.985352705178596e-15,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6990,
+    "family": "st",
+    "before-native": 1.5977385390532275e-08,
+    "after-native": 1.3519053574614794e-16,
+    "after-double": 1.3519053574614794e-16,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6994,
+    "family": "st",
+    "before-native": 5.0585604182670067e-08,
+    "after-native": 1.392469698626142e-14,
+    "after-double": 8.515275610094988e-15,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 6996,
+    "family": "st",
+    "before-native": 5.080422157744612e-10,
+    "after-native": 3.095291476698669e-16,
+    "after-double": 3.095291476698669e-16,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 7005,
+    "family": "st",
+    "before-native": 2.2130887672126942e-08,
+    "after-native": 6.3343618837877136e-15,
+    "after-double": 1.3557003250962057e-16,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 7006,
+    "family": "st",
+    "before-native": 2.2982510540284516e-08,
+    "after-native": 1.2743299008231748e-14,
+    "after-double": 1.4675235214005474e-14,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 7007,
+    "family": "st",
+    "before-native": 2.9795492626980714e-08,
+    "after-native": 4.780163801124347e-15,
+    "after-double": 6.038679062378236e-15,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 7008,
+    "family": "st",
+    "before-native": 9.095600752774332e-11,
+    "after-native": 1.0273682118801061e-16,
+    "after-double": 1.1607227873669572e-17,
+    "before_miss_confirmed": false,
+    "preserved_certified": false
+  },
+  {
+    "index": 7010,
+    "family": "st",
+    "before-native": 1.0840764662714667e-09,
+    "after-native": 1.5112711783454189e-16,
+    "after-double": 1.027134597345221e-14,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 7014,
+    "family": "st",
+    "before-native": 4.978292252363608e-09,
+    "after-native": 2.8496982786792853e-16,
+    "after-double": 5.117620260444954e-16,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 7022,
+    "family": "st",
+    "before-native": 2.7999332350473264e-08,
+    "after-native": 4.6871459568643296e-15,
+    "after-double": 1.5362484155276448e-15,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 7026,
+    "family": "st",
+    "before-native": 2.8862826725381584e-09,
+    "after-native": 1.0145490589119741e-15,
+    "after-double": 1.7684921598804758e-15,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 7039,
+    "family": "st",
+    "before-native": 2.1368445309075357e-08,
+    "after-native": 1.1231497910861425e-15,
+    "after-double": 7.225973896632615e-15,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 7042,
+    "family": "st",
+    "before-native": 1.4932813784980937e-09,
+    "after-native": 2.671040967853449e-17,
+    "after-double": 1.312442218507778e-15,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 7069,
+    "family": "st",
+    "before-native": 2.411865569787346e-09,
+    "after-native": 5.697710634773436e-16,
+    "after-double": 3.870917532271943e-15,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 7070,
+    "family": "st",
+    "before-native": 8.641458992761227e-10,
+    "after-native": 2.479964730985248e-15,
+    "after-double": 2.3307812477431456e-15,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 7071,
+    "family": "st",
+    "before-native": 1.273844063451753e-08,
+    "after-native": 2.1281309003772912e-15,
+    "after-double": 2.251483361612004e-15,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 7075,
+    "family": "st",
+    "before-native": 3.807694157855864e-10,
+    "after-native": 9.78652948012571e-16,
+    "after-double": 4.1076187351652646e-16,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 7076,
+    "family": "st",
+    "before-native": 1.2112301504826006e-08,
+    "after-native": 2.6609086409561384e-15,
+    "after-double": 2.6609086409561384e-15,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 7077,
+    "family": "st",
+    "before-native": 7.433472861091964e-10,
+    "after-native": 1.9042617403855644e-16,
+    "after-double": 1.9042617403855644e-16,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 7078,
+    "family": "st",
+    "before-native": 4.582078675298e-09,
+    "after-native": 9.079781959535997e-16,
+    "after-double": 7.356428433776071e-16,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 7090,
+    "family": "st",
+    "before-native": 1.6928105295626098e-09,
+    "after-native": 1.139056177988407e-15,
+    "after-double": 7.6793352094395825e-16,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 7093,
+    "family": "st",
+    "before-native": 8.460295395015482e-10,
+    "after-native": 5.148867121881242e-16,
+    "after-double": 1.4030651318882494e-15,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 7103,
+    "family": "st",
+    "before-native": 6.825803908203747e-09,
+    "after-native": 6.522539112713549e-16,
+    "after-double": 1.3183877260464488e-15,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 7122,
+    "family": "st",
+    "before-native": 6.857231103275192e-11,
+    "after-native": 3.7538185597335686e-17,
+    "after-double": 1.5251296893856558e-16,
+    "before_miss_confirmed": false,
+    "preserved_certified": false
+  },
+  {
+    "index": 7123,
+    "family": "st",
+    "before-native": 1.1029985139899929e-08,
+    "after-native": 1.9197330385415596e-16,
+    "after-double": 1.9197330385415596e-16,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 7124,
+    "family": "st",
+    "before-native": 9.054171980549604e-11,
+    "after-native": 1.335358017783242e-16,
+    "after-double": 3.349254225318801e-16,
+    "before_miss_confirmed": false,
+    "preserved_certified": false
+  },
+  {
+    "index": 7126,
+    "family": "st",
+    "before-native": 1.3717176317327117e-08,
+    "after-native": 5.311905412622634e-17,
+    "after-double": 3.353733901159125e-16,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 7128,
+    "family": "st",
+    "before-native": 1.527693976776057e-10,
+    "after-native": 2.474691522348208e-16,
+    "after-double": 2.474691522348208e-16,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 7129,
+    "family": "st",
+    "before-native": 2.1189961146738687e-09,
+    "after-native": 6.737715173162332e-17,
+    "after-double": 6.737715173162332e-17,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 7131,
+    "family": "st",
+    "before-native": 3.7103542951168153e-10,
+    "after-native": 2.3738932454990784e-16,
+    "after-double": 2.3738932454990784e-16,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 7132,
+    "family": "st",
+    "before-native": 1.5853998689608024e-09,
+    "after-native": 1.0352509969770627e-16,
+    "after-double": 1.0352509969770627e-16,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 7133,
+    "family": "st",
+    "before-native": 1.375875323610826e-10,
+    "after-native": 1.7269910392624485e-16,
+    "after-double": 1.7269910392624485e-16,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 7134,
+    "family": "st",
+    "before-native": 6.856135971648205e-11,
+    "after-native": 5.212746739226624e-17,
+    "after-double": 5.212746739226624e-17,
+    "before_miss_confirmed": false,
+    "preserved_certified": false
+  },
+  {
+    "index": 7136,
+    "family": "st",
+    "before-native": 1.080911629720218e-09,
+    "after-native": 5.414988772934919e-16,
+    "after-double": 3.907854990570427e-16,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 7137,
+    "family": "st",
+    "before-native": 6.779885395680343e-10,
+    "after-native": 1.9776914389908738e-16,
+    "after-double": 1.9776914389908738e-16,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 7141,
+    "family": "st",
+    "before-native": 7.951431011882512e-10,
+    "after-native": 5.996465792911054e-17,
+    "after-double": 5.996465792911054e-17,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 7147,
+    "family": "st",
+    "before-native": 1.293341593965149e-10,
+    "after-native": 1.7341540863169303e-16,
+    "after-double": 4.904207304051534e-17,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  },
+  {
+    "index": 7152,
+    "family": "st",
+    "before-native": 2.9878226424737495e-08,
+    "after-native": 1.4157554175397916e-16,
+    "after-double": 1.4157554175397916e-16,
+    "before_miss_confirmed": true,
+    "preserved_certified": false
+  }
+]

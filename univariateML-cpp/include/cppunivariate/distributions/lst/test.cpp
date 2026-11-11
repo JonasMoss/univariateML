@@ -393,7 +393,7 @@ TEST_CASE("lst: non-Cauchy held-location equality has the correct scale-zero val
 TEST_CASE("lst: subunit joint shape stops with a witness rather than an EM maximum") {
   const std::vector<double> x{-5,-4,-3,-2,-1,1,2,3,4,5};
   const auto r=cppunivariate::lst_mle(mltest::as_span(x),1e-7,200,NAN,NAN,.5);
-  REQUIRE(r.status==cppunivariate::LstStatus::NumericalFailure);
+  REQUIRE(r.status==cppunivariate::LstStatus::NonUniqueSymmetry);
   CHECK(std::isnan(r.mu));CHECK(std::isnan(r.sigma));
   CHECK(std::isfinite(r.stop_detail.loglik_lower));
   CHECK(r.stop_detail.loglik_upper==INFINITY);
@@ -449,7 +449,11 @@ TEST_CASE("lst: joint numerical witnesses retain the represented translated like
   const double a=1e7,b=std::nextafter(a,INFINITY),c=std::nextafter(b,INFINITY),d=std::nextafter(c,INFINITY);
   const std::vector<double> x{a,b,c,d};
   const auto r=cppunivariate::lst_mle_fixed_df(mltest::as_span(x),3,1e-7,500);
-  REQUIRE(r.status==cppunivariate::LstStatus::NumericalFailure);
+  REQUIRE(r.status==cppunivariate::LstStatus::Ok);
+  CHECK_FALSE(r.certified);
+  CHECK(r.sigma==doctest::Approx((b-a)*std::sqrt((5+2*std::sqrt(13.))/12)).epsilon(1e-10).scale(0));
+  const double stored[2]={r.mu,std::log(r.sigma)};
+  CHECK(r.logLik==doctest::Approx(-cppunivariate::LstCost{mltest::as_span(x),3,true}(stored)).epsilon(1e-13));
   REQUIRE_FALSE(r.stop_detail.candidates.empty());
   for(const auto& candidate:r.stop_detail.candidates){
     const double p[2]={candidate.coef[0],std::log(candidate.coef[1])};
@@ -841,4 +845,46 @@ TEST_CASE("Student density square overflow retains the scaled radius") {
   CHECK(std::isnan(cppunivariate::distributions::dsstd(1e308,-1e308,1e308,nu,2,true)));
   CHECK(std::isnan(cppunivariate::distributions::pht(1e308,-1e308,nu,1e308,true,false)));
   CHECK(std::isnan(cppunivariate::distributions::dht(1e308,-1e308,nu,1e308,true)));
+}
+
+// Independent 70-digit direct-density stationary roots: acc-fb-t-data/oracle.py.
+TEST_CASE("lst held accuracy stationary reference 30618") {
+ const std::vector<double> x{-3.0,-1.0,-0.4,0.2,0.8,1.1,2.0,5.0};
+ const auto r=cppunivariate::lst_mle({x.data(),x.size()},1e-10,200,NAN,NAN,0.4);
+ REQUIRE(r.status==cppunivariate::LstStatus::Ok);
+ CHECK(std::abs(r.mu-(0.5815210488489929))<=1e-10*0.7487878603207752);
+ CHECK(std::abs(r.sigma-(0.7487878603207752))<=1e-10*0.7487878603207752);
+ CHECK(r.df==0.4);
+ CHECK_FALSE(r.certified);
+}
+TEST_CASE("lst held accuracy stationary reference 30619") {
+ const std::vector<double> x{-3.0,-1.0,-0.4,0.2,0.8,1.1,2.0,5.0};
+ const auto r=cppunivariate::lst_mle({x.data(),x.size()},1e-10,200,NAN,NAN,0.7);
+ REQUIRE(r.status==cppunivariate::LstStatus::Ok);
+ CHECK(std::abs(r.mu-(0.45904622395414546))<=1e-10*0.9330233281574825);
+ CHECK(std::abs(r.sigma-(0.9330233281574825))<=1e-10*0.9330233281574825);
+ CHECK(r.df==0.7);
+ CHECK_FALSE(r.certified);
+}
+
+TEST_CASE("lst joint inclusion fallback stationary reference 31000") {
+ const std::vector<double> x{100000000,100000001.01544973,100000000.39498815,99999999.21842423,99999999.48873337,100000000.8069866,100000001.0345989,99999999.84352086,99999999.26082227,100000000.30362305,100000001.29060736,100000000.63311836,99999999.47243297,99999999.78516717,100000001.10196362,100000001.28665563,100000000.08244431};
+ const auto r=cppunivariate::lst_mle({x.data(),x.size()},1e-10,200,NAN,NAN,1);
+ REQUIRE(r.status==cppunivariate::LstStatus::Ok);
+ CHECK_FALSE(r.certified);
+ CHECK(std::abs(r.mu-(100000000.2764773))<=1e-10*100000000.2764773);
+ CHECK(std::abs(r.sigma-(0.5421821791326248))<=1e-10*0.5421821791326248);
+ CHECK(r.df==1);
+}
+
+// Seventy-digit knot-constrained or near-restriction references.
+TEST_CASE("lst corner and near restriction accuracy 33000") {
+ const std::vector<double> x{-27.022272533573503,-6.313751514675043,-3.732050807568877,-2.6050890646938014,-1.9626105055051506,-1.539864963814583,-1.2348971565350515,-1.0,-0.8097840331950071,-0.6494075931975106,-0.5095254494944288,-0.3838640350354158,-0.2679491924311227,-0.1583844403245363,-0.0524077792830412,0.0524077792830412,0.1583844403245363,0.2679491924311227,0.3838640350354158,0.5095254494944288,0.6494075931975106,0.8097840331950071,1.0,1.2348971565350515,1.539864963814583,1.9626105055051506,2.6050890646938014,3.732050807568877,6.313751514675043,27.022272533573503};
+ const auto r=cppunivariate::lst_mle({x.data(),x.size()},1e-10,200,NAN,1.0,NAN);
+ REQUIRE(r.status==cppunivariate::LstStatus::Ok);
+ CHECK_FALSE(r.certified);
+ CHECK(std::abs(r.mu-(0.0))<=1e-10*1.0);
+ CHECK(r.sigma==1.0);
+ CHECK(std::abs(r.df-(1.0001))<=1e-10*1.0001);
+ CHECK(r.restricted==0u);
 }
