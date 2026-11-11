@@ -1,0 +1,14 @@
+..........F
+======================================================================
+FAIL: test_stored_fingerprints_and_no_timings (quality.test_truth_metadata.TruthMetadataTests.test_stored_fingerprints_and_no_timings)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/jonas/Files/programming/univariateML.wt/ew-dpqr/dev/validation/quality/test_truth_metadata.py", line 42, in test_stored_fingerprints_and_no_timings
+    self.assertEqual(len(tables), 98)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+AssertionError: 100 != 98
+
+----------------------------------------------------------------------
+Ran 11 tests in 0.486s
+
+FAILED (failures=1)
