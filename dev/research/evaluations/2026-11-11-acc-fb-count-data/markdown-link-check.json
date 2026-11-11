@@ -1,0 +1,12 @@
+{
+  "files": [
+    "/home/jonas/Files/programming/univariateML.wt/acc-fb-count/dev/research/evaluations/2026-11-11-acc-fb-count-report.md",
+    "univariateML-cpp/include/cppunivariate/distributions/bbinom/README.md",
+    "univariateML-cpp/include/cppunivariate/distributions/tbinom/README.md",
+    "univariateML-cpp/include/cppunivariate/distributions/ztbinom/README.md",
+    "univariateML-cpp/include/cppunivariate/distributions/zib/README.md",
+    "univariateML-cpp/include/cppunivariate/distributions/zmbinom/README.md"
+  ],
+  "local_destinations": 33,
+  "errors": []
+}

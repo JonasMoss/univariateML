@@ -32,6 +32,7 @@
 // 128 * min(maxit, 100000) interval evaluations); no unimodality assumption is made.
 
 #pragma once
+#include "accuracy.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/discrete_stop.hpp"
 
@@ -66,6 +67,7 @@ struct BbinomResult {
   BbinomStatus status;
   StopDetail stop_detail{};
   bool certified = true;
+  bool accuracy_failure = false;
 };
 
 namespace bbinom_detail {
@@ -826,7 +828,26 @@ inline BbinomResult bbinom_mle(ispan x,double size,double tol=1e-10,int maxit=50
     double beta_fixed=std::numeric_limits<double>::quiet_NaN()) {
   maxit = static_cast<int>(solver_budget(maxit));
   const bbinom_detail::CellWork work(enumeration_budget(maxit));
-  return bbinom_mle_work(x,size,tol,maxit,alpha_fixed,beta_fixed,work);
+  auto out=bbinom_mle_work(x,size,tol,maxit,alpha_fixed,beta_fixed,work);
+  if(out.status==BbinomStatus::Ok && !out.certified) {
+    if(!bbinom_detail::fallback_accuracy(x,out.size,out.alpha,out.beta,alpha_fixed,beta_fixed,tol,maxit)) {
+      out.status=BbinomStatus::IterationFailure;out.accuracy_failure=true;return out;
+    }
+    // Evaluate only the returned point; certificate witnesses describe their
+    // original points and retain their original likelihood bounds.
+    if(std::isnan(alpha_fixed)||std::isnan(beta_fixed)) {
+      const double total=out.alpha+out.beta;
+      local_accuracy::JetSum ll(0);
+      for(int v:x) {
+        double term=special::lgamma(out.size+1)-special::lgamma(v+1.)-special::lgamma(out.size-v+1);
+        for(int j=0;j<v;++j)term+=-std::log1p(out.beta/out.alpha)+std::log1p(j/out.alpha)-std::log1p(j/total);
+        for(int j=0;j<out.size-v;++j)term+=-std::log1p(out.alpha/out.beta)+std::log1p(j/out.beta)-std::log1p((j+v)/total);
+        ll.add(local_accuracy::Jet(term));
+      }
+      out.logLik=ll.value().v;
+    }
+  }
+  return out;
 }
 
 }  // namespace cppunivariate

@@ -6,6 +6,7 @@ namespace cppunivariate {
 typedef zero_detail::ModifiedStatus ZmbinomStatus;
 struct ZmbinomResult : zero_detail::ModifiedResult {
   bool certified = true;
+  bool accuracy_failure = false;
 };
 inline ZmbinomResult zmbinom_mle(ispan x, double tol=1e-10,int maxit=200,double fixed_size=std::numeric_limits<double>::quiet_NaN(),
  double fixed_prob=std::numeric_limits<double>::quiet_NaN(),double fixed_p0=std::numeric_limits<double>::quiet_NaN()) {
@@ -30,7 +31,7 @@ inline ZmbinomResult zmbinom_mle(ispan x, double tol=1e-10,int maxit=200,double 
  if(k==0) {if(std::isnan(fixed_prob)&&std::isnan(fixed_p0))out.status=ZmbinomStatus::AllZero;return out;}
  const auto fit=ztbinom_mle({pos.data(),pos.size()},tol,maxit,fixed_size,fixed_prob);
  if(std::isnan(fixed_prob)&&std::isnan(fixed_p0)&&fit.prob==0)out.status=ZmbinomStatus::TwoPoint;
- out.certified=fit.certified;
+ out.certified=fit.certified;out.accuracy_failure=fit.accuracy_failure;
  const double zero_shift=out.logLik;
  out.size=fit.size;out.prob=fit.prob;out.logLik+=fit.logLik;
  if(fit.status==ZtbinomStatus::PoissonLimit) {
@@ -56,7 +57,13 @@ inline ZmbinomResult zmbinom_mle(ispan x, double tol=1e-10,int maxit=200,double 
  if(fit.status==ZtbinomStatus::InvalidSize)out.status=ZmbinomStatus::InvalidSize;
  // The empirical zero probability is a separately estimated count ratio.
  if(std::isnan(fixed_p0) && out.p0>0 && out.p0<1 &&
-    tol<8*std::numeric_limits<double>::epsilon())out.certified=false;
+    tol<8*std::numeric_limits<double>::epsilon()) {
+   out.certified=false;
+   if(!binomial_accuracy::ratio_accuracy(n-k,n,out.p0,tol)) {
+     out.status=ZmbinomStatus::IterationFailure;out.accuracy_failure=true;
+     binomial_certificate_detail::witness(out.stop_detail,{out.size,out.prob,out.p0},out.logLik,false);
+   }
+ }
  return out;
 }
 }

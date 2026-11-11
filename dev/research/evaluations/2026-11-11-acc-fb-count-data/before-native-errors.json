@@ -1,0 +1,3392 @@
+{
+  "digits": 80,
+  "rows": [
+    {
+      "index": 25,
+      "family": "bbinom",
+      "route": "constant-count",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 0.0,
+        "beta": 1.6980531018107416e-17
+      },
+      "max_error": 1.6980531018107416e-17,
+      "reference": {
+        "size": "101.0",
+        "alpha": "1.9337387365835596586549627318163402378559112548828125",
+        "beta": "0.193740635355481710993766501105841500770243020877424898082459394555383001814815"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 51,
+      "family": "bbinom",
+      "route": "constant-count",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 0.0,
+        "alpha": 2.628125103977244e-15
+      },
+      "max_error": 2.628125103977244e-15,
+      "reference": {
+        "size": "101.0",
+        "alpha": "368.73872089594101177921334169574132417580169163941821097042711216702849363052074",
+        "beta": "2.940665017889667609551906934939324855804443359375"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 75,
+      "family": "bbinom",
+      "route": "large-count",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "size": "1000019.0",
+        "alpha": "1.9337387365835596586549627318163402378559112548828125",
+        "beta": "2.940665017889667609551906934939324855804443359375"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 90,
+      "family": "hyper",
+      "route": "interior",
+      "outcome": "uncertified",
+      "errors": {
+        "m": 0.0,
+        "N": 0.0,
+        "k": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "m": "6.0",
+        "N": "136.0",
+        "k": "104.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 92,
+      "family": "hyper",
+      "route": "tiny-3",
+      "outcome": "uncertified",
+      "errors": {
+        "m": 0.0,
+        "N": 0.0,
+        "k": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "m": "5.0",
+        "N": "134.0",
+        "k": "116.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 93,
+      "family": "hyper",
+      "route": "tiny-5",
+      "outcome": "uncertified",
+      "errors": {
+        "m": 0.0,
+        "N": 0.0,
+        "k": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "m": "5.0",
+        "N": "133.0",
+        "k": "117.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 94,
+      "family": "hyper",
+      "route": "ties",
+      "outcome": "uncertified",
+      "errors": {
+        "m": 0.0,
+        "N": 0.0,
+        "k": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "m": "5.0",
+        "N": "134.0",
+        "k": "125.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 101,
+      "family": "hyper",
+      "route": "large-count",
+      "outcome": "uncertified",
+      "errors": {
+        "m": 0.0,
+        "N": 0.0,
+        "k": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "m": "1000138.0",
+        "N": "1000164.0",
+        "k": "1000026.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 102,
+      "family": "hyper",
+      "route": "zero-but-one",
+      "outcome": "uncertified",
+      "errors": {
+        "m": 0.0,
+        "N": 0.0,
+        "k": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "m": "1.0",
+        "N": "60.0",
+        "k": "12.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 103,
+      "family": "hyper",
+      "route": "constant-count",
+      "outcome": "uncertified",
+      "errors": {
+        "m": 0.0,
+        "N": 0.0,
+        "k": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "m": "125.0",
+        "N": "126.0",
+        "k": "101.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 209,
+      "family": "nhyper",
+      "route": "large-count",
+      "outcome": "uncertified",
+      "errors": {
+        "m": 0.0,
+        "N": 0.0,
+        "r": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "m": "1.0",
+        "N": "1000011.0",
+        "r": "1.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 211,
+      "family": "nhyper",
+      "route": "constant-count",
+      "outcome": "uncertified",
+      "errors": {
+        "m": 0.0,
+        "N": 0.0,
+        "r": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "m": "355.0",
+        "N": "356.0",
+        "r": "100.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 223,
+      "family": "nhyper",
+      "route": "large-count",
+      "outcome": "uncertified",
+      "errors": {
+        "N": 0.0,
+        "r": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "m": "20.0",
+        "N": "6000029.0",
+        "r": "1.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 265,
+      "family": "nhyper",
+      "route": "large-count",
+      "outcome": "uncertified",
+      "errors": {
+        "m": 0.0,
+        "N": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "m": "3.0",
+        "N": "1000011.0",
+        "r": "3.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 278,
+      "family": "nhyper",
+      "route": "large-count",
+      "outcome": "uncertified",
+      "errors": {
+        "N": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "m": "20.0",
+        "N": "6000027.0",
+        "r": "3.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 317,
+      "family": "tbinom",
+      "route": "large-count",
+      "outcome": "uncertified",
+      "errors": {
+        "prob": 6.054937200386309e-17,
+        "a": 0.0,
+        "b": 0.0,
+        "size": 0.0
+      },
+      "max_error": 6.054937200386309e-17,
+      "reference": {
+        "prob": "0.99999334712481242008810893165179470243529619291598003458043127609960726589203291",
+        "a": "999999.0",
+        "b": "1000011.0",
+        "size": "1000011.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 331,
+      "family": "tbinom",
+      "route": "large-count",
+      "outcome": "uncertified",
+      "errors": {
+        "a": 0.0,
+        "b": 0.0,
+        "size": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "prob": "0.400469338674692310053870869523962028324604034423828125",
+        "a": "999999.0",
+        "b": "1000011.0",
+        "size": "2282796.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 345,
+      "family": "tbinom",
+      "route": "large-count",
+      "outcome": "uncertified",
+      "errors": {
+        "prob": 3.694063255854809e-17,
+        "b": 0.0,
+        "size": 0.0
+      },
+      "max_error": 3.694063255854809e-17,
+      "reference": {
+        "prob": "0.99997108097222690367496401042837318972239574200906168950209954705607410149638801",
+        "a": "0.0",
+        "b": "1000011.0",
+        "size": "1000035.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 358,
+      "family": "tbinom",
+      "route": "large-count",
+      "outcome": "uncertified",
+      "errors": {
+        "b": 0.0,
+        "size": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "prob": "0.400469338674692310053870869523962028324604034423828125",
+        "a": "0.0",
+        "b": "1000011.0",
+        "size": "1000027.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 551,
+      "family": "zib",
+      "route": "large-count",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 0.0,
+        "pi": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "size": "1000013.0",
+        "prob": "0.41801297244186852442027202414465136826038360595703125",
+        "pi": "0.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 603,
+      "family": "zib",
+      "route": "large-count",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "size": "1000013.0",
+        "prob": "0.41801297244186852442027202414465136826038360595703125",
+        "pi": "0.38997108508286337791304276834125630557537078857421875"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 629,
+      "family": "zmbinom",
+      "route": "large-count",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 0.0,
+        "prob": 1.9995633770184025e-17,
+        "p0": 0.0
+      },
+      "max_error": 1.9995633770184025e-17,
+      "reference": {
+        "size": "1000023.0",
+        "prob": "0.9999816004231902666238676510440259874022897473358112763406441651842007633824422",
+        "p0": "0.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 655,
+      "family": "zmbinom",
+      "route": "large-count",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 0.0,
+        "p0": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "size": "1000013.0",
+        "prob": "0.41072177895283223936218064409331418573856353759765625",
+        "p0": "0.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 681,
+      "family": "zmbinom",
+      "route": "large-count",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 0.0,
+        "prob": 1.9995633770184025e-17
+      },
+      "max_error": 1.9995633770184025e-17,
+      "reference": {
+        "size": "1000023.0",
+        "prob": "0.9999816004231902666238676510440259874022897473358112763406441651842007633824422",
+        "p0": "0.2760000000000000230926389122032560408115386962890625"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 707,
+      "family": "zmbinom",
+      "route": "large-count",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "size": "1000013.0",
+        "prob": "0.41072177895283223936218064409331418573856353759765625",
+        "p0": "0.2760000000000000230926389122032560408115386962890625"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 733,
+      "family": "ztbinom",
+      "route": "large-count",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 0.0,
+        "prob": 1.9995633770184025e-17
+      },
+      "max_error": 1.9995633770184025e-17,
+      "reference": {
+        "size": "1000023.0",
+        "prob": "0.9999816004231902666238676510440259874022897473358112763406441651842007633824422"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 757,
+      "family": "ztbinom",
+      "route": "large-count",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "size": "1000013.0",
+        "prob": "0.4098820806029437324724540303577668964862823486328125"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 798,
+      "family": "bbinom",
+      "route": "face-endpoint-two-point-100",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 0.0,
+        "beta": 2.5663615179894325e-15
+      },
+      "max_error": 2.5663615179894325e-15,
+      "reference": {
+        "size": "420.0",
+        "alpha": "1.9337387365835596586549627318163402378559112548828125",
+        "beta": "240.9830411852210613755868360770052780708328030106192242597754733093645190338138"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 832,
+      "family": "bbinom",
+      "route": "face-endpoint-two-point-1e+06",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 0.0,
+        "beta": 2.5663615179894325e-15
+      },
+      "max_error": 2.5663615179894325e-15,
+      "reference": {
+        "size": "420.0",
+        "alpha": "1.9337387365835596586549627318163402378559112548828125",
+        "beta": "240.9830411852210613755868360770052780708328030106192242597754733093645190338138"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 845,
+      "family": "hyper",
+      "route": "support-upper-count",
+      "outcome": "uncertified",
+      "errors": {
+        "m": 0.0,
+        "N": 0.0,
+        "k": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "m": "10.0",
+        "N": "50.0",
+        "k": "49.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 927,
+      "family": "bbinom",
+      "route": "held-beta-preflight",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 0.0,
+        "alpha": 6.091168670717997e-16
+      },
+      "max_error": 6.091168670717997e-16,
+      "reference": {
+        "size": "503.0",
+        "alpha": "3241086.8209925364887172423364295420680015509285469252362214350932305684997084572",
+        "beta": "1000000000.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 928,
+      "family": "hyper",
+      "route": "all-free",
+      "outcome": "uncertified",
+      "errors": {
+        "m": 0.0,
+        "N": 0.0,
+        "k": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "m": "15.0",
+        "N": "147.0",
+        "k": "16.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 929,
+      "family": "hyper",
+      "route": "held-k",
+      "outcome": "uncertified",
+      "errors": {
+        "m": 0.0,
+        "N": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "m": "107.0",
+        "N": "263.0",
+        "k": "4.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 937,
+      "family": "bbinom",
+      "route": "held-beta-preflight",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 0.0,
+        "alpha": 1.1407451075820559e-15
+      },
+      "max_error": 1.1407451075820559e-15,
+      "reference": {
+        "size": "5.0",
+        "alpha": "904761904.66666666771112649831501919985539567659463937373694853277762544496199614",
+        "beta": "1000000000.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 938,
+      "family": "hyper",
+      "route": "all-free",
+      "outcome": "uncertified",
+      "errors": {
+        "m": 0.0,
+        "N": 0.0,
+        "k": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "m": "5.0",
+        "N": "135.0",
+        "k": "64.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 939,
+      "family": "hyper",
+      "route": "held-k",
+      "outcome": "uncertified",
+      "errors": {
+        "m": 0.0,
+        "N": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "m": "156.0",
+        "N": "263.0",
+        "k": "4.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 947,
+      "family": "bbinom",
+      "route": "held-beta-preflight",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 0.0,
+        "alpha": 1.0207092155555826e-16
+      },
+      "max_error": 1.0207092155555826e-16,
+      "reference": {
+        "size": "6.0",
+        "alpha": "548387096.73339658612574352025486385129091103797612653116623030335871357823884251",
+        "beta": "1000000000.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 948,
+      "family": "hyper",
+      "route": "all-free",
+      "outcome": "uncertified",
+      "errors": {
+        "m": 0.0,
+        "N": 0.0,
+        "k": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "m": "7.0",
+        "N": "138.0",
+        "k": "42.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 949,
+      "family": "hyper",
+      "route": "held-k",
+      "outcome": "uncertified",
+      "errors": {
+        "m": 0.0,
+        "N": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "m": "140.0",
+        "N": "263.0",
+        "k": "4.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 957,
+      "family": "bbinom",
+      "route": "held-beta-preflight",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 0.0,
+        "alpha": 8.884759868812833e-16
+      },
+      "max_error": 8.884759868812833e-16,
+      "reference": {
+        "size": "503.0",
+        "alpha": "3741581.3771515632332809865233504131998828969921053693046732052382244145118258193",
+        "beta": "1000000000.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 958,
+      "family": "hyper",
+      "route": "all-free",
+      "outcome": "uncertified",
+      "errors": {
+        "m": 0.0,
+        "N": 0.0,
+        "k": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "m": "15.0",
+        "N": "150.0",
+        "k": "19.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 959,
+      "family": "hyper",
+      "route": "held-k",
+      "outcome": "uncertified",
+      "errors": {
+        "m": 0.0,
+        "N": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "m": "123.0",
+        "N": "263.0",
+        "k": "4.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 967,
+      "family": "bbinom",
+      "route": "held-beta-preflight",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 0.0,
+        "alpha": 3.781837171092006e-17
+      },
+      "max_error": 3.781837171092006e-17,
+      "reference": {
+        "size": "503.0",
+        "alpha": "3366163.8101605979136101691124027741144030403235759809544038488080346207759924269",
+        "beta": "1000000000.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 968,
+      "family": "hyper",
+      "route": "all-free",
+      "outcome": "uncertified",
+      "errors": {
+        "m": 0.0,
+        "N": 0.0,
+        "k": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "m": "14.0",
+        "N": "149.0",
+        "k": "18.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 969,
+      "family": "hyper",
+      "route": "held-k",
+      "outcome": "uncertified",
+      "errors": {
+        "m": 0.0,
+        "N": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "m": "111.0",
+        "N": "263.0",
+        "k": "4.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 977,
+      "family": "bbinom",
+      "route": "held-beta-preflight",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 0.0,
+        "alpha": 1.0049782729030927e-15
+      },
+      "max_error": 1.0049782729030927e-15,
+      "reference": {
+        "size": "4.0",
+        "alpha": "1064516129.0024437935038161702944171864354491987849785415250870268149774161579203",
+        "beta": "1000000000.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 978,
+      "family": "hyper",
+      "route": "all-free",
+      "outcome": "uncertified",
+      "errors": {
+        "m": 0.0,
+        "N": 0.0,
+        "k": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "m": "4.0",
+        "N": "134.0",
+        "k": "69.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 979,
+      "family": "hyper",
+      "route": "held-k",
+      "outcome": "uncertified",
+      "errors": {
+        "m": 0.0,
+        "N": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "m": "135.0",
+        "N": "262.0",
+        "k": "4.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 987,
+      "family": "bbinom",
+      "route": "held-beta-preflight",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 0.0,
+        "alpha": 3.0796740205010826e-16
+      },
+      "max_error": 3.0796740205010826e-16,
+      "reference": {
+        "size": "14.0",
+        "alpha": "108910891.0913591422274513279228415720916656726213332318909848464859049543806055",
+        "beta": "1000000000.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 988,
+      "family": "hyper",
+      "route": "all-free",
+      "outcome": "uncertified",
+      "errors": {
+        "m": 0.0,
+        "N": 0.0,
+        "k": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "m": "12.0",
+        "N": "148.0",
+        "k": "17.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 989,
+      "family": "hyper",
+      "route": "held-k",
+      "outcome": "uncertified",
+      "errors": {
+        "m": 0.0,
+        "N": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "m": "90.0",
+        "N": "262.0",
+        "k": "4.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 997,
+      "family": "bbinom",
+      "route": "held-beta-preflight",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 0.0,
+        "alpha": 3.2539806980213114e-17
+      },
+      "max_error": 3.2539806980213114e-17,
+      "reference": {
+        "size": "14.0",
+        "alpha": "172774869.09574806128009975312401993759414591702584908928011021878650840375984376",
+        "beta": "1000000000.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 998,
+      "family": "hyper",
+      "route": "all-free",
+      "outcome": "uncertified",
+      "errors": {
+        "m": 0.0,
+        "N": 0.0,
+        "k": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "m": "17.0",
+        "N": "148.0",
+        "k": "18.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 999,
+      "family": "hyper",
+      "route": "held-k",
+      "outcome": "uncertified",
+      "errors": {
+        "m": 0.0,
+        "N": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "m": "136.0",
+        "N": "263.0",
+        "k": "4.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1007,
+      "family": "bbinom",
+      "route": "held-beta-preflight",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 0.0,
+        "alpha": 6.405341011176001e-17
+      },
+      "max_error": 6.405341011176001e-17,
+      "reference": {
+        "size": "7.0",
+        "alpha": "399999999.93125000177950613014408224196769538175123615859287497802810488179797327",
+        "beta": "1000000000.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1008,
+      "family": "hyper",
+      "route": "all-free",
+      "outcome": "uncertified",
+      "errors": {
+        "m": 0.0,
+        "N": 0.0,
+        "k": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "m": "10.0",
+        "N": "140.0",
+        "k": "28.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1009,
+      "family": "hyper",
+      "route": "held-k",
+      "outcome": "uncertified",
+      "errors": {
+        "m": 0.0,
+        "N": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "m": "131.0",
+        "N": "262.0",
+        "k": "4.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1017,
+      "family": "bbinom",
+      "route": "held-beta-preflight",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 0.0,
+        "alpha": 2.4034331170100913e-17
+      },
+      "max_error": 2.4034331170100913e-17,
+      "reference": {
+        "size": "503.0",
+        "alpha": "3366163.6243520662310817629672950010084887980891132547986814461040246452555263938",
+        "beta": "1000000000.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1018,
+      "family": "hyper",
+      "route": "all-free",
+      "outcome": "uncertified",
+      "errors": {
+        "m": 0.0,
+        "N": 0.0,
+        "k": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "m": "15.0",
+        "N": "148.0",
+        "k": "17.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1019,
+      "family": "hyper",
+      "route": "held-k",
+      "outcome": "uncertified",
+      "errors": {
+        "m": 0.0,
+        "N": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "m": "111.0",
+        "N": "263.0",
+        "k": "4.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1027,
+      "family": "bbinom",
+      "route": "held-beta-preflight",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 0.0,
+        "alpha": 1.5535509786127233e-16
+      },
+      "max_error": 1.5535509786127233e-16,
+      "reference": {
+        "size": "8.0",
+        "alpha": "267326732.67015035133167239947570538845988951954173192210252812783276587791330284",
+        "beta": "1000000000.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1028,
+      "family": "hyper",
+      "route": "all-free",
+      "outcome": "uncertified",
+      "errors": {
+        "m": 0.0,
+        "N": 0.0,
+        "k": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "m": "14.0",
+        "N": "141.0",
+        "k": "17.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1029,
+      "family": "hyper",
+      "route": "held-k",
+      "outcome": "uncertified",
+      "errors": {
+        "m": 0.0,
+        "N": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "m": "111.0",
+        "N": "263.0",
+        "k": "4.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1037,
+      "family": "bbinom",
+      "route": "held-beta-preflight",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 0.0,
+        "alpha": 4.92120664995569e-17
+      },
+      "max_error": 4.92120664995569e-17,
+      "reference": {
+        "size": "503.0",
+        "alpha": "4242575.4353852931184860338684069976733954518859373917545537859646541118359952459",
+        "beta": "1000000000.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1038,
+      "family": "hyper",
+      "route": "all-free",
+      "outcome": "uncertified",
+      "errors": {
+        "m": 0.0,
+        "N": 0.0,
+        "k": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "m": "17.0",
+        "N": "150.0",
+        "k": "19.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1039,
+      "family": "hyper",
+      "route": "held-k",
+      "outcome": "uncertified",
+      "errors": {
+        "m": 0.0,
+        "N": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "m": "140.0",
+        "N": "263.0",
+        "k": "4.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1045,
+      "family": "bbinom",
+      "route": "route-regression",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 0.0,
+        "beta": 1.2241778995787367e-15
+      },
+      "max_error": 1.2241778995787367e-15,
+      "reference": {
+        "size": "399.0",
+        "alpha": "1.0",
+        "beta": "158.01982742852524115218840441106710086361656292440880309576025083608380065949434"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1046,
+      "family": "bbinom",
+      "route": "route-regression",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 0.0,
+        "alpha": 8.079386480405437e-16
+      },
+      "max_error": 8.079386480405437e-16,
+      "reference": {
+        "size": "507.0",
+        "alpha": "5952380.1111118105834294277847946913666358010558566728667225259346124331026747951",
+        "beta": "1000000000.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1047,
+      "family": "hyper",
+      "route": "route-regression",
+      "outcome": "uncertified",
+      "errors": {
+        "m": 0.0,
+        "N": 0.0,
+        "k": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "m": "17.0",
+        "N": "18.0",
+        "k": "9.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1048,
+      "family": "hyper",
+      "route": "route-regression",
+      "outcome": "uncertified",
+      "errors": {
+        "m": 0.0,
+        "N": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "m": "132.0",
+        "N": "265.0",
+        "k": "5.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1049,
+      "family": "hyper",
+      "route": "route-regression",
+      "outcome": "uncertified",
+      "errors": {
+        "m": 0.0,
+        "k": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "m": "1.0",
+        "N": "10000.0",
+        "k": "5000.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1050,
+      "family": "nhyper",
+      "route": "route-regression",
+      "outcome": "uncertified",
+      "errors": {
+        "m": 0.0,
+        "N": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "m": "46.0",
+        "N": "285.0",
+        "r": "1.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1051,
+      "family": "nhyper",
+      "route": "route-regression",
+      "outcome": "uncertified",
+      "errors": {
+        "m": 0.0,
+        "r": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "m": "5000000.0",
+        "N": "10000000.0",
+        "r": "1.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1053,
+      "family": "zib",
+      "route": "route-regression",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 0.0,
+        "prob": 2.1900270000693452e-25
+      },
+      "max_error": 2.1900270000693452e-25,
+      "reference": {
+        "size": "811159542.0",
+        "prob": "0.0000000019724849646141645762309892826762756125882261597751835977511511211193796539269176",
+        "pi": "0.377214606946377595253494519056403078138828277587890625"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1054,
+      "family": "zib",
+      "route": "route-regression",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 0.0,
+        "prob": 7.915008489497163e-25
+      },
+      "max_error": 7.915008489497163e-25,
+      "reference": {
+        "size": "175100589.0",
+        "prob": "0.0000000091376049129591882679632036830110701207649176287871729078598065079120523652146942",
+        "pi": "0.37721460694637765076464575031423009932041168212890625"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1055,
+      "family": "ztbinom",
+      "route": "held-probability-budget",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "size": "11113.0",
+        "prob": "0.0000000010000000000000000622815914577798564188970686927859787829220294952392578125"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1056,
+      "family": "zib",
+      "route": "held-probability-budget",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 0.0,
+        "pi": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "size": "10002.0",
+        "prob": "0.0000000010000000000000000622815914577798564188970686927859787829220294952392578125",
+        "pi": "0.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1057,
+      "family": "zmbinom",
+      "route": "held-probability-budget",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 0.0,
+        "p0": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "size": "11113.0",
+        "prob": "0.0000000010000000000000000622815914577798564188970686927859787829220294952392578125",
+        "p0": "0.25"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1058,
+      "family": "tbinom",
+      "route": "certificate-window",
+      "outcome": "uncertified",
+      "errors": {
+        "prob": 8.377784161687107e-27,
+        "size": 0.0
+      },
+      "max_error": 8.377784161687107e-27,
+      "reference": {
+        "prob": "0.000000000099164200648890241433957962404399099828751293728626730369988130442198318077218398",
+        "a": "0.0",
+        "b": "1.0000000000000000159028911097599180468360808563945281389781327557747838772170381e+100",
+        "size": "26510400993.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1059,
+      "family": "bbinom",
+      "route": "coefficient-inclusion",
+      "outcome": "uncertified",
+      "errors": {
+        "alpha": 3.523753106722684e-16,
+        "beta": 6.363518265708213e-16
+      },
+      "max_error": 6.363518265708213e-16,
+      "reference": {
+        "size": "10.0",
+        "alpha": "0.85630369461897069284066089918309834733450408633589480702198476199859780063968829",
+        "beta": "1.4484991703216129829776786956596224378186732346445281440999650502464322252699476"
+      },
+      "tol": 1e-18
+    },
+    {
+      "index": 1060,
+      "family": "bbinom",
+      "route": "coefficient-inclusion",
+      "outcome": "uncertified",
+      "errors": {
+        "beta": 3.7261129327027644e-16
+      },
+      "max_error": 3.7261129327027644e-16,
+      "reference": {
+        "size": "10.0",
+        "alpha": "2.0",
+        "beta": "3.2537959465663671610278690670354273503338402575044940397490398068921330085316001"
+      },
+      "tol": 1e-18
+    },
+    {
+      "index": 1061,
+      "family": "bbinom",
+      "route": "coefficient-inclusion",
+      "outcome": "uncertified",
+      "errors": {
+        "alpha": 8.045669134903062e-17
+      },
+      "max_error": 8.045669134903062e-17,
+      "reference": {
+        "size": "10.0",
+        "alpha": "1.5124504698130437736543929164039724315230976614697875832673475879427442823998972",
+        "beta": "3.0"
+      },
+      "tol": 1e-18
+    },
+    {
+      "index": 1063,
+      "family": "zib",
+      "route": "unclosed-turning-discriminant",
+      "outcome": "uncertified",
+      "errors": {
+        "prob": 1.0510569580123195e-16
+      },
+      "max_error": 1.0510569580123195e-16,
+      "reference": {
+        "size": "2.0",
+        "prob": "0.91607394948846765961781358879158204483816333756953012653190464615512990752149116",
+        "pi": "0.200000000000000011102230246251565404236316680908203125"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1068,
+      "family": "zib",
+      "route": "flat-probability-root-inclusion",
+      "outcome": "uncertified",
+      "errors": {
+        "prob": 2.140945402978829e-06
+      },
+      "max_error": 2.140945402978829e-06,
+      "reference": {
+        "size": "2.0",
+        "prob": "0.82353041589714483539782392306075611552592189333090595176172276985208380409378025",
+        "pi": "0.1574344023323615282539122972593759186565876007080078125"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1069,
+      "family": "ztbinom",
+      "route": "sub-machine-coefficient-target",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 0.0,
+        "prob": 1.4802973661668753e-16
+      },
+      "max_error": 1.4802973661668753e-16,
+      "reference": {
+        "size": "2.0",
+        "prob": "0.66666666666666666666666666666666666666666666666666666666666666666666666666666667"
+      },
+      "tol": 1e-18
+    },
+    {
+      "index": 1070,
+      "family": "zmbinom",
+      "route": "sub-machine-coefficient-target",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 0.0,
+        "p0": 1.850371707708594e-17
+      },
+      "max_error": 1.850371707708594e-17,
+      "reference": {
+        "size": "1.0",
+        "prob": "0.0000000010000000000000000622815914577798564188970686927859787829220294952392578125",
+        "p0": "0.33333333333333333333333333333333333333333333333333333333333333333333333333333333"
+      },
+      "tol": 1e-18
+    },
+    {
+      "index": 1071,
+      "family": "zib",
+      "route": "sub-machine-coefficient-target",
+      "outcome": "uncertified",
+      "errors": {
+        "prob": 3.700743415417188e-17
+      },
+      "max_error": 3.700743415417188e-17,
+      "reference": {
+        "size": "2.0",
+        "prob": "0.66666666666666666666666666666666666666666666666666666666666666666666666666666667",
+        "pi": "0.0"
+      },
+      "tol": 1e-18
+    },
+    {
+      "index": 1072,
+      "family": "zib",
+      "route": "sub-machine-coefficient-target",
+      "outcome": "uncertified",
+      "errors": {
+        "pi": 1.850371707708594e-17
+      },
+      "max_error": 1.850371707708594e-17,
+      "reference": {
+        "size": "1.0",
+        "prob": "1.0",
+        "pi": "0.33333333333333333333333333333333333333333333333333333333333333333333333333333333"
+      },
+      "tol": 1e-18
+    },
+    {
+      "index": 1076,
+      "family": "bnbinom",
+      "route": "finite-joint",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 1.133428554743621e-13,
+        "alpha": 5.272067355202057e-15,
+        "beta": 1.070644231010802e-13
+      },
+      "max_error": 1.133428554743621e-13,
+      "reference": {
+        "size": "3.2721282230688438243072610053482805140090490051445608192578882741549882252452048",
+        "alpha": "4.5202287886146653328590433270624145232730533106860715871936970397398965943353598",
+        "beta": "3.2721282230688438243072610053482805140090490051445608192578882741549882252452048"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1077,
+      "family": "bnbinom",
+      "route": "held-alpha",
+      "outcome": "certified",
+      "errors": {
+        "size": 8.053675265194832e-15,
+        "beta": 7.808185960899264e-15
+      },
+      "max_error": 8.053675265194832e-15,
+      "reference": {
+        "size": "2.1277944288834079014603729885541872083206514470816934723944726641492426621692913",
+        "alpha": "2.0",
+        "beta": "2.1277944288834079014603729885541872083206514470816934723944726641492426621692913"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1078,
+      "family": "skellam",
+      "route": "seed-150251",
+      "outcome": "uncertified",
+      "errors": {
+        "mu1": 3.3610092987151853e-16,
+        "mu2": 3.6779100798029365e-16
+      },
+      "max_error": 3.6779100798029365e-16,
+      "reference": {
+        "mu1": "3.2306889576139401243754274694073582313519887471986309096756603438149154709312268",
+        "mu2": "2.1473556242806067910420941360740248980186554138652975763423270151963872339273678"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1079,
+      "family": "skellam",
+      "route": "seed-150251",
+      "outcome": "uncertified",
+      "errors": {
+        "mu2": 1.5057173391290067e-16
+      },
+      "max_error": 1.5057173391290067e-16,
+      "reference": {
+        "mu1": "3.0",
+        "mu2": "1.9672557025919596242979422124788766079669976159443783836665058523560146589482573"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1080,
+      "family": "skellam",
+      "route": "seed-150251",
+      "outcome": "uncertified",
+      "errors": {
+        "mu1": 4.860188439456262e-16,
+        "mu2": 2.0915687869159175e-16
+      },
+      "max_error": 4.860188439456262e-16,
+      "reference": {
+        "mu1": "1.4202196710978740831489170135738190746754460750017792997708847221047162242512719",
+        "mu2": "0.87855300443120741648225034690715240800877940833511263310421805463633726052385126"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1081,
+      "family": "skellam",
+      "route": "seed-150251",
+      "outcome": "uncertified",
+      "errors": {
+        "mu2": 3.122941236617476e-17
+      },
+      "max_error": 3.122941236617476e-17,
+      "reference": {
+        "mu1": "3.0",
+        "mu2": "2.1498042566942458403736526667087748325313862825366313721434016969281668191872756"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1082,
+      "family": "skellam",
+      "route": "seed-150251",
+      "outcome": "uncertified",
+      "errors": {
+        "mu1": 9.121029014803726e-17,
+        "mu2": 3.573065672187061e-18
+      },
+      "max_error": 9.121029014803726e-17,
+      "reference": {
+        "mu1": "1.2563864005772892342908469375988196758939814608683597314821649476759842359081517",
+        "mu2": "0.63138640057728923429084693759881967589398146086835973148216494766139702718083132"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1083,
+      "family": "skellam",
+      "route": "seed-150251",
+      "outcome": "uncertified",
+      "errors": {
+        "mu2": 1.0521823600333697e-16
+      },
+      "max_error": 1.0521823600333697e-16,
+      "reference": {
+        "mu1": "3.0",
+        "mu2": "1.9991596272572460641196118819858320318627910370581984858203562985769342743274067"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1084,
+      "family": "skellam",
+      "route": "seed-150251",
+      "outcome": "uncertified",
+      "errors": {
+        "mu1": 3.0470727871480973e-16,
+        "mu2": 2.5527431089977817e-16
+      },
+      "max_error": 3.0470727871480973e-16,
+      "reference": {
+        "mu1": "1.9098074351593920241020892215233061046939529588558969137443095294905296843761842",
+        "mu2": "1.4098074351593920241020892215233061046939529588558969137443095305300980273855709"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1085,
+      "family": "skellam",
+      "route": "seed-150251",
+      "outcome": "uncertified",
+      "errors": {
+        "mu2": 1.2849099301760934e-16
+      },
+      "max_error": 1.2849099301760934e-16,
+      "reference": {
+        "mu1": "3.0",
+        "mu2": "2.3042592231972742015310670754360047662271626763602162274132185307077134422964933"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1086,
+      "family": "skellam",
+      "route": "seed-150251",
+      "outcome": "uncertified",
+      "errors": {
+        "mu1": 1.386458611934839e-16,
+        "mu2": 5.163317636397831e-18
+      },
+      "max_error": 1.386458611934839e-16,
+      "reference": {
+        "mu1": "2.2147405112732541938349679474708673856464388483524649422052564851684743435820045",
+        "mu2": "2.131407177939920860501634614137534052313105515019131608871923151455106833513744"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1087,
+      "family": "skellam",
+      "route": "seed-150251",
+      "outcome": "uncertified",
+      "errors": {
+        "mu2": 9.013916988886778e-17
+      },
+      "max_error": 9.013916988886778e-17,
+      "reference": {
+        "mu1": "3.0",
+        "mu2": "2.7910521375047851726437157948056557701560736750858942677461055803960996839121844"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1088,
+      "family": "skellam",
+      "route": "seed-150251",
+      "outcome": "uncertified",
+      "errors": {
+        "mu1": 1.8197362354014925e-17,
+        "mu2": 2.357317103190427e-17
+      },
+      "max_error": 2.357317103190427e-17,
+      "reference": {
+        "mu1": "2.7406540629948076882346084410434437000322868380817716257927949018679676799403249",
+        "mu2": "2.1156540629948076882346084410434437000322868380817716257927949018679562063202088"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1089,
+      "family": "skellam",
+      "route": "seed-150251",
+      "outcome": "uncertified",
+      "errors": {
+        "mu2": 1.6728049160596724e-16
+      },
+      "max_error": 1.6728049160596724e-16,
+      "reference": {
+        "mu1": "3.0",
+        "mu2": "2.3301560176925680255662917819540476756690552764609657951854772970394520124231135"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1090,
+      "family": "skellam",
+      "route": "seed-150251",
+      "outcome": "uncertified",
+      "errors": {
+        "mu1": 4.6579536984625535e-17,
+        "mu2": 3.147288879852259e-17
+      },
+      "max_error": 4.6579536984625535e-17,
+      "reference": {
+        "mu1": "2.1149573472730548315082578525783550349983474917171160465122314190530091570312989",
+        "mu2": "1.573290680606388164841591185911688368331680825050449379845564752387264621468353"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1091,
+      "family": "skellam",
+      "route": "seed-150251",
+      "outcome": "uncertified",
+      "errors": {
+        "mu2": 7.725769895013685e-17
+      },
+      "max_error": 7.725769895013685e-17,
+      "reference": {
+        "mu1": "3.0",
+        "mu2": "2.2950304309280856077607000342558804488050520314263298951911581474443136096077989"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1092,
+      "family": "skellam",
+      "route": "seed-150251",
+      "outcome": "uncertified",
+      "errors": {
+        "mu1": 4.922458565597279e-17,
+        "mu2": 9.500852709714802e-17
+      },
+      "max_error": 9.500852709714802e-17,
+      "reference": {
+        "mu1": "1.9624702460354351696416056867278946720041690131049445928683696523017689411742794",
+        "mu2": "1.795803579368768502974939020061228005337502346438277926201702985638124143724614"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1093,
+      "family": "skellam",
+      "route": "seed-150251",
+      "outcome": "uncertified",
+      "errors": {
+        "mu2": 5.4922849596411173e-17
+      },
+      "max_error": 5.4922849596411173e-17,
+      "reference": {
+        "mu1": "3.0",
+        "mu2": "2.6634601637768361073614298807894983188700243971479410261818400239836853643983417"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1095,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 5.003749174569772e-16,
+        "alpha": 1.022842928723898e-14,
+        "beta": 1.4457125951297308e-14
+      },
+      "max_error": 1.4457125951297308e-14,
+      "reference": {
+        "size": "0.26312447088087997848753389789399910549727237670334778673340238145208894927284524",
+        "alpha": "6.4506887190136706132482293679143225107961611210392231217581064473346861494043036",
+        "beta": "31.021656372484540174460206870585570102468463365832421920971836188550012388033002"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1101,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 9.085191861139885e-16,
+        "alpha": 6.309658173343977e-15,
+        "beta": 1.550254902053895e-14
+      },
+      "max_error": 1.550254902053895e-14,
+      "reference": {
+        "size": "0.1268173036795249638316222991141070359763861177623465907623759560587697924976065",
+        "alpha": "4.2768775622334848157674776509569353048562139783482471482276730339712416856992834",
+        "beta": "2.7499707649276339250704305140663316303558035519231505077881783118132180249579159"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1106,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 3.3980458253290174e-16,
+        "alpha": 1.0505724131991686e-15,
+        "beta": 1.5007104178218184e-15
+      },
+      "max_error": 1.5007104178218184e-15,
+      "reference": {
+        "size": "0.96631078308949814433676889756944858596972202991862772965489980050075977784005298",
+        "alpha": "3.1751059585060958884025248603736930044315287431158886577617203929109408511519993",
+        "beta": "3.4450594621515315188420253721869725212673060113243462203452643021003477209993741"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1107,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 4.331123599196279e-15,
+        "alpha": 2.4038902207565255e-14,
+        "beta": 4.020424637616098e-14
+      },
+      "max_error": 4.020424637616098e-14,
+      "reference": {
+        "size": "0.49490307592090920659830212448597045535848000234445896575649481264921400875669163",
+        "alpha": "3.7458688201282303106772166244205808860053703351684649662281303980654200780235357",
+        "beta": "11.338810919811403776451859084815620425105246021260032067074191996891911383844313"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1108,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 2.7462983359432836e-15,
+        "alpha": 1.4431235568871951e-15,
+        "beta": 6.771181344896073e-15
+      },
+      "max_error": 6.771181344896073e-15,
+      "reference": {
+        "size": "0.67330106128781833247295143199187092426783780409114635654576036121742929936626028",
+        "alpha": "2.768071578009643205573725920051377642622538688254827652315407575336180847435478",
+        "beta": "4.9707349486613904467935946313449322471153280816840828430063275791270753459126249"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1109,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 2.428994772874469e-15,
+        "alpha": 3.31675813733426e-15,
+        "beta": 9.173003614544551e-15
+      },
+      "max_error": 9.173003614544551e-15,
+      "reference": {
+        "size": "0.55195666513630749178799161872756857683666434429231108015595686931021894239311214",
+        "alpha": "3.5145730620816527652673209193368519429283269485419458721169974911478555172355121",
+        "beta": "7.9734000150971654260254734604594713253064988163072149215408522509154680125801037"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1110,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 4.042377275886122e-15,
+        "alpha": 2.1106013093494027e-14,
+        "beta": 3.781293913184581e-14
+      },
+      "max_error": 3.781293913184581e-14,
+      "reference": {
+        "size": "0.43660786668155438955434424836990058069600398954381719548835612858870763696099836",
+        "alpha": "3.3088667647508872610863761981806024713318302538691632427481671828749892842663798",
+        "beta": "10.27503516076472984249004603106267678582691377573982602692302742631491269200337"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1117,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 1.871524008364968e-14,
+        "alpha": 1.4506899214052416e-15,
+        "beta": 1.781109742651797e-14
+      },
+      "max_error": 1.871524008364968e-14,
+      "reference": {
+        "size": "0.53609457686866796820541011793722346788925838050745950991607765046227494157773138",
+        "alpha": "2.7280282661484260449346290878531781021256042803541120307177874480689117885491165",
+        "beta": "0.53609457686866796820541011793722346788925838050745950991607765046227494157773138"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1118,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 3.913565892083e-12,
+        "alpha": 5.033937129910158e-14,
+        "beta": 3.8602799885641345e-12
+      },
+      "max_error": 3.913565892083e-12,
+      "reference": {
+        "size": "1.6182099877667659821205034992057374217078698191197447265272065584726650191032441",
+        "alpha": "20.396669992599793651751985142462984180752423523949217792781341267227635488343598",
+        "beta": "1.6182099877667659821205034992057374217078698191197447265272065584726650191032441"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1119,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 1.8148643465237196e-12,
+        "alpha": 4.476722757447906e-15,
+        "beta": 1.8104579180872665e-12
+      },
+      "max_error": 1.8148643465237196e-12,
+      "reference": {
+        "size": "0.70528284929344240925413616562610693264848305657245224519028409998443479516620062",
+        "alpha": "4.4230882788288543973078254148492729944307935768801165801227807393394794900565064",
+        "beta": "0.70528284929344240925413616562610693264848305657245224519028409998443479516620062"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1120,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 6.243173305803843e-13,
+        "alpha": 9.09484004704148e-15,
+        "beta": 6.141864594065322e-13
+      },
+      "max_error": 6.243173305803843e-13,
+      "reference": {
+        "size": "1.0007664043600692127927875317202639638047170013822321517905161248017960427114045",
+        "alpha": "7.9092388906015171820251060209893791905284409000992554572761083868733676103873688",
+        "beta": "1.0007664043600692127927875317202639638047170013822321517905161248017960427114045"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1125,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 6.179681397829019e-14,
+        "alpha": 1.5838520199523808e-12,
+        "beta": 1.801273034569356e-12
+      },
+      "max_error": 1.801273034569356e-12,
+      "reference": {
+        "size": "0.45000658867673125438182306378662109755395993328206143878018859097512126014259497",
+        "alpha": "20.45133649492312424434237076653738177865026655802713332540674895859277796462699",
+        "beta": "26.845978486972446105177186114201270417415966394637835148865367136437750615251983"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1126,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 9.890276532796832e-14,
+        "alpha": 4.139110334319634e-14,
+        "beta": 1.612276757249423e-13
+      },
+      "max_error": 1.612276757249423e-13,
+      "reference": {
+        "size": "0.90687164179287880615578142367838834417515033418198883234445284702597375447361024",
+        "alpha": "4.6229242455510433641464276305148396337670106449744868962722282577213129668074689",
+        "beta": "2.0522885461404900160852856924383954070634716556214829986384960189088411566576799"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1128,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 1.5580404787369852e-14,
+        "alpha": 7.724656917599954e-15,
+        "beta": 6.607301544914771e-15
+      },
+      "max_error": 1.5580404787369852e-14,
+      "reference": {
+        "size": "4.6034735062674323504899995809102784712331509849400467565777351269243065091766922",
+        "alpha": "3.8931894179630858053276262065448419591313461437237551709996715187762864514197547",
+        "beta": "4.6034735062674323504899995809102784712331509849400467565777351269243065091766922"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1129,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 1.0184640301303866e-13,
+        "alpha": 2.3236408295703058e-15,
+        "beta": 9.943703135150222e-14
+      },
+      "max_error": 1.0184640301303866e-13,
+      "reference": {
+        "size": "0.74760498639305365551847216615206336583640888349088624398010056435270957219016247",
+        "alpha": "2.8992364147146099861492624325788256883754142305735628553031362428256082843313055",
+        "beta": "0.74760498639305365551847216615206336583640888349088624398010056435270957219016247"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1131,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 1.1149051122800704e-15,
+        "alpha": 2.087722754256041e-14,
+        "beta": 3.252725215469249e-14
+      },
+      "max_error": 3.252725215469249e-14,
+      "reference": {
+        "size": "0.16293232568409507978440769315448057073612916445649973462912314991587954448037195",
+        "alpha": "4.7729554424845213564866485962130540527316659845459977493857946263019449095301285",
+        "beta": "6.3474597623627917824845308663992044782600019754511407363834301088072254744583914"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1132,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 3.732226728001662e-14,
+        "alpha": 4.535019858444286e-12,
+        "beta": 4.948435566106568e-12
+      },
+      "max_error": 4.948435566106568e-12,
+      "reference": {
+        "size": "0.24087250956326978555987696652920840524904263693342150800123778340077292184145055",
+        "alpha": "18.148466704860160163232262131757291123377552217868758153504491099651348156191527",
+        "beta": "104.45273062323960329126359797430386733781536417122402460606565605187601971472698"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1134,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 2.1780567862542813e-13,
+        "alpha": 8.75106372805844e-16,
+        "beta": 2.1890875162836629e-13
+      },
+      "max_error": 2.1890875162836629e-13,
+      "reference": {
+        "size": "1.6056645115796612825344236289239917802668083580324127237049286767041162940861217",
+        "alpha": "4.1748743720456972342086942029691640548622050639709824335875313500217881695995154",
+        "beta": "1.6056645115796612825344236289239917802668083580324127237049286767041162940861217"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1135,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 1.0538382668924296e-14,
+        "alpha": 2.6953003375430643e-14,
+        "beta": 5.338084834680389e-14
+      },
+      "max_error": 5.338084834680389e-14,
+      "reference": {
+        "size": "0.57184591005447017216661612534115955729661555517288835079082199789908262287040787",
+        "alpha": "3.9804900871137112558889815045068980176242735739304701501366118332933132055514371",
+        "beta": "4.6791872738062984870109678564139977126480888020899511059308450744033898016444515"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1138,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 9.960718512627686e-15,
+        "alpha": 1.0318724132054304e-14,
+        "beta": 2.4285231713810635e-14
+      },
+      "max_error": 2.4285231713810635e-14,
+      "reference": {
+        "size": "1.0901140709461212056126637307765790617297567398284830213393221754639295389371039",
+        "alpha": "3.7201866207453176111278229665861321839007592813302574950518127633067058781389345",
+        "beta": "9.8107477870530048733791110712997985824944322349047290826691556453504756169082368"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1139,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 9.88209294301835e-15,
+        "alpha": 1.4551628787851986e-14,
+        "beta": 3.1633360803666765e-14
+      },
+      "max_error": 3.1633360803666765e-14,
+      "reference": {
+        "size": "0.89033106358894109732873185915058589647011775877403525664109857509095529182614465",
+        "alpha": "3.0022668919707829465326325983504924110947750797770922888994765484933610100950702",
+        "beta": "8.9559487030475049218028488477273552904831148224059616025214921885458684253247419"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1140,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 1.5265592860781767e-15,
+        "alpha": 6.646072452202376e-15,
+        "beta": 1.0592873339988111e-14
+      },
+      "max_error": 1.0592873339988111e-14,
+      "reference": {
+        "size": "0.87881664336942641458079882102949694048424239662624549201144527846177078359940607",
+        "alpha": "3.6459449721897627388481996417502627366606067903223020828633083840918249466924745",
+        "beta": "11.76354866535177175089466887205002338915955891241633737617665639363173250242194"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1144,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 8.220180713706124e-13,
+        "alpha": 1.3286284578362336e-13,
+        "beta": 7.066480112357656e-13
+      },
+      "max_error": 8.220180713706124e-13,
+      "reference": {
+        "size": "0.82672280120321629321542922315208647753997144016380730260781398010100398720314456",
+        "alpha": "12.795245644376130695181642832638245445746921305640204945386273359339339047688889",
+        "beta": "0.82672280120321629321542922315208647753997144016380730260781398010100398720314456"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1148,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 2.0034567167527466e-13,
+        "alpha": 7.014134817861796e-15,
+        "beta": 2.0709960397982517e-13
+      },
+      "max_error": 2.0709960397982517e-13,
+      "reference": {
+        "size": "1.5368095381197503240648389739208178288278513212742140146527750622196989806663835",
+        "alpha": "11.061537202628797378058003057441663338193283625646126323774827643957014814939283",
+        "beta": "1.5368095381197503240648389739208178288278513212742140146527750622196989806663835"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1149,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 1.0872402382037846e-14,
+        "alpha": 6.489763457388493e-14,
+        "beta": 8.518670652532266e-14
+      },
+      "max_error": 8.518670652532266e-14,
+      "reference": {
+        "size": "0.60419445919126869238906155252038331176559329045558567487447216905353235029821798",
+        "alpha": "28.805358943817822809397955330081373357964418511514018759997369517262445720010519",
+        "beta": "13.575820085147052367391697875581767839888620033325746912654397495469317518896066"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1150,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 1.1545942244877308e-13,
+        "alpha": 9.984335543815875e-13,
+        "beta": 1.1443403208387233e-12
+      },
+      "max_error": 1.1443403208387233e-12,
+      "reference": {
+        "size": "1.1797458708479112594183435093293344377796143561236060648467690662182907393330734",
+        "alpha": "33.963262061736291622516619308701805677464614655951082804652721089682166996885964",
+        "beta": "32.598440764434350352909277215798326679650111682968257882993541326138945289239832"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1151,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 1.1062280933962935e-13,
+        "alpha": 2.1065708389261e-15,
+        "beta": 1.1403146096998643e-13
+      },
+      "max_error": 1.1403146096998643e-13,
+      "reference": {
+        "size": "1.1741997616488055705266126161427758772048460584523726529685156453102210375711623",
+        "alpha": "2.8389696074112411730594059571227611431111267793463404884144629835391090423668867",
+        "beta": "1.1741997616488055705266126161427758772048460584523726529685156453102210375711623"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1153,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 4.505829668649115e-14,
+        "alpha": 6.331998653407133e-15,
+        "beta": 3.787143661332797e-14
+      },
+      "max_error": 4.505829668649115e-14,
+      "reference": {
+        "size": "2.4900777364579987466996536727871335573698160977647143814999944914587863038449199",
+        "alpha": "6.7841630646457747794223642941575406918531689753154909268595456605485278017452478",
+        "beta": "2.4900777364579987466996536727871335573698160977647143814999944914587863038449199"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1154,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 7.124943978888233e-14,
+        "alpha": 5.688285872452148e-14,
+        "beta": 1.4105265551268709e-13
+      },
+      "max_error": 1.4105265551268709e-13,
+      "reference": {
+        "size": "1.0427123683866087643258122884705419254843132199330025359753990563984924118110507",
+        "alpha": "5.3459176306118726386212685706688212199603101265107768847528882733844777298313531",
+        "beta": "4.5058691765553135312285854670745740369504586082936653084237153175875023010709808"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1155,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 1.9607000865352915e-14,
+        "alpha": 1.2337933734489984e-14,
+        "beta": 3.470103226218037e-14
+      },
+      "max_error": 3.470103226218037e-14,
+      "reference": {
+        "size": "1.1319318558842168638413471914196520382587879812493228797336735594682875436801549",
+        "alpha": "5.5132557271482363835794421380890676796777737437420948546711656693704678331045601",
+        "beta": "4.784634693953925874817618128638290846021894568787377564494079881565860274823484"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1156,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 3.54466555366827e-15,
+        "alpha": 1.6490197836420513e-13,
+        "beta": 2.2611630979849584e-13
+      },
+      "max_error": 2.2611630979849584e-13,
+      "reference": {
+        "size": "0.1895153492520623347848888536790207340671750204092183995298687704868623987020203",
+        "alpha": "4.4325416090893910241331656393109238842774159891613052931305145057170226653810901",
+        "beta": "43.885396396449667358357347670858011285567188487301837541293272311668394138047779"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1159,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 8.065788232871077e-15,
+        "alpha": 3.93697518600645e-14,
+        "beta": 5.4329013456188715e-14
+      },
+      "max_error": 5.4329013456188715e-14,
+      "reference": {
+        "size": "1.3166524229680838625742833217768299504768250903963744810287231023212701657484341",
+        "alpha": "5.5077310784787797518641124654495434580267594435195617796499779616811633711016778",
+        "beta": "84.394593531128558737041259361787801676352210317868113276973352465254583949987453"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1160,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 3.6723782313477465e-14,
+        "alpha": 9.058705747404872e-14,
+        "beta": 2.334762204279888e-13
+      },
+      "max_error": 2.334762204279888e-13,
+      "reference": {
+        "size": "0.3721480089314025717000739251356763352746003056067899621961443397767038973936873",
+        "alpha": "2.6312843778992040012721789475495741125774968259248143385341220202497361648935235",
+        "beta": "2.7916007457126312103717954651558052180952314756253999690927697368874581522363734"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1161,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 9.468850436836917e-15,
+        "alpha": 5.5399154470958736e-14,
+        "beta": 9.113633214054036e-14
+      },
+      "max_error": 9.113633214054036e-14,
+      "reference": {
+        "size": "0.40271951875312514832734288943123409088551090335640736494832737766280492067526026",
+        "alpha": "5.0043709540678980987957706975921955979248350682323593833512274180301598912643558",
+        "beta": "5.7406606987918084682035094129134543763290205332901312135327584112753278773463262"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1162,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 2.5522759270949472e-15,
+        "alpha": 2.719600166147497e-15,
+        "beta": 8.570577429810696e-15
+      },
+      "max_error": 8.570577429810696e-15,
+      "reference": {
+        "size": "0.5669683700586339870788523206419256247465309816256481247130720404518674015660867",
+        "alpha": "3.3531322757410533406411558340508957987505472549174474291865995733045342658262619",
+        "beta": "2.9250330471063217045423922816093852509874174938939369694040738345122153798574318"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1163,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 5.9633552882667685e-15,
+        "alpha": 8.986029822621534e-14,
+        "beta": 1.2149768613063732e-13
+      },
+      "max_error": 1.2149768613063732e-13,
+      "reference": {
+        "size": "0.33913209891982079170805833092535839414176557081809355778643439165586311767213604",
+        "alpha": "6.7388468151851601159348067219553019314296176897732223170286041290570097898064077",
+        "beta": "11.776782099518118055776168940474232580697176079167712993641910899432731739972015"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1165,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 3.622455492873823e-14,
+        "alpha": 5.537523092611627e-14,
+        "beta": 1.0525896069616966e-13
+      },
+      "max_error": 1.0525896069616966e-13,
+      "reference": {
+        "size": "1.0387983368099983284532321818002740875746498767599080588993452210182730262312889",
+        "alpha": "4.3539698083441176585375798250261705257843438210138698134530816842353135923038745",
+        "beta": "7.2625352732744546362739742073045557280820630398071284857469578570885647166697215"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1166,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 2.913100555146898e-16,
+        "alpha": 2.002425663922173e-16,
+        "beta": 4.598455102314551e-17
+      },
+      "max_error": 2.913100555146898e-16,
+      "reference": {
+        "size": "1.165166292353759242813096048476073302302226421807357215658557677346481707819679",
+        "alpha": "4.6927389886138791101832719031941167137863682289197208946949110237872145486492203",
+        "beta": "8.0903582159660199667514922574634926355081515311881697620342867801844557621628663"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1167,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 1.2246488349811252e-13,
+        "alpha": 3.331317643689692e-15,
+        "beta": 1.2671583885371418e-13
+      },
+      "max_error": 1.2671583885371418e-13,
+      "reference": {
+        "size": "2.4629966645101802721242404784354677855164509164973504409607782126252455146097725",
+        "alpha": "3.2568624292431336581078662190009374002610579689057965566946056900315570857771128",
+        "beta": "2.4629966645101802721242404784354677855164509164973504409607782126252455146097725"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1168,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 3.2964535110096864e-14,
+        "alpha": 1.66496101053636e-14,
+        "beta": 5.5913453320046065e-14
+      },
+      "max_error": 5.5913453320046065e-14,
+      "reference": {
+        "size": "1.4019273233577069495528182148121192261948425600822551925086958815423744037103386",
+        "alpha": "3.057980746873586074733143377611400460454269500961002072359123947809042997226601",
+        "beta": "4.7091369216590667914968244408047329570210005705869284268005723173758616710007942"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1169,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 1.7068189015016322e-14,
+        "alpha": 1.8493774412455203e-14,
+        "beta": 4.1555556970797953e-14
+      },
+      "max_error": 4.1555556970797953e-14,
+      "reference": {
+        "size": "1.0573957559572321684530563214578487437318837211399743644470197460431793645692474",
+        "alpha": "4.126272324156271691655660943778839210654264136186979387170598301870784156401931",
+        "beta": "8.9835840410205228310398501255133543120214376424874472478373955792655311632579306"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1170,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 1.0068769627260802e-13,
+        "alpha": 3.603074093404185e-13,
+        "beta": 5.056388797072769e-13
+      },
+      "max_error": 5.056388797072769e-13,
+      "reference": {
+        "size": "1.7262088732811120021227340405567793238792742644154768614156152386623791654889567",
+        "alpha": "8.5522928022869480730486479936563612839604679892622266191379348154520987899335041",
+        "beta": "47.174531612801196087485676499002157446367236563931789171729184872857947894310604"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1171,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 7.272533624847329e-14,
+        "alpha": 3.2866368907719724e-15,
+        "beta": 7.716316430468003e-14
+      },
+      "max_error": 7.716316430468003e-14,
+      "reference": {
+        "size": "3.6827567545642172936664147536870000718057362945051837947509389212829811029563486",
+        "alpha": "2.0871314152530262801907550724335621663200175127841497674380078364793674998795633",
+        "beta": "3.6827567545642172936664147536870000718057362945051837947509389212829811029563486"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1172,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 3.028372676454195e-14,
+        "alpha": 1.966285122699554e-14,
+        "beta": 5.566494504870967e-14
+      },
+      "max_error": 5.566494504870967e-14,
+      "reference": {
+        "size": "2.6406629152215744024962785786500689343280331619595603743166638105910323294067936",
+        "alpha": "3.6154812430494613542300001718657942141456720622432130414022005256774688665429011",
+        "beta": "12.428335711297283940421126128518658227134716647905295993584245752901518592422974"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1173,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 6.987980759361354e-14,
+        "alpha": 3.593919363115454e-15,
+        "beta": 7.369191915785647e-14
+      },
+      "max_error": 7.369191915785647e-14,
+      "reference": {
+        "size": "4.9490436023666827296218783035841296033831316636699214770492568768802058730993815",
+        "alpha": "3.0419876440275596704419338447158834882220419391742988115386312252396863221435096",
+        "beta": "4.9490436023666827296218783035841296033831316636699214770492568768802058730993815"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1174,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 1.8979911169548368e-13,
+        "alpha": 6.504993594645159e-14,
+        "beta": 2.8101105253836687e-13
+      },
+      "max_error": 2.8101105253836687e-13,
+      "reference": {
+        "size": "2.9412120571070779122357515974194200903667593489931041509869670730155861410555922",
+        "alpha": "2.8782777143729416164987920675857624860169694833784714255885789755975483410292616",
+        "beta": "7.6981906780966239329837970076206735353261581629584670095193552794255809191403176"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1175,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 1.0952215578378618e-12,
+        "alpha": 8.235592753154055e-15,
+        "beta": 1.0854100847642657e-12
+      },
+      "max_error": 1.0952215578378618e-12,
+      "reference": {
+        "size": "5.0501533641512738216202036932960088944077816607575575874896656131373376526209731",
+        "alpha": "3.0476702225401009011023171225484941257151506297415399991121181737650619287384245",
+        "beta": "5.0501533641512738216202036932960088944077816607575575874896656131373376526209731"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1178,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 5.865067097682593e-15,
+        "alpha": 2.4426384767141483e-15,
+        "beta": 3.571828611631238e-15
+      },
+      "max_error": 5.865067097682593e-15,
+      "reference": {
+        "size": "0.80006145468705878485460206179385232281762390970809587861644340709932882904069619",
+        "alpha": "4.4811005029464639582068022405886391714080362204113417827776994615029985532134509",
+        "beta": "0.80006145468705878485460206179385232281762390970809587861644340709932882904069619"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1180,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 7.067809579457451e-13,
+        "alpha": 3.201091786237636e-14,
+        "beta": 6.722916734874909e-13
+      },
+      "max_error": 7.067809579457451e-13,
+      "reference": {
+        "size": "1.2674714080528600569556766872934216490606343099730550705731952407899065604137129",
+        "alpha": "7.5857314273073995974037882465610329116126362231093445858742156864486760676615547",
+        "beta": "1.2674714080528600569556766872934216490606343099730550705731952407899065604137129"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1181,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 1.269713133680651e-12,
+        "alpha": 3.087480940811393e-14,
+        "beta": 1.3000854898927502e-12
+      },
+      "max_error": 1.3000854898927502e-12,
+      "reference": {
+        "size": "4.8953871409345651049884995613177058500832963416871011761991016821995769174427755",
+        "alpha": "35.23662732606918899795689253193577247115895404561784431906031004164182464490197",
+        "beta": "4.8953871409345651049884995613177058500832963416871011761991016821995769174427755"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1183,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 1.3804899836932614e-14,
+        "alpha": 6.607092059897747e-14,
+        "beta": 8.237718864638965e-14
+      },
+      "max_error": 8.237718864638965e-14,
+      "reference": {
+        "size": "1.4669399525113708366381921257019760411676620794130031378106191212600068450918748",
+        "alpha": "24.793272045621190671436178018276480077638922499366722885005220017133013989528875",
+        "beta": "12.571249794103666243369683913303376364356743257689462277016788851495120676805509"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1184,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 1.6880240973772443e-13,
+        "alpha": 5.326254967178802e-14,
+        "beta": 1.132112530022808e-13
+      },
+      "max_error": 1.6880240973772443e-13,
+      "reference": {
+        "size": "3.0439108314818490524342497818877786772650869096296138831908212897496606416581217",
+        "alpha": "12.045196122444364954456813024224079435586073572295597133588291766680380425836776",
+        "beta": "3.0439108314818490524342497818877786772650869096296138831908212897496606416581217"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1185,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 1.566333558396049e-13,
+        "alpha": 1.6037596369980006e-14,
+        "beta": 1.3907892479700262e-13
+      },
+      "max_error": 1.566333558396049e-13,
+      "reference": {
+        "size": "2.410326619763367323558198988705177551805585349468352893505423778741247842200849",
+        "alpha": "8.5158869110384552039646135367525496527560781788192959651253895932426989882006121",
+        "beta": "2.410326619763367323558198988705177551805585349468352893505423778741247842200849"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1187,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 1.5037568547701508e-13,
+        "alpha": 1.1898604779510037e-14,
+        "beta": 1.6293715013982448e-13
+      },
+      "max_error": 1.6293715013982448e-13,
+      "reference": {
+        "size": "7.0983327527918900695086854767053957047040589991208710624010565361835716807835931",
+        "alpha": "13.80762120243645176768948078943559515807745241268561998930808900326919730682163",
+        "beta": "7.0983327527918900695086854767053957047040589991208710624010565361835716807835931"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1188,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 2.8407361012387228e-14,
+        "alpha": 1.1377091551042131e-15,
+        "beta": 2.740971235817537e-14
+      },
+      "max_error": 2.8407361012387228e-14,
+      "reference": {
+        "size": "6.9855028704172447568881978145536085594698690011922959417877086780855591834128267",
+        "alpha": "15.527556994366722777886585738401263677326406807350796830941982010624475526249462",
+        "beta": "6.9855028704172447568881978145536085594698690011922959417877086780855591834128267"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1190,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 3.3900810536820735e-13,
+        "alpha": 1.1814479844528477e-11,
+        "beta": 1.2299576317849587e-11
+      },
+      "max_error": 1.2299576317849587e-11,
+      "reference": {
+        "size": "1.4047575058449111644516034219618539244698197817794134240855663794655653370540643",
+        "alpha": "81.599883997145379119559610275303987413392115222353465771010066448450495596241744",
+        "beta": "199.09688782419473084117664936442684723559109809681513232627388734806774441257922"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1191,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 9.44378720024039e-14,
+        "alpha": 9.166317359265731e-14,
+        "beta": 1.970312217522092e-13
+      },
+      "max_error": 1.970312217522092e-13,
+      "reference": {
+        "size": "2.8316704041310822106916960385392857064454414629535917931826484476195376367237262",
+        "alpha": "9.218465863955246478484606058570651039891977822296623842597707825026248519079765",
+        "beta": "9.7756034955545635110473108883911974724973022336377084298245634241337681369718161"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1192,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 3.0216427090922396e-13,
+        "alpha": 6.198987869026942e-15,
+        "beta": 2.953254775664284e-13
+      },
+      "max_error": 3.0216427090922396e-13,
+      "reference": {
+        "size": "4.2291396806280532609872433812610582214198899616447955885818085324643580044327745",
+        "alpha": "6.2722986064672257252636229326828464596840816954862358426210783089781148919192667",
+        "beta": "4.2291396806280532609872433812610582214198899616447955885818085324643580044327745"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1197,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 2.3541454315730394e-14,
+        "alpha": 3.0218401233924784e-13,
+        "beta": 3.7787199439870405e-13
+      },
+      "max_error": 3.7787199439870405e-13,
+      "reference": {
+        "size": "0.57788701849898127999802445908026071080018765723672157113725123304959632626247112",
+        "alpha": "9.1064440876975731634224929002983527408529584055163981416195937499016721185656032",
+        "beta": "29.273298419797358064021247061105417152858181832552679029131846206903651325899532"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1203,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 8.022259975528021e-14,
+        "alpha": 1.1701984984953281e-12,
+        "beta": 1.349735243138554e-12
+      },
+      "max_error": 1.349735243138554e-12,
+      "reference": {
+        "size": "0.5403103156593775470085382500503592852883447144913678011433642697966154401979127",
+        "alpha": "38.419998299448846380513958319113175231187339711020726003536601428633067554670586",
+        "beta": "15.374825907648225775892653200976406201142418152935798927402256730077889006920542"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1207,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 2.0328961449242633e-13,
+        "alpha": 6.118522503758804e-15,
+        "beta": 2.0983192861833175e-13
+      },
+      "max_error": 2.0983192861833175e-13,
+      "reference": {
+        "size": "7.3527276561320701730452022511164997507396767695197285598395123427482113165945298",
+        "alpha": "8.2793172437914188366965435354657606737901516678513005330889811654817848525248128",
+        "beta": "7.3527276561320701730452022511164997507396767695197285598395123427482113165945298"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1208,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 1.1266603316820937e-13,
+        "alpha": 1.7475087911754403e-12,
+        "beta": 1.899022759034158e-12
+      },
+      "max_error": 1.899022759034158e-12,
+      "reference": {
+        "size": "2.2174353860661326337060298162402240230494125684238066178661243946933617189954026",
+        "alpha": "45.947590205302918421992600965761788509172037781988966372153236180489178654020125",
+        "beta": "164.92087965742312408268310954313893981184634488662094548729705418878903687370703"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1213,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 3.735977775132969e-12,
+        "alpha": 1.3327644481954252e-13,
+        "beta": 3.5995540924368545e-12
+      },
+      "max_error": 3.735977775132969e-12,
+      "reference": {
+        "size": "5.5484424057504547700365879543942880915006353310769506040544877430853393060219528",
+        "alpha": "35.400474030226952538752631484435411994211613918807006245367496373545414982183831",
+        "beta": "5.5484424057504547700365879543942880915006353310769506040544877430853393060219528"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1214,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 7.037669239536253e-13,
+        "alpha": 3.1481880617534015e-14,
+        "beta": 7.351723264157769e-13
+      },
+      "max_error": 7.351723264157769e-13,
+      "reference": {
+        "size": "4.532431882849626497123444307248541801752073956133266929085338157221104649138403",
+        "alpha": "25.05414523125249454750184525103123892073375251889729651113404304803882279265802",
+        "beta": "4.532431882849626497123444307248541801752073956133266929085338157221104649138403"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1215,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 4.749543204240622e-13,
+        "alpha": 2.6195486223941736e-12,
+        "beta": 3.1374879278463287e-12
+      },
+      "max_error": 3.1374879278463287e-12,
+      "reference": {
+        "size": "2.150216773129150676367925260274710736840901888362550811732844249755899446335386",
+        "alpha": "61.192319641316276399229607508391887778985420796641519086016027013671314668538591",
+        "beta": "24.998244576805790166394557012845129359865430704564328492656077434971063618780734"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1216,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 2.4151004845055827e-12,
+        "alpha": 1.0485250523691742e-13,
+        "beta": 2.3091785448913136e-12
+      },
+      "max_error": 2.4151004845055827e-12,
+      "reference": {
+        "size": "40.549981446107862432577895342523982971620211967241622299322046094734659249049434",
+        "alpha": "47.852442680905789580232519869725983468040384220862487159426793319075045596952965",
+        "beta": "40.549981446107862432577895342523982971620211967241622299322046094734659249049434"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1223,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 6.035287208092928e-14,
+        "alpha": 1.635718246405069e-14,
+        "beta": 7.680791889758681e-14
+      },
+      "max_error": 7.680791889758681e-14,
+      "reference": {
+        "size": "20.617846165440608005520781241856354955627799646228799270664143796316614824417018",
+        "alpha": "91.448725108138798693923890730241618275646042352580230417129281703562627838409725",
+        "beta": "20.617846165440608005520781241856354955627799646228799270664143796316614824417018"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1227,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 1.4820418934735605e-11,
+        "alpha": 1.14212764627491e-13,
+        "beta": 1.4704299736546186e-11
+      },
+      "max_error": 1.4820418934735605e-11,
+      "reference": {
+        "size": "20.644441326930553792902924327773813111281624151269792443408675580668356400247073",
+        "alpha": "100.69605274857442076187888613298418926885560301068036099785669815854570046708145",
+        "beta": "20.644441326930553792902924327773813111281624151269792443408675580668356400247073"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1240,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 2.835123554569825e-15,
+        "alpha": 3.0586698892913666e-14,
+        "beta": 5.823173078964353e-14
+      },
+      "max_error": 5.823173078964353e-14,
+      "reference": {
+        "size": "0.2127865095324663017836410916539765816747847254970994394772213821087671781474303",
+        "alpha": "2.6961965413653506743987547490944242624562078967859963377531968835581912153996782",
+        "beta": "5.7816287420764025930574700514121767436579611841439988842929768438931346214115259"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1243,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 1.6679900526202744e-14,
+        "alpha": 2.931774213832863e-13,
+        "beta": 9.430641308919798e-13
+      },
+      "max_error": 9.430641308919798e-13,
+      "reference": {
+        "size": "0.13405938524574526180681690954031523556967357387716097845474131834741532325815707",
+        "alpha": "0.93842371166766044370837090115844052972507277657073798584032441384747363313771619",
+        "beta": "39.389695061204413496239539376681029455485501425647903020952574666682885869256323"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1244,
+      "family": "bnbinom",
+      "route": "Nov9-0",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 1.010933120183531e-11,
+        "alpha": 9.998482925475299e-14,
+        "beta": 1.1780454003409471e-11
+      },
+      "max_error": 1.1780454003409471e-11,
+      "reference": {
+        "size": "0.9106257343895331768898305637412934213260714426021609665611984649597691363704085",
+        "alpha": "0.62700586213645530716758748995877039715417630051962325815665353969819809684971369",
+        "beta": "1.0478987516767562371050451329658534823763767997412887528786937470009830655222304"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1245,
+      "family": "bnbinom",
+      "route": "scalar-rescue",
+      "outcome": "uncertified",
+      "errors": {
+        "alpha": 2.2267019977977655e-15
+      },
+      "max_error": 2.2267019977977655e-15,
+      "reference": {
+        "size": "1.06722347874796152922272085561417043209075927734375",
+        "alpha": "29.44348312187134747111452646641595664806636822434039253866768007994817661545762",
+        "beta": "5.36473383510873969015619877609424293041229248046875"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1247,
+      "family": "bbinom",
+      "route": "joint-route-probe",
+      "outcome": "uncertified",
+      "errors": {
+        "alpha": 2.5351346048351826e-14,
+        "beta": 2.6079135887060493e-14
+      },
+      "max_error": 2.6079135887060493e-14,
+      "reference": {
+        "size": "3.0",
+        "alpha": "1874.5",
+        "beta": "1874.5"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1250,
+      "family": "zib",
+      "route": "interior-inflation-fallback",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 0.0,
+        "prob": 1.9995633770184025e-17,
+        "pi": 0.0
+      },
+      "max_error": 1.9995633770184025e-17,
+      "reference": {
+        "size": "1000023.0",
+        "prob": "0.9999816004231902666238676510440259874022897473358112763406441651842007633824422",
+        "pi": "0.5"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1251,
+      "family": "zib",
+      "route": "interior-inflation-fallback",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 0.0,
+        "pi": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "size": "1000013.0",
+        "prob": "0.40000000000000002220446049250313080847263336181640625",
+        "pi": "0.5"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1252,
+      "family": "bbinom",
+      "route": "joint-Newton-inclusion",
+      "outcome": "certified",
+      "errors": {
+        "alpha": 4.633976131347841e-16,
+        "beta": 7.896447034150175e-16
+      },
+      "max_error": 7.896447034150175e-16,
+      "reference": {
+        "size": "10.0",
+        "alpha": "0.85630369461897069284066089918309834733450408633589480702198476306865249707852603",
+        "beta": "1.4484991703216129829776786956596224378186732346445281440999650514771111437220511"
+      },
+      "tol": 1e-14
+    },
+    {
+      "index": 1253,
+      "family": "ztbinom",
+      "route": "exact-half-probability",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 0.0,
+        "prob": 2.220446049250313e-16
+      },
+      "max_error": 2.220446049250313e-16,
+      "reference": {
+        "size": "2.0",
+        "prob": "0.5"
+      },
+      "tol": 1e-18
+    },
+    {
+      "index": 1254,
+      "family": "zmbinom",
+      "route": "exact-half-zero-mass",
+      "outcome": "uncertified",
+      "errors": {
+        "size": 0.0,
+        "p0": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "size": "1.0",
+        "prob": "0.0000000010000000000000000622815914577798564188970686927859787829220294952392578125",
+        "p0": "0.5"
+      },
+      "tol": 1e-18
+    },
+    {
+      "index": 1255,
+      "family": "bbinom",
+      "route": "exact-symmetric-shapes",
+      "outcome": "uncertified",
+      "errors": {
+        "alpha": 1.9953571411262564e-13,
+        "beta": 2.002635039513343e-13
+      },
+      "max_error": 2.002635039513343e-13,
+      "reference": {
+        "size": "3.0",
+        "alpha": "1874.5",
+        "beta": "1874.5"
+      },
+      "tol": 1e-18
+    },
+    {
+      "index": 1256,
+      "family": "bnbinom",
+      "route": "all-held-evaluation",
+      "outcome": "uncertified",
+      "errors": {},
+      "max_error": 0,
+      "reference": {
+        "size": "2.0",
+        "alpha": "3.0",
+        "beta": "4.0"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1257,
+      "family": "bbinom",
+      "route": "exact-asymmetric-shapes",
+      "outcome": "uncertified",
+      "errors": {
+        "alpha": 6.661338147750939e-16,
+        "beta": 7.401486830834377e-16
+      },
+      "max_error": 7.401486830834377e-16,
+      "reference": {
+        "size": "3.0",
+        "alpha": "1.9999999999999999999999999999999999999999999999999999999999996863211050706510329",
+        "beta": "2.9999999999999999999999999999999999999999999999999999999999995265171490669267753"
+      },
+      "tol": 1e-18
+    },
+    {
+      "index": 1258,
+      "family": "zib",
+      "route": "exact-flat-root",
+      "outcome": "uncertified",
+      "errors": {
+        "prob": 1.5310954040614888e-06
+      },
+      "max_error": 1.5310954040614888e-06,
+      "reference": {
+        "size": "2.0",
+        "prob": "0.8",
+        "pi": "0.21875"
+      },
+      "tol": 1e-10
+    },
+    {
+      "index": 1259,
+      "family": "zib",
+      "route": "exact-nozero-held-inflation",
+      "outcome": "uncertified",
+      "errors": {
+        "prob": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "size": "4.0",
+        "prob": "0.5",
+        "pi": "0.200000000000000011102230246251565404236316680908203125"
+      },
+      "tol": 1e-18
+    },
+    {
+      "index": 1260,
+      "family": "ztbinom",
+      "route": "exact-size3-conditional-mean",
+      "outcome": "uncertified",
+      "errors": {
+        "prob": 1.1102230246251565e-16
+      },
+      "max_error": 1.1102230246251565e-16,
+      "reference": {
+        "size": "3.0",
+        "prob": "0.5"
+      },
+      "tol": 1e-18
+    },
+    {
+      "index": 1261,
+      "family": "zib",
+      "route": "exact-two-free-coefficients",
+      "outcome": "uncertified",
+      "errors": {
+        "prob": 4.8757776079498756e-82,
+        "pi": 1.1102230246251565e-16
+      },
+      "max_error": 1.1102230246251565e-16,
+      "reference": {
+        "size": "3.0",
+        "prob": "0.25",
+        "pi": "0.5"
+      },
+      "tol": 1e-18
+    },
+    {
+      "index": 1262,
+      "family": "zib",
+      "route": "unrepresentable-three-sevenths",
+      "outcome": "uncertified",
+      "errors": {
+        "pi": 2.3790493384824782e-17
+      },
+      "max_error": 2.3790493384824782e-17,
+      "reference": {
+        "size": "3.0",
+        "prob": "0.5",
+        "pi": "0.42857142857142857142857142857142857142857142857142857142857142857142857142857143"
+      },
+      "tol": 1e-18
+    },
+    {
+      "index": 1263,
+      "family": "zib",
+      "route": "exact-active-binomial-boundary",
+      "outcome": "uncertified",
+      "errors": {
+        "prob": 0.0,
+        "pi": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "size": "3.0",
+        "prob": "0.5",
+        "pi": "0.0"
+      },
+      "tol": 1e-18
+    },
+    {
+      "index": 1264,
+      "family": "zmbinom",
+      "route": "exact-delegated-probability-and-zero-mass",
+      "outcome": "uncertified",
+      "errors": {
+        "prob": 1.1102230246251565e-16,
+        "p0": 0.0
+      },
+      "max_error": 1.1102230246251565e-16,
+      "reference": {
+        "size": "3.0",
+        "prob": "0.5",
+        "p0": "0.125"
+      },
+      "tol": 1e-18
+    },
+    {
+      "index": 1265,
+      "family": "zib",
+      "route": "nonidentified-Bernoulli-curve",
+      "outcome": "uncertified",
+      "errors": {
+        "prob": 1.850371707708594e-17,
+        "pi": 0.0
+      },
+      "max_error": 1.850371707708594e-17,
+      "reference": {
+        "size": "1.0",
+        "prob": "0.33333333333333333333333333333333333333333333333333333333333333333333333333333333",
+        "pi": "0.0"
+      },
+      "tol": 1e-18
+    },
+    {
+      "index": 1266,
+      "family": "zib",
+      "route": "exact-held-inflation-Bernoulli",
+      "outcome": "uncertified",
+      "errors": {
+        "prob": 0.0
+      },
+      "max_error": 0.0,
+      "reference": {
+        "size": "1.0",
+        "prob": "0.5",
+        "pi": "0.5"
+      },
+      "tol": 1e-18
+    }
+  ]
+}

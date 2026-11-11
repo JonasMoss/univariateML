@@ -9,6 +9,7 @@ namespace cppunivariate {
 enum class ZibStatus { Ok, InvalidInput, InvalidSize, ZipLimit, IterationFailure, FaceTie };
 struct ZibResult {double size, prob, pi, logLik;int iterations;ZibStatus status;  StopDetail stop_detail{};
   bool certified = true;
+  bool accuracy_failure = false;
 };
 namespace zib_fit_detail {
 inline ZibResult zib_mle_proposal(ispan x,double tol=1e-10,int maxit=200,
@@ -284,6 +285,89 @@ inline ZibResult zib_mle(ispan x,double tol=1e-10,int maxit=200,
        tol<8*std::numeric_limits<double>::epsilon() &&
        ((std::isnan(fixed_prob) && out.prob<1) || (std::isnan(fixed_pi) && out.pi>0)))
       out.certified=false;
+    if(out.status==ZibStatus::Ok && !out.certified) {
+      const double searched_prob=out.prob,searched_pi=out.pi,searched_ll=out.logLik;
+      double S=0,zeros=0;for(int v:x){S+=v;zeros+=v==0;}
+      const double n=x.size(),k=n-zeros;
+      bool resolved=true;
+      binomial_accuracy::Pair centre(out.prob);double probability_error=0;
+      const bool precise=tol<128*std::numeric_limits<double>::epsilon();
+      const bool bernoulli_curve=precise && out.size==1 && std::isnan(fixed_pi) && std::isnan(fixed_prob) && S>0 && S<n;
+      if(bernoulli_curve) {
+        const auto mean=binomial_accuracy::divide(binomial_accuracy::Pair(S),binomial_accuracy::Pair(n));
+        out.prob=mean.hi+mean.lo;
+        const auto remainder=binomial_accuracy::add(mean,binomial_accuracy::Pair(-out.prob));
+        if(remainder.hi>0||(remainder.hi==0&&remainder.lo>0))out.prob=std::nextafter(out.prob,1.);
+        centre=binomial_accuracy::Pair(out.prob);
+      }
+      if(precise && out.size>1 && std::isnan(fixed_pi) && std::isnan(fixed_prob) && zeros>0 && k>0) {
+        const auto mean=binomial_accuracy::divide(binomial_accuracy::Pair(S),
+          binomial_accuracy::mul(binomial_accuracy::Pair(n),binomial_accuracy::Pair(out.size)));
+        const auto mass=binomial_accuracy::truncation_mass(mean,out.size);
+        const auto difference=binomial_accuracy::add(binomial_accuracy::mul(binomial_accuracy::Pair(n),
+          binomial_accuracy::add(binomial_accuracy::Pair(1),binomial_accuracy::neg(mass))),binomial_accuracy::Pair(-zeros));
+        const double eps=std::numeric_limits<double>::epsilon();
+        const double pad=128*(out.size+1)*eps*eps*(1+n+zeros);
+        if(difference.hi+difference.lo>pad)out.pi=0;
+        else out.pi=std::max(out.pi,std::numeric_limits<double>::min());
+      }
+      if(!bernoulli_curve && std::isnan(fixed_prob) && out.prob>0 && out.prob<1) {
+        if(out.size==1 && std::isfinite(fixed_pi)) {
+          const auto point=binomial_accuracy::divide(binomial_accuracy::Pair(S),
+            binomial_accuracy::mul(binomial_accuracy::Pair(n),binomial_accuracy::add(binomial_accuracy::Pair(1),binomial_accuracy::Pair(-fixed_pi))));
+          out.prob=std::min(1.,point.hi+point.lo);
+          resolved=out.prob==1 || binomial_accuracy::magnitude(binomial_accuracy::add(point,binomial_accuracy::Pair(-out.prob)))<=tol;
+        } else if(std::isfinite(fixed_pi) && fixed_pi>0 && fixed_pi<1 && zeros>0)
+          resolved=binomial_accuracy::held_probability(out.prob,out.size,fixed_pi,S,n,k,tol,maxit);
+        else if(std::isnan(fixed_pi) && out.pi>0) {
+          if(precise) {
+            const auto root=binomial_accuracy::precise_positive_root(out.prob,out.size,S,k,tol,maxit);
+            resolved=root.ok;
+            if(resolved) {
+              centre=root.point;probability_error=root.relative_error;
+              out.prob=centre.hi+centre.lo;
+            }
+          } else resolved=binomial_accuracy::positive_probability(out.prob,out.size,S,k,tol,maxit);
+        }
+        else {
+          out.prob=S/(n*out.size);
+          resolved=binomial_accuracy::ratio_accuracy(S,n*out.size,out.prob,tol);
+        }
+      }
+      if(std::isnan(fixed_pi) && out.prob>0 && out.pi<1) {
+        const ExtendedReal logf=out.size*std::log1p(-static_cast<ExtendedReal>(out.prob));
+        const ExtendedReal mass=-std::expm1(logf);
+        out.pi=static_cast<double>(std::max(ExtendedReal(0),1-(static_cast<ExtendedReal>(k)/n)/mass));
+      }
+      if(precise && resolved && std::isnan(fixed_pi) && ((out.pi>0 && out.pi<1)||bernoulli_curve)) {
+        if(!std::isnan(fixed_prob))centre=binomial_accuracy::Pair(out.prob);
+        resolved=binomial_accuracy::precise_inflation(out.pi,centre,out.size,n,k,probability_error,tol);
+      }
+      if(precise && resolved && std::isnan(fixed_pi) && std::isnan(fixed_prob) && out.pi>0)
+        resolved=binomial_accuracy::magnitude(binomial_accuracy::add(centre,binomial_accuracy::Pair(-out.prob)))+
+          probability_error*std::abs(centre.hi)<=tol;
+      if(std::isnan(fixed_pi) && std::isnan(fixed_prob) && out.pi==0) {
+        const auto mean=binomial_accuracy::divide(binomial_accuracy::Pair(S),
+          binomial_accuracy::mul(binomial_accuracy::Pair(n),binomial_accuracy::Pair(out.size)));
+        out.prob=mean.hi+mean.lo;
+        if(precise)resolved=resolved && binomial_accuracy::magnitude(binomial_accuracy::add(mean,binomial_accuracy::Pair(-out.prob)))<=tol;
+      }
+      if(std::isnan(fixed_pi) && out.prob==1) {
+        out.pi=zeros/n;
+        resolved=resolved && binomial_accuracy::ratio_accuracy(zeros,n,out.pi,tol);
+      }
+      if(!resolved) {
+        out.status=ZibStatus::IterationFailure;out.accuracy_failure=true;
+        out.prob=searched_prob;out.pi=searched_pi;out.logLik=searched_ll;
+        binomial_certificate_detail::witness(out.stop_detail,{out.size,out.prob,out.pi},out.logLik,false);
+        return out;
+      }
+      out.logLik=0;
+      for(int v:x) {
+        if(v==0)out.logLik+=special::log_sum_exp(std::log(out.pi),std::log1p(-out.pi)+out.size*std::log1p(-out.prob));
+        else out.logLik+=std::log1p(-out.pi)+zero_detail::bin_logpmf(v,out.size,out.prob);
+      }
+    }
     return out;
   };
   // Zero inflation, or a sample without zeros, reduces to ordinary

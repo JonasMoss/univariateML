@@ -1,0 +1,282 @@
+25	bbinom	uncertified	-10.659101518731639	size=101	alpha=1.9337387365835597	beta=0.19374063535548169	
+51	bbinom	uncertified	-5.3763734741771323	size=101	alpha=368.73872089594198	beta=2.9406650178896676	
+75	bbinom	uncertified	-164.81779828865987	size=1000019	alpha=1.9337387365835597	beta=2.9406650178896676	
+90	hyper	uncertified	-17.827179753472581	m=6	N=136	k=104	
+92	hyper	uncertified	-3.6190619946936828	m=5	N=134	k=116	
+93	hyper	uncertified	-5.282786972070876	m=5	N=133	k=117	
+94	hyper	uncertified	-5.1393486331559952	m=5	N=134	k=125	
+101	hyper	uncertified	-163.84242571051976	m=1000138	N=1000164	k=1000026	
+102	hyper	uncertified	-2.5020121176909376	m=1	N=60	k=12	
+103	hyper	uncertified	-2.502051642524151	m=125	N=126	k=101	
+209	nhyper	uncertified	-69.077607789516634	m=1	N=1000011	r=1	
+211	nhyper	uncertified	-2.5887736903538139	m=355	N=356	r=100	
+223	nhyper	uncertified	-80.378269063548942	m=20	N=6000029	r=1	
+265	nhyper	uncertified	-63.584610345863133	m=3	N=1000011	r=3	
+278	nhyper	uncertified	-70.764313872196908	m=20	N=6000027	r=3	
+317	tbinom	uncertified	-17.426030371921897	prob=0.99999334712481236	a=999999	b=1000011	size=1000011	
+331	tbinom	uncertified	-12.420888772765355	prob=0.40046933867469231	a=999999	b=1000011	size=2282796	
+345	tbinom	uncertified	-13.958493336452245	prob=0.99997108097222687	a=0	b=1000011	size=1000035	
+358	tbinom	uncertified	-4574371.989683738	prob=0.40046933867469231	a=0	b=1000011	size=1000027	
+551	zib	uncertified	-4360739.7310691765	size=1000013	prob=0.41801297244186852	pi=0	
+603	zib	uncertified	-4360742.2023137836	size=1000013	prob=0.41801297244186852	pi=0.38997108508286338	
+629	zmbinom	uncertified	-14.363697396130272	size=1000023	prob=0.99998160042319029	p0=0	
+655	zmbinom	uncertified	-4448721.70375882	size=1000013	prob=0.41072177895283224	p0=0	
+681	zmbinom	uncertified	-15.978516829112376	size=1000023	prob=0.99998160042319029	p0=0.27600000000000002	
+707	zmbinom	uncertified	-4448723.3185782526	size=1000013	prob=0.41072177895283224	p0=0.27600000000000002	
+733	ztbinom	uncertified	-14.363697396130272	size=1000023	prob=0.99998160042319029	
+757	ztbinom	uncertified	-4458954.3828779226	size=1000013	prob=0.40988208060294373	
+798	bbinom	uncertified	-32.570177999020473	size=420	alpha=1.9337387365835597	beta=240.98304118522168	
+832	bbinom	uncertified	-32.570177999020473	size=420	alpha=1.9337387365835597	beta=240.98304118522168	
+845	hyper	uncertified	-2.5020121176909376	m=10	N=50	k=49	
+927	bbinom	uncertified	-27.890523659649403	size=503	alpha=3241086.8209925345	beta=1000000000	
+928	hyper	uncertified	-28.812453348531651	m=15	N=147	k=16	
+929	hyper	uncertified	-31.491191388140159	m=107	N=263	k=4	
+937	bbinom	uncertified	-25.664986601415343	size=5	alpha=904761904.6666677	beta=1000000000	
+938	hyper	uncertified	-25.727808952004082	m=5	N=135	k=64	
+939	hyper	uncertified	-25.850301901305329	m=156	N=263	k=4	
+947	bbinom	uncertified	-25.496491094119982	size=6	alpha=548387096.73339653	beta=1000000000	
+948	hyper	uncertified	-25.523062808900455	m=7	N=138	k=42	
+949	hyper	uncertified	-26.0401337801514	m=140	N=263	k=4	
+957	bbinom	uncertified	-28.539855259398934	size=503	alpha=3741581.3771515666	beta=1000000000	
+958	hyper	uncertified	-28.991497714549148	m=15	N=150	k=19	
+959	hyper	uncertified	-30.681722898069033	m=123	N=263	k=4	
+967	bbinom	uncertified	-25.872674770033512	size=503	alpha=3366163.8101605978	beta=1000000000	
+968	hyper	uncertified	-26.1193934995798	m=14	N=149	k=18	
+969	hyper	uncertified	-27.780761245031798	m=111	N=263	k=4	
+977	bbinom	uncertified	-22.894717870442086	size=4	alpha=1064516129.0024449	beta=1000000000	
+978	hyper	uncertified	-22.912123503841396	m=4	N=134	k=69	
+979	hyper	uncertified	-22.902815278098849	m=135	N=262	k=4	
+987	bbinom	uncertified	-23.098466602512715	size=14	alpha=108910891.09135911	beta=1000000000	
+988	hyper	uncertified	-23.13956659880116	m=12	N=148	k=17	
+989	hyper	uncertified	-23.783382647024858	m=90	N=262	k=4	
+997	bbinom	uncertified	-26.997041491573768	size=14	alpha=172774869.09574807	beta=1000000000	
+998	hyper	uncertified	-27.048534685314976	m=17	N=148	k=18	
+999	hyper	uncertified	-28.540636770369762	m=136	N=263	k=4	
+1007	bbinom	uncertified	-26.559673060384569	size=7	alpha=399999999.93124998	beta=1000000000	
+1008	hyper	uncertified	-26.606670779184761	m=10	N=140	k=28	
+1009	hyper	uncertified	-27.162791194347275	m=131	N=262	k=4	
+1017	bbinom	uncertified	-28.485325121743728	size=503	alpha=3366163.6243520663	beta=1000000000	
+1018	hyper	uncertified	-29.441071138585627	m=15	N=148	k=17	
+1019	hyper	uncertified	-32.254019125891489	m=111	N=263	k=4	
+1027	bbinom	uncertified	-24.285092222523147	size=8	alpha=267326732.67015031	beta=1000000000	
+1028	hyper	uncertified	-24.284176921101349	m=14	N=141	k=17	
+1029	hyper	uncertified	-24.960839333703088	m=111	N=263	k=4	
+1037	bbinom	uncertified	-29.64108672416765	size=503	alpha=4242575.4353852933	beta=1000000000	
+1038	hyper	uncertified	-30.107461095093566	m=17	N=150	k=19	
+1039	hyper	uncertified	-32.504431629025461	m=140	N=263	k=4	
+1045	bbinom	uncertified	-8.3902372268269758	size=399	alpha=1	beta=158.01982742852505	
+1046	bbinom	uncertified	-13.021488121213466	size=507	alpha=5952380.1111118058	beta=1000000000	
+1047	hyper	uncertified	-2.7725887222397807	m=17	N=18	k=9	
+1048	hyper	uncertified	-21.024972454311786	m=132	N=265	k=5	
+1049	hyper	uncertified	-1.3862943611198943	m=1	N=10000	k=5000	
+1050	nhyper	uncertified	-16.236550980149094	m=46	N=285	r=1	
+1051	nhyper	uncertified	-2.0794414416668587	m=5000000	N=10000000	r=1	
+1053	zib	uncertified	-13.668373023095644	size=811159542	prob=1.9724849646141648e-09	pi=0.3772146069463776	
+1054	zib	uncertified	-13.668373023095645	size=175100589	prob=9.1376049129591875e-09	pi=0.37721460694637765	
+1055	ztbinom	uncertified	-36.707468169190314	size=11113	prob=1.0000000000000001e-09	
+1056	zib	uncertified	-71.561699511600722	size=10002	prob=1.0000000000000001e-09	pi=0	
+1057	zmbinom	uncertified	-38.956808747665548	size=11113	prob=1.0000000000000001e-09	p0=0.25	
+1058	tbinom	uncertified	-18.879639293383327	prob=9.916420064889025e-11	a=0	b=1e+100	size=26510400993	
+1059	bbinom	uncertified	-23.142710681485859	size=10	alpha=0.85630369461897105	beta=1.4484991703216139	
+1060	bbinom	uncertified	-24.129063066275059	size=10	alpha=2	beta=3.2537959465663659	
+1061	bbinom	uncertified	-23.764810599594483	size=10	alpha=1.5124504698130437	beta=3	
+1063	zib	uncertified	-74111.900972260933	size=2	prob=0.91607394948846776	pi=0.20000000000000001	
+1068	zib	uncertified	-40.016191368841476	size=2	prob=0.82352827495174186	pi=0.15743440233236153	
+1069	ztbinom	uncertified	-1.3862943611198904	size=2	prob=0.66666666666666652	
+1070	zmbinom	uncertified	-1.9095425048844386	size=1	prob=1.0000000000000001e-09	p0=0.33333333333333331	
+1071	zib	uncertified	-2.4327906486489863	size=2	prob=0.66666666666666663	pi=0	
+1072	zib	uncertified	-1.9095425048844386	size=1	prob=1	pi=0.33333333333333331	
+1073	bnbinom	stop:limit	nan	Certified global comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1074	bnbinom	stop:limit	nan	Certified global comparison: The Poisson face wins (including likelihood ties). Use `mlpois` instead.
+1075	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1076	bnbinom	uncertified	-13.446091514190089	size=3.272128223068473	alpha=4.5202287886146415	beta=3.2721282230691942	
+1077	bnbinom	certified	-13.684305879204789	size=2.1277944288833908	alpha=2	beta=2.1277944288834245	
+1078	skellam	uncertified	-53.668070837021986	mu1=3.230688957613939	mu2=2.147355624280606	
+1079	skellam	uncertified	-53.712552116599397	mu1=3	mu2=1.9672557025919599	
+1080	skellam	uncertified	-44.045938127426972	mu1=1.4202196710978734	mu2=0.87855300443120721	
+1081	skellam	uncertified	-47.126012183032358	mu1=3	mu2=2.1498042566942459	
+1082	skellam	uncertified	-40.998649814708187	mu1=1.2563864005772891	mu2=0.63138640057728923	
+1083	skellam	uncertified	-45.542013065002038	mu1=3	mu2=1.9991596272572463	
+1084	skellam	uncertified	-48.632772469317644	mu1=1.9098074351593914	mu2=1.4098074351593917	
+1085	skellam	uncertified	-49.749093887546131	mu1=3	mu2=2.3042592231972745	
+1086	skellam	uncertified	-51.479277636662026	mu1=2.2147405112732539	mu2=2.1314071779399208	
+1087	skellam	uncertified	-51.948917962864613	mu1=3	mu2=2.7910521375047854	
+1088	skellam	uncertified	-53.201550201955406	mu1=2.7406540629948077	mu2=2.1156540629948077	
+1089	skellam	uncertified	-53.250667887609524	mu1=3	mu2=2.3301560176925684	
+1090	skellam	uncertified	-49.633188567962357	mu1=2.1149573472730547	mu2=1.5732906806063882	
+1091	skellam	uncertified	-50.347478943655936	mu1=3	mu2=2.2950304309280858	
+1092	skellam	uncertified	-49.85828245710389	mu1=1.9624702460354351	mu2=1.7958035793687683	
+1093	skellam	uncertified	-50.75598722332667	mu1=3	mu2=2.6634601637768363	
+1094	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1095	bnbinom	uncertified	-297.91843378908965	size=0.26312447088088048	alpha=6.4506887190136046	beta=31.021656372484092	
+1096	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1097	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1098	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1099	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1100	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1101	bnbinom	uncertified	-311.24179291547017	size=0.12681730367952587	alpha=4.2768775622334578	beta=2.7499707649275913	
+1102	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1103	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1104	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1105	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1106	bnbinom	uncertified	-49.037168915220782	size=0.9663107830894978	alpha=3.1751059585060992	beta=3.4450594621515367	
+1107	bnbinom	uncertified	-361.19255359564136	size=0.49490307592091354	alpha=3.7458688201281403	beta=11.338810919810948	
+1108	bnbinom	uncertified	-349.5648379871364	size=0.67330106128782108	alpha=2.7680715780096392	beta=4.9707349486613568	
+1109	bnbinom	uncertified	-1699.7722653351741	size=0.55195666513630992	alpha=3.5145730620816411	beta=7.9734000150970923	
+1110	bnbinom	uncertified	-1731.1868237777792	size=0.43660786668155843	alpha=3.3088667647508174	beta=10.275035160764341	
+1111	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1112	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1113	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1114	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1115	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1116	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1117	bnbinom	uncertified	-85.094382818231807	size=0.53609457686864925	alpha=2.7280282661484221	beta=0.53609457686868578	
+1118	bnbinom	uncertified	-82.648314097755872	size=1.618209987760433	alpha=20.396669992598767	beta=1.6182099877730127	
+1119	bnbinom	uncertified	-415.11637497512453	size=0.70528284929162754	alpha=4.4230882788288346	beta=0.70528284929525287	
+1120	bnbinom	uncertified	-427.71590571335406	size=1.0007664043594444	alpha=7.9092388906014452	beta=1.0007664043606839	
+1121	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1122	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1123	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1124	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1125	bnbinom	uncertified	-1052.1824834981844	size=0.45000658867679305	alpha=20.451336494890732	beta=26.845978486924089	
+1126	bnbinom	uncertified	-943.15996033676367	size=0.9068716417927799	alpha=4.6229242455512347	beta=2.0522885461408209	
+1127	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1128	bnbinom	uncertified	-89.822889698222539	size=4.6034735062673606	alpha=3.8931894179630557	beta=4.6034735062674628	
+1129	bnbinom	uncertified	-126.94344131890388	size=0.74760498639295181	alpha=2.8992364147146032	beta=0.74760498639315309	
+1130	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1131	bnbinom	uncertified	-581.79164647385915	size=0.16293232568409396	alpha=4.772955442484621	beta=6.3474597623629982	
+1132	bnbinom	uncertified	-44.296880853134532	size=0.24087250956330711	alpha=18.148466704777857	beta=104.45273062272273	
+1133	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1134	bnbinom	uncertified	-243.74241752107065	size=1.6056645115793116	alpha=4.1748743720457009	beta=1.6056645115800128	
+1135	bnbinom	uncertified	-1249.7090051867715	size=0.57184591005448071	alpha=3.980490087113604	beta=4.6791872738060487	
+1136	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1137	bnbinom	stop:input-or-search	nan	bnbinom numerical accuracy failure: final Newton refinement did not converge to the requested coefficient tolerance; increase iterlim or inspect conditioning.
+1138	bnbinom	uncertified	-489.70963196463862	size=1.0901140709461103	alpha=3.720186620745356	beta=9.8107477870532431	
+1139	bnbinom	uncertified	-2415.061923734374	size=0.89033106358893122	alpha=3.0022668919708266	beta=8.9559487030477882	
+1140	bnbinom	uncertified	-2423.2602681738958	size=0.87881664336942489	alpha=3.645944972189787	beta=11.763548665351896	
+1141	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1142	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1143	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1144	bnbinom	uncertified	-222.21547173892515	size=0.82672280120239428	alpha=12.795245644374431	beta=0.82672280120392294	
+1145	bnbinom	stop:limit	nan	Uncertified legacy comparison: The Poisson face wins (including likelihood ties). Use `mlpois` instead.
+1146	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1147	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1148	bnbinom	uncertified	-597.10852593452364	size=1.5368095381194424	alpha=11.061537202628875	beta=1.5368095381200686	
+1149	bnbinom	uncertified	-690.38705899484296	size=0.60419445919127956	alpha=28.805358943815953	beta=13.575820085145896	
+1150	bnbinom	uncertified	-44.85349662471809	size=1.179745870847775	alpha=33.963262061770202	beta=32.598440764471654	
+1151	bnbinom	uncertified	-33.609718734112548	size=1.1741997616486757	alpha=2.8389696074112472	beta=1.1741997616489395	
+1152	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1153	bnbinom	uncertified	-286.17430278440469	size=2.4900777364578865	alpha=6.7841630646457318	beta=2.490077736458093	
+1154	bnbinom	uncertified	-1422.5653290453604	size=1.0427123683865345	alpha=5.3459176306121767	beta=4.5058691765559491	
+1155	bnbinom	uncertified	-1500.91796905774	size=1.1319318558842391	alpha=5.5132557271481684	beta=4.7846346939537598	
+1156	bnbinom	uncertified	-49.916166686917862	size=0.18951534925205879	alpha=4.432541609090122	beta=43.885396396459591	
+1157	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1158	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1159	bnbinom	uncertified	-126.37197159597447	size=1.3166524229680945	alpha=5.5077310784785629	beta=84.394593531123974	
+1160	bnbinom	uncertified	-193.38460296122878	size=0.37214800893136585	alpha=2.6312843778994424	beta=2.791600745713283	
+1161	bnbinom	uncertified	-195.53762858551045	size=0.40271951875311568	alpha=5.0043709540681753	beta=5.7406606987923317	
+1162	bnbinom	uncertified	-1084.7191774122391	size=0.56696837005863654	alpha=3.3531322757410442	beta=2.9250330471062966	
+1163	bnbinom	uncertified	-1075.3749991914299	size=0.33913209891981483	alpha=6.7388468151857657	beta=11.776782099519549	
+1164	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1165	bnbinom	uncertified	-59.306383202805122	size=1.0387983368099607	alpha=4.3539698083443588	beta=7.2625352732752191	
+1166	bnbinom	uncertified	-418.43260879316716	size=1.1651662923537589	alpha=4.6927389886138782	beta=8.0903582159660203	
+1167	bnbinom	uncertified	-423.89829456306887	size=2.4629966645098786	alpha=3.2568624292431445	beta=2.4629966645104924	
+1168	bnbinom	uncertified	-2257.6093550790333	size=1.4019273233577532	alpha=3.0579807468735352	beta=4.7091369216588035	
+1169	bnbinom	uncertified	-2228.8116997789498	size=1.0573957559572502	alpha=4.1262723241561954	beta=8.9835840410201495	
+1170	bnbinom	uncertified	-101.97470366303817	size=1.7262088732809382	alpha=8.5522928022900295	beta=47.174531612825049	
+1171	bnbinom	uncertified	-103.02363330067104	size=3.6827567545639495	alpha=2.0871314152530331	beta=3.6827567545645015	
+1172	bnbinom	uncertified	-703.80358669937891	size=2.6406629152214944	alpha=3.6154812430495324	beta=12.428335711297976	
+1173	bnbinom	uncertified	-691.46853431796421	size=4.9490436023663369	alpha=3.0419876440275706	beta=4.9490436023670474	
+1174	bnbinom	uncertified	-3472.2589430631474	size=2.9412120571065197	alpha=2.8782777143731288	beta=7.6981906780987872	
+1175	bnbinom	uncertified	-3495.4705751178649	size=5.0501533641457428	alpha=3.0476702225400758	beta=5.0501533641567553	
+1176	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1177	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1178	bnbinom	uncertified	-97.520938159162441	size=0.80006145468705292	alpha=4.481100502946453	beta=0.80006145468706236	
+1179	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1180	bnbinom	uncertified	-607.55951355652007	size=1.2674714080519642	alpha=7.5857314273071568	beta=1.2674714080537122	
+1181	bnbinom	uncertified	-34.212475112946834	size=4.8953871409283494	alpha=35.236627326070277	beta=4.8953871409409295	
+1182	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1183	bnbinom	uncertified	-243.0464965240802	size=1.4669399525113911	alpha=24.793272045619553	beta=12.571249794102631	
+1184	bnbinom	uncertified	-252.83222102810561	size=3.0439108314813352	alpha=12.045196122443723	beta=3.0439108314821937	
+1185	bnbinom	uncertified	-1211.7783655693545	size=2.4103266197629898	alpha=8.5158869110383186	beta=2.4103266197637025	
+1186	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1187	bnbinom	uncertified	-71.523375551852197	size=7.0983327527908227	alpha=13.807621202436616	beta=7.0983327527930467	
+1188	bnbinom	uncertified	-67.090076591797285	size=6.9855028704170463	alpha=15.527556994366705	beta=6.9855028704174362	
+1189	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1190	bnbinom	uncertified	-472.98552368180259	size=1.4047575058453874	alpha=81.599883996181319	beta=199.09688782174592	
+1191	bnbinom	uncertified	-2317.630026643003	size=2.8316704041313496	alpha=9.2184658639544015	beta=9.7756034955526374	
+1192	bnbinom	uncertified	-2329.0940440749537	size=4.2291396806267754	alpha=6.2722986064671868	beta=4.2291396806293022	
+1193	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1194	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1195	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1196	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1197	bnbinom	uncertified	-1894.4103652099625	size=0.57788701849895774	alpha=9.106444087700325	beta=29.27329841980842	
+1198	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1199	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1200	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1201	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1202	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1203	bnbinom	uncertified	-575.21495585409639	size=0.54031031565929732	alpha=38.419998299493805	beta=15.374825907668978	
+1204	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1205	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1206	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1207	bnbinom	uncertified	-589.49951400640066	size=7.3527276561305754	alpha=8.2793172437914695	beta=7.352727656133613	
+1208	bnbinom	uncertified	-3071.6374424651249	size=2.2174353860663825	alpha=45.947590205222625	beta=164.92087965710994	
+1209	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1210	bnbinom	stop:limit	nan	Uncertified legacy comparison: The Poisson face wins (including likelihood ties). Use `mlpois` instead.
+1211	bnbinom	stop:limit	nan	Uncertified legacy comparison: The Poisson face wins (including likelihood ties). Use `mlpois` instead.
+1212	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1213	bnbinom	uncertified	-258.51103701562329	size=5.5484424057297259	alpha=35.400474030222234	beta=5.5484424057704267	
+1214	bnbinom	uncertified	-1269.0256505544037	size=4.5324318828464367	alpha=25.054145231253283	beta=4.5324318828529586	
+1215	bnbinom	uncertified	-1299.1281249888548	size=2.1502167731281294	alpha=61.192319641476573	beta=24.998244576884222	
+1216	bnbinom	uncertified	-113.51320899407074	size=40.54998144600993	alpha=47.852442680900772	beta=40.5499814462015	
+1217	bnbinom	stop:input-or-search	nan	bnbinom numerical accuracy failure: final Newton refinement did not converge to the requested coefficient tolerance; increase iterlim or inspect conditioning.
+1218	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1219	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1220	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1221	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1222	bnbinom	stop:limit	nan	Uncertified legacy comparison: The Poisson face wins (including likelihood ties). Use `mlpois` instead.
+1223	bnbinom	uncertified	-69.833341043396729	size=20.617846165439364	alpha=91.448725108140295	beta=20.617846165442192	
+1224	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1225	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1226	bnbinom	stop:input-or-search	nan	bnbinom numerical accuracy failure: final Newton refinement did not converge to the requested coefficient tolerance; increase iterlim or inspect conditioning.
+1227	bnbinom	uncertified	-2274.3720992268272	size=20.644441326624595	alpha=100.69605274856292	beta=20.644441327234116	
+1228	bnbinom	stop:limit	nan	Uncertified legacy comparison: The Poisson face wins (including likelihood ties). Use `mlpois` instead.
+1229	bnbinom	stop:limit	nan	Uncertified legacy comparison: The Poisson face wins (including likelihood ties). Use `mlpois` instead.
+1230	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1231	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1232	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1233	bnbinom	stop:limit	nan	Uncertified legacy comparison: The Poisson face wins (including likelihood ties). Use `mlpois` instead.
+1234	bnbinom	stop:input-or-search	nan	bnbinom numerical accuracy failure: final Newton refinement did not converge to the requested coefficient tolerance; increase iterlim or inspect conditioning.
+1235	bnbinom	stop:limit	nan	Uncertified legacy comparison: The Poisson face wins (including likelihood ties). Use `mlpois` instead.
+1236	bnbinom	stop:limit	nan	Uncertified legacy comparison: The Poisson face wins (including likelihood ties). Use `mlpois` instead.
+1237	bnbinom	stop:input-or-search	nan	bnbinom numerical accuracy failure: final Newton refinement did not converge to the requested coefficient tolerance; increase iterlim or inspect conditioning.
+1238	bnbinom	stop:limit	nan	Uncertified legacy comparison: The Poisson face wins (including likelihood ties). Use `mlpois` instead.
+1239	bnbinom	stop:input-or-search	nan	bnbinom numerical accuracy failure: final Newton refinement did not converge to the requested coefficient tolerance; increase iterlim or inspect conditioning.
+1240	bnbinom	uncertified	-29.085362842298846	size=0.21278650953246914	alpha=2.6961965413652682	beta=5.7816287420760659	
+1241	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1242	bnbinom	stop:limit	nan	Uncertified legacy comparison: The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+1243	bnbinom	uncertified	-76.08985907900869	size=0.13405938524576194	alpha=0.93842371166736727	beta=39.389695061167266	
+1244	bnbinom	uncertified	-86.17215887374249	size=0.91062573437942385	alpha=0.62700586213655529	beta=1.047898751689101	
+1245	bnbinom	uncertified	-2.7273820600559873	size=1.0672234787479615	alpha=29.443483121871413	beta=5.3647338351087397	
+1246	bbinom	stop:numerical	nan	Beta-binomial MLE failed to certify the maximum and coefficient accuracy.
+1247	bbinom	uncertified	-12557.019409887744	size=3	alpha=1874.5000000000475	beta=1874.5000000000489	
+1248	bbinom	stop:numerical	nan	Beta-binomial MLE failed to certify the maximum and coefficient accuracy.
+1249	bbinom	stop:numerical	nan	Beta-binomial MLE failed to certify the maximum and coefficient accuracy.
+1250	zib	uncertified	-21.295169201729724	size=1000023	prob=0.99998160042319029	pi=0.5	
+1251	zib	uncertified	-4580985.9928449504	size=1000013	prob=0.40000000000000002	pi=0.5	
+1252	bbinom	certified	-23.142710681485859	size=10	alpha=0.85630369461897116	beta=1.4484991703216141	
+1253	ztbinom	uncertified	-1.9095425048844383	size=2	prob=0.49999999999999978	
+1254	zmbinom	uncertified	-1.3862943611198906	size=1	prob=1.0000000000000001e-09	p0=0.5	
+1255	bbinom	uncertified	-12557.019409887744	size=3	alpha=1874.500000000374	beta=1874.5000000003754	
+1256	bnbinom	uncertified	-5.144583266605995	size=2	alpha=3	beta=4	
+1257	bbinom	uncertified	-46.27225278422749	size=3	alpha=1.9999999999999987	beta=2.9999999999999978	
+1258	zib	uncertified	-39.509389291916854	size=2	prob=0.80000153109540406	pi=0.21875	
+1259	zib	uncertified	-4.422848629194136	size=4	prob=0.5	pi=0.20000000000000001	
+1260	ztbinom	uncertified	-7.0296973113785342	size=3	prob=0.49999999999999989	
+1261	zib	uncertified	-101.80904211053489	size=3	prob=0.25	pi=0.49999999999999989	
+1262	zib	uncertified	-16.733757839217766	size=3	prob=0.5	pi=0.42857142857142855	
+1263	zib	uncertified	-10.04385860143003	size=3	prob=0.5	pi=0	
+1264	zmbinom	uncertified	-10.043858601430028	size=3	prob=0.49999999999999989	p0=0.125	
+1265	zib	uncertified	-1.9095425048844383	size=1	prob=0.33333333333333331	pi=0	
+1266	zib	uncertified	-2.2493405784752332	size=1	prob=0.5	pi=0.5	

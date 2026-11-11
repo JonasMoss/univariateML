@@ -192,3 +192,26 @@ With probability held, the size scan charges every falling-factorial term in the
 With size two, inflation zero and observations $1,1,2$, the ordinary-binomial reduction has the unique probability $2/3$. Its exact real-valued maximum is known, but the nearest double misses a relative $10^{-18}$ coefficient target. A closed likelihood or size comparison cannot supply that missing probability-precision certificate.
 
 For a ZIP face with $z>0$ observed zeros, $k>0$ positive observations and held rational $0<\pi<1$, write $S=\sum x_i$ and $T=\sum x_i(x_i-1)$. At an interior stationary rate $\lambda$, the posterior base-component probability of a zero is $w=(1-\pi)e^{-\lambda}/[\pi+(1-\pi)e^{-\lambda}]$, and the score gives $S=\lambda(k+zw)$. The first binomial profile coefficient is $(\lambda S-T)/2$. If it vanished, $\lambda=T/S$ would be a nonzero rational (the case $T=0$ would force the inadmissible rate zero). The score would make $w$ rational, and then $e^{-\lambda}=\pi w/[(1-\pi)(1-w)]$ would be rational, contradicting Lindemann's theorem. Thus exact equality is excluded for valid binary held inflation on a mixed sample. This supplies neither a usable separation from zero nor integer-prefix exclusion; the reductions with $\pi=0$ or no observed zeros are outside this argument.
+
+An uncertified held-inflation probability is enclosed using the cleared score
+$\pi(S-kNp)+(1-\pi)(1-p)^N(S-nNp)$, where $S=\sum_i x_i$ and $k$ counts
+positive observations. Two-component products and sums preserve its signs
+near a multiple root. For example, counts $(17,2,15)$ on $(0,1,2)$ and
+$\pi=54/343$ give a score proportional to $-(17p-14)^3$; the supplied
+binary64 value of $\pi$ perturbs that root. Free inflation is recovered from
+the accurately bracketed positive-binomial probability using `expm1`.
+
+A double turning point with an exact score zero is checked by bounded integer
+products before numerical bracketing. For counts $(20,2,13)$ on $(0,1,2)$ and
+inflation $7/32$, this gives the rational maximum $p=4/5$, despite its zero
+observed curvature.
+
+The size-three histogram $(91,27,9,1)$ on $(0,1,2,3)$ is exactly the law with
+$p=1/4$ and $\pi=1/2$. In contrast, $(1,3,3,1)$ lies exactly on the zero-inflation
+boundary at $p=1/2$. These cases distinguish a representable joint fit from
+rounding in the inflation transformation or in selection of the active boundary.
+
+At size one, only the product $(1-\pi)p$ is identified. A coefficient-accuracy
+check may therefore use a feasible point on that maximum curve instead of
+insisting on its zero-inflation endpoint when the empirical success fraction
+is not representable at the requested precision.

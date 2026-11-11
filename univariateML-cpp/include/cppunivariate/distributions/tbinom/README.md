@@ -225,3 +225,8 @@ prefix comparison certify its truncated-Poisson supremum. Thus zero first and
 second coefficients allow both finite and limiting winners.
 
 The held-probability integer scan uses the same mode-relative kernels as the free-probability profile. It charges normalizer recurrence cells and kernel-ratio terms against the existing 512-unit default allowance; the supplied probability is never re-optimized during that scan.
+
+An uncertified free-probability fit checks the conditional-mean score relative
+to the integer mode before final bracketing. Summing offsets avoids losing a
+small score when observations are near a large truncation endpoint. This
+refinement leaves the selected integer size and truncation endpoints fixed.

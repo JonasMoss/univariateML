@@ -137,3 +137,14 @@ The held-probability size scan charges falling-factorial terms as enumeration ce
 With size free and every positive observation equal to one, size one attains likelihood one at any compatible held probability. This exact member needs no tail scan, even when the held probability is too small for an affordable global size bound.
 
 On support $\{1,2\}$, empirical counts $n_1,n_2$ require $p=2n_2/(n_1+2n_2)$. One observation of each therefore has the unique real-valued probability $2/3$. No double represents it within relative $10^{-18}$, so entropy attainment at size two does not by itself close a coefficient-precision certificate.
+
+For an uncertified size proposal, the positive-binomial mean equation is
+bracketed again for the free probability. Near a positive mean of one, the
+linear terms in $Np-\{1-(1-p)^N\}$ are cancelled analytically before computing
+the score. At size two the probability is the count ratio
+$2\sum_i(x_i-1)/\sum_i x_i$.
+
+A dyadic probability can be an exact positive-conditional MLE beyond size two:
+for size three, positive frequencies $(27,9,1)$ on $(1,2,3)$ have $p=1/4$.
+Such a representable stationary point remains valid at tolerances below an
+ordinary mean subtraction's resolution.

@@ -391,10 +391,11 @@ test('bbinom fixed-size coefficient certificate and uncertified inclusion fallba
     assert.ok(Math.abs(f.estimates.beta-3)<3e-10);
   }
   for(const held of [{size:10},{size:10,alpha:2},{size:10,beta:3}]) {
-    const f=api.bbinom.fit([0,1,1,2,2,3,4,5,7,10],held,{reltol:1e-18});
-    assert.equal(f.status,'Ok');assert.equal(f.certified,0);
-    assert.ok(Number.isFinite(f.logLik));
-    assert.ok(Object.values(f.estimates).every(Number.isFinite));
+    assert.throws(() => api.bbinom.fit([0,1,1,2,2,3,4,5,7,10],held,{reltol:1e-18}), e => {
+      assert.equal(e.kind,'numerical');
+      assert.ok(e.candidates.some(c => Number.isFinite(c.alpha) && Number.isFinite(c.beta) && Number.isFinite(c.loglik_lower)));
+      return /numerical accuracy failure/.test(e.message);
+    });
   }
 });
 

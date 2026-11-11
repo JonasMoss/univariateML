@@ -1,0 +1,814 @@
+{
+  "r-spots.json": {
+    "machine": "workstation",
+    "mode": "native",
+    "n": 25,
+    "max_error": 9.17915514521186e-13,
+    "rows": [
+      {
+        "index": 927,
+        "family": "bbinom",
+        "errors": {
+          "size": 0.0,
+          "alpha": 3.4419164694129793e-17
+        },
+        "max_error": 3.4419164694129793e-17,
+        "tol": 1e-10,
+        "integer_differs_from_gcc_reference": false,
+        "reference": {
+          "size": "503.0",
+          "alpha": "3241086.8209925364887172423364295420680015509285469252362214350932305684997084572",
+          "beta": "1000000000.0"
+        }
+      },
+      {
+        "index": 90,
+        "family": "hyper",
+        "errors": {
+          "m": 0.0,
+          "N": 0.0,
+          "k": 0.0
+        },
+        "max_error": 0.0,
+        "tol": 1e-10,
+        "integer_differs_from_gcc_reference": false,
+        "reference": {
+          "m": "6.0",
+          "N": "136.0",
+          "k": "104.0"
+        }
+      },
+      {
+        "index": 209,
+        "family": "nhyper",
+        "errors": {
+          "m": 0.0,
+          "N": 0.0,
+          "r": 0.0
+        },
+        "max_error": 0.0,
+        "tol": 1e-10,
+        "integer_differs_from_gcc_reference": false,
+        "reference": {
+          "m": "1.0",
+          "N": "1000011.0",
+          "r": "1.0"
+        }
+      },
+      {
+        "index": 317,
+        "family": "tbinom",
+        "errors": {
+          "prob": 6.054937200386309e-17,
+          "a": 0.0,
+          "b": 0.0,
+          "size": 0.0
+        },
+        "max_error": 6.054937200386309e-17,
+        "tol": 1e-10,
+        "integer_differs_from_gcc_reference": false,
+        "reference": {
+          "prob": "0.99999334712481242008810893165179470243529619291598003458043127609960726589203291",
+          "a": "999999.0",
+          "b": "1000011.0",
+          "size": "1000011.0"
+        }
+      },
+      {
+        "index": 733,
+        "family": "ztbinom",
+        "errors": {
+          "size": 0.0,
+          "prob": 1.9995633770184025e-17
+        },
+        "max_error": 1.9995633770184025e-17,
+        "tol": 1e-10,
+        "integer_differs_from_gcc_reference": false,
+        "reference": {
+          "size": "1000023.0",
+          "prob": "0.9999816004231902666238676510440259874022897473358112763406441651842007633824422"
+        }
+      },
+      {
+        "index": 1068,
+        "family": "zib",
+        "errors": {
+          "prob": 9.17915514521186e-13
+        },
+        "max_error": 9.17915514521186e-13,
+        "tol": 1e-10,
+        "integer_differs_from_gcc_reference": false,
+        "reference": {
+          "size": "2.0",
+          "prob": "0.82353041589714483539782392306075611552592189333090595176172276985208380409378025",
+          "pi": "0.1574344023323615282539122972593759186565876007080078125"
+        }
+      },
+      {
+        "index": 629,
+        "family": "zmbinom",
+        "errors": {
+          "size": 0.0,
+          "prob": 1.9995633770184025e-17,
+          "p0": 0.0
+        },
+        "max_error": 1.9995633770184025e-17,
+        "tol": 1e-10,
+        "integer_differs_from_gcc_reference": false,
+        "reference": {
+          "size": "1000023.0",
+          "prob": "0.9999816004231902666238676510440259874022897473358112763406441651842007633824422",
+          "p0": "0.0"
+        }
+      },
+      {
+        "index": 1076,
+        "family": "bnbinom",
+        "errors": {
+          "size": 1.133428554743621e-13,
+          "alpha": 5.272067355202057e-15,
+          "beta": 1.070644231010802e-13
+        },
+        "max_error": 1.133428554743621e-13,
+        "tol": 1e-10,
+        "integer_differs_from_gcc_reference": false,
+        "reference": {
+          "size": "3.2721282230688438243072610053482805140090490051445608192578882741549882252452048",
+          "alpha": "4.5202287886146653328590433270624145232730533106860715871936970397398965943353598",
+          "beta": "3.2721282230688438243072610053482805140090490051445608192578882741549882252452048"
+        }
+      },
+      {
+        "index": 1078,
+        "family": "skellam",
+        "errors": {
+          "mu1": 3.3610092987151853e-16,
+          "mu2": 3.6779100798029365e-16
+        },
+        "max_error": 3.6779100798029365e-16,
+        "tol": 1e-10,
+        "integer_differs_from_gcc_reference": false,
+        "reference": {
+          "mu1": "3.2306889576139401243754274694073582313519887471986309096756603438149154709312268",
+          "mu2": "2.1473556242806067910420941360740248980186554138652975763423270151963872339273678"
+        }
+      },
+      {
+        "index": 1245,
+        "family": "bnbinom",
+        "errors": {
+          "alpha": 2.2267019977977655e-15
+        },
+        "max_error": 2.2267019977977655e-15,
+        "tol": 1e-10,
+        "integer_differs_from_gcc_reference": false,
+        "reference": {
+          "size": "1.06722347874796152922272085561417043209075927734375",
+          "alpha": "29.44348312187134747111452646641595664806636822434039253866768007994817661545762",
+          "beta": "5.36473383510873969015619877609424293041229248046875"
+        }
+      },
+      {
+        "index": 1247,
+        "family": "bbinom",
+        "errors": {
+          "alpha": 0.0,
+          "beta": 0.0
+        },
+        "max_error": 0.0,
+        "tol": 1e-10,
+        "integer_differs_from_gcc_reference": false,
+        "reference": {
+          "size": "3.0",
+          "alpha": "1874.5",
+          "beta": "1874.5"
+        }
+      },
+      {
+        "index": 1250,
+        "family": "zib",
+        "errors": {
+          "size": 0.0,
+          "prob": 1.9995633770184025e-17,
+          "pi": 0.0
+        },
+        "max_error": 1.9995633770184025e-17,
+        "tol": 1e-10,
+        "integer_differs_from_gcc_reference": false,
+        "reference": {
+          "size": "1000023.0",
+          "prob": "0.9999816004231902666238676510440259874022897473358112763406441651842007633824422",
+          "pi": "0.5"
+        }
+      },
+      {
+        "index": 1252,
+        "family": "bbinom",
+        "errors": {
+          "alpha": 4.633976131347841e-16,
+          "beta": 7.896447034150175e-16
+        },
+        "max_error": 7.896447034150175e-16,
+        "tol": 1e-14,
+        "integer_differs_from_gcc_reference": false,
+        "reference": {
+          "size": "10.0",
+          "alpha": "0.85630369461897069284066089918309834733450408633589480702198476306865249707852603",
+          "beta": "1.4484991703216129829776786956596224378186732346445281440999650514771111437220511"
+        }
+      },
+      {
+        "index": 1253,
+        "family": "ztbinom",
+        "errors": {
+          "size": 0.0,
+          "prob": 0.0
+        },
+        "max_error": 0.0,
+        "tol": 1e-18,
+        "integer_differs_from_gcc_reference": false,
+        "reference": {
+          "size": "2.0",
+          "prob": "0.5"
+        }
+      },
+      {
+        "index": 1254,
+        "family": "zmbinom",
+        "errors": {
+          "size": 0.0,
+          "p0": 0.0
+        },
+        "max_error": 0.0,
+        "tol": 1e-18,
+        "integer_differs_from_gcc_reference": false,
+        "reference": {
+          "size": "1.0",
+          "prob": "0.0000000010000000000000000622815914577798564188970686927859787829220294952392578125",
+          "p0": "0.5"
+        }
+      },
+      {
+        "index": 1255,
+        "family": "bbinom",
+        "errors": {
+          "alpha": 0.0,
+          "beta": 0.0
+        },
+        "max_error": 0.0,
+        "tol": 1e-18,
+        "integer_differs_from_gcc_reference": false,
+        "reference": {
+          "size": "3.0",
+          "alpha": "1874.5",
+          "beta": "1874.5"
+        }
+      },
+      {
+        "index": 1257,
+        "family": "bbinom",
+        "errors": {
+          "alpha": 1.5683944746467447e-61,
+          "beta": 1.5782761697769106e-61
+        },
+        "max_error": 1.5782761697769106e-61,
+        "tol": 1e-18,
+        "integer_differs_from_gcc_reference": false,
+        "reference": {
+          "size": "3.0",
+          "alpha": "1.9999999999999999999999999999999999999999999999999999999999996863211050706510329",
+          "beta": "2.9999999999999999999999999999999999999999999999999999999999995265171490669267753"
+        }
+      },
+      {
+        "index": 1258,
+        "family": "zib",
+        "errors": {
+          "prob": 4.4408920985006264e-17
+        },
+        "max_error": 4.4408920985006264e-17,
+        "tol": 1e-10,
+        "integer_differs_from_gcc_reference": false,
+        "reference": {
+          "size": "2.0",
+          "prob": "0.8",
+          "pi": "0.21875"
+        }
+      },
+      {
+        "index": 1259,
+        "family": "zib",
+        "errors": {
+          "prob": 0.0
+        },
+        "max_error": 0.0,
+        "tol": 1e-18,
+        "integer_differs_from_gcc_reference": false,
+        "reference": {
+          "size": "4.0",
+          "prob": "0.5",
+          "pi": "0.200000000000000011102230246251565404236316680908203125"
+        }
+      },
+      {
+        "index": 1260,
+        "family": "ztbinom",
+        "errors": {
+          "prob": 0.0
+        },
+        "max_error": 0.0,
+        "tol": 1e-18,
+        "integer_differs_from_gcc_reference": false,
+        "reference": {
+          "size": "3.0",
+          "prob": "0.5"
+        }
+      },
+      {
+        "index": 1261,
+        "family": "zib",
+        "errors": {
+          "prob": 0.0,
+          "pi": 0.0
+        },
+        "max_error": 0.0,
+        "tol": 1e-18,
+        "integer_differs_from_gcc_reference": false,
+        "reference": {
+          "size": "3.0",
+          "prob": "0.25",
+          "pi": "0.5"
+        }
+      },
+      {
+        "index": 1263,
+        "family": "zib",
+        "errors": {
+          "prob": 0.0,
+          "pi": 0.0
+        },
+        "max_error": 0.0,
+        "tol": 1e-18,
+        "integer_differs_from_gcc_reference": false,
+        "reference": {
+          "size": "3.0",
+          "prob": "0.5",
+          "pi": "0.0"
+        }
+      },
+      {
+        "index": 1264,
+        "family": "zmbinom",
+        "errors": {
+          "prob": 0.0,
+          "p0": 0.0
+        },
+        "max_error": 0.0,
+        "tol": 1e-18,
+        "integer_differs_from_gcc_reference": false,
+        "reference": {
+          "size": "3.0",
+          "prob": "0.5",
+          "p0": "0.125"
+        }
+      },
+      {
+        "index": 1265,
+        "family": "zib",
+        "errors": {
+          "prob": 0.0,
+          "pi": 1.2325951644078308e-32
+        },
+        "max_error": 1.2325951644078308e-32,
+        "tol": 1e-18,
+        "integer_differs_from_gcc_reference": false,
+        "reference": {
+          "size": "1.0",
+          "prob": "0.33333333333333337034076748750521801412105560302734375",
+          "pi": "0.00000000000000011102230246251564171641152273077394014727273466048405622688847621714544867805017"
+        }
+      },
+      {
+        "index": 1266,
+        "family": "zib",
+        "errors": {
+          "prob": 0.0
+        },
+        "max_error": 0.0,
+        "tol": 1e-18,
+        "integer_differs_from_gcc_reference": false,
+        "reference": {
+          "size": "1.0",
+          "prob": "0.5",
+          "pi": "0.5"
+        }
+      }
+    ]
+  },
+  "wasm-spots.json": {
+    "machine": "workstation",
+    "mode": "double",
+    "n": 25,
+    "max_error": 9.17915514521186e-13,
+    "rows": [
+      {
+        "index": 927,
+        "family": "bbinom",
+        "errors": {
+          "size": 0.0,
+          "alpha": 3.4419164694129793e-17
+        },
+        "max_error": 3.4419164694129793e-17,
+        "tol": 1e-10,
+        "integer_differs_from_gcc_reference": false,
+        "reference": {
+          "size": "503.0",
+          "alpha": "3241086.8209925364887172423364295420680015509285469252362214350932305684997084572",
+          "beta": "1000000000.0"
+        }
+      },
+      {
+        "index": 90,
+        "family": "hyper",
+        "errors": {
+          "m": 0.0,
+          "N": 0.0,
+          "k": 0.0
+        },
+        "max_error": 0.0,
+        "tol": 1e-10,
+        "integer_differs_from_gcc_reference": false,
+        "reference": {
+          "m": "6.0",
+          "N": "136.0",
+          "k": "104.0"
+        }
+      },
+      {
+        "index": 209,
+        "family": "nhyper",
+        "errors": {
+          "m": 0.0,
+          "N": 0.0,
+          "r": 0.0
+        },
+        "max_error": 0.0,
+        "tol": 1e-10,
+        "integer_differs_from_gcc_reference": false,
+        "reference": {
+          "m": "1.0",
+          "N": "1000011.0",
+          "r": "1.0"
+        }
+      },
+      {
+        "index": 317,
+        "family": "tbinom",
+        "errors": {
+          "prob": 8.905663831716282e-17,
+          "a": 0.0,
+          "b": 0.0,
+          "size": 0.0
+        },
+        "max_error": 8.905663831716282e-17,
+        "tol": 1e-10,
+        "integer_differs_from_gcc_reference": true,
+        "reference": {
+          "prob": "0.000082524620502977025128656930810860760107476905687604366274333025892869566398288961",
+          "a": "999999.0",
+          "b": "1000011.0",
+          "size": "11224310574.0"
+        }
+      },
+      {
+        "index": 733,
+        "family": "ztbinom",
+        "errors": {
+          "size": 0.0,
+          "prob": 1.9995633770184025e-17
+        },
+        "max_error": 1.9995633770184025e-17,
+        "tol": 1e-10,
+        "integer_differs_from_gcc_reference": false,
+        "reference": {
+          "size": "1000023.0",
+          "prob": "0.9999816004231902666238676510440259874022897473358112763406441651842007633824422"
+        }
+      },
+      {
+        "index": 1068,
+        "family": "zib",
+        "errors": {
+          "prob": 9.17915514521186e-13
+        },
+        "max_error": 9.17915514521186e-13,
+        "tol": 1e-10,
+        "integer_differs_from_gcc_reference": false,
+        "reference": {
+          "size": "2.0",
+          "prob": "0.82353041589714483539782392306075611552592189333090595176172276985208380409378025",
+          "pi": "0.1574344023323615282539122972593759186565876007080078125"
+        }
+      },
+      {
+        "index": 629,
+        "family": "zmbinom",
+        "errors": {
+          "size": 0.0,
+          "prob": 1.9995633770184025e-17,
+          "p0": 0.0
+        },
+        "max_error": 1.9995633770184025e-17,
+        "tol": 1e-10,
+        "integer_differs_from_gcc_reference": false,
+        "reference": {
+          "size": "1000023.0",
+          "prob": "0.9999816004231902666238676510440259874022897473358112763406441651842007633824422",
+          "p0": "0.0"
+        }
+      },
+      {
+        "index": 1076,
+        "family": "bnbinom",
+        "errors": {
+          "size": 1.1809301234021215e-13,
+          "alpha": 2.7177011945369277e-15,
+          "beta": 1.1493611162163172e-13
+        },
+        "max_error": 1.1809301234021215e-13,
+        "tol": 1e-10,
+        "integer_differs_from_gcc_reference": false,
+        "reference": {
+          "size": "3.2721282230688438243072610053482805140090490051445608192578882741549882252452048",
+          "alpha": "4.5202287886146653328590433270624145232730533106860715871936970397398965943353598",
+          "beta": "3.2721282230688438243072610053482805140090490051445608192578882741549882252452048"
+        }
+      },
+      {
+        "index": 1078,
+        "family": "skellam",
+        "errors": {
+          "mu1": 3.3610092987151853e-16,
+          "mu2": 3.6779100798029365e-16
+        },
+        "max_error": 3.6779100798029365e-16,
+        "tol": 1e-10,
+        "integer_differs_from_gcc_reference": false,
+        "reference": {
+          "mu1": "3.2306889576139401243754274694073582313519887471986309096756603438149154709312268",
+          "mu2": "2.1473556242806067910420941360740248980186554138652975763423270151963872339273678"
+        }
+      },
+      {
+        "index": 1245,
+        "family": "bnbinom",
+        "errors": {
+          "alpha": 2.2267019977977655e-15
+        },
+        "max_error": 2.2267019977977655e-15,
+        "tol": 1e-10,
+        "integer_differs_from_gcc_reference": false,
+        "reference": {
+          "size": "1.06722347874796152922272085561417043209075927734375",
+          "alpha": "29.44348312187134747111452646641595664806636822434039253866768007994817661545762",
+          "beta": "5.36473383510873969015619877609424293041229248046875"
+        }
+      },
+      {
+        "index": 1247,
+        "family": "bbinom",
+        "errors": {
+          "alpha": 0.0,
+          "beta": 0.0
+        },
+        "max_error": 0.0,
+        "tol": 1e-10,
+        "integer_differs_from_gcc_reference": false,
+        "reference": {
+          "size": "3.0",
+          "alpha": "1874.5",
+          "beta": "1874.5"
+        }
+      },
+      {
+        "index": 1250,
+        "family": "zib",
+        "errors": {
+          "size": 0.0,
+          "prob": 1.9995633770184025e-17,
+          "pi": 0.0
+        },
+        "max_error": 1.9995633770184025e-17,
+        "tol": 1e-10,
+        "integer_differs_from_gcc_reference": false,
+        "reference": {
+          "size": "1000023.0",
+          "prob": "0.9999816004231902666238676510440259874022897473358112763406441651842007633824422",
+          "pi": "0.5"
+        }
+      },
+      {
+        "index": 1252,
+        "family": "bbinom",
+        "errors": {
+          "alpha": 4.633976131347841e-16,
+          "beta": 7.896447034150175e-16
+        },
+        "max_error": 7.896447034150175e-16,
+        "tol": 1e-14,
+        "integer_differs_from_gcc_reference": false,
+        "reference": {
+          "size": "10.0",
+          "alpha": "0.85630369461897069284066089918309834733450408633589480702198476306865249707852603",
+          "beta": "1.4484991703216129829776786956596224378186732346445281440999650514771111437220511"
+        }
+      },
+      {
+        "index": 1253,
+        "family": "ztbinom",
+        "errors": {
+          "size": 0.0,
+          "prob": 0.0
+        },
+        "max_error": 0.0,
+        "tol": 1e-18,
+        "integer_differs_from_gcc_reference": false,
+        "reference": {
+          "size": "2.0",
+          "prob": "0.5"
+        }
+      },
+      {
+        "index": 1254,
+        "family": "zmbinom",
+        "errors": {
+          "size": 0.0,
+          "p0": 0.0
+        },
+        "max_error": 0.0,
+        "tol": 1e-18,
+        "integer_differs_from_gcc_reference": false,
+        "reference": {
+          "size": "1.0",
+          "prob": "0.0000000010000000000000000622815914577798564188970686927859787829220294952392578125",
+          "p0": "0.5"
+        }
+      },
+      {
+        "index": 1255,
+        "family": "bbinom",
+        "errors": {
+          "alpha": 0.0,
+          "beta": 0.0
+        },
+        "max_error": 0.0,
+        "tol": 1e-18,
+        "integer_differs_from_gcc_reference": false,
+        "reference": {
+          "size": "3.0",
+          "alpha": "1874.5",
+          "beta": "1874.5"
+        }
+      },
+      {
+        "index": 1257,
+        "family": "bbinom",
+        "errors": {
+          "alpha": 1.5683944746467447e-61,
+          "beta": 1.5782761697769106e-61
+        },
+        "max_error": 1.5782761697769106e-61,
+        "tol": 1e-18,
+        "integer_differs_from_gcc_reference": false,
+        "reference": {
+          "size": "3.0",
+          "alpha": "1.9999999999999999999999999999999999999999999999999999999999996863211050706510329",
+          "beta": "2.9999999999999999999999999999999999999999999999999999999999995265171490669267753"
+        }
+      },
+      {
+        "index": 1258,
+        "family": "zib",
+        "errors": {
+          "prob": 4.4408920985006264e-17
+        },
+        "max_error": 4.4408920985006264e-17,
+        "tol": 1e-10,
+        "integer_differs_from_gcc_reference": false,
+        "reference": {
+          "size": "2.0",
+          "prob": "0.8",
+          "pi": "0.21875"
+        }
+      },
+      {
+        "index": 1259,
+        "family": "zib",
+        "errors": {
+          "prob": 0.0
+        },
+        "max_error": 0.0,
+        "tol": 1e-18,
+        "integer_differs_from_gcc_reference": false,
+        "reference": {
+          "size": "4.0",
+          "prob": "0.5",
+          "pi": "0.200000000000000011102230246251565404236316680908203125"
+        }
+      },
+      {
+        "index": 1260,
+        "family": "ztbinom",
+        "errors": {
+          "prob": 0.0
+        },
+        "max_error": 0.0,
+        "tol": 1e-18,
+        "integer_differs_from_gcc_reference": false,
+        "reference": {
+          "size": "3.0",
+          "prob": "0.5"
+        }
+      },
+      {
+        "index": 1261,
+        "family": "zib",
+        "errors": {
+          "prob": 0.0,
+          "pi": 0.0
+        },
+        "max_error": 0.0,
+        "tol": 1e-18,
+        "integer_differs_from_gcc_reference": false,
+        "reference": {
+          "size": "3.0",
+          "prob": "0.25",
+          "pi": "0.5"
+        }
+      },
+      {
+        "index": 1263,
+        "family": "zib",
+        "errors": {
+          "prob": 0.0,
+          "pi": 0.0
+        },
+        "max_error": 0.0,
+        "tol": 1e-18,
+        "integer_differs_from_gcc_reference": false,
+        "reference": {
+          "size": "3.0",
+          "prob": "0.5",
+          "pi": "0.0"
+        }
+      },
+      {
+        "index": 1264,
+        "family": "zmbinom",
+        "errors": {
+          "prob": 0.0,
+          "p0": 0.0
+        },
+        "max_error": 0.0,
+        "tol": 1e-18,
+        "integer_differs_from_gcc_reference": false,
+        "reference": {
+          "size": "3.0",
+          "prob": "0.5",
+          "p0": "0.125"
+        }
+      },
+      {
+        "index": 1265,
+        "family": "zib",
+        "errors": {
+          "prob": 0.0,
+          "pi": 1.2325951644078308e-32
+        },
+        "max_error": 1.2325951644078308e-32,
+        "tol": 1e-18,
+        "integer_differs_from_gcc_reference": false,
+        "reference": {
+          "size": "1.0",
+          "prob": "0.33333333333333337034076748750521801412105560302734375",
+          "pi": "0.00000000000000011102230246251564171641152273077394014727273466048405622688847621714544867805017"
+        }
+      },
+      {
+        "index": 1266,
+        "family": "zib",
+        "errors": {
+          "prob": 0.0
+        },
+        "max_error": 0.0,
+        "tol": 1e-18,
+        "integer_differs_from_gcc_reference": false,
+        "reference": {
+          "size": "1.0",
+          "prob": "0.5",
+          "pi": "0.5"
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,249 @@
+[
+  {
+    "index": 927,
+    "family": "bbinom",
+    "estimates": {
+      "size": "503",
+      "alpha": "3241086.8209925364",
+      "beta": "1000000000"
+    },
+    "certified": false
+  },
+  {
+    "index": 90,
+    "family": "hyper",
+    "estimates": {
+      "m": "6",
+      "N": "136",
+      "k": "104"
+    },
+    "certified": false
+  },
+  {
+    "index": 209,
+    "family": "nhyper",
+    "estimates": {
+      "m": "1",
+      "N": "1000011",
+      "r": "1"
+    },
+    "certified": false
+  },
+  {
+    "index": 317,
+    "family": "tbinom",
+    "estimates": {
+      "prob": "0.99999334712481236",
+      "a": "999999",
+      "b": "1000011",
+      "size": "1000011"
+    },
+    "certified": false
+  },
+  {
+    "index": 733,
+    "family": "ztbinom",
+    "estimates": {
+      "size": "1000023",
+      "prob": "0.99998160042319029"
+    },
+    "certified": false
+  },
+  {
+    "index": 1068,
+    "family": "zib",
+    "estimates": {
+      "size": "2",
+      "prob": "0.82353041589806275",
+      "pi": "0.15743440233236153"
+    },
+    "certified": false
+  },
+  {
+    "index": 629,
+    "family": "zmbinom",
+    "estimates": {
+      "size": "1000023",
+      "prob": "0.99998160042319029",
+      "p0": "0"
+    },
+    "certified": false
+  },
+  {
+    "index": 1076,
+    "family": "bnbinom",
+    "estimates": {
+      "size": "3.272128223068473",
+      "alpha": "4.5202287886146415",
+      "beta": "3.2721282230691942"
+    },
+    "certified": false
+  },
+  {
+    "index": 1078,
+    "family": "skellam",
+    "estimates": {
+      "mu1": "3.230688957613939",
+      "mu2": "2.147355624280606"
+    },
+    "certified": {}
+  },
+  {
+    "index": 1245,
+    "family": "bnbinom",
+    "estimates": {
+      "size": "1.0672234787479615",
+      "alpha": "29.443483121871413",
+      "beta": "5.3647338351087397"
+    },
+    "certified": false
+  },
+  {
+    "index": 1247,
+    "family": "bbinom",
+    "estimates": {
+      "size": "3",
+      "alpha": "1874.5",
+      "beta": "1874.5"
+    },
+    "certified": false
+  },
+  {
+    "index": 1250,
+    "family": "zib",
+    "estimates": {
+      "size": "1000023",
+      "prob": "0.99998160042319029",
+      "pi": "0.5"
+    },
+    "certified": false
+  },
+  {
+    "index": 1252,
+    "family": "bbinom",
+    "estimates": {
+      "size": "10",
+      "alpha": "0.85630369461897116",
+      "beta": "1.4484991703216141"
+    },
+    "certified": true
+  },
+  {
+    "index": 1253,
+    "family": "ztbinom",
+    "estimates": {
+      "size": "2",
+      "prob": "0.5"
+    },
+    "certified": false
+  },
+  {
+    "index": 1254,
+    "family": "zmbinom",
+    "estimates": {
+      "size": "1",
+      "prob": "1.0000000000000001e-09",
+      "p0": "0.5"
+    },
+    "certified": false
+  },
+  {
+    "index": 1255,
+    "family": "bbinom",
+    "estimates": {
+      "size": "3",
+      "alpha": "1874.5",
+      "beta": "1874.5"
+    },
+    "certified": false
+  },
+  {
+    "index": 1257,
+    "family": "bbinom",
+    "estimates": {
+      "size": "3",
+      "alpha": "2",
+      "beta": "3"
+    },
+    "certified": false
+  },
+  {
+    "index": 1258,
+    "family": "zib",
+    "estimates": {
+      "size": "2",
+      "prob": "0.80000000000000004",
+      "pi": "0.21875"
+    },
+    "certified": false
+  },
+  {
+    "index": 1259,
+    "family": "zib",
+    "estimates": {
+      "size": "4",
+      "prob": "0.5",
+      "pi": "0.20000000000000001"
+    },
+    "certified": false
+  },
+  {
+    "index": 1260,
+    "family": "ztbinom",
+    "estimates": {
+      "size": "3",
+      "prob": "0.5"
+    },
+    "certified": false
+  },
+  {
+    "index": 1261,
+    "family": "zib",
+    "estimates": {
+      "size": "3",
+      "prob": "0.25",
+      "pi": "0.5"
+    },
+    "certified": false
+  },
+  {
+    "index": 1263,
+    "family": "zib",
+    "estimates": {
+      "size": "3",
+      "prob": "0.5",
+      "pi": "0"
+    },
+    "certified": false
+  },
+  {
+    "index": 1264,
+    "family": "zmbinom",
+    "estimates": {
+      "size": "3",
+      "prob": "0.5",
+      "p0": "0.125"
+    },
+    "certified": false
+  },
+  {
+    "index": 1265,
+    "family": "zib",
+    "estimates": {
+      "size": "1",
+      "prob": "0.33333333333333337",
+      "pi": "1.1102230246251565e-16"
+    },
+    "certified": false
+  },
+  {
+    "index": 1266,
+    "family": "zib",
+    "estimates": {
+      "size": "1",
+      "prob": "0.5",
+      "pi": "0.5"
+    },
+    "certified": false
+  }
+]

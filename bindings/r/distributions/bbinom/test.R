@@ -185,12 +185,21 @@ test_that("fixed-size saturated tables enclose the public coefficients", {
   }
 })
 
-test_that("unattainable coefficient inclusion returns the successful search uncertified", {
+test_that("unattainable coefficient accuracy stops with a finite witness", {
   x <- c(0,1,1,2,2,3,4,5,7,10)
   for (held in list(list(),list(alpha=2),list(beta=3))) {
-    f <- do.call(mlbbinom,c(list(x=x,size=10,reltol=1e-18),held))
-    expect_identical(attr(f,"certified"),FALSE)
-    expect_true(all(is.finite(f)))
-    expect_true(is.finite(as.numeric(logLik(f))))
+    e <- tryCatch(do.call(mlbbinom,c(list(x=x,size=10,reltol=1e-18),held)),error=identity)
+    expect_s3_class(e,"univariateML_numerical")
+    expect_match(conditionMessage(e),"numerical accuracy failure")
+    expect_true(any(is.finite(e$candidates$alpha) & is.finite(e$candidates$beta)))
+    expect_true(all(is.finite(e$candidates$loglik_lower)))
   }
+})
+
+test_that("uncertified bbinom coefficients meet the local accuracy contract", {
+  f <- mlbbinom(c(2,4,0,1,4,0,1,2,1,4,3,3,0,1,0,0),size=NULL,beta=1000000000.0)
+  expect_identical(attr(f,"certified"),FALSE)
+  expect_equal(unname(f["size"]),503.0,tolerance=0)
+  expect_lte(abs(unname(f["alpha"])-(3241086.8209925364)),1e-10*3241086.8209925364)
+  expect_equal(unname(f["beta"]),1000000000.0,tolerance=0)
 })

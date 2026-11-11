@@ -13,6 +13,7 @@ inline FitResult fit_ztbinom(cppunivariate::ispan x, Held size_arg = {}, Held pr
   const double held_prob=prob.supplied?prob.value:std::numeric_limits<double>::quiet_NaN();
   if(prob.supplied && (!std::isfinite(held_prob)||held_prob<0||held_prob>1))return fail("`prob` must be finite and in [0, 1].");
   const auto res=cppunivariate::ztbinom_mle(x, reltol, iterlim, fixed_size, held_prob);
+  if(res.accuracy_failure)return stop_failure(fail("ztbinom numerical accuracy failure: the returned coefficients cannot be resolved to the requested tolerance in the local refinement."),res.stop_detail,"numerical",{"size","prob"});
   std::string stop_kind;
   switch(res.status) {
     case cppunivariate::ZtbinomStatus::PoissonLimit: stop_kind="limit";break;

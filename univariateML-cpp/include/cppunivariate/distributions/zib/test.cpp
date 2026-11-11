@@ -492,10 +492,70 @@ TEST_CASE("zib: an exact turning comparison does not certify a flat probability 
 TEST_CASE("zib: a closed binomial mean does not certify sub-machine coefficient accuracy") {
   const std::vector<int> x{1,1,2};
   const auto f=cppunivariate::zib_mle({x.data(),x.size()},1e-18,200,2,NAN,0);
-  REQUIRE(f.status==cppunivariate::ZibStatus::Ok);
+  REQUIRE(f.status==cppunivariate::ZibStatus::IterationFailure);
+  CHECK(f.accuracy_failure);
   CHECK_FALSE(f.certified);CHECK(std::isfinite(f.logLik));CHECK(f.pi==0);
   const std::vector<int> binary{0,1,1};
   const auto g=cppunivariate::zib_mle({binary.data(),binary.size()},1e-18,200,1,1,NAN);
-  REQUIRE(g.status==cppunivariate::ZibStatus::Ok);
+  REQUIRE(g.status==cppunivariate::ZibStatus::IterationFailure);
+  CHECK(g.accuracy_failure);
   CHECK_FALSE(g.certified);CHECK(g.prob==1);CHECK(g.pi==1./3);
+}
+
+
+TEST_CASE("zib: compensated score resolves a nearly triple probability root") {
+  const std::vector<int> x{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2};
+    const auto f=cppunivariate::zib_mle({x.data(),x.size()},1e-10,200,2,NAN,54./343);
+    REQUIRE(f.status==cppunivariate::ZibStatus::Ok);
+    CHECK_FALSE(f.certified);
+    CHECK(f.size==2);
+    CHECK(std::abs(f.prob-(0.8235304158971448))<=1e-10*1);
+    CHECK(f.pi==0.15743440233236153);
+}
+
+TEST_CASE("zib: an exactly represented inflation ratio meets a sub-machine target") {
+  const std::vector<int>x{0,1};
+  const auto f=cppunivariate::zib_mle({x.data(),x.size()},1e-18,200,1,1);
+  REQUIRE(f.status==cppunivariate::ZibStatus::Ok);
+  CHECK(f.pi==.5);CHECK_FALSE(f.accuracy_failure);
+}
+
+TEST_CASE("zib: an exactly flat probability maximum has a closed rational root") {
+  std::vector<int>x(20,0);x.insert(x.end(),2,1);x.insert(x.end(),13,2);
+  const auto f=cppunivariate::zib_mle({x.data(),x.size()},1e-10,200,2,NAN,7./32);
+  REQUIRE(f.status==cppunivariate::ZibStatus::Ok);
+  CHECK(std::abs(f.prob-.8)<=1e-10);
+}
+
+TEST_CASE("zib: no-zero held inflation preserves an exact binomial mean") {
+  const std::vector<int>x{1,2,3};
+  const auto f=cppunivariate::zib_mle({x.data(),x.size()},1e-18,200,4,NAN,.2);
+  REQUIRE(f.status==cppunivariate::ZibStatus::Ok);
+  CHECK(f.prob==.5);CHECK(f.pi==.2);
+}
+
+TEST_CASE("zib: strict positive-probability inflation is checked after transformation") {
+  std::vector<int> x(91,0);x.insert(x.end(),27,1);x.insert(x.end(),9,2);x.push_back(3);
+  const auto f=cppunivariate::zib_mle({x.data(),x.size()},1e-18,200,3);
+  REQUIRE(f.status==cppunivariate::ZibStatus::Ok);CHECK(f.prob==.25);CHECK(f.pi==.5);
+  std::vector<int> y(7,0);y.insert(y.end(),3,1);y.insert(y.end(),3,2);y.push_back(3);
+  const auto g=cppunivariate::zib_mle({y.data(),y.size()},1e-18,200,3,.5);
+  CHECK(g.status==cppunivariate::ZibStatus::IterationFailure);CHECK(g.accuracy_failure);
+}
+
+TEST_CASE("zib: a strict binomial-boundary fit keeps the exact active branch") {
+  const std::vector<int>x{0,1,1,1,2,2,2,3};
+  const auto f=cppunivariate::zib_mle({x.data(),x.size()},1e-18,200,3);
+  REQUIRE(f.status==cppunivariate::ZibStatus::Ok);CHECK(f.prob==.5);CHECK(f.pi==0);
+}
+
+TEST_CASE("zib: strict Bernoulli saturation uses the nonidentified maximum curve") {
+  const std::vector<int>x{0,0,1};
+  const auto f=cppunivariate::zib_mle({x.data(),x.size()},1e-18,200,1);
+  REQUIRE(f.status==cppunivariate::ZibStatus::Ok);
+  CHECK(f.prob>=1./3);CHECK(f.pi>=0);
+  CHECK(std::abs(std::fma(-3*f.prob,f.pi,std::fma(3.,f.prob,-1.)))<=1e-18);
+  const std::vector<int>y{0,0,0,1};
+  const auto g=cppunivariate::zib_mle({y.data(),y.size()},1e-18,200,1,NAN,.5);
+  REQUIRE(g.status==cppunivariate::ZibStatus::Ok);CHECK(g.prob==.5);
 }
