@@ -21,8 +21,11 @@ Active work lives on the board (`~/boards/univariateML`), not here.
   binary64 inputs at every parameter value, not only at the tabulated points,
   or returns `NaN` in a region its dossier names. Forward accuracy was chosen
   over a conditioning-relative bound because fitted parameters are exact
-  doubles. Design: [accuracy contract](../design/accuracy-contract.md#dpq);
-  work: TASK-189, Fréchet TASK-187.
+  doubles. A quantile also passes if its probability matches the input to
+  relative `1e-12` on the input's own tail and scale (Jonas: "sure, ok"), which
+  covers quantiles that cancel to nearly zero. Design:
+  [accuracy contract](../design/accuracy-contract.md#dpq); work: TASK-189,
+  Fréchet TASK-187.
 - **Uncertified fits meet the accuracy contract** (Jonas: "lets go with a").
   `certified = FALSE` withdraws only the global-optimality claim. Every `Ok`
   fit, certified or not, is within `tol` of a local maximizer, justified by its

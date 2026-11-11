@@ -55,11 +55,16 @@ too: `certified = FALSE` withdraws only the global claim.
 Every `dpqr.hpp` function is accurate for the exact binary64 arguments it
 receives, over the whole parameter domain: log densities and log
 probabilities within `1e-10 * max(1, |v|)` of the exact value `v`, natural
-probabilities within relative `1e-10`, quantiles within relative `1e-9` or
-the table's resolution floor. These are the
-[truth consumer's](../../univariateML-cpp/tests/test_support.hpp)
-tolerances; the contract extends them from the tabulated points to every
-parameter value.
+probabilities within relative `1e-10`. A quantile `q_hat` is accepted if it
+is within relative `1e-9` of the true quantile, or if its probability
+`F(q_hat)`, on the tail and scale of the input, is within relative `1e-12` of
+the input. The second test only forgives ill-conditioned quantiles, such as
+one that cancels to nearly zero against a nonzero center; in a tail, a
+relative quantile error `d` moves the log tail by about `shape * d`. These are
+the [truth consumer's](../../univariateML-cpp/tests/test_support.hpp)
+tolerances (it still applies the probability test only at discrete jumps and
+at an interior zero); the contract extends them from the tabulated points to
+every parameter value.
 
 This is forward accuracy, not accuracy relative to the problem's
 conditioning. Fitted parameters are exact doubles, and near limit models the
