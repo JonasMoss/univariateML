@@ -111,6 +111,12 @@ existence:
 
 The exponentially modified Gaussian is the sum of independent normal and exponential variables, used for asymmetric response times and chromatographic peaks.
 
+## d/p/q/r
+
+### Near-normal inverse bound
+
+Write the centered exponential displacement in Gaussian units as delta, with t = 1/(lambda sigma). Its mean is zero, variance t², and third absolute moment is at most 16t³. Taylor expansion of Phi and a central convolution density lower bound of 0.23/sigma bound the quantile displacement from mu + 1/lambda + sigma z by 8 sigma t² (|z|+t), for |z| <= 0.01 and t <= 0.001. The inverse uses this approximation only when that bound is below 1e-11 times the returned magnitude.
+
 ## Details
 
 With positive normal scale and exponential rate held, the free location has a

@@ -1,0 +1,55 @@
+{
+  "id": "gb2",
+  "input_sha256": "af71f9c97ea088e947456136e03c31447da3a774afd5b096081f947238316ae0",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 199379,
+    "points": 23,
+    "values": 429,
+    "quantiles": 1012
+  },
+  "after": {
+    "bytes": 217001,
+    "points": 25,
+    "values": 471,
+    "quantiles": 1100
+  },
+  "records": [
+    {
+      "parameters": [
+        2.0,
+        100000000.0,
+        2.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.3116207849998318
+    },
+    {
+      "parameters": [
+        2.0,
+        100000000.0,
+        2.0,
+        1000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.3332068780000554
+    },
+    {
+      "parameters": [
+        100000000.0,
+        0.0001414213562373095,
+        100000000.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms.",
+      "seconds": 21.554209498001
+    }
+  ],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

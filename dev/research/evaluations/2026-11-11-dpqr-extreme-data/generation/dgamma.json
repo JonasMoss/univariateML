@@ -1,0 +1,32 @@
+{
+  "id": "dgamma",
+  "input_sha256": "55847d946cbb82468ee7093c4f5cc3044c2817144c86f8a475833b227ec873b3",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 277369,
+    "points": 10,
+    "values": 2086,
+    "quantiles": 440
+  },
+  "after": {
+    "bytes": 277369,
+    "points": 10,
+    "values": 2086,
+    "quantiles": 440
+  },
+  "records": [
+    {
+      "parameters": [
+        100000000.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms.",
+      "seconds": 0.28330984199965314,
+      "reused": true
+    }
+  ],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

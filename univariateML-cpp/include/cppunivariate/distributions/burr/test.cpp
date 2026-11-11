@@ -422,3 +422,7 @@ TEST_CASE("held-power fallback score gate rejects an unchecked finite Lomax poin
  const auto r=cppunivariate::lomax_newton_candidate(mltest::as_span(near),1e-14,1000);
  CHECK(cppunivariate::fallback_lomax_search_accepted(mltest::as_span(near),r));
 }
+
+TEST_CASE("burr: exact-input extreme arithmetic regression") {
+  CHECK(cppunivariate::distributions::qburr(-0.6931471805599453,1.0,1e-08,1.0,true,true) == doctest::Approx(1.0000000046380937).epsilon(1e-10).scale(0));
+}

@@ -1,0 +1,117 @@
+{
+  "id": "betapr",
+  "before": {
+    "bytes": 80743,
+    "points": 9,
+    "values": 183,
+    "quantiles": 396
+  },
+  "after": {
+    "bytes": 168014,
+    "points": 19,
+    "values": 372,
+    "quantiles": 836
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 3.746466259006411
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 1.9078501089825295
+    },
+    {
+      "parameters": [
+        1.0,
+        1e-08,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 2.451237300003413
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 1.2977334730094299
+    },
+    {
+      "parameters": [
+        1.0,
+        1.0,
+        1e-08
+      ],
+      "status": "generated",
+      "seconds": 1.4194535510032438
+    },
+    {
+      "parameters": [
+        1.0,
+        1.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "seconds": 0.8376019590068609
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0,
+        1000.0
+      ],
+      "status": "generated",
+      "seconds": 2.077977486012969
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0,
+        1000.0
+      ],
+      "status": "generated",
+      "seconds": 1.4337586719775572
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "seconds": 1.1984063460258767
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0,
+        1e-08
+      ],
+      "status": "generated",
+      "seconds": 1.3582044100039639
+    },
+    {
+      "parameters": [
+        100000000.0,
+        100000000.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms.",
+      "seconds": 7.669189007021487
+    }
+  ]
+}

@@ -114,7 +114,7 @@ test_that("tiny Nakagami shape retains upper log tails at tiny amplitudes", {
   x <- 1e-200; shape <- 1e-25
   lx <- 2*log(x)+log(shape)
   expect_equal(pnaka(q = x, shape = shape, scale = 1, lower.tail = FALSE, log.p = TRUE),
-               log(-expm1(shape*lx)),tolerance=1e-12)
+               log(-expm1(shape*(lx+0.57721566490153286061))),tolerance=1e-12)
 })
 
 test_that("P2 held subsets agree with multistart reference likelihoods", {

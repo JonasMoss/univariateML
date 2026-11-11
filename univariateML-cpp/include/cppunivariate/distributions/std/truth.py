@@ -11,3 +11,6 @@ def build(t):
     nu = t['nu']
     return Reference(lambda x: student(nu,(x-mean)/sd*mp.sqrt(nu/(nu-2))), -mp.inf, mp.inf)
 
+
+# Approach nu=2 at fixed ordinary Student scale.
+extreme_parameter_sets = [{'nu': 2.00000001, 'sd': 14142.135659086289}]

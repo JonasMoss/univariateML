@@ -1,9 +1,11 @@
 // Package-defined, mean/standard-deviation parameterisation.
 #pragma once
 #include "../snorm/fs.hpp"
+#include "../snorm/dpqr.hpp"
 #include "../../special/skewed_densities.hpp"
 #include "../../special/special.hpp"
 #include "../ged/dpqr.hpp"
+#include "../../special/skew_moments.hpp"
 #include <algorithm>
 #include <utility>
 namespace cppunivariate {
@@ -49,9 +51,66 @@ inline double input_error(double x,double mean,double sd,double sigma,double mu,
   return dz/scale+32*std::numeric_limits<double>::epsilon()*std::abs(v);
 }
 } // namespace sged_detail
+inline double sged_logradius_density(const snorm_detail::Coordinate &c,double nu,bool log) {
+ if(!c.valid || !std::isfinite(c.log_value) || !std::isfinite(c.log_error))return special::kNaN;
+ const double ls=fs::ged_logscale(nu),logcost=nu*(c.log_value-ls),cost=std::exp(logcost);
+ const double ld=c.log_normalizer-.69314718055994530942-ls-special::lgamma1p(1/nu)-cost;
+ if(!std::isfinite(cost)) {
+   if(nu*(c.log_value-c.log_error-ls)>std::log(std::numeric_limits<double>::max())+2)return log?special::kNegInf:0;
+   return special::kNaN;
+ }
+ const double margin=cost*std::expm1(nu*c.log_error);
+ if(margin>1e-11*std::max(1.0,std::abs(ld)))return special::kNaN;
+ return log?ld:std::exp(ld);
+}
+inline double sged_logradius_probability(const snorm_detail::Coordinate &c,double nu,double xi,bool lower,bool log) {
+ if(!c.valid || !std::isfinite(c.log_value) || !std::isfinite(c.log_error))return special::kNaN;
+ const double lt=xi<=1?std::log(xi):-std::log(xi),ls=fs::ged_logscale(nu);
+ const double logcost=nu*(c.log_value-ls),cost=std::exp(logcost);
+ if(!std::isfinite(cost)) {
+   if(nu*(c.log_value-c.log_error-ls)>std::log(std::numeric_limits<double>::max())+2)return special::tail_probability(special::tails_from_log(special::kNegInf,c.negative),lower,log);
+   return special::kNaN;
+ }
+ const double base=ged_detail::gamma_power_log(c.log_value-ls,nu,false);
+ const double direct=-std::log1p(c.square)+(c.thin?2*lt:0)+base;
+ const auto tails=special::tails_from_log(direct,c.negative);
+ const double selected=lower?tails.lower:tails.upper;
+ double margin=c.log_error*(nu*cost+std::max(0.0,nu-1));
+ if(selected>-.6931471805599453)margin=direct<-745?0:margin*std::exp(direct-selected);
+ if(std::isfinite(selected) && selected!=0 && (log || selected>-700) && margin>(log?1e-11*std::max(1.0,std::abs(selected)):1e-11))return special::kNaN;
+ return special::tail_probability(tails,lower,log);
+}
 inline double dsged(double x, double mean, double sd, double nu, double xi, bool log) {
   if (!(fs::valid(mean, sd, nu, xi)) || std::isnan(x)) return cppunivariate::special::kNaN;
-  if(nu>=1e6 && xi==1) return dged(x,mean,sd,nu,log);
+  if(nu==1) {
+    if(!std::isfinite(x))return log?special::kNegInf:0;
+    const auto c=snorm_detail::coordinate_with_moment(x,mean,sd,xi,{0.7071067811865476,-4.833646656726457e-17},0);
+    if(!c.valid)return special::kNaN;
+    if(!std::isfinite(c.value))return sged_logradius_density(c,nu,log);
+    const double ld=c.log_normalizer-.34657359027997265471-1.4142135623730950488*c.value;
+    if(1.4142135623730950488*c.error>1e-11*std::max(1.0,std::abs(ld)))return special::kNaN;
+    return log?ld:std::exp(ld);
+  }
+  if(nu==2) return dsnorm(x,mean,sd,xi,log);
+  if(xi==1) return dged(x,mean,sd,nu,log);
+  const auto moment=special::skew_moments::ged(nu);
+  if(moment.valid) {
+    if(!std::isfinite(x))return log?special::kNegInf:0;
+    const auto c=snorm_detail::coordinate_with_moment(x,mean,sd,xi,{moment.value.high,moment.value.low},0,moment.error);
+    if(!c.valid)return special::kNaN;
+    if(!std::isfinite(c.value))return sged_logradius_density(c,nu,log);
+    const double ls=fs::ged_logscale(nu),lr=std::log(c.value)-ls;
+    if(nu>=1e6 && !fs::ged_radius_precise(c.value,fs::ged_log_radius(c.value,nu,ls),nu,c.error))return special::kNaN;
+    const double cost=std::exp(nu*lr),ld=c.log_normalizer+fs::ged_logdensity(c.value,nu);
+    const double ratio=c.error/c.value;
+    const double increment=nu*std::log1p(ratio);
+    const double increase=ratio<1?std::exp(nu*lr+increment+special::log1mexp(-increment))
+      :std::exp(nu*(std::log(c.value+c.error)-ls))-cost;
+    const double decrease=ratio<1?-cost*std::expm1(nu*std::log1p(-ratio)):cost;
+    const double margin=std::max(increase,decrease)+4*moment.error;
+    if(std::isfinite(ld) && (!(margin>=0) || margin>1e-11*std::max(1.0,std::abs(ld))))return special::kNaN;
+    return log?ld:std::exp(ld);
+  }
   double mu = 0.0;
   const double sigma = fs::sged_sigma(nu, xi, mu);
   const double z = (x - mean)/sd*sigma + mu;
@@ -71,7 +130,41 @@ inline double dsged(double x, double mean, double sd, double nu, double xi, bool
 }
 inline double psged(double q, double mean, double sd, double nu, double xi, bool lower_tail=true, bool log_p=false) {
   if (!(fs::valid(mean, sd, nu, xi)) || std::isnan(q)) return cppunivariate::special::kNaN;
-  if(nu>=1e6 && xi==1) return pged(q,mean,sd,nu,lower_tail,log_p);
+  if(nu==1) {
+   const auto c=snorm_detail::coordinate_with_moment(q,mean,sd,xi,{0.7071067811865476,-4.833646656726457e-17},0);
+   if(c.valid && !std::isfinite(c.value))return sged_logradius_probability(c,nu,xi,lower_tail,log_p);
+   return snorm_detail::probability_with_moment(q,mean,sd,xi,{0.7071067811865476,-4.833646656726457e-17},lower_tail,log_p,
+    [](double v){return -.69314718055994530942-1.4142135623730950488*v;},
+    [](double v){return std::log(-std::expm1(-1.4142135623730950488*v));},
+    [](double,double){return 1.4142135623730950488;});
+  }
+  if(nu==2) return psnorm(q,mean,sd,xi,lower_tail,log_p);
+  if(xi==1) return pged(q,mean,sd,nu,lower_tail,log_p);
+  const auto moment=special::skew_moments::ged(nu);
+  if(moment.valid) {
+    const double ls=fs::ged_logscale(nu);
+    const auto coordinate=snorm_detail::coordinate_with_moment(q,mean,sd,xi,{moment.value.high,moment.value.low},0,moment.error);
+    if(coordinate.valid && !std::isfinite(coordinate.value))return sged_logradius_probability(coordinate,nu,xi,lower_tail,log_p);
+    const double low=coordinate.value-coordinate.error;
+    if(coordinate.valid && low>0 && nu*(std::log(low)-ls)>std::log(std::numeric_limits<double>::max())+2 && 1/nu<std::numeric_limits<double>::max()/4)
+      return special::tail_probability(special::tails_from_log(special::kNegInf,coordinate.negative),lower_tail,log_p);
+    return snorm_detail::probability_with_moment(q,mean,sd,xi,{moment.value.high,moment.value.low},lower_tail,log_p,
+      [nu](double v){return pged(v,0,1,nu,false,true);},
+      [nu,ls](double v){return ged_detail::gamma_power_log(std::log(v)-ls,nu,true);},
+      [nu,ls](double v,double e){
+        const double low=std::max(0.0,v-e),high=v+e;
+        if(nu<1) {
+          const double at_zero=-ls-special::lgamma1p(1/nu);
+          const double power=low>0?std::log(nu)+nu*(std::log(low)-ls)-std::log(low):special::kPosInf;
+          return std::exp(std::min(at_zero,power));
+        }
+        if(nu>=1 && low>0 && std::log(low)>=ls)
+          return std::exp(std::log(nu)+nu*(std::log(high)-ls)-std::log(high))+(nu-1)/low;
+        const double density=fs::ged_logdensity(low,nu),tail=pged(high,0,1,nu,false,true);
+        const double rounding=16*std::numeric_limits<double>::epsilon()*(1+std::abs(density)+std::abs(tail));
+        return std::exp(density-tail+rounding);
+      },moment.error);
+  }
   double mu = 0.0;
   const double sigma = fs::sged_sigma(nu, xi, mu);
   const double z = (q - mean)/sd*sigma + mu;

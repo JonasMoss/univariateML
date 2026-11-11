@@ -315,3 +315,17 @@ transfers on positive excesses, including finite constant-excess maxima,
 upper-side concentration, endpoint ties and above-one held-shape endpoint
 domination. Finite witnesses append held `min`; face witnesses retain their
 excess-data coordinates.
+
+### Concentrating probability coordinates
+
+At large power, forming x-min first can erase the displacement from min+scale. Evaluation retains that center and its addition residual before forming the log ratio. The density groups the two beta-tail penalties separately, avoiding cancellation between the power term and their shared softplus. Inversion transports the log displacement through expm1 before adding the location; otherwise min=-scale can lose the entire quantile.
+
+The concentrating symmetric tail uses t=shape2*log((x-min)/scale), with a=shape1=shape3. Rounding its two beta coordinates can erase a resolved displacement. This probability bridge returns NaN for sqrt(a)*E > 2.5e-11 and 0 < |t| < 2E/1e-10, where E is eight binary64 machine epsilons. At t=0 the exact symmetric half-probability remains available; the stated margin is practical floating-point evidence.
+
+The shape1 one/two reductions use the closed beta-coordinate tails rather than a promoted backend normalizer. At shape1 two, the positive-deviance hazard described in [the GB2 dossier](../gb2/README.md#probability-coordinates-at-large-power) is applied after the translated power coordinate; both translation and the tail calculation must retain their low-order terms.
+
+### Unequal concentrating beta shapes
+
+The density normalizer is centered at the beta mean and combined with two nonnegative Bernoulli deviances. In the unit-power submodel, a compensated product expansion retains shape2 times the physical excess minus shape1 times scale before either ratio rounds; a rounded beta coordinate can lose the entire standardized displacement. For other powers, the log-odds kernel returns NaN near concentration when its practical coordinate-error margin exceeds 1e-12 times the log-density scale. This named precision region requires more accurate transcendental coordinates to close.
+
+If the ordinary log-odds margin fails, two-word logarithms recompute the centered coordinate before rounding. The beta mean is subtracted in the same arithmetic. NaN remains confined to cases where this practical two-word margin also fails; the ordinary margin selects the recomputation rather than a refusal.

@@ -10,3 +10,6 @@ def build(t, logd):
     if t['r'] == 0: return atomic({0: 1}, 0, 0)
     return finite_pmf(logd,t['r'],t['r']+t['N']-t['m'])
 
+
+# Joint/finite-design limit stresses beyond the historical grid.
+extreme_parameter_sets = [{'N': 100000000}]

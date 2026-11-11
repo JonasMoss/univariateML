@@ -114,6 +114,12 @@ existence:
 
 The truncated Poisson distribution models Poisson counts observed only within a conditioning window $a<X\le b$. The rate $\lambda$ describes the underlying Poisson law. The bounds describe which counts can be recorded, rather than censoring observations outside the window.
 
+## d/p/q/r
+
+### Relative conditional masses
+
+A rare conditioning event can give a moderate conditional log density while both parent kernel terms are large. Positive Poisson ratios lambda/(k+1), anchored at the retained mode, remove that common kernel before normalizing; monotone ratios give a geometric bound on the omitted tails. Conditional evaluation returns NaN when its unit lattice cannot advance, its two-million-cell side guard cannot close the remainder, or a separated parent-log comparison exceeds its stated practical margin.
+
 ## Details
 
 Bounds should reflect the sampling design. With both bounds estimated, the retained integer window tightens to the sample extremes. Removing unobserved counts from the window cannot decrease the conditional likelihood. Real bounds giving the same integer window are equivalent. The strict lower bound has representatives in $[\min_i x_i-1,\min_i x_i)$, and an estimated finite upper bound has representatives in $[\max_i x_i,\max_i x_i+1)$.

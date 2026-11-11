@@ -1,0 +1,41 @@
+{
+  "id": "tpois",
+  "input_sha256": "28dbd9adac5e03cf1444d0e5478cca06563e849cbf9f4b139dd6bbb78715bd6b",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 47579,
+    "points": 6,
+    "values": 79,
+    "quantiles": 264
+  },
+  "after": {
+    "bytes": 60832,
+    "points": 8,
+    "values": 109,
+    "quantiles": 352
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        0.0,
+        10.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.07038103499962745
+    },
+    {
+      "parameters": [
+        100000000.0,
+        0.0,
+        10.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.036057157999948686
+    }
+  ]
+}

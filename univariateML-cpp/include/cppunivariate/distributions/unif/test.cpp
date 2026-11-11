@@ -104,3 +104,9 @@ TEST_CASE("unif: TASK-102.5 invalid confidence levels") {
   for(double alpha:std::vector<double>{-1.,0.,1.,2.,NAN,INFINITY})
     CHECK(cppunivariate::unif_exact_interval(data,cppunivariate::UniformTarget::Width,alpha).status==cppunivariate::InferenceStatus::InvalidParameter);
 }
+
+// Independent central log-probability expansion; exact binary64 input.
+TEST_CASE("unif: central inverse retains a translated residual") {
+  CHECK(cppunivariate::distributions::qunif(-0.6931471805599453,-1,1,true,true) ==
+        doctest::Approx(2.3190468138462996e-17).epsilon(1e-10).scale(0));
+}

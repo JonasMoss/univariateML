@@ -1,0 +1,21 @@
+{
+  "id": "logis",
+  "input_sha256": "6c4f7102a9eb34e6f7ac428d1d6ffbba1b8789926e03282213cc892ee2defddd",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 70754,
+    "points": 8,
+    "values": 152,
+    "quantiles": 352
+  },
+  "after": {
+    "bytes": 70754,
+    "points": 8,
+    "values": 152,
+    "quantiles": 352
+  },
+  "records": [],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

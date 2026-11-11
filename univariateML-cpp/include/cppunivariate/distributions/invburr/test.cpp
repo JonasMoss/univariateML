@@ -521,3 +521,7 @@ TEST_CASE("invburr transports an unclosed held-power face") {
  REQUIRE(r.status==cppunivariate::InvBurrStatus::Ok);CHECK_FALSE(r.certified);
  CHECK(std::isfinite(r.logLik));
 }
+
+TEST_CASE("invburr: exact-input extreme arithmetic regression") {
+  CHECK(cppunivariate::distributions::dinvburr(0.0,100000000.0,1e-08,1.0,true) == -INFINITY);
+}

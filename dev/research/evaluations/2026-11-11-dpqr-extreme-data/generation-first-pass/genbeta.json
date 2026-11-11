@@ -1,0 +1,118 @@
+{
+  "id": "genbeta",
+  "before": {
+    "bytes": 70485,
+    "points": 9,
+    "values": 139,
+    "quantiles": 396
+  },
+  "after": {
+    "bytes": 142002,
+    "points": 18,
+    "values": 276,
+    "quantiles": 792
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        2.0,
+        1.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 5.809765221027192
+    },
+    {
+      "parameters": [
+        100000000.0,
+        2.0,
+        1.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 3.902712123992387
+    },
+    {
+      "parameters": [
+        1.0,
+        2e-08,
+        1.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 11.640790244971868
+    },
+    {
+      "parameters": [
+        1.0,
+        200000000.0,
+        1.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 3.7811370360432193
+    },
+    {
+      "parameters": [
+        1.0,
+        2.0,
+        1e-08,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 8.197060903010424
+    },
+    {
+      "parameters": [
+        1.0,
+        2.0,
+        100000000.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 30 seconds per point",
+      "seconds": 30.000114772992674
+    },
+    {
+      "parameters": [
+        1.0,
+        2.0,
+        1.0,
+        1e-08
+      ],
+      "status": "generated",
+      "seconds": 3.181290634034667
+    },
+    {
+      "parameters": [
+        1.0,
+        2.0,
+        1.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "seconds": 3.760097477992531
+    },
+    {
+      "parameters": [
+        100000000.0,
+        2.0,
+        1e-08,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 4.649721082008909
+    },
+    {
+      "parameters": [
+        1e-08,
+        2.0,
+        100000000.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 5.332254460954573
+    }
+  ]
+}

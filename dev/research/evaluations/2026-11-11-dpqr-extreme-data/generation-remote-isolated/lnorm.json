@@ -1,0 +1,39 @@
+{
+  "id": "lnorm",
+  "input_sha256": "a1429ffc3157dffb0a756f289965e764003ae182dee32a75fae1ea2385bb8678",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 54824,
+    "points": 6,
+    "values": 126,
+    "quantiles": 264
+  },
+  "after": {
+    "bytes": 69668,
+    "points": 8,
+    "values": 154,
+    "quantiles": 352
+  },
+  "records": [
+    {
+      "parameters": [
+        0.0,
+        1e-08
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.5055182390001391
+    },
+    {
+      "parameters": [
+        0.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 5.03993639600003
+    }
+  ]
+}

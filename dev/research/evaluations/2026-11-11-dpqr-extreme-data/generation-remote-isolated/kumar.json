@@ -1,0 +1,57 @@
+{
+  "id": "kumar",
+  "input_sha256": "e201a283ae7a7ae9722bac44f82ce3729431e2f29b6fe63e5bf03d94a10717dd",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 59026,
+    "points": 7,
+    "values": 129,
+    "quantiles": 308
+  },
+  "after": {
+    "bytes": 89003,
+    "points": 11,
+    "values": 185,
+    "quantiles": 484
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 4.699071519999961
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.9155108020004263
+    },
+    {
+      "parameters": [
+        1.0,
+        1e-08
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 4.400657398000021
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.9224215580002237
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "id": "huber",
+  "input_sha256": "7d9ade7687f2a7b5b756ecb50857c1e3420886c25d629a8016e44bfd9d2dcfa2",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 53213,
+    "points": 6,
+    "values": 114,
+    "quantiles": 264
+  },
+  "after": {
+    "bytes": 97805,
+    "points": 11,
+    "values": 209,
+    "quantiles": 484
+  },
+  "records": [
+    {
+      "parameters": [
+        0.0,
+        1e-08,
+        1.345
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 2.218950866999876
+    },
+    {
+      "parameters": [
+        0.0,
+        100000000.0,
+        1.345
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 2.4375228140002037
+    },
+    {
+      "parameters": [
+        0.0,
+        1000.0,
+        134500000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 3.541137443000025
+    },
+    {
+      "parameters": [
+        -100000000.0,
+        100000000.0,
+        134500000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 3.808530380999855
+    },
+    {
+      "parameters": [
+        0.0,
+        1e-08,
+        1e-08
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.692752221000319
+    }
+  ]
+}

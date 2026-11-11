@@ -237,3 +237,7 @@ is reported as a numerical tie with both witnesses, rather than asserting
 that a finite MLE does not exist.
 
 The data normalization uses the residual root mean square directly, including with a held parent mean. Neither the Newton equations nor the final score enclosure require a variance in physical units.
+
+### Extreme d/p/q arithmetic
+
+On a finite interval, bounding the oscillation of the quadratic log density by 1e-12 bounds each normalized probability relative to the uniform interval probability by exp(1e-12). This admits direct endpoint distances when standardized endpoint coordinates coincide near the uniform limit.

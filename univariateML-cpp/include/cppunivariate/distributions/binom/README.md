@@ -124,6 +124,14 @@ existence:
 
 The binomial distribution models the number of successes in a fixed number of independent Bernoulli trials.
 
+## d/p/q/r
+
+### Concentrated count density
+
+The identity mass(k;n,p) = beta_density(p;k+1,n-k+1)/(n+1) replaces three large log-gamma terms with the beta density's compensated physical mean displacement. All three count increments must be exact in binary64 before this branch applies.
+
+Counts below 16 use the finite binomial product directly, including Poisson limits with arbitrarily large represented trial counts. Once adding one ceases to be exact, two nonnegative binomial deviances replace the shifted-beta identity. FMA retains np-k; Stirling remainders at counts at least 16 bound the normalizer truncation.
+
 ## Details
 
 The trial count $n$ is a nonnegative integer and $p$ is the common success

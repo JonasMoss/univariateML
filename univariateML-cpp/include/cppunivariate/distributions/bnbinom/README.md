@@ -121,6 +121,22 @@ existence:
 
 The beta negative binomial mixes a negative binomial success probability with a beta distribution. Also called the generalized Waring distribution, it models counts with power-law tails. The shape $r$ is the underlying negative binomial size. The shapes $\alpha$ and $\beta$ govern the beta mixing distribution for its success probability.
 
+## d/p/q/r
+
+### Far-count beta normalization
+
+The beta factor in the far-count tail prefactor is evaluated through a shifted gamma ratio, avoiding cancellation of large log-gamma values when a mixing shape diverges. This addresses the normalizing factor only; the extreme mixing-tail and quantile limitations recorded by the audit remain separate.
+
+On the uniform mixing submodel (alpha=beta=1), the mass is exactly r/((r+x)(r+x+1)); evaluating this rational identity removes gamma cancellation at arbitrarily large r. Interchangeability of r and beta gives the corresponding symmetric case. The remaining beta=1 path uses a short shifted gamma ratio when its relative shift is at most one half.
+
+### Extreme d/p/q arithmetic
+
+When one count-shape is one, the survival function is the beta ratio B(x+1+r,alpha)/B(r,alpha). Computing it directly avoids complementing a lower sum whose rounding error can exceed the entire upper tail. Positive small gamma increments use log1p in their recurrence. For large-count masses in this submodel, NaN is returned if the estimated subtraction margin 16 epsilon times the sum of absolute log-beta terms exceeds the log-density tolerance.
+
+When alpha and one count-shape are one, the two tails are the exact rational weights (x+1)/(r+x+1) and r/(r+x+1). Their log-odds form avoids subtracting two gamma increments near log(r), whose cancellation can spoil a small natural CDF even when the log-tail absolute error is tiny.
+
+The unit count-shape CDF at zero uses alpha/(alpha+r) directly, including when alpha+r overflows. For counts below the existing 100000-term structural guard, the unit count-shape bridge sums the exact product hazard in scaled, compensated coordinates; its mass uses the preceding survival times alpha/(alpha+r+x). For larger counts the beta-ratio bridge returns NaN if x+1+r rounds back to r, if the practical log-beta subtraction margin exceeds the log-tail tolerance, or if a nonpositive/subnormal computed hazard cannot meet its resolution margin. Mass evaluations whose shape sum overflows the original rising-factorial kernel also return NaN. These named precision regions prevent a rounded beta-ratio difference from being reported as an exact zero probability.
+
 ## Details
 
 The all-free local accuracy check uses the full three-dimensional observed
@@ -140,7 +156,6 @@ Any subset of $r$, $\alpha$ and $\beta$ may be held fixed. When $r$ and $\beta$ 
 On the diagonal $r=\beta$ the swap fixes the law, so the score along $(1,0,-1)$ in $(r,\alpha,\beta)$ vanishes and the Fisher information has rank 2 of 3. The diagonal is therefore a singular boundary of the identified set $r\le\beta$: Wald intervals for $r$ and $\beta$ separately are unreliable near it. Elsewhere in the interior the information is nonsingular ([classification](../../../../../dev/research/evaluations/2026-11-04-dqm-c-report.md)).
 
 Multistart runs propose finite witnesses. Closed certificates verify their global coefficient enclosures or prove a limit decision. An all-free certificate that cannot close retains the legacy score-checked finite result or face comparison as uncertified; actual search failures stop. With all coefficients supplied, the likelihood is evaluated directly. For all-zero data, any free coefficient allows the likelihood to approach one only at an excluded boundary. With every coefficient held, the all-zero likelihood is evaluated at the supplied positive values.
-
 
 ## Scalar certificates
 

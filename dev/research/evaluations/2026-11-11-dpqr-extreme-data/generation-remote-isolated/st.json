@@ -1,0 +1,131 @@
+{
+  "id": "st",
+  "input_sha256": "9fa11ca510a2d260bb027649b3e1cce2fe1aeb35275b263ed73564d748a13e74",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 71295,
+    "points": 8,
+    "values": 152,
+    "quantiles": 352
+  },
+  "after": {
+    "bytes": 100001,
+    "points": 11,
+    "values": 209,
+    "quantiles": 484
+  },
+  "records": [
+    {
+      "parameters": [
+        0.0,
+        1e-08,
+        0.0,
+        5.0
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: density/antiderivative derivative mismatch",
+      "seconds": 1.9978980639998554
+    },
+    {
+      "parameters": [
+        0.0,
+        100000000.0,
+        0.0,
+        5.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.7520094779997635
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        0.0,
+        5e-08
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: normalization quadrature error estimate 0.000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001",
+      "seconds": 15.502191720000155
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        0.0,
+        500000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms.",
+      "seconds": 12.5177527310002
+    },
+    {
+      "parameters": [
+        0.0,
+        1000.0,
+        0.0,
+        500000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms.",
+      "seconds": 12.69594738800015
+    },
+    {
+      "parameters": [
+        -100000000.0,
+        100000000.0,
+        0.0,
+        500000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms.",
+      "seconds": 12.709120332000111
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        100000000.0,
+        100000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms.",
+      "seconds": 8.166250562999721
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        -100000000.0,
+        100000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms.",
+      "seconds": 8.129826312000205
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        100000000.0,
+        5.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 54.69314046699992
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        -100000000.0,
+        5.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 51.43232851899984
+    }
+  ]
+}

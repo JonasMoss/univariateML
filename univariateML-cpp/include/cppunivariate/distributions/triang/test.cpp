@@ -549,3 +549,7 @@ TEST_CASE("triang: endpoint representation certificates against 400-digit profil
     CHECK(strict.status==cppunivariate::TriangStatus::NumericalFailure);
   }
 }
+
+TEST_CASE("triang: exact-input extreme arithmetic regression") {
+  CHECK(cppunivariate::distributions::qtriang(-13.815510557964274,0.0,100000000.0,0.5,true,true) == doctest::Approx(50.25001237531874).epsilon(1e-10).scale(0));
+}

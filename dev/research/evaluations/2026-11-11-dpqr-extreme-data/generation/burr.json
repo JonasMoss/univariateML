@@ -1,0 +1,62 @@
+{
+  "id": "burr",
+  "input_sha256": "b75c59cd9766bdf073fea6a5ccbcba51391e0ee93cd676ca1e9a2aec093dde88",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 127323,
+    "points": 15,
+    "values": 278,
+    "quantiles": 660
+  },
+  "after": {
+    "bytes": 127427,
+    "points": 15,
+    "values": 278,
+    "quantiles": 660
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: normalization quadrature error estimate 0.00000000001",
+      "seconds": 1.05333304800115
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "MemoryError: reference exceeded the recorded address-space limit",
+      "seconds": 7.6720197450013075
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0,
+        1000.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "seconds": 120.00197499100068
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0,
+        100000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "seconds": 120.00422339200122
+    }
+  ],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

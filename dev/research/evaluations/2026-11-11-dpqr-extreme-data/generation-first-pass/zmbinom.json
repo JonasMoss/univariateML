@@ -1,0 +1,45 @@
+{
+  "id": "zmbinom",
+  "before": {
+    "bytes": 76887,
+    "points": 12,
+    "values": 171,
+    "quantiles": 528
+  },
+  "after": {
+    "bytes": 90557,
+    "points": 14,
+    "values": 203,
+    "quantiles": 616
+  },
+  "records": [
+    {
+      "parameters": [
+        10.0,
+        5e-09,
+        0.5
+      ],
+      "status": "generated",
+      "seconds": 0.07650771795306355
+    },
+    {
+      "parameters": [
+        10.0,
+        0.5,
+        5e-09
+      ],
+      "status": "generated",
+      "seconds": 0.06711210502544418
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1e-08,
+        0.5
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 30 seconds per point",
+      "seconds": 30.018241773999762
+    }
+  ]
+}

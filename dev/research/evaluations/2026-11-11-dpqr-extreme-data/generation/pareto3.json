@@ -1,0 +1,21 @@
+{
+  "id": "pareto3",
+  "input_sha256": "41f364599f764ecdd24ef24ac69b77b71a658d3deb1a38eea4ffa4132fe935f2",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 127227,
+    "points": 15,
+    "values": 285,
+    "quantiles": 660
+  },
+  "after": {
+    "bytes": 127227,
+    "points": 15,
+    "values": 285,
+    "quantiles": 660
+  },
+  "records": [],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

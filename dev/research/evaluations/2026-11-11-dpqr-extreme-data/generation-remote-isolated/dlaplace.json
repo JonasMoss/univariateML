@@ -1,0 +1,30 @@
+{
+  "id": "dlaplace",
+  "input_sha256": "a005322029eb6c2a38b36188fba64f347055bb901f4292cc374fbe0b68975127",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 172023,
+    "points": 6,
+    "values": 1254,
+    "quantiles": 264
+  },
+  "after": {
+    "bytes": 172023,
+    "points": 6,
+    "values": 1254,
+    "quantiles": 264
+  },
+  "records": [
+    {
+      "parameters": [
+        0.0,
+        0.9999999999999999
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "seconds": 120.00017210899978
+    }
+  ]
+}

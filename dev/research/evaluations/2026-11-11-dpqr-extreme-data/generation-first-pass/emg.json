@@ -1,0 +1,53 @@
+{
+  "id": "emg",
+  "before": {
+    "bytes": 70792,
+    "points": 8,
+    "values": 152,
+    "quantiles": 352
+  },
+  "after": {
+    "bytes": 106119,
+    "points": 12,
+    "values": 228,
+    "quantiles": 528
+  },
+  "records": [
+    {
+      "parameters": [
+        0.0,
+        1e-08,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 3.984014908026438
+    },
+    {
+      "parameters": [
+        0.0,
+        100000000.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 2.4761387390317395
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        1e-08
+      ],
+      "status": "generated",
+      "seconds": 3.469803386949934
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "seconds": 2.6728930129902437
+    }
+  ]
+}

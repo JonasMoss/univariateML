@@ -1,0 +1,81 @@
+{
+  "id": "snorm",
+  "input_sha256": "94af72e16b5b01462575099ac213d396c0106ee92ae1cac8e87257ebf75b1091",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 80197,
+    "points": 9,
+    "values": 171,
+    "quantiles": 396
+  },
+  "after": {
+    "bytes": 134047,
+    "points": 15,
+    "values": 285,
+    "quantiles": 660
+  },
+  "records": [
+    {
+      "parameters": [
+        -1.0,
+        1.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 2.7915200849997746
+    },
+    {
+      "parameters": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 2.523776868999903
+    },
+    {
+      "parameters": [
+        0.0,
+        1e-08,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 2.6375556989996767
+    },
+    {
+      "parameters": [
+        0.0,
+        100000000.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 2.6724491979998675
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        1e-08
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 2.3770786530003534
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 2.3651673059998757
+    }
+  ]
+}

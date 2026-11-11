@@ -15,6 +15,7 @@ def build(t, logd):
     out=Reference(lambda x:pair((x+1)**b*mp.log(p),False),0,mp.inf,True,log_density=ld)
     # Telescoping sum of p^(k^b)-p^((k+1)^b); exact residual.
     n=mp.ceil((mp.log(mp.mpf('1e-45'))/mp.log(p))**(1/b))
-    out.normalization=-mp.expm1((n+1)**b*mp.log(p))
+    remainder_log=(n+1)**b*mp.log(p)
+    out.normalization=mp.mpf(1) if remainder_log<mp.log(mp.eps) else -mp.expm1(remainder_log)
     return out
 

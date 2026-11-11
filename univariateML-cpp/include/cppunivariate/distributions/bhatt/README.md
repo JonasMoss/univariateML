@@ -113,6 +113,12 @@ The coefficient $\mu$ is the centre, $\sigma$ is the normal standard
 deviation and $a$ is the uniform half-width. Holding a coefficient fixes its
 physical value, rather than a dimensionless shape ratio.
 
+## d/p/q/r
+
+### Extreme d/p/q arithmetic
+
+Near an edge of the uniform convolution, subtract its physical half-width before dividing by the Gaussian scale. Subtracting two separately standardized coordinates loses the edge distance when the Gaussian scale is small.
+
 ## Details
 
 At $a=0$ fitting reduces to the conditional normal problem. Positive held

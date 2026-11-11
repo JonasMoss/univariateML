@@ -1,0 +1,143 @@
+{
+  "id": "sged",
+  "before": {
+    "bytes": 80319,
+    "points": 9,
+    "values": 171,
+    "quantiles": 396
+  },
+  "after": {
+    "bytes": 134946,
+    "points": 15,
+    "values": 285,
+    "quantiles": 660
+  },
+  "records": [
+    {
+      "parameters": [
+        -1.0,
+        1.0,
+        2.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 5.687778481980786
+    },
+    {
+      "parameters": [
+        1.0,
+        1.0,
+        2.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 4.887220984033775
+    },
+    {
+      "parameters": [
+        0.0,
+        1e-08,
+        2.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 4.4619282789644785
+    },
+    {
+      "parameters": [
+        0.0,
+        100000000.0,
+        2.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 3.8116999919875525
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        2e-08,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms.",
+      "seconds": 1.0417397589772008
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        200000000.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 30 seconds per point",
+      "seconds": 30.42060180194676
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        2.0,
+        1e-08
+      ],
+      "status": "generated",
+      "seconds": 4.118663521017879
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        2.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "seconds": 3.548529180989135
+    },
+    {
+      "parameters": [
+        0.0,
+        1000.0,
+        200000000.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 30 seconds per point",
+      "seconds": 30.219674431951717
+    },
+    {
+      "parameters": [
+        -100000000.0,
+        100000000.0,
+        200000000.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 30 seconds per point",
+      "seconds": 30.03959457000019
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        100000000.0,
+        100000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 30 seconds per point",
+      "seconds": 30.039593682973646
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        100000000.0,
+        1e-08
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 30 seconds per point",
+      "seconds": 30.436871862970293
+    }
+  ]
+}

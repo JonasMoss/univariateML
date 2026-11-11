@@ -1,0 +1,1202 @@
+[
+  {
+    "family": "trgamma",
+    "function": "d",
+    "input": 5e-324,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      1e-309,
+      1e+308,
+      1.0
+    ],
+    "actual": -Infinity,
+    "expected": 667.693479636249,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      12,
+      5e-324,
+      667.693479636249,
+      -74.44400719213827,
+      -4.670662276233234e-33
+    ]
+  },
+  {
+    "family": "trgamma",
+    "function": "p",
+    "input": 5e-324,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      1e-309,
+      1e+308,
+      1.0
+    ],
+    "actual": -Infinity,
+    "expected": -74.44400719213827,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      12,
+      5e-324,
+      667.693479636249,
+      -74.44400719213827,
+      -4.670662276233234e-33
+    ]
+  },
+  {
+    "family": "trgamma",
+    "function": "p",
+    "input": 5e-324,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      1e-309,
+      1e+308,
+      1.0
+    ],
+    "actual": 0.0,
+    "expected": 4.67066227623321e-33,
+    "error": 1.0,
+    "category": "values",
+    "row": [
+      12,
+      5e-324,
+      667.693479636249,
+      -74.44400719213827,
+      -4.670662276233234e-33
+    ]
+  },
+  {
+    "family": "trgamma",
+    "function": "d",
+    "input": 0.001,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      1e-309,
+      1e+308,
+      1.0
+    ],
+    "actual": -Infinity,
+    "expected": 3.9143946580898783,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      12,
+      0.001,
+      3.9143946580898783,
+      -0.6907755278982151,
+      -0.6955244713323127
+    ]
+  },
+  {
+    "family": "trgamma",
+    "function": "p",
+    "input": 0.001,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      1e-309,
+      1e+308,
+      1.0
+    ],
+    "actual": -Infinity,
+    "expected": -0.6907755278982151,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      12,
+      0.001,
+      3.9143946580898783,
+      -0.6907755278982151,
+      -0.6955244713323127
+    ]
+  },
+  {
+    "family": "trgamma",
+    "function": "p",
+    "input": 0.001,
+    "lower": false,
+    "log": true,
+    "parameters": [
+      1e-309,
+      1e+308,
+      1.0
+    ],
+    "actual": -0.0,
+    "expected": -0.6955244713323127,
+    "error": 0.6955244713323127,
+    "category": "values",
+    "row": [
+      12,
+      0.001,
+      3.9143946580898783,
+      -0.6907755278982151,
+      -0.6955244713323127
+    ]
+  },
+  {
+    "family": "trgamma",
+    "function": "p",
+    "input": 0.001,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      1e-309,
+      1e+308,
+      1.0
+    ],
+    "actual": 0.0,
+    "expected": 0.5011872336272716,
+    "error": 1.0,
+    "category": "values",
+    "row": [
+      12,
+      0.001,
+      3.9143946580898783,
+      -0.6907755278982151,
+      -0.6955244713323127
+    ]
+  },
+  {
+    "family": "trgamma",
+    "function": "p",
+    "input": 0.001,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      1e-309,
+      1e+308,
+      1.0
+    ],
+    "actual": 1.0,
+    "expected": 0.49881276637272837,
+    "error": 1.0047602375372424,
+    "category": "values",
+    "row": [
+      12,
+      0.001,
+      3.9143946580898783,
+      -0.6907755278982151,
+      -0.6955244713323127
+    ]
+  },
+  {
+    "family": "trgamma",
+    "function": "d",
+    "input": 1.0,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      1e-309,
+      1e+308,
+      1.0
+    ],
+    "actual": -Infinity,
+    "expected": -3.3025850929940437,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      12,
+      1.0,
+      -3.3025850929940437,
+      -2.19383934395523e-310,
+      -713.0157256941621
+    ]
+  },
+  {
+    "family": "trgamma",
+    "function": "d",
+    "input": 10.0,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      1e-309,
+      1e+308,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -Infinity,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      12,
+      10.0,
+      "-Inf",
+      0.0,
+      "-Inf"
+    ]
+  },
+  {
+    "family": "trgamma",
+    "function": "d",
+    "input": 1000.0,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      1e-309,
+      1e+308,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -Infinity,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      12,
+      1000.0,
+      "-Inf",
+      0.0,
+      "-Inf"
+    ]
+  },
+  {
+    "family": "trgamma",
+    "function": "q",
+    "input": 0.25,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      1e-309,
+      1e+308,
+      1.0
+    ],
+    "actual": 0.0,
+    "expected": 9.53674316406275e-07,
+    "error": 1.0,
+    "category": "quantiles",
+    "row": [
+      12,
+      1,
+      0,
+      0.25,
+      9.53674316406275e-07,
+      9.53674316406275e-07,
+      9.536743164062752e-07,
+      0,
+      0.0
+    ]
+  },
+  {
+    "family": "trgamma",
+    "function": "q",
+    "input": 0.5,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      1e-309,
+      1e+308,
+      1.0
+    ],
+    "actual": 0.0,
+    "expected": 0.0009765625000000128,
+    "error": 1.0,
+    "category": "quantiles",
+    "row": [
+      12,
+      1,
+      0,
+      0.5,
+      0.0009765625000000128,
+      0.0009765625000000128,
+      0.000976562500000013,
+      0,
+      0.0
+    ]
+  },
+  {
+    "family": "trgamma",
+    "function": "q",
+    "input": 0.75,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      1e-309,
+      1e+308,
+      1.0
+    ],
+    "actual": 0.0,
+    "expected": 0.05631351470947296,
+    "error": 1.0,
+    "category": "quantiles",
+    "row": [
+      12,
+      1,
+      0,
+      0.75,
+      0.05631351470947296,
+      0.05631351470947296,
+      0.05631351470947297,
+      0,
+      0.0
+    ]
+  },
+  {
+    "family": "trgamma",
+    "function": "q",
+    "input": -1.3862943611198906,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      1e-309,
+      1e+308,
+      1.0
+    ],
+    "actual": 0.0,
+    "expected": 9.536743164062754e-07,
+    "error": 1.0,
+    "category": "quantiles",
+    "row": [
+      12,
+      1,
+      1,
+      -1.3862943611198906,
+      9.536743164062754e-07,
+      9.536743164062754e-07,
+      9.536743164062756e-07,
+      0,
+      0.0
+    ]
+  },
+  {
+    "family": "trgamma",
+    "function": "q",
+    "input": -0.6931471805599453,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      1e-309,
+      1e+308,
+      1.0
+    ],
+    "actual": 0.0,
+    "expected": 0.000976562500000013,
+    "error": 1.0,
+    "category": "quantiles",
+    "row": [
+      12,
+      1,
+      1,
+      -0.6931471805599453,
+      0.000976562500000013,
+      0.000976562500000013,
+      0.0009765625000000132,
+      0,
+      0.0
+    ]
+  },
+  {
+    "family": "trgamma",
+    "function": "q",
+    "input": -0.2876820724517809,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      1e-309,
+      1e+308,
+      1.0
+    ],
+    "actual": 0.0,
+    "expected": 0.056313514709472975,
+    "error": 1.0,
+    "category": "quantiles",
+    "row": [
+      12,
+      1,
+      1,
+      -0.2876820724517809,
+      0.056313514709472975,
+      0.056313514709472975,
+      0.05631351470947298,
+      0,
+      0.0
+    ]
+  },
+  {
+    "family": "trgamma",
+    "function": "q",
+    "input": 0.25,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      1e-309,
+      1e+308,
+      1.0
+    ],
+    "actual": 0.0,
+    "expected": 0.05631351470947296,
+    "error": 1.0,
+    "category": "quantiles",
+    "row": [
+      12,
+      0,
+      0,
+      0.25,
+      0.05631351470947296,
+      0.05631351470947296,
+      0.05631351470947297,
+      0,
+      0.0
+    ]
+  },
+  {
+    "family": "trgamma",
+    "function": "q",
+    "input": 0.5,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      1e-309,
+      1e+308,
+      1.0
+    ],
+    "actual": 0.0,
+    "expected": 0.0009765625000000128,
+    "error": 1.0,
+    "category": "quantiles",
+    "row": [
+      12,
+      0,
+      0,
+      0.5,
+      0.0009765625000000128,
+      0.0009765625000000128,
+      0.000976562500000013,
+      0,
+      0.0
+    ]
+  },
+  {
+    "family": "trgamma",
+    "function": "q",
+    "input": 0.75,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      1e-309,
+      1e+308,
+      1.0
+    ],
+    "actual": 0.0,
+    "expected": 9.53674316406275e-07,
+    "error": 1.0,
+    "category": "quantiles",
+    "row": [
+      12,
+      0,
+      0,
+      0.75,
+      9.53674316406275e-07,
+      9.53674316406275e-07,
+      9.536743164062752e-07,
+      0,
+      0.0
+    ]
+  },
+  {
+    "family": "trgamma",
+    "function": "q",
+    "input": -1.3862943611198906,
+    "lower": false,
+    "log": true,
+    "parameters": [
+      1e-309,
+      1e+308,
+      1.0
+    ],
+    "actual": 0.0,
+    "expected": 0.056313514709472955,
+    "error": 1.0,
+    "category": "quantiles",
+    "row": [
+      12,
+      0,
+      1,
+      -1.3862943611198906,
+      0.056313514709472955,
+      0.056313514709472955,
+      0.05631351470947296,
+      0,
+      0.0
+    ]
+  },
+  {
+    "family": "trgamma",
+    "function": "q",
+    "input": -0.6931471805599453,
+    "lower": false,
+    "log": true,
+    "parameters": [
+      1e-309,
+      1e+308,
+      1.0
+    ],
+    "actual": 0.0,
+    "expected": 0.0009765625000000126,
+    "error": 1.0,
+    "category": "quantiles",
+    "row": [
+      12,
+      0,
+      1,
+      -0.6931471805599453,
+      0.0009765625000000126,
+      0.0009765625000000126,
+      0.0009765625000000128,
+      0,
+      0.0
+    ]
+  },
+  {
+    "family": "trgamma",
+    "function": "q",
+    "input": -0.2876820724517809,
+    "lower": false,
+    "log": true,
+    "parameters": [
+      1e-309,
+      1e+308,
+      1.0
+    ],
+    "actual": 0.0,
+    "expected": 9.536743164062744e-07,
+    "error": 1.0,
+    "category": "quantiles",
+    "row": [
+      12,
+      0,
+      1,
+      -0.2876820724517809,
+      9.536743164062744e-07,
+      9.536743164062741e-07,
+      9.536743164062744e-07,
+      0,
+      0.0
+    ]
+  },
+  {
+    "family": "invtrgamma",
+    "function": "d",
+    "input": 5e-324,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      1e-309,
+      1e+308,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -Infinity,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      12,
+      5e-324,
+      "-Inf",
+      "-Inf",
+      0.0
+    ]
+  },
+  {
+    "family": "invtrgamma",
+    "function": "d",
+    "input": 0.001,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      1e-309,
+      1e+308,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -Infinity,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      12,
+      0.001,
+      "-Inf",
+      "-Inf",
+      0.0
+    ]
+  },
+  {
+    "family": "invtrgamma",
+    "function": "d",
+    "input": 1.0,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      1e-309,
+      1e+308,
+      1.0
+    ],
+    "actual": -Infinity,
+    "expected": -3.3025850929940437,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      12,
+      1.0,
+      -3.3025850929940437,
+      -713.0157256941621,
+      -2.19383934395523e-310
+    ]
+  },
+  {
+    "family": "invtrgamma",
+    "function": "d",
+    "input": 10.0,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      1e-309,
+      1e+308,
+      1.0
+    ],
+    "actual": -Infinity,
+    "expected": -4.8354286952874945,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      12,
+      10.0,
+      -4.8354286952874945,
+      -1.5814737534084522,
+      -0.230258509299405
+    ]
+  },
+  {
+    "family": "invtrgamma",
+    "function": "p",
+    "input": 10.0,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      1e-309,
+      1e+308,
+      1.0
+    ],
+    "actual": -0.0,
+    "expected": -1.5814737534084522,
+    "error": 1.0,
+    "category": "values",
+    "row": [
+      12,
+      10.0,
+      -4.8354286952874945,
+      -1.5814737534084522,
+      -0.230258509299405
+    ]
+  },
+  {
+    "family": "invtrgamma",
+    "function": "p",
+    "input": 10.0,
+    "lower": false,
+    "log": true,
+    "parameters": [
+      1e-309,
+      1e+308,
+      1.0
+    ],
+    "actual": -Infinity,
+    "expected": -0.230258509299405,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      12,
+      10.0,
+      -4.8354286952874945,
+      -1.5814737534084522,
+      -0.230258509299405
+    ]
+  },
+  {
+    "family": "invtrgamma",
+    "function": "p",
+    "input": 10.0,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      1e-309,
+      1e+308,
+      1.0
+    ],
+    "actual": 1.0,
+    "expected": 0.20567176527571884,
+    "error": 3.86211609386161,
+    "category": "values",
+    "row": [
+      12,
+      10.0,
+      -4.8354286952874945,
+      -1.5814737534084522,
+      -0.230258509299405
+    ]
+  },
+  {
+    "family": "invtrgamma",
+    "function": "p",
+    "input": 10.0,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      1e-309,
+      1e+308,
+      1.0
+    ],
+    "actual": 0.0,
+    "expected": 0.7943282347242812,
+    "error": 1.0,
+    "category": "values",
+    "row": [
+      12,
+      10.0,
+      -4.8354286952874945,
+      -1.5814737534084522,
+      -0.230258509299405
+    ]
+  },
+  {
+    "family": "invtrgamma",
+    "function": "d",
+    "input": 1000.0,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      1e-309,
+      1e+308,
+      1.0
+    ],
+    "actual": -Infinity,
+    "expected": -9.901115899874396,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      12,
+      1000.0,
+      -9.901115899874396,
+      -0.6955244713323127,
+      -0.6907755278982151
+    ]
+  },
+  {
+    "family": "invtrgamma",
+    "function": "p",
+    "input": 1000.0,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      1e-309,
+      1e+308,
+      1.0
+    ],
+    "actual": -0.0,
+    "expected": -0.6955244713323127,
+    "error": 0.6955244713323127,
+    "category": "values",
+    "row": [
+      12,
+      1000.0,
+      -9.901115899874396,
+      -0.6955244713323127,
+      -0.6907755278982151
+    ]
+  },
+  {
+    "family": "invtrgamma",
+    "function": "p",
+    "input": 1000.0,
+    "lower": false,
+    "log": true,
+    "parameters": [
+      1e-309,
+      1e+308,
+      1.0
+    ],
+    "actual": -Infinity,
+    "expected": -0.6907755278982151,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      12,
+      1000.0,
+      -9.901115899874396,
+      -0.6955244713323127,
+      -0.6907755278982151
+    ]
+  },
+  {
+    "family": "invtrgamma",
+    "function": "p",
+    "input": 1000.0,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      1e-309,
+      1e+308,
+      1.0
+    ],
+    "actual": 1.0,
+    "expected": 0.49881276637272837,
+    "error": 1.0047602375372424,
+    "category": "values",
+    "row": [
+      12,
+      1000.0,
+      -9.901115899874396,
+      -0.6955244713323127,
+      -0.6907755278982151
+    ]
+  },
+  {
+    "family": "invtrgamma",
+    "function": "p",
+    "input": 1000.0,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      1e-309,
+      1e+308,
+      1.0
+    ],
+    "actual": 0.0,
+    "expected": 0.5011872336272716,
+    "error": 1.0,
+    "category": "values",
+    "row": [
+      12,
+      1000.0,
+      -9.901115899874396,
+      -0.6955244713323127,
+      -0.6907755278982151
+    ]
+  },
+  {
+    "family": "invtrgamma",
+    "function": "q",
+    "input": 0.25,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      1e-309,
+      1e+308,
+      1.0
+    ],
+    "actual": Infinity,
+    "expected": 17.7577266338125,
+    "error": Infinity,
+    "category": "quantiles",
+    "row": [
+      12,
+      1,
+      0,
+      0.25,
+      17.7577266338125,
+      17.7577266338125,
+      17.757726633812503,
+      0,
+      0.0
+    ]
+  },
+  {
+    "family": "invtrgamma",
+    "function": "q",
+    "input": 0.5,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      1e-309,
+      1e+308,
+      1.0
+    ],
+    "actual": Infinity,
+    "expected": 1023.9999999999866,
+    "error": Infinity,
+    "category": "quantiles",
+    "row": [
+      12,
+      1,
+      0,
+      0.5,
+      1023.9999999999866,
+      1023.9999999999865,
+      1023.9999999999866,
+      0,
+      0.0
+    ]
+  },
+  {
+    "family": "invtrgamma",
+    "function": "q",
+    "input": 0.75,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      1e-309,
+      1e+308,
+      1.0
+    ],
+    "actual": Infinity,
+    "expected": 1048575.9999999724,
+    "error": Infinity,
+    "category": "quantiles",
+    "row": [
+      12,
+      1,
+      0,
+      0.75,
+      1048575.9999999724,
+      1048575.9999999724,
+      1048575.9999999725,
+      0,
+      0.0
+    ]
+  },
+  {
+    "family": "invtrgamma",
+    "function": "q",
+    "input": -1.3862943611198906,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      1e-309,
+      1e+308,
+      1.0
+    ],
+    "actual": Infinity,
+    "expected": 17.757726633812503,
+    "error": Infinity,
+    "category": "quantiles",
+    "row": [
+      12,
+      1,
+      1,
+      -1.3862943611198906,
+      17.757726633812503,
+      17.7577266338125,
+      17.757726633812503,
+      0,
+      0.0
+    ]
+  },
+  {
+    "family": "invtrgamma",
+    "function": "q",
+    "input": -0.6931471805599453,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      1e-309,
+      1e+308,
+      1.0
+    ],
+    "actual": Infinity,
+    "expected": 1023.9999999999868,
+    "error": Infinity,
+    "category": "quantiles",
+    "row": [
+      12,
+      1,
+      1,
+      -0.6931471805599453,
+      1023.9999999999868,
+      1023.9999999999867,
+      1023.9999999999868,
+      0,
+      0.0
+    ]
+  },
+  {
+    "family": "invtrgamma",
+    "function": "q",
+    "input": -0.2876820724517809,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      1e-309,
+      1e+308,
+      1.0
+    ],
+    "actual": Infinity,
+    "expected": 1048575.9999999732,
+    "error": Infinity,
+    "category": "quantiles",
+    "row": [
+      12,
+      1,
+      1,
+      -0.2876820724517809,
+      1048575.9999999732,
+      1048575.9999999732,
+      1048575.9999999733,
+      0,
+      0.0
+    ]
+  },
+  {
+    "family": "invtrgamma",
+    "function": "q",
+    "input": 0.25,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      1e-309,
+      1e+308,
+      1.0
+    ],
+    "actual": Infinity,
+    "expected": 1048575.9999999724,
+    "error": Infinity,
+    "category": "quantiles",
+    "row": [
+      12,
+      0,
+      0,
+      0.25,
+      1048575.9999999724,
+      1048575.9999999724,
+      1048575.9999999725,
+      0,
+      0.0
+    ]
+  },
+  {
+    "family": "invtrgamma",
+    "function": "q",
+    "input": 0.5,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      1e-309,
+      1e+308,
+      1.0
+    ],
+    "actual": Infinity,
+    "expected": 1023.9999999999866,
+    "error": Infinity,
+    "category": "quantiles",
+    "row": [
+      12,
+      0,
+      0,
+      0.5,
+      1023.9999999999866,
+      1023.9999999999865,
+      1023.9999999999866,
+      0,
+      0.0
+    ]
+  },
+  {
+    "family": "invtrgamma",
+    "function": "q",
+    "input": 0.75,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      1e-309,
+      1e+308,
+      1.0
+    ],
+    "actual": Infinity,
+    "expected": 17.7577266338125,
+    "error": Infinity,
+    "category": "quantiles",
+    "row": [
+      12,
+      0,
+      0,
+      0.75,
+      17.7577266338125,
+      17.7577266338125,
+      17.757726633812503,
+      0,
+      0.0
+    ]
+  },
+  {
+    "family": "invtrgamma",
+    "function": "q",
+    "input": -1.3862943611198906,
+    "lower": false,
+    "log": true,
+    "parameters": [
+      1e-309,
+      1e+308,
+      1.0
+    ],
+    "actual": Infinity,
+    "expected": 1048575.999999972,
+    "error": Infinity,
+    "category": "quantiles",
+    "row": [
+      12,
+      0,
+      1,
+      -1.3862943611198906,
+      1048575.999999972,
+      1048575.999999972,
+      1048575.9999999721,
+      0,
+      0.0
+    ]
+  },
+  {
+    "family": "invtrgamma",
+    "function": "q",
+    "input": -0.6931471805599453,
+    "lower": false,
+    "log": true,
+    "parameters": [
+      1e-309,
+      1e+308,
+      1.0
+    ],
+    "actual": Infinity,
+    "expected": 1023.9999999999864,
+    "error": Infinity,
+    "category": "quantiles",
+    "row": [
+      12,
+      0,
+      1,
+      -0.6931471805599453,
+      1023.9999999999864,
+      1023.9999999999862,
+      1023.9999999999864,
+      0,
+      0.0
+    ]
+  },
+  {
+    "family": "invtrgamma",
+    "function": "q",
+    "input": -0.2876820724517809,
+    "lower": false,
+    "log": true,
+    "parameters": [
+      1e-309,
+      1e+308,
+      1.0
+    ],
+    "actual": Infinity,
+    "expected": 17.757726633812496,
+    "error": Infinity,
+    "category": "quantiles",
+    "row": [
+      12,
+      0,
+      1,
+      -0.2876820724517809,
+      17.757726633812496,
+      17.757726633812492,
+      17.757726633812496,
+      0,
+      0.0
+    ]
+  }
+]

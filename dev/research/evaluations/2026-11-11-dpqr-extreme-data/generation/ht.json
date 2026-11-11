@@ -1,0 +1,62 @@
+{
+  "id": "ht",
+  "input_sha256": "5f3fb601afc0246b9a6b59dc9a2da1828fffcf90b074809632682a8eed825901",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 100212,
+    "points": 11,
+    "values": 223,
+    "quantiles": 484
+  },
+  "after": {
+    "bytes": 100212,
+    "points": 11,
+    "values": 223,
+    "quantiles": 484
+  },
+  "records": [
+    {
+      "parameters": [
+        0.0,
+        5e-08,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: normalization quadrature error estimate 0.0000000001",
+      "seconds": 2.4010824220003997
+    },
+    {
+      "parameters": [
+        0.0,
+        500000000.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms.",
+      "seconds": 22.7092265579995
+    },
+    {
+      "parameters": [
+        0.0,
+        500000000.0,
+        1000.0
+      ],
+      "status": "oracle gap",
+      "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms.",
+      "seconds": 19.062105150000207
+    },
+    {
+      "parameters": [
+        -100000000.0,
+        500000000.0,
+        100000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "ValueError: \nhypercomb() failed to converge to the requested 555 bits of accuracy\nusing a working precision of 7345 bits. The function value may be zero or\ninfinite; try passing zeroprec=N or infprec=M to bound finite values between\n2^(-N) and 2^M. Otherwise try a higher maxprec or maxterms.\n",
+      "seconds": 29.726410904999284
+    }
+  ],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

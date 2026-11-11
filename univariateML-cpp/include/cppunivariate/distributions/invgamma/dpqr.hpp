@@ -7,37 +7,39 @@
 #pragma once
 
 #include "../../special/constants.hpp"
-#include "../../special/special.hpp"
+#include "../gamma/dpqr.hpp"
 #include <cmath>
 
 namespace cppunivariate {
 namespace distributions {
 
-using cppunivariate::special::kNaN;
-using cppunivariate::special::kNegInf;
 
 inline double dinvgamma(double x, double alpha, double beta, bool log) {
-  if (!(alpha > 0.0 && beta > 0.0) || std::isnan(x)) {
-    return kNaN;
+  if (!(alpha > 0.0 && beta > 0.0 && std::isfinite(alpha) && std::isfinite(beta)) || std::isnan(x)) {
+    return special::kNaN;
   }
   if (x <= 0.0 || x == special::kPosInf) {
-    return log ? kNegInf : 0.0;
+    return log ? special::kNegInf : 0.0;
   }
-  const double log_density = alpha * std::log(beta) - std::lgamma(alpha) +
-                             (-alpha - 1.0) * std::log(x) - beta / x;
+  const double log_density = special::gamma_log_density_positive(beta,alpha,x)
+      +std::log(beta)-std::log(x);
   return log ? log_density : std::exp(log_density);
 }
 
 inline double pinvgamma(double q, double alpha, double beta, bool lower_tail,
                         bool log_p) {
-  if (!(beta > 0.0 && std::isfinite(beta)) || std::isnan(q)) return special::kNaN;
-  const double lx=q<=0.0 ? special::kPosInf : std::log(beta)-std::log(q);
-  return special::tail_probability(special::gamma_log_tails(lx,alpha),!lower_tail,log_p);
+  if (!(alpha>0 && std::isfinite(alpha) && beta > 0.0 && std::isfinite(beta)) || std::isnan(q)) return special::kNaN;
+  if(q<=0) return special::tail_probability(special::tails_from_log(special::kNegInf,true),lower_tail,log_p);
+  if(q==special::kPosInf) return special::tail_probability(special::tails_from_log(special::kNegInf,false),lower_tail,log_p);
+  return pgamma(beta,alpha,q,!lower_tail,log_p);
 }
 
 inline double qinvgamma(double p, double alpha, double beta, bool lower_tail,
                         bool log_p) {
-  if (!(beta > 0.0 && std::isfinite(beta))) return special::kNaN;
+  if (!(alpha>0 && std::isfinite(alpha) && beta > 0.0 && std::isfinite(beta))) return special::kNaN;
+  const auto tails=special::quantile_log_tails(p,lower_tail,log_p);
+  if(!tails.valid) return special::kNaN;
+  if(special::gamma_mean_quantile_enclosed(alpha,tails)) return beta/alpha;
   return std::exp(std::log(beta)-special::gamma_log_quantile(p,alpha,!lower_tail,log_p));
 }
 

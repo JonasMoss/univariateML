@@ -1,0 +1,72 @@
+{
+  "id": "tlambda",
+  "before": {
+    "bytes": 72057,
+    "points": 8,
+    "values": 152,
+    "quantiles": 352
+  },
+  "after": {
+    "bytes": 113495,
+    "points": 13,
+    "values": 241,
+    "quantiles": 572
+  },
+  "records": [
+    {
+      "parameters": [
+        -1.0,
+        1.0,
+        0.0
+      ],
+      "status": "generated",
+      "seconds": 0.32203472300898284
+    },
+    {
+      "parameters": [
+        1.0,
+        1.0,
+        0.0
+      ],
+      "status": "generated",
+      "seconds": 0.4805040489882231
+    },
+    {
+      "parameters": [
+        0.0,
+        1e-08,
+        0.0
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: density/antiderivative derivative mismatch",
+      "seconds": 0.3715907770092599
+    },
+    {
+      "parameters": [
+        0.0,
+        100000000.0,
+        0.0
+      ],
+      "status": "generated",
+      "seconds": 0.5041589320171624
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        -1.0
+      ],
+      "status": "generated",
+      "seconds": 1.4470113160205074
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 1.0653313439688645
+    }
+  ]
+}

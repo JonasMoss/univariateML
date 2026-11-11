@@ -1,0 +1,52 @@
+{
+  "id": "lst",
+  "input_sha256": "7744461cccd7a1a8e2d0d320dd9f19bc9242f789b3e73f7e4ba8ac3812e4db8b",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 122742,
+    "points": 14,
+    "values": 248,
+    "quantiles": 616
+  },
+  "after": {
+    "bytes": 122742,
+    "points": 14,
+    "values": 248,
+    "quantiles": 616
+  },
+  "records": [
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        500000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms.",
+      "seconds": 15.21565598900088
+    },
+    {
+      "parameters": [
+        0.0,
+        1000.0,
+        500000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms.",
+      "seconds": 19.625620982000328
+    },
+    {
+      "parameters": [
+        -100000000.0,
+        100000000.0,
+        500000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "ValueError: \nhypercomb() failed to converge to the requested 555 bits of accuracy\nusing a working precision of 7345 bits. The function value may be zero or\ninfinite; try passing zeroprec=N or infprec=M to bound finite values between\n2^(-N) and 2^M. Otherwise try a higher maxprec or maxterms.\n",
+      "seconds": 3.871442512001522
+    }
+  ],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

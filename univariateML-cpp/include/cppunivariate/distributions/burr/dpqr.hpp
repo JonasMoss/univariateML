@@ -1,4 +1,5 @@
 #pragma once
+#include "../llogis/dpqr.hpp"
 #include "../../special/tails.hpp"
 #include <cmath>
 namespace cppunivariate { namespace distributions {
@@ -30,6 +31,7 @@ inline double pburr(double q, double shape1, double shape2, double scale, bool l
 }
 inline double qburr(double p, double shape1, double shape2, double scale, bool lower_tail, bool log_p) {
   if (!(shape1 > 0.0 && std::isfinite(shape1) && shape2 > 0.0 && std::isfinite(shape2) && scale > 0.0 && std::isfinite(scale))) return special::kNaN;
+  if(shape1==1) return qllogis(p,shape2,scale,lower_tail,log_p);
   const auto t = special::quantile_log_tails(p, lower_tail, log_p);
   if (!t.valid) return special::kNaN;
   if (t.lower == special::kNegInf) return 0.0;

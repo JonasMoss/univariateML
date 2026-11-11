@@ -1,0 +1,48 @@
+{
+  "id": "zmpois",
+  "input_sha256": "f1d36731d39069ea6ce3b6873bce5c1ad1c73f4f8fea61e1d1a5d909639ed288",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 222489,
+    "points": 10,
+    "values": 1660,
+    "quantiles": 440
+  },
+  "after": {
+    "bytes": 277452,
+    "points": 12,
+    "values": 2072,
+    "quantiles": 528
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        0.5
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.16281687999980932
+    },
+    {
+      "parameters": [
+        100000000.0,
+        0.5
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: positive series did not reach certified remainder",
+      "seconds": 17.083764642000006
+    },
+    {
+      "parameters": [
+        1.0,
+        5e-09
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.151624764999724
+    }
+  ]
+}

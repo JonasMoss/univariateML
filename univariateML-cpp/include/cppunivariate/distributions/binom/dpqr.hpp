@@ -26,6 +26,35 @@ inline double dbinom(double x, double size, double prob, bool log) {
   if (x < 0.0 || x > size || x != std::floor(x)) {
     return log ? kNegInf : 0.0;
   }
+  if(size==0 || prob==0 || prob==1) {
+    const bool atom=prob==1?x==size:x==0;
+    return log?(atom?0:special::kNegInf):(atom?1:0);
+  }
+  const double other=size-x,small=std::min(x,other);
+  if(small<16) {
+    double coefficient=0;
+    for(int j=0;j<static_cast<int>(small);++j)
+      coefficient+=std::log(size-j)-std::log(j+1.0);
+    const double lp=coefficient+x*std::log(prob)+other*std::log1p(-prob);
+    return log?lp:std::exp(lp);
+  }
+  if((size+1)-size!=1) {
+    // The beta-density identity would round its shifted counts. Center
+    // directly at np instead; fma retains np-k before either product rounds.
+    const double delta=std::fma(size,prob,-x),u=delta/x,v=-delta/other;
+    const double first=std::abs(u)<=.5?special::scaled_positive_deviance(x,u)
+      :delta-x*(special::log_positive_ratio(size,x)+std::log(prob));
+    const double second=std::abs(v)<=.5?special::scaled_positive_deviance(other,v)
+      :-delta-other*(special::log_positive_ratio(size,other)+std::log1p(-prob));
+    const double constant=.5*(std::log(size)-std::log(x)-std::log(other))-.91893853320467274178
+      +special::density_stirling_remainder(size)-special::density_stirling_remainder(x)-special::density_stirling_remainder(other);
+    const double lp=constant-first-second;
+    return log?lp:std::exp(lp);
+  }
+  if(prob>0 && prob<1 && (size+1)-size==1 && (x+1)-x==1 && ((size-x)+1)-(size-x)==1) {
+    const double lp=special::beta_log_density_positive(prob,x+1,(size-x)+1)-std::log(size+1);
+    return log?lp:std::exp(lp);
+  }
   // log p(k) = lgamma(size+1) - lgamma(k+1) - lgamma(size-k+1)
   //          + k*log(prob) + (size-k)*log1p(-prob).
   // Handle 0 * log(0) cases manually (R returns 0 contribution).

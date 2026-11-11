@@ -1,0 +1,31 @@
+{
+  "id": "exp",
+  "before": {
+    "bytes": 35887,
+    "points": 4,
+    "values": 84,
+    "quantiles": 176
+  },
+  "after": {
+    "bytes": 53790,
+    "points": 6,
+    "values": 126,
+    "quantiles": 264
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08
+      ],
+      "status": "generated",
+      "seconds": 0.4723281709593721
+    },
+    {
+      "parameters": [
+        100000000.0
+      ],
+      "status": "generated",
+      "seconds": 0.6587866190238856
+    }
+  ]
+}

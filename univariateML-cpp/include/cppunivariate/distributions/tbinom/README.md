@@ -159,6 +159,12 @@ existence:
 
 The truncated binomial distribution models success counts observed only within a conditioning window $a<X\le b$. The trial count $n$ describes the underlying binomial experiment and $p$ is its success probability. The bounds describe which counts can be recorded.
 
+## d/p/q/r
+
+### Conditional count coordinates
+
+The positive binomial ratio p*(n-k)/((1-p)*(k+1)) is formed with compensated products before normalization on the retained window. A two-cell law can have a CDF below one half by less than binary64 can represent; quantiles therefore compare unnormalized interval odds rather than rounded normalized tails. The conditional bridge is unavailable when unit count steps disappear, a side needs more than two million cells to bound its remainder, or the far-anchor comparison cannot meet its practical margin.
+
 ## Details
 
 The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-binomial.md) derives the stated limits and held-parameter conditions.

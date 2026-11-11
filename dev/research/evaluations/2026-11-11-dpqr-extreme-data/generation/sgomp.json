@@ -1,0 +1,21 @@
+{
+  "id": "sgomp",
+  "input_sha256": "dd429ebe54134afae0bcc0a6da7ce5f4491c115912a3a94f4dc285c401af0dc0",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 108227,
+    "points": 12,
+    "values": 252,
+    "quantiles": 528
+  },
+  "after": {
+    "bytes": 108227,
+    "points": 12,
+    "values": 252,
+    "quantiles": 528
+  },
+  "records": [],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

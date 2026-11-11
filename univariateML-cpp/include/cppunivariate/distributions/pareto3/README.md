@@ -129,6 +129,12 @@ existence:
 
 Pareto type III models sizes above a threshold $\mu$ with log-logistic excesses. The scale $\sigma$ is the median excess. The shape $\gamma$ controls the spread of log excesses and the polynomial tail.
 
+## d/p/q/r
+
+### Concentrating shifted probabilities
+
+When min=-scale, rounding an unshifted quantile and then adding min loses its leading displacement. The inverse uses the centered log odds and transports expm1(log-odds/shape) directly. Forward evaluation preserves the addition residual of min+scale before multiplying the log ratio by the shape.
+
 ## Details
 
 Fitting requires finite observations strictly above a held threshold. On $\log(x_i-\mu)$ the problem is a logistic location-scale fit, so existence and uniqueness transfer from [log-logistic](../llogis/README.md). The log-logistic shape and scale are unchanged; in rate coordinates the rate is $1/\sigma$.

@@ -91,6 +91,12 @@ existence:
 
 The triangular distribution describes bounded measurements between endpoints $a$ and $b$, with mode $c$. Holding an endpoint specifies a known bound; holding the mode specifies the peak, which may lie outside the observed range.
 
+## d/p/q/r
+
+### Extreme d/p/q arithmetic
+
+On the right branch with a small lower probability, rationalizing the inverse gives a + ((c-a)+F(b-c))/(1+sqrt(S(b-c)/(b-a))). Its positive numerator avoids cancellation between a support width and its nearly equal square root.
+
 ## Details
 
 The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-bounded.md) derives these boundary conditions, including the relevant held parameters.

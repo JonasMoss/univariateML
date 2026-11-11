@@ -1,0 +1,49 @@
+{
+  "id": "sgomp",
+  "before": {
+    "bytes": 71733,
+    "points": 8,
+    "values": 168,
+    "quantiles": 352
+  },
+  "after": {
+    "bytes": 107762,
+    "points": 12,
+    "values": 252,
+    "quantiles": 528
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 1.0039883260033093
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 0.9198301769793034
+    },
+    {
+      "parameters": [
+        1.0,
+        1e-08
+      ],
+      "status": "generated",
+      "seconds": 0.8004800010239705
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "seconds": 0.6611777929938398
+    }
+  ]
+}

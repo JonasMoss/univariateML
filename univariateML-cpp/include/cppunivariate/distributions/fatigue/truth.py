@@ -11,3 +11,6 @@ def build(t):
     mu = t['mu']
     return Reference(lambda x: normal((mp.sqrt((x-mu)/beta)-mp.sqrt(beta/(x-mu)))/alpha), mu, mp.inf)
 
+
+# Small alpha amplifies the log-ratio error, unlike a large alpha.
+extreme_parameter_sets = [{"alpha":1e-8,"beta":1000.,"mu":0.}, {"alpha":1e-8,"beta":1000.,"mu":-1000.}]

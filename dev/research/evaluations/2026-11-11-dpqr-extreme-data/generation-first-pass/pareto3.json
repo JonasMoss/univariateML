@@ -1,0 +1,89 @@
+{
+  "id": "pareto3",
+  "before": {
+    "bytes": 61066,
+    "points": 7,
+    "values": 141,
+    "quantiles": 308
+  },
+  "after": {
+    "bytes": 126797,
+    "points": 15,
+    "values": 285,
+    "quantiles": 660
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0,
+        0.0
+      ],
+      "status": "generated",
+      "seconds": 1.8750564850051887
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0,
+        0.0
+      ],
+      "status": "generated",
+      "seconds": 0.6750900269835256
+    },
+    {
+      "parameters": [
+        1.0,
+        1e-08,
+        0.0
+      ],
+      "status": "generated",
+      "seconds": 0.8420964850229211
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0,
+        0.0
+      ],
+      "status": "generated",
+      "seconds": 1.0865291510126553
+    },
+    {
+      "parameters": [
+        1.0,
+        1.0,
+        -1.0
+      ],
+      "status": "generated",
+      "seconds": 1.1308816189994104
+    },
+    {
+      "parameters": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 1.2950407119933516
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1000.0,
+        0.0
+      ],
+      "status": "generated",
+      "seconds": 1.1166455679922365
+    },
+    {
+      "parameters": [
+        100000000.0,
+        100000000.0,
+        -100000000.0
+      ],
+      "status": "generated",
+      "seconds": 1.2078213740023784
+    }
+  ]
+}

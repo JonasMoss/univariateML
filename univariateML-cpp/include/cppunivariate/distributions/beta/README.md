@@ -107,6 +107,12 @@ existence:
 
 The beta distribution models proportions and other continuous quantities strictly between zero and one.
 
+## d/p/q/r
+
+### Probability normalization and central inversion
+
+A difference of three log-gamma values loses the beta normalizer when one shape is large. Probability code uses exact unit-shape identities and a shifted gamma ratio or a Stirling expression with an omitted term below 3e-17. Near the median of a symmetric beta, the log-odds density is proportional to cosh(t/2)^(-2a); log(cosh(t/2)) <= t^2/8 bounds the relative error of the local linear inverse. This preserves the offset of an exact binary64 logarithmic probability from one half.
+
 ## Details
 
 The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-bounded.md) derives these boundary conditions, including the relevant held parameters.

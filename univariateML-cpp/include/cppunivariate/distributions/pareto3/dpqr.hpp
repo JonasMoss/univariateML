@@ -1,5 +1,5 @@
 #pragma once
-#include "../../special/special.hpp"
+#include "../llogis/dpqr.hpp"
 #include <cmath>
 #include <limits>
 namespace cppunivariate { namespace distributions {
@@ -10,9 +10,8 @@ inline double dpareto3(double x,double shape,double scale,double min,bool log) {
  const double c=std::log(shape)-std::log(scale);
  const double power=shape*1-1;
  if(x==min) {const double ll=power<0 ? inf : (power>0 ? -inf : c); return log ? ll : std::exp(ll);}
- const double z=std::log(x-min)-std::log(scale),t=shape*z;
- const double sp=std::fmax(t,0)+std::log1p(std::exp(-std::abs(t)));
- const double ll=c+power*z-(1+1)*sp;
+ const double z=special::log_shifted_positive_ratio(x,min,scale),t=shape*z;
+ const double ll=std::log(shape)-std::log(scale)-z-special::softplus(t)-special::softplus(-t);
  return log ? ll : std::exp(ll);
 }
 } }
@@ -24,14 +23,16 @@ inline double ppareto3(double q,double shape,double scale,double min,bool lower_
  if(std::isnan(q)) return std::numeric_limits<double>::quiet_NaN();
  if(q<=min) return log_p ? (lower_tail ? -std::numeric_limits<double>::infinity() : 0) : (lower_tail ? 0 : 1);
  if(q>=std::numeric_limits<double>::infinity()) return log_p ? (lower_tail ? 0 : -std::numeric_limits<double>::infinity()) : (lower_tail ? 1 : 0);
- return pllogis(q-min,shape,scale,lower_tail,log_p);
+ const double t=shape*special::log_shifted_positive_ratio(q,min,scale);
+ return special::tail_probability({-special::softplus(-t),-special::softplus(t),true},lower_tail,log_p);
 }
 inline double qpareto3(double p,double shape,double scale,double min,bool lower_tail,bool log_p) {
  if(!(std::isfinite(min) && shape>0 && std::isfinite(shape) && scale>0 && std::isfinite(scale))) return std::numeric_limits<double>::quiet_NaN();
  if(std::isnan(p) || (log_p ? p>0 : (p<0 || p>1))) return std::numeric_limits<double>::quiet_NaN();
  if(p==(log_p ? -std::numeric_limits<double>::infinity() : 0)) return lower_tail ? min : std::numeric_limits<double>::infinity();
  if(p==(log_p ? 0 : 1)) return lower_tail ? std::numeric_limits<double>::infinity() : min;
- return min+qllogis(p,shape,scale,lower_tail,log_p);
+ const auto tails=special::quantile_log_tails(p,lower_tail,log_p);
+ return special::shifted_scaled_power_quantile(min,scale,llogis_detail::log_odds(p,lower_tail,log_p,tails),shape);
 }
 template <typename Rng> inline double rpareto3(Rng &rng,double shape,double scale,double min) {
  if(!(std::isfinite(min) && shape>0 && std::isfinite(shape) && scale>0 && std::isfinite(scale))) return std::numeric_limits<double>::quiet_NaN();

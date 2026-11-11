@@ -1,0 +1,30 @@
+{
+  "id": "yulesimon",
+  "input_sha256": "de6b83f12f2e3590591eb35ff1962853933046076b49ccd60e4ac30b59f6d1cc",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 174239,
+    "points": 6,
+    "values": 1257,
+    "quantiles": 264
+  },
+  "after": {
+    "bytes": 174239,
+    "points": 6,
+    "values": 1257,
+    "quantiles": 264
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "seconds": 120.00006144299914
+    }
+  ],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

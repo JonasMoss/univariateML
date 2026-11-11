@@ -1,0 +1,31 @@
+{
+  "id": "zmpois",
+  "input_sha256": "d22417e90e22b0274ecde0de2fb45d1df0f3650f5b78e5e48120d06940d0946e",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 277699,
+    "points": 12,
+    "values": 2072,
+    "quantiles": 528
+  },
+  "after": {
+    "bytes": 277699,
+    "points": 12,
+    "values": 2072,
+    "quantiles": 528
+  },
+  "records": [
+    {
+      "parameters": [
+        100000000.0,
+        0.5
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: positive series did not reach certified remainder",
+      "seconds": 19.227047530999698
+    }
+  ],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

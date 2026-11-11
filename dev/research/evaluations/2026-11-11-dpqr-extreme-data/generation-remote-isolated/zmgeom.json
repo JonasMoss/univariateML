@@ -1,0 +1,39 @@
+{
+  "id": "zmgeom",
+  "input_sha256": "a60fe3a84de2ba3d16cf45c192e5959382a7a66ba134eeedee8486cf6ca44815",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 240855,
+    "points": 10,
+    "values": 1677,
+    "quantiles": 440
+  },
+  "after": {
+    "bytes": 270428,
+    "points": 11,
+    "values": 1885,
+    "quantiles": 484
+  },
+  "records": [
+    {
+      "parameters": [
+        5e-09,
+        0.5
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: positive series did not reach certified remainder",
+      "seconds": 9.802517067999815
+    },
+    {
+      "parameters": [
+        0.5,
+        5e-09
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.1005625460002193
+    }
+  ]
+}

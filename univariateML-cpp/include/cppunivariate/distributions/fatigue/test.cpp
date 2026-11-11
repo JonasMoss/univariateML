@@ -154,3 +154,11 @@ TEST_CASE("fatigue certificate: subnormal rescaling must retain coefficient accu
   const auto r=cppunivariate::fatigue_mle(mltest::as_span(x),1e-10,200);
   CHECK(r.status==cppunivariate::FatigueStatus::SearchFailure);
 }
+
+TEST_CASE("fatigue: exact-input extreme arithmetic regression") {
+  CHECK(cppunivariate::distributions::qfatigue(-0.6931471805599453,100000000.0,1.0,0.0,true,true) == doctest::Approx(1.0000000029064942).epsilon(1e-10).scale(0));
+}
+
+TEST_CASE("fatigue: physical inverse survives latent underflow") {
+ CHECK(cppunivariate::distributions::qfatigue(-.6931471805599453,4.9406564584124654e-324,1e308,-1e308,true,true)==doctest::Approx(1.4359989127576843e-32).epsilon(1e-9).scale(0));
+}

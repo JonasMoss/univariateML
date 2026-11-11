@@ -1,0 +1,101 @@
+{
+  "id": "std",
+  "before": {
+    "bytes": 80153,
+    "points": 9,
+    "values": 171,
+    "quantiles": 396
+  },
+  "after": {
+    "bytes": 134811,
+    "points": 15,
+    "values": 285,
+    "quantiles": 660
+  },
+  "records": [
+    {
+      "parameters": [
+        -1.0,
+        1.0,
+        5.0
+      ],
+      "status": "generated",
+      "seconds": 2.5625729110324755
+    },
+    {
+      "parameters": [
+        1.0,
+        1.0,
+        5.0
+      ],
+      "status": "generated",
+      "seconds": 2.439391608990263
+    },
+    {
+      "parameters": [
+        0.0,
+        1e-08,
+        5.0
+      ],
+      "status": "generated",
+      "seconds": 3.5769772520288825
+    },
+    {
+      "parameters": [
+        0.0,
+        100000000.0,
+        5.0
+      ],
+      "status": "generated",
+      "seconds": 3.2319573489949107
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        2.0000000000000004
+      ],
+      "status": "generated",
+      "seconds": 4.720582494977862
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        500000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms.",
+      "seconds": 4.82104067603359
+    },
+    {
+      "parameters": [
+        0.0,
+        1000.0,
+        500000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms.",
+      "seconds": 5.930321598018054
+    },
+    {
+      "parameters": [
+        -100000000.0,
+        100000000.0,
+        500000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "ValueError: \nhypercomb() failed to converge to the requested 289 bits of accuracy\nusing a working precision of 5382 bits. The function value may be zero or\ninfinite; try passing zeroprec=N or infprec=M to bound finite values between\n2^(-N) and 2^M. Otherwise try a higher maxprec or maxterms.\n",
+      "seconds": 4.2686600189772435
+    },
+    {
+      "parameters": [
+        0.0,
+        14142.135659086289,
+        2.00000001
+      ],
+      "status": "generated",
+      "seconds": 3.58660898800008
+    }
+  ]
+}

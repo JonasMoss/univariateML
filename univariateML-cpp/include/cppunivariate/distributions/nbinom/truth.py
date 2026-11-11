@@ -13,3 +13,6 @@ def build(t, logd):
     out.normalization=geometric_sum(lambda k: mp.exp(logd(mp.mpf(k))),0,lambda k: (1-p)*max(1,(k+r)/(k+1)))
     return out
 
+
+# Joint limit paths supplement the shared one-coordinate extreme grid.
+extreme_parameter_sets = [{'size': 100000000.0, 'prob': 0.9999999900000001}]

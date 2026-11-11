@@ -1,0 +1,80 @@
+{
+  "id": "tnorm",
+  "before": {
+    "bytes": 53164,
+    "points": 6,
+    "values": 114,
+    "quantiles": 264
+  },
+  "after": {
+    "bytes": 79752,
+    "points": 9,
+    "values": 169,
+    "quantiles": 396
+  },
+  "records": [
+    {
+      "parameters": [
+        0.0,
+        1e-08,
+        "-Inf",
+        "Inf"
+      ],
+      "status": "generated",
+      "seconds": 2.481216294982005
+    },
+    {
+      "parameters": [
+        0.0,
+        100000000.0,
+        "-Inf",
+        "Inf"
+      ],
+      "status": "generated",
+      "seconds": 2.1289166329661384
+    },
+    {
+      "parameters": [
+        -1e+16,
+        100000000.0,
+        0.0,
+        "Inf"
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: normalization failed at {'mean': -1e+16, 'sd': 100000000.0, 'a': 0, 'b': inf}: +inf",
+      "seconds": 0.4102524589980021
+    },
+    {
+      "parameters": [
+        1e+16,
+        100000000.0,
+        "-Inf",
+        0.0
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: normalization failed at {'mean': 1e+16, 'sd': 100000000.0, 'a': -inf, 'b': 0}: +inf",
+      "seconds": 0.398254306986928
+    },
+    {
+      "parameters": [
+        1e+16,
+        100000000.0,
+        0.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: normalization failed at {'mean': 1e+16, 'sd': 100000000.0, 'a': 0, 'b': 1}: +inf",
+      "seconds": 0.7165753820445389
+    },
+    {
+      "parameters": [
+        0.0,
+        100000000.0,
+        0.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 4.092389663972426
+    }
+  ]
+}

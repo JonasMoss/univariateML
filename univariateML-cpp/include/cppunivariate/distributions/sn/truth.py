@@ -31,6 +31,7 @@ def build(p, logd):
         if shape<0:
             ll,lu=standard(-z,-shape);return lu,ll
         if shape==0:return normal(z)
+        if shape==1:return pair(2*normal(z)[0])
         left=z<0;t=abs(z)
         if t>mp.mpf('1e40'):
             if left:
@@ -93,6 +94,8 @@ def build(p, logd):
             return xi+w*Reference(normal).quantile(lp,lower)
         if lp in (-mp.inf,0):
             return (-mp.inf if lower else mp.inf) if lp==-mp.inf else (mp.inf if lower else -mp.inf)
+        if a==1 and lp==mp.log(mp.mpf("0.25")) and lower:return xi
+        if a==-1 and lp==mp.log(mp.mpf("0.25")) and not lower:return xi
         index=0 if lower else 1
         def below(z):
             v=standard(z,a)[index]
@@ -118,3 +121,6 @@ def build(p, logd):
         raise ArithmeticError('Gaussian quantile convergence')
     ref.quantile=quantile
     return ref
+
+# Joint/finite-design limit stresses beyond the historical grid.
+extreme_parameter_sets = [{'alpha': 100000000.0}, {'alpha': -100000000.0}]

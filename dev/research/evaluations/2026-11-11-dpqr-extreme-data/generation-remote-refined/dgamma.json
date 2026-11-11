@@ -1,0 +1,50 @@
+{
+  "id": "dgamma",
+  "before": {
+    "bytes": 196777,
+    "points": 7,
+    "values": 1456,
+    "quantiles": 308
+  },
+  "after": {
+    "bytes": 277173,
+    "points": 10,
+    "values": 2086,
+    "quantiles": 440
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 4.054600871000275
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms.",
+      "seconds": 0.21147453799994764
+    },
+    {
+      "parameters": [
+        1.0,
+        1e-08
+      ],
+      "status": "generated",
+      "seconds": 0.31736411299971223
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "seconds": 0.04650343899993459
+    }
+  ]
+}

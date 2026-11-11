@@ -13,7 +13,7 @@ TEST_CASE("expweibull: d/p/q/r against the truth table") {
     [](double x,const std::vector<double>& p,bool t,bool l){return cppunivariate::distributions::qexpweibull(x,p[0],p[1],p[2],t,l);},
     // At b=1000,c=1e200, a few ulps of h amplify to 2.7e-10
     // relative error in a natural probability of 1e-300.
-    [](cppunivariate::distributions::StdRng<>& rng,const std::vector<double>& p){return cppunivariate::distributions::rexpweibull(rng,p[0],p[1],p[2]);},5e-10);
+    [](cppunivariate::distributions::StdRng<>& rng,const std::vector<double>& p){return cppunivariate::distributions::rexpweibull(rng,p[0],p[1],p[2]);},1e-10);
 }
 TEST_CASE("expweibull: sampler uses the analytic inverse and has uniform PIT") {
   cppunivariate::distributions::StdRng<> rng(179), control(179);
@@ -82,4 +82,9 @@ TEST_CASE("expweibull: subnormal exponents preserve log survival") {
       doctest::Approx(-737.6145749290254).epsilon(2e-15));
   CHECK(cppunivariate::distributions::pexpweibull(1e-200,1,2,1e-320,false,true)==
       doctest::Approx(-730.001743898618).epsilon(2e-15));
+}
+
+TEST_CASE("expweibull: exact-ratio hazard meets natural probability tolerance") {
+ CHECK(cppunivariate::distributions::pexpweibull(2.0122736097839593,2,1000,1e200,true,false)==
+  doctest::Approx(1.0000000086536384e-300).epsilon(1e-10).scale(0));
 }

@@ -1,0 +1,31 @@
+{
+  "id": "rayleigh",
+  "before": {
+    "bytes": 45446,
+    "points": 5,
+    "values": 105,
+    "quantiles": 220
+  },
+  "after": {
+    "bytes": 63710,
+    "points": 7,
+    "values": 147,
+    "quantiles": 308
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08
+      ],
+      "status": "generated",
+      "seconds": 0.8500520340166986
+    },
+    {
+      "parameters": [
+        100000000.0
+      ],
+      "status": "generated",
+      "seconds": 0.8319971820455976
+    }
+  ]
+}

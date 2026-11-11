@@ -1,0 +1,71 @@
+{
+  "id": "bbinom",
+  "before": {
+    "bytes": 52564,
+    "points": 8,
+    "values": 116,
+    "quantiles": 352
+  },
+  "after": {
+    "bytes": 93063,
+    "points": 14,
+    "values": 212,
+    "quantiles": 616
+  },
+  "records": [
+    {
+      "parameters": [
+        10.0,
+        1e-08,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 0.08045601402409375
+    },
+    {
+      "parameters": [
+        10.0,
+        100000000.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 0.03926017100457102
+    },
+    {
+      "parameters": [
+        10.0,
+        1.0,
+        1e-08
+      ],
+      "status": "generated",
+      "seconds": 0.037515824020374566
+    },
+    {
+      "parameters": [
+        10.0,
+        1.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "seconds": 0.03571236599236727
+    },
+    {
+      "parameters": [
+        10.0,
+        100000000.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "seconds": 0.03613266296451911
+    },
+    {
+      "parameters": [
+        10.0,
+        1e-08,
+        1e-08
+      ],
+      "status": "generated",
+      "seconds": 0.039178379985969514
+    }
+  ]
+}

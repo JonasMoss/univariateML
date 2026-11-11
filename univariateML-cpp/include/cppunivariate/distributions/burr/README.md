@@ -162,6 +162,12 @@ The scale $s$ sets the measurement scale. The shapes $k$ and $c$ control the
 lower and upper tails. The upper-tail exponent is $kc$,
 and the lower-tail power is $c$.
 
+## d/p/q/r
+
+### Extreme d/p/q arithmetic
+
+The shape1 = 1 inverse is the log-logistic inverse. Its centered log-odds calculation retains the difference between the exact log-probability input and log(1/2), which a subsequent division by a tiny shape amplifies.
+
 ## Details
 
 The all-free certificate requires at least two positive finite observations;
@@ -284,7 +290,6 @@ The earlier quadrature curvature diagnostic had incorrect signs on two
 retained workloads and is not used. See the linked derivation and
 [port validation](../../../../../dev/research/evaluations/2026-11-04-burr-port-report.md)
 for the retained decisions, workload outcomes and timing evidence.
-
 
 ### Held-scale certificate (TASK-116.4)
 

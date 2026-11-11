@@ -226,3 +226,7 @@ search certificate. The symmetric formula applies with `m` held.
 ## Stop details
 
 Unresolved face comparisons retain the fitted Poisson or binomial face and the best finite witness, with no finite global upper bound claimed.
+
+### Extreme d/p/q arithmetic
+
+The quantile compares directly summed survival probabilities when the upper tail is requested, instead of rounding 1-p to one. Discrete bisection checks the selected probability scale and the first attained cell. The sampler retains its original cumulative transform and primitive RNG stream.

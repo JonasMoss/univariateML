@@ -1,0 +1,33 @@
+{
+  "id": "lnorm",
+  "before": {
+    "bytes": 54824,
+    "points": 6,
+    "values": 126,
+    "quantiles": 264
+  },
+  "after": {
+    "bytes": 69587,
+    "points": 8,
+    "values": 154,
+    "quantiles": 352
+  },
+  "records": [
+    {
+      "parameters": [
+        0.0,
+        1e-08
+      ],
+      "status": "generated",
+      "seconds": 1.0860700189950876
+    },
+    {
+      "parameters": [
+        0.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "seconds": 2.8380043910001405
+    }
+  ]
+}

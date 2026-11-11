@@ -149,6 +149,12 @@ existence:
 
 The zero-inflated binomial distribution mixes a binomial count with a structural-zero component of probability $\pi$. The integer size $n$ is the number of trials and $p$ is the base success probability.
 
+## d/p/q/r
+
+### Nonzero masses at large trial counts
+
+At zero inflation, every positive mass is exactly binomial. Its independent rising-factorial normalizer can nevertheless lose several digits near a concentrated large-n fit. Delegating the positive mass to the centered binomial density preserves this identity; the zero-mass mixture still uses its separately computed complementary tails.
+
 ## Details
 
 The [binomial-family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-binomial.md) records the boundary and held-subset arguments.

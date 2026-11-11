@@ -131,6 +131,12 @@ existence:
 
 Pareto type II models sizes above a lower endpoint $\mu$ with Lomax-distributed excesses. The scale $\sigma$ sets the size unit and the shape $\alpha$ controls tail decay.
 
+## d/p/q/r
+
+### Extreme d/p/q arithmetic
+
+At shape one the translated inverse uses the log-logistic member with a compensated location-plus-scale. A final addition to a rounded positive quantile loses a small answer when location and scale cancel.
+
 ## Details
 
 Fitting holds the threshold fixed and requires finite observations strictly above it. Subtracting the threshold reduces the fit to [Lomax](../lomax/README.md), with shape $\kappa=\alpha$ and rate $\lambda=1/\sigma$.

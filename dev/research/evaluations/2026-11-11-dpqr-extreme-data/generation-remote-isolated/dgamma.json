@@ -1,0 +1,30 @@
+{
+  "id": "dgamma",
+  "input_sha256": "0e99703155b587c727fdd36e9f1cd8ab33bba04e27c37e6b901205a5d8658769",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 277173,
+    "points": 10,
+    "values": 2086,
+    "quantiles": 440
+  },
+  "after": {
+    "bytes": 277173,
+    "points": 10,
+    "values": 2086,
+    "quantiles": 440
+  },
+  "records": [
+    {
+      "parameters": [
+        100000000.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms.",
+      "seconds": 0.21420965000015713
+    }
+  ]
+}

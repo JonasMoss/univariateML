@@ -1,0 +1,58 @@
+{
+  "id": "beta",
+  "before": {
+    "bytes": 58974,
+    "points": 7,
+    "values": 129,
+    "quantiles": 308
+  },
+  "after": {
+    "bytes": 89072,
+    "points": 11,
+    "values": 185,
+    "quantiles": 484
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 7.220971856000006
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 2.6832898700001806
+    },
+    {
+      "parameters": [
+        1.0,
+        1e-08
+      ],
+      "status": "generated",
+      "seconds": 8.144384184000046
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "seconds": 2.4537096330000168
+    },
+    {
+      "parameters": [
+        100000000.0,
+        100000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms.",
+      "seconds": 16.618749258000207
+    }
+  ]
+}

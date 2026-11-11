@@ -1,0 +1,21 @@
+{
+  "id": "dunif",
+  "input_sha256": "aca2afdadc7e5d6f5fc7c0895865ea7251960e190d1391a26217849900e09d9c",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 86368,
+    "points": 6,
+    "values": 462,
+    "quantiles": 264
+  },
+  "after": {
+    "bytes": 86368,
+    "points": 6,
+    "values": 462,
+    "quantiles": 264
+  },
+  "records": [],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

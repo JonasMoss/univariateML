@@ -1,0 +1,21 @@
+{
+  "id": "gumbel",
+  "input_sha256": "b6411f50077b6130f83f9a7ffa5694f9d8a08f142a08d3e5eb3007cebc7b2bdb",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 98224,
+    "points": 11,
+    "values": 209,
+    "quantiles": 484
+  },
+  "after": {
+    "bytes": 98224,
+    "points": 11,
+    "values": 209,
+    "quantiles": 484
+  },
+  "records": [],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

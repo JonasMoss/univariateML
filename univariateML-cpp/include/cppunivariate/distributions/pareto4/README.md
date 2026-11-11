@@ -251,3 +251,7 @@ held-scale excess fits transport Burr's per-fit flag with the held threshold.
 Subtracting the held threshold transports the certificate to excess data with Jacobian one; artificial ties or overflow in this subtraction stop.
 
 Arithmetic that rounds a distinct observation onto a held scale stops numerically: reciprocation checks equality against the original scale, and threshold subtraction checks its error-free sum residual. This protects the exact endpoint classification and its tied-observation penalty.
+
+### Extreme d/p/q arithmetic
+
+At shape1 one the inverse uses the compensated Pareto III inverse; centering before exponentiation preserves answers close to a cancelling location and scale.

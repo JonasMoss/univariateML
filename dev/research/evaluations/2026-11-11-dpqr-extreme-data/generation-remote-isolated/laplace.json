@@ -1,0 +1,39 @@
+{
+  "id": "laplace",
+  "input_sha256": "4cdd4a721ed7ced130e470988e905bad264049f9a0078df38ecb36d8dfc6070a",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 52852,
+    "points": 6,
+    "values": 114,
+    "quantiles": 264
+  },
+  "after": {
+    "bytes": 70839,
+    "points": 8,
+    "values": 152,
+    "quantiles": 352
+  },
+  "records": [
+    {
+      "parameters": [
+        0.0,
+        1e-08
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.060713074999967
+    },
+    {
+      "parameters": [
+        0.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.0934383889998571
+    }
+  ]
+}

@@ -748,3 +748,15 @@ For held shapes below one, the mode corner has opposing infinite one-sided
 scores: the positive $|c-x_i|^p$ cost dominates smooth perturbations. The
 tangent fit uses variance-scaled side lengths to avoid overflowing gamma
 moments when the shape is small.
+
+### Normal-member centering
+
+At nu = 2 the standardized law is exactly the skew-normal member. Its d/p evaluations use the compensated skew-normal moment and residual calculation, including the documented forward-error gate and NaN precision regions in [the skew-normal dossier](../snorm/README.md#extreme-dpq-arithmetic). This preserves the thin-side residual before division by xi² instead of rounding the Gaussian absolute moment inside the generalized-Gaussian calculation.
+
+### Exact base-moment submodel
+
+At nu=1 the standardized base is Laplace, with first absolute moment 1/sqrt(2). Retaining its low word and the skew mean displacement removes the thin-side cancellation that remains after ordinary moment evaluation. The broad-side central mass is -expm1(-sqrt(2)*v), rather than a difference of rounded CDFs. The d/p bridge returns NaN if its practical coordinate margin fails or its raw displacement or standardized radius cannot be represented; these are named precision regions. Sampling and the inverse transformation retain their original arithmetic.
+
+For the other members with representable moments, two-word log-Gamma values retain the standardized first absolute moment before centering. Recurrence reaches arguments of at least 32; the first omitted Stirling term is below 5.2e-35. Its propagated practical moment margin participates in the coordinate gate. The symmetric member delegates directly to GED, and the large-nu radius precision gate remains in force after compensated standardization.
+
+The natural-tail precision region includes nu=3.8792797496374307, xi=1e8, mean=0, sd=1 at x=-1.5461574810135936 and x=-1.5461574810135932. The propagated moment/coordinate margins are respectively 3.165e-10 and 9.167e-11 in the log tail. Natural lower tails return NaN under the reserved 1e-11 coordinate budget; their independently computed probabilities remain in the truth exclusions. Log tails retain their scaled error allowance. A sharper first-moment enclosure could reduce this region.

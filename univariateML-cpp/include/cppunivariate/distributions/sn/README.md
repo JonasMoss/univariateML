@@ -119,6 +119,12 @@ existence:
 
 The Azzalini skew-normal extends the normal distribution by a smooth shape parameter. The location $\xi$ and scale $\omega$ differ from its mean and standard deviation. Positive $\alpha$ gives right skewness, negative $\alpha$ gives left skewness, and $\alpha=0$ gives the normal distribution. This is distinct from the Fernandez–Steel skew-normal family.
 
+## d/p/q/r
+
+### Extreme d/p/q arithmetic
+
+The alpha = 1 member has CDF Phi(z)^2, so its exact quarter quantile is the location (with reflection for alpha = -1). Near these quarter probabilities, the inverse uses the normal inverse of sqrt(p); rationalizing sqrt(p)-1/2 preserves natural-probability offsets, and halving an exact logarithmic input preserves its nonzero offset from the mathematical quarter.
+
 ## Details
 
 The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-skewreal.md) derives the stated limits and held-parameter conditions.

@@ -1,0 +1,35 @@
+{
+  "checks": 322814,
+  "failures": 279,
+  "active_failures": 71,
+  "ranked": [
+    [
+      "tbinom",
+      104
+    ],
+    [
+      "tpois",
+      104
+    ],
+    [
+      "sged",
+      26
+    ],
+    [
+      "snorm",
+      26
+    ],
+    [
+      "sstd",
+      16
+    ],
+    [
+      "hyper",
+      2
+    ],
+    [
+      "fpareto",
+      1
+    ]
+  ]
+}

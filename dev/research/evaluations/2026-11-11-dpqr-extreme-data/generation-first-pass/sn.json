@@ -1,0 +1,91 @@
+{
+  "id": "sn",
+  "before": {
+    "bytes": 79563,
+    "points": 9,
+    "values": 171,
+    "quantiles": 396
+  },
+  "after": {
+    "bytes": 132910,
+    "points": 15,
+    "values": 285,
+    "quantiles": 660
+  },
+  "records": [
+    {
+      "parameters": [
+        -1.0,
+        1.0,
+        0.0
+      ],
+      "status": "generated",
+      "seconds": 1.7788917110301554
+    },
+    {
+      "parameters": [
+        1.0,
+        1.0,
+        0.0
+      ],
+      "status": "generated",
+      "seconds": 1.7529092360055074
+    },
+    {
+      "parameters": [
+        0.0,
+        1e-08,
+        0.0
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: density/antiderivative derivative mismatch",
+      "seconds": 0.42640476202359423
+    },
+    {
+      "parameters": [
+        0.0,
+        100000000.0,
+        0.0
+      ],
+      "status": "generated",
+      "seconds": 1.7853750450303778
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        -1.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 30 seconds per point",
+      "seconds": 30.00008702703053
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 27.39033774996642
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "seconds": 25.17375173198525
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        -100000000.0
+      ],
+      "status": "generated",
+      "seconds": 17.57434336200822
+    }
+  ]
+}

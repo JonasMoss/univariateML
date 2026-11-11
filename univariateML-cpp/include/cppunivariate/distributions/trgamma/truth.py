@@ -11,3 +11,9 @@ def build(t):
     scale = t['scale']
     return Reference(lambda x: gamma(shape1,(x/scale)**shape2), 0, mp.inf)
 
+
+# Joint limit paths supplement the shared one-coordinate extreme grid.
+extreme_parameter_sets = [{'shape1': 1e-08, 'shape2': 100000000.0}]
+
+# Coupled power-limit overflow with an overflow-safe product coordinate.
+extreme_parameter_sets.append({'shape1': 1e-309, 'shape2': 1e+308, 'scale': 1.0})

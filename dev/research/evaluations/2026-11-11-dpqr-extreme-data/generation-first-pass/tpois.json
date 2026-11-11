@@ -1,0 +1,35 @@
+{
+  "id": "tpois",
+  "before": {
+    "bytes": 47579,
+    "points": 6,
+    "values": 79,
+    "quantiles": 264
+  },
+  "after": {
+    "bytes": 60835,
+    "points": 8,
+    "values": 109,
+    "quantiles": 352
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        0.0,
+        10.0
+      ],
+      "status": "generated",
+      "seconds": 0.05456057301489636
+    },
+    {
+      "parameters": [
+        100000000.0,
+        0.0,
+        10.0
+      ],
+      "status": "generated",
+      "seconds": 0.03672781796194613
+    }
+  ]
+}

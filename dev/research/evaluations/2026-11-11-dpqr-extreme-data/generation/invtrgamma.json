@@ -1,0 +1,82 @@
+{
+  "id": "invtrgamma",
+  "input_sha256": "8179564e28669c847dbb17d303bcf36504fe1add1f906e4b4fb026ed93b845fb",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 106443,
+    "points": 12,
+    "values": 233,
+    "quantiles": 528
+  },
+  "after": {
+    "bytes": 106443,
+    "points": 12,
+    "values": 233,
+    "quantiles": 528
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "seconds": 120.00120780399993
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms.",
+      "seconds": 0.09740778300147213
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "seconds": 120.00011265600006
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0,
+        1000.0
+      ],
+      "status": "oracle gap",
+      "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms.",
+      "seconds": 0.1608155940011784
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0,
+        1000.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "seconds": 120.00011666099999
+    },
+    {
+      "parameters": [
+        1e-08,
+        100000000.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "seconds": 120.00006474600013
+    }
+  ],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

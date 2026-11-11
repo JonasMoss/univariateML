@@ -1,0 +1,101 @@
+{
+  "id": "fatigue",
+  "input_sha256": "e782a4eee3cc6c9d630d2e7785795b3a9a1cef4de7e57ee9007fa946ea69f193",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 63278,
+    "points": 7,
+    "values": 147,
+    "quantiles": 308
+  },
+  "after": {
+    "bytes": 135353,
+    "points": 15,
+    "values": 308,
+    "quantiles": 660
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0,
+        0.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.6392282279998653
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0,
+        0.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.9884848840001723
+    },
+    {
+      "parameters": [
+        1.0,
+        1e-08,
+        0.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.8993801980000171
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0,
+        0.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.8854466080001657
+    },
+    {
+      "parameters": [
+        1.0,
+        1.0,
+        -1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.6577289130000281
+    },
+    {
+      "parameters": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.6852402350000375
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1000.0,
+        0.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 2.0547845859996414
+    },
+    {
+      "parameters": [
+        100000000.0,
+        100000000.0,
+        -100000000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 3.5368841029999203
+    }
+  ]
+}

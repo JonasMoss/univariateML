@@ -1,0 +1,21 @@
+{
+  "id": "invexp",
+  "input_sha256": "79aa1322f3a1953f30cf0974dee568eef66d8acb3dec7b54b9a625742e38a3fc",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 53866,
+    "points": 6,
+    "values": 124,
+    "quantiles": 264
+  },
+  "after": {
+    "bytes": 53866,
+    "points": 6,
+    "values": 124,
+    "quantiles": 264
+  },
+  "records": [],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

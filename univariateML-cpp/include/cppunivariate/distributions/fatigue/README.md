@@ -95,6 +95,16 @@ existence:
 
 The Birnbaum--Saunders distribution models lifetimes arising from cumulative fatigue damage.
 
+## d/p/q/r
+
+### Extreme d/p/q arithmetic
+
+The inverse uses the centered normal quantile and the identity log(t) = 2 asinh(alpha z/2). Exponentiating relative to the scale with a compensated location-plus-scale preserves the inverse when its location cancels its scale.
+
+In d/p evaluation the Gaussian argument divides the square-root ratio difference by alpha, so a small alpha amplifies error in separately computed log(x-mu)-log(beta). The translated, compensated log ratio retains the physical difference before division, including when mu+beta cancels.
+
+If alpha z/2 underflows, the inverse multiplies beta and alpha before z. The omitted asinh correction is cubic in the underflowed argument, while the final location-plus-scale can cancel and leave a representable linear displacement.
+
 ## Details
 
 The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-halfthreshold.md) describes the limiting paths and the scope of the boundary comparisons.
@@ -102,7 +112,6 @@ The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-half
 The threshold $\mu$ is supplied, and $\alpha$ and $\beta$ are fitted to the shifted observations $x - \mu$, which must all be positive. Either $\alpha$ or $\beta$ can also be held. The coefficient $\beta$ is a scale.
 
 With $\beta$ held, $\hat\alpha$ is the root mean square of $\sqrt{t/\beta} - \sqrt{\beta/t}$ over the shifted observations $t = x - \mu$. It is zero only when every $t$ equals $\beta$, and the likelihood is then unbounded. Holding $\alpha$ removes this collapse for constant samples. With $\alpha$ held, the likelihood in $\beta$ can have several local maxima, and the fit isolates and compares every possible maximum on a finite interval. For a constant shifted sample and $\alpha>2$, two reciprocal scales are equal global maxima, and fitting stops with both witnesses.
-
 
 Write $A=\overline t$, $H=1/\overline{1/t}$ and
 $\xi(b)=n/\sum_i(t_i+b)^{-1}$. After profiling alpha, the scale score has the sign of

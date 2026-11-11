@@ -430,3 +430,17 @@ likelihood and inner-shape bounds are recomputed on the contracted interval.
 Cells without a verified sign retain the general global subdivision.
 
 Held-power beta-prime transport applies coefficient enclosures only to certified parents. A rounded crossing between separated stationary profiles does not prove exact equality. Successful uncertified beta-prime and unit-first-beta-shape Burr results retain their flag; nonfinite transformed estimates or likelihoods still fail.
+
+### Probability coordinates at large power
+
+A nonunit scale makes subtraction of log(x) and log(scale) lose the displacement amplified by the power. The positive log-ratio helper retains the exact near-scale subtraction. For equal beta shapes, central inversion uses the original probability offset and the bounded local inverse of the symmetric log-odds density.
+
+The concentrating symmetric tail uses t=shape2*log(x/scale), with a=shape1=shape3. Rounding its two beta coordinates can erase a resolved displacement. This probability bridge returns NaN for sqrt(a)*E > 2.5e-11 and 0 < |t| < 2E/1e-10, where E is eight binary64 machine epsilons. At t=0 the exact symmetric half-probability remains available; the stated margin is practical floating-point evidence.
+
+For shape1 = 2, the beta-coordinate CDF is u^shape3 (1 + shape3(1-u)). Its negative logarithm is the sum of two positive logarithmic deviances. Retaining that hazard in log coordinates avoids both a cancelled complement and a backend beta normalizer whose relative error grows at tiny shapes in double-width builds. The one-shape coordinate uses its exact power CDF.
+
+### Unequal concentrating beta shapes
+
+The density normalizer is centered at the beta mean and combined with two nonnegative Bernoulli deviances. In the unit-power submodel, a compensated product expansion retains shape2 times the physical excess minus shape1 times scale before either ratio rounds; a rounded beta coordinate can lose the entire standardized displacement. For other powers, the log-odds kernel returns NaN near concentration when its practical coordinate-error margin exceeds 1e-12 times the log-density scale. This named precision region requires more accurate transcendental coordinates to close.
+
+If the ordinary log-odds margin fails, two-word logarithms recompute the centered coordinate before rounding. The beta mean is subtracted in the same arithmetic. NaN remains confined to cases where this practical two-word margin also fails; the ordinary margin selects the recomputation rather than a refusal.

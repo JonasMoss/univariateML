@@ -1,0 +1,97 @@
+{
+  "id": "nsbeta",
+  "before": {
+    "bytes": 59166,
+    "points": 7,
+    "values": 129,
+    "quantiles": 308
+  },
+  "after": {
+    "bytes": 120887,
+    "points": 15,
+    "values": 242,
+    "quantiles": 660
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0,
+        0.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 3.727799188985955
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0,
+        0.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 2.2539151369710453
+    },
+    {
+      "parameters": [
+        1.0,
+        1e-08,
+        0.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 6.34066291898489
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0,
+        0.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 1.856643520994112
+    },
+    {
+      "parameters": [
+        1.0,
+        1.0,
+        -1.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 2.376252329966519
+    },
+    {
+      "parameters": [
+        1.0,
+        1.0,
+        0.9999999999999999,
+        1.0000000000000002
+      ],
+      "status": "generated",
+      "seconds": 4.49747787497472
+    },
+    {
+      "parameters": [
+        1.0,
+        1.0,
+        0.0,
+        1e-08
+      ],
+      "status": "generated",
+      "seconds": 3.478576947003603
+    },
+    {
+      "parameters": [
+        1.0,
+        1.0,
+        0.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "seconds": 3.3663387930137105
+    }
+  ]
+}

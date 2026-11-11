@@ -1,0 +1,51 @@
+{
+  "id": "zib",
+  "input_sha256": "a3310793fc70e5a7531db2e1172a5a8dcbb1d707f2722ae6ccde72fb8945866a",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 76449,
+    "points": 12,
+    "values": 168,
+    "quantiles": 528
+  },
+  "after": {
+    "bytes": 90149,
+    "points": 14,
+    "values": 200,
+    "quantiles": 616
+  },
+  "records": [
+    {
+      "parameters": [
+        10.0,
+        5e-09,
+        0.5
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.0744771010004115
+    },
+    {
+      "parameters": [
+        10.0,
+        0.5,
+        5e-09
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.0371052589998726
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1e-08,
+        0.5
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "seconds": 120.12270927999998
+    }
+  ]
+}

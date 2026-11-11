@@ -1,0 +1,20 @@
+{
+  "id": "emg",
+  "input_sha256": "92470b7a0d02d88b948c57f79526e9bbf7a725ed88c3d0d11cc44004e13287d4",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 106442,
+    "points": 12,
+    "values": 228,
+    "quantiles": 528
+  },
+  "after": {
+    "bytes": 106442,
+    "points": 12,
+    "values": 228,
+    "quantiles": 528
+  },
+  "records": []
+}

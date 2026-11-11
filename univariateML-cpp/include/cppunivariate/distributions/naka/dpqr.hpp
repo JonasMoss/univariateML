@@ -2,6 +2,7 @@
 #pragma once
 #include "../../core/precision.hpp"
 #include "../../special/special.hpp"
+#include "../../special/tails.hpp"
 #include <cmath>
 namespace cppunivariate {
 namespace distributions {
@@ -45,7 +46,24 @@ inline double dnaka(double x,double shape,double scale,bool log=false) {
     std::log(2.0)+0.5*(std::log(shape)-std::log(scale))-special::lgamma(shape);
   else {
     const double lx=std::log(x), rate=std::log(shape)-std::log(scale);
-    v=std::log(2.0)+shape*rate-special::lgamma(shape)+(2*shape-1)*lx-std::exp(2*lx+rate);
+    if (shape<16) v=std::log(2.0)+shape*rate-special::lgamma(shape)+(2*shape-1)*lx-std::exp(2*lx+rate);
+    else {
+      int exponent=0;
+      const double mantissa=std::frexp(x,&exponent);
+      const double squared=mantissa*mantissa;
+      const double scaled_scale=std::scalbn(scale,-2*exponent);
+      double penalty;
+      if(scaled_scale>0 && squared>=scaled_scale*0.5 && squared<=scaled_scale*2) {
+        const double u=std::fma(mantissa,mantissa,-scaled_scale)/scaled_scale;
+        penalty=special::scaled_positive_deviance(shape,u);
+      } else {
+        const double lr=scaled_scale>=std::numeric_limits<double>::min() && std::isfinite(scaled_scale)
+            ? std::log(squared)-std::log(scaled_scale) : 2*lx-std::log(scale);
+        penalty=shape*(std::expm1(lr)-lr);
+      }
+      v=std::log(2.0)+0.5*std::log(shape)-lx-0.91893853320467274178
+          -special::density_stirling_remainder(shape)-penalty;
+    }
   }
   return log ? v : std::exp(v);
 }
@@ -54,10 +72,24 @@ inline double pnaka(double q,double shape,double scale,bool lower_tail=true,bool
   double v;
   if (q<=0) v=lower_tail ? special::kNegInf : 0;
   else if (std::isinf(q)) v=lower_tail ? 0 : special::kNegInf;
+  else if(shape>=16) {
+    int exponent=0;
+    const double mantissa=std::frexp(q,&exponent), squared=mantissa*mantissa;
+    const double scaled_scale=std::scalbn(scale,-2*exponent);
+    double lr;
+    if(scaled_scale>0 && squared>=scaled_scale*0.5 && squared<=scaled_scale*2)
+      lr=std::log1p(std::fma(mantissa,mantissa,-scaled_scale)/scaled_scale);
+    else if(scaled_scale>=std::numeric_limits<double>::min() && std::isfinite(scaled_scale))
+      lr=std::log(squared)-std::log(scaled_scale);
+    else lr=2*std::log(q)-std::log(scale);
+    const double root=std::sqrt(shape), w=root*lr;
+    const auto tails=special::tails_from_log(special::gamma_centered::log_tail(w,1/root),w<0);
+    return special::tail_probability(tails,lower_tail,log_p);
+  }
   else {
     const double lx=2*std::log(q)+std::log(shape)-std::log(scale);
     if (lx < -700) {
-      const double below=shape*lx-special::lgamma(shape+1);
+      const double below=shape*lx-(shape<=1.0/32?special::lgamma1p(shape):special::lgamma(shape+1));
       v=lower_tail ? below : std::log(-std::expm1(below));
     }
     else v=naka_logtail(std::exp(lx),shape,lower_tail);
@@ -68,26 +100,33 @@ inline double qnaka(double p,double shape,double scale,bool lower_tail=true,bool
   if (!naka_valid(shape,scale) || std::isnan(p) || (log_p ? p>0 : p<0 || p>1)) return special::kNaN;
   if (p==(log_p ? special::kNegInf : 0)) return lower_tail ? 0 : special::kPosInf;
   if (p==(log_p ? 0 : 1)) return lower_tail ? special::kPosInf : 0;
+  const auto tails=special::quantile_log_tails(p,lower_tail,log_p);
+  if(special::gamma_mean_quantile_enclosed(shape,tails)) return std::sqrt(scale);
   double lp=log_p ? p : std::log(p);
   if (lp>-0.6931471805599453) { lp=std::log(-std::expm1(lp)); lower_tail=!lower_tail; }
   // At tiny unit-gamma quantiles, its power-law leading term is accurate
   // to better than double precision and avoids squared-value underflow.
-  const double lg=(lp+special::lgamma(shape+1))/shape;
+  const double lg=(lp+(shape<=1.0/32?special::lgamma1p(shape):special::lgamma(shape+1)))/shape;
   if (lower_tail && lg < -36)
     return std::exp(0.5*(lg+std::log(scale)-std::log(shape)));
   if (lp > -700) {
     const double g=special::qgamma(lp,shape,1,lower_tail,true);
-    if (g>0 && std::isfinite(g))
-      return std::exp(0.5*(std::log(g)+std::log(scale)-std::log(shape)));
+    if (g>0 && std::isfinite(g)) {
+      const double candidate=std::exp(0.5*(std::log(g)+std::log(scale)-std::log(shape)));
+      const double left=pnaka(candidate*(1-4e-10),shape,scale,lower_tail,true);
+      const double right=pnaka(candidate*(1+4e-10),shape,scale,lower_tail,true);
+      if(lower_tail?(left<lp && right>lp):(left>lp && right<lp)) return candidate;
+    }
   }
   // Invert in log_p amplitude: squared observations may underflow/overflow.
   double lo=-745, hi=710;
   for (int i=0;i<100;++i) {
     const double mid=lo+(hi-lo)/2;
     const double f=pnaka(std::exp(mid),shape,scale,lower_tail,true);
+    if(std::isnan(f)) return special::kNaN;
     if (lower_tail ? f<lp : f>lp) lo=mid; else hi=mid;
   }
-  return std::exp(lo+(hi-lo)/2);
+  return hi-lo<=1e-10?std::exp(lo+(hi-lo)/2):special::kNaN;
 }
 template <typename Rng>
 inline double rnaka(Rng &rng,double shape,double scale) {

@@ -90,6 +90,16 @@ existence:
 
 The logit-normal distribution models proportions whose log odds follow a normal distribution.
 
+## d/p/q/r
+
+### Extreme d/p/q arithmetic
+
+The normal inverse retains the offset of a log-probability input from exact log(1/2) before multiplication by sigma. Equality with a rounded logarithmic median is insufficient when sigma is large.
+
+### Thin normal images
+
+A rounded logit can equal the supplied normal mean while their exact difference is nonzero. Dividing that lost residual by a tiny standard deviation changes both density and tails. When the ordinary coordinate margin is too large, a two-word atanh-series logarithm retains the residual before division. The only exact rational logit center, x=1/2, is handled directly. Density and tails return NaN when the stated practical two-word margin still cannot resolve the transformed coordinate; this is the remaining named precision region.
+
 ## Details
 
 The coefficients $\mu$ and $\sigma$ are the mean and standard deviation of the logits, rather than of the proportions. Every observation must lie strictly between zero and one. Fitting transforms the data to logits and fits a normal distribution, with a coefficient-independent Jacobian adjustment to the likelihood. The scale estimate uses divisor $n$.

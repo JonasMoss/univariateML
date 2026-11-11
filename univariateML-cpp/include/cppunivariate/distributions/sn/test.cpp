@@ -375,3 +375,13 @@ TEST_CASE("sn: subnormal location cannot satisfy the coefficient contract") {
   const auto r=cppunivariate::sn_mle(mltest::as_span(x),1e-10,100,NAN,d,0);
   CHECK((r.status==cppunivariate::SnStatus::AccuracyFailure||r.status==cppunivariate::SnStatus::IterationFailure));
 }
+
+TEST_CASE("sn: exact squared-normal quarter quantile") {
+ CHECK(cppunivariate::distributions::qsn(.25,0,1,1,true,false)==0);
+ CHECK(cppunivariate::distributions::qsn(.25,0,1,-1,false,false)==0);
+}
+
+TEST_CASE("sn: logarithmic quarter input retains exact displacement") {
+ CHECK(cppunivariate::distributions::qsn(-1.3862943611198906,0,1,1,true,true)==doctest::Approx(2.9064941568900345e-17).epsilon(1e-10).scale(0));
+ CHECK(cppunivariate::distributions::qsn(-1.3862943611198906,0,1,-1,false,true)==doctest::Approx(-2.9064941568900345e-17).epsilon(1e-10).scale(0));
+}

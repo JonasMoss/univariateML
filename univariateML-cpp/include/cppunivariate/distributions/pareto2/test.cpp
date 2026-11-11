@@ -79,3 +79,7 @@ TEST_CASE("Pareto II keeps the always-certified Lomax success and scale map") {
  REQUIRE(p.status==cppunivariate::LomaxStatus::Ok);REQUIRE(r.status==p.status);
  CHECK(r.shape==p.kappa);CHECK(r.scale==1/p.lambda);CHECK(r.min==0);CHECK(r.logLik==p.logLik);
 }
+
+TEST_CASE("pareto2: exact-input extreme arithmetic regression") {
+  CHECK(cppunivariate::distributions::qpareto2(-0.6931471805599453,1.0,1.0,-1.0,true,true) == doctest::Approx(4.638093627692599e-17).epsilon(1e-10).scale(0));
+}

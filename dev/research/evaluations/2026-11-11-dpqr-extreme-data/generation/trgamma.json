@@ -1,0 +1,82 @@
+{
+  "id": "trgamma",
+  "input_sha256": "139bd28debb786b362245079a16876885172eae2ffc16f3da080eab4188a5914",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 105966,
+    "points": 12,
+    "values": 235,
+    "quantiles": 528
+  },
+  "after": {
+    "bytes": 105966,
+    "points": 12,
+    "values": 235,
+    "quantiles": 528
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "seconds": 120.03584087199852
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms.",
+      "seconds": 0.09181495199845813
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "seconds": 120.00009213300109
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0,
+        1000.0
+      ],
+      "status": "oracle gap",
+      "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms.",
+      "seconds": 0.16188787900136958
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0,
+        1000.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "seconds": 120.00745296599962
+    },
+    {
+      "parameters": [
+        1e-08,
+        100000000.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "seconds": 120.00008695699944
+    }
+  ],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

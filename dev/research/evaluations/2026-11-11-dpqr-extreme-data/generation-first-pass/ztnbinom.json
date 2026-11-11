@@ -1,0 +1,51 @@
+{
+  "id": "ztnbinom",
+  "before": {
+    "bytes": 235682,
+    "points": 9,
+    "values": 1671,
+    "quantiles": 396
+  },
+  "after": {
+    "bytes": 291484,
+    "points": 11,
+    "values": 2085,
+    "quantiles": 484
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        0.5
+      ],
+      "status": "generated",
+      "seconds": 0.32329865696374327
+    },
+    {
+      "parameters": [
+        100000000.0,
+        0.5
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: positive series did not reach certified remainder",
+      "seconds": 16.474713545001578
+    },
+    {
+      "parameters": [
+        1.0,
+        5e-09
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: positive series did not reach certified remainder",
+      "seconds": 17.716085289022885
+    },
+    {
+      "parameters": [
+        100000000.0,
+        0.9999999900000001
+      ],
+      "status": "generated",
+      "seconds": 0.11297846102388576
+    }
+  ]
+}

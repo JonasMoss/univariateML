@@ -1,0 +1,21 @@
+{
+  "id": "bbinom",
+  "input_sha256": "3cd9a7de709bf698bd41cfdd4ccd6989bd884b850da7603a48c5c0a8ac7592dc",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 93271,
+    "points": 14,
+    "values": 212,
+    "quantiles": 616
+  },
+  "after": {
+    "bytes": 93271,
+    "points": 14,
+    "values": 212,
+    "quantiles": 616
+  },
+  "records": [],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

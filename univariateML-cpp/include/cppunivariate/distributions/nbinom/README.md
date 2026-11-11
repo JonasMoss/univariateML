@@ -306,3 +306,13 @@ The certificate transfers to an actual call of `nbinom_mle` made by another
 family. It does not certify a truncated/mixture likelihood, an outer search,
 or a caller that discards failure statuses. No other family's certification
 claim is changed here.
+
+### Probability evaluation near the Poisson limit
+
+At fixed mean and large size, subtracting `logGamma(size)` from `logGamma(size+x)` loses the finite rising-factorial correction. The PMF uses the shared shifted gamma-ratio expansion; the exact size and count enter before the nearly equal gamma terms are combined. Log-tail continuation starts from this PMF, so its relative error also controls the probability on the Poisson face.
+
+### Concentrated count density
+
+The identity mass(k;r,p) = p*beta_density(p;r,k+1)/(r+k) retains the beta mean displacement without subtracting a large gamma normalizer. The branch requires an exact k+1 and a finite r+k; the zero-count mass is evaluated directly as p^r.
+
+For larger counts whose unit shift rounds away, the mass instead uses a gamma-binomial split with two nonnegative deviances. A scaled product expansion retains p*(r+k)-r without forming an overflowing sum. The log normalizer uses log(r+k) through a ratio and a sum; all Stirling arguments are at least 16.

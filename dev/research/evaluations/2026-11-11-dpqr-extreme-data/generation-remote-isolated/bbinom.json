@@ -1,0 +1,20 @@
+{
+  "id": "bbinom",
+  "input_sha256": "a30f0e423de9089bbe3402d4cccd5b22b963f33f091aeb9fd856b6ffb8471963",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 93066,
+    "points": 14,
+    "values": 212,
+    "quantiles": 616
+  },
+  "after": {
+    "bytes": 93066,
+    "points": 14,
+    "values": 212,
+    "quantiles": 616
+  },
+  "records": []
+}

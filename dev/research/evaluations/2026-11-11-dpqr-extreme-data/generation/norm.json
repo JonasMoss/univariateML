@@ -1,0 +1,21 @@
+{
+  "id": "norm",
+  "input_sha256": "a6ef7c723548eeafb61907385d98ce8db060b643aae907007a4911c788c0015b",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 71262,
+    "points": 8,
+    "values": 152,
+    "quantiles": 352
+  },
+  "after": {
+    "bytes": 71262,
+    "points": 8,
+    "values": 152,
+    "quantiles": 352
+  },
+  "records": [],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

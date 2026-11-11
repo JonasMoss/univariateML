@@ -1,0 +1,57 @@
+{
+  "id": "dweibull",
+  "input_sha256": "aad503f6982e3890997f8556c62a2b3374f94c8d686f84c0afc4b170ead06af8",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 193376,
+    "points": 7,
+    "values": 1456,
+    "quantiles": 308
+  },
+  "after": {
+    "bytes": 279526,
+    "points": 10,
+    "values": 2086,
+    "quantiles": 440
+  },
+  "records": [
+    {
+      "parameters": [
+        5e-09,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.0678090000001248
+    },
+    {
+      "parameters": [
+        0.9999999999999999,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.3217070910000075
+    },
+    {
+      "parameters": [
+        0.5,
+        1e-08
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.09029335200011701
+    },
+    {
+      "parameters": [
+        0.5,
+        100000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "seconds": 120.00021869200009
+    }
+  ]
+}

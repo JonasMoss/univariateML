@@ -1,0 +1,69 @@
+{
+  "id": "invgamma",
+  "before": {
+    "bytes": 62931,
+    "points": 7,
+    "values": 143,
+    "quantiles": 308
+  },
+  "after": {
+    "bytes": 81382,
+    "points": 9,
+    "values": 185,
+    "quantiles": 396
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 30 seconds per point",
+      "seconds": 30.000207913049962
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms.",
+      "seconds": 0.03844245703658089
+    },
+    {
+      "parameters": [
+        1.0,
+        1e-08
+      ],
+      "status": "generated",
+      "seconds": 0.705531879037153
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "seconds": 0.6974640270345844
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1000.0
+      ],
+      "status": "oracle gap",
+      "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms.",
+      "seconds": 0.053935147006995976
+    },
+    {
+      "parameters": [
+        100000000.0,
+        100000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms.",
+      "seconds": 6.555061875027604
+    }
+  ]
+}

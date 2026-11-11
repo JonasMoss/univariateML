@@ -11,7 +11,10 @@ def build(t):
     def tails(x):
         z=(x-m)/s
         if abs(z)>e: small=mp.exp(e*e/2-e*abs(z))/(e*c)
-        else: small=(mp.exp(-e*e/2)/e+mp.sqrt(mp.pi/2)*(mp.erf(e/mp.sqrt(2))-mp.erf(abs(z)/mp.sqrt(2))))/c
+        else: small=(mp.exp(-e*e/2)/e+mp.sqrt(2*mp.pi)*(mp.exp(normal(abs(z))[1])-mp.exp(normal(e)[1])))/c
         return pair(mp.log(small),z<0)
     return Reference(tails,breaks=[m-e*s,m,m+e*s])
 
+
+# Joint limit paths supplement the shared one-coordinate extreme grid.
+extreme_parameter_sets = [{'epsilon': 1e-08, 'sigma': 1e-08}]

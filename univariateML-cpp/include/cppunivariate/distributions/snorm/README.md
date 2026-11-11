@@ -115,6 +115,14 @@ existence:
 
 The Fernández–Steel skew-normal distribution models skewness through different Gaussian scales on the two sides of a mode.
 
+## d/p/q/r
+
+### Extreme d/p/q arithmetic
+
+For t = min(xi, 1/xi), normalize the centering moment and standard deviation before forming the residual: m(t²-1) and sqrt((1-m²)(1+t⁴)+(2m²-1)t²), where m = sqrt(2/pi). On the thin side the residual is divided by t², so rounding m or its standard deviation first can create order-one errors at xi = 1e-8. Compensated products, sums, division and a square-root correction retain the low-order terms; the moment constant retains its second binary64 component.
+
+The practical centering margin is 64 epsilon² (1+|w|), with eight epsilon times the standardized radius reserved for its final rounding. Density and tail evaluations return NaN when this propagated margin exceeds 1e-11 in the applicable forward-error metric, or when the compensated location/scale coordinate overflows. These are stated precision regions, not a claim that a wider arithmetic implementation is impossible. On the broad side, the opposite probability is evaluated as (t²+erf(|v|/sqrt(2)))/(1+t²), retaining the thin-side probability at the mode.
+
 ## Details
 
 Fully free constant finite samples, including a singleton, report unbounded likelihood before profile construction: the normal member with mean at the observation has density proportional to $1/\sigma$. Empty or nonfinite samples remain invalid.
@@ -263,7 +271,6 @@ The two tails tend to minus infinity, so at least two distinct finite
 maximizers exist. An [exact rational check](../../../../../dev/research/evaluations/2026-11-07-snorm-held-data/nonunique.py)
 verifies the strict inequalities. The certificate compares all candidates
 without assuming unimodality.
-
 
 For a constant sample $x$ with mean held at $\mu\ne x$ and standard deviation
 free, the sharp bound is $f(x)\le m^2/|x-\mu|$. It is approached only by the

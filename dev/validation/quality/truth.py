@@ -5,7 +5,10 @@ by README parameter order. Positive distances to a single bound are multiplied
 by .1 and 10; finite intervals move 90% towards each edge; unbounded nonzero
 coordinates are multiplied by .1 and 10 (zero moves to -1 and +1). Integer,
 design, fixed and endpoint coordinates remain at the fitted golden value.
-Family-local special_points take priority over stresses. At most eight historical
+The uncapped extreme extension multiplies each positive free coordinate by
+1e-8 and 1e8, projects dependent domains, and adds location/scale cancellation
+and family-local joint limit paths. Family-local special_points take priority
+over historical stresses. At most eight historical
 points, plus the README default if absent. Sampling selects the default and fit.
 
 No shared distribution registry: optional truth.py beside README supplies a
@@ -108,7 +111,7 @@ def module_at(path):
     return module
 
 
-def points(meta, g, route):
+def historical_points(meta, g, route):
     ps = meta['params']
     fit = {p['name']: float(g['estimates'][p['name']]) for p in ps}
     held = {p['name'] for p in ps if p.get('integer') or p.get('bound') or
@@ -152,6 +155,72 @@ def points(meta, g, route):
     for pt in boundary_points(meta, route):
         if pt not in result:
             result.append(pt)
+    return result
+
+
+def extreme_points(meta, route=None):
+    """Binary64 parameter stresses, independent of the historical point cap.
+
+    Move one positive coordinate at a time. Project dependent domains, including
+    open bounds using the next interior double. Location/scale cancellation is
+    a separate stress, not a multiplicative displacement of location zero.
+    Local routes can add joint limit paths using extreme_parameter_sets.
+    """
+    ps = meta['params']
+    default = {p['name']: float(p['simulate']) for p in ps}
+    candidates = []
+    for p, (lo, hi) in zip(ps, domains(meta, default)):
+        name, value = p['name'], default[p['name']]
+        if p.get('integer') or p.get('kind') == 'design':
+            continue
+        if value > 0 and lo >= 0:
+            candidates.extend({**default, name: value*f} for f in (1e-8, 1e8))
+        elif lo < 0 < hi:
+            scales = [default[q['name']] for q in ps
+                      if q['role'] in ('scale', 'sd', 'standard deviation')]
+            unit = scales[0] if scales else max(1., abs(value))
+            candidates.extend({**default, name: sign*unit} for sign in (-1, 1))
+    # Joint location/scale cancellation in a concentrating shape regime.
+    # This includes the Frechet-to-Gumbel path without a family registry.
+    locations = [p for p, (lo, hi) in zip(ps, domains(meta, default))
+                 if lo < 0 < hi and any(word in p['role'] for word in ('location', 'endpoint', 'lower'))]
+    scales = [p for p in ps if p['role'] == 'scale']
+    shapes = [p for p in ps if p['role'] in ('shape', 'df') and default[p['name']] > 0]
+    # A nonunit scale exposes loss in log(x)-log(scale) that unit-scale
+    # one-coordinate stresses cannot reveal.
+    if scales:
+        for shape in shapes:
+            candidates.append({**default, scales[0]['name']: default[scales[0]['name']]*1000,
+                               shape['name']: default[shape['name']]*1e8})
+    if locations and scales and shapes:
+        loc, scale, shape = locations[0]['name'], scales[0]['name'], shapes[0]['name']
+        value = default[scale]*1e8
+        candidates.append({**default, loc: -value, scale: value,
+                           shape: default[shape]*1e8})
+    for overrides in getattr(route, 'extreme_parameter_sets', []):
+        if set(overrides)-set(default):
+            raise ValueError('unknown extreme parameter: '+str(set(overrides)-set(default)))
+        candidates.append({**default, **overrides})
+    result = []
+    for candidate in candidates:
+        pt = candidate.copy()
+        for _ in range(len(ps)+1):
+            previous = pt.copy()
+            for p, (lo, hi) in zip(ps, domains(meta, pt)):
+                name = p['name']
+                a = float(lo) if p['domain'][0] == '[' else math.nextafter(float(lo), math.inf)
+                b = float(hi) if p['domain'][-1] == ']' else math.nextafter(float(hi), -math.inf)
+                pt[name] = min(b, max(a, pt[name]))
+            if pt == previous: break
+        if all(not math.isnan(v) and (math.isfinite(v) or v == default[k]) for k, v in pt.items()) and pt != default and pt not in result:
+            result.append(pt)
+    return result
+
+
+def points(meta, g, route):
+    result = historical_points(meta, g, route)
+    for pt in extreme_points(meta, route):
+        if pt not in result: result.append(pt)
     return result
 
 
@@ -210,15 +279,19 @@ def declarative(folder, meta, theta, route):
     fn = sp.lambdify([*syms, x], expr, 'mpmath', cse=True)
     args = [number(theta[p['name']]) for p in meta['params']]
     def density(v):
+        if hasattr(route, 'endpoint_log_density'):
+            endpoint = route.endpoint_log_density(dict(zip([p['name'] for p in meta['params']], args)), v)
+            if endpoint is not None:
+                return endpoint
         try:
             r = fn(*args, v)
         except (ZeroDivisionError, ValueError):
             # Endpoint values are one-sided limits of the DECLARATIVE law.
-            sub = dict(zip(syms, args))
+            sub = {sym: sp.Rational(float(theta[param["name"]])) for sym,param in zip(syms,meta["params"])}
             r = sp.limit(expr.subs(sub), x, sp.Float(str(v), 80), dir='-' if v == getattr(density, 'upper', mp.inf) else '+')
             r = mp.mpf(float(r)) if r in (sp.oo,-sp.oo) else mp.mpf(str(r.evalf(70)))
         if mp.isnan(r):
-            r = sp.limit(expr.subs(dict(zip(syms,args))), x, sp.Float(str(v),80), dir='-' if v == getattr(density, 'upper', mp.inf) else '+')
+            r = sp.limit(expr.subs({sym: sp.Rational(float(theta[param["name"]])) for sym,param in zip(syms,meta["params"])}), x, sp.Float(str(v),80), dir='-' if v == getattr(density, 'upper', mp.inf) else '+')
             r = mp.mpf(float(r)) if r in (sp.oo,-sp.oo) else mp.mpf(str(r.evalf(70)))
         if isinstance(r, mp.mpc):
             if abs(r.imag) > mp.mpf('1e-60'): raise ValueError('complex density')
@@ -265,6 +338,11 @@ def verify(ref, logd):
         raise ArithmeticError('normalization quadrature error estimate '+str(error))
     for u in ('.1', '.3', '.7', '.9'):
         x = ref.quantile(mp.log(mp.mpf(u)), True)
+        # At a concentrated finite endpoint the exact quantile may require
+        # millions of digits to separate from the edge. Differentiate at an
+        # interior chart point instead; normalization is checked independently.
+        if not mp.isfinite(x) or not ref.lower < x < ref.upper:
+            x = ref.chart(mp.mpf(0))[0]
         scale = min([abs(x)+1]+([x-ref.lower] if mp.isfinite(ref.lower) else [])+([ref.upper-x] if mp.isfinite(ref.upper) else []))
         h = mp.mpf('1e-15')*scale
         if getattr(ref, 'numerical_tails', False):
@@ -330,6 +408,8 @@ def make(folder, parameter_points=None):
     fit = {p['name']: float(g['estimates'][p['name']]) for p in meta['params']}
     # Explicit indices keep special defaults and general fitted branches covered.
     result['sampler_points'] = [[pts.index(pt)] if pt in pts else [] for pt in (default, fit)]
+    historical=historical_points(meta,g,route)
+    result['historical_sampler_points']=[[i] for i,pt in enumerate(pts) if pt in historical]
     for index, theta in enumerate(pts):
         started = time.monotonic()
         small = min([float(theta[p['name']]) for p in meta['params'] if p['role']=='shape' and float(theta[p['name']])>1e-6] or [1.])
@@ -360,6 +440,11 @@ def make(folder, parameter_points=None):
             for u in U:
                 v = as_double(ref.quantile(mp.log(mp.mpf(u)), lower))
                 if math.isfinite(v): xs.add(v)
+        for lower in (True,False):
+            for logp, inp in getattr(route, 'quantile_inputs', []):
+                lp=number(inp) if logp else mp.log(number(inp))
+                value=as_double(ref.quantile(lp,lower))
+                if math.isfinite(value): xs.add(value)
         for edge in (ref.lower, ref.upper):
             e = float(edge)
             xs.add(e)
@@ -381,6 +466,7 @@ def make(folder, parameter_points=None):
             # Each input is evaluated after binary64 rounding, including log u.
             inputs = [(True, float(mp.log(mp.mpf(u)))) for u in U]+[(True,-800.), (True,-1e4), (True,-math.inf), (True,0.)]
             inputs += [(False,float(u)) for u in U]+[(False,0.), (False,1.)]
+            inputs += list(getattr(route, 'quantile_inputs', []))
             for logp, inp in inputs:
                 lp = number(inp) if logp else mp.log(number(inp))
                 q = ref.quantile(lp, lower)
@@ -425,6 +511,8 @@ def apply_point_exclusions(result, route):
         result[key] = [[mapping[r[0]], *r[1:]] for r in result[key] if r[0] not in removed]
     result['parameters'], result['normalization'] = parameters, normalization
     result['sampler_points'] = [[mapping[row[0]]] if row else [] for row in result['sampler_points']]
+    if 'historical_sampler_points' in result:
+        result['historical_sampler_points']=[[mapping[row[0]]] for row in result['historical_sampler_points'] if row and row[0] in mapping]
     return result
 
 

@@ -1,0 +1,21 @@
+{
+  "id": "emg",
+  "input_sha256": "91cc9e08655de0ea480dfcc26dc1cba668dc6760523db8379fc038807db3c0b3",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 106647,
+    "points": 12,
+    "values": 228,
+    "quantiles": 528
+  },
+  "after": {
+    "bytes": 106647,
+    "points": 12,
+    "values": 228,
+    "quantiles": 528
+  },
+  "records": [],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

@@ -1,0 +1,21 @@
+{
+  "id": "huber",
+  "input_sha256": "d01891bcdd38b259d5cb23aa7b880ce0fe72281c4e638114a3bc34efc5b9c320",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 98000,
+    "points": 11,
+    "values": 209,
+    "quantiles": 484
+  },
+  "after": {
+    "bytes": 98000,
+    "points": 11,
+    "values": 209,
+    "quantiles": 484
+  },
+  "records": [],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

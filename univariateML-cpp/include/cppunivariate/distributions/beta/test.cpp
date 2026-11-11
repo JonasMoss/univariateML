@@ -247,3 +247,9 @@ TEST_CASE("beta: free fit near the boundaries and near constant data") {
     CHECK(r.logLik == doctest::Approx(c.logLik).epsilon(1e-12));
   }
 }
+
+// Independent 1600-digit exact-input reference; beta-smoke.py.
+TEST_CASE("beta: centered large-shape density") {
+  CHECK(cppunivariate::distributions::dbeta(0.5,100000000.0,100000000.0,true)==
+        doctest::Approx(9.331122608361428).epsilon(1e-10).scale(0));
+}

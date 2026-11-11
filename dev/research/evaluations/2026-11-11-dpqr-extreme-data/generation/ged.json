@@ -1,0 +1,62 @@
+{
+  "id": "ged",
+  "input_sha256": "947c497a173d1897df5a5b11b8dc9b643000057865b251cd4679274136722b07",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 116243,
+    "points": 13,
+    "values": 247,
+    "quantiles": 572
+  },
+  "after": {
+    "bytes": 116396,
+    "points": 13,
+    "values": 247,
+    "quantiles": 572
+  },
+  "records": [
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        2e-08
+      ],
+      "status": "oracle gap",
+      "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms.",
+      "seconds": 3.3721402840001247
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        200000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "MemoryError: reference exceeded the recorded address-space limit",
+      "seconds": 18.421277766001367
+    },
+    {
+      "parameters": [
+        0.0,
+        1000.0,
+        200000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "MemoryError: reference exceeded the recorded address-space limit",
+      "seconds": 41.62727799499953
+    },
+    {
+      "parameters": [
+        -100000000.0,
+        100000000.0,
+        200000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "MemoryError: reference exceeded the recorded address-space limit",
+      "seconds": 15.20611410499987
+    }
+  ],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

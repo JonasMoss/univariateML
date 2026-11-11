@@ -105,6 +105,12 @@ existence:
 
 The uniform distribution assigns constant density between a lower endpoint $a$ and an upper endpoint $b$.
 
+## d/p/q/r
+
+### Logarithmic probabilities near the center
+
+The binary64 value -log(2) represents a probability slightly different from one half. If the endpoints cancel, rounding that probability to one half first loses the entire quantile. Central inversion retains the low part of log(2) and the compensated endpoint midpoint.
+
 ## Details
 
 Each free endpoint is estimated by the corresponding sample extreme. Holding an endpoint specifies a known limit of the measurement range. The fitted interval is closed and must have positive width. A constant sample has a finite fit only when a compatible held endpoint lies strictly outside the observation. With both endpoints held, the interval must contain every observation.

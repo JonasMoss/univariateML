@@ -1,0 +1,57 @@
+{
+  "id": "gumbel",
+  "input_sha256": "0cb50bb0e861149c819be09ec32e4c2d8917a8ac1c84499f49eb207f4dc1d343",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 62219,
+    "points": 7,
+    "values": 133,
+    "quantiles": 308
+  },
+  "after": {
+    "bytes": 98040,
+    "points": 11,
+    "values": 209,
+    "quantiles": 484
+  },
+  "records": [
+    {
+      "parameters": [
+        -1.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.2595478719999846
+    },
+    {
+      "parameters": [
+        1.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.099613591000434
+    },
+    {
+      "parameters": [
+        0.0,
+        1e-08
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.195148347000213
+    },
+    {
+      "parameters": [
+        0.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.3218083609999667
+    }
+  ]
+}

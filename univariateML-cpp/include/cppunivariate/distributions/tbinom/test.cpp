@@ -439,3 +439,11 @@ TEST_CASE("tbinom: uncertified coefficients meet the local accuracy contract") {
     CHECK(std::abs(f.prob-ref)<=1e-10*ref);
   }
 }
+
+TEST_CASE("tbinom: half probability retains a subnormal conditional odds displacement") {
+ const double n=std::ldexp(1.,1022),p=std::ldexp(1.,-1022);
+ CHECK(cppunivariate::distributions::qtbinom(.5,p,-1,1,n,true,false)==1);
+ CHECK(cppunivariate::distributions::qtbinom(.5,p,-1,1,n,false,false)==1);
+ CHECK(cppunivariate::distributions::qtbinom(std::log(.5),p,-1,1,n,true,true)==1);
+ CHECK(cppunivariate::distributions::qtbinom(std::log(.5),p,-1,1,n,false,true)==0);
+}

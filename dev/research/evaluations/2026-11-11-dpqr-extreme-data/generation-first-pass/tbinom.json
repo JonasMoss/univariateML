@@ -1,0 +1,38 @@
+{
+  "id": "tbinom",
+  "before": {
+    "bytes": 60003,
+    "points": 8,
+    "values": 110,
+    "quantiles": 352
+  },
+  "after": {
+    "bytes": 66832,
+    "points": 9,
+    "values": 125,
+    "quantiles": 396
+  },
+  "records": [
+    {
+      "parameters": [
+        5e-09,
+        0.0,
+        10.0,
+        10.0
+      ],
+      "status": "generated",
+      "seconds": 0.3636713119922206
+    },
+    {
+      "parameters": [
+        1e-08,
+        0.0,
+        10.0,
+        100000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 30 seconds per point",
+      "seconds": 30.000121501041576
+    }
+  ]
+}

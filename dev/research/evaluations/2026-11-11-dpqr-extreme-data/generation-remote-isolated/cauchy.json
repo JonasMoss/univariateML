@@ -1,0 +1,20 @@
+{
+  "id": "cauchy",
+  "input_sha256": "a1b6d5ff50bf6d361ee97e8b90a672c909fedb1410d1fa4329bd9c28fc49e278",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 70529,
+    "points": 8,
+    "values": 152,
+    "quantiles": 352
+  },
+  "after": {
+    "bytes": 70529,
+    "points": 8,
+    "values": 152,
+    "quantiles": 352
+  },
+  "records": []
+}

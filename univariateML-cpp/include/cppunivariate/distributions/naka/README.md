@@ -103,6 +103,14 @@ existence:
 
 The Nakagami distribution models positive amplitudes, including radio-fading measurements. Its square follows a gamma distribution.
 
+## d/p/q/r
+
+### Concentrating log density
+
+Near x^2=scale at large shape, rounding x^2 before centering can change the density materially. A binary rescaling and FMA form the squared-radius residual before the shape multiplies its deviance. The density normalizer uses the bounded Stirling remainder; neither the square nor the mean needs to be representable at its original scale.
+
+The large-shape CDF uses the same squared-radius residual to standardize a centered log-gamma integral. Forming a rounded gamma argument from 2*log(q)+log(shape)-log(scale) would lose that displacement before tail evaluation.
+
 ## Details
 
 The shape $m$ may be any positive value, including values below $1/2$. The shape controls concentration around the root mean squared amplitude. The scale $\Omega$ is the mean squared amplitude, rather than the scale of the gamma law of the squared amplitude. Sampling takes the square root of a gamma variable.

@@ -559,3 +559,7 @@ TEST_CASE("zib: strict Bernoulli saturation uses the nonidentified maximum curve
   const auto g=cppunivariate::zib_mle({y.data(),y.size()},1e-18,200,1,NAN,.5);
   REQUIRE(g.status==cppunivariate::ZibStatus::Ok);CHECK(g.prob==.5);
 }
+
+TEST_CASE("zib: exact-input density from likelihood seam replay") {
+ CHECK(cppunivariate::distributions::dzib(1000003,1000023.0,0.9999816004231903,0.0,true)==doctest::Approx(-2.4885944485828846).epsilon(1e-10));
+}

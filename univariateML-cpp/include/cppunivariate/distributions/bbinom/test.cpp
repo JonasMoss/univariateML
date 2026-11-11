@@ -595,3 +595,7 @@ TEST_CASE("bbinom: represented asymmetric stationary shapes survive sub-machine 
   REQUIRE(f.status==cppunivariate::BbinomStatus::Ok);
   CHECK(f.alpha==2);CHECK(f.beta==3);
 }
+
+TEST_CASE("bbinom: exact-input extreme arithmetic regression") {
+  CHECK(cppunivariate::distributions::pbbinom(0.0,10.0,1.0,1e-08,false,true) == doctest::Approx(-9.999999995e-10).epsilon(1e-10));
+}

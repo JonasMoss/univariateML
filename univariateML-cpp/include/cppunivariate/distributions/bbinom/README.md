@@ -403,3 +403,7 @@ available as an exact count ratio. Reflection gives the stationary mean one
 half; the remaining profile is binomial in the endpoint frequency. This avoids
 amplifying score cancellation near the binomial face in a joint log-shape
 Newton solve.
+
+### Extreme d/p/q arithmetic
+
+In the mass recurrence the remaining integer count is formed before adding beta. Subtracting the counts after adding a tiny beta can discard its significant digits at the last cell, contaminating both summed tails.

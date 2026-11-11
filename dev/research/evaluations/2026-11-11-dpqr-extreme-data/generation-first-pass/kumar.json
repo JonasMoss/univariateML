@@ -1,0 +1,49 @@
+{
+  "id": "kumar",
+  "before": {
+    "bytes": 59026,
+    "points": 7,
+    "values": 129,
+    "quantiles": 308
+  },
+  "after": {
+    "bytes": 88932,
+    "points": 11,
+    "values": 185,
+    "quantiles": 484
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 4.042639814026188
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 1.4467563159996644
+    },
+    {
+      "parameters": [
+        1.0,
+        1e-08
+      ],
+      "status": "generated",
+      "seconds": 3.5259356839815155
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "seconds": 1.7275982860010117
+    }
+  ]
+}

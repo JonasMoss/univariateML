@@ -1,0 +1,57 @@
+{
+  "id": "invgauss",
+  "input_sha256": "a6891dbcd963aa3cc1056860b5590710887ff0a0733856e449b36e6e4a77efa5",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 63618,
+    "points": 7,
+    "values": 147,
+    "quantiles": 308
+  },
+  "after": {
+    "bytes": 100320,
+    "points": 11,
+    "values": 231,
+    "quantiles": 484
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 2.4991562039999735
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 3.099271796999801
+    },
+    {
+      "parameters": [
+        1.0,
+        1e-08
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 3.2024612130003334
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 2.16605588099992
+    }
+  ]
+}

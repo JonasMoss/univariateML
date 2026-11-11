@@ -1,0 +1,21 @@
+{
+  "id": "slash",
+  "input_sha256": "c1576cc8194e0a635d4c83b2882394428335c688961566ad4057a848dab591fd",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 71345,
+    "points": 8,
+    "values": 152,
+    "quantiles": 352
+  },
+  "after": {
+    "bytes": 71345,
+    "points": 8,
+    "values": 152,
+    "quantiles": 352
+  },
+  "records": [],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

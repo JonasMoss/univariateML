@@ -559,3 +559,7 @@ TEST_CASE("Bhatt unclosed uniform-margin preference retains its finite search") 
  REQUIRE(r.status==cppunivariate::BhattStatus::Ok);CHECK_FALSE(r.certified);
  CHECK(std::isfinite(r.logLik));
 }
+
+TEST_CASE("bhatt: exact-input extreme arithmetic regression") {
+  CHECK(cppunivariate::distributions::dbhatt(-1.0000002020921483,0.0,1e-08,1.0,true) == doctest::Approx(-208.82684021178022).epsilon(1e-10).scale(0));
+}

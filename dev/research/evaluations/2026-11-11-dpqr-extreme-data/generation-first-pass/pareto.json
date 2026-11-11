@@ -1,0 +1,50 @@
+{
+  "id": "pareto",
+  "before": {
+    "bytes": 43068,
+    "points": 5,
+    "values": 85,
+    "quantiles": 220
+  },
+  "after": {
+    "bytes": 67776,
+    "points": 8,
+    "values": 138,
+    "quantiles": 352
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: normalization quadrature error estimate 0.00000000001",
+      "seconds": 0.6624124700319953
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 1.0646596029982902
+    },
+    {
+      "parameters": [
+        1.0,
+        1e-08
+      ],
+      "status": "generated",
+      "seconds": 1.2721991519792937
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "seconds": 1.2437970269820653
+    }
+  ]
+}

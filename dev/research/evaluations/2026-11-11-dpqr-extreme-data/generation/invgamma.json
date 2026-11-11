@@ -1,0 +1,58 @@
+{
+  "id": "invgamma",
+  "input_sha256": "c866d85c112ad6a4948257c9f75fb533d1ddd9acea0ec22f44f1281ababe1046",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 81697,
+    "points": 9,
+    "values": 185,
+    "quantiles": 396
+  },
+  "after": {
+    "bytes": 81697,
+    "points": 9,
+    "values": 185,
+    "quantiles": 396
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "seconds": 120.01399678999951
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms.",
+      "seconds": 0.09224038700085657
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1000.0
+      ],
+      "status": "oracle gap",
+      "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms.",
+      "seconds": 0.12275730299916177
+    },
+    {
+      "parameters": [
+        100000000.0,
+        100000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms.",
+      "seconds": 9.965932404998966
+    }
+  ],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

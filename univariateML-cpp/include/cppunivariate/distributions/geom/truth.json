@@ -8335,7 +8335,6 @@
     ]
   ],
   "quantile_limits": "nearest binary64; columns 7/8: jump ambiguity flag / zero absolute floor; ambiguous bounds are two acceptable lattice points; jump relative distance 1e-12 on input scale",
-  "input_sha256": "c46d02fafbf9586ec4731f02150f8b78d0f448fc9e2540851870d3a685a05880",
   "sampler_points": [
     [
       0
@@ -8343,5 +8342,31 @@
     [
       1
     ]
-  ]
+  ],
+  "extreme_reference_gaps": [
+    {
+      "parameters": [
+        5e-09
+      ],
+      "reason": "ArithmeticError: positive series did not reach certified remainder"
+    }
+  ],
+  "historical_sampler_points": [
+    [
+      0
+    ],
+    [
+      1
+    ],
+    [
+      2
+    ],
+    [
+      3
+    ],
+    [
+      4
+    ]
+  ],
+  "input_sha256": "b020bbb789474d0d6230b09b600feef8caa7d1930613a4dd22bc2000fab01bac"
 }

@@ -1,0 +1,34 @@
+{
+  "id": "dnorm",
+  "before": {
+    "bytes": 157534,
+    "points": 6,
+    "values": 1236,
+    "quantiles": 264
+  },
+  "after": {
+    "bytes": 179423,
+    "points": 7,
+    "values": 1441,
+    "quantiles": 308
+  },
+  "records": [
+    {
+      "parameters": [
+        0.0,
+        1e-08
+      ],
+      "status": "generated",
+      "seconds": 0.1670332210487686
+    },
+    {
+      "parameters": [
+        0.0,
+        100000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 30 seconds per point",
+      "seconds": 30.000072909984738
+    }
+  ]
+}

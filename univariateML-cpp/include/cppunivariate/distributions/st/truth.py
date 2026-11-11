@@ -78,3 +78,6 @@ def build(p, logd):
         raise ArithmeticError('skew-t quantile iteration did not converge')
     ref.quantile=quantile
     return ref
+
+# Joint limit paths supplement the shared one-coordinate extreme grid.
+extreme_parameter_sets = [{'nu': 100000000.0, 'alpha': 100000000.0}, {'nu': 100000000.0, 'alpha': -100000000.0}, {'alpha': 100000000.0}, {'alpha': -100000000.0}]

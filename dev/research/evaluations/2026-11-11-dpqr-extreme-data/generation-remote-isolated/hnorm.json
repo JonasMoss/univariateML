@@ -1,0 +1,57 @@
+{
+  "id": "hnorm",
+  "input_sha256": "4803eacc7550677b1c615b97afec4169065b5977bc6d9836a1d3aa58a4402844",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 45395,
+    "points": 5,
+    "values": 93,
+    "quantiles": 220
+  },
+  "after": {
+    "bytes": 80473,
+    "points": 9,
+    "values": 171,
+    "quantiles": 396
+  },
+  "records": [
+    {
+      "parameters": [
+        -1.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.6116677560003154
+    },
+    {
+      "parameters": [
+        1.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.495687925999846
+    },
+    {
+      "parameters": [
+        0.0,
+        1e-08
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.4465072100001635
+    },
+    {
+      "parameters": [
+        0.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.4101438590000726
+    }
+  ]
+}

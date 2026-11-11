@@ -1,0 +1,27 @@
+{
+  "id": "nhyper",
+  "before": {
+    "bytes": 42686,
+    "points": 7,
+    "values": 74,
+    "quantiles": 308
+  },
+  "after": {
+    "bytes": 42894,
+    "points": 7,
+    "values": 74,
+    "quantiles": 308
+  },
+  "records": [
+    {
+      "parameters": [
+        5.0,
+        100000000.0,
+        3.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 30 seconds per point",
+      "seconds": 30.01577370899031
+    }
+  ]
+}

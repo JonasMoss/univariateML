@@ -80,6 +80,12 @@ existence:
 
 The Poisson distribution models counts of independent events over a fixed observation interval.
 
+## d/p/q/r
+
+### Centered count density
+
+At large counts the log mass combines the Stirling remainder with the nonnegative Poisson deviance lambda-k-k*log(lambda/k). Sterbenz subtraction retains lambda-k near the mode. This avoids subtracting a factorial log from two terms of order k*log(k), whose errors can exceed the entire log-density tolerance at million-count fits.
+
 ## Details
 
 The rate $\lambda$ describes the expected event count over that interval.

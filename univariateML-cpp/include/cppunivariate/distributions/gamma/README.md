@@ -103,6 +103,16 @@ existence:
 
 The gamma distribution models positive measurements and waiting times.
 
+## d/p/q/r
+
+### Concentrating log density
+
+For large shape, a log-gamma subtraction can lose the entire finite density near the mode. The density separates its Stirling normalizer from the nonnegative deviance k*(u-log1p(u)). Binary mantissas and an FMA residual retain the exact scale-times-shape center without overflow or subnormal product loss; the finite Taylor polynomial preserves k*u^2 even when u^2 underflows. The omitted Stirling term is below 3e-17 at the regime boundary.
+
+For shape at least 16, probabilities integrate the centered log-gamma density with the bounded Simpson and log-concave tangent construction also used by the Prentice family. The exact binary64 scale-times-shape center is retained before standardization. The smaller-shape path passes a representable unit-scale argument directly to the gamma backend instead of exponentiating its logarithm. A small FMA division residual is transported through the density; the unresolved region where its relative tail correction exceeds 1e-7 returns NaN. Far from the mode, an explicit log-concave Laplace bound controls the tail remainder by 1e-12. Exhausted series or continued fractions also return NaN.
+
+The inverse can return the mean when Chernoff bounds put the requested quantile within relative 1e-10 of it; a factor-two exponent margin reserves floating-point error. This shortcut returns NaN if that bracket intersects the binary64 overflow boundary. It is confined to the gamma inverse, since further power or exponential transforms can amplify its relative allowance.
+
 ## Details
 
 The [positive-family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-positive.md) gives the boundary arguments and their held-parameter conditions.
@@ -110,7 +120,6 @@ The [positive-family analysis](../../../../../dev/research/evaluations/2026-10-2
 2026-10-30 (TASK-125): when the held-shape total overflows, the scale is computed from the mean accumulated as `sum(x/n)`, and the likelihood penalty as `sum(x/scale)`. The existing held-shape overflow test checks the result; it is not an error bound for arbitrary sample sizes.
 
 Holding either shape or scale gives a unique finite fit for any positive sample, including constant data. With both free, constant data have unbounded likelihood.
-
 
 With both coefficients free, profiling scale gives the shape score
 $\log(k)-\psi(k)=\log(\bar x)-\overline{\log x}$. Its unique positive

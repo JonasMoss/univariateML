@@ -1,0 +1,48 @@
+{
+  "id": "zip",
+  "input_sha256": "97d182c5989a7ab960b4c9525a3122b96c534b8299475a0bbe92b7e47a312dd0",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 189093,
+    "points": 8,
+    "values": 1447,
+    "quantiles": 352
+  },
+  "after": {
+    "bytes": 243550,
+    "points": 10,
+    "values": 1859,
+    "quantiles": 440
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        0.5
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.15121140099972763
+    },
+    {
+      "parameters": [
+        100000000.0,
+        0.5
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: positive series did not reach certified remainder",
+      "seconds": 13.15551901300023
+    },
+    {
+      "parameters": [
+        1.0,
+        5e-09
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.14536979400008931
+    }
+  ]
+}

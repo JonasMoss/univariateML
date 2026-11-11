@@ -1,0 +1,57 @@
+{
+  "id": "skellam",
+  "input_sha256": "3a98c92e7f947dee189e8c13759cdb79446038f6446aed9f8a473a65c663dc2f",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 245529,
+    "points": 10,
+    "values": 1771,
+    "quantiles": 440
+  },
+  "after": {
+    "bytes": 302058,
+    "points": 12,
+    "values": 2183,
+    "quantiles": 528
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.2992355149999639
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "seconds": 120.00004146099991
+    },
+    {
+      "parameters": [
+        1.0,
+        1e-08
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.2862604769998143
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "seconds": 120.00005995299989
+    }
+  ]
+}

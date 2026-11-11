@@ -1,0 +1,34 @@
+{
+  "id": "dlaplace",
+  "before": {
+    "bytes": 145262,
+    "points": 5,
+    "values": 1049,
+    "quantiles": 220
+  },
+  "after": {
+    "bytes": 172023,
+    "points": 6,
+    "values": 1254,
+    "quantiles": 264
+  },
+  "records": [
+    {
+      "parameters": [
+        0.0,
+        5e-09
+      ],
+      "status": "generated",
+      "seconds": 0.07889061700007005
+    },
+    {
+      "parameters": [
+        0.0,
+        0.9999999999999999
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "seconds": 120.00026797300006
+    }
+  ]
+}

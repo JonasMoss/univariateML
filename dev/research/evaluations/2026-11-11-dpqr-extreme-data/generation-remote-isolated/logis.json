@@ -1,0 +1,39 @@
+{
+  "id": "logis",
+  "input_sha256": "8ba16fe307aa8566ab184d13e2ed1c2f59322b35ed5a0296ab455c15000a26b2",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 52680,
+    "points": 6,
+    "values": 114,
+    "quantiles": 264
+  },
+  "after": {
+    "bytes": 70591,
+    "points": 8,
+    "values": 152,
+    "quantiles": 352
+  },
+  "records": [
+    {
+      "parameters": [
+        0.0,
+        1e-08
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.6081944780003141
+    },
+    {
+      "parameters": [
+        0.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.7683552299999974
+    }
+  ]
+}

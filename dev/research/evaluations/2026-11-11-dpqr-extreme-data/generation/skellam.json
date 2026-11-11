@@ -1,0 +1,40 @@
+{
+  "id": "skellam",
+  "input_sha256": "da7657830ee7699626b525a0b586103052c4d04969dcecbf05cf77219589ecb1",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 302305,
+    "points": 12,
+    "values": 2183,
+    "quantiles": 528
+  },
+  "after": {
+    "bytes": 302305,
+    "points": 12,
+    "values": 2183,
+    "quantiles": 528
+  },
+  "records": [
+    {
+      "parameters": [
+        100000000.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "seconds": 120.00005769299969
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "seconds": 120.00009247799971
+    }
+  ],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

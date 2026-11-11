@@ -530,3 +530,22 @@ TEST_CASE("GB2 transports the uncertified unit-p Burr result") {
  CHECK(r.shape1==p.shape1);CHECK(r.shape2==p.shape2);CHECK(r.scale==p.scale);
  CHECK(r.logLik==doctest::Approx(p.logLik).epsilon(1e-12));
 }
+
+// The exact binary64 product 1e8*1e-8 exceeds one, although it rounds to one.
+TEST_CASE("gb2: exact power side at the support endpoint") {
+  CHECK(cppunivariate::distributions::dgb2(0,1,1e8,1e-8,1,true) == -std::numeric_limits<double>::infinity());
+}
+
+// Independent 1600-digit exact-input reference; beta-smoke.py.
+TEST_CASE("gb2: centered large-shape density") {
+  CHECK(cppunivariate::distributions::dgb2(1.0,100000000.0,1,100000000.0,1,true)==
+        doctest::Approx(7.944828247241538).epsilon(1e-10).scale(0));
+}
+
+TEST_CASE("gb2: portable small-shape complementary tail") {
+ CHECK(cppunivariate::distributions::pgb2(5e-324,2.0,1.0,2e-08,1.0,false,true)==doctest::Approx(-11.116252837780058).epsilon(1e-10));
+}
+
+TEST_CASE("gb2: exact-input density from likelihood seam replay") {
+ CHECK(cppunivariate::distributions::dgb2(0.7827803638567952,1642761704942913.5,7.824192388751234e-08,1642761640781011.5,1.0079365599415882,true)==doctest::Approx(-0.019107341623514542).epsilon(1e-10));
+}

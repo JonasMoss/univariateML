@@ -1,0 +1,49 @@
+{
+  "id": "unif",
+  "before": {
+    "bytes": 16831,
+    "points": 2,
+    "values": 33,
+    "quantiles": 88
+  },
+  "after": {
+    "bytes": 47124,
+    "points": 6,
+    "values": 89,
+    "quantiles": 264
+  },
+  "records": [
+    {
+      "parameters": [
+        -1.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 2.2993564670323394
+    },
+    {
+      "parameters": [
+        0.9999999999999999,
+        1.0000000000000002
+      ],
+      "status": "generated",
+      "seconds": 3.829688526049722
+    },
+    {
+      "parameters": [
+        0.0,
+        1e-08
+      ],
+      "status": "generated",
+      "seconds": 2.1390873229829594
+    },
+    {
+      "parameters": [
+        0.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "seconds": 2.095267506025266
+    }
+  ]
+}

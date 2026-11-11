@@ -1,0 +1,62 @@
+{
+  "id": "gengamma",
+  "input_sha256": "7b6f3b191e44e079b01928a5b10d1a895c134f9fc3a9e03079b432ef890b3e10",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 136016,
+    "points": 15,
+    "values": 307,
+    "quantiles": 660
+  },
+  "after": {
+    "bytes": 136016,
+    "points": 15,
+    "values": 307,
+    "quantiles": 660
+  },
+  "records": [
+    {
+      "parameters": [
+        -1.0,
+        1.0,
+        0.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "seconds": 120.00006724200102
+    },
+    {
+      "parameters": [
+        1.0,
+        1.0,
+        0.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "seconds": 120.00597209700027
+    },
+    {
+      "parameters": [
+        0.0,
+        1e-08,
+        0.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "seconds": 120.00006925100024
+    },
+    {
+      "parameters": [
+        0.0,
+        100000000.0,
+        0.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "seconds": 120.00006685100016
+    }
+  ],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

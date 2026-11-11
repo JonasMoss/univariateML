@@ -50,7 +50,12 @@ inline double pexpweibull(double q, double scale, double shape, double exponent,
     return special::tail_probability(special::tails_from_log_hazard(lH,true),lower_tail,log_p);
   }
   // H=-log(F)=c*(-log(1-exp(-h))); retain log(H) when H underflows.
-  const double lH=std::log(exponent)+special::log_neg_log1mexp(-std::exp(lh));
+  const double ratio=q/scale;
+  // A directly evaluated power avoids the extra log/product/exp rounding
+  // when the quotient is exactly representable (proved by the FMA).
+  const double h=ratio>=.5 && ratio<=2 && std::fma(-ratio,scale,q)==0
+      ? std::pow(ratio,shape) : std::exp(lh);
+  const double lH=std::log(exponent)+special::log_neg_log1mexp(-h);
   return special::tail_probability(special::tails_from_log_hazard(lH,true),lower_tail,log_p);
 }
 inline double qexpweibull(double p, double scale, double shape, double exponent,

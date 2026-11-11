@@ -1,0 +1,71 @@
+{
+  "id": "zinb",
+  "input_sha256": "fa88d697c9560ee166f801fafa0b129b0ec1aaf7c462b53b0ab0193628866935",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 304251,
+    "points": 13,
+    "values": 2095,
+    "quantiles": 572
+  },
+  "after": {
+    "bytes": 392128,
+    "points": 16,
+    "values": 2717,
+    "quantiles": 704
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        0.5,
+        0.5
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.39882707300012044
+    },
+    {
+      "parameters": [
+        100000000.0,
+        0.5,
+        0.5
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: positive series did not reach certified remainder",
+      "seconds": 19.746960038999987
+    },
+    {
+      "parameters": [
+        1.0,
+        5e-09,
+        0.5
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: positive series did not reach certified remainder",
+      "seconds": 22.449031671000284
+    },
+    {
+      "parameters": [
+        1.0,
+        0.5,
+        5e-09
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.2299353289999999
+    },
+    {
+      "parameters": [
+        100000000.0,
+        0.9999999900000001,
+        0.5
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.12847267200004353
+    }
+  ]
+}

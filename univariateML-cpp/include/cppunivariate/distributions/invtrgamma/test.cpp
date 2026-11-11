@@ -256,3 +256,8 @@ TEST_CASE("invtrgamma: held endpoint agrees with reciprocal fit") {
   CHECK(extreme.scale==1e-308);
   CHECK(std::isfinite(extreme.logLik));
 }
+
+TEST_CASE("invtrgamma: finite coupled power survives latent log overflow") {
+ CHECK(cppunivariate::distributions::qinvtrgamma(.5,1e-309,1e308,1,true,false)==doctest::Approx(1024.0).epsilon(1e-9).scale(0));
+ CHECK(cppunivariate::distributions::dinvtrgamma(1,1e-309,1e308,1,true)==doctest::Approx(-3.302585092994043).epsilon(1e-10));
+}

@@ -1,0 +1,39 @@
+{
+  "id": "ztbinom",
+  "input_sha256": "cedfe7c0302e9b9fb74edd8f50aabe5c74f984b99e460f00a51556f0361546f8",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 49776,
+    "points": 8,
+    "values": 101,
+    "quantiles": 352
+  },
+  "after": {
+    "bytes": 56556,
+    "points": 9,
+    "values": 116,
+    "quantiles": 396
+  },
+  "records": [
+    {
+      "parameters": [
+        10.0,
+        5e-09
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.0651310690000173
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1e-08
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "seconds": 120.05270255900041
+    }
+  ]
+}

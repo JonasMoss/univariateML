@@ -11,3 +11,6 @@ def build(t):
     scale = t['scale']
     return Reference(lambda x: pair(-shape1*mp.log1p((scale/x)**shape2)), 0, mp.inf)
 
+
+# Joint limit paths supplement the shared one-coordinate extreme grid.
+extreme_parameter_sets = [{'shape2': 100000000.0, 'scale': 1e-08}, {'shape1': 100000000.0, 'shape2': 1e-08}]

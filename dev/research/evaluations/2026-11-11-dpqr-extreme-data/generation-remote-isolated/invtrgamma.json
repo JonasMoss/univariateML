@@ -1,0 +1,111 @@
+{
+  "id": "invtrgamma",
+  "input_sha256": "07de056f4d6e2b8c597746a73cb19a030b74e6918feb2087a53602e2c2d2bb4b",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 81383,
+    "points": 9,
+    "values": 185,
+    "quantiles": 396
+  },
+  "after": {
+    "bytes": 106217,
+    "points": 12,
+    "values": 233,
+    "quantiles": 528
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "seconds": 120.00508700599994
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms.",
+      "seconds": 0.08185530999980983
+    },
+    {
+      "parameters": [
+        1.0,
+        1e-08,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 3.4522474390000752
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "seconds": 120.00005792499996
+    },
+    {
+      "parameters": [
+        1.0,
+        1.0,
+        1e-08
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.0189680660000704
+    },
+    {
+      "parameters": [
+        1.0,
+        1.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.9953164730000026
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0,
+        1000.0
+      ],
+      "status": "oracle gap",
+      "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms.",
+      "seconds": 0.10280610300014814
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0,
+        1000.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "seconds": 120.00088623900001
+    },
+    {
+      "parameters": [
+        1e-08,
+        100000000.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "seconds": 120.00006921600016
+    }
+  ]
+}

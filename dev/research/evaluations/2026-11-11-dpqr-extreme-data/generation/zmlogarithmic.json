@@ -1,0 +1,31 @@
+{
+  "id": "zmlogarithmic",
+  "input_sha256": "9f2eaa80d300fd82370217a1b1eb92c0a95bc5433d56281f633faf29b0d7b39a",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 296909,
+    "points": 12,
+    "values": 2090,
+    "quantiles": 528
+  },
+  "after": {
+    "bytes": 296909,
+    "points": 12,
+    "values": 2090,
+    "quantiles": 528
+  },
+  "records": [
+    {
+      "parameters": [
+        0.9999999999999999,
+        0.5
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: positive series did not reach certified remainder",
+      "seconds": 12.623366985000757
+    }
+  ],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

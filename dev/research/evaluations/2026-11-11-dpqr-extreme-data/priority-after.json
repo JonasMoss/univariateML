@@ -1,0 +1,818 @@
+[
+  {
+    "family": "weibull",
+    "function": "d",
+    "parameters": [
+      100000000.0,
+      1000.0
+    ],
+    "input": 999.9999999999999,
+    "actual": 10.51292546497023,
+    "expected": 10.512925464970229,
+    "error": 1.6896884176713611e-16
+  },
+  {
+    "family": "weibull",
+    "function": "p",
+    "parameters": [
+      100000000.0,
+      1000.0
+    ],
+    "input": 999.9999999999999,
+    "actual": -0.9999999886313163,
+    "expected": -0.9999999886313163,
+    "error": 0.0
+  },
+  {
+    "family": "weibull",
+    "function": "d",
+    "parameters": [
+      100000000.0,
+      1000.0
+    ],
+    "input": 1000.0,
+    "actual": 10.51292546497023,
+    "expected": 10.512925464970229,
+    "error": 1.6896884176713611e-16
+  },
+  {
+    "family": "weibull",
+    "function": "p",
+    "parameters": [
+      100000000.0,
+      1000.0
+    ],
+    "input": 1000.0,
+    "actual": -1.0,
+    "expected": -1.0,
+    "error": 0.0
+  },
+  {
+    "family": "weibull",
+    "function": "d",
+    "parameters": [
+      100000000.0,
+      1000.0
+    ],
+    "input": 1000.0000000000001,
+    "actual": 10.51292546497023,
+    "expected": 10.512925464970229,
+    "error": 1.6896884176713611e-16
+  },
+  {
+    "family": "weibull",
+    "function": "p",
+    "parameters": [
+      100000000.0,
+      1000.0
+    ],
+    "input": 1000.0000000000001,
+    "actual": -1.0000000113686838,
+    "expected": -1.0000000113686838,
+    "error": 0.0
+  },
+  {
+    "family": "weibull",
+    "function": "d",
+    "parameters": [
+      100000000.0,
+      1000.0
+    ],
+    "input": 1000.000005,
+    "actual": 10.364204190899937,
+    "expected": 10.364204190899933,
+    "error": 3.4278692443360823e-16
+  },
+  {
+    "family": "weibull",
+    "function": "p",
+    "parameters": [
+      100000000.0,
+      1000.0
+    ],
+    "input": 1000.000005,
+    "actual": -1.648721266557916,
+    "expected": -1.648721266557916,
+    "error": 0.0
+  },
+  {
+    "family": "weibull",
+    "function": "d",
+    "parameters": [
+      1000000000000.0,
+      1000.0
+    ],
+    "input": 999.9999999999999,
+    "actual": 19.72326583048431,
+    "expected": 19.72326583048431,
+    "error": 0.0
+  },
+  {
+    "family": "weibull",
+    "function": "p",
+    "parameters": [
+      1000000000000.0,
+      1000.0
+    ],
+    "input": 999.9999999999999,
+    "actual": -0.999886319624382,
+    "expected": -0.999886319624382,
+    "error": 0.0
+  },
+  {
+    "family": "weibull",
+    "function": "d",
+    "parameters": [
+      1000000000000.0,
+      1000.0
+    ],
+    "input": 1000.0,
+    "actual": 19.72326583694641,
+    "expected": 19.72326583694641,
+    "error": 0.0
+  },
+  {
+    "family": "weibull",
+    "function": "p",
+    "parameters": [
+      1000000000000.0,
+      1000.0
+    ],
+    "input": 1000.0,
+    "actual": -1.0,
+    "expected": -1.0,
+    "error": 0.0
+  },
+  {
+    "family": "weibull",
+    "function": "d",
+    "parameters": [
+      1000000000000.0,
+      1000.0
+    ],
+    "input": 1000.0000000000001,
+    "actual": 19.723265830483818,
+    "expected": 19.723265830483818,
+    "error": 0.0
+  },
+  {
+    "family": "weibull",
+    "function": "p",
+    "parameters": [
+      1000000000000.0,
+      1000.0
+    ],
+    "input": 1000.0000000000001,
+    "actual": -1.000113693300315,
+    "expected": -1.000113693300315,
+    "error": 0.0
+  },
+  {
+    "family": "weibull",
+    "function": "d",
+    "parameters": [
+      1000000000000.0,
+      1000.0
+    ],
+    "input": 1000.0000000005,
+    "actual": 19.574547996466492,
+    "expected": 19.574547996466492,
+    "error": 0.0
+  },
+  {
+    "family": "weibull",
+    "function": "p",
+    "parameters": [
+      1000000000000.0,
+      1000.0
+    ],
+    "input": 1000.0000000005,
+    "actual": -1.6487125527789592,
+    "expected": -1.6487125527789595,
+    "error": 1.3467757284359107e-16
+  },
+  {
+    "family": "weibull",
+    "function": "d",
+    "parameters": [
+      1e+16,
+      1000.0
+    ],
+    "input": 999.9999999999999,
+    "actual": 28.475915687474007,
+    "expected": 28.475915687474004,
+    "error": 1.2476205217742199e-16
+  },
+  {
+    "family": "weibull",
+    "function": "p",
+    "parameters": [
+      1e+16,
+      1000.0
+    ],
+    "input": 999.9999999999999,
+    "actual": -0.32082214423242905,
+    "expected": -0.320822144232429,
+    "error": 5.551115123125783e-17
+  },
+  {
+    "family": "weibull",
+    "function": "d",
+    "parameters": [
+      1e+16,
+      1000.0
+    ],
+    "input": 1000.0,
+    "actual": 28.933606208922598,
+    "expected": 28.933606208922594,
+    "error": 1.227884852357225e-16
+  },
+  {
+    "family": "weibull",
+    "function": "p",
+    "parameters": [
+      1e+16,
+      1000.0
+    ],
+    "input": 1000.0,
+    "actual": -1.0,
+    "expected": -1.0,
+    "error": 0.0
+  },
+  {
+    "family": "weibull",
+    "function": "d",
+    "parameters": [
+      1e+16,
+      1000.0
+    ],
+    "input": 1000.0000000000001,
+    "actual": 27.953482763792728,
+    "expected": 27.953482763792724,
+    "error": 1.2709377607151765e-16
+  },
+  {
+    "family": "weibull",
+    "function": "p",
+    "parameters": [
+      1e+16,
+      1000.0
+    ],
+    "input": 1000.0000000000001,
+    "actual": -3.1169918223460304,
+    "expected": -3.1169918223460304,
+    "error": 0.0
+  },
+  {
+    "family": "weibull",
+    "function": "d",
+    "parameters": [
+      1e+100,
+      1000.0
+    ],
+    "input": 999.9999999999999,
+    "actual": -1.1368683772161604e+84,
+    "expected": -1.1368683772161604e+84,
+    "error": 0.0
+  },
+  {
+    "family": "weibull",
+    "function": "p",
+    "parameters": [
+      1e+100,
+      1000.0
+    ],
+    "input": 999.9999999999999,
+    "actual": -0.0,
+    "expected": -0.0,
+    "error": 0.0
+  },
+  {
+    "family": "weibull",
+    "function": "d",
+    "parameters": [
+      1e+100,
+      1000.0
+    ],
+    "input": 1000.0,
+    "actual": 222.35075402042244,
+    "expected": 222.35075402042244,
+    "error": 0.0
+  },
+  {
+    "family": "weibull",
+    "function": "p",
+    "parameters": [
+      1e+100,
+      1000.0
+    ],
+    "input": 1000.0,
+    "actual": -1.0,
+    "expected": -1.0,
+    "error": 0.0
+  },
+  {
+    "family": "weibull",
+    "function": "d",
+    "parameters": [
+      1e+100,
+      1000.0
+    ],
+    "input": 1000.0000000000001,
+    "actual": -Infinity,
+    "expected": -Infinity,
+    "error": 0.0
+  },
+  {
+    "family": "weibull",
+    "function": "p",
+    "parameters": [
+      1e+100,
+      1000.0
+    ],
+    "input": 1000.0000000000001,
+    "actual": -Infinity,
+    "expected": -Infinity,
+    "error": 0.0
+  },
+  {
+    "family": "weibull",
+    "function": "d",
+    "parameters": [
+      1e+308,
+      1000.0
+    ],
+    "input": 999.9999999999999,
+    "actual": -1.1368683772161602e+292,
+    "expected": -1.1368683772161604e+292,
+    "error": 1.9490628022799996e-16
+  },
+  {
+    "family": "weibull",
+    "function": "p",
+    "parameters": [
+      1e+308,
+      1000.0
+    ],
+    "input": 999.9999999999999,
+    "actual": -0.0,
+    "expected": -0.0,
+    "error": 0.0
+  },
+  {
+    "family": "weibull",
+    "function": "d",
+    "parameters": [
+      1e+308,
+      1000.0
+    ],
+    "input": 1000.0,
+    "actual": 701.288453363184,
+    "expected": 701.288453363184,
+    "error": 0.0
+  },
+  {
+    "family": "weibull",
+    "function": "p",
+    "parameters": [
+      1e+308,
+      1000.0
+    ],
+    "input": 1000.0,
+    "actual": -1.0,
+    "expected": -1.0,
+    "error": 0.0
+  },
+  {
+    "family": "weibull",
+    "function": "d",
+    "parameters": [
+      1e+308,
+      1000.0
+    ],
+    "input": 1000.0000000000001,
+    "actual": -Infinity,
+    "expected": -Infinity,
+    "error": 0.0
+  },
+  {
+    "family": "weibull",
+    "function": "p",
+    "parameters": [
+      1e+308,
+      1000.0
+    ],
+    "input": 1000.0000000000001,
+    "actual": -Infinity,
+    "expected": -Infinity,
+    "error": 0.0
+  },
+  {
+    "family": "llogis",
+    "function": "d",
+    "parameters": [
+      100000000.0,
+      1000.0
+    ],
+    "input": 999.9999999999999,
+    "actual": 10.12663110385034,
+    "expected": 10.126631103850338,
+    "error": 1.7541439212936726e-16
+  },
+  {
+    "family": "llogis",
+    "function": "p",
+    "parameters": [
+      100000000.0,
+      1000.0
+    ],
+    "input": 999.9999999999999,
+    "actual": -0.6931471748756035,
+    "expected": -0.6931471748756034,
+    "error": 1.1102230246251565e-16
+  },
+  {
+    "family": "llogis",
+    "function": "d",
+    "parameters": [
+      100000000.0,
+      1000.0
+    ],
+    "input": 1000.0,
+    "actual": 10.12663110385034,
+    "expected": 10.126631103850338,
+    "error": 1.7541439212936726e-16
+  },
+  {
+    "family": "llogis",
+    "function": "p",
+    "parameters": [
+      100000000.0,
+      1000.0
+    ],
+    "input": 1000.0,
+    "actual": -0.6931471805599453,
+    "expected": -0.6931471805599453,
+    "error": 0.0
+  },
+  {
+    "family": "llogis",
+    "function": "d",
+    "parameters": [
+      100000000.0,
+      1000.0
+    ],
+    "input": 1000.0000000000001,
+    "actual": 10.12663110385034,
+    "expected": 10.126631103850338,
+    "error": 1.7541439212936726e-16
+  },
+  {
+    "family": "llogis",
+    "function": "p",
+    "parameters": [
+      100000000.0,
+      1000.0
+    ],
+    "input": 1000.0000000000001,
+    "actual": -0.6931471862442873,
+    "expected": -0.6931471862442872,
+    "error": 1.1102230246251565e-16
+  },
+  {
+    "family": "llogis",
+    "function": "d",
+    "parameters": [
+      100000000.0,
+      1000.0
+    ],
+    "input": 1000.000005,
+    "actual": 10.064771492225345,
+    "expected": 10.064771492225344,
+    "error": 1.7649251557995323e-16
+  },
+  {
+    "family": "llogis",
+    "function": "p",
+    "parameters": [
+      100000000.0,
+      1000.0
+    ],
+    "input": 1000.000005,
+    "actual": -0.9740769826162532,
+    "expected": -0.9740769826162532,
+    "error": 0.0
+  },
+  {
+    "family": "llogis",
+    "function": "d",
+    "parameters": [
+      1000000000000.0,
+      1000.0
+    ],
+    "input": 999.9999999999999,
+    "actual": 19.336971472595344,
+    "expected": 19.336971472595348,
+    "error": 1.8372647877334158e-16
+  },
+  {
+    "family": "llogis",
+    "function": "p",
+    "parameters": [
+      1000000000000.0,
+      1000.0
+    ],
+    "input": 999.9999999999999,
+    "actual": -0.6930903387566716,
+    "expected": -0.6930903387566716,
+    "error": 0.0
+  },
+  {
+    "family": "llogis",
+    "function": "d",
+    "parameters": [
+      1000000000000.0,
+      1000.0
+    ],
+    "input": 1000.0,
+    "actual": 19.336971475826523,
+    "expected": 19.33697147582652,
+    "error": 1.8372647874264123e-16
+  },
+  {
+    "family": "llogis",
+    "function": "p",
+    "parameters": [
+      1000000000000.0,
+      1000.0
+    ],
+    "input": 1000.0,
+    "actual": -0.6931471805599453,
+    "expected": -0.6931471805599453,
+    "error": 0.0
+  },
+  {
+    "family": "llogis",
+    "function": "d",
+    "parameters": [
+      1000000000000.0,
+      1000.0
+    ],
+    "input": 1000.0000000000001,
+    "actual": 19.336971472595344,
+    "expected": 19.336971472595348,
+    "error": 1.8372647877334158e-16
+  },
+  {
+    "family": "llogis",
+    "function": "p",
+    "parameters": [
+      1000000000000.0,
+      1000.0
+    ],
+    "input": 1000.0000000000001,
+    "actual": -0.6932040255943932,
+    "expected": -0.6932040255943932,
+    "error": 0.0
+  },
+  {
+    "family": "llogis",
+    "function": "d",
+    "parameters": [
+      1000000000000.0,
+      1000.0
+    ],
+    "input": 1000.0000000005,
+    "actual": 19.27511316363565,
+    "expected": 19.275113163635652,
+    "error": 1.8431609965865391e-16
+  },
+  {
+    "family": "llogis",
+    "function": "p",
+    "parameters": [
+      1000000000000.0,
+      1000.0
+    ],
+    "input": 1000.0000000005,
+    "actual": -0.9740736928049014,
+    "expected": -0.9740736928049015,
+    "error": 1.1102230246251565e-16
+  },
+  {
+    "family": "llogis",
+    "function": "d",
+    "parameters": [
+      1e+16,
+      1000.0
+    ],
+    "input": 999.9999999999999,
+    "actual": 28.240229073194797,
+    "expected": 28.24022907319479,
+    "error": 2.5160657653253136e-16
+  },
+  {
+    "family": "llogis",
+    "function": "p",
+    "parameters": [
+      1e+16,
+      1000.0
+    ],
+    "input": 999.9999999999999,
+    "actual": -0.2782543792558213,
+    "expected": -0.27825437925582125,
+    "error": 5.551115123125783e-17
+  },
+  {
+    "family": "llogis",
+    "function": "d",
+    "parameters": [
+      1e+16,
+      1000.0
+    ],
+    "input": 1000.0,
+    "actual": 28.54731184780271,
+    "expected": 28.547311847802703,
+    "error": 2.489000503964407e-16
+  },
+  {
+    "family": "llogis",
+    "function": "p",
+    "parameters": [
+      1e+16,
+      1000.0
+    ],
+    "input": 1000.0,
+    "actual": -0.6931471805599453,
+    "expected": -0.6931471805599453,
+    "error": 0.0
+  },
+  {
+    "family": "llogis",
+    "function": "d",
+    "parameters": [
+      1e+16,
+      1000.0
+    ],
+    "input": 1000.0000000000001,
+    "actual": 28.240229073194797,
+    "expected": 28.24022907319479,
+    "error": 2.5160657653253136e-16
+  },
+  {
+    "family": "llogis",
+    "function": "p",
+    "parameters": [
+      1e+16,
+      1000.0
+    ],
+    "input": 1000.0000000000001,
+    "actual": -1.4151227564719817,
+    "expected": -1.4151227564719815,
+    "error": 1.5690836989902343e-16
+  },
+  {
+    "family": "llogis",
+    "function": "d",
+    "parameters": [
+      1e+100,
+      1000.0
+    ],
+    "input": 999.9999999999999,
+    "actual": -1.1368683772161604e+84,
+    "expected": -1.1368683772161604e+84,
+    "error": 0.0
+  },
+  {
+    "family": "llogis",
+    "function": "p",
+    "parameters": [
+      1e+100,
+      1000.0
+    ],
+    "input": 999.9999999999999,
+    "actual": -0.0,
+    "expected": -0.0,
+    "error": 0.0
+  },
+  {
+    "family": "llogis",
+    "function": "d",
+    "parameters": [
+      1e+100,
+      1000.0
+    ],
+    "input": 1000.0,
+    "actual": 221.96445965930255,
+    "expected": 221.96445965930255,
+    "error": 0.0
+  },
+  {
+    "family": "llogis",
+    "function": "p",
+    "parameters": [
+      1e+100,
+      1000.0
+    ],
+    "input": 1000.0,
+    "actual": -0.6931471805599453,
+    "expected": -0.6931471805599453,
+    "error": 0.0
+  },
+  {
+    "family": "llogis",
+    "function": "d",
+    "parameters": [
+      1e+100,
+      1000.0
+    ],
+    "input": 1000.0000000000001,
+    "actual": -1.1368683772161604e+84,
+    "expected": -1.1368683772161602e+84,
+    "error": 1.8971375900641889e-16
+  },
+  {
+    "family": "llogis",
+    "function": "p",
+    "parameters": [
+      1e+100,
+      1000.0
+    ],
+    "input": 1000.0000000000001,
+    "actual": -1.1368683772161604e+84,
+    "expected": -1.1368683772161602e+84,
+    "error": 1.8971375900641889e-16
+  },
+  {
+    "family": "llogis",
+    "function": "d",
+    "parameters": [
+      1e+308,
+      1000.0
+    ],
+    "input": 999.9999999999999,
+    "actual": -1.1368683772161602e+292,
+    "expected": -1.1368683772161604e+292,
+    "error": 1.9490628022799996e-16
+  },
+  {
+    "family": "llogis",
+    "function": "p",
+    "parameters": [
+      1e+308,
+      1000.0
+    ],
+    "input": 999.9999999999999,
+    "actual": -0.0,
+    "expected": -0.0,
+    "error": 0.0
+  },
+  {
+    "family": "llogis",
+    "function": "d",
+    "parameters": [
+      1e+308,
+      1000.0
+    ],
+    "input": 1000.0,
+    "actual": 700.9021590020642,
+    "expected": 700.9021590020641,
+    "error": 1.6220072411173902e-16
+  },
+  {
+    "family": "llogis",
+    "function": "p",
+    "parameters": [
+      1e+308,
+      1000.0
+    ],
+    "input": 1000.0,
+    "actual": -0.6931471805599453,
+    "expected": -0.6931471805599453,
+    "error": 0.0
+  },
+  {
+    "family": "llogis",
+    "function": "d",
+    "parameters": [
+      1e+308,
+      1000.0
+    ],
+    "input": 1000.0000000000001,
+    "actual": -1.1368683772161602e+292,
+    "expected": -1.1368683772161602e+292,
+    "error": 0.0
+  },
+  {
+    "family": "llogis",
+    "function": "p",
+    "parameters": [
+      1e+308,
+      1000.0
+    ],
+    "input": 1000.0000000000001,
+    "actual": -1.1368683772161602e+292,
+    "expected": -1.1368683772161602e+292,
+    "error": 0.0
+  }
+]

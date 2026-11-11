@@ -72,3 +72,6 @@ def build(t):
     ref.normalization_integrand=lambda w: mp.exp(logdw(w))
     ref.normalization_domain=[-80,-20,0,20,80]
     return ref
+
+# Joint/finite-design limit stresses beyond the historical grid.
+extreme_parameter_sets = [{'Q': 1e-08}, {'Q': -1e-08}]

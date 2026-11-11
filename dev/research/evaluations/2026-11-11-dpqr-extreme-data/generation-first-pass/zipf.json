@@ -1,0 +1,33 @@
+{
+  "id": "zipf",
+  "before": {
+    "bytes": 41833,
+    "points": 7,
+    "values": 66,
+    "quantiles": 308
+  },
+  "after": {
+    "bytes": 54729,
+    "points": 9,
+    "values": 96,
+    "quantiles": 396
+  },
+  "records": [
+    {
+      "parameters": [
+        10.0,
+        1e-08
+      ],
+      "status": "generated",
+      "seconds": 0.053432995977345854
+    },
+    {
+      "parameters": [
+        10.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "seconds": 0.04386656696442515
+    }
+  ]
+}

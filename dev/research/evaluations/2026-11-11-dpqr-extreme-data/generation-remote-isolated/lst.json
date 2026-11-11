@@ -1,0 +1,101 @@
+{
+  "id": "lst",
+  "input_sha256": "d5815a054eeedf235f24fc4453426474305f81ea32868271d4522ac914e5c75e",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 79604,
+    "points": 9,
+    "values": 167,
+    "quantiles": 396
+  },
+  "after": {
+    "bytes": 122516,
+    "points": 14,
+    "values": 248,
+    "quantiles": 616
+  },
+  "records": [
+    {
+      "parameters": [
+        -1.0,
+        1.0,
+        5.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 2.5384166870003355
+    },
+    {
+      "parameters": [
+        1.0,
+        1.0,
+        5.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 2.4476654599998255
+    },
+    {
+      "parameters": [
+        0.0,
+        1e-08,
+        5.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 2.8079112870000245
+    },
+    {
+      "parameters": [
+        0.0,
+        100000000.0,
+        5.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 2.7461706090002735
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        5e-08
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 7.183819222000238
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        500000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms.",
+      "seconds": 10.54313879700021
+    },
+    {
+      "parameters": [
+        0.0,
+        1000.0,
+        500000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms.",
+      "seconds": 13.651791342000251
+    },
+    {
+      "parameters": [
+        -100000000.0,
+        100000000.0,
+        500000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "ValueError: \nhypercomb() failed to converge to the requested 555 bits of accuracy\nusing a working precision of 7345 bits. The function value may be zero or\ninfinite; try passing zeroprec=N or infprec=M to bound finite values between\n2^(-N) and 2^M. Otherwise try a higher maxprec or maxterms.\n",
+      "seconds": 2.3561964750001607
+    }
+  ]
+}

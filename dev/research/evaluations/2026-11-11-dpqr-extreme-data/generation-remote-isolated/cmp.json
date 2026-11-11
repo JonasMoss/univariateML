@@ -1,0 +1,39 @@
+{
+  "id": "cmp",
+  "input_sha256": "7b890d76d638b6de06cb3fac6c99848c69b57b8d0281d8e20c25155aa5007d82",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 269062,
+    "points": 11,
+    "values": 2082,
+    "quantiles": 484
+  },
+  "after": {
+    "bytes": 269062,
+    "points": 11,
+    "values": 2082,
+    "quantiles": 484
+  },
+  "records": [
+    {
+      "parameters": [
+        100000000.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: positive series did not reach certified remainder",
+      "seconds": 10.92834116999984
+    },
+    {
+      "parameters": [
+        1.0,
+        1e-08
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: positive series did not reach certified remainder",
+      "seconds": 14.554185996999877
+    }
+  ]
+}

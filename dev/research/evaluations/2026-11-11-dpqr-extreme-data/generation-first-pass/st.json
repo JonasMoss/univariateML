@@ -1,0 +1,124 @@
+{
+  "id": "st",
+  "before": {
+    "bytes": 71295,
+    "points": 8,
+    "values": 152,
+    "quantiles": 352
+  },
+  "after": {
+    "bytes": 99667,
+    "points": 11,
+    "values": 209,
+    "quantiles": 484
+  },
+  "records": [
+    {
+      "parameters": [
+        0.0,
+        1e-08,
+        0.0,
+        5.0
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: density/antiderivative derivative mismatch",
+      "seconds": 1.5517082019941881
+    },
+    {
+      "parameters": [
+        0.0,
+        100000000.0,
+        0.0,
+        5.0
+      ],
+      "status": "generated",
+      "seconds": 1.4765921470243484
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        0.0,
+        5e-08
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: normalization quadrature error estimate 0.0000000100000000000000000000000000000000000000000000000000000000000000000000000001",
+      "seconds": 8.173792443994898
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        0.0,
+        500000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms.",
+      "seconds": 7.875113382004201
+    },
+    {
+      "parameters": [
+        0.0,
+        1000.0,
+        0.0,
+        500000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms.",
+      "seconds": 7.830971587041859
+    },
+    {
+      "parameters": [
+        -100000000.0,
+        100000000.0,
+        0.0,
+        500000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms.",
+      "seconds": 7.888144639960956
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        100000000.0,
+        100000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms.",
+      "seconds": 6.0724684909801
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        -100000000.0,
+        100000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms.",
+      "seconds": 4.212490942969453
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        100000000.0,
+        5.0
+      ],
+      "status": "generated",
+      "seconds": 24.011516682978254
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        -100000000.0,
+        5.0
+      ],
+      "status": "generated",
+      "seconds": 19.927535610971972
+    }
+  ]
+}

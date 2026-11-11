@@ -14,26 +14,23 @@ inline double dinvtrgamma(double x, double shape1, double shape2, double scale, 
   if (!trgamma_valid(shape1, shape2, scale)) return std::numeric_limits<double>::quiet_NaN();
   if (std::isnan(x)) return x;
   if (!(x > 0.0) || !std::isfinite(x)) return log ? -std::numeric_limits<double>::infinity() : 0.0;
-  const double logu = shape2 * (std::log(scale) - std::log(x));
-  const double z = logu - std::log(shape1);
-  const double ld = std::log(shape2) + 0.5 * std::log(shape1) -
-      trgamma_detail::kHalfLog2Pi - trgamma_detail::stirling_remainder(shape1) -
-      shape1 * trgamma_detail::expm1_minus(z) - std::log(x);
+  const double ld=trgamma_power_logdensity(x,special::log_positive_ratio(scale,x),shape1,shape2);
   return log ? ld : std::exp(ld);
 }
 
 inline double pinvtrgamma(double q, double shape1, double shape2, double scale,
                           bool lower_tail, bool log_p) {
   if (!trgamma_valid(shape1,shape2,scale) || std::isnan(q)) return special::kNaN;
-  const double lu=q<=0.0 ? special::kPosInf : shape2*(std::log(scale)-std::log(q));
-  return special::tail_probability(special::gamma_log_tails(lu,shape1),!lower_tail,log_p);
+  const auto tails=q<=0?special::tails_from_log(special::kNegInf,false):
+    trgamma_power_tails(special::log_positive_ratio(scale,q),shape1,shape2);
+  return special::tail_probability(tails,!lower_tail,log_p);
 }
 
 inline double qinvtrgamma(double p, double shape1, double shape2, double scale,
                           bool lower_tail, bool log_p) {
   if (!trgamma_valid(shape1, shape2, scale)) return std::numeric_limits<double>::quiet_NaN();
-  const double logg = trgamma_gamma_logquantile(p, shape1, !lower_tail, log_p);
-  return std::exp(std::log(scale) - logg / shape2);
+  const double displacement=trgamma_power_logquantile(p,shape1,shape2,!lower_tail,log_p);
+  return std::exp(std::log(scale)-displacement);
 }
 
 template <typename Rng>

@@ -1,0 +1,21 @@
+{
+  "id": "kumar",
+  "input_sha256": "392338fe14d55afb275f85a21c7fc7b9c41510e7f4fb2e582fa75f13c2fdb4e0",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 89187,
+    "points": 11,
+    "values": 185,
+    "quantiles": 484
+  },
+  "after": {
+    "bytes": 89187,
+    "points": 11,
+    "values": 185,
+    "quantiles": 484
+  },
+  "records": [],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

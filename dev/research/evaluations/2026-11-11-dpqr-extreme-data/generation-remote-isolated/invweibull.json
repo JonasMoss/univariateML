@@ -1,0 +1,66 @@
+{
+  "id": "invweibull",
+  "input_sha256": "399c20dc19dbf6df3903791fe5da0cf221d665c7949de6b2430f42bbcae6e753",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 63389,
+    "points": 7,
+    "values": 143,
+    "quantiles": 308
+  },
+  "after": {
+    "bytes": 96208,
+    "points": 11,
+    "values": 212,
+    "quantiles": 484
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 2.33531508499982
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.7843358190002618
+    },
+    {
+      "parameters": [
+        1.0,
+        1e-08
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.7663245569997343
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.7402402890002122
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1000.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "seconds": 120.00257916400005
+    }
+  ]
+}

@@ -1,0 +1,80 @@
+{
+  "id": "gev",
+  "before": {
+    "bytes": 82502,
+    "points": 9,
+    "values": 180,
+    "quantiles": 396
+  },
+  "after": {
+    "bytes": 145405,
+    "points": 16,
+    "values": 315,
+    "quantiles": 704
+  },
+  "records": [
+    {
+      "parameters": [
+        -1.0,
+        1.0,
+        0.0
+      ],
+      "status": "generated",
+      "seconds": 0.6399890770553611
+    },
+    {
+      "parameters": [
+        1.0,
+        1.0,
+        0.0
+      ],
+      "status": "generated",
+      "seconds": 0.6345787819591351
+    },
+    {
+      "parameters": [
+        0.0,
+        1e-08,
+        0.0
+      ],
+      "status": "generated",
+      "seconds": 0.858274533005897
+    },
+    {
+      "parameters": [
+        0.0,
+        100000000.0,
+        0.0
+      ],
+      "status": "generated",
+      "seconds": 0.8363253240240738
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 1.5168202960048802
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        1e-12
+      ],
+      "status": "generated",
+      "seconds": 1.7555514729465358
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        -1e-12
+      ],
+      "status": "generated",
+      "seconds": 1.8818090669810772
+    }
+  ]
+}

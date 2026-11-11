@@ -1,0 +1,65 @@
+{
+  "id": "weibull",
+  "before": {
+    "bytes": 62473,
+    "points": 7,
+    "values": 145,
+    "quantiles": 308
+  },
+  "after": {
+    "bytes": 110424,
+    "points": 13,
+    "values": 246,
+    "quantiles": 572
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 0.041877183015458286
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 0.04184948495822027
+    },
+    {
+      "parameters": [
+        1.0,
+        1e-08
+      ],
+      "status": "generated",
+      "seconds": 0.04780869098613039
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "seconds": 0.04641015600645915
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1000.0
+      ],
+      "status": "generated",
+      "seconds": 0.03391013597138226
+    },
+    {
+      "parameters": [
+        1000000000000.0,
+        1000.0
+      ],
+      "status": "generated",
+      "seconds": 0.0339611450326629
+    }
+  ]
+}

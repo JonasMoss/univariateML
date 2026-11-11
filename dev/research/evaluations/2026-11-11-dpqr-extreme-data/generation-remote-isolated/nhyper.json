@@ -1,0 +1,31 @@
+{
+  "id": "nhyper",
+  "input_sha256": "8baff915d720ae21231f6c8efd0eaa952e9915e62940e7258a28a5e04b59ccae",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 42686,
+    "points": 7,
+    "values": 74,
+    "quantiles": 308
+  },
+  "after": {
+    "bytes": 42895,
+    "points": 7,
+    "values": 74,
+    "quantiles": 308
+  },
+  "records": [
+    {
+      "parameters": [
+        5.0,
+        100000000.0,
+        3.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "seconds": 120.05131149699992
+    }
+  ]
+}

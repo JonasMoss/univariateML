@@ -1,0 +1,42 @@
+{
+  "id": "zip",
+  "before": {
+    "bytes": 189093,
+    "points": 8,
+    "values": 1447,
+    "quantiles": 352
+  },
+  "after": {
+    "bytes": 240520,
+    "points": 10,
+    "values": 1859,
+    "quantiles": 440
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        0.5
+      ],
+      "status": "generated",
+      "seconds": 0.11461489700013772
+    },
+    {
+      "parameters": [
+        100000000.0,
+        0.5
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: positive series did not reach certified remainder",
+      "seconds": 12.816664155048784
+    },
+    {
+      "parameters": [
+        1.0,
+        5e-09
+      ],
+      "status": "generated",
+      "seconds": 0.136630472028628
+    }
+  ]
+}

@@ -1,0 +1,101 @@
+{
+  "id": "pareto3",
+  "input_sha256": "3f812692fbf68e0694fd3b95fe67cbe6665e974e37e344878f36dbbd35603cc0",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 61066,
+    "points": 7,
+    "values": 141,
+    "quantiles": 308
+  },
+  "after": {
+    "bytes": 127043,
+    "points": 15,
+    "values": 285,
+    "quantiles": 660
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0,
+        0.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 2.8498974780000026
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0,
+        0.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.2062993129998176
+    },
+    {
+      "parameters": [
+        1.0,
+        1e-08,
+        0.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.1671670109999468
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0,
+        0.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.1170709709999755
+    },
+    {
+      "parameters": [
+        1.0,
+        1.0,
+        -1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.2084970359996987
+    },
+    {
+      "parameters": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.2588485149999542
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1000.0,
+        0.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.29716568799995
+    },
+    {
+      "parameters": [
+        100000000.0,
+        100000000.0,
+        -100000000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.462840482000047
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "id": "gompertz",
+  "input_sha256": "9f04b1a5aca5fb899390a603fdbb83c6010e96d09c7644dda5b60e4cac3a97e0",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 53479,
+    "points": 6,
+    "values": 126,
+    "quantiles": 264
+  },
+  "after": {
+    "bytes": 89440,
+    "points": 10,
+    "values": 210,
+    "quantiles": 440
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.974227879999944
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.8666829879998659
+    },
+    {
+      "parameters": [
+        1.0,
+        1e-08
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.7922015700000884
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.832188364999638
+    }
+  ]
+}

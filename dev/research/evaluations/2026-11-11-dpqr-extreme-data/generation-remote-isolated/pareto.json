@@ -1,0 +1,57 @@
+{
+  "id": "pareto",
+  "input_sha256": "04071bc62531173b3d6745f7e8d3ce916bb13f890e64c17c49ee35b33398c1dc",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 43068,
+    "points": 5,
+    "values": 85,
+    "quantiles": 220
+  },
+  "after": {
+    "bytes": 67995,
+    "points": 8,
+    "values": 138,
+    "quantiles": 352
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: normalization quadrature error estimate 0.00000000001",
+      "seconds": 0.6909885800000666
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.9112140199999885
+    },
+    {
+      "parameters": [
+        1.0,
+        1e-08
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.1290502649999326
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.0939631379997081
+    }
+  ]
+}

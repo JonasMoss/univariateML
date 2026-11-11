@@ -1,0 +1,2901 @@
+{
+  "baseline": "bcea25d29800d4ddf058182c1749584b704cba3b",
+  "historical_prefix_verified": true,
+  "families": [
+    {
+      "family": "bbinom",
+      "before": {
+        "bytes": 52564,
+        "points": 8,
+        "values": 116,
+        "quantiles": 352
+      },
+      "after": {
+        "bytes": 93271,
+        "points": 14,
+        "values": 212,
+        "quantiles": 616
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": []
+    },
+    {
+      "family": "beta",
+      "before": {
+        "bytes": 58974,
+        "points": 7,
+        "values": 129,
+        "quantiles": 308
+      },
+      "after": {
+        "bytes": 89256,
+        "points": 11,
+        "values": 185,
+        "quantiles": 484
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": [
+        {
+          "parameters": [
+            100000000.0,
+            100000000.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        }
+      ]
+    },
+    {
+      "family": "betapr",
+      "before": {
+        "bytes": 80743,
+        "points": 9,
+        "values": 183,
+        "quantiles": 396
+      },
+      "after": {
+        "bytes": 166178,
+        "points": 19,
+        "values": 370,
+        "quantiles": 836
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": [
+        {
+          "parameters": [
+            100000000.0,
+            100000000.0,
+            1.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        }
+      ]
+    },
+    {
+      "family": "bhatt",
+      "before": {
+        "bytes": 87744,
+        "points": 10,
+        "values": 190,
+        "quantiles": 440
+      },
+      "after": {
+        "bytes": 140618,
+        "points": 16,
+        "values": 304,
+        "quantiles": 704
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": []
+    },
+    {
+      "family": "binom",
+      "before": {
+        "bytes": 44759,
+        "points": 7,
+        "values": 100,
+        "quantiles": 308
+      },
+      "after": {
+        "bytes": 51799,
+        "points": 8,
+        "values": 116,
+        "quantiles": 352
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": [
+        {
+          "parameters": [
+            100000000.0,
+            1e-08
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        }
+      ]
+    },
+    {
+      "family": "bnbinom",
+      "before": {
+        "bytes": 266131,
+        "points": 9,
+        "values": 1897,
+        "quantiles": 396
+      },
+      "after": {
+        "bytes": 473166,
+        "points": 16,
+        "values": 3370,
+        "quantiles": 704
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": [
+        {
+          "parameters": [
+            100000000.0,
+            1e+16,
+            100000000.0
+          ],
+          "reason": "ArithmeticError: beta-mixture remainder"
+        }
+      ]
+    },
+    {
+      "family": "burr",
+      "before": {
+        "bytes": 78891,
+        "points": 9,
+        "values": 181,
+        "quantiles": 396
+      },
+      "after": {
+        "bytes": 127427,
+        "points": 15,
+        "values": 278,
+        "quantiles": 660
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": [
+        {
+          "parameters": [
+            1e-08,
+            1.0,
+            1.0
+          ],
+          "reason": "ArithmeticError: normalization quadrature error estimate 0.00000000001"
+        },
+        {
+          "parameters": [
+            1.0,
+            100000000.0,
+            1.0
+          ],
+          "reason": "MemoryError: reference exceeded the recorded address-space limit"
+        },
+        {
+          "parameters": [
+            1.0,
+            100000000.0,
+            1000.0
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        },
+        {
+          "parameters": [
+            1.0,
+            100000000.0,
+            100000000.0
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        }
+      ]
+    },
+    {
+      "family": "cauchy",
+      "before": {
+        "bytes": 52758,
+        "points": 6,
+        "values": 114,
+        "quantiles": 264
+      },
+      "after": {
+        "bytes": 70692,
+        "points": 8,
+        "values": 152,
+        "quantiles": 352
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": []
+    },
+    {
+      "family": "cmb",
+      "before": {
+        "bytes": 84908,
+        "points": 11,
+        "values": 354,
+        "quantiles": 484
+      },
+      "after": {
+        "bytes": 112347,
+        "points": 15,
+        "values": 418,
+        "quantiles": 660
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": [
+        {
+          "parameters": [
+            10000.0,
+            0.0001,
+            1.0
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        }
+      ]
+    },
+    {
+      "family": "cmp",
+      "before": {
+        "bytes": 217757,
+        "points": 9,
+        "values": 1670,
+        "quantiles": 396
+      },
+      "after": {
+        "bytes": 269288,
+        "points": 11,
+        "values": 2082,
+        "quantiles": 484
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": [
+        {
+          "parameters": [
+            100000000.0,
+            1.0
+          ],
+          "reason": "ArithmeticError: positive series did not reach certified remainder"
+        },
+        {
+          "parameters": [
+            1.0,
+            1e-08
+          ],
+          "reason": "ArithmeticError: positive series did not reach certified remainder"
+        }
+      ]
+    },
+    {
+      "family": "dgamma",
+      "before": {
+        "bytes": 196777,
+        "points": 7,
+        "values": 1456,
+        "quantiles": 308
+      },
+      "after": {
+        "bytes": 277369,
+        "points": 10,
+        "values": 2086,
+        "quantiles": 440
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": [
+        {
+          "parameters": [
+            100000000.0,
+            1.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        }
+      ]
+    },
+    {
+      "family": "dlaplace",
+      "before": {
+        "bytes": 145262,
+        "points": 5,
+        "values": 1049,
+        "quantiles": 220
+      },
+      "after": {
+        "bytes": 172165,
+        "points": 6,
+        "values": 1254,
+        "quantiles": 264
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": [
+        {
+          "parameters": [
+            0.0,
+            0.9999999999999999
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        }
+      ]
+    },
+    {
+      "family": "dnorm",
+      "before": {
+        "bytes": 157534,
+        "points": 6,
+        "values": 1236,
+        "quantiles": 264
+      },
+      "after": {
+        "bytes": 179587,
+        "points": 7,
+        "values": 1441,
+        "quantiles": 308
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": [
+        {
+          "parameters": [
+            0.0,
+            100000000.0
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        }
+      ]
+    },
+    {
+      "family": "dunif",
+      "before": {
+        "bytes": 24243,
+        "points": 4,
+        "values": 38,
+        "quantiles": 176
+      },
+      "after": {
+        "bytes": 86368,
+        "points": 6,
+        "values": 462,
+        "quantiles": 264
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": []
+    },
+    {
+      "family": "dweibull",
+      "before": {
+        "bytes": 193376,
+        "points": 7,
+        "values": 1456,
+        "quantiles": 308
+      },
+      "after": {
+        "bytes": 279710,
+        "points": 10,
+        "values": 2086,
+        "quantiles": 440
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": [
+        {
+          "parameters": [
+            0.5,
+            100000000.0
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        }
+      ]
+    },
+    {
+      "family": "emg",
+      "before": {
+        "bytes": 70792,
+        "points": 8,
+        "values": 152,
+        "quantiles": 352
+      },
+      "after": {
+        "bytes": 106647,
+        "points": 12,
+        "values": 228,
+        "quantiles": 528
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": []
+    },
+    {
+      "family": "exp",
+      "before": {
+        "bytes": 35887,
+        "points": 4,
+        "values": 84,
+        "quantiles": 176
+      },
+      "after": {
+        "bytes": 53993,
+        "points": 6,
+        "values": 126,
+        "quantiles": 264
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": []
+    },
+    {
+      "family": "expweibull",
+      "before": {
+        "bytes": 102756,
+        "points": 12,
+        "values": 228,
+        "quantiles": 528
+      },
+      "after": {
+        "bytes": 170332,
+        "points": 20,
+        "values": 371,
+        "quantiles": 880
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": []
+    },
+    {
+      "family": "fatigue",
+      "before": {
+        "bytes": 63278,
+        "points": 7,
+        "values": 147,
+        "quantiles": 308
+      },
+      "after": {
+        "bytes": 153986,
+        "points": 17,
+        "values": 350,
+        "quantiles": 748
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": []
+    },
+    {
+      "family": "foldnorm",
+      "before": {
+        "bytes": 71845,
+        "points": 8,
+        "values": 168,
+        "quantiles": 352
+      },
+      "after": {
+        "bytes": 107939,
+        "points": 12,
+        "values": 252,
+        "quantiles": 528
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": []
+    },
+    {
+      "family": "fpareto",
+      "before": {
+        "bytes": 61067,
+        "points": 7,
+        "values": 133,
+        "quantiles": 308
+      },
+      "after": {
+        "bytes": 226447,
+        "points": 26,
+        "values": 491,
+        "quantiles": 1144
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": [
+        {
+          "parameters": [
+            100000000.0,
+            0.0001414213562373095,
+            100000000.0,
+            1.0,
+            0.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        }
+      ]
+    },
+    {
+      "family": "frechet",
+      "before": {
+        "bytes": 64330,
+        "points": 7,
+        "values": 143,
+        "quantiles": 308
+      },
+      "after": {
+        "bytes": 115094,
+        "points": 13,
+        "values": 250,
+        "quantiles": 572
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": [
+        {
+          "parameters": [
+            100000000.0,
+            0.0,
+            1000.0
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        },
+        {
+          "parameters": [
+            100000000.0,
+            -100000000.0,
+            100000000.0
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        }
+      ]
+    },
+    {
+      "family": "gamma",
+      "before": {
+        "bytes": 62789,
+        "points": 7,
+        "values": 145,
+        "quantiles": 308
+      },
+      "after": {
+        "bytes": 81671,
+        "points": 9,
+        "values": 187,
+        "quantiles": 396
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": [
+        {
+          "parameters": [
+            1e-08,
+            1.0
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        },
+        {
+          "parameters": [
+            100000000.0,
+            1.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        },
+        {
+          "parameters": [
+            100000000.0,
+            1000.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        },
+        {
+          "parameters": [
+            100000000.0,
+            1e-08
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        }
+      ]
+    },
+    {
+      "family": "gb2",
+      "before": {
+        "bytes": 77845,
+        "points": 9,
+        "values": 169,
+        "quantiles": 396
+      },
+      "after": {
+        "bytes": 217001,
+        "points": 25,
+        "values": 471,
+        "quantiles": 1100
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": [
+        {
+          "parameters": [
+            100000000.0,
+            0.0001414213562373095,
+            100000000.0,
+            1.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        }
+      ]
+    },
+    {
+      "family": "ged",
+      "before": {
+        "bytes": 79616,
+        "points": 9,
+        "values": 171,
+        "quantiles": 396
+      },
+      "after": {
+        "bytes": 116396,
+        "points": 13,
+        "values": 247,
+        "quantiles": 572
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": [
+        {
+          "parameters": [
+            0.0,
+            1.0,
+            2e-08
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        },
+        {
+          "parameters": [
+            0.0,
+            1.0,
+            200000000.0
+          ],
+          "reason": "MemoryError: reference exceeded the recorded address-space limit"
+        },
+        {
+          "parameters": [
+            0.0,
+            1000.0,
+            200000000.0
+          ],
+          "reason": "MemoryError: reference exceeded the recorded address-space limit"
+        },
+        {
+          "parameters": [
+            -100000000.0,
+            100000000.0,
+            200000000.0
+          ],
+          "reason": "MemoryError: reference exceeded the recorded address-space limit"
+        }
+      ]
+    },
+    {
+      "family": "genbeta",
+      "before": {
+        "bytes": 70485,
+        "points": 9,
+        "values": 139,
+        "quantiles": 396
+      },
+      "after": {
+        "bytes": 150141,
+        "points": 19,
+        "values": 298,
+        "quantiles": 836
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": []
+    },
+    {
+      "family": "gengamma",
+      "before": {
+        "bytes": 117396,
+        "points": 13,
+        "values": 267,
+        "quantiles": 572
+      },
+      "after": {
+        "bytes": 136016,
+        "points": 15,
+        "values": 307,
+        "quantiles": 660
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": [
+        {
+          "parameters": [
+            -1.0,
+            1.0,
+            0.0
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        },
+        {
+          "parameters": [
+            1.0,
+            1.0,
+            0.0
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        },
+        {
+          "parameters": [
+            0.0,
+            1e-08,
+            0.0
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        },
+        {
+          "parameters": [
+            0.0,
+            100000000.0,
+            0.0
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        }
+      ]
+    },
+    {
+      "family": "geom",
+      "before": {
+        "bytes": 119274,
+        "points": 5,
+        "values": 838,
+        "quantiles": 220
+      },
+      "after": {
+        "bytes": 119593,
+        "points": 5,
+        "values": 838,
+        "quantiles": 220
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": [
+        {
+          "parameters": [
+            5e-09
+          ],
+          "reason": "ArithmeticError: positive series did not reach certified remainder"
+        }
+      ]
+    },
+    {
+      "family": "gev",
+      "before": {
+        "bytes": 82502,
+        "points": 9,
+        "values": 180,
+        "quantiles": 396
+      },
+      "after": {
+        "bytes": 145916,
+        "points": 16,
+        "values": 315,
+        "quantiles": 704
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": []
+    },
+    {
+      "family": "gompertz",
+      "before": {
+        "bytes": 53479,
+        "points": 6,
+        "values": 126,
+        "quantiles": 264
+      },
+      "after": {
+        "bytes": 89603,
+        "points": 10,
+        "values": 210,
+        "quantiles": 440
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": []
+    },
+    {
+      "family": "gpd",
+      "before": {
+        "bytes": 79181,
+        "points": 9,
+        "values": 186,
+        "quantiles": 396
+      },
+      "after": {
+        "bytes": 123727,
+        "points": 14,
+        "values": 289,
+        "quantiles": 616
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": []
+    },
+    {
+      "family": "gumbel",
+      "before": {
+        "bytes": 62219,
+        "points": 7,
+        "values": 133,
+        "quantiles": 308
+      },
+      "after": {
+        "bytes": 98224,
+        "points": 11,
+        "values": 209,
+        "quantiles": 484
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": []
+    },
+    {
+      "family": "hcauchy",
+      "before": {
+        "bytes": 36224,
+        "points": 4,
+        "values": 84,
+        "quantiles": 176
+      },
+      "after": {
+        "bytes": 71125,
+        "points": 8,
+        "values": 162,
+        "quantiles": 352
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": []
+    },
+    {
+      "family": "hnorm",
+      "before": {
+        "bytes": 45395,
+        "points": 5,
+        "values": 93,
+        "quantiles": 220
+      },
+      "after": {
+        "bytes": 80615,
+        "points": 9,
+        "values": 171,
+        "quantiles": 396
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": []
+    },
+    {
+      "family": "ht",
+      "before": {
+        "bytes": 63664,
+        "points": 7,
+        "values": 145,
+        "quantiles": 308
+      },
+      "after": {
+        "bytes": 100212,
+        "points": 11,
+        "values": 223,
+        "quantiles": 484
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": [
+        {
+          "parameters": [
+            0.0,
+            5e-08,
+            1.0
+          ],
+          "reason": "ArithmeticError: normalization quadrature error estimate 0.0000000001"
+        },
+        {
+          "parameters": [
+            0.0,
+            500000000.0,
+            1.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        },
+        {
+          "parameters": [
+            0.0,
+            500000000.0,
+            1000.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        },
+        {
+          "parameters": [
+            -100000000.0,
+            500000000.0,
+            100000000.0
+          ],
+          "reason": "ValueError: \nhypercomb() failed to converge to the requested 555 bits of accuracy\nusing a working precision of 7345 bits. The function value may be zero or\ninfinite; try passing zeroprec=N or infprec=M to bound finite values between\n2^(-N) and 2^M. Otherwise try a higher maxprec or maxterms.\n"
+        }
+      ]
+    },
+    {
+      "family": "huber",
+      "before": {
+        "bytes": 53213,
+        "points": 6,
+        "values": 114,
+        "quantiles": 264
+      },
+      "after": {
+        "bytes": 98000,
+        "points": 11,
+        "values": 209,
+        "quantiles": 484
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": []
+    },
+    {
+      "family": "hyper",
+      "before": {
+        "bytes": 39461,
+        "points": 7,
+        "values": 47,
+        "quantiles": 308
+      },
+      "after": {
+        "bytes": 45728,
+        "points": 8,
+        "values": 58,
+        "quantiles": 352
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": []
+    },
+    {
+      "family": "invburr",
+      "before": {
+        "bytes": 78805,
+        "points": 9,
+        "values": 181,
+        "quantiles": 396
+      },
+      "after": {
+        "bytes": 135313,
+        "points": 16,
+        "values": 298,
+        "quantiles": 704
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": [
+        {
+          "parameters": [
+            1e-08,
+            1.0,
+            1.0
+          ],
+          "reason": "ArithmeticError: normalization quadrature error estimate 0.00000000001"
+        },
+        {
+          "parameters": [
+            1.0,
+            100000000.0,
+            1000.0
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        },
+        {
+          "parameters": [
+            1.0,
+            100000000.0,
+            1e-08
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        }
+      ]
+    },
+    {
+      "family": "invexp",
+      "before": {
+        "bytes": 35923,
+        "points": 4,
+        "values": 82,
+        "quantiles": 176
+      },
+      "after": {
+        "bytes": 53866,
+        "points": 6,
+        "values": 124,
+        "quantiles": 264
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": []
+    },
+    {
+      "family": "invgamma",
+      "before": {
+        "bytes": 62931,
+        "points": 7,
+        "values": 143,
+        "quantiles": 308
+      },
+      "after": {
+        "bytes": 81697,
+        "points": 9,
+        "values": 185,
+        "quantiles": 396
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": [
+        {
+          "parameters": [
+            1e-08,
+            1.0
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        },
+        {
+          "parameters": [
+            100000000.0,
+            1.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        },
+        {
+          "parameters": [
+            100000000.0,
+            1000.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        },
+        {
+          "parameters": [
+            100000000.0,
+            100000000.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        }
+      ]
+    },
+    {
+      "family": "invgauss",
+      "before": {
+        "bytes": 63618,
+        "points": 7,
+        "values": 147,
+        "quantiles": 308
+      },
+      "after": {
+        "bytes": 100504,
+        "points": 11,
+        "values": 231,
+        "quantiles": 484
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": []
+    },
+    {
+      "family": "invparalogis",
+      "before": {
+        "bytes": 51461,
+        "points": 6,
+        "values": 117,
+        "quantiles": 264
+      },
+      "after": {
+        "bytes": 78220,
+        "points": 9,
+        "values": 180,
+        "quantiles": 396
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": [
+        {
+          "parameters": [
+            1e-08,
+            1.0
+          ],
+          "reason": "ArithmeticError: normalization quadrature error estimate 0.00000000001"
+        },
+        {
+          "parameters": [
+            100000000.0,
+            1000.0
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        }
+      ]
+    },
+    {
+      "family": "invpareto",
+      "before": {
+        "bytes": 61642,
+        "points": 7,
+        "values": 143,
+        "quantiles": 308
+      },
+      "after": {
+        "bytes": 96863,
+        "points": 11,
+        "values": 226,
+        "quantiles": 484
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": [
+        {
+          "parameters": [
+            1e-08,
+            1.0
+          ],
+          "reason": "ArithmeticError: normalization quadrature error estimate 0.00000000001"
+        }
+      ]
+    },
+    {
+      "family": "invtrgamma",
+      "before": {
+        "bytes": 81383,
+        "points": 9,
+        "values": 185,
+        "quantiles": 396
+      },
+      "after": {
+        "bytes": 109709,
+        "points": 13,
+        "values": 245,
+        "quantiles": 540
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": [
+        {
+          "parameters": [
+            1e-08,
+            1.0,
+            1.0
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        },
+        {
+          "parameters": [
+            100000000.0,
+            1.0,
+            1.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        },
+        {
+          "parameters": [
+            1.0,
+            100000000.0,
+            1.0
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        },
+        {
+          "parameters": [
+            100000000.0,
+            1.0,
+            1000.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        },
+        {
+          "parameters": [
+            1.0,
+            100000000.0,
+            1000.0
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        },
+        {
+          "parameters": [
+            1e-08,
+            100000000.0,
+            1.0
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        }
+      ]
+    },
+    {
+      "family": "invweibull",
+      "before": {
+        "bytes": 63389,
+        "points": 7,
+        "values": 143,
+        "quantiles": 308
+      },
+      "after": {
+        "bytes": 96392,
+        "points": 11,
+        "values": 212,
+        "quantiles": 484
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": [
+        {
+          "parameters": [
+            100000000.0,
+            1000.0
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        }
+      ]
+    },
+    {
+      "family": "kumar",
+      "before": {
+        "bytes": 59026,
+        "points": 7,
+        "values": 129,
+        "quantiles": 308
+      },
+      "after": {
+        "bytes": 89187,
+        "points": 11,
+        "values": 185,
+        "quantiles": 484
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": []
+    },
+    {
+      "family": "laplace",
+      "before": {
+        "bytes": 52852,
+        "points": 6,
+        "values": 114,
+        "quantiles": 264
+      },
+      "after": {
+        "bytes": 71002,
+        "points": 8,
+        "values": 152,
+        "quantiles": 352
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": []
+    },
+    {
+      "family": "lgamma",
+      "before": {
+        "bytes": 58849,
+        "points": 7,
+        "values": 126,
+        "quantiles": 308
+      },
+      "after": {
+        "bytes": 67758,
+        "points": 8,
+        "values": 143,
+        "quantiles": 352
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": [
+        {
+          "parameters": [
+            1e-08,
+            1.0
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        },
+        {
+          "parameters": [
+            100000000.0,
+            1.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        },
+        {
+          "parameters": [
+            1.0,
+            1e-08
+          ],
+          "reason": "ArithmeticError: normalization quadrature error estimate 0.00000000001"
+        }
+      ]
+    },
+    {
+      "family": "lgser",
+      "before": {
+        "bytes": 143974,
+        "points": 5,
+        "values": 1047,
+        "quantiles": 220
+      },
+      "after": {
+        "bytes": 170252,
+        "points": 6,
+        "values": 1253,
+        "quantiles": 264
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": [
+        {
+          "parameters": [
+            0.9999999999999999
+          ],
+          "reason": "ArithmeticError: positive series did not reach certified remainder"
+        }
+      ]
+    },
+    {
+      "family": "llogis",
+      "before": {
+        "bytes": 59697,
+        "points": 7,
+        "values": 139,
+        "quantiles": 308
+      },
+      "after": {
+        "bytes": 109472,
+        "points": 13,
+        "values": 251,
+        "quantiles": 572
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": []
+    },
+    {
+      "family": "lnorm",
+      "before": {
+        "bytes": 54824,
+        "points": 6,
+        "values": 126,
+        "quantiles": 264
+      },
+      "after": {
+        "bytes": 69831,
+        "points": 8,
+        "values": 154,
+        "quantiles": 352
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": []
+    },
+    {
+      "family": "logis",
+      "before": {
+        "bytes": 52680,
+        "points": 6,
+        "values": 114,
+        "quantiles": 264
+      },
+      "after": {
+        "bytes": 70754,
+        "points": 8,
+        "values": 152,
+        "quantiles": 352
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": []
+    },
+    {
+      "family": "logitnorm",
+      "before": {
+        "bytes": 59663,
+        "points": 7,
+        "values": 128,
+        "quantiles": 308
+      },
+      "after": {
+        "bytes": 92528,
+        "points": 11,
+        "values": 197,
+        "quantiles": 484
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": []
+    },
+    {
+      "family": "lomax",
+      "before": {
+        "bytes": 61127,
+        "points": 7,
+        "values": 143,
+        "quantiles": 308
+      },
+      "after": {
+        "bytes": 97088,
+        "points": 11,
+        "values": 227,
+        "quantiles": 484
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": [
+        {
+          "parameters": [
+            1.0,
+            1e-08
+          ],
+          "reason": "ArithmeticError: normalization quadrature error estimate 0.00000000001"
+        }
+      ]
+    },
+    {
+      "family": "lst",
+      "before": {
+        "bytes": 79604,
+        "points": 9,
+        "values": 167,
+        "quantiles": 396
+      },
+      "after": {
+        "bytes": 122742,
+        "points": 14,
+        "values": 248,
+        "quantiles": 616
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": [
+        {
+          "parameters": [
+            0.0,
+            1.0,
+            500000000.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        },
+        {
+          "parameters": [
+            0.0,
+            1000.0,
+            500000000.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        },
+        {
+          "parameters": [
+            -100000000.0,
+            100000000.0,
+            500000000.0
+          ],
+          "reason": "ValueError: \nhypercomb() failed to converge to the requested 555 bits of accuracy\nusing a working precision of 7345 bits. The function value may be zero or\ninfinite; try passing zeroprec=N or infprec=M to bound finite values between\n2^(-N) and 2^M. Otherwise try a higher maxprec or maxterms.\n"
+        }
+      ]
+    },
+    {
+      "family": "naka",
+      "before": {
+        "bytes": 63060,
+        "points": 7,
+        "values": 146,
+        "quantiles": 308
+      },
+      "after": {
+        "bytes": 81809,
+        "points": 9,
+        "values": 188,
+        "quantiles": 396
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": [
+        {
+          "parameters": [
+            1e-08,
+            1.0
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        },
+        {
+          "parameters": [
+            100000000.0,
+            1.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        },
+        {
+          "parameters": [
+            100000000.0,
+            1000.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        }
+      ]
+    },
+    {
+      "family": "nbinom",
+      "before": {
+        "bytes": 213725,
+        "points": 9,
+        "values": 1479,
+        "quantiles": 396
+      },
+      "after": {
+        "bytes": 272136,
+        "points": 11,
+        "values": 1893,
+        "quantiles": 484
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": [
+        {
+          "parameters": [
+            100000000.0,
+            0.5
+          ],
+          "reason": "ArithmeticError: positive series did not reach certified remainder"
+        },
+        {
+          "parameters": [
+            1.0,
+            5e-09
+          ],
+          "reason": "ArithmeticError: positive series did not reach certified remainder"
+        }
+      ]
+    },
+    {
+      "family": "nhyper",
+      "before": {
+        "bytes": 42686,
+        "points": 7,
+        "values": 74,
+        "quantiles": 308
+      },
+      "after": {
+        "bytes": 43079,
+        "points": 7,
+        "values": 74,
+        "quantiles": 308
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": [
+        {
+          "parameters": [
+            5.0,
+            100000000.0,
+            3.0
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        }
+      ]
+    },
+    {
+      "family": "norm",
+      "before": {
+        "bytes": 53012,
+        "points": 6,
+        "values": 114,
+        "quantiles": 264
+      },
+      "after": {
+        "bytes": 71262,
+        "points": 8,
+        "values": 152,
+        "quantiles": 352
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": []
+    },
+    {
+      "family": "nsbeta",
+      "before": {
+        "bytes": 59166,
+        "points": 7,
+        "values": 129,
+        "quantiles": 308
+      },
+      "after": {
+        "bytes": 120054,
+        "points": 15,
+        "values": 241,
+        "quantiles": 660
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": []
+    },
+    {
+      "family": "paralogis",
+      "before": {
+        "bytes": 51533,
+        "points": 6,
+        "values": 117,
+        "quantiles": 264
+      },
+      "after": {
+        "bytes": 78343,
+        "points": 9,
+        "values": 180,
+        "quantiles": 396
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": [
+        {
+          "parameters": [
+            1e-08,
+            1.0
+          ],
+          "reason": "ArithmeticError: normalization quadrature error estimate 0.00000000001"
+        },
+        {
+          "parameters": [
+            100000000.0,
+            1000.0
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        }
+      ]
+    },
+    {
+      "family": "pareto",
+      "before": {
+        "bytes": 43068,
+        "points": 5,
+        "values": 85,
+        "quantiles": 220
+      },
+      "after": {
+        "bytes": 68137,
+        "points": 8,
+        "values": 138,
+        "quantiles": 352
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": [
+        {
+          "parameters": [
+            1e-08,
+            1.0
+          ],
+          "reason": "ArithmeticError: normalization quadrature error estimate 0.00000000001"
+        }
+      ]
+    },
+    {
+      "family": "pareto2",
+      "before": {
+        "bytes": 61010,
+        "points": 7,
+        "values": 138,
+        "quantiles": 308
+      },
+      "after": {
+        "bytes": 130525,
+        "points": 15,
+        "values": 292,
+        "quantiles": 660
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": [
+        {
+          "parameters": [
+            1e-08,
+            1.0,
+            0.0
+          ],
+          "reason": "ArithmeticError: normalization quadrature error estimate 0.00000000001"
+        }
+      ]
+    },
+    {
+      "family": "pareto3",
+      "before": {
+        "bytes": 61066,
+        "points": 7,
+        "values": 141,
+        "quantiles": 308
+      },
+      "after": {
+        "bytes": 127227,
+        "points": 15,
+        "values": 285,
+        "quantiles": 660
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": []
+    },
+    {
+      "family": "pareto4",
+      "before": {
+        "bytes": 76360,
+        "points": 9,
+        "values": 162,
+        "quantiles": 396
+      },
+      "after": {
+        "bytes": 152349,
+        "points": 18,
+        "values": 323,
+        "quantiles": 792
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": [
+        {
+          "parameters": [
+            1e-08,
+            1.0,
+            1.0,
+            0.0
+          ],
+          "reason": "ArithmeticError: normalization quadrature error estimate 0.00000000001"
+        },
+        {
+          "parameters": [
+            1.0,
+            100000000.0,
+            1000.0,
+            0.0
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        }
+      ]
+    },
+    {
+      "family": "pig",
+      "before": {
+        "bytes": 204997,
+        "points": 8,
+        "values": 1465,
+        "quantiles": 352
+      },
+      "after": {
+        "bytes": 205841,
+        "points": 8,
+        "values": 1465,
+        "quantiles": 352
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": [
+        {
+          "parameters": [
+            1e-08,
+            1.0
+          ],
+          "reason": "MemoryError: reference exceeded the recorded address-space limit"
+        },
+        {
+          "parameters": [
+            100000000.0,
+            1.0
+          ],
+          "reason": "ArithmeticError: PIG integral remainder"
+        },
+        {
+          "parameters": [
+            1.0,
+            1e-08
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        },
+        {
+          "parameters": [
+            1.0,
+            100000000.0
+          ],
+          "reason": "MemoryError: reference exceeded the recorded address-space limit"
+        }
+      ]
+    },
+    {
+      "family": "pois",
+      "before": {
+        "bytes": 137953,
+        "points": 6,
+        "values": 1035,
+        "quantiles": 264
+      },
+      "after": {
+        "bytes": 164084,
+        "points": 7,
+        "values": 1241,
+        "quantiles": 308
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": [
+        {
+          "parameters": [
+            100000000.0
+          ],
+          "reason": "ArithmeticError: positive series did not reach certified remainder"
+        }
+      ]
+    },
+    {
+      "family": "power",
+      "before": {
+        "bytes": 43182,
+        "points": 5,
+        "values": 88,
+        "quantiles": 220
+      },
+      "after": {
+        "bytes": 67828,
+        "points": 8,
+        "values": 141,
+        "quantiles": 352
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": [
+        {
+          "parameters": [
+            1.0,
+            1e-08
+          ],
+          "reason": "ArithmeticError: normalization quadrature error estimate 0.00000000001"
+        }
+      ]
+    },
+    {
+      "family": "rayleigh",
+      "before": {
+        "bytes": 45446,
+        "points": 5,
+        "values": 105,
+        "quantiles": 220
+      },
+      "after": {
+        "bytes": 63935,
+        "points": 7,
+        "values": 147,
+        "quantiles": 308
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": []
+    },
+    {
+      "family": "sged",
+      "before": {
+        "bytes": 80319,
+        "points": 9,
+        "values": 171,
+        "quantiles": 396
+      },
+      "after": {
+        "bytes": 163043,
+        "points": 18,
+        "values": 340,
+        "quantiles": 792
+      },
+      "excluded_values": 2,
+      "excluded_quantiles": 0,
+      "oracle_gaps": [
+        {
+          "parameters": [
+            0.0,
+            1.0,
+            2e-08,
+            1.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        },
+        {
+          "parameters": [
+            0.0,
+            1.0,
+            200000000.0,
+            1.0
+          ],
+          "reason": "MemoryError: reference exceeded the recorded address-space limit"
+        },
+        {
+          "parameters": [
+            0.0,
+            1000.0,
+            200000000.0,
+            1.0
+          ],
+          "reason": "MemoryError: reference exceeded the recorded address-space limit"
+        },
+        {
+          "parameters": [
+            -100000000.0,
+            100000000.0,
+            200000000.0,
+            1.0
+          ],
+          "reason": "MemoryError: reference exceeded the recorded address-space limit"
+        },
+        {
+          "parameters": [
+            0.0,
+            1.0,
+            100000000.0,
+            100000000.0
+          ],
+          "reason": "MemoryError: reference exceeded the recorded address-space limit"
+        },
+        {
+          "parameters": [
+            0.0,
+            1.0,
+            100000000.0,
+            1e-08
+          ],
+          "reason": "MemoryError: reference exceeded the recorded address-space limit"
+        }
+      ]
+    },
+    {
+      "family": "sgomp",
+      "before": {
+        "bytes": 71733,
+        "points": 8,
+        "values": 168,
+        "quantiles": 352
+      },
+      "after": {
+        "bytes": 108227,
+        "points": 12,
+        "values": 252,
+        "quantiles": 528
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": []
+    },
+    {
+      "family": "skellam",
+      "before": {
+        "bytes": 245529,
+        "points": 10,
+        "values": 1771,
+        "quantiles": 440
+      },
+      "after": {
+        "bytes": 302305,
+        "points": 12,
+        "values": 2183,
+        "quantiles": 528
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": [
+        {
+          "parameters": [
+            100000000.0,
+            1.0
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        },
+        {
+          "parameters": [
+            1.0,
+            100000000.0
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        }
+      ]
+    },
+    {
+      "family": "slash",
+      "before": {
+        "bytes": 53258,
+        "points": 6,
+        "values": 114,
+        "quantiles": 264
+      },
+      "after": {
+        "bytes": 71345,
+        "points": 8,
+        "values": 152,
+        "quantiles": 352
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": []
+    },
+    {
+      "family": "sn",
+      "before": {
+        "bytes": 79563,
+        "points": 9,
+        "values": 171,
+        "quantiles": 396
+      },
+      "after": {
+        "bytes": 124832,
+        "points": 14,
+        "values": 266,
+        "quantiles": 616
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": [
+        {
+          "parameters": [
+            0.0,
+            1e-08,
+            0.0
+          ],
+          "reason": "ArithmeticError: density/antiderivative derivative mismatch"
+        },
+        {
+          "parameters": [
+            0.0,
+            1.0,
+            -1.0
+          ],
+          "reason": "ArithmeticError: Gaussian quantile convergence"
+        },
+        {
+          "parameters": [
+            0.0,
+            1.0,
+            1.0
+          ],
+          "reason": "ArithmeticError: Gaussian quantile convergence"
+        }
+      ]
+    },
+    {
+      "family": "snorm",
+      "before": {
+        "bytes": 80197,
+        "points": 9,
+        "values": 171,
+        "quantiles": 396
+      },
+      "after": {
+        "bytes": 134273,
+        "points": 15,
+        "values": 285,
+        "quantiles": 660
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": []
+    },
+    {
+      "family": "sstd",
+      "before": {
+        "bytes": 80895,
+        "points": 9,
+        "values": 171,
+        "quantiles": 396
+      },
+      "after": {
+        "bytes": 164007,
+        "points": 18,
+        "values": 342,
+        "quantiles": 792
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": [
+        {
+          "parameters": [
+            0.0,
+            1.0,
+            500000000.0,
+            1.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        },
+        {
+          "parameters": [
+            0.0,
+            1000.0,
+            500000000.0,
+            1.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        },
+        {
+          "parameters": [
+            -100000000.0,
+            100000000.0,
+            500000000.0,
+            1.0
+          ],
+          "reason": "ValueError: \nhypercomb() failed to converge to the requested 555 bits of accuracy\nusing a working precision of 7345 bits. The function value may be zero or\ninfinite; try passing zeroprec=N or infprec=M to bound finite values between\n2^(-N) and 2^M. Otherwise try a higher maxprec or maxterms.\n"
+        },
+        {
+          "parameters": [
+            0.0,
+            1.0,
+            100000000.0,
+            100000000.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        },
+        {
+          "parameters": [
+            0.0,
+            1.0,
+            100000000.0,
+            1e-08
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        }
+      ]
+    },
+    {
+      "family": "st",
+      "before": {
+        "bytes": 71295,
+        "points": 8,
+        "values": 152,
+        "quantiles": 352
+      },
+      "after": {
+        "bytes": 100206,
+        "points": 11,
+        "values": 209,
+        "quantiles": 484
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": [
+        {
+          "parameters": [
+            0.0,
+            1e-08,
+            0.0,
+            5.0
+          ],
+          "reason": "ArithmeticError: density/antiderivative derivative mismatch"
+        },
+        {
+          "parameters": [
+            0.0,
+            1.0,
+            0.0,
+            5e-08
+          ],
+          "reason": "ArithmeticError: normalization quadrature error estimate 0.000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001"
+        },
+        {
+          "parameters": [
+            0.0,
+            1.0,
+            0.0,
+            500000000.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        },
+        {
+          "parameters": [
+            0.0,
+            1000.0,
+            0.0,
+            500000000.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        },
+        {
+          "parameters": [
+            -100000000.0,
+            100000000.0,
+            0.0,
+            500000000.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        },
+        {
+          "parameters": [
+            0.0,
+            1.0,
+            100000000.0,
+            100000000.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        },
+        {
+          "parameters": [
+            0.0,
+            1.0,
+            -100000000.0,
+            100000000.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        }
+      ]
+    },
+    {
+      "family": "std",
+      "before": {
+        "bytes": 80153,
+        "points": 9,
+        "values": 171,
+        "quantiles": 396
+      },
+      "after": {
+        "bytes": 135414,
+        "points": 15,
+        "values": 285,
+        "quantiles": 660
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": [
+        {
+          "parameters": [
+            0.0,
+            1.0,
+            500000000.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        },
+        {
+          "parameters": [
+            0.0,
+            1000.0,
+            500000000.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        },
+        {
+          "parameters": [
+            -100000000.0,
+            100000000.0,
+            500000000.0
+          ],
+          "reason": "ValueError: \nhypercomb() failed to converge to the requested 555 bits of accuracy\nusing a working precision of 7345 bits. The function value may be zero or\ninfinite; try passing zeroprec=N or infprec=M to bound finite values between\n2^(-N) and 2^M. Otherwise try a higher maxprec or maxterms.\n"
+        }
+      ]
+    },
+    {
+      "family": "tbinom",
+      "before": {
+        "bytes": 60003,
+        "points": 8,
+        "values": 110,
+        "quantiles": 352
+      },
+      "after": {
+        "bytes": 79135,
+        "points": 11,
+        "values": 147,
+        "quantiles": 484
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": []
+    },
+    {
+      "family": "tlambda",
+      "before": {
+        "bytes": 72057,
+        "points": 8,
+        "values": 152,
+        "quantiles": 352
+      },
+      "after": {
+        "bytes": 114020,
+        "points": 13,
+        "values": 241,
+        "quantiles": 572
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": [
+        {
+          "parameters": [
+            0.0,
+            1e-08,
+            0.0
+          ],
+          "reason": "ArithmeticError: density/antiderivative derivative mismatch"
+        }
+      ]
+    },
+    {
+      "family": "tnorm",
+      "before": {
+        "bytes": 53164,
+        "points": 6,
+        "values": 114,
+        "quantiles": 264
+      },
+      "after": {
+        "bytes": 79989,
+        "points": 9,
+        "values": 170,
+        "quantiles": 396
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": [
+        {
+          "parameters": [
+            -1e+16,
+            100000000.0,
+            0.0,
+            "Inf"
+          ],
+          "reason": "ArithmeticError: normalization failed at {'mean': -1e+16, 'sd': 100000000.0, 'a': 0, 'b': inf}: +inf"
+        },
+        {
+          "parameters": [
+            1e+16,
+            100000000.0,
+            "-Inf",
+            0.0
+          ],
+          "reason": "ArithmeticError: normalization failed at {'mean': 1e+16, 'sd': 100000000.0, 'a': -inf, 'b': 0}: +inf"
+        },
+        {
+          "parameters": [
+            1e+16,
+            100000000.0,
+            0.0,
+            1.0
+          ],
+          "reason": "ArithmeticError: normalization failed at {'mean': 1e+16, 'sd': 100000000.0, 'a': 0, 'b': 1}: +inf"
+        }
+      ]
+    },
+    {
+      "family": "tpois",
+      "before": {
+        "bytes": 47579,
+        "points": 6,
+        "values": 79,
+        "quantiles": 264
+      },
+      "after": {
+        "bytes": 60995,
+        "points": 8,
+        "values": 109,
+        "quantiles": 352
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": []
+    },
+    {
+      "family": "trgamma",
+      "before": {
+        "bytes": 80799,
+        "points": 9,
+        "values": 187,
+        "quantiles": 396
+      },
+      "after": {
+        "bytes": 109368,
+        "points": 13,
+        "values": 247,
+        "quantiles": 540
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": [
+        {
+          "parameters": [
+            1e-08,
+            1.0,
+            1.0
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        },
+        {
+          "parameters": [
+            100000000.0,
+            1.0,
+            1.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        },
+        {
+          "parameters": [
+            1.0,
+            100000000.0,
+            1.0
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        },
+        {
+          "parameters": [
+            100000000.0,
+            1.0,
+            1000.0
+          ],
+          "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms."
+        },
+        {
+          "parameters": [
+            1.0,
+            100000000.0,
+            1000.0
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        },
+        {
+          "parameters": [
+            1e-08,
+            100000000.0,
+            1.0
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        }
+      ]
+    },
+    {
+      "family": "triang",
+      "before": {
+        "bytes": 61372,
+        "points": 7,
+        "values": 123,
+        "quantiles": 308
+      },
+      "after": {
+        "bytes": 102177,
+        "points": 12,
+        "values": 201,
+        "quantiles": 528
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": []
+    },
+    {
+      "family": "unif",
+      "before": {
+        "bytes": 16831,
+        "points": 2,
+        "values": 33,
+        "quantiles": 88
+      },
+      "after": {
+        "bytes": 47293,
+        "points": 6,
+        "values": 89,
+        "quantiles": 264
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": []
+    },
+    {
+      "family": "weibull",
+      "before": {
+        "bytes": 62473,
+        "points": 7,
+        "values": 145,
+        "quantiles": 308
+      },
+      "after": {
+        "bytes": 121509,
+        "points": 13,
+        "values": 269,
+        "quantiles": 620
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": []
+    },
+    {
+      "family": "yulesimon",
+      "before": {
+        "bytes": 147811,
+        "points": 5,
+        "values": 1051,
+        "quantiles": 220
+      },
+      "after": {
+        "bytes": 174239,
+        "points": 6,
+        "values": 1257,
+        "quantiles": 264
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": [
+        {
+          "parameters": [
+            1e-08
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        }
+      ]
+    },
+    {
+      "family": "zeta",
+      "before": {
+        "bytes": 118218,
+        "points": 4,
+        "values": 842,
+        "quantiles": 176
+      },
+      "after": {
+        "bytes": 172159,
+        "points": 6,
+        "values": 1254,
+        "quantiles": 264
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": []
+    },
+    {
+      "family": "zib",
+      "before": {
+        "bytes": 76449,
+        "points": 12,
+        "values": 168,
+        "quantiles": 528
+      },
+      "after": {
+        "bytes": 90440,
+        "points": 14,
+        "values": 200,
+        "quantiles": 616
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": [
+        {
+          "parameters": [
+            100000000.0,
+            1e-08,
+            0.5
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        }
+      ]
+    },
+    {
+      "family": "zinb",
+      "before": {
+        "bytes": 304251,
+        "points": 13,
+        "values": 2095,
+        "quantiles": 572
+      },
+      "after": {
+        "bytes": 392441,
+        "points": 16,
+        "values": 2717,
+        "quantiles": 704
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": [
+        {
+          "parameters": [
+            100000000.0,
+            0.5,
+            0.5
+          ],
+          "reason": "ArithmeticError: positive series did not reach certified remainder"
+        },
+        {
+          "parameters": [
+            1.0,
+            5e-09,
+            0.5
+          ],
+          "reason": "ArithmeticError: positive series did not reach certified remainder"
+        }
+      ]
+    },
+    {
+      "family": "zip",
+      "before": {
+        "bytes": 189093,
+        "points": 8,
+        "values": 1447,
+        "quantiles": 352
+      },
+      "after": {
+        "bytes": 243755,
+        "points": 10,
+        "values": 1859,
+        "quantiles": 440
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": [
+        {
+          "parameters": [
+            100000000.0,
+            0.5
+          ],
+          "reason": "ArithmeticError: positive series did not reach certified remainder"
+        }
+      ]
+    },
+    {
+      "family": "zipf",
+      "before": {
+        "bytes": 41833,
+        "points": 7,
+        "values": 66,
+        "quantiles": 308
+      },
+      "after": {
+        "bytes": 54913,
+        "points": 9,
+        "values": 96,
+        "quantiles": 396
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": []
+    },
+    {
+      "family": "zmbinom",
+      "before": {
+        "bytes": 76887,
+        "points": 12,
+        "values": 171,
+        "quantiles": 528
+      },
+      "after": {
+        "bytes": 90850,
+        "points": 14,
+        "values": 203,
+        "quantiles": 616
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": [
+        {
+          "parameters": [
+            100000000.0,
+            1e-08,
+            0.5
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        }
+      ]
+    },
+    {
+      "family": "zmgeom",
+      "before": {
+        "bytes": 240855,
+        "points": 10,
+        "values": 1677,
+        "quantiles": 440
+      },
+      "after": {
+        "bytes": 270675,
+        "points": 11,
+        "values": 1885,
+        "quantiles": 484
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": [
+        {
+          "parameters": [
+            5e-09,
+            0.5
+          ],
+          "reason": "ArithmeticError: positive series did not reach certified remainder"
+        }
+      ]
+    },
+    {
+      "family": "zmlogarithmic",
+      "before": {
+        "bytes": 240950,
+        "points": 10,
+        "values": 1676,
+        "quantiles": 440
+      },
+      "after": {
+        "bytes": 296909,
+        "points": 12,
+        "values": 2090,
+        "quantiles": 528
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": [
+        {
+          "parameters": [
+            0.9999999999999999,
+            0.5
+          ],
+          "reason": "ArithmeticError: positive series did not reach certified remainder"
+        }
+      ]
+    },
+    {
+      "family": "zmnbinom",
+      "before": {
+        "bytes": 328522,
+        "points": 13,
+        "values": 2302,
+        "quantiles": 572
+      },
+      "after": {
+        "bytes": 416706,
+        "points": 16,
+        "values": 2924,
+        "quantiles": 704
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": [
+        {
+          "parameters": [
+            100000000.0,
+            0.5,
+            0.5
+          ],
+          "reason": "ArithmeticError: positive series did not reach certified remainder"
+        },
+        {
+          "parameters": [
+            1.0,
+            5e-09,
+            0.5
+          ],
+          "reason": "ArithmeticError: positive series did not reach certified remainder"
+        }
+      ]
+    },
+    {
+      "family": "zmpois",
+      "before": {
+        "bytes": 222489,
+        "points": 10,
+        "values": 1660,
+        "quantiles": 440
+      },
+      "after": {
+        "bytes": 277699,
+        "points": 12,
+        "values": 2072,
+        "quantiles": 528
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": [
+        {
+          "parameters": [
+            100000000.0,
+            0.5
+          ],
+          "reason": "ArithmeticError: positive series did not reach certified remainder"
+        }
+      ]
+    },
+    {
+      "family": "ztbinom",
+      "before": {
+        "bytes": 49776,
+        "points": 8,
+        "values": 101,
+        "quantiles": 352
+      },
+      "after": {
+        "bytes": 56761,
+        "points": 9,
+        "values": 116,
+        "quantiles": 396
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": [
+        {
+          "parameters": [
+            100000000.0,
+            1e-08
+          ],
+          "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+        }
+      ]
+    },
+    {
+      "family": "ztgeom",
+      "before": {
+        "bytes": 148369,
+        "points": 6,
+        "values": 1046,
+        "quantiles": 264
+      },
+      "after": {
+        "bytes": 148709,
+        "points": 6,
+        "values": 1046,
+        "quantiles": 264
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": [
+        {
+          "parameters": [
+            5e-09
+          ],
+          "reason": "ArithmeticError: positive series did not reach certified remainder"
+        }
+      ]
+    },
+    {
+      "family": "ztnbinom",
+      "before": {
+        "bytes": 235682,
+        "points": 9,
+        "values": 1671,
+        "quantiles": 396
+      },
+      "after": {
+        "bytes": 294105,
+        "points": 11,
+        "values": 2085,
+        "quantiles": 484
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": [
+        {
+          "parameters": [
+            100000000.0,
+            0.5
+          ],
+          "reason": "ArithmeticError: positive series did not reach certified remainder"
+        },
+        {
+          "parameters": [
+            1.0,
+            5e-09
+          ],
+          "reason": "ArithmeticError: positive series did not reach certified remainder"
+        }
+      ]
+    },
+    {
+      "family": "ztpois",
+      "before": {
+        "bytes": 138318,
+        "points": 6,
+        "values": 1035,
+        "quantiles": 264
+      },
+      "after": {
+        "bytes": 164518,
+        "points": 7,
+        "values": 1241,
+        "quantiles": 308
+      },
+      "excluded_values": 0,
+      "excluded_quantiles": 0,
+      "oracle_gaps": [
+        {
+          "parameters": [
+            100000000.0
+          ],
+          "reason": "ArithmeticError: positive series did not reach certified remainder"
+        }
+      ]
+    }
+  ]
+}

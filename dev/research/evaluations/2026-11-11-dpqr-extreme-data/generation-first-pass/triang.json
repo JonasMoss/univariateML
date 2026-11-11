@@ -1,0 +1,62 @@
+{
+  "id": "triang",
+  "before": {
+    "bytes": 61372,
+    "points": 7,
+    "values": 123,
+    "quantiles": 308
+  },
+  "after": {
+    "bytes": 101829,
+    "points": 12,
+    "values": 201,
+    "quantiles": 528
+  },
+  "records": [
+    {
+      "parameters": [
+        -1.0,
+        1.0,
+        0.5
+      ],
+      "status": "generated",
+      "seconds": 3.1399233740521595
+    },
+    {
+      "parameters": [
+        0.9999999999999999,
+        1.0000000000000002,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 5.28013305098284
+    },
+    {
+      "parameters": [
+        0.0,
+        1e-08,
+        1e-08
+      ],
+      "status": "generated",
+      "seconds": 3.5710035689990036
+    },
+    {
+      "parameters": [
+        0.0,
+        100000000.0,
+        0.5
+      ],
+      "status": "generated",
+      "seconds": 3.1319630360230803
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        5e-09
+      ],
+      "status": "generated",
+      "seconds": 2.8836759499972686
+    }
+  ]
+}

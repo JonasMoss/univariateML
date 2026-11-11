@@ -18,3 +18,7 @@ For $x>0$, the CDF is $[1-\exp\{-(x/a)^b\}]^c$.
 distinguishes the CDF power from the Weibull shape. The scalar C++ order is
 `scale`, `shape`, `exponent`. Setting `exponent = 1` gives Weibull.
 Only d/p/q/r are available; the fitter is pending TASK-180.
+
+### Exact-ratio power evaluation
+
+When an FMA verifies that x/scale is exactly representable, the probability kernel evaluates its power directly. This removes an intermediate rounded logarithm and product whose error in the Weibull hazard is amplified by a large CDF exponent.

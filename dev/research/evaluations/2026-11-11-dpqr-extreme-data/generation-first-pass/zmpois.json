@@ -1,0 +1,42 @@
+{
+  "id": "zmpois",
+  "before": {
+    "bytes": 222489,
+    "points": 10,
+    "values": 1660,
+    "quantiles": 440
+  },
+  "after": {
+    "bytes": 274433,
+    "points": 12,
+    "values": 2072,
+    "quantiles": 528
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        0.5
+      ],
+      "status": "generated",
+      "seconds": 0.12523066898575053
+    },
+    {
+      "parameters": [
+        100000000.0,
+        0.5
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: positive series did not reach certified remainder",
+      "seconds": 15.701442744990345
+    },
+    {
+      "parameters": [
+        1.0,
+        5e-09
+      ],
+      "status": "generated",
+      "seconds": 0.1621562970103696
+    }
+  ]
+}

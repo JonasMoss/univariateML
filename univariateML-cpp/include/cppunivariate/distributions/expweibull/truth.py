@@ -26,6 +26,10 @@ def build(t, declarative):
             # Relative correction O(h^2) < 1e-70, below the harness
             # verification tolerance and binary64 table precision.
             return mp.log(b*c)-mp.log(x)+b*c*mp.log(x/a)-(c+1)*h/2
+        if h > max(200,mp.log(c)+200):
+            # The omitted density correction has magnitude < exp(-200).
+            # Avoid constructing exp(-h) when its integer exponent is enormous.
+            return mp.log(b*c)-mp.log(x)+mp.log(h)-h
         if h > 1:
             return mp.log(b*c)-mp.log(x)+mp.log(h)-h+(c-1)*mp.log1p(-mp.exp(-h))
         return declarative(x)

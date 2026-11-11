@@ -1,0 +1,37 @@
+{
+  "id": "invexp",
+  "input_sha256": "9a6879b4d01fb901faf5a118445296e2cb052dde8c2d8226ec785c3a0f106702",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 35923,
+    "points": 4,
+    "values": 82,
+    "quantiles": 176
+  },
+  "after": {
+    "bytes": 53745,
+    "points": 6,
+    "values": 124,
+    "quantiles": 264
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.8032194809998146
+    },
+    {
+      "parameters": [
+        100000000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.7115012300000672
+    }
+  ]
+}

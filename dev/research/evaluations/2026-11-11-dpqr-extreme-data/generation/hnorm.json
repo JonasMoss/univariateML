@@ -1,0 +1,21 @@
+{
+  "id": "hnorm",
+  "input_sha256": "62e987f4b8e42501f37d5f156e41070c980e12d60e0547752959a02721f1ef54",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 80615,
+    "points": 9,
+    "values": 171,
+    "quantiles": 396
+  },
+  "after": {
+    "bytes": 80615,
+    "points": 9,
+    "values": 171,
+    "quantiles": 396
+  },
+  "records": [],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

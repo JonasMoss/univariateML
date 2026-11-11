@@ -1,0 +1,39 @@
+{
+  "id": "dnorm",
+  "input_sha256": "585b351bf1ab98405706cabfc52e6be4e4044d637cb90cf1b29ff810ef6e0504",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 157534,
+    "points": 6,
+    "values": 1236,
+    "quantiles": 264
+  },
+  "after": {
+    "bytes": 179424,
+    "points": 7,
+    "values": 1441,
+    "quantiles": 308
+  },
+  "records": [
+    {
+      "parameters": [
+        0.0,
+        1e-08
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.10690473700014991
+    },
+    {
+      "parameters": [
+        0.0,
+        100000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "seconds": 120.00008207399969
+    }
+  ]
+}

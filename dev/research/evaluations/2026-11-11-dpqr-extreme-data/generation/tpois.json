@@ -1,0 +1,21 @@
+{
+  "id": "tpois",
+  "input_sha256": "40dcd274f1aa2448589e6c17955936de8b8e4859a052c0786a72fface5348234",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 60995,
+    "points": 8,
+    "values": 109,
+    "quantiles": 352
+  },
+  "after": {
+    "bytes": 60995,
+    "points": 8,
+    "values": 109,
+    "quantiles": 352
+  },
+  "records": [],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

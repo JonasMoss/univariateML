@@ -1,0 +1,32 @@
+{
+  "id": "nhyper",
+  "input_sha256": "6be2e31c74606fd59d4dae05e6af89449468a93a1cae7f4d775f4b7f2a9ebabe",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 43079,
+    "points": 7,
+    "values": 74,
+    "quantiles": 308
+  },
+  "after": {
+    "bytes": 43079,
+    "points": 7,
+    "values": 74,
+    "quantiles": 308
+  },
+  "records": [
+    {
+      "parameters": [
+        5.0,
+        100000000.0,
+        3.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "seconds": 120.04781085200011
+    }
+  ],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

@@ -1,0 +1,66 @@
+{
+  "id": "invpareto",
+  "input_sha256": "9d273c638c7bb2db0ea5982e507f0d129d6e09fec7534e2789c2a8748f3ae3ce",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 61642,
+    "points": 7,
+    "values": 143,
+    "quantiles": 308
+  },
+  "after": {
+    "bytes": 96679,
+    "points": 11,
+    "values": 226,
+    "quantiles": 484
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: normalization quadrature error estimate 0.00000000001",
+      "seconds": 0.8030754469996282
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.9037832509998225
+    },
+    {
+      "parameters": [
+        1.0,
+        1e-08
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.144220174000111
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.1112732679998771
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.9563265150000007
+    }
+  ]
+}

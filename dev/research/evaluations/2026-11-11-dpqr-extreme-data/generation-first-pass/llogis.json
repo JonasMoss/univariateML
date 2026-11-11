@@ -1,0 +1,65 @@
+{
+  "id": "llogis",
+  "before": {
+    "bytes": 59697,
+    "points": 7,
+    "values": 139,
+    "quantiles": 308
+  },
+  "after": {
+    "bytes": 109127,
+    "points": 13,
+    "values": 251,
+    "quantiles": 572
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 0.046324483992066234
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 0.03941012901486829
+    },
+    {
+      "parameters": [
+        1.0,
+        1e-08
+      ],
+      "status": "generated",
+      "seconds": 0.08652896399144083
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "seconds": 0.08343025599606335
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1000.0
+      ],
+      "status": "generated",
+      "seconds": 0.038668761029839516
+    },
+    {
+      "parameters": [
+        1000000000000.0,
+        1000.0
+      ],
+      "status": "generated",
+      "seconds": 0.03866075398400426
+    }
+  ]
+}

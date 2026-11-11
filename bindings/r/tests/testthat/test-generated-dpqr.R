@@ -46,6 +46,13 @@ test_that("generated d/p/q/r agree with independent truth tables", {
     fun <- lapply(paste0(c("d", "p", "q", "r"), id), get, envir = ns, inherits = FALSE)
     points <- if (tier_at_least("full")) seq_len(nrow(parameters)) else
       pick(nrow(parameters), if (tier_at_least("dev")) 3L else 1L)
+    # TASK-189 adds d/p/q stresses. Preserve every historical sampler case
+    # and its primitive RNG stream without expanding sampling into this grid.
+    historical <- if (is.null(truth$historical_sampler_points)) seq_len(nrow(parameters)) else
+      as.integer(unlist(truth$historical_sampler_points)) + 1L
+    sampled <- if (tier_at_least("full")) historical else
+      historical[pick(length(historical), if (tier_at_least("dev")) 3L else 1L)]
+    points <- sort(unique(c(points, sampled)))
     for (point in points) {
       theta <- setNames(as.list(parameters[point, ]), unlist(truth$parameter_names))
       v <- values[values[, 1] == point - 1L, , drop = FALSE]
@@ -94,6 +101,7 @@ test_that("generated d/p/q/r agree with independent truth tables", {
           expect_true(all(good), info = paste(info, "quantile", lower, log_input))
         }
       }
+      if (!point %in% sampled) next
       # These two inverse samplers consume exactly one uniform per draw.
       # Replay it to check every draw against the direct quantile.
       inverse_rng <- id %in% c("zeta", "yulesimon")

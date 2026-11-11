@@ -1,0 +1,104 @@
+{
+  "id": "trgamma",
+  "before": {
+    "bytes": 80799,
+    "points": 9,
+    "values": 187,
+    "quantiles": 396
+  },
+  "after": {
+    "bytes": 105606,
+    "points": 12,
+    "values": 235,
+    "quantiles": 528
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 30 seconds per point",
+      "seconds": 30.00028094998561
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms.",
+      "seconds": 0.03971945698140189
+    },
+    {
+      "parameters": [
+        1.0,
+        1e-08,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 2.5344827490043826
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 30 seconds per point",
+      "seconds": 30.000061249011196
+    },
+    {
+      "parameters": [
+        1.0,
+        1.0,
+        1e-08
+      ],
+      "status": "generated",
+      "seconds": 0.7561380959814414
+    },
+    {
+      "parameters": [
+        1.0,
+        1.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "seconds": 0.7528520379564725
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0,
+        1000.0
+      ],
+      "status": "oracle gap",
+      "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms.",
+      "seconds": 0.07963707501767203
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0,
+        1000.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 30 seconds per point",
+      "seconds": 30.000084587023593
+    },
+    {
+      "parameters": [
+        1e-08,
+        100000000.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 30 seconds per point",
+      "seconds": 30.000104832986835
+    }
+  ]
+}

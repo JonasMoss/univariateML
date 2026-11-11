@@ -1,0 +1,31 @@
+{
+  "id": "cmb",
+  "input_sha256": "5eeee1f63394713d60bae8d364f988df7c2fa123c77df6751f6ed3d834474d1d",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 112080,
+    "points": 15,
+    "values": 418,
+    "quantiles": 660
+  },
+  "after": {
+    "bytes": 112080,
+    "points": 15,
+    "values": 418,
+    "quantiles": 660
+  },
+  "records": [
+    {
+      "parameters": [
+        10000.0,
+        0.0001,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "seconds": 120.00675323799987
+    }
+  ]
+}

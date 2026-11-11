@@ -26,37 +26,73 @@ inline double trgamma_gamma_logquantile(double p, double a, bool lower_tail, boo
   return special::gamma_log_quantile(p,a,lower_tail,log_p);
 }
 
+// Integrating exp(-u) between exp(-u) and one bounds the leading
+// small-Gamma CDF's relative error by u. Preserve a*c when c*log(x/s)
+// overflows, and require this remainder to resolve the smaller tail.
+inline special::LogTails trgamma_power_tails(double lr,double a,double c) {
+  const double lu=c*lr;
+  if(a<1 && std::isfinite(lr)) {
+    const double normalizer=special::lgamma1p(a);
+    const double lp=std::isfinite(lu)?std::fma(a,lu,-normalizer):(a*c)*lr-normalizer;
+    if(lp<0 && lu<std::log(1e-12)+std::min(0.0,std::log(-lp)))
+      return special::tails_from_log(lp,true);
+  }
+  return special::gamma_log_tails(lu,a);
+}
+inline double trgamma_power_logquantile(double p,double a,double c,bool lower,bool log_p) {
+  const auto tails=special::quantile_log_tails(p,lower,log_p);
+  if(!tails.valid) return special::kNaN;
+  if(a<1 && std::isfinite(tails.lower)) {
+    const double numerator=tails.lower+special::lgamma1p(a);
+    // The unit-Gamma log quantile lies below -DBL_MAX. Its neglected
+    // exp(log u) remainder is smaller than every representable margin.
+    if(numerator < -std::numeric_limits<double>::max()*a)
+      return numerator/(a*c);
+  }
+  return trgamma_gamma_logquantile(p,a,lower,log_p)/c;
+}
+inline double trgamma_power_logdensity(double x,double lr,double a,double c) {
+  const double lu=c*lr;
+  if(a<1) {
+    if(lu==special::kPosInf) return special::kNegInf;
+    const double product=a*c;
+    const double logproduct=product>0?std::log(product):std::log(a)+std::log(c);
+    const double power=std::isfinite(lu)?a*lu:product*lr;
+    return logproduct-std::log(x)+power-std::exp(lu)-special::lgamma1p(a);
+  }
+  const double z=lu-std::log(a);
+  return std::log(c)+.5*std::log(a)-trgamma_detail::kHalfLog2Pi
+      -trgamma_detail::stirling_remainder(a)-a*trgamma_detail::expm1_minus(z)-std::log(x);
+}
+
 inline double dtrgamma(double x, double shape1, double shape2, double scale, bool log) {
   if (!trgamma_valid(shape1, shape2, scale)) return std::numeric_limits<double>::quiet_NaN();
   if (std::isnan(x)) return x;
   if (!(x >= 0.0) || !std::isfinite(x)) return log ? -std::numeric_limits<double>::infinity() : 0.0;
   if (x == 0.0) {
-    const double power = shape1 * shape2;
-    if (power < 1.0) return std::numeric_limits<double>::infinity();
-    if (power > 1.0) return log ? -std::numeric_limits<double>::infinity() : 0.0;
+    const double difference = std::fma(shape1,shape2,-1.0);
+    if (difference < 0.0) return std::numeric_limits<double>::infinity();
+    if (difference > 0.0) return log ? -std::numeric_limits<double>::infinity() : 0.0;
     const double ld = std::log(shape2) - std::log(scale) - std::lgamma(shape1);
     return log ? ld : std::exp(ld);
   }
-  const double logu = shape2 * (std::log(x) - std::log(scale));
-  const double z = logu - std::log(shape1);
-  const double ld = std::log(shape2) + 0.5 * std::log(shape1) -
-      trgamma_detail::kHalfLog2Pi - trgamma_detail::stirling_remainder(shape1) -
-      shape1 * trgamma_detail::expm1_minus(z) - std::log(x);
+  const double ld=trgamma_power_logdensity(x,special::log_positive_ratio(x,scale),shape1,shape2);
   return log ? ld : std::exp(ld);
 }
 
 inline double ptrgamma(double q, double shape1, double shape2, double scale, bool lower_tail,
                        bool log_p) {
   if (!trgamma_valid(shape1,shape2,scale) || std::isnan(q)) return special::kNaN;
-  const double lu=q<=0.0 ? special::kNegInf : shape2*(std::log(q)-std::log(scale));
-  return special::tail_probability(special::gamma_log_tails(lu,shape1),lower_tail,log_p);
+  const auto tails=q<=0?special::tails_from_log(special::kNegInf,true):
+    trgamma_power_tails(special::log_positive_ratio(q,scale),shape1,shape2);
+  return special::tail_probability(tails,lower_tail,log_p);
 }
 
 inline double qtrgamma(double p, double shape1, double shape2, double scale, bool lower_tail,
                        bool log_p) {
   if (!trgamma_valid(shape1, shape2, scale)) return std::numeric_limits<double>::quiet_NaN();
-  const double logg = trgamma_gamma_logquantile(p, shape1, lower_tail, log_p);
-  return std::exp(std::log(scale) + logg / shape2);
+  const double displacement=trgamma_power_logquantile(p,shape1,shape2,lower_tail,log_p);
+  return std::exp(std::log(scale)+displacement);
 }
 
 template <typename Rng>

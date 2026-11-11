@@ -1,0 +1,21 @@
+{
+  "id": "gev",
+  "input_sha256": "ecb15a2b962ee09c9e29210b90b8ecf6d26def3c30ec4aacec474f5d622bdb67",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 145916,
+    "points": 16,
+    "values": 315,
+    "quantiles": 704
+  },
+  "after": {
+    "bytes": 145916,
+    "points": 16,
+    "values": 315,
+    "quantiles": 704
+  },
+  "records": [],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

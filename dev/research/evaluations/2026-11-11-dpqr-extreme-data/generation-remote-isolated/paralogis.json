@@ -1,0 +1,66 @@
+{
+  "id": "paralogis",
+  "input_sha256": "16db972f976d850a566bc51a1747aac77ef0797041ae4d4a1dee8b50b053dbfd",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 51533,
+    "points": 6,
+    "values": 117,
+    "quantiles": 264
+  },
+  "after": {
+    "bytes": 78180,
+    "points": 9,
+    "values": 180,
+    "quantiles": 396
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: normalization quadrature error estimate 0.00000000001",
+      "seconds": 1.1172772459999578
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.0087887300001057
+    },
+    {
+      "parameters": [
+        1.0,
+        1e-08
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.129023361000236
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.0709008310000172
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1000.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "seconds": 120.01957358499976
+    }
+  ]
+}

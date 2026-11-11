@@ -1,0 +1,49 @@
+{
+  "id": "hnorm",
+  "before": {
+    "bytes": 45395,
+    "points": 5,
+    "values": 93,
+    "quantiles": 220
+  },
+  "after": {
+    "bytes": 80204,
+    "points": 9,
+    "values": 171,
+    "quantiles": 396
+  },
+  "records": [
+    {
+      "parameters": [
+        -1.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 1.7445194399915636
+    },
+    {
+      "parameters": [
+        1.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 1.781073146034032
+    },
+    {
+      "parameters": [
+        0.0,
+        1e-08
+      ],
+      "status": "generated",
+      "seconds": 1.6987054640194401
+    },
+    {
+      "parameters": [
+        0.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "seconds": 1.5134978370042518
+    }
+  ]
+}

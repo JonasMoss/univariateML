@@ -1,0 +1,52 @@
+{
+  "id": "invburr",
+  "input_sha256": "ca822dc29c0b5530c59cc28c876e75f888294eaf2c7ffd9451058193d8eb7b59",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 135260,
+    "points": 16,
+    "values": 298,
+    "quantiles": 704
+  },
+  "after": {
+    "bytes": 135313,
+    "points": 16,
+    "values": 298,
+    "quantiles": 704
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: normalization quadrature error estimate 0.00000000001",
+      "seconds": 1.0785115140006383
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0,
+        1000.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "seconds": 120.00440695500038
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0,
+        1e-08
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "seconds": 120.00464057600038
+    }
+  ],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

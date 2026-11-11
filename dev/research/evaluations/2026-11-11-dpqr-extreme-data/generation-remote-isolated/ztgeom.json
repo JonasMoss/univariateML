@@ -1,0 +1,29 @@
+{
+  "id": "ztgeom",
+  "input_sha256": "86b9524c42c315a799faa2ed80426c455e18481b458a356af332746f1faf44f8",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 148369,
+    "points": 6,
+    "values": 1046,
+    "quantiles": 264
+  },
+  "after": {
+    "bytes": 148546,
+    "points": 6,
+    "values": 1046,
+    "quantiles": 264
+  },
+  "records": [
+    {
+      "parameters": [
+        5e-09
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: positive series did not reach certified remainder",
+      "seconds": 8.941159097999844
+    }
+  ]
+}

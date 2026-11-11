@@ -113,3 +113,7 @@ TEST_CASE("hcauchy: README threshold shifts all four operations") {
     CHECK(cppunivariate::distributions::rhcauchy(a, mu, 2.0) == mu + cppunivariate::distributions::rhcauchy(b, 0.0, 2.0));
   CHECK(std::isnan(cppunivariate::distributions::dhcauchy(4.0, INFINITY, 2.0, true)));
 }
+
+TEST_CASE("hcauchy: exact-input extreme arithmetic regression") {
+  CHECK(cppunivariate::distributions::qhcauchy(-0.6931471805599453,-1.0,1.0,true,true) == doctest::Approx(3.642750216855176e-17).epsilon(1e-10).scale(0));
+}

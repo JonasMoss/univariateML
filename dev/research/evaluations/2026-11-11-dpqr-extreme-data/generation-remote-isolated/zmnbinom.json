@@ -1,0 +1,71 @@
+{
+  "id": "zmnbinom",
+  "input_sha256": "6f27b99ac9c17729a299998caebda478651e1018764529a2ee6401327d77c442",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 328522,
+    "points": 13,
+    "values": 2302,
+    "quantiles": 572
+  },
+  "after": {
+    "bytes": 416393,
+    "points": 16,
+    "values": 2924,
+    "quantiles": 704
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        0.5,
+        0.5
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.429437434999727
+    },
+    {
+      "parameters": [
+        100000000.0,
+        0.5,
+        0.5
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: positive series did not reach certified remainder",
+      "seconds": 21.71772070299994
+    },
+    {
+      "parameters": [
+        1.0,
+        5e-09,
+        0.5
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: positive series did not reach certified remainder",
+      "seconds": 25.065896315000373
+    },
+    {
+      "parameters": [
+        1.0,
+        0.5,
+        5e-09
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.23012389099994834
+    },
+    {
+      "parameters": [
+        100000000.0,
+        0.9999999900000001,
+        0.5
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.1403489429999354
+    }
+  ]
+}

@@ -114,6 +114,14 @@ existence:
 
 The inverse gamma distribution models positive quantities whose reciprocals follow a gamma distribution.
 
+## d/p/q/r
+
+### Concentrating log density
+
+The inverse-gamma log density equals the gamma log density at beta with scale x, plus log(beta)-log(x). Evaluating that identity through the compensated gamma deviance preserves the exact beta-versus-alpha*x displacement; the former separate log-gamma terms could cancel the finite density near a concentrating mode.
+
+The probability identity uses the opposite gamma tail at beta with scale q. Passing those original arguments preserves the scale-division residual instead of first rounding beta/q or its logarithm.
+
 ## Details
 
 The [positive-family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-positive.md) gives the boundary arguments and their held-parameter conditions.

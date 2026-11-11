@@ -1,0 +1,52 @@
+{
+  "id": "lgamma",
+  "before": {
+    "bytes": 58849,
+    "points": 7,
+    "values": 126,
+    "quantiles": 308
+  },
+  "after": {
+    "bytes": 67519,
+    "points": 8,
+    "values": 143,
+    "quantiles": 352
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: normalization failed at {'shapelog': 1e-08, 'ratelog': 1.0}: 0.0",
+      "seconds": 21.386073042987846
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms.",
+      "seconds": 0.07936972996685654
+    },
+    {
+      "parameters": [
+        1.0,
+        1e-08
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: normalization quadrature error estimate 0.00000000001",
+      "seconds": 0.8844638519803993
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "seconds": 1.483149292995222
+    }
+  ]
+}

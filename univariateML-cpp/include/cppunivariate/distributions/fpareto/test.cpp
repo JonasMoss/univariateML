@@ -179,3 +179,28 @@ TEST_CASE("Feller Pareto keeps an uncertified GB2 delegate") {
  REQUIRE(p.status==cppunivariate::Gb2Status::Ok);REQUIRE(r.status==p.status);
  CHECK_FALSE(p.certified);CHECK(r.certified==p.certified);CHECK(r.shape1==p.shape1);CHECK(r.shape2==p.shape2);CHECK(r.shape3==p.shape3);CHECK(r.scale==p.scale);CHECK(r.logLik==p.logLik);
 }
+
+// Independent central log-probability expansion; exact binary64 input.
+TEST_CASE("fpareto: central inverse retains a translated residual") {
+  CHECK(cppunivariate::distributions::qfpareto(-0.6931471805599453,2,1e8,2,1e8,-1e8,true,true) ==
+        doctest::Approx(3.092062418461733e-17).epsilon(1e-10).scale(0));
+}
+
+// The exact binary64 product 1e8*1e-8 exceeds one, although it rounds to one.
+TEST_CASE("fpareto: exact power side at the support endpoint") {
+  CHECK(cppunivariate::distributions::dfpareto(0,1,1e8,1e-8,1,0,true) == -std::numeric_limits<double>::infinity());
+}
+
+// Independent 1600-digit exact-input reference; beta-smoke.py.
+TEST_CASE("fpareto: centered large-shape density") {
+  CHECK(cppunivariate::distributions::dfpareto(1.0,100000000.0,1,100000000.0,1,0,true)==
+        doctest::Approx(7.944828247241538).epsilon(1e-10).scale(0));
+}
+
+TEST_CASE("fpareto: portable small-shape complementary tail") {
+ CHECK(cppunivariate::distributions::pfpareto(5e-324,2.0,1.0,2e-08,1.0,0.0,false,true)==doctest::Approx(-11.116252837780058).epsilon(1e-10));
+}
+
+TEST_CASE("fpareto: exact-input density from likelihood seam replay") {
+ CHECK(cppunivariate::distributions::dfpareto(1.1350862928982455,3.0861599286892316e+16,1.2356446103149665e-08,3.0861599294133976e+16,1.0087842921157315,0.0,true)==doctest::Approx(-0.6287034440723621).epsilon(1e-10));
+}

@@ -34,6 +34,10 @@ def build(p, logd):
     @lru_cache(maxsize=20000)
     def tails(k):
         n=k+1
+        if b==1 or r==1:
+            rr = r if b==1 else b
+            upper=mp.logbeta(n+rr,a)-mp.logbeta(rr,a) if hasattr(mp,"logbeta") else mp.log(mp.beta(n+rr,a))-mp.log(mp.beta(rr,a))
+            return pair(upper,False)
         if n<=300:
             return pair(mp.log(sums[int(k)]))
         term=mp.mpf(1); total=term
@@ -48,3 +52,6 @@ def build(p, logd):
     ref=Reference(tails,0,mp.inf,True,log_density=density)
     ref.normalization=sums[300]+mp.exp(tails(mp.mpf(300))[1])
     return ref
+
+# Joint limit paths supplement the shared one-coordinate extreme grid.
+extreme_parameter_sets = [{'alpha': 100000000.0, 'beta': 100000000.0}, {'size': 100000000.0, 'beta': 100000000.0, 'alpha': 1e+16}]

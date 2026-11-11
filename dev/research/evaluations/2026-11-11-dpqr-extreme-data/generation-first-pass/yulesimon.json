@@ -1,0 +1,32 @@
+{
+  "id": "yulesimon",
+  "before": {
+    "bytes": 147811,
+    "points": 5,
+    "values": 1051,
+    "quantiles": 220
+  },
+  "after": {
+    "bytes": 173218,
+    "points": 6,
+    "values": 1257,
+    "quantiles": 264
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 30 seconds per point",
+      "seconds": 30.000050299044233
+    },
+    {
+      "parameters": [
+        100000000.0
+      ],
+      "status": "generated",
+      "seconds": 0.0713154940167442
+    }
+  ]
+}

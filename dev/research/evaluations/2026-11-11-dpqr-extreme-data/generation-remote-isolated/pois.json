@@ -1,0 +1,37 @@
+{
+  "id": "pois",
+  "input_sha256": "9757ebc6bd926448305800f34b1273a5f60fc09e41b95b79292e25b2e7b77ee8",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 137953,
+    "points": 6,
+    "values": 1035,
+    "quantiles": 264
+  },
+  "after": {
+    "bytes": 163921,
+    "points": 7,
+    "values": 1241,
+    "quantiles": 308
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.13766674799990142
+    },
+    {
+      "parameters": [
+        100000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: positive series did not reach certified remainder",
+      "seconds": 13.791734425999948
+    }
+  ]
+}

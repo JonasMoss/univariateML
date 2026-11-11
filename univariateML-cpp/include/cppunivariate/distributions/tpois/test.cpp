@@ -78,3 +78,7 @@ TEST_CASE("tpois: structured stop payloads") {
 TEST_CASE("tpois: quantile search guards and representability") {
   CHECK(std::isnan(cppunivariate::distributions::qtpois(.5,1e308,-INFINITY,INFINITY)));
 }
+
+TEST_CASE("tpois: conditional normalizer retains its mode anchor") {
+ CHECK(cppunivariate::distributions::dtpois(1000004,926275.8860827014,999999,1000011,true)==doctest::Approx(-2.4047244421197274).epsilon(1e-10));
+}

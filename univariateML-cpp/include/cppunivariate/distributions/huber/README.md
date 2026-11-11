@@ -93,6 +93,12 @@ existence:
 
 The Huber density models symmetric measurements with a Gaussian core and exponential tails. Location $\mu$ sets the centre, scale $\sigma$ sets the residual unit, and shape $\epsilon$ sets the transition from quadratic to linear log-density loss.
 
+## d/p/q/r
+
+### Extreme d/p/q arithmetic
+
+Within the Gaussian core, the survival numerator is evaluated as a log-domain difference of normal tails plus the exponential-tail mass. Materializing erfc first underflows at standardized arguments around 38, although its logarithm is finite; inversion of that zero previously saturated the quantile at the underflow point even when epsilon was much larger.
+
 ## Details
 
 The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-locscale.md) derives these boundary conditions, including the relevant held parameters.

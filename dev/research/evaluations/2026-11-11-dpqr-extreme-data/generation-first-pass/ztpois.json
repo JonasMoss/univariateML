@@ -1,0 +1,32 @@
+{
+  "id": "ztpois",
+  "before": {
+    "bytes": 138318,
+    "points": 6,
+    "values": 1035,
+    "quantiles": 264
+  },
+  "after": {
+    "bytes": 163676,
+    "points": 7,
+    "values": 1241,
+    "quantiles": 308
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08
+      ],
+      "status": "generated",
+      "seconds": 0.20161852100864053
+    },
+    {
+      "parameters": [
+        100000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: positive series did not reach certified remainder",
+      "seconds": 13.36554868298117
+    }
+  ]
+}

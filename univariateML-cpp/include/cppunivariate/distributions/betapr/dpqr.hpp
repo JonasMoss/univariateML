@@ -19,8 +19,12 @@ inline double dbetapr(double x, double shape1, double shape2, double scale, bool
     return log ? ld : std::exp(ld);
   }
   const double z = special::log_positive_ratio(x, scale);
-  const double ld = -std::log(x) - special::lbeta(shape1,shape2)
-      - shape1 * special::softplus(-z) - shape2 * special::softplus(z);
+  double centered;
+  if(missing_detail::centered_beta_prime_density(x,0,scale,shape1,shape2,centered))
+    return log?centered:std::exp(centered);
+  const double ld = shape1==shape2 ? -std::log(x)+missing_detail::symmetric_beta_logit_density(z,shape1)
+      : -std::log(x)-special::log_beta_positive(shape1,shape2)
+        -shape1*special::softplus(-z)-shape2*special::softplus(z);
   return log ? ld : std::exp(ld);
 }
 
@@ -30,7 +34,7 @@ inline double pbetapr(double q, double shape1, double shape2, double scale, bool
   if (q == special::kPosInf) return special::tail_probability(special::tails_from_log(special::kNegInf, false), lower_tail, log_p);
   const double z = special::log_positive_ratio(q, scale);
   // GB2 continuation retains both beta coordinates beyond probability underflow.
-  const double lp = missing_detail::beta_log(-special::softplus(-z), -special::softplus(z), shape1, shape2, lower_tail);
+  const double lp = missing_detail::beta_log_from_logit(z,shape1,shape2,lower_tail);
   return log_p ? lp : std::exp(lp);
 }
 
@@ -38,6 +42,9 @@ inline double qbetapr(double p, double shape1, double shape2, double scale, bool
   if (!(shape1 > 0.0 && std::isfinite(shape1) && shape2 > 0.0 && std::isfinite(shape2) && scale > 0.0 && std::isfinite(scale))) return special::kNaN;
   const auto t = special::quantile_log_tails(p, lower_tail, log_p);
   if (!t.valid) return special::kNaN;
+  double center;
+  if (missing_detail::symmetric_beta_logit_quantile(p,shape1,shape2,lower_tail,log_p,center))
+    return std::exp(std::log(scale)+center);
   const bool lower = t.lower < t.upper;
   return std::exp(std::log(scale) + betapr_detail::beta_logit_quantile(lower ? t.lower : t.upper, shape1, shape2, lower));
 }

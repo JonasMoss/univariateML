@@ -16,4 +16,3 @@ def build(t):
         if y<0: return pair(mp.log(2/(1+xi*xi))+base(y*xi)[0])
         return pair(mp.log(2*xi*xi/(1+xi*xi))+base(y/xi)[1],False)
     return Reference(tails,breaks=[m-s*shift/scale])
-

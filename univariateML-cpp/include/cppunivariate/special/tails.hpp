@@ -16,8 +16,10 @@
 #pragma once
 #include "../core/precision.hpp"
 #include "constants.hpp"
+#include "gamma_centered.hpp"
 #include <cmath>
 #include <algorithm>
+#include <array>
 
 namespace cppunivariate {
 namespace special {
@@ -90,6 +92,55 @@ inline double probability_minus_half(double p, bool lower_tail, bool log_p) {
 inline double log_positive_ratio(double a, double b) {
   return a > b * 0.5 && a * 0.5 < b
       ? std::log1p((a-b)/b) : std::log(a)-std::log(b);
+}
+// Low part of an addition (FastTwoSum with magnitude ordering).
+inline double addition_residual(double a, double b, double sum) {
+  return std::abs(a)>=std::abs(b) ? (a-sum)+b : (b-sum)+a;
+}
+// Keep the center location+scale before forming a concentrated log ratio.
+inline double log_shifted_positive_ratio(double x, double location, double scale) {
+  const double center=location+scale;
+  if (std::isfinite(center)) {
+    const double delta=x-center;
+    if (std::abs(delta)<=scale*0.5) {
+      const double low=addition_residual(location,scale,center);
+      return std::log1p((delta-low)/scale);
+    }
+  }
+  return log_positive_ratio(x-location,scale);
+}
+inline double shifted_scaled_exp(double location, double scale, double displacement) {
+  const double center=location+scale;
+  const double offset=std::expm1(displacement);
+  if (displacement>=-0.6931471805599453 && std::isfinite(center) && std::isfinite(offset))
+    return std::fma(scale,offset,center)+addition_residual(location,scale,center);
+  return location+std::exp(std::log(scale)+displacement);
+}
+// Do not underflow log_power/power before multiplying by a huge scale.
+inline double shifted_scaled_power_quantile(double location,double scale,
+                                            double log_power,double power) {
+  const double displacement=log_power/power;
+  if (std::isfinite(displacement) && std::expm1(displacement)==displacement) {
+    const double center=location+scale;
+    if (std::isfinite(center)) {
+      const double low=addition_residual(location,scale,center);
+      if (log_power==0) return center+low;
+      const double ratio=scale/power;
+      if (ratio>=std::numeric_limits<double>::min() && std::isfinite(ratio))
+        return std::fma(ratio,log_power,center)+low;
+      const double offset=std::copysign(std::exp(std::log(scale)+std::log(std::abs(log_power))-std::log(power)),log_power);
+      return (center+offset)+low;
+    }
+  }
+  return shifted_scaled_exp(location,scale,displacement);
+}
+// offset is p-1/2; preserve a small result when finite endpoints cancel.
+inline double centered_interval_quantile(double lo, double hi, double offset) {
+  const double a=lo*0.5, b=hi*0.5, center=a+b, radius=b-a;
+  const double low=addition_residual(a,b,center);
+  const double radius_low=addition_residual(b,-a,radius);
+  const double value=std::fma(radius,2*offset,center)+(low+radius_low*(2*offset));
+  return std::isnan(value)?value:std::max(lo,std::min(hi,value));
 }
 // Stable log(1+exp(x)) and its logarithm, including underflowed exp(x).
 inline double softplus(double x) {
@@ -192,6 +243,167 @@ inline double log_gamma_ratio(double x, double u, double v) {
     residual=h*total;
   } else residual=z*l-h;
   return correction+h*std::log(z)+residual+(h-.5)*l+remainder(z+h)-remainder(z);
+}
+
+// Stirling log-gamma remainder through z^-11; the next term at z>=16
+// is below 3e-17. This normalizer is used only by probability evaluation.
+inline double density_stirling_remainder(double z) {
+  const double t=1/z, t2=t*t;
+  return t*(1.0/12-t2*(1.0/360-t2*(1.0/1260-t2*(1.0/1680-t2*(1.0/1188-t2*691.0/360360)))));
+}
+// shape*(u-log1p(u)), preserving shape*u^2 even if u^2 underflows.
+inline double scaled_positive_deviance(double shape,double u) {
+  if (std::abs(u)<=0.5) {
+    // Finite Taylor polynomial: remainder <= |u|^65/(66*(1-|u|)).
+    double coefficient=1.0/66;
+    for (int j=65;j>=2;--j) coefficient=1.0/j-u*coefficient;
+    return ((shape*u)*u)*coefficient;
+  }
+  return shape*(u-std::log1p(u));
+}
+inline double gamma_log_density_positive(double x,double shape,double scale) {
+  const double lx=std::log(x);
+  if (shape<16)
+    return shape*log_positive_ratio(x,scale)-lx-x/scale-std::lgamma(shape);
+  int scale_exponent=0, shape_exponent=0;
+  const double ms=std::frexp(scale,&scale_exponent);
+  const double mk=std::frexp(shape,&shape_exponent);
+  const double mean=ms*mk, low=std::fma(ms,mk,-mean);
+  const double normalized=std::scalbn(x,-(scale_exponent+shape_exponent));
+  double penalty;
+  if (normalized>=mean*0.5 && normalized<=mean*2) {
+    const double u=((normalized-mean)-low)/mean;
+    penalty=scaled_positive_deviance(shape,u);
+  } else {
+    if (std::isinf(normalized)) return kNegInf;
+    const double lr=normalized>=std::numeric_limits<double>::min()
+        ? std::log(normalized)-std::log(mean)
+        : lx-std::log(scale)-std::log(shape);
+    penalty=shape*(std::expm1(lr)-lr);
+  }
+  return 0.5*std::log(shape)-lx-0.91893853320467274178
+      -density_stirling_remainder(shape)-penalty;
+}
+
+// Positive beta normalizer without subtracting large log gamma values.
+// The shifted gamma ratio bounds its Stirling remainder by 3e-17.
+inline double log_beta_positive(double a, double b) {
+  if (!(a>0 && b>0 && std::isfinite(a) && std::isfinite(b))) return kNaN;
+  if (a==1) return -std::log(b);
+  if (b==1) return -std::log(a);
+  const double small=std::min(a,b), large=std::max(a,b);
+  if (small<16) return std::lgamma(small)-log_gamma_ratio(large,small,0);
+  const auto remainder=[](double y) {
+    const double t=1.0/y, t2=t*t;
+    return t*(1.0/12-t2*(1.0/360-t2*(1.0/1260-t2*(1.0/1680-t2*(1.0/1188-t2*691.0/360360)))));
+  };
+  const double logsum=std::log(large)+std::log1p(small/large);
+  return -(a-.5)*std::log1p(b/a)-(b-.5)*std::log1p(a/b)
+      -.5*logsum+0.91893853320467274178
+      +remainder(a)+remainder(b)-remainder(a+b);
+}
+
+// Exact expansion of x*(a+b)-a, apart from underflowed low products.
+// All products are bounded by one after power-of-two normalization.
+inline double beta_center_residual(double x,double a,double b) {
+  const double p=x*a, q=x*b;
+  const std::array<double,5> terms{{p,std::fma(x,a,-p),q,std::fma(x,b,-q),-a}};
+  std::array<double,6> expansion{};
+  std::size_t length=0;
+  for (double term:terms) {
+    double carry=term;
+    for (std::size_t i=0;i<length;++i) {
+      const double sum=carry+expansion[i];
+      expansion[i]=addition_residual(carry,expansion[i],sum);
+      carry=sum;
+    }
+    expansion[length++]=carry;
+  }
+  double value=0;
+  for (std::size_t i=0;i<length;++i) value+=expansion[i];
+  return value;
+}
+inline double beta_log_density_positive(double x,double a,double b) {
+  const double lx=std::log(x), ly=std::log1p(-x);
+  if (a<16 || b<16)
+    return (a-1)*lx+(b-1)*ly-log_beta_positive(a,b);
+  int ea=0, eb=0;
+  std::frexp(a,&ea);std::frexp(b,&eb);
+  const int exponent=std::max(ea,eb);
+  const double na=std::scalbn(a,-exponent), nb=std::scalbn(b,-exponent);
+  const double delta=beta_center_residual(x,na,nb);
+  const double u=delta/na, v=-delta/nb;
+  const double logsum=std::log(std::max(a,b))+std::log1p(std::min(a,b)/std::max(a,b));
+  const double first=std::abs(u)<=0.5 ? scaled_positive_deviance(a,u)
+      : a*(u-(lx+logsum-std::log(a)));
+  const double second=std::abs(v)<=0.5 ? scaled_positive_deviance(b,v)
+      : b*(v-(ly+logsum-std::log(b)));
+  const double normalizer=0.5*(std::log(a)+std::log(b)-logsum)-0.91893853320467274178
+      -density_stirling_remainder(a)-density_stirling_remainder(b)+density_stirling_remainder(a+b);
+  return normalizer-lx-ly-first-second;
+}
+
+inline double log_positive_distance(double hi,double lo) {
+  const double d=hi-lo;
+  return std::isfinite(d)?std::log(d):std::log(hi*0.5-lo*0.5)+0.6931471805599453;
+}
+// Log coordinates of (x-lo)/(hi-lo), retaining a tiny distance to an edge.
+inline LogTails interval_log_coordinates(double x,double lo,double hi) {
+  double left=x-lo, right=hi-x;
+  if(!std::isfinite(left) || !std::isfinite(right)) {
+    left=x*0.5-lo*0.5;right=hi*0.5-x*0.5;
+  }
+  if(left<=right) {
+    const double ratio=left/right;
+    const double lr=ratio>=std::numeric_limits<double>::min() ? std::log(ratio)
+        : log_positive_distance(x,lo)-log_positive_distance(hi,x);
+    const double upper=-std::log1p(ratio);
+    return {lr+upper,upper,true};
+  }
+  const double ratio=right/left;
+  const double lr=ratio>=std::numeric_limits<double>::min() ? std::log(ratio)
+      : log_positive_distance(hi,x)-log_positive_distance(x,lo);
+  const double lower=-std::log1p(ratio);
+  return {lower,lr+lower,true};
+}
+inline double affine_beta_log_density_positive(double x,double a,double b,double lo,double hi) {
+  const double width_log=log_positive_distance(hi,lo);
+  const auto coordinates=interval_log_coordinates(x,lo,hi);
+  if(a<16 || b<16)
+    return (a-1)*coordinates.lower+(b-1)*coordinates.upper-log_beta_positive(a,b)-width_log;
+  int ea=0,eb=0,ex=0;
+  std::frexp(a,&ea);std::frexp(b,&eb);
+  const int shape_exponent=std::max(ea,eb);
+  const double na=std::scalbn(a,-shape_exponent), nb=std::scalbn(b,-shape_exponent);
+  std::frexp(std::max(std::abs(x),std::max(std::abs(lo),std::abs(hi))),&ex);
+  const double nx=std::scalbn(x,-ex), nl=std::scalbn(lo,-ex), nh=std::scalbn(hi,-ex);
+  const std::array<double,4> first{{na,nb,-nb,-na}}, second{{nx,nx,nl,nh}};
+  std::array<double,9> expansion{};
+  std::size_t length=0;
+  for(std::size_t k=0;k<4;++k) {
+    const double product=first[k]*second[k];
+    const std::array<double,2> pieces{{product,std::fma(first[k],second[k],-product)}};
+    for(double piece:pieces) {
+      double carry=piece;
+      for(std::size_t i=0;i<length;++i) {
+        const double sum=carry+expansion[i];
+        expansion[i]=addition_residual(carry,expansion[i],sum);carry=sum;
+      }
+      expansion[length++]=carry;
+    }
+  }
+  double delta=0;
+  for(std::size_t i=0;i<length;++i) delta+=expansion[i];
+  delta/=(nh-nl);
+  const double u=delta/na, v=-delta/nb;
+  const double logsum=std::log(std::max(a,b))+std::log1p(std::min(a,b)/std::max(a,b));
+  const double p=std::abs(u)<=0.5?scaled_positive_deviance(a,u)
+      : a*(u-(coordinates.lower+logsum-std::log(a)));
+  const double q=std::abs(v)<=0.5?scaled_positive_deviance(b,v)
+      : b*(v-(coordinates.upper+logsum-std::log(b)));
+  const double constant=0.5*(std::log(a)+std::log(b)-logsum)-0.91893853320467274178
+      -density_stirling_remainder(a)-density_stirling_remainder(b)+density_stirling_remainder(a+b);
+  return constant-coordinates.lower-coordinates.upper-width_log-p-q;
 }
 
 // Positive discrete series, scaled by its first term. ratio_bound(k) bounds
@@ -395,39 +607,86 @@ inline double expm1_affine(double z, double location, double scale) {
 // Gamma helpers require special.hpp for these no-throw backend wrappers.
 inline double gamma_p(double a, double x);
 inline double gamma_q(double a, double x);
+inline double lgamma1p(double x);
 // Unit-scale gamma evaluated in log coordinates, shared by the gamma,
 // inverse gamma, loggamma and transformed gamma families.
-inline LogTails gamma_log_tails(double lx, double a) {
+inline LogTails gamma_log_tails(double lx, double a, double supplied_x=kNaN) {
   if (!(a > 0.0 && std::isfinite(a)) || std::isnan(lx))
     return {kNaN, kNaN, false};
   if (lx == kNegInf) return tails_from_log(kNegInf, true);
   if (lx > std::log(std::numeric_limits<double>::max()))
     return tails_from_log(kNegInf, false);
-  const double x = std::exp(lx);
+  const double x = std::isnan(supplied_x)?std::exp(lx):supplied_x;
+  if(a>=16 && x>0 && std::isfinite(x)) {
+    const double root=std::sqrt(a), w=root*log_positive_ratio(x,a);
+    return tails_from_log(gamma_centered::log_tail(w,1/root),w<0);
+  }
   if (lx < -36.0)
-    return tails_from_log(a*lx - std::lgamma(a+1.0), true);
+    return tails_from_log(a*lx - (a<=1.0/32?lgamma1p(a):std::lgamma(a+1.0)), true);
   const double p = gamma_p(a,x), q = gamma_q(a,x);
   if (p > 1e-280 && p <= 0.5) return tails_from_log(std::log(p), true);
   if (q > 1e-280 && q < 0.5) return tails_from_log(std::log(q), false);
   if (x < a+1.0) {
     double sum = 1.0, term = 1.0;
+    bool converged=false;
     for (int k=1; k<100000; ++k) {
       term *= x/(a+k); sum += term;
-      if (term <= sum*2e-16) break;
+      if (term <= sum*2e-16) {converged=true;break;}
     }
-    return tails_from_log(a*lx-x-std::lgamma(a+1.0)+std::log(sum), true);
+    if(!converged) return {kNaN,kNaN,false};
+    return tails_from_log(gamma_log_density_positive(x,a,1)+lx-std::log(a)+std::log(sum), true);
   }
   // Lentz fraction for Q(a,x); only used outside the backend's safe range.
   const double tiny = 1e-300;
   double b=x+1.0-a, c=1.0/tiny, d=1.0/b, h=d;
+  bool converged=false;
   for (int k=1; k<100000; ++k) {
     const double an=-static_cast<double>(k)*(k-a);
     b += 2.0; d=an*d+b; if (std::abs(d)<tiny) d=tiny;
     c=b+an/c; if (std::abs(c)<tiny) c=tiny;
     d=1.0/d; const double delta=d*c; h*=delta;
-    if (std::abs(delta-1.0)<4e-16) break;
+    if (std::abs(delta-1.0)<4e-16) {converged=true;break;}
   }
-  return tails_from_log(a*lx-x-std::lgamma(a)+std::log(h), false);
+  if(!converged || !(h>0)) return {kNaN,kNaN,false};
+  return tails_from_log(gamma_log_density_positive(x,a,1)+lx+std::log(h), false);
+}
+inline LogTails gamma_centered_physical_tails(double x,double a,double scale) {
+  int es=0,ea=0;
+  const double ms=std::frexp(scale,&es),ma=std::frexp(a,&ea);
+  const double mean=ms*ma, low=std::fma(ms,ma,-mean);
+  const double normalized=std::scalbn(x,-(es+ea));
+  double lr;
+  if(normalized>=mean*0.5 && normalized<=mean*2)
+    lr=std::log1p(((normalized-mean)-low)/mean);
+  else if(normalized>=std::numeric_limits<double>::min() && std::isfinite(normalized))
+    lr=std::log(normalized)-std::log(mean);
+  else lr=std::log(x)-std::log(scale)-std::log(a);
+  const double root=std::sqrt(a), w=root*lr;
+  return tails_from_log(gamma_centered::log_tail(w,1/root),w<0);
+}
+inline bool gamma_laplace_tails(double x,double a,double scale,LogTails &answer) {
+  if(a<1 || !(x>0) || !std::isfinite(x)) return false;
+  int es=0,ea=0;
+  const double ms=std::frexp(scale,&es), ma=std::frexp(a,&ea);
+  const double mean=ms*ma, low=std::fma(ms,ma,-mean);
+  const double normalized=std::scalbn(x,-(es+ea));
+  if(!std::isfinite(normalized)) return false;
+  const double one_scale=std::scalbn(ms,-ea);
+  const double difference=((normalized-mean)-low)+one_scale;
+  if(difference==0) return false;
+  const double log_units=std::log(std::abs(difference))-std::log(one_scale);
+  // Upper remainder <= H/h^2. For the lower tail, restricting to [x/2,x]
+  // gives <=4H/h^2 plus exp(-h*x/2); this test bounds both by 1e-12.
+  if(std::log(4.0)+std::log(a-1)-2*log_units>=std::log(5e-13)) return false;
+  const double log_slope=std::log(std::abs(difference))+(es+ea)*0.69314718055994530942
+      -std::log(x)-std::log(scale);
+  const double lp=gamma_log_density_positive(x,a,scale)-log_slope;
+  answer=tails_from_log(lp,difference<0);
+  return true;
+}
+inline bool gamma_mean_quantile_enclosed(double a,const LogTails &tails) {
+  const double epsilon=1e-10;
+  return tails.valid && a*(epsilon*epsilon/(4*(1+epsilon))) > -std::min(tails.lower,tails.upper);
 }
 inline double gamma_log_quantile(double p, double a, bool lower, bool log_p) {
   const auto t = quantile_log_tails(p,lower,log_p);
@@ -436,21 +695,27 @@ inline double gamma_log_quantile(double p, double a, bool lower, bool log_p) {
   if (t.upper == kNegInf) return kPosInf;
   const bool left=t.lower<t.upper;
   const double target=left?t.lower:t.upper;
-  const double leading=(t.lower+std::lgamma(a+1.0))/a;
+  const double leading=(t.lower+(a<=1.0/32?lgamma1p(a):std::lgamma(a+1.0)))/a;
   if (leading < -36.0) return leading;
+  if(!std::isfinite(leading)) return kNaN;
   double lo=std::min(-1.0,leading-2.0), hi=std::max(1.0,std::log(a)+1.0);
+  bool valid=true;
   auto before=[&](double z) {
     const auto v=gamma_log_tails(z,a);
+    if(!v.valid || std::isnan(v.lower) || std::isnan(v.upper)) {valid=false;return false;}
     return left ? v.lower<target : v.upper>target;
   };
-  while (before(hi)) hi=hi*2.0+1.0;
-  while (!before(lo)) lo=lo*2.0-1.0;
+  while (before(hi)) {if(!valid || !std::isfinite(hi)) return kNaN;hi=hi*2.0+1.0;}
+  if(!valid) return kNaN;
+  while (!before(lo)) {if(!valid || !std::isfinite(lo)) return kNaN;lo=lo*2.0-1.0;}
+  if(!valid || !std::isfinite(lo) || !std::isfinite(hi)) return kNaN;
   for (int i=0; i<150; ++i) {
     const double mid=lo+(hi-lo)/2;
     if (mid==lo || mid==hi) break;
     if (before(mid)) lo=mid; else hi=mid;
+    if(!valid) return kNaN;
   }
-  return lo+(hi-lo)/2;
+  return hi-lo<=1e-10?lo+(hi-lo)/2:kNaN;
 }
 
 } // namespace special

@@ -168,3 +168,11 @@ TEST_CASE("logitnorm: exactly zero held logit residual is analytic nonexistence"
   const auto fit=cppunivariate::logitnorm_mle(mltest::as_span(data),0,NAN);
   CHECK(fit.status==cppunivariate::LogitnormStatus::Unbounded);
 }
+
+TEST_CASE("logitnorm: exact-input extreme arithmetic regression") {
+  CHECK(cppunivariate::distributions::qlogitnorm(-0.6931471805599453,0.0,100000000.0,true,true) == doctest::Approx(0.5000000007266235).epsilon(1e-10).scale(0));
+}
+
+TEST_CASE("logitnorm: rounded logit cannot select the wrong normal side") {
+ CHECK(cppunivariate::distributions::plogitnorm(.125,-1.9459101490553132,1e-24,true,true)==doctest::Approx(-2681745747230768.5).epsilon(1e-10));
+}

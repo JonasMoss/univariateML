@@ -1,0 +1,71 @@
+{
+  "id": "snorm",
+  "before": {
+    "bytes": 80197,
+    "points": 9,
+    "values": 171,
+    "quantiles": 396
+  },
+  "after": {
+    "bytes": 133560,
+    "points": 15,
+    "values": 285,
+    "quantiles": 660
+  },
+  "records": [
+    {
+      "parameters": [
+        -1.0,
+        1.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 2.628744788991753
+    },
+    {
+      "parameters": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 2.40844820800703
+    },
+    {
+      "parameters": [
+        0.0,
+        1e-08,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 2.6794607740011998
+    },
+    {
+      "parameters": [
+        0.0,
+        100000000.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 2.701616282982286
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        1e-08
+      ],
+      "status": "generated",
+      "seconds": 2.603338069980964
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "seconds": 2.629328337032348
+    }
+  ]
+}

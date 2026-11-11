@@ -1,0 +1,49 @@
+{
+  "id": "lgamma",
+  "input_sha256": "7b960511b2d7b835c7cdd2f8a8525482af4a793ddac253f41d0310985683edd2",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 67758,
+    "points": 8,
+    "values": 143,
+    "quantiles": 352
+  },
+  "after": {
+    "bytes": 67758,
+    "points": 8,
+    "values": 143,
+    "quantiles": 352
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "seconds": 120.0000787480003
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms.",
+      "seconds": 0.16766273199937132
+    },
+    {
+      "parameters": [
+        1.0,
+        1e-08
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: normalization quadrature error estimate 0.00000000001",
+      "seconds": 1.4943345809988386
+    }
+  ],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

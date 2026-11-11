@@ -12,3 +12,6 @@ def build(t):
     ref = Reference(lambda x: beta(shape1,shape2,x/(scale+x),scale/(scale+x)), 0, mp.inf)
 
     return beta_normalization(ref,shape1,shape2)
+
+# Joint limit paths supplement the shared one-coordinate extreme grid.
+extreme_parameter_sets = [{'shape2': 100000000.0, 'scale': 100000000.0}, {'shape1': 100000000.0, 'scale': 1e-08}, {'shape1': 100000000.0, 'shape2': 100000000.0}]

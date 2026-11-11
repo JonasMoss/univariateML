@@ -117,6 +117,14 @@ existence:
 
 The Weibull distribution models lifetimes and reliability data. Its scale $\lambda$ sets the time unit. Its shape $k$ gives a decreasing hazard when $k<1$, a constant hazard when $k=1$, and an increasing hazard when $k>1$.
 
+## d/p/q/r
+
+### Probability evaluation at large shape
+
+The power coordinate uses `shape * log1p((x-scale)/scale)` when the two positive inputs differ by at most a factor of two. Sterbenz subtraction preserves the exact binary64 displacement before multiplication by the shape; subtracting their logarithms loses that displacement at large shapes. The log density is grouped as `log(shape)-log(x)+log(h)-h`, so a shape near zero does not require cancellation between the scale term and `(shape-1)*log(x/scale)`.
+
+Near unit hazard, small shape amplifies loss in log(-log(1-p)) or log(-log(p)). The inverse centers the original probability at 1-exp(-1), exp(-1), or log(1-exp(-1)), retaining each constant’s low part before applying log1p/expm1. The usual rounded complementary log tail can otherwise produce a relative quantile error of about 0.4 at shape 1e-16.
+
 ## Details
 
 The [positive-family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-positive.md) gives the boundary arguments and their held-parameter conditions.

@@ -5,6 +5,7 @@
 
 #pragma once
 #include "../../core/precision.hpp"
+#include "../../special/tails.hpp"
 
 #include "mle.hpp"
 
@@ -57,7 +58,7 @@ inline double phyper(double q, double m, double N, double k, bool lower_tail,
 }
 
 // Smallest x with P(X <= x) >= p (R's discrete-quantile convention).
-inline double qhyper(double p, double m, double N, double k, bool lower_tail,
+inline double hyper_sampling_quantile(double p, double m, double N, double k, bool lower_tail,
                      bool log_p) {
   if (!hyper_dpqr_detail::valid(N, m, k) || std::isnan(p)) {
     return std::numeric_limits<double>::quiet_NaN();
@@ -77,9 +78,21 @@ inline double qhyper(double p, double m, double N, double k, bool lower_tail,
   return hi;
 }
 
+inline double qhyper(double p,double m,double N,double k,bool lower_tail,bool log_p) {
+  if(!hyper_dpqr_detail::valid(N,m,k)) return special::kNaN;
+  const double lo=std::max(0.0,k-(N-m)),hi=std::min(k,m);
+  if(std::isnan(p) || (log_p?p>0:p<0 || p>1)) return special::kNaN;
+  if(p==(log_p?special::kNegInf:0)) return lower_tail?lo:hi;
+  if(p==(log_p?0:1)) return lower_tail?hi:lo;
+  return special::discrete_search(lo,hi,[&](double q) {
+    const double probability=phyper(q,m,N,k,lower_tail,log_p);
+    return std::isnan(probability)?-1:int(lower_tail?probability>=p:probability<=p);
+  });
+}
+
 template <typename Rng>
 inline double rhyper(Rng &rng, double m, double N, double k) {
-  return qhyper(rng.runif(0.0, 1.0), m, N, k, true, false);
+  return hyper_sampling_quantile(rng.runif(0.0, 1.0), m, N, k, true, false);
 }
 
 }  // namespace distributions

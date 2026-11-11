@@ -1,0 +1,121 @@
+{
+  "id": "sged",
+  "input_sha256": "82fd8c5564c7f7da3bc7f84a313b63e5185b217e7f1d61f7882c4b63244a34d0",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 135654,
+    "points": 15,
+    "values": 285,
+    "quantiles": 660
+  },
+  "after": {
+    "bytes": 162531,
+    "points": 18,
+    "values": 342,
+    "quantiles": 792
+  },
+  "records": [
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        2e-08,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "NoConvergence: Hypergeometric series converges too slowly. Try increasing maxterms.",
+      "seconds": 3.4750163489989063
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        200000000.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "MemoryError: reference exceeded the recorded address-space limit",
+      "seconds": 22.109963875001995
+    },
+    {
+      "parameters": [
+        0.0,
+        1000.0,
+        200000000.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "MemoryError: reference exceeded the recorded address-space limit",
+      "seconds": 49.272563085
+    },
+    {
+      "parameters": [
+        -100000000.0,
+        100000000.0,
+        200000000.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "MemoryError: reference exceeded the recorded address-space limit",
+      "seconds": 14.684886279002967
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        100000000.0,
+        100000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "MemoryError: reference exceeded the recorded address-space limit",
+      "seconds": 20.070632222999848
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        100000000.0,
+        1e-08
+      ],
+      "status": "oracle gap",
+      "reason": "MemoryError: reference exceeded the recorded address-space limit",
+      "seconds": 19.240896456001792
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        1.0,
+        1e-08
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 2.1727336140029365
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        1.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 2.0511046559986426
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        3.8792797496374307,
+        100000000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 9.56352538200008
+    }
+  ],
+  "metadata_migration": "Table metadata updated; original generation fingerprint retained"
+}

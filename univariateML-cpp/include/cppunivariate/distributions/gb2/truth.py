@@ -13,3 +13,16 @@ def build(t):
     ref = Reference(lambda x: beta(shape3,shape1,(x/scale)**shape2/(1+(x/scale)**shape2),1/(1+(x/scale)**shape2)), 0, mp.inf)
 
     return beta_normalization(ref,shape3,shape1)
+
+# Joint limit paths supplement the shared one-coordinate extreme grid.
+extreme_parameter_sets = [{'shape1': 100000000.0, 'scale': 100000000.0}, {'shape3': 100000000.0, 'scale': 1e-08}, {'shape1': 100000000.0, 'shape3': 100000000.0, 'shape2': 0.0001414213562373095}, {'shape1': 1e-08, 'shape2': 100000000.0}, {'shape3': 1e-08, 'shape2': 100000000.0}, {'shape1': 1e-08, 'shape3': 1e-08, 'shape2': 100000000.0}]
+
+
+def endpoint_log_density(t, x):
+    """Exact one-sided power-law endpoint, before symbolic Gamma evaluation."""
+    b,c,a,s=t['shape1'],t['shape2'],t['shape3'],t['scale']
+    edge=mp.mpf(0)
+    if x==edge:
+        power=a*c-1
+        return -mp.inf if power>0 else mp.inf if power<0 else mp.log(c)-mp.log(s)-mp.log(mp.beta(a,b))
+    return None

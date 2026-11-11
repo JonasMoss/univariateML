@@ -1,0 +1,66 @@
+{
+  "id": "lomax",
+  "input_sha256": "9aa17f263d082fdd20cdda501763d0230932000f424e12fcffcb2dbee21ff124",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 61127,
+    "points": 7,
+    "values": 143,
+    "quantiles": 308
+  },
+  "after": {
+    "bytes": 96904,
+    "points": 11,
+    "values": 227,
+    "quantiles": 484
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.0613413060000312
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.9719122930000594
+    },
+    {
+      "parameters": [
+        1.0,
+        1e-08
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: normalization quadrature error estimate 0.00000000001",
+      "seconds": 0.6223653739998554
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.7370174329998918
+    },
+    {
+      "parameters": [
+        1e-08,
+        100000000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.7830447960000129
+    }
+  ]
+}

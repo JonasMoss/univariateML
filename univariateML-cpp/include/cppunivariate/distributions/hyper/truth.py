@@ -9,3 +9,7 @@ def build(t, logd):
     m,n,k=t['m'],t['N']-t['m'],t['k']
     return finite_pmf(logd,max(0,k-n),min(m,k))
 
+
+# Joint/finite-design limit stresses beyond the historical grid.
+extreme_parameter_sets = [{'N': 100000000}]
+

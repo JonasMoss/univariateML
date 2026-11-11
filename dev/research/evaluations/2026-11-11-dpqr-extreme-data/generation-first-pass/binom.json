@@ -1,0 +1,34 @@
+{
+  "id": "binom",
+  "before": {
+    "bytes": 44759,
+    "points": 7,
+    "values": 100,
+    "quantiles": 308
+  },
+  "after": {
+    "bytes": 51577,
+    "points": 8,
+    "values": 116,
+    "quantiles": 352
+  },
+  "records": [
+    {
+      "parameters": [
+        10.0,
+        5e-09
+      ],
+      "status": "generated",
+      "seconds": 0.03414812497794628
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1e-08
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 30 seconds per point",
+      "seconds": 30.021502916002646
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "id": "foldnorm",
+  "before": {
+    "bytes": 71845,
+    "points": 8,
+    "values": 168,
+    "quantiles": 352
+  },
+  "after": {
+    "bytes": 107439,
+    "points": 12,
+    "values": 252,
+    "quantiles": 528
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 2.099096602993086
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 2.731114804977551
+    },
+    {
+      "parameters": [
+        1.0,
+        1e-08
+      ],
+      "status": "generated",
+      "seconds": 2.317886426986661
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "seconds": 2.8373723999829963
+    }
+  ]
+}

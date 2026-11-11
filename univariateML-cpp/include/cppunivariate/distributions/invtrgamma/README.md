@@ -139,6 +139,16 @@ The inverse transformed gamma distribution is the distribution of the
 reciprocal of a transformed gamma variable; it models heavy-tailed
 positive losses.
 
+## d/p/q/r
+
+### Small-shape reciprocal inverse
+
+The inverse uses the corrected logarithmic Gamma normalization before taking the reciprocal power; error in that normalizer enters log X divided by shape1 shape2, with the opposite sign from the transformed-Gamma member. Its small-shape inverse sampler inherits the corrected numeric values with unchanged uniform inputs and RNG consumption.
+
+### Coupled small-shape and large-power limit
+
+The product shape1*shape2 can remain finite while shape2*log(x/scale) overflows. Small-shape density and tail evaluations retain that product before transforming. The Gamma integral bounds the leading small-u CDF between exp(-u) and one times u^a/Gamma(1+a); the branch requires u below 1e-12 times the smaller tail's logarithmic scale. For quantiles whose latent log coordinate overflows negatively, the same bound makes the omitted remainder negligible before division by the power. This recovers finite power-limit answers, including shape1=1e-309 and shape2=1e308, without forming the latent coordinate.
+
 ## Details
 
 With $k\downarrow0$, $p\to\infty$ and $kp\to d>0$, $p/\Gamma(k)\to d$. In the displayed density,

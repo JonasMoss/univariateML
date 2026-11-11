@@ -160,6 +160,20 @@ existence:
 
 The generalized beta of the first kind models positive observations below a supplied upper endpoint.
 
+## d/p/q/r
+
+### Endpoint power
+
+The zero-endpoint classification uses the residual of the exact binary64 shape-times-power product minus one. Rounding that product first can falsely select a finite density when the exact endpoint density is zero or infinite.
+
+For shape2 = 2, write u = (x/scale)^shape3. The CDF u^shape1 (1 + shape1(1-u)) is evaluated through positive logarithmic deviances, with a Taylor remainder bound when the hazard is too small to materialize. This avoids the double-width beta-backend normalization error on reciprocal-power paths. Shape2 one uses the exact power law.
+
+### Concentrating beta coordinates
+
+At unit power the affine beta density retains the physical displacement through compensated products. Other powers use the centered beta log-odds density. Its practical coordinate margin includes amplification by 1/(1-y) when y=(x/scale)^power approaches one. The density returns NaN near concentration if that margin exceeds 1e-12 times its log-density scale; this named precision region requires more accurate transcendental coordinates.
+
+If the ordinary log-odds margin fails, two-word logarithms recompute the centered coordinate before rounding. The beta mean is subtracted in the same arithmetic. The complement uses a direct expm1 series near zero, so forming one minus a rounded exponential cannot erase it. NaN remains confined to cases where this practical two-word margin also fails; the ordinary margin selects the recomputation rather than a refusal.
+
 ## Details
 
 The endpoint is $b$, the power is $a$, and $(X/b)^a$ has beta shapes $p,q$.
@@ -228,7 +242,6 @@ selected by this route. The
 states the bounds and practical floating-point margins. In particular, when
 $q>1$, a sufficiently large finite power strictly improves on the fixed-endpoint
 power face; a tolerance-based power selection can therefore be false.
-
 
 With both beta shapes held, the power likelihood is strictly concave even
 when $0<q<1$. For $y_i=\log(b/x_i)>0$, its second derivative is

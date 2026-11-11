@@ -111,6 +111,12 @@ existence:
 
 The half-Cauchy distribution models magnitudes with heavy tails above a lower endpoint $\mu$. Its positive scale $\sigma$ sets the width. The endpoint has positive density and is included in the support.
 
+## d/p/q/r
+
+### Extreme d/p/q arithmetic
+
+Near the median, tan(pi/4+d)-1 = 2 tan(d)/(1-tan(d)) avoids subtracting one from a rounded tangent. The offset is combined with a compensated location-plus-scale.
+
 ## Details
 
 The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-halfthreshold.md) gives the endpoint and collapse arguments.

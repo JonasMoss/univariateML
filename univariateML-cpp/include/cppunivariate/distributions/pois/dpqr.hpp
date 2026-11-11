@@ -23,6 +23,14 @@ using cppunivariate::special::kNegInf;
 inline double dpois(double x, double lambda, bool log) {
   if (!(lambda>=0) || !std::isfinite(lambda) || std::isnan(x)) return special::kNaN;
   if (!std::isfinite(x) || x<0 || x!=std::floor(x)) return log?special::kNegInf:0.0;
+  if(lambda==0)return x==0?(log?0:1):(log?special::kNegInf:0);
+  if(x>=16) {
+    const double delta=lambda-x,u=delta/x;
+    const double penalty=std::abs(u)<=.5?special::scaled_positive_deviance(x,u)
+      :delta-x*special::log_positive_ratio(lambda,x);
+    const double lp=-.91893853320467274178-.5*std::log(x)-special::density_stirling_remainder(x)-penalty;
+    return log?lp:std::exp(lp);
+  }
   return special::dpois(x,lambda,log);
 }
 

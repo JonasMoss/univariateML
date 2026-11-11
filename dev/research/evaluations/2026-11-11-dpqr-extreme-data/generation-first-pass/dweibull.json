@@ -1,0 +1,50 @@
+{
+  "id": "dweibull",
+  "before": {
+    "bytes": 193376,
+    "points": 7,
+    "values": 1456,
+    "quantiles": 308
+  },
+  "after": {
+    "bytes": 278743,
+    "points": 10,
+    "values": 2086,
+    "quantiles": 440
+  },
+  "records": [
+    {
+      "parameters": [
+        5e-09,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 0.11517901200568303
+    },
+    {
+      "parameters": [
+        0.9999999999999999,
+        1.0
+      ],
+      "status": "generated",
+      "seconds": 0.5095162629731931
+    },
+    {
+      "parameters": [
+        0.5,
+        1e-08
+      ],
+      "status": "generated",
+      "seconds": 0.14194741798564792
+    },
+    {
+      "parameters": [
+        0.5,
+        100000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 30 seconds per point",
+      "seconds": 30.00010971201118
+    }
+  ]
+}

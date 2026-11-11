@@ -251,3 +251,13 @@ TEST_CASE("llogis: raw transform audit case 4522") {
   CHECK(fit.scale==doctest::Approx(0.9111157554269419).epsilon(1e-10).scale(0));
   CHECK(fit.logLik==doctest::Approx(-8.10597742931569).epsilon(1e-10).scale(0));
 }
+
+// Independent 100-digit mpmath values; priority.py records exact double inputs.
+TEST_CASE("llogis: exact-input large-shape displacement") {
+  CHECK(cppunivariate::distributions::dllogis(999.9999999999999,1e12,1000.,true) == doctest::Approx(19.336971472595348).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::pllogis(999.9999999999999,1e12,1000.,false,true) == doctest::Approx(-0.6930903387566716).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::dllogis(1000.0000000000001,1e12,1000.,true) == doctest::Approx(19.336971472595348).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::pllogis(1000.0000000000001,1e12,1000.,false,true) == doctest::Approx(-0.6932040255943932).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::dllogis(1000.0000000005,1e12,1000.,true) == doctest::Approx(19.275113163635652).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::pllogis(1000.0000000005,1e12,1000.,false,true) == doctest::Approx(-0.9740736928049015).epsilon(1e-10));
+}

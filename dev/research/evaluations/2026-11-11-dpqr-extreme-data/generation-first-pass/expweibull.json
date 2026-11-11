@@ -1,0 +1,91 @@
+{
+  "id": "expweibull",
+  "before": {
+    "bytes": 102756,
+    "points": 12,
+    "values": 228,
+    "quantiles": 528
+  },
+  "after": {
+    "bytes": 152014,
+    "points": 18,
+    "values": 329,
+    "quantiles": 792
+  },
+  "records": [
+    {
+      "parameters": [
+        2e-08,
+        1.5,
+        2.5
+      ],
+      "status": "generated",
+      "seconds": 0.5334092089906335
+    },
+    {
+      "parameters": [
+        200000000.0,
+        1.5,
+        2.5
+      ],
+      "status": "generated",
+      "seconds": 0.5145757389836945
+    },
+    {
+      "parameters": [
+        2.0,
+        1.5000000000000002e-08,
+        2.5
+      ],
+      "status": "generated",
+      "seconds": 0.573499625956174
+    },
+    {
+      "parameters": [
+        2.0,
+        150000000.0,
+        2.5
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 30 seconds per point",
+      "seconds": 30.000116969982628
+    },
+    {
+      "parameters": [
+        2.0,
+        1.5,
+        2.5e-08
+      ],
+      "status": "generated",
+      "seconds": 0.7372443409985863
+    },
+    {
+      "parameters": [
+        2.0,
+        1.5,
+        250000000.0
+      ],
+      "status": "generated",
+      "seconds": 0.5331459409790114
+    },
+    {
+      "parameters": [
+        2000.0,
+        150000000.0,
+        2.5
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 30 seconds per point",
+      "seconds": 30.00009670504369
+    },
+    {
+      "parameters": [
+        2000.0,
+        1.5,
+        250000000.0
+      ],
+      "status": "generated",
+      "seconds": 0.49039040302159265
+    }
+  ]
+}

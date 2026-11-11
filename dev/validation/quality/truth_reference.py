@@ -17,7 +17,7 @@ def complement(logp):
         return mp.mpf(0)
     if logp == 0:
         return -mp.inf
-    return mp.log(-mp.expm1(logp))
+    return mp.log1p(-mp.exp(logp)) if logp < -mp.log(2) else mp.log(-mp.expm1(logp))
 
 
 def pair(logp, lower=True):
@@ -51,12 +51,13 @@ def beta(a, b, z, w=None):
     if w is None:w=1-z
     if z<=0:return -mp.inf,mp.mpf(0)
     if w<=0:return mp.mpf(0),-mp.inf
-    lower=z<a/(a+b)
+    lower=True if w==1 else False if z==1 else z<a/(a+b)
     def integral(is_lower):
         return mp.log(mp.betainc(a,b,0,z,regularized=True) if is_lower
                       else mp.betainc(b,a,0,w,regularized=True))
     lp=integral(lower)
-    if lp>-mp.log(2):lower=not lower;lp=integral(lower)
+    if lp>-mp.log(2) and z!=1 and w!=1:
+        lower=not lower;lp=integral(lower)
     return pair(lp,lower)
 
 
@@ -160,13 +161,20 @@ class Reference:
             v = self.tails(x)[0 if lower else 1]
             return v < lp if lower else v > lp
         a, b = mp.mpf(-1), mp.mpf(1)
-        while not below(a) and a > -16384: a *= 2
-        while below(b) and b < 16384: b *= 2
+        while not below(a): a *= 2
+        while below(b): b *= 2
         for _ in range(220):
             mid = (a+b)/2
             if below(mid): a = mid
             else: b = mid
-            if binary64(self.chart(a)[0])==binary64(self.chart(b)[0]): break
+            xa, xb = self.chart(a)[0], self.chart(b)[0]
+            rounded = binary64(xa)
+            # Verification uses unrounded quantiles as integration cuts. Two
+            # zeros/infinities (or a rounded finite support edge) do not locate
+            # that cut: retain the logarithmic coordinate until it is resolved.
+            if (rounded == binary64(xb) and rounded != 0 and
+                mp.isfinite(rounded) and self.lower < rounded < self.upper):
+                break
         return self.chart((a+b)/2)[0]
 
 

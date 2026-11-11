@@ -90,7 +90,7 @@ inline double dbhatt(double x,double mu=0,double sigma=1,double a=1,bool log=fal
   if(b*(1+std::abs(z))<1e-8)l=bhatt_detail::logphi(z)-std::log(static_cast<double>(sigma));
   else if(b*(1+std::abs(z))<.01)l=bhatt_detail::narrow(z,b,false)-std::log(static_cast<double>(sigma));
   else {
-    const double lo=std::isfinite(z) && std::isfinite(b) ? z-b : (std::abs(x-mu)-a)/sigma,hi=z+b;
+    const double lo=(std::abs(x-mu)-a)/sigma,hi=z+b;
     if(lo==hi) {
       // The interval is below double coordinate resolution. Its
       // convolution correction is below double log-density precision.
@@ -111,7 +111,7 @@ inline double pbhatt(double q,double mu=0,double sigma=1,double a=1,bool lower_t
   else if(b*(1+z)<1e-8)lp=bhatt_detail::logQ(z);
   else if(b*(1+z)<.01)lp=bhatt_detail::narrow(z,b,true);
   else {
-    const double lo=std::isfinite(z) && std::isfinite(b) ? z-b : (d-a)/sigma,hi=z+b;
+    const double lo=(d-a)/sigma,hi=z+b;
     lp=lo==hi?bhatt_detail::logQ(z):bhatt_detail::logdiff(bhatt_detail::logH(lo),bhatt_detail::logH(hi))-(std::log(2.0)+std::log(a)-std::log(sigma));
   }
   const bool small=lower_tail?q<=mu:q>=mu;
