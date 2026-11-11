@@ -50,6 +50,23 @@ optimality is a separate claim with its own evidence (the dossier
 `existence:` block and certificates). It therefore covers uncertified fits
 too: `certified = FALSE` withdraws only the global claim.
 
+## Log likelihood
+
+A fit's `logLik` is the maximized value the fit establishes: the certified
+supremum, or the value at the returned local maximizer. It is accurate to
+`1e-10 * max(1, |logLik|)`. Where the likelihood is Lipschitz near the
+maximizer, the usual case, it agrees with the summed d/p/q log density at the
+returned public coefficients to that tolerance.
+
+Where it is not, no representable coefficient vector attains the supremum.
+Examples: a power cusp below one at an observation (SGED and GED with shape
+below one, mode on a data point), or a maximizer at a support endpoint reached
+through a transformation of the public coefficients. Then the summed density
+at the returned coefficients is at most `logLik` (up to rounding) and below it
+by at most an allowance the family dossier states; for a cusp of power `nu`
+it is about `eps^nu` per cusp observation (1e-4 at `nu = 0.3`). Returned
+coefficients never place an observation outside the support.
+
 ## d/p/q
 
 Every `dpqr.hpp` function is accurate for the exact binary64 arguments it

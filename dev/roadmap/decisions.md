@@ -8,6 +8,14 @@ Active work lives on the board (`~/boards/univariateML`), not here.
 
 ## 2026-11-11
 
+- **`logLik` is the maximized value** (Jonas: "Lets do option A"; and a
+  general rule). At a non-Lipschitz maximizer (a power cusp below one, an
+  endpoint reached through transformed coefficients) no representable
+  coefficients attain the supremum; `logLik` reports the supremum, the
+  summed density at the returned coefficients is below it by a dossier-stated
+  allowance, and seam checks there are one-sided. Elsewhere `logLik` agrees
+  with the summed density to `1e-10`. Design:
+  [accuracy contract](../design/accuracy-contract.md#log-likelihood).
 - **Two accuracy-failure kinds** (Jonas: "sounds reasonable"). A `tol`
   below the binary64 spacing at the maximizer is a `tolerance` stop; noise
   over curvature above a representable `tol` is a `conditioning` stop. One

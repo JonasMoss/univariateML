@@ -441,7 +441,11 @@ TEST_CASE("sged subunit asymmetric scale certificate closes cusps and smooth ext
     const auto r=cppunivariate::sged_mle(mltest::as_span(x),1e-8,200,.1,NAN,nu,xi);
     REQUIRE(r.status==cppunivariate::SgedStatus::Ok);CHECK(r.certified);
     double ll=0;for(double v:x)ll+=dist::dsged(v,.1,r.sigma,nu,xi,true);
-    CHECK(r.logLik==doctest::Approx(ll).epsilon(2e-8));
+    // logLik is the certified supremum. No double sd puts the mode exactly on its
+    // observation, so the density at the returned sd is lower by about eps^nu
+    // per cusp observation (accuracy contract, "Log likelihood").
+    CHECK(ll<=r.logLik+1e-12*(1+std::abs(r.logLik)));
+    CHECK(r.logLik-ll<=x.size()*std::pow(64*std::numeric_limits<double>::epsilon(),nu));
     // Independent broad log-scale grid: a regression check, not the proof.
     for(int j=-300;j<=300;++j) {
       const double sd=std::exp(j*.05);double candidate=0;

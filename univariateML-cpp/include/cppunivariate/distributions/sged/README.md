@@ -390,8 +390,13 @@ a $4096\epsilon(1+n+|F|)(1+|\nu\log\xi|+1/\nu)$ cost allowance;
 derivative comparisons use the same conditioning factor times their absolute
 term sum. Algebraic knot residuals are set to zero. Recovery tries three algebraically equivalent scale expressions at a cusp and
 their adjacent representable values. It is accepted only
-if the density at the stored public coefficients agrees with its ideal value
-within $10^{-7}(n+|\ell|)$. Nonfinite arithmetic, lost distinct normalized
+if the density at the stored public coefficients, evaluated in the
+certificate's own standardization (which maps the knot to zero), agrees with
+its ideal value within $10^{-7}(n+|\ell|)$. The reported log likelihood is
+that certified supremum. No representable scale puts the mode exactly on its
+observation, so the exactly evaluated density at the returned coefficients is
+lower by about $\epsilon^{\nu}$ per cusp observation ($10^{-4}$ at $\nu=0.3$,
+$10^{-13}$ at $\nu=0.9$). Nonfinite arithmetic, lost distinct normalized
 observations or knots, and underflowed scales stop numerically. These checks address practical cancellation and cusp
 sensitivity; they are not directed-rounding bounds. Tail expansions, point
 and cell evaluations share $128\min(\mathtt{iterlim},100000)$ work units.

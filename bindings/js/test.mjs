@@ -513,7 +513,11 @@ test('SGED subunit asymmetric scale certificates agree with independent fixtures
     assert.ok(Math.abs(fit.estimates.sd/sd-1)<2e-7);
     assert.ok(Math.abs(fit.logLik-ll)<2e-6);
     const density = api.sged.d(x,[.1,fit.estimates.sd,nu,1.3],{log: true});
-    assert.ok(Math.abs(Array.from(density).reduce((a,b)=>a+b,0)-fit.logLik)<2e-6);
+    // logLik is the certified supremum; at a subunit cusp the density at the
+    // rounded sd is lower by about eps^nu per cusp observation.
+    const sum = Array.from(density).reduce((a,b)=>a+b,0);
+    assert.ok(sum<=fit.logLik+1e-12*(1+Math.abs(fit.logLik)));
+    assert.ok(fit.logLik-sum<=x.length*Math.pow(64*Number.EPSILON,nu));
   }
 });
 

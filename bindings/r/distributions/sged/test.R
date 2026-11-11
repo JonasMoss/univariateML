@@ -530,7 +530,11 @@ test_that("SGED held subunit asymmetric scale agrees with the density", {
   for (nu in c(.3,.5,.9)) for (xi in c(.3,1.3,3)) {
     fit <- mlsged(x, mean=.1, nu=nu, xi=xi)
     expect_identical(as.numeric(fit[c("mean","nu","xi")]), c(.1,nu,xi))
-    expect_equal(as.numeric(logLik(fit)), sum(dml(x,fit,log=TRUE)), tolerance=2e-7)
+    # logLik is the certified supremum; at a subunit cusp the density at the
+    # rounded sd is lower by about eps^nu per cusp observation.
+    l <- as.numeric(logLik(fit)); d <- sum(dml(x,fit,log=TRUE))
+    expect_lte(d, l + 1e-12*(1+abs(l)))
+    expect_lte(l - d, length(x)*(64*.Machine$double.eps)^nu)
     expect_setequal(attr(fit,"fixed"),c("mean","nu","xi"))
   }
 })
