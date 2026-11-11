@@ -365,3 +365,5 @@ additionally needs uniform bounds at joint shape/skew corners. Those routes
 retain their numerical methods and are not certified. The
 [derivation and remaining obligations](../../../../../dev/research/evaluations/2026-11-08-sstd-free-data/derivation.md)
 records the precise remaining obligations and independent checks.
+
+Held-subset refinement keeps the supplied shape and skew constant in the variance-standardization moments. Large residuals use the logarithm of their magnitude before forming the Student kernel, so squared-residual derivative underflow does not remove shape curvature.

@@ -732,7 +732,19 @@ inline SstdResult sstd_mle(span x, double tol, int maxit,
     auto status=statuses[r.status];
     if((r.status==7 || r.status==8) && std::isinf(r.nu))
       status=r.status==7 ? SstdStatus::RightHalfNormalBoundary : SstdStatus::LeftHalfNormalBoundary;
-    return {r.mean,r.sd,r.nu,r.xi,-r.f,r.iterations,status};
+    SstdResult result{r.mean,r.sd,r.nu,r.xi,-r.f,r.iterations,status};
+    if(result.status==SstdStatus::Ok) {
+      const double origin=result.mu,unit=result.sigma;
+      std::vector<double> y;for(double v:x)y.push_back((v-origin)/unit);
+      std::array<double,4> p{{(result.mu-origin)/unit,std::log(result.sigma/unit),hn?0:std::log(result.nu-2),std::log(result.xi)}};
+      const auto objective=[&](const std::array<local_accuracy::Jet,4>& q){return local_accuracy::skew_objective(y,q,true,hn?fixed_nu:NAN);};
+      const auto error=[&](const std::array<double,4>& q,const std::array<double,4>& step){auto v=q;v[0]+=origin/unit;auto t=step;if(!hn)t[2]*=std::exp(q[2])/(2+std::exp(q[2]));return local_accuracy::location_error(v,t);};
+      if(local_accuracy::subset(p,{{!hm,!hs,!hn,!hx}},tol,maxit,objective,error)){
+        result.mu=hm?fixed_mean:origin+unit*p[0];result.sigma=hs?fixed_sd:unit*std::exp(p[1]);result.nu=hn?fixed_nu:2+std::exp(p[2]);result.xi=hx?fixed_xi:std::exp(p[3]);result.logLik=-objective(local_accuracy::variables(p)).v-x.size()*std::log(unit);
+        if((!hm&&!local_accuracy::represented(result.mu,std::max(std::abs(result.mu),result.sigma),tol))||(!hs&&!local_accuracy::represented(result.sigma,result.sigma,tol))){result.status=SstdStatus::BfgsFailure;result.accuracy_failure=true;}
+      }else{result.status=SstdStatus::BfgsFailure;result.accuracy_failure=true;}
+    }
+    return result;
   }
   if(hm && hs) {
     SstdCost cost{x};const double phi[]={fixed_mean,std::log(fixed_sd),std::log(fixed_nu-2),std::log(fixed_xi)};

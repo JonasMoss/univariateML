@@ -216,18 +216,28 @@ inline StResult st_mle(span data,double tol=1e-10,int maxit=200,double xi=specia
    }}
  if(!best.ok||profile_best>best.ll+tie){bad.status=StStatus::NumericalFailure;bad.reason=4;return bad;}
  if(std::abs(best.v[2])>1e5||best.v[3]>1e6){bad.status=StStatus::NumericalFailure;bad.reason=5;return bad;}
- if(std::isnan(xi)&&std::isnan(omega)&&std::isnan(alpha)&&std::isnan(nu)) {
-  std::array<double,4> p{{best.v[0],std::log(best.v[1]),best.v[2],best.v[3]>1?std::log(best.v[3]-1):0}};
-  const auto objective=[&](const std::array<local_accuracy::Jet,4>& q){return st_accuracy::objective(y,q,maxit,best.v[3]==1);};
+ {
+  const bool edge=std::isnan(nu)&&best.v[3]<1.001;
+  const double accuracy_center=allfree?0:best.v[0],accuracy_scale=allfree?1:best.v[1];
+  std::vector<double> accuracy_y;for(double v:y)accuracy_y.push_back((v-accuracy_center)/accuracy_scale);
+  std::array<double,4> p{{(best.v[0]-accuracy_center)/accuracy_scale,std::log(best.v[1]/accuracy_scale),best.v[2],edge?best.v[3]:std::isnan(nu)&&best.v[3]>1?std::log(best.v[3]-1):0}};
+  const auto objective=[&](const std::array<local_accuracy::Jet,4>& q){return st_accuracy::objective(accuracy_y,q,maxit,false,nu,edge);};
   const auto error=[&](const std::array<double,4>& q,const std::array<double,4>& s){
-   return std::max(std::abs(s[0])/std::max(std::abs(origin/unit+q[0]),std::exp(q[1])),std::max(std::abs(s[1]),std::max(std::abs(s[2])/std::max(1.,std::abs(q[2])),std::abs(s[3]))));};
-  if(!local_accuracy::polish(p,best.v[3]==1?3:4,tol,maxit,objective,error)){bad.status=StStatus::NumericalFailure;bad.accuracy_failure=true;return bad;}
-  const auto checked=objective(local_accuracy::variables(p));
-  if(best.v[3]==1 && checked.g[3]<-128*std::numeric_limits<double>::epsilon()*y.size()){bad.status=StStatus::NumericalFailure;return bad;}
-  best.v[0]=p[0];best.v[1]=std::exp(p[1]);best.v[2]=p[2];best.v[3]=best.v[3]==1?1:1+std::exp(p[3]);best.ll=-checked.v;
+   return std::max(std::abs(s[0])/std::max(std::abs((origin/unit+accuracy_center)/accuracy_scale+q[0]),std::exp(q[1])),std::max(std::abs(s[1]),std::max(std::abs(s[2])/std::max(1.,std::abs(q[2])),std::abs(s[3])*(edge?1/q[3]:allfree?1:std::exp(q[3])/(1+std::exp(q[3]))))));};
+  bool boundary=false;
+  if(edge){auto at=p;at[3]=1;boundary=objective(local_accuracy::variables(at)).g[3]>=0;if(boundary)p[3]=1;}
+  bool free_shape=std::isnan(nu)&&(!edge||!boundary);
+  if(!local_accuracy::subset(p,{{std::isnan(xi),std::isnan(omega),std::isnan(alpha),free_shape}},tol,maxit,objective,error)){bad.status=StStatus::NumericalFailure;bad.accuracy_failure=true;return bad;}
+  if(edge&&!free_shape&&objective(local_accuracy::variables(p)).g[3]<0){
+   if(!local_accuracy::subset(p,{{std::isnan(xi),std::isnan(omega),std::isnan(alpha),true}},tol,maxit,objective,error)){bad.status=StStatus::NumericalFailure;bad.accuracy_failure=true;return bad;}
+  }
+  auto evaluation=local_accuracy::variables(p);
+  if(!allfree)for(int j=0;j<4;++j)evaluation[j]=p[j]; // Value only; derivative axes were checked in the packed subset.
+  const auto checked=objective(evaluation);
+  best.v[0]=accuracy_center+accuracy_scale*p[0];best.v[1]=accuracy_scale*std::exp(p[1]);best.v[2]=p[2];best.v[3]=std::isfinite(nu)?nu:edge?p[3]:1+std::exp(p[3]);best.ll=-checked.v-y.size()*std::log(accuracy_scale);
  }
  StResult out{std::isfinite(xi)?xi:origin+unit*best.v[0],std::isfinite(omega)?omega:unit*best.v[1],best.v[2],best.v[3],best.ll-n*std::log(unit),best.iterations,StStatus::Ok,(std::isnan(nu)&&best.v[3]==1)?64u:0u};
- if(allfree&&(!local_accuracy::represented(out.xi,std::max(std::abs(out.xi),out.omega),tol)||!local_accuracy::represented(out.omega,out.omega,tol))){out.status=StStatus::NumericalFailure;out.accuracy_failure=true;}
+ if(!std::isfinite(out.logLik)||(std::isnan(xi)&&!local_accuracy::represented(out.xi,std::max(std::abs(out.xi),out.omega),tol))||(std::isnan(omega)&&!local_accuracy::represented(out.omega,out.omega,tol))){out.status=StStatus::NumericalFailure;out.accuracy_failure=true;}
  return out;
 }
 }

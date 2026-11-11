@@ -272,3 +272,20 @@ TEST_CASE("slash subnormal scale spacing cannot silently pass the accuracy contr
  const auto r=cppunivariate::slash_mle({x.data(),x.size()});
  CHECK(r.status==cppunivariate::SlashStatus::IterationFailure);
 }
+
+// Independent 70-digit direct-density stationary roots: acc-fb-t-data/oracle.py.
+TEST_CASE("slash held accuracy stationary reference 6400") {
+ const std::vector<double> x{-6.860963357530646,2.731907054614555,-1.2506362937344324,0.03426346894790194,1000002.7319070547};
+ const auto r=cppunivariate::slash_mle({x.data(),x.size()},1e-10,200,1.1437689913361664,NAN);
+ REQUIRE(r.status==cppunivariate::SlashStatus::Ok);
+ CHECK(std::abs(r.mu-(-0.1816294493796424))<=1e-10*1.1437689913361664);
+ CHECK(r.sigma==1.1437689913361664);
+}
+
+TEST_CASE("slash held location monotone scale reference") {
+ const std::vector<double> x{-3,-1,-.4,.2,.8,1.1,2,5};
+ const auto r=cppunivariate::slash_mle({x.data(),x.size()},1e-10,500,NAN,.3);
+ REQUIRE(r.status==cppunivariate::SlashStatus::Ok);
+ CHECK(r.mu==.3);
+ CHECK(r.sigma==doctest::Approx(0.7295445726574704).epsilon(1e-10).scale(0));
+}

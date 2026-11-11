@@ -266,3 +266,5 @@ the uncached computation. At `log(t) >= 4`, the previous clamped argument gives
 [Paired records](../../../../../dev/research/evaluations/2026-11-09-slash-perf-data/benchmark.py)
 test this arithmetic identity and its fit-level consequences for every held
 subset.
+
+With scale held, the final location error is measured using the observed location curvature; the likelihood cover alone does not bound coefficient error near a flat maximum.

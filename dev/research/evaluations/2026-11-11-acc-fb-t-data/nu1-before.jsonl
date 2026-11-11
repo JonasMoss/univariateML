@@ -1,0 +1,18 @@
+{"index":32000,"error":"","estimates":{ "mean":0,"sd":41.218263991595911,"nu":1,"xi":1},"logLik":-35.458185418313036,"iterations":0,"certified":0}
+{"index":32001,"error":"","estimates":{ "mean":0,"sd":1,"nu":1,"xi":1},"logLik":-290.95386612731863,"iterations":1,"certified":0}
+{"index":32002,"error":"","estimates":{ "mean":0,"sd":1,"nu":1,"xi":1},"logLik":-290.95386612731863,"iterations":0,"certified":0}
+{"index":32003,"error":"","estimates":{ "mean":-1.2723931248910012,"sd":1,"nu":1,"xi":2},"logLik":-520.86112751066719,"iterations":0,"certified":0}
+{"index":32004,"error":"SGED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.","estimates":{ },"logLik":null,"iterations":0,"certified":null}
+{"index":32005,"error":"","estimates":{ "mean":0,"sd":1,"nu":1,"xi":2},"logLik":-524.79578594909356,"iterations":0,"certified":0}
+{"index":32006,"error":"","estimates":{ "mean":0,"sd":31.114167051944754,"nu":1,"xi":0.99977276381293911},"logLik":-33.490174175549619,"iterations":0,"certified":0}
+{"index":32007,"error":"","estimates":{ "mean":-0.15884566957885937,"sd":1,"nu":1,"xi":0.89268513388899917},"logLik":-216.2750679566569,"iterations":22,"certified":0}
+{"index":32008,"error":"","estimates":{ "mean":0,"sd":1,"nu":1,"xi":0.89722076461608213},"logLik":-216.74460601966356,"iterations":0,"certified":0}
+{"index":32009,"error":"","estimates":{ "mean":-1.2723931248909999,"sd":1,"nu":1,"xi":2},"logLik":-469.32230719044639,"iterations":0,"certified":0}
+{"index":32010,"error":"SGED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.","estimates":{ },"logLik":null,"iterations":0,"certified":null}
+{"index":32011,"error":"","estimates":{ "mean":0,"sd":1,"nu":1,"xi":2},"logLik":-473.25696562887276,"iterations":0,"certified":0}
+{"index":32012,"error":"The likelihood is maximised by a translated half-GED with endpoint constrained by the held moments; no MLE in the skewed family.","estimates":{ },"logLik":null,"iterations":0,"certified":null}
+{"index":32013,"error":"","estimates":{ "mean":0.16038407177954639,"sd":1,"nu":1,"xi":1.3098313819037022},"logLik":-35.053896040283476,"iterations":20,"certified":0}
+{"index":32014,"error":"","estimates":{ "mean":0,"sd":1,"nu":1,"xi":1.2898835354897078},"logLik":-35.33944327711815,"iterations":0,"certified":0}
+{"index":32015,"error":"","estimates":{ "mean":-0.27239312489100076,"sd":1,"nu":1,"xi":2},"logLik":-38.973157516603095,"iterations":0,"certified":0}
+{"index":32016,"error":"","estimates":{ "mean":0,"sd":5.0802550998982774,"nu":1,"xi":2},"logLik":-21.227349084073474,"iterations":0,"certified":0}
+{"index":32017,"error":"","estimates":{ "mean":0,"sd":1,"nu":1,"xi":2},"logLik":-39.815486735816336,"iterations":0,"certified":0}

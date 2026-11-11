@@ -1,0 +1,84 @@
+{"index":6366,"error":"","estimates":{"mu":3.9605967164532783e+149,"sigma":1.0397687653228379e+150},"certified":null}
+{"index":6400,"error":"","estimates":{"mu":-0.18162944937960804,"sigma":1.1437689913361664},"certified":null}
+{"index":6170,"error":"","estimates":{"mean":-1.8564032985102169e+149,"sd":8.7247123865109793e+149,"nu":3.4208324500711944,"xi":2.5890673965717057},"certified":true}
+{"index":6190,"error":"","estimates":{"mean":-0.10791819947817438,"sd":0.93902992027393606,"nu":3.4208324500711944,"xi":2.5890673965717057},"certified":true}
+{"index":6176,"error":"","estimates":{"mean":-0.032496865700421936,"sd":0.44480906653003166,"nu":3.4208324500711944,"xi":2.5890673965717057},"certified":true}
+{"index":6078,"error":"","estimates":{"mean":-0.032496865700421936,"sd":0.93902992027393606,"nu":3.4208324500711944,"xi":2.3352191509468039},"certified":true}
+{"index":6126,"error":"","estimates":{"mean":0.10751194239651558,"sd":0.93902992027393606,"nu":94.478343055917179,"xi":2.5890673965717057},"certified":false}
+{"index":6818,"error":"","estimates":{"mean":0.012734271748561354,"sd":1.6312662033213465,"nu":2.4225402704596073,"xi":1.9114750836827714},"certified":null}
+{"index":6142,"error":"","estimates":{"mean":-0.032496865700421936,"sd":0.93902992027393606,"nu":842.71182130782847,"xi":2.5890673965717057},"certified":false}
+{"index":6847,"error":"","estimates":{"mean":100000000.22756633,"sd":1.0184483076867987,"nu":8.5667672501617496,"xi":1.9114750836827714},"certified":null}
+{"index":6943,"error":"","estimates":{"xi":100000000.62770641,"omega":1.6458235942090849,"alpha":-2.5317284024604128,"nu":20.00680030290858},"certified":null}
+{"index":6880,"error":"","estimates":{"mean":2.6364043321585724,"sd":5.4534183638190106,"nu":2.9622019441967624,"xi":1.9114750836827714},"certified":null}
+{"index":6734,"error":"","estimates":{"mean":0.012734271748561354,"sd":1.0184483076867987,"nu":2.0028805167365489,"xi":0.94534567122331536},"certified":null}
+{"index":7149,"error":"","estimates":{"xi":-0.036539023191020197,"omega":0.035185561363608994,"alpha":0.10872382324228061,"nu":4.8315112533735256},"certified":null}
+{"index":6802,"error":"","estimates":{"mean":0.29518067100613221,"sd":1.6071849387690906,"nu":2.8634053537179649,"xi":1.9114750836827714},"certified":null}
+{"index":6960,"error":"","estimates":{"xi":-0.036539023191020197,"omega":0.33376592561822926,"alpha":0.97143520906434511,"nu":1},"certified":null}
+{"index":7126,"error":"","estimates":{"xi":0.091364100797242637,"omega":0.17981393590460032,"alpha":0.10872382324228061,"nu":4.8315112533735256},"certified":null}
+{"index":6962,"error":"","estimates":{"xi":0.13590464699694721,"omega":0.92035179255948207,"alpha":-1.0065491765001406,"nu":3.0088919444290489},"certified":null}
+{"index":7022,"error":"","estimates":{"xi":-0.036539023191020197,"omega":1.0035280528694785e+150,"alpha":0.10872382324228061,"nu":3.6644541133518906},"certified":null}
+{"index":6994,"error":"","estimates":{"xi":-0.63425477841785449,"omega":1.0187718341841341,"alpha":0.10872382324228061,"nu":6.896022889206149},"certified":null}
+{"index":7152,"error":"","estimates":{"xi":-0.036539023191020197,"omega":182770.87559872319,"alpha":0.10872382324228061,"nu":4.8315112533735256},"certified":null}
+{"index":7076,"error":"","estimates":{"xi":-0.036539023191020197,"omega":0.6112490999514173,"alpha":7.3046081485454275,"nu":4.8315112533735256},"certified":null}
+{"index":6990,"error":"","estimates":{"xi":-0.036539023191020197,"omega":0.92035179255948207,"alpha":-0.3535533905932739,"nu":1},"certified":null}
+{"index":6124,"error":"","estimates":{"mean":-0.032496865700421936,"sd":202213.92827120645,"nu":1,"xi":2.5890673965717057},"certified":false}
+{"index":6854,"error":"","estimates":{"mean":0.012734271748561354,"sd":1.0184483076867987,"nu":2.9783535899648408,"xi":1.9114750836827714},"certified":null}
+{"index":7103,"error":"","estimates":{"xi":99999999.935200214,"omega":0.92035179255948207,"alpha":-0.62206162450488733,"nu":4.8315112533735256},"certified":null}
+{"index":7071,"error":"","estimates":{"xi":100000000.4227709,"omega":1.2876859949999246,"alpha":-1.8000824847955759,"nu":4.8315112533735256},"certified":null}
+{"index":6026,"error":"","estimates":{"mean":-0.032496865700421936,"sd":0.93902992027393606,"nu":1,"xi":0.9568623825650695},"certified":false}
+{"index":7039,"error":"","estimates":{"xi":99999999.402437374,"omega":0.92035179255948207,"alpha":0.10872382324228061,"nu":4.7870926795942816},"certified":null}
+{"index":7042,"error":"","estimates":{"xi":-0.036539023191020197,"omega":0.92035179255948207,"alpha":0.10872382324228061,"nu":3.1085821018070292},"certified":null}
+{"index":6862,"error":"","estimates":{"mean":0.012734271748561354,"sd":1.0184483076867987,"nu":2.0028804813892136,"xi":1.9114750836827714},"certified":null}
+{"index":20182,"error":"","estimates":{"mean":0,"sd":1,"nu":472.44414856423197},"certified":false}
+{"index":20352,"error":"","estimates":{"mu":0,"sigma":1.0349851133381243,"df":374.01590360549335},"certified":false}
+{"index":20356,"error":"","estimates":{"mu":0,"sigma":1,"df":24.625613460277869},"certified":false}
+{"index":20498,"error":"","estimates":{"mean":0.014802159447983002,"sd":1,"nu":260.99035864317437},"certified":false}
+{"index":20509,"error":"","estimates":{"mean":0,"sd":0.96872579358697497,"nu":255.28581348519643},"certified":false}
+{"index":20607,"error":"","estimates":{"mu":-0.12312523206059715,"sigma":1,"df":1580.400827103251},"certified":false}
+{"index":30618,"error":"","estimates":{"mu":0.58152104884899269,"sigma":0.74878786032077516,"df":0.40000000000000002},"certified":false}
+{"index":30619,"error":"","estimates":{"mu":0.45904622395414546,"sigma":0.93302332815748257,"df":0.69999999999999996},"certified":false}
+{"index":30621,"error":"","estimates":{"mu":0.40391265990042857,"sigma":1.3690831392535374,"df":2},"certified":true}
+{"index":31000,"error":"","estimates":{"mu":100000000.27647731,"sigma":0.54218217913262456,"df":1},"certified":false}
+{"index":31100,"error":"At this held shape, symmetry and a strict likelihood comparison prove distinct global location-scale t maximizers. Candidates are finite likelihood witnesses.","estimates":[]}
+{"index":31101,"error":"","estimates":{"mean":0.8637175657864562,"sd":1.0178559902092952,"nu":27.497341303893556,"xi":1},"certified":false}
+{"index":31102,"error":"","estimates":{"mean":100000000.29932496,"sd":0.84605591574120687,"nu":5},"certified":false}
+{"index":31200,"error":"","estimates":{"mu":0,"sigma":1e-10,"df":0.039766816098032259},"certified":false}
+{"index":31201,"error":"","estimates":{"mu":0,"sigma":0.0014250151670490323,"df":0.26888012327951033},"certified":false}
+{"index":31202,"error":"","estimates":{"mu":10000000.000000004,"sigma":1.87895743532839e-09,"df":3},"certified":false}
+{"index":32000,"error":"","estimates":{"mean":0,"sd":41.218264427908402,"nu":1,"xi":1},"certified":false}
+{"index":32001,"error":"","estimates":{"mean":0,"sd":1,"nu":1,"xi":1},"certified":false}
+{"index":32002,"error":"","estimates":{"mean":0,"sd":1,"nu":1,"xi":1},"certified":false}
+{"index":32003,"error":"","estimates":{"mean":-1.272393124891001,"sd":1,"nu":1,"xi":2},"certified":false}
+{"index":32004,"error":"SGED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.","estimates":[]}
+{"index":32005,"error":"","estimates":{"mean":0,"sd":1,"nu":1,"xi":2},"certified":false}
+{"index":32006,"error":"","estimates":{"mean":0,"sd":31.114167098370135,"nu":1,"xi":0.99977276381327695},"certified":false}
+{"index":32007,"error":"","estimates":{"mean":-0.15886663266736539,"sd":1,"nu":1,"xi":0.89267152432558317},"certified":false}
+{"index":32008,"error":"","estimates":{"mean":0,"sd":1,"nu":1,"xi":0.89722075719208949},"certified":false}
+{"index":32009,"error":"","estimates":{"mean":-1.272393124891001,"sd":1,"nu":1,"xi":2},"certified":false}
+{"index":32010,"error":"SGED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.","estimates":[]}
+{"index":32011,"error":"","estimates":{"mean":0,"sd":1,"nu":1,"xi":2},"certified":false}
+{"index":32012,"error":"The likelihood is maximised by a translated half-GED with endpoint constrained by the held moments; no MLE in the skewed family.","estimates":[]}
+{"index":32013,"error":"","estimates":{"mean":0.16042552968122864,"sd":1,"nu":1,"xi":1.3098769330753941},"certified":false}
+{"index":32014,"error":"","estimates":{"mean":0,"sd":1,"nu":1,"xi":1.2898835266125339},"certified":false}
+{"index":32015,"error":"","estimates":{"mean":-0.27239312489100098,"sd":1,"nu":1,"xi":2},"certified":false}
+{"index":32016,"error":"","estimates":{"mean":0,"sd":5.080255145850332,"nu":1,"xi":2},"certified":false}
+{"index":32017,"error":"","estimates":{"mean":0,"sd":1,"nu":1,"xi":2},"certified":false}
+{"index":32018,"error":"","estimates":{"mean":0,"sd":41.218264427908409,"nu":1,"xi":1},"certified":false}
+{"index":32019,"error":"","estimates":{"mean":-0.032496878459554596,"sd":0.93902990474162584,"nu":3.4208333438322698,"xi":2.5890677274967513},"certified":false}
+{"index":33000,"error":"","estimates":{"mu":2.4522351594285743e-17,"sigma":1,"df":1.0001000000000004},"certified":false}
+{"index":33001,"error":"","estimates":{"xi":0,"omega":1,"alpha":0,"nu":1.0001000000000002},"certified":null}
+{"index":33002,"error":"","estimates":{"mean":0,"sd":1,"nu":1.0001,"xi":2},"certified":false}
+{"index":33100,"error":"","estimates":{"mu":0.29999999999999999,"sigma":0.72954457265747041},"certified":null}
+{"index":33101,"error":"","estimates":{"xi":0,"omega":1,"alpha":2,"nu":1000.0000000007537},"certified":null}
+{"index":34000,"error":"","estimates":{"mean":0,"sd":36.858732959670114,"nu":0.80000000000000004,"xi":1},"certified":false}
+{"index":34001,"error":"","estimates":{"mean":0,"sd":1,"nu":0.80000000000000004,"xi":1},"certified":false}
+{"index":34002,"error":"","estimates":{"mean":0,"sd":29.638969765220516,"nu":0.5,"xi":1},"certified":false}
+{"index":34003,"error":"","estimates":{"mean":0,"sd":1,"nu":0.5,"xi":1},"certified":false}
+{"index":34004,"error":"","estimates":{"mean":0,"sd":263.95437897417219,"nu":0.10000000000000001,"xi":1},"certified":false}
+{"index":34005,"error":"","estimates":{"mean":0,"sd":1,"nu":0.10000000000000001,"xi":1},"certified":false}
+{"index":34006,"error":"The likelihood is maximised by a translated half-GED with reflected endpoint constrained by the held moments; no MLE in the skewed family.","estimates":[]}
+{"index":34007,"error":"Skew GED MLE requires at least 2 finite observations with positive variance.","estimates":[]}
+{"index":34008,"error":"Skew GED MLE requires at least 2 finite observations with positive variance.","estimates":[]}
+{"index":34009,"error":"Skew GED MLE requires at least 2 finite observations with positive variance.","estimates":[]}
+{"index":34010,"error":"","estimates":{"mean":0,"sd":22.579007131227304,"nu":0.5,"xi":0.99999999999999989},"certified":false}
+{"index":34011,"error":"","estimates":{"mean":-0.054880714236549888,"sd":1,"nu":0.5,"xi":0.95098705602950839},"certified":false}

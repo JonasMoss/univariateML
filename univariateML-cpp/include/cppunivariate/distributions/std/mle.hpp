@@ -44,6 +44,7 @@ struct StudentTResult {
   StudentTStatus status;
   StopDetail stop_detail{};
   bool certified = true;
+  bool accuracy_failure = false;
 };
 
 // Per-obs nll in phi-space (with z = (x - mu)/sigma, m = nu - 2,
@@ -205,7 +206,7 @@ inline StudentTResult student_t_mle_fixed_nu(span x, double nu, double tol, int 
   if (r.status == LstStatus::IterationFailure) status = StudentTStatus::IterationFailure;
   if (r.status == LstStatus::NumericalFailure) status = StudentTStatus::NumericalFailure;
   auto result=StudentTResult{r.mu,r.sigma*std::sqrt(nu/(nu-2.0)),nu,r.logLik,r.iterations,status};
-  result.stop_detail=r.stop_detail;
+  result.stop_detail=r.stop_detail;result.certified=r.certified;result.accuracy_failure=r.accuracy_failure;
   if(status==StudentTStatus::Ok&&(!std::isfinite(result.mu)||!std::isfinite(result.sigma)||!(result.sigma>0)||!std::isfinite(result.logLik)||!student_t_scale_accurate(r.sigma,result.sigma,nu))) {
     result.status=StudentTStatus::NumericalFailure;result.mu=NAN;result.sigma=NAN;result.logLik=NAN;
     result.stop_detail.loglik_upper=INFINITY;
@@ -380,7 +381,7 @@ inline StudentTResult student_t_mle_certified(span x, double tol, int maxit,std:
 inline StudentTResult student_t_mle(span x,double tol,int maxit){
   maxit = static_cast<int>(solver_budget(maxit));return student_t_mle_certified(x,tol,maxit);}
 
-inline StudentTResult student_t_mle(span x,double tol,int maxit,double mean,double sd,double nu) {
+inline StudentTResult student_t_mle_held(span x,double tol,int maxit,double mean,double sd,double nu) {
   maxit = static_cast<int>(solver_budget(maxit));
   if(std::isnan(mean)&&std::isnan(sd))return std::isnan(nu)?student_t_mle(x,tol,maxit):student_t_mle_fixed_nu(x,nu,tol,maxit);
   const double nan=std::numeric_limits<double>::quiet_NaN();
@@ -411,7 +412,7 @@ inline StudentTResult student_t_mle(span x,double tol,int maxit,double mean,doub
     if(r.status==LstStatus::CertificateTie)status=StudentTStatus::CertificateTie;
     if(r.status==LstStatus::NumericalFailure)status=StudentTStatus::NumericalFailure;
     auto result=StudentTResult{r.mu,std::isnan(sd)?r.sigma*std::sqrt(d/(d-2)):sd,d,r.logLik,r.iterations,status};
-    result.stop_detail=r.stop_detail;
+    result.stop_detail=r.stop_detail;result.certified=r.certified;result.accuracy_failure=r.accuracy_failure;
     if(status==StudentTStatus::Ok&&(!std::isfinite(result.mu)||!std::isfinite(result.sigma)||!(result.sigma>0)||!std::isfinite(result.logLik)||(std::isnan(sd)&&!student_t_scale_accurate(r.sigma,result.sigma,d)))) {
       result.status=StudentTStatus::NumericalFailure;result.mu=NAN;result.sigma=NAN;result.logLik=NAN;
       result.stop_detail.loglik_upper=INFINITY;
@@ -553,5 +554,10 @@ inline StudentTResult student_t_mle(span x,double tol,int maxit,double mean,doub
   // converged admissible legacy point, explicitly without certification.
   best.certified=false;
   return best;
+}
+inline StudentTResult student_t_mle(span x,double tol,int maxit,double mean,double sd,double nu) {
+ auto r=student_t_mle_held(x,tol,maxit,mean,sd,nu);
+ if(r.status==StudentTStatus::Ok&&!r.certified && !t_local_accuracy::refine(r,x,mean,sd,nu,tol,maxit,true,r.nu)){r.status=StudentTStatus::NumericalFailure;r.accuracy_failure=true;}
+ return r;
 }
 } // namespace cppunivariate
