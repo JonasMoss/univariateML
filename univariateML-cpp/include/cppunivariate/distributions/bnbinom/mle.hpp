@@ -38,7 +38,7 @@ struct Data {
 };
 inline double likelihood(const Data &d, const std::vector<double> &p) {
   CPPUNIV_EXTENDED_REAL ll=d.n*zero(p[0],p[1],p[2]);
-  const CPPUNIV_EXTENDED_REAL t=static_cast<CPPUNIV_EXTENDED_REAL>(p[0])+p[1]+p[2];
+  const CPPUNIV_EXTENDED_REAL t=static_cast<CPPUNIV_EXTENDED_REAL>(p[0])+p[2]+p[1];  // size+beta first: exactly symmetric under the size<->beta swap
   for (std::size_t i=0;i<d.x.size();++i) {
     const int x=d.x[i];
     ll+=d.count[i]*(increment(p[0],x)+increment(p[2],x)-increment(t,x)-special::lgamma(x+1.0));
