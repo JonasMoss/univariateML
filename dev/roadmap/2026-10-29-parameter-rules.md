@@ -224,6 +224,11 @@ mechanical and leaves one judgement per coefficient (its kind).
   story than the free fit.
 - **M2:** threshold `NULL` fits under $c \ge 1$: gpd, pareto2–4, fpareto,
   nsbeta, genbeta, ht, hcauchy; fatigue's mechanism (unknown).
+  These are 26 of the 27 `not-implemented` hold subsets in the dossiers
+  (the 27th is bbinom with every coefficient free, TASK-113). With other
+  coefficients held an MLE can exist, so under the 2026-11-09 fallback rule
+  each such subset should eventually fit (certified or uncertified) or stop
+  with a proof, rather than refuse.
 - **M3:** GEV and GPD on $[-1, -1/2)$: existence, attainment, profile
   shape; whether GEV's `xi <= 1` holds with `mu` held.
 - **M4:** escape frequency of huber with free `epsilon` (now the default)
