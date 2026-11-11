@@ -428,9 +428,14 @@ TEST_CASE("tbinom: uncertified coefficients meet the local accuracy contract") {
     const auto f=cppunivariate::tbinom_design_mle({x.data(),x.size()},NAN,NAN,NAN);
     REQUIRE(f.status==cppunivariate::TbinomStatus::Ok);
     CHECK_FALSE(f.certified);
-    CHECK(std::abs(f.prob-(0.9999933471248125))<=1e-10*1);
+    // The uncertified size search lands on different integers across compilers
+    // (GCC 15: 1000011; GCC 13 and WASM: 11224310574). Check the local accuracy
+    // at the returned size against its 80-digit reference.
     CHECK(f.a==999999.0);
     CHECK(f.b==1000011.0);
-    CHECK(f.size==1000011.0);
+    const bool small=f.size==1000011.0, large=f.size==11224310574.0;
+    REQUIRE((small || large));
+    const double ref=small ? 0.9999933471248125 : 8.2524620502977025e-05;
+    CHECK(std::abs(f.prob-ref)<=1e-10*ref);
   }
 }
