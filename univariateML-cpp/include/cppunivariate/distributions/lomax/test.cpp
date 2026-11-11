@@ -354,3 +354,55 @@ TEST_CASE("lomax: held kappa does not hide an unrepresentable rate") {
   const std::vector<double> x{1e158,2e158};
   CHECK(cppunivariate::lomax_mle({x.data(),x.size()},1e-10,100,NAN,NAN,1e158).status==cppunivariate::LomaxStatus::AccuracyFailure);
 }
+
+#include "cppunivariate/distributions/lomax/censored.hpp"
+#include "censored_reference.hpp"
+TEST_CASE("lomax: right censoring independent 50-digit reference") {
+  for(const auto& c:censored_reference::cases()) {
+    if(std::string(c.family)!="lomax")continue;
+    CAPTURE(c.label); CAPTURE(c.held);
+    const auto& v=c.lower;
+    std::vector<double> upper=v;
+    for(std::size_t i=0;i<v.size();++i)if(!c.exact[i])upper[i]=INFINITY;
+    const cppunivariate::CensoredData data{mltest::as_span(v),mltest::as_span(upper)};
+    const auto r=cppunivariate::lomax_censored_mle(data,c.held);
+    REQUIRE(r.status==cppunivariate::LomaxCensoredStatus::Ok);
+    CHECK(r.kappa/c.coefficient==doctest::Approx(1).epsilon(1e-10));
+    CHECK(r.logLik==doctest::Approx(c.logLik).epsilon(1e-12));
+    if(std::string(c.label)=="0pct" || std::string(c.label)=="single") {
+      const auto exact=cppunivariate::lomax_mle(mltest::as_span(v),1e-10,1000,NAN,c.held,NAN);
+      CHECK(r.kappa/exact.kappa==doctest::Approx(1).epsilon(4*std::numeric_limits<double>::epsilon()));
+      CHECK(r.logLik==doctest::Approx(exact.logLik).epsilon(2e-13));
+    }
+  }
+}
+TEST_CASE("lomax: right censoring classifications and refusals") {
+  std::vector<double> lower{1,2},upper{INFINITY,INFINITY};
+  cppunivariate::CensoredData data{mltest::as_span(lower),mltest::as_span(upper)};
+  const auto c=censored_reference::Case{"","",1.,0,0,{},{}};
+  CHECK(cppunivariate::lomax_censored_mle(data,c.held).status==cppunivariate::LomaxCensoredStatus::AllCensored);
+  upper[0]=1;
+  CHECK(cppunivariate::lomax_censored_mle(data,c.held).status==cppunivariate::LomaxCensoredStatus::Ok);
+  lower[0]=-INFINITY;
+  CHECK(cppunivariate::lomax_censored_mle(data,c.held).status==cppunivariate::LomaxCensoredStatus::NotImplemented);
+  lower[0]=1;upper[0]=1.5;
+  CHECK(cppunivariate::lomax_censored_mle(data,c.held).status==cppunivariate::LomaxCensoredStatus::NotImplemented);
+  upper[0]=0;
+  CHECK(cppunivariate::lomax_censored_mle(data,c.held).status==cppunivariate::LomaxCensoredStatus::InvalidInput);
+}
+TEST_CASE("lomax: censored hold sets and zero exposures") {
+  std::vector<double> l{0,0},u{0,INFINITY};
+  const cppunivariate::CensoredData x{mltest::as_span(l),mltest::as_span(u)};
+  CHECK(cppunivariate::lomax_censored_mle(x,2).status==cppunivariate::LomaxCensoredStatus::Unbounded);
+  CHECK(cppunivariate::lomax_censored_mle(x).status==cppunivariate::LomaxCensoredStatus::NotImplemented);
+  CHECK(cppunivariate::lomax_censored_mle(x,NAN,2).status==cppunivariate::LomaxCensoredStatus::NotImplemented);
+  CHECK(cppunivariate::lomax_censored_mle(x,2,2).status==cppunivariate::LomaxCensoredStatus::NotImplemented);
+  CHECK(cppunivariate::lomax_censored_mle(x,-1).status==cppunivariate::LomaxCensoredStatus::InvalidInput);
+}
+TEST_CASE("lomax: right censoring overflowing dimensional product") {
+  std::vector<double> l{1e200,1e200},u{1e200,INFINITY};
+  const cppunivariate::CensoredData x{mltest::as_span(l),mltest::as_span(u)};
+  const auto r=cppunivariate::lomax_censored_mle(x,1e200);
+  REQUIRE(r.status==cppunivariate::LomaxCensoredStatus::Ok);
+  CHECK(r.kappa==doctest::Approx(1/(800*std::log(10.))).epsilon(1e-14));
+}

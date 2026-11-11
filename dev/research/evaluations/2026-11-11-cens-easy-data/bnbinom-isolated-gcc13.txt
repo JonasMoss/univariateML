@@ -1,0 +1,19 @@
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+../../../univariateML-cpp/include/cppunivariate/distributions/bnbinom/test.cpp:364:
+TEST CASE:  bnbinom: alpha-free pair certificates transport the held value under swapping
+
+../../../univariateML-cpp/include/cppunivariate/distributions/bnbinom/test.cpp:373: ERROR: CHECK( a.logLik==b.logLik ) is NOT correct!
+  values: CHECK( -1275.66 == -1275.66 )
+
+../../../univariateML-cpp/include/cppunivariate/distributions/bnbinom/test.cpp:373: ERROR: CHECK( a.logLik==b.logLik ) is NOT correct!
+  values: CHECK( -1275.65 == -1275.65 )
+
+../../../univariateML-cpp/include/cppunivariate/distributions/bnbinom/test.cpp:373: ERROR: CHECK( a.logLik==b.logLik ) is NOT correct!
+  values: CHECK( -1275.65 == -1275.65 )
+
+===============================================================================
+[doctest] test cases:  1 |  0 passed | 1 failed | 2215 skipped
+[doctest] assertions: 60 | 57 passed | 3 failed |
+[doctest] Status: FAILURE!

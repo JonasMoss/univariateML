@@ -66,3 +66,39 @@ TEST_CASE("rayleigh P2 every held subset") {
     CHECK(ll(p)==doctest::Approx(r.logLik).epsilon(1e-8));
   }
 }
+
+#include "cppunivariate/distributions/rayleigh/censored.hpp"
+#include "censored_reference.hpp"
+TEST_CASE("rayleigh: right censoring independent 50-digit reference") {
+  for(const auto& c:censored_reference::cases()) {
+    if(std::string(c.family)!="rayleigh")continue;
+    CAPTURE(c.label); CAPTURE(c.held);
+    const auto& v=c.lower;
+    std::vector<double> upper=v;
+    for(std::size_t i=0;i<v.size();++i)if(!c.exact[i])upper[i]=INFINITY;
+    const cppunivariate::CensoredData data{mltest::as_span(v),mltest::as_span(upper)};
+    const auto r=cppunivariate::rayleigh_censored_mle(data);
+    REQUIRE(r.status==cppunivariate::RayleighCensoredStatus::Ok);
+    CHECK(r.sigma/c.coefficient==doctest::Approx(1).epsilon(1e-10));
+    CHECK(r.logLik==doctest::Approx(c.logLik).epsilon(1e-12));
+    if(std::string(c.label)=="0pct" || std::string(c.label)=="single") {
+      const auto exact=cppunivariate::rayleigh_mle(mltest::as_span(v));
+      CHECK(r.sigma/exact.sigma==doctest::Approx(1).epsilon(4*std::numeric_limits<double>::epsilon()));
+      CHECK(r.logLik==doctest::Approx(exact.logLik).epsilon(2e-13));
+    }
+  }
+}
+TEST_CASE("rayleigh: right censoring classifications and refusals") {
+  std::vector<double> lower{1,2},upper{INFINITY,INFINITY};
+  cppunivariate::CensoredData data{mltest::as_span(lower),mltest::as_span(upper)};
+  const auto c=censored_reference::Case{"","",1.,0,0,{},{}};
+  CHECK(cppunivariate::rayleigh_censored_mle(data).status==cppunivariate::RayleighCensoredStatus::AllCensored);
+  upper[0]=1;
+  CHECK(cppunivariate::rayleigh_censored_mle(data).status==cppunivariate::RayleighCensoredStatus::Ok);
+  lower[0]=-INFINITY;
+  CHECK(cppunivariate::rayleigh_censored_mle(data).status==cppunivariate::RayleighCensoredStatus::NotImplemented);
+  lower[0]=1;upper[0]=1.5;
+  CHECK(cppunivariate::rayleigh_censored_mle(data).status==cppunivariate::RayleighCensoredStatus::NotImplemented);
+  upper[0]=0;
+  CHECK(cppunivariate::rayleigh_censored_mle(data).status==cppunivariate::RayleighCensoredStatus::InvalidInput);
+}

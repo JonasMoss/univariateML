@@ -1,0 +1,6 @@
+{
+  "baseline": "206e979f",
+  "tracked_headers_checked": 348,
+  "changed": [],
+  "scope": "All tracked C++ library headers are byte-identical to the baseline. New censoring headers are not dependencies of the isolated bnbinom program."
+}
