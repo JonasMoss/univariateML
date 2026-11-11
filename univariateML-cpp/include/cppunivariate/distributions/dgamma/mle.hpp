@@ -215,7 +215,7 @@ inline bool certify(const dnorm_detail::Cells &p,bool held,double held_r,
   return true;
 }
 }
-inline DgammaResult dgamma_mle(span x,double tol=1e-8,int maxit=400,
+inline DgammaResult dgamma_accuracy_search(span x,double tol=1e-8,int maxit=400,
     double shape=std::numeric_limits<double>::quiet_NaN(),double rate=std::numeric_limits<double>::quiet_NaN()) {
   maxit = static_cast<int>(solver_budget(maxit));
   auto stopped = [&]() -> DgammaResult {
@@ -289,5 +289,31 @@ inline DgammaResult dgamma_mle(span x,double tol=1e-8,int maxit=400,
     stopped.stop_detail=discrete_two_point(x,lo,lo+1);
   }
   return stopped;
+}
+}
+
+#include "accuracy.hpp"
+namespace cppunivariate {
+inline DgammaResult dgamma_mle(span x,double tol=1e-10,int maxit=400,double shape=NAN,double rate=NAN) {
+  auto r=dgamma_accuracy_search(x,tol,maxit,shape,rate);
+  if(r.status!=DgammaStatus::Ok)return r;
+  std::array<double,3> q{{std::log(r.shape),std::log(r.rate),0}};
+  const std::array<bool,3> free{{std::isnan(shape),std::isnan(rate),false}};
+  dnorm_detail::Cells cells;if(!cells.init(x)){r.status=DgammaStatus::IterationFailure;return r;}
+  const auto objective=[&](const std::array<accuracy_detail::Jet,3>& z) {
+    const auto a=accuracy_detail::exp(z[0]),ratev=accuracy_detail::exp(z[1]);accuracy_detail::JetSum f;
+    for(std::size_t i=0;i<cells.x.size();++i) {
+      const auto l=accuracy_detail::Jet(cells.x[i])*ratev,h=accuracy_detail::Jet(cells.x[i]+1)*ratev;
+      const bool lower=(l.v+h.v)/2<a.v;
+      const auto p=lower?dgamma_detail::gamma_tail(a,h,true,maxit)-dgamma_detail::gamma_tail(a,l,true,maxit):dgamma_detail::gamma_tail(a,l,false,maxit)-dgamma_detail::gamma_tail(a,h,false,maxit);
+      f.add(accuracy_detail::Jet(cells.w[i])*accuracy_detail::log(p));
+    }
+    return f.value;
+  };
+  if(!accuracy_detail::polish(q,free,tol,maxit,objective)){r.status=DgammaStatus::IterationFailure;return r;}
+  if(free[0])r.shape=std::exp(q[0]);
+  if(free[1])r.rate=std::exp(q[1]);
+  r.logLik=0;for(double v:x)r.logLik+=distributions::ddgamma(v,r.shape,r.rate,true);
+  return r;
 }
 }

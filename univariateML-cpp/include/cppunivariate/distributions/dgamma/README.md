@@ -26,7 +26,7 @@ r:
   control:
     shape: "Optional held value; NULL estimates it."
     rate: "Optional positive held value; NULL estimates it."
-    reltol: "Tolerance for the logarithmic search coordinates."
+    reltol: "Relative coefficient accuracy (default 1e-10)."
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations."
 log_density: "log((lowergamma(shape, rate*(x+1)) - lowergamma(shape, rate*x))/gamma(shape))"
 limits:
@@ -303,3 +303,8 @@ prove special-function error bounds.
 | Shape on bounded intervals | The bounds above include the zero cell and the profiled rate. Convex secants provide the score enclosure used by subdivision. |
 | Shape faces | Finite cutoffs are proved above for the unrestricted and held-rate existence regimes. |
 | Global certificate | The subdivision uses the stated practical margin and returns numerical failure when it cannot complete. It is conditional on computed comparisons, not outward-rounded arithmetic. |
+
+The shape score differentiates the incomplete-gamma integral over the whole
+unit cell. The gamma density at a cell midpoint is not a substitute, and an
+accurate conditional rate does not remove the shape/rate cross-information.
+This distinction matters when likelihood rounding obscures shape errors.

@@ -1,4 +1,5 @@
 #pragma once
+#include "../sstd/local_accuracy.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
 #include "../../core/precision.hpp"
@@ -9,7 +10,7 @@
 #include <vector>
 namespace cppunivariate {
 enum class SlashStatus { Ok, Unbounded, CollapseLimit, InvalidInput, IterationFailure };
-struct SlashResult {double mu,sigma,logLik;int iterations;SlashStatus status;StopDetail stop_detail{};bool budget_exhausted=false;};
+struct SlashResult {double mu,sigma,logLik;int iterations;SlashStatus status;StopDetail stop_detail{};bool budget_exhausted=false;bool accuracy_failure=false;};
 namespace slash_detail {
 // A scale-score pass uses only log distances. Keep their subtraction and
 // summation order identical to the uncached expression, including zeros and
@@ -268,7 +269,7 @@ inline bool certify_free(const Profile& p,const std::vector<double>& grid,const 
   return true;
 }
 }
-inline SlashResult slash_mle(span x,double tol=1e-9,int maxit=500,double sigma=special::kNaN,double mu=special::kNaN) {
+inline SlashResult slash_mle(span x,double tol=1e-10,int maxit=500,double sigma=special::kNaN,double mu=special::kNaN) {
   maxit = static_cast<int>(solver_budget(maxit));
   SlashResult bad={special::kNaN,special::kNaN,special::kNaN,0,SlashStatus::InvalidInput};
   if(x.empty()||!(tol>0&&std::isfinite(tol))||maxit<1||(!std::isnan(sigma)&&!(sigma>0&&std::isfinite(sigma))))return bad;
@@ -400,11 +401,24 @@ inline SlashResult slash_mle(span x,double tol=1e-9,int maxit=500,double sigma=s
   }
   if(best.status!=SlashStatus::Ok || !std::isfinite(best.logLik)){bad.status=SlashStatus::IterationFailure;return bad;}
   if(boundary>=best.logLik-1e-8*n){bad.status=SlashStatus::CollapseLimit;return bad;}
+  if(std::isnan(sigma)) {
+    std::array<double,4> q{{best.mu,std::log(best.sigma),0,0}};
+    const auto objective=[&](const std::array<local_accuracy::Jet,4>& a){
+      local_accuracy::JetSum f(y.size()*(a[1]+.91893853320467274178+std::log(2.)));
+      for(double v:y){auto z=(v-a[0])/local_accuracy::exp(a[1]);auto t=z*z/2;
+        if(t.v<.01){auto t2=t*t;f.add(t/2-t2/24+t2*t2/2880-t2*t2*t2/181440);}
+        else f.add(local_accuracy::log(t)-local_accuracy::log1p(-local_accuracy::exp(-t)));}
+      return f.value();
+    };
+    if(!local_accuracy::polish(q,2,tol,maxit,objective,[&](const std::array<double,4>& v,const std::array<double,4>& step){auto q=v;q[0]+=centre/scale;return local_accuracy::location_error(q,step);})){bad.status=SlashStatus::IterationFailure;bad.accuracy_failure=true;return bad;}
+    best.mu=q[0];best.sigma=std::exp(q[1]);best.logLik=-objective(local_accuracy::variables(q)).v;
+  }
   best.mu=centre+scale*best.mu;best.sigma=std::isnan(sigma)?scale*best.sigma:sigma;best.logLik-=n*std::log(scale);
   if(!std::isnan(sigma)&&(!std::isfinite(best.mu)||!std::isfinite(best.logLik))) {
     bad.status=SlashStatus::IterationFailure;return bad;
   }
   if(best.status==SlashStatus::Ok && std::isnan(sigma) && !(best.sigma>0 && std::isfinite(best.sigma) && std::isfinite(best.logLik) && std::abs(slash_detail::scale_score(x,best.mu,std::log(best.sigma)))<1e-3))best.status=SlashStatus::IterationFailure;
+  if(best.status==SlashStatus::Ok&&std::isnan(sigma)&&(!local_accuracy::represented(best.mu,std::max(std::abs(best.mu),best.sigma),tol)||!local_accuracy::represented(best.sigma,best.sigma,tol))){best.status=SlashStatus::IterationFailure;best.accuracy_failure=true;}
   return best;
 }
 }

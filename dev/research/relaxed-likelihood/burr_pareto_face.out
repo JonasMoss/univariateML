@@ -1,0 +1,10 @@
+limit: P(finite Burr MLE) = 0.0294 (se 0.0017); escape to Pareto = 0.9706
+  first spacing in [0,1): share 0.6282, P(finite MLE | spacing) = 0.004
+  first spacing in [1,2): share 0.2324, P(finite MLE | spacing) = 0.011
+  first spacing in [2,3): share 0.0867, P(finite MLE | spacing) = 0.038
+  first spacing in [3,4): share 0.0322, P(finite MLE | spacing) = 0.161
+  first spacing in [4,6): share 0.0173, P(finite MLE | spacing) = 0.746
+  first spacing in [6,inf): share 0.0032, P(finite MLE | spacing) = 1.000
+n=   50: P(finite Burr beats Pareto near the face) = 0.0375; P(W > P) = 0.0000
+n=  200: P(finite Burr beats Pareto near the face) = 0.0315; P(W > P) = 0.0000
+n= 1000: P(finite Burr beats Pareto near the face) = 0.0220; P(W > P) = 0.0000

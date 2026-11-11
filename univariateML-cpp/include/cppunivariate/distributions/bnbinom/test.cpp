@@ -763,3 +763,19 @@ TEST_CASE("bnbinom: signed global cover certifies NB and Poisson beyond mixture 
   const auto unresolved=cppunivariate::bnbinom_detail::signed_face_cover(equal_dispersion,NAN,-2.,-2.,600);
   CHECK_FALSE(unresolved.proved);CHECK_FALSE(unresolved.budget_exhausted);
 }
+
+TEST_CASE("bnbinom all-free audit coefficient regression") {
+ const std::vector<int> x{17,1,2,0,4};
+ const auto r=cppunivariate::bnbinom_mle({x.data(),x.size()});
+ REQUIRE(r.status==cppunivariate::BnbinomStatus::Ok);
+ CHECK(r.size==doctest::Approx(2.332116275904348).epsilon(1e-10));
+ CHECK(r.alpha==doctest::Approx(1.99680928225682).epsilon(1e-10));
+ CHECK(r.beta==doctest::Approx(2.332116275904348).epsilon(1e-10));
+}
+
+TEST_CASE("bnbinom tighter scalar accuracy retains a checked proposal when its sign margin is inconclusive") {
+ const std::vector<int> x{0,0,0,0,1};
+ const auto r=cppunivariate::bnbinom_mle({x.data(),x.size()},1e-10,600,1.0672234787479615,NAN,5.36473383510874);
+ REQUIRE(r.status==cppunivariate::BnbinomStatus::Ok);
+ CHECK(r.alpha==doctest::Approx(29.443483121871347).epsilon(1e-10));
+}

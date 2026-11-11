@@ -49,49 +49,46 @@ constexpr double kPareto4GoldenTol = 1e-8;
 
 // Independent golden references: componentwise relative accuracy measured on
 // native GCC, double intermediates, R and WASM. See the TASK-149.1 report and
-// its retained captures. These empirical allowances are not error bounds.
+// its retained captures. TASK-150.2.1 tightens eight families using the
+// 2026-11-10-acc-newton report. These empirical allowances are not error bounds.
 constexpr double kGolden_bbinom = 1e-15;
 constexpr double kGolden_beta = 5e-15;
 constexpr double kGolden_betapr = 1e-11;
 constexpr double kGolden_binom = 2e-16;
-// bnbinom: finite-difference BFGS gradtol=1e-8 and profile stopping.
-constexpr double kGolden_bnbinom = 5e-07;
+// bnbinom: joint analytic Newton refinement; measured native/double/R/WASM reference error.
+constexpr double kGolden_bnbinom = 1.5e-13;
 constexpr double kGolden_burr = 2e-14;
 constexpr double kGolden_cauchy = 3e-12;
-// cmb: Newton moment-score stop at reltol=1e-10; inverse curvature amplifies coefficient error.
-constexpr double kGolden_cmb = 3e-10;
+constexpr double kGolden_cmb = 2e-13;
 constexpr double kGolden_cmp = 1e-15;
-// dgamma: profile simplex width reltol=1e-8; likelihood rounding limits coefficient resolution.
-constexpr double kGolden_dgamma = 3e-08;
+// dgamma: analytic Newton correction; measured native/double/R/WASM reference checks.
+constexpr double kGolden_dgamma = 5e-15;
 constexpr double kGolden_dlaplace = 2e-16;
 constexpr double kGolden_dnorm = 1e-12;
 constexpr double kGolden_dunif = 3e-16;
 constexpr double kGolden_dweibull = 2e-16;
-// emg: certified profile with default reltol=1e-8; coefficient resolution and floating-point comparisons.
-constexpr double kGolden_emg = 5e-09;
+// emg: analytic Newton correction; measured native/double/R/WASM reference checks.
+constexpr double kGolden_emg = 5e-14;
 constexpr double kGolden_exp = 5e-16;
-// fatigue: absolute parameter-step abstol=1.220703e-4 inherited from CRAN.
-constexpr double kGolden_fatigue = 5e-09;
-// foldnorm: scalar profile refinement reltol=1e-10; likelihood rounding limits coefficient resolution.
-constexpr double kGolden_foldnorm = 3e-09;
+constexpr double kGolden_fatigue = 5e-13;
+constexpr double kGolden_foldnorm = 1e-14;
 constexpr double kGolden_fpareto = 1e-11;
 constexpr double kGolden_frechet = 2e-14;
 constexpr double kGolden_gamma = 1e-15;
-// gb2: all-free beta-shape profile score stop at gradtol=1e-7; profile curvature amplifies coefficient error.
-constexpr double kGolden_gb2 = 2e-07;
+// gb2: joint analytic Newton refinement; measured native/double/R/WASM reference error.
+constexpr double kGolden_gb2 = 8e-14;
 constexpr double kGolden_ged = 3e-11;
-// genbeta: profile score stop gradtol=1e-7; shallow profile amplifies coefficient error.
-constexpr double kGolden_genbeta = 5e-09;
+// genbeta: analytic Newton correction; measured native/double/R/WASM reference checks.
+constexpr double kGolden_genbeta = 1e-14;
 constexpr double kGolden_geom = 5e-15;
 constexpr double kGolden_gev = 1e-13;
 constexpr double kGolden_gompertz = 5e-13;
 constexpr double kGolden_gpd = 2e-15;
-// gumbel: Newton relative-step reltol=1.220703e-4 inherited from CRAN.
-constexpr double kGolden_gumbel = 3e-10;
+constexpr double kGolden_gumbel = 2e-15;
 constexpr double kGolden_hcauchy = 5e-15;
 constexpr double kGolden_hnorm = 2e-16;
-// ht: profile objective/scale stops; small likelihood error does not bound nu error.
-constexpr double kGolden_ht = 1e-07;
+// ht: analytic Newton correction; measured native/double/R/WASM reference checks.
+constexpr double kGolden_ht = 1e-14;
 constexpr double kGolden_huber = 1e-12;
 constexpr double kGolden_hyper = 2e-16;
 constexpr double kGolden_invburr = 1e-15;
@@ -102,8 +99,7 @@ constexpr double kGolden_invparalogis = 3e-15;
 constexpr double kGolden_invpareto = 1e-10;
 constexpr double kGolden_invtrgamma = 1e-13;
 constexpr double kGolden_invweibull = 1e-14;
-// kumar: Newton relative-step reltol=1.220703e-4 inherited from CRAN.
-constexpr double kGolden_kumar = 5e-09;
+constexpr double kGolden_kumar = 5e-16;
 constexpr double kGolden_laplace = 1e-15;
 constexpr double kGolden_lgamma = 2e-15;
 constexpr double kGolden_lgser = 5e-16;
@@ -111,8 +107,7 @@ constexpr double kGolden_llogis = 2e-13;
 constexpr double kGolden_lnorm = 1e-14;
 constexpr double kGolden_logis = 5e-14;
 constexpr double kGolden_logitnorm = 2e-15;
-// lomax: Newton relative-step reltol=1.220703e-4 inherited from CRAN.
-constexpr double kGolden_lomax = 1e-07;
+constexpr double kGolden_lomax = 2e-15;
 constexpr double kGolden_lst = 2e-13;
 constexpr double kGolden_naka = 2e-15;
 constexpr double kGolden_nbinom = 1e-10;
@@ -122,29 +117,28 @@ constexpr double kGolden_nsbeta = 2e-15;
 constexpr double kGolden_paralogis = 2e-15;
 constexpr double kGolden_pareto = 5e-16;
 constexpr double kGolden_pareto2 = 2e-15;
-// pareto3: delegated damped logistic Newton step reltol=1e-10; likelihood rounding can shrink the accepted step.
-constexpr double kGolden_pareto3 = 2e-08;
+// pareto3: analytic Newton correction; measured native/double/R/WASM reference checks.
+constexpr double kGolden_pareto3 = 1e-15;
 constexpr double kGolden_pareto4 = 5e-15;
-// pig: scalar profile reltol=1e-9; curvature amplifies shape error.
-constexpr double kGolden_pig = 2e-10;
+constexpr double kGolden_pig = 1e-12;
 constexpr double kGolden_pois = 3e-15;
 constexpr double kGolden_power = 2e-15;
 constexpr double kGolden_rayleigh = 2e-16;
-// sged: finite-difference BFGS gradtol=1.220703e-4 inherited from CRAN; curvature amplifies coefficient error.
-constexpr double kGolden_sged = 3e-06;
-// sgomp: scalar profile reltol=1e-10; curvature amplifies coefficient error.
-constexpr double kGolden_sgomp = 3e-08;
-// skellam: scalar profile refinement reltol=1e-9; likelihood rounding limits coefficient resolution.
-constexpr double kGolden_skellam = 5e-08;
-// slash: scalar profile width reltol=1e-8 and likelihood rounding; near-zero location amplifies relative error.
-constexpr double kGolden_slash = 2e-05;
-// sn: scalar profile refinement reltol=1e-9; likelihood rounding limits coefficient resolution.
-constexpr double kGolden_sn = 5e-07;
+// sged: joint analytic Newton refinement; measured native/double/R/WASM reference error.
+constexpr double kGolden_sged = 3e-14;
+// sgomp: analytic Newton correction; measured native/double/R/WASM reference checks.
+constexpr double kGolden_sgomp = 1e-15;
+// skellam: analytic Newton correction; measured native/double/R/WASM reference checks.
+constexpr double kGolden_skellam = 5e-15;
+// slash: joint analytic Newton refinement; measured native/double/R/WASM reference error.
+constexpr double kGolden_slash = 3e-13;
+// sn: analytic Newton correction; measured native/double/R/WASM reference checks.
+constexpr double kGolden_sn = 2e-14;
 constexpr double kGolden_snorm = 3e-13;
-// sstd: finite-difference BFGS gradtol=1.220703e-4 inherited from CRAN; curvature amplifies coefficient error.
-constexpr double kGolden_sstd = 2e-05;
-// st: all-free BFGS score stop at reltol=1e-6; global/face certificate does not impose 1e-10 coefficient accuracy.
-constexpr double kGolden_st = 2e-06;
+// sstd: joint analytic Newton refinement; measured native/double/R/WASM reference error.
+constexpr double kGolden_sstd = 4e-13;
+// st: joint analytic Newton refinement; measured native/double/R/WASM reference error.
+constexpr double kGolden_st = 1.2e-13;
 constexpr double kGolden_std = 3e-13;
 constexpr double kGolden_tbinom = 5e-15;
 constexpr double kGolden_tlambda = 1e-14;
@@ -153,25 +147,24 @@ constexpr double kGolden_tpois = 3e-15;
 constexpr double kGolden_trgamma = 3e-14;
 constexpr double kGolden_triang = 1e-12;
 constexpr double kGolden_unif = 1e-16;
-// weibull: Newton relative-step reltol=1.220703e-4 inherited from CRAN.
-constexpr double kGolden_weibull = 3e-09;
+constexpr double kGolden_weibull = 5e-15;
 constexpr double kGolden_yulesimon = 5e-11;
 constexpr double kGolden_zeta = 1e-11;
 constexpr double kGolden_zib = 5e-15;
-// zinb: negative-binomial scalar profile width reltol=1e-10 and likelihood rounding.
-constexpr double kGolden_zinb = 5e-08;
+// zinb: analytic Newton correction; measured native/double/R/WASM reference checks.
+constexpr double kGolden_zinb = 1e-14;
 constexpr double kGolden_zip = 5e-15;
 constexpr double kGolden_zipf = 1e-13;
 constexpr double kGolden_zmbinom = 5e-16;
 constexpr double kGolden_zmgeom = 2e-15;
 constexpr double kGolden_zmlogarithmic = 5e-17;
-// zmnbinom: delegated positive negative-binomial profile reltol=1e-10.
-constexpr double kGolden_zmnbinom = 5e-07;
+// zmnbinom: analytic Newton correction; measured native/double/R/WASM reference checks.
+constexpr double kGolden_zmnbinom = 1e-14;
 constexpr double kGolden_zmpois = 5e-15;
 constexpr double kGolden_ztbinom = 1e-15;
 constexpr double kGolden_ztgeom = 1e-17;
-// ztnbinom: positive negative-binomial profile reltol=1e-10.
-constexpr double kGolden_ztnbinom = 3e-07;
+// ztnbinom: analytic Newton correction; measured native/double/R/WASM reference checks.
+constexpr double kGolden_ztnbinom = 1e-14;
 constexpr double kGolden_ztpois = 5e-16;
 constexpr double kGolden_bhatt = 2e-6; // Deferred to bhatt-allfree.
 

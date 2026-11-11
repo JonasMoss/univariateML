@@ -65,10 +65,10 @@ relations:
     shift: r
 fit:
   method: integer-search
-  certified: 'yes'
+  certified: partial
   note: 'nhyper/README.md, Details; nhyper/mle.hpp (public fitter and held overloads); nhyper/test.cpp: Supported
-    integer grids are exhaustive with a proved population tail bound; one-coordinate likelihood ratios decrease.
-    Unsupported joint population/composition designs stop; floating-point tie tolerances remain.'
+    certified integer grids are exhaustive with a proved population tail bound; one-coordinate likelihood ratios decrease.
+    Growing-urn face comparisons and unfinished joint grids return their finite prefix winner uncertified; floating-point tie tolerances remain.'
 areas:
 - sampling and quality control
 existence:
@@ -189,10 +189,7 @@ largest face by more than `1e-9*(1+abs(face))` gives a tail cutoff; every
 population below it is searched, subject to the 10^7 evaluation budget.
 The upper bound must fall below the candidate by that margin. These margins
 and profile signs are numerical comparisons, not directed-rounding proofs.
-If no strict improvement is found in the exploratory search, the fitter
-stops with an unresolved face status, or a face-tie status when a finite
-likelihood matches within the margin. Neither status proves a global
-maximum or escape.
+If exploration finds no strict improvement, or a face matches within the margin, the best finite profile is returned with `certified = FALSE`. An unfinished finite grid likewise returns its prefix winner uncertified; neither result establishes the global maximum or an escape.
 
 For an interior face probability `p=r/mean(x)`, the first-order coefficient
 in `t=1/N` is one half of the sum over observations of
@@ -203,3 +200,5 @@ each face separately.
 ## Stop details
 
 The growing-urn face is a negative binomial translated by r, since observations count total draws. Its payload explicitly records the shift and the absence of a corresponding package family.
+
+With composition held, a constant draw count $c\le m$ attains likelihood one at $N=m$, $r=c$. This exact member also settles the case at the largest represented population. Outside such attained cases, omitting stopping counts whose feasible populations exceed the representation range leaves the finite prefix uncertified. A large growing-urn preflight retains the population-prefix winner at the smallest admissible stopping count; it makes no claim to have optimized all stopping counts.

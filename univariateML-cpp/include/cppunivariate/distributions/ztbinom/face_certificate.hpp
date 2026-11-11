@@ -2,8 +2,29 @@
 #include "certificate.hpp"
 #include "../pois/dpqr.hpp"
 #include <numeric>
+#include "../../core/precision.hpp"
 namespace cppunivariate {
 namespace binomial_certificate_detail {
+// For positive Poisson Q, E_Q (X)_2 = lambda E_Q X. Re-solve
+// the mean equation in extended precision before giving up a near-zero gap.
+// The returned lower gap includes both the root bracket and an arithmetic pad.
+inline double positive_poisson_gap(ispan x,Work& work) {
+  CPPUNIV_EXTENDED_REAL sum=0,second=0;
+  for(int v:x){sum+=v;second+=static_cast<CPPUNIV_EXTENDED_REAL>(v)*(v-1);}
+  const CPPUNIV_EXTENDED_REAL mean=sum/x.size(),empirical=second/x.size();
+  if(!(mean>1))return -INFINITY;
+  CPPUNIV_EXTENDED_REAL lo=std::max(static_cast<CPPUNIV_EXTENDED_REAL>(0),mean-1),hi=mean;
+  for(std::int64_t j=0;j<solver_budget(work.maxit);++j) {
+    if(!work.charge(1))return -INFINITY;
+    const CPPUNIV_EXTENDED_REAL mid=lo+(hi-lo)/2;
+    if(mid==lo || mid==hi)break;
+    const CPPUNIV_EXTENDED_REAL value=mid/(-std::expm1(-mid));
+    if(value<mean)lo=mid;else hi=mid;
+  }
+  const CPPUNIV_EXTENDED_REAL pad=8192*std::numeric_limits<CPPUNIV_EXTENDED_REAL>::epsilon()*
+    (1+std::abs(empirical)+mean*hi);
+  return static_cast<double>(empirical-mean*hi-pad);
+}
 // Signed Jensen bound; derivation and the infinite-support compression are in
 // the binom-faces report. This is a sufficient certificate, not a criterion.
 inline double signed_cutoff(ispan x,int L,double U,double lambda,Work& work,bool& exhausted) {
@@ -39,7 +60,11 @@ inline double signed_cutoff(ispan x,int L,double U,double lambda,Work& work,bool
   if(!std::isfinite(f2+f3+qmean) || std::abs(qmean-mean)>eps*(1+mean)) {
     work.numerical=true;return INFINITY;
   }
-  const double gap=empirical-f2-eps*(1+empirical+f2);
+  double gap=empirical-f2-eps*(1+empirical+f2);
+  if(!(gap>0) && L==1 && !std::isfinite(U)) {
+    const double refined=positive_poisson_gap(x,work);
+    if(refined>0)gap=refined;
+  }
   if(!(gap>0))return INFINITY;
   const double remainder=(f3/3+f2/2)*(1+eps)+eps;
   // N >= 8*remainder/gap controls the log(1-j/N) remainder.

@@ -1,0 +1,8 @@
+options(pkg.build_extra_flags=FALSE)
+pkgload::load_all(Sys.getenv("UMVL_CAPTURE_PACKAGE","univariateML-r"),quiet=TRUE)
+x <- rep(.999999,10000000)
+c <- -log(x[1]); reference <- (2-c+sqrt(c*c+4))/(2*c)
+f <- univariateML::mlgenbeta(x,scale=1,shape2=2,shape3=1)
+a <- as.numeric(f["shape1"]); error <- abs(a/reference-1)
+cat(jsonlite::toJSON(list(n=length(x),x=x[1],status="Ok",shape1=a,reference=reference,relative_error=error),auto_unbox=TRUE,digits=17),"\n",sep="")
+stopifnot(is.finite(error),error<=1e-10)

@@ -4,12 +4,14 @@
 namespace cppunivariate {
 // Status and result types retain the shared factorised likelihood contract.
 typedef zero_detail::ModifiedStatus ZmbinomStatus;
-typedef zero_detail::ModifiedResult ZmbinomResult;
+struct ZmbinomResult : zero_detail::ModifiedResult {
+  bool certified = true;
+};
 inline ZmbinomResult zmbinom_mle(ispan x, double tol=1e-10,int maxit=200,double fixed_size=std::numeric_limits<double>::quiet_NaN(),
  double fixed_prob=std::numeric_limits<double>::quiet_NaN(),double fixed_p0=std::numeric_limits<double>::quiet_NaN()) {
   maxit = static_cast<int>(solver_budget(maxit));
 
- ZmbinomResult out{1,1,.5,0,0,0,ZmbinomStatus::InvalidInput};
+ ZmbinomResult out{{1,1,.5,0,0,0,ZmbinomStatus::InvalidInput}};
  if(x.size()==0 || !(tol>0) || !std::isfinite(tol) || maxit<1)return out;
  if(!std::isnan(fixed_prob) && (!std::isfinite(fixed_prob)||fixed_prob<0||fixed_prob>1))return out;
  if(!std::isnan(fixed_p0) && (!std::isfinite(fixed_p0)||fixed_p0<0||fixed_p0>1))return out;
@@ -28,14 +30,16 @@ inline ZmbinomResult zmbinom_mle(ispan x, double tol=1e-10,int maxit=200,double 
  if(k==0) {if(std::isnan(fixed_prob)&&std::isnan(fixed_p0))out.status=ZmbinomStatus::AllZero;return out;}
  const auto fit=ztbinom_mle({pos.data(),pos.size()},tol,maxit,fixed_size,fixed_prob);
  if(std::isnan(fixed_prob)&&std::isnan(fixed_p0)&&fit.prob==0)out.status=ZmbinomStatus::TwoPoint;
+ out.certified=fit.certified;
+ const double zero_shift=out.logLik;
  out.size=fit.size;out.prob=fit.prob;out.logLik+=fit.logLik;
  if(fit.status==ZtbinomStatus::PoissonLimit) {
    out.status=ZmbinomStatus::PoissonLimit;
    const auto& d=fit.stop_detail;
-   out.stop_detail=discrete_face(StopModel::Zmpois,{d.limit_coef[0],out.p0},out.logLik-fit.logLik+d.limit_loglik);
+   out.stop_detail=discrete_face(StopModel::Zmpois,{d.limit_coef[0],out.p0},zero_shift+d.limit_loglik);
  }
- if(!fit.stop_detail.candidates.empty()) {
-   const double shift=out.logLik-fit.logLik;
+ if(!fit.stop_detail.candidates.empty() || fit.stop_detail.budget_exhausted) {
+   const double shift=zero_shift;
    out.stop_detail=fit.stop_detail;
    for(auto& c:out.stop_detail.candidates) {
      if(c.model==StopModel::None)c.coef.push_back(out.p0);
@@ -50,6 +54,9 @@ inline ZmbinomResult zmbinom_mle(ispan x, double tol=1e-10,int maxit=200,double 
  if(fit.status==ZtbinomStatus::IterationFailure)out.status=ZmbinomStatus::IterationFailure;
  if(fit.status==ZtbinomStatus::InvalidInput)out.status=ZmbinomStatus::InvalidInput;
  if(fit.status==ZtbinomStatus::InvalidSize)out.status=ZmbinomStatus::InvalidSize;
+ // The empirical zero probability is a separately estimated count ratio.
+ if(std::isnan(fixed_p0) && out.p0>0 && out.p0<1 &&
+    tol<8*std::numeric_limits<double>::epsilon())out.certified=false;
  return out;
 }
 }

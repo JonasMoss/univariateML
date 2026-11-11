@@ -346,6 +346,16 @@ strict concavity on an isolating rectangle, followed by a complete stationary
 and value profile cover. Each shape slab encloses the unique inner location
 root by uniform score signs and interval Newton; it does not assume profile
 unimodality. The shape-one boundary remains attained and restricted.
+Once the root is enclosed, the excluded rectangle is enlarged: a negative
+definite interval Hessian on every piece of a subdivision makes that root the
+unique maximizer of the larger rectangle (at the shape-one edge, an outward
+shape score with negative location curvature). Without this step the cover
+excluded a rectangle of relative radius $2\times10^{-6}$ and spent about
+three quarters of its work approaching it, which left ordinary samples of
+size 500 uncertified at the default `iterlim`. The
+[measurements](../../../../../dev/research/evaluations/2026-11-10-held-concave-report.md)
+record this and the remaining limit: the work still grows with the sample
+size, and samples of size 1000 and 2000 need `iterlim` 200 and 400.
 The [proof and arithmetic margins](../../../../../dev/research/evaluations/2026-11-10-gev-held-data/proof.md)
 state the tail bound and root-existence conditions. A completed cover sets the
 C++ result's `certified` field for this route. If coverage, coefficient inclusion or a comparison remains unresolved,

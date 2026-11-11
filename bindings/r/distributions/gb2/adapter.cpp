@@ -1,7 +1,7 @@
 #include "common/distributions/gb2/fit.hpp"
 #include "common_fit.h"
 // [[Rcpp::export]]
-Rcpp::List mlgb2_(const Rcpp::NumericVector &x, double gradtol = 1e-7,
+Rcpp::List mlgb2_(const Rcpp::NumericVector &x, double gradtol = 1e-10,
     int iterlim = 300, Rcpp::Nullable<double> shape1 = R_NilValue,
     Rcpp::Nullable<double> shape2 = R_NilValue,
     Rcpp::Nullable<double> shape3 = R_NilValue,

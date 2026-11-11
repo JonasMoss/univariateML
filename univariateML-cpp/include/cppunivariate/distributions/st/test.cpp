@@ -66,8 +66,7 @@ TEST_CASE("st: native golden fit") {
  const auto g=mltest::load_distribution_golden("st");
  const auto f=cppunivariate::st_mle(mltest::as_span(g.data));
  REQUIRE(f.status==cppunivariate::StStatus::Ok);
- // The df score uses finite differences and WebAssembly uses binary64
- // intermediates. The tolerance covers measured cross-platform score drift.
+ // Final chain derivatives include the df dependence of the Student CDF.
  CHECK(f.xi==doctest::Approx(g.estimates.at("xi")).epsilon(mltest::kGolden_st).scale(0));
  CHECK(f.omega==doctest::Approx(g.estimates.at("omega")).epsilon(mltest::kGolden_st).scale(0));
  CHECK(f.alpha==doctest::Approx(g.estimates.at("alpha")).epsilon(mltest::kGolden_st).scale(0));
@@ -358,5 +357,68 @@ TEST_CASE("st: budget witnesses enclose likelihoods at rounded public locations"
  for(const auto& c:r.stop_detail.candidates) {
   double ll=0;for(double v:x)ll+=cppunivariate::distributions::dst(v,c.coef[0],c.coef[1],c.coef[2],c.coef[3],true);
   CHECK(c.loglik_lower<=ll);CHECK(c.loglik_upper>=ll);
+ }
+}
+
+TEST_CASE("st all-free chain derivatives agree with independent 60-digit derivatives") {
+ const std::vector<double> x{-2,-.4,.2,1.3,5};
+ const std::array<double,4> p{{-.3,std::log(1.2),.7,std::log(4.)}};
+ const auto f=cppunivariate::st_accuracy::objective(x,cppunivariate::local_accuracy::variables(p),200);
+ CHECK(f.v==doctest::Approx(12.262070689904155).epsilon(2e-13));
+ const std::array<double,4> g{{0.28195485866404624,-3.708308858659771,0.7320607745045672,1.04629232103192}};
+ const std::array<double,16> h{{2.46274879560771,0.17034691188685322,1.9481716557640356,-0.19191420768452164,0.17034691188685322,7.53234082940357,-1.4387470598615533,-2.917724009917648,1.9481716557640356,-1.4387470598615533,2.2277679164748614,0.34229453263371784,-0.19191420768452164,-2.917724009917648,0.34229453263371784,0.714684657486697}};
+ for(int j=0;j<4;++j)CHECK(f.g[j]==doctest::Approx(g[j]).epsilon(3e-12));
+ for(int j=0;j<16;++j)CHECK(f.h[j]==doctest::Approx(h[j]).epsilon(3e-11));
+}
+
+TEST_CASE("st all-free audit coefficient accuracy survives affine transforms") {
+ {
+ const std::vector<double> x{0.11024753757609822,-0.049422603469292115,1.3131208557689356,-0.22599451092730288,-1.3588404835226253,-1.554024854164954,-0.489892608032276,-1.5792660060875787,-3.481155288860334,0.3740887816008062,0.18182592636591727,-0.8722188835346512};
+ const auto r=cppunivariate::st_mle({x.data(),x.size()});
+ REQUIRE(r.status==cppunivariate::StStatus::Ok);
+ CHECK(r.xi==doctest::Approx(0.6277064207169055).epsilon(1e-10));
+ CHECK(r.omega==doctest::Approx(1.6458236060539524).epsilon(1e-10));
+ CHECK(r.alpha==doctest::Approx(-2.5317284337811823).epsilon(1e-10));
+ CHECK(r.nu==doctest::Approx(20.006801958806026).epsilon(1e-10));
+ }
+ {
+ const std::vector<double> x{100000000.11024754,99999999.9505774,100000001.31312086,99999999.77400549,99999998.64115952,99999998.44597514,99999999.5101074,99999998.42073399,99999996.51884471,100000000.37408878,100000000.18182592,99999999.12778112};
+ const auto r=cppunivariate::st_mle({x.data(),x.size()});
+ REQUIRE(r.status==cppunivariate::StStatus::Ok);
+ CHECK(r.xi==doctest::Approx(100000000.62770641).epsilon(1e-10));
+ CHECK(r.omega==doctest::Approx(1.6458235942091328).epsilon(1e-10));
+ CHECK(r.alpha==doctest::Approx(-2.5317284024605207).epsilon(1e-10));
+ CHECK(r.nu==doctest::Approx(20.006800302915664).epsilon(1e-10));
+ }
+ {
+ const std::vector<double> x{1.1024753757609823e+149,-4.9422603469292116e+148,1.3131208557689355e+150,-2.2599451092730287e+149,-1.3588404835226253e+150,-1.554024854164954e+150,-4.89892608032276e+149,-1.5792660060875786e+150,-3.481155288860334e+150,3.740887816008062e+149,1.8182592636591726e+149,-8.722188835346512e+149};
+ const auto r=cppunivariate::st_mle({x.data(),x.size()});
+ REQUIRE(r.status==cppunivariate::StStatus::Ok);
+ CHECK(r.xi==doctest::Approx(6.277064207169055e+149).epsilon(1e-10));
+ CHECK(r.omega==doctest::Approx(1.6458236060539525e+150).epsilon(1e-10));
+ CHECK(r.alpha==doctest::Approx(-2.5317284337811827).epsilon(1e-10));
+ CHECK(r.nu==doctest::Approx(20.006801958806047).epsilon(1e-10));
+ }
+}
+
+TEST_CASE("st central and tail df derivatives retain the normal limit") {
+ const std::vector<double> x{-2,-.4,.2,1.3,5};
+ const std::array<double,4> p{{-.3,std::log(1.2),2.5,std::log(999.)}};
+ const auto f=cppunivariate::st_accuracy::objective(x,cppunivariate::local_accuracy::variables(p),200);
+ CHECK(f.v==doctest::Approx(23.200456341900328).epsilon(2e-13));
+ const std::array<double,4> g{{6.472298610031706,-31.23988655894785,5.260596034622365,0.1326930499140267}};
+ const std::array<double,16> h{{11.839705046462676,-8.875446451216167,6.577316174806845,0.05441838470092813,-8.875446451216167,70.31430756225537,-9.973609610459619,-0.5533149520261402,6.577316174806845,-9.973609610459619,1.8931075565103426,0.07082243568190795,0.05441838470092813,-0.5533149520261402,0.07082243568190795,-0.12925436377627825}};
+ for(int j=0;j<4;++j)CHECK(f.g[j]==doctest::Approx(g[j]).epsilon(2e-11).scale(1));
+ for(int j=0;j<16;++j)CHECK(f.h[j]==doctest::Approx(h[j]).epsilon(3e-11).scale(1));
+}
+
+TEST_CASE("st near-normal 55-digit coefficient reference is affine equivariant") {
+ const std::vector<double> base{-1.77332972795447,-0.155049384757702,0.0961950617620771,1.68127726443543,1.81908213856355,-0.344190323493544,-0.355860277284418,1.33615149008829,1.01402838856633,0.0104396263812416,-0.0546875709288008,-1.30102266267756,1.06225094710892,0.861403676169522,0.638285176791554,-0.294553435210585,-2.71936910019106,0.336090541934782,0.0808372031580432,0.708139794484886,0.610833682064369,0.679401772859537,-0.992293045734106,2.06367970293921,2.41601947005125,0.0379470691405896,0.723086764185947,-0.0023536886500704,1.30495555771382,-0.596096973361479,-0.120497483798528,1.35009075415471,0.797244854232913,-0.38526602348665,0.358907551069067,-0.496276343074521,-0.355417449871236,-1.11780248572976,-0.157866989295123,0.559776018785781,1.44193874150905,-0.552594373287359,0.676013008811131,0.783873417526922,-0.365927220871107,0.148253880036053,-1.41996274955774,-1.25546774660881,-0.0108690689518648,0.00601574199390882,-0.320472896930679,0.228181872934452,-1.85897500734843,-2.69381671509274,1.41673638437109,0.580130248871283,-1.34952548769795,-0.0229715084576313,-1.67659910789834,-0.106477172580448,0.612540574389048,2.35755799219499,-1.37335262773542,-0.200401385855495,1.39620246293799,-1.41349118610765,-0.638845225953054,-1.65697763617303,-0.645380187585517,-0.702586449828615,2.79606891757007,-1.20314916206858,-1.6532913947428,0.979951927235418,-0.512380949251251,-0.920579624337648,0.672356305121155,0.381052253383021,-0.0960690823820381,0.0977487999225795};
+ for(double scale:{1.,1e-4,1e4}){auto x=base;double shift=scale==1?0:3*scale;for(double&v:x)v=shift+scale*v;const auto r=cppunivariate::st_mle({x.data(),x.size()});
+ REQUIRE(r.status==cppunivariate::StStatus::Ok);
+ CHECK(r.xi==doctest::Approx(shift+scale*(-0.17292278716260778)).epsilon(1e-10));
+ CHECK(r.omega==doctest::Approx(scale*1.1288051218310524).epsilon(1e-10));
+ CHECK(r.alpha==doctest::Approx(0.21393697710543438).epsilon(1e-10));
+ CHECK(r.nu==doctest::Approx(1272.6522999546437).epsilon(1e-10));
  }
 }

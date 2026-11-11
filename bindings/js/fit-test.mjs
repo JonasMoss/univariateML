@@ -188,3 +188,14 @@ test('GEV coupled support corners survive normalization and outer coverage',()=>
   assert.equal(f.estimates.sigma,Math.max(...x));
  }
 });
+
+test('count fallback exposes per-fit certification',()=>{
+ const r=m.fithyper(new Float64Array([0,0,0,5,5,5]),{k:5},{});
+ assert.equal(r.status,'Ok');
+ assert.equal(r.error,undefined);
+ assert.equal(r.certified,0);
+ assert.ok(Number.isFinite(r.logLik));
+ assert.equal(r.estimates.k,5);
+ const f=m.fitztbinom(new Float64Array([1,2,2,3]),{size:5},{});
+ assert.equal(f.status,'Ok');assert.equal(f.certified,1);
+});

@@ -101,7 +101,7 @@ inline Candidate refine(span x,double lo,double hi,double eta,int maxit,double t
   f.iterations=iterations;f.converged=converged && hi-lo<=tol;return f;
 }
 }
-inline SgompResult sgomp_mle(span x,double tol=1e-10,int maxit=200,
+inline SgompResult sgomp_accuracy_search(span x,double tol=1e-10,int maxit=200,
                             double b=sgomp_detail::nan(),double eta=sgomp_detail::nan()) {
   maxit = static_cast<int>(solver_budget(maxit));
   SgompResult out{b,eta,sgomp_detail::nan(),0,SgompStatus::InvalidInput};
@@ -295,5 +295,42 @@ inline SgompResult sgomp_mle(span x,double tol=1e-10,int maxit=200,
   out.status=std::isfinite(out.b) && std::isfinite(out.eta) && std::isfinite(out.logLik) && converged ? SgompStatus::Ok : SgompStatus::IterationFailure;
   if(out.status==SgompStatus::Ok)out.stop_detail={};
   return out;
+}
+}
+
+#include "../../core/likelihood_polish.hpp"
+namespace cppunivariate {
+inline SgompResult sgomp_mle(span x,double tol=1e-10,int maxit=200,double b=NAN,double eta=NAN) {
+  const auto exponential=[&](SgompResult r) {
+    double unit=0;for(double v:x)unit=std::max(unit,v);
+    if(!(unit>0)){r.status=SgompStatus::Collapse;return r;}
+    accuracy_detail::ScalarSum sum;
+    for(double v:x)sum.add(static_cast<ExtendedReal>(v)/unit);
+    r.b=static_cast<double>((static_cast<ExtendedReal>(x.size())/sum.value)/unit);
+    r.eta=0;
+    r.logLik=static_cast<double>(static_cast<ExtendedReal>(x.size())*std::log(static_cast<ExtendedReal>(r.b))-
+      static_cast<ExtendedReal>(r.b)*unit*sum.value);
+    if(!(r.b>0)||!std::isfinite(r.b)||!std::isfinite(r.logLik))r.status=SgompStatus::IterationFailure;
+    return r;
+  };
+  if(eta==0&&std::isnan(b)&&!x.empty()&&tol>0&&std::isfinite(tol)&&maxit>0&&
+     std::all_of(x.begin(),x.end(),[](double v){return v>=0&&std::isfinite(v);}))
+    return exponential(SgompResult{NAN,0,NAN,0,SgompStatus::Ok});
+  auto r=sgomp_accuracy_search(x,tol,maxit,b,eta);
+  if(r.status==SgompStatus::Ok&&r.eta==0&&std::isnan(b))return exponential(r);
+  if(r.status!=SgompStatus::Ok||r.eta==0)return r;
+  const double unit=r.b;std::array<double,3> q{{0,std::log(r.eta),0}};
+  const std::array<bool,3> free{{std::isnan(b),std::isnan(eta),false}};
+  const auto objective=[&](const std::array<accuracy_detail::Jet,3>& z) {
+    const auto rate=accuracy_detail::exp(z[0]),e=accuracy_detail::exp(z[1]);accuracy_detail::JetSum f;
+    for(double v:x){const auto t=rate*accuracy_detail::Jet(static_cast<ExtendedReal>(v)*unit);
+      f.add(z[0]-t+accuracy_detail::log1pmx(e*(-accuracy_detail::expm1(-t)))+e*(-accuracy_detail::expm1(accuracy_detail::Jet(.69314718055994530942)-t)));}
+    return f.value;
+  };
+  if(!accuracy_detail::polish(q,free,tol,maxit,objective)){r.status=SgompStatus::IterationFailure;return r;}
+  if(free[0])r.b=unit*std::exp(q[0]);
+  if(free[1])r.eta=std::exp(q[1]);
+  r.logLik=0;for(double v:x)r.logLik+=distributions::dsgomp(v,r.b,r.eta,true);
+  return r;
 }
 }

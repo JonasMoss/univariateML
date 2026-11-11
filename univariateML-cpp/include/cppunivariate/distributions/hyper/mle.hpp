@@ -69,6 +69,7 @@ struct HyperResult {
   int iterations;
   HyperStatus status;
   StopDetail stop_detail{};
+  bool certified = true;
 };
 
 namespace hyper_detail {
@@ -309,7 +310,8 @@ inline double hyper_log_pmf(double x, double N, double m, double k) {
 }
 
 // NaN requests estimation: N held permits either or both m and k free.
-inline HyperResult hyper_mle(span x, double k, double N, double m) {
+inline HyperResult hyper_mle(span x, double k, double N, double m);
+inline HyperResult hyper_mle_search(span x, double k, double N, double m) {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   constexpr double kInf = std::numeric_limits<double>::infinity();
   HyperResult r{N, m, k, kNaN, kNaN, 0, HyperStatus::InvalidInput};
@@ -322,7 +324,21 @@ inline HyperResult hyper_mle(span x, double k, double N, double m) {
       r.status = HyperStatus::Ok; return r;
     }
     r.status = HyperStatus::NumericalFailure;
-    if(c.max>100000){r.stop_detail=discrete_budget(r.stop_detail);return r;}
+    if(c.max>100000){
+      double value=-kInf;
+      for(double size=c.max;size<c.max+16 && size<=hyper_detail::kMaxCount;++size) {
+        const double lo=size+c.max-c.min;
+        for(double nn=lo;nn<lo+128 && nn<=hyper_detail::kMaxCount;++nn) {
+          const auto seed=hyper_mle(x,size,nn,kNaN);
+          r.iterations+=seed.iterations;
+          if(std::isfinite(seed.logLik) && seed.logLik>value) {
+            value=seed.logLik;r.stop_detail.candidates={{{seed.m,seed.N,seed.k},value,value}};
+          }
+        }
+      }
+      r.stop_detail=discrete_budget(r.stop_detail);
+      return r;
+    }
     if(!std::isfinite(c.sum)||c.sum<=0)return r;
     const double mean = c.sum / c.h;
     double poisson = 0;
@@ -469,7 +485,18 @@ inline HyperResult hyper_mle(span x, double k, double N, double m) {
     }
     r.status = HyperStatus::NumericalFailure;
     // Explicit work guard also bounds the correction's summation.
-    if(size>100000){r.stop_detail=discrete_budget(r.stop_detail);return r;}
+    if(size>100000){
+      double value=-kInf;
+      const double lo=size+c.max-c.min;
+      for(double nn=lo;nn<lo+256 && nn<=hyper_detail::kMaxCount;++nn) {
+        const auto seed=hyper_mle(x,size,nn,kNaN);r.iterations+=seed.iterations;
+        if(std::isfinite(seed.logLik) && seed.logLik>value) {
+          value=seed.logLik;r.stop_detail.candidates={{{held_k?seed.m:size,seed.N,held_k?size:seed.m},value,value}};
+        }
+      }
+      r.stop_detail=discrete_budget(r.stop_detail);
+      return r;
+    }
     if(size<1)return r;
     const double p = c.sum / (c.h * size);
     double face = 0;
@@ -490,7 +517,7 @@ inline HyperResult hyper_mle(span x, double k, double N, double m) {
       if (f.logLik > best) { best = f.logLik; winner = f;
         r.stop_detail.candidates.erase(std::remove_if(r.stop_detail.candidates.begin(),r.stop_detail.candidates.end(),
           [](const FitCandidate& c){return c.model==StopModel::None;}),r.stop_detail.candidates.end());
-        r.stop_detail.candidates.push_back({{f.m,f.N,f.k},f.logLik,f.logLik}); }
+        r.stop_detail.candidates.push_back({{held_k?f.m:size,f.N,held_k?size:f.m},f.logLik,f.logLik}); }
       if (std::fabs(f.logLik-face) <= margin) face_tie = true;
       return true;
     };
@@ -501,7 +528,7 @@ inline HyperResult hyper_mle(span x, double k, double N, double m) {
       if (!evaluate(nn)) return r;
     if (best <= face + margin) {
       r.stop_detail=discrete_face(StopModel::Binom,{size,p},face);
-      r.stop_detail.candidates.push_back({{winner.m,winner.N,winner.k},best,best});r.stop_detail.loglik_upper=INFINITY;
+      r.stop_detail.candidates.push_back({{held_k?winner.m:size,winner.N,held_k?size:winner.m},best,best});r.stop_detail.loglik_upper=INFINITY;
       r.status = face_tie ? HyperStatus::FaceTie : HyperStatus::FaceUnresolved;
       r.iterations = work; return r;
     }
@@ -539,7 +566,7 @@ inline HyperResult hyper_mle(span x, double k, double N, double m) {
     const CPPUNIV_EXTENDED_REAL width = static_cast<CPPUNIV_EXTENDED_REAL>(N) - 2 * c.max + c.min + 1;
     if (width <= 0) return r;
     r.status = HyperStatus::NumericalFailure;
-    if (width * (width + 1) > hyper_detail::kGridBudget){r.stop_detail=discrete_budget(r.stop_detail);return r;}
+    const bool partial=width*(width+1)>hyper_detail::kGridBudget;
     CPPUNIV_EXTENDED_REAL best = -kInf;
     for (int pass = 0; pass < 2; ++pass) {
       for (double mm = c.max; mm <= N - c.max + c.min; ++mm) {
@@ -552,7 +579,18 @@ inline HyperResult hyper_mle(span x, double k, double N, double m) {
                 hyper_detail::grid_choose(N, kk)));
           }
           ++r.iterations;
-          if (!std::isfinite(ll.value())) return r;
+          if (!std::isfinite(ll.value())) {
+            if(partial && std::isfinite(r.logLik)){r.status=HyperStatus::Ok;r.certified=false;}
+            return r;
+          }
+          if(partial) {
+            if(ll.value()>best) {
+              best=ll.value();r.m=mm;r.k=kk;r.logLik=static_cast<double>(best);
+            }
+            if(r.iterations>=hyper_detail::kGridBudget/2) {
+              r.status=HyperStatus::Ok;r.certified=false;r.stop_detail=discrete_budget(r.stop_detail);return r;
+            }
+          }
           if (pass == 0) best = std::max(best, ll.value());
           else if (hyper_detail::grid_tied(ll.value(), best)) {
             r.m = mm; r.k = kk; r.logLik = static_cast<double>(ll.value());
@@ -648,4 +686,21 @@ inline HyperResult hyper_mle(span x, double k, double N, double m) {
   return r;
 }
 
+inline HyperResult hyper_mle(span x, double k, double N, double m) {
+  auto out=hyper_mle_search(x, k, N, m);
+  if(out.status==HyperStatus::FaceUnresolved || out.status==HyperStatus::FaceTie ||
+     out.status==HyperStatus::NumericalFailure) {
+    for(const auto& candidate:out.stop_detail.candidates) {
+      if(candidate.model!=StopModel::None || candidate.coef.size()!=3 || !std::isfinite(candidate.loglik_lower))continue;
+      if(out.certified || candidate.loglik_lower>out.logLik) {
+        out.m=candidate.coef[0];
+        out.N=candidate.coef[1];
+        out.k=candidate.coef[2];
+        out.logLik=candidate.loglik_lower;out.certified=false;
+      }
+    }
+    if(!out.certified)out.status=HyperStatus::Ok;
+  }
+  return out;
+}
 }  // namespace cppunivariate

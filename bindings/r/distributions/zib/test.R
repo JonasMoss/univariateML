@@ -240,13 +240,11 @@ test_that("zib localizes a held face when the inflation-uniform gap is insuffici
   expect_true(is.finite(e$loglik_lower))
 })
 
-test_that("zib near-zero local face coefficients remain unresolved", {
+test_that("zib near-zero local face coefficients return an uncertified finite fit", {
   q <- exp(-1.6)
-  e <- tryCatch(mlzib(c(rep(0,5),1,1,2,2,4),size=NULL,pi=.75*q/(.25+.75*q)),error=identity)
-  expect_s3_class(e,"univariateML_unresolved")
-  expect_identical(e$kind,"unresolved")
-  expect_equal(e$loglik_upper,Inf)
-  expect_gte(nrow(e$candidates),2)
+  f <- mlzib(c(rep(0,5),1,1,2,2,4),size=NULL,pi=.75*q/(.25+.75*q))
+  expect_identical(attr(f,"certified"),FALSE)
+  expect_true(is.finite(as.numeric(logLik(f))))
 })
 
 test_that("zib proves escape even when the winning ZIP rate is tied", {
@@ -317,15 +315,48 @@ test_that("zib log half respects the exact side of a two-point jump", {
   expect_equal(qml(log(.5),model,lower.tail=FALSE,log.p=TRUE),0)
 })
 
-test_that("zib preserves unresolved stops at both adjacent critical inflations", {
+test_that("zib returns uncertified fits at both adjacent critical inflations", {
   x <- c(0,0,0,0,0,1,1,2,2,4)
   for (pi in c(.3772146069463776,.37721460694637765)) {
-    e <- tryCatch(mlzib(x,size=NULL,pi=pi),error=identity)
-    expect_s3_class(e,"univariateML_unresolved")
-    expect_identical(e$kind,"unresolved")
-    expect_identical(e$model,"zip")
-    expect_equal(unname(e$estimates["pi"]),pi,tolerance=0)
-    expect_equal(e$loglik_upper,Inf)
-    expect_gte(nrow(e$candidates),2)
+    f <- mlzib(x,size=NULL,pi=pi)
+    expect_identical(attr(f,"certified"),FALSE)
+    expect_equal(unname(f["pi"]),pi,tolerance=0)
+    expect_true(is.finite(as.numeric(logLik(f))))
   }
+})
+
+test_that("zib exposes the uncertified held-probability prefix", {
+  f <- mlzib(0:3,size=NULL,prob=1e-9,iterlim=1)
+  expect_identical(attr(f,"certified"),FALSE)
+  expect_equal(unname(f["prob"]),1e-9,tolerance=0)
+  expect_true(is.finite(as.numeric(logLik(f))))
+})
+
+test_that("zib retains a stationary fit at an ambiguous turning discriminant", {
+  f <- mlzib(c(rep(0,34000),rep(1,4000),rep(2,30000)),size=2,pi=.2)
+  expect_identical(attr(f,"certified"),FALSE)
+  expect_true(is.finite(as.numeric(logLik(f))))
+  expect_equal(unname(f[c("size","pi")]),c(2,.2),tolerance=0)
+})
+
+test_that("large held counts return the successful zib prefix uncertified", {
+  f <- mlzib(c(1000000,1000001,1000003,1000008,1000011),size=NULL,prob=.4)
+  expect_identical(attr(f,"certified"),FALSE)
+  expect_equal(unname(f["prob"]),.4,tolerance=0)
+  expect_true(is.finite(as.numeric(logLik(f))))
+})
+
+test_that("an exact turning discriminant leaves a flat probability root uncertified", {
+  f <- mlzib(c(rep(0,17),rep(1,2),rep(2,15)),size=2,pi=54/343)
+  expect_identical(attr(f,"certified"),FALSE)
+  expect_true(is.finite(as.numeric(logLik(f))))
+})
+
+test_that("a closed binomial mean respects the requested coefficient precision", {
+  f <- mlzib(c(1,1,2),size=2,pi=0,reltol=1e-18)
+  expect_identical(attr(f,"certified"),FALSE)
+  expect_true(is.finite(as.numeric(logLik(f))))
+  g <- mlzib(c(0,1,1),size=1,prob=1,reltol=1e-18)
+  expect_identical(attr(g,"certified"),FALSE)
+  expect_equal(unname(g["pi"]),1/3,tolerance=0)
 })

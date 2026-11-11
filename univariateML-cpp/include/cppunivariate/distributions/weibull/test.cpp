@@ -119,3 +119,36 @@ TEST_CASE("weibull: TASK-132 preserves invalid Gumbel controls") {
   const std::vector<double> data{1,2,3};
   CHECK(cppunivariate::weibull_mle(cppunivariate::span{data.data(),data.size()},1e-8,0).status == cppunivariate::WeibullStatus::InvalidInput);
 }
+
+TEST_CASE("weibull: relative logarithms retain concentrated-sample shape accuracy") {
+  const std::vector<double> x{2.890529999994219,2.8905299999971095,2.89053,2.8905300000028906,2.8905300000086716};
+  // Independent score root is checked on the actual binary64 inputs by the
+  // retained audit replay. Here changing units must preserve the shape.
+  auto y=x;for(double& v:y)v*=.5;
+  const auto a=cppunivariate::weibull_mle({x.data(),x.size()},1e-10,200);
+  const auto b=cppunivariate::weibull_mle({y.data(),y.size()},1e-10,200);
+  REQUIRE(a.status==cppunivariate::WeibullStatus::Ok);
+  REQUIRE(b.status==cppunivariate::WeibullStatus::Ok);
+  CHECK(a.shape==doctest::Approx(b.shape).epsilon(1e-11).scale(0));
+}
+
+TEST_CASE("weibull: unrepresentable subnormal coefficient is not Ok") {
+  const double u=std::numeric_limits<double>::denorm_min();
+  const std::vector<double> x{u,2*u};
+  const auto r=cppunivariate::weibull_mle({x.data(),x.size()},1e-10,200);
+  CHECK(r.status==cppunivariate::WeibullStatus::AccuracyFailure);
+}
+
+TEST_CASE("weibull: held scale retains concentrated-sample shape accuracy") {
+  const std::vector<double> x{2.4349403590372,2.434940359039635,2.43494035904207,2.434940359044505,2.434940359049375};
+  const auto r=cppunivariate::weibull_mle({x.data(),x.size()},1e-10,100,NAN,NAN,x[0]);
+  REQUIRE(r.status==cppunivariate::WeibullStatus::Ok);
+  // Independent 100-digit conditional-score root on the binary64 sample.
+  CHECK(r.shape==doctest::Approx(263511819158.377827834).epsilon(1e-10));
+}
+
+TEST_CASE("weibull: held shape does not hide an unrepresentable scale") {
+  const double u=std::numeric_limits<double>::denorm_min();
+  const std::vector<double> x{u,2*u};
+  CHECK(cppunivariate::weibull_mle({x.data(),x.size()},1e-10,100,NAN,1,NAN).status==cppunivariate::WeibullStatus::AccuracyFailure);
+}

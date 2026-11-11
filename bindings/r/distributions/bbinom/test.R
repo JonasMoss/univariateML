@@ -96,7 +96,7 @@ test_that("bbinom: P3 unfinished optimizer stops", {
 
 test_that("bbinom: retained free-size guards identify the unresolved profile", {
   expect_error(mlbbinom(c(0,1,2,4,8),size=NULL), "binomial and two-point limits.*no usable bound")
-  expect_error(mlbbinom(c(0,1,2,4,8),size=NULL,beta=1e9), "work budget")
+  expect_identical(attr(mlbbinom(c(0,1,2,4,8),size=NULL,beta=1e9), "certified"), FALSE)
   # Fixed alpha with beta proportional to size approaches NB with that
   # alpha held. Reflecting x to N-x would change the observed sample.
   x <- 0:10; alpha <- 2; mu <- 3
@@ -117,7 +117,7 @@ test_that("held beta free-size fit has a certified tail", {
  expect_equal(attr(f,"logLik"), max(grid), tolerance=1e-8)
  expect_error(mlbbinom(rep(3,4),size=NULL,beta=2), "point mass")
  expect_error(mlbbinom(c(0,0),size=NULL,beta=2), "not identified")
- expect_error(mlbbinom(x,size=NULL,beta=1e9), "work budget")
+ expect_identical(attr(mlbbinom(x,size=NULL,beta=1e9), "certified"), FALSE)
 })
 
 test_that("seeded held-beta profiles agree with dense size enumeration", {
@@ -140,8 +140,8 @@ test_that("held alpha free-size certificates and stopping outcomes", {
   expect_equal(attr(fit,"logLik"), max(grid), tolerance=1e-7)
   expect_error(mlbbinom(c(0,0),size=NULL,alpha=1), "not identified")
   expect_error(mlbbinom(c(3,3),size=NULL,alpha=1), "point mass")
-  expect_error(mlbbinom(c(0,1001),size=NULL,alpha=1), "work budget")
-  expect_error(mlbbinom(c(0,0,0,10),size=NULL,alpha=1), "cannot resolve the negative binomial face")
+  expect_identical(attr(mlbbinom(c(0,1001),size=NULL,alpha=1), "certified"), FALSE)
+  expect_identical(attr(mlbbinom(c(0,0,0,10),size=NULL,alpha=1), "certified"), FALSE)
 })
 
 test_that("signed zero-score face and small finite gains are distinguished", {
@@ -185,14 +185,12 @@ test_that("fixed-size saturated tables enclose the public coefficients", {
   }
 })
 
-test_that("unattainable coefficient accuracy gives a structured numerical stop", {
+test_that("unattainable coefficient inclusion returns the successful search uncertified", {
   x <- c(0,1,1,2,2,3,4,5,7,10)
   for (held in list(list(),list(alpha=2),list(beta=3))) {
-    e <- tryCatch(do.call(mlbbinom,c(list(x=x,size=10,reltol=1e-18),held)),error=identity)
-    expect_s3_class(e,"univariateML_numerical")
-    expect_equal(e$kind,"numerical")
-    expect_true(is.infinite(e$loglik_upper))
-    expect_true(nrow(e$candidates)>0)
-    expect_true(all(is.finite(e$candidates$loglik_lower)))
+    f <- do.call(mlbbinom,c(list(x=x,size=10,reltol=1e-18),held))
+    expect_identical(attr(f,"certified"),FALSE)
+    expect_true(all(is.finite(f)))
+    expect_true(is.finite(as.numeric(logLik(f))))
   }
 })

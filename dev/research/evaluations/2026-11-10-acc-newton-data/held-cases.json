@@ -1,0 +1,94 @@
+[
+  {
+    "id": "weibull-held-scale",
+    "family": "weibull",
+    "data": [
+      2.4349403590372,
+      2.434940359039635,
+      2.43494035904207,
+      2.434940359044505,
+      2.434940359049375
+    ],
+    "held": {
+      "scale": 2.4349403590372
+    }
+  },
+  {
+    "id": "lomax-held-kappa",
+    "family": "lomax",
+    "data": [
+      1,
+      2,
+      3
+    ],
+    "held": {
+      "kappa": 1e-14
+    }
+  },
+  {
+    "id": "gumbel-held-scale",
+    "family": "gumbel",
+    "data": [
+      0,
+      1
+    ],
+    "held": {
+      "sigma": 1
+    },
+    "unit": "denorm",
+    "unit_params": [
+      "sigma"
+    ],
+    "numerical": true
+  },
+  {
+    "id": "weibull-held-shape",
+    "family": "weibull",
+    "data": [
+      1,
+      2
+    ],
+    "held": {
+      "shape": 1
+    },
+    "unit": "denorm",
+    "unit_params": [],
+    "numerical": true
+  },
+  {
+    "id": "lomax-wide-held-kappa",
+    "family": "lomax",
+    "data": [
+      1e-200,
+      1e+200
+    ],
+    "held": {
+      "kappa": 1
+    }
+  },
+  {
+    "id": "lomax-weighted-held-kappa",
+    "family": "lomax",
+    "data": [
+      1e-200,
+      1e+200,
+      1e+200,
+      1e+200
+    ],
+    "held": {
+      "kappa": 0.3333333333333333
+    }
+  },
+  {
+    "id": "lomax-subnormal-held-kappa",
+    "family": "lomax",
+    "data": [
+      1e+158,
+      2e+158
+    ],
+    "held": {
+      "kappa": 1e+158
+    },
+    "numerical": true
+  }
+]

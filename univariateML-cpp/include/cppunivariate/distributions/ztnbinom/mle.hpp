@@ -81,3 +81,17 @@ inline ZtnbinomResult ztnbinom_candidate_mle(ispan x, double tol=1e-10, int maxi
 }
 
 #include "certificate.hpp"
+
+#include "accuracy.hpp"
+namespace cppunivariate {
+inline ZtnbinomResult ztnbinom_mle(ispan x,double tol=1e-10,int maxit=200,double size=NAN,double prob=NAN) {
+  auto r=ztnbinom_accuracy_search(x,tol,maxit,size,prob);
+  if(r.status!=ZtnbinomStatus::Ok)return r;
+  double pi=0;
+  if(!accuracy_detail::nb_polish(x,r.size,r.prob,pi,std::isnan(size),std::isnan(prob),false,true,tol,maxit)) {
+    r.status=ZtnbinomStatus::IterationFailure;return r;
+  }
+  if(r.size>0&&r.prob<1){r.logLik=0;for(int v:x)r.logLik+=zero_detail::nb_logpmf(v,r.size,r.prob)-std::log(-std::expm1(r.size*std::log(r.prob)));}
+  return r;
+}
+}

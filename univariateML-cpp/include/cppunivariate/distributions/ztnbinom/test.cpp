@@ -135,13 +135,18 @@ TEST_CASE("ztnbinom: geometric member allows adjacent answers at jumps") {
   CHECK(cppunivariate::distributions::pztnbinom(2,1,.5,false,false)==doctest::Approx(.25).epsilon(1e-14));
 }
 
-TEST_CASE("ztnbinom: global certificate preserves the historical proposer") {
+TEST_CASE("ztnbinom: global certificate preserves the proposer basin with coefficient refinement") {
  const auto g=mltest::load_distribution_golden("ztnbinom");
  std::vector<int>x;for(double v:g.data)x.push_back(static_cast<int>(v));
  const auto old=cppunivariate::ztnbinom_candidate_mle({x.data(),x.size()});
  const auto fit=cppunivariate::ztnbinom_mle({x.data(),x.size()});
  REQUIRE(fit.status==cppunivariate::ZtnbinomStatus::Ok);
- CHECK(fit.size==old.size);CHECK(fit.prob==old.prob);CHECK(fit.logLik==old.logLik);
+ // Local accuracy deliberately improves the historical likelihood-only proposal.
+ CHECK(fit.size==doctest::Approx(g.estimates.at("size")).epsilon(mltest::kGolden_ztnbinom).scale(0));
+ CHECK(fit.prob==doctest::Approx(g.estimates.at("prob")).epsilon(mltest::kGolden_ztnbinom).scale(0));
+ CHECK(std::abs(fit.size-g.estimates.at("size"))<std::abs(old.size-g.estimates.at("size")));
+ CHECK(std::abs(fit.prob-g.estimates.at("prob"))<std::abs(old.prob-g.estimates.at("prob")));
+ CHECK(fit.logLik==doctest::Approx(g.logLik).epsilon(mltest::kGolden_ztnbinom).scale(0));
  CHECK(fit.iterations>0);
 }
 

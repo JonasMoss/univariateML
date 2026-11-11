@@ -101,10 +101,10 @@ test_that("fully free hyper fits and reports boundary outcomes", {
   f <- mlhyper(c(2,2,2,3,3,3), N=NULL, k=NULL, m=NULL)
   expect_equal(as.numeric(logLik(f)), 6*log(.5), tolerance=1e-9)
   expect_length(attr(f, "fixed"), 0)
-  expect_error(mlhyper(c(0,1),N=NULL,k=NULL,m=NULL), "matched the binomial face")
-  expect_error(mlhyper(c(0,0,0,5,5,5),N=NULL,k=NULL,m=NULL), "Poisson face.*not excluded|not excluded.*Poisson face")
-  expect_error(mlhyper(c(0,100001),N=NULL,k=NULL,m=NULL), "numerical failure")
-  expect_error(mlhyper(c(8,8,9,9),N=NULL,k=NULL,m=NULL), "numerical failure.*budget")
+  expect_identical(attr(mlhyper(c(0,1),N=NULL,k=NULL,m=NULL), "certified"), FALSE)
+  expect_identical(attr(mlhyper(c(0,0,0,5,5,5),N=NULL,k=NULL,m=NULL), "certified"), FALSE)
+  expect_identical(attr(mlhyper(c(0,100001),N=NULL,k=NULL,m=NULL), "certified"), FALSE)
+  expect_identical(attr(mlhyper(c(8,8,9,9),N=NULL,k=NULL,m=NULL), "certified"), FALSE)
 })
 
 test_that("fully free seeded fits agree with independent population grids", {
@@ -139,7 +139,7 @@ test_that("fully free seeded fits agree with independent population grids", {
     expect_identical(attr(f,"fixed"),"N")
   }
   expect_error(mlhyper(c(0,15),N=14,k=NULL),"positive probability")
-  expect_error(mlhyper(c(0,1),N=10000,k=NULL),"numerical failure.*budget")
+  expect_identical(attr(mlhyper(c(0,1),N=10000,k=NULL), "certified"), FALSE)
  })
 
 test_that("joint population fits agree with a finite reference grid", {
@@ -152,7 +152,7 @@ test_that("joint population fits agree with a finite reference grid", {
   expect_equal(as.numeric(logLik(f)), max(ll), tolerance=1e-9)
   expect_equal(as.numeric(logLik(g)), max(ll), tolerance=1e-9)
   expect_equal(as.numeric(logLik(mlhyper(c(0,1),k=1,N=NULL,m=NULL))),2*log(.5))
-  expect_error(mlhyper(c(0,1),k=100001,N=NULL,m=NULL),"numerical failure")
+  expect_identical(attr(mlhyper(c(0,1),k=100001,N=NULL,m=NULL), "certified"), FALSE)
 })
 
 test_that("seeded joint hyper fits match population grids", {
@@ -166,5 +166,5 @@ test_that("seeded joint hyper fits match population grids", {
     expect_equal(as.numeric(logLik(f)),best,tolerance=1e-8)
     expect_equal(as.numeric(logLik(g)),best,tolerance=1e-8)
   }
-  expect_error(mlhyper(c(0,0,0,5,5,5),k=5,N=NULL,m=NULL),"not excluded")
+  expect_identical(attr(mlhyper(c(0,0,0,5,5,5),k=5,N=NULL,m=NULL), "certified"), FALSE)
 })

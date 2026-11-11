@@ -6,7 +6,7 @@
 #include <queue>
 
 namespace cppunivariate {
-enum class EmgStatus { Ok, NormalLimit, TranslatedExponentialLimit, Unbounded, InvalidInput, IterationFailure, NumericalFailure, BudgetExhausted, Unresolved, Tie };
+enum class EmgStatus { Ok, NormalLimit, TranslatedExponentialLimit, Unbounded, InvalidInput, IterationFailure, NumericalFailure, BudgetExhausted, Unresolved, Tie, AccuracyFailure };
 struct EmgResult { double mu,sigma,lambda,logLik; int iterations; EmgStatus status; StopDetail stop_detail{}; };
 namespace emg_detail {
 struct CertFace {

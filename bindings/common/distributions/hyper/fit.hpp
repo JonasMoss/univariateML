@@ -105,7 +105,7 @@ inline FitResult fit_hyper(cppunivariate::span x, Held m_arg = {}, Held N_arg = 
   if (m.supplied) fixed.push_back("m");
   if (N.supplied) fixed.push_back("N");
   if (k.supplied) fixed.push_back("k");
-  return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"m",res.m},{"N",res.N},{"k",res.k}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }();
+  return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"m",res.m},{"N",res.N},{"k",res.k}}; out.extra.push_back({"certified", res.certified ? 1.0 : 0.0}); out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }();
 
 }
 }

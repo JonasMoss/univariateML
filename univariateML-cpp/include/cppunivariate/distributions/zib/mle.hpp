@@ -8,6 +8,7 @@
 namespace cppunivariate {
 enum class ZibStatus { Ok, InvalidInput, InvalidSize, ZipLimit, IterationFailure, FaceTie };
 struct ZibResult {double size, prob, pi, logLik;int iterations;ZibStatus status;  StopDetail stop_detail{};
+  bool certified = true;
 };
 namespace zib_fit_detail {
 inline ZibResult zib_mle_proposal(ispan x,double tol=1e-10,int maxit=200,
@@ -58,10 +59,27 @@ inline ZibResult zib_mle_proposal(ispan x,double tol=1e-10,int maxit=200,
       // Use u=r*p: recovering p coefficients by differencing values at
       // 0, 1/2, 1 loses the linear coefficient for a large held size.
       const double a=n*k,b=-sum*(n+k)-sum*zeros/r,c=sum*sum+sum*zeros;
-      const double disc=b*b-4*a*c;
+      double disc=b*b-4*a*c;
       const double arithmetic=4096*std::numeric_limits<double>::epsilon()*(1+b*b+4*a*c);
-      if(!std::isfinite(disc) || std::abs(disc)<=arithmetic) {
+      if(!std::isfinite(disc)) {
         auto out=evaluate(r,lower);out.status=ZibStatus::IterationFailure;return out;
+      }
+      bool uncertain_turns=std::abs(disc)<=arithmetic;
+      const bool near_turns=uncertain_turns;
+      if(uncertain_turns) {
+        // Multiplication by integer size squared clears all denominators.
+        // Positive integer intermediates below this mantissa bound are exact.
+        const CPPUNIV_EXTENDED_REAL R=r,S=sum,K=k,Z=zeros,H=n;
+        const CPPUNIV_EXTENDED_REAL t=(H+K)*R+Z;
+        const CPPUNIV_EXTENDED_REAL left=S*S*t*t,right=4*H*K*(S*S+S*Z)*R*R;
+        if(std::isfinite(left+right) && left+right<std::ldexp(static_cast<CPPUNIV_EXTENDED_REAL>(1),
+            std::numeric_limits<CPPUNIV_EXTENDED_REAL>::digits-2)) {
+          disc=static_cast<double>((left-right)/(R*R));uncertain_turns=false;
+        }
+      }
+      if(uncertain_turns) {
+        const double vertex=-b/(2*a*r);
+        if(vertex>lower && vertex<upper)points.push_back(vertex);
       }
       if(disc>0) {
         const double q=-.5*(b+std::copysign(std::sqrt(disc),b));
@@ -75,9 +93,11 @@ inline ZibResult zib_mle_proposal(ispan x,double tol=1e-10,int maxit=200,
       // maximizers. Only the physical endpoint p=1 competes without a root.
       auto best=evaluate(r,upper);
       bool candidate_seen=upper==1 && best.status==ZibStatus::Ok;
+      double runner=-INFINITY;
       const auto consider=[&](double p) {
         const auto candidate=evaluate(r,p);
         if(candidate.status!=ZibStatus::Ok){best.status=ZibStatus::IterationFailure;return false;}
+        if(candidate_seen && p!=best.prob)runner=std::max(runner,candidate.logLik>best.logLik?best.logLik:candidate.logLik);
         if(!candidate_seen || candidate.logLik>best.logLik)best=candidate;
         candidate_seen=true;return true;
       };
@@ -109,6 +129,21 @@ inline ZibResult zib_mle_proposal(ispan x,double tol=1e-10,int maxit=200,
         if(!consider(lo+(hi-lo)/2))return best;
       }
       if(!candidate_seen)best.status=ZibStatus::IterationFailure;
+      // Bracketed stationary candidates survive an unresolved turning-point
+      // comparison; the numerical search makes no all-branches claim here.
+      if(uncertain_turns)best.certified=false;
+      if(near_turns && best.status==ZibStatus::Ok) {
+        // Exact turning-point arithmetic alone does not enclose a nearly
+        // multiple probability root. Require padded signs at a tol-sized band.
+        if(best.prob>0 && best.prob<1) {
+          const double radius=.25*std::min(tol,1.)*best.prob;
+          const double left=std::max(lower,best.prob-radius),right=std::min(upper,best.prob+radius);
+          const double pad=256*std::numeric_limits<double>::epsilon()*(1+sum+n*(r*best.prob));
+          if(!(score(left)>pad && score(right)<-pad))best.certified=false;
+        }
+        const double margin=1e-9*n+4096*std::numeric_limits<double>::epsilon()*(1+std::abs(best.logLik));
+        if(runner+margin>=best.logLik)best.certified=false;
+      }
       return best;
     };
     if(fixed)return held_profile(fixed_size);
@@ -116,18 +151,22 @@ inline ZibResult zib_mle_proposal(ispan x,double tol=1e-10,int maxit=200,
     // In particular, size one is suboptimal when p>0 and pi<1 are held.
     if(sum==0)return held_profile(0);
     if(fp) {
-      auto best=held_profile(mx);
-      if(fixed_prob==0 || fixed_prob==1)return best;
-      std::int64_t work=x.size();
+      if(fixed_prob==0 || fixed_prob==1)return held_profile(mx);
       const std::int64_t cap=enumeration_budget(maxit);
-      for(std::int64_t j=0;;++j) {
-        if(static_cast<std::int64_t>(x.size())>cap-work){
+      std::int64_t cost=static_cast<std::int64_t>(x.size());for(int v:x){if(cost>cap || v>cap-cost){cost=cap+1;break;}cost+=v;}
+      if(cost>cap){ZibResult failed{NAN,fixed_prob,fi?fixed_pi:NAN,NAN,0,ZibStatus::IterationFailure};failed.stop_detail=discrete_budget(failed.stop_detail);return failed;}
+      auto best=held_profile(mx);
+      std::int64_t work=cost;
+      for(std::int64_t j=1;;++j) {
+        if(cost>cap-work){
           best.status=ZibStatus::IterationFailure;
           best.stop_detail=discrete_budget(best.stop_detail);
           best.stop_detail.candidates.push_back({{best.size,best.prob,best.pi},best.logLik,best.logLik});
-          best.stop_detail.loglik_lower=best.logLik;return best;
+          best.stop_detail.loglik_lower=best.logLik;
+          if(std::isfinite(best.logLik)){best.status=ZibStatus::Ok;best.certified=false;}
+          return best;
         }
-        work+=x.size();
+        work+=cost;
         const double r=double(mx)+j;
         auto candidate=held_profile(r);if(candidate.logLik>best.logLik)best=candidate;
         // Each positive mass is bounded by the mass at mx beyond mx/p.
@@ -238,6 +277,15 @@ inline ZibResult zib_mle_proposal(ispan x,double tol=1e-10,int maxit=200,
 } // namespace zib_fit_detail
 inline ZibResult zib_mle(ispan x,double tol=1e-10,int maxit=200,
     double fixed_size=NAN,double fixed_prob=NAN, double fixed_pi=NAN) {
+  const auto checked_precision=[&](ZibResult out) {
+    // Closed binomial reductions and inflation ratios still round to double.
+    // Degenerate zero laws have no floating coefficient accuracy to resolve.
+    if(out.status==ZibStatus::Ok && out.size>0 && out.prob>0 && out.pi<1 &&
+       tol<8*std::numeric_limits<double>::epsilon() &&
+       ((std::isnan(fixed_prob) && out.prob<1) || (std::isnan(fixed_pi) && out.pi>0)))
+      out.certified=false;
+    return out;
+  };
   // Zero inflation, or a sample without zeros, reduces to ordinary
   // binomial profiling. Held nonzero inflation adds only a constant in
   // the latter case; free inflation is then maximized at zero.
@@ -258,7 +306,7 @@ inline ZibResult zib_mle(ispan x,double tol=1e-10,int maxit=200,
     } else if(out.status==ZibStatus::IterationFailure) {
       binomial_certificate_detail::witness(out.stop_detail,{out.size,out.prob,pi},out.logLik,f.stop_detail.budget_exhausted);
     }
-    return out;
+    return checked_precision(out);
   }
   // The support {0,1} is saturated at size one, even with inflation held.
   if((std::isnan(fixed_size)||fixed_size==1) && std::isnan(fixed_prob) && x.size()>0 && maxit>1 && tol>0 && std::isfinite(tol)) {
@@ -268,13 +316,41 @@ inline ZibResult zib_mle(ispan x,double tol=1e-10,int maxit=200,
       const double p=std::min(1.,sum/(x.size()*(1-pi)));
       double ll=sum*std::log((1-pi)*p);
       if(sum<x.size())ll+=(x.size()-sum)*std::log(1-(1-pi)*p);
-      return {1,p,pi,ll,0,ZibStatus::Ok};
+      return checked_precision({1,p,pi,ll,0,ZibStatus::Ok});
     }
   }
+  bool candidate_ready=false;
+  auto checked = [&]() -> ZibResult {
   auto best=zib_fit_detail::zib_mle_proposal(x,tol,maxit,fixed_size,fixed_prob,fixed_pi);
+  // Only a successful fixed-size solve can supply the finite fallback.
+  if(std::isnan(fixed_size) && std::isnan(fixed_prob) && x.size()>0 &&
+     best.status!=ZibStatus::InvalidInput && best.status!=ZibStatus::InvalidSize &&
+     std::isfinite(best.size) && std::isfinite(best.logLik)) {
+    const auto finite=zib_fit_detail::zib_mle_proposal(x,tol,maxit,best.size,NAN,fixed_pi);
+    candidate_ready=finite.status==ZibStatus::Ok;
+    if(!candidate_ready) {
+      int observed=0;for(int v:x)observed=std::max(observed,v);
+      double value=-INFINITY;
+      std::int64_t remaining=enumeration_budget(maxit),cost=static_cast<std::int64_t>(x.size());
+      for(int v:x)cost+=v;
+      for(std::int64_t j=0;j<solver_budget(maxit);++j) {
+        if(cost>remaining)break;
+        remaining-=cost;
+        const auto f=zib_fit_detail::zib_mle_proposal(x,tol,maxit,observed+double(j),NAN,fixed_pi);
+        if(f.status!=ZibStatus::Ok || !std::isfinite(f.logLik))continue;
+        if(f.logLik>value) {
+          value=f.logLik;best.size=f.size;best.prob=f.prob;best.pi=f.pi;best.logLik=f.logLik;
+          candidate_ready=true;
+        }
+      }
+    }
+    if(candidate_ready && best.status==ZibStatus::IterationFailure) {
+      best.status=ZibStatus::Ok;best.certified=false;return best;
+    }
+  }
   if(!std::isnan(fixed_size)||!std::isnan(fixed_prob)||x.size()==0) {
     if(best.status==ZibStatus::IterationFailure)
-      binomial_certificate_detail::witness(best.stop_detail,{best.size,best.prob,best.pi},best.logLik,false);
+      binomial_certificate_detail::witness(best.stop_detail,{best.size,best.prob,best.pi},best.logLik,best.stop_detail.budget_exhausted);
     return best;
   }
   int mx=0;double sum=0;for(int v:x){mx=std::max(mx,v);sum+=v;}
@@ -283,6 +359,7 @@ inline ZibResult zib_mle(ispan x,double tol=1e-10,int maxit=200,
   if(best.status==ZibStatus::IterationFailure) {
     binomial_certificate_detail::witness(best.stop_detail,{best.size,best.prob,best.pi},best.logLik,false);return best;
   }
+  candidate_ready=candidate_ready && std::isfinite(best.logLik) && best.size>=0 && best.prob>=0 && best.prob<=1 && best.pi>=0 && best.pi<=1;
   binomial_certificate_detail::Work work{0,0,maxit};
   if(best.status==ZibStatus::ZipLimit || best.status==ZibStatus::FaceTie) {
     const double face_upper=best.stop_detail.loglik_upper;
@@ -310,7 +387,7 @@ inline ZibResult zib_mle(ispan x,double tol=1e-10,int maxit=200,
       bool finite_seen=false;
       const auto covered=binomial_certificate_detail::cover_face(x,mx,end,best.stop_detail.limit_loglik,work,[&](double N) {
         const auto f=zib_fit_detail::zib_mle_proposal(x,tol,maxit,N,NAN,fixed_pi);
-        if(f.status!=ZibStatus::Ok)return double(NAN);
+        if(f.status!=ZibStatus::Ok || !f.certified)return double(NAN);
         if(!finite_seen || f.logLik>best.logLik) {best.size=f.size;best.prob=f.prob;best.pi=f.pi;best.logLik=f.logLik;}
         finite_seen=true;return f.logLik;
       });
@@ -378,7 +455,7 @@ inline ZibResult zib_mle(ispan x,double tol=1e-10,int maxit=200,
   double incumbent=best.logLik;
   const bool complete=binomial_certificate_detail::cover(x,mx,end,incumbent,work,[&](double N) {
     const auto f=zib_fit_detail::zib_mle_proposal(x,tol,maxit,N,NAN,fixed_pi);
-    if(f.status!=ZibStatus::Ok)return double(NAN);
+    if(f.status!=ZibStatus::Ok || !f.certified)return double(NAN);
     if(f.logLik>best.logLik)best=f;
     return f.logLik;
   });
@@ -386,7 +463,16 @@ inline ZibResult zib_mle(ispan x,double tol=1e-10,int maxit=200,
     best.status=ZibStatus::IterationFailure;
     binomial_certificate_detail::witness(best.stop_detail,{best.size,best.prob,best.pi},best.logLik,!work.numerical);
   }
+  // Integer coverage does not close an unresolved probability-root enclosure.
   return best;
+  };
+  auto best=checked();
+  if(candidate_ready && best.status!=ZibStatus::Ok &&
+     (best.stop_detail.comparison_tie || !std::isfinite(best.stop_detail.loglik_upper)) &&
+     std::isfinite(best.logLik) && best.size>=0 && best.prob>=0 && best.prob<=1 && best.pi>=0 && best.pi<=1) {
+    best.status=ZibStatus::Ok;best.certified=false;
+  }
+  return checked_precision(best);
 }
 
-}
+} // namespace cppunivariate

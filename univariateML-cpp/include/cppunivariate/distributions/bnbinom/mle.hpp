@@ -1,6 +1,7 @@
 // Global scalar, pair and finite all-free covers. General winning all-free
 // NB faces retain the legacy comparison when unproved. Faces are fitted separately.
 #pragma once
+#include "../sstd/local_accuracy.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/discrete_stop.hpp"
 #include "../../core/precision.hpp"
@@ -21,9 +22,13 @@ struct BnbinomResult {
   BnbinomStatus status;
   StopDetail stop_detail{};
   std::array<double,2> global_interval{{NAN,NAN}};
+  std::array<double,3> global_coefficient_center{{NAN,NAN,NAN}};
+  double global_coefficient_radius=NAN;
   std::array<double,2> profile_alpha{{NAN,NAN}};
   std::array<double,4> profile_mode{{NAN,NAN,NAN,NAN}};
   bool certified=false;
+  bool accuracy_failure=false;
+  bool local_accuracy_fallback=false;
 };
 namespace bnbinom_detail {
 struct Data {
@@ -39,6 +44,27 @@ inline double likelihood(const Data &d, const std::vector<double> &p) {
     ll+=d.count[i]*(increment(p[0],x)+increment(p[2],x)-increment(t,x)-special::lgamma(x+1.0));
   }
   return static_cast<double>(ll);
+}
+inline local_accuracy::Jet accuracy_increment(local_accuracy::Jet z,double h) {
+  if(h==0)return 0;
+  if(h==1)return local_accuracy::log(z);
+  local_accuracy::Jet correction=0;
+  while(z.v<16){correction=correction-local_accuracy::log1p(h/z);z=z+1;}
+  return correction+h*local_accuracy::log(z)+(z+h-.5)*local_accuracy::log1p(h/z)-h+
+    local_accuracy::stirling(z+h)-local_accuracy::stirling(z);
+}
+inline local_accuracy::Jet accuracy_zero(local_accuracy::Jet r,local_accuracy::Jet a,local_accuracy::Jet b) {
+  if(r.v>b.v)std::swap(r,b);
+  local_accuracy::Jet correction=0;
+  while(a.v<16){correction=correction-local_accuracy::log1p(r/a)+local_accuracy::log1p(r/(a+b));a=a+1;}
+  return correction-r*local_accuracy::log1p(b/a)+(a+r-.5)*local_accuracy::log1p(r/a)-
+    (a+b+r-.5)*local_accuracy::log1p(r/(a+b))+local_accuracy::stirling(a+r)-local_accuracy::stirling(a)-
+    local_accuracy::stirling(a+b+r)+local_accuracy::stirling(a+b);
+}
+inline local_accuracy::Jet accuracy_objective(const Data& d,const std::array<local_accuracy::Jet,3>& p){
+ auto c=p;if(c[0].v>c[2].v)std::swap(c[0],c[2]);
+ auto t=c[0]+c[1]+c[2];local_accuracy::JetSum f(-d.n*accuracy_zero(c[0],c[1],c[2]));
+ for(std::size_t j=0;j<d.x.size();++j){double k=d.x[j];f.add(-d.count[j]*(accuracy_increment(c[0],k)+accuracy_increment(c[2],k)-accuracy_increment(t,k)-special::lgamma(k+1)));}return f.value();
 }
 struct Cost {
   const Data &d;
@@ -515,7 +541,7 @@ inline BnbinomResult alpha_fit(const Cost &c,double tol,int maxit) {
 #include "joint_certificate.hpp"
 #include "signed_face_certificate.hpp"
 namespace cppunivariate {
-inline BnbinomResult bnbinom_mle(ispan x, double tol=1e-8, int maxit=600,
+inline BnbinomResult bnbinom_mle(ispan x, double tol=1e-10, int maxit=600,
     double size_fixed=std::numeric_limits<double>::quiet_NaN(),
     double alpha_fixed=std::numeric_limits<double>::quiet_NaN(),
     double beta_fixed=std::numeric_limits<double>::quiet_NaN()) {
@@ -538,9 +564,27 @@ inline BnbinomResult bnbinom_mle(ispan x, double tol=1e-8, int maxit=600,
   if (cost.free.empty()) return {size_fixed,alpha_fixed,beta_fixed,
       bnbinom_detail::likelihood(d,cost.fixed),0,BnbinomStatus::Ok};
   if (sum==0) { out.logLik=0; out.status=BnbinomStatus::PointMass; return out; }
-  if (cost.free.size()==1) return bnbinom_detail::scalar_fit(cost,tol,maxit);
+  if (cost.free.size()==1) {
+    auto r=bnbinom_detail::scalar_fit(cost,tol,maxit);
+    if(r.status==BnbinomStatus::NumericalFailure && !r.stop_detail.candidates.empty()) {
+      auto proposal=bnbinom_detail::scalar_fit(cost,std::max(tol,1e-8),maxit);
+      if(proposal.status==BnbinomStatus::Ok) {
+        const int j=cost.free[0];const std::array<double,3> shape{{proposal.size,proposal.alpha,proposal.beta}};
+        std::array<double,4> v{{std::log(shape[j]),0,0,0}};
+        const auto objective=[&](const std::array<local_accuracy::Jet,4>& q){
+          std::array<local_accuracy::Jet,3> p{{shape[0],shape[1],shape[2]}};p[j]=local_accuracy::exp(q[0]);
+          return bnbinom_detail::accuracy_objective(d,p);
+        };
+        if(local_accuracy::polish(v,1,tol,maxit,objective,local_accuracy::log_error)) {
+          auto p=shape;p[j]=std::exp(v[0]);proposal.size=p[0];proposal.alpha=p[1];proposal.beta=p[2];
+          proposal.logLik=bnbinom_detail::likelihood(d,{p[0],p[1],p[2]});proposal.certified=false;proposal.local_accuracy_fallback=true;return proposal;
+        }
+      }
+    }
+    return r;
+  }
   if (cost.free.size()==2 && std::isfinite(alpha_fixed))
-    return bnbinom_detail::alpha_fit(cost,tol,maxit);
+    return bnbinom_detail::alpha_fit(cost,std::max(tol,1e-8),maxit);
   const bool fr=std::isnan(size_fixed), fa=std::isnan(alpha_fixed), fb=std::isnan(beta_fixed);
   StopDetail nb_detail, po_detail;
   double face=-std::numeric_limits<double>::infinity();
@@ -579,7 +623,7 @@ inline BnbinomResult bnbinom_mle(ispan x, double tol=1e-8, int maxit=600,
   if(cost.free.size()==2 && fa) {
     const bool mirror=fr;
     bnbinom_detail::Cost canonical{d,{mirror?beta_fixed:size_fixed,NAN,NAN},{1,2}};
-    auto fitted=bnbinom_detail::pair_fit(canonical,tol,maxit,face,nb_detail.limit_coef[1]);
+    auto fitted=bnbinom_detail::pair_fit(canonical,std::max(tol,1e-8),maxit,face,nb_detail.limit_coef[1]);
     if(mirror) {
       std::swap(fitted.size,fitted.beta);
       for(auto &candidate:fitted.stop_detail.candidates)
@@ -608,7 +652,7 @@ inline BnbinomResult bnbinom_mle(ispan x, double tol=1e-8, int maxit=600,
       if (fa) p[1]=a*(1+p[0]*p[2]/(1+sum/d.n));
       std::vector<double> u;
       for (int j:cost.free) u.push_back(std::log(p[j]));
-      u=bnbinom_detail::optimise(cost,u,tol,maxit,out.iterations);
+      u=bnbinom_detail::optimise(cost,u,std::max(tol,1e-8),maxit,out.iterations);
       const double value=-d.n*cost.value(u);
       const auto proposed=cost.decode(u);
       if(value>attempted){attempted=value;attempted_point=proposed;}
@@ -736,7 +780,7 @@ inline BnbinomResult bnbinom_mle(ispan x, double tol=1e-8, int maxit=600,
   if(!diagonal.empty())retain(diagonal,diagonal_ll);
   out.stop_detail.loglik_lower=out.logLik-bnbinom_detail::alpha_likelihood_bound(d,p[1],{p[0],p[0],p[2],p[2]}).margin;
   out.stop_detail.loglik_upper=0;
-  const auto global=bnbinom_detail::joint_cover(d,p,face,poisson_face,tol,maxit,
+  const auto global=bnbinom_detail::joint_cover(d,p,face,poisson_face,std::max(tol,1e-8),maxit,
     nb_detail.limit_coef.empty()?NAN:nb_detail.limit_coef[0]);
   out.iterations=static_cast<int>(std::min(static_cast<long long>(std::numeric_limits<int>::max()),
     static_cast<long long>(out.iterations)+global.iterations));
@@ -776,13 +820,14 @@ inline BnbinomResult bnbinom_mle(ispan x, double tol=1e-8, int maxit=600,
   out.size=p[0];out.alpha=p[1];out.beta=p[2];out.logLik=bnbinom_detail::likelihood(d,p);
   retain(p,out.logLik);if(p[0]!=p[2])retain({p[2],p[1],p[0]},out.logLik);
   out.global_interval={{global.loglik_lower,global.loglik_upper}};
+  out.global_coefficient_center={{p[0],p[1],p[2]}};out.global_coefficient_radius=2.5e-9;
   out.certified=true;
   out.stop_detail.loglik_lower=global.loglik_lower;
   // Certify the global inner profile uniformly near this alpha proposal.
   // Retain a parameter-uniform inner enclosure in addition to the full cover.
   // General winning-NB-face decisions remain separate and unresolved.
   const double width=std::min(1e-6,std::sqrt(tol));
-  const auto profile=bnbinom_detail::alpha_interval_profile(d,p,p[1]*(1-width),p[1]*(1+width),tol,maxit);
+  const auto profile=bnbinom_detail::alpha_interval_profile(d,p,p[1]*(1-width),p[1]*(1+width),std::max(tol,1e-8),maxit);
   out.iterations=static_cast<int>(std::min(static_cast<long long>(std::numeric_limits<int>::max()),
     static_cast<long long>(out.iterations)+profile.iterations));
   if(!profile.proved) {
@@ -801,8 +846,37 @@ inline BnbinomResult bnbinom_mle(ispan x, double tol=1e-8, int maxit=600,
     stopped.stop_detail=discrete_face(StopModel::Pois,{0},0);stopped.certified=true;
   }
   const int free_count=static_cast<int>(std::isnan(size_fixed))+static_cast<int>(std::isnan(alpha_fixed))+static_cast<int>(std::isnan(beta_fixed));
-  if(free_count>0 && free_count<3 && (stopped.status==BnbinomStatus::Ok ||
+  if(!stopped.local_accuracy_fallback && free_count>0 && free_count<3 && (stopped.status==BnbinomStatus::Ok ||
       stopped.status==BnbinomStatus::NegativeBinomialLimit || stopped.status==BnbinomStatus::PoissonLimit))stopped.certified=true;
+  if(free_count>=2 && stopped.status==BnbinomStatus::Ok) {
+    bnbinom_detail::Data d;std::map<int,double> counts;for(int v:x)counts[v]+=1;
+    d.n=x.size();for(const auto& v:counts){d.x.push_back(v.first);d.count.push_back(v.second);}
+    const std::array<double,3> value{{stopped.size,stopped.alpha,stopped.beta}},held{{size_fixed,alpha_fixed,beta_fixed}};
+    std::array<int,3> index{{-1,-1,-1}};std::array<double,4> p{};int dim=0;
+    const std::array<int,3> order=std::isfinite(size_fixed)&&std::isnan(beta_fixed)?std::array<int,3>{{2,1,0}}:std::array<int,3>{{0,1,2}};
+    for(int j:order)if(std::isnan(held[j])){index[j]=dim;p[dim++]=std::log(value[j]);}
+    const auto unpack=[&](const std::array<local_accuracy::Jet,4>& q){
+      std::array<local_accuracy::Jet,3> shape{{value[0],value[1],value[2]}};
+      for(int j=0;j<3;++j)if(index[j]>=0)shape[j]=local_accuracy::exp(q[index[j]]);
+      return shape;
+    };
+    const auto objective=[&](const std::array<local_accuracy::Jet,4>& q){return bnbinom_detail::accuracy_objective(d,unpack(q));};
+    if(local_accuracy::polish(p,dim,tol,maxit,objective,local_accuracy::log_error)) {
+      const auto shape=unpack(local_accuracy::variables(p));
+      stopped.size=shape[0].v;stopped.alpha=shape[1].v;stopped.beta=shape[2].v;
+      if(std::isnan(size_fixed)&&std::isnan(beta_fixed)&&stopped.size>stopped.beta)std::swap(stopped.size,stopped.beta);
+      if(std::isfinite(stopped.global_coefficient_center[0])) {
+        const std::array<double,3> refined{{stopped.size,stopped.alpha,stopped.beta}};
+        for(int j=0;j<3;++j)if(std::abs(refined[j]/stopped.global_coefficient_center[j]-1)>stopped.global_coefficient_radius+tol) {
+          stopped.status=BnbinomStatus::NumericalFailure;stopped.accuracy_failure=true;return stopped;
+        }
+      }
+      stopped.logLik=bnbinom_detail::likelihood(d,{stopped.size,stopped.alpha,stopped.beta});
+      const double margin=bnbinom_detail::alpha_likelihood_bound(d,stopped.alpha,{stopped.size,stopped.size,stopped.beta,stopped.beta}).margin;
+      stopped.stop_detail.candidates.push_back({{stopped.size,stopped.alpha,stopped.beta},stopped.logLik-margin,stopped.logLik+margin,StopModel::None});
+      if(std::isnan(size_fixed)&&std::isnan(beta_fixed)&&stopped.size!=stopped.beta)stopped.stop_detail.candidates.push_back({{stopped.beta,stopped.alpha,stopped.size},stopped.logLik-margin,stopped.logLik+margin,StopModel::None});
+    } else {stopped.status=BnbinomStatus::NumericalFailure;stopped.accuracy_failure=true;}
+  }
   return stopped;
 }
 }

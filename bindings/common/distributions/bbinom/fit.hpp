@@ -24,7 +24,7 @@ inline FitResult fit_bbinom(cppunivariate::ispan x, Held size_arg = {}, Held alp
   if (beta.supplied && !(std::isfinite(b) && b > 0))
     return failure("`beta` must be a finite positive number.");
   const auto res = cppunivariate::bbinom_mle(x, N, reltol, iterlim, a, b);
-  if(res.stop_detail.budget_exhausted)return stop_failure(failure("Beta-binomial search exhausted its work budget before certifying the maximum. Raising iterlim may resolve this stop."),res.stop_detail,"budget",{"size","alpha","beta"});
+  if(res.status!=cppunivariate::BbinomStatus::Ok && res.stop_detail.budget_exhausted)return stop_failure(failure("Beta-binomial search exhausted its work budget before certifying the maximum. Raising iterlim may resolve this stop."),res.stop_detail,"budget",{"size","alpha","beta"});
   std::string stop_kind;
   switch(res.status) {
     case cppunivariate::BbinomStatus::BinomialLimit: stop_kind="limit";break;
@@ -86,7 +86,7 @@ inline FitResult fit_bbinom(cppunivariate::ispan x, Held size_arg = {}, Held alp
   if (size.supplied) fixed.push_back("size");
   if (alpha.supplied) fixed.push_back("alpha");
   if (beta.supplied) fixed.push_back("beta");
-  return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"size",res.size},{"alpha",res.alpha},{"beta",res.beta}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }();
+  return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"size",res.size},{"alpha",res.alpha},{"beta",res.beta}}; out.extra.push_back({"certified", res.certified ? 1.0 : 0.0}); out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }();
 
 }
 }

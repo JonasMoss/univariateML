@@ -1,0 +1,34 @@
+{
+  "lomax": {
+    "byte_identical": true,
+    "sha256": "7b4610cecdc07af2083cfdf09a2de9866036ed41bf2b6abfb2d9ac7af3b70d62"
+  },
+  "kumar": {
+    "byte_identical": true,
+    "sha256": "1a59a64074726c51da0c50d139615c634f4052fa7b3204c0d0613371d69fc8ec"
+  },
+  "weibull": {
+    "byte_identical": true,
+    "sha256": "d5a044c7a76346aad8a852305fb5b52725d75a4e27a04f023b236871553b8b1d"
+  },
+  "gumbel": {
+    "byte_identical": true,
+    "sha256": "10fcf2658d417a3fc5036fc7af7b34b92a193b56c6aabd6164f9488c4be791ea"
+  },
+  "fatigue": {
+    "byte_identical": true,
+    "sha256": "499864255a3031c975b768e30567208ef9a907520bad82fc52489d385523a42d"
+  },
+  "cmb": {
+    "byte_identical": true,
+    "sha256": "f3096befd17af569bfc71de416c142728bd5457042007aa808759cb3305a2ff7"
+  },
+  "pig": {
+    "byte_identical": true,
+    "sha256": "697ea4fcb71fe02fe22d186e056d524a02fed8d94d68c8d06ff1bf4b27be3446"
+  },
+  "foldnorm": {
+    "byte_identical": true,
+    "sha256": "33ef03008cacb4e0c43fec31bb0f4c7913705d9fa4cf8e4e0350675076dfe443"
+  }
+}

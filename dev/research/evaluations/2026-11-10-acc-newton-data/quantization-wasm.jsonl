@@ -1,0 +1,5 @@
+{"id":"gumbel","kind":"numerical","message":"Gumbel requested coefficient accuracy cannot be represented after rescaling."}
+{"id":"weibull","kind":"numerical","message":"Weibull requested coefficient accuracy cannot be represented after rescaling."}
+{"id":"foldnorm","kind":"numerical","message":"Foldnorm could not verify the requested coefficient accuracy in binary64."}
+{"id":"pig","kind":"numerical","message":"Pig requested coefficient accuracy cannot be represented after rescaling."}
+{"id":"foldnorm-seam","result":{"warnings":[],"restricted":{},"estimates":{"mu":0.003726805474181285,"sigma":0.577343052101475},"fixed":[],"logLik":-0.5294806247236724,"iterations":37,"status":"Ok"}}

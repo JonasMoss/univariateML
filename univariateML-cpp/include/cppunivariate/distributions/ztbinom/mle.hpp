@@ -6,6 +6,7 @@
 namespace cppunivariate {
 enum class ZtbinomStatus { Ok, InvalidInput, InvalidSize, PoissonLimit, IterationFailure };
 struct ZtbinomResult { double size, prob, logLik; int iterations; ZtbinomStatus status;   StopDetail stop_detail{};
+  bool certified = true;
 };
 namespace ztbinom_detail {
 template <typename F>
@@ -49,17 +50,24 @@ inline ZtbinomResult ztbinom_mle_proposal(ispan x, double tol=1e-10, int maxit=2
     };
     if(fixed)return profile_held(fixed_size);
     if(p==0 || p==1)return profile_held(mx);
+    // At size one the conditional law is exactly the atom at one,
+    // including arbitrarily small positive held probabilities.
+    if(m==1)return {1,p,0,0,ZtbinomStatus::Ok};
+    const std::int64_t cap=enumeration_budget(maxit);
+    std::int64_t cost=static_cast<std::int64_t>(x.size());for(int v:x){if(cost>cap || v>cap-cost){cost=cap+1;break;}cost+=v;}
+    if(cost>cap){ZtbinomResult failed{NAN,p,NAN,0,ZtbinomStatus::IterationFailure};failed.stop_detail=discrete_budget(failed.stop_detail);return failed;}
     auto best=profile_held(mx);
-    std::int64_t work=x.size();
-      const std::int64_t cap=enumeration_budget(maxit);
-      for(std::int64_t j=0;;++j) {
-        if(static_cast<std::int64_t>(x.size())>cap-work){
+    std::int64_t work=cost;
+      for(std::int64_t j=1;;++j) {
+        if(cost>cap-work){
           best.status=ZtbinomStatus::IterationFailure;
           best.stop_detail=discrete_budget(best.stop_detail);
           best.stop_detail.candidates.push_back({{best.size,best.prob},best.logLik,best.logLik});
-          best.stop_detail.loglik_lower=best.logLik;return best;
+          best.stop_detail.loglik_lower=best.logLik;
+          if(std::isfinite(best.logLik)){best.status=ZtbinomStatus::Ok;best.certified=false;}
+          return best;
         }
-        work+=x.size();
+        work+=cost;
       const double size=double(mx)+j;
       auto candidate=profile_held(size);
       if(candidate.logLik>best.logLik)best=candidate;
@@ -136,18 +144,53 @@ inline ZtbinomResult ztbinom_mle_proposal(ispan x, double tol=1e-10, int maxit=2
 } // namespace ztbinom_detail
 inline ZtbinomResult ztbinom_mle(ispan x,double tol=1e-10,int maxit=200,
     double fixed_size=NAN,double fixed_prob=NAN) {
+  bool candidate_ready=false;
+  auto checked = [&]() -> ZtbinomResult {
   auto best=ztbinom_detail::ztbinom_mle_proposal(x,tol,maxit,fixed_size,fixed_prob);
+  // Only a successful fixed-size solve can supply the finite fallback.
+  if(std::isnan(fixed_size) && std::isnan(fixed_prob) && x.size()>0 &&
+     best.status!=ZtbinomStatus::InvalidInput && best.status!=ZtbinomStatus::InvalidSize &&
+     std::isfinite(best.size) && std::isfinite(best.logLik)) {
+    const auto finite=ztbinom_detail::ztbinom_mle_proposal(x,tol,maxit,best.size,NAN);
+    candidate_ready=finite.status==ZtbinomStatus::Ok;
+    if(!candidate_ready) {
+      int observed=0;for(int v:x)observed=std::max(observed,v);
+      double value=-INFINITY;
+      std::int64_t remaining=enumeration_budget(maxit),cost=static_cast<std::int64_t>(x.size());
+      for(int v:x)cost+=v;
+      for(std::int64_t j=0;j<solver_budget(maxit);++j) {
+        if(cost>remaining)break;
+        remaining-=cost;
+        const auto f=ztbinom_detail::ztbinom_mle_proposal(x,tol,maxit,observed+double(j),NAN);
+        if(f.status!=ZtbinomStatus::Ok || !std::isfinite(f.logLik))continue;
+        if(f.logLik>value) {
+          value=f.logLik;best.size=f.size;best.prob=f.prob;best.logLik=f.logLik;
+          candidate_ready=true;
+        }
+      }
+    }
+    if(candidate_ready && best.status==ZtbinomStatus::IterationFailure) {
+      best.status=ZtbinomStatus::Ok;best.certified=false;return best;
+    }
+  }
   if(!std::isnan(fixed_size)||!std::isnan(fixed_prob)||x.size()==0) {
     if(best.status==ZtbinomStatus::IterationFailure)
-      binomial_certificate_detail::witness(best.stop_detail,{best.size,best.prob},best.logLik,false);
+      binomial_certificate_detail::witness(best.stop_detail,{best.size,best.prob},best.logLik,best.stop_detail.budget_exhausted);
     return best;
   }
   int mx=0;double sum=0;for(int v:x){mx=std::max(mx,v);sum+=v;}
   if(sum==double(x.size()))return best;
+  // Size two spans every law on {1,2}; matching the empirical frequency
+  // attains the multinomial upper bound on the entire parameter domain.
+  if(mx==2) {
+    const auto saturated=ztbinom_detail::ztbinom_mle_proposal(x,tol,maxit,2,NAN);
+    if(saturated.status==ZtbinomStatus::Ok)return saturated;
+  }
   if(best.status==ZtbinomStatus::InvalidInput || best.status==ZtbinomStatus::InvalidSize)return best;
   if(best.status==ZtbinomStatus::IterationFailure) {
     binomial_certificate_detail::witness(best.stop_detail,{best.size,best.prob},best.logLik,false);return best;
   }
+  candidate_ready=candidate_ready && std::isfinite(best.logLik) && best.size>=1 && best.prob>=0 && best.prob<=1;
   binomial_certificate_detail::Work work{0,0,maxit};
   if(best.status==ZtbinomStatus::PoissonLimit) {
     const double face=best.stop_detail.limit_loglik;
@@ -198,7 +241,21 @@ inline ZtbinomResult ztbinom_mle(ispan x,double tol=1e-10,int maxit=200,
     best.status=ZtbinomStatus::IterationFailure;
     binomial_certificate_detail::witness(best.stop_detail,{best.size,best.prob},best.logLik,!work.numerical);
   }
+  if(complete)best.certified=true;
+  return best;
+  };
+  auto best=checked();
+  if(candidate_ready && best.status!=ZtbinomStatus::Ok &&
+     (best.stop_detail.comparison_tie || !std::isfinite(best.stop_detail.loglik_upper)) &&
+     std::isfinite(best.logLik) && best.size>=1 && best.prob>=0 && best.prob<=1) {
+    best.status=ZtbinomStatus::Ok;best.certified=false;
+  }
+  // A double coefficient cannot inherit an exact-arithmetic saturation proof
+  // below the conservative forward-error allowance for its probability ratio.
+  if(best.status==ZtbinomStatus::Ok && std::isnan(fixed_prob) && best.size>1 &&
+     best.prob>0 && best.prob<1 && tol<8*std::numeric_limits<double>::epsilon())
+    best.certified=false;
   return best;
 }
 
-}
+} // namespace cppunivariate

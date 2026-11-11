@@ -80,3 +80,50 @@ TEST_CASE("foldnorm scaled residuals: normal scale at extreme units") {
     CHECK(std::isfinite(r.logLik));
   }
 }
+
+TEST_CASE("foldnorm: concentrated positive mode retains original-data spread") {
+  const std::vector<double> x{2.4349403590372,2.434940359039635,2.43494035904207,2.434940359044505,2.434940359049375};
+  const auto r=cppunivariate::foldnorm_mle({x.data(),x.size()});
+  REQUIRE(r.status==cppunivariate::FoldnormStatus::Ok);
+  // 70-digit stationary root on the binary64 sample, audit case 1519.
+  CHECK(r.sigma==doctest::Approx(4.1892311343611796727331068e-12).epsilon(1e-12).scale(0));
+}
+
+TEST_CASE("foldnorm: unrepresentable subnormal coefficient is not Ok") {
+  const double u=std::numeric_limits<double>::denorm_min();
+  const std::vector<double> x{0,u};
+  const auto r=cppunivariate::foldnorm_mle({x.data(),x.size()});
+  CHECK(r.status==cppunivariate::FoldnormStatus::AccuracyFailure);
+}
+
+TEST_CASE("foldnorm: local half-normal minimum cannot win a rounded likelihood tie") {
+  const double e=.0028867513459481287;
+  const std::vector<double> x{e,e,1};
+  const auto r=cppunivariate::foldnorm_mle({x.data(),x.size()});
+  REQUIRE(r.status==cppunivariate::FoldnormStatus::Ok);
+  // Independent 100-digit profile-score root; natural location scale is sigma.
+  CHECK(r.mu==doctest::Approx(.0037268054741952707381).epsilon(1e-10).scale(0));
+  CHECK(r.sigma==doctest::Approx(.57734305210147493127).epsilon(1e-10));
+}
+
+TEST_CASE("foldnorm: small positive basin uses a cancellation-free local score") {
+  const std::vector<double> x{.02,.02,1};
+  const auto r=cppunivariate::foldnorm_mle({x.data(),x.size()});
+  REQUIRE(r.status==cppunivariate::FoldnormStatus::Ok);
+  // Independent 100-digit root of the original joint profile score.
+  CHECK(r.mu==doctest::Approx(.025828388643715272867).epsilon(1e-10).scale(0));
+  CHECK(r.sigma==doctest::Approx(.57700337463490557989).epsilon(1e-10));
+}
+
+TEST_CASE("foldnorm: unresolved quartic identification cannot certify zero location") {
+  const double critical=std::sqrt(9+4*std::sqrt(6.));
+  for(double c:{std::nextafter(critical,0.),critical,std::nextafter(critical,INFINITY)}) {
+    const std::vector<double> x{1,1,1,c};
+    CHECK(cppunivariate::foldnorm_mle({x.data(),x.size()}).status==cppunivariate::FoldnormStatus::AccuracyFailure);
+  }
+  // This exact boundary reduction remains available at fourth-moment equality.
+  const std::vector<double> atoms{0,0,1};
+  const auto exact=cppunivariate::foldnorm_mle({atoms.data(),atoms.size()});
+  REQUIRE(exact.status==cppunivariate::FoldnormStatus::Ok);
+  CHECK(exact.mu==0);
+}

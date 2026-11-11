@@ -1,0 +1,69 @@
+{
+  "machine": "workstation",
+  "compiler": "c++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "R": "4.6.1",
+  "all_started_commands_finished": true,
+  "cpp_dev": {
+    "passed": 106,
+    "failed": 0
+  },
+  "cpp_no_long_double": {
+    "passed": 130,
+    "failed": 0
+  },
+  "final_affected_cpp_shards": {
+    "native": 5,
+    "no_long_double": 5,
+    "failed": 0
+  },
+  "focused_cpp": {
+    "cases": 188,
+    "assertions": 224826,
+    "failed": 0,
+    "filtered": 2
+  },
+  "js_build": "passed",
+  "js_test": {
+    "passed": 596,
+    "failed": 0
+  },
+  "site_check": {
+    "cpp17_snippets": 99,
+    "result": "passed"
+  },
+  "r_dev": {
+    "pass": 23026,
+    "fail": 0,
+    "warn": 0,
+    "skip": 154
+  },
+  "r_dev_final_affected": {
+    "pass": 384,
+    "fail": 0,
+    "warn": 0,
+    "skip": 9
+  },
+  "r_full": {
+    "pass": 45849,
+    "fail": 0,
+    "warn": 0,
+    "skip": 0
+  },
+  "simbox": {
+    "attempts": 5,
+    "exit_codes": [
+      75,
+      75,
+      75,
+      75,
+      75
+    ],
+    "numerical_suite_ran": false,
+    "latest": "unreachable; local fallback passed"
+  },
+  "git_diff_check": "passed",
+  "markdown_links": {
+    "owned": "passed",
+    "repository_wide": "44 pre-existing issues in six files byte-identical to HEAD"
+  }
+}

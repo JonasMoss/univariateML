@@ -257,3 +257,18 @@ TEST_CASE("slash: independent golden coefficients") {
   CHECK(f.mu==doctest::Approx(g.estimates.at("mu")).epsilon(mltest::kGolden_slash).scale(0));
   CHECK(f.sigma==doctest::Approx(g.estimates.at("sigma")).epsilon(mltest::kGolden_slash).scale(0));
 }
+
+TEST_CASE("slash all-free audit coefficient regression") {
+ const std::vector<double> x{-6.860963357530646,2.731907054614555,-1.2506362937344324,0.03426346894790194,1000002.7319070547};
+ const auto r=cppunivariate::slash_mle({x.data(),x.size()});
+ REQUIRE(r.status==cppunivariate::SlashStatus::Ok);
+ CHECK(r.mu==doctest::Approx(-0.6118328850394561).epsilon(1e-10));
+ CHECK(r.sigma==doctest::Approx(2.0936205306861293).epsilon(1e-10));
+}
+
+TEST_CASE("slash subnormal scale spacing cannot silently pass the accuracy contract") {
+ const double unit=1024*std::numeric_limits<double>::denorm_min();
+ const std::vector<double> x{-6*unit,-2*unit,0,unit,3*unit,9*unit};
+ const auto r=cppunivariate::slash_mle({x.data(),x.size()});
+ CHECK(r.status==cppunivariate::SlashStatus::IterationFailure);
+}

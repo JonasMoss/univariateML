@@ -1,0 +1,7 @@
+{"id":"weibull-held-scale","estimates":{"shape":263511819158.29898,"scale":2.4349403590372},"error":"","kind":""}
+{"id":"lomax-held-kappa","estimates":{"lambda":61111111111098.88,"kappa":1e-14},"error":"","kind":""}
+{"id":"gumbel-held-scale","estimates":{},"error":"Gumbel requested coefficient accuracy cannot be represented after rescaling.","kind":"numerical"}
+{"id":"weibull-held-shape","estimates":{},"error":"Weibull requested coefficient accuracy cannot be represented after rescaling.","kind":"numerical"}
+{"id":"lomax-wide-held-kappa","estimates":{"lambda":0.9999999999999779,"kappa":1},"error":"","kind":""}
+{"id":"lomax-weighted-held-kappa","estimates":{"lambda":4.1633363423442213e+183,"kappa":0.3333333333333333},"error":"","kind":""}
+{"id":"lomax-subnormal-held-kappa","estimates":{},"error":"Lomax could not verify the requested coefficient accuracy in binary64.","kind":"numerical"}

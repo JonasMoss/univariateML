@@ -342,7 +342,7 @@ test_that("genbeta shallow coverage returns its uncertified legacy finite fit", 
   x <- qgenbeta(((1:300)-.5)/300,3,2,.7,1)
   f <- mlgenbeta(x,scale=1)
   expect_equal(as.numeric(attr(f,"certified")),0)
-  expect_equal(as.numeric(f)[1:3],c(5.3645780153723184,1.9924355221946439,.41118368148382761),tolerance=1e-7)
+  expect_equal(as.numeric(f)[1:3],c(5.364602384807961,1.9924354536118294,0.41118193497486405),tolerance=1e-10)
   g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"),"genbeta","golden.json"))
   expect_equal(as.numeric(attr(mlgenbeta(g$data,scale=1),"certified")),1)
 })

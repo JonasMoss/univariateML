@@ -146,6 +146,39 @@ profile unimodality or compare only sampled stationary points. It is an
 alternative to constructing profile Schur jets: the full constrained Hessian
 retains both free coordinates and encloses all maxima simultaneously.
 
+### Enlarged basin (added 2026-11-10, TASK-172)
+
+The basin that isolates the root starts at relative radius 2e-6 and only
+shrinks. Near a maximum the score and value tests above weaken, so a cover
+that excludes only that basin pays a roughly constant number of boxes per
+decade of distance to the root while it approaches it. The basin's own
+criterion does not weaken there, and it is a pointwise condition, so it can
+be established on a larger box by pieces.
+
+Let x* be the enclosed root and B a box containing the basin, clipped to the
+domain. Suppose B is covered by finitely many pieces and the interval Hessian
+is negative definite on each piece. Then the Hessian is negative definite at
+every point of the convex set B, the likelihood is strictly concave on B, and
+its stationary point x* is the unique maximizer of B. No other maximizer lies
+in B, whether or not any single interval evaluation covers all of B.
+
+At a shape edge the basin criterion is instead an outward shape score and
+negative nuisance curvature. If both hold on every piece of B, the likelihood
+strictly decreases along the shape coordinate away from the edge at every
+nuisance value, so the maximum of B lies on the edge face. On that face the
+likelihood is strictly concave in the nuisance coordinate and x* is its
+stationary point, hence again the unique maximizer of B.
+
+A piece without smooth jets (crossing support, or outside an inner-root
+enclosure) cannot be verified and is subdivided; it never counts as verified.
+The implementation doubles both radii until an attempt fails and keeps the
+last verified box. An attempt checks only the ring around the box verified
+so far and examines at most 400 pieces (1/32 of the default certificate
+allowance), charged to the shared cap. The same practical floating-point
+margins as the basin test apply. The
+[measurements](../2026-11-10-held-concave-report.md) show where the previous
+cover spent its allowance and what this changes.
+
 All cover evaluations, including point proposals and contraction evaluations,
 consume a shared cap of 128*min(maxit,100000); individual solver loops use
 min(maxit,100000). Tail bracketing uses the solver cap. Failure to establish

@@ -1100,7 +1100,7 @@ test('signed binomial face certificates have finite global bounds', async () => 
   }
 });
 
-test('higher-order binomial face signs retain certified or unresolved witnesses', async () => {
+test('higher-order binomial face signs retain proved stops or uncertified fits', async () => {
   const {default: createApi} = await import('./index.mjs');
   const api = await createApi();
   const q=Math.exp(-1.6),pi=.75*q/(.25+.75*q);
@@ -1108,6 +1108,12 @@ test('higher-order binomial face signs retain certified or unresolved witnesses'
     ['tbinom',[...Array(50).fill(0),...Array(41).fill(1),...Array(33).fill(2),...Array(3).fill(3),...Array(3).fill(4)],{a:-1,b:4}],
     ['zib',[0,0,0,0,0,1,1,2,2,4],{pi}]
   ]) {
+    if(family==='zib') {
+      const f=api[family].fit(new Float64Array(x),held);
+      assert.equal(f.status,'Ok');assert.equal(f.certified,0);
+      assert.equal(f.estimates.pi,pi);assert.ok(Number.isFinite(f.logLik));
+      continue;
+    }
     assert.throws(() => api[family].fit(new Float64Array(x),held),error => {
       assert.equal(error.kind,family==='tbinom'?'limit':'unresolved');
       if(family==='tbinom')assert.ok(Number.isFinite(error.loglik_upper));
@@ -1754,14 +1760,13 @@ test('bnbinom legacy fallbacks and proved decisions expose certification labels'
 });
 
 
-test('binomial near-critical ZIP inputs preserve unresolved witnesses',async()=>{
+test('binomial near-critical ZIP inputs return uncertified fits',async()=>{
   const {default:createApi}=await import('./index.mjs');const api=await createApi();
-  for(const pi of [.3772146069463776,.37721460694637765])
-    assert.throws(()=>api.zib.fit(new Float64Array([0,0,0,0,0,1,1,2,2,4]),{size:null,pi}),e=>{
-      assert.equal(e.kind,'unresolved');assert.equal(e.model,'zip');
-      assert.equal(e.estimates.pi,pi);assert.equal(e.loglik_upper,Infinity);
-      assert.ok(e.candidates.length>=2);return true;
-    });
+  for(const pi of [.3772146069463776,.37721460694637765]) {
+    const f=api.zib.fit(new Float64Array([0,0,0,0,0,1,1,2,2,4]),{size:null,pi});
+    assert.equal(f.status,'Ok');assert.equal(f.certified,0);
+    assert.equal(f.estimates.pi,pi);assert.ok(Number.isFinite(f.logLik));
+  }
 });
 
 test('truncated binomial certifies the finite zero-second-order boundary',async()=>{
@@ -1897,7 +1902,7 @@ test('genbeta shallow coverage retains the uncertified legacy finite fit', async
   const x=api.genbeta.q(u,[3,2,.7,1]);
   const f=api.genbeta.fit(x,{scale:1});
   assert.equal(f.certified,0);
-  assert.ok(Math.abs(f.estimates.shape1/5.3645780153723184-1)<1e-7);
+  assert.ok(Math.abs(f.estimates.shape1/5.364602384807961-1)<1e-10);
   const g=read('genbeta','golden');
   assert.equal(api.genbeta.fit(new Float64Array(g.data),{scale:1}).certified,1);
 });
@@ -1923,4 +1928,90 @@ test('GEV and Frechet held nuisance certificate markers cross the common seam',(
  }
  const f=m.fitfrechet(new Float64Array(p.map(v=>Math.pow(-Math.log(v),-.5))),{sigma:1},{});
  assert.equal(f.status,'Ok');assert.equal(f.certified,1);assert.equal(f.estimates.sigma,1);
+});
+test('std and lst shape certificates distinguish uncertified joint fits', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  for (const family of ['lst','std']) {
+    const g = read(family,'golden'), names = Object.keys(g.estimates);
+    const held = Object.fromEntries(names.slice(0,2).map(k => [k,g.estimates[k]]));
+    const fit = api[family].fit(new Float64Array(g.data), held);
+    assert.equal(fit.status,'Ok');
+    assert.equal(fit.certified,1);
+    assert.ok(fit.logLik >= g.logLik - 1e-6*g.data.length);
+    for (const [key,value] of Object.entries(held)) assert.equal(fit.estimates[key],value);
+    for (const key of names.slice(0,2)) {
+      const joint=api[family].fit(new Float64Array(g.data),{[key]:g.estimates[key]});
+      assert.equal(joint.status,'Ok');
+      assert.equal(joint.certified,0);
+      assert.equal(joint.estimates[key],g.estimates[key]);
+    }
+  }
+  assert.throws(() => api.std.fit(new Float64Array([0,0,1]), {mean:0,sd:1}), error => {
+    assert.equal(error.kind,'nomle');
+    assert.ok(error.loglik_lower <= -3*Math.log(2));
+    assert.ok(error.loglik_upper >= -3*Math.log(2));
+    return true;
+  });
+  const small = api.lst.fit(new Float64Array([-100,100]), {mu:0,sigma:1});
+  assert.ok(small.estimates.df>0 && small.estimates.df<.5);
+});
+
+test('std and lst held free-shape solver caps preserve finite diagnostic witnesses', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  for (const family of ['lst','std']) {
+    const g=read(family,'golden'), names=Object.keys(g.estimates);
+    for (const mask of [1,2,3]) {
+      const held=Object.fromEntries(names.filter((_,i)=>mask>>i&1).map(k=>[k,g.estimates[k]]));
+      assert.throws(()=>api[family].fit(new Float64Array(g.data),held,{iterlim:1}),error=>{
+        assert.equal(error.kind,family==='lst'&&mask===2?'budget':'numerical');
+        assert.ok(Number.isFinite(error.loglik_lower));
+        assert.equal(error.loglik_upper,Infinity);
+        assert.ok(error.candidates.length>0);
+        return true;
+      });
+    }
+  }
+});
+
+
+test('Student held subsets expose proved symmetry nonuniqueness', async () => {
+  const {default:createApi}=await import('./index.mjs');
+  const api=await createApi();
+  for(const [family,x,held] of [['std',[-100,100],{sd:1}],['lst',[-100,-99,0,99,100],{df:.5}]]){
+    assert.throws(()=>api[family].fit(new Float64Array(x),held),error=>{
+      assert.equal(error.kind,'tie');
+      assert.ok(Number.isFinite(error.loglik_lower));
+      assert.equal(error.loglik_upper,Infinity);
+      assert.equal(error.candidates.length,2);
+      return true;
+    });
+  }
+});
+
+test('Student signed held-location normal faces expose certification', async () => {
+  const {default:createApi}=await import('./index.mjs');
+  const api=await createApi();
+  for(const [family,held] of [['lst',{mu:.2}],['std',{mean:.2}]]) {
+    assert.throws(()=>api[family].fit(new Float64Array([-1,2]),held),error=>{
+      assert.equal(error.kind,'limit');
+      assert.equal(error.model,'norm');
+      assert.equal(error.certified,1);
+      assert.ok(Number.isFinite(error.loglik_upper));
+      return true;
+    });
+  }
+});
+
+
+test('Student legacy t2 limit keeps its class and uncertified flag', async () => {
+  const {default:createApi}=await import('./index.mjs');
+  const api=await createApi();
+  const x=[-20,...Array(10).fill(-.1),...Array(10).fill(.1),20];
+  assert.throws(()=>api.std.fit(new Float64Array(x),{mean:0}),error=>{
+    assert.equal(error.kind,'limit');assert.equal(error.model,'lst');
+    assert.equal(error.certified,0);assert.equal(error.loglik_upper,Infinity);
+    assert.match(error.message,/mllst/);return true;
+  });
 });

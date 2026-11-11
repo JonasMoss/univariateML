@@ -48,7 +48,7 @@ r:
     size: "Required number of trials; NULL estimates it where supported. Fixed sizes are limited to 1e7 for allocation safety."
     prob: "Optional fixed canonical probability between zero and one inclusive; NULL estimates it."
     nu: "Optional fixed finite real dispersion; NULL estimates it. Both prob and nu may be held fixed."
-    reltol: "Relative tolerance for the free-coordinate moment residuals."
+    reltol: "Requested relative coefficient accuracy (default 1e-10), checked using inverse observed information."
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations (default iterlim 2000); per enumeration: 100000 * min(iterlim, 100000) enumeration cells."
 log_density: "nu*(loggamma(size+1)-loggamma(x+1)-loggamma(size-x+1)) + x*log(prob) + (size-x)*log(1-prob) - log(Sum((factorial(size)/(factorial(k)*factorial(size-k)))**nu * prob**k * (1-prob)**(size-k), (k, 0, size)))"
 limits:
@@ -612,3 +612,5 @@ Each evaluated normalizer is charged by `K+1` cells; its fixed sufficient
 statistics are computed once. The block comparison adds
 `1e-9*(1+abs(anchor)+abs(correction))`. These are exact-arithmetic bounds
 conditional on computed comparisons, with practical floating-point margins.
+
+At the selected integer size, a final canonical Newton solve uses the covariance matrix of (X, log choose(size, X)). Its inverse maps both moment residuals to errors in log odds and nu; the probability error includes the logistic derivative. Positive definiteness and contraction of the full corrections are checked before the existing global acceptance check. Held-coordinate fits use the corresponding scalar information.

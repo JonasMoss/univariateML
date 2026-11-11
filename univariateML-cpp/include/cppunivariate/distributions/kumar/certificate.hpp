@@ -7,7 +7,7 @@ struct Sum {
   void add(double x) {const double y=x-correction,t=value+y;correction=(t-value)-y;value=t;}
 };
 }
-inline KumarResult kumar_mle(span x,double tol,int maxit,
+inline KumarResult kumar_certified_search(span x,double tol,int maxit,
     double start=std::numeric_limits<double>::quiet_NaN(),
     double fixed_a=std::numeric_limits<double>::quiet_NaN(),
     double fixed_b=std::numeric_limits<double>::quiet_NaN()) {
@@ -80,14 +80,34 @@ inline KumarResult kumar_mle(span x,double tol,int maxit,
   if(work+3>budget)return fail(work,KumarCertificateFailure::Budget);
   double bl,bh,ll0,e0;evaluate(lo,bl,ll0,e0);evaluate(hi,bh,ll0,e0);work+=2;
   if(!(bl>0&&bh>0&&std::abs(std::log(bh/bl))<1e-6))return fail(work);
-  if(candidate.status==KumarStatus::Ok && candidate.a>=lo && candidate.a<=hi &&
-      candidate.b>=std::min(bl,bh)*(1-1e-12) && candidate.b<=std::max(bl,bh)*(1+1e-12)) {
-    candidate.iterations=work;return candidate;
+  // Finish the unique root enclosure in both public coefficients. These
+  // profile-point evaluations share the certificate ledger, including when
+  // the one-step proposal itself has not converged.
+  for(;work+3<=budget;) {
+    a=lo+(hi-lo)/2;
+    const double slocal=evaluate(lo,bl,ll0,e0),shlocal=evaluate(hi,bh,ll0,e0);work+=2;
+    if(hi-lo<=.01*tol*lo &&
+       (!std::isnan(fixed_b) || std::abs(bh-bl)<=.01*tol*std::min(bl,bh))) {
+      // Secant interpolation only selects a point inside the signed box;
+      // the enclosure, including the b endpoints, justifies the accuracy.
+      if(slocal>0 && shlocal<0)a=lo+(hi-lo)*(slocal/(slocal-shlocal));
+      evaluate(a,b,ll,error);++work;
+      if(!std::isfinite(ll)||!std::isfinite(error)||!(b>0))return fail(work);
+      return {a,b,ll,work};
+    }
+    const double score=evaluate(a,b,ll,error);++work;
+    if(a==lo || a==hi)return fail(work);
+    if(score>0)lo=a;else hi=a;
   }
-  evaluate(a,b,ll,error);++work;
-  if(!std::isfinite(ll)||!std::isfinite(error)||!(b>0))return fail(work);
-  return {a,b,ll,work};
+  return fail(work,KumarCertificateFailure::Budget);
 }
+inline KumarResult kumar_mle(span x,double tol,int maxit,
+    double start=std::numeric_limits<double>::quiet_NaN(),
+    double fixed_a=std::numeric_limits<double>::quiet_NaN(),
+    double fixed_b=std::numeric_limits<double>::quiet_NaN()) {
+  return kumar_certified_search(x,std::isfinite(tol)?std::min(tol,1e-10):tol,maxit,start,fixed_a,fixed_b);
+}
+
 inline KumarResult kumar_profile_mle(span x,double tol,int maxit) {
   maxit = static_cast<int>(solver_budget(maxit));
   return kumar_mle(x,tol,maxit);

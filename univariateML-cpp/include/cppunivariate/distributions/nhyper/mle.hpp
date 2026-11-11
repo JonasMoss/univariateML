@@ -14,6 +14,7 @@ struct NhyperResult {
   int iterations;
   NhyperStatus status;
   StopDetail stop_detail{};
+  bool certified = true;
 };
 
 // Total draws until the r-th white ball. P(T=x) = r/x P(H_x=r).
@@ -44,7 +45,8 @@ inline CPPUNIV_EXTENDED_REAL population_bound(double m, double b, double r) {
 // L(m)/L(m-1) = prod m/(m-r) * (N-m+1-x+r)/(N-m+1).
 // Each factor is nonincreasing in m, strictly so for r>0. Thus the
 // likelihood is log concave on [r, N-max(x)+r], including its endpoints.
-inline NhyperResult nhyper_mle(span x, double r, double N, double m) {
+inline NhyperResult nhyper_mle(span x, double r, double N, double m);
+inline NhyperResult nhyper_mle_search(span x, double r, double N, double m) {
   const double nan = std::numeric_limits<double>::quiet_NaN();
   NhyperResult out{m, N, r, nan, nan, 0, NhyperStatus::InvalidInput};
   if (std::isnan(N) && std::isnan(m)) {
@@ -67,7 +69,17 @@ inline NhyperResult nhyper_mle(span x, double r, double N, double m) {
     out.status = NhyperStatus::NumericalFailure;
     if (c.max > 100000 || rhi > 100000 ||
         (rhi-rlo+1) * static_cast<double>(c.value.size()) > 1000000 ||
-        c.max * static_cast<double>(c.value.size()) > 1000000){out.stop_detail=discrete_budget(out.stop_detail);return out;}
+        c.max * static_cast<double>(c.value.size()) > 1000000){
+      double value=-INFINITY;
+      for(double nn=c.max;nn<c.max+256 && nn<=hyper_detail::kMaxCount;++nn) {
+        const auto seed=nhyper_mle(x,rlo,nn,nan);out.iterations+=seed.iterations;
+        if(std::isfinite(seed.logLik) && seed.logLik>value) {
+          value=seed.logLik;out.stop_detail.candidates={{{seed.m,seed.N,seed.r},value,value}};
+        }
+      }
+      out.stop_detail=discrete_budget(out.stop_detail);
+      return out;
+    }
     double face_r=rlo, face_p=NAN;
     double face = -std::numeric_limits<double>::infinity();
     for (double rr = rlo; rr <= rhi; ++rr) {
@@ -155,27 +167,32 @@ inline NhyperResult nhyper_mle(span x, double r, double N, double m) {
     }
     if (c.min == 0 || r == 0) return out;
     const bool fixed_N = !std::isnan(N);
-    const double rlo = std::isnan(r) ? 1 : r;
+    if(!fixed_N && c.min==c.max && m>=c.min && (std::isnan(r) || r==c.min)) {
+      out.N=m;out.r=c.min;out.logLik=0;out.status=NhyperStatus::Ok;return out;
+    }
+    const double rlo = std::isnan(r) ? (fixed_N ? 1 : std::max(1.,m-(hyper_detail::kMaxCount-c.max))) : r;
     const double rhi = std::isnan(r) ? std::min(c.min, fixed_N ? N : m) : r;
     if (rlo > rhi || rhi > c.min) return out;
     // Preflight exact line lengths, stopping as soon as the budget is exceeded.
     CPPUNIV_EXTENDED_REAL size = 0;
+    bool partial=std::isnan(r) && !fixed_N && rlo>1;
     out.status = NhyperStatus::NumericalFailure;
     for (double rr = rlo; rr <= rhi; ++rr) {
-      const CPPUNIV_EXTENDED_REAL lo = fixed_N ? rr : static_cast<CPPUNIV_EXTENDED_REAL>(m) + c.max - rr;
+      const CPPUNIV_EXTENDED_REAL lo = fixed_N ? rr : static_cast<CPPUNIV_EXTENDED_REAL>(m) + (c.max - rr);
       const CPPUNIV_EXTENDED_REAL hi = fixed_N ? static_cast<CPPUNIV_EXTENDED_REAL>(N) - c.max + rr :
           std::max(lo, nhyper_detail::population_bound(m, c.max, rr));
-      if (hi > hyper_detail::kMaxCount) return out;
+      if(lo>hyper_detail::kMaxCount)return out;
+      if(hi>hyper_detail::kMaxCount){partial=true;break;}
       size += hi - lo + 1;
-      if (2 * size > hyper_detail::kGridBudget){out.stop_detail=discrete_budget(out.stop_detail);return out;}
+      if (2 * size > hyper_detail::kGridBudget){partial=true;break;}
     }
     CPPUNIV_EXTENDED_REAL best = -std::numeric_limits<CPPUNIV_EXTENDED_REAL>::infinity();
     bool selected = false;
     for (int pass = 0; pass < 2; ++pass) {
       for (double rr = rlo; rr <= rhi; ++rr) {
-        const double lo = fixed_N ? rr : static_cast<double>(static_cast<CPPUNIV_EXTENDED_REAL>(m) + c.max - rr);
-        const double hi = fixed_N ? N - c.max + rr : static_cast<double>(std::max(
-            static_cast<CPPUNIV_EXTENDED_REAL>(lo), nhyper_detail::population_bound(m, c.max, rr)));
+        const double lo = fixed_N ? rr : static_cast<double>(static_cast<CPPUNIV_EXTENDED_REAL>(m) + (c.max - rr));
+        const double hi = fixed_N ? N - c.max + rr : std::min(hyper_detail::kMaxCount,static_cast<double>(std::max(
+            static_cast<CPPUNIV_EXTENDED_REAL>(lo), nhyper_detail::population_bound(m, c.max, rr))));
         for (double t = lo; t <= hi; ++t) {
           const double mm = fixed_N ? t : m, nn = fixed_N ? N : t;
           hyper_detail::Sum ll;
@@ -186,7 +203,18 @@ inline NhyperResult nhyper_mle(span x, double r, double N, double m) {
                 hyper_detail::grid_choose(nn, mm)));
           }
           ++out.iterations;
-          if (!std::isfinite(ll.value())) return out;
+          if (!std::isfinite(ll.value())) {
+            if(partial && std::isfinite(out.logLik)){out.status=NhyperStatus::Ok;out.certified=false;}
+            return out;
+          }
+          if(partial) {
+            if(ll.value()>best) {
+              best=ll.value();out.m=mm;out.N=nn;out.r=rr;out.logLik=static_cast<double>(best);
+            }
+            if(out.iterations>=hyper_detail::kGridBudget/2) {
+              out.status=NhyperStatus::Ok;out.certified=false;out.stop_detail=discrete_budget(out.stop_detail);return out;
+            }
+          }
           if (pass == 0) best = std::max(best, ll.value());
           else if (hyper_detail::grid_tied(ll.value(), best) &&
               (!selected || mm < out.m || (mm == out.m &&
@@ -198,6 +226,9 @@ inline NhyperResult nhyper_mle(span x, double r, double N, double m) {
       }
     }
     if (selected) out.status = NhyperStatus::Ok;
+    if(partial && std::isfinite(out.logLik)) {
+      out.status=NhyperStatus::Ok;out.certified=false;out.stop_detail=discrete_budget(out.stop_detail);
+    }
     return out;
   }
   if (std::isnan(r) && hyper_detail::is_count(N) &&
@@ -270,6 +301,23 @@ inline NhyperResult nhyper_mle(span x, double r, double N, double m) {
   for (std::size_t j = 0; j < c.value.size(); ++j)
     ll += c.count[j] * nhyper_log_pmf(c.value[j], out.N - out.m, out.m, r);
   out.logLik = static_cast<double>(ll);
+  return out;
+}
+inline NhyperResult nhyper_mle(span x, double r, double N, double m) {
+  auto out=nhyper_mle_search(x, r, N, m);
+  if(out.status==NhyperStatus::FaceUnresolved || out.status==NhyperStatus::FaceTie ||
+     out.status==NhyperStatus::NumericalFailure) {
+    for(const auto& candidate:out.stop_detail.candidates) {
+      if(candidate.model!=StopModel::None || candidate.coef.size()!=3 || !std::isfinite(candidate.loglik_lower))continue;
+      if(out.certified || candidate.loglik_lower>out.logLik) {
+        out.m=candidate.coef[0];
+        out.N=candidate.coef[1];
+        out.r=candidate.coef[2];
+        out.logLik=candidate.loglik_lower;out.certified=false;
+      }
+    }
+    if(!out.certified)out.status=NhyperStatus::Ok;
+  }
   return out;
 }
 }  // namespace cppunivariate

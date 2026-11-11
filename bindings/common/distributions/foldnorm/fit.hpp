@@ -26,6 +26,8 @@ inline FitResult fit_foldnorm(cppunivariate::span x, Held mu_arg = {}, Held sigm
   if (sigma.supplied && !(std::isfinite(s) && s>0)) return fail("fixed `sigma` must be finite and positive.");
   const auto r=cppunivariate::foldnorm_mle(x,reltol,iterlim,m,s);
   if(r.stop_detail.budget_exhausted)return stop_failure(failure("Folded-normal profile search did not converge; certificate work budget exhausted. Raising iterlim may resolve this stop."),r.stop_detail,"budget",{"mu","sigma"});
+  if (r.status==cppunivariate::FoldnormStatus::AccuracyFailure)
+    return stop_failure(fail("Foldnorm could not verify the requested coefficient accuracy in binary64."),{},"numerical",{"mu","sigma"});
   if (r.status==cppunivariate::FoldnormStatus::Unbounded) return nomle("The folded-normal likelihood is unbounded as sigma tends to zero for these constant data.");
   if (r.status==cppunivariate::FoldnormStatus::InvalidInput) return fail("Folded normal requires finite nonnegative data, positive reltol and positive iterlim.");
   if (r.status!=cppunivariate::FoldnormStatus::Ok) return fail("Folded-normal profile search did not converge; increase iterlim.");

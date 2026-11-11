@@ -3,6 +3,9 @@
 #include "../../core/work_budget.hpp"
 #include "certificate.hpp"
 #include "location_certificate.hpp"
+#include "shape_certificate.hpp"
+#include "symmetry_certificate.hpp"
+#include "signed_face_certificate.hpp"
 #include "../../core/face_compare.hpp"
 #include "cppunivariate/core/constants.hpp"
 #include "../../core/multistart.hpp"
@@ -19,11 +22,11 @@
 namespace cppunivariate {
 inline constexpr double kLstDfLower = 1.0;
 
-enum class LstStatus { Ok, BfgsFailure, InvalidStart, NoMLE, NormalBoundary, InvalidDf, Unbounded, ScaleBoundary, IterationFailure, CertificateBudget, CertificateTie, NumericalFailure };
+enum class LstStatus { Ok, BfgsFailure, InvalidStart, NoMLE, NormalBoundary, InvalidDf, Unbounded, ScaleBoundary, IterationFailure, CertificateBudget, CertificateTie, NumericalFailure, NonUniqueSymmetry };
 struct LstResult {
   double mu, sigma, df, logLik;
   int iterations;
-  LstStatus status; unsigned restricted = 0; StopDetail stop_detail{};
+  LstStatus status; unsigned restricted = 0; StopDetail stop_detail{}; bool certified = true;
 };
 
 // Coordinates are location, log(scale), log(df-1); fixed_df includes Cauchy.
@@ -161,13 +164,19 @@ inline LstResult lst_mle_fixed_df(span x, double df, double tol, int maxit) {
     return failed;
   }
   if(df<1) {
+    const auto proof=exponent>0?t_symmetry_detail::subunit(x,{y.data(),y.size()},df,maxit):t_symmetry_detail::Result{};
+    if(proof.outcome==1){
+      LstResult tied{NAN,NAN,df,NAN,proof.evaluations,LstStatus::NonUniqueSymmetry};
+      tied.stop_detail=proof.detail;return tied;
+    }
     const double candidate[2]={center,std::log(unit/2)};
     const double ll=-LstCost{x,df,true}(candidate);
-    LstResult stopped{NAN,NAN,df,NAN,0,LstStatus::NumericalFailure};
+    LstResult stopped{NAN,NAN,df,NAN,proof.evaluations,proof.outcome==2?LstStatus::CertificateBudget:LstStatus::NumericalFailure};
+    stopped.stop_detail=proof.detail;stopped.stop_detail.loglik_upper=INFINITY;
     if(std::isfinite(ll)) {
       const double margin=256*std::numeric_limits<double>::epsilon()*(1+std::abs(ll))*n;
       stopped.stop_detail.candidates.push_back({{center,unit/2,df},ll-margin,ll+margin,StopModel::Lst});
-      stopped.stop_detail.loglik_lower=ll-margin;stopped.stop_detail.loglik_upper=INFINITY;
+      stopped.stop_detail.loglik_lower=ll-margin;
     }
     return stopped;
   }
@@ -325,9 +334,15 @@ inline Maximum maximize(F f,const std::vector<double>& grid,double tol,int maxit
     if(!evaluated[j]) {values[j]=f(grid[j]);evaluated[j]=true;}
     return values[j];
   };
-  double best=grid.front(),value=at(0);bool converged=grid.size()==1;
+  double best=grid.front(),value=at(0);bool converged=grid.size()==1&&std::isfinite(value);
+  if(!std::isfinite(value))value=-INFINITY;
   for(std::size_t j=0;j<grid.size();++j) {
-    const double v=at(j);if(v>value){value=v;best=grid[j];converged=false;}
+    const double v=at(j);
+    // An unresolved conditional solve is not a peak to refine. In
+    // particular, NaN must not poison later finite nominations or trigger
+    // a complete refinement at every failed grid point.
+    if(!std::isfinite(v))continue;
+    if(v>value){value=v;best=grid[j];converged=false;}
     if((j&&v<at(j-1))||(j+1<grid.size()&&v<at(j+1)))continue;
     double lo=grid[j?j-1:0],hi=grid[j+1<grid.size()?j+1:j];
     double a=hi-(hi-lo)*.6180339887498948482,b=lo+(hi-lo)*.6180339887498948482;
@@ -454,23 +469,53 @@ inline LstResult lst_mle_impl(span x,double tol,int maxit,double mu,double sigma
   // With free scale and held location the lowest df has the weakest
   // collapse exponent; the equality supremum is the df=1 collapse face.
   const double floor=std::isnan(mu) ? 1.0 : 0.0;
-  double collapse=-INFINITY;
   if(std::isnan(sigma)) {
     std::size_t k=0;for(double v:x)k+=v==mu;
     if((floor==0 && k>0) || 2*k>x.size())return {mu,nan,1,INFINITY,0,LstStatus::Unbounded};
-    if(2*k==x.size()){collapse=-static_cast<double>(x.size())*std::log(cppunivariate::pi);for(double v:x)if(v!=mu)collapse-=2*std::log(std::abs(v-mu));}
   }
   auto profile=[&](double t){return lst_detail::conditional(x,floor+std::exp(t),mu,sigma,tol,maxit);};
   std::vector<double> grid;for(double t=-12;t<=16;t+=.5)grid.push_back(t);
-  const auto optimum=lst_detail::maximize([&](double a){return profile(a).logLik;},grid,1e-8,maxit);
-  if(!optimum.converged)return {nan,nan,nan,nan,maxit,LstStatus::IterationFailure};
+  StopDetail nomination;nomination.loglik_upper=INFINITY;
+  const auto optimum=lst_detail::maximize([&](double a){
+    const auto point=profile(a);t_shape_detail::retain_candidates(point.stop_detail,nomination);
+    if(nomination.candidates.empty())t_shape_detail::retain_point(x,
+      std::isfinite(point.mu)?point.mu:(std::isnan(mu)?x[0]:mu),
+      std::isfinite(point.sigma)&&point.sigma>0?point.sigma:(std::isnan(sigma)?1.:sigma),
+      floor+std::exp(a),false,nomination);
+    return point.logLik;
+  },grid,1e-8,maxit);
+  if(!optimum.converged){
+    LstResult failed{nan,nan,nan,nan,maxit,LstStatus::IterationFailure};failed.stop_detail=nomination;return failed;
+  }
   auto best=profile(optimum.point);const auto edge=lst_detail::conditional(x,1,mu,sigma,tol,maxit);
-  if(floor==1 && edge.status==LstStatus::Ok && face_numerical_tie(edge.logLik,best.logLik,1e-8*x.size())) {best.status=LstStatus::IterationFailure;return best;}
-  const double tie=1e-8*x.size();if(floor==1 && edge.status==LstStatus::Ok&&edge.logLik>=best.logLik-tie)best=edge;
-  const auto normal=norm_mle(x,mu,sigma);
-  if(face_numerical_tie(normal.logLik,best.logLik,tie) || face_numerical_tie(best.logLik,normal.logLik,tie) || face_numerical_tie(collapse,best.logLik,tie)) {best.status=LstStatus::IterationFailure;return best;}
-  if(normal.logLik>best.logLik+tie||(best.df>1e5&&normal.logLik>=best.logLik-tie))return {normal.mean,normal.sd,INFINITY,normal.logLik,0,LstStatus::NormalBoundary};
-  if(collapse>=best.logLik-tie)return {mu,0,1,collapse,0,LstStatus::ScaleBoundary};
+  // A pointwise face comparison cannot select a global limit model.
+  const double tie=1e-8*x.size();
+  if(floor==1&&edge.status==LstStatus::Ok&&edge.logLik>=best.logLik-tie){
+    StopDetail point,face;
+    t_shape_detail::retain_point(x,best.mu,best.sigma,best.df,false,point);
+    t_shape_detail::retain_point(x,edge.mu,edge.sigma,1,false,face);
+    if(point.candidates.empty()||face.candidates.empty()||!(point.loglik_lower>face.candidates.front().loglik_upper))best=edge;
+  }
+  if(best.status==LstStatus::Ok) {
+    StopDetail point;t_shape_detail::retain_point(x,best.mu,best.sigma,best.df,false,point);
+    const auto normal=norm_mle(x,mu,sigma);
+    const auto face=t_shape_detail::normal_point(x,normal.mean,normal.sd);
+    const bool disproved=!point.candidates.empty()&&!face.candidates.empty()&&
+      point.loglik_lower>face.candidates.front().loglik_upper;
+    // An unresolved certificate preserves the legacy face classification.
+    if(!disproved&&(normal.logLik>best.logLik+tie||(best.df>1e5&&normal.logLik>=best.logLik-tie))) {
+      LstResult result{normal.mean,normal.sd,INFINITY,normal.logLik,0,LstStatus::NormalBoundary};
+      result.certified=false;result.stop_detail=face;
+      result.stop_detail.candidates.insert(result.stop_detail.candidates.begin(),point.candidates.begin(),point.candidates.end());
+      result.stop_detail.limit_model=StopModel::Norm;result.stop_detail.limit_coef={normal.mean,normal.sd};
+      result.stop_detail.limit_loglik=normal.logLik;result.stop_detail.loglik_upper=INFINITY;
+      return result;
+    }
+    if(t_shape_detail::dominated(point,face)){
+      best.status=LstStatus::NumericalFailure;best.stop_detail=point;return best;
+    }
+  }
+  best.certified=false;
   return best;
 }
 
@@ -502,6 +547,18 @@ inline LstResult lst_mle(span x,double tol,int maxit) {
 }
 inline LstResult lst_mle(span x,double tol,int maxit,double mu,double sigma,double df) {
   maxit = static_cast<int>(solver_budget(maxit));
+  StopDetail face_witness;double normal_coefficient=NAN;
+  const auto checked=[&](LstResult result){
+    const bool normal=result.status==LstStatus::NormalBoundary;
+    if(!normal&&result.status!=LstStatus::Ok)return result;
+    if(face_witness.candidates.empty()&&!(normal&&normal_coefficient>0))return result;
+    StopDetail point;
+    if(normal)point=t_shape_detail::normal_point(x,result.mu,result.sigma);
+    else t_shape_detail::retain_point(x,result.mu,result.sigma,result.df,false,point);
+    const bool wrong=t_shape_detail::dominated(point,face_witness)||(normal&&normal_coefficient>0);
+    if(wrong){result.status=LstStatus::NumericalFailure;result.certified=false;result.stop_detail=point;}
+    return result;
+  };
   if(std::isnan(mu)&&std::isnan(sigma)&&std::isnan(df))return lst_mle(x,tol,maxit);
   if(std::isnan(df)) {
     if(x.empty()||!(tol>0)||!std::isfinite(tol)||maxit<1 ||
@@ -512,6 +569,31 @@ inline LstResult lst_mle(span x,double tol,int maxit,double mu,double sigma,doub
     if(std::isnan(sigma)&&std::count(x.begin(),x.end(),mu)>0) {
       LstResult unbounded{mu,NAN,NAN,INFINITY,0,LstStatus::Unbounded};
       unbounded.stop_detail.loglik_lower=INFINITY;unbounded.stop_detail.loglik_upper=INFINITY;return unbounded;
+    }
+    if(!std::isnan(mu)&&!std::isnan(sigma)) {
+      const auto c=t_shape_detail::solve(x,mu,sigma,false,maxit,tol);
+      const auto status=c.status==0?LstStatus::Ok:c.status==1?LstStatus::NormalBoundary:
+        c.status==2?LstStatus::CertificateBudget:c.status==3?LstStatus::CertificateTie:LstStatus::NumericalFailure;
+      LstResult result{mu,sigma,c.shape,c.loglik,c.evaluations,status};result.stop_detail=c.detail;
+      if(c.status==0||c.status==1||tol<std::numeric_limits<double>::epsilon())return result;
+      auto legacy=lst_mle_impl(x,tol,maxit,mu,sigma,df);
+      if(legacy.status==LstStatus::Ok||legacy.status==LstStatus::NormalBoundary){
+        StopDetail point;
+        if(legacy.status==LstStatus::Ok)t_shape_detail::retain_point(x,legacy.mu,legacy.sigma,legacy.df,false,point);
+        else point=t_shape_detail::normal_point(x,legacy.mu,legacy.sigma);
+        if(t_shape_detail::dominated(point,c.detail)){
+          legacy.status=LstStatus::NumericalFailure;legacy.stop_detail=point;return legacy;
+        }
+        legacy.certified=false;return legacy;
+      }
+      return result;
+    }
+    const auto normal_proof=t_signed_detail::solve(x,mu,sigma,false,maxit);
+    face_witness=normal_proof.detail;normal_coefficient=normal_proof.coefficient_lower;
+    if(normal_proof.proved){
+      const auto& c=normal_proof.detail.limit_coef;
+      LstResult result{c[0],c[1],INFINITY,normal_proof.detail.limit_loglik,normal_proof.evaluations,LstStatus::NormalBoundary};
+      result.stop_detail=normal_proof.detail;return result;
     }
     if(std::isnan(mu)&&!std::isnan(sigma)) {
       const auto shape=t_location_detail::decreasing_shape(x,sigma,maxit);
@@ -525,9 +607,15 @@ inline LstResult lst_mle(span x,double tol,int maxit,double mu,double sigma,doub
           const auto value=lst_detail::conditional(x,1,location.location,sigma,tol,maxit);
           if(value.status==LstStatus::Ok){certified.status=LstStatus::Ok;certified.logLik=value.logLik;certified.restricted=16u;}
         }
+        if(certified.status==LstStatus::NumericalFailure||certified.status==LstStatus::CertificateBudget) {
+          const auto numerical=lst_mle_impl(x,tol,maxit,mu,sigma,df);
+          if(numerical.status==LstStatus::Ok||numerical.status==LstStatus::NormalBoundary)return checked(numerical);
+        }
         return certified;
       }
       if(shape.result==2) {
+        const auto numerical=lst_mle_impl(x,tol,maxit,mu,sigma,df);
+        if(numerical.status==LstStatus::Ok||numerical.status==LstStatus::NormalBoundary)return checked(numerical);
         const auto witness=lst_detail::conditional(x,1,x[0],sigma,tol,maxit);
         LstResult stopped{NAN,NAN,NAN,NAN,shape.evaluations,LstStatus::CertificateBudget};
         stopped.stop_detail.budget_exhausted=true;
@@ -539,10 +627,11 @@ inline LstResult lst_mle(span x,double tol,int maxit,double mu,double sigma,doub
         return stopped;
       }
     }
-    // The remaining held free-shape subsets retain their numerical profile
-    // search. Convergence is required, but globality is not certified.
+    // Remaining two-dimensional constrained profiles keep converged
+    // numerical fits explicitly marked uncertified.
   }
-  auto r=lst_mle_impl(x,tol,maxit,mu,sigma,df);
+  auto r=checked(lst_mle_impl(x,tol,maxit,mu,sigma,df));
+  if(std::isnan(df) && r.status==LstStatus::Ok)r.certified=false;
   if(r.status==LstStatus::Ok && (std::isnan(df) && std::isnan(mu)) && r.df==kLstDfLower) r.restricted|=16u;
   return r;
 }

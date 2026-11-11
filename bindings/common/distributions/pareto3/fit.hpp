@@ -21,6 +21,7 @@ inline FitResult fit_pareto3(cppunivariate::span x, Held shape_arg = {}, Held sc
  if(shape.supplied) fixed.push_back("shape");
  if(scale.supplied) fixed.push_back("scale");
  auto res=cppunivariate::pareto3_mle(x,min,reltol,iterlim,shape.supplied?shape.value:NAN,scale.supplied?scale.value:NAN);
+  if(res.status==cppunivariate::Pareto3Status::AccuracyFailure)return fail("pareto3 numerical accuracy failure: coefficients cannot be represented at the requested accuracy.");
   if(res.status==cppunivariate::Pareto3Status::IterationFailure) return fail("Pareto III delegate search failed to converge.");
   if (!(res.shape>0.0) || !((1/res.scale)>0.0) || !std::isfinite(res.shape) || !std::isfinite(res.scale) || !(res.scale>0) || !std::isfinite(res.logLik)) {
     if (std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))

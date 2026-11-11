@@ -511,7 +511,7 @@ inline ZinbCertificateResult zinb_certified_mle(ispan x,double tol=1e-10,int max
   }
   return fail(ZinbCertificateFailure::ComparisonTie);
 }
-inline ZinbResult zinb_mle(ispan x,double tol,int maxit,
+inline ZinbResult zinb_accuracy_search(ispan x,double tol,int maxit,
     double fixed_size,double fixed_prob,double fixed_pi) {
   maxit = static_cast<int>(solver_budget(maxit));
   auto result=zinb_certified_mle(x,tol,maxit,fixed_size,fixed_prob,fixed_pi);

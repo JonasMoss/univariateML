@@ -8,7 +8,7 @@
 #include <vector>
 #include <limits>
 namespace cppunivariate {
-enum class SnStatus { Ok, InvalidInput, IterationFailure, RightHalfNormalBoundary, LeftHalfNormalBoundary };
+enum class SnStatus { Ok, InvalidInput, IterationFailure, RightHalfNormalBoundary, LeftHalfNormalBoundary, AccuracyFailure };
 struct SnResult { double xi,omega,alpha,logLik; int iterations; SnStatus status;  StopDetail stop_detail{}; bool budget_exhausted=false; };
 namespace sn_detail {
 struct Inner { double eta,h,ll; bool converged; };
@@ -195,7 +195,7 @@ inline double shape_tail_upper(const std::vector<double>& x,double omega,double 
   return std::isfinite(value)?static_cast<double>(value):std::numeric_limits<double>::infinity();
 }
 }
-inline SnResult sn_mle(span data,double tol=1e-9,int maxit=100,
+inline SnResult sn_accuracy_search(span data,double tol=1e-9,int maxit=100,
                        double xi=special::kNaN,double omega=special::kNaN,double alpha=special::kNaN, std::int64_t work_budget=-2) {
   maxit = static_cast<int>(solver_budget(maxit));
   const double nan=special::kNaN;
@@ -476,5 +476,32 @@ inline SnResult sn_mle(span data,double tol=1e-9,int maxit=100,
   return {std::isfinite(xi) ? xi : center+unit*best.h/best.eta,
     std::isfinite(omega) ? omega : unit/best.eta,besta,original_best_ll,evaluations,
     best.converged ? SnStatus::Ok : SnStatus::IterationFailure};
+}
+}
+
+#include "../../core/likelihood_polish.hpp"
+namespace cppunivariate {
+inline SnResult sn_mle(span x,double tol=1e-10,int maxit=100,double xi=NAN,double omega=NAN,double alpha=NAN,std::int64_t work_budget=-2) {
+  auto r=sn_accuracy_search(x,tol,maxit,xi,omega,alpha,work_budget);
+  if(r.status!=SnStatus::Ok)return r;
+  const double center=r.xi,unit=r.omega,shape_unit=std::max(1.0,std::abs(r.alpha));
+  std::array<double,3> q{{0,0,r.alpha/shape_unit}};
+  const std::array<bool,3> free{{std::isnan(xi),std::isnan(omega),std::isnan(alpha)}};
+  const auto objective=[&](const std::array<accuracy_detail::Jet,3>& z) {
+    const auto w=accuracy_detail::exp(z[1]);accuracy_detail::JetSum f;
+    for(double v:x){const auto t=(accuracy_detail::Jet((static_cast<ExtendedReal>(v)-center)/unit)-z[0])/w;
+      f.add(-z[1]-accuracy_detail::Jet(.5)*t*t+accuracy_detail::logcdf(accuracy_detail::Jet(shape_unit)*z[2]*t));}
+    return f.value;
+  };
+  if(!accuracy_detail::polish(q,free,tol,maxit,objective)){r.status=SnStatus::IterationFailure;return r;}
+  if(free[0])r.xi=std::fma(unit,q[0],center);
+  if(free[1])r.omega=unit*std::exp(q[1]);
+  if(free[2])r.alpha=shape_unit*q[2];
+  if((free[0]&&!accuracy_detail::location_projection(r.xi,center,unit,q[0],r.omega,tol))||
+     (free[1]&&!accuracy_detail::scale_projection(r.omega,unit,q[1],tol))||!std::isfinite(r.alpha)) {
+    r.status=SnStatus::AccuracyFailure;return r;
+  }
+  r.logLik=0;for(double v:x)r.logLik+=distributions::dsn(v,r.xi,r.omega,r.alpha,true);
+  return r;
 }
 }

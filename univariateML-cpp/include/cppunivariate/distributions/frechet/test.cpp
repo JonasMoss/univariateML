@@ -454,3 +454,17 @@ TEST_CASE("frechet: an unordered Gumbel comparison retains the finite stationary
   const auto profile=cppunivariate::gev_profile(mltest::as_span(x),1/fit.lambda,1e-12,100);
   CHECK(std::abs(profile.score)<1e-3);
 }
+
+TEST_CASE("frechet: held-scale certificate closes n=500 within the default allowance") {
+  // Uncertified before the cover's excluded basin was enlarged: the default
+  // allowance went to zooming in on a basin of relative radius 2e-6.
+  std::vector<double> x;
+  for(int i=0;i<500;++i)x.push_back(std::pow(-std::log((i+.5)/500),-.5));
+  const auto r=cppunivariate::frechet_mle(mltest::as_span(x),1e-10,100,NAN,NAN,1);
+  REQUIRE(r.status==cppunivariate::FrechetStatus::Ok);
+  CHECK(r.certified);CHECK(r.sigma==1);CHECK(r.restricted==0u);
+  const double h=1e-5;
+  const double ga=(cppunivariate::frechet_loglik(mltest::as_span(x),r.lambda+h,r.mu,1)-cppunivariate::frechet_loglik(mltest::as_span(x),r.lambda-h,r.mu,1))/(2*h);
+  const double gm=(cppunivariate::frechet_loglik(mltest::as_span(x),r.lambda,r.mu+h,1)-cppunivariate::frechet_loglik(mltest::as_span(x),r.lambda,r.mu-h,1))/(2*h);
+  CHECK(std::abs(ga)<1e-2);CHECK(std::abs(gm)<1e-2);
+}

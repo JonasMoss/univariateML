@@ -399,7 +399,12 @@ sample and finite witness.
 The cover includes the Gumbel member under the same hold, both attained shape
 bounds, and value envelopes across moving support. An interior isolated
 maximum needs an interval negative definite constrained Hessian, root
-existence and joint coefficient inclusion. Support corners use the one-sided
+existence and joint coefficient inclusion. The excluded rectangle around that maximum is then
+enlarged: the same criterion, verified on every piece of a subdivision, makes
+the enclosed root the unique maximizer of the larger rectangle, so the cover
+does not have to approach a rectangle of relative radius $2\times10^{-6}$
+with score and value tests that weaken near a maximum
+([measurements](../../../../../dev/research/evaluations/2026-11-10-held-concave-report.md)). Support corners use the one-sided
 bounds below. Completion proves global dominance by a stationary and
 value box cover. This uses the joint certificate's interval machinery without
 assuming the constrained profile is unimodal. Arithmetic margins and the

@@ -1,0 +1,110 @@
+{
+  "native": {
+    "weibull-held-scale": {
+      "outcome": "verified",
+      "maximum": 2.992166409080137e-13
+    },
+    "lomax-held-kappa": {
+      "outcome": "verified",
+      "maximum": 1.979518521782492e-13
+    },
+    "gumbel-held-scale": {
+      "outcome": "numerical-accuracy failure"
+    },
+    "weibull-held-shape": {
+      "outcome": "numerical-accuracy failure"
+    },
+    "lomax-wide-held-kappa": {
+      "outcome": "verified",
+      "maximum": 2.2117521497734817e-14
+    },
+    "lomax-weighted-held-kappa": {
+      "outcome": "verified",
+      "maximum": 2.7864490191176023e-14
+    },
+    "lomax-subnormal-held-kappa": {
+      "outcome": "numerical-accuracy failure"
+    }
+  },
+  "double": {
+    "weibull-held-scale": {
+      "outcome": "verified",
+      "maximum": 2.992166409080137e-13
+    },
+    "lomax-held-kappa": {
+      "outcome": "verified",
+      "maximum": 1.979518521782492e-13
+    },
+    "gumbel-held-scale": {
+      "outcome": "numerical-accuracy failure"
+    },
+    "weibull-held-shape": {
+      "outcome": "numerical-accuracy failure"
+    },
+    "lomax-wide-held-kappa": {
+      "outcome": "verified",
+      "maximum": 2.2117521497734817e-14
+    },
+    "lomax-weighted-held-kappa": {
+      "outcome": "verified",
+      "maximum": 2.7864490191176023e-14
+    },
+    "lomax-subnormal-held-kappa": {
+      "outcome": "numerical-accuracy failure"
+    }
+  },
+  "r": {
+    "weibull-held-scale": {
+      "outcome": "verified",
+      "maximum": 2.992166409080137e-13
+    },
+    "lomax-held-kappa": {
+      "outcome": "verified",
+      "maximum": 1.979518521782492e-13
+    },
+    "gumbel-held-scale": {
+      "outcome": "numerical-accuracy failure"
+    },
+    "weibull-held-shape": {
+      "outcome": "numerical-accuracy failure"
+    },
+    "lomax-wide-held-kappa": {
+      "outcome": "verified",
+      "maximum": 2.2117521497734817e-14
+    },
+    "lomax-weighted-held-kappa": {
+      "outcome": "verified",
+      "maximum": 2.7864490191176023e-14
+    },
+    "lomax-subnormal-held-kappa": {
+      "outcome": "numerical-accuracy failure"
+    }
+  },
+  "wasm": {
+    "weibull-held-scale": {
+      "outcome": "verified",
+      "maximum": 2.992166409080137e-13
+    },
+    "lomax-held-kappa": {
+      "outcome": "verified",
+      "maximum": 1.979518521782492e-13
+    },
+    "gumbel-held-scale": {
+      "outcome": "numerical-accuracy failure"
+    },
+    "weibull-held-shape": {
+      "outcome": "numerical-accuracy failure"
+    },
+    "lomax-wide-held-kappa": {
+      "outcome": "verified",
+      "maximum": 2.2117521497734817e-14
+    },
+    "lomax-weighted-held-kappa": {
+      "outcome": "verified",
+      "maximum": 2.7864490191176023e-14
+    },
+    "lomax-subnormal-held-kappa": {
+      "outcome": "numerical-accuracy failure"
+    }
+  }
+}

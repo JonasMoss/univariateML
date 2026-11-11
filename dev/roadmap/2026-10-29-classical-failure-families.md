@@ -18,8 +18,17 @@ Related, as illustrations of "removable" escapes (see the taxonomy below):
   `trgamma` ($Q>0$), lognormal ($Q=0$) and `invtrgamma` ($Q<0$) in one
   smooth family, so the lognormal escape becomes an interior point.
 - Student t continued through the normal into Pearson type II (symmetric
-  beta) with $\eta = 1/\nu < 0$; spikes appear for $-1 < \eta < 0$ exactly
-  as for the generalized Pareto with $\xi < -1$.
+  beta) with $\eta = 1/\nu < 0$. Known as the q-Gaussian (Tsallis),
+  $q = (1+3\eta)/(1+\eta)$, so $\eta = 0 \leftrightarrow q = 1$. Writing
+  $f(z) \propto (1+\eta z^2)^{-(1+\eta)/(2\eta)}$, the endpoint exponent for
+  $\eta < 0$ is $m = -(1+\eta)/(2\eta)$: $m > 1$ for $-1/3 < \eta < 0$
+  (Smith-regular), $0 < m < 1$ for $-1 < \eta < -1/3$ (nonregular, bounded),
+  uniform at $\eta = -1$, and spikes (unbounded likelihood) for $\eta < -1$,
+  the same pattern as the generalized Pareto with $\xi < -1$ but with the
+  regularity threshold at $\eta = -1/3$ rather than $-1/2$. (Corrected
+  2026-11-10; the earlier text put the spikes at $-1 < \eta < 0$. The
+  $-1/3$ threshold is derived from Smith's criterion, not yet checked
+  against literature: see the q-Gaussian literature-check card.)
 
 ## Failure gallery
 

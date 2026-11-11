@@ -2,7 +2,7 @@
 #include "common_fit.h"
 // [[Rcpp::export]]
 Rcpp::List mlkumar_(const Rcpp::NumericVector &x, Rcpp::Nullable<double> a0 = R_NilValue,
-                    double reltol = 1.220703e-4,
+                    double reltol = 1e-10,
                     int iterlim = 100,
     Rcpp::Nullable<double> a = R_NilValue,
     Rcpp::Nullable<double> b = R_NilValue) {

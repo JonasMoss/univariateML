@@ -5,7 +5,7 @@ Rcpp::List mlbnbinom_(const Rcpp::IntegerVector &x,
     Rcpp::Nullable<double> size=R_NilValue,
     Rcpp::Nullable<double> alpha=R_NilValue,
     Rcpp::Nullable<double> beta=R_NilValue,
-    double gradtol=1e-8, int iterlim=600) {
+    double gradtol=1e-10, int iterlim=600) {
   const auto fit=umvl_binding::fit_bnbinom(cppunivariate::ispan{x.begin(), static_cast<std::size_t>(x.size())}, common_held(size), common_held(alpha), common_held(beta), gradtol, iterlim);
   auto out=common_result(fit);
   const Rcpp::RObject classes=out.attr("class");

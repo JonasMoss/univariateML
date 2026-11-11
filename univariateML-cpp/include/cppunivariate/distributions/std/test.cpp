@@ -172,6 +172,7 @@ TEST_CASE("std: every held golden subset preserves coefficients and likelihood")
   for(int mask=1;mask<8;++mask) {
     CAPTURE(mask);
     const auto r=cppunivariate::student_t_mle(mltest::as_span(g.data),1e-8,1000,((mask & 1) ? g.estimates.at("mean") : nan),((mask & 2) ? g.estimates.at("sd") : nan),((mask & 4) ? g.estimates.at("nu") : nan));
+    if(mask==1||mask==2)CHECK_FALSE(r.certified);
     if(mask & 1)CHECK(r.mu==g.estimates.at("mean"));
     if(mask & 2)CHECK(r.sigma==g.estimates.at("sd"));
     if(mask & 4)CHECK(r.nu==g.estimates.at("nu"));
@@ -184,7 +185,10 @@ TEST_CASE("std: every held golden subset preserves coefficients and likelihood")
 TEST_CASE("std: conditional lower shape faces") {
   const double nan=std::numeric_limits<double>::quiet_NaN();
   std::vector<double> x={-20,20};for(int i=0;i<10;++i){x.push_back(-.1);x.push_back(.1);}
-  CHECK(cppunivariate::student_t_mle(mltest::as_span(x),1e-8,200,0,nan,nan).status==cppunivariate::StudentTStatus::DfTwoBoundary);
+  const auto unresolved=cppunivariate::student_t_mle(mltest::as_span(x),1e-8,200,0,nan,nan);
+  CHECK(unresolved.status==cppunivariate::StudentTStatus::DfTwoBoundary);
+  CHECK_FALSE(unresolved.certified);
+  CHECK(unresolved.stop_detail.candidates.size()==2);
   const std::vector<double> tied={0,0,1};
   CHECK(cppunivariate::student_t_mle(mltest::as_span(tied),1e-8,200,0,1,nan).status==cppunivariate::StudentTStatus::ScaleBoundary);
 }
@@ -244,7 +248,8 @@ TEST_CASE("std: audited huge held-parameter magnitude") {
   std::vector<double> x{1,2};
   cppunivariate::span s{x.data(),x.size()};
   const auto r=cppunivariate::student_t_mle(s,1e-6,200,0,1e-10,nan);
-  CHECK((r.status==cppunivariate::StudentTStatus::Ok || r.status==cppunivariate::StudentTStatus::BfgsFailure || r.status==cppunivariate::StudentTStatus::IterationFailure));
+  CHECK(r.status==cppunivariate::StudentTStatus::Ok);
+  CHECK(std::isfinite(r.logLik));
   CHECK(r.status!=cppunivariate::StudentTStatus::NormalBoundary);
 }
 
@@ -337,6 +342,160 @@ TEST_CASE("std: uncertified free-shape searches still stop on solver exhaustion"
   for(int mask:{1,2,3}) {
     const auto r=cppunivariate::student_t_mle(mltest::as_span(g.data),1e-8,1,
       mask&1?g.estimates.at("mean"):NAN,mask&2?g.estimates.at("sd"):NAN,NAN);
-    CHECK(r.status==cppunivariate::StudentTStatus::IterationFailure);
+    CHECK(r.status==(mask==3?cppunivariate::StudentTStatus::NumericalFailure:cppunivariate::StudentTStatus::IterationFailure));
   }
+}
+
+TEST_CASE("std: shape-only certificate keeps actual sd and resolves the collapse face") {
+  const auto g=mltest::load_distribution_golden("std");
+  const auto r=cppunivariate::student_t_mle(mltest::as_span(g.data),1e-8,200,g.estimates.at("mean"),g.estimates.at("sd"),NAN);
+  REQUIRE(r.status==cppunivariate::StudentTStatus::Ok);
+  CHECK(r.nu==doctest::Approx(3.97766630702385528449).epsilon(1e-7));
+  CHECK(r.logLik==doctest::Approx(-579.480782421376264826).epsilon(1e-12));
+  const std::vector<double> x{0,0,1};
+  const auto collapse=cppunivariate::student_t_mle(mltest::as_span(x),1e-8,200,0,1,NAN);
+  REQUIRE(collapse.status==cppunivariate::StudentTStatus::ScaleBoundary);
+  CHECK(collapse.stop_detail.loglik_lower<=-3*std::log(2.));
+  CHECK(collapse.stop_detail.loglik_upper>=-3*std::log(2.));
+  CHECK(collapse.stop_detail.limit_coef==std::vector<double>{0,2});
+}
+
+TEST_CASE("std: shape-only certificate is equivariant and never accepts its work cap") {
+  const std::vector<double> x{-.7,-.2,.1,.4,1,4};
+  const auto base=cppunivariate::student_t_mle(mltest::as_span(x),1e-8,200,0,1,NAN);
+  REQUIRE(base.status==cppunivariate::StudentTStatus::Ok);
+  for(double unit:{1e-100,1e100}){
+    auto y=x;for(double& v:y)v*=unit;
+    const auto r=cppunivariate::student_t_mle(mltest::as_span(y),1e-8,200,0,unit,NAN);
+    REQUIRE(r.status==cppunivariate::StudentTStatus::Ok);
+    CHECK(r.nu==doctest::Approx(base.nu).epsilon(1e-7));
+    CHECK(r.logLik+y.size()*std::log(unit)==doctest::Approx(base.logLik).epsilon(1e-10));
+  }
+  const auto stopped=cppunivariate::student_t_mle(mltest::as_span(x),1e-8,1,0,1,NAN);
+  CHECK(stopped.status!=cppunivariate::StudentTStatus::Ok);
+  CHECK(std::isfinite(stopped.stop_detail.loglik_lower));
+  CHECK(stopped.stop_detail.loglik_upper==INFINITY);
+}
+
+TEST_CASE("std: shape-only normal stops preserve both held normal coefficients") {
+  const std::vector<double> x{-1,1};
+  const auto r=cppunivariate::student_t_mle(mltest::as_span(x),1e-8,200,0,1,NAN);
+  REQUIRE(r.status==cppunivariate::StudentTStatus::NormalBoundary);
+  CHECK(r.stop_detail.limit_coef==std::vector<double>{0,1});
+  CHECK(r.stop_detail.loglik_lower<=-1-std::log(2*cppunivariate::pi));
+  CHECK(r.stop_detail.loglik_upper>=-1-std::log(2*cppunivariate::pi));
+}
+
+TEST_CASE("std: free-shape held solver stops retain admissible witnesses and unknown upper bounds") {
+  const auto g=mltest::load_distribution_golden("std");
+  for(int mask:{1,2,3}) {
+    const auto r=cppunivariate::student_t_mle(mltest::as_span(g.data),1e-8,1,
+      mask&1?g.estimates.at("mean"):NAN,mask&2?g.estimates.at("sd"):NAN,NAN);
+    REQUIRE(r.status!=cppunivariate::StudentTStatus::Ok);
+    CHECK(r.stop_detail.loglik_upper==INFINITY);
+    CHECK(std::isfinite(r.stop_detail.loglik_lower));
+    CHECK_FALSE(r.stop_detail.candidates.empty());
+    for(const auto& candidate:r.stop_detail.candidates) {
+      REQUIRE(candidate.coef.size()==3);
+      double ll;
+      if(candidate.model==cppunivariate::StopModel::Lst) {
+        const double point[2]={candidate.coef[0],std::log(candidate.coef[1])};
+        ll=-cppunivariate::LstCost{mltest::as_span(g.data),candidate.coef[2],true}(point);
+      } else ll=cppunivariate::student_t_held_loglik(mltest::as_span(g.data),candidate.coef[0],candidate.coef[1],candidate.coef[2]);
+      CHECK(ll>=candidate.loglik_lower);CHECK(ll<=candidate.loglik_upper);
+    }
+  }
+}
+
+TEST_CASE("std: shape-only certificate refuses unjustifiable requested coefficient precision") {
+  const auto g=mltest::load_distribution_golden("std");
+  const auto r=cppunivariate::student_t_mle(mltest::as_span(g.data),1e-20,200,g.estimates.at("mean"),g.estimates.at("sd"),NAN);
+  CHECK(r.status!=cppunivariate::StudentTStatus::Ok);
+  CHECK(r.stop_detail.loglik_upper==INFINITY);
+  CHECK(std::isfinite(r.stop_detail.loglik_lower));
+}
+
+TEST_CASE("std: balanced separated atoms have proved distinct held-sd global maximizers") {
+  for(const std::vector<double>& x:{std::vector<double>{-100,100},std::vector<double>{-100,-100,100,100}}){
+    const auto r=cppunivariate::student_t_mle(mltest::as_span(x),1e-8,200,NAN,1,NAN);
+    REQUIRE(r.status==cppunivariate::StudentTStatus::NonUniqueHeldSd);
+    REQUIRE(r.stop_detail.candidates.size()==2);
+    CHECK(r.stop_detail.comparison_tie);
+    CHECK(r.stop_detail.loglik_upper==INFINITY);
+    for(const auto& point:r.stop_detail.candidates){
+      const double ll=cppunivariate::student_t_held_loglik(mltest::as_span(x),point.coef[0],point.coef[1],point.coef[2]);
+      CHECK(ll>=point.loglik_lower);CHECK(ll<=point.loglik_upper);
+    }
+  }
+  const std::vector<double> close{-1,1},unbalanced{-100,100,100};
+  CHECK(cppunivariate::t_symmetry_detail::held_sd(mltest::as_span(close),1).outcome==0);
+  CHECK(cppunivariate::t_symmetry_detail::held_sd(mltest::as_span(unbalanced),1).outcome==0);
+}
+
+TEST_CASE("std: default budget distinguishes scalar certificates and joint numerical fits") {
+  const auto g=mltest::load_distribution_golden("std");
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  for(int mask=1;mask<=3;++mask) {
+    CAPTURE(mask);
+    const auto r=cppunivariate::student_t_mle(mltest::as_span(g.data),1.220703e-4,200,
+      mask&1?g.estimates.at("mean"):nan,
+      mask&2?g.estimates.at("sd"):nan,nan);
+    REQUIRE(r.status==cppunivariate::StudentTStatus::Ok);
+    CHECK(r.certified==(mask==3));
+    CHECK(r.logLik>=g.logLik-1e-6*g.data.size());
+  }
+}
+
+TEST_CASE("std: held-sd likelihood bounds stay narrow at the normal face") {
+  const std::vector<double> x={-1,2};const double sd=std::sqrt(2.34);
+  cppunivariate::StopDetail point;
+  cppunivariate::t_shape_detail::retain_point(mltest::as_span(x),.2,sd,1e8,true,point);
+  const auto normal=cppunivariate::t_shape_detail::normal_point(mltest::as_span(x),.2,sd);
+  REQUIRE(point.candidates.size()==1);
+  CHECK(point.candidates[0].loglik_upper-point.loglik_lower<1e-9);
+  CHECK(cppunivariate::t_shape_detail::dominated(point,normal));
+}
+
+TEST_CASE("std: signed normal profile covers every finite shape at actual holds") {
+  std::vector<double> x;
+  for(int j=0;j<100;++j)x.push_back(cppunivariate::special::qnorm((j+.5)/100.,0,1,true,false));
+  for(int mask:{1,2}){
+    const double mu=mask==1?0:NAN,scale=mask==2?1:NAN;
+    const auto proof=cppunivariate::t_signed_detail::solve(mltest::as_span(x),mu,scale,true,200);
+    REQUIRE(proof.proved);CHECK(proof.coefficient_upper<0);CHECK(proof.cutoff>proof.lower_shape);
+    CHECK(proof.evaluations<=cppunivariate::certificate_budget(200));
+    const auto result=cppunivariate::student_t_mle(mltest::as_span(x),1e-8,200,mu,scale,NAN);
+    CHECK(result.status==cppunivariate::StudentTStatus::NormalBoundary);CHECK(result.certified);
+    CHECK(std::isfinite(result.stop_detail.loglik_upper));
+  }
+}
+
+TEST_CASE("std: signed face zero and uncertain coefficients make no claim") {
+  std::vector<cppunivariate::t_cert_detail::I> q{0,0,0,0,3,3};
+  const auto zero=cppunivariate::t_signed_detail::coefficient(q,true);
+  CHECK(zero.lo<=0);CHECK(zero.hi>=0);
+  q={1,4};
+  const auto value=cppunivariate::t_signed_detail::coefficient(q,true);
+  CHECK(value.lo<=-1.75);CHECK(value.hi>=-1.75);
+}
+
+TEST_CASE("std: negative normal coefficient does not select a beaten face") {
+  std::vector<double> x(26,0);for(int j=0;j<7;++j){x.push_back(-1);x.push_back(1);}
+  const double sd=std::sqrt(.35);
+  const auto proof=cppunivariate::t_signed_detail::solve(mltest::as_span(x),NAN,sd,true,200);
+  CHECK_FALSE(proof.proved);CHECK(proof.coefficient_upper<0);
+  const auto normal=cppunivariate::t_shape_detail::normal_point(mltest::as_span(x),0,sd);
+  REQUIRE_FALSE(proof.detail.candidates.empty());
+  CHECK(proof.detail.loglik_lower>normal.candidates[0].loglik_upper);
+  const auto fit=cppunivariate::student_t_mle(mltest::as_span(x),1e-8,200,NAN,sd,NAN);
+  CHECK(fit.status==cppunivariate::StudentTStatus::Ok);CHECK_FALSE(fit.certified);
+}
+
+TEST_CASE("std: zero normal profile coefficient preserves uncertified legacy search") {
+  const double a=std::sqrt(9+4*std::sqrt(6.));
+  const std::vector<double> x{-a,a,-1,1,-1,1,-1,1};
+  const auto proof=cppunivariate::t_signed_detail::solve(mltest::as_span(x),0,NAN,true,200);
+  CHECK_FALSE(proof.proved);CHECK(proof.coefficient_lower<=0);CHECK(proof.coefficient_upper>=0);
+  const auto fit=cppunivariate::student_t_mle(mltest::as_span(x),1e-8,200,0,NAN,NAN);
+  CHECK(fit.status==cppunivariate::StudentTStatus::Ok);CHECK_FALSE(fit.certified);
 }

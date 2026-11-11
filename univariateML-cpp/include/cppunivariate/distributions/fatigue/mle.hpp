@@ -32,8 +32,8 @@ struct FatigueResult {
 
 #include "certificate.hpp"
 
-// Historical Newton proposer retained for golden compatibility. The complete
-// rational inclusion below decides whether it represents the winning root.
+// Optional Newton proposal. The public fit returns the complete rational
+// inclusion root, with both coefficient widths checked.
 inline FatigueResult fatigue_proposal_impl(span x, double tol, int maxit, bool standardized) {
   maxit = static_cast<int>(solver_budget(maxit));
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
@@ -140,13 +140,6 @@ inline FatigueResult fatigue_mle(span x, double tol, int maxit,
   if (!fa && !fb) {
     auto certified=fatigue_certificate::fit(x,tol,maxit,held_alpha,held_beta);
     if(certified.status!=FatigueStatus::Ok)return certified;
-    const auto proposal=fatigue_proposal_impl(x,tol,maxit,false);
-    if(proposal.status==FatigueStatus::Ok&&proposal.alpha>0&&proposal.beta>0&&
-       std::isfinite(proposal.logLik)&&std::abs(std::log(proposal.beta/certified.beta))<=1e-8&&
-       std::abs(std::log(proposal.alpha/certified.alpha))<=1e-8&&
-       std::abs(proposal.logLik-certified.logLik)<=1e-10*x.size()) {
-      certified.alpha=proposal.alpha;certified.beta=proposal.beta;certified.logLik=proposal.logLik;
-    }
     return certified;
   }
   const double nan=std::numeric_limits<double>::quiet_NaN();

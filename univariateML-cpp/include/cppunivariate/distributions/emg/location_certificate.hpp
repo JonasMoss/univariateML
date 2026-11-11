@@ -4,6 +4,7 @@
 #include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
 #include <array>
+#include "../../core/likelihood_polish.hpp"
 
 namespace cppunivariate {
 namespace emg_detail {
@@ -12,7 +13,7 @@ namespace emg_detail {
 // Other branches use the settled Mills evaluator, with a practical margin.
 inline std::array<CPPUNIV_EXTENDED_REAL,2> location_score(
     span x, CPPUNIV_EXTENDED_REAL mu, double sigma, double lambda, CPPUNIV_EXTENDED_REAL origin=0) {
-  CPPUNIV_EXTENDED_REAL lower=0,upper=0,magnitude=0;
+  accuracy_detail::ScalarSum lower,upper,magnitude;
   const CPPUNIV_EXTENDED_REAL a=static_cast<CPPUNIV_EXTENDED_REAL>(sigma)*lambda;
   for(double v:x) {
     const CPPUNIV_EXTENDED_REAL z=((static_cast<CPPUNIV_EXTENDED_REAL>(v)-origin)-mu)/sigma,t=a-z;
@@ -21,17 +22,17 @@ inline std::array<CPPUNIV_EXTENDED_REAL,2> location_score(
       for(int j=40;j>=2;--j)r0=j/(t+r0);
       for(int j=41;j>=2;--j)r1=j/(t+r1);
       const CPPUNIV_EXTENDED_REAL h0=1/(t+r0),h1=1/(t+r1);
-      lower+=z-std::max(h0,h1);upper+=z-std::min(h0,h1);
-      magnitude+=std::abs(z)+std::max(h0,h1);
+      lower.add(z-std::max(h0,h1));upper.add(z-std::min(h0,h1));
+      magnitude.add(std::abs(z)+std::max(h0,h1));
     } else {
       const CPPUNIV_EXTENDED_REAL logm=logmills(t),r=std::exp(-logm);
-      lower+=a-r;upper+=a-r;
-      magnitude+=std::abs(a)+(r>0?r*(1+std::abs(logm)):0);
+      lower.add(a-r);upper.add(a-r);
+      magnitude.add(std::abs(a)+(r>0?r*(1+std::abs(logm)):0));
     }
   }
-  const CPPUNIV_EXTENDED_REAL margin=128*std::numeric_limits<double>::epsilon()*magnitude+
+  const CPPUNIV_EXTENDED_REAL margin=128*std::numeric_limits<double>::epsilon()*magnitude.value+
       128*static_cast<CPPUNIV_EXTENDED_REAL>(x.size())*std::numeric_limits<double>::denorm_min();
-  return {{lower-margin,upper+margin}};
+  return {{lower.value-margin,upper.value+margin}};
 }
 struct LocationCertificate {
   double mu=NAN,lower=NAN,upper=NAN,loglik=NAN;
@@ -72,7 +73,8 @@ inline LocationCertificate location_certificate(span x,double sigma,double lambd
     const CPPUNIV_EXTENDED_REAL mid=lo+(hi-lo)/2;
     // Solve in compensated local coordinates. Translation must not relax
     // the absolute location target measured in units of the held sigma.
-    const CPPUNIV_EXTENDED_REAL target=tol*static_cast<CPPUNIV_EXTENDED_REAL>(sigma);
+    // Leave the same sixteen-fold headroom as the joint Newton acceptance.
+    const CPPUNIV_EXTENDED_REAL target=(tol/16)*static_cast<CPPUNIV_EXTENDED_REAL>(sigma);
     const double rounded=static_cast<double>(mid);
     if(std::isfinite(rounded) && std::max(std::abs(rounded-lo),std::abs(hi-rounded))<=target) {enclosed=true;break;}
     const auto score=location_score(x,mid,sigma,lambda,origin);
