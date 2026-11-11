@@ -690,3 +690,13 @@ TEST_CASE("sstd: logarithmic thin-side radius exceeds binary64 range") {
 TEST_CASE("sstd: compensated standardized moment at nu 2.5492086449176115") {
  CHECK(cppunivariate::distributions::dsstd(-0.6644244801433566,0.012734271748561354,1.0184483076867987,2.5492086449176115,77179.93142228863,true)==doctest::Approx(-0.18927952912370902).epsilon(1e-10));
 }
+
+TEST_CASE("sstd exact-coefficient logLik seam replay 6876") {
+ const std::vector<double> x{0.999999999998,0.999999999999,1.0,1.000000000001,1.000000000003};
+ const auto r=cppunivariate::sstd_mle({x.data(),x.size()},1e-10,200,NAN,NAN,2.9622019441967624,1.9114750836827714);
+ REQUIRE(r.status==cppunivariate::SstdStatus::Ok);
+ double ll=0;
+ for(double v:x)ll+=cppunivariate::distributions::dsstd(v,r.mu,r.sigma,r.nu,r.xi,true);
+ CHECK(std::abs(r.logLik-ll)<=1e-10*std::max(1.0,std::abs(ll)));
+ CHECK(std::abs(r.logLik-(128.26173677170738))<=1e-10*128.26173677170738);
+}

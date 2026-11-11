@@ -329,3 +329,10 @@ test_that("snorm constant data away from a held mean stop on the constrained fac
     expect_equal(e$limit_loglik,2*log(m*m/2),tolerance=1e-12)
   }
 })
+
+test_that("snorm refitted likelihood seam agrees at returned coefficients", {
+  x <- c(-0.1400741601380333,-0.14006015552294254,-0.14004615090785175,-0.14003214629276095,-0.1400041370625794)
+  f <- mlsnorm(x,mean=-0.020798452221064478,xi=3.394979982095818)
+  ll <- sum(dsnorm(x,mean=f[["mean"]],sd=f[["sd"]],xi=f[["xi"]],log=TRUE))
+  expect_lte(abs(as.numeric(logLik(f))-ll),1e-10*max(1,abs(ll)))
+})

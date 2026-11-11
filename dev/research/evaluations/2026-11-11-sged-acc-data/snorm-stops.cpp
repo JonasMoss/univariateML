@@ -1,0 +1,5 @@
+#include <iostream>
+#include <fstream>
+#include <iomanip>
+#include "cppunivariate/distributions/snorm/mle.hpp"
+int main(int argc,char**argv){std::ifstream in(argv[1]);int i,n;std::string f;std::cout<<std::setprecision(17);while(in>>i>>f>>n){std::vector<double> h(3),x(n);for(auto&v:h){std::string t;in>>t;v=std::stod(t);}for(auto&v:x)in>>v;for(int cap:{200,2000,10000}){auto r=cppunivariate::snorm_mle({x.data(),x.size()},1e-10,cap,h[0],h[1],h[2]);std::cout<<i<<" "<<cap<<" "<<int(r.status)<<" "<<r.mu<<" "<<r.sigma<<" "<<r.xi<<" "<<r.logLik<<" budget "<<r.stop_detail.budget_exhausted<<" tie "<<r.stop_detail.comparison_tie<<" candidates "<<r.stop_detail.candidates.size()<<" limits "<<r.stop_detail.limit_coef.size()<<"\n";for(const auto& c:r.stop_detail.candidates){const char* name=c.model==cppunivariate::StopModel::None?"finite":c.model==cppunivariate::StopModel::Hnorm?"hnorm":c.model==cppunivariate::StopModel::ReflectedHnorm?"reflected-hnorm":"other";std::cout<<"  candidate "<<name<<" bounds "<<c.loglik_lower<<" "<<c.loglik_upper<<" coefficients";for(double v:c.coef)std::cout<<" "<<v;std::cout<<"\n";}}}}

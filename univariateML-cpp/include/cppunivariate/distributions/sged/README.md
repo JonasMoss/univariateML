@@ -60,7 +60,7 @@ r:
     sd: "Optional held sd; NULL estimates it where the hold subset is supported."
     nu: "Optional held nu; NULL estimates it where the hold subset is supported."
     xi: "Optional held xi; NULL estimates it where the hold subset is supported."
-    gradtol: "Requested relative coefficient accuracy for all-free fits (default 1e-10); checked by the final observed-information Newton correction."
+    gradtol: "Requested relative coefficient accuracy (default 1e-10), including fixed-shape/skew public-coefficient enclosures."
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
 log_density: "log(sqrt((1 - (gamma(2/nu)/sqrt(gamma(1/nu)*gamma(3/nu)))**2)*(xi**2 + xi**(-2)) + 2*(gamma(2/nu)/sqrt(gamma(1/nu)*gamma(3/nu)))**2 - 1)) - log(sd) + log(2/(xi + 1/xi)) + log(nu/(sqrt(2**(-2/nu)*gamma(1/nu)/gamma(3/nu))*2**(1 + 1/nu)*gamma(1/nu))) - Abs(Piecewise(((sqrt((1 - (gamma(2/nu)/sqrt(gamma(1/nu)*gamma(3/nu)))**2)*(xi**2 + xi**(-2)) + 2*(gamma(2/nu)/sqrt(gamma(1/nu)*gamma(3/nu)))**2 - 1)*(x - mean)/sd + (gamma(2/nu)/sqrt(gamma(1/nu)*gamma(3/nu)))*(xi - 1/xi))/xi, (sqrt((1 - (gamma(2/nu)/sqrt(gamma(1/nu)*gamma(3/nu)))**2)*(xi**2 + xi**(-2)) + 2*(gamma(2/nu)/sqrt(gamma(1/nu)*gamma(3/nu)))**2 - 1)*(x - mean)/sd + (gamma(2/nu)/sqrt(gamma(1/nu)*gamma(3/nu)))*(xi - 1/xi)) > 0), ((sqrt((1 - (gamma(2/nu)/sqrt(gamma(1/nu)*gamma(3/nu)))**2)*(xi**2 + xi**(-2)) + 2*(gamma(2/nu)/sqrt(gamma(1/nu)*gamma(3/nu)))**2 - 1)*(x - mean)/sd + (gamma(2/nu)/sqrt(gamma(1/nu)*gamma(3/nu)))*(xi - 1/xi))*xi, True)))**nu/(2*(sqrt(2**(-2/nu)*gamma(1/nu)/gamma(3/nu)))**nu)"
 limits:
@@ -292,10 +292,19 @@ sample minimum and positive above the maximum, and has one global minimum.
 The certificate bisects that derivative on the whole sample range, evaluating
 compensated signed sums after logarithmic rescaling. An uncertain derivative sign must be
 replaced by two signed endpoints enclosing the root; it is never treated as a
-zero score. The normalized root enclosure has width at most $10^{-9}$.
-The stored mean must recover the normalized mode within another $10^{-9}$;
-otherwise the fitter stops. Cancellation in mean recovery is also rejected
-when a $32\epsilon$ allowance on its summands exceeds $10^{-7}(1+|\mu|)$.
+zero score. Public-coordinate inclusion and reconstruction allowances use
+$\eta=\min(\mathtt{tol},10^{-7})$; this retains a positive relative-error
+margin when a caller requests a very loose coefficient tolerance.
+The normalized root enclosure has width at most
+$\min(10^{-9},\mathtt{tol}/8)$.
+The stored mean must recover the mode within
+$\eta\max(|\mu|,\sigma)/4$ in data units. The separate
+likelihood reconstruction guard still requires the stored
+mean to recover the normalized mode within $10^{-9}$; a small mean error in
+public units alone does not protect the profiled scale when the data spread
+is much smaller than their location.
+Cancellation in mean recovery is rejected when a $32\epsilon$ allowance
+on its summands exceeds the same public-coordinate bound.
 The likelihood evaluated at the stored coefficients must agree with the
 mode-coordinate evaluation within the candidate allowance below; this guards
 against cusp amplification of reconstruction errors. This supplies an absolute coefficient enclosure
@@ -303,7 +312,15 @@ in units of the largest observation distance from the sample midpoint,
 rather than a stopping test based only on likelihood decrease. Termwise
 minimum/maximum distances over the root interval also enclose the profiled
 scale and recovered mean; both public-coordinate widths must be at most
-$10^{-7}(1+|\theta|)$ before acceptance.
+$\eta\,\max(|\mu|,\sigma)/4$ for the mean and
+$\eta\,\sigma/4$ for the scale before acceptance. Each interval
+is enlarged to include its computed public representative before this width
+is tested. These bound
+errors in the public coordinates, including cancellation in the recovered
+mean; a normalized mode tolerance alone does not establish coefficient accuracy.
+A profiled scale already agreeing with the refined representative within
+$\min(\eta/8,32\epsilon)$ relatively is retained to avoid
+rounding-level changes to an already enclosed coefficient.
 
 For $\nu=1$, the minimizers are weighted medians with quantile
 $1/(1+\xi^2)$. Sorted observations and cumulative left/right slopes locate
@@ -335,9 +352,13 @@ power growth dominating the logarithm. The scale certificate brackets the
 monotone derivative $F'(t)$ with expanding log-$t$ endpoints and then
 bisects, using compensated signed logarithmic sums for $tF'(t)$. A derivative
 uncertainty, including a $\nu=1$ join, must be resolved by two signed
-endpoints or it stops numerically. A log-scale bracket of width $10^{-9}$
+endpoints or it stops numerically. A log-scale bracket of width
+$\min(10^{-9},3\mathtt{tol}/4)$
 is required, and the stored scale must preserve its log coordinate within
-$10^{-8}$. Tail bracketing and bisection share the solver budget; the
+$\mathtt{tol}/8$. The scale representative is projected onto the refined
+log-inverse-scale interval, retaining it when already enclosed. Projection
+cannot increase its distance to the root in that monotone coordinate.
+Tail bracketing and bisection share the solver budget; the
 certificate imposes no finite inverse-scale cutoff. When $u=0$, collapse
 is unbounded. For asymmetric held shapes below one, the separate certificate below replaces
 the convexity argument.
@@ -368,9 +389,12 @@ the cell (at $h$ if the slope is nonpositive). A cell is discarded if
 this bound exceeds the incumbent, or if
 $P'(h)-n/l>0$ or $P'(l)-n/h<0$ certifies monotonicity; its endpoints
 have already been evaluated. Remaining cells are bisected geometrically.
-Terminal cells have log width at most $10^{-10}$. Retained knots and
+Terminal cells have log width at most $\min(10^{-10},\mathtt{tol}/8)$. Retained knots and
 cells must together enclose all possible winners within a public scale
-width $10^{-7}(1+|\sigma|)$ and log-scale width $10^{-7}$. Separated surviving regions stop as a
+relative scale width and log-scale width $\min(10^{-7},\mathtt{tol}/2)$.
+A smooth candidate is selected from the surviving derivative enclosure;
+a rounded objective incumbent excluded by the derivative bounds is only a
+likelihood witness and does not enlarge that enclosure. Separated surviving regions stop as a
 comparison tie, retaining finite witnesses. A finite global likelihood upper
 bound is reported after every cell and both tails have been closed; before
 that, budget and numerical stops retain an infinite upper bound.
@@ -387,8 +411,8 @@ maxima, despite every observation differing from the held mean.
 
 The subunit certificate uses compensated sums, fused residual evaluation and
 a $4096\epsilon(1+n+|F|)(1+|\nu\log\xi|+1/\nu)$ cost allowance;
-derivative comparisons use the same conditioning factor times their absolute
-term sum. Algebraic knot residuals are set to zero. Recovery tries three algebraically equivalent scale expressions at a cusp and
+derivative comparisons use $64\epsilon(1+|\nu\log\xi|+1/\nu)$ times
+their absolute term sum. Algebraic knot residuals are set to zero. Recovery tries three algebraically equivalent scale expressions at a cusp and
 their adjacent representable values. It is accepted only
 if the density at the stored public coefficients, evaluated in the
 certificate's own standardization (which maps the knot to zero), agrees with
@@ -409,8 +433,9 @@ search storage is bounded by the certificate budget. Raising `iterlim`
 raises the work cap without introducing a fixed scale cutoff.
 
 The certificate is exact-arithmetic conditional on computed comparisons.
-Its practical floating-point allowances are $512\epsilon$ times the
-rescaled score magnitude and its exponent conditioning factor, and
+Its practical floating-point score allowances are $64\epsilon$ times the
+rescaled mode-score magnitude and its exponent conditioning factor
+($512\epsilon$ for the inverse-scale score), and
 $10^{-10}(n+|\ell|)$ per evaluated candidate ($10^{-7}(n+|\ell|)$ for
 $\nu<1$, allowing for the cusp's sensitivity to mode reconstruction).
 Overlapping likelihood allowances or an uncertain weighted-median slope
@@ -420,8 +445,10 @@ failed coordinate reconstruction produce a numerical stop. The settled
 log-gamma moment helper used by d/p/q/r supplies the certificate's shift
 and scale; the historical all-free objective is unchanged.
 
-The certificate uses these fixed coefficient enclosures independently of
-`gradtol`, which continues to control the legacy numerical optimizers.
+The fixed-shape/skew certificate propagates the requested C++ `tol`
+(R `gradtol` on this baseline) to its mode, scale and public-coordinate
+enclosures. Its global comparisons remain conditional on the stated arithmetic
+margins; the tolerance controls coefficient accuracy rather than those margins.
 Bisection uses at most $\min(\mathtt{iterlim},100000)$ solver steps;
 exhaustion is a numerical stop. Location bisection retains its finite
 witness when available; scale bracketing can stop before evaluating a

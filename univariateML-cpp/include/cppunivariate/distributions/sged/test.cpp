@@ -1113,3 +1113,284 @@ TEST_CASE("sged natural thin-tail precision region is explicit") {
   CHECK(std::isnan(cppunivariate::distributions::psged(-1.5461574810135936,0,1,3.8792797496374307,1e8,true,false)));
   CHECK(std::isnan(cppunivariate::distributions::psged(-1.5461574810135932,0,1,3.8792797496374307,1e8,true,false)));
 }
+
+// Independent 110-digit density stationary roots; see sged-acc evidence.
+TEST_CASE("sged tol-aware certified replay 6170") {
+ const std::vector<double> x{6.449948853914544e+149,5.314175321796899e+149,1.0643637622867162e+149,3.5784486371116986e+149,4.912947510231833e+149,-1.4843850018264121e+150,-9.29136424879163e+149,-1.0582726819365746e+149,-8.768581195832416e+149,-1.8968909122061467e+149,1.5580291981210541e+150,-1.2217397805116431e+150};
+ for(double tol : {1e-10,1e-11}) {
+  const auto f=cppunivariate::sged_mle({x.data(),x.size()},tol,200,NAN,NAN,3.4208324500711944,2.5890673965717057);
+  REQUIRE(f.status==cppunivariate::SgedStatus::Ok);
+  CHECK(f.certified);
+  CHECK(std::abs(f.mu-(-1.8564033054720792e+149))<=tol*8.724712386510601e+149);
+  CHECK(std::abs(f.sigma-(8.724712386510601e+149))<=tol*8.724712386510601e+149);
+ }
+}
+
+// Independent 110-digit density stationary roots; see sged-acc evidence.
+TEST_CASE("sged tol-aware certified replay 6158") {
+ const std::vector<double> x{0.6449948853914544,0.5314175321796899,0.10643637622867162,0.35784486371116986,0.4912947510231833,-1.4843850018264122,-0.929136424879163,-0.10582726819365745,-0.8768581195832416,-0.18968909122061467,1.5580291981210541,-1.2217397805116432};
+ for(double tol : {1e-10,1e-11}) {
+  const auto f=cppunivariate::sged_mle({x.data(),x.size()},tol,200,NAN,NAN,3.4208324500711944,2.5890673965717057);
+  REQUIRE(f.status==cppunivariate::SgedStatus::Ok);
+  CHECK(f.certified);
+  CHECK(std::abs(f.mu-(-0.18564033054720794))<=tol*0.8724712386510602);
+  CHECK(std::abs(f.sigma-(0.8724712386510602))<=tol*0.8724712386510602);
+ }
+}
+
+// Independent 110-digit density stationary roots; see sged-acc evidence.
+TEST_CASE("sged tol-aware certified replay 6190") {
+ const std::vector<double> x{0.6449948853914544,0.5314175321796899,0.10643637622867162,0.35784486371116986,0.4912947510231833,-1.4843850018264122,-0.929136424879163,-0.10582726819365745,-0.8768581195832416,-0.18968909122061467,1.5580291981210541,-1.2217397805116432};
+ for(double tol : {1e-10,1e-11}) {
+  const auto f=cppunivariate::sged_mle({x.data(),x.size()},tol,200,NAN,0.9390299202739361,3.4208324500711944,2.5890673965717057);
+  REQUIRE(f.status==cppunivariate::SgedStatus::Ok);
+  CHECK(f.certified);
+  CHECK(std::abs(f.mu-(-0.10791820017431634))<=tol*0.9390299202739361);
+ }
+}
+
+// Independent 110-digit density stationary roots; see sged-acc evidence.
+TEST_CASE("sged tol-aware certified replay 6176") {
+ const std::vector<double> x{0.6449948853914544,0.5314175321796899,0.10643637622867162};
+ for(double tol : {1e-10,1e-11}) {
+  const auto f=cppunivariate::sged_mle({x.data(),x.size()},tol,200,-0.032496865700421936,NAN,3.4208324500711944,2.5890673965717057);
+  REQUIRE(f.status==cppunivariate::SgedStatus::Ok);
+  CHECK(f.certified);
+  CHECK(std::abs(f.sigma-(0.4448090663293896))<=tol*0.4448090663293896);
+ }
+}
+
+// Independent 110-digit density stationary roots; see sged-acc evidence.
+TEST_CASE("sged tol-aware certified replay 6184") {
+ const std::vector<double> x{0.999999999998,0.999999999999,1.0,1.000000000001,1.000000000003};
+ for(double tol : {1e-10,1e-11}) {
+  const auto f=cppunivariate::sged_mle({x.data(),x.size()},tol,200,-0.032496865700421936,NAN,3.4208324500711944,2.5890673965717057);
+  REQUIRE(f.status==cppunivariate::SgedStatus::Ok);
+  CHECK(f.certified);
+  CHECK(std::abs(f.sigma-(0.8676541171006674))<=tol*0.8676541171006674);
+ }
+}
+
+// Independent 110-digit density stationary roots; see sged-acc evidence.
+TEST_CASE("sged tol-aware certified replay 6181") {
+ const std::vector<double> x{0.10643637622845875,0.10643637622856518,0.10643637622867162,0.10643637622877807,0.10643637622899094};
+ for(double tol : {1e-10,1e-11}) {
+  const auto f=cppunivariate::sged_mle({x.data(),x.size()},tol,200,-0.032496865700421936,NAN,3.4208324500711944,2.5890673965717057);
+  REQUIRE(f.status==cppunivariate::SgedStatus::Ok);
+  CHECK(f.certified);
+  CHECK(std::abs(f.sigma-(0.11675192764884629))<=tol*0.11675192764884629);
+ }
+}
+
+// Independent 110-digit density stationary roots; see sged-acc evidence.
+TEST_CASE("sged tol-aware certified replay 6183") {
+ const std::vector<double> x{0.99999998,0.99999999,1.0,1.00000001,1.00000003};
+ for(double tol : {1e-10,1e-11}) {
+  const auto f=cppunivariate::sged_mle({x.data(),x.size()},tol,200,-0.032496865700421936,NAN,3.4208324500711944,2.5890673965717057);
+  REQUIRE(f.status==cppunivariate::SgedStatus::Ok);
+  CHECK(f.certified);
+  CHECK(std::abs(f.sigma-(0.8676541187811906))<=tol*0.8676541187811906);
+ }
+}
+
+// Independent 110-digit density stationary roots; see sged-acc evidence.
+TEST_CASE("sged tol-aware certified replay 6189") {
+ const std::vector<double> x{0.10643616335591917,0.1064362697922954,0.10643637622867162,0.10643648266504785,0.10643658910142409};
+ for(double tol : {1e-10,1e-11}) {
+  const auto f=cppunivariate::sged_mle({x.data(),x.size()},tol,200,-0.032496865700421936,NAN,3.4208324500711944,2.5890673965717057);
+  REQUIRE(f.status==cppunivariate::SgedStatus::Ok);
+  CHECK(f.certified);
+  CHECK(std::abs(f.sigma-(0.11675192764893079))<=tol*0.11675192764893079);
+ }
+}
+
+// Independent 110-digit density stationary roots; see sged-acc evidence.
+TEST_CASE("sged tol-aware certified replay 6204") {
+ const std::vector<double> x{0.6449948853914544,0.5314175321796899,0.10643637622867162,0.35784486371116986,1000001.5580291981};
+ for(double tol : {1e-10,1e-11}) {
+  const auto f=cppunivariate::sged_mle({x.data(),x.size()},tol,200,NAN,0.9390299202739361,3.4208324500711944,2.5890673965717057);
+  REQUIRE(f.status==cppunivariate::SgedStatus::Ok);
+  CHECK(f.certified);
+  CHECK(std::abs(f.mu-(36929.00109201191))<=tol*36929.00109201191);
+ }
+}
+
+// Independent 110-digit density stationary roots; see sged-acc evidence.
+TEST_CASE("sged tol-aware certified replay 6179") {
+ const std::vector<double> x{0.10641508895342588,0.10642573259104876,0.10643637622867162,0.10644701986629448,0.10646830714154022};
+ for(double tol : {1e-10,1e-11}) {
+  const auto f=cppunivariate::sged_mle({x.data(),x.size()},tol,200,-0.032496865700421936,NAN,3.4208324500711944,2.5890673965717057);
+  REQUIRE(f.status==cppunivariate::SgedStatus::Ok);
+  CHECK(f.certified);
+  CHECK(std::abs(f.sigma-(0.11675371803079385))<=tol*0.11675371803079385);
+ }
+}
+
+// Independent 110-digit density stationary roots; see sged-acc evidence.
+TEST_CASE("sged tol-aware certified replay 6174") {
+ const std::vector<double> x{0.6449948853914544,0.5314175321796899,0.10643637622867162,0.35784486371116986,0.4912947510231833,-1.4843850018264122,-0.929136424879163,-0.10582726819365745,-0.8768581195832416,-0.18968909122061467,1.5580291981210541,-1.2217397805116432};
+ for(double tol : {1e-10,1e-11}) {
+  const auto f=cppunivariate::sged_mle({x.data(),x.size()},tol,200,-0.032496865700421936,NAN,3.4208324500711944,2.5890673965717057);
+  REQUIRE(f.status==cppunivariate::SgedStatus::Ok);
+  CHECK(f.certified);
+  CHECK(std::abs(f.sigma-(0.9541889839143239))<=tol*0.9541889839143239);
+ }
+}
+
+// Independent 110-digit density stationary roots; see sged-acc evidence.
+TEST_CASE("sged tol-aware certified replay 6175") {
+ const std::vector<double> x{0.6449948853914544,0.5314175321796899};
+ for(double tol : {1e-10,1e-11}) {
+  const auto f=cppunivariate::sged_mle({x.data(),x.size()},tol,200,-0.032496865700421936,NAN,3.4208324500711944,2.5890673965717057);
+  REQUIRE(f.status==cppunivariate::SgedStatus::Ok);
+  CHECK(f.certified);
+  CHECK(std::abs(f.sigma-(0.5248453057248756))<=tol*0.5248453057248756);
+ }
+}
+
+// Independent 110-digit density stationary roots; see sged-acc evidence.
+TEST_CASE("sged tol-aware certified replay 6078") {
+ const std::vector<double> x{0.6449948853914544,0.5314175321796899,0.10643637622867162,0.35784486371116986,0.4912947510231833,-1.4843850018264122,-0.929136424879163,-0.10582726819365745,-0.8768581195832416,-0.18968909122061467,1.5580291981210541,-1.2217397805116432};
+ for(double tol : {1e-10}) {
+  const auto f=cppunivariate::sged_mle({x.data(),x.size()},tol,200,-0.032496865700421936,0.9390299202739361,3.4208324500711944,NAN);
+  REQUIRE(f.status==cppunivariate::SgedStatus::Ok);
+  CHECK(f.certified);
+  CHECK(std::abs(f.xi-(2.3352191509463136))<=tol*2.3352191509463136);
+ }
+}
+
+// Independent 110-digit density stationary roots; see sged-acc evidence.
+TEST_CASE("sged tol-aware certified replay 6177") {
+ const std::vector<double> x{0.6449948853914544,0.5314175321796899,0.10643637622867162,0.35784486371116986,0.4912947510231833};
+ for(double tol : {1e-10,1e-11}) {
+  const auto f=cppunivariate::sged_mle({x.data(),x.size()},tol,200,-0.032496865700421936,NAN,3.4208324500711944,2.5890673965717057);
+  REQUIRE(f.status==cppunivariate::SgedStatus::Ok);
+  CHECK(f.certified);
+  CHECK(std::abs(f.sigma-(0.42460608181086934))<=tol*0.42460608181086934);
+ }
+}
+
+// Independent 110-digit density stationary roots; see sged-acc evidence.
+TEST_CASE("sged tol-aware certified replay 6187") {
+ const std::vector<double> x{100000000.64499488,100000000.53141753,100000000.10643637,100000000.35784486,100000000.49129476,99999998.515615,99999999.07086357,99999999.89417273,99999999.12314188,99999999.81031092,100000001.5580292,99999998.77826022};
+ for(double tol : {1e-10,1e-11}) {
+  const auto f=cppunivariate::sged_mle({x.data(),x.size()},tol,200,-0.032496865700421936,NAN,3.4208324500711944,2.5890673965717057);
+  REQUIRE(f.status==cppunivariate::SgedStatus::Ok);
+  CHECK(f.certified);
+  CHECK(std::abs(f.sigma-(84034552.10353352))<=tol*84034552.10353352);
+ }
+}
+
+// Independent 110-digit density stationary roots; see sged-acc evidence.
+TEST_CASE("sged tol-aware certified replay 6182") {
+ const std::vector<double> x{0.9998,0.9999,1.0,1.0001,1.0003};
+ for(double tol : {1e-10,1e-11}) {
+  const auto f=cppunivariate::sged_mle({x.data(),x.size()},tol,200,-0.032496865700421936,NAN,3.4208324500711944,2.5890673965717057);
+  REQUIRE(f.status==cppunivariate::SgedStatus::Ok);
+  CHECK(f.certified);
+  CHECK(std::abs(f.sigma-(0.8676709420096901))<=tol*0.8676709420096901);
+ }
+}
+
+// Independent 110-digit density stationary roots; see sged-acc evidence.
+TEST_CASE("sged tol-aware certified replay 6186") {
+ const std::vector<double> x{6.449948853914544e+149,5.314175321796899e+149,1.0643637622867162e+149,3.5784486371116986e+149,4.912947510231833e+149,-1.4843850018264121e+150,-9.29136424879163e+149,-1.0582726819365746e+149,-8.768581195832416e+149,-1.8968909122061467e+149,1.5580291981210541e+150,-1.2217397805116431e+150};
+ for(double tol : {1e-10,1e-11}) {
+  const auto f=cppunivariate::sged_mle({x.data(),x.size()},tol,200,-0.032496865700421936,NAN,3.4208324500711944,2.5890673965717057);
+  REQUIRE(f.status==cppunivariate::SgedStatus::Ok);
+  CHECK(f.certified);
+  CHECK(std::abs(f.sigma-(9.728626229296805e+149))<=tol*9.728626229296805e+149);
+ }
+}
+
+// Independent 110-digit density stationary roots; see sged-acc evidence.
+TEST_CASE("sged tol-aware certified replay 6188") {
+ const std::vector<double> x{0.6449948853914544,0.5314175321796899,0.10643637622867162,0.35784486371116986,1000001.5580291981};
+ for(double tol : {1e-10,1e-11}) {
+  const auto f=cppunivariate::sged_mle({x.data(),x.size()},tol,200,-0.032496865700421936,NAN,3.4208324500711944,2.5890673965717057);
+  REQUIRE(f.status==cppunivariate::SgedStatus::Ok);
+  CHECK(f.certified);
+  CHECK(std::abs(f.sigma-(432041.2882245153))<=tol*432041.2882245153);
+ }
+}
+
+TEST_CASE("sged exact-coefficient logLik seam replay 6154") {
+ const std::vector<double> x{6.449948853914544e+149,5.314175321796899e+149,1.0643637622867162e+149,3.5784486371116986e+149,4.912947510231833e+149,-1.4843850018264121e+150,-9.29136424879163e+149,-1.0582726819365746e+149,-8.768581195832416e+149,-1.8968909122061467e+149,1.5580291981210541e+150,-1.2217397805116431e+150};
+ const auto r=cppunivariate::sged_mle({x.data(),x.size()},1e-10,200,-0.032496865700421936,0.9390299202739361,NAN,2.5890673965717057);
+ REQUIRE(r.status==cppunivariate::SgedStatus::Ok);
+ double ll=0;
+ for(double v:x)ll+=cppunivariate::distributions::dsged(v,r.mu,r.sigma,r.nu,r.xi,true);
+ CHECK(std::abs(r.logLik-ll)<=1e-10*std::max(1.0,std::abs(ll)));
+ CHECK(std::abs(r.logLik-(-3.8672210466242833e+151))<=1e-10*3.8672210466242833e+151);
+}
+
+TEST_CASE("sged smooth subunit scale uses surviving derivative enclosure") {
+ const std::vector<double> x{-3,-1,-.2,0,.3,.4,2};
+ // Independent 110-digit derivative root, not an objective-value minimum.
+ const double reference=1.4916863638394512395771637229847117165;
+ for(double tol:{1e-8,1e-10}) {
+  const auto r=cppunivariate::sged_mle({x.data(),x.size()},tol,200,.1,NAN,.9,1.3);
+  REQUIRE(r.status==cppunivariate::SgedStatus::Ok);
+  CHECK(r.certified);
+  CHECK(std::abs(r.sigma-reference)<=tol*reference);
+  CHECK(std::abs(r.logLik-(-12.78171688761074417121611427950297))<=1e-10*12.781716887610744);
+ }
+}
+
+TEST_CASE("sged default-tolerance cusp likelihood has its one-sided allowance") {
+ const std::vector<double> x{-3,-1,-.2,0,.3,.4,2};
+ for(double nu:{.3,.5,.9})for(double xi:{.3,1.3,3.}) {
+  const auto r=cppunivariate::sged_mle({x.data(),x.size()},1e-10,200,.1,NAN,nu,xi);
+  REQUIRE(r.status==cppunivariate::SgedStatus::Ok);
+  CHECK(r.certified);
+  double ll=0;for(double v:x)ll+=dist::dsged(v,r.mu,r.sigma,nu,xi,true);
+  CHECK(ll<=r.logLik+1e-12*std::max(1.0,std::abs(r.logLik)));
+  CHECK(r.logLik-ll<=x.size()*std::pow(64*std::numeric_limits<double>::epsilon(),nu));
+ }
+}
+
+TEST_CASE("sged closed-form scale does not certify subspacing tolerance") {
+ // The exact scale is sqrt(14/3), whose binary64 rounding misses 1e-20.
+ const std::vector<double> x{-3,-1,2};
+ const auto r=cppunivariate::sged_mle({x.data(),x.size()},1e-20,200,0,NAN,2,1);
+ CHECK(r.status!=cppunivariate::SgedStatus::Ok);
+ CHECK(r.accuracy_failure);
+}
+
+TEST_CASE("sged subunit logLik reports the ideal maximum") {
+ // Independent 110-digit density at the exact x=2 cusp scale.
+ const std::vector<double> x{-3,-1,-.2,0,.3,.4,2};
+ const auto r=cppunivariate::sged_mle({x.data(),x.size()},1e-10,200,.1,NAN,.5,.3);
+ REQUIRE(r.status==cppunivariate::SgedStatus::Ok);
+ CHECK(r.certified);
+ CHECK(std::abs(r.logLik-(-14.05912276616022571831211972695625))<=1e-10*14.059122766160226);
+}
+
+TEST_CASE("sged cell projection preserves the maximum with loose coefficient tolerance") {
+ // Two separated scale maxima: log(R)=2(1-1/R), nu=1/2.
+ // A loose coefficient tolerance must not permit evaluating their hull gap.
+ double lo=4,hi=6;
+ for(int j=0;j<60;++j){const double t=(lo+hi)/2;if(std::log(t)>2*(1-1/t))hi=t;else lo=t;}
+ const double t=(lo+hi)/2,k=2*std::sqrt(t-1)/t,xi=std::sqrt(1+k*k/6);
+ const std::vector<double> x{-1,-1,-1};
+ const auto r=cppunivariate::sged_mle({x.data(),x.size()},10,400,0,NAN,.5,xi);
+ REQUIRE(r.status==cppunivariate::SgedStatus::CertificateFailure);
+ CHECK_FALSE(r.certified);
+ CHECK(r.stop_detail.comparison_tie);
+ REQUIRE(r.stop_detail.candidates.size()>=2);
+ // Exact gamma identities give the likelihood at the tied cusp maximum.
+ const double expected=3*std::log(3*(xi*xi-1)/(xi*xi+1));
+ CHECK(std::abs(r.logLik-expected)<=1e-10*std::max(1.0,std::abs(expected)));
+}
+
+TEST_CASE("sged loose tolerance cannot certify a displaced public mean") {
+ // Independent 110-digit root of the two-point convex-power score, sd held.
+ const std::vector<double> x{0,1e100};
+ const double mean=1.00487215154858971444308151029017;
+ const auto r=cppunivariate::sged_mle({x.data(),x.size()},10,200,NAN,1,1.01,100);
+ if(r.status==cppunivariate::SgedStatus::Ok)
+  CHECK(std::abs(r.mu-mean)<=10*mean);
+ else
+  CHECK((r.status==cppunivariate::SgedStatus::CertificateFailure ||
+         r.status==cppunivariate::SgedStatus::BfgsFailure));
+}
