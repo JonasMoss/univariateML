@@ -224,6 +224,7 @@ if (nzchar(DISTRIBUTIONS_DIR) && dir.exists(DISTRIBUTIONS_DIR)) {
   golden_files <- Sys.glob(file.path(DISTRIBUTIONS_DIR, "*", "golden.json"))
 
   for (f in golden_files) {
+    if (!length(umvl_filter_families(basename(dirname(f))))) next
     g <- jsonlite::fromJSON(f, simplifyDataFrame = FALSE)
     test_that(paste0("golden: ", g$id), {
       # Frozen datasets remain valid across sampler changes. RNG reproducibility

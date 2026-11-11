@@ -1,4 +1,5 @@
-import test from 'node:test';
+import {selectedFamily} from './test-register.mjs';
+import test from './test-register.mjs';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
@@ -7,6 +8,7 @@ import create from './index.mjs';
 const api=await create();
 const golden=id=>JSON.parse(readFileSync(new URL(`../../univariateML-cpp/include/cppunivariate/distributions/${id}/golden.json`,import.meta.url)));
 for(const id of ['norm','gamma','beta','pois','exp','lnorm','betapr','binom','snorm','sstd','huber','pig','gpd','gev']) {
+ if(!selectedFamily(id)) continue;
  test(`covariance native agreement: ${id}`,()=>{
   const g=golden(id), x=new Float64Array(g.data);
   const holds=[{},...Object.keys(g.estimates).map(name=>({[name]:g.estimates[name]})),g.estimates];

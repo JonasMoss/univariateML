@@ -1,0 +1,13 @@
+{
+  "baseline": "200b501b",
+  "repository_errors": 45,
+  "unchanged_error_source_sha256": {
+    "dev/research/evaluations/2026-11-03-boundary-lit-report.md": "cd351c4120a8ba7d1181ac10498c470cbddfce532947ab4b019380224c24ba3e",
+    "dev/research/evaluations/2026-11-07-fit-audit-data/static-inventory.md": "34ae937b7ec2783016dffa90ee33595a761cceecf62c26efa9f63214ad889c1d",
+    "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md": "b8f1c71407be40dd591791b52c669386ddd237b9d0b3465d7c375b5f15915859",
+    "dev/research/evaluations/2026-11-10-defective-limit-lit-report.md": "6b8802d54274284d216794e72ae45f6bf962dd0add2c161350b025deb44e1cd8",
+    "dev/research/evaluations/2026-11-10-relaxed-likelihood-lit-report.md": "7b051da0cc97008955b843822a19b1fe722e2bb434bdbe3875eddf69d1725cf5",
+    "univariateML-cpp/include/cppunivariate/distributions/nbinom/README.md": "d904451e9b6df5a64fbb2a252a2e0a5d2538e5af168a589d0d4914733e231ab8",
+    "univariateML-cpp/notes/inference.md": "9843db90c9a907959bca5b1013da1d5b9379df11db218324d6ed1476601dd9d1"
+  }
+}

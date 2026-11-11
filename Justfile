@@ -18,6 +18,10 @@ export CCACHE_MAXSIZE := "8G"
 
 default: test
 
+# Explain and test changed families plus transitive header dependants.
+test-changed base="master" *args:
+    python3 dev/tools/test-changed.py {{base}} {{args}}
+
 # Wipe and rebuild univariateML-r/ from workspace sources.
 # UMVL_UNITY_GROUPS=0 selects per-family compilation for debugging; positive
 # values select the number of deterministic unity groups (default: 4).
@@ -197,7 +201,7 @@ js-build:
     bash bindings/js/build.sh
 
 js-test:
-    node --v8-pool-size=1 --test bindings/js/test.mjs
+    python3 bindings/js/run-tests.py
 
 # Derived site data from canonical dossiers (no authored second catalog).
 site-data:

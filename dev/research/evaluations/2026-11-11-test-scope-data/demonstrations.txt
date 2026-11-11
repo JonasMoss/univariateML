@@ -1,0 +1,5 @@
+Real working-tree edits; no git write commands.
+Leaf, reverse dependency, shared-core selection assertions passed.
+Broken family test detected; runner exit 8.
+All temporary source edits restored in finally.
+Complete selected-family C++/R/JS plan passed with the isolated leaf path list injected after restoring infrastructure.

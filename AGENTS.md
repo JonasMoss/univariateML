@@ -84,6 +84,7 @@ user-chosen length (finite mixtures, categorical).
 | command | what |
 |---|---|
 | `just cpp-test` | C++ ctest targets |
+| `just test-changed [base]` | changed families and transitive header dependants (default base: master) |
 | `just test` | default R tier (reserve all four CPU slots first) |
 | `just test-full` | exhaustive pre-merge suite with slow oracles |
 | `just quality [id ...]` | fitter goldens against symbolic densities and a multistart oracle |

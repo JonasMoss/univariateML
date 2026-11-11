@@ -31,6 +31,7 @@ test_that("generated d/p/q/r agree with independent truth tables", {
   metadata <- get("univariateML_metadata", ns)
   checked <- 0L
   for (folder in sort(list.dirs(directory, recursive = FALSE))) {
+    if (!length(umvl_filter_families(basename(folder)))) next
     id <- basename(folder)
     filename <- file.path(folder, "truth.json")
     # Stats families have no generated functions. Checking binding ownership
@@ -172,7 +173,7 @@ test_that("EMG retains its established R primitive stream", {
 })
 
 test_that("heavy-tail inverse samplers return finite quantiles on replayed uniforms", {
-  for (id in c("zeta", "yulesimon")) {
+  for (id in umvl_filter_families(c("zeta", "yulesimon"))) {
     r <- getFromNamespace(paste0("r",id), "univariateML")
     q <- getFromNamespace(paste0("q",id), "univariateML")
     shape <- if (id=="zeta") 1.1 else .1

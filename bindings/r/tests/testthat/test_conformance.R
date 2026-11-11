@@ -4,7 +4,7 @@ subsets <- function(x) lapply(0:(2^length(x)-1), function(mask)
   x[as.logical(intToBits(mask)[seq_along(x)])])
 
 test_that('parameter kinds, required messages and adapter signatures conform', {
-  for (id in names(univariateML_metadata)) {
+  for (id in umvl_filter_families(names(univariateML_metadata))) {
     meta <- univariateML_metadata[[id]]
     adapter <- getFromNamespace(paste0(id, '_'), 'univariateML')
     args <- formals(adapter)
@@ -51,7 +51,7 @@ test_that('every holdable subset fits golden data or gives a declared reason', {
   skip_unless_tier('dev')
   root <- Sys.getenv('UMVL_DISTRIBUTIONS_DIR')
   skip_if(!nzchar(root), 'no distribution goldens')
-  for (id in names(univariateML_metadata)) {
+  for (id in umvl_filter_families(names(univariateML_metadata))) {
     meta <- univariateML_metadata[[id]]
     g <- jsonlite::fromJSON(file.path(root,sub('^ml','',id),'golden.json'))
     estimates <- setNames(as.numeric(g$estimates),names(g$estimates))
@@ -133,7 +133,7 @@ test_that('TASK-118 required offers conform for every other held subset', {
   skip_unless_tier('dev')
   root <- Sys.getenv('UMVL_DISTRIBUTIONS_DIR')
   skip_if(!nzchar(root), 'no distribution goldens')
-  for (id in names(univariateML_metadata)) {
+  for (id in umvl_filter_families(names(univariateML_metadata))) {
     meta <- univariateML_metadata[[id]]
     if (!length(meta$required)) next
     g <- jsonlite::fromJSON(file.path(root,sub('^ml','',id),'golden.json'))
@@ -155,7 +155,7 @@ test_that('TASK-118 required offers conform for every other held subset', {
 })
 
 test_that('constant-collapse limits are recorded for free fits', {
-  for (id in c('mllnorm', 'mlinvgauss', 'mlinvgamma', 'mlweibull')) {
+  for (id in umvl_filter_families(c('mllnorm', 'mlinvgauss', 'mlinvgamma', 'mlweibull'))) {
     limits <- univariateML_metadata[[id]]$limits
     expect_true(any(vapply(limits, function(l)
       identical(l$kind, 'nonexistence') && is.null(l$fixed) &&
@@ -166,7 +166,7 @@ test_that('constant-collapse limits are recorded for free fits', {
  test_that('R6 normal-related collapse records match fitter statuses', {
   expected <- c(mltnorm='DegenerateData',mlsnorm='Unbounded',
     mlfoldnorm='Unbounded',mllgamma='Degenerate',mlllogis='Unbounded')
-  for (id in names(expected)) {
+  for (id in umvl_filter_families(names(expected))) {
     limits <- univariateML_metadata[[id]]$limits
     expect_true(any(vapply(limits,function(l)
       identical(l$status,unname(expected[id])) && identical(l$firmness,'proved') &&

@@ -1,0 +1,143 @@
+python3 dev/tools/test-changed.py master --dry-run
+/home/jonas/.bashrc: line 26: /home/jonas/.cargo/env: No such file or directory
+/home/jonas/.bash_profile: line 9: /home/jonas/.cargo/env: No such file or directory
+Base master; merge base 200b501b7eb2e30b6cdd224dfbb55fcd7f849179; tier dev
+Selected 99 families: bbinom, beta, betapr, bhatt, binom, bnbinom, burr, cauchy, cmb, cmp, dgamma, dlaplace, dnorm, dunif, dweibull, emg, exp, fatigue, foldnorm, fpareto, frechet, gamma, gb2, ged, genbeta, geom, gev, gompertz, gpd, gumbel, hcauchy, hnorm, ht, huber, hyper, invburr, invexp, invgamma, invgauss, invparalogis, invpareto, invtrgamma, invweibull, kumar, laplace, lgamma, lgser, llogis, lnorm, logis, logitnorm, lomax, lst, naka, nbinom, nhyper, norm, nsbeta, paralogis, pareto, pareto2, pareto3, pareto4, pig, pois, power, rayleigh, sged, sgomp, skellam, slash, sn, snorm, sstd, st, std, tbinom, tlambda, tnorm, tpois, trgamma, triang, unif, weibull, yulesimon, zeta, zib, zinb, zip, zipf, zmbinom, zmgeom, zmlogarithmic, zmnbinom, zmpois, ztbinom, ztgeom, ztnbinom, ztpois
+  bbinom: shared implementation/build effects
+  beta: shared implementation/build effects
+  betapr: shared implementation/build effects
+  bhatt: shared implementation/build effects
+  binom: shared implementation/build effects
+  bnbinom: shared implementation/build effects
+  burr: shared implementation/build effects
+  cauchy: shared implementation/build effects
+  cmb: shared implementation/build effects
+  cmp: shared implementation/build effects
+  dgamma: shared implementation/build effects
+  dlaplace: shared implementation/build effects
+  dnorm: shared implementation/build effects
+  dunif: shared implementation/build effects
+  dweibull: shared implementation/build effects
+  emg: shared implementation/build effects
+  exp: shared implementation/build effects
+  fatigue: shared implementation/build effects
+  foldnorm: shared implementation/build effects
+  fpareto: shared implementation/build effects
+  frechet: shared implementation/build effects
+  gamma: shared implementation/build effects
+  gb2: shared implementation/build effects
+  ged: shared implementation/build effects
+  genbeta: shared implementation/build effects
+  geom: shared implementation/build effects
+  gev: shared implementation/build effects
+  gompertz: shared implementation/build effects
+  gpd: shared implementation/build effects
+  gumbel: shared implementation/build effects
+  hcauchy: shared implementation/build effects
+  hnorm: shared implementation/build effects
+  ht: shared implementation/build effects
+  huber: shared implementation/build effects
+  hyper: shared implementation/build effects
+  invburr: shared implementation/build effects
+  invexp: shared implementation/build effects
+  invgamma: shared implementation/build effects
+  invgauss: shared implementation/build effects
+  invparalogis: shared implementation/build effects
+  invpareto: shared implementation/build effects
+  invtrgamma: shared implementation/build effects
+  invweibull: shared implementation/build effects
+  kumar: shared implementation/build effects
+  laplace: shared implementation/build effects
+  lgamma: shared implementation/build effects
+  lgser: shared implementation/build effects
+  llogis: shared implementation/build effects
+  lnorm: shared implementation/build effects
+  logis: shared implementation/build effects
+  logitnorm: shared implementation/build effects
+  lomax: shared implementation/build effects
+  lst: shared implementation/build effects
+  naka: shared implementation/build effects
+  nbinom: shared implementation/build effects
+  nhyper: shared implementation/build effects
+  norm: shared implementation/build effects
+  nsbeta: shared implementation/build effects
+  paralogis: shared implementation/build effects
+  pareto: shared implementation/build effects
+  pareto2: shared implementation/build effects
+  pareto3: shared implementation/build effects
+  pareto4: shared implementation/build effects
+  pig: shared implementation/build effects
+  pois: shared implementation/build effects
+  power: shared implementation/build effects
+  rayleigh: shared implementation/build effects
+  sged: shared implementation/build effects
+  sgomp: shared implementation/build effects
+  skellam: shared implementation/build effects
+  slash: shared implementation/build effects
+  sn: shared implementation/build effects
+  snorm: shared implementation/build effects
+  sstd: shared implementation/build effects
+  st: shared implementation/build effects
+  std: shared implementation/build effects
+  tbinom: shared implementation/build effects
+  tlambda: shared implementation/build effects
+  tnorm: shared implementation/build effects
+  tpois: shared implementation/build effects
+  trgamma: shared implementation/build effects
+  triang: shared implementation/build effects
+  unif: shared implementation/build effects
+  weibull: shared implementation/build effects
+  yulesimon: shared implementation/build effects
+  zeta: shared implementation/build effects
+  zib: shared implementation/build effects
+  zinb: shared implementation/build effects
+  zip: shared implementation/build effects
+  zipf: shared implementation/build effects
+  zmbinom: shared implementation/build effects
+  zmgeom: shared implementation/build effects
+  zmlogarithmic: shared implementation/build effects
+  zmnbinom: shared implementation/build effects
+  zmpois: shared implementation/build effects
+  ztbinom: shared implementation/build effects
+  ztgeom: shared implementation/build effects
+  ztnbinom: shared implementation/build effects
+  ztpois: shared implementation/build effects
+Shared effects: running ordinary recipes without family filters.
+  shared: Justfile
+  shared: bindings/js/fit-test.mjs
+  shared: bindings/js/package.json
+  shared: bindings/js/run-tests.py
+  shared: bindings/js/stop-test.mjs
+  shared: bindings/js/test-groups/group-00.mjs
+  shared: bindings/js/test-groups/group-01.mjs
+  shared: bindings/js/test-groups/group-02.mjs
+  shared: bindings/js/test-groups/group-03.mjs
+  shared: bindings/js/test-groups/group-04.mjs
+  shared: bindings/js/test-groups/group-05.mjs
+  shared: bindings/js/test-groups/group-06.mjs
+  shared: bindings/js/test-groups/group-07.mjs
+  shared: bindings/js/test-groups/group-08.mjs
+  shared: bindings/js/test-groups/group-09.mjs
+  shared: bindings/js/test-groups/group-10.mjs
+  shared: bindings/js/test-groups/group-11.mjs
+  shared: bindings/js/test-groups/group-12.mjs
+  shared: bindings/js/test-groups/group-13.mjs
+  shared: bindings/js/test-groups/group-14.mjs
+  shared: bindings/js/test-groups/group-15.mjs
+  shared: bindings/js/test-register.mjs
+  shared: bindings/js/test.mjs
+  shared: bindings/js/vcov-test.mjs
+  shared: bindings/r/scripts/test_local.R
+  shared: bindings/r/tests/testthat/helper-02-families.R
+  shared: bindings/r/tests/testthat/test-audit-input.R
+  shared: bindings/r/tests/testthat/test-diagnostics.R
+  shared: bindings/r/tests/testthat/test-generated-dpqr.R
+  shared: bindings/r/tests/testthat/test_conformance.R
+  shared: bindings/r/tests/testthat/test_frozen.R
+  shared: bindings/r/tests/testthat/test_golden_regression.R
+  shared: bindings/r/tests/testthat/test_input_checks.R
+  shared: bindings/r/tests/testthat/test_restricted.R
+  shared: bindings/r/tests/testthat/test_scale_equivariance.R
+  shared: dev/tools/r-assembly-reproducibility.sh
+  shared: dev/tools/test-changed.py
+  shared: dev/tools/test-test-changed.py

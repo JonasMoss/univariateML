@@ -15,7 +15,7 @@ for run in a b; do
   rsync -a --delete --prune-empty-dirs --include='*/' --include='*.hpp' --exclude='*' \
     "$root/univariateML-cpp/include/cppunivariate" "$UMVL_PKG_DIR/inst/include/"
   (cd "$UMVL_PKG_DIR" && Rscript -e 'Rcpp::compileAttributes()')
-  (cd "$root/bindings/r" && Rscript scripts/codegen_metadata.R && Rscript scripts/codegen_wrappers.R)
+  (cd "$root/bindings/r" && Rscript scripts/codegen_metadata.R && Rscript scripts/codegen_wrappers.R && Rscript scripts/codegen_links.R)
   # Use the production loader (including documented datasets).
   (cd "$UMVL_PKG_DIR" && Rscript -e 'roxygen2::roxygenise()')
   # These compiler products are excluded by R CMD build too; compare sources.
@@ -24,3 +24,9 @@ done
 diff -ru "$root/build/scratch/repro-a" "$root/build/scratch/repro-b" \
   > "$root/build/scratch/reproducibility.diff"
 echo 'Two independent generations are byte-identical (diff -ru exit 0).'
+
+if [ -n "${UMVL_REPRO_COMPARE:-}" ]; then
+  diff -ru --exclude='*.o' --exclude='*.so' "$UMVL_REPRO_COMPARE" "$root/build/scratch/repro-a" \
+    > "$root/build/scratch/incremental-reproducibility.diff"
+  echo 'Existing package sources equal the pristine regeneration (compiler products excluded).'
+fi

@@ -1,0 +1,10 @@
+{'label': 'r-warm-wipe', 'command': ['bash', 'dev/tools/measure-r-rebuild.sh', 'warm-wipe'], 'groups': 4, 'seconds': 39.16}
+{'label': 'r-edit-wipe', 'command': ['bash', 'dev/tools/measure-r-rebuild.sh', 'edit-wipe'], 'groups': 4, 'seconds': 153.59}
+{'label': 'r-reset-unity', 'command': ['bash', 'dev/tools/r-incremental-regen.sh'], 'groups': 4, 'seconds': 41.04}
+{'label': 'r-edit-incremental-unity', 'command': ['bash', 'dev/tools/r-incremental-regen.sh'], 'groups': 4, 'seconds': 146.56}
+{'label': 'r-identity-unity', 'command': ['bash', 'dev/tools/r-assembly-reproducibility.sh'], 'groups': 4, 'seconds': 154.06}
+{'label': 'r-per-family-first', 'command': ['bash', 'dev/tools/measure-r-rebuild.sh', 'per-family-first'], 'groups': 0, 'seconds': 1173.9}
+{'label': 'r-edit-wipe-family', 'command': ['bash', 'dev/tools/measure-r-rebuild.sh', 'edit-wipe-family'], 'groups': 0, 'seconds': 33.02}
+{'label': 'r-reset-family', 'command': ['bash', 'dev/tools/r-incremental-regen.sh'], 'groups': 0, 'seconds': 24.54}
+{'label': 'r-edit-incremental-family', 'command': ['bash', 'dev/tools/r-incremental-regen.sh'], 'groups': 0, 'seconds': 29.72}
+{'label': 'r-identity-family', 'command': ['bash', 'dev/tools/r-assembly-reproducibility.sh'], 'groups': 0, 'seconds': 508.6}

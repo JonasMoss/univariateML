@@ -1,7 +1,7 @@
 test_that("all 99 families build, evaluate, simulate and hold coefficients", {
   expect_length(univariateML_metadata, 99L)
   directory <- Sys.getenv("UMVL_DISTRIBUTIONS_DIR")
-  for (name in names(univariateML_metadata)) {
+  for (name in umvl_filter_families(names(univariateML_metadata))) {
     meta <- univariateML_metadata[[name]]
     fn <- get(name, mode = "function")
     theta <- stats::setNames(as.list(meta$simulate), meta$names)

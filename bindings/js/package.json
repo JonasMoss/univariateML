@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "build": "bash build.sh",
-    "test": "node --v8-pool-size=1 --test test.mjs"
+    "test": "python3 run-tests.py"
   },
   "exports": {
     ".": {

@@ -1,5 +1,5 @@
 import {readFileSync} from 'node:fs';
-import test from 'node:test';
+import test from './test-register.mjs';
 import assert from 'node:assert/strict';
 import create from './index.mjs';
 const api = await create();
