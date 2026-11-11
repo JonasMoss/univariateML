@@ -3,7 +3,7 @@
 #include "cppunivariate/distributions/bnbinom/mle.hpp"
 #include <limits>
 namespace umvl_binding {
-inline FitResult fit_bnbinom(cppunivariate::ispan x, Held size_arg = {}, Held alpha_arg = {}, Held beta_arg = {}, double gradtol=1e-8, int iterlim=600) {
+inline FitResult fit_bnbinom(cppunivariate::ispan x, Held size_arg = {}, Held alpha_arg = {}, Held beta_arg = {}, double gradtol=1e-10, int iterlim=600) {
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
   const Held size = size_arg;
@@ -22,6 +22,7 @@ inline FitResult fit_bnbinom(cppunivariate::ispan x, Held size_arg = {}, Held al
     size.supplied?size.value:nan,
     alpha.supplied?alpha.value:nan,
     beta.supplied?beta.value:nan);
+  if(fit.accuracy_failure)return fail("bnbinom numerical accuracy failure: final Newton refinement did not converge to the requested coefficient tolerance; increase iterlim or inspect conditioning.");
   std::string stop_kind;
   switch(fit.status) {
     case cppunivariate::BnbinomStatus::NegativeBinomialLimit: stop_kind="limit";break;
@@ -67,9 +68,10 @@ inline FitResult fit_bnbinom(cppunivariate::ispan x, Held size_arg = {}, Held al
     out.extra.emplace_back("certified",fit.certified?1.:0.);
     if(std::isfinite(fit.global_interval[0])) {
       out.extra_vectors.emplace_back("global_loglik_interval",std::vector<double>{fit.global_interval[0],fit.global_interval[1]});
-      const double radius=std::min(gradtol,1e-8)*.25;
-      out.extra_vectors.emplace_back("global_coefficient_lower",std::vector<double>{fit.size*(1-radius),fit.alpha*(1-radius),fit.beta*(1-radius)});
-      out.extra_vectors.emplace_back("global_coefficient_upper",std::vector<double>{fit.size*(1+radius),fit.alpha*(1+radius),fit.beta*(1+radius)});
+      const double radius=fit.global_coefficient_radius;
+      const auto& center=fit.global_coefficient_center;
+      out.extra_vectors.emplace_back("global_coefficient_lower",std::vector<double>{center[0]*(1-radius),center[1]*(1-radius),center[2]*(1-radius)});
+      out.extra_vectors.emplace_back("global_coefficient_upper",std::vector<double>{center[0]*(1+radius),center[1]*(1+radius),center[2]*(1+radius)});
     }
     if(std::isfinite(fit.profile_alpha[0])) {
       out.extra_vectors.emplace_back("profile_alpha_interval",std::vector<double>{fit.profile_alpha[0],fit.profile_alpha[1]});

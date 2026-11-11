@@ -6,6 +6,20 @@ entry stays, marked superseded. Design detail lives in the linked roadmap
 entries, reports and code; this file is the index of what was chosen.
 Active work lives on the board (`~/boards/univariateML`), not here.
 
+## 2026-11-09
+
+- **Uncertified fallback instead of refusals** (Jonas). When a certificate
+  cannot close a case on ordinary data (an unproved face or candidate
+  comparison, an unresolved sign, an exhausted certificate allowance), the fit
+  returns the search's successful result marked uncertified (C++ `certified`,
+  R logical attribute, JS 0/1). A fit stops only when the certificate proves
+  that result wrong, the search itself fails, or the mathematics proves a stop
+  (winning limit model, nonexistence, exact tie). "Legacy carries no weight"
+  means legacy results need not be kept as golden truth, not that they may be
+  replaced by refusals. Existing tests are not deleted or rewritten to fit new
+  stops. Families written before this rule are converted on the board
+  (TASK-168).
+
 ## 2026-11-08
 
 - **Discrete quantiles beyond 2^53 return the nearest representable value**

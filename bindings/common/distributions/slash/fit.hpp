@@ -2,7 +2,7 @@
 #include "../../fit.hpp"
 #include "cppunivariate/distributions/slash/mle.hpp"
 namespace umvl_binding {
-inline FitResult fit_slash(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg = {}, double reltol=1e-8, int iterlim=500) {
+inline FitResult fit_slash(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg = {}, double reltol=1e-10, int iterlim=500) {
   // Invalid controls remain ordinary errors, even if a legacy fitter reports
   // a statistical status before checking them.
   const auto classify = [&](FitResult out, const cppunivariate::StopDetail& detail,
@@ -24,6 +24,7 @@ inline FitResult fit_slash(cppunivariate::span x, Held mu_arg = {}, Held sigma_a
   const double f_mu=mu.supplied?mu.value:cppunivariate::special::kNaN;
   if(mu.supplied&&!std::isfinite(f_mu))return fail("Held mu must be finite.");
   const auto f=cppunivariate::slash_mle(x,reltol,iterlim,f_sigma,f_mu);
+  if(f.accuracy_failure)return fail("slash numerical accuracy failure: final Newton refinement did not converge to the requested coefficient tolerance; increase iterlim or inspect conditioning.");
   if(f.status==cppunivariate::SlashStatus::Unbounded)return nomle("Slash likelihood is unbounded: a value has more than half the sample mass.");
   if(f.status==cppunivariate::SlashStatus::CollapseLimit)return classify(fail("Slash likelihood selects scale collapse; no finite fit is returned."),{},"nomle",{},"");
   if(f.budget_exhausted)return classify(fail("Slash fit failed: check inputs, reltol and iterlim. Raising iterlim may resolve this stop."),f.stop_detail,"budget",{"mu","sigma"});

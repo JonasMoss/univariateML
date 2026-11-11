@@ -30,7 +30,7 @@ r:
   control:
     b: Optional fixed positive rate; `NULL` estimates it.
     eta: Optional fixed nonnegative shape; `NULL` estimates it.
-    reltol: Tolerance for the scalar profile searches.
+    reltol: "Relative accuracy of every free coefficient (default 1e-10)."
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
 log_density: log(b) - b*x - eta*exp(-b*x) + log(1 + eta*(1-exp(-b*x)))
 holds: []
@@ -138,3 +138,12 @@ The [positive-family analysis](../../../../../dev/research/evaluations/2026-10-2
 ## R notes
 
 The fitter compares candidates by directly subtracting the rate and shape contributions before adding their common log likelihood. To preserve ordinary-fit rounding on numerical plateaus, candidate differences within $8\epsilon n$ retain the historical ordering only when the full-likelihood floating-point spacing is also at most $8\epsilon n$, where $\epsilon$ is double precision machine epsilon. This tie margin stays absolute as the common likelihood grows. It prefers the attained `eta = 0` member only when its right shape score is nonpositive and its directly computed likelihood difference is at least $-10^{-8}n$. This absolute per-observation margin does not grow with the magnitude of the common log likelihood. Strict concavity proves the held-rate shape decision in exact arithmetic, conditional on the computed score comparison; floating-point comparisons use double precision. The compact profile subdivision checks joint search completeness using the bounds above. Constant samples with both coefficients free, and all-zero samples with `b` free, stop with an unbounded-likelihood error.
+
+Strict concavity in eta alone does not control joint coefficient accuracy:
+a rate error changes the conditional eta optimum through the mixed derivative
+of $\log(1+\eta(1-e^{-bx}))-\eta e^{-bx}$. A small conditional eta score
+therefore cannot by itself justify the reported rate and eta errors.
+
+With $\eta=0$ held, the rate has the closed form $n/\sum x_i$.
+The sum is compensated after scaling by the largest observation; repeated
+observations therefore do not accumulate a first-order summation bias.

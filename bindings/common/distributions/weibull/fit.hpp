@@ -6,7 +6,7 @@
 #include <cmath>
 #include <vector>
 namespace umvl_binding {
-inline FitResult fit_weibull(cppunivariate::span x, Held shape_arg = {}, Held scale_arg = {}, Held shape0 = {}, double reltol = 1.220703e-4, int iterlim = 100) {
+inline FitResult fit_weibull(cppunivariate::span x, Held shape_arg = {}, Held scale_arg = {}, Held shape0 = {}, double reltol = 1e-10, int iterlim = 100) {
   // Invalid controls remain ordinary errors, even if a legacy fitter reports
   // a statistical status before checking them.
   const auto classify = [&](FitResult out, const cppunivariate::StopDetail& detail,
@@ -44,6 +44,8 @@ inline FitResult fit_weibull(cppunivariate::span x, Held shape_arg = {}, Held sc
     }
   }
   auto res = cppunivariate::weibull_mle(x, reltol, iterlim, start, shape_held, scale_held);
+  if (res.status==cppunivariate::WeibullStatus::AccuracyFailure)
+    return stop_failure(fail("Weibull requested coefficient accuracy cannot be represented after rescaling."),{},"numerical",{"shape","scale"});
   if (res.status == cppunivariate::WeibullStatus::InvalidInput)
     return fail("Weibull requires nonempty positive finite data, valid held parameters, positive reltol and positive iterlim.");
   if (res.status == cppunivariate::WeibullStatus::Unbounded)

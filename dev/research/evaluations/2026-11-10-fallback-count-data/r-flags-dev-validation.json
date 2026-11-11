@@ -1,0 +1,26 @@
+{
+  "tier": "dev",
+  "workers": 1,
+  "families": [
+    "zib",
+    "ztbinom",
+    "zmbinom"
+  ],
+  "source_sha256": {
+    "univariateML-cpp/include/cppunivariate/distributions/zib/mle.hpp": "a9085598aa8709539679bdf990540098b50bc5e23c05aa9c8a13916f29191ce0",
+    "bindings/r/distributions/zib/test.R": "f0b7ae55e70aca87ca73127801f638210fd84172a006df1f6d82fed8c8ed8c7c",
+    "univariateML-cpp/include/cppunivariate/distributions/ztbinom/mle.hpp": "61281172cd8ea9eeb778e3eb292ae8e3ef832f45847343bb9c4c927a62d18726",
+    "bindings/r/distributions/ztbinom/test.R": "aea47e75b289b8bab5001f02f4401fb9c326466e12874300ba2c35860158bcb0",
+    "univariateML-cpp/include/cppunivariate/distributions/zmbinom/mle.hpp": "ceb8fc6095d4f1bd03f3e18a63ac892fb624cad68bd28ae20258adfa94f4698f",
+    "bindings/r/distributions/zmbinom/test.R": "b494d917cb45f6b0b38ee6e4ac0216c02f5c13a13a6188935f32c8efe4b91279"
+  },
+  "required_new_tests": [
+    "ztbinom does not certify a sub-machine probability target",
+    "a closed binomial mean respects the requested coefficient precision",
+    "zmbinom carries the zero-ratio precision flag"
+  ],
+  "new_tests_present": true,
+  "test_rows": 58,
+  "csv": "r-flags-dev-results.csv",
+  "isolated": true
+}

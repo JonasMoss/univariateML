@@ -1,0 +1,42 @@
+{
+  "index": 1025,
+  "initial_log_shape": 13.787170045381231,
+  "newton_corrections_first_8": [
+    9.833984948498971e-11,
+    2.7580628859496846e-13,
+    2.838602268440532e-13,
+    8.934808300151864e-14,
+    9.718030505635635e-14,
+    2.823599415514573e-13,
+    2.771289303873833e-13,
+    9.66595786646738e-14
+  ],
+  "newton_corrections_final_8": [
+    8.956549472111493e-14,
+    2.831211676877983e-13,
+    2.7714702153523994e-13,
+    9.701369432359294e-14,
+    2.825791428735555e-13,
+    9.103494375195569e-14,
+    2.76944411815971e-13,
+    2.754716538144258e-13
+  ],
+  "requested_tol": 1e-10,
+  "acceptance_margin": 16,
+  "measured_relative_error": 4.779198912696733e-13,
+  "strict_check": {
+    "goldens_passed": 11,
+    "replays_passed": 222,
+    "replays_stopped": 1,
+    "rule": "Require quadratic decrease against a fixed 16*double-epsilon floor; no two-small-corrections allowance."
+  },
+  "retained_result": {
+    "index": 1025,
+    "id": "dgamma",
+    "estimates": {
+      "shape": 972057.3125986661,
+      "rate": 0.9720518551425348
+    },
+    "error": ""
+  }
+}

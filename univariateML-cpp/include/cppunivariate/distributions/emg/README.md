@@ -206,3 +206,8 @@ For a free endpoint, `mlexp(x - min(x))` fits distances from the fitted
 endpoint. Held endpoints or rates require their conditional comparison.
 
 The dominating normal face uses the conditional normal fitter. Its large-shape envelope forms Gaussian residual moments after division by the largest residual.
+
+Near the normal face, normal scale and exponential rate can compensate
+while likelihood values round identically. In the negative normal-CDF tail,
+the common Gaussian quadratic terms must cancel before score evaluation.
+The location accuracy floor is the normal scale; `reltol` defaults to `1e-10`.

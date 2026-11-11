@@ -10,7 +10,7 @@
 namespace cppunivariate {
 inline constexpr double kHtNuLower = 1.0;
 
-enum class HtStatus { Ok, InvalidData, InvalidParameter, Unbounded, ScaleBoundary, NormalLimit, SearchFailure, IterationFailure };
+enum class HtStatus { Ok, InvalidData, InvalidParameter, Unbounded, ScaleBoundary, NormalLimit, SearchFailure, IterationFailure, AccuracyFailure };
 // `mu` defaults to NaN: `ht_mle_zero` and the search helpers below never set
 // it (they operate on already-translated data); the public `ht_mle` entry
 // point at the bottom of this file always fills it in before returning.
@@ -212,7 +212,7 @@ inline HtResult ht_mle_zero(span x, double held_nu = std::numeric_limits<double>
 // NaN requests estimation. The free endpoint is exactly min(x); its
 // free shape is restricted to nu>=1. Held nu values are preserved, while
 // holding mu exempts free nu from the restriction.
-inline HtResult ht_mle(span x, double mu, double nu, double sigma) {
+inline HtResult ht_accuracy_search(span x, double mu, double nu, double sigma) {
   const double nan = std::numeric_limits<double>::quiet_NaN();
   if (x.size() == 0) return {nan,nan,nan,0,HtStatus::InvalidData,0,nan};
   for (double v : x) if (!std::isfinite(v)) return {nan,nan,nan,0,HtStatus::InvalidData,0,nan};
@@ -242,3 +242,35 @@ inline HtResult ht_mle(span x, double mu, double nu, double sigma) {
 }
 
 } // namespace cppunivariate
+
+#include "accuracy.hpp"
+namespace cppunivariate {
+inline HtResult ht_mle(span x,double mu,double nu,double sigma) {
+  auto r=ht_accuracy_search(x,mu,nu,sigma);
+  if(r.status!=HtStatus::Ok)return r;
+  const double unit=r.sigma;
+  std::array<double,3> q{{std::log(r.nu),0,0}};
+  const std::array<bool,3> free{{std::isnan(nu)&&!(r.restricted&4u),std::isnan(sigma),false}};
+  const auto objective=[&](const std::array<accuracy_detail::Jet,3>& z) {
+    const auto df=accuracy_detail::exp(z[0]);
+    const auto normalizer=accuracy_detail::Jet(x.size())*(ht_detail::mode_correction(df)-z[1]);
+    accuracy_detail::JetSum terms;
+    for(double v:x)if(v>r.mu) {
+      const auto loga=accuracy_detail::Jet(2*std::log((static_cast<ExtendedReal>(v)-r.mu)/unit))-accuracy_detail::Jet(2)*z[1];
+      const auto t=loga-z[0];
+      if(t.v < -2.302585092994045684) {
+        const auto ratio=accuracy_detail::exp(t);
+        terms.add(-accuracy_detail::Jet(.5)*(accuracy_detail::exp(loga)+ratio+(df+accuracy_detail::Jet(1))*accuracy_detail::log1pmx(ratio)));
+      } else terms.add(-accuracy_detail::Jet(.5)*(df+accuracy_detail::Jet(1))*accuracy_detail::softplus(t));
+    }
+    return normalizer+terms.value;
+  };
+  if(!accuracy_detail::polish(q,free,1e-10,200,objective)){r.status=HtStatus::SearchFailure;return r;}
+  if(free[0])r.nu=std::exp(q[0]);
+  if(free[1])r.sigma=unit*std::exp(q[1]);
+  if(free[1]&&!accuracy_detail::scale_projection(r.sigma,unit,q[1],1e-10)){r.status=HtStatus::AccuracyFailure;return r;}
+  std::vector<double> y;for(double v:x)y.push_back(v-r.mu);
+  double logscale=std::log(r.sigma);r.logLik=ht_detail::profile({y.data(),y.size()},r.nu,logscale,true);
+  return r;
+}
+}

@@ -101,8 +101,8 @@ relations:
         shape2: beta
 fit:
   method: profile-search
-  certified: 'yes'
-  note: "bbinom/mle.hpp and acceptance.hpp: Fixed-size finite fits require a negative-curvature region, score-based enclosures transported to every free public shape, and strict tangent/chord exclusion outside that region. Binomial-limit stops use a signed uniform near-face bound; size-two saturated fits are algebraic. Certificates are conditional on computed comparisons with practical floating-point margins. Unresolved finite or face comparisons, coefficient precision and work limits stop with witnesses. Supported free-size fits retain their integer tail certificates; the unrestricted free-size fit is unsupported. See Details, Fixed-size coefficient acceptance."
+  certified: partial
+  note: "bbinom/mle.hpp and acceptance.hpp: Certified fixed-size finite fits require a negative-curvature region, score-based enclosures transported to every free public shape, and strict tangent/chord exclusion outside that region. Binomial-limit stops use a signed uniform near-face bound; size-two saturated fits are algebraic. Certificates are conditional on computed comparisons with practical floating-point margins. Unclosed finite or face comparisons, coefficient inclusion and certificate work limits return the successful finite search result uncertified; a failed local solve without a candidate stops. Supported free-size fits retain their integer tail certificates; the unrestricted free-size fit is unsupported. See Details, Fixed-size coefficient acceptance."
 areas:
 - counts and ecology
 classification: specialist
@@ -196,8 +196,7 @@ encloses its public coefficients as described below. For example, at $N=2$, freq
 have the exact finite fit $\alpha=\beta=25000$, although its improvement is
 below the former face preference. At $N=1$ every pair with the same shape
 ratio gives the same fitted Bernoulli law, providing a continuum of maxima.
-Other unresolved comparisons and exhausted certificates stop with their
-finite and face witnesses. Proof details and reproducible checks are in the
+Other unresolved comparisons, coefficient inclusion failures and exhausted certificates return the successful finite search result with `certified = FALSE`. A failed local search without a finite candidate still stops. Proof details and reproducible checks are in the
 [face report](../../../../../dev/research/evaluations/2026-11-07-bbinom-face-report.md).
 
 ## Free-size research: joint held-beta tail
@@ -333,7 +332,7 @@ selects $c$ by bisection, enumerates finite sizes subject to the enumeration-cel
 numerical tie or failure. Before enumeration, it requires the first profile
 to exclude the tail beyond the budget; otherwise it reports a budget stop,
 even though a larger finite profile could improve the bound. If the first finite profile does not clearly beat
-$F$, it reports an unresolved face: this is not a proof that the face wins.
+$F$, it returns the prefix winner uncertified; this does not prove that the face wins.
 The inequalities are proved in exact arithmetic conditional on computed
 comparisons; the practical floating-point margin is not an interval proof.
 At each fixed size, the same tangent/chord certificate used for held beta
@@ -352,7 +351,7 @@ allowances. An exhaustive closure proof and a global search remain open.
 
 ## Stop details
 
-Binomial and endpoint faces retain their fitted probabilities. Free-size budget and unresolved-face stops retain evaluated finite profiles and the negative-binomial face when computed; their global upper bound remains infinite.
+Binomial and endpoint faces retain their fitted probabilities. Uncertified free-size results retain evaluated finite profiles and the negative-binomial face when computed; their global upper bound remains infinite.
 
 The size search charges rising-factorial, likelihood, derivative and
 certificate-bound scans by their support cells, sharing the cell budget
@@ -379,10 +378,7 @@ score-to-root enclosure directly in the other shape.
 The region has at most one stationary maximum. The enclosed root lies strictly
 inside it; strict tangent/chord bounds exclude its entire complement in the
 analytic compact search domain. Thus acceptance proves global optimality and
-uniqueness for that sample, conditional on the comparisons. Grid proposals
-never substitute for these exclusions. Separated proposed maxima with
-indistinguishable likelihoods stop as a tie. Precision failures and exhausted
-certificates also stop, retaining available feasible witnesses. The
+uniqueness for that sample, conditional on the comparisons. The `certified` flag records whether these exclusions close. Separated proposed maxima with indistinguishable likelihoods, coefficient inclusion failures and exhausted certificates return the successful finite search result uncertified. The
 size-two saturated solution retains its algebraic reduction.
 
 Near the binomial face the dispersion score subtracts its face value

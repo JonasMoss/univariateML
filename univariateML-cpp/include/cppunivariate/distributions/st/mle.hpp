@@ -1,4 +1,5 @@
 #pragma once
+#include "local_accuracy.hpp"
 #include "../../core/work_budget.hpp"
 #include "../sstd/scalar_search.hpp"
 #include "../../core/stop_detail.hpp"
@@ -16,7 +17,7 @@
 #include <vector>
 namespace cppunivariate {
 enum class StStatus {Ok, InvalidInput, Unbounded, ScaleBoundary, NumericalFailure, SkewNormalBoundary, RightHalfTBoundary, LeftHalfTBoundary, RightHalfNormalBoundary, LeftHalfNormalBoundary};
-struct StResult {double xi,omega,alpha,nu,logLik;int iterations;StStatus status;unsigned restricted=0;unsigned reason=0;StopDetail stop_detail{};bool budget_exhausted=false;bool certified=false;};
+struct StResult {double xi,omega,alpha,nu,logLik;int iterations;StStatus status;unsigned restricted=0;unsigned reason=0;StopDetail stop_detail{};bool budget_exhausted=false;bool certified=false;bool accuracy_failure=false;};
 namespace st_detail {
 // Transport a stopped limiting-family search, preserving its witnesses rather
 // than treating subdivision exhaustion as a generic optimizer failure.
@@ -90,7 +91,7 @@ inline Candidate optimize(Cost c,const double* start,double tol,int maxit) {
 
 #include "certificate.hpp"
 
-inline StResult st_mle(span data,double tol=1e-6,int maxit=200,double xi=special::kNaN,double omega=special::kNaN,double alpha=special::kNaN,double nu=special::kNaN) {
+inline StResult st_mle(span data,double tol=1e-10,int maxit=200,double xi=special::kNaN,double omega=special::kNaN,double alpha=special::kNaN,double nu=special::kNaN) {
   maxit = static_cast<int>(solver_budget(maxit));
  const double nan=special::kNaN;StResult bad{nan,nan,nan,nan,nan,0,StStatus::InvalidInput};
  if(data.empty()||!(tol>0)||!std::isfinite(tol)||maxit<=0||(!std::isnan(xi)&&!std::isfinite(xi))||(!std::isnan(omega)&&(!std::isfinite(omega)||omega<=0))||(!std::isnan(alpha)&&!std::isfinite(alpha))||(!std::isnan(nu)&&(!std::isfinite(nu)||nu<=0)))return bad;
@@ -120,16 +121,18 @@ inline StResult st_mle(span data,double tol=1e-6,int maxit=200,double xi=special
  std::vector<double> y;for(double x:data)y.push_back((x-origin)/unit);span sy{y.data(),y.size()};
  double fx=std::isnan(xi)?nan:(xi-origin)/unit,fw=std::isnan(omega)?nan:omega/unit;
  st_detail::Candidate best,profile_witness;double profile_best=-INFINITY;
+ const bool allfree=std::isnan(xi)&&std::isnan(omega)&&std::isnan(alpha)&&std::isnan(nu);
+ const double proposal_tol=allfree?std::max(tol,1e-6):tol;
  const std::vector<double> as=std::isnan(alpha)?std::vector<double>{-8,-3,-1,0,1,3,8}:std::vector<double>{alpha};
  const std::vector<double> ns=std::isnan(nu)?std::vector<double>{1,1.5,3,8,30,200}:std::vector<double>{nu};
  for(double a:as)for(double d:ns) {
   st_detail::Cost inner{sy,{fx,fw,a,d},{std::isnan(fx),std::isnan(fw),false,false}};
-  double start[4]={0,0.5,a,d};auto p=st_detail::optimize(inner,start,tol,maxit);if(!p.ok)continue;
+  double start[4]={0,0.5,a,d};auto p=st_detail::optimize(inner,start,proposal_tol,maxit);if(!p.ok)continue;
   if(p.ll>profile_best)profile_witness=p;
   profile_best=std::max(profile_best,p.ll);
   bool boundary=std::isnan(nu)&&d==1;
   st_detail::Cost full{sy,{fx,fw,alpha,boundary?1.:nu},{std::isnan(fx),std::isnan(fw),std::isnan(alpha),std::isnan(nu)&&!boundary}};
-  auto q=st_detail::optimize(full,p.v,tol,maxit);
+  auto q=st_detail::optimize(full,p.v,proposal_tol,maxit);
   if(q.ok && std::isnan(nu) && q.v[3]<=1+1e-6) {
    // A transformed interior iterate can round to the restriction. Check
    // its untransformed score rather than accepting a vanishing Jacobian.
@@ -147,7 +150,7 @@ inline StResult st_mle(span data,double tol=1e-6,int maxit=200,double xi=special
  const FitCandidate reference_candidate{{origin+unit*witness.v[0],unit*witness.v[1],witness.v[2],witness.v[3]},reference_ll,reference_ll,StopModel::None};
  StResult boundary{nan,nan,nan,nan,-INFINITY,0,StStatus::NumericalFailure};
  if(std::isnan(nu)) {
-  auto sn=sn_mle(sy,tol,maxit,fx,fw,alpha);
+  auto sn=sn_mle(sy,proposal_tol,maxit,fx,fw,alpha);
   if(sn.status!=SnStatus::Ok&&sn.status!=SnStatus::RightHalfNormalBoundary&&sn.status!=SnStatus::LeftHalfNormalBoundary){
    bad.status=StStatus::NumericalFailure;bad.reason=2;
    if(sn.budget_exhausted || sn.stop_detail.comparison_tie) {
@@ -213,6 +216,18 @@ inline StResult st_mle(span data,double tol=1e-6,int maxit=200,double xi=special
    }}
  if(!best.ok||profile_best>best.ll+tie){bad.status=StStatus::NumericalFailure;bad.reason=4;return bad;}
  if(std::abs(best.v[2])>1e5||best.v[3]>1e6){bad.status=StStatus::NumericalFailure;bad.reason=5;return bad;}
- return {std::isfinite(xi)?xi:origin+unit*best.v[0],std::isfinite(omega)?omega:unit*best.v[1],best.v[2],best.v[3],best.ll-n*std::log(unit),best.iterations,StStatus::Ok,(std::isnan(nu)&&best.v[3]==1)?64u:0u};
+ if(std::isnan(xi)&&std::isnan(omega)&&std::isnan(alpha)&&std::isnan(nu)) {
+  std::array<double,4> p{{best.v[0],std::log(best.v[1]),best.v[2],best.v[3]>1?std::log(best.v[3]-1):0}};
+  const auto objective=[&](const std::array<local_accuracy::Jet,4>& q){return st_accuracy::objective(y,q,maxit,best.v[3]==1);};
+  const auto error=[&](const std::array<double,4>& q,const std::array<double,4>& s){
+   return std::max(std::abs(s[0])/std::max(std::abs(origin/unit+q[0]),std::exp(q[1])),std::max(std::abs(s[1]),std::max(std::abs(s[2])/std::max(1.,std::abs(q[2])),std::abs(s[3]))));};
+  if(!local_accuracy::polish(p,best.v[3]==1?3:4,tol,maxit,objective,error)){bad.status=StStatus::NumericalFailure;bad.accuracy_failure=true;return bad;}
+  const auto checked=objective(local_accuracy::variables(p));
+  if(best.v[3]==1 && checked.g[3]<-128*std::numeric_limits<double>::epsilon()*y.size()){bad.status=StStatus::NumericalFailure;return bad;}
+  best.v[0]=p[0];best.v[1]=std::exp(p[1]);best.v[2]=p[2];best.v[3]=best.v[3]==1?1:1+std::exp(p[3]);best.ll=-checked.v;
+ }
+ StResult out{std::isfinite(xi)?xi:origin+unit*best.v[0],std::isfinite(omega)?omega:unit*best.v[1],best.v[2],best.v[3],best.ll-n*std::log(unit),best.iterations,StStatus::Ok,(std::isnan(nu)&&best.v[3]==1)?64u:0u};
+ if(allfree&&(!local_accuracy::represented(out.xi,std::max(std::abs(out.xi),out.omega),tol)||!local_accuracy::represented(out.omega,out.omega,tol))){out.status=StStatus::NumericalFailure;out.accuracy_failure=true;}
+ return out;
 }
 }

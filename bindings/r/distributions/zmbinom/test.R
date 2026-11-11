@@ -174,3 +174,16 @@ test_that("zmbinom proved size-face comparisons stop as limits", {
   expect_identical(e$kind,"limit")
   expect_identical(class(e)[1],"univariateML_limit")
 })
+
+test_that("zmbinom propagates positive-count certification", {
+  f <- mlzmbinom(0:3,size=NULL,prob=1e-9,iterlim=1)
+  expect_identical(attr(f,"certified"),FALSE)
+  expect_equal(unname(f["p0"]),.25)
+  expect_true(is.finite(as.numeric(logLik(f))))
+})
+
+test_that("zmbinom carries the zero-ratio precision flag", {
+  f <- mlzmbinom(c(0,1,1),size=NULL,prob=1e-9,iterlim=1,reltol=1e-18)
+  expect_identical(attr(f,"certified"),FALSE)
+  expect_equal(unname(f["p0"]),1/3,tolerance=0)
+})

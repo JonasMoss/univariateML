@@ -149,7 +149,8 @@ TEST_CASE("tbinom: two-point saturated profile is attained, not a Poisson escape
   CHECK(f.size==3);
   CHECK(f.logLik==doctest::Approx(-4*std::log(2.)).epsilon(1e-12));
   const std::vector<int> huge{2000001,2000002};
-  CHECK(cppunivariate::tbinom_design_mle({huge.data(),huge.size()},2000000,2000005,nan).status==cppunivariate::TbinomStatus::NumericalFailure);
+  CHECK(cppunivariate::tbinom_design_mle({huge.data(),huge.size()},2000000,2000005,nan).status==cppunivariate::TbinomStatus::Ok);
+  CHECK(cppunivariate::tbinom_design_mle({huge.data(),huge.size()},2000000,2000005,nan).certified);
 }
 
 TEST_CASE("tbinom attained point sampler ignores zero uniform") {
@@ -393,4 +394,29 @@ TEST_CASE("tbinom: histogram certificate profiles sizes below the held upper bou
   const double exact=2*std::log(.125)+2*std::log(.375);
   CHECK(std::abs(f.ll-exact)<1e-12);
   CHECK(f.upper>=exact-1e-12);
+}
+
+TEST_CASE("tbinom: an unrepresentable certificate window retains the finite profile") {
+  const std::vector<int> x{1,1,1,1,1,12};
+  const auto f=cppunivariate::tbinom_design_mle({x.data(),x.size()},0,1e100,NAN);
+  REQUIRE(f.status==cppunivariate::TbinomStatus::Ok);
+  CHECK_FALSE(f.certified);CHECK(std::isfinite(f.logLik));CHECK(f.b==1e100);
+}
+
+TEST_CASE("tbinom: anchored kernels cancel exactly the common conditioning factor") {
+  for(double size:{20.,100.,-1.})for(int v=8;v<=12;++v) {
+    const double difference=cppunivariate::tbinom_detail::kernel(v,.3,size)-cppunivariate::tbinom_detail::kernel(8,.3,size);
+    CHECK(cppunivariate::tbinom_detail::anchored_kernel(v,.3,size,8)==doctest::Approx(difference).epsilon(1e-12));
+  }
+  const std::vector<int> x{1000000,1000001,1000003,1000008,1000011};
+  const auto f=cppunivariate::tbinom_design_mle({x.data(),x.size()},999999,1000011,NAN);
+  REQUIRE(f.status==cppunivariate::TbinomStatus::Ok);
+  CHECK(std::isfinite(f.logLik));
+}
+
+TEST_CASE("tbinom: large held-probability search returns its budgeted finite prefix") {
+  const std::vector<int>x{1000000,1000001,1000003,1000008,1000011};
+  const auto f=cppunivariate::tbinom_design_mle({x.data(),x.size()},0,1000011,NAN,.4);
+  REQUIRE(f.status==cppunivariate::TbinomStatus::Ok);CHECK_FALSE(f.certified);
+  CHECK(f.stop_detail.budget_exhausted);CHECK(f.prob==.4);CHECK(std::isfinite(f.logLik));
 }

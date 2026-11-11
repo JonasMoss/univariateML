@@ -2,7 +2,7 @@
 #include "../../fit.hpp"
 #include "cppunivariate/distributions/skellam/mle.hpp"
 namespace umvl_binding {
-inline FitResult fit_skellam(cppunivariate::span x, Held mu1_arg = {}, Held mu2_arg = {}, double reltol=1e-9, int iterlim=150) {
+inline FitResult fit_skellam(cppunivariate::span x, Held mu1_arg = {}, Held mu2_arg = {}, double reltol=1e-10, int iterlim=150) {
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
   const Held mu1 = mu1_arg;

@@ -27,7 +27,7 @@ r:
     a: Optional held a; `NULL` estimates it.
     b: Optional held b; `NULL` estimates it.
     a0: Optional positive starting value for `a`; `NULL` uses the automatic start.
-    reltol: Relative step tolerance for the Newton proposal; the certificate uses its own fixed accuracy.
+    reltol: "Requested relative accuracy in both shapes after propagating the profile correction (default 1e-10)."
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations."
 log_density: log(a) + log(b) + (a-1)*log(x) + (b-1)*log(1-x**a)
 references:
@@ -156,3 +156,5 @@ proof. Subnormal/vanishing $G$, nonfinite arithmetic, unresolved signs,
 unrepresentable coefficients or an exhausted $16\min(\mathrm{maxit},100000)$
 evaluation budget produce `IterationFailure`, never an unchecked fit.
 No finite limit model accompanies the constant-sample unbounded stop.
+
+The final profile enclosure bounds both a and b, including the sensitivity d log(b)/d log(a). Secant interpolation selects a point inside this signed box; likelihood rounding and a small residual alone do not establish coefficient accuracy. Refinement evaluations share the global profile-point ledger, allowing the certificate to finish a one-step proposal when the remaining budget suffices.

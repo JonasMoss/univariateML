@@ -32,7 +32,7 @@ r:
   sampler: rpareto3
   control:
     min: Known finite lower endpoint.
-    reltol: Delegate fitting tolerance.
+    reltol: "Relative accuracy of every free coefficient (default 1e-10)."
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
     shape: Known positive finite coefficient; NULL estimates it.
     scale: Known positive finite coefficient; NULL estimates it.
@@ -142,3 +142,7 @@ The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-genb
 ## R notes
 
 With `min = 0`, the joint fit agrees with `mlllogis(x)`. Failed conditional searches stop rather than return an unresolved estimate.
+
+The logarithm of the distance from the held minimum converts scale into a
+logistic location. Coefficient accuracy must therefore account for the coupled
+shape/location errors and the exponential map back to the public scale.

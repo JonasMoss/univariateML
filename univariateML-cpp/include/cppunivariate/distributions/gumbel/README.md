@@ -31,7 +31,7 @@ r:
   control:
     sigma: Optional held sigma; NULL estimates it.
     mu: Optional held mu; NULL estimates it.
-    reltol: Relative step tolerance in log(sigma) of the underlying Gumbel fit.
+    reltol: "Requested relative coefficient accuracy (default 1e-10); the scale bracket also bounds the profiled location."
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
 log_density: -log(sigma) - (x-mu)/sigma - exp(-(x-mu)/sigma)
 references:
@@ -115,8 +115,12 @@ Holding location leaves a strictly concave likelihood in inverse scale. It has a
 
 ## R notes
 
-Supplying `mu` or `sigma` holds that coefficient. The free joint fit uses Newton iteration in log scale. Failure to converge stops the fit.
+Supplying `mu` or `sigma` holds that coefficient. The free joint fit bisects the strictly increasing profiled scale equation. Its bracket bounds both scale and the monotone profiled location, using fitted sigma as the location accuracy floor; the location width also controls the exponential map used by Weibull. Failure to converge stops the fit.
 
 ## Decision history
 
 2026-10-31 (diagnostic status contract): Empty or invalid input carries a non-success status. Degeneracy depends on which coefficients are free, and delegate failures survive transformations. See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md) and the appended TASK-132 cases in `test.cpp` for the validation scope.
+
+The conversion back from centered, scaled data checks both reconstructed coefficients; an unrepresentable positive scale is a numerical-accuracy failure.
+
+With scale held, the explicit location uses compensated exponential weights and checks restoration from its dimensionless log-sum. This detects an unrepresentable free location even when the supplied positive scale itself is representable. The inverse-scale score with location held uses compensated accumulation of its signed terms.

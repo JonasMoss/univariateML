@@ -9,6 +9,7 @@
 //   z = (x - mu)/sigma * sigma_u + mu_u.
 
 #pragma once
+#include "../sstd/local_accuracy.hpp"
 #include "../../core/work_budget.hpp"
 #include "../sstd/hold_search.hpp"
 
@@ -47,6 +48,7 @@ struct SgedResult {
   SgedStatus status; unsigned restricted = 0;
   StopDetail stop_detail{};
   bool certified = false;
+  bool accuracy_failure=false;
 };
 
 #include "certificate.hpp"
@@ -345,6 +347,8 @@ inline SgedResult sged_mle_free(span x, double tol, int maxit) {
     }
     prefix += c;
   }
+  SgedResult interior=best;interior.logLik=-INFINITY;
+  bool wrong_restriction=false;
   double attempted=best.logLik;
   bool accepted=false;
   const double objective_divisor = n>=100000 ? dn : 1.0;
@@ -362,6 +366,8 @@ inline SgedResult sged_mle_free(span x, double tol, int maxit) {
     accepted=true;
     r.status=BfgsStatus::Ok;
     r.f *= objective_divisor;
+    if(std::isfinite(r.f)&&-r.f>interior.logLik)
+      interior={r.theta[0],std::exp(r.theta[1]),1+std::exp(r.theta[2]),std::exp(r.theta[3]),-r.f,r.iterations,SgedStatus::Ok};
     if (std::isfinite(r.f) && -r.f > best.logLik + tie) {
       best = {r.theta[0], std::exp(r.theta[1]), 1.0 + std::exp(r.theta[2]),
               std::exp(r.theta[3]),
@@ -369,6 +375,20 @@ inline SgedResult sged_mle_free(span x, double tol, int maxit) {
               r.status == BfgsStatus::Ok ? SgedStatus::Ok : SgedStatus::BfgsFailure};
     }
   }
+  }
+  // A likelihood tie cannot validate an attained shape-one point whose
+  // profile derivative points into the interior. Hold the join and side
+  // scales along this directional derivative; their envelope scores vanish.
+  if(best.nu==1) {
+    const double ratio=best.xi*best.xi,norm=std::hypot(1.,ratio);
+    const double a=best.sigma/norm,b=best.sigma*(ratio/norm);
+    const double join=best.mu-b+a;
+    double score=-dn*special::digamma(2.),magnitude=dn;
+    for(double v:z){const double w=std::abs(v-join)/(v>join?b:a);if(w>0){const double term=w*std::log(w);score+=term;magnitude+=std::abs(term);}}
+    if(score < -128*std::numeric_limits<double>::epsilon()*magnitude) {
+      if(std::isfinite(interior.logLik)&&interior.nu>1)best=interior;
+      else wrong_restriction=true;
+    }
   }
   if (!accepted && attempted>best.logLik+tie) best.status=SgedStatus::BfgsFailure;
   // Half-GED profile: log a = (log nu + log mean(y^nu))/nu.
@@ -412,9 +432,18 @@ inline SgedResult sged_mle_free(span x, double tol, int maxit) {
     best.status = SgedStatus::UniformBoundary;
     best.stop_detail=limit_detail({mean_x+sd_x*z.front(),mean_x+sd_x*z.back()},uniform-dn*std::log(sd_x),StopModel::Unif);
   }
+  if(best.status==SgedStatus::Ok&&wrong_restriction){best.status=SgedStatus::BfgsFailure;best.accuracy_failure=true;}
+  if(best.status==SgedStatus::Ok && best.nu>1) {
+    std::array<double,4> p{{best.mu,std::log(best.sigma),std::log(best.nu-1),std::log(best.xi)}};
+    const auto objective=[&](const std::array<local_accuracy::Jet,4>& q){return local_accuracy::skew_objective(z,q,false);};
+    if(local_accuracy::polish(p,4,tol,maxit,objective,[&](const std::array<double,4>& v,const std::array<double,4>& step){auto q=v;q[0]+=mean_x/sd_x;return local_accuracy::location_error(q,step);})) {
+      best.mu=p[0];best.sigma=std::exp(p[1]);best.nu=1+std::exp(p[2]);best.xi=std::exp(p[3]);best.logLik=-objective(local_accuracy::variables(p)).v;
+    } else {best.status=SgedStatus::BfgsFailure;best.accuracy_failure=true;}
+  }
   best.mu = mean_x + sd_x * best.mu;
   best.sigma *= sd_x;
   best.logLik -= dn * std::log(sd_x);
+  if(best.status==SgedStatus::Ok&&(!local_accuracy::represented(best.mu,std::max(std::abs(best.mu),best.sigma),tol)||!local_accuracy::represented(best.sigma,best.sigma,tol))){best.status=SgedStatus::BfgsFailure;best.accuracy_failure=true;}
   return best;
 }
 

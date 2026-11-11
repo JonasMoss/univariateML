@@ -32,7 +32,7 @@ r:
     omega: Optional held scale; NULL estimates it.
     alpha: Optional held skewness; NULL estimates it.
     nu: Optional held degrees of freedom; NULL estimates it.
-    reltol: Numerical score tolerance.
+    reltol: "Requested relative coefficient accuracy for all-free fits (default 1e-10); checked by the final observed-information Newton correction."
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
 log_density: "log(2)-log(omega)+loggamma((nu+1)/2)-loggamma(nu/2)-log(nu*pi)/2-(nu+1)*log(1+((x-xi)/omega)**2/nu)/2+log((1+sign(alpha*(x-xi))*betainc(1/2,(nu+1)/2,0,(alpha*(x-xi)/omega)**2/(nu+((x-xi)/omega)**2+(alpha*(x-xi)/omega)**2))/beta(1/2,(nu+1)/2))/2)"
 limits:
@@ -94,6 +94,12 @@ location-scale Student distribution. This skewing construction differs from
 the Fernandez--Steel skew-t.
 
 ## Details
+
+The all-free interior accuracy check differentiates the Student probability through
+its incomplete-beta continued fraction, including its degrees of freedom. The
+location floor is omega; alpha has floor one. First and second derivative convergence
+are checked along with the continued-fraction value. See the [accuracy
+validation](../../../../../dev/research/evaluations/2026-11-10-acc-allfree-report.md).
 
 When every coefficient is held, the likelihood is evaluated at those values
 without optimization.

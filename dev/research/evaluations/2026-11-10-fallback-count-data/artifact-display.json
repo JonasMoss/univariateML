@@ -1,0 +1,7 @@
+{
+  "command": "/home/jonas/Files/work/misc/codex-math-web/bin/show /home/jonas/Files/programming/univariateML.wt/fallback-count/dev/research/evaluations/2026-11-10-fallback-count-report.md",
+  "exit": 1,
+  "http_status": 403,
+  "error": "That path is outside every readable root.",
+  "worktree_only_constraint_preserved": true
+}

@@ -1,0 +1,7 @@
+{"id":"weibull-held-scale","shape":263511819158.29898,"status":0}
+{"id":"lomax-held-kappa","lambda":61111111111098.883,"status":0}
+{"id":"gumbel-held-scale","mu_in_ulps":0,"status":4}
+{"id":"weibull-held-shape","scale_in_ulps":2,"status":4}
+{"id":"lomax-wide-held-kappa","lambda":0.99999999999997791,"status":0}
+{"id":"lomax-weighted-held-kappa","lambda":4.1633363423442213e+183,"status":0}
+{"id":"lomax-subnormal-held-kappa","lambda":6.6666668871085268e-317,"status":4}

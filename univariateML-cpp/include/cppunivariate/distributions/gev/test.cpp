@@ -908,3 +908,37 @@ TEST_CASE("gev: constrained cover cannot certify a losing stationary maximum") {
   CHECK(evaluate(result.competitor).jet.v.lo>evaluate(result.root).jet.v.hi);
   CHECK(result.evaluations<=cppunivariate::certificate_budget(100));
 }
+
+TEST_CASE("gev: constrained cover excludes an enlarged concave basin") {
+  // A strictly concave quadratic: the piecewise Hessian check covers the
+  // whole domain, so no zoom toward the root is needed (251 evaluations
+  // before the basin was enlarged, 28 after).
+  auto quadratic=[](cppunivariate::gev_held_detail::Box b) {
+    const auto x=cppunivariate::gev_held_detail::variable(b.x,0),y=cppunivariate::gev_held_detail::variable(b.y,1);
+    const auto form=cppunivariate::gev_held_detail::add(cppunivariate::gev_held_detail::add(
+      cppunivariate::gev_held_detail::mul(x,x),cppunivariate::gev_held_detail::mul(x,y)),cppunivariate::gev_held_detail::mul(y,y));
+    const auto value=cppunivariate::gev_held_detail::margin(cppunivariate::gev_held_detail::add(
+      cppunivariate::gev_held_detail::scale(form,-1),cppunivariate::gev_held_detail::scale(x,.3)));
+    return cppunivariate::gev_held_detail::Evaluation{value,value.v.hi,true};
+  };
+  auto precise=[](cppunivariate::gev_held_detail::Box b,double tol) {return b.x.hi-b.x.lo<tol&&b.y.hi-b.y.lo<tol;};
+  const auto closed=cppunivariate::gev_held_detail::cover({{-2,2},{-2,2}},1,1,1e-10,100,quadratic,precise);
+  REQUIRE(closed.certified);
+  CHECK(closed.root.x.lo<=.2);CHECK(closed.root.x.hi>=.2);
+  CHECK(closed.root.y.lo<=-.1);CHECK(closed.root.y.hi>=-.1);
+  CHECK(closed.evaluations<=100);
+  // The enlarged basin must stop where concavity fails. Two wells: started at
+  // the winner the cover closes on it; started at the loser it is refuted.
+  auto wells=[](cppunivariate::gev_held_detail::Box b) {
+    const auto x=cppunivariate::gev_held_detail::variable(b.x,0),y=cppunivariate::gev_held_detail::variable(b.y,1);
+    const auto q=cppunivariate::gev_held_detail::add(cppunivariate::gev_held_detail::mul(x,x),cppunivariate::gev_held_detail::constant(-1));
+    const auto value=cppunivariate::gev_held_detail::margin(cppunivariate::gev_held_detail::add(
+      cppunivariate::gev_held_detail::scale(cppunivariate::gev_held_detail::add(cppunivariate::gev_held_detail::mul(q,q),cppunivariate::gev_held_detail::mul(y,y)),-1),cppunivariate::gev_held_detail::scale(x,.1)));
+    return cppunivariate::gev_held_detail::Evaluation{value,value.v.hi,true};
+  };
+  const auto winner=cppunivariate::gev_held_detail::cover({{-2,2},{-2,2}},1,0,1e-10,100,wells,precise);
+  REQUIRE(winner.certified);
+  CHECK(winner.root.x.lo>1);CHECK(winner.root.x.hi<1.02);
+  const auto loser=cppunivariate::gev_held_detail::cover({{-2,2},{-2,2}},-1,0,1e-10,100,wells,precise);
+  CHECK_FALSE(loser.certified);CHECK(loser.contradicted);
+}

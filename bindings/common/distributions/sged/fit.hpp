@@ -5,7 +5,7 @@
 #include <cmath>
 #include <limits>
 namespace umvl_binding {
-inline FitResult fit_sged(cppunivariate::span x, Held mean_arg = {}, Held sd_arg = {}, Held nu_arg = {}, Held xi_arg = {}, double gradtol = 1.220703e-4, int iterlim = 200) {
+inline FitResult fit_sged(cppunivariate::span x, Held mean_arg = {}, Held sd_arg = {}, Held nu_arg = {}, Held xi_arg = {}, double gradtol = 1e-10, int iterlim = 200) {
   // Invalid controls remain ordinary errors, even if a legacy fitter reports
   // a statistical status before checking them.
   const auto classify = [&](FitResult out, const cppunivariate::StopDetail& detail,
@@ -35,6 +35,7 @@ inline FitResult fit_sged(cppunivariate::span x, Held mean_arg = {}, Held sd_arg
   const double held_xi=xi.supplied ? xi.value : nan;
   if(xi.supplied && (!(std::isfinite(held_xi) && held_xi>0))) return fail("Invalid held `xi`: requires a finite value in its parameter domain.");
   auto res=cppunivariate::sged_mle(x,gradtol,iterlim,held_mean,held_sd,held_nu,held_xi);
+  if(res.accuracy_failure)return fail("sged numerical accuracy failure: final Newton refinement did not converge to the requested coefficient tolerance; increase iterlim or inspect conditioning.");
   if(res.status==cppunivariate::SgedStatus::CertificateFailure) {
     const std::vector<std::string> names{"mean","sd","nu","xi"};
     if(res.stop_detail.budget_exhausted)

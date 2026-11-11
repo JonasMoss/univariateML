@@ -152,7 +152,8 @@ TEST_CASE("nhyper: all three new finite grids versus inline enumeration") {
     }
   }
   const std::vector<double> x{1,100}, mixed{0,1}, zero{0,0};
-  CHECK(cppunivariate::nhyper_mle(mltest::as_span(x),1,nan,1e7).status==cppunivariate::NhyperStatus::NumericalFailure);
+  CHECK(cppunivariate::nhyper_mle(mltest::as_span(x),1,nan,1e7).status==cppunivariate::NhyperStatus::Ok);
+  CHECK_FALSE(cppunivariate::nhyper_mle(mltest::as_span(x),1,nan,1e7).certified);
   CHECK(cppunivariate::nhyper_mle(mltest::as_span(mixed),nan,nan,7).status==cppunivariate::NhyperStatus::Infeasible);
   const auto z=cppunivariate::nhyper_mle(mltest::as_span(zero),nan,nan,7);
   CHECK(z.N==7); CHECK(z.r==0); CHECK(z.logLik==0);
@@ -190,10 +191,13 @@ TEST_CASE("nhyper: certified joint population profiles and unresolved face") {
   const std::vector<double> tie{2,2};
   CHECK(cppunivariate::nhyper_mle(mltest::as_span(tie),2,nan,nan).status == cppunivariate::NhyperStatus::Ok);
   const std::vector<double> spread{1,1,1,1,1,30};
-  CHECK(cppunivariate::nhyper_mle(mltest::as_span(spread),1,nan,nan).status == cppunivariate::NhyperStatus::FaceUnresolved);
-  CHECK(cppunivariate::nhyper_mle(mltest::as_span(spread),nan,nan,nan).status == cppunivariate::NhyperStatus::FaceUnresolved);
+  CHECK(cppunivariate::nhyper_mle(mltest::as_span(spread),1,nan,nan).status == cppunivariate::NhyperStatus::Ok);
+  CHECK_FALSE(cppunivariate::nhyper_mle(mltest::as_span(spread),1,nan,nan).certified);
+  CHECK(cppunivariate::nhyper_mle(mltest::as_span(spread),nan,nan,nan).status == cppunivariate::NhyperStatus::Ok);
+  CHECK_FALSE(cppunivariate::nhyper_mle(mltest::as_span(spread),nan,nan,nan).certified);
   const std::vector<double> large{1,100001};
-  CHECK(cppunivariate::nhyper_mle(mltest::as_span(large),1,nan,nan).status == cppunivariate::NhyperStatus::NumericalFailure);
+  CHECK(cppunivariate::nhyper_mle(mltest::as_span(large),1,nan,nan).status==cppunivariate::NhyperStatus::Ok);
+  CHECK_FALSE(cppunivariate::nhyper_mle(mltest::as_span(large),1,nan,nan).certified);
 }
 
 TEST_CASE("nhyper: structured stop payloads") {
@@ -209,13 +213,29 @@ TEST_CASE("nhyper: structured stop payloads") {
 TEST_CASE("nhyper: explicit growing-urn work preflight has an empty budget payload") {
   const std::vector<double> x{1,100001};
   const auto r=cppunivariate::nhyper_mle({x.data(),x.size()},1,NAN,NAN);
-  CHECK(r.status==cppunivariate::NhyperStatus::NumericalFailure);
+  CHECK(r.status==cppunivariate::NhyperStatus::Ok);
+  CHECK_FALSE(r.certified);
   CHECK(r.stop_detail.budget_exhausted);
-  CHECK(r.stop_detail.candidates.empty());
+  CHECK_FALSE(r.stop_detail.candidates.empty());
   CHECK(r.stop_detail.loglik_upper==INFINITY);
 }
 
 #include "cppunivariate/distributions/nhyper/dpqr.hpp"
 TEST_CASE("nhyper: quantile search guards and representability") {
   CHECK(cppunivariate::distributions::qnhyper(.5,9007199254740991.,9007199254740991.,9007199254740990.,true,false)==9007199254740990.);
+}
+
+TEST_CASE("nhyper: uncertified growing-urn prefix has a valid finite likelihood") {
+  const std::vector<double> x{1,1,1,1,1,30};
+  const auto f=cppunivariate::nhyper_mle({x.data(),x.size()},1,NAN,NAN);
+  REQUIRE(f.status==cppunivariate::NhyperStatus::Ok);CHECK_FALSE(f.certified);CHECK(f.r==1);
+  double ll=0;for(double v:x)ll+=cppunivariate::nhyper_log_pmf(v,f.N-f.m,f.m,f.r);
+  CHECK(f.logLik==doctest::Approx(ll).epsilon(1e-10));
+}
+
+TEST_CASE("nhyper: the first representable free stopping count is feasible") {
+  const std::vector<double>x{2,2};
+  const auto f=cppunivariate::nhyper_mle({x.data(),x.size()},NAN,NAN,cppunivariate::hyper_detail::kMaxCount);
+  REQUIRE(f.status==cppunivariate::NhyperStatus::Ok);
+  CHECK(f.r==2);CHECK(f.N==f.m);CHECK(f.logLik==0);
 }

@@ -477,3 +477,45 @@ TEST_CASE("gb2: unit-shape delegation preserves the inverse-Burr uncertified fla
   CHECK_FALSE(fit.certified);
   CHECK(std::isfinite(fit.logLik));
 }
+
+TEST_CASE("gb2 differentiated log beta retains a small-shape score beside a 1e18 shape") {
+ const std::array<double,4> p{{std::log(.7),std::log(1e18),0,0}};
+ auto z=cppunivariate::local_accuracy::variables(p);
+ auto f=cppunivariate::local_accuracy::logbeta(cppunivariate::local_accuracy::exp(z[0]),cppunivariate::local_accuracy::exp(z[1]));
+ CHECK(f.v==doctest::Approx(-28.75170492519331).epsilon(1e-13));
+ CHECK(f.g[0]==doctest::Approx(-29.86658865931353).epsilon(1e-12));
+ CHECK(f.g[1]==doctest::Approx(-0.7).epsilon(1e-12));
+ CHECK(f.h[0]==doctest::Approx(-28.47790457253317).epsilon(1e-12).scale(1));
+ CHECK(f.h[1]==doctest::Approx(-0.7).epsilon(1e-12).scale(1));
+ CHECK(f.h[5]==doctest::Approx(1.05e-19).epsilon(1e-12).scale(1));
+}
+
+TEST_CASE("gb2 local accuracy keeps concentrated beta and gamma-limit coordinates") {
+ {
+ const std::vector<double> x{3.6286401871558374,3.629003123761874,3.6293660603679108,3.6297289969739475,3.6304548701860213};
+ const auto r=cppunivariate::gb2_mle({x.data(),x.size()},1e-10,300,NAN,1.123220989970799,NAN,1.0079365599415882);
+ REQUIRE(r.status==cppunivariate::Gb2Status::Ok);
+ CHECK(r.shape1==doctest::Approx(33132624.910532456).epsilon(1e-10));
+ CHECK(r.shape2==doctest::Approx(1.123220989970799).epsilon(1e-10));
+ CHECK(r.shape3==doctest::Approx(139708562.23074487).epsilon(1e-10));
+ CHECK(r.scale==doctest::Approx(1.0079365599415882).epsilon(1e-10));
+ }
+ {
+ const std::vector<double> x{0.26339769553123515,0.4562181912566571,0.5889751523246344,0.6968847982831573,0.7901930865937284,0.8735913273001527,0.9496965626030057,1.0220156829711253,1.1113791565452917,1.2432875885353978,1.4740804330726338,2.1259918711975656};
+ const auto r=cppunivariate::gb2_mle({x.data(),x.size()},1e-10,300,NAN,1.123220989970799,NAN,NAN);
+ REQUIRE(r.status==cppunivariate::Gb2Status::Ok);
+ CHECK(r.shape1==doctest::Approx(317.0723737123441).epsilon(1e-10));
+ CHECK(r.shape2==doctest::Approx(1.123220989970799).epsilon(1e-10));
+ CHECK(r.shape3==doctest::Approx(3.3230705772385902).epsilon(1e-10));
+ CHECK(r.scale==doctest::Approx(56.56454728300938).epsilon(1e-10));
+ }
+}
+
+TEST_CASE("gb2 centered large-shape kernel retains an ordinary held-scale estimate") {
+ const std::vector<double> x{1e-6,2e-6,3e-6,4.9999999999999996e-6,9e-6};
+ const auto r=cppunivariate::gb2_mle({x.data(),x.size()},1e-10,300,NAN,NAN,NAN,1.0079365599415882);
+ REQUIRE(r.status==cppunivariate::Gb2Status::Ok);
+ CHECK(r.shape1==doctest::Approx(597.100007345069).epsilon(1e-10));
+ CHECK(r.shape2==doctest::Approx(.19427423066143805).epsilon(1e-10));
+ CHECK(r.shape3==doctest::Approx(51.063150568462).epsilon(1e-10));
+}

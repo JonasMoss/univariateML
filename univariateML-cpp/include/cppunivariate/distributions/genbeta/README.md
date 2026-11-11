@@ -43,7 +43,7 @@ r:
   sampler: rgenbeta
   control:
     scale: Known positive finite upper endpoint, strictly above every observation.
-    gradtol: Relative coefficient tolerance for certified power and all-free finite searches. Held shape1 = 1 inherits the Kumaraswamy coefficient bounds.
+    gradtol: Relative accuracy of every free coefficient. Held shape1 = 1 inherits Kumaraswamy bounds.
     iterlim: "Work limit: min(iterlim, 100000) iterations per solve and 128 * min(iterlim, 100000) certificate evaluations."
 log_density: log(shape3)-log(x)-loggamma(shape1)-loggamma(shape2)+loggamma(shape1+shape2)+shape1*shape3*log(x/scale)+(shape2-1)*log(1-(x/scale)**shape3)
 limits:
@@ -351,3 +351,17 @@ A completed gamma certificate selects its fitted limit; other gamma proposals
 retain an uncertified legacy payload. Unfinished
 all-free certificates retain successful legacy answers unless contradicted by
 a proved improvement; failures of the legacy search still stop with witnesses.
+
+The weak power direction near the gamma face requires cancellation before
+score evaluation. With $k=\mathrm{shape1}\,\mathrm{shape3}$, the correction
+$C(p,q)=\log\Gamma(p)+q\log p-\log\Gamma(p+q)$ removes the common gamma-limit
+terms; $C$ tends to zero as $p$ tends to infinity with $q$ fixed. This avoids
+amplifying rounded beta-shape scores along the power profile. With power held,
+concentrated samples instead use beta mean/precision coordinates, and a single
+free beta shape has a monotone digamma-increment score. Its conditional
+statistics are the means of $\log(x/\mathrm{scale})$ and
+$\log(1-(x/\mathrm{scale})^{\mathrm{shape3}})$. For held shape2 = 2 and
+shape3 = 1, setting $c=-\operatorname{mean}\log(x/\mathrm{scale})$ gives
+$1/p+1/(p+1)=c$, hence $p=(2-c+\sqrt{c^2+4})/(2c)$ for shape1. This
+strictly decreasing score has a unique finite root for every $c>0$.
+`gradtol` defaults to `1e-10`.

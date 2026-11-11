@@ -98,13 +98,13 @@ test_that("lst new holds agree with independent multistart likelihoods", {
   held_values <- c(mu=0.2,sigma=1.3,df=3)
   samples <- list(rlogis(20),rlogis(100),c(-2,-1,0,0,1,3),c(-1,2),
                   qnorm((1:20-.5)/20),seq(-1,1,length.out=20))
-  ld <- function(x,p) dlst(x = x, mu = p[1], sigma = p[2], df = p[3], log = TRUE)
+  ld <- function(x,p) stats::dt((x-p[1])/p[2],df=p[3],log=TRUE)-log(p[2])
   for(x in samples)for(mask in 1:7) {
     held <- names(held_values)[as.logical(intToBits(mask)[seq_along(held_values)])]
     args <- as.list(held_values[held])
     f <- tryCatch(suppressWarnings(do.call(mllst,c(list(x=x),args))),error=identity)
     if(inherits(f,"error")) {
-      expect_match(conditionMessage(f),"[Uu]se `ml|unbounded|collapse|support cannot contain|does not exist|positive")
+      expect_match(conditionMessage(f),"global certificate|[Uu]se `ml|unbounded|collapse|support cannot contain|does not exist|positive")
       next
     }
     expect_identical(unname(as.numeric(f[held])),unname(held_values[held]))
@@ -147,7 +147,7 @@ test_that("lst conditional collapse, feasibility and invalid holds", {
   expect_error(suppressWarnings(mllst(c(0,0,1),mu=0), classes = "univariateML_restricted"),"unbounded")
   expect_true(is.finite(logLik(suppressWarnings(mllst(rep(2,4),mu=0,df=3), classes = "univariateML_restricted"))))
   expect_equal(unname(suppressWarnings(mllst(rep(2,4),sigma=1,df=3), classes = "univariateML_restricted")["mu"]),2,tolerance=1e-7)
-  expect_error(suppressWarnings(mllst(qnorm((1:100-.5)/100),mu=0), classes = "univariateML_restricted"),"mlnorm")
+  expect_error(mllst(qnorm((1:100-.5)/100),mu=0),"mlnorm")
   expect_error(suppressWarnings(mllst(1:5,mu=Inf), classes = "univariateML_restricted"),"mu")
   expect_error(suppressWarnings(mllst(1:5,sigma=0), classes = "univariateML_restricted"),"sigma")
 })
@@ -215,7 +215,7 @@ test_that("held-scale location certificates retain both equal maxima", {
 })
 
 
-test_that("uncertified held free-shape searches still return finite golden fits", {
+test_that("shape-only held fits certify while joint numerical fits remain available", {
   g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"),"lst","golden.json"))
   for (held in list("mu","sigma",c("mu","sigma"))) {
     args <- g$estimates[held]
@@ -223,6 +223,7 @@ test_that("uncertified held free-shape searches still return finite golden fits"
     expect_s3_class(f,"univariateML")
     expect_identical(unname(as.numeric(f[held])),unname(as.numeric(unlist(args))))
     expect_setequal(attr(f,"fixed"),held)
+    expect_identical(attr(f,"certified"),length(held)==2L)
     expect_true(all(is.finite(f)))
     expect_gte(as.numeric(logLik(f)),g$logLik-1e-6*length(g$data))
     expect_error(do.call(mllst,c(list(x=g$data,iterlim=1),args)),
@@ -255,6 +256,54 @@ test_that("held solver exhaustion carries structured numerical details", {
     expect_true(is.finite(e$loglik_lower))
     expect_identical(e$loglik_upper,Inf)
   }
+})
+
+test_that("lst shape-only certificate honors the held-location shape exemption", {
+  f <- mllst(c(-100,100),mu=0,sigma=1)
+  expect_gt(unname(f["df"]),0)
+  expect_lt(unname(f["df"]),.5)
+  expect_length(attr(f,"restricted"),0L)
+  expect_equal(as.numeric(logLik(f)),sum(dt(c(-100,100),df=f["df"],log=TRUE)),tolerance=1e-10)
+  e <- tryCatch(mllst(c(-1,1),mu=0,sigma=1),error=identity)
+  expect_s3_class(e,"univariateML_limit")
+  expect_identical(e$model,"norm")
+})
+
+test_that("lst free-shape held solver stops retain a finite witness", {
+  g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"),"lst","golden.json"))
+  for(held in list("mu","sigma",c("mu","sigma"))) {
+    e <- tryCatch(do.call(mllst,c(list(x=g$data,iterlim=1),g$estimates[held])),error=identity)
+    expect_s3_class(e,if(identical(held,"sigma")) "univariateML_budget" else "univariateML_numerical")
+    expect_true(is.finite(e$loglik_lower))
+    expect_identical(e$loglik_upper,Inf)
+    expect_gt(nrow(e$candidates),0L)
+  }
+})
+
+
+test_that("lst symmetry proves distinct global maximizers", {
+  e <- tryCatch(mllst(c(-100,-99,0,99,100),df=.5),error=identity)
+  expect_s3_class(e,"univariateML_tie")
+  expect_true(is.finite(e$loglik_lower))
+  expect_identical(e$loglik_upper,Inf)
+  expect_equal(nrow(e$candidates),2L)
+})
+
+test_that("signed normal bounds certify a held-location normal face", {
+  e <- tryCatch(mllst(c(-1,2),mu=.2),error=identity)
+  expect_s3_class(e,"univariateML_limit")
+  expect_identical(e$model,"norm")
+  expect_identical(e$certified,TRUE)
+  expect_true(is.finite(e$loglik_upper))
+})
+
+test_that("lst signed normal profile retains the normal limit class", {
+  e <- tryCatch(mllst(qnorm((1:100-.5)/100),mu=0),error=identity)
+  expect_s3_class(e,"univariateML_limit")
+  expect_identical(e$model,"norm")
+  expect_identical(e$certified,TRUE)
+  expect_true(is.finite(e$loglik_upper))
+  expect_match(conditionMessage(e),"Use `mlnorm`",fixed=TRUE)
 })
 
 test_that("extreme Student shapes retain tails and finite draws", {

@@ -333,8 +333,17 @@ $10^{-8}n$ margin is practical rather than an outward-rounded enclosure.
 
 Estimated coefficients on an applicable `fit_domain` bound carry `restricted`
 and emit a warning of class `univariateML_restricted`. Held coefficients are
-not flagged. README hold exemptions apply to free coefficients. Failed
-optimizers return a failure status unless the score norm in fitting
-coordinates is below `1e-3`; unresolved scalar searches stop.
+not flagged. README hold exemptions apply to free coefficients.
 
 Supply `mu` explicitly. Holding `mu = 0` gives the ordinary half-t, another numeric value holds a translation, and `mu = NULL` estimates the endpoint. A half-normal escape recommends `mlhnorm` with the same endpoint and any held scale.
+
+Degrees of freedom can be weakly identified even when the profiled scale
+and likelihood are accurate. At the normal face, the common half-step gamma
+and Gaussian data terms must cancel before differentiation. The remaining
+score requires the joint shape/scale information to bound coefficient error. The free endpoint remains the exact
+sample minimum.
+
+For held $\nu=1$, $\mu=0$ and observations $(0,d,2d)$, the scale
+maximizer is $d\sqrt{(\sqrt{73}-5)/6}$. At the smallest positive
+double $d$, rounding this scale cannot satisfy the coefficient contract;
+the fitter reports a numerical accuracy failure.

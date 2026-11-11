@@ -145,3 +145,34 @@ TEST_CASE("gumbel: TASK-132 invalid data never report success") {
     CHECK(cppunivariate::fit_gumbel_newton(x,1e-8,200).status != cppunivariate::GumbelStatus::Ok);
   }
 }
+
+TEST_CASE("gumbel: large scale uses its natural location accuracy floor") {
+  const std::vector<double> x{2.3228224154969013,-.08046749604975467,-1.110891503229487,3.408709691847847,2785373.185316817};
+  const auto r=cppunivariate::fit_gumbel_newton({x.data(),x.size()},1e-10,100);
+  REQUIRE(r.status==cppunivariate::GumbelStatus::Ok);
+  CHECK(r.mu==doctest::Approx(122412.1337352374661724457).epsilon(1e-11).scale(0));
+  CHECK(r.sigma==doctest::Approx(552576.871224461825294332).epsilon(1e-11).scale(0));
+}
+
+TEST_CASE("gumbel: scale score preserves the unrounded centered sample mean") {
+  const std::vector<double> x{0,.125,.25,.625,1.125};
+  auto y=x;for(double& v:y)v+=262144;
+  const auto a=cppunivariate::fit_gumbel_newton({x.data(),x.size()},1e-12,200);
+  const auto b=cppunivariate::fit_gumbel_newton({y.data(),y.size()},1e-12,200);
+  REQUIRE(a.status==cppunivariate::GumbelStatus::Ok);
+  REQUIRE(b.status==cppunivariate::GumbelStatus::Ok);
+  CHECK(a.sigma==doctest::Approx(b.sigma).epsilon(1e-12).scale(0));
+}
+
+TEST_CASE("gumbel: unrepresentable subnormal coefficient is not Ok") {
+  const double u=std::numeric_limits<double>::denorm_min();
+  const std::vector<double> x{0,u};
+  const auto r=cppunivariate::fit_gumbel_newton({x.data(),x.size()},1e-10,200);
+  CHECK(r.status==cppunivariate::GumbelStatus::AccuracyFailure);
+}
+
+TEST_CASE("gumbel: held scale does not hide an unrepresentable location") {
+  const double u=std::numeric_limits<double>::denorm_min();
+  const std::vector<double> x{0,u};
+  CHECK(cppunivariate::fit_gumbel_held({x.data(),x.size()},1e-10,100,NAN,u).status==cppunivariate::GumbelStatus::AccuracyFailure);
+}

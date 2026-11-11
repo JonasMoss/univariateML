@@ -13,7 +13,7 @@
 #include <map>
 #include <vector>
 namespace cppunivariate {
-enum class PigStatus { Ok, PoissonLimit, ZeroLimit, InvalidInput, SearchFailure };
+enum class PigStatus { Ok, PoissonLimit, ZeroLimit, InvalidInput, SearchFailure, AccuracyFailure };
 struct PigResult {
   double mean, shape, logLik;
   int iterations;
@@ -159,32 +159,40 @@ inline PigResult binary_shape(const Counts& data,double mean) {
     return {mean,shape,ll,0,PigStatus::SearchFailure};
   return {mean,shape,ll,0,PigStatus::Ok};
 }
-struct ShapeMoments {double degree=0,scaled_degree=0;};
+struct ShapeMoments {double degree=0,scaled_degree=0,scaled_difference=0;};
 // Q_m/Q_{m-1}=(2m-1)/z+Q_{m-2}/Q_{m-1}. No large polynomial
 // coefficients or logarithm differences are needed. Compute z*E[J] as
 // well as E[J], preserving the nonzero Poisson-side limit when E is tiny.
 inline ShapeMoments shape_moments(const Counts& data,double logz) {
   const double inverse_z=std::exp(-logz);
-  double ratio=1,previous=0,current=0,previous_scaled=0,current_scaled=0;
-  ShapeMoments out;Sum degree,scaled_degree;
+  double previous=0,current=0,previous_scaled=0,current_scaled=0;
+  double ratio_difference=0,previous_difference=0,current_difference=0;
+  ShapeMoments out;Sum degree,scaled_degree,difference;
   auto frequency=data.frequencies.begin();
   if(frequency->first==0)++frequency;
   for(std::int64_t k=1;k<=data.frequencies.rbegin()->first;++k) {
     if(k>=2) {
-      const double a=2.*k-3,term=a*inverse_z,next_ratio=term+1/ratio;
+      const double a=2.*k-3,term=a*inverse_z;
+      const double next_difference=term-ratio_difference/(1+ratio_difference);
+      const double next_ratio=1+next_difference;
       const double weight=term/next_ratio;
       const double next=weight*(current+1)+(1-weight)*previous;
       const double next_scaled=weight*current_scaled+(1-weight)*previous_scaled+a/next_ratio;
+      const double next_scaled_difference=weight*current_difference+(1-weight)*previous_difference
+        -a*next_difference/next_ratio+weight*(k-2);
+      previous_difference=current_difference;current_difference=next_scaled_difference;
+      ratio_difference=next_difference;
       previous=current;current=next;previous_scaled=current_scaled;current_scaled=next_scaled;
-      ratio=next_ratio;
     }
     if(frequency!=data.frequencies.end() && frequency->first==k) {
       degree.add(static_cast<CPPUNIV_EXTENDED_REAL>(frequency->second)*current);
-      scaled_degree.add(static_cast<CPPUNIV_EXTENDED_REAL>(frequency->second)*current_scaled);++frequency;
+      scaled_degree.add(static_cast<CPPUNIV_EXTENDED_REAL>(frequency->second)*current_scaled);
+      difference.add(static_cast<CPPUNIV_EXTENDED_REAL>(frequency->second)*current_difference);++frequency;
     }
   }
   out.degree=static_cast<double>(degree.value/data.n);
-  out.scaled_degree=static_cast<double>(scaled_degree.value/data.n);return out;
+  out.scaled_degree=static_cast<double>(scaled_degree.value/data.n);
+  out.scaled_difference=static_cast<double>(difference.value/data.n);return out;
 }
 struct ShapeScore {double value,error;};
 inline ShapeScore shape_score(const Counts& data,double mean,double logshape) {
@@ -206,7 +214,22 @@ inline ShapeScore shape_score(const Counts& data,double mean,double logshape) {
   const double scale=std::numeric_limits<double>::min()+std::abs(first)+std::abs(second)+std::abs(third);
   const double error=256*std::numeric_limits<double>::epsilon()*
     (1+std::sqrt(double(data.frequencies.rbegin()->first)))*scale;
-  return {first-second+third,error};
+  double value=first-second+third;
+  if(q>=.5 && logz>=0) {
+    Sum factorial,total;
+    for(const auto& kv:data.frequencies) {
+      factorial.add(static_cast<CPPUNIV_EXTENDED_REAL>(kv.second)*kv.first*(kv.first-1));
+      total.add(static_cast<CPPUNIV_EXTENDED_REAL>(kv.second)*kv.first);
+    }
+    const CPPUNIV_EXTENDED_REAL n=data.n,mu=mean;
+    const double edge=mean==data.average?
+      static_cast<double>((n*factorial.value-total.value*total.value)/(2*n*n)):
+      static_cast<double>((n*mu*mu-2*mu*total.value+factorial.value)/(2*n));
+    const double u=-std::expm1(logq),f=static_cast<double>(factorial.value/n);
+    value=edge-.5*mean*mean*(u/(1+q))*(u/(1+q))
+      +.5*(q+1/q)*moments.scaled_difference+u*u/(4*q)*f;
+  }
+  return {value,error};
 }
 inline PigResult poisson_face(const Counts& data,double mean,int iterations=0) {
   const double ll=data.poisson(mean);
@@ -296,16 +319,25 @@ inline PigResult free_shape(const Counts& data,double mean,bool mean_free,double
       bool polished=false;
       for(;out.iterations<cap;++out.iterations) {
         const double mid=a+(b-a)/2;
-        if(b-a<=tol || mid==a || mid==b) {polished=true;break;}
+        if(b-a<=.01*tol || mid==a || mid==b) {polished=true;break;}
         const auto s=shape_score(data,mean,mid);
         if(!std::isfinite(s.value)) {witness(mid);return out;}
-        if(s.value==0) {a=mid;b=mid;polished=true;break;}
+        if(s.value==0) {
+          // A rounded zero is not a root enclosure. Keep independently
+          // signed neighbours at the requested local coefficient resolution.
+          const double left=std::max(a,mid-.004*tol),right=std::min(b,mid+.004*tol);
+          if(!(shape_score(data,mean,left).value<0 && shape_score(data,mean,right).value>0)) {witness(mid);return out;}
+          a=left;b=right;polished=true;break;
+        }
         if(s.value>0)b=mid;else a=mid;
       }
       if(!polished) {witness(a+(b-a)/2);return out;}
       witness(a+(b-a)/2);
       if(!std::isfinite(out.logLik) ||
           std::nextafter(out.shape,INFINITY)-out.shape>resolution*out.shape)return out;
+      if(!(out.shape>0) || std::abs(std::log(out.shape)-(a+(b-a)/2))>.25*tol) {
+        out.status=PigStatus::AccuracyFailure;return out;
+      }
       out.status=PigStatus::Ok;out.stop_detail={};return out;
     }
     const double mid=lo+(hi-lo)/2;
@@ -326,7 +358,7 @@ inline PigResult free_shape(const Counts& data,double mean,bool mean_free,double
 }
 // NaN means free. Each fixed subset is evaluated or profiled exactly;
 // there is no generic multi-parameter optimiser.
-inline PigResult pig_mle(ispan x, double tol=1e-9, int maxit=200,
+inline PigResult pig_mle(ispan x, double tol=1e-10, int maxit=200,
  double mean=std::numeric_limits<double>::quiet_NaN(),
  double shape=std::numeric_limits<double>::quiet_NaN()) {
   const double nan=std::numeric_limits<double>::quiet_NaN();

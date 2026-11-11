@@ -8,15 +8,15 @@
 namespace cppunivariate {
 enum class SkellamStatus { Ok, InvalidInput, Impossible, IterationFailure };
 struct SkellamResult { double mu1,mu2,logLik; int iterations; SkellamStatus status; StopDetail stop_detail{}; };
-inline SkellamResult skellam_mle(span x,double tol=1e-9,int maxit=150,
+inline SkellamResult skellam_accuracy_search(span x,double tol=1e-9,int maxit=150,
     double mu1=special::kNaN,double mu2=special::kNaN) {
   maxit = static_cast<int>(solver_budget(maxit));
   const bool f1=!std::isnan(mu1),f2=!std::isnan(mu2);
   const auto fail=[](SkellamStatus s) {return SkellamResult{special::kNaN,special::kNaN,special::kNaN,0,s};};
   if(x.size()==0 || !(tol>0) || !std::isfinite(tol) || maxit<1 ||
      (f1 && !(std::isfinite(mu1) && mu1>=0)) || (f2 && !(std::isfinite(mu2) && mu2>=0))) return fail(SkellamStatus::InvalidInput);
-  CPPUNIV_EXTENDED_REAL sum=0;double xmin=INFINITY,xmax=-INFINITY;
-  for(double v:x) {if(!std::isfinite(v) || v!=std::floor(v)) return fail(SkellamStatus::InvalidInput);sum+=v;xmin=std::min(xmin,v);xmax=std::max(xmax,v);}
+  CPPUNIV_EXTENDED_REAL sum=0,correction=0;double xmin=INFINITY,xmax=-INFINITY;
+  for(double v:x) {if(!std::isfinite(v) || v!=std::floor(v)) return fail(SkellamStatus::InvalidInput);const CPPUNIV_EXTENDED_REAL y=static_cast<CPPUNIV_EXTENDED_REAL>(v)-correction,t=sum+y;correction=(t-sum)-y;sum=t;xmin=std::min(xmin,v);xmax=std::max(xmax,v);}
   const double m=static_cast<double>(sum/x.size());
   const auto ll=[&](double a,double b) {double out=0;for(double v:x) out+=skellam_detail::logmass(v,a,b);return out;};
   if(f1 && f2) {const double l=ll(mu1,mu2);if(!std::isfinite(l)) return fail(SkellamStatus::Impossible);return {mu1,mu2,l,0,SkellamStatus::Ok};}
@@ -156,5 +156,25 @@ inline SkellamResult skellam_mle(span x,double tol=1e-9,int maxit=150,
   if(!std::isfinite(best)) return fail(SkellamStatus::Impossible);
   const auto r=rates(best_t);
   return {r[0],r[1],best,iterations,SkellamStatus::Ok};
+}
+}
+
+#include "accuracy.hpp"
+namespace cppunivariate {
+inline SkellamResult skellam_mle(span x,double tol=1e-10,int maxit=150,double mu1=NAN,double mu2=NAN) {
+  auto r=skellam_accuracy_search(x,tol,maxit,mu1,mu2);
+  if(r.status!=SkellamStatus::Ok||r.mu1==0||r.mu2==0)return r;
+  std::array<double,3> q{{std::log(r.mu1),std::log(r.mu2),0}};
+  const std::array<bool,3> free{{std::isnan(mu1),std::isnan(mu2),false}};
+  const auto objective=[&](const std::array<accuracy_detail::Jet,3>& z) {
+    const auto a=accuracy_detail::exp(z[0]),b=accuracy_detail::exp(z[1]);accuracy_detail::JetSum f;
+    for(double v:x)f.add(skellam_detail::differentiable_mass(v,a,b,maxit));
+    return f.value;
+  };
+  if(!accuracy_detail::polish(q,free,tol,maxit,objective)){r.status=SkellamStatus::IterationFailure;return r;}
+  if(free[0])r.mu1=std::exp(q[0]);
+  if(free[1])r.mu2=std::exp(q[1]);
+  r.logLik=0;for(double v:x)r.logLik+=skellam_detail::logmass(v,r.mu1,r.mu2);
+  return r;
 }
 }

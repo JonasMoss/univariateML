@@ -298,7 +298,8 @@ TEST_CASE("bbinom: held beta free size certificates") {
   }
   CHECK(fit(std::vector<int>{3,3}, kNaN, kNaN, 2).status == cppunivariate::BbinomStatus::PointMass);
   CHECK(fit(std::vector<int>{0,0}, kNaN, kNaN, 2).status == cppunivariate::BbinomStatus::Unidentified);
-  CHECK(fit(x, kNaN, kNaN, 1e9).status == cppunivariate::BbinomStatus::SizeBudget);
+  CHECK(fit(x, kNaN, kNaN, 1e9).status == cppunivariate::BbinomStatus::Ok);
+  CHECK_FALSE(fit(x, kNaN, kNaN, 1e9).certified);
 }
 
 TEST_CASE("bbinom: seeded held-beta searches agree with a dense size grid") {
@@ -332,8 +333,10 @@ TEST_CASE("bbinom: held alpha free-size certified and unresolved outcomes") {
   }
   CHECK(fit(std::vector<int>{0, 0}, kNaN, 1, kNaN).status == cppunivariate::BbinomStatus::Unidentified);
   CHECK(fit(std::vector<int>{3, 3}, kNaN, 1, kNaN).status == cppunivariate::BbinomStatus::PointMass);
-  CHECK(fit(std::vector<int>{0, 1001}, kNaN, 1, kNaN).status == cppunivariate::BbinomStatus::SizeBudget);
-  CHECK(fit(std::vector<int>{0, 0, 0, 10}, kNaN, 1, kNaN).status == cppunivariate::BbinomStatus::FaceUnresolved);
+  CHECK(fit(std::vector<int>{0, 1001}, kNaN, 1, kNaN).status == cppunivariate::BbinomStatus::Ok);
+  CHECK_FALSE(fit(std::vector<int>{0, 1001}, kNaN, 1, kNaN).certified);
+  CHECK(fit(std::vector<int>{0, 0, 0, 10}, kNaN, 1, kNaN).status == cppunivariate::BbinomStatus::Ok);
+  CHECK_FALSE(fit(std::vector<int>{0, 0, 0, 10}, kNaN, 1, kNaN).certified);
 }
 
 TEST_CASE("bbinom: seeded held-alpha searches agree with finite size profiles") {
@@ -369,7 +372,8 @@ TEST_CASE("bbinom: structured stop payloads") {
   CHECK(f.stop_detail.limit_coef[2]==doctest::Approx(1./3));
   const std::vector<int> spread{0,0,0,10};
   const auto b=cppunivariate::bbinom_mle({spread.data(),spread.size()},NAN,1e-10,100,1,NAN);
-  CHECK(b.status==cppunivariate::BbinomStatus::FaceUnresolved);
+  CHECK(b.status==cppunivariate::BbinomStatus::Ok);
+  CHECK_FALSE(b.certified);
   REQUIRE(b.stop_detail.candidates.size()>=2);
   CHECK(b.stop_detail.limit_model==cppunivariate::StopModel::Nbinom);
   CHECK(b.stop_detail.loglik_upper==INFINITY);
@@ -444,7 +448,8 @@ TEST_CASE("bbinom: final-cell exhaustion retains finite and face witnesses") {
   REQUIRE(fitted.status==cppunivariate::BbinomStatus::Ok);
   cppunivariate::bbinom_detail::CellWork limited(reference.used-1);
   const auto stopped=cppunivariate::bbinom_mle_work({x.data(),x.size()},10,1e-10,100,kNaN,kNaN,limited);
-  CHECK(stopped.status==cppunivariate::BbinomStatus::SizeBudget);
+  CHECK(stopped.status==cppunivariate::BbinomStatus::Ok);
+  CHECK_FALSE(stopped.certified);
   CHECK(stopped.stop_detail.budget_exhausted);
   CHECK(stopped.stop_detail.limit_model==cppunivariate::StopModel::Binom);
   CHECK(stopped.stop_detail.candidates.size()>=2);
@@ -497,7 +502,8 @@ TEST_CASE("bbinom: impossible coefficient precision stops with a finite witness"
   for(int mask=0;mask<3;++mask) {
     const auto result=cppunivariate::bbinom_mle({x.data(),x.size()},10,1e-18,500,
       mask==1?2:kNaN,mask==2?3:kNaN);
-    CHECK(result.status==cppunivariate::BbinomStatus::IterationFailure);
+    CHECK(result.status==cppunivariate::BbinomStatus::Ok);
+  CHECK_FALSE(result.certified);
     CHECK(result.stop_detail.loglik_upper==INFINITY);
     REQUIRE(!result.stop_detail.candidates.empty());
     CHECK(std::isfinite(result.stop_detail.candidates.back().loglik_lower));
@@ -522,5 +528,25 @@ TEST_CASE("bbinom: non-finite held-shape search bounds stop before grid allocati
     CHECK(b.status==cppunivariate::BbinomStatus::IterationFailure);
     CHECK(a.stop_detail.loglik_upper==INFINITY);
     CHECK(b.stop_detail.loglik_upper==INFINITY);
+  }
+}
+
+TEST_CASE("bbinom: fallback is a finite held-alpha profile rather than a face estimate") {
+  const std::vector<int> x{0,0,0,10};
+  const auto f=cppunivariate::bbinom_mle({x.data(),x.size()},NAN,1e-10,100,1,NAN);
+  REQUIRE(f.status==cppunivariate::BbinomStatus::Ok);
+  CHECK_FALSE(f.certified);CHECK(f.alpha==1);CHECK(std::isfinite(f.beta));
+  const auto held=cppunivariate::bbinom_mle({x.data(),x.size()},f.size,1e-10,100,1,NAN);
+  CHECK(f.logLik==doctest::Approx(held.logLik).epsilon(1e-10));
+}
+
+TEST_CASE("bbinom: an unclosed size tail retains the best successful prefix profile") {
+  const std::vector<int>x{0,0,0,10};
+  const auto f=cppunivariate::bbinom_mle({x.data(),x.size()},NAN,1e-10,100,1,NAN);
+  REQUIRE(f.status==cppunivariate::BbinomStatus::Ok);CHECK_FALSE(f.certified);
+  for(int N=10;N<=20;++N) {
+    const auto fixed=cppunivariate::bbinom_mle({x.data(),x.size()},N,1e-10,100,1,NAN);
+    REQUIRE(fixed.status==cppunivariate::BbinomStatus::Ok);
+    CHECK(f.logLik>=fixed.logLik-1e-8);
   }
 }

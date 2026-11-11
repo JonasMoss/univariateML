@@ -1,0 +1,255 @@
+[
+  {
+    "id": "sn",
+    "fit_errors": {
+      "after-double": 9.31894289896892e-15,
+      "after-native": 9.31894289896892e-15,
+      "after-r": 9.33840683652375e-15,
+      "after-wasm": 9.31894289896892e-15,
+      "before-native": 4.3212834584604337e-07
+    },
+    "loglik_errors": {
+      "after-double": 2.958128772502449e-16,
+      "after-native": 2.958128772502449e-16,
+      "after-r": 3.021722410459688e-16,
+      "after-wasm": 2.958128772502449e-16,
+      "before-native": 3.732953082479085e-16
+    },
+    "after-double": 9.31894289896892e-15,
+    "after-native": 9.31894289896892e-15,
+    "after-r": 9.33840683652375e-15,
+    "after-wasm": 9.31894289896892e-15,
+    "before-native": 4.321283458382742e-07,
+    "allowance": 2e-14
+  },
+  {
+    "id": "skellam",
+    "fit_errors": {
+      "after-double": 1.972927096476085e-15,
+      "after-native": 2.1615752600235763e-15,
+      "after-r": 2.1741572741722348e-15,
+      "after-wasm": 1.7842789329285937e-15,
+      "before-native": 3.958580224213763e-08
+    },
+    "loglik_errors": {
+      "after-double": 1.972927096476085e-15,
+      "after-native": 2.1615752600235763e-15,
+      "after-r": 2.1741572741722348e-15,
+      "after-wasm": 1.7842789329285937e-15,
+      "before-native": 3.3956669438548418e-15
+    },
+    "after-double": 2.499201185973212e-16,
+    "after-native": 3.5819010595490354e-16,
+    "after-r": 3.630956477008195e-16,
+    "after-wasm": 2.499201185973212e-16,
+    "before-native": 3.958580224213763e-08,
+    "allowance": 5.000000000000001e-15
+  },
+  {
+    "id": "sgomp",
+    "fit_errors": {
+      "after-double": 6.578213745074043e-16,
+      "after-native": 6.578213745074043e-16,
+      "after-r": 6.401209134444646e-16,
+      "after-wasm": 6.578213745074043e-16,
+      "before-native": 2.8750483640080803e-08
+    },
+    "loglik_errors": {
+      "after-double": 3.274551002608252e-17,
+      "after-native": 3.274551002608252e-17,
+      "after-r": 3.7250413707123993e-17,
+      "after-wasm": 3.274551002608252e-17,
+      "before-native": 2.2646517828737157e-15
+    },
+    "after-double": 6.578213745074043e-16,
+    "after-native": 6.578213745074043e-16,
+    "after-r": 6.401209134444646e-16,
+    "after-wasm": 6.578213745074043e-16,
+    "before-native": 2.8750483630988913e-08,
+    "allowance": 1e-15
+  },
+  {
+    "id": "dgamma",
+    "fit_errors": {
+      "after-double": 2.2159230731927715e-15,
+      "after-native": 4.499836762398142e-16,
+      "after-r": 4.517408028434239e-16,
+      "after-wasm": 1.1079615365963857e-15,
+      "before-native": 2.1407955252807804e-09
+    },
+    "loglik_errors": {
+      "after-double": 4.499836762398142e-16,
+      "after-native": 4.499836762398142e-16,
+      "after-r": 4.517408028434239e-16,
+      "after-wasm": 4.499836762398142e-16,
+      "before-native": 2.7697481761444287e-16
+    },
+    "after-double": 2.1742793555113456e-15,
+    "after-native": 4.164371768142584e-17,
+    "after-r": 4.3945066125421926e-17,
+    "after-wasm": 1.0663178189149598e-15,
+    "before-native": 2.1407954836370623e-09,
+    "allowance": 5.000000000000001e-15
+  },
+  {
+    "id": "pareto3",
+    "fit_errors": {
+      "after-double": 6.002724986182233e-16,
+      "after-native": 6.002724986182233e-16,
+      "after-r": 6.023990807602782e-16,
+      "after-wasm": 6.002724986182233e-16,
+      "before-native": 2.2146680960482342e-16
+    },
+    "loglik_errors": {
+      "after-double": 6.002724986182233e-16,
+      "after-native": 6.002724986182233e-16,
+      "after-r": 6.023990807602782e-16,
+      "after-wasm": 6.002724986182233e-16,
+      "before-native": 7.935972520227282e-17
+    },
+    "after-double": 6.544370588331858e-17,
+    "after-native": 6.544370588331858e-17,
+    "after-r": 5.269118341725626e-17,
+    "after-wasm": 6.544370588331858e-17,
+    "before-native": 1.779406868362936e-16,
+    "allowance": 1e-15
+  },
+  {
+    "id": "zinb",
+    "fit_errors": {
+      "after-double": 3.794368289572899e-15,
+      "after-native": 1.07835709529672e-15,
+      "after-r": 1.0873328210007365e-15,
+      "after-wasm": 3.794368289572899e-15,
+      "before-native": 3.788535747169134e-08
+    },
+    "loglik_errors": {
+      "after-double": 2.342551518323397e-16,
+      "after-native": 2.342551518323397e-16,
+      "after-r": 2.327491356493972e-16,
+      "after-wasm": 2.342551518323397e-16,
+      "before-native": 2.342551518323397e-16
+    },
+    "after-double": 3.7790393558122215e-15,
+    "after-native": 1.0277697522721024e-15,
+    "after-r": 1.036745477976119e-15,
+    "after-wasm": 3.7790393558122215e-15,
+    "before-native": 3.788535745636241e-08,
+    "allowance": 1.0000000000000002e-14
+  },
+  {
+    "id": "zmnbinom",
+    "fit_errors": {
+      "after-double": 5.3504871409757346e-15,
+      "after-native": 4.681676248353768e-15,
+      "after-r": 4.693355204803561e-15,
+      "after-wasm": 5.3504871409757346e-15,
+      "before-native": 3.7933355114238233e-07
+    },
+    "loglik_errors": {
+      "after-double": 5.027525624022626e-16,
+      "after-native": 2.8641492578137975e-16,
+      "after-r": 2.5093018251992893e-16,
+      "after-wasm": 5.027525624022626e-16,
+      "before-native": 2.1633763662088287e-16
+    },
+    "after-double": 5.3190764321345435e-15,
+    "after-native": 4.650265539512577e-15,
+    "after-r": 4.66194449596237e-15,
+    "after-wasm": 5.3190764321345435e-15,
+    "before-native": 3.793335511177483e-07,
+    "allowance": 1.0000000000000002e-14
+  },
+  {
+    "id": "ztnbinom",
+    "fit_errors": {
+      "after-double": 3.588584005552942e-15,
+      "after-native": 3.8083642190738065e-15,
+      "after-r": 3.777075278543204e-15,
+      "after-wasm": 3.588584005552942e-15,
+      "before-native": 2.7131058136828183e-07
+    },
+    "loglik_errors": {
+      "after-double": 3.588584005552942e-15,
+      "after-native": 3.8083642190738065e-15,
+      "after-r": 3.777075278543204e-15,
+      "after-wasm": 3.588584005552942e-15,
+      "before-native": 3.8083642190738065e-15
+    },
+    "after-double": 2.2797989126432168e-15,
+    "after-native": 2.888305983221497e-15,
+    "after-r": 2.8822467723323967e-15,
+    "after-wasm": 2.2797989126432168e-15,
+    "before-native": 2.7131058136828183e-07,
+    "allowance": 1.0000000000000002e-14
+  },
+  {
+    "id": "ht",
+    "fit_errors": {
+      "after-double": 3.5290287322572323e-15,
+      "after-native": 3.5290287322572323e-15,
+      "after-r": 3.5402821258502106e-15,
+      "after-wasm": 3.5290287322572323e-15,
+      "before-native": 7.896379109807988e-08
+    },
+    "loglik_errors": {
+      "after-double": 3.955258162952733e-16,
+      "after-native": 5.932887244429099e-16,
+      "after-r": 5.971918707792035e-16,
+      "after-wasm": 3.955258162952733e-16,
+      "before-native": 1.3843403570334565e-15
+    },
+    "after-double": 3.5290287322572323e-15,
+    "after-native": 3.5290287322572323e-15,
+    "after-r": 3.5402821258502106e-15,
+    "after-wasm": 3.5290287322572323e-15,
+    "before-native": 7.896379107077479e-08,
+    "allowance": 1.0000000000000002e-14
+  },
+  {
+    "id": "emg",
+    "fit_errors": {
+      "after-double": 1.9107845182967262e-14,
+      "after-native": 4.737482276768743e-15,
+      "after-r": 4.730051210750216e-15,
+      "after-wasm": 2.842489366061246e-14,
+      "before-native": 4.070357606498865e-09
+    },
+    "loglik_errors": {
+      "after-double": 2.685220734381908e-16,
+      "after-native": 4.0278311015728623e-16,
+      "after-r": 4.062142020329071e-16,
+      "after-wasm": 4.0278311015728623e-16,
+      "before-native": 6.271685044428348e-17
+    },
+    "after-double": 1.9103872129190528e-14,
+    "after-native": 4.73350922299201e-15,
+    "after-r": 4.726078156973483e-15,
+    "after-wasm": 2.8420920606835725e-14,
+    "before-native": 4.070357606498865e-09,
+    "allowance": 5e-14
+  },
+  {
+    "id": "genbeta",
+    "fit_errors": {
+      "after-double": 3.940731748015229e-15,
+      "after-native": 4.355078856418503e-15,
+      "after-r": 4.352982280691761e-15,
+      "after-wasm": 3.940731748015229e-15,
+      "before-native": 3.8502579751657625e-09
+    },
+    "loglik_errors": {
+      "after-double": 3.940731748015229e-15,
+      "after-native": 4.355078856418503e-15,
+      "after-r": 4.352982280691761e-15,
+      "after-wasm": 3.940731748015229e-15,
+      "before-native": 6.215206626049102e-16
+    },
+    "after-double": 3.373505256799233e-15,
+    "after-native": 7.575612123859132e-16,
+    "after-r": 7.682264884021524e-16,
+    "after-wasm": 3.373505256799233e-15,
+    "before-native": 3.8502579751657625e-09,
+    "allowance": 1.0000000000000002e-14
+  }
+]

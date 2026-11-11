@@ -1,10 +1,7 @@
 // Public certified entrypoint is defined in certificate.hpp below.
 // Legacy routines in this file propose coefficients; they are not certificates.
-// Kumaraswamy MLE: two-stage. Stage 1 uses an L-moment-based Newton on
-// `a` to seed; stage 2 refines `a` by Newton on the score. `b` is then
-// the closed-form maximiser. Convergence is hybrid (relative + absolute):
-//   |step| < |a| * tol + tol
-// kept verbatim for golden parity.
+// Kumaraswamy proposal search; certificate.hpp selects the basin and
+// encloses the final root in both public coefficients.
 
 #pragma once
 #include "../../core/work_budget.hpp"
@@ -121,7 +118,7 @@ inline KumarResult kumar_candidate_mle(span x, double tol, int maxit,
       for (; it < maxit; ++it) {
         a = lo + (hi - lo) / 2;
         if (score(a) > 0) lo = a; else hi = a;
-        if (hi - lo <= 1e-13 * a) break;
+        if (hi - lo <= .01 * tol * a) break;
       }
       if (it == maxit) return {kNaN,kNaN,kNaN,it,KumarStatus::IterationFailure};
     }

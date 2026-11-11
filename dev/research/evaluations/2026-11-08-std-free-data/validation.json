@@ -1,0 +1,840 @@
+{
+  "base": "5ecd032cf0998f50abce3353e610dd99559221c2",
+  "completed_utc": "2026-11-11T00:30:12.516339+00:00",
+  "all_final_runs_green": true,
+  "review_resolution": {
+    "shared_js_test": "Original tests unchanged; appended regressions only.",
+    "joint_free_shape": "Converged numerical Ok results retained with certified=false; no joint root-coverage certificate is claimed.",
+    "scalar_shape": "New global actual-hold certificate; explicit failure and face statuses.",
+    "flags": "Native bool; R estimate attribute and limit-condition logical field; common numeric extra transported by JS success/error paths.",
+    "normal_face": "Signed actual-hold first coefficient, uniform reoptimized tail bound and exhaustive compact exclusion cover."
+  },
+  "final_runs": [
+    {
+      "command": "just cpp-test",
+      "machine": "workstation",
+      "reservation": "run4",
+      "log": "build/scratch/second-final-cpp-dev.log",
+      "elapsed_seconds": 1418.38,
+      "exit_code": 0,
+      "passed": 106,
+      "failed": 0,
+      "compiler": "GCC 15.2.0",
+      "result": "106/106 shards"
+    },
+    {
+      "command": "just test",
+      "machine": "workstation",
+      "reservation": "run4",
+      "log": "build/scratch/second-final-r-dev.log",
+      "elapsed_seconds": 224.62,
+      "exit_code": 0,
+      "passed": 21924,
+      "failed": 0,
+      "warnings": 0,
+      "skipped": 154,
+      "result": "21924 pass; 0 fail/warn; 154 skip"
+    },
+    {
+      "command": "just test-full",
+      "machine": "workstation",
+      "reservation": "run4",
+      "log": "build/scratch/second-final-r-full.log",
+      "elapsed_seconds": 924.78,
+      "exit_code": 0,
+      "passed": 44747,
+      "failed": 0,
+      "warnings": 0,
+      "skipped": 0,
+      "result": "44747 pass; 0 fail/warn; 0 skip"
+    },
+    {
+      "command": "UMVL_TEST_TIER=full just cpp-test",
+      "machine": "workstation",
+      "reservation": "run4",
+      "log": "build/scratch/second-final-cpp-full.log",
+      "elapsed_seconds": 428.66,
+      "exit_code": 0,
+      "passed": 129,
+      "failed": 0,
+      "compiler": "GCC 15.2.0",
+      "result": "129/129 shards"
+    },
+    {
+      "command": "just cpp-test-no-long-double",
+      "machine": "workstation",
+      "reservation": "run4",
+      "log": "build/scratch/second-final-cpp-no-long-double.log",
+      "elapsed_seconds": 404.9,
+      "exit_code": 0,
+      "passed": 129,
+      "failed": 0,
+      "compiler": "GCC 15.2.0",
+      "result": "129/129 shards"
+    },
+    {
+      "command": "just js-build",
+      "machine": "workstation",
+      "reservation": "run4",
+      "log": "build/scratch/second-final-js-build.log",
+      "elapsed_seconds": 74.59,
+      "exit_code": 0,
+      "result": "Exit 0; 99 families"
+    },
+    {
+      "command": "just js-test",
+      "machine": "workstation",
+      "reservation": "run4",
+      "log": "build/scratch/second-final-js-test.log",
+      "elapsed_seconds": 261.88,
+      "exit_code": 0,
+      "passed": 541,
+      "failed": 0,
+      "result": "541/541 tests",
+      "skipped": 0,
+      "cancelled": 0
+    },
+    {
+      "command": "just site-check",
+      "machine": "workstation",
+      "reservation": "run4",
+      "log": "build/scratch/second-final-site-check.log",
+      "elapsed_seconds": 130.06,
+      "exit_code": 0,
+      "result": "99 pages/snippets; links, MathML and browser checks"
+    },
+    {
+      "command": "just relations",
+      "machine": "workstation",
+      "reservation": "run4",
+      "log": "build/scratch/second-final-relations.log",
+      "elapsed_seconds": 167.95,
+      "exit_code": 0,
+      "result": "157 records; 0 failed"
+    }
+  ],
+  "compilers": {
+    "current_final_workstation": "GCC 15.2.0",
+    "simbox": "Unavailable for this review; prior GCC 13 runs do not validate current source."
+  },
+  "mathematics": {
+    "bounds": {
+      "precision_dps": 80,
+      "checks": 621,
+      "failed": 0,
+      "evidence": "Numerical sanity checks; uniform validity is proved in derivation.md."
+    },
+    "scalar_oracle": "oracle.json: two independent 80-digit roots on exact binary64 frozen inputs",
+    "golden_faces": {
+      "precision_dps": 80,
+      "normal_comparisons": 6,
+      "t2_comparisons": 1,
+      "all_strict_gaps_positive": true,
+      "scope": "Numerical face comparisons; no joint root coverage claim."
+    },
+    "exact_nonuniqueness": "oracle.py / exact-comparisons.txt: two exact rational comparisons",
+    "derivation": "derivation.md: conditional exact-arithmetic certificates with practical margins, constrained compactness and reachable faces",
+    "signed_bounds": {
+      "precision_dps": 80,
+      "checks": 115,
+      "failed": 0,
+      "counterexamples": [
+        {
+          "family": "lst",
+          "coefficient": "-1.2500187499484376124997785160363273893567501931233679419616465371909747223671532",
+          "finite_witness_gain": "18.994033260588439265976366430910888045763093195952375647260644570442812575230138"
+        },
+        {
+          "family": "std",
+          "coefficient": "-1.4285714285714285714285714285714285714285714285714285714285714285714285714285714",
+          "finite_witness_gain": "0.89628504203627354791465717534629309103327737449024314811693931286357744717994758"
+        }
+      ],
+      "scope": "Numerical verification; uniform proof is in signed-derivation.md"
+    },
+    "signed_derivation": "signed-derivation.md",
+    "scalar_seeded_oracle": {
+      "precision_dps": 80,
+      "scope": "Numerical stationary-root/accuracy checks; globality comes from the library certificate when closed.",
+      "roots": [
+        {
+          "family": "lst",
+          "source": "normal",
+          "seed": 10,
+          "held": [
+            "mu",
+            "sigma"
+          ],
+          "shape": "18.492670864681556116859084578147153438375852854862166966640029037361421928302908",
+          "score": "-1.3177747429038154030435717564087523759637451727960634437597203781385180363712199e-82",
+          "curvature": "-0.0014822785219166044919979149156942049216801377616019544218903675514890796215408074",
+          "reported_shape": "18.49267086474272",
+          "certified": 1,
+          "relative_shape_error": "0.0000000000033074922461348892697081998157525196400582307938108001649984031502914966110262445"
+        },
+        {
+          "family": "lst",
+          "source": "normal",
+          "seed": 2,
+          "held": [
+            "mu",
+            "sigma"
+          ],
+          "shape": "326.32112084605692772764850385716182483873425927260350537432043771661177459922041",
+          "score": "-3.1914857054701779292461503475524471605371953403654661528555727908042233693365483e-83",
+          "curvature": "-0.000000015121243995098510986779795244569527680775700678997808201974659371610464888441413",
+          "reported_shape": "326.33044169904946",
+          "certified": 0,
+          "relative_shape_error": "0.000028563437660316703034941765560733032387578322927496552639138315585052660737390355"
+        }
+      ]
+    }
+  },
+  "normal_seam_checks": {
+    "precision_dps": 80,
+    "checks": 621,
+    "failed": 0,
+    "point_bound_before": [
+      -3.6880284788286897,
+      -3.688027721152352
+    ],
+    "point_bound_after": [
+      -3.6880280999910937,
+      -3.688028099989948
+    ],
+    "normal_bound": [
+      -3.688027995779338,
+      -3.688027995778573
+    ],
+    "dominance_after": true
+  },
+  "timing_method": {
+    "machine": "workstation",
+    "compiler": "GCC 15.2.0",
+    "flags": "-O2 -std=c++17; same BH include path before and after",
+    "baseline": "Original std/lst mle.hpp from base, first include path overlay; all other inputs unchanged. UMVL_TIMING_BASELINE excludes new proof examples.",
+    "sample": "500 mid-quantiles of ordinary-scale t5; held location 0; held physical scale 1.3; tol=1e-8; maxit=200",
+    "repetitions": 3,
+    "raw_columns": [
+      "family",
+      "subset",
+      "status",
+      "location",
+      "physical_scale",
+      "shape",
+      "seconds"
+    ],
+    "subset_codes": {
+      "std": {
+        "0": "nu",
+        "1": "sd,nu",
+        "2": "mean,nu"
+      },
+      "lst": {
+        "0": "nu",
+        "1": "sigma,nu",
+        "2": "mu,nu"
+      }
+    },
+    "caveat": "Shared workstation; CSV coefficients are printed to six significant digits and are not accuracy evidence."
+  },
+  "timings": [
+    {
+      "family": "lst",
+      "subset": "0",
+      "before": {
+        "median_seconds": 0.00103118,
+        "range_seconds": [
+          0.00100007,
+          0.00199428
+        ]
+      },
+      "after": {
+        "median_seconds": 0.0250619,
+        "range_seconds": [
+          0.0250096,
+          0.0251059
+        ]
+      },
+      "after_over_before": 24.30409821757598
+    },
+    {
+      "family": "lst",
+      "subset": "1",
+      "before": {
+        "median_seconds": 0.0943101,
+        "range_seconds": [
+          0.0930729,
+          0.204312
+        ]
+      },
+      "after": {
+        "median_seconds": 0.105215,
+        "range_seconds": [
+          0.103769,
+          0.107046
+        ]
+      },
+      "after_over_before": 1.1156281246653328
+    },
+    {
+      "family": "lst",
+      "subset": "2",
+      "before": {
+        "median_seconds": 3.73404,
+        "range_seconds": [
+          3.66912,
+          7.75002
+        ]
+      },
+      "after": {
+        "median_seconds": 4.20078,
+        "range_seconds": [
+          4.19348,
+          4.27058
+        ]
+      },
+      "after_over_before": 1.1249959829032363
+    },
+    {
+      "family": "std",
+      "subset": "0",
+      "before": {
+        "median_seconds": 0.0011877,
+        "range_seconds": [
+          0.00112793,
+          0.00122011
+        ]
+      },
+      "after": {
+        "median_seconds": 0.179419,
+        "range_seconds": [
+          0.163487,
+          1.64234
+        ]
+      },
+      "after_over_before": 151.06424181190536
+    },
+    {
+      "family": "std",
+      "subset": "1",
+      "before": {
+        "median_seconds": 0.10698,
+        "range_seconds": [
+          0.100887,
+          0.109421
+        ]
+      },
+      "after": {
+        "median_seconds": 0.115747,
+        "range_seconds": [
+          0.109825,
+          0.126733
+        ]
+      },
+      "after_over_before": 1.0819498971770425
+    },
+    {
+      "family": "std",
+      "subset": "2",
+      "before": {
+        "median_seconds": 6.64088,
+        "range_seconds": [
+          6.58258,
+          12.1388
+        ]
+      },
+      "after": {
+        "median_seconds": 7.33953,
+        "range_seconds": [
+          7.29781,
+          7.68401
+        ]
+      },
+      "after_over_before": 1.1052044307380948
+    }
+  ],
+  "earlier_full_suite_failure": {
+    "failed": 2,
+    "reason": "The old family-local oracle optimized spurious large-shape log-beta cancellation gains in the settled density path. The final oracle uses independent stats::dt with the same assertions and tolerances; narrow normal-relative bounds prove the affected numerical candidates dominated. The final full suite is green.",
+    "reproducer": "density-cancellation.py / density-cancellation.json; original observation in oracle-diagnostic-before.txt"
+  },
+  "source_audit": {
+    "matched_source_sha256": 18,
+    "shared_js_original_exact_prefix": true,
+    "tracked_changed_files": [
+      "bindings/common/distributions/lst/fit.hpp",
+      "bindings/common/distributions/std/fit.hpp",
+      "bindings/js/bindings.cpp",
+      "bindings/js/index.mjs",
+      "bindings/js/test.mjs",
+      "bindings/r/distributions/lst/adapter.cpp",
+      "bindings/r/distributions/lst/test.R",
+      "bindings/r/distributions/std/adapter.cpp",
+      "bindings/r/distributions/std/test.R",
+      "univariateML-cpp/include/cppunivariate/distributions/lst/README.md",
+      "univariateML-cpp/include/cppunivariate/distributions/lst/mle.hpp",
+      "univariateML-cpp/include/cppunivariate/distributions/lst/test.cpp",
+      "univariateML-cpp/include/cppunivariate/distributions/std/README.md",
+      "univariateML-cpp/include/cppunivariate/distributions/std/mle.hpp",
+      "univariateML-cpp/include/cppunivariate/distributions/std/test.cpp"
+    ],
+    "goldens_and_settled_seams_unchanged": true,
+    "shared_core_headers_unchanged": true,
+    "incidental_site_screenshot_restored": true,
+    "diff_check": "PASS",
+    "commits": "none"
+  },
+  "open": [
+    {
+      "subsets": [
+        "std {nu}, both nuisance held",
+        "lst {nu}, both nuisance held"
+      ],
+      "missing": "28 seeded default-control coefficient-enclosure refusals and 1 coverage budget exhaustion remain; successful legacy fits are explicitly uncertified."
+    },
+    {
+      "subsets": [
+        "std {sd,nu}",
+        "lst {sigma,nu}",
+        "std {mean,nu}",
+        "lst {mu,nu}"
+      ],
+      "missing": "General finite constrained joint root inclusion, branch completeness and coefficient enclosures. Signed normal-face wins are covered when both infinite tail and compact exclusion close; unresolved finite/limit results retain uncertified legacy decisions."
+    },
+    {
+      "subsets": [
+        "lst {mu,sigma}, held 0<nu<1"
+      ],
+      "missing": "Generic exhaustive nuisance root isolation and critical collapse comparisons, beyond the proved symmetric ties."
+    },
+    {
+      "scope": "settled density seam",
+      "missing": "Stable large-shape logmode/log-beta normalizer in lst/tails.hpp -> special::lbeta and truth regression near nu=1e11; unchanged by task restriction."
+    }
+  ],
+  "current_review": "Second review completed: legacy face decisions preserved unless disproved; signed normal profiles, seeded coverage and matched timings validated locally.",
+  "seeded_coverage": {
+    "fits": 1344,
+    "input_samples": 448,
+    "groups": 42,
+    "trials_per_group": 32,
+    "n": 64,
+    "positive_first_order_uncertified_normal": 0,
+    "summary": "seeded-summary.json",
+    "outcome_counts": {
+      "uncertified_finite": 462,
+      "certified_face": 674,
+      "certified_finite": 206,
+      "uncertified_face": 2
+    }
+  },
+  "golden_default_R": [
+    {
+      "family": "std",
+      "held": "mean",
+      "iterlim": 200,
+      "certified": false,
+      "coefficients": {
+        "mean": -0.0062603717426506856,
+        "sd": 0.8395057246119094,
+        "nu": 3.9776664945166025
+      },
+      "logLik": -579.4807824213772,
+      "maximum_relative_golden_error": 3.1706926170044425e-06,
+      "seconds": 0.32199999999999984
+    },
+    {
+      "family": "std",
+      "held": "sd",
+      "iterlim": 200,
+      "certified": false,
+      "coefficients": {
+        "mean": -0.006260333185704097,
+        "sd": 0.8395065634734545,
+        "nu": 3.9776580725833672
+      },
+      "logLik": -579.4807824214728,
+      "maximum_relative_golden_error": 6.158890905142446e-06,
+      "seconds": 19.679
+    },
+    {
+      "family": "std",
+      "held": [
+        "mean",
+        "sd"
+      ],
+      "iterlim": 200,
+      "certified": true,
+      "coefficients": {
+        "mean": -0.0062603717426506856,
+        "sd": 0.8395065634734545,
+        "nu": 3.977657951975587
+      },
+      "logLik": -579.4807824214682,
+      "maximum_relative_golden_error": 1.023059547966859e-06,
+      "seconds": 1.551000000000002
+    },
+    {
+      "family": "lst",
+      "held": "mu",
+      "iterlim": 200,
+      "certified": false,
+      "coefficients": {
+        "mu": 0.0745507089520688,
+        "sigma": 1.0270946920856898,
+        "df": 3.0242424325353574
+      },
+      "logLik": -898.6247811046568,
+      "maximum_relative_golden_error": 9.689866959238466e-08,
+      "seconds": 0.28000000000000114
+    },
+    {
+      "family": "lst",
+      "held": "sigma",
+      "iterlim": 200,
+      "certified": false,
+      "coefficients": {
+        "mu": 0.0745506901585527,
+        "sigma": 1.0270947160838733,
+        "df": 3.024243028749565
+      },
+      "logLik": -898.6247811046563,
+      "maximum_relative_golden_error": 2.5209037403704494e-07,
+      "seconds": 12.468
+    },
+    {
+      "family": "lst",
+      "held": [
+        "mu",
+        "sigma"
+      ],
+      "iterlim": 200,
+      "certified": true,
+      "coefficients": {
+        "mu": 0.0745507089520688,
+        "sigma": 1.0270947160838733,
+        "df": 3.0242427135238885
+      },
+      "logLik": -898.624781104648,
+      "maximum_relative_golden_error": 3.986639505401278e-09,
+      "seconds": 0.1740000000000066
+    }
+  ],
+  "golden_default_native": [
+    {
+      "family": "std",
+      "held_mask": "1",
+      "status": "0",
+      "certified": "0",
+      "mu": "-0.0062603717426506856",
+      "scale": "0.83950572461190942",
+      "shape": "3.9776664945166025",
+      "loglik": "-579.48078242137717",
+      "maximum_relative_golden_error": "3.1706926169050575e-06",
+      "seconds": "0.25656372999999999"
+    },
+    {
+      "family": "std",
+      "held_mask": "2",
+      "status": "0",
+      "certified": "0",
+      "mu": "-0.0062603331857040969",
+      "scale": "0.83950656347345454",
+      "shape": "3.9776580725833672",
+      "loglik": "-579.48078242147278",
+      "maximum_relative_golden_error": "6.1588909051613072e-06",
+      "seconds": "15.584100261"
+    },
+    {
+      "family": "std",
+      "held_mask": "3",
+      "status": "0",
+      "certified": "1",
+      "mu": "-0.0062603717426506856",
+      "scale": "0.83950656347345454",
+      "shape": "3.977657951975587",
+      "loglik": "-579.48078242146823",
+      "maximum_relative_golden_error": "1.0230595479665539e-06",
+      "seconds": "0.12651885199999999"
+    },
+    {
+      "family": "lst",
+      "held_mask": "1",
+      "status": "0",
+      "certified": "0",
+      "mu": "0.074550708952068806",
+      "scale": "1.0270946920856898",
+      "shape": "3.0242424325353574",
+      "loglik": "-898.62478110465679",
+      "maximum_relative_golden_error": "9.6898669643685764e-08",
+      "seconds": "0.109504934"
+    },
+    {
+      "family": "lst",
+      "held_mask": "2",
+      "status": "0",
+      "certified": "0",
+      "mu": "0.074550690158552702",
+      "scale": "1.0270947160838733",
+      "shape": "3.0242430287495652",
+      "loglik": "-898.62478110465634",
+      "maximum_relative_golden_error": "2.5209037401996426e-07",
+      "seconds": "5.9729806859999997"
+    },
+    {
+      "family": "lst",
+      "held_mask": "3",
+      "status": "0",
+      "certified": "1",
+      "mu": "0.074550708952068806",
+      "scale": "1.0270947160838733",
+      "shape": "3.0242427135238885",
+      "loglik": "-898.62478110464804",
+      "maximum_relative_golden_error": "3.986639462993935e-09",
+      "seconds": "0.13578109899999999"
+    }
+  ],
+  "normal_timings": [
+    {
+      "family": "lst",
+      "n": 100,
+      "held_mask": 1,
+      "before": {
+        "median_seconds": 0.018152697,
+        "range_seconds": [
+          0.017916282,
+          0.01853806
+        ]
+      },
+      "after": {
+        "median_seconds": 0.072866105,
+        "range_seconds": [
+          0.072838562,
+          0.072957891
+        ]
+      },
+      "after_over_before": 4.014064962357935
+    },
+    {
+      "family": "lst",
+      "n": 100,
+      "held_mask": 2,
+      "before": {
+        "median_seconds": 0.148888034,
+        "range_seconds": [
+          0.148534194,
+          0.148933385
+        ]
+      },
+      "after": {
+        "median_seconds": 0.128715717,
+        "range_seconds": [
+          0.127842813,
+          0.131055344
+        ]
+      },
+      "after_over_before": 0.8645135108708603
+    },
+    {
+      "family": "lst",
+      "n": 100,
+      "held_mask": 3,
+      "before": {
+        "median_seconds": 0.000194465,
+        "range_seconds": [
+          0.000191238,
+          0.000199609
+        ]
+      },
+      "after": {
+        "median_seconds": 0.027758714,
+        "range_seconds": [
+          0.027753767,
+          0.027767649
+        ]
+      },
+      "after_over_before": 142.7440104903196
+    },
+    {
+      "family": "lst",
+      "n": 1000,
+      "held_mask": 1,
+      "before": {
+        "median_seconds": 0.176142279,
+        "range_seconds": [
+          0.176010761,
+          0.178111519
+        ]
+      },
+      "after": {
+        "median_seconds": 1.075726314,
+        "range_seconds": [
+          1.044288065,
+          1.094468648
+        ]
+      },
+      "after_over_before": 6.1071442932789575
+    },
+    {
+      "family": "lst",
+      "n": 1000,
+      "held_mask": 2,
+      "before": {
+        "median_seconds": 14.130419439,
+        "range_seconds": [
+          13.941335623,
+          14.408259292
+        ]
+      },
+      "after": {
+        "median_seconds": 2.169806749,
+        "range_seconds": [
+          0.259956608,
+          2.204819109
+        ]
+      },
+      "after_over_before": 0.15355572128392217
+    },
+    {
+      "family": "lst",
+      "n": 1000,
+      "held_mask": 3,
+      "before": {
+        "median_seconds": 0.001946048,
+        "range_seconds": [
+          0.001940904,
+          0.001949146
+        ]
+      },
+      "after": {
+        "median_seconds": 0.054662055,
+        "range_seconds": [
+          0.054661644,
+          0.055109525
+        ]
+      },
+      "after_over_before": 28.088749609464926
+    },
+    {
+      "family": "std",
+      "n": 100,
+      "held_mask": 1,
+      "before": {
+        "median_seconds": 0.020620008,
+        "range_seconds": [
+          0.020617771,
+          0.020650111
+        ]
+      },
+      "after": {
+        "median_seconds": 0.039210759,
+        "range_seconds": [
+          0.039060378,
+          0.039244489
+        ]
+      },
+      "after_over_before": 1.9015879625264938
+    },
+    {
+      "family": "std",
+      "n": 100,
+      "held_mask": 2,
+      "before": {
+        "median_seconds": 0.327724462,
+        "range_seconds": [
+          0.327369942,
+          0.334079827
+        ]
+      },
+      "after": {
+        "median_seconds": 0.831830468,
+        "range_seconds": [
+          0.828290032,
+          0.834262798
+        ]
+      },
+      "after_over_before": 2.538200727902942
+    },
+    {
+      "family": "std",
+      "n": 100,
+      "held_mask": 3,
+      "before": {
+        "median_seconds": 0.000227872,
+        "range_seconds": [
+          0.000223556,
+          0.000230896
+        ]
+      },
+      "after": {
+        "median_seconds": 0.173630458,
+        "range_seconds": [
+          0.172210657,
+          0.178498995
+        ]
+      },
+      "after_over_before": 761.9648662406964
+    },
+    {
+      "family": "std",
+      "n": 1000,
+      "held_mask": 1,
+      "before": {
+        "median_seconds": 0.20240001,
+        "range_seconds": [
+          0.202208473,
+          0.203770565
+        ]
+      },
+      "after": {
+        "median_seconds": 0.042148978,
+        "range_seconds": [
+          0.04211764,
+          0.042208618
+        ]
+      },
+      "after_over_before": 0.2082459284463474
+    },
+    {
+      "family": "std",
+      "n": 1000,
+      "held_mask": 2,
+      "before": {
+        "median_seconds": 23.608270009,
+        "range_seconds": [
+          23.076689785,
+          33.101980194
+        ]
+      },
+      "after": {
+        "median_seconds": 4.073508007,
+        "range_seconds": [
+          3.85024889,
+          4.548184344
+        ]
+      },
+      "after_over_before": 0.17254580727207405
+    },
+    {
+      "family": "std",
+      "n": 1000,
+      "held_mask": 3,
+      "before": {
+        "median_seconds": 0.002426188,
+        "range_seconds": [
+          0.002418464,
+          0.00244643
+        ]
+      },
+      "after": {
+        "median_seconds": 0.697002965,
+        "range_seconds": [
+          0.68399826,
+          0.702095921
+        ]
+      },
+      "after_over_before": 287.28316395926447
+    }
+  ]
+}

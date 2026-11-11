@@ -1,0 +1,386 @@
+[
+  {
+    "family": "all",
+    "status": "binding validation",
+    "error_kind": "plain",
+    "classification": "proved stop",
+    "condition": "Missing required designs, NA/nonfinite held values, held values outside the coefficient domain, noninteger/negative observations; tbinom additionally empty data or incompatible bounds.",
+    "after": "stop"
+  },
+  {
+    "family": "bbinom",
+    "status": "unsupported free size and both shapes",
+    "error_kind": "plain",
+    "classification": "search failure",
+    "condition": "No shape held with size free: no implemented unrestricted search. Fixed-size face escapes do not provide a successful finite joint-shape profile to reuse; global size/shape face comparisons are open. This is the existing declared structural not-implemented subset, not a nonexistence theorem.",
+    "after": "existing structural stop retained; a safe general joint search is open"
+  },
+  {
+    "family": "bbinom",
+    "status": "InvalidInput",
+    "error_kind": "plain",
+    "classification": "proved stop",
+    "condition": "Empty/negative counts; invalid size, shape, tolerance or iteration limit.",
+    "after": "stop"
+  },
+  {
+    "family": "bbinom",
+    "status": "SizeTooSmall",
+    "error_kind": "plain",
+    "classification": "proved stop",
+    "condition": "Held size smaller than an observation.",
+    "after": "stop"
+  },
+  {
+    "family": "bbinom",
+    "status": "BinomialLimit",
+    "error_kind": "limit",
+    "classification": "proved stop",
+    "condition": "Signed near-face exclusion plus global tangent/chord exclusion prove the binomial face strictly wins.",
+    "after": "stop"
+  },
+  {
+    "family": "bbinom",
+    "status": "TwoPointLimit",
+    "error_kind": "limit",
+    "classification": "proved stop",
+    "condition": "Both endpoints observed and no interior counts, both shapes free.",
+    "after": "stop"
+  },
+  {
+    "family": "bbinom",
+    "status": "PointMass",
+    "error_kind": "limit",
+    "classification": "proved stop",
+    "condition": "All zero/all size with a shape free; or constant positive data with size and one shape free.",
+    "after": "stop"
+  },
+  {
+    "family": "bbinom",
+    "status": "Unidentified",
+    "error_kind": "tie",
+    "classification": "proved stop",
+    "condition": "Size zero; size one with both shapes free; all zeros with size and a shape free.",
+    "after": "stop"
+  },
+  {
+    "family": "bbinom",
+    "status": "ProfileTie",
+    "error_kind": "tie",
+    "classification": "unclosed certificate",
+    "condition": "Finite/face likelihoods or size-profile runners cannot be separated by the practical margin.",
+    "after": "Ok, certified=false, best successful finite candidate"
+  },
+  {
+    "family": "bbinom",
+    "status": "FaceUnresolved",
+    "error_kind": "unresolved",
+    "classification": "unclosed certificate",
+    "condition": "Near-binomial strip cannot close, or held-alpha size profile has no strict negative-binomial face separation.",
+    "after": "Ok, certified=false when a finite candidate exists"
+  },
+  {
+    "family": "bbinom",
+    "status": "SizeBudget / stop_detail.budget_exhausted",
+    "error_kind": "budget",
+    "classification": "unclosed certificate",
+    "condition": "Tail preflight, global exclusion, final-cell evaluation or size coverage exhausts allowance after a successful finite solve.",
+    "after": "Ok, certified=false"
+  },
+  {
+    "family": "bbinom",
+    "status": "SizeBudget / IterationFailure",
+    "error_kind": "budget / numerical",
+    "classification": "search failure",
+    "condition": "Allowance exhausted before a successful finite candidate, nonfinite search/shape bounds, or local root refinement fails.",
+    "after": "stop"
+  },
+  {
+    "family": "bbinom",
+    "status": "IterationFailure",
+    "error_kind": "numerical",
+    "classification": "unclosed certificate",
+    "condition": "Successful local search but coefficient inclusion, curvature region, outside exclusion or certificate arithmetic cannot close.",
+    "after": "Ok, certified=false"
+  },
+  {
+    "family": "hyper",
+    "status": "InvalidInput",
+    "error_kind": "plain",
+    "classification": "proved stop",
+    "condition": "Empty data; nonwhole/nonfinite/out-of-range counts or designs; invalid urn inequalities.",
+    "after": "stop"
+  },
+  {
+    "family": "hyper",
+    "status": "Infeasible",
+    "error_kind": "nomle",
+    "classification": "proved stop",
+    "condition": "No admissible integer tuple gives every observation positive mass (hyper support, or nhyper draws from r through N-m+r).",
+    "after": "stop"
+  },
+  {
+    "family": "hyper",
+    "status": "FaceUnresolved / FaceTie",
+    "error_kind": "unresolved / tie; fully-free adapter uses plain errors",
+    "classification": "unclosed certificate",
+    "condition": "Exploratory finite prefix is not strictly above a binomial/Poisson face (hyper) or shifted negative-binomial face (nhyper); no global escape established.",
+    "after": "Ok, certified=false, prefix winner"
+  },
+  {
+    "family": "hyper",
+    "status": "NumericalFailure + budget",
+    "error_kind": "budget",
+    "classification": "unclosed certificate",
+    "condition": "Finite grid or global growing-urn coverage does not fit the allowance; large-count correction preflight refuses the global certificate.",
+    "after": "Ok, certified=false, finite prefix winner"
+  },
+  {
+    "family": "hyper",
+    "status": "NumericalFailure",
+    "error_kind": "plain (budget overrides when present)",
+    "classification": "search failure",
+    "condition": "No finite representable candidate or nonfinite likelihood before a usable candidate.",
+    "after": "stop"
+  },
+  {
+    "family": "nhyper",
+    "status": "InvalidInput",
+    "error_kind": "plain",
+    "classification": "proved stop",
+    "condition": "Empty data; nonwhole/nonfinite/out-of-range counts or designs; invalid urn inequalities.",
+    "after": "stop"
+  },
+  {
+    "family": "nhyper",
+    "status": "Infeasible",
+    "error_kind": "nomle",
+    "classification": "proved stop",
+    "condition": "No admissible integer tuple gives every observation positive mass (hyper support, or nhyper draws from r through N-m+r).",
+    "after": "stop"
+  },
+  {
+    "family": "nhyper",
+    "status": "FaceUnresolved / FaceTie",
+    "error_kind": "unresolved / tie",
+    "classification": "unclosed certificate",
+    "condition": "Exploratory finite prefix is not strictly above a binomial/Poisson face (hyper) or shifted negative-binomial face (nhyper); no global escape established.",
+    "after": "Ok, certified=false, prefix winner"
+  },
+  {
+    "family": "nhyper",
+    "status": "NumericalFailure + budget",
+    "error_kind": "budget",
+    "classification": "unclosed certificate",
+    "condition": "Finite grid or global growing-urn coverage does not fit the allowance; large-count correction preflight refuses the global certificate.",
+    "after": "Ok, certified=false, finite prefix winner"
+  },
+  {
+    "family": "nhyper",
+    "status": "NumericalFailure",
+    "error_kind": "plain (budget overrides when present)",
+    "classification": "search failure",
+    "condition": "No finite representable candidate or nonfinite likelihood before a usable candidate.",
+    "after": "stop"
+  },
+  {
+    "family": "hyper",
+    "status": "AllZero",
+    "error_kind": "limit",
+    "classification": "proved stop",
+    "condition": "Population free, positive held m and k, all observations zero: population must diverge.",
+    "after": "stop"
+  },
+  {
+    "family": "hyper",
+    "status": "TooLarge",
+    "error_kind": "plain",
+    "classification": "search failure",
+    "condition": "Required one-coordinate maximizer exceeds the exactly represented integer range 2^53-1.",
+    "after": "stop"
+  },
+  {
+    "family": "hyper",
+    "status": "BothFree",
+    "error_kind": "plain",
+    "classification": "search failure",
+    "condition": "Obsolete unsupported-design enum, unreachable through current joint-search dispatch.",
+    "after": "unreachable"
+  },
+  {
+    "family": "tbinom",
+    "status": "InvalidInput",
+    "error_kind": "plain",
+    "classification": "proved stop",
+    "condition": "Invalid size/probability, bounds a>=b, observations outside a<x<=b, or conditioning event with zero probability.",
+    "after": "stop"
+  },
+  {
+    "family": "tbinom",
+    "status": "LowerPointMass / UpperPointMass",
+    "error_kind": "limit",
+    "classification": "proved stop",
+    "condition": "Constant sample at an excluded lower/upper probability endpoint; held interior probability with a growing-size upper-edge escape unless finite singleton support is feasible.",
+    "after": "stop"
+  },
+  {
+    "family": "tbinom",
+    "status": "Unidentified",
+    "error_kind": "tie",
+    "classification": "proved stop",
+    "condition": "Singleton conditioning support in the underlying truncated fitter; the public fixed-size wrapper already supplies a representative.",
+    "after": "not normally reachable as a stop"
+  },
+  {
+    "family": "tbinom",
+    "status": "TpoisLimit",
+    "error_kind": "limit",
+    "classification": "proved stop",
+    "condition": "Signed tail and full prefix, exact rational moment/saturation, or untruncated-binomial reduction proves a strictly winning truncated-Poisson face.",
+    "after": "stop"
+  },
+  {
+    "family": "tbinom",
+    "status": "NumericalFailure / provisional TpoisLimit",
+    "error_kind": "numerical / unresolved / budget",
+    "classification": "unclosed certificate",
+    "condition": "Zero/higher-order moment or prefix comparison, certificate representation or allowance cannot close after a finite profile succeeds.",
+    "after": "Ok, certified=false"
+  },
+  {
+    "family": "tbinom",
+    "status": "NumericalFailure",
+    "error_kind": "numerical",
+    "classification": "search failure",
+    "condition": "No successful finite normalizer/mean solve; no finite candidate.",
+    "after": "stop"
+  },
+  {
+    "family": "tbinom",
+    "status": "NumericalFailure (proposal)",
+    "error_kind": "numerical",
+    "classification": "unclosed certificate",
+    "condition": "Held-probability integer scan or free-size expansion/refinement stops after successful finite evaluations.",
+    "after": "Ok, certified=false; global pass may subsequently certify"
+  },
+  {
+    "family": "ztbinom",
+    "status": "InvalidInput / InvalidSize",
+    "error_kind": "plain",
+    "classification": "proved stop",
+    "condition": "Empty/invalid counts or controls, invalid held probabilities, held size below max(x), or incompatible held point/zero mass.",
+    "after": "stop"
+  },
+  {
+    "family": "ztbinom",
+    "status": "PoissonLimit",
+    "error_kind": "limit",
+    "classification": "proved stop",
+    "condition": "Signed/relaxed face certificate and full finite-prefix exclusion prove the positive Poisson face strictly wins.",
+    "after": "stop"
+  },
+  {
+    "family": "ztbinom",
+    "status": "IterationFailure / provisional PoissonLimit",
+    "error_kind": "numerical / unresolved / budget",
+    "classification": "unclosed certificate",
+    "condition": "Successful finite profile but unclosed sign, prefix, retained-support cutoff, allowance, or coefficient/proposal comparison.",
+    "after": "Ok, certified=false"
+  },
+  {
+    "family": "ztbinom",
+    "status": "IterationFailure",
+    "error_kind": "numerical (budget if no candidate and exhausted)",
+    "classification": "search failure",
+    "condition": "Failed probability root/relative bracket/score gate, nonfinite likelihood, or no successful finite candidate. zmbinom preserves the positive-count failure.",
+    "after": "stop"
+  },
+  {
+    "family": "zib",
+    "status": "InvalidInput / InvalidSize",
+    "error_kind": "plain",
+    "classification": "proved stop",
+    "condition": "Empty/invalid counts or controls, invalid held probabilities, held size below max(x), or incompatible held point/zero mass.",
+    "after": "stop"
+  },
+  {
+    "family": "zib",
+    "status": "ZipLimit",
+    "error_kind": "limit",
+    "classification": "proved stop",
+    "condition": "Signed/relaxed face certificate and full finite-prefix exclusion prove the ZIP face strictly wins.",
+    "after": "stop"
+  },
+  {
+    "family": "zib",
+    "status": "IterationFailure / provisional ZipLimit",
+    "error_kind": "numerical / unresolved / budget",
+    "classification": "unclosed certificate",
+    "condition": "Successful finite profile but unclosed sign, prefix, retained-support cutoff, allowance, or coefficient/proposal comparison.",
+    "after": "Ok, certified=false"
+  },
+  {
+    "family": "zib",
+    "status": "IterationFailure",
+    "error_kind": "numerical (budget if no candidate and exhausted)",
+    "classification": "search failure",
+    "condition": "Failed probability root/relative bracket/score gate, nonfinite likelihood, or no successful finite candidate. zmbinom preserves the positive-count failure.",
+    "after": "stop"
+  },
+  {
+    "family": "zmbinom",
+    "status": "InvalidInput / InvalidSize",
+    "error_kind": "plain",
+    "classification": "proved stop",
+    "condition": "Empty/invalid counts or controls, invalid held probabilities, held size below max(x), or incompatible held point/zero mass.",
+    "after": "stop"
+  },
+  {
+    "family": "zmbinom",
+    "status": "PoissonLimit",
+    "error_kind": "limit",
+    "classification": "proved stop",
+    "condition": "Signed/relaxed face certificate and full finite-prefix exclusion prove the zero-modified Poisson face strictly wins.",
+    "after": "stop"
+  },
+  {
+    "family": "zmbinom",
+    "status": "IterationFailure / provisional PoissonLimit",
+    "error_kind": "numerical / unresolved / budget",
+    "classification": "unclosed certificate",
+    "condition": "Successful finite profile but unclosed sign, prefix, retained-support cutoff, allowance, or coefficient/proposal comparison.",
+    "after": "Ok, certified=false"
+  },
+  {
+    "family": "zmbinom",
+    "status": "IterationFailure",
+    "error_kind": "numerical (budget if no candidate and exhausted)",
+    "classification": "search failure",
+    "condition": "Failed probability root/relative bracket/score gate, nonfinite likelihood, or no successful finite candidate. zmbinom preserves the positive-count failure.",
+    "after": "stop"
+  },
+  {
+    "family": "zib",
+    "status": "FaceTie",
+    "error_kind": "tie",
+    "classification": "proved stop",
+    "condition": "All finite sizes excluded; globally winning ZIP face branches cannot be ordered. Finite nonattainment is already proved.",
+    "after": "stop; uncertified finite fallback if finite exclusion was not proved"
+  },
+  {
+    "family": "zib",
+    "status": "IterationFailure (turning discriminant)",
+    "error_kind": "numerical",
+    "classification": "unclosed certificate",
+    "condition": "Held-inflation turning discriminant falls within the arithmetic margin.",
+    "after": "Exact integer recheck when safe; otherwise bracketed stationary search returns Ok, certified=false"
+  },
+  {
+    "family": "nhyper",
+    "status": "NumericalFailure (initial represented r/N bound)",
+    "error_kind": "plain",
+    "classification": "search failure",
+    "condition": "Held m=2^53-1, N and r free, constant draws c<=m: the old initial-r/population-bound arithmetic missed the feasible tuple r=c, N=m. This was an implementation search failure, not nonexistence.",
+    "after": "Ok, certified=true at the exact attained point law; other omitted representability branches remain uncertified when a finite candidate exists"
+  }
+]
