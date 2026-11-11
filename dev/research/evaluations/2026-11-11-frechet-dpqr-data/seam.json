@@ -1,0 +1,50 @@
+[
+  {
+    "case": 4,
+    "reference_loglik": "-125.7201235518106538260019039067324519881",
+    "baseline_density_loglik": -125.72012355462542,
+    "baseline_density_loglik_absolute_error": 2.814762946976593e-09,
+    "baseline_fitter_loglik": -125.72012355181067,
+    "baseline_fitter_loglik_absolute_error": 1.8953536531954737e-14,
+    "current_density_loglik": -125.72012355181063,
+    "current_density_loglik_absolute_error": 2.3679027613651274e-14,
+    "current_fitter_loglik": -125.72012355181067,
+    "current_fitter_loglik_absolute_error": 1.8953536531954737e-14
+  },
+  {
+    "case": 5,
+    "reference_loglik": "-125.720095482276701993778321756662684571",
+    "baseline_density_loglik": -125.72009527885642,
+    "baseline_density_loglik_absolute_error": 2.0342028255310658e-07,
+    "baseline_fitter_loglik": -125.72009548227685,
+    "baseline_fitter_loglik_absolute_error": 1.4461636959169557e-13,
+    "current_density_loglik": -125.72009548227673,
+    "current_density_loglik_absolute_error": 3.0929531870079547e-14,
+    "current_fitter_loglik": -125.72009548227685,
+    "current_fitter_loglik_absolute_error": 1.4461636959169557e-13
+  },
+  {
+    "case": 6,
+    "reference_loglik": "-125.7200926753212735835912122956124692238",
+    "baseline_density_loglik": -125.7200935051699,
+    "baseline_density_loglik_absolute_error": 8.298486255337995e-07,
+    "baseline_fitter_loglik": -125.72009267532114,
+    "baseline_fitter_loglik_absolute_error": 1.330651282866119e-13,
+    "current_density_loglik": -125.72009267532127,
+    "current_density_loglik_absolute_error": 5.167435849793872e-15,
+    "current_fitter_loglik": -125.72009267532114,
+    "current_fitter_loglik_absolute_error": 1.330651282866119e-13
+  },
+  {
+    "case": 7,
+    "reference_loglik": "-125.7200923946258636621576577412212299465",
+    "baseline_density_loglik": -125.72008192212968,
+    "baseline_density_loglik_absolute_error": 1.0472496183965349e-05,
+    "baseline_fitter_loglik": -125.72009239462581,
+    "baseline_fitter_loglik_absolute_error": 5.5010504015440704e-14,
+    "current_density_loglik": -125.72009239462587,
+    "current_density_loglik_absolute_error": 1.83291484536731e-15,
+    "current_fitter_loglik": -125.72009239462581,
+    "current_fitter_loglik_absolute_error": 5.5010504015440704e-14
+  }
+]

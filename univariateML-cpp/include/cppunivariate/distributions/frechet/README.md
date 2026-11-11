@@ -156,6 +156,22 @@ The Fréchet distribution models extreme maxima with heavy right tails. The thre
 
 ## Details
 
+Near the Gumbel limit, separate logarithms of the distance and scale incur
+an absolute rounding error that is multiplied by $\lambda$. When
+$\sigma/2\le -\mu\le2\sigma$, Sterbenz's lemma makes
+$b=\mu+\sigma$ exact. Centering at $b$ then gives
+$\log1p((x-b)/\sigma)$: for $x-b=O(\sigma/\lambda)$ its
+absolute error is $O(\epsilon/\lambda)$, so the log hazard has
+$O(\epsilon)$ error independent of shape. Outside this regime an
+error-free distance residual preserves the same small log ratio when the
+center is inexact. Quantiles use the exact center and an `expm1` displacement
+with fused multiplication and addition. Residuals of $\exp(-1)$ and
+$\log(1-\exp(-1))$ preserve nonzero quantiles that an intermediate
+rounded $\log(p)=-1$ would erase. These arguments remove shape-dependent
+cancellation. A near-zero quantile with nonzero center can still have large
+relative error; tail errors also depend on conditioning and representability. The [exact-input comparisons](../../../../../dev/research/evaluations/2026-11-11-frechet-dpqr-data/measure.py)
+measure those limits separately from fitter accuracy.
+
 For the Gumbel face fix $b\in\mathbb R$ and $a>0$, set
 $\sigma=\lambda a$ and $\mu=b-\lambda a$, and let $\lambda\to\infty$.
 For fixed $x$, $((x-\mu)/\sigma)^{-\lambda}\to

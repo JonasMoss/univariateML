@@ -1,0 +1,45 @@
+just cpp-test
+100% tests passed, 0 tests failed out of 108
+Total Test time (real) = 252.13 sec
+
+UMVL_TEST_TIER=full just cpp-test
+100% tests passed, 0 tests failed out of 135
+Total Test time (real) = 402.67 sec
+
+just cpp-test-no-long-double
+100% tests passed, 0 tests failed out of 135
+Total Test time (real) = 440.67 sec
+
+just test
+[ FAIL 0 | WARN 0 | SKIP 154 | PASS 23231 ]
+
+just test-full
+[ FAIL 0 | WARN 0 | SKIP 0 | PASS 46533 ]
+
+just js-build
+Validated and generated d/p/q/r for 99 families.
+
+just js-test
+# tests 615
+# pass 615
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 390447.725357
+
+just site-check
+Validated and generated d/p/q/r for 99 families.
+PASS: four articles; dossier catalogues: 289 limits, 99 families, 9 fit domains.
+PASS: inference: 353 unique scopes, 99 families; implementation symbols, evidence anchors, calibration and checks resolve; full static table.
+PASS: graph: 99 unique nodes, 278 edges, resolving family links; SVG generated twice byte-identically and matches built HTML.
+PASS: explorer coverage matches binding registry; optional build assets agree.
+PASS: every declared and inverted relation and limit link is rendered and resolves.
+PASS: 99 family pages; MathML on every family; no math runtime or external runtime assets; internal links and fragments resolve.
+Environment: Python 3.14.5, SymPy 1.14.0; g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0
+Boost headers: /home/jonas/R/x86_64-pc-linux-gnu-library/4.5/BH/include
+PASS: 99 generated C++ snippets compile and link as C++17 (including exp, gamma, gb2).
+PASS: pilot and ten additional HTML spot checks: exp, gamma, gb2, binom, beta, hyper, sstd, gev, gpd, tnorm, pois, unif, pareto
+
+just quality frechet
+frechet pass 

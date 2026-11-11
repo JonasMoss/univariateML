@@ -524,3 +524,75 @@ TEST_CASE("frechet: local log ratio avoids overflow across a finite extreme gap"
   REQUIRE(cppunivariate::frechet_held_detail::polish(mltest::as_span(x),fit,1e-10,100));
   CHECK(fit.lambda==1);CHECK(fit.mu==-.5);CHECK(std::isfinite(fit.logLik));
 }
+
+TEST_CASE("frechet: centered d/p/q near the Gumbel limit on exact doubles") {
+  // Independent 100-digit mpmath values on the exact binary64 inputs.
+  const double rows[][8] = {
+    {1000000,-1000000,1000000,0.50000012500002078,-1.1065311597126335,-0.60653065971263342,-0.7879837387044486,0.36651298774753299},
+    {1000000,-999999.75,1000000,0.75000012500002078,-1.1065311597126335,-0.60653065971263342,-0.7879837387044486,0.61651298774753305},
+    {1000000,-999998,1000000,2.500000125000021,-1.1065311597126335,-0.60653065971263331,-0.78798373870444882,2.3665129877475328},
+    {1000000000,-1000000000,1000000000,0.50000000012500001,-1.1065306602126335,-0.60653065971263342,-0.78798373870444871,0.36651292064883018},
+    {1000000000,-999999999.75,1000000000,0.75000000012500001,-1.1065306602126335,-0.60653065971263342,-0.78798373870444871,0.61651292064883023},
+    {1000000000,-999999998,1000000000,2.500000000125,-1.1065306602126335,-0.60653065971263342,-0.78798373870444871,2.3665129206488302},
+    {1000000000000,-1000000000000,1000000000000,0.50000000000012501,-1.1065306597131335,-0.60653065971263342,-0.78798373870444871,0.36651292058173152},
+    {1000000000000,-999999999999.75,1000000000000,0.75000000000012501,-1.1065306597131335,-0.60653065971263342,-0.78798373870444871,0.61651292058173146},
+    {1000000000000,-999999999998,1000000000000,2.5000000000001248,-1.1065306597131332,-0.60653065971263354,-0.78798373870444849,2.3665129205817315},
+    {1000000000000000,-1000000000000000,1000000000000000,0.50000000000000011,-1.1065306597126339,-0.60653065971263342,-0.7879837387044486,0.3665129205816644},
+    {1000000000000000,-999999999999999.75,1000000000000000,0.75000000000000011,-1.1065306597126339,-0.60653065971263342,-0.7879837387044486,0.6165129205816644},
+    {1000000000000000,-999999999999998,1000000000000000,2.5,-1.1065306597126339,-0.60653065971263354,-0.7879837387044486,2.3665129205816644},
+  };
+  for(const auto& r:rows) {
+    CHECK(std::abs(cppunivariate::distributions::dfrechet(r[3],r[0],r[1],r[2],true)-r[4])<4e-15*std::max(1.,std::abs(r[4])));
+    for(bool lower:{false,true}) CHECK(std::abs(cppunivariate::distributions::pfrechet(r[3],r[0],r[1],r[2],lower,true)-r[lower ? 5 : 6])<4e-15);
+    CHECK(std::abs(cppunivariate::distributions::qfrechet(.5,r[0],r[1],r[2],true,false)-r[7])<4e-15*std::max(1.,std::abs(r[7])));
+  }
+}
+
+TEST_CASE("frechet: finite extreme distances and quantile range rescue") {
+  CHECK(std::isfinite(cppunivariate::distributions::dfrechet(1e308,1,-1e308,1e308,true)));
+  CHECK(std::isfinite(cppunivariate::distributions::pfrechet(1e300,1e15,-1e15,1e15,false,true)));
+  CHECK(cppunivariate::distributions::dfrechet(std::nextafter(-1.,0.),1e15,-1,1,true)==-INFINITY);
+  const double q=cppunivariate::distributions::qfrechet(-1000.,1,0,1e-300,false,true);
+  CHECK(std::isfinite(q));
+  CHECK(std::abs(std::log(q)-(1000+std::log(1e-300)))<2e-13);
+}
+
+TEST_CASE("frechet: centered quantile rescues an underflowed exponent") {
+  const double p=std::nextafter(-1.,0.);
+  const double q=cppunivariate::distributions::qfrechet(p,1e308,-1e308,1e308,true,true);
+  CHECK(std::abs(q/(-std::log(-p))-1)<5e-16);
+}
+
+TEST_CASE("frechet: distance overflow preserves the scaled log ratio") {
+  const double actual=cppunivariate::distributions::pfrechet(1e308,1e15,-1e308,1e308,false,true);
+  CHECK(std::abs(actual+1e15*std::log(2.))<.25);
+}
+
+TEST_CASE("frechet: exact center quantile avoids an overflowing scale-shape ratio") {
+  CHECK(cppunivariate::distributions::qfrechet(-1.,1e-300,-1e300,1e300,true,true)==0.);
+}
+
+TEST_CASE("frechet: probability rounding does not erase a near-zero quantile") {
+  for(double a:{1e6,1e9,1e12,1e15}) {
+    const double reference=3.3784855259134225844e-17;
+    const double lower=cppunivariate::distributions::qfrechet(0.36787944117144233,a,-a,a,true,false);
+    const double upper=cppunivariate::distributions::qfrechet(0.6321205588285577,a,-a,a,false,false);
+    const double log_upper=cppunivariate::distributions::qfrechet(-0.4586751453870819,a,-a,a,false,true);
+    CHECK(std::abs(lower/reference-1)<1e-15);
+    CHECK(std::abs(upper/reference-1)<1e-15);
+    CHECK(std::abs(log_upper/(-3.1167176815514802952e-17)-1)<1e-15);
+  }
+}
+
+TEST_CASE("frechet: virtual distance subtraction overflow stays finite") {
+  const double x=-std::ldexp(3.,970), mu=-std::numeric_limits<double>::max();
+  CHECK(std::isfinite(cppunivariate::distributions::dfrechet(x,1,mu,1e308,true)));
+  CHECK(std::isfinite(cppunivariate::distributions::pfrechet(x,1,mu,1e308,true,true)));
+}
+
+TEST_CASE("frechet: extreme scale rescues a multiplier beyond the half-exponent range") {
+  const double scale=std::numeric_limits<double>::denorm_min();
+  const double q=cppunivariate::distributions::qfrechet(-1450.,1.,0.,scale,false,true);
+  CHECK(std::isnormal(q));
+  CHECK(std::abs(std::log(q)-(1450.+std::log(scale)))<2e-13);
+}
