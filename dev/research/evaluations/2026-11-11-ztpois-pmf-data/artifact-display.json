@@ -1,0 +1,9 @@
+{
+  "attempted": true,
+  "helper": "/home/jonas/Files/work/misc/codex-math-web/bin/show",
+  "report": "dev/research/evaluations/2026-11-11-ztpois-pmf-report.md",
+  "http_status": 403,
+  "reason": "This worktree is outside every viewer-readable root.",
+  "required_external_change": "Register /home/jonas/Files/programming/univariateML.wt/ztpois-pmf as a viewer-readable root.",
+  "shared_configuration_modified": false
+}

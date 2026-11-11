@@ -1,0 +1,38 @@
+{
+  "final_checks_green": true,
+  "source_hashes_match_evidence": true,
+  "tests": [
+    {
+      "command": "just cpp-test",
+      "machine": "simbox / GCC 13.3",
+      "result": "105/108 initial pass; three affected failures corrected; final family rerun 4/4 pass",
+      "log": "logs/cpp-dev.log.gz",
+      "rerun_log": "logs/cpp-targeted-final.log.gz"
+    },
+    {
+      "command": "just cpp-test-no-long-double",
+      "machine": "workstation / GCC 15.2",
+      "result": "135/135 pass",
+      "log": "logs/cpp-double-local.log.gz"
+    },
+    {
+      "command": "just cpp-test-no-long-double",
+      "machine": "simbox / GCC 13.3",
+      "result": "135/135 pass",
+      "log": "logs/cpp-double-simbox.log.gz"
+    },
+    {
+      "command": "just test",
+      "machine": "simbox / R 4.6.1",
+      "result": "FAIL 0 WARN 0 SKIP 154 PASS 25600",
+      "log": "logs/r-dev.log.gz"
+    },
+    {
+      "command": "just test-full",
+      "machine": "simbox / R 4.6.1",
+      "result": "FAIL 0 WARN 0 SKIP 0 PASS 52358",
+      "log": "logs/r-full.log.gz"
+    }
+  ],
+  "not_required": "No shared core, binding, message, code-generator, dossier or public fitter signature changes; js-build, js-test and site-check not triggered."
+}

@@ -1,0 +1,96 @@
+{
+  "native": {
+    "certified_coefficients_unchanged": true,
+    "certified_likelihoods_unchanged": 132,
+    "certified_worst_error_increase": 8.96008499095644e-16,
+    "cases": 383,
+    "outcomes": {
+      "certified": 341,
+      "uncertified": 27,
+      "stop:limit": 10,
+      "stop:numerical": 5
+    },
+    "outcome_changes": [],
+    "coefficient_changes": [
+      1053,
+      1054
+    ],
+    "worst_error": 1.1919679419312672e-12,
+    "case629": {
+      "index": 629,
+      "family": "zmbinom",
+      "mode": "native",
+      "before": {
+        "outcome": "uncertified",
+        "logLik": -14.363697396130272,
+        "coef": {
+          "size": 1000023.0,
+          "prob": 0.9999816004231903,
+          "p0": 0.0
+        }
+      },
+      "after": {
+        "outcome": "uncertified",
+        "logLik": -14.363696715670791,
+        "coef": {
+          "size": 1000023.0,
+          "prob": 0.9999816004231903,
+          "p0": 0.0
+        }
+      },
+      "reference": "-14.363696715670824188654941523790553645528689184811362946814262158563866764197027",
+      "after_error": 2.304111993718194e-15,
+      "reference_drift": 2.787646765423587e-74,
+      "before_reference": "-14.363696715670824188654941523790553645528689184811362946814262158563866764197027",
+      "before_error": 4.737355996412458e-08,
+      "contract_pass": true
+    }
+  },
+  "double": {
+    "certified_coefficients_unchanged": true,
+    "certified_likelihoods_unchanged": 138,
+    "certified_worst_error_increase": 8.96008499095644e-16,
+    "cases": 383,
+    "outcomes": {
+      "certified": 341,
+      "uncertified": 27,
+      "stop:limit": 10,
+      "stop:numerical": 5
+    },
+    "outcome_changes": [],
+    "coefficient_changes": [
+      1053,
+      1054
+    ],
+    "worst_error": 1.1919679419312672e-12,
+    "case629": {
+      "index": 629,
+      "family": "zmbinom",
+      "mode": "double",
+      "before": {
+        "outcome": "uncertified",
+        "logLik": -14.363697396130272,
+        "coef": {
+          "size": 1000023.0,
+          "prob": 0.9999816004231903,
+          "p0": 0.0
+        }
+      },
+      "after": {
+        "outcome": "uncertified",
+        "logLik": -14.363696715670791,
+        "coef": {
+          "size": 1000023.0,
+          "prob": 0.9999816004231903,
+          "p0": 0.0
+        }
+      },
+      "reference": "-14.363696715670824188654941523790553645528689184811362946814262158563866764197027",
+      "after_error": 2.304111993718194e-15,
+      "reference_drift": 2.787646765423587e-74,
+      "before_reference": "-14.363696715670824188654941523790553645528689184811362946814262158563866764197027",
+      "before_error": 4.737355996412458e-08,
+      "contract_pass": true
+    }
+  }
+}

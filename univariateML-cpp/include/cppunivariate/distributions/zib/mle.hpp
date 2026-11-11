@@ -381,7 +381,13 @@ inline ZibResult zib_mle(ispan x,double tol=1e-10,int maxit=200,
     const double shift=nozeros?x.size()*std::log1p(-pi):0;
     const auto f=binom_mle(x,NAN,tol,maxit);
     ZibResult out{f.size,f.prob,pi,f.logLik+shift,f.iterations,ZibStatus::IterationFailure};
-    if(f.status==BinomStatus::Ok)out.status=ZibStatus::Ok;
+    if(f.status==BinomStatus::Ok) {
+      out.status=ZibStatus::Ok;
+      // Keep the delegate's search, but evaluate its returned coefficients
+      // with the same stable mass used by the other inflation profiles.
+      out.logLik=shift;
+      for(int v:x)out.logLik+=zero_detail::bin_logpmf(v,out.size,out.prob);
+    }
     if(f.status==BinomStatus::InvalidInput)out.status=ZibStatus::InvalidInput;
     if(f.status==BinomStatus::Underdispersed) {
       out.status=ZibStatus::ZipLimit;

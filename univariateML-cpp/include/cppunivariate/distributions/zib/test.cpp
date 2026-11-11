@@ -563,3 +563,14 @@ TEST_CASE("zib: strict Bernoulli saturation uses the nonidentified maximum curve
 TEST_CASE("zib: exact-input density from likelihood seam replay") {
  CHECK(cppunivariate::distributions::dzib(1000003,1000023.0,0.9999816004231903,0.0,true)==doctest::Approx(-2.4885944485828846).epsilon(1e-10));
 }
+
+TEST_CASE("zib: certified large-count binomial delegate likelihood") {
+  const std::vector<int> x{1000000,1000001,1000003,1000008,1000011};
+  const auto fit=cppunivariate::zib_mle({x.data(),x.size()});
+  REQUIRE(fit.status==cppunivariate::ZibStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.size==1000023);
+  CHECK(fit.pi==0);
+  // 80-digit log-gamma reference at the returned binary64 probability.
+  CHECK(std::abs(fit.logLik-(-14.363696715670824))<1e-10);
+}

@@ -3,6 +3,7 @@
 #include "../../core/work_budget.hpp"
 #include "../../core/span.hpp"
 #include "../lgser/mle.hpp"
+#include "../binom/dpqr.hpp"
 #include "../../special/special.hpp"
 #include <algorithm>
 #include <cmath>
@@ -60,11 +61,17 @@ inline double nb_logpmf(int x, double size, double prob) {
   return l;
 }
 inline double bin_logpmf(int x, double size, double prob) {
-  if (prob==0) return x==0 ? 0 : -std::numeric_limits<double>::infinity();
-  if (prob==1) return x==size ? 0 : -std::numeric_limits<double>::infinity();
-  double l=(size-x)*std::log1p(-prob)-special::lgamma(x+1.0);
-  for(int j=0;j<x;++j) l+=std::log((size-j)*prob);
-  return l;
+  // Share the stable count kernel with d/p/q: the factorial and falling
+  // product otherwise cancel after accumulating O(x) rounding error.
+  if(size==std::floor(size))return distributions::dbinom(x,size,prob,true);
+  // The size search also interpolates between integers. Its gamma-extended
+  // binomial mass is beta_density(p; x+1, size-x+1)/(size+1), using the
+  // same stable beta kernel as dbinom without its integer-size validation.
+  if(!(size>=0) || !std::isfinite(size) || !(prob>=0 && prob<=1))return NAN;
+  if(x<0 || x>size)return -std::numeric_limits<double>::infinity();
+  if(prob==0)return x==0?0:-std::numeric_limits<double>::infinity();
+  if(prob==1)return x==size?0:-std::numeric_limits<double>::infinity();
+  return special::beta_log_density_positive(prob,x+1.,size-x+1.)-std::log(size+1.);
 }
 template <typename F>
 inline double maximize(F f, double lo, double hi, double tol, int maxit) {

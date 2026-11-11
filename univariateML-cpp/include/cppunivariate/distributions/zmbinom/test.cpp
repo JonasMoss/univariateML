@@ -189,3 +189,15 @@ TEST_CASE("zmbinom: exact conditional probability transports independently of ze
   const auto f=cppunivariate::zmbinom_mle({x.data(),x.size()},1e-18,200,3);
   REQUIRE(f.status==cppunivariate::ZmbinomStatus::Ok);CHECK(f.prob==.5);CHECK(f.p0==.125);
 }
+
+TEST_CASE("zmbinom: case 629 large-count profile likelihood") {
+  const std::vector<int> x{1000000,1000001,1000003,1000008,1000011};
+  const auto fit=cppunivariate::zmbinom_mle({x.data(),x.size()});
+  REQUIRE(fit.status==cppunivariate::ZmbinomStatus::Ok);
+  CHECK(fit.size==1000023);
+  CHECK(fit.prob==doctest::Approx(.99998160042319029).epsilon(1e-14));
+  // Independent high-precision binomial likelihood, positive conditioning
+  // indistinguishable from one here; zero mass is the attained endpoint zero.
+  CHECK(std::abs(fit.logLik-(-14.363696715670824))<1e-10);
+  CHECK(fit.p0==0);
+}
