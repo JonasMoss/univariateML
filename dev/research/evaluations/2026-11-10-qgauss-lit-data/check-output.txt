@@ -1,0 +1,4 @@
+Confirmed: dqgauss(2,q=0) = 0.1443375672974064 outside support [-sqrt(3),sqrt(3)]
+Confirmed: dqgauss(q=1) prints and returns a character value
+Confirmed: vector cqgauss fails before any zipfR call: 'length = 2' in coercion to 'logical(1)' 
+Gaussian information: I_eta_eta= 3.5 ; I_logscale_eta= 2 ; efficient= 1.5 

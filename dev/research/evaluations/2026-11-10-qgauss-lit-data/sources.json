@@ -1,0 +1,12 @@
+[
+  {
+    "url": "https://raw.githubusercontent.com/cran/qGaussian/1f7d9a66e32808cad24acaef9007c9bb45378a00/R/dqgauss_0.1.8.R",
+    "sha256": "ef27054ae0a3b51b33d9c8dd794d3bf64e91b93943307801e20835ebcfb7249d",
+    "retrieved": "2026-11-10"
+  },
+  {
+    "url": "https://raw.githubusercontent.com/cran/qGaussian/1f7d9a66e32808cad24acaef9007c9bb45378a00/R/cqgauss_0.1.8.R",
+    "sha256": "cd35903a627ae556e7bc3fae3c0178af07cc88ba2bb1c4b0f1ef1a392e5c3222",
+    "retrieved": "2026-11-10"
+  }
+]
