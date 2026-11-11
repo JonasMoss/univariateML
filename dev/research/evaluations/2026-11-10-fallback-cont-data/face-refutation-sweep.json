@@ -1,0 +1,2226 @@
+{
+  "cases": [
+    {
+      "index": "burr-shape2--0.001-1e-06-16",
+      "family": "burr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        5.999
+      ],
+      "tol": 1e-06,
+      "iterlim": 16
+    },
+    {
+      "index": "betapr-shape1--0.001-1e-06-16",
+      "family": "betapr",
+      "held": {
+        "shape1": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        5.999
+      ],
+      "tol": 1e-06,
+      "iterlim": 16
+    },
+    {
+      "index": "betapr-shape2--0.001-1e-06-16",
+      "family": "betapr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.16669444907484582
+      ],
+      "tol": 1e-06,
+      "iterlim": 16
+    },
+    {
+      "index": "burr-shape2--0.001-1e-06-1000",
+      "family": "burr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        5.999
+      ],
+      "tol": 1e-06,
+      "iterlim": 1000
+    },
+    {
+      "index": "betapr-shape1--0.001-1e-06-1000",
+      "family": "betapr",
+      "held": {
+        "shape1": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        5.999
+      ],
+      "tol": 1e-06,
+      "iterlim": 1000
+    },
+    {
+      "index": "betapr-shape2--0.001-1e-06-1000",
+      "family": "betapr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.16669444907484582
+      ],
+      "tol": 1e-06,
+      "iterlim": 1000
+    },
+    {
+      "index": "burr-shape2--0.001-1e-08-16",
+      "family": "burr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        5.999
+      ],
+      "tol": 1e-08,
+      "iterlim": 16
+    },
+    {
+      "index": "betapr-shape1--0.001-1e-08-16",
+      "family": "betapr",
+      "held": {
+        "shape1": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        5.999
+      ],
+      "tol": 1e-08,
+      "iterlim": 16
+    },
+    {
+      "index": "betapr-shape2--0.001-1e-08-16",
+      "family": "betapr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.16669444907484582
+      ],
+      "tol": 1e-08,
+      "iterlim": 16
+    },
+    {
+      "index": "burr-shape2--0.001-1e-08-1000",
+      "family": "burr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        5.999
+      ],
+      "tol": 1e-08,
+      "iterlim": 1000
+    },
+    {
+      "index": "betapr-shape1--0.001-1e-08-1000",
+      "family": "betapr",
+      "held": {
+        "shape1": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        5.999
+      ],
+      "tol": 1e-08,
+      "iterlim": 1000
+    },
+    {
+      "index": "betapr-shape2--0.001-1e-08-1000",
+      "family": "betapr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.16669444907484582
+      ],
+      "tol": 1e-08,
+      "iterlim": 1000
+    },
+    {
+      "index": "burr-shape2--0.0001-1e-06-16",
+      "family": "burr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        5.9999
+      ],
+      "tol": 1e-06,
+      "iterlim": 16
+    },
+    {
+      "index": "betapr-shape1--0.0001-1e-06-16",
+      "family": "betapr",
+      "held": {
+        "shape1": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        5.9999
+      ],
+      "tol": 1e-06,
+      "iterlim": 16
+    },
+    {
+      "index": "betapr-shape2--0.0001-1e-06-16",
+      "family": "betapr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.1666694444907415
+      ],
+      "tol": 1e-06,
+      "iterlim": 16
+    },
+    {
+      "index": "burr-shape2--0.0001-1e-06-1000",
+      "family": "burr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        5.9999
+      ],
+      "tol": 1e-06,
+      "iterlim": 1000
+    },
+    {
+      "index": "betapr-shape1--0.0001-1e-06-1000",
+      "family": "betapr",
+      "held": {
+        "shape1": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        5.9999
+      ],
+      "tol": 1e-06,
+      "iterlim": 1000
+    },
+    {
+      "index": "betapr-shape2--0.0001-1e-06-1000",
+      "family": "betapr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.1666694444907415
+      ],
+      "tol": 1e-06,
+      "iterlim": 1000
+    },
+    {
+      "index": "burr-shape2--0.0001-1e-08-16",
+      "family": "burr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        5.9999
+      ],
+      "tol": 1e-08,
+      "iterlim": 16
+    },
+    {
+      "index": "betapr-shape1--0.0001-1e-08-16",
+      "family": "betapr",
+      "held": {
+        "shape1": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        5.9999
+      ],
+      "tol": 1e-08,
+      "iterlim": 16
+    },
+    {
+      "index": "betapr-shape2--0.0001-1e-08-16",
+      "family": "betapr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.1666694444907415
+      ],
+      "tol": 1e-08,
+      "iterlim": 16
+    },
+    {
+      "index": "burr-shape2--0.0001-1e-08-1000",
+      "family": "burr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        5.9999
+      ],
+      "tol": 1e-08,
+      "iterlim": 1000
+    },
+    {
+      "index": "betapr-shape1--0.0001-1e-08-1000",
+      "family": "betapr",
+      "held": {
+        "shape1": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        5.9999
+      ],
+      "tol": 1e-08,
+      "iterlim": 1000
+    },
+    {
+      "index": "betapr-shape2--0.0001-1e-08-1000",
+      "family": "betapr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.1666694444907415
+      ],
+      "tol": 1e-08,
+      "iterlim": 1000
+    },
+    {
+      "index": "burr-shape2--5e-05-1e-06-16",
+      "family": "burr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        5.99995
+      ],
+      "tol": 1e-06,
+      "iterlim": 16
+    },
+    {
+      "index": "betapr-shape1--5e-05-1e-06-16",
+      "family": "betapr",
+      "held": {
+        "shape1": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        5.99995
+      ],
+      "tol": 1e-06,
+      "iterlim": 16
+    },
+    {
+      "index": "betapr-shape2--5e-05-1e-06-16",
+      "family": "betapr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.1666680555671297
+      ],
+      "tol": 1e-06,
+      "iterlim": 16
+    },
+    {
+      "index": "burr-shape2--5e-05-1e-06-1000",
+      "family": "burr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        5.99995
+      ],
+      "tol": 1e-06,
+      "iterlim": 1000
+    },
+    {
+      "index": "betapr-shape1--5e-05-1e-06-1000",
+      "family": "betapr",
+      "held": {
+        "shape1": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        5.99995
+      ],
+      "tol": 1e-06,
+      "iterlim": 1000
+    },
+    {
+      "index": "betapr-shape2--5e-05-1e-06-1000",
+      "family": "betapr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.1666680555671297
+      ],
+      "tol": 1e-06,
+      "iterlim": 1000
+    },
+    {
+      "index": "burr-shape2--5e-05-1e-08-16",
+      "family": "burr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        5.99995
+      ],
+      "tol": 1e-08,
+      "iterlim": 16
+    },
+    {
+      "index": "betapr-shape1--5e-05-1e-08-16",
+      "family": "betapr",
+      "held": {
+        "shape1": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        5.99995
+      ],
+      "tol": 1e-08,
+      "iterlim": 16
+    },
+    {
+      "index": "betapr-shape2--5e-05-1e-08-16",
+      "family": "betapr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.1666680555671297
+      ],
+      "tol": 1e-08,
+      "iterlim": 16
+    },
+    {
+      "index": "burr-shape2--5e-05-1e-08-1000",
+      "family": "burr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        5.99995
+      ],
+      "tol": 1e-08,
+      "iterlim": 1000
+    },
+    {
+      "index": "betapr-shape1--5e-05-1e-08-1000",
+      "family": "betapr",
+      "held": {
+        "shape1": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        5.99995
+      ],
+      "tol": 1e-08,
+      "iterlim": 1000
+    },
+    {
+      "index": "betapr-shape2--5e-05-1e-08-1000",
+      "family": "betapr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.1666680555671297
+      ],
+      "tol": 1e-08,
+      "iterlim": 1000
+    },
+    {
+      "index": "burr-shape2--2e-05-1e-06-16",
+      "family": "burr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        5.99998
+      ],
+      "tol": 1e-06,
+      "iterlim": 16
+    },
+    {
+      "index": "betapr-shape1--2e-05-1e-06-16",
+      "family": "betapr",
+      "held": {
+        "shape1": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        5.99998
+      ],
+      "tol": 1e-06,
+      "iterlim": 16
+    },
+    {
+      "index": "betapr-shape2--2e-05-1e-06-16",
+      "family": "betapr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.1666672222240741
+      ],
+      "tol": 1e-06,
+      "iterlim": 16
+    },
+    {
+      "index": "burr-shape2--2e-05-1e-06-1000",
+      "family": "burr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        5.99998
+      ],
+      "tol": 1e-06,
+      "iterlim": 1000
+    },
+    {
+      "index": "betapr-shape1--2e-05-1e-06-1000",
+      "family": "betapr",
+      "held": {
+        "shape1": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        5.99998
+      ],
+      "tol": 1e-06,
+      "iterlim": 1000
+    },
+    {
+      "index": "betapr-shape2--2e-05-1e-06-1000",
+      "family": "betapr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.1666672222240741
+      ],
+      "tol": 1e-06,
+      "iterlim": 1000
+    },
+    {
+      "index": "burr-shape2--2e-05-1e-08-16",
+      "family": "burr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        5.99998
+      ],
+      "tol": 1e-08,
+      "iterlim": 16
+    },
+    {
+      "index": "betapr-shape1--2e-05-1e-08-16",
+      "family": "betapr",
+      "held": {
+        "shape1": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        5.99998
+      ],
+      "tol": 1e-08,
+      "iterlim": 16
+    },
+    {
+      "index": "betapr-shape2--2e-05-1e-08-16",
+      "family": "betapr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.1666672222240741
+      ],
+      "tol": 1e-08,
+      "iterlim": 16
+    },
+    {
+      "index": "burr-shape2--2e-05-1e-08-1000",
+      "family": "burr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        5.99998
+      ],
+      "tol": 1e-08,
+      "iterlim": 1000
+    },
+    {
+      "index": "betapr-shape1--2e-05-1e-08-1000",
+      "family": "betapr",
+      "held": {
+        "shape1": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        5.99998
+      ],
+      "tol": 1e-08,
+      "iterlim": 1000
+    },
+    {
+      "index": "betapr-shape2--2e-05-1e-08-1000",
+      "family": "betapr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.1666672222240741
+      ],
+      "tol": 1e-08,
+      "iterlim": 1000
+    },
+    {
+      "index": "burr-shape2--1e-05-1e-06-16",
+      "family": "burr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        5.99999
+      ],
+      "tol": 1e-06,
+      "iterlim": 16
+    },
+    {
+      "index": "betapr-shape1--1e-05-1e-06-16",
+      "family": "betapr",
+      "held": {
+        "shape1": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        5.99999
+      ],
+      "tol": 1e-06,
+      "iterlim": 16
+    },
+    {
+      "index": "betapr-shape2--1e-05-1e-06-16",
+      "family": "betapr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.1666669444449074
+      ],
+      "tol": 1e-06,
+      "iterlim": 16
+    },
+    {
+      "index": "burr-shape2--1e-05-1e-06-1000",
+      "family": "burr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        5.99999
+      ],
+      "tol": 1e-06,
+      "iterlim": 1000
+    },
+    {
+      "index": "betapr-shape1--1e-05-1e-06-1000",
+      "family": "betapr",
+      "held": {
+        "shape1": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        5.99999
+      ],
+      "tol": 1e-06,
+      "iterlim": 1000
+    },
+    {
+      "index": "betapr-shape2--1e-05-1e-06-1000",
+      "family": "betapr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.1666669444449074
+      ],
+      "tol": 1e-06,
+      "iterlim": 1000
+    },
+    {
+      "index": "burr-shape2--1e-05-1e-08-16",
+      "family": "burr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        5.99999
+      ],
+      "tol": 1e-08,
+      "iterlim": 16
+    },
+    {
+      "index": "betapr-shape1--1e-05-1e-08-16",
+      "family": "betapr",
+      "held": {
+        "shape1": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        5.99999
+      ],
+      "tol": 1e-08,
+      "iterlim": 16
+    },
+    {
+      "index": "betapr-shape2--1e-05-1e-08-16",
+      "family": "betapr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.1666669444449074
+      ],
+      "tol": 1e-08,
+      "iterlim": 16
+    },
+    {
+      "index": "burr-shape2--1e-05-1e-08-1000",
+      "family": "burr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        5.99999
+      ],
+      "tol": 1e-08,
+      "iterlim": 1000
+    },
+    {
+      "index": "betapr-shape1--1e-05-1e-08-1000",
+      "family": "betapr",
+      "held": {
+        "shape1": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        5.99999
+      ],
+      "tol": 1e-08,
+      "iterlim": 1000
+    },
+    {
+      "index": "betapr-shape2--1e-05-1e-08-1000",
+      "family": "betapr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.1666669444449074
+      ],
+      "tol": 1e-08,
+      "iterlim": 1000
+    },
+    {
+      "index": "burr-shape2--1e-06-1e-06-16",
+      "family": "burr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        5.999999
+      ],
+      "tol": 1e-06,
+      "iterlim": 16
+    },
+    {
+      "index": "betapr-shape1--1e-06-1e-06-16",
+      "family": "betapr",
+      "held": {
+        "shape1": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        5.999999
+      ],
+      "tol": 1e-06,
+      "iterlim": 16
+    },
+    {
+      "index": "betapr-shape2--1e-06-1e-06-16",
+      "family": "betapr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.16666669444444907
+      ],
+      "tol": 1e-06,
+      "iterlim": 16
+    },
+    {
+      "index": "burr-shape2--1e-06-1e-06-1000",
+      "family": "burr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        5.999999
+      ],
+      "tol": 1e-06,
+      "iterlim": 1000
+    },
+    {
+      "index": "betapr-shape1--1e-06-1e-06-1000",
+      "family": "betapr",
+      "held": {
+        "shape1": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        5.999999
+      ],
+      "tol": 1e-06,
+      "iterlim": 1000
+    },
+    {
+      "index": "betapr-shape2--1e-06-1e-06-1000",
+      "family": "betapr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.16666669444444907
+      ],
+      "tol": 1e-06,
+      "iterlim": 1000
+    },
+    {
+      "index": "burr-shape2--1e-06-1e-08-16",
+      "family": "burr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        5.999999
+      ],
+      "tol": 1e-08,
+      "iterlim": 16
+    },
+    {
+      "index": "betapr-shape1--1e-06-1e-08-16",
+      "family": "betapr",
+      "held": {
+        "shape1": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        5.999999
+      ],
+      "tol": 1e-08,
+      "iterlim": 16
+    },
+    {
+      "index": "betapr-shape2--1e-06-1e-08-16",
+      "family": "betapr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.16666669444444907
+      ],
+      "tol": 1e-08,
+      "iterlim": 16
+    },
+    {
+      "index": "burr-shape2--1e-06-1e-08-1000",
+      "family": "burr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        5.999999
+      ],
+      "tol": 1e-08,
+      "iterlim": 1000
+    },
+    {
+      "index": "betapr-shape1--1e-06-1e-08-1000",
+      "family": "betapr",
+      "held": {
+        "shape1": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        5.999999
+      ],
+      "tol": 1e-08,
+      "iterlim": 1000
+    },
+    {
+      "index": "betapr-shape2--1e-06-1e-08-1000",
+      "family": "betapr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.16666669444444907
+      ],
+      "tol": 1e-08,
+      "iterlim": 1000
+    },
+    {
+      "index": "burr-shape2-0.0001-1e-06-16",
+      "family": "burr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        6.0001
+      ],
+      "tol": 1e-06,
+      "iterlim": 16
+    },
+    {
+      "index": "betapr-shape1-0.0001-1e-06-16",
+      "family": "betapr",
+      "held": {
+        "shape1": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        6.0001
+      ],
+      "tol": 1e-06,
+      "iterlim": 16
+    },
+    {
+      "index": "betapr-shape2-0.0001-1e-06-16",
+      "family": "betapr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.1666638889351844
+      ],
+      "tol": 1e-06,
+      "iterlim": 16
+    },
+    {
+      "index": "burr-shape2-0.0001-1e-06-1000",
+      "family": "burr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        6.0001
+      ],
+      "tol": 1e-06,
+      "iterlim": 1000
+    },
+    {
+      "index": "betapr-shape1-0.0001-1e-06-1000",
+      "family": "betapr",
+      "held": {
+        "shape1": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        6.0001
+      ],
+      "tol": 1e-06,
+      "iterlim": 1000
+    },
+    {
+      "index": "betapr-shape2-0.0001-1e-06-1000",
+      "family": "betapr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.1666638889351844
+      ],
+      "tol": 1e-06,
+      "iterlim": 1000
+    },
+    {
+      "index": "burr-shape2-0.0001-1e-08-16",
+      "family": "burr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        6.0001
+      ],
+      "tol": 1e-08,
+      "iterlim": 16
+    },
+    {
+      "index": "betapr-shape1-0.0001-1e-08-16",
+      "family": "betapr",
+      "held": {
+        "shape1": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        6.0001
+      ],
+      "tol": 1e-08,
+      "iterlim": 16
+    },
+    {
+      "index": "betapr-shape2-0.0001-1e-08-16",
+      "family": "betapr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.1666638889351844
+      ],
+      "tol": 1e-08,
+      "iterlim": 16
+    },
+    {
+      "index": "burr-shape2-0.0001-1e-08-1000",
+      "family": "burr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        6.0001
+      ],
+      "tol": 1e-08,
+      "iterlim": 1000
+    },
+    {
+      "index": "betapr-shape1-0.0001-1e-08-1000",
+      "family": "betapr",
+      "held": {
+        "shape1": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        6.0001
+      ],
+      "tol": 1e-08,
+      "iterlim": 1000
+    },
+    {
+      "index": "betapr-shape2-0.0001-1e-08-1000",
+      "family": "betapr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.1666638889351844
+      ],
+      "tol": 1e-08,
+      "iterlim": 1000
+    },
+    {
+      "index": "burr-shape2-1e-08-1e-06-16",
+      "family": "burr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        6.00000001
+      ],
+      "tol": 1e-06,
+      "iterlim": 16
+    },
+    {
+      "index": "betapr-shape1-1e-08-1e-06-16",
+      "family": "betapr",
+      "held": {
+        "shape1": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        6.00000001
+      ],
+      "tol": 1e-06,
+      "iterlim": 16
+    },
+    {
+      "index": "betapr-shape2-1e-08-1e-06-16",
+      "family": "betapr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.16666666638888888
+      ],
+      "tol": 1e-06,
+      "iterlim": 16
+    },
+    {
+      "index": "burr-shape2-1e-08-1e-06-1000",
+      "family": "burr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        6.00000001
+      ],
+      "tol": 1e-06,
+      "iterlim": 1000
+    },
+    {
+      "index": "betapr-shape1-1e-08-1e-06-1000",
+      "family": "betapr",
+      "held": {
+        "shape1": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        6.00000001
+      ],
+      "tol": 1e-06,
+      "iterlim": 1000
+    },
+    {
+      "index": "betapr-shape2-1e-08-1e-06-1000",
+      "family": "betapr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.16666666638888888
+      ],
+      "tol": 1e-06,
+      "iterlim": 1000
+    },
+    {
+      "index": "burr-shape2-1e-08-1e-08-16",
+      "family": "burr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        6.00000001
+      ],
+      "tol": 1e-08,
+      "iterlim": 16
+    },
+    {
+      "index": "betapr-shape1-1e-08-1e-08-16",
+      "family": "betapr",
+      "held": {
+        "shape1": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        6.00000001
+      ],
+      "tol": 1e-08,
+      "iterlim": 16
+    },
+    {
+      "index": "betapr-shape2-1e-08-1e-08-16",
+      "family": "betapr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.16666666638888888
+      ],
+      "tol": 1e-08,
+      "iterlim": 16
+    },
+    {
+      "index": "burr-shape2-1e-08-1e-08-1000",
+      "family": "burr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        6.00000001
+      ],
+      "tol": 1e-08,
+      "iterlim": 1000
+    },
+    {
+      "index": "betapr-shape1-1e-08-1e-08-1000",
+      "family": "betapr",
+      "held": {
+        "shape1": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        6.00000001
+      ],
+      "tol": 1e-08,
+      "iterlim": 1000
+    },
+    {
+      "index": "betapr-shape2-1e-08-1e-08-1000",
+      "family": "betapr",
+      "held": {
+        "shape2": 1
+      },
+      "data": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.16666666638888888
+      ],
+      "tol": 1e-08,
+      "iterlim": 1000
+    }
+  ],
+  "results": [
+    {
+      "index": "burr-shape2--0.001-1e-06-16",
+      "outcome": "stop:limit",
+      "row": "burr-shape2--0.001-1e-06-16\tburr\tstop:limit\tnan\tmessage=The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.",
+      "face_loglik": -8.465235877798058
+    },
+    {
+      "index": "betapr-shape1--0.001-1e-06-16",
+      "outcome": "stop:limit",
+      "row": "betapr-shape1--0.001-1e-06-16\tbetapr\tstop:limit\tnan\tmessage=The certified beta-prime submodel selects the exponential limit. Use `mlexp`.",
+      "face_loglik": -8.465235877798058
+    },
+    {
+      "index": "betapr-shape2--0.001-1e-06-16",
+      "outcome": "stop:limit",
+      "row": "betapr-shape2--0.001-1e-06-16\tbetapr\tstop:limit\tnan\tmessage=The certified beta-prime submodel selects the inverse exponential limit. Use `mlinvexp`.",
+      "face_loglik": -4.882050300456147
+    },
+    {
+      "index": "burr-shape2--0.001-1e-06-1000",
+      "outcome": "stop:limit",
+      "row": "burr-shape2--0.001-1e-06-1000\tburr\tstop:limit\tnan\tmessage=The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.",
+      "face_loglik": -8.465235877798058
+    },
+    {
+      "index": "betapr-shape1--0.001-1e-06-1000",
+      "outcome": "stop:limit",
+      "row": "betapr-shape1--0.001-1e-06-1000\tbetapr\tstop:limit\tnan\tmessage=The certified beta-prime submodel selects the exponential limit. Use `mlexp`.",
+      "face_loglik": -8.465235877798058
+    },
+    {
+      "index": "betapr-shape2--0.001-1e-06-1000",
+      "outcome": "stop:limit",
+      "row": "betapr-shape2--0.001-1e-06-1000\tbetapr\tstop:limit\tnan\tmessage=The certified beta-prime submodel selects the inverse exponential limit. Use `mlinvexp`.",
+      "face_loglik": -4.882050300456147
+    },
+    {
+      "index": "burr-shape2--0.001-1e-08-16",
+      "outcome": "stop:limit",
+      "row": "burr-shape2--0.001-1e-08-16\tburr\tstop:limit\tnan\tmessage=The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.",
+      "face_loglik": -8.465235877798058
+    },
+    {
+      "index": "betapr-shape1--0.001-1e-08-16",
+      "outcome": "stop:limit",
+      "row": "betapr-shape1--0.001-1e-08-16\tbetapr\tstop:limit\tnan\tmessage=The certified beta-prime submodel selects the exponential limit. Use `mlexp`.",
+      "face_loglik": -8.465235877798058
+    },
+    {
+      "index": "betapr-shape2--0.001-1e-08-16",
+      "outcome": "stop:limit",
+      "row": "betapr-shape2--0.001-1e-08-16\tbetapr\tstop:limit\tnan\tmessage=The certified beta-prime submodel selects the inverse exponential limit. Use `mlinvexp`.",
+      "face_loglik": -4.882050300456147
+    },
+    {
+      "index": "burr-shape2--0.001-1e-08-1000",
+      "outcome": "stop:limit",
+      "row": "burr-shape2--0.001-1e-08-1000\tburr\tstop:limit\tnan\tmessage=The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.",
+      "face_loglik": -8.465235877798058
+    },
+    {
+      "index": "betapr-shape1--0.001-1e-08-1000",
+      "outcome": "stop:limit",
+      "row": "betapr-shape1--0.001-1e-08-1000\tbetapr\tstop:limit\tnan\tmessage=The certified beta-prime submodel selects the exponential limit. Use `mlexp`.",
+      "face_loglik": -8.465235877798058
+    },
+    {
+      "index": "betapr-shape2--0.001-1e-08-1000",
+      "outcome": "stop:limit",
+      "row": "betapr-shape2--0.001-1e-08-1000\tbetapr\tstop:limit\tnan\tmessage=The certified beta-prime submodel selects the inverse exponential limit. Use `mlinvexp`.",
+      "face_loglik": -4.882050300456147
+    },
+    {
+      "index": "burr-shape2--0.0001-1e-06-16",
+      "outcome": "stop:limit",
+      "row": "burr-shape2--0.0001-1e-06-16\tburr\tstop:limit\tnan\tmessage=The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.",
+      "face_loglik": -8.465685902549724
+    },
+    {
+      "index": "betapr-shape1--0.0001-1e-06-16",
+      "outcome": "stop:limit",
+      "row": "betapr-shape1--0.0001-1e-06-16\tbetapr\tstop:limit\tnan\tmessage=The certified beta-prime submodel selects the exponential limit. Use `mlexp`.",
+      "face_loglik": -8.465685902549724
+    },
+    {
+      "index": "betapr-shape2--0.0001-1e-06-16",
+      "outcome": "stop:limit",
+      "row": "betapr-shape2--0.0001-1e-06-16\tbetapr\tstop:limit\tnan\tmessage=The certified beta-prime submodel selects the inverse exponential limit. Use `mlinvexp`.",
+      "face_loglik": -4.8822002977047285
+    },
+    {
+      "index": "burr-shape2--0.0001-1e-06-1000",
+      "outcome": "stop:limit",
+      "row": "burr-shape2--0.0001-1e-06-1000\tburr\tstop:limit\tnan\tmessage=The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.",
+      "face_loglik": -8.465685902549724
+    },
+    {
+      "index": "betapr-shape1--0.0001-1e-06-1000",
+      "outcome": "stop:limit",
+      "row": "betapr-shape1--0.0001-1e-06-1000\tbetapr\tstop:limit\tnan\tmessage=The certified beta-prime submodel selects the exponential limit. Use `mlexp`.",
+      "face_loglik": -8.465685902549724
+    },
+    {
+      "index": "betapr-shape2--0.0001-1e-06-1000",
+      "outcome": "stop:limit",
+      "row": "betapr-shape2--0.0001-1e-06-1000\tbetapr\tstop:limit\tnan\tmessage=The certified beta-prime submodel selects the inverse exponential limit. Use `mlinvexp`.",
+      "face_loglik": -4.8822002977047285
+    },
+    {
+      "index": "burr-shape2--0.0001-1e-08-16",
+      "outcome": "stop:limit",
+      "row": "burr-shape2--0.0001-1e-08-16\tburr\tstop:limit\tnan\tmessage=The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.",
+      "face_loglik": -8.465685902549724
+    },
+    {
+      "index": "betapr-shape1--0.0001-1e-08-16",
+      "outcome": "stop:limit",
+      "row": "betapr-shape1--0.0001-1e-08-16\tbetapr\tstop:limit\tnan\tmessage=The certified beta-prime submodel selects the exponential limit. Use `mlexp`.",
+      "face_loglik": -8.465685902549724
+    },
+    {
+      "index": "betapr-shape2--0.0001-1e-08-16",
+      "outcome": "stop:limit",
+      "row": "betapr-shape2--0.0001-1e-08-16\tbetapr\tstop:limit\tnan\tmessage=The certified beta-prime submodel selects the inverse exponential limit. Use `mlinvexp`.",
+      "face_loglik": -4.8822002977047285
+    },
+    {
+      "index": "burr-shape2--0.0001-1e-08-1000",
+      "outcome": "stop:limit",
+      "row": "burr-shape2--0.0001-1e-08-1000\tburr\tstop:limit\tnan\tmessage=The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.",
+      "face_loglik": -8.465685902549724
+    },
+    {
+      "index": "betapr-shape1--0.0001-1e-08-1000",
+      "outcome": "stop:limit",
+      "row": "betapr-shape1--0.0001-1e-08-1000\tbetapr\tstop:limit\tnan\tmessage=The certified beta-prime submodel selects the exponential limit. Use `mlexp`.",
+      "face_loglik": -8.465685902549724
+    },
+    {
+      "index": "betapr-shape2--0.0001-1e-08-1000",
+      "outcome": "stop:limit",
+      "row": "betapr-shape2--0.0001-1e-08-1000\tbetapr\tstop:limit\tnan\tmessage=The certified beta-prime submodel selects the inverse exponential limit. Use `mlinvexp`.",
+      "face_loglik": -4.8822002977047285
+    },
+    {
+      "index": "burr-shape2--5e-05-1e-06-16",
+      "outcome": "stop:limit",
+      "row": "burr-shape2--5e-05-1e-06-16\tburr\tstop:limit\tnan\tmessage=The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.",
+      "face_loglik": -8.465710902737227
+    },
+    {
+      "index": "betapr-shape1--5e-05-1e-06-16",
+      "outcome": "stop:limit",
+      "row": "betapr-shape1--5e-05-1e-06-16\tbetapr\tstop:limit\tnan\tmessage=The certified beta-prime submodel selects the exponential limit. Use `mlexp`.",
+      "face_loglik": -8.465710902737227
+    },
+    {
+      "index": "betapr-shape2--5e-05-1e-06-16",
+      "outcome": "stop:limit",
+      "row": "betapr-shape2--5e-05-1e-06-16\tbetapr\tstop:limit\tnan\tmessage=The certified beta-prime submodel selects the inverse exponential limit. Use `mlinvexp`.",
+      "face_loglik": -4.882208631017228
+    },
+    {
+      "index": "burr-shape2--5e-05-1e-06-1000",
+      "outcome": "stop:limit",
+      "row": "burr-shape2--5e-05-1e-06-1000\tburr\tstop:limit\tnan\tmessage=The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.",
+      "face_loglik": -8.465710902737227
+    },
+    {
+      "index": "betapr-shape1--5e-05-1e-06-1000",
+      "outcome": "stop:limit",
+      "row": "betapr-shape1--5e-05-1e-06-1000\tbetapr\tstop:limit\tnan\tmessage=The certified beta-prime submodel selects the exponential limit. Use `mlexp`.",
+      "face_loglik": -8.465710902737227
+    },
+    {
+      "index": "betapr-shape2--5e-05-1e-06-1000",
+      "outcome": "stop:limit",
+      "row": "betapr-shape2--5e-05-1e-06-1000\tbetapr\tstop:limit\tnan\tmessage=The certified beta-prime submodel selects the inverse exponential limit. Use `mlinvexp`.",
+      "face_loglik": -4.882208631017228
+    },
+    {
+      "index": "burr-shape2--5e-05-1e-08-16",
+      "outcome": "stop:limit",
+      "row": "burr-shape2--5e-05-1e-08-16\tburr\tstop:limit\tnan\tmessage=The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.",
+      "face_loglik": -8.465710902737227
+    },
+    {
+      "index": "betapr-shape1--5e-05-1e-08-16",
+      "outcome": "stop:limit",
+      "row": "betapr-shape1--5e-05-1e-08-16\tbetapr\tstop:limit\tnan\tmessage=The certified beta-prime submodel selects the exponential limit. Use `mlexp`.",
+      "face_loglik": -8.465710902737227
+    },
+    {
+      "index": "betapr-shape2--5e-05-1e-08-16",
+      "outcome": "stop:limit",
+      "row": "betapr-shape2--5e-05-1e-08-16\tbetapr\tstop:limit\tnan\tmessage=The certified beta-prime submodel selects the inverse exponential limit. Use `mlinvexp`.",
+      "face_loglik": -4.882208631017228
+    },
+    {
+      "index": "burr-shape2--5e-05-1e-08-1000",
+      "outcome": "stop:limit",
+      "row": "burr-shape2--5e-05-1e-08-1000\tburr\tstop:limit\tnan\tmessage=The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.",
+      "face_loglik": -8.465710902737227
+    },
+    {
+      "index": "betapr-shape1--5e-05-1e-08-1000",
+      "outcome": "stop:limit",
+      "row": "betapr-shape1--5e-05-1e-08-1000\tbetapr\tstop:limit\tnan\tmessage=The certified beta-prime submodel selects the exponential limit. Use `mlexp`.",
+      "face_loglik": -8.465710902737227
+    },
+    {
+      "index": "betapr-shape2--5e-05-1e-08-1000",
+      "outcome": "stop:limit",
+      "row": "betapr-shape2--5e-05-1e-08-1000\tbetapr\tstop:limit\tnan\tmessage=The certified beta-prime submodel selects the inverse exponential limit. Use `mlinvexp`.",
+      "face_loglik": -4.882208631017228
+    },
+    {
+      "index": "burr-shape2--2e-05-1e-06-16",
+      "outcome": "stop:unresolved",
+      "row": "burr-shape2--2e-05-1e-06-16\tburr\tstop:unresolved\tnan\tmessage=Constrained likelihood search failed to converge.",
+      "face_loglik": -8.465725902789726
+    },
+    {
+      "index": "betapr-shape1--2e-05-1e-06-16",
+      "outcome": "stop:unresolved",
+      "row": "betapr-shape1--2e-05-1e-06-16\tbetapr\tstop:unresolved\tnan\tmessage=Beta-prime optimizer BfgsFailure: profile did not converge or its global certificate is unresolved; increase iterlim. An unresolved gamma or inverse-gamma comparison does not select `mlgamma` or `mlinvgamma`.",
+      "face_loglik": -8.465725902789726
+    },
+    {
+      "index": "betapr-shape2--2e-05-1e-06-16",
+      "outcome": "stop:unresolved",
+      "row": "betapr-shape2--2e-05-1e-06-16\tbetapr\tstop:unresolved\tnan\tmessage=Beta-prime optimizer BfgsFailure: profile did not converge or its global certificate is unresolved; increase iterlim. An unresolved gamma or inverse-gamma comparison does not select `mlgamma` or `mlinvgamma`.",
+      "face_loglik": -4.882213631011394
+    },
+    {
+      "index": "burr-shape2--2e-05-1e-06-1000",
+      "outcome": "stop:unresolved",
+      "row": "burr-shape2--2e-05-1e-06-1000\tburr\tstop:unresolved\tnan\tmessage=Constrained likelihood search failed to converge.",
+      "face_loglik": -8.465725902789726
+    },
+    {
+      "index": "betapr-shape1--2e-05-1e-06-1000",
+      "outcome": "uncertified",
+      "row": "betapr-shape1--2e-05-1e-06-1000\tbetapr\tuncertified\t-8.4657259027925917\tshape1=1\tshape2=3703562.5967621389\tscale=7407109.2783147283",
+      "face_loglik": -8.465725902789726,
+      "gain": -2.865263581952604e-12,
+      "margin": 6.1235031820581715e-12,
+      "refuted": false
+    },
+    {
+      "index": "betapr-shape2--2e-05-1e-06-1000",
+      "outcome": "uncertified",
+      "row": "betapr-shape2--2e-05-1e-06-1000\tbetapr\tuncertified\t-4.8822136310142561\tshape1=3703562.5967621389\tshape2=1\tscale=1.3500543362140335e-07",
+      "face_loglik": -4.882213631011394,
+      "gain": -2.8617108682738035e-12,
+      "margin": 4.4939104695978386e-12,
+      "refuted": false
+    },
+    {
+      "index": "burr-shape2--2e-05-1e-08-16",
+      "outcome": "stop:unresolved",
+      "row": "burr-shape2--2e-05-1e-08-16\tburr\tstop:unresolved\tnan\tmessage=Constrained likelihood search failed to converge.",
+      "face_loglik": -8.465725902789726
+    },
+    {
+      "index": "betapr-shape1--2e-05-1e-08-16",
+      "outcome": "stop:unresolved",
+      "row": "betapr-shape1--2e-05-1e-08-16\tbetapr\tstop:unresolved\tnan\tmessage=Beta-prime optimizer BfgsFailure: profile did not converge or its global certificate is unresolved; increase iterlim. An unresolved gamma or inverse-gamma comparison does not select `mlgamma` or `mlinvgamma`.",
+      "face_loglik": -8.465725902789726
+    },
+    {
+      "index": "betapr-shape2--2e-05-1e-08-16",
+      "outcome": "stop:unresolved",
+      "row": "betapr-shape2--2e-05-1e-08-16\tbetapr\tstop:unresolved\tnan\tmessage=Beta-prime optimizer BfgsFailure: profile did not converge or its global certificate is unresolved; increase iterlim. An unresolved gamma or inverse-gamma comparison does not select `mlgamma` or `mlinvgamma`.",
+      "face_loglik": -4.882213631011394
+    },
+    {
+      "index": "burr-shape2--2e-05-1e-08-1000",
+      "outcome": "stop:unresolved",
+      "row": "burr-shape2--2e-05-1e-08-1000\tburr\tstop:unresolved\tnan\tmessage=Constrained likelihood search failed to converge.",
+      "face_loglik": -8.465725902789726
+    },
+    {
+      "index": "betapr-shape1--2e-05-1e-08-1000",
+      "outcome": "uncertified",
+      "row": "betapr-shape1--2e-05-1e-08-1000\tbetapr\tuncertified\t-8.4657259027902949\tshape1=1\tshape2=18458051.090087213\tscale=36916029.538434081",
+      "face_loglik": -8.465725902789726,
+      "gain": -5.684341886080801e-13,
+      "margin": 6.123503182057127e-12,
+      "refuted": false
+    },
+    {
+      "index": "betapr-shape2--2e-05-1e-08-1000",
+      "outcome": "uncertified",
+      "row": "betapr-shape2--2e-05-1e-08-1000\tbetapr\tuncertified\t-4.8822136310118012\tshape1=24834969.720533971\tshape2=1\tscale=2.0132941925342166e-08",
+      "face_loglik": -4.882213631011394,
+      "gain": -4.0678571622265736e-13,
+      "margin": 4.493910469596722e-12,
+      "refuted": false
+    },
+    {
+      "index": "burr-shape2--1e-05-1e-06-16",
+      "outcome": "stop:unresolved",
+      "row": "burr-shape2--1e-05-1e-06-16\tburr\tstop:unresolved\tnan\tmessage=Constrained likelihood search failed to converge.",
+      "face_loglik": -8.465730902797228
+    },
+    {
+      "index": "betapr-shape1--1e-05-1e-06-16",
+      "outcome": "stop:unresolved",
+      "row": "betapr-shape1--1e-05-1e-06-16\tbetapr\tstop:unresolved\tnan\tmessage=Beta-prime optimizer BfgsFailure: profile did not converge or its global certificate is unresolved; increase iterlim. An unresolved gamma or inverse-gamma comparison does not select `mlgamma` or `mlinvgamma`.",
+      "face_loglik": -8.465730902797228
+    },
+    {
+      "index": "betapr-shape2--1e-05-1e-06-16",
+      "outcome": "stop:unresolved",
+      "row": "betapr-shape2--1e-05-1e-06-16\tbetapr\tstop:unresolved\tnan\tmessage=Beta-prime optimizer BfgsFailure: profile did not converge or its global certificate is unresolved; increase iterlim. An unresolved gamma or inverse-gamma comparison does not select `mlgamma` or `mlinvgamma`.",
+      "face_loglik": -4.882215297677229
+    },
+    {
+      "index": "burr-shape2--1e-05-1e-06-1000",
+      "outcome": "stop:unresolved",
+      "row": "burr-shape2--1e-05-1e-06-1000\tburr\tstop:unresolved\tnan\tmessage=Constrained likelihood search failed to converge.",
+      "face_loglik": -8.465730902797228
+    },
+    {
+      "index": "betapr-shape1--1e-05-1e-06-1000",
+      "outcome": "uncertified",
+      "row": "betapr-shape1--1e-05-1e-06-1000\tbetapr\tuncertified\t-8.4657309027997769\tshape1=1\tshape2=2279012.6205265913\tscale=4558019.2413668418",
+      "face_loglik": -8.465730902797228,
+      "gain": -2.5490720645393594e-12,
+      "margin": 6.1235054557981934e-12,
+      "refuted": false
+    },
+    {
+      "index": "betapr-shape2--1e-05-1e-06-1000",
+      "outcome": "uncertified",
+      "row": "betapr-shape2--1e-05-1e-06-1000\tbetapr\tuncertified\t-4.8822152976797817\tshape1=2279286.0569256525\tshape2=1\tscale=2.1936722536115521e-07",
+      "face_loglik": -4.882215297677229,
+      "gain": -2.55262477821816e-12,
+      "margin": 4.493911227509571e-12,
+      "refuted": false
+    },
+    {
+      "index": "burr-shape2--1e-05-1e-08-16",
+      "outcome": "stop:unresolved",
+      "row": "burr-shape2--1e-05-1e-08-16\tburr\tstop:unresolved\tnan\tmessage=Constrained likelihood search failed to converge.",
+      "face_loglik": -8.465730902797228
+    },
+    {
+      "index": "betapr-shape1--1e-05-1e-08-16",
+      "outcome": "stop:unresolved",
+      "row": "betapr-shape1--1e-05-1e-08-16\tbetapr\tstop:unresolved\tnan\tmessage=Beta-prime optimizer BfgsFailure: profile did not converge or its global certificate is unresolved; increase iterlim. An unresolved gamma or inverse-gamma comparison does not select `mlgamma` or `mlinvgamma`.",
+      "face_loglik": -8.465730902797228
+    },
+    {
+      "index": "betapr-shape2--1e-05-1e-08-16",
+      "outcome": "stop:unresolved",
+      "row": "betapr-shape2--1e-05-1e-08-16\tbetapr\tstop:unresolved\tnan\tmessage=Beta-prime optimizer BfgsFailure: profile did not converge or its global certificate is unresolved; increase iterlim. An unresolved gamma or inverse-gamma comparison does not select `mlgamma` or `mlinvgamma`.",
+      "face_loglik": -4.882215297677229
+    },
+    {
+      "index": "burr-shape2--1e-05-1e-08-1000",
+      "outcome": "stop:unresolved",
+      "row": "burr-shape2--1e-05-1e-08-1000\tburr\tstop:unresolved\tnan\tmessage=Constrained likelihood search failed to converge.",
+      "face_loglik": -8.465730902797228
+    },
+    {
+      "index": "betapr-shape1--1e-05-1e-08-1000",
+      "outcome": "uncertified",
+      "row": "betapr-shape1--1e-05-1e-08-1000\tbetapr\tuncertified\t-8.4657309027980432\tshape1=1\tshape2=6572371.19698638\tscale=13144728.287882403",
+      "face_loglik": -8.465730902797228,
+      "gain": -8.15347789284715e-13,
+      "margin": 6.123505455797405e-12,
+      "refuted": false
+    },
+    {
+      "index": "betapr-shape2--1e-05-1e-08-1000",
+      "outcome": "uncertified",
+      "row": "betapr-shape2--1e-05-1e-08-1000\tbetapr\tuncertified\t-4.8822152976780426\tshape1=6572371.19698638\tshape2=1\tscale=7.6076125584266349e-08",
+      "face_loglik": -4.882215297677229,
+      "gain": -8.135714324453147e-13,
+      "margin": 4.49391122750878e-12,
+      "refuted": false
+    },
+    {
+      "index": "burr-shape2--1e-06-1e-06-16",
+      "outcome": "stop:unresolved",
+      "row": "burr-shape2--1e-06-1e-06-16\tburr\tstop:unresolved\tnan\tmessage=Constrained likelihood search failed to converge.",
+      "face_loglik": -8.465735402799702
+    },
+    {
+      "index": "betapr-shape1--1e-06-1e-06-16",
+      "outcome": "stop:unresolved",
+      "row": "betapr-shape1--1e-06-1e-06-16\tbetapr\tstop:unresolved\tnan\tmessage=Beta-prime optimizer BfgsFailure: profile did not converge or its global certificate is unresolved; increase iterlim. An unresolved gamma or inverse-gamma comparison does not select `mlgamma` or `mlinvgamma`.",
+      "face_loglik": -8.465735402799702
+    },
+    {
+      "index": "betapr-shape2--1e-06-1e-06-16",
+      "outcome": "stop:unresolved",
+      "row": "betapr-shape2--1e-06-1e-06-16\tbetapr\tstop:unresolved\tnan\tmessage=Beta-prime optimizer BfgsFailure: profile did not converge or its global certificate is unresolved; increase iterlim. An unresolved gamma or inverse-gamma comparison does not select `mlgamma` or `mlinvgamma`.",
+      "face_loglik": -4.882216797676953
+    },
+    {
+      "index": "burr-shape2--1e-06-1e-06-1000",
+      "outcome": "stop:unresolved",
+      "row": "burr-shape2--1e-06-1e-06-1000\tburr\tstop:unresolved\tnan\tmessage=Constrained likelihood search failed to converge.",
+      "face_loglik": -8.465735402799702
+    },
+    {
+      "index": "betapr-shape1--1e-06-1e-06-1000",
+      "outcome": "uncertified",
+      "row": "betapr-shape1--1e-06-1e-06-1000\tbetapr\tuncertified\t-8.4657354028012826\tshape1=1\tshape2=1199277.7863719158\tscale=2398553.5249850638",
+      "face_loglik": -8.465735402799702,
+      "gain": -1.580957587066223e-12,
+      "margin": 6.123507502161957e-12,
+      "refuted": false
+    },
+    {
+      "index": "betapr-shape2--1e-06-1e-06-1000",
+      "outcome": "uncertified",
+      "row": "betapr-shape2--1e-06-1e-06-1000\tbetapr\tuncertified\t-4.882216797678538\tshape1=1199155.559811706\tshape2=1\tscale=4.1696043768556395e-07",
+      "face_loglik": -4.882216797676953,
+      "gain": -1.5853984791647235e-12,
+      "margin": 4.493911909630032e-12,
+      "refuted": false
+    },
+    {
+      "index": "burr-shape2--1e-06-1e-08-16",
+      "outcome": "stop:unresolved",
+      "row": "burr-shape2--1e-06-1e-08-16\tburr\tstop:unresolved\tnan\tmessage=Constrained likelihood search failed to converge.",
+      "face_loglik": -8.465735402799702
+    },
+    {
+      "index": "betapr-shape1--1e-06-1e-08-16",
+      "outcome": "stop:unresolved",
+      "row": "betapr-shape1--1e-06-1e-08-16\tbetapr\tstop:unresolved\tnan\tmessage=Beta-prime optimizer BfgsFailure: profile did not converge or its global certificate is unresolved; increase iterlim. An unresolved gamma or inverse-gamma comparison does not select `mlgamma` or `mlinvgamma`.",
+      "face_loglik": -8.465735402799702
+    },
+    {
+      "index": "betapr-shape2--1e-06-1e-08-16",
+      "outcome": "stop:unresolved",
+      "row": "betapr-shape2--1e-06-1e-08-16\tbetapr\tstop:unresolved\tnan\tmessage=Beta-prime optimizer BfgsFailure: profile did not converge or its global certificate is unresolved; increase iterlim. An unresolved gamma or inverse-gamma comparison does not select `mlgamma` or `mlinvgamma`.",
+      "face_loglik": -4.882216797676953
+    },
+    {
+      "index": "burr-shape2--1e-06-1e-08-1000",
+      "outcome": "stop:unresolved",
+      "row": "burr-shape2--1e-06-1e-08-1000\tburr\tstop:unresolved\tnan\tmessage=Constrained likelihood search failed to converge.",
+      "face_loglik": -8.465735402799702
+    },
+    {
+      "index": "betapr-shape1--1e-06-1e-08-1000",
+      "outcome": "uncertified",
+      "row": "betapr-shape1--1e-06-1e-08-1000\tbetapr\tuncertified\t-8.4657354028005276\tshape1=1\tshape2=1758440.4760088553\tscale=3516878.7502996274",
+      "face_loglik": -8.465735402799702,
+      "gain": -8.260059303211165e-13,
+      "margin": 6.123507502161614e-12,
+      "refuted": false
+    },
+    {
+      "index": "betapr-shape2--1e-06-1e-08-1000",
+      "outcome": "uncertified",
+      "row": "betapr-shape2--1e-06-1e-08-1000\tbetapr\tuncertified\t-4.8822167976776676\tshape1=1940230.0398129206\tshape2=1\tscale=2.5770154123285567e-07",
+      "face_loglik": -4.882216797676953,
+      "gain": -7.149836278586008e-13,
+      "margin": 4.493911909629636e-12,
+      "refuted": false
+    },
+    {
+      "index": "burr-shape2-0.0001-1e-06-16",
+      "outcome": "uncertified",
+      "row": "burr-shape2-0.0001-1e-06-16\tburr\tuncertified\t-8.4657859021747708\tshape1=65986.069197648874\tshape2=1\tscale=131971.45810193982",
+      "face_loglik": -8.465785902549728,
+      "gain": 3.7495695437428367e-10,
+      "margin": 6.123530466618272e-12,
+      "refuted": false
+    },
+    {
+      "index": "betapr-shape1-0.0001-1e-06-16",
+      "outcome": "uncertified",
+      "row": "betapr-shape1-0.0001-1e-06-16\tbetapr\tuncertified\t-8.4657859021747726\tshape1=1\tshape2=65986.069197648772\tscale=131971.4581024565",
+      "face_loglik": -8.465785902549728,
+      "gain": 3.7495517801744427e-10,
+      "margin": 6.123530466618273e-12,
+      "refuted": false
+    },
+    {
+      "index": "betapr-shape2-0.0001-1e-06-16",
+      "outcome": "uncertified",
+      "row": "betapr-shape2-0.0001-1e-06-16\tbetapr\tuncertified\t-4.8822336306631007\tshape1=65986.069197648656\tshape2=1\tscale=7.5773960095199638e-06",
+      "face_loglik": -4.8822336310380585,
+      "gain": 3.7495784255270337e-10,
+      "margin": 4.49391956438517e-12,
+      "refuted": false
+    },
+    {
+      "index": "burr-shape2-0.0001-1e-06-1000",
+      "outcome": "uncertified",
+      "row": "burr-shape2-0.0001-1e-06-1000\tburr\tuncertified\t-8.4657859021747708\tshape1=65986.069197648874\tshape2=1\tscale=131971.45810193982",
+      "face_loglik": -8.465785902549728,
+      "gain": 3.7495695437428367e-10,
+      "margin": 6.123530466618272e-12,
+      "refuted": false
+    },
+    {
+      "index": "betapr-shape1-0.0001-1e-06-1000",
+      "outcome": "uncertified",
+      "row": "betapr-shape1-0.0001-1e-06-1000\tbetapr\tuncertified\t-8.4657859021747726\tshape1=1\tshape2=65986.069197648772\tscale=131971.4581024565",
+      "face_loglik": -8.465785902549728,
+      "gain": 3.7495517801744427e-10,
+      "margin": 6.123530466618273e-12,
+      "refuted": false
+    },
+    {
+      "index": "betapr-shape2-0.0001-1e-06-1000",
+      "outcome": "uncertified",
+      "row": "betapr-shape2-0.0001-1e-06-1000\tbetapr\tuncertified\t-4.8822336306631007\tshape1=65986.069197648656\tshape2=1\tscale=7.5773960095199638e-06",
+      "face_loglik": -4.8822336310380585,
+      "gain": 3.7495784255270337e-10,
+      "margin": 4.49391956438517e-12,
+      "refuted": false
+    },
+    {
+      "index": "burr-shape2-0.0001-1e-08-16",
+      "outcome": "uncertified",
+      "row": "burr-shape2-0.0001-1e-08-16\tburr\tuncertified\t-8.4657859021747672\tshape1=67251.223469068689\tshape2=1\tscale=134501.79194738963",
+      "face_loglik": -8.465785902549728,
+      "gain": 3.7496050708796247e-10,
+      "margin": 6.123530466618271e-12,
+      "refuted": false
+    },
+    {
+      "index": "betapr-shape1-0.0001-1e-08-16",
+      "outcome": "uncertified",
+      "row": "betapr-shape1-0.0001-1e-08-16\tbetapr\tuncertified\t-8.4657859021747761\tshape1=1\tshape2=67251.223469068544\tscale=134501.79194652234",
+      "face_loglik": -8.465785902549728,
+      "gain": 3.7495162530376547e-10,
+      "margin": 6.123530466618275e-12,
+      "refuted": false
+    },
+    {
+      "index": "betapr-shape2-0.0001-1e-08-16",
+      "outcome": "uncertified",
+      "row": "betapr-shape2-0.0001-1e-08-16\tbetapr\tuncertified\t-4.8822336306631042\tshape1=67251.223469068544\tshape2=1\tscale=7.4348451833087702e-06",
+      "face_loglik": -4.8822336310380585,
+      "gain": 3.7495428983902457e-10,
+      "margin": 4.493919564385171e-12,
+      "refuted": false
+    },
+    {
+      "index": "burr-shape2-0.0001-1e-08-1000",
+      "outcome": "uncertified",
+      "row": "burr-shape2-0.0001-1e-08-1000\tburr\tuncertified\t-8.4657859021748862\tshape1=68035.698837685428\tshape2=1\tscale=136070.75837384479",
+      "face_loglik": -8.465785902549728,
+      "gain": 3.7484149117972265e-10,
+      "margin": 6.123530466618325e-12,
+      "refuted": false
+    },
+    {
+      "index": "betapr-shape1-0.0001-1e-08-1000",
+      "outcome": "uncertified",
+      "row": "betapr-shape1-0.0001-1e-08-1000\tbetapr\tuncertified\t-8.4657859021747353\tshape1=1\tshape2=66562.726382616253\tscale=133124.7856695356",
+      "face_loglik": -8.465785902549728,
+      "gain": 3.7499248151107167e-10,
+      "margin": 6.123530466618256e-12,
+      "refuted": false
+    },
+    {
+      "index": "betapr-shape2-0.0001-1e-08-1000",
+      "outcome": "uncertified",
+      "row": "betapr-shape2-0.0001-1e-08-1000\tbetapr\tuncertified\t-4.882233630663058\tshape1=66507.879710524241\tshape2=1\tscale=7.5179439618145994e-06",
+      "face_loglik": -4.8822336310380585,
+      "gain": 3.75000475116849e-10,
+      "margin": 4.49391956438515e-12,
+      "refuted": false
+    },
+    {
+      "index": "burr-shape2-1e-08-1e-06-16",
+      "outcome": "uncertified",
+      "row": "burr-shape2-1e-08-1e-06-16\tburr\tuncertified\t-8.4657359077997256\tshape1=702651630.57846928\tshape2=1\tscale=1405303260.5622435",
+      "face_loglik": -8.465735907799727,
+      "gain": 1.7763568394002505e-15,
+      "margin": 6.123507731808661e-12,
+      "refuted": false
+    },
+    {
+      "index": "betapr-shape1-1e-08-1e-06-16",
+      "outcome": "uncertified",
+      "row": "betapr-shape1-1e-08-1e-06-16\tbetapr\tuncertified\t-8.4657359077997274\tshape1=1\tshape2=702651630.57847202\tscale=1405303260.5622334",
+      "face_loglik": -8.465735907799727,
+      "gain": 0.0,
+      "margin": 6.123507731808662e-12,
+      "refuted": false
+    },
+    {
+      "index": "betapr-shape2-1e-08-1e-06-16",
+      "outcome": "uncertified",
+      "row": "betapr-shape2-1e-08-1e-06-16\tbetapr\tuncertified\t-4.8822169660102794\tshape1=702651630.57846951\tshape2=1\tscale=7.115901799017481e-10",
+      "face_loglik": -4.882216966010284,
+      "gain": 4.440892098500626e-15,
+      "margin": 4.493911986178445e-12,
+      "refuted": false
+    },
+    {
+      "index": "burr-shape2-1e-08-1e-06-1000",
+      "outcome": "uncertified",
+      "row": "burr-shape2-1e-08-1e-06-1000\tburr\tuncertified\t-8.4657359077997256\tshape1=702651630.57846928\tshape2=1\tscale=1405303260.5622435",
+      "face_loglik": -8.465735907799727,
+      "gain": 1.7763568394002505e-15,
+      "margin": 6.123507731808661e-12,
+      "refuted": false
+    },
+    {
+      "index": "betapr-shape1-1e-08-1e-06-1000",
+      "outcome": "uncertified",
+      "row": "betapr-shape1-1e-08-1e-06-1000\tbetapr\tuncertified\t-8.4657359077997274\tshape1=1\tshape2=702651630.57847202\tscale=1405303260.5622334",
+      "face_loglik": -8.465735907799727,
+      "gain": 0.0,
+      "margin": 6.123507731808662e-12,
+      "refuted": false
+    },
+    {
+      "index": "betapr-shape2-1e-08-1e-06-1000",
+      "outcome": "uncertified",
+      "row": "betapr-shape2-1e-08-1e-06-1000\tbetapr\tuncertified\t-4.8822169660102794\tshape1=702651630.57846951\tshape2=1\tscale=7.115901799017481e-10",
+      "face_loglik": -4.882216966010284,
+      "gain": 4.440892098500626e-15,
+      "margin": 4.493911986178445e-12,
+      "refuted": false
+    },
+    {
+      "index": "burr-shape2-1e-08-1e-08-16",
+      "outcome": "uncertified",
+      "row": "burr-shape2-1e-08-1e-08-16\tburr\tuncertified\t-8.4657359077997256\tshape1=702651630.57846928\tshape2=1\tscale=1405303260.5622435",
+      "face_loglik": -8.465735907799727,
+      "gain": 1.7763568394002505e-15,
+      "margin": 6.123507731808661e-12,
+      "refuted": false
+    },
+    {
+      "index": "betapr-shape1-1e-08-1e-08-16",
+      "outcome": "uncertified",
+      "row": "betapr-shape1-1e-08-1e-08-16\tbetapr\tuncertified\t-8.4657359077997274\tshape1=1\tshape2=702651630.57847202\tscale=1405303260.5622334",
+      "face_loglik": -8.465735907799727,
+      "gain": 0.0,
+      "margin": 6.123507731808662e-12,
+      "refuted": false
+    },
+    {
+      "index": "betapr-shape2-1e-08-1e-08-16",
+      "outcome": "uncertified",
+      "row": "betapr-shape2-1e-08-1e-08-16\tbetapr\tuncertified\t-4.8822169660102794\tshape1=702651630.57846951\tshape2=1\tscale=7.115901799017481e-10",
+      "face_loglik": -4.882216966010284,
+      "gain": 4.440892098500626e-15,
+      "margin": 4.493911986178445e-12,
+      "refuted": false
+    },
+    {
+      "index": "burr-shape2-1e-08-1e-08-1000",
+      "outcome": "uncertified",
+      "row": "burr-shape2-1e-08-1e-08-1000\tburr\tuncertified\t-8.4657359077997256\tshape1=702651630.57846928\tshape2=1\tscale=1405303260.5622435",
+      "face_loglik": -8.465735907799727,
+      "gain": 1.7763568394002505e-15,
+      "margin": 6.123507731808661e-12,
+      "refuted": false
+    },
+    {
+      "index": "betapr-shape1-1e-08-1e-08-1000",
+      "outcome": "uncertified",
+      "row": "betapr-shape1-1e-08-1e-08-1000\tbetapr\tuncertified\t-8.4657359077997274\tshape1=1\tshape2=702651630.57847202\tscale=1405303260.5622334",
+      "face_loglik": -8.465735907799727,
+      "gain": 0.0,
+      "margin": 6.123507731808662e-12,
+      "refuted": false
+    },
+    {
+      "index": "betapr-shape2-1e-08-1e-08-1000",
+      "outcome": "uncertified",
+      "row": "betapr-shape2-1e-08-1e-08-1000\tbetapr\tuncertified\t-4.8822169660102794\tshape1=702651630.57846951\tshape2=1\tscale=7.115901799017481e-10",
+      "face_loglik": -4.882216966010284,
+      "gain": 4.440892098500626e-15,
+      "margin": 4.493911986178445e-12,
+      "refuted": false
+    }
+  ]
+}

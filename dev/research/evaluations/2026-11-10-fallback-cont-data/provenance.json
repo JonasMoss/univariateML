@@ -1,0 +1,11 @@
+{
+  "base": "af295963493ce0b73f678d1316e5c7355914aa89",
+  "seed": 16802,
+  "frozen_audit_source": "2026-11-09-fit-audit-rerun-data (same frozen cases as 2026-11-07-fit-audit-data/cases.json.gz)",
+  "cases": 1189,
+  "python": "3.14.5",
+  "workstation_cxx": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "simbox_cxx": "g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+  "cases_sha256": "40a30a51bd060c22099698d6968091f806ae9eca0da2147b6541d9aa062f00bf",
+  "baseline_headers_sha256": "f7ac1d2c51edba3e13fb7ab5b9eb3fd905b8b79d82f23dffaad4c77d3eb9d5f5"
+}

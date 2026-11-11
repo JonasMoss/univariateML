@@ -227,3 +227,24 @@ TEST_CASE("Pareto IV centered profile rejects a separated scale restoration loss
   CHECK(r.status==cppunivariate::BurrStatus::NumericalFailure);
   CHECK(std::isnan(r.logLik));
 }
+
+TEST_CASE("pareto4 transports an uncertified held-scale search") {
+ const std::vector<double> x{std::exp(-1.1),std::exp(-1.)};
+ const auto r=cppunivariate::pareto4_mle(mltest::as_span(x),0,1.220703e-4,1000,1);
+ REQUIRE(r.status==cppunivariate::BurrStatus::Ok);CHECK_FALSE(r.certified);
+ CHECK(std::isfinite(r.logLik));
+}
+
+TEST_CASE("pareto4 retains a converged joint search after short certificate work") {
+ const auto g=mltest::load_distribution_golden("pareto4");
+ const auto r=cppunivariate::pareto4_mle(mltest::as_span(g.data),0,1e-8,16);
+ REQUIRE(r.status==cppunivariate::BurrStatus::Ok);CHECK_FALSE(r.certified);
+ CHECK(std::isfinite(r.logLik));
+}
+
+TEST_CASE("pareto4 transports an unclosed held-power face") {
+ const std::vector<double> x{1,1,1,1,6.0001};
+ const auto r=cppunivariate::pareto4_mle(mltest::as_span(x),0,1e-14,1000,NAN,NAN,1);
+ REQUIRE(r.status==cppunivariate::BurrStatus::Ok);CHECK_FALSE(r.certified);
+ CHECK(std::isfinite(r.logLik));
+}

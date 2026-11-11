@@ -189,3 +189,31 @@ TEST_CASE("paralogis: binned bounds enclose exact grouped derivatives") {
     }
   }
 }
+
+TEST_CASE("paralogis retains a converged search when its root inclusion cannot close") {
+ const std::vector<double> x{.9998,.9999,1,1.0001,1.0003};
+ const auto r=cppunivariate::paralogis_mle(mltest::as_span(x),1e-8,1000);
+ REQUIRE(r.status==cppunivariate::ParalogisStatus::Ok);CHECK_FALSE(r.certified);
+ double ll=0;for(double v:x)ll+=cppunivariate::distributions::dparalogis(v,r.shape,r.scale,true);
+ CHECK(r.logLik==doctest::Approx(ll).epsilon(1e-8));
+}
+
+TEST_CASE("paralogis held-scale inclusion retains the scalar search") {
+ for(double v:{.99999999999999,.999999999999999}) {
+   const std::vector<double> x{v};
+   const auto r=cppunivariate::paralogis_mle_fixed_scale(mltest::as_span(x),1,1e-8,1000);
+   REQUIRE(r.status==cppunivariate::ParalogisStatus::Ok);CHECK_FALSE(r.certified);
+   CHECK(r.scale==1);CHECK(std::isfinite(r.logLik));
+ }
+}
+
+TEST_CASE("paralogis exhausted cover retains an independently converged search") {
+ const std::vector<double> x{.03,.1,.4,.7,1,2,4,12};const auto data=mltest::as_span(x);
+ const auto r=cppunivariate::paralogis_mle_impl(data,1e-8,1000,NAN,false);
+ REQUIRE(r.status==cppunivariate::ParalogisStatus::Ok);
+ const auto c=cppunivariate::paralogis_cert_detail::certify(data,r.shape,r.scale,false,1);
+ REQUIRE(c.budget);CHECK_FALSE(c.ok);
+ const auto f=cppunivariate::paralogis_detail::uncertified(r,c,data);
+ REQUIRE(f.status==cppunivariate::ParalogisStatus::Ok);CHECK_FALSE(f.certified);
+ CHECK(f.shape==r.shape);CHECK(f.scale==r.scale);CHECK(f.logLik==r.logLik);
+}

@@ -1,0 +1,119 @@
+{
+  "completed_utc": "2026-11-11T01:26:36.642343+00:00",
+  "base": "af295963493ce0b73f678d1316e5c7355914aa89",
+  "machine": "workstation",
+  "compiler": "GCC 15.2.0",
+  "cpp_dev": {
+    "passed": 105,
+    "total": 106,
+    "exit": 8,
+    "failed": [
+      "distribution_gb2"
+    ],
+    "test_seconds": 497.15
+  },
+  "cpp_no_long_double": {
+    "passed": 129,
+    "total": 130,
+    "exit": 8,
+    "failed": [
+      "distribution_gb2"
+    ],
+    "test_seconds": 443.66
+  },
+  "focused_each_mode": {
+    "cases": 242,
+    "assertions": 60381,
+    "failed": 0,
+    "skipped": 9
+  },
+  "r_dev": {
+    "pass": 23077,
+    "fail": 0,
+    "warn": 0,
+    "skip": 154,
+    "elapsed_seconds": 320.617
+  },
+  "r_full": {
+    "pass": 45904,
+    "fail": 0,
+    "warn": 0,
+    "skip": 0,
+    "elapsed_seconds": 638.346
+  },
+  "js_build": {
+    "exit": 0
+  },
+  "js_test": {
+    "pass": 597,
+    "fail": 0,
+    "skip": 0,
+    "seconds": 370.361553866
+  },
+  "site_check": {
+    "exit": 0,
+    "family_pages": 99,
+    "mathml_pages": 99,
+    "cpp17_snippets": 99
+  },
+  "simbox_no_long_double": {
+    "exit": 75,
+    "result": "unreachable; no GCC13 test execution"
+  },
+  "repository_markdown_links": {
+    "files": 606,
+    "destinations": 3948,
+    "broken": 44,
+    "all_failures_outside_changed_documents": true
+  },
+  "owned_markdown_links_before_report": {
+    "files": 9,
+    "destinations": 40,
+    "broken": 0
+  },
+  "source_hashes_verified": 67,
+  "study": {
+    "successful_finite_domain_rows": {
+      "before": 809,
+      "after": 875
+    },
+    "cases": 1189,
+    "counts": {
+      "before": {
+        "stop:limit": 271,
+        "stop:tie": 33,
+        "stop:budget": 5,
+        "stop:numerical": 61,
+        "certified": 796,
+        "stop:unresolved": 7,
+        "uncertified": 13,
+        "stop:nomle": 3
+      },
+      "after": {
+        "stop:limit": 259,
+        "stop:tie": 14,
+        "stop:budget": 2,
+        "stop:numerical": 27,
+        "uncertified": 79,
+        "certified": 796,
+        "stop:unresolved": 10,
+        "stop:nomle": 2
+      }
+    },
+    "previously_certified": 796,
+    "certified_numeric_unchanged": 796,
+    "transitions": 70,
+    "stop_to_uncertified": 66
+  },
+  "cpp_runner_note": "See cpp-runner-status.txt: temporary launcher dev status127 differs from the completed just/CTest exit8.",
+  "owned_markdown_links_with_report": {
+    "files": 10,
+    "destinations": 100,
+    "broken": 0
+  },
+  "artifact_pane": {
+    "exit": 1,
+    "http_status": 403,
+    "reason": "Worktree not registered as a readable root; viewer configuration outside authorized worktree unchanged."
+  }
+}

@@ -15,6 +15,7 @@
 #include <algorithm>
 #include "../invgamma/mle.hpp"
 #include "../lomax/mle.hpp"
+#include "../burr/lomax_face.hpp"
 #include "../invpareto/mle.hpp"
 #include <cmath>
 #include <cstddef>
@@ -29,6 +30,8 @@ struct BetaPrimeResult {
   StopDetail stop_detail{};
   LomaxCertificateFailure certificate_failure=LomaxCertificateFailure::None;
   BetaPrimeJointBounds joint_exterior{};
+  bool certified=true;
+  bool search_failed=false;
 };
 // Negative log-likelihood in the two shapes at a supplied scale.
 // Default scale 1 also preserves the legacy validation-harness seam.
@@ -162,6 +165,7 @@ inline BetaPrimeResult betapr_mle(span x, double tol = 1e-6, int maxit = 2000,
 namespace cppunivariate {
 // Hold-aware profiles. The conditional interface is also used by GB2.
 namespace betapr_joint_cert { inline double log_beta(double p,double q); }
+inline BetaPrimeResult betapr_mle_holds(span x,double a,double b,double s,double tol=1e-6,int maxit=1000);
 namespace betapr_detail {
 inline double shape_root(double other, double target,int maxit=1000) {
   maxit = static_cast<int>(solver_budget(maxit));
@@ -181,7 +185,7 @@ inline double shape_root(double other, double target,int maxit=1000) {
   return value;
 }
 }
-inline BetaPrimeResult betapr_mle_holds(span x, double held_a, double held_b,
+inline BetaPrimeResult betapr_mle_holds_certificate(span x, double held_a, double held_b,
     double held_s, double tol=1e-6,int maxit=1000) {
   maxit = static_cast<int>(solver_budget(maxit));
   const double nan=std::numeric_limits<double>::quiet_NaN();
@@ -192,7 +196,11 @@ inline BetaPrimeResult betapr_mle_holds(span x, double held_a, double held_b,
     (fb&&(!(held_b>0)||!std::isfinite(held_b))) ||
     (fs&&(!(held_s>0)||!std::isfinite(held_s)))) return invalid;
   if(held_a==1) {
-    const auto r=lomax_mle(x,tol,maxit,NAN,fs?1/held_s:NAN,held_b);
+    auto r=lomax_mle(x,tol,maxit,NAN,fs?1/held_s:NAN,held_b);
+    if(r.status==LomaxStatus::ExponentialLimit && !fallback_lomax_face_proved(x,maxit)) {
+      r.status=LomaxStatus::IterationFailure;
+      fallback_retain_unclosed_face(r.stop_detail,StopModel::Exp);
+    }
     auto d=r.stop_detail;
     for(auto& c:d.candidates)if(c.model==StopModel::None && c.coef.size()==2)c.coef={1,c.coef[1],1/c.coef[0]};
     return {1,r.kappa,fs?held_s:1/r.lambda,r.logLik,r.iterations,
@@ -201,7 +209,14 @@ inline BetaPrimeResult betapr_mle_holds(span x, double held_a, double held_b,
       r.status==LomaxStatus::InvalidStart?BetaPrimeStatus::InvalidStart:BetaPrimeStatus::BfgsFailure,d,r.certificate_failure};
   }
   if(held_b==1) {
-    const auto r=invpareto_mle(x,tol,maxit,NAN,held_a,held_s);
+    auto r=invpareto_mle(x,tol,maxit,NAN,held_a,held_s);
+    if(r.status==LomaxStatus::ExponentialLimit){
+      std::vector<double> reciprocal;for(double v:x)reciprocal.push_back(1/v);
+      if(!fallback_lomax_face_proved(span{reciprocal.data(),reciprocal.size()},maxit)) {
+        r.status=LomaxStatus::IterationFailure;
+        fallback_retain_unclosed_face(r.stop_detail,StopModel::InvExp);
+      }
+    }
     auto d=r.stop_detail;
     for(auto& c:d.candidates)if(c.model==StopModel::None && c.coef.size()==2)c.coef={c.coef[0],1,c.coef[1]};
     return {r.shape,1,r.scale,r.logLik,r.iterations,
@@ -233,9 +248,12 @@ inline BetaPrimeResult betapr_mle_holds(span x, double held_a, double held_b,
       std::abs(special::digamma(a+b)-special::digamma(a)-ta)>1e-7*std::max(1.0,ta));
     const bool bad_b=!fb&&(b>=.999e8 || b<=std::exp(-39.99) ||
       std::abs(special::digamma(a+b)-special::digamma(b)-tb)>1e-7*std::max(1.0,tb));
-    return BetaPrimeResult{a,b,fs?held_s:std::exp(ls),ll,0,
+    BetaPrimeResult out{a,b,fs?held_s:std::exp(ls),ll,0,
       (bad_a||bad_b||!std::isfinite(ll))
       ?BetaPrimeStatus::BfgsFailure:BetaPrimeStatus::Ok};
+    const double resolution=128*std::numeric_limits<double>::denorm_min()/1e-10;
+    if((!fa && !(ta>resolution)) || (!fb && !(tb>resolution)))out.search_failed=true;
+    return out;
   };
   if(fs) return profile(std::log(held_s));
   if(fa&&fb) {
@@ -261,7 +279,8 @@ inline BetaPrimeResult betapr_mle_holds(span x, double held_a, double held_b,
   for(double v:x){
     if(!(1/v>0)||!std::isfinite(1/v)) {
       invalid.status=BetaPrimeStatus::BfgsFailure;
-      invalid.certificate_failure=LomaxCertificateFailure::Arithmetic;return invalid;
+      invalid.certificate_failure=LomaxCertificateFailure::Arithmetic;
+      invalid.search_failed=true;return invalid;
     }
     reciprocal.push_back(1/v);
     const double term=-2*std::log(v);jac_sum.add(term);jac_magnitude.add(std::abs(term));
@@ -274,6 +293,7 @@ inline BetaPrimeResult betapr_mle_holds(span x, double held_a, double held_b,
   if(r.status==BetaPrimeStatus::Ok && (!(r.scale>0)||!std::isfinite(r.scale)||
       std::abs((1/r.scale)/original_scale-1)>1e-6)) {
     r.status=BetaPrimeStatus::BfgsFailure;r.certificate_failure=LomaxCertificateFailure::Arithmetic;
+    r.search_failed=true;
   }
   if(r.status==BetaPrimeStatus::GammaBoundary)r.status=BetaPrimeStatus::InvGammaBoundary;
   auto& d=r.stop_detail;
@@ -297,4 +317,19 @@ inline BetaPrimeResult betapr_mle_holds(span x, double held_a, double held_b,
 
 } // namespace cppunivariate
 
+namespace cppunivariate { namespace betapr_detail {
+inline BetaPrimeResult fallback(BetaPrimeResult certificate,span x,double a,double b,double s,
+    double tol,int maxit,double starta,double startb,double starts);
+}}
 #include "joint_certificate.hpp"
+
+#include "fallback.hpp"
+namespace cppunivariate {
+inline BetaPrimeResult betapr_mle_holds(span x,double a,double b,double s,double tol,int maxit) {
+  const auto r=betapr_mle_holds_certificate(x,a,b,s,tol,maxit);
+  // The all-free delegate already applied its fallback; fixed-scale beta
+  // failures are failures of that search, without an outer certificate.
+  if(std::isnan(a) && std::isnan(b))return r;
+  return betapr_detail::fallback(r,x,a,b,s,tol,maxit);
+}
+}

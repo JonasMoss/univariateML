@@ -310,3 +310,16 @@ test_that("bhatt reports per-fit certification without suppressing search result
   expect_true(all(is.finite(f)))
   expect_equal(attr(f,"logLik"),sum(bhatt_oracle_density(x,f[1],f[2],f[3])),tolerance=1e-8)
 })
+
+test_that("bhatt normal member inclusion fallback uses common_result", {
+  f <- mlbhatt(c(-3,-1,0,1,3),a=0,reltol=1e-30)
+  expect_identical(attr(f,"certified"),FALSE)
+  expect_equal(as.numeric(f),c(0,2,0))
+})
+
+test_that("Bhatt retains a finite fit when the uniform comparison is unclosed", {
+  x <- c(-1,1,rep(c(-.49161548692487145,.49161548692487145),10))
+  f <- mlbhatt(x,reltol=1e-14,iterlim=1000)
+  expect_identical(attr(f,"certified"),FALSE)
+  expect_true(is.finite(as.numeric(logLik(f))))
+})

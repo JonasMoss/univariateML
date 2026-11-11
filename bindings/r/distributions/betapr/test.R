@@ -185,27 +185,26 @@ test_that("non-unit held shapes expose certified faces and numerical stops", {
   expect_equal(attr(inv,"logLik"),attr(f,"logLik")+2*sum(log(x)),tolerance=1e-10)
 })
 
-test_that("nonunique conditional beta-prime peaks retain both witnesses", {
+test_that("rounded conditional beta-prime peaks retain an uncertified search", {
   x <- c(1.9901008294052028e-5,2.209857117039297e-5,.0002450722434289249,
          12.288342947780086,942.976056905759,16.239512580216314,
          2.898690421966857,1.2684036923492177,400970.63293690106*exp(5.646438395028704))
   e <- tryCatch(mlbetapr(x,shape1=.22690393135372058),error=identity)
-  expect_s3_class(e,"univariateML_tie")
-  expect_true(any(e$candidates$shape2<.12,na.rm=TRUE))
-  expect_true(any(e$candidates$shape2>.12,na.rm=TRUE))
-  expect_true(is.finite(e$loglik_upper))
+  expect_s3_class(e,"univariateML")
+  expect_identical(attr(e,"certified"),FALSE)
+  expect_true(is.finite(as.numeric(logLik(e))))
 })
 
-test_that("beta-prime certificate budget stops preserve witnesses", {
+test_that("beta-prime certificate allowance preserves a successful search", {
   set.seed(8104)
   invisible(rbetapr(n=20,shape1=.7,shape2=1.2,scale=1))
   invisible(rbetapr(n=100,shape1=.7,shape2=1.2,scale=1))
   invisible(rgamma(20,2))
   x <- rinvgamma(n=100,alpha=3,beta=1)
   e <- tryCatch(mlbetapr(x,shape1=.66110553857791232,iterlim=64),error=identity)
-  expect_s3_class(e,"univariateML_budget")
-  expect_true(nrow(e$candidates)>0)
-  expect_match(conditionMessage(e),"raising iterlim")
+  expect_s3_class(e,"univariateML")
+  expect_identical(attr(e,"certified"),FALSE)
+  expect_true(is.finite(as.numeric(logLik(e))))
 })
 
 test_that("all-free certificate stops carry witnesses and selected faces are proper", {
@@ -283,4 +282,62 @@ test_that("betapr rejects a separated shape restoration loss", {
 test_that("betapr held-shape score rejects an underflowed statistic", {
   expect_error(mlbetapr(c(1e-100,2e-100,3e-100,5e-100,9e-100),
                        shape1=1e-320,scale=1e300),"BfgsFailure")
+})
+
+test_that("beta-prime coefficient inclusion fallback has a logical flag", {
+  x <- c(.03,.1,.4,.7,1,2,4,12)
+  for(it in c(16L,1000L)) {
+    f <- mlbetapr(x,gradtol=1e-14,iterlim=it)
+    expect_identical(attr(f,"certified"),FALSE)
+    expect_equal(as.numeric(logLik(f)),sum(dbetapr(x,f[1],f[2],f[3],log=TRUE)),tolerance=1e-9)
+  }
+})
+
+test_that("beta-prime unit shapes retain finite fits near the exponential face", {
+  x <- c(1,1,1,1,6.0001)
+  for(f in list(mlbetapr(x,shape1=1),mlbetapr(1/x,shape2=1))) {
+    expect_identical(attr(f,"certified"),FALSE)
+    expect_true(is.finite(as.numeric(logLik(f))))
+  }
+})
+
+test_that("beta-prime exact unit shapes retain large finite search coefficients", {
+  x <- c(1,1,1,1,6.00000001)
+  f <- mlbetapr(x,shape1=1)
+  g <- mlbetapr(1/x,shape2=1)
+  expect_identical(attr(f,"certified"),FALSE)
+  expect_identical(attr(g,"certified"),FALSE)
+  expect_gt(unname(f["shape2"]),1e6)
+  expect_gt(unname(g["shape1"]),1e6)
+  ll <- sum(log(f[2])-log(f[3])-(f[2]+1)*log1p(x/f[3]))
+  il <- sum(log(g[1])+log(g[3])-2*log(1/x)-(g[1]+1)*log1p(g[3]*x))
+  expect_equal(as.numeric(logLik(f)),unname(ll),tolerance=1e-9)
+  expect_equal(as.numeric(logLik(g)),unname(il),tolerance=1e-9)
+})
+
+test_that("beta-prime rejects a finite search below its reachable face", {
+  x <- c(1,1,1,1,5.99998)
+  for(args in list(list(shape1=1),list(shape2=1))) {
+    y <- if(!is.null(args$shape1)) x else 1/x
+    e <- tryCatch(do.call(mlbetapr,c(list(x=y,iterlim=16),args)),error=identity)
+    expect_s3_class(e,"univariateML_unresolved")
+    expect_true(is.finite(e$loglik_lower))
+    expect_true(nrow(e$candidates)>0)
+  }
+})
+
+test_that("unit beta-prime never drops an unrepresentable face lower bound", {
+  u <- 1e-320
+  x <- c(u,u,u,u,6*u)
+  f <- tryCatch(mlbetapr(x,shape1=1,iterlim=16),error=identity)
+  if(inherits(f,"error")) {
+    expect_true(is.finite(f$loglik_lower))
+  } else {
+    expect_identical(attr(f,"certified"),FALSE)
+    ll <- as.numeric(logLik(f))
+    face <- -5*(1+log(2*u))
+    margin <- 2048*.Machine$double.eps*(5+abs(ll))
+    expect_true(is.finite(ll))
+    expect_gte(ll+margin,face)
+  }
 })

@@ -1,0 +1,48 @@
+stop-or-certified burr-shape2--0.001-1e-06	burr	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.
+stop-or-certified betapr-shape1--0.001-1e-06	betapr	stop:limit	nan	message=The certified beta-prime submodel selects the exponential limit. Use `mlexp`.
+stop-or-certified betapr-shape2--0.001-1e-06	betapr	stop:limit	nan	message=The certified beta-prime submodel selects the inverse exponential limit. Use `mlinvexp`.
+stop-or-certified burr-shape2--0.001-1e-08	burr	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.
+stop-or-certified betapr-shape1--0.001-1e-08	betapr	stop:limit	nan	message=The certified beta-prime submodel selects the exponential limit. Use `mlexp`.
+stop-or-certified betapr-shape2--0.001-1e-08	betapr	stop:limit	nan	message=The certified beta-prime submodel selects the inverse exponential limit. Use `mlinvexp`.
+stop-or-certified burr-shape2--0.0001-1e-06	burr	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.
+stop-or-certified betapr-shape1--0.0001-1e-06	betapr	stop:limit	nan	message=The certified beta-prime submodel selects the exponential limit. Use `mlexp`.
+stop-or-certified betapr-shape2--0.0001-1e-06	betapr	stop:limit	nan	message=The certified beta-prime submodel selects the inverse exponential limit. Use `mlinvexp`.
+stop-or-certified burr-shape2--0.0001-1e-08	burr	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.
+stop-or-certified betapr-shape1--0.0001-1e-08	betapr	stop:limit	nan	message=The certified beta-prime submodel selects the exponential limit. Use `mlexp`.
+stop-or-certified betapr-shape2--0.0001-1e-08	betapr	stop:limit	nan	message=The certified beta-prime submodel selects the inverse exponential limit. Use `mlinvexp`.
+stop-or-certified burr-shape2--5e-05-1e-06	burr	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.
+stop-or-certified betapr-shape1--5e-05-1e-06	betapr	stop:limit	nan	message=The certified beta-prime submodel selects the exponential limit. Use `mlexp`.
+stop-or-certified betapr-shape2--5e-05-1e-06	betapr	stop:limit	nan	message=The certified beta-prime submodel selects the inverse exponential limit. Use `mlinvexp`.
+stop-or-certified burr-shape2--5e-05-1e-08	burr	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.
+stop-or-certified betapr-shape1--5e-05-1e-08	betapr	stop:limit	nan	message=The certified beta-prime submodel selects the exponential limit. Use `mlexp`.
+stop-or-certified betapr-shape2--5e-05-1e-08	betapr	stop:limit	nan	message=The certified beta-prime submodel selects the inverse exponential limit. Use `mlinvexp`.
+stop-or-certified burr-shape2--2e-05-1e-06	burr	stop:unresolved	nan	message=Constrained likelihood search failed to converge.
+REFUTED -1.1809220268332865e-11 betapr-shape1--2e-05-1e-06	betapr	uncertified	-8.4657259028015357	shape1=1	shape2=997619.35866034986	scale=1995233.1500180422
+REFUTED -1.2898127010885219e-11 betapr-shape2--2e-05-1e-06	betapr	uncertified	-4.8822136310242925	shape1=988490.33070511697	shape2=1	scale=5.058236984928172e-07
+stop-or-certified burr-shape2--2e-05-1e-08	burr	stop:unresolved	nan	message=Constrained likelihood search failed to converge.
+REFUTED -1.1809220268332865e-11 betapr-shape1--2e-05-1e-08	betapr	uncertified	-8.4657259028015357	shape1=1	shape2=997619.35866034986	scale=1995233.1500180422
+REFUTED -1.2898127010885219e-11 betapr-shape2--2e-05-1e-08	betapr	uncertified	-4.8822136310242925	shape1=988490.33070511697	shape2=1	scale=5.058236984928172e-07
+stop-or-certified burr-shape2--1e-05-1e-06	burr	stop:unresolved	nan	message=Constrained likelihood search failed to converge.
+REFUTED -6.8762773253183695e-12 betapr-shape1--1e-05-1e-06	betapr	uncertified	-8.4657309028041041	shape1=1	shape2=982402.66475718806	scale=1964801.698547343
+REFUTED -2.793321129956894e-11 betapr-shape2--1e-05-1e-06	betapr	uncertified	-4.8822152977051623	shape1=964426.18477083591	shape2=1	scale=5.1844254999833438e-07
+stop-or-certified burr-shape2--1e-05-1e-08	burr	stop:unresolved	nan	message=Constrained likelihood search failed to converge.
+REFUTED -6.8407501885303645e-12 betapr-shape1--1e-05-1e-08	betapr	uncertified	-8.4657309028040686	shape1=1	shape2=983871.63971038093	scale=1967739.5597543349
+REFUTED -9.697131986285967e-12 betapr-shape2--1e-05-1e-08	betapr	uncertified	-4.8822152976869262	shape1=825168.96755968523	shape2=1	scale=6.0593742869307457e-07
+stop-or-certified burr-shape2--1e-06-1e-06	burr	stop:unresolved	nan	message=Constrained likelihood search failed to converge.
+unrefuted -2.3945290195115376e-12 betapr-shape1--1e-06-1e-06	betapr	uncertified	-8.4657354028020961	shape1=1	shape2=977755.87262521533	scale=1955510.0129004931
+REFUTED -1.4714451879171975e-11 betapr-shape2--1e-06-1e-06	betapr	uncertified	-4.8822167976916671	shape1=358300.31316880137	shape2=1	scale=1.3954819852818426e-06
+stop-or-certified burr-shape2--1e-06-1e-08	burr	stop:unresolved	nan	message=Constrained likelihood search failed to converge.
+unrefuted -2.2577495428777183e-12 betapr-shape1--1e-06-1e-08	betapr	uncertified	-8.4657354028019594	shape1=1	shape2=998083.60792857525	scale=1996165.3984652769
+REFUTED -1.4714451879171975e-11 betapr-shape2--1e-06-1e-08	betapr	uncertified	-4.8822167976916671	shape1=358300.31316880137	shape2=1	scale=1.3954819852818426e-06
+unrefuted 3.7495695437428367e-10 burr-shape2-0.0001-1e-06	burr	uncertified	-8.4657859021747708	shape1=65986.069197648874	shape2=1	scale=131971.45810193982
+unrefuted 3.7483793846604385e-10 betapr-shape1-0.0001-1e-06	betapr	uncertified	-8.4657859021748898	shape1=1	shape2=65393.63592182596	scale=130786.58726607778
+unrefuted 3.7498626426213377e-10 betapr-shape2-0.0001-1e-06	betapr	uncertified	-4.8822336306630723	shape1=66615.750380637925	shape2=1	scale=7.5057698950047298e-06
+unrefuted 3.7484149117972265e-10 burr-shape2-0.0001-1e-08	burr	uncertified	-8.4657859021748862	shape1=68035.698837685428	shape2=1	scale=136070.75837384479
+unrefuted 3.7499070515423227e-10 betapr-shape1-0.0001-1e-08	betapr	uncertified	-8.465785902174737	shape1=1	shape2=66333.742298563899	scale=132666.81545370782
+unrefuted 3.7498626426213377e-10 betapr-shape2-0.0001-1e-08	betapr	uncertified	-4.8822336306630723	shape1=66402.467778550388	shape2=1	scale=7.5298785504777427e-06
+unrefuted 1.7763568394002505e-15 burr-shape2-1e-08-1e-06	burr	uncertified	-8.4657359077997256	shape1=702651630.57846928	shape2=1	scale=1405303260.5622435
+unrefuted -1.8260948309034575e-12 betapr-shape1-1e-08-1e-06	betapr	uncertified	-8.4657359078015535	shape1=1	shape2=959553.56965927605	scale=1919105.3297392922
+REFUTED -1.0248690784919745e-11 betapr-shape2-1e-08-1e-06	betapr	uncertified	-4.8822169660205326	shape1=404099.77337829565	shape2=1	scale=1.2373210827694949e-06
+unrefuted 1.7763568394002505e-15 burr-shape2-1e-08-1e-08	burr	uncertified	-8.4657359077997256	shape1=702651630.57846928	shape2=1	scale=1405303260.5622435
+unrefuted -1.8260948309034575e-12 betapr-shape1-1e-08-1e-08	betapr	uncertified	-8.4657359078015535	shape1=1	shape2=959553.56965927605	scale=1919105.3297392922
+REFUTED -6.985523270941485e-12 betapr-shape2-1e-08-1e-08	betapr	uncertified	-4.8822169660172694	shape1=538379.73923724657	shape2=1	scale=9.2871358057941037e-07

@@ -130,7 +130,10 @@ score root with negative definite local Hessian proves a unique global
 maximum. The numerical certificate requires a coefficient enclosure within
 `reltol`, with $\sigma$ as the natural location floor; a small score alone
 does not suffice. With free $\mu$, positive held $a$ and range greater than $2a$, the maximum is attained and unique.
-Holding $k=a/\sigma$ instead specifies a different concave slice.
+Holding $k=a/\sigma$ instead specifies a different concave slice. The
+normal member at held `a=0` keeps its closed-form fit when only the practical
+coefficient inclusion fails; physical residual scores still reject a displaced
+normal mean or scale.
 
 With $\sigma$ held and $a$ free, put $k=a/\sigma$. At each fixed $k$,
 location is strictly log concave. The profiled objective $P(k)$ satisfies
@@ -181,7 +184,7 @@ The normal-interval and score comparisons use practical binary64 margins,
 conditional on computed comparisons. Their scope is the enclosed score root
 and the likelihood bounds above. Coefficient enclosures are checked in original
 units, and finite stopped witnesses are evaluated at their recovered physical
-coefficients. An inconclusive comparison retains the existing search result with per-fit `certified=0`, unless an evaluated certificate witness proves that result loses or the search itself fails.
+coefficients. An inconclusive comparison retains the existing search result with per-fit `certified=0`, unless an evaluated certificate witness proves that result loses or the search itself fails. An unproved uniform-face selection tries a finite search with face screening disabled; only the closed comparison selects a limit stop.
 
 With both scales free, the width certificate profiles $(u,b)$ at fixed
 $k=a/\sigma$, imposing $u=b\mu$ when location is held. The adjusted

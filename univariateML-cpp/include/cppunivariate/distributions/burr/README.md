@@ -51,7 +51,7 @@ limits:
     firmness: proved
     fixed: [shape2]
     when: With $c$ held, $k$ tends to infinity and $s k^{-1/c}$ stays at a positive Weibull scale.
-    detect: With $c$ held, the numerical comparison for the transformed observations selects the exponential limit of the Lomax likelihood. This is not an exact sample criterion.
+    detect: With $c$ held, a strict transformed-profile bound selects the exponential limit; a likelihood-margin preference alone retains an uncertified finite search.
     status: WeibullBoundary
     numerical: true
   - model: 'weibull'
@@ -110,8 +110,8 @@ relations:
     power: shape2
 fit:
   method: profile-search
-  certified: 'yes'
-  note: 'burr/README.md, Details; burr/mle.hpp (public fitter and held overloads); burr/test.cpp: All-free fits use the global Burr certificate; held shape2 with free shape1 and scale uses certified Lomax on exp(shape2*(log(x)-max(log(x)))), with its exact Jacobian and Weibull face map. Held scale with both shapes free uses the strictly concave scalar-profile certificate, conditional on computed comparisons and the stated practical margin. Other shape holds use monotone scores or closed forms.'
+  certified: partial
+  note: 'Joint and held-scale fits attempt Burr root and global likelihood enclosures. Held power uses Lomax; other shape holds use monotone scores or closed forms. Unclosed joint, held-scale or Lomax comparisons retain a converged, unrefuted finite search with its per-fit flag.'
 areas:
 - actuarial
 - economics and income
@@ -133,7 +133,8 @@ existence:
     (equality is included). These are the only likelihood-retaining escape
     faces. At least half the sample at its minimum precludes a finite MLE.
     General joint uniqueness is not established; a successful certificate
-    proves uniqueness for that sample. Exact finite/face ties can stop unresolved.
+    proves uniqueness for that sample. Numerical finite/face overlap leaves a
+    successful finite search uncertified.
     With only scale $s$ held, a unique finite maximum exists for nonconstant data if some observation is
     below $s$. Constant data below $s$ have unbounded likelihood.
     If all observations are at least $s$, the supremum is on the
@@ -207,7 +208,7 @@ the signed seam theorem instead excludes all $k\ge1/h$ against the same
 exact Weibull optimum $W$. Its power root is bracketed and propagated into
 all fitted exponentials and seam constants. A slope enclosure containing
 zero supplies no signed-tail decision. A finite improvement can still use
-the unsigned bound. Without either route the fit stops unresolved.
+the unsigned bound. Without either route the global certificate remains unclosed.
 
 Certification is **in exact arithmetic, conditional on the computed
 comparisons, with a stated practical floating-point margin**. Each interval
@@ -221,15 +222,16 @@ outward-rounded interval proof. The golden root has independent exact
 rational evidence in the linked research work; that evidence does not make
 every production run an exact rational proof.
 
-Invalid domains, failed brackets, nonfinite evaluations and failed linear
-solves stop with explicit failure. The global budget is `128 * min(iterlim, 100000)` cached profiles;
-tail searches, root refinements and bracket solves are also bounded. Exhaustion
-returns `CertificateBudget`; a sign-uncertain seam or unresolved tie returns
-`CertificateTie`; other arithmetic/proposal failures return `NumericalFailure`.
-No capped estimate is returned. Constant positive data return `Unbounded`.
-The C++ `burr_mle_certified` entrypoint additionally accepts an explicit final
-`certificate_budget` for reproducible stops. The public default `burr_mle`
-uses this certified path. `burr_mle_legacy` remains for GB2 starts; it is not certified.
+The global budget is `128 * min(iterlim, 100000)` cached profiles;
+tail searches, root refinements and bracket solves are also bounded.
+Unclosed comparisons or inclusions try the existing finite log-coordinate
+search and return it with `certified=false` when it converges and no feasible
+certificate bound refutes it. The held-scale path retains its successful
+two-shape proposal under the same rule; held power uses the Lomax Newton
+candidate. Failed searches and inconsistent likelihood reconstruction still
+stop. Constant positive data return `Unbounded`. The explicit final work
+allowance of `burr_mle_certified` controls certification independently of
+the search allowance.
 
 With only scale held at $s$ and nonconstant observations all at least $s$,
 the supremum is the endpoint-$s$ Pareto log-likelihood minus $Z\log 2$,
@@ -248,7 +250,7 @@ Thus holding scale alone does not remove constant-sample collapse below it.
 Holding $c$ gives a Lomax likelihood on $x^{c}$, whose exponential
 limit becomes Weibull with that power held. Its existence criterion is the
 one in the [Lomax dossier](../lomax/README.md), applied to the transformed
-observations. Holding $k$ instead gives a strictly concave log-data likelihood
+observations, with an additional strict face check. Holding $k$ instead gives a strictly concave log-data likelihood
 in inverse spread and standardized location for nonconstant samples.
 With $k$ and $s$ held, a free $c$ is unbounded only when every observation
 equals $s$. Holding $c$ and $s$ leaves an explicit estimate of $k$.
@@ -260,7 +262,7 @@ Supply `scale = s` to estimate only the shapes. The fixed-scale path profiles `s
 controls `shape10`, `shape20`, `scale0`, and historical BFGS tolerances
 are retained for compatibility and validated on the all-free path. Detected
 limits stop with a recommendation to fit `mlweibull` or `mlpareto`.
-Certificate tie, budget and numerical failures have distinct error messages
+Refuted candidates and failed searches have distinct error messages
 and return no coefficient vector. The returned iteration count on the
 all-free path is the number of attempted cached conditional profiles.
 Held-$c$ inherits the separate Lomax certificate, with the Jacobian
@@ -331,9 +333,8 @@ center. It must pass the same independent signed bracket and coefficient
 width checks; its optimizer status never establishes globality. Strict concavity proves
 that this bracket contains the unique global maximum. Concave tangents
 supply an upper likelihood bound and the center a lower bound. `iterlim`
-bounds proposal evaluations; exhaustion stops with `CertificateBudget`.
-Unresolved endpoint signs or coefficient width stop with `CertificateTie`;
-nonfinite arithmetic or invalid bounds stop with `NumericalFailure`.
+bounds certificate evaluations. Unresolved endpoint signs, coefficient width
+or an exhausted certificate allowance leave a converged proposal uncertified.
 No capped iterate is returned. The historical moment/Newton path is retained solely as a compatibility
 proposal; alone it could stop at an unchecked iterate and supplied no global
 certificate. Invalid or distant proposals are discarded.
@@ -345,6 +346,23 @@ values, and $64\epsilon(m+1)(1+\sum|a_i|)$ on sums of $m$ terms.
 They are practical floating-point margins, not outward-rounded interval
 arithmetic or a universal libm error theorem. Close ratios use `log1p`;
 otherwise differences of logs avoid ratio overflow. Very ill-conditioned
-or extreme data may correctly stop when the margin prevents a decision.
+or extreme data can leave the certificate unclosed; refuted or unrepresentable search results still stop.
 The [validation report](../../../../../dev/research/evaluations/2026-11-06-burr-scale-report.md)
 records independent comparisons, regression tolerances, and timings.
+
+For the held-power face check, normalize the transformed observations to
+mean one and write $M_2=E[Y^2]$, $A(q)=E[\log(1+qY)]$.
+The inequalities $\log(1+t)\ge 2t/(2+t)$ and weighted Jensen give
+$A(q)\ge q/(1+qM_2/2)$. Thus the profile improvement over the exponential
+face satisfies $h(q)\le\log(1+t)-(2/M_2)t/(1+t)$, where $t=qM_2/2$.
+When $M_2<2$, this bound decreases strictly from zero up to
+$t=2/M_2-1$. The remaining compact interval uses the Lomax chord bounds;
+the right tail uses $h\le L-\log(z-L)$, $L=-E[\log Y]$.
+The check requires strict negative bounds with practical floating-point
+allowances. Failure to close any part retains the finite Newton search
+uncertified; it does not prove a face or nonexistence.
+
+A reachable Weibull face remains a likelihood lower bound when the strict
+comparison does not close. Its value can refute a finite search point by a
+separated gap even without proving that the face wins globally; the
+unclosed face is retained as a witness, not a selected limit payload.

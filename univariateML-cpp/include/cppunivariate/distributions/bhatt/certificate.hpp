@@ -534,13 +534,23 @@ inline BhattResult bhatt_mle(span x,double tol=1e-8,int maxit=500,double sigma=s
     certificate.certified=true;return certificate;
   }
   if(certificate.status==BhattStatus::InvalidInput)return certificate;
-  // The normal delegate is the search itself, including its representability
-  // checks. Other inconclusive coefficient enclosures must try the search,
-  // even when the requested target is smaller than the certificate margin.
-  if(a==0)return certificate;
   // Inconclusive certification must preserve a successful existing search.
   // Its result has no global or coefficient-enclosure claim: certified=false.
   auto searched=bhatt_detail::legacy_candidate(x,tol,maxit,sigma,a,mu);
+  if(a==0 && searched.status==BhattStatus::Ok) {
+    // A normal coefficient inclusion can fail solely because tol is below
+    // its practical margin. Preserve the closed-form search in that case,
+    // but reject a physically displaced mean or scale (notably large offsets).
+    bhatt_detail::CertSum location,scale_score,magnitude;
+    for(double v:x) {
+      const CPPUNIV_EXTENDED_REAL z=(static_cast<CPPUNIV_EXTENDED_REAL>(v)-searched.mu)/searched.sigma;
+      location.add(z);scale_score.add(z*z-1);magnitude.add(std::abs(z)+z*z);
+    }
+    const CPPUNIV_EXTENDED_REAL margin=256*std::numeric_limits<double>::epsilon()*(x.size()+magnitude.value);
+    const CPPUNIV_EXTENDED_REAL score=std::hypot(std::isnan(mu)?location.value:0,
+        std::isnan(sigma)?scale_score.value:0);
+    if(!std::isfinite(score) || !std::isfinite(margin) || score>1e-3+margin)return certificate;
+  }
   const auto reject_search=[&]() {
     certificate.status=BhattStatus::NumericalFailure;
     certificate.stop_detail.budget_exhausted=false;
@@ -572,7 +582,15 @@ inline BhattResult bhatt_mle(span x,double tol=1e-8,int maxit=500,double sigma=s
     if(!bhatt_detail::uniform_representation_valid(searched,tol))return reject_search();
     const double margin=1024*std::numeric_limits<double>::epsilon()*(x.size()+std::abs(searched.logLik));
     if(certificate.stop_detail.loglik_lower>searched.logLik+margin)return certificate;
-    return searched;
+    // A numerical face comparison is not a proof of a limit win. Retain an
+    // independently converged finite search instead of emitting that stop.
+    auto finite=bhatt_detail::legacy_candidate(x,tol,maxit,sigma,a,mu,true);
+    if(finite.status!=BhattStatus::Ok)return certificate;
+    const auto witness=bhatt_detail::cert_witness(x,finite.mu,finite.sigma,finite.a);
+    if(!bhatt_detail::cert_valid(witness) || !std::isfinite(finite.logLik) ||
+        finite.logLik<witness.loglik_lower || finite.logLik>witness.loglik_upper ||
+        certificate.stop_detail.loglik_lower>witness.loglik_upper)return certificate;
+    return finite;
   }
   // The search itself failed, or proposed an invalid/unbounded result not
   // proved by the certificate. Preserve the certificate's physical witnesses.

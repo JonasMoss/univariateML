@@ -459,7 +459,7 @@ TEST_CASE("ged: held-shape certificates expose median and knot ties") {
   REQUIRE(normal.status==cppunivariate::GedStatus::Ok);CHECK(normal.certified);
 }
 
-TEST_CASE("ged: separated finite shape maxima stop with competing root witnesses") {
+TEST_CASE("ged: numerically overlapping finite maxima keep an uncertified search") {
   // 80-digit raw-likelihood construction: held sd=1, symmetric locations.
   // Exact inner radius 0.3299866080912000371592... makes the two peaks equal.
   std::vector<double> x(8,0.);
@@ -467,7 +467,7 @@ TEST_CASE("ged: separated finite shape maxima stop with competing root witnesses
   for(int i=0;i<12;++i){x.push_back(-1.4239025460520294);x.push_back(1.4239025460520294);}
   for(double mean:{0.,double(NAN)}) {
     const auto r=cppunivariate::ged_mle(mltest::as_span(x),1e-6,200,mean,1,NAN);
-    REQUIRE(r.status==cppunivariate::GedStatus::Nonunique);
+    REQUIRE(r.status==cppunivariate::GedStatus::Ok);CHECK_FALSE(r.certified);
     REQUIRE(r.stop_detail.candidates.size()>=2);
     auto a=r.stop_detail.candidates[0],b=r.stop_detail.candidates[1];
     if(a.coef[2]>b.coef[2])std::swap(a,b);
@@ -684,4 +684,43 @@ TEST_CASE("GED subnormal gamma draws report failure") {
   } rng;
   for(double nu:{10.,1e8,std::numeric_limits<double>::max()})
     CHECK(std::isnan(cppunivariate::distributions::rged(rng,0,1,nu)));
+}
+
+TEST_CASE("GED uncertified fallback rejects a strictly better feasible witness") {
+ const auto g=mltest::load_distribution_golden("ged");const auto data=mltest::as_span(g.data);
+ auto certificate=cppunivariate::ged_shape_certificate(data,1e-8,200,NAN,NAN);
+ certificate.status=cppunivariate::GedStatus::BfgsFailure;certificate.certified=false;
+ certificate.stop_detail.loglik_lower=g.logLik+1;
+ CHECK(cppunivariate::ged_uncertified(certificate,data,1e-8,200,NAN,NAN,NAN).status==cppunivariate::GedStatus::BfgsFailure);
+}
+
+TEST_CASE("GED retains converged searches after held-sd and short-work certificate failure") {
+ const std::vector<double> x{.7321666961121761,2.2766042947262384,-.5491691631533211};
+ const auto r=cppunivariate::ged_mle(mltest::as_span(x),1e-8,1000,NAN,1.0178559902092952,NAN);
+ REQUIRE(r.status==cppunivariate::GedStatus::Ok);CHECK_FALSE(r.certified);
+ CHECK(std::isfinite(r.logLik));
+ const auto g=mltest::load_distribution_golden("ged");
+ const auto short_work=cppunivariate::ged_mle(mltest::as_span(g.data),1e-8,16);
+ REQUIRE(short_work.status==cppunivariate::GedStatus::Ok);CHECK_FALSE(short_work.certified);
+}
+
+TEST_CASE("GED point-score inclusion failure retains a converged conditional search") {
+ const std::vector<double> x{-0.02133959176388924,-0.021339613103523683,-0.021339634443158128,-0.02133965578279257,-0.021339677122427014};
+ const auto r=cppunivariate::ged_mle(mltest::as_span(x),1e-8,1000,NAN,NAN,3.016645308327854);
+ REQUIRE(r.status==cppunivariate::GedStatus::Ok);CHECK_FALSE(r.certified);
+ double ll=0;for(double v:x)ll+=cppunivariate::distributions::dged(v,r.mu,r.sigma,r.nu,true);
+ CHECK(r.logLik==doctest::Approx(ll).epsilon(1e-10));
+}
+
+TEST_CASE("GED reflection does not prove a tie against an unresolved central knot") {
+ const double t=.96295235253631053;const std::vector<double> x{-1,-t,0,t,1};
+ const auto r=cppunivariate::ged_mle(mltest::as_span(x),1e-8,1000,NAN,NAN,.5);
+ REQUIRE(r.status==cppunivariate::GedStatus::Ok);CHECK_FALSE(r.certified);CHECK_FALSE(r.proved_tie);
+}
+
+TEST_CASE("GED held shape and scale retain a converged point-score fallback") {
+ const std::vector<double> x{-.02133959176388924,-.021339613103523683,-.021339634443158128,-.02133965578279257,-.021339677122427014};
+ const auto r=cppunivariate::ged_mle(mltest::as_span(x),1e-8,1000,NAN,1.0178559902092952,3.016645308327854);
+ REQUIRE(r.status==cppunivariate::GedStatus::Ok);CHECK_FALSE(r.certified);
+ CHECK(r.sigma==1.0178559902092952);CHECK(r.nu==3.016645308327854);CHECK(std::isfinite(r.logLik));
 }

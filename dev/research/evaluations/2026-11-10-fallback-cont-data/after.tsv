@@ -1,0 +1,1189 @@
+166	betapr	stop:limit	nan	message=The beta-prime likelihood selects the gamma limit. Use `mlgamma` to fit this model.
+167	betapr	stop:tie	nan	message=Beta-prime optimizer BfgsFailure: profile did not converge or its global certificate is unresolved; increase iterlim. An unresolved gamma or inverse-gamma comparison does not select `mlgamma` or `mlinvgamma`.
+168	betapr	stop:budget	nan	message=Beta-prime BfgsFailure: global certificate budget exhausted (128 * min(iterlim, 100000) evaluations); raising iterlim may resolve this stop.
+169	betapr	stop:limit	nan	message=The beta-prime likelihood selects the gamma limit. Use `mlgamma` to fit this model.
+170	betapr	stop:budget	nan	message=Beta-prime BfgsFailure: global certificate budget exhausted (128 * min(iterlim, 100000) evaluations); raising iterlim may resolve this stop.
+171	betapr	stop:tie	nan	message=Beta-prime optimizer BfgsFailure: profile did not converge or its global certificate is unresolved; increase iterlim. An unresolved gamma or inverse-gamma comparison does not select `mlgamma` or `mlinvgamma`.
+172	betapr	stop:numerical	nan	message=Beta-prime optimizer BfgsFailure: profile did not converge or its global certificate is unresolved; increase iterlim. An unresolved gamma or inverse-gamma comparison does not select `mlgamma` or `mlinvgamma`.
+173	betapr	stop:numerical	nan	message=Beta-prime optimizer BfgsFailure: profile did not converge or its global certificate is unresolved; increase iterlim. An unresolved gamma or inverse-gamma comparison does not select `mlgamma` or `mlinvgamma`.
+174	betapr	stop:tie	nan	message=Beta-prime optimizer BfgsFailure: profile did not converge or its global certificate is unresolved; increase iterlim. An unresolved gamma or inverse-gamma comparison does not select `mlgamma` or `mlinvgamma`.
+175	betapr	stop:numerical	nan	message=Beta-prime optimizer BfgsFailure: profile did not converge or its global certificate is unresolved; increase iterlim. An unresolved gamma or inverse-gamma comparison does not select `mlgamma` or `mlinvgamma`.
+176	betapr	stop:numerical	nan	message=Beta-prime optimizer BfgsFailure: profile did not converge or its global certificate is unresolved; increase iterlim. An unresolved gamma or inverse-gamma comparison does not select `mlgamma` or `mlinvgamma`.
+177	betapr	uncertified	57.749475742325195	shape1=2.6172523179802378	shape2=8.1029667944874149	scale=1.091191417609162e-05
+178	betapr	uncertified	126.82702853214657	shape1=2.617252667321929	shape2=8.1029620594126808	scale=1.0911905643721695e-11
+179	betapr	uncertified	184.39165585699772	shape1=2.617252334461166	shape2=8.1029665717690378	scale=1.0911913908726526e-16
+180	betapr	uncertified	2291.2570159465495	shape1=2.6172522886068821	shape2=8.1029670767215851	scale=1.0911914939030136e-199
+181	betapr	stop:limit	nan	message=The beta-prime likelihood selects the gamma limit. Use `mlgamma` to fit this model.
+182	betapr	stop:limit	nan	message=The beta-prime likelihood selects the gamma limit. Use `mlgamma` to fit this model.
+183	betapr	stop:limit	nan	message=The beta-prime likelihood selects the inverse-gamma limit. Use `mlinvgamma` to fit this model.
+184	betapr	stop:tie	nan	message=Beta-prime optimizer BfgsFailure: profile did not converge or its global certificate is unresolved; increase iterlim. An unresolved gamma or inverse-gamma comparison does not select `mlgamma` or `mlinvgamma`.
+185	betapr	certified	-9.2126804930106321	shape1=2.0142714427942718	shape2=4.45958074261394	scale=1.4062820851063156
+186	betapr	stop:limit	nan	message=The beta-prime likelihood selects the gamma limit. Use `mlgamma` to fit this model.
+187	betapr	stop:limit	nan	message=The beta-prime likelihood selects the gamma limit. Use `mlgamma` to fit this model.
+188	betapr	stop:limit	nan	message=The beta-prime likelihood selects the gamma limit. Use `mlgamma` to fit this model.
+189	betapr	stop:limit	nan	message=The beta-prime likelihood selects the gamma limit. Use `mlgamma` to fit this model.
+190	betapr	stop:limit	nan	message=The beta-prime likelihood selects the gamma limit. Use `mlgamma` to fit this model.
+191	betapr	stop:limit	nan	message=The beta-prime likelihood selects the gamma limit. Use `mlgamma` to fit this model.
+192	betapr	stop:limit	nan	message=The beta-prime likelihood selects the gamma limit. Use `mlgamma` to fit this model.
+193	betapr	stop:limit	nan	message=The beta-prime likelihood selects the gamma limit. Use `mlgamma` to fit this model.
+194	betapr	stop:limit	nan	message=The beta-prime likelihood selects the gamma limit. Use `mlgamma` to fit this model.
+195	betapr	stop:limit	nan	message=The beta-prime likelihood selects the gamma limit. Use `mlgamma` to fit this model.
+196	betapr	certified	57.744766387011104	shape1=2.0142714427942718	shape2=259.17271412290631	scale=0.00051268927160598421
+197	betapr	certified	126.82231917683247	shape1=2.0142714427942718	shape2=259.17271412290631	scale=5.1268927160598426e-10
+198	betapr	certified	184.38694650168358	shape1=2.0142714427942718	shape2=259.17271412290631	scale=5.1268927160598436e-15
+199	betapr	certified	2291.2523065912355	shape1=2.0142714427942718	shape2=259.17271412290631	scale=5.126892716059842e-198
+200	betapr	certified	4135.4404868962711	shape1=2.0142714427942718	shape2=4.45958074261394	scale=1.4062820851063157e-150
+201	betapr	certified	-4153.8658478822927	shape1=2.0142714427942718	shape2=4.45958074261394	scale=1.4062820851063161e+150
+202	betapr	certified	-21.330153529937661	shape1=2.0142714427942718	shape2=0.23233206956560529	scale=0.033044927089974849
+203	betapr	stop:limit	nan	message=The beta-prime likelihood selects the gamma limit. Use `mlgamma` to fit this model.
+204	betapr	certified	-9.2414061720655063	shape1=1.9450981211931813	shape2=3.2600098684669976	scale=1.009866443294674
+205	betapr	stop:limit	nan	message=The beta-prime likelihood selects the inverse-gamma limit. Use `mlinvgamma` to fit this model.
+206	betapr	stop:limit	nan	message=The beta-prime likelihood selects the inverse-gamma limit. Use `mlinvgamma` to fit this model.
+207	betapr	stop:limit	nan	message=The beta-prime likelihood selects the inverse-gamma limit. Use `mlinvgamma` to fit this model.
+208	betapr	stop:limit	nan	message=The beta-prime likelihood selects the inverse-gamma limit. Use `mlinvgamma` to fit this model.
+209	betapr	stop:limit	nan	message=The beta-prime likelihood selects the inverse-gamma limit. Use `mlinvgamma` to fit this model.
+210	betapr	stop:limit	nan	message=The beta-prime likelihood selects the inverse-gamma limit. Use `mlinvgamma` to fit this model.
+211	betapr	stop:limit	nan	message=The beta-prime likelihood selects the inverse-gamma limit. Use `mlinvgamma` to fit this model.
+212	betapr	stop:limit	nan	message=The beta-prime likelihood selects the inverse-gamma limit. Use `mlinvgamma` to fit this model.
+213	betapr	stop:limit	nan	message=The beta-prime likelihood selects the inverse-gamma limit. Use `mlinvgamma` to fit this model.
+214	betapr	stop:limit	nan	message=The beta-prime likelihood selects the inverse-gamma limit. Use `mlinvgamma` to fit this model.
+215	betapr	certified	57.734296628597519	shape1=4.6442578498315772	shape2=3.2600098684669976	scale=2.0531443024311672e-06
+216	betapr	certified	126.81184941841889	shape1=4.6442578498315772	shape2=3.2600098684669976	scale=2.0531443024311674e-12
+217	betapr	certified	184.3764767432701	shape1=4.6442578498315772	shape2=3.2600098684669976	scale=2.0531443024311674e-17
+218	betapr	certified	2291.2418368328217	shape1=4.6442578498315772	shape2=3.2600098684669976	scale=2.0531443024311673e-200
+219	betapr	certified	4135.4117612172158	shape1=1.9450981211931813	shape2=3.2600098684669976	scale=1.0098664432946741e-150
+220	betapr	certified	-4153.8945735613479	shape1=1.9450981211931813	shape2=3.2600098684669976	scale=1.0098664432946741e+150
+221	betapr	certified	-26.128409733772418	shape1=0.078421114566520761	shape2=3.2600098684669976	scale=7514136.5595853981
+222	betapr	stop:limit	nan	message=The beta-prime likelihood selects the inverse-gamma limit. Use `mlinvgamma` to fit this model.
+223	betapr	certified	-9.2433178172339368	shape1=2.0142714427942718	shape2=3.2600098684669976	scale=0.96831569812394536
+224	betapr	certified	1.2133230217673812	shape1=2.0142714427942718	shape2=3.2600098684669976	scale=0.3666505826190723
+225	betapr	certified	2.1877125331903624	shape1=2.0142714427942718	shape2=3.2600098684669976	scale=0.31983727832938719
+226	betapr	certified	1.7853906463634273	shape1=2.0142714427942718	shape2=3.2600098684669976	scale=0.43936457652184452
+227	betapr	certified	4.6395907887142931	shape1=2.0142714427942718	shape2=3.2600098684669976	scale=0.31081348887063992
+228	betapr	certified	-2.1544918702613964	shape1=2.0142714427942718	shape2=3.2600098684669976	scale=1.0536392444156804
+229	betapr	certified	-2.1543918631336201	shape1=2.0142714427942718	shape2=3.2600098684669976	scale=1.05361818606918
+230	betapr	certified	-2.1543918531346216	shape1=2.0142714427942718	shape2=3.2600098684669976	scale=1.0536181839621548
+231	betapr	certified	-4.3007045160682109	shape1=2.0142714427942718	shape2=3.2600098684669976	scale=1.618488433361893
+232	betapr	certified	-4.3006045089404354	shape1=2.0142714427942718	shape2=3.2600098684669976	scale=1.6184560857719406
+233	betapr	certified	-4.3006044989414374	shape1=2.0142714427942718	shape2=3.2600098684669976	scale=1.6184560825353524
+234	betapr	certified	57.490408640989337	shape1=2.0142714427942718	shape2=3.2600098684669976	scale=5.2971332281854116e-06
+235	betapr	certified	126.56796143081071	shape1=2.0142714427942718	shape2=3.2600098684669976	scale=5.2971332281853949e-12
+236	betapr	certified	184.13258875566186	shape1=2.0142714427942718	shape2=3.2600098684669976	scale=5.2971332281854224e-17
+237	betapr	certified	2290.9979488452141	shape1=2.0142714427942718	shape2=3.2600098684669976	scale=5.2971332281854984e-200
+238	betapr	certified	4135.4098495720491	shape1=2.0142714427942718	shape2=3.2600098684669976	scale=9.683156981238869e-151
+239	betapr	certified	-4153.8964852065164	shape1=2.0142714427942718	shape2=3.2600098684669976	scale=9.6831569812397401e+149
+240	betapr	certified	-56.117376324269927	shape1=2.0142714427942718	shape2=3.2600098684669976	scale=0.82715035253505809
+241	betapr	certified	-2.1543918531348458	shape1=2.0142714427942718	shape2=3.2600098684669976	scale=1.0536181839611394
+242	betapr	certified	-9.2282999977232585	shape1=1.9876405475346339	shape2=3.5006942860002304	scale=1.0594104501122898
+243	betapr	certified	3.4668048452265552	shape1=34.183935022189345	shape2=158.69557930905032	scale=1.0594104501122898
+244	betapr	certified	4.7509145017189827	shape1=18.908828328195224	shape2=99.90210266325721	scale=1.0594104501122898
+245	betapr	certified	3.8717371744150793	shape1=7.5131251141552369	shape2=28.485037021201343	scale=1.0594104501122898
+246	betapr	certified	11.624983769386589	shape1=35.991683148798842	shape2=196.96955539873787	scale=1.0594104501122898
+247	betapr	certified	38.390405351878798	shape1=54549751.448488712	shape2=88769957.006638989	scale=1.0594104501122898
+248	betapr	certified	84.441950547059193	shape1=5454373785714334	shape2=8876194498901769	scale=1.0594104501122898
+249	betapr	certified	130.49368885992754	shape1=5.4544532947721471e+23	shape2=8.8763239059994838e+23	scale=1.0594104501122898
+250	betapr	certified	36.244204614003749	shape1=65680706.005567901	shape2=69581435.684380665	scale=1.0594104501122898
+251	betapr	certified	82.295737896392424	shape1=6567301472501320	shape2=6957467795090793	scale=1.0594104501122898
+252	betapr	certified	128.34741532257218	shape1=6.5672372575878705e+23	shape2=6.9573997790539743e+23	scale=1.0594104501122898
+253	betapr	certified	57.744748259687263	shape1=2.0262618635841267	shape2=536661.75479941524	scale=1.0594104501122898
+254	betapr	certified	126.82230092559585	shape1=2.026255167714941	shape2=536658974818.81738	scale=1.0594104501122898
+255	betapr	certified	184.38692825044689	shape1=2.0262551677082516	shape2=53665897481603816	scale=1.0594104501122898
+256	betapr	certified	2291.2522883399988	shape1=2.0262551677084244	shape2=5.3665897481607234e+199	scale=1.0594104501122898
+257	betapr	certified	4135.7055707807831	shape1=1.3768062808237056	shape2=1.8278993726689006e+150	scale=1.0594104501122898
+258	betapr	certified	-4154.3409505052032	shape1=3.9801339529024133e+149	shape2=1.245657142809574	scale=1.0594104501122898
+259	betapr	certified	-23.180228047323048	shape1=0.34901254544105981	shape2=0.2337746512909272	scale=1.0594104501122898
+260	betapr	certified	62.39620481822837	shape1=807247310521.9353	shape2=1313676772576.6833	scale=1.0594104501122898
+261	betapr	certified	-9.2289078314378266	shape1=2.0142714427942718	shape2=3.5414717374190996	scale=1.0594104501122898
+262	betapr	certified	1.5051466705536418	shape1=2.0142714427942718	shape2=9.8134932699010626	scale=1.0594104501122898
+263	betapr	certified	2.6354475289617083	shape1=2.0142714427942718	shape2=11.081704971704289	scale=1.0594104501122898
+264	betapr	certified	2.3043260077657952	shape1=2.0142714427942718	shape2=7.9936071158219786	scale=1.0594104501122898
+265	betapr	certified	5.591825803784543	shape1=2.0142714427942718	shape2=11.488440489766283	scale=1.0594104501122898
+266	betapr	certified	-2.0767148668033455	shape1=2.0142714427942718	shape2=3.7575173339046466	scale=1.0594104501122898
+267	betapr	certified	-2.0765966104591738	shape1=2.0142714427942718	shape2=3.7575832056440013	scale=1.0594104501122898
+268	betapr	certified	-2.0765965986347465	shape1=2.0142714427942718	shape2=3.7575832122331625	scale=1.0594104501122898
+269	betapr	certified	-4.6643361224970885	shape1=2.0142714427942718	shape2=2.6050292669043755	scale=1.0594104501122898
+270	betapr	certified	-4.664213264410626	shape1=2.0142714427942718	shape2=2.6050723838254441	scale=1.0594104501122898
+271	betapr	certified	-4.6642132521241466	shape1=2.0142714427942718	shape2=2.6050723881387721	scale=1.0594104501122898
+272	betapr	certified	57.744697378272882	shape1=2.0142714427942718	shape2=533486.0575303185	scale=1.0594104501122898
+273	betapr	stop:unresolved	nan	message=Beta-prime optimizer BfgsFailure: profile did not converge or its global certificate is unresolved; increase iterlim. An unresolved gamma or inverse-gamma comparison does not select `mlgamma` or `mlinvgamma`.
+274	betapr	stop:unresolved	nan	message=Beta-prime optimizer BfgsFailure: profile did not converge or its global certificate is unresolved; increase iterlim. An unresolved gamma or inverse-gamma comparison does not select `mlgamma` or `mlinvgamma`.
+275	betapr	stop:unresolved	nan	message=Beta-prime optimizer BfgsFailure: profile did not converge or its global certificate is unresolved; increase iterlim. An unresolved gamma or inverse-gamma comparison does not select `mlgamma` or `mlinvgamma`.
+276	betapr	stop:unresolved	nan	message=Beta-prime optimizer BfgsFailure: profile did not converge or its global certificate is unresolved; increase iterlim. An unresolved gamma or inverse-gamma comparison does not select `mlgamma` or `mlinvgamma`.
+277	betapr	certified	-4219.1594058714381	shape1=2.0142714427942718	shape2=0.0029095740907950202	scale=1.0594104501122898
+278	betapr	certified	-30.550410247547795	shape1=2.0142714427942718	shape2=0.44982799118971689	scale=1.0594104501122898
+279	betapr	certified	-2.0765965986344557	shape1=2.0142714427942718	shape2=3.7575832122350747	scale=1.0594104501122898
+280	betapr	certified	-9.2435400784234396	shape1=1.8806661762372376	shape2=3.2600098684669976	scale=1.0594104501122898
+281	betapr	certified	0.60159542294215607	shape1=1.130262375254637	shape2=3.2600098684669976	scale=1.0594104501122898
+282	betapr	certified	1.1486775005638055	shape1=1.0328930801479905	shape2=3.2600098684669976	scale=1.0594104501122898
+283	betapr	certified	0.7200012511565147	shape1=1.247816848088896	shape2=3.2600098684669976	scale=1.0594104501122898
+284	betapr	certified	2.4458921129139228	shape1=1.0185073594062701	shape2=3.2600098684669976	scale=1.0594104501122898
+285	betapr	certified	-1.9729057877902145	shape1=2.4752994346436576	shape2=3.2600098684669976	scale=1.0594104501122898
+286	betapr	certified	-1.9728349829764433	shape1=2.475258974964865	shape2=3.2600098684669976	scale=1.0594104501122898
+287	betapr	certified	-1.9728349759006738	shape1=2.4752589709147594	shape2=3.2600098684669976	scale=1.0594104501122898
+288	betapr	certified	-3.5392778119109787	shape1=3.5573772373759973	shape2=3.2600098684669976	scale=1.0594104501122898
+289	betapr	certified	-3.5392024484817597	shape1=3.5573154454000169	shape2=3.2600098684669976	scale=1.0594104501122898
+290	betapr	certified	-3.5392024409523746	shape1=3.5573154392140172	shape2=3.2600098684669976	scale=1.0594104501122898
+291	betapr	certified	46.394968323243823	shape1=0.088796682007253686	shape2=3.2600098684669976	scale=1.0594104501122898
+292	betapr	certified	111.46302919112445	shape1=0.039966574637506073	shape2=3.2600098684669976	scale=1.0594104501122898
+293	betapr	certified	167.13454265895436	shape1=0.027383330736280475	shape2=3.2600098684669976	scale=1.0594104501122898
+294	betapr	certified	2261.3538684958494	shape1=0.0021840734992516356	shape2=3.2600098684669976	scale=1.0594104501122898
+295	betapr	certified	4070.1194134689654	shape1=0.0029029068458870161	shape2=3.2600098684669976	scale=1.0594104501122898
+296	betapr	stop:unresolved	nan	message=Beta-prime optimizer BfgsFailure: profile did not converge or its global certificate is unresolved; increase iterlim. An unresolved gamma or inverse-gamma comparison does not select `mlgamma` or `mlinvgamma`.
+297	betapr	certified	-55.927425805010749	shape1=1.5582390981580179	shape2=3.2600098684669976	scale=1.0594104501122898
+298	betapr	certified	-1.9728349759031838	shape1=2.4752589709115589	shape2=3.2600098684669976	scale=1.0594104501122898
+299	betapr	certified	-9.2932608351678549	shape1=2.0142714427942718	shape2=3.2600098684669976	scale=1.0594104501122898
+300	betapr	certified	-0.02238646703111415	shape1=2.0142714427942718	shape2=3.2600098684669976	scale=1.0594104501122898
+301	betapr	certified	-0.11777083525326065	shape1=2.0142714427942718	shape2=3.2600098684669976	scale=1.0594104501122898
+302	betapr	certified	-0.33752882114211957	shape1=2.0142714427942718	shape2=3.2600098684669976	scale=1.0594104501122898
+303	betapr	certified	-0.19986445239069101	shape1=2.0142714427942718	shape2=3.2600098684669976	scale=1.0594104501122898
+304	betapr	certified	-2.1545847032218162	shape1=2.0142714427942718	shape2=3.2600098684669976	scale=1.0594104501122898
+305	betapr	certified	-2.1544853765198106	shape1=2.0142714427942718	shape2=3.2600098684669976	scale=1.0594104501122898
+306	betapr	certified	-2.1544853665890153	shape1=2.0142714427942718	shape2=3.2600098684669976	scale=1.0594104501122898
+307	betapr	certified	-4.8745776999888317	shape1=2.0142714427942718	shape2=3.2600098684669976	scale=1.0594104501122898
+308	betapr	certified	-4.8744230534343211	shape1=2.0142714427942718	shape2=3.2600098684669976	scale=1.0594104501122898
+309	betapr	certified	-4.8744230379679445	shape1=2.0142714427942718	shape2=3.2600098684669976	scale=1.0594104501122898
+310	betapr	certified	-51.730328982643414	shape1=2.0142714427942718	shape2=3.2600098684669976	scale=1.0594104501122898
+311	betapr	certified	-121.79361854573393	shape1=2.0142714427942718	shape2=3.2600098684669976	scale=1.0594104501122898
+312	betapr	certified	-180.1797761563258	shape1=2.0142714427942718	shape2=3.2600098684669976	scale=1.0594104501122898
+313	betapr	certified	-2317.1131447076286	shape1=2.0142714427942718	shape2=3.2600098684669976	scale=1.0594104501122898
+314	betapr	certified	-4181.1104696624197	shape1=2.0142714427942718	shape2=3.2600098684669976	scale=1.0594104501122898
+315	betapr	certified	-17589.987840894915	shape1=2.0142714427942718	shape2=3.2600098684669976	scale=1.0594104501122898
+316	betapr	certified	-56.223283946985127	shape1=2.0142714427942718	shape2=3.2600098684669976	scale=1.0594104501122898
+317	betapr	certified	-2.1544853665892729	shape1=2.0142714427942718	shape2=3.2600098684669976	scale=1.0594104501122898
+318	bhatt	stop:limit	nan	message=Certified global comparison: Bhattacharjee likelihood selects the uniform face: use `mlunif`.
+319	bhatt	stop:limit	nan	message=Certified global comparison: Bhattacharjee likelihood selects the uniform face: use `mlunif`.
+320	bhatt	stop:limit	nan	message=Certified global comparison: Bhattacharjee likelihood selects the uniform face: use `mlunif`.
+321	bhatt	stop:limit	nan	message=Certified global comparison: Bhattacharjee likelihood selects the uniform face: use `mlunif`.
+322	bhatt	stop:limit	nan	message=Certified global comparison: Bhattacharjee likelihood selects the uniform face: use `mlunif`.
+323	bhatt	stop:limit	nan	message=Certified global comparison: Bhattacharjee likelihood selects the uniform face: use `mlunif`.
+324	bhatt	stop:limit	nan	message=Certified global comparison: Bhattacharjee likelihood selects the uniform face: use `mlunif`.
+325	bhatt	stop:limit	nan	message=Certified global comparison: Bhattacharjee likelihood selects the uniform face: use `mlunif`.
+326	bhatt	stop:limit	nan	message=Certified global comparison: Bhattacharjee likelihood selects the uniform face: use `mlunif`.
+327	bhatt	stop:limit	nan	message=Certified global comparison: Bhattacharjee likelihood selects the uniform face: use `mlunif`.
+328	bhatt	stop:limit	nan	message=Certified global comparison: Bhattacharjee likelihood selects the uniform face: use `mlunif`.
+329	bhatt	stop:limit	nan	message=Certified global comparison: Bhattacharjee likelihood selects the uniform face: use `mlunif`.
+330	bhatt	stop:limit	nan	message=Certified global comparison: Bhattacharjee likelihood selects the uniform face: use `mlunif`.
+331	bhatt	stop:limit	nan	message=Certified global comparison: Bhattacharjee likelihood selects the uniform face: use `mlunif`.
+332	bhatt	stop:limit	nan	message=Certified global comparison: Bhattacharjee likelihood selects the uniform face: use `mlunif`.
+333	bhatt	stop:limit	nan	message=Certified global comparison: Bhattacharjee likelihood selects the uniform face: use `mlunif`.
+334	bhatt	stop:limit	nan	message=Certified global comparison: Bhattacharjee likelihood selects the uniform face: use `mlunif`.
+335	bhatt	stop:limit	nan	message=Certified global comparison: Bhattacharjee likelihood selects the uniform face: use `mlunif`.
+336	bhatt	stop:limit	nan	message=Certified global comparison: Bhattacharjee likelihood selects the uniform face: use `mlunif`.
+337	bhatt	stop:limit	nan	message=Certified global comparison: Bhattacharjee likelihood selects the uniform face: use `mlunif`.
+338	bhatt	stop:limit	nan	message=Certified global comparison: Bhattacharjee likelihood selects the uniform face: use `mlunif`.
+339	bhatt	stop:limit	nan	message=Certified global comparison: Bhattacharjee likelihood selects the uniform face: use `mlunif`.
+340	bhatt	stop:limit	nan	message=Certified global comparison: Bhattacharjee likelihood selects the uniform face: use `mlunif`.
+341	bhatt	stop:limit	nan	message=Certified global comparison: Bhattacharjee likelihood selects the uniform face: use `mlunif`.
+342	bhatt	stop:limit	nan	message=Certified global comparison: Bhattacharjee likelihood selects the uniform face: use `mlunif`.
+343	bhatt	stop:limit	nan	message=Certified global comparison: Bhattacharjee likelihood selects the uniform face: use `mlunif`.
+344	bhatt	stop:limit	nan	message=Certified global comparison: Bhattacharjee likelihood selects the uniform face: use `mlunif`.
+345	bhatt	stop:limit	nan	message=Certified global comparison: Bhattacharjee likelihood selects the uniform face: use `mlunif`.
+346	bhatt	stop:limit	nan	message=Certified global comparison: Bhattacharjee likelihood selects the uniform face: use `mlunif`.
+347	bhatt	stop:limit	nan	message=Certified global comparison: Bhattacharjee likelihood selects the uniform face: use `mlunif`.
+348	bhatt	uncertified	-72.148664947013842	mu=-0.0038000682197418395	sigma=447214.87205101748	a=0
+349	bhatt	stop:limit	nan	message=Certified global comparison: Bhattacharjee likelihood selects the uniform face: use `mlunif`.
+350	bhatt	certified	-22.162181457559836	mu=0.43067033846471675	sigma=1.057897350270679	a=2.0902083819529564
+351	bhatt	certified	-3.383198957345309	mu=-1.1226324771103642	sigma=1.057897350270679	a=1.6575942059769611
+352	bhatt	certified	-5.9029680151857038	mu=-0.18197168955932613	sigma=1.057897350270679	a=2.6638734723692221
+353	bhatt	certified	-10.089603970833908	mu=0.51780826292969651	sigma=1.057897350270679	a=2.7947941974571111
+354	bhatt	certified	-10.217100625231282	mu=0.050196292563579929	sigma=1.057897350270679	a=1.3030215425661682
+355	bhatt	certified	-4.8761092010651952	mu=0.23133887898078226	sigma=1.057897350270679	a=0
+356	bhatt	certified	-4.8761091975266515	mu=0.23133425275840486	sigma=1.057897350270679	a=0
+357	bhatt	certified	-4.8761091975266515	mu=0.23133425229578261	sigma=1.057897350270679	a=0
+358	bhatt	certified	-4.8761092636484502	mu=1.0000199999999999	sigma=1.057897350270679	a=0
+359	bhatt	certified	-4.8761091975266524	mu=1.0000000019999999	sigma=1.057897350270679	a=0
+360	bhatt	certified	-4.8761091975266515	mu=1.0000000000002001	sigma=1.057897350270679	a=0
+361	bhatt	certified	-11.702662074063964	mu=4.3271689623922314e-151	sigma=1.057897350270679	a=0
+362	bhatt	uncertified	-4164.9450637062218	mu=1.599685116058775e+149	sigma=1.057897350270679	a=2.7124280120690724e+150
+363	bhatt	certified	-22.1621814620839	mu=100000000.43067034	sigma=1.057897350270679	a=2.0902083841323886
+364	bhatt	uncertified	-69.077631706985684	mu=500000.18702318694	sigma=1.057897350270679	a=500007.67642487347
+365	bhatt	certified	-4.8761091975268904	mu=0.23133425229573634	sigma=1.057897350270679	a=0
+366	bhatt	certified	-22.625601519697746	mu=-0.0038000682197418395	sigma=1.057897350270679	a=2.2134661954567565
+367	bhatt	certified	-3.9128438267824084	mu=-0.0038000682197418395	sigma=1.057897350270679	a=2.4760983202948599
+368	bhatt	certified	-5.9198716967874958	mu=-0.0038000682197418395	sigma=1.057897350270679	a=2.6647138992048789
+369	bhatt	certified	-10.28588347046635	mu=-0.0038000682197418395	sigma=1.057897350270679	a=3.0618918306549392
+370	bhatt	certified	-10.222108666027074	mu=-0.0038000682197418395	sigma=1.057897350270679	a=1.3214505930297042
+371	bhatt	certified	-4.9996191916832622	mu=-0.0038000682197418395	sigma=1.057897350270679	a=0
+372	bhatt	certified	-4.9996143282176977	mu=-0.0038000682197418395	sigma=1.057897350270679	a=0
+373	bhatt	certified	-4.9996143277317096	mu=-0.0038000682197418395	sigma=1.057897350270679	a=0
+374	bhatt	certified	-7.1270532998118368	mu=-0.0038000682197418395	sigma=1.057897350270679	a=0
+375	bhatt	certified	-7.1269635484329399	mu=-0.0038000682197418395	sigma=1.057897350270679	a=0
+376	bhatt	certified	-7.1269635394645032	mu=-0.0038000682197418395	sigma=1.057897350270679	a=0
+377	bhatt	certified	-11.702739492960717	mu=-0.0038000682197418395	sigma=1.057897350270679	a=0
+378	bhatt	uncertified	-4165.5414797027734	mu=-0.0038000682197418395	sigma=1.057897350270679	a=2.8506456492815377e+150
+379	bhatt	uncertified	-229.36593615913088	mu=-0.0038000682197418395	sigma=1.057897350270679	a=100000008.53547394
+380	bhatt	uncertified	-72.543329105448933	mu=-0.0038000682197418395	sigma=1.057897350270679	a=1000007.8683241192
+381	bhatt	certified	-4.9996143277318996	mu=-0.0038000682197418395	sigma=1.057897350270679	a=0
+382	bhatt	certified	-22.314923348581342	mu=0.4311037096472834	sigma=1.094690185914047	a=1.7336058787117143
+383	bhatt	stop:limit	nan	message=Certified global comparison: Bhattacharjee likelihood selects the uniform face with a held. Use `mlunif` for an unrestricted fit; it does not hold a.
+384	bhatt	certified	-6.0824861934830707	mu=-0.085253060080204279	sigma=1.4742168435031178	a=1.7336058787117143
+385	bhatt	certified	-10.272992099667011	mu=0.86572557558833807	sigma=1.5808733306738549	a=1.7336058787117143
+386	bhatt	certified	-10.288216850453036	mu=-0.0061627874160107808	sigma=0.98554277254252554	a=1.7336058787117143
+387	bhatt	stop:limit	nan	message=Certified global comparison: Bhattacharjee likelihood selects the uniform face with a held. Use `mlunif` for an unrestricted fit; it does not hold a.
+388	bhatt	stop:limit	nan	message=Certified global comparison: Bhattacharjee likelihood selects the uniform face with a held. Use `mlunif` for an unrestricted fit; it does not hold a.
+389	bhatt	stop:limit	nan	message=Certified global comparison: Bhattacharjee likelihood selects the uniform face with a held. Use `mlunif` for an unrestricted fit; it does not hold a.
+390	bhatt	stop:limit	nan	message=Certified global comparison: Bhattacharjee likelihood selects the uniform face with a held. Use `mlunif` for an unrestricted fit; it does not hold a.
+391	bhatt	stop:limit	nan	message=Certified global comparison: Bhattacharjee likelihood selects the uniform face with a held. Use `mlunif` for an unrestricted fit; it does not hold a.
+392	bhatt	stop:limit	nan	message=Certified global comparison: Bhattacharjee likelihood selects the uniform face with a held. Use `mlunif` for an unrestricted fit; it does not hold a.
+393	bhatt	stop:limit	nan	message=Certified global comparison: Bhattacharjee likelihood selects the uniform face with a held. Use `mlunif` for an unrestricted fit; it does not hold a.
+394	bhatt	uncertified	-4167.1750313592865	mu=4.3271689623922318e+149	sigma=1.580724785711593e+150	a=1.7336058787117143
+395	bhatt	certified	-22.314923355051782	mu=100000000.43110371	sigma=1.0946901865896754	a=1.7336058787117143
+396	bhatt	uncertified	-71.590802740453682	mu=200001.09961531952	sigma=400000.87107526127	a=1.7336058787117143
+397	bhatt	stop:limit	nan	message=Certified global comparison: Bhattacharjee likelihood selects the uniform face with a held. Use `mlunif` for an unrestricted fit; it does not hold a.
+398	bhatt	certified	-22.822390724919345	mu=-0.0038000682197418395	sigma=1.2170911047240085	a=1.7336058787117143
+399	bhatt	certified	-3.9504019453145314	mu=-0.0038000682197418395	sigma=1.3953175599457663	a=1.7336058787117143
+400	bhatt	certified	-6.0856753039891602	mu=-0.0038000682197418395	sigma=1.4807937296705416	a=1.7336058787117143
+401	bhatt	certified	-10.78108844220864	mu=-0.0038000682197418395	sigma=1.790219849095821	a=1.7336058787117143
+402	bhatt	certified	-10.288224555282721	mu=-0.0038000682197418395	sigma=0.98592549970918464	a=1.7336058787117143
+403	bhatt	stop:limit	nan	message=Certified global comparison: Bhattacharjee likelihood selects the uniform face with a held. Use `mlunif` for an unrestricted fit; it does not hold a.
+404	bhatt	stop:limit	nan	message=Certified global comparison: Bhattacharjee likelihood selects the uniform face with a held. Use `mlunif` for an unrestricted fit; it does not hold a.
+405	bhatt	stop:limit	nan	message=Certified global comparison: Bhattacharjee likelihood selects the uniform face with a held. Use `mlunif` for an unrestricted fit; it does not hold a.
+406	bhatt	stop:limit	nan	message=Certified global comparison: Bhattacharjee likelihood selects the uniform face with a held. Use `mlunif` for an unrestricted fit; it does not hold a.
+407	bhatt	stop:limit	nan	message=Certified global comparison: Bhattacharjee likelihood selects the uniform face with a held. Use `mlunif` for an unrestricted fit; it does not hold a.
+408	bhatt	stop:limit	nan	message=Certified global comparison: Bhattacharjee likelihood selects the uniform face with a held. Use `mlunif` for an unrestricted fit; it does not hold a.
+409	bhatt	stop:limit	nan	message=Certified global comparison: Bhattacharjee likelihood selects the uniform face with a held. Use `mlunif` for an unrestricted fit; it does not hold a.
+410	bhatt	uncertified	-4167.6086026120711	mu=-0.0038000682197418395	sigma=1.6388821637133915e+150	a=1.7336058787117143
+411	bhatt	uncertified	-238.0754313782665	mu=-0.0038000682197418395	sigma=100000000.78686966	a=1.7336058787117143
+412	bhatt	uncertified	-72.148664947013842	mu=-0.0038000682197418395	sigma=447214.87381200137	a=1.7336058787117143
+413	bhatt	stop:limit	nan	message=Certified global comparison: Bhattacharjee likelihood selects the uniform face with a held. Use `mlunif` for an unrestricted fit; it does not hold a.
+414	bhatt	certified	-22.318690529703318	mu=0.4317202690234711	sigma=1.057897350270679	a=1.7336058787117143
+415	bhatt	certified	-3.3843046272392754	mu=-1.1226324771103642	sigma=1.057897350270679	a=1.7336058787117143
+416	bhatt	certified	-6.2094999525716617	mu=-0.1238267708711184	sigma=1.057897350270679	a=1.7336058787117143
+417	bhatt	certified	-10.67981195450907	mu=0.74592662080684913	sigma=1.057897350270679	a=1.7336058787117143
+418	bhatt	certified	-10.299751500834166	mu=0.011808785064837748	sigma=1.057897350270679	a=1.7336058787117143
+419	bhatt	certified	-6.7506165296038976	mu=0.23133887898078226	sigma=1.057897350270679	a=1.7336058787117143
+420	bhatt	certified	-6.7506165282595587	mu=0.23133425275840486	sigma=1.057897350270679	a=1.7336058787117143
+421	bhatt	certified	-6.7506165282595587	mu=0.23133425229578261	sigma=1.057897350270679	a=1.7336058787117143
+422	bhatt	certified	-6.7506165533800893	mu=1.0000199999999999	sigma=1.057897350270679	a=1.7336058787117143
+423	bhatt	certified	-6.7506165282595596	mu=1.0000000019999999	sigma=1.057897350270679	a=1.7336058787117143
+424	bhatt	certified	-6.7506165282595587	mu=1.0000000000002001	sigma=1.057897350270679	a=1.7336058787117143
+425	bhatt	certified	-16.201479667822941	mu=4.3271689623922321e-151	sigma=1.057897350270679	a=1.7336058787117143
+426	bhatt	uncertified	-1.3396048631400884e+301	mu=4.3271689623922318e+149	sigma=1.057897350270679	a=1.7336058787117143
+427	bhatt	uncertified	-22.318690536305333	mu=100000000.43172026	sigma=1.057897350270679	a=1.7336058787117143
+428	bhatt	stop:numerical	nan	message=Bhatt certificate solve did not converge; increase iterlim.
+429	bhatt	certified	-6.7506165282596502	mu=0.23133425229573634	sigma=1.057897350270679	a=1.7336058787117143
+430	bhatt	certified	-22.904292036803053	mu=-0.0038000682197418395	sigma=1.057897350270679	a=1.7336058787117143
+431	bhatt	certified	-4.0203744939566466	mu=-0.0038000682197418395	sigma=1.057897350270679	a=1.7336058787117143
+432	bhatt	certified	-6.2214612547427244	mu=-0.0038000682197418395	sigma=1.057897350270679	a=1.7336058787117143
+433	bhatt	certified	-11.469328183039721	mu=-0.0038000682197418395	sigma=1.057897350270679	a=1.7336058787117143
+434	bhatt	certified	-10.300079130046591	mu=-0.0038000682197418395	sigma=1.057897350270679	a=1.7336058787117143
+435	bhatt	certified	-6.7976983192125999	mu=-0.0038000682197418395	sigma=1.057897350270679	a=1.7336058787117143
+436	bhatt	certified	-6.7976964590256754	mu=-0.0038000682197418395	sigma=1.057897350270679	a=1.7336058787117143
+437	bhatt	certified	-6.7976964588397957	mu=-0.0038000682197418395	sigma=1.057897350270679	a=1.7336058787117143
+438	bhatt	certified	-7.6550165461983459	mu=-0.0038000682197418395	sigma=1.057897350270679	a=1.7336058787117143
+439	bhatt	certified	-7.654978652483182	mu=-0.0038000682197418395	sigma=1.057897350270679	a=1.7336058787117143
+440	bhatt	certified	-7.6549786486971474	mu=-0.0038000682197418395	sigma=1.057897350270679	a=1.7336058787117143
+441	bhatt	certified	-16.201509080292563	mu=-0.0038000682197418395	sigma=1.057897350270679	a=1.7336058787117143
+442	bhatt	certified	-1.4399905739352593e+301	mu=-0.0038000682197418395	sigma=1.057897350270679	a=1.7336058787117143
+443	bhatt	certified	-53612268064034944	mu=-0.0038000682197418395	sigma=1.057897350270679	a=1.7336058787117143
+444	bhatt	certified	-446769913662.25323	mu=-0.0038000682197418395	sigma=1.057897350270679	a=1.7336058787117143
+445	bhatt	certified	-6.7976964588398694	mu=-0.0038000682197418395	sigma=1.057897350270679	a=1.7336058787117143
+610	burr	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.
+611	burr	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlpareto` to fit this model.
+612	burr	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.
+613	burr	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlpareto` to fit this model.
+614	burr	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.
+615	burr	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlpareto` to fit this model.
+616	burr	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlpareto` to fit this model.
+617	burr	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlpareto` to fit this model.
+618	burr	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlpareto` to fit this model.
+619	burr	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlpareto` to fit this model.
+620	burr	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlpareto` to fit this model.
+621	burr	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlpareto` to fit this model.
+622	burr	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlpareto` to fit this model.
+623	burr	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlpareto` to fit this model.
+624	burr	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlpareto` to fit this model.
+625	burr	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.
+626	burr	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.
+627	burr	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlpareto` to fit this model.
+628	burr	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlpareto` to fit this model.
+629	burr	certified	-19.980648654714287	shape1=1.334637717604056	shape2=1.70834977057855	scale=1.8386074492885489
+630	burr	certified	-2.936297075227305	shape1=1.334637717604056	shape2=1.522304311754729	scale=1.4093353560347721
+631	burr	certified	-5.7680677936155798	shape1=1.334637717604056	shape2=1.5883065429714458	scale=2.418009816862571
+632	burr	certified	-7.5807579333424044	shape1=1.334637717604056	shape2=1.4512884685627401	scale=1.3677341754949794
+633	burr	certified	-10.401773803191269	shape1=1.334637717604056	shape2=2.7965500861448742	scale=2.8320524989606954
+634	burr	certified	32.443025592358403	shape1=1.334637717604056	shape2=8751.6314658735882	scale=2.0429676303007533
+635	burr	certified	78.494546242506757	shape1=1.334637717604056	shape2=87511530.603105783	scale=2.0428455088081332
+636	burr	certified	124.54635866844983	shape1=1.334637717604056	shape2=875134658462.23279	scale=2.0428454965939449
+637	burr	certified	32.443025592358403	shape1=1.334637717604056	shape2=8751.6314658735882	scale=2.0429676303007533
+638	burr	certified	78.494546242506757	shape1=1.334637717604056	shape2=87511530.603105783	scale=2.0428455088081332
+639	burr	certified	124.54635866844983	shape1=1.334637717604056	shape2=875134658462.23279	scale=2.0428454965939449
+640	burr	certified	57.622682337880619	shape1=1.334637717604056	shape2=2.0240977904499711	scale=3.8111196329500007e-06
+641	burr	certified	126.70023512770199	shape1=1.334637717604056	shape2=2.0240977904499697	scale=3.8111196329499959e-12
+642	burr	certified	184.2648624525531	shape1=1.334637717604056	shape2=2.0240977904499671	scale=3.811119632950002e-17
+643	burr	certified	2291.130222542105	shape1=1.334637717604056	shape2=2.0240977904499529	scale=3.8111196329500567e-200
+644	burr	certified	4124.6725187345683	shape1=1.334637717604056	shape2=1.7083497705785753	scale=1.8386074492885495e-150
+645	burr	certified	-4164.6338160439973	shape1=1.334637717604056	shape2=1.7083497705785329	scale=1.838607449288506e+150
+646	burr	certified	-31.816335137915736	shape1=1.334637717604056	shape2=0.27869628018381654	scale=32.325491160876688
+647	burr	certified	56.462182241079113	shape1=1.334637717604056	shape2=1063206.9426580376	scale=2.0428463374189212
+648	burr	certified	-20.051386416218222	shape1=1.4247462820482184	shape2=1.8604176234909942	scale=1.9362102179125757
+649	burr	certified	-2.9748186618993113	shape1=0.73586425456696991	shape2=1.8604176234909942	scale=0.75502321381397108
+650	burr	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.
+651	burr	certified	-7.5621988497246093	shape1=0.6528244085499868	shape2=1.8604176234909942	scale=0.65210539079410035
+652	burr	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.
+653	burr	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.
+654	burr	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.
+655	burr	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.
+656	burr	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.
+657	burr	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.
+658	burr	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.
+659	burr	certified	57.646151866019906	shape1=2.1593730304136969	shape2=1.8604176234909942	scale=5.5167419649518865e-06
+660	burr	certified	126.72370465584129	shape1=2.1593730304136947	shape2=1.8604176234909942	scale=5.5167419649518798e-12
+661	burr	certified	184.28833198069245	shape1=2.1593730304136791	shape2=1.8604176234909942	scale=5.5167419649518684e-17
+662	burr	certified	2291.1536920702451	shape1=2.1593730304137844	shape2=1.8604176234909942	scale=5.5167419649520662e-200
+663	burr	certified	4124.6017809730656	shape1=1.4247462820483334	shape2=1.8604176234909942	scale=1.9362102179126672e-150
+664	burr	certified	-4164.7045538055017	shape1=1.4247462820482193	shape2=1.8604176234909942	scale=1.9362102179126214e+150
+665	burr	certified	-28.895853031828409	shape1=0.12223250605879549	shape2=1.8604176234909942	scale=0.31352128695771631
+666	burr	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.
+667	burr	certified	-20.053229058703749	shape1=1.334637717604056	shape2=1.8604176234909942	scale=1.8308138451706764
+668	burr	certified	-3.0110912054988335	shape1=1.334637717604056	shape2=1.8604176234909942	scale=1.4096619512039221
+669	burr	certified	-5.8244402858186408	shape1=1.334637717604056	shape2=1.8604176234909942	scale=2.4579193939828969
+670	burr	certified	-7.8682521838241684	shape1=1.334637717604056	shape2=1.8604176234909942	scale=1.3292317460845822
+671	burr	certified	-10.90070359835275	shape1=1.334637717604056	shape2=1.8604176234909942	scale=2.8390819792574815
+672	burr	certified	-6.9954237640718855	shape1=1.334637717604056	shape2=1.8604176234909942	scale=2.3857709552392792
+673	burr	certified	-6.9953237026618069	shape1=1.334637717604056	shape2=1.8604176234909942	scale=2.3857232714383265
+674	burr	certified	-6.9953236926628053	shape1=1.334637717604056	shape2=1.8604176234909942	scale=2.3857232666673576
+675	burr	certified	-6.9954237640718855	shape1=1.334637717604056	shape2=1.8604176234909942	scale=2.3857709552392792
+676	burr	certified	-6.9953237026618069	shape1=1.334637717604056	shape2=1.8604176234909942	scale=2.3857232714383265
+677	burr	certified	-6.9953236926628053	shape1=1.334637717604056	shape2=1.8604176234909942	scale=2.3857232666673576
+678	burr	certified	57.595891036187957	shape1=1.334637717604056	shape2=1.8604176234909942	scale=3.8410163806962635e-06
+679	burr	certified	126.67344382600933	shape1=1.334637717604056	shape2=1.8604176234909942	scale=3.841016380696259e-12
+680	burr	certified	184.23807115086046	shape1=1.334637717604056	shape2=1.8604176234909942	scale=3.8410163806962512e-17
+681	burr	certified	2291.1034312404122	shape1=1.334637717604056	shape2=1.8604176234909942	scale=3.8410163806963068e-200
+682	burr	certified	4124.5999383305789	shape1=1.334637717604056	shape2=1.8604176234909942	scale=1.830813845170661e-150
+683	burr	certified	-4164.7063964479858	shape1=1.334637717604056	shape2=1.8604176234909942	scale=1.8308138451707217e+150
+684	burr	certified	-54.355513772630218	shape1=1.334637717604056	shape2=1.8604176234909942	scale=3.1332503978943764
+685	burr	certified	-6.9953236926666991	shape1=1.334637717604056	shape2=1.8604176234909942	scale=2.3857232666651309
+686	burr	certified	-20.204069953230622	shape1=0.86779401377674881	shape2=1.9174027677495868	scale=1.1969913095113565
+687	burr	certified	-2.9472882847727409	shape1=1.1940112209125502	shape2=1.5596303971123013	scale=1.1969913095113565
+688	burr	certified	-6.005912771675419	shape1=0.78283329105738875	shape2=1.6484777043524728	scale=1.1969913095113565
+689	burr	certified	-7.5836994596297114	shape1=1.1872806070972679	shape2=1.5017487826289375	scale=1.1969913095113565
+690	burr	certified	-12.219038756212761	shape1=0.54954999263039161	shape2=2.3050833896315033	scale=1.1969913095113565
+691	burr	stop:limit	nan	message=The fixed-scale burr MLE does not exist when all observations >= scale. Use `mlpareto` to fit this model with endpoint scale.
+692	burr	stop:limit	nan	message=The fixed-scale burr MLE does not exist when all observations >= scale. Use `mlpareto` to fit this model with endpoint scale.
+693	burr	stop:limit	nan	message=The fixed-scale burr MLE does not exist when all observations >= scale. Use `mlpareto` to fit this model with endpoint scale.
+694	burr	stop:limit	nan	message=The fixed-scale burr MLE does not exist when all observations >= scale. Use `mlpareto` to fit this model with endpoint scale.
+695	burr	stop:limit	nan	message=The fixed-scale burr MLE does not exist when all observations >= scale. Use `mlpareto` to fit this model with endpoint scale.
+696	burr	stop:limit	nan	message=The fixed-scale burr MLE does not exist when all observations >= scale. Use `mlpareto` to fit this model with endpoint scale.
+697	burr	uncertified	57.679451945699498	shape1=110264425.67422915	shape2=1.481182478592473	scale=1.1969913095113565
+698	burr	uncertified	126.75700473603906	shape1=85021780740409680	shape2=1.4811824705755225	scale=1.1969913095113565
+699	burr	uncertified	184.32163206089024	shape1=2.1649234751538774e+24	shape2=1.4811824705755283	scale=1.1969913095113565
+700	burr	stop:numerical	nan	message=Burr global certificate numerical failure (domain, bracket, nonfinite arithmetic or linear solve); no verified MLE.
+701	burr	stop:tie	nan	message=Burr global certificate unresolved: finite/face tie or sign-uncertain seam; no verified MLE.
+702	burr	stop:limit	nan	message=The fixed-scale burr MLE does not exist when all observations >= scale. Use `mlpareto` to fit this model with endpoint scale.
+703	burr	certified	-30.065155956213182	shape1=0.25769082100638396	shape2=1.1023990239031121	scale=1.1969913095113565
+704	burr	stop:limit	nan	message=The fixed-scale burr MLE does not exist when all observations >= scale. Use `mlpareto` to fit this model with endpoint scale.
+705	burr	certified	-21.161054650693043	shape1=1.334637717604056	shape2=1.6035928136505302	scale=1.1969913095113565
+706	burr	certified	-2.9587470243579634	shape1=1.334637717604056	shape2=1.5160539898716143	scale=1.1969913095113565
+707	burr	certified	-6.3647871698801026	shape1=1.334637717604056	shape2=1.3042474578710666	scale=1.1969913095113565
+708	burr	certified	-7.615280129868383	shape1=1.334637717604056	shape2=1.4563507546876275	scale=1.1969913095113565
+709	burr	certified	-13.932390375301981	shape1=1.334637717604056	shape2=1.4063603823661373	scale=1.1969913095113565
+710	burr	certified	-9.1629607164422069	shape1=1.334637717604056	shape2=2.3122632960901583	scale=1.1969913095113565
+711	burr	certified	-9.1626737234681279	shape1=1.334637717604056	shape2=2.3123497985524901	scale=1.1969913095113565
+712	burr	certified	-9.1626736947630629	shape1=1.334637717604056	shape2=2.3123498072034829	scale=1.1969913095113565
+713	burr	certified	-9.1629607164422069	shape1=1.334637717604056	shape2=2.3122632960901583	scale=1.1969913095113565
+714	burr	certified	-9.1626737234681279	shape1=1.334637717604056	shape2=2.3123497985524901	scale=1.1969913095113565
+715	burr	certified	-9.1626736947630629	shape1=1.334637717604056	shape2=2.3123498072034829	scale=1.1969913095113565
+716	burr	certified	44.342853807439312	shape1=1.334637717604056	shape2=0.12605850109391695	scale=1.1969913095113565
+717	burr	certified	109.78098466815288	shape1=1.334637717604056	shape2=0.060843175782018123	scale=1.1969913095113565
+718	burr	certified	165.5534238214214	shape1=1.334637717604056	shape2=0.042511496488745387	scale=1.1969913095113565
+719	burr	certified	2259.9827777235096	shape1=1.334637717604056	shape2=0.0035342121961858429	scale=1.1969913095113565
+720	burr	certified	4055.296716532715	shape1=1.334637717604056	shape2=0.0047047303775783495	scale=1.1969913095113565
+721	burr	certified	-4239.7091582275534	shape1=1.334637717604056	shape2=0.0035770836509339378	scale=1.1969913095113565
+722	burr	certified	-32.727707989942388	shape1=1.334637717604056	shape2=0.26295385871207577	scale=1.1969913095113565
+723	burr	certified	-9.1626736947567249	shape1=1.334637717604056	shape2=2.3123498072045754	scale=1.1969913095113565
+724	burr	certified	-20.210540756849269	shape1=0.88344313768927485	shape2=1.8604176234909942	scale=1.1969913095113565
+725	burr	certified	-2.9976471270979435	shape1=1.0965648707803737	shape2=1.8604176234909942	scale=1.1969913095113565
+726	burr	certified	-6.0333348999645562	shape1=0.71988390120373102	shape2=1.8604176234909942	scale=1.1969913095113565
+727	burr	certified	-7.7637095851634834	shape1=1.0690657744211354	shape2=1.8604176234909942	scale=1.1969913095113565
+728	burr	certified	-12.350263897554768	shape1=0.64767650959831335	shape2=1.8604176234909942	scale=1.1969913095113565
+729	burr	certified	-8.3887683750375857	shape1=0.76380352749913272	shape2=1.8604176234909942	scale=1.1969913095113565
+730	burr	certified	-8.3886149238516712	shape1=0.76381936586097776	shape2=1.8604176234909942	scale=1.1969913095113565
+731	burr	certified	-8.388614908503957	shape1=0.76381936744543832	shape2=1.8604176234909942	scale=1.1969913095113565
+732	burr	certified	-8.3887683750375857	shape1=0.76380352749913272	shape2=1.8604176234909942	scale=1.1969913095113565
+733	burr	certified	-8.3886149238516712	shape1=0.76381936586097776	shape2=1.8604176234909942	scale=1.1969913095113565
+734	burr	certified	-8.388614908503957	shape1=0.76381936744543832	shape2=1.8604176234909942	scale=1.1969913095113565
+735	burr	certified	57.440728627552502	shape1=11048728331.857973	shape2=1.8604176234909942	scale=1.1969913095113565
+736	burr	certified	126.51828141728757	shape1=1.6062681059388914e+21	shape2=1.8604176234909942	scale=1.1969913095113565
+737	burr	certified	184.08290874213867	shape1=3.2203728275274613e+30	shape2=1.8604176234909942	scale=1.1969913095113565
+738	burr	stop:unresolved	nan	message=Constrained likelihood search failed to converge.
+739	burr	certified	4124.0438689069651	shape1=3.1827137462628934e+278	shape2=1.8604176234909942	scale=1.1969913095113565
+740	burr	certified	-4230.7744888204043	shape1=0.0015555776724292731	shape2=1.8604176234909942	scale=1.1969913095113565
+741	burr	certified	-30.403344530754296	shape1=0.15979110803460947	shape2=1.8604176234909942	scale=1.1969913095113565
+742	burr	certified	-8.3886149085007649	shape1=0.76381936744599099	shape2=1.8604176234909942	scale=1.1969913095113565
+743	burr	certified	-21.388155939263559	shape1=1.334637717604056	shape2=1.8604176234909942	scale=1.1969913095113565
+744	burr	certified	-3.0389079695658725	shape1=1.334637717604056	shape2=1.8604176234909942	scale=1.1969913095113565
+745	burr	certified	-6.743246602780971	shape1=1.334637717604056	shape2=1.8604176234909942	scale=1.1969913095113565
+746	burr	certified	-7.8964108225453966	shape1=1.334637717604056	shape2=1.8604176234909942	scale=1.1969913095113565
+747	burr	certified	-14.376049963449439	shape1=1.334637717604056	shape2=1.8604176234909942	scale=1.1969913095113565
+748	burr	certified	-9.3350323482163819	shape1=1.334637717604056	shape2=1.8604176234909942	scale=1.1969913095113565
+749	burr	certified	-9.3348014130554695	shape1=1.334637717604056	shape2=1.8604176234909942	scale=1.1969913095113565
+750	burr	certified	-9.3348013899565743	shape1=1.334637717604056	shape2=1.8604176234909942	scale=1.1969913095113565
+751	burr	certified	-9.3350323482163819	shape1=1.334637717604056	shape2=1.8604176234909942	scale=1.1969913095113565
+752	burr	certified	-9.3348014130554695	shape1=1.334637717604056	shape2=1.8604176234909942	scale=1.1969913095113565
+753	burr	certified	-9.3348013899565743	shape1=1.334637717604056	shape2=1.8604176234909942	scale=1.1969913095113565
+754	burr	certified	-51.743877836826719	shape1=1.334637717604056	shape2=1.8604176234909942	scale=1.1969913095113565
+755	burr	certified	-111.17942164376197	shape1=1.334637717604056	shape2=1.8604176234909942	scale=1.1969913095113565
+756	burr	certified	-160.70904148375519	shape1=1.334637717604056	shape2=1.8604176234909942	scale=1.1969913095113565
+757	burr	certified	-1973.4931276275051	shape1=1.334637717604056	shape2=1.8604176234909942	scale=1.1969913095113565
+758	burr	certified	-3555.8088932782443	shape1=1.334637717604056	shape2=1.8604176234909942	scale=1.1969913095113565
+759	burr	certified	-14433.349966014055	shape1=1.334637717604056	shape2=1.8604176234909942	scale=1.1969913095113565
+760	burr	certified	-56.552557687464393	shape1=1.334637717604056	shape2=1.8604176234909942	scale=1.1969913095113565
+761	burr	certified	-9.3348013899506785	shape1=1.334637717604056	shape2=1.8604176234909942	scale=1.1969913095113565
+2356	ged	stop:limit	nan	message=GED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+2357	ged	stop:limit	nan	message=GED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+2358	ged	stop:limit	nan	message=GED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+2359	ged	stop:limit	nan	message=GED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+2360	ged	certified	-5.6410189731383218	mean=0.73216669611217611	sd=0.66604119138786511	nu=1
+2361	ged	stop:limit	nan	message=GED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+2362	ged	stop:limit	nan	message=GED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+2363	ged	stop:limit	nan	message=GED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+2364	ged	stop:limit	nan	message=GED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+2365	ged	stop:limit	nan	message=GED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+2366	ged	stop:limit	nan	message=GED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+2367	ged	stop:limit	nan	message=GED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+2368	ged	stop:limit	nan	message=GED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+2369	ged	stop:limit	nan	message=GED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+2370	ged	stop:limit	nan	message=GED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+2371	ged	stop:limit	nan	message=GED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+2372	ged	certified	-16.945758706024662	mean=-0.017698887677594307	sd=0.99472226355732485	nu=1.7774977415101603
+2373	ged	stop:limit	nan	message=GED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+2374	ged	stop:limit	nan	message=GED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+2375	ged	stop:limit	nan	message=GED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+2376	ged	stop:limit	nan	message=GED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+2377	ged	stop:limit	nan	message=GED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+2378	ged	stop:limit	nan	message=GED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+2379	ged	stop:limit	nan	message=GED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+2380	ged	stop:limit	nan	message=GED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+2381	ged	stop:limit	nan	message=GED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+2382	ged	stop:limit	nan	message=GED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+2383	ged	stop:numerical	nan	message=GED normalization loses coefficient or likelihood accuracy; no finite fit is certified.
+2384	ged	certified	-4161.5845528488544	mean=-0.017698887677594307	sd=9.9287277369917624e+149	nu=1.8299548784561921
+2385	ged	stop:limit	nan	message=GED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+2386	ged	certified	-69.496136458499876	mean=-0.017698887677594307	sd=282844.82407584292	nu=1
+2387	ged	stop:limit	nan	message=GED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+2388	ged	uncertified	-15.121495715294474	mean=0.57512328045579253	sd=1.0178559902092952	nu=267.11661809568466
+2389	ged	certified	-2.3779633127826574	mean=1.504385495419206	sd=1.0178559902092952	nu=3.2844817690784112
+2390	ged	uncertified	-3.7741653666095276	mean=0.8637175657864562	sd=1.0178559902092952	nu=27.497341303893556
+2391	ged	uncertified	-6.2871556067857641	mean=0.86352652248289674	sd=1.0178559902092952	nu=23.000299729007228
+2392	ged	certified	-6.1117742050154931	mean=0.73216669611217611	sd=1.0178559902092952	nu=1
+2393	ged	certified	-1.8213809293308518	mean=-0.021339634443158128	sd=1.0178559902092952	nu=1
+2394	ged	certified	-1.821360176839341	mean=-0.021339634443158128	sd=1.0178559902092952	nu=1
+2395	ged	certified	-1.821360174764092	mean=-0.021339634443158128	sd=1.0178559902092952	nu=1
+2396	ged	certified	-1.8223327578239472	mean=1	sd=1.0178559902092952	nu=1
+2397	ged	certified	-1.8213602720221904	mean=1	sd=1.0178559902092952	nu=1
+2398	ged	certified	-1.8213601747736103	mean=1	sd=1.0178559902092952	nu=1
+2399	ged	stop:tie	nan	message=GED maxima are not unique or their comparison is unresolved, including a possible Laplace median interval.
+2400	ged	stop:tie	nan	message=GED maxima are not unique or their comparison is unresolved, including a possible Laplace median interval.
+2401	ged	stop:numerical	nan	message=GED held-sd uniform comparison is unresolved by the shape certificate.
+2402	ged	certified	-1389412.2648690296	mean=1.5779966110538917	sd=1.0178559902092952	nu=1
+2403	ged	certified	-1.8213603526601727	mean=-0.021339634443158128	sd=1.0178559902092952	nu=1
+2404	ged	certified	-16.951259267560268	mean=-0.017698887677594307	sd=1.0178559902092952	nu=1.765709863830125
+2405	ged	certified	-4.6819473422080371	mean=-0.017698887677594307	sd=1.0178559902092952	nu=1.8796682662796229
+2406	ged	certified	-5.748689637135918	mean=-0.017698887677594307	sd=1.0178559902092952	nu=1.8097631898708642
+2407	ged	certified	-8.8870363249839652	mean=-0.017698887677594307	sd=1.0178559902092952	nu=1.9581536840996705
+2408	ged	certified	-9.3742522889533699	mean=-0.017698887677594307	sd=1.0178559902092952	nu=2.1470529850048479
+2409	ged	certified	-1.8466495571840773	mean=-0.017698887677594307	sd=1.0178559902092952	nu=1
+2410	ged	certified	-1.8466525218257217	mean=-0.017698887677594307	sd=1.0178559902092952	nu=1
+2411	ged	certified	-1.8466525221221859	mean=-0.017698887677594307	sd=1.0178559902092952	nu=1
+2412	ged	uncertified	-6.1907921437201221	mean=-0.017698887677594307	sd=1.0178559902092952	nu=7.1582343992824846
+2413	ged	uncertified	-6.1907807808274615	mean=-0.017698887677594307	sd=1.0178559902092952	nu=7.1577714256054241
+2414	ged	uncertified	-6.1907807796961887	mean=-0.017698887677594307	sd=1.0178559902092952	nu=7.1577715034952236
+2415	ged	certified	-4.6663553623564979	mean=-0.017698887677594307	sd=1.0178559902092952	nu=1
+2416	ged	certified	-1.313461660839341e+151	mean=-0.017698887677594307	sd=1.0178559902092952	nu=1
+2417	ged	certified	-1667285252.1373749	mean=-0.017698887677594307	sd=1.0178559902092952	nu=1
+2418	ged	certified	-1389416.5656683717	mean=-0.017698887677594307	sd=1.0178559902092952	nu=1
+2419	ged	certified	-1.8466525221222156	mean=-0.017698887677594307	sd=1.0178559902092952	nu=1
+2420	ged	certified	-16.792109087967088	mean=0.2662633379535897	sd=0.99367403536224785	nu=3.0166453083278539
+2421	ged	certified	-2.0384491725753788	mean=1.5043854954192066	sd=0.67945525595189005	nu=3.0166453083278539
+2422	ged	certified	-4.4671861648287452	mean=0.86092214272522893	sd=1.0869477866311565	nu=3.0166453083278539
+2423	ged	certified	-7.0275927181555282	mean=0.7840535490166276	sd=0.99983007573437799	nu=3.0166453083278539
+2424	ged	certified	-7.5577132479227807	mean=0.85375549952585739	sd=0.86409755326377813	nu=3.0166453083278539
+2425	ged	certified	55.680194497717451	mean=-0.021338887096757728	sd=3.5743494089886695e-06	nu=3.0166453083278539
+2426	ged	stop:numerical	nan	message=Conditional GED search did not converge; increase iterlim.
+2427	ged	stop:numerical	nan	message=Conditional GED search did not converge; increase iterlim.
+2428	ged	certified	36.444248680821538	mean=1.0000350215184048	sd=0.00016749815553354728	nu=3.0166453083278539
+2429	ged	stop:numerical	nan	message=Conditional GED search did not converge; increase iterlim.
+2430	ged	stop:numerical	nan	message=Conditional GED search did not converge; increase iterlim.
+2431	ged	certified	4127.8610583013151	mean=2.6626333795359119e-151	sd=9.9367403536224784e-151	nu=3.0166453083278539
+2432	ged	certified	-4161.4452764772495	mean=2.6626333795359111e+149	sd=9.9367403536224768e+149	nu=3.0166453083278539
+2433	ged	stop:numerical	nan	message=Conditional GED search did not converge; increase iterlim.
+2434	ged	certified	-71.436857504056292	mean=334607.3564283473	sd=393046.42689847248	nu=3.0166453083278539
+2435	ged	uncertified	79.784819759592054	mean=-0.021339634443158124	sd=2.8806855663702431e-08	nu=3.0166453083278539
+2436	ged	certified	-17.309245319243615	mean=-0.017698887677594307	sd=1.0374322062367474	nu=3.0166453083278539
+2437	ged	certified	-3.779073813758127	mean=-0.017698887677594307	sd=1.6223057252842106	nu=3.0166453083278539
+2438	ged	certified	-5.2769797537429248	mean=-0.017698887677594307	sd=1.4237649966269399	nu=3.0166453083278539
+2439	ged	certified	-8.4092132271349982	mean=-0.017698887677594307	sd=1.318051043189121	nu=3.0166453083278539
+2440	ged	certified	-9.3617179368148769	mean=-0.017698887677594307	sd=1.1671884707361109	nu=3.0166453083278539
+2441	ged	certified	21.689853672365693	mean=-0.017698887677594307	sd=0.0032030262376308576	nu=3.0166453083278539
+2442	ged	certified	21.689272690569393	mean=-0.017698887677594307	sd=0.0032033984392421016	nu=3.0166453083278539
+2443	ged	certified	21.689272631961963	mean=-0.017698887677594307	sd=0.003203398476790693	nu=3.0166453083278539
+2444	ged	certified	-6.4763785182474507	mean=-0.017698887677594307	sd=0.89546443036769219	nu=3.0166453083278539
+2445	ged	certified	-6.4762801240636483	mean=-0.017698887677594307	sd=0.89544680884272809	nu=3.0166453083278539
+2446	ged	certified	-6.4762801142385413	mean=-0.017698887677594307	sd=0.89544680708315605	nu=3.0166453083278539
+2447	ged	certified	33.078498574101033	mean=-0.017698887677594307	sd=0.015572791374458965	nu=3.0166453083278539
+2448	ged	certified	-4161.9039346076534	mean=-0.017698887677594307	sd=1.032388915868727e+150	nu=3.0166453083278539
+2449	ged	certified	-236.38071218072821	mean=-0.017698887677594307	sd=87987401.673437268	nu=3.0166453083278539
+2450	ged	certified	-72.798528407050242	mean=-0.017698887677594307	sd=516080.06599034544	nu=3.0166453083278539
+2451	ged	certified	21.68927263160969	mean=-0.017698887677594307	sd=0.0032033984770163874	nu=3.0166453083278539
+2452	ged	certified	-16.802324832860904	mean=0.2662633379535897	sd=1.0178559902092952	nu=3.0166453083278539
+2453	ged	certified	-2.3796736511954117	mean=1.5043854954192066	sd=1.0178559902092952	nu=3.0166453083278539
+2454	ged	certified	-4.4880587188039858	mean=0.86092214272522893	sd=1.0178559902092952	nu=3.0166453083278539
+2455	ged	certified	-7.0299579109760728	mean=0.7840535490166276	sd=1.0178559902092952	nu=3.0166453083278539
+2456	ged	certified	-7.7649484712643844	mean=0.85375549952585739	sd=1.0178559902092952	nu=3.0166453083278539
+2457	ged	certified	-5.4594643364296953	mean=-0.021338887096757728	sd=1.0178559902092952	nu=3.0166453083278539
+2458	ged	stop:numerical	nan	message=Conditional GED search did not converge; increase iterlim.
+2459	ged	stop:numerical	nan	message=Conditional GED search did not converge; increase iterlim.
+2460	ged	certified	-5.4594643364360849	mean=1.0000350215184048	sd=1.0178559902092952	nu=3.0166453083278539
+2461	ged	stop:numerical	nan	message=Conditional GED search did not converge; increase iterlim.
+2462	ged	stop:numerical	nan	message=Conditional GED search did not converge; increase iterlim.
+2463	ged	certified	-13.10271440743127	mean=2.6626333795359119e-151	sd=1.0178559902092952	nu=3.0166453083278539
+2464	ged	stop:numerical	nan	message=GED normalization loses coefficient or likelihood accuracy; no finite fit is certified.
+2465	ged	stop:numerical	nan	message=Conditional GED search did not converge; increase iterlim.
+2466	ged	certified	-1.1822562080721995e+17	mean=334607.3564283473	sd=1.0178559902092952	nu=3.0166453083278539
+2467	ged	uncertified	-5.4594643364296953	mean=-0.021339634443158124	sd=1.0178559902092952	nu=3.0166453083278539
+2468	ged	certified	-17.315941590478534	mean=-0.017698887677594307	sd=1.0178559902092952	nu=3.0166453083278539
+2469	ged	certified	-4.8890806743911028	mean=-0.017698887677594307	sd=1.0178559902092952	nu=3.0166453083278539
+2470	ged	certified	-6.0127051869195318	mean=-0.017698887677594307	sd=1.0178559902092952	nu=3.0166453083278539
+2471	ged	certified	-9.0739940493604934	mean=-0.017698887677594307	sd=1.0178559902092952	nu=3.0166453083278539
+2472	ged	certified	-9.5572992156082233	mean=-0.017698887677594307	sd=1.0178559902092952	nu=3.0166453083278539
+2473	ged	certified	-5.4594643833563481	mean=-0.017698887677594307	sd=1.0178559902092952	nu=3.0166453083278539
+2474	ged	certified	-5.4594643833728007	mean=-0.017698887677594307	sd=1.0178559902092952	nu=3.0166453083278539
+2475	ged	certified	-5.4594643833728016	mean=-0.017698887677594307	sd=1.0178559902092952	nu=3.0166453083278539
+2476	ged	certified	-6.5856387368430873	mean=-0.017698887677594307	sd=1.0178559902092952	nu=3.0166453083278539
+2477	ged	certified	-6.58557188453082	mean=-0.017698887677594307	sd=1.0178559902092952	nu=3.0166453083278539
+2478	ged	certified	-6.5855718778555108	mean=-0.017698887677594307	sd=1.0178559902092952	nu=3.0166453083278539
+2479	ged	certified	-13.102727696080056	mean=-0.017698887677594307	sd=1.0178559902092952	nu=3.0166453083278539
+2480	ged	stop:numerical	nan	message=GED normalization loses coefficient or likelihood accuracy; no finite fit is certified.
+2481	ged	certified	-3.4831233257341848e+24	mean=-0.017698887677594307	sd=1.0178559902092952	nu=3.0166453083278539
+2482	ged	certified	-2.6884378009993386e+17	mean=-0.017698887677594307	sd=1.0178559902092952	nu=3.0166453083278539
+2483	ged	certified	-5.4594643833728016	mean=-0.017698887677594307	sd=1.0178559902092952	nu=3.0166453083278539
+3562	invburr	certified	-14.453072466829616	shape1=0.88671086481077088	shape2=2.3096184590583633	scale=1.1265451584772617
+3563	invburr	stop:limit	nan	message=The invburr likelihood is maximised at a limit. Use `mlpower` to fit this model.
+3564	invburr	stop:limit	nan	message=The invburr likelihood is maximised at a limit. Use `mlpower` to fit this model.
+3565	invburr	stop:limit	nan	message=The invburr likelihood is maximised at a limit. Use `mlpower` to fit this model.
+3566	invburr	certified	-7.5578606541813889	shape1=0.55570385343479167	shape2=4.2950872859785374	scale=1.9848994403707689
+3567	invburr	stop:limit	nan	message=The invburr likelihood is maximised at a limit. Use `mlinvweibull` to fit this model.
+3568	invburr	stop:limit	nan	message=The invburr likelihood is maximised at a limit. Use `mlinvweibull` to fit this model.
+3569	invburr	stop:tie	nan	message=invburr certificate unresolved at a tie or sign-uncertain seam; no verified MLE.
+3570	invburr	stop:limit	nan	message=The invburr likelihood is maximised at a limit. Use `mlinvweibull` to fit this model.
+3571	invburr	stop:limit	nan	message=The invburr likelihood is maximised at a limit. Use `mlinvweibull` to fit this model.
+3572	invburr	stop:tie	nan	message=invburr certificate unresolved at a tie or sign-uncertain seam; no verified MLE.
+3573	invburr	stop:limit	nan	message=The invburr likelihood is maximised at a limit. Use `mlpower` to fit this model.
+3574	invburr	stop:limit	nan	message=The invburr likelihood is maximised at a limit. Use `mlpower` to fit this model.
+3575	invburr	stop:limit	nan	message=The invburr likelihood is maximised at a limit. Use `mlpower` to fit this model.
+3576	invburr	stop:limit	nan	message=The invburr likelihood is maximised at a limit. Use `mlpower` to fit this model.
+3577	invburr	certified	4130.200094922453	shape1=0.88671086481065675	shape2=2.3096184590584548	scale=1.1265451584773922e-150
+3578	invburr	certified	-4159.1062398561116	shape1=0.88671086481085215	shape2=2.3096184590582785	scale=1.1265451584771735e+150
+3579	invburr	stop:limit	nan	message=The invburr likelihood is maximised at a limit. Use `mlinvweibull` to fit this model.
+3580	invburr	stop:limit	nan	message=The invburr likelihood is maximised at a limit. Use `mlpower` to fit this model.
+3581	invburr	certified	-14.453418497777008	shape1=0.855256299891619	shape2=2.3415046710391554	scale=1.1544227857278395
+3582	invburr	certified	-3.0357647808998349	shape1=0.855256299891619	shape2=3.9381364210621554	scale=2.6477282264038839
+3583	invburr	certified	-4.9433262467226555	shape1=0.855256299891619	shape2=2.0955647635674395	scale=1.7082345138662272
+3584	invburr	certified	-7.6434084882452122	shape1=0.855256299891619	shape2=2.1798738673967555	scale=1.5622646601616854
+3585	invburr	certified	-7.6686563309695943	shape1=0.855256299891619	shape2=3.503340425282798	scale=1.719531139143349
+3586	invburr	certified	35.444060268685391	shape1=0.855256299891619	shape2=10197.078287449605	scale=1.1211298640520171
+3587	invburr	certified	81.495603718728347	shape1=0.855256299891619	shape2=101966008.22632758	scale=1.1210922485460666
+3588	invburr	certified	127.54725663872983	shape1=0.855256299891619	shape2=1019650101014.3539	scale=1.1210922447835645
+3589	invburr	certified	35.444060268685391	shape1=0.855256299891619	shape2=10197.078287449605	scale=1.1211298640520171
+3590	invburr	certified	81.495603718728347	shape1=0.855256299891619	shape2=101966008.22632758	scale=1.1210922485460666
+3591	invburr	certified	127.54725663872983	shape1=0.855256299891619	shape2=1019650101014.3539	scale=1.1210922447835645
+3592	invburr	certified	57.586172479551685	shape1=0.855256299891619	shape2=2.3296754748428161	scale=3.4370129034242896e-06
+3593	invburr	certified	126.66372526937306	shape1=0.855256299891619	shape2=2.3296754748428139	scale=3.4370129034242912e-12
+3594	invburr	certified	184.22835259422419	shape1=0.855256299891619	shape2=2.3296754748428103	scale=3.4370129034242965e-17
+3595	invburr	certified	2291.0937126837762	shape1=0.855256299891619	shape2=2.3296754748427917	scale=3.4370129034242728e-200
+3596	invburr	certified	4130.1997488915058	shape1=0.855256299891619	shape2=2.3415046710391394	scale=1.1544227857278363e-150
+3597	invburr	certified	-4159.1065858870588	shape1=0.855256299891619	shape2=2.3415046710391394	scale=1.1544227857278362e+150
+3598	invburr	certified	-30.17500770314745	shape1=0.855256299891619	shape2=0.36205559494245415	scale=8.6007835435806523
+3599	invburr	certified	59.419472619322399	shape1=0.855256299891619	shape2=1220176.4537299508	scale=1.1210924841498029
+3600	invburr	certified	-14.453138213303673	shape1=0.89956345766406332	shape2=2.2945593981369536	scale=1.1155593168301383
+3601	invburr	stop:limit	nan	message=The invburr likelihood is maximised at a limit. Use `mlinvweibull` to fit this model.
+3602	invburr	certified	-4.9290089466839504	shape1=0.65719898627469786	shape2=2.2945593981369536	scale=2.0854496056703367
+3603	invburr	certified	-7.6408080931976796	shape1=0.74277762417644877	shape2=2.2945593981369536	scale=1.7404219774420491
+3604	invburr	certified	-8.0786172379093379	shape1=1.363813847153454	shape2=2.2945593981369536	scale=1.3339967551654863
+3605	invburr	stop:limit	nan	message=The invburr likelihood is maximised at a limit. Use `mlinvweibull` to fit this model.
+3606	invburr	stop:limit	nan	message=The invburr likelihood is maximised at a limit. Use `mlinvweibull` to fit this model.
+3607	invburr	stop:limit	nan	message=The invburr likelihood is maximised at a limit. Use `mlinvweibull` to fit this model.
+3608	invburr	stop:limit	nan	message=The invburr likelihood is maximised at a limit. Use `mlinvweibull` to fit this model.
+3609	invburr	stop:limit	nan	message=The invburr likelihood is maximised at a limit. Use `mlinvweibull` to fit this model.
+3610	invburr	stop:limit	nan	message=The invburr likelihood is maximised at a limit. Use `mlinvweibull` to fit this model.
+3611	invburr	certified	57.591571436567875	shape1=0.95216726080756531	shape2=2.2945593981369536	scale=3.1881139121184488e-06
+3612	invburr	certified	126.66912422638921	shape1=0.9521672608075642	shape2=2.2945593981369536	scale=3.1881139121184452e-12
+3613	invburr	certified	184.23375155124037	shape1=0.95216726080756364	shape2=2.2945593981369536	scale=3.1881139121184384e-17
+3614	invburr	certified	2291.0991116407927	shape1=0.95216726080753067	shape2=2.2945593981369536	scale=3.188113912118417e-200
+3615	invburr	certified	4130.2000291759814	shape1=0.89956345766402579	shape2=2.2945593981369536	scale=1.1155593168301802e-150
+3616	invburr	certified	-4159.106305602586	shape1=0.89956345766407431	shape2=2.2945593981369536	scale=1.1155593168301538e+150
+3617	invburr	certified	-32.039444529924396	shape1=0.037247185115624928	shape2=2.2945593981369536	scale=2173821.3972986131
+3618	invburr	stop:limit	nan	message=The invburr likelihood is maximised at a limit. Use `mlinvweibull` to fit this model.
+3619	invburr	certified	-14.456986384392929	shape1=0.855256299891619	shape2=2.2945593981369536	scale=1.1551795928397539
+3620	invburr	certified	-3.414139432458045	shape1=0.855256299891619	shape2=2.2945593981369536	scale=2.6813923309809886
+3621	invburr	certified	-4.9623936298060514	shape1=0.855256299891619	shape2=2.2945593981369536	scale=1.7140967270425007
+3622	invburr	certified	-7.6537225618610574	shape1=0.855256299891619	shape2=2.2945593981369536	scale=1.5650522079207148
+3623	invburr	certified	-8.2490176918735472	shape1=0.855256299891619	shape2=2.2945593981369536	scale=1.7344235955869078
+3624	invburr	certified	-3.6022515454313071	shape1=0.855256299891619	shape2=2.2945593981369536	scale=1.2001717140988462
+3625	invburr	certified	-3.6021514508368906	shape1=0.855256299891619	shape2=2.2945593981369536	scale=1.2001477281272344
+3626	invburr	certified	-3.6021514408378899	shape1=0.855256299891619	shape2=2.2945593981369536	scale=1.2001477257271791
+3627	invburr	certified	-3.6022515454313071	shape1=0.855256299891619	shape2=2.2945593981369536	scale=1.2001717140988462
+3628	invburr	certified	-3.6021514508368906	shape1=0.855256299891619	shape2=2.2945593981369536	scale=1.2001477281272344
+3629	invburr	certified	-3.6021514408378899	shape1=0.855256299891619	shape2=2.2945593981369536	scale=1.2001477257271791
+3630	invburr	certified	57.585321303430149	shape1=0.855256299891619	shape2=2.2945593981369536	scale=3.4389014651209825e-06
+3631	invburr	certified	126.66287409325153	shape1=0.855256299891619	shape2=2.2945593981369536	scale=3.4389014651209778e-12
+3632	invburr	certified	184.22750141810266	shape1=0.855256299891619	shape2=2.2945593981369536	scale=3.4389014651209953e-17
+3633	invburr	certified	2291.0928615076546	shape1=0.855256299891619	shape2=2.2945593981369536	scale=3.4389014651210207e-200
+3634	invburr	certified	4130.1961810048897	shape1=0.855256299891619	shape2=2.2945593981369536	scale=1.1551795928397503e-150
+3635	invburr	certified	-4159.1101537736749	shape1=0.855256299891619	shape2=2.2945593981369536	scale=1.1551795928397503e+150
+3636	invburr	certified	-49.920708204561976	shape1=0.855256299891619	shape2=2.2945593981369536	scale=1.9778140563711817
+3637	invburr	certified	-3.6021514408440258	shape1=0.855256299891619	shape2=2.2945593981369536	scale=1.2001477257259536
+3638	invburr	certified	-14.453271525532482	shape1=0.86342314274517351	shape2=2.3329356035322748	scale=1.1483262751193506
+3639	invburr	certified	-2.9008429502374837	shape1=6.2290082470594612	shape2=3.0585225995001406	scale=1.1483262751193506
+3640	invburr	certified	-4.9596914574028981	shape1=1.3462035118632836	shape2=1.7734008129755381	scale=1.1483262751193506
+3641	invburr	certified	-7.633207503410568	shape1=1.2575779921548758	shape2=1.9084982695889701	scale=1.1483262751193506
+3642	invburr	certified	-8.0911000541530314	shape1=1.6524629693683122	shape2=2.4627803753067883	scale=1.1483262751193506
+3643	invburr	stop:limit	nan	message=The fixed-scale invburr MLE does not exist when all observations <= scale. Use `mlpower` to fit this model with endpoint scale.
+3644	invburr	stop:limit	nan	message=The fixed-scale invburr MLE does not exist when all observations <= scale. Use `mlpower` to fit this model with endpoint scale.
+3645	invburr	stop:limit	nan	message=The fixed-scale invburr MLE does not exist when all observations <= scale. Use `mlpower` to fit this model with endpoint scale.
+3646	invburr	stop:limit	nan	message=The fixed-scale invburr MLE does not exist when all observations <= scale. Use `mlpower` to fit this model with endpoint scale.
+3647	invburr	stop:limit	nan	message=The fixed-scale invburr MLE does not exist when all observations <= scale. Use `mlpower` to fit this model with endpoint scale.
+3648	invburr	stop:limit	nan	message=The fixed-scale invburr MLE does not exist when all observations <= scale. Use `mlpower` to fit this model with endpoint scale.
+3649	invburr	stop:limit	nan	message=The fixed-scale invburr MLE does not exist when all observations <= scale. Use `mlpower` to fit this model with endpoint scale.
+3650	invburr	stop:limit	nan	message=The fixed-scale invburr MLE does not exist when all observations <= scale. Use `mlpower` to fit this model with endpoint scale.
+3651	invburr	stop:limit	nan	message=The fixed-scale invburr MLE does not exist when all observations <= scale. Use `mlpower` to fit this model with endpoint scale.
+3652	invburr	stop:limit	nan	message=The fixed-scale invburr MLE does not exist when all observations <= scale. Use `mlpower` to fit this model with endpoint scale.
+3653	invburr	stop:limit	nan	message=The fixed-scale invburr MLE does not exist when all observations <= scale. Use `mlpower` to fit this model with endpoint scale.
+3654	invburr	stop:tie	nan	message=invburr certificate unresolved at a tie or sign-uncertain seam; no verified MLE.
+3655	invburr	certified	-29.567944697809896	shape1=1.7793399370162006	shape2=0.35424754132529551	scale=1.1483262751193506
+3656	invburr	stop:limit	nan	message=The fixed-scale invburr MLE does not exist when all observations <= scale. Use `mlpower` to fit this model with endpoint scale.
+3657	invburr	certified	-14.453683416052247	shape1=0.855256299891619	shape2=2.3418803647413702	scale=1.1483262751193506
+3658	invburr	certified	-4.6902328764478245	shape1=0.855256299891619	shape2=1.8499335890425057	scale=1.1483262751193506
+3659	invburr	certified	-5.2108317190284019	shape1=0.855256299891619	shape2=1.9278365906928627	scale=1.1483262751193506
+3660	invburr	certified	-7.9355139443467397	shape1=0.855256299891619	shape2=2.071992073873814	scale=1.1483262751193506
+3661	invburr	certified	-9.132764653417901	shape1=0.855256299891619	shape2=2.6147998893929216	scale=1.1483262751193506
+3662	invburr	certified	11.127442353107694	shape1=0.855256299891619	shape2=72.29433963370785	scale=1.1483262751193506
+3663	invburr	certified	11.123469398027531	shape1=0.855256299891619	shape2=72.234760695993288	scale=1.1483262751193506
+3664	invburr	certified	11.12346899143788	shape1=0.855256299891619	shape2=72.234754677550256	scale=1.1483262751193506
+3665	invburr	certified	11.127442353107694	shape1=0.855256299891619	shape2=72.29433963370785	scale=1.1483262751193506
+3666	invburr	certified	11.123469398027531	shape1=0.855256299891619	shape2=72.234760695993288	scale=1.1483262751193506
+3667	invburr	certified	11.12346899143788	shape1=0.855256299891619	shape2=72.234754677550256	scale=1.1483262751193506
+3668	invburr	certified	43.759373712472559	shape1=0.855256299891619	shape2=0.13501532505541816	scale=1.1483262751193506
+3669	invburr	certified	109.18828878604354	shape1=0.855256299891619	shape2=0.065049849243296362	scale=1.1483262751193506
+3670	invburr	certified	164.95824661605621	shape1=0.855256299891619	shape2=0.045428577234263773	scale=1.1483262751193506
+3671	invburr	certified	2259.3824877609404	shape1=0.855256299891619	shape2=0.0037728972607780089	scale=1.1483262751193506
+3672	invburr	certified	4057.5764938447023	shape1=0.855256299891619	shape2=0.0050180997666254609	scale=1.1483262751193506
+3673	invburr	certified	-4234.5287689317629	shape1=0.855256299891619	shape2=0.0043650307702573013	scale=1.1483262751193506
+3674	invburr	certified	-30.634136353800962	shape1=0.855256299891619	shape2=0.35626026416475109	scale=1.1483262751193506
+3675	invburr	certified	11.123468985019063	shape1=0.855256299891619	shape2=72.234754632932209	scale=1.1483262751193506
+3676	invburr	certified	-14.455106444173254	shape1=0.87186530202864176	shape2=2.2945593981369536	scale=1.1483262751193506
+3677	invburr	certified	-3.0280265594663294	shape1=4.601958176553552	shape2=2.2945593981369536	scale=1.1483262751193506
+3678	invburr	certified	-5.1264730287173466	shape1=1.2085056878503151	shape2=2.2945593981369536	scale=1.1483262751193506
+3679	invburr	certified	-7.7693315868187307	shape1=1.1590140303668393	shape2=2.2945593981369536	scale=1.1483262751193506
+3680	invburr	certified	-8.1147422979724695	shape1=1.6709404435892832	shape2=2.2945593981369536	scale=1.1483262751193506
+3681	invburr	certified	-3.1136657908703178	shape1=1.3868860108823027	shape2=2.2945593981369536	scale=1.1483262751193506
+3682	invburr	certified	-3.1136175192030295	shape1=1.3868407390457949	shape2=2.2945593981369536	scale=1.1483262751193506
+3683	invburr	certified	-3.1136175143955285	shape1=1.386840734511565	shape2=2.2945593981369536	scale=1.1483262751193506
+3684	invburr	certified	-3.1136657908703178	shape1=1.3868860108823027	shape2=2.2945593981369536	scale=1.1483262751193506
+3685	invburr	certified	-3.1136175192030295	shape1=1.3868407390457949	shape2=2.2945593981369536	scale=1.1483262751193506
+3686	invburr	certified	-3.1136175143955285	shape1=1.386840734511565	shape2=2.2945593981369536	scale=1.1483262751193506
+3687	invburr	certified	45.718590050563705	shape1=0.033957382456913154	shape2=2.2945593981369536	scale=1.1483262751193506
+3688	invburr	certified	111.14280499872575	shape1=0.016353447197695964	shape2=2.2945593981369536	scale=1.1483262751193506
+3689	invburr	certified	166.91203529068579	shape1=0.011419921226180373	shape2=2.2945593981369536	scale=1.1483262751193506
+3690	invburr	certified	2261.3355885317901	shape1=0.00094837805562721349	shape2=2.2945593981369536	scale=1.1483262751193506
+3691	invburr	certified	4062.263945429012	shape1=0.0012613800864489406	shape2=2.2945593981369536	scale=1.1483262751193506
+3692	invburr	stop:unresolved	nan	message=Constrained likelihood search failed to converge.
+3693	invburr	certified	-50.388002238013399	shape1=1.2054566663677648	shape2=2.2945593981369536	scale=1.1483262751193506
+3694	invburr	certified	-3.1136175144083422	shape1=1.3868407345063145	shape2=2.2945593981369536	scale=1.1483262751193506
+3695	invburr	certified	-14.457311905039276	shape1=0.855256299891619	shape2=2.2945593981369536	scale=1.1483262751193506
+3696	invburr	certified	-4.7653908836798768	shape1=0.855256299891619	shape2=2.2945593981369536	scale=1.1483262751193506
+3697	invburr	certified	-5.2867812961860228	shape1=0.855256299891619	shape2=2.2945593981369536	scale=1.1483262751193506
+3698	invburr	certified	-7.9785360008822988	shape1=0.855256299891619	shape2=2.2945593981369536	scale=1.1483262751193506
+3699	invburr	certified	-9.2042341747785947	shape1=0.855256299891619	shape2=2.2945593981369536	scale=1.1483262751193506
+3700	invburr	certified	-3.6141101264203899	shape1=0.855256299891619	shape2=2.2945593981369536	scale=1.1483262751193506
+3701	invburr	certified	-3.6139992911848076	shape1=0.855256299891619	shape2=2.2945593981369536	scale=1.1483262751193506
+3702	invburr	certified	-3.613999280111277	shape1=0.855256299891619	shape2=2.2945593981369536	scale=1.1483262751193506
+3703	invburr	certified	-3.6141101264203899	shape1=0.855256299891619	shape2=2.2945593981369536	scale=1.1483262751193506
+3704	invburr	certified	-3.6139992911848076	shape1=0.855256299891619	shape2=2.2945593981369536	scale=1.1483262751193506
+3705	invburr	certified	-3.613999280111277	shape1=0.855256299891619	shape2=2.2945593981369536	scale=1.1483262751193506
+3706	invburr	certified	-59.080769588383689	shape1=0.855256299891619	shape2=2.2945593981369536	scale=1.1483262751193506
+3707	invburr	certified	-125.56351948524855	shape1=0.855256299891619	shape2=2.2945593981369536	scale=1.1483262751193506
+3708	invburr	certified	-180.96581106597336	shape1=0.855256299891619	shape2=2.2945593981369536	scale=1.1483262751193506
+3709	invburr	certified	-2208.689682920502	shape1=0.855256299891619	shape2=2.2945593981369536	scale=1.1483262751193506
+3710	invburr	certified	-3983.8919732117656	shape1=0.855256299891619	shape2=2.2945593981369536	scale=1.1483262751193506
+3711	invburr	certified	-13643.728362152553	shape1=0.855256299891619	shape2=2.2945593981369536	scale=1.1483262751193506
+3712	invburr	certified	-50.651501973054089	shape1=0.855256299891619	shape2=2.2945593981369536	scale=1.1483262751193506
+3713	invburr	certified	-3.6139992801168321	shape1=0.855256299891619	shape2=2.2945593981369536	scale=1.1483262751193506
+5382	paralogis	certified	-19.495840090235507	shape=1.3363939660068187	scale=1.3923099090832114
+5383	paralogis	certified	-4.5608231365886542	shape=1.5423518909150167	scale=3.7398537924495039
+5384	paralogis	certified	-5.6521936397896937	shape=1.2566667865958518	scale=1.5761046816963888
+5385	paralogis	certified	-8.4299489374536805	shape=1.3598640849512047	scale=1.5408470564596017
+5386	paralogis	certified	-8.3235761347030177	shape=1.6389907562196955	scale=1.5106861245048879
+5387	paralogis	uncertified	36.022899378231642	shape=5865.0951431607791	scale=0.95327019022313175
+5388	paralogis	uncertified	-2.6193421949149895	shape=2.8872653792139165	scale=0.95193687884684297
+5389	paralogis	uncertified	-86313.583390858097	shape=1039736052013.78	scale=0.95175734595512818
+5390	paralogis	uncertified	35.775673468034306	shape=5865.0951431607791	scale=1.001589543965731
+5391	paralogis	uncertified	80.755013384676843	shape=33395916.746374268	scale=1.0000005246231876
+5392	paralogis	uncertified	-86316.169082169872	shape=1039745411870.5538	scale=1.0000000166567524
+5393	paralogis	certified	57.642640068514119	shape=1.8755436442910762	scale=4.9601886051565177e-06
+5394	paralogis	uncertified	126.72019285833549	shape=1.8755436401847521	scale=4.9601885701212997e-12
+5395	paralogis	uncertified	184.28482018318664	shape=1.875543630628093	scale=4.960188546266307e-17
+5396	paralogis	uncertified	2291.1501802727385	shape=1.8755436339470617	scale=4.9601885418872691e-200
+5397	paralogis	uncertified	4125.1573272990472	shape=1.3363939671636704	scale=1.3923098880097104e-150
+5398	paralogis	certified	-4164.1490074795174	shape=1.3363939660068218	scale=1.3923099090832228e+150
+5399	paralogis	certified	-29.954733793550609	shape=0.52995557297479545	scale=0.86427612820506805
+5400	paralogis	uncertified	60.366311325691704	shape=789347.87124988704	scale=0.95177437250086971
+5401	paralogis	certified	-20.694275535568352	shape=0.99906474074346585	scale=1.027658522049125
+5402	paralogis	certified	-4.9429836815924011	shape=0.99906474074346585	scale=2.401132580274802
+5403	paralogis	certified	-5.8526670034956183	shape=0.99906474074346585	scale=1.2228767276226231
+5404	paralogis	certified	-8.9897652198427522	shape=0.99906474074346585	scale=1.1198849443116574
+5405	paralogis	certified	-9.8872233958098761	shape=0.99906474074346585	scale=1.0595173825496365
+5406	paralogis	certified	-6.6904603706788599	shape=0.99906474074346585	scale=0.9508853605970613
+5407	paralogis	certified	-6.6903604187629728	shape=0.99906474074346585	scale=0.95086635925028551
+5408	paralogis	certified	-6.6903604087639739	shape=0.99906474074346585	scale=0.95086635734874281
+5409	paralogis	certified	-6.9376862808761928	shape=0.99906474074346585	scale=0.99908383210973273
+5410	paralogis	certified	-6.9375863289603075	shape=0.99906474074346585	scale=0.99906386762280441
+5411	paralogis	certified	-6.9375863189613067	shape=0.99906474074346585	scale=0.99906386562487626
+5412	paralogis	certified	55.862923285224525	shape=0.99906474074346585	scale=3.0657228975155458e-06
+5413	paralogis	certified	124.94047607504589	shape=0.99906474074346585	scale=3.0657228975155421e-12
+5414	paralogis	certified	182.50510339989705	shape=0.99906474074346585	scale=3.0657228975155362e-17
+5415	paralogis	certified	2289.3704634894489	shape=0.99906474074346585	scale=3.0657228975154277e-200
+5416	paralogis	certified	4123.9588918537138	shape=0.99906474074346585	scale=1.027658522049129e-150
+5417	paralogis	certified	-4165.3474429248508	shape=0.99906474074346585	scale=1.0276585220491047e+150
+5418	paralogis	certified	-35.061816566587986	shape=0.99906474074346585	scale=2.8389728487448744
+5419	paralogis	certified	-6.6903604087604673	shape=0.99906474074346585	scale=0.95086635734760161
+5420	paralogis	certified	-19.761705552648817	shape=1.2532891122283101	scale=1.0392326509920615
+5421	paralogis	certified	-5.2215814331975556	shape=1.0227725458085708	scale=1.0392326509920615
+5422	paralogis	certified	-5.7623268329860764	shape=1.1556572140007011	scale=1.0392326509920615
+5423	paralogis	certified	-8.6284530912202761	shape=1.2414090906386379	scale=1.0392326509920615
+5424	paralogis	certified	-8.733768990559291	shape=1.4652089739559966	scale=1.0392326509920615
+5425	paralogis	certified	14.28637039931712	shape=48.429191796106622	scale=1.0392326509920615
+5426	paralogis	certified	14.285089507325566	shape=48.415210904963565	scale=1.0392326509920615
+5427	paralogis	certified	14.285089367325416	shape=48.415209521637877	scale=1.0392326509920615
+5428	paralogis	certified	19.320389665074792	shape=134.65609548904999	scale=1.0392326509920615
+5429	paralogis	certified	19.318276679086132	shape=134.56691487356798	scale=1.0392326509920615
+5430	paralogis	certified	19.318276365958706	shape=134.56690635649915	scale=1.0392326509920615
+5431	paralogis	certified	34.301630712084545	shape=0.17556606336621808	scale=1.0392326509920615
+5432	paralogis	certified	96.081989686716128	shape=0.083857424187918458	scale=1.0392326509920615
+5433	paralogis	certified	150.05799056662988	shape=0.058424012791635949	scale=1.0392326509920615
+5434	paralogis	certified	2232.043729541022	shape=0.0048281344188356229	scale=1.0392326509920615
+5435	paralogis	certified	3994.9771007324307	shape=0.0064231859384616527	scale=1.0392326509920615
+5436	paralogis	certified	-4227.4498699176265	shape=0.05380667478356848	scale=1.0392326509920615
+5437	paralogis	certified	-29.960486327742696	shape=0.53527093064942888	scale=1.0392326509920615
+5438	paralogis	certified	14.285089359265729	shape=48.415209531239896	scale=1.0392326509920615
+5439	paralogis	certified	-20.694568905706628	shape=0.99906474074346585	scale=1.0392326509920615
+5440	paralogis	certified	-5.2237168618887484	shape=0.99906474074346585	scale=1.0392326509920615
+5441	paralogis	certified	-5.867590512782253	shape=0.99906474074346585	scale=1.0392326509920615
+5442	paralogis	certified	-8.9952453892751905	shape=0.99906474074346585	scale=1.0392326509920615
+5443	paralogis	certified	-9.8877137171149236	shape=0.99906474074346585	scale=1.0392326509920615
+5444	paralogis	certified	-6.7003008762001937	shape=0.99906474074346585	scale=1.0392326509920615
+5445	paralogis	certified	-6.7002053501114487	shape=0.99906474074346585	scale=1.0392326509920615
+5446	paralogis	certified	-6.7002053405554083	shape=0.99906474074346585	scale=1.0392326509920615
+5447	paralogis	certified	-6.9396220043961128	shape=0.99906474074346585	scale=1.0392326509920615
+5448	paralogis	certified	-6.9395240164423786	shape=0.99906474074346585	scale=1.0392326509920615
+5449	paralogis	certified	-6.9395240066399708	shape=0.99906474074346585	scale=1.0392326509920615
+5450	paralogis	certified	-0.1422595086082708	shape=0.99906474074346585	scale=1.0392326509920615
+5451	paralogis	certified	-0.07761517361793252	shape=0.99906474074346585	scale=1.0392326509920615
+5452	paralogis	certified	-0.023777323023991593	shape=0.99906474074346585	scale=1.0392326509920615
+5453	paralogis	certified	1.9466880072708372	shape=0.99906474074346585	scale=1.0392326509920615
+5454	paralogis	certified	3.3918917674472961	shape=0.99906474074346585	scale=1.0392326509920615
+5455	paralogis	certified	-8282.4378350456045	shape=0.99906474074346585	scale=1.0392326509920615
+5456	paralogis	certified	-35.846090630503298	shape=0.99906474074346585	scale=1.0392326509920615
+5457	paralogis	certified	-6.7002053405521629	shape=0.99906474074346585	scale=1.0392326509920615
+5644	pareto4	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlpareto(x - min)` to fit this model.
+5645	pareto4	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlpareto(x - min)` to fit this model.
+5646	pareto4	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlpareto(x - min)` to fit this model.
+5647	pareto4	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlpareto(x - min)` to fit this model.
+5648	pareto4	uncertified	-35.717219274675685	shape1=2009.7153920755227	shape2=0.44951974916137805	scale=2883265739.3292971	min=0
+5649	pareto4	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlpareto(x - min)` to fit this model.
+5650	pareto4	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlpareto(x - min)` to fit this model.
+5651	pareto4	stop:tie	nan	message=Pareto IV certificate unresolved at a tie or sign-uncertain seam; no verified MLE.
+5652	pareto4	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlpareto(x - min)` to fit this model.
+5653	pareto4	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlpareto(x - min)` to fit this model.
+5654	pareto4	stop:tie	nan	message=Pareto IV certificate unresolved at a tie or sign-uncertain seam; no verified MLE.
+5655	pareto4	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlpareto(x - min)` to fit this model.
+5656	pareto4	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlpareto(x - min)` to fit this model.
+5657	pareto4	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlpareto(x - min)` to fit this model.
+5658	pareto4	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlpareto(x - min)` to fit this model.
+5659	pareto4	certified	-111.33587917499554	shape1=0.31572662523108319	shape2=0.49355698638917128	scale=1.3212944895302805	min=0
+5660	pareto4	certified	-15.448785878501537	shape1=0.31572662523108319	shape2=1.8909976113351639	scale=55.363502817026479	min=0
+5661	pareto4	certified	-18.121446147364921	shape1=0.31572662523108319	shape2=0.64080168199305143	scale=0.34673350439069023	min=0
+5662	pareto4	certified	-42.356452660333169	shape1=0.31572662523108319	shape2=0.54974808410016085	scale=1.6925405524019455	min=0
+5663	pareto4	certified	-37.464400172762041	shape1=0.31572662523108319	shape2=0.85248600460898605	scale=5.3926486071156772	min=0
+5664	pareto4	certified	15.936138095301079	shape1=0.31572662523108319	shape2=18139.451331770575	scale=57.949340666154292	min=0
+5665	pareto4	certified	61.987917686706908	shape1=0.31572662523108319	shape2=181397157.91800258	scale=57.957197505209919	min=0
+5666	pareto4	certified	108.03953672670249	shape1=0.31572662523108319	shape2=1813936513691.6497	scale=57.957198290888662	min=0
+5667	pareto4	certified	15.936138095301079	shape1=0.31572662523108319	shape2=18139.451331770575	scale=57.949340666154292	min=0
+5668	pareto4	certified	61.987917686706908	shape1=0.31572662523108319	shape2=181397157.91800258	scale=57.957197505209919	min=0
+5669	pareto4	certified	108.03953672670249	shape1=0.31572662523108319	shape2=1813936513691.6497	scale=57.957198290888662	min=0
+5670	pareto4	certified	4033.3172882142867	shape1=0.31572662523108319	shape2=0.49355698638917028	scale=1.3212944895302549e-150	min=0
+5671	pareto4	certified	-4255.9890465642775	shape1=0.31572662523108319	shape2=0.4935569863891715	scale=1.3212944895302988e+150	min=0
+5672	pareto4	certified	-60.239477450115615	shape1=0.31572662523108319	shape2=0.3785433947148239	scale=4.9376512825155485	min=0
+5673	pareto4	certified	39.561040164937424	shape1=0.31572662523108319	shape2=1997889.857420061	scale=57.957120603828621	min=0
+5674	pareto4	certified	-111.35172669960903	shape1=0.20803429556485281	shape2=0.66237140340221856	scale=0.4463484502995837	min=0
+5675	pareto4	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlweibull(x - min)` to fit this model.
+5676	pareto4	certified	-18.123420563323613	shape1=0.32016190008371653	shape2=0.66237140340221856	scale=0.36074216053314884	min=0
+5677	pareto4	certified	-42.413534582185044	shape1=0.25292120110523952	shape2=0.66237140340221856	scale=0.919366635434122	min=0
+5678	pareto4	certified	-35.894745958909631	shape1=1.855786979244993	shape2=0.66237140340221856	scale=181.05600981503099	min=0
+5679	pareto4	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlweibull(x - min)` to fit this model.
+5680	pareto4	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlweibull(x - min)` to fit this model.
+5681	pareto4	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlweibull(x - min)` to fit this model.
+5682	pareto4	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlweibull(x - min)` to fit this model.
+5683	pareto4	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlweibull(x - min)` to fit this model.
+5684	pareto4	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlweibull(x - min)` to fit this model.
+5685	pareto4	certified	4033.3014406896727	shape1=0.20803429556485209	shape2=0.66237140340221856	scale=4.4634845029955726e-151	min=0
+5686	pareto4	certified	-4256.004894088891	shape1=0.20803429556485295	shape2=0.66237140340221856	scale=4.4634845029959746e+149	min=0
+5687	pareto4	certified	-60.371144444560798	shape1=0.14516680377003813	shape2=0.66237140340221856	scale=0.20816542535711113	min=0
+5688	pareto4	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlweibull(x - min)` to fit this model.
+5689	pareto4	certified	-112.04707689876541	shape1=0.31572662523108319	shape2=0.66237140340221856	scale=1.7864749359080736	min=0
+5690	pareto4	certified	-16.344476223497516	shape1=0.31572662523108319	shape2=0.66237140340221856	scale=33.557286571255759	min=0
+5691	pareto4	certified	-18.123556829449683	shape1=0.31572662523108319	shape2=0.66237140340221856	scale=0.34446276162680506	min=0
+5692	pareto4	certified	-42.477677811570203	shape1=0.31572662523108319	shape2=0.66237140340221856	scale=2.0668628759149401	min=0
+5693	pareto4	certified	-37.68386793584596	shape1=0.31572662523108319	shape2=0.66237140340221856	scale=3.268765173028104	min=0
+5694	pareto4	certified	-31.747738168936102	shape1=0.31572662523108319	shape2=0.66237140340221856	scale=10.167464514762708	min=0
+5695	pareto4	certified	-31.747638246139903	shape1=0.31572662523108319	shape2=0.66237140340221856	scale=10.167261392166985	min=0
+5696	pareto4	certified	-31.747638236140901	shape1=0.31572662523108319	shape2=0.66237140340221856	scale=10.167261371834497	min=0
+5697	pareto4	certified	-31.747738168936102	shape1=0.31572662523108319	shape2=0.66237140340221856	scale=10.167464514762708	min=0
+5698	pareto4	certified	-31.747638246139903	shape1=0.31572662523108319	shape2=0.66237140340221856	scale=10.167261392166985	min=0
+5699	pareto4	certified	-31.747638236140901	shape1=0.31572662523108319	shape2=0.66237140340221856	scale=10.167261371834497	min=0
+5700	pareto4	certified	4032.6060904905171	shape1=0.31572662523108319	shape2=0.66237140340221856	scale=1.7864749359080218e-150	min=0
+5701	pareto4	certified	-4256.7002442880485	shape1=0.31572662523108319	shape2=0.66237140340221856	scale=1.786474935908081e+150	min=0
+5702	pareto4	certified	-61.460288879922388	shape1=0.31572662523108319	shape2=0.66237140340221856	scale=8.6964381211083595	min=0
+5703	pareto4	certified	-31.74763823613543	shape1=0.31572662523108319	shape2=0.66237140340221856	scale=10.167261371818798	min=0
+5704	pareto4	certified	-111.32103236535298	shape1=0.28501542177800687	shape2=0.52814687552734929	scale=1.0887481860644432	min=0
+5705	pareto4	stop:limit	nan	message=The fixed-scale Pareto IV MLE does not exist when all observations >= min + scale. The limit is a shifted Pareto with its endpoint held at min + scale; the package has no held-endpoint Pareto fitter.
+5706	pareto4	certified	-18.046990259396555	shape1=0.49970233897412331	shape2=0.49170311097293973	scale=1.0887481860644432	min=0
+5707	pareto4	certified	-42.372032619776434	shape1=0.30583253704225649	shape2=0.55298834935219354	scale=1.0887481860644432	min=0
+5708	pareto4	certified	-37.764369368749627	shape1=0.37400477553904865	shape2=0.66996333963782995	scale=1.0887481860644432	min=0
+5709	pareto4	stop:limit	nan	message=The fixed-scale Pareto IV MLE does not exist when all observations >= min + scale. The limit is a shifted Pareto with its endpoint held at min + scale; the package has no held-endpoint Pareto fitter.
+5710	pareto4	stop:limit	nan	message=The fixed-scale Pareto IV MLE does not exist when all observations >= min + scale. The limit is a shifted Pareto with its endpoint held at min + scale; the package has no held-endpoint Pareto fitter.
+5711	pareto4	stop:limit	nan	message=The fixed-scale Pareto IV MLE does not exist when all observations >= min + scale. The limit is a shifted Pareto with its endpoint held at min + scale; the package has no held-endpoint Pareto fitter.
+5712	pareto4	stop:limit	nan	message=The fixed-scale Pareto IV MLE does not exist when all observations >= min + scale. The limit is a shifted Pareto with its endpoint held at min + scale; the package has no held-endpoint Pareto fitter.
+5713	pareto4	stop:limit	nan	message=The fixed-scale Pareto IV MLE does not exist when all observations >= min + scale. The limit is a shifted Pareto with its endpoint held at min + scale; the package has no held-endpoint Pareto fitter.
+5714	pareto4	stop:limit	nan	message=The fixed-scale Pareto IV MLE does not exist when all observations >= min + scale. The limit is a shifted Pareto with its endpoint held at min + scale; the package has no held-endpoint Pareto fitter.
+5715	pareto4	uncertified	4031.8336480007815	shape1=1.2880654457150579e+22	shape2=0.15149082902097696	scale=1.0887481860644432	min=0
+5716	pareto4	stop:limit	nan	message=The fixed-scale Pareto IV MLE does not exist when all observations >= min + scale. The limit is a shifted Pareto with its endpoint held at min + scale; the package has no held-endpoint Pareto fitter.
+5717	pareto4	certified	-60.295509484531244	shape1=0.25602945466130816	shape2=0.42605998192235522	scale=1.0887481860644432	min=0
+5718	pareto4	stop:limit	nan	message=The fixed-scale Pareto IV MLE does not exist when all observations >= min + scale. The limit is a shifted Pareto with its endpoint held at min + scale; the package has no held-endpoint Pareto fitter.
+5719	pareto4	certified	-111.34292166637353	shape1=0.31572662523108319	shape2=0.49050537878046108	scale=1.0887481860644432	min=0
+5720	pareto4	certified	-17.088489485437734	shape1=0.31572662523108319	shape2=0.64269237262679979	scale=1.0887481860644432	min=0
+5721	pareto4	certified	-18.207067686115717	shape1=0.31572662523108319	shape2=0.62406185033892037	scale=1.0887481860644432	min=0
+5722	pareto4	certified	-42.373002031555963	shape1=0.31572662523108319	shape2=0.54114861986685037	scale=1.0887481860644432	min=0
+5723	pareto4	certified	-37.80262253667388	shape1=0.31572662523108319	shape2=0.7405957392584388	scale=1.0887481860644432	min=0
+5724	pareto4	certified	-32.418313941208588	shape1=0.31572662523108319	shape2=0.89910584925322712	scale=1.0887481860644432	min=0
+5725	pareto4	certified	-32.418188886278216	shape1=0.31572662523108319	shape2=0.89911036922139309	scale=1.0887481860644432	min=0
+5726	pareto4	certified	-32.41818887376354	shape1=0.31572662523108319	shape2=0.89911036967376734	scale=1.0887481860644432	min=0
+5727	pareto4	certified	-32.418313941208588	shape1=0.31572662523108319	shape2=0.89910584925322712	scale=1.0887481860644432	min=0
+5728	pareto4	certified	-32.418188886278216	shape1=0.31572662523108319	shape2=0.89911036922139309	scale=1.0887481860644432	min=0
+5729	pareto4	certified	-32.41818887376354	shape1=0.31572662523108319	shape2=0.89911036967376734	scale=1.0887481860644432	min=0
+5730	pareto4	certified	3972.6886182273406	shape1=0.31572662523108319	shape2=0.0040216592684214816	scale=1.0887481860644432	min=0
+5731	pareto4	certified	-4299.4848095687548	shape1=0.31572662523108319	shape2=0.010173475191238211	scale=1.0887481860644432	min=0
+5732	pareto4	certified	-60.32952139407432	shape1=0.31572662523108319	shape2=0.36401774592949404	scale=1.0887481860644432	min=0
+5733	pareto4	certified	-32.418188873756172	shape1=0.31572662523108319	shape2=0.89911036967406266	scale=1.0887481860644432	min=0
+5734	pareto4	certified	-111.46270562519814	shape1=0.23094658646180152	shape2=0.66237140340221856	scale=1.0887481860644432	min=0
+5735	pareto4	certified	-17.055767278408233	shape1=0.26399588056094281	shape2=0.66237140340221856	scale=1.0887481860644432	min=0
+5736	pareto4	certified	-18.158028761846687	shape1=0.38604044142151839	shape2=0.66237140340221856	scale=1.0887481860644432	min=0
+5737	pareto4	certified	-42.414920173298732	shape1=0.25874353560648894	shape2=0.66237140340221856	scale=1.0887481860644432	min=0
+5738	pareto4	certified	-37.764638295282609	shape1=0.37789101851908963	shape2=0.66237140340221856	scale=1.0887481860644432	min=0
+5739	pareto4	certified	-32.67557217984173	shape1=0.37007686409428875	shape2=0.66237140340221856	scale=1.0887481860644432	min=0
+5740	pareto4	certified	-32.675453850719244	shape1=0.37007855537281742	shape2=0.66237140340221856	scale=1.0887481860644432	min=0
+5741	pareto4	certified	-32.675453838877729	shape1=0.37007855554206726	shape2=0.66237140340221856	scale=1.0887481860644432	min=0
+5742	pareto4	certified	-32.67557217984173	shape1=0.37007686409428875	shape2=0.66237140340221856	scale=1.0887481860644432	min=0
+5743	pareto4	certified	-32.675453850719244	shape1=0.37007855537281742	shape2=0.66237140340221856	scale=1.0887481860644432	min=0
+5744	pareto4	certified	-32.675453838877729	shape1=0.37007855554206726	shape2=0.66237140340221856	scale=1.0887481860644432	min=0
+5745	pareto4	certified	3986.2610531233986	shape1=1.3813146206496026e+95	shape2=0.66237140340221856	scale=1.0887481860644432	min=0
+5746	pareto4	certified	-4298.9560035472041	shape1=0.0042975475384463228	shape2=0.66237140340221856	scale=1.0887481860644432	min=0
+5747	pareto4	certified	-60.492514469983348	shape1=0.16774084752866877	shape2=0.66237140340221856	scale=1.0887481860644432	min=0
+5748	pareto4	certified	-32.675453838870808	shape1=0.37007855554216512	shape2=0.66237140340221856	scale=1.0887481860644432	min=0
+5749	pareto4	certified	-112.11559880754646	shape1=0.31572662523108319	shape2=0.66237140340221856	scale=1.0887481860644432	min=0
+5750	pareto4	certified	-17.089786514421355	shape1=0.31572662523108319	shape2=0.66237140340221856	scale=1.0887481860644432	min=0
+5751	pareto4	certified	-18.214801790267494	shape1=0.31572662523108319	shape2=0.66237140340221856	scale=1.0887481860644432	min=0
+5752	pareto4	certified	-42.520873348178057	shape1=0.31572662523108319	shape2=0.66237140340221856	scale=1.0887481860644432	min=0
+5753	pareto4	certified	-37.855992009797603	shape1=0.31572662523108319	shape2=0.66237140340221856	scale=1.0887481860644432	min=0
+5754	pareto4	certified	-32.735432017291203	shape1=0.31572662523108319	shape2=0.66237140340221856	scale=1.0887481860644432	min=0
+5755	pareto4	certified	-32.735317044057012	shape1=0.31572662523108319	shape2=0.66237140340221856	scale=1.0887481860644432	min=0
+5756	pareto4	certified	-32.735317032551336	shape1=0.31572662523108319	shape2=0.66237140340221856	scale=1.0887481860644432	min=0
+5757	pareto4	certified	-32.735432017291203	shape1=0.31572662523108319	shape2=0.66237140340221856	scale=1.0887481860644432	min=0
+5758	pareto4	certified	-32.735317044057012	shape1=0.31572662523108319	shape2=0.66237140340221856	scale=1.0887481860644432	min=0
+5759	pareto4	certified	-32.735317032551336	shape1=0.31572662523108319	shape2=0.66237140340221856	scale=1.0887481860644432	min=0
+5760	pareto4	certified	1355.6030764795787	shape1=0.31572662523108319	shape2=0.66237140340221856	scale=1.0887481860644432	min=0
+5761	pareto4	certified	-5116.994387687062	shape1=0.31572662523108319	shape2=0.66237140340221856	scale=1.0887481860644432	min=0
+5762	pareto4	certified	-61.741375033033961	shape1=0.31572662523108319	shape2=0.66237140340221856	scale=1.0887481860644432	min=0
+5763	pareto4	certified	-32.735317032544614	shape1=0.31572662523108319	shape2=0.66237140340221856	scale=1.0887481860644432	min=0
+9404	betapr	stop:limit	nan	message=The beta-prime likelihood selects the gamma limit. Use `mlgamma` to fit this model.
+9405	betapr	stop:limit	nan	message=The beta-prime likelihood selects the gamma limit. Use `mlgamma` to fit this model.
+9406	betapr	certified	-19.030746300387712	shape1=3.8586386182870154	shape2=3.2600098684669976	scale=1.2977180166490951
+9407	betapr	certified	-19.498030850481019	shape1=2.0142714427942718	shape2=3.2600098684669976	scale=2.6970011250768748
+9408	betapr	certified	-19.055292653054558	shape1=4.6668846731509088	shape2=3.3416392779473987	scale=1.0594104501122898
+9409	betapr	certified	-20.767838874094416	shape1=2.0142714427942718	shape2=1.6911276666077053	scale=1.0594104501122898
+9410	betapr	certified	-19.057260579643103	shape1=4.5643400490665016	shape2=3.2600098684669976	scale=1.0594104501122898
+9411	betapr	certified	-25.523816360772198	shape1=2.0142714427942718	shape2=3.2600098684669976	scale=1.0594104501122898
+9412	betapr	stop:limit	nan	message=The beta-prime likelihood selects the inverse-gamma limit. Use `mlinvgamma` to fit this model.
+9413	betapr	certified	-8.9872260160055024	shape1=2.0142714427942718	shape2=6.318878967312477	scale=2.3136324629783274
+9414	betapr	certified	-8.2603222773671359	shape1=7.2764169274222965	shape2=3.2600098684669976	scale=0.25963003735606033
+9415	betapr	certified	-9.1810097077126116	shape1=2.0142714427942718	shape2=3.2600098684669976	scale=1.0983302471350318
+9416	betapr	certified	-8.5849056156514791	shape1=3.1915605998087822	shape2=4.9334384399948013	scale=1.0594104501122898
+9417	betapr	certified	-9.1890955791650182	shape1=2.0142714427942718	shape2=3.2842143142606353	scale=1.0594104501122898
+9418	betapr	certified	-9.0507025459388171	shape1=2.2615900524197046	shape2=3.2600098684669976	scale=1.0594104501122898
+9419	betapr	certified	-9.1896174919570957	shape1=2.0142714427942718	shape2=3.2600098684669976	scale=1.0594104501122898
+9420	burr	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.
+9421	burr	certified	-7.2812797270873224	shape1=1.334637717604056	shape2=2.7802574549307302	scale=0.9226299293618494
+9422	burr	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.
+9423	burr	certified	-8.4997306871042859	shape1=1.334637717604056	shape2=1.8604176234909942	scale=0.94538727646153287
+9424	burr	certified	-7.0258649926742578	shape1=2.2439954108682265	shape2=2.5459590633695108	scale=1.1969913095113565
+9425	burr	certified	-8.3903924273381492	shape1=1.334637717604056	shape2=2.4719828158367552	scale=1.1969913095113565
+9426	burr	certified	-7.8825005088670625	shape1=2.1396702981102473	shape2=1.8604176234909942	scale=1.1969913095113565
+9427	burr	certified	-9.0315059503772765	shape1=1.334637717604056	shape2=1.8604176234909942	scale=1.1969913095113565
+9428	invburr	stop:limit	nan	message=The invburr likelihood is maximised at a limit. Use `mlinvweibull` to fit this model.
+9429	invburr	certified	-14.249733738204107	shape1=0.855256299891619	shape2=3.0987130310676498	scale=1.3574067719798166
+9430	invburr	certified	-13.372490636698739	shape1=17.28724904130522	shape2=2.2945593981369536	scale=0.29109921607197486
+9431	invburr	certified	-14.941559060117783	shape1=0.855256299891619	shape2=2.2945593981369536	scale=1.3935934277440045
+9432	invburr	certified	-13.928650640271441	shape1=1.2800549077110803	shape2=2.8043353795711066	scale=1.1483262751193506
+9433	invburr	certified	-14.72523555994692	shape1=0.855256299891619	shape2=3.055591510494811	scale=1.1483262751193506
+9434	invburr	certified	-14.23750585677033	shape1=1.3590618657097384	shape2=2.2945593981369536	scale=1.1483262751193506
+9435	invburr	certified	-15.346879047264984	shape1=0.855256299891619	shape2=2.2945593981369536	scale=1.1483262751193506
+9722	bhatt	stop:limit	nan	message=Certified global comparison: Bhattacharjee likelihood selects the uniform face: use `mlunif`.
+9723	bhatt	stop:limit	nan	message=Certified global comparison: Bhattacharjee likelihood selects the uniform face: use `mlunif`.
+9724	bhatt	certified	-13.53572589267236	mu=9.2699285747510629e-18	sigma=1.057897350270679	a=0
+9725	bhatt	certified	-13.535803311569113	mu=-0.0038000682197418395	sigma=1.057897350270679	a=0
+9726	bhatt	stop:limit	nan	message=Certified global comparison: Bhattacharjee likelihood selects the uniform face with a held. Use `mlunif` for an unrestricted fit; it does not hold a.
+9727	bhatt	stop:limit	nan	message=Certified global comparison: Bhattacharjee likelihood selects the uniform face with a held. Use `mlunif` for an unrestricted fit; it does not hold a.
+9728	bhatt	certified	-16.92272992541827	mu=8.396364448940239e-18	sigma=1.057897350270679	a=1.7336058787117143
+9729	bhatt	certified	-16.922762662262876	mu=-0.0038000682197418395	sigma=1.057897350270679	a=1.7336058787117143
+9730	ged	stop:limit	nan	message=GED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+9731	ged	stop:limit	nan	message=GED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+9732	ged	uncertified	-15.116000145925938	mean=-2.8196653635564969e-15	sd=1.0178559902092952	nu=57.779697714587577
+9733	ged	uncertified	-15.116531827823019	mean=-0.017698887677594307	sd=1.0178559902092952	nu=60.348278972506705
+9734	ged	certified	-16.334043832610664	mean=-2.8196653635564969e-15	sd=0.95645822783167211	nu=3.0166453083278539
+9735	ged	certified	-16.336596072061848	mean=-0.017698887677594307	sd=0.95666167533472624	nu=3.0166453083278539
+9736	ged	certified	-16.399921661066518	mean=-2.8196653635564969e-15	sd=1.0178559902092952	nu=3.0166453083278539
+9737	ged	certified	-16.402037828354839	mean=-0.017698887677594307	sd=1.0178559902092952	nu=3.0166453083278539
+9864	betapr	stop:limit	nan	message=The beta-prime likelihood selects the gamma limit. Use `mlgamma` to fit this model.
+9865	betapr	stop:limit	nan	message=The beta-prime likelihood selects the gamma limit. Use `mlgamma` to fit this model.
+9866	betapr	certified	-18.885781264956265	shape1=3.9408220779442655	shape2=3.2600098684669976	scale=1.2615037891115632
+9867	betapr	certified	-19.378500584636402	shape1=2.0142714427942718	shape2=3.2600098684669976	scale=2.6815322053643449
+9868	betapr	certified	-18.899987415499162	shape1=4.7242282835453429	shape2=3.3950976724361386	scale=1.0594104501122898
+9869	betapr	certified	-20.656477612120366	shape1=2.0142714427942718	shape2=1.6989878026617764	scale=1.0594104501122898
+9870	betapr	certified	-18.90525943048095	shape1=4.554925506489818	shape2=3.2600098684669976	scale=1.0594104501122898
+9871	betapr	certified	-25.340557381876344	shape1=2.0142714427942718	shape2=3.2600098684669976	scale=1.0594104501122898
+9872	betapr	stop:limit	nan	message=The beta-prime likelihood selects the inverse-gamma limit. Use `mlinvgamma` to fit this model.
+9873	betapr	certified	-8.9704080257605003	shape1=2.0142714427942718	shape2=6.5186287283982214	scale=2.4018791601141989
+9874	betapr	certified	-8.2058539472061867	shape1=7.7706255736384469	shape2=3.2600098684669976	scale=0.24309157905075743
+9875	betapr	certified	-9.1784717459508265	shape1=2.0142714427942718	shape2=3.2600098684669976	scale=1.1026099360604429
+9876	betapr	certified	-8.5465678046908877	shape1=3.2417842438791844	shape2=4.9936576558876871	scale=1.0594104501122898
+9877	betapr	certified	-9.1887671633998984	shape1=2.0142714427942718	shape2=3.2779728065166891	scale=1.0594104501122898
+9878	betapr	certified	-9.0382223468028204	shape1=2.2726884770229328	shape2=3.2600098684669976	scale=1.0594104501122898
+9879	betapr	certified	-9.1890552799436165	shape1=2.0142714427942718	shape2=3.2600098684669976	scale=1.0594104501122898
+9880	burr	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.
+9881	burr	certified	-7.2088031324646327	shape1=1.334637717604056	shape2=2.790916784794812	scale=0.9201236300583171
+9882	burr	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.
+9883	burr	certified	-8.4482801812951713	shape1=1.334637717604056	shape2=1.8604176234909942	scale=0.94291695116136764
+9884	burr	certified	-6.9473376018947572	shape1=2.2609033939037553	shape2=2.5542122579354292	scale=1.1969913095113565
+9885	burr	certified	-8.3473316394801031	shape1=1.334637717604056	shape2=2.474409570815244	scale=1.1969913095113565
+9886	burr	certified	-7.8212080145374605	shape1=2.1502034108819799	shape2=1.8604176234909942	scale=1.1969913095113565
+9887	burr	certified	-8.9924748487708346	shape1=1.334637717604056	shape2=1.8604176234909942	scale=1.1969913095113565
+9888	invburr	stop:limit	nan	message=The invburr likelihood is maximised at a limit. Use `mlinvweibull` to fit this model.
+9889	invburr	certified	-14.239054578379506	shape1=0.855256299891619	shape2=3.109326071652041	scale=1.3598798084624424
+9890	invburr	certified	-13.342844069163906	shape1=21.590792892776179	shape2=2.2945593981369536	scale=0.26409984853270174
+9891	invburr	certified	-14.945710465492871	shape1=0.855256299891619	shape2=2.2945593981369536	scale=1.396658503288337
+9892	invburr	certified	-13.911508890528077	shape1=1.2865485116424886	shape2=2.8120574926034836	scale=1.1483262751193506
+9893	invburr	certified	-14.728369972852366	shape1=0.855256299891619	shape2=3.0640470084521771	scale=1.1483262751193506
+9894	invburr	certified	-14.229161929676678	shape1=1.3659037480097871	shape2=2.2945593981369536	scale=1.1483262751193506
+9895	invburr	certified	-15.360968492254065	shape1=0.855256299891619	shape2=2.2945593981369536	scale=1.1483262751193506
+10182	bhatt	stop:limit	nan	message=Certified global comparison: Bhattacharjee likelihood selects the uniform face: use `mlunif`.
+10183	bhatt	stop:limit	nan	message=Certified global comparison: Bhattacharjee likelihood selects the uniform face: use `mlunif`.
+10184	bhatt	certified	-13.477333266639437	mu=9.2699285747510629e-18	sigma=1.057897350270679	a=0
+10185	bhatt	certified	-13.47741068553619	mu=-0.0038000682197418395	sigma=1.057897350270679	a=0
+10186	bhatt	stop:limit	nan	message=Certified global comparison: Bhattacharjee likelihood selects the uniform face with a held. Use `mlunif` for an unrestricted fit; it does not hold a.
+10187	bhatt	stop:limit	nan	message=Certified global comparison: Bhattacharjee likelihood selects the uniform face with a held. Use `mlunif` for an unrestricted fit; it does not hold a.
+10188	bhatt	certified	-16.898943597943649	mu=8.396364448940239e-18	sigma=1.057897350270679	a=1.7336058787117143
+10189	bhatt	certified	-16.89897624058343	mu=-0.0038000682197418395	sigma=1.057897350270679	a=1.7336058787117143
+10190	ged	stop:nomle	nan	message=GED MLE requires at least 2 finite observations with positive variance.
+10191	ged	stop:limit	nan	message=GED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+10192	ged	certified	-4.371264419433321	mean=0	sd=1.0178559902092952	nu=1
+10193	ged	certified	-4.6663553623564979	mean=-0.017698887677594307	sd=1.0178559902092952	nu=1
+10194	ged	stop:nomle	nan	message=GED scale likelihood is unbounded: all observations equal the fitted or held location.
+10195	ged	certified	33.078498574101033	mean=-0.017698887677594307	sd=0.015572791374458965	nu=3.0166453083278539
+10196	ged	certified	-13.10271440743127	mean=0	sd=1.0178559902092952	nu=3.0166453083278539
+10197	ged	certified	-13.102727696080056	mean=-0.017698887677594307	sd=1.0178559902092952	nu=3.0166453083278539
+10238	burr	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlpareto` to fit this model.
+10239	burr	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlpareto` to fit this model.
+10240	burr	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlpareto` to fit this model.
+10241	burr	certified	36.014744028489972	shape1=1.334637717604056	shape2=8751.6314658791216	scale=1.0000597860720419
+10242	burr	certified	82.066264661876687	shape1=1.334637717604056	shape2=87511530.322801486	scale=1.0000000059796055
+10243	burr	certified	128.11793614067236	shape1=1.334637717604056	shape2=875108834018.80774	scale=1.000000000000598
+10244	burr	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.
+10245	burr	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.
+10246	burr	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.
+10247	burr	certified	-3.4237053279433836	shape1=1.334637717604056	shape2=1.8604176234909942	scale=1.1678665661297067
+10248	burr	certified	-3.4236052665333041	shape1=1.334637717604056	shape2=1.8604176234909942	scale=1.1678432242758894
+10249	burr	certified	-3.4236052565343034	shape1=1.334637717604056	shape2=1.8604176234909942	scale=1.1678432219404369
+10250	burr	stop:numerical	nan	message=Burr global certificate numerical failure (domain, bracket, nonfinite arithmetic or linear solve); no verified MLE.
+10251	burr	stop:numerical	nan	message=Burr global certificate numerical failure (domain, bracket, nonfinite arithmetic or linear solve); no verified MLE.
+10252	burr	stop:numerical	nan	message=Burr global certificate numerical failure (domain, bracket, nonfinite arithmetic or linear solve); no verified MLE.
+10253	burr	certified	2.2273406268715616	shape1=1.334637717604056	shape2=9.0340568464015281	scale=1.1969913095113565
+10254	burr	certified	2.2268867837752198	shape1=1.334637717604056	shape2=9.0330545895934176	scale=1.1969913095113565
+10255	burr	certified	2.2268867381659065	shape1=1.334637717604056	shape2=9.0330544891308158	scale=1.1969913095113565
+10256	burr	certified	-3.1850921613207208	shape1=1.8524545628296982	shape2=1.8604176234909942	scale=1.1969913095113565
+10257	burr	certified	-3.1849567698099643	shape1=1.8525078244345263	shape2=1.8604176234909942	scale=1.1969913095113565
+10258	burr	certified	-3.1849567562784591	shape1=1.8525078297605031	shape2=1.8604176234909942	scale=1.1969913095113565
+10259	burr	certified	-3.4266999038507895	shape1=1.334637717604056	shape2=1.8604176234909942	scale=1.1969913095113565
+10260	burr	certified	-3.4266046983739122	shape1=1.334637717604056	shape2=1.8604176234909942	scale=1.1969913095113565
+10261	burr	certified	-3.4266046888609631	shape1=1.334637717604056	shape2=1.8604176234909942	scale=1.1969913095113565
+10478	invburr	stop:limit	nan	message=The invburr likelihood is maximised at a limit. Use `mlinvweibull` to fit this model.
+10479	invburr	stop:limit	nan	message=The invburr likelihood is maximised at a limit. Use `mlinvweibull` to fit this model.
+10480	invburr	stop:tie	nan	message=invburr certificate unresolved at a tie or sign-uncertain seam; no verified MLE.
+10481	invburr	certified	36.015577411919352	shape1=0.855256299891619	shape2=10197.078287449827	scale=1.0000335559085383
+10482	invburr	certified	82.067120843308359	shape1=0.855256299891619	shape2=101966007.86014904	scale=1.0000000033564398
+10483	invburr	certified	128.11879065072833	shape1=0.855256299891619	shape2=1019651840251.4622	scale=1.0000000000003357
+10484	invburr	stop:limit	nan	message=The invburr likelihood is maximised at a limit. Use `mlinvweibull` to fit this model.
+10485	invburr	stop:limit	nan	message=The invburr likelihood is maximised at a limit. Use `mlinvweibull` to fit this model.
+10486	invburr	stop:limit	nan	message=The invburr likelihood is maximised at a limit. Use `mlinvweibull` to fit this model.
+10487	invburr	certified	-3.0307344021976084	shape1=0.855256299891619	shape2=2.2945593981369536	scale=1.0705378791831277
+10488	invburr	certified	-3.0306343076031919	shape1=0.855256299891619	shape2=2.2945593981369536	scale=1.0705164840020236
+10489	invburr	certified	-3.0306342976041911	shape1=0.855256299891619	shape2=2.2945593981369536	scale=1.0705164818612047
+10490	invburr	stop:limit	nan	message=The fixed-scale invburr MLE does not exist when all observations <= scale. Use `mlpower` to fit this model with endpoint scale.
+10491	invburr	stop:limit	nan	message=The fixed-scale invburr MLE does not exist when all observations <= scale. Use `mlpower` to fit this model with endpoint scale.
+10492	invburr	stop:limit	nan	message=The fixed-scale invburr MLE does not exist when all observations <= scale. Use `mlpower` to fit this model with endpoint scale.
+10493	invburr	certified	2.9389763493740779	shape1=0.855256299891619	shape2=12.537693942827985	scale=1.1483262751193506
+10494	invburr	certified	2.9383565429105136	shape1=0.855256299891619	shape2=12.535885614510255	scale=1.1483262751193506
+10495	invburr	certified	2.9383564806130567	shape1=0.855256299891619	shape2=12.535885433250249	scale=1.1483262751193506
+10496	invburr	certified	-2.8535442378384666	shape1=1.1569626558678401	shape2=2.2945593981369536	scale=1.1483262751193506
+10497	invburr	certified	-2.853501012541837	shape1=1.1569271657570686	shape2=2.2945593981369536	scale=1.1483262751193506
+10498	invburr	certified	-2.8535010082366048	shape1=1.1569271622029242	shape2=2.2945593981369536	scale=1.1483262751193506
+10499	invburr	certified	-3.0604330470787797	shape1=0.855256299891619	shape2=2.2945593981369536	scale=1.1483262751193506
+10500	invburr	certified	-3.0603498263020512	shape1=0.855256299891619	shape2=2.2945593981369536	scale=1.1483262751193506
+10501	invburr	certified	-3.0603498179915993	shape1=0.855256299891619	shape2=2.2945593981369536	scale=1.1483262751193506
+10628	pareto4	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlpareto(x - min)` to fit this model.
+10629	pareto4	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlpareto(x - min)` to fit this model.
+10630	pareto4	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlpareto(x - min)` to fit this model.
+10631	pareto4	certified	36.234661983395696	shape1=0.31572662523108319	shape2=18139.451331769178	scale=0.99986442366013795	min=0
+10632	pareto4	certified	82.286441570884179	shape1=0.31572662523108319	shape2=181397157.78180358	scale=0.99999998644245502	min=0
+10633	pareto4	certified	128.33813061546604	shape1=0.31572662523108319	shape2=1813971911242.239	scale=0.99999999999864431	min=0
+10634	pareto4	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlweibull(x - min)` to fit this model.
+10635	pareto4	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlweibull(x - min)` to fit this model.
+10636	pareto4	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlweibull(x - min)` to fit this model.
+10637	pareto4	certified	-11.449214280841256	shape1=0.31572662523108319	shape2=0.66237140340221856	scale=0.1754305731570763	min=0
+10638	pareto4	certified	-11.449114358045057	shape1=0.31572662523108319	shape2=0.66237140340221856	scale=0.17542706845702677	min=0
+10639	pareto4	certified	-11.449114348046056	shape1=0.31572662523108319	shape2=0.66237140340221856	scale=0.17542706810620773	min=0
+10640	pareto4	stop:tie	nan	message=Pareto IV certificate unresolved at a tie or sign-uncertain seam; no verified MLE.
+10641	pareto4	stop:numerical	nan	message=Pareto IV certificate numerical failure; no verified MLE.
+10642	pareto4	stop:numerical	nan	message=Pareto IV certificate numerical failure; no verified MLE.
+10643	pareto4	certified	-0.20494679225352175	shape1=0.31572662523108319	shape2=16.061228534845444	scale=1.0887481860644432	min=0
+10644	pareto4	certified	-0.20601802130175351	shape1=0.31572662523108319	shape2=16.057465036996501	scale=1.0887481860644432	min=0
+10645	pareto4	certified	-0.20601812889845195	shape1=0.31572662523108319	shape2=16.057464659338716	scale=1.0887481860644432	min=0
+10646	pareto4	certified	-8.6313184033698498	shape1=1.5028784379912421	shape2=0.66237140340221856	scale=1.0887481860644432	min=0
+10647	pareto4	certified	-8.6312041587521868	shape1=1.5028929689129082	shape2=0.66237140340221856	scale=1.0887481860644432	min=0
+10648	pareto4	certified	-8.6312041473211867	shape1=1.5028929703667335	shape2=0.66237140340221856	scale=1.0887481860644432	min=0
+10649	pareto4	certified	-12.483028689854201	shape1=0.31572662523108319	shape2=0.66237140340221856	scale=1.0887481860644432	min=0
+10650	pareto4	certified	-12.482952632644208	shape1=0.31572662523108319	shape2=0.66237140340221856	scale=1.0887481860644432	min=0
+10651	pareto4	certified	-12.482952625033862	shape1=0.31572662523108319	shape2=0.66237140340221856	scale=1.0887481860644432	min=0
+10846	pareto4	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlpareto(x - min)` to fit this model.
+10847	pareto4	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlpareto(x - min)` to fit this model.
+10848	pareto4	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlpareto(x - min)` to fit this model.
+10849	pareto4	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlpareto(x - min)` to fit this model.
+10850	pareto4	certified	57.344611453971872	shape1=0.31572662523108319	shape2=3.6572129148545214	scale=1.5379506405576848e-06	min=0
+10851	pareto4	certified	126.42216424379325	shape1=0.31572662523108319	shape2=3.6572129148545232	scale=1.5379506405576827e-12	min=0
+10852	pareto4	certified	183.98679156864438	shape1=0.31572662523108319	shape2=3.6572129148545183	scale=1.5379506405576796e-17	min=0
+10853	pareto4	certified	2290.8521516581964	shape1=0.31572662523108319	shape2=3.6572129148544907	scale=1.5379506405576254e-200	min=0
+10854	pareto4	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlweibull(x - min)` to fit this model.
+10855	pareto4	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlweibull(x - min)` to fit this model.
+10856	pareto4	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlweibull(x - min)` to fit this model.
+10857	pareto4	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlweibull(x - min)` to fit this model.
+10858	pareto4	certified	51.882969415869567	shape1=0.31572662523108319	shape2=0.66237140340221856	scale=4.8833035717048037e-07	min=0
+10859	pareto4	certified	120.96052220569094	shape1=0.31572662523108319	shape2=0.66237140340221856	scale=4.8833035717048057e-13	min=0
+10860	pareto4	certified	178.52514953054208	shape1=0.31572662523108319	shape2=0.66237140340221856	scale=4.883303571704813e-18	min=0
+10861	pareto4	certified	2285.3905096200938	shape1=0.31572662523108319	shape2=0.66237140340221856	scale=4.8833035717046757e-201	min=0
+10862	pareto4	uncertified	57.679451945621409	shape1=95821869.992637187	shape2=1.4811824700214467	scale=1.0887481860644432	min=0
+10863	pareto4	uncertified	126.75700473603905	shape1=73885523361449232	shape2=1.4811824608110218	scale=1.0887481860644432	min=0
+10864	pareto4	uncertified	184.32163206089018	shape1=1.8813589250220687e+24	shape2=1.4811824608110264	scale=1.0887481860644432	min=0
+10865	pareto4	stop:numerical	nan	message=Pareto IV certificate numerical failure; no verified MLE.
+10866	pareto4	certified	38.206085293321976	shape1=0.31572662523108319	shape2=0.10676453403601248	scale=1.0887481860644432	min=0
+10867	pareto4	certified	103.62215714932104	shape1=0.31572662523108319	shape2=0.051328754612197443	scale=1.0887481860644432	min=0
+10868	pareto4	certified	159.38877525795291	shape1=0.31572662523108319	shape2=0.035824683128147371	scale=1.0887481860644432	min=0
+10869	pareto4	certified	2253.8063084128325	shape1=0.31572662523108319	shape2=0.0029714804268358287	scale=1.0887481860644432	min=0
+10870	pareto4	certified	55.815790124016182	shape1=4209.8022096119694	shape2=0.66237140340221856	scale=1.0887481860644432	min=0
+10871	pareto4	certified	124.89379820326845	shape1=39666739.705654621	shape2=0.66237140340221856	scale=1.0887481860644432	min=0
+10872	pareto4	certified	182.45842557642015	shape1=81336132233.378067	shape2=0.66237140340221856	scale=1.0887481860644432	min=0
+10873	pareto4	certified	2289.3237856659953	shape1=1.3312215493549241e+132	shape2=0.66237140340221856	scale=1.0887481860644432	min=0
+10874	pareto4	certified	13.325167662509408	shape1=0.31572662523108319	shape2=0.66237140340221856	scale=1.0887481860644432	min=0
+10875	pareto4	certified	36.6492873956105	shape1=0.31572662523108319	shape2=0.66237140340221856	scale=1.0887481860644432	min=0
+10876	pareto4	certified	56.08475189874099	shape1=0.31572662523108319	shape2=0.66237140340221856	scale=1.0887481860644432	min=0
+10877	pareto4	certified	767.4227466463368	shape1=0.31572662523108319	shape2=0.66237140340221856	scale=1.0887481860644432	min=0
+golden-burr-16	burr	uncertified	-613.67979675083097	shape1=1.3346376397588124	shape2=1.8604176090941429	scale=1.1969912411233226
+golden-burr-64	burr	certified	-613.67979675083029	shape1=1.334637472101857	shape2=1.8604177041344527	scale=1.1969911178454391
+golden-burr-1000	burr	certified	-613.67979675083029	shape1=1.334637472101857	shape2=1.8604177041344527	scale=1.1969911178454391
+seed-burr-0	burr	certified	-40.833844651514667	shape1=0.40374028741642659	shape2=1.7076439510791557	scale=0.24738773961800206
+seed-burr-1	burr	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.
+seed-burr-2	burr	stop:limit	nan	message=The burr likelihood is maximised at a limit. Use `mlpareto` to fit this model.
+golden-invburr-16	invburr	uncertified	-625.40647696835697	shape1=0.855256299891619	shape2=2.2945593981369536	scale=1.1483262751193506
+golden-invburr-64	invburr	certified	-625.40647696835754	shape1=0.85525629648037715	shape2=2.2945593266565667	scale=1.1483262991933783
+golden-invburr-1000	invburr	certified	-625.40647696835754	shape1=0.85525629648037715	shape2=2.2945593266565667	scale=1.1483262991933783
+seed-invburr-0	invburr	certified	-60.088871129576262	shape1=0.1802715022195395	shape2=2.8262267470465616	scale=10.434949251359741
+seed-invburr-1	invburr	certified	-46.648432568208769	shape1=1.2156294668451677	shape2=0.81983506101921355	scale=0.52786365931365287
+seed-invburr-2	invburr	certified	-38.205721570574852	shape1=0.62503346793805081	shape2=1.618979854317105	scale=1.4454467497331926
+golden-pareto4-16	pareto4	uncertified	-3607.2382431667843	shape1=0.31572663386430971	shape2=0.66237135973887262	scale=1.0887479679788286	min=0
+golden-pareto4-64	pareto4	certified	-3607.2382431667834	shape1=0.31572662523108319	shape2=0.66237140340221856	scale=1.0887481860644432	min=0
+golden-pareto4-1000	pareto4	certified	-3607.2382431667834	shape1=0.31572662523108319	shape2=0.66237140340221856	scale=1.0887481860644432	min=0
+seed-pareto4-0	pareto4	uncertified	-55.034206799833846	shape1=5.9131706387127778	shape2=0.90328495761840022	scale=19.060503837362791	min=0
+seed-pareto4-1	pareto4	certified	-39.050979803879599	shape1=0.47931244224258912	shape2=1.8451142868999462	scale=0.38456409864338048	min=0
+seed-pareto4-2	pareto4	uncertified	-47.009481846835882	shape1=5.1095924505674093	shape2=0.81936004775955584	scale=13.153553678023323	min=0
+golden-paralogis-16	paralogis	certified	-1035.2174503316762	shape=0.99906478085006523	scale=1.0392329254989454
+golden-paralogis-64	paralogis	certified	-1035.2174503316762	shape=0.99906478085006523	scale=1.0392329254989454
+golden-paralogis-1000	paralogis	certified	-1035.2174503316762	shape=0.99906478085006523	scale=1.0392329254989454
+seed-paralogis-0	paralogis	certified	-30.989573263011074	shape=1.2471631533150362	scale=0.86078172259659813
+seed-paralogis-1	paralogis	certified	-33.011173491648471	shape=1.5417918333356502	scale=1.3924116788119447
+seed-paralogis-2	paralogis	certified	-51.623659801628612	shape=1.0317542772811856	scale=1.1503599977237111
+golden-betapr-16	betapr	uncertified	-439.61585993236264	shape1=2.0142714441834157	shape2=3.2600098629884862	scale=1.0594104475237229
+golden-betapr-64	betapr	certified	-439.61585993236292	shape1=2.0142714433024067	shape2=3.2600098671733666	scale=1.0594104492834631
+golden-betapr-1000	betapr	certified	-439.61585993236292	shape1=2.0142714433024067	shape2=3.2600098671733666	scale=1.0594104492834631
+seed-betapr-0	betapr	uncertified	-36.792780314901329	shape1=8.5735046656974312	shape2=0.73835597400886421	scale=0.02859537266955962
+seed-betapr-1	betapr	uncertified	-41.177178356113465	shape1=0.85146587270463192	shape2=17.786984783923344	scale=38.211799973263403
+seed-betapr-2	betapr	certified	-35.377140117810512	shape1=1.3127418339511299	shape2=1.2328725458625946	scale=0.59927868462274558
+golden-bhatt-16	bhatt	certified	-896.31045982723856	mu=-0.0038000689216034379	sigma=1.0578973332891286	a=1.7336059238714314
+golden-bhatt-64	bhatt	certified	-896.31045982723856	mu=-0.0038000689215917463	sigma=1.0578973332904944	a=1.733605923867753
+golden-bhatt-1000	bhatt	certified	-896.31045982723856	mu=-0.0038000689215917463	sigma=1.0578973332904944	a=1.733605923867753
+seed-bhatt-0	bhatt	stop:limit	nan	message=Certified global comparison: Bhattacharjee likelihood selects the uniform face: use `mlunif`.
+seed-bhatt-1	bhatt	stop:limit	nan	message=Certified global comparison: Bhattacharjee likelihood selects the uniform face: use `mlunif`.
+seed-bhatt-2	bhatt	stop:limit	nan	message=Certified global comparison: Bhattacharjee likelihood selects the uniform face: use `mlunif`.
+golden-ged-16	ged	uncertified	-711.69346056327333	mean=-0.017698961289811691	sd=1.0178559625443544	nu=3.0166443291152163
+golden-ged-64	ged	certified	-711.69346056327277	mean=-0.01769892743468017	sd=1.0178559615983107	nu=3.0166441191540798
+golden-ged-1000	ged	certified	-711.69346056327277	mean=-0.01769892743468017	sd=1.0178559615983107	nu=3.0166441191540798
+seed-ged-0	ged	stop:limit	nan	message=GED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+seed-ged-1	ged	stop:limit	nan	message=GED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+seed-ged-2	ged	stop:limit	nan	message=GED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.
+route-burr-power	burr	certified	-15.043590709793712	shape1=0.2228379450193107	shape2=2	scale=0.093949273103731995
+route-invburr-power	invburr	certified	-20.07911165911187	shape1=0.2228379450193107	shape2=2	scale=10.644041906485773
+route-pareto4-power	pareto4	certified	-15.043590709793712	shape1=0.2228379450193107	shape2=2	scale=0.093949273103731995	min=0
+route-paralogis-scale-1e-06	paralogis	certified	15.628593152314334	shape=16696540.307455633	scale=1
+route-paralogis-scale-1e-07	paralogis	certified	18.067558336898944	shape=191258884.48573104	scale=1
+route-paralogis-scale-1e-08	paralogis	certified	20.489391847618467	shape=2154052611.0574794	scale=1
+route-paralogis-scale-1e-09	paralogis	certified	22.89798553240546	shape=23943528218.108131	scale=1
+route-paralogis-scale-1e-10	paralogis	certified	25.296029355620306	shape=263370949434.53293	scale=1
+route-paralogis-scale-1e-11	paralogis	certified	27.685462871953852	shape=2872286509984.0552	scale=1
+route-paralogis-scale-1e-12	paralogis	certified	30.067754357955231	shape=31102791328127.09	scale=1
+route-paralogis-scale-1e-13	paralogis	certified	32.443621568489782	shape=334649764572824.62	scale=1
+route-paralogis-scale-1e-14	paralogis	uncertified	-0.57382697827668894	shape=2.8853900817780262	scale=1
+route-paralogis-scale-1e-15	paralogis	uncertified	-0.57382697827672224	shape=2.8853900817779365	scale=1
+route-betapr-inclusion	betapr	uncertified	-13.69741916138701	shape1=0.66525330271047589	shape2=1.8469329027304457	scale=3.7692162491595393
+route-bhatt-normal-inclusion	bhatt	uncertified	-10.56042856882309	mu=0	sigma=2	a=0
+route-burr-log-coalescence	burr	stop:numerical	nan	message=Burr global certificate numerical failure (domain, bracket, nonfinite arithmetic or linear solve); no verified MLE.
+route-held-power-unproved-face	burr	uncertified	-8.4657859021753321	shape1=64109.135824194702	shape2=1	scale=128217.55381710346
+route-conditional-budget64	betapr	uncertified	-60.456866897590196	shape1=0.66110553857791232	shape2=903.43801130040049	scale=790.99411417837337
+route-unit-shape-unproved-face	betapr	uncertified	-8.4657859021747353	shape1=1	shape2=66562.726382616253	scale=133124.7856695356
+route-inverse-unit-unproved-face	betapr	uncertified	-4.882233630663058	shape1=66507.879710524241	shape2=1	scale=7.5179439618145994e-06
+route-betapr-rounded-crossing	betapr	uncertified	-35.289647914905281	shape1=0.22690393135372058	shape2=0.16883269323795383	scale=1.0147996776740018
+route-bhatt-uniform-comparison	bhatt	uncertified	-15.249237972318566	mu=-1.3871971181882772e-17	sigma=0.18377418337470389	a=0.80855568869276817
+route-ged-central-knot	ged	uncertified	-7.6746314776398865	mean=-0.96295235253631051	sd=1.720092048217803	nu=0.5
+route-betapr-large-unit-forward	betapr	uncertified	-8.4657359077997274	shape1=1	shape2=702651630.57847202	scale=1405303260.5622334
+route-betapr-refuted-unit-forward	betapr	stop:unresolved	nan	message=Beta-prime optimizer BfgsFailure: profile did not converge or its global certificate is unresolved; increase iterlim. An unresolved gamma or inverse-gamma comparison does not select `mlgamma` or `mlinvgamma`.
+route-betapr-large-unit-inverse	betapr	uncertified	-4.8822169660102794	shape1=702651630.57846951	shape2=1	scale=7.115901799017481e-10
+route-betapr-refuted-unit-inverse	betapr	stop:unresolved	nan	message=Beta-prime optimizer BfgsFailure: profile did not converge or its global certificate is unresolved; increase iterlim. An unresolved gamma or inverse-gamma comparison does not select `mlgamma` or `mlinvgamma`.
+route-betapr-unrepresentable-face-16	betapr	stop:unresolved	nan	message=Beta-prime optimizer BfgsFailure: profile did not converge or its global certificate is unresolved; increase iterlim. An unresolved gamma or inverse-gamma comparison does not select `mlgamma` or `mlinvgamma`.
+route-betapr-unrepresentable-face-1000	betapr	uncertified	3675.6704685518357	shape1=1	shape2=90557.74338791742	scale=1.8111210770140156e-315
+route-burr-held-scale	burr	uncertified	5.2687298207552047	shape1=48258140357.013313	shape2=23.993572806593505	scale=1
+route-invburr-held-scale	invburr	uncertified	1.0687298207552056	shape1=48258140354.188011	shape2=23.993572806535447	scale=1
+route-pareto4-held-scale	pareto4	uncertified	5.2687298207552047	shape1=48258140357.013313	shape2=23.993572806593505	scale=1	min=0
+route-burr-nearly-constant	burr	uncertified	257.3055757555145	shape1=4.2127148577117156e+284	shape2=1822600.997996554	scale=1.0003599475763629
+route-invburr-nearly-constant	invburr	uncertified	257.30557575606423	shape1=4.2132955632676102e+284	shape2=1822601.3843452991	scale=0.99964018193982007
+route-pareto4-nearly-constant	pareto4	uncertified	257.3055757555145	shape1=4.2127148577117156e+284	shape2=1822600.997996554	scale=1.0003599475763629	min=0
+route-invburr-held-power-face	invburr	uncertified	-4.8822336306636629	shape1=64109.135824194702	shape2=1	scale=7.7992440990291767e-06
+route-pareto4-held-power-face	pareto4	uncertified	-8.4657859021753321	shape1=64109.135824194702	shape2=1	scale=128217.55381710346	min=0
+route-ged-rounded-roots-held-mean	ged	uncertified	-96.739200387761159	mean=0	sd=1	nu=1.1081455616252152
+route-ged-rounded-roots-free-mean	ged	uncertified	-96.739200387761159	mean=-2.5293590263189525e-15	sd=1	nu=1.1081455628487342

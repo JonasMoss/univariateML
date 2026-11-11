@@ -152,3 +152,23 @@ test('sstd xi-only certificate, reflection, budget and half-t comparison',()=>{
  const terms=m.dsstd(x,[0,1,1e12,large.estimates.xi],true,true);
  assert.ok(Math.abs([...terms].reduce((a,b)=>a+b,0)-large.logLik)<1e-11);
 });
+
+test('continuous fallback carries the per-fit certification flag',()=>{
+ const x=new Float64Array([Math.exp(-1.1),Math.exp(-1)]);
+ for(const [family,held] of [['burr',{scale:1}],['pareto4',{min:0,scale:1}]]) {
+  const r=m['fit'+family](x,held,{});
+  assert.equal(r.error,undefined,r.error);
+  assert.equal(r.certified,0);
+  assert.ok(Number.isFinite(r.logLik));
+ }
+});
+
+test('unit beta-prime fallback keeps the scalar search beyond the generic shape guard', () => {
+  const x=[1,1,1,1,6.00000001];
+  for(const [data,held,name] of [[x,{shape1:1},'shape2'],[x.map(v=>1/v),{shape2:1},'shape1']]) {
+    const f=m.fitbetapr(new Float64Array(data),held,{});
+    assert.equal(f.error,undefined,f.error);
+    assert.equal(f.status,'Ok');assert.equal(f.certified,0);
+    assert.ok(f.estimates[name]>1e6);assert.ok(Number.isFinite(f.logLik));
+  }
+});

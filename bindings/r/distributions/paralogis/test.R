@@ -172,3 +172,19 @@ test_that("paralogis held-scale competing mode is globally certified", {
   expect_equal(unname(f["shape"]),9262.778134534776,tolerance=1e-8)
   expect_equal(attr(f,"logLik"),8.126729864909168,tolerance=1e-10)
 })
+
+test_that("paralogis returns the root-inclusion fallback flag", {
+  x <- c(.9998,.9999,1,1.0001,1.0003)
+  f <- mlparalogis(x,gradtol=1e-8,iterlim=1000)
+  expect_identical(attr(f,"certified"),FALSE)
+  expect_equal(as.numeric(logLik(f)),sum(dparalogis(x,f[1],f[2],log=TRUE)),tolerance=1e-8)
+})
+
+test_that("held-scale paralogis retains its scalar search when inclusion fails", {
+  for(x in c(.99999999999999,.999999999999999)) {
+    f <- mlparalogis(x,scale=1,gradtol=1e-8,iterlim=1000)
+    expect_identical(attr(f,"certified"),FALSE)
+    expect_identical(unname(f["scale"]),1)
+    expect_true(is.finite(as.numeric(logLik(f))))
+  }
+})

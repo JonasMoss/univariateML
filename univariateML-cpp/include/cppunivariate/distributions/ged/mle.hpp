@@ -43,7 +43,10 @@ struct GedResult {
   GedStatus status; unsigned restricted = 0;
  StopDetail stop_detail{};
   // True only after the conditional/global certificate accepts the result.
-  bool certified = false; };
+  bool certified = false;
+  // Internal distinction between an exact tie and overlapping numerical bounds.
+  bool proved_tie = false;
+  bool search_failed = false; };
 
 #include "free_shape_bounds.hpp"
 
@@ -145,7 +148,7 @@ struct GedFitCost {
   }
 };
 
-inline GedResult ged_mle_impl(span x, double tol, int maxit) {
+inline GedResult ged_mle_impl(span x, double tol, int maxit, bool finite_only=false) {
   maxit = static_cast<int>(solver_budget(maxit));
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
@@ -192,21 +195,21 @@ inline GedResult ged_mle_impl(span x, double tol, int maxit) {
     accepted=true;
     r.status=BfgsStatus::Ok;
     r.f *= objective_divisor;
-    if (std::isfinite(r.f) && -r.f > best.logLik + tie) {
+    if (std::isfinite(r.f) && -r.f > best.logLik + (finite_only?0:tie)) {
       best = {r.theta[0], std::exp(r.theta[1]), 1.0 + std::exp(r.theta[2]),
               -r.f, r.iterations,
               r.status == BfgsStatus::Ok ? GedStatus::Ok : GedStatus::BfgsFailure};
     }
   }
-  if(!accepted && attempted>best.logLik+tie) best.status=GedStatus::BfgsFailure;
+  if(!accepted && (finite_only || attempted>best.logLik+tie)) best.status=GedStatus::BfgsFailure;
   const double uniform = -dn * std::log(z.back() - z.front());
-  if(face_numerical_tie(attempted,uniform,tie)) {
+  if(!finite_only && face_numerical_tie(attempted,uniform,tie)) {
     best.status=GedStatus::BfgsFailure;
     const double face=uniform-dn*std::log(sd_x),ll=best.logLik-dn*std::log(sd_x);
     best.stop_detail=comparison_detail({{mean_x+sd_x*z.front(),mean_x+sd_x*z.back()},face,face,StopModel::Unif},{{mean_x+sd_x*best.mu,sd_x*best.sigma,best.nu},ll,ll,StopModel::None});
     return best;
   }
-  if (uniform > attempted + tie) {
+  if (!finite_only && uniform > attempted + tie) {
     best.logLik = uniform;
     best.status = GedStatus::UniformBoundary;
     best.stop_detail=limit_detail({mean_x+sd_x*z.front(),mean_x+sd_x*z.back()},uniform-dn*std::log(sd_x),StopModel::Unif);
@@ -286,9 +289,9 @@ inline GedResult conditional(span x,double nu,double mean,double sd,int maxit=20
   return {m,s,nu,conditional_loglik({y.data(),y.size()},m,s,nu),0,GedStatus::Ok};
 }
 }
-inline GedResult ged_mle_impl(span x,double tol,int maxit,double mean,double sd,double nu) {
+inline GedResult ged_mle_impl(span x,double tol,int maxit,double mean,double sd,double nu,bool finite_only=false) {
   maxit = static_cast<int>(solver_budget(maxit));
-  if(std::isnan(mean)&&std::isnan(sd)&&std::isnan(nu))return ged_mle_impl(x,tol,maxit);
+  if(std::isnan(mean)&&std::isnan(sd)&&std::isnan(nu))return ged_mle_impl(x,tol,maxit,finite_only);
   const double nan=std::numeric_limits<double>::quiet_NaN();
   if(!std::isnan(nu)) {
     if(!std::isfinite(nu)||nu<=0)return {nan,nan,nu,nan,0,GedStatus::InvalidShape};
@@ -344,7 +347,7 @@ inline GedResult ged_mle_impl(span x,double tol,int maxit,double mean,double sd,
             r.status=GedStatus::BfgsFailure;return r;
           }
           const double pad=ged_shape_detail::margin(std::max(std::abs(a.logLik),std::abs(b.logLik)),x.size());
-          r.status=GedStatus::Nonunique;
+          r.status=GedStatus::Nonunique;r.proved_tie=true;
           r.stop_detail=comparison_detail({{left,sd,1},a.logLik-pad,a.logLik+pad},
               {{right,sd,1},b.logLik-pad,b.logLik+pad});
           r.stop_detail.loglik_upper=std::max(a.logLik,b.logLik)+pad;
@@ -357,13 +360,13 @@ inline GedResult ged_mle_impl(span x,double tol,int maxit,double mean,double sd,
   std::vector<double> grid;for(double t=-12;t<=12;t+=.4)grid.push_back(t);
   auto profile=[&](double t){return ged_detail::conditional(x,1+std::exp(t),mean,sd,maxit);};
   const auto optimum=ged_detail::maximize([&](double a){return profile(a).logLik;},grid,1e-8,maxit);
-  if(!optimum.converged)return {nan,nan,nan,nan,maxit,GedStatus::BfgsFailure};
+  if(!optimum.converged || (finite_only && optimum.point>=grid.back()-1e-8))return {nan,nan,nan,nan,maxit,GedStatus::BfgsFailure};
   auto best=profile(optimum.point);const auto laplace=ged_detail::conditional(x,1,mean,sd,maxit);const double tie=1e-8*x.size();
-  if(face_numerical_tie(laplace.logLik,best.logLik,tie)) {
+  if(!finite_only && face_numerical_tie(laplace.logLik,best.logLik,tie)) {
     best.status=GedStatus::BfgsFailure;
     best.stop_detail=comparison_detail({{laplace.mu,laplace.sigma,laplace.nu},laplace.logLik,laplace.logLik,StopModel::None},{{best.mu,best.sigma,best.nu},best.logLik,best.logLik,StopModel::None});return best;
   }
-  if(laplace.logLik>=best.logLik-tie)best=laplace;
+  if(laplace.logLik>=best.logLik-(finite_only?0:tie))best=laplace;
   const auto mm=std::minmax_element(x.begin(),x.end());
   const double m=std::isnan(mean)?*mm.first/2+*mm.second/2:mean;
   const double radius=std::max(std::abs(*mm.first-m),std::abs(*mm.second-m));
@@ -376,11 +379,11 @@ inline GedResult ged_mle_impl(span x,double tol,int maxit,double mean,double sd,
       uniform-=std::exp(-0.5772156649015328606)*(std::isnan(mean)?2*std::sqrt(left*right):left+right);
     }
   }
-  if(face_numerical_tie(best.logLik,uniform,tie)) {
+  if(!finite_only && face_numerical_tie(best.logLik,uniform,tie)) {
     best.status=GedStatus::BfgsFailure;
     best.stop_detail=comparison_detail({{m-r,m+r},uniform,uniform,StopModel::Unif},{{best.mu,best.sigma,best.nu},best.logLik,best.logLik,StopModel::None});return best;
   }
-  if(uniform>best.logLik+tie){best.logLik=uniform;best.status=GedStatus::UniformBoundary;best.stop_detail=limit_detail({m-r,m+r},uniform,StopModel::Unif);}
+  if(!finite_only && uniform>best.logLik+tie){best.logLik=uniform;best.status=GedStatus::UniformBoundary;best.stop_detail=limit_detail({m-r,m+r},uniform,StopModel::Unif);}
   return best;
 }
 
@@ -475,11 +478,45 @@ inline void ged_uniform_certificate(GedResult& r,span x,double mean,double tol,i
 
 #include "shape_certificate.hpp"
 
+// Keep local convergence separate from the global/accuracy certificate.
+inline GedResult ged_uncertified(GedResult certificate,span x,double tol,int maxit,
+    double mean,double sd,double nu) {
+  if(certificate.status==GedStatus::Ok || certificate.status==GedStatus::UniformBoundary ||
+      certificate.status==GedStatus::InvalidStart || certificate.status==GedStatus::InvalidShape ||
+      (certificate.status==GedStatus::TransformFailure && certificate.search_failed) ||
+      certificate.proved_tie)return certificate;
+  // Knot enumeration is the search itself, not a dispensable certificate.
+  const auto n=static_cast<std::int64_t>(x.size());
+  if(nu<1 && std::isnan(mean) && n>0 && n>enumeration_budget(maxit)/(2*n))return certificate;
+  auto searched=ged_mle_impl(x,tol,maxit,mean,sd,nu,true);
+  if(searched.status!=GedStatus::Ok || !(searched.sigma>0 && searched.nu>0) ||
+      !std::isfinite(searched.mu+searched.sigma+searched.nu+searched.logLik))return certificate;
+  const double ll=ged_detail::conditional_loglik(x,searched.mu,searched.sigma,searched.nu);
+  if(std::isfinite(nu) && nu>1) {
+    const double lambda=dens::ged_lambda(nu);
+    ged_shape_detail::Sum location,scale_score;
+    for(double v:x) {
+      const double d=v-searched.mu;
+      const double W=.5*std::pow(std::abs(d/searched.sigma)/lambda,nu);
+      if(d!=0)location.add(nu*W*(searched.sigma/d));
+      scale_score.add(nu*W-1);
+    }
+    const double score=std::hypot(std::isnan(mean)?location.value:0,
+        std::isnan(sd)?scale_score.value:0);
+    if(!(score<1e-3))return certificate;
+  }
+  const double margin=2048*std::numeric_limits<double>::epsilon()*(x.size()+std::abs(ll)+std::abs(searched.logLik))*(1+searched.nu);
+  if(!std::isfinite(ll) || std::abs(ll-searched.logLik)>margin ||
+      certificate.stop_detail.loglik_lower>ll+margin)return certificate;
+  searched.logLik=ll;searched.certified=false;searched.stop_detail=certificate.stop_detail;return searched;
+}
+
 inline GedResult ged_mle(span x,double tol,int maxit) {
   maxit = static_cast<int>(solver_budget(maxit));
   auto r=ged_shape_certificate(x,tol,maxit,NAN,NAN);
   ged_uniform_certificate(r,x,NAN,tol,maxit);
   ged_failure_bounds(r,x,NAN,NAN,tol,maxit);
+  r=ged_uncertified(r,x,tol,maxit,NAN,NAN,NAN);
   if(r.status==GedStatus::Ok && (true) && r.nu==kGedNuLower) r.restricted|=16u;
   return r;
 }
@@ -495,6 +532,7 @@ inline GedResult ged_mle(span x,double tol,int maxit,double mean,double sd,doubl
   }
   if(std::isnan(nu) && std::isnan(sd))ged_uniform_certificate(r,x,mean,tol,maxit);
   if(std::isnan(nu))ged_failure_bounds(r,x,mean,sd,tol,maxit);
+  r=ged_uncertified(r,x,tol,maxit,mean,sd,nu);
   if(r.status==GedStatus::Ok && (std::isnan(nu)) && r.nu==kGedNuLower) r.restricted|=16u;
   return r;
 }

@@ -37,10 +37,10 @@ inline FitResult fit_ged(cppunivariate::span x, Held mean_arg = {}, Held sd_arg 
   if(res.status==cppunivariate::GedStatus::InvalidShape)return fail("Held `nu` must be at least 1 under the existing GED restriction.");
   if(res.sigma==0 && (mean.supplied||sd.supplied||nu.supplied))
     return classify(fail("GED scale likelihood is unbounded: all observations equal the fitted or held location."),{},"nomle",{});
-  if(res.stop_detail.budget_exhausted)return classify(fail("GED shape certificate did not converge within its work budget; increase iterlim."),res.stop_detail,"budget",{"mean","sd","nu"});
+  if(res.status!=cppunivariate::GedStatus::Ok && res.stop_detail.budget_exhausted)return classify(fail("GED shape certificate did not converge within its work budget; increase iterlim."),res.stop_detail,"budget",{"mean","sd","nu"});
   if(res.status==cppunivariate::GedStatus::UniformUnresolved)return classify(fail("GED held-sd uniform comparison is unresolved by the shape certificate."),res.stop_detail,"numerical",{"mean","sd","nu"});
   if(res.status==cppunivariate::GedStatus::Nonunique)return classify(fail("GED maxima are not unique or their comparison is unresolved, including a possible Laplace median interval."),res.stop_detail,"tie",{"mean","sd","nu"});
-  if(res.stop_detail.comparison_tie)return classify(fail("Conditional GED search did not converge; increase iterlim."),res.stop_detail,"tie",{"mean","sd","nu"});
+  if(res.status!=cppunivariate::GedStatus::Ok && res.stop_detail.comparison_tie)return classify(fail("Conditional GED search did not converge; increase iterlim."),res.stop_detail,"tie",{"mean","sd","nu"});
   if (res.status == cppunivariate::GedStatus::InvalidStart) {
     if(!sd.supplied && gradtol>0 && std::isfinite(gradtol) && iterlim>0 && !x.empty() && std::isfinite(x[0]) && (!mean.supplied || held_mean==x[0]) && std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return classify(fail("GED MLE requires at least 2 finite observations with positive "
                "variance."),{},"nomle",{});
@@ -63,7 +63,7 @@ inline FitResult fit_ged(cppunivariate::span x, Held mean_arg = {}, Held sd_arg 
   if(res.restricted & 8u) restricted.emplace_back("sd","upper");
   if(res.restricted & 16u) restricted.emplace_back("nu","lower");
   if(res.restricted & 32u) restricted.emplace_back("nu","upper");
-  return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"mean",res.mu},{"sd",res.sigma},{"nu",res.nu}}; out.restricted = restricted; out.has_restricted = true; out.fixed = fixed; out.has_fixed = true; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; return out; }();
+  return [&]() { FitResult out; out.extra.emplace_back("certified",res.certified?1.:0.); out.warnings = warnings; out.estimates = {{"mean",res.mu},{"sd",res.sigma},{"nu",res.nu}}; out.restricted = restricted; out.has_restricted = true; out.fixed = fixed; out.has_fixed = true; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; return out; }();
 
 }
 }

@@ -5,6 +5,7 @@
 #include "cppunivariate/core/constants.hpp"
 #include "../../core/multistart.hpp"
 #include "../lomax/mle.hpp"
+#include "lomax_face.hpp"
 #include "fixed_scale.hpp"
 #include "certificate.hpp"
 #include "scale_certificate.hpp"
@@ -96,6 +97,7 @@ struct BurrMLE {
   int iterations;
   BurrStatus status;
   StopDetail stop_detail{};
+  bool certified=true;
 };
 // theta = (log shape2, log scale relative to geometric mean).
 // shape1 = n / sum softplus(shape2 * log(x/scale)).
@@ -123,7 +125,8 @@ struct BurrProfileCost {
 inline BurrMLE burr_mle_legacy(span x, double tol, int maxit,
     double shape10 = std::numeric_limits<double>::quiet_NaN(),
     double shape20 = std::numeric_limits<double>::quiet_NaN(),
-    double scale0 = std::numeric_limits<double>::quiet_NaN(), double reltol = 1e-12) {
+    double scale0 = std::numeric_limits<double>::quiet_NaN(), double reltol = 1e-12,
+    bool finite_only = false) {
   maxit = static_cast<int>(solver_budget(maxit));
   const double nan = std::numeric_limits<double>::quiet_NaN();
   if (x.size() < 2) return {nan,nan,nan,nan,0,BurrStatus::InvalidInit};
@@ -188,9 +191,9 @@ inline BurrMLE burr_mle_legacy(span x, double tol, int maxit,
   const auto w = weibull_mle(x,1e-10,maxit);
   const auto p = pareto_mle(x);
   const double tie = 1e-8*n;
-  if (w.logLik >= ll-tie && w.logLik >= p.logLik-tie)
+  if (!finite_only && w.logLik >= ll-tie && w.logLik >= p.logLik-tie)
     return {INFINITY,w.shape,w.scale,w.logLik,best.iterations,BurrStatus::WeibullBoundary};
-  if (p.logLik >= ll-tie)
+  if (!finite_only && p.logLik >= ll-tie)
     return {0.0,INFINITY,p.min,p.logLik,best.iterations,BurrStatus::ParetoBoundary};
   if (!std::isfinite(best.f)) {
     if(attempted.theta.size()!=2) return {nan,nan,nan,nan,0,BurrStatus::IterationFailure};
@@ -202,8 +205,24 @@ inline BurrMLE burr_mle_legacy(span x, double tol, int maxit,
     best.status == BfgsStatus::Ok ? BurrStatus::Ok : BurrStatus::IterationFailure};
 }
 
-// Convert only checked certificate outcomes. No local-score rescue is valid
-// after a failed global certificate. Held paths below retain their algorithms.
+// An inconclusive certificate does not invalidate a converged finite search.
+// A separated feasible lower bound does invalidate it.
+inline BurrMLE burr_uncertified(BurrMLE certificate, BurrMLE searched, span x) {
+  if(searched.status!=BurrStatus::Ok) return certificate;
+  if(!(searched.shape1>0 && searched.shape2>0 && searched.scale>0) ||
+      !std::isfinite(searched.shape1+searched.shape2+searched.scale+searched.logLik))return certificate;
+  double ll=0;
+  for(double v:x) {
+    const double z=searched.shape2*(std::log(v)-std::log(searched.scale));
+    ll+=std::log(searched.shape1)+std::log(searched.shape2)-std::log(v)-
+      burr_softplus(-z)-searched.shape1*burr_softplus(z);
+  }
+  const double margin=1024*std::numeric_limits<double>::epsilon()*(x.size()+std::abs(ll)+std::abs(searched.logLik));
+  if(!std::isfinite(ll) || std::abs(ll-searched.logLik)>margin ||
+      certificate.stop_detail.loglik_lower>ll+margin)return certificate;
+  searched.logLik=ll;searched.certified=false;searched.stop_detail=certificate.stop_detail;
+  return searched;
+}
 inline BurrMLE burr_mle_certified(span x, double tol, int maxit,
     double shape10 = std::numeric_limits<double>::quiet_NaN(),
     double shape20 = std::numeric_limits<double>::quiet_NaN(),
@@ -237,6 +256,8 @@ inline BurrMLE burr_mle_certified(span x, double tol, int maxit,
     const auto& face=r.stop_detail.candidates[status==BurrStatus::ParetoBoundary?0:1];
     out.stop_detail.limit_coef=face.coef;out.stop_detail.limit_loglik=r.logLik;
   }
+  if(status==BurrStatus::CertificateTie || status==BurrStatus::CertificateBudget || status==BurrStatus::NumericalFailure)
+    return burr_uncertified(out,burr_mle_legacy(x,tol,maxit,shape10,shape20,scale0,reltol,true),x);
   return out;
 }
 inline BurrMLE burr_mle(span x, double tol, int maxit,
@@ -252,8 +273,9 @@ inline BurrMLE burr_mle_fixed_scale(span x, double scale,
     double tol = 1.220703e-4, int maxit = 1000) {
   maxit = static_cast<int>(solver_budget(maxit));
   double proposal=NAN;
-  // Compatibility proposal only: successful or failed historical solves
-  // must pass the same independent root bracket and coefficient bounds.
+  BurrMLE searched{NAN,NAN,scale,NAN,0,BurrStatus::IterationFailure};
+  // The existing solve nominates a root for the independent certificate;
+  // a converged result can also survive an unclosed certificate uncertified.
   if(scale>0&&std::isfinite(scale)&&tol>0&&std::isfinite(tol)&&maxit>0) {
     std::vector<double> normalized;
     for(double v:x) {
@@ -263,7 +285,10 @@ inline BurrMLE burr_mle_fixed_scale(span x, double scale,
     }
     if(!normalized.empty()) {
       const auto legacy=burr_fixed_detail::burr_mle(span{normalized.data(),normalized.size()},tol,maxit);
-      if(legacy.status==burr_fixed_detail::BurrStatus::Ok)proposal=legacy.shape2;
+      if(legacy.status==burr_fixed_detail::BurrStatus::Ok) {
+        proposal=legacy.shape2;
+        searched={legacy.shape1,legacy.shape2,scale,legacy.logLik-x.size()*std::log(scale),legacy.iterations,BurrStatus::Ok};
+      }
     }
   }
   const auto r=burr_cert_detail::scale_fit(x,scale,tol,maxit,proposal);
@@ -275,7 +300,10 @@ inline BurrMLE burr_mle_fixed_scale(span x, double scale,
   if(r.outcome==burr_cert_detail::Outcome::Budget)status=BurrStatus::CertificateBudget;
   if(r.outcome==burr_cert_detail::Outcome::Tie)status=BurrStatus::CertificateTie;
   auto detail=r.stop_detail;detail.budget_exhausted=status==BurrStatus::CertificateBudget;
-  return {r.k,r.c,scale,r.logLik,r.profiles,status,detail};
+  BurrMLE out{r.k,r.c,scale,r.logLik,r.profiles,status,detail};
+  if(status==BurrStatus::CertificateTie || status==BurrStatus::CertificateBudget || status==BurrStatus::NumericalFailure)
+    return burr_uncertified(out,searched,x);
+  return out;
 }
 } // namespace cppunivariate
 
@@ -309,7 +337,10 @@ inline BurrMLE burr_mle_holds(span x,double a,double b,double s,double tol=1e-9,
  for(double v:x){if(!(v>0)||!std::isfinite(v))return bad;l.push_back(std::log(v));mean+=l.back()/x.size();mn=std::min(mn,l.back());mx=std::max(mx,l.back());}
  if(std::isnan(a)&&std::isnan(b))return std::isnan(s)?burr_mle(x,tol,maxit):burr_mle_fixed_scale(x,s,tol,maxit);
  const bool fa=std::isnan(a),fb=std::isnan(b),fs=std::isnan(s);
- if(fb&&((fs&&mn==mx)||(!fs&&mn==mx&&x[0]==s))){bad.status=BurrStatus::Unbounded;return bad;}
+ if(fb&&((fs&&mn==mx)||(!fs&&mn==mx&&x[0]==s))){
+   const bool constant=std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];});
+   bad.status=constant?BurrStatus::Unbounded:BurrStatus::NumericalFailure;return bad;
+ }
  const auto solve_root=[&](auto score){return burr_hold_detail::root(score,maxit);};
  const double n=static_cast<double>(x.size());
  // Fixed power is precisely a Lomax likelihood; its exponential face
@@ -327,14 +358,25 @@ inline BurrMLE burr_mle_holds(span x,double a,double b,double s,double tol=1e-9,
    }
    bad.stop_detail.loglik_lower+=jac;bad.stop_detail.loglik_upper+=jac;
    bad.stop_detail.segment_loglik_upper+=jac;bad.stop_detail.limit_loglik+=jac;
-   if(r.status==LomaxStatus::ExponentialLimit){
+   if(r.status==LomaxStatus::ExponentialLimit && fallback_lomax_face_proved(span{y.data(),y.size()},maxit)){
      bad.status=BurrStatus::WeibullBoundary;
      const double rate=r.stop_detail.limit_coef.empty()?NAN:r.stop_detail.limit_coef[0];
      bad.stop_detail.limit_coef={b,std::exp(mx-std::log(rate)/b)};
      bad.stop_detail.limit_loglik=r.stop_detail.limit_loglik+n*std::log(b)+(b-1)*n*mean-b*n*mx;
      return bad;
    }
-   if(r.status!=LomaxStatus::Ok){bad.status=r.certificate_failure==LomaxCertificateFailure::Budget?BurrStatus::CertificateBudget:r.certificate_failure==LomaxCertificateFailure::Arithmetic?BurrStatus::NumericalFailure:BurrStatus::IterationFailure;return bad;}
+   if(r.status==LomaxStatus::ExponentialLimit) {
+     const double rate=r.stop_detail.limit_coef.empty()?NAN:r.stop_detail.limit_coef[0];
+     bad.stop_detail.limit_coef={b,std::exp(mx-std::log(rate)/b)};
+     fallback_retain_unclosed_face(bad.stop_detail,StopModel::Weibull);
+   }
+   if(r.status!=LomaxStatus::Ok){
+     bad.status=r.certificate_failure==LomaxCertificateFailure::Budget?BurrStatus::CertificateBudget:r.certificate_failure==LomaxCertificateFailure::Arithmetic?BurrStatus::NumericalFailure:BurrStatus::IterationFailure;
+     const auto candidate=lomax_newton_candidate(span{y.data(),y.size()},tol,maxit);
+     BurrMLE searched{candidate.kappa,b,std::exp(mx-std::log(candidate.lambda)/b),
+       candidate.logLik+jac,candidate.iterations,candidate.status==LomaxStatus::Ok?BurrStatus::Ok:BurrStatus::IterationFailure};
+     return burr_uncertified(bad,searched,x);
+   }
    a=r.kappa;s=std::exp(mx-std::log(r.lambda)/b);
    if(!(a>0 && std::isfinite(a) && s>0 && std::isfinite(s) && std::isfinite(r.logLik+jac))){bad.status=BurrStatus::NumericalFailure;return bad;}
    return {a,b,s,r.logLik+jac,r.iterations,BurrStatus::Ok};

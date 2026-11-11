@@ -130,7 +130,7 @@ inline BhattResult search(const Profile& p,std::vector<double> start,double tol,
 }
 }
 namespace bhatt_detail {
-inline BhattResult legacy_candidate(span x,double tol=1e-8,int maxit=500,double sigma=special::kNaN,double a=special::kNaN,double mu=special::kNaN) {
+inline BhattResult legacy_candidate(span x,double tol=1e-8,int maxit=500,double sigma=special::kNaN,double a=special::kNaN,double mu=special::kNaN,bool finite_only=false) {
   maxit = static_cast<int>(solver_budget(maxit));
   BhattResult bad={special::kNaN,special::kNaN,special::kNaN,special::kNaN,0,BhattStatus::InvalidInput};
   if(x.empty()||!(tol>0&&std::isfinite(tol))||maxit<1||(!std::isnan(sigma)&&!(sigma>0&&std::isfinite(sigma)))||(!std::isnan(a)&&!(a>=0&&std::isfinite(a))))return bad;
@@ -155,7 +155,7 @@ inline BhattResult legacy_candidate(span x,double tol=1e-8,int maxit=500,double 
   const double held_s=std::isnan(sigma)?sigma:sigma/scale,held_a=std::isnan(a)?a:a/scale;
   // With width held and covering the sample, pointwise and complementary
   // endpoint bounds prove that the uniform face dominates every interior fit.
-  if(std::isnan(sigma)&&!std::isnan(a)&&(std::isnan(mu)?y.back()-y.front()<=2*held_a:std::max(std::abs(y.front()-held_mu),std::abs(y.back()-held_mu))<=held_a)) {
+  if(!finite_only&&std::isnan(sigma)&&!std::isnan(a)&&(std::isnan(mu)?y.back()-y.front()<=2*held_a:std::max(std::abs(y.front()-held_mu),std::abs(y.back()-held_mu))<=held_a)) {
     double ll=-n*std::log(2*held_a);
     if(!std::isnan(mu)){for(double z:y)if(std::abs(z-held_mu)==held_a)ll-=std::log(2.0);}
     else if(y.back()-y.front()==2*held_a) {
@@ -174,7 +174,7 @@ inline BhattResult legacy_candidate(span x,double tol=1e-8,int maxit=500,double 
     face=-n*(std::log(sd)+.91893853320467274178)-n*var/(2*sd*sd);
   }
   if(std::isnan(sigma)&&std::isnan(a))face=std::max(face,-n*std::log(std::isnan(mu)?y.back()-y.front():2*std::max(std::abs(y.front()-held_mu),std::abs(y.back()-held_mu))));
-  bhatt_detail::Profile p{y,held_s,held_a,face,held_mu,maxit};
+  bhatt_detail::Profile p{y,held_s,held_a,finite_only?special::kNegInf:face,held_mu,maxit};
   BhattResult best={0,0,0,special::kNegInf,0,BhattStatus::IterationFailure};
   auto attempted=best;
   bool faces_only=false;
@@ -273,13 +273,13 @@ inline BhattResult legacy_candidate(span x,double tol=1e-8,int maxit=500,double 
     }
   }
   };
-  compare_faces();
+  if(!finite_only)compare_faces();
   if(faces_only && best.status==BhattStatus::IterationFailure) {
     logconcave_detail::record_fallback(logconcave_detail::FallbackReason::UnresolvedFaces);
     best={0,0,0,special::kNegInf,0,BhattStatus::IterationFailure};attempted=best;
     run_multistart();
     if(!std::isfinite(best.logLik))best=attempted;
-    compare_faces();
+    if(!finite_only)compare_faces();
   }
   best.mu=std::isnan(mu)?centre+scale*best.mu:mu;best.sigma=std::isnan(sigma)?scale*best.sigma:sigma;best.a=std::isnan(a)?scale*best.a:a;best.logLik-=n*std::log(scale);
   if(best.status==BhattStatus::UniformLimit) {

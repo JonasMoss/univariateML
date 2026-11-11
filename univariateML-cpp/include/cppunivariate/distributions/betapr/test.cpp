@@ -291,13 +291,14 @@ TEST_CASE("betapr conditional certificate compares separated local maxima") {
   CHECK(r.logLik==doctest::Approx(-28.556114324015226).epsilon(1e-10));
 }
 
-TEST_CASE("betapr conditional nonunique crossing stops with both witnesses") {
+TEST_CASE("betapr rounded conditional crossing keeps an uncertified fit and both witnesses") {
   std::vector<double> x{1.9901008294052028e-5,2.209857117039297e-5,
     .0002450722434289249,12.288342947780086,942.976056905759,16.239512580216314,
     2.898690421966857,1.2684036923492177,400970.63293690106};
   x.back()*=std::exp(5.646438395028704);
   const auto r=cppunivariate::betapr_mle_holds(mltest::as_span(x),.22690393135372058,NAN,NAN);
-  REQUIRE(r.status==cppunivariate::BetaPrimeStatus::BfgsFailure);
+  REQUIRE(r.status==cppunivariate::BetaPrimeStatus::Ok);
+  CHECK_FALSE(r.certified);
   REQUIRE(r.stop_detail.comparison_tie);
   CHECK(std::isfinite(r.stop_detail.loglik_upper));
   CHECK(r.stop_detail.loglik_lower<=r.stop_detail.loglik_upper);
@@ -355,10 +356,11 @@ TEST_CASE("betapr flat gamma-adjacent conditional maximum retains golden coeffic
   CHECK(r.logLik==doctest::Approx(-58.0668187021122).epsilon(1e-10));
   CHECK(r.iterations<=cppunivariate::certificate_budget(1000));
   const auto budget=cppunivariate::betapr_mle_holds(mltest::as_span(x),.66110553857791232,NAN,NAN,1e-6,64);
-  REQUIRE(budget.status==cppunivariate::BetaPrimeStatus::BfgsFailure);
+  REQUIRE(budget.status==cppunivariate::BetaPrimeStatus::Ok);
+  CHECK_FALSE(budget.certified);
   CHECK(budget.certificate_failure==cppunivariate::LomaxCertificateFailure::Budget);
   CHECK(budget.stop_detail.budget_exhausted);
-  CHECK(budget.iterations==cppunivariate::certificate_budget(64));
+  CHECK(budget.iterations<=64);
   CHECK(!budget.stop_detail.candidates.empty());
 }
 
@@ -529,10 +531,11 @@ TEST_CASE("betapr all-free unresolved symmetric faces stop as a comparison tie")
   CHECK(gamma);CHECK(invgamma);
 }
 
-TEST_CASE("betapr all-free budget stops retain witnesses and never bless a proposal") {
+TEST_CASE("betapr all-free certificate allowance retains an uncertified converged search") {
   const auto g=mltest::load_distribution_golden("betapr");
   const auto r=cppunivariate::betapr_mle(mltest::as_span(g.data),1e-6,16);
-  REQUIRE(r.status==cppunivariate::BetaPrimeStatus::BfgsFailure);
+  REQUIRE(r.status==cppunivariate::BetaPrimeStatus::Ok);
+  CHECK_FALSE(r.certified);
   CHECK(r.certificate_failure==cppunivariate::LomaxCertificateFailure::Budget);
   CHECK(r.stop_detail.budget_exhausted);
   CHECK_FALSE(r.joint_exterior.global_certified);
@@ -541,10 +544,11 @@ TEST_CASE("betapr all-free budget stops retain witnesses and never bless a propo
   CHECK(std::isinf(r.stop_detail.loglik_upper));
 }
 
-TEST_CASE("betapr strict all-free coefficient requests cannot bless a wider enclosure") {
+TEST_CASE("betapr strict coefficient request retains an uncertified converged search") {
   const auto g=mltest::load_distribution_golden("betapr");
   const auto r=cppunivariate::betapr_mle(mltest::as_span(g.data),1e-14,1000);
-  CHECK(r.status==cppunivariate::BetaPrimeStatus::BfgsFailure);
+  CHECK(r.status==cppunivariate::BetaPrimeStatus::Ok);
+  CHECK_FALSE(r.certified);
   CHECK(r.certificate_failure==cppunivariate::LomaxCertificateFailure::Arithmetic);
   CHECK_FALSE(r.joint_exterior.global_certified);
   CHECK(!r.stop_detail.candidates.empty());
@@ -629,4 +633,66 @@ TEST_CASE("betapr held-shape score rejects an underflowed data statistic") {
   const std::vector<double> x{1e-100,2e-100,3e-100,5e-100,9e-100};
   const auto r=cppunivariate::betapr_mle_holds(mltest::as_span(x),1e-320,NAN,1e300);
   CHECK(r.status==cppunivariate::BetaPrimeStatus::BfgsFailure);
+}
+
+TEST_CASE("beta-prime fallback keeps local convergence and rejects a separated witness") {
+ const std::vector<double> x{.03,.1,.4,.7,1,2,4,12};const auto data=mltest::as_span(x);
+ auto r=cppunivariate::betapr_mle(data,1e-14,16);
+ REQUIRE(r.status==cppunivariate::BetaPrimeStatus::Ok);CHECK_FALSE(r.certified);
+ double ll=0;for(double v:x)ll+=cppunivariate::distributions::dbetapr(v,r.alpha,r.beta,r.scale,true);
+ CHECK(r.logLik==doctest::Approx(ll).epsilon(1e-10));
+ cppunivariate::BetaPrimeResult certificate{NAN,NAN,NAN,NAN,0,cppunivariate::BetaPrimeStatus::BfgsFailure};
+ const auto empty=cppunivariate::betapr_detail::fallback(certificate,data,NAN,NAN,NAN,1e-8,1000);
+ REQUIRE(empty.status==cppunivariate::BetaPrimeStatus::Ok);CHECK_FALSE(empty.certified);
+ certificate.stop_detail=r.stop_detail;certificate.stop_detail.loglik_lower=r.logLik+1;
+ CHECK(cppunivariate::betapr_detail::fallback(certificate,data,NAN,NAN,NAN,1e-8,1000).status==cppunivariate::BetaPrimeStatus::BfgsFailure);
+}
+
+TEST_CASE("beta-prime unit-shape margin preferences do not prove limit stops") {
+ std::vector<double> x{1,1,1,1,6.0001};
+ const auto r=cppunivariate::betapr_mle_holds(mltest::as_span(x),1,NAN,NAN);
+ REQUIRE(r.status==cppunivariate::BetaPrimeStatus::Ok);CHECK_FALSE(r.certified);
+ for(double& v:x)v=1/v;
+ const auto q=cppunivariate::betapr_mle_holds(mltest::as_span(x),NAN,1,NAN);
+ REQUIRE(q.status==cppunivariate::BetaPrimeStatus::Ok);CHECK_FALSE(q.certified);
+}
+
+TEST_CASE("beta-prime unit shapes retain large finite scalar proposals") {
+ std::vector<double> x{1,1,1,1,6.00000001};
+ for(bool inverse:{false,true}) {
+   std::vector<double> y=x;if(inverse)for(double& v:y)v=1/v;
+   const auto r=cppunivariate::betapr_mle_holds(mltest::as_span(y),inverse?NAN:1,inverse?1:NAN,NAN,1e-6,1000);
+   REQUIRE(r.status==cppunivariate::BetaPrimeStatus::Ok);CHECK_FALSE(r.certified);
+   CHECK((inverse?r.alpha:r.beta)>1e6);CHECK(std::isfinite(r.logLik));
+ }
+}
+
+TEST_CASE("beta-prime retains an unclosed face as a refuting witness") {
+ const std::vector<double> x{1,1,1,1,5.99998};const auto data=mltest::as_span(x);
+ auto certificate=cppunivariate::betapr_mle_holds_certificate(data,1,NAN,NAN,1e-6,16);
+ REQUIRE(certificate.status==cppunivariate::BetaPrimeStatus::BfgsFailure);
+ REQUIRE(std::isfinite(certificate.stop_detail.loglik_lower));
+ CHECK(certificate.stop_detail.limit_coef.empty());CHECK(certificate.stop_detail.limit_model==cppunivariate::StopModel::None);
+ REQUIRE(!certificate.stop_detail.candidates.empty());
+ CHECK(certificate.stop_detail.candidates.back().model==cppunivariate::StopModel::Exp);
+ auto without_bound=certificate;without_bound.stop_detail.loglik_lower=-INFINITY;
+ const auto unchecked=cppunivariate::betapr_detail::fallback(without_bound,data,1,NAN,NAN,1e-6,16);
+ REQUIRE(unchecked.status==cppunivariate::BetaPrimeStatus::Ok);
+ const double margin=2048*std::numeric_limits<double>::epsilon()*(x.size()+std::abs(unchecked.logLik));
+ CHECK(certificate.stop_detail.loglik_lower>unchecked.logLik+margin);
+ CHECK(cppunivariate::betapr_detail::fallback(certificate,data,1,NAN,NAN,1e-6,16).status==cppunivariate::BetaPrimeStatus::BfgsFailure);
+}
+
+TEST_CASE("unit face bounds survive unrepresentable face coefficients") {
+ cppunivariate::StopDetail d;d.limit_coef={INFINITY};d.limit_loglik=42;
+ cppunivariate::fallback_retain_unclosed_face(d,cppunivariate::StopModel::Exp);
+ CHECK(d.loglik_lower==42);CHECK(d.candidates.empty());CHECK(d.limit_coef.empty());CHECK(std::isnan(d.limit_loglik));
+ const double u=1e-320;const std::vector<double> x{u,u,u,u,6*u};
+ const auto r=cppunivariate::betapr_mle_holds(mltest::as_span(x),1,NAN,NAN,1e-6,16);
+ REQUIRE(std::isfinite(r.stop_detail.loglik_lower));
+ if(r.status==cppunivariate::BetaPrimeStatus::Ok) {
+   CHECK_FALSE(r.certified);CHECK(r.scale>0);CHECK(std::isfinite(r.logLik));
+   const double margin=2048*std::numeric_limits<double>::epsilon()*(x.size()+std::abs(r.logLik));
+   CHECK(r.logLik+margin>=r.stop_detail.loglik_lower);
+ } else CHECK(r.status==cppunivariate::BetaPrimeStatus::BfgsFailure);
 }

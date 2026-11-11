@@ -201,6 +201,7 @@ inline InvBurrResult invburr_mle(span x, double tol, int maxit,
     return {nan,nan,nan,nan,r.iterations,InvBurrStatus::NumericalFailure};
   }
   InvBurrResult out{r.shape1,r.shape2,scale,logLik,r.iterations,status};
+  out.certified=r.certified;
   out.stop_detail=invburr_stop_detail(r.stop_detail,jacobian,maximum);
   if(status==InvBurrStatus::PowerBoundary)out.stop_detail.limit_coef={maximum,r.stop_detail.limit_coef[0]};
   if(status==InvBurrStatus::InvWeibullBoundary)out.stop_detail.limit_coef={r.stop_detail.limit_coef[0],1/r.stop_detail.limit_coef[1]};
@@ -260,6 +261,7 @@ inline InvBurrResult invburr_mle_holds(span x,double a,double b,double s,double 
  if(r.status==BurrStatus::ParetoBoundary)st=InvBurrStatus::PowerBoundary;
  if(r.status==BurrStatus::AllGeOne)st=InvBurrStatus::AllLeOne;
  InvBurrResult out{r.shape1,r.shape2,std::isnan(s)?1/r.scale:s,r.logLik+jac,r.iterations,st};
+ out.certified=r.certified;
  out.stop_detail=invburr_stop_detail(r.stop_detail,jac,std::isnan(s)?NAN:s);
  // The reciprocal certificate establishes the unique held-scale maximum;
  // refine its scalar score using raw log ratios, without preserving the

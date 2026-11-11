@@ -26,7 +26,7 @@ r:
   control:
     shape: Known positive finite coefficient; NULL estimates it.
     shape0: Optional starting value for the numerical proposal; NULL uses an automatic start.
-    gradtol: Tolerance for the numerical proposal; success additionally requires the global certificate, independently of this tolerance.
+    gradtol: Tolerance for the numerical proposal; the global certificate is attempted independently of this tolerance.
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations."
 limits:
   - name: unbounded likelihood
@@ -60,8 +60,8 @@ relations:
       scale: scale
 fit:
   method: multistart
-  certified: 'yes'
-  note: 'paralogis/README.md, Global certificate; paralogis/certificate.hpp; paralogis/test.cpp: Free-shape fits require root enclosure, analytic tail exclusion and exhaustive compact-domain exclusion. Held shape uses the monotone Burr scale solve. Reciprocal transformation preserves the certificate and stop details.'
+  certified: partial
+  note: 'Free-shape fits attempt root enclosure, analytic tail exclusion and compact-domain exclusion. A converged proposal survives an unclosed cover unless a feasible likelihood bound refutes it. Held shape uses the monotone Burr scale solve.'
 areas:
 - actuarial
 - economics and income
@@ -103,14 +103,15 @@ Fitting requires a nonempty positive finite sample. The
 [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-genbeta.md)
 gives the boundary argument. Both coefficients are estimated unless held.
 With both free, constant data permit concentration at their common value and
-have unbounded likelihood. A numerical proposal is returned only after the global certificate below succeeds.
+have unbounded likelihood. A converged numerical proposal remains available with `certified=false` when
+the global certificate below does not close.
 
 Holding scale removes that collapse. There are no nondegenerate limit-model
 escapes in this conditional fit. Its log-likelihood tends to minus infinity
 at both shape endpoints, including for constant data, so a finite maximum
 exists. This argument does not prove uniqueness. Holding shape leaves a
 strictly monotone log-scale score with a unique root, also for constant data.
-The joint proposal uses BFGS in log coordinates after scaling observations by their median. With scale held, safeguarded shape-score iterations propose the fit. Both paths then require the global certificate below. With shape held, the fit uses the Burr conditional scale solve.
+The joint proposal uses BFGS in log coordinates after scaling observations by their median. With scale held, safeguarded shape-score iterations propose the fit. Both paths then attempt the global certificate below. With shape held, the fit uses the Burr conditional scale solve.
 
 For a direct joint existence argument, consider the paralogistic log-data
 $y_i=\log x_i$, put $a=\alpha$, $v=\log\theta$ and
@@ -207,30 +208,26 @@ the Burr certificate's practical floating-point policy:
 with an additional term-count and magnitude allowance for sums. The claim
 is certification in exact arithmetic conditional on the computed comparisons,
 with this practical margin; it is not outward-rounded interval arithmetic.
-No long-double precision is required. Nonfinite arithmetic, insufficient
-root accuracy, indistinguishable logarithms or an unresolved comparison
-stops with `NumericalFailure`. Exhausting `128 * min(iterlim, 100000)` compact-search boxes stops
-with `CertificateBudget`. Proposal exhaustion retains `BfgsFailure`.
-The bindings provide structured `numerical`, `budget` or `nomle` stops,
-including finite feasible candidates and likelihood bounds when available;
-they never return the unchecked proposal. The global upper bound on an
-unfinished search may be infinity. `shape0` affects only the proposal.
+No long-double precision is required. An unclosed root enclosure or compact
+cover leaves the converged proposal with `certified=false`; a strictly better
+finite certificate point refutes it. Proposal exhaustion retains `BfgsFailure`.
+The compact cover uses at most `128 * min(iterlim, 100000)` boxes. `shape0`
+affects only the proposal.
 
 The held-scale likelihood can have competing modes. If the historical
 proposal fails certification, a dyadic shape scan proposes additional
 positive-to-negative score crossings, refined by bisection. Its feasible
 likelihoods select a candidate; the scan does not establish completeness
 or globality. The same root enclosure, tail bounds and exhaustive exclusion
-must certify the replacement. Thus a missed crossing can cause a numerical
-stop, never acceptance of an unchecked mode. For `x = exp(-0.001)` and scale
+must certify the replacement. The scan supplies proposals only; successful global exclusion supplies certification. For `x = exp(-0.001)` and scale
 1 the returned shape is 9262.7781345 (log likelihood 8.1267299), rather than
 the local mode at 2.89538 (log likelihood -0.570099).
 
-The nearest double below 1 with scale 1 remains a numerical stop. Its
-large candidate root can be enclosed, but absolute allowances in the
-likelihood bound prevent closing the small-shape tail. Returning that
-candidate requires a tighter feasible-likelihood bound; see the retained
-[precision-stop check](../../../../../dev/research/evaluations/2026-11-06-paralogis-modes-data/precision-stop.cpp).
+For the nearest double below 1 at scale 1, practical likelihood allowances
+can prevent separation of the small-shape mode from the large-shape root.
+A converged local proposal is then uncertified; a separated feasible lower
+bound still refutes it. The [precision check](../../../../../dev/research/evaluations/2026-11-06-paralogis-modes-data/precision-stop.cpp)
+records the tail-bound difficulty.
 
 Sorted centered logarithms are compressed into exact repeated-value groups.
 Their sum is cached. Conservative bins of at most 128, 1024 and 8192 groups

@@ -43,14 +43,11 @@ test('Burr and reciprocal sign-uncertain-seam structured tie', () => {
   }
 });
 
-test('Burr and reciprocal nearly-constant structured tie', () => {
+test('Burr and reciprocal nearly-constant uncertified fallback', () => {
   const x=[0.99999900000050002,0.99999910526355817,0.99999921052662744,0.9999993157897078,0.99999942105279915,0.99999952631590161,0.99999963157901528,0.99999973684213994,0.99999984210527559,0.99999994736842246,1.0000000526315804,1.0000001578947493,1.0000002631579294,1.0000003684211205,1.0000004736843227,1.0000005789475359,1.0000006842107605,1.000000789473996,1.0000008947372423,1.0000010000005];
   for (const [family,data] of [['burr',x],['invburr',x.map(v=>1/v)]]) {
-    assert.throws(() => api[family].fit(data), e => {
-      assert.equal(e.kind,'tie');assert.ok(e.candidates.length>=2);
-      for(const c of e.candidates)assert.ok(c.loglik_lower<=c.loglik_upper);
-      return true;
-    });
+    const f=api[family].fit(data);
+    assert.equal(f.status,'Ok');assert.equal(f.certified,0);assert.ok(Number.isFinite(f.logLik));
   }
 });
 
