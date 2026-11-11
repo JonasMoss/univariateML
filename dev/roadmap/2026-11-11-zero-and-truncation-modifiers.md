@@ -53,10 +53,10 @@ For a while both knobs and the old families coexist; `zero = "truncated"` and
 Combining them (zero modification of an upper-truncated count) is refused at
 first with `not-implemented`.
 
-Window convention (decision: Jonas): closed `[lower, upper]` for both
-continuous and integer families. extraDistr and the current `tpois`/`tbinom`
-use $(a, b]$; `tnorm` uses $[a, b]$. A single closed convention is easier to
-state; generated wrappers for the old names translate.
+Window convention (decision: Jonas; proposed): closed `[lower, upper]` for
+both continuous and integer families. extraDistr and the current
+`tpois`/`tbinom` use $(a, b]$; `tnorm` uses $[a, b]$. With no aliases, nothing
+needs translating; NEWS states the new convention.
 
 ## Where the knob appears
 
@@ -158,17 +158,29 @@ were never published. d/p/q/r are internal and generated, so extraDistr and
 actuar names (`dztpois`, `dzmnbinom`, `dtpois`, `dzip`) do not bind us; users
 know them, though.
 
-Options (decision: Jonas):
+Decision (Jonas, 2026-11-11): knobs only, in both C++ and R. No aliases;
+`mlzip`, `mlzipf` and the zt/zm/t wrappers go, as a breaking change in the 2.0
+release. Checked 2026-11-11: no CRAN package calls `mlzip` or `mlzipf` (GitHub
+code search over the `cran` mirror; the reverse imports are ale, autogam,
+EBcoBART, kdensity, peppwR, piecenorms, RealSurvSim, svines). NEWS gives the
+replacement call for each removed wrapper.
 
-1. Only the knob: `mlpois(x, zero = "modified")`. Fewest names; `mlzip` breaks.
-2. The knob plus generated one-line aliases for the conventional names
-   (`mlzip`, `mlztpois`, `mlzmpois`, `mltnorm`, ...), each returning the same
-   object as the knob call, documented on the base family's page. Keeps the
-   published `mlzip` and actuar's vocabulary at no maintenance cost.
-3. Keep separate R families as now and change C++ only.
+## Truncation widens the parameter domain
 
-Recommendation: 2. The aliases are generated from the front matter
-(`modifiers.*.alias`), so they are not separate families anywhere.
+`zipf` is `zeta` truncated to $\{1, \dots, N\}$, but its domain is
+$s \ge 0$ while `zeta` needs $s > 1$: on a finite window the normaliser is
+finite for every $s$. So `mlzeta(x, truncate = c(1, N))` must fit on a wider
+domain than `mlzeta(x)`. In general a bounded window admits every parameter for
+which the density is integrable on the window, and the truncated family can be
+larger than $T(M)$ for the base family $M$. The same happens for a normal
+truncated to a bounded window, whose closure adds the truncated exponential and
+the uniform as limits.
+
+Requirement: each family's `modifiers.truncate` block declares its domain under
+a bounded window (`domain_bounded`), and the limits of the truncated family are
+assessed separately rather than inherited. zipf retires only when
+`mlzeta(x, truncate = c(1, N))` reproduces its goldens, including fits with
+$s \le 1$.
 
 ## Current coverage (counts starting at 0)
 
@@ -197,11 +209,11 @@ dgamma and dweibull marginal.
    truncation through it, checked against the existing zt fitters.
 4. New bases: pig, cmp, bbinom, bnbinom, each with zero-truncated limits
    worked out first.
-5. Retire the zt/zm/t directories, aliases per the R decision.
+5. Retire the zt/zm/zi/t directories and zipf, and remove their R wrappers.
 
 ## Trigger to revisit
 
-The R names decision is made and TASK-150 (accuracy contract, uniform
+The window convention is settled and TASK-150 (accuracy contract, uniform
 controls) is done, since that also changes every wrapper signature.
 
 ## Verification
