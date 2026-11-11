@@ -42,7 +42,7 @@ r:
     df: Optional held df; NULL estimates it.
     sigma: Optional held sigma; NULL estimates it.
     mu: Optional held mu; NULL estimates it.
-    gradtol: All-free coefficient enclosure width target, clamped between 1e-7 and 1e-6 in normalized location and relative scale/shape units. Held joint fits use the score tolerance for EM nominations and require root inclusion; scalar held fits require coefficient brackets.
+    gradtol: All-free coefficient enclosure width target, clamped between 1e-7 and 1e-6 in normalized location and relative scale/shape units. Held joint fits use the score tolerance for EM nominations and require root inclusion; scalar held fits require coefficient brackets. Shape-only brackets target relative width min(gradtol, 1e-10) and require relative width at most min(gradtol, 1e-7).
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations."
 log_density: loggamma((df+1)/2) - loggamma(df/2) - log(df*pi)/2 - log(sigma) - (df+1)*log(1+((x-mu)/sigma)**2/df)/2
 limits:
@@ -67,9 +67,8 @@ limits:
   - model: norm
     firmness: proved
     when: 'The shape $\nu$ tends to infinity, retaining finite location and scale.'
-    detect: For all-free fits, exhaustive profile and tail bounds select this face. Held free-shape subsets retain uncertified numerical profile and face comparisons.
+    detect: All-free and shape-only held fits use exhaustive finite-interval and tail certificates. Joint held profiles can certify normal with a strictly negative first-order term, a uniform tail remainder and a complete compact cover; unresolved profiles retain legacy finite or limit decisions marked uncertified.
     status: NormalBoundary
-    numerical: true
 holds: []
 examples: |
   x <- diff(log(datasets::EuStockMarkets[, "DAX"]))
@@ -82,7 +81,7 @@ relations: {}
 fit:
   method: profile-search
   certified: partial
-  note: 'lst/README.md, Details; lst/certificate.hpp; lst/mle.hpp: All-free fits use exhaustive profile envelopes, root inclusion and uniform curvature neighborhoods, with normal and lower-face certificates conditional on computed practical arithmetic bounds. Fixed-location/fixed-shape scale fits use monotone brackets; fixed-scale/fixed-shape location fits isolate every possible maximum and stop on unresolved ties. Joint location/scale fits at held shape >= 1 require root inclusion under the strict atom condition. A uniform shape-score bound additionally certifies the held-scale Cauchy regime; other free-shape held profiles retain uncertified numerical searches. Joint fits below shape one stop numerically pending global bounds.'
+  note: 'lst/certificate.hpp; lst/shape_certificate.hpp; lst/signed_face_certificate.hpp: All-free, fixed-shape scalar and closed shape-only fits use global certificates conditional on practical arithmetic bounds. Joint held-shape fits at shape >= 1 and a held-scale Cauchy regime retain their certificates. Constrained normal limits use signed profile tails and compact covers. Unresolved finite or limit nominations retain converged legacy decisions marked uncertified. Symmetric subunit samples can prove global nonuniqueness; generic subunit joint fits remain unresolved.'
 areas:
 - measurement and errors
 classification: classical
@@ -133,12 +132,12 @@ can have nonunique attained fits). Strictly positive exponents for every tie
 permit the regular fixed-parameter fit.
 
 
-Conditional fits preserve held location $\mu$ and scale $\sigma$. With location held and scale free, only ties at that location contribute to collapse: the exponent is $\nu(n-k)-k$. A negative exponent is unbounded; at equality and fixed shape the collapse supremum is not attained. Free shape has lower bound one with location free; held location exempts that bound. The conditional normal face remains eligible in the numerical profile comparison. Holding scale removes scale collapse. Held-scale/free-location/free-shape fits can certify the Cauchy face using a uniform shape-score bound. Other held free-shape fits retain numerical searches and face comparisons, without actual-hold global bounds. At fixed shape, held-scale location fits use exhaustive stationary-point isolation.
+Conditional fits preserve held location $\mu$ and scale $\sigma$. With location held and scale free, only ties at that location contribute to collapse: the exponent is $\nu(n-k)-k$. A negative exponent is unbounded; at equality and fixed shape the collapse supremum is not attained. Free shape has lower bound one with location free; held location exempts that bound. The conditional normal face requires an actual-hold tail certificate. Holding scale removes scale collapse. Held-scale/free-location/free-shape fits can certify the Cauchy face using a uniform shape-score bound. Shape-only fits use exhaustive scalar certificates. Other two-dimensional held profiles retain successful numerical results marked uncertified. At fixed shape, held-scale location fits use exhaustive stationary-point isolation.
 
 With shape free, any observation equal to the held location permits scale collapse
 through sufficiently small positive shape when scale is free, and fitting stops.
 
-With $\mu$ held, the lower shape restriction is exempt. Observations equal to that location make the free-scale/free-shape likelihood unbounded; other free-shape cases retain uncertified numerical searches.
+With $\mu$ held, the lower shape restriction is exempt. Observations equal to that location make the free-scale/free-shape likelihood unbounded; unresolved two-dimensional free-shape cases retain converged numerical fits marked uncertified.
 
 The [2026-11-04 certificate study](../../../../../dev/research/evaluations/2026-11-04-t-cert-report.md)
 proves geodesic convexity of the fixed-shape nuisance objective for
@@ -202,8 +201,7 @@ nonfinite/domain errors and insufficient coefficient widths stop with
 failure can use the local optimizer-score exception. Location width is
 measured in empirical normal-scale units; scale and shape widths are relative.
 The all-free width target is gradtol clamped to [1e-7,1e-6]; std checks the
-entire transformed standard-deviation interval as well. Held subsets retain
-uncertified numerical searches for free-shape profiles; the fixed-shape certificates below apply separately.
+entire transformed standard-deviation interval as well. Shape-only and fixed-shape held subsets use the certificates below; unresolved two-dimensional free-shape profiles retain successful numerical results marked uncertified.
 
 Normal stops carry `(mean,sd)`; positive ordinary-scale t2 stops carry
 `(mu,sigma,df=2)`. A bounded collapse stop carries the diagnostic path
@@ -214,7 +212,7 @@ witnesses where available; unknown global upper bounds remain infinite.
 
 ## Decision history
 
-The all-free default uses the native certificate. Held subsets use the fixed-shape certificates and the free-shape numerical searches described below.
+The all-free default uses the native certificate. Held subsets use the fixed-shape and scalar shape certificates below; unresolved joint free-shape profiles retain converged numerical fits marked uncertified.
 
 The 2026-11-04 TASK-140 study retains the existing default: its whole-profile
 value enclosures do not yet establish a certified global coefficient vector.
@@ -235,8 +233,6 @@ comparisons and convergence checks; it does not strengthen global guarantees.
 
 The held-location scale route retains residual log magnitudes to avoid squared-residual overflow; the strengthened bracket acceptance is described below.
 
-Uncertified held free-shape face comparisons use the family tolerance and stop numerically when `core/face_compare.hpp` cannot resolve a decision after its floating-point rounding allowance. This allowance concerns computed likelihood comparisons, not optimizer convergence or global optimality; see the [comparison analysis](../../../../../dev/research/evaluations/2026-11-02-face-compare-report.md).
-
 At a critical half-mass atom b, the fixed-shape Cauchy supremum is
 $-n\log\pi-2\sum_{x_i\ne b}\log|x_i-b|$. It is attained only for
 balanced two-point data, with nonunique nuisance fits. That exceptional
@@ -249,7 +245,7 @@ The [root and lower-face derivation](../../../../../dev/research/evaluations/202
 proves these endpoint statements and gives a relative chord inequality
 that can exclude a whole punctured endpoint neighborhood. It also derives
 the analytic Hessian in upper-half-plane coordinates, root inclusion and
-uniform nuisance/profile-curvature checks. These arguments underlie the all-free native certificate; held profile searches keep their existing scope.
+uniform nuisance/profile-curvature checks. These arguments underlie the all-free native certificate; held profiles require their own constrained bounds.
 
 ## Fixed-shape held certificates
 
@@ -276,19 +272,24 @@ inequality, geodesic convexity makes an included stationary root global.
 EM nominates the point; Newton refinement and a two-dimensional contraction
 inclusion verify it. The complete location and relative scale widths must
 be below $10^{-6}$. The balanced two-point Cauchy equality keeps its existing
-attained, nonunique route after verifying its maximizing curve in physical coordinates. An endpoint-rounded midpoint stops numerically. Subunit-shape joint fits stop numerically rather than returning an unchecked EM result.
+attained, nonunique route after verifying its maximizing curve in physical coordinates. An endpoint-rounded midpoint stops numerically. Subunit-shape joint fits use the symmetry exclusion below when it proves nonuniqueness; other cases stop numerically rather than returning an unchecked EM result.
 
 The [held-subset derivation and validation](../../../../../dev/research/evaluations/2026-11-07-std-held-report.md)
 records the proofs, actual-hold normal-seam coefficients, unresolved
 free-shape bounds and regression evidence. These gaps keep certification
-partial; these held profiles retain numerical estimates without a globality claim.
+partial; unresolved two-dimensional free-shape profiles retain converged numerical fits marked uncertified.
 
-Outside the certified decreasing-shape Cauchy regime, the three free-shape
-held subsets retain their numerical profiles: a shape grid nominates peaks,
-golden-section refinement must converge, and numerical comparisons select
-conditional normal or collapse faces. Holding location removes the df >= 1
-fitting bound. These searches do not exclude every remote maximum or supply
-uniform tail bounds; successful estimates remain uncertified.
+With location and ordinary scale held, `shape_certificate.hpp` covers the
+whole positive shape axis. The bound $f_\nu(x;\mu,\sigma)\le
+\sqrt{\nu}/(2\sigma)$ excludes a neighborhood of zero using a finite
+witness. A closed scalar root cover and actual-hold normal-tail bounds
+then compare all maxima and the normal supremum. Holding location exempts
+shape from the lower fitting restriction; no artificial shape floor is used.
+
+Outside the decreasing-shape Cauchy and certified normal regimes,
+converged two-dimensional nominations retain their finite or limit decisions
+with `certified=false`. A failed solve still stops; a strictly better
+likelihood witness rejects a proposed face.
 
 With scale held and location free, a sufficiently large sample range permits
 a uniform-in-location proof that the likelihood strictly decreases in shape
@@ -308,3 +309,23 @@ Location accuracy with scale held is measured against empirical data spread,
 so a large held scale cannot mask an inaccurate location. Scale estimates
 must survive logarithmic round-trip checks after conversion to physical
 coordinates; an unrepresentable accurate estimate causes a numerical stop.
+The [constrained-shape derivation](../../../../../dev/research/evaluations/2026-11-08-std-free-data/derivation.md)
+gives the exempt lower-shape tail and actual-hold normal-tail bounds.
+
+At held shape below one, strict atom inequalities imply existence but do not
+imply uniqueness. For exactly symmetric data, the fitter bounds the entire
+centered scale profile using its monotone scale score. If reflected finite
+witnesses both strictly beat that bound, symmetry proves at least two distinct
+global maximizers. For example, $(-100,-99,0,99,100)$ at shape $1/2$ passes this
+test. Candidate coefficients in this stop are likelihood witnesses, not
+maximizer enclosures. Unresolved symmetric and asymmetric cases retain a
+numerical stop. Exact symmetry is verified on binary64 input sums.
+
+For held location and free scale, the first normal-profile coefficient is
+$n(b_2-3)/4$ about the supplied centre. For held ordinary scale it is
+$\sum_i(z_i^4-2z_i^2-1)/4$ about the fitted normal location. Uniform
+remainders, nuisance root brackets and the finite shape/location cover
+can certify the normal limit despite location modes on the Cauchy face.
+The [signed-face derivation](../../../../../dev/research/evaluations/2026-11-08-std-free-data/signed-derivation.md)
+explains the actual-hold bounds. Zero or uncertain first-order signs retain
+uncertified legacy decisions when the search converges.

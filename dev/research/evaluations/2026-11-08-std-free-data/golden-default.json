@@ -1,0 +1,86 @@
+[
+  {
+    "family": "std",
+    "held": "mean",
+    "iterlim": 200,
+    "certified": false,
+    "coefficients": {
+      "mean": -0.0062603717426506856,
+      "sd": 0.83950572461190942,
+      "nu": 3.9776664945166025
+    },
+    "logLik": -579.48078242137717,
+    "maximum_relative_golden_error": 3.1706926170044425e-06,
+    "seconds": 0.32199999999999984
+  },
+  {
+    "family": "std",
+    "held": "sd",
+    "iterlim": 200,
+    "certified": false,
+    "coefficients": {
+      "mean": -0.0062603331857040969,
+      "sd": 0.83950656347345454,
+      "nu": 3.9776580725833672
+    },
+    "logLik": -579.48078242147278,
+    "maximum_relative_golden_error": 6.1588909051424463e-06,
+    "seconds": 19.678999999999998
+  },
+  {
+    "family": "std",
+    "held": ["mean", "sd"],
+    "iterlim": 200,
+    "certified": true,
+    "coefficients": {
+      "mean": -0.0062603717426506856,
+      "sd": 0.83950656347345454,
+      "nu": 3.977657951975587
+    },
+    "logLik": -579.48078242146823,
+    "maximum_relative_golden_error": 1.023059547966859e-06,
+    "seconds": 1.5510000000000019
+  },
+  {
+    "family": "lst",
+    "held": "mu",
+    "iterlim": 200,
+    "certified": false,
+    "coefficients": {
+      "mu": 0.074550708952068806,
+      "sigma": 1.0270946920856898,
+      "df": 3.0242424325353574
+    },
+    "logLik": -898.62478110465679,
+    "maximum_relative_golden_error": 9.6898669592384658e-08,
+    "seconds": 0.28000000000000114
+  },
+  {
+    "family": "lst",
+    "held": "sigma",
+    "iterlim": 200,
+    "certified": false,
+    "coefficients": {
+      "mu": 0.074550690158552702,
+      "sigma": 1.0270947160838733,
+      "df": 3.0242430287495652
+    },
+    "logLik": -898.62478110465634,
+    "maximum_relative_golden_error": 2.5209037403704494e-07,
+    "seconds": 12.468
+  },
+  {
+    "family": "lst",
+    "held": ["mu", "sigma"],
+    "iterlim": 200,
+    "certified": true,
+    "coefficients": {
+      "mu": 0.074550708952068806,
+      "sigma": 1.0270947160838733,
+      "df": 3.0242427135238885
+    },
+    "logLik": -898.62478110464804,
+    "maximum_relative_golden_error": 3.9866395054012781e-09,
+    "seconds": 0.17400000000000659
+  }
+] 

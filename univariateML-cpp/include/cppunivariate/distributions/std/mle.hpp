@@ -33,7 +33,7 @@
 
 namespace cppunivariate {
 
-enum class StudentTStatus { Ok = 0, BfgsFailure, InvalidStart, NormalBoundary, DfTwoBoundary, InvalidNu, Unbounded, ScaleBoundary, IterationFailure, CertificateBudget, CertificateTie, NumericalFailure };
+enum class StudentTStatus { Ok = 0, BfgsFailure, InvalidStart, NormalBoundary, DfTwoBoundary, InvalidNu, Unbounded, ScaleBoundary, IterationFailure, CertificateBudget, CertificateTie, NumericalFailure, NonUniqueHeldSd };
 
 struct StudentTResult {
   double mu;
@@ -43,6 +43,7 @@ struct StudentTResult {
   int iterations;
   StudentTStatus status;
   StopDetail stop_detail{};
+  bool certified = true;
 };
 
 // Per-obs nll in phi-space (with z = (x - mu)/sigma, m = nu - 2,
@@ -450,24 +451,107 @@ inline StudentTResult student_t_mle(span x,double tol,int maxit,double mean,doub
     StudentTResult unbounded{nan,nan,nan,INFINITY,0,StudentTStatus::Unbounded};
     unbounded.stop_detail.loglik_lower=INFINITY;unbounded.stop_detail.loglik_upper=INFINITY;return unbounded;
   }
-  std::vector<double> grid;for(double t=-18;t<=16;t+=.5)grid.push_back(t);
-  const auto optimum=lst_detail::maximize([&](double a){return profile(2+std::exp(a)).logLik;},grid,1e-8,maxit);
-  if(!optimum.converged)return {nan,nan,nan,nan,maxit,StudentTStatus::IterationFailure};
-  auto best=profile(2+std::exp(optimum.point));const double tie=1e-8*x.size();
-  const auto normal=norm_mle(x,mean,sd);
-  double face=-INFINITY;
-  if(std::isnan(sd))face=lst_detail::conditional(x,2,mean,nan,tol,maxit).logLik;
-  if(k==2*(x.size()-k)) {
-    double atom=mean;
-    if(std::isnan(atom)) {
-      std::vector<double> y(x.begin(),x.end());std::sort(y.begin(),y.end());atom=y[y.size()/2];
-    }
-    face=-static_cast<double>(x.size())*std::log(2.0);
-    for(double v:x)if(v!=atom)face-=3*std::log(std::abs(v-atom));
+  bool scalar_unresolved=false;
+  StudentTResult scalar_refusal{NAN,NAN,NAN,NAN,0,StudentTStatus::NumericalFailure};
+  if(!std::isnan(mean)&&!std::isnan(sd)) {
+    const auto c=t_shape_detail::solve(x,mean,sd,true,maxit,tol);
+    const auto status=c.status==0?StudentTStatus::Ok:c.status==1?StudentTStatus::NormalBoundary:
+      c.status==2?StudentTStatus::CertificateBudget:c.status==3?StudentTStatus::CertificateTie:
+      c.status==5?StudentTStatus::ScaleBoundary:StudentTStatus::NumericalFailure;
+    StudentTResult result{mean,sd,c.shape,c.loglik,c.evaluations,status};result.stop_detail=c.detail;
+    if(c.status==0||c.status==1||c.status==5||tol<std::numeric_limits<double>::epsilon())return result;
+    scalar_unresolved=true;scalar_refusal=result;
+
   }
-  if(face_numerical_tie(normal.logLik,best.logLik,tie) || face_numerical_tie(face,best.logLik,tie) || face_numerical_tie(normal.logLik,face,tie)) {best.status=StudentTStatus::IterationFailure;return best;}
-  if(normal.logLik>=best.logLik-tie&&normal.logLik>=face-tie)return {normal.mean,normal.sd,INFINITY,normal.logLik,0,StudentTStatus::NormalBoundary};
-  if(face>=best.logLik-tie)return {mean,INFINITY,2,face,0,k==2*(x.size()-k)?StudentTStatus::ScaleBoundary:StudentTStatus::DfTwoBoundary};
+  if(std::isnan(mean)&&!std::isnan(sd)) {
+    const auto proof=t_symmetry_detail::held_sd(x,sd);
+    if(proof.outcome==1){
+      StudentTResult tied{NAN,NAN,NAN,NAN,proof.evaluations,StudentTStatus::NonUniqueHeldSd};
+      tied.stop_detail=proof.detail;return tied;
+    }
+  }
+  const auto normal_proof=t_signed_detail::solve(x,mean,sd,true,maxit);
+  if(normal_proof.proved){
+    const auto& c=normal_proof.detail.limit_coef;
+    StudentTResult result{c[0],c[1],INFINITY,normal_proof.detail.limit_loglik,normal_proof.evaluations,StudentTStatus::NormalBoundary};
+    result.stop_detail=normal_proof.detail;return result;
+  }
+  std::vector<double> grid;for(double t=-18;t<=16;t+=.5)grid.push_back(t);
+  StopDetail nomination;nomination.loglik_upper=INFINITY;
+  const auto optimum=lst_detail::maximize([&](double a){
+    const double shape=2+std::exp(a);const auto point=profile(shape);
+    t_shape_detail::retain_candidates(point.stop_detail,nomination);
+    if(nomination.candidates.empty())t_shape_detail::retain_point(x,
+      std::isfinite(point.mu)?point.mu:(std::isnan(mean)?x[0]:mean),
+      std::isfinite(point.sigma)&&point.sigma>0?point.sigma:(std::isnan(sd)?1.:sd),shape,true,nomination);
+    return point.logLik;
+  },grid,1e-8,maxit);
+  if(!optimum.converged){
+    if(scalar_unresolved)return scalar_refusal;
+    StudentTResult failed{nan,nan,nan,nan,maxit,StudentTStatus::IterationFailure};
+    failed.stop_detail=nomination;return failed;
+  }
+  auto best=profile(2+std::exp(optimum.point));
+  if(best.status==StudentTStatus::Ok) {
+    StopDetail point;t_shape_detail::retain_point(x,best.mu,best.sigma,best.nu,true,point);
+    const auto normal=norm_mle(x,mean,sd);
+    const auto normal_point=t_shape_detail::normal_point(x,normal.mean,normal.sd);
+    double lower_value=-INFINITY;StopDetail lower_point;
+    if(std::isnan(sd)) {
+      const auto lower=lst_detail::conditional(x,2,mean,nan,tol,maxit);
+      lower_value=lower.logLik;
+      t_shape_detail::retain_point(x,lower.mu,lower.sigma,2,false,lower_point);
+      if(lower.status==LstStatus::Ok){lower_point.limit_model=StopModel::Lst;lower_point.limit_coef={lower.mu,lower.sigma,2};}
+    }
+    if(k==2*(x.size()-k)) {
+      double atom=mean;
+      if(std::isnan(atom)){std::vector<double> y(x.begin(),x.end());std::sort(y.begin(),y.end());atom=y[y.size()/2];}
+      t_cert_detail::Sum terms;
+      for(double v:x)if(v!=atom)terms.add(t_cert_detail::log(t_cert_detail::I(std::abs(v-atom)))*3);
+      const auto value=t_cert_detail::I(-static_cast<double>(x.size()))*std::log(2.)-terms.get();
+      if(value.valid()){
+        lower_value=value.mid();lower_point.limit_model=StopModel::TCollapsePath;lower_point.limit_coef={atom,2};
+        lower_point.loglik_lower=value.lo;lower_point.candidates={{{atom,2},value.lo,value.hi,StopModel::TCollapsePath}};
+      }
+    }
+    const auto disproved=[&](const StopDetail& face){
+      if(face.candidates.empty())return false;
+      const double upper=face.candidates.front().loglik_upper;
+      if(!point.candidates.empty()&&point.loglik_lower>upper)return true;
+      if(scalar_unresolved)for(const auto& candidate:scalar_refusal.stop_detail.candidates)
+        if(candidate.loglik_lower>upper)return true;
+      for(const auto& candidate:normal_proof.detail.candidates)if(candidate.loglik_lower>upper)return true;
+      return false;
+    };
+    const double tie=1e-8*x.size();
+    if(!(normal_proof.coefficient_lower>0)&&normal.logLik>=best.logLik-tie&&normal.logLik>=lower_value-tie&&!disproved(normal_point)&&
+       (normal_point.candidates.empty()||lower_point.candidates.empty()||!(lower_point.loglik_lower>normal_point.candidates.front().loglik_upper))){
+      StudentTResult result{normal.mean,normal.sd,INFINITY,normal.logLik,0,StudentTStatus::NormalBoundary};
+      result.certified=false;result.stop_detail=normal_point;
+      result.stop_detail.limit_model=StopModel::Norm;result.stop_detail.limit_coef={normal.mean,normal.sd};
+      result.stop_detail.limit_loglik=normal.logLik;
+      result.stop_detail.candidates.insert(result.stop_detail.candidates.begin(),point.candidates.begin(),point.candidates.end());
+      return result;
+    }
+    if(lower_value>=best.logLik-tie&&!disproved(lower_point)&&
+       (normal_point.candidates.empty()||lower_point.candidates.empty()||!(normal_point.loglik_lower>lower_point.candidates.front().loglik_upper))){
+      StudentTResult result{mean,INFINITY,2,lower_value,0,
+        k==2*(x.size()-k)?StudentTStatus::ScaleBoundary:StudentTStatus::DfTwoBoundary};
+      result.certified=false;result.stop_detail=lower_point;result.stop_detail.limit_loglik=lower_value;
+      result.stop_detail.loglik_upper=INFINITY;
+      result.stop_detail.candidates.insert(result.stop_detail.candidates.begin(),point.candidates.begin(),point.candidates.end());
+      return result;
+    }
+    StopDetail alternative=normal_point;
+    bool wrong=t_shape_detail::dominated(point,alternative);
+    if(!wrong)wrong=t_shape_detail::dominated(point,lower_point);
+    if(!wrong&&scalar_unresolved)wrong=t_shape_detail::dominated(point,scalar_refusal.stop_detail);
+    if(!wrong)wrong=t_shape_detail::dominated(point,normal_proof.detail);
+    if(wrong){best.status=StudentTStatus::NumericalFailure;best.stop_detail=point;return best;}
+  }
+  // No constrained joint root coverage is available yet. Preserve a
+  // converged admissible legacy point, explicitly without certification.
+  best.certified=false;
   return best;
 }
-}  // namespace cppunivariate
+} // namespace cppunivariate

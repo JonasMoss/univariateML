@@ -1255,3 +1255,90 @@ test('binomial relatives retain proved finite and Poisson witnesses', async () =
   }
 });
 
+
+test('std and lst shape certificates distinguish uncertified joint fits', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  for (const family of ['lst','std']) {
+    const g = read(family,'golden'), names = Object.keys(g.estimates);
+    const held = Object.fromEntries(names.slice(0,2).map(k => [k,g.estimates[k]]));
+    const fit = api[family].fit(new Float64Array(g.data), held);
+    assert.equal(fit.status,'Ok');
+    assert.equal(fit.certified,1);
+    assert.ok(fit.logLik >= g.logLik - 1e-6*g.data.length);
+    for (const [key,value] of Object.entries(held)) assert.equal(fit.estimates[key],value);
+    for (const key of names.slice(0,2)) {
+      const joint=api[family].fit(new Float64Array(g.data),{[key]:g.estimates[key]});
+      assert.equal(joint.status,'Ok');
+      assert.equal(joint.certified,0);
+      assert.equal(joint.estimates[key],g.estimates[key]);
+    }
+  }
+  assert.throws(() => api.std.fit(new Float64Array([0,0,1]), {mean:0,sd:1}), error => {
+    assert.equal(error.kind,'nomle');
+    assert.ok(error.loglik_lower <= -3*Math.log(2));
+    assert.ok(error.loglik_upper >= -3*Math.log(2));
+    return true;
+  });
+  const small = api.lst.fit(new Float64Array([-100,100]), {mu:0,sigma:1});
+  assert.ok(small.estimates.df>0 && small.estimates.df<.5);
+});
+
+test('std and lst held free-shape solver caps preserve finite diagnostic witnesses', async () => {
+  const {default: createApi} = await import('./index.mjs');
+  const api = await createApi();
+  for (const family of ['lst','std']) {
+    const g=read(family,'golden'), names=Object.keys(g.estimates);
+    for (const mask of [1,2,3]) {
+      const held=Object.fromEntries(names.filter((_,i)=>mask>>i&1).map(k=>[k,g.estimates[k]]));
+      assert.throws(()=>api[family].fit(new Float64Array(g.data),held,{iterlim:1}),error=>{
+        assert.equal(error.kind,family==='lst'&&mask===2?'budget':'numerical');
+        assert.ok(Number.isFinite(error.loglik_lower));
+        assert.equal(error.loglik_upper,Infinity);
+        assert.ok(error.candidates.length>0);
+        return true;
+      });
+    }
+  }
+});
+
+
+test('Student held subsets expose proved symmetry nonuniqueness', async () => {
+  const {default:createApi}=await import('./index.mjs');
+  const api=await createApi();
+  for(const [family,x,held] of [['std',[-100,100],{sd:1}],['lst',[-100,-99,0,99,100],{df:.5}]]){
+    assert.throws(()=>api[family].fit(new Float64Array(x),held),error=>{
+      assert.equal(error.kind,'tie');
+      assert.ok(Number.isFinite(error.loglik_lower));
+      assert.equal(error.loglik_upper,Infinity);
+      assert.equal(error.candidates.length,2);
+      return true;
+    });
+  }
+});
+
+test('Student signed held-location normal faces expose certification', async () => {
+  const {default:createApi}=await import('./index.mjs');
+  const api=await createApi();
+  for(const [family,held] of [['lst',{mu:.2}],['std',{mean:.2}]]) {
+    assert.throws(()=>api[family].fit(new Float64Array([-1,2]),held),error=>{
+      assert.equal(error.kind,'limit');
+      assert.equal(error.model,'norm');
+      assert.equal(error.certified,1);
+      assert.ok(Number.isFinite(error.loglik_upper));
+      return true;
+    });
+  }
+});
+
+
+test('Student legacy t2 limit keeps its class and uncertified flag', async () => {
+  const {default:createApi}=await import('./index.mjs');
+  const api=await createApi();
+  const x=[-20,...Array(10).fill(-.1),...Array(10).fill(.1),20];
+  assert.throws(()=>api.std.fit(new Float64Array(x),{mean:0}),error=>{
+    assert.equal(error.kind,'limit');assert.equal(error.model,'lst');
+    assert.equal(error.certified,0);assert.equal(error.loglik_upper,Infinity);
+    assert.match(error.message,/mllst/);return true;
+  });
+});
