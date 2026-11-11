@@ -1,5 +1,5 @@
 test_that("empty and out-of-range counts fail before native conversion", {
-  for (id in setdiff(names(univariateML_metadata), "mlzinb")) {
+  for (id in umvl_filter_families(setdiff(names(univariateML_metadata), "mlzinb"))) {
     fun <- get(id)
     args <- golden_fit_args(id)
     expect_error(do.call(fun, c(list(numeric()), args)), "positive length", info = id)

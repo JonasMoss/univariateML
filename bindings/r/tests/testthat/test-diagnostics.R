@@ -1,6 +1,6 @@
 test_that('TASK-132 invalid observations stop before conversion to core spans', {
   skip_unless_tier('dev')
-  for (id in names(univariateML_metadata)) {
+  for (id in umvl_filter_families(names(univariateML_metadata))) {
     meta <- univariateML_metadata[[id]]
     args <- golden_fit_args(id)
     invalid <- list(numeric(), c(NaN, 1), c(Inf, 1), c(-Inf, 1))

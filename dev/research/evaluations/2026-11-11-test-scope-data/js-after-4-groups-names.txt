@@ -1,0 +1,615 @@
+Bhatt per-fit certification preserves successful searches
+Bhattacharjee all-held evaluation keeps a finite extreme log likelihood
+Bhattacharjee held certificates and quantitative numerical stops
+Bhattacharjee normal member distinguishes residual underflow and precision
+Bhattacharjee physical comparisons and stopped likelihood witnesses
+Burr and reciprocal burr-k1000-r0 structured limit
+Burr and reciprocal nearly-constant uncertified fallback
+Burr and reciprocal sign-uncertain-seam structured tie
+CMB finite-size ties retain two distinct witnesses and nu-held census certifies
+CMB fixed-size normalizers spend and raise the cell budget
+CMB shared CMP work remains available at higher iterlim
+CMP ledger budget retains witnesses; huge modes are numerical
+EMG certified conditional routes and numerical location stops
+EMG outer certificate preserves budget and unresolved witnesses
+EVT compatible holds keep certificate failures and constrained witnesses
+EVT two-point certificates preserve public holds and typed Gumbel face
+Feller Pareto held-endpoint power face keeps its model identity
+Frechet bounded two-point solve cap preserves numerical stop details
+Frechet finite two-point cancellation retains an uncertified fit
+Frechet held scale keeps coefficient accuracy at large shape
+Fully held CMP evaluation uses its fixed cap and fails numerically
+GB2 constant held-shape scale rejects tiny-power log-ratio amplification
+GB2 constant mixed-power finite regime has a certified fit
+GB2 delegated budget keeps transformed-gamma witness names
+GB2 held power transfers non-unit conditional certificates and gamma witnesses
+GB2 held-scale free-power profiles use global coefficient enclosures
+GB2 subunit held shapes certify endpoint faces with held-endpoint advice
+GB2 subunit held-shape endpoint ties retain their likelihood penalty
+GED Laplace median intervals retain the original observation endpoints
+GED a completed low-budget certificate can prove the Laplace face
+GED analytic held-sd shape fits and median ties agree across bindings
+GED constant data away from a held mean have a uniform limit
+GED exhausted finite root certificates stop on budget and retain witnesses
+GED finite free-shape golden subsets pass the global certificate
+GED free-scale uniform stops include certified global bounds
+GED held-shape arithmetic losses produce numerical stops
+GED inverse normalization rejects a rounded location with a different likelihood
+GED overlapping finite shape roots retain an uncertified search
+GED rounded held-sd endpoints cannot select a uniform face
+GED rounded residual ties cannot select an invalid uniform support
+GEV and Frechet all-free fits expose per-fit certificate markers
+GEV and Frechet half-minimum certificates distinguish attainment
+GEV and Frechet held nuisance certificate markers cross the common seam
+GEV coupled support corners survive normalization and outer coverage
+GEV held-minimum half ties retain the attained member
+GEV joint cover isolates the seam maximum and keeps precision stops
+GEV negative-shape coefficient corners preserve the gap dependency
+GEV public support rejects a negative zero residual
+GEV shape-only certificate handles flat shapes and typed solve failure
+GEV two-point count certificate avoids a rounded sample mean
+Gaussian face witnesses retain extreme residual scales
+J6 tnorm CMB and CMP quantitative acceptance uses common binding routes
+Lomax budget witnesses retain public delegate coordinates and bounds
+Newton-family unrepresentable coefficients are numerical stops
+PIG binary closed form and small positive Poisson improvement survive WASM
+PIG global certificate transports Poisson, tie, budget and numerical stops
+Power face payload follows public endpoint-then-shape order
+SGED balanced endpoint uniform proof covers asymmetric and free skew
+SGED fixed-shape free-skew certificates share core routing
+SGED normal face conversion rejects rounded subnormal scales
+SGED normal face conversion reports scale overflow numerically
+SGED subunit asymmetric scale certificates agree with independent fixtures
+SGED subunit scale ties and exhausted certificates stop in the common binding
+SGED symmetric free-shape delegate transports fits and structured stops
+SGED weighted free-shape and smooth free-skew profiles certify golden fits
+SGED weighted median and smooth reflected half-GED ties retain their witnesses
+Skellam tail-cover budget preserves a feasible witness
+Student held subsets expose proved symmetry nonuniqueness
+Student legacy t2 limit keeps its class and uncertified flag
+Student signed held-location normal faces expose certification
+ZIB subnormal held inflation preserves log masses and its probability root
+ZIB tiny held probabilities preserve the unique all-zero inflation
+ZIB unrepresentable finite log likelihoods stop numerically
+ZINB certificate transports competing maxima and terminal budgets
+ZINB certified ZIP and Poisson stops name their limiting coefficients
+ZIP certified rate ties, budgets and numerical stops
+ZIP held tiny rate attains all-zero inflation maximum
+all-free Frechet minimum-majority collapse is typed nonexistence
+an unordered Frechet Gumbel comparison retains the finite search
+bbinom all held subsets
+bbinom fixed-size coefficient certificate and uncertified inclusion fallback
+bbinom generated truth and sampler
+bbinom held-value diagnostic
+bbinom near-binomial shape enclosure survives double-width WASM arithmetic
+bbinom shared golden
+bbinom signed face and small finite gains agree with the shared fitter
+beta all held subsets
+beta generated truth and sampler
+beta held-value diagnostic
+beta shared golden
+betapr all held subsets
+betapr all-free certificate returns verified fits and structured global stops
+betapr flat gamma-adjacent profile retains coefficient accuracy in WASM
+betapr generated truth and sampler
+betapr held-value diagnostic
+betapr non-unit conditional certificate transports finite fits and gamma faces
+betapr rounded conditional peaks retain an uncertified search
+betapr shared golden
+bhatt all held subsets
+bhatt generated truth and sampler
+bhatt held-value diagnostic
+bhatt shared golden
+binom all held subsets
+binom generated truth and sampler
+binom held-value diagnostic
+binom shared golden
+binomial near-critical ZIP inputs return uncertified fits
+binomial probability solves stop numerically before returning an unresolved coefficient
+binomial relatives certify Poisson limits and retain finite witnesses
+binomial relatives prove their Poisson-type limits with finite witnesses
+binomial relatives retain certified Poisson limit witnesses
+binomial relatives retain proved finite and Poisson witnesses
+bnbinom Bernstein supporting polynomials prove additional all-free and pair faces
+bnbinom NB delegate precision failures remain structured numerical stops
+bnbinom all held subsets
+bnbinom all-free finite certificate bounds an independent high-precision maximizer
+bnbinom all-free results expose a certified global inner profile interval
+bnbinom alpha-free pair certificates transport the actual held value
+bnbinom alpha-held global certificate keeps both labels and the diagonal witness
+bnbinom alpha-held range exhaustion has numerical stop details
+bnbinom delegated NB precision failures retain NB candidate names
+bnbinom generated truth and sampler
+bnbinom held-value diagnostic
+bnbinom legacy fallbacks and proved decisions expose certification labels
+bnbinom shared golden
+bnbinom signed Poisson faces and budget fallbacks keep their labels
+bnbinom supporting-polynomial proofs select reachable faces
+bnbinom unproved all-free face comparisons retain the legacy limit
+burr all held subsets
+burr generated truth and sampler
+burr held-value diagnostic
+burr shared golden
+cauchy all held subsets
+cauchy generated truth and sampler
+cauchy held-value diagnostic
+cauchy shared golden
+cmb all held subsets
+cmb generated truth and sampler
+cmb held-value diagnostic
+cmb shared golden
+cmp all held subsets
+cmp generated truth and sampler
+cmp held-value diagnostic
+cmp shared golden
+conditional free coefficients reject unrepresentable subnormals
+conditional scalar fits retain coefficient accuracy
+conditional snorm and skew-t ambiguities retain both compared models
+continuous fallback carries the per-fit certification flag
+continuous structured nonexistence and fitted faces
+count fallback exposes per-fit certification
+covariance diagnostics and input ownership
+covariance native agreement: beta
+covariance native agreement: betapr
+covariance native agreement: binom
+covariance native agreement: exp
+covariance native agreement: gamma
+covariance native agreement: gev
+covariance native agreement: gpd
+covariance native agreement: huber
+covariance native agreement: lnorm
+covariance native agreement: norm
+covariance native agreement: pig
+covariance native agreement: pois
+covariance native agreement: snorm
+covariance native agreement: sstd
+delegate follow-up keeps successful uncertified parent fits
+dgamma all held subsets
+dgamma generated truth and sampler
+dgamma held-value diagnostic
+dgamma shared golden
+diagnostics and vector flags
+discrete empty preflight budget has no invented candidate
+discrete stops retain fitted package and non-package faces
+dlaplace all held subsets
+dlaplace generated truth and sampler
+dlaplace held-value diagnostic
+dlaplace shared golden
+dnorm all held subsets
+dnorm generated truth and sampler
+dnorm held-value diagnostic
+dnorm shared golden
+dunif all held subsets
+dunif generated truth and sampler
+dunif held-value diagnostic
+dunif shared golden
+dweibull all held subsets
+dweibull generated truth and sampler
+dweibull held-value diagnostic
+dweibull shared golden
+emg all held subsets
+emg generated truth and sampler
+emg held-value diagnostic
+emg shared golden
+exact factorial moments certify a nonsaturated truncated Poisson face
+exp all held subsets
+exp every held subset
+exp generated truth and sampler
+exp golden
+exp held-value diagnostic
+exp shared golden
+extreme scalar certificates expose common binding stops
+extreme t and GED shapes terminate in WASM and retain inversion
+fatigue all held subsets
+fatigue certificate stops when rounding hides alpha resolution
+fatigue generated truth and sampler
+fatigue held-value diagnostic
+fatigue rounded threshold translations stop numerically rather than claiming nonexistence
+fatigue shared golden
+fatigue subnormal coefficient reconstruction must retain relative accuracy
+folded-normal boundary likelihood tie receives local score polish
+foldnorm all held subsets
+foldnorm generated truth and sampler
+foldnorm held-value diagnostic
+foldnorm shared golden
+fpareto all held subsets
+fpareto generated truth and sampler
+fpareto held-value diagnostic
+fpareto shared golden
+frechet all held subsets
+frechet generated truth and sampler
+frechet held-value diagnostic
+frechet shared golden
+gamma all held subsets
+gamma every held subset
+gamma generated truth and sampler
+gamma golden
+gamma held-value diagnostic
+gamma shared golden
+gb2 all held subsets
+gb2 every held subset
+gb2 generated truth and sampler
+gb2 golden
+gb2 held-value diagnostic
+gb2 shared golden
+ged all held subsets
+ged generated truth and sampler
+ged held-value diagnostic
+ged shared golden
+genbeta all held subsets
+genbeta all-free finite certificate preserves the golden and never certifies unattainable precision
+genbeta critical held p one half preserves the small-power quadratic score
+genbeta gamma face preserves its structured legacy payload
+genbeta generated truth and sampler
+genbeta held p one shares the Kumaraswamy certificate and stop transport
+genbeta held p uses the complete power-profile certificate
+genbeta held q uses certified finite maxima and terminal neighborhood stops
+genbeta held-value diagnostic
+genbeta moving-power certificate transports global likelihood bounds
+genbeta power certificate keeps tiny held beta shapes in double precision
+genbeta power certificate retains a large-shape weighted exponential tail
+genbeta preserves a parent budget without a finite witness
+genbeta rounded log ties are a numerical stop
+genbeta shallow coverage retains the uncertified legacy finite fit
+genbeta shared golden
+genbeta signed squared-power certificate selects a global gamma face
+general Frechet certificate transports the Gumbel closure in public coordinates
+geom all held subsets
+geom generated truth and sampler
+geom held-value diagnostic
+geom shared golden
+gev all held subsets
+gev generated truth and sampler
+gev held-value diagnostic
+gev shared golden
+globally winning tied ZIP faces retain both rate candidates
+gompertz all held subsets
+gompertz generated truth and sampler
+gompertz held-value diagnostic
+gompertz shared golden
+gpd all held subsets
+gpd generated truth and sampler
+gpd held-value diagnostic
+gpd shared golden
+gumbel all held subsets
+gumbel generated truth and sampler
+gumbel held-value diagnostic
+gumbel shared golden
+hcauchy all held subsets
+hcauchy generated truth and sampler
+hcauchy held-value diagnostic
+hcauchy shared golden
+heavy-tail inverse samplers replay finite quantiles beyond 2^53
+held subunit GED shape retains the certified reflected half face
+held-power faces retain transformed coefficients
+higher-order binomial face signs retain proved stops or uncertified fits
+hnorm all held subsets
+hnorm generated truth and sampler
+hnorm held-value diagnostic
+hnorm shared golden
+ht all held subsets
+ht generated truth and sampler
+ht held-value diagnostic
+ht shared golden
+huber all held subsets
+huber generated truth and sampler
+huber held-value diagnostic
+huber shared golden
+hyper all held subsets
+hyper generated truth and sampler
+hyper held-value diagnostic
+hyper shared golden
+invburr all held subsets
+invburr generated truth and sampler
+invburr held-value diagnostic
+invburr shared golden
+invexp all held subsets
+invexp generated truth and sampler
+invexp held-value diagnostic
+invexp shared golden
+invgamma all held subsets
+invgamma generated truth and sampler
+invgamma held-value diagnostic
+invgamma shared golden
+invgauss all held subsets
+invgauss generated truth and sampler
+invgauss held-value diagnostic
+invgauss shared golden
+invparalogis all held subsets
+invparalogis generated truth and sampler
+invparalogis held-value diagnostic
+invparalogis shared golden
+invpareto all held subsets
+invpareto generated truth and sampler
+invpareto held-value diagnostic
+invpareto shared golden
+invtrgamma all held subsets
+invtrgamma generated truth and sampler
+invtrgamma held-value diagnostic
+invtrgamma shared golden
+invweibull all held subsets
+invweibull generated truth and sampler
+invweibull held-value diagnostic
+invweibull shared golden
+join family held-subset covariance parity at the same parameter point
+join regimes: free symmetric skew, negative shape and free shape zero
+kumar all held subsets
+kumar generated truth and sampler
+kumar held-value diagnostic
+kumar shared golden
+laplace all held subsets
+laplace generated truth and sampler
+laplace held-value diagnostic
+laplace shared golden
+large geometric quantiles preserve the supplied probability scale
+large held skew-t shape retains a certified fit and finite skew covariance
+lgamma all held subsets
+lgamma generated truth and sampler
+lgamma held-value diagnostic
+lgamma shared golden
+lgser all held subsets
+lgser generated truth and sampler
+lgser held-value diagnostic
+lgser shared golden
+llogis all held subsets
+llogis generated truth and sampler
+llogis held-value diagnostic
+llogis shared golden
+lnorm all held subsets
+lnorm generated truth and sampler
+lnorm held-value diagnostic
+lnorm shared golden
+logis all held subsets
+logis generated truth and sampler
+logis held-value diagnostic
+logis shared golden
+logitnorm all held subsets
+logitnorm generated truth and sampler
+logitnorm held-value diagnostic
+logitnorm shared golden
+lomax all held subsets
+lomax generated truth and sampler
+lomax held-value diagnostic
+lomax shared golden
+lst Cauchy equality checks and projects the represented maximizing curve
+lst all held subsets
+lst and std certificate normal stops name the fitted face
+lst and std fixed-scale location certificates transport equal maxima
+lst and std held solver caps return structured numerical stops
+lst and std iterlim scales the certificate and preserves budget witnesses
+lst and std uncertified held free-shape searches preserve golden fits
+lst generated truth and sampler
+lst held-value diagnostic
+lst shared golden
+naka all held subsets
+naka generated truth and sampler
+naka held-value diagnostic
+naka shared golden
+nbinom all held subsets
+nbinom generated truth and sampler
+nbinom held-value diagnostic
+nbinom shared golden
+nhyper all held subsets
+nhyper generated truth and sampler
+nhyper held-value diagnostic
+nhyper shared golden
+noninflated ZIP faces include the equal-moment binomial escape
+norm all held subsets
+norm generated truth and sampler
+norm held-value diagnostic
+norm shared golden
+nsbeta all held subsets
+nsbeta generated truth and sampler
+nsbeta held-value diagnostic
+nsbeta shared golden
+paralogis all held subsets
+paralogis generated truth and sampler
+paralogis held-value diagnostic
+paralogis shared golden
+pareto all held subsets
+pareto generated truth and sampler
+pareto held-value diagnostic
+pareto shared golden
+pareto2 all held subsets
+pareto2 generated truth and sampler
+pareto2 held-value diagnostic
+pareto2 shared golden
+pareto3 all held subsets
+pareto3 generated truth and sampler
+pareto3 held-value diagnostic
+pareto3 shared golden
+pareto4 all held subsets
+pareto4 generated truth and sampler
+pareto4 held-value diagnostic
+pareto4 shared golden
+pig all held subsets
+pig generated truth and sampler
+pig held-value diagnostic
+pig shared golden
+pois all held subsets
+pois generated truth and sampler
+pois held-value diagnostic
+pois shared golden
+power all held subsets
+power generated truth and sampler
+power held-value diagnostic
+power shared golden
+public facade
+raw transformed sufficient statistics match independent concentrated references
+rayleigh all held subsets
+rayleigh generated truth and sampler
+rayleigh held-value diagnostic
+rayleigh shared golden
+scalar-trio certificates expose fatigue ties and solve held scalar roots
+scaled normal residuals preserve extreme units in every held subset
+sged all held subsets
+sged generated truth and sampler
+sged held-value diagnostic
+sged shared golden
+sgomp all held subsets
+sgomp generated truth and sampler
+sgomp held-value diagnostic
+sgomp shared golden
+shifted Gompertz unfinished bracket preserves a finite witness
+signed binomial face certificates have finite global bounds
+skellam all held subsets
+skellam generated truth and sampler
+skellam held-value diagnostic
+skellam shared golden
+skew-t and skew-GED retain large-shape gamma moments
+slash all held subsets
+slash generated truth and sampler
+slash held-value diagnostic
+slash shared golden
+small positive folded-normal basin retains coefficient accuracy
+sn all held subsets
+sn checks likelihood after restoring large held shapes
+sn conditional certificates and nonunique shape have shared stops
+sn finite normalization overflow is a numerical stop
+sn generated truth and sampler
+sn held-value diagnostic
+sn rounded residuals cannot fabricate held-endpoint factors
+sn shared golden
+snorm all held subsets
+snorm constant sample with held mean has a constrained half-normal supremum
+snorm generated truth and sampler
+snorm held certificate preserves opposite-face ties and root failures
+snorm held-value diagnostic
+snorm reflected finite modes remain a comparison tie
+snorm shared golden
+sstd all held subsets
+sstd generated truth and sampler
+sstd held-value diagnostic
+sstd shared golden
+sstd xi-only certificate, reflection, budget and half-t comparison
+st all held subsets
+st conditional location and alpha-scale certificates retain stops
+st constant-data free-nu corner keeps both half-normal faces
+st constant-data location-skew faces retain the sharp global bound
+st generated truth and sampler
+st held-value diagnostic
+st shared golden
+st symmetric all-nuisance reduction transports the normal face
+st unresolved thin-tail score arithmetic remains a numerical stop
+std all held subsets
+std and lst held free-shape solver caps preserve finite diagnostic witnesses
+std and lst shape certificates distinguish uncertified joint fits
+std certificate distinguishes ordinary t2 and collapse paths
+std certificate resolves the shallow quantile maximum
+std collapse comparisons preserve the sign at binary64 rational shapes
+std generated truth and sampler
+std held-shape sd overflow retains a proper ordinary-scale witness
+std held-value diagnostic
+std shared golden
+structured stops survive the JS Error facade
+tbinom all held subsets
+tbinom generated truth and sampler
+tbinom held-value diagnostic
+tbinom shared golden
+tlambda all held subsets
+tlambda certificates keep contact ties, budget and collapse witnesses
+tlambda free-shape half ties retain a finite improvement and an unresolved global bound
+tlambda generated truth and sampler
+tlambda held-value diagnostic
+tlambda shared golden
+tnorm all held subsets
+tnorm generated truth and sampler
+tnorm held-value diagnostic
+tnorm shared golden
+tpois all held subsets
+tpois generated truth and sampler
+tpois held-value diagnostic
+tpois shared golden
+transformed normal and normalized scale families preserve extreme units
+transformed profiles retain finite ulp-wide fits with explicit uncertified flags
+translated and reciprocal delegates preserve certified stops
+translated lattice normal and Laplace tails survive overflowing differences
+trgamma all held subsets
+trgamma certificates preserve held endpoints and reciprocal likelihoods
+trgamma generated truth and sampler
+trgamma held endpoint comparisons stop without asserting nonattainment
+trgamma held-scale concentration and numerical stops have distinct kinds
+trgamma held-value diagnostic
+trgamma limit witnesses preserve raw support endpoints
+trgamma partial logarithmic ties stop numerically
+trgamma shared golden
+trgamma unrepresentable scales retain numerical stop details
+triang all held subsets
+triang generated truth and sampler
+triang held-value diagnostic
+triang shared golden
+triangular public rounding loss is a numerical failure
+truncated binomial certifies the finite zero-second-order boundary
+two-point binomial windows attain a finite member despite their face tie
+unif all held subsets
+unif generated truth and sampler
+unif held-value diagnostic
+unif shared golden
+unit beta-prime fallback keeps the scalar search beyond the generic shape guard
+unrepresentable delegate reductions stop as numerical failures
+unresolved folded-normal quartic identification is numerical
+weibull all held subsets
+weibull generated truth and sampler
+weibull held-value diagnostic
+weibull shared golden
+yulesimon all held subsets
+yulesimon generated truth and sampler
+yulesimon held-value diagnostic
+yulesimon shared golden
+zeta all held subsets
+zeta generated truth and sampler
+zeta held-value diagnostic
+zeta shared golden
+zib all held subsets
+zib generated truth and sampler
+zib held-value diagnostic
+zib quantiles stop on extreme numerical failure
+zib shared golden
+zinb all held subsets
+zinb generated truth and sampler
+zinb held-value diagnostic
+zinb shared golden
+zip all held subsets
+zip generated truth and sampler
+zip held-value diagnostic
+zip shared golden
+zipf all held subsets
+zipf generated truth and sampler
+zipf held-value diagnostic
+zipf shared golden
+zmbinom all held subsets
+zmbinom generated truth and sampler
+zmbinom held-value diagnostic
+zmbinom shared golden
+zmgeom all held subsets
+zmgeom generated truth and sampler
+zmgeom held-value diagnostic
+zmgeom shared golden
+zmlogarithmic all held subsets
+zmlogarithmic generated truth and sampler
+zmlogarithmic held-value diagnostic
+zmlogarithmic shared golden
+zmnbinom all held subsets
+zmnbinom generated truth and sampler
+zmnbinom held-value diagnostic
+zmnbinom shared golden
+zmpois all held subsets
+zmpois generated truth and sampler
+zmpois held-value diagnostic
+zmpois shared golden
+ztbinom all held subsets
+ztbinom generated truth and sampler
+ztbinom held-value diagnostic
+ztbinom shared golden
+ztgeom all held subsets
+ztgeom generated truth and sampler
+ztgeom held-value diagnostic
+ztgeom shared golden
+ztnbinom all held subsets
+ztnbinom generated truth and sampler
+ztnbinom held-value diagnostic
+ztnbinom shared golden
+ztpois all held subsets
+ztpois generated truth and sampler
+ztpois held-value diagnostic
+ztpois shared golden

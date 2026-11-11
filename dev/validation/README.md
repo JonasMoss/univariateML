@@ -434,3 +434,32 @@ identities, independent numerical comparisons and mathematical proofs support
 different claims. Inference additionally needs checks of coverage or test
 calibration under its stated assumptions; likelihood agreement alone is
 insufficient.
+
+## Changed-family checks
+
+`/tmp/umvl-cpu/run4 just test-changed [base]` defaults to `master` and includes
+committed changes since the merge base, working-tree changes and untracked files.
+`just test-changed master --dry-run` explains selection without building. Family
+folders in the core and common/R bindings select their family; reverse literal
+header includes add dependent families transitively. Dossier edits count because
+their front matter generates bindings and fixtures. Shared implementation,
+generator, harness and build changes select all families and use the ordinary
+recipes. Documentation outside dossiers selects nothing.
+
+For a family selection, the runner incrementally builds the C++ distribution
+binary and runs the selected tier's family ctest entries. It regenerates the R
+package and runs those family files plus filtered golden, conformance, generated
+d/p/q/r, scale-equivariance, frozen-model, diagnostics, input-check and restriction loops.
+Hand-written cases within these shared files still run.
+`UMVL_TEST_FAMILIES=id,id` supplies that filter to R and JS; unset means all.
+JS runs selected generated family cases and retains the hand-written cross-family
+regressions. JS registration groups run concurrently according to
+`CMAKE_BUILD_PARALLEL_LEVEL` (default one), with one V8 pool thread per process.
+`UMVL_TEST_NO_LONG_DOUBLE=1` or `--no-long-double` adds that C++ build.
+
+This is an iteration shortcut, not merge validation. It never runs relations,
+the site, independent quality oracles, or cross-family R files outside the
+listed loops; a family-only selection also omits C++ shared targets. Include
+relationships follow implementation headers; cross-family comparison tests that
+include the umbrella header remain full-suite coverage. Run
+the ordinary suites and any task-specific checks before finishing a change.

@@ -1,4 +1,5 @@
-import test from 'node:test';
+import {selectedFamily} from './test-register.mjs';
+import test from './test-register.mjs';
 import assert from 'node:assert/strict';
 import {readFileSync,writeFileSync,mkdirSync} from 'node:fs';
 import create from '../../build/js/univariateML.mjs';
@@ -34,7 +35,7 @@ function previousDouble(x) {
   return view.getFloat64(0);
 }
 const dpqrFamilies=JSON.parse(readFileSync(new URL('../../build/js/generated/families.json',import.meta.url),'utf8'));
-for(const f of dpqrFamilies) test(`${f} generated truth and sampler`,()=>checkTruth(f));
+for(const f of dpqrFamilies.filter(selectedFamily)) test(`${f} generated truth and sampler`,()=>checkTruth(f));
 function checkTruth(f) {
   const discrete=/type: integer/.test(readFileSync(new URL(`${f}/README.md`,dossier),'utf8'));
   const t=read(f,'truth');const call=(op,x,p,lower=true,log=true)=>m[`${op}${f}`](new Float64Array([x]),p,lower,log)[0];
@@ -61,7 +62,7 @@ function checkTruth(f) {
 
 const goldenCases=JSON.parse(readFileSync(new URL('../../build/js/generated/fit-cases.json',import.meta.url)));
 const close=(a,b,t)=>a===b||Number.isNaN(a)&&Number.isNaN(b)||Number.isFinite(a)&&Number.isFinite(b)&&Math.abs(a-b)<=t*Math.max(1,Math.abs(b));
-for(const f of ['exp','gamma','gb2']) {
+for(const f of ['exp','gamma','gb2'].filter(selectedFamily)) {
  test(`${f} golden`,()=>{
   const g=read(f,'golden'),r=m[`fit${f}`](new Float64Array(g.data),{},{});
   const policy=goldenCases.find(c=>c.id===f);
@@ -83,7 +84,7 @@ test('diagnostics and vector flags',()=>{
  for(const f of ['exp','gamma','gb2']) {const g=read(f,'golden'),name=Object.keys(g.estimates)[0];assert.throws(()=>m['fit'+f](new Float64Array(g.data),{[name]:NaN},{}),/must be.*positive.*finite/);}
  for(const f of ['exp','gamma','gb2']){const p=Object.values(read(f,'golden').estimates),x=new Float64Array([.2,1,2]);for(const op of ['d','p','q'])for(const lower of [true,false])for(const log of [true,false]){const a=m[op+f](x,p,lower,log);assert.equal(a.length,3);for(let i=0;i<3;i++)assert.equal(a[i],m[op+f](x.slice(i,i+1),p,lower,log)[0]);}}
 });
-process.on('exit',()=>{mkdirSync(new URL('../../build/scratch/',import.meta.url),{recursive:true});writeFileSync(new URL('../../build/scratch/truth-results.json',import.meta.url),JSON.stringify({checks,failures},(_,v)=>typeof v==='number'&&!Number.isFinite(v)?String(v):v,2));});
+process.on('exit',()=>{mkdirSync(new URL('../../build/scratch/',import.meta.url),{recursive:true});writeFileSync(new URL(`../../build/scratch/truth-results-${process.env.UMVL_JS_GROUP ?? 'all'}.json`,import.meta.url),JSON.stringify({checks,failures},(_,v)=>typeof v==='number'&&!Number.isFinite(v)?String(v):v,2));});
 
 // Shared-fit goldens, all held subsets and diagnostics for every migrated family.
 await import('./fit-test.mjs');

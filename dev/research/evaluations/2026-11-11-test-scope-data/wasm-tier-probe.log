@@ -1,0 +1,12 @@
+module_seconds 0.06759651199999998
+{"mask":0,"seconds":0.15285726600000002,"status":"Ok"}
+{"mask":1,"seconds":0.105869508,"status":"Ok"}
+{"mask":2,"seconds":0.08920708800000006,"status":"Ok"}
+{"mask":3,"seconds":114.41269983500001,"status":"Ok"}
+{"mask":4,"seconds":0.0639417100000137,"status":"Ok"}
+{"mask":5,"seconds":0.04157522800000152,"status":"Ok"}
+{"mask":6,"seconds":0.025548018999994385,"status":"Ok"}
+{"mask":7,"seconds":0.004552432000011322,"status":"Ok"}
+real 115.15
+user 115.08
+sys 0.04

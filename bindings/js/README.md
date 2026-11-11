@@ -47,7 +47,11 @@ requires all 98 shared fitters and compares the aggregate with all 98 single
 family modules. For batch checks, `FIT_FAMILY=a,b node --test
 bindings/js/fit-test.mjs` selects fit tests without rebuilding a subset.
 
-`just js-test` audits every truth entry and sampler point for every family,
+`just js-test` (also `npm test` here) runs disjoint test groups with
+`CMAKE_BUILD_PARALLEL_LEVEL` as the Node concurrency limit, defaulting to one.
+Parallel runs distribute sixteen groups; a serial run uses one group.
+`UMVL_TEST_FAMILIES=a,b` restricts generated family loops while retaining
+hand-written cross-family cases. It audits every truth entry and sampler point for every selected family,
 and all 98 goldens, held subsets and diagnostics. It records every failed
 truth entry in `build/scratch/truth-results.json` without relaxing native
 tolerances. The generated TypeScript facade exposes precise fit coefficients and controls

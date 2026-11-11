@@ -1,7 +1,7 @@
 # Generating automatic tests.
 
 forms_rhs <- c("x", "na.rm", "...")
-for (dens in densities) {
+for (dens in umvl_filter_families(densities)) {
   eval(call("context", paste0("Inputs, formals, and logLik: ", dens)))
   eval(call("expect_error", call(dens, "x")))
   eval(call("expect_error", call(dens, lm)))

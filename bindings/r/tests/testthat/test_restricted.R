@@ -1,7 +1,7 @@
 test_that("restriction warnings name README bounds and reasons", {
   metadata <- getFromNamespace("univariateML_metadata", "univariateML")
   construct <- getFromNamespace("univariateML_construct", "univariateML")
-  for (id in c("lst", "frechet", "ht", "gev", "gpd", "tlambda", "ged", "sged")) {
+  for (id in umvl_filter_families(c("lst", "frechet", "ht", "gev", "gpd", "tlambda", "ged", "sged"))) {
     name <- paste0("ml", id)
     m <- metadata[[name]]
     for (p in m$params) {
@@ -78,7 +78,7 @@ test_that("C++ restriction constants match README fit domains", {
   root <- Sys.getenv("UMVL_DISTRIBUTIONS_DIR")
   skip_if(!nzchar(root), "repository metadata unavailable")
   metadata <- getFromNamespace("univariateML_metadata", "univariateML")
-  for (id in c("lst", "frechet", "ht", "gev", "gpd", "tlambda", "ged", "sged")) {
+  for (id in umvl_filter_families(c("lst", "frechet", "ht", "gev", "gpd", "tlambda", "ged", "sged"))) {
     path <- file.path(root, id, "mle.hpp")
     if (!file.exists(path)) {
       path <- system.file("include", "cppunivariate", "distributions", id,

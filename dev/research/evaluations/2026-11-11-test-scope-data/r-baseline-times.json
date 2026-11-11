@@ -1,0 +1,32 @@
+{
+  "stages": {
+    "compile": {
+      "real": 151.38,
+      "user": 147.43,
+      "sys": 4.16
+    },
+    "gen": {
+      "real": 18.6,
+      "user": 18.23,
+      "sys": 0.37
+    },
+    "tests": {
+      "real": 365.96,
+      "user": 1054.72,
+      "sys": 5.3
+    },
+    "regen": {
+      "real": 8.36,
+      "user": 8.13,
+      "sys": 0.21
+    },
+    "assemble": {
+      "real": 1.71,
+      "user": 1.32,
+      "sys": 0.47
+    }
+  },
+  "tests_summary": "FAIL 0 | WARN 0 | SKIP 154 | PASS 23257",
+  "driver_exit": 1,
+  "driver_note": "Driver edited during Rscript execution; trailing parse error after completed green tests. Stabilized driver must pass final validation."
+}

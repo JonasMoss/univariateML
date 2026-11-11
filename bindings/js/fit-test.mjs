@@ -1,4 +1,5 @@
-import test from 'node:test';
+import {selectedFamily} from './test-register.mjs';
+import test from './test-register.mjs';
 import assert from 'node:assert/strict';
 import {readFileSync,writeFileSync} from 'node:fs';
 import create from '../../build/js/univariateML.mjs';
@@ -14,6 +15,7 @@ if(process.env.FIT_CAPTURE) {
 // Evidence: dev/research/evaluations/2026-11-08-tlambda-speed-impl-data/golden-checks.json
 const profileReferences={tlambda:{mu:0.04752470769410265657093355,sigma:1.098815160848591024380682,lambda:0.1844784658509907723491377}};
 for(const c of cases) {
+ if(!selectedFamily(c.id)) continue;
  if(process.env.FIT_FAMILY && !process.env.FIT_FAMILY.split(/[,|]/).includes(c.id)) continue;
  const fit=(held,control=c.control)=>m['fit'+c.id](new Float64Array(c.g.data),held,control);
  test(`${c.id} shared golden`,()=>{

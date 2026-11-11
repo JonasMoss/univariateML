@@ -62,7 +62,7 @@ scale_search_models <- c("mlbetapr", "mlburr", "mlemg", "mlgb2", "mlged",
                          "mlht", "mlhuber", "mllst", "mlinvburr", "mlinvparalogis", "mlparalogis",
                          "mlsged", "mlsn", "mlst", "mlsstd", "mlstd", "mlbhatt")
 
-for (id in univariateML_models) {
+for (id in umvl_filter_families(univariateML_models)) {
   model <- paste0("ml", id)
   if (univariateML:::univariateML_metadata[[model]]$support$type != "R") next
   if (model %in% names(scale_exclusions)) next
@@ -122,7 +122,7 @@ test_that("Student fits on DAX returns and small skew-t data are stable", {
   # returned the start nu = 6.
   expect_equal(unname(f["nu"]), 4.19447, tolerance = 1e-4)
   expect_equal(as.numeric(logLik(f)), 5983.32, tolerance = 2e-6)
-  for (model in c("mlstd", "mlsstd")) {
+  for (model in umvl_filter_families(c("mlstd", "mlsstd"))) {
     fit <- get(model, mode = "function")
     base <- fit(x)
     for (b in c(1e-6, 1e6)) {
@@ -141,8 +141,8 @@ test_that("Student fits on DAX returns and small skew-t data are stable", {
 
 test_that("required endpoints transform with the observations", {
   skip_unless_tier("dev")
-  for (model in c("mlgenbeta", "mlnsbeta", "mlpareto2", "mlpareto3",
-                  "mlpareto4", "mlfpareto")) {
+  for (model in umvl_filter_families(c("mlgenbeta", "mlnsbeta", "mlpareto2", "mlpareto3",
+                  "mlpareto4", "mlfpareto"))) {
     set.seed(7)
     x <- ml_simulate(model, 40)
     args <- switch(model, mlgenbeta = list(scale = 1),
