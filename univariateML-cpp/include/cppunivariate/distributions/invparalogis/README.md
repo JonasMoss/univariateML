@@ -26,7 +26,7 @@ r:
   control:
     shape: Known positive finite coefficient; NULL estimates it.
     shape0: Optional positive finite starting value; NULL uses the automatic start.
-    gradtol: Tolerance for the reciprocal paralogistic numerical proposal; success additionally requires the global certificate.
+    gradtol: Tolerance for the reciprocal paralogistic numerical proposal; a successful proposal is uncertified when the global certificate does not close.
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations."
 limits:
   - name: unbounded likelihood
@@ -67,8 +67,8 @@ relations:
     transform: inverse
 fit:
   method: delegation
-  certified: 'yes'
-  note: 'invparalogis/README.md, Global certificate; paralogis/certificate.hpp; invparalogis/test.cpp: Free-shape fits require root enclosure, analytic tail exclusion and exhaustive compact-domain exclusion. Held shape uses the monotone Burr scale solve. Reciprocal transformation preserves the certificate and stop details.'
+  certified: partial
+  note: 'invparalogis/README.md, Global certificate; paralogis/certificate.hpp; invparalogis/test.cpp: Free-shape certification uses root enclosure, analytic tail exclusion and exhaustive compact-domain exclusion; an unclosed certificate retains the successful reciprocal search. Held shape uses the monotone Burr scale solve. Reciprocal transformation preserves the certificate and stop details.'
 areas:
 - actuarial
 - economics and income
@@ -188,3 +188,5 @@ certificate. A proposed concavity shortcut was rejected: dividing the
 likelihood by $a+1$ does not produce the needed softplus perspective.
 The implementation therefore excludes competitors explicitly. See the
 [validation report](../../../../../dev/research/evaluations/2026-11-06-paralogis-cert-report.md).
+
+Reciprocal joint and held-scale fits preserve the paralogistic parent's per-fit certification flag together with its physical likelihood and transformed witnesses.

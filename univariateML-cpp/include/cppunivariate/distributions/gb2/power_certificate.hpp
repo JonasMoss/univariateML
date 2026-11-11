@@ -32,7 +32,7 @@ inline Gb2Result fit(span x,double q,double a,double p,double tol,int maxit) {
     if(x[order[i]]!=x[order[i-1]] && y[order[i]]==y[order[i-1]])return out;
   auto r=betapr_mle_holds(span{y.data(),y.size()},p,q,NAN,tol,maxit);
   out.iterations=r.iterations;out.logLik=r.logLik+jac_sum.value;
-  out.stop_detail=r.stop_detail;
+  out.stop_detail=r.stop_detail;out.certified=r.certified;
   if(r.status==BetaPrimeStatus::Ok)out.status=Gb2Status::Ok;
   else if(r.status==BetaPrimeStatus::GammaBoundary)out.status=Gb2Status::TrGammaBoundary;
   else if(r.status==BetaPrimeStatus::InvGammaBoundary)out.status=Gb2Status::InvTrGammaBoundary;
@@ -46,7 +46,7 @@ inline Gb2Result fit(span x,double q,double a,double p,double tol,int maxit) {
     if(!(s>0)||!std::isfinite(s))return NAN;
     const double ls=center+std::log(s)/a;
     const double v=std::exp(ls);
-    if(!(v>0)||!std::isfinite(v)||128*eps*(1+std::abs(center)+(1+std::abs(std::log(s)))/a)>1e-7)return NAN;
+    if(!(v>0)||!std::isfinite(v)||(out.certified && 128*eps*(1+std::abs(center)+(1+std::abs(std::log(s)))/a)>1e-7))return NAN;
     return v;
   };
   // Each surviving segment in the parent emits its left endpoint, and its
@@ -58,7 +58,7 @@ inline Gb2Result fit(span x,double q,double a,double p,double tol,int maxit) {
     const double s=c.coef[2],e=2e-10+128*eps*(1+std::abs(std::log(s)));
     sl=std::min(sl,std::log(s)-e);su=std::max(su,std::log(s)+e);
   }
-  if(out.status==Gb2Status::Ok && (!(su>=sl)||(su-sl)/a>std::log1p(1e-6)))
+  if(out.status==Gb2Status::Ok && out.certified && (!(su>=sl)||(su-sl)/a>std::log1p(1e-6)))
     out.status=Gb2Status::NumericalFailure;
   out.shape1=std::isnan(q)?r.beta:q;out.shape3=std::isnan(p)?r.alpha:p;
   out.scale=scale(r.scale);
@@ -91,7 +91,7 @@ inline Gb2Result fit(span x,double q,double a,double p,double tol,int maxit) {
     invalid=true;
     d.limit_coef.clear();d.limit_model=StopModel::None;d.limit_loglik=NAN;
   }
-  if(invalid || (out.status==Gb2Status::Ok && !std::isfinite(out.scale)) ||
+  if((invalid && (out.status!=Gb2Status::Ok || out.certified)) || (out.status==Gb2Status::Ok && !std::isfinite(out.scale)) ||
      ((out.status==Gb2Status::Ok||out.status==Gb2Status::TrGammaBoundary||
        out.status==Gb2Status::InvTrGammaBoundary)&&!std::isfinite(out.logLik)))out.status=Gb2Status::NumericalFailure;
   return out;

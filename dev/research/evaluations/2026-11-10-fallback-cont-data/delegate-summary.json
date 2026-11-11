@@ -1,0 +1,31 @@
+{
+  "base": "6d8a1f06",
+  "cases": 604,
+  "counts": {
+    "before": {
+      "certified": 394,
+      "stop:limit": 180,
+      "stop:numerical": 14,
+      "stop:tie": 4,
+      "stop:nomle": 1,
+      "stop:unresolved": 4,
+      "stop:input-or-unclassified": 4,
+      "uncertified": 3
+    },
+    "after": {
+      "certified": 376,
+      "stop:limit": 180,
+      "uncertified": 40,
+      "stop:numerical": 3,
+      "stop:tie": 2,
+      "stop:nomle": 1,
+      "stop:unresolved": 1,
+      "stop:input-or-unclassified": 1
+    }
+  },
+  "stop_to_uncertified": 19,
+  "lost_flag_corrected": 18,
+  "certified_numeric_unchanged": 376,
+  "finite_successful_after": 416,
+  "changed_previously_successful_numeric": 2
+}

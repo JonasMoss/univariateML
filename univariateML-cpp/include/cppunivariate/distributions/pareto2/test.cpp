@@ -72,3 +72,10 @@ TEST_CASE("Pareto II held coefficients use exact Lomax coordinates") {
   if(r.status==cppunivariate::LomaxStatus::Ok){CHECK(r.logLik==doctest::Approx(p.logLik));CHECK(r.shape==doctest::Approx(p.kappa));CHECK(r.scale==doctest::Approx(1/p.lambda));}
  }
 }
+
+TEST_CASE("Pareto II keeps the always-certified Lomax success and scale map") {
+ const std::vector<double> x{.03,.1,.4,.7,1,2,4,12};const auto d=mltest::as_span(x);
+ const auto p=cppunivariate::lomax_mle(d,1e-8,1000);const auto r=cppunivariate::pareto2_mle(d,0,1e-8,1000);
+ REQUIRE(p.status==cppunivariate::LomaxStatus::Ok);REQUIRE(r.status==p.status);
+ CHECK(r.shape==p.kappa);CHECK(r.scale==1/p.lambda);CHECK(r.min==0);CHECK(r.logLik==p.logLik);
+}

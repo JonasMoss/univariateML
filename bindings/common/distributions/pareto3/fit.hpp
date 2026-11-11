@@ -28,7 +28,7 @@ inline FitResult fit_pareto3(cppunivariate::span x, Held shape_arg = {}, Held sc
       return fail("The log-logistic maximum likelihood estimator does not exist for constant data: the likelihood is unbounded.");
     return fail("Log-logistic MLE failed: data exceed double precision.");
   }
-  return [&]() { FitResult out; if(!res.certified)out.extra.push_back({"certified",0}); out.warnings = warnings; out.estimates = {{"shape",res.shape},{"scale",res.scale},{"min",min}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }();
+  return [&]() { FitResult out; out.extra.push_back({"certified",res.certified?1.:0.}); out.warnings = warnings; out.estimates = {{"shape",res.shape},{"scale",res.scale},{"min",min}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }();
 
 }
 }

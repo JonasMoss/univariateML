@@ -7,7 +7,7 @@
 #include <limits>
 #include <vector>
 namespace cppunivariate {
-struct InvParalogisResult { double shape, scale; double logLik; int iterations; ParalogisStatus status; StopDetail stop_detail = {}; };
+struct InvParalogisResult { double shape, scale; double logLik; int iterations; ParalogisStatus status; StopDetail stop_detail = {}; bool certified=true; };
 inline StopDetail invparalogis_stop_detail(StopDetail d,double jacobian) {
   for(auto& c:d.candidates){if(c.coef.size()==2)c.coef[1]=1/c.coef[1];
     c.loglik_lower+=jacobian;c.loglik_upper+=jacobian;}
@@ -36,7 +36,7 @@ inline InvParalogisResult invparalogis_mle(span x, double tol, int maxit, double
   // distinct adjacent doubles; that is loss of resolution, not nonexistence.
   if(r.status==ParalogisStatus::Unbounded)
     return {NAN,NAN,NAN,r.iterations,ParalogisStatus::NumericalFailure};
-  return {r.shape, 1.0/r.scale, r.logLik+jacobian, r.iterations, r.status,invparalogis_stop_detail(r.stop_detail,jacobian)};
+  return {r.shape, 1.0/r.scale, r.logLik+jacobian, r.iterations, r.status,invparalogis_stop_detail(r.stop_detail,jacobian),r.certified};
 }
 inline InvParalogisResult invparalogis_mle_fixed_scale(span x, double scale,
     double tol=1e-10, int maxit=100,
@@ -56,7 +56,7 @@ inline InvParalogisResult invparalogis_mle_fixed_scale(span x, double scale,
   double jacobian=0;
   for (std::size_t i=0; i<x.size(); ++i) { y[i]=1/x[i]; jacobian-=2*std::log(x[i]); }
   auto r=paralogis_mle_fixed_scale(span{y.data(),y.size()},1/scale,tol,maxit,shape0);
-  return {r.shape,scale,r.logLik+jacobian,r.iterations,r.status,invparalogis_stop_detail(r.stop_detail,jacobian)};
+  return {r.shape,scale,r.logLik+jacobian,r.iterations,r.status,invparalogis_stop_detail(r.stop_detail,jacobian),r.certified};
 }
 } // namespace cppunivariate
 
@@ -67,7 +67,7 @@ inline InvParalogisResult invparalogis_mle_holds(span x,double shape,double scal
  if(std::isnan(shape)) return std::isnan(scale)?invparalogis_mle(x,tol,maxit):invparalogis_mle_fixed_scale(x,scale,tol,maxit);
  std::vector<double> y;double jac=0;for(double v:x){y.push_back(1/v);jac-=2*std::log(v);}
  auto r=paralogis_mle_holds(span{y.data(),y.size()},shape,std::isnan(scale)?scale:1/scale,tol,maxit);
- return {shape,std::isnan(scale)?1/r.scale:scale,r.logLik+jac,r.iterations,r.status,invparalogis_stop_detail(r.stop_detail,jac)};
+ return {shape,std::isnan(scale)?1/r.scale:scale,r.logLik+jac,r.iterations,r.status,invparalogis_stop_detail(r.stop_detail,jac),r.certified};
 }
 
 }

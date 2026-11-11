@@ -1,0 +1,49 @@
+{
+  "fpareto": {
+    "certified": 17,
+    "stop:limit": 55,
+    "stop:numerical": 1
+  },
+  "gb2": {
+    "certified": 17,
+    "stop:limit": 54,
+    "stop:unresolved": 1,
+    "stop:numerical": 1
+  },
+  "invparalogis": {
+    "certified": 93
+  },
+  "invpareto": {
+    "stop:limit": 21,
+    "certified": 71
+  },
+  "pareto2": {
+    "certified": 75,
+    "stop:limit": 17
+  },
+  "pareto3": {
+    "certified": 84,
+    "stop:input-or-unclassified": 4,
+    "uncertified": 3
+  },
+  "sged": {
+    "stop:limit": 33,
+    "certified": 34,
+    "stop:numerical": 11,
+    "stop:tie": 4,
+    "stop:nomle": 1
+  },
+  "trgamma": {
+    "stop:numerical": 1,
+    "certified": 3
+  },
+  "burr": {
+    "stop:unresolved": 1
+  },
+  "invburr": {
+    "stop:unresolved": 1
+  },
+  "pareto4": {
+    "stop:unresolved": 1
+  }
+}

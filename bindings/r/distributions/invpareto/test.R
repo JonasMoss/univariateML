@@ -118,3 +118,8 @@ test_that("inverse Pareto carries inverse exponential stop details", {
   expect_equal(e$estimates, c(scale = 2))
   expect_equal(e$limit_loglik, -3 * (1 + log(2)))
 })
+
+test_that("invpareto delegate follow-up preserves the accepted fit", {
+  f <- mlinvpareto(1/c(.03,.1,.4,.7,1,2,4,12),reltol=1e-8,iterlim=1000)
+  expect_true(is.finite(as.numeric(logLik(f))))
+})

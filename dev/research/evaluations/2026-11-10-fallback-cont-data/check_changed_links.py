@@ -8,7 +8,7 @@ ROOT = Path(__file__).resolve().parents[4]
 scanner = runpy.run_path(str(ROOT / 'dev/tools/check_links.py'))['destinations']
 dist = ROOT / 'univariateML-cpp/include/cppunivariate/distributions'
 files = [dist / family / 'README.md' for family in
-         ['burr', 'invburr', 'pareto4', 'paralogis', 'betapr', 'bhatt', 'ged']]
+         ['burr', 'invburr', 'pareto4', 'paralogis', 'betapr', 'bhatt', 'ged', 'gb2', 'sged', 'invparalogis', 'pareto3']]
 files += [dist / 'README_SCHEMA.md', ROOT / 'dev/validation/diagnostics.md']
 report = ROOT / 'dev/research/evaluations/2026-11-10-fallback-cont-report.md'
 if report.exists():

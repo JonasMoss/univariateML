@@ -1,6 +1,16 @@
 // Strict exponential-face comparison for the owned transformed families.
 #pragma once
 namespace cppunivariate {
+inline bool fallback_lomax_search_accepted(span x,const LomaxResult& r) {
+  if(!(r.lambda>0 && r.kappa>0) || !std::isfinite(r.lambda+r.kappa) || !std::isfinite(r.logLik))return false;
+  if(r.status==LomaxStatus::Ok)return true;
+  if(r.status!=LomaxStatus::IterationFailure && r.status!=LomaxStatus::AccuracyFailure)return false;
+  const auto p=lomax_detail::profile(x,r.lambda);
+  const double n=static_cast<double>(x.size());
+  const double shape_score=static_cast<double>(n*(1-static_cast<CPPUNIV_EXTENDED_REAL>(r.kappa)*p.A));
+  const double rate_score=static_cast<double>(n*p.score());
+  return std::hypot(shape_score,rate_score)<1e-3;
+}
 inline bool fallback_lomax_face_proved(span x,int maxit) {
   if(x.empty())return false;
   double largest=0;bool constant=true;

@@ -1,0 +1,12 @@
+{
+  "head": "6d8a1f0631dd9929296037c44b145ff8765a6b3d",
+  "source_hashes_matched": 131,
+  "baseline_archive_and_cases_match": true,
+  "all_validation_logs_confirmed": true,
+  "protected_surfaces_unchanged": true,
+  "historical_screenshot_restored": true,
+  "scoped_links": "14 job Markdown files; 141 local destinations; 0 broken",
+  "whitespace": "pass",
+  "artifact_preview": "HTTP 403: worktree outside viewer readable roots",
+  "commits_made": false
+}

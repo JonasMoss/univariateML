@@ -413,3 +413,12 @@ TEST_CASE("Burr held-power tolerance-face preference retains the finite search")
  CHECK(std::isfinite(r.logLik));
  CHECK(cppunivariate::fallback_lomax_face_proved(mltest::as_span(std::vector<double>{1,2,3,4}),1000));
 }
+
+TEST_CASE("held-power fallback score gate rejects an unchecked finite Lomax point") {
+ const std::vector<double> x{.03,.1,.4,.7,1,2,4,12};
+ const cppunivariate::LomaxResult bad{1,100,0,1,cppunivariate::LomaxStatus::IterationFailure};
+ CHECK_FALSE(cppunivariate::fallback_lomax_search_accepted(mltest::as_span(x),bad));
+ const std::vector<double> near{1,1,1,1,6.0001};
+ const auto r=cppunivariate::lomax_newton_candidate(mltest::as_span(near),1e-14,1000);
+ CHECK(cppunivariate::fallback_lomax_search_accepted(mltest::as_span(near),r));
+}

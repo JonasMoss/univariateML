@@ -42,10 +42,11 @@ inline SgedResult symmetric(span x,double tol,int maxit,double mean,double sd) {
   for(auto& c:out.stop_detail.candidates)
     if(c.model==StopModel::None && c.coef.size()==3)c.coef.push_back(1);
   // Face coordinates belong to the face model, so uniform endpoints and
-  // all bounds remain unchanged. Failed covers are never finite successes.
+  // all bounds remain unchanged. An accepted parent search remains accepted
+  // when its cover is unclosed; its flag carries the missing certificate.
   switch(r.status) {
     case GedStatus::Ok:
-      if(r.certified){out.status=SgedStatus::Ok;out.certified=true;}
+      out.status=SgedStatus::Ok;out.certified=r.certified;
       break;
     case GedStatus::UniformBoundary:
       if(r.certified){out.status=SgedStatus::UniformBoundary;out.certified=true;}

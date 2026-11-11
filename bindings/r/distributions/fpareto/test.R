@@ -183,3 +183,9 @@ test_that("GB2 reduction preserves an uncertified restoration", {
   expect_false(attr(fit, "certified"))
   expect_true(is.finite(as.numeric(logLik(fit))))
 })
+
+test_that("fpareto delegate follow-up preserves the accepted fit", {
+  f <- mlfpareto(exp(c(-1.1,-1)),min=0,shape3=1,scale=1,reltol=1e-8,iterlim=1000)
+  expect_identical(attr(f,"certified"),FALSE)
+  expect_true(is.finite(as.numeric(logLik(f))))
+})

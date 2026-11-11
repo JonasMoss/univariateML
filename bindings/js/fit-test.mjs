@@ -183,3 +183,17 @@ test('count fallback exposes per-fit certification',()=>{
  const f=m.fitztbinom(new Float64Array([1,2,2,3]),{size:5},{});
  assert.equal(f.status,'Ok');assert.equal(f.certified,1);
 });
+
+test('delegate follow-up keeps successful uncertified parent fits',()=>{
+ const cases=[
+  ['gb2',[Math.exp(-1.1),Math.exp(-1)],{shape3:1,scale:1}],
+  ['fpareto',[Math.exp(-1.1),Math.exp(-1)],{min:0,shape3:1,scale:1}],
+  ['sged',[.7321666961121761,2.2766042947262384,-.5491691631533211],{sd:1.0178559902092952,xi:1}],
+  ['invparalogis',[.9998,.9999,1,1.0001,1.0003].map(v=>1/v),{}],
+  ['pareto3',[1,1+Number.EPSILON],{min:0}]
+ ];
+ for(const [id,x,held] of cases){
+  const r=m['fit'+id](new Float64Array(x),held,{gradtol:1e-8,reltol:1e-10,iterlim:1000});
+  assert.equal(r.status,'Ok',id);assert.equal(r.certified,0,id);assert.ok(Number.isFinite(r.logLik),id);
+ }
+});

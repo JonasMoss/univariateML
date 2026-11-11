@@ -89,8 +89,8 @@ relations:
     shift: min
 fit:
   method: delegation
-  certified: 'yes'
-  note: 'pareto3/README.md, Details; pareto3/mle.hpp (public fitter and held overloads); pareto3/test.cpp: Every supported subset with min held delegates exactly to certified log-logistic on x-min, including held shape and held scale.'
+  certified: partial
+  note: 'pareto3/README.md, Details; pareto3/mle.hpp (public fitter and held overloads); pareto3/test.cpp: Every supported subset with min held delegates to log-logistic on x-min, preserving its represented-likelihood certification flag, including held shape and held scale.'
 areas:
 - actuarial
 - economics and income
@@ -146,3 +146,5 @@ With `min = 0`, the joint fit agrees with `mlllogis(x)`. Failed conditional sear
 The logarithm of the distance from the held minimum converts scale into a
 logistic location. Coefficient accuracy must therefore account for the coupled
 shape/location errors and the exponential map back to the public scale.
+
+When the represented log-logistic scale loses its latent likelihood certificate, a failed correction or scale projection retains the accepted finite parent. A successful correction replaces it only when its finite physical likelihood, evaluated with centered log ratios, is at least as large. Its flag remains uncertified. Certified parent fits keep their existing coefficient refinement and scale-projection checks.

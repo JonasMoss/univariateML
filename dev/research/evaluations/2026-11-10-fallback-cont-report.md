@@ -1,5 +1,7 @@
 # Continuous-family uncertified fallback — TASK-168.2
 
+The original seven-family sections through Reproduction retain the evidence from commit `4a497d0d`. The [Delegate follow-up](#delegate-follow-up) records the current implementation on merged base `6d8a1f06` and the all-green local validation. Open items describe the current state.
+
 The seven owned families (`burr`, `invburr`, `pareto4`, `paralogis`, `betapr`, `bhatt`, `ged`) now retain a successful, unrefuted search when its certificate cannot close, and expose the per-fit certification flag through the common binding. Bhatt's R adapter no longer duplicates the shared conversion. Proved stops and failed or refuted searches remain stops.
 
 The final 1,189-case replay changes **66 stops into uncertified fits**. All **796 previously certified coefficient vectors and log likelihoods are text-identical** in the replay. The final seven-family focused checks pass in both workstation arithmetic modes; R dev/full, JS and site checks pass. Global C++ runs each retain one failure in the explicitly excluded GB2 delegate. The required GCC 13 simbox run could not execute because the machine remained unreachable. These are recorded precisely under Open items.
@@ -200,11 +202,10 @@ The repository-wide Markdown scanner reports 44 broken destinations across 606 f
 
 ## Open items
 
-1. **GB2 integration — explicitly excluded family.** Both global C++ failures are `gb2/test.cpp:297`, old “held-power nonunique profiles” expectation: expected `CertificateTie` (13), got `NumericalFailure` (15). Its beta-prime delegate neither transports the parent's uncertified flag nor skips certificate enclosure checks for an uncertified parent. The old rounded crossing needs an `Ok,false` expectation once delegation is corrected. Separately, the unit-`p` Burr delegate in `gb2/mle.hpp` loses the flag: on `exp({-1.1,-1})`, scale 1, Burr is `Ok,false` but GB2 reports `Ok,true`. The [reproducer](2026-11-10-fallback-cont-data/dependency_probe.cpp) and [output](2026-11-10-fallback-cont-data/dependency-probe.tsv) show the concrete false-certification issue. A narrow [proposed patch](2026-11-10-fallback-cont-data/gb2-delegate-proposal.patch) covers flag propagation, conditional enclosure checking and the obsolete crossing expectation. **It is not applied:** the brief explicitly reserves GB2 for another job, and no authorization to cross that boundary was received. These dependency fixes and reruns are needed before declaring the global C++ suite green.
-2. **GCC 13 double-only validation — unavailable machine.** The required workstation run is complete. Simbox remained unreachable on the final retry after all local suites, with exit 75; no final GCC 13 result is claimed. Run the required no-long-double suite there when available, after the GB2 integration correction if an all-green global result is required.
-3. **SGED held-xi handoff — explicitly excluded family.** With `xi=1`, held sd `1.0178559902092952` and data `{.7321666961121761,2.2766042947262384,-.5491691631533211}`, GED now returns `Ok,false`, while SGED still returns `CertificateFailure` (9), as recorded by the same dependency probe. The owning SGED job must retain/propagate the successful uncertified parent rather than refusing it. GED's public signatures and certified numerical fits were preserved; SGED files were not edited.
+1. **Protected Pareto III density arithmetic.** `pareto3/dpqr.hpp` subtracts nearly equal absolute logarithms on tightly spaced data. For `{1000,1000.0000000000001,1000.0000000000002}`, held `min=0`, the unchanged certified fit has shape `17416525445767648`, scale `1000.0000000000001`, and stored log likelihood `73.223750676989127`; a 100-digit evaluation at those exact binary64 data and coefficients gives `85.60164977708311227`. The error is about `-12.377899100094`. Other certified grid cases also exhibit this problem. A centered-log-ratio density implementation and matching truth fixtures are needed. Those settled surfaces are protected by the task and were left unchanged. The [independent oracle](2026-11-10-fallback-cont-data/delegate_likelihood_oracle.py) and [all grid results](2026-11-10-fallback-cont-data/delegate-likelihood-oracle.json) record both certified and uncertified cases. The corrected uncertified fitter path passes this oracle; no claim of independently verified likelihoods is made for the unchanged certified grid cases.
+2. **GCC 13 cross-machine coverage.** Simbox has a read-only filesystem and is unavailable for the cross-compiler run. All required follow-up suites, including no-long-double, pass locally under GCC 15.2 as requested. A GCC 13 no-long-double result requires a writable, available simbox.
 
-4. **Artifact-pane preview — viewer root configuration.** The required `show` attempt returned HTTP 403: this worktree is outside the viewer service readable roots, despite being the active working directory. The supported client has no per-request root override. Register this directory with the viewer or configure its server-side `CODEX_MATH_WEB_VIEW_ROOTS` to preview the file. That configuration is outside the authorized worktree, so it was left unchanged; the completed report remains at the requested path. The [display diagnostic](2026-11-10-fallback-cont-data/artifact-display.txt) records the failure.
+3. **Artifact-pane preview configuration.** The supported `show` command returns HTTP 403 because the active worktree is outside the viewer's readable roots. Preview requires registering this directory in the viewer service; that configuration is outside the authorized worktree and remains untouched. The report is available at its requested path. The [current display diagnostic](2026-11-10-fallback-cont-data/delegate-artifact-display.txt) records the rejection.
 
 ## Reproduction
 
@@ -223,3 +224,77 @@ mkdir -p "$TMPDIR"
 ```
 
 The [study driver](2026-11-10-fallback-cont-data/study.py) compiles the frozen baseline or current headers and common bindings with GCC `-O2 -std=c++17`; Boost is found through the already-installed BH include directory. It performs no package installation. The [case builder](2026-11-10-fallback-cont-data/build_cases.py) leaves the frozen baseline archive untouched. The face sweep is additional numerical regression evidence and does not upgrade an uncertified result to certified.
+
+## Delegate follow-up
+
+The follow-up uses merged base `6d8a1f06`, including the accuracy jobs, and finishes on 2026-11-11 UTC. No commit was made. All requested delegate families were checked; **every required local suite passes**. The original seven-family evidence remains separate from the new `delegate-*` evidence.
+
+### Delegate behavior and remaining stops
+
+| Family | Parent / affected route | Result and stop classification |
+|---|---|---|
+| GB2 | Beta-prime with held power; Burr with unit `p` | Both transport the parent's `certified`. A successful uncertified beta-prime parent bypasses certificate-only scale enclosure and roundoff-width gates. Invalid unselected witness metadata is discarded without refusing a finite uncertified fit. Actual nonfinite scale/likelihood, failed parent search and proved parent stops still stop. The old numerical refusal was an unclosed certificate. |
+| SGED | GED with `xi=1` held and free shape | `GedStatus::Ok` transports coefficients, likelihood, restrictions, diagnostics and the parent's flag. `Ok,false` no longer becomes `CertificateFailure` / numerical. Certified parent routes and parent stop mappings are unchanged. |
+| InvParalogis | Reciprocal Paralogis: joint, held scale and held shape | The C++ result now carries and transports the flag on each handoff; common bindings emit it. Existing reciprocal representation failures, invalid inputs, proved nonexistence and failed parent searches remain stops. No successful false parent is relabeled certified. |
+| Pareto III | Log-logistic excess fit, then coefficient correction | Failed correction (`IterationFailure`, ordinary binding error) or scale projection (`AccuracyFailure`) retains an accepted uncertified parent. A successful correction is retained only if its finite, stably evaluated physical likelihood is at least the parent's. The flag remains false. Certified correction routes are unchanged; a failed parent search still stops. |
+| FPareto | Shifted GB2 | Its core already transports GB2's flag; the common binding now emits it. It inherits the successful rounded-power and unit-`p` fallbacks instead of the former GB2 numerical refusal. Actual failed/refuted searches and proved stops remain stops. |
+| InvPareto | Reciprocal Lomax | The current parent is Lomax, whose successful routes are always certified and have no fallback flag. There is no false parent to drop. Existing successful transport, limit selection and failed-search behavior are retained and tested. |
+| Pareto II | Shifted Lomax | The same always-certified Lomax handoff applies; successful fits and parent stops are unchanged and tested. |
+| Trgamma | Burr helper inclusion, not a parent fit call | It includes Burr profile helpers but does not delegate a result to a changed fitter. No flag handoff or fallback refusal exists to change. Its independent successful fit and budget failure are retained and tested. |
+
+GB2, SGED, InvParalogis, Pareto III and FPareto expose `extra {"certified",0/1}` through the shared conversion. No R adapter shim was added. The [expanded dependency probe](2026-11-10-fallback-cont-data/dependency_probe.cpp), [merged-base output](2026-11-10-fallback-cont-data/delegate-probe-before.tsv) and [final output](2026-11-10-fallback-cont-data/dependency-probe.tsv) cover all eight families. Probe flag `-1` means that the always-certified result type omits the field, not an uncertified fit.
+
+The merged Lomax solver also exposed three inherited held-power regressions on `{1,1,1,1,6.0001}`, power 1, tolerance `1e-14`, in Burr, InvBurr and Pareto IV. It supplies a finite near-stationary point while reporting a coefficient-accuracy/iteration failure. The owned Burr fallback now accepts that point only when the total log-shape/log-rate score norm is below `1e-3`; positive finite coefficients, physical likelihood and refuting-face checks still apply, and the result is uncertified. An unchecked finite point fails the appended negative score-gate test. Lomax itself was not edited, and the three existing regression expectations were retained.
+
+### Rounded crossing and regression coverage
+
+Only one existing stop expectation changes in this follow-up: [GB2's held-power nonunique-profile test](../../../univariateML-cpp/include/cppunivariate/distributions/gb2/test.cpp). At `t=5.646438395028704`, its sample is the square root of `{1.9901008294052028e-5,2.209857117039297e-5,.0002450722434289249,12.288342947780086,942.976056905759,16.239512580216314,2.898690421966857,1.2684036923492177,400970.63293690106*exp(t)}`, with power 2 and `p=.22690393135372058`. `CertificateTie` becomes `Ok,false`. The parent's comparison records overlapping numerical enclosures/possible winners; it does not prove exact equality at this rounded crossing. Both separated witnesses and the neighboring samples' winner assertions remain. Proved-stop assertions are unchanged.
+
+Appended C++ and R cases cover all eight requested delegates; R also checks the rounded GB2 crossing directly. C++ cases check transport identities, both InvParalogis search routes, retained Pareto III parents and six tightly spaced Pareto III grids. The appended JS test checks successful false flags for GB2, FPareto, SGED, InvParalogis and Pareto III. The final focused run passes **435 cases / 94,046 assertions**. GB2, SGED, InvParalogis, Pareto III and Burr dossier notes describe the family-specific behavior.
+
+### Affected study replay
+
+The [604 frozen cases](2026-11-10-fallback-cont-data/delegate-cases.json) contain 476 requested-family stress cases from the frozen audit, 80 symmetric replays of the GED-parent study (including seed 16802), 24 golden/budget cases, 21 explicit dependency probes and the three inherited held-power regressions. The [provenance](2026-11-10-fallback-cont-data/delegate-provenance.json) records the merged baseline archive and case hashes. The [driver](2026-11-10-fallback-cont-data/delegate_study.py) compiles the frozen merged-base headers or current headers; it leaves the original seven-family replay untouched.
+
+| Outcome | Merged base | Final |
+|---|---:|---:|
+| Certified, including implicit flags | 394 | 376 |
+| Uncertified | 3 | 40 |
+| Stop: limit | 180 | 180 |
+| Stop: numerical | 14 | 3 |
+| Stop: tie | 4 | 2 |
+| Stop: nonexistence | 1 | 1 |
+| Stop: unresolved | 4 | 1 |
+| Stop: ordinary/unclassified binding error | 4 | 1 |
+
+**19 stops become uncertified successes:** 11 SGED, three Pareto III, one GB2, one FPareto and the three inherited held-power regressions. **18 lost flags are corrected:** 13 InvParalogis, three SGED, one GB2 and one FPareto. All **376 retained-certified numeric outputs are text-identical**. All 416 final successful rows have finite in-domain coefficients and finite likelihoods. Residual stop kinds alone are not proofs of nonuniqueness; failed parent searches can retain certificate diagnostics. The remaining ordinary Pareto III stop is the unsuccessful golden search at `iterlim=16`.
+
+Two previously uncertified Pareto III grid fits retain their coefficients but correct their stored likelihoods: center 1000 / four adjacent doubles changes `95.176374677150307` to `112.56899816357473`; center `1e100` / four adjacent doubles changes `-780.36234786664204` to `-782.97711110994487`. A 100-digit physical evaluation confirms the corrected likelihoods. Comparisons use that independent baseline likelihood, rather than the inaccurate old stored value. Every final uncertified grid likelihood agrees within `1e-10`; this is numerical likelihood evidence, not a global certificate. The unchanged certified density issue is specified under Open items.
+
+The [summary](2026-11-10-fallback-cont-data/delegate-summary.json), [full transitions and samples](2026-11-10-fallback-cont-data/delegate-transitions.json), [numeric changes](2026-11-10-fallback-cont-data/delegate-numeric-changes.json), [before](2026-11-10-fallback-cont-data/delegate-before.tsv) and [after](2026-11-10-fallback-cont-data/delegate-after.tsv) outcomes, and [comparison checker](2026-11-10-fallback-cont-data/analyze_delegates.py) are retained. No certified golden coefficients or controls were changed.
+
+### Final local validation
+
+All commands ran in the foreground on the **workstation**, through the shared slot wrappers, under `nice -n 10` with BLAS/OpenMP pinned. Simbox was unavailable with a read-only filesystem; the revised instruction requests local runs. The [validation manifest](2026-11-10-fallback-cont-data/delegate-validation-results.json) records the results. All [131 source hashes](2026-11-10-fallback-cont-data/delegate-source-sha256.json) match. Numerical sources were unchanged throughout the final C++/R/JS/site runs.
+
+| Required command | Final result | Log |
+|---|---|---|
+| `UMVL_TEST_TIER=dev just cpp-test` | 106/106; 492.78 s | [C++ dev](2026-11-10-fallback-cont-data/delegate-cpp-dev-workstation.log.gz) |
+| `UMVL_TEST_TIER=full just cpp-test` | 133/133; 502.08 s | [C++ full](2026-11-10-fallback-cont-data/delegate-cpp-full-workstation.log.gz) |
+| `just cpp-test-no-long-double` | 133/133; 532.28 s | [double-only](2026-11-10-fallback-cont-data/delegate-cpp-no-long-double-workstation.log.gz) |
+| `UMVL_TEST_TIER=dev just test` | FAIL 0, WARN 0, SKIP 154, PASS 23,211; 306.612 s | [R dev](2026-11-10-fallback-cont-data/delegate-r-dev-workstation.log.gz) |
+| `just test-full` | FAIL 0, WARN 0, SKIP 0, PASS 46,038; 849.742 s | [R full](2026-11-10-fallback-cont-data/delegate-r-full-workstation.log.gz) |
+| `just js-build` | Pass | [JS build](2026-11-10-fallback-cont-data/delegate-js-build-workstation.log.gz) |
+| `just js-test` | 610/610; no failures/skips; 299.900 s | [JS tests](2026-11-10-fallback-cont-data/delegate-js-test-workstation.log.gz) |
+| `just site-check` | Pass: 99 pages, MathML, 99 compiling C++17 snippets, graph/links/browser checks | [Site](2026-11-10-fallback-cont-data/delegate-site-check-workstation.log.gz) |
+
+The [15-family focused log](2026-11-10-fallback-cont-data/delegate-targeted-workstation.log.gz) and [study/oracle log](2026-11-10-fallback-cont-data/delegate-study-workstation.log.gz) are retained too. The scoped Markdown and whitespace checks pass. The site's historical screenshot side effect was restored to HEAD bytes. No protected d/p/q/r, truth, special-function or code-generation source was changed.
+
+To reproduce the new replay after setting the worktree temporary-directory environment:
+
+```sh
+/tmp/umvl-cpu/run python3 dev/research/evaluations/2026-11-10-fallback-cont-data/delegate_study.py before
+/tmp/umvl-cpu/run python3 dev/research/evaluations/2026-11-10-fallback-cont-data/delegate_study.py after
+/tmp/umvl-cpu/run python3 dev/research/evaluations/2026-11-10-fallback-cont-data/delegate_likelihood_oracle.py
+/tmp/umvl-cpu/run python3 dev/research/evaluations/2026-11-10-fallback-cont-data/analyze_delegates.py
+```

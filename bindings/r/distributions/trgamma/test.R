@@ -302,3 +302,8 @@ test_that("unrepresentable scales carry numerical stop details", {
     expect_identical(e$loglik_upper,Inf)
   }
 })
+
+test_that("trgamma delegate follow-up preserves the accepted fit", {
+  f <- mltrgamma(c(.03,.1,.4,.7,1,2,4,12),shape2=1,reltol=1e-8,iterlim=1000)
+  expect_true(is.finite(as.numeric(logLik(f))))
+})

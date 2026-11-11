@@ -366,3 +366,5 @@ A reachable Weibull face remains a likelihood lower bound when the strict
 comparison does not close. Its value can refute a finite search point by a
 separated gap even without proving that the face wins globally; the
 unclosed face is retained as a witness, not a selected limit payload.
+
+The held-power fallback accepts a finite Lomax proposal at its coefficient-precision floor only when its total log-shape and log-rate score norm is below $10^{-3}$. Physical likelihood consistency and feasible-bound refutation are checked after transport; the result remains uncertified.

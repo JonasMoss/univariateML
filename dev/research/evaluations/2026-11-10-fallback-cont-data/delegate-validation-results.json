@@ -1,0 +1,89 @@
+{
+  "base": "6d8a1f06",
+  "machine": "workstation",
+  "compiler": "GCC 15.2.0",
+  "simbox": "unavailable (read-only filesystem); local runs requested",
+  "source_hashes": "delegate-source-sha256.json",
+  "validated_sources": 131,
+  "commands": [
+    {
+      "command": "UMVL_TEST_TIER=dev just cpp-test",
+      "exit": 0,
+      "passed": 106,
+      "total": 106,
+      "seconds": 492.78,
+      "log": "delegate-cpp-dev-workstation.log.gz"
+    },
+    {
+      "command": "UMVL_TEST_TIER=full just cpp-test",
+      "exit": 0,
+      "passed": 133,
+      "total": 133,
+      "seconds": 502.08,
+      "log": "delegate-cpp-full-workstation.log.gz"
+    },
+    {
+      "command": "just cpp-test-no-long-double",
+      "exit": 0,
+      "passed": 133,
+      "total": 133,
+      "seconds": 532.28,
+      "log": "delegate-cpp-no-long-double-workstation.log.gz"
+    },
+    {
+      "command": "UMVL_TEST_TIER=dev just test",
+      "exit": 0,
+      "passed": 23211,
+      "failed": 0,
+      "warnings": 0,
+      "skipped": 154,
+      "seconds": 306.612,
+      "log": "delegate-r-dev-workstation.log.gz"
+    },
+    {
+      "command": "just test-full",
+      "exit": 0,
+      "passed": 46038,
+      "failed": 0,
+      "warnings": 0,
+      "skipped": 0,
+      "seconds": 849.742,
+      "log": "delegate-r-full-workstation.log.gz"
+    },
+    {
+      "command": "just js-build",
+      "exit": 0,
+      "log": "delegate-js-build-workstation.log.gz"
+    },
+    {
+      "command": "just js-test",
+      "exit": 0,
+      "passed": 610,
+      "failed": 0,
+      "skipped": 0,
+      "seconds": 299.899970639,
+      "log": "delegate-js-test-workstation.log.gz"
+    },
+    {
+      "command": "just site-check",
+      "exit": 0,
+      "family_pages": 99,
+      "compiled_snippets": 99,
+      "log": "delegate-site-check-workstation.log.gz"
+    },
+    {
+      "command": "focused 15-family doctest",
+      "exit": 0,
+      "passed": 435,
+      "assertions": 94046,
+      "skipped": 9,
+      "log": "delegate-targeted-workstation.log.gz"
+    }
+  ],
+  "notes": [
+    "All commands ran in the foreground through the local CPU-slot wrappers.",
+    "No numerical source changed between the final C++ runs and the final R/JS/site runs.",
+    "The final R dev and full runs both include the appended rounded GB2 crossing test.",
+    "The initial merged-source dev/full attempt exposed three inherited held-power regressions; final reruns above pass after the score-gated fallback fix."
+  ]
+}

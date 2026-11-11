@@ -37,7 +37,7 @@ inline FitResult fit_gb2(cppunivariate::span x, Held shape1_arg = {}, Held shape
     default: return stop_failure(failure("GB2 search unresolved: no verified interior maximum; increase iterlim or inspect the limiting models."),r.stop_detail,"unresolved",{"shape1","shape2","shape3","scale"},"");
   }
   FitResult out;
-  if(!r.certified)out.extra.push_back({"certified",0});
+  out.extra.push_back({"certified",r.certified?1.:0.});
   out.estimates.emplace_back("shape1",r.shape1); if(shape1_arg.supplied) out.fixed.push_back("shape1");
   out.estimates.emplace_back("shape2",r.shape2); if(shape2_arg.supplied) out.fixed.push_back("shape2");
   out.estimates.emplace_back("shape3",r.shape3); if(shape3_arg.supplied) out.fixed.push_back("shape3");

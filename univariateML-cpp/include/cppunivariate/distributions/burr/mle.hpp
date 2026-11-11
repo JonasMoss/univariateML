@@ -374,7 +374,7 @@ inline BurrMLE burr_mle_holds(span x,double a,double b,double s,double tol=1e-9,
      bad.status=r.certificate_failure==LomaxCertificateFailure::Budget?BurrStatus::CertificateBudget:r.certificate_failure==LomaxCertificateFailure::Arithmetic?BurrStatus::NumericalFailure:BurrStatus::IterationFailure;
      const auto candidate=lomax_newton_candidate(span{y.data(),y.size()},tol,maxit);
      BurrMLE searched{candidate.kappa,b,std::exp(mx-std::log(candidate.lambda)/b),
-       candidate.logLik+jac,candidate.iterations,candidate.status==LomaxStatus::Ok?BurrStatus::Ok:BurrStatus::IterationFailure};
+       candidate.logLik+jac,std::min(candidate.iterations,maxit),fallback_lomax_search_accepted(span{y.data(),y.size()},candidate)?BurrStatus::Ok:BurrStatus::IterationFailure};
      return burr_uncertified(bad,searched,x);
    }
    a=r.kappa;s=std::exp(mx-std::log(r.lambda)/b);

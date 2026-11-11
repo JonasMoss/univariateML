@@ -171,3 +171,11 @@ TEST_CASE("fpareto: preserves the GB2 uncertified restoration flag") {
   CHECK_FALSE(fit.certified);
   CHECK(std::isfinite(fit.logLik));
 }
+
+TEST_CASE("Feller Pareto keeps an uncertified GB2 delegate") {
+ const std::vector<double> x{std::exp(-1.1),std::exp(-1.)};const auto d=mltest::as_span(x);
+ const auto p=cppunivariate::gb2_mle(d,1e-8,1000,NAN,NAN,1,1);
+ const auto r=cppunivariate::fpareto_mle(d,0,1e-8,1000,NAN,NAN,1,1);
+ REQUIRE(p.status==cppunivariate::Gb2Status::Ok);REQUIRE(r.status==p.status);
+ CHECK_FALSE(p.certified);CHECK(r.certified==p.certified);CHECK(r.shape1==p.shape1);CHECK(r.shape2==p.shape2);CHECK(r.shape3==p.shape3);CHECK(r.scale==p.scale);CHECK(r.logLik==p.logLik);
+}

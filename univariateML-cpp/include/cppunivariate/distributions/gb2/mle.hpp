@@ -253,6 +253,7 @@ inline Gb2Result gb2_mle(span x,double tol=1e-10,int maxit=300,
     if(p==1) {
       const auto r=burr_mle_holds(x,q,a,b,tol,maxit);
       out={r.shape1,r.shape2,1,r.scale,r.logLik,r.iterations,Gb2Status::SearchUnresolved,r.stop_detail};
+      out.certified=r.certified;
       if(r.status==BurrStatus::Ok)out.status=Gb2Status::Ok;
       if(r.status==BurrStatus::InvalidInit || r.status==BurrStatus::Unbounded)out.status=Gb2Status::InvalidData;
       if(r.status==BurrStatus::CertificateTie)out.status=Gb2Status::CertificateTie;

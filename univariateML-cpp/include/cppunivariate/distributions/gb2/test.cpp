@@ -294,7 +294,8 @@ TEST_CASE("GB2 held-power nonunique profiles retain both separated witnesses") {
   for(double& v:x)v=std::sqrt(v);
   const auto r=cppunivariate::gb2_mle(mltest::as_span(x),1e-7,1000,NAN,2,.22690393135372058,NAN);
   if(t==5.646438395028704) {
-   REQUIRE(r.status==cppunivariate::Gb2Status::CertificateTie);
+   REQUIRE(r.status==cppunivariate::Gb2Status::Ok);
+   CHECK_FALSE(r.certified);
    bool left=false,right=false;
    for(const auto& c:r.stop_detail.candidates)if(c.model==cppunivariate::StopModel::None) {
     REQUIRE(c.coef.size()==4);left=left||c.coef[0]<.12;right=right||c.coef[0]>.12;
@@ -518,4 +519,14 @@ TEST_CASE("gb2 centered large-shape kernel retains an ordinary held-scale estima
  CHECK(r.shape1==doctest::Approx(597.100007345069).epsilon(1e-10));
  CHECK(r.shape2==doctest::Approx(.19427423066143805).epsilon(1e-10));
  CHECK(r.shape3==doctest::Approx(51.063150568462).epsilon(1e-10));
+}
+
+TEST_CASE("GB2 transports the uncertified unit-p Burr result") {
+ const std::vector<double> x{std::exp(-1.1),std::exp(-1.)};const auto d=mltest::as_span(x);
+ const auto p=cppunivariate::burr_mle_holds(d,NAN,NAN,1,1e-8,1000);
+ const auto r=cppunivariate::gb2_mle(d,1e-8,1000,NAN,NAN,1,1);
+ REQUIRE(p.status==cppunivariate::BurrStatus::Ok);REQUIRE(r.status==cppunivariate::Gb2Status::Ok);
+ CHECK_FALSE(p.certified);CHECK(r.certified==p.certified);
+ CHECK(r.shape1==p.shape1);CHECK(r.shape2==p.shape2);CHECK(r.scale==p.scale);
+ CHECK(r.logLik==doctest::Approx(p.logLik).epsilon(1e-12));
 }

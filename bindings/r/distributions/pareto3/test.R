@@ -105,3 +105,9 @@ test_that("log-logistic reduction preserves an uncertified restoration", {
   expect_false(attr(fit, "certified"))
   expect_true(is.finite(as.numeric(logLik(fit))))
 })
+
+test_that("pareto3 delegate follow-up preserves the accepted fit", {
+  f <- mlpareto3(c(1,1+.Machine$double.eps),min=0,reltol=1e-10,iterlim=1000)
+  expect_identical(attr(f,"certified"),FALSE)
+  expect_true(is.finite(as.numeric(logLik(f))))
+})
