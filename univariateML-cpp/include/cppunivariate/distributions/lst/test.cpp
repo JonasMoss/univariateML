@@ -103,6 +103,7 @@ TEST_CASE("lst: every held golden subset preserves coefficients and likelihood")
   for(int mask=1;mask<8;++mask) {
     CAPTURE(mask);
     const auto r=cppunivariate::lst_mle(mltest::as_span(g.data),1e-8,1000,((mask & 1) ? g.estimates.at("mu") : nan),((mask & 2) ? g.estimates.at("sigma") : nan),((mask & 4) ? g.estimates.at("df") : nan));
+    if(mask==1||mask==2)CHECK_FALSE(r.certified);
     if(mask & 1)CHECK(r.mu==g.estimates.at("mu"));
     if(mask & 2)CHECK(r.sigma==g.estimates.at("sigma"));
     if(mask & 4)CHECK(r.df==g.estimates.at("df"));
@@ -212,7 +213,8 @@ TEST_CASE("lst: audited huge held-parameter magnitude") {
   std::vector<double> x{1,2};
   cppunivariate::span s{x.data(),x.size()};
   const auto r=cppunivariate::lst_mle(s,1e-6,200,0,1e-10,nan);
-  CHECK((r.status==cppunivariate::LstStatus::Ok || r.status==cppunivariate::LstStatus::BfgsFailure || r.status==cppunivariate::LstStatus::IterationFailure));
+  CHECK(r.status==cppunivariate::LstStatus::Ok);
+  CHECK(std::isfinite(r.logLik));
   CHECK(r.status!=cppunivariate::LstStatus::NormalBoundary);
 }
 
@@ -524,8 +526,213 @@ TEST_CASE("lst: uncertified free-shape searches still stop on solver exhaustion"
   for(int mask:{1,2,3}) {
     const auto r=cppunivariate::lst_mle(mltest::as_span(g.data),1e-8,1,
       mask&1?g.estimates.at("mu"):NAN,mask&2?g.estimates.at("sigma"):NAN,NAN);
-    CHECK(r.status==(mask==2?cppunivariate::LstStatus::CertificateBudget:cppunivariate::LstStatus::IterationFailure));
+    CHECK(r.status==(mask==2?cppunivariate::LstStatus::CertificateBudget:mask==3?cppunivariate::LstStatus::NumericalFailure:cppunivariate::LstStatus::IterationFailure));
   }
+}
+
+TEST_CASE("lst: shape-only certificate agrees with the independent 80-digit root") {
+  const auto g=mltest::load_distribution_golden("lst");
+  const auto r=cppunivariate::lst_mle(mltest::as_span(g.data),1e-8,200,g.estimates.at("mu"),g.estimates.at("sigma"),NAN);
+  REQUIRE(r.status==cppunivariate::LstStatus::Ok);
+  CHECK(r.df==doctest::Approx(3.02424271362830351424).epsilon(1e-7));
+  CHECK(r.logLik==doctest::Approx(-898.624781104657356037).epsilon(1e-12));
+  const std::vector<double> x{-1,1};
+  const auto normal=cppunivariate::lst_mle(mltest::as_span(x),1e-8,200,0,1,NAN);
+  REQUIRE(normal.status==cppunivariate::LstStatus::NormalBoundary);
+  CHECK(normal.stop_detail.limit_model==cppunivariate::StopModel::Norm);
+  CHECK(normal.stop_detail.limit_coef==std::vector<double>{0,1});
+  const auto stopped=cppunivariate::lst_mle(mltest::as_span(g.data),1e-8,1,g.estimates.at("mu"),g.estimates.at("sigma"),NAN);
+  CHECK(stopped.status!=cppunivariate::LstStatus::Ok);
+  CHECK(std::isfinite(stopped.stop_detail.loglik_lower));
+}
+
+TEST_CASE("lst: subunit joint global uniqueness fails under strict atom inequalities") {
+  const std::vector<double> x{-100,-99,0,99,100};
+  const double B=10000,C=9801;
+  // At location zero the unique scale score root has a=df*s^2 below.
+  const auto a=(cppunivariate::t_cert_detail::root(cppunivariate::t_cert_detail::I(4*(B+C)*(B+C)+20*B*C))-2*(B+C))/10;
+  const auto central_scale=cppunivariate::t_cert_detail::root(a*2);
+  cppunivariate::t_cert_detail::Sum difference;
+  for(double v:x){
+    const auto left=cppunivariate::t_cert_detail::log1p(cppunivariate::t_cert_detail::sq((cppunivariate::t_cert_detail::I(v)-99.5)/.5)*2);
+    const auto right=cppunivariate::t_cert_detail::log1p(cppunivariate::t_cert_detail::sq(cppunivariate::t_cert_detail::I(v)/central_scale)*2);
+    difference.add((right-left)*.75);
+  }
+  const auto gap=difference.get()+cppunivariate::t_cert_detail::log(central_scale/.5)*5;
+  REQUIRE(gap.valid());CHECK(gap.lo>.44);CHECK(gap.hi<.45);
+  // Strict atoms give existence. This witness beats every fit at zero;
+  // reflection therefore forces at least two distinct global maximizers.
+  const auto stopped=cppunivariate::lst_mle_fixed_df(mltest::as_span(x),.5,1e-8,200);
+  REQUIRE(stopped.status==cppunivariate::LstStatus::NonUniqueSymmetry);
+  REQUIRE(stopped.stop_detail.candidates.size()==2);
+  for(const auto& point:stopped.stop_detail.candidates){
+    const double p[2]={point.coef[0],std::log(point.coef[1])};
+    const double ll=-cppunivariate::LstCost{mltest::as_span(x),.5,true}(p);
+    CHECK(ll>=point.loglik_lower);CHECK(ll<=point.loglik_upper);
+  }
+}
+
+TEST_CASE("lst: shape-only holds allow a certified shape below one half") {
+  const std::vector<double> x{-100,100};
+  const auto r=cppunivariate::lst_mle(mltest::as_span(x),1e-8,200,0,1,NAN);
+  REQUIRE(r.status==cppunivariate::LstStatus::Ok);
+  CHECK(r.df>0);CHECK(r.df<.5);
+  CHECK(r.restricted==0u);
+  CHECK(r.logLik> -10000-std::log(2*cppunivariate::pi));
+}
+
+TEST_CASE("lst: free-shape held solver stops retain admissible witnesses and unknown upper bounds") {
+  const auto g=mltest::load_distribution_golden("lst");
+  for(int mask:{1,2,3}) {
+    const auto r=cppunivariate::lst_mle(mltest::as_span(g.data),1e-8,1,
+      mask&1?g.estimates.at("mu"):NAN,mask&2?g.estimates.at("sigma"):NAN,NAN);
+    REQUIRE(r.status!=cppunivariate::LstStatus::Ok);
+    CHECK(r.stop_detail.loglik_upper==INFINITY);
+    CHECK(std::isfinite(r.stop_detail.loglik_lower));
+    CHECK_FALSE(r.stop_detail.candidates.empty());
+    for(const auto& candidate:r.stop_detail.candidates) {
+      REQUIRE(candidate.coef.size()==3);
+      const double point[2]={candidate.coef[0],std::log(candidate.coef[1])};
+      const double ll=-cppunivariate::LstCost{mltest::as_span(g.data),candidate.coef[2],true}(point);
+      CHECK(ll>=candidate.loglik_lower);CHECK(ll<=candidate.loglik_upper);
+    }
+  }
+}
+
+TEST_CASE("lst: shape-only certificate refuses unjustifiable requested coefficient precision") {
+  const auto g=mltest::load_distribution_golden("lst");
+  const auto r=cppunivariate::lst_mle(mltest::as_span(g.data),1e-20,200,g.estimates.at("mu"),g.estimates.at("sigma"),NAN);
+  CHECK(r.status!=cppunivariate::LstStatus::Ok);
+  CHECK(r.stop_detail.loglik_upper==INFINITY);
+  CHECK(std::isfinite(r.stop_detail.loglik_lower));
+}
+
+TEST_CASE("lst: default budget distinguishes scalar certificates and joint numerical fits") {
+  const auto g=mltest::load_distribution_golden("lst");
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  for(int mask=1;mask<=3;++mask) {
+    CAPTURE(mask);
+    const auto r=cppunivariate::lst_mle(mltest::as_span(g.data),1.220703e-4,200,
+      mask&1?g.estimates.at("mu"):nan,
+      mask&2?g.estimates.at("sigma"):nan,nan);
+    REQUIRE(r.status==cppunivariate::LstStatus::Ok);
+    CHECK(r.certified==(mask==3));
+    CHECK(r.logLik>=g.logLik-1e-6*g.data.size());
+  }
+}
+
+TEST_CASE("lst: normal-relative value bounds reject a dominated near-normal point") {
+  const std::vector<double> x={-1,2};
+  cppunivariate::StopDetail point;
+  cppunivariate::t_shape_detail::retain_point(mltest::as_span(x),.2,1.5297058413452655,8886110.5205078721,false,point);
+  const auto fit=cppunivariate::norm_mle(mltest::as_span(x),.2,NAN);
+  const auto normal=cppunivariate::t_shape_detail::normal_point(mltest::as_span(x),fit.mean,fit.sd);
+  REQUIRE(point.candidates.size()==1);
+  REQUIRE(normal.candidates.size()==1);
+  CHECK(point.candidates[0].loglik_upper-point.loglik_lower<1e-9);
+  CHECK(cppunivariate::t_shape_detail::dominated(point,normal));
+  CHECK(point.candidates.size()==2);
+  const auto r=cppunivariate::lst_mle(mltest::as_span(x),1.220703e-4,200,.2,NAN,NAN);
+  CHECK(r.status==cppunivariate::LstStatus::NormalBoundary);
+  CHECK(r.certified);
+}
+
+TEST_CASE("lst: signed normal profile covers every finite shape at actual holds") {
+  std::vector<double> x;
+  for(int j=0;j<100;++j)x.push_back(cppunivariate::special::qnorm((j+.5)/100.,0,1,true,false));
+  for(int mask:{1,2}){
+    const double mu=mask==1?0:NAN,scale=mask==2?1:NAN;
+    const auto proof=cppunivariate::t_signed_detail::solve(mltest::as_span(x),mu,scale,false,200);
+    REQUIRE(proof.proved);CHECK(proof.coefficient_upper<0);CHECK(proof.cutoff>proof.lower_shape);
+    CHECK(proof.evaluations<=cppunivariate::certificate_budget(200));
+    const auto result=cppunivariate::lst_mle(mltest::as_span(x),1e-8,200,mu,scale,NAN);
+    CHECK(result.status==cppunivariate::LstStatus::NormalBoundary);CHECK(result.certified);
+    CHECK(std::isfinite(result.stop_detail.loglik_upper));
+  }
+}
+
+TEST_CASE("lst: signed face zero and uncertain coefficients make no claim") {
+  std::vector<cppunivariate::t_cert_detail::I> q{0,0,0,0,3,3};
+  const auto zero=cppunivariate::t_signed_detail::coefficient(q,false);
+  CHECK(zero.lo<=0);CHECK(zero.hi>=0);
+  q={1,4};
+  const auto value=cppunivariate::t_signed_detail::coefficient(q,false);
+  CHECK(value.lo<=1.25);CHECK(value.hi>=1.25);
+}
+
+TEST_CASE("lst: compact cover refuses normal when its negative leading term hides a finite winner") {
+  std::vector<double> x;for(int j=0;j<3;++j){x.push_back(-.001);x.push_back(.001);}
+  for(int j=0;j<2;++j){x.push_back(-1);x.push_back(1);}
+  const auto proof=cppunivariate::t_signed_detail::solve(mltest::as_span(x),0,NAN,false,200);
+  CHECK_FALSE(proof.proved);CHECK(proof.coefficient_upper<0);
+  // An independent finite witness disproves the face; the budgeted cover
+  // may remain unresolved without locating this narrow scale optimum.
+  cppunivariate::StopDetail witness;
+  cppunivariate::t_shape_detail::retain_point(mltest::as_span(x),0,.001,.2,false,witness);
+  REQUIRE_FALSE(witness.candidates.empty());
+  const auto normal=cppunivariate::norm_mle(mltest::as_span(x),0,NAN);
+  const auto face=cppunivariate::t_shape_detail::normal_point(mltest::as_span(x),0,normal.sd);
+  CHECK(witness.loglik_lower>face.candidates[0].loglik_upper);
+  const auto fit=cppunivariate::lst_mle(mltest::as_span(x),1e-8,200,0,NAN,NAN);
+  CHECK(fit.status==cppunivariate::LstStatus::Ok);CHECK_FALSE(fit.certified);
+}
+
+TEST_CASE("lst: zero normal profile coefficient preserves uncertified legacy search") {
+  const double a=std::sqrt(9+4*std::sqrt(6.));
+  const std::vector<double> x{-a,a,-1,1,-1,1,-1,1};
+  const auto proof=cppunivariate::t_signed_detail::solve(mltest::as_span(x),0,NAN,false,200);
+  CHECK_FALSE(proof.proved);CHECK(proof.coefficient_lower<=0);CHECK(proof.coefficient_upper>=0);
+  const auto fit=cppunivariate::lst_mle(mltest::as_span(x),1e-8,200,0,NAN,NAN);
+  CHECK(fit.status==cppunivariate::LstStatus::Ok);CHECK_FALSE(fit.certified);
+}
+
+TEST_CASE("lst: inverse-shape score enclosures retain the normal cancellation") {
+  const auto g=cppunivariate::t_signed_detail::scaled_gamma({32,1e6},false);
+  REQUIRE(g.valid());CHECK(g.lo>.249);CHECK(g.hi<=.25);
+  const auto ratio=cppunivariate::t_signed_detail::remainder_ratio({0,1});
+  REQUIRE(ratio.valid());CHECK(ratio.lo<=.1931471805599453094);CHECK(ratio.hi==.5);
+}
+
+TEST_CASE("lst: a broad inherited scale bracket contracts by uniform monotone signs") {
+  cppunivariate::t_signed_detail::Engine e;
+  e.free_scale=true;e.n=2;e.maxit=200;e.q={.4,1.6};
+  cppunivariate::t_cert_detail::I p(-5,5);
+  CHECK(e.nuisance(.01,p.lo).lo>0);CHECK(e.nuisance(.01,p.hi).hi<0);
+  REQUIRE(e.scale_box(100,p,true));
+  CHECK(p.hi-p.lo<1e-9);CHECK(p.lo>-1);CHECK(p.hi<1);
+}
+
+TEST_CASE("lst: scalar root inclusion refreshes curvature after contraction") {
+  const std::vector<double> x{
+    0.75720486532275033,0.078164112246018269,-0.29617000018298156,0.050073394207876487,
+    1.0344803503783386,-1.8705333801050186,-3.0989867299391776,0.90730333404638741,
+    0.86382261359534596,0.96758662859438438,-2.1019173105838753,0.92132097699594229,
+    0.036567641718837307,1.4540366392763326,-1.3249887416131778,1.8563850477064809,
+    0.1116342606423634,0.82160146027238912,1.052750325400404,-0.26650613879082141,
+    -0.056457642305623237,-0.70494265187825933,1.6655563810952159,-0.89923880231305531,
+    0.75255399723301819,1.2416742840838393,0.19691343696481184,0.48281862013640198,
+    0.47676973303520387,0.16249408360302275,1.2896057451399137,1.2237821902695254,
+    -0.49720872015426054,0.22303829922632412,0.97071652876075509,-0.29379211607275513,
+    -0.88709293449384896,0.1573121349613944,-0.91759370430874165,-0.87160768908349917,
+    -1.0101932449454551,0.27404867073227768,-1.4213256807182235,-0.32019158419304417,
+    2.2647456405063782,1.1884078696369769,-0.09363209189861052,0.12587651816843237,
+    1.0681883028736228,0.16552218950837555,-1.0151526789594714,0.7577305226233213,
+    -1.1747273207870981,-0.37395687570530867,-1.707127708692465,-1.0711494510562174,
+    1.5766445114569931,-2.1286971407445163,-2.3761726139159434,-1.213674694998772,
+    0.56454955707753385,-0.37330024029843223,-0.60150897220800825,0.42511880543734426
+  };
+  const auto result=cppunivariate::lst_mle(mltest::as_span(x),1e-10,200,0,1,NAN);
+  REQUIRE(result.status==cppunivariate::LstStatus::Ok);CHECK(result.certified);
+  CHECK(result.df==doctest::Approx(18.49267086468155611686).epsilon(1e-10));
+}
+
+TEST_CASE("lst: positive-series shape remainder avoids the direct subtraction seam") {
+  const auto value=cppunivariate::t_shape_detail::shape_remainder(.011);
+  REQUIRE(value.valid());
+  CHECK(value.hi-value.lo<1e-16);
+  CHECK(value.lo>0);
+  const auto old=cppunivariate::t_cert_detail::shape_remainder(.011);
+  CHECK(value.hi-value.lo<old.hi-old.lo);
 }
 
 #include "cppunivariate/distributions/std/dpqr.hpp"

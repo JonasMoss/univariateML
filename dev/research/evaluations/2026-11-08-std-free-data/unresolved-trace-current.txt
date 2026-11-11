@@ -1,0 +1,31 @@
+lst,normal,2,3  root_width=7.29168e-08 allowed=3.26321e-08 slope_floor=1.51212e-08 shape:297
+std,normal,12,3  root_width=1.74894e-09 allowed=1.08304e-09 slope_floor=0.00172308 shape:297
+std,normal,24,3  root_width=1.40253e-08 allowed=2.81096e-09 slope_floor=0.000129833 shape:297
+std,normal,25,3  root_width=3.331e-07 allowed=4.72444e-08 slope_floor=2.89013e-09 shape:297
+std,normal,27,3 shape:264
+std,t3,17,1 joint:226
+std,t3,32,1 joint:226
+lst,t5,13,3  root_width=3.86461e-09 allowed=2.46256e-09 slope_floor=0.000446688 shape:297
+std,t5,15,3  root_width=8.49646e-09 allowed=6.67088e-09 slope_floor=3.08341e-06 shape:297
+std,t5,17,3  root_width=1.46036e-09 allowed=1.07038e-09 slope_floor=0.00178954 shape:297
+std,t5,31,3  root_width=2.3765e-08 allowed=3.35282e-09 slope_floor=3.46713e-05 shape:297
+lst,t10,5,3  root_width=5.5614e-09 allowed=3.40958e-09 slope_floor=0.000114496 shape:297
+std,t10,9,3  root_width=5.69955e-09 allowed=3.48287e-09 slope_floor=0.000106806 shape:297
+lst,t10,10,3  root_width=2.74055e-09 allowed=2.54677e-09 slope_floor=0.000413543 shape:297
+lst,t10,16,3  root_width=3.33477e-09 allowed=2.25792e-09 slope_floor=0.000547722 shape:297
+std,t10,17,3  root_width=4.46875e-08 allowed=1.9093e-08 slope_floor=6.84305e-08 shape:297
+std,t10,21,3  root_width=5.05638e-08 allowed=1.43513e-08 slope_floor=2.03638e-07 shape:297
+std,t10,24,3  root_width=5.63867e-08 allowed=1.21964e-08 slope_floor=2.26697e-07 shape:297
+std,t10,27,3  root_width=6.63265e-09 allowed=3.48996e-09 slope_floor=8.5214e-05 shape:297
+lst,t10,30,3  root_width=6.95752e-08 allowed=4.30491e-08 slope_floor=6.51915e-09 shape:297
+std,t10,31,3  root_width=6.34522e-09 allowed=2.17677e-09 slope_floor=0.000171713 shape:297
+std,t10,32,3  root_width=5.0562e-08 allowed=2.4829e-09 slope_floor=2.74679e-05 shape:297
+std,t30,4,3  root_width=1.05372e-08 allowed=2.75276e-09 slope_floor=8.5952e-05 shape:297
+std,t30,5,3  root_width=4.1944e-09 allowed=1.93622e-09 slope_floor=0.000425691 shape:297
+std,t30,19,3  root_width=6.77875e-09 allowed=1.87175e-09 slope_floor=0.00016635 shape:297
+std,t30,20,3  root_width=2.37671e-09 allowed=2.3028e-09 slope_floor=0.000445856 shape:297
+std,t30,25,3  root_width=2.23842e-08 allowed=1.12714e-08 slope_floor=3.46581e-07 shape:297
+std,t30,27,3  root_width=5.97083e-09 allowed=5.50986e-09 slope_floor=1.81102e-05 shape:297
+std,t30,28,3  root_width=1.83431e-08 allowed=5.45853e-09 slope_floor=3.29069e-06 shape:297
+std,triangular,4,3  root_width=1.37281e-09 allowed=1.11351e-09 slope_floor=0.00196074 shape:297
+lst,triangular,5,3  root_width=5.30163e-07 allowed=1.06691e-07 slope_floor=1.17473e-10 shape:297

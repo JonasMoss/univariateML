@@ -6,7 +6,12 @@
 namespace umvl_binding {
 inline FitResult fit_std(cppunivariate::span x, Held mean_arg = {}, Held sd_arg = {}, Held nu_arg = {}, double gradtol = 1.220703e-4, int iterlim = 200) {
   std::vector<std::string> warnings;
-  const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
+  bool face_flag=false;double certified=0;
+  const auto fail = [&](const std::string& format, const auto&... arguments) {
+    auto out=failure(binding_message(format, arguments...), warnings);
+    if(face_flag)out.extra.emplace_back("certified",certified);
+    return out;
+  };
   const Held mean = mean_arg;
   const Held sd = sd_arg;
   const Held nu = nu_arg;
@@ -22,10 +27,13 @@ inline FitResult fit_std(cppunivariate::span x, Held mean_arg = {}, Held sd_arg 
   if(sd.supplied)fixed.push_back("sd");
   if(nu.supplied)fixed.push_back("nu");
   auto res=cppunivariate::student_t_mle(x,gradtol,iterlim,held_mean,held_sd,nu.supplied?nu.value:nan);
+  certified=res.certified?1.:0.;
+  face_flag=res.status==cppunivariate::StudentTStatus::NormalBoundary||res.status==cppunivariate::StudentTStatus::DfTwoBoundary||res.status==cppunivariate::StudentTStatus::ScaleBoundary;
   if(res.status==cppunivariate::StudentTStatus::CertificateBudget)return stop_failure(fail("Student-t global certificate budget exhausted; no verified MLE. Raising iterlim may resolve this stop."),res.stop_detail,"budget",{"mean","sd","nu"});
+  if(res.status==cppunivariate::StudentTStatus::NonUniqueHeldSd)return stop_failure(fail("With sd held, this balanced two-point sample has distinct global Student-t maximizers by symmetry and the variance bound. Candidates are finite likelihood witnesses."),res.stop_detail,"tie",{"mean","sd","nu"});
   if(res.status==cppunivariate::StudentTStatus::CertificateTie)return stop_failure(fail("Student-t global certificate unresolved tie or sign-uncertain seam; no verified MLE."),res.stop_detail,"tie",{"mean","sd","nu"});
   if(res.status==cppunivariate::StudentTStatus::NumericalFailure && !nu.supplied && (mean.supplied || sd.supplied))
-    return stop_failure(fail("Student-t held-subset numerical search failed its score, arithmetic or representability checks; increase iterlim."),res.stop_detail,"numerical",{"mean","sd","nu"});
+    return stop_failure(fail(sd.supplied ? "Student-t held-subset global certificate unresolved: normal (`mlnorm`) or scale-collapse comparisons, finite roots or arithmetic bounds remain unresolved; no verified MLE." : "Student-t held-subset global certificate unresolved: normal (`mlnorm`) or positive-scale t2 (`mllst`) comparisons, finite roots or arithmetic bounds remain unresolved; no verified MLE."),res.stop_detail,"numerical",{"mean","sd","nu"});
   if(res.status==cppunivariate::StudentTStatus::NumericalFailure)return stop_failure(fail("Student-t global certificate numerical failure: score/root, enclosure, domain or linear solve unresolved; no verified MLE."),res.stop_detail,"numerical",{"mean","sd","nu"});
   if (res.status == cppunivariate::StudentTStatus::InvalidNu)
     return fail("`nu` must be finite and greater than 2.");
@@ -54,7 +62,7 @@ inline FitResult fit_std(cppunivariate::span x, Held mean_arg = {}, Held sd_arg 
       !std::isfinite(res.nu)) {
     return fail("Student-t MLE failed to converge (check inputs)");
   }
-  return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"mean",res.mu},{"sd",res.sigma},{"nu",res.nu}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }();
+  return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"mean",res.mu},{"sd",res.sigma},{"nu",res.nu}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; out.extra.emplace_back("certified",res.certified?1.:0.); return out; }();
 
 }
 }

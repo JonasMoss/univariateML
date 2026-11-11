@@ -6,7 +6,12 @@
 namespace umvl_binding {
 inline FitResult fit_lst(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg = {}, Held df_arg = {}, double gradtol = 1.220703e-4, int iterlim = 200) {
   std::vector<std::string> warnings;
-  const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
+  bool face_flag=false;double certified=0;
+  const auto fail = [&](const std::string& format, const auto&... arguments) {
+    auto out=failure(binding_message(format, arguments...), warnings);
+    if(face_flag)out.extra.emplace_back("certified",certified);
+    return out;
+  };
   const Held mu = mu_arg;
   const Held sigma = sigma_arg;
   const Held df = df_arg;
@@ -22,12 +27,15 @@ inline FitResult fit_lst(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg
   if(sigma.supplied)fixed.push_back("sigma");
   if(df.supplied)fixed.push_back("df");
   auto r=cppunivariate::lst_mle(x,gradtol,iterlim,held_mu,held_sigma,df.supplied?df.value:nan);
+  certified=r.certified?1.:0.;
+  face_flag=r.status==cppunivariate::LstStatus::NormalBoundary||r.status==cppunivariate::LstStatus::ScaleBoundary;
   if(r.status==cppunivariate::LstStatus::CertificateBudget)return stop_failure(fail("Student-t global certificate budget exhausted; no verified MLE. Raising iterlim may resolve this stop."),r.stop_detail,"budget",{"mu","sigma","df"});
+  if(r.status==cppunivariate::LstStatus::NonUniqueSymmetry)return stop_failure(fail("At this held shape, symmetry and a strict likelihood comparison prove distinct global location-scale t maximizers. Candidates are finite likelihood witnesses."),r.stop_detail,"tie",{"mu","sigma","df"});
   if(r.status==cppunivariate::LstStatus::CertificateTie)return stop_failure(fail("Student-t global certificate unresolved tie or sign-uncertain seam; no verified MLE."),r.stop_detail,"tie",{"mu","sigma","df"});
   if(r.status==cppunivariate::LstStatus::NumericalFailure && df.supplied && df.value<1 && !mu.supplied && !sigma.supplied)
-    return stop_failure(fail("Location-scale t numerical failure: joint location/scale at df < 1 lacks a global nuisance certificate; no verified MLE."),r.stop_detail,"numerical",{"mu","sigma","df"});
+    return stop_failure(fail("Location-scale t numerical failure: joint location/scale at df < 1 has unresolved global nuisance bounds; no verified MLE."),r.stop_detail,"numerical",{"mu","sigma","df"});
   if(r.status==cppunivariate::LstStatus::NumericalFailure && !df.supplied && (mu.supplied || sigma.supplied))
-    return stop_failure(fail("Student-t held-subset numerical search failed its score, arithmetic or representability checks; increase iterlim."),r.stop_detail,"numerical",{"mu","sigma","df"});
+    return stop_failure(fail("Student-t held-subset global certificate unresolved: normal (`mlnorm`) or lower-shape comparisons, finite roots or arithmetic bounds remain unresolved; no verified MLE."),r.stop_detail,"numerical",{"mu","sigma","df"});
   if(r.status==cppunivariate::LstStatus::NumericalFailure)return stop_failure(fail("Student-t global certificate numerical failure: score/root, enclosure, domain or linear solve unresolved; no verified MLE."),r.stop_detail,"numerical",{"mu","sigma","df"});
   if (r.status == cppunivariate::LstStatus::InvalidDf)
     return fail("`df` must be finite and positive.");
@@ -51,7 +59,7 @@ inline FitResult fit_lst(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg
   if(r.restricted & 8u) restricted.emplace_back("sigma","upper");
   if(r.restricted & 16u) restricted.emplace_back("df","lower");
   if(r.restricted & 32u) restricted.emplace_back("df","upper");
-  return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"mu",r.mu},{"sigma",r.sigma},{"df",r.df}}; out.logLik = r.logLik; out.iterations = r.iterations; out.has_iterations = true; out.restricted = restricted; out.has_restricted = true; out.fixed = fixed; out.has_fixed = true; return out; }();
+  return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"mu",r.mu},{"sigma",r.sigma},{"df",r.df}}; out.logLik = r.logLik; out.iterations = r.iterations; out.has_iterations = true; out.restricted = restricted; out.has_restricted = true; out.fixed = fixed; out.has_fixed = true; out.extra.emplace_back("certified",r.certified?1.:0.); return out; }();
 
 }
 }

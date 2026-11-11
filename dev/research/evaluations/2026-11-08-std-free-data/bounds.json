@@ -1,0 +1,6 @@
+{
+  "precision_dps": 80,
+  "checks": 621,
+  "failed": 0,
+  "evidence": "Numerical sanity checks; uniform validity is proved in derivation.md."
+}
