@@ -3985,7 +3985,6 @@
     ]
   ],
   "quantile_limits": "nearest binary64; columns 7/8: jump ambiguity flag / zero absolute floor; ambiguous bounds are two acceptable lattice points; jump relative distance 1e-12 on input scale",
-  "input_sha256": "cdf34767a22b8200d1017a7e03fe2c7f42bb372cf96cdd90cb3c2c8c506dd674",
   "sampler_points": [
     [
       1
@@ -3993,5 +3992,39 @@
     [
       0
     ]
-  ]
+  ],
+  "extreme_reference_gaps": [
+    {
+      "parameters": [
+        5.0,
+        100000000.0,
+        3.0
+      ],
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+    }
+  ],
+  "historical_sampler_points": [
+    [
+      0
+    ],
+    [
+      1
+    ],
+    [
+      2
+    ],
+    [
+      3
+    ],
+    [
+      4
+    ],
+    [
+      5
+    ],
+    [
+      6
+    ]
+  ],
+  "input_sha256": "6be2e31c74606fd59d4dae05e6af89449468a93a1cae7f4d775f4b7f2a9ebabe"
 }

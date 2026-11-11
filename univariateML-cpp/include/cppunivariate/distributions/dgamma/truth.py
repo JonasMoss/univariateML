@@ -8,6 +8,7 @@ from quality.truth_reference import Reference, pair, complement, normal, gamma, 
 def build(t, logd):
     a,r=t['shape'],t['rate']
     def ld(x):
+        if a==1:return -r*x+mp.log(-mp.expm1(-r))
         if x>mp.mpf('1e40')*max(1,abs(a-1)):
             # Integrating exp(-r v)*(1+v/x)^(a-1), 0<=v<=1:
             # omitted relative correction <= O(|a-1|/x) <1e-40.

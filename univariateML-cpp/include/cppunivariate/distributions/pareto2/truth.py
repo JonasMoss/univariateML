@@ -11,3 +11,6 @@ def build(t):
     min = t['min']
     return Reference(lambda x: pair(-shape*mp.log1p((x-min)/scale),False), min, mp.inf)
 
+
+# Joint limit paths supplement the shared one-coordinate extreme grid.
+extreme_parameter_sets = [{'shape': 100000000.0, 'scale': 100000000.0}]

@@ -18,3 +18,13 @@ def build(t):
         return pair(mp.log(2*xi*xi/(1+xi*xi))+base(y/xi)[1],False)
     return Reference(tails,breaks=[m-s*shift/scale])
 
+
+# Joint limit paths supplement the shared one-coordinate extreme grid.
+extreme_parameter_sets = [{'nu': 2.00000001, 'sd': 14142.135659086289}, {'nu': 100000000.0, 'xi': 100000000.0}, {'nu': 100000000.0, 'xi': 1e-08}]
+
+
+
+# The exact nu=5 skew moment retains all measured thin-side rows as active.
+
+# Exact and general compensated-moment stresses.
+extreme_parameter_sets.extend([{'nu': 3.093978716511268, 'xi': 100000000.0}])

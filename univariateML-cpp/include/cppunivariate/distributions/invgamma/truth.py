@@ -10,3 +10,6 @@ def build(t):
     beta = t['beta']
     return Reference(lambda x: gamma(alpha, beta/x)[::-1], 0, mp.inf)
 
+
+# Joint limit paths supplement the shared one-coordinate extreme grid.
+extreme_parameter_sets = [{'alpha': 100000000.0, 'beta': 100000000.0}]

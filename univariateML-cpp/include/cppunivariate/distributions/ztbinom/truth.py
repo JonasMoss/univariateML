@@ -13,3 +13,6 @@ def build(t, logd):
     if t['prob'] in (0, 1) or hi == lo:
         return atomic({lo if t['prob'] == 0 else hi: 1}, lo, hi)
     return finite_pmf(logd,1,t['size'])
+
+# Joint limit paths supplement the shared one-coordinate extreme grid.
+extreme_parameter_sets = [{'size': 100000000, 'prob': 1e-08}]

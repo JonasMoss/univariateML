@@ -19,3 +19,6 @@ def build(t):
     out.chart=chart
     out.unchart=lambda x:mp.log((x-m)/s if a==0 else mp.log1p(a*(x-m)/s)/a)
     return out
+
+# Joint limit paths supplement the shared one-coordinate extreme grid.
+extreme_parameter_sets = [{'xi': 1e-12}, {'xi': -1e-12}]

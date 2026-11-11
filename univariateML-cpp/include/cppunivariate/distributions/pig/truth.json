@@ -14206,7 +14206,6 @@
     ]
   ],
   "quantile_limits": "nearest binary64; columns 7/8: jump ambiguity flag / zero absolute floor; ambiguous bounds are two acceptable lattice points; jump relative distance 1e-12 on input scale",
-  "input_sha256": "4c361e2dcc30f49bddde1960bc62da4d9e1b5beebbb05128d9711d18da5631b8",
   "sampler_points": [
     [
       6
@@ -14214,5 +14213,62 @@
     [
       1
     ]
-  ]
+  ],
+  "extreme_reference_gaps": [
+    {
+      "parameters": [
+        1e-08,
+        1.0
+      ],
+      "reason": "MemoryError: reference exceeded the recorded address-space limit"
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0
+      ],
+      "reason": "ArithmeticError: PIG integral remainder"
+    },
+    {
+      "parameters": [
+        1.0,
+        1e-08
+      ],
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point"
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0
+      ],
+      "reason": "MemoryError: reference exceeded the recorded address-space limit"
+    }
+  ],
+  "historical_sampler_points": [
+    [
+      0
+    ],
+    [
+      1
+    ],
+    [
+      2
+    ],
+    [
+      3
+    ],
+    [
+      4
+    ],
+    [
+      5
+    ],
+    [
+      6
+    ],
+    [
+      7
+    ]
+  ],
+  "input_sha256": "194a262167f7b86c0c98c7ac376219c563cf0eab67ce6e00609cb0b47f0130df"
 }

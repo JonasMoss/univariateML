@@ -25,3 +25,6 @@ def build(t, logd):
     out.normalization=mp.fsum(weights)
     return out
 
+
+# Joint limit paths supplement the shared one-coordinate extreme grid.
+extreme_parameter_sets = [{'size': 100000000, 'prob': 1e-08}]

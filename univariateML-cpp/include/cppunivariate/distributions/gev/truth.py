@@ -25,3 +25,6 @@ def build(t):
         return -mp.log(s)-(1+a)*y-mp.exp(-y)
     out.log_density=ld
     return out
+
+# Joint limit paths supplement the shared one-coordinate extreme grid.
+extreme_parameter_sets = [{'xi': 1e-12}, {'xi': -1e-12}]
