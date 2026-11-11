@@ -125,6 +125,12 @@ The inverse Weibull distribution models heavy-tailed positive measurements, incl
 
 Smaller shape $k$ gives a heavier upper tail.
 
+At large shape, $x$ near scale requires a centered log ratio: Sterbenz's
+lemma makes their difference exact within a factor of two, and `log1p`
+keeps its relative information before multiplication by shape. Separate
+logarithms instead amplify their absolute rounding error by shape. This
+is the unshifted version of the [Fréchet evaluation issue](../frechet/README.md#details).
+
 The joint fit uses a Gumbel likelihood on centered log ratios $\log1p((x_i-x_0)/x_0)$, standardized before solving for power. Profiling its location leaves a scalar equation with a unique root for nonconstant data. Constant data instead allow the shape to increase without bound with scale at their common value.
 
 Holding shape leaves an explicit scale estimate, tending to the geometric mean as shape tends to zero. Holding scale leaves a strictly decreasing shape score, solved by bracketing. This conditional fit permits constant data unless their common value equals the held scale. Holding both coefficients evaluates the likelihood. The monotone score brackets determine convergence. Scale restoration uses expm1 near the raw anchor; likelihood evaluation uses that returned scale. If an ulp-wide sample prevents the Gumbel likelihood certificate from transferring to that scale, the finite fit is retained with an explicit uncertified flag.

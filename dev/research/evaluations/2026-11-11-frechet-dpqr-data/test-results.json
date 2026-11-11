@@ -1,0 +1,97 @@
+{
+  "task": "TASK-187",
+  "baseline_commit": "6642c02bd6b277410688a695d4e6c0a7cc2e6247",
+  "machine": "workstation",
+  "compiler": "GNU g++ 15.2.0",
+  "R": "4.6.1",
+  "cpp_build_type": "Release",
+  "resource_control": "/tmp/umvl-cpu/run4; nice 10; BLAS/OpenMP one thread; at most four active cores",
+  "runs": [
+    {
+      "command": "just cpp-test",
+      "machine": "workstation",
+      "exit_code": 0,
+      "passed_shards": 108,
+      "seconds": 252.13
+    },
+    {
+      "command": "UMVL_TEST_TIER=full just cpp-test",
+      "machine": "workstation",
+      "exit_code": 0,
+      "passed_shards": 135,
+      "seconds": 402.67
+    },
+    {
+      "command": "just cpp-test-no-long-double",
+      "machine": "workstation",
+      "exit_code": 0,
+      "passed_shards": 135,
+      "seconds": 440.67
+    },
+    {
+      "command": "just test",
+      "machine": "workstation",
+      "exit_code": 0,
+      "fail": 0,
+      "warn": 0,
+      "skip": 154,
+      "pass": 23231,
+      "seconds": 449.258
+    },
+    {
+      "command": "just test-full",
+      "machine": "workstation",
+      "exit_code": 0,
+      "fail": 0,
+      "warn": 0,
+      "skip": 0,
+      "pass": 46533,
+      "seconds": 937.972
+    },
+    {
+      "command": "just js-build",
+      "machine": "workstation",
+      "exit_code": 0
+    },
+    {
+      "command": "just js-test",
+      "machine": "workstation",
+      "exit_code": 0,
+      "tests": 615,
+      "pass": 615,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0,
+      "seconds": 390.447725357
+    },
+    {
+      "command": "just site-check",
+      "machine": "workstation",
+      "exit_code": 0,
+      "family_pages": 99,
+      "cpp_snippets": 99
+    },
+    {
+      "command": "just quality frechet",
+      "machine": "workstation",
+      "exit_code": 0
+    }
+  ],
+  "fitters_and_goldens_changed": false,
+  "source_sha256": {
+    "univariateML-cpp/include/cppunivariate/distributions/frechet/README.md": "7bf0937097ed1cb7771984e5de4f931e9538df42f38fd4fe87f41c815b035f65",
+    "univariateML-cpp/include/cppunivariate/distributions/frechet/dpqr.hpp": "e9fd58a6c51bc5064bb708eebfef9dbe2023a528a01c565736ae57321174a64f",
+    "univariateML-cpp/include/cppunivariate/distributions/frechet/test.cpp": "d19f17b058f85c1b153f173142331a78d8149990b153388982d06c54e665fe55",
+    "univariateML-cpp/include/cppunivariate/distributions/frechet/truth.json": "12de48f142236f1819142e9ffadb5b6f142bad98ec5c790f4a8093d41c645a26",
+    "univariateML-cpp/include/cppunivariate/distributions/frechet/truth.py": "e668da33a26276665ca9739714e0e8cded434d032a450457feacc6a1d63f3047",
+    "univariateML-cpp/include/cppunivariate/distributions/invweibull/README.md": "434c3813229388ea33bdf213a1c08d0c4319f3fc4fa606da58108bc743719523",
+    "univariateML-cpp/include/cppunivariate/distributions/invweibull/dpqr.hpp": "3dafb82998b6f1b41ab721fc0e40f0f185ea5461520b959f7eaf12b3e1437456",
+    "univariateML-cpp/include/cppunivariate/distributions/invweibull/test.cpp": "e6e7d62a7fa0603214181123cbace1299feb97b456a76bbbe8c22881da02230e",
+    "univariateML-cpp/include/cppunivariate/distributions/invweibull/truth.json": "d4b5a5e9822c34a1bcbb7a8fd29b25c34cff66234674637abe86b173c9abbf41",
+    "univariateML-cpp/include/cppunivariate/distributions/invweibull/truth.py": "e1203052f6ab3e9265bc7db9cb46b1dbb736e8c50c2894c1dc34a07c07f8ae4e",
+    "dev/research/evaluations/2026-11-11-frechet-dpqr-data/seam.py": "15264866d0d80483b405152abcdf0b917f2ee95dd0b4c476d036584ac17ba786",
+    "dev/research/evaluations/2026-11-11-frechet-dpqr-data/check_tables.py": "99410218652b960cee05880c1f5c92b25a887c5c119f2e32e30a38631b87267d",
+    "dev/research/evaluations/2026-11-11-frechet-dpqr-data/measure.py": "00fd6ea893a026b891366ed97b55867d76723539d77f4fcce3b13ec95059b892"
+  }
+}

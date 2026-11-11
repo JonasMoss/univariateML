@@ -330,3 +330,47 @@ TEST_CASE("invweibull: ulp-wide scale restoration retains an explicitly uncertif
   CHECK(std::isfinite(fit.logLik));
   CHECK(fit.logLik>100);
 }
+
+TEST_CASE("invweibull: centered d/p/q near the Gumbel limit on exact doubles") {
+  // Independent 100-digit mpmath values on the exact binary64 inputs.
+  const double rows[][8] = {
+    {1000000,0,1000000,1000000.500000125,-1.1065311597244512,-0.60653065969441644,-0.78798373872629013,1000000.3665129878},
+    {1000000,0,1000000,1000000.500000125,-1.1065311597244512,-0.60653065969441644,-0.78798373872629013,1000000.3665129878},
+    {1000000,0,1000000,1000000.500000125,-1.1065311597244512,-0.60653065969441644,-0.78798373872629013,1000000.3665129878},
+    {1000000000,0,1000000000,1000000000.5,-1.1065306601634497,-0.60653065978844978,-0.78798373861354798,1000000000.3665129},
+    {1000000000,0,1000000000,1000000000.5,-1.1065306601634497,-0.60653065978844978,-0.78798373861354798,1000000000.3665129},
+    {1000000000,0,1000000000,1000000000.5,-1.1065306601634497,-0.60653065978844978,-0.78798373861354798,1000000000.3665129},
+    {1000000000000,0,1000000000000,1000000000000.5,-1.1065306597130842,-0.60653065971270925,-0.78798373870435778,1000000000000.3665},
+    {1000000000000,0,1000000000000,1000000000000.5,-1.1065306597130842,-0.60653065971270925,-0.78798373870435778,1000000000000.3665},
+    {1000000000000,0,1000000000000,1000000000000.5,-1.1065306597130842,-0.60653065971270925,-0.78798373870435778,1000000000000.3665},
+    {1000000000000000,0,1000000000000000,1000000000000000.5,-1.1065306597126339,-0.60653065971263354,-0.7879837387044486,1000000000000000.4},
+    {1000000000000000,0,1000000000000000,1000000000000000.5,-1.1065306597126339,-0.60653065971263354,-0.7879837387044486,1000000000000000.4},
+    {1000000000000000,0,1000000000000000,1000000000000000.5,-1.1065306597126339,-0.60653065971263354,-0.7879837387044486,1000000000000000.4},
+  };
+  for(const auto& r:rows) {
+    CHECK(std::abs(cppunivariate::distributions::dinvweibull(r[3],r[0],r[2],true)-r[4])<4e-15*std::max(1.,std::abs(r[4])));
+    for(bool lower:{false,true}) CHECK(std::abs(cppunivariate::distributions::pinvweibull(r[3],r[0],r[2],lower,true)-r[lower ? 5 : 6])<4e-15);
+    CHECK(std::abs(cppunivariate::distributions::qinvweibull(.5,r[0],r[2],true,false)-r[7])<4e-15*std::max(1.,std::abs(r[7])));
+  }
+}
+
+TEST_CASE("invweibull: scaling rescues overflowing and subnormal multipliers") {
+  for(const double exponent:{-740.,740.}) {
+    const double scale=exponent<0 ? 1e300 : 1e-300;
+    const double q=cppunivariate::distributions::qinvweibull(-std::exp(-exponent/2),.5,scale,true,true);
+    CHECK(std::isnormal(q));
+    CHECK(std::abs(std::log(q)-(std::log(scale)+exponent))<2e-13);
+  }
+}
+
+TEST_CASE("invweibull: large-shape log tail at a noncentral finite ratio") {
+  const double actual=cppunivariate::distributions::pinvweibull(1e308,1e15,5e307,false,true);
+  CHECK(std::abs(actual+1e15*std::log(2.))<.25);
+}
+
+TEST_CASE("invweibull: extreme scale rescues a multiplier beyond the half-exponent range") {
+  const double scale=std::numeric_limits<double>::denorm_min();
+  const double q=cppunivariate::distributions::qinvweibull(-1450.,1.,scale,false,true);
+  CHECK(std::isnormal(q));
+  CHECK(std::abs(std::log(q)-(1450.+std::log(scale)))<2e-13);
+}
