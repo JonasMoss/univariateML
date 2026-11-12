@@ -328,7 +328,7 @@ inline BhattResult accurate_candidate(span x,double tol=1e-8,int maxit=500,doubl
         accuracy_detail::ScalarSum sum;for(double v:x)sum.add(distributions::dbhatt(v,finite.mu,finite.sigma,finite.a,true));finite.logLik=static_cast<double>(sum.value);return finite;
       }
     }
-    r.status=tol<4*std::numeric_limits<double>::epsilon()?BhattStatus::NumericalFailure:BhattStatus::IterationFailure;return r;
+    r.status=tol<4*std::numeric_limits<double>::epsilon()?BhattStatus::NumericalFailure:BhattStatus::IterationFailure;record_accuracy(r,tol,{r.mu,r.sigma,r.a},{std::isnan(mu)?std::max(std::abs(r.mu),r.sigma):0,std::isnan(sigma)?r.sigma:0,std::isnan(a)?std::max(1.,r.a):0});return r;
   }
   if(r.mu!=before.mu||r.sigma!=before.sigma||r.a!=before.a) {
     accuracy_detail::ScalarSum sum;for(double v:x)sum.add(distributions::dbhatt(v,r.mu,r.sigma,r.a,true));

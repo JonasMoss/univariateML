@@ -3,7 +3,8 @@ export interface Tail { lower?: boolean; log?: boolean }
 export interface Fit<P> { estimates: P; logLik: number; iterations: number; status: 'Ok'; fixed: (keyof P)[]; warnings: string[]; restricted: Record<string, string>; [field: string]: unknown }
 /** Selected stopped fits; catch as Error and inspect kind before narrowing. */
 export interface FitStop extends Error {
-  kind: 'tie' | 'limit' | 'budget' | 'nomle';
+  kind: 'tie' | 'limit' | 'budget' | 'nomle' | 'numerical' | 'unresolved' | 'tolerance' | 'conditioning';
+  attainable_tol: number;
   model: string;
   estimates: Record<string, number>;
   candidates: Array<{model: string; loglik_lower: number; loglik_upper: number;

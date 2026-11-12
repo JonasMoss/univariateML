@@ -21,6 +21,9 @@ inline FitResult fit_pareto2(cppunivariate::span x, Held shape_arg = {}, Held sc
  if(shape.supplied) fixed.push_back("shape");
  if(scale.supplied) fixed.push_back("scale");
  auto res=cppunivariate::pareto2_mle(x,min,reltol,iterlim,shape.supplied?shape.value:NAN,scale.supplied?scale.value:NAN);
+  if(res.status==cppunivariate::LomaxStatus::IterationFailure && std::isinf(res.scale) && res.certificate_failure==cppunivariate::LomaxCertificateFailure::Arithmetic)
+    return stop_failure(fail("Pareto II numerical failure: the fitted scale cannot be represented in binary64."),res.stop_detail,"numerical",{"shape","scale","min"});
+  if(res.status==cppunivariate::LomaxStatus::AccuracyFailure)return stop_failure(fail("Lomax delegate requested coefficient accuracy cannot be established."),res.stop_detail,"numerical",{"shape","scale","min"});
   if (res.status == cppunivariate::LomaxStatus::ExponentialLimit) {
     return stop_failure(fail("The Lomax maximum likelihood estimator does not exist for data "
                "whose likelihood is maximized on the exponential face. Use `mlexp(x - min)` to fit an "

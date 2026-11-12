@@ -60,7 +60,13 @@ inline ZmbinomResult zmbinom_mle(ispan x, double tol=1e-10,int maxit=200,double 
     tol<8*std::numeric_limits<double>::epsilon()) {
    out.certified=false;
    if(!binomial_accuracy::ratio_accuracy(n-k,n,out.p0,tol)) {
-     out.status=ZmbinomStatus::IterationFailure;out.accuracy_failure=true;
+     out.status=ZmbinomStatus::IterationFailure;out.accuracy_failure=true;record_accuracy(out,tol,{out.size,out.prob,out.p0},{0,1,1});
+     const auto exact=binomial_accuracy::divide(binomial_accuracy::Pair(n-k),binomial_accuracy::Pair(n));
+     const double nearest=exact.hi+exact.lo;
+     const double probability_floor=fit.stop_detail.accuracy_stop==AccuracyStop::Tolerance?fit.stop_detail.attainable_tol:0;
+     out.stop_detail.attainable_tol=std::max(probability_floor,binomial_accuracy::magnitude(binomial_accuracy::add(exact,binomial_accuracy::Pair(-nearest))));
+     out.stop_detail.accuracy_stop=tol<out.stop_detail.attainable_tol?AccuracyStop::Tolerance:
+       fit.stop_detail.accuracy_stop==AccuracyStop::Conditioning?AccuracyStop::Conditioning:AccuracyStop::None;
      binomial_certificate_detail::witness(out.stop_detail,{out.size,out.prob,out.p0},out.logLik,false);
    }
  }

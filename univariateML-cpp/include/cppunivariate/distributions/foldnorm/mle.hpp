@@ -222,7 +222,7 @@ inline FoldnormResult foldnorm_mle(span x,double tol=1e-10,int maxit=200,
         two_atoms=two_atoms && z==atom;++positives;
       }
       if(!(two_atoms && positives<=y.size()/3)) {
-        out.status=FoldnormStatus::AccuracyFailure;return out;
+        {out.status=FoldnormStatus::AccuracyFailure;out.mu=fm?fixed_mu:mu*scale;out.sigma=fs?fixed_sigma:s*scale;out.logLik=ll(mu,s)-x.size()*std::log(scale);{if(out.sigma>0 && out.mu>=0)record_accuracy(out,tol,{out.mu,out.sigma},{fm?0:std::max(std::abs(out.mu),out.sigma),fs?0:out.sigma},std::sqrt(margin));else{out.stop_detail.accuracy_stop=AccuracyStop::None;out.stop_detail.attainable_tol=NAN;}}}return out;
       }
     }
     if(h0>margin || mu>0) {
@@ -233,7 +233,7 @@ inline FoldnormResult foldnorm_mle(span x,double tol=1e-10,int maxit=200,
       double lo=mu>0?.5*incumbent:0,hi=mu>0?std::min(limit,1.5*incumbent):limit;
       const auto score=[&](double b){return foldnorm_detail::face_score({y.data(),y.size()},m2,b,b,b).value;};
       const bool bracketed=lo<hi && score(lo)>margin && score(hi)<-margin;
-      if(!bracketed && mu==0) {out.status=FoldnormStatus::AccuracyFailure;return out;}
+      if(!bracketed && mu==0) {{out.status=FoldnormStatus::AccuracyFailure;out.mu=fm?fixed_mu:mu*scale;out.sigma=fs?fixed_sigma:s*scale;out.logLik=ll(mu,s)-x.size()*std::log(scale);{if(out.sigma>0 && out.mu>=0)record_accuracy(out,tol,{out.mu,out.sigma},{fm?0:std::max(std::abs(out.mu),out.sigma),fs?0:out.sigma});else{out.stop_detail.accuracy_stop=AccuracyStop::None;out.stop_detail.attainable_tol=NAN;}}}return out;}
       if(bracketed) {
         bool accurate=false;
         for(int k=0;k<maxit;++k) {
@@ -248,7 +248,7 @@ inline FoldnormResult foldnorm_mle(span x,double tol=1e-10,int maxit=200,
             mu=std::sqrt(m2*b);s=std::sqrt(m2*(1-b));accurate=true;face_polish=true;break;
           }
         }
-        if(!accurate) {out.status=FoldnormStatus::AccuracyFailure;return out;}
+        if(!accurate) {{out.status=FoldnormStatus::AccuracyFailure;out.mu=fm?fixed_mu:mu*scale;out.sigma=fs?fixed_sigma:s*scale;out.logLik=ll(mu,s)-x.size()*std::log(scale);{if(out.sigma>0 && out.mu>=0)record_accuracy(out,tol,{out.mu,out.sigma},{fm?0:std::max(std::abs(out.mu),out.sigma),fs?0:out.sigma});else{out.stop_detail.accuracy_stop=AccuracyStop::None;out.stop_detail.attainable_tol=NAN;}}}return out;}
       }
     }
   }
@@ -292,7 +292,7 @@ inline FoldnormResult foldnorm_mle(span x,double tol=1e-10,int maxit=200,
   if(!(out.sigma>0 && std::isfinite(out.sigma)) ||
      (!fs && std::abs(out.sigma/scale-s)>.25*tol*s) ||
      (!fm && std::abs(out.mu/scale-mu)>.25*tol*std::max(std::abs(mu),s))) {
-    out.status=FoldnormStatus::AccuracyFailure;return out;
+    {out.status=FoldnormStatus::AccuracyFailure;{if(out.sigma>0 && out.mu>=0)record_accuracy(out,tol,{out.mu,out.sigma},{fm?0:std::max(std::abs(out.mu),out.sigma),fs?0:out.sigma});else{out.stop_detail.accuracy_stop=AccuracyStop::None;out.stop_detail.attainable_tol=NAN;}}}return out;
   }
   out.status=out.iterations>=maxit ? FoldnormStatus::IterationFailure : FoldnormStatus::Ok;
   return out;

@@ -5,6 +5,7 @@
 // downstream estimators.
 
 #pragma once
+#include "../../core/stop_detail.hpp"
 #include "../../core/work_budget.hpp"
 #include "cppunivariate/core/constants.hpp"
 #include "../../core/precision.hpp"
@@ -27,7 +28,7 @@ struct GumbelResult {
   double logLik;
   int iterations;
   GumbelStatus status = GumbelStatus::Ok;
-};
+ StopDetail stop_detail{}; };
 
 inline GumbelResult fit_gumbel_newton(span x, double tol, int maxit,
                                       double theta0 = std::numeric_limits<double>::quiet_NaN(),
@@ -70,7 +71,9 @@ inline GumbelResult fit_gumbel_newton(span x, double tol, int maxit,
        std::abs((mu-moments.mean)/moments.sd-r.mu)>
          .25*tol*std::max(std::abs(mu)/moments.sd,r.sigma)))
       status=GumbelStatus::AccuracyFailure;
-    return {mu,sigma,r.logLik-dn*std::log(moments.sd),r.iterations,status};
+    GumbelResult out{mu,sigma,r.logLik-dn*std::log(moments.sd),r.iterations,status};
+    if(status==GumbelStatus::AccuracyFailure){if(out.sigma>0)record_accuracy(out,tol,{mu,sigma},{std::max(std::abs(mu),sigma),sigma});else{out.stop_detail.accuracy_stop=AccuracyStop::None;out.stop_detail.attainable_tol=NAN;}}
+    return out;
   }
 
   tol=std::min(tol,1e-10);
@@ -156,7 +159,9 @@ inline GumbelResult fit_gumbel_held(span x,double tol,int maxit,double mu,double
     const double difference=m-low;
     const double restored=std::isfinite(difference)?difference/s:m/s-low/s;
     if(!std::isfinite(m) || std::abs(restored-eta)>.25*tol*std::max(std::abs(m)/s,1.))
-      return {m,s,nan,it,GumbelStatus::AccuracyFailure};
+      {GumbelResult out{m,s,nan,it,GumbelStatus::AccuracyFailure};
+      if(std::isfinite(m)){double ll=0;for(double v:x){double z=(v-m)/s;ll-=std::log(s)+z+std::exp(-z);}out.logLik=ll;}
+      {if(out.sigma>0)record_accuracy(out,tol,{m,s},{std::max(std::abs(m),s),0});else{out.stop_detail.accuracy_stop=AccuracyStop::None;out.stop_detail.attainable_tol=NAN;}}return out;}
   } else if(std::isnan(s)) {
     double radius=0;for(double v:x)radius=std::max(radius,std::abs(v-m));
     if(!(radius>0))return {nan,nan,nan,0,GumbelStatus::Unbounded};

@@ -26,6 +26,7 @@ inline FitResult fit_paralogis(cppunivariate::span x, Held shape_arg = {}, Held 
   auto res = shape.supplied ? cppunivariate::paralogis_mle_holds(x,shape.value,scale.supplied?held:NAN,gradtol,iterlim) : scale.supplied
       ? cppunivariate::paralogis_mle_fixed_scale(x, held, gradtol, iterlim, start)
       : cppunivariate::paralogis_mle(x, gradtol, iterlim, start);
+  if(res.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return stop_failure(failure("paralogis numerical accuracy failure: requested coefficient accuracy cannot be established."),res.stop_detail,"numerical",{"shape","scale"});
   if(res.status==cppunivariate::ParalogisStatus::Unbounded)
     return stop_failure(fail("The paralogis maximum likelihood estimator does not exist for constant data: the likelihood is unbounded."),res.stop_detail,"nomle",{"shape","scale"});
   if(res.status==cppunivariate::ParalogisStatus::CertificateBudget)

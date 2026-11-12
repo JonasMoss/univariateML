@@ -69,7 +69,8 @@ inline SgedResult fit(span x, double tol, int maxit, double mean,
     if(!std::isfinite(r.mu) || !(r.sigma>0) || !std::isfinite(r.sigma))return r;
     if((!hm && !local_accuracy::represented(r.mu,std::max(std::abs(r.mu),r.sigma),accuracy)) ||
        (!hs && !local_accuracy::represented(r.sigma,r.sigma,accuracy))) {
-      r.accuracy_failure=true;return r;
+      r.accuracy_failure=true;r.logLik=0;for(double v:x)r.logLik+=distributions::dsged(v,r.mu,r.sigma,r.nu,r.xi,true);
+      record_accuracy(r,accuracy,{r.mu,r.sigma,r.nu,r.xi},{hm?0:std::max(std::abs(r.mu),r.sigma),hs?0:r.sigma,0,0});return r;
     }
     double penalty=0,ideal_penalty=0;
     for(double v:x) {
@@ -91,6 +92,7 @@ inline SgedResult fit(span x, double tol, int maxit, double mean,
     r.status=SgedStatus::CertificateFailure;r.certified=false;
     r.stop_detail.budget_exhausted=budget;r.stop_detail.comparison_tie=tie;
     r.stop_detail.candidates=candidates;r.stop_detail.loglik_upper=INFINITY;
+    if(r.accuracy_failure)record_accuracy(r,accuracy,{r.mu,r.sigma,r.nu,r.xi},{hm?0:std::max(std::abs(r.mu),r.sigma),hs?0:r.sigma,0,0});
     for(const auto& v:candidates)r.stop_detail.loglik_lower=std::isnan(r.stop_detail.loglik_lower)?v.loglik_lower:std::max(r.stop_detail.loglik_lower,v.loglik_lower);
     return r;
   };

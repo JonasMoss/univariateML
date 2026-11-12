@@ -114,3 +114,13 @@ test_that("pareto2 delegate follow-up preserves the accepted fit", {
   f <- mlpareto2(c(.03,.1,.4,.7,1,2,4,12),min=0,reltol=1e-8,iterlim=1000)
   expect_true(is.finite(as.numeric(logLik(f))))
 })
+
+test_that("Pareto II reciprocal scale overflow is numerical even with a tight tol", {
+  for (tol in c(1e-10,1e-20)) {
+    e <- tryCatch(mlpareto2(c(1e308,1.1e308,1.2e308),min=0,shape=100,reltol=tol,iterlim=200),error=identity)
+    expect_s3_class(e,"univariateML_numerical")
+    expect_identical(e$kind,"numerical")
+    expect_match(conditionMessage(e),"scale cannot be represented")
+    if("scale" %in% names(e$candidates))expect_true(all(is.finite(e$candidates$scale)))
+  }
+})

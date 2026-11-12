@@ -39,7 +39,7 @@ export default async function create(options = {}) {
       const result = module[`fit${id}`](x, held, control);
       if (result.error) {
         const error = new Error(result.error);
-        for (const key of ['kind', 'model', 'estimates', 'candidates', 'limit_loglik', 'loglik_lower', 'loglik_upper', 'segment_loglik_upper', 'certified'])
+        for (const key of ['kind', 'attainable_tol', 'model', 'estimates', 'candidates', 'limit_loglik', 'loglik_lower', 'loglik_upper', 'segment_loglik_upper', 'certified'])
           if (key in result) error[key] = result[key];
         error.warnings = result.warnings || []; throw error;
       }

@@ -265,10 +265,10 @@ inline HtResult ht_mle(span x,double mu,double nu,double sigma) {
     }
     return normalizer+terms.value;
   };
-  if(!accuracy_detail::polish(q,free,1e-10,200,objective)){r.status=HtStatus::SearchFailure;return r;}
+  if(!accuracy_detail::polish(q,free,1e-10,200,objective,r.stop_detail)){r.status=HtStatus::SearchFailure;{if(r.nu>0 && r.sigma>0)record_accuracy(r,1e-10,{r.mu,r.nu,r.sigma},{0,std::isnan(nu)?r.nu:0,std::isnan(sigma)?r.sigma:0});else{r.stop_detail.accuracy_stop=AccuracyStop::None;r.stop_detail.attainable_tol=NAN;}}return r;}
   if(free[0])r.nu=std::exp(q[0]);
   if(free[1])r.sigma=unit*std::exp(q[1]);
-  if(free[1]&&!accuracy_detail::scale_projection(r.sigma,unit,q[1],1e-10)){r.status=HtStatus::AccuracyFailure;return r;}
+  if(free[1]&&!accuracy_detail::scale_projection(r.sigma,unit,q[1],1e-10)){{r.status=HtStatus::AccuracyFailure;{if(r.nu>0 && r.sigma>0)record_accuracy(r,1e-10,{r.mu,r.nu,r.sigma},{0,std::isnan(nu)?r.nu:0,std::isnan(sigma)?r.sigma:0});else{r.stop_detail.accuracy_stop=AccuracyStop::None;r.stop_detail.attainable_tol=NAN;}}}return r;}
   std::vector<double> y;for(double v:x)y.push_back(v-r.mu);
   double logscale=std::log(r.sigma);r.logLik=ht_detail::profile({y.data(),y.size()},r.nu,logscale,true);
   return r;

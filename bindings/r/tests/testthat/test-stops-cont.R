@@ -86,9 +86,9 @@ test_that("small positive folded-normal basin retains coefficient accuracy", {
   expect_equal(unname(fit["sigma"]),.57700337463490557989,tolerance=1e-10)
 })
 
-test_that("unresolved folded-normal quartic identification is numerical", {
+test_that("unresolved folded-normal quartic identification is conditioning", {
   x <- c(1,1,1,sqrt(9+4*sqrt(6)))
-  expect_s3_class(tryCatch(mlfoldnorm(x),error=identity),"univariateML_numerical")
+  expect_s3_class(tryCatch(mlfoldnorm(x),error=identity),"univariateML_conditioning")
   expect_equal(unname(mlfoldnorm(c(0,0,1))["mu"]),0)
 })
 

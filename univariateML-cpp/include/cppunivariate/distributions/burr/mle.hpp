@@ -219,7 +219,7 @@ inline BurrMLE burr_uncertified(BurrMLE certificate, BurrMLE searched, span x, d
   const double search_margin=1024*std::numeric_limits<double>::epsilon()*(x.size()+std::abs(physical)+std::abs(searched.logLik));
   if(!std::isfinite(physical)||std::abs(physical-searched.logLik)>search_margin||certificate.stop_detail.loglik_lower>physical+search_margin)return certificate;
   const std::array<double,3> proposal{{searched.shape1,searched.shape2,searched.scale}};
-  if(!burr_local_accuracy(x,searched.shape1,searched.shape2,searched.scale,free,tol,maxit)) {
+  if(!burr_local_accuracy(x,searched.shape1,searched.shape2,searched.scale,free,tol,maxit,false,0,searched.stop_detail)) {
     certificate.status=BurrStatus::NumericalFailure;certificate.certified=false;
     certificate.shape1=certificate.shape2=certificate.scale=certificate.logLik=NAN;
     certificate.stop_detail.budget_exhausted=false;
@@ -227,6 +227,8 @@ inline BurrMLE burr_uncertified(BurrMLE certificate, BurrMLE searched, span x, d
     const double witness=burr_local_loglik(x,proposal[0],proposal[1],proposal[2]);
     const double padding=1024*std::numeric_limits<double>::epsilon()*(x.size()+std::abs(witness))*(1+proposal[1]);
     if(std::isfinite(witness)&&std::isfinite(padding))certificate.stop_detail.candidates.push_back({{proposal[0],proposal[1],proposal[2]},witness-padding,witness+padding,StopModel::None});
+    certificate.stop_detail.conditioning_bound=searched.stop_detail.conditioning_bound;
+    record_accuracy(certificate.stop_detail,tol,{proposal[0],proposal[1],proposal[2]},witness,{free[0]?proposal[0]:0,free[1]?proposal[1]:0,free[2]?proposal[2]:0});
     return certificate;
   }
   const double ll=burr_local_loglik(x,searched.shape1,searched.shape2,searched.scale);

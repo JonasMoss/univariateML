@@ -134,3 +134,13 @@ TEST_CASE("inverse paralogistic transport keeps the parent flag on both search r
   CHECK_FALSE(p.certified);CHECK(r.certified==p.certified);CHECK(r.shape==p.shape);CHECK(r.scale==1/p.scale);CHECK(r.logLik==p.logLik+jac);
  }
 }
+
+TEST_CASE("invparalogis rejects an overflowing reciprocal scale in the core") {
+  const std::vector<double> x{1e308,1.1e308,1.2e308};
+  for(double tol:{1e-10,1e-20}) {
+    const auto r=cppunivariate::invparalogis_mle_holds({x.data(),x.size()},.5,NAN,tol,200);
+    CHECK(r.status==cppunivariate::ParalogisStatus::NumericalFailure);
+    CHECK(r.stop_detail.accuracy_stop==cppunivariate::AccuracyStop::None);
+    for(const auto& c:r.stop_detail.candidates)for(double v:c.coef)CHECK(std::isfinite(v));
+  }
+}

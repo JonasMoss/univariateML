@@ -36,13 +36,15 @@ inline Rcpp::List common_result(const umvl_binding::FitResult& fit, bool iterati
     Rcpp::NumericVector estimates;
     for(const auto& item:fit.limit_estimates)estimates.push_back(item.second,item.first);
     auto condition=Rcpp::List::create(Rcpp::_["message"]=fit.error,Rcpp::_["call"]=R_NilValue,
-        Rcpp::_["kind"]=fit.error_kind,Rcpp::_["candidates"]=candidates,
+        Rcpp::_["attainable_tol"]=fit.attainable_tol,Rcpp::_["kind"]=fit.error_kind,Rcpp::_["candidates"]=candidates,
         Rcpp::_["model"]=fit.model,Rcpp::_["estimates"]=estimates,
         Rcpp::_["limit_loglik"]=fit.limit_loglik,Rcpp::_["loglik_lower"]=fit.loglik_lower,
         Rcpp::_["loglik_upper"]=fit.loglik_upper,Rcpp::_["segment_loglik_upper"]=fit.segment_loglik_upper);
     // An uncertified limit decision keeps its marker on the condition.
     for(const auto& item:fit.extra)if(item.first=="certified")condition["certified"]=item.second!=0;
-    condition.attr("class")=Rcpp::CharacterVector::create("univariateML_"+fit.error_kind,"univariateML_stop","error","condition");
+    if(fit.error_kind=="tolerance" || fit.error_kind=="conditioning")
+      condition.attr("class")=Rcpp::CharacterVector::create("univariateML_"+fit.error_kind,"univariateML_numerical","univariateML_stop","error","condition");
+    else condition.attr("class")=Rcpp::CharacterVector::create("univariateML_"+fit.error_kind,"univariateML_stop","error","condition");
     return condition;
   }
   Rcpp::NumericVector estimates(fit.estimates.size());

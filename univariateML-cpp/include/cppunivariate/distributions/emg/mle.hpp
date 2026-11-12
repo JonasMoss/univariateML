@@ -26,7 +26,8 @@ inline EmgResult emg_accuracy_search(span x,double tol=1e-8,int maxit=500,
     const auto c=emg_detail::location_certificate(x,sigma,lambda,tol,maxit);
     EmgResult r={c.mu,sigma,lambda,c.loglik,c.iterations,
       c.ok?EmgStatus::Ok:(c.arithmetic_failure?EmgStatus::NumericalFailure:EmgStatus::IterationFailure)};
-    r.stop_detail=c.detail;return r;
+    r.stop_detail=c.detail;
+    if(!c.ok){if(r.sigma>0 && r.lambda>0)record_accuracy(r,tol,{r.mu,r.sigma,r.lambda},{std::isnan(mu)?std::max(std::abs(r.mu),r.sigma):0,std::isnan(sigma)?r.sigma:0,std::isnan(lambda)?r.lambda:0});else{r.stop_detail.accuracy_stop=AccuracyStop::None;r.stop_detail.attainable_tol=NAN;}}return r;
   }
   // Pointwise domination: for x <= mu and t >= 0,
   // phi_sigma(x-mu-t) <= phi_sigma(x-mu). This excludes every finite
@@ -92,14 +93,14 @@ inline EmgResult emg_mle(span x,double tol=1e-10,int maxit=500,double mu=NAN,dou
       } else f.add(z[2]+accuracy_detail::Jet(.5)*k*k-k*t+accuracy_detail::logcdf(t-k));}
     return f.value;
   };
-  if(!accuracy_detail::polish(q,free,tol,maxit,objective)){r.status=EmgStatus::NumericalFailure;return r;}
+  if(!accuracy_detail::polish(q,free,tol,maxit,objective,r.stop_detail)){r.status=EmgStatus::NumericalFailure;{if(r.sigma>0 && r.lambda>0)record_accuracy(r,tol,{r.mu,r.sigma,r.lambda},{std::isnan(mu)?std::max(std::abs(r.mu),r.sigma):0,std::isnan(sigma)?r.sigma:0,std::isnan(lambda)?r.lambda:0});else{r.stop_detail.accuracy_stop=AccuracyStop::None;r.stop_detail.attainable_tol=NAN;}}return r;}
   if(free[0])r.mu=std::fma(unit,q[0],center);
   if(free[1])r.sigma=unit*std::exp(q[1]);
   if(free[2])r.lambda=std::exp(q[2])/unit;
   if((free[0]&&!accuracy_detail::location_projection(r.mu,center,unit,q[0],r.sigma,tol))||
      (free[1]&&!accuracy_detail::scale_projection(r.sigma,unit,q[1],tol))||
      (free[2]&&!accuracy_detail::scale_projection(r.lambda,unit,q[2],tol,true))) {
-    r.status=EmgStatus::AccuracyFailure;return r;
+    {r.status=EmgStatus::AccuracyFailure;{if(r.sigma>0 && r.lambda>0)record_accuracy(r,tol,{r.mu,r.sigma,r.lambda},{std::isnan(mu)?std::max(std::abs(r.mu),r.sigma):0,std::isnan(sigma)?r.sigma:0,std::isnan(lambda)?r.lambda:0});else{r.stop_detail.accuracy_stop=AccuracyStop::None;r.stop_detail.attainable_tol=NAN;}}}return r;
   }
   r.logLik=0;for(double v:x)r.logLik+=distributions::demg(v,r.mu,r.sigma,r.lambda,true);
   return r;

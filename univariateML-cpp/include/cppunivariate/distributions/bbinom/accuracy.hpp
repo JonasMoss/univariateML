@@ -8,7 +8,7 @@ namespace cppunivariate { namespace bbinom_detail {
 // have already finished. Rational rising-factorial scores avoid log-gamma
 // subtraction, including when the other shape is held at a large value.
 inline bool fallback_accuracy(ispan x,double size,double& alpha,double& beta,
-                              double held_alpha,double held_beta,double tol,int maxit) {
+                              double held_alpha,double held_beta,double tol,int maxit,StopDetail& detail) {
   const bool fa=std::isnan(held_alpha),fb=std::isnan(held_beta);
   if(!fa&&!fb)return true;
   if(!(size>=1 && size<=enumeration_budget(maxit) && size<=std::numeric_limits<int>::max()))return false;
@@ -100,6 +100,7 @@ inline bool fallback_accuracy(ispan x,double size,double& alpha,double& beta,
     if(!(conditioning<.125))return 0;
     const double noise_a=gamma*(aa*gmass[0]+ab*gmass[1]);
     const double noise_b=gamma*(ab*gmass[0]+bb*gmass[1]);
+    detail.conditioning_bound=32*std::max(noise_a/std::max(1.,a),noise_b/std::max(1.,b));
     const double error=std::max((magnitude(da)+2*noise_a)/std::max(1.,a),
                                 (magnitude(db)+2*noise_b)/std::max(1.,b));
     if(!std::isfinite(error)||error>.25)return 0;
@@ -122,5 +123,9 @@ inline bool fallback_accuracy(ispan x,double size,double& alpha,double& beta,
   }
   if(advance(false)!=1)return false;
   alpha=a;beta=b;return true;
+}
+inline bool fallback_accuracy(ispan x,double size,double& alpha,double& beta,
+                              double held_alpha,double held_beta,double tol,int maxit) {
+  StopDetail detail;return fallback_accuracy(x,size,alpha,beta,held_alpha,held_beta,tol,maxit,detail);
 }
 } }

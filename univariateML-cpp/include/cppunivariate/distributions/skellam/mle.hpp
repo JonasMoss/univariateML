@@ -171,7 +171,7 @@ inline SkellamResult skellam_mle(span x,double tol=1e-10,int maxit=150,double mu
     for(double v:x)f.add(skellam_detail::differentiable_mass(v,a,b,maxit));
     return f.value;
   };
-  if(!accuracy_detail::polish(q,free,tol,maxit,objective)){r.status=SkellamStatus::IterationFailure;return r;}
+  if(!accuracy_detail::polish(q,free,tol,maxit,objective,r.stop_detail)){r.status=SkellamStatus::IterationFailure;return r;}
   if(free[0])r.mu1=std::exp(q[0]);
   if(free[1])r.mu2=std::exp(q[1]);
   r.logLik=0;for(double v:x)r.logLik+=skellam_detail::logmass(v,r.mu1,r.mu2);

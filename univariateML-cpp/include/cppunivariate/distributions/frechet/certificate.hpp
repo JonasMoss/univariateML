@@ -172,7 +172,7 @@ inline bool polish(span data,FrechetResult& fit,double tol,int maxit) {
     }
     return sum.value/accuracy_detail::Jet(static_cast<ExtendedReal>(data.size()));
   };
-  if(!accuracy_detail::polish(q,free,tol,maxit,objective))return false;
+  if(!accuracy_detail::polish(q,free,tol,maxit,objective,fit.stop_detail))return false;
   if(!free[0]) {
     std::array<accuracy_detail::Jet,3> a;
     for(int i=0;i<3;++i)a[i]=accuracy_detail::variable(q[i],i,true);

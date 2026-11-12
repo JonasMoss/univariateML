@@ -2,11 +2,13 @@
 // shape = 1/sigma, scale = exp(-mu + s) where s = -mean(log_x).
 
 #pragma once
+#include "../../core/stop_detail.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/precision.hpp"
 
 #include "../../core/span.hpp"
 #include "../gumbel/mle.hpp"
+#include "dpqr.hpp"
 
 #include <cmath>
 #include <cstddef>
@@ -23,7 +25,7 @@ struct WeibullResult {
   double logLik;
   int iterations;
   WeibullStatus status = WeibullStatus::Ok;
-};
+ StopDetail stop_detail{}; };
 
 // shape0 is an optional positive starting shape; NaN keeps the automatic start.
 inline WeibullResult weibull_mle(span x, double tol, int maxit,
@@ -60,22 +62,26 @@ inline WeibullResult weibull_mle(span x, double tol, int maxit,
      !(scale>0 && std::isfinite(scale)) ||
      (factor>1e-150 && factor<1e150 ? std::abs(scale/anchor-factor)>.25*tol*factor :
        std::abs(std::log(scale)-(-g.mu+s))>.25*tol)))
-    return {shape,scale,g.logLik+sum_log_x,g.iterations,WeibullStatus::AccuracyFailure};
+    {WeibullResult out{shape,scale,g.logLik+sum_log_x,g.iterations,WeibullStatus::AccuracyFailure};if(!std::isfinite(out.logLik)&&shape>0&&scale>0&&std::isfinite(shape+scale)){out.logLik=0;for(double v:x)out.logLik+=distributions::dweibull(v,shape,scale,true);}
+      {if(out.shape>0 && out.scale>0)record_accuracy(out,tol,{shape,scale},{out.shape,out.scale});else{out.stop_detail.accuracy_stop=AccuracyStop::None;out.stop_detail.attainable_tol=NAN;}}return out;}
   // Transform the fitted Gumbel likelihood, avoiding shape times
   // a difference of rounded log scales near a point mass.
   const double logLik = g.logLik + sum_log_x;
-  return {shape, scale, logLik, g.iterations,
+  WeibullResult out{shape, scale, logLik, g.iterations,
       g.status == GumbelStatus::Ok ? WeibullStatus::Ok :
       g.status == GumbelStatus::Unbounded ? WeibullStatus::Unbounded :
       g.status == GumbelStatus::AccuracyFailure ? WeibullStatus::AccuracyFailure :
       g.status == GumbelStatus::InvalidInput ? WeibullStatus::InvalidInput :
       WeibullStatus::IterationFailure};
+  if(out.status==WeibullStatus::AccuracyFailure){if(out.shape>0 && out.scale>0)record_accuracy(out,tol,{shape,scale},{out.shape,out.scale});else{out.stop_detail.accuracy_stop=AccuracyStop::None;out.stop_detail.attainable_tol=NAN;}}
+  return out;
 }
 
 // Strictly decreasing fixed-scale shape score, using relative log ratios.
 inline WeibullResult weibull_mle(span x,double tol,int maxit,double shape0,double shape,double scale) {
   maxit = static_cast<int>(solver_budget(maxit));
-  if (std::isnan(shape) && std::isnan(scale)) return weibull_mle(x,tol,maxit,shape0);
+  const bool free_shape=std::isnan(shape),free_scale=std::isnan(scale);
+  if (free_shape && free_scale) return weibull_mle(x,tol,maxit,shape0);
   const double nan=std::numeric_limits<double>::quiet_NaN();
   if(x.empty() || !(tol>0 && std::isfinite(tol)) || maxit<=0 ||
      (!std::isnan(shape) && !(shape>0 && std::isfinite(shape))) ||
@@ -99,7 +105,8 @@ inline WeibullResult weibull_mle(span x,double tol,int maxit,double shape0,doubl
     const double ideal=top+static_cast<double>(std::log1p(shifted/n)/shape);
     scale=std::exp(ideal);
     if(!(scale>0 && std::isfinite(scale)) || std::abs(std::log(scale)-ideal)>.25*tol)
-      return {shape,scale,nan,0,WeibullStatus::AccuracyFailure};
+      {WeibullResult out{shape,scale,nan,0,WeibullStatus::AccuracyFailure};if(!std::isfinite(out.logLik)&&shape>0&&scale>0&&std::isfinite(shape+scale)){out.logLik=0;for(double v:x)out.logLik+=distributions::dweibull(v,shape,scale,true);}
+      {if(out.shape>0 && out.scale>0)record_accuracy(out,tol,{shape,scale},{free_shape?out.shape:0,free_scale?out.scale:0});else{out.stop_detail.accuracy_stop=AccuracyStop::None;out.stop_detail.attainable_tol=NAN;}}return out;}
   }
   const double ls=std::log(scale);
   std::vector<double> ratios(x.size());
@@ -140,7 +147,8 @@ inline WeibullResult weibull_mle(span x,double tol,int maxit,double shape0,doubl
     if(!accurate && hi-lo>.01*tol)return {nan,scale,nan,iterations,WeibullStatus::IterationFailure};
     const double selected=lo+(hi-lo)/2;shape=std::exp(selected);
     if(!(shape>0 && std::isfinite(shape)) || std::abs(std::log(shape)-selected)>.25*tol)
-      return {shape,scale,nan,iterations,WeibullStatus::AccuracyFailure};
+      {WeibullResult out{shape,scale,nan,iterations,WeibullStatus::AccuracyFailure};if(!std::isfinite(out.logLik)&&shape>0&&scale>0&&std::isfinite(shape+scale)){out.logLik=0;for(double v:x)out.logLik+=distributions::dweibull(v,shape,scale,true);}
+      {if(out.shape>0 && out.scale>0)record_accuracy(out,tol,{shape,scale},{free_shape?out.shape:0,free_scale?out.scale:0});else{out.stop_detail.accuracy_stop=AccuracyStop::None;out.stop_detail.attainable_tol=NAN;}}return out;}
   }
   CPPUNIV_EXTENDED_REAL ll=0,c=0;
   for(std::size_t i=0;i<x.size();++i) {

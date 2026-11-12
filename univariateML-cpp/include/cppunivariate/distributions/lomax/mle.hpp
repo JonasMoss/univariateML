@@ -112,8 +112,21 @@ inline LomaxResult lomax_newton_candidate(
     const double start = std::isfinite(lambda0) && lambda0 > 0.0 ? lambda0 * unit : lambda0;
     const auto r = lomax_newton_candidate(span{z.data(), n}, tol, maxit, start);
     auto out=r;out.lambda=r.lambda/unit;out.logLik-=static_cast<double>(n)*std::log(unit);
+    const double jac=static_cast<double>(n)*std::log(unit);
+    for(auto& c:out.stop_detail.candidates) {
+      if(c.model==StopModel::None && c.coef.size()==2)c.coef[0]/=unit;
+      c.loglik_lower-=jac;c.loglik_upper-=jac;
+    }
+
     if(r.status==LomaxStatus::Ok && (!(out.lambda>0 && std::isfinite(out.lambda)) ||
        std::abs(out.lambda*unit-r.lambda)>.25*tol*r.lambda))out.status=LomaxStatus::AccuracyFailure;
+    out.stop_detail.candidates.erase(std::remove_if(out.stop_detail.candidates.begin(),out.stop_detail.candidates.end(),
+      [](const FitCandidate& c){return c.model==StopModel::None &&
+        (c.coef.size()!=2 || !(c.coef[0]>0 && c.coef[1]>0) || !std::isfinite(c.coef[0]+c.coef[1]));}),out.stop_detail.candidates.end());
+    if(out.status==LomaxStatus::AccuracyFailure) {
+      if(out.lambda>0 && out.kappa>0)record_accuracy(out,tol,{out.lambda,out.kappa},{out.lambda,out.kappa});
+      else{out.stop_detail.accuracy_stop=AccuracyStop::None;out.stop_detail.attainable_tol=NAN;}
+    }
     return out;
   }
 
@@ -272,7 +285,13 @@ inline LomaxResult lomax_mle(span x,double tol,int maxit,double lambda0,double l
       }
     }
     if(!accurate && hi-lo<=.5*tol)accurate=true;
-    if(!accurate)return {nan,kappa,nan,iterations,rounding?LomaxStatus::AccuracyFailure:LomaxStatus::IterationFailure};
+    if(!accurate) {
+      const double rate=std::exp(lo+(hi-lo)/2);
+      double ll=0;for(double v:x)ll+=std::log(rate)+std::log(kappa)-(kappa+1)*std::log1p(rate*v);
+      LomaxResult out{rate,kappa,ll,iterations,rounding?LomaxStatus::AccuracyFailure:LomaxStatus::IterationFailure};
+      if(rounding){if(out.lambda>0 && out.kappa>0)record_accuracy(out,tol,{rate,kappa},{rate,0});else{out.stop_detail.accuracy_stop=AccuracyStop::None;out.stop_detail.attainable_tol=NAN;}}
+      return out;
+    }
     // This raw-sign polish only chooses a point inside the already signed
     // enclosure. Even an exhausted polish retains the coefficient guarantee.
     double a=lo,b=hi;
@@ -283,7 +302,8 @@ inline LomaxResult lomax_mle(span x,double tol,int maxit,double lambda0,double l
     }
     const double selected=a+(b-a)/2;lambda=std::exp(selected);
     if(!(lambda>0 && std::isfinite(lambda)) || std::abs(std::log(lambda)-selected)>.25*tol)
-      return {lambda,kappa,nan,iterations,LomaxStatus::AccuracyFailure};
+      {double ll=0;for(double v:x)ll+=std::log(lambda)+std::log(kappa)-(kappa+1)*std::log1p(lambda*v);
+      LomaxResult out{lambda,kappa,ll,iterations,LomaxStatus::AccuracyFailure};{if(out.lambda>0 && out.kappa>0)record_accuracy(out,tol,{lambda,kappa},{lambda,0});else{out.stop_detail.accuracy_stop=AccuracyStop::None;out.stop_detail.attainable_tol=NAN;}}return out;}
   }
 
   double s=0;for(double v:x){const double z=std::log(lambda)+std::log(v);s+=std::max(z,0.0)+std::log1p(std::exp(-std::abs(z)));}

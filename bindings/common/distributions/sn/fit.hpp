@@ -28,11 +28,12 @@ inline FitResult fit_sn(cppunivariate::span x, Held xi_arg = {}, Held omega_arg 
       (omega.supplied && !(std::isfinite(w) && w>0)) ||
       (alpha.supplied && !std::isfinite(a))) return fail("Fixed xi and alpha must be finite; fixed omega must be finite and positive.");
   const auto fit=cppunivariate::sn_mle(x,reltol,iterlim,c,w,a);
+  if(fit.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return stop_failure(failure("sn numerical accuracy failure: requested coefficient accuracy cannot be established."),fit.stop_detail,"numerical",{"xi","omega","alpha"});
   if(fit.stop_detail.comparison_tie && std::isfinite(fit.stop_detail.loglik_upper) &&
      fit.stop_detail.loglik_lower==fit.stop_detail.loglik_upper)
     return classify(fail("Skew-normal shape is not identifiable when every observation equals the held location."),fit.stop_detail,"tie",{"xi","omega","alpha"});
   if(fit.stop_detail.comparison_tie)return classify(fail("Skew-normal search did not converge or could not certify the maximum; increase iterlim."),fit.stop_detail,"tie",{"xi","omega","alpha"});
-  if(fit.status==cppunivariate::SnStatus::AccuracyFailure)return fail("sn numerical accuracy failure: coefficients cannot be represented at the requested accuracy.");
+  if(fit.status==cppunivariate::SnStatus::AccuracyFailure)return stop_failure(fail("sn numerical accuracy failure: coefficients cannot be represented at the requested accuracy."),fit.stop_detail,"numerical",{"xi","omega","alpha"});
   if(fit.status==cppunivariate::SnStatus::RightHalfNormalBoundary)
     return classify(fail("The skew-normal MLE is infinite: use `mlhnorm`."),fit.stop_detail,"limit",{"mu","sigma"},"hnorm");
   if(fit.status==cppunivariate::SnStatus::LeftHalfNormalBoundary)

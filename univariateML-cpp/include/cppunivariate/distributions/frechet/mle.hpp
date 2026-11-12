@@ -52,7 +52,7 @@ inline GevResult frechet_gev_mle(span x, double tol=1e-10, int maxit=100,
     }
     gev_verify_contradiction(x,r);
     if(std::isnan(xi)&&r.status==GevStatus::Ok&&!r.certified&&r.xi>0 &&
-       !gev_accuracy_detail::polish(x,r,false,false,tol,maxit,true))r.status=GevStatus::NumericalFailure;
+       !gev_accuracy_detail::polish(x,r,false,false,tol,maxit,true)){r.status=GevStatus::NumericalFailure;record_accuracy(r,tol,{r.mu,r.sigma,r.xi},{std::max(std::abs(r.mu),r.sigma),r.sigma,std::max(1.,std::abs(r.xi))});}
     return r;
   };
   if(!std::isnan(xi)) return restore(gev_profile(data,xi,tol,maxit).fit);
@@ -236,16 +236,18 @@ inline FrechetResult frechet_held_mle(span x,double tol,int maxit,double mu,
  const auto opt=extreme_detail::maximize([&](double u){return candidate(u).logLik;},-32,32,tol,maxit,false);
  auto fit=candidate(opt.x);
  if(!opt.ok)fit.status=FrechetStatus::IterationFailure;
+ bool accuracy_failed=false;
  if(hs&&!hl&&fit.status==FrechetStatus::Ok &&
-    !frechet_held_detail::polish(data,fit,tol,maxit))fit.status=FrechetStatus::NumericalFailure;
+    !frechet_held_detail::polish(data,fit,tol,maxit)){fit.status=FrechetStatus::NumericalFailure;accuracy_failed=true;}
  const auto standardized_search=fit;
  fit.mu=m+unit*fit.mu;fit.sigma=hs ? sigma : unit*fit.sigma;
  fit.logLik=frechet_loglik(x,fit.lambda,fit.mu,fit.sigma);
+ if(accuracy_failed)record_accuracy(fit,tol,{fit.lambda,fit.mu,fit.sigma},{hl?0:fit.lambda,std::max(std::abs(fit.mu),fit.sigma),hs?0:fit.sigma});
  if(!opt.ok)fit.status=FrechetStatus::IterationFailure;
  else if(fit.status==FrechetStatus::Ok &&
    (!std::isfinite(fit.logLik) || (hs&&!hl&&
     !accuracy_detail::location_projection(fit.mu,m,unit,standardized_search.mu,sigma,tol))))
-   fit.status=FrechetStatus::NumericalFailure;
+   {fit.status=FrechetStatus::NumericalFailure;record_accuracy(fit,tol,{fit.lambda,fit.mu,fit.sigma},{hl?0:std::max(1.,fit.lambda),std::max(std::abs(fit.mu),fit.sigma),hs?0:fit.sigma});}
  if(hs && !hl && fit.status==FrechetStatus::Ok) {
    // The search result is uncertified unless the held-scale cover closes.
    fit.certified=false;

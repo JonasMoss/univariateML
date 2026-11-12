@@ -35,7 +35,7 @@ inline FitResult fit_gumbel(cppunivariate::span x, Held mu_arg = {}, Held sigma_
 
   cppunivariate::GumbelResult res = cppunivariate::fit_gumbel_held(x,reltol,iterlim,held_mu,held_sigma);
   if (res.status==cppunivariate::GumbelStatus::AccuracyFailure)
-    return stop_failure(fail("Gumbel requested coefficient accuracy cannot be represented after rescaling."),{},"numerical",{"mu","sigma"});
+    return stop_failure(fail("Gumbel requested coefficient accuracy cannot be represented after rescaling."),res.stop_detail,"numerical",{"mu","sigma"});
   if (res.status == cppunivariate::GumbelStatus::InvalidInput) return fail("Gumbel requires nonempty finite data, valid held parameters, a positive tolerance and positive iterlim.");
   if (res.status == cppunivariate::GumbelStatus::Unbounded) return nomle("The Gumbel maximum likelihood estimator does not exist for constant data: the likelihood is unbounded.");
   if (res.status == cppunivariate::GumbelStatus::IterationFailure)

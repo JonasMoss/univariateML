@@ -30,6 +30,7 @@ inline FitResult fit_invpareto(cppunivariate::span x, Held shape_arg = {}, Held 
     }
   }
   auto res = cppunivariate::invpareto_mle(x, reltol, iterlim, start, shape_held, scale_held);
+  if(res.status==cppunivariate::LomaxStatus::AccuracyFailure)return stop_failure(fail("Lomax delegate requested coefficient accuracy cannot be established."),res.stop_detail,"numerical",{"shape","scale"});
   if (res.status == cppunivariate::LomaxStatus::ExponentialLimit) {
     return stop_failure(fail("The certified profile bound places every improvement over the inverse exponential limit within its tolerance. Use `mlinvexp` to fit that limit model."),res.stop_detail,"limit",{"shape","scale"},"invexp");
   }

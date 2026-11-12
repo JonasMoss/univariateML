@@ -40,10 +40,17 @@ numerical-accuracy failure.
 Accuracy failures come in two kinds, reported separately with the best
 candidate. `tolerance`: the requested `tol` is below the binary64 spacing at
 the maximizer (the nearest double to 2/3 is 3.7e-17 away), which only an
-explicit `tol` can cause; the report gives the smallest attainable `tol`.
+explicit `tol` can cause; the report gives a `tol` that is attainable.
 `conditioning`: the score's rounding noise over the curvature exceeds a
 representable `tol`, which can happen at the default and calls for a
 reformulation. Evaluation breakdown (NaN, overflow) stays `numerical`.
+
+The report's `attainable_tol` is in public coefficient units, held
+coordinates excluded: one binary64 spacing at the candidate, which rounding can
+always meet, or for a closed ratio its exact distance to the nearest double. A
+finer request can still succeed when the maximizer lies close to a double. A
+failed refinement without a noise-over-curvature bound stays a numerical
+failure; reaching a cap alone is not conditioning.
 
 The contract is local: it concerns the maximizer the fit reports. Global
 optimality is a separate claim with its own evidence (the dossier

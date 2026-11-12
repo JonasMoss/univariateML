@@ -53,7 +53,7 @@ certificates, numerical margins and unresolved guarantees.
 `bindings/common/fit.hpp` carries `error_kind` (`tie`, `limit`, `budget`,
 `nomle`, and for delegates `numerical` or `unresolved`), a limit `model` id, named candidates, named limit estimates and bounds.
 Unclassified input and numerical failures keep their existing ordinary errors.
-Successful fits and all printed messages retain their existing contract.
+Successful fits retain their existing contract.
 
 The R adapter returns a condition to the decorator, which signals it with base
 R `stop`. Classes are `univariateML_<kind>`, `univariateML_stop`, `error`,
@@ -245,3 +245,21 @@ or budget witnesses and bounds through the outer affine Jacobian and any held
 endpoint penalty. A simultaneous plain numerical failure stays ordinary. The
 large-held-magnitude snorm and skew-t tie checks independently evaluate the
 reported half-normal and half-t densities in original coordinates.
+
+## Accuracy stops
+
+Accuracy is independent of the family status enum: `StopDetail::accuracy_stop`
+distinguishes an explicitly unrepresentable tolerance from measured conditioning.
+Both retain the finite candidate in public coordinates. Historical family status
+names and message text do not classify the cause; consumers inspect the kind. Bindings use `tolerance`
+and `conditioning`; R additionally inherits `univariateML_numerical`, preserving
+existing numerical-error handlers. `attainable_tol` travels as a numeric field;
+a tolerance message also gives it in round-trip decimal precision.
+
+A failed iteration or nonpositive information matrix alone does not establish
+conditioning. Those search failures remain numerical unless a propagated score
+noise bound establishes the accuracy limitation. Nonfinite evaluations do not
+become tolerance errors. Held coordinates are excluded from resolution checks.
+The numerical margins are practical floating-point estimates, not interval
+arithmetic certificates. A successful search whose global certificate cannot
+close remains uncertified under the existing fallback rule.

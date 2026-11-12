@@ -33,12 +33,12 @@ inline bool refine(Result& r,const Sample& x,double held_mu,double held_scale,
  bool boundary=false;
  if(edge){auto at=p;at[2]=floor;boundary=objective(local_accuracy::variables(at)).g[2]>=0;if(boundary)p[2]=floor;}
  bool free_shape=!hn&&(!edge||!boundary);
- if(!local_accuracy::subset(p,{{std::isnan(held_mu),std::isnan(held_scale),free_shape,false}},tol,maxit,objective,error))return false;
+ if(!local_accuracy::subset(p,{{std::isnan(held_mu),std::isnan(held_scale),free_shape,false}},tol,maxit,objective,error,r.stop_detail))return false;
  // Nuisance refinement may uncover a small inward shape score previously
  // hidden by a likelihood tie. Continue in natural shape coordinates.
  if(edge&&!free_shape&&objective(local_accuracy::variables(p)).g[2]<0){
   free_shape=true;
-  if(!local_accuracy::subset(p,{{std::isnan(held_mu),std::isnan(held_scale),true,false}},tol,maxit,objective,error))return false;
+  if(!local_accuracy::subset(p,{{std::isnan(held_mu),std::isnan(held_scale),true,false}},tol,maxit,objective,error,r.stop_detail))return false;
  }
  r.mu=std::isnan(held_mu)?origin+unit*p[0]:held_mu;
  r.sigma=std::isnan(held_scale)?unit*std::exp(p[1]):held_scale;

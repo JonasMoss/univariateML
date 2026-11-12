@@ -575,7 +575,7 @@ inline BnbinomResult bnbinom_mle(ispan x, double tol=1e-10, int maxit=600,
           std::array<local_accuracy::Jet,3> p{{shape[0],shape[1],shape[2]}};p[j]=local_accuracy::exp(q[0]);
           return bnbinom_detail::accuracy_objective(d,p);
         };
-        if(local_accuracy::polish(v,1,tol,maxit,objective,local_accuracy::log_error)) {
+        if(local_accuracy::polish(v,1,tol,maxit,objective,local_accuracy::log_error,r.stop_detail)) {
           auto p=shape;p[j]=std::exp(v[0]);proposal.size=p[0];proposal.alpha=p[1];proposal.beta=p[2];
           proposal.logLik=bnbinom_detail::likelihood(d,{p[0],p[1],p[2]});proposal.certified=false;proposal.local_accuracy_fallback=true;return proposal;
         }
@@ -861,21 +861,25 @@ inline BnbinomResult bnbinom_mle(ispan x, double tol=1e-10, int maxit=600,
       return shape;
     };
     const auto objective=[&](const std::array<local_accuracy::Jet,4>& q){return bnbinom_detail::accuracy_objective(d,unpack(q));};
-    if(local_accuracy::polish(p,dim,tol,maxit,objective,local_accuracy::log_error)) {
+    if(local_accuracy::polish(p,dim,tol,maxit,objective,local_accuracy::log_error,stopped.stop_detail)) {
       const auto shape=unpack(local_accuracy::variables(p));
       stopped.size=shape[0].v;stopped.alpha=shape[1].v;stopped.beta=shape[2].v;
       if(std::isnan(size_fixed)&&std::isnan(beta_fixed)&&stopped.size>stopped.beta)std::swap(stopped.size,stopped.beta);
       if(std::isfinite(stopped.global_coefficient_center[0])) {
         const std::array<double,3> refined{{stopped.size,stopped.alpha,stopped.beta}};
         for(int j=0;j<3;++j)if(std::abs(refined[j]/stopped.global_coefficient_center[j]-1)>stopped.global_coefficient_radius+tol) {
-          stopped.status=BnbinomStatus::NumericalFailure;stopped.accuracy_failure=true;return stopped;
+          // A certificate/refinement disagreement is not a spacing limitation.
+          stopped.size=value[0];stopped.alpha=value[1];stopped.beta=value[2];
+          stopped.status=BnbinomStatus::NumericalFailure;stopped.accuracy_failure=true;
+          stopped.stop_detail.accuracy_stop=AccuracyStop::None;stopped.stop_detail.conditioning_bound=NAN;
+          {if(stopped.size>0 && stopped.alpha>0 && stopped.beta>0)record_accuracy(stopped,1e-10,{stopped.size,stopped.alpha,stopped.beta},{std::isnan(size_fixed)?stopped.size:0,std::isnan(alpha_fixed)?stopped.alpha:0,std::isnan(beta_fixed)?stopped.beta:0});else{stopped.stop_detail.accuracy_stop=AccuracyStop::None;stopped.stop_detail.attainable_tol=NAN;}}return stopped;
         }
       }
       stopped.logLik=bnbinom_detail::likelihood(d,{stopped.size,stopped.alpha,stopped.beta});
       const double margin=bnbinom_detail::alpha_likelihood_bound(d,stopped.alpha,{stopped.size,stopped.size,stopped.beta,stopped.beta}).margin;
       stopped.stop_detail.candidates.push_back({{stopped.size,stopped.alpha,stopped.beta},stopped.logLik-margin,stopped.logLik+margin,StopModel::None});
       if(std::isnan(size_fixed)&&std::isnan(beta_fixed)&&stopped.size!=stopped.beta)stopped.stop_detail.candidates.push_back({{stopped.beta,stopped.alpha,stopped.size},stopped.logLik-margin,stopped.logLik+margin,StopModel::None});
-    } else {stopped.status=BnbinomStatus::NumericalFailure;stopped.accuracy_failure=true;}
+    } else {stopped.status=BnbinomStatus::NumericalFailure;stopped.accuracy_failure=true;{if(stopped.size>0 && stopped.alpha>0 && stopped.beta>0)record_accuracy(stopped,tol,{stopped.size,stopped.alpha,stopped.beta},{std::isnan(size_fixed)?stopped.size:0,std::isnan(alpha_fixed)?stopped.alpha:0,std::isnan(beta_fixed)?stopped.beta:0});else{stopped.stop_detail.accuracy_stop=AccuracyStop::None;stopped.stop_detail.attainable_tol=NAN;}}}
   }
   return stopped;
 }

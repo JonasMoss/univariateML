@@ -44,8 +44,9 @@ inline FitResult fit_weibull(cppunivariate::span x, Held shape_arg = {}, Held sc
     }
   }
   auto res = cppunivariate::weibull_mle(x, reltol, iterlim, start, shape_held, scale_held);
+  if(res.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return stop_failure(failure("weibull numerical accuracy failure: requested coefficient accuracy cannot be established."),res.stop_detail,"numerical",{"shape","scale"});
   if (res.status==cppunivariate::WeibullStatus::AccuracyFailure)
-    return stop_failure(fail("Weibull requested coefficient accuracy cannot be represented after rescaling."),{},"numerical",{"shape","scale"});
+    return stop_failure(fail("Weibull requested coefficient accuracy cannot be represented after rescaling."),res.stop_detail,"numerical",{"shape","scale"});
   if (res.status == cppunivariate::WeibullStatus::InvalidInput)
     return fail("Weibull requires nonempty positive finite data, valid held parameters, positive reltol and positive iterlim.");
   if (res.status == cppunivariate::WeibullStatus::Unbounded)

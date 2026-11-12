@@ -407,7 +407,7 @@ test('bbinom fixed-size coefficient certificate and uncertified inclusion fallba
   }
   for(const held of [{size:10},{size:10,alpha:2},{size:10,beta:3}]) {
     assert.throws(() => api.bbinom.fit([0,1,1,2,2,3,4,5,7,10],held,{reltol:1e-18}), e => {
-      assert.equal(e.kind,'numerical');
+      assert.equal(e.kind,'tolerance');
       assert.ok(e.candidates.some(c => Number.isFinite(c.alpha) && Number.isFinite(c.beta) && Number.isFinite(c.loglik_lower)));
       return /numerical accuracy failure/.test(e.message);
     });
@@ -484,8 +484,8 @@ test('small positive folded-normal basin retains coefficient accuracy', () => {
   assert.ok(Math.abs(r.estimates.sigma/.57700337463490557989-1)<1e-10);
 });
 
-test('unresolved folded-normal quartic identification is numerical', () => {
-  assert.throws(()=>api.foldnorm.fit([1,1,1,Math.sqrt(9+4*Math.sqrt(6))]),e=>e.kind==='numerical');
+test('unresolved folded-normal quartic identification is conditioning', () => {
+  assert.throws(()=>api.foldnorm.fit([1,1,1,Math.sqrt(9+4*Math.sqrt(6))]),e=>e.kind==='conditioning');
   assert.equal(api.foldnorm.fit([0,0,1]).estimates.mu,0);
 });
 
@@ -502,4 +502,33 @@ test('conditional free coefficients reject unrepresentable subnormals', () => {
   for(const [family,data,held] of [['gumbel',[0,u],{sigma:u}],['weibull',[u,2*u],{shape:1}],
       ['lomax',[1e158,2e158],{kappa:1e158}]])
     assert.throws(()=>api[family].fit(data,held),e=>e.kind==='numerical');
+});
+
+test('accuracy stops distinguish binary64 tolerance from conditioning', () => {
+  assert.throws(()=>api.zib.fit([0,1,1],{size:1,pi:0},{reltol:1e-20}),e=>{
+    assert.equal(e.kind,'tolerance');
+    assert.ok(Math.abs(e.attainable_tol/(1/27021597764222976)-1)<1e-14);
+    assert.match(e.message,/tol must be at least .* here/);
+    assert.ok(e.candidates.some(c=>c.prob===2/3));return true;
+  });
+  assert.throws(()=>api.foldnorm.fit([1,1,1,Math.sqrt(9+4*Math.sqrt(6))]),e=>{
+    assert.equal(e.kind,'conditioning');
+    assert.ok(e.attainable_tol<1e-10);
+    assert.ok(e.candidates.length>0);
+    assert.ok(e.candidates.every(c=>Number.isFinite(c.loglik_lower)));return true;
+  });
+});
+
+test('Pareto II reciprocal scale overflow remains numerical at tight tolerance', () => {
+  for(const reltol of [1e-10,1e-20])assert.throws(()=>api.pareto2.fit([1e308,1.1e308,1.2e308],{min:0,shape:100},{reltol,iterlim:200}),e=>{
+    assert.equal(e.kind,'numerical');assert.match(e.message,/scale cannot be represented/);
+    assert.ok(e.candidates.every(c=>c.scale===undefined||Number.isFinite(c.scale)));return true;
+  });
+});
+
+test('inverse paralogistic reciprocal overflow stays numerical', () => {
+  for(const gradtol of [1e-10,1e-20])assert.throws(()=>api.invparalogis.fit([1e308,1.1e308,1.2e308],{shape:.5},{gradtol,iterlim:200}),e=>{
+    assert.equal(e.kind,'numerical');
+    assert.ok(e.candidates.every(c=>c.scale===undefined||Number.isFinite(c.scale)));return true;
+  });
 });

@@ -27,6 +27,7 @@ inline FitResult fit_std(cppunivariate::span x, Held mean_arg = {}, Held sd_arg 
   if(sd.supplied)fixed.push_back("sd");
   if(nu.supplied)fixed.push_back("nu");
   auto res=cppunivariate::student_t_mle(x,gradtol,iterlim,held_mean,held_sd,nu.supplied?nu.value:nan);
+  if(res.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return stop_failure(failure("std numerical accuracy failure: requested coefficient accuracy cannot be established."),res.stop_detail,"numerical",{"mean","sd","nu"});
   certified=res.certified?1.:0.;
   if(res.accuracy_failure)return stop_failure(fail("Student-t numerical accuracy failure: observed-information Newton refinement could not justify the requested coefficient tolerance; increase iterlim or inspect conditioning."),res.stop_detail,"numerical",{"mean","sd","nu"});
   face_flag=res.status==cppunivariate::StudentTStatus::NormalBoundary||res.status==cppunivariate::StudentTStatus::DfTwoBoundary||res.status==cppunivariate::StudentTStatus::ScaleBoundary;

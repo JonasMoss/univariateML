@@ -227,9 +227,9 @@ inline StResult st_mle(span data,double tol=1e-10,int maxit=200,double xi=specia
   bool boundary=false;
   if(edge){auto at=p;at[3]=1;boundary=objective(local_accuracy::variables(at)).g[3]>=0;if(boundary)p[3]=1;}
   bool free_shape=std::isnan(nu)&&(!edge||!boundary);
-  if(!local_accuracy::subset(p,{{std::isnan(xi),std::isnan(omega),std::isnan(alpha),free_shape}},tol,maxit,objective,error)){bad.status=StStatus::NumericalFailure;bad.accuracy_failure=true;return bad;}
+  if(!local_accuracy::subset(p,{{std::isnan(xi),std::isnan(omega),std::isnan(alpha),free_shape}},tol,maxit,objective,error,bad.stop_detail)){bad.xi=std::isfinite(xi)?xi:origin+unit*best.v[0];bad.omega=std::isfinite(omega)?omega:unit*best.v[1];bad.alpha=best.v[2];bad.nu=best.v[3];bad.logLik=best.ll-n*std::log(unit);bad.status=StStatus::NumericalFailure;bad.accuracy_failure=true;{if(bad.omega>0 && bad.nu>0)record_accuracy(bad,tol,{bad.xi,bad.omega,bad.alpha,bad.nu},{std::isnan(xi)?std::max(std::abs(bad.xi),bad.omega):0,std::isnan(omega)?bad.omega:0,std::isnan(alpha)?std::max(1.,std::abs(bad.alpha)):0,std::isnan(nu)?bad.nu:0});else{bad.stop_detail.accuracy_stop=AccuracyStop::None;bad.stop_detail.attainable_tol=NAN;}}return bad;}
   if(edge&&!free_shape&&objective(local_accuracy::variables(p)).g[3]<0){
-   if(!local_accuracy::subset(p,{{std::isnan(xi),std::isnan(omega),std::isnan(alpha),true}},tol,maxit,objective,error)){bad.status=StStatus::NumericalFailure;bad.accuracy_failure=true;return bad;}
+   if(!local_accuracy::subset(p,{{std::isnan(xi),std::isnan(omega),std::isnan(alpha),true}},tol,maxit,objective,error,bad.stop_detail)){bad.xi=std::isfinite(xi)?xi:origin+unit*best.v[0];bad.omega=std::isfinite(omega)?omega:unit*best.v[1];bad.alpha=best.v[2];bad.nu=best.v[3];bad.logLik=best.ll-n*std::log(unit);bad.status=StStatus::NumericalFailure;bad.accuracy_failure=true;{if(bad.omega>0 && bad.nu>0)record_accuracy(bad,tol,{bad.xi,bad.omega,bad.alpha,bad.nu},{std::isnan(xi)?std::max(std::abs(bad.xi),bad.omega):0,std::isnan(omega)?bad.omega:0,std::isnan(alpha)?std::max(1.,std::abs(bad.alpha)):0,std::isnan(nu)?bad.nu:0});else{bad.stop_detail.accuracy_stop=AccuracyStop::None;bad.stop_detail.attainable_tol=NAN;}}return bad;}
   }
   auto evaluation=local_accuracy::variables(p);
   if(!allfree)for(int j=0;j<4;++j)evaluation[j]=p[j]; // Value only; derivative axes were checked in the packed subset.
@@ -237,7 +237,7 @@ inline StResult st_mle(span data,double tol=1e-10,int maxit=200,double xi=specia
   best.v[0]=accuracy_center+accuracy_scale*p[0];best.v[1]=accuracy_scale*std::exp(p[1]);best.v[2]=p[2];best.v[3]=std::isfinite(nu)?nu:edge?p[3]:1+std::exp(p[3]);best.ll=-checked.v-y.size()*std::log(accuracy_scale);
  }
  StResult out{std::isfinite(xi)?xi:origin+unit*best.v[0],std::isfinite(omega)?omega:unit*best.v[1],best.v[2],best.v[3],best.ll-n*std::log(unit),best.iterations,StStatus::Ok,(std::isnan(nu)&&best.v[3]==1)?64u:0u};
- if(!std::isfinite(out.logLik)||(std::isnan(xi)&&!local_accuracy::represented(out.xi,std::max(std::abs(out.xi),out.omega),tol))||(std::isnan(omega)&&!local_accuracy::represented(out.omega,out.omega,tol))){out.status=StStatus::NumericalFailure;out.accuracy_failure=true;}
+ if(!std::isfinite(out.logLik)||(std::isnan(xi)&&!local_accuracy::represented(out.xi,std::max(std::abs(out.xi),out.omega),tol))||(std::isnan(omega)&&!local_accuracy::represented(out.omega,out.omega,tol))){out.status=StStatus::NumericalFailure;out.accuracy_failure=true;{if(out.omega>0 && out.nu>0)record_accuracy(out,tol,{out.xi,out.omega,out.alpha,out.nu},{std::isnan(xi)?std::max(std::abs(out.xi),out.omega):0,std::isnan(omega)?out.omega:0,std::isnan(alpha)?std::max(1.,std::abs(out.alpha)):0,std::isnan(nu)?out.nu:0});else{out.stop_detail.accuracy_stop=AccuracyStop::None;out.stop_detail.attainable_tol=NAN;}}}
  return out;
 }
 }

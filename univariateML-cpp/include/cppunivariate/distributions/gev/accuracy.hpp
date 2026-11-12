@@ -103,7 +103,7 @@ inline bool polish(span data,GevResult& fit,bool held_mu,bool held_sigma,double 
     }
     return value;
   };
-  if(!accuracy_detail::polish(q,free,tol,maxit,objective))return false;
+  if(!accuracy_detail::polish(q,free,tol,maxit,objective,fit.stop_detail))return false;
   if(shape_edge) {
     std::array<accuracy_detail::Jet,3> a;
     for(int i=0;i<3;++i)a[i]=accuracy_detail::variable(q[i],i,true);

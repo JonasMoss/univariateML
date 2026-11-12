@@ -557,7 +557,7 @@ inline StudentTResult student_t_mle_held(span x,double tol,int maxit,double mean
 }
 inline StudentTResult student_t_mle(span x,double tol,int maxit,double mean,double sd,double nu) {
  auto r=student_t_mle_held(x,tol,maxit,mean,sd,nu);
- if(r.status==StudentTStatus::Ok&&!r.certified && !t_local_accuracy::refine(r,x,mean,sd,nu,tol,maxit,true,r.nu)){r.status=StudentTStatus::NumericalFailure;r.accuracy_failure=true;}
+ if(r.status==StudentTStatus::Ok&&!r.certified && !t_local_accuracy::refine(r,x,mean,sd,nu,tol,maxit,true,r.nu)){r.status=StudentTStatus::NumericalFailure;r.accuracy_failure=true;{if(r.sigma>0 && r.nu>2)record_accuracy(r,tol,{r.mu,r.sigma,r.nu},{std::isnan(mean)?std::max(std::abs(r.mu),r.sigma):0,std::isnan(sd)?r.sigma:0,std::isnan(nu)?r.nu:0});else{r.stop_detail.accuracy_stop=AccuracyStop::None;r.stop_detail.attainable_tol=NAN;}}}
  return r;
 }
 } // namespace cppunivariate

@@ -548,7 +548,7 @@ inline TbinomDesignResult tbinom_design_mle(ispan x,double a,double b,double siz
   }
   if(best.status==TbinomStatus::Ok && !best.certified && std::isnan(prob)) {
     if(!tbinom_detail::fallback_accuracy(x,best.size,best.a,best.b,best.prob)) {
-      best.status=TbinomStatus::NumericalFailure;return best;
+      best.status=TbinomStatus::NumericalFailure;record_accuracy(best,1e-10,{best.prob,best.a,best.b,best.size},{1,0,0,0});return best;
     }
     const double eta=std::log(best.size)+std::log(best.prob)-std::log1p(-best.prob);
     const auto z=tbinom_detail::mass(eta,std::max(0.,std::floor(best.a)+1),std::floor(best.b),best.size);

@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/stop_detail.hpp"
 #include "../../core/work_budget.hpp"
 #include "../burr/mle.hpp"
 #include "../llogis/mle.hpp"
@@ -6,7 +7,7 @@
 #include <cmath>
 namespace cppunivariate {
 enum class Pareto3Status { Ok, InvalidData, Unbounded, IterationFailure, AccuracyFailure };
-struct Pareto3Result { double shape,scale,min,logLik; int iterations; Pareto3Status status; bool certified=true; };
+struct Pareto3Result { double shape,scale,min,logLik; int iterations; Pareto3Status status; bool certified=true;  StopDetail stop_detail{}; };
 
 inline Pareto3Result pareto3_accuracy_search(span x, double min, double tol, int maxit, double shape=std::numeric_limits<double>::quiet_NaN(), double scale=std::numeric_limits<double>::quiet_NaN()) {
   maxit = static_cast<int>(solver_budget(maxit));
@@ -40,20 +41,20 @@ inline Pareto3Result pareto3_mle(span x,double min,double tol,int maxit,double s
       f.add(z[0]+t-accuracy_detail::Jet(2)*accuracy_detail::softplus(t));}
     return f.value;
   };
-  const bool refined=parent.certified?accuracy_detail::polish(q,free,tol,maxit,objective):continuous_fallback_polish(q,free,tol,maxit,objective);
-  if(!refined){r.status=Pareto3Status::IterationFailure;return r;}
+  const bool refined=parent.certified?accuracy_detail::polish(q,free,tol,maxit,objective,r.stop_detail):continuous_fallback_polish(q,free,tol,maxit,objective,r.stop_detail);
+  if(!refined){r.status=Pareto3Status::IterationFailure;{if(r.shape>0 && r.scale>0)record_accuracy(r,tol,{r.shape,r.scale,r.min},{std::isnan(shape)?r.shape:0,std::isnan(scale)?r.scale:0,0});else{r.stop_detail.accuracy_stop=AccuracyStop::None;r.stop_detail.attainable_tol=NAN;}}return r;}
   if(free[0])r.shape=std::exp(q[0]);
   if(free[1])r.scale=unit*std::exp(q[1]);
-  if(free[1]&&!accuracy_detail::scale_projection(r.scale,unit,q[1],tol)){r.status=Pareto3Status::AccuracyFailure;return r;}
+  if(free[1]&&!accuracy_detail::scale_projection(r.scale,unit,q[1],tol)){{r.status=Pareto3Status::AccuracyFailure;{if(r.shape>0 && r.scale>0)record_accuracy(r,tol,{r.shape,r.scale,r.min},{std::isnan(shape)?r.shape:0,std::isnan(scale)?r.scale:0,0});else{r.stop_detail.accuracy_stop=AccuracyStop::None;r.stop_detail.attainable_tol=NAN;}}}return r;}
   if(!parent.certified) {
-    if(!(r.shape>0 && r.scale>0) || !std::isfinite(r.shape+r.scale)){r.status=Pareto3Status::AccuracyFailure;return r;}
+    if(!(r.shape>0 && r.scale>0) || !std::isfinite(r.shape+r.scale)){{r.status=Pareto3Status::AccuracyFailure;{if(r.shape>0 && r.scale>0)record_accuracy(r,tol,{r.shape,r.scale,r.min},{std::isnan(shape)?r.shape:0,std::isnan(scale)?r.scale:0,0});else{r.stop_detail.accuracy_stop=AccuracyStop::None;r.stop_detail.attainable_tol=NAN;}}}return r;}
     transformed_detail::Sum ll;
     for(double v:x) {
       const double y=v-min,t=r.shape*transformed_detail::log_ratio(y,r.scale);
       ll.push(std::log(r.shape)-std::log(y)-transformed_detail::softplus(t)-transformed_detail::softplus(-t));
     }
     r.logLik=ll.get();
-    if(!std::isfinite(r.logLik))r.status=Pareto3Status::AccuracyFailure;
+    if(!std::isfinite(r.logLik)){r.status=Pareto3Status::AccuracyFailure;{if(r.shape>0 && r.scale>0)record_accuracy(r,tol,{r.shape,r.scale,r.min},{std::isnan(shape)?r.shape:0,std::isnan(scale)?r.scale:0,0});else{r.stop_detail.accuracy_stop=AccuracyStop::None;r.stop_detail.attainable_tol=NAN;}}}
     return r;
   }
   r.logLik=0;for(double v:x)r.logLik+=distributions::dpareto3(v,r.shape,r.scale,min,true);

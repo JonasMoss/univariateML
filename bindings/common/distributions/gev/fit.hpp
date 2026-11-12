@@ -33,6 +33,7 @@ inline FitResult fit_gev(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg
   if(sigma.supplied) fixed.push_back("sigma");
   if(xi.supplied) fixed.push_back("xi");
   const auto r=cppunivariate::gev_mle(x,reltol,iterlim,shape,location,scale);
+  if(r.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return stop_failure(failure("gev numerical accuracy failure: requested coefficient accuracy cannot be established."),r.stop_detail,"numerical",{"mu","sigma","xi"});
   if(r.status==cppunivariate::GevStatus::SearchContradicted)
     return stop_failure(fail("Generalized extreme value search is disproved by a certified better feasible point."),r.stop_detail,"numerical",{"mu","sigma","xi"});
   if(r.stop_detail.budget_exhausted)

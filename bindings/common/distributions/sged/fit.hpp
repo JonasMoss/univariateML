@@ -35,7 +35,8 @@ inline FitResult fit_sged(cppunivariate::span x, Held mean_arg = {}, Held sd_arg
   const double held_xi=xi.supplied ? xi.value : nan;
   if(xi.supplied && (!(std::isfinite(held_xi) && held_xi>0))) return fail("Invalid held `xi`: requires a finite value in its parameter domain.");
   auto res=cppunivariate::sged_mle(x,gradtol,iterlim,held_mean,held_sd,held_nu,held_xi);
-  if(res.accuracy_failure)return fail("sged numerical accuracy failure: final Newton refinement did not converge to the requested coefficient tolerance; increase iterlim or inspect conditioning.");
+  if(res.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return stop_failure(failure("sged numerical accuracy failure: requested coefficient accuracy cannot be established."),res.stop_detail,"numerical",{"mean","sd","nu","xi"});
+  if(res.accuracy_failure)return stop_failure(fail("sged numerical accuracy failure: final Newton refinement did not converge to the requested coefficient tolerance; increase iterlim or inspect conditioning."),res.stop_detail,"numerical",{"mean","sd","nu","xi"});
   if(res.status==cppunivariate::SgedStatus::CertificateFailure) {
     const std::vector<std::string> names{"mean","sd","nu","xi"};
     if(res.stop_detail.budget_exhausted)

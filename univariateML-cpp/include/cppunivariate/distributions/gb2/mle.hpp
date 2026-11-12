@@ -488,7 +488,9 @@ inline Gb2Result gb2_mle(span x,double tol=1e-10,int maxit=300,
         best.ll=beta.logLik;for(std::size_t i=0;i<logs.size();++i){double t=a*gb2_accuracy::log_ratio(x[i],b);best.ll+=std::log(a)-logs[i]-gb2_detail::softplus(-t)-gb2_detail::softplus(t);}
         local_done=true;
       } else if(beta.status==BetaStatus::Degenerate||(beta.status==BetaStatus::Ok&&std::min(beta.alpha,beta.beta)*std::numeric_limits<double>::epsilon()>tol*.125)) {
-        bad.status=Gb2Status::NumericalFailure;bad.accuracy_failure=true;return bad;
+        const double propagated=beta.status==BetaStatus::Ok?gb2_accuracy::input_error({probability.data(),probability.size()},{uncertainty.data(),uncertainty.size()},beta.alpha,beta.beta):std::numeric_limits<double>::max();
+        bad.stop_detail.conditioning_bound=std::isfinite(propagated)?2*propagated:std::numeric_limits<double>::max();
+        bad.shape1=best.q;bad.shape2=best.A/d.sd;bad.shape3=best.p;bad.scale=std::exp(d.mean+d.sd*best.c/best.A);bad.logLik=best.ll;bad.status=Gb2Status::NumericalFailure;bad.accuracy_failure=true;{if(bad.shape1>0 && bad.shape2>0 && bad.shape3>0 && bad.scale>0)record_accuracy(bad,tol,{bad.shape1,bad.shape2,bad.shape3,bad.scale},{std::isnan(q)?bad.shape1:0,std::isnan(a)?bad.shape2:0,std::isnan(p)?bad.shape3:0,std::isnan(b)?bad.scale:0});else{bad.stop_detail.accuracy_stop=AccuracyStop::None;bad.stop_detail.attainable_tol=NAN;}}return bad;
       }
     }
   }
@@ -533,7 +535,7 @@ inline Gb2Result gb2_mle(span x,double tol=1e-10,int maxit=300,
       if(free[3])e=std::max(e,std::abs(d.sd/t[1].v*(step[index[3]]+(shifted&&free[0]?step[index[0]]:0)-t[3].v*(free[1]?step[index[1]]:0))));
       return e;
     };
-    if(dim>0&&!local_accuracy::polish(v,dim,tol,maxit,objective,error)){bad.status=Gb2Status::NumericalFailure;bad.accuracy_failure=true;return bad;}
+    if(dim>0&&!local_accuracy::polish(v,dim,tol,maxit,objective,error,bad.stop_detail)){bad.shape1=best.q;bad.shape2=best.A/d.sd;bad.shape3=best.p;bad.scale=std::exp(d.mean+d.sd*best.c/best.A);bad.logLik=best.ll;bad.status=Gb2Status::NumericalFailure;bad.accuracy_failure=true;{if(bad.shape1>0 && bad.shape2>0 && bad.shape3>0 && bad.scale>0)record_accuracy(bad,tol,{bad.shape1,bad.shape2,bad.shape3,bad.scale},{std::isnan(q)?bad.shape1:0,std::isnan(a)?bad.shape2:0,std::isnan(p)?bad.shape3:0,std::isnan(b)?bad.scale:0});else{bad.stop_detail.accuracy_stop=AccuracyStop::None;bad.stop_detail.attainable_tol=NAN;}}return bad;}
     const auto t=unpack(local_accuracy::variables(v));
     local_done=true;best.q=t[0].v;best.A=t[1].v;best.p=t[2].v;best.c=t[3].v;
     best.ll=-objective(local_accuracy::variables(v)).v-d.n*std::log(d.sd)-d.sum;
@@ -546,7 +548,7 @@ inline Gb2Result gb2_mle(span x,double tol=1e-10,int maxit=300,
   if(status==Gb2Status::Ok&&(!std::isfinite(std::exp(logb))||std::exp(logb)==0))status=Gb2Status::ScaleOutOfRange;
   Gb2Result out{std::isnan(q)?best.q:q,std::isnan(a)?best.A/d.sd:a,
     std::isnan(p)?best.p:p,std::isnan(b)?std::exp(logb):b,best.ll,evals,status};
-  if(out.status==Gb2Status::Ok&&std::isnan(b)&&!local_accuracy::represented(out.scale,out.scale,tol)){out.status=Gb2Status::NumericalFailure;out.accuracy_failure=true;}
+  if(out.status==Gb2Status::Ok&&std::isnan(b)&&!local_accuracy::represented(out.scale,out.scale,tol)){out.status=Gb2Status::NumericalFailure;out.accuracy_failure=true;{if(out.shape1>0 && out.shape2>0 && out.shape3>0 && out.scale>0)record_accuracy(out,tol,{out.shape1,out.shape2,out.shape3,out.scale},{std::isnan(q)?out.shape1:0,std::isnan(a)?out.shape2:0,std::isnan(p)?out.shape3:0,std::isnan(b)?out.scale:0});else{out.stop_detail.accuracy_stop=AccuracyStop::None;out.stop_detail.attainable_tol=NAN;}}}
   return out;
 }
 } // namespace cppunivariate

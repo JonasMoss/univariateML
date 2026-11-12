@@ -7,7 +7,7 @@ namespace cppunivariate { namespace burr_power_one_detail {
 // neither raw observation logarithms nor the leading Gamma terms are rounded
 // before cancellation. All derivatives below are analytic in these coordinates.
 inline bool joint_fit(span x,double& shape,double& power,double& scale,
-    const std::array<bool,3>& free,double tol,int maxit,bool inverse=false,double shift=0) {
+    const std::array<bool,3>& free,double tol,int maxit,bool inverse,double shift,StopDetail& detail) {
   if(x.empty()||!(shape>0&&power>0&&scale>0)||(!std::isfinite(shape)||!std::isfinite(power)||!std::isfinite(scale)))return false;
   const double unit=scale,orientation=inverse?-1:1;
   std::vector<Pair> raw;
@@ -48,11 +48,16 @@ inline bool joint_fit(span x,double& shape,double& power,double& scale,
       f.projection[2][1]=-Pair(orientation)*(u-z[2])/c;}
     return f;
   };
-  if(!pair_polish(state,free,{{1,2,0}},tol,maxit,objective))return false;
+  if(!pair_polish(state,free,{{1,2,0}},tol,maxit,objective,detail))return false;
   const Pair k=free[0]?exponential(state[0]):Pair(shape),c=free[1]?exponential(state[1]):Pair(power);
   const Pair logs=free[2]?logarithm(Pair(unit))+Pair(orientation)*((free[0]?state[0]:logarithm(Pair(shape)))-state[2])/c:logarithm(Pair(unit));
   const double s=free[2]?value(exponential(logs)):unit;
   if(!(s>0)||!std::isfinite(s)||(free[2]&&std::abs(value(logarithm(Pair(s))-logs))>tol*.25))return false;
   shape=value(k);power=value(c);scale=s;return true;
 }
+inline bool joint_fit(span x,double& shape,double& power,double& scale,
+    const std::array<bool,3>& free,double tol,int maxit,bool inverse=false,double shift=0) {
+  StopDetail detail;return joint_fit(x,shape,power,scale,free,tol,maxit,inverse,shift,detail);
+}
+
 }}

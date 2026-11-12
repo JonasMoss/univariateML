@@ -553,10 +553,20 @@ inline BhattResult bhatt_mle(span x,double tol=1e-8,int maxit=500,double sigma=s
         std::isnan(sigma)?scale_score.value:0);
     if(!std::isfinite(score) || !std::isfinite(margin) || score>1e-3+margin)return certificate;
   }
+  const auto preserve_accuracy=[&](StopDetail& output) {
+    const auto& diagnosis=searched.stop_detail;
+    if(diagnosis.accuracy_stop==AccuracyStop::None)return;
+    output.accuracy_stop=diagnosis.accuracy_stop;
+    output.attainable_tol=diagnosis.attainable_tol;
+    output.conditioning_bound=diagnosis.conditioning_bound;
+    for(const auto& candidate:diagnosis.candidates)
+      if(bhatt_detail::cert_valid(candidate))output.candidates.push_back(candidate);
+  };
   const auto reject_search=[&]() {
     certificate.status=BhattStatus::NumericalFailure;
     certificate.stop_detail.budget_exhausted=false;
     certificate.stop_detail.comparison_tie=false;
+    preserve_accuracy(certificate.stop_detail);
     return certificate;
   };
   if(searched.status==BhattStatus::Ok){
@@ -595,7 +605,7 @@ inline BhattResult bhatt_mle(span x,double tol=1e-8,int maxit=500,double sigma=s
     return finite;
   }
   if(searched.status==BhattStatus::NumericalFailure)return reject_search();
-  if(searched.status==BhattStatus::IterationFailure){searched.stop_detail=certificate.stop_detail;return searched;}
+  if(searched.status==BhattStatus::IterationFailure){auto detail=certificate.stop_detail;preserve_accuracy(detail);searched.stop_detail=detail;return searched;}
   // The search itself failed, or proposed an invalid/unbounded result not
   // proved by the certificate. Preserve the certificate's physical witnesses.
   return certificate;

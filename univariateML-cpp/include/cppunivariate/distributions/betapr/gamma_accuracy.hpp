@@ -49,7 +49,7 @@ inline Pair gamma_correction(Pair q,Pair p) {
 // two-double arithmetic. Stirling remainders after B16 are bounded before
 // inverse-information propagation, including for a held literal shape.
 inline bool beta_gamma_fit(span x,double& alpha,double& beta,double& scale,
-    const std::array<bool,3>& free,double tol,int maxit,double& loglik,double power=1,double shift=0) {
+    const std::array<bool,3>& free,double tol,int maxit,double& loglik,double power,double shift,StopDetail& detail) {
   const bool reflect=alpha>beta;const double small=reflect?beta:alpha,large=reflect?alpha:beta;
   if(!(free[2]&&small>0&&large>0&&power>0))return false;
   const double sign_y=reflect?-1:1,unit=scale;
@@ -95,7 +95,7 @@ inline bool beta_gamma_fit(span x,double& alpha,double& beta,double& scale,
     f.projection[2][1]=Pair(sign_y)/Pair(power);f.projection[2][2]=Pair(sign_y)/Pair(power);
     return f;
   };
-  if(!pair_polish(state,active,{{0,2,1}},tol,maxit,objective))return false;
+  if(!pair_polish(state,active,{{0,2,1}},tol,maxit,objective,detail))return false;
   const Pair pp=active[0]?exponential(state[0]):Pair(small),qq=active[1]?exponential(state[1]):Pair(large);
   const Pair logs=logarithm(Pair(unit))+(Pair(sign_y)/Pair(power))*(state[2]+(active[1]?state[1]:logarithm(Pair(large))));
   const double ss=value(exponential(logs));if(!(ss>0)||!std::isfinite(ss)||std::abs(value(logarithm(Pair(ss))-logs))>tol*.25)return false;
@@ -106,4 +106,9 @@ inline bool beta_gamma_fit(span x,double& alpha,double& beta,double& scale,
   if(!std::isfinite(ll.hi))return false;
   alpha=ap;beta=bp;scale=ss;loglik=value(ll);return true;
 }
+inline bool beta_gamma_fit(span x,double& alpha,double& beta,double& scale,
+    const std::array<bool,3>& free,double tol,int maxit,double& loglik,double power=1,double shift=0) {
+  StopDetail detail;return beta_gamma_fit(x,alpha,beta,scale,free,tol,maxit,loglik,power,shift,detail);
+}
+
 }}

@@ -9,6 +9,7 @@
 //   z = (x - mu)/sigma * sigma_u + mu_u.
 
 #pragma once
+#include "dpqr.hpp"
 #include "../sstd/local_accuracy.hpp"
 #include "../../core/work_budget.hpp"
 #include "../sstd/hold_search.hpp"
@@ -436,7 +437,7 @@ inline SgedResult sged_mle_free(span x, double tol, int maxit) {
   if(best.status==SgedStatus::Ok && best.nu>1) {
     std::array<double,4> p{{best.mu,std::log(best.sigma),std::log(best.nu-1),std::log(best.xi)}};
     const auto objective=[&](const std::array<local_accuracy::Jet,4>& q){return local_accuracy::skew_objective(z,q,false);};
-    if(local_accuracy::polish(p,4,tol,maxit,objective,[&](const std::array<double,4>& v,const std::array<double,4>& step){auto q=v;q[0]+=mean_x/sd_x;return local_accuracy::location_error(q,step);})) {
+    if(local_accuracy::polish(p,4,tol,maxit,objective,[&](const std::array<double,4>& v,const std::array<double,4>& step){auto q=v;q[0]+=mean_x/sd_x;return local_accuracy::location_error(q,step);},best.stop_detail)) {
       best.mu=p[0];best.sigma=std::exp(p[1]);best.nu=1+std::exp(p[2]);best.xi=std::exp(p[3]);best.logLik=-objective(local_accuracy::variables(p)).v;
     } else {best.status=SgedStatus::BfgsFailure;best.accuracy_failure=true;}
   }
@@ -444,6 +445,7 @@ inline SgedResult sged_mle_free(span x, double tol, int maxit) {
   best.sigma *= sd_x;
   best.logLik -= dn * std::log(sd_x);
   if(best.status==SgedStatus::Ok&&(!local_accuracy::represented(best.mu,std::max(std::abs(best.mu),best.sigma),tol)||!local_accuracy::represented(best.sigma,best.sigma,tol))){best.status=SgedStatus::BfgsFailure;best.accuracy_failure=true;}
+  if(best.accuracy_failure){if(best.sigma>0 && best.nu>0 && best.xi>0)record_accuracy(best,wrong_restriction?1e-10:tol,{best.mu,best.sigma,best.nu,best.xi},{std::max(std::abs(best.mu),best.sigma),best.sigma,best.nu,best.xi});else{best.stop_detail.accuracy_stop=AccuracyStop::None;best.stop_detail.attainable_tol=NAN;}}
   return best;
 }
 
@@ -559,13 +561,13 @@ inline SgedResult sged_mle(span x,double tol,int maxit,double mean= std::numeric
     bool boundary=false;
     if(edge){auto at=p;at[2]=1;boundary=objective(local_accuracy::variables(at)).g[2]>=0;if(boundary)p[2]=1;}
     bool free_shape=!hn&&(!edge||!boundary);
-    bool accurate=local_accuracy::subset(p,{{std::isnan(mean),std::isnan(sd),free_shape,std::isnan(xi)}},tol,maxit,objective,error);
+    bool accurate=local_accuracy::subset(p,{{std::isnan(mean),std::isnan(sd),free_shape,std::isnan(xi)}},tol,maxit,objective,error,r.stop_detail);
     if(accurate&&edge&&!free_shape&&objective(local_accuracy::variables(p)).g[2]<0)
-      accurate=local_accuracy::subset(p,{{std::isnan(mean),std::isnan(sd),true,std::isnan(xi)}},tol,maxit,objective,error);
+      accurate=local_accuracy::subset(p,{{std::isnan(mean),std::isnan(sd),true,std::isnan(xi)}},tol,maxit,objective,error,r.stop_detail);
     if(accurate){
       r.mu=std::isnan(mean)?origin+unit*p[0]:mean;r.sigma=std::isnan(sd)?unit*std::exp(p[1]):sd;r.nu=hn?r.nu:edge?p[2]:1+std::exp(p[2]);r.xi=std::isnan(xi)?std::exp(p[3]):xi;r.logLik=-objective(local_accuracy::variables(p)).v-x.size()*std::log(unit);
-      if((std::isnan(mean)&&!local_accuracy::represented(r.mu,std::max(std::abs(r.mu),r.sigma),tol))||(std::isnan(sd)&&!local_accuracy::represented(r.sigma,r.sigma,tol))){r.status=SgedStatus::BfgsFailure;r.accuracy_failure=true;}
-    }else{r.status=SgedStatus::BfgsFailure;r.accuracy_failure=true;}
+      if((std::isnan(mean)&&!local_accuracy::represented(r.mu,std::max(std::abs(r.mu),r.sigma),tol))||(std::isnan(sd)&&!local_accuracy::represented(r.sigma,r.sigma,tol))){r.status=SgedStatus::BfgsFailure;r.accuracy_failure=true;{if(r.sigma>0 && r.nu>0 && r.xi>0)record_accuracy(r,tol,{r.mu,r.sigma,r.nu,r.xi},{std::isnan(mean)?std::max(std::abs(r.mu),r.sigma):0,std::isnan(sd)?r.sigma:0,std::isnan(nu)?r.nu:0,std::isnan(xi)?r.xi:0});else{r.stop_detail.accuracy_stop=AccuracyStop::None;r.stop_detail.attainable_tol=NAN;}}}
+    }else{r.status=SgedStatus::BfgsFailure;r.accuracy_failure=true;{if(r.sigma>0 && r.nu>0 && r.xi>0)record_accuracy(r,tol,{r.mu,r.sigma,r.nu,r.xi},{std::isnan(mean)?std::max(std::abs(r.mu),r.sigma):0,std::isnan(sd)?r.sigma:0,std::isnan(nu)?r.nu:0,std::isnan(xi)?r.xi:0});else{r.stop_detail.accuracy_stop=AccuracyStop::None;r.stop_detail.attainable_tol=NAN;}}}
   }
   if(r.status==SgedStatus::Ok && (std::isnan(nu)) && r.nu==kSgedNuLower) r.restricted|=16u;
   return r;

@@ -14,6 +14,19 @@ inline StopDetail invparalogis_stop_detail(StopDetail d,double jacobian) {
   d.loglik_lower+=jacobian;d.loglik_upper+=jacobian;
   d.segment_loglik_upper+=jacobian;return d;
 }
+// Reciprocation of a representable scale need not remain representable.
+inline InvParalogisResult invparalogis_checked(InvParalogisResult r) {
+  r.stop_detail.candidates.erase(std::remove_if(r.stop_detail.candidates.begin(),r.stop_detail.candidates.end(),
+    [](const FitCandidate& c){return c.model==StopModel::None &&
+      (c.coef.size()!=2 || !(c.coef[0]>0 && c.coef[1]>0) ||
+       !std::isfinite(c.coef[0]) || !std::isfinite(c.coef[1]));}),r.stop_detail.candidates.end());
+  if(!(r.shape>0 && r.scale>0) || !std::isfinite(r.shape) || !std::isfinite(r.scale) || !std::isfinite(r.logLik)) {
+    if(r.status==ParalogisStatus::Ok){r.status=ParalogisStatus::NumericalFailure;r.certified=false;}
+    r.stop_detail.accuracy_stop=AccuracyStop::None;r.stop_detail.attainable_tol=NAN;r.stop_detail.conditioning_bound=NAN;
+  }
+  return r;
+}
+
 inline InvParalogisResult invparalogis_mle(span x, double tol, int maxit, double shape0 = std::numeric_limits<double>::quiet_NaN()) {
   maxit = static_cast<int>(solver_budget(maxit));
   for (double v : x) {
@@ -40,7 +53,7 @@ inline InvParalogisResult invparalogis_mle(span x, double tol, int maxit, double
   if(r.status==ParalogisStatus::Ok&&!r.certified) {
     tol=std::min(tol,1e-10);
     double shape=r.shape,s=physical,value=ll;
-    if(!paralogis_local_accuracy(x,shape,s,value,tol,maxit,false,true))r.status=ParalogisStatus::NumericalFailure;
+    if(!paralogis_local_accuracy(x,shape,s,value,tol,maxit,false,true,r.stop_detail)){r.status=ParalogisStatus::NumericalFailure;record_accuracy(r,tol,{r.shape,r.scale},{r.shape,r.scale});}
     else if(std::abs(shape/r.shape-1)>tol*.125||std::abs(s/physical-1)>tol*.125){r.shape=shape;physical=s;ll=value;}
   }
   if(r.status==ParalogisStatus::Ok&&!r.certified) {
@@ -50,7 +63,7 @@ inline InvParalogisResult invparalogis_mle(span x, double tol, int maxit, double
     if(!std::isfinite(actual))r.status=ParalogisStatus::NumericalFailure;
     else if(std::abs(actual-ll)>margin)ll=actual;
   }
-  return {r.shape,physical,ll,r.iterations,r.status,invparalogis_stop_detail(r.stop_detail,jacobian),r.certified};
+  return invparalogis_checked({r.shape,physical,ll,r.iterations,r.status,invparalogis_stop_detail(r.stop_detail,jacobian),r.certified});
 }
 inline InvParalogisResult invparalogis_mle_fixed_scale(span x, double scale,
     double tol=1e-10, int maxit=100,
@@ -74,7 +87,7 @@ inline InvParalogisResult invparalogis_mle_fixed_scale(span x, double scale,
   if(r.status==ParalogisStatus::Ok&&!r.certified) {
     tol=std::min(tol,1e-10);
     double shape=r.shape,s=physical,value=ll;
-    if(!paralogis_local_accuracy(x,shape,s,value,tol,maxit,true,true))r.status=ParalogisStatus::NumericalFailure;
+    if(!paralogis_local_accuracy(x,shape,s,value,tol,maxit,true,true,r.stop_detail)){r.status=ParalogisStatus::NumericalFailure;record_accuracy(r,tol,{r.shape,r.scale},{r.shape,0});}
     else if(std::abs(shape/r.shape-1)>tol*.125){r.shape=shape;ll=value;}
   }
   if(r.status==ParalogisStatus::Ok&&!r.certified) {
@@ -84,7 +97,7 @@ inline InvParalogisResult invparalogis_mle_fixed_scale(span x, double scale,
     if(!std::isfinite(actual))r.status=ParalogisStatus::NumericalFailure;
     else if(std::abs(actual-ll)>margin)ll=actual;
   }
-  return {r.shape,scale,ll,r.iterations,r.status,invparalogis_stop_detail(r.stop_detail,jacobian),r.certified};
+  return invparalogis_checked({r.shape,scale,ll,r.iterations,r.status,invparalogis_stop_detail(r.stop_detail,jacobian),r.certified});
 }
 } // namespace cppunivariate
 
@@ -95,7 +108,7 @@ inline InvParalogisResult invparalogis_mle_holds(span x,double shape,double scal
  if(std::isnan(shape)) return std::isnan(scale)?invparalogis_mle(x,tol,maxit):invparalogis_mle_fixed_scale(x,scale,tol,maxit);
  std::vector<double> y;double jac=0;for(double v:x){y.push_back(1/v);jac-=2*std::log(v);}
  auto r=paralogis_mle_holds(span{y.data(),y.size()},shape,std::isnan(scale)?scale:1/scale,tol,maxit);
- return {shape,std::isnan(scale)?1/r.scale:scale,r.logLik+jac,r.iterations,r.status,invparalogis_stop_detail(r.stop_detail,jac),r.certified};
+ return invparalogis_checked({shape,std::isnan(scale)?1/r.scale:scale,r.logLik+jac,r.iterations,r.status,invparalogis_stop_detail(r.stop_detail,jac),r.certified});
 }
 
 }

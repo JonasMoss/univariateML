@@ -83,3 +83,14 @@ TEST_CASE("Pareto II keeps the always-certified Lomax success and scale map") {
 TEST_CASE("pareto2: exact-input extreme arithmetic regression") {
   CHECK(cppunivariate::distributions::qpareto2(-0.6931471805599453,1.0,1.0,-1.0,true,true) == doctest::Approx(4.638093627692599e-17).epsilon(1e-10).scale(0));
 }
+
+TEST_CASE("pareto2 reciprocal rate overflow remains numerical at every tolerance") {
+  const std::vector<double> x{1e308,1.1e308,1.2e308};
+  for(double tol:{1e-10,1e-20}) {
+    const auto r=cppunivariate::pareto2_mle({x.data(),x.size()},0,tol,200,100,NAN);
+    CHECK(r.status!=cppunivariate::LomaxStatus::Ok);
+    CHECK(r.certificate_failure==cppunivariate::LomaxCertificateFailure::Arithmetic);
+    CHECK(r.stop_detail.accuracy_stop==cppunivariate::AccuracyStop::None);
+    for(const auto& c:r.stop_detail.candidates)for(double v:c.coef)CHECK(std::isfinite(v));
+  }
+}

@@ -9,7 +9,7 @@ inline bool gb2_transport_accuracy(span x,double shift,Gb2Result& r,
   if(r.shape3==1||r.shape1==1) {
     double k=r.shape3==1?r.shape1:r.shape3,b=r.shape2,s=r.scale;
     const bool inverse=r.shape1==1&&r.shape3!=1;
-    if(!burr_local_accuracy(x,k,b,s,{{inverse?free[2]:free[0],free[1],free[3]}},tol,maxit,inverse,shift))return false;
+    if(!burr_local_accuracy(x,k,b,s,{{inverse?free[2]:free[0],free[1],free[3]}},tol,maxit,inverse,shift,r.stop_detail))return false;
     const double initial=inverse?r.shape3:r.shape1;
     if(std::abs(k/initial-1)>tol*.125||std::abs(b/r.shape2-1)>tol*.125||std::abs(s/r.scale-1)>tol*.125) {
       if(inverse)r.shape3=k;else r.shape1=k;r.shape2=b;r.scale=s;
@@ -19,7 +19,7 @@ inline bool gb2_transport_accuracy(span x,double shift,Gb2Result& r,
   }
   if(!free[1]&&free[3]) {
     double p=r.shape3,q=r.shape1,s=r.scale,ll=NAN;
-    if(!burr_power_one_detail::beta_gamma_fit(x,p,q,s,{{free[2],free[0],true}},tol,maxit,ll,r.shape2,shift))return false;
+    if(!burr_power_one_detail::beta_gamma_fit(x,p,q,s,{{free[2],free[0],true}},tol,maxit,ll,r.shape2,shift,r.stop_detail))return false;
     if(std::max({std::abs(p/r.shape3-1),std::abs(q/r.shape1-1),std::abs(s/r.scale-1)})>tol*.125) {
       r.shape3=p;r.shape1=q;r.scale=s;r.logLik=ll;
     }
@@ -58,7 +58,7 @@ inline bool gb2_transport_accuracy(span x,double shift,Gb2Result& r,
     if(free[3]){const int j=reflect?2:0;const double d=rare?(step[index[3]]+(free[j]?step[index[j]]:0))/base[1]:step[index[3]];e=std::max(e,std::abs(d));}
     return e;
   };
-  if(dim&&!local_accuracy::polish(v,dim,tol,maxit,objective,error))return false;
+  if(dim&&!local_accuracy::polish(v,dim,tol,maxit,objective,error,r.stop_detail))return false;
   std::array<double,4> solved=base;double change=0;
   for(int i=0;i<3;++i)if(free[i])solved[i]=std::exp(v[index[i]]);
   const double coordinate=free[3]?(rare?(reflect?-1:1)*(v[index[3]]+std::log(reflect?solved[2]:solved[0]))/base[1]:v[index[3]]):0;

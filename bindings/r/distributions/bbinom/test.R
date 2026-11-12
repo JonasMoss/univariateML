@@ -190,6 +190,8 @@ test_that("unattainable coefficient accuracy stops with a finite witness", {
   for (held in list(list(),list(alpha=2),list(beta=3))) {
     e <- tryCatch(do.call(mlbbinom,c(list(x=x,size=10,reltol=1e-18),held)),error=identity)
     expect_s3_class(e,"univariateML_numerical")
+    expect_s3_class(e,"univariateML_tolerance")
+    expect_gt(e$attainable_tol,1e-18)
     expect_match(conditionMessage(e),"numerical accuracy failure")
     expect_true(any(is.finite(e$candidates$alpha) & is.finite(e$candidates$beta)))
     expect_true(all(is.finite(e$candidates$loglik_lower)))

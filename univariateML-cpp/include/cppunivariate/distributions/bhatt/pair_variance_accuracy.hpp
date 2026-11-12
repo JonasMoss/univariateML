@@ -103,7 +103,7 @@ inline bool pair_variance_accuracy(BhattResult& r,span x,double held_mu,double t
     f.information_tail=tail*16384/(coordinate_unit*coordinate_unit);
     return f;
   };
-  if(!burr_power_one_detail::pair_polish(q,free,{{0,1,2}},tol,maxit,objective))return false;
+  if(!burr_power_one_detail::pair_polish(q,free,{{0,1,2}},tol,maxit,objective,r.stop_detail))return false;
   const auto S=unit_pair*burr_power_one_detail::exponential(q[1]);
   const auto E=burr_power_one_detail::exponential(q[2]/burr_power_one_detail::Pair(coordinate_unit));
   const auto sigma=sigma_held?unit_pair:S*burr_power_one_detail::square_root(burr_power_one_detail::Pair(1)-E*E/burr_power_one_detail::Pair(3));

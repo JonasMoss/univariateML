@@ -574,3 +574,16 @@ TEST_CASE("zib: certified large-count binomial delegate likelihood") {
   // 80-digit log-gamma reference at the returned binary64 probability.
   CHECK(std::abs(fit.logLik-(-14.363696715670824))<1e-10);
 }
+
+TEST_CASE("zib accuracy stop distinguishes an unrepresentable rational maximizer") {
+  const std::vector<int> x{0,1,1};
+  const auto r=cppunivariate::zib_mle({x.data(),x.size()},1e-20,200,1,NAN,0);
+  CHECK(r.status!=cppunivariate::ZibStatus::Ok);
+  CHECK(r.stop_detail.accuracy_stop==cppunivariate::AccuracyStop::Tolerance);
+  CHECK(r.stop_detail.attainable_tol==doctest::Approx(1.0/27021597764222976.).epsilon(1e-14));
+  REQUIRE(!r.stop_detail.candidates.empty());
+  CHECK(r.prob==2.0/3.0);
+  const auto exact=cppunivariate::zib_mle({x.data(),x.size()},1e-20,200,1,.5,NAN);
+  // An explicitly held probability does not itself constrain tolerance.
+  CHECK(exact.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::Tolerance);
+}

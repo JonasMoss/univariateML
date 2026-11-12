@@ -1,0 +1,2 @@
+tolerance 3.7007434154171883e-17 2 zib numerical accuracy failure: requested coefficient accuracy cannot be established. tol must be at least 3.7007434154171883e-17 here.
+conditioning 1.9023582291494466e-16 1 foldnorm numerical accuracy failure: requested coefficient accuracy cannot be established.

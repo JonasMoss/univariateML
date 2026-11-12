@@ -436,9 +436,11 @@ inline GenbetaResult genbeta_mle(span x,double scale,double tol=1e-10,int maxit=
     r.status=GenbetaStatus::SearchUnresolved;r.allfree_certified=false;
     r.certificate_failure=GenbetaCertificateFailure::CoefficientInclusion;
     const double pad=4096*std::numeric_limits<double>::epsilon()*(1+std::abs(r.logLik));
-    r.stop_detail={};
+    const double noise=r.stop_detail.conditioning_bound;
+    r.stop_detail={};r.stop_detail.conditioning_bound=noise;
     r.stop_detail.candidates={{{r.shape1,r.shape2,r.shape3,scale},r.logLik-pad,r.logLik+pad,StopModel::None}};
     r.stop_detail.loglik_lower=r.logLik-pad;r.stop_detail.loglik_upper=INFINITY;
+    record_accuracy(r,tol,{r.shape1,r.shape2,r.shape3,scale},{std::isnan(a)?r.shape1:0,std::isnan(b)?r.shape2:0,std::isnan(t)?r.shape3:0,0});
     return r;
   };
   // These scalar certificates already propagate coefficient inclusion, and
@@ -492,7 +494,7 @@ inline GenbetaResult genbeta_mle(span x,double scale,double tol=1e-10,int maxit=
     }
     return normalizer+terms.value;
   };
-  if(!accuracy_detail::polish(q,free,tol,maxit,objective)){return accuracy_failure();}
+  if(!accuracy_detail::polish(q,free,tol,maxit,objective,r.stop_detail)){return accuracy_failure();}
   if(free[0])r.shape1=std::exp(q[0]-q[2]);
   if(free[1])r.shape2=std::exp(q[1]);
   if(free[2])r.shape3=std::exp(q[2]);

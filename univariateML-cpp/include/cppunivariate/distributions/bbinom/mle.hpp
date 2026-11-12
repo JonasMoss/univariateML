@@ -845,8 +845,8 @@ inline BbinomResult bbinom_mle(ispan x,double size,double tol=1e-10,int maxit=50
   const bbinom_detail::CellWork work(enumeration_budget(maxit));
   auto out=bbinom_mle_work(x,size,tol,maxit,alpha_fixed,beta_fixed,work);
   if(out.status==BbinomStatus::Ok && !out.certified) {
-    if(!bbinom_detail::fallback_accuracy(x,out.size,out.alpha,out.beta,alpha_fixed,beta_fixed,tol,maxit)) {
-      out.status=BbinomStatus::IterationFailure;out.accuracy_failure=true;return out;
+    if(!bbinom_detail::fallback_accuracy(x,out.size,out.alpha,out.beta,alpha_fixed,beta_fixed,tol,maxit,out.stop_detail)) {
+      out.status=BbinomStatus::IterationFailure;out.accuracy_failure=true;{if(out.alpha>0 && out.beta>0)record_accuracy(out,tol,{out.size,out.alpha,out.beta},{0,std::isnan(alpha_fixed)?out.alpha:0,std::isnan(beta_fixed)?out.beta:0});else{out.stop_detail.accuracy_stop=AccuracyStop::None;out.stop_detail.attainable_tol=NAN;}}return out;
     }
     // Evaluate only the returned point; certificate witnesses describe their
     // original points and retain their original likelihood bounds.

@@ -15,8 +15,9 @@ inline FitResult fit_pig(cppunivariate::ispan x, Held mean_arg = {}, Held shape_
  auto r=cppunivariate::pig_mle(x,reltol,iterlim,
    mean.supplied?mean.value:nan,
    shape.supplied?shape.value:nan);
+  if(r.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return stop_failure(failure("pig numerical accuracy failure: requested coefficient accuracy cannot be established."),r.stop_detail,"numerical",{"mean","shape"});
   if (r.status==cppunivariate::PigStatus::AccuracyFailure)
-    return stop_failure(fail("Pig requested coefficient accuracy cannot be represented after rescaling."),{},"numerical",{"mean","shape"});
+    return stop_failure(fail("Pig requested coefficient accuracy cannot be represented after rescaling."),r.stop_detail,"numerical",{"mean","shape"});
  if (r.status==cppunivariate::PigStatus::PoissonLimit) {
    if (mean.supplied)
      return stop_failure(fail("The PIG likelihood is maximised at the Poisson limit with the supplied mean fixed. Use `mlpois` for an unrestricted Poisson fit."),r.stop_detail,"limit",{"mean","shape"});
