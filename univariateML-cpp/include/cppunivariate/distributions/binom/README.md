@@ -120,6 +120,148 @@ existence:
     the Bernoulli log likelihood. The uniqueness label does not assert a
     unique joint integer estimate for every sample.
 
+modifiers:
+  zero:
+    truncated:
+      status: implemented
+      certified: partial
+      note: Existing conditional/hurdle/mixture fitter; every hold is forwarded.
+      limits:
+      - model: ztpois
+        firmness: proved
+        when: As $n\to\infty$ and $p\to0$ with $np\to\lambda>0$, the positive-count law tends to a zero-truncated
+          Poisson law.
+        detect: A strict positive factorial-moment gap at the mean-matched positive-Poisson face supplies a signed
+          tail cutoff, and complete finite-prefix coverage excludes every smaller size. Comparisons not passing
+          both checks return a finite search result with `certified = FALSE`.
+        status: PoissonLimit
+    modified:
+      status: implemented
+      certified: partial
+      note: Existing conditional/hurdle/mixture fitter; every hold is forwarded.
+      limits:
+      - model: zmpois
+        firmness: proved
+        when: As $n\to\infty$ and $p\to0$ with $np\to\lambda>0$, the positive-count law tends to a zero-truncated
+          Poisson law. The zero probability $p_0$ remains fixed, giving a zero-modified Poisson law.
+        detect: The positive-count fit passes the signed-tail and complete finite-prefix face certificate in ztbinom;
+          the Bernoulli zero-indicator likelihood is added with the same held or fitted zero probability.
+        status: PoissonLimit
+      - model: zmpois
+        firmness: proved
+        when: As $n\to\infty$ and $p\to0$ with $np\to\lambda>0$, the positive-count law tends to a zero-truncated
+          Poisson law. The zero probability $p_0$ remains fixed, giving a zero-modified Poisson law.
+        detect: The positive-count fit passes the signed-tail and complete finite-prefix face certificate in ztbinom;
+          the Bernoulli zero-indicator likelihood is added with the same held or fitted zero probability.
+        status: PoissonLimit
+        fixed:
+        - p0
+    inflated:
+      status: implemented
+      certified: partial
+      note: Existing conditional/hurdle/mixture fitter; every hold is forwarded.
+      limits:
+      - model: zip
+        firmness: proved
+        when: The trial count $n$ tends to infinity and $p$ tends to zero with $np$ tending to a finite positive
+          rate.
+        detect: The relaxed zero-modified signed-tail and finite-prefix certificate proves an admissible ZIP face
+          wins; samples without zeros delegate to the ordinary binomial certificate. Noninflated faces also use
+          a compact rate certificate that proves inflation is inactive near the Poisson optimum. Other comparisons
+          remain unresolved.
+        status: ZipLimit
+      - model: zip
+        firmness: proved
+        when: The trial count $n$ tends to infinity and $p$ tends to zero with $np$ tending to a finite positive
+          rate.
+        detect: Zero inflation or a sample without zeros delegates to the binomial face decision, retaining held
+          inflation. With observed zeros and nonzero held inflation, an inflation-uniform or localized signed rate
+          bound and complete prefix exclusion prove the held ZIP face wins; otherwise the comparison remains unresolved.
+        status: ZipLimit
+        fixed:
+        - pi
+      - model: zip
+        firmness: proved
+        when: As trial count tends to infinity and success probability tends to zero with their product fixed, the
+          law tends to zero-inflated Poisson with the same inflation.
+        detect: Signed tail and complete finite-prefix exclusion prove escape, while the held-inflation ZIP certificate
+          cannot order multiple face-rate maxima at its comparison margin.
+        status: FaceTie
+        fixed:
+        - pi
+  truncate:
+    status: implemented
+    certified: 'yes'
+    requires_held:
+    - size
+    domain_bounded: parent parameter domain
+    note: Concave conditional exponential family; size held only.
+    holds:
+    - held: []
+      status: not-implemented
+      reason: General truncation requires size held; zero truncation also supports size free.
+    limits:
+    - name: point mass at lowest support point
+      firmness: proved
+      when: With size fixed, $p\to0$ on a nonsingleton window whose lowest retained count is positive.
+      detect: Size is held, probability is free, and every observation equals the strictly positive lowest count
+        of a nonsingleton retained window.
+      status: LowerPointMass
+    - name: point mass at highest support point
+      firmness: proved
+      when: With size fixed, $p\to1$ on a nonsingleton window whose highest retained count is below $n$.
+      detect: Size is held, probability is free, and every observation equals the highest count of a nonsingleton
+        retained window below $n$.
+      status: UpperPointMass
+    - name: point mass at highest support point
+      firmness: proved
+      when: The size satisfies $n\to\infty$ with $0<p<1$ held and a finite upper truncation bound.
+      detect: Size is free, probability is held strictly between zero and one, and constant data equal the finite
+        upper truncation edge and no feasible size can make the retained support singleton.
+      fixed:
+      - prob
+      status: UpperPointMass
+    - model: tpois
+      firmness: proved
+      when: The size satisfies $n\to\infty$ and $p\to0$ with $np$ tending to a finite positive rate on the same
+        truncation window.
+      detect: A signed factorial-moment tail with complete finite-prefix exclusion, or an exact finite-window moment
+        certificate, proves the truncated-Poisson face wins on the held or profiled integer window; otherwise the
+        comparison remains unresolved.
+      fixed: []
+      status: TpoisLimit
+    - model: tpois
+      firmness: proved
+      when: The size satisfies $n\to\infty$ and $p\to0$ with $np$ tending to a finite positive rate on the same
+        truncation window.
+      detect: A signed factorial-moment tail with complete finite-prefix exclusion, or an exact finite-window moment
+        certificate, proves the truncated-Poisson face wins on the held or profiled integer window; otherwise the
+        comparison remains unresolved.
+      fixed:
+      - a
+      status: TpoisLimit
+    - model: tpois
+      firmness: proved
+      when: The size satisfies $n\to\infty$ and $p\to0$ with $np$ tending to a finite positive rate on the same
+        truncation window.
+      detect: A signed factorial-moment tail with complete finite-prefix exclusion, or an exact finite-window moment
+        certificate, proves the truncated-Poisson face wins on the held or profiled integer window; otherwise the
+        comparison remains unresolved.
+      fixed:
+      - b
+      status: TpoisLimit
+    - model: tpois
+      firmness: proved
+      when: The size satisfies $n\to\infty$ and $p\to0$ with $np$ tending to a finite positive rate on the same
+        truncation window.
+      detect: A signed factorial-moment tail with complete finite-prefix exclusion, or an exact finite-window moment
+        certificate, proves the truncated-Poisson face wins on the held or profiled integer window; otherwise the
+        comparison remains unresolved.
+      fixed:
+      - a
+      - b
+      status: TpoisLimit
+
 ---
 
 The binomial distribution models the number of successes in a fixed number of independent Bernoulli trials.

@@ -1,0 +1,68 @@
+{
+  "baseline": "bb460787",
+  "compiler": "GCC 15.2.0",
+  "r": "4.6.1",
+  "simbox": "unreachable; exit 75; local run4 fallback used",
+  "checks": [
+    {
+      "command": "just cpp-test",
+      "machine": "workstation",
+      "exit_code": 0,
+      "log": "build/scratch/final/cpp-dev-final-local.log",
+      "log_sha256": "d56b9af81be027d6483580ee3b416cef5bd35fab40ade1f9a1bf3c89af4306dd",
+      "passed": 108
+    },
+    {
+      "command": "just cpp-test-no-long-double",
+      "machine": "workstation",
+      "exit_code": 0,
+      "log": "build/scratch/final/cpp-no-long-double-final-local.log",
+      "log_sha256": "468974e6ebcc7d7187917f31e1c3a400f7a299943c8ef3edd1de1f245d0cbba1",
+      "passed": 135
+    },
+    {
+      "command": "just test",
+      "machine": "workstation",
+      "exit_code": 0,
+      "log": "build/scratch/final/r-dev-verified-local.log",
+      "log_sha256": "5b4ebd5e6a2324f1ed48c89ece6d3cb33eea688760b0ae104d73fcf5f180b16e",
+      "failed": 0,
+      "warnings": 0,
+      "skipped": 154,
+      "passed": 28774
+    },
+    {
+      "command": "just test-full",
+      "machine": "workstation",
+      "exit_code": 0,
+      "log": "build/scratch/final/r-full-verified-local.log",
+      "log_sha256": "9159dee9741e068b5ef5859617009965778985b74a922763e37770fe7c5dc1e8",
+      "failed": 0,
+      "warnings": 0,
+      "skipped": 0,
+      "passed": 55532
+    },
+    {
+      "command": "just js-build",
+      "machine": "workstation",
+      "exit_code": 0,
+      "log": "build/scratch/final/js-build-final-local.log",
+      "log_sha256": "96f1888c42ab4c7a74b7dc47b67d007d442d2d7f18819d62ecfa5c3562be8633"
+    },
+    {
+      "command": "just js-test",
+      "machine": "workstation",
+      "exit_code": 0,
+      "log": "build/scratch/final/js-test-final-local.log",
+      "log_sha256": "69be062e2e043231a6a89651d3ea793519e4f841ce932e8d9dc5f6e38f851c3f",
+      "passed": 617
+    },
+    {
+      "command": "just site-check",
+      "machine": "workstation",
+      "exit_code": 0,
+      "log": "build/scratch/final/site-check-final2-local.log",
+      "log_sha256": "17e330e0be1fb48848726a9b5afd7a9cfa010cf3075eee73e455eab72e8cacf6"
+    }
+  ]
+}

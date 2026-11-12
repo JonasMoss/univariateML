@@ -112,6 +112,8 @@ for (m in models) {
     line("  simulate = ", param_info$defaults_vec, ","),
     line("  params = ", paste(deparse(m$params, width.cutoff=500L), collapse=" "), ","),
     line("  required = ", paste(deparse(vapply(Filter(function(p) p$required, m$params), `[[`, "", "name")), collapse=" "), ","),
+    line("  modifiers = ", paste(deparse(m$modifiers, width.cutoff=500L), collapse=" "), ","),
+    line("  modifier_eligibility = ", paste(deparse(m$modifier_eligibility), collapse=" "), ","),
     line("  holds = ", paste(deparse(m$holds, width.cutoff=500L), collapse=" "), ","),
     line("  limits = ", paste(deparse(m$limits, width.cutoff=500L), collapse=" "), ","),
     line("  fit_args = ", paste(deparse(m$fit_args, width.cutoff=500L), collapse=" ")),

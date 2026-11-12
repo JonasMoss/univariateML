@@ -106,6 +106,75 @@ existence:
     If some count is positive, it decreases strictly from infinity to
     $n\log p<0$, so it has one root. If all counts vanish, the likelihood
     is $p^{nr}$ and its maximum is attained at $r=0$.
+modifiers:
+  zero:
+    truncated:
+      status: implemented
+      certified: partial
+      note: Existing conditional/hurdle/mixture fitter; every hold is forwarded.
+      limits:
+      - model: ztpois
+        firmness: proved
+        when: As $r\to\infty$ and $p\to1$ with $r(1-p)/p\to\lambda>0$, the law tends to a zero-truncated Poisson
+          law.
+        detect: With both coefficients free and some count above one, the certificate proves that the finite-size
+          profile increases throughout its domain and approaches the fitted zero-truncated Poisson law.
+        status: PoissonLimit
+    modified:
+      status: implemented
+      certified: partial
+      note: Existing conditional/hurdle/mixture fitter; every hold is forwarded.
+      limits:
+      - model: zmpois
+        firmness: proved
+        when: The size $r$ tends to infinity and $p$ tends to one with $r(1-p)/p$ tending to a finite positive rate
+          and $p_0$ unchanged.
+        detect: Size and probability are free and the delegated positive-count certificate proves that its finite-size
+          profile increases throughout the domain to the zero-truncated Poisson limit.
+        status: PoissonLimit
+    inflated:
+      status: implemented
+      certified: partial
+      note: Existing conditional/hurdle/mixture fitter; every hold is forwarded.
+      limits:
+      - model: zip
+        firmness: proved
+        when: The size $r$ tends to infinity and $p$ tends to one with $r(1-p)/p$ fixed and positive inflation.
+        detect: Size and probability are free; a signed Poisson-tail bound and complete finite-rectangle coverage
+          select the same-inflation ZIP face, or certified positive-count and NB comparisons select the free-inflation
+          face. Unresolved comparisons stop without selecting a limit.
+        status: ZipLimit
+        numerical: true
+      - model: pois
+        firmness: proved
+        when: The size $r$ tends to infinity and $p$ tends to one with $r(1-p)/p$ fixed, while inflation tends to
+          zero.
+        detect: A certified ordinary-NB reduction or complete global comparison selects the zero-inflation Poisson
+          face. An unresolved global comparison is a numerical stop, not a non-existence report.
+        status: PoissonLimit
+        numerical: true
+  truncate:
+    status: implemented
+    certified: 'yes'
+    requires_held:
+    - size
+    domain_bounded: parent parameter domain
+    note: Concave conditional exponential family; size held only.
+    holds:
+    - held: []
+      status: not-implemented
+      reason: General truncation requires size held; zero truncation also supports size free.
+    limits:
+    - when: prob tends to zero on a finite retained window
+      detect: sample mean is at or above the limiting conditional mean
+      name: finite-window negative-binomial zero-probability limit, with weights (size)_k/k!
+      status: UpperLimit
+    - when: all observations equal the lowest retained integer above zero, outside the declared positive-truncation
+        extension
+      detect: sample is constant at the retained lower bound
+      name: point mass at the lowest retained integer
+      status: LowerLimit
+
 ---
 
 The negative binomial distribution models nonnegative counts with overdispersion relative to a Poisson distribution. The size $r$ need not be an integer. The probability $p$ determines the mean together with $r$, through $r(1-p)/p$.

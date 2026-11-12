@@ -223,7 +223,9 @@ gen_doc <- function(model) {
     nl("  * `", arg, "`: Value at which to hold `", arg, "` fixed; ",
        "`NULL` estimates it with data; without data uses the fixed-model default above.")
   }, character(1))
-  control_items <- c(fixed_items, control_items)
+  control_items <- c(fixed_items, control_items,
+    if(model$modifier_eligibility$zero) '  * `zero`: One of "none", "truncated", "modified", "inflated".',
+    '  * `truncate`: Closed retained window c(lower, upper); NA estimates a bound.')
   seealso <- unique(c(
     if (startsWith(model$density, "stats::")) nl(rd_link(model$density), " for the density.") else "[dml()] for density evaluation.",
     unlist(lapply(model$limits, function(l) if (!is.null(l$model)) nl("[ml", l$model, "()] for the limit model."))),
@@ -266,6 +268,13 @@ gen_wrapper <- function(model) {
   paste0(
     doc, "\n",
     fname, " <- function(x, na.rm = FALSE, ...) {\n",
+    "  modifier_args <- list(...)\n",
+    "  if (", if(model$modifier_eligibility$zero) '\"zero\" %in% names(modifier_args) || ' else '',
+    '\"truncate\" %in% names(modifier_args) || (!missing(x) && ((is.matrix(x) && NCOL(x)==2L) || inherits(x, \"Surv\")))) {\n',
+    "    zero <- ", if(model$modifier_eligibility$zero) 'if (\"zero\" %in% names(modifier_args)) modifier_args$zero else \"none\"' else '\"none\"', "\n",
+    "    truncate <- modifier_args$truncate; modifier_args$truncate <- NULL\n",
+    if(model$modifier_eligibility$zero) "    modifier_args$zero <- NULL\n" else "",
+    "    return(ml_modified_call(\"", fname, "\", if(missing(x)) NULL else x, missing(x), na.rm, modifier_args, zero, truncate, match.call()))\n  }\n",
     "  ml_check_args(", fname, "_, list(...), \"", fname, "\")\n",
     "  if (missing(x)) {\n",
     "    ml_check_frozen_call(sys.call())\n",

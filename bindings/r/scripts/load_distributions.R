@@ -302,12 +302,34 @@ if (!requireNamespace("yaml", quietly = TRUE)) {
     stop("load_distributions: ", path, ": fit_args lacks required ",
          paste(missing, collapse = ", "))
   }
+  modifier <- f$modifiers
+  for (key in c("zero", "truncate", "censor")) {
+    records <- if(key=="truncate" && !is.null(modifier[[key]])) list(modifier[[key]]) else modifier[[key]]
+    if(key=="zero") records <- records[intersect(names(records),c("truncated","modified","inflated"))]
+    for(record in records) {
+      allowed <- if(key=="censor") c("certified","local","not-implemented") else c("implemented","not-implemented","no-mle")
+      if(is.null(record$status) || !record$status %in% allowed)
+        stop("load_distributions: invalid modifier status for ",id)
+      if(key!="censor" && (!is.character(record$certified) ||
+          !record$certified %in% c("yes","partial","no","unknown")))
+        stop("load_distributions: invalid modifier certification for ",id)
+      if(length(setdiff(c(unlist(record$requires_held),unlist(record$requires_free)),pn)))
+        stop("load_distributions: unknown modifier hold for ",id)
+    }
+  }
+  if(identical(modifier$truncate$status,"implemented") && is.null(modifier$truncate$domain_bounded))
+    stop("load_distributions: implemented truncation needs domain_bounded for ",id)
   list(
     id = id,
     name = f$name,
     summary = f$summary,
     group = f$group,
     construction = f$construction,
+    modifiers = f$modifiers %||% list(),
+    modifier_eligibility = list(zero = (identical(f$support$type, "integer") &&
+      identical(as.character(f$support$lower), "0") &&
+      !any(c("truncation", "modification") %in% unlist(f$construction))) ||
+      isTRUE(f$modifiers$zero_exception), truncate = TRUE),
     relations = f$relations,
     fit = f$fit,
     areas = f$areas,

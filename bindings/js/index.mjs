@@ -1,20 +1,30 @@
 import {families, fitFamilies, coefficients} from './families.mjs';
 export {families, fitFamilies} from './families.mjs';
+import {modifierAPI} from './modifiers.mjs';
+import {modifiers} from './modifier-metadata.mjs';
 import createModule from '../../build/js/univariateML.mjs';
 
 /** Load the private generated binding. Copy boundaries return owned Float64Arrays. */
 export default async function create(options = {}) {
   const module = await createModule(options);
-  return Object.fromEntries(families.map(id => [id, {
-    d: (x, params, {log = false} = {}) => module[`d${id}`](x, params, true, log),
-    p: (x, params, {lower = true, log = false} = {}) => module[`p${id}`](x, params, lower, log),
-    q: (x, params, {lower = true, log = false} = {}) => module[`q${id}`](x, params, lower, log),
-    r: (n, params, seed) => {
+  return Object.fromEntries(families.map(id => {
+    const modifier=modifierAPI(module,id,modifiers[id].eligibility,modifiers[id].capabilities);
+    return [id, {
+    d: (x, params, flags = {}) => modifier.evaluate("d",x,params,flags),
+    p: (x, params, flags = {}) => modifier.evaluate("p",x,params,flags),
+    q: (x, params, flags = {}) => modifier.evaluate("q",x,params,flags),
+    r: (n, params, seed, flags = {}) => {
       if (!Number.isSafeInteger(n) || n < 0 || n > 0xffffffff) throw new RangeError('n must be an unsigned 32-bit integer.');
       if (!Number.isInteger(seed) || seed < 0 || seed > 0xffffffff) throw new RangeError('seed must be an unsigned 32-bit integer.');
+      if(flags.zero && flags.zero!=="none" || flags.truncate) {
+        // The seeded uniform source remains native and deterministic.
+        const u=module.runif(n,[0,1],seed);
+        return modifier.evaluate("q",u,params,flags);
+      }
       return module[`r${id}`](n, params, seed);
     },
     ...(fitFamilies.includes(id) ? {vcov: (x, fit, type = 'sandwich') => {
+      if(fit?.censored || fit?.truncate || fit?.zero && fit.zero!=='none') throw new Error('Covariance for modified or censored fits is not implemented');
       if (!['sandwich', 'observed'].includes(type)) throw new Error('type must be "sandwich" or "observed"');
       if (x == null) throw new Error('Covariance requires the observations from a fitted model');
       const names = coefficients[id];
@@ -36,7 +46,16 @@ export default async function create(options = {}) {
         condition: result.condition, validity: result.validity,
         warnings: result.condition > 1e6 ? ['Observed information is poorly conditioned in natural coordinates; covariance may be numerically sensitive'] : []};
     }, fit: (x, held = {}, control = {}) => {
-      const result = module[`fit${id}`](x, held, control);
+      if(x && 'lower' in x && x.lower.length===x.upper?.length &&
+          Array.from(x.lower).every((v,i)=>v===x.upper[i])) x=x.lower;
+      if(control.zero && control.zero!=="none" || control.truncate || x && "lower" in x) {
+        const allowed=[...coefficients[id],...(control.zero==='modified'?['p0']:control.zero==='inflated'?['pi']:[])];
+        if(Object.keys(held).some(k=>!allowed.includes(k))) throw new Error('Unknown held coefficient for modifier');
+        if(Object.values(held).some(v=>v!==null && (typeof v!=='number' || !Number.isFinite(v)))) throw new Error('held coefficients must be finite scalars');
+      }
+      const result = control.zero && control.zero!=="none" || control.truncate ||
+        (x && !ArrayBuffer.isView(x) && !Array.isArray(x) && "lower" in x) ?
+        modifier.fit(x,held,control) : module[`fit${id}`](x, held, control);
       if (result.error) {
         const error = new Error(result.error);
         for (const key of ['kind', 'model', 'estimates', 'candidates', 'limit_loglik', 'loglik_lower', 'loglik_upper', 'segment_loglik_upper', 'certified'])
@@ -45,5 +64,5 @@ export default async function create(options = {}) {
       }
       return result;
     }} : {}),
-  }]));
+  }];}));
 }

@@ -29,6 +29,9 @@
 #' @param reducer A reducer function. Defaults to `stats::quantile` with
 #'   default argument `probs = c(0.025, 0.975)`.
 #' @param ... Passed to `reducer`.
+#' @param type Parametric simulation or nonparametric resampling of retained
+#'   observations (whole interval rows for censored data). Censored parametric
+#'   bootstrap requires a censoring mechanism and is refused.
 #' @return The transposed map-reduced bootstrap samples.
 #' @export
 #' @references
@@ -68,7 +71,10 @@
 #'
 bootstrapml <- function(
     object, reps = 1000, map = identity,
-    reducer = stats::quantile, ...) {
+    reducer = stats::quantile, ..., type = c("parametric", "nonparametric")) {
+  type <- match.arg(type)
+  if (isTRUE(attr(object,"censored")) && type=="parametric")
+    stop("Parametric bootstrap of censored data requires a censoring mechanism")
   ml_require_data(object)
   r_fun <- univariateML_to_function(object, type = "r")
   ml_fun <- univariateML_to_function(object, type = "ml")
@@ -78,9 +84,21 @@ bootstrapml <- function(
   required <- univariateML_metadata[[univariateML_name(object)]]$required
   free_required <- setdiff(required, fixed)
   held[free_required] <- rep(list(NULL), length(free_required))
+  if (!is.null(attr(object,"zero")) && attr(object,"zero")!="none") held$zero <- attr(object,"zero")
+  if (!is.null(attr(object,"truncate"))) {
+    held$truncate <- attr(object,"truncate_spec")
+    if(is.null(held$truncate))held$truncate<-attr(object,"truncate")
+  }
+  draw <- function() {
+    if(type=="parametric") return(r_fun(attr(object,"n")))
+    data <- attr(object,"inference_data")
+    if(is.null(data)) stop("Nonparametric bootstrap requires retained observations")
+    rows <- sample.int(if(is.matrix(data))nrow(data) else length(data),replace=TRUE)
+    if(is.matrix(data)) data[rows,,drop=FALSE] else data[rows]
+  }
   bootstraps <- replicate(
     n = reps,
-    expr = do.call(ml_fun, c(list(r_fun(attr(object, "n"))), held))
+    expr = do.call(ml_fun, c(list(draw()), held))
   )
 
   defaults <- list()

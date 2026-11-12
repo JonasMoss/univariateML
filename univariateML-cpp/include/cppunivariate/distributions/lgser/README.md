@@ -73,6 +73,11 @@ aliases:
 - "log-series"
 key_references:
 - 2
+modifiers:
+  zero_exception: true
+  zero:
+    modified: {status: not-implemented, certified: "unknown", note: "zmlogarithmic remains until the exception is routed."}
+
 ---
 
 

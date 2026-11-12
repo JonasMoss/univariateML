@@ -104,6 +104,10 @@ existence:
     With $\lambda$ held the likelihood is strictly concave in $\kappa$.
     With $\kappa$ held the score in $\log\lambda$ strictly decreases
     from $n$ to $-n\kappa$.
+modifiers:
+  censor:
+    right: {status: certified, requires_held: [lambda], requires_free: [kappa], note: "censored.hpp; lambda held and kappa free"}
+
 ---
 
 The Lomax (Pareto type II) distribution models positive incomes, losses and waiting times with a heavy right tail.

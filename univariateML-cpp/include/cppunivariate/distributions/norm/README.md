@@ -113,6 +113,65 @@ existence:
     exactly when $(\bar x, \overline{x^2})$ lies inside the convex hull of the
     parabola $\{(x, x^2)\}$, that is when $\overline{x^2} > \bar x^2$; this
     fails only for constant samples.
+modifiers:
+  truncate:
+    status: implemented
+    certified: 'yes'
+    domain_bounded: parent parameter domain
+    note: Concave conditional exponential family.
+    limits:
+    - name: scale collapse
+      firmness: proved
+      when: As $\sigma\to0$, mass concentrates at the projection of $\mu$ onto $[a,b]$.
+      detect: Scale is free and the sample is constant; mean is free or every observation equals the projection
+        of the held mean onto the nonempty profiled interval.
+      status: DegenerateData
+      message: unbounded
+      kind: nonexistence
+    - name: endpoint location escape
+      firmness: proved
+      fixed:
+      - sd
+      when: With positive scale held, $\mu\to-\infty$ at a finite lower endpoint or $\mu\to\infty$ at a finite upper
+        endpoint concentrates mass there.
+      detect: Mean is free and every observation equals the same finite endpoint of the nonempty profiled interval.
+      status: UnboundedLocation
+      message: unbounded
+      kind: nonexistence
+    - model: exp
+      firmness: proved
+      when: As $\sigma\to\infty$ and $\mu/\sigma^2\to-1/(\bar x-a)$ with $a$ finite and $b=\infty$, the distribution
+        tends to $a+Y$, where $Y$ is exponential.
+      detect: The sample is nonconstant, both parent coefficients are free, $a$ is finite, $b=\infty$, and the empirical
+        variance is at least $(\bar x-a)^2$.
+      status: ExponentialBoundary
+      numerical: true
+    - model: exp
+      firmness: proved
+      when: As $\sigma\to\infty$ and $\mu/\sigma^2\to1/(b-\bar x)$ with $a=-\infty$ and $b$ finite, the distribution
+        tends to $b-Y$, where $Y$ is exponential.
+      detect: The sample is nonconstant, both parent coefficients are free, $a=-\infty$, $b$ is finite, and the
+        empirical variance is at least $(b-\bar x)^2$.
+      status: ReflectedExponentialBoundary
+      numerical: true
+    - name: truncated exponential
+      firmness: proved
+      when: As $\sigma\to\infty$ and $\mu/\sigma^2\to r$ with both bounds finite, the distribution tends to the
+        law with density proportional to $e^{rx}$ on $[a,b]$. It is uniform when $r=0$.
+      detect: The sample is nonconstant, both parent coefficients are free, both bounds are finite, and the empirical
+        variance is at least that of the exponential tilt with the same empirical mean.
+      status: TruncatedExponentialBoundary
+      numerical: true
+    - name: uniform
+      firmness: proved
+      fixed:
+      - mean
+      when: With $\mu$ held and both bounds finite, $\sigma\to\infty$ gives the uniform distribution on $[a,b]$.
+      detect: The parent mean $\mu$ is held, scale is free, both bounds are finite, and the empirical squared distance
+        from $\mu$ is at least $((b-\mu)^3-(a-\mu)^3)/(3(b-a))$.
+      status: UniformBoundary
+      numerical: true
+
 ---
 
 The normal (Gaussian) distribution is a symmetric distribution on the real line, used to model continuous measurements and errors.

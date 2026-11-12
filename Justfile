@@ -29,6 +29,7 @@ test-changed base="master" *args:
 # gitignored; bindings/r/ itself holds only sources, scripts, and
 # metadata.
 assemble:
+	python3 dev/validation/modifier_capabilities.py
 	cd bindings/r && \
 	  UMVL_DOSSIER_DIR={{repo_root}}/univariateML-cpp/include/cppunivariate/distributions \
 	  Rscript scripts/assemble_package.R

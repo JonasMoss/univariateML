@@ -1,0 +1,2 @@
+dev/validation/capabilities.csv: OK
+dev/validation/family-reductions.csv: OK

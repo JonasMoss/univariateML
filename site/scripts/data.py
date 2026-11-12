@@ -97,7 +97,13 @@ def derived_tags(m):
         text=lambda l:' '.join(str(l.get(k,'')) for k in ('name','when','detect','status')).lower()
         degenerate=lambda l:bool(re.search(r'constant|all.zero|all observations (?:are )?(?:equal|zero|one|at )|every (?:log |squared )?observation equals|all logits equal|degenerate|singleton',text(l)))
         tags.append('degenerate-only' if all(degenerate(l) for l in limits) else 'partial')
-    return dict(support_tags=[shape]+(['dependent'] if dependent else []),
+    modifier_tags=['truncatable']
+    declared=m.get('modifiers',{})
+    zero_eligible=(support['type']=='integer' and lo==0 and not set(m.get('construction',[])) & {'truncation','modification'}) or declared.get('zero_exception',False)
+    if zero_eligible: modifier_tags.append('zero-modifiable')
+    if any(v.get('status')=='implemented' for k,v in declared.get('zero',{}).items() if isinstance(v,dict)): modifier_tags.append('zero-modified')
+    if declared.get('truncate',{}).get('status')=='implemented': modifier_tags.append('truncation')
+    return dict(modifier_tags=modifier_tags, support_tags=[shape]+(['dependent'] if dependent else []),
                 support_shape=shape, support_dependence='dependent' if dependent else 'fixed',
                 coefficient_count=str(len(m['params'])), coefficient_kinds=sorted({p.get('kind','regular') for p in m['params']}),
                 coefficient_tags=[str(len(m['params']))]+sorted({p.get('kind','regular') for p in m['params']}),

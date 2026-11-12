@@ -76,6 +76,58 @@ existence:
     If $S>0$, it is strictly concave and maximized at $S/m$.
     If $S=0$, it decreases strictly and is maximized at the included endpoint zero.
 
+modifiers:
+  zero:
+    truncated:
+      status: implemented
+      certified: 'yes'
+      note: Existing conditional/hurdle/mixture fitter; every hold is forwarded.
+    modified:
+      status: implemented
+      certified: 'yes'
+      note: Existing conditional/hurdle/mixture fitter; every hold is forwarded.
+    inflated:
+      status: implemented
+      certified: 'yes'
+      note: Existing conditional/hurdle/mixture fitter; every hold is forwarded.
+      limits:
+      - model: pois
+        firmness: proved
+        when: The rate $\lambda$ tends to zero with inflation $\pi<1$ held.
+        detect: All observations are zero, the rate is free and inflation is held below one.
+        fixed:
+        - pi
+        status: ZeroLimit
+      - name: undefined zero-rate reference
+        firmness: proved
+        when: The rate $\lambda$ is held at zero, outside the declared domain.
+        fixed:
+        - lambda
+        status: InvalidInput
+        message: lambda positive
+  truncate:
+    status: implemented
+    certified: 'yes'
+    domain_bounded: parent parameter domain
+    note: Concave conditional exponential family.
+    limits:
+    - name: point mass at lowest support point
+      firmness: proved
+      when: The rate satisfies $\lambda\to0$ on a fixed nonsingleton window whose lowest retained count is positive.
+      detect: The rate is free and every observation equals the strictly positive lowest count of a nonsingleton
+        retained window.
+      status: LowerPointMass
+      fixed:
+      - b
+    - name: point mass at highest support point
+      firmness: proved
+      when: The rate satisfies $\lambda\to\infty$ on a fixed nonsingleton window with a finite upper edge.
+      detect: The rate is free and every observation equals the finite highest count of a nonsingleton retained
+        window.
+      status: UpperPointMass
+      fixed:
+      - a
+
 ---
 
 The Poisson distribution models counts of independent events over a fixed observation interval.

@@ -243,3 +243,35 @@ test('Frechet held scale keeps coefficient accuracy at large shape',()=>{
  assert.ok(Math.abs(f.estimates.mu+.99999999837500435)<1e-10);
  assert.equal(f.estimates.sigma,1);
 });
+
+test('modifier knobs preserve zero fits, window likelihood and censoring', async () => {
+  const api=await (await import("./index.mjs")).default();
+  const x=new Float64Array([0,0,1,2,3,5]);
+  const z=api.pois.fit(x,{}, {zero:'modified'});
+  assert.ok(Math.abs(z.estimates.p0-1/3)<1e-14);
+  const old=api.zmpois.fit(x);
+  assert.ok(Math.abs(z.estimates.lambda/old.estimates.lambda-1)<1e-10);
+  assert.deepEqual(api.pois.d(x,[z.estimates.lambda,z.estimates.p0],{zero:'modified'}),api.zmpois.d(x,[old.estimates.lambda,old.estimates.p0]));
+  const pos=new Float64Array([1,1,2,3,5]);
+  const a=api.pois.fit(pos,{}, {zero:'truncated'}),b=api.pois.fit(pos,{}, {truncate:[1,Infinity]});
+  assert.equal(a.estimates.lambda,b.estimates.lambda);
+  const c=api.pois.fit(pos,{}, {truncate:[1,5]});
+  const mass=api.pois.d(new Float64Array([1,2,3,4,5]),[c.estimates.lambda],{truncate:[1,5]});
+  assert.ok(Math.abs(Array.from(mass).reduce((a,b)=>a+b)-1)<1e-12);
+  assert.deepEqual(Array.from(api.pois.q(new Float64Array([0,1]),[c.estimates.lambda],{truncate:[1,5]})),[1,5]);
+  const censored={lower:new Float64Array([1,2,3,4]),upper:new Float64Array([1,Infinity,3,Infinity])};
+  assert.equal(api.exp.fit(censored).estimates.rate,.2);
+  assert.throws(()=>api.gamma.fit(censored),/censoring.*not implemented/);
+  assert.throws(()=>api.cmp.fit(x,{}, {zero:'modified'}),/zero = "modified".*not implemented/);
+  assert.throws(()=>api.pois.fit(x,{}, {zero:'modified',truncate:[0,5]}),/zero \+ truncate/);
+});
+
+test('conditional tails preserve tiny log complements and refuse unstable normalization', async () => {
+  const api=await (await import('./index.mjs')).default();
+  const x=new Float64Array([250]);
+  const expected=api.geom.p(x,[.3],{log:true})[0];
+  const actual=api.geom.p(x,[.3],{truncate:[0,Infinity],log:true})[0];
+  assert.ok(actual<0);
+  assert.ok(Math.abs(actual/expected-1)<1e-10);
+  assert.throws(()=>api.geom.d(new Float64Array([1e9]),[.3],{truncate:[1e9,1e9+10]}),/normalization.*floating-point accuracy/);
+});
