@@ -300,12 +300,22 @@ inline void check_dpqr_truth(const std::string &id, D density, P probability,
     // The oracle supplies double brackets or two acceptable lattice points.
     const bool bracket = row[7]!=0 ? (got==row[5] || got==row[6]) :
         (got>=row[5] && got<=row[6]);
+    // A saturated endpoint probability must not rescue a wrong endpoint.
+    // Continuous interior roots may instead be ill-conditioned in x.
+    bool backward=false;
+    if (!discrete && !relative && !bracket && std::isfinite(got) &&
+        std::isfinite(expected) && (row[2]!=0 ? std::isfinite(row[3]) && row[3]<0 :
+                                   row[3]>0 && row[3]<1)) {
+      const double at=evaluate([&] {return probability(got,params[point],row[1]!=0,row[2]!=0);});
+      const double scale=row[2]!=0 ? std::max(1.0,std::abs(row[3])) : std::abs(row[3]);
+      backward=std::isfinite(at) && std::abs(at-row[3])<=1e-12*scale;
+    }
     check(std::string(row[1]!=0?"q_lower":"q_upper")+(row[2]!=0?"_log":""),
           point,row[3],got,expected,discrete && std::abs(expected)>9007199254740992.0 &&
           (row[2]!=0 ? std::isfinite(row[3]) && row[3]<0 : row[3]>0 && row[3]<1)
           ? (relative||bracket) && truth_lattice_quantile(got,row[3],row[1]!=0,[&](double x) {
               return probability(x,params[point],row[1]!=0,row[2]!=0);
-            },std::isinf(expected)) : relative||bracket);
+            },std::isinf(expected)) : relative||bracket||backward);
   }
   const auto start=std::chrono::steady_clock::now();
   const auto sampler_points = truth_matrix(source,"sampler_points");

@@ -93,6 +93,14 @@ test_that("generated d/p/q/r agree with independent truth tables", {
           interior <- if (log_input) is.finite(q[,4]) & q[,4] < 0 else q[,4] > 0 & q[,4] < 1
           large <- discrete & interior & abs(expected) > 2^53
           good[is.na(good)] <- FALSE
+          backward <- !discrete & !good & interior & is.finite(got) & is.finite(expected)
+          if (any(backward)) {
+            at <- do.call(fun[[2]], c(list(got[backward]), theta,
+                                     list(lower.tail=lower, log.p=log_input)))
+            target <- q[backward, 4]
+            scale <- if (log_input) pmax(1, abs(target)) else abs(target)
+            good[backward] <- is.finite(at) & abs(at-target) <= 1e-12 * scale
+          }
           if (any(large)) {
             at <- do.call(fun[[2]], c(list(got[large]), theta, list(lower.tail=lower, log.p=log_input)))
             before <- do.call(fun[[2]], c(list(previous_double(got[large])), theta, list(lower.tail=lower, log.p=log_input)))
