@@ -413,3 +413,11 @@ test_that("invburr retains an unclosed held-power face as uncertified", {
   expect_identical(attr(f,"certified"),FALSE)
   expect_true(is.finite(as.numeric(logLik(f))))
 })
+
+test_that("inverse Burr retains a finite log tail after intermediate power overflow", {
+  expect_equal(pinvburr(1e-100,1e-308,1e308,1,TRUE,TRUE),
+               -100*log(10),tolerance=1e-10)
+  x <- c(1e-90,1e-100,1e-110)
+  expect_equal(pinvburr(x,1e-308,1e308,1,TRUE,TRUE),log(x),tolerance=1e-10)
+  expect_equal(dinvburr(x,1e-308,1e308,1,TRUE),rep(0,3),tolerance=1e-10)
+})

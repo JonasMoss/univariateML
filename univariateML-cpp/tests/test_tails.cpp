@@ -151,3 +151,22 @@ TEST_CASE("signed expansion crosses zero even when its step reaches DBL_MAX") {
         [=](double x) {return int(x>=h);})==h);
   }
 }
+
+TEST_CASE("tail helpers: guard softplus product overflow before multiplication") {
+  // Once a*b is enormous and positive, log(softplus(a*b)) = log(a)+log(b)
+  // to binary64 precision. A finite-input guard exposed GCC 15's inference
+  // b=Inf inside the old a*b==Inf branch when this helper was inlined.
+  for (double a : {1e307, 1e308, std::numeric_limits<double>::max()}) {
+    REQUIRE(std::isfinite(a));
+    for (double b : {2.0, 230.25850929940458}) {
+      CHECK(cppunivariate::special::log_softplus_product(a,b) ==
+            doctest::Approx(std::log(a)+std::log(b)).epsilon(2e-15));
+    }
+  }
+  CHECK(cppunivariate::special::log_softplus_product(2,3) ==
+        doctest::Approx(std::log(std::log1p(std::exp(6.0)))));
+  CHECK(cppunivariate::special::log_softplus_product(1e308,-230) ==
+        cppunivariate::special::kNegInf);
+  CHECK(cppunivariate::special::log_softplus_product(1e308,0) ==
+        doctest::Approx(std::log(std::log(2.0))));
+}

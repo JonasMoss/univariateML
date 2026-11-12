@@ -64,7 +64,7 @@ jobs:
       - run: python .github/scripts/boost.py
       - name: Configure, build and test (full)
         run: |
-          cmake -S univariateML-cpp -B build/ci-core -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DBoost_INCLUDE_DIR="$PWD/build/boost_1_87_0"
+          cmake -S univariateML-cpp -B build/ci-core -G Ninja -DCPPUNIV_TEST_OPTIMIZE=ON -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DBoost_INCLUDE_DIR="$PWD/build/boost_1_87_0"
           cmake --build build/ci-core --parallel 4
           ctest --test-dir build/ci-core --output-on-failure -j4 -L full
       - uses: actions/upload-artifact@v4

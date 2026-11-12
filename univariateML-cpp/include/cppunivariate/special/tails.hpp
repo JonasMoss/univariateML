@@ -152,9 +152,12 @@ inline double log_softplus(double x) {
 // log(log(1+exp(a*b))), with a positive. A large positive product may
 // overflow even when a later shape factor rescues the resulting hazard.
 inline double log_softplus_product(double a, double b) {
-  const double product = a*b;
-  return product == kPosInf ? std::log(a)+std::log(b)
-                           : log_softplus(product);
+  // Guard before multiplying: GCC 15 can infer b=Inf in an a*b==Inf
+  // branch after inlining a finite-a check, losing the finite log(b).
+  // In this range softplus(a*b) rounds to a*b even at the finite boundary.
+  if (b > 1.0 && a >= std::numeric_limits<double>::max() / b)
+    return std::log(a) + std::log(b);
+  return log_softplus(a*b);
 }
 // log(expm1(exp(lv))) without forming an overflowing or underflowing expm1.
 inline double log_expm1_from_log(double lv) {

@@ -553,3 +553,14 @@ TEST_CASE("Coupled Weibull-limit invburr fallback retains coefficient accuracy")
     CHECK(s==doctest::Approx(0.0000000097816426849076451812542134).scale(0.).epsilon(1e-10));
   }
 }
+
+TEST_CASE("invburr: optimized finite-input overflow retains the rescued hazard") {
+  CHECK(cppunivariate::distributions::pinvburr(1e-100,1e-308,1e308,1,true,true) ==
+        doctest::Approx(-100*std::log(10.0)).epsilon(1e-10));
+  for (double x : {1e-90, 1e-100, 1e-110}) {
+    CHECK(cppunivariate::distributions::pinvburr(x,1e-308,1e308,1,true,true) ==
+          doctest::Approx(std::log(x)).epsilon(1e-10));
+    CHECK(cppunivariate::distributions::dinvburr(x,1e-308,1e308,1,true) ==
+          doctest::Approx(0.0).epsilon(1e-10).scale(1.0));
+  }
+}

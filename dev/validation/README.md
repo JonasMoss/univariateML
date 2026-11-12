@@ -82,6 +82,20 @@ relations and truth regeneration) remain explicit commands.
 
 ## C++ tests
 
+Both `just cpp-test` and `just cpp-test-no-long-double` compile every test
+target with `-g -O2 -DNDEBUG` and GNU C++17, matching R's optimization,
+assertion and language modes on GCC.
+The latter disables extended intermediates and runs all ctest shards;
+`UMVL_TEST_TIER=full just cpp-test` runs all shards in native precision.
+The C++ truth checker evaluates every stored row in every tier; the R truth
+checker samples rows in cran/dev and evaluates all rows in full.
+For debugging, configure a separate CMake directory with
+`-DCPPUNIV_TEST_OPTIMIZE=OFF` (and `-DBoost_INCLUDE_DIR=...` when needed),
+then build and run ctest there. This switches every test target to `-g -O0`
+with assertions enabled, without changing the default validation builds.
+Test optimization flags are
+private to the executables and do not affect header-only consumers.
+
 `/tmp/umvl-cpu/run4 nice -n 10 just cpp-test` builds the family/shared binaries and monorepo diagnostic sweep, and runs the selected ctest shards. For a family, run, for example:
 
 ```sh
@@ -368,7 +382,7 @@ They have read-only repository permissions, cancel superseded runs of the same
 workflow/ref, and publish no package or website. They do not compute coverage
 percentages or replace the independent numerical and inference audits above.
 
-- [core](../../.github/workflows/core.yaml): standalone Release CMake build and
+- [core](../../.github/workflows/core.yaml): standalone optimized CMake build and
   full ctest labels on Ubuntu 24.04/GCC, macOS 15 **arm64**/Apple Clang and
   Windows 2022/MinGW UCRT64 GCC (not MSVC: the test build uses GCC-style flags).
   Boost 1.87.0 is downloaded with SHA256 verification and cached; compiler caches

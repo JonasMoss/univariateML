@@ -1,0 +1,59 @@
+
+;; Function overflow_log (_Z12overflow_logdd, funcdef_no=1026, decl_uid=23934, cgraph_uid=1076, symbol_order=1075)
+
+Removing basic block 8
+Removing basic block 9
+double overflow_log (double a, double b)
+{
+  const double p;
+  double _1;
+  double _2;
+  double _3;
+  double _7;
+  double _11;
+  double _14;
+
+  <bb 2> [local count: 1073741824]:
+  # DEBUG BEGIN_STMT
+  if (a_5(D) > 0.0)
+    goto <bb 3>; [73.64%]
+  else
+    goto <bb 7>; [26.36%]
+
+  <bb 3> [local count: 790703480]:
+  # DEBUG __x => a_5(D)
+  # DEBUG INLINE_ENTRY isfinite
+  # DEBUG BEGIN_STMT
+  _7 = ABS_EXPR <a_5(D)>;
+  # DEBUG __x => NULL
+  if (_7 u> 1.79769313486231570814527423731704356798070567525844996599e+308)
+    goto <bb 7>; [34.00%]
+  else
+    goto <bb 4>; [66.00%]
+
+  <bb 4> [local count: 521864294]:
+  # DEBUG BEGIN_STMT
+  p_9 = a_5(D) * b_8(D);
+  # DEBUG p => p_9
+  # DEBUG BEGIN_STMT
+  if (p_9 ==  Inf)
+    goto <bb 5>; [50.00%]
+  else
+    goto <bb 6>; [50.00%]
+
+  <bb 5> [local count: 260932147]:
+  _1 = log (a_5(D));
+  _2 = log ( Inf);
+  _14 = _1 + _2;
+  goto <bb 7>; [100.00%]
+
+  <bb 6> [local count: 260932147]:
+  _11 = log (p_9); [tail call]
+
+  <bb 7> [local count: 1073741824]:
+  # _3 = PHI < Nan(2), _11(6), _14(5),  Nan(3)>
+  return _3;
+
+}
+
+

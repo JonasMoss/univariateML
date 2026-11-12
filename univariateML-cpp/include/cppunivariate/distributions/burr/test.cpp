@@ -594,3 +594,14 @@ TEST_CASE("Burr weak-coordinate holds preserve native coefficient accuracy") {
 TEST_CASE("burr: exact-input extreme arithmetic regression") {
   CHECK(cppunivariate::distributions::qburr(-0.6931471805599453,1.0,1e-08,1.0,true,true) == doctest::Approx(1.0000000046380937).epsilon(1e-10).scale(0));
 }
+
+TEST_CASE("burr: optimized finite-input overflow retains the rescued hazard") {
+  CHECK(cppunivariate::distributions::pburr(1e100,1e-308,1e308,1,false,true) ==
+        doctest::Approx(-100*std::log(10.0)).epsilon(1e-10));
+  for (double x : {1e90, 1e100, 1e110}) {
+    CHECK(cppunivariate::distributions::pburr(x,1e-308,1e308,1,false,true) ==
+          doctest::Approx(-std::log(x)).epsilon(1e-10));
+    CHECK(cppunivariate::distributions::dburr(x,1e-308,1e308,1,true) ==
+          doctest::Approx(-2*std::log(x)).epsilon(1e-10));
+  }
+}
