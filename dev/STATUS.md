@@ -1,33 +1,41 @@
 # Status and open items
 
-Updated 2026-10-30, master `32b8dfe`. Decisions and their evidence:
+Updated 2026-11-12, master `8a702cc2`. Decisions and their evidence:
 `dev/roadmap/decisions.md`. Deferred design ideas live in `dev/roadmap/`; work in
-flight and planned work are on the board (`~/.local/bin/board`): the package
-migration is TASK-101, inference TASK-102, the optional holds and existence
-work TASK-113 to TASK-120. This file is the short list of what is open.
+flight and planned work are on the board (`~/.local/bin/board`). The current
+priority is the [consolidation plan](design/consolidation.md) (TASK-214), which
+follows the [repository audit](research/evaluations/2026-11-12-repo-audit-report.md);
+new families are held until its later steps. This file is the short list of
+what is open. Sections below "Status" were last revised on 2026-10-30 and may
+be behind the board.
 Validation methods and coverage limits: [validation guide](validation/README.md).
 
 ## Status
 
-- 98 distributions, one folder each. Coverage of extraDistr and actuar:
+- 102 families, one folder each: 101 with fitters and one, pgw, with d/p/q/r
+  only (dossier `stage: dpqr`). Coverage of extraDistr and actuar:
   `dev/research/evaluations/2026-10-29-density-coverage.html` (rebuild with
   `python3 dev/research/evaluations/2026-10-29-density-coverage.py`). actuar is
   fully covered except `dphtype` (out of scope); extraDistr except the
   dropped vector-parameter families and four documented restrictions (fatigue
   `mu = 0`, GEV and GPD shape bounds, `lst` df >= 1).
-- Tests on master 32b8dfe (simbox, 2026-10-30): C++ 6/6 ctest targets
-  pass; R `[ FAIL 0 | WARN 0 | SKIP 0 | PASS 30814 ]`; `just quality`
-  98/98. TASK-78 merged (8471607): own internal d/p/q/r for every
-  non-stats family, all 98 truth tables pass; extraDistr and actuar are
-  no longer dependencies (simbox: R `[ FAIL 0 | PASS 34188 ]`, R CMD check OK).
-- simbox runs the full suite in about 15 minutes:
-  `dev/tools/simbox-test.sh <label> [tree]` (rsync, then `cpp-test`, `test`,
-  `quality`; setup notes in the script). No known failures there since
-  TASK-75.
-- The earlier TASK-94 check on simbox had a missing-cross-reference warning.
-  The later [standalone R check](research/evaluations/2026-10-30-r-standalone-report.md)
-  passed with packaged fixtures and no ERROR, WARNING or NOTE.
-- Nothing is pushed: master is 516 commits ahead of `origin/master`.
+- Tests on master 8a702cc2 (workstation, GCC 15.2, 2026-11-12, after merging
+  TASK-180, 182, 191, 198, 212 and 213): `just cpp-test` 109/109 ctest entries;
+  `just test` `[ FAIL 0 | WARN 0 | SKIP 156 | PASS 31494 ]`; `just js-test`
+  641/641. Not run on this revision: the R full tier, the double-only C++
+  build, `just quality`, the site check, and any second compiler or platform.
+- GitHub Actions run only on manual dispatch since 2026-11-06 (quota spent);
+  there is no macOS or Windows result for anything merged after that date.
+- simbox was unreachable on 2026-11-12; the jobs of that day were
+  validated on the workstation only. `dev/tools/simbox-test.sh <label> [tree]`
+  runs the suite there when it is back.
+- Known wrong answers on master, each with a card: hypergeometric quantile at
+  an exact CDF tie (TASK-215); vector `pml` on truncated geometric and negative
+  binomial fits (TASK-216); fits that miss the accuracy contract (TASK-214.3,
+  TASK-214.5).
+- Nothing is published. Master is about 1,260 commits ahead of `origin/master`;
+  the backup branch `origin/cpp-core` was last updated before the six merges of
+  2026-11-12.
 
 ## Decisions for Jonas
 
