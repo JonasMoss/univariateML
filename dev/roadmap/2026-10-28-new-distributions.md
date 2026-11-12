@@ -51,3 +51,20 @@ constrained GPD are being added.
 A decision on the sads/Suggests question; a user request for one of the
 families; or the end of the fixed-parameter work (which several of these
 need: fixed size, threshold, bounds).
+
+## Reference-package parity
+
+Checked 2026-11-12 against extraDistr, actuar 3.3.7 and flexsurv. Every
+in-scope family is present; the others map as follows.
+
+| Package | Functions | Covered by |
+|---|---|---|
+| extraDistr | bern, gpois, invchisq, prop, wald | binom (size 1), nbinom, invgamma, beta (mean-precision), invgauss |
+| extraDistr | tpois, tbinom, tnorm, zip, zib, zinb | `truncate` / `zero` modifiers |
+| actuar | pareto1, genpareto, trbeta, pearson6, lgompertz, logarithmic, poisinvgauss | pareto, betapr, gb2, gb2 (alias of trbeta), invweibull (alias), lgser, pig |
+| actuar | zt\*, zm\* | `zero` modifiers; zmlogarithmic is lgser's exception |
+| flexsurv | genf, weibullPH, gompertz | gb2, weibull, gompertz (negative shape is defective, out of scope) |
+
+Out of scope: extraDistr bvnorm, bvpois, dirichlet, dirmnom, mnom, mvhyper
+(multivariate), cat (categorical), mixnorm, mixpois (finite mixtures);
+actuar phtype (matrix parameters); flexsurv survspline (user-chosen length).

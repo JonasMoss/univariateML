@@ -8,6 +8,17 @@ Active work lives on the board (`~/boards/univariateML`), not here.
 
 ## 2026-11-12
 
+- **Family coverage: parity with extraDistr, actuar and flexsurv** (Jonas:
+  "we want parity with it for eligible distros i think? along with actuar and
+  flexsurv?"). Every in-scope univariate family of the three is included;
+  aliases and reparameterizations map to an existing family, truncated and
+  zero-modified variants are modifiers. Checked 2026-11-12 (extraDistr,
+  actuar 3.3.7, flexsurv): parity holds. The mapping is in the
+  [new-distributions roadmap](2026-10-28-new-distributions.md#reference-package-parity).
+- **Defective distributions are out of scope** (Jonas: "yeah, this sounds out
+  of scope"). Members with mass at infinity, such as flexsurv's Gompertz with
+  negative shape, are not supported; our gompertz keeps both coefficients
+  positive and escapes to the exponential.
 - **Retiring families go as soon as their replacement lands** (Jonas: "we'll
   remove all redundant truncated and zero-mod/trunc/infl distributions once
   they land"). Each of the 16 families in
