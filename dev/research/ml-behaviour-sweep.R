@@ -14,7 +14,7 @@ for(ii in seq_along(meta)) {
  def <- setNames(m$default, m$names); dens <- resolve(m$density)
  sampler <- resolve(univariateML_samplers[[key]])
  draw <- function(n) do.call(sampler, c(list(n=n),univariateML_dpqr_args(def,key)))
- ll <- function(p,x) suppressWarnings(tryCatch({v<-do.call(dens,c(list(x=x),univariateML_dpqr_args(p,key),list(log=TRUE))); if(length(v)!=length(x) || any(!is.finite(v))) -Inf else sum(v)},error=function(e) -Inf))
+ ll <- function(p,x) suppressWarnings(tryCatch({v<-do.call(dens,c(list(x=x),univariateML_dpqr_args(p,key,"d"),list(log=TRUE))); if(length(v)!=length(x) || any(!is.finite(v))) -Inf else sum(v)},error=function(e) -Inf))
  sets <- list()
  for(n in c(20,200)) for(s in 1:2) {set.seed(100000+ii*100+n+s); sets[[paste0("family",n,"-s",s)]]<-draw(n)}
  set.seed(200000+ii)

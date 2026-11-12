@@ -1,0 +1,125 @@
+case,index,core,stats,relative
+beta d shape1 Inf,1,NaN,0,inf
+beta d shape1 0,1,NaN,0,inf
+beta d shape2 Inf,1,NaN,0,inf
+beta d shape2 0,1,NaN,0,inf
+beta p shape1 Inf,1,NaN,0,inf
+beta p shape1 0,1,NaN,1,inf
+beta p shape2 Inf,1,NaN,1,inf
+beta p shape2 0,1,NaN,0,inf
+beta q shape1 Inf,1,NaN,1,inf
+beta q shape1 0,1,NaN,0,inf
+beta q shape2 Inf,1,NaN,0,inf
+beta q shape2 0,1,NaN,1,inf
+gamma d shape Inf,1,NaN,0,inf
+gamma d shape 0,1,NaN,0,inf
+gamma d scale Inf,1,NaN,0,inf
+gamma p shape Inf,1,NaN,0,inf
+gamma p shape 0,1,NaN,1,inf
+gamma p scale Inf,1,NaN,0,inf
+gamma q near_integer_tiny,1,14.981745219178348,14.981745219039302,9.28103541529925e-12
+gamma q shape Inf,1,NaN,Inf,inf
+gamma q shape 0,1,NaN,0,inf
+gamma q scale Inf,1,NaN,Inf,inf
+hyper d near_integer_tiny,1,0,0.027855846119478653,1.0
+hyper d near_integer_tiny,2,0,0.027855846119478653,1.0
+hyper d m 19.999999999999002,1,NaN,0,inf
+hyper d m 20.000000000000998,1,NaN,0,inf
+hyper d N Inf,1,NaN,0,inf
+hyper d N 49.999999999998998,1,NaN,0,inf
+hyper d N 50.000000000001002,1,NaN,0,inf
+hyper d k 9.9999999999989999,1,NaN,0,inf
+hyper d k 10.000000000001,1,NaN,0,inf
+hyper p near_integer,1,0.002924863842545264,0.030780709962023912,0.9049773755656108
+hyper p near_integer_tiny,1,0.002924863842545264,0.030780709962023912,0.9049773755656108
+hyper p m 19.999999999999002,1,NaN,0.0029248638425452625,inf
+hyper p m 20.000000000000998,1,NaN,0.0029248638425452625,inf
+hyper p N 49.999999999998998,1,NaN,0.0029248638425452625,inf
+hyper p N 50.000000000001002,1,NaN,0.0029248638425452625,inf
+hyper p k 9.9999999999989999,1,NaN,0.0029248638425452625,inf
+hyper p k 10.000000000001,1,NaN,0.0029248638425452625,inf
+hyper q m 19.999999999999002,1,NaN,4,inf
+hyper q m 20.000000000000998,1,NaN,4,inf
+hyper q N 49.999999999998998,1,NaN,4,inf
+hyper q N 50.000000000001002,1,NaN,4,inf
+hyper q k 9.9999999999989999,1,NaN,4,inf
+hyper q k 10.000000000001,1,NaN,4,inf
+lnorm d meanlog Inf,1,NaN,0,inf
+lnorm d meanlog -Inf,1,NaN,0,inf
+lnorm d sdlog 0,1,NaN,0,inf
+lnorm p meanlog Inf,1,NaN,0,inf
+lnorm p meanlog -Inf,1,NaN,1,inf
+lnorm p sdlog Inf,1,NaN,0.5,inf
+lnorm p sdlog 0,1,NaN,0,inf
+lnorm q meanlog Inf,1,NaN,Inf,inf
+lnorm q meanlog -Inf,1,NaN,0,inf
+lnorm q sdlog 0,1,NaN,1.037473470941151,inf
+cauchy d location Inf,1,NaN,0,inf
+cauchy d location -Inf,1,NaN,0,inf
+cauchy d scale Inf,1,NaN,0,inf
+cauchy p location Inf,1,NaN,0,inf
+cauchy p location -Inf,1,NaN,1,inf
+cauchy p scale Inf,1,NaN,0.5,inf
+cauchy q location Inf,1,NaN,Inf,inf
+cauchy q location -Inf,1,NaN,-Inf,inf
+cauchy q scale 0,1,NaN,-0.02099181811229862,inf
+logis d location Inf,1,NaN,0,inf
+logis d location -Inf,1,NaN,0,inf
+logis d scale Inf,1,NaN,0,inf
+logis p location Inf,1,NaN,0,inf
+logis p location -Inf,1,NaN,1,inf
+logis p scale Inf,1,NaN,0.5,inf
+logis q location Inf,1,NaN,Inf,inf
+logis q location -Inf,1,NaN,-Inf,inf
+logis q scale 0,1,NaN,-0.054183601372143085,inf
+unif d min -Inf,1,NaN,0,inf
+unif d max Inf,1,NaN,0,inf
+exp d rate 0,1,NaN,0,inf
+exp p rate Inf,1,NaN,1,inf
+exp p rate -Inf,1,NaN,-Inf,inf
+exp p rate 0,1,NaN,0,inf
+exp q rate Inf,1,NaN,0,inf
+exp q rate -Inf,1,NaN,0,inf
+exp q rate 0,1,NaN,Inf,inf
+binom d near_integer_tiny,1,0,0.009426939911227531,1.0
+binom d near_integer_tiny,2,0,0.009426939911227531,1.0
+binom d size Inf,1,NaN,0,inf
+binom d size 9.9999999999989999,1,NaN,0,inf
+binom d size 10.000000000001,1,NaN,0,inf
+binom p near_integer,1,0.0009344346252108866,0.01036137453643843,0.9098155730280083
+binom p near_integer_tiny,1,0.0009344346252108866,0.01036137453643843,0.9098155730280083
+binom p size 9.9999999999989999,1,NaN,0.0009344346252108859,inf
+binom p size 10.000000000001,1,NaN,0.0009344346252108859,inf
+binom q size 9.9999999999989999,1,NaN,5,inf
+binom q size 10.000000000001,1,NaN,5,inf
+pois d near_integer_tiny,1,0,0.2622849910212077,1.0
+pois d near_integer_tiny,2,0,0.2622849910212077,1.0
+pois d lambda Inf,1,NaN,0,inf
+pois p near_integer,1,0.1271993166931172,0.38948430771432496,0.6734160679294579
+pois p near_integer_tiny,1,0.1271993166931172,0.38948430771432496,0.6734160679294579
+pois p lambda Inf,1,NaN,0,inf
+weibull d scale Inf,1,NaN,0,inf
+weibull p shape Inf,1,NaN,0,inf
+weibull p scale Inf,1,NaN,0,inf
+weibull q shape Inf,1,NaN,3.961112788454163,inf
+weibull q scale Inf,1,NaN,Inf,inf
+geom d near_integer_tiny,1,0,0.24982185698805492,1.0
+geom d near_integer_tiny,2,0,0.24982185698805492,1.0
+geom p near_integer,1,0.5133470225872689,0.7631688795753239,0.32734806629834257
+geom p near_integer_tiny,1,0.5133470225872689,0.7631688795753239,0.32734806629834257
+nbinom d near_integer_tiny,1,0,3.276536881902446e-05,1.0
+nbinom d near_integer_tiny,2,0,3.276536881902446e-05,1.0
+nbinom d size Inf,1,NaN,0,inf
+nbinom p near_integer,1,4.544083260151845e-06,3.730945207917629e-05,0.8782055750776341
+nbinom p near_integer_tiny,1,4.544083260151845e-06,3.730945207917629e-05,0.8782055750776341
+norm d mean Inf,1,NaN,0,inf
+norm d mean -Inf,1,NaN,0,inf
+norm d sd Inf,1,NaN,0,inf
+norm d sd 0,1,NaN,0,inf
+norm p mean Inf,1,NaN,0,inf
+norm p mean -Inf,1,NaN,1,inf
+norm p sd Inf,1,NaN,0.5,inf
+norm p sd 0,1,NaN,1,inf
+norm q mean Inf,1,NaN,Inf,inf
+norm q mean -Inf,1,NaN,-Inf,inf
+norm q sd 0,1,NaN,0.00027587149470132197,inf

@@ -26,7 +26,7 @@ params:
   simulate: 1
   kind: regular
 r:
-  density: stats::dgamma
+  density: core_dgamma
   sampler: stats::rgamma
   control:
     shape: Optional held shape; NULL estimates it.

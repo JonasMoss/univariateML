@@ -27,7 +27,8 @@ for (i in seq_along(length(dists))) {
     do.call(
       paste0("d", dist),
       c(1, as.list(obj))
-    )
+    ),
+    tolerance = 1e-10
   )
 
   expect_equal(
@@ -39,7 +40,8 @@ for (i in seq_along(length(dists))) {
         log.p = TRUE,
         as.list(obj)
       )
-    )
+    ),
+    tolerance = 1e-10
   )
 
   expect_equal(
@@ -51,7 +53,8 @@ for (i in seq_along(length(dists))) {
         lower.tail = TRUE,
         as.list(obj)
       )
-    )
+    ),
+    tolerance = 1e-10
   )
 
   expect_equal(

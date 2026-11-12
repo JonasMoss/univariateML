@@ -20,7 +20,7 @@ params:
   simulate: 1.0
   kind: regular
 r:
-  density: stats::dexp
+  density: core_dexp
   sampler: stats::rexp
   control:
     rate: Optional held rate; NULL estimates it.

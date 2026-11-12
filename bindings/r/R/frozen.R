@@ -85,8 +85,7 @@ ml_build_fixed_model <- function(name, supplied, call, frozen, x) {
   if (frozen) {
     attr(obj, "frozen") <- TRUE
   } else {
-    id <- substring(name, 3L)
-    density <- get(paste0(if (startsWith(meta$density, "stats::")) "core_", "d", id), mode = "function")
+    density <- get(meta$density, mode = "function")
     ld <- do.call(density, c(list(x), values, list(log = TRUE)))
     if (anyNA(ld) || any(ld == -Inf))
       stop("`", name, "`: observations incompatible with held coefficients", call. = FALSE)

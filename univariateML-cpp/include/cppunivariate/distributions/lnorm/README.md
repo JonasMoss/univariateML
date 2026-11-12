@@ -26,7 +26,7 @@ params:
   simulate: 1.0
   kind: regular
 r:
-  density: stats::dlnorm
+  density: core_dlnorm
   sampler: stats::rlnorm
   control:
     meanlog: Optional held meanlog; NULL estimates it.

@@ -20,7 +20,7 @@ params:
   simulate: 1
   kind: regular
 r:
-  density: stats::dpois
+  density: core_dpois
   sampler: stats::rpois
   control:
     lambda: "Optional held lambda; NULL estimates it."

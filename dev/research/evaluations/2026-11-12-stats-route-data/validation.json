@@ -1,0 +1,100 @@
+{
+  "baseline": "85f2bb6790d7678b780c3bf104b5c50c3e48125a",
+  "worktree": "stats-route",
+  "committed": false,
+  "final_runs": [
+    {
+      "command": "just test-changed",
+      "machine": "workstation GCC 15.2",
+      "scope": "all 100 families, C++ dev",
+      "passed": 108,
+      "failed": 0
+    },
+    {
+      "command": "just cpp-test-no-long-double",
+      "machine": "workstation GCC 15.2",
+      "passed": 135,
+      "failed": 0
+    },
+    {
+      "command": "just test",
+      "machine": "workstation R 4.6.1",
+      "passed": 31002,
+      "failed": 0,
+      "warnings": 0,
+      "skipped": 155,
+      "seconds": 388.1
+    },
+    {
+      "command": "just test-full",
+      "machine": "workstation R 4.6.1",
+      "passed": 60882,
+      "failed": 0,
+      "warnings": 0,
+      "skipped": 0,
+      "seconds": 1204.5
+    },
+    {
+      "command": "just js-build",
+      "machine": "workstation",
+      "exit": 0
+    },
+    {
+      "command": "just js-test",
+      "machine": "workstation",
+      "passed": 624,
+      "failed": 0
+    },
+    {
+      "command": "just site-check",
+      "machine": "workstation",
+      "exit": 0
+    }
+  ],
+  "superseded_runs": [
+    {
+      "command": "just test-changed, R dev portion",
+      "result": "one new consumer error on metadata-less expweibull scaffold; fixed by skipping unregistered families; final complete dev/full both passed"
+    },
+    {
+      "command": "just test-full",
+      "machine": "simbox",
+      "exit": 75,
+      "passed_before_disconnect": 17040,
+      "failed_before_disconnect": 0
+    },
+    {
+      "command": "just cpp-test-no-long-double",
+      "machine": "simbox GCC 13.3",
+      "exit": 75,
+      "passed_before_disconnect": 101,
+      "total": 135
+    },
+    {
+      "command": "just cpp-test",
+      "machine": "simbox",
+      "exit": 75,
+      "result": "unavailable before tests"
+    }
+  ],
+  "evidence": {
+    "ordinary_parameter_points": 135,
+    "ordinary_material_rows": 46,
+    "convention_material_rows": 124,
+    "golden_families": 14,
+    "maximum_golden_seam_relative_error": 5.7696816350741e-15,
+    "near_zero_reference_digits": 100,
+    "gamma_reference_digits": 100
+  },
+  "open": [
+    "native hypergeometric quantile tie comparison",
+    "existing modifier upper-tail vectorization",
+    "complete GCC 13 no-long-double run unavailable after simbox disconnect; local fallback passed"
+  ],
+  "documentation_checks": {
+    "diff_check": "passed",
+    "report_links": "all resolve",
+    "repository_link_checker": "45 pre-existing findings; each destination confirmed in baseline source",
+    "artifact_pane": "viewer HTTP 403: worktree outside readable roots"
+  }
+}

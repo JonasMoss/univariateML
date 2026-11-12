@@ -19,8 +19,8 @@ goldens), by the validation harness, and later by the Python shell.
 | `name` | yes | display name, e.g. `Lomax`; the R title is "<name> distribution maximum likelihood estimation" |
 | `support` | yes | `{type: real\|integer, lower, upper, closed: [bool, bool]}`; bounds may be `inf` / `-inf` or coefficient expressions (see below) |
 | `params` | yes | list of `{name, role, domain, simulate}`; names are the R coefficient names (see `bindings/r/CANONICAL_NAMES.md`), in output order; `domain` is an interval string such as `"(0, inf)"` |
-| `r.density`, `r.sampler` | yes | d/r functions: `pkg::fn` for an external package, or a bare name such as `dzipf` for package-defined functions; `p`/`q` are found by swapping the first letter |
-| `r.args` | when the reference functions do not take the coefficient names | map from reference-function argument to an R expression in the coefficients, e.g. `{mean: mu, sd: sigma}` for a stats reference; a coefficient may feed several arguments; e.g. `"n": "N - m"`. Expressions must parse as one expression and use only coefficient variables. `dml`/`pml`/`qml`/`rml` apply it |
+| `r.density`, `r.sampler` | yes | d/r functions: `pkg::fn` for an external package, or a bare name such as `dzipf` or `core_dnorm` for package-defined functions; `p`/`q` replace the density prefix (`d` or `core_d`); sampling uses `r.sampler` |
+| `r.args` | when the reference functions do not take the coefficient names | map from reference-function argument to an R expression in the coefficients, e.g. `{mean: mu, sd: sigma}` for a stats reference; a coefficient may feed several arguments; e.g. `"n": "N - m"`. Expressions must parse as one expression and use only coefficient variables. `rml` applies it; generated d/p/q take coefficient names directly |
 | `r.control` | yes (may be `{}`) | one entry per non-coefficient argument of the Rcpp adapter `ml<id>_` other than `x` (coefficient descriptions are optional), mapping name to a one-line description; codegen fails if the names differ from the adapter's |
 | `fit_args` | when a parameter has kind `design` or `threshold` | map of arguments for the default fit `ml<id>(x, ...)` used by `just goldens` (recorded as `fit_args` in `golden.json` and replayed by the golden regression test); must name every required parameter (including explicit YAML `null` to estimate), and may add arguments the fitter needs, such as hyper's `N` |
 | `inference_numeric` | yes | list of numeric-inference regime claims; see below |
@@ -212,9 +212,12 @@ construction of fit objects.
 
 Assembly runs `bindings/r/scripts/codegen_dpqr.R` before Rcpp attribute
 compilation. It writes R wrappers and Rcpp exports into `univariateML-r/`
-for every non-`stats::` reference, using README coefficient names and order.
-It does not change the selected reference. The resolver still applies `r.args`
-and `r.shift` when invoking a selected reference. Random generators use R's
+for every family, using README coefficient names and order. The 14 families
+with stats samplers use private `core_d<id>`, `core_p<id>` and `core_q<id>`
+names to avoid masking R functions. Their `r.density` names `core_d<id>`;
+`r.sampler` continues to name the stats sampler. `r.args` applies only to
+sampling (hypergeometric maps `n` to `N - m`). The resolver applies `r.shift`
+when declared. Random generators use R's
 RNG through `src/rng_r.h`; an EMG R-host specialization in `src/rng_emg.h`
 preserves its established normal/exponential primitive stream. Sample size
 follows base R conventions. For a family
@@ -226,9 +229,12 @@ coefficient defaults or roxygen topics. Use exported `dml`/`pml`/`qml`/`rml`
 with a fitted or fixed object. Family-specific evaluation facts belong in a short
 `## d/p/q/r` prose section, rather than export metadata.
 
-All-held fits use the generated internal C++ density directly. Stats-dispatched
-families also receive a private `core_d<id>` entry point for this purpose;
-ordinary `dml`/`pml`/`qml`/`rml` dispatch remains as declared by `r.density`.
+All-held fits and ordinary `dml` use the same generated internal C++ density.
+`pml` and `qml` replace the density prefix; `rml` uses `r.sampler` explicitly.
+No core sampler is generated for the 14 families retaining stats streams.
+Their `core_` wrappers retain R math-function input checks and copy attributes
+from the first longest numeric argument; factors, raw and complex inputs are
+rejected before Rcpp coercion.
 
 ## Presentation metadata (TASK-101.6.4)
 

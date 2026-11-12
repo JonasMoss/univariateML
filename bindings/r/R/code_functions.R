@@ -41,7 +41,8 @@
 #'
 #' ## Simple example
 #' obj <- mlnorm(airquality$Wind)
-#' dml(0.5, obj) == dnorm(0.5, mean = obj[1], sd = obj[2])
+#' all.equal(dml(0.5, obj), dnorm(0.5, mean = obj[1], sd = obj[2]),
+#'   tolerance = 1e-10)
 #'
 #' obj <- mlweibull(airquality$Wind)
 #'
