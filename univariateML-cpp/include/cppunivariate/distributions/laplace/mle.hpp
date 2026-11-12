@@ -4,6 +4,7 @@
 #include "../../core/precision.hpp"
 
 #include "../../core/span.hpp"
+#include "../../core/outcome.hpp"
 
 #include <algorithm>
 #include <cmath>
@@ -20,6 +21,7 @@ struct LaplaceResult {
   double sigma;
   double logLik;
   LaplaceStatus status = LaplaceStatus::Ok;
+  bool unique = true;
 };
 
 inline LaplaceResult laplace_mle(span x) {
@@ -37,7 +39,8 @@ inline LaplaceResult laplace_mle(span x) {
   const double sigma = abs_sum / static_cast<double>(n);
   const double logLik =
       -static_cast<double>(n) * (1.0 + (std::log(2.0) + std::log(sigma)));
-  return {mu, sigma, logLik, sigma==0 ? LaplaceStatus::Unbounded : std::isfinite(mu) && std::isfinite(sigma) && std::isfinite(logLik) ? LaplaceStatus::Ok : LaplaceStatus::IterationFailure};
+  return {mu, sigma, logLik, sigma==0 ? LaplaceStatus::Unbounded : std::isfinite(mu) && std::isfinite(sigma) && std::isfinite(logLik) ? LaplaceStatus::Ok : LaplaceStatus::IterationFailure,
+          sorted[(n - 1) / 2] == sorted[n / 2]};
 }
 
 
@@ -54,7 +57,20 @@ inline LaplaceResult laplace_mle(span x,double mu,double sigma) {
   CPPUNIV_EXTENDED_REAL a=0;for(double v:x)a+=std::abs(static_cast<CPPUNIV_EXTENDED_REAL>(v)-m);
   const double s=std::isnan(sigma)?static_cast<double>(a/x.size()):sigma;
   const double ll=-static_cast<double>(x.size())*(std::log(2.0)+std::log(s))-static_cast<double>(a/s);
-  return {m,s,ll,s==0 ? LaplaceStatus::Unbounded : std::isfinite(m) && std::isfinite(s) && std::isfinite(ll) ? LaplaceStatus::Ok : LaplaceStatus::IterationFailure};
+  return {m,s,ll,s==0 ? LaplaceStatus::Unbounded : std::isfinite(m) && std::isfinite(s) && std::isfinite(ll) ? LaplaceStatus::Ok : LaplaceStatus::IterationFailure,
+          !std::isnan(mu) || y[(y.size()-1)/2]==y[y.size()/2]};
+}
+
+// Every point of the median interval maximizes the likelihood; `unique` says
+// whether that interval is a single point.
+inline FitOutcome outcome(const LaplaceResult& r) {
+  switch (r.status) {
+    case LaplaceStatus::Ok: return FitOutcome::estimate(true, r.unique);
+    case LaplaceStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
+    case LaplaceStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case LaplaceStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
+  }
+  return {};
 }
 
 }  // namespace cppunivariate

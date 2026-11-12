@@ -26,6 +26,7 @@
 #include "../../core/newton.hpp"
 #include "../../core/reductions.hpp"
 #include "../../core/span.hpp"
+#include "../../core/outcome.hpp"
 #include "../../special/special.hpp"
 
 #include <cmath>
@@ -209,6 +210,17 @@ inline GammaResult gamma_mle(span x, double tol, int maxit, double shape, double
   }
   const double ll=static_cast<double>(n*(shape*std::log(rate)-std::lgamma(shape))+(shape-1)*logs-rate*total);
   return {shape,scale,ll,iterations,std::isfinite(ll)?GammaStatus::Ok:GammaStatus::IterationFailure};
+}
+
+inline FitOutcome outcome(const GammaResult& r) {
+  switch (r.status) {
+    case GammaStatus::Ok: return FitOutcome::estimate();
+    case GammaStatus::Degenerate: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
+    case GammaStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+    case GammaStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case GammaStatus::TransformFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
+  }
+  return {};
 }
 
 }  // namespace cppunivariate
