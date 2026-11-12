@@ -8,7 +8,7 @@ are different kinds of evidence.
 
 | Check | Command | Kind of evidence | Runs in |
 |---|---|---|---|
-| [Core diagnostic sweep](diagnostics.md) (98 families, supported holds, invalid/degenerate data) | `just cpp-test` | status/domain regression, not an existence proof | monorepo dev/full |
+| [Core diagnostic sweep](diagnostics.md) (the 98 families of 2026-10-31; st, gengamma and expweibull are not in the checked-in sweep; supported holds, invalid/degenerate data) | `just cpp-test` | status/domain regression, not an existence proof | monorepo dev/full |
 | C++ fit goldens | `just cpp-test` | agreement with independent references where present, else regression | ordinary |
 | C++ family cases: holds, limits, closed forms, score residuals | `just cpp-test` | internal identities; closed forms where derived | ordinary |
 | C++ truth tables | `just cpp-test` | independent numerical, given the README density | ordinary |
@@ -114,7 +114,7 @@ cases, assertions, skips and any `may_fail` cases. Read the individual cases.
   density ([reference.py](quality/reference.py), `just golden-reference`):
   damped Newton with a score and curvature check, closed forms for median and
   support endpoints, and exhaustive integer profiles with a finite range or
-  an explicit tail bound. The port covers 98 canonical families; bhatt is reserved for the concurrent all-free fitter job.
+  an explicit tail bound. Every golden carries such a reference.
   Held and otherwise unrefined coefficients retain explicit reasons. Local
   score/curvature evidence, dossier uniqueness statements, and numerical
   eight-start oracle comparisons are recorded separately; numerical multistart
@@ -413,7 +413,7 @@ nonfinite mismatches count as infinity. This metric differs from testthat's
 vector comparison and must not be read as its pass/fail criterion. These are
 finite-sample comparisons with independent references, not universal accuracy bounds. TASK-129 must inspect
 the first arm64/Windows artifacts before choosing any tolerance changes. Fit
-errors may leave a partial CSV; the reporting runner requires all 99 rows.
+errors may leave a partial CSV; the reporting runner requires one row per golden.
 
 The portable scripts in [.github/scripts](../../.github/scripts/) are also local
 entry points: `Rscript .github/scripts/assemble.R`, then

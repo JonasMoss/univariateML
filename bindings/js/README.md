@@ -1,6 +1,6 @@
 # Private WebAssembly binding
 
-`just js-build` generates embind d/p/q/r for all 98 dossiers, verifies the
+`just js-build` generates embind d/p/q/r for every dossier, verifies the
 uniform positional signatures checked by R's `codegen_dpqr.R`, and compiles
 one ES module. No npm dependencies live here. Run builds through
 `/tmp/umvl-cpu/run4` and tests through `/tmp/umvl-cpu/run`.
@@ -21,10 +21,10 @@ function reaches `p`. `NaN` means the evaluation failed.
 Sampling uses a binding-owned C++ `StdRng`, seeded explicitly per call;
 reproducibility is within a build, not across standard library implementations.
 
-Fitting covers **all 98 families**. Validation, core calls, status mapping,
+Fitting covers **every family with a fitter**. Validation, core calls, status mapping,
 warnings and diagnostics live in `bindings/common/distributions/` and are
 shared with the thin R adapters. Both `families` and `fitFamilies` enumerate
-all 98 IDs; generation discovers shared headers without family-specific rules.
+every family id; generation discovers shared headers without family-specific rules.
 
 `fit(data, held = {}, control = {})` uses named held coefficients. Omitted
 or null values are free. Controls and defaults are read from the shared
@@ -43,7 +43,7 @@ measurement; the default build always restores all generated exports.
 and reruns Node tests; `measure-all.mjs <module names>` records raw/gzip sizes
 and five Node loads.
 This measures local import/instantiation, not network transfer. The measurement
-requires all 98 shared fitters and compares the aggregate with all 98 single
+requires every shared fitter and compares the aggregate with every single
 family modules. For batch checks, `FIT_FAMILY=a,b node --test
 bindings/js/fit-test.mjs` selects fit tests without rebuilding a subset.
 
@@ -52,7 +52,7 @@ bindings/js/fit-test.mjs` selects fit tests without rebuilding a subset.
 Parallel runs distribute sixteen groups; a serial run uses one group.
 `UMVL_TEST_FAMILIES=a,b` restricts generated family loops while retaining
 hand-written cross-family cases. It audits every truth entry and sampler point for every selected family,
-and all 98 goldens, held subsets and diagnostics. It records every failed
+and every golden, held subsets and diagnostics. It records every failed
 truth entry in `build/scratch/truth-results.json` without relaxing native
 tolerances. The generated TypeScript facade exposes precise fit coefficients and controls
 for all shared families.
