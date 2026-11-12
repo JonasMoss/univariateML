@@ -11,8 +11,26 @@
 namespace cppunivariate {
 enum class DgammaStatus { Ok, InvalidData, InvalidControl, PointMass, TwoPointLimit, IterationFailure };
 struct DgammaResult { double shape, rate, logLik; int iterations; DgammaStatus status;   StopDetail stop_detail{};
+  std::int64_t large_shape_iterations=0;
+  double failed_shape=NAN,failed_rate=NAN;
+  double rate_score_roundoff=NAN;
 };
 namespace dgamma_detail {
+// Searches initialized at large shape share one rate-solver allowance,
+// rather than restarting maxit at every grid point and simplex proposal.
+// Ordinary initializers retain per-profile caps: remote large-shape grid
+// probes must not spend the allowance needed for their ordinary optimum.
+inline constexpr double large_shape=1e6;
+struct RateWork {
+  std::int64_t used=0,cap=0;
+  bool exhausted=false,enabled=true;
+  double shape=NAN,rate=NAN;
+  bool take(double a,double r) {
+    if(!enabled || a<=large_shape)return true;
+    if(used>=cap){exhausted=true;shape=a;rate=r;return false;}
+    ++used;return true;
+  }
+};
 // With shape held, log-rate is a location coordinate for log(Y).
 // Its grouped likelihood is strictly concave (log-gamma density is
 // log-concave). Solve that exact profile score, not a plug-in moment rate.
@@ -30,15 +48,49 @@ inline double rate_score(const dnorm_detail::Cells &p,double shape,double logr,d
   }
   return g;
 }
-inline bool profile_rate(const dnorm_detail::Cells &p,double shape,double &rate,int maxit=100) {
+// Practical roundoff allowance for the endpoint-density subtraction in
+// the log-rate score. This is a floating-point diagnostic, not an interval
+// arithmetic guarantee. It scales with the terms actually subtracted.
+inline double rate_score_roundoff(const dnorm_detail::Cells &p,double shape,double rate) {
+  const double lg=special::lgamma(shape);double error=0;
+  for(std::size_t j=0;j<p.x.size();++j) {
+    const double a=p.x[j]*rate,b=(p.x[j]+1)*rate;
+    const double lp=distributions::ddgamma(p.x[j],shape,rate,true);
+    const double hb=shape*std::log(b),ha=a==0?0:shape*std::log(a);
+    const double u=std::exp(hb-b-lg-lp),v=a==0?0:std::exp(ha-a-lg-lp);
+    error+=p.w[j]/p.n*64*std::numeric_limits<double>::epsilon()*
+      (u*(1+std::abs(hb)+b+std::abs(lg)+std::abs(lp))+
+       v*(1+std::abs(ha)+a+std::abs(lg)+std::abs(lp)));
+  }
+  return error;
+}
+inline double loglik_roundoff(const dnorm_detail::Cells &p,double shape,double rate) {
+  double magnitude=p.n*(1+std::abs(special::lgamma(shape)));
+  for(std::size_t j=0;j<p.x.size();++j) {
+    const double midpoint=(p.x[j]+0.5)*rate;
+    magnitude+=p.w[j]*(std::abs(shape*std::log(midpoint))+midpoint);
+  }
+  return 64*std::numeric_limits<double>::epsilon()*magnitude;
+}
+inline bool profile_rate(const dnorm_detail::Cells &p,double shape,double &rate,int maxit,RateWork& work) {
   maxit = static_cast<int>(solver_budget(maxit));
   double u=std::log(shape)-std::log(p.centre),derivative=0;
+  if(!work.take(shape,std::exp(u)))return false;
   double g=rate_score(p,shape,u,derivative);
   if (!std::isfinite(g)) return false;
   double lo=u,hi=u; const bool up=g>0;
   bool bracketed=false;double step=1;
-  for (int pass=0;pass<maxit;++pass,step*=2) {
+  // At large shape a unit log-rate step sends gamma tails far outside
+  // the data cells. The conditional mean lies in [mean,mean+1], giving
+  // this analytic bracket without evaluating those remote tails.
+  if (shape>large_shape && p.centre>0.5) {
+    lo=std::log(shape)-std::log(p.centre+0.5);
+    hi=std::log(shape)-std::log(p.centre-0.5);
+    bracketed=true;
+  }
+  for (int pass=0;pass<maxit && !bracketed;++pass,step*=2) {
     const double v=u+(up ? step:-step);
+    if(!work.take(shape,std::exp(v)))return false;
     double dg=0; const double gv=rate_score(p,shape,v,dg);
     if (!std::isfinite(gv)) return false;
     if (up) hi=v; else lo=v;
@@ -47,6 +99,7 @@ inline bool profile_rate(const dnorm_detail::Cells &p,double shape,double &rate,
   if(!bracketed)return false;
   u=(lo+hi)/2;
   for (int it=0;it<maxit;++it) {
+    if(!work.take(shape,std::exp(u)))return false;
     g=rate_score(p,shape,u,derivative);
     if (!std::isfinite(g)) return false;
     if (std::abs(g)<1e-11*std::min(1.0,shape) || hi-lo<1e-12*(1+std::abs(u))) { rate=std::exp(u); return true; }
@@ -56,15 +109,25 @@ inline bool profile_rate(const dnorm_detail::Cells &p,double shape,double &rate,
   }
   return false;
 }
+inline bool profile_rate(const dnorm_detail::Cells &p,double shape,double &rate,int maxit=100) {
+  RateWork work{0,solver_budget(maxit)};
+  return profile_rate(p,shape,rate,maxit,work);
+}
 struct Cost {
   const dnorm_detail::Cells &p;
   bool hr; double r; int maxit;
+  mutable RateWork work{0,solver_budget(maxit)};
+  mutable double best_shape=NAN,best_rate=NAN,best_loglik=-INFINITY;
+  double shape_upper=INFINITY;
   double operator()(const std::vector<double> &t) const {
     const double shape=std::exp(t[0]); double rate=r;
-    if (!(shape>0) || !std::isfinite(shape) || (!hr && !profile_rate(p,shape,rate,maxit)))
+    if (!(shape>0) || !std::isfinite(shape) || shape>shape_upper || (!hr && !profile_rate(p,shape,rate,maxit,work)))
       return std::numeric_limits<double>::infinity();
     double f=0;
     for (std::size_t j=0;j<p.x.size();++j) f-=p.w[j]*distributions::ddgamma(p.x[j],shape,rate,true)/p.n;
+    if(std::isfinite(f) && -p.n*f>best_loglik) {
+      best_shape=shape;best_rate=rate;best_loglik=-p.n*f;
+    }
     return f;
   }
 };
@@ -77,6 +140,7 @@ inline bool search(const Cost &cost,std::vector<double> &t,double tol,int maxit,
   for (int j=1;j<=d;++j) v[j][j-1]+=0.4;
   for (int j=0;j<=d;++j) f[j]=cost(v[j]);
   for (int it=0;it<maxit;++it) {
+    if(cost.work.exhausted)return false;
     ++iterations;
     for (int i=0;i<=d;++i) for (int j=i+1;j<=d;++j) if (f[j]<f[i]) { std::swap(f[i],f[j]); std::swap(v[i],v[j]); }
     double width=0; for (int j=1;j<=d;++j) for (int k=0;k<d;++k) width=std::max(width,std::abs(v[j][k]-v[0][k]));
@@ -218,6 +282,7 @@ inline bool certify(const dnorm_detail::Cells &p,bool held,double held_r,
 inline DgammaResult dgamma_accuracy_search(span x,double tol=1e-8,int maxit=400,
     double shape=std::numeric_limits<double>::quiet_NaN(),double rate=std::numeric_limits<double>::quiet_NaN()) {
   maxit = static_cast<int>(solver_budget(maxit));
+  dgamma_detail::RateWork rate_work{0,solver_budget(maxit)};
   auto stopped = [&]() -> DgammaResult {
   const double nan=std::numeric_limits<double>::quiet_NaN();
   DgammaResult out{nan,nan,nan,0,DgammaStatus::InvalidData};
@@ -232,7 +297,7 @@ inline DgammaResult dgamma_accuracy_search(span x,double tol=1e-8,int maxit=400,
   }
   if (ha) {
     double r=0;
-    if (!dgamma_detail::profile_rate(p,shape,r,maxit)) { out.status=DgammaStatus::IterationFailure; return out; }
+    if (!dgamma_detail::profile_rate(p,shape,r,maxit,rate_work)) { out.status=DgammaStatus::IterationFailure; return out; }
     out.shape=shape; out.rate=r; out.logLik=0;
     for (std::size_t j=0;j<p.x.size();++j) out.logLik+=p.w[j]*distributions::ddgamma(p.x[j],shape,r,true);
     out.iterations=1; out.status=DgammaStatus::Ok; return out;
@@ -240,19 +305,70 @@ inline DgammaResult dgamma_accuracy_search(span x,double tol=1e-8,int maxit=400,
   const double mean=p.centre,var=std::max(0.1,p.variance);
   const double a0=hr ? mean*rate:mean*mean/var;
   dgamma_detail::Cost cost{p,hr,rate,maxit};
+  cost.work.enabled=a0>dgamma_detail::large_shape;
+  // Reuse the proved shape tail bound before evaluating the initializer's
+  // remote grid points. Any feasible anchor supplies the needed superlevel.
+  if(a0>dgamma_detail::large_shape) {
+    const double anchor_rate=hr?rate:a0/mean;
+    double anchor_ll=0;
+    for(std::size_t j=0;j<p.x.size();++j)
+      anchor_ll+=p.w[j]*distributions::ddgamma(p.x[j],a0,anchor_rate,true);
+    if(std::isfinite(anchor_ll) && anchor_ll<0) {
+      const double anchor_lower=anchor_ll-dgamma_detail::loglik_roundoff(p,a0,anchor_rate);
+      if(hr)cost.shape_upper=std::max(2*rate*(p.x.back()+1),-anchor_lower/(p.n*(std::log(2.)-.5)));
+      else for(std::size_t i=0;i<p.x.size();++i)for(std::size_t j=i+1;j<p.x.size();++j) {
+        if(!(p.x[j]>p.x[i]+1))continue;
+        const double logq=.5*std::log(p.x[j]/(p.x[i]+1));
+        const double c=std::min(std::expm1(logq)-logq,std::expm1(-logq)+logq);
+        if(c>0)cost.shape_upper=std::min(cost.shape_upper,-anchor_lower/(c*std::min(p.w[i],p.w[j])));
+      }
+      cost.best_shape=a0;cost.best_rate=anchor_rate;cost.best_loglik=anchor_ll;
+    }
+  }
+  const auto large_shape_stop=[&]() {
+    out.status=DgammaStatus::IterationFailure;
+    out.large_shape_iterations=cost.work.used;
+    if(std::isfinite(cost.best_loglik)) {
+      const double margin=std::max(1e-8*(1+std::abs(cost.best_loglik)),
+        dgamma_detail::loglik_roundoff(p,cost.best_shape,cost.best_rate));
+      out.stop_detail.candidates.push_back({{cost.best_shape,cost.best_rate},cost.best_loglik-margin,cost.best_loglik+margin});
+      out.stop_detail.loglik_lower=out.stop_detail.candidates.back().loglik_lower;
+    }
+    out.failed_shape=cost.work.shape;out.failed_rate=cost.work.rate;
+    return out;
+  };
+  if(!hr && a0>dgamma_detail::large_shape && std::isfinite(cost.best_loglik)) {
+    const double r=cost.best_rate;
+    double derivative=0;
+    rate_work.take(a0,r);
+    const double g=dgamma_detail::rate_score(p,a0,std::log(r),derivative);
+    const double error=dgamma_detail::rate_score_roundoff(p,a0,r);
+    // A relative rate displacement is a log-rate displacement to first
+    // order. Require the score arithmetic to resolve that displacement
+    // against observed information before undertaking repeated solves.
+    if(std::isfinite(g) && derivative<0 && std::isfinite(error) &&
+       error>tol*(-derivative)) {
+      cost.work.shape=a0;cost.work.rate=r;
+      auto stopped=large_shape_stop();stopped.rate_score_roundoff=error;
+      return stopped;
+    }
+  }
   // Global scan of the one-dimensional exact profile, followed by local
   // refinement of every grid-local maximum. Extend either improving edge.
   std::vector<double> grid,values;
   for (int i=-20;i<=20;++i) {
     const double t=std::log(a0)+i;
     grid.push_back(t); values.push_back(cost(std::vector<double>{t}));
+    if(cost.work.exhausted)return large_shape_stop();
   }
   for (int i=0;i<maxit && values.front()<values[1];++i) {
     grid.insert(grid.begin(),grid.front()-1);
     values.insert(values.begin(),cost(std::vector<double>{grid.front()}));
+    if(cost.work.exhausted)return large_shape_stop();
   }
   for (int i=0;i<maxit && values.back()<values[values.size()-2];++i) {
     grid.push_back(grid.back()+1); values.push_back(cost(std::vector<double>{grid.back()}));
+    if(cost.work.exhausted)return large_shape_stop();
   }
   double best=std::numeric_limits<double>::infinity(); std::vector<double> best_t;
   for (std::size_t j=1;j+1<grid.size();++j) {
@@ -260,6 +376,7 @@ inline DgammaResult dgamma_accuracy_search(span x,double tol=1e-8,int maxit=400,
     std::vector<double> t{grid[j]};
     const bool ok=dgamma_detail::search(cost,t,tol,maxit,out.iterations);
     const double f=cost(t);
+    if(cost.work.exhausted)return large_shape_stop();
     if (ok && f<best) { best=f; best_t=t; }
   }
   if (best_t.empty()) { out.status=DgammaStatus::IterationFailure; return out; }
@@ -283,6 +400,7 @@ inline DgammaResult dgamma_accuracy_search(span x,double tol=1e-8,int maxit=400,
   out.status=DgammaStatus::Ok; return out;
 
   }();
+  stopped.large_shape_iterations+=rate_work.used;
   if(stopped.status==DgammaStatus::PointMass) stopped.stop_detail=discrete_point(x[0]);
   if(stopped.status==DgammaStatus::TwoPointLimit) {
     const double lo=*std::min_element(x.begin(),x.end());

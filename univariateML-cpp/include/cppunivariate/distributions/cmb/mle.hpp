@@ -19,6 +19,89 @@ namespace cmb_detail {
 inline double probability(double eta) {
   return eta>=0 ? 1/(1+std::exp(-eta)) : std::exp(eta)/(1+std::exp(eta));
 }
+// Fitting needs masses and moments, but no cumulative tails. On large
+// supports retain a modal interval or two log-convex endpoint intervals. Every omitted weight is
+// below exp(cutoff) relative to the mode; there are at most N+1 of them,
+// and |X|<=N, |log choose(N,X)|<=N log(2). Thus their contribution to
+// the normalizer and each raw moment through order two is below 1e-24.
+// The support-cell ledger still charges N+1, including discarded cells.
+inline Table fit_table(int N,double eta,double nu,ispan observed={}) {
+  if(N<100000 || !std::isfinite(eta+nu))return Table(N,eta,nu);
+  const double cutoff=std::log(1e-24)-std::log(double(N)+1)-
+    std::log1p(double(N)*N*(1+std::log(2.)*std::log(2.)));
+  std::vector<int> active;
+  if(nu>0) {
+    int lo=0,hi=N;
+    while(lo<hi) {
+      const int mid=lo+(hi-lo)/2;
+      if(eta+nu*std::log(double(N-mid)/(mid+1))>0)lo=mid+1;else hi=mid;
+    }
+    const int mode=lo;
+    double relative=0;lo=mode;hi=mode;
+    while(lo>0) {
+      relative-=eta+nu*std::log(double(N-lo+1)/lo);
+      --lo;if(relative<cutoff)break;
+    }
+    relative=0;
+    while(hi<N) {
+      relative+=eta+nu*std::log(double(N-hi)/(hi+1));
+      ++hi;if(relative<cutoff)break;
+    }
+    for(int k=lo;k<=hi;++k)active.push_back(k);
+  } else {
+    // Log-convex weights: the retained set consists of two endpoint
+    // intervals. A discarded middle cell is below both crossing weights.
+    const double peak=std::max(0.,N*eta);
+    int left=0;double relative=-peak;
+    while(left<=N && relative>=cutoff) {
+      active.push_back(left);
+      if(left<N)relative+=eta+nu*std::log(double(N-left)/(left+1));
+      ++left;
+    }
+    const auto left_size=active.size();
+    int right=N;relative=N*eta-peak;
+    while(right>=left && relative>=cutoff) {
+      active.push_back(right);
+      if(right>0)relative-=eta+nu*std::log(double(N-right+1)/right);
+      --right;
+    }
+    std::reverse(active.begin()+left_size,active.end());
+  }
+  Table out(0,0,0);
+  out.h.resize(static_cast<std::size_t>(N)+1);
+  out.lp.assign(out.h.size(),-INFINITY);out.lc.clear();out.uc.clear();
+  CPPUNIV_EXTENDED_REAL peak=-INFINITY;
+  for(int k:active) {
+    out.h[k]=logchoose(N,k);
+    peak=std::max(peak,static_cast<CPPUNIV_EXTENDED_REAL>(eta)*k+
+      static_cast<CPPUNIV_EXTENDED_REAL>(nu)*out.h[k]);
+  }
+  double rest=0;bool skipped=false;
+  for(int k:active) {
+    out.lp[k]=static_cast<double>(static_cast<CPPUNIV_EXTENDED_REAL>(eta)*k+
+      static_cast<CPPUNIV_EXTENDED_REAL>(nu)*out.h[k]-peak);
+    if(!skipped && out.lp[k]==0){skipped=true;continue;}
+    rest+=std::exp(out.lp[k]);
+  }
+  const double logz=std::log1p(rest);out.logZ=static_cast<double>(peak)+logz;
+  // Observed counts outside the retained interval still need finite log
+  // masses. Filling those is cheap and does not add them to the moments.
+  if(!observed.empty())for(int k:observed)if(!std::isfinite(out.lp[k])) {
+    out.h[k]=logchoose(N,k);
+    out.lp[k]=static_cast<double>(static_cast<CPPUNIV_EXTENDED_REAL>(eta)*k+
+      static_cast<CPPUNIV_EXTENDED_REAL>(nu)*out.h[k]-peak)-logz;
+  }
+  out.mean=out.mh=out.vx=out.vh=out.cov=0;
+  for(int k:active) {
+    out.lp[k]-=logz;const double w=std::exp(out.lp[k]);
+    out.mean+=w*k;out.mh+=w*out.h[k];
+  }
+  for(int k:active) {
+    const double w=std::exp(out.lp[k]),dx=k-out.mean,dh=out.h[k]-out.mh;
+    out.vx+=w*dx*dx;out.vh+=w*dh*dh;out.cov+=w*dx*dh;
+  }
+  return out;
+}
 // One cell is one supported count's normalizer/moment contribution. The
 // finite number of table passes is O(1) work per cell. All delegated tables
 // share this ledger; record the best feasible represented probability too.
@@ -36,7 +119,9 @@ struct TableWork {
       Table out(0,0,0);out.mean=out.mh=out.vx=out.vh=out.cov=NAN;return out;
     }
     used+=cost;
-    Table out(N,eta,nu);
+    Table out=fit_table(N,eta,nu);
+    for(const auto& kv:counts)if(!std::isfinite(out.lp[kv.first]))
+      out.lp[kv.first]=eta*kv.first+nu*logchoose(N,kv.first)-out.logZ;
     double ll=0,n=0;for(const auto& kv:counts){ll+=kv.second*out.lp[kv.first];n+=kv.second;}
     const double prob=std::isnan(fixed_prob)?probability(eta):fixed_prob;
     if(prob>0 && prob<1 && std::isfinite(nu) && std::isfinite(ll)) {
@@ -424,7 +509,7 @@ inline CmbResult size_candidate(ispan x,int N,double prob,double tol,int maxit,
     if(!std::isfinite(eta) || !std::isfinite(nu))return fail(CmbStatus::IterationFailure);
     if(cost>budget-work){auto out=fail(CmbStatus::IterationFailure);out.stop_detail=discrete_budget(out.stop_detail);return out;}
     work+=cost;
-    const Table tab(N,eta,nu);
+    const Table tab=fit_table(N,eta,nu,x);
     double ll=0;for(int v:x)ll+=tab.lp[v];
     const double gx=m-tab.mean,gh=t-tab.mh;
     if((fixed || std::abs(gx)<=tol*(1+m)) && std::abs(gh)<=tol*(1+std::abs(t))) {
@@ -433,7 +518,7 @@ inline CmbResult size_candidate(ispan x,int N,double prob,double tol,int maxit,
       if(cost>budget-work){auto out=fail(CmbStatus::IterationFailure);out.stop_detail=discrete_budget(out.stop_detail);return out;}
       work+=cost;
       const double reported_eta=std::log(p)-std::log1p(-p);
-      const Table check(N,reported_eta,nu);
+      const Table check=fit_table(N,reported_eta,nu,x);
       if((!fixed && std::abs(m-check.mean)>tol*(1+m)) ||
          std::abs(t-check.mh)>tol*(1+std::abs(t)))return fail(CmbStatus::IterationFailure);
       ll=0;for(int v:x)ll+=check.lp[v];
@@ -460,7 +545,7 @@ inline CmbResult size_candidate(ispan x,int N,double prob,double tol,int maxit,
     for(std::int64_t backtrack=0;backtrack<solver_budget(maxit) && step>1e-12;++backtrack,step*=.5) {
       if(cost>budget-work){auto out=fail(CmbStatus::IterationFailure);out.stop_detail=discrete_budget(out.stop_detail);return out;}
       work+=cost;
-      const Table next(N,eta+step*de,nu+step*dv);
+      const Table next=fit_table(N,eta+step*de,nu+step*dv,x);
       double next_ll=0;for(int v:x)next_ll+=next.lp[v];
       if(std::isfinite(next_ll) && next_ll>=ll-1e-12*(1+std::abs(ll))) {
         eta+=step*de;nu+=step*dv;accepted=true;break;

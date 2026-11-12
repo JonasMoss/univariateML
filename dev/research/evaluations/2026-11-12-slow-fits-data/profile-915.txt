@@ -1,0 +1,65 @@
+Flat profile:
+
+Each sample counts as 0.01 seconds.
+  %   cumulative   self              self     total           
+ time   seconds   seconds    calls   s/call   s/call  name    
+ 70.25      0.85     0.85       16     0.05     0.07  cppunivariate::cmb_detail::Table::Table(int, double, double)
+ 17.36      1.06     0.21       15     0.01     0.02  cppunivariate::cmb_detail::Table::cumulative()
+ 11.57      1.20     0.14       30     0.00     0.00  std::vector<double, std::allocator<double> >::_M_default_append(unsigned long)
+  0.83      1.21     0.01                             _init
+  0.00      1.21     0.00       80     0.00     0.00  std::_Rb_tree_iterator<std::pair<int const, unsigned long> > std::_Rb_tree<int, std::pair<int const, unsigned long>, std::_Select1st<std::pair<int const, unsigned long> >, std::less<int>, std::allocator<std::pair<int const, unsigned long> > >::_M_emplace_hint_unique<std::piecewise_construct_t const&, std::tuple<int const&>, std::tuple<> >(std::_Rb_tree_const_iterator<std::pair<int const, unsigned long> >, std::piecewise_construct_t const&, std::tuple<int const&>&&, std::tuple<>&&)
+  0.00      1.21     0.00       80     0.00     0.00  std::_Rb_tree<int, std::pair<int const, unsigned long>, std::_Select1st<std::pair<int const, unsigned long> >, std::less<int>, std::allocator<std::pair<int const, unsigned long> > >::_M_get_insert_hint_unique_pos(std::_Rb_tree_const_iterator<std::pair<int const, unsigned long> >, int const&)
+  0.00      1.21     0.00       45     0.00     0.00  std::_Vector_base<double, std::allocator<double> >::~_Vector_base()
+  0.00      1.21     0.00       30     0.00     0.00  std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> >::~vector()
+  0.00      1.21     0.00       30     0.00     0.00  cppunivariate::FitCandidate* std::__do_uninit_copy<__gnu_cxx::__normal_iterator<cppunivariate::FitCandidate const*, std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> > >, __gnu_cxx::__normal_iterator<cppunivariate::FitCandidate const*, std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> > >, cppunivariate::FitCandidate*>(__gnu_cxx::__normal_iterator<cppunivariate::FitCandidate const*, std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> > >, __gnu_cxx::__normal_iterator<cppunivariate::FitCandidate const*, std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> > >, cppunivariate::FitCandidate*)
+  0.00      1.21     0.00       16     0.00     0.07  cppunivariate::cmb_detail::TableWork::table(int, double, double)
+  0.00      1.21     0.00       16     0.00     0.07  cppunivariate::cmb_mle_work(cppunivariate::basic_span<int>, int, double, int, double, double, unsigned long&, unsigned long)
+  0.00      1.21     0.00       16     0.00     0.00  std::_Rb_tree<int, std::pair<int const, unsigned long>, std::_Select1st<std::pair<int const, unsigned long> >, std::less<int>, std::allocator<std::pair<int const, unsigned long> > >::_M_get_insert_unique_pos(int const&)
+  0.00      1.21     0.00       16     0.00     0.07  cppunivariate::cmb_mle_work(cppunivariate::basic_span<int>, int, double, int, double, double, unsigned long&, unsigned long)::{lambda()#1}::operator()() const
+  0.00      1.21     0.00       15     0.00     0.00  cppunivariate::StopDetail::StopDetail(cppunivariate::StopDetail const&)
+  0.00      1.21     0.00       15     0.00     0.00  cppunivariate::StopDetail::operator=(cppunivariate::StopDetail&&)
+  0.00      1.21     0.00       15     0.00     0.00  cppunivariate::cmb_detail::SizeRunner::observe(int, cppunivariate::CmbResult const&, cppunivariate::CmbSizeResult const&)
+  0.00      1.21     0.00       15     0.00     0.00  cppunivariate::cmb_detail::Table::~Table()
+  0.00      1.21     0.00       15     0.00     0.00  cppunivariate::FitCandidate& std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> >::emplace_back<cppunivariate::FitCandidate>(cppunivariate::FitCandidate&&)
+  0.00      1.21     0.00       15     0.00     0.00  std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> >::_M_erase(__gnu_cxx::__normal_iterator<cppunivariate::FitCandidate*, std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> > >, __gnu_cxx::__normal_iterator<cppunivariate::FitCandidate*, std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> > >)
+  0.00      1.21     0.00       15     0.00     0.00  std::vector<double, std::allocator<double> >::vector(std::initializer_list<double>, std::allocator<double> const&)
+  0.00      1.21     0.00       15     0.00     0.00  std::_Rb_tree<int, std::pair<int const, unsigned long>, std::_Select1st<std::pair<int const, unsigned long> >, std::less<int>, std::allocator<std::pair<int const, unsigned long> > >::_M_erase(std::_Rb_tree_node<std::pair<int const, unsigned long> >*)
+  0.00      1.21     0.00       14     0.00     0.00  std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> >::operator=(std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> > const&)
+  0.00      1.21     0.00       14     0.00     0.00  std::vector<double, std::allocator<double> >::operator=(std::vector<double, std::allocator<double> > const&)
+  0.00      1.21     0.00        1     0.00     1.20  cppunivariate::cmb_size_mle(cppunivariate::basic_span<int>, double, double, double, int)
+  0.00      1.21     0.00        1     0.00     0.00  void std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> >::_M_realloc_append<cppunivariate::FitCandidate>(cppunivariate::FitCandidate&&)
+
+ %         the percentage of the total running time of the
+time       program used by this function.
+
+cumulative a running sum of the number of seconds accounted
+ seconds   for by this function and those listed above it.
+
+ self      the number of seconds accounted for by this
+seconds    function alone.  This is the major sort for this
+           listing.
+
+calls      the number of times this function was invoked, if
+           this function is profiled, else blank.
+
+ self      the average number of milliseconds spent in this
+ms/call    function per call, if this function is profiled,
+	   else blank.
+
+ total     the average number of milliseconds spent in this
+ms/call    function and its descendents per call, if this
+	   function is profiled, else blank.
+
+name       the name of the function.  This is the minor sort
+           for this listing. The index shows the location of
+	   the function in the gprof listing. If the index is
+	   in parenthesis it shows where it would appear in
+	   the gprof listing if it were to be printed.
+
+Copyright (C) 2012-2026 Free Software Foundation, Inc.
+
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved.
+
+		     

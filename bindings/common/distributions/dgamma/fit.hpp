@@ -21,6 +21,7 @@ inline FitResult fit_dgamma(cppunivariate::span x, Held shape_arg = {}, Held rat
   switch(r.status) {
     case cppunivariate::DgammaStatus::PointMass: stop_kind="limit";break;
     case cppunivariate::DgammaStatus::TwoPointLimit: stop_kind="limit";break;
+    case cppunivariate::DgammaStatus::IterationFailure: stop_kind="numerical";break;
     default:break;
   }
   const auto stopped_fail = [&](const std::string& format, const auto&... arguments) {
@@ -35,7 +36,10 @@ inline FitResult fit_dgamma(cppunivariate::span x, Held shape_arg = {}, Held rat
     case cppunivariate::DgammaStatus::PointMass: return stopped_fail("The maximum likelihood estimator does not exist: the likelihood approaches a point mass.");
     case cppunivariate::DgammaStatus::TwoPointLimit:
       return stopped_fail("The maximum likelihood estimator does not exist on two adjacent integers; use `mlbinom(x - k, size = 1)` with k = min(x).");
-    case cppunivariate::DgammaStatus::IterationFailure: return stopped_fail("MLE failed to converge; increase iterlim.");
+    case cppunivariate::DgammaStatus::IterationFailure:
+      if(std::isfinite(r.rate_score_roundoff))
+        return stopped_fail("Large-shape log-rate score precision is insufficient for the requested coefficient accuracy.");
+      return stopped_fail("MLE failed to converge; increase iterlim.");
   }
   std::vector<std::string> fixed;
   if (shape.supplied) fixed.push_back("shape");
