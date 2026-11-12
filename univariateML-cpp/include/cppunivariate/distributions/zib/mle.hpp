@@ -357,8 +357,17 @@ inline ZibResult zib_mle(ispan x,double tol=1e-10,int maxit=200,
         resolved=resolved && binomial_accuracy::ratio_accuracy(zeros,n,out.pi,tol);
       }
       if(!resolved) {
-        out.status=ZibStatus::IterationFailure;out.accuracy_failure=true;
+        out.status=ZibStatus::IterationFailure;out.accuracy_failure=true;record_accuracy(out,tol,{out.size,out.prob,out.pi},{0,1,1});
         out.prob=searched_prob;out.pi=searched_pi;out.logLik=searched_ll;
+        record_accuracy(out,tol,{out.size,out.prob,out.pi},{0,std::isnan(fixed_prob)?1.:0.,std::isnan(fixed_pi)?1.:0.});
+        if(std::isnan(fixed_prob) && fixed_pi==0) {
+          const auto exact=binomial_accuracy::divide(binomial_accuracy::Pair(S),binomial_accuracy::Pair(n*out.size));
+          const double nearest=exact.hi+exact.lo;
+          const double attainable=binomial_accuracy::magnitude(binomial_accuracy::add(exact,binomial_accuracy::Pair(-nearest)));
+          out.stop_detail.attainable_tol=attainable;
+          out.stop_detail.accuracy_stop=tol<attainable?AccuracyStop::Tolerance:AccuracyStop::None;
+        }
+
         binomial_certificate_detail::witness(out.stop_detail,{out.size,out.prob,out.pi},out.logLik,false);
         return out;
       }

@@ -1,7 +1,7 @@
 #pragma once
 #include "../burr/accuracy.hpp"
 namespace cppunivariate {
-inline bool paralogis_local_accuracy(span x,double& shape,double& scale,double& logLik,double tol,int maxit,bool fixed_scale,bool inverse=false) {
+inline bool paralogis_local_accuracy(span x,double& shape,double& scale,double& logLik,double tol,int maxit,bool fixed_scale,bool inverse,StopDetail& detail) {
   tol=std::min(tol,1e-10);
   const double unit=scale;
   accuracy_detail::ScalarSum mean,square;
@@ -28,10 +28,10 @@ inline bool paralogis_local_accuracy(span x,double& shape,double& scale,double& 
     }
     return f.value;
   };
-  if(!continuous_fallback_polish(q,free,tol,maxit,objective))return false;
+  if(!continuous_fallback_polish(q,free,tol,maxit,objective,detail))return false;
   if(!fixed_scale) {
     const double sensitivity=(1+std::abs(1-q[1]-q[0]))/std::exp(q[0]);
-    if(sensitivity>4&&!continuous_fallback_polish(q,free,tol*4/sensitivity,maxit,objective))return false;
+    if(sensitivity>4&&!continuous_fallback_polish(q,free,tol*4/sensitivity,maxit,objective,detail))return false;
   }
   shape=std::exp(q[0]);
   const double coordinate=fixed_scale?0:(inverse?-1:1)*(center+(q[1]+q[0])/shape);
@@ -42,4 +42,8 @@ inline bool paralogis_local_accuracy(span x,double& shape,double& scale,double& 
     ll.add(2*std::log(static_cast<ExtendedReal>(shape))-std::log(static_cast<ExtendedReal>(v))-std::max(-t,ExtendedReal(0))-std::log1p(std::exp(-std::abs(t)))-shape*(std::max(t,ExtendedReal(0))+std::log1p(std::exp(-std::abs(t)))));}
   logLik=static_cast<double>(ll.value);return true;
 }
+inline bool paralogis_local_accuracy(span x,double& shape,double& scale,double& logLik,double tol,int maxit,bool fixed_scale,bool inverse=false) {
+  StopDetail detail;return paralogis_local_accuracy(x,shape,scale,logLik,tol,maxit,fixed_scale,inverse,detail);
+}
+
 }

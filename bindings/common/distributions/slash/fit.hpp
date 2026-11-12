@@ -24,7 +24,8 @@ inline FitResult fit_slash(cppunivariate::span x, Held mu_arg = {}, Held sigma_a
   const double f_mu=mu.supplied?mu.value:cppunivariate::special::kNaN;
   if(mu.supplied&&!std::isfinite(f_mu))return fail("Held mu must be finite.");
   const auto f=cppunivariate::slash_mle(x,reltol,iterlim,f_sigma,f_mu);
-  if(f.accuracy_failure)return fail("slash numerical accuracy failure: final Newton refinement did not converge to the requested coefficient tolerance; increase iterlim or inspect conditioning.");
+  if(f.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return stop_failure(failure("slash numerical accuracy failure: requested coefficient accuracy cannot be established."),f.stop_detail,"numerical",{"mu","sigma"});
+  if(f.accuracy_failure)return stop_failure(fail("slash numerical accuracy failure: final Newton refinement did not converge to the requested coefficient tolerance; increase iterlim or inspect conditioning."),f.stop_detail,"numerical",{"mu","sigma"});
   if(f.status==cppunivariate::SlashStatus::Unbounded)return nomle("Slash likelihood is unbounded: a value has more than half the sample mass.");
   if(f.status==cppunivariate::SlashStatus::CollapseLimit)return classify(fail("Slash likelihood selects scale collapse; no finite fit is returned."),{},"nomle",{},"");
   if(f.budget_exhausted)return classify(fail("Slash fit failed: check inputs, reltol and iterlim. Raising iterlim may resolve this stop."),f.stop_detail,"budget",{"mu","sigma"});

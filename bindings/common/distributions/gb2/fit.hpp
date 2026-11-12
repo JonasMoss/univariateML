@@ -13,7 +13,8 @@ inline FitResult fit_gb2(cppunivariate::span x, Held shape1_arg = {}, Held shape
   if (scale_arg.supplied && (!(scale_arg.value > 0) || !std::isfinite(scale_arg.value))) return failure("`scale` must be a positive finite number.");
   double scale=scale_arg.supplied ? scale_arg.value : NAN;
   auto r=cppunivariate::gb2_mle(cppunivariate::span{x.data(),x.size()},gradtol,iterlim,shape1,shape2,shape3,scale);
-  if(r.accuracy_failure)return failure("gb2 numerical accuracy failure: final Newton refinement did not converge to the requested coefficient tolerance; increase iterlim or inspect conditioning.");
+  if(r.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return stop_failure(failure("gb2 numerical accuracy failure: requested coefficient accuracy cannot be established."),r.stop_detail,"numerical",{"shape1","shape2","shape3","scale"});
+  if(r.accuracy_failure)return stop_failure(failure("gb2 numerical accuracy failure: final Newton refinement did not converge to the requested coefficient tolerance; increase iterlim or inspect conditioning."),r.stop_detail,"numerical",{"shape1","shape2","shape3","scale"});
   switch(r.status) {
     case cppunivariate::Gb2Status::Ok: break;
     case cppunivariate::Gb2Status::WeibullBoundary: return stop_failure(failure("GB2 selects a limiting model. Use `mlweibull`."),r.stop_detail,"limit",{"shape1","shape2","shape3","scale"},"weibull");

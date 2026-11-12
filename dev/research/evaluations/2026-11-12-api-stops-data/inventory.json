@@ -1,0 +1,805 @@
+{
+  "baseline": "0019c6b3",
+  "sites": [
+    {
+      "path": "bindings/common/distributions/bbinom/fit.hpp",
+      "line": 27,
+      "source": "if(res.accuracy_failure)return stop_failure(failure(\"bbinom numerical accuracy failure: the returned coefficients cannot be resolved to the requested tolerance in the local refinement.\"),res.stop_detail,\"numerical\",{\"size\",\"alpha\",\"beta\"});"
+    },
+    {
+      "path": "bindings/common/distributions/bnbinom/fit.hpp",
+      "line": 25,
+      "source": "if(fit.accuracy_failure)return fail(\"bnbinom numerical accuracy failure: final Newton refinement did not converge to the requested coefficient tolerance; increase iterlim or inspect conditioning.\");"
+    },
+    {
+      "path": "bindings/common/distributions/emg/fit.hpp",
+      "line": 53,
+      "source": "if(r.status==cppunivariate::EmgStatus::AccuracyFailure)return fail(\"emg numerical accuracy failure: coefficients cannot be represented at the requested accuracy.\");"
+    },
+    {
+      "path": "bindings/common/distributions/foldnorm/fit.hpp",
+      "line": 29,
+      "source": "if (r.status==cppunivariate::FoldnormStatus::AccuracyFailure)"
+    },
+    {
+      "path": "bindings/common/distributions/gb2/fit.hpp",
+      "line": 16,
+      "source": "if(r.accuracy_failure)return failure(\"gb2 numerical accuracy failure: final Newton refinement did not converge to the requested coefficient tolerance; increase iterlim or inspect conditioning.\");"
+    },
+    {
+      "path": "bindings/common/distributions/gumbel/fit.hpp",
+      "line": 37,
+      "source": "if (res.status==cppunivariate::GumbelStatus::AccuracyFailure)"
+    },
+    {
+      "path": "bindings/common/distributions/ht/fit.hpp",
+      "line": 36,
+      "source": "if(r.status==cppunivariate::HtStatus::AccuracyFailure)return fail(\"ht numerical accuracy failure: coefficients cannot be represented at the requested accuracy.\");"
+    },
+    {
+      "path": "bindings/common/distributions/lomax/fit.hpp",
+      "line": 33,
+      "source": "if (res.status == cppunivariate::LomaxStatus::AccuracyFailure)"
+    },
+    {
+      "path": "bindings/common/distributions/lst/fit.hpp",
+      "line": 31,
+      "source": "if(r.accuracy_failure)return stop_failure(fail(\"Student-t numerical accuracy failure: observed-information Newton refinement could not justify the requested coefficient tolerance; increase iterlim or inspect conditioning.\"),r.stop_detail,\"numerical\",{\"mu\",\"sigma\",\"df\"});"
+    },
+    {
+      "path": "bindings/common/distributions/pareto3/fit.hpp",
+      "line": 24,
+      "source": "if(res.status==cppunivariate::Pareto3Status::AccuracyFailure)return fail(\"pareto3 numerical accuracy failure: coefficients cannot be represented at the requested accuracy.\");"
+    },
+    {
+      "path": "bindings/common/distributions/pig/fit.hpp",
+      "line": 18,
+      "source": "if (r.status==cppunivariate::PigStatus::AccuracyFailure)"
+    },
+    {
+      "path": "bindings/common/distributions/sged/fit.hpp",
+      "line": 38,
+      "source": "if(res.accuracy_failure)return fail(\"sged numerical accuracy failure: final Newton refinement did not converge to the requested coefficient tolerance; increase iterlim or inspect conditioning.\");"
+    },
+    {
+      "path": "bindings/common/distributions/slash/fit.hpp",
+      "line": 27,
+      "source": "if(f.accuracy_failure)return fail(\"slash numerical accuracy failure: final Newton refinement did not converge to the requested coefficient tolerance; increase iterlim or inspect conditioning.\");"
+    },
+    {
+      "path": "bindings/common/distributions/sn/fit.hpp",
+      "line": 35,
+      "source": "if(fit.status==cppunivariate::SnStatus::AccuracyFailure)return fail(\"sn numerical accuracy failure: coefficients cannot be represented at the requested accuracy.\");"
+    },
+    {
+      "path": "bindings/common/distributions/sstd/fit.hpp",
+      "line": 26,
+      "source": "if(res.accuracy_failure)return fail(\"sstd numerical accuracy failure: final Newton refinement did not converge to the requested coefficient tolerance; increase iterlim or inspect conditioning.\");"
+    },
+    {
+      "path": "bindings/common/distributions/st/fit.hpp",
+      "line": 21,
+      "source": "if(r.accuracy_failure)return fail(\"st numerical accuracy failure: final Newton refinement did not converge to the requested coefficient tolerance; increase iterlim or inspect conditioning.\");"
+    },
+    {
+      "path": "bindings/common/distributions/std/fit.hpp",
+      "line": 31,
+      "source": "if(res.accuracy_failure)return stop_failure(fail(\"Student-t numerical accuracy failure: observed-information Newton refinement could not justify the requested coefficient tolerance; increase iterlim or inspect conditioning.\"),res.stop_detail,\"numerical\",{\"mean\",\"sd\",\"nu\"});"
+    },
+    {
+      "path": "bindings/common/distributions/weibull/fit.hpp",
+      "line": 47,
+      "source": "if (res.status==cppunivariate::WeibullStatus::AccuracyFailure)"
+    },
+    {
+      "path": "bindings/common/distributions/zib/fit.hpp",
+      "line": 19,
+      "source": "if(res.accuracy_failure)return stop_failure(fail(\"zib numerical accuracy failure: the returned coefficients cannot be resolved to the requested tolerance in the local refinement.\"),res.stop_detail,\"numerical\",{\"size\",\"prob\",\"pi\"});"
+    },
+    {
+      "path": "bindings/common/distributions/zmbinom/fit.hpp",
+      "line": 19,
+      "source": "if(res.accuracy_failure)return stop_failure(fail(\"zmbinom numerical accuracy failure: the returned coefficients cannot be resolved to the requested tolerance in the local refinement.\"),res.stop_detail,\"numerical\",{\"size\",\"prob\",\"p0\"});"
+    },
+    {
+      "path": "bindings/common/distributions/ztbinom/fit.hpp",
+      "line": 16,
+      "source": "if(res.accuracy_failure)return stop_failure(fail(\"ztbinom numerical accuracy failure: the returned coefficients cannot be resolved to the requested tolerance in the local refinement.\"),res.stop_detail,\"numerical\",{\"size\",\"prob\"});"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/bbinom/mle.hpp",
+      "line": 70,
+      "source": "bool accuracy_failure = false;"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/bbinom/mle.hpp",
+      "line": 848,
+      "source": "if(!bbinom_detail::fallback_accuracy(x,out.size,out.alpha,out.beta,alpha_fixed,beta_fixed,tol,maxit)) {"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/bbinom/mle.hpp",
+      "line": 849,
+      "source": "out.status=BbinomStatus::IterationFailure;out.accuracy_failure=true;return out;"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/betapr/fallback.hpp",
+      "line": 137,
+      "source": "accurate=burr_local_accuracy(x,k,power,scale,{{a==1?free[1]:free[0],false,free[2]}},tol,maxit,b==1);"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/betapr/fallback.hpp",
+      "line": 139,
+      "source": "} else if(compensated)accurate=burr_power_one_detail::beta_gamma_fit(x,c[0],c[1],c[2],free,tol,maxit,out.logLik);"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/betapr/fallback.hpp",
+      "line": 140,
+      "source": "else accurate=continuous_fallback_polish(q,free,tol,maxit,objective);"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/betapr/fallback.hpp",
+      "line": 141,
+      "source": "if(!accurate) {"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/bhatt/mle.hpp",
+      "line": 311,
+      "source": "if(!local_accuracy(r,x,mu,sigma,a,tol,maxit)) {"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/bhatt/pair_variance_accuracy.hpp",
+      "line": 106,
+      "source": "if(!burr_power_one_detail::pair_polish(q,free,{{0,1,2}},tol,maxit,objective))return false;"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/bnbinom/mle.hpp",
+      "line": 30,
+      "source": "bool accuracy_failure=false;"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/bnbinom/mle.hpp",
+      "line": 849,
+      "source": "if(!stopped.local_accuracy_fallback && free_count>0 && free_count<3 && (stopped.status==BnbinomStatus::Ok ||"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/bnbinom/mle.hpp",
+      "line": 871,
+      "source": "stopped.status=BnbinomStatus::NumericalFailure;stopped.accuracy_failure=true;return stopped;"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/bnbinom/mle.hpp",
+      "line": 878,
+      "source": "} else {stopped.status=BnbinomStatus::NumericalFailure;stopped.accuracy_failure=true;}"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/burr/lomax_face.hpp",
+      "line": 7,
+      "source": "if(r.status!=LomaxStatus::IterationFailure && r.status!=LomaxStatus::AccuracyFailure)return false;"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/burr/mle.hpp",
+      "line": 222,
+      "source": "if(!burr_local_accuracy(x,searched.shape1,searched.shape2,searched.scale,free,tol,maxit)) {"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/dgamma/mle.hpp",
+      "line": 313,
+      "source": "if(!accuracy_detail::polish(q,free,tol,maxit,objective)){r.status=DgammaStatus::IterationFailure;return r;}"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/emg/certificate.hpp",
+      "line": 9,
+      "source": "enum class EmgStatus { Ok, NormalLimit, TranslatedExponentialLimit, Unbounded, InvalidInput, IterationFailure, NumericalFailure, BudgetExhausted, Unresolved, Tie, AccuracyFailure };"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/emg/mle.hpp",
+      "line": 95,
+      "source": "if(!accuracy_detail::polish(q,free,tol,maxit,objective)){r.status=EmgStatus::NumericalFailure;return r;}"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/emg/mle.hpp",
+      "line": 102,
+      "source": "r.status=EmgStatus::AccuracyFailure;return r;"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/foldnorm/mle.hpp",
+      "line": 9,
+      "source": "enum class FoldnormStatus { Ok, InvalidInput, Unbounded, IterationFailure, AccuracyFailure };"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/foldnorm/mle.hpp",
+      "line": 225,
+      "source": "out.status=FoldnormStatus::AccuracyFailure;return out;"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/foldnorm/mle.hpp",
+      "line": 236,
+      "source": "if(!bracketed && mu==0) {out.status=FoldnormStatus::AccuracyFailure;return out;}"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/foldnorm/mle.hpp",
+      "line": 248,
+      "source": "mu=std::sqrt(m2*b);s=std::sqrt(m2*(1-b));accurate=true;face_polish=true;break;"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/foldnorm/mle.hpp",
+      "line": 251,
+      "source": "if(!accurate) {out.status=FoldnormStatus::AccuracyFailure;return out;}"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/foldnorm/mle.hpp",
+      "line": 283,
+      "source": "if(!accurate) {out.status=FoldnormStatus::IterationFailure;return out;}"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/foldnorm/mle.hpp",
+      "line": 295,
+      "source": "out.status=FoldnormStatus::AccuracyFailure;return out;"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/fpareto/mle.hpp",
+      "line": 37,
+      "source": "if(r.status==Gb2Status::Ok&&!r.certified&&!fpareto_transport_accuracy(x,min,r,{{std::isnan(shape1),std::isnan(shape2),std::isnan(shape3),std::isnan(scale)}},tol,maxit))r.status=Gb2Status::NumericalFailure;"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/frechet/certificate.hpp",
+      "line": 175,
+      "source": "if(!accuracy_detail::polish(q,free,tol,maxit,objective))return false;"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/frechet/mle.hpp",
+      "line": 55,
+      "source": "!gev_accuracy_detail::polish(x,r,false,false,tol,maxit,true))r.status=GevStatus::NumericalFailure;"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/frechet/mle.hpp",
+      "line": 240,
+      "source": "!frechet_held_detail::polish(data,fit,tol,maxit))fit.status=FrechetStatus::NumericalFailure;"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gb2/mle.hpp",
+      "line": 26,
+      "source": "bool accuracy_failure=false;"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gb2/mle.hpp",
+      "line": 491,
+      "source": "bad.status=Gb2Status::NumericalFailure;bad.accuracy_failure=true;return bad;"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gb2/mle.hpp",
+      "line": 536,
+      "source": "if(dim>0&&!local_accuracy::polish(v,dim,tol,maxit,objective,error)){bad.status=Gb2Status::NumericalFailure;bad.accuracy_failure=true;return bad;}"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gb2/mle.hpp",
+      "line": 549,
+      "source": "if(out.status==Gb2Status::Ok&&std::isnan(b)&&!local_accuracy::represented(out.scale,out.scale,tol)){out.status=Gb2Status::NumericalFailure;out.accuracy_failure=true;}"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gb2/power_certificate.hpp",
+      "line": 70,
+      "source": "if(out.status==Gb2Status::Ok&&!out.certified&&!gb2_transport_accuracy(x,0,out,{{std::isnan(q),false,std::isnan(p),true}},tol,maxit,true)){out.status=Gb2Status::NumericalFailure;out.accuracy_failure=true;}"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gb2/transport_accuracy.hpp",
+      "line": 12,
+      "source": "if(!burr_local_accuracy(x,k,b,s,{{inverse?free[2]:free[0],free[1],free[3]}},tol,maxit,inverse,shift))return false;"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gb2/transport_accuracy.hpp",
+      "line": 61,
+      "source": "if(dim&&!local_accuracy::polish(v,dim,tol,maxit,objective,error))return false;"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/ged/accuracy.hpp",
+      "line": 28,
+      "source": "if(!accuracy_detail::polish(q,free,tol,maxit,objective))return false;"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/ged/accuracy.hpp",
+      "line": 33,
+      "source": "if(sensitivity>4&&!accuracy_detail::polish(q,free,tol*4/sensitivity,maxit,objective))return false;"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/ged/mle.hpp",
+      "line": 497,
+      "source": "if(!ged_local_accuracy(searched,x,mean,sd,nu,tol,maxit)){searched.status=GedStatus::TransformFailure;searched.certified=false;return searched;}"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/genbeta/mle.hpp",
+      "line": 435,
+      "source": "const auto accuracy_failure=[&]() {"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/genbeta/mle.hpp",
+      "line": 452,
+      "source": "if(beta.status!=BetaStatus::Ok){return accuracy_failure();}"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/genbeta/mle.hpp",
+      "line": 472,
+      "source": "if(!ok){return accuracy_failure();}"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/genbeta/mle.hpp",
+      "line": 495,
+      "source": "if(!accuracy_detail::polish(q,free,tol,maxit,objective)){return accuracy_failure();}"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gev/accuracy.hpp",
+      "line": 106,
+      "source": "if(!accuracy_detail::polish(q,free,tol,maxit,objective))return false;"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gev/joint_certificate.hpp",
+      "line": 719,
+      "source": "if(!gev_accuracy_detail::polish(data,p.fit,false,false,local_tol,maxit,frechet)) {"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gev/mle.hpp",
+      "line": 377,
+      "source": "!gev_accuracy_detail::polish(data,fit,hm,hs,tol,maxit))fit.status=GevStatus::NumericalFailure;"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gumbel/mle.hpp",
+      "line": 22,
+      "source": "enum class GumbelStatus { Ok, InvalidInput, Unbounded, IterationFailure, AccuracyFailure };"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gumbel/mle.hpp",
+      "line": 72,
+      "source": "status=GumbelStatus::AccuracyFailure;"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/gumbel/mle.hpp",
+      "line": 159,
+      "source": "return {m,s,nan,it,GumbelStatus::AccuracyFailure};"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/ht/mle.hpp",
+      "line": 13,
+      "source": "enum class HtStatus { Ok, InvalidData, InvalidParameter, Unbounded, ScaleBoundary, NormalLimit, SearchFailure, IterationFailure, AccuracyFailure };"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/ht/mle.hpp",
+      "line": 268,
+      "source": "if(!accuracy_detail::polish(q,free,1e-10,200,objective)){r.status=HtStatus::SearchFailure;return r;}"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/ht/mle.hpp",
+      "line": 271,
+      "source": "if(free[1]&&!accuracy_detail::scale_projection(r.sigma,unit,q[1],1e-10)){r.status=HtStatus::AccuracyFailure;return r;}"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/invburr/mle.hpp",
+      "line": 205,
+      "source": "if(out.status==InvBurrStatus::Ok&&!out.certified&&!burr_local_accuracy(x,out.shape1,out.shape2,out.scale,{{true,true,true}},tol,maxit,true))out.status=InvBurrStatus::NumericalFailure;"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/invburr/mle.hpp",
+      "line": 234,
+      "source": "if(!burr_local_accuracy(x,out.shape1,out.shape2,out.scale,{{false,std::isnan(b),std::isnan(s)}},tol,maxit,true))out.status=InvBurrStatus::NumericalFailure;"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/invburr/mle.hpp",
+      "line": 302,
+      "source": "if(out.status==InvBurrStatus::Ok&&!out.certified&&!burr_local_accuracy(x,out.shape1,out.shape2,out.scale,{{std::isnan(a),std::isnan(b),std::isnan(s)}},tol,maxit,true))out.status=InvBurrStatus::NumericalFailure;"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/invparalogis/mle.hpp",
+      "line": 43,
+      "source": "if(!paralogis_local_accuracy(x,shape,s,value,tol,maxit,false,true))r.status=ParalogisStatus::NumericalFailure;"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/invparalogis/mle.hpp",
+      "line": 77,
+      "source": "if(!paralogis_local_accuracy(x,shape,s,value,tol,maxit,true,true))r.status=ParalogisStatus::NumericalFailure;"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/lomax/mle.hpp",
+      "line": 24,
+      "source": "AccuracyFailure"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/lomax/mle.hpp",
+      "line": 116,
+      "source": "std::abs(out.lambda*unit-r.lambda)>.25*tol*r.lambda))out.status=LomaxStatus::AccuracyFailure;"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/lomax/mle.hpp",
+      "line": 274,
+      "source": "if(!accurate && hi-lo<=.5*tol)accurate=true;"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/lomax/mle.hpp",
+      "line": 275,
+      "source": "if(!accurate)return {nan,kappa,nan,iterations,rounding?LomaxStatus::AccuracyFailure:LomaxStatus::IterationFailure};"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/lomax/mle.hpp",
+      "line": 286,
+      "source": "return {lambda,kappa,nan,iterations,LomaxStatus::AccuracyFailure};"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/lst/accuracy.hpp",
+      "line": 36,
+      "source": "if(!local_accuracy::subset(p,{{std::isnan(held_mu),std::isnan(held_scale),free_shape,false}},tol,maxit,objective,error))return false;"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/lst/accuracy.hpp",
+      "line": 39,
+      "source": "if(edge&&!free_shape&&objective(local_accuracy::variables(p)).g[2]<0){"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/lst/accuracy.hpp",
+      "line": 41,
+      "source": "if(!local_accuracy::subset(p,{{std::isnan(held_mu),std::isnan(held_scale),true,false}},tol,maxit,objective,error))return false;"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/lst/accuracy.hpp",
+      "line": 50,
+      "source": "return (std::isfinite(r.logLik)&&(!std::isnan(held_mu)||local_accuracy::represented(r.mu,std::max(std::abs(r.mu),empirical_floor?spread:r.sigma),tol))&&(!std::isnan(held_scale)||local_accuracy::represented(r.sigma,r.sigma,tol)));"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/lst/mle.hpp",
+      "line": 30,
+      "source": "LstStatus status; unsigned restricted = 0; StopDetail stop_detail{}; bool certified = true; bool accuracy_failure = false;"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/lst/mle.hpp",
+      "line": 211,
+      "source": "if(!t_local_accuracy::refine(candidate,x,NAN,NAN,df,tol,maxit,false,candidate.df)){candidate.status=LstStatus::NumericalFailure;candidate.accuracy_failure=true;}"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/lst/mle.hpp",
+      "line": 649,
+      "source": "if(r.status==LstStatus::Ok&&!r.certified && !t_local_accuracy::refine(r,x,mu,sigma,df,tol,maxit,false,r.df)){r.status=LstStatus::NumericalFailure;r.accuracy_failure=true;}"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/paralogis/mle.hpp",
+      "line": 289,
+      "source": "if(!paralogis_local_accuracy(x,searched.shape,searched.scale,searched.logLik,tol,maxit,fixed_scale)){searched.status=ParalogisStatus::NumericalFailure;return searched;}"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/pareto3/mle.hpp",
+      "line": 8,
+      "source": "enum class Pareto3Status { Ok, InvalidData, Unbounded, IterationFailure, AccuracyFailure };"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/pareto3/mle.hpp",
+      "line": 47,
+      "source": "if(free[1]&&!accuracy_detail::scale_projection(r.scale,unit,q[1],tol)){r.status=Pareto3Status::AccuracyFailure;return r;}"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/pareto3/mle.hpp",
+      "line": 49,
+      "source": "if(!(r.shape>0 && r.scale>0) || !std::isfinite(r.shape+r.scale)){r.status=Pareto3Status::AccuracyFailure;return r;}"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/pareto3/mle.hpp",
+      "line": 56,
+      "source": "if(!std::isfinite(r.logLik))r.status=Pareto3Status::AccuracyFailure;"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/pareto4/mle.hpp",
+      "line": 46,
+      "source": "if(r.status==BurrStatus::Ok&&!r.certified&&!burr_local_accuracy(x,r.shape1,r.shape2,r.scale,{{std::isnan(shape1),std::isnan(shape2),std::isnan(scale)}},tol,maxit,false,min))r.status=BurrStatus::NumericalFailure;"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/pareto4/mle.hpp",
+      "line": 74,
+      "source": "if(r.status==BurrStatus::Ok&&!r.certified&&!burr_local_accuracy(x,r.shape1,r.shape2,r.scale,{{true,true,true}},tol,maxit,false,min))r.status=BurrStatus::NumericalFailure;"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/pig/mle.hpp",
+      "line": 16,
+      "source": "enum class PigStatus { Ok, PoissonLimit, ZeroLimit, InvalidInput, SearchFailure, AccuracyFailure };"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/pig/mle.hpp",
+      "line": 339,
+      "source": "out.status=PigStatus::AccuracyFailure;return out;"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/sged/accuracy.hpp",
+      "line": 40,
+      "source": "if(!(p.a.v>0&&p.b.v>0))return local_accuracy::Jet(NAN);"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/sged/accuracy.hpp",
+      "line": 91,
+      "source": "if(tangent&&!local_accuracy::polish(q,1,tol,maxit,objective,error))continue;"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/sged/accuracy.hpp",
+      "line": 113,
+      "source": "if((!hm&&!local_accuracy::represented(candidate.mu,std::max(std::abs(candidate.mu),candidate.sigma),tol))||"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/sged/accuracy.hpp",
+      "line": 114,
+      "source": "(!hs&&!local_accuracy::represented(candidate.sigma,candidate.sigma,tol))||"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/sged/accuracy.hpp",
+      "line": 115,
+      "source": "(!hx&&!local_accuracy::represented(candidate.xi,candidate.xi,tol)))continue;"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/sged/certificate.hpp",
+      "line": 70,
+      "source": "if((!hm && !local_accuracy::represented(r.mu,std::max(std::abs(r.mu),r.sigma),accuracy)) ||"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/sged/certificate.hpp",
+      "line": 71,
+      "source": "(!hs && !local_accuracy::represented(r.sigma,r.sigma,accuracy))) {"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/sged/certificate.hpp",
+      "line": 72,
+      "source": "r.accuracy_failure=true;return r;"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/sged/mle.hpp",
+      "line": 51,
+      "source": "bool accuracy_failure=false;"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/sged/mle.hpp",
+      "line": 435,
+      "source": "if(best.status==SgedStatus::Ok&&wrong_restriction){best.status=SgedStatus::BfgsFailure;best.accuracy_failure=true;}"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/sged/mle.hpp",
+      "line": 441,
+      "source": "} else {best.status=SgedStatus::BfgsFailure;best.accuracy_failure=true;}"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/sged/mle.hpp",
+      "line": 446,
+      "source": "if(best.status==SgedStatus::Ok&&(!local_accuracy::represented(best.mu,std::max(std::abs(best.mu),best.sigma),tol)||!local_accuracy::represented(best.sigma,best.sigma,tol))){best.status=SgedStatus::BfgsFailure;best.accuracy_failure=true;}"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/sged/mle.hpp",
+      "line": 558,
+      "source": "const auto error=[&](const std::array<double,4>& q,const std::array<double,4>& step){auto v=q;v[0]+=origin/unit;auto t=step;if(!hn)t[2]*=edge?1/q[2]:std::exp(q[2])/(1+std::exp(q[2]));return local_accuracy::location_error(v,t);};"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/sged/mle.hpp",
+      "line": 562,
+      "source": "bool accurate=local_accuracy::subset(p,{{std::isnan(mean),std::isnan(sd),free_shape,std::isnan(xi)}},tol,maxit,objective,error);"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/sged/mle.hpp",
+      "line": 563,
+      "source": "if(accurate&&edge&&!free_shape&&objective(local_accuracy::variables(p)).g[2]<0)"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/sged/mle.hpp",
+      "line": 564,
+      "source": "accurate=local_accuracy::subset(p,{{std::isnan(mean),std::isnan(sd),true,std::isnan(xi)}},tol,maxit,objective,error);"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/sged/mle.hpp",
+      "line": 567,
+      "source": "if((std::isnan(mean)&&!local_accuracy::represented(r.mu,std::max(std::abs(r.mu),r.sigma),tol))||(std::isnan(sd)&&!local_accuracy::represented(r.sigma,r.sigma,tol))){r.status=SgedStatus::BfgsFailure;r.accuracy_failure=true;}"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/sged/mle.hpp",
+      "line": 568,
+      "source": "}else{r.status=SgedStatus::BfgsFailure;r.accuracy_failure=true;}"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/sgomp/mle.hpp",
+      "line": 330,
+      "source": "if(!accuracy_detail::polish(q,free,tol,maxit,objective)){r.status=SgompStatus::IterationFailure;return r;}"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/skellam/mle.hpp",
+      "line": 174,
+      "source": "if(!accuracy_detail::polish(q,free,tol,maxit,objective)){r.status=SkellamStatus::IterationFailure;return r;}"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/slash/mle.hpp",
+      "line": 13,
+      "source": "struct SlashResult {double mu,sigma,logLik;int iterations;SlashStatus status;StopDetail stop_detail{};bool budget_exhausted=false;bool accuracy_failure=false;};"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/slash/mle.hpp",
+      "line": 299,
+      "source": "if(r.status==SlashStatus::Ok&&std::isnan(sigma)&&!local_accuracy::represented(r.sigma,r.sigma,tol)){r.status=SlashStatus::IterationFailure;r.accuracy_failure=true;}"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/slash/mle.hpp",
+      "line": 419,
+      "source": "if(!local_accuracy::subset(q,{{true,std::isnan(sigma),false,false}},tol,maxit,objective,[&](const std::array<double,4>& v,const std::array<double,4>& step){auto q=v;q[0]+=(centre/scale+accuracy_center)/accuracy_scale;return local_accuracy::location_error(q,step);})){bad.status=SlashStatus::IterationFailure;bad.accuracy_failure=true;return bad;}"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/slash/mle.hpp",
+      "line": 427,
+      "source": "if(best.status==SlashStatus::Ok&&(!local_accuracy::represented(best.mu,std::max(std::abs(best.mu),best.sigma),tol)||(std::isnan(sigma)&&!local_accuracy::represented(best.sigma,best.sigma,tol)))){best.status=SlashStatus::IterationFailure;best.accuracy_failure=true;}"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/sn/mle.hpp",
+      "line": 11,
+      "source": "enum class SnStatus { Ok, InvalidInput, IterationFailure, RightHalfNormalBoundary, LeftHalfNormalBoundary, AccuracyFailure };"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/sn/mle.hpp",
+      "line": 496,
+      "source": "if(!accuracy_detail::polish(q,free,tol,maxit,objective)){r.status=SnStatus::IterationFailure;return r;}"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/sn/mle.hpp",
+      "line": 502,
+      "source": "r.status=SnStatus::AccuracyFailure;return r;"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/sstd/mle.hpp",
+      "line": 60,
+      "source": "bool accuracy_failure=false;"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/sstd/mle.hpp",
+      "line": 510,
+      "source": "if(r.status==SstdStatus::Ok&&(!local_accuracy::represented(r.mu,std::max(std::abs(r.mu),r.sigma),tol)||!local_accuracy::represented(r.sigma,r.sigma,tol))){r.status=SstdStatus::BfgsFailure;r.accuracy_failure=true;}"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/sstd/mle.hpp",
+      "line": 693,
+      "source": "r.accuracy_failure=!local_accuracy::represented(r.mu,std::max(std::abs(r.mu),r.sigma),tol)||!local_accuracy::represented(r.sigma,r.sigma,tol);"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/sstd/mle.hpp",
+      "line": 694,
+      "source": "r.status=r.accuracy_failure?SstdStatus::BfgsFailure:SstdStatus::Ok;"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/sstd/mle.hpp",
+      "line": 695,
+      "source": "} else {r.status=SstdStatus::BfgsFailure;r.accuracy_failure=true;}"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/sstd/mle.hpp",
+      "line": 741,
+      "source": "const auto error=[&](const std::array<double,4>& q,const std::array<double,4>& step){auto v=q;v[0]+=origin/unit;auto t=step;if(!hn)t[2]*=std::exp(q[2])/(2+std::exp(q[2]));return local_accuracy::location_error(v,t);};"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/sstd/mle.hpp",
+      "line": 744,
+      "source": "if((!hm&&!local_accuracy::represented(result.mu,std::max(std::abs(result.mu),result.sigma),tol))||(!hs&&!local_accuracy::represented(result.sigma,result.sigma,tol))){result.status=SstdStatus::BfgsFailure;result.accuracy_failure=true;}"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/sstd/mle.hpp",
+      "line": 745,
+      "source": "}else{result.status=SstdStatus::BfgsFailure;result.accuracy_failure=true;}"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/st/mle.hpp",
+      "line": 20,
+      "source": "struct StResult {double xi,omega,alpha,nu,logLik;int iterations;StStatus status;unsigned restricted=0;unsigned reason=0;StopDetail stop_detail{};bool budget_exhausted=false;bool certified=false;bool accuracy_failure=false;};"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/st/mle.hpp",
+      "line": 230,
+      "source": "if(!local_accuracy::subset(p,{{std::isnan(xi),std::isnan(omega),std::isnan(alpha),free_shape}},tol,maxit,objective,error)){bad.status=StStatus::NumericalFailure;bad.accuracy_failure=true;return bad;}"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/st/mle.hpp",
+      "line": 231,
+      "source": "if(edge&&!free_shape&&objective(local_accuracy::variables(p)).g[3]<0){"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/st/mle.hpp",
+      "line": 232,
+      "source": "if(!local_accuracy::subset(p,{{std::isnan(xi),std::isnan(omega),std::isnan(alpha),true}},tol,maxit,objective,error)){bad.status=StStatus::NumericalFailure;bad.accuracy_failure=true;return bad;}"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/st/mle.hpp",
+      "line": 240,
+      "source": "if(!std::isfinite(out.logLik)||(std::isnan(xi)&&!local_accuracy::represented(out.xi,std::max(std::abs(out.xi),out.omega),tol))||(std::isnan(omega)&&!local_accuracy::represented(out.omega,out.omega,tol))){out.status=StStatus::NumericalFailure;out.accuracy_failure=true;}"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/std/mle.hpp",
+      "line": 47,
+      "source": "bool accuracy_failure = false;"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/std/mle.hpp",
+      "line": 209,
+      "source": "result.stop_detail=r.stop_detail;result.certified=r.certified;result.accuracy_failure=r.accuracy_failure;"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/std/mle.hpp",
+      "line": 415,
+      "source": "result.stop_detail=r.stop_detail;result.certified=r.certified;result.accuracy_failure=r.accuracy_failure;"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/std/mle.hpp",
+      "line": 560,
+      "source": "if(r.status==StudentTStatus::Ok&&!r.certified && !t_local_accuracy::refine(r,x,mean,sd,nu,tol,maxit,true,r.nu)){r.status=StudentTStatus::NumericalFailure;r.accuracy_failure=true;}"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/tbinom/mle.hpp",
+      "line": 550,
+      "source": "if(!tbinom_detail::fallback_accuracy(x,best.size,best.a,best.b,best.prob)) {"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/weibull/mle.hpp",
+      "line": 18,
+      "source": "enum class WeibullStatus { Ok, InvalidInput, Unbounded, IterationFailure, AccuracyFailure };"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/weibull/mle.hpp",
+      "line": 63,
+      "source": "return {shape,scale,g.logLik+sum_log_x,g.iterations,WeibullStatus::AccuracyFailure};"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/weibull/mle.hpp",
+      "line": 70,
+      "source": "g.status == GumbelStatus::AccuracyFailure ? WeibullStatus::AccuracyFailure :"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/weibull/mle.hpp",
+      "line": 102,
+      "source": "return {shape,scale,nan,0,WeibullStatus::AccuracyFailure};"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/weibull/mle.hpp",
+      "line": 140,
+      "source": "if(!accurate && hi-lo>.01*tol)return {nan,scale,nan,iterations,WeibullStatus::IterationFailure};"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/weibull/mle.hpp",
+      "line": 143,
+      "source": "return {shape,scale,nan,iterations,WeibullStatus::AccuracyFailure};"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/zib/mle.hpp",
+      "line": 12,
+      "source": "bool accuracy_failure = false;"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/zib/mle.hpp",
+      "line": 360,
+      "source": "out.status=ZibStatus::IterationFailure;out.accuracy_failure=true;"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/zinb/mle.hpp",
+      "line": 213,
+      "source": "if(!accuracy_detail::nb_polish(x,r.size,r.prob,r.pi,std::isnan(size),std::isnan(prob),std::isnan(pi),false,tol,maxit)) {"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/zmbinom/mle.hpp",
+      "line": 9,
+      "source": "bool accuracy_failure = false;"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/zmbinom/mle.hpp",
+      "line": 34,
+      "source": "out.certified=fit.certified;out.accuracy_failure=fit.accuracy_failure;"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/zmbinom/mle.hpp",
+      "line": 63,
+      "source": "out.status=ZmbinomStatus::IterationFailure;out.accuracy_failure=true;"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/ztbinom/mle.hpp",
+      "line": 12,
+      "source": "bool accuracy_failure = false;"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/ztbinom/mle.hpp",
+      "line": 264,
+      "source": "best.status=ZtbinomStatus::IterationFailure;best.accuracy_failure=true;"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/ztnbinom/mle.hpp",
+      "line": 91,
+      "source": "if(!accuracy_detail::nb_polish(x,r.size,r.prob,pi,std::isnan(size),std::isnan(prob),false,true,tol,maxit)) {"
+    }
+  ]
+}

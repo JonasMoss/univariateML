@@ -16,6 +16,7 @@ inline FitResult fit_zib(cppunivariate::ispan x, Held size_arg = {}, Held prob_a
   const double held_pi=pi.supplied?pi.value:std::numeric_limits<double>::quiet_NaN();
   if(pi.supplied && (!std::isfinite(held_pi)||held_pi<0||held_pi>1))return fail("`pi` must be finite and in [0, 1].");
   const auto res=cppunivariate::zib_mle(x, reltol, iterlim, fixed_size, held_prob, held_pi);
+  if(res.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return stop_failure(failure("zib numerical accuracy failure: requested coefficient accuracy cannot be established."),res.stop_detail,"numerical",{"size","prob","pi"});
   if(res.accuracy_failure)return stop_failure(fail("zib numerical accuracy failure: the returned coefficients cannot be resolved to the requested tolerance in the local refinement."),res.stop_detail,"numerical",{"size","prob","pi"});
   std::string stop_kind;
   switch(res.status) {

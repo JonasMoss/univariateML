@@ -127,3 +127,26 @@ TEST_CASE("foldnorm: unresolved quartic identification cannot certify zero locat
   REQUIRE(exact.status==cppunivariate::FoldnormStatus::Ok);
   CHECK(exact.mu==0);
 }
+
+TEST_CASE("foldnorm quartic identification reports conditioning with its witness") {
+  const std::vector<double> x{1,1,1,std::sqrt(9+4*std::sqrt(6.))};
+  const auto r=cppunivariate::foldnorm_mle({x.data(),x.size()});
+  CHECK(r.status==cppunivariate::FoldnormStatus::AccuracyFailure);
+  CHECK(r.stop_detail.accuracy_stop==cppunivariate::AccuracyStop::Conditioning);
+  CHECK(r.stop_detail.conditioning_bound>1e-10);
+  REQUIRE(!r.stop_detail.candidates.empty());
+  CHECK(std::isfinite(r.stop_detail.candidates.back().loglik_lower));
+  CHECK(r.stop_detail.attainable_tol<1e-10);
+}
+
+TEST_CASE("foldnorm underflow does not fabricate a positive-scale accuracy witness") {
+  const double u=std::numeric_limits<double>::denorm_min();
+  const std::vector<double> x{0,u};
+  const auto r=cppunivariate::foldnorm_mle({x.data(),x.size()});
+  CHECK(r.status==cppunivariate::FoldnormStatus::AccuracyFailure);
+  CHECK(r.stop_detail.accuracy_stop==cppunivariate::AccuracyStop::None);
+  for(const auto& c:r.stop_detail.candidates)if(c.model==cppunivariate::StopModel::None) {
+    REQUIRE(c.coef.size()==2);
+    CHECK(c.coef[1]>0);
+  }
+}

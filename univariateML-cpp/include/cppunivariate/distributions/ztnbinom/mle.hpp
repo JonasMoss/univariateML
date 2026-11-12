@@ -88,8 +88,8 @@ inline ZtnbinomResult ztnbinom_mle(ispan x,double tol=1e-10,int maxit=200,double
   auto r=ztnbinom_accuracy_search(x,tol,maxit,size,prob);
   if(r.status!=ZtnbinomStatus::Ok)return r;
   double pi=0;
-  if(!accuracy_detail::nb_polish(x,r.size,r.prob,pi,std::isnan(size),std::isnan(prob),false,true,tol,maxit)) {
-    r.status=ZtnbinomStatus::IterationFailure;return r;
+  if(!accuracy_detail::nb_polish(x,r.size,r.prob,pi,std::isnan(size),std::isnan(prob),false,true,tol,maxit,r.stop_detail)) {
+    r.status=ZtnbinomStatus::IterationFailure;record_accuracy(r,tol,{r.size,r.prob},{std::max(1.,std::abs(r.size)),std::max(1.,std::abs(r.prob))});return r;
   }
   if(r.size>0&&r.prob<1){r.logLik=0;for(int v:x)r.logLik+=zero_detail::nb_logpmf(v,r.size,r.prob)-std::log(-std::expm1(r.size*std::log(r.prob)));}
   return r;

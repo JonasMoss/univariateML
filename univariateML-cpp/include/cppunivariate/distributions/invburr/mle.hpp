@@ -202,9 +202,12 @@ inline InvBurrResult invburr_mle(span x, double tol, int maxit,
   }
   InvBurrResult out{r.shape1,r.shape2,scale,logLik,r.iterations,status};
   out.certified=r.certified;
-  if(out.status==InvBurrStatus::Ok&&!out.certified&&!burr_local_accuracy(x,out.shape1,out.shape2,out.scale,{{true,true,true}},tol,maxit,true))out.status=InvBurrStatus::NumericalFailure;
+  bool accuracy_failed=false;
+  if(out.status==InvBurrStatus::Ok&&!out.certified&&!burr_local_accuracy(x,out.shape1,out.shape2,out.scale,{{true,true,true}},tol,maxit,true,0,out.stop_detail)){out.status=InvBurrStatus::NumericalFailure;accuracy_failed=true;}
   if(out.status==InvBurrStatus::Ok&&!out.certified){out.logLik=burr_local_loglik(x,out.shape1,out.shape2,out.scale,true);if(!std::isfinite(out.logLik))out.status=InvBurrStatus::NumericalFailure;}
+  const double accuracy_noise=out.stop_detail.conditioning_bound;
   out.stop_detail=invburr_stop_detail(r.stop_detail,jacobian,maximum);
+  if(accuracy_failed)record_accuracy(out,tol,{out.shape1,out.shape2,out.scale},{out.shape1,out.shape2,out.scale},accuracy_noise);
   if(status==InvBurrStatus::PowerBoundary)out.stop_detail.limit_coef={maximum,r.stop_detail.limit_coef[0]};
   if(status==InvBurrStatus::InvWeibullBoundary)out.stop_detail.limit_coef={r.stop_detail.limit_coef[0],1/r.stop_detail.limit_coef[1]};
   return out;
@@ -231,7 +234,7 @@ inline InvBurrResult invburr_mle_holds(span x,double a,double b,double s,double 
      r.status==1?InvBurrStatus::InvalidInit:r.status==2?InvBurrStatus::Unbounded:InvBurrStatus::NumericalFailure};
    out.certified=r.certified;
    if(out.status==InvBurrStatus::Ok&&!out.certified) {
-     if(!burr_local_accuracy(x,out.shape1,out.shape2,out.scale,{{false,std::isnan(b),std::isnan(s)}},tol,maxit,true))out.status=InvBurrStatus::NumericalFailure;
+     if(!burr_local_accuracy(x,out.shape1,out.shape2,out.scale,{{false,std::isnan(b),std::isnan(s)}},tol,maxit,true,0,out.stop_detail)){out.status=InvBurrStatus::NumericalFailure;record_accuracy(out,tol,{out.shape1,out.shape2,out.scale},{0,std::isnan(b)?out.shape2:0,std::isnan(s)?out.scale:0});}
      else {out.logLik=burr_local_loglik(x,out.shape1,out.shape2,out.scale,true);if(!std::isfinite(out.logLik))out.status=InvBurrStatus::NumericalFailure;}
    }
    return out;
@@ -299,7 +302,7 @@ inline InvBurrResult invburr_mle_holds(span x,double a,double b,double s,double 
    out.stop_detail.loglik_lower=std::min(out.stop_detail.loglik_lower,out.logLik);
    out.stop_detail.loglik_upper=std::max(out.stop_detail.loglik_upper,out.logLik);
  }
- if(out.status==InvBurrStatus::Ok&&!out.certified&&!burr_local_accuracy(x,out.shape1,out.shape2,out.scale,{{std::isnan(a),std::isnan(b),std::isnan(s)}},tol,maxit,true))out.status=InvBurrStatus::NumericalFailure;
+ if(out.status==InvBurrStatus::Ok&&!out.certified&&!burr_local_accuracy(x,out.shape1,out.shape2,out.scale,{{std::isnan(a),std::isnan(b),std::isnan(s)}},tol,maxit,true,0,out.stop_detail)){out.status=InvBurrStatus::NumericalFailure;record_accuracy(out,tol,{out.shape1,out.shape2,out.scale},{std::isnan(a)?out.shape1:0,std::isnan(b)?out.shape2:0,std::isnan(s)?out.scale:0});}
  if(out.status==InvBurrStatus::Ok&&!out.certified){out.logLik=burr_local_loglik(x,out.shape1,out.shape2,out.scale,true);if(!std::isfinite(out.logLik))out.status=InvBurrStatus::NumericalFailure;}
  if(!std::isnan(s))for(auto& candidate:out.stop_detail.candidates)
    if(candidate.model==StopModel::None&&candidate.coef.size()==3)candidate.coef[2]=s;

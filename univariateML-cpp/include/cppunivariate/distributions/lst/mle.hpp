@@ -208,7 +208,7 @@ inline LstResult lst_mle_fixed_df(span x, double df, double tol, int maxit) {
       double fitted_mu=center+unit*mu,fitted_scale=unit*scale;
       if(df>=1 && !t_location_detail::joint_inclusion(x,df,maxit,fitted_mu,fitted_scale)) {
         LstResult candidate{center+unit*mu,unit*scale,df,NAN,it,LstStatus::Ok};candidate.certified=false;
-        if(!t_local_accuracy::refine(candidate,x,NAN,NAN,df,tol,maxit,false,candidate.df)){candidate.status=LstStatus::NumericalFailure;candidate.accuracy_failure=true;}
+        if(!t_local_accuracy::refine(candidate,x,NAN,NAN,df,tol,maxit,false,candidate.df)){candidate.status=LstStatus::NumericalFailure;candidate.accuracy_failure=true;{if(candidate.sigma>0 && candidate.df>0)record_accuracy(candidate,tol,{candidate.mu,candidate.sigma,candidate.df},{std::max(std::abs(candidate.mu),candidate.sigma),candidate.sigma,0});else{candidate.stop_detail.accuracy_stop=AccuracyStop::None;candidate.stop_detail.attainable_tol=NAN;}}}
         t_shape_detail::retain_point(x,candidate.mu,candidate.sigma,df,false,candidate.stop_detail);
         candidate.stop_detail.loglik_upper=INFINITY;
         return candidate;
@@ -646,7 +646,7 @@ inline LstResult lst_mle_held(span x,double tol,int maxit,double mu,double sigma
 }
 inline LstResult lst_mle(span x,double tol,int maxit,double mu,double sigma,double df) {
  auto r=lst_mle_held(x,tol,maxit,mu,sigma,df);
- if(r.status==LstStatus::Ok&&!r.certified && !t_local_accuracy::refine(r,x,mu,sigma,df,tol,maxit,false,r.df)){r.status=LstStatus::NumericalFailure;r.accuracy_failure=true;}
+ if(r.status==LstStatus::Ok&&!r.certified && !t_local_accuracy::refine(r,x,mu,sigma,df,tol,maxit,false,r.df)){r.status=LstStatus::NumericalFailure;r.accuracy_failure=true;{if(r.sigma>0 && r.df>0)record_accuracy(r,tol,{r.mu,r.sigma,r.df},{std::isnan(mu)?std::max(std::abs(r.mu),r.sigma):0,std::isnan(sigma)?r.sigma:0,std::isnan(df)?r.df:0});else{r.stop_detail.accuracy_stop=AccuracyStop::None;r.stop_detail.attainable_tol=NAN;}}}
  if(r.status==LstStatus::Ok&&!r.certified&&std::isnan(df)&&std::isnan(mu)){
   if(r.df==1)r.restricted|=16u;else r.restricted&=~16u;
  }

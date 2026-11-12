@@ -28,6 +28,7 @@ inline FitResult fit_bhatt(cppunivariate::span x, Held mu_arg = {}, Held sigma_a
   const double f_mu=mu.supplied?mu.value:cppunivariate::special::kNaN;
   if(mu.supplied&&!std::isfinite(f_mu))return fail("Held mu must be finite.");
   const auto f=cppunivariate::bhatt_mle(x,reltol,iterlim,f_sigma,f_a,f_mu);
+  if(f.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return stop_failure(failure("bhatt numerical accuracy failure: requested coefficient accuracy cannot be established."),f.stop_detail,"numerical",{"mu","sigma","a"});
   certified=f.certified;
   if(f.status==cppunivariate::BhattStatus::BudgetExhausted)return stop_failure(fail("Bhatt certificate budget exhausted; raising iterlim may resolve the remaining width intervals."),f.stop_detail,"budget",{"mu","sigma","a"});
   if(f.status==cppunivariate::BhattStatus::Unresolved)return stop_failure(fail("Bhatt normal/uniform comparison unresolved; no global winner has been certified. Use `mlnorm` or `mlunif` only for the compared model, retaining compatible holds."),f.stop_detail,"unresolved",{"mu","sigma","a"});

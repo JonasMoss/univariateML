@@ -23,6 +23,7 @@ inline FitResult fit_pareto4(cppunivariate::span x, Held shape1_arg = {}, Held s
  if(shape1.supplied) fixed.push_back("shape1");
  if(shape2.supplied) fixed.push_back("shape2");
  auto res=cppunivariate::pareto4_mle(x,min,reltol,iterlim,scale.supplied ? scale.value : std::numeric_limits<double>::quiet_NaN(),shape1.supplied?shape1.value:NAN,shape2.supplied?shape2.value:NAN);
+  if(res.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return stop_failure(failure("pareto4 numerical accuracy failure: requested coefficient accuracy cannot be established."),res.stop_detail,"numerical",{"shape1","shape2","scale","min"});
  if (res.status == cppunivariate::BurrStatus::Unbounded) return stop_failure(fail("Likelihood is unbounded for this constant sample; no MLE."),res.stop_detail,"nomle",{"shape1","shape2","scale","min"},"");
  if (res.status == cppunivariate::BurrStatus::AllGeOne) return stop_failure(fail("The fixed-scale Pareto IV MLE does not exist when all observations >= min + scale. The limit is a shifted Pareto with its endpoint held at min + scale; the package has no held-endpoint Pareto fitter."),res.stop_detail,"limit",{"shape1","shape2","scale","min"},"pareto");
  if (res.status == cppunivariate::BurrStatus::WeibullBoundary) return stop_failure(fail("The burr likelihood is maximised at a limit. Use `mlweibull(x - min)` to fit this model."),res.stop_detail,"limit",{"shape1","shape2","scale","min"},"weibull");

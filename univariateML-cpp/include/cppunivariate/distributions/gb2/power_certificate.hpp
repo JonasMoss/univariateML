@@ -65,7 +65,7 @@ inline Gb2Result fit(span x,double q,double a,double p,double tol,int maxit) {
   if(out.status==Gb2Status::Ok&&!out.certified) {
     const ExtendedReal coordinate=static_cast<ExtendedReal>(center)+std::log(static_cast<ExtendedReal>(r.scale))/a;
     out.scale=static_cast<double>(std::exp(coordinate));
-    if(!(out.scale>0)||!std::isfinite(out.scale)||std::abs(std::log(static_cast<ExtendedReal>(out.scale))-coordinate)>tol*.25)out.status=Gb2Status::NumericalFailure;
+    if(!(out.scale>0)||!std::isfinite(out.scale)||std::abs(std::log(static_cast<ExtendedReal>(out.scale))-coordinate)>tol*.25){out.status=Gb2Status::NumericalFailure;out.accuracy_failure=true;}
   }
   if(out.status==Gb2Status::Ok&&!out.certified&&!gb2_transport_accuracy(x,0,out,{{std::isnan(q),false,std::isnan(p),true}},tol,maxit,true)){out.status=Gb2Status::NumericalFailure;out.accuracy_failure=true;}
   auto& d=out.stop_detail;
@@ -100,6 +100,11 @@ inline Gb2Result fit(span x,double q,double a,double p,double tol,int maxit) {
   if((invalid && (out.status!=Gb2Status::Ok || out.certified)) || (out.status==Gb2Status::Ok && !std::isfinite(out.scale)) ||
      ((out.status==Gb2Status::Ok||out.status==Gb2Status::TrGammaBoundary||
        out.status==Gb2Status::InvTrGammaBoundary)&&!std::isfinite(out.logLik)))out.status=Gb2Status::NumericalFailure;
+  if(out.accuracy_failure) {
+    if(out.shape1>0 && out.shape2>0 && out.shape3>0 && out.scale>0)
+      record_accuracy(out,tol,{out.shape1,out.shape2,out.shape3,out.scale},{std::isnan(q)?out.shape1:0,0,std::isnan(p)?out.shape3:0,out.scale});
+    else{out.stop_detail.accuracy_stop=AccuracyStop::None;out.stop_detail.attainable_tol=NAN;}
+  }
   return out;
 }
 } // namespace gb2_power_detail

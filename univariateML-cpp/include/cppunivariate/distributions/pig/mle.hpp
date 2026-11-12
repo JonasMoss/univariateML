@@ -336,7 +336,7 @@ inline PigResult free_shape(const Counts& data,double mean,bool mean_free,double
       if(!std::isfinite(out.logLik) ||
           std::nextafter(out.shape,INFINITY)-out.shape>resolution*out.shape)return out;
       if(!(out.shape>0) || std::abs(std::log(out.shape)-(a+(b-a)/2))>.25*tol) {
-        out.status=PigStatus::AccuracyFailure;return out;
+        {out.status=PigStatus::AccuracyFailure;{if(out.mean>0 && out.shape>0)record_accuracy(out,tol,{out.mean,out.shape},{mean_free?out.mean:0,out.shape});else{out.stop_detail.accuracy_stop=AccuracyStop::None;out.stop_detail.attainable_tol=NAN;}}}return out;
       }
       out.status=PigStatus::Ok;out.stop_detail={};return out;
     }

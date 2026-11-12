@@ -61,6 +61,7 @@ const std::string name = "shape3";
   if(b==1&&std::isnan(a)&&std::isnan(t))fixed.push_back("shape3");
   fixed.push_back("scale");
   const auto r=cppunivariate::genbeta_mle(x,scale,gradtol,iterlim,a,b,t);
+  if(r.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return stop_failure(failure("genbeta numerical accuracy failure: requested coefficient accuracy cannot be established."),r.stop_detail,"numerical",{"shape1","shape2","shape3","scale"});
   if(r.stop_detail.budget_exhausted)return classify(fail("Generalized beta certificate budget exhausted; increase iterlim."),r.stop_detail,"budget",{"shape1","shape2","shape3","scale"});
   if(r.stop_detail.comparison_tie)return classify(fail("Generalized beta search unresolved; increase iterlim or hold shapes."),r.stop_detail,"tie",{"shape1","shape2","shape3","scale"});
   switch(r.status) {

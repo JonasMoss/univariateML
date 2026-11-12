@@ -29,7 +29,7 @@ emscripten::val fit_output(const umvl_binding::FitResult& result) {
     for(const auto& message:result.warnings) warnings.call<void>("push",message);
     out.set("warnings",warnings);
     if(!result.error_kind.empty()) {
-      out.set("kind",result.error_kind);out.set("model",result.model);
+      out.set("attainable_tol",result.attainable_tol);out.set("kind",result.error_kind);out.set("model",result.model);
       auto estimates=emscripten::val::object(),candidates=emscripten::val::array();
       for(const auto& item:result.limit_estimates)estimates.set(item.first,item.second);
       for(const auto& candidate:result.candidates) {

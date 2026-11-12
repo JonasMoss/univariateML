@@ -493,13 +493,13 @@ inline SnResult sn_mle(span x,double tol=1e-10,int maxit=100,double xi=NAN,doubl
       f.add(-z[1]-accuracy_detail::Jet(.5)*t*t+accuracy_detail::logcdf(accuracy_detail::Jet(shape_unit)*z[2]*t));}
     return f.value;
   };
-  if(!accuracy_detail::polish(q,free,tol,maxit,objective)){r.status=SnStatus::IterationFailure;return r;}
+  if(!accuracy_detail::polish(q,free,tol,maxit,objective,r.stop_detail)){r.status=SnStatus::IterationFailure;{if(r.omega>0)record_accuracy(r,tol,{r.xi,r.omega,r.alpha},{std::isnan(xi)?std::max(std::abs(r.xi),r.omega):0,std::isnan(omega)?r.omega:0,std::isnan(alpha)?std::max(1.,std::abs(r.alpha)):0});else{r.stop_detail.accuracy_stop=AccuracyStop::None;r.stop_detail.attainable_tol=NAN;}}return r;}
   if(free[0])r.xi=std::fma(unit,q[0],center);
   if(free[1])r.omega=unit*std::exp(q[1]);
   if(free[2])r.alpha=shape_unit*q[2];
   if((free[0]&&!accuracy_detail::location_projection(r.xi,center,unit,q[0],r.omega,tol))||
      (free[1]&&!accuracy_detail::scale_projection(r.omega,unit,q[1],tol))||!std::isfinite(r.alpha)) {
-    r.status=SnStatus::AccuracyFailure;return r;
+    {r.status=SnStatus::AccuracyFailure;{if(r.omega>0)record_accuracy(r,tol,{r.xi,r.omega,r.alpha},{std::isnan(xi)?std::max(std::abs(r.xi),r.omega):0,std::isnan(omega)?r.omega:0,std::isnan(alpha)?std::max(1.,std::abs(r.alpha)):0});else{r.stop_detail.accuracy_stop=AccuracyStop::None;r.stop_detail.attainable_tol=NAN;}}}return r;
   }
   r.logLik=0;for(double v:x)r.logLik+=distributions::dsn(v,r.xi,r.omega,r.alpha,true);
   return r;

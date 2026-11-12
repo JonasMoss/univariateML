@@ -1,0 +1,10 @@
+baseline
+pareto2 tol=1e-10 status=0 scale=inf finite_loglik=1
+invparalogis tol=1e-10 status=0 scale=inf finite_loglik=1
+pareto2 tol=1e-20 status=4 scale=nan finite_loglik=0
+invparalogis tol=1e-20 status=0 scale=inf finite_loglik=1
+current
+pareto2 tol=1e-10 status=3 scale=inf finite_loglik=1
+invparalogis tol=1e-10 status=4 scale=inf finite_loglik=1
+pareto2 tol=1e-20 status=3 scale=inf finite_loglik=1
+invparalogis tol=1e-20 status=4 scale=inf finite_loglik=1

@@ -30,8 +30,9 @@ inline FitResult fit_lomax(cppunivariate::span x, Held lambda_arg = {}, Held kap
     }
   }
   auto res = cppunivariate::lomax_mle(x, reltol, iterlim, start, lambda_held, kappa_held);
+  if(res.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return stop_failure(failure("lomax numerical accuracy failure: requested coefficient accuracy cannot be established."),res.stop_detail,"numerical",{"lambda","kappa"});
   if (res.status == cppunivariate::LomaxStatus::AccuracyFailure)
-    return stop_failure(fail("Lomax could not verify the requested coefficient accuracy in binary64."),{},"numerical",{"lambda","kappa"});
+    return stop_failure(fail("Lomax could not verify the requested coefficient accuracy in binary64."),res.stop_detail,"numerical",{"lambda","kappa"});
   if (res.status == cppunivariate::LomaxStatus::ExponentialLimit) {
     return stop_failure(fail("The certified profile bound places every improvement over the exponential limit within its tolerance (1e-8 per observation). Use `mlexp` to fit that limit model."),res.stop_detail,"limit",{"lambda","kappa"},"exp");
   }

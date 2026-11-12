@@ -16,6 +16,7 @@ inline FitResult fit_zmbinom(cppunivariate::ispan x, Held size_arg = {}, Held pr
   const double held_p0=p0.supplied?p0.value:std::numeric_limits<double>::quiet_NaN();
   if(p0.supplied && (!std::isfinite(held_p0)||held_p0<0||held_p0>1))return fail("`p0` must be finite and in [0, 1].");
   const auto res=cppunivariate::zmbinom_mle(x, reltol, iterlim, fixed_size, held_prob, held_p0);
+  if(res.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return stop_failure(failure("zmbinom numerical accuracy failure: requested coefficient accuracy cannot be established."),res.stop_detail,"numerical",{"size","prob","p0"});
   if(res.accuracy_failure)return stop_failure(fail("zmbinom numerical accuracy failure: the returned coefficients cannot be resolved to the requested tolerance in the local refinement."),res.stop_detail,"numerical",{"size","prob","p0"});
   std::string stop_kind;
   switch(res.status) {

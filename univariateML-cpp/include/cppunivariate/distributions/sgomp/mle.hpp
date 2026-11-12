@@ -327,7 +327,7 @@ inline SgompResult sgomp_mle(span x,double tol=1e-10,int maxit=200,double b=NAN,
       f.add(z[0]-t+accuracy_detail::log1pmx(e*(-accuracy_detail::expm1(-t)))+e*(-accuracy_detail::expm1(accuracy_detail::Jet(.69314718055994530942)-t)));}
     return f.value;
   };
-  if(!accuracy_detail::polish(q,free,tol,maxit,objective)){r.status=SgompStatus::IterationFailure;return r;}
+  if(!accuracy_detail::polish(q,free,tol,maxit,objective,r.stop_detail)){r.status=SgompStatus::IterationFailure;record_accuracy(r,tol,{r.b,r.eta},{std::isnan(b)?std::max(1.,r.b):0,std::isnan(eta)?std::max(1.,r.eta):0});return r;}
   if(free[0])r.b=unit*std::exp(q[0]);
   if(free[1])r.eta=std::exp(q[1]);
   r.logLik=0;for(double v:x)r.logLik+=distributions::dsgomp(v,r.b,r.eta,true);

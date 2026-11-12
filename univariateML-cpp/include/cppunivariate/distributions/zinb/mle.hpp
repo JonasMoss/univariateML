@@ -210,8 +210,8 @@ namespace cppunivariate {
 inline ZinbResult zinb_mle(ispan x,double tol,int maxit,double size,double prob,double pi) {
   auto r=zinb_accuracy_search(x,tol,maxit,size,prob,pi);
   if(r.status!=ZinbStatus::Ok)return r;
-  if(!accuracy_detail::nb_polish(x,r.size,r.prob,r.pi,std::isnan(size),std::isnan(prob),std::isnan(pi),false,tol,maxit)) {
-    r.status=ZinbStatus::IterationFailure;return r;
+  if(!accuracy_detail::nb_polish(x,r.size,r.prob,r.pi,std::isnan(size),std::isnan(prob),std::isnan(pi),false,tol,maxit,r.stop_detail)) {
+    r.status=ZinbStatus::IterationFailure;record_accuracy(r,tol,{r.size,r.prob,r.pi},{std::max(1.,std::abs(r.size)),std::max(1.,std::abs(r.prob)),std::max(1.,std::abs(r.pi))});return r;
   }
   if(r.size>0&&r.prob<1){r.logLik=0;for(int v:x)r.logLik+=v==0?zinb_cert_detail::zero_logmass(r.size*std::log(r.prob),r.pi):std::log1p(-r.pi)+zero_detail::nb_logpmf(v,r.size,r.prob);}
   return r;

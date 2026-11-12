@@ -26,6 +26,9 @@ inline FitResult fit_invparalogis(cppunivariate::span x, Held shape_arg = {}, He
   auto res = shape.supplied ? cppunivariate::invparalogis_mle_holds(x,shape.value,scale.supplied?held:NAN,gradtol,iterlim) : scale.supplied
       ? cppunivariate::invparalogis_mle_fixed_scale(x, held, gradtol, iterlim, start)
       : cppunivariate::invparalogis_mle(x, gradtol, iterlim, start);
+  if(res.status==cppunivariate::ParalogisStatus::NumericalFailure && std::isinf(res.scale))
+    return stop_failure(fail("Inverse paralogistic numerical failure: the fitted scale cannot be represented in binary64."),res.stop_detail,"numerical",{"shape","scale"});
+  if(res.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return stop_failure(failure("invparalogis numerical accuracy failure: requested coefficient accuracy cannot be established."),res.stop_detail,"numerical",{"shape","scale"});
   if(res.status==cppunivariate::ParalogisStatus::Unbounded)
     return stop_failure(fail("The invparalogis maximum likelihood estimator does not exist for constant data: the likelihood is unbounded."),res.stop_detail,"nomle",{"shape","scale"});
   if(res.status==cppunivariate::ParalogisStatus::CertificateBudget)

@@ -24,6 +24,7 @@ inline FitResult fit_sgomp(cppunivariate::span x, Held b_arg = {}, Held eta_arg 
   if (b.supplied && !(bv>0 && std::isfinite(bv))) return fail("fixed `b` must be positive and finite.");
   if (eta.supplied && !(ev>=0 && std::isfinite(ev))) return fail("fixed `eta` must be nonnegative and finite.");
   const auto f=cppunivariate::sgomp_mle(x,reltol,iterlim,bv,ev);
+  if(f.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return stop_failure(failure("sgomp numerical accuracy failure: requested coefficient accuracy cannot be established."),f.stop_detail,"numerical",{"b","eta"});
   if (f.status==cppunivariate::SgompStatus::Collapse) return nomle("The shifted Gompertz MLE does not exist: constant data have unbounded likelihood.");
   if (f.status==cppunivariate::SgompStatus::InvalidInput) return fail("Shifted Gompertz requires finite nonnegative data, positive reltol and positive iterlim.");
   if (f.status!=cppunivariate::SgompStatus::Ok) {

@@ -286,7 +286,7 @@ inline ParalogisResult accurate_uncertified(ParalogisResult searched,
     const paralogis_cert_detail::Result& certificate,span x,double tol,int maxit,bool fixed_scale) {
   searched=uncertified(searched,certificate,x);
   if(searched.status!=ParalogisStatus::Ok)return searched;
-  if(!paralogis_local_accuracy(x,searched.shape,searched.scale,searched.logLik,tol,maxit,fixed_scale)){searched.status=ParalogisStatus::NumericalFailure;return searched;}
+  if(!paralogis_local_accuracy(x,searched.shape,searched.scale,searched.logLik,tol,maxit,fixed_scale,false,searched.stop_detail)){searched.status=ParalogisStatus::NumericalFailure;record_accuracy(searched,tol,{searched.shape,searched.scale},{searched.shape,fixed_scale?0:searched.scale});return searched;}
   searched.stop_detail=paralogis_cert_detail::witness(x,searched.shape,searched.scale);
   return searched;
 }

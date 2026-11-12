@@ -131,15 +131,21 @@ inline BetaPrimeResult accurate_fallback(BetaPrimeResult certificate,span x,doub
       f.add(-lb-A*accuracy_detail::softplus(-t)-B*accuracy_detail::softplus(t));}
     return f.value;
   };
+  const auto accuracy_stop=[&]() {
+    certificate.status=BetaPrimeStatus::BfgsFailure;certificate.certificate_failure=LomaxCertificateFailure::Arithmetic;
+    certificate.stop_detail.conditioning_bound=out.stop_detail.conditioning_bound;
+    record_accuracy(certificate.stop_detail,tol,{out.alpha,out.beta,out.scale},out.logLik,{free[0]?out.alpha:0,free[1]?out.beta:0,free[2]?out.scale:0});
+    return certificate;
+  };
   bool accurate=false;
   if(a==1 || b==1) {
     double k=a==1?c[1]:c[0],power=1,scale=c[2];
-    accurate=burr_local_accuracy(x,k,power,scale,{{a==1?free[1]:free[0],false,free[2]}},tol,maxit,b==1);
+    accurate=burr_local_accuracy(x,k,power,scale,{{a==1?free[1]:free[0],false,free[2]}},tol,maxit,b==1,0,out.stop_detail);
     if(a==1)c[1]=k;else c[0]=k;c[2]=scale;
-  } else if(compensated)accurate=burr_power_one_detail::beta_gamma_fit(x,c[0],c[1],c[2],free,tol,maxit,out.logLik);
-  else accurate=continuous_fallback_polish(q,free,tol,maxit,objective);
+  } else if(compensated)accurate=burr_power_one_detail::beta_gamma_fit(x,c[0],c[1],c[2],free,tol,maxit,out.logLik,1,0,out.stop_detail);
+  else accurate=continuous_fallback_polish(q,free,tol,maxit,objective,out.stop_detail);
   if(!accurate) {
-    certificate.status=BetaPrimeStatus::BfgsFailure;certificate.certificate_failure=LomaxCertificateFailure::Arithmetic;return certificate;
+    return accuracy_stop();
   }
   ExtendedReal coordinate=0;
   if(a!=1&&b!=1&&!compensated){
@@ -152,7 +158,7 @@ inline BetaPrimeResult accurate_fallback(BetaPrimeResult certificate,span x,doub
     }
   }
   if(a!=1&&b!=1&&!compensated&&free[2]&&!accuracy_detail::scale_projection(c[2],unit,static_cast<double>(coordinate),tol)) {
-    certificate.status=BetaPrimeStatus::BfgsFailure;certificate.certificate_failure=LomaxCertificateFailure::Arithmetic;return certificate;
+    return accuracy_stop();
   }
   const double ll=-cost.evaluate(c,false);
 

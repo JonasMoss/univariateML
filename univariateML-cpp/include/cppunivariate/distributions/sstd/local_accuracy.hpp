@@ -5,6 +5,7 @@
 #include "../../special/special.hpp"
 #include "../../core/work_budget.hpp"
 #include <array>
+#include "../../core/stop_detail.hpp"
 #include <algorithm>
 #include <cmath>
 #include <limits>
@@ -75,7 +76,8 @@ inline bool step(const Jet& f,int n,std::array<double,4>& s){
 // Require a second independently evaluated correction after a full Newton
 // step: contraction must be quadratic (or at the binary64 rounding floor).
 template<class Objective,class Error>
-inline bool polish(std::array<double,4>& p,int n,double tol,int maxit,Objective objective,Error error){
+inline bool polish(std::array<double,4>& p,int n,double tol,int maxit,Objective objective,Error error,StopDetail& detail){
+ detail.accuracy_stop=AccuracyStop::None;detail.conditioning_bound=NAN;
  if(!(tol>=8*std::numeric_limits<double>::epsilon())||!std::isfinite(tol)||maxit<1)return false;
  tol=std::min(tol,1e-10);
  double previous=INFINITY;bool full=false;
@@ -113,7 +115,7 @@ inline bool polish(std::array<double,4>& p,int n,double tol,int maxit,Objective 
         std::array<double,4> response{};if(!std::isfinite(sampled.v)||!step(residual,n,response))return false;
         noise=std::max(noise,error(q,response));
       }
-      if(2*noise+error(q,remaining)>tol*.75)return false;
+      if(2*noise+error(q,remaining)>tol*.75){{detail.conditioning_bound=(2*noise+error(q,remaining))/.75;detail.accuracy_stop=AccuracyStop::Conditioning;}return false;}
     }
     p=q;return true;
    }
@@ -127,19 +129,28 @@ inline bool polish(std::array<double,4>& p,int n,double tol,int maxit,Objective 
   previous=e;full=damping==1;p=q;
  }return false;
 }
+template<class Objective,class Error>
+inline bool polish(std::array<double,4>& p,int n,double tol,int maxit,Objective objective,Error error){
+ StopDetail detail;return polish(p,n,tol,maxit,objective,error,detail);
+}
 // Pack only free coordinates; held values are constants in both derivative
 // orders. The error map is evaluated in the original public coordinates.
 template<class Objective,class Error>
 inline bool subset(std::array<double,4>& p,const std::array<bool,4>& free,
-                   double tol,int maxit,Objective objective,Error error){
+                   double tol,int maxit,Objective objective,Error error,StopDetail& detail){
  std::array<int,4> index{};int n=0;std::array<double,4> packed{};
  for(int j=0;j<4;++j)if(free[j]){index[n]=j;packed[n++]=p[j];}
  if(!n)return true;
  const auto unpack=[&](const std::array<double,4>& q){auto out=p;for(int j=0;j<n;++j)out[index[j]]=q[j];return out;};
  const auto f=[&](const std::array<Jet,4>& q){std::array<Jet,4> out;for(int j=0;j<4;++j)out[j]=p[j];for(int j=0;j<n;++j)out[index[j]]=q[j];return objective(out);};
  const auto e=[&](const std::array<double,4>& q,const std::array<double,4>& step){std::array<double,4> mapped{};for(int j=0;j<n;++j)mapped[index[j]]=step[j];return error(unpack(q),mapped);};
- if(!polish(packed,n,tol,maxit,f,e))return false;
+ if(!polish(packed,n,tol,maxit,f,e,detail))return false;
  p=unpack(packed);return true;
+}
+template<class Objective,class Error>
+inline bool subset(std::array<double,4>& p,const std::array<bool,4>& free,
+                   double tol,int maxit,Objective objective,Error error){
+ StopDetail detail;return subset(p,free,tol,maxit,objective,error,detail);
 }
 inline double log_error(const std::array<double,4>&,const std::array<double,4>& s){double e=0;for(double x:s)e=std::max(e,std::abs(x));return e;}
 // Variance-standardized two-piece t / GED objective in (location, log sd,

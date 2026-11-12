@@ -140,3 +140,13 @@ test_that("foldnorm R6 collapse diagnostics and held exceptions", {
   }
   expect_true(is.finite(logLik(mlfoldnorm(rep(2,3),sigma=1))))
 })
+
+test_that("folded normal distinguishes conditioning at the default tolerance", {
+  e <- tryCatch(mlfoldnorm(c(1,1,1,sqrt(9+4*sqrt(6)))),error=identity)
+  expect_s3_class(e,"univariateML_conditioning")
+  expect_s3_class(e,"univariateML_numerical")
+  expect_identical(e$kind,"conditioning")
+  expect_gt(nrow(e$candidates),0)
+  expect_true(all(is.finite(e$candidates$loglik_lower)))
+  expect_lt(e$attainable_tol,1e-10)
+})

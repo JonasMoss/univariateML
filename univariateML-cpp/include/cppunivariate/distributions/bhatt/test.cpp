@@ -745,3 +745,12 @@ TEST_CASE("Bhatt compensated normal members retain a signed physical likelihood"
 TEST_CASE("bhatt: exact-input extreme arithmetic regression") {
   CHECK(cppunivariate::distributions::dbhatt(-1.0000002020921483,0.0,1e-08,1.0,true) == doctest::Approx(-208.82684021178022).epsilon(1e-10).scale(0));
 }
+
+TEST_CASE("bhatt: certificate fallback preserves the local accuracy kind") {
+  const std::vector<double> x{-3,-1,0,1,2};
+  const auto r=cppunivariate::bhatt_mle(mltest::as_span(x),1e-30,500,1,2);
+  CHECK(r.stop_detail.accuracy_stop==cppunivariate::AccuracyStop::Tolerance);
+  CHECK(r.stop_detail.attainable_tol>1e-30);
+  REQUIRE(!r.stop_detail.candidates.empty());
+  for(const auto& c:r.stop_detail.candidates)CHECK(std::isfinite(c.loglik_lower));
+}

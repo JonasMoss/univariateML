@@ -23,7 +23,8 @@ inline FitResult fit_sstd(cppunivariate::span x, Held mean_arg = {}, Held sd_arg
   const double held_xi=xi.supplied ? xi.value : nan;
   if(xi.supplied && (!(std::isfinite(held_xi) && held_xi>0))) return fail("Invalid held `xi`: requires a finite value in its parameter domain.");
   auto res=cppunivariate::sstd_mle(x,gradtol,iterlim,held_mean,held_sd,held_nu,held_xi);
-  if(res.accuracy_failure)return fail("sstd numerical accuracy failure: final Newton refinement did not converge to the requested coefficient tolerance; increase iterlim or inspect conditioning.");
+  if(res.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return stop_failure(failure("sstd numerical accuracy failure: requested coefficient accuracy cannot be established."),res.stop_detail,"numerical",{"mean","sd","nu","xi"});
+  if(res.accuracy_failure)return stop_failure(fail("sstd numerical accuracy failure: final Newton refinement did not converge to the requested coefficient tolerance; increase iterlim or inspect conditioning."),res.stop_detail,"numerical",{"mean","sd","nu","xi"});
   if(res.certified && (res.stop_detail.limit_model==cppunivariate::StopModel::Ht || res.stop_detail.limit_model==cppunivariate::StopModel::ReflectedHt))
     return stop_failure(fail("The skew Student-t likelihood has its supremum on the constrained half-t face; no finite skew MLE. Use `mlht` on signed endpoint distances."),res.stop_detail,"limit",{"mean","sd","nu","xi"});
   if(res.certified && res.stop_detail.limit_model==cppunivariate::StopModel::Norm)

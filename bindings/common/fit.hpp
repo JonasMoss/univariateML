@@ -27,6 +27,7 @@ struct FitResult {
   bool has_fixed = false;
   bool has_restricted = false;
   std::string error_kind, model;
+  double attainable_tol=NAN;
   std::vector<NamedCandidate> candidates;
   std::vector<std::pair<std::string,double>> limit_estimates;
   double limit_loglik=NAN,loglik_lower=NAN,loglik_upper=NAN,segment_loglik_upper=NAN;
@@ -173,7 +174,14 @@ inline bool finite_stop_payload(const cppunivariate::StopDetail& detail,const st
 }
 inline FitResult stop_failure(FitResult out,const cppunivariate::StopDetail& detail,
     const std::string& kind,const std::vector<std::string>& names,const std::string& model="") {
-  out.error_kind=kind;out.model=model.empty()?stop_model(detail.limit_model):model;
+  out.error_kind=kind;
+  if(detail.accuracy_stop==cppunivariate::AccuracyStop::Tolerance) {
+    out.error_kind="tolerance";
+    std::ostringstream value;value<<std::setprecision(17)<<detail.attainable_tol;
+    out.error+=" tol must be at least "+value.str()+" here.";
+  } else if(detail.accuracy_stop==cppunivariate::AccuracyStop::Conditioning)out.error_kind="conditioning";
+  out.attainable_tol=detail.attainable_tol;
+  out.model=model.empty()?stop_model(detail.limit_model):model;
   out.limit_estimates=named_coefficients(detail.limit_coef,stop_names(out.model,names));
   out.segment_loglik_upper=detail.segment_loglik_upper;
   out.limit_loglik=detail.limit_loglik;out.loglik_lower=detail.loglik_lower;out.loglik_upper=detail.loglik_upper;

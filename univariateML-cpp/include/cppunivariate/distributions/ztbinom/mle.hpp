@@ -261,7 +261,7 @@ inline ZtbinomResult ztbinom_mle(ispan x,double tol=1e-10,int maxit=200,
   if(best.status==ZtbinomStatus::Ok && !best.certified && std::isnan(fixed_prob)) {
     double sum=0;for(int v:x)sum+=v;
     if(!binomial_accuracy::positive_probability(best.prob,best.size,sum,x.size(),tol,maxit)) {
-      best.status=ZtbinomStatus::IterationFailure;best.accuracy_failure=true;
+      best.status=ZtbinomStatus::IterationFailure;best.accuracy_failure=true;record_accuracy(best,tol,{best.size,best.prob},{0,1});
       binomial_certificate_detail::witness(best.stop_detail,{best.size,best.prob},best.logLik,false);
       return best;
     }

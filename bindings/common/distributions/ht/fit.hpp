@@ -31,9 +31,10 @@ inline FitResult fit_ht(cppunivariate::span x, Held mu_arg = {}, Held nu_arg = {
       (sigma.supplied && (!(sc>0)||!std::isfinite(sc))))
     return fail("Held `nu` and `sigma` must be positive finite numbers.");
   const auto r=cppunivariate::ht_mle(x,held_mu,df,sc);
+  if(r.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return stop_failure(failure("ht numerical accuracy failure: requested coefficient accuracy cannot be established."),r.stop_detail,"numerical",{"mu","nu","sigma"});
   if(mu_held && r.status==cppunivariate::HtStatus::InvalidData)
     return fail("Half-t observations must be finite and at least the held mu.");
-  if(r.status==cppunivariate::HtStatus::AccuracyFailure)return fail("ht numerical accuracy failure: coefficients cannot be represented at the requested accuracy.");
+  if(r.status==cppunivariate::HtStatus::AccuracyFailure)return stop_failure(fail("ht numerical accuracy failure: coefficients cannot be represented at the requested accuracy."),r.stop_detail,"numerical",{"mu","nu","sigma"});
   if(r.status==cppunivariate::HtStatus::Unbounded)
     return nomle("Half-t likelihood is unbounded along sigma -> 0 with nu*(n-k) < k (k ties at the free or held endpoint); hold sigma, hold nu with nu*(n-k) > k, or (with a free endpoint) hold mu.");
   if(r.status==cppunivariate::HtStatus::ScaleBoundary)

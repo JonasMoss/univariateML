@@ -1,0 +1,164 @@
+Workstation GCC 15; baseline 0019c6b3; simbox attempts exited 75.
+
+
+--- cpp-dev ---
+        Start 132: no_throw_tests
+104/108 Test #132: no_throw_tests ...................   Passed    0.00 sec
+        Start 134: tails_tests
+105/108 Test #134: tails_tests ......................   Passed    0.00 sec
+106/108 Test  #45: distribution_hnorm ...............   Passed    0.04 sec
+107/108 Test  #61: distribution_laplace .............   Passed    0.04 sec
+108/108 Test  #52: distribution_invexp ..............   Passed    0.04 sec
+
+100% tests passed, 0 tests failed out of 108
+
+Label Time Summary:
+cran    = 2274.69 sec*proc (107 tests)
+dev     = 2277.38 sec*proc (108 tests)
+full    = 2277.38 sec*proc (108 tests)
+
+Total Test time (real) = 569.37 sec
+
+--- r-dev ---
+  'test-dist-zmgeom.R:36:3', 'test-dist-zmlogarithmic.R:2:3',
+  'test-dist-zmlogarithmic.R:36:3', 'test-dist-zmnbinom.R:2:3',
+  'test-dist-zmnbinom.R:60:3', 'test-dist-zmnbinom.R:75:3',
+  'test-dist-zmpois.R:2:3', 'test-dist-zmpois.R:36:3',
+  'test-dist-ztbinom.R:2:3', 'test-dist-ztbinom.R:49:3',
+  'test-dist-ztbinom.R:91:3', 'test-dist-ztgeom.R:2:3',
+  'test-dist-ztgeom.R:33:3', 'test-dist-ztnbinom.R:2:3',
+  'test-dist-ztnbinom.R:57:3', 'test-dist-ztpois.R:2:3',
+  'test-dist-ztnbinom.R:72:3', 'test-dist-ztpois.R:33:3',
+  'test-dist-genbeta.R:127:3'
+
+[ FAIL 0 | WARN 0 | SKIP 154 | PASS 25831 ]
+
+🌈 Your tests are over the rainbow 🌈
+   user  system elapsed 
+968.667   5.501 311.192 
+
+--- r-full ---
+Failure ('test-dist-invparalogis.R:161:5'): inverse paralogistic reciprocal overflow stays numerical
+Expected `e` to inherit from "univariateML_numerical".
+Actual class: "simpleError"/"error"/"condition".
+
+Failure ('test-dist-invparalogis.R:162:5'): inverse paralogistic reciprocal overflow stays numerical
+Expected `e$kind` to be identical to "numerical".
+Differences:
+target is NULL, current is character
+
+[ FAIL 4 | WARN 0 | SKIP 0 | PASS 52595 ]
+Error:
+! Test failures.
+Timing stopped at: 2519 7.062 1035
+Execution halted
+error: Recipe `test` failed on line 70 with exit code 1
+error: Recipe `test-full` failed on line 74 with exit code 1
+
+--- late-transports-cpp ---
+[ 12%] Linking CXX executable distribution_tests
+[100%] Built target distribution_tests
+Test project /home/jonas/Files/programming/univariateML.wt/api-stops/univariateML-cpp/build
+    Start 55: distribution_invparalogis
+    Start 83: distribution_pareto2
+1/2 Test #83: distribution_pareto2 .............   Passed    0.07 sec
+2/2 Test #55: distribution_invparalogis ........   Passed    0.49 sec
+
+100% tests passed, 0 tests failed out of 2
+
+Label Time Summary:
+cran    =   0.55 sec*proc (2 tests)
+dev     =   0.55 sec*proc (2 tests)
+full    =   0.55 sec*proc (2 tests)
+
+Total Test time (real) =   0.49 sec
+
+--- late-transports-r ---
+⠙ [ FAIL 0 | WARN 0 | SKIP 3 | PASS 34 ] @ dist-pareto2                         
+⠹ [ FAIL 0 | WARN 0 | SKIP 3 | PASS 34 ] @ dist-pareto2                         
+⠸ [ FAIL 0 | WARN 0 | SKIP 3 | PASS 35 ] @ dist-pareto2                         
+✔ |      1  38 | dist-pareto2                                                   
+
+⠼ [ FAIL 0 | WARN 0 | SKIP 4 | PASS 71 ] Starting up...                         
+                                                                                
+══ Results ═════════════════════════════════════════════════════════════════════
+Duration: 1.8 s
+
+── Skipped tests (4) ───────────────────────────────────────────────────────────
+• requires full test tier (4): 'test-dist-invparalogis.R:2:3',
+  'test-dist-invparalogis.R:13:3', 'test-dist-invparalogis.R:52:3',
+  'test-dist-pareto2.R:47:3'
+
+[ FAIL 0 | WARN 0 | SKIP 4 | PASS 71 ]
+
+--- bhatt ---
+⠸ |        144 | dist-bhatt                                                     
+⠧ |        188 | dist-bhatt                                                     
+⠹ |        203 | dist-bhatt                                                     
+⠦ |        237 | dist-bhatt                                                     
+⠦ |        257 | dist-bhatt                                                     
+⠋ |        281 | dist-bhatt                                                     
+⠙ |        312 | dist-bhatt                                                     
+⠸ |        314 | dist-bhatt                                                     
+⠇ |        319 | dist-bhatt                                                     
+✔ |        324 | dist-bhatt [33.3s]
+
+══ Results ═════════════════════════════════════════════════════════════════════
+Duration: 33.3 s
+
+[ FAIL 0 | WARN 0 | SKIP 0 | PASS 324 ]
+Ran 1/1 deferred expressions
+
+--- js-test ---
+  ...
+# Subtest: genbeta shallow coverage retains the uncertified legacy finite fit
+ok 618 - genbeta shallow coverage retains the uncertified legacy finite fit
+  ---
+  duration_ms: 61168.859324
+  type: 'test'
+  ...
+1..618
+# tests 618
+# suites 0
+# pass 618
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 238494.566208
+
+--- cpp-no-long-double ---
+        Start 134: tails_tests
+131/135 Test #134: tails_tests ......................   Passed    0.00 sec
+        Start 135: diagnostics_tests
+132/135 Test #129: distribution_ztnbinom ............   Passed    0.98 sec
+133/135 Test #135: diagnostics_tests ................   Passed    2.05 sec
+134/135 Test #110: distribution_trgamma .............   Passed   61.66 sec
+135/135 Test #107: distribution_tlambda_slow ........   Passed  222.24 sec
+
+100% tests passed, 0 tests failed out of 135
+
+Label Time Summary:
+cran    = 1716.98 sec*proc (107 tests)
+dev     = 1719.03 sec*proc (108 tests)
+full    = 2117.57 sec*proc (135 tests)
+
+Total Test time (real) = 648.16 sec
+
+--- site-check ---
+PASS: graph: 99 unique nodes, 278 edges, resolving family links; SVG generated twice byte-identically and matches built HTML.
+PASS: explorer coverage matches binding registry; optional build assets agree.
+PASS: every declared and inverted relation and limit link is rendered and resolves.
+PASS: 99 family pages; MathML on every family; no math runtime or external runtime assets; internal links and fragments resolve.
+Environment: Python 3.14.5, SymPy 1.14.0; g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0
+Boost headers: /home/jonas/R/x86_64-pc-linux-gnu-library/4.5/BH/include
+PASS: 99 generated C++ snippets compile and link as C++17 (including exp, gamma, gb2).
+PASS: pilot and ten additional HTML spot checks: exp, gamma, gb2, binom, beta, hyper, sstd, gev, gpd, tnorm, pois, unif, pareto
+Log-density fallback: cmb, cmp, dweibull, gev, gpd, huber, sged, snorm, sstd, st, tbinom, tpois, triang, zib, zinb, zip, zipf, zmbinom, zmgeom, zmlogarithmic, zmnbinom, zmpois
+WEIGHT exp: HTML 25427 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+WEIGHT gamma: HTML 31252 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+WEIGHT gb2: HTML 116523 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+WEIGHT binom: HTML 42006 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+WEIGHT hyper: HTML 40675 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+WEIGHT sstd: HTML 144207 B; CSS 9455 B; JS 64284 B (inline included in HTML)
+Total dist: 26319535 B

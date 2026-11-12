@@ -24,6 +24,7 @@ inline FitResult fit_bbinom(cppunivariate::ispan x, Held size_arg = {}, Held alp
   if (beta.supplied && !(std::isfinite(b) && b > 0))
     return failure("`beta` must be a finite positive number.");
   const auto res = cppunivariate::bbinom_mle(x, N, reltol, iterlim, a, b);
+  if(res.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return stop_failure(failure("bbinom numerical accuracy failure: requested coefficient accuracy cannot be established."),res.stop_detail,"numerical",{"size","alpha","beta"});
   if(res.accuracy_failure)return stop_failure(failure("bbinom numerical accuracy failure: the returned coefficients cannot be resolved to the requested tolerance in the local refinement."),res.stop_detail,"numerical",{"size","alpha","beta"});
   if(res.status!=cppunivariate::BbinomStatus::Ok && res.stop_detail.budget_exhausted)return stop_failure(failure("Beta-binomial search exhausted its work budget before certifying the maximum. Raising iterlim may resolve this stop."),res.stop_detail,"budget",{"size","alpha","beta"});
   std::string stop_kind;

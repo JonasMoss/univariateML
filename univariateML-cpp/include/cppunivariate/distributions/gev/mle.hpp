@@ -373,8 +373,9 @@ inline GevResult gev_held_mle(span x,double tol,int maxit,double xi,double mu,do
     fit=gev_held_profile(data,m,s,opt.x,tol,maxit);
     if(!opt.ok) fit.status=GevStatus::IterationFailure;
   }
+  bool accuracy_failed=false;
   if(fit.status==GevStatus::Ok&&std::isnan(xi)&&hm!=hs &&
-     !gev_accuracy_detail::polish(data,fit,hm,hs,tol,maxit))fit.status=GevStatus::NumericalFailure;
+     !gev_accuracy_detail::polish(data,fit,hm,hs,tol,maxit)){fit.status=GevStatus::NumericalFailure;accuracy_failed=true;}
   const auto standardized_search=fit;
   std::vector<FitCandidate> restored;
   bool lost_witness=false;
@@ -404,6 +405,7 @@ inline GevResult gev_held_mle(span x,double tol,int maxit,double xi,double mu,do
   if(fit.status==GevStatus::Ok && !gev_restore_support(x,fit,hm,hs,tol,maxit))
     fit.status=GevStatus::NumericalFailure;
   fit.logLik=gev_public_loglik(x,fit.mu,fit.sigma,fit.xi);
+  if(accuracy_failed)record_accuracy(fit,tol,{fit.mu,fit.sigma,fit.xi},{hm?0:std::max(std::abs(fit.mu),fit.sigma),hs?0:fit.sigma,std::max(1.,std::abs(fit.xi))});
   const double predicted=standardized_ll-x.size()*std::log(scale);
   const double likelihood_margin=std::max(1e-7*x.size(),256*std::numeric_limits<double>::epsilon()*
       (x.size()+std::abs(predicted)+std::abs(fit.logLik)));
@@ -413,7 +415,7 @@ inline GevResult gev_held_mle(span x,double tol,int maxit,double xi,double mu,do
   if(fit.status==GevStatus::Ok && std::isnan(xi) && hm!=hs &&
      ((!hm&&!accuracy_detail::location_projection(fit.mu,origin,scale,standardized_search.mu,fit.sigma,tol)) ||
       (!hs&&!accuracy_detail::scale_projection(fit.sigma,scale,std::log(standardized_search.sigma),tol))))
-    fit.status=GevStatus::NumericalFailure;
+    {fit.status=GevStatus::NumericalFailure;record_accuracy(fit,tol,{fit.mu,fit.sigma,fit.xi},{hm?0:std::max(std::abs(fit.mu),fit.sigma),hs?0:fit.sigma,std::max(1.,std::abs(fit.xi))});}
   if(fit.status==GevStatus::Ok && std::isnan(xi) && hm!=hs) {
     auto candidate=gev_held_certificate(data,m,s,tol,maxit,standardized_search,origin,scale);
     if(candidate.status==GevStatus::SearchContradicted) {
@@ -650,6 +652,7 @@ inline GevResult gev_mle_impl(span x, double tol=1e-10, int maxit=100,
         }
       }
       r.logLik=actual;
+      if(r.status==GevStatus::NumericalFailure)record_accuracy(r,tol,{r.mu,r.sigma,r.xi},{std::max(std::abs(r.mu),r.sigma),r.sigma,std::max(1.,std::abs(r.xi))});
     }
     return r;
   };

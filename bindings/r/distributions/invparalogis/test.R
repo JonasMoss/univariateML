@@ -154,3 +154,12 @@ test_that("invparalogis delegate follow-up preserves the accepted fit", {
   expect_identical(attr(f,"certified"),FALSE)
   expect_true(is.finite(as.numeric(logLik(f))))
 })
+
+test_that("inverse paralogistic reciprocal overflow stays numerical", {
+  for(tol in c(1e-10,1e-20)) {
+    e <- tryCatch(mlinvparalogis(c(1e308,1.1e308,1.2e308),shape=.5,gradtol=tol,iterlim=200),error=identity)
+    expect_s3_class(e,"univariateML_numerical")
+    expect_identical(e$kind,"numerical")
+    if("scale" %in% names(e$candidates))expect_true(all(is.finite(e$candidates$scale)))
+  }
+})

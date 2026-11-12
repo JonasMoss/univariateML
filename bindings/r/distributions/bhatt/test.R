@@ -328,3 +328,11 @@ test_that("Bhatt retains a finite fit when the uniform comparison is unclosed", 
   expect_identical(attr(f,"certified"),FALSE)
   expect_true(is.finite(as.numeric(logLik(f))))
 })
+# The outer certificate must preserve a diagnosed local accuracy stop.
+test_that("Bhattacharjee fallback retains the tolerance classification", {
+  e <- tryCatch(mlbhatt(c(-3,-1,0,1,2),sigma=1,a=2,reltol=1e-30),error=identity)
+  expect_s3_class(e,"univariateML_tolerance")
+  expect_s3_class(e,"univariateML_numerical")
+  expect_gt(e$attainable_tol,1e-30)
+  expect_match(conditionMessage(e),"tol must be at least")
+})

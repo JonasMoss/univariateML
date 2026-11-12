@@ -296,7 +296,7 @@ inline SlashResult slash_mle(span x,double tol=1e-10,int maxit=500,double sigma=
     auto r=p(0);r.mu=mu;r.sigma=std::isnan(sigma)?unit*r.sigma:sigma;r.logLik-=y.size()*std::log(unit);
     if(r.status==SlashStatus::Ok && !(r.sigma>0 && std::isfinite(r.sigma) && std::isfinite(r.logLik)))r.status=SlashStatus::IterationFailure;
     if(r.status==SlashStatus::Ok && std::isnan(sigma) && !(std::abs(slash_detail::scale_score(x,mu,std::log(r.sigma)))<1e-3))r.status=SlashStatus::IterationFailure;
-    if(r.status==SlashStatus::Ok&&std::isnan(sigma)&&!local_accuracy::represented(r.sigma,r.sigma,tol)){r.status=SlashStatus::IterationFailure;r.accuracy_failure=true;}
+    if(r.status==SlashStatus::Ok&&std::isnan(sigma)&&!local_accuracy::represented(r.sigma,r.sigma,tol)){r.status=SlashStatus::IterationFailure;r.accuracy_failure=true;{if(r.sigma>0)record_accuracy(r,tol,{r.mu,r.sigma},{std::isnan(mu)?std::max(std::abs(r.mu),r.sigma):0,std::isnan(sigma)?r.sigma:0});else{r.stop_detail.accuracy_stop=AccuracyStop::None;r.stop_detail.attainable_tol=NAN;}}}
     return r;
   }
   std::vector<double> y(x.begin(),x.end());for(double v:y)if(!std::isfinite(v))return bad;
@@ -416,7 +416,7 @@ inline SlashResult slash_mle(span x,double tol=1e-10,int maxit=500,double sigma=
         else f.add(local_accuracy::log(t)-local_accuracy::log1p(-local_accuracy::exp(-t)));}
       return f.value();
     };
-    if(!local_accuracy::subset(q,{{true,std::isnan(sigma),false,false}},tol,maxit,objective,[&](const std::array<double,4>& v,const std::array<double,4>& step){auto q=v;q[0]+=(centre/scale+accuracy_center)/accuracy_scale;return local_accuracy::location_error(q,step);})){bad.status=SlashStatus::IterationFailure;bad.accuracy_failure=true;return bad;}
+    if(!local_accuracy::subset(q,{{true,std::isnan(sigma),false,false}},tol,maxit,objective,[&](const std::array<double,4>& v,const std::array<double,4>& step){auto q=v;q[0]+=(centre/scale+accuracy_center)/accuracy_scale;return local_accuracy::location_error(q,step);},bad.stop_detail)){bad.mu=centre+scale*best.mu;bad.sigma=std::isnan(sigma)?scale*best.sigma:sigma;bad.logLik=best.logLik-n*std::log(scale);bad.status=SlashStatus::IterationFailure;bad.accuracy_failure=true;{if(bad.sigma>0)record_accuracy(bad,tol,{bad.mu,bad.sigma},{std::isnan(mu)?std::max(std::abs(bad.mu),bad.sigma):0,std::isnan(sigma)?bad.sigma:0});else{bad.stop_detail.accuracy_stop=AccuracyStop::None;bad.stop_detail.attainable_tol=NAN;}}return bad;}
     best.mu=accuracy_center+accuracy_scale*q[0];best.sigma=accuracy_scale*std::exp(q[1]);best.logLik=-objective(local_accuracy::variables(q)).v-y.size()*std::log(accuracy_scale);
   }
   best.mu=centre+scale*best.mu;best.sigma=std::isnan(sigma)?scale*best.sigma:sigma;best.logLik-=n*std::log(scale);
@@ -424,7 +424,7 @@ inline SlashResult slash_mle(span x,double tol=1e-10,int maxit=500,double sigma=
     bad.status=SlashStatus::IterationFailure;return bad;
   }
   if(best.status==SlashStatus::Ok && std::isnan(sigma) && !(best.sigma>0 && std::isfinite(best.sigma) && std::isfinite(best.logLik) && std::abs(slash_detail::scale_score(x,best.mu,std::log(best.sigma)))<1e-3))best.status=SlashStatus::IterationFailure;
-  if(best.status==SlashStatus::Ok&&(!local_accuracy::represented(best.mu,std::max(std::abs(best.mu),best.sigma),tol)||(std::isnan(sigma)&&!local_accuracy::represented(best.sigma,best.sigma,tol)))){best.status=SlashStatus::IterationFailure;best.accuracy_failure=true;}
+  if(best.status==SlashStatus::Ok&&(!local_accuracy::represented(best.mu,std::max(std::abs(best.mu),best.sigma),tol)||(std::isnan(sigma)&&!local_accuracy::represented(best.sigma,best.sigma,tol)))){best.status=SlashStatus::IterationFailure;best.accuracy_failure=true;{if(best.sigma>0)record_accuracy(best,tol,{best.mu,best.sigma},{std::isnan(mu)?std::max(std::abs(best.mu),best.sigma):0,std::isnan(sigma)?best.sigma:0});else{best.stop_detail.accuracy_stop=AccuracyStop::None;best.stop_detail.attainable_tol=NAN;}}}
   return best;
 }
 }

@@ -22,7 +22,8 @@ inline FitResult fit_bnbinom(cppunivariate::ispan x, Held size_arg = {}, Held al
     size.supplied?size.value:nan,
     alpha.supplied?alpha.value:nan,
     beta.supplied?beta.value:nan);
-  if(fit.accuracy_failure)return fail("bnbinom numerical accuracy failure: final Newton refinement did not converge to the requested coefficient tolerance; increase iterlim or inspect conditioning.");
+  if(fit.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return stop_failure(failure("bnbinom numerical accuracy failure: requested coefficient accuracy cannot be established."),fit.stop_detail,"numerical",{"size","alpha","beta"});
+  if(fit.accuracy_failure)return stop_failure(fail("bnbinom numerical accuracy failure: final Newton refinement did not converge to the requested coefficient tolerance; increase iterlim or inspect conditioning."),fit.stop_detail,"numerical",{"size","alpha","beta"});
   std::string stop_kind;
   switch(fit.status) {
     case cppunivariate::BnbinomStatus::NegativeBinomialLimit: stop_kind="limit";break;

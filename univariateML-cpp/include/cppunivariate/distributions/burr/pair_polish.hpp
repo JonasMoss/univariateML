@@ -1,5 +1,6 @@
 #pragma once
 #include "power_one_accuracy.hpp"
+#include "../../core/stop_detail.hpp"
 namespace cppunivariate { namespace burr_power_one_detail {
 struct PairEvaluation {
   Pair likelihood;
@@ -21,7 +22,8 @@ inline Pair square_root(Pair a) {
 // insufficient. Modified pivots are proposals only, never acceptance evidence.
 template<class Objective>
 inline bool pair_polish(std::array<Pair,3>& q,const std::array<bool,3>& free,
-    const std::array<int,3>& order,double tol,int maxit,const Objective& objective) {
+    const std::array<int,3>& order,double tol,int maxit,const Objective& objective,StopDetail& detail) {
+  detail.accuracy_stop=AccuracyStop::None;detail.conditioning_bound=NAN;
   std::array<int,3> index{};int n=0;
   for(int j:order)if(free[j])index[n++]=j;
   if(n==0)return true;
@@ -51,18 +53,20 @@ inline bool pair_polish(std::array<Pair,3>& q,const std::array<bool,3>& free,
       for(int i=n-1;i>=0;--i){Pair a=y[i];for(int j=i+1;j<n;++j)a=a-L[j][i]*answer[j];answer[i]=a/L[i][i];out[index[i]]=answer[i];}
       return out;
     };
-    const auto step=solve(f.score);double error=0;std::array<double,3> noise{};
+    const auto step=solve(f.score);double error=0;std::array<double,3> noise{},roundoff{};
     for(int k=0;k<n;++k) {
       std::array<Pair,3> rhs{};rhs[index[k]]=Pair(1);const auto column=solve(rhs);
       const double bound=rounding*f.score_magnitude[index[k]]+f.score_tail[index[k]];
-      for(int i=0;i<n;++i)noise[index[i]]+=std::abs(value(column[index[i]]))*bound;
+      for(int i=0;i<n;++i){noise[index[i]]+=std::abs(value(column[index[i]]))*bound;
+        roundoff[index[i]]+=std::abs(value(column[index[i]]))*rounding*f.score_magnitude[index[k]];}
     }
-    double uncertainty=0;
+    double uncertainty=0,roundoff_uncertainty=0;
     for(int i=0;i<3;++i) {
-      Pair correction;double propagated=0;
-      for(int j=0;j<3;++j){correction=correction+f.projection[i][j]*step[j];propagated+=std::abs(value(f.projection[i][j]))*noise[j];}
-      error=std::max(error,std::abs(value(correction)));uncertainty=std::max(uncertainty,propagated);
+      Pair correction;double propagated=0,propagated_roundoff=0;
+      for(int j=0;j<3;++j){correction=correction+f.projection[i][j]*step[j];propagated+=std::abs(value(f.projection[i][j]))*noise[j];propagated_roundoff+=std::abs(value(f.projection[i][j]))*roundoff[j];}
+      error=std::max(error,std::abs(value(correction)));uncertainty=std::max(uncertainty,propagated);roundoff_uncertainty=std::max(roundoff_uncertainty,propagated_roundoff);
     }
+    detail.conditioning_bound=positive && error<=roundoff_uncertainty?4*roundoff_uncertainty:NAN;
     if(!std::isfinite(error)||!std::isfinite(uncertainty))return false;
     if(positive&&error<=tol*.0625&&uncertainty<=tol*.25&&std::isfinite(previous)&&
         (previous<=tol*.0625||(error<=previous*.25&&error<=std::max(16*eps*eps,16*previous*previous))))return true;
@@ -83,4 +87,10 @@ inline bool pair_polish(std::array<Pair,3>& q,const std::array<bool,3>& free,
     if(!moved)return false;
   }
 }
+template<class Objective>
+inline bool pair_polish(std::array<Pair,3>& q,const std::array<bool,3>& free,
+    const std::array<int,3>& order,double tol,int maxit,const Objective& objective) {
+  StopDetail detail;return pair_polish(q,free,order,tol,maxit,objective,detail);
+}
+
 }}

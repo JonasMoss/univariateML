@@ -847,7 +847,7 @@ test('EMG certified conditional routes and numerical location stops', async () =
   assert.equal(f.estimates.sigma,1);assert.equal(f.estimates.lambda,1);
   for(const controls of [{iterlim:1},{reltol:1e-30}]) {
     assert.throws(()=>api.emg.fit(x,{sigma:1,lambda:1},controls),e=>{
-      assert.equal(e.kind,'numerical');assert.ok(e.candidates.length>0);
+      assert.equal(e.kind,controls.reltol ? 'tolerance' : 'numerical');assert.ok(e.candidates.length>0);
       assert.ok(e.loglik_lower<=e.loglik_upper);return true;
     });
   }
@@ -1215,7 +1215,7 @@ test('Bhattacharjee held certificates and quantitative numerical stops', async (
     });
   }
   assert.throws(()=>api.bhatt.fit(x,{sigma:1,a:2},{reltol:1e-30}),e=>{
-    assert.equal(e.kind,'numerical');assert.match(e.message,/numerical accuracy failure/i);
+    assert.equal(e.kind,'tolerance');assert.match(e.message,/numerical accuracy failure/i);
     assert.ok(e.candidates.length>0);
     const best=e.candidates.reduce((a,b)=>a.loglik_lower>b.loglik_lower?a:b);
     assert.ok(Number.isFinite(best.mu));assert.equal(best.sigma,1);assert.equal(best.a,2);
@@ -1869,7 +1869,8 @@ test('genbeta all-free finite certificate preserves the golden and never certifi
     for(const key of ['shape1','shape2','shape3'])
       assert.ok(Math.abs(tight.estimates[key]/g.estimates[key]-1)<1e-5);
   } catch(e) {
-    assert.ok(['numerical','budget'].includes(e.kind));
+    assert.equal(e.kind,'tolerance');
+    assert.ok(e.attainable_tol>1e-20);
     assert.ok(e.candidates.length>0);
     assert.equal(e.loglik_upper,Infinity);
   }

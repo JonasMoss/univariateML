@@ -81,11 +81,11 @@ inline bool local_accuracy(BhattResult& r,span x,double mu,double sigma,double a
       f.add(-z[1]+(r.a>0?local_kernel(t,width/s):-t*t/accuracy_detail::Jet(2)));}
     return f.value;
   };
-  if(!exact_normal&&!continuous_fallback_polish(q,free,tol,maxit,objective))return false;
+  if(!exact_normal&&!continuous_fallback_polish(q,free,tol,maxit,objective,r.stop_detail))return false;
   if(free[0]) {
     const double floor=std::max(std::abs(static_cast<double>(static_cast<ExtendedReal>(center)+location_unit*q[0])),unit*std::exp(q[1]));
     const double sensitivity=location_unit/floor;
-    if(sensitivity>4&&!continuous_fallback_polish(q,free,tol*4/sensitivity,maxit,objective))return false;
+    if(sensitivity>4&&!continuous_fallback_polish(q,free,tol*4/sensitivity,maxit,objective,r.stop_detail))return false;
   }
   if(free[0])r.mu=static_cast<double>(static_cast<ExtendedReal>(center)+location_unit*static_cast<ExtendedReal>(q[0]));
   if(free[1])r.sigma=unit*std::exp(q[1]);

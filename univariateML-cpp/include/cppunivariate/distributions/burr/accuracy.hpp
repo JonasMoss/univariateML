@@ -9,7 +9,7 @@ namespace cppunivariate {
 // contraction region; acceptance still uses the common correction test.
 template<class Objective>
 inline bool continuous_fallback_polish(std::array<double,3>& q,const std::array<bool,3>& free,
-    double tol,int maxit,const Objective& objective) {
+    double tol,int maxit,const Objective& objective,StopDetail& detail) {
   std::array<int,3> index{};int n=0;for(int i=0;i<3;++i)if(free[i])index[n++]=i;
   int remaining=static_cast<int>(solver_budget(maxit));
   while(remaining>1) {
@@ -44,7 +44,12 @@ inline bool continuous_fallback_polish(std::array<double,3>& q,const std::array<
     }
     if(!moved)return false;
   }
-  return accuracy_detail::polish(q,free,tol,remaining,objective);
+  return accuracy_detail::polish(q,free,tol,remaining,objective,detail);
+}
+template<class Objective>
+inline bool continuous_fallback_polish(std::array<double,3>& q,const std::array<bool,3>& free,
+    double tol,int maxit,const Objective& objective) {
+  StopDetail detail;return continuous_fallback_polish(q,free,tol,maxit,objective,detail);
 }
 // TwoSum retains the subtraction residual in double-only builds too.
 inline ExtendedReal burr_excess_log_ratio(double v,double shift,double unit) {
@@ -76,7 +81,7 @@ inline bool burr_shape_box_refuted(span x,double k,double c,double tol,bool inve
 }
 // Local likelihood refinement only. The caller retains its global decision.
 inline bool burr_local_accuracy(span x,double& a,double& b,double& s,
-    const std::array<bool,3>& free,double tol,int maxit,bool inverse=false,double shift=0) {
+    const std::array<bool,3>& free,double tol,int maxit,bool inverse,double shift,StopDetail& detail) {
   tol=std::min(tol,1e-10);
   const bool held_power=free[0]&&!free[1]&&free[2];
   if(held_power&&!x.empty()&&s>0&&std::isfinite(s)) {
@@ -95,7 +100,7 @@ inline bool burr_local_accuracy(span x,double& a,double& b,double& s,
     ExtendedReal high=-INFINITY;for(double value:x)high=std::max(high,(inverse?-1:1)*power*burr_excess_log_ratio(value,shift,scale));
     return high<std::log(ExtendedReal(.01));
   };
-  if(weak_joint(a,b,s)&&burr_power_one_detail::joint_fit(x,a,b,s,free,tol,maxit,inverse,shift))return true;
+  if(weak_joint(a,b,s)&&burr_power_one_detail::joint_fit(x,a,b,s,free,tol,maxit,inverse,shift,detail))return true;
   const double unit=s;
   std::array<double,3> q{{std::log(a),std::log(b),free[2]?std::log(a):0}};
   const auto objective=[&](const std::array<accuracy_detail::Jet,3>& z) {
@@ -118,14 +123,14 @@ inline bool burr_local_accuracy(span x,double& a,double& b,double& s,
     if(!(free[1]&&(free[0]||free[2])))return false;
     double k=free[0]?std::exp(q[0]):a,c=std::exp(q[1]);
     double scale=free[2]?static_cast<double>(static_cast<ExtendedReal>(unit)*std::exp((inverse?-1:1)*((free[0]?static_cast<ExtendedReal>(q[0]):std::log(static_cast<ExtendedReal>(a)))-q[2])/c)):unit;
-    if(!weak_joint(k,c,scale)||!burr_power_one_detail::joint_fit(x,k,c,scale,free,tol,maxit,inverse,shift))return false;
+    if(!weak_joint(k,c,scale)||!burr_power_one_detail::joint_fit(x,k,c,scale,free,tol,maxit,inverse,shift,detail))return false;
     a=k;b=c;s=scale;return true;
   };
-  if(!continuous_fallback_polish(q,free,internal_tol,maxit,objective))return compensated_current();
+  if(!continuous_fallback_polish(q,free,internal_tol,maxit,objective,detail))return compensated_current();
   if(free[2]) {
     const double power=free[1]?std::exp(q[1]):b,coordinate=static_cast<double>(((free[0]?static_cast<ExtendedReal>(q[0]):std::log(static_cast<ExtendedReal>(a)))-q[2])/power);
     const double sensitivity=2/power+std::abs(coordinate);
-    if(internal_tol*sensitivity>tol*4&&!continuous_fallback_polish(q,free,tol*4/sensitivity,maxit,objective))return compensated_current();
+    if(internal_tol*sensitivity>tol*4&&!continuous_fallback_polish(q,free,tol*4/sensitivity,maxit,objective,detail))return compensated_current();
   }
   if(free[0])a=std::exp(q[0]);
   if(free[1])b=std::exp(q[1]);
@@ -138,11 +143,16 @@ inline bool burr_local_accuracy(span x,double& a,double& b,double& s,
     const ExtendedReal log_rate=(inverse?-1:1)*b*burr_excess_log_ratio(extreme,shift,s);
     if(log_rate<std::log(ExtendedReal(.01)))return burr_power_one_detail::fit(x,a,s,tol,maxit,inverse,shift,b);
   }
-  if(weak_joint(a,b,s))return burr_power_one_detail::joint_fit(x,a,b,s,free,tol,maxit,inverse,shift);
+  if(weak_joint(a,b,s))return burr_power_one_detail::joint_fit(x,a,b,s,free,tol,maxit,inverse,shift,detail);
   if(free[0]&&free[1]&&free[2]&&burr_shape_box_refuted(x,a,b,tol,inverse,shift))return false;
   return std::isfinite(a+b+s)&&a>0&&b>0&&s>0&&
     (!free[2]||accuracy_detail::scale_projection(s,unit,logscale,tol));
 }
+inline bool burr_local_accuracy(span x,double& a,double& b,double& s,
+    const std::array<bool,3>& free,double tol,int maxit,bool inverse=false,double shift=0) {
+  StopDetail detail;return burr_local_accuracy(x,a,b,s,free,tol,maxit,inverse,shift,detail);
+}
+
 inline double burr_local_loglik(span x,double a,double b,double s,bool inverse=false,double shift=0) {
   accuracy_detail::ScalarSum ll;
   for(double v:x){

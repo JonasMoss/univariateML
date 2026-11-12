@@ -25,12 +25,12 @@ inline bool ged_local_accuracy(GedResult& r,span x,double mean,double sd,double 
       f.add(normalizer-w);}
     return f.value;
   };
-  if(!accuracy_detail::polish(q,free,tol,maxit,objective))return false;
+  if(!accuracy_detail::polish(q,free,tol,maxit,objective,r.stop_detail))return false;
   if(free[0]) {
     const double location=static_cast<double>(static_cast<ExtendedReal>(center)+unit*static_cast<ExtendedReal>(q[0]));
     const double scale=unit*std::exp(q[1]);
     const double sensitivity=unit/std::max(std::abs(location),scale);
-    if(sensitivity>4&&!accuracy_detail::polish(q,free,tol*4/sensitivity,maxit,objective))return false;
+    if(sensitivity>4&&!accuracy_detail::polish(q,free,tol*4/sensitivity,maxit,objective,r.stop_detail))return false;
   }
   if(knot&&std::isnan(nu)) {
     std::array<accuracy_detail::Jet,3> z;for(int i=0;i<3;++i)z[i]=accuracy_detail::variable(q[i],i,i==2);

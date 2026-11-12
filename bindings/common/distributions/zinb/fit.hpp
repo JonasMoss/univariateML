@@ -16,6 +16,7 @@ inline FitResult fit_zinb(cppunivariate::ispan x, Held size_arg = {}, Held prob_
     return fail("size must be a finite nonnegative number");
   const auto fit = cppunivariate::zinb_mle(x, reltol, iterlim,
       size.supplied ? size.value : NAN,prob.supplied?prob.value:std::numeric_limits<double>::quiet_NaN(),pi.supplied?pi.value:std::numeric_limits<double>::quiet_NaN());
+  if(fit.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return stop_failure(failure("zinb numerical accuracy failure: requested coefficient accuracy cannot be established."),fit.stop_detail,"numerical",{"size","prob","pi"});
   if (fit.status == cppunivariate::ZinbStatus::InvalidSize)
     return fail("size must be a finite nonnegative number");
   if (fit.status == cppunivariate::ZinbStatus::InvalidInput)

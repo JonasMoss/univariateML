@@ -34,6 +34,7 @@ inline FitResult fit_ged(cppunivariate::span x, Held mean_arg = {}, Held sd_arg 
   if(nu.supplied && (!std::isfinite(held_nu)||!(held_nu>0)))return fail("Invalid held `nu`.");
   if(nu.supplied)fixed.push_back("nu");
   auto res = cppunivariate::ged_mle(x, gradtol, iterlim, held_mean, held_sd, held_nu);
+  if(res.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return stop_failure(failure("ged numerical accuracy failure: requested coefficient accuracy cannot be established."),res.stop_detail,"numerical",{"mean","sd","nu"});
   if(res.status==cppunivariate::GedStatus::InvalidShape)return fail("Held `nu` must be at least 1 under the existing GED restriction.");
   if(res.sigma==0 && (mean.supplied||sd.supplied||nu.supplied))
     return classify(fail("GED scale likelihood is unbounded: all observations equal the fitted or held location."),{},"nomle",{});

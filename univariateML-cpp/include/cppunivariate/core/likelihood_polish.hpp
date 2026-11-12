@@ -1,5 +1,6 @@
 #pragma once
 #include "precision.hpp"
+#include "stop_detail.hpp"
 #include "work_budget.hpp"
 #include "../special/special.hpp"
 #include <array>
@@ -98,12 +99,14 @@ struct JetSum {
 // budget failure. The global search and face comparisons belong to callers.
 template<class Objective>
 inline bool polish(std::array<double,3>& q,const std::array<bool,3>& free,
-                   double tol,int maxit,const Objective& objective) {
+                   double tol,int maxit,const Objective& objective,StopDetail& detail) {
+  detail.accuracy_stop=AccuracyStop::None;detail.conditioning_bound=NAN;
   std::array<int,3> indices{};int n=0;for(int i=0;i<3;++i)if(free[i])indices[n++]=i;
   if(n==0)return true;
   if(tol<4*std::numeric_limits<double>::epsilon())return false;
   double previous=INFINITY;
   const auto advance=[&](bool update)->int {
+    detail.conditioning_bound=NAN;
     std::array<Jet,3> z;for(int i=0;i<3;++i)z[i]=variable(q[i],i,free[i]);
     const Jet f=objective(z);
     if(!std::isfinite(f.v))return false;
@@ -125,12 +128,56 @@ inline bool polish(std::array<double,3>& q,const std::array<bool,3>& free,
     previous=error;
     return -1;
   };
+  // Diagnose a rounding plateau only after the existing search has failed.
+  // A symmetric perturbation measures score noise after subtracting the
+  // computed linear response; inverse information maps it to coefficient
+  // coordinates. Large remaining corrections remain ordinary search failures.
+  const auto diagnose=[&]() {
+    detail.conditioning_bound=NAN;
+    if(solver_budget(maxit)<1)return;
+    std::array<Jet,3> z;for(int i=0;i<3;++i)z[i]=variable(q[i],i,free[i]);
+    const auto f=objective(z);if(!std::isfinite(f.v))return;
+    std::array<std::array<ExtendedReal,3>,3> L{};
+    for(int i=0;i<n;++i)for(int j=0;j<=i;++j) {
+      ExtendedReal a=-f.h[indices[i]][indices[j]];
+      for(int k=0;k<j;++k)a-=L[i][k]*L[j][k];
+      if(i==j){if(!(a>0)||!std::isfinite(a))return;L[i][j]=std::sqrt(a);}
+      else L[i][j]=a/L[j][j];
+    }
+    const auto solve=[&](const std::array<ExtendedReal,3>& g) {
+      std::array<ExtendedReal,3> y{},answer{};
+      for(int i=0;i<n;++i){ExtendedReal a=g[i];for(int j=0;j<i;++j)a-=L[i][j]*y[j];y[i]=a/L[i][i];}
+      for(int i=n-1;i>=0;--i){ExtendedReal a=y[i];for(int j=i+1;j<n;++j)a-=L[j][i]*answer[j];answer[i]=a/L[i][i];}
+      return answer;
+    };
+    std::array<ExtendedReal,3> g{};for(int i=0;i<n;++i)g[i]=f.g[indices[i]];
+    const auto correction=solve(g);ExtendedReal remaining=0,noise=0;
+    for(int i=0;i<n;++i)remaining=std::max(remaining,std::abs(correction[i]));
+    if(!std::isfinite(remaining)||remaining>.25)return;
+    for(int column=0;column<n;++column)for(double direction:{-1.,1.}) {
+      auto trial=q;const int j=indices[column];
+      trial[j]+=direction*16*std::numeric_limits<double>::epsilon()*std::max(1.,std::abs(q[j]));
+      const double delta=trial[j]-q[j];
+      for(int i=0;i<3;++i)z[i]=variable(trial[i],i,free[i]);
+      const auto sampled=objective(z);if(!std::isfinite(sampled.v))return;
+      for(int i=0;i<n;++i)g[i]=sampled.g[indices[i]]-f.g[indices[i]]-f.h[indices[i]][j]*delta;
+      const auto response=solve(g);
+      for(int i=0;i<n;++i){if(!std::isfinite(response[i]))return;noise=std::max(noise,std::abs(response[i]));}
+    }
+    if(remaining<=4*noise)detail.conditioning_bound=static_cast<double>(4*noise);
+  };
   for(std::int64_t it=0;it<solver_budget(maxit);++it) {
     const int state=advance(true);
-    if(state>=0)return state==1;
+    if(state>=0){if(state==1)return true;diagnose();return false;}
   }
   // Validation of the final permitted update is not another Newton step.
-  return advance(false)==1;
+  if(advance(false)==1)return true;
+  diagnose();return false;
+}
+template<class Objective>
+inline bool polish(std::array<double,3>& q,const std::array<bool,3>& free,
+                   double tol,int maxit,const Objective& objective) {
+  StopDetail detail;return polish(q,free,tol,maxit,objective,detail);
 }
 } // namespace accuracy_detail
 } // namespace cppunivariate

@@ -369,3 +369,13 @@ test_that("uncertified zib coefficients meet the local accuracy contract", {
   expect_lte(abs(unname(f["prob"])-(0.8235304158971448)),1e-10*1)
   expect_equal(unname(f["pi"]),0.15743440233236153,tolerance=0)
 })
+
+test_that("ZIB reports the attainable tolerance at a rational maximizer", {
+  e <- tryCatch(mlzib(c(0,1,1),size=1,pi=0,reltol=1e-20),error=identity)
+  expect_s3_class(e,"univariateML_tolerance")
+  expect_s3_class(e,"univariateML_numerical")
+  expect_identical(e$kind,"tolerance")
+  expect_equal(e$attainable_tol,1/27021597764222976,tolerance=1e-30)
+  expect_match(conditionMessage(e),"tol must be at least .* here")
+  expect_true(any(e$candidates$prob==2/3))
+})
