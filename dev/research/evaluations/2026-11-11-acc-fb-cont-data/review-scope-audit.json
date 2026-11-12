@@ -1,0 +1,118 @@
+{
+  "authorized_files": [
+    "bindings/js/stop-test.mjs",
+    "bindings/js/test.mjs",
+    "bindings/r/distributions/bhatt/test.R",
+    "bindings/r/distributions/burr/test.R",
+    "bindings/r/distributions/ged/test.R",
+    "bindings/r/distributions/invburr/test.R",
+    "bindings/r/distributions/pareto4/test.R",
+    "univariateML-cpp/include/cppunivariate/distributions/bhatt/test.cpp",
+    "univariateML-cpp/include/cppunivariate/distributions/burr/test.cpp",
+    "univariateML-cpp/include/cppunivariate/distributions/ged/test.cpp"
+  ],
+  "changed_files": [
+    "bindings/js/stop-test.mjs",
+    "bindings/js/test.mjs",
+    "bindings/r/distributions/bhatt/test.R",
+    "bindings/r/distributions/burr/test.R",
+    "bindings/r/distributions/ged/test.R",
+    "bindings/r/distributions/invburr/test.R",
+    "bindings/r/distributions/pareto4/test.R",
+    "univariateML-cpp/include/cppunivariate/distributions/bhatt/test.cpp",
+    "univariateML-cpp/include/cppunivariate/distributions/burr/test.cpp",
+    "univariateML-cpp/include/cppunivariate/distributions/ged/test.cpp"
+  ],
+  "production_files_unchanged": true,
+  "private_proposal_unchanged_from_bc8ff7be": true,
+  "private_proposal_sha256": "8402b3f6f6b279c93a332139b208459d67661acc3889c846da2a3a95edfdc0aa",
+  "details": [
+    {
+      "file": "bindings/js/stop-test.mjs",
+      "modified_existing_tests": [
+        "Burr and reciprocal nearly-constant uncertified fallback"
+      ],
+      "added_tests": [],
+      "inputs_and_fit_arguments_preserved": true
+    },
+    {
+      "file": "bindings/js/test.mjs",
+      "modified_existing_tests": [
+        "Bhattacharjee held certificates and quantitative numerical stops"
+      ],
+      "added_tests": [],
+      "inputs_and_fit_arguments_preserved": true
+    },
+    {
+      "file": "bindings/r/distributions/bhatt/test.R",
+      "modified_existing_tests": [
+        "bhatt tiny requested tolerance preserves a successful uncertified search"
+      ],
+      "added_tests": [],
+      "inputs_and_fit_arguments_preserved": true
+    },
+    {
+      "file": "bindings/r/distributions/burr/test.R",
+      "modified_existing_tests": [
+        "Burr global certificate stops preserve their diagnostics",
+        "burr nearly-constant retains an uncertified finite search"
+      ],
+      "added_tests": [],
+      "inputs_and_fit_arguments_preserved": true
+    },
+    {
+      "file": "bindings/r/distributions/ged/test.R",
+      "modified_existing_tests": [],
+      "added_tests": [
+        "GED held-scale accuracy reaches SGED unit skew case 31101"
+      ],
+      "inputs_and_fit_arguments_preserved": true
+    },
+    {
+      "file": "bindings/r/distributions/invburr/test.R",
+      "modified_existing_tests": [
+        "invburr preserves certificate refusal diagnostics",
+        "invburr nearly-constant retains an uncertified finite search"
+      ],
+      "added_tests": [],
+      "inputs_and_fit_arguments_preserved": true
+    },
+    {
+      "file": "bindings/r/distributions/pareto4/test.R",
+      "modified_existing_tests": [
+        "pareto4 preserves certificate refusal diagnostics"
+      ],
+      "added_tests": [],
+      "inputs_and_fit_arguments_preserved": true
+    },
+    {
+      "file": "univariateML-cpp/include/cppunivariate/distributions/bhatt/test.cpp",
+      "modified_existing_tests": [
+        "bhatt certificate: quantitative location, precision fallback and iteration failure",
+        "bhatt inconclusive normal certificate preserves the existing attained member",
+        "bhatt failed enclosure preserves the successful existing search as uncertified"
+      ],
+      "added_tests": [],
+      "inputs_and_fit_arguments_preserved": true
+    },
+    {
+      "file": "univariateML-cpp/include/cppunivariate/distributions/burr/test.cpp",
+      "modified_existing_tests": [
+        "burr: certified retained workloads and guarded stops",
+        "burr: certificate arithmetic and failure gates",
+        "Burr uncertified fallback rejects a refuted or failed search"
+      ],
+      "added_tests": [],
+      "inputs_and_fit_arguments_preserved": true
+    },
+    {
+      "file": "univariateML-cpp/include/cppunivariate/distributions/ged/test.cpp",
+      "modified_existing_tests": [],
+      "added_tests": [
+        "GED held-scale accuracy propagates to SGED unit skew case 31101"
+      ],
+      "inputs_and_fit_arguments_preserved": true
+    }
+  ],
+  "errors": []
+}

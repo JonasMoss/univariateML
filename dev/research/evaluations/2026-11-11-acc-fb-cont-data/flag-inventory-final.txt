@@ -1,0 +1,150 @@
+univariateML-cpp/include/cppunivariate/distributions/paralogis/mle.hpp:51:  bool certified=true;
+univariateML-cpp/include/cppunivariate/distributions/paralogis/mle.hpp:267:inline ParalogisResult uncertified(ParalogisResult searched,
+univariateML-cpp/include/cppunivariate/distributions/paralogis/mle.hpp:269:  searched.certified=false;
+univariateML-cpp/include/cppunivariate/distributions/paralogis/mle.hpp:285:inline ParalogisResult accurate_uncertified(ParalogisResult searched,
+univariateML-cpp/include/cppunivariate/distributions/paralogis/mle.hpp:287:  searched=uncertified(searched,certificate,x);
+univariateML-cpp/include/cppunivariate/distributions/paralogis/mle.hpp:295:inline ParalogisResult paralogis_mle(span x, double tol, int maxit,
+univariateML-cpp/include/cppunivariate/distributions/paralogis/mle.hpp:308:  const auto certified = paralogis_cert_detail::certify(x,r.shape,r.scale,false,certificate_budget(maxit),maxit);
+univariateML-cpp/include/cppunivariate/distributions/paralogis/mle.hpp:309:  if (!certified.ok) return paralogis_detail::accurate_uncertified(r,certified,x,tol,maxit,false);
+univariateML-cpp/include/cppunivariate/distributions/paralogis/mle.hpp:310:  r.shape=certified.shape; r.scale=certified.scale; r.logLik=certified.logLik;
+univariateML-cpp/include/cppunivariate/distributions/paralogis/mle.hpp:368:  auto certified=paralogis_cert_detail::certify(x,r.shape,scale,true,certificate_budget(maxit),maxit);
+univariateML-cpp/include/cppunivariate/distributions/paralogis/mle.hpp:369:  if(!certified.ok) {
+univariateML-cpp/include/cppunivariate/distributions/paralogis/mle.hpp:372:      certified=paralogis_cert_detail::certify(x,alternative,scale,true,certificate_budget(maxit),maxit);
+univariateML-cpp/include/cppunivariate/distributions/paralogis/mle.hpp:374:  if(!certified.ok) return paralogis_detail::accurate_uncertified(r,certified,x,tol,maxit,true);
+univariateML-cpp/include/cppunivariate/distributions/paralogis/mle.hpp:375:  r.shape=certified.shape;r.logLik=certified.logLik;
+univariateML-cpp/include/cppunivariate/distributions/paralogis/mle.hpp:385: if(std::isnan(shape)) return std::isnan(scale)?paralogis_mle(x,tol,maxit):paralogis_mle_fixed_scale(x,scale,tol,maxit);
+univariateML-cpp/include/cppunivariate/distributions/sn/mle.hpp:268:      bool certified=false;
+univariateML-cpp/include/cppunivariate/distributions/sn/mle.hpp:275:           width*std::max(sl,-sr)/2<=5e-9*n) {certified=true;break;}
+univariateML-cpp/include/cppunivariate/distributions/sn/mle.hpp:280:      if(!certified) {
+univariateML-cpp/include/cppunivariate/distributions/sn/mle.hpp:484:inline SnResult sn_mle(span x,double tol=1e-10,int maxit=100,double xi=NAN,double omega=NAN,double alpha=NAN,std::int64_t work_budget=-2) {
+univariateML-cpp/include/cppunivariate/distributions/pareto4/mle.hpp:7:struct Pareto4Result { double shape1,shape2,scale,min,logLik; int iterations; BurrStatus status; StopDetail stop_detail{}; bool certified=true; };
+univariateML-cpp/include/cppunivariate/distributions/pareto4/mle.hpp:12:inline Pareto4Result pareto4_mle_certified(span x, double min, double tol, int maxit);
+univariateML-cpp/include/cppunivariate/distributions/pareto4/mle.hpp:14:inline Pareto4Result pareto4_mle(span x, double min, double tol, int maxit, double scale=std::numeric_limits<double>::quiet_NaN(), double shape1=std::numeric_limits<double>::quiet_NaN(), double shape2=std::numeric_limits<double>::quiet_NaN()) {
+univariateML-cpp/include/cppunivariate/distributions/pareto4/mle.hpp:17:    return pareto4_mle_certified(x,min,tol,maxit);
+univariateML-cpp/include/cppunivariate/distributions/pareto4/mle.hpp:46:  if(r.status==BurrStatus::Ok&&!r.certified&&!burr_local_accuracy(x,r.shape1,r.shape2,r.scale,{{std::isnan(shape1),std::isnan(shape2),std::isnan(scale)}},tol,maxit,false,min))r.status=BurrStatus::NumericalFailure;
+univariateML-cpp/include/cppunivariate/distributions/pareto4/mle.hpp:47:  if(r.status==BurrStatus::Ok&&!r.certified){r.logLik=burr_local_loglik(x,r.shape1,r.shape2,r.scale,false,min);if(!std::isfinite(r.logLik))r.status=BurrStatus::NumericalFailure;}
+univariateML-cpp/include/cppunivariate/distributions/pareto4/mle.hpp:50:  return {r.shape1,r.shape2,r.scale,min,r.logLik,r.iterations,r.status,detail,r.certified};
+univariateML-cpp/include/cppunivariate/distributions/pareto4/mle.hpp:53:inline Pareto4Result pareto4_mle_certified(span x, double min, double tol, int maxit) {
+univariateML-cpp/include/cppunivariate/distributions/pareto4/mle.hpp:73:  auto r=burr_mle_certified(span{y.data(),y.size()},tol,maxit);
+univariateML-cpp/include/cppunivariate/distributions/pareto4/mle.hpp:74:  if(r.status==BurrStatus::Ok&&!r.certified&&!burr_local_accuracy(x,r.shape1,r.shape2,r.scale,{{true,true,true}},tol,maxit,false,min))r.status=BurrStatus::NumericalFailure;
+univariateML-cpp/include/cppunivariate/distributions/pareto4/mle.hpp:75:  if(r.status==BurrStatus::Ok&&!r.certified){r.logLik=burr_local_loglik(x,r.shape1,r.shape2,r.scale,false,min);if(!std::isfinite(r.logLik))r.status=BurrStatus::NumericalFailure;}
+univariateML-cpp/include/cppunivariate/distributions/pareto4/mle.hpp:78:  return {r.shape1,r.shape2,r.scale,min,r.logLik,r.iterations,r.status,detail,r.certified};
+univariateML-cpp/include/cppunivariate/distributions/bhatt/mle.hpp:15:struct BhattResult {double mu,sigma,a,logLik;int iterations;BhattStatus status; StopDetail stop_detail{}; bool certified=false; };
+univariateML-cpp/include/cppunivariate/distributions/bhatt/mle.hpp:139:    const auto r=norm_mle(x,mu,sigma);
+univariateML-cpp/include/cppunivariate/distributions/invburr/mle.hpp:21:inline InvBurrResult invburr_mle(span x, double tol, int maxit) {
+univariateML-cpp/include/cppunivariate/distributions/invburr/mle.hpp:133:  bool certified=true;
+univariateML-cpp/include/cppunivariate/distributions/invburr/mle.hpp:151:inline InvBurrResult invburr_mle(span x, double tol, int maxit,
+univariateML-cpp/include/cppunivariate/distributions/invburr/mle.hpp:180:  auto r = burr_mle_certified(span{reciprocal.data(),reciprocal.size()},tol,maxit,
+univariateML-cpp/include/cppunivariate/distributions/invburr/mle.hpp:204:  out.certified=r.certified;
+univariateML-cpp/include/cppunivariate/distributions/invburr/mle.hpp:205:  if(out.status==InvBurrStatus::Ok&&!out.certified&&!burr_local_accuracy(x,out.shape1,out.shape2,out.scale,{{true,true,true}},tol,maxit,true))out.status=InvBurrStatus::NumericalFailure;
+univariateML-cpp/include/cppunivariate/distributions/invburr/mle.hpp:206:  if(out.status==InvBurrStatus::Ok&&!out.certified){out.logLik=burr_local_loglik(x,out.shape1,out.shape2,out.scale,true);if(!std::isfinite(out.logLik))out.status=InvBurrStatus::NumericalFailure;}
+univariateML-cpp/include/cppunivariate/distributions/invburr/mle.hpp:214:// Share the certified reciprocal path with the held-parameter dispatcher.
+univariateML-cpp/include/cppunivariate/distributions/invburr/mle.hpp:232:   out.certified=r.certified;
+univariateML-cpp/include/cppunivariate/distributions/invburr/mle.hpp:233:   if(out.status==InvBurrStatus::Ok&&!out.certified) {
+univariateML-cpp/include/cppunivariate/distributions/invburr/mle.hpp:240:   return invburr_mle(x,tol,maxit);
+univariateML-cpp/include/cppunivariate/distributions/invburr/mle.hpp:271: out.certified=r.certified;
+univariateML-cpp/include/cppunivariate/distributions/invburr/mle.hpp:289:     } else out.certified=false;
+univariateML-cpp/include/cppunivariate/distributions/invburr/mle.hpp:292:   // Retain its coefficients explicitly uncertified and evaluate their raw
+univariateML-cpp/include/cppunivariate/distributions/invburr/mle.hpp:302: if(out.status==InvBurrStatus::Ok&&!out.certified&&!burr_local_accuracy(x,out.shape1,out.shape2,out.scale,{{std::isnan(a),std::isnan(b),std::isnan(s)}},tol,maxit,true))out.status=InvBurrStatus::NumericalFailure;
+univariateML-cpp/include/cppunivariate/distributions/invburr/mle.hpp:303: if(out.status==InvBurrStatus::Ok&&!out.certified){out.logLik=burr_local_loglik(x,out.shape1,out.shape2,out.scale,true);if(!std::isfinite(out.logLik))out.status=InvBurrStatus::NumericalFailure;}
+univariateML-cpp/include/cppunivariate/distributions/genbeta/mle.hpp:40: bool allfree_certified=false; };
+univariateML-cpp/include/cppunivariate/distributions/genbeta/mle.hpp:138:      const auto g=gamma_mle({y.data(),y.size()},1e-10,maxit);
+univariateML-cpp/include/cppunivariate/distributions/genbeta/mle.hpp:176:    const auto k=kumar_mle({u.data(),u.size()},tol,maxit);
+univariateML-cpp/include/cppunivariate/distributions/genbeta/mle.hpp:260:    const bool certified=left>0&&right>left&&std::isfinite(el)&&std::isfinite(er)&&sl>el&&sr< -er;
+univariateML-cpp/include/cppunivariate/distributions/genbeta/mle.hpp:262:      p.ok&&certified?GenbetaStatus::Ok:GenbetaStatus::SearchUnresolved};
+univariateML-cpp/include/cppunivariate/distributions/genbeta/mle.hpp:355:        if(checked.allfree_certified)return checked;
+univariateML-cpp/include/cppunivariate/distributions/genbeta/mle.hpp:370:        out=legacy;out.allfree_certified=false;
+univariateML-cpp/include/cppunivariate/distributions/genbeta/mle.hpp:429:inline GenbetaResult genbeta_mle(span x,double scale,double tol=1e-10,int maxit=300,double a=NAN,double b=NAN,double t=NAN) {
+univariateML-cpp/include/cppunivariate/distributions/genbeta/mle.hpp:436:    r.status=GenbetaStatus::SearchUnresolved;r.allfree_certified=false;
+univariateML-cpp/include/cppunivariate/distributions/genbeta/mle.hpp:451:      const auto beta=beta_mle({u.data(),u.size()},tol,maxit);
+univariateML-cpp/include/cppunivariate/distributions/pareto3/mle.hpp:9:struct Pareto3Result { double shape,scale,min,logLik; int iterations; Pareto3Status status; bool certified=true; };
+univariateML-cpp/include/cppunivariate/distributions/pareto3/mle.hpp:18:  auto r=loglogistic_mle(span{y.data(),y.size()},tol,maxit,shape,scale);
+univariateML-cpp/include/cppunivariate/distributions/pareto3/mle.hpp:22:  return {r.shape,r.scale,min,r.logLik,r.iterations,status,r.certified};
+univariateML-cpp/include/cppunivariate/distributions/pareto3/mle.hpp:29:inline Pareto3Result pareto3_mle(span x,double min,double tol,int maxit,double shape=NAN,double scale=NAN) {
+univariateML-cpp/include/cppunivariate/distributions/pareto3/mle.hpp:32:  if(!r.certified)tol=std::min(tol,1e-10);
+univariateML-cpp/include/cppunivariate/distributions/pareto3/mle.hpp:39:    for(double v:x){const auto t=a*(accuracy_detail::Jet(parent.certified?std::log((static_cast<ExtendedReal>(v)-min)/unit):burr_excess_log_ratio(v,min,unit))-z[1]);
+univariateML-cpp/include/cppunivariate/distributions/pareto3/mle.hpp:43:  const bool refined=parent.certified?accuracy_detail::polish(q,free,tol,maxit,objective):continuous_fallback_polish(q,free,tol,maxit,objective);
+univariateML-cpp/include/cppunivariate/distributions/pareto3/mle.hpp:48:  if(!parent.certified) {
+univariateML-cpp/include/cppunivariate/distributions/ged/mle.hpp:46:  bool certified = false;
+univariateML-cpp/include/cppunivariate/distributions/ged/mle.hpp:316:    r.certified=true;return r;
+univariateML-cpp/include/cppunivariate/distributions/ged/mle.hpp:325:    r.certified=std::isfinite(r.logLik);
+univariateML-cpp/include/cppunivariate/distributions/ged/mle.hpp:326:    if(!r.certified)r.status=GedStatus::BfgsFailure;
+univariateML-cpp/include/cppunivariate/distributions/ged/mle.hpp:357:      r.certified=true;return r;
+univariateML-cpp/include/cppunivariate/distributions/ged/mle.hpp:416:  if(r.status!=GedStatus::UniformBoundary || r.certified)return;
+univariateML-cpp/include/cppunivariate/distributions/ged/mle.hpp:443:    r.status=GedStatus::BfgsFailure;r.certified=false;r.stop_detail=original;
+univariateML-cpp/include/cppunivariate/distributions/ged/mle.hpp:475:  r.certified=true;r.stop_detail=original;
+univariateML-cpp/include/cppunivariate/distributions/ged/mle.hpp:485:inline GedResult ged_uncertified(GedResult certificate,span x,double tol,int maxit,
+univariateML-cpp/include/cppunivariate/distributions/ged/mle.hpp:497:  if(!ged_local_accuracy(searched,x,mean,sd,nu,tol,maxit)){searched.status=GedStatus::TransformFailure;searched.certified=false;return searched;}
+univariateML-cpp/include/cppunivariate/distributions/ged/mle.hpp:515:  searched.logLik=ll;searched.certified=false;searched.stop_detail=certificate.stop_detail;return searched;
+univariateML-cpp/include/cppunivariate/distributions/ged/mle.hpp:518:inline GedResult ged_mle(span x,double tol,int maxit) {
+univariateML-cpp/include/cppunivariate/distributions/ged/mle.hpp:523:  r=ged_uncertified(r,x,tol,maxit,NAN,NAN,NAN);
+univariateML-cpp/include/cppunivariate/distributions/ged/mle.hpp:527:inline GedResult ged_mle(span x,double tol,int maxit,double mean,double sd,double nu) {
+univariateML-cpp/include/cppunivariate/distributions/ged/mle.hpp:531:    // No held-sd uniform escape is certified by this search. Strictly interior
+univariateML-cpp/include/cppunivariate/distributions/ged/mle.hpp:539:  r=ged_uncertified(r,x,tol,maxit,mean,sd,nu);
+univariateML-cpp/include/cppunivariate/distributions/gb2/power_certificate.hpp:35:  out.stop_detail=r.stop_detail;out.certified=r.certified;
+univariateML-cpp/include/cppunivariate/distributions/gb2/power_certificate.hpp:49:    if(!(v>0)||!std::isfinite(v)||(out.certified && 128*eps*(1+std::abs(center)+(1+std::abs(std::log(s)))/a)>1e-7))return NAN;
+univariateML-cpp/include/cppunivariate/distributions/gb2/power_certificate.hpp:61:  if(out.status==Gb2Status::Ok && out.certified && (!(su>=sl)||(su-sl)/a>std::log1p(1e-6)))
+univariateML-cpp/include/cppunivariate/distributions/gb2/power_certificate.hpp:65:  if(out.status==Gb2Status::Ok&&!out.certified) {
+univariateML-cpp/include/cppunivariate/distributions/gb2/power_certificate.hpp:70:  if(out.status==Gb2Status::Ok&&!out.certified&&!gb2_transport_accuracy(x,0,out,{{std::isnan(q),false,std::isnan(p),true}},tol,maxit,true)){out.status=Gb2Status::NumericalFailure;out.accuracy_failure=true;}
+univariateML-cpp/include/cppunivariate/distributions/gb2/power_certificate.hpp:100:  if((invalid && (out.status!=Gb2Status::Ok || out.certified)) || (out.status==Gb2Status::Ok && !std::isfinite(out.scale)) ||
+univariateML-cpp/include/cppunivariate/distributions/fpareto/mle.hpp:8:struct FparetoResult { double shape1,shape2,shape3,scale,min,logLik; int iterations; Gb2Status status; StopDetail stop_detail{}; bool certified=true; };
+univariateML-cpp/include/cppunivariate/distributions/fpareto/mle.hpp:10:inline FparetoResult fpareto_mle(span x, double min, double tol, int maxit, double shape1=std::numeric_limits<double>::quiet_NaN(), double shape2=std::numeric_limits<double>::quiet_NaN(), double shape3=std::numeric_limits<double>::quiet_NaN(), double scale=std::numeric_limits<double>::quiet_NaN()) {
+univariateML-cpp/include/cppunivariate/distributions/fpareto/mle.hpp:36:  auto r=gb2_mle(span{y.data(),y.size()},tol,maxit,shape1,shape2,shape3,scale);
+univariateML-cpp/include/cppunivariate/distributions/fpareto/mle.hpp:37:  if(r.status==Gb2Status::Ok&&!r.certified&&!fpareto_transport_accuracy(x,min,r,{{std::isnan(shape1),std::isnan(shape2),std::isnan(shape3),std::isnan(scale)}},tol,maxit))r.status=Gb2Status::NumericalFailure;
+univariateML-cpp/include/cppunivariate/distributions/fpareto/mle.hpp:40:  return {r.shape1,r.shape2,r.shape3,r.scale,min,r.logLik,r.iterations,r.status,detail,r.certified};
+univariateML-cpp/include/cppunivariate/distributions/betapr/joint_certificate.hpp:333:  const auto g=gamma_mle(x,1e-12,maxit);const auto ig=invgamma_mle(x,1e-12,maxit);
+univariateML-cpp/include/cppunivariate/distributions/betapr/joint_certificate.hpp:470:  // Every finite maximum lies in a certified, unique-root patch now.
+univariateML-cpp/include/cppunivariate/distributions/betapr/joint_certificate.hpp:487:    out.stop_detail.loglik_upper=original(f.upper);out.joint_exterior.global_certified=true;return out;
+univariateML-cpp/include/cppunivariate/distributions/betapr/joint_certificate.hpp:495:  out.joint_exterior.coefficient_lower={p.p.lo,p.q.lo,sl};out.joint_exterior.coefficient_upper={p.p.hi,p.q.hi,su};out.joint_exterior.global_certified=true;
+univariateML-cpp/include/cppunivariate/distributions/betapr/joint_certificate.hpp:500:inline BetaPrimeResult betapr_mle(span x,double tol,int maxit,double shape1,
+univariateML-cpp/include/cppunivariate/distributions/betapr/joint_certificate.hpp:502:  return betapr_detail::accurate_fallback(betapr_joint_cert::fit(x,tol,maxit,shape1,shape2,scale,reltol,abstol),x,NAN,NAN,NAN,tol,maxit,shape1,shape2,scale);
+univariateML-cpp/include/cppunivariate/distributions/betapr/fallback.hpp:8:// accurate_fallback before exposing an estimate.
+univariateML-cpp/include/cppunivariate/distributions/betapr/fallback.hpp:100:  out.certified=false;out.stop_detail=certificate.stop_detail;
+univariateML-cpp/include/cppunivariate/distributions/betapr/fallback.hpp:104:inline BetaPrimeResult accurate_fallback(BetaPrimeResult certificate,span x,double a,double b,double s,
+univariateML-cpp/include/cppunivariate/distributions/betapr/fallback.hpp:107:  if(out.status!=BetaPrimeStatus::Ok||out.certified)return out;
+univariateML-cpp/include/cppunivariate/distributions/gb2/mle.hpp:25:  bool certified=true;
+univariateML-cpp/include/cppunivariate/distributions/gb2/mle.hpp:230:inline Gb2Result gb2_mle(span x,double tol=1e-10,int maxit=300,
+univariateML-cpp/include/cppunivariate/distributions/gb2/mle.hpp:257:      out.certified=r.certified;
+univariateML-cpp/include/cppunivariate/distributions/gb2/mle.hpp:269:      out.certified=r.certified;
+univariateML-cpp/include/cppunivariate/distributions/gb2/mle.hpp:375:    consider(lognormal_mle(x).logLik,Gb2Status::LognormalBoundary);
+univariateML-cpp/include/cppunivariate/distributions/gb2/mle.hpp:380:    if(std::isnan(p))consider(power_mle(x,0).logLik,Gb2Status::PowerBoundary);
+univariateML-cpp/include/cppunivariate/distributions/gb2/mle.hpp:381:    if(std::isnan(q))consider(pareto_mle(x).logLik,Gb2Status::ParetoBoundary);
+univariateML-cpp/include/cppunivariate/distributions/gb2/mle.hpp:415:    const auto ib=invburr_mle(seed,1e-8,maxit);
+univariateML-cpp/include/cppunivariate/distributions/gb2/mle.hpp:417:    const auto bp=betapr_mle(seed,1e-6,maxit);
+univariateML-cpp/include/cppunivariate/distributions/gb2/mle.hpp:485:      const auto beta=beta_mle(span{probability.data(),probability.size()},std::min(tol,1e-10)*.125,maxit);
+univariateML-cpp/include/cppunivariate/distributions/betapr/mle.hpp:1:// Beta-prime fitters: certified conditional profiles and all-free cover.
+univariateML-cpp/include/cppunivariate/distributions/betapr/mle.hpp:33:  bool certified=true;
+univariateML-cpp/include/cppunivariate/distributions/betapr/mle.hpp:150:      beta_mle(span{y.data(),y.size()},std::min(tol,1e-12),maxit);
+univariateML-cpp/include/cppunivariate/distributions/betapr/mle.hpp:160:inline BetaPrimeResult betapr_mle(span x, double tol = 1e-6, int maxit = 2000,
+univariateML-cpp/include/cppunivariate/distributions/betapr/mle.hpp:199:    auto r=lomax_mle(x,tol,maxit,NAN,fs?1/held_s:NAN,held_b);
+univariateML-cpp/include/cppunivariate/distributions/betapr/mle.hpp:212:    auto r=invpareto_mle(x,tol,maxit,NAN,held_a,held_s);
+univariateML-cpp/include/cppunivariate/distributions/betapr/mle.hpp:232:  if(!fa&&!fb) return fs?betapr_mle_fixed_scale(x,held_s,tol,maxit):betapr_mle(x,tol,maxit);
+univariateML-cpp/include/cppunivariate/distributions/betapr/mle.hpp:321:inline BetaPrimeResult accurate_fallback(BetaPrimeResult certificate,span x,double a,double b,double s,
+univariateML-cpp/include/cppunivariate/distributions/betapr/mle.hpp:333:  return betapr_detail::accurate_fallback(r,x,a,b,s,tol,maxit);
+univariateML-cpp/include/cppunivariate/distributions/burr/mle.hpp:101:  bool certified=true;
+univariateML-cpp/include/cppunivariate/distributions/burr/mle.hpp:192:  const auto w = weibull_mle(x,1e-10,maxit);
+univariateML-cpp/include/cppunivariate/distributions/burr/mle.hpp:193:  const auto p = pareto_mle(x);
+univariateML-cpp/include/cppunivariate/distributions/burr/mle.hpp:211:inline BurrMLE burr_uncertified(BurrMLE certificate, BurrMLE searched, span x, double tol=1e-10, int maxit=1000,
+univariateML-cpp/include/cppunivariate/distributions/burr/mle.hpp:223:    certificate.status=BurrStatus::NumericalFailure;certificate.certified=false;
+univariateML-cpp/include/cppunivariate/distributions/burr/mle.hpp:236:  searched.logLik=ll;searched.certified=false;searched.stop_detail=certificate.stop_detail;
+univariateML-cpp/include/cppunivariate/distributions/burr/mle.hpp:239:inline BurrMLE burr_mle_certified(span x, double tol, int maxit,
+univariateML-cpp/include/cppunivariate/distributions/burr/mle.hpp:273:    return burr_uncertified(out,burr_mle_legacy(x,tol,maxit,shape10,shape20,scale0,reltol,true),x,tol,maxit,{{true,true,true}});
+univariateML-cpp/include/cppunivariate/distributions/burr/mle.hpp:276:inline BurrMLE burr_mle(span x, double tol, int maxit,
+univariateML-cpp/include/cppunivariate/distributions/burr/mle.hpp:281:  return burr_mle_certified(x,tol,maxit,shape10,shape20,scale0,reltol);
+univariateML-cpp/include/cppunivariate/distributions/burr/mle.hpp:291:  // a converged result can also survive an unclosed certificate uncertified.
+univariateML-cpp/include/cppunivariate/distributions/burr/mle.hpp:300:      const auto legacy=burr_fixed_detail::burr_mle(span{normalized.data(),normalized.size()},tol,maxit);
+univariateML-cpp/include/cppunivariate/distributions/burr/mle.hpp:318:    return burr_uncertified(out,searched,x,tol,maxit,{{true,true,false}});
+univariateML-cpp/include/cppunivariate/distributions/burr/mle.hpp:351: if(std::isnan(a)&&std::isnan(b))return std::isnan(s)?burr_mle(x,tol,maxit):burr_mle_fixed_scale(x,s,tol,maxit);
+univariateML-cpp/include/cppunivariate/distributions/burr/mle.hpp:364:   auto r=lomax_mle(span{y.data(),y.size()},tol,maxit);
+univariateML-cpp/include/cppunivariate/distributions/burr/mle.hpp:391:     return burr_uncertified(bad,searched,x,tol,maxit,{{true,false,true}});
+univariateML-cpp/include/cppunivariate/distributions/invparalogis/mle.hpp:10:struct InvParalogisResult { double shape, scale; double logLik; int iterations; ParalogisStatus status; StopDetail stop_detail = {}; bool certified=true; };
+univariateML-cpp/include/cppunivariate/distributions/invparalogis/mle.hpp:17:inline InvParalogisResult invparalogis_mle(span x, double tol, int maxit, double shape0 = std::numeric_limits<double>::quiet_NaN()) {
+univariateML-cpp/include/cppunivariate/distributions/invparalogis/mle.hpp:34:  auto r = paralogis_mle(span{y.data(), y.size()}, tol, maxit, shape0);
+univariateML-cpp/include/cppunivariate/distributions/invparalogis/mle.hpp:40:  if(r.status==ParalogisStatus::Ok&&!r.certified) {
+univariateML-cpp/include/cppunivariate/distributions/invparalogis/mle.hpp:46:  if(r.status==ParalogisStatus::Ok&&!r.certified) {
+univariateML-cpp/include/cppunivariate/distributions/invparalogis/mle.hpp:53:  return {r.shape,physical,ll,r.iterations,r.status,invparalogis_stop_detail(r.stop_detail,jacobian),r.certified};
+univariateML-cpp/include/cppunivariate/distributions/invparalogis/mle.hpp:74:  if(r.status==ParalogisStatus::Ok&&!r.certified) {
+univariateML-cpp/include/cppunivariate/distributions/invparalogis/mle.hpp:80:  if(r.status==ParalogisStatus::Ok&&!r.certified) {
+univariateML-cpp/include/cppunivariate/distributions/invparalogis/mle.hpp:87:  return {r.shape,scale,ll,r.iterations,r.status,invparalogis_stop_detail(r.stop_detail,jacobian),r.certified};
+univariateML-cpp/include/cppunivariate/distributions/invparalogis/mle.hpp:95: if(std::isnan(shape)) return std::isnan(scale)?invparalogis_mle(x,tol,maxit):invparalogis_mle_fixed_scale(x,scale,tol,maxit);
+univariateML-cpp/include/cppunivariate/distributions/invparalogis/mle.hpp:98: return {shape,std::isnan(scale)?1/r.scale:scale,r.logLik+jac,r.iterations,r.status,invparalogis_stop_detail(r.stop_detail,jac),r.certified};

@@ -130,6 +130,11 @@ therefore exists. For constant $y_i=y_0$, choosing
 $v=y_0+\log(a)/a$ gives density asymptotic to $a/e$, proving unboundedness.
 Reciprocation transports the argument to the inverse distribution.
 
+For concentrated log data, the coordinates
+$E=a\log(s/u)-\log a$ and $\log a$ keep the finite Gumbel rate resolved
+as $a$ grows. The log-moment identity supplies a spread-dependent starting
+point if the finite-difference search has lost the sample spread. Complementary
+logistic terms and $\log(1+r)-r$ retain the shape curvature in this limit.
 
 ## Global certificate
 

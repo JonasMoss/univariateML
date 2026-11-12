@@ -329,3 +329,8 @@ The shape1 one/two reductions use the closed beta-coordinate tails rather than a
 The density normalizer is centered at the beta mean and combined with two nonnegative Bernoulli deviances. In the unit-power submodel, a compensated product expansion retains shape2 times the physical excess minus shape1 times scale before either ratio rounds; a rounded beta coordinate can lose the entire standardized displacement. For other powers, the log-odds kernel returns NaN near concentration when its practical coordinate-error margin exceeds 1e-12 times the log-density scale. This named precision region requires more accurate transcendental coordinates to close.
 
 If the ordinary log-odds margin fails, two-word logarithms recompute the centered coordinate before rounding. The beta mean is subtracted in the same arithmetic. NaN remains confined to cases where this practical two-word margin also fails; the ordinary margin selects the recomputation rather than a refusal.
+
+Subtracting a held minimum can round even when the original observations are
+represented exactly. Uncertified GB2 transport checks the TwoSum residual of
+each subtraction. A nonzero residual is carried into the original-excess log
+ratios before the information check; exact subtractions retain the parent fit.

@@ -1,0 +1,133 @@
+../../include/cppunivariate/distributions/burr/test.cpp:215:
+TEST CASE:  burr: certified retained workloads and guarded stops
+
+../../include/cppunivariate/distributions/burr/test.cpp:220: FATAL ERROR: REQUIRE( fit.status==cppunivariate::BurrStatus::Ok ) is NOT correct!
+  values: REQUIRE( 9 == 0 )
+  logged: fixture.name := nearly-constant
+
+../../include/cppunivariate/distributions/burr/test.cpp:234:
+TEST CASE:  burr: certificate arithmetic and failure gates
+
+../../include/cppunivariate/distributions/burr/test.cpp:245: FATAL ERROR: REQUIRE( a.status==cppunivariate::BurrStatus::Ok ) is NOT correct!
+  values: REQUIRE( 9 == 0 )
+
+../../include/cppunivariate/distributions/burr/test.cpp:381:
+TEST CASE:  Burr uncertified fallback rejects a refuted or failed search
+
+../../include/cppunivariate/distributions/burr/test.cpp:388: FATAL ERROR: REQUIRE( fallback.status==cppunivariate::BurrStatus::Ok ) is NOT correct!
+  values: REQUIRE( 9 == 0 )
+
+../../include/cppunivariate/distributions/bhatt/test.cpp:210:
+TEST CASE:  bhatt certificate: quantitative location, precision fallback and iteration failure
+
+../../include/cppunivariate/distributions/bhatt/test.cpp:216: FATAL ERROR: REQUIRE( tiny.status==cppunivariate::BhattStatus::Ok ) is NOT correct!
+  values: REQUIRE( 6 == 0 )
+
+../../include/cppunivariate/distributions/bhatt/test.cpp:431:
+TEST CASE:  bhatt inconclusive normal certificate preserves the existing attained member
+
+../../include/cppunivariate/distributions/bhatt/test.cpp:438: FATAL ERROR: REQUIRE( stopped.status==cppunivariate::BhattStatus::Ok ) is NOT correct!
+  values: REQUIRE( 5 == 0 )
+
+../../include/cppunivariate/distributions/bhatt/test.cpp:469:
+TEST CASE:  bhatt failed enclosure preserves the successful existing search as uncertified
+
+../../include/cppunivariate/distributions/bhatt/test.cpp:480: ERROR: CHECK( f.mu==existing.mu ) is NOT correct!
+  values: CHECK( 3.19784 == 3.19784 )
+
+../../include/cppunivariate/distributions/bhatt/test.cpp:480: ERROR: CHECK( f.sigma==existing.sigma ) is NOT correct!
+  values: CHECK( 1.12236 == 1.12236 )
+
+../../include/cppunivariate/distributions/bhatt/test.cpp:480: ERROR: CHECK( f.a==existing.a ) is NOT correct!
+  values: CHECK( 0.278098 == 0.278099 )
+
+../../include/cppunivariate/distributions/bhatt/test.cpp:480: ERROR: CHECK( f.mu==existing.mu ) is NOT correct!
+  values: CHECK( 0.000319784 == 0.000319784 )
+
+../../include/cppunivariate/distributions/bhatt/test.cpp:480: ERROR: CHECK( f.sigma==existing.sigma ) is NOT correct!
+  values: CHECK( 0.000112236 == 0.000112236 )
+
+../../include/cppunivariate/distributions/bhatt/test.cpp:480: ERROR: CHECK( f.a==existing.a ) is NOT correct!
+  values: CHECK( 2.78098e-05 == 2.78099e-05 )
+
+../../include/cppunivariate/distributions/bhatt/test.cpp:480: ERROR: CHECK( f.mu==existing.mu ) is NOT correct!
+  values: CHECK( 31978.4 == 31978.4 )
+
+../../include/cppunivariate/distributions/bhatt/test.cpp:480: ERROR: CHECK( f.sigma==existing.sigma ) is NOT correct!
+  values: CHECK( 11223.6 == 11223.6 )
+
+../../include/cppunivariate/distributions/bhatt/test.cpp:480: ERROR: CHECK( f.a==existing.a ) is NOT correct!
+  values: CHECK( 2780.98 == 2780.99 )
+
+../../include/cppunivariate/distributions/bhatt/test.cpp:481: ERROR: CHECK( f.logLik==existing.logLik ) is NOT correct!
+  values: CHECK( -258.116 == -258.116 )
+
+../../../univariateML-cpp/include/cppunivariate/distributions/burr/test.cpp:215:
+TEST CASE:  burr: certified retained workloads and guarded stops
+
+../../../univariateML-cpp/include/cppunivariate/distributions/burr/test.cpp:220: FATAL ERROR: REQUIRE( fit.status==cppunivariate::BurrStatus::Ok ) is NOT correct!
+  values: REQUIRE( 9 == 0 )
+  logged: fixture.name := nearly-constant
+
+../../../univariateML-cpp/include/cppunivariate/distributions/burr/test.cpp:234:
+TEST CASE:  burr: certificate arithmetic and failure gates
+
+../../../univariateML-cpp/include/cppunivariate/distributions/burr/test.cpp:245: FATAL ERROR: REQUIRE( a.status==cppunivariate::BurrStatus::Ok ) is NOT correct!
+  values: REQUIRE( 9 == 0 )
+
+../../../univariateML-cpp/include/cppunivariate/distributions/burr/test.cpp:381:
+TEST CASE:  Burr uncertified fallback rejects a refuted or failed search
+
+../../../univariateML-cpp/include/cppunivariate/distributions/burr/test.cpp:388: FATAL ERROR: REQUIRE( fallback.status==cppunivariate::BurrStatus::Ok ) is NOT correct!
+  values: REQUIRE( 9 == 0 )
+
+../../../univariateML-cpp/include/cppunivariate/distributions/bhatt/test.cpp:210:
+TEST CASE:  bhatt certificate: quantitative location, precision fallback and iteration failure
+
+../../../univariateML-cpp/include/cppunivariate/distributions/bhatt/test.cpp:216: FATAL ERROR: REQUIRE( tiny.status==cppunivariate::BhattStatus::Ok ) is NOT correct!
+  values: REQUIRE( 6 == 0 )
+
+../../../univariateML-cpp/include/cppunivariate/distributions/bhatt/test.cpp:431:
+TEST CASE:  bhatt inconclusive normal certificate preserves the existing attained member
+
+../../../univariateML-cpp/include/cppunivariate/distributions/bhatt/test.cpp:438: FATAL ERROR: REQUIRE( stopped.status==cppunivariate::BhattStatus::Ok ) is NOT correct!
+  values: REQUIRE( 5 == 0 )
+
+../../../univariateML-cpp/include/cppunivariate/distributions/bhatt/test.cpp:469:
+TEST CASE:  bhatt failed enclosure preserves the successful existing search as uncertified
+
+../../../univariateML-cpp/include/cppunivariate/distributions/bhatt/test.cpp:480: ERROR: CHECK( f.mu==existing.mu ) is NOT correct!
+  values: CHECK( 3.19784 == 3.19784 )
+
+../../../univariateML-cpp/include/cppunivariate/distributions/bhatt/test.cpp:480: ERROR: CHECK( f.sigma==existing.sigma ) is NOT correct!
+  values: CHECK( 1.12236 == 1.12236 )
+
+../../../univariateML-cpp/include/cppunivariate/distributions/bhatt/test.cpp:480: ERROR: CHECK( f.a==existing.a ) is NOT correct!
+  values: CHECK( 0.278098 == 0.278098 )
+
+../../../univariateML-cpp/include/cppunivariate/distributions/bhatt/test.cpp:481: ERROR: CHECK( f.logLik==existing.logLik ) is NOT correct!
+  values: CHECK( -37.0681 == -37.0681 )
+
+../../../univariateML-cpp/include/cppunivariate/distributions/bhatt/test.cpp:480: ERROR: CHECK( f.mu==existing.mu ) is NOT correct!
+  values: CHECK( 0.000319784 == 0.000319784 )
+
+../../../univariateML-cpp/include/cppunivariate/distributions/bhatt/test.cpp:480: ERROR: CHECK( f.sigma==existing.sigma ) is NOT correct!
+  values: CHECK( 0.000112236 == 0.000112236 )
+
+../../../univariateML-cpp/include/cppunivariate/distributions/bhatt/test.cpp:480: ERROR: CHECK( f.a==existing.a ) is NOT correct!
+  values: CHECK( 2.78098e-05 == 2.78098e-05 )
+
+../../../univariateML-cpp/include/cppunivariate/distributions/bhatt/test.cpp:481: ERROR: CHECK( f.logLik==existing.logLik ) is NOT correct!
+  values: CHECK( 183.98 == 183.98 )
+
+../../../univariateML-cpp/include/cppunivariate/distributions/bhatt/test.cpp:480: ERROR: CHECK( f.mu==existing.mu ) is NOT correct!
+  values: CHECK( 31978.4 == 31978.4 )
+
+../../../univariateML-cpp/include/cppunivariate/distributions/bhatt/test.cpp:480: ERROR: CHECK( f.sigma==existing.sigma ) is NOT correct!
+  values: CHECK( 11223.6 == 11223.6 )
+
+../../../univariateML-cpp/include/cppunivariate/distributions/bhatt/test.cpp:480: ERROR: CHECK( f.a==existing.a ) is NOT correct!
+  values: CHECK( 2780.98 == 2780.99 )
+
+../../../univariateML-cpp/include/cppunivariate/distributions/bhatt/test.cpp:481: ERROR: CHECK( f.logLik==existing.logLik ) is NOT correct!
+  values: CHECK( -258.116 == -258.116 )

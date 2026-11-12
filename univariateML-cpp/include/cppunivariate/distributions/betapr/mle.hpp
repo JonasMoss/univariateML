@@ -318,7 +318,7 @@ inline BetaPrimeResult betapr_mle_holds_certificate(span x, double held_a, doubl
 } // namespace cppunivariate
 
 namespace cppunivariate { namespace betapr_detail {
-inline BetaPrimeResult fallback(BetaPrimeResult certificate,span x,double a,double b,double s,
+inline BetaPrimeResult accurate_fallback(BetaPrimeResult certificate,span x,double a,double b,double s,
     double tol,int maxit,double starta,double startb,double starts);
 }}
 #include "joint_certificate.hpp"
@@ -330,6 +330,6 @@ inline BetaPrimeResult betapr_mle_holds(span x,double a,double b,double s,double
   // The all-free delegate already applied its fallback; fixed-scale beta
   // failures are failures of that search, without an outer certificate.
   if(std::isnan(a) && std::isnan(b))return r;
-  return betapr_detail::fallback(r,x,a,b,s,tol,maxit);
+  return betapr_detail::accurate_fallback(r,x,a,b,s,tol,maxit);
 }
 }

@@ -724,3 +724,27 @@ TEST_CASE("GED held shape and scale retain a converged point-score fallback") {
  REQUIRE(r.status==cppunivariate::GedStatus::Ok);CHECK_FALSE(r.certified);
  CHECK(r.sigma==1.0178559902092952);CHECK(r.nu==3.016645308327854);CHECK(std::isfinite(r.logLik));
 }
+
+TEST_CASE("GED uncertified knot fit refines scale at the original observation") {
+  const std::vector<double> x{-1,-.9629523525363105,0,.9629523525363105,1};
+  const auto r=cppunivariate::ged_mle(mltest::as_span(x),1e-10,1000,NAN,NAN,.5);
+  REQUIRE(r.status==cppunivariate::GedStatus::Ok);
+  CHECK_FALSE(r.certified);
+  CHECK(r.mu==x[1]);
+  CHECK(r.sigma==doctest::Approx(1.7200920482178039627483).scale(0.).epsilon(1e-10));
+  CHECK(r.nu==.5);
+}
+
+TEST_CASE("GED held-scale accuracy propagates to SGED unit skew case 31101") {
+  const std::vector<double> x{0.7321666961121761,2.2766042947262384,-0.5491691631533211};
+  const double sd=1.0178559902092952,mean_truth=0.8637175657864586408862805910629875338342774,nu_truth=27.497336616831684338668525265498056683345282;
+  const auto parent=cppunivariate::ged_mle(mltest::as_span(x),1e-10,1000,NAN,sd,NAN);
+  const auto child=cppunivariate::sged_mle(mltest::as_span(x),1e-10,1000,NAN,sd,NAN,1.);
+  REQUIRE(parent.status==cppunivariate::GedStatus::Ok);
+  REQUIRE(child.status==cppunivariate::SgedStatus::Ok);
+  CHECK(std::abs(parent.mu-mean_truth)<=1e-10*std::max(std::abs(mean_truth),sd));
+  CHECK(std::abs(parent.nu/nu_truth-1)<=1e-10);
+  CHECK(parent.sigma==sd);CHECK(child.sigma==sd);CHECK(child.xi==1.);
+  CHECK(child.mu==parent.mu);CHECK(child.nu==parent.nu);
+  CHECK(child.logLik==parent.logLik);CHECK(child.certified==parent.certified);
+}

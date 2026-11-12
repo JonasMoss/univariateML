@@ -1,0 +1,12 @@
+{
+  "baseline": "bc8ff7be2e3bc4b9186a56fc4f2e8ee45c163714",
+  "flags": [
+    "-O2",
+    "-std=c++17"
+  ],
+  "workers": 4,
+  "source_input_fingerprint": "0682dcd00c25d071d528f9abd1d07658d0b16128076e7d5b549f3d1a0ce7d5df",
+  "fit_wall_seconds": 485.6932704630308,
+  "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+  "machine": "JonasBI"
+}

@@ -46,8 +46,23 @@ test('Burr and reciprocal sign-uncertain-seam structured tie', () => {
 test('Burr and reciprocal nearly-constant uncertified fallback', () => {
   const x=[0.99999900000050002,0.99999910526355817,0.99999921052662744,0.9999993157897078,0.99999942105279915,0.99999952631590161,0.99999963157901528,0.99999973684213994,0.99999984210527559,0.99999994736842246,1.0000000526315804,1.0000001578947493,1.0000002631579294,1.0000003684211205,1.0000004736843227,1.0000005789475359,1.0000006842107605,1.000000789473996,1.0000008947372423,1.0000010000005];
   for (const [family,data] of [['burr',x],['invburr',x.map(v=>1/v)]]) {
-    const f=api[family].fit(data);
-    assert.equal(f.status,'Ok');assert.equal(f.certified,0);assert.ok(Number.isFinite(f.logLik));
+    assert.throws(()=>api[family].fit(data),e=>{
+      assert.equal(e.kind,'numerical');
+      const finite=e.candidates.filter(c=>Number.isFinite(c.shape1)&&Number.isFinite(c.shape2)&&Number.isFinite(c.scale));
+      assert.ok(finite.length>0);
+      const nomination=finite.reduce((a,b)=>a.shape1>b.shape1?a:b);
+      assert.ok(nomination.shape1>1e100);assert.ok(nomination.shape2>0&&nomination.scale>0);
+      assert.ok(Number.isFinite(nomination.loglik_lower)&&Number.isFinite(nomination.loglik_upper));
+      assert.ok(nomination.loglik_lower<=nomination.loglik_upper);
+      for(const c of e.candidates)if(Number.isFinite(c.shape)&&Number.isFinite(c.scale)) {
+        assert.ok(c.shape>0&&c.scale>0);
+        assert.ok(Number.isFinite(c.loglik_lower)&&Number.isFinite(c.loglik_upper));
+        assert.ok(c.loglik_lower<=c.loglik_upper);
+        assert.ok(c.loglik_upper>=nomination.loglik_lower);
+        assert.ok(e.loglik_lower>=c.loglik_lower);
+      }
+      return true;
+    });
   }
 });
 

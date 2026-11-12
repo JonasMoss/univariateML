@@ -1,0 +1,308 @@
+[
+  {
+    "id": "strict-seed-bhatt-critical-sym-1e-06",
+    "builds": {
+      "native": {
+        "row": "strict-seed-bhatt-critical-sym-1e-06\tbhatt\tuncertified\t-29.160283771019206\tmu=3.2042825875417083e-33\tsigma=1.0398464637459186\ta=0.0040944963677814073",
+        "errors": {
+          "mu": 3.0814958739184204e-33,
+          "sigma": 3.3675666743447667e-17,
+          "a": 2.3044079639212144e-19
+        },
+        "max_error": 3.3675666743447667e-17
+      },
+      "double": {
+        "row": "strict-seed-bhatt-critical-sym-1e-06\tbhatt\tuncertified\t-29.160283771019273\tmu=3.2042825875417083e-33\tsigma=1.0398464637459186\ta=0.0040944963677814073",
+        "errors": {
+          "mu": 3.0814958739184204e-33,
+          "sigma": 3.3675666743447667e-17,
+          "a": 2.3044079639212144e-19
+        },
+        "max_error": 3.3675666743447667e-17
+      }
+    }
+  },
+  {
+    "id": "strict-seed-bhatt-critical-sym-1e-08",
+    "builds": {
+      "native": {
+        "row": "strict-seed-bhatt-critical-sym-1e-08\tbhatt\tuncertified\t-29.160293418918588\tmu=5.7024027373101685e-33\tsigma=1.039849625569305\ta=0.00040944978041506503",
+        "errors": {
+          "mu": 5.483872472606963e-33,
+          "sigma": 6.238530476086312e-17,
+          "a": 2.661301285732752e-20
+        },
+        "max_error": 6.238530476086312e-17
+      },
+      "double": {
+        "row": "strict-seed-bhatt-critical-sym-1e-08\tbhatt\tuncertified\t-29.160293418918592\tmu=5.7024027373101685e-33\tsigma=1.039849625569305\ta=0.00040944978041506503",
+        "errors": {
+          "mu": 5.483872472606963e-33,
+          "sigma": 6.238530476086312e-17,
+          "a": 2.661301285732752e-20
+        },
+        "max_error": 6.238530476086312e-17
+      }
+    }
+  },
+  {
+    "id": "strict-seed-bhatt-critical-sym-1e-10",
+    "builds": {
+      "native": {
+        "row": "strict-seed-bhatt-critical-sym-1e-10\tbhatt\tuncertified\t-29.160293515397584\tmu=-1.3742789989709078e-33\tsigma=1.0398496571875118\ta=4.0944970155445934e-05",
+        "errors": {
+          "mu": 1.3216131673187538e-33,
+          "sigma": 3.796645450072751e-17,
+          "a": 2.923716154425116e-21
+        },
+        "max_error": 3.796645450072751e-17
+      },
+      "double": {
+        "row": "strict-seed-bhatt-critical-sym-1e-10\tbhatt\tuncertified\t-29.160293515397584\tmu=-1.3742789989709078e-33\tsigma=1.0398496571875118\ta=4.0944970155445934e-05",
+        "errors": {
+          "mu": 1.3216131673187538e-33,
+          "sigma": 3.796645450072751e-17,
+          "a": 2.923716154425116e-21
+        },
+        "max_error": 3.796645450072751e-17
+      }
+    }
+  },
+  {
+    "id": "strict-seed-bhatt-critical-sym-1e-12",
+    "builds": {
+      "native": {
+        "row": "strict-seed-bhatt-critical-sym-1e-12\tbhatt\tuncertified\t-29.160293516362373\tmu=4.6139338804913236e-33\tsigma=1.0398496575036935\ta=4.0946543767188231e-06",
+        "errors": {
+          "mu": 4.4371163150332e-33,
+          "sigma": 1.2700170698682287e-17,
+          "a": 9.817357283995349e-23
+        },
+        "max_error": 1.2700170698682287e-17
+      },
+      "double": {
+        "row": "strict-seed-bhatt-critical-sym-1e-12\tbhatt\tuncertified\t-29.160293516362373\tmu=4.6139338804913236e-33\tsigma=1.0398496575036935\ta=4.0946543767188231e-06",
+        "errors": {
+          "mu": 4.4371163150332e-33,
+          "sigma": 1.2700170698682287e-17,
+          "a": 9.817357283995349e-23
+        },
+        "max_error": 1.2700170698682287e-17
+      }
+    }
+  },
+  {
+    "id": "strict-seed-bhatt-critical-sym-1e-14",
+    "builds": {
+      "native": {
+        "row": "strict-seed-bhatt-critical-sym-1e-14\tbhatt\tuncertified\t-29.160293516372022\tmu=5.1124397624685991e-34\tsigma=1.0398496575068552\ta=4.1119379729510504e-07",
+        "errors": {
+          "mu": 4.916518196222895e-34,
+          "sigma": 8.260386111000196e-17,
+          "a": 1.806126149195301e-23
+        },
+        "max_error": 8.260386111000196e-17
+      },
+      "double": {
+        "row": "strict-seed-bhatt-critical-sym-1e-14\tbhatt\tuncertified\t-29.160293516372022\tmu=5.1124397624685991e-34\tsigma=1.0398496575068552\ta=4.1119379729510504e-07",
+        "errors": {
+          "mu": 4.916518196222895e-34,
+          "sigma": 8.260386111000196e-17,
+          "a": 1.806126149195301e-23
+        },
+        "max_error": 8.260386111000196e-17
+      }
+    }
+  },
+  {
+    "id": "strict-seed-bhatt-critical-asym-1e-08",
+    "builds": {
+      "native": {
+        "row": "strict-seed-bhatt-critical-asym-1e-08\tbhatt\tuncertified\t-29.032331436592973\tmu=0.0031865301823295407\tsigma=1.0332178172794599\ta=0.00027469386501053229",
+        "errors": {
+          "mu": 1.9692351010260229e-19,
+          "sigma": 5.88865976252625e-17,
+          "a": 5.148051289773686e-19
+        },
+        "max_error": 5.88865976252625e-17
+      },
+      "double": {
+        "row": "strict-seed-bhatt-critical-asym-1e-08\tbhatt\tuncertified\t-29.032331436592973\tmu=0.0031865301823295407\tsigma=1.0332178172794599\ta=0.00027469386501053229",
+        "errors": {
+          "mu": 1.9692351010260229e-19,
+          "sigma": 5.88865976252625e-17,
+          "a": 5.148051289773686e-19
+        },
+        "max_error": 5.88865976252625e-17
+      }
+    }
+  },
+  {
+    "id": "strict-seed-bhatt-critical-asym-1e-12",
+    "builds": {
+      "native": {
+        "row": "strict-seed-bhatt-critical-asym-1e-12\tbhatt\tuncertified\t-29.032331484327582\tmu=0.0031865313117701078\tsigma=1.0332178319160545\ta=2.7469108923574145e-06",
+        "errors": {
+          "mu": 8.394765012761892e-20,
+          "sigma": 3.6740687546733334e-17,
+          "a": 6.298656848870191e-23
+        },
+        "max_error": 3.6740687546733334e-17
+      },
+      "double": {
+        "row": "strict-seed-bhatt-critical-asym-1e-12\tbhatt\tuncertified\t-29.032331484327585\tmu=0.0031865313117701078\tsigma=1.0332178319160545\ta=2.7469108923574145e-06",
+        "errors": {
+          "mu": 8.394765012761892e-20,
+          "sigma": 3.6740687546733334e-17,
+          "a": 6.298656848870191e-23
+        },
+        "max_error": 3.6740687546733334e-17
+      }
+    }
+  },
+  {
+    "id": "strict-seed-bhatt-critical-held-mu",
+    "builds": {
+      "native": {
+        "row": "strict-seed-bhatt-critical-held-mu\tbhatt\tuncertified\t-29.160293418918588\tmu=0\tsigma=1.039849625569305\ta=0.00040944978041506503",
+        "errors": {
+          "sigma": 6.238530476086312e-17,
+          "a": 2.661301285732752e-20
+        },
+        "max_error": 6.238530476086312e-17
+      },
+      "double": {
+        "row": "strict-seed-bhatt-critical-held-mu\tbhatt\tuncertified\t-29.160293418918592\tmu=0\tsigma=1.039849625569305\ta=0.00040944978041506503",
+        "errors": {
+          "sigma": 6.238530476086312e-17,
+          "a": 2.661301285732752e-20
+        },
+        "max_error": 6.238530476086312e-17
+      }
+    }
+  },
+  {
+    "id": "strict-seed-bhatt-critical-sigma-1e-06",
+    "builds": {
+      "native": {
+        "row": "strict-seed-bhatt-critical-sigma-1e-06\tbhatt\tuncertified\t-8.5136371992250375\tmu=0\tsigma=1\ta=0.0024494895153309416",
+        "errors": {
+          "mu": 0.0,
+          "a": 6.3714730991070976e-21
+        },
+        "max_error": 6.3714730991070976e-21
+      },
+      "double": {
+        "row": "strict-seed-bhatt-critical-sigma-1e-06\tbhatt\tuncertified\t-8.5136371992250375\tmu=0\tsigma=1\ta=0.0024494895153309416",
+        "errors": {
+          "mu": 0.0,
+          "a": 6.3714730991070976e-21
+        },
+        "max_error": 6.3714730991070976e-21
+      }
+    }
+  },
+  {
+    "id": "strict-seed-bhatt-critical-sigma-1e-08",
+    "builds": {
+      "native": {
+        "row": "strict-seed-bhatt-critical-sigma-1e-08\tbhatt\tuncertified\t-8.5136312592280348\tmu=0\tsigma=1\ta=0.00024494897378790691",
+        "errors": {
+          "mu": 0.0,
+          "a": 2.204855382230468e-19
+        },
+        "max_error": 2.204855382230468e-19
+      },
+      "double": {
+        "row": "strict-seed-bhatt-critical-sigma-1e-08\tbhatt\tuncertified\t-8.5136312592280348\tmu=0\tsigma=1\ta=0.00024494897378790691",
+        "errors": {
+          "mu": 0.0,
+          "a": 2.204855382230468e-19
+        },
+        "max_error": 2.204855382230468e-19
+      }
+    }
+  },
+  {
+    "id": "strict-seed-bhatt-critical-sigma-1e-10",
+    "builds": {
+      "native": {
+        "row": "strict-seed-bhatt-critical-sigma-1e-10\tbhatt\tuncertified\t-8.513631199828037\tmu=0\tsigma=1\ta=2.4494900739001137e-05",
+        "errors": {
+          "mu": 0.0,
+          "a": 9.220969474556362e-22
+        },
+        "max_error": 9.220969474556362e-22
+      },
+      "double": {
+        "row": "strict-seed-bhatt-critical-sigma-1e-10\tbhatt\tuncertified\t-8.513631199828037\tmu=0\tsigma=1\ta=2.4494900739001137e-05",
+        "errors": {
+          "mu": 0.0,
+          "a": 9.220969474556362e-22
+        },
+        "max_error": 9.220969474556362e-22
+      }
+    }
+  },
+  {
+    "id": "strict-seed-bhatt-critical-sigma-1e-12",
+    "builds": {
+      "native": {
+        "row": "strict-seed-bhatt-critical-sigma-1e-12\tbhatt\tuncertified\t-8.5136311992340374\tmu=0\tsigma=1\ta=2.449503039613454e-06",
+        "errors": {
+          "mu": 0.0,
+          "a": 2.6078679667625486e-23
+        },
+        "max_error": 2.6078679667625486e-23
+      },
+      "double": {
+        "row": "strict-seed-bhatt-critical-sigma-1e-12\tbhatt\tuncertified\t-8.5136311992340357\tmu=0\tsigma=1\ta=2.449503039613454e-06",
+        "errors": {
+          "mu": 0.0,
+          "a": 2.6078679667625486e-23
+        },
+        "max_error": 2.6078679667625486e-23
+      }
+    }
+  },
+  {
+    "id": "strict-seed-bhatt-critical-sigma-1e-14",
+    "builds": {
+      "native": {
+        "row": "strict-seed-bhatt-critical-sigma-1e-14\tbhatt\tuncertified\t-8.5136311992280973\tmu=0\tsigma=1\ta=2.4423105924627815e-07",
+        "errors": {
+          "mu": 0.0,
+          "a": 1.7864546843580583e-23
+        },
+        "max_error": 1.7864546843580583e-23
+      },
+      "double": {
+        "row": "strict-seed-bhatt-critical-sigma-1e-14\tbhatt\tuncertified\t-8.5136311992280955\tmu=0\tsigma=1\ta=2.4423105924627815e-07",
+        "errors": {
+          "mu": 0.0,
+          "a": 1.7864546843580583e-23
+        },
+        "max_error": 1.7864546843580583e-23
+      }
+    }
+  },
+  {
+    "id": "strict-seed-bhatt-critical-sigma-held-mu",
+    "builds": {
+      "native": {
+        "row": "strict-seed-bhatt-critical-sigma-held-mu\tbhatt\tuncertified\t-8.5136311992280973\tmu=0\tsigma=1\ta=2.4423105924627815e-07",
+        "errors": {
+          "a": 1.7864546843580583e-23
+        },
+        "max_error": 1.7864546843580583e-23
+      },
+      "double": {
+        "row": "strict-seed-bhatt-critical-sigma-held-mu\tbhatt\tuncertified\t-8.5136311992280955\tmu=0\tsigma=1\ta=2.4423105924627815e-07",
+        "errors": {
+          "a": 1.7864546843580583e-23
+        },
+        "max_error": 1.7864546843580583e-23
+      }
+    }
+  }
+]

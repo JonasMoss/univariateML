@@ -1,0 +1,506 @@
+{
+  "baseline": "bc8ff7be2e3bc4b9186a56fc4f2e8ee45c163714",
+  "machine": "JonasBI",
+  "checks": [
+    {
+      "check": "accuracy-focused-final",
+      "command": [
+        "python3",
+        "/home/jonas/Files/programming/univariateML.wt/acc-fb-cont/dev/research/evaluations/2026-11-11-acc-fb-cont-data/focused_tests.py"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 110.49313524202444,
+      "machine": "JonasBI"
+    },
+    {
+      "check": "bhatt-weak-reference-final",
+      "command": [
+        "python3",
+        "/home/jonas/Files/programming/univariateML.wt/acc-fb-cont/dev/research/evaluations/2026-11-11-acc-fb-cont-data/bhatt_weak_reference.py"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 2.008649112947751,
+      "machine": "JonasBI"
+    },
+    {
+      "check": "bhatt-held-sigma-reference-final",
+      "command": [
+        "python3",
+        "/home/jonas/Files/programming/univariateML.wt/acc-fb-cont/dev/research/evaluations/2026-11-11-acc-fb-cont-data/bhatt_held_sigma_reference.py"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.15957817301386967,
+      "machine": "JonasBI"
+    },
+    {
+      "check": "strict-before-native-final",
+      "command": [
+        "python3",
+        "/home/jonas/Files/programming/univariateML.wt/acc-fb-cont/dev/research/evaluations/2026-11-11-acc-fb-cont-data/replay.py",
+        "strict-before-native"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 45.884549289010465,
+      "machine": "JonasBI"
+    },
+    {
+      "check": "strict-before-double-final",
+      "command": [
+        "python3",
+        "/home/jonas/Files/programming/univariateML.wt/acc-fb-cont/dev/research/evaluations/2026-11-11-acc-fb-cont-data/replay.py",
+        "strict-before-double"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 37.77521695999894,
+      "machine": "JonasBI"
+    },
+    {
+      "check": "strict-probe-native-final",
+      "command": [
+        "python3",
+        "/home/jonas/Files/programming/univariateML.wt/acc-fb-cont/dev/research/evaluations/2026-11-11-acc-fb-cont-data/replay.py",
+        "strict-probe-native"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 48.1527381829801,
+      "machine": "JonasBI"
+    },
+    {
+      "check": "strict-probe-double-final",
+      "command": [
+        "python3",
+        "/home/jonas/Files/programming/univariateML.wt/acc-fb-cont/dev/research/evaluations/2026-11-11-acc-fb-cont-data/replay.py",
+        "strict-probe-double"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 49.181635582004674,
+      "machine": "JonasBI"
+    },
+    {
+      "check": "strict-reference-final",
+      "command": [
+        "python3",
+        "/home/jonas/Files/programming/univariateML.wt/acc-fb-cont/dev/research/evaluations/2026-11-11-acc-fb-cont-data/reference.py",
+        "strict-probe-native"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 58.46119318495039,
+      "machine": "JonasBI"
+    },
+    {
+      "check": "strict-measure-final",
+      "command": [
+        "python3",
+        "/home/jonas/Files/programming/univariateML.wt/acc-fb-cont/dev/research/evaluations/2026-11-11-acc-fb-cont-data/measure.py"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.09296193800400943,
+      "machine": "JonasBI"
+    },
+    {
+      "check": "betapr-seam-final",
+      "command": [
+        "python3",
+        "/home/jonas/Files/programming/univariateML.wt/acc-fb-cont/dev/research/evaluations/2026-11-11-acc-fb-cont-data/betapr_seam_probe.py"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.3052207669825293,
+      "machine": "JonasBI"
+    },
+    {
+      "check": "coupled-burr-final",
+      "command": [
+        "python3",
+        "/home/jonas/Files/programming/univariateML.wt/acc-fb-cont/dev/research/evaluations/2026-11-11-acc-fb-cont-data/coupled_burr_probe.py"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 27.410243639023975,
+      "machine": "JonasBI"
+    },
+    {
+      "check": "comparable-beta-final",
+      "command": [
+        "python3",
+        "/home/jonas/Files/programming/univariateML.wt/acc-fb-cont/dev/research/evaluations/2026-11-11-acc-fb-cont-data/comparable_beta_probe.py"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 8.96307005098788,
+      "machine": "JonasBI"
+    },
+    {
+      "check": "bhatt-weak-final",
+      "command": [
+        "python3",
+        "/home/jonas/Files/programming/univariateML.wt/acc-fb-cont/dev/research/evaluations/2026-11-11-acc-fb-cont-data/bhatt_weak_probe.py"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 4.325689223012887,
+      "machine": "JonasBI"
+    },
+    {
+      "check": "cpp-dev-complete",
+      "command": [
+        "just",
+        "cpp-test"
+      ],
+      "exit_code": 8,
+      "wall_seconds": 649.5845725890249,
+      "machine": "JonasBI"
+    },
+    {
+      "check": "cpp-double-complete",
+      "command": [
+        "just",
+        "cpp-test-no-long-double"
+      ],
+      "exit_code": 8,
+      "wall_seconds": 498.2999960340094,
+      "machine": "JonasBI"
+    },
+    {
+      "check": "replay-complete-native",
+      "command": [
+        "python3",
+        "/home/jonas/Files/programming/univariateML.wt/acc-fb-cont/dev/research/evaluations/2026-11-11-acc-fb-cont-data/parallel_replay.py",
+        "native"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 544.5417987490073,
+      "machine": "JonasBI"
+    },
+    {
+      "check": "replay-complete-double",
+      "command": [
+        "python3",
+        "/home/jonas/Files/programming/univariateML.wt/acc-fb-cont/dev/research/evaluations/2026-11-11-acc-fb-cont-data/parallel_replay.py",
+        "double"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 423.4603158699465,
+      "machine": "JonasBI"
+    },
+    {
+      "check": "r-dev-complete",
+      "command": [
+        "just",
+        "test"
+      ],
+      "exit_code": 1,
+      "wall_seconds": 411.0690208809683,
+      "machine": "JonasBI"
+    },
+    {
+      "check": "r-full-complete",
+      "command": [
+        "just",
+        "test-full"
+      ],
+      "exit_code": 1,
+      "wall_seconds": 574.4048179099918,
+      "machine": "JonasBI"
+    },
+    {
+      "check": "r-spots-complete",
+      "command": [
+        "Rscript",
+        "/home/jonas/Files/programming/univariateML.wt/acc-fb-cont/dev/research/evaluations/2026-11-11-acc-fb-cont-data/spot.R"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 8.092137138999533,
+      "machine": "JonasBI",
+      "rerun_reason": "Corrected only the new Bhatt fixtures from gradtol to the existing reltol argument."
+    },
+    {
+      "check": "js-site-complete",
+      "command": [
+        "python3",
+        "/home/jonas/Files/programming/univariateML.wt/acc-fb-cont/build/scratch/final-js-site.py"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 578.4878146669944,
+      "machine": "JonasBI"
+    },
+    {
+      "check": "measure-complete",
+      "command": [
+        "python3",
+        "/home/jonas/Files/programming/univariateML.wt/acc-fb-cont/dev/research/evaluations/2026-11-11-acc-fb-cont-data/measure.py"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.36284034803975374,
+      "machine": "JonasBI",
+      "rerun_reason": "Corrected only the new Bhatt fixtures from gradtol to the existing reltol argument."
+    },
+    {
+      "check": "integrity-complete",
+      "command": [
+        "python3",
+        "/home/jonas/Files/programming/univariateML.wt/acc-fb-cont/dev/research/evaluations/2026-11-11-acc-fb-cont-data/integrity.py"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.2080391199560836,
+      "machine": "JonasBI",
+      "rerun_reason": "Corrected only the new Bhatt fixtures from gradtol to the existing reltol argument."
+    },
+    {
+      "check": "betapr-fixed-scale-supplemental",
+      "command": [
+        "python3",
+        "dev/research/evaluations/2026-11-11-acc-fb-cont-data/betapr_fixed_scale_probe.py"
+      ],
+      "exit_code": 0,
+      "machine": "JonasBI",
+      "reference_digits": 100,
+      "note": "Three private uncertified fixed-scale return-boundary masks; native and double-only. Fitter/test/dossier source hashes unchanged."
+    }
+  ],
+  "js_site": [
+    {
+      "check": "js-build",
+      "command": [
+        "just",
+        "js-build"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 91.2775486719911,
+      "machine": "JonasBI"
+    },
+    {
+      "check": "js-test",
+      "command": [
+        "just",
+        "js-test"
+      ],
+      "exit_code": 1,
+      "wall_seconds": 333.8961612569983,
+      "machine": "JonasBI"
+    },
+    {
+      "check": "site-check",
+      "command": [
+        "just",
+        "site-check"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 147.2248087269836,
+      "machine": "JonasBI"
+    },
+    {
+      "check": "wasm-spots",
+      "command": [
+        "node",
+        "--v8-pool-size=1",
+        "/home/jonas/Files/programming/univariateML.wt/acc-fb-cont/dev/research/evaluations/2026-11-11-acc-fb-cont-data/spot.mjs"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 3.957299363974016,
+      "machine": "JonasBI",
+      "rerun_reason": "Corrected only the new Bhatt fixtures from gradtol to the existing reltol argument."
+    },
+    {
+      "check": "wasm-measure",
+      "command": [
+        "python3",
+        "/home/jonas/Files/programming/univariateML.wt/acc-fb-cont/dev/research/evaluations/2026-11-11-acc-fb-cont-data/measure.py"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.19836083299014717,
+      "machine": "JonasBI",
+      "rerun_reason": "Corrected only the new Bhatt fixtures from gradtol to the existing reltol argument."
+    }
+  ],
+  "cpp": {
+    "cpp-dev-complete": {
+      "total": 107,
+      "failed": 2,
+      "passed": 105,
+      "failed_shards": [
+        "distribution_bhatt",
+        "distribution_burr"
+      ],
+      "failed_cases": [
+        "burr: certified retained workloads and guarded stops",
+        "burr: certificate arithmetic and failure gates",
+        "Burr uncertified fallback rejects a refuted or failed search",
+        "bhatt certificate: quantitative location, precision fallback and iteration failure",
+        "bhatt inconclusive normal certificate preserves the existing attained member",
+        "bhatt failed enclosure preserves the successful existing search as uncertified"
+      ]
+    },
+    "cpp-double-complete": {
+      "total": 134,
+      "failed": 2,
+      "passed": 132,
+      "failed_shards": [
+        "distribution_bhatt",
+        "distribution_burr"
+      ],
+      "failed_cases": [
+        "burr: certified retained workloads and guarded stops",
+        "burr: certificate arithmetic and failure gates",
+        "Burr uncertified fallback rejects a refuted or failed search",
+        "bhatt certificate: quantitative location, precision fallback and iteration failure",
+        "bhatt inconclusive normal certificate preserves the existing attained member",
+        "bhatt failed enclosure preserves the successful existing search as uncertified"
+      ]
+    }
+  },
+  "r": {
+    "r-dev-complete": {
+      "fail": 6,
+      "warn": 0,
+      "skip": 154,
+      "passed": 23206,
+      "errors": [
+        {
+          "location": "test-dist-bhatt.R:263:3",
+          "test": "bhatt tiny requested tolerance preserves a successful uncertified search"
+        },
+        {
+          "location": "test-dist-burr.R:227:3",
+          "test": "Burr global certificate stops preserve their diagnostics"
+        },
+        {
+          "location": "test-dist-burr.R:254:3",
+          "test": "burr nearly-constant retains an uncertified finite search"
+        },
+        {
+          "location": "test-dist-invburr.R:214:3",
+          "test": "invburr preserves certificate refusal diagnostics"
+        },
+        {
+          "location": "test-dist-invburr.R:248:3",
+          "test": "invburr nearly-constant retains an uncertified finite search"
+        },
+        {
+          "location": "test-dist-pareto4.R:118:3",
+          "test": "pareto4 preserves certificate refusal diagnostics"
+        }
+      ]
+    },
+    "r-full-complete": {
+      "fail": 6,
+      "warn": 0,
+      "skip": 0,
+      "passed": 46033,
+      "errors": [
+        {
+          "location": "test-dist-bhatt.R:263:3",
+          "test": "bhatt tiny requested tolerance preserves a successful uncertified search"
+        },
+        {
+          "location": "test-dist-burr.R:227:3",
+          "test": "Burr global certificate stops preserve their diagnostics"
+        },
+        {
+          "location": "test-dist-burr.R:254:3",
+          "test": "burr nearly-constant retains an uncertified finite search"
+        },
+        {
+          "location": "test-dist-invburr.R:214:3",
+          "test": "invburr preserves certificate refusal diagnostics"
+        },
+        {
+          "location": "test-dist-invburr.R:248:3",
+          "test": "invburr nearly-constant retains an uncertified finite search"
+        },
+        {
+          "location": "test-dist-pareto4.R:118:3",
+          "test": "pareto4 preserves certificate refusal diagnostics"
+        }
+      ]
+    }
+  },
+  "js": {
+    "tests": 615,
+    "pass": 613,
+    "fail": 2,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "js_failed_tests": [
+    "Burr and reciprocal nearly-constant uncertified fallback",
+    "Bhattacharjee held certificates and quantitative numerical stops"
+  ],
+  "certified_identity": {
+    "native": {
+      "certified_rows": 995,
+      "changed": []
+    },
+    "double": {
+      "certified_rows": 994,
+      "changed": []
+    }
+  },
+  "coefficients": {
+    "native": {
+      "relevant": 395,
+      "returned": 391,
+      "max_error": 7.760132369047211e-12,
+      "max_error_id": "delegate-audit-3926",
+      "new_stops": [
+        {
+          "id": "route-betapr-unrepresentable-face-1000",
+          "status": "stop:numerical"
+        },
+        {
+          "id": "route-burr-nearly-constant",
+          "status": "stop:numerical"
+        },
+        {
+          "id": "route-invburr-nearly-constant",
+          "status": "stop:numerical"
+        },
+        {
+          "id": "route-pareto4-nearly-constant",
+          "status": "stop:numerical"
+        }
+      ]
+    },
+    "double": {
+      "relevant": 395,
+      "returned": 391,
+      "max_error": 7.307141975597569e-12,
+      "max_error_id": "delegate-audit-3926",
+      "new_stops": [
+        {
+          "id": "route-betapr-unrepresentable-face-1000",
+          "status": "stop:numerical"
+        },
+        {
+          "id": "route-burr-nearly-constant",
+          "status": "stop:numerical"
+        },
+        {
+          "id": "route-invburr-nearly-constant",
+          "status": "stop:numerical"
+        },
+        {
+          "id": "route-pareto4-nearly-constant",
+          "status": "stop:numerical"
+        }
+      ]
+    }
+  },
+  "bindings": {
+    "r": {
+      "rows": 84,
+      "returned": 79,
+      "preserved_stops": 5,
+      "max_error": 2.6717662099863066e-11
+    },
+    "wasm": {
+      "rows": 84,
+      "returned": 79,
+      "preserved_stops": 5,
+      "max_error": 2.6717662099863066e-11
+    }
+  },
+  "versions": {
+    "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+    "R": "Rscript (R) version 4.6.1 (2026-06-24)",
+    "node": "v22.22.1",
+    "emscripten": "not on default PATH; use Justfile toolchain"
+  }
+}

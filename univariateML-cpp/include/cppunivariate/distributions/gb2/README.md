@@ -444,3 +444,15 @@ For shape1 = 2, the beta-coordinate CDF is u^shape3 (1 + shape3(1-u)). Its negat
 The density normalizer is centered at the beta mean and combined with two nonnegative Bernoulli deviances. In the unit-power submodel, a compensated product expansion retains shape2 times the physical excess minus shape1 times scale before either ratio rounds; a rounded beta coordinate can lose the entire standardized displacement. For other powers, the log-odds kernel returns NaN near concentration when its practical coordinate-error margin exceeds 1e-12 times the log-density scale. This named precision region requires more accurate transcendental coordinates to close.
 
 If the ordinary log-odds margin fails, two-word logarithms recompute the centered coordinate before rounding. The beta mean is subtracted in the same arithmetic. NaN remains confined to cases where this practical two-word margin also fails; the ordinary margin selects the recomputation rather than a refusal.
+
+In the fixed-power beta-prime delegate, the public scale is the parent scale
+raised to the reciprocal power. The local scale correction therefore
+divides the parent log-scale correction by the held power. This native
+coefficient bound and the final exponential map are checked separately from
+the parent shape equations.
+
+The powered observations are rounded before the beta-prime delegate sees
+them. A final score and information check uses the original log observations;
+when its correction is appreciable, it refines that transformed point before
+returning it. The check uses the same rare-shape rate coordinate as the parent
+so the transformation check does not restore the cancelled gamma terms.

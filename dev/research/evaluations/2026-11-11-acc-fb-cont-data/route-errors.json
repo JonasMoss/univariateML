@@ -1,0 +1,512 @@
+{
+  "native": {
+    "betapr / joint": {
+      "rows": 15,
+      "before_max": 7.483364357691203e-07,
+      "after_max": 1.8114139166304837e-12,
+      "stopped": 0,
+      "missing": []
+    },
+    "bhatt / normal member": {
+      "rows": 72,
+      "before_max": 0.30813481716996544,
+      "after_max": 9.674377765018032e-17,
+      "stopped": 0,
+      "missing": []
+    },
+    "bhatt / finite width": {
+      "rows": 79,
+      "before_max": 0.14465957538673746,
+      "after_max": 1.7151620196096607e-12,
+      "stopped": 0,
+      "missing": []
+    },
+    "burr / held scale": {
+      "rows": 5,
+      "before_max": 3.6645169780908467e-07,
+      "after_max": 4.792261127471286e-16,
+      "stopped": 0,
+      "missing": []
+    },
+    "ged / free shape": {
+      "rows": 13,
+      "before_max": 9.862889301688756e-07,
+      "after_max": 4.343085675470854e-12,
+      "stopped": 0,
+      "missing": []
+    },
+    "ged / held shape": {
+      "rows": 2,
+      "before_max": 1.3569327586758446e-16,
+      "after_max": 1.1521278300160723e-16,
+      "stopped": 0,
+      "missing": []
+    },
+    "paralogis / joint": {
+      "rows": 12,
+      "before_max": 0.9999999507628223,
+      "after_max": 2.0332138877443004e-13,
+      "stopped": 0,
+      "missing": []
+    },
+    "pareto4 / joint": {
+      "rows": 5,
+      "before_max": 0.003829732518042262,
+      "after_max": 1.772276547297133e-16,
+      "stopped": 1,
+      "missing": [
+        "route-pareto4-nearly-constant"
+      ]
+    },
+    "pareto4 / held scale": {
+      "rows": 5,
+      "before_max": 5.546549250495268e-13,
+      "after_max": 7.724492797982998e-17,
+      "stopped": 0,
+      "missing": []
+    },
+    "burr / joint": {
+      "rows": 2,
+      "before_max": 1.256198670444378e-07,
+      "after_max": 2.204189351908469e-15,
+      "stopped": 1,
+      "missing": [
+        "route-burr-nearly-constant"
+      ]
+    },
+    "invburr / joint": {
+      "rows": 3,
+      "before_max": 0.8822222423009989,
+      "after_max": 9.211723605965934e-17,
+      "stopped": 1,
+      "missing": [
+        "route-invburr-nearly-constant"
+      ]
+    },
+    "paralogis / held scale": {
+      "rows": 2,
+      "before_max": 7.524123198627028e-17,
+      "after_max": 8.717159777348019e-17,
+      "stopped": 0,
+      "missing": []
+    },
+    "burr / held power": {
+      "rows": 10,
+      "before_max": 6.737562067736512e-08,
+      "after_max": 1.7632159317009287e-12,
+      "stopped": 0,
+      "missing": []
+    },
+    "betapr / conditional shape": {
+      "rows": 13,
+      "before_max": 0.9891053542284044,
+      "after_max": 1.0604776643664478e-12,
+      "stopped": 0,
+      "missing": []
+    },
+    "betapr / unit shape": {
+      "rows": 5,
+      "before_max": 0.002403335245952872,
+      "after_max": 1.4322976051469564e-12,
+      "stopped": 1,
+      "missing": [
+        "route-betapr-unrepresentable-face-1000"
+      ]
+    },
+    "ged / knot/Laplace": {
+      "rows": 2,
+      "before_max": 5.376404873874153e-16,
+      "after_max": 1.5037411087850781e-16,
+      "stopped": 0,
+      "missing": []
+    },
+    "invburr / held scale": {
+      "rows": 2,
+      "before_max": 1.802223753042557e-14,
+      "after_max": 3.5856850236260524e-17,
+      "stopped": 0,
+      "missing": []
+    },
+    "invburr / held power": {
+      "rows": 6,
+      "before_max": 8.741120724555471e-09,
+      "after_max": 7.054744539987335e-13,
+      "stopped": 0,
+      "missing": []
+    },
+    "pareto4 / held power": {
+      "rows": 7,
+      "before_max": 6.737562067736512e-08,
+      "after_max": 8.816020604805863e-13,
+      "stopped": 0,
+      "missing": []
+    },
+    "invparalogis / joint": {
+      "rows": 13,
+      "before_max": 0.9999999592017402,
+      "after_max": 7.760132369047211e-12,
+      "stopped": 0,
+      "missing": []
+    },
+    "gb2 / Burr delegate": {
+      "rows": 3,
+      "before_max": 1.256198670444378e-07,
+      "after_max": 1.4332247503817234e-12,
+      "stopped": 0,
+      "missing": []
+    },
+    "fpareto / Burr delegate": {
+      "rows": 3,
+      "before_max": 1.256198670444378e-07,
+      "after_max": 1.4332247503817234e-12,
+      "stopped": 0,
+      "missing": []
+    },
+    "invparalogis / held scale": {
+      "rows": 1,
+      "before_max": 7.524123198661386e-17,
+      "after_max": 7.866835987571324e-17,
+      "stopped": 0,
+      "missing": []
+    },
+    "pareto3 / parent transport": {
+      "rows": 6,
+      "before_max": 0.00011395438490545015,
+      "after_max": 3.374085645472628e-15,
+      "stopped": 0,
+      "missing": []
+    },
+    "gb2 / beta-prime power delegate": {
+      "rows": 1,
+      "before_max": 1.160526985591703e-08,
+      "after_max": 2.3522750076324096e-16,
+      "stopped": 0,
+      "missing": []
+    },
+    "fpareto / beta-prime power delegate": {
+      "rows": 4,
+      "before_max": 3.522080896354426e-07,
+      "after_max": 3.932534093386139e-13,
+      "stopped": 0,
+      "missing": []
+    },
+    "genbeta / existing local accuracy": {
+      "rows": 90,
+      "before_max": 5.387749710695488e-12,
+      "after_max": 5.387749710695488e-12,
+      "stopped": 0,
+      "missing": []
+    },
+    "sn / existing local accuracy": {
+      "rows": 1,
+      "before_max": 6.89196147550623e-17,
+      "after_max": 6.89196147550623e-17,
+      "stopped": 0,
+      "missing": []
+    },
+    "invburr / held first shape": {
+      "rows": 1,
+      "before_max": 6.796491498065432e-17,
+      "after_max": 2.2118130671733207e-15,
+      "stopped": 0,
+      "missing": []
+    },
+    "gb2 / inverse Burr delegate": {
+      "rows": 1,
+      "before_max": 3.211809593636087e-08,
+      "after_max": 5.658549860583473e-17,
+      "stopped": 0,
+      "missing": []
+    },
+    "gb2 / beta-prime small-power delegate": {
+      "rows": 3,
+      "before_max": 0.5140468747948863,
+      "after_max": 3.045882746833567e-14,
+      "stopped": 0,
+      "missing": []
+    },
+    "gb2 / beta-prime reverse-power delegate": {
+      "rows": 1,
+      "before_max": 2.5343846035383666e-10,
+      "after_max": 8.397809872184967e-17,
+      "stopped": 0,
+      "missing": []
+    },
+    "fpareto / inverse Burr delegate": {
+      "rows": 1,
+      "before_max": 3.211809593636087e-08,
+      "after_max": 5.658549860583473e-17,
+      "stopped": 0,
+      "missing": []
+    },
+    "fpareto / beta-prime small-power delegate": {
+      "rows": 5,
+      "before_max": 0.5140468747948863,
+      "after_max": 7.731444567870845e-13,
+      "stopped": 0,
+      "missing": []
+    },
+    "fpareto / beta-prime reverse-power delegate": {
+      "rows": 1,
+      "before_max": 2.5343846035383666e-10,
+      "after_max": 8.397809872184967e-17,
+      "stopped": 0,
+      "missing": []
+    }
+  },
+  "double": {
+    "betapr / joint": {
+      "rows": 15,
+      "before_max": 2.35238461900275e-07,
+      "after_max": 1.5951508903086413e-13,
+      "stopped": 0,
+      "missing": []
+    },
+    "bhatt / normal member": {
+      "rows": 72,
+      "before_max": 0.30813481716996544,
+      "after_max": 7.819026073076805e-16,
+      "stopped": 0,
+      "missing": []
+    },
+    "bhatt / finite width": {
+      "rows": 79,
+      "before_max": 0.6307817436036978,
+      "after_max": 5.06739768456409e-13,
+      "stopped": 0,
+      "missing": []
+    },
+    "burr / held scale": {
+      "rows": 5,
+      "before_max": 3.6645169780908467e-07,
+      "after_max": 4.792261127471286e-16,
+      "stopped": 0,
+      "missing": []
+    },
+    "ged / free shape": {
+      "rows": 13,
+      "before_max": 9.862889301688756e-07,
+      "after_max": 4.008345041607527e-12,
+      "stopped": 0,
+      "missing": []
+    },
+    "ged / held shape": {
+      "rows": 2,
+      "before_max": 1.3569327586758446e-16,
+      "after_max": 1.1521278300160723e-16,
+      "stopped": 0,
+      "missing": []
+    },
+    "paralogis / joint": {
+      "rows": 12,
+      "before_max": 0.9999999507628223,
+      "after_max": 8.56601096637717e-13,
+      "stopped": 0,
+      "missing": []
+    },
+    "pareto4 / joint": {
+      "rows": 5,
+      "before_max": 0.003829732518042262,
+      "after_max": 4.0642451340908106e-14,
+      "stopped": 1,
+      "missing": [
+        "route-pareto4-nearly-constant"
+      ]
+    },
+    "pareto4 / held scale": {
+      "rows": 5,
+      "before_max": 5.546549250495268e-13,
+      "after_max": 7.724492797982998e-17,
+      "stopped": 0,
+      "missing": []
+    },
+    "burr / joint": {
+      "rows": 2,
+      "before_max": 1.256198670444378e-07,
+      "after_max": 2.037818626099798e-15,
+      "stopped": 1,
+      "missing": [
+        "route-burr-nearly-constant"
+      ]
+    },
+    "invburr / joint": {
+      "rows": 3,
+      "before_max": 0.8822222423009989,
+      "after_max": 9.211723605965934e-17,
+      "stopped": 1,
+      "missing": [
+        "route-invburr-nearly-constant"
+      ]
+    },
+    "paralogis / held scale": {
+      "rows": 2,
+      "before_max": 7.524123198627028e-17,
+      "after_max": 2.4108118963581206e-16,
+      "stopped": 0,
+      "missing": []
+    },
+    "burr / held power": {
+      "rows": 10,
+      "before_max": 4.8627731260036224e-08,
+      "after_max": 7.206863481750268e-17,
+      "stopped": 0,
+      "missing": []
+    },
+    "betapr / conditional shape": {
+      "rows": 13,
+      "before_max": 0.9891053542284044,
+      "after_max": 1.064541452594325e-12,
+      "stopped": 0,
+      "missing": []
+    },
+    "betapr / unit shape": {
+      "rows": 5,
+      "before_max": 0.0015748717119586034,
+      "after_max": 7.260323207852056e-17,
+      "stopped": 1,
+      "missing": [
+        "route-betapr-unrepresentable-face-1000"
+      ]
+    },
+    "ged / knot/Laplace": {
+      "rows": 2,
+      "before_max": 5.376404873874153e-16,
+      "after_max": 2.7946290304814363e-16,
+      "stopped": 0,
+      "missing": []
+    },
+    "invburr / held scale": {
+      "rows": 2,
+      "before_max": 1.802223753042557e-14,
+      "after_max": 3.5856850236260524e-17,
+      "stopped": 0,
+      "missing": []
+    },
+    "invburr / held power": {
+      "rows": 6,
+      "before_max": 1.000676759350037e-08,
+      "after_max": 2.9323138591726557e-12,
+      "stopped": 0,
+      "missing": []
+    },
+    "pareto4 / held power": {
+      "rows": 7,
+      "before_max": 4.8627731260036224e-08,
+      "after_max": 9.713133964631893e-13,
+      "stopped": 0,
+      "missing": []
+    },
+    "invparalogis / joint": {
+      "rows": 13,
+      "before_max": 0.9999999592017402,
+      "after_max": 7.307141975597569e-12,
+      "stopped": 0,
+      "missing": []
+    },
+    "gb2 / Burr delegate": {
+      "rows": 3,
+      "before_max": 1.256198670444378e-07,
+      "after_max": 2.037818626099798e-15,
+      "stopped": 0,
+      "missing": []
+    },
+    "fpareto / Burr delegate": {
+      "rows": 3,
+      "before_max": 1.256198670444378e-07,
+      "after_max": 2.037818626099798e-15,
+      "stopped": 0,
+      "missing": []
+    },
+    "invparalogis / held scale": {
+      "rows": 1,
+      "before_max": 7.524123198661386e-17,
+      "after_max": 7.866835987571324e-17,
+      "stopped": 0,
+      "missing": []
+    },
+    "pareto3 / parent transport": {
+      "rows": 6,
+      "before_max": 0.12509971008679555,
+      "after_max": 3.374085645472628e-15,
+      "stopped": 0,
+      "missing": []
+    },
+    "gb2 / beta-prime power delegate": {
+      "rows": 1,
+      "before_max": 1.238370589005828e-08,
+      "after_max": 1.241567060263323e-16,
+      "stopped": 0,
+      "missing": []
+    },
+    "fpareto / beta-prime power delegate": {
+      "rows": 4,
+      "before_max": 3.521822099102971e-07,
+      "after_max": 3.9282222335279493e-13,
+      "stopped": 0,
+      "missing": []
+    },
+    "genbeta / existing local accuracy": {
+      "rows": 90,
+      "before_max": 5.936536034443117e-12,
+      "after_max": 5.936536034443117e-12,
+      "stopped": 0,
+      "missing": []
+    },
+    "sn / existing local accuracy": {
+      "rows": 1,
+      "before_max": 6.89196147550623e-17,
+      "after_max": 6.89196147550623e-17,
+      "stopped": 0,
+      "missing": []
+    },
+    "invburr / held first shape": {
+      "rows": 1,
+      "before_max": 6.796491498065432e-17,
+      "after_max": 2.2118130671733207e-15,
+      "stopped": 0,
+      "missing": []
+    },
+    "gb2 / inverse Burr delegate": {
+      "rows": 1,
+      "before_max": 3.211809593636087e-08,
+      "after_max": 3.893269502231765e-16,
+      "stopped": 0,
+      "missing": []
+    },
+    "gb2 / beta-prime small-power delegate": {
+      "rows": 3,
+      "before_max": 0.5140150604811333,
+      "after_max": 5.511842141444936e-13,
+      "stopped": 0,
+      "missing": []
+    },
+    "gb2 / beta-prime reverse-power delegate": {
+      "rows": 1,
+      "before_max": 2.534389535446172e-10,
+      "after_max": 8.397809872184967e-17,
+      "stopped": 0,
+      "missing": []
+    },
+    "fpareto / inverse Burr delegate": {
+      "rows": 1,
+      "before_max": 3.211809593636087e-08,
+      "after_max": 3.893269502231765e-16,
+      "stopped": 0,
+      "missing": []
+    },
+    "fpareto / beta-prime small-power delegate": {
+      "rows": 5,
+      "before_max": 0.5140150604811333,
+      "after_max": 6.603000115638924e-14,
+      "stopped": 0,
+      "missing": []
+    },
+    "fpareto / beta-prime reverse-power delegate": {
+      "rows": 1,
+      "before_max": 2.534389535446172e-10,
+      "after_max": 8.397809872184967e-17,
+      "stopped": 0,
+      "missing": []
+    }
+  }
+}

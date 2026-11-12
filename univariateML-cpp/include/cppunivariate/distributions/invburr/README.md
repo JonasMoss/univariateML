@@ -269,3 +269,9 @@ certificate. The reported likelihood still evaluates the returned coefficients.
 ### Extreme d/p/q arithmetic
 
 The shape1 = 1 inverse uses the centered log-logistic inverse. At the origin, a fused product-minus-one determines the endpoint exponent: a rounded shape product equal to one need not have an exact product equal to one.
+
+For held power, the normalized inverse rate is
+$r=(s/x_{\min})^c$. Its relative error contributes $1/c$ times as much to
+the public scale error. The original log ratios retain the input spacings
+before this map; a rounded reciprocal sample can otherwise perturb the
+weak shape direction while preserving the parent's numerical convergence.

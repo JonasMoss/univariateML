@@ -1,0 +1,32 @@
+{
+  "strict-seed-coupled-burr-0": {
+    "kind": "budget",
+    "baseline": "bc8ff7be",
+    "message": "Burr global certificate budget exhausted; no verified MLE. Raising iterlim may resolve this stop.",
+    "reason": "Existing public search supplies no successful nomination; direct final-step fixture passes."
+  },
+  "strict-seed-coupled-pareto4-0": {
+    "kind": "budget",
+    "baseline": "bc8ff7be",
+    "message": "Pareto IV certificate budget exhausted; no verified MLE. Raising iterlim may resolve this stop.",
+    "reason": "Existing public search supplies no successful nomination; direct final-step fixture passes."
+  },
+  "strict-seed-coupled-burr-1": {
+    "kind": "budget",
+    "baseline": "bc8ff7be",
+    "message": "Burr global certificate budget exhausted; no verified MLE. Raising iterlim may resolve this stop.",
+    "reason": "Existing public search supplies no successful nomination; direct final-step fixture passes."
+  },
+  "strict-seed-coupled-invburr-1": {
+    "kind": "budget",
+    "baseline": "bc8ff7be",
+    "message": "invburr certificate budget exhausted; no verified MLE. Raising iterlim may resolve this stop.",
+    "reason": "Existing public search supplies no successful nomination; direct final-step fixture passes."
+  },
+  "strict-seed-coupled-pareto4-1": {
+    "kind": "budget",
+    "baseline": "bc8ff7be",
+    "message": "Pareto IV certificate budget exhausted; no verified MLE. Raising iterlim may resolve this stop.",
+    "reason": "Existing public search supplies no successful nomination; direct final-step fixture passes."
+  }
+}

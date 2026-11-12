@@ -26,6 +26,7 @@ struct Gb2Result {
   bool accuracy_failure=false;
 };
 } // namespace cppunivariate
+#include "transport_accuracy.hpp"
 #include "power_certificate.hpp"
 #include "endpoint_certificate.hpp"
 namespace cppunivariate {

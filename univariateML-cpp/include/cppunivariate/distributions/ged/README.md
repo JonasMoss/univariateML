@@ -158,7 +158,6 @@ The fitter profiles location and scale, covers the finite shape range with score
 With location and scale free, at the Laplace face $\mu$ is a sample median and $\sigma$ is $\sqrt{2}$ times
 the mean absolute deviation from that median.
 
-
 For each held or profiled shape, location minimizes the sum of absolute residuals to that power (a median at shape one, or an observation for held shape below one); the free scale has an exact power-mean profile. A held location collapses only when all residuals vanish. Held standard deviation removes scale collapse. Free shape retains the existing restriction $\nu\ge1$ and is compared with the conditional uniform face. With both location and standard deviation held, observations at a uniform endpoint contribute their limiting GED penalty. Held-sd tails that cannot be separated from finite candidates leave a converged finite search uncertified.
 
 For fixed $\nu\ge1$, the standardized log-density is a constant minus a
@@ -178,6 +177,11 @@ not log-concave. For free shape, the interval score certificate below covers eve
 
 With standard deviation held and a limiting uniform endpoint forced onto an observation, each such observation has limiting log-density penalty $e^{-\gamma}$, where $\gamma$ is Euler's constant. If mean is free and both endpoints are forced, with endpoint counts k and l the total penalty is $2e^{-\gamma}\sqrt{kl}$ after profiling the location shift of order $1/\nu$.
 
+In the finite fallback, the smooth coordinates are location in units of the
+fitted scale, log scale and log shape. At a held subunit shape the enumerated
+knot location stays exact; at the Laplace restriction the median stays fixed.
+Only the remaining smooth coordinates enter the observed-information solve.
+
 ## R notes
 
 Estimated coefficients on an applicable `fit_domain` bound carry `restricted`
@@ -187,7 +191,6 @@ not flagged. README hold exemptions apply to free coefficients.
 The fGarch mean and standard deviation convention is used. Its `gedFit` permits positive shapes below one and returns local solutions. A winning uniform limit here stops with advice to use `mlunif`.
 
 Finite/uniform comparisons retain the family tolerance and floating-point rounding allowance. An unresolved comparison leaves a converged finite search uncertified; see the [comparison analysis](../../../../../dev/research/evaluations/2026-11-02-face-compare-report.md).
-
 
 ## Free-shape bounds
 
@@ -421,7 +424,6 @@ A large offset with small spread can make a certified normalized location
 unrepresentable; this stops with `TransformFailure`. Fixed convex-shape fits
 also check the returned location's monotone score, including the normal mean
 shortcut. Physical normalization failures still stop. A point-score enclosure that merely fails to include zero may retain the conditional search when the physical free-coordinate score norm is below $10^{-3}$.
-
 
 Rounded equality of endpoint residuals does not imply containment by a
 reflected uniform support. With $u=2^{-53}$, observations $-1+u,1+2u$ and

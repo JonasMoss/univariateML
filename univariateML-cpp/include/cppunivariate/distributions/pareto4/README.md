@@ -255,3 +255,9 @@ Arithmetic that rounds a distinct observation onto a held scale stops numericall
 ### Extreme d/p/q arithmetic
 
 At shape1 one the inverse uses the compensated Pareto III inverse; centering before exponentiation preserves answers close to a cancelling location and scale.
+
+For a rounded excess $y_i=\operatorname{fl}(x_i-\mu)$, the exact
+subtraction residual $e_i=(x_i-\mu)-y_i$ contributes
+$\log(1+e_i/y_i)$ to its log excess. This term can affect the weak shape
+direction of an uncertified fit even when every support classification is
+unchanged. The local correction therefore retains the subtraction residual.

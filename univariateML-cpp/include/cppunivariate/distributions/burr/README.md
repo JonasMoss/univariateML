@@ -261,6 +261,49 @@ in inverse spread and standardized location for nonconstant samples.
 With $k$ and $s$ held, a free $c$ is unbounded only when every observation
 equals $s$. Holding $c$ and $s$ leaves an explicit estimate of $k$.
 
+The held-power score gate nominates a Lomax point; it does not supply its
+coefficient error bound. Near the exponential face, use $w=k(x/s)^c$ and
+$D=\log k-c\log s$ to separate the finite rate from the diverging shape.
+For a known power $c$, put $Y=(x/e)^c$, $e=\max x$, and
+$G(r)=E[\log(1+rY)]$, $H(r)=E[rY/(1+rY)]$.
+The profiled equation is $(H-G+GH)/r^2=0$, with $k=1/G$ and
+$s=e r^{-1/c}$. Its moment expansion retains the small
+$E[Y]^2-E[Y^2]/2$ term. A signed bracket and a positive derivative bound
+control both coefficients; $d\log s=-d\log r/c$ determines the required
+rate precision. A local derivative bound suffices when the path to the
+exponential face is not monotone.
+
+Rounded log observations can move this weak root by much more than the
+coefficient tolerance. Compensated evaluation of the raw powers, as well as
+the profile equation, is needed near the face. Reciprocal data use
+$Y=(e/x)^c$, $e=\min x$, and $s=e r^{1/c}$; shifted excesses retain their
+subtraction residual before the power is taken.
+
+A large finite shape can be refuted locally without selecting a global face.
+For scale-profiled likelihood $L(k,c)$, put
+$v_i(c)=n x_i^c/\sum_j x_j^c$ and $A(c)=\sum_i v_i(c)^2/2-n$.
+For $k\ge100n$, the conditional scale equation and the alternating logarithm
+series give
+$|k\,\partial L/\partial\log k+A(c)|\le64n^3/k$.
+In a relative coefficient box centred at $c_0$, normalized weights change
+by at most $\exp(E)$, where
+$E=c_0\log(x_{\max}/x_{\min})\,\mathrm{tol}/(1-\mathrm{tol})$.
+Consequently $\sum v_i(c_0)^2\exp(2E)/2-n$ bounds $A$ above throughout
+that box. If this upper bound remains negative after the tail remainder and
+practical floating-point margin, the box contains no stationary point.
+This refutes that proposed estimate; it does not prove global Weibull domination.
+
+When both shapes are free near the Weibull face, the local step uses
+`(log(k), log(c), D)` with `D = log(k) - c log(s/unit)`. Its weak shape
+score retains the factor `r = exp(D + c log(x/unit))/k` before summation.
+Compensated raw logarithms and information prevent a small finite shape
+departure from disappearing through cancellation with the free power.
+The inverse orientation reverses the raw logarithms and native scale map.
+
+A held first shape fixes the joint step's `u = log(k)`. With scale held,
+`D = u`; its score and information combine the two rate directions before
+solving. The native scale projection retains the latent, unrounded shape.
+
 ## R notes
 
 Supply `scale = s` to estimate only the shapes. The fixed-scale path profiles `shape1` exactly and certifies the unique
@@ -371,5 +414,3 @@ A reachable Weibull face remains a likelihood lower bound when the strict
 comparison does not close. Its value can refute a finite search point by a
 separated gap even without proving that the face wins globally; the
 unclosed face is retained as a witness, not a selected limit payload.
-
-The held-power fallback accepts a finite Lomax proposal at its coefficient-precision floor only when its total log-shape and log-rate score norm is below $10^{-3}$. Physical likelihood consistency and feasible-bound refutation are checked after transport; the result remains uncertified.

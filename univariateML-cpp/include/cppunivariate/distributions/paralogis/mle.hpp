@@ -24,6 +24,7 @@
 #include "../../core/work_budget.hpp"
 #include "../burr/mle.hpp"
 #include "certificate.hpp"
+#include "accuracy.hpp"
 
 #include "../../core/bfgs.hpp"
 #include "../../core/finite_diff.hpp"
@@ -262,6 +263,7 @@ inline ParalogisResult paralogis_mle_impl(
 }
 
 namespace paralogis_detail {
+// Attach comparisons to a search nomination; public returns refine it below.
 inline ParalogisResult uncertified(ParalogisResult searched,
     const paralogis_cert_detail::Result& certificate,span x) {
   searched.certified=false;
@@ -280,6 +282,14 @@ inline ParalogisResult uncertified(ParalogisResult searched,
   }
   return searched;
 }
+inline ParalogisResult accurate_uncertified(ParalogisResult searched,
+    const paralogis_cert_detail::Result& certificate,span x,double tol,int maxit,bool fixed_scale) {
+  searched=uncertified(searched,certificate,x);
+  if(searched.status!=ParalogisStatus::Ok)return searched;
+  if(!paralogis_local_accuracy(x,searched.shape,searched.scale,searched.logLik,tol,maxit,fixed_scale)){searched.status=ParalogisStatus::NumericalFailure;return searched;}
+  searched.stop_detail=paralogis_cert_detail::witness(x,searched.shape,searched.scale);
+  return searched;
+}
 }
 
 inline ParalogisResult paralogis_mle(span x, double tol, int maxit,
@@ -296,7 +306,7 @@ inline ParalogisResult paralogis_mle(span x, double tol, int maxit,
   r.stop_detail=paralogis_cert_detail::witness(x,r.shape,r.scale);
   if (r.status != ParalogisStatus::Ok) return r;
   const auto certified = paralogis_cert_detail::certify(x,r.shape,r.scale,false,certificate_budget(maxit),maxit);
-  if (!certified.ok) return paralogis_detail::uncertified(r,certified,x);
+  if (!certified.ok) return paralogis_detail::accurate_uncertified(r,certified,x,tol,maxit,false);
   r.shape=certified.shape; r.scale=certified.scale; r.logLik=certified.logLik;
   return r;
 }
@@ -361,7 +371,7 @@ inline ParalogisResult paralogis_mle_fixed_scale(
     if(alternative!=r.shape)
       certified=paralogis_cert_detail::certify(x,alternative,scale,true,certificate_budget(maxit),maxit);
   }
-  if(!certified.ok) return paralogis_detail::uncertified(r,certified,x);
+  if(!certified.ok) return paralogis_detail::accurate_uncertified(r,certified,x,tol,maxit,true);
   r.shape=certified.shape;r.logLik=certified.logLik;
   return r;
 }

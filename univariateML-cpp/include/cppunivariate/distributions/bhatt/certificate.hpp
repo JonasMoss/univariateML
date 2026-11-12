@@ -1,6 +1,7 @@
 #pragma once
 #include "mle.hpp"
 #include "winner_certificate.hpp"
+#include "accuracy.hpp"
 #include <map>
 #include <queue>
 
@@ -535,8 +536,9 @@ inline BhattResult bhatt_mle(span x,double tol=1e-8,int maxit=500,double sigma=s
   }
   if(certificate.status==BhattStatus::InvalidInput)return certificate;
   // Inconclusive certification must preserve a successful existing search.
-  // Its result has no global or coefficient-enclosure claim: certified=false.
-  auto searched=bhatt_detail::legacy_candidate(x,tol,maxit,sigma,a,mu);
+  // The final local refinement supplies coefficient accuracy; certified=false
+  // withdraws only the global claim.
+  auto searched=bhatt_detail::accurate_candidate(x,tol,maxit,sigma,a,mu);
   if(a==0 && searched.status==BhattStatus::Ok) {
     // A normal coefficient inclusion can fail solely because tol is below
     // its practical margin. Preserve the closed-form search in that case,
@@ -584,7 +586,7 @@ inline BhattResult bhatt_mle(span x,double tol=1e-8,int maxit=500,double sigma=s
     if(certificate.stop_detail.loglik_lower>searched.logLik+margin)return certificate;
     // A numerical face comparison is not a proof of a limit win. Retain an
     // independently converged finite search instead of emitting that stop.
-    auto finite=bhatt_detail::legacy_candidate(x,tol,maxit,sigma,a,mu,true);
+    auto finite=bhatt_detail::accurate_candidate(x,tol,maxit,sigma,a,mu,true);
     if(finite.status!=BhattStatus::Ok)return certificate;
     const auto witness=bhatt_detail::cert_witness(x,finite.mu,finite.sigma,finite.a);
     if(!bhatt_detail::cert_valid(witness) || !std::isfinite(finite.logLik) ||
@@ -592,6 +594,8 @@ inline BhattResult bhatt_mle(span x,double tol=1e-8,int maxit=500,double sigma=s
         certificate.stop_detail.loglik_lower>witness.loglik_upper)return certificate;
     return finite;
   }
+  if(searched.status==BhattStatus::NumericalFailure)return reject_search();
+  if(searched.status==BhattStatus::IterationFailure){searched.stop_detail=certificate.stop_detail;return searched;}
   // The search itself failed, or proposed an invalid/unbounded result not
   // proved by the certificate. Preserve the certificate's physical witnesses.
   return certificate;

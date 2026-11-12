@@ -136,6 +136,12 @@ therefore exists. For constant $y_i=y_0$, choosing
 $v=y_0+\log(a)/a$ gives density asymptotic to $a/e$, proving unboundedness.
 Reciprocation transports the argument to the inverse distribution.
 
+In concentrated samples, the identifiable rate is
+$w=a(x/s)^{-a}$. Forming it from original log spacings separates the rate
+from the large common shape and retains the spacing lost by reciprocation.
+The native scale correction reverses the sign of the parent's log-scale
+correction; errors in the transformed observations require a separate check
+on the original likelihood.
 
 ## Global certificate
 

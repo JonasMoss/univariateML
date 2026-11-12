@@ -213,10 +213,18 @@ TEST_CASE("bhatt certificate: quantitative location, precision fallback and iter
   REQUIRE(f.status==cppunivariate::BhattStatus::Ok);
   const auto tiny=cppunivariate::bhatt_mle(mltest::as_span(x),1e-30,500,1,2);
   const auto searched=cppunivariate::bhatt_detail::legacy_candidate(mltest::as_span(x),1e-30,500,1,2);
-  REQUIRE(tiny.status==cppunivariate::BhattStatus::Ok);
+  REQUIRE(tiny.status==cppunivariate::BhattStatus::NumericalFailure);
   CHECK_FALSE(tiny.certified);
-  CHECK(tiny.mu==searched.mu);CHECK(tiny.sigma==searched.sigma);CHECK(tiny.a==searched.a);
-  CHECK(tiny.logLik==searched.logLik);
+  REQUIRE(searched.status==cppunivariate::BhattStatus::Ok);
+  bool finite_best=false;
+  for(const auto& c:tiny.stop_detail.candidates)if(c.model==cppunivariate::StopModel::None&&c.coef.size()==3) {
+    REQUIRE(std::isfinite(c.coef[0]));CHECK(c.coef[1]==1);CHECK(c.coef[2]==2);
+    CHECK(std::isfinite(c.loglik_lower));CHECK(std::isfinite(c.loglik_upper));
+    double ll=0;for(double v:x)ll+=cppunivariate::distributions::dbhatt(v,c.coef[0],1,2,true);
+    CHECK(c.loglik_lower<=ll+1e-11);CHECK(c.loglik_upper>=ll-1e-11);
+    finite_best=true;
+  }
+  CHECK(finite_best);
   const auto shortfit=cppunivariate::bhatt_mle(mltest::as_span(x),1e-10,1,1,2);
   CHECK(shortfit.status==cppunivariate::BhattStatus::IterationFailure);
 }
@@ -435,10 +443,11 @@ TEST_CASE("bhatt inconclusive normal certificate preserves the existing attained
   CHECK(f.a==0);CHECK_FALSE(f.certified);
   const auto g=mltest::load_distribution_golden("bhatt");
   const auto stopped=cppunivariate::bhatt_mle(mltest::as_span(g.data),1e-10,1);
-  REQUIRE(stopped.status==cppunivariate::BhattStatus::Ok);
+  REQUIRE(stopped.status==cppunivariate::BhattStatus::IterationFailure);
   CHECK_FALSE(stopped.certified);
   const auto existing=cppunivariate::bhatt_detail::legacy_candidate(mltest::as_span(g.data),1e-10,1);
-  CHECK(stopped.a==existing.a);CHECK(stopped.logLik==existing.logLik);
+  CHECK(existing.status==cppunivariate::BhattStatus::Ok);
+  CHECK(std::isfinite(existing.logLik));
 }
 
 TEST_CASE("bhatt all-free certificate: free centre large-shape bound covers every width") {
@@ -470,6 +479,8 @@ TEST_CASE("bhatt failed enclosure preserves the successful existing search as un
   // Rounded seed-7, n=24 scale-equivariance sample: both faces are beaten,
   // but the full stationary solve does not enclose a winner at default work.
   const std::vector<double> original{1.5186427188633,-.893644554187554,-1.08058198203889,-.639737926177478,.655034880479549,-2.35672046800855,2.46887599116556,.273853493748292,2.5355294429514,-.299436099194099,-.160890965931292,-.201888161544889,.6721053216777,-.344350831779183,1.51377727236596,.163578425435854,1.41905463032963,.838599300343392,-.0826733918168545,-1.34035410608697,-.343170308885225,.824451373169256,-.404339571078608,.0120556813316649};
+  const std::array<std::array<double,3>,3> reference{{{{3.1978415345832606267535874776893352869714468,1.1223614094387010007345122460457683086753747,0.2780983070872669236836987986248264815958186}},{{0.0003197841534583260715725060978102389114739,0.0001122361409438700717894849308332458796610,0.0000278098307087270468638098367476346004937}},{{31978.415345832606043137725699783206940552856,11223.614094387010253045623172897662426764499,2780.9830708726696223406685230310091164197835}}}};
+  std::size_t reference_index=0;
   for(double unit:{1.,1e-4,1e4}) {
     auto x=original;for(double& v:x)v=unit*(v+3);
     const auto f=cppunivariate::bhatt_mle(mltest::as_span(x));
@@ -477,8 +488,14 @@ TEST_CASE("bhatt failed enclosure preserves the successful existing search as un
     REQUIRE(existing.status==cppunivariate::BhattStatus::Ok);
     REQUIRE(f.status==cppunivariate::BhattStatus::Ok);
     CHECK_FALSE(f.certified);
-    CHECK(f.mu==existing.mu);CHECK(f.sigma==existing.sigma);CHECK(f.a==existing.a);
-    CHECK(f.logLik==existing.logLik);
+    const auto& truth=reference[reference_index++];
+    CHECK(std::abs(f.mu-truth[0])<=1e-10*std::max(std::abs(truth[0]),truth[1]));
+    CHECK(std::abs(f.sigma/truth[1]-1)<=1e-10);
+    CHECK(std::abs(f.a-truth[2])<=1e-10*std::max(1.,std::abs(truth[2])));
+    CHECK(std::isfinite(existing.logLik));
+    double ll=0;for(double v:x)ll+=cppunivariate::distributions::dbhatt(v,f.mu,f.sigma,f.a,true);
+    CHECK(f.logLik==doctest::Approx(ll).epsilon(1e-12));
+    CHECK(f.logLik>=existing.logLik-1e-10*std::max(1.,std::abs(existing.logLik)));
 
   }
 }
@@ -558,6 +575,171 @@ TEST_CASE("Bhatt unclosed uniform-margin preference retains its finite search") 
  const auto r=cppunivariate::bhatt_mle(mltest::as_span(x),1e-14,1000);
  REQUIRE(r.status==cppunivariate::BhattStatus::Ok);CHECK_FALSE(r.certified);
  CHECK(std::isfinite(r.logLik));
+}
+
+TEST_CASE("Bhatt conditional location enclosure retains a narrow latent width") {
+  const std::vector<double> x{-1e150,2e150,3e150};
+  const auto r=cppunivariate::bhatt_mle(mltest::as_span(x),1e-10,1000,1,2);
+  REQUIRE(r.status==cppunivariate::BhattStatus::Ok);
+  CHECK(r.mu==doctest::Approx(4e150/3).epsilon(1e-10));
+  CHECK(r.sigma==1);CHECK(r.a==2);
+}
+
+TEST_CASE("Bhatt normal-member accuracy checks the profiled width direction") {
+  const std::vector<double> x{-1,1};
+  cppunivariate::BhattResult free_scale{0,1,0,0,0,cppunivariate::BhattStatus::Ok};
+  // At fixed total variance, sum H4 = -4: positive fourth-order improvement.
+  CHECK_FALSE(cppunivariate::bhatt_detail::local_accuracy(free_scale,mltest::as_span(x),0,NAN,NAN,1e-10,1000));
+  cppunivariate::BhattResult held_scale{0,1,0,0,0,cppunivariate::BhattStatus::Ok};
+  // With sigma held, the quadratic term vanishes and the quartic is negative.
+  CHECK(cppunivariate::bhatt_detail::local_accuracy(held_scale,mltest::as_span(x),0,1,NAN,1e-10,1000));
+}
+
+TEST_CASE("Bhatt weak width curvature retains a finite stationary point") {
+  const std::vector<double> x{-1.6016651822835168,1.4131576436602584,-1.0168621903530508,0.9296709855513083,4.40289091800287,0.27607662436890257,-3.7958474656837833,-2.0442845086360153,2.2082961858358687,0.13759915246265964,-1.1181911494145556,-0.2192028789052477,-3.5598395093505624,4.019752461015294,-2.8313809802328604,0.5489358457285406,-1.6038180912244655,0.7882993805401675,0.4046734103787528,3.08855569053258,-2.7081922498426483,-0.10731484219926302,0.04778711377596978,-0.2152967468933631,3.0675032240039277,2.6248275404727583,1.119713524370304,2.859891298896347,-0.43868941350529456,0.4418558399650234,0.7886856858513625,0.407193677156341,1.6981592786852828,0.6048367899895202,-0.5138568849250252,0.421607194312945,0.7806671105263328,2.5573062647066767,-0.40890102184826976,-4.686025429363835,1.1212261827677497,-0.901610077754597,-1.3060345564132276,4.231444431938951,-0.6019584640357862,0.9238215813358588,1.695186699273988,-2.1882461211152737,0.34334826488774883,0.28268479075819636,-0.9780420159323002,-1.0494325708767533,-2.5089922969713507,0.24484720454198117,-1.3035302694383009,1.2324142068259183,2.2701384307836987,0.4852127205287723,-0.5391308422947806,4.729926480986163,-0.22615130060758282,-2.566397015089285,-2.7321240914623433,-2.713805417980509,2.8311783418111642,2.5907302728750548,-0.13243161239396123,-1.8462211795265338,-0.20483524773454276,-2.171702864537435,0.8229046236584701,-2.875315569231851,2.3689867294121134,-0.17405764879458552,-0.9509380687556095,0.15037015956039496,-0.37061784387922614,-0.042584161157465994,0.07457212868300872,0.9543749664667933,1.5308080691605888,-0.7155965114810569,3.0366706086775217,0.9263245077574229,3.224411003588174,-1.1543544583451637,0.022496794580203483,1.269156053064791,0.5783371374737007,0.6421539457478336,0.06407143710382096,-1.3665677582725109,-0.47835200781189446,2.0872108994877303,1.4727030634922091,0.8323225944876718,2.255072300131579,-0.07919126132517285,1.477869866103409,-2.1844656150070687};
+  const auto r=cppunivariate::bhatt_mle(mltest::as_span(x),1e-10,500);
+  REQUIRE(r.status==cppunivariate::BhattStatus::Ok);CHECK_FALSE(r.certified);
+  // Independent 80-digit exact-CDF likelihood score, not production jets.
+  CHECK(r.mu==doctest::Approx(.211789227569719883122798151840723).epsilon(1e-10));
+  CHECK(r.sigma==doctest::Approx(1.84429767696311463172586559491358).epsilon(1e-10));
+  CHECK(r.a==doctest::Approx(.308134817169965440658849977959411).epsilon(1e-10));
+}
+
+TEST_CASE("Bhatt asymmetric location detects an unattainable binary64 target") {
+  const std::vector<double> x{-3,-1,0,1,2};
+  // Independent 90-digit root: -0.2966871018622317685538106428555...
+  // Its nearest binary64 value is over 2.6e-17 away; sigma=1 sets the floor.
+  const auto r=cppunivariate::bhatt_mle(mltest::as_span(x),1e-30,500,1,2);
+  CHECK(r.status==cppunivariate::BhattStatus::NumericalFailure);
+}
+
+TEST_CASE("Bhatt normal endpoint distinguishes exact and rounded moment equations") {
+  const std::vector<double> integer_sample{-3,-1,0,1,3};
+  CHECK(cppunivariate::bhatt_detail::normal_stationary_exact(mltest::as_span(integer_sample),0,2,true,true));
+  const std::vector<double> irrational_scale{-2,-1,1,2};
+  CHECK_FALSE(cppunivariate::bhatt_detail::normal_stationary_exact(mltest::as_span(irrational_scale),0,std::sqrt(2.5),true,true));
+  const auto r=cppunivariate::bhatt_mle(mltest::as_span(irrational_scale),1e-30,500,NAN,0);
+  CHECK(r.status==cppunivariate::BhattStatus::NumericalFailure);
+  const std::vector<double> symmetric{-1,1};const double displacement=std::ldexp(1.,-1000);
+  // With centre held, the exact variance excess is displacement^2. Its
+  // products underflow binary64. Profiling the centre cancels it exactly.
+  CHECK(cppunivariate::bhatt_detail::normal_width_score_sign(mltest::as_span(symmetric),displacement,1,false)==1);
+  CHECK(cppunivariate::bhatt_detail::normal_width_score_sign(mltest::as_span(symmetric),displacement,1,true)==0);
+}
+
+TEST_CASE("Bhatt near-normal width uses compensated conditional information") {
+  { const std::vector<double> x{-2.295376385240308,-1.439531470938456,-1.150349380376008,-0.9345892910734801,-0.7554150263604693,-0.5977601260424784,-0.4537621901698794,-0.31863936396437514,-0.1891184262727925,-0.06270677794321379,0.06270677794321379,0.1891184262727925,0.31863936396437514,0.4537621901698794,0.5977601260424784,0.7554150263604693,0.9345892910734801,1.150349380376008,1.439531470938456,2.295376385240308};
+    const auto r=cppunivariate::bhatt_mle(mltest::as_span(x),1e-10,1000,NAN,NAN,NAN);
+    REQUIRE(r.status==cppunivariate::BhattStatus::Ok);CHECK_FALSE(r.certified);
+    CHECK(r.mu==doctest::Approx(0.0).scale(1.).epsilon(1e-10));
+    CHECK(r.sigma==doctest::Approx(1.039846463745918638311694566828581423201).scale(0.).epsilon(1e-10));
+    CHECK(r.a==doctest::Approx(0.004094496367781407081195980177108847639866).scale(1.).epsilon(1e-10));
+  }
+  { const std::vector<double> x{-2.2953786576652018,-1.439531470938456,-1.150349380376008,-0.9345892910734801,-0.7554150263604693,-0.5977601260424784,-0.4537621901698794,-0.31863936396437514,-0.1891184262727925,-0.06270677794321379,0.06270677794321379,0.1891184262727925,0.31863936396437514,0.4537621901698794,0.5977601260424784,0.7554150263604693,0.9345892910734801,1.150349380376008,1.439531470938456,2.2953786576652018};
+    const auto r=cppunivariate::bhatt_mle(mltest::as_span(x),1e-10,1000,NAN,NAN,NAN);
+    REQUIRE(r.status==cppunivariate::BhattStatus::Ok);CHECK_FALSE(r.certified);
+    CHECK(r.mu==doctest::Approx(0.0).scale(1.).epsilon(1e-10));
+    CHECK(r.sigma==doctest::Approx(1.039849625569304982307778102281454997682).scale(0.).epsilon(1e-10));
+    CHECK(r.a==doctest::Approx(0.0004094497804150649992981126273979976138223).scale(1.).epsilon(1e-10));
+  }
+  { const std::vector<double> x{-2.295378680389451,-1.439531470938456,-1.150349380376008,-0.9345892910734801,-0.7554150263604693,-0.5977601260424784,-0.4537621901698794,-0.31863936396437514,-0.1891184262727925,-0.06270677794321379,0.06270677794321379,0.1891184262727925,0.31863936396437514,0.4537621901698794,0.5977601260424784,0.7554150263604693,0.9345892910734801,1.150349380376008,1.439531470938456,2.295378680389451};
+    const auto r=cppunivariate::bhatt_mle(mltest::as_span(x),1e-10,1000,NAN,NAN,NAN);
+    REQUIRE(r.status==cppunivariate::BhattStatus::Ok);CHECK_FALSE(r.certified);
+    CHECK(r.mu==doctest::Approx(0.0).scale(1.).epsilon(1e-10));
+    CHECK(r.sigma==doctest::Approx(1.039849657187511806144415934116544990922).scale(0.).epsilon(1e-10));
+    CHECK(r.a==doctest::Approx(0.00004094497015544593154100988883080603345425).scale(1.).epsilon(1e-10));
+  }
+  { const std::vector<double> x{-2.295378680616693,-1.439531470938456,-1.150349380376008,-0.9345892910734801,-0.7554150263604693,-0.5977601260424784,-0.4537621901698794,-0.31863936396437514,-0.1891184262727925,-0.06270677794321379,0.06270677794321379,0.1891184262727925,0.31863936396437514,0.4537621901698794,0.5977601260424784,0.7554150263604693,0.9345892910734801,1.150349380376008,1.439531470938456,2.295378680616693};
+    const auto r=cppunivariate::bhatt_mle(mltest::as_span(x),1e-10,1000,NAN,NAN,NAN);
+    REQUIRE(r.status==cppunivariate::BhattStatus::Ok);CHECK_FALSE(r.certified);
+    CHECK(r.mu==doctest::Approx(0.0).scale(1.).epsilon(1e-10));
+    CHECK(r.sigma==doctest::Approx(1.039849657503693500909370966981651598209).scale(0.).epsilon(1e-10));
+    CHECK(r.a==doctest::Approx(0.000004094654376718823017416018409465649513465).scale(1.).epsilon(1e-10));
+  }
+  { const std::vector<double> x{-2.2953786806189656,-1.439531470938456,-1.150349380376008,-0.9345892910734801,-0.7554150263604693,-0.5977601260424784,-0.4537621901698794,-0.31863936396437514,-0.1891184262727925,-0.06270677794321379,0.06270677794321379,0.1891184262727925,0.31863936396437514,0.4537621901698794,0.5977601260424784,0.7554150263604693,0.9345892910734801,1.150349380376008,1.439531470938456,2.2953786806189656};
+    const auto r=cppunivariate::bhatt_mle(mltest::as_span(x),1e-10,1000,NAN,NAN,NAN);
+    REQUIRE(r.status==cppunivariate::BhattStatus::Ok);CHECK_FALSE(r.certified);
+    CHECK(r.mu==doctest::Approx(0.0).scale(1.).epsilon(1e-10));
+    CHECK(r.sigma==doctest::Approx(1.039849657506855293140763323020074800738).scale(0.).epsilon(1e-10));
+    CHECK(r.a==doctest::Approx(0.0000004111937972951050174315828930614206026682).scale(1.).epsilon(1e-10));
+  }
+  { const std::vector<double> x{-2.295376385240308,-1.439531470938456,-1.150349380376008,-0.9345892910734801,-0.7554150263604693,-0.49776012604247843,-0.4537621901698794,-0.31863936396437514,-0.1891184262727925,-0.06270677794321379,0.06270677794321379,0.1891184262727925,0.31863936396437514,0.4537621901698794,0.5977601260424784,0.7554150263604693,0.9345892910734801,1.150349380376008,1.439531470938456,2.259106988886899};
+    const auto r=cppunivariate::bhatt_mle(mltest::as_span(x),1e-10,1000,NAN,NAN,NAN);
+    REQUIRE(r.status==cppunivariate::BhattStatus::Ok);CHECK_FALSE(r.certified);
+    CHECK(r.mu==doctest::Approx(0.003186530182329540909924448955887776008541).scale(1.).epsilon(1e-10));
+    CHECK(r.sigma==doctest::Approx(1.033217817279459998849562158347530522123).scale(0.).epsilon(1e-10));
+    CHECK(r.a==doctest::Approx(0.000274693865010531770914650844051654754296).scale(1.).epsilon(1e-10));
+  }
+  { const std::vector<double> x{-2.295376385240308,-1.439531470938456,-1.150349380376008,-0.9345892910734801,-0.7554150263604693,-0.49776012604247843,-0.4537621901698794,-0.31863936396437514,-0.1891184262727925,-0.06270677794321379,0.06270677794321379,0.1891184262727925,0.31863936396437514,0.4537621901698794,0.5977601260424784,0.7554150263604693,0.9345892910734801,1.150349380376008,1.439531470938456,2.2591070114757104};
+    const auto r=cppunivariate::bhatt_mle(mltest::as_span(x),1e-10,1000,NAN,NAN,NAN);
+    REQUIRE(r.status==cppunivariate::BhattStatus::Ok);CHECK_FALSE(r.certified);
+    CHECK(r.mu==doctest::Approx(0.003186531311770107732783650345216395565785).scale(1.).epsilon(1e-10));
+    CHECK(r.sigma==doctest::Approx(1.033217831916054578958285419455410491333).scale(0.).epsilon(1e-10));
+    CHECK(r.a==doctest::Approx(0.000002746910892357414539911522707874376779877).scale(1.).epsilon(1e-10));
+  }
+  { const std::vector<double> x{-2.2953786576652018,-1.439531470938456,-1.150349380376008,-0.9345892910734801,-0.7554150263604693,-0.5977601260424784,-0.4537621901698794,-0.31863936396437514,-0.1891184262727925,-0.06270677794321379,0.06270677794321379,0.1891184262727925,0.31863936396437514,0.4537621901698794,0.5977601260424784,0.7554150263604693,0.9345892910734801,1.150349380376008,1.439531470938456,2.2953786576652018};
+    const auto r=cppunivariate::bhatt_mle(mltest::as_span(x),1e-10,1000,NAN,NAN,0.);
+    REQUIRE(r.status==cppunivariate::BhattStatus::Ok);CHECK_FALSE(r.certified);
+    CHECK(r.mu==doctest::Approx(0.0).scale(1.).epsilon(1e-10));
+    CHECK(r.sigma==doctest::Approx(1.039849625569304982307778102281454997682).scale(0.).epsilon(1e-10));
+    CHECK(r.a==doctest::Approx(0.0004094497804150649992981126273979976138223).scale(1.).epsilon(1e-10));
+  }
+}
+
+TEST_CASE("Bhatt held-sigma near-normal width uses compensated information") {
+  { const std::vector<double> x{-1.7320525396196849,0.0,0.0,0.0,0.0,1.7320525396196849};
+    const auto r=cppunivariate::bhatt_mle(mltest::as_span(x),1e-10,1000,1.,NAN,NAN);
+    REQUIRE(r.status==cppunivariate::BhattStatus::Ok);CHECK_FALSE(r.certified);
+    CHECK(r.mu==doctest::Approx(0.0).scale(1.).epsilon(1e-10));
+    CHECK(r.sigma==doctest::Approx(1.0).scale(0.).epsilon(1e-10));
+    CHECK(r.a==doctest::Approx(0.002449489515330941548239093413799091440848).scale(1.).epsilon(1e-10));
+  }
+  { const std::vector<double> x{-1.7320508248893853,0.0,0.0,0.0,0.0,1.7320508248893853};
+    const auto r=cppunivariate::bhatt_mle(mltest::as_span(x),1e-10,1000,1.,NAN,NAN);
+    REQUIRE(r.status==cppunivariate::BhattStatus::Ok);CHECK_FALSE(r.certified);
+    CHECK(r.mu==doctest::Approx(0.0).scale(1.).epsilon(1e-10));
+    CHECK(r.sigma==doctest::Approx(1.0).scale(0.).epsilon(1e-10));
+    CHECK(r.a==doctest::Approx(0.0002449489737879066845646996371195534998127).scale(1.).epsilon(1e-10));
+  }
+  { const std::vector<double> x{-1.7320508077420824,0.0,0.0,0.0,0.0,1.7320508077420824};
+    const auto r=cppunivariate::bhatt_mle(mltest::as_span(x),1e-10,1000,1.,NAN,NAN);
+    REQUIRE(r.status==cppunivariate::BhattStatus::Ok);CHECK_FALSE(r.certified);
+    CHECK(r.mu==doctest::Approx(0.0).scale(1.).epsilon(1e-10));
+    CHECK(r.sigma==doctest::Approx(1.0).scale(0.).epsilon(1e-10));
+    CHECK(r.a==doctest::Approx(0.00002449490073900113777041007844485492656603).scale(1.).epsilon(1e-10));
+  }
+  { const std::vector<double> x{-1.7320508075706094,0.0,0.0,0.0,0.0,1.7320508075706094};
+    const auto r=cppunivariate::bhatt_mle(mltest::as_span(x),1e-10,1000,1.,NAN,NAN);
+    REQUIRE(r.status==cppunivariate::BhattStatus::Ok);CHECK_FALSE(r.certified);
+    CHECK(r.mu==doctest::Approx(0.0).scale(1.).epsilon(1e-10));
+    CHECK(r.sigma==doctest::Approx(1.0).scale(0.).epsilon(1e-10));
+    CHECK(r.a==doctest::Approx(0.000002449503039613454026040039770080773560921).scale(1.).epsilon(1e-10));
+  }
+  { const std::vector<double> x{-1.7320508075688945,0.0,0.0,0.0,0.0,1.7320508075688945};
+    const auto r=cppunivariate::bhatt_mle(mltest::as_span(x),1e-10,1000,1.,NAN,NAN);
+    REQUIRE(r.status==cppunivariate::BhattStatus::Ok);CHECK_FALSE(r.certified);
+    CHECK(r.mu==doctest::Approx(0.0).scale(1.).epsilon(1e-10));
+    CHECK(r.sigma==doctest::Approx(1.0).scale(0.).epsilon(1e-10));
+    CHECK(r.a==doctest::Approx(0.0000002442310592462781698723541020695304031185).scale(1.).epsilon(1e-10));
+  }
+  { const std::vector<double> x{-1.7320508075688945,0.0,0.0,0.0,0.0,1.7320508075688945};
+    const auto r=cppunivariate::bhatt_mle(mltest::as_span(x),1e-10,1000,1.,NAN,0.);
+    REQUIRE(r.status==cppunivariate::BhattStatus::Ok);CHECK_FALSE(r.certified);
+    CHECK(r.mu==doctest::Approx(0.0).scale(1.).epsilon(1e-10));
+    CHECK(r.sigma==doctest::Approx(1.0).scale(0.).epsilon(1e-10));
+    CHECK(r.a==doctest::Approx(0.0000002442310592462781698723541020695304031185).scale(1.).epsilon(1e-10));
+  }
+}
+
+TEST_CASE("Bhatt compensated normal members retain a signed physical likelihood") {
+  for(bool held:{false,true}) {
+    std::vector<double> x=held?std::vector<double>{-1.,1.}:std::vector<double>(22,0.);
+    if(!held){x.front()=-3.;x.back()=3.;}
+    cppunivariate::BhattResult r{0.,held?2.:1.,0.,0.,0,cppunivariate::BhattStatus::Ok};
+    REQUIRE(cppunivariate::bhatt_detail::pair_variance_accuracy(r,mltest::as_span(x),NAN,1e-10,1000,held));
+    double ll=0;for(double v:x)ll+=cppunivariate::distributions::dbhatt(v,r.mu,r.sigma,r.a,true);
+    CHECK(r.logLik<0);CHECK(r.logLik==doctest::Approx(ll).epsilon(1e-12));
+  }
 }
 
 TEST_CASE("bhatt: exact-input extreme arithmetic regression") {

@@ -115,9 +115,25 @@ test_that("P2 pareto4 validates new held values", {
 
  test_that("pareto4 preserves certificate refusal diagnostics", {
   x <- exp(seq(-1e-6,1e-6,length.out=20))
-  f <- mlpareto4(x,min=0)
-  expect_s3_class(f,"univariateML")
-  expect_identical(attr(f,"certified"),FALSE)
+  e <- tryCatch(mlpareto4(x,min=0),univariateML_numerical=identity)
+  expect_s3_class(e,"univariateML_numerical")
+  expect_true(is.data.frame(e$candidates))
+  nom <- e$candidates[is.finite(e$candidates$shape1),,drop=FALSE]
+  expect_gt(nrow(nom),0L)
+  nom <- nom[which.max(nom$shape1),,drop=FALSE]
+  expect_gt(nom$shape1,1e100)
+  expect_true(all(is.finite(unlist(nom[c("shape1","shape2","scale")]))))
+  expect_true(all(unlist(nom[c("shape1","shape2","scale")])>0))
+  expect_true(is.finite(nom$loglik_lower)&&is.finite(nom$loglik_upper))
+  expect_lte(nom$loglik_lower,nom$loglik_upper)
+  face <- e$candidates[e$candidates$model=="weibull",,drop=FALSE]
+  if(nrow(face)) {
+    expect_true(all(is.finite(unlist(face[c("shape","scale","loglik_lower","loglik_upper")]))))
+    expect_true(all(face$shape>0&face$scale>0))
+    expect_true(all(face$loglik_lower<=face$loglik_upper))
+    expect_true(all(face$loglik_upper>=nom$loglik_lower))
+    expect_true(all(e$loglik_lower>=face$loglik_lower))
+  }
   x <- c(.2,.5,1,2,4)
   expect_error(mlpareto4(x,min=0,iterlim=2), "certificate numerical failure.*no verified MLE")
   x <- c(0.0049057434842350416,0.042501201178458653,0.19481544379842536,0.29869422522389177,0.40386521559557592,0.49096570363940406,0.5326256684997116,0.72206471601197653,0.74104603671600355,0.82688168528714312,0.98659907210500519,1.1056048590023038,1.140076235502067,1.1606952121643113,1.4300263464615877,1.4793399841671804,1.5655241685783525,1.6390163836698108,2.0838622791695847,5.1042846241626947)

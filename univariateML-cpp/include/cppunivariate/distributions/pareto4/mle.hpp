@@ -43,6 +43,8 @@ inline Pareto4Result pareto4_mle(span x, double min, double tol, int maxit, doub
       return pareto4_detail::centered_shape(x,min,shape1,tol,maxit);
   }
   auto r=(!std::isnan(shape1)||!std::isnan(shape2)) ? burr_mle_holds(span{y.data(),y.size()},shape1,shape2,scale,tol,maxit) : std::isnan(scale) ? burr_mle_legacy(span{y.data(),y.size()},tol,maxit) : burr_mle_fixed_scale(span{y.data(),y.size()},scale,tol,maxit);
+  if(r.status==BurrStatus::Ok&&!r.certified&&!burr_local_accuracy(x,r.shape1,r.shape2,r.scale,{{std::isnan(shape1),std::isnan(shape2),std::isnan(scale)}},tol,maxit,false,min))r.status=BurrStatus::NumericalFailure;
+  if(r.status==BurrStatus::Ok&&!r.certified){r.logLik=burr_local_loglik(x,r.shape1,r.shape2,r.scale,false,min);if(!std::isfinite(r.logLik))r.status=BurrStatus::NumericalFailure;}
   auto detail=r.stop_detail;
   for(auto& c:detail.candidates) if(c.model==StopModel::None && c.coef.size()==3)c.coef.push_back(min);
   return {r.shape1,r.shape2,r.scale,min,r.logLik,r.iterations,r.status,detail,r.certified};
@@ -68,7 +70,9 @@ inline Pareto4Result pareto4_mle_certified(span x, double min, double tol, int m
   for(std::size_t i=1;i<order.size();++i)
     if(x[order[i]]!=x[order[i-1]] && y[order[i]]==y[order[i-1]])
       return {nan,nan,nan,min,nan,0,BurrStatus::NumericalFailure};
-  const auto r=burr_mle_certified(span{y.data(),y.size()},tol,maxit);
+  auto r=burr_mle_certified(span{y.data(),y.size()},tol,maxit);
+  if(r.status==BurrStatus::Ok&&!r.certified&&!burr_local_accuracy(x,r.shape1,r.shape2,r.scale,{{true,true,true}},tol,maxit,false,min))r.status=BurrStatus::NumericalFailure;
+  if(r.status==BurrStatus::Ok&&!r.certified){r.logLik=burr_local_loglik(x,r.shape1,r.shape2,r.scale,false,min);if(!std::isfinite(r.logLik))r.status=BurrStatus::NumericalFailure;}
   auto detail=r.stop_detail;
   for(auto& c:detail.candidates) if(c.model==StopModel::None && c.coef.size()==3)c.coef.push_back(min);
   return {r.shape1,r.shape2,r.scale,min,r.logLik,r.iterations,r.status,detail,r.certified};

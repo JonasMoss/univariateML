@@ -1,0 +1,10 @@
+{
+  "native": {
+    "certified_rows": 5,
+    "changed": []
+  },
+  "double": {
+    "certified_rows": 5,
+    "changed": []
+  }
+}

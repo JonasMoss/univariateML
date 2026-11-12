@@ -1,0 +1,181 @@
+[
+  {
+    "e": 1e-06,
+    "data": [
+      -1.7320525396196849,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      1.7320525396196849
+    ],
+    "held": {
+      "sigma": 1.0
+    },
+    "builds": {
+      "native": "held-critical-1e-06\tbhatt\tuncertified\t-8.5136371992250375\tmu=0\tsigma=1\ta=0.0024494895153308101",
+      "double": "held-critical-1e-06\tbhatt\tuncertified\t-8.5136371992250375\tmu=0\tsigma=1\ta=0.002449489515471468"
+    },
+    "baseline": {
+      "native": "held-critical-1e-06\tbhatt\tuncertified\t-8.5136371992310362\tmu=0\tsigma=1\ta=0",
+      "double": "held-critical-1e-06\tbhatt\tuncertified\t-8.5136371992310362\tmu=0\tsigma=1\ta=0"
+    },
+    "id": "strict-seed-bhatt-critical-sigma-1e-06",
+    "family": "bhatt",
+    "digits": 180,
+    "reference": {
+      "mu": "0",
+      "sigma": "1",
+      "a": "0.0024494895153309415482390934137990914408482125173935352729147744743060447437998765289844264452397341311334699539990539622394861692181172030061"
+    },
+    "information_width": "0.000000000047999856000214662889486674203396169014398045076002"
+  },
+  {
+    "e": 1e-08,
+    "data": [
+      -1.7320508248893853,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      1.7320508248893853
+    ],
+    "held": {
+      "sigma": 1.0
+    },
+    "builds": {
+      "native": "held-critical-1e-08\tbhatt\tstop:numerical\tnan\tmessage=Bhatt certificate solve did not converge; increase iterlim.",
+      "double": "held-critical-1e-08\tbhatt\tstop:numerical\tnan\tmessage=Bhatt certificate solve did not converge; increase iterlim."
+    },
+    "baseline": {
+      "native": "held-critical-1e-08\tbhatt\tuncertified\t-8.5136312592280365\tmu=0\tsigma=1\ta=0",
+      "double": "held-critical-1e-08\tbhatt\tuncertified\t-8.5136312592280365\tmu=0\tsigma=1\ta=0"
+    },
+    "id": "strict-seed-bhatt-critical-sigma-1e-08",
+    "family": "bhatt",
+    "digits": 180,
+    "reference": {
+      "mu": "0",
+      "sigma": "1",
+      "a": "0.00024494897378790668456469963711955349981272079836260440168307247196392234043582889000469437630451095630683251831808775084777927805249772494756"
+    },
+    "information_width": "0.0000000000000047999998353883495048553632477925929158729142580522"
+  },
+  {
+    "e": 1e-10,
+    "data": [
+      -1.7320508077420824,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      1.7320508077420824
+    ],
+    "held": {
+      "sigma": 1.0
+    },
+    "builds": {
+      "native": "held-critical-1e-10\tbhatt\tstop:numerical\tnan\tmessage=Bhatt certificate solve did not converge; increase iterlim.",
+      "double": "held-critical-1e-10\tbhatt\tuncertified\t-8.513631199828037\tmu=0\tsigma=1\ta=2.4494888232450112e-05"
+    },
+    "baseline": {
+      "native": "held-critical-1e-10\tbhatt\tuncertified\t-8.513631199828037\tmu=0\tsigma=1\ta=0",
+      "double": "held-critical-1e-10\tbhatt\tuncertified\t-8.513631199828037\tmu=0\tsigma=1\ta=0"
+    },
+    "id": "strict-seed-bhatt-critical-sigma-1e-10",
+    "family": "bhatt",
+    "digits": 180,
+    "reference": {
+      "mu": "0",
+      "sigma": "1",
+      "a": "0.000024494900739001137770410078444854926566028576539135440580958519435324460065723938611909194677925107546741061155327056865393723970407607024007"
+    },
+    "information_width": "4.8000025941549312983497797968593548873835118539452e-19"
+  },
+  {
+    "e": 1e-12,
+    "data": [
+      -1.7320508075706094,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      1.7320508075706094
+    ],
+    "held": {
+      "sigma": 1.0
+    },
+    "builds": {
+      "native": "held-critical-1e-12\tbhatt\tuncertified\t-8.5136311992340374\tmu=0\tsigma=1\ta=2.4495031086215895e-06",
+      "double": "held-critical-1e-12\tbhatt\tuncertified\t-8.5136311992340357\tmu=1.285571236024901e-17\tsigma=1\ta=2.4494087232736041e-06"
+    },
+    "baseline": {
+      "native": "held-critical-1e-12\tbhatt\tuncertified\t-8.5136311992340374\tmu=0\tsigma=1\ta=0",
+      "double": "held-critical-1e-12\tbhatt\tuncertified\t-8.5136311992340374\tmu=0\tsigma=1\ta=0"
+    },
+    "id": "strict-seed-bhatt-critical-sigma-1e-12",
+    "family": "bhatt",
+    "digits": 180,
+    "reference": {
+      "mu": "0",
+      "sigma": "1",
+      "a": "0.0000024495030396134540260400397700807735609214935833424346270335596512291180997678544383761987494284982407075004242909468551122862261248286354177"
+    },
+    "information_width": "4.8001042262740445803405619486903136885898247657282e-23"
+  },
+  {
+    "e": 1e-14,
+    "data": [
+      -1.7320508075688945,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      1.7320508075688945
+    ],
+    "held": {
+      "sigma": 1.0
+    },
+    "builds": {
+      "native": "held-critical-1e-14\tbhatt\tuncertified\t-8.5136311992280973\tmu=0\tsigma=1\ta=2.4423121475780938e-07",
+      "double": "held-critical-1e-14\tbhatt\tuncertified\t-8.5136311992280955\tmu=0\tsigma=1\ta=2.4412023406688844e-07"
+    },
+    "baseline": {
+      "native": "held-critical-1e-14\tbhatt\tuncertified\t-8.5136311992280973\tmu=0\tsigma=1\ta=0",
+      "double": "held-critical-1e-14\tbhatt\tuncertified\t-8.5136311992280973\tmu=0\tsigma=1\ta=0"
+    },
+    "id": "strict-seed-bhatt-critical-sigma-1e-14",
+    "family": "bhatt",
+    "digits": 180,
+    "reference": {
+      "mu": "0",
+      "sigma": "1",
+      "a": "0.0000002442310592462781698723541020695304031184723073985589861350020613437059304535987464576656510849802163068763241931171658591307793916427286133"
+    },
+    "information_width": "4.7439740936959799479247964856830371151876764371935e-27"
+  },
+  {
+    "e": 1e-14,
+    "data": [
+      -1.7320508075688945,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      1.7320508075688945
+    ],
+    "held": {
+      "sigma": 1.0,
+      "mu": 0.0
+    },
+    "id": "strict-seed-bhatt-critical-sigma-held-mu",
+    "family": "bhatt",
+    "digits": 180,
+    "reference": {
+      "mu": "0",
+      "sigma": "1",
+      "a": "0.0000002442310592462781698723541020695304031184723073985589861350020613437059304535987464576656510849802163068763241931171658591307793916427286133"
+    },
+    "information_width": "4.7439740936959799479247964856830371151876764371935e-27"
+  }
+]

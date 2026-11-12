@@ -1,0 +1,155 @@
+[
+  {
+    "id": "betapr-gamma-0.001",
+    "data": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      8.994063388561067
+    ],
+    "held": {
+      "shape1": 0.6611055385779123
+    },
+    "digits": 120,
+    "reference": {
+      "shape1": "0.6611055385779123216849484379054047167301177978515625",
+      "shape2": "717.26569636007650717972670301783550504391006740370440753001813379296906351640884119972189497772",
+      "scale": "2815.649250972822151971787570440681403090991434853559452970185924069884013584511123674330364095"
+    },
+    "builds": {
+      "native": {
+        "row": "betapr-gamma-0.001\tbetapr\tuncertified\t-10.127499169311449\tshape1=0.66110553857791232\tshape2=717.26569636007639\tscale=2815.6492509728223",
+        "status": "uncertified",
+        "max_error": 1.6310199330550606e-16
+      },
+      "double": {
+        "row": "betapr-gamma-0.001\tbetapr\tuncertified\t-10.127499169311452\tshape1=0.66110553857791232\tshape2=717.26569635999488\tscale=2815.6492509725022",
+        "status": "uncertified",
+        "max_error": 1.1380782675855887e-13
+      }
+    }
+  },
+  {
+    "id": "betapr-gamma-0.0001",
+    "data": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      8.98597681808184
+    ],
+    "held": {
+      "shape1": 0.6611055385779123
+    },
+    "digits": 120,
+    "reference": {
+      "shape1": "0.6611055385779123216849484379054047167301177978515625",
+      "shape2": "7162.8305213302282084793562834716903622396887418105940059755354239783697697472360987957537611489",
+      "scale": "28135.709102260898791705717876115327083277938053656388823186363469559379714987399507357187662368"
+    },
+    "builds": {
+      "native": {
+        "row": "betapr-gamma-0.0001\tbetapr\tuncertified\t-10.12513755724985\tshape1=0.66110553857791232\tshape2=7162.8305213302629\tscale=28135.709102261029",
+        "status": "uncertified",
+        "max_error": 4.836912311415135e-15
+      },
+      "double": {
+        "row": "betapr-gamma-0.0001\tbetapr\tuncertified\t-10.125137557249847\tshape1=0.66110553857791232\tshape2=7162.8305213016856\tscale=28135.709102148776",
+        "status": "uncertified",
+        "max_error": 3.985075904292177e-12
+      }
+    }
+  },
+  {
+    "id": "betapr-gamma-1e-05",
+    "data": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      8.985168161033918
+    ],
+    "held": {
+      "shape1": 0.6611055385779123
+    },
+    "digits": 120,
+    "reference": {
+      "shape1": "0.6611055385779123216849484379054047167301177978515625",
+      "shape2": "71618.471427395720311543887009206219131628690398115340961208935892996841197840379020850296308142",
+      "scale": "281336.2936878014405012764396800171950929121387884175906024209874933921926645621414105225338411"
+    },
+    "builds": {
+      "native": {
+        "row": "betapr-gamma-1e-05\tbetapr\tuncertified\t-10.124901221544572\tshape1=0.66110553857791232\tshape2=71618.471427396595\tscale=281336.29368780507",
+        "status": "uncertified",
+        "max_error": 1.2892920807900013e-14
+      },
+      "double": {
+        "row": "betapr-gamma-1e-05\tbetapr\tstop:numerical\tnan\tmessage=Beta-prime optimizer BfgsFailure: profile did not converge or its global certificate is unresolved; increase iterlim. An unresolved gamma or inverse-gamma comparison does not select `mlgamma` or `mlinvgamma`.",
+        "status": "stop:numerical"
+      }
+    }
+  },
+  {
+    "id": "betapr-gamma-3e-06",
+    "data": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      8.985105265485746
+    ],
+    "held": {
+      "shape1": 0.6611055385779123
+    },
+    "digits": 120,
+    "reference": {
+      "shape1": "0.6611055385779123216849484379054047167301177978515625",
+      "shape2": "238725.68840416464899541320880747909956204431084645793871479423186649515593935856189158277299034",
+      "scale": "937782.25336927427027421668434186567945149382841977410670590986636266671555798733104443676329247"
+    },
+    "builds": {
+      "native": {
+        "row": "betapr-gamma-3e-06\tbetapr\tuncertified\t-10.124882838547455\tshape1=0.66110553857791232\tshape2=238725.68840419149\tscale=937782.25336937897",
+        "status": "uncertified",
+        "max_error": 1.1243072900869935e-13
+      },
+      "double": {
+        "row": "betapr-gamma-3e-06\tbetapr\tstop:numerical\tnan\tmessage=Beta-prime optimizer BfgsFailure: profile did not converge or its global certificate is unresolved; increase iterlim. An unresolved gamma or inverse-gamma comparison does not select `mlgamma` or `mlinvgamma`.",
+        "status": "stop:numerical"
+      }
+    }
+  },
+  {
+    "id": "betapr-gamma-1e-06",
+    "data": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      8.985087295329125
+    ],
+    "held": {
+      "shape1": 0.6611055385779123
+    },
+    "digits": 120,
+    "reference": {
+      "shape1": "0.6611055385779123216849484379054047167301177978515625",
+      "shape2": "716174.87981004046132295020937747706858742094435927073159040922200649130339237633040454649887155",
+      "scale": "2813342.1383752846101243193770099143558241936154664594147962019136705174481933415746440839311897"
+    },
+    "builds": {
+      "native": {
+        "row": "betapr-gamma-1e-06\tbetapr\tuncertified\t-10.124877586227264\tshape1=0.66110553857791232\tshape2=716174.87980920135\tscale=2813342.1383719887",
+        "status": "uncertified",
+        "max_error": 1.1716629102811665e-12
+      },
+      "double": {
+        "row": "betapr-gamma-1e-06\tbetapr\tuncertified\t-10.124877586227271\tshape1=0.66110553857791232\tshape2=716174.87971349258\tscale=2813342.137996017",
+        "status": "uncertified",
+        "max_error": 1.3481047664472482e-10
+      }
+    }
+  }
+]

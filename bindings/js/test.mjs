@@ -1214,10 +1214,16 @@ test('Bhattacharjee held certificates and quantitative numerical stops', async (
       assert.ok(e.loglik_lower<=e.loglik_upper);return true;
     });
   }
-  const tiny=api.bhatt.fit(x,{sigma:1,a:2},{reltol:1e-30});
-  assert.equal(tiny.status,'Ok');assert.equal(tiny.certified,0);
-  assert.equal(tiny.estimates.sigma,1);assert.equal(tiny.estimates.a,2);
-  assert.ok(Number.isFinite(tiny.estimates.mu));
+  assert.throws(()=>api.bhatt.fit(x,{sigma:1,a:2},{reltol:1e-30}),e=>{
+    assert.equal(e.kind,'numerical');assert.match(e.message,/numerical accuracy failure/i);
+    assert.ok(e.candidates.length>0);
+    const best=e.candidates.reduce((a,b)=>a.loglik_lower>b.loglik_lower?a:b);
+    assert.ok(Number.isFinite(best.mu));assert.equal(best.sigma,1);assert.equal(best.a,2);
+    assert.ok(Number.isFinite(best.loglik_lower)&&Number.isFinite(best.loglik_upper));
+    assert.ok(best.loglik_lower<=best.loglik_upper);
+    assert.ok(best.loglik_lower<=f.logLik+1e-11&&best.loglik_upper>=f.logLik-1e-11);
+    return true;
+  });
   const normal=api.bhatt.fit(new Float64Array([-10,...Array(20).fill(0),10]),{mu:0,sigma:4});
   assert.equal(normal.certified,1);
   assert.deepEqual(normal.estimates,{mu:0,sigma:4,a:0});
