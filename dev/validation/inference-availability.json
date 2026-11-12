@@ -3324,6 +3324,25 @@
       "historical_validation": ""
     },
     {
+      "family": "gengamma",
+      "regime": "finite interior including Q=0",
+      "target": "Other hypotheses: not reviewed",
+      "status": "unreviewed",
+      "procedures": "No audited procedure for this scope",
+      "theory": "Unreviewed estimator limit; DQM alone is insufficient",
+      "assumptions": "finite mu and Q, finite sigma > 0; any nonempty coordinate subset free",
+      "dqm": "Unreviewed",
+      "information": "Unreviewed",
+      "rank": "Unreviewed",
+      "evidence": "dev/research/evaluations/2026-11-10-gg-theory-report.md#inference-regimes",
+      "calibration": "",
+      "implementation": [],
+      "checks": [],
+      "gap": "The interior is regular, including Q=0, but a numerical inference adapter has not been implemented.",
+      "historical_sources": "",
+      "historical_validation": ""
+    },
+    {
       "family": "st",
       "regime": "unreviewed",
       "target": "Other hypotheses: not reviewed",
@@ -7382,6 +7401,46 @@
           "failure_count": 49
         }
       ],
+      "historical_sources": "",
+      "historical_validation": ""
+    },
+    {
+      "family": "gengamma",
+      "regime": "finite interior including Q=0",
+      "kind": "covariance",
+      "target": "Free-coefficient covariance",
+      "status": "invalid for the procedure",
+      "procedures": "Sandwich and observed covariance \u00b7 C++ and R vcov (default sandwich)",
+      "theory": "Implemented numerical covariance scope; availability does not establish estimator asymptotics or coverage",
+      "assumptions": "finite mu and Q, finite sigma > 0; any nonempty coordinate subset free; IID; successful fit interior to the stated free submodel, correct free mask and nonsingular well-conditioned sensitivity. Observed inference requires correct specification and regular estimator asymptotics; robust sandwich inference additionally requires finite score variance, an identifiable KL target and an estimating-equation expansion.",
+      "dqm": "Conditional classification in the linked source",
+      "information": "Derivative eligibility only; no automatic finite-information claim",
+      "rank": "Available scopes exclude structural null directions; runtime singular, indefinite and ill-conditioned solves still fail",
+      "evidence": "dev/research/evaluations/2026-11-10-gg-theory-report.md#inference-regimes",
+      "calibration": "dev/research/evaluations/2026-11-01-vcov-scores-report.md#monte-carlo-sanity-check",
+      "evidence_links": [
+        {
+          "label": "Canonical dossier",
+          "path": "univariateML-cpp/include/cppunivariate/distributions/gengamma/README.md"
+        },
+        {
+          "label": "Independent derivative validation",
+          "path": "dev/research/evaluations/2026-11-01-vcov-scores-report.md#independent-derivative-validation"
+        },
+        {
+          "label": "Pilot Monte Carlo table",
+          "path": "dev/research/evaluations/2026-11-01-vcov-scores-report.md#monte-carlo-sanity-check"
+        },
+        {
+          "label": "R vcov interface and assumptions",
+          "path": "dev/research/evaluations/2026-11-01-vcov-r-report.md#interface-and-mathematical-scope"
+        }
+      ],
+      "implementation": [],
+      "checks": [],
+      "gap": "The interior is regular, including Q=0, but a numerical inference adapter has not been implemented. Pointwise SE/SD comparisons are not coverage validation. Evidence uses recorded truth points and held subsets, not every regime; failed replications can select results. Near-singular sn/bhatt members, bnbinom weak identification at n = 500 and invtrgamma finite-sample bias require caution.",
+      "caveats": [],
+      "monte_carlo": [],
       "historical_sources": "",
       "historical_validation": ""
     },
@@ -22023,6 +22082,15 @@
         "condition": "finite shape1 > 0, shape2 > 0, shape3 > 0 and scale > 0 held; shape2 = 1 with both shape1 and shape3 free",
         "reason": "DQM holds but the free information has a null direction; ordinary observed or sandwich covariance is unavailable",
         "classification": "dev/research/evaluations/2026-11-04-dqm-a-report.md#genbeta-an-interior-identification-ridge"
+      }
+    ],
+    "gengamma": [
+      {
+        "regime": "finite interior including Q=0",
+        "available": false,
+        "condition": "finite mu and Q, finite sigma > 0; any nonempty coordinate subset free",
+        "reason": "The interior is regular, including Q=0, but a numerical inference adapter has not been implemented.",
+        "classification": "dev/research/evaluations/2026-11-10-gg-theory-report.md#inference-regimes"
       }
     ],
     "geom": [

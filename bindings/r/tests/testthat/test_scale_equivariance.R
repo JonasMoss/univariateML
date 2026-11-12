@@ -37,6 +37,7 @@ pull_back_scale_fit <- function(fit, model, a, b) {
   # Explicit exceptions to name-based rules (shape names and log coordinates).
   if (model %in% c("mlfrechet", "mltlambda")) rate <- character()
   if (model == "mlfatigue") loc <- character() # held mu = 0
+  if (model == "mlgengamma") { loc <- character(); scl <- character() }
   if (model == "mlgpd") loc <- character()     # held threshold = 0
   if (model == "mlpower") { scl <- "alpha"; rate <- character() }
   if (model == "mlpareto") scl <- "b"
@@ -49,6 +50,7 @@ pull_back_scale_fit <- function(fit, model, a, b) {
   p[rate] <- p[rate] * b
   p[loc] <- (p[loc] - a) / b
   if (model == "mllnorm") p["meanlog"] <- p["meanlog"] - log(b)
+  if (model == "mlgengamma") p["mu"] <- p["mu"] - log(b)
   unname(p)
 }
 

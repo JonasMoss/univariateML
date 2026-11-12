@@ -26,6 +26,7 @@ export interface GeneratedAPI {
   gb2: Family<{shape1: number; shape2: number; shape3: number; scale: number}, [shape1: number, shape2: number, shape3: number, scale: number], {gradtol?: number; iterlim?: number}>;
   ged: Family<{mean: number; sd: number; nu: number}, [mean: number, sd: number, nu: number], {gradtol?: number; iterlim?: number}>;
   genbeta: Family<{shape1: number; shape2: number; shape3: number; scale: number}, [shape1: number, shape2: number, shape3: number, scale: number], {gradtol?: number; iterlim?: number}>;
+  gengamma: Family<{mu: number; sigma: number; Q: number}, [mu: number, sigma: number, Q: number], {tol?: number; iterlim?: number}>;
   geom: Family<{prob: number}, [prob: number], Record<string, never>>;
   gev: Family<{mu: number; sigma: number; xi: number}, [mu: number, sigma: number, xi: number], {reltol?: number; iterlim?: number}>;
   gompertz: Family<{a: number; b: number}, [a: number, b: number], {reltol?: number; iterlim?: number}>;

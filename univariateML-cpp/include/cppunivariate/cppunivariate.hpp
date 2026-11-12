@@ -91,6 +91,7 @@
 #include "distributions/gev/mle.hpp"
 #include "distributions/trgamma/mle.hpp"
 #include "distributions/invtrgamma/mle.hpp"
+#include "distributions/gengamma/mle.hpp"
 #include "distributions/tnorm/mle.hpp"
 #include "distributions/pig/mle.hpp"
 #include "distributions/dweibull/mle.hpp"

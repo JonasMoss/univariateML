@@ -154,6 +154,9 @@ coordinate; a log/exp round trip otherwise perturbs large-shape extreme tails.
 
 ## Details
 
+The lognormal limit is an interior member of the Prentice generalized gamma
+family, at $Q=0$; this inverse transformed-gamma family contains only its $Q<0$ side.
+
 With $k\downarrow0$, $p\to\infty$ and $kp\to d>0$, $p/\Gamma(k)\to d$. In the displayed density,
 put $u=a/x$. For $u<1$, $u^p\to0$ and the density tends to
 $d u^d/x$; for $u>1$ it tends to zero. This is the Pareto density
