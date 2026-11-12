@@ -1,0 +1,24 @@
+{
+  "name": "cpp-binomial-double-retest",
+  "command": [
+    "env",
+    "UMVL_RETEST_NO_LONG_DOUBLE=1",
+    "bash",
+    "dev/research/evaluations/2026-11-12-seam-rerun-data/binom-retest.sh"
+  ],
+  "attempts": [
+    {
+      "machine": "workstation",
+      "command": [
+        "/tmp/umvl-cpu/run",
+        "env",
+        "UMVL_RETEST_NO_LONG_DOUBLE=1",
+        "bash",
+        "dev/research/evaluations/2026-11-12-seam-rerun-data/binom-retest.sh"
+      ],
+      "exit": 0,
+      "seconds": 16.871809244155884,
+      "log": "build/scratch/seam-rerun/cpp-binomial-double-retest-workstation.log"
+    }
+  ]
+}

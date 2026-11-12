@@ -1,0 +1,11 @@
+{
+  "machine": "workstation",
+  "command": [
+    "/tmp/umvl-cpu/run4",
+    "/home/jonas/.venvs/global/bin/python3",
+    "/home/jonas/Files/programming/univariateML.wt/seam-rerun/dev/research/evaluations/2026-11-12-seam-rerun-data/local-final-batch.py"
+  ],
+  "slots": 4,
+  "seconds_including_wait": 3861.1023528575897,
+  "exit": 0
+}

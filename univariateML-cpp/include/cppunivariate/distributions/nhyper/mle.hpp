@@ -318,6 +318,15 @@ inline NhyperResult nhyper_mle(span x, double r, double N, double m) {
     }
     if(!out.certified)out.status=NhyperStatus::Ok;
   }
+  if(out.status==NhyperStatus::Ok &&
+      ((std::isnan(r)&&std::isnan(m)&&!std::isnan(N)) ||
+       (std::isnan(N)&&!std::isnan(m)))) {
+    // Only the final value of a grid winner changes. Recursive face-search
+    // fits have N and r held, so their candidate comparisons stay untouched.
+    hyper_detail::Sum ll;
+    for(double v:x)ll.add(nhyper_log_pmf(v,out.N-out.m,out.m,out.r));
+    out.logLik=static_cast<double>(ll.value());
+  }
   return out;
 }
 }  // namespace cppunivariate

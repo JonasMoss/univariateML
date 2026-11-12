@@ -338,3 +338,8 @@ distinct observations) in work and O(maximum count) in temporary memory.
 Larger counts retain the existing calculation; its accuracy on double-width
 targets is an open validation gap. The large-size
 profile comparison in `test.cpp` exercises the moderate-count path.
+
+At large counts, a difference of log-gamma values can lose the likelihood
+accuracy even after the integer maximizer is found. Final values sum the
+stable binomial log mass at the returned size and probability in both
+precision modes.

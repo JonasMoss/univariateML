@@ -378,3 +378,8 @@ shape3 = 1, setting $c=-\operatorname{mean}\log(x/\mathrm{scale})$ gives
 $1/p+1/(p+1)=c$, hence $p=(2-c+\sqrt{c^2+4})/(2c)$ for shape1. This
 strictly decreasing score has a unique finite root for every $c>0$.
 `gradtol` defaults to `1e-10`.
+
+Large beta shapes amplify rounding in the powered log ratio even when the
+conditional solve has converged. The final likelihood retains that nonlinear
+coordinate through the beta deviance calculation instead of subtracting large
+log-beta and sufficient-statistic terms.

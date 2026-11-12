@@ -1,0 +1,91 @@
+{
+  "head": "63bc2200ead3cab6c957543b2f1765d419bb9c89",
+  "modified": [
+    "bindings/r/distributions/binom/test.R",
+    "bindings/r/distributions/burr/test.R",
+    "bindings/r/distributions/genbeta/test.R",
+    "bindings/r/distributions/nhyper/test.R",
+    "dev/validation/seam-check.py",
+    "univariateML-cpp/include/cppunivariate/distributions/binom/README.md",
+    "univariateML-cpp/include/cppunivariate/distributions/binom/mle.hpp",
+    "univariateML-cpp/include/cppunivariate/distributions/binom/test.cpp",
+    "univariateML-cpp/include/cppunivariate/distributions/burr/README.md",
+    "univariateML-cpp/include/cppunivariate/distributions/burr/mle.hpp",
+    "univariateML-cpp/include/cppunivariate/distributions/burr/test.cpp",
+    "univariateML-cpp/include/cppunivariate/distributions/genbeta/README.md",
+    "univariateML-cpp/include/cppunivariate/distributions/genbeta/accuracy.hpp",
+    "univariateML-cpp/include/cppunivariate/distributions/genbeta/mle.hpp",
+    "univariateML-cpp/include/cppunivariate/distributions/genbeta/test.cpp",
+    "univariateML-cpp/include/cppunivariate/distributions/nhyper/README.md",
+    "univariateML-cpp/include/cppunivariate/distributions/nhyper/mle.hpp",
+    "univariateML-cpp/include/cppunivariate/distributions/nhyper/test.cpp"
+  ],
+  "protected_paths_changed": [],
+  "tests": [
+    {
+      "path": "bindings/r/distributions/binom/test.R",
+      "old_sha256": "b1d5ec5b46fe79854bf94a4a8531f2da4d5358a945acb53d1f62041fdd5deaaf",
+      "new_sha256": "c5b385f406538d4c6a579f8d458b3f410f31afd53d4220a68b667443d46cb4c3",
+      "old_bytes": 10740,
+      "new_bytes": 11009,
+      "append_only": true
+    },
+    {
+      "path": "bindings/r/distributions/burr/test.R",
+      "old_sha256": "8a73ee28e97b0ff497570aa0e5455630533ea4d507fcaaab9ee7c75d198ed93c",
+      "new_sha256": "65439589019ade6a12858437e8d020ab4592e6716bf4878130d3549fcfdeb54f",
+      "old_bytes": 18397,
+      "new_bytes": 18701,
+      "append_only": true
+    },
+    {
+      "path": "bindings/r/distributions/genbeta/test.R",
+      "old_sha256": "cbc1b4d80c70585faa00c317f3cc693e81fe4be5020edf69c3dd031d42a47569",
+      "new_sha256": "16ba83e7e7dd9f5430eb19bbf50fedc466818910419f8e692fc64b957eff2f26",
+      "old_bytes": 16425,
+      "new_bytes": 16678,
+      "append_only": true
+    },
+    {
+      "path": "bindings/r/distributions/nhyper/test.R",
+      "old_sha256": "6b29b557e8cbfff7c5959a3f411216fa70bda881a25be734bdbdf708722a0ac8",
+      "new_sha256": "692fefa1c0c11578dad7d81aa0f50c6eb03f5747ffe0825e0dc597d581c60b34",
+      "old_bytes": 9094,
+      "new_bytes": 9451,
+      "append_only": true
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/binom/test.cpp",
+      "old_sha256": "49e5538655d23dafebda352591dc136afaa67f0c068941994e07b418da3d6a5d",
+      "new_sha256": "3b49794ab62c55ae75ae97493ad9fa321836f4a1ddda55bb62d8bed597cc7239",
+      "old_bytes": 12063,
+      "new_bytes": 12567,
+      "append_only": true
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/burr/test.cpp",
+      "old_sha256": "6de987157c8b8f6b02d838adb13bf79c24ca2463c6e30dc3e83c926b37d685b3",
+      "new_sha256": "f62b321d69443bcb2f22b9155494214a8a8d74c57b4158785f834ced083175d1",
+      "old_bytes": 35231,
+      "new_bytes": 36038,
+      "append_only": true
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/genbeta/test.cpp",
+      "old_sha256": "a85c52f00ee96100615647c8a11c4ae3c9ce00f80449d1ea03370bd2e3b87ad1",
+      "new_sha256": "5e3beaac429fc99c8ecfa80ecdb37b013a14b3290f02aeed2acd635299ec47bf",
+      "old_bytes": 32123,
+      "new_bytes": 32870,
+      "append_only": true
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/nhyper/test.cpp",
+      "old_sha256": "d02531ccf97983025862acbf36457ebb2a2a25aad3d9b4e48b5bf2ab1d7acaa1",
+      "new_sha256": "9c13ade04df079e62de57e7d2e60e27d800240835f6024eaa7c710ed351f9d98",
+      "old_bytes": 12990,
+      "new_bytes": 13972,
+      "append_only": true
+    }
+  ],
+  "diff_check": "pass"
+}

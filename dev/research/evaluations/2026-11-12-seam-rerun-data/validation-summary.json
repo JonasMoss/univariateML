@@ -1,0 +1,203 @@
+{
+  "cpp-dev": {
+    "machine": "workstation",
+    "exit": 8,
+    "cpp_shards": 108,
+    "r_summary": null,
+    "attempts": [
+      {
+        "machine": "simbox",
+        "command": [
+          "/tmp/umvl-cpu/simbox-run",
+          "env",
+          "CMAKE_BUILD_PARALLEL_LEVEL=4",
+          "CTEST_PARALLEL_LEVEL=4",
+          "just",
+          "cpp-test"
+        ],
+        "exit": 75,
+        "seconds": 8.050600528717041,
+        "log": "build/scratch/seam-rerun/cpp-dev-simbox.log"
+      },
+      {
+        "machine": "workstation",
+        "command": [
+          "/tmp/umvl-cpu/run4",
+          "just",
+          "cpp-test"
+        ],
+        "exit": 8,
+        "seconds": 3291.440608024597,
+        "log": "build/scratch/seam-rerun/cpp-dev-workstation.log"
+      }
+    ],
+    "retained_log": "cpp-dev-workstation.log.gz",
+    "initial_shards_passed": 107,
+    "final_coverage": "pass after family-only binomial retest",
+    "retest_record": "cpp-dev-binomial-retest-run.json"
+  },
+  "cpp-dev-binomial-retest": {
+    "machine": "workstation",
+    "exit": 0,
+    "cpp_shards": null,
+    "r_summary": null,
+    "attempts": [
+      {
+        "machine": "workstation",
+        "command": [
+          "/tmp/umvl-cpu/run",
+          "bash",
+          "dev/research/evaluations/2026-11-12-seam-rerun-data/binom-retest.sh"
+        ],
+        "exit": 0,
+        "seconds": 24.181854963302612,
+        "log": "build/scratch/seam-rerun/cpp-dev-binomial-retest-workstation.log"
+      }
+    ],
+    "retained_log": "cpp-dev-binomial-retest-workstation.log.gz"
+  },
+  "cpp-no-long-double": {
+    "machine": "workstation",
+    "exit": 0,
+    "cpp_shards": 135,
+    "r_summary": null,
+    "attempts": [
+      {
+        "machine": "simbox",
+        "command": [
+          "/tmp/umvl-cpu/simbox-run",
+          "env",
+          "CMAKE_BUILD_PARALLEL_LEVEL=4",
+          "CTEST_PARALLEL_LEVEL=4",
+          "just",
+          "cpp-test-no-long-double"
+        ],
+        "exit": 75,
+        "seconds": 8.040702104568481,
+        "log": "build/scratch/seam-rerun/cpp-no-long-double-simbox.log"
+      },
+      {
+        "machine": "workstation",
+        "command": [
+          "/tmp/umvl-cpu/run4",
+          "just",
+          "cpp-test-no-long-double"
+        ],
+        "exit": 0,
+        "seconds": 1617.4656021595001,
+        "log": "build/scratch/seam-rerun/cpp-no-long-double-workstation.log"
+      }
+    ],
+    "retained_log": "cpp-no-long-double-workstation.log.gz"
+  },
+  "r-dev": {
+    "machine": "workstation",
+    "exit": 0,
+    "cpp_shards": null,
+    "r_summary": "[ FAIL 0 | WARN 0 | SKIP 155 | PASS 29059 ]",
+    "attempts": [
+      {
+        "machine": "simbox",
+        "command": [
+          "/tmp/umvl-cpu/simbox-run",
+          "env",
+          "CMAKE_BUILD_PARALLEL_LEVEL=4",
+          "CTEST_PARALLEL_LEVEL=4",
+          "just",
+          "test"
+        ],
+        "exit": 75,
+        "seconds": 8.059771299362183,
+        "log": "build/scratch/seam-rerun/r-dev-simbox.log"
+      },
+      {
+        "machine": "workstation",
+        "command": [
+          "just",
+          "test"
+        ],
+        "exit": 0,
+        "seconds": 817.5597202777863,
+        "log": "build/scratch/seam-rerun/r-dev-workstation.log",
+        "reservation_record": "local-final-batch-reservation.json"
+      }
+    ],
+    "retained_log": "r-dev-workstation.log.gz"
+  },
+  "r-full": {
+    "machine": "workstation",
+    "exit": 0,
+    "cpp_shards": null,
+    "r_summary": "[ FAIL 0 | WARN 0 | SKIP 0 | PASS 57899 ]",
+    "attempts": [
+      {
+        "machine": "simbox",
+        "command": [
+          "/tmp/umvl-cpu/simbox-run",
+          "env",
+          "CMAKE_BUILD_PARALLEL_LEVEL=4",
+          "CTEST_PARALLEL_LEVEL=4",
+          "just",
+          "test-full"
+        ],
+        "exit": 75,
+        "seconds": 8.05974793434143,
+        "log": "build/scratch/seam-rerun/r-full-simbox.log"
+      },
+      {
+        "machine": "workstation",
+        "command": [
+          "just",
+          "test-full"
+        ],
+        "exit": 0,
+        "seconds": 1090.120329618454,
+        "log": "build/scratch/seam-rerun/r-full-workstation.log",
+        "reservation_record": "local-final-batch-reservation.json"
+      }
+    ],
+    "retained_log": "r-full-workstation.log.gz"
+  },
+  "site-check": {
+    "machine": "workstation",
+    "exit": 0,
+    "cpp_shards": null,
+    "r_summary": null,
+    "attempts": [
+      {
+        "machine": "workstation",
+        "command": [
+          "just",
+          "site-check"
+        ],
+        "exit": 0,
+        "seconds": 317.3814513683319,
+        "log": "build/scratch/seam-rerun/site-check-workstation.log",
+        "reservation_record": "local-final-batch-reservation.json"
+      }
+    ],
+    "retained_log": "site-check-workstation.log.gz"
+  },
+  "cpp-binomial-double-retest": {
+    "machine": "workstation",
+    "exit": 0,
+    "cpp_shards": null,
+    "r_summary": null,
+    "attempts": [
+      {
+        "machine": "workstation",
+        "command": [
+          "/tmp/umvl-cpu/run",
+          "env",
+          "UMVL_RETEST_NO_LONG_DOUBLE=1",
+          "bash",
+          "dev/research/evaluations/2026-11-12-seam-rerun-data/binom-retest.sh"
+        ],
+        "exit": 0,
+        "seconds": 16.871809244155884,
+        "log": "build/scratch/seam-rerun/cpp-binomial-double-retest-workstation.log"
+      }
+    ],
+    "retained_log": "cpp-binomial-double-retest-workstation.log.gz"
+  }
+}

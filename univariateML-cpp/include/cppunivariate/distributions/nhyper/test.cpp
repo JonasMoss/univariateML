@@ -244,3 +244,19 @@ TEST_CASE("nhyper: few marked positions retain an extreme endpoint survival") {
   const double got=cppunivariate::distributions::pnhyper(99999997.99999999,5,1e8,3,false,false);
   CHECK(std::abs(got/6.000000180000012e-23-1)<1e-10);
 }
+
+// Independent 100/150-digit exact-input PMF sums for audit rows 5175/5230.
+TEST_CASE("nhyper: large-count grid winners report the stable final likelihood") {
+  const std::vector<double> x{1000000,1000001,1000003,1000008,1000011};
+  for(double r : {std::numeric_limits<double>::quiet_NaN(),3.}) {
+    const auto f=cppunivariate::nhyper_mle(mltest::as_span(x),r,NAN,20);
+    REQUIRE(f.status==cppunivariate::NhyperStatus::Ok);
+    CHECK(f.m==20);
+    double sum=0;for(double v:x)sum+=cppunivariate::nhyper_log_pmf(v,f.N-f.m,f.m,f.r);
+    CHECK(f.logLik==doctest::Approx(sum).epsilon(1e-12));
+    // Fixed-point reference, independent of future improvements to the grid.
+    const double population=std::isnan(r)?6000029.:6000027.,stopping=std::isnan(r)?1.:3.;
+    double reference=0;for(double v:x)reference+=cppunivariate::nhyper_log_pmf(v,population-20,20,stopping);
+    CHECK(reference==doctest::Approx(std::isnan(r)?-80.37826906358457:-70.76431387220237).epsilon(1e-12));
+  }
+}

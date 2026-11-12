@@ -1,0 +1,10 @@
+{
+  "source_sha256": "ba8fa78e797ae0b804722e13e4c8815fbf5d7fd8c71b880338da7777cd75a423",
+  "families": [
+    "burr",
+    "genbeta"
+  ],
+  "no_long_double": false,
+  "timeout": 30,
+  "case": null
+}

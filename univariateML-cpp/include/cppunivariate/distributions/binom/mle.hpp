@@ -304,13 +304,17 @@ inline BinomResult binom_mle(ispan x, double size_or_nan, double tol,
     for(int v:x)ll+=v*std::log(m)-m-special::lgamma(v+1.);
     stopped.stop_detail=discrete_face(StopModel::Pois,{m},ll);
   }
-  if(stopped.status==BinomStatus::Ok && !std::isnan(held_prob)) {
+  if(stopped.status==BinomStatus::Ok) {
     double ll=0,correction=0;
     for(int v:x) {
       const double value=distributions::dbinom(v,stopped.size,stopped.prob,true)-correction;
       const double next=ll+value;correction=(next-ll)-value;ll=next;
     }
-    stopped.logLik=ll;
+    // Preserve an already accurate ordinary likelihood payload. Only a
+    // discrepancy beyond summation roundoff needs the public-PMF correction.
+    const double roundoff=128*std::numeric_limits<double>::epsilon()*std::max(1.,std::abs(ll));
+    if(!std::isnan(held_prob) || !std::isfinite(stopped.logLik) ||
+        std::abs(ll-stopped.logLik)>roundoff)stopped.logLik=ll;
     if(!std::isfinite(ll))stopped.status=BinomStatus::IterationFailure;
   }
   return stopped;

@@ -605,3 +605,15 @@ TEST_CASE("burr: optimized finite-input overflow retains the rescued hazard") {
           doctest::Approx(-2*std::log(x)).epsilon(1e-10));
   }
 }
+
+// Independent exact-binary64, 100/150-digit density sum (audit 636/639).
+TEST_CASE("burr: concentrated held-shape logLik uses public coefficients") {
+  const std::vector<double> x{2.0428454965886376,2.0428454965906804,2.042845496592723,2.042845496594766,2.0428454965988516};
+  const auto r=cppunivariate::burr_mle_holds(mltest::as_span(x),1.334637717604056,NAN,NAN,1e-8,1000);
+  REQUIRE(r.status==cppunivariate::BurrStatus::Ok);
+  CHECK(r.shape1==1.334637717604056);
+  double sum=0;for(double v:x)sum+=cppunivariate::distributions::dburr(v,r.shape1,r.shape2,r.scale,true);
+  CHECK(r.logLik==doctest::Approx(sum).epsilon(1e-11));
+  CHECK(cppunivariate::burr_local_loglik(mltest::as_span(x),1.334637717604056,875134658462.2328,2.042845496593945)
+    ==doctest::Approx(124.54633405249429).epsilon(1e-12));
+}

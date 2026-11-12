@@ -237,3 +237,13 @@ TEST_CASE("binom: held probability large-count logLik uses the accurate density"
   CHECK(std::abs(r.logLik-ll)<=1e-10*std::max(1.,std::abs(ll)));
   CHECK(r.logLik==doctest::Approx(-37.389678299088466).epsilon(1e-12));
 }
+
+// Independent 100/150-digit PMF sum; also exercises double-only intermediates.
+TEST_CASE("binom: large-count free-size final likelihood avoids gamma cancellation") {
+  const std::vector<int> x{1000000,1000001,1000003,1000008,1000011};
+  const auto r=cppunivariate::binom_mle({x.data(),x.size()},NAN,1e-10,1000);
+  REQUIRE(r.status==cppunivariate::BinomStatus::Ok);
+  CHECK(r.size==1000023);
+  CHECK(r.prob==0.9999816004231903);
+  CHECK(r.logLik==doctest::Approx(-14.363696715670825).epsilon(1e-12));
+}

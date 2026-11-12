@@ -1,0 +1,52 @@
+family,source,index,previous,current,previous_attribution,current_attribution,sample,held,reason
+bbinom,archive,75,mismatch,pass,both,,large-count,"{""alpha"": 1.9337387365835597, ""beta"": 2.9406650178896676}",
+beta,archive,100,mismatch,pass,fitter,,constant-0.25-1e-12,{},
+bhatt,archive,364,pass,stop,,,limit-outlier,"{""sigma"": 1.057897350270679}",Bhatt certificate solve did not converge; increase iterlim.
+binom,archive,483,mismatch,pass,fitter,,large-count,"{""prob"": 0.5022}",
+bnbinom,archive,579,pass,mismatch,,fitter,large-count,"{""beta"": 5.36473383510874, ""size"": 1.0672234787479615}",
+burr,archive,636,mismatch,pass,fitter,,constant-2.04285-1e-12,"{""shape1"": 1.334637717604056}",
+burr,archive,639,mismatch,pass,fitter,,constant-2.04285-1e-12,"{""shape1"": 1.334637717604056}",
+cmb,archive,837,open fit,stop,,,large-count,{},CMB MLE failed to converge or exhausted its normalizer work budget. Raising iterlim may resolve this stop.
+cmb,archive,863,open fit,stop,,,large-count,"{""prob"": 0.2777362750324292}",CMB MLE failed to converge or exhausted its normalizer work budget. Raising iterlim may resolve this stop.
+cmb,archive,889,open fit,stop,,,large-count,"{""nu"": 1.683599466457963}",CMB MLE failed to converge or exhausted its normalizer work budget; a larger finite maximum is not excluded. The Conway-Maxwell-Poisson limit is available: use mlcmp with nu held fixed. Raising iterlim may resolve this stop.
+cmb,archive,915,open fit,stop,,,large-count,"{""nu"": 1.683599466457963, ""prob"": 0.2777362750324292}",CMB MLE failed to converge or exhausted its normalizer work budget. Raising iterlim may resolve this stop.
+dgamma,archive,997,open fit,stop,,,large-count,{},Large-shape log-rate score precision is insufficient for the requested coefficient accuracy.
+dgamma,archive,1025,pass,stop,,,large-count,"{""rate"": 0.9720518551425348}",The discretized gamma fit could not meet the requested coefficient accuracy in floating-point arithmetic.
+emg,archive,1311,stop,open fit,,,offset-1e8,"{""sigma"": 1.0518147225573364}",no terminal result within 600.0s
+fpareto,archive,1599,open fit,stop,,,scale-1e-150,"{""min"": 0.0}",GB2 selects the double Pareto limit; this package has no double Pareto fitter.
+fpareto,archive,1600,open fit,stop,,,scale-1e+150,"{""min"": 0.0}",GB2 selects the double Pareto limit; this package has no double Pareto fitter.
+genbeta,archive,2495,open fit,stop,,,lower-1e-06,"{""scale"": 1.0}",Generalized beta selects a limiting power law (uncertified global comparison). Use `mlpower`.
+genbeta,archive,2497,open fit,stop,,,lower-1e-12,"{""scale"": 1.0}",Generalized beta selects a limiting power law (uncertified global comparison). Use `mlpower`.
+genbeta,archive,2499,open fit,stop,,,lower-1e-17,"{""scale"": 1.0}",Generalized beta selects a limiting power law (uncertified global comparison). Use `mlpower`.
+genbeta,archive,2568,mismatch,pass,fitter,,constant-0.25-0.0001,"{""scale"": 1.0, ""shape3"": 4.084996007320842}",
+invgauss,archive,3835,mismatch,pass,fitter,,constant-2.43772-1e-12,{},
+invgauss,archive,3838,mismatch,pass,fitter,,constant-2.43772-1e-12,{},
+lgamma,archive,4435,mismatch,pass,dpqr,,constant-1.95363-1e-12,{},
+lgamma,archive,4438,mismatch,pass,dpqr,,constant-1.95363-1e-12,{},
+lnorm,archive,4601,mismatch,pass,dpqr,,constant-1.44519-1e-12,{},
+lnorm,archive,4604,mismatch,pass,dpqr,,constant-1.44519-1e-12,{},
+lnorm,archive,4611,mismatch,pass,dpqr,,offset-1e8,{},
+nbinom,archive,5133,mismatch,pass,fitter,,large-count,"{""prob"": 0.30610275261187947}",
+pareto4,archive,5665,mismatch,pass,dpqr,,constant-57.9572-1e-08,"{""min"": 0.0, ""shape1"": 0.3157266252310832}",
+pareto4,archive,5666,mismatch,pass,dpqr,,constant-57.9572-1e-12,"{""min"": 0.0, ""shape1"": 0.3157266252310832}",
+pareto4,archive,5668,mismatch,pass,dpqr,,constant-57.9572-1e-08,"{""min"": 0.0, ""shape1"": 0.3157266252310832}",
+pareto4,archive,5669,mismatch,pass,dpqr,,constant-57.9572-1e-12,"{""min"": 0.0, ""shape1"": 0.3157266252310832}",
+st,archive,7040,stop,pass,,,limit-outlier,"{""alpha"": 0.10872382324228061, ""omega"": 0.9203517925594821}",
+tnorm,archive,7695,mismatch,pass,fitter,,offset-1e8,"{""sd"": 1.0043282104167566}",
+tnorm,archive,7705,mismatch,pass,fitter,,constant--0.327424-1e-12,"{""mean"": -0.062005588372027076, ""sd"": 1.0043282104167566}",
+tnorm,archive,7708,mismatch,pass,fitter,,constant-1-1e-12,"{""mean"": -0.062005588372027076, ""sd"": 1.0043282104167566}",
+tnorm,archive,7711,mismatch,pass,fitter,,offset-1e8,"{""mean"": -0.062005588372027076, ""sd"": 1.0043282104167566}",
+tnorm,archive,7759,mismatch,pass,fitter,,offset-1e8,"{""a"": -Infinity, ""sd"": 1.0043282104167566}",
+tnorm,archive,7807,mismatch,pass,fitter,,offset-1e8,"{""b"": Infinity, ""mean"": -0.062005588372027076}",
+tnorm,archive,7819,mismatch,pass,fitter,,constant-1-1e-08,"{""b"": Infinity, ""sd"": 1.0043282104167566}",
+tnorm,archive,7823,mismatch,pass,fitter,,offset-1e8,"{""b"": Infinity, ""sd"": 1.0043282104167566}",
+tnorm,archive,7839,mismatch,pass,fitter,,offset-1e8,"{""b"": Infinity, ""mean"": -0.062005588372027076, ""sd"": 1.0043282104167566}",
+tpois,archive,7917,mismatch,pass,fitter,,large-count,{},
+zmbinom,archive,8805,mismatch,pass,fitter,,large-count,{},
+zmbinom,archive,8857,mismatch,pass,fitter,,large-count,"{""p0"": 0.276}",
+ztbinom,archive,9189,mismatch,pass,fitter,,large-count,{},
+fpareto,archive,10717,open fit,stop,,,support-lower-1e-200,"{""min"": 0.0}",GB2 selects a limiting model. Use `mlpower(x - min)`.
+fpareto,archive,10757,open fit,stop,,,support-lower-1e-200,"{""min"": 0.0, ""scale"": 1.0087842921157315, ""shape2"": 1.9802932530684678}",GB2 search unresolved: no verified interior maximum; increase iterlim or inspect the limiting models.
+fpareto,archive,10762,open fit,stop,,,support-lower-1e-06,"{""min"": 0.0, ""scale"": 1.0087842921157315, ""shape3"": 0.4}",GB2 certified delegate budget stop; no verified maximum. Raising iterlim may resolve this stop.
+nsbeta,archive,10786,mismatch,pass,fitter,,constant-support-0.25-1e-12,"{""max"": 1.0, ""min"": 0.0}",
+gengamma,golden,-1,absent,pass,,,,{},

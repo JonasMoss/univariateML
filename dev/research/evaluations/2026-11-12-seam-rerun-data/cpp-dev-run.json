@@ -1,0 +1,34 @@
+{
+  "name": "cpp-dev",
+  "command": [
+    "just",
+    "cpp-test"
+  ],
+  "attempts": [
+    {
+      "machine": "simbox",
+      "command": [
+        "/tmp/umvl-cpu/simbox-run",
+        "env",
+        "CMAKE_BUILD_PARALLEL_LEVEL=4",
+        "CTEST_PARALLEL_LEVEL=4",
+        "just",
+        "cpp-test"
+      ],
+      "exit": 75,
+      "seconds": 8.050600528717041,
+      "log": "build/scratch/seam-rerun/cpp-dev-simbox.log"
+    },
+    {
+      "machine": "workstation",
+      "command": [
+        "/tmp/umvl-cpu/run4",
+        "just",
+        "cpp-test"
+      ],
+      "exit": 8,
+      "seconds": 3291.440608024597,
+      "log": "build/scratch/seam-rerun/cpp-dev-workstation.log"
+    }
+  ]
+}

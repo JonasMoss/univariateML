@@ -598,3 +598,14 @@ TEST_CASE("genbeta: portable small-shape complementary tail") {
 TEST_CASE("genbeta: compensated nonlinear coordinate from likelihood seam") {
  CHECK(cppunivariate::distributions::dgenbeta(0.9743349826286254,9105166753969690.0,1020286444033552.8,4.084996007320842,1.0,true)==doctest::Approx(20.03567010654306).epsilon(1e-10));
 }
+
+TEST_CASE("genbeta: concentrated held-power logLik preserves the beta coordinate") {
+  const std::vector<double> x{.24995,.249975,.25,.250025,.250075};
+  const auto r=cppunivariate::genbeta_mle(mltest::as_span(x),1,1e-10,300,NAN,NAN,4.084996007320842);
+  REQUIRE(r.status==cppunivariate::GenbetaStatus::Ok);
+  double sum=0;for(double v:x)sum+=cppunivariate::distributions::dgenbeta(v,r.shape1,r.shape2,r.shape3,r.scale,true);
+  CHECK(r.logLik==doctest::Approx(sum).epsilon(1e-11));
+  // Independent 100/150-digit sum at the original native returned point.
+  CHECK(cppunivariate::genbeta_detail::public_loglik(mltest::as_span(x),2017533.8265625883,579011618.7379755,4.084996007320842,1)
+    ==doctest::Approx(43.17544463960882).epsilon(1e-12));
+}

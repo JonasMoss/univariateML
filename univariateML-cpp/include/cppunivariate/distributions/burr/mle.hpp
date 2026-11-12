@@ -394,7 +394,7 @@ inline BurrMLE burr_mle_holds(span x,double a,double b,double s,double tol=1e-9,
    }
    a=r.kappa;s=std::exp(mx-std::log(r.lambda)/b);
    if(!(a>0 && std::isfinite(a) && s>0 && std::isfinite(s) && std::isfinite(r.logLik+jac))){bad.status=BurrStatus::NumericalFailure;return bad;}
-   return {a,b,s,r.logLik+jac,r.iterations,BurrStatus::Ok};
+   return {a,b,s,burr_local_loglik(x,a,b,s),r.iterations,BurrStatus::Ok};
  } else {
    auto location=[&](double power){return solve_root([&](double c){double z=n;for(double v:l)z-=(a+1)*burr_hold_detail::sigmoid(power*(v-mean)-c);return -z;});};
    if(fb){
@@ -406,7 +406,11 @@ inline BurrMLE burr_mle_holds(span x,double a,double b,double s,double tol=1e-9,
  }
  double ll=n*(std::log(a)+std::log(b));
  for(double v:l){double u=b*(v-std::log(s));ll+=-v-burr_softplus(-u)-a*burr_softplus(u);}
- return {a,b,s,ll,0,std::isfinite(ll)&&a>0&&b>0&&s>0&&std::isfinite(s)?BurrStatus::Ok:BurrStatus::IterationFailure};
+ BurrMLE out{a,b,s,ll,0,std::isfinite(ll)&&a>0&&b>0&&s>0&&std::isfinite(s)?BurrStatus::Ok:BurrStatus::IterationFailure};
+ // The transformed score solve is unchanged. Report the likelihood at the
+ // public coefficients without subtracting rounded logarithms near x=s.
+ if(out.status==BurrStatus::Ok)out.logLik=burr_local_loglik(x,a,b,s);
+ return out;
 }
 
 }

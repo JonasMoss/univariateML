@@ -82,7 +82,7 @@ def build(families, double=False, source_id=""):
     source=WORK/('probe-'+tag+'.cpp');source.write_text(src)
     boost=subprocess.check_output(['Rscript','-e','cat(system.file("include",package="BH"))'],text=True).strip()
     exe=WORK/('probe-'+tag+('-double' if double else ''))
-    subprocess.run(['ccache','c++','-std=c++17','-O1',*(['-DBOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS'] if double else []),'-I'+str(ROOT),'-I'+str(ROOT/'univariateML-cpp/include'),'-I'+boost,str(source),'-o',str(exe)],check=True)
+    subprocess.run(['ccache','c++','-std=c++17','-O2',*(['-DBOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS'] if double else []),'-I'+str(ROOT),'-I'+str(ROOT/'univariateML-cpp/include'),'-I'+boost,str(source),'-o',str(exe)],check=True)
     return exe
 
 def cases(families):

@@ -1,0 +1,8 @@
+{
+  "report": "dev/research/evaluations/2026-11-12-seam-rerun-report.md",
+  "links_checked": 22,
+  "missing": [],
+  "diff_check": "pass",
+  "append_only_test_files": 8,
+  "report_sha256": "bcea03e0022440a8a49dac21ba18ef23d35cdf8a7062cd1e603771ddf61a4b31"
+}

@@ -1,0 +1,34 @@
+{
+  "name": "cpp-no-long-double",
+  "command": [
+    "just",
+    "cpp-test-no-long-double"
+  ],
+  "attempts": [
+    {
+      "machine": "simbox",
+      "command": [
+        "/tmp/umvl-cpu/simbox-run",
+        "env",
+        "CMAKE_BUILD_PARALLEL_LEVEL=4",
+        "CTEST_PARALLEL_LEVEL=4",
+        "just",
+        "cpp-test-no-long-double"
+      ],
+      "exit": 75,
+      "seconds": 8.040702104568481,
+      "log": "build/scratch/seam-rerun/cpp-no-long-double-simbox.log"
+    },
+    {
+      "machine": "workstation",
+      "command": [
+        "/tmp/umvl-cpu/run4",
+        "just",
+        "cpp-test-no-long-double"
+      ],
+      "exit": 0,
+      "seconds": 1617.4656021595001,
+      "log": "build/scratch/seam-rerun/cpp-no-long-double-workstation.log"
+    }
+  ]
+}
