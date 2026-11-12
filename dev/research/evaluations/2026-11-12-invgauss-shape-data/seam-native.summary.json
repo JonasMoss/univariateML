@@ -1,0 +1,11 @@
+{
+  "records": 101,
+  "by_family": {
+    "invgauss": {
+      "pass": 101
+    }
+  },
+  "attributions": {},
+  "head": "c4ed89f6a4222e133c7524cf726fea4cb9369593",
+  "compiler": "c++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0"
+}

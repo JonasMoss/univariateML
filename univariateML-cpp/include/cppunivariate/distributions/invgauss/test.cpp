@@ -147,3 +147,51 @@ TEST_CASE("invgauss: concentrated public point retains the closed-form maximum")
   CHECK(r.lambda==doctest::Approx(8.23530894536328e23).epsilon(1e-10));
 #endif
 }
+
+TEST_CASE("invgauss: continuous mean shape meets the coefficient contract in both modes") {
+  const std::vector<double> x{2.4377209513444593,2.4377209513468974,2.437720951349335,
+      2.4377209513517726,2.4377209513566482};
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  const auto r=cppunivariate::invgauss_mle(mltest::as_span(x));
+  REQUIRE(r.status==cppunivariate::InvGaussStatus::Ok);
+  // Independent 160/220-digit direct closed form on the binary64 inputs.
+  CHECK(std::abs(r.lambda/8.2353089453632802e23-1)<1e-10);
+  const auto mean_held=cppunivariate::invgauss_mle(mltest::as_span(x),2.4377209513498226,nan);
+  REQUIRE(mean_held.status==cppunivariate::InvGaussStatus::Ok);
+  CHECK(std::abs(mean_held.lambda/8.235308941670034e23-1)<1e-10);
+  const auto shape_held=cppunivariate::invgauss_mle(mltest::as_span(x),nan,1.0);
+  REQUIRE(shape_held.status==cppunivariate::InvGaussStatus::Ok);
+  CHECK(std::abs(shape_held.mu/2.4377209513498226-1)<1e-10);
+  CHECK(shape_held.lambda==1.0);
+}
+
+TEST_CASE("invgauss: concentrated million-observation fits avoid sum overflow") {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  for(double scale:{1e-300,1.0,1e270,1e307}) {
+    std::vector<double> x(1000000);
+    for(std::size_t i=0;i<x.size();++i)x[i]=scale*(1+(static_cast<int>(i%5)-2)*(scale>1e300?.25:1e-6));
+    const std::vector<double> small(x.begin(),x.begin()+5);
+    const auto reference=cppunivariate::invgauss_mle(mltest::as_span(small));
+    REQUIRE(reference.status==cppunivariate::InvGaussStatus::Ok);
+    for(int mask=0;mask<4;++mask) {
+      const auto r=cppunivariate::invgauss_mle(mltest::as_span(x),mask&1?scale:nan,mask&2?scale:nan);
+      REQUIRE(r.status==cppunivariate::InvGaussStatus::Ok);
+      CHECK(std::abs(r.mu/scale-1)<1e-10);
+      if(mask&2)CHECK(r.lambda==scale);
+      else CHECK(std::abs(r.lambda/reference.lambda-1)<1e-10);
+    }
+  }
+  const std::vector<double> huge{5e299,1e300,2e300,4e300};
+  const auto r=cppunivariate::invgauss_mle(mltest::as_span(huge));
+  REQUIRE(r.status==cppunivariate::InvGaussStatus::Ok);
+  CHECK(std::abs(r.mu/1.875e300-1)<1e-10);
+  CHECK(std::abs(r.lambda/2.4742268041237114e300-1)<1e-10);
+}
+
+TEST_CASE("invgauss: held mean far above the data scale retains a finite shape") {
+  const std::vector<double> x{1e-300,2e-300,4e-300};
+  const auto r=cppunivariate::invgauss_mle(mltest::as_span(x),1e300,NAN);
+  REQUIRE(r.status==cppunivariate::InvGaussStatus::Ok);
+  CHECK(r.mu==1e300);
+  CHECK(std::abs(r.lambda/1.7142857142857143e-300-1)<1e-10);
+}

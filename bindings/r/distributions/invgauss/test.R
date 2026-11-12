@@ -146,3 +146,32 @@ test_that("concentrated inverse Gaussian logLik evaluates the public point", {
   expect_lte(abs(as.numeric(logLik(fit))-ll),1e-10*max(1,abs(ll)))
   expect_lte(abs(as.numeric(logLik(fit))-123.89205063011403),1e-10*123.89205063011403)
 })
+
+test_that("continuous-mean shape satisfies the coefficient contract", {
+  x <- c(2.4377209513444593,2.4377209513468974,2.437720951349335,
+         2.4377209513517726,2.4377209513566482)
+  # Independent 160/220-digit direct closed forms on exact binary64 inputs.
+  f <- mlinvgauss(x)
+  expect_lt(abs(unname(f["shape"])/8.2353089453632802e23-1),1e-10)
+  h <- mlinvgauss(x,mean=2.4377209513498226)
+  expect_identical(unname(h["mean"]),2.4377209513498226)
+  expect_lt(abs(unname(h["shape"])/8.235308941670034e23-1),1e-10)
+  h <- mlinvgauss(x,shape=1)
+  expect_identical(unname(h["shape"]),1)
+  expect_lt(abs(unname(h["mean"])/2.4377209513498226-1),1e-10)
+  for (s in c(1e-300,1,1e270)) {
+    y <- s*(1+(-2:2)*1e-6)
+    a <- mlinvgauss(y)
+    b <- mlinvgauss(rep(y,2000))
+    expect_lt(max(abs(as.numeric(a)/as.numeric(b)-1)),1e-10)
+    expect_lt(abs(unname(mlinvgauss(rep(y,2000),mean=s)["shape"])/a["shape"]-1),1e-10)
+    expect_identical(unname(mlinvgauss(y,shape=s)["shape"]),s)
+  }
+})
+
+
+test_that("a held mean far above the data scale permits a finite shape", {
+  f <- mlinvgauss(c(1e-300,2e-300,4e-300),mean=1e300)
+  expect_identical(unname(f["mean"]),1e300)
+  expect_lt(abs(unname(f["shape"])/1.7142857142857143e-300-1),1e-10)
+})
