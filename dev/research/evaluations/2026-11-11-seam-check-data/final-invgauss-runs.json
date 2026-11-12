@@ -1,0 +1,119 @@
+[
+  {
+    "name": "cpp-invgauss",
+    "machine": "workstation (one CPU affinity)",
+    "command": [
+      "bash",
+      "dev/research/evaluations/2026-11-11-seam-check-data/targeted-cpp.sh",
+      "invgauss"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 7.865317218005657
+  },
+  {
+    "name": "cpp-invgauss-double",
+    "machine": "workstation (one CPU affinity)",
+    "command": [
+      "env",
+      "UMVL_SEAM_NO_LONG_DOUBLE=1",
+      "bash",
+      "dev/research/evaluations/2026-11-11-seam-check-data/targeted-cpp.sh",
+      "invgauss"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 7.559324725007173
+  },
+  {
+    "name": "invgauss-census",
+    "machine": "workstation (one CPU affinity)",
+    "command": [
+      "python3",
+      "dev/validation/seam-check.py",
+      "--family",
+      "invgauss",
+      "--output",
+      "dev/research/evaluations/2026-11-11-seam-check-data/after-invgauss-final.jsonl"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 3.831052259018179
+  },
+  {
+    "name": "invgauss-double-census",
+    "machine": "workstation (one CPU affinity)",
+    "command": [
+      "python3",
+      "dev/validation/seam-check.py",
+      "--family",
+      "invgauss",
+      "--no-long-double",
+      "--output",
+      "dev/research/evaluations/2026-11-11-seam-check-data/after-invgauss-double.jsonl"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 3.659828241041396
+  },
+  {
+    "name": "summary",
+    "machine": "workstation (one CPU affinity)",
+    "command": [
+      "python3",
+      "dev/research/evaluations/2026-11-11-seam-check-data/summarize.py"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 4.108013632008806
+  },
+  {
+    "name": "references",
+    "machine": "workstation (one CPU affinity)",
+    "command": [
+      "python3",
+      "dev/research/evaluations/2026-11-11-seam-check-data/reconcile-references.py"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 0.8424981510033831
+  },
+  {
+    "name": "invgauss-max",
+    "machine": "workstation (one CPU affinity)",
+    "command": [
+      "python3",
+      "dev/research/evaluations/2026-11-11-seam-check-data/invgauss-max-check.py"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 0.2894644999760203
+  },
+  {
+    "name": "js-build",
+    "machine": "workstation (one CPU affinity)",
+    "command": [
+      "just",
+      "js-build"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 145.10371682897676
+  },
+  {
+    "name": "js-invgauss",
+    "machine": "workstation (one CPU affinity)",
+    "command": [
+      "node",
+      "--v8-pool-size=1",
+      "--test",
+      "--test-name-pattern=^invgauss |^public facade$",
+      "bindings/js/test.mjs"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 2.116093794000335
+  },
+  {
+    "name": "wasm-invgauss-max",
+    "machine": "workstation (one CPU affinity)",
+    "command": [
+      "node",
+      "--v8-pool-size=1",
+      "dev/research/evaluations/2026-11-11-seam-check-data/invgauss-wasm.mjs"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 0.2241080710082315
+  }
+]

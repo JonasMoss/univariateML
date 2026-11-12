@@ -82,3 +82,13 @@ TEST_CASE("tpois: quantile search guards and representability") {
 TEST_CASE("tpois: conditional normalizer retains its mode anchor") {
  CHECK(cppunivariate::distributions::dtpois(1000004,926275.8860827014,999999,1000011,true)==doctest::Approx(-2.4047244421197274).epsilon(1e-10));
 }
+
+TEST_CASE("tpois: estimated large-count bounds logLik uses relative conditional masses") {
+  const std::vector<int> x{1000000,1000001,1000003,1000008,1000011};
+  const auto r=cppunivariate::tpois_mle({x.data(),x.size()},NAN,NAN);
+  REQUIRE(r.status==cppunivariate::truncated_detail::Status::Ok);
+  double ll=0;
+  for(int v:x)ll+=cppunivariate::distributions::dtpois(v,r.parameter,999999,1000011,true);
+  CHECK(std::abs(r.logLik-ll)<=1e-10*std::max(1.,std::abs(ll)));
+  CHECK(r.logLik==doctest::Approx(-12.253430677034801).epsilon(1e-12));
+}

@@ -463,3 +463,32 @@ listed loops; a family-only selection also omits C++ shared targets. Include
 relationships follow implementation headers; cross-family comparison tests that
 include the umbrella header remain full-suite coverage. Run
 the ordinary suites and any task-specific checks before finishing a change.
+
+## Fitter log-likelihood seam
+
+`seam-check.py` refits the frozen fit-audit datasets and the golden samples
+through the current binding-neutral adapters, preserving their default controls.
+It compares `logLik` with a compensated sum of scalar log densities at the
+returned public coefficients. Disagreements beyond `1e-10 * max(1, |logLik|)`
+receive independent mpmath evaluations at exact binary64 inputs, repeated at
+higher precision. Closed-support comparisons use exact rational arithmetic.
+A stopped fit is recorded separately; an audit timeout makes no existence claim.
+Documented non-Lipschitz allowances require family-specific review of the saved
+records; a positive seam discrepancy alone does not establish a fitter defect.
+
+```sh
+/tmp/umvl-cpu/run python3 dev/validation/seam-check.py \
+  --output build/scratch/seam-check/all.jsonl
+/tmp/umvl-cpu/run python3 dev/validation/seam-check.py --family beta,binom \
+  --output build/scratch/seam-check/selected.jsonl
+```
+
+`--case INDEX` restricts the archived replay (repeatable), `--timeout SECONDS`
+sets the audit guard, and `--no-long-double` builds the double-width variant.
+JSONL records retain data, holds, returned coefficients, density sums and
+independent attributions; adjacent summary and provenance JSON record counts
+and source identity. Reusing an output after changing sources is rejected; compiled probes also carry
+the source identity, so simultaneous replays cannot overwrite one another.
+The frozen input archive is
+`dev/research/evaluations/2026-11-07-fit-audit-data/cases.json.gz`.
+This is a finite regression census, not a proof over all data or hold values.

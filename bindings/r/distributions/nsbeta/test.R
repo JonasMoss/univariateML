@@ -153,3 +153,10 @@ test_that("nsbeta a tiny held shape with a resolved score is estimable", {
   expect_equal(fit[["shape2"]]/(sqrt(h)/sqrt(-mean(log1p(-x)))),1,tolerance=1e-10)
   expect_equal(attr(fit,"logLik"),length(x)*log(h)-sum(log(x)+log1p(-x)),tolerance=1e-10)
 })
+
+test_that("concentrated nonstandard beta retains its delegated public logLik", {
+  x <- c(0.2499999999995,0.24999999999975,0.25,0.25000000000025,0.25000000000075)
+  fit <- mlnsbeta(x,min=0,max=1)
+  ll <- sum(dml(x,fit,log=TRUE))
+  expect_lte(abs(as.numeric(logLik(fit))-ll),1e-10*max(1,abs(ll)))
+})

@@ -14,6 +14,7 @@
 #include "../../core/precision.hpp"
 
 #include "../../core/span.hpp"
+#include "dpqr.hpp"
 #include "../../special/special.hpp"
 
 #include <algorithm>
@@ -302,6 +303,15 @@ inline BinomResult binom_mle(ispan x, double size_or_nan, double tol,
     double m=0;for(int v:x)m+=v;m/=x.size();double ll=0;
     for(int v:x)ll+=v*std::log(m)-m-special::lgamma(v+1.);
     stopped.stop_detail=discrete_face(StopModel::Pois,{m},ll);
+  }
+  if(stopped.status==BinomStatus::Ok && !std::isnan(held_prob)) {
+    double ll=0,correction=0;
+    for(int v:x) {
+      const double value=distributions::dbinom(v,stopped.size,stopped.prob,true)-correction;
+      const double next=ll+value;correction=(next-ll)-value;ll=next;
+    }
+    stopped.logLik=ll;
+    if(!std::isfinite(ll))stopped.status=BinomStatus::IterationFailure;
   }
   return stopped;
 }

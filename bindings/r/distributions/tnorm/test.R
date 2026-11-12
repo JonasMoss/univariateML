@@ -137,3 +137,12 @@ test_that("tnorm acceptance stops numerical failures and retains held subsets", 
     expect_equal(as.numeric(logLik(f)),sum(dml(x,f,log=TRUE)),tolerance=1e-10)
   }
 })
+
+test_that("fitted truncated-normal bounds retain narrow-interval logLik", {
+  x <- c(-.32742383907552863,-.3274238390752012,-.32742383907487377,
+         -.32742383907454636,-.3274238390738915)
+  fit <- mltnorm(x,a=NULL,b=NULL,mean=-.062005588372027076,sd=1.0043282104167566)
+  ll <- sum(dml(x,fit,log=TRUE))
+  expect_lte(abs(as.numeric(logLik(fit))-ll),1e-10*max(1,abs(ll)))
+  expect_equal(as.numeric(logLik(fit)),135.6903671556374,tolerance=1e-10)
+})

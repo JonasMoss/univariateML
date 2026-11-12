@@ -599,3 +599,21 @@ TEST_CASE("bbinom: represented asymmetric stationary shapes survive sub-machine 
 TEST_CASE("bbinom: exact-input extreme arithmetic regression") {
   CHECK(cppunivariate::distributions::pbbinom(0.0,10.0,1.0,1e-08,false,true) == doctest::Approx(-9.999999995e-10).epsilon(1e-10));
 }
+
+TEST_CASE("bbinom: small held shapes large-count logLik avoids accumulated cancellation") {
+  const std::vector<int> x{1000000,1000001,1000003,1000008,1000011};
+  const auto r=cppunivariate::bbinom_mle({x.data(),x.size()},1000019.,1e-10,100,
+      1.9337387365835597,2.9406650178896676);
+  REQUIRE(r.status==cppunivariate::BbinomStatus::Ok);
+  // Independent 100/150-digit log-gamma identity, exact binary64 shapes.
+  CHECK(r.logLik==doctest::Approx(-164.81779817797852).epsilon(1e-12));
+}
+
+TEST_CASE("bbinom: gamma-ratio likelihood retains tiny-shape endpoint terms") {
+  const std::vector<int> x{0,1000,2000};
+  const auto r=cppunivariate::bbinom_mle({x.data(),x.size()},2000.,1e-10,100,1e-300,1.);
+  REQUIRE(r.status==cppunivariate::BbinomStatus::Ok);
+  // For beta=1 and alpha -> 0, f(k)=alpha/k + O(alpha^2), k>0,
+  // and log f(0)=O(alpha log N); omitted terms here are below 1e-296.
+  CHECK(r.logLik==doctest::Approx(2*std::log(1e-300)-std::log(1000.)-std::log(2000.)).epsilon(1e-12));
+}

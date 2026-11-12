@@ -110,6 +110,12 @@ The free mean estimate is the arithmetic sample mean, whether the shape is free 
 
 Although the distribution tends to a Lévy law as $\mu\to\infty$ with $\lambda$ fixed, this is not a likelihood escape for a finite positive sample: the likelihood in the mean is uniquely maximized at $\bar x$.
 
+For highly concentrated samples, rounding the mean by $\delta$ loses
+$n\lambda\delta^2/(2\mu^3)$ in log-likelihood to leading order. Consequently,
+even a one-ulp mean error can exceed the likelihood accuracy target when
+$\lambda/\mu$ is large. The smooth maximum requires a sufficiently accurate
+public mean as well as an accurate residual calculation.
+
 ## R notes
 
 `mean = NULL` and `shape = NULL` estimate the corresponding coefficients. Held coefficients must be finite and positive. Both held coefficients evaluate the likelihood without estimation. Empty or invalid samples and unattained or numerically unrepresentable fits stop with an error.

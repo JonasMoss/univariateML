@@ -122,3 +122,28 @@ TEST_CASE("invgauss: TASK-132 invalid and degenerate data have statuses") {
   const std::vector<double> constant(4,2);
   CHECK(cppunivariate::invgauss_mle(cppunivariate::span{constant.data(),constant.size()}).status == cppunivariate::InvGaussStatus::Unbounded);
 }
+
+TEST_CASE("invgauss: concentrated fit logLik evaluates the rounded public point") {
+  const std::vector<double> x{2.4377209513444593,2.4377209513468974,2.437720951349335,
+      2.4377209513517726,2.4377209513566482};
+  const auto r=cppunivariate::invgauss_mle(mltest::as_span(x));
+  REQUIRE(r.status==cppunivariate::InvGaussStatus::Ok);
+  double ll=0;
+  for(double v:x)ll+=cppunivariate::distributions::dinvgauss(v,r.mu,r.lambda,true);
+  CHECK(std::abs(r.logLik-ll)<=1e-10*std::max(1.,std::abs(ll)));
+  const auto held=cppunivariate::invgauss_mle(mltest::as_span(x),2.4377209513498226,8.235308862764327e23);
+  CHECK(held.logLik==doctest::Approx(123.89205062899286).epsilon(1e-12));
+}
+
+TEST_CASE("invgauss: concentrated public point retains the closed-form maximum") {
+  const std::vector<double> x{2.4377209513444593,2.4377209513468974,2.437720951349335,
+      2.4377209513517726,2.4377209513566482};
+  const auto r=cppunivariate::invgauss_mle(mltest::as_span(x));
+  REQUIRE(r.status==cppunivariate::InvGaussStatus::Ok);
+  // Independent 100/160-digit evaluation at mu=mean(x), lambda=n/Q(mu).
+  constexpr double maximum=123.89205063011403;
+  CHECK(std::abs(r.logLik-maximum)<=1e-10*maximum);
+#ifdef BOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS
+  CHECK(r.lambda==doctest::Approx(8.23530894536328e23).epsilon(1e-10));
+#endif
+}

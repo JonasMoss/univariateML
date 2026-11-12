@@ -1,0 +1,1770 @@
+{
+  "records": 11284,
+  "families": 99,
+  "before": {
+    "pass": 8725,
+    "stop": 2514,
+    "mismatch": 32,
+    "open fit": 13
+  },
+  "after": {
+    "pass": 8744,
+    "stop": 2521,
+    "mismatch": 13,
+    "open fit": 6
+  },
+  "before_fitter": 23,
+  "after_fitter": 3,
+  "before_owned_fitter": 20,
+  "after_owned_fitter": 0,
+  "before_dpqr": 10,
+  "after_dpqr": 10,
+  "support": {
+    "before": {
+      "checked": 8757,
+      "outside_support": []
+    },
+    "after": {
+      "checked": 8757,
+      "outside_support": []
+    }
+  },
+  "parameter_changes": [
+    {
+      "key": [
+        "beta",
+        "archive",
+        100
+      ],
+      "before": [
+        2.53375903435621e+23,
+        7.6012771030666e+23
+      ],
+      "after": [
+        2.53375903435621e+23,
+        7.601277103066602e+23
+      ]
+    },
+    {
+      "key": [
+        "nsbeta",
+        "archive",
+        10786
+      ],
+      "before": [
+        2.53375903435621e+23,
+        7.6012771030666e+23,
+        0.0,
+        1.0
+      ],
+      "after": [
+        2.53375903435621e+23,
+        7.601277103066602e+23,
+        0.0,
+        1.0
+      ]
+    }
+  ],
+  "golden_payload_changes": [
+    {
+      "family": "invgauss",
+      "before_parameters": [
+        2.98427435367453,
+        4.1167677662848075
+      ],
+      "after_parameters": [
+        2.98427435367453,
+        4.1167677662848075
+      ],
+      "before_logLik": -963.8308398127127,
+      "after_logLik": -963.8308398127125
+    },
+    {
+      "family": "nbinom",
+      "before_parameters": [
+        10.391389312562472,
+        0.30610275261187947
+      ],
+      "after_parameters": [
+        10.391389312562472,
+        0.30610275261187947
+      ],
+      "before_logLik": -1778.8021427996564,
+      "after_logLik": -1778.8021427996578
+    },
+    {
+      "family": "tnorm",
+      "before_parameters": [
+        -0.06200558837202771,
+        1.0043282104167557,
+        -Infinity,
+        Infinity
+      ],
+      "after_parameters": [
+        -0.06200558837202771,
+        1.0043282104167557,
+        -Infinity,
+        Infinity
+      ],
+      "before_logLik": -711.6287019293318,
+      "after_logLik": -711.6287019293321
+    },
+    {
+      "family": "tpois",
+      "before_parameters": [
+        2.9605593598095785,
+        0.0,
+        10.0
+      ],
+      "after_parameters": [
+        2.9605593598095785,
+        0.0,
+        10.0
+      ],
+      "before_logLik": -907.5998710799106,
+      "after_logLik": -907.5998710799129
+    },
+    {
+      "family": "zmbinom",
+      "before_parameters": [
+        8.0,
+        0.41072177895283224,
+        0.276
+      ],
+      "after_parameters": [
+        8.0,
+        0.41072177895283224,
+        0.276
+      ],
+      "before_logLik": -911.6253216582959,
+      "after_logLik": -911.6253216582963
+    },
+    {
+      "family": "ztbinom",
+      "before_parameters": [
+        8.0,
+        0.40988208060294373
+      ],
+      "after_parameters": [
+        8.0,
+        0.40988208060294373
+      ],
+      "before_logLik": -851.1963765337293,
+      "after_logLik": -851.19637653373
+    }
+  ],
+  "transitions": {
+    "pass -> pass": 8725,
+    "stop -> stop": 2514,
+    "mismatch -> mismatch": 13,
+    "mismatch -> pass": 19,
+    "open fit -> open fit": 6,
+    "open fit -> stop": 7
+  },
+  "open_cases": [
+    {
+      "index": 837,
+      "family": "cmb",
+      "mask": 0,
+      "held": {},
+      "sample": "large-count",
+      "data": [
+        1000000,
+        1000001,
+        1000003,
+        1000008,
+        1000011
+      ],
+      "source": "archive",
+      "outcome": "open fit",
+      "reason": "no terminal result within 120.0s"
+    },
+    {
+      "index": 915,
+      "family": "cmb",
+      "mask": 6,
+      "held": {
+        "prob": 0.2777362750324292,
+        "nu": 1.683599466457963
+      },
+      "sample": "large-count",
+      "data": [
+        1000000,
+        1000001,
+        1000003,
+        1000008,
+        1000011
+      ],
+      "source": "archive",
+      "outcome": "open fit",
+      "reason": "no terminal result within 120.0s"
+    },
+    {
+      "index": 997,
+      "family": "dgamma",
+      "mask": 0,
+      "held": {},
+      "sample": "large-count",
+      "data": [
+        1000000,
+        1000001,
+        1000003,
+        1000008,
+        1000011
+      ],
+      "source": "archive",
+      "outcome": "open fit",
+      "reason": "no terminal result within 120.0s"
+    },
+    {
+      "index": 1599,
+      "family": "fpareto",
+      "mask": 16,
+      "held": {
+        "min": 0.0
+      },
+      "sample": "scale-1e-150",
+      "data": [
+        9.341081677852826e-151,
+        4.595475734747349e-150,
+        5.998711847579505e-151,
+        1.056419269543656e-149,
+        7.000746031939794e-151,
+        1.112552433763363e-150,
+        1.3300121914598085e-148,
+        3.057685931487713e-151,
+        9.471857714817827e-151,
+        3.8097695246334955e-150,
+        1.8225442484990885e-150,
+        1.1865419401405472e-151
+      ],
+      "source": "archive",
+      "outcome": "open fit",
+      "reason": "no terminal result within 120.0s"
+    },
+    {
+      "index": 1600,
+      "family": "fpareto",
+      "mask": 16,
+      "held": {
+        "min": 0.0
+      },
+      "sample": "scale-1e+150",
+      "data": [
+        9.341081677852825e+149,
+        4.5954757347473486e+150,
+        5.998711847579505e+149,
+        1.056419269543656e+151,
+        7.000746031939793e+149,
+        1.1125524337633629e+150,
+        1.3300121914598085e+152,
+        3.057685931487713e+149,
+        9.471857714817827e+149,
+        3.809769524633495e+150,
+        1.8225442484990886e+150,
+        1.1865419401405473e+149
+      ],
+      "source": "archive",
+      "outcome": "open fit",
+      "reason": "no terminal result within 120.0s"
+    },
+    {
+      "index": 10717,
+      "family": "fpareto",
+      "mask": 16,
+      "held": {
+        "min": 0.0
+      },
+      "sample": "support-lower-1e-200",
+      "data": [
+        1e-200,
+        2e-200,
+        3e-200,
+        5e-200,
+        9e-200
+      ],
+      "source": "archive",
+      "outcome": "open fit",
+      "reason": "no terminal result within 120.0s"
+    }
+  ],
+  "remaining_mismatches": [
+    {
+      "index": 75,
+      "family": "bbinom",
+      "mask": 6,
+      "held": {
+        "alpha": 1.9337387365835597,
+        "beta": 2.9406650178896676
+      },
+      "sample": "large-count",
+      "data": [
+        1000000,
+        1000001,
+        1000003,
+        1000008,
+        1000011
+      ],
+      "source": "archive",
+      "outcome": "mismatch",
+      "parameters": [
+        1000019.0,
+        1.9337387365835597,
+        2.9406650178896676
+      ],
+      "reported": -164.8177981779785,
+      "dpqr": -164.81779851626197,
+      "error": 2.0524693802802188e-09,
+      "outside_support": [],
+      "reference": -164.81779817797852,
+      "fitter_error": 1.7244320543411714e-16,
+      "dpqr_error": 2.0524692120496436e-09,
+      "attribution": "dpqr"
+    },
+    {
+      "index": 636,
+      "family": "burr",
+      "mask": 1,
+      "held": {
+        "shape1": 1.334637717604056
+      },
+      "sample": "constant-2.04285-1e-12",
+      "data": [
+        2.0428454965886376,
+        2.0428454965906804,
+        2.042845496592723,
+        2.042845496594766,
+        2.0428454965988516
+      ],
+      "source": "archive",
+      "outcome": "mismatch",
+      "parameters": [
+        1.334637717604056,
+        875134658462.2328,
+        2.042845496593945
+      ],
+      "reported": 124.54635866844983,
+      "dpqr": 124.54633405249429,
+      "error": 1.9764496262447286e-07,
+      "outside_support": [],
+      "reference": 124.54633405249429,
+      "fitter_error": 1.9764496262447286e-07,
+      "dpqr_error": 0.0,
+      "attribution": "fitter"
+    },
+    {
+      "index": 639,
+      "family": "burr",
+      "mask": 1,
+      "held": {
+        "shape1": 1.334637717604056
+      },
+      "sample": "constant-2.04285-1e-12",
+      "data": [
+        2.0428454965886376,
+        2.0428454965906804,
+        2.042845496592723,
+        2.042845496594766,
+        2.0428454965988516
+      ],
+      "source": "archive",
+      "outcome": "mismatch",
+      "parameters": [
+        1.334637717604056,
+        875134658462.2328,
+        2.042845496593945
+      ],
+      "reported": 124.54635866844983,
+      "dpqr": 124.54633405249429,
+      "error": 1.9764496262447286e-07,
+      "outside_support": [],
+      "reference": 124.54633405249429,
+      "fitter_error": 1.9764496262447286e-07,
+      "dpqr_error": 0.0,
+      "attribution": "fitter"
+    },
+    {
+      "index": 2568,
+      "family": "genbeta",
+      "mask": 12,
+      "held": {
+        "shape3": 4.084996007320842,
+        "scale": 1.0
+      },
+      "sample": "constant-0.25-0.0001",
+      "data": [
+        0.24995,
+        0.249975,
+        0.25,
+        0.250025,
+        0.250075
+      ],
+      "source": "archive",
+      "outcome": "mismatch",
+      "parameters": [
+        2017533.8265625883,
+        579011618.7379755,
+        4.084996007320842,
+        1.0
+      ],
+      "reported": 43.175444645875984,
+      "dpqr": 43.175444639608855,
+      "error": 1.4515493911559663e-10,
+      "outside_support": [],
+      "reference": 43.17544463960882,
+      "fitter_error": 1.451557619707424e-10,
+      "dpqr_error": 8.228551456633452e-16,
+      "attribution": "fitter"
+    },
+    {
+      "index": 4435,
+      "family": "lgamma",
+      "mask": 0,
+      "held": {},
+      "sample": "constant-1.95363-1e-12",
+      "data": [
+        1.953632517309603,
+        1.9536325173115567,
+        1.9536325173135103,
+        1.9536325173154638,
+        1.9536325173193712
+      ],
+      "source": "archive",
+      "outcome": "mismatch",
+      "parameters": [
+        1.515167188134916e+23,
+        2.262488803638903e+23
+      ],
+      "reported": 124.99901060508091,
+      "dpqr": 124.99904549080858,
+      "error": 2.79087952511829e-07,
+      "outside_support": [],
+      "reference": 124.9990106050809,
+      "fitter_error": 1.1368773757817542e-16,
+      "dpqr_error": 2.790880305156238e-07,
+      "attribution": "dpqr"
+    },
+    {
+      "index": 4438,
+      "family": "lgamma",
+      "mask": 0,
+      "held": {},
+      "sample": "constant-1.95363-1e-12",
+      "data": [
+        1.953632517309603,
+        1.9536325173115567,
+        1.9536325173135103,
+        1.9536325173154638,
+        1.9536325173193712
+      ],
+      "source": "archive",
+      "outcome": "mismatch",
+      "parameters": [
+        1.515167188134916e+23,
+        2.262488803638903e+23
+      ],
+      "reported": 124.99901060508091,
+      "dpqr": 124.99904549080858,
+      "error": 2.79087952511829e-07,
+      "outside_support": [],
+      "reference": 124.9990106050809,
+      "fitter_error": 1.1368773757817542e-16,
+      "dpqr_error": 2.790880305156238e-07,
+      "attribution": "dpqr"
+    },
+    {
+      "index": 4601,
+      "family": "lnorm",
+      "mask": 0,
+      "held": {},
+      "sample": "constant-1.44519-1e-12",
+      "data": [
+        1.445187510724387,
+        1.445187510725832,
+        1.4451875107272774,
+        1.4451875107287226,
+        1.445187510731613
+      ],
+      "source": "archive",
+      "outcome": "mismatch",
+      "parameters": [
+        0.3682390783550075,
+        1.7204957773060612e-12
+      ],
+      "reported": 126.50615506228071,
+      "dpqr": 126.50613366451884,
+      "error": 1.691440663792574e-07,
+      "outside_support": [],
+      "reference": 126.50615506228073,
+      "fitter_error": 1.1233330669330518e-16,
+      "dpqr_error": 1.6914403788188033e-07,
+      "attribution": "dpqr"
+    },
+    {
+      "index": 4604,
+      "family": "lnorm",
+      "mask": 0,
+      "held": {},
+      "sample": "constant-1.44519-1e-12",
+      "data": [
+        1.445187510724387,
+        1.445187510725832,
+        1.4451875107272774,
+        1.4451875107287226,
+        1.445187510731613
+      ],
+      "source": "archive",
+      "outcome": "mismatch",
+      "parameters": [
+        0.3682390783550075,
+        1.7204957773060612e-12
+      ],
+      "reported": 126.50615506228071,
+      "dpqr": 126.50613366451884,
+      "error": 1.691440663792574e-07,
+      "outside_support": [],
+      "reference": 126.50615506228073,
+      "fitter_error": 1.1233330669330518e-16,
+      "dpqr_error": 1.6914403788188033e-07,
+      "attribution": "dpqr"
+    },
+    {
+      "index": 4611,
+      "family": "lnorm",
+      "mask": 0,
+      "held": {},
+      "sample": "offset-1e8",
+      "data": [
+        100000001.46643509,
+        100000000.44635502,
+        100000001.90765181,
+        100000002.98407541,
+        100000001.44518751,
+        100000000.48315705,
+        100000001.20661016,
+        100000000.26392101,
+        100000004.95617464,
+        100000000.76818824,
+        100000001.8055238,
+        100000000.58251828
+      ],
+      "source": "archive",
+      "outcome": "mismatch",
+      "parameters": [
+        18.42068075921553,
+        1.276009224197664e-08
+      ],
+      "reported": -19.952111548312217,
+      "dpqr": -19.952111848421097,
+      "error": 1.5041459382806075e-08,
+      "outside_support": [],
+      "reference": -19.952111548312196,
+      "fitter_error": 1.0683722382559658e-15,
+      "dpqr_error": 1.504146067742383e-08,
+      "attribution": "dpqr"
+    },
+    {
+      "index": 5665,
+      "family": "pareto4",
+      "mask": 9,
+      "held": {
+        "shape1": 0.3157266252310832,
+        "min": 0.0
+      },
+      "sample": "constant-57.9572-1e-08",
+      "data": [
+        57.95719713182328,
+        57.95719771139526,
+        57.95719829096724,
+        57.95719887053922,
+        57.95720002968319
+      ],
+      "source": "archive",
+      "outcome": "mismatch",
+      "parameters": [
+        0.3157266252310832,
+        181397157.91800258,
+        57.95719750520992,
+        0.0
+      ],
+      "reported": 61.98791768670691,
+      "dpqr": 61.9879177098726,
+      "error": 3.7371298579976713e-10,
+      "outside_support": [],
+      "reference": 61.987917686706915,
+      "fitter_error": 1.146260049178057e-16,
+      "dpqr_error": 3.737128713134236e-10,
+      "attribution": "dpqr"
+    },
+    {
+      "index": 5666,
+      "family": "pareto4",
+      "mask": 9,
+      "held": {
+        "shape1": 0.3157266252310832,
+        "min": 0.0
+      },
+      "sample": "constant-57.9572-1e-12",
+      "data": [
+        57.95719829085132,
+        57.95719829090928,
+        57.95719829096724,
+        57.9571982910252,
+        57.95719829114111
+      ],
+      "source": "archive",
+      "outcome": "mismatch",
+      "parameters": [
+        0.3157266252310832,
+        1813936513691.6497,
+        57.95719829088866,
+        0.0
+      ],
+      "reported": 108.0395367267025,
+      "dpqr": 108.03917478280806,
+      "error": 3.350117169631189e-06,
+      "outside_support": [],
+      "reference": 108.03953672670248,
+      "fitter_error": 1.3153383609141045e-16,
+      "dpqr_error": 3.3501059462522046e-06,
+      "attribution": "dpqr"
+    },
+    {
+      "index": 5668,
+      "family": "pareto4",
+      "mask": 9,
+      "held": {
+        "shape1": 0.3157266252310832,
+        "min": 0.0
+      },
+      "sample": "constant-57.9572-1e-08",
+      "data": [
+        57.95719713182328,
+        57.95719771139526,
+        57.95719829096724,
+        57.95719887053922,
+        57.95720002968319
+      ],
+      "source": "archive",
+      "outcome": "mismatch",
+      "parameters": [
+        0.3157266252310832,
+        181397157.91800258,
+        57.95719750520992,
+        0.0
+      ],
+      "reported": 61.98791768670691,
+      "dpqr": 61.9879177098726,
+      "error": 3.7371298579976713e-10,
+      "outside_support": [],
+      "reference": 61.987917686706915,
+      "fitter_error": 1.146260049178057e-16,
+      "dpqr_error": 3.737128713134236e-10,
+      "attribution": "dpqr"
+    },
+    {
+      "index": 5669,
+      "family": "pareto4",
+      "mask": 9,
+      "held": {
+        "shape1": 0.3157266252310832,
+        "min": 0.0
+      },
+      "sample": "constant-57.9572-1e-12",
+      "data": [
+        57.95719829085132,
+        57.95719829090928,
+        57.95719829096724,
+        57.9571982910252,
+        57.95719829114111
+      ],
+      "source": "archive",
+      "outcome": "mismatch",
+      "parameters": [
+        0.3157266252310832,
+        1813936513691.6497,
+        57.95719829088866,
+        0.0
+      ],
+      "reported": 108.0395367267025,
+      "dpqr": 108.03917478280806,
+      "error": 3.350117169631189e-06,
+      "outside_support": [],
+      "reference": 108.03953672670248,
+      "fitter_error": 1.3153383609141045e-16,
+      "dpqr_error": 3.3501059462522046e-06,
+      "attribution": "dpqr"
+    }
+  ],
+  "by_family": {
+    "bbinom": {
+      "records": 126,
+      "before_fitter": 1,
+      "after_fitter": 0,
+      "after_dpqr": 1,
+      "after": {
+        "pass": 113,
+        "stop": 12,
+        "mismatch": 1
+      },
+      "owned_elsewhere": false
+    },
+    "beta": {
+      "records": 89,
+      "before_fitter": 1,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 89
+      },
+      "owned_elsewhere": false
+    },
+    "betapr": {
+      "records": 185,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "stop": 48,
+        "pass": 137
+      },
+      "owned_elsewhere": true
+    },
+    "bhatt": {
+      "records": 145,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "stop": 57,
+        "pass": 88
+      },
+      "owned_elsewhere": true
+    },
+    "binom": {
+      "records": 65,
+      "before_fitter": 1,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 63,
+        "stop": 2
+      },
+      "owned_elsewhere": false
+    },
+    "bnbinom": {
+      "records": 113,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "stop": 35,
+        "pass": 78
+      },
+      "owned_elsewhere": false
+    },
+    "burr": {
+      "records": 193,
+      "before_fitter": 2,
+      "after_fitter": 2,
+      "after_dpqr": 0,
+      "after": {
+        "stop": 52,
+        "pass": 139,
+        "mismatch": 2
+      },
+      "owned_elsewhere": true
+    },
+    "cauchy": {
+      "records": 73,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 69,
+        "stop": 4
+      },
+      "owned_elsewhere": false
+    },
+    "cmb": {
+      "records": 113,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "stop": 30,
+        "pass": 81,
+        "open fit": 2
+      },
+      "owned_elsewhere": false
+    },
+    "cmp": {
+      "records": 57,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 46,
+        "stop": 11
+      },
+      "owned_elsewhere": false
+    },
+    "dgamma": {
+      "records": 57,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 44,
+        "stop": 12,
+        "open fit": 1
+      },
+      "owned_elsewhere": false
+    },
+    "dlaplace": {
+      "records": 57,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 49,
+        "stop": 8
+      },
+      "owned_elsewhere": false
+    },
+    "dnorm": {
+      "records": 57,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 49,
+        "stop": 8
+      },
+      "owned_elsewhere": false
+    },
+    "dunif": {
+      "records": 65,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 59,
+        "stop": 6
+      },
+      "owned_elsewhere": false
+    },
+    "dweibull": {
+      "records": 57,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 46,
+        "stop": 11
+      },
+      "owned_elsewhere": false
+    },
+    "emg": {
+      "records": 185,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "stop": 73,
+        "pass": 112
+      },
+      "owned_elsewhere": false
+    },
+    "exp": {
+      "records": 43,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 43
+      },
+      "owned_elsewhere": false
+    },
+    "fatigue": {
+      "records": 89,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 74,
+        "stop": 15
+      },
+      "owned_elsewhere": false
+    },
+    "foldnorm": {
+      "records": 97,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 97
+      },
+      "owned_elsewhere": false
+    },
+    "fpareto": {
+      "records": 545,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "stop": 264,
+        "open fit": 3,
+        "pass": 278
+      },
+      "owned_elsewhere": true
+    },
+    "frechet": {
+      "records": 181,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 154,
+        "stop": 27
+      },
+      "owned_elsewhere": false
+    },
+    "gamma": {
+      "records": 97,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 97
+      },
+      "owned_elsewhere": false
+    },
+    "gb2": {
+      "records": 545,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "stop": 273,
+        "pass": 272
+      },
+      "owned_elsewhere": true
+    },
+    "ged": {
+      "records": 145,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "stop": 48,
+        "pass": 97
+      },
+      "owned_elsewhere": true
+    },
+    "genbeta": {
+      "records": 193,
+      "before_fitter": 1,
+      "after_fitter": 1,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 119,
+        "stop": 73,
+        "mismatch": 1
+      },
+      "owned_elsewhere": true
+    },
+    "geom": {
+      "records": 29,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 29
+      },
+      "owned_elsewhere": false
+    },
+    "gev": {
+      "records": 153,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 142,
+        "stop": 11
+      },
+      "owned_elsewhere": false
+    },
+    "gompertz": {
+      "records": 85,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 71,
+        "stop": 14
+      },
+      "owned_elsewhere": false
+    },
+    "gpd": {
+      "records": 81,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 80,
+        "stop": 1
+      },
+      "owned_elsewhere": false
+    },
+    "gumbel": {
+      "records": 85,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 84,
+        "stop": 1
+      },
+      "owned_elsewhere": false
+    },
+    "hcauchy": {
+      "records": 101,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 99,
+        "stop": 2
+      },
+      "owned_elsewhere": false
+    },
+    "hnorm": {
+      "records": 83,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 83
+      },
+      "owned_elsewhere": false
+    },
+    "ht": {
+      "records": 201,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 128,
+        "stop": 73
+      },
+      "owned_elsewhere": false
+    },
+    "huber": {
+      "records": 145,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "stop": 76,
+        "pass": 69
+      },
+      "owned_elsewhere": false
+    },
+    "hyper": {
+      "records": 117,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 107,
+        "stop": 10
+      },
+      "owned_elsewhere": false
+    },
+    "invburr": {
+      "records": 193,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 145,
+        "stop": 48
+      },
+      "owned_elsewhere": true
+    },
+    "invexp": {
+      "records": 45,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 45
+      },
+      "owned_elsewhere": false
+    },
+    "invgamma": {
+      "records": 97,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 97
+      },
+      "owned_elsewhere": false
+    },
+    "invgauss": {
+      "records": 101,
+      "before_fitter": 2,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 101
+      },
+      "owned_elsewhere": false
+    },
+    "invparalogis": {
+      "records": 89,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 84,
+        "stop": 5
+      },
+      "owned_elsewhere": true
+    },
+    "invpareto": {
+      "records": 89,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "stop": 21,
+        "pass": 68
+      },
+      "owned_elsewhere": false
+    },
+    "invtrgamma": {
+      "records": 153,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "stop": 40,
+        "pass": 113
+      },
+      "owned_elsewhere": true
+    },
+    "invweibull": {
+      "records": 85,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 84,
+        "stop": 1
+      },
+      "owned_elsewhere": false
+    },
+    "kumar": {
+      "records": 81,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 71,
+        "stop": 10
+      },
+      "owned_elsewhere": false
+    },
+    "laplace": {
+      "records": 73,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 73
+      },
+      "owned_elsewhere": false
+    },
+    "lgamma": {
+      "records": 81,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 2,
+      "after": {
+        "pass": 79,
+        "mismatch": 2
+      },
+      "owned_elsewhere": false
+    },
+    "lgser": {
+      "records": 29,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 29
+      },
+      "owned_elsewhere": false
+    },
+    "llogis": {
+      "records": 89,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 89
+      },
+      "owned_elsewhere": false
+    },
+    "lnorm": {
+      "records": 101,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 3,
+      "after": {
+        "pass": 98,
+        "mismatch": 3
+      },
+      "owned_elsewhere": false
+    },
+    "logis": {
+      "records": 73,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 71,
+        "stop": 2
+      },
+      "owned_elsewhere": false
+    },
+    "logitnorm": {
+      "records": 89,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 89
+      },
+      "owned_elsewhere": false
+    },
+    "lomax": {
+      "records": 77,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 65,
+        "stop": 12
+      },
+      "owned_elsewhere": false
+    },
+    "lst": {
+      "records": 145,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 81,
+        "stop": 64
+      },
+      "owned_elsewhere": false
+    },
+    "naka": {
+      "records": 97,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 94,
+        "stop": 3
+      },
+      "owned_elsewhere": false
+    },
+    "nbinom": {
+      "records": 65,
+      "before_fitter": 1,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 53,
+        "stop": 12
+      },
+      "owned_elsewhere": false
+    },
+    "nhyper": {
+      "records": 125,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 113,
+        "stop": 12
+      },
+      "owned_elsewhere": false
+    },
+    "norm": {
+      "records": 73,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 73
+      },
+      "owned_elsewhere": false
+    },
+    "nsbeta": {
+      "records": 101,
+      "before_fitter": 1,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 81,
+        "stop": 20
+      },
+      "owned_elsewhere": false
+    },
+    "paralogis": {
+      "records": 77,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 75,
+        "stop": 2
+      },
+      "owned_elsewhere": true
+    },
+    "pareto": {
+      "records": 83,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 83
+      },
+      "owned_elsewhere": false
+    },
+    "pareto2": {
+      "records": 89,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 72,
+        "stop": 17
+      },
+      "owned_elsewhere": false
+    },
+    "pareto3": {
+      "records": 77,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 77
+      },
+      "owned_elsewhere": true
+    },
+    "pareto4": {
+      "records": 177,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 4,
+      "after": {
+        "stop": 49,
+        "pass": 124,
+        "mismatch": 4
+      },
+      "owned_elsewhere": true
+    },
+    "pig": {
+      "records": 57,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 37,
+        "stop": 20
+      },
+      "owned_elsewhere": false
+    },
+    "pois": {
+      "records": 29,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 29
+      },
+      "owned_elsewhere": false
+    },
+    "power": {
+      "records": 85,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 85
+      },
+      "owned_elsewhere": false
+    },
+    "rayleigh": {
+      "records": 49,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 49
+      },
+      "owned_elsewhere": false
+    },
+    "sged": {
+      "records": 257,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "stop": 157,
+        "pass": 100
+      },
+      "owned_elsewhere": true
+    },
+    "sgomp": {
+      "records": 89,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 78,
+        "stop": 11
+      },
+      "owned_elsewhere": false
+    },
+    "skellam": {
+      "records": 57,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 57
+      },
+      "owned_elsewhere": false
+    },
+    "slash": {
+      "records": 65,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 62,
+        "stop": 3
+      },
+      "owned_elsewhere": false
+    },
+    "sn": {
+      "records": 161,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "stop": 74,
+        "pass": 87
+      },
+      "owned_elsewhere": true
+    },
+    "snorm": {
+      "records": 129,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "stop": 63,
+        "pass": 66
+      },
+      "owned_elsewhere": true
+    },
+    "sstd": {
+      "records": 257,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "stop": 157,
+        "pass": 100
+      },
+      "owned_elsewhere": true
+    },
+    "st": {
+      "records": 257,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 109,
+        "stop": 148
+      },
+      "owned_elsewhere": false
+    },
+    "std": {
+      "records": 145,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "stop": 56,
+        "pass": 89
+      },
+      "owned_elsewhere": false
+    },
+    "tbinom": {
+      "records": 241,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 222,
+        "stop": 19
+      },
+      "owned_elsewhere": false
+    },
+    "tlambda": {
+      "records": 177,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 154,
+        "stop": 23
+      },
+      "owned_elsewhere": false
+    },
+    "tnorm": {
+      "records": 257,
+      "before_fitter": 9,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "stop": 60,
+        "pass": 197
+      },
+      "owned_elsewhere": false
+    },
+    "tpois": {
+      "records": 117,
+      "before_fitter": 1,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 117
+      },
+      "owned_elsewhere": false
+    },
+    "trgamma": {
+      "records": 177,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "stop": 44,
+        "pass": 133
+      },
+      "owned_elsewhere": true
+    },
+    "triang": {
+      "records": 169,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 161,
+        "stop": 8
+      },
+      "owned_elsewhere": false
+    },
+    "unif": {
+      "records": 95,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 83,
+        "stop": 12
+      },
+      "owned_elsewhere": false
+    },
+    "weibull": {
+      "records": 97,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 96,
+        "stop": 1
+      },
+      "owned_elsewhere": false
+    },
+    "yulesimon": {
+      "records": 17,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 13,
+        "stop": 4
+      },
+      "owned_elsewhere": false
+    },
+    "zeta": {
+      "records": 17,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 14,
+        "stop": 3
+      },
+      "owned_elsewhere": false
+    },
+    "zib": {
+      "records": 129,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 129
+      },
+      "owned_elsewhere": false
+    },
+    "zinb": {
+      "records": 129,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "stop": 32,
+        "pass": 97
+      },
+      "owned_elsewhere": false
+    },
+    "zip": {
+      "records": 57,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 54,
+        "stop": 3
+      },
+      "owned_elsewhere": false
+    },
+    "zipf": {
+      "records": 57,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 56,
+        "stop": 1
+      },
+      "owned_elsewhere": false
+    },
+    "zmbinom": {
+      "records": 129,
+      "before_fitter": 2,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 125,
+        "stop": 4
+      },
+      "owned_elsewhere": false
+    },
+    "zmgeom": {
+      "records": 57,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 57
+      },
+      "owned_elsewhere": false
+    },
+    "zmlogarithmic": {
+      "records": 57,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 57
+      },
+      "owned_elsewhere": false
+    },
+    "zmnbinom": {
+      "records": 129,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 103,
+        "stop": 26
+      },
+      "owned_elsewhere": false
+    },
+    "zmpois": {
+      "records": 57,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 57
+      },
+      "owned_elsewhere": false
+    },
+    "ztbinom": {
+      "records": 65,
+      "before_fitter": 1,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 63,
+        "stop": 2
+      },
+      "owned_elsewhere": false
+    },
+    "ztgeom": {
+      "records": 17,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 17
+      },
+      "owned_elsewhere": false
+    },
+    "ztnbinom": {
+      "records": 65,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 50,
+        "stop": 15
+      },
+      "owned_elsewhere": false
+    },
+    "ztpois": {
+      "records": 29,
+      "before_fitter": 0,
+      "after_fitter": 0,
+      "after_dpqr": 0,
+      "after": {
+        "pass": 29
+      },
+      "owned_elsewhere": true
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "head": "3b2a16fed4787c71b96bf23b1cb86569973b0a9c",
+  "compiler": "GCC 15.2.0 (workstation)",
+  "flags": [
+    "-std=c++17",
+    "-O1"
+  ],
+  "driver_sha256": "04860f71a6e5b4e0e54ce54a29f9128c259cb9fa06ae2b8535cc28bb99d46789",
+  "binary_sha256": "9da81ab367bb706b17df979ba99e3da67ad94d9ff1b01e664ea91f879d13ae52",
+  "description": "Compiled before any production changes, from the initially clean worktree. Inputs are the frozen November 7 archive and current golden samples; all fits were rerun."
+}

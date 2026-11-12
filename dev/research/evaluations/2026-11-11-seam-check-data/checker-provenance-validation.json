@@ -1,0 +1,5 @@
+{
+  "expected_rejection": true,
+  "returncode": 1,
+  "message": "source/selection changed: use a new --output, do not reuse stale fits"
+}

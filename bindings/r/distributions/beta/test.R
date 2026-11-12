@@ -84,3 +84,16 @@ test_that("beta: P3 unfinished optimizer stops", {
   expect_error(mlbeta(x, iterlim=1, reltol=1e-10),
                "[Ff]ail|converge|unresolved|exhausted|score check")
 })
+
+test_that("concentrated beta retains the exact-input public-point logLik", {
+  x <- c(0.2499999999995,0.24999999999975,0.25,0.25000000000025,0.25000000000075)
+  fit <- mlbeta(x)
+  # stats::dbeta loses accuracy here; the independent 180/240-digit
+  # reference evaluates these exact public coefficients. The C++ regression
+  # checks the native density sum.
+  expect_identical(fit[["shape1"]],2.53375903435621e23)
+  expect_identical(fit[["shape2"]],7.601277103066602e23)
+  ll <- 135.27888712858683
+  expect_lte(135.27888712924002-as.numeric(logLik(fit)),1e-10*135.27888712924002)
+  expect_lte(abs(as.numeric(logLik(fit))-ll),1e-10*max(1,abs(ll)))
+})

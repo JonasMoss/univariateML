@@ -227,3 +227,13 @@ TEST_CASE("binom: quantile search guards and representability") {
 TEST_CASE("binom: exact-input density from likelihood seam replay") {
  CHECK(cppunivariate::distributions::dbinom(1000000,1000023.0,0.9999816004231903,true)==doctest::Approx(-3.0226093617274734).epsilon(1e-10));
 }
+
+TEST_CASE("binom: held probability large-count logLik uses the accurate density") {
+  const std::vector<int> x{1000000,1000001,1000003,1000008,1000011};
+  const auto r=cppunivariate::binom_mle({x.data(),x.size()},NAN,1.490116e-8,100,0.5022);
+  REQUIRE(r.status==cppunivariate::BinomStatus::Ok);
+  double ll=0;
+  for(int v:x)ll+=cppunivariate::distributions::dbinom(v,r.size,r.prob,true);
+  CHECK(std::abs(r.logLik-ll)<=1e-10*std::max(1.,std::abs(ll)));
+  CHECK(r.logLik==doctest::Approx(-37.389678299088466).epsilon(1e-12));
+}

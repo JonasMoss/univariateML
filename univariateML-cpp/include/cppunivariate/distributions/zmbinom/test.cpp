@@ -201,3 +201,14 @@ TEST_CASE("zmbinom: case 629 large-count profile likelihood") {
   CHECK(std::abs(fit.logLik-(-14.363696715670824))<1e-10);
   CHECK(fit.p0==0);
 }
+
+TEST_CASE("zmbinom: delegated large-count logLik retains the truncated-binomial correction") {
+  const std::vector<int> x{1000000,1000001,1000003,1000008,1000011};
+  for(double p0:{0.,.276}) {
+    const auto r=cppunivariate::zmbinom_mle({x.data(),x.size()},1e-10,200,NAN,NAN,p0);
+    REQUIRE(r.status==cppunivariate::ZmbinomStatus::Ok);
+    double ll=0;
+    for(int v:x)ll+=cppunivariate::distributions::dzmbinom(v,r.size,r.prob,r.p0,true);
+    CHECK(std::abs(r.logLik-ll)<=1e-10*std::max(1.,std::abs(ll)));
+  }
+}

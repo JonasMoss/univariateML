@@ -1,4 +1,5 @@
 #pragma once
+#include "dpqr.hpp"
 #include "face_certificate.hpp"
 #include "accuracy.hpp"
 #include "../../core/work_budget.hpp"
@@ -268,8 +269,17 @@ inline ZtbinomResult ztbinom_mle(ispan x,double tol=1e-10,int maxit=200,
     for(int v:x) {
       if(best.prob==0){if(v!=1)best.status=ZtbinomStatus::IterationFailure;}
       else if(best.prob==1){if(v!=best.size)best.status=ZtbinomStatus::IterationFailure;}
-      else best.logLik+=zero_detail::bin_logpmf(v,best.size,best.prob)-std::log(-std::expm1(best.size*std::log1p(-best.prob)));
+      else best.logLik+=distributions::dztbinom(v,best.size,best.prob,true);
     }
+  }
+  if(best.status==ZtbinomStatus::Ok) {
+    double ll=0,correction=0;
+    for(int v:x) {
+      const double value=distributions::dztbinom(v,best.size,best.prob,true)-correction;
+      const double next=ll+value;correction=(next-ll)-value;ll=next;
+    }
+    best.logLik=ll;
+    if(!std::isfinite(ll))best.status=ZtbinomStatus::IterationFailure;
   }
   return best;
 }

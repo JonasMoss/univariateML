@@ -1,0 +1,27 @@
+[
+  {
+    "name": "invgauss-double-census",
+    "machine": "workstation",
+    "command": [
+      "python3",
+      "dev/validation/seam-check.py",
+      "--family",
+      "invgauss",
+      "--no-long-double",
+      "--output",
+      "/home/jonas/Files/programming/univariateML.wt/seam-check/dev/research/evaluations/2026-11-11-seam-check-data/after-invgauss-double.jsonl"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 3.5819783189799637
+  },
+  {
+    "name": "invgauss-maximized-value",
+    "machine": "workstation",
+    "command": [
+      "python3",
+      "/home/jonas/Files/programming/univariateML.wt/seam-check/dev/research/evaluations/2026-11-11-seam-check-data/invgauss-max-check.py"
+    ],
+    "returncode": 1,
+    "elapsed_seconds": 0.31126071099424735
+  }
+]

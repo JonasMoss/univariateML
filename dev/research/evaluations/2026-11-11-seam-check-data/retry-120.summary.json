@@ -1,0 +1,22 @@
+{
+  "records": 13,
+  "by_family": {
+    "cmb": {
+      "open fit": 2,
+      "stop": 2
+    },
+    "dgamma": {
+      "open fit": 1
+    },
+    "fpareto": {
+      "open fit": 2,
+      "stop": 3
+    },
+    "genbeta": {
+      "stop": 3
+    }
+  },
+  "attributions": {},
+  "head": "3b2a16fed4787c71b96bf23b1cb86569973b0a9c",
+  "compiler": "c++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0"
+}

@@ -195,3 +195,10 @@ test_that("all-held subnormal members retain finite likelihood evaluation", {
   expect_true(is.finite(attr(fit,"logLik")))
   expect_identical(fit[["size"]],size)
 })
+
+test_that("large-count held-probability negative binomial logLik crosses the binding intact", {
+  x <- c(1000000,1000001,1000003,1000008,1000011)
+  fit <- mlnbinom(x,prob=0.30610275261187947)
+  ll <- sum(dml(x,fit,log=TRUE))
+  expect_lte(abs(as.numeric(logLik(fit))-ll),1e-10*max(1,abs(ll)))
+})

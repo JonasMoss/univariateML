@@ -137,3 +137,12 @@ test_that("P2 held existence boundaries", {
 expect_error(mlinvgauss(rep(2,3),mean=2),"constant data")
 expect_true(is.finite(logLik(mlinvgauss(rep(2,3),shape=2))))
 })
+
+test_that("concentrated inverse Gaussian logLik evaluates the public point", {
+  x <- c(2.4377209513444593,2.4377209513468974,2.437720951349335,
+         2.4377209513517726,2.4377209513566482)
+  fit <- mlinvgauss(x)
+  ll <- sum(dml(x,fit,log=TRUE))
+  expect_lte(abs(as.numeric(logLik(fit))-ll),1e-10*max(1,abs(ll)))
+  expect_lte(abs(as.numeric(logLik(fit))-123.89205063011403),1e-10*123.89205063011403)
+})

@@ -1,0 +1,14 @@
+{
+  "source_sha256": "4d2384ae5aad90c0fabdf46c7873ca60b86912cc59309058e0b2dc5718ee5dc6",
+  "families": [
+    "beta",
+    "betapr",
+    "fpareto",
+    "gb2",
+    "genbeta",
+    "nsbeta"
+  ],
+  "no_long_double": false,
+  "timeout": 30,
+  "case": null
+}

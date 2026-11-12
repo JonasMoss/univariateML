@@ -1,0 +1,16 @@
+[
+  {
+    "recipe": "site-check",
+    "machine": "workstation (one CPU affinity)",
+    "returncode": 0,
+    "started": "2026-11-11T20:07:08.228459+00:00",
+    "elapsed_seconds": 157.43043998698704
+  },
+  {
+    "recipe": "js-test",
+    "machine": "workstation (one CPU affinity)",
+    "returncode": 1,
+    "started": "2026-11-11T20:09:45.659161+00:00",
+    "elapsed_seconds": 521.4638402870041
+  }
+]

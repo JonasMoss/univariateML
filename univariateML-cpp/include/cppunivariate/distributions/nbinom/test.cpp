@@ -246,3 +246,13 @@ TEST_CASE("nbinom: finite-size Poisson face log mass and tiny survival") {
 TEST_CASE("nbinom: exact-input density from likelihood seam replay") {
  CHECK(cppunivariate::distributions::dnbinom(1000001,10.391389312562472,1.0391233533535134e-05,true)==doctest::Approx(-13.571983521811106).epsilon(1e-10));
 }
+
+TEST_CASE("nbinom: held probability large-count logLik evaluates the public size") {
+  const std::vector<int> x{1000000,1000001,1000003,1000008,1000011};
+  const auto r=cppunivariate::nbinom_mle({x.data(),x.size()},1.490116e-8,100,NAN,0.30610275261187947);
+  REQUIRE(r.status==cppunivariate::NbinomStatus::Ok);
+  double ll=0;
+  for(int v:x)ll+=cppunivariate::distributions::dnbinom(v,r.size,r.prob,true);
+  CHECK(std::abs(r.logLik-ll)<=1e-10*std::max(1.,std::abs(ll)));
+  CHECK(r.logLik==doctest::Approx(-42.09308040331988).epsilon(1e-12));
+}

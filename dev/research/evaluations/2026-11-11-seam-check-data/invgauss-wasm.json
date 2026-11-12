@@ -1,0 +1,16 @@
+{
+  "fit": {
+    "warnings": [],
+    "restricted": {},
+    "estimates": {
+      "mean": 2.4377209513498226,
+      "shape": 8.23530894536328e+23
+    },
+    "fixed": [],
+    "logLik": 123.89205062899285,
+    "iterations": 0,
+    "status": "Ok"
+  },
+  "maximum": 123.89205063011403,
+  "sum": 123.89205062899283
+}

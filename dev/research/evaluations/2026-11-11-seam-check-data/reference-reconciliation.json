@@ -1,0 +1,290 @@
+[
+  {
+    "family": "bbinom",
+    "source": "archive",
+    "index": 75,
+    "reference": -164.81779817797852,
+    "before_fitter_error": 6.715376425346324e-10,
+    "after_fitter_error": 1.7244320543411714e-16,
+    "reference_mode": "identical-input reuse"
+  },
+  {
+    "family": "beta",
+    "source": "archive",
+    "index": 100,
+    "reference": 135.27888712858683,
+    "before_fitter_error": 1.5722851766318888e-10,
+    "after_fitter_error": 0.0,
+    "reference_mode": "recomputed at polished coefficients"
+  },
+  {
+    "family": "binom",
+    "source": "archive",
+    "index": 483,
+    "reference": -37.389678299088466,
+    "before_fitter_error": 2.0889471038624907e-10,
+    "after_fitter_error": 0.0,
+    "reference_mode": "identical-input reuse"
+  },
+  {
+    "family": "burr",
+    "source": "archive",
+    "index": 636,
+    "reference": 124.54633405249429,
+    "before_fitter_error": 1.9764496262447286e-07,
+    "after_fitter_error": 1.9764496262447286e-07,
+    "reference_mode": "identical-input reuse"
+  },
+  {
+    "family": "burr",
+    "source": "archive",
+    "index": 639,
+    "reference": 124.54633405249429,
+    "before_fitter_error": 1.9764496262447286e-07,
+    "after_fitter_error": 1.9764496262447286e-07,
+    "reference_mode": "identical-input reuse"
+  },
+  {
+    "family": "genbeta",
+    "source": "archive",
+    "index": 2568,
+    "reference": 43.17544463960882,
+    "before_fitter_error": 1.451557619707424e-10,
+    "after_fitter_error": 1.451557619707424e-10,
+    "reference_mode": "identical-input reuse"
+  },
+  {
+    "family": "invgauss",
+    "source": "archive",
+    "index": 3835,
+    "reference": 123.89205062899286,
+    "before_fitter_error": 1.9334150597896237e-10,
+    "after_fitter_error": 1.147035232934987e-16,
+    "reference_mode": "identical-input reuse"
+  },
+  {
+    "family": "invgauss",
+    "source": "archive",
+    "index": 3838,
+    "reference": 123.89205062899286,
+    "before_fitter_error": 1.9334150597896237e-10,
+    "after_fitter_error": 1.147035232934987e-16,
+    "reference_mode": "identical-input reuse"
+  },
+  {
+    "family": "lgamma",
+    "source": "archive",
+    "index": 4435,
+    "reference": 124.9990106050809,
+    "before_fitter_error": 1.1368773757817542e-16,
+    "after_fitter_error": 1.1368773757817542e-16,
+    "reference_mode": "identical-input reuse"
+  },
+  {
+    "family": "lgamma",
+    "source": "archive",
+    "index": 4438,
+    "reference": 124.9990106050809,
+    "before_fitter_error": 1.1368773757817542e-16,
+    "after_fitter_error": 1.1368773757817542e-16,
+    "reference_mode": "identical-input reuse"
+  },
+  {
+    "family": "lnorm",
+    "source": "archive",
+    "index": 4601,
+    "reference": 126.50615506228073,
+    "before_fitter_error": 1.1233330669330518e-16,
+    "after_fitter_error": 1.1233330669330518e-16,
+    "reference_mode": "identical-input reuse"
+  },
+  {
+    "family": "lnorm",
+    "source": "archive",
+    "index": 4604,
+    "reference": 126.50615506228073,
+    "before_fitter_error": 1.1233330669330518e-16,
+    "after_fitter_error": 1.1233330669330518e-16,
+    "reference_mode": "identical-input reuse"
+  },
+  {
+    "family": "lnorm",
+    "source": "archive",
+    "index": 4611,
+    "reference": -19.952111548312196,
+    "before_fitter_error": 1.0683722382559658e-15,
+    "after_fitter_error": 1.0683722382559658e-15,
+    "reference_mode": "identical-input reuse"
+  },
+  {
+    "family": "nbinom",
+    "source": "archive",
+    "index": 5133,
+    "reference": -42.09308040331988,
+    "before_fitter_error": 1.2635003340683012e-10,
+    "after_fitter_error": 0.0,
+    "reference_mode": "identical-input reuse"
+  },
+  {
+    "family": "pareto4",
+    "source": "archive",
+    "index": 5665,
+    "reference": 61.987917686706915,
+    "before_fitter_error": 1.146260049178057e-16,
+    "after_fitter_error": 1.146260049178057e-16,
+    "reference_mode": "identical-input reuse"
+  },
+  {
+    "family": "pareto4",
+    "source": "archive",
+    "index": 5666,
+    "reference": 108.03953672670248,
+    "before_fitter_error": 1.3153383609141045e-16,
+    "after_fitter_error": 1.3153383609141045e-16,
+    "reference_mode": "identical-input reuse"
+  },
+  {
+    "family": "pareto4",
+    "source": "archive",
+    "index": 5668,
+    "reference": 61.987917686706915,
+    "before_fitter_error": 1.146260049178057e-16,
+    "after_fitter_error": 1.146260049178057e-16,
+    "reference_mode": "identical-input reuse"
+  },
+  {
+    "family": "pareto4",
+    "source": "archive",
+    "index": 5669,
+    "reference": 108.03953672670248,
+    "before_fitter_error": 1.3153383609141045e-16,
+    "after_fitter_error": 1.3153383609141045e-16,
+    "reference_mode": "identical-input reuse"
+  },
+  {
+    "family": "tnorm",
+    "source": "archive",
+    "index": 7695,
+    "reference": -13.54252323107333,
+    "before_fitter_error": 2.6984129071090417e-10,
+    "after_fitter_error": 0.0,
+    "reference_mode": "identical-input reuse"
+  },
+  {
+    "family": "tnorm",
+    "source": "archive",
+    "index": 7705,
+    "reference": 135.6903671556374,
+    "before_fitter_error": 1.223189655866202e-07,
+    "after_fitter_error": 0.0,
+    "reference_mode": "identical-input reuse"
+  },
+  {
+    "family": "tnorm",
+    "source": "archive",
+    "index": 7708,
+    "reference": 130.10791560377197,
+    "before_fitter_error": 7.30530258846915e-08,
+    "after_fitter_error": 0.0,
+    "reference_mode": "identical-input reuse"
+  },
+  {
+    "family": "tnorm",
+    "source": "archive",
+    "index": 7711,
+    "reference": -2048891866.3134167,
+    "before_fitter_error": 8.484633992627765e-10,
+    "after_fitter_error": 0.0,
+    "reference_mode": "identical-input reuse"
+  },
+  {
+    "family": "tnorm",
+    "source": "archive",
+    "index": 7759,
+    "reference": -13.870228052713614,
+    "before_fitter_error": 3.7647913039971774e-10,
+    "after_fitter_error": 0.0,
+    "reference_mode": "identical-input reuse"
+  },
+  {
+    "family": "tnorm",
+    "source": "archive",
+    "index": 7807,
+    "reference": -18.52338468075366,
+    "before_fitter_error": 1.903083196583765e-09,
+    "after_fitter_error": 5.753884195621993e-16,
+    "reference_mode": "identical-input reuse"
+  },
+  {
+    "family": "tnorm",
+    "source": "archive",
+    "index": 7819,
+    "reference": 83.16111692309549,
+    "before_fitter_error": 1.2136600715869855e-10,
+    "after_fitter_error": 0.0,
+    "reference_mode": "identical-input reuse"
+  },
+  {
+    "family": "tnorm",
+    "source": "archive",
+    "index": 7823,
+    "reference": -15.227603595272434,
+    "before_fitter_error": 1.1497007196068035e-10,
+    "after_fitter_error": 0.0,
+    "reference_mode": "identical-input reuse"
+  },
+  {
+    "family": "tnorm",
+    "source": "archive",
+    "index": 7839,
+    "reference": -2048891866.3134167,
+    "before_fitter_error": 8.484633992627765e-10,
+    "after_fitter_error": 0.0,
+    "reference_mode": "identical-input reuse"
+  },
+  {
+    "family": "tpois",
+    "source": "archive",
+    "index": 7917,
+    "reference": -12.253430677034801,
+    "before_fitter_error": 4.3384421561200295e-10,
+    "after_fitter_error": 0.0,
+    "reference_mode": "identical-input reuse"
+  },
+  {
+    "family": "zmbinom",
+    "source": "archive",
+    "index": 8805,
+    "reference": -14.363696715670825,
+    "before_fitter_error": 4.73735599185086e-08,
+    "after_fitter_error": 2.3497279716148965e-15,
+    "reference_mode": "identical-input reuse"
+  },
+  {
+    "family": "zmbinom",
+    "source": "archive",
+    "index": 8857,
+    "reference": -15.978516148652927,
+    "before_fitter_error": 4.258589736724959e-08,
+    "after_fitter_error": 2.0010883871654203e-15,
+    "reference_mode": "identical-input reuse"
+  },
+  {
+    "family": "ztbinom",
+    "source": "archive",
+    "index": 9189,
+    "reference": -14.363696715670825,
+    "before_fitter_error": 4.73735599185086e-08,
+    "after_fitter_error": 2.3497279716148965e-15,
+    "reference_mode": "identical-input reuse"
+  },
+  {
+    "family": "nsbeta",
+    "source": "archive",
+    "index": 10786,
+    "reference": 135.27888712858683,
+    "before_fitter_error": 1.5722851766318888e-10,
+    "after_fitter_error": 0.0,
+    "reference_mode": "recomputed at polished coefficients"
+  }
+]
