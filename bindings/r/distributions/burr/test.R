@@ -346,3 +346,11 @@ test_that("Burr held power retains a finite fit near the exponential face", {
   expect_identical(attr(f,"certified"),FALSE)
   expect_true(is.finite(as.numeric(logLik(f))))
 })
+
+test_that("Burr retains a finite log tail after intermediate power overflow", {
+  expect_equal(pburr(1e100,1e-308,1e308,1,FALSE,TRUE),
+               -100*log(10),tolerance=1e-10)
+  x <- c(1e90,1e100,1e110)
+  expect_equal(pburr(x,1e-308,1e308,1,FALSE,TRUE),-log(x),tolerance=1e-10)
+  expect_equal(dburr(x,1e-308,1e308,1,TRUE),-2*log(x),tolerance=1e-10)
+})

@@ -1,0 +1,109 @@
+{
+  "baseline": "217ab8b533cac25ccc8eba8d66eccde1b376f0b4",
+  "current": false,
+  "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "records": [
+    {
+      "mode": "native",
+      "flags": [
+        "-g",
+        "-std=gnu++17",
+        "-DNDEBUG",
+        "-O0",
+        "-I/home/jonas/Files/programming/univariateML.wt/o2-tests/build/scratch/o2-replay/baseline/univariateML-cpp/include",
+        "-I/home/jonas/R/x86_64-pc-linux-gnu-library/4.6/BH/include"
+      ],
+      "output": "ratio 230.25850929940458 product inf logproduct 714.63541127340216\nloga -709.19620864216608 lh 5.4392026312360713 tails -9.9999999999444675e-101 -230.25850929941012\nruntime -230.25850929941012 -230.25850929941012\nconstant -230.25850929941012 -230.25850929941012\ndensity -460.51701859881473 -5.5422333389287814e-12\n"
+    },
+    {
+      "mode": "native",
+      "flags": [
+        "-g",
+        "-std=gnu++17",
+        "-DNDEBUG",
+        "-O1",
+        "-I/home/jonas/Files/programming/univariateML.wt/o2-tests/build/scratch/o2-replay/baseline/univariateML-cpp/include",
+        "-I/home/jonas/R/x86_64-pc-linux-gnu-library/4.6/BH/include"
+      ],
+      "output": "ratio 230.25850929940458 product inf logproduct 714.63541127340216\nloga -709.19620864216608 lh 5.4392026312360713 tails -9.9999999999444675e-101 -230.25850929941012\nruntime -inf -inf\nconstant -inf -inf\ndensity -inf -inf\n"
+    },
+    {
+      "mode": "native",
+      "flags": [
+        "-g",
+        "-std=gnu++17",
+        "-DNDEBUG",
+        "-O2",
+        "-I/home/jonas/Files/programming/univariateML.wt/o2-tests/build/scratch/o2-replay/baseline/univariateML-cpp/include",
+        "-I/home/jonas/R/x86_64-pc-linux-gnu-library/4.6/BH/include"
+      ],
+      "output": "ratio 230.25850929940458 product inf logproduct 714.63541127340216\nloga -709.19620864216608 lh 5.4392026312360713 tails -9.9999999999444675e-101 -230.25850929941012\nruntime -inf -inf\nconstant -inf -inf\ndensity -inf -inf\n"
+    },
+    {
+      "mode": "native",
+      "flags": [
+        "-g",
+        "-std=gnu++17",
+        "-DNDEBUG",
+        "-O2",
+        "-fno-inline",
+        "-I/home/jonas/Files/programming/univariateML.wt/o2-tests/build/scratch/o2-replay/baseline/univariateML-cpp/include",
+        "-I/home/jonas/R/x86_64-pc-linux-gnu-library/4.6/BH/include"
+      ],
+      "output": "ratio 230.25850929940458 product inf logproduct 714.63541127340216\nloga -709.19620864216608 lh 5.4392026312360713 tails -9.9999999999444675e-101 -230.25850929941012\nruntime -230.25850929941012 -230.25850929941012\nconstant -230.25850929941012 -230.25850929941012\ndensity -460.51701859881473 -5.5422333389287814e-12\n"
+    },
+    {
+      "mode": "no-long-double",
+      "flags": [
+        "-g",
+        "-std=gnu++17",
+        "-DNDEBUG",
+        "-O0",
+        "-I/home/jonas/Files/programming/univariateML.wt/o2-tests/build/scratch/o2-replay/baseline/univariateML-cpp/include",
+        "-I/home/jonas/R/x86_64-pc-linux-gnu-library/4.6/BH/include",
+        "-DBOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS"
+      ],
+      "output": "ratio 230.25850929940458 product inf logproduct 714.63541127340216\nloga -709.19620864216608 lh 5.4392026312360713 tails -9.9999999999444675e-101 -230.25850929941012\nruntime -230.25850929941012 -230.25850929941012\nconstant -230.25850929941012 -230.25850929941012\ndensity -460.51701859881473 -5.5422333389287814e-12\n"
+    },
+    {
+      "mode": "no-long-double",
+      "flags": [
+        "-g",
+        "-std=gnu++17",
+        "-DNDEBUG",
+        "-O1",
+        "-I/home/jonas/Files/programming/univariateML.wt/o2-tests/build/scratch/o2-replay/baseline/univariateML-cpp/include",
+        "-I/home/jonas/R/x86_64-pc-linux-gnu-library/4.6/BH/include",
+        "-DBOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS"
+      ],
+      "output": "ratio 230.25850929940458 product inf logproduct 714.63541127340216\nloga -709.19620864216608 lh 5.4392026312360713 tails -9.9999999999444675e-101 -230.25850929941012\nruntime -inf -inf\nconstant -inf -inf\ndensity -inf -inf\n"
+    },
+    {
+      "mode": "no-long-double",
+      "flags": [
+        "-g",
+        "-std=gnu++17",
+        "-DNDEBUG",
+        "-O2",
+        "-I/home/jonas/Files/programming/univariateML.wt/o2-tests/build/scratch/o2-replay/baseline/univariateML-cpp/include",
+        "-I/home/jonas/R/x86_64-pc-linux-gnu-library/4.6/BH/include",
+        "-DBOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS"
+      ],
+      "output": "ratio 230.25850929940458 product inf logproduct 714.63541127340216\nloga -709.19620864216608 lh 5.4392026312360713 tails -9.9999999999444675e-101 -230.25850929941012\nruntime -inf -inf\nconstant -inf -inf\ndensity -inf -inf\n"
+    },
+    {
+      "mode": "no-long-double",
+      "flags": [
+        "-g",
+        "-std=gnu++17",
+        "-DNDEBUG",
+        "-O2",
+        "-fno-inline",
+        "-I/home/jonas/Files/programming/univariateML.wt/o2-tests/build/scratch/o2-replay/baseline/univariateML-cpp/include",
+        "-I/home/jonas/R/x86_64-pc-linux-gnu-library/4.6/BH/include",
+        "-DBOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS"
+      ],
+      "output": "ratio 230.25850929940458 product inf logproduct 714.63541127340216\nloga -709.19620864216608 lh 5.4392026312360713 tails -9.9999999999444675e-101 -230.25850929941012\nruntime -230.25850929941012 -230.25850929941012\nconstant -230.25850929941012 -230.25850929941012\ndensity -460.51701859881473 -5.5422333389287814e-12\n"
+    }
+  ]
+}

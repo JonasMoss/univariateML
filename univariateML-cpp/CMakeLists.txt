@@ -12,7 +12,8 @@ project(cppunivariate CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
+# R's shipped C++17 compilation uses GNU extensions (gnu++17).
+set(CMAKE_CXX_EXTENSIONS ON)
 
 # --- Boost.Math discovery --------------------------------------------------
 if(Boost_INCLUDE_DIR)

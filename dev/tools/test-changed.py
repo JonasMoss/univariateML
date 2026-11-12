@@ -124,7 +124,8 @@ def main():
         commands = []
         builds = [build] + (['build/cpp-no-long-double'] if args.no_long_double else [])
         for build in builds:
-            config = ['cmake', '-S', 'univariateML-cpp', '-B', build]
+            config = ['cmake', '-S', 'univariateML-cpp', '-B', build,
+                      '-DCPPUNIV_TEST_OPTIMIZE=ON']
             if shutil.which('ccache'):
                 config.append('-DCMAKE_CXX_COMPILER_LAUNCHER=ccache')
             if build != 'univariateML-cpp/build':

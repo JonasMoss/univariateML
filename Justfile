@@ -109,30 +109,34 @@ readme-table:
 	  Rscript scripts/readme_table.R
 
 # Build & run the standalone C++ test harness from univariateML-cpp/.
+# All targets use -g -O2 -DNDEBUG and gnu++17, as in R (no Release -O3).
+# Debug separately: cmake -S univariateML-cpp -B build/cpp-debug
+#   -DCPPUNIV_TEST_OPTIMIZE=OFF [-DBoost_INCLUDE_DIR=/path/to/boost].
 # R/BH is only a monorepo convenience when system Boost is unavailable.
 cpp-test:
     #!/usr/bin/env bash
     set -euo pipefail
     launcher=()
     if command -v ccache >/dev/null; then launcher=(-DCMAKE_CXX_COMPILER_LAUNCHER=ccache); fi
-    if ! cmake -S univariateML-cpp -B univariateML-cpp/build "${launcher[@]}"; then
+    if ! cmake -S univariateML-cpp -B univariateML-cpp/build -DCPPUNIV_TEST_OPTIMIZE=ON "${launcher[@]}"; then
         boost=$(Rscript -e 'cat(system.file("include", package="BH"))')
         test -f "$boost/boost/version.hpp"
-        cmake -S univariateML-cpp -B univariateML-cpp/build "${launcher[@]}" -DBoost_INCLUDE_DIR="$boost"
+        cmake -S univariateML-cpp -B univariateML-cpp/build -DCPPUNIV_TEST_OPTIMIZE=ON "${launcher[@]}" -DBoost_INCLUDE_DIR="$boost"
     fi
     cmake --build univariateML-cpp/build -j "${CMAKE_BUILD_PARALLEL_LEVEL:-1}"
     ctest --test-dir univariateML-cpp/build --output-on-failure -j "${CMAKE_BUILD_PARALLEL_LEVEL:-1}" -L "${UMVL_TEST_TIER:-dev}"
 
-# Exercise the entire core with double-width extended intermediates.
+# Exercise the entire optimized core with double intermediates.
+# This explicit portability audit runs every ctest shard (including full).
 cpp-test-no-long-double:
     #!/usr/bin/env bash
     set -euo pipefail
     launcher=()
     if command -v ccache >/dev/null; then launcher=(-DCMAKE_CXX_COMPILER_LAUNCHER=ccache); fi
-    if ! cmake -S univariateML-cpp -B build/cpp-no-long-double "${launcher[@]}" -DCMAKE_CXX_FLAGS=-DBOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS; then
+    if ! cmake -S univariateML-cpp -B build/cpp-no-long-double -DCPPUNIV_TEST_OPTIMIZE=ON "${launcher[@]}" -DCMAKE_CXX_FLAGS=-DBOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS; then
         boost=$(Rscript -e 'cat(system.file("include", package="BH"))')
         test -f "$boost/boost/version.hpp"
-        cmake -S univariateML-cpp -B build/cpp-no-long-double "${launcher[@]}" -DCMAKE_CXX_FLAGS=-DBOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS -DBoost_INCLUDE_DIR="$boost"
+        cmake -S univariateML-cpp -B build/cpp-no-long-double -DCPPUNIV_TEST_OPTIMIZE=ON "${launcher[@]}" -DCMAKE_CXX_FLAGS=-DBOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS -DBoost_INCLUDE_DIR="$boost"
     fi
     cmake --build build/cpp-no-long-double -j "${CMAKE_BUILD_PARALLEL_LEVEL:-1}"
     ctest --test-dir build/cpp-no-long-double --output-on-failure

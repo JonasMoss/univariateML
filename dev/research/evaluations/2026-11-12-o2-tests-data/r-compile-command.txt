@@ -1,0 +1,1 @@
+ccache g++ -std=gnu++17 -I"/opt/R/4.6.1/lib/R/include" -DNDEBUG -I../inst/include -I'/home/jonas/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/jonas/R/x86_64-pc-linux-gnu-library/4.6/BH/include' -I/usr/local/include   -fopenmp -fpic  -g -O2   -c inference.cpp -o inference.o

@@ -1,0 +1,935 @@
+{
+  "baseline_commit": "217ab8b533cac25ccc8eba8d66eccde1b376f0b4",
+  "configurations": {
+    "before": "Original flags: c++17, default O0 except diagnostics at O2",
+    "optimized_unfixed": "g O2 gnu++17, assertions enabled (exploratory full replay)",
+    "after": "g O2 DNDEBUG gnu++17 (R optimization, assertion and language modes)"
+  },
+  "benchmarks": {
+    "before": {
+      "dev": {
+        "machine": "workstation",
+        "workers": 4,
+        "build_seconds": 146.72,
+        "test_seconds": 687.11,
+        "recipe_seconds": 834.3,
+        "passed": 108,
+        "failed": 0,
+        "total": 108,
+        "cache_hits": 5,
+        "cache_misses": 104,
+        "cache_results": {
+          "direct_cache_hit": 5,
+          "local_storage_hit": 5,
+          "local_storage_read_hit": 11,
+          "cache_miss": 104,
+          "direct_cache_miss": 104,
+          "local_storage_miss": 104,
+          "local_storage_read_miss": 207,
+          "local_storage_write": 208,
+          "preprocessed_cache_miss": 104
+        },
+        "failed_shards": [],
+        "failed_assertions": []
+      },
+      "no-long-double": {
+        "machine": "workstation",
+        "workers": 4,
+        "build_seconds": 177.72,
+        "test_seconds": 722.46,
+        "recipe_seconds": 900.74,
+        "passed": 135,
+        "failed": 0,
+        "total": 135,
+        "cache_hits": 4,
+        "cache_misses": 105,
+        "cache_results": {
+          "direct_cache_hit": 4,
+          "local_storage_hit": 4,
+          "local_storage_read_hit": 10,
+          "cache_miss": 105,
+          "direct_cache_miss": 105,
+          "local_storage_miss": 105,
+          "local_storage_read_miss": 208,
+          "local_storage_write": 210,
+          "preprocessed_cache_miss": 105
+        },
+        "failed_shards": [],
+        "failed_assertions": []
+      },
+      "full": {
+        "machine": "workstation",
+        "workers": 4,
+        "build_seconds": 0.14,
+        "test_seconds": 961.56,
+        "recipe_seconds": 961.84,
+        "passed": 135,
+        "failed": 0,
+        "total": 135,
+        "cache_hits": 0,
+        "cache_misses": 0,
+        "cache_results": {},
+        "failed_shards": [],
+        "failed_assertions": []
+      }
+    },
+    "after": {
+      "dev": {
+        "machine": "workstation",
+        "workers": 4,
+        "build_seconds": 686.04,
+        "test_seconds": 415.53,
+        "recipe_seconds": 1101.71,
+        "passed": 108,
+        "failed": 0,
+        "total": 108,
+        "cache_hits": 4,
+        "cache_misses": 104,
+        "cache_results": {
+          "direct_cache_miss": 109,
+          "local_storage_hit": 4,
+          "local_storage_read_hit": 4,
+          "local_storage_read_miss": 214,
+          "local_storage_write": 212,
+          "preprocessed_cache_hit": 4,
+          "modified_input_file": 1,
+          "preprocessed_cache_miss": 105,
+          "cache_miss": 104,
+          "local_storage_miss": 104
+        },
+        "failed_shards": [],
+        "failed_assertions": []
+      },
+      "no-long-double": {
+        "machine": "workstation",
+        "workers": 4,
+        "build_seconds": 566.4,
+        "test_seconds": 390.87,
+        "recipe_seconds": 957.4,
+        "passed": 135,
+        "failed": 0,
+        "total": 135,
+        "cache_hits": 4,
+        "cache_misses": 104,
+        "cache_results": {
+          "direct_cache_miss": 109,
+          "local_storage_hit": 4,
+          "local_storage_read_hit": 4,
+          "local_storage_read_miss": 214,
+          "local_storage_write": 212,
+          "preprocessed_cache_hit": 4,
+          "modified_input_file": 1,
+          "preprocessed_cache_miss": 105,
+          "cache_miss": 104,
+          "local_storage_miss": 104
+        },
+        "failed_shards": [],
+        "failed_assertions": []
+      },
+      "full": {
+        "machine": "workstation",
+        "workers": 4,
+        "build_seconds": 0.18,
+        "test_seconds": 622.09,
+        "recipe_seconds": 622.38,
+        "passed": 135,
+        "failed": 0,
+        "total": 135,
+        "cache_hits": 0,
+        "cache_misses": 0,
+        "cache_results": {},
+        "failed_shards": [],
+        "failed_assertions": []
+      }
+    }
+  },
+  "optimized_unfixed": {
+    "native": {
+      "machine": "workstation",
+      "workers": 4,
+      "build_seconds": 418.05,
+      "test_seconds": 482.95,
+      "recipe_seconds": 901.1,
+      "passed": 133,
+      "failed": 2,
+      "total": 135,
+      "cache_hits": 0,
+      "cache_misses": 108,
+      "cache_results": {
+        "direct_cache_miss": 109,
+        "local_storage_read_miss": 218,
+        "modified_input_file": 1,
+        "preprocessed_cache_miss": 109,
+        "cache_miss": 108,
+        "local_storage_miss": 108,
+        "local_storage_write": 216
+      },
+      "failed_shards": [
+        "distribution_burr",
+        "distribution_invburr"
+      ],
+      "failed_assertions": [
+        "../../include/cppunivariate/distributions/invburr/test.cpp:156: ERROR: CHECK( cppunivariate::distributions::pinvburr(1e-100,1e-308,1e308,1,true,true) == doctest::Approx(-100*std::log(10.0)).scale(0.0).epsilon(1e-10) ) is NOT correct!",
+        "../../include/cppunivariate/distributions/burr/test.cpp:157: ERROR: CHECK( cppunivariate::distributions::pburr(1e100,1e-308,1e308,1,false,true) == doctest::Approx(-100*std::log(10.0)).scale(0.0).epsilon(1e-10) ) is NOT correct!"
+      ]
+    },
+    "no-long-double": {
+      "machine": "workstation",
+      "workers": 4,
+      "build_seconds": 379.87,
+      "test_seconds": 418.94,
+      "recipe_seconds": 798.95,
+      "passed": 133,
+      "failed": 2,
+      "total": 135,
+      "cache_hits": 0,
+      "cache_misses": 108,
+      "cache_results": {
+        "cache_miss": 108,
+        "direct_cache_miss": 109,
+        "local_storage_miss": 108,
+        "local_storage_read_miss": 218,
+        "local_storage_write": 216,
+        "preprocessed_cache_miss": 109,
+        "modified_input_file": 1
+      },
+      "failed_shards": [
+        "distribution_burr",
+        "distribution_invburr"
+      ],
+      "failed_assertions": [
+        "../../../univariateML-cpp/include/cppunivariate/distributions/invburr/test.cpp:156: ERROR: CHECK( cppunivariate::distributions::pinvburr(1e-100,1e-308,1e308,1,true,true) == doctest::Approx(-100*std::log(10.0)).scale(0.0).epsilon(1e-10) ) is NOT correct!",
+        "../../../univariateML-cpp/include/cppunivariate/distributions/burr/test.cpp:157: ERROR: CHECK( cppunivariate::distributions::pburr(1e100,1e-308,1e308,1,false,true) == doctest::Approx(-100*std::log(10.0)).scale(0.0).epsilon(1e-10) ) is NOT correct!"
+      ]
+    }
+  },
+  "truth_totals": {
+    "tables": 101,
+    "parameters": 1302,
+    "values": 67918,
+    "quantiles": 57264,
+    "sampler_points": 202
+  },
+  "truth_tables": {
+    "bbinom": {
+      "parameters": 14,
+      "values": 212,
+      "quantiles": 616,
+      "sampler_points": 2,
+      "sha256": "3f51137e16b942d4b0cb6d129f9c02ef2b44a2c52d8c0f3643037fefbe259d73"
+    },
+    "beta": {
+      "parameters": 12,
+      "values": 205,
+      "quantiles": 528,
+      "sampler_points": 2,
+      "sha256": "aef637742368558c84004afc71a28e03f8c42c9a132c5dd0b92410e7cbf8a5c8"
+    },
+    "betapr": {
+      "parameters": 20,
+      "values": 389,
+      "quantiles": 880,
+      "sampler_points": 2,
+      "sha256": "5b7454bca4232976a850e840702a63fe9485f43fb3778c4ed77f36e92a0a07a7"
+    },
+    "bhatt": {
+      "parameters": 16,
+      "values": 304,
+      "quantiles": 704,
+      "sampler_points": 2,
+      "sha256": "563751585adf3ef5ec5e1764c4c74e700494e00053ad2f472248c2d55adaa575"
+    },
+    "binom": {
+      "parameters": 9,
+      "values": 322,
+      "quantiles": 396,
+      "sampler_points": 2,
+      "sha256": "7a45c5eb5fadc1e5d33773284b9283d657447c448c96584c23d31108d9840c35"
+    },
+    "bnbinom": {
+      "parameters": 16,
+      "values": 3370,
+      "quantiles": 704,
+      "sampler_points": 2,
+      "sha256": "e3b4f4308796a162fa22b33fb8a59fd69b0ca5bc4c35e864137f788d4a835761"
+    },
+    "burr": {
+      "parameters": 19,
+      "values": 352,
+      "quantiles": 836,
+      "sampler_points": 2,
+      "sha256": "f3ce44dcb66fc6607bfb2412dad60e7b75152c52c8f4fd5bdb562a963515495a"
+    },
+    "cauchy": {
+      "parameters": 8,
+      "values": 152,
+      "quantiles": 352,
+      "sampler_points": 2,
+      "sha256": "bf92f8a01d503860e0ddf8ff06d00057a21c2f70d5895ba11e755bb76c0c4037"
+    },
+    "cmb": {
+      "parameters": 16,
+      "values": 624,
+      "quantiles": 704,
+      "sampler_points": 2,
+      "sha256": "c8ac6fe0cd003e09de1001562d5bdf7802eb38c7e3fc2288ca75be71e4156502"
+    },
+    "cmp": {
+      "parameters": 12,
+      "values": 2303,
+      "quantiles": 528,
+      "sampler_points": 2,
+      "sha256": "cbf6cce43eb10f9e2d5525d6c509d96541b421d253610ac322768fa5a3d847fa"
+    },
+    "dgamma": {
+      "parameters": 11,
+      "values": 2307,
+      "quantiles": 484,
+      "sampler_points": 2,
+      "sha256": "024a8628dded9c9094d01a35b2c94713afb3b2dbbb0ed919a7191580ed9aeafb"
+    },
+    "dlaplace": {
+      "parameters": 7,
+      "values": 1473,
+      "quantiles": 308,
+      "sampler_points": 2,
+      "sha256": "ec2e35f6c8612983821bad74603962b70c3ed72975ab3ccec44fe5c3892cd38e"
+    },
+    "dnorm": {
+      "parameters": 8,
+      "values": 1660,
+      "quantiles": 352,
+      "sampler_points": 2,
+      "sha256": "2c4e8a0d59174e8bb65b5a345675d506626df51418e565c3b6968ad30b86b22c"
+    },
+    "dunif": {
+      "parameters": 6,
+      "values": 462,
+      "quantiles": 264,
+      "sampler_points": 2,
+      "sha256": "9d02dcb71cf18c1439c2322aae1e2102050baaa886be53c02645035c7a48e6c2"
+    },
+    "dweibull": {
+      "parameters": 11,
+      "values": 2292,
+      "quantiles": 484,
+      "sampler_points": 2,
+      "sha256": "9e66e4dd28022ba9b7d832a257327ea87a7228d670a716226d7f3c827c5e77d4"
+    },
+    "emg": {
+      "parameters": 12,
+      "values": 228,
+      "quantiles": 528,
+      "sampler_points": 2,
+      "sha256": "5e761d84c11c9f03b29529577a6accda1a5a0dc81d2798dbdc88a536fda96afa"
+    },
+    "exp": {
+      "parameters": 6,
+      "values": 126,
+      "quantiles": 264,
+      "sampler_points": 2,
+      "sha256": "c0113a52b0ad36acd087912cfa3dbd3f3225000527d084236285c183d6fd2ac4"
+    },
+    "expweibull": {
+      "parameters": 20,
+      "values": 371,
+      "quantiles": 880,
+      "sampler_points": 2,
+      "sha256": "5f32846bbb3ff03eb56dd7ec69d709dfd226ae516931082cfc6a263a035cb323"
+    },
+    "fatigue": {
+      "parameters": 17,
+      "values": 350,
+      "quantiles": 748,
+      "sampler_points": 2,
+      "sha256": "c52e93828299e678027622aba0e1d4f4fdae8d2bcba3cdabbd25910a16a7bf21"
+    },
+    "foldnorm": {
+      "parameters": 12,
+      "values": 252,
+      "quantiles": 528,
+      "sampler_points": 2,
+      "sha256": "faf7e8ae1ad75525e9015d1d957bffd4aeaddf87caa67aa66ae55838bdabd012"
+    },
+    "fpareto": {
+      "parameters": 27,
+      "values": 510,
+      "quantiles": 1188,
+      "sampler_points": 2,
+      "sha256": "7720d3db9d2a8808df773feb3811f8f8b012610ce094310c7207db2789ab60bb"
+    },
+    "frechet": {
+      "parameters": 31,
+      "values": 627,
+      "quantiles": 1364,
+      "sampler_points": 2,
+      "sha256": "f755b90f57763b8639d1551c69c2b63d33b0e1555c53463720ba3c29bb7abedd"
+    },
+    "gamma": {
+      "parameters": 13,
+      "values": 261,
+      "quantiles": 572,
+      "sampler_points": 2,
+      "sha256": "ca7a5d9179d4d16929e5e3e6f18281119a9a14e07f31a14f35032428ba782d1d"
+    },
+    "gb2": {
+      "parameters": 26,
+      "values": 490,
+      "quantiles": 1144,
+      "sampler_points": 2,
+      "sha256": "6f2bb7c3d472fe2546327c839ae90f67a19580e680c8626d2aefdeb8fab909f7"
+    },
+    "ged": {
+      "parameters": 17,
+      "values": 289,
+      "quantiles": 748,
+      "sampler_points": 2,
+      "sha256": "28427a034d099f2ac36007473e8790614005cb4b19092884a262a2c462adbe1d"
+    },
+    "genbeta": {
+      "parameters": 19,
+      "values": 298,
+      "quantiles": 836,
+      "sampler_points": 2,
+      "sha256": "85198d056459ec6201955ab01259e0352609300530bb4e87ec58dead415a42d3"
+    },
+    "gengamma": {
+      "parameters": 15,
+      "values": 307,
+      "quantiles": 660,
+      "sampler_points": 2,
+      "sha256": "20d0cb51724848c850ab907e348e3ab7e494e0de210d3e6abf1747d30b7d779c"
+    },
+    "geom": {
+      "parameters": 6,
+      "values": 1055,
+      "quantiles": 264,
+      "sampler_points": 2,
+      "sha256": "3e2c8f027302a8c5b1f35bd4cee9ce1487159c31c3eee9be3606a96876cc71f8"
+    },
+    "gev": {
+      "parameters": 16,
+      "values": 315,
+      "quantiles": 704,
+      "sampler_points": 2,
+      "sha256": "03c7117931ff228bf3ce089d2c8be7170e2e63e1c0ec1273a78e0793def06833"
+    },
+    "gompertz": {
+      "parameters": 10,
+      "values": 210,
+      "quantiles": 440,
+      "sampler_points": 2,
+      "sha256": "0b89a87d45d417706de363ebc21733de05ef313930bbcd286db19d8eb796b72a"
+    },
+    "gpd": {
+      "parameters": 14,
+      "values": 289,
+      "quantiles": 616,
+      "sampler_points": 2,
+      "sha256": "26e036fbab0ad22336a949a8bff9fe5fa326571e0835340642a13f09774c7228"
+    },
+    "gumbel": {
+      "parameters": 11,
+      "values": 209,
+      "quantiles": 484,
+      "sampler_points": 2,
+      "sha256": "bf44a87cec1ea8bf9defc35b9a1c5262be4d546853701c89a7278b37c0ddf39e"
+    },
+    "hcauchy": {
+      "parameters": 8,
+      "values": 162,
+      "quantiles": 352,
+      "sampler_points": 2,
+      "sha256": "7b82ccb0821600927536962e101ca6895a83861063fa934825c7426db9745931"
+    },
+    "hnorm": {
+      "parameters": 9,
+      "values": 171,
+      "quantiles": 396,
+      "sampler_points": 2,
+      "sha256": "b6630fd9253952f6c5e1ccad88fc8a1ad4fa596bb5dbedde5a46f354c851805e"
+    },
+    "ht": {
+      "parameters": 15,
+      "values": 294,
+      "quantiles": 660,
+      "sampler_points": 2,
+      "sha256": "aca9b147286186cb6f82d330b01ef34e42da3091ae701ab2630e83bffea3d4f7"
+    },
+    "huber": {
+      "parameters": 11,
+      "values": 209,
+      "quantiles": 484,
+      "sampler_points": 2,
+      "sha256": "fb916435ad0f45d8c8454add30c31a33b0345e25bd38839694ed3a4152f041c7"
+    },
+    "hyper": {
+      "parameters": 8,
+      "values": 58,
+      "quantiles": 352,
+      "sampler_points": 2,
+      "sha256": "5387c3662e4c9e0f94f539c39e62961eec21b703c91490b9843aa880434cb00d"
+    },
+    "invburr": {
+      "parameters": 19,
+      "values": 351,
+      "quantiles": 836,
+      "sampler_points": 2,
+      "sha256": "a1ac38a6e16bf65c8e2fa161d0b68cd64c576b63c145f88d69212a9fac009e20"
+    },
+    "invexp": {
+      "parameters": 6,
+      "values": 124,
+      "quantiles": 264,
+      "sampler_points": 2,
+      "sha256": "ffa0d29ba3896267c1159a09b0a494825c8df0bba63f63f15b24e4d351ca0bd4"
+    },
+    "invgamma": {
+      "parameters": 13,
+      "values": 259,
+      "quantiles": 572,
+      "sampler_points": 2,
+      "sha256": "04dd8810fbadf0debd1166409ddb1d46d3b403adf162e946bc3b4dbabda537ed"
+    },
+    "invgauss": {
+      "parameters": 11,
+      "values": 231,
+      "quantiles": 484,
+      "sampler_points": 2,
+      "sha256": "df377bd196967901594a60d26a1400e37a147044d7dd126a54864b9ba6afff95"
+    },
+    "invparalogis": {
+      "parameters": 11,
+      "values": 207,
+      "quantiles": 484,
+      "sampler_points": 2,
+      "sha256": "2c300631cdc98b68fdd36701e6252d636c65b955d983d83bd9b19056c5292dfe"
+    },
+    "invpareto": {
+      "parameters": 12,
+      "values": 237,
+      "quantiles": 528,
+      "sampler_points": 2,
+      "sha256": "d91877a5751080c23cda67e979b2474d102829cf825c95b12045f8c5b35ad0a6"
+    },
+    "invtrgamma": {
+      "parameters": 19,
+      "values": 361,
+      "quantiles": 804,
+      "sampler_points": 2,
+      "sha256": "9befde6cbf5a0770c1db23fdd99cfd95e79da0df9b89b3a328ee0557369c9dda"
+    },
+    "invweibull": {
+      "parameters": 21,
+      "values": 422,
+      "quantiles": 924,
+      "sampler_points": 2,
+      "sha256": "0beae76e62ce5304afe5686ae80a0a2b092fd88a49cf3ae96510a218dc252d29"
+    },
+    "kumar": {
+      "parameters": 11,
+      "values": 185,
+      "quantiles": 484,
+      "sampler_points": 2,
+      "sha256": "2a1f85c2414c7f4997e9686a4aba554da085634abc291ba862c46e1553b77709"
+    },
+    "laplace": {
+      "parameters": 8,
+      "values": 152,
+      "quantiles": 352,
+      "sampler_points": 2,
+      "sha256": "ef1c5da822c46ec69b666b980989be3ddf6c5d74f6c3c9dbcd5cff681d8d4b5b"
+    },
+    "lgamma": {
+      "parameters": 11,
+      "values": 167,
+      "quantiles": 484,
+      "sampler_points": 2,
+      "sha256": "1b92d45d78ecc7197c43d29db8301e4947a1d7f634136cfb91858b8afbcf94a4"
+    },
+    "lgser": {
+      "parameters": 6,
+      "values": 1253,
+      "quantiles": 264,
+      "sampler_points": 2,
+      "sha256": "ea31abaebc254b23db062dc35ac5778df4c7e0fc566f2686660303bd57216b3f"
+    },
+    "llogis": {
+      "parameters": 13,
+      "values": 251,
+      "quantiles": 572,
+      "sampler_points": 2,
+      "sha256": "274fcddff193747c6bcb3cbb5724e24f0005147a20f1587851eb362ed290fcdf"
+    },
+    "lnorm": {
+      "parameters": 8,
+      "values": 154,
+      "quantiles": 352,
+      "sampler_points": 2,
+      "sha256": "b33d3ff3aca60a5c5012c5fb26333fbdad6be4b539141b06180d6290e176af14"
+    },
+    "logis": {
+      "parameters": 8,
+      "values": 152,
+      "quantiles": 352,
+      "sampler_points": 2,
+      "sha256": "972b2484471a36686d9f113604ef1e70be544d04244ff2d83f2ee8562d3f82fb"
+    },
+    "logitnorm": {
+      "parameters": 11,
+      "values": 197,
+      "quantiles": 484,
+      "sampler_points": 2,
+      "sha256": "5705340b8b9e4f1e43e3a0fbbce4d41228853b5ef1282e762a93ad6311b68c6b"
+    },
+    "lomax": {
+      "parameters": 12,
+      "values": 238,
+      "quantiles": 528,
+      "sampler_points": 2,
+      "sha256": "90e7c91e10f631d70ccc64f416edb8d771e08512343ad31cc008320eba66a7b8"
+    },
+    "lst": {
+      "parameters": 17,
+      "values": 305,
+      "quantiles": 748,
+      "sampler_points": 2,
+      "sha256": "92aba7359f03ebc3ed1a1e73aa17c0fa818e9cf3f09da18add88615e5ee34e26"
+    },
+    "naka": {
+      "parameters": 12,
+      "values": 241,
+      "quantiles": 528,
+      "sampler_points": 2,
+      "sha256": "d2c40c0f4d0b087ed439ce4a4ea7c6f25de2db82cdbd497374e6dcab3d7d559e"
+    },
+    "nbinom": {
+      "parameters": 13,
+      "values": 2331,
+      "quantiles": 572,
+      "sampler_points": 2,
+      "sha256": "fd3c954d666d184b51725c7770a3c3c14583cbc42fb109c225c44157d0961aa0"
+    },
+    "nhyper": {
+      "parameters": 8,
+      "values": 289,
+      "quantiles": 352,
+      "sampler_points": 2,
+      "sha256": "ba4c4e90db6d42fb20f5c47b5dfcb7842fdab90834bb3b639d5f7c528425d8e3"
+    },
+    "norm": {
+      "parameters": 8,
+      "values": 152,
+      "quantiles": 352,
+      "sampler_points": 2,
+      "sha256": "4cde36d313dcd8ff8cee7588fe4a2f589b8d3e2b9deab1c76a20bb7d5c191584"
+    },
+    "nsbeta": {
+      "parameters": 15,
+      "values": 241,
+      "quantiles": 660,
+      "sampler_points": 2,
+      "sha256": "bdcc506f804bc30f163c505e53553bcb6b29f31fb1f941f29084a772ec6b412f"
+    },
+    "paralogis": {
+      "parameters": 11,
+      "values": 207,
+      "quantiles": 484,
+      "sampler_points": 2,
+      "sha256": "9779dc718ccab041bff3e05fcf8b35a4c0bee373060dab17f6f4c2e663c4091a"
+    },
+    "pareto": {
+      "parameters": 9,
+      "values": 146,
+      "quantiles": 396,
+      "sampler_points": 2,
+      "sha256": "1e648173d2f65f676cd043fa684ca957ed158ec193040d1ff23b2ef5cc46c7b7"
+    },
+    "pareto2": {
+      "parameters": 16,
+      "values": 303,
+      "quantiles": 704,
+      "sampler_points": 2,
+      "sha256": "d99affa8d7f6f3f61c82464553885ca5da28a48c02cc965284b4b0471d6bf166"
+    },
+    "pareto3": {
+      "parameters": 15,
+      "values": 285,
+      "quantiles": 660,
+      "sampler_points": 2,
+      "sha256": "a8028c0b557800ecf0f9cf0253569faac69106b7f8dfc885a784eede4562171e"
+    },
+    "pareto4": {
+      "parameters": 20,
+      "values": 355,
+      "quantiles": 880,
+      "sampler_points": 2,
+      "sha256": "839b0f40aa1bf0d6587a3cbfd322b304b05ede632b2ba3bc33949a43d73928ec"
+    },
+    "pig": {
+      "parameters": 10,
+      "values": 1877,
+      "quantiles": 440,
+      "sampler_points": 2,
+      "sha256": "8e69d137ca066bd545196a4f224139c14715cda9953ef8d0d9e7c1380ff6d9ea"
+    },
+    "pois": {
+      "parameters": 8,
+      "values": 1462,
+      "quantiles": 352,
+      "sampler_points": 2,
+      "sha256": "201930b9e2b27f21a807401f0c8c30323fa38e0223d1987d491b11773a35439d"
+    },
+    "power": {
+      "parameters": 9,
+      "values": 149,
+      "quantiles": 396,
+      "sampler_points": 2,
+      "sha256": "26445c8ca16ca9b57edfbd14d085370bf58d86215842f8d7a18ec303d31b1b72"
+    },
+    "rayleigh": {
+      "parameters": 7,
+      "values": 147,
+      "quantiles": 308,
+      "sampler_points": 2,
+      "sha256": "20db65e8906a9b127f3d4f05de5bc45a8902a4e345ed79105a6806f042bbfcc6"
+    },
+    "sged": {
+      "parameters": 24,
+      "values": 406,
+      "quantiles": 1048,
+      "sampler_points": 2,
+      "sha256": "2316de1e2cf59b026039d5c121222c52f8568d75bc28d667a2d3252e83f62bd7"
+    },
+    "sgomp": {
+      "parameters": 12,
+      "values": 252,
+      "quantiles": 528,
+      "sampler_points": 2,
+      "sha256": "332379cd9acb404d923893ff23af0960832e49aa5700d85bb8c0d24c9760f893"
+    },
+    "skellam": {
+      "parameters": 14,
+      "values": 2595,
+      "quantiles": 616,
+      "sampler_points": 2,
+      "sha256": "948ea4d0c71d25ad40055a738d69b6a305fbf43cb0bf4b84647e6eb33250b7b0"
+    },
+    "slash": {
+      "parameters": 8,
+      "values": 152,
+      "quantiles": 352,
+      "sampler_points": 2,
+      "sha256": "c7a55ee3a99af4b3acd3fdc44d410fa6d013cd1890e513fa877e8e53c24357ff"
+    },
+    "sn": {
+      "parameters": 17,
+      "values": 323,
+      "quantiles": 748,
+      "sampler_points": 2,
+      "sha256": "eb43a43a23b106af75b7549b828961743ea810a54e02c33723d876d7fecdc8e2"
+    },
+    "snorm": {
+      "parameters": 15,
+      "values": 285,
+      "quantiles": 660,
+      "sampler_points": 2,
+      "sha256": "fabcf902514ef945a727f9928320df106eb2f1fcbdd703289520903f99ebff60"
+    },
+    "sstd": {
+      "parameters": 23,
+      "values": 431,
+      "quantiles": 1012,
+      "sampler_points": 2,
+      "sha256": "1aac19ba7b779d811685d2695d3c94bff1b05d3607997664397e320fe5d4abfd"
+    },
+    "st": {
+      "parameters": 16,
+      "values": 290,
+      "quantiles": 704,
+      "sampler_points": 2,
+      "sha256": "6c2dafb68fb5615f53ba76f1c0ffd9795038b85d12501fe3227a867af1bc8342"
+    },
+    "std": {
+      "parameters": 18,
+      "values": 342,
+      "quantiles": 792,
+      "sampler_points": 2,
+      "sha256": "9082219b14dc1226471b153d163db57fefc9d258593f5fdfa6c97fd7e339b8a9"
+    },
+    "tbinom": {
+      "parameters": 11,
+      "values": 147,
+      "quantiles": 484,
+      "sampler_points": 2,
+      "sha256": "b0a4942a8841d501bad2b92a8c327ce6c2fd1737dc90d6627416893dd2bda7f5"
+    },
+    "tlambda": {
+      "parameters": 14,
+      "values": 260,
+      "quantiles": 616,
+      "sampler_points": 2,
+      "sha256": "ad192fbb4f25cda075671ede58578fe4b54e21646d2e51fd2668ce76f9be482d"
+    },
+    "tnorm": {
+      "parameters": 12,
+      "values": 228,
+      "quantiles": 528,
+      "sampler_points": 2,
+      "sha256": "341955e2bd9a4f49e311390248c1b7c9e753cae262e8ba5979ec3ffb978baa69"
+    },
+    "tpois": {
+      "parameters": 8,
+      "values": 109,
+      "quantiles": 352,
+      "sampler_points": 2,
+      "sha256": "45831736a5d24774cd32d88b1411d73e6cb599084285df8e8d3dc10dec305b0f"
+    },
+    "trgamma": {
+      "parameters": 19,
+      "values": 363,
+      "quantiles": 804,
+      "sampler_points": 2,
+      "sha256": "2e3ddec99afdaf4086983cdd031f843bd1c35305f19d5a7ebf5ee58742addae5"
+    },
+    "triang": {
+      "parameters": 12,
+      "values": 201,
+      "quantiles": 528,
+      "sampler_points": 2,
+      "sha256": "8cd6ce72429149cdcb0e890215d20fdb499671f85de921b76752b2afbe9fc2df"
+    },
+    "unif": {
+      "parameters": 6,
+      "values": 89,
+      "quantiles": 264,
+      "sampler_points": 2,
+      "sha256": "f0c4805dc9036095ec926b62b01ff1f38a38cd21dbc86a0f6e5e4e1e69b7e483"
+    },
+    "weibull": {
+      "parameters": 13,
+      "values": 269,
+      "quantiles": 620,
+      "sampler_points": 2,
+      "sha256": "d07006af4e19a8cc1faaed4d24495b9d4997b36c66836822a54429270b989637"
+    },
+    "yulesimon": {
+      "parameters": 7,
+      "values": 1464,
+      "quantiles": 308,
+      "sampler_points": 2,
+      "sha256": "d45cb3e2b27da61271bd2ba026272e6ad5d4eef9708ff1617398efaff6404fc3"
+    },
+    "zeta": {
+      "parameters": 6,
+      "values": 1254,
+      "quantiles": 264,
+      "sampler_points": 2,
+      "sha256": "84b37b8c53ad49fb40eaef82e68600c21d1dcd8d3871790e1aef78b3995ea4f4"
+    },
+    "zib": {
+      "parameters": 15,
+      "values": 406,
+      "quantiles": 660,
+      "sampler_points": 2,
+      "sha256": "25cad6fb0e5553677bd8e15f06041300b62ffb72b80e5457864f33ea51b5aa08"
+    },
+    "zinb": {
+      "parameters": 18,
+      "values": 3143,
+      "quantiles": 792,
+      "sampler_points": 2,
+      "sha256": "17dc0d24d85abf05ef830d4138570fc8ec6454d8b1ebb53d82123328d9d4fe93"
+    },
+    "zip": {
+      "parameters": 11,
+      "values": 2072,
+      "quantiles": 484,
+      "sampler_points": 2,
+      "sha256": "05b317a975491a041bb33a5d287b8f622c45ee604c9af28134056c3140c70789"
+    },
+    "zipf": {
+      "parameters": 9,
+      "values": 96,
+      "quantiles": 396,
+      "sampler_points": 2,
+      "sha256": "4cc70de28481517554d3256ec109c2328810fccf1972f3e2ce9ab9d59b4e24fe"
+    },
+    "zmbinom": {
+      "parameters": 15,
+      "values": 409,
+      "quantiles": 660,
+      "sampler_points": 2,
+      "sha256": "4b20e5d072ac331a462666dbb9456745d9b0b531a76245d76ab0ef11353bf9a9"
+    },
+    "zmgeom": {
+      "parameters": 12,
+      "values": 2098,
+      "quantiles": 528,
+      "sampler_points": 2,
+      "sha256": "bb179c7699a5abd9bb3c9b2cc293379b8713aa62e22cf2f805e3c2b0069f7cfd"
+    },
+    "zmlogarithmic": {
+      "parameters": 12,
+      "values": 2090,
+      "quantiles": 528,
+      "sampler_points": 2,
+      "sha256": "ca27f63ff6a4a6a9df0843ddfe6c58c88d96db88c09bf999351fcc9e8ecc3741"
+    },
+    "zmnbinom": {
+      "parameters": 18,
+      "values": 3350,
+      "quantiles": 792,
+      "sampler_points": 2,
+      "sha256": "48c420ce3d5b9550d3a6f42df061a55d76317d448120242659fb2286ed7ec743"
+    },
+    "zmpois": {
+      "parameters": 13,
+      "values": 2285,
+      "quantiles": 572,
+      "sampler_points": 2,
+      "sha256": "6acdc5898bf46f5a48ca7d2de3d8cbac8d34df92638f8a4d0c0824aa41c1e4ed"
+    },
+    "ztbinom": {
+      "parameters": 10,
+      "values": 322,
+      "quantiles": 440,
+      "sampler_points": 2,
+      "sha256": "7736959fde74bd4a5ce7ed2c50acc4745d31c38ae77064863f41750fb0c47f2a"
+    },
+    "ztgeom": {
+      "parameters": 7,
+      "values": 1263,
+      "quantiles": 308,
+      "sampler_points": 2,
+      "sha256": "c899131354c28a442bd7e064f0840c25db893cf7b8161370cf6c3982f82c71a4"
+    },
+    "ztnbinom": {
+      "parameters": 13,
+      "values": 2523,
+      "quantiles": 572,
+      "sampler_points": 2,
+      "sha256": "ba7977660b95985d1d83bbeb46b01bdbc7bbf89e2c38e7a89ea758ee9710d39e"
+    },
+    "ztpois": {
+      "parameters": 8,
+      "values": 1462,
+      "quantiles": 352,
+      "sampler_points": 2,
+      "sha256": "31c3bd1920d17f185d6ef61daf038d33c7ca92fc759d36ded6a94cf6b7791040"
+    }
+  },
+  "source_sha256": {
+    ".github/workflows/core.yaml": "47ca1b33699a16fefa59f22e0c19cee4b1cd11999ce77958a255310756f7f33d",
+    "Justfile": "462b384b685a01b0d767d37b2d3d04ae6dd84844f4cc001a17d04cf50717e83d",
+    "dev/tools/test-changed.py": "d1f8a893aeadca545c6514661e01403e9545802128fad21529d9895314538d20",
+    "univariateML-cpp/CMakeLists.txt": "dbd3b03a1ce0785616d49849382c9f59efc883ec1b5ead191f441d2627cbcb43",
+    "univariateML-cpp/tests/CMakeLists.txt": "7df49ec1b48a056ef6bdeec6cdfeb7143107cd265c95d78232616941a75f249d",
+    "univariateML-cpp/tests/test_tails.cpp": "91209b1535ddb6b81c65aa998c1c29e8ee82acac9998cfeff5797d775e5b9f8b",
+    "univariateML-cpp/include/cppunivariate/special/tails.hpp": "681f7b6af8fdbd1397a9f91c96d88df7262329adfac953d90a04f5b923659a17",
+    "univariateML-cpp/include/cppunivariate/distributions/burr/test.cpp": "6de987157c8b8f6b02d838adb13bf79c24ca2463c6e30dc3e83c926b37d685b3",
+    "bindings/r/distributions/burr/test.R": "8a73ee28e97b0ff497570aa0e5455630533ea4d507fcaaab9ee7c75d198ed93c",
+    "univariateML-cpp/include/cppunivariate/distributions/invburr/test.cpp": "71fefebd6d09ab54296f35903b7e3f263ed4de962ee7e534799dc16531a1b6d3",
+    "bindings/r/distributions/invburr/test.R": "35cd8e533ffa93fbaf9362e237fb3810ffc8b964ed7f33060490545a10c5d002"
+  }
+}

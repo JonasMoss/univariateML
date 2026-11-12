@@ -3,7 +3,15 @@
 # include/cppunivariate/distributions/<id>/ (distribution_tests).
 
 
-set(_CPPUNIV_TEST_FLAGS -Wall -Wextra -Wpedantic)
+# Exercise R's optimization and assertion mode without Release's -O3.
+# This applies only to our executables, never to downstream header consumers.
+option(CPPUNIV_TEST_OPTIMIZE "Build tests with R's -g -O2 -DNDEBUG flags" ON)
+set(_CPPUNIV_TEST_FLAGS -Wall -Wextra -Wpedantic -g)
+if(CPPUNIV_TEST_OPTIMIZE)
+  list(APPEND _CPPUNIV_TEST_FLAGS -O2 -DNDEBUG)
+else()
+  list(APPEND _CPPUNIV_TEST_FLAGS -O0)
+endif()
 
 function(cppuniv_test target source)
   add_executable(${target} ${source})
@@ -96,7 +104,6 @@ set_tests_properties(bfgs_tests sample_tests no_throw_tests cmp_tests tails_test
 set(_diagnostics_source "${CMAKE_SOURCE_DIR}/../dev/validation/diagnostics-audit.cpp")
 if(EXISTS "${_diagnostics_source}")
   cppuniv_test(diagnostics_tests "${_diagnostics_source}")
-  target_compile_options(diagnostics_tests PRIVATE -O2)
   add_test(NAME diagnostics_tests COMMAND diagnostics_tests)
   set_tests_properties(diagnostics_tests PROPERTIES LABELS "dev;full" TIMEOUT 60)
 endif()
