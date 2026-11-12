@@ -307,6 +307,9 @@ def show(value):
 
 def diff(args):
     a, b = load(args.diff[0]), load(args.diff[1])
+    if args.family:   # compare only these families, e.g. a partial rerun against a full baseline
+        keep = set(args.family.split(','))
+        a = {k: v for k, v in a.items() if k[0] in keep}; b = {k: v for k, v in b.items() if k[0] in keep}
     ignore = set(args.ignore.split(',')) if args.ignore else set()
     changed = 0; by_family = {}; by_field = {}
     for key in sorted(set(a) | set(b)):
@@ -362,7 +365,7 @@ def outcomes(args):
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--output', type=Path, help='snapshot directory')
-    ap.add_argument('--family', help='comma-separated family ids (default: all)')
+    ap.add_argument('--family', help='comma-separated family ids (default: all); also restricts --diff')
     ap.add_argument('--jobs', type=int, default=1, help='families fitted in parallel (one core each)')
     ap.add_argument('--cpu-limit', type=float, default=300, help='CPU seconds per case before "timeout"')
     ap.add_argument('--no-long-double', action='store_true', help='double-only intermediates')
