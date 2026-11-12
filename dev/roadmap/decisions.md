@@ -6,6 +6,18 @@ entry stays, marked superseded. Design detail lives in the linked roadmap
 entries, reports and code; this file is the index of what was chosen.
 Active work lives on the board (`~/boards/univariateML`), not here.
 
+## 2026-11-12
+
+- **Retiring families go as soon as their replacement lands** (Jonas: "we'll
+  remove all redundant truncated and zero-mod/trunc/infl distributions once
+  they land"). Each of the 16 families in
+  [family-reductions.csv](../validation/family-reductions.csv) is removed once
+  `zero`/`truncate` on its base reproduces it in the retirement audit, not
+  held back for a single 2.0 cut. The half families (hnorm, hcauchy, ht) and
+  other families that are not windows of a parent stay. Design:
+  [modifiers roadmap](2026-11-11-zero-and-truncation-modifiers.md); work:
+  TASK-191.
+
 ## 2026-11-11
 
 - **`logLik` is the maximized value** (Jonas: "Lets do option A"; and a

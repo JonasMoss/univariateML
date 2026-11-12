@@ -158,6 +158,9 @@ and it replaces the hand-kept lists in this file and the 2026-11-05 entry.
   `zipf`) once the knob reproduces their goldens. `zmlogarithmic` becomes
   lgser's declared exception. `zip`, `zib`, `zinb` become the `inflated`
   implementations of their base families.
+- Removal follows each replacement as soon as the retirement audit passes
+  (Jonas, 2026-11-12). The half families (`hnorm`, `hcauchy`, `ht`) stay: they
+  are families of their own, not windows of a parent with free location.
 
 ## R names
 
